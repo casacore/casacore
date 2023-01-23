@@ -74,6 +74,12 @@ public:
 
     ~StManColumnBase();
 
+    // The object cannot be copied.
+    StManColumnBase (const StManColumnBase&) = delete;
+
+    // The object cannot be assigned to.
+    StManColumnBase& operator= (const StManColumnBase&) = delete;
+
     // Test if the given data type is supported by storage managers.
     // It is used by the function Table::isNativeDataType.
     static Bool isNativeDataType (int dtype);
@@ -88,13 +94,6 @@ public:
     // Return the size of an element of the column's data type.
     Int elemSize() const
       { return elemSize_p; }
-
-private:
-    // The object cannot be copied.
-    StManColumnBase (const StManColumnBase&);
-
-    // The object cannot be assigned to.
-    StManColumnBase& operator= (const StManColumnBase&);
 
 private:
     // The data type of the column.

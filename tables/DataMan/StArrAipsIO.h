@@ -142,8 +142,6 @@ public:
   virtual void getFile (rownr_t nrval, AipsIO&);
 
 private:
-  // The (unique) sequence number of the column.
-  uInt seqnr_p;
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.

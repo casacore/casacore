@@ -176,12 +176,11 @@ public:
 
     ~StandardStMan();
 
-private:
     // Copy constructor cannot be used.
-    StandardStMan (const StandardStMan& that);
+    StandardStMan (const StandardStMan&) = delete;
 
     // Assignment cannot be used.
-    StandardStMan& operator= (const StandardStMan& that);
+    StandardStMan& operator= (const StandardStMan&) = delete;
 };
 
 

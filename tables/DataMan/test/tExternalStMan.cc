@@ -787,7 +787,7 @@ void readTable()
   Table tab("tLofarStMan_tmp.data");
   uInt nrow = tab.nrow();
   uInt nbasel = nant*nant;
-  AlwaysAssertExit (nrow = ntime*nbasel);
+  AlwaysAssertExit (ntime*nbasel == nrow);
   AlwaysAssertExit (!tab.canAddRow());
   AlwaysAssertExit (!tab.canRemoveRow());
   AlwaysAssertExit (tab.canRemoveColumn(Vector<String>(1, "DATA")));

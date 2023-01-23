@@ -114,11 +114,6 @@ public:
     // If locked, the destructor releases the lock and flushes the data.
     ~TableLocker();
 
-    // Has this process the read or write lock, thus can the table
-    // be read or written safely?
-    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
-
-private:
     // The copy constructor and assignment are not possible.
     // Note that only one lock can be held on a table, so copying a
     // TableLocker object imposes great difficulties which objects should
@@ -127,10 +122,15 @@ private:
     // with a reference counted body class.
     // However, that will only be done when the need arises.
     // <group>
-    TableLocker (const TableLocker&);
-    TableLocker& operator= (const TableLocker&);
+    TableLocker (const TableLocker&) = delete;
+    TableLocker& operator= (const TableLocker&) = delete;
     // </group>
 
+    // Has this process the read or write lock, thus can the table
+    // be read or written safely?
+    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
+
+private:
     //# Variables.
     Table itsTable;
     bool  itsHadLock;

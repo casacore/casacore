@@ -227,6 +227,13 @@ public:
 
     virtual ~DataManager();
 
+    // The copy constructor cannot be used for this base class.
+    // The clone function should be used instead.
+    DataManager (const DataManager&) = delete;
+
+    // Assignment cannot be used for this base class.
+    DataManager& operator= (const DataManager&) = delete;
+
     // Make a clone of the derived object.
     virtual DataManager* clone() const = 0;
 
@@ -409,15 +416,6 @@ private:
     Table*       table_p;            //# Table this data manager belongs to
     mutable DataManager* clone_p;    //# Pointer to clone (used by SetupNewTab)
 
-
-    // The copy constructor cannot be used for this base class.
-    // The clone function should be used instead.
-    // The private declaration of this constructor makes it unusable.
-    DataManager (const DataManager&);
-
-    // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    DataManager& operator= (const DataManager&);
 
     // Create a column in the data manager on behalf of a table column.
     //# Should be private, but has to be public because friend

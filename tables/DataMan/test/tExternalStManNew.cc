@@ -71,6 +71,9 @@ namespace casacore {
   
     ~LofarStMan();
 
+    // Assignment cannot be used.
+    LofarStMan& operator= (const LofarStMan&) = delete;
+  
     // Clone this object.
     virtual DataManager* clone() const;
   
@@ -113,12 +116,9 @@ namespace casacore {
       { return ntime * nant * nant; }
 
   private:
-    // Copy constructor cannot be used.
-    LofarStMan (const LofarStMan& that);
+    // Copy constructor can only be used by clone.
+    LofarStMan (const LofarStMan&);
 
-    // Assignment cannot be used.
-    LofarStMan& operator= (const LofarStMan& that);
-  
     // Flush and optionally fsync the data.
     // It does nothing, and returns False.
     virtual Bool flush (AipsIO&, Bool doFsync);
@@ -775,7 +775,7 @@ void readTable()
   Table tab("tLofarStMan_tmp.data");
   rownr_t nrow = tab.nrow();
   uInt nbasel = nant*nant;
-  AlwaysAssertExit (nrow = ntime*nbasel);
+  AlwaysAssertExit (ntime*nbasel == nrow);
   AlwaysAssertExit (!tab.canAddRow());
   AlwaysAssertExit (!tab.canRemoveRow());
   AlwaysAssertExit (tab.canRemoveColumn(Vector<String>(1, "DATA")));

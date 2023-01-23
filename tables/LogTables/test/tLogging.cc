@@ -311,7 +311,7 @@ void testLogSink()
     LogSink::globalSink(newGlobal);
     AlwaysAssertExit(!newGlobal);
     // static LogSinkInterface &globalSink();
-    AlwaysAssertExit(copy = &LogSink::globalSink());
+    AlwaysAssertExit(copy == &LogSink::globalSink());
     LogMessage message;
     message.message("test");
     // Bool post(const LogMessage &message);

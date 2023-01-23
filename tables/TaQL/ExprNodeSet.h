@@ -111,6 +111,9 @@ public:
 
     ~TableExprNodeSet();
     
+    // A copy of a TableExprNodeSet cannot be assigned.
+    TableExprNodeSet& operator= (const TableExprNodeSet&) = delete;
+
     // Add an element to the set.
     // If adaptType=True, the data type is the highest of the elements added.
     // Otherwise it is that of the first element.
@@ -206,9 +209,6 @@ public:
     void adaptSetUnits (const Unit&) override;
 
 private:
-    // A copy of a TableExprNodeSet cannot be made.
-    TableExprNodeSet& operator= (const TableExprNodeSet&);
-
     // Convert the const set to an array.
     TENShPtr toConstArray() const;
 

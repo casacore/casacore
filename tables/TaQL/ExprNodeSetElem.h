@@ -74,6 +74,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     virtual ~TableExprNodeSetElemBase() = default;
 
+    // A copy of a TableExprNodeSetElem cannot be made.
+    TableExprNodeSetElemBase& operator= (const TableExprNodeSetElemBase&) = delete;
+
     // Show the node.
     void show (ostream& os, uInt indent) const override;
 
@@ -183,10 +186,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TENShPtr itsStart;
     TENShPtr itsEnd;
     TENShPtr itsIncr;
-
-  private:
-    // A copy of a TableExprNodeSetElem cannot be made.
-    TableExprNodeSetElemBase& operator= (const TableExprNodeSetElemBase&);
   };
 
 

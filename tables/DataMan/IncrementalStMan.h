@@ -208,12 +208,11 @@ public:
 
     ~IncrementalStMan();
 
-private:
     // Copy constructor cannot be used.
-    IncrementalStMan (const IncrementalStMan& that);
+    IncrementalStMan (const IncrementalStMan&) = delete;
 
     // Assignment cannot be used.
-    IncrementalStMan& operator= (const IncrementalStMan& that);
+    IncrementalStMan& operator= (const IncrementalStMan&) = delete;
 };
 
 

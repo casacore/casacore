@@ -157,6 +157,12 @@ public:
     // Frees up the storage.
     virtual ~DataManagerColumn();
 
+    // The copy constructor cannot be used for this base class.
+    DataManagerColumn (const DataManagerColumn&) = delete;
+
+    // Assignment cannot be used for this base class.
+    DataManagerColumn& operator= (const DataManagerColumn&) = delete;
+
     // Set the isFixedShape flag.
     void setIsFixedShape (Bool isFixedShape)
         { isFixedShape_p = isFixedShape; }
@@ -483,14 +489,6 @@ protected:
     // </group>
 
 private:
-    // The copy constructor cannot be used for this base class.
-    // The private declaration of this constructor makes it unusable.
-    DataManagerColumn (const DataManagerColumn&);
-
-    // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    DataManagerColumn& operator= (const DataManagerColumn&);
-
     // Set the shape of all (fixed-shaped) arrays in the column.
     // By default it throws a "not possible" exception.
     virtual void setShapeColumn (const IPosition& shape);

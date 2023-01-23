@@ -51,7 +51,7 @@ $casa_checktool ./tTableGram 'select all ab,ac,ad,ae,af,ag from tTableGram_tmp.d
 
 $casa_checktool ./tTableGram 'select ab from tTableGram_tmp.tab where ab==2**1**2 || ab==-2**-1*8/-2*3'
 
-$casa_checktool ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")'
+$casa_checktool ./tTableGram 'select ab,ac,af from ../../TaQL/./test/tTableGram_tmp.tab where lower(af) == regex("v[01279]")'
 $casa_checktool ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af!~m/V[01279]/i'
 
 $casa_checktool ./tTableGram 'select ab,ac,af from tTableGram_tmp.tab where af ~ p/?{3,5,8}/'

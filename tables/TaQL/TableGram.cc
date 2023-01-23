@@ -80,6 +80,8 @@ public:
   {}
   ~TableGramState()
     { clear(); }
+  TableGramState (const TableGramState&) = delete;
+  TableGramState& operator= (const TableGramState&) = delete;
   void clear()
     { if (itsState) {
         TableGram_delete_buffer(itsState);
@@ -89,8 +91,6 @@ public:
   YY_BUFFER_STATE state() const
     { return itsState; }
 private:
-  TableGramState (const TableGramState&);
-  TableGramState& operator= (const TableGramState&);
   YY_BUFFER_STATE itsState;      //# this is a pointer to yy_buffer_state
 };
 

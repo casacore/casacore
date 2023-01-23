@@ -115,6 +115,9 @@ public:
     // Destructor is mandatory.
     virtual ~VACExampleVACEngine();
 
+    // Assignment is not needed and therefore forbidden.
+    VACExampleVACEngine& operator= (const VACExampleVACEngine&) = delete;
+
     // Clone the object.
     DataManager* clone() const;
 
@@ -143,10 +146,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     VACExampleVACEngine (const VACExampleVACEngine&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private).
-    VACExampleVACEngine& operator= (const VACExampleVACEngine&);
 
 
     // The target column names.

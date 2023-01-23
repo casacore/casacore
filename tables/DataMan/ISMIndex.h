@@ -77,9 +77,7 @@ class AipsIO;
 class ISMIndex
 {
 public:
-    // Create a ISMIndex object with the given parent for a new table.
-    // It keeps the pointer to its parent (but does not own it).
-    explicit ISMIndex (ISMBase* parent);
+    ISMIndex();
 
     // The destructor closes the file (if opened).
     ~ISMIndex();
@@ -137,8 +135,6 @@ private:
 
 
     //# Declare member variables.
-    // Pointer to the parent storage manager.
-    ISMBase*          stmanPtr_p;
     // Number of entries used.
     uInt              nused_p;
     // Rownr index (i.e. row rows_p[i] starts in bucketNr_p[i]).

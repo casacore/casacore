@@ -36,9 +36,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ISMIndex::ISMIndex (ISMBase* parent)
-: stmanPtr_p (parent),
-  nused_p    (1),
+ISMIndex::ISMIndex()
+: nused_p    (1),
   rows_p     (2, 0),
   bucketNr_p (1, 0)
 {}

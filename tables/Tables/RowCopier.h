@@ -174,6 +174,14 @@ public:
     RowCopier (Table &out, const Table &in, const Vector<String>& outNames,
 	       const Vector<String>& inNames);
    
+    ~RowCopier();
+
+    //# The following constructors and operator don't seem to be useful
+    // <group>
+    RowCopier(const RowCopier &other) = delete;
+    RowCopier &operator=(const RowCopier &other) = delete;
+    // </group>
+
     // The things that actually do the copying when requested.
     // <group>
     // Copy different row numbers.
@@ -182,16 +190,7 @@ public:
     Bool copy (rownr_t rownr);
     // </group>
 
-    ~RowCopier();
-
 private:
-    //# The following constructors and operator don't seem to be useful
-    // <group>
-    RowCopier();
-    RowCopier(const RowCopier &other);
-    RowCopier &operator=(const RowCopier &other);
-    // </group>
-
     // The ColumnHolder class exists only in the .cc file, it is what
     // ultimately does the work.
     CountedPtr<ColumnHolder> columns_p;

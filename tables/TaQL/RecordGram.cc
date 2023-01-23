@@ -94,13 +94,13 @@ void RecordGram::addToken (TableExprNodeSet* ptr)
 void RecordGram::addToken (TableExprNodeSetElem* ptr)
   { addToken (ptr, RecordGram::Elem); }
 void RecordGram::deleteToken (TableExprNode* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteToken (RecordGramVal* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteToken (TableExprNodeSet* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteToken (TableExprNodeSetElem* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteTokenStorage()
 {
   for (std::map<void*,RecordGram::Token>::const_iterator

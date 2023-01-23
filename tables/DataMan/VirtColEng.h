@@ -116,15 +116,12 @@ public:
 
     virtual ~VirtualColumnEngine();
 
-private:
     // The copy constructor cannot be used for this base class.
     // The clone function should be used instead.
-    // The private declaration of this constructor makes it unusable.
-    VirtualColumnEngine (const VirtualColumnEngine& that);
+    VirtualColumnEngine (const VirtualColumnEngine&) = delete;
 
     // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    VirtualColumnEngine& operator= (const VirtualColumnEngine&);
+    VirtualColumnEngine& operator= (const VirtualColumnEngine&) = delete;
 
     // The data manager is not a storage manager?
     virtual Bool isStorageManager() const;

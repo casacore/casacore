@@ -143,19 +143,17 @@ private:
     Data (const IPosition& shape, int dtype, int elemSize);
     //# explicitly specify noexcept to squash compiler warning
     ~Data() noexcept(false);
+    Data (const Data&) = delete;
+    Data& operator= (const Data&) = delete;
     void clear (int dtype);
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
   private:
-    Data (const Data&);
-    Data& operator= (const Data&);
     IPosition shape_p;
     void* data_p;
   };
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
-  // The size of an array element.
-  uInt elemSize_p;
   // The size at the start of the data (for the IPosition).
   uInt startSize_p;
 

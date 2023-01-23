@@ -270,9 +270,7 @@ void b()
     Matrix<float> resD(2,10);
     Vector<RetypedArrayEx1> resA(10);
     Slice slice(1,5,2);
-    uInt i=0;
-    i = 0;
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    resD(0,j) = i*100+j;
 	    resD(1,j) = resD(0,j) + 10000;
@@ -293,7 +291,7 @@ void b()
 	}
     }
     Matrix<RetypedArrayEx1> matA = colA.getColumn();
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    if (!(matA(j,i) == RetypedArrayEx1(i*100+j, i*100+j+10000))) {
 		cout << "error in matA(" << j << "," << i << "): "
@@ -344,9 +342,7 @@ void c()
     Vector<RetypedArrayEx2> valA;
     Matrix<DComplex> resD(4,10);
     Vector<RetypedArrayEx2> resA(10);
-    uInt i=0;
-    i = 0;
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    uInt v = i*100 + j;
 	    resD(0,j) = DComplex(v);
@@ -408,9 +404,7 @@ void c()
     Vector<RetypedArrayEx2> valA;
     Matrix<DComplex> resD(2,10);
     Vector<RetypedArrayEx2> resA(10);
-    uInt i=0;
-    i = 0;
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    uInt v = i*100 + j;
 	    resD(0,j) = DComplex(v);

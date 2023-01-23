@@ -465,6 +465,9 @@ public:
   // Destructor is mandatory.
   ~CompressComplexSD();
 
+  // Assignment is not needed and therefore forbidden
+  CompressComplexSD& operator= (const CompressComplexSD&) = delete;
+
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
@@ -480,10 +483,6 @@ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
   CompressComplexSD (const CompressComplexSD&);
-
-  // Assignment is not needed and therefore forbidden
-  // (so it is made private and not implemented).
-  CompressComplexSD& operator= (const CompressComplexSD&);
 
   // Clone the engine object.
   virtual DataManager* clone() const;

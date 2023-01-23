@@ -792,15 +792,15 @@ void CompressComplexSD::scaleOnPut (Float scale, Float offset,
       Float tmp = (in[i].real() - offset) / fullScale;
       if (tmp < 0) {
 	float f = ceil(tmp - 0.5);
-	if (f < -32768*32768) {
-	  s = -32768*32768;
+	if (f < -32768.*32768) {
+	  s = -32768.*32768;
 	} else {
 	  s = Int(f);
 	}
       } else {
 	float f = floor(tmp + 0.5);
-	if (f > 32768*32768-1) {
-	  s = 32768*32768-1;
+	if (f > 32768.*32768-1) {
+	  s = 32768.*32768-1;
 	} else {
 	  s = Int(f);
 	}

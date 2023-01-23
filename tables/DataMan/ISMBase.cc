@@ -303,7 +303,7 @@ void ISMBase::makeIndex()
     if (index_p != 0) {
 	return;
     }
-    index_p = new ISMIndex (this);
+    index_p = new ISMIndex();
     AlwaysAssert (index_p != 0, AipsError);
     file_p->open();
     readIndex();
@@ -548,7 +548,7 @@ void ISMBase::recreate()
     firstFree_p   = -1;
     file_p = new BucketFile (fileName(), 0, False, multiFile());
     AlwaysAssert (file_p != 0, AipsError);
-    index_p = new ISMIndex (this);
+    index_p = new ISMIndex();
     AlwaysAssert (index_p != 0, AipsError);
     makeCache();
     //# Let the column objects create something if needed.

@@ -124,6 +124,12 @@ public:
 
   virtual ~TaQLNodeRep();
 
+  // Letter objects cannot be copied.
+  // <group>
+  TaQLNodeRep (const TaQLNodeRep&) = delete;
+  TaQLNodeRep& operator= (const TaQLNodeRep&) = delete;
+  // </group>
+
   // Get the node type of the derived class.
   char nodeType() const
     { return itsNodeType; }
@@ -148,12 +154,6 @@ public:
   String addEscape (const String& str) const;
 
 private:
-  // Letter objects cannot be copied.
-  // <group>
-  TaQLNodeRep (const TaQLNodeRep&);
-  TaQLNodeRep& operator= (const TaQLNodeRep&);
-  // </group>
-
   char      itsNodeType;
   TaQLStyle itsStyle;
 };

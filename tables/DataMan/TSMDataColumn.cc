@@ -337,6 +337,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	}
       }
       if (doIt) {
+        AlwaysAssert (hypercube, AipsError);
 	if (lastCube != 0) {
 	  accessFullCells (lastCube, data, writeFlag, start, end, incr);
 	  data += (nrinc+1) * chunkSize;
