@@ -170,7 +170,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "   Use 'show datatypes' to get more information about the possible data types.",
     "  A masked array expression can be stored in 2 columns like",
     "      expression AS (datacolumn,maskcolumn) [datatype]",
-    "  where datatype applies to the datacolumn (the maskcolumn is always Bool).",
+    "  where datatype applies to the datacolumn (the maskcolumn is always bool).",
     "  A regex (see 'show constants') can be used at any place in the expression-list",
     "  to include or exclude columns.",
     "    For example:   !~p/*DATA/    to exclude all columns ending in DATA",
@@ -279,7 +279,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    different shape.",
     "  It is possible to update part of an array by slicing and/or masking it like:",
     "    COLUMN[start:end:step]   or   COLUMN[mask]",
-    "  If a mask is used, only array values with a True mask value will be updated.",
+    "  If a mask is used, only array values with a true mask value will be updated.",
     "  It is possible to apply slicing and masking in succession (in any order).",
     "  Array and mask can be updated jointly like",
     "    (DATACOLUMN,MASKCOLUMN)=expression",
@@ -544,7 +544,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "             [1,2,3] (1-dim)  or  [[1,2,3],[4,5e3,6]] (2-dim)",
     "          or using function ARRAY",
     "",
-    "Masked array (True value means bad (as in numpy)):",
+    "Masked array (true value means bad (as in numpy)):",
     "             array[mask]  such as  [1,2,3][[T,F,T]]",
     "          or using function MARRAY"
   };
@@ -787,7 +787,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "  numeric MIN (numeric, numeric)",
     "  numeric MAX (numeric, numeric)",
-    "  anytype IIF (bool cond, arg1, arg2)   arg1 if cond is True, else arg2"
+    "  anytype IIF (bool cond, arg1, arg2)   arg1 if cond is true, else arg2"
   };
 
   const char* dateTimeFuncHelp[] = {
@@ -905,7 +905,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  double NORMANGLE  (arg1)",
     "    normalize an angle between -pi and pi radians",
     "  bool   ANYCONE    (source, cones)",
-    "    True if source in at least one of the cones",
+    "    true if source in at least one of the cones",
     "    synonym for operator INCONE",
     "  bool   ANYCONE    (source, conepos, radii)",
     "    same as above, but cone centers and radii are given separately",

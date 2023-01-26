@@ -87,7 +87,7 @@ public:
     SDWeatherHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDWeatherHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDWeatherHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDWeatherHandler(const SDWeatherHandler &other);
@@ -98,26 +98,26 @@ public:
     SDWeatherHandler &operator=(const SDWeatherHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
     
     // fill - a new row is added as necessary, there is no lookback to see if a row could be
     // reused.  Only the current row might be reused.
-    void fill(const Record &row, Int antennaId, Double time, Vector<Double> &timeRange);
+    void fill(const Record &row, int32_t antennaId, double time, Vector<double> &timeRange);
 private:
     MSWeather *msWeather_p;
     MSWeatherColumns *msWeatherCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
-    Int humidityId_p, tambientId_p, pressureId_p, dewpointId_p, windspeeId_p, winddireId_p;
+    int32_t humidityId_p, tambientId_p, pressureId_p, dewpointId_p, windspeeId_p, winddireId_p;
 
     // additional fields from an SDFITS file that had a previous life as a MS
-    RORecordFieldPtr<Float> H2OField_p, ionosElectronField_p, pressureField_p, 
+    RORecordFieldPtr<float> H2OField_p, ionosElectronField_p, pressureField_p, 
 	humidityField_p, temperatureField_p, windDirField_p, windSpeedField_p;
-    RORecordFieldPtr<Double> timeField_p, intervalField_p;
+    RORecordFieldPtr<double> timeField_p, intervalField_p;
 
     // cleanup everything
     void clearAll();
@@ -126,10 +126,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

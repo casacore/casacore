@@ -41,7 +41,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-std::atomic<uInt> File::uniqueSeqnr_p(0);
+std::atomic<uint32_t> File::uniqueSeqnr_p(0);
 
 
 File::File () 
@@ -72,54 +72,54 @@ File& File::operator= (const File& that)
     return *this;
 }
 
-Bool File::isRegular (Bool followSymLink) const
+bool File::isRegular (bool followSymLink) const
 {
     // The struct is filled in by mylstat, and S_ISREG checks buf
     // if the file is a regularfile.
     Path testPath = itsPath;
     if (isSymLink()) {
 	if (! followSymLink) {
-	    return False;
+	    return false;
 	}
 	testPath = SymLink(itsPath).followSymLink();
     }
     struct fileSTAT buf;
     if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
-	return False;
+	return false;
     }
     return  (S_ISREG (buf.st_mode));
 }
 
-Bool File::isDirectory (Bool followSymLink) const
+bool File::isDirectory (bool followSymLink) const
 {
     // The struct is filled in by mylstat, and S_ISDIR checks buf
     // if the file is a directory.
     Path testPath = itsPath;
     if (isSymLink()) {
 	if (! followSymLink) {
-	    return False;
+	    return false;
 	}
 	testPath = SymLink(itsPath).followSymLink();
     }
     struct fileSTAT buf;
     if (mylstat (testPath.expandedName().chars(), &buf) < 0) {
-	return False;
+	return false;
     }
     return  (S_ISDIR (buf.st_mode));
 }
 
-Bool File::isSymLink() const
+bool File::isSymLink() const
 {
     // The struct is filled in by mylstat, and S_ISLNK checks buf
     // if the file is a symbolic link.
     struct fileSTAT buf;
     if (mylstat (itsPath.expandedName().chars(), &buf) < 0) {
-	return False;
+	return false;
     }
     return  (S_ISLNK (buf.st_mode));
 }
 
-Bool File::isPipe() const
+bool File::isPipe() const
 {
     // The struct is filled in by mylstat, and S_ISFIFO checks buf
     // if the file is a pipe.
@@ -128,7 +128,7 @@ Bool File::isPipe() const
     return (S_ISFIFO (buf.st_mode)); 
 }
 
-Bool File::isCharacterSpecial() const
+bool File::isCharacterSpecial() const
 {
     // The struct is filled in by mylstat, and S_ISCHR checks buf
     // if the file is a characterspecialfile.
@@ -137,7 +137,7 @@ Bool File::isCharacterSpecial() const
     return (S_ISCHR (buf.st_mode));
 }
 
-Bool File::isBlockSpecial() const
+bool File::isBlockSpecial() const
 {
     // The struct is filled in by mylstat, and S_ISBLK checks buf
     // if the file is a blokspecialfile.
@@ -146,7 +146,7 @@ Bool File::isBlockSpecial() const
     return (S_ISBLK (buf.st_mode));
 }
 
-Bool File::isSocket() const
+bool File::isSocket() const
 {
     // The struct is filled in by mylstat, and S_ISSOCK checks buf
     // if the file is a socket.
@@ -155,7 +155,7 @@ Bool File::isSocket() const
     return (S_ISSOCK (buf.st_mode));
 }
 
-Bool File::exists() const
+bool File::exists() const
 {
     // The function access always substitutes symlinks.
     // Therefore use lstat instead.
@@ -172,33 +172,33 @@ Bool File::exists() const
     return status == 0;
 }
 
-Bool File::isReadable() const
+bool File::isReadable() const
 {
     // The function access checks if the file is readable.
     return (access ((itsPath.expandedName()).chars(), R_OK)==0);
 }
 
-Bool File::isWritable() const
+bool File::isWritable() const
 {
     // The function access checks if the file is writable.
     return (access ((itsPath.expandedName()).chars(), W_OK)==0);
 }
 
-Bool File::isExecutable() const
+bool File::isExecutable() const
 {
     // The function access checks if the file is executable.
     return (access ((itsPath.expandedName()).chars(), X_OK)==0);
 }
 
-Bool File::canCreate() const
+bool File::canCreate() const
 {
     // Checks if the dirname of a file is a writable and executable
     // directory.
     File dir(itsPath.dirName());
     if (dir.isDirectory()  &&  dir.isWritable()  &&  dir.isExecutable()) {
-	return True;
+	return true;
     }
-    return False;
+    return false;
 }
 
 long File::userID() const
@@ -219,7 +219,7 @@ long File::groupID() const
     return buf.st_gid;
 }
 
-Int64 File::size() const
+int64_t File::size() const
 {
     // The struct buf is filled in by mylstat, and the size 
     // of the file is extracted from buf.
@@ -228,18 +228,18 @@ Int64 File::size() const
     return buf.st_size;
 }
     
-uInt File::readPermissions() const
+uint32_t File::readPermissions() const
 {
     // Returns the permissions as a decimal value. The value 
     // is extracted from buf.
     struct fileSTAT buf;
     getstat (&buf);
-    return (uInt (buf.st_mode & 07) +
-           (uInt (buf.st_mode &070) >> 3) * 10 +
-           (uInt (buf.st_mode &0700) >> 6) * 100 );
+    return (uint32_t (buf.st_mode & 07) +
+           (uint32_t (buf.st_mode &070) >> 3) * 10 +
+           (uint32_t (buf.st_mode &0700) >> 6) * 100 );
 }
 
-void File::setPermissions(uInt permissions)
+void File::setPermissions(uint32_t permissions)
 {
     // Changes the permissions by using chmod, the value must be 
     // an octal value.
@@ -252,8 +252,8 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     // create an new unique name 
     char str[32];
     // fill str with the pid and the unique number
-    uInt seqnr = uniqueSeqnr_p.fetch_add(1);
-    sprintf (str, "%i_%i", Int(getpid()), seqnr);
+    uint32_t seqnr = uniqueSeqnr_p.fetch_add(1);
+    sprintf (str, "%i_%i", int32_t(getpid()), seqnr);
     if (directory.empty()  ||  directory.lastchar() == '/') {
 	return Path (directory + prefix + str);
     }
@@ -268,7 +268,7 @@ Path File::newUniqueName (const String& directory)
     return newUniqueName (directory, "");
 }
 
-void File::touch(uInt time)
+void File::touch(uint32_t time)
 {
     // Uses the function utime to set the access time and the
     // modification time. 
@@ -289,7 +289,7 @@ void File::touch()
     }
 }
 
-uInt File::accessTime () const
+uint32_t File::accessTime () const
 {
     // The struct is filled in by mylstat, and the accesstime 
     // is returned.
@@ -308,7 +308,7 @@ String File::accessTimeString () const
 
 }
 
-uInt File::modifyTime () const
+uint32_t File::modifyTime () const
 {
     // The struct is filled in by mylstat, and the modificationtime 
     // is returned.
@@ -336,7 +336,7 @@ File::FileWriteStatus File::getWriteStatus() const
 }
 
 
-uInt File::statusChangeTime () const
+uint32_t File::statusChangeTime () const
 {
     // The struct is filled in by mylstat, and the statusChangetime 
     // is returned.
@@ -381,8 +381,8 @@ void File::getstat (const File& file, void* buf) const
     }
 }
 
-void File::checkTarget (Path& targetName, Bool overwrite,
-			Bool forDirectory) const
+void File::checkTarget (Path& targetName, bool overwrite,
+			bool forDirectory) const
 {
     // Determine the target directory and file.
     // When the target is a directory, the basename is copied from the source.

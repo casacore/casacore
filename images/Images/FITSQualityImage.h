@@ -73,8 +73,8 @@ class Slicer;
 // <srcblock>
 //	   FITSQualityImage fitsQIStat("im.fits", 1, 2);
 //	   LogIO logger(or);
-//	   ImageStatistics<Float> stats(fitsQIStat, logger);
-//	   Bool ok = stats.display();
+//	   ImageStatistics<float> stats(fitsQIStat, logger);
+//	   bool ok = stats.display();
 //    </srcblock>
 // </example>
 
@@ -85,7 +85,7 @@ class Slicer;
 //# <todo asof="2011/06/17">
 //# </todo>
 
-class FITSQualityImage: public ImageInterface<Float>
+class FITSQualityImage: public ImageInterface<float>
 {
 public: 
   // Construct a FITSQualityImage from the FITS file name and extensions
@@ -93,7 +93,7 @@ public:
   explicit FITSQualityImage(const String& name);
 
   // Construct a FITSQualityImage from the disk FITS file name and extensions.
-  explicit FITSQualityImage(const String& name, uInt whichDataHDU, uInt whichErrorHDU);
+  explicit FITSQualityImage(const String& name, uint32_t whichDataHDU, uint32_t whichErrorHDU);
 
   // Copy constructor (reference semantics)
   FITSQualityImage(const FITSQualityImage& other);
@@ -107,13 +107,13 @@ public:
   //# ImageInterface virtual functions
   
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Given the misc-info of a CASA image (with quality-axis)
   // the misc-info of the data sub-image and the error sub-image
   // are produced. This ensures that, if written to FITS, the
   // data and error extensions have the all necessary keywords.
-  Bool static qualFITSInfo(String &error, TableRecord &dataExtMiscInfo, TableRecord &errorExtMiscInfo,
+  bool static qualFITSInfo(String &error, TableRecord &dataExtMiscInfo, TableRecord &errorExtMiscInfo,
 		  const TableRecord &miscInfo);
 
   // Get the FITS data
@@ -131,16 +131,16 @@ public:
 
   // Has the object really a mask?  The FITSQualityImage always
   // has a pixel mask and never has a region mask so this
-  // always returns True
-  virtual Bool isMasked() const;
+  // always returns true
+  virtual bool isMasked() const;
 
-  // FITSQualityImage always has a pixel mask so returns True
-  virtual Bool hasPixelMask() const;
+  // FITSQualityImage always has a pixel mask so returns true
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  FITSQualityImage always has a pixel mask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
 
@@ -149,46 +149,46 @@ public:
   virtual const LatticeRegion* getRegionPtr() const;
  
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice (Array<Float>& buffer, const Slicer& theSlice);
+  // Returns false as the data do not reference another Array
+  virtual bool doGetSlice (Array<float>& buffer, const Slicer& theSlice);
 
   // The FITSQualityImage is not writable, so this throws an exception.
-  virtual void doPutSlice (const Array<Float>& sourceBuffer,
+  virtual void doPutSlice (const Array<float>& sourceBuffer,
 			   const IPosition& where,
 			   const IPosition& stride);
 
   // Do the actual get of the mask data.   The return value is always
-  // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  // false, thus the buffer does not reference another array.
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   //# LatticeBase virtual functions
 
   // The lattice is paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // The FITSImage is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
   
   // Return the shape of the FITSImage.
   virtual IPosition shape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor. 
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -202,18 +202,18 @@ public:
   DataType dataType () const;
 
   // Return the data HDU number
-  uInt whichDataHDU () const
+  uint32_t whichDataHDU () const
     { return whichDataHDU_p; }
 
   // Return the error HDU number
-  uInt whichErrorHDU () const
+  uint32_t whichErrorHDU () const
     { return whichErrorHDU_p; }
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -226,7 +226,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -240,15 +240,15 @@ private:
   String         fullname_p;
   FITSImage      *fitsdata_p;
   FITSErrorImage *fitserror_p;
-  Lattice<Bool>  *pPixelMask_p;
+  Lattice<bool>  *pPixelMask_p;
   TiledShape     shape_p;
-  uInt           whichDataHDU_p;
-  uInt           whichErrorHDU_p;
-  uInt           whichMaskHDU_p;
+  uint32_t           whichDataHDU_p;
+  uint32_t           whichErrorHDU_p;
+  uint32_t           whichMaskHDU_p;
   FITSErrorImage::ErrorType errType_p;
-  Bool           isClosed_p;
-  Bool           isDataClosed_p;
-  Bool           isErrorClosed_p;
+  bool           isClosed_p;
+  bool           isDataClosed_p;
+  bool           isErrorClosed_p;
 
   // Reopen the image if needed.
   void reopenIfNeeded() const;
@@ -263,7 +263,7 @@ private:
    void setup();
 
    // Make sure the input is compatible.
-   Bool checkInput();
+   bool checkInput();
 };
 
 

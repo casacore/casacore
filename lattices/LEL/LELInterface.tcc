@@ -50,7 +50,7 @@ void LELInterface<T>::evalRef (LELArrayRef<T>& result,
 			       const Slicer& section) const
 {
     // For one reason or another gcc requires an explicit cast
-    // for LELInterface<Bool>.
+    // for LELInterface<bool>.
     eval ((LELArray<T>&)result, section);
 }
 
@@ -68,10 +68,10 @@ LELArray<T> LELInterface<T>::getArray() const
 }
 
 template<class T>
-Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
+bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
 {
 // Recursively prepare (optimize) a scalar subexpression
-    Bool isInvalidScalar = expr->prepareScalarExpr();
+    bool isInvalidScalar = expr->prepareScalarExpr();
 // If the value is a valid scalar expression, replace it by its result
 // (which can be an invalid scalar in itself).
     if (!isInvalidScalar  &&  expr->isScalar()) {
@@ -79,7 +79,7 @@ Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
 	if (tmp.mask()) {
 	    expr = new LELUnaryConst<T> (tmp.value());
 	} else {
-	    isInvalidScalar = True;
+	    isInvalidScalar = true;
 	}
     }
 // If the value is an invalid scalar expression, replace by scalar
@@ -92,17 +92,17 @@ Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
 
 
 template<class T>
-Bool LELInterface<T>::lock (FileLocker::LockType, uInt)
+bool LELInterface<T>::lock (FileLocker::LockType, uint32_t)
 {
-    return True;
+    return true;
 }
 template<class T>
 void LELInterface<T>::unlock()
 {}
 template<class T>
-Bool LELInterface<T>::hasLock (FileLocker::LockType) const
+bool LELInterface<T>::hasLock (FileLocker::LockType) const
 {
-    return True;
+    return true;
 }
 template<class T>
 void LELInterface<T>::resync()

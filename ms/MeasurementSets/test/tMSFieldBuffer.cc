@@ -96,8 +96,8 @@ int main() {
 //  		     AipsError);
 //  	AlwaysAssert(fieldBuffer.delayDirMeas(4, 0.0).getRef().getType()
 // 		     == MDirection::J2000, AipsError);
-//  	fieldBuffer.delayDir().put(0, Matrix<Double>(2, 1, 1.0));
-//  	fieldBuffer.delayDir().put(4, Matrix<Double>(2, 2, 2.0));
+//  	fieldBuffer.delayDir().put(0, Matrix<double>(2, 1, 1.0));
+//  	fieldBuffer.delayDir().put(4, Matrix<double>(2, 2, 2.0));
 //       }
 //       { // test the phaseDir & phaseFrame functions.
 // 	AlwaysAssert(fieldBuffer.phaseDir()(0).shape() == IPosition(2, 2, 1),
@@ -110,8 +110,8 @@ int main() {
 // 		     AipsError);
 //  	AlwaysAssert(fieldBuffer.phaseDirMeas(4, 0.0).getRef().getType()
 // 		     == MDirection::J2000, AipsError);
-// 	fieldBuffer.phaseDir().put(0, Matrix<Double>(2, 1, 20.0));
-// 	fieldBuffer.phaseDir().put(4, Matrix<Double>(2, 2, 30.0));
+// 	fieldBuffer.phaseDir().put(0, Matrix<double>(2, 1, 20.0));
+// 	fieldBuffer.phaseDir().put(4, Matrix<double>(2, 2, 30.0));
 //       }
 //       { // test the referenceDir & referenceFrame functions.
 // 	AlwaysAssert(fieldBuffer.referenceDir()(0).shape() == 
@@ -124,8 +124,8 @@ int main() {
 // 			     C::dbl_epsilon), AipsError);
 //  	AlwaysAssert(fieldBuffer.referenceDirMeas(4, 0.0).getRef().getType()
 // 		     == MDirection::J2000, AipsError);
-// 	fieldBuffer.referenceDir().put(0, Matrix<Double>(2, 1, 10.0));
-// 	fieldBuffer.referenceDir().put(4, Matrix<Double>(2, 2, 15.0));
+// 	fieldBuffer.referenceDir().put(0, Matrix<double>(2, 1, 10.0));
+// 	fieldBuffer.referenceDir().put(4, Matrix<double>(2, 2, 15.0));
 //       }
 //       { // test the sourceID functions.
 // 	AlwaysAssert(fieldBuffer.sourceId()(0) == -1, AipsError);
@@ -134,9 +134,9 @@ int main() {
 // 	fieldBuffer.sourceId().put(4, 20);
 //       }
 //       { // test the flagRow functions.
-// 	AlwaysAssert(fieldBuffer.flagRow()(0) == False, AipsError);
-// 	AlwaysAssert(fieldBuffer.flagRow()(4) == False, AipsError);
-// 	fieldBuffer.flagRow().put(3, True);
+// 	AlwaysAssert(fieldBuffer.flagRow()(0) == false, AipsError);
+// 	AlwaysAssert(fieldBuffer.flagRow()(4) == false, AipsError);
+// 	fieldBuffer.flagRow().put(3, true);
 //       }
 //       { // Check the assignment operator & copy constructor
 // 	MSFieldBuffer otherBuffer(fieldBuffer);
@@ -146,11 +146,11 @@ int main() {
 // 	AlwaysAssert(newBuffer.ok(), AipsError);
 // 	// Check the reference semantics by adding data here and seeing if it
 // 	// is mirrored into the newBuffer object.
-// 	fieldBuffer.delayDir().put(1, Matrix<Double>(2, 2, 1.2));
+// 	fieldBuffer.delayDir().put(1, Matrix<double>(2, 2, 1.2));
 // 	fieldBuffer.name().put(1, "name 1");
-// 	fieldBuffer.flagRow().put(1, True);
+// 	fieldBuffer.flagRow().put(1, true);
 // 	// Save the buffer to disk
-// 	fieldBuffer.save(filename, True);
+// 	fieldBuffer.save(filename, true);
 //       }
 //     }
 //     { // check the data has not been lost.
@@ -189,28 +189,28 @@ int main() {
 //  		   AipsError);
 //       AlwaysAssert(newBuffer.sourceId()(0) == 10, AipsError);
 //       AlwaysAssert(newBuffer.sourceId()(4) == 20, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(0) == False, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(3) == True, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(4) == False, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(0) == false, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(3) == true, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(4) == false, AipsError);
 //       // check the reference semantics
 //       AlwaysAssert(allNear(newBuffer.delayDir()(1), 1.2, C::dbl_epsilon),
 //  		   AipsError);
 //       AlwaysAssert(newBuffer.name()(1) == "name 1", AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(1) == True, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(1) == true, AipsError);
 //     }
 //     { // Check the isValid functions
-//       AlwaysAssert(newBuffer.isValid(True) == True, AipsError);
-//       AlwaysAssert(newBuffer.isValid(3u) == True, AipsError);
-//       AlwaysAssert(newBuffer.isValid() == True, AipsError);
+//       AlwaysAssert(newBuffer.isValid(true) == true, AipsError);
+//       AlwaysAssert(newBuffer.isValid(3u) == true, AipsError);
+//       AlwaysAssert(newBuffer.isValid() == true, AipsError);
 //     }
 //     { // Check the match functions
-//       AlwaysAssert(newBuffer.matchRefDir(Matrix<Double>(2, 1, 0.0)) == -1,
+//       AlwaysAssert(newBuffer.matchRefDir(Matrix<double>(2, 1, 0.0)) == -1,
 //  		   AipsError);
-//       AlwaysAssert(newBuffer.matchRefDir(Matrix<Double>(2, 1, 10.0), False)==0,
+//       AlwaysAssert(newBuffer.matchRefDir(Matrix<double>(2, 1, 10.0), false)==0,
 //  		   AipsError);
-//       AlwaysAssert(newBuffer.matchRefDir(Matrix<Double>(2, 2, 0.0)) == 2,
+//       AlwaysAssert(newBuffer.matchRefDir(Matrix<double>(2, 2, 0.0)) == 2,
 //  		   AipsError);
-//       AlwaysAssert(newBuffer.matchRefDir(Matrix<Double>(2, 2, 0.0), False)==3,
+//       AlwaysAssert(newBuffer.matchRefDir(Matrix<double>(2, 2, 0.0), false)==3,
 //  		   AipsError);
 //     }
 //   }

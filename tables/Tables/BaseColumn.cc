@@ -53,7 +53,7 @@ void BaseColumn::setShape (rownr_t, const IPosition&, const IPosition&)
                        "; only valid for an array"));
 }
 
-uInt BaseColumn::ndimColumn() const
+uint32_t BaseColumn::ndimColumn() const
 {
   throw (TableInvOper ("invalid ndimColumn() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
@@ -67,7 +67,7 @@ IPosition BaseColumn::shapeColumn() const
   return IPosition(0);
 }
 
-uInt BaseColumn::ndim (rownr_t) const
+uint32_t BaseColumn::ndim (rownr_t) const
 {
   throw (TableInvOper ("invalid ndim() for column " + colDescPtr_p->name() +
                        "; only valid for an array"));
@@ -88,9 +88,9 @@ IPosition BaseColumn::tileShape (rownr_t) const
 }
 
 
-Bool BaseColumn::canChangeShape() const
+bool BaseColumn::canChangeShape() const
 {
-    return False;                      // can not be changed
+    return false;                      // can not be changed
 }
 
 void BaseColumn::get (rownr_t, void*) const
@@ -204,13 +204,13 @@ void BaseColumn::putColumnSliceCells (const RefRows&,
 }
 
 
-void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
+void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, int32_t,
                               CountedPtr<ArrayBase>&)
 {
   throw (TableInvOper ("makeSortKey() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
-void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
+void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, int32_t,
 				 const Vector<rownr_t>&, CountedPtr<ArrayBase>&)
 {
   throw (TableInvOper ("makeSortKey(rownrs) for column " + colDescPtr_p->name() +
@@ -228,7 +228,7 @@ void BaseColumn::freeIterBuf (void*&, void*&)
 }
 
 
-void BaseColumn::getScalar (rownr_t rownr, Bool& value) const
+void BaseColumn::getScalar (rownr_t rownr, bool& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -242,7 +242,7 @@ void BaseColumn::getScalar (rownr_t rownr, Bool& value) const
     }
 }
 
-void BaseColumn::getScalar (rownr_t rownr, uChar& value) const
+void BaseColumn::getScalar (rownr_t rownr, unsigned char& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -256,7 +256,7 @@ void BaseColumn::getScalar (rownr_t rownr, uChar& value) const
     }
 }
 
-void BaseColumn::getScalar (rownr_t rownr, Short& value) const
+void BaseColumn::getScalar (rownr_t rownr, int16_t& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
@@ -270,14 +270,14 @@ void BaseColumn::getScalar (rownr_t rownr, Short& value) const
     }
 }
 
-void BaseColumn::getScalar (rownr_t rownr, uShort& value) const
+void BaseColumn::getScalar (rownr_t rownr, uint16_t& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = valuc;
 	return;
@@ -289,24 +289,24 @@ void BaseColumn::getScalar (rownr_t rownr, uShort& value) const
     }
 }
 
-void BaseColumn::getScalar (rownr_t rownr, Int& value) const
+void BaseColumn::getScalar (rownr_t rownr, int32_t& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = valuc;
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	get (rownr, &vals);
 	value = vals;
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = valus;
 	return;
@@ -318,19 +318,19 @@ void BaseColumn::getScalar (rownr_t rownr, Int& value) const
     }
 }
 
-void BaseColumn::getScalar (rownr_t rownr, uInt& value) const
+void BaseColumn::getScalar (rownr_t rownr, uint32_t& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = valuc;
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = valus;
 	return;
@@ -342,34 +342,34 @@ void BaseColumn::getScalar (rownr_t rownr, uInt& value) const
     }
 }
 
-void BaseColumn::getScalar (rownr_t rownr, Int64& value) const
+void BaseColumn::getScalar (rownr_t rownr, int64_t& value) const
 {
     if (!colDescPtr_p->isScalar()) {
         throwGetScalar();
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = valuc;
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	get (rownr, &vals);
 	value = vals;
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = valus;
 	return;
     case TpInt:
-        Int vali;
+        int32_t vali;
 	get (rownr, &vali);
         value = vali;
 	return;
     case TpUInt:
-        uInt valui;
+        uint32_t valui;
 	get (rownr, &valui);
         value = valui;
 	return;
@@ -388,32 +388,32 @@ void BaseColumn::getScalar (rownr_t rownr, float& value) const
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = valuc;
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	get (rownr, &vals);
 	value = vals;
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = valus;
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	get (rownr, &vali);
 	value = vali;
 	return;
     case TpUInt:
-	uInt valui;
+	uint32_t valui;
 	get (rownr, &valui);
 	value = valui;
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	get (rownr, &vali64);
 	value = vali64;
 	return;
@@ -437,32 +437,32 @@ void BaseColumn::getScalar (rownr_t rownr, double& value) const
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = valuc;
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	get (rownr, &vals);
 	value = vals;
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = valus;
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	get (rownr, &vali);
 	value = vali;
 	return;
     case TpUInt:
-	uInt valui;
+	uint32_t valui;
 	get (rownr, &valui);
 	value = valui;
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	get (rownr, &vali64);
 	value = vali64;
 	return;
@@ -486,32 +486,32 @@ void BaseColumn::getScalar (rownr_t rownr, Complex& value) const
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = Complex ((float) valuc);
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	get (rownr, &vals);
 	value = Complex ((float) vals);
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = Complex ((float) valus);
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	get (rownr, &vali);
 	value = Complex ((float) vali);
 	return;
     case TpUInt:
-	uInt valui;
+	uint32_t valui;
 	get (rownr, &valui);
 	value = Complex ((float) valui);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	get (rownr, &vali64);
 	value = vali64;
 	return;
@@ -546,32 +546,32 @@ void BaseColumn::getScalar (rownr_t rownr, DComplex& value) const
     }
     switch (colDescPtr_p->dataType()) {
     case TpUChar:
-	uChar valuc;
+	unsigned char valuc;
 	get (rownr, &valuc);
 	value = DComplex ((double) valuc);
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	get (rownr, &vals);
 	value = DComplex ((double) vals);
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	get (rownr, &valus);
 	value = DComplex ((double) valus);
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	get (rownr, &vali);
 	value = DComplex ((double) vali);
 	return;
     case TpUInt:
-	uInt valui;
+	uint32_t valui;
 	get (rownr, &valui);
 	value = DComplex ((double) valui);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	get (rownr, &vali64);
 	value = vali64;
 	return;
@@ -640,7 +640,7 @@ void BaseColumn::getScalar (rownr_t rownr, void* value,
 }
 
 
-void BaseColumn::putScalar (rownr_t rownr, const Bool& value)
+void BaseColumn::putScalar (rownr_t rownr, const bool& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -654,7 +654,7 @@ void BaseColumn::putScalar (rownr_t rownr, const Bool& value)
     }
 }
 
-void BaseColumn::putScalar (rownr_t rownr, const uChar& value)
+void BaseColumn::putScalar (rownr_t rownr, const unsigned char& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -664,27 +664,27 @@ void BaseColumn::putScalar (rownr_t rownr, const uChar& value)
 	put (rownr, &value);
 	return;
     case TpShort:
-	Short vals;
+	int16_t vals;
 	vals = value;
 	put (rownr, &vals);
 	return;
     case TpUShort:
-	uShort valus;
+	uint16_t valus;
 	valus = value;
 	put (rownr, &valus);
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	vali = value;
 	put (rownr, &vali);
 	return;
     case TpUInt:
-	uInt valui;
+	uint32_t valui;
 	valui = value;
 	put (rownr, &valui);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	vali64 = value;
 	put (rownr, &vali64);
 	return;
@@ -711,7 +711,7 @@ void BaseColumn::putScalar (rownr_t rownr, const uChar& value)
     }
 }
 
-void BaseColumn::putScalar (rownr_t rownr, const Short& value)
+void BaseColumn::putScalar (rownr_t rownr, const int16_t& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -721,12 +721,12 @@ void BaseColumn::putScalar (rownr_t rownr, const Short& value)
 	put (rownr, &value);
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	vali = value;
 	put (rownr, &vali);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	vali64 = value;
 	put (rownr, &vali64);
 	return;
@@ -753,7 +753,7 @@ void BaseColumn::putScalar (rownr_t rownr, const Short& value)
     }
 }
 
-void BaseColumn::putScalar (rownr_t rownr, const uShort& value)
+void BaseColumn::putScalar (rownr_t rownr, const uint16_t& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -763,17 +763,17 @@ void BaseColumn::putScalar (rownr_t rownr, const uShort& value)
 	put (rownr, &value);
 	return;
     case TpInt:
-	Int vali;
+	int32_t vali;
 	vali = value;
 	put (rownr, &vali);
 	return;
     case TpUInt:
-	uInt valui;
+	uint32_t valui;
 	valui = value;
 	put (rownr, &valui);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	vali64 = value;
 	put (rownr, &vali64);
 	return;
@@ -800,7 +800,7 @@ void BaseColumn::putScalar (rownr_t rownr, const uShort& value)
     }
 }
 
-void BaseColumn::putScalar (rownr_t rownr, const Int& value)
+void BaseColumn::putScalar (rownr_t rownr, const int32_t& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -810,7 +810,7 @@ void BaseColumn::putScalar (rownr_t rownr, const Int& value)
 	put (rownr, &value);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	vali64 = value;
 	put (rownr, &vali64);
 	return;
@@ -837,7 +837,7 @@ void BaseColumn::putScalar (rownr_t rownr, const Int& value)
     }
 }
 
-void BaseColumn::putScalar (rownr_t rownr, const uInt& value)
+void BaseColumn::putScalar (rownr_t rownr, const uint32_t& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();
@@ -847,7 +847,7 @@ void BaseColumn::putScalar (rownr_t rownr, const uInt& value)
 	put (rownr, &value);
 	return;
     case TpInt64:
-	Int64 vali64;
+	int64_t vali64;
 	vali64 = value;
 	put (rownr, &vali64);
 	return;
@@ -874,7 +874,7 @@ void BaseColumn::putScalar (rownr_t rownr, const uInt& value)
     }
 }
 
-void BaseColumn::putScalar (rownr_t rownr, const Int64& value)
+void BaseColumn::putScalar (rownr_t rownr, const int64_t& value)
 {
     if (!colDescPtr_p->isScalar()) {
         throwPutScalar();

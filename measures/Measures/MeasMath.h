@@ -140,24 +140,24 @@ public:
   void applyPrecNutat(MVPosition &in);
   void deapplyPrecNutat(MVPosition &in);
   void createPrecNutatB1950();
-  void applyPrecNutatB1950(MVPosition &in, Bool doin=True);
-  void deapplyPrecNutatB1950(MVPosition &in, Bool doin=True);
+  void applyPrecNutatB1950(MVPosition &in, bool doin=true);
+  void deapplyPrecNutatB1950(MVPosition &in, bool doin=true);
   //   </group>
   // Aberration for J2000 (IAU definition) and B1950 and in coordinates
   //   <group>
   void createAberration();
-  void applyAberration(MVPosition &in, Bool doin=True);
-  void deapplyAberration(MVPosition &in, Bool doin=True);
+  void applyAberration(MVPosition &in, bool doin=true);
+  void deapplyAberration(MVPosition &in, bool doin=true);
   void createAberrationB1950();
-  void applyAberrationB1950(MVPosition &in, Bool doin=True);
-  void deapplyAberrationB1950(MVPosition &in, Bool doin=True);
+  void applyAberrationB1950(MVPosition &in, bool doin=true);
+  void deapplyAberrationB1950(MVPosition &in, bool doin=true);
   //   </group>
   // Solar bending for J2000 (IAU definition) and in coordinates.
-  // False if dependent on frame direction rather than input one.
+  // false if dependent on frame direction rather than input one.
   //   <group>
   void createSolarPos();
-  void applySolarPos(MVPosition &in, Bool doin=True);
-  void deapplySolarPos(MVPosition &in, Bool doin=True);
+  void applySolarPos(MVPosition &in, bool doin=true);
+  void deapplySolarPos(MVPosition &in, bool doin=true);
   //   </group>
   // Various conversions
   // <group>
@@ -167,14 +167,14 @@ public:
   void deapplyHADECtoAZEL(MVPosition &in);
   void applyHADECtoAZELGEO(MVPosition &in);
   void deapplyHADECtoAZELGEO(MVPosition &in); 
-  void applyJ2000toB1950(MVPosition &in, Double epo, Bool doin);
-  void deapplyJ2000toB1950(MVPosition &in, Double epo, Bool doin);
-  void applyJ2000toB1950(MVPosition &in, Bool doin=True);
-  void deapplyJ2000toB1950(MVPosition &in, Bool doin=True);
-  void applyJ2000toB1950_VLA(MVPosition &in, Bool doin=True);
-  void deapplyJ2000toB1950_VLA(MVPosition &in, Bool doin=True);
-  void applyETerms(MVPosition &in, Bool doin=True, Double epo=2000.0);
-  void deapplyETerms(MVPosition &in, Bool doin=True, Double epo=2000.0);
+  void applyJ2000toB1950(MVPosition &in, double epo, bool doin);
+  void deapplyJ2000toB1950(MVPosition &in, double epo, bool doin);
+  void applyJ2000toB1950(MVPosition &in, bool doin=true);
+  void deapplyJ2000toB1950(MVPosition &in, bool doin=true);
+  void applyJ2000toB1950_VLA(MVPosition &in, bool doin=true);
+  void deapplyJ2000toB1950_VLA(MVPosition &in, bool doin=true);
+  void applyETerms(MVPosition &in, bool doin=true, double epo=2000.0);
+  void deapplyETerms(MVPosition &in, bool doin=true, double epo=2000.0);
   void applyGALtoJ2000(MVPosition &in);
   void deapplyGALtoJ2000(MVPosition &in);
   void applyGALtoB1950(MVPosition &in);
@@ -183,8 +183,8 @@ public:
   void deapplyGALtoSUPERGAL(MVPosition &in);
   void applyICRStoJ2000(MVPosition &in);
   void deapplyICRStoJ2000(MVPosition &in);
-  void applyTOPOtoHADEC(MVPosition &in, Bool doin=True);
-  void deapplyTOPOtoHADEC(MVPosition &in, Bool doin=True);
+  void applyTOPOtoHADEC(MVPosition &in, bool doin=true);
+  void deapplyTOPOtoHADEC(MVPosition &in, bool doin=true);
   void applyPolarMotion(MVPosition &in);
   void deapplyPolarMotion(MVPosition &in);
   void applyAZELtoAZELSW(MVPosition &in); 
@@ -194,10 +194,10 @@ public:
   void deapplyMECLIPtoJMEAN(MVPosition &in);
   void applyTECLIPtoJTRUE(MVPosition &in);
   void deapplyTECLIPtoJTRUE(MVPosition &in);
-  void applyAPPtoTOPO(MVPosition &in, const Double len,
-		      Bool doin=True);
-  void deapplyAPPtoTOPO(MVPosition &in, const Double len,
-			Bool doin=True);
+  void applyAPPtoTOPO(MVPosition &in, const double len,
+		      bool doin=true);
+  void deapplyAPPtoTOPO(MVPosition &in, const double len,
+			bool doin=true);
   // </group>
   // </group>
 
@@ -245,8 +245,8 @@ private:
   typedef const Measure* (MeasFrame::*FRFCT)() const;
   // To get frame info
   // <group>
-  typedef Bool (MeasFrame::*FRDINFO)(Double &) const;
-  typedef Bool (MeasFrame::*FRMVDINFO)(MVDirection &) const;
+  typedef bool (MeasFrame::*FRDINFO)(double &) const;
+  typedef bool (MeasFrame::*FRMVDINFO)(MVDirection &) const;
   // </group>
 
   //# Cached Data
@@ -254,9 +254,9 @@ private:
   // <group>
   // Frame information
   // <group>
-  Bool inOK_p;
-  Bool outOK_p;
-  Bool frameOK_p[N_FrameType];
+  bool inOK_p;
+  bool outOK_p;
+  bool frameOK_p[N_FrameType];
   MeasFrame *inFrame_p;
   MeasFrame *outFrame_p;
   MeasFrame *applyFrame_p[N_FrameType];
@@ -273,13 +273,13 @@ private:
   // <group>
   RotMatrix ROTMAT1;
   MVPosition MVPOS1, MVPOS2, MVPOS3, MVPOS4;
-  Double g1, g2, g3, lengthE;
-  Bool infoOK_p[N_FrameInfo];
-  Double info_p[N_FrameDInfo];
+  double g1, g2, g3, lengthE;
+  bool infoOK_p[N_FrameInfo];
+  double info_p[N_FrameDInfo];
   MVDirection infomvd_p[N_FrameMVDInfo];
   // </group>
   // Aipsrc definition for B1950 epoch (in years)
-  static uInt b1950_reg_p;
+  static uint32_t b1950_reg_p;
  
   // </group>
 
@@ -295,20 +295,20 @@ private:
 
   // Get information from the frame
   // <thrown>
-  //  <li> AipsError if information not available; or False return if
-  //		<em>ret=True</em>
+  //  <li> AipsError if information not available; or false return if
+  //		<em>ret=true</em>
   // </thrown>
   // <group>
-  Bool getInfo(FrameInfo i, Bool ret=False);
+  bool getInfo(FrameInfo i, bool ret=false);
   // </group>
 
   // Make a shift of coordinate into a rotation and apply it when doin is
-  // False. Else apply a shift.
+  // false. Else apply a shift.
   // Given are the longitude and latitude codes of the direction to be used,
   // and the shift to be applied in that system to the in coordinate.
   void rotateShift(MVPosition &in, const MVPosition &shft,
 		   const FrameInfo lng, const FrameInfo lat,
-		   Bool doin);
+		   bool doin);
 };
 
 

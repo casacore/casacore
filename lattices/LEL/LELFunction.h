@@ -64,7 +64,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It is used to construct 
 // LEL objects that apply numerical 1-argument functions to Lattice 
-// expressions. They operate on numerical (Float,Double,Complex,DComplex) 
+// expressions. They operate on numerical (float,double,Complex,DComplex) 
 // Lattice expressions and return the same type. The available C++ functions are 
 // <src>sin,sinh,cos,cosh,exp,log,log10,sqrt,min,max,mean,sum</src> with 
 // equivalents in the enum of SIN,SINH,COS,COSH,EXP,LOG,LOG10,SQRT,MIN1D,MAX1D,
@@ -121,16 +121,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -167,7 +167,7 @@ private:
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It is used to construct 
 // LEL objects that apply numerical (real only)  1-argument functions to 
-// Lattice expressions. They operate on Float and Double numerical Lattice 
+// Lattice expressions. They operate on float and double numerical Lattice 
 // expressions and return the same type. The available C++ functions are 
 // <src>asin,acos,tan,tanh,ceil,floor</src> with 
 // equivalents in the enum of ASIN, ACOS, TAN, TANH, CEIL, and FLOOR.
@@ -184,8 +184,8 @@ private:
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(0.05);
-// ArrayLattice<Float> y(shape); 
+// ArrayLattice<float> x(shape); x.set(0.05);
+// ArrayLattice<float> y(shape); 
 // y.copyData(asin(x));                 // y = asin(x)
 // y.copyData(tan(x));                  // y = tan(x)
 // </srcblock>
@@ -223,16 +223,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
 // Handle locking/syncing of a lattice in a lattice expression.
    // <group>
-   virtual Bool lock (FileLocker::LockType, uInt nattempts);
+   virtual bool lock (FileLocker::LockType, uint32_t nattempts);
    virtual void unlock();
-   virtual Bool hasLock (FileLocker::LockType) const;
+   virtual bool hasLock (FileLocker::LockType) const;
    virtual void resync();
    // </group>
 
@@ -288,9 +288,9 @@ private:
 // <srcblock>
 // IPosition shape(2,5,10);
 // ArrayLattice<Complex> w(shape); w.set(Complex(2.0,3.0));
-// ArrayLattice<Float> x(shape); x.set(0.05);
-// ArrayLattice<Float> y(shape); y.set(2.0);
-// ArrayLattice<Float> z(shape); y.set(2.0);
+// ArrayLattice<float> x(shape); x.set(0.05);
+// ArrayLattice<float> y(shape); y.set(2.0);
+// ArrayLattice<float> z(shape); y.set(2.0);
 //
 // z.copyData(iif(x==0, y, x));
 //
@@ -328,16 +328,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -350,7 +350,7 @@ private:
 
 
 // <summary>
-// This LEL class handles numerical functions whose return type is a Float
+// This LEL class handles numerical functions whose return type is a float
 // </summary>
 //
 // <use visibility=local>
@@ -368,15 +368,15 @@ private:
 //
 // <etymology>
 //  This derived LEL letter class handles numerical functions (arbitrary
-//  number of arguments) which return a Float
+//  number of arguments) which return a float
 // </etymology>
 //
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It is used to construct 
 // LEL objects that apply numerical functions of arbitrary number of
 // arguments (but only 1 or 2 arguments currently implemented) to Lattice 
-// expressions. They operate on Float or Complex Lattices 
-// and return a Float. The available C++ functions are 
+// expressions. They operate on float or Complex Lattices 
+// and return a float. The available C++ functions are 
 // <src>min,max,pow,atan2,fmod,abs,arg,real,imag</src> with 
 // equivalents in the enum of MIN,MAX,POW,ATAN2,FMOD,ABS,ARG,REAL, and IMAG.
 //
@@ -393,9 +393,9 @@ private:
 // <srcblock>
 // IPosition shape(2,5,10);
 // ArrayLattice<Complex> w(shape); w.set(Complex(2.0,3.0));
-// ArrayLattice<Float> x(shape); x.set(0.05);
-// ArrayLattice<Float> y(shape); y.set(2.0);
-// ArrayLattice<Float> z(shape); y.set(2.0);
+// ArrayLattice<float> x(shape); x.set(0.05);
+// ArrayLattice<float> y(shape); y.set(2.0);
+// ArrayLattice<float> z(shape); y.set(2.0);
 //
 // z.copyData(min(x,y));                // z = min(x,y)
 // z.copyData(imag(w));                 // z = imag(w)
@@ -414,7 +414,7 @@ private:
 // </todo>
 
 
-class LELFunctionFloat : public LELInterface<Float>
+class LELFunctionFloat : public LELInterface<float>
 {
 public: 
    
@@ -427,23 +427,23 @@ public:
   ~LELFunctionFloat();
 
 // Recursively evaluate the expression 
-   virtual void eval (LELArray<Float>& result,
+   virtual void eval (LELArray<float>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual LELScalar<Float> getScalar() const;
+   virtual LELScalar<float> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -455,7 +455,7 @@ private:
 
 
 // <summary>
-// This LEL class handles numerical functions whose return type is a Double
+// This LEL class handles numerical functions whose return type is a double
 // </summary>
 //
 // <use visibility=local>
@@ -473,20 +473,20 @@ private:
 //
 // <etymology>
 //  This derived LEL letter class handles numerical functions (arbitrary
-//  number of arguments) which return a Double
+//  number of arguments) which return a double
 // </etymology>
 //
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It is used to construct 
 // LEL objects that apply numerical functions of arbitrary number of
 // arguments (but only 1 or 2 arguments currently implemented) to Lattice 
-// expressions. They operate on Double or DComplex Lattices 
-// and return a Double. The available C++ functions are 
+// expressions. They operate on double or DComplex Lattices 
+// and return a double. The available C++ functions are 
 // <src>min,max,pow,atan2,fmod,abs,arg,real,imag</src> with 
 // equivalents in the enum of MIN,MAX,POW,ATAN2,FMOD,ABS,ARG,REAL, and IMAG.
 //
 // There are also two other functions for which the input Lattice expression
-// type must be a Bool.  These are <src>ntrue,nfalse</src> with 
+// type must be a bool.  These are <src>ntrue,nfalse</src> with 
 // equivalents in the enum of NTRUE and NFALSE.
 //
 // There is a further function for which the input Lattice expression
@@ -505,11 +505,11 @@ private:
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> v(shape); v.set(True);
+// ArrayLattice<bool> v(shape); v.set(true);
 // ArrayLattice<DComplex> w(shape); w.set(DComplex(2.0,3.0));
-// ArrayLattice<Double> x(shape); x.set(0.05);
-// ArrayLattice<Double> y(shape); y.set(2.0);
-// ArrayLattice<Double> z(shape); y.set(2.0);
+// ArrayLattice<double> x(shape); x.set(0.05);
+// ArrayLattice<double> y(shape); y.set(2.0);
+// ArrayLattice<double> z(shape); y.set(2.0);
 //
 // z.copyData(min(x,y));                // z = min(x,y)
 // z.copyData(imag(w));                 // z = imag(w)
@@ -526,7 +526,7 @@ private:
 // </todo>
 
 
-class LELFunctionDouble : public LELInterface<Double>
+class LELFunctionDouble : public LELInterface<double>
 {
 public: 
    
@@ -539,31 +539,31 @@ public:
   ~LELFunctionDouble();
 
 // Recursively evaluate the expression 
-   virtual void eval (LELArray<Double>& result,
+   virtual void eval (LELArray<double>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual LELScalar<Double> getScalar() const;
+   virtual LELScalar<double> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
 private:
    // Count number of masked elements in a LatticeExprNode.
    // <group>
-   uInt nMaskedElements (const LatticeExprNode&) const;
-   uInt nMaskedOn (const Array<Bool>& mask) const;
+   uint32_t nMaskedElements (const LatticeExprNode&) const;
+   uint32_t nMaskedOn (const Array<bool>& mask) const;
    // </group>
 
    LELFunctionEnums::Function function_p;
@@ -648,16 +648,16 @@ public:
    virtual LELScalar<Complex> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -745,16 +745,16 @@ public:
    virtual LELScalar<DComplex> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -790,8 +790,8 @@ private:
 // This LEL letter class is derived from LELInterface.  It is used to construct 
 // LEL objects that apply logical functions of arbitrary number of
 // arguments (but only 1 or 2 arguments currently implemented) to Lattice 
-// expressions. They operate on Bool Lattice expressions only
-// and return a Bool. The available C++ functions are 
+// expressions. They operate on bool Lattice expressions only
+// and return a bool. The available C++ functions are 
 // <src>all,any</src> with equivalents in the enum of ALL and ANY.
 //
 // A description of the implementation details of the LEL classes can
@@ -806,12 +806,12 @@ private:
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(True);
-// ArrayLattice<Bool> y(shape); 
+// ArrayLattice<bool> x(shape); x.set(true);
+// ArrayLattice<bool> y(shape); 
 // y.copyData(any(x));                // y = any(x)
 // </srcblock>
-// The result of the any function (were any of the values True) is 
-// a Bool scalar. So the output Lattice is filled with that one value.
+// The result of the any function (were any of the values true) is 
+// a bool scalar. So the output Lattice is filled with that one value.
 // </example>
 //
 // <motivation>
@@ -821,7 +821,7 @@ private:
 // <todo asof="1998/01/21">
 // </todo>
 
-class LELFunctionBool : public LELInterface<Bool>
+class LELFunctionBool : public LELInterface<bool>
 {
 public: 
    
@@ -834,23 +834,23 @@ public:
   ~LELFunctionBool();
 
 // Recursively evaluate the expression 
-   virtual void eval (LELArray<Bool>& result,
+   virtual void eval (LELArray<bool>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual LELScalar<Bool> getScalar() const;
+   virtual LELScalar<bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 

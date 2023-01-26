@@ -59,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Quantities are values with a unit. Their basic specification can be one of
 // two forms:
 // <srcblock>
-// Quantity( Double value, String unit);	// or: Unit unit
+// Quantity( double value, String unit);	// or: Unit unit
 // Quantum<Type> ( Type value, String unit)	// or: Unit unit
 // </srcblock>
 //
@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <src>*=Quantum<T>, *=T; /=Quantum<T>; /=T;</src>
 //   <li> <src>+,-,*,/</src> for <src>Quantum<T>,Quantum<T>; T,Quantum<T>; Quantum<T>,T;</src>
 //   <li> <src>abs, ceil, floor(Quantum<T>)</src>
-//   <li> <src>pow(Quantum<T>, Int);</src>
+//   <li> <src>pow(Quantum<T>, int32_t);</src>
 //   <li> <src>sin, cos, tan(Quantum<T>)</src> with proper unit handling
 //   <li> <src>asin, acos, atan, atan2(Quantum<T>)</src> with proper unit handling
 //   <li> <src>log, log10, exp, root, sqrt</src> with proper unit handling
@@ -166,9 +166,9 @@ Quantum<Qtype> operator/(const Qtype &left, const Quantum<Qtype> &other);
 //   <li> AipsError if root exponent zero
 // </thrown>
 template <class Qtype>
-Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p);
+Quantum<Qtype> pow(const Quantum<Qtype> &left, int32_t p);
 template <class Qtype>
-Quantum<Qtype> root(const Quantum<Qtype> &left, Int p);
+Quantum<Qtype> root(const Quantum<Qtype> &left, int32_t p);
 template <class Qtype>
 Quantum<Qtype> sqrt(const Quantum<Qtype> &left);
 template <class Qtype>
@@ -224,16 +224,16 @@ Quantum<Qtype> max(const Quantum<Qtype> &left, const Quantum<Qtype> &other);
 
 // Functions to implement integer ceil/floor and others
 // <group name="foreign">
-Int ceil(const Int &val);
-Int floor(const Int &val);
-Array<Complex> operator *(const Array<Complex> &in, Double f);
-Array<Complex> operator /(const Array<Complex> &in, Double f);
-Array<DComplex> operator *(const Array<DComplex> &in, Double f);
-Array<DComplex> operator /(const Array<DComplex> &in, Double f);
-Array<Float> operator *(const Array<Float> &in, Double f);
-Array<Float> operator /(const Array<Float> &in, Double f);
-Array<Int> operator *(const Array<Int> &in, Double f);
-Array<Int> operator /(const Array<Int> &in, Double f);
+int32_t ceil(const int32_t &val);
+int32_t floor(const int32_t &val);
+Array<Complex> operator *(const Array<Complex> &in, double f);
+Array<Complex> operator /(const Array<Complex> &in, double f);
+Array<DComplex> operator *(const Array<DComplex> &in, double f);
+Array<DComplex> operator /(const Array<DComplex> &in, double f);
+Array<float> operator *(const Array<float> &in, double f);
+Array<float> operator /(const Array<float> &in, double f);
+Array<int32_t> operator *(const Array<int32_t> &in, double f);
+Array<int32_t> operator /(const Array<int32_t> &in, double f);
 // </group>
 //# Inline Implementations
 

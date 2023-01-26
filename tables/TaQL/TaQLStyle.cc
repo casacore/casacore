@@ -30,12 +30,12 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-TaQLStyle::TaQLStyle (uInt origin)
+TaQLStyle::TaQLStyle (uint32_t origin)
   : itsOrigin    (origin),
-    itsEndExcl   (False),
-    itsCOrder    (False),
-    itsDoTiming  (False),
-    itsDoTracing (False)
+    itsEndExcl   (false),
+    itsCOrder    (false),
+    itsDoTiming  (false),
+    itsDoTracing (false)
 {
   // Define mscal as a synonym for derivedmscal.
   defineSynonym ("mscal", "derivedmscal");
@@ -47,32 +47,32 @@ void TaQLStyle::set (const String& value)
   String val = upcase(value);
   if (val == "GLISH") {
     itsOrigin  = 1;
-    itsEndExcl = False;
-    itsCOrder  = False;
+    itsEndExcl = false;
+    itsCOrder  = false;
   } else if (val == "PYTHON") {
     itsOrigin  = 0;
-    itsEndExcl = True;
-    itsCOrder  = True;
+    itsEndExcl = true;
+    itsCOrder  = true;
   } else if (val == "BASE1") {
     itsOrigin  = 1;
   } else if (val == "BASE0") {
     itsOrigin  = 0;
   } else if (val == "FORTRANORDER") {
-    itsCOrder  = False;
+    itsCOrder  = false;
   } else if (val == "CORDER") {
-    itsCOrder  = True;
+    itsCOrder  = true;
   } else if (val == "ENDINCL") {
-    itsEndExcl = False;
+    itsEndExcl = false;
   } else if (val == "ENDEXCL") {
-    itsEndExcl = True;
+    itsEndExcl = true;
   } else if (val == "TIME") {
-    itsDoTiming = True;
+    itsDoTiming = true;
   } else if (val == "NOTIME") {
-    itsDoTiming = False;
+    itsDoTiming = false;
   } else if (val == "TRACE") {
-    itsDoTracing = True;
+    itsDoTracing = true;
   } else if (val == "NOTRACE") {
-    itsDoTracing = False;
+    itsDoTracing = false;
   } else {
     throw TableError(value + " is an invalid TaQL STYLE value");
   }
@@ -81,8 +81,8 @@ void TaQLStyle::set (const String& value)
 void TaQLStyle::reset()
 {
   set ("GLISH");
-  itsDoTiming  = False;
-  itsDoTracing = False;
+  itsDoTiming  = false;
+  itsDoTracing = false;
 }
 
 void TaQLStyle::defineSynonym (const String& synonym, const String& udfLibName)

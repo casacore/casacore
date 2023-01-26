@@ -34,7 +34,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCuvw::ToRef_p[N_Routes][3] = {
+uint32_t MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::GALACTIC,	 	Muvw::J2000,	0},
   {Muvw::GALACTIC,		Muvw::B1950,	2},
   {Muvw::J2000,		 	Muvw::GALACTIC,	0},
@@ -83,7 +83,7 @@ uInt MCuvw::ToRef_p[N_Routes][3] = {
   {Muvw::TOPO,			Muvw::APP,	0},
   {Muvw::ICRS,			Muvw::J2000,	0},
   {Muvw::J2000,			Muvw::ICRS,	0} };
-uInt MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
+uint32_t MCuvw::FromTo_p[Muvw::N_Types][Muvw::N_Types];
 std::once_flag MCuvw::theirInitOnceFlag;
 
 //# Constructors
@@ -104,10 +104,10 @@ void MCuvw::getConvert(MConvertBase &mc,
 		       const MRBase &inref, 
 		       const MRBase &outref) {
     
-  Int iin  = inref.getType();
-  Int iout = outref.getType();
+  int32_t iin  = inref.getType();
+  int32_t iout = outref.getType();
   if (iin != iout) {
-    Int tmp;
+    int32_t tmp;
     while (iin != iout) {
       tmp = FromTo_p[iin][iout];
       iin = ToRef_p[tmp][1];
@@ -121,8 +121,8 @@ void MCuvw::clearConvert() {
 }
 
 //# Conversion routines
-void MCuvw::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);	// Stop warning
+void MCuvw::initConvert(uint32_t which, MConvertBase &mc) {
+  if (false) initConvert(which, mc);	// Stop warning
   
   switch (which) {
 
@@ -225,13 +225,13 @@ void MCuvw::doConvert(MVuvw &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  Double g2;
+  double g2;
   // Planetary aberration factor
-  Double lengthP = 0;
+  double lengthP = 0;
   
   measMath.initFrame(inref, outref);
   
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
     
     switch (mc.getMethod(i)) {
 
@@ -288,7 +288,7 @@ void MCuvw::doConvert(MVuvw &in,
       getJ2000();
       toPole(in);
       in.adjust(g2);
-      measMath.applyJ2000toB1950(in, False);
+      measMath.applyJ2000toB1950(in, false);
       in.readjust(g2);
       measMath.applyJ2000toB1950(MVDIR1);
       break;
@@ -297,7 +297,7 @@ void MCuvw::doConvert(MVuvw &in,
       getJ2000();
       toPole(in);
       in.adjust(g2);
-      measMath.applyJ2000toB1950_VLA(in, False);
+      measMath.applyJ2000toB1950_VLA(in, false);
       in.readjust(g2);
       measMath.applyJ2000toB1950_VLA(MVDIR1);
       break;
@@ -306,7 +306,7 @@ void MCuvw::doConvert(MVuvw &in,
       getB1950();
       toPole(in);
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950(in, False);
+      measMath.deapplyJ2000toB1950(in, false);
       in.readjust(g2);
       measMath.deapplyJ2000toB1950(MVDIR1);
       break;
@@ -315,7 +315,7 @@ void MCuvw::doConvert(MVuvw &in,
       getB1950();
       toPole(in);
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950_VLA(in, False);
+      measMath.deapplyJ2000toB1950_VLA(in, false);
       in.readjust(g2);
       measMath.deapplyJ2000toB1950_VLA(MVDIR1);
       break;
@@ -395,7 +395,7 @@ void MCuvw::doConvert(MVuvw &in,
       getJ2000();
       toPole(in);
       in.adjust(g2);
-      measMath.applySolarPos(in, False);
+      measMath.applySolarPos(in, false);
       in.readjust(g2);
       measMath.applySolarPos(MVDIR1);
       break;
@@ -405,7 +405,7 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applySolarPos(MVDIR1);
       toPole(in);
       in.adjust(g2);
-      measMath.applyAberration(in, False);
+      measMath.applyAberration(in, false);
       in.readjust(g2);
       measMath.applyPrecNutat(in);
       measMath.applyAberration(MVDIR1);
@@ -417,7 +417,7 @@ void MCuvw::doConvert(MVuvw &in,
       toPole(in);
       measMath.deapplyPrecNutat(in);
       in.adjust(g2);
-      measMath.deapplyAberration(in, False);
+      measMath.deapplyAberration(in, false);
       in.readjust(g2);
       measMath.deapplyPrecNutat(MVDIR1);
       measMath.deapplyAberration(MVDIR1);
@@ -428,7 +428,7 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applySolarPos(MVDIR1);
       toPole(in);
       in.adjust(g2);
-      measMath.deapplySolarPos(in, False);
+      measMath.deapplySolarPos(in, false);
       in.readjust(g2);
       measMath.deapplySolarPos(MVDIR1);
       break;
@@ -437,8 +437,8 @@ void MCuvw::doConvert(MVuvw &in,
       getB1950();
       toPole(in);
       in.adjust(g2);
-      measMath.applyPrecNutatB1950(in, False);
-      measMath.applyAberrationB1950(in, False);
+      measMath.applyPrecNutatB1950(in, false);
+      measMath.applyAberrationB1950(in, false);
       in.readjust(g2);
       measMath.applyPrecNutatB1950(MVDIR1);
       measMath.applyAberrationB1950(MVDIR1);
@@ -448,8 +448,8 @@ void MCuvw::doConvert(MVuvw &in,
       getAPP();
       toPole(in);
       in.adjust(g2);
-      measMath.deapplyAberrationB1950(in, False);
-      measMath.deapplyPrecNutatB1950(in, False);
+      measMath.deapplyAberrationB1950(in, false);
+      measMath.deapplyPrecNutatB1950(in, false);
       in.readjust(g2);
       measMath.deapplyAberrationB1950(MVDIR1);
       measMath.deapplyPrecNutatB1950(MVDIR1);
@@ -460,7 +460,7 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applyAPPtoTOPO(in, lengthP);
       toPole(in);
       in.adjust(g2);
-      measMath.applyTOPOtoHADEC(in, False);
+      measMath.applyTOPOtoHADEC(in, false);
       in.readjust(g2);
       measMath.applyTOPOtoHADEC(MVDIR1);
       break;
@@ -509,7 +509,7 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applyTOPOtoHADEC(MVDIR1);
       toPole(in);
       in.adjust(g2);
-      measMath.deapplyTOPOtoHADEC(in, False);
+      measMath.deapplyTOPOtoHADEC(in, false);
       in.readjust(g2);
       measMath.deapplyTOPOtoHADEC(MVDIR1);
       break;
@@ -518,7 +518,7 @@ void MCuvw::doConvert(MVuvw &in,
       getAPP();
       toPole(in);
       in.adjust(g2);
-      measMath.applyAPPtoTOPO(in, lengthP, False);
+      measMath.applyAPPtoTOPO(in, lengthP, false);
       in.readjust(g2);
       measMath.applyAPPtoTOPO(MVDIR1, lengthP);
       break;
@@ -528,7 +528,7 @@ void MCuvw::doConvert(MVuvw &in,
       measMath.applyAPPtoTOPO(in, lengthP);
       toPole(in);
       in.adjust(g2);
-      measMath.deapplyAPPtoTOPO(in, lengthP, False);
+      measMath.deapplyAPPtoTOPO(in, lengthP, false);
       in.readjust(g2);
       measMath.deapplyAPPtoTOPO(MVDIR1, lengthP);
       break;

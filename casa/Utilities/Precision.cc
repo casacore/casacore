@@ -28,17 +28,17 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
-                                  const Vector<Double>& pair2)
+uint32_t precisionForValueErrorPairs (const Vector<double>& pair1,
+                                  const Vector<double>& pair2)
 {
-  Double val1 = fabs(pair1[0]);
-  Double err1 = pair1[1];
-  Double value = val1;
-  Double error = fabs(err1);
+  double val1 = fabs(pair1[0]);
+  double err1 = pair1[1];
+  double value = val1;
+  double error = fabs(err1);
 
   if (pair2.size() == 2){
-    Double val2 = fabs(pair2[0]);
-    Double err2 = pair2[1];
+    double val2 = fabs(pair2[0]);
+    double err2 = pair2[1];
     value = max(val1, val2);
     error = (err1 == 0 || err2 == 0)
       ? max(fabs(err1), fabs(err2))
@@ -52,7 +52,7 @@ uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
   if ( value < error ) {
     value = max(value,0.1*error);
     // TODO be cool and figure out a way to swap without using a temporary variable
-    Double tmp = value;
+    double tmp = value;
     value = error;
     error = tmp;
   }
@@ -77,7 +77,7 @@ uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
 
   // Generate format
   // Add little value for possible round-off error
-  uInt after = 0;
+  uint32_t after = 0;
   if ( log10(error) < 0 ) {
     after = int(fabs(log10(error)) + 1e-8) + 1;
   }

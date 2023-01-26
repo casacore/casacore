@@ -70,9 +70,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return *this;
   }
 
-  Bool MSParse::test (const String& str) const
+  bool MSParse::test (const String& str) const
   {
-    return (shorthand_p == str  ?  True : False);
+    return (shorthand_p == str  ?  true : false);
   }
 
   String& MSParse::shorthand()

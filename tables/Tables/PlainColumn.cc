@@ -59,8 +59,8 @@ rownr_t PlainColumn:: nrow() const
 
 TableRecord& PlainColumn::rwKeywordSet()
 {
-    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, True);
-    checkWriteLock (True);
+    bool hasLocked = colSetPtr_p->userLock (FileLocker::Write, true);
+    checkWriteLock (true);
     TableRecord& rec = const_cast<BaseColumnDesc*>(colDescPtr_p)->rwKeywordSet();
     colSetPtr_p->setTableChanged();
     colSetPtr_p->userUnlock (hasLocked);
@@ -68,8 +68,8 @@ TableRecord& PlainColumn::rwKeywordSet()
 }
 TableRecord& PlainColumn::keywordSet()
 {
-    Bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, True);
-    checkReadLock (True);
+    bool hasLocked = colSetPtr_p->userLock (FileLocker::Read, true);
+    checkReadLock (true);
     TableRecord& rec = const_cast<BaseColumnDesc*>(colDescPtr_p)->rwKeywordSet();
     colSetPtr_p->userUnlock (hasLocked);
     return rec;
@@ -82,21 +82,21 @@ void PlainColumn::setShapeColumn (const IPosition&)
 			   colDescPtr_p->name())); }
 
 
-Bool PlainColumn::isBound() const
-    { return (dataManPtr_p == 0  ?  False : True); }
+bool PlainColumn::isBound() const
+    { return (dataManPtr_p == 0  ?  false : true); }
 void PlainColumn::bind (DataManager* dataManPtr)
     { dataManPtr_p = dataManPtr; }
 
-Bool PlainColumn::isWritable() const
+bool PlainColumn::isWritable() const
     { return dataColPtr_p->isWritable(); }
 
-Bool PlainColumn::isStored() const
+bool PlainColumn::isStored() const
     { return dataManPtr_p->isStorageManager(); }
 
 ColumnCache& PlainColumn::columnCache()
     { return dataColPtr_p->columnCache(); }
 
-void PlainColumn::setMaximumCacheSize (uInt nbytes)
+void PlainColumn::setMaximumCacheSize (uint32_t nbytes)
     { dataManPtr_p->setMaximumCacheSize (nbytes); }
 
 
@@ -106,14 +106,14 @@ void PlainColumn::setMaximumCacheSize (uInt nbytes)
 //# the version is put "manually".
 void PlainColumn::putFile (AipsIO& ios, const TableAttr&)
 {
-    ios << (uInt)2;                  // class version 2
+    ios << (uint32_t)2;                  // class version 2
     ios << originalName_p;
     putFileDerived (ios);
 }
 void PlainColumn::getFile (AipsIO& ios, const ColumnSet& colset,
 			   const TableAttr& attr)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
     // In the older Table files the keyword set was written separately
     // and was not part of the TableDesc.
@@ -130,7 +130,7 @@ void PlainColumn::getFile (AipsIO& ios, const ColumnSet& colset,
 
 void PlainColumn::checkValueLength (const String* value) const
 {
-    uInt maxlen = colDescPtr_p->maxLength();
+    uint32_t maxlen = colDescPtr_p->maxLength();
     if (maxlen > 0  &&  value->length() > maxlen) {
 	throw (TableError ("ScalarColumn::put: string value '" +
 			   *value + "' exceeds maximum length"));
@@ -138,7 +138,7 @@ void PlainColumn::checkValueLength (const String* value) const
 }
 void PlainColumn::checkValueLength (const Array<String>* value) const
 {
-    uInt maxlen = colDescPtr_p->maxLength();
+    uint32_t maxlen = colDescPtr_p->maxLength();
     if (maxlen == 0) {
 	return;
     }

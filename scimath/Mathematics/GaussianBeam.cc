@@ -72,17 +72,17 @@ GaussianBeam& GaussianBeam::operator=(const GaussianBeam& other) {
     return *this;
 }
 
-Bool GaussianBeam::operator==(const GaussianBeam& other) const {
+bool GaussianBeam::operator==(const GaussianBeam& other) const {
     return _major == other._major && _minor == other._minor
         && _pa == other._pa;
     /*
     return _major.getValue("rad") == other._major.getValue("rad")
         && _minor.getValue("rad") == other._minor.getValue("rad")
-        && getPA(True).getValue("rad") == other.getPA(True).getValue("rad");
+        && getPA(true).getValue("rad") == other.getPA(true).getValue("rad");
         */
 }
 
-Bool GaussianBeam::operator!=(const GaussianBeam& other) const {
+bool GaussianBeam::operator!=(const GaussianBeam& other) const {
     return ! operator==(other);
 }
 
@@ -90,7 +90,7 @@ const Quantity& GaussianBeam::getMajor() const {
     return _major;
 }
 
-Double GaussianBeam::getMajor(const Unit& u) const {
+double GaussianBeam::getMajor(const Unit& u) const {
     return _major.getValue(u);
 }
 
@@ -98,18 +98,18 @@ const Quantity& GaussianBeam::getMinor() const {
     return _minor;
 }
 
-Double GaussianBeam::getMinor(const Unit& u) const {
+double GaussianBeam::getMinor(const Unit& u) const {
     return _minor.getValue(u);
 }
 
-Quantity GaussianBeam::getPA(const Bool unwrap) const {
+Quantity GaussianBeam::getPA(const bool unwrap) const {
     if (unwrap) {
         return _unwrap(_pa);
     }
     return _pa;
 }
 
-Double GaussianBeam::getPA(const Unit& u, const Bool unwrap) const {
+double GaussianBeam::getPA(const Unit& u, const bool unwrap) const {
     return getPA(unwrap).getValue(u);
 }
 
@@ -163,7 +163,7 @@ void GaussianBeam::setMajorMinor(
     _minor = minAx;
 }
 
-void GaussianBeam::setPA(const Quantity& pa, Bool unwrap) {
+void GaussianBeam::setPA(const Quantity& pa, bool unwrap) {
     auto paVal = pa.getValue();
     ThrowIf(
         isInf(paVal) || isNaN(paVal),
@@ -177,16 +177,16 @@ void GaussianBeam::setPA(const Quantity& pa, Bool unwrap) {
     _pa = unwrap ? _unwrap(pa) : pa;
 }
 
-Bool GaussianBeam::isNull() const {
+bool GaussianBeam::isNull() const {
     return _major.getValue() == 0 || _minor.getValue() == 0;
 }
 
-Double GaussianBeam::getArea(const Unit& unit) const {
+double GaussianBeam::getArea(const Unit& unit) const {
     // NOTE we never want to return a Qauntity because of the
     // nonstandard handling of solid angle units in CASA
     Quantity qunit(1, unit);
     if (qunit.isConform("sr") || qunit.isConform("rad2")) {
-        static const Double coeff = C::pi/(4*C::ln2);
+        static const double coeff = C::pi/(4*C::ln2);
         return coeff * (_major * _minor).getValue(unit);
     }
     else {
@@ -259,7 +259,7 @@ GaussianBeam GaussianBeam::fromRecord(
 
 ostream &operator<<(ostream &os, const GaussianBeam& beam) {
     os << "major: " << beam.getMajor() << ", minor: " << beam.getMinor()
-        << ", pa: " << beam.getPA(True);
+        << ", pa: " << beam.getPA(true);
     return os;
 }
 
@@ -270,11 +270,11 @@ LogIO &operator<<(LogIO &os, const GaussianBeam& beam) {
     return os;
 }
 
-Vector<Quantity> GaussianBeam::toVector(const Bool unwrap) const {
+Vector<Quantity> GaussianBeam::toVector(const bool unwrap) const {
     Vector<Quantity> beam(3);
     beam[0] = _major;
     beam[1] = _minor;
-    beam[2] = unwrap ? getPA(True) : _pa;
+    beam[2] = unwrap ? getPA(true) : _pa;
     return beam;
 }
 
@@ -287,9 +287,9 @@ void GaussianBeam::convert(
     _pa.convert(paUnit);
 }
 
-Bool near(
+bool near(
     const GaussianBeam& left, const GaussianBeam& other,
-    const Double relWidthTol, const Quantity& absPATol
+    const double relWidthTol, const Quantity& absPATol
 ) {
     if (! absPATol.isConform("rad")) {
         throw AipsError(
@@ -298,7 +298,7 @@ Bool near(
     }
     return casacore::near(left.getMajor(), other.getMajor(), relWidthTol)
         && casacore::near(left.getMinor(), other.getMinor(), relWidthTol)
-        && casacore::nearAbs(left.getPA(True), other.getPA(True), absPATol);
+        && casacore::nearAbs(left.getPA(true), other.getPA(true), absPATol);
 }
 
 }

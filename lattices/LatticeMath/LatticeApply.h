@@ -105,7 +105,7 @@ class LatticeRegion;
 // is for the data type you are processing.  The second type is
 // for what type you want the results of the processing assigned to.
 // For example, if you are computing sums of squares for statistical
-// purposes, you might use higher precision (Float->Double) for this.
+// purposes, you might use higher precision (float->double) for this.
 // No check is made that the template types are self-consistent.
 // </synopsis>
 
@@ -113,11 +113,11 @@ class LatticeRegion;
 // Collapse each line in the y-direction using my collapser function object.
 // <srcblock>
 //    MyLineCollapser collapser;
-//    PagedArray<Float> latticeIn("lattice.file");
+//    PagedArray<float> latticeIn("lattice.file");
 //    IPosition shape = latticeIn.shape();
 //    shape(1) = 1;
-//    ArrayLattice<Double> latticeOut(shape);
-//    LatticeApply<Float,Double>::lineApply (latticeOut, latticeIn, collapser, 1);
+//    ArrayLattice<double> latticeOut(shape);
+//    LatticeApply<float,double>::lineApply (latticeOut, latticeIn, collapser, 1);
 // </srcblock>
 // </example>
 
@@ -146,13 +146,13 @@ public:
     static void lineApply (MaskedLattice<U>& latticeOut, 
 			   const MaskedLattice<T>& latticeIn,
 			   LineCollapser<T,U>& collapser,
-			   uInt collapseAxis,
+			   uint32_t collapseAxis,
 			   LatticeProgress* tellProgress = 0);
     static void lineApply (MaskedLattice<U>& latticeOut, 
 			   const MaskedLattice<T>& latticeIn,
 			   const LatticeRegion& region,
 			   LineCollapser<T,U>& collapser,
-			   uInt collapseAxis,
+			   uint32_t collapseAxis,
 			   LatticeProgress* tellProgress = 0);
 // </group>
     
@@ -167,14 +167,14 @@ public:
     static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				LineCollapser<T,U>& collapser,
-				uInt collapseAxis,
+				uint32_t collapseAxis,
 				LatticeProgress* tellProgress = 0);
 
     static void lineMultiApply (PtrBlock<MaskedLattice<U>*>& latticeOut, 
 				const MaskedLattice<T>& latticeIn,
 				const LatticeRegion& region,
 				LineCollapser<T,U>& collapser,
-				uInt collapseAxis,
+				uint32_t collapseAxis,
 				LatticeProgress* tellProgress = 0);
 // </group>
 
@@ -193,14 +193,14 @@ public:
 			    const MaskedLattice<T>& latticeIn,
 			    TiledCollapser<T,U>& collapser,
 			    const IPosition& collapseAxes,
-			    Int newOutAxis = -1,
+			    int32_t newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
     static void tiledApply (MaskedLattice<U>& latticeOut,
 			    const MaskedLattice<T>& latticeIn,
 			    const LatticeRegion& region,
 			    TiledCollapser<T,U>& collapser,
 			    const IPosition& collapseAxes,
-			    Int newOutAxis = -1,
+			    int32_t newOutAxis = -1,
 			    LatticeProgress* tellProgress = 0);
 // </group>
 
@@ -243,10 +243,10 @@ private:
     static IPosition prepare (const IPosition& shapeIn,
 			      const IPosition& shapeOut,
 			      const IPosition& collapseAxes,
-			      Int newOutAxis);
+			      int32_t newOutAxis);
 
     static IPosition _chunkShape(
-        uInt axis, const MaskedLattice<T>& latticeIn
+        uint32_t axis, const MaskedLattice<T>& latticeIn
     );
 };
 

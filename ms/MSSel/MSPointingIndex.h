@@ -85,10 +85,10 @@ public:
 
   void attach(const MSPointing &pointing);
 
-  // access to the antenna ID key, throws an exception if isNull() is False
-  Int &antennaId() {return *antennaId_p;}
+  // access to the antenna ID key, throws an exception if isNull() is false
+  int32_t &antennaId() {return *antennaId_p;}
 private:
-  RecordFieldPtr<Int> antennaId_p;
+  RecordFieldPtr<int32_t> antennaId_p;
 
   void attachIds();
 };

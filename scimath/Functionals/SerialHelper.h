@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class V>
 void getArrayVal(V &val, int type, const Record& gr, 
-                 const String& name, uInt index=0);
+                 const String& name, uint32_t index=0);
 
 template <class V>
 void getArray(Array<V> &val, int type, const Record& gr, 
@@ -107,21 +107,21 @@ public:
 
     // load the function type name as given in the record's "functype" 
     // field into the given String <em>ftype</em>.  <em>gr</em> is the 
-    //  record to extract from.  False is returned if the record 
+    //  record to extract from.  false is returned if the record 
     // does not contain this field.
     // <thrown>
     //   <li> InvalidSerializationError if "functype" exists but is 
     //          empty or the incorrect type
     // </thrown>
-    Bool getFuncType(String& ftype) const;
+    bool getFuncType(String& ftype) const;
 
     // ensure that the Function type stored in the given record, <em>gr</em>,
     // matches <em>ftype</em>.  If it does not, an 
     // InvalidSerializationError is thrown.
     void checkFuncType(const String& ftype) const;
 
-    // return True if a field with the given <em>name</em> exists
-    Bool exists(const String &name) const { return gr.isDefined(name); }
+    // return true if a field with the given <em>name</em> exists
+    bool exists(const String &name) const { return gr.isDefined(name); }
 
     // Get the <em>index</em>th element of the <em>name</em> field 
     // This should be 
@@ -136,15 +136,15 @@ public:
     //  <li> if the index is out of range.
     // </ul>
     // <group>
-    void get(Bool &val, const String& name, uInt index = 0) const;
-//      void get(uChar &val, const String& name, uInt index = 0) const;
-    void get(Short &val, const String& name, uInt index = 0) const;
-    void get(Int &val, const String& name, uInt index = 0) const;
-    void get(Float &val, const String& name, uInt index = 0) const;
-    void get(Double &val, const String& name, uInt index = 0) const;
-    void get(Complex &val, const String& name, uInt index = 0) const;
-    void get(DComplex &val, const String& name, uInt index = 0) const;
-    void get(String &val, const String& name, uInt index = 0) const;
+    void get(bool &val, const String& name, uint32_t index = 0) const;
+//      void get(unsigned char &val, const String& name, uint32_t index = 0) const;
+    void get(int16_t &val, const String& name, uint32_t index = 0) const;
+    void get(int32_t &val, const String& name, uint32_t index = 0) const;
+    void get(float &val, const String& name, uint32_t index = 0) const;
+    void get(double &val, const String& name, uint32_t index = 0) const;
+    void get(Complex &val, const String& name, uint32_t index = 0) const;
+    void get(DComplex &val, const String& name, uint32_t index = 0) const;
+    void get(String &val, const String& name, uint32_t index = 0) const;
     void get(Record &val, const String& name) const;
     // </group>
 
@@ -161,12 +161,12 @@ public:
     //  <li> if the index is out of range.
     // </ul>
     // <group>
-    void get(Array<Bool> &val, const String& name) const;
-//      void get(Array<uChar &val, const String& name) const;
-    void get(Array<Short> &val, const String& name) const;
-    void get(Array<Int> &val, const String& name) const;
-    void get(Array<Float> &val, const String& name) const;
-    void get(Array<Double> &val, const String& name) const;
+    void get(Array<bool> &val, const String& name) const;
+//      void get(Array<unsigned char &val, const String& name) const;
+    void get(Array<int16_t> &val, const String& name) const;
+    void get(Array<int32_t> &val, const String& name) const;
+    void get(Array<float> &val, const String& name) const;
+    void get(Array<double> &val, const String& name) const;
     void get(Array<Complex> &val, const String& name) const;
     void get(Array<DComplex> &val, const String& name) const;
     void get(Array<String> &val, const String& name) const;

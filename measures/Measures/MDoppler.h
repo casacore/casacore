@@ -115,7 +115,7 @@ template <class T> class Quantum;
 // Setting up a conversion
 // <srcblock>
 //	MDoppler::Convert to_opt(MDoppler::RADIO, MDoppler::OPTICAL);
-//	for (Double d=0; d<0.1; d += 0.005) {
+//	for (double d=0; d<0.1; d += 0.005) {
 //		cout << "radio = " << d << " to optical = " <<
 //			to_opt(d) << endl;
 // </srcblock>
@@ -197,36 +197,36 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   static const String &showMe();
   static void assure(const Measure &in);
   // </group>
-  // Translate reference code. The uInt version has a check for valid codes
+  // Translate reference code. The uint32_t version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
-  //   <li> AipsError in the uInt interface if illegal code given
+  //   <li> AipsError in the uint32_t interface if illegal code given
   // </thrown>
   // <group>
-  static MDoppler::Types castType(uInt tp);
+  static MDoppler::Types castType(uint32_t tp);
   static const String &showType(MDoppler::Types tp);
-  static const String &showType(uInt tp);
+  static const String &showType(uint32_t tp);
   // </group>
   // Translate string to reference code
   // <group>
-  static Bool getType(MDoppler::Types &tp, const String &in);
-  Bool giveMe(MDoppler::Ref &mr, const String &in);
+  static bool getType(MDoppler::Types &tp, const String &in);
+  bool giveMe(MDoppler::Ref &mr, const String &in);
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
-  // Set the reference type to the specified String. False if illegal
+  // Set the offset in the reference (false if non-matching Measure)
+  virtual bool setOffset(const Measure &in);
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
   // nextra the number of specials (like planets) that should be at 
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
-  static const String* allMyTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ);
+  virtual const String* allTypes(int32_t &nall, int32_t &nextra,
+                                 const uint32_t *&typ) const;
+  static const String* allMyTypes(int32_t &nall, int32_t &nextra,
+                                  const uint32_t *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are 
   // complete and correct. This function is called automatically if and when
@@ -245,12 +245,12 @@ class MDoppler : public MeasBase<MVDoppler, MeasRef<MDoppler> > {
   Quantity get(const Unit &un) const;
 
   // Shift the input frequencies to the output frequencies. In the case of
-  // simple Double inputs, it is assumed that the values are linearly dependent
+  // simple double inputs, it is assumed that the values are linearly dependent
   // on frequency. I.e. frequencies given as wavelength or time cannot be used.
   // <group>
-  Vector<Double> shiftFrequency(const Vector<Double> &freq) const;
-  Quantum<Vector<Double> >
-    shiftFrequency(const Quantum<Vector<Double> > &freq) const;
+  Vector<double> shiftFrequency(const Vector<double> &freq) const;
+  Quantum<Vector<double> >
+    shiftFrequency(const Quantum<Vector<double> > &freq) const;
   // </group>
 
   // Make a copy

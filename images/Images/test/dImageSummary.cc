@@ -67,7 +67,7 @@ try {
 // Parse velocity type
 
    MDoppler::Types doppler;
-   Bool ok = MDoppler::getType(doppler, velocityType);
+   bool ok = MDoppler::getType(doppler, velocityType);
    if (!ok) {
      os << "Invalid velocity type, using RADIO" << endl;
      doppler = MDoppler::RADIO;
@@ -77,19 +77,19 @@ try {
    if (imageType==ImageOpener::AIPSPP) {
       DataType pixelType = imagePixelType(in);
       if (pixelType==TpFloat) {    
-         PagedImage<Float> im(in);
-         ImageSummary<Float> header(im);
+         PagedImage<float> im(in);
+         ImageSummary<float> header(im);
          header.list(os, doppler);
       } else {
          os << "Float images only" << LogIO::EXCEPTION;
       }
    } else if (imageType==ImageOpener::FITS) {
       FITSImage im(in);
-      ImageSummary<Float> header(im);
+      ImageSummary<float> header(im);
       header.list(os, doppler);
    } else if (imageType==ImageOpener::MIRIAD) {  
       MIRIADImage im(in);
-      ImageSummary<Float> header(im);
+      ImageSummary<float> header(im);
       header.list(os, doppler);
    } else {
      os << "Unrecognized image type" << LogIO::EXCEPTION;

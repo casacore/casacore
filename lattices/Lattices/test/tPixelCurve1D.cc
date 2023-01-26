@@ -35,7 +35,7 @@
 
 int main()
 {
-  Vector<Float> x,y;
+  Vector<float> x,y;
 
   // Construct from straight line.
   PixelCurve1D pcurve(1.0, 2.0, 5.0, 6.0, 9);
@@ -60,7 +60,7 @@ int main()
   }
   // The same, but using a polynomial.
   {
-    Polynomial<Float> func(1);
+    Polynomial<float> func(1);
     func.setCoefficient (0, 1.);
     func.setCoefficient (1, 1.);
     PixelCurve1D pcurve1(func, 1., 5.);
@@ -69,7 +69,7 @@ int main()
     cout << x << y << endl;
     float dx = 1;
     float dy = 2;
-    for (uInt i=0; i<5; i++) {
+    for (uint32_t i=0; i<5; i++) {
       AlwaysAssertExit (near(x[i], dx, 0.00001));
       AlwaysAssertExit (near(y[i], dy, 0.00001));
       dx += 0.8;
@@ -78,7 +78,7 @@ int main()
   }
 
   // Construct from a cosine function.
-  Sinusoid1D<Float> fn;
+  Sinusoid1D<float> fn;
   PixelCurve1D pcurve2(fn, 0., 2., 5);
   {
     AlwaysAssertExit (pcurve2.npoints() == 5);
@@ -87,7 +87,7 @@ int main()
     double dx = x[1] - x[0];
     double dy = y[1] - y[0];
     double lng = sqrt(dx*dx + dy*dy);
-    for (uInt i=1; i<5; i++) {
+    for (uint32_t i=1; i<5; i++) {
       double dx = x[i] - x[i-1];
       double dy = y[i] - y[i-1];
       AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-5));
@@ -102,7 +102,7 @@ int main()
     double dx = x[1] - x[0];
     double dy = y[1] - y[0];
     double lng = sqrt(dx*dx + dy*dy);
-    for (uInt i=1; i<9; i++) {
+    for (uint32_t i=1; i<9; i++) {
       double dx = x[i] - x[i-1];
       double dy = y[i] - y[i-1];
       AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-4));
@@ -116,7 +116,7 @@ int main()
     double dx = x[1] - x[0];
     double dy = y[1] - y[0];
     double lng = sqrt(dx*dx + dy*dy);
-    for (uInt i=1; i<9; i++) {
+    for (uint32_t i=1; i<9; i++) {
       double dx = x[i] - x[i-1];
       double dy = y[i] - y[i-1];
       AlwaysAssertExit (near(lng, sqrt(dx*dx + dy*dy), 1e-4));
@@ -140,8 +140,8 @@ int main()
 
   {
     // Construct from a very simple polyline.
-    Vector<Float> xp(3);
-    Vector<Float> yp(3);
+    Vector<float> xp(3);
+    Vector<float> yp(3);
     xp[0]=0; xp[1]=4; xp[2]=4;
     yp[0]=0; yp[1]=0; yp[2]=4;
     PixelCurve1D pcurve4(xp,yp);
@@ -151,8 +151,8 @@ int main()
   }
   {
     // Construct from a square.
-    Vector<Float> xp(5);
-    Vector<Float> yp(5);
+    Vector<float> xp(5);
+    Vector<float> yp(5);
     xp[0]=2; xp[1]=4; xp[2]=2; xp[3]=0; xp[4]=2;
     yp[0]=0; yp[1]=2; yp[2]=4; yp[3]=2; yp[4]=0;
     PixelCurve1D pcurve4(xp,yp,9);
@@ -162,8 +162,8 @@ int main()
   }
   {
     // Construct from another polyline.
-    Vector<Float> xp(5);
-    Vector<Float> yp(5);
+    Vector<float> xp(5);
+    Vector<float> yp(5);
     xp[0]=2; xp[1]=4; xp[2]=7; xp[3]=8; xp[4]=12;
     yp[0]=2; yp[1]=6; yp[2]=9; yp[3]=6; yp[4]=6;
     PixelCurve1D pcurve4(xp,yp,21);

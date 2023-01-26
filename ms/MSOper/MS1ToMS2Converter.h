@@ -73,16 +73,16 @@ class MS1ToMS2Converter
 public:
   // Create the converter for the given output (ms2) and input (ms1) name.
   // The input name has to be an MS version 1. If not, nothing will be done.
-  // <br>If <src>inPlace==True</src>, the ms2 name is ignored. In that
+  // <br>If <src>inPlace==true</src>, the ms2 name is ignored. In that
   // case the ms is changed in place.
   MS1ToMS2Converter (const String& ms2,
 		     const String& ms1,
-		     Bool inPlace);
+		     bool inPlace);
 
   ~MS1ToMS2Converter();
 
   // Do the actual conversion.
-  Bool convert();
+  bool convert();
 
 private:
   // Forbid copy constrcutor and assignment.
@@ -98,7 +98,7 @@ private:
 
   String ms1_p;
   String ms2_p;
-  Bool inPlace_p;
+  bool inPlace_p;
 
   // Logger
   LogIO os_p;

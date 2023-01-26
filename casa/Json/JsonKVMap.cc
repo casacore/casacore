@@ -60,7 +60,7 @@ namespace casacore {
     return value->second;
   }
 
-  Bool JsonKVMap::getBool (const String& name, Bool defVal) const
+  bool JsonKVMap::getBool (const String& name, bool defVal) const
   {
     const_iterator value = find(name);
     if (value == end()) {
@@ -68,7 +68,7 @@ namespace casacore {
     }
     return value->second.getBool();
   }
-  Int64 JsonKVMap::getInt (const String& name, Int64 defVal) const
+  int64_t JsonKVMap::getInt (const String& name, int64_t defVal) const
   {
     const_iterator value = find(name);
     if (value == end()) {

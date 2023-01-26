@@ -70,7 +70,7 @@ namespace casacore {
 // make it known to the image.
 // <srcblock>
 //   // Open the image (as readonly for the moment).
-//   PagedImage<Float> myimage ("image.name");
+//   PagedImage<float> myimage ("image.name");
 //   // Get access to attibute handler LOFAR_SOURCE.
 //   ImageExtrAttr& = myimage.attrHandler ("LOFAR_SOURCE");
 //   // Get the data for some field.
@@ -95,7 +95,7 @@ public:
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
   ImageAttrHandlerCasa& attachTable (const Table& image,
-                                     Bool createHandler = False);
+                                     bool createHandler = false);
 
   virtual ~ImageAttrHandlerCasa();
 
@@ -103,7 +103,7 @@ public:
   virtual void flush();
 
   // Test if the given attribute group is present.
-  virtual Bool hasGroup (const String& name);
+  virtual bool hasGroup (const String& name);
 
   // Get all attribute group names.
   virtual Vector<String> groupNames() const;
@@ -119,7 +119,7 @@ public:
   virtual void closeGroup (const String& groupName);
 
 private:
-  Bool                                itsCanAdd;      //# can groups be added?
+  bool                                itsCanAdd;      //# can groups be added?
   Table                               itsImageTable;  //# Table object of image
   std::map<String,ImageAttrGroupCasa> itsGroupMap;    //# attribute groups
 };

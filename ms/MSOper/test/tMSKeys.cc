@@ -85,7 +85,7 @@ int main() {
             std::set<ScanKey>::const_iterator iter = scanKeys.begin();
             std::set<ScanKey>::const_iterator end = scanKeys.end();
             ArrayKey x;
-            uInt i = 0;
+            uint32_t i = 0;
             ScanKey expec;
             expec.scan = 9;
             for (; iter!=end; ++iter, ++i) {

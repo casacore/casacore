@@ -86,9 +86,9 @@ StreamLogSink::~StreamLogSink()
     stream_p = 0;
 }
 
-Bool StreamLogSink::postLocally(const LogMessage &message) 
+bool StreamLogSink::postLocally(const LogMessage &message) 
 {
-    Bool doPost = filter().pass(message);
+    bool doPost = filter().pass(message);
     if (doPost) {
 	LogOrigin theOrigin(message.origin());
 	theOrigin.taskName(LogSinkInterface::taskName);
@@ -99,7 +99,7 @@ Bool StreamLogSink::postLocally(const LogMessage &message)
     return doPost;
 }
 
-void StreamLogSink::flush(Bool)
+void StreamLogSink::flush(bool)
 {
     if(stream_p) stream_p->flush();
 }

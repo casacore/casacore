@@ -137,19 +137,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  Bool HDF5Lattice<T>::isPersistent() const
+  bool HDF5Lattice<T>::isPersistent() const
   {
-    return True;
+    return true;
   }
 
   template<typename T>
-  Bool HDF5Lattice<T>::isPaged() const
+  bool HDF5Lattice<T>::isPaged() const
   {
-    return True;
+    return true;
   }
 
   template<typename T>
-  Bool HDF5Lattice<T>::isWritable() const
+  bool HDF5Lattice<T>::isWritable() const
   {
     // HDF5Lattice is writable if underlying file is already open for write
     // or if the underlying file is in principle writable.
@@ -157,7 +157,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <typename T> 
-  String HDF5Lattice<T>::name (Bool stripPath) const 
+  String HDF5Lattice<T>::name (bool stripPath) const 
   {
     Path path(itsFile->getName());
     if (!stripPath) {
@@ -174,14 +174,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  Bool HDF5Lattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
+  bool HDF5Lattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
   {
     buffer.resize (section.length());
-    Bool deleteIt;
+    bool deleteIt;
     T* data = buffer.getStorage (deleteIt);
     itsDataSet->get (section, data);
     buffer.putStorage (data, deleteIt);
-    return False;
+    return false;
   }
 
   template<typename T>
@@ -190,10 +190,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				   const IPosition& stride)
   {
     checkWritable();
-    Bool deleteIt;
+    bool deleteIt;
     const T* data = sourceArray.getStorage (deleteIt);
-    const uInt arrDim = sourceArray.ndim();
-    const uInt latDim = ndim();
+    const uint32_t arrDim = sourceArray.ndim();
+    const uint32_t latDim = ndim();
     AlwaysAssert(arrDim <= latDim, AipsError);
     if (arrDim == latDim) {
       Slicer section(where, sourceArray.shape(), stride, Slicer::endIsLength); 
@@ -213,23 +213,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  uInt HDF5Lattice<T>::advisedMaxPixels() const
+  uint32_t HDF5Lattice<T>::advisedMaxPixels() const
   {
     return tileShape().product();
   }
 
   template<typename T>
-  IPosition HDF5Lattice<T>::doNiceCursorShape (uInt maxPixels) const
+  IPosition HDF5Lattice<T>::doNiceCursorShape (uint32_t maxPixels) const
   {
     IPosition retval = tileShape();
-    if (retval.product() > Int(maxPixels)) {
+    if (retval.product() > int32_t(maxPixels)) {
       retval = Lattice<T>::doNiceCursorShape(maxPixels);
     }
     return retval;
   }
 
   template<class T>
-  void HDF5Lattice<T>::setCacheSizeInTiles (uInt howManyTiles)
+  void HDF5Lattice<T>::setCacheSizeInTiles (uint32_t howManyTiles)
   {
     itsDataSet->setCacheSize (howManyTiles);
   }
@@ -242,7 +242,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsDataSet->setCacheSize (TSMCube::calcCacheSize (itsDataSet->shape(),
                                                       tileShape(),
-                                                      False,
+                                                      false,
                                                       sliceShape, windowStart,
                                                       windowLength, axisPath,
                                                       0, 1));
@@ -263,9 +263,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  Bool HDF5Lattice<T>::ok() const
+  bool HDF5Lattice<T>::ok() const
   {
-    return True;
+    return true;
   }
 
   template<typename T>
@@ -278,7 +278,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   LatticeIterInterface<T>* HDF5Lattice<T>::makeIter (const LatticeNavigator& nav,
-						     Bool useRef) const
+						     bool useRef) const
   {
     return new HDF5LattIter<T>(*this, nav, useRef);
   }

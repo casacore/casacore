@@ -33,22 +33,22 @@ VirtualColumnEngine::~VirtualColumnEngine()
 {}
 
 
-Bool VirtualColumnEngine::isStorageManager() const
-    { return False; }
+bool VirtualColumnEngine::isStorageManager() const
+    { return false; }
 
-Bool VirtualColumnEngine::canAddRow() const
-    { return True; }
+bool VirtualColumnEngine::canAddRow() const
+    { return true; }
 void VirtualColumnEngine::addRow64 (rownr_t)
     {}
-Bool VirtualColumnEngine::canRemoveRow() const
-    { return True; }
+bool VirtualColumnEngine::canRemoveRow() const
+    { return true; }
 void VirtualColumnEngine::removeRow64 (rownr_t)
     {}
 
 //# Create, open, prepare and close do nothing unless implemented in the
 // derived class.
-Bool VirtualColumnEngine::flush (AipsIO&, Bool)
-{ return False; }
+bool VirtualColumnEngine::flush (AipsIO&, bool)
+{ return false; }
 void VirtualColumnEngine::create64 (rownr_t)
 {}
 rownr_t VirtualColumnEngine::open64 (rownr_t nrow, AipsIO&)

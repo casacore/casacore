@@ -254,7 +254,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 
     TableGramText is the char* pointer giving the start of the token recognized.
     yyleng gives the length of the token recognized by flex.
-    tableGramPosition() is an Int& keeping track of the position in the command
+    tableGramPosition() is an int32_t& keeping track of the position in the command
     string for error reporting in TableGram.cc.
     Note that lvalp is defined at the beginning of this file as the argument
     to TableGramlex (in the YY_DECL definition). The possible lvalp fields
@@ -608,7 +608,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {INT}     {
             tableGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtoll(TableGramtext, &endPtr, 10);
+            int64_t v = strtoll(TableGramtext, &endPtr, 10);
             if (endPtr != TableGramtext+yyleng) {
                 throw TableInvExpr ("Integer number not fully parsed");
             }
@@ -619,7 +619,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {HEXINT}  {
             tableGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtoll(TableGramtext, &endPtr, 0);
+            int64_t v = strtoll(TableGramtext, &endPtr, 0);
             if (endPtr != TableGramtext+yyleng) {
                 throw TableInvExpr ("Hex number not fully parsed");
             }
@@ -629,13 +629,13 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 {TRUE}    {
             tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (True));
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (true));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
           }
 {FALSE}   {
             tableGramPosition() += yyleng;
-            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (False));
+            lvalp->val = new TaQLConstNode(new TaQLConstNodeRep (false));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
             return LITERAL;
           }
@@ -740,7 +740,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
  /* A temporary table number possibly followed by a subtable name*/
 {TEMPTAB} {
             tableGramPosition() += yyleng;
-            Int64 ival = atoi(TableGramtext+1);
+            int64_t ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);
@@ -748,7 +748,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
           }
 <SHOWstate>{TEMPTAB} {
             tableGramPosition() += yyleng;
-            Int64 ival = atoi(TableGramtext+1);
+            int64_t ival = atoi(TableGramtext+1);
             lvalp->val = new TaQLConstNode(
                 new TaQLConstNodeRep (ival, tableGramRemoveEscapes (TableGramtext)));
             TaQLNode::theirNodesCreated.push_back (lvalp->val);

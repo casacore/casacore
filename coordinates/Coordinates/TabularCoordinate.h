@@ -69,8 +69,8 @@ class LogIO;
 // Let's make a non-linear TabularCoordinate  and convert a pixel
 // value to world (which will use linear interpolation)
 // <srcblock>
-//    Vector<Double> pixelValues(3); 
-//    Vector<Double> worldValues(3); 
+//    Vector<double> pixelValues(3); 
+//    Vector<double> worldValues(3); 
 //    pixelValues(0) = 122.0;
 //    pixelValues(1) = 300.0;
 //    pixelValues(2) = 6524.0;
@@ -83,7 +83,7 @@ class LogIO;
 //
 //    TabularCoordinate tc(pixelValues, worldValues, unit, axisName);
 //
-//    Double world, pixel;
+//    double world, pixel;
 //    pixel = 200.12;
 //    if (!tc.toWorld(world, pixel)) {
 //      cerr << "Error : " << tc.errorMessage() << endl;
@@ -117,7 +117,7 @@ public:
 
     // Create a linear TabularCoordinate where 
     // <src>world = refval + inc*(pixel-refpix)</src>
-    TabularCoordinate(Double refval, Double inc, Double refpix,
+    TabularCoordinate(double refval, double inc, double refpix,
 		      const String &unit, const String &axisName);
 
     // Create a linear TabularCoordinate with a Quantum-based interface where 
@@ -125,9 +125,9 @@ public:
     // increment (<src>inc</src>) will be converted to
     // those of the reference value (<src>refVal</src>) which will
     // then serve as the units of the Coordinate.
-    TabularCoordinate(const Quantum<Double>& refval, 
-                      const Quantum<Double>& inc, 
-                      Double refpix, const String& axisName);
+    TabularCoordinate(const Quantum<double>& refval, 
+                      const Quantum<double>& inc, 
+                      double refpix, const String& axisName);
 
     // Construct a TabularCoordinate with the specified world values. The
     // increments and related functions return the average values
@@ -139,15 +139,15 @@ public:
     // supplied. The reference channel (pixel) is chosen to be 0.  The
     // frequencies must increase or decrease monotonically (otherwise the
     // toPixel lookup would not be possible).
-    TabularCoordinate(const Vector<Double> &pixelValues,
-		      const Vector<Double> &worldValues,
+    TabularCoordinate(const Vector<double> &pixelValues,
+		      const Vector<double> &worldValues,
 		      const String &unit, const String &axisName);
 
     // Construct a TabularCoordinate with the specified world values
     // via the Quantum-based interface.  All comments for the
     // previous constructor apply
-    TabularCoordinate(const Vector<Double>& pixelValues,
-                      const Quantum<Vector<Double> >& worldValues,
+    TabularCoordinate(const Vector<double>& pixelValues,
+                      const Quantum<Vector<double> >& worldValues,
                       const String &axisName);
 
     // Copy constructor (copy semantics).
@@ -167,38 +167,38 @@ public:
 
     // Always returns 1.
     // <group>
-    virtual uInt nPixelAxes() const;
-    virtual uInt nWorldAxes() const;
+    virtual uint32_t nPixelAxes() const;
+    virtual uint32_t nWorldAxes() const;
     // </group>
 
-    // Convert a pixel position to a world position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and method
+    // Convert a pixel position to a world position or vice versa. Returns true
+    // if the conversion succeeds, otherwise it returns false and method
     // errorMessage contains an error message.  The output
     // vectors are appropriately resized.
-    // The Bool parameter in toWorld() has no effect as this coordinate does
+    // The bool parameter in toWorld() has no effect as this coordinate does
     // not support a conversion layer frame.
     // <group>
-    virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel, Bool=True) const;
-    virtual Bool toPixel(Vector<Double> &pixel, 
-			 const Vector<Double> &world) const;
-    Bool toWorld(Double &world, Double pixel) const;
-    Bool toPixel(Double &pixel, Double world) const;
+    virtual bool toWorld(Vector<double> &world, 
+			 const Vector<double> &pixel, bool=true) const;
+    virtual bool toPixel(Vector<double> &pixel, 
+			 const Vector<double> &world) const;
+    bool toWorld(double &world, double pixel) const;
+    bool toPixel(double &pixel, double world) const;
     // </group>
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
-    // of the matrices contain the coordinates. Returns False if any conversion
+    // of the matrices contain the coordinates. Returns false if any conversion
     // failed  and  <src>errorMessage()</src> will hold a message.
-    // The <src>failures</src> array (True for fail, False for success)
+    // The <src>failures</src> array (true for fail, false for success)
     // is the length of the number of conversions and
     // holds an error status for each conversion.  
     // <group>
-    virtual Bool toWorldMany(Matrix<Double> &world,
-                             const Matrix<Double> &pixel,
-                             Vector<Bool>& failures) const;
-    virtual Bool toPixelMany(Matrix<Double>& pixel,
-                             const Matrix<Double>& world,
-                             Vector<Bool>& failures) const;
+    virtual bool toWorldMany(Matrix<double> &world,
+                             const Matrix<double> &pixel,
+                             Vector<bool>& failures) const;
+    virtual bool toPixelMany(Matrix<double>& pixel,
+                             const Matrix<double>& world,
+                             Vector<bool>& failures) const;
     // </group>
 
 
@@ -207,60 +207,60 @@ public:
     // Vectors must be length <src>nPixelAxes()</src> or
     // <src>nWorldAxes()</src> or memory access errors will occur
     // <group>
-    virtual void makePixelRelative (Vector<Double>& pixel) const {pixel -= crpix_p;};
-    virtual void makePixelAbsolute (Vector<Double>& pixel) const {pixel += crpix_p;};
-    virtual void makeWorldRelative (Vector<Double>& world) const {world -= crval_p;};
-    virtual void makeWorldAbsolute (Vector<Double>& world) const {world += crval_p;};
+    virtual void makePixelRelative (Vector<double>& pixel) const {pixel -= crpix_p;};
+    virtual void makePixelAbsolute (Vector<double>& pixel) const {pixel += crpix_p;};
+    virtual void makeWorldRelative (Vector<double>& world) const {world -= crval_p;};
+    virtual void makeWorldAbsolute (Vector<double>& world) const {world += crval_p;};
     // </group>
 
     // Return the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
-    virtual Vector<Double> referencePixel() const;
-    virtual Matrix<Double> linearTransform() const;
-    virtual Vector<Double> increment() const;
-    virtual Vector<Double> referenceValue() const;
+    virtual Vector<double> referencePixel() const;
+    virtual Matrix<double> linearTransform() const;
+    virtual Vector<double> increment() const;
+    virtual Vector<double> referenceValue() const;
     // </group>
 
     // Set the value of the requested attribute.  Note that these just
     // change the internal values, they do not cause any recomputation.
     // <group>
-    virtual Bool setWorldAxisNames(const Vector<String> &names);
-    virtual Bool setReferencePixel(const Vector<Double> &refPix);
-    virtual Bool setLinearTransform(const Matrix<Double> &xform);
-    virtual Bool setIncrement(const Vector<Double> &inc) ;
-    virtual Bool setReferenceValue(const Vector<Double> &refval);
+    virtual bool setWorldAxisNames(const Vector<String> &names);
+    virtual bool setReferencePixel(const Vector<double> &refPix);
+    virtual bool setLinearTransform(const Matrix<double> &xform);
+    virtual bool setIncrement(const Vector<double> &inc) ;
+    virtual bool setReferenceValue(const Vector<double> &refval);
     // </group>
 
     // Set/get the axis unit. Adjust the increment and
     // reference value by the ratio of the old and new units.
     // The unit must be compatible with the current units.
     // <group>
-    virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual bool setWorldAxisUnits(const Vector<String> &units);
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
     // Overwrite the world axis units with no compatibility
     // checks or adjustment.
-    Bool overwriteWorldAxisUnits(const Vector<String> &units);
+    bool overwriteWorldAxisUnits(const Vector<String> &units);
 
     // Get the table, i.e. the pixel and world values. The length of these
     // Vectors will be zero if this axis is pure linear.
     // <group>
-    Vector<Double> pixelValues() const;
-    Vector<Double> worldValues() const;
+    Vector<double> pixelValues() const;
+    Vector<double> worldValues() const;
     // </group>
 
-    // Comparison function. Any private Double data members are compared    
+    // Comparison function. Any private double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False, method
+    // axes in the Coordinate.  If the comparison returns false, method
     // errorMessage() contains a message about why.
     // <group>
-    virtual Bool near(const Coordinate& other, 
-                      Double tol=1e-6) const;
-    virtual Bool near(const Coordinate& other, 
-                      const Vector<Int>& excludeAxes,
-                      Double tol=1e-6) const;
+    virtual bool near(const Coordinate& other, 
+                      double tol=1e-6) const;
+    virtual bool near(const Coordinate& other, 
+                      const Vector<int32_t>& excludeAxes,
+                      double tol=1e-6) const;
     // </group>
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
@@ -269,12 +269,12 @@ public:
     // associated with all the axes of the Coordinate.   Currently the
     // output reference pixel is always shape/2. If the pointer returned is 0, 
     // it failed with a message in <src>errorMessage</src>
-    virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
-                                               const Vector<Int>& shape) const;
+    virtual Coordinate* makeFourierCoordinate (const Vector<bool>& axes,
+                                               const Vector<int32_t>& shape) const;
 
     // Save the TabularCoordinate into the supplied record using the supplied field name.
-    // The field must not exist, otherwise <src>False</src> is returned.
-    virtual Bool save(RecordInterface &container, const String &fieldName) const;
+    // The field must not exist, otherwise <src>false</src> is returned.
+    virtual bool save(RecordInterface &container, const String &fieldName) const;
 
     // Recover the TabularCoordinate from a record.
     // A null pointer means that the restoration did not succeed - probably 
@@ -287,15 +287,15 @@ public:
     virtual Coordinate *clone() const;
 
 private:
-    Double crval_p, cdelt_p, crpix_p;
-    Double matrix_p;
+    double crval_p, cdelt_p, crpix_p;
+    double matrix_p;
     String unit_p;
     String name_p;
 
     // Channel_True = channel_corrections_p(Channel_average).
     // <group>
-    Interpolate1D<Double,Double> *channel_corrector_p;
-    Interpolate1D<Double,Double> *channel_corrector_rev_p;
+    Interpolate1D<double,double> *channel_corrector_p;
+    Interpolate1D<double,double> *channel_corrector_rev_p;
     // </group>
 
     // Common for assignment operator and destructor.
@@ -304,8 +304,8 @@ private:
     // Common code for copy ctor and assignment operator.
     void copy(const TabularCoordinate &other);
 
-    void makeNonLinearTabularCoordinate(const Vector<Double> &pixelValues,
-                                        const Vector<Double> &worldValues);
+    void makeNonLinearTabularCoordinate(const Vector<double> &pixelValues,
+                                        const Vector<double> &worldValues);
 };
 
 } //# NAMESPACE CASACORE - END

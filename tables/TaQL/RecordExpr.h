@@ -61,14 +61,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Make a record expression node for the given field in the record description.
 // <group>
 TableExprNode makeRecordExpr (const RecordDesc& desc,
-                              Int fieldNumber);
+                              int32_t fieldNumber);
 TableExprNode makeRecordExpr (const RecordDesc& desc,
                               const String& fieldName);
 // </group>
 
 // Make a record expression node for the given field in the record.
 inline TableExprNode makeRecordExpr (const RecordInterface& record,
-                                     Int fieldNumber)
+                                     int32_t fieldNumber)
     { return makeRecordExpr (record.description(), fieldNumber); }
 
 

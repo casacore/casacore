@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // // create converter
 //    StokesConverter sc;
-//    Vector<Int> out(7),in(4);
+//    Vector<int32_t> out(7),in(4);
 // // set the input polarizations   
 //    in(0)=Stokes::RR;
 //    in(1)=Stokes::LL;
@@ -117,9 +117,9 @@ public:
   // The rescale option will correct for crosscorrelation data that
   // has been scaled to the level Stokes I (common practice 
   // in radioastronomy: even though officially I=XX+YY, in practice
-  // we need to do I=(XX+YY)/2, set rescale to True to do the latter).
-  StokesConverter(const Vector<Int>& out, const Vector<Int>& in,
-		  Bool rescale=False);
+  // we need to do I=(XX+YY)/2, set rescale to true to do the latter).
+  StokesConverter(const Vector<int32_t>& out, const Vector<int32_t>& in,
+		  bool rescale=false);
   
   // desctructor
   ~StokesConverter();
@@ -132,8 +132,8 @@ public:
   
   // Change or Set the conversion. Arguments are the same as for
   // constructor above.
-  void setConversion(const Vector<Int>& out, const Vector<Int>& in,
-		     Bool rescale = False);
+  void setConversion(const Vector<int32_t>& out, const Vector<int32_t>& in,
+		     bool rescale = false);
   
   // convert data, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
@@ -144,21 +144,21 @@ public:
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed. All output depending on a flagged input
   // will be flagged. 
-  void convert(Array<Bool>& out, const Array<Bool>& in) const;
+  void convert(Array<bool>& out, const Array<bool>& in) const;
 
   // convert weights, first dimension of input must match
   // that of the input conversion vector used to set up the conversion.
   // Output is resized as needed.
-  // Set sigma to True when converting sigma's using this routine.
-  void convert(Array<Float>& out, const Array<Float>& in,
-	       Bool sigma=False) const;
+  // Set sigma to true when converting sigma's using this routine.
+  void convert(Array<float>& out, const Array<float>& in,
+	       bool sigma=false) const;
 
   // invert flags, first dimension of input must match
   // that of the output conversion vector used to set up the conversion.
   // Output is resized as needed. All output depending on a flagged input
   // will be flagged. This does the inverse operation of convert, allowing
   // flagging of converted data to be transferred back to the original data.
-  void invert(Array<Bool>& out, const Array<Bool>& in) const;
+  void invert(Array<bool>& out, const Array<bool>& in) const;
 
 protected:
 
@@ -166,14 +166,14 @@ protected:
   void initConvMatrix();
 
 private:
-  Vector<Int> in_p,out_p;
-  Bool rescale_p;
+  Vector<int32_t> in_p,out_p;
+  bool rescale_p;
   //# mutable because operator Matrix(Slice,Slice) doesn't have const version
   mutable Matrix<Complex> conv_p; 
   mutable Matrix<Complex> iquvConv_p;
-  Bool doIQUV_p;
-  Matrix<Bool> flagConv_p;
-  Matrix<Float> wtConv_p;
+  bool doIQUV_p;
+  Matrix<bool> flagConv_p;
+  Matrix<float> wtConv_p;
   Matrix<Complex> polConv_p;
 };
 

@@ -83,8 +83,8 @@ public:
     // Update the synchronization data and write it into the MemoryIO object.
     // This function is called when a table flush is done to reflect
     // if anything has changed compared to the previous flush.
-    void write (rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
-		const Block<Bool>& dataManChanged);
+    void write (rownr_t nrrow, uint32_t nrcolumn, bool tableChanged,
+		const Block<bool>& dataManChanged);
 
     // Update the synchronization data and write it into the MemoryIO object.
     // This function should be used by an external filler when it flushes
@@ -94,9 +94,9 @@ public:
     // Read the synchronization data from the MemoryIO object.
     // This function is called when a lock is acquired to see if
     // table data has to be reread.
-    // <br>It returns False when the MemoryIO object is empty.
-    Bool read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
-	       Block<Bool>& dataManChanged);
+    // <br>It returns false when the MemoryIO object is empty.
+    bool read (rownr_t& nrrow, uint32_t& nrcolumn, bool& tableChanged,
+	       Block<bool>& dataManChanged);
 
     // Get the MemoryIO object.
     // This is used to let <src>LockFile</src> read or write the
@@ -104,7 +104,7 @@ public:
     MemoryIO& memoryIO();
 
     // Get the modify counter.
-    uInt getModifyCounter() const;
+    uint32_t getModifyCounter() const;
 
 
 private:
@@ -117,10 +117,10 @@ private:
 
     //# Member variables.
     rownr_t     itsNrrow;
-    Int         itsNrcolumn;
-    uInt        itsModifyCounter;
-    uInt        itsTableChangeCounter;
-    Block<uInt> itsDataManChangeCounter;
+    int32_t         itsNrcolumn;
+    uint32_t        itsModifyCounter;
+    uint32_t        itsTableChangeCounter;
+    Block<uint32_t> itsDataManChangeCounter;
     MemoryIO    itsMemIO;
     AipsIO      itsAipsIO;
 };
@@ -131,7 +131,7 @@ inline MemoryIO& TableSyncData::memoryIO()
 {
     return itsMemIO;
 }
-inline uInt TableSyncData::getModifyCounter() const
+inline uint32_t TableSyncData::getModifyCounter() const
 {
     return itsModifyCounter;
 }

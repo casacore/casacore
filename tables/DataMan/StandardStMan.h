@@ -167,11 +167,11 @@ public:
     // In that way the buckets will be small enough for small tables
     // and not too small for large tables.
     // <group>
-    explicit StandardStMan (Int bucketSize = 0,
-			    uInt cacheSize = 1);
+    explicit StandardStMan (int32_t bucketSize = 0,
+			    uint32_t cacheSize = 1);
     explicit StandardStMan (const String& dataManagerName,
-			    Int bucketSize = 0,
-			    uInt cacheSize = 1);
+			    int32_t bucketSize = 0,
+			    uint32_t cacheSize = 1);
     // </group>
 
     ~StandardStMan();

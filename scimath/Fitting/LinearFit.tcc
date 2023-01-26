@@ -57,15 +57,15 @@ template<class T>
 LinearFit<T>::~LinearFit() {}
 
 template<class T>
-Bool LinearFit<T>::
+bool LinearFit<T>::
 fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol, 
       const Array<typename FunctionTraits<T>::BaseType> &x, 
       const Vector<typename FunctionTraits<T>::BaseType> &y,
       const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-      const Vector<Bool> *const mask) {
+      const Vector<bool> *const mask) {
   // Initialise fitter
   sol.resize(pCount_p);
-  for (uInt i=0, k=0; i<pCount_p; ++i) {
+  for (uint32_t i=0, k=0; i<pCount_p; ++i) {
     sol[i] = (*ptr_derive_p)[i].value();
     if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   }
@@ -80,8 +80,8 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     this->solve(condEq_p);
     sol_p += condEq_p;
     this->getErrors(err_p);
-    errors_p = True;
-    for (uInt i=0, k=0; i<pCount_p; i++) {
+    errors_p = true;
+    for (uint32_t i=0, k=0; i<pCount_p; i++) {
       if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
       (*ptr_derive_p)[i].value() = sol[i];
     }

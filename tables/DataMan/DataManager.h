@@ -173,7 +173,7 @@ typedef DataManager* (*DataManagerCtor) (const String& dataManagerType,
 //   <br>However, for unknown data managers it is tried to load a shared
 //   library whose name is the lowercase version of the data manager without a
 //   possible template argument (e.g. <src>bitflagsengine</src> for
-//   data manager <src>BitFlagsEngine<Int></src>).
+//   data manager <src>BitFlagsEngine<int32_t></src>).
 //   It can be preceeded by lib or libcasa_ and followed by .so or .dylib.
 //   The shared library has to have a function with a name like
 //   <src>register_bitflagsengine</src> that must register the data manager(s).
@@ -261,13 +261,13 @@ public:
 
     // Is the data manager a storage manager?
     // The default is yes.
-    virtual Bool isStorageManager() const;
+    virtual bool isStorageManager() const;
 
     // Tell if the data manager wants to reallocate the data manager
     // column objects.
     // This is used by the tiling storage manager.
-    // By default it returns False.
-    virtual Bool canReallocateColumns() const;
+    // By default it returns false.
+    virtual bool canReallocateColumns() const;
 
     // Reallocate the column object if it is part of this data manager.
     // It returns a pointer to the new column object.
@@ -276,15 +276,15 @@ public:
     virtual DataManagerColumn* reallocateColumn (DataManagerColumn* column);
     
     // Get the (unique) sequence nr of this data manager.
-    uInt sequenceNr() const
+    uint32_t sequenceNr() const
 	{ return seqnr_p; }
 
     // Get the nr of columns in this data manager (can be zero).
-    uInt ncolumn() const
+    uint32_t ncolumn() const
 	{ return nrcol_p; }
 
     // Have the data to be stored in big or little endian canonical format?
-    Bool asBigEndian() const
+    bool asBigEndian() const
       { return asBigEndian_p; }
 
     // Get the TSM option.
@@ -309,8 +309,8 @@ public:
 
     // Is this a regular storage manager?
     // It is regular if it allows addition of rows and writing data in them.
-    // <br>The default implementation returns True.
-    virtual Bool isRegular() const;
+    // <br>The default implementation returns true.
+    virtual bool isRegular() const;
 
     // Get the table this object is associated with.
     Table& table() const
@@ -322,23 +322,23 @@ public:
     virtual void reopenRW();
 
     // Does the data manager allow to add rows? (default no)
-    virtual Bool canAddRow() const;
+    virtual bool canAddRow() const;
 
     // Does the data manager allow to delete rows? (default no)
-    virtual Bool canRemoveRow() const;
+    virtual bool canRemoveRow() const;
 
     // Does the data manager allow to add columns? (default no)
-    virtual Bool canAddColumn() const;
+    virtual bool canAddColumn() const;
 
     // Does the data manager allow to delete columns? (default no)
-    virtual Bool canRemoveColumn() const;
+    virtual bool canRemoveColumn() const;
 
     // Does the data manager allow to rename columns? (default yes)
-    virtual Bool canRenameColumn() const;
+    virtual bool canRenameColumn() const;
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
     // The default implementation does nothing.
-    virtual void setMaximumCacheSize (uInt nMiB);
+    virtual void setMaximumCacheSize (uint32_t nMiB);
 
     // Show the data manager's IO statistics. By default it does nothing.
     virtual void showCacheStatistics (std::ostream&) const;
@@ -378,7 +378,7 @@ protected:
 	{ nrcol_p--; }
 
     // Tell the data manager if big or little endian format is needed.
-    void setEndian (Bool bigEndian)
+    void setEndian (bool bigEndian)
       { asBigEndian_p = bigEndian; }
 
     // Tell the data manager which TSM option to use.
@@ -390,9 +390,9 @@ protected:
     void setMultiFile (const std::shared_ptr<MultiFileBase>& mfile);
 
     // Does the data manager support use of MultiFile?
-    // A derived class has to return True if it can use the MultiFile.
-    // The default implementation returns False.
-    virtual Bool hasMultiFileSupport() const;
+    // A derived class has to return true if it can use the MultiFile.
+    // The default implementation returns false.
+    virtual bool hasMultiFileSupport() const;
 
     // Throw an exception in case data type is TpOther, because the
     // storage managers (and maybe other data managers) do not support
@@ -401,9 +401,9 @@ protected:
 
 
 private:
-    uInt         nrcol_p;            //# #columns in this st.man.
-    uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
-    Bool         asBigEndian_p;      //# store data in big or little endian
+    uint32_t         nrcol_p;            //# #columns in this st.man.
+    uint32_t         seqnr_p;            //# Unique nr of this st.man. in a Table
+    bool         asBigEndian_p;      //# store data in big or little endian
     TSMOption    tsmOption_p;
     std::shared_ptr<MultiFileBase> multiFile_p;  //# Possible MultiFile to use
     Table*       table_p;            //# Table this data manager belongs to
@@ -443,11 +443,11 @@ private:
 			int dataType, const String& dataTypeId) const;
 
     // Add rows to all columns.
-    // <br>The default implementation calls the uInt version.
+    // <br>The default implementation calls the uint32_t version.
     virtual void addRow64 (rownr_t nrrow);
 
     // Delete a row from all columns.
-    // <br>The default implementation calls the uInt version.
+    // <br>The default implementation calls the uint32_t version.
     virtual void removeRow64 (rownr_t rownr);
 
     // Add a column.
@@ -459,7 +459,7 @@ private:
     virtual void removeColumn (DataManagerColumn*);
 
     // Set the sequence number of this data manager.
-    void setSeqnr (uInt nr)
+    void setSeqnr (uint32_t nr)
 	{ seqnr_p = nr; }
 
     // Link the data manager to the Table object.
@@ -468,11 +468,11 @@ private:
     // Flush and optionally fsync the data.
     // The AipsIO stream represents the main table file and can be
     // used by virtual column engines to store SMALL amounts of data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO& ios, Bool fsync) = 0;
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    virtual bool flush (AipsIO& ios, bool fsync) = 0;
 
     // Let the data manager initialize itself for a new table.
-    // <br>The default implementation calls the uInt version.
+    // <br>The default implementation calls the uint32_t version.
     virtual void create64 (rownr_t nrrow);
 
     // Let the data manager initialize itself for an existing table.
@@ -483,7 +483,7 @@ private:
     // This is particularly useful for data managers like LofarStMan whose
     // data are written outside the table system, thus for which no rows
     // have been added.
-    // <br>The default implementation calls the uInt version of open and open1.
+    // <br>The default implementation calls the uint32_t version of open and open1.
     virtual rownr_t open64 (rownr_t nrrow, AipsIO& ios);
 
     // Resync the data by rereading cached data from the file.
@@ -493,7 +493,7 @@ private:
     // This is particularly useful for data managers like LofarStMan whose
     // data are written outside the table system, thus for which no rows
     // have been added.
-    // <br>The default implementation calls the uInt version of resync and
+    // <br>The default implementation calls the uint32_t version of resync and
     // resync1.
     virtual rownr_t resync64 (rownr_t nrrow);
 
@@ -504,16 +504,16 @@ private:
     // The default implementation does nothing.
     virtual void prepare();
 
-    // Backward compatibility function using uInt instead of rownr_t.
+    // Backward compatibility function using uint32_t instead of rownr_t.
     // The default implementations throw an exception.
     // <group>
-    virtual void addRow (uInt nrrow);
-    virtual void removeRow (uInt rownr);
-    virtual void create (uInt nrrow);
-    virtual void open (uInt nrrow, AipsIO& ios);
-    virtual uInt open1 (uInt nrrow, AipsIO& ios);
-    virtual void resync (uInt nrrow);
-    virtual uInt resync1 (uInt nrrow);
+    virtual void addRow (uint32_t nrrow);
+    virtual void removeRow (uint32_t rownr);
+    virtual void create (uint32_t nrrow);
+    virtual void open (uint32_t nrrow, AipsIO& ios);
+    virtual uint32_t open1 (uint32_t nrrow, AipsIO& ios);
+    virtual void resync (uint32_t nrrow);
+    virtual uint32_t resync1 (uint32_t nrrow);
     // </group>
 
     // Declare the mapping of the data manager type name to a static
@@ -538,7 +538,7 @@ public:
     static DataManagerCtor getCtor (const String& dataManagerType);
 
     // Test if a data manager is registered (thread-safe).
-    static Bool isRegistered (const String& dataManagerType);
+    static bool isRegistered (const String& dataManagerType);
 
     // Serve as default function for theirRegisterMap, which catches all
     // unknown data manager types.
@@ -549,7 +549,7 @@ public:
 					    const Record& spec);
 
     // Define the highest row number that can be represented as signed 32-bit.
-    // In principle it is the maximum uInt number, but for test purposes it
+    // In principle it is the maximum uint32_t number, but for test purposes it
     // can be reset (to a lower number).
     static rownr_t MAXROWNR32;   //# set to 2147483647
 

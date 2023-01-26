@@ -42,7 +42,7 @@
 using namespace casacore;
 using namespace std;
 
-void testScalar (Bool asDirCos)
+void testScalar (bool asDirCos)
 {
   cout << "test scalars as "
        << (asDirCos ? "dircos" : "angles")
@@ -56,7 +56,7 @@ void testScalar (Bool asDirCos)
                 MPosition::WGS84);         // near WSRT
   MeasFrame frame(coord,epo,pos);
   {
-    Vector<Double> dir;
+    Vector<double> dir;
     if (asDirCos) {
       dir = MDirection::Convert
         (coord, MDirection::Ref(MDirection::APP,frame))()
@@ -74,8 +74,8 @@ void testScalar (Bool asDirCos)
                         "mjdtodate(50217.625d),'UTC',"
                         "6.60417deg, 52.8deg, 10m, 'WGS84')").node());
     AlwaysAssertExit (node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
-    VectorIterator<Double> veciter(arr1);
+    Array<double> arr1 = node.getArrayDouble(0);
+    VectorIterator<double> veciter(arr1);
     ///cout << "taql=" << arr1 << endl;
     if (asDirCos) {
       AlwaysAssertExit (node.unit().getName().empty());
@@ -85,7 +85,7 @@ void testScalar (Bool asDirCos)
     AlwaysAssertExit (allNear(dir, veciter.vector(), 1e-8));
   }
   {
-    Vector<Double> dir;
+    Vector<double> dir;
     if (asDirCos) {
       dir = MDirection::Convert
         (coord, MDirection::Ref(MDirection::J2000))()
@@ -102,14 +102,14 @@ void testScalar (Bool asDirCos)
                         "[185.425833deg, 31.799167deg],"
                         "'B1950')deg").node());
     AlwaysAssertExit (node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
-    VectorIterator<Double> veciter(arr1);
+    Array<double> arr1 = node.getArrayDouble(0);
+    VectorIterator<double> veciter(arr1);
     ///cout << "diff=" << dir-veciter.vector() << endl;
     AlwaysAssertExit (allNear(dir, veciter.vector(), 1e-8));
   }
   {
     // Test a nested meas. function.
-    Vector<Double> dir;
+    Vector<double> dir;
     if (asDirCos) {
       dir = coord.getValue().getValue();
     } else {
@@ -124,8 +124,8 @@ void testScalar (Bool asDirCos)
                         "[185.425833deg, 31.799167deg],"
                         "'B1950'))deg").node());
     AlwaysAssertExit (node.getNodeRep()->isConstant());
-    Array<Double> arr1 = node.getArrayDouble(0);
-    VectorIterator<Double> veciter(arr1);
+    Array<double> arr1 = node.getArrayDouble(0);
+    VectorIterator<double> veciter(arr1);
     ///cout << "diff=" << dir-veciter.vector() << endl;
     AlwaysAssertExit (allNear(dir, veciter.vector(), 1e-8));
   }
@@ -135,16 +135,16 @@ void testScalar (Bool asDirCos)
                         ("calc meas.azel([0,0,1], 'AZEL')deg").node());
     TableExprNode node2(tableCommand
                         ("calc meas.azel('ZENITH')deg").node());
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     AlwaysAssertExit (nearAbs(arr1.data()[0], 0.));
     AlwaysAssertExit (nearAbs(arr1.data()[1], 90.));
-    Array<Double> arr2 = node2.getArrayDouble(0);
+    Array<double> arr2 = node2.getArrayDouble(0);
     AlwaysAssertExit (nearAbs(arr2.data()[0], 0.));
     AlwaysAssertExit (nearAbs(arr2.data()[1], 90.));
   }
 }
 
-void testArray (Bool asDirCos)
+void testArray (bool asDirCos)
 {
   cout << "test arrays as "
        << (asDirCos ? "dircos" : "angles")
@@ -174,12 +174,12 @@ void testArray (Bool asDirCos)
   AlwaysAssertExit (node2.getNodeRep()->isConstant());
   ///cout << "taql=" << node1.getArrayDouble(0) << endl;
   ///cout << "taql=" << node2.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   AlwaysAssertExit (arr1.shape() == IPosition(4,asDirCos?3:2,4,3,2));
   AlwaysAssertExit (arr2.shape() == IPosition(5,asDirCos?3:2,2,2,3,2));
-  VectorIterator<Double> arr1iter(arr1);
-  VectorIterator<Double> arr2iter(arr2);
+  VectorIterator<double> arr1iter(arr1);
+  VectorIterator<double> arr2iter(arr2);
   // Check with Measures.
   Vector<MDirection> coord(4);
   Vector<MEpoch> epo(3);
@@ -201,10 +201,10 @@ void testArray (Bool asDirCos)
   pos[1] = MPosition(Quantity(1000,"m"),
                      Quantity(-60.60417,"deg"), Quantity(-32.8,"deg"),
                      MPosition::WGS84);
-  for (uInt ip=0; ip<pos.size(); ++ip) {
-    for (uInt ie=0; ie<epo.size(); ++ie) {
-      for (uInt ic=0; ic<coord.size(); ++ic) {
-        Vector<Double> dir;
+  for (uint32_t ip=0; ip<pos.size(); ++ip) {
+    for (uint32_t ie=0; ie<epo.size(); ++ie) {
+      for (uint32_t ic=0; ic<coord.size(); ++ic) {
+        Vector<double> dir;
         if (asDirCos) {
           dir = MDirection::Convert
             (coord[ic],
@@ -228,7 +228,7 @@ void testArray (Bool asDirCos)
   }
 }
 
-void testColumn (Bool asDirCos)
+void testColumn (bool asDirCos)
 {
   cout << "test columns as "
        << (asDirCos ? "dircos" : "angles")
@@ -271,16 +271,16 @@ void testColumn (Bool asDirCos)
   AlwaysAssertExit (! node1.getNodeRep()->isConstant());
   AlwaysAssertExit (! node2.getNodeRep()->isConstant());
   AlwaysAssertExit (node1.nrow() == 3  &&  node2.nrow() == 3);
-  for (uInt i=0; i<3; ++i) {
+  for (uint32_t i=0; i<3; ++i) {
     ///cout << "taql=" << node1.getArrayDouble(i) << endl;
     ///cout << "taql=" << node2.getArrayDouble(i) << endl;
-    Array<Double> arr1 = node1.getArrayDouble(i);
-    Array<Double> arr2 = node2.getArrayDouble(i);
+    Array<double> arr1 = node1.getArrayDouble(i);
+    Array<double> arr2 = node2.getArrayDouble(i);
     AlwaysAssertExit (arr1.shape() == IPosition(1,asDirCos?3:2));
     AlwaysAssertExit (arr2.shape() == IPosition(1,asDirCos?3:2));
-    VectorIterator<Double> veciter1(arr1);
-    VectorIterator<Double> veciter2(arr2);
-    Vector<Double> dir;
+    VectorIterator<double> veciter1(arr1);
+    VectorIterator<double> veciter2(arr2);
+    Vector<double> dir;
     if (asDirCos) {
       dir = MDirection::Convert
         (coord[i],
@@ -319,14 +319,14 @@ void testName()
                        "['WSRT','VLA'])deg").node());
   AlwaysAssertExit (node1.getNodeRep()->isConstant());
   ///cout << "taql=" << node1.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
   AlwaysAssertExit (arr1.shape() == IPosition(4,2,3,1,2));
-  VectorIterator<Double> arr1iter(arr1);
+  VectorIterator<double> arr1iter(arr1);
   // Check with Measures.
-  for (uInt ip=0; ip<pos.size(); ++ip) {
-    for (uInt ie=0; ie<epo.size(); ++ie) {
-      for (uInt ic=0; ic<coord.size(); ++ic) {
-        Vector<Double> dir = MDirection::Convert
+  for (uint32_t ip=0; ip<pos.size(); ++ip) {
+    for (uint32_t ie=0; ie<epo.size(); ++ie) {
+      for (uint32_t ic=0; ic<coord.size(); ++ic) {
+        Vector<double> dir = MDirection::Convert
             (coord[ic],
              MDirection::Ref(MDirection::APP,
                              MeasFrame(coord[ic],epo[ie],pos[ip])))()
@@ -358,7 +358,7 @@ void testRiset()
 
 int checkErr (const String& command)
 {
-  Bool fail = False;
+  bool fail = false;
   try {
     TableExprNode node(tableCommand(command).node());
     if (node.isScalar()) {
@@ -368,7 +368,7 @@ int checkErr (const String& command)
     }
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    fail = True;
+    fail = true;
   }
   if (!fail) {
     cout << "Command '" + command + "' should have failed" << endl;
@@ -400,12 +400,12 @@ int main()
     register_meas();
     // Execute some tests.
     testErr();
-    testScalar(False);
-    testScalar(True);
-    testArray(False);
-    testArray(True);
-    testColumn(False);
-    testColumn(True);
+    testScalar(false);
+    testScalar(true);
+    testArray(false);
+    testArray(true);
+    testColumn(false);
+    testColumn(true);
     testName();
     testRiset();
   } catch (const std::exception& x) {

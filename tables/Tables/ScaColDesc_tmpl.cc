@@ -28,15 +28,15 @@
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class ScalarColumnDesc<Bool>;
-  template class ScalarColumnDesc<Char>;
-  template class ScalarColumnDesc<Short>;
-  template class ScalarColumnDesc<uShort>;
-  template class ScalarColumnDesc<Int>;
-  template class ScalarColumnDesc<uInt>;
-  template class ScalarColumnDesc<Int64>;
-  template class ScalarColumnDesc<Float>;
-  template class ScalarColumnDesc<Double>;
+  template class ScalarColumnDesc<bool>;
+  template class ScalarColumnDesc<char>;
+  template class ScalarColumnDesc<int16_t>;
+  template class ScalarColumnDesc<uint16_t>;
+  template class ScalarColumnDesc<int32_t>;
+  template class ScalarColumnDesc<uint32_t>;
+  template class ScalarColumnDesc<int64_t>;
+  template class ScalarColumnDesc<float>;
+  template class ScalarColumnDesc<double>;
   template class ScalarColumnDesc<Complex>;
   template class ScalarColumnDesc<DComplex>;
   template class ScalarColumnDesc<String>;

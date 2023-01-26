@@ -72,7 +72,7 @@ class IPosition;
 // is for the data type you are processing.  The second type is
 // for what type you want the results of the processing assigned to.
 // For example, if you are computing sums of squares for statistical
-// purposes, you might use higher precision (FLoat->Double) for this.
+// purposes, you might use higher precision (FLoat->double) for this.
 // No check is made that the template types are self-consistent.
 // </synopsis>
 
@@ -101,36 +101,36 @@ public:
 // corresponds with the number of pixels produced per collapsed chunk.
 // <br><src>processAxis</src> is the axis of the line being passed
 // to the <src>process</src> function.
-    virtual void init (uInt nOutPixelsPerCollapse) = 0;
+    virtual void init (uint32_t nOutPixelsPerCollapse) = 0;
 
 // Can the process function in the derived class handle a null mask pointer?
 // If not, LatticeApply ensures that it'll always pass a mask block,
 // even if the lattice does not have a mask (in that case that mask block
-// contains all True values).
-// <br>The default implementation returns False.
+// contains all true values).
+// <br>The default implementation returns false.
 // <br>The function is there to make optimization possible when no masks
 // are involved. On the other side, it allows the casual user to ignore
 // optimization.
-    virtual Bool canHandleNullMask() const;
+    virtual bool canHandleNullMask() const;
 
 // Create and initialize the accumulator.
 // The accumulator can be a cube with shape [n1,n2,n3],
 // where <src>n2</src> is equal to <src>nOutPixelsPerCollapse</src>.
 // However, one can also use several matrices as accumulator.
 // <br> The data type of the accumulator can be any. E.g. when
-// accumulating Float lattices, the accumulator could be of
-// type Double to have enough precision.
+// accumulating float lattices, the accumulator could be of
+// type double to have enough precision.
 // <br>In the <src>endAccumulator</src> function the accumulator
 // data has to be copied into an Array object with the correct
 // shape and data type.
-    virtual void initAccumulator (uInt64 n1, uInt64 n3) = 0;
+    virtual void initAccumulator (uint64_t n1, uint64_t n3) = 0;
 
 // Collapse the given input data containing (<src>nrval</src> values
 // with an increment of <src>inDataIncr</src> elements).
-// <src>inMask</src> is a Bool block representing a mask with the
+// <src>inMask</src> is a bool block representing a mask with the
 // same nr of values and increment as the input data. If a mask
-// value is False, the corresponding input value is masked off.
-// <br>When function <src>canHandleNullMask</src> returned True,
+// value is false, the corresponding input value is masked off.
+// <br>When function <src>canHandleNullMask</src> returned true,
 // it is possible that <src>inMask</src> is a null pointer indicating
 // that the input has no mask, thus all values are valid.
 // <br>
@@ -139,10 +139,10 @@ public:
 // The position of other values can be calculated from index and shape
 // using function <src>toPositionInArray</src> in class
 // <linkto class=IPosition>IPosition</linkto>.
-    virtual void process (uInt accumIndex1, uInt accumIndex3,
-			  const T* inData, const Bool* inMask,
-                          uInt inDataIncr, uInt inMaskIncr,
-                          uInt nrval,
+    virtual void process (uint32_t accumIndex1, uint32_t accumIndex3,
+			  const T* inData, const bool* inMask,
+                          uint32_t inDataIncr, uint32_t inMaskIncr,
+                          uint32_t nrval,
 			  const IPosition& startPos,
 			  const IPosition& shape) = 0;
 
@@ -150,7 +150,7 @@ public:
 // Array of datatype U (e.g. double the precision of type T) 
 // with the given shape. The accumulator should thereafter be deleted when needed.
     virtual void endAccumulator (Array<U>& result, 
-                                 Array<Bool>& resultMask,
+                                 Array<bool>& resultMask,
 				 const IPosition& shape) = 0;
 };
 

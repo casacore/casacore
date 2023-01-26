@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // If we do not allocate it here, it will be done by newbuf.
 // However, then we may get a huge buffer, which may be not so nice.
 // bufsz may be sufficient for many purposes.
-DynBuffer::DynBuffer (uInt bsz)
+DynBuffer::DynBuffer (uint32_t bsz)
 : bufsz_p   (bsz),
   nrbuf_p   (0),
   maxnrbuf_p(10),
@@ -44,7 +44,7 @@ DynBuffer::DynBuffer (uInt bsz)
   bufptr_p  (10)
 {
     allocstart ();
-    bufptr_p[0] = new Char[bufsz_p];
+    bufptr_p[0] = new char[bufsz_p];
     totlen_p[0] = bufsz_p;
     nrbuf_p = 1;
 }
@@ -56,9 +56,9 @@ DynBuffer::~DynBuffer ()
 }
 
 
-void DynBuffer::remove (uInt n)
+void DynBuffer::remove (uint32_t n)
 {
-    for (Int i=n; i<nrbuf_p; i++) {
+    for (int32_t i=n; i<nrbuf_p; i++) {
 	delete [] bufptr_p[i];
     }
     nrbuf_p = n;
@@ -76,12 +76,12 @@ void DynBuffer::allocstart ()
     
 
 // Get a new buffer
-uInt DynBuffer::newbuf (uInt nr, uInt valsz)
+uint32_t DynBuffer::newbuf (uint32_t nr, uint32_t valsz)
 {
     // Get the nr of free values in the current buffer.
     // If nothing left, use next buffer.
     // Store the used length of the current buffer.
-    uInt n;
+    uint32_t n;
     while ((n = (curtotlen_p - curuselen_p) / valsz) == 0) {
 	if (curbuf_p >= 0) {
             uselen_p[curbuf_p] = curuselen_p;
@@ -98,7 +98,7 @@ uInt DynBuffer::newbuf (uInt nr, uInt valsz)
 		uselen_p.resize (maxnrbuf_p);
 	    }
 	    totlen_p[nrbuf_p] = (nr*valsz > bufsz_p ? nr*valsz : bufsz_p);
-	    bufptr_p[nrbuf_p] = new Char[totlen_p[nrbuf_p]];
+	    bufptr_p[nrbuf_p] = new char[totlen_p[nrbuf_p]];
 	    nrbuf_p++;
 	}
 
@@ -123,16 +123,16 @@ void DynBuffer::nextstart ()
     }
 }
 
-Bool DynBuffer::next (uInt& len, Char*& ptr)
+bool DynBuffer::next (uint32_t& len, char*& ptr)
 {
     if (nextbuf_p > curbuf_p) {
 	len = 0;
-	return False;                         // no more buffers
+	return false;                         // no more buffers
     }else{
 	len = uselen_p[nextbuf_p];
 	ptr = bufptr_p[nextbuf_p];
 	nextbuf_p++;
-	return True;
+	return true;
     }
 }
 

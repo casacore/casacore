@@ -92,7 +92,7 @@ public:
   // Construct from vectors of world coordinates 
   // defining the box corners.  It is assumed that the
   // order of the values is in the order of the pixel axes.
-  explicit LCLELMask (const LatticeExpr<Bool>& expr);
+  explicit LCLELMask (const LatticeExpr<bool>& expr);
 
   // Copy constructor (copy semantics).
   LCLELMask (const LCLELMask& other);
@@ -104,16 +104,16 @@ public:
   LCLELMask& operator= (const LCLELMask& other);
 
   // Comparison
-  virtual Bool operator== (const LCRegion& other) const;
+  virtual bool operator== (const LCRegion& other) const;
 
   // Clone a LCLELMask object.
   virtual LCRegion* cloneRegion() const;
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the PagedArray object with the lattice file.
@@ -145,12 +145,12 @@ public:
 
 protected:
   // Translating an LCLELMask is not possible, so it throws an exception.
-  virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+  virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				 const IPosition& newLatticeShape) const;
 
 private:
   LCBox             itsBox;
-  LatticeExpr<Bool> itsExpr;
+  LatticeExpr<bool> itsExpr;
 };
 
 

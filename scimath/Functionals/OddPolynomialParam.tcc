@@ -37,7 +37,7 @@ OddPolynomialParam<T>::OddPolynomialParam() :
   Function1D<T>(1) {}
 
 template<class T>
-OddPolynomialParam<T>::OddPolynomialParam(uInt order) :
+OddPolynomialParam<T>::OddPolynomialParam(uint32_t order) :
   Function1D<T>(order/2 + 1) {}
 
 template<class T>

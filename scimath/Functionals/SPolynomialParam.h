@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//  SPolynomial<Float> pf(3);  // Third order polynomial - coeffs 0 by default
+//  SPolynomial<float> pf(3);  // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(1, 1.0);
 //  pf[5] = 2.0;
 //  pf.setCoefficient(3, 3.0);  // 3x^3 + 2x^2 + x
@@ -103,7 +103,7 @@ public:
   
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit SPolynomialParam(uInt order);
+  explicit SPolynomialParam(uint32_t order);
   
   // Make this a copy of other (deep copy).
   // <group>
@@ -121,9 +121,9 @@ public:
   // Comparisons.  
   // SPolynomials are equal if they are of the same order
   // <group>
-  Bool operator==(const SPolynomialParam<T> &other) const {
+  bool operator==(const SPolynomialParam<T> &other) const {
     return (param_p == other.param_p); }
-  Bool operator!=(const SPolynomialParam<T> &other) const {
+  bool operator!=(const SPolynomialParam<T> &other) const {
     return (param_p != other.param_p); }
   // </group>
 
@@ -133,25 +133,25 @@ public:
     return x; }
 
   // What is the order of the polynomial, i.e. maximum exponent of "x".
-  uInt order() const { return param_p.nelements() - 4; }
+  uint32_t order() const { return param_p.nelements() - 4; }
   
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
-  T coefficient(uInt which) const {
+  T coefficient(uint32_t which) const {
     DebugAssert(which<=order(), AipsError); return param_p[which+3]; }
   
   // Return all the coefficients as a vector.
   Vector<T> coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>. 
-  void setCoefficient(uInt which, const T value) {
+  void setCoefficient(uint32_t which, const T value) {
     DebugAssert(which<=order(), AipsError); param_p[which+3] = value; }
   
   // Set all the coefficients at once, throw away all existing coefficients.
   void setCoefficients(const Vector<T> &coefficients);
 
   // Returns the dimension of function
-  virtual uInt ndim() const { return 1; }
+  virtual uint32_t ndim() const { return 1; }
 
   //# Make members of parent classes known.
 protected:

@@ -63,56 +63,56 @@ namespace casacore {
       RegionManager();
       RegionManager(const CoordinateSystem& csys);
       virtual ~RegionManager();
-      String absreltype(const Int absrelval=0);
+      String absreltype(const int32_t absrelval=0);
 
       //Some little but useful tidbits.
-      static Bool isPixelRegion(const ImageRegion& reg);
-      static Bool isWorldRegion(const ImageRegion& reg);
+      static bool isPixelRegion(const ImageRegion& reg);
+      static bool isWorldRegion(const ImageRegion& reg);
       void setcoordsys(const CoordinateSystem& csys);
       const CoordinateSystem& getcoordsys() const ;
       
       //LCSlicer box
-      Record* box(const Vector<Double>& blc, const Vector<Double>& trc, 
-	          const Vector<Double>& inc, const String& absrel,
-	          const Bool frac, const String& comment="");
+      Record* box(const Vector<double>& blc, const Vector<double>& trc, 
+	          const Vector<double>& inc, const String& absrel,
+	          const bool frac, const String& comment="");
       //LCBox box
-      static Record* box(const Vector<Double>& blc, const Vector<Double>& trc, 
-                         const Vector<Int>& shape, const String& comment="");
+      static Record* box(const Vector<double>& blc, const Vector<double>& trc, 
+                         const Vector<int32_t>& shape, const String& comment="");
       Record* wbox(const Vector<Quantity>& blc, 
 			const Vector<Quantity>& trc, 
-			const Vector<Int>& pixelaxes, 
+			const Vector<int32_t>& pixelaxes, 
 			const CoordinateSystem& csys,
 			const String& absrel, const String& comment);
       Record* wbox(const Vector<String>& blc, 
 			const Vector<String>& trc, 
-			const Vector<Int>& pixelaxes, 
+			const Vector<int32_t>& pixelaxes, 
 			const CoordinateSystem& csys,
 			const String& absrel, const String& comment);
       Record* wbox(const Vector<Quantity>& blc, 
 			const Vector<Quantity>& trc, 
-			const Vector<Int>& pixelaxes, 
+			const Vector<int32_t>& pixelaxes, 
 			const String& absrel, const String& comment);
       Record* wbox(const Vector<String>& blc, 
 			const Vector<String>& trc, 
-			const Vector<Int>& pixelaxes, 
+			const Vector<int32_t>& pixelaxes, 
 			const String& absrel, const String& comment);
       ImageRegion* wbox(const Vector<Quantity>& blc, 
 			const Vector<Quantity>& trc, 
-			const Vector<Int>& pixelaxes, 
+			const Vector<int32_t>& pixelaxes, 
 			const CoordinateSystem& csys,
 			const String& absrel="abs" );
       //Wpolygon with coordsys and if pixelaxes[0] is -1 then its assumed
       //to be 0,1,...
       ImageRegion* wpolygon(const Vector<Quantity>& x, 
 			    const Vector<Quantity>& y, 
-			    const Vector<Int>& pixelaxes, 
+			    const Vector<int32_t>& pixelaxes, 
 			    const CoordinateSystem& csys, 
 			    const String& absrel);
       //wpolygon version without csys...throws an exception if 
       //setcoordsys is not run
       ImageRegion* wpolygon(const Vector<Quantity>& x, 
 			    const Vector<Quantity>& y, 
-			    const Vector<Int>& pixelaxes,  
+			    const Vector<int32_t>& pixelaxes,  
 			    const String& absrel);
       
      static ImageRegion* wellipse(
@@ -121,8 +121,8 @@ namespace casacore {
     		  const Quantity& a,
     		  const Quantity& b,
     		  const Quantity& pa,
-    		  const uInt pixelAxis0,
-    		  const uInt pixelAxis1,
+    		  const uint32_t pixelAxis0,
+    		  const uint32_t pixelAxis1,
     		  const CoordinateSystem& csys,
     		  const String& absrel
       );
@@ -135,15 +135,15 @@ namespace casacore {
     		  const Quantity& a,
     		  const Quantity& b,
     		  const Quantity& pa,
-    		  const uInt pixelAxis0,
-    		  const uInt pixelAxis1,
+    		  const uint32_t pixelAxis0,
+    		  const uint32_t pixelAxis1,
     		  const String& absrel
       ) const;
 
       static ImageRegion* wsphere(
     		  const Vector<Quantity>& center,
     		  const Quantity& radius,
-    		  const Vector<Int>& pixelaxes,
+    		  const Vector<int32_t>& pixelaxes,
     		  const CoordinateSystem& csys,
     		  const String& absrel
       );
@@ -152,14 +152,14 @@ namespace casacore {
       ImageRegion* wsphere(
     		  const Vector<Quantity>& center,
     		  const Quantity& radius,
-    		  const Vector<Int>& pixelaxes,
+    		  const Vector<int32_t>& pixelaxes,
     		  const String& absrel
       ) const;
 
       static ImageRegion* wellipsoid(
     		  const Vector<Quantity>& center,
     		  const Vector<Quantity>& radii,
-    		  const Vector<Int>& pixelaxes,
+    		  const Vector<int32_t>& pixelaxes,
     		  const CoordinateSystem& csys,
     		  const String& absrel
       );
@@ -167,7 +167,7 @@ namespace casacore {
       ImageRegion* wellipsoid(
     		  const Vector<Quantity>& center,
     		  const Vector<Quantity>& radii,
-    		  const Vector<Int>& pixelaxes,
+    		  const Vector<int32_t>& pixelaxes,
     		  const String& absrel
       ) const;
 
@@ -175,7 +175,7 @@ namespace casacore {
     		  const Vector<Quantity>& center,
     		  const Vector<Quantity>& innerRadii,
     		  const Vector<Quantity>& outerRadii,
-    		  const Vector<Int>& pixelaxes,
+    		  const Vector<int32_t>& pixelaxes,
     		  const CoordinateSystem& csys,
     		  const String& absrel
       );
@@ -184,7 +184,7 @@ namespace casacore {
     		  const Vector<Quantity>& center,
     		  const Vector<Quantity>& innerRadii,
     		  const Vector<Quantity>& outerRadii,
-    		  const Vector<Int>& pixelaxes,
+    		  const Vector<int32_t>& pixelaxes,
     		  const String& absrel
       ) const;
 
@@ -234,16 +234,16 @@ namespace casacore {
       //Reading of a file containing an ImageRegion in the AipsIO format dump
       static Record* readImageFile( String filename, String regionname );
       //Writing a file of the AipsIO dump of the record representation of the region
-      static Bool writeImageFile(const String& file, const String& regionname, const Record& regionRecord);
+      static bool writeImageFile(const String& file, const String& regionname, const Record& regionRecord);
 
       
       //save region into a table (image, blank table or any other such)
       String imageRegionToTable(const String& tabName, 
 				const ImageRegion& imreg,
-				const String& regName, Bool asmask=False); 
+				const String& regName, bool asmask=false); 
 
       String recordToTable(const String& tabName, const RecordInterface& rec, 
-			   const String& regName="", Bool asmask=False);
+			   const String& regName="", bool asmask=false);
       //recover region from table
       Record* tableToRecord(const String& tabName,   const String& regname);
 
@@ -251,7 +251,7 @@ namespace casacore {
       Vector<String> namesInTable(const String& tabName);
 
       //Remove a region from table...refuse is regionname is ""
-      Bool removeRegionInTable(const String& tabName, const String& regName);
+      bool removeRegionInTable(const String& tabName, const String& regName);
 
 
     protected:
@@ -261,7 +261,7 @@ namespace casacore {
       LogIO *itsLog;
       std::unique_ptr<CoordinateSystem> itsCSys;
       // Function to return the internal Table object to the RegionHandler.
-      static Table& getTable (void* ptr, Bool writable);
+      static Table& getTable (void* ptr, bool writable);
       //Convert a string to Quantity
       void toQuantity(Quantity& out, const String& in);
       Table tab_p;

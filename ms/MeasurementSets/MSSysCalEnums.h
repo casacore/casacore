@@ -63,83 +63,83 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Antenna Id.<BR>
-    // Int.
+    // int32_t.
     ANTENNA_ID,  
     // Feed id <BR>
-    // Int
+    // int32_t
     FEED_ID,
     // Interval for which this set of parameters is accurate <BR>
-    // Double - s
+    // double - s
     INTERVAL,
     // Spectral window id <BR>
-    // Int
+    // int32_t
     SPECTRAL_WINDOW_ID,
     // Midpoint of time for which this set of parameters is accurate<BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     // Enum specifying the number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME,
     // Phase difference between receptor 2 and receptor 1. Not used
     // for single polarization feeds. <BR>
-    // Float - rad 
+    // float - rad 
     PHASE_DIFF,
     // Flag for PHASE_DIFF <BR>
-    // Bool
+    // bool
     PHASE_DIFF_FLAG,
     // Antenna temperature <BR>
-    // Float(NUM_RECEPTORS) - K
+    // float(NUM_RECEPTORS) - K
     TANT,
     // Flag for TANT <BR>
-    // Bool
+    // bool
     TANT_FLAG,
     // Antenna temperature for each channel and receptor <BR>
-    // Float(NUM_RECEPTORS,NUM_CHAN) - K
+    // float(NUM_RECEPTORS,NUM_CHAN) - K
     TANT_SPECTRUM,
     // Ratio of antenna temperature and system temperature <BR>
-    // Float(NUM_RECEPTORS) - K
+    // float(NUM_RECEPTORS) - K
     TANT_TSYS,
     // Flag for TANT_TSYS <BR>
-    // Bool
+    // bool
     TANT_TSYS_FLAG,
     // Spectrum of Tant/Tsys ratio for each receptor <BR>
-    // Float(NUM_RECEPTORS,NUM_CHAN) 
+    // float(NUM_RECEPTORS,NUM_CHAN) 
     TANT_TSYS_SPECTRUM,
     // Calibration temperature for each receptor <BR>
-    // Float(NUM_RECEPTORS) - K
+    // float(NUM_RECEPTORS) - K
     TCAL,
     // Flag for TCAL <BR>
-    // Bool
+    // bool
     TCAL_FLAG,
     // Calibration temp. for each channel and receptor <BR>
-    // Float(NUM_RECEPTORS,NUM_CHAN) - K
+    // float(NUM_RECEPTORS,NUM_CHAN) - K
     TCAL_SPECTRUM,
     // Receiver temperature for each of the two receptors. This is
     // a scalar quantity <BR>
-    // Float(NUM_RECEPTORS) - K
+    // float(NUM_RECEPTORS) - K
     TRX,
     // Flag for TRX <BR>
-    // Bool
+    // bool
     TRX_FLAG,
     // Receiver temp. for each channel and receptor <BR>
-    // Float(NUM_RECEPTORS,NUM_CHAN) - K
+    // float(NUM_RECEPTORS,NUM_CHAN) - K
     TRX_SPECTRUM,
     // Sky temperature for each of the two receptors. <BR>
-    // Float(NUM_RECEPTORS) - K
+    // float(NUM_RECEPTORS) - K
     TSKY,
     // Flag for TSKY <BR>
-    // Bool
+    // bool
     TSKY_FLAG,
     // Sky temp. for each channel and receptor <BR>
-    // Float(NUM_RECEPTORS,NUM_CHAN) - K
+    // float(NUM_RECEPTORS,NUM_CHAN) - K
     TSKY_SPECTRUM,
     // System temp. for each of the two receptors. <BR>
-    // Float(NUM_RECEPTORS) - K
+    // float(NUM_RECEPTORS) - K
     TSYS,
     // Flag for TSYS <BR>
-    // Bool
+    // bool
     TSYS_FLAG,
     // System temp. for each channel and receptor <BR>
-    // Float(NUM_RECEPTORS,NUM_CHAN) - K
+    // float(NUM_RECEPTORS,NUM_CHAN) - K
     TSYS_SPECTRUM,
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=TSYS_SPECTRUM

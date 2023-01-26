@@ -103,69 +103,69 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~MSAntennaParse() {column1AsTEN_p=TableExprNode();column2AsTEN_p=TableExprNode();}
 
     // Add the given antennae selection.
-    const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds, 
+    const TableExprNode* selectAntennaIds(const Vector<int32_t>& antennaIds, 
 					  BaselineListType baselineType=CrossOnly,
-                                          Bool negate=False);
+                                          bool negate=false);
 
     // Add the given baseline selection.
-    const TableExprNode* selectAntennaIds(const Vector<Int>& antennaIds1,
-                                          const Vector<Int>& antennaIds2, 
+    const TableExprNode* selectAntennaIds(const Vector<int32_t>& antennaIds1,
+                                          const Vector<int32_t>& antennaIds2, 
 					  BaselineListType baselineType=CrossOnly,
-                                          Bool negate=False);
+                                          bool negate=false);
 
     // Select by name or station number.
     const TableExprNode* selectNameOrStation(const Vector<String>& antenna,
  					     BaselineListType baselineType=CrossOnly,
-                                             Bool negate=False);
+                                             bool negate=false);
     const TableExprNode* selectNameOrStation(const Vector<String>& antenna1,
                                              const Vector<String>& antenna2, 
  					     BaselineListType baselineType=CrossOnly,
-                                             Bool negate=False);
+                                             bool negate=false);
 
     const TableExprNode* selectNameOrStation(const String& antenna1,
                                              const String& antenna2, 
  					     BaselineListType baselineType=CrossOnly,
-                                             Bool negate=False);
+                                             bool negate=false);
     
     // Selection on baseline regex
     const TableExprNode* selectBLRegex(const std::vector<String>& lengths,
-                                       Bool negate=False);
+                                       bool negate=false);
 
     // Selection on baseline length
     const TableExprNode* selectLength(const std::vector<double>& lengths,
-                                      Bool negate=False);
+                                      bool negate=false);
 
     // Get a pointer to the table expression node object.
     TableExprNode node() const
       { return node_p; }
-    const Vector<Int>& selectedAnt1() const
+    const Vector<int32_t>& selectedAnt1() const
       { return ant1List; }
-    const Vector<Int>& selectedAnt2() const
+    const Vector<int32_t>& selectedAnt2() const
       { return ant2List; }
-    const Matrix<Int>& selectedBaselines() const
+    const Matrix<int32_t>& selectedBaselines() const
       { return baselineList; }
 
     // Get the factor to convert the given unit to m.
     static double getUnitFactor (const char* unit);
     
     void setComplexity(const ComplexityLevels& level=RESET) 
-    {if (level==RESET) complexity.reset(); else complexity.set(level,True);}
+    {if (level==RESET) complexity.reset(); else complexity.set(level,true);}
     std::bitset<HIGHESTLEVEL> getComplexity() {return complexity;}
     MSAntenna& subTable() {return msSubTable_p;}
   private:
-    const TableExprNode* makeBLNode (const Matrix<Bool>& match,
-                                     Bool negate);
+    const TableExprNode* makeBLNode (const Matrix<bool>& match,
+                                     bool negate);
     const TableExprNode* setTEN(TableExprNode& condition, 
                                 BaselineListType baselineType=CrossOnly,
-                                Bool negate=False);
+                                bool negate=false);
     Matrix<double> getBaselineLengths();
-    void makeBaselineList(const Vector<Int>&a1, const Vector<Int>&a2, Matrix<Int>&b, 
+    void makeBaselineList(const Vector<int32_t>&a1, const Vector<int32_t>&a2, Matrix<int32_t>&b, 
 			  BaselineListType baselineType=CrossOnly,
-			  Bool negate=False);
-    void makeAntennaList(Vector<Int>& antList,const Vector<Int>& thisList,
-                         Bool negate=False);
-    Bool addBaseline(const Matrix<Int>& baselist,
-                     const Int ant1, const Int ant2, 
+			  bool negate=false);
+    void makeAntennaList(Vector<int32_t>& antList,const Vector<int32_t>& thisList,
+                         bool negate=false);
+    bool addBaseline(const Matrix<int32_t>& baselist,
+                     const int32_t ant1, const int32_t ant2, 
  		     BaselineListType baselineType=CrossOnly);
 
     //# Data members.
@@ -177,8 +177,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   private:
     TableExprNode node_p;
     const String colName1, colName2;
-    Vector<Int> ant1List, ant2List;
-    Matrix<Int> baselineList;
+    Vector<int32_t> ant1List, ant2List;
+    Matrix<int32_t> baselineList;
     MSAntenna msSubTable_p;
     static TableExprNode column1AsTEN_p,column2AsTEN_p;
   };

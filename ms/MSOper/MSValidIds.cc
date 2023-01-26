@@ -36,15 +36,15 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSValidIds::MSValidIds()
-    : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
+    : romsCols_p(0), hasDoppler_p(false), hasSource_p(false)
 { ;}
 
 MSValidIds::MSValidIds(const MeasurementSet &ms)
-    : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
+    : romsCols_p(0), hasDoppler_p(false), hasSource_p(false)
 { attach(ms);}
 
 MSValidIds::MSValidIds(const MSValidIds &other)
-    : romsCols_p(0), hasDoppler_p(False), hasSource_p(False)
+    : romsCols_p(0), hasDoppler_p(false), hasSource_p(false)
 { *this = other;}
 
 MSValidIds::~MSValidIds()
@@ -72,90 +72,90 @@ void MSValidIds::attach(const MeasurementSet &ms)
     hasSource_p = ms_p.keywordSet().isDefined("SOURCE");
 }
 
-Int MSValidIds::antenna1(rownr_t rownr) const
+int32_t MSValidIds::antenna1(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->antenna1()(rownr), ms_p.antenna());
     }
     return result;
 }
 
-Int MSValidIds::antenna2(rownr_t rownr) const
+int32_t MSValidIds::antenna2(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->antenna2()(rownr), ms_p.antenna());
     }
     return result;
 }
 
-Int MSValidIds::dataDescId(rownr_t rownr) const
+int32_t MSValidIds::dataDescId(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->dataDescId()(rownr), ms_p.dataDescription());
     }
     return result;
 }
 
-Int MSValidIds::fieldId(rownr_t rownr) const
+int32_t MSValidIds::fieldId(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->fieldId()(rownr), ms_p.field());
     }
     return result;
 }
 
-Int MSValidIds::observationId(rownr_t rownr) const
+int32_t MSValidIds::observationId(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->observationId()(rownr), ms_p.observation());
     }
     return result;
 }
 
-Int MSValidIds::processorId(rownr_t rownr) const
+int32_t MSValidIds::processorId(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->processorId()(rownr), ms_p.processor());
     }
     return result;
 }
 
-Int MSValidIds::stateId(rownr_t rownr) const
+int32_t MSValidIds::stateId(rownr_t rownr) const
 {
-    Int result = -1;
+    int32_t result = -1;
     if (checkRow(rownr) && romsCols_p) {
 	result = checkResult(romsCols_p->stateId()(rownr), ms_p.state());
     }
     return result;
 }
 
-Int MSValidIds::polarizationId(rownr_t rownr) const
+int32_t MSValidIds::polarizationId(rownr_t rownr) const
 {
-    Int result = dataDescId(rownr);
+    int32_t result = dataDescId(rownr);
     if (result >= 0) {
 	result = checkResult(romsCols_p->dataDescription().polarizationId()(result), ms_p.polarization());
     }
     return result;
 }
 
-Int MSValidIds::spectralWindowId(rownr_t rownr) const
+int32_t MSValidIds::spectralWindowId(rownr_t rownr) const
 {
-    Int result = dataDescId(rownr);
+    int32_t result = dataDescId(rownr);
     if (result >= 0) {
 	result = checkResult(romsCols_p->dataDescription().spectralWindowId()(result), ms_p.spectralWindow());
     }
     return result;
 }
 
-Int MSValidIds::dopplerId(rownr_t rownr) const
+int32_t MSValidIds::dopplerId(rownr_t rownr) const
 {
-    Int result = hasDoppler_p ? spectralWindowId(rownr) : -1;
+    int32_t result = hasDoppler_p ? spectralWindowId(rownr) : -1;
     if (result >= 0) {
 	result = romsCols_p->spectralWindow().dopplerId().isNull() ? -1 : 
 	    romsCols_p->spectralWindow().dopplerId()(result);
@@ -163,9 +163,9 @@ Int MSValidIds::dopplerId(rownr_t rownr) const
     return result;
 }
 
-Int MSValidIds::sourceId(rownr_t rownr) const
+int32_t MSValidIds::sourceId(rownr_t rownr) const
 {
-    Int result = hasSource_p ? fieldId(rownr) : -1;
+    int32_t result = hasSource_p ? fieldId(rownr) : -1;
     if (result >= 0) {
 	result = romsCols_p->field().sourceId()(result);
     }
@@ -177,7 +177,7 @@ void MSValidIds::clear()
     delete romsCols_p;
     romsCols_p = 0;
 
-    hasDoppler_p = hasSource_p = False;
+    hasDoppler_p = hasSource_p = false;
 }
 
 } //# NAMESPACE CASACORE - END

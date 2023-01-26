@@ -60,8 +60,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that represent scalars
-// constants.   They can be of type Float,Double,Complex,DComplex
-// and Bool.  
+// constants.   They can be of type float,double,Complex,DComplex
+// and bool.  
 //
 // A description of the implementation details of the LEL classes can
 // be found in
@@ -75,11 +75,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Float> y(shape);
-// ArrayLattice<Float> z(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<float> y(shape);
+// ArrayLattice<float> z(shape); 
 // y.copyData(x+2.0);                 // y = x + 2.0
-// z.copyData(True);                  // z = True
+// z.copyData(true);                  // z = true
 // </srcblock>
 // </example>
 //
@@ -116,7 +116,7 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
@@ -151,7 +151,7 @@ private:
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply numerical unary
 // operators to Lattice expressions.  They operate on numerical
-// Lattice (Float,Double,Complex,DComplex) expressions and return the 
+// Lattice (float,double,Complex,DComplex) expressions and return the 
 // same numerical type. The available C++ operators  
 // are  <src>+,-</src> with  equivalents in the enum 
 // of PLUS and MINUS.
@@ -168,8 +168,8 @@ private:
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Float> y(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<float> y(shape); 
 // y.copyData(-x);                 // y = -x
 // </srcblock>
 // </example>
@@ -201,16 +201,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -245,8 +245,8 @@ private:
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply logical unary
-// operators to Lattice expressions.  They operate on Bool
-// Lattice expressions only and return a Bool.
+// operators to Lattice expressions.  They operate on bool
+// Lattice expressions only and return a bool.
 // The available C++ operator is <src>!</src> with  the equivalent
 // in the enum  of NOT.
 //
@@ -262,8 +262,8 @@ private:
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(True);
-// ArrayLattice<Bool> y(shape); 
+// ArrayLattice<bool> x(shape); x.set(true);
+// ArrayLattice<bool> y(shape); 
 // y.copyData(!x);                 // y = !x
 // </srcblock>
 // </example>
@@ -276,42 +276,42 @@ private:
 // </todo>
 
 
-class LELUnaryBool : public LELInterface<Bool>
+class LELUnaryBool : public LELInterface<bool>
 {
 public: 
    
 // Constructor takes operation and expression
 // to be operated upon
    LELUnaryBool(const LELUnaryEnums::Operation op, 
-		const CountedPtr<LELInterface<Bool> >& pExpr);
+		const CountedPtr<LELInterface<bool> >& pExpr);
 
 // Destructor does nothing
   ~LELUnaryBool();
 
 // Recursively evaluate the expression.
-   virtual void eval (LELArray<Bool>& result,
+   virtual void eval (LELArray<bool>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression.
-   virtual LELScalar<Bool> getScalar() const;
+   virtual LELScalar<bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
 private:
    LELUnaryEnums::Operation op_p;
-   CountedPtr<LELInterface<Bool> > pExpr_p;
+   CountedPtr<LELInterface<bool> > pExpr_p;
 };
 
 

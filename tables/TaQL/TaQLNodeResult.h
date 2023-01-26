@@ -114,7 +114,7 @@ public:
   {}
 
   // Does the envelope hold a letter?
-  Bool isValid() const
+  bool isValid() const
     { return itsRep.get(); }
 
   // Get the actual underlying object.

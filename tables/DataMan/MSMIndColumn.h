@@ -93,18 +93,18 @@ public:
   void setShape (rownr_t rownr, const IPosition& shape);
 
   // Is the shape defined (i.e. is there an array) in this row?
-  Bool isShapeDefined (rownr_t rownr);
+  bool isShapeDefined (rownr_t rownr);
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  uInt ndim (rownr_t rownr);
+  uint32_t ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
   IPosition shape (rownr_t rownr);
 
   // This storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Get an array value in the given row.
   // The buffer given by <src>arr</src> has to have the correct length
@@ -149,9 +149,9 @@ private:
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
   // The size of an array element.
-  uInt elemSize_p;
+  uint32_t elemSize_p;
   // The size at the start of the data (for the IPosition).
-  uInt startSize_p;
+  uint32_t startSize_p;
 
 
   // Delete the array in the given row.

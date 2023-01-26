@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Operators
 template<class T>
 T SPolynomial<T>::eval(typename Function<T>::FunctionArg x) const {
-  Int j = nparameters();
+  int32_t j = nparameters();
   T accum = param_p[--j];
   while (--j >= 3) {
     accum *= (x[0]-param_p[1])/param_p[2];

@@ -40,17 +40,17 @@ Measure::~Measure() {}
 //# Operators
 
 //# Member functions
-uInt Measure::giveMe(const String &in, Int N_name, 
+uint32_t Measure::giveMe(const String &in, int32_t N_name, 
 		     const String tname[]) {
   return MUString::minimaxNC(in, N_name, tname);
 }
 
-const String* Measure::allTypes(Int &nall, Int &nextra,
-                                const uInt *&typ) const {
-  static const Int N_name  = 0;
-  static const Int N_extra = 0;
+const String* Measure::allTypes(int32_t &nall, int32_t &nextra,
+                                const uint32_t *&typ) const {
+  static const int32_t N_name  = 0;
+  static const int32_t N_extra = 0;
   static const String *tname = 0;
-  static const uInt *oname = 0;
+  static const uint32_t *oname = 0;
 
   nall   = N_name;
   nextra = N_extra;
@@ -58,8 +58,8 @@ const String* Measure::allTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-Bool Measure::isModel() const {
-  return False;
+bool Measure::isModel() const {
+  return false;
 }
 
 //# Global functions

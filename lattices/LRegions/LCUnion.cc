@@ -43,7 +43,7 @@ LCUnion::LCUnion (const LCRegion& region1,
     defineBox();
 }
 
-LCUnion::LCUnion (Bool takeOver, const LCRegion* region1,
+LCUnion::LCUnion (bool takeOver, const LCRegion* region1,
 		  const LCRegion* region2,
 		  const LCRegion* region3,
 		  const LCRegion* region4,
@@ -59,7 +59,7 @@ LCUnion::LCUnion (Bool takeOver, const LCRegion* region1,
     defineBox();
 }
 
-LCUnion::LCUnion (Bool takeOver,
+LCUnion::LCUnion (bool takeOver,
 		  const PtrBlock<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
@@ -81,7 +81,7 @@ LCUnion& LCUnion::operator= (const LCUnion& other)
     return *this;
 }
 
-Bool LCUnion::operator== (const LCRegion& other) const
+bool LCUnion::operator== (const LCRegion& other) const
 {
    return LCRegionMulti::operator== (other);
 }
@@ -91,12 +91,12 @@ LCRegion* LCUnion::cloneRegion() const
     return new LCUnion (*this);
 }
 
-LCRegion* LCUnion::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCUnion::doTranslate (const Vector<float>& translateVector,
 				const IPosition& newLatticeShape) const
 {
     PtrBlock<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
-    return new LCUnion (True, regions);
+    return new LCUnion (true, regions);
 }
 
 String LCUnion::className()
@@ -122,22 +122,22 @@ LCUnion* LCUnion::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new LCUnion (True, regions);
+    return new LCUnion (true, regions);
 }
 
 void LCUnion::defineBox()
 {
-    uInt i;
+    uint32_t i;
     // Get the union of blc and trc.
     const IPosition& shape = latticeShape();
-    uInt nrdim = shape.nelements();
+    uint32_t nrdim = shape.nelements();
     IPosition blc (regions()[0]->boundingBox().start());
     IPosition trc (regions()[0]->boundingBox().end());
-    uInt nr = regions().nelements();
+    uint32_t nr = regions().nelements();
     for (i=1; i<nr; i++) {
 	const IPosition& regblc = regions()[i]->boundingBox().start();
 	const IPosition& regtrc = regions()[i]->boundingBox().end();
-	for (uInt j=0; j<nrdim; j++) {
+	for (uint32_t j=0; j<nrdim; j++) {
 	    if (regblc(j) < blc(j)) {
 		blc(j) = regblc(j);
 	    }
@@ -151,36 +151,36 @@ void LCUnion::defineBox()
 }
 
 
-void LCUnion::multiGetSlice (Array<Bool>& buffer,
+void LCUnion::multiGetSlice (Array<bool>& buffer,
 			     const Slicer& section)
 {
     buffer.resize (section.length());
-    uInt nrdim = buffer.ndim();
-    buffer = False;
+    uint32_t nrdim = buffer.ndim();
+    buffer = false;
     IPosition stbuf(nrdim);
     IPosition endbuf(nrdim);
     IPosition streg(nrdim);
     IPosition endreg(nrdim);
     const IPosition& inc = section.stride();
-    uInt nr = regions().nelements();
-    for (uInt i=0; i<nr; i++) {
+    uint32_t nr = regions().nelements();
+    for (uint32_t i=0; i<nr; i++) {
         if (findAreas (stbuf, endbuf, streg, endreg, section, i)) {
-	    Array<Bool> tmpbuf;
+	    Array<bool> tmpbuf;
 	    LCRegion* reg = (LCRegion*)(regions()[i]);
 	    reg->doGetSlice (tmpbuf, Slicer(streg, endreg, inc,
 					    Slicer::endIsLast));
-	    Array<Bool> bufreg = buffer(stbuf,endbuf);
+	    Array<bool> bufreg = buffer(stbuf,endbuf);
 	    DebugAssert (bufreg.shape() == tmpbuf.shape(), AipsError);
-	    // Make pixel in buffer True when tmpbuf has a True pixel.
-	    Bool deleteBuf, deleteTmp;
-	    Bool* buf = bufreg.getStorage (deleteBuf);
-	    Bool* bufptr = buf;
-	    Bool* bufend = buf + bufreg.nelements();
-	    const Bool* tmp = tmpbuf.getStorage (deleteTmp);
-	    const Bool* tmpptr = tmp;
+	    // Make pixel in buffer true when tmpbuf has a true pixel.
+	    bool deleteBuf, deleteTmp;
+	    bool* buf = bufreg.getStorage (deleteBuf);
+	    bool* bufptr = buf;
+	    bool* bufend = buf + bufreg.nelements();
+	    const bool* tmp = tmpbuf.getStorage (deleteTmp);
+	    const bool* tmpptr = tmp;
 	    while (bufptr < bufend) {
 	      if (*tmpptr++) {
-	        *bufptr = True;
+	        *bufptr = true;
 	      }
 	      bufptr++;
 	    }

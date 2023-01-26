@@ -40,13 +40,13 @@ void check (int bufSize, const char* buf)
   fio.seek (0);
   std::vector<char> buf1(bufSize);
   for (int j=0; j<2000/bufSize; j++) {
-    AlwaysAssertExit (fio.read (bufSize, buf1.data(), True) == bufSize);
+    AlwaysAssertExit (fio.read (bufSize, buf1.data(), true) == bufSize);
     for (int i=0; i<bufSize; i++) {
       AlwaysAssertExit (buf1[i] == *buf++);
     }
   }
   int rem = 2000%bufSize;
-  AlwaysAssertExit (fio.read(bufSize, buf1.data(), False) == rem);
+  AlwaysAssertExit (fio.read(bufSize, buf1.data(), false) == rem);
   for (int i=0; i<rem; i++) {
     AlwaysAssertExit (buf1[i] == *buf++);
   }

@@ -77,10 +77,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Suppose for some reason we wanted the sum of <src>x^2</src> plus a gaussian.
 // We could form it as follows:
 // <srcblock>
-//    Polynomial<Float> x2(2);
+//    Polynomial<float> x2(2);
 //    x[2] = 1.0; 					 // x^2
-//    Gaussian1D<Float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
-//    CompoundParam<Float> sum;                        // sum == 0.0
+//    Gaussian1D<float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
+//    CompoundParam<float> sum;                        // sum == 0.0
 //    sum.addFunction(x2);                               // sum == x^2
 //    sum.addFunction(gauss);                            // sum == x^2+e^{-x^2}
 //    sum(2.0);                                          // == 4 + e^-4
@@ -121,14 +121,14 @@ public:
   // <group>
   CompoundFunction(const CompoundFunction<T> &other) :
     CompoundParam<T>(other) {}
-  CompoundFunction(const CompoundFunction<T> &other, Bool) :
-    CompoundParam<T>(other, True) {}
+  CompoundFunction(const CompoundFunction<T> &other, bool) :
+    CompoundParam<T>(other, true) {}
   template <class W>
     CompoundFunction(const CompoundFunction<W> &other) :
     CompoundParam<T>(other) {}
   template <class W>
-    CompoundFunction(const CompoundFunction<W> &other, Bool) :
-    CompoundParam<T>(other, True) {}
+    CompoundFunction(const CompoundFunction<W> &other, bool) :
+    CompoundParam<T>(other, true) {}
   // </group>
   // Make this object a (deep) copy of other.
   CompoundFunction<T> &operator=(const CompoundFunction<T> &other) {
@@ -158,7 +158,7 @@ public:
     return new CompoundFunction<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
     return new CompoundFunction<typename FunctionTraits<T>::BaseType>
-      (*this, True); }
+      (*this, true); }
   // </group>
   
 private:
@@ -230,7 +230,7 @@ public CompoundParam<AutoDiff<T> >
 // Add a function to the sum. All functions must have the same 
   // <src>ndim()</src> as the first one. Returns the (zero relative) number 
   // of the function just added.
-  uInt addFunction(const Function<AutoDiff<T> > &newFunction);
+  uint32_t addFunction(const Function<AutoDiff<T> > &newFunction);
   // Consolidate the parameter settings. This could be necessary if
   // parameters have been set, and a copy constructor called. This is
   // necessary before and after the setting of <em>local</em> parameters; i.e.
@@ -249,7 +249,7 @@ public CompoundParam<AutoDiff<T> >
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new CompoundFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this, True); }
+      (*this, true); }
   // </group>
 
 private:

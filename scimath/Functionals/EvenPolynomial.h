@@ -58,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//  EvenPolynomial<Float> pf(3);  // Second order polynomial - coeffs 0 by default
+//  EvenPolynomial<float> pf(3);  // Second order polynomial - coeffs 0 by default
 //  pf.setCoefficient(0, 1.0);
 //  pf[1] = 2.0;		// 2x^2 + 1x^0
 //  pf(2); // == 8
@@ -89,7 +89,7 @@ public:
   EvenPolynomial() : EvenPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit EvenPolynomial(uInt order) : EvenPolynomialParam<T>(order) {}
+  explicit EvenPolynomial(uint32_t order) : EvenPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   EvenPolynomial(const EvenPolynomial<T> &other) :
@@ -144,7 +144,7 @@ public:
   // Constructs one dimensional EvenPolynomials.
   // <group>
   EvenPolynomial_PS() : EvenPolynomialParam<AutoDiff<T> >() {}
-  explicit EvenPolynomial_PS(uInt order) :
+  explicit EvenPolynomial_PS(uint32_t order) :
     EvenPolynomialParam<AutoDiff<T> >(order) {}
   // </group>
 

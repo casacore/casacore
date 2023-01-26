@@ -111,13 +111,13 @@ class MRBase;
 //    <li> (Quantity): will use the conversion chain deduced from the
 //	MEpoch model in the definition of MConvertBase, and will convert the
 //	Quantity
-//    <li> (Quantum<Vector<Double> >) as previous
-//    <li> (Double): will use the units (if present) as specified in the
+//    <li> (Quantum<Vector<double> >) as previous
+//    <li> (double): will use the units (if present) as specified in the
 //		MConvertBase object to construct the internal value
 //		 to be converted
-//    <li> (Vector<Double> >): as previous
+//    <li> (Vector<double> >): as previous
 // </ul>
-// Float versions will be produced if necessary.<br>
+// float versions will be produced if necessary.<br>
 // The conversion analyser expects that all Measure classes have a set
 // of routines to do the actual analysing and conversion.<br>
 // If the standard conversion is not sufficient, additional methods can be
@@ -161,14 +161,14 @@ public:
   virtual void set(const MeasValue &val) = 0;
   // Set a new model unit only
   virtual void set(const Unit &inunit) = 0;
-  // Add a method (Note: uInt should be an enum from the appropiate Measure)
-  virtual void addMethod(uInt method) = 0;
+  // Add a method (Note: uint32_t should be an enum from the appropiate Measure)
+  virtual void addMethod(uint32_t method) = 0;
   // Add a FrameTypes used (as specified in MeasFrame::FrameTypes)
-  virtual void addFrameType(uInt tp) = 0;
+  virtual void addFrameType(uint32_t tp) = 0;
   // Get number of methods
-  virtual Int nMethod() const = 0;
+  virtual int32_t nMethod() const = 0;
   // Get method
-  virtual uInt getMethod(uInt which) const = 0;
+  virtual uint32_t getMethod(uint32_t which) const = 0;
   // Print a conversion engine
   virtual void print(ostream &os) const = 0;
   

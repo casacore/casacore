@@ -47,7 +47,7 @@
 #include <casacore/casa/namespace.h>
 int main (int argc, const char* argv[])
 {
-  Bool foundError = False;
+  bool foundError = false;
 
   try {
     Input inp(1);
@@ -56,43 +56,43 @@ int main (int argc, const char* argv[])
     inp.create("ny", "10", "Number of pixels along the y-axis", "int");
     inp.readArguments(argc, argv);
     
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
     IPosition shape(2, nx, ny);
     Slicer section(IPosition(2,0), shape);
-    Array<Float> arr(shape);
+    Array<float> arr(shape);
     indgen (arr);
-    Array<Float> arrm1, arrm2;
+    Array<float> arrm1, arrm2;
     arrm1 = arr;
     arrm2 = arr;
-    Array<Bool> m1;
-    Array<Bool> m2;
+    Array<bool> m1;
+    Array<bool> m2;
     {    
-      PagedImage<Float> image (shape,
+      PagedImage<float> image (shape,
 			       CoordinateUtil::defaultCoords2D(),
 			       "tImageExpr2Gram_tmp.img");
       image.put (arr);
       
       // Define 2 masks for the image and make the first one the default.
-      ImageRegion maskreg1 = image.makeMask ("mask1", True, True);
-      ImageRegion maskreg2 = image.makeMask ("mask2", True, False);
+      ImageRegion maskreg1 = image.makeMask ("mask1", true, true);
+      ImageRegion maskreg2 = image.makeMask ("mask2", true, false);
       LCRegion& mask1 = maskreg1.asMask();
       LCRegion& mask2 = maskreg2.asMask();
-      Matrix<Bool> mask(shape);
-      mask = True;
-      mask(0,0) = False;
+      Matrix<bool> mask(shape);
+      mask = true;
+      mask(0,0) = false;
       arrm1(IPosition(2,0,0)) = -1;
       mask1.put (mask);
       m1 = mask;
-      mask = True;
-      mask(0,1) = False;
-      mask(1,1) = False;
+      mask = true;
+      mask(0,1) = false;
+      mask(1,1) = false;
       arrm2(IPosition(2,0,1)) = -1;
       arrm2(IPosition(2,1,1)) = -1;
       mask2.put (mask);
       m2 = mask;
     }
-    PagedImage<Float> image ("tImageExpr2Gram_tmp.img");
+    PagedImage<float> image ("tImageExpr2Gram_tmp.img");
     Block<LatticeExprNode> temps(1);
     temps[0] = LatticeExprNode(image);
 
@@ -102,28 +102,28 @@ int main (int argc, const char* argv[])
     {
       cout << endl;
       cout << "Expr:  $1" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 			       ("$1", temps, tempRegs));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr)) {
 	cout << "Result should be " << arr << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
       cout << endl;
       cout << "Expr:  $1[$region || $region && $region]" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 			     ("$1[$R1 || $r1 && $R1]",
 			      temps, tempRegs));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr)) {
 	cout << "Result should be " << arr << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -131,11 +131,11 @@ int main (int argc, const char* argv[])
       cout << "Expr:  nelements($1)" << endl;
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements($1)", temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-1) {
 	cout << "Result should be " << shape.product()-1 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -144,11 +144,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("ndim('tImageExpr2Gram_tmp.img::mask1')",
 			     temps, tempRegs));
-      Float result = expr.getFloat();
+      float result = expr.getFloat();
       if (result != shape.nelements()) {
 	cout << "Result should be " << shape.nelements() << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -157,11 +157,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("ndim($R1)",
 			     temps, tempRegs));
-      Float result = expr.getFloat();
+      float result = expr.getFloat();
       if (result != shape.nelements()) {
 	cout << "Result should be " << shape.nelements() << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -170,11 +170,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("any('tImageExpr2Gram_tmp.img::mask2')",
 			     temps, tempRegs));
-      Bool result = expr.getBool();
+      bool result = expr.getBool();
       if (!result) {
-	cout << "Result should be " << True << endl;
+	cout << "Result should be " << true << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -183,11 +183,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("all('tImageExpr2Gram_tmp.img::mask2')",
 			     temps, tempRegs));
-      Bool result = expr.getBool();
+      bool result = expr.getBool();
       if (result) {
-	cout << "Result should be " << False << endl;
+	cout << "Result should be " << false << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -196,11 +196,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("ntrue('tImageExpr2Gram_tmp.img::mask1')",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-1) {
 	cout << "Result should be " << shape.product()-1 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -209,11 +209,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nfalse('tImageExpr2Gram_tmp.img::mask1')",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != 1) {
 	cout << "Result should be " << 1 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -222,11 +222,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements('tImageExpr2Gram_tmp.img::mask1')",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()) {
 	cout << "Result should be " << shape.product() << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -235,12 +235,12 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 	  ("'tImageExpr2Gram_tmp.img::mask2' == tImageExpr2Gram_tmp.img::mask2",
 	   temps, tempRegs));
-      LELArray<Bool> result(shape);
+      LELArray<bool> result(shape);
       expr.eval (result, section);
-      if (! allEQ (result.value(), True)) {
+      if (! allEQ (result.value(), true)) {
 	cout << "Result should be " << m2 << endl;
 	cout << "Result is " << result.value() << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -255,12 +255,12 @@ int main (int argc, const char* argv[])
 			     "(tImageExpr2Gram_tmp.img::mask1=="
 			     "tImageExpr2Gram_tmp.img::mask2)",
 			     temps, tempRegs));
-      LELArray<Bool> result(shape);
+      LELArray<bool> result(shape);
       expr.eval (result, section);
       if (! allEQ (result.value(), m1&&m2)) {
-	cout << "Result should be " << False << endl;
+	cout << "Result should be " << false << endl;
 	cout << "Result is " << result.value() << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -268,16 +268,16 @@ int main (int argc, const char* argv[])
       cout << "Expr:  iif ('tImageExpr2Gram_tmp.img::mask2', "
  	      "tImageExpr2Gram_tmp.img,-1)"
 	   << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 			       ("iif ('tImageExpr2Gram_tmp.img::mask2', "
 				"tImageExpr2Gram_tmp.img,-1)",
 				temps, tempRegs));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arrm2)) {
 	cout << "Result should be " << arr << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -286,11 +286,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements('tImageExpr2Gram_tmp.img')",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-1) {
 	cout << "Result should be " << shape.product()-1 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -299,11 +299,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements('tImageExpr2Gram_tmp.img:nomask')",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()) {
 	cout << "Result should be " << shape.product() << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -312,11 +312,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements(tImageExpr2Gram_tmp.img:mask2)",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-2) {
 	cout << "Result should be " << shape.product()-2 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -325,11 +325,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements(tImageExpr2Gram_tmp.img:mask2)",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-2) {
 	cout << "Result should be " << shape.product()-2 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -338,11 +338,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements(tImageExpr2Gram_tmp.img[mask2])",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-3) {
 	cout << "Result should be " << shape.product()-3 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -351,11 +351,11 @@ int main (int argc, const char* argv[])
       LatticeExprNode expr (ImageExprParse::command
 			    ("nelements(tImageExpr2Gram_tmp.img[::mask2])",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-3) {
 	cout << "Result should be " << shape.product()-3 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
@@ -366,21 +366,21 @@ int main (int argc, const char* argv[])
 			    ("nelements(tImageExpr2Gram_tmp.img"
 			     "[tImageExpr2Gram_tmp.img::mask2])",
 			     temps, tempRegs));
-      Double result = expr.getDouble();
+      double result = expr.getDouble();
       if (result != shape.product()-3) {
 	cout << "Result should be " << shape.product()-3 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
 
-    for (uInt i=0; i<tempRegs.nelements(); i++) {
+    for (uint32_t i=0; i<tempRegs.nelements(); i++) {
       delete tempRegs[i];
     }
 
   } catch (std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
-    foundError = True;
+    foundError = true;
   } 
 
   if (foundError) {

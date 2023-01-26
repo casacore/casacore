@@ -46,17 +46,17 @@ template <class T> class MSSelUtil
 public:
   // Compute the absolute difference of the data, subtracting
   // either the previous value (window==2) or the average over
-  // the window (window>2). If doMedian==True is specified, the
+  // the window (window>2). If doMedian==true is specified, the
   // median difference over the window is returned for window>2.
   // Takes flagging into account.
   // diffAxis==2,3: row or time, diffAxis==1: channel
   // Handles 3d and 4d data arrays.
-  static Array<Float> diffData(const Array<T>& data,
-			       const Array<Bool>& flag,
-			       const Array<Bool>& flagRow,
-			       Int diffAxis,
-			       Int window,
-			       Bool doMedian=False);
+  static Array<float> diffData(const Array<T>& data,
+			       const Array<bool>& flag,
+			       const Array<bool>& flagRow,
+			       int32_t diffAxis,
+			       int32_t window,
+			       bool doMedian=false);
 };
 
 } //# NAMESPACE CASACORE - END

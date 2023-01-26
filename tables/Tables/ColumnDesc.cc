@@ -48,12 +48,12 @@ std::mutex ColumnDesc::theirMutex;
   
 ColumnDesc::ColumnDesc (const BaseColumnDesc& cold)
 : colPtr_p   (cold.clone()),
-  allocated_p(True)
+  allocated_p(true)
 {}
 
 ColumnDesc::ColumnDesc (const ColumnDesc& that)
 : colPtr_p   (that.colPtr_p),
-  allocated_p(True)
+  allocated_p(true)
 {
   if (colPtr_p != 0) {
       colPtr_p = colPtr_p->clone();
@@ -62,7 +62,7 @@ ColumnDesc::ColumnDesc (const ColumnDesc& that)
 
 ColumnDesc::ColumnDesc (BaseColumnDesc* bcdp)
 : colPtr_p   (bcdp),
-  allocated_p(False)
+  allocated_p(false)
 {}
 
 ColumnDesc::~ColumnDesc()
@@ -83,44 +83,44 @@ ColumnDesc& ColumnDesc::operator= (const ColumnDesc& that)
 	if (colPtr_p != 0) {
 	    colPtr_p = colPtr_p->clone();
 	}
-	allocated_p = True;
+	allocated_p = true;
     }
     return *this;
 }
 
 
-Bool ColumnDesc::operator== (const ColumnDesc& that) const
+bool ColumnDesc::operator== (const ColumnDesc& that) const
 {
     if (dataType() != that.dataType())
-	return False;
+	return false;
     if (options() != that.options())
-	return False;
+	return false;
     if (ndim() != that.ndim())
-	return False;
+	return false;
     if (isScalar() && that.isScalar())
-	return True;
+	return true;
     if (isArray() && that.isArray())
-	return True;
+	return true;
     if (isTable() && that.isTable())
-	return True;
-    return False;
+	return true;
+    return false;
 }
 
-Bool ColumnDesc::operator!= (const ColumnDesc& that) const
+bool ColumnDesc::operator!= (const ColumnDesc& that) const
 {
     return !(*this == that);
 }
 
 
-Bool ColumnDesc::isFixedShape() const
+bool ColumnDesc::isFixedShape() const
 {
     if (isScalar()) {
-	return True;
+	return true;
     }
     if ((options() & ColumnDesc::FixedShape)  ==  ColumnDesc::FixedShape) {
-	return True;
+	return true;
     }
-    return False;
+    return false;
 }
 
 
@@ -158,7 +158,7 @@ DataType ColumnDesc::trueDataType() const
     case TpString:
 	return TpArrayString;
     default:
-	AlwaysAssert (False, AipsError);
+	AlwaysAssert (false, AipsError);
     }
     return TpOther;
 }
@@ -186,7 +186,7 @@ AipsIO& operator>> (AipsIO& ios, ColumnDesc& cd)
 //# the version is put "manually".
 void ColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
     //# First write the exact column type, then its data.
     ios << colPtr_p->className();
     colPtr_p->putFile (ios, parentAttr);
@@ -195,7 +195,7 @@ void ColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 //# Get from AipsIO.
 void ColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
     String tp;
     ios >> tp;
@@ -205,7 +205,7 @@ void ColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
     // If tp is not in the map, (tp, unknownColumnDesc) is added and called (throws).
     ColumnDesc::ColumnDescCtor* cdFunc = getCtor(tp);
     colPtr_p = (*cdFunc)(tp);
-    allocated_p = True;
+    allocated_p = true;
     colPtr_p->getFile (ios, parentAttr);
 }
 
@@ -265,19 +265,19 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap()
 {
   std::map<String, ColumnDesc::ColumnDescCtor*> regMap;
 
-  ScalarColumnDesc<Bool>     scdb("x");
+  ScalarColumnDesc<bool>     scdb("x");
   regMap.insert (std::make_pair(scdb.className(), &scdb.makeDesc));
-  ScalarColumnDesc<uChar>    scduc("x");
+  ScalarColumnDesc<unsigned char>    scduc("x");
   regMap.insert (std::make_pair(scduc.className(), &scduc.makeDesc));
-  ScalarColumnDesc<Short>    scds("x");
+  ScalarColumnDesc<int16_t>    scds("x");
   regMap.insert (std::make_pair(scds.className(), &scds.makeDesc));
-  ScalarColumnDesc<uShort>   scdus("x");
+  ScalarColumnDesc<uint16_t>   scdus("x");
   regMap.insert (std::make_pair(scdus.className(), &scdus.makeDesc));
-  ScalarColumnDesc<Int>      scdi("x");
+  ScalarColumnDesc<int32_t>      scdi("x");
   regMap.insert (std::make_pair(scdi.className(), &scdi.makeDesc));
-  ScalarColumnDesc<uInt>     scdui("x");
+  ScalarColumnDesc<uint32_t>     scdui("x");
   regMap.insert (std::make_pair(scdui.className(), &scdui.makeDesc));
-  ScalarColumnDesc<Int64>    scdi64("x");
+  ScalarColumnDesc<int64_t>    scdi64("x");
   regMap.insert (std::make_pair(scdi64.className(), &scdi64.makeDesc));
   ScalarColumnDesc<float>    scdf("x");
   regMap.insert (std::make_pair(scdf.className(), &scdf.makeDesc));
@@ -293,19 +293,19 @@ std::map<String, ColumnDesc::ColumnDescCtor*> ColumnDesc::initRegisterMap()
   ScalarRecordColumnDesc     srcd ("x");
   regMap.insert (std::make_pair(srcd.className(), &srcd.makeDesc));
 
-  ArrayColumnDesc<Bool>     acdb("x");
+  ArrayColumnDesc<bool>     acdb("x");
   regMap.insert (std::make_pair(acdb.className(), &acdb.makeDesc));
-  ArrayColumnDesc<uChar>    acduc("x");
+  ArrayColumnDesc<unsigned char>    acduc("x");
   regMap.insert (std::make_pair(acduc.className(), &acduc.makeDesc));
-  ArrayColumnDesc<Short>    acds("x");
+  ArrayColumnDesc<int16_t>    acds("x");
   regMap.insert (std::make_pair(acds.className(), &acds.makeDesc));
-  ArrayColumnDesc<uShort>   acdus("x");
+  ArrayColumnDesc<uint16_t>   acdus("x");
   regMap.insert (std::make_pair(acdus.className(), &acdus.makeDesc));
-  ArrayColumnDesc<Int>      acdi("x");
+  ArrayColumnDesc<int32_t>      acdi("x");
   regMap.insert (std::make_pair(acdi.className(), &acdi.makeDesc));
-  ArrayColumnDesc<uInt>     acdui("x");
+  ArrayColumnDesc<uint32_t>     acdui("x");
   regMap.insert (std::make_pair(acdui.className(), &acdui.makeDesc));
-  ArrayColumnDesc<Int64>    acdi64("x");
+  ArrayColumnDesc<int64_t>    acdi64("x");
   regMap.insert (std::make_pair(acdi64.className(), &acdi64.makeDesc));
   ArrayColumnDesc<float>    acdf("x");
   regMap.insert (std::make_pair(acdf.className(), &acdf.makeDesc));

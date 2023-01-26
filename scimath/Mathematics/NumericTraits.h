@@ -60,37 +60,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	C++ standard (e.g. <src>DComplex::value_type</src> equals
 //	<src>double</src>)
 // <dt> <src>BaseType</src>
-// <dd> The numeric base type. I.e. <src>Double</src> for <src>Double</src>
-//	and <src>DComplex</src>; <src>Float</src> for <src>Float</src> and
+// <dd> The numeric base type. I.e. <src>double</src> for <src>double</src>
+//	and <src>DComplex</src>; <src>float</src> for <src>float</src> and
 //	<src>Complex</src>
 // <dt> <src>ConjugateType</src>
 // <dd> The corresponding complex type for a real type, and real type
 //	for a complex type. It is the type of the result if a Fourier
 //	Transform was to be done.
 // <dt> <src>PrecisionType</src>
-// <dd> The Type of the next higher numerical precision. I.e. <src>Double</src>
+// <dd> The Type of the next higher numerical precision. I.e. <src>double</src>
 //	or <src>DComplex</src>
 // </dl>
 // 
 // And the following characteristics:
 // <dl> 
 // <dt> <src>epsilon</src>
-// <dd> A Double containing the smallest value such that 1+epsilon is different
+// <dd> A double containing the smallest value such that 1+epsilon is different
 //      from 1.
 // <dt> <src>minimum</src>
-// <dd> A Double containing the smallest positive representable number,
+// <dd> A double containing the smallest positive representable number,
 //      excluding denormalised numbers.
 // <dt> <src>maximum</src>
-// <dd> A Double containing the largest representable number.
+// <dd> A double containing the largest representable number.
 // <dt> <src>size()</src>
 // <dd> The number of numeric values in the templated entity. It will be
 //	2 for complex numbers; 1 for real numbers.
 // <dt> <src>setImag(T &other, const BaseType &val)</src>
 // <dd> Set an imaginary part (for complex numbers) or a NOP (for reals).
-// <dt> <src>getValue(T &other, const uInt n)</src>
+// <dt> <src>getValue(T &other, const uint32_t n)</src>
 // <dd> Get the <src>n%size()-th</src> value in the argument.
 //	For complex numbers the sequence is real, imaginary part.
-// <dt> <src>setValue(T &other, const BaseType &val, const uInt n)</src>
+// <dt> <src>setValue(T &other, const BaseType &val, const uint32_t n)</src>
 // <dd> Set the <src>n%size()-th</src> value in the argument.
 //	For complex numbers the sequence is real, imaginary part.
 // </dl>
@@ -114,17 +114,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // This class is implemented as a number of specialisations for the
 // following data types.
 // <ul> 
-// <li> Float
-// <li> Double
+// <li> float
+// <li> double
 // <li> Complex
 // <li> DComplex
 // </ul>
 // This class should not be used with other template types and does nothing
 // except return its template type if it is used. ie. <br>
 // <src>NumericTraits<ArbitraryType>\::ConjugateType</src> returns 
-//   <src>Char</src> and <br>
+//   <src>char</src> and <br>
 // <src>NumericTraits<ArbitraryType>\::PrecisionType</src> returns 
-//   <src>Char</src><br>
+//   <src>char</src><br>
 // <src>NumericTraits<ArbitraryType>\::epsilon</src> is undefined<br>
 // <src>NumericTraits<ArbitraryType>\::minimum</src> is undefined<br>
 // <src>NumericTraits<ArbitraryType>\::maximum</src> is undefined
@@ -133,7 +133,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <h4>Example 1:</h4>
 // Suppose you are writing a templated class that needs to do Fourier
-// Transforms. The FFTServer class can do FFT's of Float or Double data
+// Transforms. The FFTServer class can do FFT's of float or double data
 // types, but you need to doubly template it on the conjugate data type. To
 // avoid having the conjugate data type appear as a template in the class
 // you are writing you can use the ConjugateType typedef.
@@ -145,10 +145,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // The ConjugateType transforms
 // <ul>
-// <li> Float -> Complex
-// <li> Double -> DComplex
-// <li> Complex -> Float
-// <li> DComplex -> Double
+// <li> float -> Complex
+// <li> double -> DComplex
+// <li> Complex -> float
+// <li> DComplex -> double
 // </ul>
 //
 // <h4>Example 2:</h4>
@@ -166,8 +166,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // The PrecisionType transforms
 // <ul>
-// <li> Float -> Double
-// <li> Double -> Double
+// <li> float -> double
+// <li> double -> double
 // <li> Complex -> DComplex
 // <li> DComplex -> DComplex
 // </ul>
@@ -191,13 +191,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <dl>
 // <dt><src>NumericTraits<T>\::epsilon</src> 
-// <dd> is FLT_EPSILON for Float and Complex types and DBL_EPSILON for Double
+// <dd> is FLT_EPSILON for float and Complex types and DBL_EPSILON for double
 // and DComplex data types.
 // <dt><src>NumericTraits<T>\::minimum</src>
-// <dd>is FLT_MIN for Float and complex Types and DBL_MIN for Double and
+// <dd>is FLT_MIN for float and complex Types and DBL_MIN for double and
 // DComplex data types.
 // <dt><src>NumericTraits<T>\::maximum</src>
-// <dd>is FLT_MAX for Float and complex Types and DBL_MAX for Double and
+// <dd>is FLT_MAX for float and complex Types and DBL_MAX for double and
 // DComplex data types.
 // </dl>
 // See the <linkto class=Dummy_Constants_class">C class/namespace</linkto>
@@ -223,25 +223,25 @@ public:
   // Template argument
   typedef T    value_type;
   // Numeric type
-  typedef Char BaseType;
+  typedef char BaseType;
   // Conjugate (<src>real<->complex</src>) type
-  typedef Char ConjugateType; 
-  // Higher precision type (<src>Float->Double</src>)
-  typedef Char PrecisionType;      
+  typedef char ConjugateType; 
+  // Higher precision type (<src>float->double</src>)
+  typedef char PrecisionType;      
   // Relevant minimum and maximum numbers
   // <group>
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 0; }
+  static uint32_t  size() { return 0; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(T &, const BaseType &) {;}
   // Get the <src>n%size()-th</src> numeric value
-  static BaseType getValue(const T &, const uInt) { return 0; }
+  static BaseType getValue(const T &, const uint32_t) { return 0; }
   // Set the <src>n%size()-th</src> numeric value
-  static void setValue(T &, const BaseType &, const uInt) {;}
+  static void setValue(T &, const BaseType &, const uint32_t) {;}
 };
 
 #if defined NumericTraits_F
@@ -249,33 +249,33 @@ public:
 #endif
 #define NumericTraits_F NumericTraits
 
-// <summary>NumericTraits specialization for Float</summary>
+// <summary>NumericTraits specialization for float</summary>
 
-template <> class NumericTraits_F<Float> {
+template <> class NumericTraits_F<float> {
 public:
   // Template argument
-  typedef Float    value_type;
+  typedef float    value_type;
   // Numeric type
-  typedef Float	   BaseType;
+  typedef float	   BaseType;
   // Conjugate (<src>real<->complex</src>) type
   typedef Complex  ConjugateType; 
-  // Higher precision type (<src>Float->Double</src>)
-  typedef Double   PrecisionType;      
+  // Higher precision type (<src>float->double</src>)
+  typedef double   PrecisionType;      
   // Relevant minimum and maximum numbers
   // <group>
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 1; }
+  static uint32_t  size() { return 1; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(value_type &, const BaseType &) {;}
   // Get the <src>n%size()-th</src> numeric value
-  static BaseType getValue(const value_type &other, const uInt) {
+  static BaseType getValue(const value_type &other, const uint32_t) {
     return other; }
   // Set the <src>n%size()-th</src> numeric value
-  static void setValue(value_type &other, const BaseType &val, const uInt) {
+  static void setValue(value_type &other, const BaseType &val, const uint32_t) {
     other = val; }
 };
 
@@ -286,33 +286,33 @@ public:
 #endif
 #define NumericTraits_D NumericTraits
 
-// <summary>NumericTraits specialization for Double</summary>
+// <summary>NumericTraits specialization for double</summary>
 
-template <> class NumericTraits_D<Double> {
+template <> class NumericTraits_D<double> {
 public:
   // Template argument
-  typedef Double    value_type;
+  typedef double    value_type;
   // Numeric type
-  typedef Double    BaseType;
+  typedef double    BaseType;
   // Conjugate (<src>real<->complex</src>) type
   typedef DComplex  ConjugateType; 
-  // Higher precision type (<src>Float->Double</src>)
-  typedef Double    PrecisionType;      
+  // Higher precision type (<src>float->double</src>)
+  typedef double    PrecisionType;      
   // Relevant minimum and maximum numbers
   // <group>
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 1; }
+  static uint32_t  size() { return 1; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(value_type &, const BaseType &) {;}
   // Get the <src>n%size()-th</src> numeric value
-  static BaseType getValue(const value_type &other, const uInt) {
+  static BaseType getValue(const value_type &other, const uint32_t) {
     return other; }
   // Set the <src>n%size()-th</src> numeric value
-  static void setValue(value_type &other, const BaseType &val, const uInt) {
+  static void setValue(value_type &other, const BaseType &val, const uint32_t) {
     other = val; }
 };
 
@@ -330,27 +330,27 @@ public:
   // Template argument
   typedef Complex    value_type;
   // Numeric type
-  typedef Float      BaseType;
+  typedef float      BaseType;
   // Conjugate (<src>real<->complex</src>) type
-  typedef Float      ConjugateType; 
-  // Higher precision type (<src>Float->Double</src>)
+  typedef float      ConjugateType; 
+  // Higher precision type (<src>float->double</src>)
   typedef DComplex   PrecisionType;      
   // Relevant minimum and maximum numbers
   // <group>
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 2; }
+  static uint32_t  size() { return 2; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(value_type &other, const BaseType &val) {
     other = value_type(other.real(), val); }
   // Get the <src>n%size()-th</src> numeric value
-  static BaseType getValue(const value_type &other, const uInt n) {
+  static BaseType getValue(const value_type &other, const uint32_t n) {
     return ((n%2 == 0) ? other.real() : other.imag()); }
   // Set the <src>n%size()-th</src> numeric value
-  static void setValue(value_type &other, const BaseType &val, const uInt n) {
+  static void setValue(value_type &other, const BaseType &val, const uint32_t n) {
     other = (n%2 == 0) ? value_type(val, other.imag()) :
       value_type(other.real(), val); }
 };
@@ -369,27 +369,27 @@ public:
   // Template argument
   typedef DComplex    value_type;
   // Numeric type
-  typedef Double      BaseType;
+  typedef double      BaseType;
   // Conjugate (<src>real<->complex</src>) type
-  typedef Double      ConjugateType; 
-  // Higher precision type (<src>Float->Double</src>)
+  typedef double      ConjugateType; 
+  // Higher precision type (<src>float->double</src>)
   typedef DComplex   PrecisionType;      
   // Relevant minimum and maximum numbers
   // <group>
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
   // </group>
   // Number of relevant numeric values
-  static uInt  size() { return 2; }
+  static uint32_t  size() { return 2; }
   // Set the imaginary part of a complex value only (a NOP for reals)
   static void setImag(value_type &other, const BaseType &val) {
     other = value_type(other.real(), val); }
   // Get the <src>n%size()-th</src> numeric value
-  static BaseType getValue(const value_type &other, const uInt n) {
+  static BaseType getValue(const value_type &other, const uint32_t n) {
     return ((n%2 == 0) ? other.real() : other.imag()); }
   // Set the <src>n%size()-th</src> numeric value
-  static void setValue(value_type &other, const BaseType &val, const uInt n) {
+  static void setValue(value_type &other, const BaseType &val, const uint32_t n) {
     other = (n%2 == 0) ? value_type(val, other.imag()) :
       value_type(other.real(), val); }
 };

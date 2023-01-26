@@ -51,18 +51,18 @@ template <class T>
 AipsrcVector<T>::~AipsrcVector() {}
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value,
+bool AipsrcVector<T>::find(Vector<T> &value,
 			   const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    int32_t m = res.freq(" ") +1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
-    for (Int i=0; i<m; i++) {
+    for (int32_t i=0; i<m; i++) {
       istringstream instr(nres[i]);
       instr >> value(i);
     }
@@ -72,26 +72,26 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
 }
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, 
+bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, 
 			   const Vector<T> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value,
+bool AipsrcVector<T>::find(Vector<T> &value,
 			   const String &keyword,
 			   const Unit &defun, const Unit &resun) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    int32_t m = res.freq(" ") +1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<T>(m);
-    Quantum<Double> qres;
-    for (Int i=0; i<m; i++) {
+    Quantum<double> qres;
+    for (int32_t i=0; i<m; i++) {
       istringstream instr(nres[i]);
       instr >> qres;
       if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
@@ -103,50 +103,50 @@ Bool AipsrcVector<T>::find(Vector<T> &value,
 }
 
 template <class T>
-Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, 
+bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword, 
 			   const Unit&, const Unit&,
 			   const Vector<T> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 template <class T>
-uInt AipsrcVector<T>::registerRC(const String &keyword,
+uint32_t AipsrcVector<T>::registerRC(const String &keyword,
 				 const Vector<T> &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
 template <class T>
-uInt AipsrcVector<T>::registerRC(const String &keyword,
+uint32_t AipsrcVector<T>::registerRC(const String &keyword,
 				 const Unit &defun, const Unit &resun,
 				 const Vector<T> &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, defun, resun, deflt);
   return n;
 }
 
 template <class T>
-const Vector<T> &AipsrcVector<T>::get(uInt keyword) {
+const Vector<T> &AipsrcVector<T>::get(uint32_t keyword) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
 template <class T>
-void AipsrcVector<T>::set(uInt keyword, const Vector<T> &deflt) {
+void AipsrcVector<T>::set(uint32_t keyword, const Vector<T> &deflt) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   (myp_p.tlst)[keyword-1].resize(deflt.nelements());
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
 template <class T>
-void AipsrcVector<T>::save(uInt keyword) {
+void AipsrcVector<T>::save(uint32_t keyword) {
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostringstream oss;
-  Int n = ((myp_p.tlst)[keyword-1]).nelements();
-  for (Int i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
+  int32_t n = ((myp_p.tlst)[keyword-1]).nelements();
+  for (int32_t i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 

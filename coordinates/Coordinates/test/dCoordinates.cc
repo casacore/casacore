@@ -47,7 +47,7 @@ int main()
 
   try {
     // Direction Coordinate
-    Matrix<Double> xform(2,2);                                    // 1
+    Matrix<double> xform(2,2);                                    // 1
     xform = 0.0; xform.diagonal() = 1.0;                          // 2
     DirectionCoordinate radec(MDirection::J2000,                  // 3
 			      Projection(Projection::SIN),        // 4
@@ -60,10 +60,10 @@ int main()
     Vector<String> units(2); units = "deg";                        //  9
     radec.setWorldAxisUnits(units);                               // 10
     
-    Vector<Double> world(2), pixel(2);                            // 11
+    Vector<double> world(2), pixel(2);                            // 11
     pixel = 138.0;                                                // 12
     
-    Bool ok = radec.toWorld(world, pixel);                        // 13
+    bool ok = radec.toWorld(world, pixel);                        // 13
     if (!ok) {                                                    // 14
 	cout << "Error: " << radec.errorMessage() << endl;        // 15
 	return 1;                                                 // 16
@@ -77,12 +77,12 @@ int main()
     cout << world << " ---> " << pixel << endl;
 
     // StokesCoordinate
-    Vector<Int> iquv(4);                                         // 20
+    Vector<int32_t> iquv(4);                                         // 20
     iquv(0) = Stokes::I; iquv(1) = Stokes::Q;                    // 21
     iquv(2) = Stokes::U; iquv(3) = Stokes::V;                    // 22
     StokesCoordinate stokes(iquv);                               // 23
 
-    Int plane;                                                   // 24
+    int32_t plane;                                                   // 24
     ok = stokes.toPixel(plane, Stokes::Q);                       // 25
     if (!ok) {
 	cout << "Error: " << stokes.errorMessage() << endl;
@@ -146,7 +146,7 @@ int main()
     cout << world << " ---> " << pixel << endl;
 
     // CoordinateSystem::transpose
-    Vector<Int> tran(4);
+    Vector<int32_t> tran(4);
     tran(0) = 0; tran(1) = 1; tran(2) = 3; tran(3) = 2;
     coordsys.transpose(tran,tran);
     pixel(2) = 50; pixel(3) = 2;

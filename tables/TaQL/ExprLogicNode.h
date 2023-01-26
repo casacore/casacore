@@ -37,16 +37,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
-//# Data types Bool, Int64, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
-//# Float to Double, and Complex to DComplex.
+//# Data types bool, int64_t, double, DComplex and String are used.
+//# char, unsigned char, int16_t, uint16_t, int32_t, and uint32_t are converted to int64_t,
+//# float to double, and Complex to DComplex.
 //# Binary operators ==, >=, >, <, <=, !=, and IN are recognized.
 //# Also &&, ||, and unary ! are recognized.
 
 
 
 // <summary>
-// Bool comparison == in table select expression tree
+// bool comparison == in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -62,8 +62,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQBool : public TableExprNodeBinary
@@ -71,12 +71,12 @@ class TableExprNodeEQBool : public TableExprNodeBinary
 public:
     TableExprNodeEQBool (const TableExprNodeRep&);
     ~TableExprNodeEQBool() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 // <summary>
-// Int comparison == in table select expression tree
+// int32_t comparison == in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -92,8 +92,8 @@ public:
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQInt : public TableExprNodeBinary
@@ -101,12 +101,12 @@ class TableExprNodeEQInt : public TableExprNodeBinary
 public:
     TableExprNodeEQInt (const TableExprNodeRep&);
     ~TableExprNodeEQInt() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 // <summary>
-// Double comparison == in table select expression tree
+// double comparison == in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -122,8 +122,8 @@ public:
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQDouble : public TableExprNodeBinary
@@ -131,7 +131,7 @@ class TableExprNodeEQDouble : public TableExprNodeBinary
 public:
     TableExprNodeEQDouble (const TableExprNodeRep&);
     ~TableExprNodeEQDouble() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
     void ranges (Block<TableExprRange>&) override;
 };
 
@@ -153,8 +153,8 @@ public:
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQDComplex : public TableExprNodeBinary
@@ -162,7 +162,7 @@ class TableExprNodeEQDComplex : public TableExprNodeBinary
 public:
     TableExprNodeEQDComplex (const TableExprNodeRep&);
     ~TableExprNodeEQDComplex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -183,8 +183,8 @@ public:
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQString : public TableExprNodeBinary
@@ -192,7 +192,7 @@ class TableExprNodeEQString : public TableExprNodeBinary
 public:
     TableExprNodeEQString (const TableExprNodeRep&);
     ~TableExprNodeEQString() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -213,8 +213,8 @@ public:
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQRegex : public TableExprNodeBinary
@@ -222,7 +222,7 @@ class TableExprNodeEQRegex : public TableExprNodeBinary
 public:
     TableExprNodeEQRegex (const TableExprNodeRep&);
     ~TableExprNodeEQRegex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -243,8 +243,8 @@ public:
 // <synopsis> 
 // This class represents an == comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeEQDate : public TableExprNodeBinary
@@ -252,13 +252,13 @@ class TableExprNodeEQDate : public TableExprNodeBinary
 public:
     TableExprNodeEQDate (const TableExprNodeRep&);
     ~TableExprNodeEQDate() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 
 // <summary>
-// Bool comparison != in table select expression tree
+// bool comparison != in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -274,8 +274,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNEBool : public TableExprNodeBinary
@@ -283,12 +283,12 @@ class TableExprNodeNEBool : public TableExprNodeBinary
 public:
     TableExprNodeNEBool (const TableExprNodeRep&);
     ~TableExprNodeNEBool() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 // <summary>
-// Int comparison != in table select expression tree
+// int32_t comparison != in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -304,8 +304,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNEInt : public TableExprNodeBinary
@@ -313,12 +313,12 @@ class TableExprNodeNEInt : public TableExprNodeBinary
 public:
     TableExprNodeNEInt (const TableExprNodeRep&);
     ~TableExprNodeNEInt() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 // <summary>
-// Double comparison != in table select expression tree
+// double comparison != in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -334,8 +334,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNEDouble : public TableExprNodeBinary
@@ -343,7 +343,7 @@ class TableExprNodeNEDouble : public TableExprNodeBinary
 public:
     TableExprNodeNEDouble (const TableExprNodeRep&);
     ~TableExprNodeNEDouble() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -364,8 +364,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNEDComplex : public TableExprNodeBinary
@@ -373,7 +373,7 @@ class TableExprNodeNEDComplex : public TableExprNodeBinary
 public:
     TableExprNodeNEDComplex (const TableExprNodeRep&);
     ~TableExprNodeNEDComplex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -394,8 +394,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNEString : public TableExprNodeBinary
@@ -403,7 +403,7 @@ class TableExprNodeNEString : public TableExprNodeBinary
 public:
     TableExprNodeNEString (const TableExprNodeRep&);
     ~TableExprNodeNEString() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -424,8 +424,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNERegex : public TableExprNodeBinary
@@ -433,7 +433,7 @@ class TableExprNodeNERegex : public TableExprNodeBinary
 public:
     TableExprNodeNERegex (const TableExprNodeRep&);
     ~TableExprNodeNERegex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -454,8 +454,8 @@ public:
 // <synopsis> 
 // This class represents an != comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeNEDate : public TableExprNodeBinary
@@ -463,13 +463,13 @@ class TableExprNodeNEDate : public TableExprNodeBinary
 public:
     TableExprNodeNEDate (const TableExprNodeRep&);
     ~TableExprNodeNEDate() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 
 // <summary>
-// Int comparison > in table select expression tree
+// int32_t comparison > in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -485,8 +485,8 @@ public:
 // <synopsis> 
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGTInt : public TableExprNodeBinary
@@ -494,12 +494,12 @@ class TableExprNodeGTInt : public TableExprNodeBinary
 public:
     TableExprNodeGTInt (const TableExprNodeRep&);
     ~TableExprNodeGTInt() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 // <summary>
-// Double comparison > in table select expression tree
+// double comparison > in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -515,8 +515,8 @@ public:
 // <synopsis> 
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGTDouble : public TableExprNodeBinary
@@ -524,7 +524,7 @@ class TableExprNodeGTDouble : public TableExprNodeBinary
 public:
     TableExprNodeGTDouble (const TableExprNodeRep&);
     ~TableExprNodeGTDouble() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
     void ranges (Block<TableExprRange>&) override;
 };
 
@@ -546,8 +546,8 @@ public:
 // <synopsis> 
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGTDComplex : public TableExprNodeBinary
@@ -555,7 +555,7 @@ class TableExprNodeGTDComplex : public TableExprNodeBinary
 public:
     TableExprNodeGTDComplex (const TableExprNodeRep&);
     ~TableExprNodeGTDComplex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -576,8 +576,8 @@ public:
 // <synopsis> 
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGTString : public TableExprNodeBinary
@@ -585,7 +585,7 @@ class TableExprNodeGTString : public TableExprNodeBinary
 public:
     TableExprNodeGTString (const TableExprNodeRep&);
     ~TableExprNodeGTString() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -606,8 +606,8 @@ public:
 // <synopsis> 
 // This class represents an > comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGTDate : public TableExprNodeBinary
@@ -615,13 +615,13 @@ class TableExprNodeGTDate : public TableExprNodeBinary
 public:
     TableExprNodeGTDate (const TableExprNodeRep&);
     ~TableExprNodeGTDate() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 
 // <summary>
-// Int comparison >= in table select expression tree
+// int32_t comparison >= in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -637,8 +637,8 @@ public:
 // <synopsis> 
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGEInt : public TableExprNodeBinary
@@ -646,12 +646,12 @@ class TableExprNodeGEInt : public TableExprNodeBinary
 public:
     TableExprNodeGEInt (const TableExprNodeRep&);
     ~TableExprNodeGEInt() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 // <summary>
-// Double comparison >= in table select expression tree
+// double comparison >= in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -667,8 +667,8 @@ public:
 // <synopsis> 
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGEDouble : public TableExprNodeBinary
@@ -676,7 +676,7 @@ class TableExprNodeGEDouble : public TableExprNodeBinary
 public:
     TableExprNodeGEDouble (const TableExprNodeRep&);
     ~TableExprNodeGEDouble() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
     void ranges (Block<TableExprRange>&) override;
 };
 
@@ -698,8 +698,8 @@ public:
 // <synopsis> 
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGEDComplex : public TableExprNodeBinary
@@ -707,7 +707,7 @@ class TableExprNodeGEDComplex : public TableExprNodeBinary
 public:
     TableExprNodeGEDComplex (const TableExprNodeRep&);
     ~TableExprNodeGEDComplex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -728,8 +728,8 @@ public:
 // <synopsis> 
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGEString : public TableExprNodeBinary
@@ -737,7 +737,7 @@ class TableExprNodeGEString : public TableExprNodeBinary
 public:
     TableExprNodeGEString (const TableExprNodeRep&);
     ~TableExprNodeGEString() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -758,8 +758,8 @@ public:
 // <synopsis> 
 // This class represents an >= comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeGEDate : public TableExprNodeBinary
@@ -767,13 +767,13 @@ class TableExprNodeGEDate : public TableExprNodeBinary
 public:
     TableExprNodeGEDate (const TableExprNodeRep&);
     ~TableExprNodeGEDate() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
 
 // <summary>
-// Int comparison IN in table select expression tree
+// int32_t comparison IN in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -789,27 +789,27 @@ public:
 // <synopsis> 
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // The right hand side can be optimized if it contains a constant array which
-// can be replaced by an std::unordered_set<Int64> or a Block<Bool>.
+// can be replaced by an std::unordered_set<int64_t> or a Block<bool>.
 // </synopsis> 
 
 class TableExprNodeINInt : public TableExprNodeBinary
 {
 public:
     // <src>doTracing</src> is not used.
-    TableExprNodeINInt (const TableExprNodeRep&, Bool doTracing=False);
+    TableExprNodeINInt (const TableExprNodeRep&, bool doTracing=false);
     ~TableExprNodeINInt() = default;
     void optimize() override;
     static void doOptimize (TENShPtr& rnode);
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 private:
 };
 
 
 // <summary>
-// Double comparison IN in table select expression tree
+// double comparison IN in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -825,8 +825,8 @@ private:
 // <synopsis> 
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // The right hand side can be optimized if it contains a constant set with
 // bounded intervals.
 // </synopsis> 
@@ -838,7 +838,7 @@ public:
     ~TableExprNodeINDouble() = default;
     void optimize() override;
     static void doOptimize (TENShPtr& rnode);
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -859,8 +859,8 @@ public:
 // <synopsis> 
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeINDComplex : public TableExprNodeBinary
@@ -868,7 +868,7 @@ class TableExprNodeINDComplex : public TableExprNodeBinary
 public:
     TableExprNodeINDComplex (const TableExprNodeRep&);
     ~TableExprNodeINDComplex() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -889,8 +889,8 @@ public:
 // <synopsis> 
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // The right hand side can be optimized if it contains a constant array which
 // can be replaced by an std::unordered_set<String>
 // </synopsis> 
@@ -902,7 +902,7 @@ public:
     ~TableExprNodeINString() = default;
     void optimize() override;
     static void doOptimize (TENShPtr& rnode);
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -923,8 +923,8 @@ public:
 // <synopsis> 
 // This class represents an IN comparison in a table select expression tree.
 // This is defined for all data types.
-// Only the Bool get function is defined, because the result of a
-// compare is always a Bool.
+// Only the bool get function is defined, because the result of a
+// compare is always a bool.
 // </synopsis> 
 
 class TableExprNodeINDate : public TableExprNodeBinary
@@ -934,7 +934,7 @@ public:
     ~TableExprNodeINDate() = default;
     void optimize() override;
     static void doOptimize (TENShPtr& rnode);
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 
@@ -955,7 +955,7 @@ public:
 
 // <synopsis> 
 // This class represents a logical or in a table select expression tree.
-// This is defined for Bool only.
+// This is defined for bool only.
 // </synopsis> 
 
 class TableExprNodeOR : public TableExprNodeBinary
@@ -963,7 +963,7 @@ class TableExprNodeOR : public TableExprNodeBinary
 public:
     TableExprNodeOR (const TableExprNodeRep&);
     ~TableExprNodeOR() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
     void ranges (Block<TableExprRange>&) override;
 };
 
@@ -984,7 +984,7 @@ public:
 
 // <synopsis> 
 // This class represents a logical and in a table select expression tree.
-// This is defined for Bool only.
+// This is defined for bool only.
 // </synopsis> 
 
 class TableExprNodeAND: public TableExprNodeBinary
@@ -992,7 +992,7 @@ class TableExprNodeAND: public TableExprNodeBinary
 public:
     TableExprNodeAND (const TableExprNodeRep&);
     ~TableExprNodeAND() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
     void ranges (Block<TableExprRange>&) override;
 };
 
@@ -1013,7 +1013,7 @@ public:
 
 // <synopsis> 
 // This class represents a logical not in a table select expression tree.
-// This is defined for Bool only.
+// This is defined for bool only.
 // </synopsis> 
 
 class TableExprNodeNOT: public TableExprNodeBinary
@@ -1021,7 +1021,7 @@ class TableExprNodeNOT: public TableExprNodeBinary
 public:
     TableExprNodeNOT (const TableExprNodeRep&);
     ~TableExprNodeNOT() = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 };
 
 

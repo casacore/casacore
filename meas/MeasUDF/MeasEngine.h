@@ -102,13 +102,13 @@ namespace casacore {
 
     // Handle a doppler reference type.
     // If the reference type is invalid, an exception is only thrown
-    // if <src>doThrow=True</src>. In this way a string argument can
+    // if <src>doThrow=true</src>. In this way a string argument can
     // be a source name for a direction.
-    Bool handleMeasType (const TENShPtr& operand, Bool doThrow);
+    bool handleMeasType (const TENShPtr& operand, bool doThrow);
 
     // Make the expression result attributes.
     Record makeAttributes (typename M::Types refType,
-                           Int valueType = 1) const;
+                           int32_t valueType = 1) const;
 
   protected:
     // Handle the operand representing an array of Meas values.

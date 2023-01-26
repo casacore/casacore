@@ -92,7 +92,7 @@ public:
     MSState (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
     MSState (SetupNewTable &newTab, rownr_t nrrow = 0,
-		    Bool initialize = False);
+		    bool initialize = false);
     MSState (const Table &table);
     MSState (const MSState &other);
     // </group>
@@ -126,7 +126,7 @@ public:
 private:
 
     // required by the need to throw an exception in the destructor
-    Bool hasBeenDestroyed_p;
+    bool hasBeenDestroyed_p;
 
 };
 

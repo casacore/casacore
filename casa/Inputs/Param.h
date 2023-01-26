@@ -93,7 +93,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // Now we may build our Param
 // Param PleaseDontTouchMeThere(key, value, help, type, range, unit);
 // // to retrieve the value we use the GetInt function
-// for (Int i=0, i<PleaseDontTouchMeThere.getInt(); i++, chutzpah++);
+// for (int32_t i=0, i<PleaseDontTouchMeThere.getInt(); i++, chutzpah++);
 // </srcblock></example>
 //
 // <motivation>
@@ -131,7 +131,7 @@ public:
   // Equality comparitor.
   // <note role=warning> This function ALWAYS returns 
   // false.  I have no idea why it was designed to do this. </note>
-  Bool operator== (const Param&) const;
+  bool operator== (const Param&) const;
   
   // I/O operators
   //<group>
@@ -142,25 +142,25 @@ public:
   //</group>
   
   // get a double parameter value; prompt if switch is TRUE
-  Double getDouble (Bool do_prompt=False) const;
+  double getDouble (bool do_prompt=false) const;
 
   // get a Block<double> parameter value; prompt if switch is TRUE
-  Block<Double> getDoubleArray (Bool do_prompt=False) const;
+  Block<double> getDoubleArray (bool do_prompt=false) const;
   
-  // get an Int parameter value; prompt if switch is TRUE
-  Int getInt (Bool do_prompt=False) const;
+  // get an int32_t parameter value; prompt if switch is TRUE
+  int32_t getInt (bool do_prompt=false) const;
 
-  // get an Block<Int> parameter value; prompt if switch is TRUE
-  Block<Int> getIntArray (Bool do_prompt=False) const;
+  // get an Block<int32_t> parameter value; prompt if switch is TRUE
+  Block<int32_t> getIntArray (bool do_prompt=false) const;
   
   // get a String parameter value; prompt if switch is TRUE
-  const String& getString (Bool do_prompt=False) const;
+  const String& getString (bool do_prompt=false) const;
 
   // get a Block<String> parameter value; prompt if switch is TRUE
-  Block<String> getStringArray (Bool do_prompt=False) const;
+  Block<String> getStringArray (bool do_prompt=false) const;
   
   // get a Boolean parameter value; prompt if switch is TRUE
-  Bool getBool (Bool do_prompt=False) const;
+  bool getBool (bool do_prompt=false) const;
   
   // get parameter value as a string
   const String& get() const
@@ -191,22 +191,22 @@ public:
     { return unit; }
   
   // set new parameter value; return FALSE if invalid value
-  Bool put (const String& a_value);
+  bool put (const String& a_value);
   
   // set a parameter as a system parameter
-  void setSystem (Bool val)
+  void setSystem (bool val)
     { system = val; }
   
   // check if a parameter is a system parameter
-  Bool isSystem() const
+  bool isSystem() const
     { return system; }
   
   // set an index for a program parameter
-  void setIndex (Int inx)
+  void setIndex (int32_t inx)
     { index = inx; }
 
   // get the index of a parameter
-  Int getIndex() const
+  int32_t getIndex() const
     { return index; }
 
 
@@ -230,13 +230,13 @@ private:
   String unit;
   
   // boolean data member which indicates the Param's key has a value.
-  Bool hasvalue;     
+  bool hasvalue;     
 
   // boolean data member which indicates the Param is system wide.
-  Bool system;
+  bool system;
 
   // index for program keywords (>=1)
-  Int index;
+  int32_t index;
 };
 
 

@@ -31,19 +31,19 @@
 
 #include <casacore/casa/namespace.h>
 
-void showTime (MVTime time, uInt format, uInt prec)
+void showTime (MVTime time, uint32_t format, uint32_t prec)
 {
   cout << MVTime::Format(format,prec) << time << endl;
 }
 
-void checkTime (const String& str, uInt yy, uInt mm, uInt dd,
-                uInt h, uInt m, uInt s, double ss, Bool chk=True)
+void checkTime (const String& str, uint32_t yy, uint32_t mm, uint32_t dd,
+                uint32_t h, uint32_t m, uint32_t s, double ss, bool chk=true)
 {
   Quantity q;
   AlwaysAssertExit (MVTime::read(q, str, chk));
   MVTime mvtm(q);
   Time tm = mvtm.getTime();
-  AlwaysAssertExit (mvtm.year() == Int(yy));
+  AlwaysAssertExit (mvtm.year() == int32_t(yy));
   AlwaysAssertExit (mvtm.month() == mm);
   AlwaysAssertExit (mvtm.monthday() == dd);
   AlwaysAssertExit (tm.year() == yy);
@@ -58,12 +58,12 @@ void checkTime (const String& str, uInt yy, uInt mm, uInt dd,
 void checkExcp (const String& str)
 {
   Quantity q;
-  Bool ok = False;
+  bool ok = false;
   try {
-    MVTime::read(q, str, True, True);
+    MVTime::read(q, str, true, true);
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    ok = True;
+    ok = true;
   }
   AlwaysAssertExit (ok);
 }
@@ -76,14 +76,14 @@ int main ()
     AlwaysAssertExit (! MVTime::read (q, "20Nov96-5h20"));
     AlwaysAssertExit (! MVTime::read (q, "20Nov96-5hm"));
     AlwaysAssertExit (! MVTime::read (q, "1996-11-20T5.20"));
-    AlwaysAssertExit (! MVTime::read (q, "1996-11-20T5:20,", True));
+    AlwaysAssertExit (! MVTime::read (q, "1996-11-20T5:20,", true));
     AlwaysAssertExit (MVTime::read (q, "today"));
     AlwaysAssertExit (MVTime::read (q, "today/12:00:00"));
     AlwaysAssertExit (MVTime::read (q, "today 12:00:00"));
     AlwaysAssertExit (MVTime::read (q, "today-12:00:00"));
     AlwaysAssertExit (MVTime::read (q, "ToDay"));
     AlwaysAssertExit (! MVTime::read (q, "1996-11-20T5:20,"));
-    AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20,", False));
+    AlwaysAssertExit (MVTime::read (q, "1996-11-20T5:20,", false));
 
     checkTime (" 1996-11-20T5:20 ", 1996, 11, 20, 5, 20, 0, 0);
     checkTime ("1996-11-20T..20.", 1996, 11, 20, 0, 0, 1, 5./15);  // time in deg!!
@@ -98,7 +98,7 @@ int main ()
     checkTime ("1996-11-20T5:20Z", 1996, 11, 20, 5, 20, 0, 0);
     checkTime ("2017-Jul-1/11:57:0.0", 2017, 7, 1, 11, 57, 0, 0);
     AlwaysAssertExit (!MVTime::read (q, "2017-Jul-1x/11:57:0.0"));
-    checkTime ("2017-Jul-1x/11:57:0.0", 2017, 7, 1, 0, 0, 0, 0, False);
+    checkTime ("2017-Jul-1x/11:57:0.0", 2017, 7, 1, 0, 0, 0, 0, false);
     checkExcp ("2017-Jul-1x/11:57:0.0");
     checkExcp ("x");
     checkExcp ("2017-Jul-1/11:57:0.0  x");

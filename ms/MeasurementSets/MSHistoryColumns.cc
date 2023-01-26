@@ -60,7 +60,7 @@ void MSHistoryColumns::attach(const MSHistory& msHistory)
   timeQuant_p.attach(msHistory, MSHistory::columnName(MSHistory::TIME));
 }
 
-void MSHistoryColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
+void MSHistoryColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty)
 {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

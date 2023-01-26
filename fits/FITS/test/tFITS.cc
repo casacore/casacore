@@ -45,21 +45,21 @@
 int main()
 {
     const char *file = "test.fits";
-    Matrix<Float> m(512,512), m2;
+    Matrix<float> m(512,512), m2;
 
     // Create a wedge; rows in a matrix normally are columns in an image,
     // i.e. the result might be the transpose of what you expect.
-    for (uInt i=0; i < 512; i++) {
+    for (uint32_t i=0; i < 512; i++) {
 	m.row(i) = float(i);
     }
 
     // Create the "optional" information
-    std::map<String, Double> mapout, mapin;
+    std::map<String, double> mapout, mapin;
     String unitout, unitin;
     unitout = "Jy";
     Vector<String> namesout(2), namesin(2);
     namesout(0) = "X" ; namesout(1) = "Y";
-    Vector<Float> refout(2), refin(2), locout(2), locin(2), deltaout(2),
+    Vector<float> refout(2), refin(2), locout(2), locin(2), deltaout(2),
 	deltain(2);
     refout = 0.0f; locout = 1.0f; deltaout = 1.0f;
     mapout["hello"] = 1.0;
@@ -74,16 +74,16 @@ int main()
     // remove the fits file if already exists
     remove( file );  // unlink() at the end does this.
     if (WriteFITS(file,m,message, unitout.chars(), &namesout, &refout,
-		  &locout, &deltaout, &mapout, objectout.chars()) == False) {
+		  &locout, &deltaout, &mapout, objectout.chars()) == false) {
 	cout << "Write failed: " << message << endl;
 	return 1;
     }
-    Bool ok = True;
+    bool ok = true;
 
     cout << "Reading.... (will leave test.fits if program fails)" << endl;
     m2 = ReadFITS(file,ok,message, &unitin, &namesin, &refin, &locin, &deltain,
 		  &mapin, &objectin);
-    if (ok == False) {
+    if (ok == false) {
 	cout << "Read failed: " << message << endl;
 	return 1;
     }

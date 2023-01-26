@@ -39,24 +39,24 @@ String LatticeBase::imageType() const
   return "Lattice";
 }
 
-Bool LatticeBase::isPersistent() const
+bool LatticeBase::isPersistent() const
 {
-  return False;
+  return false;
 }
 
-Bool LatticeBase::isPaged() const
+bool LatticeBase::isPaged() const
 {
-  return False;
+  return false;
 }
 
-Bool LatticeBase::canReferenceArray() const
+bool LatticeBase::canReferenceArray() const
 {
-  return False;
+  return false;
 }
 
-Bool LatticeBase::isWritable() const
+bool LatticeBase::isWritable() const
 {
-  return True;
+  return true;
 }
 
 void LatticeBase::save (const String&) const
@@ -64,15 +64,15 @@ void LatticeBase::save (const String&) const
   throw AipsError(imageType() + "::save is not implemented");
 }
 
-Bool LatticeBase::lock (FileLocker::LockType, uInt)
+bool LatticeBase::lock (FileLocker::LockType, uint32_t)
 {
-    return True;
+    return true;
 }
 void LatticeBase::unlock()
 {}
-Bool LatticeBase::hasLock (FileLocker::LockType) const
+bool LatticeBase::hasLock (FileLocker::LockType) const
 {
-    return True;
+    return true;
 }
 void LatticeBase::resync()
 {}
@@ -83,12 +83,12 @@ void LatticeBase::tempClose()
 void LatticeBase::reopen()
 {}
 
-String LatticeBase::name (Bool) const
+String LatticeBase::name (bool) const
 {
   return "";
 }
 
-uInt LatticeBase::ndim() const
+uint32_t LatticeBase::ndim() const
 {
   return shape().nelements();
 }
@@ -104,16 +104,16 @@ LELCoordinates LatticeBase::lelCoordinates() const
 }
 
 
-IPosition LatticeBase::doNiceCursorShape (uInt maxPixels) const
+IPosition LatticeBase::doNiceCursorShape (uint32_t maxPixels) const
 {
   IPosition originalShape(shape());
-  uInt ndim = originalShape.nelements();
+  uint32_t ndim = originalShape.nelements();
   IPosition cursorShape(ndim);
   if (ndim > 0) {
     cursorShape = 1;
     cursorShape(0) = originalShape(0);
-    for (uInt i=1;
-	 i < ndim  &&  cursorShape.product()*originalShape(i) <= Int(maxPixels);
+    for (uint32_t i=1;
+	 i < ndim  &&  cursorShape.product()*originalShape(i) <= int32_t(maxPixels);
 	 i++) {
       cursorShape(i) = originalShape(i);
     }
@@ -122,21 +122,21 @@ IPosition LatticeBase::doNiceCursorShape (uInt maxPixels) const
 }
 
 
-Bool LatticeBase::ok() const
+bool LatticeBase::ok() const
 {
-  return True;
+  return true;
 }
 
 
-uInt LatticeBase::maximumCacheSize() const
+uint32_t LatticeBase::maximumCacheSize() const
 {
   return 0;
 }
 
-void LatticeBase::setMaximumCacheSize (uInt)
+void LatticeBase::setMaximumCacheSize (uint32_t)
 {}
 
-void LatticeBase::setCacheSizeInTiles (uInt)
+void LatticeBase::setCacheSizeInTiles (uint32_t)
 {}
 
 void LatticeBase::setCacheSizeFromPath (const IPosition&,

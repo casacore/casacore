@@ -43,7 +43,7 @@ TableIterator::TableIterator (const Table& tab,
 : tabIterPtr_p (0)
 {
     Block<String> keys(1, key);
-    Block<Int> ord(1, order);
+    Block<int32_t> ord(1, order);
     Block<CountedPtr<BaseCompare> > cmpObj(1);
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     ord, option);
@@ -56,7 +56,7 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    Block<Int> ord(keys.nelements(), order);
+    Block<int32_t> ord(keys.nelements(), order);
     Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements());
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     ord, option);
@@ -65,7 +65,7 @@ TableIterator::TableIterator (const Table& tab,
 
 TableIterator::TableIterator (const Table& tab,
 			      const Block<String>& keys,
-			      const Block<Int>& orders,
+			      const Block<int32_t>& orders,
 			      Option option)
 : tabIterPtr_p (0)
 {
@@ -78,7 +78,7 @@ TableIterator::TableIterator (const Table& tab,
 TableIterator::TableIterator (const Table& tab,
                               const Block<String>& keys,
                               const Block<CountedPtr<BaseCompare> >& cmpObjs,
-                              const Block<Int>& orders,
+                              const Block<int32_t>& orders,
                               Option option,
                               bool cacheIterationBoundaries)
 : tabIterPtr_p (0)

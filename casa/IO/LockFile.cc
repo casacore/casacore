@@ -62,7 +62,7 @@
 #define traceCLOSE close
 #endif // PABLO_IO
 
-//# canonical size of an Int (checked in constructor).
+//# canonical size of an int32_t (checked in constructor).
 #define SIZEINT 4u
 #define NRREQID 32u
 #define SIZEREQID ((1 + 2*NRREQID) * SIZEINT)
@@ -70,20 +70,20 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LockFile::LockFile (const String& fileName, double inspectInterval,
-		    Bool create, Bool setRequestFlag, Bool mustExist,
-		    uInt seqnr, Bool permLocking, Bool noLocking)
+		    bool create, bool setRequestFlag, bool mustExist,
+		    uint32_t seqnr, bool permLocking, bool noLocking)
 : itsFileIO      (0),
   itsCanIO       (0),
-  itsWritable    (True),
+  itsWritable    (true),
   itsAddToList   (setRequestFlag),
   itsInterval    (inspectInterval),
   itsPid         (getpid()),
 ///  itsHostId    (gethostid()),     gethostid is not declared in unistd.h
   itsHostId      (0),
-  itsReqId       (SIZEREQID/SIZEINT, (Int)0),
+  itsReqId       (SIZEREQID/SIZEINT, (int32_t)0),
   itsInspectCount(0)
 {
-    AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize (static_cast<Int*>(0)),
+    AlwaysAssert (SIZEINT == CanonicalConversion::canonicalSize (static_cast<int32_t*>(0)),
 		  AipsError);
     itsName = Path(fileName).absoluteName();
     //# If needed, create the file if it does not exist yet.
@@ -97,7 +97,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
         if (!f.canCreate()  &&  !mustExist) {
           return;    // Acceptable that lock file does not exist
         }
-        create = True;
+        create = true;
       }
     }
     //# Open the lock file as read/write if it exists.
@@ -105,11 +105,11 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
     //# For noLocking, it does not need to exist.
     int fd = -1;
     if (!create) {
-      fd = FiledesIO::open (itsName.chars(), True, False);
+      fd = FiledesIO::open (itsName.chars(), true, false);
       if (fd == -1) {
-        fd = FiledesIO::open (itsName.chars(), False, !noLocking);
-        itsWritable  = False;
-        itsAddToList = False;
+        fd = FiledesIO::open (itsName.chars(), false, !noLocking);
+        itsWritable  = false;
+        itsAddToList = false;
       }
     } else if (!noLocking) {
       //# Create a new file with world write access.
@@ -147,15 +147,15 @@ LockFile::~LockFile()
     }
 }
 
-Bool LockFile::isMultiUsed()
+bool LockFile::isMultiUsed()
 {
     //# If a write lock cannot be obtained, the file is in use.
     return ( (itsUseLocker.fd() >= 0
                 &&  !itsUseLocker.canLock (FileLocker::Write)));
 }
 
-Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
-			uInt nattempts)
+bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
+			uint32_t nattempts)
 {
     //# When no lock file, lock requests always succeed,
     //# but we cannot return any info.
@@ -163,17 +163,17 @@ Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
 	if (info != 0) {
 	    info->clear();
 	}
-	return True;
+	return true;
     }
     //# Try to set a lock without waiting.
-    Bool succ = itsLocker.acquire (type, 1);
-    Bool added = False;
+    bool succ = itsLocker.acquire (type, 1);
+    bool added = false;
     //# When unsuccessful and multiple attempts have to be done,
     //# add the process to the request list (if needed) and try to acquire.
     if (!succ  &&  nattempts != 1) {
 	if (itsAddToList) {
 	    addReqId();
-	    added = True;
+	    added = true;
 	}
 	succ = itsLocker.acquire (type, nattempts);
     }
@@ -201,11 +201,11 @@ Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
     return succ;
 }
 
-Bool LockFile::release (const MemoryIO* info)
+bool LockFile::release (const MemoryIO* info)
 {
     //# When no lock file, lock requests are not really handled.
     if (itsFileIO == 0) {
-	return True;
+	return true;
     }
     if (info != 0) {
 	putInfo (*info);
@@ -213,29 +213,29 @@ Bool LockFile::release (const MemoryIO* info)
     return itsLocker.release();
 }
 
-Bool LockFile::inspect (Bool always)
+bool LockFile::inspect (bool always)
 {
     //# When no lock file, lock requests are not really handled.
     if (itsFileIO == 0) {
-	return False;
+	return false;
     }
 
     if (!always) {
       //# Only check elapsed time every n-th request (where n=25 at present),
       //# as the elapsed time calculation is computationally expensive
       if (itsInterval > 0 && itsInspectCount++ < 25) {
-	return False;
+	return false;
       }
       itsInspectCount = 0;
 
       //# Only inspect if time interval has passed.
       if (itsInterval > 0  &&  itsLastTime.age() < itsInterval) {
-	return False;
+	return false;
       }
     }
 
     //# Get the number of request id's and reset the time.
-    uInt nr = getNrReqId();
+    uint32_t nr = getNrReqId();
     itsLastTime.now();
     return  (nr > 0);
 }
@@ -248,85 +248,85 @@ void LockFile::getInfo (MemoryIO& info)
     }
     // The lock file contains:
     // - the fixed length request list in the first bytes
-    // - thereafter the length of the info (as a uInt)
+    // - thereafter the length of the info (as a uint32_t)
     // - thereafter the entire info
-    uChar buffer[2048];
+    unsigned char buffer[2048];
     // Read the first part of the file.
     traceLSEEK (itsLocker.fd(), 0, SEEK_SET);
-    uInt leng = ::read (itsLocker.fd(), buffer, sizeof(buffer));
+    uint32_t leng = ::read (itsLocker.fd(), buffer, sizeof(buffer));
     // Extract the request list from it.
     convReqId (buffer, leng);
     // Get the length of the info.
-    uInt infoLeng = getInt (buffer, leng, SIZEREQID);
+    uint32_t infoLeng = getInt (buffer, leng, SIZEREQID);
     // Clear the MemoryIO object.
     info.clear();
     if (infoLeng == 0) {
 	return;
     }
     // Get the length of the info in the part already read.
-    // (subtract length of request list and the info-length uInt)
+    // (subtract length of request list and the info-length uint32_t)
     leng -= SIZEREQID+SIZEINT;
     if (leng > infoLeng) {
 	leng = infoLeng;
     }
-    info.seek (Int64(0));
+    info.seek (int64_t(0));
     info.write (leng, buffer + SIZEREQID + SIZEINT);
     // Read the remaining info parts.
     if (infoLeng > leng) {
 	infoLeng -= leng;
-	uChar* buf = new uChar[infoLeng];
-	AlwaysAssert (::read (itsLocker.fd(), buf, infoLeng) == Int(infoLeng),
+	unsigned char* buf = new unsigned char[infoLeng];
+	AlwaysAssert (::read (itsLocker.fd(), buf, infoLeng) == int32_t(infoLeng),
                       AipsError);
 	info.write (infoLeng, buf);
 	delete [] buf;
     }
-    info.seek (Int64(0));
+    info.seek (int64_t(0));
 }
 
 void LockFile::putInfo (const MemoryIO& info) const
 {
-    uInt infoLeng = const_cast<MemoryIO&>(info).length();
+    uint32_t infoLeng = const_cast<MemoryIO&>(info).length();
     if (itsLocker.fd() < 0  ||  !itsWritable  ||  infoLeng == 0) {
 	return;
     }
     // Write the info into the lock file preceeded by its length.
-    uChar buffer[1024];
-    uInt leng = CanonicalConversion::fromLocal (buffer, infoLeng);
+    unsigned char buffer[1024];
+    uint32_t leng = CanonicalConversion::fromLocal (buffer, infoLeng);
     if (infoLeng > 1024 - leng) {
       // Too large for the buffer, so write length and info separately.
       traceLSEEK (itsLocker.fd(), SIZEREQID, SEEK_SET);
-      AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)buffer, leng) ==
-                    Int(leng), AipsError);
-      AlwaysAssert (traceWRITE (itsLocker.fd(), (Char *)info.getBuffer(),
-                                infoLeng) == Int(infoLeng), AipsError);
+      AlwaysAssert (traceWRITE (itsLocker.fd(), (char *)buffer, leng) ==
+                    int32_t(leng), AipsError);
+      AlwaysAssert (traceWRITE (itsLocker.fd(), (char *)info.getBuffer(),
+                                infoLeng) == int32_t(infoLeng), AipsError);
     }else{
       // Info fits in the buffer, so copy and do a single write.
       memcpy (buffer+leng, info.getBuffer(), infoLeng);
-      AlwaysAssert (tracePWRITE (itsLocker.fd(), (Char *)buffer, leng+infoLeng,
-                                 SIZEREQID) == Int(leng+infoLeng), AipsError);
+      AlwaysAssert (tracePWRITE (itsLocker.fd(), (char *)buffer, leng+infoLeng,
+                                 SIZEREQID) == int32_t(leng+infoLeng), AipsError);
     }
     // Do an fsync to achieve NFS synchronization.
     fsync (itsLocker.fd());
 }
 
-Int LockFile::getNrReqId() const
+int32_t LockFile::getNrReqId() const
 {
-    uChar buffer[8];
-    uInt leng = tracePREAD (itsLocker.fd(), buffer, SIZEINT, 0);
+    unsigned char buffer[8];
+    uint32_t leng = tracePREAD (itsLocker.fd(), buffer, SIZEINT, 0);
     return getInt (buffer, leng, 0);
 }
 
-Int LockFile::getInt (const uChar* buffer, uInt leng, uInt offset) const
+int32_t LockFile::getInt (const unsigned char* buffer, uint32_t leng, uint32_t offset) const
 {
     if (leng < offset + SIZEINT) {
 	return 0;
     }
-    Int value;
+    int32_t value;
     CanonicalConversion::toLocal (value, buffer+offset);
     return value;
 }
 
-void LockFile::convReqId (const uChar* buffer, uInt leng)
+void LockFile::convReqId (const unsigned char* buffer, uint32_t leng)
 {
     if (leng >= SIZEREQID) {
 	CanonicalConversion::toLocal (itsReqId.storage(), buffer,
@@ -339,7 +339,7 @@ void LockFile::addReqId()
     //# Add the id at the last free place in the block.
     //# If full, use last element. This is better than ignoring it,
     //# because in this way the last request is always known.
-    uInt inx = itsReqId[0];
+    uint32_t inx = itsReqId[0];
     if (inx >= NRREQID) {
 	inx = NRREQID-1;
     }
@@ -351,14 +351,14 @@ void LockFile::addReqId()
 
 void LockFile::removeReqId()
 {
-    Int i;
+    int32_t i;
     //# Remove the id and all previous id's from the block.
     //# In principle previous id's should not occur, but it
     //# can happen when a process with an outstanding request died.
-    Int nr = itsReqId[0];
+    int32_t nr = itsReqId[0];
     for (i=0; i<nr; i++) {
-	if (Int(itsPid) == itsReqId[2*i+1]
-        &&  Int(itsHostId) == itsReqId[2*i+2]) {
+	if (int32_t(itsPid) == itsReqId[2*i+1]
+        &&  int32_t(itsHostId) == itsReqId[2*i+2]) {
 	    break;
 	}
     }
@@ -373,11 +373,11 @@ void LockFile::removeReqId()
 void LockFile::putReqId (int fd) const
 {
     if (itsAddToList) {
-	uChar buffer[SIZEREQID];
-	uInt leng = CanonicalConversion::fromLocal (buffer,
+	unsigned char buffer[SIZEREQID];
+	uint32_t leng = CanonicalConversion::fromLocal (buffer,
 						    itsReqId.storage(),
 						    itsReqId.nelements());
-        AlwaysAssert(tracePWRITE(fd, (Char *)buffer, leng, 0) == Int(leng),
+        AlwaysAssert(tracePWRITE(fd, (char *)buffer, leng, 0) == int32_t(leng),
                      AipsError);
 	fsync (fd);
     }
@@ -386,7 +386,7 @@ void LockFile::putReqId (int fd) const
 void LockFile::getReqId()
 {
     int fd = itsLocker.fd();
-    uChar buffer[SIZEREQID];
+    unsigned char buffer[SIZEREQID];
     if (tracePREAD(fd, buffer, SIZEREQID, 0) > 0) {
 	CanonicalConversion::fromLocal (buffer,
 					itsReqId.storage(),
@@ -395,10 +395,10 @@ void LockFile::getReqId()
 }
 
 
-uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
+uint32_t LockFile::showLock (uint32_t& pid, bool& permLocked, const String& fileName)
 {
     pid = 0;
-    permLocked = False;
+    permLocked = false;
     String fullName = Path(fileName).absoluteName();
     File f (fullName);
     if (! f.exists()) {
@@ -406,7 +406,7 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
 			 " does not exist");
     }
     //# Open the lock file as readonly.
-    int fd = FiledesIO::open (fullName.chars(), False);
+    int fd = FiledesIO::open (fullName.chars(), false);
     if (fd == -1) {
         throw AipsError ("LockFile::showLock - File " + fileName +
 			 " could not be opened");
@@ -419,11 +419,11 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
     FileLocker permLocker (fd, 2, 1);
     // Determine if the file is opened in another process.
     // If not, we can exit immediately.
-    uInt usePid;
+    uint32_t usePid;
     if (useLocker.canLock (usePid, FileLocker::Write)) {
         return 0;
     }
-    uInt result;
+    uint32_t result;
     // If we cannot readlock, the file is writelocked elsewhere.
     // If we cannot writelock, the file is readlocked elsewhere.
     // Otherwise the file is simply in use.
@@ -436,7 +436,7 @@ uInt LockFile::showLock (uInt& pid, Bool& permLocked, const String& fileName)
         return 1;
     }
     if (! permLocker.canLock (usePid, FileLocker::Write)) {
-        permLocked = True;
+        permLocked = true;
     }
     return result;
 }

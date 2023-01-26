@@ -31,11 +31,11 @@
 
 int main() {
     try {
-    	for (Double z=0; z<=7; z+=0.5) {
+    	for (double z=0; z<=7; z+=0.5) {
     		cout << z << " "  << ZScoreCalculator::zscoreToNpts(z) << endl;
     	}
-    	uInt count = 0;
-    	uInt64 x = 10;
+    	uint32_t count = 0;
+    	uint64_t x = 10;
     	while (count < 15) {
     		cout << "log(npts) " << log10(x) << " zscore " << ZScoreCalculator::getMaxZScore(x) << endl;
     		++count;

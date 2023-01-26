@@ -49,17 +49,17 @@ int main() {
                        Interpolate2D::CUBIC, AipsError);
 
         // Set up matrix of input values
-        Matrix<Float> matt_f(10,10);
-        Matrix<Double> matt_d(10,10);
-        for (uInt i=0; i<10; ++i) {
-          for (uInt j=0; j<10; ++j) {
+        Matrix<float> matt_f(10,10);
+        Matrix<double> matt_d(10,10);
+        for (uint32_t i=0; i<10; ++i) {
+          for (uint32_t j=0; j<10; ++j) {
             matt_f(i,j) = i+j;
             matt_d(i,j) = i+j;
           }
         }
 
         // Where to evaluate the interpolation
-        Vector<Double> where(2);
+        Vector<double> where(2);
         where(0) = 3.452; where(1) = 6.1;
 
         // Test for all implemented methods
@@ -69,23 +69,23 @@ int main() {
         methods[2] = "lanczos";
         methods[3] = "nearest";
 
-        std::vector<Double> results(4);
+        std::vector<double> results(4);
         results[0] = 9.552; // Linear
         results[1] = 9.552; // Cubic
         results[2] = 9.473654921656; // Lanczos
         results[3] = 9.; // Nearest
-        Bool ok;
-        for (uInt method=0; method<methods.size(); ++method) {
-          Float result_f;
+        bool ok;
+        for (uint32_t method=0; method<methods.size(); ++method) {
+          float result_f;
           Interpolate2D myInterp(Interpolate2D::stringToMethod(methods[method]));
 
           ok = myInterp.interp(result_f, where, matt_f);
-          AlwaysAssert(ok==True, AipsError);
+          AlwaysAssert(ok==true, AipsError);
           AlwaysAssert(near(result_f, results[method]), AipsError);
 
-          Double result_d;
+          double result_d;
           ok = myInterp.interp(result_d, where, matt_d);
-          AlwaysAssert(ok==True, AipsError);
+          AlwaysAssert(ok==true, AipsError);
           AlwaysAssert(near(result_d, results[method], 1.e-9), AipsError);
         }
 
@@ -93,17 +93,17 @@ int main() {
         Matrix<Complex> matt_c(10,10);
         Matrix<DComplex> matt_dc(10,10);
         std::vector<DComplex> cresults(results.size());
-        for (uInt i=0; i<results.size(); ++i) {
+        for (uint32_t i=0; i<results.size(); ++i) {
             cresults[i] = DComplex(results[i], 2*results[i]);
         }
-        for (uInt i=0; i<10; ++i) {
-            for (uInt j=0; j<10; ++j) {
-                uInt v = i + j;
+        for (uint32_t i=0; i<10; ++i) {
+            for (uint32_t j=0; j<10; ++j) {
+                uint32_t v = i + j;
                 matt_c(i,j) = Complex(v, 2*v);
                 matt_dc(i,j) = DComplex(v, 2*v);
             }
         }
-        for (uInt method=0; method<methods.size(); ++method) {
+        for (uint32_t method=0; method<methods.size(); ++method) {
             Complex result_c;
             Interpolate2D myInterp(Interpolate2D::stringToMethod(methods[method]));
             ok = myInterp.interp(result_c, where, matt_c);

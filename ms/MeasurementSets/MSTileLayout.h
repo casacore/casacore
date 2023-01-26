@@ -113,13 +113,13 @@ public:
   // data with large tiles in field_id order can be 10-100 times slower than
   // sequential access.
   static IPosition tileShape(const IPosition& dataShape,
-			     Int observationType = Standard,
-			     Int nIfr = 0, Int nInt = 1);
+			     int32_t observationType = Standard,
+			     int32_t nIfr = 0, int32_t nInt = 1);
 
   // same as above, but pick standard nIfr (number of interferometers)
   // for named array and default nInt.
   static IPosition tileShape(const IPosition& dataShape,
-			     Int observationType,
+			     int32_t observationType,
 			     const String& array);
 };
 

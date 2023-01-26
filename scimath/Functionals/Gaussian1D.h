@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-//    Gaussian<Double> gf(5.0, 25.0, 7);
+//    Gaussian<double> gf(5.0, 25.0, 7);
 //    gf(25);            // = 5.0
 //    gf[HEIGHT](1.0);
 //    gf.setWidth(2.0);                

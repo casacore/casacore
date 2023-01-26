@@ -37,7 +37,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Initialize statics.
-  Bool MemoryTrace::theirDoTrace = False;
+  bool MemoryTrace::theirDoTrace = false;
   std::ofstream MemoryTrace::theirFile;
   Timer MemoryTrace::theirTimer;
   void* (*MemoryTrace::theirOldMallocHook)(size_t, const void*) = 0;
@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       __malloc_hook      = &mallocHook;
       __free_hook        = &freeHook;
 #endif
-      theirDoTrace = True;
+      theirDoTrace = true;
     }
   }
 
@@ -80,20 +80,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       __malloc_hook = theirOldMallocHook;
       __free_hook   = theirOldFreeHook;
 #endif
-      theirDoTrace = False;
+      theirDoTrace = false;
     }
   }
 
   std::ofstream& MemoryTrace::writeAlloc (const void* ptr, size_t size)
   {
-    theirFile << Int64(1000 * theirTimer.real()) << " a b-" << ptr
+    theirFile << int64_t(1000 * theirTimer.real()) << " a b-" << ptr
               << ' ' << size << ' ';
     return theirFile;
   }
 
   std::ofstream& MemoryTrace::writeFree (const void* ptr)
   {
-    theirFile << Int64(1000 * theirTimer.real()) << " f b-" << ptr
+    theirFile << int64_t(1000 * theirTimer.real()) << " f b-" << ptr
               << ' ';
     return theirFile;
   }
@@ -121,7 +121,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     theirOldMallocHook = __malloc_hook;
     theirOldFreeHook   = __free_hook;
     // iostream might call malloc/free; it is protected too.
-    theirFile << Int64(1000 * theirTimer.real()) << " a " << ptr << ' '
+    theirFile << int64_t(1000 * theirTimer.real()) << " a " << ptr << ' '
               << size << ' ' << caller << std::endl;
     // Restore our own hooks.
     __malloc_hook = &mallocHook;
@@ -148,7 +148,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       theirOldMallocHook = __malloc_hook;
       theirOldFreeHook   = __free_hook;
       // iostream might call malloc/free; it is protected too.
-      theirFile << Int64(1000 * theirTimer.real()) << " f " << ptr << ' '
+      theirFile << int64_t(1000 * theirTimer.real()) << " f " << ptr << ' '
                 << caller << std::endl;
       // Restore our own hooks.
       __malloc_hook = &mallocHook;
@@ -170,7 +170,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         __free_hook   = theirOldFreeHook;
       }
 #endif
-      theirFile << Int64(1000 * theirTimer.real()) << msg
+      theirFile << int64_t(1000 * theirTimer.real()) << msg
                 << name << std::endl;
 #ifdef AIPS_LINUX_DEPR
       if (theirDoTrace) {
@@ -192,7 +192,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         __free_hook   = theirOldFreeHook;
       }
 #endif
-      theirFile << Int64(1000 * theirTimer.real()) << msg
+      theirFile << int64_t(1000 * theirTimer.real()) << msg
                 << name << std::endl;
 #ifdef AIPS_LINUX_DEPR
       if (theirDoTrace) {

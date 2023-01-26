@@ -91,18 +91,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    RawIO rawio (&membuf);
 //    AipsIO stream (&rawio);
 //    // Write values.
-//    stream << (Int)10;
-//    stream << True;
+//    stream << (int32_t)10;
+//    stream << true;
 //    // Seek to beginning of buffer and read data in.
 //    stream.setpos (0);
-//    Int vali;
-//    Bool valb;
+//    int32_t vali;
+//    bool valb;
 //    stream >> vali >> valb;
 //
 //    // One can obtain the buffer and its length and use it later.
 //    // (e.g. to write it in a non-AipsIO file).
-//    uChar* bufptr = membuf.getBuffer();
-//    uInt64 length = membuf.length();
+//    unsigned char* bufptr = membuf.getBuffer();
+//    uint64_t length = membuf.length();
 //
 //    // It can also used to construct another MemoryIO object from it.
 //    // The following memory buffer is static and readonly.
@@ -123,11 +123,11 @@ class MemoryIO: public ByteIO
 {
 public:
     // Construct a dynamic object with the given initial length.
-    explicit MemoryIO (uInt64 initialSize=65536, uInt64 expandSize=32768);
+    explicit MemoryIO (uint64_t initialSize=65536, uint64_t expandSize=32768);
 
     // Construct from a buffer with the given length.
     // The buffer is readonly and cannot be expanded.
-    MemoryIO (const void* buffer, uInt64 size);
+    MemoryIO (const void* buffer, uint64_t size);
 
     // Construct from the given buffer with the given length.
     // The Byte::Option determines how the buffer will be used.
@@ -148,10 +148,10 @@ public:
     // This means that <src>buffer</src> does not point to the data
     // anymore. However, when <src>expandSize==0</src>, the buffer
     // cannot be expanded and the pointer is always valid.
-    // <br>When canDelete is True, buffer expansion means that the
+    // <br>When canDelete is true, buffer expansion means that the
     // old buffer gets deleted.
-    MemoryIO (void* buffer, uInt64 size, ByteIO::OpenOption,
-	      uInt64 expandSize=0, Bool canDelete=False);
+    MemoryIO (void* buffer, uint64_t size, ByteIO::OpenOption,
+	      uint64_t expandSize=0, bool canDelete=false);
 
     // Delete the Memory object.
     // The data buffer is not deleted when constructed with the
@@ -162,14 +162,14 @@ public:
     // When needed it expands the buffer.
     // An exception is thrown when the buffer is not writable or
     // when buffer expansion fails or is not possible.
-    virtual void write (Int64 size, const void* buf);
+    virtual void write (int64_t size, const void* buf);
 
     // Read <src>size</src> bytes from the memory buffer. Returns the number of
     // bytes actually read. Will throw an Exception (AipsError) if the
     // requested number of bytes could not be read unless throwException is set
-    // to False. Will always throw an exception if the buffer is not readable
+    // to false. Will always throw an exception if the buffer is not readable
     // or the buffer pointer is at an invalid position.
-    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
+    virtual int64_t read (int64_t size, void* buf, bool throwException=true);    
 
     // Clear the buffer; i.e. set the data length and seek pointer to zero.
     void clear();
@@ -177,25 +177,25 @@ public:
     // Get the buffer containing the data.
     // <br>The length of the data in the buffer can be obtained using the
     // length() function.
-    const uChar* getBuffer() const;
+    const unsigned char* getBuffer() const;
 
     // Get the length of the data in the buffer.
-    virtual Int64 length();
+    virtual int64_t length();
 
     // Get the allocated length of the buffer.
-    uInt64 allocated() const;
+    uint64_t allocated() const;
        
     // Get the expand size (0 = not expandable).
-    uInt64 expandSize() const;
+    uint64_t expandSize() const;
        
     // Is the IO stream readable?
-    virtual Bool isReadable() const;
+    virtual bool isReadable() const;
 
     // Is the IO stream writable?
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Is the IO stream seekable?
-    virtual Bool isSeekable() const;
+    virtual bool isSeekable() const;
 
     // resize the internal buffer (if necessary) so that it is big enough
     // to hold the specified number of bytes. Returns a non-const pointer
@@ -207,7 +207,7 @@ public:
     // buffer and the MemoryIO object is not expandable.
     // <note role=warning> You should not use the supplied pointer to write
     // more than length data points to the buffer</note>
-    uChar* setBuffer(uInt64 length);
+    unsigned char* setBuffer(uint64_t length);
 
     // tell the MemoryIO object how much of its internal buffer is valid
     // data. You only need to use this function if you are directly writing to
@@ -215,7 +215,7 @@ public:
     // function. This function throws an exception if the number of bytes used
     // is greater than the number allocated or if the MemoryIO object is not
     // writeable.
-    void setUsed(uInt64 bytesUsed);
+    void setUsed(uint64_t bytesUsed);
 
 private:
     //# Copy constructor, should not be used.
@@ -230,23 +230,23 @@ private:
     // buffer or when seeking past the end of a readonly buffer.
     // When seeking past the end of a writable buffer, the required
     // amount of bytes is added and initialized to zero.
-    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+    virtual int64_t doSeek (int64_t offset, ByteIO::SeekOption);
 
     //# Expand the buffer to at least the given size. The specified size
     //# will be used if it results in a larger buffer size. In this way the
     //# buffer does not get reallocated too often.  It returns a false status
     //# when the buffer cannot be expanded. 
-    Bool expand (uInt64 minSize);
+    bool expand (uint64_t minSize);
 
 
-    uChar* itsBuffer;
-    Int64  itsAlloc;
-    Int64  itsExpandSize;
-    Int64  itsUsed;
-    Int64  itsPosition;
-    Bool   itsReadable;
-    Bool   itsWritable;
-    Bool   itsCanDelete;
+    unsigned char* itsBuffer;
+    int64_t  itsAlloc;
+    int64_t  itsExpandSize;
+    int64_t  itsUsed;
+    int64_t  itsPosition;
+    bool   itsReadable;
+    bool   itsWritable;
+    bool   itsCanDelete;
 };
 
 
@@ -254,15 +254,15 @@ inline void MemoryIO::clear()
 {
     itsUsed = itsPosition = 0;
 }
-inline const uChar* MemoryIO::getBuffer() const
+inline const unsigned char* MemoryIO::getBuffer() const
 {
     return itsBuffer;
 }
-inline uInt64 MemoryIO::allocated() const
+inline uint64_t MemoryIO::allocated() const
 {
     return itsAlloc;
 }
-inline uInt64 MemoryIO::expandSize() const
+inline uint64_t MemoryIO::expandSize() const
 {
     return itsExpandSize;
 }

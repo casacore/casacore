@@ -49,7 +49,7 @@ template<class T> class Block;
 // <etymology>
 // A SampledFunctional is an interface that allows random access to a fixed
 // size data set. I originally conceived this class as being used to access
-// scalar values (Int's Float's etc.) stored in Vectors, using the
+// scalar values (int32_t's float's etc.) stored in Vectors, using the
 // SampledFunctional interface. It became generalised to incorporate Blocks
 // and I now realise that a better name might be MemorySampledFunctional, to
 // highlight that the data is stored in memory (and not on disk).
@@ -87,10 +87,10 @@ template<class T> class Block;
 // <example>
 // Constructing and using ScalarSampledFunctional's
 // <srcblock> 
-// Block<Float> b(10); // Create a block of ten elements
+// Block<float> b(10); // Create a block of ten elements
 // // ... Fill the block any way you like ... 
-// ScalarSampledFunctional<Float> fb(b); 
-// for(uInt i = 0; i < 10; i++)
+// ScalarSampledFunctional<float> fb(b); 
+// for(uint32_t i = 0; i < 10; i++)
 //  cout << "f(" << i << ") = " << fb(i) << endl;
 // </srcblock>
 // </example>
@@ -138,8 +138,8 @@ public:
 
   // Define the functions for the SampledFunctional interface
   // <group> 
-  virtual T operator()(const uInt &index) const;
-  virtual uInt nelements() const;
+  virtual T operator()(const uint32_t &index) const;
+  virtual uint32_t nelements() const;
   virtual ~ScalarSampledFunctional();
   // </group>
 

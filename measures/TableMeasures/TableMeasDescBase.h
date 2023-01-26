@@ -124,11 +124,11 @@ public:
     { return itsValue.columnName(); }
 
   // Return the reference code.
-  uInt getRefCode() const
+  uint32_t getRefCode() const
     { return itsRef.getRefCode(); }
 
-  // Returns True if the reference varies per row.
-  Bool isRefCodeVariable() const
+  // Returns true if the reference varies per row.
+  bool isRefCodeVariable() const
     { return itsRef.isRefCodeVariable(); }
 
   // Returns the name of the ref code column when the ref code is variable.
@@ -145,17 +145,17 @@ public:
   const String& offsetColumnName() const
     { return itsRef.offsetColumnName(); }
 
-  // Returns True if an offset has been defined.
-  Bool hasOffset() const
+  // Returns true if an offset has been defined.
+  bool hasOffset() const
     { return itsRef.hasOffset(); }
 
-  // Returns True if the offset is variable.
-  Bool isOffsetVariable() const
+  // Returns true if the offset is variable.
+  bool isOffsetVariable() const
     { return itsRef.isOffsetVariable(); }
 
-  // Returns True if the offset is variable and is stored in an
+  // Returns true if the offset is variable and is stored in an
   // ArrayMeasColumn, i.e., offsets are stored per element.
-  Bool isOffsetArray() const
+  bool isOffsetArray() const
     { return itsRef.isOffsetArray(); }
 
   // Returns a reference to the offset.
@@ -168,11 +168,11 @@ public:
 
   // Returns the reference code for this object given a string.  Throws
   // an exception if the refString is invalid for this object.
-  uInt refCode (const String& refString) const
+  uint32_t refCode (const String& refString) const
     { return itsMeasType.refCode(refString); }
 
   // Translates the refCode for the descriptors measure type.
-  const String& refType (uInt refCode) const
+  const String& refType (uint32_t refCode) const
     { return itsMeasType.refType(refCode); }
 
   // Return the Units of the Measure values
@@ -183,7 +183,7 @@ public:
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
   // <group>
-  void resetRefCode (uInt refCode)
+  void resetRefCode (uint32_t refCode)
     { itsRef.resetRefCode (refCode); }
   void resetOffset (const Measure& offset)
     { itsRef.resetOffset (offset); }
@@ -195,7 +195,7 @@ public:
 					 const String& columnName);
 
   // Does this column contain table measures?
-  static Bool hasMeasures (const TableColumn& column);
+  static bool hasMeasures (const TableColumn& column);
 
 protected:
   // Set the initial reference codes and types in the table.
@@ -203,7 +203,7 @@ protected:
 
   // Set the measure and possible units.
   void setMeasUnits (const Measure& meas,
-		     const Vector<Quantum<Double> >& val,
+		     const Vector<Quantum<double> >& val,
 		     const Vector<Unit>& units);
 
 private:

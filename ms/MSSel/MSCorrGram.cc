@@ -68,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSCorrGram = 0;
-static Int                   posMSCorrGram = 0;
+static int32_t                   posMSCorrGram = 0;
 
 
 //# Parse the command.
@@ -94,7 +94,7 @@ void msCorrGramParseDeleteNode()
 }
 
 //# Give the string position.
-Int& msCorrGramPosition()
+int32_t& msCorrGramPosition()
 {
     return posMSCorrGram;
 }

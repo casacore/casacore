@@ -40,7 +40,7 @@ PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam() :
 }
 
 template<class T>
-PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam(uInt n) :
+PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam(uint32_t n) :
   Function1D<T>(n) {
 	if (n < 2) {
 		throw AipsError("PowerLogarithmicPolynomialParam constructor: n must be at least 2");
@@ -49,7 +49,7 @@ PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam(uInt n) :
 
 template<class T>
 PowerLogarithmicPolynomialParam<T>::PowerLogarithmicPolynomialParam(const vector<T>& parms)
-	: Function1D<T>(Vector<Double>(parms)) {
+	: Function1D<T>(Vector<double>(parms)) {
 	if (parms.size() < 2) {
 		throw AipsError("PowerLogarithmicPolynomialParam constructor: n must be at least 2");
 	}

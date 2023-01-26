@@ -50,29 +50,29 @@
 #include <casacore/casa/namespace.h>
 
 SpectralCoordinate makeLinearCoordinate(MFrequency::Types type,
-                                        Double& crval,
-                                        Double& cdelt,
-                                        Double& crpix,
-                                        Double& restFreq);
+                                        double& crval,
+                                        double& cdelt,
+                                        double& crpix,
+                                        double& restFreq);
 
 SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
-                                            Vector<Double>& freqs,
-                                            Double& restFreq);
+                                            Vector<double>& freqs,
+                                            double& restFreq);
 
-Double velInc (Double dF, Double f0, MDoppler::Types velType);
+double velInc (double dF, double f0, MDoppler::Types velType);
 void refConv();
 
 int main()
 {
    try {
 
-      Double f0, finc, refchan, restFreq;
-      Vector<Double> freqs;
-      Matrix<Double> xform(1,1); xform(0,0) = 1.0;
+      double f0, finc, refchan, restFreq;
+      Vector<double> freqs;
+      Matrix<double> xform(1,1); xform(0,0) = 1.0;
 //
       Vector<String> names(1); names(0) = "Frequency";
       Vector<String> units(1); units(0) = "Hz";
-      Vector<Double> crpix(1), crval(1), cdelt(1);
+      Vector<double> crpix(1), crval(1), cdelt(1);
 
 // Constructors
 
@@ -87,13 +87,13 @@ int main()
       {
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
-         Vector<Double> velocities;
+         Vector<double> velocities;
          lc.setVelocity (String("km/s"), MDoppler::OPTICAL);
          lc.frequencyToVelocity(velocities, freqs);
          SpectralCoordinate lc2(MFrequency::TOPO, MDoppler::OPTICAL, velocities, String("km/s"), restFreq);
-         Double freq;
-         for (uInt i=0; i<velocities.nelements(); i++) {
-            if (!lc2.toWorld(freq, Double(i))) {
+         double freq;
+         for (uint32_t i=0; i<velocities.nelements(); i++) {
+            if (!lc2.toWorld(freq, double(i))) {
                throw(AipsError(String("Failed velocity construction consistency test toWorld conversion because ") + lc.errorMessage()));
             }
             if (!near(freq, freqs(i))) {
@@ -105,13 +105,13 @@ int main()
       {
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
-         Vector<Double> wavelengths;
+         Vector<double> wavelengths;
          lc.setWavelengthUnit (String("m"));
          lc.frequencyToWavelength(wavelengths, freqs);
          SpectralCoordinate lc2(MFrequency::TOPO, wavelengths, String("m"));
-         Double freq;
-         for (uInt i=0; i<wavelengths.nelements(); i++) {
-            if (!lc2.toWorld(freq, Double(i))) {
+         double freq;
+         for (uint32_t i=0; i<wavelengths.nelements(); i++) {
+            if (!lc2.toWorld(freq, double(i))) {
                throw(AipsError(String("Failed wavelength construction consistency test toWorld conversion because ") + lc.errorMessage()));
             }
             if (!near(freq, freqs(i))) {
@@ -123,7 +123,7 @@ int main()
          	throw(AipsError(String("The native type of the coordinate should be WAVE")));
 
          // create the cSys as air wavelength and check the spectral type
-         lc2 = SpectralCoordinate(MFrequency::TOPO, wavelengths, String("m"), 0.0, True);
+         lc2 = SpectralCoordinate(MFrequency::TOPO, wavelengths, String("m"), 0.0, true);
          if (lc2.nativeType() != SpectralCoordinate::AWAV)
          	throw(AipsError(String("The native type of the coordinate should be AWAV")));
       }
@@ -132,7 +132,7 @@ int main()
       {
 			String sType;
 			SpectralCoordinate::SpecType spcType;
-			Bool rval;
+			bool rval;
 
 			//sType = SpectralCoordinate::specTypetoString(SpectralCoordinate::FREQ);
 			rval = SpectralCoordinate::specTypetoString(sType, SpectralCoordinate::FREQ);
@@ -182,7 +182,7 @@ int main()
          if (!lc.near(lc2)) {
             throw(AipsError(String("Failed near test 1 because") + lc.errorMessage()));
          }
-         Vector<Int> excludeAxes(1, 1);
+         Vector<int32_t> excludeAxes(1, 1);
          if (!lc.near(lc2, excludeAxes)) {
             throw(AipsError(String("Failed near test 2 because") + lc.errorMessage()));
          }
@@ -191,15 +191,15 @@ int main()
 // Test Quantum constructor interfaces
    
      {
-        Double crval = 1.4e9;
-        Double crpix = 1.0;
-        Double cdelt = 1.0e3;
-        Double restFreq = 1.41e9;
+        double crval = 1.4e9;
+        double crpix = 1.0;
+        double cdelt = 1.0e3;
+        double restFreq = 1.41e9;
         SpectralCoordinate sc1(MFrequency::TOPO, crval, cdelt, crpix, restFreq);
 //
-        Quantum<Double> crval2(100*crval, "cHz");
-        Quantum<Double> cdelt2(100*cdelt, "cHz");
-        Quantum<Double> restFreq2(100*restFreq, "cHz");
+        Quantum<double> crval2(100*crval, "cHz");
+        Quantum<double> cdelt2(100*cdelt, "cHz");
+        Quantum<double> restFreq2(100*restFreq, "cHz");
         SpectralCoordinate sc2(MFrequency::TOPO, crval2, cdelt2, crpix, restFreq2);
 //
         if (!sc1.near(sc2)) {  
@@ -208,13 +208,13 @@ int main()
       }
 
       {
-        Vector<Double> freqs(3);
+        Vector<double> freqs(3);
         freqs(0) = 1.4e9; freqs(1) = 1.5e9; freqs(2) = 1.7e9;
-        Double restFreq = 1.41e9;
+        double restFreq = 1.41e9;
         SpectralCoordinate sc1(MFrequency::TOPO, freqs, restFreq);
 //
-        Quantum<Vector<Double> > freqs2(100.0*freqs, "cHz");
-        Quantum<Double> restFreq2(100.0*restFreq, "cHz");
+        Quantum<Vector<double> > freqs2(100.0*freqs, "cHz");
+        Quantum<double> restFreq2(100.0*restFreq, "cHz");
         SpectralCoordinate sc2(MFrequency::TOPO, freqs2, restFreq2);
 //
         if (!sc1.near(sc2)) {  
@@ -348,17 +348,17 @@ int main()
          }
 //
          restFreq = 1.3;
-         if (!lc.setRestFrequency(restFreq, False)) {
+         if (!lc.setRestFrequency(restFreq, false)) {
             throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
          }
          if (!near(restFreq, lc.restFrequency())) {
             throw(AipsError("Failed rest frequency set/recovery test"));
          }
 //
-         Vector<Double> rf(2);
+         Vector<double> rf(2);
          rf(0) = lc.restFrequency();
          rf(1) = restFreq;
-         if (!lc.setRestFrequency(restFreq, True)) {
+         if (!lc.setRestFrequency(restFreq, true)) {
             throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
          }
          if (!near(restFreq, lc.restFrequency())) {
@@ -366,30 +366,30 @@ int main()
          }
 //
          restFreq = 1.4;
-         rf.resize(3,True);
+         rf.resize(3,true);
          rf(2) = restFreq;
-         if (!lc.setRestFrequency(restFreq, True)) {
+         if (!lc.setRestFrequency(restFreq, true)) {
             throw(AipsError(String("Failed to set rest frequency because") + lc.errorMessage()));
          }
          if (!near(restFreq, lc.restFrequency())) {
             throw(AipsError("Failed rest frequency set/recovery test"));
          }
-         const Vector<Double>& restFreqs = lc.restFrequencies();
+         const Vector<double>& restFreqs = lc.restFrequencies();
          if (restFreqs.nelements() != rf.nelements()) {
             throw(AipsError("Failed restFrequencies recovery test 1"));
          }
-         for (uInt i=0; i<rf.nelements(); i++) {
+         for (uint32_t i=0; i<rf.nelements(); i++) {
             if (!near(restFreqs(i), rf(i))) {
                throw(AipsError("Failed restFrequencies recovery test 2"));
             }
          }
-         for (uInt i=0; i<restFreqs.nelements(); i++){
+         for (uint32_t i=0; i<restFreqs.nelements(); i++){
             lc.selectRestFrequency(i);
             if (!near(restFreqs(i), lc.restFrequency())) {
                throw(AipsError("Failed selectRestFrquency test 1"));
             }
          }
-         for (uInt i=0; i<restFreqs.nelements(); i++){
+         for (uint32_t i=0; i<restFreqs.nelements(); i++){
             lc.selectRestFrequency(restFreqs(i));
             if (!near(restFreqs(i), lc.restFrequency())) {
                throw(AipsError("Failed selectRestFrquency test 1"));
@@ -398,12 +398,12 @@ int main()
          rf.resize(2);
          rf(0) = 1e9;
          rf(1) = 2e9;
-         lc.setRestFrequencies(rf, 0, False);
-         const Vector<Double>& restFreqs2 = lc.restFrequencies();
+         lc.setRestFrequencies(rf, 0, false);
+         const Vector<double>& restFreqs2 = lc.restFrequencies();
          if (restFreqs2.nelements() != rf.nelements()) {
             throw(AipsError("Failed setRestFrequencies test 1"));
          } 
-         for (uInt i=0; i<rf.nelements(); i++) {
+         for (uint32_t i=0; i<rf.nelements(); i++) {
             if (!near(restFreqs(i), rf(i))) {
                throw(AipsError("Failed setRestFrequencies test 2"));
             }
@@ -414,14 +414,14 @@ int main()
             throw(AipsError("Failed frequency system set/recovery test"));
          }
 //
-         Int prec;
+         int32_t prec;
          Coordinate::formatType fType = Coordinate::SCIENTIFIC;
-         lc.getPrecision(prec, fType, True, 6, 4, 2);
+         lc.getPrecision(prec, fType, true, 6, 4, 2);
          if (prec != 6) {
             throw(AipsError("Failed getPrecision test 1"));
          }
          fType = Coordinate::FIXED;
-         lc.getPrecision(prec, fType, True, 6, 4, 2);
+         lc.getPrecision(prec, fType, true, 6, 4, 2);
          if (prec != 4) {
             throw(AipsError("Failed getPrecision test 2"));
          }
@@ -432,9 +432,9 @@ int main()
 //
          {
             String unit("km/s");
-            Double val = lc.restFrequency();
+            double val = lc.restFrequency();
             lc.setVelocity (String("m/s"), MDoppler::Z);
-            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
             if (str != String("0.0000")) {
 	      throw(AipsError("Failed format test 3"));
             }
@@ -444,8 +444,8 @@ int main()
             String nativeUnit = lc.worldAxisUnits()(0);
 //
             String unit;
-            Double val = 0.0;
-            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+            double val = 0.0;
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
             if (str != String("0.0000")) {
 	       cerr << str << endl;
                throw(AipsError("Failed format test 4"));
@@ -457,10 +457,10 @@ int main()
          }
          {
             String unit;
-            Double val = 1.4e9;
-            lc.setRestFrequency(val, False);
+            double val = 1.4e9;
+            lc.setRestFrequency(val, false);
             lc.setVelocity (String("m/s"), MDoppler::Z);
-            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
             if (str != String("1400000000.0000")) {	
                cerr << str << endl;
                throw(AipsError("Failed format test 5"));
@@ -475,8 +475,8 @@ int main()
             String unit("m");
 	    units(0) = "GHz";
 	    lc.setWorldAxisUnits(units);
-            Double val = 100; 
-            String str = lc.format(unit, Coordinate::FIXED, val, 0, True, True, 4);
+            double val = 100; 
+            String str = lc.format(unit, Coordinate::FIXED, val, 0, true, true, 4);
             if (str != String("0.0030")) {
 	       cerr << str << endl;
                throw(AipsError("Failed format test 6"));
@@ -484,8 +484,8 @@ int main()
          }
 //
          {
-            Vector<Double> pixelValues = lc.pixelValues();
-            Vector<Double> worldValues = lc.worldValues();
+            Vector<double> pixelValues = lc.pixelValues();
+            Vector<double> worldValues = lc.worldValues();
             if (pixelValues.nelements()!=0 || worldValues.nelements()!=0) {
                throw(AipsError("Failed linear pixel/worldValues function test"));
             }
@@ -494,13 +494,13 @@ int main()
          {
             SpectralCoordinate lc2 = 
                makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
-            Vector<Double> pixelValues = lc2.pixelValues();
-            Vector<Double> worldValues = lc2.worldValues();
+            Vector<double> pixelValues = lc2.pixelValues();
+            Vector<double> worldValues = lc2.worldValues();
             if (!casacore::allNear(worldValues, freqs, 1e-6)) {
                throw(AipsError("Failed non-linear worldValues function test"));
             }
-            Vector<Double> pixels2(freqs.nelements());
-            for (uInt i=0; i<pixels2.nelements(); i++) pixels2(i) = Double(i);
+            Vector<double> pixels2(freqs.nelements());
+            for (uint32_t i=0; i<pixels2.nelements(); i++) pixels2(i) = double(i);
             if (!casacore::allNear(pixelValues, pixels2, 1e-6)) {
                throw(AipsError("Failed non-linear pixelValues function test"));
             }
@@ -516,8 +516,8 @@ int main()
          SpectralCoordinate lc2 = makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
 //
          AlwaysAssert(lc.nPixelAxes()==1, AipsError);
-         Vector<Bool> axes(1, True);
-         Vector<Int> shape(1);
+         Vector<bool> axes(1, true);
+         Vector<int32_t> shape(1);
          shape(0) = 128;
             
 // All axes
@@ -526,8 +526,8 @@ int main()
             Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
             Vector<String> units2 = pC->worldAxisUnits();
             Vector<String> names2 = pC->worldAxisNames();
-            Vector<Double> crval2 = pC->referenceValue();
-            Vector<Double> crpix2 = pC->referencePixel();
+            Vector<double> crval2 = pC->referenceValue();
+            Vector<double> crpix2 = pC->referencePixel();
             if (units2(0)!=String("s")) {
                throw(AipsError("makeFourierCoordinate (1) failed units test"));
             }
@@ -537,8 +537,8 @@ int main()
             if (!casacore::allNear(crval2,0.0,1e-13)) {
                throw(AipsError("makeFourierCoordinate (1) failed crval test"));
             }
-            for (uInt i=0; i<pC->nPixelAxes(); i++) {
-               if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+            for (uint32_t i=0; i<pC->nPixelAxes(); i++) {
+               if (!near(double(int32_t(shape(i)/2)), crpix2(i))) {
                   throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
                }
             }
@@ -548,7 +548,7 @@ int main()
 // No axes
 
          {
-            axes.set(False);
+            axes.set(false);
             Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
             if (pC) {
                delete pC;
@@ -559,7 +559,7 @@ int main()
 // Non linear
 
          {
-            axes.set(True);
+            axes.set(true);
             Coordinate* pC = lc2.makeFourierCoordinate (axes, shape);
             if (pC) {
                delete pC;
@@ -573,26 +573,26 @@ int main()
 
      {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         Vector<Double> pixel(1), world;
+         Vector<double> pixel(1), world;
          pixel(0) = 12.2;
          if (!lc.toWorld(world, pixel)) {
             throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
          }
 //
-         Vector<Double> pixel2;
+         Vector<double> pixel2;
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
          if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
-         Double pix, wrld;
+         double pix, wrld;
          pix = 12.2;
          if (!lc.toWorld(wrld, pix)) {
             throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
          }
 //
-         Double pix2;
+         double pix2;
          if (!lc.toPixel(pix2, wrld)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
@@ -602,14 +602,14 @@ int main()
      }
      {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         Double pixel;
+         double pixel;
          MFrequency world;
          pixel = 12.2;
          if (!lc.toWorld(world, pixel)) {
             throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
          }
 //
-         Double pixel2;
+         double pixel2;
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
@@ -621,26 +621,26 @@ int main()
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
 //
-         Vector<Double> pixel(1), world;
+         Vector<double> pixel(1), world;
          pixel(0) = 12.2;
          if (!lc.toWorld(world, pixel)) {
             throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
          }
 //
-         Vector<Double> pixel2;
+         Vector<double> pixel2;
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
          if (!casacore::allNear(pixel2, pixel, 1e-6)) {
                throw(AipsError("Coordinate conversion reflection failed"));
          }
-         Double pix, wrld;
+         double pix, wrld;
          pix = 12.2;
          if (!lc.toWorld(wrld, pix)) {
             throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
          }
 //
-         Double pix2;
+         double pix2;
          if (!lc.toPixel(pix2, wrld)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
@@ -652,7 +652,7 @@ int main()
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
 //
-         Double pixel;
+         double pixel;
          MFrequency world;
          pixel = 12.2;
          if (!lc.toWorld(world, pixel)) {
@@ -665,7 +665,7 @@ int main()
          units.set("KHz");
          lc.setWorldAxisUnits(units);
 //
-         Double pixel2;
+         double pixel2;
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
@@ -677,7 +677,7 @@ int main()
          SpectralCoordinate lc = 
             makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
 //
-         Double pixel;
+         double pixel;
          MVFrequency world;
          pixel = 12.2;
          if (!lc.toWorld(world, pixel)) {
@@ -690,7 +690,7 @@ int main()
          units.set("KHz");
          lc.setWorldAxisUnits(units);
 //
-         Double pixel2;
+         double pixel2;
          if (!lc.toPixel(pixel2, world)) {
             throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
          }
@@ -710,13 +710,13 @@ int main()
          restFreq = 1.420405752E9;
          f0 = restFreq;
          SpectralCoordinate lc(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         Double dVel = velInc(finc, f0, velType);
+         double dVel = velInc(finc, f0, velType);
 
 // Pixel <-> Velocity
 
-         Double vel;
-         Double pix = 0.0;
-         Double pix2;
+         double vel;
+         double pix = 0.0;
+         double pix2;
          lc.setVelocity (velUnit, velType);
          if (!lc.pixelToVelocity(vel, pix)) {
             throw(AipsError(String("pixelToVelocity 1 conversion failed because ") + lc.errorMessage()));
@@ -745,8 +745,8 @@ int main()
             throw(AipsError(String("velocityToPixel 2 gave wrong answer")));
          }
 //
-         Vector<Double> pixels(2), pixels2;
-         Vector<Double> velocities;
+         Vector<double> pixels(2), pixels2;
+         Vector<double> velocities;
          pixels(0) = 0.0; pixels(1) = 1.0;
          if (!lc.pixelToVelocity(velocities, pixels)) {
             throw(AipsError(String("pixelToVelocity 3 conversion failed because ") + lc.errorMessage()));
@@ -761,7 +761,7 @@ int main()
             throw(AipsError(String("pixelToVelocity 3 gave wrong answer")));
          }
 //
-         Quantum<Double> velQ;
+         Quantum<double> velQ;
          pix = 0.0;
          if (!lc.pixelToVelocity(velQ, pix)) {
             throw(AipsError(String("pixelToVelocity 4 conversion failed because ") + lc.errorMessage()));
@@ -778,7 +778,7 @@ int main()
 
 // Frequency <-> Velocity
 
-         Double freq;
+         double freq;
          if (!lc.frequencyToVelocity(vel, f0)) {
             throw(AipsError(String("frequencyToVelocity 1 conversion failed because ") + lc.errorMessage()));
          }
@@ -792,7 +792,7 @@ int main()
             throw(AipsError(String("velocityToFrequency 1 gave wrong answer")));
          }
 //
-         Vector<Double> frequencies(2), frequencies2;
+         Vector<double> frequencies(2), frequencies2;
          frequencies(0) = f0;
          frequencies(1) = f0 + finc;
          if (!lc.frequencyToVelocity(velocities, frequencies)) {
@@ -877,11 +877,11 @@ int main()
 
 // Frequency <-> Wavelength
 //
-	 Vector<Double> wavelengths;
+	 Vector<double> wavelengths;
          frequencies(0) = f0;
          frequencies(1) = f0 + finc;
-	 Double w0 = C::c/f0*1000.; // default unit is mm
-	 Double w1 = C::c/frequencies(1)*1000.;
+	 double w0 = C::c/f0*1000.; // default unit is mm
+	 double w1 = C::c/frequencies(1)*1000.;
          if (!lc.frequencyToWavelength(wavelengths, frequencies)) {
             throw(AipsError(String("frequencyToWavelength conversion failed because ") + lc.errorMessage()));
          }
@@ -922,12 +922,12 @@ int main()
 
 	 lc.setWavelengthUnit(String("mm"));
 
-	 Vector<Double> airWavelengths;
+	 Vector<double> airWavelengths;
          frequencies(0) = 6.26E14;
          frequencies(1) = 3.21E14;
-	 Double aw0 = C::c/frequencies(0)*1000.; // default unit is mm
+	 double aw0 = C::c/frequencies(0)*1000.; // default unit is mm
 	 aw0 /= FITSSpectralUtil::refractiveIndex(aw0*1000.); // takes wavelength in microns
-	 Double aw1 = C::c/frequencies(1)*1000.;
+	 double aw1 = C::c/frequencies(1)*1000.;
 	 aw1 /= FITSSpectralUtil::refractiveIndex(aw1*1000.);
          if (!lc.frequencyToAirWavelength(airWavelengths, frequencies)) {
             throw(AipsError(String("frequencyToAirWavelength conversion failed because ") + lc.errorMessage()));
@@ -973,9 +973,9 @@ int main()
 //
       {
          SpectralCoordinate lc = makeLinearCoordinate(MFrequency::TOPO, f0, finc, refchan, restFreq);
-         Vector<Double> rf(2);
+         Vector<double> rf(2);
          rf(0) = 1.0e9; rf(1) = 2.0e9;
-         lc.setRestFrequencies(rf, 0, False);
+         lc.setRestFrequencies(rf, 0, false);
          Record rec;
          if (!lc.save(rec, "linear")) {
             throw(AipsError("Linear SpectralCoordinate saving to Record failed"));  
@@ -991,9 +991,9 @@ int main()
       }
       {
          SpectralCoordinate lc = makeNonLinearCoordinate(MFrequency::TOPO, freqs, restFreq);
-         Vector<Double> rf(2);
+         Vector<double> rf(2);
          rf(0) = 1.0e9; rf(1) = 2.0e9;
-         lc.setRestFrequencies(rf, 0, False);
+         lc.setRestFrequencies(rf, 0, false);
          Record rec;
          if (!lc.save(rec, "nonlinear")) {
             throw(AipsError("Non-linear SpectralCoordinate saving to Record failed"));  
@@ -1030,13 +1030,13 @@ int main()
           );
           MDirection direction(Quantity(20, "deg"), Quantity(50, "deg"), MDirection::J2000);
           sc.setReferenceConversion(MFrequency::CMB, epoch, position, direction);
-          Vector<Double> pixel(1, 10);
-          Vector<Double> world(1);
+          Vector<double> pixel(1, 10);
+          Vector<double> world(1);
           sc.toWorld(world, pixel);
           AlwaysAssert(near(world[0], 1.50121e+09, 1e-5), AipsError);
-          sc.toWorld(world, pixel, True);
+          sc.toWorld(world, pixel, true);
           AlwaysAssert(near(world[0], 1.50121e+09, 1e-5), AipsError);
-          sc.toWorld(world, pixel, False);
+          sc.toWorld(world, pixel, false);
           AlwaysAssert(world[0] == 1.50001e+09, AipsError);
 
       }
@@ -1052,10 +1052,10 @@ int main()
 }
 
 SpectralCoordinate makeLinearCoordinate (MFrequency::Types type,
-                                         Double& f0,
-                                         Double& finc,
-                                         Double& refchan,
-                                         Double& restFreq)
+                                         double& f0,
+                                         double& finc,
+                                         double& refchan,
+                                         double& restFreq)
 {
    refchan = 10.5;
    finc = 4e6;
@@ -1068,8 +1068,8 @@ SpectralCoordinate makeLinearCoordinate (MFrequency::Types type,
 
 
 SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
-                                            Vector<Double>& freqs,
-                                            Double& restFreq)
+                                            Vector<double>& freqs,
+                                            double& restFreq)
 {
    restFreq = 1.420405752E9;
    freqs.resize(5);
@@ -1083,9 +1083,9 @@ SpectralCoordinate makeNonLinearCoordinate (MFrequency::Types type,
    return SpectralCoordinate(type, freqs, restFreq);
 }
 
-Double velInc (Double dF, Double f0, MDoppler::Types velType)
+double velInc (double dF, double f0, MDoppler::Types velType)
 {
-   Double c = QC::c( ).getValue(Unit("km/s"));
+   double c = QC::c( ).getValue(Unit("km/s"));
    if (velType==MDoppler::RADIO) {
       return -c * dF / f0;
    }
@@ -1100,25 +1100,25 @@ void refConv ()
 {
   { // on a linear coordinate
 
-    Double f0, finc, refchan, restFreq;
+    double f0, finc, refchan, restFreq;
     SpectralCoordinate lc = makeLinearCoordinate(MFrequency::LSRK, f0, finc, refchan, restFreq);
     //
-    Vector<Double> pixel = lc.referencePixel().copy();
-    Vector<Double> world;
+    Vector<double> pixel = lc.referencePixel().copy();
+    Vector<double> world;
     //
     if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld conversion (1) failed because ") + lc.errorMessage()));
     }
     //
-    Quantum<Double> t(50237.29, Unit(String("d")));
+    Quantum<double> t(50237.29, Unit(String("d")));
     MVEpoch t2(t);
     MEpoch epoch(t2);
     //
     MPosition pos;
     MeasTable::Observatory(pos, String("ATCA"));
     //
-    Quantum<Double> lon(0.0,Unit(String("rad")));
-    Quantum<Double> lat(-35.0,Unit(String("deg")));
+    Quantum<double> lon(0.0,Unit(String("rad")));
+    Quantum<double> lat(-35.0,Unit(String("deg")));
     MDirection dir(lon, lat, MDirection::J2000);
     MFrequency::Types type = MFrequency::BARY;
     if (!lc.setReferenceConversion(type, epoch, pos, dir)) {
@@ -1129,7 +1129,7 @@ void refConv ()
       throw(AipsError(String("toWorld + reference conversion (1) failed because ") + lc.errorMessage()));
     }
     //
-    Vector<Double> pixel2;
+    Vector<double> pixel2;
     if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel + reference conversion (1) failed because ") + lc.errorMessage()));
     }
@@ -1149,7 +1149,7 @@ void refConv ()
     AlwaysAssert(casacore::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
     AlwaysAssert(casacore::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
     
-    Vector<Double> baryFreq;
+    Vector<double> baryFreq;
     lc.toWorld(baryFreq, pixel);
     
     AlwaysAssert(lc.transformFrequencySystem(MFrequency::BARY, epoch, pos, dir), AipsError);
@@ -1159,26 +1159,26 @@ void refConv ()
   }
   { // on a non-linear coordinate
 
-   Double restFreq;
-   Vector<Double> freqs;
+   double restFreq;
+   Vector<double> freqs;
    SpectralCoordinate lc = makeNonLinearCoordinate(MFrequency::LSRK, freqs, restFreq);
    //
-   Vector<Double> pixel = lc.referencePixel().copy();
-   Vector<Double> world;
+   Vector<double> pixel = lc.referencePixel().copy();
+   Vector<double> world;
    //
    if (!lc.toWorld(world, pixel)) {
      throw(AipsError(String("toWorld conversion (2) failed because ") + lc.errorMessage()));
    }
    //
-   Quantum<Double> t(50237.29, Unit(String("d")));
+   Quantum<double> t(50237.29, Unit(String("d")));
    MVEpoch t2(t);
    MEpoch epoch(t2);
    //
    MPosition pos;
    MeasTable::Observatory(pos, String("ATCA"));
    //
-   Quantum<Double> lon(0.0,Unit(String("rad")));
-   Quantum<Double> lat(-35.0,Unit(String("deg")));
+   Quantum<double> lon(0.0,Unit(String("rad")));
+   Quantum<double> lat(-35.0,Unit(String("deg")));
    MDirection dir(lon, lat, MDirection::J2000);
    MFrequency::Types type = MFrequency::CMB;
    if (!lc.setReferenceConversion(type, epoch, pos, dir)) {
@@ -1189,7 +1189,7 @@ void refConv ()
      throw(AipsError(String("toWorld + reference conversion (2) failed because ") + lc.errorMessage()));
    }
    //
-   Vector<Double> pixel2;
+   Vector<double> pixel2;
    if (!lc.toPixel(pixel2, world)) {
      throw(AipsError(String("toPixel + reference conversion (2) failed because ") + lc.errorMessage()));
    }
@@ -1209,12 +1209,12 @@ void refConv ()
    AlwaysAssert(casacore::allNear(pos.getValue().get(), pos2.getValue().get(), 1e-6), AipsError);
    AlwaysAssert(casacore::allNear(dir.getValue().get(), dir2.getValue().get(), 1e-6), AipsError);
 
-   Vector<Double> cmbFreq;
+   Vector<double> cmbFreq;
    lc.toWorld(cmbFreq, pixel);
 
    AlwaysAssert(lc.transformFrequencySystem(MFrequency::CMB, epoch, pos, dir), AipsError);
 
-   Vector<Double> cmbFreq2;
+   Vector<double> cmbFreq2;
    lc.toWorld(cmbFreq2, pixel);
 
    AlwaysAssert(casacore::allNear(cmbFreq, lc.referenceValue(), 1e-6), AipsError);

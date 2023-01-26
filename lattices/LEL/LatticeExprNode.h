@@ -182,17 +182,17 @@ class LatticeExprNode;
   // </group>
 
   // 1-argument function to get the number of elements in a lattice.
-  // If the lattice is masked, only the True elements are counted.
-  // Results in a scalar Double.
+  // If the lattice is masked, only the true elements are counted.
+  // Results in a scalar double.
    LatticeExprNode nelements (const LatticeExprNode& expr);
 
   // 1-argument function to get the dimensionality of a lattice.
   // 0 is returned if it is a scalar.
-  // Results in a scalar Float.
+  // Results in a scalar float.
    LatticeExprNode ndim (const LatticeExprNode& expr);
 
   // 2-argument function to get the length of an axis.
-  // Results in a scalar Float.
+  // Results in a scalar float.
   // The 2nd expression (giving the axis number) has to be a real scalar.
   // <note role=caution>
   // Axes start counting at 0.
@@ -204,9 +204,9 @@ class LatticeExprNode;
 
   // 2-argument function telling per pixel if its index on the given axis
   // is contained in the 2nd argument. The 2nd argument should be a boolean
-  // vector where True means that the index is contained.
-  // For indices >= vector_length, the 2nd argument defaults to False.
-  // Results in a Bool array.
+  // vector where true means that the index is contained.
+  // For indices >= vector_length, the 2nd argument defaults to false.
+  // Results in a bool array.
   // <note role=caution>
   // Axes start counting at 0.
   // If the axis is a number < 0 or >= ndim, an exception is thrown.
@@ -215,7 +215,7 @@ class LatticeExprNode;
 			    const LatticeExprNode& indexFlags);
 
   // 2-argument function rebinning Lattice by given factors. The 2nd argument
-  // should be a vector (preferably Float - really Int but Int not well
+  // should be a vector (preferably float - really int32_t but int32_t not well
   // supported in LEL yet).  Results in a T array.
    LatticeExprNode rebin (const LatticeExprNode& expr,
 			  const LatticeExprNode& bin);
@@ -225,8 +225,8 @@ class LatticeExprNode;
 
   // Functions operating on a logical expression resulting in a scalar;
   // Functions "any" (are any pixels "True") and "all" (are all pixels
-  // "True") result in a Bool; functions "ntrue" and "nfalse" result 
-  // in a Double.
+  // "True") result in a bool; functions "ntrue" and "nfalse" result 
+  // in a double.
   // <group>
    LatticeExprNode any   (const LatticeExprNode& expr);
    LatticeExprNode all   (const LatticeExprNode& expr);
@@ -235,7 +235,7 @@ class LatticeExprNode;
   // </group>
 
   // This function returns the mask of the given expression.
-  // If it has no mask, the result is an array with all True values.
+  // If it has no mask, the result is an array with all true values.
    LatticeExprNode mask (const LatticeExprNode& expr);
 
   // This function returns the value of the expression without a mask.
@@ -259,8 +259,8 @@ class LatticeExprNode;
 				  const LatticeExprNode& right);
 
   // Function resembling the ternary <src>?:</src> construct in C++.
-  // The argument "condition" has to be a Bool scalar or lattice.
-  // If an element in "condition" is True, the corresponding element from
+  // The argument "condition" has to be a bool scalar or lattice.
+  // If an element in "condition" is true, the corresponding element from
   // "arg1" is taken, otherwise it is taken from "arg2".
    LatticeExprNode iif (const LatticeExprNode& condition,
 			const LatticeExprNode& arg1,
@@ -278,8 +278,8 @@ class LatticeExprNode;
   // meaningful for down-conversions (e.g. double to float),
   // since up-conversions are automatically done to get matching data types
   // when needed.  Note that some conversions are not supported, such
-  // as Complex to Double or Float.
-  // <br>The conversion to Bool is useful to convert a region to a
+  // as Complex to double or float.
+  // <br>The conversion to bool is useful to convert a region to a
   // boolean lattice, which is only possible if the region is given
   // in world coordinates. Otherwise an exception is thrown.
   // <group>
@@ -288,11 +288,11 @@ class LatticeExprNode;
    LatticeExprNode toComplex (const LatticeExprNode& expr);
    LatticeExprNode toDComplex(const LatticeExprNode& expr);
    LatticeExprNode toBool    (const LatticeExprNode& expr);
-   LatticeExprNode convertType (const LatticeExprNode& expr, const Float*);
-   LatticeExprNode convertType (const LatticeExprNode& expr, const Double*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const float*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const double*);
    LatticeExprNode convertType (const LatticeExprNode& expr, const Complex*);
    LatticeExprNode convertType (const LatticeExprNode& expr, const DComplex*);
-   LatticeExprNode convertType (const LatticeExprNode& expr, const Bool*);
+   LatticeExprNode convertType (const LatticeExprNode& expr, const bool*);
   // </group>
 // </group>
 
@@ -363,8 +363,8 @@ class LatticeExprNode;
 //
 // <example>
 // <srcblock>
-//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
-//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f2(IPosition (2,nx,ny));
 //  f2.set(2.0);
 //  f1.copyData(2*f2+f2);
 // </srcblock>
@@ -386,29 +386,29 @@ class LatticeExprNode;
 //
 // <example>
 // <srcblock>
-//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
-//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
-//  ArrayLattice<Double>  d(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f2(IPosition (2,nx,ny));
+//  ArrayLattice<double>  d(IPosition (2,nx,ny));
 //  ArrayLattice<Complex> c(IPosition (2,nx,ny));
-//  ArrayLattice<Bool>    b(IPosition (2,nx,ny));
+//  ArrayLattice<bool>    b(IPosition (2,nx,ny));
 //
-//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(True);
+//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(true);
 //  f1.copyData( (3.5*f2) + (cos(d)) - (10/min(d,f2)*(-abs(c))*ntrue(b)) - (C::pi) );
 // </srcblock>
 //  
 //  In this rather silly example, we fill Lattice "f1" with the result of the
 //  expression.  The expression shows the use of constants, unary operations, 
 //  binary operations, 1D and 2D functions.  It also shows how mixed types can 
-//  be handled.  The output Lattice is a Float, whereas  mixed into the 
-//  expression are subexpressions involving Float, Double, Complex and Bool
+//  be handled.  The output Lattice is a float, whereas  mixed into the 
+//  expression are subexpressions involving float, double, Complex and bool
 //  Lattices.
 //
 // </example>
 //
 // <example>
 // <srcblock>
-//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
-//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f2(IPosition (2,nx,ny));
 //  f2.set(2.0);
 //  LatticeExprNode exp1(sin(f2));
 //  LatticeExprNode exp2(pow(f2,2.0));
@@ -559,15 +559,15 @@ public:
 
 // Unary constant expression constructors.
 // <group>
-   LatticeExprNode (Int64 constant);
-   LatticeExprNode (Int constant);
-   LatticeExprNode (uInt constant);
-   LatticeExprNode (Long constant);
-   LatticeExprNode (Float constant);
-   LatticeExprNode (Double constant);
+   LatticeExprNode (int64_t constant);
+   LatticeExprNode (int32_t constant);
+   LatticeExprNode (uint32_t constant);
+   LatticeExprNode (long constant);
+   LatticeExprNode (float constant);
+   LatticeExprNode (double constant);
    LatticeExprNode (const Complex& constant);
    LatticeExprNode (const DComplex& constant);
-   LatticeExprNode (Bool constant);
+   LatticeExprNode (bool constant);
 // </group>
 
 // Constructor from an IPosition (containing indices or axes).
@@ -575,16 +575,16 @@ public:
 
 // Lattice expression (gets Lattice pixels) constructors.
 // <group>
-   LatticeExprNode (const Lattice<Float>& lattice);
-   LatticeExprNode (const Lattice<Double>& lattice);
+   LatticeExprNode (const Lattice<float>& lattice);
+   LatticeExprNode (const Lattice<double>& lattice);
    LatticeExprNode (const Lattice<Complex>& lattice);
    LatticeExprNode (const Lattice<DComplex>& lattice);
-   LatticeExprNode (const Lattice<Bool>& lattice);
-   LatticeExprNode (const MaskedLattice<Float>& lattice);
-   LatticeExprNode (const MaskedLattice<Double>& lattice);
+   LatticeExprNode (const Lattice<bool>& lattice);
+   LatticeExprNode (const MaskedLattice<float>& lattice);
+   LatticeExprNode (const MaskedLattice<double>& lattice);
    LatticeExprNode (const MaskedLattice<Complex>& lattice);
    LatticeExprNode (const MaskedLattice<DComplex>& lattice);
-   LatticeExprNode (const MaskedLattice<Bool>& lattice);
+   LatticeExprNode (const MaskedLattice<bool>& lattice);
 // </group>
 
 // Create a lattice expression from a region.
@@ -614,22 +614,22 @@ public:
 
 // Convert the expression to another data type.
 // <group>
-   CountedPtr<LELInterface<Float> >    makeFloat() const;
-   CountedPtr<LELInterface<Double> >   makeDouble() const;
+   CountedPtr<LELInterface<float> >    makeFloat() const;
+   CountedPtr<LELInterface<double> >   makeDouble() const;
    CountedPtr<LELInterface<Complex> >  makeComplex() const;
    CountedPtr<LELInterface<DComplex> > makeDComplex() const;
-   CountedPtr<LELInterface<Bool> >     makeBool() const;
+   CountedPtr<LELInterface<bool> >     makeBool() const;
 // </group>
 
 // Evaluate the expression.
 // One can be sure that the result is not a reference to another array.
 // This function should be used by LatticeExpr and other users.
 // <group>
-   void eval (LELArray<Float>& result, const Slicer& section) const;
-   void eval (LELArray<Double>& result, const Slicer& section) const;
+   void eval (LELArray<float>& result, const Slicer& section) const;
+   void eval (LELArray<double>& result, const Slicer& section) const;
    void eval (LELArray<Complex>& result, const Slicer& section) const;
    void eval (LELArray<DComplex>& result, const Slicer& section) const;
-   void eval (LELArray<Bool>& result, const Slicer& section) const;
+   void eval (LELArray<bool>& result, const Slicer& section) const;
 // </group>
 
 // Evaluate the expression.
@@ -638,15 +638,15 @@ public:
 // This function is meant for internal use by the LEL classes and
 // should not be used externally.
 // <group>
-   void evalRef (LELArrayRef<Float>& result, const Slicer& section) const
+   void evalRef (LELArrayRef<float>& result, const Slicer& section) const
     { pExprFloat_p->evalRef (result, section); }
-   void evalRef (LELArrayRef<Double>& result, const Slicer& section) const
+   void evalRef (LELArrayRef<double>& result, const Slicer& section) const
     { pExprDouble_p->evalRef (result, section); }
    void evalRef (LELArrayRef<Complex>& result, const Slicer& section) const
     { pExprComplex_p->evalRef (result, section); }
    void evalRef (LELArrayRef<DComplex>& result, const Slicer& section) const
     { pExprDComplex_p->evalRef (result, section); }
-   void evalRef (LELArrayRef<Bool>& result, const Slicer& section) const
+   void evalRef (LELArrayRef<bool>& result, const Slicer& section) const
     { pExprBool_p->evalRef (result, section); }
 // </group>
 
@@ -654,25 +654,25 @@ public:
 // and "get*" functions do the same thing, they just have
 // a slightly different interface.
 // <group>
-   void eval (Float& result) const;
-   void eval (Double& result) const;
+   void eval (float& result) const;
+   void eval (double& result) const;
    void eval (Complex& result) const;
    void eval (DComplex& result) const;
-   void eval (Bool& result) const;
-   Float getFloat() const;
-   Double getDouble() const;
+   void eval (bool& result) const;
+   float getFloat() const;
+   double getDouble() const;
    Complex getComplex() const;
    DComplex getDComplex() const;
-   Bool getBool() const;
+   bool getBool() const;
 // </group>
 
 // Evaluate the expression (in case it is a constant array).
 // <group>
-   Array<Float> getArrayFloat() const;
-   Array<Double> getArrayDouble() const;
+   Array<float> getArrayFloat() const;
+   Array<double> getArrayDouble() const;
    Array<Complex> getArrayComplex() const;
    Array<DComplex> getArrayDComplex() const;
-   Array<Bool> getArrayBool() const;
+   Array<bool> getArrayBool() const;
 // </group>
 
 // Get the data type of the expression.
@@ -680,19 +680,19 @@ public:
       {return dtype_p;}
 
 // Is the expression node a region?
-   Bool isRegion() const
+   bool isRegion() const
       {return pAttr_p->isRegion();}
 
 // Is the result of "eval" a scalar?
-   Bool isScalar() const
+   bool isScalar() const
       {return pAttr_p->isScalar();}
 
 // Is the result of "eval" masked?
-   Bool isMasked() const
+   bool isMasked() const
       {return pAttr_p->isMasked();}
 
 // Holds the node an invalid scalar?
-   Bool isInvalidScalar() const
+   bool isInvalidScalar() const
     {
       if (!donePrepare_p) doPrepare();
       return isInvalid_p;
@@ -708,17 +708,17 @@ public:
       {return *pAttr_p;}
 
 // Replace a scalar subexpression by its result.
-   Bool replaceScalarExpr();
+   bool replaceScalarExpr();
   
 // Make the object from a Counted<LELInterface> pointer.
 // Ideally this function is private, but alas it is needed in LELFunction1D,
 // operator==, and more (too many to make them friend).
 // <group>
-   LatticeExprNode(const CountedPtr<LELInterface<Float> >& expr);
-   LatticeExprNode(const CountedPtr<LELInterface<Double> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<float> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<double> >& expr);
    LatticeExprNode(const CountedPtr<LELInterface<Complex> >& expr);
    LatticeExprNode(const CountedPtr<LELInterface<DComplex> >& expr);
-   LatticeExprNode(const CountedPtr<LELInterface<Bool> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<bool> >& expr);
 // </group>
 
 // Determine the resulting data type from the given data types.
@@ -732,15 +732,15 @@ public:
 // <br>The expectArray argument tells if the result should be an array
 // which is the case if one of the arguments is an array.
    static LELAttribute checkArg (const Block<LatticeExprNode>& arg,
-				 const Block<Int>& argType,
-				 Bool expectArray,
-				 Bool matchAxes = True);
+				 const Block<int32_t>& argType,
+				 bool expectArray,
+				 bool matchAxes = true);
 
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
   // <group>
-  Bool lock (FileLocker::LockType, uInt nattempts);
+  bool lock (FileLocker::LockType, uint32_t nattempts);
   void unlock();
-  Bool hasLock (FileLocker::LockType) const;
+  bool hasLock (FileLocker::LockType) const;
   void resync();
   // </group>
 
@@ -748,16 +748,16 @@ public:
 private:
 // Make the object from a LELInterface* pointer.
 // <group>
-   LatticeExprNode(LELInterface<Float>* expr);
-   LatticeExprNode(LELInterface<Double>* expr);
+   LatticeExprNode(LELInterface<float>* expr);
+   LatticeExprNode(LELInterface<double>* expr);
    LatticeExprNode(LELInterface<Complex>* expr);
    LatticeExprNode(LELInterface<DComplex>* expr);
-   LatticeExprNode(LELInterface<Bool>* expr);
+   LatticeExprNode(LELInterface<bool>* expr);
 // </group>
 
 // Test if both operands represent a region.
 // An exception is thrown if only one of them is a region.
-   static Bool areRegions (const LatticeExprNode& left,
+   static bool areRegions (const LatticeExprNode& left,
 			   const LatticeExprNode& right);
 
 // Create a new node for a numerical unary operation.
@@ -814,7 +814,7 @@ private:
 // nodes have a coordinate system.
 // It is done by creating an ExtendLattice object for the node
 // with the lower dimensionality.
-   static Int makeEqualDim (LatticeExprNode& expr0,
+   static int32_t makeEqualDim (LatticeExprNode& expr0,
 			    LatticeExprNode& expr1);
 
 // Do the preparation for the evaluation.
@@ -823,16 +823,16 @@ private:
    
 // Member variables.  
 
-   Bool                donePrepare_p;
+   bool                donePrepare_p;
    DataType            dtype_p;
-   Bool                isInvalid_p;
+   bool                isInvalid_p;
    IPosition           iposition_p;
    const LELAttribute* pAttr_p;
-   CountedPtr<LELInterface<Float> >    pExprFloat_p;
-   CountedPtr<LELInterface<Double> >   pExprDouble_p;
+   CountedPtr<LELInterface<float> >    pExprFloat_p;
+   CountedPtr<LELInterface<double> >   pExprDouble_p;
    CountedPtr<LELInterface<Complex> >  pExprComplex_p;
    CountedPtr<LELInterface<DComplex> > pExprDComplex_p;
-   CountedPtr<LELInterface<Bool> >     pExprBool_p;
+   CountedPtr<LELInterface<bool> >     pExprBool_p;
 };
 
 
@@ -844,15 +844,15 @@ inline LatticeExprNode operator^ (const LatticeExprNode& left,
 				  const LatticeExprNode& right)
   { return pow (left, right); }
 
-inline LatticeExprNode convertType(const LatticeExprNode& expr, const Float*)
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const float*)
   { return toFloat (expr); }
-inline LatticeExprNode convertType(const LatticeExprNode& expr, const Double*)
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const double*)
   { return toDouble (expr); }
 inline LatticeExprNode convertType(const LatticeExprNode& expr, const Complex*)
   { return toComplex (expr); }
 inline LatticeExprNode convertType(const LatticeExprNode& expr, const DComplex*)
   { return toDComplex (expr); }
-inline LatticeExprNode convertType(const LatticeExprNode& expr, const Bool*)
+inline LatticeExprNode convertType(const LatticeExprNode& expr, const bool*)
   { return toBool (expr); }
 
 } //# NAMESPACE CASACORE - END

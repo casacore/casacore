@@ -72,7 +72,7 @@ namespace casacore {
   // JsonKVMap jmap = JsonParser::parseFile (fileName);
   // // Check if the version is correct.
   // AlwaysAssert (jmap.getInt("Version", 1) == 1, AipsError);
-  // uInt axis = jmap.get("Axis").getInt();
+  // uint32_t axis = jmap.get("Axis").getInt();
   // // Get the vector of names from the map and JsonValue.
   // Vector<String> names(jmap.get("Images").getArrayString());
   // </srcblock>

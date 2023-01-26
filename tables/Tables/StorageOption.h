@@ -95,7 +95,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // A size value -1 means use the default of 4*1024*1024.
     // <br>useODirect<0 means reading the option from the aipsrc file.
     // It is only set if the OS supports O_DIRECT.
-    StorageOption (Option option=Aipsrc, Int blockSize=-2, Int useODirect=-3);
+    StorageOption (Option option=Aipsrc, int32_t blockSize=-2, int32_t useODirect=-3);
 
     // Fill the option in case Aipsrc or Default was given.
     // It is done as explained in the synopsis.
@@ -110,26 +110,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { itsOption = option; }
 
     // Get the block size (in bytes).
-    uInt blockSize() const
+    uint32_t blockSize() const
       { return itsBlockSize; }
 
     // Set the block size (in bytes).
-    void setBlockSize (Int blockSize)
+    void setBlockSize (int32_t blockSize)
       { itsBlockSize = blockSize; }
 
     // Get the O_DIRECT option.
-    Bool useODirect() const
+    bool useODirect() const
       { return itsUseODirect; }
 
     // Set the O_DIRECT option.
     // It is only set if the OS supports O_DIRECT.
-    void setUseODirect (Bool useODirect);
+    void setUseODirect (bool useODirect);
 
   private:
     Option itsOption;
-    Int    itsBlockSize;
-    Bool   itsUseODirect;
-    Bool   itsUseAipsrcODirect;
+    int32_t    itsBlockSize;
+    bool   itsUseODirect;
+    bool   itsUseAipsrcODirect;
   };
 
 } //# NAMESPACE CASACORE - END

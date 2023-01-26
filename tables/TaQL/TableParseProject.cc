@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Only take the part beyond the period.
   //# Extend the block each time. Since there are only a few column names,
   //# this will not be too expensive.
-  void TableParseProject::handleColumn (Int stringType,
+  void TableParseProject::handleColumn (int32_t stringType,
                                         const String& name,
                                         const TableExprNode& expr,
                                         const String& newName,
@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       handleWildColumn (stringType, name);
     } else {
       // A single column is given.
-      Int nrcol = columnNames_p.size();
+      int32_t nrcol = columnNames_p.size();
       columnNames_p.resize     (nrcol+1);
       columnNameMasks_p.resize (nrcol+1);
       columnExpr_p.resize      (nrcol+1);
@@ -80,14 +80,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // A true column name is given.
         String oldName;
         String str = name;
-        Int inx = str.index('.');
+        int32_t inx = str.index('.');
         if (inx < 0) {
           oldName = str;
         } else {
           oldName = str.after(inx);
         }
         // Make an expression of the column or keyword name.
-        columnExpr_p[nrcol] = handleKeyCol (str, True, tpq);
+        columnExpr_p[nrcol] = handleKeyCol (str, true, tpq);
         if (columnExpr_p[nrcol].getTableInfo().table().isNull()) {
           // A keyword was given which is returned as a constant.
           nrSelExprUsed_p++;
@@ -100,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           if (!newDtype.empty()  ||  inx >= 0) {
             nrSelExprUsed_p++;
           } else {
-            for (Int i=0; i<nrcol; ++i) {
+            for (int32_t i=0; i<nrcol; ++i) {
               if (str == columnOldNames_p[i]) {
                 nrSelExprUsed_p++;
                 break;
@@ -127,12 +127,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Handle a wildcarded a column name.
   //# Add or remove to/from the block of column names as needed.
-  void TableParseProject::handleWildColumn (Int stringType, const String& name)
+  void TableParseProject::handleWildColumn (int32_t stringType, const String& name)
   {
-    Int nrcol  = columnNames_p.size();
+    int32_t nrcol  = columnNames_p.size();
     String str = name.substr(2, name.size()-3);    // remove delimiters
-    Bool caseInsensitive = ((stringType & 1) != 0);
-    Bool negate          = ((stringType & 2) != 0);
+    bool caseInsensitive = ((stringType & 1) != 0);
+    bool negate          = ((stringType & 2) != 0);
     Regex regex;
     int shInx = -1;
     // See if the wildcarded name has a table shorthand in it.
@@ -169,7 +169,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (!negate) {
       // Find all matching columns.
-      Table tab = tableList_p.findTable(shorthand, False).table();
+      Table tab = tableList_p.findTable(shorthand, false).table();
       if (tab.isNull()) {
         throw TableInvExpr("Shorthand " + shorthand + " in wildcarded column " +
                            name + " not defined in FROM clause");
@@ -179,8 +179,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (shInx >= 0) {
         shorthand += '.';
       }
-      Int nr = 0;
-      for (uInt i=0; i<columns.size(); ++i) {
+      int32_t nr = 0;
+      for (uint32_t i=0; i<columns.size(); ++i) {
         String col = columns[i];
         if (caseInsensitive) {
           col.downcase();
@@ -198,7 +198,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       columnOldNames_p.resize  (nrcol+nr);
       columnDtypes_p.resize    (nrcol+nr);
       columnKeywords_p.resize  (nrcol+nr);
-      for (uInt i=0; i<columns.size(); ++i) {
+      for (uint32_t i=0; i<columns.size(); ++i) {
         if (! columns[i].empty()) {
           // Add the shorthand to the name, so negation takes that into account.
           columnNames_p[nrcol++] = shorthand + columns[i];
@@ -232,13 +232,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Finish the additions to the block of column names
   //# by removing the deleted empty names and creating Expr objects as needed.
-  Table TableParseProject::handleColumnFinish (Bool distinct,
-                                               Bool hasResultSet,
+  Table TableParseProject::handleColumnFinish (bool distinct,
+                                               bool hasResultSet,
                                                TableParseQuery& tpq)
   {
     // Remove the deleted column names.
     // Create Expr objects for the wildcarded names.
-    Int nrcol = columnNames_p.size();
+    int32_t nrcol = columnNames_p.size();
     if (nrcol > 0) {
       if (hasResultSet) {
         throw TableInvExpr("Expressions can be given in SELECT or GIVING, "
@@ -250,8 +250,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       Block<TableExprNode> exprs(nrcol);
       Block<String> dtypes(nrcol);
       Block<TableRecord> keywords(nrcol);
-      Int nr = 0;
-      for (Int i=0; i<nrcol; ++i) {
+      int32_t nr = 0;
+      for (int32_t i=0; i<nrcol; ++i) {
         if (! (columnExpr_p[i].isNull()  &&  columnNames_p[i].empty())) {
           names[nr]     = columnNames_p[i];
           nameMasks[nr] = columnNameMasks_p[i];
@@ -264,12 +264,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             // That can only be the case if no old name is filled in.
             AlwaysAssert (oldNames[nr].empty(), AipsError);
             String name = names[nr];
-            Int j = name.index('.');
+            int32_t j = name.index('.');
             if (j >= 0) {
               name = name.after(j);
             }
             // Make an expression of the column name.
-            exprs[nr]    = handleKeyCol (name, False, tpq);
+            exprs[nr]    = handleKeyCol (name, false, tpq);
             names[nr]    = name;
             oldNames[nr] = name;
             // Get the keywords for this column (to copy unit, etc.)
@@ -279,11 +279,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           ++nr;
         }
       }
-      names.resize    (nr, True);
-      oldNames.resize (nr, True);
-      exprs.resize    (nr, True);
-      dtypes.resize   (nr, True);
-      keywords.resize (nr, True);
+      names.resize    (nr, true);
+      oldNames.resize (nr, true);
+      exprs.resize    (nr, true);
+      dtypes.resize   (nr, true);
+      keywords.resize (nr, true);
       columnNames_p     = names;
       columnNameMasks_p = nameMasks;
       columnOldNames_p  = oldNames;
@@ -308,12 +308,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                        const String& likeColName,
                                        const String& dtstr,
                                        const Record& spec,
-                                       Bool isCOrder)
+                                       bool isCOrder)
   {
     // Check if specific column info is given.
     DataType dtype = TpOther;
-    Int options = 0;
-    Int ndim = -1;
+    int32_t options = 0;
+    int32_t ndim = -1;
     IPosition shape;
     String dmType;
     String dmGroup;
@@ -347,17 +347,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       dtype = makeDataType (TpOther, dtstr, colName);
     }
     // Get the possible specifications (which override the LIKE column).
-    for (uInt i=0; i<spec.nfields(); i++) {
+    for (uint32_t i=0; i<spec.nfields(); i++) {
       String name = spec.name(i);
       name.upcase();
       if (name == "NDIM") {
         ndim = spec.asInt(i);
       } else if (name == "SHAPE") {
-        Vector<Int> ivec(spec.toArrayInt(i));
-        Int nd = ivec.size();
+        Vector<int32_t> ivec(spec.toArrayInt(i));
+        int32_t nd = ivec.size();
         shape.resize (nd);
         if (isCOrder) {
-          for (Int i=0; i<nd; ++i) {
+          for (int32_t i=0; i<nd; ++i) {
             shape[i] = ivec[nd-i-1];
           }
         } else {
@@ -391,7 +391,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Now add the scalar or array column description.
     addColumnDesc (*tableDesc_p, dtype, colName, options, ndim, shape,
                    dmType, dmGroup, comment, keywords, unit, Record());
-    Int nrcol = columnNames_p.size();
+    int32_t nrcol = columnNames_p.size();
     columnNames_p.resize (nrcol+1);
     columnNames_p[nrcol] = colName;
   }
@@ -415,19 +415,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Make a column description for all expressions.
     // Check if all tables involved have the same nr of rows as the first one.
     TableDesc td;
-    for (uInt i=0; i<columnExpr_p.size(); i++) {
+    for (uint32_t i=0; i<columnExpr_p.size(); i++) {
       // If no new name is given, make one (unique).
       String newName = columnNames_p[i];
       if (newName.empty()) {
         String nm = "Col_" + String::toString(i+1);
-        Int seqnr = 0;
+        int32_t seqnr = 0;
         newName = nm;
-        Bool unique = False;
+        bool unique = false;
         while (!unique) {
-          unique = True;
-          for (uInt i=0; i<columnNames_p.size(); i++) {
+          unique = true;
+          for (uint32_t i=0; i<columnNames_p.size(); i++) {
             if (newName == columnNames_p[i]) {
-              unique = False;
+              unique = false;
               seqnr++;
               newName = nm + "_" + String::toString(seqnr);
               break;
@@ -463,20 +463,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // elsewhere.
     projectExprSelColumn_p.resize (columnNames_p.size());
     std::fill (projectExprSelColumn_p.begin(),
-               projectExprSelColumn_p.end(), False);
-    // Set to True for the used columns.
-    uInt ncol = 0;
-    for (uInt i=0; i<projectExprSubset_p.size(); ++i) {
+               projectExprSelColumn_p.end(), false);
+    // Set to true for the used columns.
+    uint32_t ncol = 0;
+    for (uint32_t i=0; i<projectExprSubset_p.size(); ++i) {
       AlwaysAssert (projectExprSubset_p[i] < projectExprSelColumn_p.size(),
                     AipsError);
       if (! projectExprSelColumn_p[projectExprSubset_p[i]]) {
-        projectExprSelColumn_p[projectExprSubset_p[i]] = True;
+        projectExprSelColumn_p[projectExprSubset_p[i]] = true;
         ncol++;
       }
     }
     // Resize the subset vector. It is not really used anymore, but the
     // tracing shows its size as the nr of pre-projected columns.
-    projectExprSubset_p.resize (ncol, True);
+    projectExprSubset_p.resize (ncol, true);
   }
 
   void TableParseProject::initDescriptions (const TableDesc& desc,
@@ -493,7 +493,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (dtstr == "B") {
         if (dtype != TpOther  &&  dtype != TpBool) {
           throw TableInvExpr ("Expression of column " + colName +
-                              " does not have data type Bool");
+                              " does not have data type bool");
         }
         return TpBool;
       }
@@ -551,8 +551,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseProject::addColumnDesc (TableDesc& td,
                                        DataType dtype,
                                        const String& colName,
-                                       Int options,
-                                       Int ndim, const IPosition& shape,
+                                       int32_t options,
+                                       int32_t ndim, const IPosition& shape,
                                        const String& dmType,
                                        const String& dmGroup,
                                        const String& comment,
@@ -563,40 +563,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (ndim < 0) {
       switch (dtype) {
       case TpBool:
-        td.addColumn (ScalarColumnDesc<Bool> (colName, comment,
+        td.addColumn (ScalarColumnDesc<bool> (colName, comment,
                                               dmType, dmGroup, options));
         break;
       case TpUChar:
-        td.addColumn (ScalarColumnDesc<uChar> (colName, comment,
+        td.addColumn (ScalarColumnDesc<unsigned char> (colName, comment,
                                                dmType, dmGroup, 0, options));
         break;
       case TpShort:
-        td.addColumn (ScalarColumnDesc<Short> (colName, comment,
+        td.addColumn (ScalarColumnDesc<int16_t> (colName, comment,
                                                dmType, dmGroup, 0, options));
         break;
       case TpUShort:
-        td.addColumn (ScalarColumnDesc<uShort> (colName, comment,
+        td.addColumn (ScalarColumnDesc<uint16_t> (colName, comment,
                                                 dmType, dmGroup, 0, options));
         break;
       case TpInt:
-        td.addColumn (ScalarColumnDesc<Int> (colName, comment,
+        td.addColumn (ScalarColumnDesc<int32_t> (colName, comment,
                                              dmType, dmGroup, 0, options));
         break;
       case TpUInt:
-        td.addColumn (ScalarColumnDesc<uInt> (colName, comment,
+        td.addColumn (ScalarColumnDesc<uint32_t> (colName, comment,
                                               dmType, dmGroup, 0, options));
         break;
       case TpInt64:
-        td.addColumn (ScalarColumnDesc<Int64> (colName, comment,
+        td.addColumn (ScalarColumnDesc<int64_t> (colName, comment,
                                                dmType, dmGroup, 0, options));
         break;
       case TpFloat:
-        td.addColumn (ScalarColumnDesc<Float> (colName, comment,
+        td.addColumn (ScalarColumnDesc<float> (colName, comment,
                                                dmType, dmGroup, options));
         break;
       case TpDouble:
       case TpQuantity:
-        td.addColumn (ScalarColumnDesc<Double> (colName, comment,
+        td.addColumn (ScalarColumnDesc<double> (colName, comment,
                                                 dmType, dmGroup, options));
         break;
       case TpComplex:
@@ -612,7 +612,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                                 dmType, dmGroup, options));
         break;
       default:
-        AlwaysAssert (False, AipsError);
+        AlwaysAssert (false, AipsError);
       }
     } else {
       // Giving a shape means fixed shape arrays.
@@ -621,48 +621,48 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       switch (dtype) {
       case TpBool:
-        td.addColumn (ArrayColumnDesc<Bool> (colName, comment,
+        td.addColumn (ArrayColumnDesc<bool> (colName, comment,
                                              dmType, dmGroup,
                                              shape, options, ndim));
         break;
       case TpUChar:
-        td.addColumn (ArrayColumnDesc<uChar> (colName, comment,
+        td.addColumn (ArrayColumnDesc<unsigned char> (colName, comment,
                                               dmType, dmGroup,
                                               shape, options, ndim));
         break;
       case TpShort:
-        td.addColumn (ArrayColumnDesc<Short> (colName, comment,
+        td.addColumn (ArrayColumnDesc<int16_t> (colName, comment,
                                               dmType, dmGroup,
                                               shape, options, ndim));
         break;
       case TpUShort:
-        td.addColumn (ArrayColumnDesc<uShort> (colName, comment,
+        td.addColumn (ArrayColumnDesc<uint16_t> (colName, comment,
                                                dmType, dmGroup,
                                                shape, options, ndim));
         break;
       case TpInt:
-        td.addColumn (ArrayColumnDesc<Int> (colName, comment,
+        td.addColumn (ArrayColumnDesc<int32_t> (colName, comment,
                                             dmType, dmGroup,
                                             shape, options, ndim));
         break;
       case TpUInt:
-        td.addColumn (ArrayColumnDesc<uInt> (colName, comment,
+        td.addColumn (ArrayColumnDesc<uint32_t> (colName, comment,
                                              dmType, dmGroup,
                                              shape, options, ndim));
         break;
       case TpInt64:
-        td.addColumn (ArrayColumnDesc<Int64> (colName, comment,
+        td.addColumn (ArrayColumnDesc<int64_t> (colName, comment,
                                               dmType, dmGroup,
                                               shape, options, ndim));
         break;
       case TpFloat:
-        td.addColumn (ArrayColumnDesc<Float> (colName, comment,
+        td.addColumn (ArrayColumnDesc<float> (colName, comment,
                                               dmType, dmGroup,
                                               shape, options, ndim));
         break;
       case TpDouble:
       case TpQuantity:
-        td.addColumn (ArrayColumnDesc<Double> (colName, comment,
+        td.addColumn (ArrayColumnDesc<double> (colName, comment,
                                                dmType, dmGroup,
                                                shape, options, ndim));
         break;
@@ -682,7 +682,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                                shape, options, ndim));
         break;
       default:
-        AlwaysAssert (False, AipsError);
+        AlwaysAssert (false, AipsError);
       }
     }
     // Write the keywords.
@@ -707,7 +707,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (! unit.empty()  &&  ! unit[0].empty()) {
       if (! shape.empty()) {
-        if (! (unit.size() == 1  ||  unit.size() == uInt(shape[0]))) {
+        if (! (unit.size() == 1  ||  unit.size() == uint32_t(shape[0]))) {
           throw AipsError("Nr of units must be 1 or match the first axis");
         }
       }
@@ -721,10 +721,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String columnName, shorthand;
     Vector<String> fieldNames;
     if (TableParseUtil::splitName (shorthand, columnName, fieldNames,
-                                   colName, True, False, True)) {
+                                   colName, true, false, true)) {
       throw TableInvExpr ("Column name " + colName + " is a keyword, no column");
     }
-    Table tab = tableList_p.findTable (shorthand, True).table();
+    Table tab = tableList_p.findTable (shorthand, true).table();
     if (tab.isNull()) {
       throw TableInvExpr("Shorthand " + shorthand + " has not been defined");
     }
@@ -732,7 +732,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Try to find the column in the info.
     // If found, create a dminfo record for this column only.
     Record dmrec;
-    for (uInt i=0; i<dminfo.nfields(); ++i) {
+    for (uint32_t i=0; i<dminfo.nfields(); ++i) {
       Record dm(dminfo.subRecord(i));
       if (dm.isDefined("COLUMNS")) {
         Vector<String> cols(dm.asArrayString("COLUMNS"));
@@ -753,10 +753,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // have the same size as the first table.
     // Note: the first table is a main table (not a join table).
     rownr_t nrow = tableList_p.firstTable().nrow();
-    for (uInt i=0; i<columnExpr_p.size(); i++) {
+    for (uint32_t i=0; i<columnExpr_p.size(); i++) {
       if (! columnExpr_p[i].getRep()->isConstant()) {
         std::vector<Table> tabs =
-          TableExprNodeUtil::getNodeTables (columnExpr_p[i].getRep().get(), True);
+          TableExprNodeUtil::getNodeTables (columnExpr_p[i].getRep().get(), true);
         for (const Table& tab : tabs) {
           if (tab.nrow() != nrow) {
             throw TableInvExpr("Nr of rows of tables used in select "
@@ -770,17 +770,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Lookup a field name in the table for which the shorthand is given.
   //# If no shorthand is given, use the first table.
   //# The shorthand and name are separated by a period.
-  TableExprNode TableParseProject::handleKeyCol (const String& name, Bool tryProj,
+  TableExprNode TableParseProject::handleKeyCol (const String& name, bool tryProj,
                                                  TableParseQuery& tpq)
   {
     //# Split the name into optional shorthand, column, and optional keyword.
     String shand, columnName;
     Vector<String> fieldNames;
-    Bool hasKey = TableParseUtil::splitName (shand, columnName, fieldNames,
-                                             name, True, False, False);
+    bool hasKey = TableParseUtil::splitName (shand, columnName, fieldNames,
+                                             name, true, false, false);
     //# Use first table if there is no shorthand given.
     //# Otherwise find the table at the current level (no WITH tables).
-    TableParsePair tabPair = tableList_p.findTable (shand, False);
+    TableParsePair tabPair = tableList_p.findTable (shand, false);
     Table tab = tabPair.table();
     if (tab.isNull()) {
       throw (TableInvExpr("Shorthand " + shand + " has not been defined in FROM clause"));
@@ -792,8 +792,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         // Only the column name is given; so first try if the column is
         // a new name of a projected column. It can also be a column created
         // from the mask of a masked array.
-        Bool found;
-        Int inx = linearSearchBrackets (found, columnNames_p, columnName,
+        bool found;
+        int32_t inx = linearSearchBrackets (found, columnNames_p, columnName,
                                         columnNames_p.size());
         if (!found) {
           inx = linearSearchBrackets (found, columnNameMasks_p, columnName,
@@ -805,7 +805,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           const Table& projectExprTable = tpq.projectExprTable();
           if (!projectExprTable.isNull()  &&
               projectExprTable.tableDesc().isColumn (columnName)) {
-            uInt nc = projectExprSubset_p.size();
+            uint32_t nc = projectExprSubset_p.size();
             projectExprSubset_p.resize (nc+1);
             projectExprSubset_p[nc] = inx;
             return projectExprTable.col (columnName);
@@ -855,7 +855,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // First do projection using the original column names.
     Table tabp = tab.project (columnOldNames_p);
-    for (uInt i=0; i<columnNames_p.size(); i++) {
+    for (uint32_t i=0; i<columnNames_p.size(); i++) {
       // Rename column if new name is given to a column.
       if (columnNames_p[i] != columnOldNames_p[i]) {
         tabp.renameColumn (columnNames_p[i], columnOldNames_p[i]);
@@ -864,14 +864,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return tabp;
   }
 
-  void TableParseProject::makeUpdate (Bool useSel, TableParseQuery& tpq)
+  void TableParseProject::makeUpdate (bool useSel, TableParseQuery& tpq)
   {
-    for (uInt i=0; i<columnExpr_p.size(); i++) {
+    for (uint32_t i=0; i<columnExpr_p.size(); i++) {
       if (! columnExpr_p[i].isNull()) {
         if (projectExprSelColumn_p[i] == useSel) {
           tpq.addUpdate (new TableParseUpdate (columnNames_p[i],
                                                columnNameMasks_p[i],
-                                               columnExpr_p[i], False));
+                                               columnExpr_p[i], false));
         }
       }
     }
@@ -879,7 +879,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableParseProject::getAggrNodes (std::vector<TableExprNodeRep*>& aggr) const
   {
-    for (uInt i=0; i<columnExpr_p.size(); ++i) {
+    for (uint32_t i=0; i<columnExpr_p.size(); ++i) {
       std::vector<TableExprNodeRep*> nodes =
         TableExprNodeUtil::getAggrNodes (columnExpr_p[i].getRep().get());
       aggr.insert (aggr.end(), nodes.begin(), nodes.end());
@@ -889,7 +889,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseProject::setUpdateNames
   (std::vector<CountedPtr<TableParseUpdate>>& upd)
   {
-    for (uInt i=0; i<upd.size(); i++) {
+    for (uint32_t i=0; i<upd.size(); i++) {
       upd[i]->setColumnName     (columnNames_p[i]);
       upd[i]->setColumnNameMask (columnNameMasks_p[i]);
     }
@@ -899,7 +899,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     (const std::vector<CountedPtr<TableParseUpdate>>& upd)
   {
     columnNames_p.resize (upd.size());
-    for (uInt i=0; i<upd.size(); i++) {
+    for (uint32_t i=0; i<upd.size(); i++) {
       columnNames_p[i] = upd[i]->columnName();
     }
     columnNameMasks_p.resize (columnNames_p.size());
@@ -916,7 +916,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (columnExpr_p.empty()) {
       throw TableInvExpr ("No COUNT columns given");
     }
-    for (uInt i=0; i<columnExpr_p.size(); i++) {
+    for (uint32_t i=0; i<columnExpr_p.size(); i++) {
       TableParseGroupby::checkAggrFuncs (columnExpr_p[i]);
       if (!columnExpr_p[i].isScalar()) {
         throw TableInvExpr ("COUNT column " + columnNames_p[i] + " is not scalar");

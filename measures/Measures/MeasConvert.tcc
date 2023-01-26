@@ -211,7 +211,7 @@ const M &MeasConvert<M>::operator()() {
 }
 
 template<class M>
-const M &MeasConvert<M>::operator()(Double val) {
+const M &MeasConvert<M>::operator()(double val) {
   if (unit.empty()) {
     *locres = typename M::MVType(val);
   } else {
@@ -221,21 +221,21 @@ const M &MeasConvert<M>::operator()(Double val) {
 }
 
 template<class M>
-const M &MeasConvert<M>::operator()(const Vector<Double> &val) {
+const M &MeasConvert<M>::operator()(const Vector<double> &val) {
   if (unit.empty()) *locres = typename M::MVType(val);
-  else *locres = typename M::MVType(Quantum<Vector<Double> >(val,unit));
+  else *locres = typename M::MVType(Quantum<Vector<double> >(val,unit));
   return operator()(*locres);
 }
 
 template<class M>
-const M &MeasConvert<M>::operator()(const Quantum<Double> &val) {
+const M &MeasConvert<M>::operator()(const Quantum<double> &val) {
   unit = val.getUnit();
   *locres = typename M::MVType(val);
   return operator()(*locres);
 }
 
 template<class M>
-const M &MeasConvert<M>::operator()(const Quantum<Vector<Double> > &val) {
+const M &MeasConvert<M>::operator()(const Quantum<Vector<double> > &val) {
   unit = val.getUnit();
   *locres = typename M::MVType(val);
   return operator()(*locres);
@@ -289,7 +289,7 @@ const M &MeasConvert<M>::operator()(typename M::Types mr) {
 template<class M>
 void MeasConvert<M>::init() {
   cvdat = new typename M::MCType();
-  for (Int i=0; i<4; i++) result[i] = new M();
+  for (int32_t i=0; i<4; i++) result[i] = new M();
   locres = new typename M::MVType();
 }
 
@@ -298,14 +298,14 @@ void MeasConvert<M>::clear() {
   delete model; model = 0;
   unit = Unit();
   outref = typename M::Ref();
-  crout.resize(0, True);
+  crout.resize(0, true);
   crtype = 0;
   cvdat->clearConvert();
   delete cvdat; cvdat = 0;
   delete offin; offin = 0;
   delete offout; offout = 0;
   delete locres; locres = 0;
-  for (Int j=0; j < 4; j++) {
+  for (int32_t j=0; j < 4; j++) {
     delete result[j]; result[j] = 0;
   }
 }
@@ -321,23 +321,23 @@ void MeasConvert<M>::copy(const MeasConvert<M> &other) {
 }
 
 template<class M>
-void MeasConvert<M>::addMethod(uInt method) {
+void MeasConvert<M>::addMethod(uint32_t method) {
   crout.resize(crout.nelements() + 1);
   crout[crout.nelements() - 1] = method;
 }
 
 template<class M>
-void MeasConvert<M>::addFrameType(uInt tp) {
+void MeasConvert<M>::addFrameType(uint32_t tp) {
   crtype |= tp;
 }
 
 template<class M>
-Int MeasConvert<M>::nMethod() const {
+int32_t MeasConvert<M>::nMethod() const {
   return crout.nelements();
 }
 
 template<class M>
-uInt MeasConvert<M>::getMethod(uInt which) const {
+uint32_t MeasConvert<M>::getMethod(uint32_t which) const {
   return crout[which];
 }
 
@@ -374,7 +374,7 @@ void MeasConvert<M>::create() {
       offout = new typename M::MVType(*ptmp);
     }
   }
-  crout.resize(0, True);
+  crout.resize(0, true);
   crtype = 0;
   // Make sure a reference given
   if (model && model->getRefPtr()->empty()) {

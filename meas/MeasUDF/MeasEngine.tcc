@@ -39,8 +39,8 @@ namespace casacore {
   {}
   
   template <typename M>
-  Bool MeasEngine<M>::handleMeasType (const TENShPtr& operand,
-                                      Bool doThrow)
+  bool MeasEngine<M>::handleMeasType (const TENShPtr& operand,
+                                      bool doThrow)
   {
     if (operand->dataType() != TableExprNodeRep::NTString  ||
         operand->valueType() != TableExprNodeRep::VTScalar  ||
@@ -49,14 +49,14 @@ namespace casacore {
         throw AipsError (M::showMe() + " type given in a MEAS function "
                          "must be a constant scalar string");
       }
-      return False;
+      return false;
     }
     String str = operand->getString(0);
     str.upcase();
     // Let a derived class strip part of the mesaure type (as needed).
     str = stripMeasType (str);
     typename M::Types refType;
-    Bool fnd = M::getType (refType, str);
+    bool fnd = M::getType (refType, str);
     if (fnd) {
       itsRefType = refType;
     } else if (doThrow) {
@@ -86,7 +86,7 @@ namespace casacore {
       const Record& measAttr = operand->attributes().subRecord("MEASINFO");
       String type = measAttr.asString("type");
       String ref  = measAttr.asString("Ref");
-      Int valueType = measAttr.asInt ("ValueType");
+      int32_t valueType = measAttr.asInt ("ValueType");
       // Check if type matches.
       if (type != M::showMe()) {
         throw AipsError (M::showMe() + " value expected in a MEAS function, found " + type);
@@ -103,7 +103,7 @@ namespace casacore {
     // Try if the argument is a column.
     // If found, try to handle it as a TableMeasures column.
     const TableColumn* tabCol = 0;
-    Bool directCol = True;
+    bool directCol = true;
     const TableExprNodeColumn* scaNode =
       dynamic_cast<TableExprNodeColumn*>(operand.get());
     if (scaNode) {
@@ -115,7 +115,7 @@ namespace casacore {
         tabCol = &(colNode->getColumn());
       } else {
         // The node is an expression, not a column.
-        directCol = False;
+        directCol = false;
         // Try if the node is an array part of a column.
         TableExprNodeArrayPart* partNode =
           dynamic_cast<TableExprNodeArrayPart*>(operand.get());
@@ -139,7 +139,7 @@ namespace casacore {
         typename M::Types nodeRefType = M::N_Types;
         if (! (measTmp.measDesc().isRefCodeVariable()  ||
                measTmp.measDesc().hasOffset())) {
-          uInt refCode = measTmp.measDesc().getRefCode();
+          uint32_t refCode = measTmp.measDesc().getRefCode();
           nodeRefType = static_cast<typename M::Types>(refCode);
           if (itsRefType != M::N_Types  &&  nodeRefType != itsRefType) {
             throw AipsError ("MEAS " + M::showMe() + " reference type " +
@@ -195,7 +195,7 @@ namespace casacore {
 
   template<typename M>
   Record MeasEngine<M>::makeAttributes (typename M::Types refType,
-                                        Int valueType) const
+                                        int32_t valueType) const
   {
     // This is the opposite of testing attributes in handleMeasArray above.
     Record srec;

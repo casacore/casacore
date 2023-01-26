@@ -177,9 +177,9 @@ public:
     // The things that actually do the copying when requested.
     // <group>
     // Copy different row numbers.
-    Bool copy (rownr_t toRow, rownr_t fromRow);
+    bool copy (rownr_t toRow, rownr_t fromRow);
     // Copy to and from the same row number
-    Bool copy (rownr_t rownr);
+    bool copy (rownr_t rownr);
     // </group>
 
     ~RowCopier();
@@ -198,7 +198,7 @@ private:
 };
 
 
-inline Bool RowCopier::copy (rownr_t rownr)
+inline bool RowCopier::copy (rownr_t rownr)
     { return copy (rownr, rownr); }
 
 

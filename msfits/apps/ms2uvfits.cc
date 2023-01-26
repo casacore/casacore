@@ -102,19 +102,19 @@ int main (int argc, const char* argv[])
 	String column(inputs.getString("column"));
 
 	// Get the writesyscal.
-	Bool writeSyscal(inputs.getBool("writesyscal"));
+	bool writeSyscal(inputs.getBool("writesyscal"));
 
 	// Get the multisource.
-	Bool multisource(inputs.getBool("multisource"));
+	bool multisource(inputs.getBool("multisource"));
 
 	// Get the multisource.
-	Bool combinespw(inputs.getBool("combinespw"));
+	bool combinespw(inputs.getBool("combinespw"));
 
       	// Get the writestation.
-	Bool writestation(inputs.getBool("writestation"));
+	bool writestation(inputs.getBool("writestation"));
 
 	// Get the sensitivity.
-	Double sensitivity(inputs.getDouble("sensitivity"));
+	double sensitivity(inputs.getDouble("sensitivity"));
 
 	// Now write the fits file.
 	MSFitsOutput::writeFitsFile(fitsfile, MeasurementSet(msin),

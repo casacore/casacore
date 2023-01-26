@@ -71,8 +71,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <synopsis>
 // The primary notion is that a <linkto class=Coordinate>Coordinate</linkto>
-// can interconvert between a length "n" Vector<Double> (the
-// pixel coordinate) and a length "m" Vector<Double> (the
+// can interconvert between a length "n" Vector<double> (the
+// pixel coordinate) and a length "m" Vector<double> (the
 // "world" coordinate). Note that "m" and "n" do not in 
 // principle have to be the same (so that one can get both the RA and DEC from
 // an image slice, for example), however in practice they currently always are.
@@ -142,12 +142,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // First, let's make a DirectionCoordinate --- used to represent a direction,
 // usually an RA/DEC, but it could also be, e.g., an AZ/EL pair.
 // <srcblock>
-//    Matrix<Double> xform(2,2);                                    // 1
+//    Matrix<double> xform(2,2);                                    // 1
 //    xform = 0.0; xform.diagonal() = 1.0;                          // 2
-//    Quantum<Double> refLon(135.0, "deg");
-//    Quantum<Double> refLat(60.0, "deg");
-//    Quantum<Double> incLon(-1.0, "deg");
-//    Quantum<Double> incLat(1.0, "deg");
+//    Quantum<double> refLon(135.0, "deg");
+//    Quantum<double> refLat(60.0, "deg");
+//    Quantum<double> incLon(-1.0, "deg");
+//    Quantum<double> incLat(1.0, "deg");
 //    DirectionCoordinate radec(MDirection::J2000,                  // 3
 //                            Projection(Projection::SIN),          // 4
 //                            refLon, refLat,                       // 5
@@ -192,7 +192,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // Set up a couple of vectors to use the world and pixel coordinate values.
 // <srcblock>
-//    Vector<Double> world(2), pixel(2);                            // 11
+//    Vector<double> world(2), pixel(2);                            // 11
 //    pixel = 138.0;                                                // 12
 // </srcblock>
 // We use 138 as an abitrary pixel position which is near the reference pixel
@@ -201,7 +201,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // We can actually perform a transformation like this as follows. If
 // it succeeds we print the value of the world coordinate.
 // <srcblock>
-//    Bool ok = radec.toWorld(world, pixel);                        // 13
+//    bool ok = radec.toWorld(world, pixel);                        // 13
 //    if (!ok) {                                                    // 14
 //	cout << "Error: " << radec.errorMessage() << endl;          // 15
 //	return 1;                                                   // 16
@@ -219,7 +219,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // Suppose we have an image with a Stokes axis. It can be set up as follows:
 // <srcblock>
-//    Vector<Int> iquv(4);
+//    Vector<int32_t> iquv(4);
 //    iquv(0) = Stokes::I; iquv(1) = Stokes::Q;                    // 21
 //    iquv(2) = Stokes::U; iquv(3) = Stokes::V;                    // 22
 //    StokesCoordinate stokes(iquv);                               // 23
@@ -227,15 +227,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // We create an integer array the same length as the Stokes axis, and place
 // the corresponding Stokes enum into each element of the array. The values
 // must be unique, e.g. there can only be one "I" plane.
-// Besides the generic <src>Vector<Double></src> toWorld/toPixel interface,
+// Besides the generic <src>Vector<double></src> toWorld/toPixel interface,
 // you can also directly interconvert between Stokes enum and and (zero-relative)
 // plane number:
 // <srcblock>
-//    Int plane;                                                   // 24
+//    int32_t plane;                                                   // 24
 //    ok = stokes.toPixel(plane, Stokes::Q);                       // 25
 // </srcblock>
-// Here it will return <src>True</src> and set plane to 1. On the other
-// hand, it would return <src>False</src> for:
+// Here it will return <src>true</src> and set plane to 1. On the other
+// hand, it would return <src>false</src> for:
 // <srcblock>
 //    ok = stokes.toPixel(plane, Stokes::XX);                      // 26
 // </srcblock>

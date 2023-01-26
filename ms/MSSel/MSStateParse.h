@@ -91,14 +91,14 @@ public:
   // Associate the ms and the shorthand.
   MSStateParse (const MeasurementSet* ms);
 
-  const TableExprNode* selectStateIds(const Vector<Int>& stateIDs);
+  const TableExprNode* selectStateIds(const Vector<int32_t>& stateIDs);
 
     // Get table expression node object.
   static const TableExprNode* node();
   static MSStateParse* thisMSSIParser;
   static CountedPtr<MSSelectionErrorHandler> thisMSSErrorHandler;
   //static MSSelectionErrorHandler* thisMSSErrorHandler;
-  static Vector<Int> selectedIDs() {return idList;};
+  static Vector<int32_t> selectedIDs() {return idList;};
   static void reset(){idList.resize(0);};
   static void cleanupNode() {if (node_p) delete node_p;node_p=0x0;}
   static void cleanupErrorHandler() {thisMSSErrorHandler.reset();}
@@ -106,7 +106,7 @@ public:
 private:
   static TableExprNode* node_p;
   const String colName;
-  static  Vector<Int> idList;
+  static  Vector<int32_t> idList;
 };
 
 } //# NAMESPACE CASACORE - END

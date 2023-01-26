@@ -145,8 +145,8 @@ public:
   // If a filter isn't defined, default to <src>NORMAL</src>.
   // <group>
   explicit LogSink (LogMessage::Priority filter = LogMessage::NORMAL,
-		    Bool nullSink = True);
-  explicit LogSink (const LogFilterInterface &filter, Bool nullSink = True);
+		    bool nullSink = true);
+  explicit LogSink (const LogFilterInterface &filter, bool nullSink = true);
   // </group>
 
   // Log to an ostream. It is the responsiblity of the caller to ensure that
@@ -154,9 +154,9 @@ public:
   // Normally you would use <src>&cerr</src> as the argument.
   // <group>
   LogSink (LogMessage::Priority filter, ostream *os,
-           Bool useGlobalSink = True);
+           bool useGlobalSink = true);
   LogSink (const LogFilterInterface &filter, ostream *os,
-           Bool useGlobalSink = True);
+           bool useGlobalSink = true);
   // </group>
 
   // Log to the given sink.
@@ -178,23 +178,23 @@ public:
   // They are not implemented, so compiler should give warning.
   // The 3rd argument is added to make it different from current
   // version which is still in the system library.
-   LogSink (const LogFilterInterface &filter, const String &fileName, Int n=0);
-   LogSink (const LogFilterInterface &filter, const Char* fileName, Int n=0);
-   LogSink (LogMessage::Priority, const String &fileName, Int n=0);
-   LogSink (LogMessage::Priority, const Char* fileName, Int n=0);
+   LogSink (const LogFilterInterface &filter, const String &fileName, int32_t n=0);
+   LogSink (const LogFilterInterface &filter, const char* fileName, int32_t n=0);
+   LogSink (LogMessage::Priority, const String &fileName, int32_t n=0);
+   LogSink (LogMessage::Priority, const char* fileName, int32_t n=0);
 
   ~LogSink();
 
   // Send <src>message</src> to both the local and global sink. Return
-  // <src>True</src> if it passes either of them.
-  Bool post (const LogMessage &message);
+  // <src>true</src> if it passes either of them.
+  bool post (const LogMessage &message);
 
-  // Send <src>message</src> to the global sink only. Returns <src>True</src>
+  // Send <src>message</src> to the global sink only. Returns <src>true</src>
   // if it passes the filter.
-  static Bool postGlobally (const LogMessage &message);
-  // Send <src>message</src> to the local sink only. Returns <src>True</src>
+  static bool postGlobally (const LogMessage &message);
+  // Send <src>message</src> to the local sink only. Returns <src>true</src>
   // if it passes the filter.
-  virtual Bool postLocally (const LogMessage &message);
+  virtual bool postLocally (const LogMessage &message);
 
   // Post <src>message</src> and then throw an <src>AipsError</src> exception
   // containing <src>message.toString()</src>. It is always posted as a 
@@ -208,20 +208,20 @@ public:
   // </group>
 
   // Get number of messages in local sink.
-  virtual uInt nelements() const;
+  virtual uint32_t nelements() const;
 
   // Get given part of the i-th message from the local sink.
   // <group>
-  virtual Double getTime (uInt i) const;
-  virtual String getPriority (uInt i) const;
-  virtual String getMessage (uInt i) const;
-  virtual String getLocation (uInt i) const;
-  virtual String getObjectID (uInt i) const;
+  virtual double getTime (uint32_t i) const;
+  virtual String getPriority (uint32_t i) const;
+  virtual String getMessage (uint32_t i) const;
+  virtual String getLocation (uint32_t i) const;
+  virtual String getObjectID (uint32_t i) const;
   // </group>
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.
-  virtual void writeLocally (Double time, const String& message,
+  virtual void writeLocally (double time, const String& message,
 			     const String& priority, const String& location,
 			     const String& objectID);
 
@@ -249,11 +249,11 @@ public:
   // <group>
   static LogSinkInterface &globalSink();
   static void globalSink (LogSinkInterface *&fromNew);
-  static Bool nullGlobalSink();
+  static bool nullGlobalSink();
   // </group>
 
   // Write any pending output (by default also the global sink).
-  virtual void flush (Bool global=True);
+  virtual void flush (bool global=true);
 
   // Returns the id for this class...
   static String localId( );
@@ -280,7 +280,7 @@ private:
 
       LogSinkInterface & operator* () { return * logSinkInterface_p;}
       LogSinkInterface * operator-> () { return logSinkInterface_p;}
-      Bool operator! () const { return ! logSinkInterface_p;}
+      bool operator! () const { return ! logSinkInterface_p;}
 
       void replace (LogSinkInterface * newLsi) { delete logSinkInterface_p; logSinkInterface_p = newLsi;}
 
@@ -311,7 +311,7 @@ private:
   // reference to it is destroyed. This can happen if you have a static
   // LogSink (or LogIO).
   CountedPtr<LsiIntermediate> local_ref_to_global_p;
-  Bool useGlobalSink_p;
+  bool useGlobalSink_p;
 };
 
 

@@ -113,8 +113,8 @@ public:
 		    const String& dataManagerType,
 		    const String& dataManagerGroup,
 		    DataType, const String& dataTypeId,
-		    Int options, uInt ndim, const IPosition& shape,
-		    Bool isScalar, Bool isArray, Bool isTable);
+		    int32_t options, uint32_t ndim, const IPosition& shape,
+		    bool isScalar, bool isArray, bool isTable);
 
     // Copy constructor (copy semantics).
     BaseColumnDesc (const BaseColumnDesc&);
@@ -164,8 +164,8 @@ public:
 	{ return dataManGroup_p; }
 
     // Set the data manager type and group to the default.
-    // If <src>always==True</src> they are always set, otherwise only if empty.
-    void setDefaultDataManager (Bool always);
+    // If <src>always==true</src> they are always set, otherwise only if empty.
+    void setDefaultDataManager (bool always);
 
     // Get comment string.
     const String& comment() const
@@ -176,21 +176,21 @@ public:
 	{ return comment_p; }
 
     // Get the options.
-    Int options() const
+    int32_t options() const
 	{ return option_p; }
 
     // Test if column is scalar, array or table.
     // <group>
-    Bool isScalar() const
+    bool isScalar() const
 	{ return isScalar_p; }
-    Bool isArray() const
+    bool isArray() const
 	{ return isArray_p; }
-    Bool isTable() const
+    bool isTable() const
 	{ return isTable_p; }
     // </group>
 
     // Get the number of dimensions.
-    Int ndim() const
+    int32_t ndim() const
 	{ return nrdim_p; }
 
     // Get the predefined shape.
@@ -204,7 +204,7 @@ public:
     // and the shape.
     // Otherwise it can only be used if the dimensionality has not been
     // defined yet.
-    void setNdim (uInt ndim);
+    void setNdim (uint32_t ndim);
 
     // Set the predefined shape.
     // This is only allowed for arrays, for which the shape
@@ -215,17 +215,17 @@ public:
     // The second version sets the <src>Direct</src> option as given.
     // <group>
     void setShape (const IPosition& shape);
-    void setShape (const IPosition& shape, Bool directOption);
+    void setShape (const IPosition& shape, bool directOption);
     // </group>
 
     // Set the options to the given value.
     // Option <src>ColumnDesc::Direct</src> forces <src>FixedShape</src>.
     // If <src>FixedShape</src> is not given (implicitly or explicitly),
     // the column can have no shape, so its shape is cleared.
-    void setOptions (Int options);
+    void setOptions (int32_t options);
 
     // Get the maximum value length.
-    uInt maxLength() const
+    uint32_t maxLength() const
 	{ return maxLength_p; }
 
     // Set the maximum value length.
@@ -233,7 +233,7 @@ public:
     // An exception is thrown if the column data type is not TpString.
     // Some storage managers support fixed length strings and can store
     // them more efficiently than variable length strings.
-    void setMaxLength (uInt maxLength);
+    void setMaxLength (uint32_t maxLength);
 
     // Get table description (in case column contains subtables).
     // <group>
@@ -251,14 +251,14 @@ protected:
     String         dataManGroup_p;       //# data manager group
     DataType       dtype_p;              //# datatype
     String         dtypeId_p;            //# datatype id for TpOther
-    Int            option_p;             //# column options
-    Int            nrdim_p;              //# #dimensions (<0 = unknown)
+    int32_t            option_p;             //# column options
+    int32_t            nrdim_p;              //# #dimensions (<0 = unknown)
     IPosition      shape_p;              //# table array shape
-    uInt           maxLength_p;          //# maximum value length (for strings)
+    uint32_t           maxLength_p;          //# maximum value length (for strings)
     TableRecord*   keySetPtr_p;          //# set of keywords
-    Bool           isScalar_p;           //# True = column contains scalars
-    Bool           isArray_p;            //# True = column contains arrays
-    Bool           isTable_p;            //# True = column contains tables
+    bool           isScalar_p;           //# true = column contains scalars
+    bool           isArray_p;            //# true = column contains arrays
+    bool           isTable_p;            //# true = column contains tables
 
     // Assignment (copy semantics).
     BaseColumnDesc& operator= (const BaseColumnDesc&);

@@ -53,9 +53,9 @@ void doIt (const String& name, double interval)
     cin >> op;
     //# Create 2 lock objects with given inspection interval.
     //# Let them start at a different offset in the file.
-    LockFile lock1(name, interval, False, True, True, 0, op==1, op==0);
+    LockFile lock1(name, interval, false, true, true, 0, op==1, op==0);
     LockFile* lockp;
-    while (True) {
+    while (true) {
 	cout << "locknr (1,2 0=end): ";
 	cin >> lnr;
 	if (lnr <= 0) break;
@@ -64,15 +64,15 @@ void doIt (const String& name, double interval)
 	} else {
             cout << "Locking type (0=no, 1=permanent, other=normal):";
             cin >> op;
-	    lockp = new LockFile (name, interval, False, True, True, 1,
+	    lockp = new LockFile (name, interval, false, true, true, 1,
                                   op==1, op==0);
 	}
-	while (True) {
+	while (true) {
 	    cout << "1=rlock, 2=wlock, 3=rlockw, 4=wlockw, 5=unlock, "
 		    "6=status, 7=speed, 8=open/close 9=show, else=end: ";
 	    cin >> op;
 	    if (op == 1  ||  op == 3) {
-		uInt nattempt = 1;
+		uint32_t nattempt = 1;
 		if (op == 3) {
 		    cout << "nattempts :";
 		    cin >> nattempt;
@@ -83,7 +83,7 @@ void doIt (const String& name, double interval)
 		    cout << " Already locked by another process" << endl;
 		}
 	    } else if (op == 2  ||  op == 4) {
-		uInt nattempt = 1;
+		uint32_t nattempt = 1;
 		if (op == 4) {
 		    cout << "nattempts :";
 		    cin >> nattempt;
@@ -116,9 +116,9 @@ void doIt (const String& name, double interval)
 	    } else if (op == 8) {
 	        RegularFileIO tmp(name);
 	    } else if (op == 9) {
-	        uInt pid;
-		Bool perm;
-		uInt res = LockFile::showLock (pid, perm, name);
+	        uint32_t pid;
+		bool perm;
+		uint32_t res = LockFile::showLock (pid, perm, name);
 		cout << "result=" << res << ", pid=" << pid
 		     << ", permlocked=" << perm << endl;
 	    } else {
@@ -133,7 +133,7 @@ void doIt (const String& name, double interval)
 
 void doTest()
 {
-    LockFile lock ("tLockFile_tmp.data", 0, True);
+    LockFile lock ("tLockFile_tmp.data", 0, true);
     AlwaysAssertExit (! lock.hasLock (FileLocker::Read));
     AlwaysAssertExit (! lock.hasLock (FileLocker::Write));
     MemoryIO memio;
@@ -156,8 +156,8 @@ void doTest()
     AlwaysAssertExit (lock.acquire (memio));
     AlwaysAssertExit (memio.length() == 0);
     //# Store information (<1024 bytes) in the memio object.
-    uInt value = 10;
-    memio.write (sizeof(uInt), &value);
+    uint32_t value = 10;
+    memio.write (sizeof(uint32_t), &value);
     AlwaysAssertExit (lock.release (memio));
     memio.seek (0);
     //# Store different value in memio to be sure acquire gets it right.
@@ -169,8 +169,8 @@ void doTest()
     memio.read (sizeof(value), &value);
     AlwaysAssertExit (value == 10);
     //# Write very long info.
-    Int val[10000];
-    Int i;
+    int32_t val[10000];
+    int32_t i;
     for (i=0; i<10000; i++) {
 	val[i] = i-5000;
     }
@@ -181,8 +181,8 @@ void doTest()
     //# Acquire lock and get info.
     {
 	MemoryIO memio2;
-	uInt n;
-	Int v[10000];
+	uint32_t n;
+	int32_t v[10000];
 	lock.acquire (memio2);
 	memio2.read (sizeof(n), &n);
 	AlwaysAssertExit (n == 10);

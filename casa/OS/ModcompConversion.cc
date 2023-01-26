@@ -30,11 +30,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-size_t ModcompConversion::toLocal (Int64* to, const void* from,
+size_t ModcompConversion::toLocal (int64_t* to, const void* from,
                                    size_t nr)
 {
     const char* data = (const char*)from;
-    Int64* last = to + nr;
+    int64_t* last = to + nr;
     while (to < last) {
 	toLocal (*to++, data);
 	data += SIZE_MODCOMP_INT64;
@@ -42,11 +42,11 @@ size_t ModcompConversion::toLocal (Int64* to, const void* from,
     return nr*SIZE_MODCOMP_INT64;
 }
 
-size_t ModcompConversion::toLocal (uInt64* to, const void* from,
+size_t ModcompConversion::toLocal (uint64_t* to, const void* from,
                                    size_t nr)
 { 
     const char* data = (const char*)from;
-    uInt64* last = to + nr;
+    uint64_t* last = to + nr;
     while (to < last) {
 	toLocal (*to++, data);
 	data += SIZE_MODCOMP_UINT64;
@@ -54,11 +54,11 @@ size_t ModcompConversion::toLocal (uInt64* to, const void* from,
     return nr*SIZE_MODCOMP_UINT64;
 }
 
-size_t ModcompConversion::fromLocal (void* to, const Int64* from,
+size_t ModcompConversion::fromLocal (void* to, const int64_t* from,
                                      size_t nr)
 {
     char* data = (char*)to;
-    const Int64* last = from + nr;
+    const int64_t* last = from + nr;
     while (from < last) {
 	fromLocal (data, *from++);
 	data += SIZE_MODCOMP_INT64;
@@ -66,11 +66,11 @@ size_t ModcompConversion::fromLocal (void* to, const Int64* from,
     return nr*SIZE_MODCOMP_INT64;
 }
 
-size_t ModcompConversion::fromLocal (void* to, const uInt64* from,
+size_t ModcompConversion::fromLocal (void* to, const uint64_t* from,
                                      size_t nr)
 { 
     char* data = (char*)to;
-    const uInt64* last = from + nr;
+    const uint64_t* last = from + nr;
     while (from < last) {
 	fromLocal (data, *from++);
 	data += SIZE_MODCOMP_UINT64;
@@ -82,22 +82,22 @@ size_t ModcompConversion::fromLocal (void* to, const uInt64* from,
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
-size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
-  DebugAssert(sizeof(Short) >= 2, AipsError);
-  uChar asByte[SIZE_MODCOMP_FLOAT];
+size_t ModcompConversion::toLocal (float* to, const void* from, size_t nr) {
+  DebugAssert(sizeof(int16_t) >= 2, AipsError);
+  unsigned char asByte[SIZE_MODCOMP_FLOAT];
   size_t retval = 0;
 
-  const uChar* data = (const uChar*) from;
-  for (const Float* const last = to + nr; to < last; to++) {
+  const unsigned char* data = (const unsigned char*) from;
+  for (const float* const last = to + nr; to < last; to++) {
     // Copy the data to the temporary buffer
-    for (uShort i = 0; i < SIZE_MODCOMP_FLOAT; i++) {
+    for (uint16_t i = 0; i < SIZE_MODCOMP_FLOAT; i++) {
       asByte[i] = *data;
       data++;
     }
     // If the number is negative then its positive value is the twos complement
-    const Bool isNegative = ((asByte[0] & 0x80) > 0) ? True : False;
+    const bool isNegative = ((asByte[0] & 0x80) > 0) ? true : false;
     if (isNegative) { // This code takes the twos complement
-      uShort i = 0;
+      uint16_t i = 0;
       while (i < SIZE_MODCOMP_FLOAT) {
  	asByte[i] = ~asByte[i];
  	i++;
@@ -110,14 +110,14 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
       }
     }
 
-    Bool isZero = (asByte[1] & 0x3f) == 0x00;
-    for (uShort i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
+    bool isZero = (asByte[1] & 0x3f) == 0x00;
+    for (uint16_t i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
       isZero = (asByte[i] == 0x00) && isZero;
     }
 
     if (isZero) { // Early exit if the number is zero. 
       // I am told this is common in the data so it should speed things up.
-      for (uShort k = 1; k < SIZE_MODCOMP_FLOAT; k++) {
+      for (uint16_t k = 1; k < SIZE_MODCOMP_FLOAT; k++) {
 	asByte[k] = 0x00;
       }
       if (isNegative) { // Return a signed zero
@@ -126,17 +126,17 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	asByte[0] = 0x00;
       }
     } else { // Number is not zero
-      Short exponent = ((asByte[0] & 0x7f) << 2) | ((asByte[1] & 0xc0) >> 6);
+      int16_t exponent = ((asByte[0] & 0x7f) << 2) | ((asByte[1] & 0xc0) >> 6);
       while ((asByte[1] & 0x20) == 0) { // See if the number is unnormalised
 	{ // If so try to normalise it. 
 	  // This code does a byte by byte left shift by one bit (painful).
-	  uShort i = SIZE_MODCOMP_FLOAT-1; 
-	  Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+	  uint16_t i = SIZE_MODCOMP_FLOAT-1; 
+	  bool msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
 	  asByte[i] <<= 1;
 	  i--;
 	  while (i > 1) {
-	    Bool prevMsbIsSet = msbIsSet;
-	    msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+	    bool prevMsbIsSet = msbIsSet;
+	    msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
 	    asByte[i] <<= 1;
 	    if (prevMsbIsSet) asByte[i] |= 0x01;
 	    i--;
@@ -147,7 +147,7 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	exponent--; // Because the exponent can go negative it must be signed
       }
       if (exponent > 384) {// exponent is too big.
-	for (uShort i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
+	for (uint16_t i = 2; i < SIZE_MODCOMP_FLOAT; i++) {
 	  asByte[i] = 0x00;
 	}
 	asByte[1] = 0x80;
@@ -157,7 +157,7 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	  asByte[0] = 0x7f; // Return a positive infinity
 	}
       } else if (exponent < 108) {// exponent is too small.
-	for (uShort i = 1; i < SIZE_MODCOMP_FLOAT; i++) {
+	for (uint16_t i = 1; i < SIZE_MODCOMP_FLOAT; i++) {
 	  asByte[i] = 0x00;       
 	}
 	if (isNegative) {
@@ -169,12 +169,12 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	// The next 2 lines assumes mantissa is normalised (as is done above) 
 	exponent -= 130;
 	{ // This code does a byte by byte left shift by 2 bits (painful)
-	  uShort i = SIZE_MODCOMP_FLOAT-1;
-	  uChar msbits = asByte[i] >> 6;
+	  uint16_t i = SIZE_MODCOMP_FLOAT-1;
+	  unsigned char msbits = asByte[i] >> 6;
 	  asByte[i] <<= 2;
 	  i--;
 	  while (i > 1) {
-	    uChar prevMsbits = msbits;
+	    unsigned char prevMsbits = msbits;
 	    msbits = asByte[i] >> 6;
 	    asByte[i] <<= 2;
 	    asByte[i] |= prevMsbits;
@@ -187,7 +187,7 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	} else {
 	  asByte[1] |= 0x80; 
 	}
-	asByte[0] = (uChar) exponent >> 1;
+	asByte[0] = (unsigned char) exponent >> 1;
 	if (isNegative) asByte[0] |= 0x80;
 	// The IEEE format effectively has two more bits in the mantissa than
 	// the Modcomp format. The least significant bits are always set to
@@ -195,17 +195,17 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	// one but I do not think the performance degradation warrents this.
       } else { // A subnormal number
 	if (exponent < 129) { // need to shift mantissa to the right
-	  Short shift = 129-exponent;
+	  int16_t shift = 129-exponent;
 	  // Do a series of 8 or less bit right shifts (the painful way).
 	  while (shift > 0) { // Exponent too small is already dealt with
-	    const Short thisShift = shift > 8 ? 8 : shift;
-	    const Short compShift = 8-thisShift;
+	    const int16_t thisShift = shift > 8 ? 8 : shift;
+	    const int16_t compShift = 8-thisShift;
 	    asByte[1] &= 0x3f;
-	    uChar lsbits = asByte[1] << compShift;
+	    unsigned char lsbits = asByte[1] << compShift;
 	    asByte[1] >>= thisShift;
-	    uShort i = 2;
+	    uint16_t i = 2;
 	    while (i < SIZE_MODCOMP_FLOAT-1) {
-	      uChar prevLsbits = lsbits;
+	      unsigned char prevLsbits = lsbits;
 	      lsbits = asByte[i] << compShift;
 	      asByte[i] >>= thisShift; 
 	      asByte[i] |= prevLsbits;
@@ -217,13 +217,13 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 	  }
 	} else if (exponent == 130) { // need to shift mantissa to the left
 	  // This code does a (painful) byte by byte left shift by one bit.
-	  uShort i = SIZE_MODCOMP_FLOAT-1;
-	  Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+	  uint16_t i = SIZE_MODCOMP_FLOAT-1;
+	  bool msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
 	  asByte[i] <<= 1;
 	  i--;
 	  while (i > 1) {
-	    Bool prevMsbIsSet = msbIsSet;
-	    msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+	    bool prevMsbIsSet = msbIsSet;
+	    msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
 	    asByte[i] <<= 1;
 	    if (prevMsbIsSet) asByte[i] |= 0x01;
 	    i--;
@@ -248,21 +248,21 @@ size_t ModcompConversion::toLocal (Float* to, const void* from, size_t nr) {
 // Modcomp has one more bit in the exponent than IEEE and because it does not
 // have an implicit bit two less bits in the Mantissa. It does not have any
 // special numbers like NaN or Infinity. The Modcomp is big-endian (like Sun's)
-size_t ModcompConversion::toLocal (Double* to, const void* from, size_t nr) {
-  DebugAssert(sizeof(Short) >= 2, AipsError);
-  uChar asByte[SIZE_MODCOMP_DOUBLE];
+size_t ModcompConversion::toLocal (double* to, const void* from, size_t nr) {
+  DebugAssert(sizeof(int16_t) >= 2, AipsError);
+  unsigned char asByte[SIZE_MODCOMP_DOUBLE];
   size_t retval = 0;
-  const uChar* data = (const uChar*) from;
-  for (const Double* const last = to + nr; to < last; to++) {
+  const unsigned char* data = (const unsigned char*) from;
+  for (const double* const last = to + nr; to < last; to++) {
     // Copy the data to temporary buffer
-    for (uShort i = 0; i < SIZE_MODCOMP_DOUBLE; i++) {
+    for (uint16_t i = 0; i < SIZE_MODCOMP_DOUBLE; i++) {
       asByte[i] = *data;
       data++;
     }
     // If the number is negative then its positive value is the twos complement
-    const Bool isNegative = ((asByte[0] & 0x80) > 0) ? True : False;
+    const bool isNegative = ((asByte[0] & 0x80) > 0) ? true : false;
     if (isNegative) { // This code takes the twos complement
-      uShort i = 0;
+      uint16_t i = 0;
       while (i < SIZE_MODCOMP_DOUBLE) {
  	asByte[i] = ~asByte[i];
  	i++;
@@ -275,14 +275,14 @@ size_t ModcompConversion::toLocal (Double* to, const void* from, size_t nr) {
       }
     }
 
-    Bool isZero = (asByte[1] & 0x3f) == 0x00;
-    for (uShort i = 2; i < SIZE_MODCOMP_DOUBLE; i++) {
+    bool isZero = (asByte[1] & 0x3f) == 0x00;
+    for (uint16_t i = 2; i < SIZE_MODCOMP_DOUBLE; i++) {
       isZero = (asByte[i] == 0x00) && isZero;
     }
 
     if (isZero) { // Early exit if the number is zero. 
       // I am told this is common in the data so it should speed things up.
-      for (uShort k = 1; k < SIZE_MODCOMP_DOUBLE; k++) {
+      for (uint16_t k = 1; k < SIZE_MODCOMP_DOUBLE; k++) {
 	asByte[k] = 0x00;
       }
       if (isNegative) { // Return a signed zero
@@ -291,17 +291,17 @@ size_t ModcompConversion::toLocal (Double* to, const void* from, size_t nr) {
 	asByte[0] = 0x00;
       }
     } else { // Number is not zero
-      Short exponent = ((asByte[0] & 0x7f) << 2) | ((asByte[1] & 0xc0) >> 6);
+      int16_t exponent = ((asByte[0] & 0x7f) << 2) | ((asByte[1] & 0xc0) >> 6);
       while ((asByte[1] & 0x20) == 0) { // See if the number is unnormalised
  	{ // If so try to normalise it. 
  	  // This code does a byte by byte left shift by one bit (painful).
- 	  uShort i = SIZE_MODCOMP_DOUBLE-1; 
- 	  Bool msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+ 	  uint16_t i = SIZE_MODCOMP_DOUBLE-1; 
+ 	  bool msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
  	  asByte[i] <<= 1;
  	  i--;
  	  while (i > 1) {
- 	    Bool prevMsbIsSet = msbIsSet;
- 	    msbIsSet = (asByte[i] & (0x80)) > 0 ? True : False;
+ 	    bool prevMsbIsSet = msbIsSet;
+ 	    msbIsSet = (asByte[i] & (0x80)) > 0 ? true : false;
  	    asByte[i] <<= 1;
  	    if (prevMsbIsSet) asByte[i] |= 0x01;
  	    i--;
@@ -329,15 +329,15 @@ size_t ModcompConversion::toLocal (Double* to, const void* from, size_t nr) {
       // The next few lines assumes mantissa is normalised (as is done above)
       exponent += 766;
       { // This code does a byte by byte right shift by 1-bit (painful)
-	for (uShort i = SIZE_MODCOMP_DOUBLE-1; i > 1; i--) {
+	for (uint16_t i = SIZE_MODCOMP_DOUBLE-1; i > 1; i--) {
 	  asByte[i] >>= 1;
 	  asByte[i] |= (asByte[i-1] & 0x01) << 7;
 	}
 	asByte[1] >>= 1;
       }
       asByte[1] &= 0x0f;
-      asByte[1] |= uChar(exponent & 0x000f) << 4;
-      asByte[0] = uChar(exponent >> 4);
+      asByte[1] |= static_cast<unsigned char>(exponent & 0x000f) << 4;
+      asByte[0] = static_cast<unsigned char>(exponent >> 4);
       if (isNegative) {
 	asByte[0] |= 0x80;
       } else {
@@ -353,22 +353,22 @@ size_t ModcompConversion::toLocal (Double* to, const void* from, size_t nr) {
   return retval;
 }
 
-size_t ModcompConversion::fromLocal(void* to, const Float* from, size_t nr) {
+size_t ModcompConversion::fromLocal(void* to, const float* from, size_t nr) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (nr == 0) {}
   if (from == 0) {}
   if (to != 0) {}
-  throw(AipsError("ModcompConversion::fromLocal(Float&, const void*) - "
+  throw(AipsError("ModcompConversion::fromLocal(float&, const void*) - "
 		  "Cannot convert floating point numbers to Modcomp format"));
   return 0;
 }
 
-size_t ModcompConversion::fromLocal(void* to, const Double* from, size_t nr) {
+size_t ModcompConversion::fromLocal(void* to, const double* from, size_t nr) {
   // Dummy statements to suppress compiler warnings about unused variables
   if (nr == 0) {}
   if (from == 0) {}
   if (to != 0) {}
-  throw(AipsError("ModcompConversion::fromLocal(Double&, const void*) - "
+  throw(AipsError("ModcompConversion::fromLocal(double&, const void*) - "
 		  "Cannot convert floating point numbers to Modcomp format"));
   return 0;
 }
@@ -376,14 +376,14 @@ size_t ModcompConversion::fromLocal(void* to, const Double* from, size_t nr) {
 // size_t ModcompConversion::fromLocal (void* to, const float* from,
 // 			       size_t nr)
 // {
-//     assert (sizeof(uInt) == 4);
+//     assert (sizeof(uint32_t) == 4);
 //     assert (sizeof(float) == 4);
 //     char* data = (char*)to;
 //     const float* last = from + nr;
 //     while (from < last) {
-// 	uInt value;
-// 	value = *(uInt*)from;
-// 	uInt exponent = (value & 0x7f800000) >> 23;
+// 	uint32_t value;
+// 	value = *(uint32_t*)from;
+// 	uint32_t exponent = (value & 0x7f800000) >> 23;
 // 	if (exponent == 0) {
 // 	    value = 0;
 // 	}else{
@@ -403,20 +403,20 @@ size_t ModcompConversion::fromLocal(void* to, const Double* from, size_t nr) {
 // size_t ModcompConversion::fromLocal (void* to, const double* from,
 // 			       size_t nr)
 // {
-//     assert (sizeof(uInt) == 4);
+//     assert (sizeof(uint32_t) == 4);
 //     assert (sizeof(double) == 8);
 //     char* data = (char*)to;
 //     const double* last = from + nr;
 //     while (from < last) {
-// 	uInt value, rest;
+// 	uint32_t value, rest;
 // #if defined(AIPS_LITTLE_ENDIAN)
-// 	rest  = ((uInt*)from)[0];
-// 	value = ((uInt*)from)[1];
+// 	rest  = ((uint32_t*)from)[0];
+// 	value = ((uint32_t*)from)[1];
 // #else
-// 	value = ((uInt*)from)[0];
-// 	rest  = ((uInt*)from)[1];
+// 	value = ((uint32_t*)from)[0];
+// 	rest  = ((uint32_t*)from)[1];
 // #endif
-// 	uInt exponent = (value & 0x7ff00000) >> 20;
+// 	uint32_t exponent = (value & 0x7ff00000) >> 20;
 // 	exponent -= 1022-128;
 // 	if (exponent <= 0) {
 // 	    exponent = 0;

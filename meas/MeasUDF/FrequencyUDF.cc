@@ -46,18 +46,18 @@ namespace casacore {
     }
     // Get the 'to' reference type.
     // Determine the argnr of the epoch.
-    Bool needRadVel = False;
-    uInt argnr = 0;
+    bool needRadVel = false;
+    uint32_t argnr = 0;
     if (itsType == REST) {
       itsRefType = MFrequency::REST;
     } else if (itsType != SHIFT) {
       // A to-type has to be given if not shifting frequencies.
-      if (itsEngine.handleMeasType (operands()[0], True)) {
+      if (itsEngine.handleMeasType (operands()[0], true)) {
         itsRefType = itsEngine.refType();
         argnr = 1;
         if (itsRefType == MFrequency::REST) {
           itsType = REST;      // Conversion to REST
-          needRadVel = True;
+          needRadVel = true;
         }
       }
     }
@@ -67,17 +67,17 @@ namespace casacore {
     }
     itsEngine.handleFrequency (operands(), argnr);
     if (itsEngine.refType() == MFrequency::REST) {
-      needRadVel = True;
+      needRadVel = true;
     }
-    Bool useDoppler = False;
+    bool useDoppler = false;
     if (itsType == SHIFT) {
       // For shift the output reftype is the same as the input.
       itsRefType = itsEngine.refType();
       // Only get the doppler if shifting.
       if (operands().size() > argnr) {
-        itsDopplerEngine.handleDoppler (operands(), argnr, False, False);
+        itsDopplerEngine.handleDoppler (operands(), argnr, false, false);
         itsEngine.setDopplerEngine (itsDopplerEngine);
-        useDoppler = True;
+        useDoppler = true;
       } else {
         throw AipsError("No doppler given in function MEAS.SHIFTFREQ");
       }
@@ -89,7 +89,7 @@ namespace casacore {
     if (! useDoppler) {
       // Handle possible Direction arguments.
       if (operands().size() > argnr) {
-        itsDirectionEngine.handleDirection (operands(), argnr, False, False);
+        itsDirectionEngine.handleDirection (operands(), argnr, false, false);
         itsEngine.setDirectionEngine (itsDirectionEngine);
       }
       // Handle possible Epoch arguments.
@@ -126,27 +126,27 @@ namespace casacore {
     setAttributes (itsEngine.makeAttributes (itsRefType));
   }
 
-  Bool FrequencyUDF::handleRadVelDoppler (uInt& argnr, Bool mustRadVel)
+  bool FrequencyUDF::handleRadVelDoppler (uint32_t& argnr, bool mustRadVel)
   {
     // In the REST function a radial velocity or doppler can be used.
     // They can be distinguished by unit or type, so the velocity unit
     // and/or a type is required for radial velocity.
     if (operands().size() > argnr) {
-      uInt argnrOld = argnr;
+      uint32_t argnrOld = argnr;
       if (! operands()[argnr]->unit().empty()) {
         try {
           itsRadVelEngine.handleRadialVelocity (operands(), argnr);
           itsEngine.setRadVelEngine (itsRadVelEngine);
-          return False;
+          return false;
         } catch (const AipsError&) {
         }
       }
       if (! mustRadVel) {
         argnr = argnrOld;
         try {
-          itsDopplerEngine.handleDoppler (operands(), argnr, False, False);
+          itsDopplerEngine.handleDoppler (operands(), argnr, false, false);
           itsEngine.setDopplerEngine (itsDopplerEngine);
-          return True;
+          return true;
         } catch (const AipsError&) {
         }
       }
@@ -157,14 +157,14 @@ namespace casacore {
     throw AipsError("No radial velocity nor doppler given in MEAS.REST function");
   }
 
-  Double FrequencyUDF::getDouble (const TableExprId& id)
+  double FrequencyUDF::getDouble (const TableExprId& id)
   {
     return getArrayDouble(id).array().data()[0];
   }
 
-  MArray<Double> FrequencyUDF::getArrayDouble (const TableExprId& id)
+  MArray<double> FrequencyUDF::getArrayDouble (const TableExprId& id)
   {
-    return MArray<Double>(itsEngine.getArrayDouble (id, itsType));
+    return MArray<double>(itsEngine.getArrayDouble (id, itsType));
   }
 
 } //end namespace

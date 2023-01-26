@@ -81,7 +81,7 @@ void MEpoch::assure(const Measure &in) {
   }
 }
 
-MEpoch::Types MEpoch::castType(uInt tp) {
+MEpoch::Types MEpoch::castType(uint32_t tp) {
   MEpoch::checkMyTypes();
   AlwaysAssert((tp & ~MEpoch::EXTRA) < MEpoch::N_Types, AipsError);
   return static_cast<MEpoch::Types>(tp);
@@ -106,14 +106,14 @@ const String &MEpoch::showType(MEpoch::Types tp) {
   return tname[tp & ~MEpoch::EXTRA];
 }
 
-const String &MEpoch::showType(uInt tp) {
+const String &MEpoch::showType(uint32_t tp) {
   return MEpoch::showType(MEpoch::castType(tp));
 }
 
-const String* MEpoch::allMyTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) {
-  static const Int N_name = 17;
-  static const Int N_extra = 0;
+const String* MEpoch::allMyTypes(int32_t &nall, int32_t &nextra,
+                                 const uint32_t *&typ) {
+  static const int32_t N_name = 17;
+  static const int32_t N_extra = 0;
   static const String tname[N_name] = {
     "LAST",
     "LMST",
@@ -133,7 +133,7 @@ const String* MEpoch::allMyTypes(Int &nall, Int &nextra,
     "ET",
     "UT" };
   
-  static const uInt oname[N_name] = {
+  static const uint32_t oname[N_name] = {
     MEpoch::LAST,
     MEpoch::LMST,
     MEpoch::GMST1,
@@ -159,8 +159,8 @@ const String* MEpoch::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String* MEpoch::allTypes(Int &nall, Int &nextra,
-                               const uInt *&typ) const {
+const String* MEpoch::allTypes(int32_t &nall, int32_t &nextra,
+                               const uint32_t *&typ) const {
   return MEpoch::allMyTypes(nall, nextra, typ);
 }
 
@@ -170,60 +170,60 @@ void MEpoch::checkTypes() const {
 
 void MEpoch::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
-    Int nall, nex;
-    const uInt *typ;
+    first = false;
+    int32_t nall, nex;
+    const uint32_t *typ;
     const String *const tps = MEpoch::allMyTypes(nall,nex, typ);
     MEpoch::Types tp;
-    for (Int i=0; i<nall; i++) {
+    for (int32_t i=0; i<nall; i++) {
       AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(typ[i])) &&
-		   tp == Int(typ[i]) &&
+		   tp == int32_t(typ[i]) &&
 		   MEpoch::getType(tp, tps[i]) &&
-		   tp == Int(typ[i]), AipsError);
+		   tp == int32_t(typ[i]), AipsError);
     }
-    for (Int i=0; i<N_Types; i++) {
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(MEpoch::getType(tp, MEpoch::showType(i)) &&
 		   tp == i, AipsError);
     }
   }
 }
 
-Bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+bool MEpoch::getType(MEpoch::Types &tp, const String &in) {
+  const uint32_t *oname;
+  int32_t nall, nex;
   const String *tname = MEpoch::allMyTypes(nall, nex, oname);
   
-  Int i = Measure::giveMe(in, nall, tname);
+  int32_t i = Measure::giveMe(in, nall, tname);
 
-  if (i>=nall) return False;
+  if (i>=nall) return false;
   else tp = static_cast<MEpoch::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
+bool MEpoch::giveMe(MEpoch::Ref &mr, const String &in) {
   MEpoch::Types tp;
   if (MEpoch::getType(tp, in)) mr = MEpoch::Ref(tp);
   else {
     mr = MEpoch::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MEpoch::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MEpoch*>(&in)) return False;
+bool MEpoch::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MEpoch*>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MEpoch::setRefString(const String &in) {
+bool MEpoch::setRefString(const String &in) {
   MEpoch::Types tp;
   String x = in;
-  Bool raze = False;
+  bool raze = false;
   if (x.before(2) == "r_" || x.before(2) == "R_") {
-    raze = True;
+    raze = true;
     x = x.from(2);
   }
   if (MEpoch::getType(tp, x)) {
@@ -232,10 +232,10 @@ Bool MEpoch::setRefString(const String &in) {
     } else {
       ref.setType(tp);
     }
-    return True;
+    return true;
   }
   ref.setType(MEpoch::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MEpoch::getDefaultType() const {

@@ -49,7 +49,7 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& virtualColumnName,
 					     const String& storedColumnName)
 : BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
   shape_p    (S::shape()),
-  isVirtualFixedShape_p (False),
+  isVirtualFixedShape_p (false),
   copyInfo_p (0)
 {}
 
@@ -60,7 +60,7 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& virtualColumnName,
 					   const TableRecord& extraInformation)
 : BaseMappedArrayEngine<S,T> (virtualColumnName, storedColumnName),
   shape_p    (virtualShape),
-  isVirtualFixedShape_p (False),
+  isVirtualFixedShape_p (false),
   record_p   (extraInformation),
   copyInfo_p (0)
 {}
@@ -68,13 +68,13 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine (const String& virtualColumnName,
 template<class S, class T>
 RetypedArrayEngine<S,T>::RetypedArrayEngine (const Record& spec)
 : BaseMappedArrayEngine<S,T> (),
-  isVirtualFixedShape_p (False),
+  isVirtualFixedShape_p (false),
   copyInfo_p (0)
 {
     if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
         setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
 	if (spec.isDefined("SHAPE")) {
-	    Vector<Int64> shp;
+	    Vector<int64_t> shp;
 	    spec.get ("SHAPE", shp);
 	    shape_p.fill (shp.size(), shp.begin());
 	}
@@ -89,7 +89,7 @@ RetypedArrayEngine<S,T>::RetypedArrayEngine
                                         (const RetypedArrayEngine<S,T>& that)
 : BaseMappedArrayEngine<S,T> (that),
   shape_p    (that.shape_p),
-  isVirtualFixedShape_p (False),
+  isVirtualFixedShape_p (false),
   record_p   (that.record_p),
   copyInfo_p (0)
 {}
@@ -165,7 +165,7 @@ void RetypedArrayEngine<S,T>::prepare()
 {
     // Get the various parameters from keywords in this column.
     TableColumn thisCol (table(), virtualName());
-    Vector<Int64> vec (thisCol.keywordSet().toArrayInt64("_RetypedArrayEngine_Shape"));
+    Vector<int64_t> vec (thisCol.keywordSet().toArrayInt64("_RetypedArrayEngine_Shape"));
     shape_p.fill (vec.size(), vec.begin());
     record_p = thisCol.keywordSet().subRecord ("_RetypedArrayEngine_Record");
     // Set the column shape in the base class (when needed).
@@ -199,7 +199,7 @@ template<class S, class T>
 void RetypedArrayEngine<S,T>::setShapeColumn (const IPosition& shape)
 {
     virtualFixedShape_p = shape;
-    isVirtualFixedShape_p = True;
+    isVirtualFixedShape_p = true;
 }
 
 template<class S, class T>
@@ -219,7 +219,7 @@ void RetypedArrayEngine<S,T>::setShape (rownr_t rownr, const IPosition& shape)
 }
 
 template<class S, class T>
-uInt RetypedArrayEngine<S,T>::ndim (rownr_t rownr)
+uint32_t RetypedArrayEngine<S,T>::ndim (rownr_t rownr)
 {
     return column().ndim (rownr) - shape_p.nelements();
 }
@@ -253,7 +253,7 @@ Slicer RetypedArrayEngine<S,T>::getStoredSlicer
 {
     //# Determine the element dimensionality.
     //# Make the Slicer such that all values of the element are used.
-    uInt ndim = shape_p.nelements();
+    uint32_t ndim = shape_p.nelements();
     return Slicer (IPosition(ndim,0).concatenate (virtualSlicer.start()),
 		   IPosition(ndim,Slicer::MimicSource).
                                      concatenate (virtualSlicer.end()),
@@ -278,7 +278,7 @@ IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
     //# which are formed by the first axes in the stored.
     //# Their shape cannot be greater than the real virtual element shape.
     IPosition elemShape (shape_p.nelements());
-    uInt i;   //used later
+    uint32_t i;   //used later
     for (i=0; i<shape_p.nelements(); i++) {
 	if (tShape(i) > shape_p(i)) {
 	    throw (DataManInvOper
@@ -287,7 +287,7 @@ IPosition RetypedArrayEngine<S,T>::checkShape (const Array<S>& source,
 	elemShape(i) = tShape(i);
     }
     //# Check if remaining sizes in stored shape match virtual shape.
-    for (uInt j=0; j<sShape.nelements(); j++) {
+    for (uint32_t j=0; j<sShape.nelements(); j++) {
 	if (sShape(j) != tShape(i++)) {
 	    throw (DataManInvOper ("RetypedArrayEngine: stored/virtual shape"
 				   " mismatch"));

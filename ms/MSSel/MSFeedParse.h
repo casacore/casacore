@@ -103,24 +103,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~MSFeedParse() {column1AsTEN_p=TableExprNode();column2AsTEN_p=TableExprNode();}
 
     // Add the given feed selection.
-    const TableExprNode* selectFeedIds(const Vector<Int>& feedIds, 
+    const TableExprNode* selectFeedIds(const Vector<int32_t>& feedIds, 
 					  BaselineListType baselineType=CrossOnly,
-                                          Bool negate=False);
+                                          bool negate=false);
 
     // Add the given "baseline" selection.
-    const TableExprNode* selectFeedIds(const Vector<Int>& feedIds1,
-                      const Vector<Int>& feedIds2, 
+    const TableExprNode* selectFeedIds(const Vector<int32_t>& feedIds1,
+                      const Vector<int32_t>& feedIds2, 
 					  BaselineListType baselineType=CrossOnly,
-                      Bool negate=False);
+                      bool negate=false);
 
     // Get a pointer to the table expression node object.
     TableExprNode node() const
       { return node_p; }
-    const Vector<Int>& selectedFeed1() const
+    const Vector<int32_t>& selectedFeed1() const
       { return feed1List; }
-    const Vector<Int>& selectedFeed2() const
+    const Vector<int32_t>& selectedFeed2() const
       { return feed2List; }
-    const Matrix<Int>& selectedFeedPairs() const
+    const Matrix<int32_t>& selectedFeedPairs() const
       { return feedPairList; }
 
     MSFeed& subTable() {return msSubTable_p;}
@@ -129,14 +129,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     const TableExprNode* setTEN(TableExprNode& condition, 
                                 BaselineListType baselineType=CrossOnly,
-                                Bool negate=False);
-    void makeFeedPairList(const Vector<Int>&f1, const Vector<Int>&f2, Matrix<Int>&fp, 
+                                bool negate=false);
+    void makeFeedPairList(const Vector<int32_t>&f1, const Vector<int32_t>&f2, Matrix<int32_t>&fp, 
 			  BaselineListType baselineType=CrossOnly,
-			  Bool negate=False);
-    void makeFeedList(Vector<Int>& feedList,const Vector<Int>& thisList,
-                         Bool negate=False);
-    Bool addFeedPair(const Matrix<Int>& feedpairlist,
-                     const Int feed1, const Int feed2, 
+			  bool negate=false);
+    void makeFeedList(Vector<int32_t>& feedList,const Vector<int32_t>& thisList,
+                         bool negate=false);
+    bool addFeedPair(const Matrix<int32_t>& feedpairlist,
+                     const int32_t feed1, const int32_t feed2, 
  		     BaselineListType baselineType=CrossOnly);
 
     //# Data members.
@@ -147,8 +147,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   private:
     TableExprNode node_p;
     const String colName1, colName2;
-    Vector<Int> feed1List, feed2List;
-    Matrix<Int> feedPairList;
+    Vector<int32_t> feed1List, feed2List;
+    Matrix<int32_t> feedPairList;
     MSFeed msSubTable_p;
     static TableExprNode column1AsTEN_p,column2AsTEN_p;
   };

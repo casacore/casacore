@@ -90,70 +90,70 @@ public:
 
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& antennaId() {return antennaId_p;}
-  ScalarColumn<Int>& beamId() {return beamId_p;}
-  ArrayColumn<Double>& beamOffset() {return beamOffset_p;}
-  ArrayQuantColumn<Double>& beamOffsetQuant() { return beamOffsetQuant_p;}
+  ScalarColumn<int32_t>& antennaId() {return antennaId_p;}
+  ScalarColumn<int32_t>& beamId() {return beamId_p;}
+  ArrayColumn<double>& beamOffset() {return beamOffset_p;}
+  ArrayQuantColumn<double>& beamOffsetQuant() { return beamOffsetQuant_p;}
   ArrayMeasColumn<MDirection>& beamOffsetMeas() 
     {return beamOffsetMeas_p;}
-  ScalarColumn<Int>& feedId() {return feedId_p;}
-  ScalarColumn<Double>& interval() {return interval_p;}
-  ScalarQuantColumn<Double>& intervalQuant() { return intervalQuant_p;}
-  ScalarColumn<Int>& numReceptors() {return numReceptors_p;}
+  ScalarColumn<int32_t>& feedId() {return feedId_p;}
+  ScalarColumn<double>& interval() {return interval_p;}
+  ScalarQuantColumn<double>& intervalQuant() { return intervalQuant_p;}
+  ScalarColumn<int32_t>& numReceptors() {return numReceptors_p;}
   ArrayColumn<Complex>& polResponse() {return polResponse_p;}
   ArrayColumn<String>& polarizationType() {return polarizationType_p;}
-  ArrayColumn<Double>& position() {return position_p;}
-  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
+  ArrayColumn<double>& position() {return position_p;}
+  ArrayQuantColumn<double>& positionQuant() {return positionQuant_p;}
   ScalarMeasColumn<MPosition>& positionMeas() 
     { return positionMeas_p;}
-  ArrayColumn<Double>& receptorAngle() {return receptorAngle_p;}
-  ArrayQuantColumn<Double>& receptorAngleQuant() {
+  ArrayColumn<double>& receptorAngle() {return receptorAngle_p;}
+  ArrayQuantColumn<double>& receptorAngleQuant() {
     return receptorAngleQuant_p;}
-  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
+  ScalarColumn<int32_t>& spectralWindowId() {return spectralWindowId_p;}
+  ScalarColumn<double>& time() {return time_p;}
+  ScalarQuantColumn<double>& timeQuant() { return timeQuant_p;}
   ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Int>& antennaId() const {return antennaId_p;}
-  const ScalarColumn<Int>& beamId() const {return beamId_p;}
-  const ArrayColumn<Double>& beamOffset() const {return beamOffset_p;}
-  const ArrayQuantColumn<Double>& beamOffsetQuant() const { return beamOffsetQuant_p;}
+  const ScalarColumn<int32_t>& antennaId() const {return antennaId_p;}
+  const ScalarColumn<int32_t>& beamId() const {return beamId_p;}
+  const ArrayColumn<double>& beamOffset() const {return beamOffset_p;}
+  const ArrayQuantColumn<double>& beamOffsetQuant() const { return beamOffsetQuant_p;}
   const ArrayMeasColumn<MDirection>& beamOffsetMeas() const 
     {return beamOffsetMeas_p;}
-  const ScalarColumn<Int>& feedId() const {return feedId_p;}
-  const ScalarColumn<Double>& interval() const {return interval_p;}
-  const ScalarQuantColumn<Double>& intervalQuant() const { return intervalQuant_p;}
-  const ScalarColumn<Int>& numReceptors() const {return numReceptors_p;}
+  const ScalarColumn<int32_t>& feedId() const {return feedId_p;}
+  const ScalarColumn<double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<double>& intervalQuant() const { return intervalQuant_p;}
+  const ScalarColumn<int32_t>& numReceptors() const {return numReceptors_p;}
   const ArrayColumn<Complex>& polResponse() const {return polResponse_p;}
   const ArrayColumn<String>& polarizationType() const {return polarizationType_p;}
-  const ArrayColumn<Double>& position() const {return position_p;}
-  const ArrayQuantColumn<Double>& positionQuant() const {return positionQuant_p;}
+  const ArrayColumn<double>& position() const {return position_p;}
+  const ArrayQuantColumn<double>& positionQuant() const {return positionQuant_p;}
   const ScalarMeasColumn<MPosition>& positionMeas() const 
     { return positionMeas_p;}
-  const ArrayColumn<Double>& receptorAngle() const {return receptorAngle_p;}
-  const ArrayQuantColumn<Double>& receptorAngleQuant() const {
+  const ArrayColumn<double>& receptorAngle() const {return receptorAngle_p;}
+  const ArrayQuantColumn<double>& receptorAngleQuant() const {
     return receptorAngleQuant_p;}
-  const ScalarColumn<Int>& spectralWindowId() const {return spectralWindowId_p;}
-  const ScalarColumn<Double>& time() const {return time_p;}
-  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
+  const ScalarColumn<int32_t>& spectralWindowId() const {return spectralWindowId_p;}
+  const ScalarColumn<double>& time() const {return time_p;}
+  const ScalarQuantColumn<double>& timeQuant() const { return timeQuant_p;}
   const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Double>& focusLength() {return focusLength_p;}
-  ScalarQuantColumn<Double>& focusLengthQuant() { return focusLengthQuant_p;}
-  ScalarColumn<Int>& phasedFeedId() {return phasedFeedId_p;}
+  ScalarColumn<double>& focusLength() {return focusLength_p;}
+  ScalarQuantColumn<double>& focusLengthQuant() { return focusLengthQuant_p;}
+  ScalarColumn<int32_t>& phasedFeedId() {return phasedFeedId_p;}
   // </group>
 
   // Const access to optional columns
   // <group>
-  const ScalarColumn<Double>& focusLength() const {return focusLength_p;}
-  const ScalarQuantColumn<Double>& focusLengthQuant() const { return focusLengthQuant_p;}
-  const ScalarColumn<Int>& phasedFeedId() const {return phasedFeedId_p;}
+  const ScalarColumn<double>& focusLength() const {return focusLength_p;}
+  const ScalarQuantColumn<double>& focusLengthQuant() const { return focusLengthQuant_p;}
+  const ScalarColumn<int32_t>& phasedFeedId() const {return phasedFeedId_p;}
   // </group>
 
   // set the epoch type for the TIME column.
@@ -162,10 +162,10 @@ public:
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty=true);
 
   // set the direction type for the BEAM_OFFSET column. This can only be done
   // when the table has no rows. Trying to do so at other times will throw an
@@ -189,21 +189,21 @@ public:
   // Ignore the Feed table rows contained in vector ignoreRows. 
   // focusLengthQ is only compared if this optional column is present and
   // if the value of focusLengthQ is not dimensionless.
-  Int64 matchFeed(Quantum<Double>& newTimeQ,
-                  Quantum<Double>& newIntervalQ,
-                  Int antId,
-                  Int feedId,
-                  Int spwId, 
-                  const Quantum<Double>& timeQ,
-                  const Quantum<Double>& intervalQ,
-                  Int numReceptor,
-                  const Array<Quantum<Double> >& beamOffsetQ,
+  int64_t matchFeed(Quantum<double>& newTimeQ,
+                  Quantum<double>& newIntervalQ,
+                  int32_t antId,
+                  int32_t feedId,
+                  int32_t spwId, 
+                  const Quantum<double>& timeQ,
+                  const Quantum<double>& intervalQ,
+                  int32_t numReceptor,
+                  const Array<Quantum<double> >& beamOffsetQ,
                   const Array<String>& polType,
                   const Array<Complex>& polResp,
-                  const Array<Quantum<Double> >& positionQ,
-                  const Array<Quantum<Double> >& receptorAngleQ,
+                  const Array<Quantum<double> >& positionQ,
+                  const Array<Quantum<double> >& receptorAngleQ,
                   const RowNumbers& ignoreRows,
-                  const Quantum<Double>& focusLengthQ=Quantum<Double>() 
+                  const Quantum<double>& focusLengthQ=Quantum<double>() 
                   );
 
 protected:
@@ -224,21 +224,21 @@ private:
   void attachOptionalCols(const MSFeed& msFeed);
   
   //# required columns
-  ScalarColumn<Int> antennaId_p;
-  ScalarColumn<Int> beamId_p;
-  ArrayColumn<Double> beamOffset_p;
-  ScalarColumn<Int> feedId_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Int> numReceptors_p;
+  ScalarColumn<int32_t> antennaId_p;
+  ScalarColumn<int32_t> beamId_p;
+  ArrayColumn<double> beamOffset_p;
+  ScalarColumn<int32_t> feedId_p;
+  ScalarColumn<double> interval_p;
+  ScalarColumn<int32_t> numReceptors_p;
   ArrayColumn<Complex> polResponse_p;
   ArrayColumn<String> polarizationType_p;
-  ArrayColumn<Double> position_p;
-  ArrayColumn<Double> receptorAngle_p;
-  ScalarColumn<Int> spectralWindowId_p;
-  ScalarColumn<Double> time_p;
+  ArrayColumn<double> position_p;
+  ArrayColumn<double> receptorAngle_p;
+  ScalarColumn<int32_t> spectralWindowId_p;
+  ScalarColumn<double> time_p;
   //# optional columns
-  ScalarColumn<Double> focusLength_p;
-  ScalarColumn<Int> phasedFeedId_p;
+  ScalarColumn<double> focusLength_p;
+  ScalarColumn<int32_t> phasedFeedId_p;
 
   //# Access to Measure columns
   ArrayMeasColumn<MDirection> beamOffsetMeas_p;
@@ -246,13 +246,13 @@ private:
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   //# Access to Quantum columns
-  ArrayQuantColumn<Double> beamOffsetQuant_p;
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ArrayQuantColumn<Double> positionQuant_p;
-  ArrayQuantColumn<Double> receptorAngleQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
+  ArrayQuantColumn<double> beamOffsetQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ArrayQuantColumn<double> positionQuant_p;
+  ArrayQuantColumn<double> receptorAngleQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
   //# optional Quantum columns
-  ScalarQuantColumn<Double> focusLengthQuant_p;
+  ScalarQuantColumn<double> focusLengthQuant_p;
 };
 
 //# Define the RO version for backward compatibility.

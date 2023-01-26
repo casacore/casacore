@@ -33,19 +33,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Put a C-array of n elements.
 template<class T>
-void putAipsIO (AipsIO& ios, uInt n, const T* data)
+void putAipsIO (AipsIO& ios, uint32_t n, const T* data)
 {
     ios << n;
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
 	ios << *data++;
     }
 }
 
 // Get n elements into an already available C-array.
 template<class T>
-void getAipsIO (AipsIO& ios, uInt n, T* data)
+void getAipsIO (AipsIO& ios, uint32_t n, T* data)
 {
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
 	ios >> *data++;
     }
 }
@@ -53,7 +53,7 @@ void getAipsIO (AipsIO& ios, uInt n, T* data)
 // Get elements into a C-array to be allocated on the heap.
 // The number of elements will also be returned.
 template<class T>
-void getnewAipsIO (AipsIO& ios, uInt& n, T** data)
+void getnewAipsIO (AipsIO& ios, uint32_t& n, T** data)
 {
     ios >> n;
     *data = new T[n];

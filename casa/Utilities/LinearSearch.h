@@ -64,12 +64,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-// Vector<Int> vi;
+// Vector<int32_t> vi;
 // ...  // Sets vi somehow
-// Int val;
-// Bool found;
+// int32_t val;
+// bool found;
 // while (cin >> val  &&  val != -999) {
-//     Int where = linearSearch(found, vi, val, vi.nelements());
+//     int32_t where = linearSearch(found, vi, val, vi.nelements());
 //     if (found) {
 //       cout << "Found " << val << " at position " << where << endl;
 //     } else {
@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 //
 // <templating arg=Container>
-//    <li> operator(Int) or operator[Int] needs to be defined.
+//    <li> operator(int32_t) or operator[int32_t] needs to be defined.
 //    <li> The index must be zero based.
 //    <li> The result of that indexing must be an expression that can be 
 //         compared with an object of class ElType. Normally in fact it would
@@ -113,24 +113,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // indices in the range <src>[lower ... lower + n - 1]</src> Return the index
 // of the first element which is greater than or equal to (ascending order) or
 // less than or equal to (descending order) the value.
-// When not found, -1 is returned and found is set to False.
+// When not found, -1 is returned and found is set to false.
 //# GvD 19971008: The functions need different names, because g++ gives errors
 //# when instantiating.
 // <group>
 // This version of the function is for containers that use () for indexing.
 template<class Container, class ElType>
-Int linearSearch1 (const Container& container, const ElType& value,
-		   uInt lower = 0);
+int32_t linearSearch1 (const Container& container, const ElType& value,
+		   uint32_t lower = 0);
 template<class Container, class ElType>
-Int linearSearch (Bool& found, const Container& container, 
-		  const ElType& value, uInt n, uInt lower=0);
+int32_t linearSearch (bool& found, const Container& container, 
+		  const ElType& value, uint32_t n, uint32_t lower=0);
 // This version of the function is for containers that use [] for indexing.
 template<class Container, class ElType>
-Int linearSearchBrackets1 (const Container& container, const ElType& value,
-			   uInt lower = 0);
+int32_t linearSearchBrackets1 (const Container& container, const ElType& value,
+			   uint32_t lower = 0);
 template<class Container, class ElType>
-Int linearSearchBrackets (Bool& found, const Container& container, 
-			  const ElType& value, uInt n, uInt lower=0);
+int32_t linearSearchBrackets (bool& found, const Container& container, 
+			  const ElType& value, uint32_t n, uint32_t lower=0);
 // </group>
 // </group>
 

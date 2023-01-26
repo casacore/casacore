@@ -89,22 +89,22 @@ class IPosition;
 
 // <example>
 // <srcblock>
-// void writeArray (const Array<Bool>& array)
+// void writeArray (const Array<bool>& array)
 // {
 //     // Construct object and update file StArray.dat.
 //     StManArrayFile arrayFile("StArray.dat, ByteIO::New);
 //     // Reserve space for an array with the given shape and data type.
 //     // This writes the shape at the end of the file and reserves
-//     // space the hold the entire Bool array.
+//     // space the hold the entire bool array.
 //     // It fills in the file offset where the shape is stored
 //     // and returns the length of the shape in the file.
-//     Int64 offset;
-//     uInt shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<Bool*>(0));
+//     int64_t offset;
+//     uint32_t shapeLength = arrayFile.putShape (array.shape(), offset, static_cast<bool*>(0));
 //     // Now put the actual array.
 //     // This has to be put at the returned file offset plus the length
 //     // of the shape in the file.
-//     Bool deleteIt;
-//     const Bool* dataPtr = array.getStorage (deleteIt);
+//     bool deleteIt;
+//     const bool* dataPtr = array.getStorage (deleteIt);
 //     arrayFile.put (offset+shapeLength, 0, array.nelements(), dataPtr);
 //     array.freeStorage (dataPtr, deleteIt);
 // }
@@ -136,16 +136,16 @@ public:
     // for the underlying filebuf object (see iostream package).
     // A bufferSize 0 means using the default size (currently 65536).
     StManArrayFile (const String& name, ByteIO::OpenOption,
-		    uInt version=0, Bool bigEndian=True,
-		    uInt bufferSize=0,
+		    uint32_t version=0, bool bigEndian=true,
+		    uint32_t bufferSize=0,
                     const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Close the possibly opened file.
     ~StManArrayFile();
 
     // Flush and optionally fsync the data.
-    // It returns True when any data was written since the last flush.
-    Bool flush (Bool fsync);
+    // It returns true when any data was written since the last flush.
+    bool flush (bool fsync);
 
     // Reopen the file for read/write access.
     void reopenRW();
@@ -154,7 +154,7 @@ public:
     void resync();
 
     // Return the current file length (merely a debug tool).
-    Int64 length()
+    int64_t length()
 	{ return leng_p; }
 
     // Put the array shape and store its file offset into the offset argument.
@@ -164,42 +164,42 @@ public:
     // actual array data (which can be used by get and put).
     // Space is reserved to store the reference count.
     // <group>
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Bool* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Char* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uChar* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Short* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uShort* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Int* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uInt* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Int64* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const uInt64* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Float* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
-		   const Double* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const bool* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const char* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const unsigned char* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const int16_t* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const uint16_t* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const int32_t* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const uint32_t* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const int64_t* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const uint64_t* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const float* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
+		   const double* dummy);
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
 		   const Complex* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
 		   const DComplex* dummy);
-    uInt putShape (const IPosition& shape, Int64& fileOffset,
+    uint32_t putShape (const IPosition& shape, int64_t& fileOffset,
 		   const String* dummy);
     // </group>
 
     // Get the reference count.
-    uInt getRefCount (Int64 offset);
+    uint32_t getRefCount (int64_t offset);
 
     // Put the reference count.
     // An exception is thrown if a value other than 1 is put for version 0.
-    void putRefCount (uInt refCount, Int64 offset);
+    void putRefCount (uint32_t refCount, int64_t offset);
 
     // Put nr elements at the given file offset and array offset.
     // The file offset of the first array element is the file offset
@@ -207,27 +207,27 @@ public:
     // The array offset is counted in number of elements. It can be
     // used to put only a (contiguous) section of the array.
     // <group>
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Bool*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Char*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uChar*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Short*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uShort*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Int64*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const uInt64*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Float*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Double*);
-//#//    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const long double*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const Complex*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const DComplex*);
-    void put (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, const String*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const bool*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const char*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const unsigned char*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const int16_t*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const uint16_t*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const int32_t*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const uint32_t*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const int64_t*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const uint64_t*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const float*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const double*);
+//#//    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const long double*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const Complex*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const DComplex*);
+    void put (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, const String*);
     // </group>
 
     // Get the shape at the given file offset.
     // It will reshape the IPosition vector when needed.
     // It returns the length of the shape in the file.
-    uInt getShape (Int64 fileOffset, IPosition& shape);
+    uint32_t getShape (int64_t fileOffset, IPosition& shape);
 
     // Get nr elements at the given file offset and array offset.
     // The file offset of the first array element is the file offset
@@ -235,86 +235,86 @@ public:
     // The array offset is counted in number of elements. It can be
     // used to get only a (contiguous) section of the array.
     // <group>
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Bool*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Char*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uChar*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Short*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uShort*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Int64*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, uInt64*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Float*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Double*);
-//#//    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, long double*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, Complex*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, DComplex*);
-    void get (Int64 fileOffset, Int64 arrayOffset, uInt64 nr, String*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, bool*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, char*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, unsigned char*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, int16_t*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, uint16_t*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, int32_t*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, uint32_t*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, int64_t*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, uint64_t*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, float*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, double*);
+//#//    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, long double*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, Complex*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, DComplex*);
+    void get (int64_t fileOffset, int64_t arrayOffset, uint64_t nr, String*);
     // </group>
 
     // Copy the array with <src>nr</src> elements from one file offset
     // to another.
     // <group>
-    void copyArrayBool     (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayChar     (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuChar    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayShort    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuShort   (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayInt      (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuInt     (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayInt64    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayuInt64   (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayFloat    (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayDouble   (Int64 to, Int64 from, uInt64 nr);
-//#//    void copyArrayLDouble  (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayComplex  (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayDComplex (Int64 to, Int64 from, uInt64 nr);
-    void copyArrayString   (Int64 to, Int64 from, uInt64 nr);
+    void copyArrayBool     (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayChar     (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayuChar    (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayShort    (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayuShort   (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayInt      (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayuInt     (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayInt64    (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayuInt64   (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayFloat    (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayDouble   (int64_t to, int64_t from, uint64_t nr);
+//#//    void copyArrayLDouble  (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayComplex  (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayDComplex (int64_t to, int64_t from, uint64_t nr);
+    void copyArrayString   (int64_t to, int64_t from, uint64_t nr);
     // </group>
 
 private:
     ByteIO* file_p;                //# File object
     TypeIO* iofil_p;               //# IO object
-    Int64   leng_p;                //# File length
-    uInt    version_p;             //# Version of StArrayFile file
-    Bool    swput_p;               //# True = put is possible
-    Bool    hasPut_p;              //# True = put since last flush
-    uInt    sizeChar_p;
-    uInt    sizeuChar_p;
-    uInt    sizeShort_p;
-    uInt    sizeuShort_p;
-    uInt    sizeInt_p;
-    uInt    sizeuInt_p;
-    uInt    sizeInt64_p;
-    uInt    sizeuInt64_p;
-    uInt    sizeFloat_p;
-    uInt    sizeDouble_p;
+    int64_t   leng_p;                //# File length
+    uint32_t    version_p;             //# Version of StArrayFile file
+    bool    swput_p;               //# true = put is possible
+    bool    hasPut_p;              //# true = put since last flush
+    uint32_t    sizeChar_p;
+    uint32_t    sizeuChar_p;
+    uint32_t    sizeShort_p;
+    uint32_t    sizeuShort_p;
+    uint32_t    sizeInt_p;
+    uint32_t    sizeuInt_p;
+    uint32_t    sizeInt64_p;
+    uint32_t    sizeuInt64_p;
+    uint32_t    sizeFloat_p;
+    uint32_t    sizeDouble_p;
 
     // Put a single value at the current file offset.
     // It returns the length of the value in the file.
     // <group>
-    uInt put (const Int&);
-    uInt put (const uInt&);
+    uint32_t put (const int32_t&);
+    uint32_t put (const uint32_t&);
     // </group>
 
     // Put the array shape at the end of the file and reserve
     // space for nr elements (each lenElem bytes long).
     // It fills the file offset of the shape.
     // It returns the length of the shape in the file.
-    uInt putRes (const IPosition& shape, Int64& fileOffset, float lenElem);
+    uint32_t putRes (const IPosition& shape, int64_t& fileOffset, float lenElem);
 
     // Get a single value at the current file offset.
     // It returns the length of the value in the file.
     // <group>
-    uInt get (Int&);
-    uInt get (uInt&);
+    uint32_t get (int32_t&);
+    uint32_t get (uint32_t&);
     // </group>
 
     // Copy data with the given length from one file offset to another.
-    void copyData (Int64 to, Int64 from, uInt64 length);
+    void copyData (int64_t to, int64_t from, uint64_t length);
 
     // Position the file on the given offset.
-    void setpos (Int64 offset);
+    void setpos (int64_t offset);
 };
     
 
@@ -322,21 +322,21 @@ inline void StManArrayFile::reopenRW()
 {
     file_p->reopenRW();
 }
-inline uInt StManArrayFile::put (const Int& value)
+inline uint32_t StManArrayFile::put (const int32_t& value)
 {
-    hasPut_p = True;
+    hasPut_p = true;
     return iofil_p->write (1, &value);
 }
-inline uInt StManArrayFile::put (const uInt& value)
+inline uint32_t StManArrayFile::put (const uint32_t& value)
 {
-    hasPut_p = True;
+    hasPut_p = true;
     return iofil_p->write (1, &value);
 }
-inline uInt StManArrayFile::get (Int& value)
+inline uint32_t StManArrayFile::get (int32_t& value)
 {
     return iofil_p->read (1, &value);
 }
-inline uInt StManArrayFile::get (uInt& value)
+inline uint32_t StManArrayFile::get (uint32_t& value)
 {
     return iofil_p->read (1, &value);
 }

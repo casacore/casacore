@@ -167,14 +167,14 @@ public:
    LELArray<T> getArray() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-// It returns True if the expression is an invalid scalar
-// (i.e. with a False mask).
+// It returns true if the expression is an invalid scalar
+// (i.e. with a false mask).
 // That can happen if the expression has a component with an invalid
 // scalar value (e.g. min(lattice) where lattice contains no valid elements).
-   virtual Bool prepareScalarExpr() = 0;
+   virtual bool prepareScalarExpr() = 0;
 
 // Is the result of evaluating this expression a scalar ?
-   Bool isScalar() const {return attr_p.isScalar();}
+   bool isScalar() const {return attr_p.isScalar();}
 
 // Get the shape of the expression result.
    const IPosition& shape() const {return attr_p.shape();}
@@ -186,17 +186,17 @@ public:
    virtual String className() const = 0;
 
 // If the given expression is a valid scalar, replace it by its result.
-// It returns False if the expression is no scalar or if the expression
-// is an invalid scalar (i.e. with a False mask).
-   static Bool replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
+// It returns false if the expression is no scalar or if the expression
+// is an invalid scalar (i.e. with a false mask).
+   static bool replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
 
   // Handle locking/syncing of the parts of a lattice expression.
   // <br>By default the functions do not do anything at all.
-  // lock() and hasLock return True.
+  // lock() and hasLock return true.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 

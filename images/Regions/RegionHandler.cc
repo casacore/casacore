@@ -47,9 +47,9 @@ RegionHandler* RegionHandler::clone() const
 void RegionHandler::setObjectPtr (void*)
 {}
 
-Bool RegionHandler::canDefineRegion() const
+bool RegionHandler::canDefineRegion() const
 {
-  return False;
+  return false;
 }
 
 void RegionHandler::setDefaultMask (const String&)
@@ -63,40 +63,40 @@ String RegionHandler::getDefaultMask() const
   return "";
 }
 
-Bool RegionHandler::defineRegion (const String&,
+bool RegionHandler::defineRegion (const String&,
 				  const ImageRegion&,
 				  RegionHandler::GroupType,
-				  Bool)
+				  bool)
 {
   throw AipsError ("RegionHandler::defineRegion"
 		   " cannot be used for this image type");
 }
 
-Bool RegionHandler::hasRegion (const String&,
+bool RegionHandler::hasRegion (const String&,
 			       RegionHandler::GroupType) const
 {
-  return False;
+  return false;
 }
 
-Bool RegionHandler::renameRegion (const String&,
+bool RegionHandler::renameRegion (const String&,
 				  const String&,
 				  RegionHandler::GroupType,
-				  Bool)
+				  bool)
 {
   throw AipsError ("RegionHandler::renameRegion"
 		   " cannot be used for this image type");
-  return False;
+  return false;
 }
 
-Bool RegionHandler::removeRegion (const String&,
+bool RegionHandler::removeRegion (const String&,
 				  RegionHandler::GroupType,
-				  Bool throwIfUnknown)
+				  bool throwIfUnknown)
 {
   if (throwIfUnknown) {
     throw AipsError ("RegionHandler::removeRegion"
 		     " cannot be used for this image type");
   }
-  return False;
+  return false;
 }
 
 Vector<String> RegionHandler::regionNames (RegionHandler::GroupType) const
@@ -106,7 +106,7 @@ Vector<String> RegionHandler::regionNames (RegionHandler::GroupType) const
 
 ImageRegion* RegionHandler::getRegion (const String&,
 				       RegionHandler::GroupType,
-				       Bool throwIfUnknown) const
+				       bool throwIfUnknown) const
 {
   if (throwIfUnknown) {
     throw AipsError ("RegionHandler::findRegionGroup"
@@ -125,9 +125,9 @@ ImageRegion RegionHandler::makeMask (const LatticeBase&,
 }
 
 String RegionHandler::makeUniqueRegionName (const String& rootName,
-					    uInt startNumber) const
+					    uint32_t startNumber) const
 {
-  while (True) {
+  while (true) {
     ostringstream oss;
     oss << startNumber;
     String name = rootName + String(oss);

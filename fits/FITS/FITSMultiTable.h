@@ -70,7 +70,7 @@ public:
 		   FITSTabular* (*tabMaker)(const String &) = 0);
     ~FITSMultiTable();
 
-    virtual Bool isValid() const;
+    virtual bool isValid() const;
     virtual const TableRecord &keywords() const;
     virtual const RecordDesc &description() const;
     virtual const Record &units() const;
@@ -79,8 +79,8 @@ public:
 
     virtual const String &name() const { return table_p->name(); }
 
-    // Only returns True when all files are exhausted.
-    virtual Bool pastEnd() const;
+    // Only returns true when all files are exhausted.
+    virtual bool pastEnd() const;
     // When end of data is hit on the current file, the next file is opened
     // automatically.
     virtual void next();
@@ -90,23 +90,23 @@ public:
     const Vector<String>& fileNames() const { return file_names_p;}
 
     // Has the descriptor changed from when the file was opened
-    virtual Bool hasChanged() const { return hasChanged_p;}
+    virtual bool hasChanged() const { return hasChanged_p;}
 
-    // set hasChanged to False - used after hasChanged has been checked
-    void resetChangedFlag() { hasChanged_p = False;}
+    // set hasChanged to false - used after hasChanged has been checked
+    void resetChangedFlag() { hasChanged_p = false;}
 
     // A helper function to generate a list of fileNames. This function returns
     // all the files in "directoryName" which have the form
     // yyyy_mm_dd_hh:mm:ss_*.fits and which are (even partially) 
     // in the time range specified by startTime and endTime. It is used to 
     // generate a set of file names for use in the FITSMultiTable constructor. 
-    // If verboseStatus is True, some status messages appear on cout.
-    // If verboseErrors is True improperly named files names (not matching the above 
+    // If verboseStatus is true, some status messages appear on cout.
+    // If verboseErrors is true improperly named files names (not matching the above 
     // pattern) are named on cerrt.
     static Vector<String> filesInTimeRange(const String &directoryName, 
 				   const Time &startTime, const Time &endTime,
-					   Bool verboseErrors = False,
-					   Bool verboseStatus = False);
+					   bool verboseErrors = false,
+					   bool verboseStatus = false);
     // return the time as found in the given string using the form given above
     // There are no sanity checks in this subroutine
     static Time timeFromFile(const String &fileName);
@@ -120,9 +120,9 @@ private:
     FITSTabular *table_p;
 
     Vector<String> file_names_p;
-    uInt nfiles_p;
-    uInt which_file_p;
-    Bool hasChanged_p;
+    uint32_t nfiles_p;
+    uint32_t which_file_p;
+    bool hasChanged_p;
 
     Record row_p;
 

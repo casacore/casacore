@@ -53,7 +53,7 @@ namespace casacore {
   // These functions perform element by element mathematical operations on
   // optionally masked arrays and/or scalars.
   // If two arrays are used, the arrays must conform, except for allEQ which
-  // returns False if the arrays do not conform.
+  // returns false if the arrays do not conform.
   //
   // The functions in this file can be divided in 3 groups:
   // <ul>
@@ -66,7 +66,7 @@ namespace casacore {
   //       mask is the OR of both masks.
   //  <li> Full reduction functions like ntrue, all, allEQ, etc.
   //       They operate on the unmasked elements only. If there are no unmasked
-  //       elements, the results is 0 or True.
+  //       elements, the results is 0 or true.
   //  <li> Reduction functions working on unmasked elements in parts of the
   //       input array. The result is an MArray that has a mask if the input
   //       array has a mask. An output element is masked off if its input
@@ -76,7 +76,7 @@ namespace casacore {
   //       There are 3 flavours:
   //   <ul>
   //    <li> partialXXX reduces one or more axes. E.g. one can count the
-  //         number of True elements for particular array axes.
+  //         number of true elements for particular array axes.
   //         The result is an array with a lower dimensionality.
   //         They can be seen as a special versions of the boxedXXX functions.
   //    <li> slidingXXX operates in a sliding window over the array. So the
@@ -126,21 +126,21 @@ namespace casacore {
   };
   template<typename T> class MVarianceFunc : public MArrayFunctorBase<T> {
   public:
-    explicit MVarianceFunc(uInt ddof=0)
+    explicit MVarianceFunc(uint32_t ddof=0)
       : itsDdof(ddof) {}
     virtual ~MVarianceFunc() {}
     T operator() (const MArray<T>& arr) const { return variance(arr, itsDdof); }
   private:
-    uInt itsDdof;
+    uint32_t itsDdof;
   };
   template<typename T> class MStddevFunc : public MArrayFunctorBase<T> {
   public:
-    explicit MStddevFunc(uInt ddof=0)
+    explicit MStddevFunc(uint32_t ddof=0)
       : itsDdof(ddof) {}
     ~MStddevFunc() {}
     T operator() (const MArray<T>& arr) const { return stddev(arr, itsDdof); }
   private:
-    uInt itsDdof;
+    uint32_t itsDdof;
   };
   template<typename T> class MAvdevFunc : public MArrayFunctorBase<T> {
   public:
@@ -154,29 +154,29 @@ namespace casacore {
   };
   template<typename T> class MMedianFunc : public MArrayFunctorBase<T> {
   public:
-    explicit MMedianFunc (Bool sorted=False, Bool takeEvenMean=True,
-                          Bool inPlace = False)
+    explicit MMedianFunc (bool sorted=false, bool takeEvenMean=true,
+                          bool inPlace = false)
       : itsSorted(sorted), itsTakeEvenMean(takeEvenMean), itsInPlace(inPlace) {}
     virtual ~MMedianFunc() {}
     T operator() (const MArray<T>& arr) const
       { return median(arr, itsSorted, itsTakeEvenMean, itsInPlace); }
   private:
-    Bool itsSorted;
-    Bool itsTakeEvenMean;
-    Bool itsInPlace;
+    bool itsSorted;
+    bool itsTakeEvenMean;
+    bool itsInPlace;
   };
   template<typename T> class MFractileFunc : public MArrayFunctorBase<T> {
   public:
-    explicit MFractileFunc (Float fraction,
-                            Bool sorted = False, Bool inPlace = False)
+    explicit MFractileFunc (float fraction,
+                            bool sorted = false, bool inPlace = false)
       : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
     virtual ~MFractileFunc() {}
     T operator() (const MArray<T>& arr) const
       { return fractile(arr, itsFraction, itsSorted, itsInPlace); }
   private:
     float itsFraction;
-    Bool  itsSorted;
-    Bool  itsInPlace;
+    bool  itsSorted;
+    bool  itsInPlace;
   };
 
 
@@ -210,31 +210,31 @@ namespace casacore {
     // Hmm, tricky for median and fractile.
     // Better to make Array copy ctor thread-safe (thus use boost shared_ptr).
     ReadOnlyArrayIterator<T>    aiter(a.array(), collapseAxes);
-    ReadOnlyArrayIterator<Bool> miter(a.mask(),  collapseAxes);
+    ReadOnlyArrayIterator<bool> miter(a.mask(),  collapseAxes);
     IPosition shape(a.array().shape().removeAxes (collapseAxes));
     /*
-    Int64 nr = 1;
-    for (uInt i=0; i<collapseAxes.size(); ++i) {
+    int64_t nr = 1;
+    for (uint32_t i=0; i<collapseAxes.size(); ++i) {
       nr *= a.array().shape()[collapseAxes[i]];
     }
     ///#pragma omp parallel
-    for (Int64 i=0; i<nr; ++i) {
+    for (int64_t i=0; i<nr; ++i) {
       IPosition pos = findPos(i);
       IPosition endPos = pos + cursorShape - 1;
       *data[pos] = funcObj(MArray<T>(a.array()(pos,endPos), a.mask()(pos,endpos)));
     }
     */
     ///IPosition shape(a.array().shape().removeAxes (collapseAxes));
-    res.resize (shape, False);
-    Array<Bool> resMask(shape);
+    res.resize (shape, false);
+    Array<bool> resMask(shape);
     RES* data = res.array().data();
-    Bool* mask = resMask.data();
+    bool* mask = resMask.data();
     while (!aiter.pastEnd()) {
       if (allTrue(miter.array())) {
-        *mask++ = True;
+        *mask++ = true;
         *data++ = RES();
       } else {
-        *mask++ = False;
+        *mask++ = false;
         *data++ = funcObj(MArray<T> (aiter.array(), miter.array()));
       }
       aiter.next();
@@ -262,26 +262,26 @@ namespace casacore {
   {
     AlwaysAssert (array.hasMask(), AipsError);
     const IPosition& shape = array.shape();
-    uInt ndim = shape.size();
+    uint32_t ndim = shape.size();
     IPosition fullBoxShape, resShape;
     fillBoxedShape (shape, boxShape, fullBoxShape, resShape);
-    res.resize (resShape, False);
-    Array<Bool> resMask(resShape);
+    res.resize (resShape, false);
+    Array<bool> resMask(resShape);
     RES* data = res.array().data();
-    Bool* mask = resMask.data();
+    bool* mask = resMask.data();
     // Loop through all data and assemble as needed.
     IPosition blc(ndim, 0);
     IPosition trc(fullBoxShape-1);
-    while (True) {
-      Array<Bool> subMask (array.mask()(blc,trc));
+    while (true) {
+      Array<bool> subMask (array.mask()(blc,trc));
       if (allTrue(subMask)) {
         *data++ = RES();
-        *mask++ = True;
+        *mask++ = true;
       } else {
         *data++ = funcObj (MArray<T>(array.array()(blc,trc), subMask));
-        *mask++ = False;
+        *mask++ = false;
       }
-      uInt ax;
+      uint32_t ax;
       for (ax=0; ax<ndim; ++ax) {
         blc[ax] += fullBoxShape[ax];
         if (blc[ax] < shape[ax]) {
@@ -305,7 +305,7 @@ namespace casacore {
   inline MArray<T> slidingArrayMath (const MArray<T>& array,
                                      const IPosition& halfBoxShape,
                                      const MArrayFunctorBase<T>& funcObj,
-                                     Bool fillEdge=True)
+                                     bool fillEdge=true)
   {
     MArray<T> res;
     slidingArrayMath (res, array, halfBoxShape, funcObj, fillEdge);
@@ -316,47 +316,47 @@ namespace casacore {
                          const MArray<T>& array,
                          const IPosition& halfBoxShape,
                          const MArrayFunctorBase<T,RES>& funcObj,
-                         Bool fillEdge=True)
+                         bool fillEdge=true)
   {
     AlwaysAssert (array.hasMask(), AipsError);
     const IPosition& shape = array.shape();
-    uInt ndim = shape.size();
+    uint32_t ndim = shape.size();
     IPosition boxEnd, resShape;
-    Bool empty = fillSlidingShape (shape, halfBoxShape, boxEnd, resShape);
+    bool empty = fillSlidingShape (shape, halfBoxShape, boxEnd, resShape);
     if (fillEdge) {
-      res.resize (shape, False);
+      res.resize (shape, false);
       res.array() = RES();
-      Array<Bool> mask(shape, True);
+      Array<bool> mask(shape, true);
       res.setMask (mask);
     } else {
-      res.resize (resShape, True);
+      res.resize (resShape, true);
     }
     if (!empty) {
       Array<RES>  resa (res.array());
-      Array<Bool> resm (res.mask());
+      Array<bool> resm (res.mask());
       if (fillEdge) {
         IPosition boxEnd2 (boxEnd/2);
         resa.reference (resa(boxEnd2, resShape+boxEnd2-1));
         resm.reference (resm(boxEnd2, resShape+boxEnd2-1));
       }
       typename Array<RES>::iterator  iterarr(resa.begin());
-      typename Array<Bool>::iterator itermask(resm.begin());
+      typename Array<bool>::iterator itermask(resm.begin());
       // Loop through all data and assemble as needed.
       IPosition blc(ndim, 0);
       IPosition trc(boxEnd);
       IPosition pos(ndim, 0);
-      while (True) {
-        Array<Bool> subMask (array.mask()(blc,trc));
+      while (true) {
+        Array<bool> subMask (array.mask()(blc,trc));
         if (allTrue(subMask)) {
           *iterarr  = RES();
-          *itermask = True;
+          *itermask = true;
         } else {
           *iterarr  = funcObj (MArray<T>(array.array()(blc,trc), subMask));
-          *itermask = False;
+          *itermask = false;
         }
         ++iterarr;
         ++itermask;
-        uInt ax;
+        uint32_t ax;
         for (ax=0; ax<ndim; ++ax) {
           if (++pos[ax] < resShape[ax]) {
             blc[ax]++;
@@ -678,29 +678,29 @@ namespace casacore {
   MArray<T> conj(const MArray<T>& arr)
     { return MArray<T> (conj(arr.array()), arr); }
 
-  inline MArray<Float> real(const MArray<Complex> &arr)
-    { return MArray<Float> (real(arr.array()), arr); }
+  inline MArray<float> real(const MArray<Complex> &arr)
+    { return MArray<float> (real(arr.array()), arr); }
 
-  inline MArray<Float> imag(const MArray<Complex> &arr)
-    { return MArray<Float> (imag(arr.array()), arr); }
+  inline MArray<float> imag(const MArray<Complex> &arr)
+    { return MArray<float> (imag(arr.array()), arr); }
 
-  inline MArray<Float> amplitude(const MArray<Complex> &arr)
-    { return MArray<Float> (amplitude(arr.array()), arr); }
+  inline MArray<float> amplitude(const MArray<Complex> &arr)
+    { return MArray<float> (amplitude(arr.array()), arr); }
 
-  inline MArray<Float> phase(const MArray<Complex> &arr)
-    { return MArray<Float> (phase(arr.array()), arr); }
+  inline MArray<float> phase(const MArray<Complex> &arr)
+    { return MArray<float> (phase(arr.array()), arr); }
 
-  inline MArray<Double> real(const MArray<DComplex> &arr)
-    { return MArray<Double> (real(arr.array()), arr); }
+  inline MArray<double> real(const MArray<DComplex> &arr)
+    { return MArray<double> (real(arr.array()), arr); }
 
-  inline MArray<Double> imag(const MArray<DComplex> &arr)
-    { return MArray<Double> (imag(arr.array()), arr); }
+  inline MArray<double> imag(const MArray<DComplex> &arr)
+    { return MArray<double> (imag(arr.array()), arr); }
 
-  inline MArray<Double> amplitude(const MArray<DComplex> &arr)
-    { return MArray<Double> (amplitude(arr.array()), arr); }
+  inline MArray<double> amplitude(const MArray<DComplex> &arr)
+    { return MArray<double> (amplitude(arr.array()), arr); }
 
-  inline MArray<Double> phase(const MArray<DComplex> &arr)
-    { return MArray<Double> (phase(arr.array()), arr); }
+  inline MArray<double> phase(const MArray<DComplex> &arr)
+    { return MArray<double> (phase(arr.array()), arr); }
   // </group>
 
 
@@ -775,16 +775,16 @@ namespace casacore {
   template<typename T>
   T mean(const MArray<T>& a)
   {
-    Int64 nv = a.nvalid();
+    int64_t nv = a.nvalid();
     if (nv == 0) return T();
     if (! a.hasMask()) return mean(a.array());
     return T(sum(a) / (1.0*nv));
   }
 
   template<typename T>
-  T variance(const MArray<T>& a, T mean, uInt ddof)
+  T variance(const MArray<T>& a, T mean, uint32_t ddof)
   {
-    Int64 nv = a.nvalid();
+    int64_t nv = a.nvalid();
     if (nv < ddof+1) return T();
     if (! a.hasMask()) return pvariance(a.array(), mean, ddof);
     T sum = a.array().contiguousStorage() && a.mask().contiguousStorage() ?
@@ -796,19 +796,19 @@ namespace casacore {
   }
 
   template<typename T>
-  T variance(const MArray<T>& a, uInt ddof)
+  T variance(const MArray<T>& a, uint32_t ddof)
   {
     return variance(a, mean(a), ddof);
   }
 
   template<typename T>
-  T stddev(const MArray<T>& a, uInt ddof)
+  T stddev(const MArray<T>& a, uint32_t ddof)
   {
     return sqrt(variance(a, ddof));
   }
 
   template<typename T>
-  T stddev(const MArray<T>& a, T mean, uInt ddof)
+  T stddev(const MArray<T>& a, T mean, uint32_t ddof)
   {
     return sqrt(variance(a, mean, ddof));
   }
@@ -816,7 +816,7 @@ namespace casacore {
   template<typename T>
   T avdev(const MArray<T>& a, T mean)
   {
-    Int64 nv = a.nvalid();
+    int64_t nv = a.nvalid();
     if (nv == 0) return T();
     if (! a.hasMask()) return avdev(a.array(), mean);
     T sum = a.array().contiguousStorage() && a.mask().contiguousStorage() ?
@@ -836,7 +836,7 @@ namespace casacore {
   template<typename T>
   T rms(const MArray<T>& a)
   {
-    Int64 nv = a.nvalid();
+    int64_t nv = a.nvalid();
     if (nv == 0) return T();
     if (! a.hasMask()) return rms(a.array());
     T sum = a.array().contiguousStorage() && a.mask().contiguousStorage() ?
@@ -848,28 +848,28 @@ namespace casacore {
   }
 
   template<typename T>
-  T median(const MArray<T> &a, Bool sorted, Bool takeEvenMean,
-           Bool inPlace=False)
+  T median(const MArray<T> &a, bool sorted, bool takeEvenMean,
+           bool inPlace=false)
   {
     // The normal median function needs at least one element, so shortcut.
     if (a.empty()) return T();
     if (! a.hasMask()) return median(a.array(), sorted, takeEvenMean, inPlace);
     Block<T> buf(a.size());
-    Int64 nv = a.flatten (buf.storage(), buf.size());
+    int64_t nv = a.flatten (buf.storage(), buf.size());
     if (nv == 0) return T();
     Array<T> arr(IPosition(1, nv), buf.storage(), SHARE);
     // Median can be taken in place.
-    return median (arr, sorted, takeEvenMean, True);
+    return median (arr, sorted, takeEvenMean, true);
   }
   template<typename T>
   inline T median(const MArray<T> &a)
-    { return median (a, False, (a.size() <= 100), False); }
+    { return median (a, false, (a.size() <= 100), false); }
   template<typename T>
-  inline T median(const MArray<T> &a, Bool sorted)
-    { return median (a, sorted, (a.nelements() <= 100), False); }
+  inline T median(const MArray<T> &a, bool sorted)
+    { return median (a, sorted, (a.nelements() <= 100), false); }
   template<typename T>
-  inline T medianInPlace(const MArray<T> &a, Bool sorted = False)
-    { return median (a, sorted, (a.nelements() <= 100), True); }
+  inline T medianInPlace(const MArray<T> &a, bool sorted = false)
+    { return median (a, sorted, (a.nelements() <= 100), true); }
 
   // Return the fractile of an array.
   // It returns the value at the given fraction of the array.
@@ -877,17 +877,17 @@ namespace casacore {
   // the two middle elements is taken if the array has an even nr of elements.
   // It uses kthLargest if the array is not sorted yet.
   template<typename T>
-  T fractile(const MArray<T> &a, Float fraction, Bool sorted=False,
-             Bool inPlace=False)
+  T fractile(const MArray<T> &a, float fraction, bool sorted=false,
+             bool inPlace=false)
   {
     // The normal fractile function needs at least one element, so shortcut.
     if (a.empty()) return T();
     if (! a.hasMask()) return fractile(a.array(), fraction, sorted, inPlace);
     Block<T> buf(a.size());
-    Int64 nv = a.flatten (buf.storage(), a.size());
+    int64_t nv = a.flatten (buf.storage(), a.size());
     if (nv == 0) return T();
     Array<T> arr(IPosition(1, nv), buf.storage(), SHARE);
-    return fractile (arr, fraction, sorted, True);
+    return fractile (arr, fraction, sorted, true);
   }
   // </group>
 
@@ -963,7 +963,7 @@ namespace casacore {
   template<typename T>
   MArray<T> partialVariances (const MArray<T>& a,
                               const IPosition& collapseAxes,
-                              uInt ddof)
+                              uint32_t ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -975,7 +975,7 @@ namespace casacore {
   template<typename T>
   MArray<T> partialStddevs (const MArray<T>& a,
                             const IPosition& collapseAxes,
-                            uInt ddof)
+                            uint32_t ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1009,8 +1009,8 @@ namespace casacore {
   template<typename T>
   MArray<T> partialMedians (const MArray<T>& a,
                             const IPosition& collapseAxes,
-                            Bool takeEvenMean=False,
-                            Bool inPlace=False)
+                            bool takeEvenMean=false,
+                            bool inPlace=false)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1019,13 +1019,13 @@ namespace casacore {
                                        takeEvenMean, inPlace));
     }
     return partialArrayMath (a, collapseAxes,
-                             MMedianFunc<T>(False, takeEvenMean, inPlace));
+                             MMedianFunc<T>(false, takeEvenMean, inPlace));
   }
   template<typename T>
   MArray<T> partialFractiles (const MArray<T>& a,
                               const IPosition& collapseAxes,
-                              Float fraction,
-                              Bool inPlace=False)
+                              float fraction,
+                              bool inPlace=false)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1034,7 +1034,7 @@ namespace casacore {
                                          fraction, inPlace));
     }
     return partialArrayMath (a, collapseAxes,
-                             MFractileFunc<T>(fraction, False, inPlace));
+                             MFractileFunc<T>(fraction, false, inPlace));
   }
   // </group>
 
@@ -1042,7 +1042,7 @@ namespace casacore {
   // <group>
   template<typename T>
   MArray<T> slidingSums (const MArray<T>& a,
-                         const IPosition& halfBoxSize, Bool fillEdge=True)
+                         const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1054,7 +1054,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingSumSqrs (const MArray<T>& a,
-                            const IPosition& halfBoxSize, Bool fillEdge=True)
+                            const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1066,7 +1066,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingProducts (const MArray<T>& a,
-                             const IPosition& halfBoxSize, Bool fillEdge=True)
+                             const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1078,7 +1078,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingMins (const MArray<T>& a,
-                         const IPosition& halfBoxSize, Bool fillEdge=True)
+                         const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1090,7 +1090,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingMaxs (const MArray<T>& a,
-                         const IPosition& halfBoxSize, Bool fillEdge=True)
+                         const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1102,7 +1102,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingMeans (const MArray<T>& a,
-                          const IPosition& halfBoxSize, Bool fillEdge=True)
+                          const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1115,8 +1115,8 @@ namespace casacore {
   template<typename T>
   MArray<T> slidingVariances (const MArray<T>& a,
                               const IPosition& halfBoxSize,
-                              uInt ddof,
-                              Bool fillEdge=True)
+                              uint32_t ddof,
+                              bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1129,8 +1129,8 @@ namespace casacore {
   template<typename T>
   MArray<T> slidingStddevs (const MArray<T>& a,
                             const IPosition& halfBoxSize,
-                            uInt ddof,
-                            Bool fillEdge=True)
+                            uint32_t ddof,
+                            bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1142,7 +1142,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingAvdevs (const MArray<T>& a,
-                           const IPosition& halfBoxSize, Bool fillEdge=True)
+                           const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1154,7 +1154,7 @@ namespace casacore {
   }
   template<typename T>
   MArray<T> slidingRmss (const MArray<T>& a,
-                         const IPosition& halfBoxSize, Bool fillEdge=True)
+                         const IPosition& halfBoxSize, bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1167,39 +1167,39 @@ namespace casacore {
   template<typename T>
   MArray<T> slidingMedians (const MArray<T>& a,
                             const IPosition& halfBoxSize,
-                            Bool takeEvenMean=False,
-                            Bool inPlace=False,
-                            Bool fillEdge=True)
+                            bool takeEvenMean=false,
+                            bool inPlace=false,
+                            bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
       return MArray<T>(slidingArrayMath (a.array(), halfBoxSize,
-                                         MedianFunc<T>(False, takeEvenMean,
+                                         MedianFunc<T>(false, takeEvenMean,
                                                        inPlace),
                                          fillEdge));
     }
     return slidingArrayMath (a, halfBoxSize,
-                             MMedianFunc<T>(False, takeEvenMean, inPlace),
+                             MMedianFunc<T>(false, takeEvenMean, inPlace),
                              fillEdge);
   }
   template<typename T>
   MArray<T> slidingFractiles (const MArray<T>& a,
                               const IPosition& halfBoxSize,
-                              Float fraction,
-                              Bool inPlace=False,
-                              Bool fillEdge=True)
+                              float fraction,
+                              bool inPlace=false,
+                              bool fillEdge=true)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
       return MArray<T>(slidingArrayMath (a.array(), halfBoxSize,
-                                         FractileFunc<T>(fraction, False,
+                                         FractileFunc<T>(fraction, false,
                                                          inPlace),
                                          fillEdge));
     }
     return slidingArrayMath (a, halfBoxSize,
-                             MFractileFunc<T>(fraction, False, inPlace),
+                             MFractileFunc<T>(fraction, false, inPlace),
                              fillEdge);
   }
   // </group>
@@ -1275,7 +1275,7 @@ namespace casacore {
   template<typename T>
   MArray<T> boxedVariances (const MArray<T>& a,
                             const IPosition& boxSize,
-                            uInt ddof)
+                            uint32_t ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1287,7 +1287,7 @@ namespace casacore {
   template<typename T>
   MArray<T> boxedStddevs (const MArray<T>& a,
                           const IPosition& boxSize,
-                          uInt ddof)
+                          uint32_t ddof)
   {
     if (a.isNull()) {
       return MArray<T>();
@@ -1321,34 +1321,34 @@ namespace casacore {
   template<typename T>
   MArray<T> boxedMedians (const MArray<T>& a,
                           const IPosition& boxSize,
-                          Bool takeEvenMean=False,
-                          Bool inPlace=False)
+                          bool takeEvenMean=false,
+                          bool inPlace=false)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
       return MArray<T>(boxedArrayMath (a.array(), boxSize,
-                                       MedianFunc<T>(False, takeEvenMean,
+                                       MedianFunc<T>(false, takeEvenMean,
                                                      inPlace)));
     }
     return boxedArrayMath (a, boxSize,
-                           MMedianFunc<T>(False, takeEvenMean, inPlace));
+                           MMedianFunc<T>(false, takeEvenMean, inPlace));
   }
   template<typename T>
   MArray<T> boxedFractiles (const MArray<T>& a,
                             const IPosition& boxSize,
-                            Float fraction,
-                            Bool inPlace=False)
+                            float fraction,
+                            bool inPlace=false)
   {
     if (a.isNull()) {
       return MArray<T>();
     } else if (! a.hasMask()) {
       return MArray<T>(boxedArrayMath (a.array(), boxSize,
-                                       FractileFunc<T>(fraction, False,
+                                       FractileFunc<T>(fraction, false,
                                                        inPlace)));
     }
     return boxedArrayMath (a, boxSize,
-                           MFractileFunc<T>(fraction, False, inPlace));
+                           MFractileFunc<T>(fraction, false, inPlace));
   }
   // </group>
 

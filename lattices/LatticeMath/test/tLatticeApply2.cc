@@ -51,60 +51,60 @@
 
 
 #include <casacore/casa/namespace.h>
-class MyLineCollapser : public LineCollapser<Float>
+class MyLineCollapser : public LineCollapser<float>
 {
 public:
     MyLineCollapser() {}
-    virtual void init (uInt nOutPixelsPerCollapse);
-    virtual Bool canHandleNullMask() const;
-    virtual void process (Float& result, Bool& resultMask,
-			  const Vector<Float>& vector,
-			  const Vector<Bool>& arrayMask,
+    virtual void init (uint32_t nOutPixelsPerCollapse);
+    virtual bool canHandleNullMask() const;
+    virtual void process (float& result, bool& resultMask,
+			  const Vector<float>& vector,
+			  const Vector<bool>& arrayMask,
 			  const IPosition& pos);
-    virtual void multiProcess (Vector<Float>& result, Vector<Bool>& resultMask,
-			  const Vector<Float>& vector,
-			  const Vector<Bool>& arrayMask,
+    virtual void multiProcess (Vector<float>& result, Vector<bool>& resultMask,
+			  const Vector<float>& vector,
+			  const Vector<bool>& arrayMask,
 			  const IPosition& pos);
 };
-void MyLineCollapser::init (uInt nOutPixelsPerCollapse)
+void MyLineCollapser::init (uint32_t nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 1, AipsError);
 }
-Bool MyLineCollapser::canHandleNullMask() const
+bool MyLineCollapser::canHandleNullMask() const
 {
-    return False;
+    return false;
 }
-void MyLineCollapser::process (Float& result, Bool& resultMask,
-			       const Vector<Float>& vector,
-			       const Vector<Bool>& mask,
+void MyLineCollapser::process (float& result, bool& resultMask,
+			       const Vector<float>& vector,
+			       const Vector<bool>& mask,
 			       const IPosition&)
 {
     DebugAssert (vector.nelements() == mask.nelements(), AipsError);
-    Float sum = 0;
-    Bool fnd = False;
-    uInt n = vector.nelements();
-    for (uInt i=0; i<n; i++) {
+    float sum = 0;
+    bool fnd = false;
+    uint32_t n = vector.nelements();
+    for (uint32_t i=0; i<n; i++) {
 	if (mask(i)) {
-	    fnd = True;
+	    fnd = true;
 	    sum += vector(i);
 	}
     }
     result = sum;
     resultMask = fnd;
 }
-void MyLineCollapser::multiProcess (Vector<Float>& result,
-				    Vector<Bool>& resultMask,
-				    const Vector<Float>& vector,
-				    const Vector<Bool>& mask,
+void MyLineCollapser::multiProcess (Vector<float>& result,
+				    Vector<bool>& resultMask,
+				    const Vector<float>& vector,
+				    const Vector<bool>& mask,
 				    const IPosition&)
 {
     DebugAssert (vector.nelements() == mask.nelements(), AipsError);
-    Float sum = 0;
-    Bool fnd = False;
-    uInt n = vector.nelements();
-    for (uInt i=0; i<n; i++) {
+    float sum = 0;
+    bool fnd = false;
+    uint32_t n = vector.nelements();
+    for (uint32_t i=0; i<n; i++) {
 	if (mask(i)) {
-	    fnd = True;
+	    fnd = true;
 	    sum += vector(i);
 	}
     }
@@ -116,27 +116,27 @@ void MyLineCollapser::multiProcess (Vector<Float>& result,
 }
 
 
-class MyTiledCollapser : public TiledCollapser<Float>
+class MyTiledCollapser : public TiledCollapser<float>
 {
 public:
     MyTiledCollapser() : itsSum1(0),itsSum2(0),itsNpts(0) {}
     virtual ~MyTiledCollapser();
-    virtual void init (uInt nOutPixelsPerCollapse);
-    virtual Bool canHandleNullMask() const;
-    virtual void initAccumulator (uInt64 n1, uInt64 n3);
-    virtual void process (uInt index1, uInt index3,
-			  const Float* inData, const Bool* inMask,
-			  uInt inDataIncr, uInt inMaskIncr, uInt nrval,
+    virtual void init (uint32_t nOutPixelsPerCollapse);
+    virtual bool canHandleNullMask() const;
+    virtual void initAccumulator (uint64_t n1, uint64_t n3);
+    virtual void process (uint32_t index1, uint32_t index3,
+			  const float* inData, const bool* inMask,
+			  uint32_t inDataIncr, uint32_t inMaskIncr, uint32_t nrval,
 			  const IPosition& pos, const IPosition& shape);
-    virtual void endAccumulator (Array<Float>& result,
-				 Array<Bool>& resultMask,
+    virtual void endAccumulator (Array<float>& result,
+				 Array<bool>& resultMask,
 				 const IPosition& shape);
 private:
-    Matrix<Float>* itsSum1;
-    Block<Float>*   itsSum2;
-    Matrix<uInt>* itsNpts;
-    uInt          itsn1;
-    uInt          itsn3;
+    Matrix<float>* itsSum1;
+    Block<float>*   itsSum2;
+    Matrix<uint32_t>* itsNpts;
+    uint32_t          itsn1;
+    uint32_t          itsn3;
 };
 MyTiledCollapser::~MyTiledCollapser()
 {
@@ -144,34 +144,34 @@ MyTiledCollapser::~MyTiledCollapser()
     delete itsSum2;
     delete itsNpts;
 }
-void MyTiledCollapser::init (uInt nOutPixelsPerCollapse)
+void MyTiledCollapser::init (uint32_t nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 2, AipsError);
 }
-void MyTiledCollapser::initAccumulator (uInt64 n1, uInt64 n3)
+void MyTiledCollapser::initAccumulator (uint64_t n1, uint64_t n3)
 {
-    itsSum1 = new Matrix<Float> (n1, n3);
-    itsSum2 = new Block<Float> (n1*n3);
-    itsNpts = new Matrix<uInt> (n1, n3);
+    itsSum1 = new Matrix<float> (n1, n3);
+    itsSum2 = new Block<float> (n1*n3);
+    itsNpts = new Matrix<uint32_t> (n1, n3);
     itsSum1->set (0.0);
     itsSum2->set (0.0);
     itsNpts->set (0);
     itsn1 = n1;
     itsn3 = n3;
 }
-Bool MyTiledCollapser::canHandleNullMask() const
+bool MyTiledCollapser::canHandleNullMask() const
 {
-    return False;
+    return false;
 }
-void MyTiledCollapser::process (uInt index1, uInt index3,
-				const Float* inData, const Bool* inMask,
-				uInt inDataIncr, uInt inMaskIncr, uInt nrval,
+void MyTiledCollapser::process (uint32_t index1, uint32_t index3,
+				const float* inData, const bool* inMask,
+				uint32_t inDataIncr, uint32_t inMaskIncr, uint32_t nrval,
 				const IPosition&, const IPosition&)
 {
-    Float& sum1 = (*itsSum1)(index1, index3);
-    Float& sum2 = (*itsSum2)[index1 + index3*itsn1];
-    uInt& npts = (*itsNpts)(index1, index3);
-    for (uInt i=0; i<nrval; i++) {
+    float& sum1 = (*itsSum1)(index1, index3);
+    float& sum2 = (*itsSum2)[index1 + index3*itsn1];
+    uint32_t& npts = (*itsNpts)(index1, index3);
+    for (uint32_t i=0; i<nrval; i++) {
 	if (*inMask) {
 	    sum1 += *inData;
 	    sum2 -= *inData;
@@ -181,26 +181,26 @@ void MyTiledCollapser::process (uInt index1, uInt index3,
 	inData += inDataIncr;
     }
 }
-void MyTiledCollapser::endAccumulator (Array<Float>& result,
-				       Array<Bool>& resultMask,
+void MyTiledCollapser::endAccumulator (Array<float>& result,
+				       Array<bool>& resultMask,
 				       const IPosition& shape)
 {
     result.resize (shape);
     resultMask.resize (shape);
-    Bool deleteRes, deleteSum1;
-    Bool deleteMask, deleteNpts;
-    Float* res = result.getStorage (deleteRes);
-    Float* resptr = res;
-    Bool* mask = resultMask.getStorage (deleteMask);
-    Bool* maskptr = mask;
-    const Float* sum1 = itsSum1->getStorage (deleteSum1);
-    const Float* sum1ptr = sum1;
-    const Float* sum2ptr = itsSum2->storage();
-    const uInt* npts = itsNpts->getStorage (deleteNpts);
-    const uInt* nptsptr = npts;
-    for (uInt i=0; i<itsn3; i++) {
-	Bool* maskptr2 = maskptr;
-        for (uInt j=0; j<itsn1; j++) {
+    bool deleteRes, deleteSum1;
+    bool deleteMask, deleteNpts;
+    float* res = result.getStorage (deleteRes);
+    float* resptr = res;
+    bool* mask = resultMask.getStorage (deleteMask);
+    bool* maskptr = mask;
+    const float* sum1 = itsSum1->getStorage (deleteSum1);
+    const float* sum1ptr = sum1;
+    const float* sum2ptr = itsSum2->storage();
+    const uint32_t* npts = itsNpts->getStorage (deleteNpts);
+    const uint32_t* nptsptr = npts;
+    for (uint32_t i=0; i<itsn3; i++) {
+	bool* maskptr2 = maskptr;
+        for (uint32_t j=0; j<itsn1; j++) {
 	    *resptr++ = *sum1ptr++;
 	    *maskptr++ = (*nptsptr++ != 0);
 	}
@@ -229,7 +229,7 @@ public:
     MyLatticeProgress() : itsMeter(0) {}
     virtual ~MyLatticeProgress();
     virtual void initDerived();
-    virtual void nstepsDone (uInt nsteps);
+    virtual void nstepsDone (uint32_t nsteps);
     virtual void done();
 private:
     ProgressMeter* itsMeter;
@@ -243,9 +243,9 @@ void MyLatticeProgress::initDerived()
     delete itsMeter;
     itsMeter = new ProgressMeter(0.0, expectedNsteps(), "tLatticeApply",
 				 "Vectors extracted", "", "",
-				 True, max(1,Int(expectedNsteps()/100)));
+				 true, max(1,int32_t(expectedNsteps()/100)));
 }
-void MyLatticeProgress::nstepsDone (uInt nsteps)
+void MyLatticeProgress::nstepsDone (uint32_t nsteps)
 {
     itsMeter->update (nsteps);
 }
@@ -268,45 +268,45 @@ void doIt (int argc, const char* argv[])
     inp.create("tz", "0", "Number of pixels along the z-axis tile", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
-    const uInt tx=inp.getInt("tx");
-    const uInt ty=inp.getInt("ty");
-    const uInt tz=inp.getInt("tz");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const uint32_t nz=inp.getInt("nz");
+    const uint32_t tx=inp.getInt("tx");
+    const uint32_t ty=inp.getInt("ty");
+    const uint32_t tz=inp.getInt("tz");
     IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
 	tileShape = TiledShape(latticeShape).tileShape();
     }
-    cout << "Data Type: Float";
+    cout << "Data Type: float";
     cout << "  Lattice shape:" << latticeShape;
     cout << "  Tile shape:" << tileShape << endl;
 
     MyLatticeProgress showProgress;
     {
 //
-// Make a ML with the corner x profiles all False
+// Make a ML with the corner x profiles all false
 //
-        ArrayLattice<Float> lat(latticeShape);
-        ArrayLattice<Bool> mask(latticeShape);
-        mask.set(True);
+        ArrayLattice<float> lat(latticeShape);
+        ArrayLattice<bool> mask(latticeShape);
+        mask.set(true);
 //
-        Array<Bool> slice(IPosition(3,nx,1,1));
-        slice = False;
+        Array<bool> slice(IPosition(3,nx,1,1));
+        slice = false;
         mask.putSlice(slice, IPosition(3,0,0,0));
         mask.putSlice(slice, IPosition(3,0,0,nz-1));
         mask.putSlice(slice, IPosition(3,0,ny-1,nz-1));
         mask.putSlice(slice, IPosition(3,0,ny-1,0));
-        SubLattice<Float> mLat(lat,True);
-        mLat.setPixelMask(mask,False);
+        SubLattice<float> mLat(lat,true);
+        mLat.setPixelMask(mask,false);
 //
-	Array<Float> arr(IPosition(3,nx,ny,1));
+	Array<float> arr(IPosition(3,nx,ny,1));
 	indgen(arr);
-	LatticeIterator<Float> iter(mLat, LatticeStepper(latticeShape,
+	LatticeIterator<float> iter(mLat, LatticeStepper(latticeShape,
                                     IPosition(3,nx,ny,1)));
 	Timer tim;
-	for (iter.reset(); !iter.atEnd(); iter++, arr += Float(nx*ny)) {
+	for (iter.reset(); !iter.atEnd(); iter++, arr += float(nx*ny)) {
 	    iter.woCursor() = arr;
 	}
 	tim.show("fill       ");
@@ -316,33 +316,33 @@ void doIt (int argc, const char* argv[])
         l2Shape(0) = 1;
         t2Shape(0) = 1;
 //
-        ArrayLattice<Float> lat0(l2Shape);
-        SubLattice<Float> mLatOut0(lat0,True);
-        ArrayLattice<Bool> mask0(l2Shape); mask0.set(True);
-        mLatOut0.setPixelMask(mask0,False); 
+        ArrayLattice<float> lat0(l2Shape);
+        SubLattice<float> mLatOut0(lat0,true);
+        ArrayLattice<bool> mask0(l2Shape); mask0.set(true);
+        mLatOut0.setPixelMask(mask0,false); 
 //
-        ArrayLattice<Float> lat1(l2Shape);
-        SubLattice<Float> mLatOut1(lat1,True);
-        ArrayLattice<Bool> mask1(l2Shape); mask0.set(True);
-        mLatOut1.setPixelMask(mask1,False); 
+        ArrayLattice<float> lat1(l2Shape);
+        SubLattice<float> mLatOut1(lat1,true);
+        ArrayLattice<bool> mask1(l2Shape); mask0.set(true);
+        mLatOut1.setPixelMask(mask1,false); 
 //
-	PtrBlock<MaskedLattice<Float>*> blat(2);
+	PtrBlock<MaskedLattice<float>*> blat(2);
 	blat[0] = &mLatOut0;
 	blat[1] = &mLatOut1;
 	MyLineCollapser collapser;
         tim.mark();
-	LatticeApply<Float>::lineMultiApply (blat, mLat, collapser, 0);
+	LatticeApply<float>::lineMultiApply (blat, mLat, collapser, 0);
 	tim.show("multiline 0");
 //
-	Float sum = (nx-1)*nx/2;
+	float sum = (nx-1)*nx/2;
 	IPosition pos(3,0);
         tim.mark();
-	for (uInt i=0; i<nz; i++) {
+	for (uint32_t i=0; i<nz; i++) {
 	    pos(2) = i;
-	    for (uInt j=0; j<ny; j++) {
+	    for (uint32_t j=0; j<ny; j++) {
 		pos(1) = j;
-		Float value = mLatOut1.getAt (pos);
-		Float expval = -sum;
+		float value = mLatOut1.getAt (pos);
+		float expval = -sum;
 		if ((i==0 || i==nz-1)  &&  (j==0 || j==ny-1)) {
 		    expval = 0;
 		}
@@ -350,7 +350,7 @@ void doIt (int argc, const char* argv[])
 		    cout << "Value=" << value << ", expected " << expval
 			 << "   at position " << pos << endl;
 		}
-		sum += Float(nx*nx);
+		sum += float(nx*nx);
 	    }
 	}
 	tim.show("check      ");

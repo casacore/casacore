@@ -53,7 +53,7 @@ class DFTError: public AipsError
 {
 public:
    DFTError(): AipsError("DFTError") {}
-   DFTError(const Char *m) : AipsError(m) {}
+   DFTError(const char *m) : AipsError(m) {}
    DFTError(const String &m) : AipsError(m) {}
 
    virtual ~DFTError() noexcept {}

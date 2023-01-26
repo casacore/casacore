@@ -108,13 +108,13 @@ class MeasVal;
 //    <li> (Quantity): will use the conversion chain deduced from the
 //	MEpoch model in the definition of MeasConvert, and will convert the
 //	Quantity
-//    <li> (Quantum<Vector<Double> >) as previous
-//    <li> (Double): will use the units (if present) as specified in the
+//    <li> (Quantum<Vector<double> >) as previous
+//    <li> (double): will use the units (if present) as specified in the
 //		MeasConvert object to construct the internal value
 //		 to be converted
-//    <li> (Vector<Double> >): as previous
+//    <li> (Vector<double> >): as previous
 // </ul>
-// Float versions will be produced if necessary.<br>
+// float versions will be produced if necessary.<br>
 // The conversion analyser expects that all Measure classes have a set
 // of routines to do the actual analysing and conversion.
 // (see <linkto class=MCBase>MCBase</linkto> class for how this is done in
@@ -184,10 +184,10 @@ public:
   // <group>
   // Convert model Measure to output frame
   const M &operator()();
-  const M &operator()(Double val);
-  const M &operator()(const Vector<Double> &val);
-  const M &operator()(const Quantum<Double> &val);
-  const M &operator()(const Quantum<Vector<Double> > &val);
+  const M &operator()(double val);
+  const M &operator()(const Vector<double> &val);
+  const M &operator()(const Quantum<double> &val);
+  const M &operator()(const Quantum<Vector<double> > &val);
   const M &operator()(const typename M::MVType &val);
   const M &operator()(const MeasVal *val);
   const M &operator()(const M &val);
@@ -215,16 +215,16 @@ public:
   // Set a new model unit only
   virtual void set(const Unit &inunit);
   
-  // Add a method (Note: uInt should be an enum from the appropiate Measure)
-  virtual void addMethod(uInt method);
+  // Add a method (Note: uint32_t should be an enum from the appropiate Measure)
+  virtual void addMethod(uint32_t method);
   // Add the frame type (Note: tp should be an MeasFrame::FrameType)
-  virtual void addFrameType(uInt tp);
+  virtual void addFrameType(uint32_t tp);
   // Get number of methods
-  virtual Int nMethod() const;
+  virtual int32_t nMethod() const;
   // Get method
-  virtual uInt getMethod(uInt which) const;
+  virtual uint32_t getMethod(uint32_t which) const;
   // Is the conversion engine empty?
-  Bool isNOP() { return crout.nelements() == 0; }
+  bool isNOP() { return crout.nelements() == 0; }
   // Print conversion engine
   virtual void print(ostream &os) const;
   
@@ -241,15 +241,15 @@ private:
   // The output offset
   typename M::MVType *offout;
   // Vector of conversion routines (length variable)
-  Block<uInt> crout;
+  Block<uint32_t> crout;
   // Coded (with MeasFrame::FrameTypes) frames used in conversion
-  uInt crtype;
+  uint32_t crtype;
   // Local conversion data
   MCBase *cvdat;
   // Cyclic buffer for return values
   // <group>
   // Current pointer
-  Int lres;
+  int32_t lres;
   M *result[4];
   // </group>
   // Local variables that can be used in conversion

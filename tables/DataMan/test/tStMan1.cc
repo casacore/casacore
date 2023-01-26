@@ -55,16 +55,16 @@ void readtab()
   Timer timer;
   {
     Table tab("tStMan1_tmp.data");
-    uInt nrrow = tab.nrow();
+    uint32_t nrrow = tab.nrow();
     timer.show ("table open          ");
-    ScalarColumn<uInt> int1 (tab, "int1");
-    for (uInt i=0; i<nrrow; i++) {
+    ScalarColumn<uint32_t> int1 (tab, "int1");
+    for (uint32_t i=0; i<nrrow; i++) {
       AlwaysAssertExit (int1(i) == i);
     }
     timer.show ("table get rows      ");
-    Vector<uInt> vec = int1.getColumn();
+    Vector<uint32_t> vec = int1.getColumn();
     timer.show ("table get column    ");
-    for (uInt i=0; i<nrrow; i++) {
+    for (uint32_t i=0; i<nrrow; i++) {
       AlwaysAssertExit (vec(i) == i);
     }
     timer.show ("table check column  ");
@@ -73,11 +73,11 @@ void readtab()
 }
 
 // Create and fill a new table.
-void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
+void newtab (uint32_t nrrow, const DataManager& stman, uint32_t flushnr)
 {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn (ScalarColumnDesc<uInt>("int1"));
+  td.addColumn (ScalarColumnDesc<uint32_t>("int1"));
 
   Timer timer;
   {
@@ -89,8 +89,8 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
     newtab.bindAll (stman);
     Table tab(newtab, nrrow);
     timer.show ("table rows creation ");
-    ScalarColumn<uInt> int1 (tab, "int1");
-    for (uInt i=0; i<nrrow; i++) {
+    ScalarColumn<uint32_t> int1 (tab, "int1");
+    for (uint32_t i=0; i<nrrow; i++) {
       int1.put (i, i);
     }
     timer.show ("table put non-add   ");
@@ -104,8 +104,8 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
     newtab.bindAll (stman);
     Table tab(newtab);
     timer.show ("table empty creation");
-    ScalarColumn<uInt> int1 (tab, "int1");
-    for (uInt i=0; i<nrrow; i++) {
+    ScalarColumn<uint32_t> int1 (tab, "int1");
+    for (uint32_t i=0; i<nrrow; i++) {
       tab.addRow();
       int1.put (i, i);
     }
@@ -120,8 +120,8 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
     newtab.bindAll (stman);
     Table tab(newtab, nrrow);
     timer.show ("table rows creation ");
-    ScalarColumn<uInt> int1 (tab, "int1");
-    for (uInt i=0; i<nrrow; i++) {
+    ScalarColumn<uint32_t> int1 (tab, "int1");
+    for (uint32_t i=0; i<nrrow; i++) {
       int1.put (i, i);
       if (i>0  &&  i%flushnr == 0) {
 	tab.flush();
@@ -132,7 +132,7 @@ void newtab (uInt nrrow, const DataManager& stman, uInt flushnr)
   timer.show ("total + destructor  ");
 }
 
-void doTest (uInt nrrow, const DataManager& stman, uInt flushnr)
+void doTest (uint32_t nrrow, const DataManager& stman, uint32_t flushnr)
 {
   newtab (nrrow, stman, flushnr);
   readtab();
@@ -140,9 +140,9 @@ void doTest (uInt nrrow, const DataManager& stman, uInt flushnr)
 
 int main (int argc, const char* argv[])
 {
-  uInt nrrow = 100000;
-  uInt bucketSize = 32768;
-  uInt flushnr = 1000;
+  uint32_t nrrow = 100000;
+  uint32_t bucketSize = 32768;
+  uint32_t flushnr = 1000;
   if (argc > 1) {
     istringstream istr(argv[1]);
     istr >> nrrow;
@@ -164,7 +164,7 @@ int main (int argc, const char* argv[])
     StandardStMan st2(max(bucketSize,100u));
     doTest (nrrow, st2, flushnr);
     cout << endl << "IncrementalStMan" << endl;
-    IncrementalStMan st3(max(bucketSize,1000u), False);
+    IncrementalStMan st3(max(bucketSize,1000u), false);
     doTest (nrrow, st3, flushnr);
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

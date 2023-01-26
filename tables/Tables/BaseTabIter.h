@@ -97,7 +97,7 @@ public:
     BaseTableIterator (const std::shared_ptr<BaseTable>&,
                        const Block<String>& columnNames,
                        const Block<CountedPtr<BaseCompare> >& cmpObjs,
-                       const Block<Int>& orders,
+                       const Block<int32_t>& orders,
                        int option,
                        bool cacheIterationBoundaries = false);
 
@@ -124,7 +124,7 @@ public:
 protected:
     std::shared_ptr<BaseTable> sortTab_p; //# Table sorted in iteration order
     rownr_t                lastRow_p;     //# last row used from reftab
-    uInt                   nrkeys_p;      //# nr of columns in group
+    uint32_t                   nrkeys_p;      //# nr of columns in group
     String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
     Block<CountedPtr<BaseCompare> > cmpObj_p;  //# comparison object per column

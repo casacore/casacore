@@ -39,12 +39,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSHistory::MSHistory()
-  : hasBeenDestroyed_p(True)
+  : hasBeenDestroyed_p(true)
 {}
 
 MSHistory::MSHistory(const String &tableName, TableOption option) 
   : MSTable<MSHistoryEnums>(tableName, option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -55,7 +55,7 @@ MSHistory::MSHistory(const String &tableName, TableOption option)
 MSHistory::MSHistory(const String& tableName, const String &tableDescName,
 			       TableOption option)
   : MSTable<MSHistoryEnums>(tableName, tableDescName,option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -64,18 +64,18 @@ MSHistory::MSHistory(const String& tableName, const String &tableDescName,
 }
 
 MSHistory::MSHistory(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSHistoryEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSHistory(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSHistory(SetupNewTable &, uint32_t, bool) - "
 			 "table is not a valid MSHistory"));
 }
 
 MSHistory::MSHistory(const Table &table)
-    : MSTable<MSHistoryEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSHistoryEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -85,7 +85,7 @@ MSHistory::MSHistory(const Table &table)
 
 MSHistory::MSHistory(const MSHistory &other)
     : MSTable<MSHistoryEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -105,7 +105,7 @@ MSHistory::~MSHistory()
            << "~MSHistory() - Table written is not a valid MSHistory"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -153,7 +153,7 @@ MSTableMaps MSHistory::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

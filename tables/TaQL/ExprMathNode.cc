@@ -45,9 +45,9 @@ TableExprNodePlusInt::TableExprNodePlusInt (const TableExprNodeRep& node)
 {}
 TableExprNodePlusInt::~TableExprNodePlusInt()
 {}
-Int64 TableExprNodePlusInt::getInt (const TableExprId& id)
+int64_t TableExprNodePlusInt::getInt (const TableExprId& id)
     { return lnode_p->getInt(id) + rnode_p->getInt(id); }
-Double TableExprNodePlusInt::getDouble (const TableExprId& id)
+double TableExprNodePlusInt::getDouble (const TableExprId& id)
     { return lnode_p->getInt(id) + rnode_p->getInt(id); }
 DComplex TableExprNodePlusInt::getDComplex (const TableExprId& id)
     { return double(lnode_p->getInt(id) + rnode_p->getInt(id)); }
@@ -57,7 +57,7 @@ TableExprNodePlusDouble::TableExprNodePlusDouble (const TableExprNodeRep& node)
 {}
 TableExprNodePlusDouble::~TableExprNodePlusDouble()
 {}
-Double TableExprNodePlusDouble::getDouble (const TableExprId& id)
+double TableExprNodePlusDouble::getDouble (const TableExprId& id)
     { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 DComplex TableExprNodePlusDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
@@ -93,7 +93,7 @@ void TableExprNodePlusDate::handleUnits()
 }
 MVTime TableExprNodePlusDate::getDate(const TableExprId& id)
     { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
-Double TableExprNodePlusDate::getDouble(const TableExprId& id)
+double TableExprNodePlusDate::getDouble(const TableExprId& id)
     { return lnode_p->getDouble(id) + rnode_p->getDouble(id); }
 
 
@@ -117,9 +117,9 @@ void TableExprNodeMinusInt::handleUnits()
         TableExprNodeBinary::handleUnits();
     }
 }
-Int64 TableExprNodeMinusInt::getInt (const TableExprId& id)
+int64_t TableExprNodeMinusInt::getInt (const TableExprId& id)
     { return lnode_p->getInt(id) - rnode_p->getInt(id); }
-Double TableExprNodeMinusInt::getDouble (const TableExprId& id)
+double TableExprNodeMinusInt::getDouble (const TableExprId& id)
     { return lnode_p->getInt(id) - rnode_p->getInt(id); }
 DComplex TableExprNodeMinusInt::getDComplex (const TableExprId& id)
     { return double(lnode_p->getInt(id) - rnode_p->getInt(id)); }
@@ -137,7 +137,7 @@ void TableExprNodeMinusDouble::handleUnits()
         TableExprNodeBinary::handleUnits();
     }
 }
-Double TableExprNodeMinusDouble::getDouble (const TableExprId& id)
+double TableExprNodeMinusDouble::getDouble (const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 DComplex TableExprNodeMinusDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
@@ -162,7 +162,7 @@ void TableExprNodeMinusDate::handleUnits()
 }
 MVTime TableExprNodeMinusDate::getDate(const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
-Double TableExprNodeMinusDate::getDouble(const TableExprId& id)
+double TableExprNodeMinusDate::getDouble(const TableExprId& id)
     { return lnode_p->getDouble(id) - rnode_p->getDouble(id); }
 
 
@@ -190,9 +190,9 @@ TableExprNodeTimesInt::TableExprNodeTimesInt (const TableExprNodeRep& node)
 {}
 TableExprNodeTimesInt::~TableExprNodeTimesInt()
 {}
-Int64 TableExprNodeTimesInt::getInt (const TableExprId& id)
+int64_t TableExprNodeTimesInt::getInt (const TableExprId& id)
     { return lnode_p->getInt(id) * rnode_p->getInt(id); }
-Double TableExprNodeTimesInt::getDouble (const TableExprId& id)
+double TableExprNodeTimesInt::getDouble (const TableExprId& id)
     { return lnode_p->getInt(id) * rnode_p->getInt(id); }
 DComplex TableExprNodeTimesInt::getDComplex (const TableExprId& id)
     { return double(lnode_p->getInt(id) * rnode_p->getInt(id)); }
@@ -202,7 +202,7 @@ TableExprNodeTimesDouble::TableExprNodeTimesDouble (const TableExprNodeRep& node
 {}
 TableExprNodeTimesDouble::~TableExprNodeTimesDouble()
 {}
-Double TableExprNodeTimesDouble::getDouble (const TableExprId& id)
+double TableExprNodeTimesDouble::getDouble (const TableExprId& id)
     { return lnode_p->getDouble(id) * rnode_p->getDouble(id); }
 DComplex TableExprNodeTimesDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) * rnode_p->getDouble(id); }
@@ -258,7 +258,7 @@ TableExprNodeDivideDouble::TableExprNodeDivideDouble (const TableExprNodeRep& no
 {}
 TableExprNodeDivideDouble::~TableExprNodeDivideDouble()
 {}
-Double TableExprNodeDivideDouble::getDouble (const TableExprId& id)
+double TableExprNodeDivideDouble::getDouble (const TableExprId& id)
     { return lnode_p->getDouble(id) / rnode_p->getDouble(id); }
 DComplex TableExprNodeDivideDouble::getDComplex (const TableExprId& id)
     { return lnode_p->getDouble(id) / rnode_p->getDouble(id); }
@@ -288,9 +288,9 @@ TableExprNodeModuloInt::TableExprNodeModuloInt (const TableExprNodeRep& node)
 {}
 TableExprNodeModuloInt::~TableExprNodeModuloInt()
 {}
-Int64 TableExprNodeModuloInt::getInt (const TableExprId& id)
+int64_t TableExprNodeModuloInt::getInt (const TableExprId& id)
     { return floormod (lnode_p->getInt(id), rnode_p->getInt(id)); }
-Double TableExprNodeModuloInt::getDouble (const TableExprId& id)
+double TableExprNodeModuloInt::getDouble (const TableExprId& id)
     { return getInt (id); }
 DComplex TableExprNodeModuloInt::getDComplex (const TableExprId& id)
     { return getInt (id); }
@@ -300,7 +300,7 @@ TableExprNodeModuloDouble::TableExprNodeModuloDouble (const TableExprNodeRep& no
 {}
 TableExprNodeModuloDouble::~TableExprNodeModuloDouble()
 {}
-Double TableExprNodeModuloDouble::getDouble (const TableExprId& id)
+double TableExprNodeModuloDouble::getDouble (const TableExprId& id)
     { return floormod (lnode_p->getDouble(id), rnode_p->getDouble(id)); }
 DComplex TableExprNodeModuloDouble::getDComplex (const TableExprId& id)
     { return getDouble (id); }
@@ -311,9 +311,9 @@ TableExprNodeBitAndInt::TableExprNodeBitAndInt (const TableExprNodeRep& node)
 {}
 TableExprNodeBitAndInt::~TableExprNodeBitAndInt()
 {}
-Int64 TableExprNodeBitAndInt::getInt (const TableExprId& id)
+int64_t TableExprNodeBitAndInt::getInt (const TableExprId& id)
     { return lnode_p->getInt(id) & rnode_p->getInt(id); }
-Double TableExprNodeBitAndInt::getDouble (const TableExprId& id)
+double TableExprNodeBitAndInt::getDouble (const TableExprId& id)
     { return lnode_p->getInt(id) & rnode_p->getInt(id); }
 DComplex TableExprNodeBitAndInt::getDComplex (const TableExprId& id)
     { return double(lnode_p->getInt(id) & rnode_p->getInt(id)); }
@@ -323,9 +323,9 @@ TableExprNodeBitOrInt::TableExprNodeBitOrInt (const TableExprNodeRep& node)
 {}
 TableExprNodeBitOrInt::~TableExprNodeBitOrInt()
 {}
-Int64 TableExprNodeBitOrInt::getInt (const TableExprId& id)
+int64_t TableExprNodeBitOrInt::getInt (const TableExprId& id)
     { return lnode_p->getInt(id) | rnode_p->getInt(id); }
-Double TableExprNodeBitOrInt::getDouble (const TableExprId& id)
+double TableExprNodeBitOrInt::getDouble (const TableExprId& id)
     { return lnode_p->getInt(id) | rnode_p->getInt(id); }
 DComplex TableExprNodeBitOrInt::getDComplex (const TableExprId& id)
     { return double(lnode_p->getInt(id) | rnode_p->getInt(id)); }
@@ -335,9 +335,9 @@ TableExprNodeBitXorInt::TableExprNodeBitXorInt (const TableExprNodeRep& node)
 {}
 TableExprNodeBitXorInt::~TableExprNodeBitXorInt()
 {}
-Int64 TableExprNodeBitXorInt::getInt (const TableExprId& id)
+int64_t TableExprNodeBitXorInt::getInt (const TableExprId& id)
     { return lnode_p->getInt(id) ^ rnode_p->getInt(id); }
-Double TableExprNodeBitXorInt::getDouble (const TableExprId& id)
+double TableExprNodeBitXorInt::getDouble (const TableExprId& id)
     { return lnode_p->getInt(id) ^ rnode_p->getInt(id); }
 DComplex TableExprNodeBitXorInt::getDComplex (const TableExprId& id)
     { return double(lnode_p->getInt(id) ^ rnode_p->getInt(id)); }
@@ -348,9 +348,9 @@ TableExprNodeMIN::TableExprNodeMIN (const TableExprNodeRep& node)
 {}
 TableExprNodeMIN::~TableExprNodeMIN()
 {}
-Int64 TableExprNodeMIN::getInt (const TableExprId& id)
+int64_t TableExprNodeMIN::getInt (const TableExprId& id)
     { return -(lnode_p->getInt(id)); }
-Double TableExprNodeMIN::getDouble (const TableExprId& id)
+double TableExprNodeMIN::getDouble (const TableExprId& id)
     { return -(lnode_p->getDouble(id)); }
 DComplex TableExprNodeMIN::getDComplex (const TableExprId& id)
     { return -(lnode_p->getDComplex(id)); }
@@ -361,9 +361,9 @@ TableExprNodeBitNegate::TableExprNodeBitNegate (const TableExprNodeRep& node)
 {}
 TableExprNodeBitNegate::~TableExprNodeBitNegate()
 {}
-Int64 TableExprNodeBitNegate::getInt (const TableExprId& id)
+int64_t TableExprNodeBitNegate::getInt (const TableExprId& id)
     { return ~(lnode_p->getInt(id)); }
-Double TableExprNodeBitNegate::getDouble (const TableExprId& id)
+double TableExprNodeBitNegate::getDouble (const TableExprId& id)
     { return double(~(lnode_p->getInt(id))); }
 DComplex TableExprNodeBitNegate::getDComplex (const TableExprId& id)
     { return double(~(lnode_p->getInt(id))); }

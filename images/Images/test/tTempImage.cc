@@ -46,28 +46,28 @@
 #include <casacore/casa/namespace.h>
 
 // Write and check the image.
-void doIt (TempImage<Int>& scratch)
+void doIt (TempImage<int32_t>& scratch)
 {
   IPosition shape(3,1);    
   shape(2) = scratch.shape()(2);
   AlwaysAssertExit (scratch.isWritable());
-  LatticeIterator<Int> li(scratch, shape);
-  Int i = 0;
+  LatticeIterator<int32_t> li(scratch, shape);
+  int32_t i = 0;
   for (li.reset(); !li.atEnd(); li++, i++) {
     li.woCursor() = i;
   }
   shape = scratch.shape();
   shape(2) = 1;
-  COWPtr<Array<Int> > ptrM;
-  scratch.getSlice(ptrM, IPosition(3,0), shape, IPosition(3,1), False);
+  COWPtr<Array<int32_t> > ptrM;
+  scratch.getSlice(ptrM, IPosition(3,0), shape, IPosition(3,1), false);
   AlwaysAssertExit (ptrM->shape().isEqual(shape));
-  Array<Int> expectedResult(shape);
+  Array<int32_t> expectedResult(shape);
   indgen(expectedResult);
   AlwaysAssertExit (allEQ(*ptrM, expectedResult));
   ptrM.rwRef() = 0;
   AlwaysAssertExit (allEQ(*ptrM, 0));
   Slicer sl(IPosition(3,0,0,5), shape, IPosition(3,1));
-  scratch.getSlice(ptrM, sl, False);
+  scratch.getSlice(ptrM, sl, false);
   AlwaysAssertExit (allEQ(*ptrM, expectedResult));
   scratch.set(0);
   scratch.putAt (7, IPosition(3,7));
@@ -76,38 +76,38 @@ void doIt (TempImage<Int>& scratch)
 
   // Check if masking works fine.
   // To start with there should be no mask.
-  TempLattice<Bool> mask(scratch.shape());
-  mask.set (True);
-  mask.putAt (False, IPosition(3,7));
+  TempLattice<bool> mask(scratch.shape());
+  mask.set (true);
+  mask.putAt (false, IPosition(3,7));
   AlwaysAssertExit (! scratch.isMasked());
   AlwaysAssertExit (! scratch.hasPixelMask());
-  Array<Bool> tm;
+  Array<bool> tm;
   scratch.getMaskSlice (tm, IPosition(3,1), IPosition(3,6));
-  AlwaysAssertExit (allEQ (tm, True));
+  AlwaysAssertExit (allEQ (tm, true));
 
   // Now attach a mask and see if it is fine.
   scratch.attachMask (mask);
   AlwaysAssertExit (scratch.isMasked());
   AlwaysAssertExit (scratch.hasPixelMask());
   AlwaysAssertExit (scratch.pixelMask().isWritable());
-  Array<Bool> tm1;
+  Array<bool> tm1;
   scratch.getMaskSlice (tm1, IPosition(3,1), IPosition(3,6));
-  AlwaysAssertExit (allEQ (tm1, True));
+  AlwaysAssertExit (allEQ (tm1, true));
 
   // Change the mask and see if it is reflected in the image's mask.
-  mask.putAt (False, IPosition(3,7));
-  tm1(IPosition(3,6)) = False;
-  Array<Bool> tm2;
+  mask.putAt (false, IPosition(3,7));
+  tm1(IPosition(3,6)) = false;
+  Array<bool> tm2;
   scratch.getMaskSlice (tm2, IPosition(3,1), IPosition(3,6));
   AlwaysAssertExit (allEQ (tm2, tm1));
 
   // Change the image mask directly and see if it is fine.
   scratch.pixelMask().putSlice (tm2, IPosition(3,0));
-  Array<Bool> tm3(IPosition(3,7));
-  tm3 = True;
-  tm1(IPosition(3,6)) = False;
-  tm1(IPosition(3,7)) = False;
-  Array<Bool> tm3a;
+  Array<bool> tm3(IPosition(3,7));
+  tm3 = true;
+  tm1(IPosition(3,6)) = false;
+  tm1(IPosition(3,7)) = false;
+  Array<bool> tm3a;
   scratch.getMaskSlice (tm3a, IPosition(3,0), IPosition(3,7));
   AlwaysAssertExit (allEQ (tm3a, tm3));
 
@@ -134,7 +134,7 @@ void doIt (TempImage<Int>& scratch)
 }
 
 // Stream, unstream, and check the image.
-void streamImage (ImageInterface<Int>& img)
+void streamImage (ImageInterface<int32_t>& img)
 {
   MemoryIO membuf;
   CanonicalIO canio (&membuf);
@@ -154,7 +154,7 @@ void streamImage (ImageInterface<Int>& img)
   }
   os.putend();
   // Get the image back.
-  TempImage<Int> scratch;
+  TempImage<int32_t> scratch;
   os.setpos (0);
   AlwaysAssertExit (os.getstart("Image") == 0);
   {
@@ -164,16 +164,16 @@ void streamImage (ImageInterface<Int>& img)
     AlwaysAssertExit (scratch.fromRecord(msg, rec));
   }
   {
-    Array<Int> arr;
+    Array<int32_t> arr;
     os >> arr;
     scratch.put (arr);
   }
-  Bool isMasked;
+  bool isMasked;
   os >> isMasked;
   if (isMasked) {
-    Array<Bool> mask;
+    Array<bool> mask;
     os >> mask;
-    scratch.attachMask (ArrayLattice<Bool>(mask));
+    scratch.attachMask (ArrayLattice<bool>(mask));
   }
   // Check the result.
   AlwaysAssertExit (scratch.getAt(IPosition(3,7)) == 7);
@@ -183,10 +183,10 @@ void streamImage (ImageInterface<Int>& img)
   AlwaysAssertExit (scratch.isMasked());
   AlwaysAssertExit (scratch.hasPixelMask());
   AlwaysAssertExit (scratch.pixelMask().isWritable());
-  Array<Bool> tm1;
+  Array<bool> tm1;
   scratch.getMaskSlice (tm1, IPosition(3,1), IPosition(3,6));
-  tm1(IPosition(3,6)) = False;
-  AlwaysAssertExit (allEQ (tm1, True));
+  tm1(IPosition(3,6)) = false;
+  AlwaysAssertExit (allEQ (tm1, true));
   */
   // Test other info.
   AlwaysAssertExit (scratch.units() == Unit("Jy"));
@@ -202,11 +202,11 @@ void streamImage (ImageInterface<Int>& img)
 
 void testTempCloseDelete()
 {
-  Int nchan= 10;
-  Int nx=1000;
-  Int ny=1000;
+  int32_t nchan= 10;
+  int32_t nx=1000;
+  int32_t ny=1000;
 
-  TempImage<Float> tIm((TiledShape(IPosition(4,nx,ny,1,nchan))),
+  TempImage<float> tIm((TiledShape(IPosition(4,nx,ny,1,nchan))),
                        CoordinateUtil::defaultCoords4D(),
                        0);
   cerr <<"isPaged " << tIm.isPaged() << endl;
@@ -215,12 +215,12 @@ void testTempCloseDelete()
   tIm.tempClose();
   IPosition blc(4,0 , 0, 0, nchan);
   IPosition trc(4, nx-1, ny-1, 0, nchan);
-  Array<Float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
-  for (Int k=0; k < nchan ; ++k){
+  Array<float> goodplane(IPosition(4, nx,ny,1,1), 0.0f);
+  for (int32_t k=0; k < nchan ; ++k){
     blc(3)=k; trc(3)=k;
     Slicer sl(blc, trc, Slicer::endIsLast);
-    SubImage<Float> imSub(tIm, sl, True);
-    goodplane += Float(k);
+    SubImage<float> imSub(tIm, sl, true);
+    goodplane += float(k);
     imSub.put(goodplane);
   }
 
@@ -232,14 +232,14 @@ int main()
 {
   try {
     {
-      TempImage<Int> scratch((TiledShape(IPosition(3,64,64,257))),
+      TempImage<int32_t> scratch((TiledShape(IPosition(3,64,64,257))),
 			     CoordinateUtil::defaultCoords3D(),
 			     1);
       AlwaysAssertExit (scratch.isPaged());
       doIt (scratch);
     }
     {
-      TempImage<Int> small((TiledShape(IPosition(3,64,64,16))),
+      TempImage<int32_t> small((TiledShape(IPosition(3,64,64,16))),
 			   CoordinateUtil::defaultCoords3D(),
 			   1);
       AlwaysAssertExit (small.ok());
@@ -248,7 +248,7 @@ int main()
     }
     {
     	// per hyper-plane beam support
-    	TempImage<Int> temp((
+    	TempImage<int32_t> temp((
     		TiledShape(IPosition(4,64, 64, 4, 16))),
     		CoordinateUtil::defaultCoords4D()
     	);
@@ -269,8 +269,8 @@ int main()
     		temp.setImageInfo(info);
     	}
     	catch (std::exception& x) {}
-    	for (uInt i=0; i<4; i++) {
-    		for (uInt j=0; j<16; j++) {
+    	for (uint32_t i=0; i<4; i++) {
+    		for (uint32_t j=0; j<16; j++) {
     			info.setBeam(j, i, maj, min, pa);
     		}
     	}

@@ -45,7 +45,7 @@
 // This can be used to check if no memory leaks occur in normal operation.
 
 
-void doIt (Bool doExcp)
+void doIt (bool doExcp)
 {
     // Create some File objects to test later.
     File isFile  ("tRegularFile_tmp/isFile");     // regular file
@@ -89,13 +89,13 @@ void doIt (Bool doExcp)
     // Do an erroneous create.
     if (doExcp) {
 	try {
-	    risFile.create (False);                         // already exists
+	    risFile.create (false);                         // already exists
 	} catch (std::exception& x) {
 	    cout << x.what() << endl;
 	} 
     }
     // Do a valid create and assure its timestamp is greater and it is empty.
-    uInt time1 = risFile.modifyTime();
+    uint32_t time1 = risFile.modifyTime();
     risFile.create();
     AlwaysAssertExit (risFile.modifyTime() > time1);
     AlwaysAssertExit (risFile.size() == 0);
@@ -104,7 +104,7 @@ void doIt (Bool doExcp)
     //   to another file
     RegularFile risCopy ("tRegularFile_tmp/moveto/isFile1");
     RegularFile risFile1 ("tRegularFile_tmp/isFile1");
-    uInt size1 = risFile1.size();
+    uint32_t size1 = risFile1.size();
     cout << size1 << endl;
     risFile1.copy ("tRegularFile_tmp/isFile");
     AlwaysAssertExit (risFile.size() == size1);
@@ -120,7 +120,7 @@ void doIt (Bool doExcp)
 	    cout << x.what() << endl;         // non-writable directory
 	} 
 	try {
-	    risFile1.copy (Path("tRegularFile_tmp/isFile"), False);
+	    risFile1.copy (Path("tRegularFile_tmp/isFile"), false);
 	} catch (std::exception& x) {
 	    cout << x.what() << endl;         // already exists
 	} 
@@ -142,7 +142,7 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (file2.exists());
     if (doExcp) {
 	try {
-	    file2.move ("tRegularFile_tmp/moveto/isFile1", False);
+	    file2.move ("tRegularFile_tmp/moveto/isFile1", false);
 	} catch (std::exception& x) {
 	    cout << x.what() << endl;         // already exists
 	} 

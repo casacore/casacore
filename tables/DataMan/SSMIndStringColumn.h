@@ -87,7 +87,7 @@ public:
   // Create a SSMIndStringColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  SSMIndStringColumn (SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMIndStringColumn (SSMBase* aParent, int aDataType, uint32_t aColNr);
   
   virtual ~SSMIndStringColumn();
 
@@ -105,13 +105,13 @@ public:
   virtual IPosition shape (rownr_t aRowNr);
   
   // This storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
 
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined (rownr_t aRowNr);
+  virtual bool isShapeDefined (rownr_t aRowNr);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (rownr_t aRowNr);
+  virtual uint32_t ndim (rownr_t aRowNr);
 
 
 private:

@@ -53,7 +53,7 @@ LogFilter* LogFilter::clone() const
   return new LogFilter(*this);
 }
 
-Bool LogFilter::pass (const LogMessage& message) const
+bool LogFilter::pass (const LogMessage& message) const
 {
   return message.priority() >= lowest_p;
 }

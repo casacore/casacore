@@ -51,21 +51,21 @@
 
 #include <casacore/casa/namespace.h>
 void a() {
-    Int arraySize=2048;
+    int32_t arraySize=2048;
     cout<<"Array Size?   "; cin>>arraySize; 
     IPosition map2shape(2, arraySize, arraySize);
-    Int tileSize=16;
-    Int cacheSize=351*tileSize*tileSize;
-    Int trials=1000;
-    Float tileOverlap=0.5;
-    Int imageTileSize=16;
+    int32_t tileSize=16;
+    int32_t cacheSize=351*tileSize*tileSize;
+    int32_t trials=1000;
+    float tileOverlap=0.5;
+    int32_t imageTileSize=16;
     cout<<"Image Tile Size?    "; cin>>imageTileSize; 
     //    cout<<"Tile Overlap? "; cin>>tileOverlap; 
     //    cout<<"Cache Size?   "; cin>>cacheSize; 
     cout<<"Trials?       "; cin>>trials; 
     IPosition tileShape(2,tileSize,tileSize);
     IPosition imageTileShape(2,imageTileSize,imageTileSize);
-    Vector<Float> tileOverlapVec(2);
+    Vector<float> tileOverlapVec(2);
     tileOverlapVec=tileOverlap;
     PagedArray<Complex> pi2(TiledShape(map2shape, imageTileShape));
     pi2.setCacheSizeInTiles(1);
@@ -82,29 +82,29 @@ void a() {
     IPosition tilePos(2,0);
     if(trials<0) {
       IPosition myPos=IPosition(2,0);
-      for (Int j=0;j<arraySize;j++) {
-	for (Int i=0;i<arraySize;i++) {
+      for (int32_t j=0;j<arraySize;j++) {
+	for (int32_t i=0;i<arraySize;i++) {
 	  myPos=IPosition(2,i,j);
-	  Array<Complex>& myTile=itc.tile(tilePos,myPos,False);
+	  Array<Complex>& myTile=itc.tile(tilePos,myPos,false);
 	  cout<<"Filling tile at "<<myPos<<" -> "<<tilePos<<endl;
 	  myTile(myPos-tilePos)+=1.0;
 	}
       }
     }
     else {
-      Int i=randomPos.asInt();
-      Int j=randomPos.asInt();
+      int32_t i=randomPos.asInt();
+      int32_t j=randomPos.asInt();
       IPosition myPos=IPosition(2,i,j);
-      Double missFraction=0.0;
+      double missFraction=0.0;
       cout<<"MissFraction ? ";cin>>missFraction;
-      for (Int trial=0;trial<trials;trial++) {
+      for (int32_t trial=0;trial<trials;trial++) {
 	if(randomChoice()<missFraction) {
 	  i=randomPos.asInt();
 	  j=randomPos.asInt();
 	  myPos=IPosition(2,i,j);
 	  //	  cout<<"New tile on trial "<<trial<<" at "<<myPos<<endl;
 	}
-	Array<Complex>& myTile=itc.tile(tilePos,myPos,False);
+	Array<Complex>& myTile=itc.tile(tilePos,myPos,false);
 	myTile(myPos-tilePos)+=1.0;
       }
     }
@@ -116,32 +116,32 @@ void a() {
 }
 
 void b() {
-    Int arraySize=128;
+    int32_t arraySize=128;
     cout<<"Array Size?   "; cin>>arraySize; 
-    Int nChannels=128;
-    Int nChanTile=128;
-    Int nPol=1;
-    Int nPolTile=1;
-    Int tileSize=16;
-    Int cacheSize=351*tileSize*tileSize*nChanTile*nPolTile;
-    Int trials=100;
-    Int imageTileSize=16;
+    int32_t nChannels=128;
+    int32_t nChanTile=128;
+    int32_t nPol=1;
+    int32_t nPolTile=1;
+    int32_t tileSize=16;
+    int32_t cacheSize=351*tileSize*tileSize*nChanTile*nPolTile;
+    int32_t trials=100;
+    int32_t imageTileSize=16;
     cout<<"Image Tile Size?    "; cin>>imageTileSize; 
-    Float tileOverlap=0.5;
+    float tileOverlap=0.5;
     //    cout<<"Tile Size?    "; cin>>tileSize; 
     //    cout<<"Tile Overlap? "; cin>>tileOverlap; 
     //    cout<<"Cache Size?   "; cin>>cacheSize; 
     cout<<"Trials?       "; cin>>trials; 
-    Vector<Float> tileOverlapVec(4);
+    Vector<float> tileOverlapVec(4);
     tileOverlapVec=0.0;
     tileOverlapVec(0)=tileOverlap;
     tileOverlapVec(1)=tileOverlap;
     IPosition tileShape(4,tileSize,tileSize,nPolTile,nChanTile);
     IPosition map4shape(4, arraySize, arraySize, nPol, nChannels);
     IPosition imageTileShape(4,imageTileSize,imageTileSize,1,imageTileSize);
-    PagedArray<Float> pi4(TiledShape(map4shape, imageTileShape));
+    PagedArray<float> pi4(TiledShape(map4shape, imageTileShape));
     pi4.setCacheSizeInTiles(0);
-    LatticeCache<Float> itc(pi4, cacheSize, tileShape, tileOverlapVec,
+    LatticeCache<float> itc(pi4, cacheSize, tileShape, tileOverlapVec,
 			       (tileOverlap>0.0));      
     MLCG rng(835, 05401);
     DiscreteUniform randomPos(&rng, tileSize, arraySize-tileSize-1);
@@ -153,14 +153,14 @@ void b() {
     pi4.set(0.0);
     cout<<"Time to initialize array = "<<1000.0*timer.real()<<" ms"<<endl;
     timer.mark();
-    Int i=randomPos.asInt();
-    Int j=randomPos.asInt();
-    Int pol=randomPol.asInt();
-    Int chan=randomChan.asInt();
+    int32_t i=randomPos.asInt();
+    int32_t j=randomPos.asInt();
+    int32_t pol=randomPol.asInt();
+    int32_t chan=randomChan.asInt();
     IPosition myPos=IPosition(4,i,j,pol,chan);
-    Double missFraction=0.0;
+    double missFraction=0.0;
     cout<<"MissFraction ? ";cin>>missFraction;
-    for (Int trial=0;trial<trials;trial++) {
+    for (int32_t trial=0;trial<trials;trial++) {
       if(randomChoice()<missFraction) {
 	i=randomPos.asInt();
 	j=randomPos.asInt();
@@ -172,7 +172,7 @@ void b() {
         cout<<"New tile on trial "<<trial<<" at "<<myPos<<endl;
       }
       IPosition tilePos(4, 0);
-      Array<Float>& myTile=itc.tile(tilePos,myPos,False);
+      Array<float>& myTile=itc.tile(tilePos,myPos,false);
       IPosition offPos=myPos-tilePos;
       myTile(offPos)+=1.0;
     }
@@ -187,7 +187,7 @@ int main()
 {
   try {
     cout<<">>>"<<endl;
-    Int type=1;
+    int32_t type=1;
     cout<<"Enter 0 for 2D, 1 for 4D, 2 for both ";
     cin>>type;
     switch(type) {

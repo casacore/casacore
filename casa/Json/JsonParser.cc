@@ -88,7 +88,7 @@ namespace casacore {
   JsonKVMap JsonParser::parse (const String& command)
   {
     // Return an empty map if the command is empty.
-    Bool empty = true;
+    bool empty = true;
     for (size_t i=0; i<command.size(); i++) {
       if (command[i] != ' ') {
         empty = false;
@@ -152,15 +152,15 @@ namespace casacore {
           case 'u':
             {
               // unicode repr of control character
-              Bool ok = False;
+              bool ok = false;
               if (i < leng+4) {
                 String hex("0X" + in.substr(i+1,4));
                 char* endPtr;
-                Int64 val = strtoll(hex.chars(), &endPtr, 0);
+                int64_t val = strtoll(hex.chars(), &endPtr, 0);
                 if (endPtr == hex.chars()+hex.size()  &&  val < 128) {
                   out += char(val);
                   i += 4;
-                  ok = True;
+                  ok = true;
                 }
               }
               if (!ok) {

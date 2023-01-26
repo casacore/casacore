@@ -115,7 +115,7 @@ public:
         { return storageOpt_p; }
 
     // Test if the table is marked for delete.
-    Bool isMarkedForDelete() const
+    bool isMarkedForDelete() const
 	{ return delete_p; }
 
     // Get the table description.
@@ -141,14 +141,14 @@ public:
     // It cannot be used anymore once the SetupNewTableRep object is used to
     // construct a Table object.
     void bindGroup (const String& columnGroup, const DataManager&,
-		    Bool rebind=False);
+		    bool rebind=false);
 
     // Bind all columns to the given data manager.
     // The flag rebind tells if the binding of an already bound column
     // will be overwritten.
     // It cannot be used anymore once the SetupNewTableRep object is used to
     // construct a Table object.
-    void bindAll (const DataManager&, Bool rebind=False);
+    void bindAll (const DataManager&, bool rebind=false);
 
     // Create data managers and bind the columns using the specifications
     // in the given record (which is obtained using Table::dataManagerInfo()).
@@ -167,7 +167,7 @@ public:
     void setShapeColumn (const String& columnName, const IPosition& shape);
 
     // Test if object is already in use.
-    Bool isUsed() const
+    bool isUsed() const
         { return colSetPtr_p.null(); }
 
     // Get pointer to column set.
@@ -195,7 +195,7 @@ private:
     int           option_p;
     StorageOption storageOpt_p;
     // Marked for delete?
-    Bool          delete_p;
+    bool          delete_p;
     CountedPtr<TableDesc> tdescPtr_p;
     CountedPtr<ColumnSet> colSetPtr_p;  //# null = object is already used by a Table
     std::map<void*,void*> dataManMap_p;
@@ -371,7 +371,7 @@ public:
         { return newTable_p->storageOption(); }
 
     // Test if the table is marked for delete.
-    Bool isMarkedForDelete() const
+    bool isMarkedForDelete() const
 	{ return newTable_p->isMarkedForDelete(); }
 
     // Get the table description.
@@ -381,7 +381,7 @@ public:
     // Adjust the hypercolumn definitions.
     // It renames and/or removes columns as necessary.
     void adjustHypercolumns (const std::map<String, String>& old2new,
-			     Bool keepUnknown)
+			     bool keepUnknown)
       { newTable_p->tableDescPtr()->adjustHypercolumns(old2new,keepUnknown); }
 
     // Bind a column to the given data manager.
@@ -405,7 +405,7 @@ public:
     // It cannot be used anymore once the SetupNewTable object is used to
     // construct a Table object.
     void bindGroup (const String& columnGroup, const DataManager& dm,
-		    Bool rebind=False)
+		    bool rebind=false)
 	{ newTable_p->bindGroup (columnGroup, dm, rebind); }
 
     // Bind all columns to the given data manager.
@@ -413,7 +413,7 @@ public:
     // will be overwritten.
     // It cannot be used anymore once the SetupNewTable object is used to
     // construct a Table object.
-    void bindAll (const DataManager& dm, Bool rebind=False)
+    void bindAll (const DataManager& dm, bool rebind=false)
 	{ newTable_p->bindAll (dm, rebind); }
 
     // Create data managers and bind the columns using the specifications
@@ -435,7 +435,7 @@ public:
 	{ newTable_p->setShapeColumn (columnName, shape); }
 
     // Test if object is already in use.
-    Bool isUsed() const
+    bool isUsed() const
 	{ return newTable_p->isUsed(); }
 
 private:

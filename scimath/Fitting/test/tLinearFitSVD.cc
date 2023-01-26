@@ -42,31 +42,31 @@
 #include <casacore/casa/namespace.h>
 // Some C++ functions
 // To use them in Fitting, have to have parameters and also AutoDiff
-static Double func0(const Vector<Double> &) {return 1;}            // 1
-static Double func1(const Vector<Double> &x) {return x(0);}         // x
-static Double func2(const Vector<Double> &x) {return sin(x(1));}    // sin(y)
-static Double func3(const Vector<Double> &x) {return x(0)*x(0);}    // x^2
+static double func0(const Vector<double> &) {return 1;}            // 1
+static double func1(const Vector<double> &x) {return x(0);}         // x
+static double func2(const Vector<double> &x) {return sin(x(1));}    // sin(y)
+static double func3(const Vector<double> &x) {return x(0)*x(0);}    // x^2
 
-void checkLinearFit(LinearFitSVD<Double> &fitter) {
+void checkLinearFit(LinearFitSVD<double> &fitter) {
   //*********** Test one *************
   // fit data to polynomial
   {
     // Generate fake data
-    const uInt nPrimes = 20;
-    Vector<Double> primesTable(nPrimes);
-    Vector<Double> x(nPrimes);
-    Vector<Double> sigma(nPrimes);
-    indgen((Array<Double>&)x, 1.0);  // 1, 2, ...
+    const uint32_t nPrimes = 20;
+    Vector<double> primesTable(nPrimes);
+    Vector<double> x(nPrimes);
+    Vector<double> sigma(nPrimes);
+    indgen((Array<double>&)x, 1.0);  // 1, 2, ...
     primesTable(0) = 2;
-    for (uInt i=1; i < nPrimes; i++) {
-      primesTable(i) = Primes::nextLargerPrimeThan(Int(primesTable(i-1)+0.01));
+    for (uint32_t i=1; i < nPrimes; i++) {
+      primesTable(i) = Primes::nextLargerPrimeThan(int32_t(primesTable(i-1)+0.01));
     }   
     sigma = 1.0;
-    Vector<Double> actualParameters(3);
+    Vector<double> actualParameters(3);
     actualParameters(0) = -1.92368;
     actualParameters(1) = 2.2055;
     actualParameters(2) = 0.0746753;
-    Matrix<Double> actualCovariance(3, 3);
+    Matrix<double> actualCovariance(3, 3);
     actualCovariance(0,0) = 0.553509;
     actualCovariance(0,1) = -0.107895;
     actualCovariance(0,2) = 0.00438596;
@@ -76,35 +76,35 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     actualCovariance(2,0) = 0.00438596;
     actualCovariance(2,1) = -0.00119617;
     actualCovariance(2,2) = 0.0000569606;
-    Double actualChiSquare = 22.9901;
+    double actualChiSquare = 22.9901;
     
     
     // construct a linear combination of functions: a(0)+a(1)*x+a(2)*x^2    
     
-    Polynomial<AutoDiff<Double> > combination(2);
+    Polynomial<AutoDiff<double> > combination(2);
     combination.setCoefficient(0, 1.0);
     combination.setCoefficient(1, 1.0);
     combination.setCoefficient(2, 1.0);
     // perform least-squares fit
     fitter.setFunction(combination);
-    Vector<Double> solution = fitter.fit(x,primesTable,sigma);
-    Matrix<Double> covariance = fitter.compuCovariance();
+    Vector<double> solution = fitter.fit(x,primesTable,sigma);
+    Matrix<double> covariance = fitter.compuCovariance();
     
     // Get the residual
-    Vector<Double> yres(nPrimes);
+    Vector<double> yres(nPrimes);
     yres = primesTable;
     AlwaysAssertExit(fitter.residual(yres, x));
     yres = yres*yres;
     
     cout << "******** test one *************" << endl;
     // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nparameters(); i++) {
+    for (uint32_t i = 0; i < combination.nparameters(); i++) {
       cout << "Actual Parameter " << actualParameters(i) << 
 	", Computed Parameter " << solution(i) << endl;
     }
     // Print actual covariance and computed covariance
-    for (uInt i = 0; i < combination.nparameters(); i++) {
-      for (uInt j = 0; j < combination.nparameters(); j++) {
+    for (uint32_t i = 0; i < combination.nparameters(); i++) {
+      for (uint32_t j = 0; j < combination.nparameters(); j++) {
 	cout << "Actual Covariance " << actualCovariance(i,j) << 
 	  ", Computed Covariance " << covariance(i,j) << endl;
       }
@@ -134,23 +134,23 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
 
   // fitting polynomial to data with some coefficient being held fixed
   {
-    Int j;
+    int32_t j;
     // Make some fake data sets
     // -1 + 6*x + 10*x^2 + 3*x^3
-    Polynomial<Double> poly(3);
+    Polynomial<double> poly(3);
     poly.setCoefficient(0, -1.0); 
     poly.setCoefficient(1, 6.0);
     poly.setCoefficient(2, 10.0);
     poly.setCoefficient(3, 3.0);
-    const uInt n = 1000;
-    Vector<Double> x(n); 
-    Vector<Double> y(n);
-    Vector<Double> sigma(n); 
-    indgen((Array<Double>&)x); 
-    x /= Double(Double(n)/10); // 0.00 - 9.99
+    const uint32_t n = 1000;
+    Vector<double> x(n); 
+    Vector<double> y(n);
+    Vector<double> sigma(n); 
+    indgen((Array<double>&)x); 
+    x /= double(double(n)/10); // 0.00 - 9.99
     MLCG generator; 
     Normal noise(&generator, 0.0, 1.0);   
-    for (uInt i=0; i < n; i++) {
+    for (uint32_t i=0; i < n; i++) {
       // -1 + 6*x + 10*x^2 + 3*x^3 + unit gaussian noise
       y(i) = poly(x(i)) + noise();
     }
@@ -160,22 +160,22 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
 
     // construct a linear combination of functions: 
     // a(0)+a(1)*x+a(2)*x^2+a(3)*x^3
-    Polynomial<AutoDiff<Double> > combination(3);
-    for (uInt i=0; i<4; i++) combination[i] = 1.0;
+    Polynomial<AutoDiff<double> > combination(3);
+    for (uint32_t i=0; i<4; i++) combination[i] = 1.0;
 
     // Hold the coefficient for square fixed
-    combination.mask(2) = False;
+    combination.mask(2) = false;
     // set the parameter value
     combination[2] = 10;
 
     // Indicate which function to fit
     fitter.setFunction(combination);
-    Vector<Double> solution = fitter.fit(x, y, sigma);
-    Matrix<Double> covariance = fitter.compuCovariance();
+    Vector<double> solution = fitter.fit(x, y, sigma);
+    Matrix<double> covariance = fitter.compuCovariance();
 
     cout << endl << "******** test two *************" << endl;
     cout << "Expect -1 + 6*x + 10*x^2 + 3*x^3 " << endl;
-    for (uInt i = 0; i < solution.nelements(); i++) {
+    for (uint32_t i = 0; i < solution.nelements(); i++) {
       if (i == 2) cout << "Fixed coefficient ";
       else cout << "Computed ";
       cout << solution(i) << " Std Dev " << sqrt(covariance(i,i)) << endl;
@@ -187,9 +187,9 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     cout << "Missing rank: " << fitter.fittedNumber()-fitter.getRank() << endl;
     
     // compare solution with poly parameters. See if they are within 3*sigma.
-    Int factor = 3;
+    int32_t factor = 3;
     j = 0;
-    for (uInt i = 0; i < solution.nelements(); i++) {
+    for (uint32_t i = 0; i < solution.nelements(); i++) {
       if (i == 2) {
 	j++;
 	continue;
@@ -206,12 +206,12 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
     // f(x,y) = a0 + a1*x+ a2*y + a3*x*x
     {    
       // Convert C++ functions to Functionals
-      FunctionWrapper<Double> Func0(func0,2);
-      FunctionWrapper<Double> Func1(func1,2);
-      FunctionWrapper<Double> Func2(func2,2);
-      FunctionWrapper<Double> Func3(func3,2);
+      FunctionWrapper<double> Func0(func0,2);
+      FunctionWrapper<double> Func1(func1,2);
+      FunctionWrapper<double> Func2(func2,2);
+      FunctionWrapper<double> Func3(func3,2);
       
-      CombiFunction<Double> combination;
+      CombiFunction<double> combination;
       
       // form linear combination of functions
       // f(x,y) = a0 + a1*x+ a2*sin(y) + a3*x*x
@@ -226,21 +226,21 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       combination[2] = 6;
       combination[3] = 0.2;
       
-      Int npoints = 100;
-      Matrix<Double> x(npoints,2);       // coordinates
-      Vector<Double> z(npoints);         // data values
-      Vector<Double> sigma(npoints);     // standard deviation   
+      int32_t npoints = 100;
+      Matrix<double> x(npoints,2);       // coordinates
+      Vector<double> z(npoints);         // data values
+      Vector<double> sigma(npoints);     // standard deviation   
       MLCG generator; 
       Normal noise(&generator, 0.0, 1.0);   
-      for (Int i = 0; i < npoints; i++) {
+      for (int32_t i = 0; i < npoints; i++) {
 	x(i,0) = 0.2*i;
 	x(i,1) = x(i,0)*2;
-	Double nois = noise()/4.0;
+	double nois = noise()/4.0;
 	z(i) = combination(x.row(i)) + nois;
       }
       sigma = 1.0;
       cout << endl << "******** test three *************" << endl;
-      Vector<Double> z0(2);
+      Vector<double> z0(2);
       z0[0] = 2; z0[1] = 3;
       cout << "x,y: " << z0[0] << ", " << z0[1] << endl;
       cout << "Expect: " << 4 + 5*z0[0]+ 6*sin(z0[1]) + 0.2*z0[0]*z0[0] <<
@@ -251,20 +251,20 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
       // static PoolStack data: crashed in memory
       /*
       fitter.setFunction(combination);
-      Vector<Double> solution = fitter.fit(x,z,sigma);
-      Matrix<Double> covariance = fitter.compuCovariance();    
+      Vector<double> solution = fitter.fit(x,z,sigma);
+      Matrix<double> covariance = fitter.compuCovariance();    
       
       cout << "Expect f(x,y) = 4 + 5*x+ 6*sin(y) + 0.2*x*x" << endl;
-      cout << "Computed " << (Array<Double>&)solution << endl;
+      cout << "Computed " << (Array<double>&)solution << endl;
       cout << "Std Dev  ";
-      for (uInt i = 0; i < solution.nelements(); i++) {
+      for (uint32_t i = 0; i < solution.nelements(); i++) {
 	cout << sqrt(covariance(i,i)) << " ";
       }
       cout << endl;
       
       // See if they are within 3*sigma.
-      Int factor = 3;
-      for (uInt i = 0; i < solution.nelements(); i++) {
+      int32_t factor = 3;
+      for (uint32_t i = 0; i < solution.nelements(); i++) {
 	AlwaysAssertExit(nearAbs(solution(i), combination[i],
 				 factor*sqrt(covariance(i,i))));
       }
@@ -283,7 +283,7 @@ void checkLinearFit(LinearFitSVD<Double> &fitter) {
 void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
 
   // fitting polynomial to data
-  const uInt n = 1000;
+  const uint32_t n = 1000;
   
   // Make some fake data sets
   // (-1.0,2.0) + (6.0,4.0)*x + (10.0,-1.5)*x^2 + (3.0,2.3)*x^3
@@ -301,7 +301,7 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
   Normal noise(& generator, 0.0, 1.0);  
 
   // randomly generate data on a complex plane. 
-  for (uInt i = 0; i < n; i++) {
+  for (uint32_t i = 0; i < n; i++) {
     x(i) = Complex(noise(), noise());
     y(i) = poly(x(i))+Complex(noise())/Complex(2.0);
   }
@@ -320,12 +320,12 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
   fitter.setFunction(combination);
   Vector<Complex> solution = fitter.fit(x, y, sigma);
 
-  Matrix<Double> covariance = fitter.compuCovariance();
+  Matrix<double> covariance = fitter.compuCovariance();
     
   cout << endl << "******** test four complex fitting*************" << endl;
   cout << "fitted function ";
   cout << "(-1.0,2.0) + (6.0,4.0)*x + (10.0,-1.5)*x^2 + (3.0,2.3)*x^3" << endl;
-  for (uInt i = 0; i < solution.nelements(); i++) {
+  for (uint32_t i = 0; i < solution.nelements(); i++) {
     cout << "Expected: (" <<
       poly[i].real() << "," << poly[i].imag() << ") ";
     cout << "Computed: (" <<
@@ -335,8 +335,8 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
   cout << "Missing rank: " << 2*fitter.fittedNumber()-fitter.getRank() << endl;
 
   // compare solution with poly parameters. See if they are within 3*sigma.
-  Double factor = 3;
-  for (uInt i = 0; i < solution.nelements(); i++) {
+  double factor = 3;
+  for (uint32_t i = 0; i < solution.nelements(); i++) {
     AlwaysAssertExit(nearAbs(abs(solution(i)), 
 			     abs(poly[i]),
 			     factor*abs(sqrt(covariance(i,i)))));
@@ -344,19 +344,19 @@ void checkComplexLinearFit(LinearFitSVD<Complex> &fitter) {
   AlwaysAssertExit(2*fitter.fittedNumber()-fitter.getRank() == 0);
 }
 
-void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
+void checkConstraintLinearFit(LinearFitSVD<double> &fitter) {
   //*********** Test constraint one *************
   // fit data to measured angles
   {
     // Generate fake data (3 angles)
-    const uInt n = 100;
-    Matrix<Double> arg(3*n,3);
+    const uint32_t n = 100;
+    Matrix<double> arg(3*n,3);
     arg = 0.0;
-    Vector<Double> y(3*n);
-    Vector<Double> angle(3);
+    Vector<double> y(3*n);
+    Vector<double> angle(3);
     angle[0] = 50; angle[1] = 60; angle[2] = 70;
-    for (uInt i=0; i<3; ++i) {
-      for (uInt j=0; j<n; ++j) {
+    for (uint32_t i=0; i<3; ++i) {
+      for (uint32_t j=0; j<n; ++j) {
 	arg(n*i+j,i) = 1;
 	y[n*i+j] = angle[i];
       }
@@ -365,24 +365,24 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
     // Add noise
     MLCG generator; 
     Normal noise(&generator, 0.0, 10.0);   
-    for (uInt i=0; i<3*n; ++i) y[i] += noise();
+    for (uint32_t i=0; i<3*n; ++i) y[i] += noise();
     
     // Specify functional
-    HyperPlane<AutoDiff<Double> > combination(3);
+    HyperPlane<AutoDiff<double> > combination(3);
     fitter.setFunction(combination);
     
     cout << endl << "******** test constraint one *************" << endl;
     // Perform fit
-    Vector<Double> solution = fitter.fit(arg, y);
-    Matrix<Double> covariance = fitter.compuCovariance();
-    Vector<Double> errors = fitter.errors();
+    Vector<double> solution = fitter.fit(arg, y);
+    Matrix<double> covariance = fitter.compuCovariance();
+    Vector<double> errors = fitter.errors();
     // Get the residuals
-    Vector<Double> yres(3*n);
+    Vector<double> yres(3*n);
     yres = y;
     AlwaysAssertExit(fitter.residual(yres, arg));
     yres = yres*yres;
     // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nparameters(); i++) {
+    for (uint32_t i = 0; i < combination.nparameters(); i++) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
@@ -414,7 +414,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
     yres = yres*yres;
     
     // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nparameters(); i++) {
+    for (uint32_t i = 0; i < combination.nparameters(); i++) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
@@ -436,11 +436,11 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
     // Add constraint -------------------------
 
     // Specify functional
-    HyperPlane<AutoDiff<Double> > combinationA(3);
+    HyperPlane<AutoDiff<double> > combinationA(3);
     fitter.setFunction(combinationA);
     // Specify constraint
-    Vector<Double> constrArg(3, 1.0);
-    HyperPlane<AutoDiff<Double> > constrFun(3);
+    Vector<double> constrArg(3, 1.0);
+    HyperPlane<AutoDiff<double> > constrFun(3);
     fitter.addConstraint(constrFun, constrArg, 180.0);
         
     cout << endl << "******** test constraint sum to 180 ********" << endl;
@@ -454,7 +454,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
     yres = yres*yres;
     
     // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nparameters(); i++) {
+    for (uint32_t i = 0; i < combination.nparameters(); i++) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
@@ -483,7 +483,7 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
     yres = yres*yres;
     
     // Print actual parameters and computed parameters
-    for (uInt i = 0; i < combination.nparameters(); i++) {
+    for (uint32_t i = 0; i < combination.nparameters(); i++) {
       cout << "Expected: " << angle[i] << 
 	" Computed: " << solution[i]  << 
 	" Std Dev: " << errors[i] << endl;
@@ -506,13 +506,13 @@ void checkConstraintLinearFit(LinearFitSVD<Double> &fitter) {
 }
 
   int main() {
-  LinearFitSVD<Double> fitsvd;
+  LinearFitSVD<double> fitsvd;
   checkLinearFit(fitsvd);
 
   LinearFitSVD<Complex> fit_complex;
   checkComplexLinearFit(fit_complex);
   
-  LinearFitSVD<Double> fitcon;
+  LinearFitSVD<double> fitcon;
   checkConstraintLinearFit(fitcon);
 
   cout << "OK" << endl;

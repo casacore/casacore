@@ -20,7 +20,7 @@ std::string to_string(const Array<T, Alloc> array)
   return str.str();
 }
 
-// Take care that a uChar is printed numerically, not as a letter.
+// Take care that a unsigned char is printed numerically, not as a letter.
 inline void ArrayIO_printValue (std::ostream& s, const unsigned char& v)
   { s << int(v); }
 template<typename T>

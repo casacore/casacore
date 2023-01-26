@@ -52,10 +52,10 @@ namespace casacore { namespace python {
   // </synopsis>
 
   // Check if the PyObject is an array object.
-  Bool PycArrayCheck (PyObject* obj_ptr);
+  bool PycArrayCheck (PyObject* obj_ptr);
 
   // Check if the PyObject is an array scalar object.
-  Bool PycArrayScalarCheck (PyObject* obj_ptr);
+  bool PycArrayScalarCheck (PyObject* obj_ptr);
 
   // Get the data type of the array scalar object.
   // It returns TpBool, TpInt, TpFloat, or TpComplex.
@@ -65,12 +65,12 @@ namespace casacore { namespace python {
   struct casa_array_from_python
   {
     // Constructs an Array from a Python object.
-    // If copyData=False, the array data is only copied if needed meaning
+    // If copyData=false, the array data is only copied if needed meaning
     // that the Array object in the ValueHolder can reference the data in
     // Python array.
     // That should only be used if the ValueHolder and its Array will be
     // destructed before the Python array.
-    static ValueHolder makeArray(PyObject* obj_ptr, Bool copyData=False);
+    static ValueHolder makeArray(PyObject* obj_ptr, bool copyData=false);
 
     // Construct an Array<String> from a special Python dict object.
     static ValueHolder makeArrayFromDict (PyObject* obj_ptr);

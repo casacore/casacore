@@ -34,26 +34,26 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class Container, class ElType>
-Int linearSearch (Bool& found, const Container& container, 
-		  const ElType& value, uInt n, uInt lower)
+int32_t linearSearch (bool& found, const Container& container, 
+		  const ElType& value, uint32_t n, uint32_t lower)
 {
     n += lower;
     while (lower < n) {
 	if (container(lower) == value) {
-	    found = True;
+	    found = true;
 	    return lower;
 	}
 	lower++;
     }
-    found = False;
+    found = false;
     return -1;
 }
 
 template<class Container, class ElType>
-Int linearSearch1 (const Container& container, const ElType& value,
-		   uInt lower)
+int32_t linearSearch1 (const Container& container, const ElType& value,
+		   uint32_t lower)
 {
-    uInt n = container.nelements();
+    uint32_t n = container.nelements();
     while (lower < n) {
 	if (container(lower) == value) {
 	    return lower;
@@ -64,26 +64,26 @@ Int linearSearch1 (const Container& container, const ElType& value,
 }
 
 template<class Container, class ElType>
-Int linearSearchBrackets (Bool& found, const Container& container, 
-			  const ElType& value, uInt n, uInt lower)
+int32_t linearSearchBrackets (bool& found, const Container& container, 
+			  const ElType& value, uint32_t n, uint32_t lower)
 {
     n += lower;
     while (lower < n) {
 	if (container[lower] == value) {
-	    found = True;
+	    found = true;
 	    return lower;
 	}
 	lower++;
     }
-    found = False;
+    found = false;
     return -1;
 }
 
 template<class Container, class ElType>
-Int linearSearchBrackets1 (const Container& container, const ElType& value,
-			   uInt lower)
+int32_t linearSearchBrackets1 (const Container& container, const ElType& value,
+			   uint32_t lower)
 {
-    uInt n = container.nelements();
+    uint32_t n = container.nelements();
     while (lower < n) {
 	if (container[lower] == value) {
 	    return lower;

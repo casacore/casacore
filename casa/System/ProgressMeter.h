@@ -63,10 +63,10 @@ class String;
 //
 // <example>
 // <srcblock>
-// void calculate(uInt n) {
-//   Int skip = n / 200;
-//   ProgressMeter meter(0, n, "Title", "Subtitle", "", "", True, skip);
-//   for (uInt i=0; i<n; i++) {
+// void calculate(uint32_t n) {
+//   int32_t skip = n / 200;
+//   ProgressMeter meter(0, n, "Title", "Subtitle", "", "", true, skip);
+//   for (uint32_t i=0; i<n; i++) {
 //       ... calculate ...
 //       meter.update(i);
 //   }
@@ -93,7 +93,7 @@ public:
     ProgressMeter();
 
     // Create a progress meter with the given min and max values and labels.
-    // if <src>estimateTime</src> is <src>True</src>, an estimate of the
+    // if <src>estimateTime</src> is <src>true</src>, an estimate of the
     // time remaining will be made for the user. This estimate assumes that
     // the remaining portion will compute at the same rate as the portion
     // completed so far, so the time should not be estimated for processes
@@ -110,49 +110,49 @@ public:
     // a couple of hundred times since the eye can't distinguish differences
     // in the progress bar position at that level. If updateEvery is <=0, it
     // is set to 1 for you.
-    ProgressMeter(Double min, Double max, 
+    ProgressMeter(double min, double max, 
 		  const String &title, const String &subtitle,
 		  const String &minlabel, const String &maxlabel,
-		  Bool estimateTime = True, Int updateEvery=1);
+		  bool estimateTime = true, int32_t updateEvery=1);
 
-    ProgressMeter(Double min, Double max, const String &title);
+    ProgressMeter(double min, double max, const String &title);
     // The destruction of the meter will cause an update to be sent with the
     // maximum value. This will usually cause the GUI window to be removed
     // from the screen. Thus the progress meter should generally live as long
     // as the calculation it is tracking.
     ~ProgressMeter();
 
-    void update(Double value, Bool force=False);
-    void _update(Double value, Bool force=False);
+    void update(double value, bool force=false);
+    void _update(double value, bool force=false);
     void busy();
     void done();
 
     // Display the min and max values of the progress meter.
     // <group>
-    Double min() const;
-    Double max() const;
+    double min() const;
+    double max() const;
     // </group>
 
     friend class ObjectController;
     static const char* PROGRESSFILE;
 private:
-    Int id_p;
-    Double min_p, max_p;
-    Int update_every_p, update_count_p;
+    int32_t id_p;
+    double min_p, max_p;
+    int32_t update_every_p, update_count_p;
        // Time the progress meter began
     time_t startTime; 
-    Bool   showProgress;
+    bool   showProgress;
     
     // These are set by ObjectController for executables that have the tasking
     // system in them, otherwise they are null and this class just does no-ops.
-    static Int (*creation_function_p)(Double, Double, 
+    static int32_t (*creation_function_p)(double, double, 
 			      const String &, const String &,
                               const String &, const String &,
-                              Bool);
-    static void (*update_function_p)(Int, Double);
-    static void (*show_function_p)(Int, Double);
-    static void (*busy_function_p)(Int);
-    static void (*done_function_p)(Int);
+                              bool);
+    static void (*update_function_p)(int32_t, double);
+    static void (*show_function_p)(int32_t, double);
+    static void (*busy_function_p)(int32_t);
+    static void (*done_function_p)(int32_t);
 
     // Undefined and inaccessible
     ProgressMeter(const ProgressMeter &);

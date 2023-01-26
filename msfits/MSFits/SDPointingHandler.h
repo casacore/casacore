@@ -89,7 +89,7 @@ public:
     SDPointingHandler();
 
     // attach this to a MS, mark fields row which are handled here
-    SDPointingHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDPointingHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDPointingHandler(const SDPointingHandler &other);
@@ -100,7 +100,7 @@ public:
     SDPointingHandler &operator=(const SDPointingHandler &other);
 
     // attach to a MS, mark fields in row which are handled here
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &);
@@ -112,29 +112,29 @@ public:
     //      c) the direction changes
     //      d) the antennaId changes
     //  There is no look-back to see if a previous row could be re-used
-    void fill(const Record &row, Int antennaId, Double time, const Vector<Double> &timeRange,
+    void fill(const Record &row, int32_t antennaId, double time, const Vector<double> &timeRange,
 	      const MDirection &direction, const MeasFrame &frame);
 
     // convenience functions for use when filling the FIELD table, which is mostly
     // just a clone of this table for SD data
-    Int nrow() {return rownr_p+1;}
+    int32_t nrow() {return rownr_p+1;}
     const String &name() {return name_p;}
-    Int directionRefType() {return dirColRef_p.getType();}
-    const Matrix<Double> &directionPoly() {return directionPoly_p;}
-    Double time() {return time_p;}
+    int32_t directionRefType() {return dirColRef_p.getType();}
+    const Matrix<double> &directionPoly() {return directionPoly_p;}
+    double time() {return time_p;}
 private:
     MSPointing *msPointing_p;
     MSPointingColumns *msPointingCols_p;
 
-    Double time_p;
+    double time_p;
 
-    Int antId_p;
+    int32_t antId_p;
     MDirection direction_p;
-    Matrix<Double> directionPoly_p;
-    Vector<Double> directionRate_p;
+    Matrix<double> directionPoly_p;
+    Vector<double> directionRate_p;
     String name_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
     MDirection::Ref dirColRef_p;
 
@@ -142,10 +142,10 @@ private:
 
     // these might come from an MS table
     // this can just come from an MS v1 table
-    RORecordFieldPtr<Array<Double> > pointingDirRateField_p;
-    RORecordFieldPtr<Double> intervalField_p, timeField_p;
+    RORecordFieldPtr<Array<double> > pointingDirRateField_p;
+    RORecordFieldPtr<double> intervalField_p, timeField_p;
     RORecordFieldPtr<String> nameField_p;
-    RORecordFieldPtr<Bool> trackingField_p;
+    RORecordFieldPtr<bool> trackingField_p;
 
     // cleanup everything
     void clearAll();
@@ -154,10 +154,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // initialize everythign which depends on row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

@@ -39,18 +39,18 @@
 
 
 #include <casacore/casa/namespace.h>
-void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
-		       Bool alternates)
+void testVectorROIter (const Lattice<bool>& lattice, bool firstValue,
+		       bool alternates)
 {
-    Int nstep;
+    int32_t nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Bool>  iter(lattice, step);
-    Bool value = firstValue;
+    RO_LatticeIterator<bool>  iter(lattice, step);
+    bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
         // static_cast is a workaround for an SGI compiler bug
-        AlwaysAssert(allEQ(static_cast<Vector<Bool> >(iter.vectorCursor()), value), AipsError);
+        AlwaysAssert(allEQ(static_cast<Vector<bool> >(iter.vectorCursor()), value), AipsError);
 	if (alternates) {
 	    value = (!value);
 	}
@@ -64,11 +64,11 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
 }
 
 
-void testArrayRWIter (Lattice<Bool>& lattice)
+void testArrayRWIter (Lattice<bool>& lattice)
 {
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(latticeShape);
-    LatticeIterator<Bool>  iter(lattice, cursorShape);
+    LatticeIterator<bool>  iter(lattice, cursorShape);
     for (iter.reset(); !iter.atEnd(); ++iter){
         iter.rwCursor() = !(iter.cursor());
     }
@@ -81,33 +81,33 @@ int main ()
   try {
     {
         IPosition latticeShape(2, 4, 8);
-        Array<Bool> arr(latticeShape);
-        arr.set(True);
-        arr(IPosition(2,0,0)) = False;
+        Array<bool> arr(latticeShape);
+        arr.set(true);
+        arr(IPosition(2,0,0)) = false;
         LCPixelSet mask(arr, LCBox(IPosition(2,0),
 				   latticeShape-1, latticeShape));
         cout << mask.hasMask() << mask.maskArray() << endl;
     }
     {
       IPosition latticeShape(4, 16, 12, 4, 32);
-      Array<Bool> arr(latticeShape);
-      arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
-      arr(IPosition(4,0,1,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = False;
+      Array<bool> arr(latticeShape);
+      arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = true;
+      arr(IPosition(4,0,1,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = false;
       LCPixelSet mask(arr, LCBox (IPosition(4,0),
 				  latticeShape-1, latticeShape));
       AlwaysAssertExit (! mask.isWritable());
       AlwaysAssertExit (mask.hasMask());
       AlwaysAssertExit (mask.shape() == latticeShape);
       // Check the mask functions using the iterator.
-      testVectorROIter (mask, True, True);
+      testVectorROIter (mask, true, true);
 ///      testArrayRWIter (mask);
-///      testVectorROIter (mask, False, True);
+///      testVectorROIter (mask, false, true);
       TableRecord rec = mask.toRecord("");
       LCRegion* copmask = LCRegion::fromRecord (rec, "");
       AlwaysAssertExit (! copmask->isWritable());
       AlwaysAssertExit (copmask->hasMask());
       AlwaysAssertExit (copmask->shape() == latticeShape);
-      testVectorROIter (*copmask, True, True);
+      testVectorROIter (*copmask, true, true);
 ///      LCRegion* trmask = copmask->translate (IPosition(4,2,0,0,0));
 ///      AlwaysAssertExit (trmask->isWritable());
 ///      AlwaysAssertExit (trmask->hasMask());
@@ -116,7 +116,7 @@ int main ()
 ///      AlwaysAssertExit (trmask->shape() == latticeShape);
 ///      AlwaysAssertExit (trmask->boundingBox().start()
 ///                        == IPosition(4,2,0,0,0));
-///      testVectorROIter (*trmask, False, True);
+///      testVectorROIter (*trmask, false, true);
       delete copmask;
 ///      delete trmask;
     }
@@ -128,19 +128,19 @@ int main ()
       AlwaysAssertExit (! region.hasMask());
       AlwaysAssertExit (region.shape() == latticeShape);
       // Check the region functions using the iterator.
-      testVectorROIter (region, True, False);
+      testVectorROIter (region, true, false);
     }
     {
       IPosition latticeShape(2, 4, 8);
-      Array<Bool> arr(latticeShape);
-      arr.set(True);
-      arr(IPosition(2,0)) = False;
-      arr(latticeShape-1) = False;
+      Array<bool> arr(latticeShape);
+      arr.set(true);
+      arr(IPosition(2,0)) = false;
+      arr(latticeShape-1) = false;
       LCPixelSet mask1(arr, LCBox(IPosition(2,0),
 				  latticeShape-1, latticeShape));
       LCPixelSet mask2(mask1);
       AlwaysAssertExit (mask2 == mask1);
-      arr(latticeShape-1) = True;
+      arr(latticeShape-1) = true;
       LCPixelSet mask3(arr, LCBox(IPosition(2,0),
 				  latticeShape-1, latticeShape));
       AlwaysAssertExit (mask3 != mask1);

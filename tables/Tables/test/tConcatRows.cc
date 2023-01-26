@@ -50,24 +50,24 @@ void doIt()
   AlwaysAssertExit (rows.ntable() == 2);
 
   // Check if rownr mapping is fine.
-  uInt tabnr;
+  uint32_t tabnr;
   rownr_t rownr;
-  for (uInt i=0; i<10; ++i) {
+  for (uint32_t i=0; i<10; ++i) {
     rows.mapRownr (tabnr, rownr, i);
     AlwaysAssertExit (tabnr == 0);
     AlwaysAssertExit (rownr == i);
   }
-  for (uInt i=10; i<25; ++i) {
+  for (uint32_t i=10; i<25; ++i) {
     rows.mapRownr (tabnr, rownr, i);
     AlwaysAssertExit (tabnr == 1);
     AlwaysAssertExit (rownr == i-10);
   }
   // Check if it fails if rownr out of bounds.
-  Bool ok = True;
+  bool ok = true;
   try {
     rows.mapRownr (tabnr, rownr, rows.nrow());
   } catch (std::exception& x) {
-    ok = False;
+    ok = false;
   }
   AlwaysAssertExit (!ok);
 

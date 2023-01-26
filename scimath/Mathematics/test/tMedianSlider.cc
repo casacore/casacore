@@ -42,11 +42,11 @@ int main(){
   cout << "add {0.5, 3.5, 1.5, 4.5, 2.5, 5.5} with flags {f,t,f,t,f,t} to m1" << endl;
 
   m1.add(0.5);
-  m1.add(3.5, True);
+  m1.add(3.5, true);
   m1.add(1.5);
-  m1.add(4.5, True);
+  m1.add(4.5, true);
   m1.add(2.5);
-  m1.add(5.5, True);
+  m1.add(5.5, true);
   m1.next();
   cout << "the function next() add 1 flagged value into m1 window, and make it full " << endl;
 
@@ -81,33 +81,33 @@ int main(){
   cout << "Assign m2 to me, so me has the number of non-flagged values " << me.nval() << endl;
   cout << "Current median value in me window is " << me.median() << endl;
 
-  Vector<Float> vl(4);
+  Vector<float> vl(4);
   vl(0) = 10.5;
   vl(1) = 4.5;
   vl(2) = 5.5;
   vl(3) = 11.5;
-  cout << "Create Vector<Float> vl = {10.5, 4.5, 5.5, 11.5}" << endl;
-  Vector<Bool> bl(4);
-  bl(0) = False;
-  bl(1) = True;
-  bl(2) = True;
-  bl(3) = False;
-  cout << "Create Vector<Bool> bl = {False, True, True, False}" << endl;
+  cout << "Create Vector<float> vl = {10.5, 4.5, 5.5, 11.5}" << endl;
+  Vector<bool> bl(4);
+  bl(0) = false;
+  bl(1) = true;
+  bl(2) = true;
+  bl(3) = false;
+  cout << "Create Vector<bool> bl = {false, true, true, false}" << endl;
 
   m1.add(vl, bl);
   cout << "Add vl and bl to m1, old values are pushed out" << endl;
   cout << "The number of non-flagged values in m1 window is " << m1.nval() << endl;
   cout << "Current median value in m1 window is " << m1.median() << endl;
 
-  Bool flag = False;
+  bool flag = false;
 
-  cout << "The value takes 4 step back from end " << m1.prevVal(uInt(4), flag) << endl;
+  cout << "The value takes 4 step back from end " << m1.prevVal(uint32_t(4), flag) << endl;
   cout << "The value at the midpoint " << m1.midpoint(flag) << endl;
   cout << "The difference between the current median and the value at the window center " << m1.diff(flag) << endl;
   cout << "The total memory usage for a given half window size is " << m1.objsize(halfwin) << endl;
 
   m1.add();
-  cout << "\nTest add() that add(0, True) to m1 " << endl;
+  cout << "\nTest add() that add(0, true) to m1 " << endl;
   cout << "Current median value in m1 window is " << m1.median() << endl;
   cout << "Now the value at the midpoint is " << m1.midpoint(flag);
   String boolAsString;
@@ -119,7 +119,7 @@ int main(){
        << m1.diff() << endl;
   //  cout << " Number of values in the m1 window " << m1.size() << endl;
 
-  Vector<Float> vl2(7);
+  Vector<float> vl2(7);
   vl2(0) = 1;
   vl2(1) = 2;
   vl2(2) = 3;
@@ -127,7 +127,7 @@ int main(){
   vl2(4) = 5;
   vl2(5) = 6;
   vl2(6) = 7;
-  cout << "\nCreate Vector<Float> vl2 = {1,2,3,4,5,6,7}" << endl;
+  cout << "\nCreate Vector<float> vl2 = {1,2,3,4,5,6,7}" << endl;
   m1.add(vl2);
   cout << "Add vl2 to m1, old values are pushed out" << endl;
   cout << "The number of non-flagged values in m1 window is " << m1.nval() << endl;

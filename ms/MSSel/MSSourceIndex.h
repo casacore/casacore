@@ -86,38 +86,38 @@ public:
 
   void attach(const MSSource &source);
 
-  // access to the source ID key, throws an exception if isNull() is False
-  Int &sourceId() {return *sourceId_p;}
+  // access to the source ID key, throws an exception if isNull() is false
+  int32_t &sourceId() {return *sourceId_p;}
 
   // access to the spectral window ID key, throws an 
-  // exception if isNull() is False
-  Int &spectralWindowId() {return *spwId_p;}
+  // exception if isNull() is false
+  int32_t &spectralWindowId() {return *spwId_p;}
 
   // Match a source name or list of source names to a set of SOURCE_ID's
-  Vector<Int> matchSourceName(const String& name);
-  Vector<Int> matchSourceName(const Vector<String>& names);
+  Vector<int32_t> matchSourceName(const String& name);
+  Vector<int32_t> matchSourceName(const Vector<String>& names);
 
   //add for source code selection
-  Vector<Int> matchSourceCode(const String& code);
+  Vector<int32_t> matchSourceCode(const String& code);
 
   //Return rows matching a SourceID
-  RowNumbers getRowNumbersOfSourceID(const Int sid);
+  RowNumbers getRowNumbersOfSourceID(const int32_t sid);
 
 
 protected:
   // the specialized compare function to pass to the
   // <linkto class=ColumnsIndex>ColumnsIndex</linkto> object.  This supports -1
   // values for the SPECTRAL_WINDOW_ID
-  static Int compare (const Block<void*>& fieldPtrs,
+  static int32_t compare (const Block<void*>& fieldPtrs,
                       const Block<void*>& dataPtrs,
-                      const Block<Int>& dataTypes,
+                      const Block<int32_t>& dataTypes,
                       rownr_t index);
   
 private:
   // Pointer to local MSSourceColumns object
   MSSourceColumns* msSourceCols_p;
   
-  RecordFieldPtr<Int> sourceId_p, spwId_p;
+  RecordFieldPtr<int32_t> sourceId_p, spwId_p;
 
   void attachIds();
 

@@ -39,7 +39,7 @@ template<class T>
 ExtendLattice<T>::ExtendLattice()
 : itsLatticePtr   (0),
   itsMaskLatPtr   (0),
-  itsHasPixelMask (False),
+  itsHasPixelMask (false),
   itsPixelMask    (0)
 {}
 
@@ -112,7 +112,7 @@ template<class T>
 void ExtendLattice<T>::setPtr (Lattice<T>* latticePtr,
 			       MaskedLattice<T>* maskLatPtr)
 {
-  itsHasPixelMask = False;
+  itsHasPixelMask = false;
   itsPixelMask = 0;
   if (maskLatPtr == 0) {
     itsLatticePtr = latticePtr;
@@ -129,31 +129,31 @@ void ExtendLattice<T>::setPtr (Lattice<T>* latticePtr,
 }
 
 template<class T>
-Bool ExtendLattice<T>::isMasked() const
+bool ExtendLattice<T>::isMasked() const
 {
   return  (itsMaskLatPtr != 0);
 }
 
 template<class T>
-Bool ExtendLattice<T>::isPersistent() const
+bool ExtendLattice<T>::isPersistent() const
 {
-  return False;
+  return false;
 }
 
 template<class T>
-Bool ExtendLattice<T>::isPaged() const
+bool ExtendLattice<T>::isPaged() const
 {
   return itsLatticePtr->isPaged();
 }
 
 template<class T>
-Bool ExtendLattice<T>::isWritable() const
+bool ExtendLattice<T>::isWritable() const
 {
-  return False;
+  return false;
 }
 
 template<class T>
-Bool ExtendLattice<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool ExtendLattice<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return itsLatticePtr->lock (type, nattempts);
 }
@@ -163,7 +163,7 @@ void ExtendLattice<T>::unlock()
   itsLatticePtr->unlock();
 }
 template<class T>
-Bool ExtendLattice<T>::hasLock (FileLocker::LockType type) const
+bool ExtendLattice<T>::hasLock (FileLocker::LockType type) const
 {
   return itsLatticePtr->hasLock (type);
 }
@@ -192,18 +192,18 @@ void ExtendLattice<T>::reopen()
 }
 
 template<class T>
-Bool ExtendLattice<T>::hasPixelMask() const
+bool ExtendLattice<T>::hasPixelMask() const
 {
   return itsHasPixelMask;
 }
 
 template<class T>
-const Lattice<Bool>& ExtendLattice<T>::pixelMask() const
+const Lattice<bool>& ExtendLattice<T>::pixelMask() const
 {
   return ((const ExtendLattice<T>*)this)->pixelMask();
 }
 template<class T>
-Lattice<Bool>& ExtendLattice<T>::pixelMask()
+Lattice<bool>& ExtendLattice<T>::pixelMask()
 {
   if (!itsHasPixelMask) {
     throw (AipsError ("ExtendLattice::pixelMask - no pixelmask available"));
@@ -211,8 +211,8 @@ Lattice<Bool>& ExtendLattice<T>::pixelMask()
   // Construct the pixelmask (as an extension of the parent pixelmask)
   // if that is not done yet.
   if (itsPixelMask == 0) {
-    Lattice<Bool>& fullMask = itsMaskLatPtr->pixelMask();
-    itsPixelMask = new ExtendLattice<Bool> (fullMask,
+    Lattice<bool>& fullMask = itsMaskLatPtr->pixelMask();
+    itsPixelMask = new ExtendLattice<bool> (fullMask,
 					    itsExtendSpec.newShape(),
 					    itsExtendSpec.newAxes(),
 					    itsExtendSpec.stretchAxes());
@@ -234,13 +234,13 @@ IPosition ExtendLattice<T>::shape() const
 }
 
 template<class T>
-String ExtendLattice<T>::name (Bool stripPath) const
+String ExtendLattice<T>::name (bool stripPath) const
 {
   return itsLatticePtr->name(stripPath);
 }
 
 template<class T>
-Bool ExtendLattice<T>::doGetSlice (Array<T>& buffer,
+bool ExtendLattice<T>::doGetSlice (Array<T>& buffer,
 				   const Slicer& section)
 {
   IPosition shape;
@@ -256,9 +256,9 @@ Bool ExtendLattice<T>::doGetSlice (Array<T>& buffer,
   IPosition end (buffer.shape() - 1);
   //# Iterate along the extendAxes through the buffer.
   const IPosition extendAxes = itsExtendSpec.extendAxes();
-  uInt nre = extendAxes.nelements();
+  uint32_t nre = extendAxes.nelements();
   for (;;) {
-    uInt i;
+    uint32_t i;
     for (i=0; i<nre; i++) {
       end(extendAxes(i)) = pos(extendAxes(i));
     }
@@ -277,7 +277,7 @@ Bool ExtendLattice<T>::doGetSlice (Array<T>& buffer,
       break;
     }
   }
-  return False;
+  return false;
 }
 
 template<class T>
@@ -290,13 +290,13 @@ void ExtendLattice<T>::doPutSlice (const Array<T>&,
 
 
 template<class T>
-uInt ExtendLattice<T>::advisedMaxPixels() const
+uint32_t ExtendLattice<T>::advisedMaxPixels() const
 {
   return itsLatticePtr->advisedMaxPixels();
 }
 
 template<class T>
-IPosition ExtendLattice<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition ExtendLattice<T>::doNiceCursorShape (uint32_t maxPixels) const
 {
   IPosition cursorShape (itsLatticePtr->niceCursorShape (maxPixels));
   return itsExtendSpec.convertNew (cursorShape);
@@ -304,20 +304,20 @@ IPosition ExtendLattice<T>::doNiceCursorShape (uInt maxPixels) const
 
 
 template<class T>
-Bool ExtendLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
+bool ExtendLattice<T>::doGetMaskSlice (Array<bool>& buffer,
 				       const Slicer& section)
 {
-  // When lattice has no mask, set mask to True.
+  // When lattice has no mask, set mask to true.
   if (itsMaskLatPtr == 0) {
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
   }
   IPosition shape;
   Slicer newSect = itsExtendSpec.convert (shape, section);
-  Array<Bool> tmpbuf(newSect.length());
+  Array<bool> tmpbuf(newSect.length());
   itsMaskLatPtr->doGetMaskSlice (tmpbuf, newSect);
   // Reform tmpbuf, so it has the same dimensionality as buffer.
-  Array<Bool> data = tmpbuf.reform (shape);
+  Array<bool> data = tmpbuf.reform (shape);
   // Now we have to extend tmpbuf along all extend axes.
   const IPosition& length = section.length();
   buffer.resize (length);
@@ -325,9 +325,9 @@ Bool ExtendLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
   IPosition end (buffer.shape() - 1);
   //# Iterate along the extendAxes through the buffer.
   const IPosition extendAxes = itsExtendSpec.extendAxes();
-  uInt nre = extendAxes.nelements();
+  uint32_t nre = extendAxes.nelements();
   for (;;) {
-    uInt i;
+    uint32_t i;
     for (i=0; i<nre; i++) {
       end(extendAxes(i)) = pos(extendAxes(i));
     }
@@ -346,12 +346,12 @@ Bool ExtendLattice<T>::doGetMaskSlice (Array<Bool>& buffer,
       break;
     }
   }
-  return False;
+  return false;
 }
 
 
 template <class T>
-Bool ExtendLattice<T>::ok() const
+bool ExtendLattice<T>::ok() const
 {
   return itsLatticePtr->ok();
 }

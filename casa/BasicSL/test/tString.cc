@@ -40,7 +40,7 @@ String X = "Hello";
 String Y = "world";
 String N = "123";
 String c;
-const Char*  s = ",";
+const char*  s = ",";
 Regex  r ("e[a-z]*o");
 
 void decltest() {
@@ -65,7 +65,7 @@ void decltest() {
   cout << "A string initialized to previous string.at(1, 2):" << b << endl;
   AlwaysAssertExit(b == "el");
 
-  Char ch = '@';
+  char ch = '@';
   String z(ch);
   cout << "A string initialized to @:" << z << endl;
   AlwaysAssertExit(z == "@");
@@ -74,8 +74,8 @@ void decltest() {
   cout << "A string initialized to dec(20):" << n << endl;
   AlwaysAssertExit(n == "20");
 
-  Int i = atoi(n.chars());
-  Double f = atof(n.chars());
+  int32_t i = atoi(n.chars());
+  double f = atof(n.chars());
   cout << "n = " << n << " atoi(n) = " << i << " atof(n) = " << f << endl;
   AlwaysAssertExit(i == 20);
   AlwaysAssertExit(f == 20);
@@ -158,7 +158,7 @@ void comparetest() {
 void substrtest() {
   String x = X;
 
-  Char ch = x[0];
+  char ch = x[0];
   cout << "ch = x[0] = " << ch << endl;
   AlwaysAssertExit(ch == 'H');
 
@@ -234,7 +234,7 @@ void substrtest() {
 void utiltest() {
   String x = X;
   
-  Int matches = x.gsub("l", "ll");
+  int32_t matches = x.gsub("l", "ll");
   
   cout << "x.gsub(l, ll); x = " << x << endl;
   AlwaysAssertExit(matches == 2);
@@ -287,10 +287,10 @@ void splittest() {
   String z = "This string\thas\nfive words";
   cout << "z = " << z << endl;
   String w[10];
-  Int nw = split(z, w, 10, RXwhite);
+  int32_t nw = split(z, w, 10, RXwhite);
   AlwaysAssertExit(nw == 5);
   cout << "from split(z, RXwhite, w, 10), n words = " << nw << ":\n";
-  for (Int i = 0; i < nw; ++i) {
+  for (int32_t i = 0; i < nw; ++i) {
     cout << w[i] << endl;
   }
   AlwaysAssertExit(w[0] == "This");
@@ -344,7 +344,7 @@ void identitytest(String a, String b) {
   AlwaysAssertExit(y == (a + b));
   
   x = a + reverse(a);
-  for (Int i = 0; i < 7; ++i) {
+  for (int32_t i = 0; i < 7; ++i) {
     y = x;
     x += x;
     AlwaysAssertExit(x == reverse(x));
@@ -356,21 +356,21 @@ void identitytest(String a, String b) {
 void freqtest() {
   String x = "Hello World";
   String y = x.at(0,5);
-  AlwaysAssertExit(x.freq('l') == 3);	// Char
-  AlwaysAssertExit(x.freq("lo") == 1);	// Char*
+  AlwaysAssertExit(x.freq('l') == 3);	// char
+  AlwaysAssertExit(x.freq("lo") == 1);	// char*
   AlwaysAssertExit(x.freq(x) == 1);	// String
   AlwaysAssertExit(x.freq(y) == 1);	// SubString
 }
 
 void toDouble() {
     String x = "1.5";
-    Double y = String::toDouble(x);
+    double y = String::toDouble(x);
     AlwaysAssertExit(y == 1.5);
     x = "frodo";
     AlwaysAssertExit (String::toDouble(x) == 0);
     bool ok = false;
     try {
-      y = String::toDouble(x, True);
+      y = String::toDouble(x, true);
     } catch (const AipsError&) {
       ok = true;
     }
@@ -379,13 +379,13 @@ void toDouble() {
 
 void toFloat() {
     String x = "1.5";
-    Float y = String::toFloat(x);
+    float y = String::toFloat(x);
     AlwaysAssertExit(y == 1.5);
     x = "1.5 aa";
     AlwaysAssertExit(String::toFloat(x) == 1.5);
     bool ok = false;
     try {
-      y = String::toFloat(x, True);
+      y = String::toFloat(x, true);
     } catch (const AipsError&) {
       ok = true;
     }
@@ -394,7 +394,7 @@ void toFloat() {
 
 void toInt() {
     String x = "4";
-    Int y = String::toInt(x);
+    int32_t y = String::toInt(x);
     AlwaysAssertExit(y == 4);
     x = "-12";
     y = String::toInt(x);
@@ -403,7 +403,7 @@ void toInt() {
     AlwaysAssertExit (String::toInt(x) == 6);
     bool ok = false;
     try {
-      y = String::toInt(x, True);
+      y = String::toInt(x, true);
     } catch (const AipsError&) {
       ok = true;
     }

@@ -30,29 +30,29 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> COWPtr<T>::COWPtr(T *obj, Bool deleteIt, Bool readOnly)
+template <class T> COWPtr<T>::COWPtr(T *obj, bool deleteIt, bool readOnly)
 : obj_p(obj, deleteIt), const_p(readOnly)
 {
   // does nothing
 }
 
-template <class T> void COWPtr<T>::set(T *obj, Bool deleteIt, Bool readOnly)
+template <class T> void COWPtr<T>::set(T *obj, bool deleteIt, bool readOnly)
 {
   obj_p = CountedPtr<T>(obj, deleteIt);
   const_p = readOnly;
 }
 
 // make this a copy if more than one exists. 
-template <class T> Bool COWPtr<T>::makeUnique()
+template <class T> bool COWPtr<T>::makeUnique()
 {
-  Bool val = False;
+  bool val = false;
   if (const_p || obj_p.nrefs() > 1){
     T *tmp = new T;
     *tmp = *obj_p;
     // CountedPtr assignment operator takes care of deletion of old ptr.
-    obj_p = CountedPtr<T>(tmp, True);
-    const_p = False;
-    val = True;
+    obj_p = CountedPtr<T>(tmp, true);
+    const_p = false;
+    val = true;
   } 
   return val;
 }

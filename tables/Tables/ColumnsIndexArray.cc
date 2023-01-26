@@ -93,29 +93,29 @@ void ColumnsIndexArray::deleteObjects()
 {
   switch (itsDataType) {
   case TpUChar:
-    delete (RecordFieldPtr<uChar>*)(itsLowerField);
-    delete (RecordFieldPtr<uChar>*)(itsUpperField);
-    delete (Vector<uChar>*)(itsDataVector);
+    delete (RecordFieldPtr<unsigned char>*)(itsLowerField);
+    delete (RecordFieldPtr<unsigned char>*)(itsUpperField);
+    delete (Vector<unsigned char>*)(itsDataVector);
     break;
   case TpShort:
-    delete (RecordFieldPtr<Short>*)(itsLowerField);
-    delete (RecordFieldPtr<Short>*)(itsUpperField);
-    delete (Vector<Short>*)(itsDataVector);
+    delete (RecordFieldPtr<int16_t>*)(itsLowerField);
+    delete (RecordFieldPtr<int16_t>*)(itsUpperField);
+    delete (Vector<int16_t>*)(itsDataVector);
     break;
   case TpInt:
-    delete (RecordFieldPtr<Int>*)(itsLowerField);
-    delete (RecordFieldPtr<Int>*)(itsUpperField);
-    delete (Vector<Int>*)(itsDataVector);
+    delete (RecordFieldPtr<int32_t>*)(itsLowerField);
+    delete (RecordFieldPtr<int32_t>*)(itsUpperField);
+    delete (Vector<int32_t>*)(itsDataVector);
     break;
   case TpUInt:
-    delete (RecordFieldPtr<uInt>*)(itsLowerField);
-    delete (RecordFieldPtr<uInt>*)(itsUpperField);
-    delete (Vector<uInt>*)(itsDataVector);
+    delete (RecordFieldPtr<uint32_t>*)(itsLowerField);
+    delete (RecordFieldPtr<uint32_t>*)(itsUpperField);
+    delete (Vector<uint32_t>*)(itsDataVector);
     break;
   case TpInt64:
-    delete (RecordFieldPtr<Int64>*)(itsLowerField);
-    delete (RecordFieldPtr<Int64>*)(itsUpperField);
-    delete (Vector<Int64>*)(itsDataVector);
+    delete (RecordFieldPtr<int64_t>*)(itsLowerField);
+    delete (RecordFieldPtr<int64_t>*)(itsUpperField);
+    delete (Vector<int64_t>*)(itsDataVector);
     break;
   case TpString:
     delete (RecordFieldPtr<String>*)(itsLowerField);
@@ -159,7 +159,7 @@ void ColumnsIndexArray::makeObjects (const RecordDesc& description)
   itsData = 0;
   itsLowerField = 0;
   itsUpperField = 0;
-  itsChanged = True;
+  itsChanged = true;
   // Create the correct column object for each field.
   // Also create a RecordFieldPtr object for each Key.
   // This makes a fast data copy possible.
@@ -167,37 +167,37 @@ void ColumnsIndexArray::makeObjects (const RecordDesc& description)
   switch (itsDataType) {
   case TpUChar:
     {
-      itsLowerField = new RecordFieldPtr<uChar>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<uChar>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<uChar>;
+      itsLowerField = new RecordFieldPtr<unsigned char>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<unsigned char>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<unsigned char>;
       break;
     }
   case TpShort:
     {
-      itsLowerField = new RecordFieldPtr<Short>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<Short>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<Short>;
+      itsLowerField = new RecordFieldPtr<int16_t>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<int16_t>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<int16_t>;
       break;
     }
   case TpInt:
     {
-      itsLowerField = new RecordFieldPtr<Int>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<Int>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<Int>;
+      itsLowerField = new RecordFieldPtr<int32_t>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<int32_t>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<int32_t>;
       break;
     }
   case TpUInt:
     {
-      itsLowerField = new RecordFieldPtr<uInt>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<uInt>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<uInt>;
+      itsLowerField = new RecordFieldPtr<uint32_t>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<uint32_t>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<uint32_t>;
       break;
     }
   case TpInt64:
     {
-      itsLowerField = new RecordFieldPtr<Int64>(*itsLowerKeyPtr, 0);
-      itsUpperField = new RecordFieldPtr<Int64>(*itsUpperKeyPtr, 0);
-      itsDataVector = new Vector<Int64>;
+      itsLowerField = new RecordFieldPtr<int64_t>(*itsLowerKeyPtr, 0);
+      itsUpperField = new RecordFieldPtr<int64_t>(*itsUpperKeyPtr, 0);
+      itsDataVector = new Vector<int64_t>;
       break;
     }
   case TpString:
@@ -218,20 +218,20 @@ void ColumnsIndexArray::readData()
   TableLocker locker(itsTable, FileLocker::Read);
   rownr_t nrrow = itsTable.nrow();
   if (nrrow != itsNrrow) {
-    itsChanged = True;
+    itsChanged = true;
     itsNrrow = nrrow;
   }
   if (!itsChanged) {
     return;
   }
   Sort sort;
-  Bool deleteIt;
+  bool deleteIt;
   const RecordDesc& desc = itsLowerKeyPtr->description();
   const String& name = desc.name(0);
   switch (itsDataType) {
   case TpUChar:
     {
-      Vector<uChar>* vecptr = (Vector<uChar>*)itsDataVector;
+      Vector<unsigned char>* vecptr = (Vector<unsigned char>*)itsDataVector;
       getArray (*vecptr, name);
       itsData = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData, desc.type(0));
@@ -239,7 +239,7 @@ void ColumnsIndexArray::readData()
     }
   case TpShort:
     {
-      Vector<Short>* vecptr = (Vector<Short>*)itsDataVector;
+      Vector<int16_t>* vecptr = (Vector<int16_t>*)itsDataVector;
       getArray (*vecptr, name);
       itsData = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData, desc.type(0));
@@ -247,7 +247,7 @@ void ColumnsIndexArray::readData()
     }
   case TpInt:
     {
-      Vector<Int>* vecptr = (Vector<Int>*)itsDataVector;
+      Vector<int32_t>* vecptr = (Vector<int32_t>*)itsDataVector;
       getArray (*vecptr, name);
       itsData = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData, desc.type(0));
@@ -255,7 +255,7 @@ void ColumnsIndexArray::readData()
     }
   case TpUInt:
     {
-      Vector<uInt>* vecptr = (Vector<uInt>*)itsDataVector;
+      Vector<uint32_t>* vecptr = (Vector<uint32_t>*)itsDataVector;
       getArray (*vecptr, name);
       itsData = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData, desc.type(0));
@@ -263,7 +263,7 @@ void ColumnsIndexArray::readData()
     }
   case TpInt64:
     {
-      Vector<Int64>* vecptr = (Vector<Int64>*)itsDataVector;
+      Vector<int64_t>* vecptr = (Vector<int64_t>*)itsDataVector;
       getArray (*vecptr, name);
       itsData = vecptr->getStorage (deleteIt);
       sort.sortKey (itsData, desc.type(0));
@@ -288,18 +288,18 @@ void ColumnsIndexArray::readData()
   sort.unique (itsUniqueIndex, itsDataIndex);
   itsDataInx = itsDataIndex.getStorage (deleteIt);
   itsUniqueInx = itsUniqueIndex.getStorage (deleteIt);
-  itsChanged = False;
+  itsChanged = false;
 }
 
-rownr_t ColumnsIndexArray::bsearch (Bool& found, void* fieldPtr) const
+rownr_t ColumnsIndexArray::bsearch (bool& found, void* fieldPtr) const
 {
-  found = False;
-  Int64 lower = 0;
-  Int64 upper = itsUniqueIndex.nelements() - 1;
-  Int64 middle = 0;
+  found = false;
+  int64_t lower = 0;
+  int64_t upper = itsUniqueIndex.nelements() - 1;
+  int64_t middle = 0;
   while (lower <= upper) {
     middle = (upper + lower) / 2;
-    Int cmp = compare (fieldPtr, itsData, itsDataType,
+    int32_t cmp = compare (fieldPtr, itsData, itsDataType,
 		       itsDataInx[itsUniqueInx[middle]]);
     if (cmp < 0) {
       upper = middle - 1;            // go to left
@@ -307,23 +307,23 @@ rownr_t ColumnsIndexArray::bsearch (Bool& found, void* fieldPtr) const
       middle++;
       lower = middle;                // go to right
     } else {
-      found = True;
+      found = true;
       break;
     }
   }
   return middle;
 }
 
-Int ColumnsIndexArray::compare (void* fieldPtr,
+int32_t ColumnsIndexArray::compare (void* fieldPtr,
 				void* dataPtr,
-				Int dataType,
+				int32_t dataType,
 				rownr_t index)
 {
   switch (dataType) {
   case TpUChar:
     {
-      const uChar left = *(*(RecordFieldPtr<uChar>*)(fieldPtr));
-      const uChar right = ((const uChar*)(dataPtr))[index];
+      const unsigned char left = *(*(RecordFieldPtr<unsigned char>*)(fieldPtr));
+      const unsigned char right = ((const unsigned char*)(dataPtr))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -333,8 +333,8 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
     }
   case TpShort:
     {
-      const Short left = *(*(RecordFieldPtr<Short>*)(fieldPtr));
-      const Short right = ((const Short*)(dataPtr))[index];
+      const int16_t left = *(*(RecordFieldPtr<int16_t>*)(fieldPtr));
+      const int16_t right = ((const int16_t*)(dataPtr))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -344,8 +344,8 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
     }
   case TpInt:
     {
-      const Int left = *(*(RecordFieldPtr<Int>*)(fieldPtr));
-      const Int right = ((const Int*)(dataPtr))[index];
+      const int32_t left = *(*(RecordFieldPtr<int32_t>*)(fieldPtr));
+      const int32_t right = ((const int32_t*)(dataPtr))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -355,8 +355,8 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
     }
   case TpUInt:
     {
-      const uInt left = *(*(RecordFieldPtr<uInt>*)(fieldPtr));
-      const uInt right = ((const uInt*)(dataPtr))[index];
+      const uint32_t left = *(*(RecordFieldPtr<uint32_t>*)(fieldPtr));
+      const uint32_t right = ((const uint32_t*)(dataPtr))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -366,8 +366,8 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
     }
   case TpInt64:
     {
-      const Int64 left = *(*(RecordFieldPtr<Int64>*)(fieldPtr));
-      const Int64 right = ((const Int64*)(dataPtr))[index];
+      const int64_t left = *(*(RecordFieldPtr<int64_t>*)(fieldPtr));
+      const int64_t right = ((const int64_t*)(dataPtr))[index];
       if (left < right) {
 	return -1;
       } else if (left > right) {
@@ -392,13 +392,13 @@ Int ColumnsIndexArray::compare (void* fieldPtr,
   return 0;
 }
  
-rownr_t ColumnsIndexArray::getRowNumber (Bool& found, const Record& key)
+rownr_t ColumnsIndexArray::getRowNumber (bool& found, const Record& key)
 {
   ColumnsIndex::copyKeyField (itsLowerField, itsDataType, key);
   return getRowNumber (found);
 }
 
-rownr_t ColumnsIndexArray::getRowNumber (Bool& found)
+rownr_t ColumnsIndexArray::getRowNumber (bool& found)
 {
   if (!isUnique()) {
     throw (TableError ("ColumnsIndexArray::getRowNumber only possible "
@@ -414,17 +414,17 @@ rownr_t ColumnsIndexArray::getRowNumber (Bool& found)
 }
 
 RowNumbers ColumnsIndexArray::getRowNumbers (const Record& key,
-                                             Bool unique)
+                                             bool unique)
 {
   ColumnsIndex::copyKeyField (itsLowerField, itsDataType, key);
   return getRowNumbers (unique);
 }
 
-RowNumbers ColumnsIndexArray::getRowNumbers (Bool unique)
+RowNumbers ColumnsIndexArray::getRowNumbers (bool unique)
 {
   // Read the data (if needed).
   readData();
-  Bool found;
+  bool found;
   rownr_t inx = bsearch (found, itsLowerField);
   RowNumbers rows;
   if (found) {
@@ -435,22 +435,22 @@ RowNumbers ColumnsIndexArray::getRowNumbers (Bool unique)
 
 RowNumbers ColumnsIndexArray::getRowNumbers (const Record& lowerKey,
                                              const Record& upperKey,
-                                             Bool lowerInclusive,
-                                             Bool upperInclusive,
-                                             Bool unique)
+                                             bool lowerInclusive,
+                                             bool upperInclusive,
+                                             bool unique)
 {
   ColumnsIndex::copyKeyField (itsLowerField, itsDataType, lowerKey);
   ColumnsIndex::copyKeyField (itsUpperField, itsDataType, upperKey);
   return getRowNumbers (lowerInclusive, upperInclusive, unique);
 }
 
-RowNumbers ColumnsIndexArray::getRowNumbers (Bool lowerInclusive,
-                                             Bool upperInclusive,
-                                             Bool unique)
+RowNumbers ColumnsIndexArray::getRowNumbers (bool lowerInclusive,
+                                             bool upperInclusive,
+                                             bool unique)
 {
   // Read the data (if needed).
   readData();
-  Bool found;
+  bool found;
   // Try to find the lower key. If not found, bsearch is giving the
   // index of the next higher key.
   // So increment the start index if found and is not to be included.
@@ -474,7 +474,7 @@ RowNumbers ColumnsIndexArray::getRowNumbers (Bool lowerInclusive,
 
 void ColumnsIndexArray::fillRowNumbers (Vector<rownr_t>& rows,
 					rownr_t start, rownr_t end,
-					Bool unique) const
+					bool unique) const
 {
   start = itsUniqueInx[start];
   if (end < itsUniqueIndex.nelements()) {
@@ -484,7 +484,7 @@ void ColumnsIndexArray::fillRowNumbers (Vector<rownr_t>& rows,
   }
   rownr_t nr = end-start;
   rows.resize (nr);
-  Bool deleteIt;
+  bool deleteIt;
   rownr_t* rowStorage = rows.getStorage (deleteIt);
   for (rownr_t i=0; i<nr; i++) {
     rowStorage[i] = itsRownrs[itsDataInx[start+i]];
@@ -493,180 +493,180 @@ void ColumnsIndexArray::fillRowNumbers (Vector<rownr_t>& rows,
   if (unique) {
     rownr_t nrrow = GenSort<rownr_t>::sort (rows, Sort::Ascending,
                                             Sort::NoDuplicates);
-    rows.resize (nrrow, True);
+    rows.resize (nrrow, true);
   }
 }
 
 void ColumnsIndexArray::setChanged()
 {
-  itsChanged = True;
+  itsChanged = true;
 }
 
 void ColumnsIndexArray::setChanged (const String& columnName)
 {
   const RecordDesc& desc = itsLowerKeyPtr->description();
   if (desc.name(0) == columnName) {
-    itsChanged = True;
+    itsChanged = true;
   }
 }
 
 
-void ColumnsIndexArray::getArray (Vector<uChar>& result, const String& name)
+void ColumnsIndexArray::getArray (Vector<unsigned char>& result, const String& name)
 {
-  ArrayColumn<uChar> arrCol (itsTable, name);
+  ArrayColumn<unsigned char> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<uChar> arr = arrCol(0);
+    Array<unsigned char> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    uChar* data = result.getStorage(deleteIt);
+    bool deleteIt;
+    unsigned char* data = result.getStorage(deleteIt);
     objmove (data, arr.getStorage(deleteIt), npts);
     data += npts;
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
-	Array<uChar> arr = arrCol(i);
+	Array<unsigned char> arr = arrCol(i);
 	rownr_t n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {
-	  result.resize (npts+n, True);
+	  result.resize (npts+n, true);
 	}
 	data = result.getStorage(deleteIt) + npts;
 	objmove (data, arr.getStorage(deleteIt), n);
 	npts += n;
       }
     }
-    result.resize (npts, True);
+    result.resize (npts, true);
     fillRownrs (npts, nrel);
   }
 }
 
-void ColumnsIndexArray::getArray (Vector<Short>& result, const String& name)
+void ColumnsIndexArray::getArray (Vector<int16_t>& result, const String& name)
 {
-  ArrayColumn<Short> arrCol (itsTable, name);
+  ArrayColumn<int16_t> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<Short> arr = arrCol(0);
+    Array<int16_t> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    Short* data = result.getStorage(deleteIt);
+    bool deleteIt;
+    int16_t* data = result.getStorage(deleteIt);
     objmove (data, arr.getStorage(deleteIt), npts);
     data += npts;
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
-	Array<Short> arr = arrCol(i);
+	Array<int16_t> arr = arrCol(i);
 	rownr_t n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {
-	  result.resize (npts+n, True);
+	  result.resize (npts+n, true);
 	}
 	data = result.getStorage(deleteIt) + npts;
 	objmove (data, arr.getStorage(deleteIt), n);
 	npts += n;
       }
     }
-    result.resize (npts, True);
+    result.resize (npts, true);
     fillRownrs (npts, nrel);
   }
 }
 
-void ColumnsIndexArray::getArray (Vector<Int>& result, const String& name)
+void ColumnsIndexArray::getArray (Vector<int32_t>& result, const String& name)
 {
-  ArrayColumn<Int> arrCol (itsTable, name);
+  ArrayColumn<int32_t> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<Int> arr = arrCol(0);
+    Array<int32_t> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    Int* data = result.getStorage(deleteIt);
+    bool deleteIt;
+    int32_t* data = result.getStorage(deleteIt);
     objmove (data, arr.getStorage(deleteIt), npts);
     data += npts;
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
-	Array<Int> arr = arrCol(i);
+	Array<int32_t> arr = arrCol(i);
 	rownr_t n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {
-	  result.resize (npts+n, True);
+	  result.resize (npts+n, true);
 	}
 	data = result.getStorage(deleteIt) + npts;
 	objmove (data, arr.getStorage(deleteIt), n);
 	npts += n;
       }
     }
-    result.resize (npts, True);
+    result.resize (npts, true);
     fillRownrs (npts, nrel);
   }
 }
 
-void ColumnsIndexArray::getArray (Vector<uInt>& result, const String& name)
+void ColumnsIndexArray::getArray (Vector<uint32_t>& result, const String& name)
 {
-  ArrayColumn<uInt> arrCol (itsTable, name);
+  ArrayColumn<uint32_t> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<uInt> arr = arrCol(0);
+    Array<uint32_t> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    uInt* data = result.getStorage(deleteIt);
+    bool deleteIt;
+    uint32_t* data = result.getStorage(deleteIt);
     objmove (data, arr.getStorage(deleteIt), npts);
     data += npts;
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
-	Array<uInt> arr = arrCol(i);
+	Array<uint32_t> arr = arrCol(i);
 	rownr_t n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {
-	  result.resize (npts+n, True);
+	  result.resize (npts+n, true);
 	}
 	data = result.getStorage(deleteIt) + npts;
 	objmove (data, arr.getStorage(deleteIt), n);
 	npts += n;
       }
     }
-    result.resize (npts, True);
+    result.resize (npts, true);
     fillRownrs (npts, nrel);
   }
 }
 
-void ColumnsIndexArray::getArray (Vector<Int64>& result, const String& name)
+void ColumnsIndexArray::getArray (Vector<int64_t>& result, const String& name)
 {
-  ArrayColumn<Int64> arrCol (itsTable, name);
+  ArrayColumn<int64_t> arrCol (itsTable, name);
   rownr_t nrrow = arrCol.nrow();
   if (nrrow > 0) {
     Block<rownr_t> nrel(nrrow, rownr_t(0));
-    Array<Int64> arr = arrCol(0);
+    Array<int64_t> arr = arrCol(0);
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    Int64* data = result.getStorage(deleteIt);
+    bool deleteIt;
+    int64_t* data = result.getStorage(deleteIt);
     objmove (data, arr.getStorage(deleteIt), npts);
     data += npts;
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
-	Array<Int64> arr = arrCol(i);
+	Array<int64_t> arr = arrCol(i);
 	rownr_t n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {
-	  result.resize (npts+n, True);
+	  result.resize (npts+n, true);
 	}
 	data = result.getStorage(deleteIt) + npts;
 	objmove (data, arr.getStorage(deleteIt), n);
 	npts += n;
       }
     }
-    result.resize (npts, True);
+    result.resize (npts, true);
     fillRownrs (npts, nrel);
   }
 }
@@ -681,7 +681,7 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
+    bool deleteIt;
     String* data = result.getStorage(deleteIt);
     objmove (data, arr.getStorage(deleteIt), npts);
     data += npts;
@@ -691,14 +691,14 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
 	rownr_t n = arr.nelements();
 	nrel[i] = n;
 	if (npts+n > result.nelements()) {
-	  result.resize (npts+n, True);
+	  result.resize (npts+n, true);
 	}
 	data = result.getStorage(deleteIt) + npts;
 	objmove (data, arr.getStorage(deleteIt), n);
 	npts += n;
       }
     }
-    result.resize (npts, True);
+    result.resize (npts, true);
     fillRownrs (npts, nrel);
   }
 }

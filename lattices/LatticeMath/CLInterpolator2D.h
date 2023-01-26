@@ -101,22 +101,22 @@ public:
   // class the opportunity to do some initial work.
   void set (MaskedLattice<T>* lattice,
 	    const AxesMapping& axesMap,
-	    uInt axis1, uInt axis2, uInt curveAxis);
+	    uint32_t axis1, uint32_t axis2, uint32_t curveAxis);
 
   // Get the data for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
   // The Slicer is fixed and the buffer has the correct shape.
   virtual void getData (Array<T>& buffer,
-			const Vector<Float>& x,
-			const Vector<Float>& y,
+			const Vector<float>& x,
+			const Vector<float>& y,
 			const Slicer& section) = 0;
 
   // Get the mask for the given pixel points (on axis1 and axis2) and
   // the chunk in the other axes as given by the section.
   // The Slicer is fixed and the buffer has the correct shape.
-  virtual void getMask (Array<Bool>& buffer,
-			const Vector<Float>& x,
-			const Vector<Float>& y,
+  virtual void getMask (Array<bool>& buffer,
+			const Vector<float>& x,
+			const Vector<float>& y,
 			const Slicer& section) = 0;
 
 protected:
@@ -133,10 +133,10 @@ protected:
 
   MaskedLattice<T>* itsLatticePtr;
   AxesMapping       itsAxesMap;
-  uInt              itsAxis1;
-  uInt              itsAxis2;
-  uInt              itsCurveAxis;
-  Bool              itsIsRef;       // True = lattice returns array reference
+  uint32_t              itsAxis1;
+  uint32_t              itsAxis2;
+  uint32_t              itsCurveAxis;
+  bool              itsIsRef;       // true = lattice returns array reference
 };
 
 

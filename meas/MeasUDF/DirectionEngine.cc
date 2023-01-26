@@ -39,15 +39,15 @@ namespace casacore {
   {}
 
   void DirectionEngine::handleDirection (const vector<TENShPtr>& args,
-                                         uInt& argnr, Bool riseSet,
-                                         Bool asDirCos)
+                                         uint32_t& argnr, bool riseSet,
+                                         bool asDirCos)
   {
     // Initialize to unknown reference type.
     itsRefType = MDirection::N_Types;
     // Normally directions must be given in an array, but a single one
     // can be 2 or 3 scalars.
-    uInt nargnr = argnr+1;
-    Bool asScalar = False;
+    uint32_t nargnr = argnr+1;
+    bool asScalar = false;
     TENShPtr scalar3;
     // A string means that object names (e.g. MOON) are given.
     if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
@@ -61,7 +61,7 @@ namespace casacore {
           args[argnr]->valueType() == TableExprNodeRep::VTScalar  &&
           args[nargnr]->isReal()  &&
           args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
-        asScalar = True;
+        asScalar = true;
         nargnr++;
         // See if given as 3 scalars xyz (direction cosines).
         if (args.size() > nargnr  &&
@@ -74,7 +74,7 @@ namespace casacore {
       // See if a reference type is given.
       if (args.size() > nargnr  &&
           args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-        if (handleMeasType (args[nargnr], False)) {
+        if (handleMeasType (args[nargnr], false)) {
           nargnr++;
         }
       }
@@ -150,7 +150,7 @@ namespace casacore {
     Array<String> names = operand->getStringAS(0).array();
     itsConstants.resize (names.shape());
     itsH.resize (names.size());
-    for (uInt i=0; i<names.size(); ++i) {
+    for (uint32_t i=0; i<names.size(); ++i) {
       String name(names.data()[i]);
       name.upcase();
       itsH[i] = 0;
@@ -219,7 +219,7 @@ namespace casacore {
                                       const TableExprId& id,
                                       Array<MDirection>& directions)
   {
-    Array<Double> values = operand.getArrayDouble(id);
+    Array<double> values = operand.getArrayDouble(id);
     IPosition shape = values.shape();
     int nrv = 0;
     Unit unit(operand.unit());
@@ -248,10 +248,10 @@ namespace casacore {
     directions.resize (dirShape);
     Quantity q1(0, unit);
     Quantity q2(0, unit);
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    bool delIt;
+    const double* valVec = values.getStorage (delIt);
     MDirection* dirVec = directions.data();
-    for (uInt i=0; i<directions.size(); ++i) {
+    for (uint32_t i=0; i<directions.size(); ++i) {
       if (nrv == 2) {
         q1.setValue (valVec[i*2]);
         q2.setValue (valVec[i*2+1]);
@@ -269,7 +269,7 @@ namespace casacore {
   {
     AlwaysAssert (itsEpochEngine == 0, AipsError);
     itsEpochEngine = &engine;
-    extendBase (engine, False);
+    extendBase (engine, false);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MEpoch());
   }
@@ -278,7 +278,7 @@ namespace casacore {
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
   }
@@ -302,8 +302,8 @@ namespace casacore {
     return directions;
   }
 
-  Array<Double> DirectionEngine::getArrayDouble (const TableExprId& id,
-                                                 Bool riseSet, Bool asDirCos)
+  Array<double> DirectionEngine::getArrayDouble (const TableExprId& id,
+                                                 bool riseSet, bool asDirCos)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MDirection> res (getDirections(id));
@@ -318,7 +318,7 @@ namespace casacore {
       pos.reference (itsPositionEngine->getPositions (id));
     }
     // Convert the direction to the given type for all epochs and positions.
-    Array<Double> out;
+    Array<double> out;
     if (res.size() > 0  &&  eps.size() > 0  &&  pos.size() > 0) {
       // 2 or 3 values per MDirection
       IPosition shape(1, asDirCos ? 3:2);
@@ -342,7 +342,7 @@ namespace casacore {
           if (itsEpochEngine) {
             itsFrame.resetEpoch (*epsIter);
           }
-          uInt hIndex = 0;
+          uint32_t hIndex = 0;
           for (Array<MDirection>::const_contiter resIter = res.cbegin();
                resIter != res.cend(); ++resIter, ++hIndex) {
             if (riseSet) {
@@ -355,13 +355,13 @@ namespace casacore {
               MDirection mdir = itsConverter();
               if (asDirCos) {
                 // Get direction cosines.
-                Vector<Double> md (mdir.getValue().getValue());
+                Vector<double> md (mdir.getValue().getValue());
                 *outPtr++ = md[0];
                 *outPtr++ = md[1];
                 *outPtr++ = md[2];
               } else {
                 // Get angles as radians.
-                Vector<Double> md (mdir.getValue().get());
+                Vector<double> md (mdir.getValue().get());
                 *outPtr++ = md[0];
                 *outPtr++ = md[1];
               }

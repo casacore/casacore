@@ -81,22 +81,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // will be stored on disk.
 // <srcblock>
 // // make an Array and fill it with data.
-// Array<Float> myArray(IPosition(3, 64, 64, 2));
+// Array<float> myArray(IPosition(3, 64, 64, 2));
 // indgen(myArray); // fills the Array with 0,1,2,....,64*64*2-1
 // // construct the ArrayLattice
-// ArrayLattice<Float> myLattice(myArray);
+// ArrayLattice<float> myLattice(myArray);
 // // make a PagedArray to store the data on disk
-// PagedArray<Float> myPagedArray(myLattice.shape(), "myTestData.array");
+// PagedArray<float> myPagedArray(myLattice.shape(), "myTestData.array");
 // // now copy the data onto disk
 // myPagedArray.copyData (myLattice);
 // </srcblock>
 // Note that it could be done in a somewhat simpler way as:
 // <srcblock>
 // // make an Array and fill it with data.
-// Array<Float> myArray(IPosition(3, 64, 64, 2));
+// Array<float> myArray(IPosition(3, 64, 64, 2));
 // indgen(myArray); // fills the Array with 0,1,2,....,64*64*2-1
 // // make a PagedArray to store the data on disk
-// PagedArray<Float> myPagedArray(myLattice.shape(), "myTestData.array");
+// PagedArray<float> myPagedArray(myLattice.shape(), "myTestData.array");
 // // now put the data onto disk
 // myPagedArray.put (myArray);
 // </srcblock>
@@ -110,14 +110,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // access the data spectrum by spectrum (assuming the z-axis is frequency).
 //
 // <srcblock>
-// Cube<Float> arr(64,64,128);
+// Cube<float> arr(64,64,128);
 // // assume that the data gets put into the cube somehow
 // // now construct an ArrayLattice from this cube.
-// ArrayLattice<Float> lat(arr);
+// ArrayLattice<float> lat(arr);
 // // Construct an iterator that returns the 128-element spectra one at a time
-// ArrLatticeIter<Float> iter(lat, IPosition(3,1,1,128));
+// ArrLatticeIter<float> iter(lat, IPosition(3,1,1,128));
 // // construct a Matrix to hold the results
-// Matrix<Float> channelSum(64,64);
+// Matrix<float> channelSum(64,64);
 // // and do the summation one spectrum at a time
 // for (iter.reset(); !iter.atEnd(); iter++)
 //    channelSum(iter.position().getFirst(2)) = sum(iter.cursor());
@@ -158,7 +158,7 @@ public:
 
   // Construct an ArrayLattice that references the given Array.
   // By default it results in a writable lattice.
-  ArrayLattice (Array<T>& array, Bool isWritable = True);
+  ArrayLattice (Array<T>& array, bool isWritable = true);
 
   // Construct an ArrayLattice that references the given Array.
   // It results in a non-writable lattice.
@@ -176,10 +176,10 @@ public:
   virtual Lattice<T>* clone() const;
 
   // The lattice data can be referenced as an array section.
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the lattice writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // returns the shape of the ArrayLattice.
   virtual IPosition shape() const; 
@@ -201,13 +201,13 @@ public:
   // Put the value of a single element.
   virtual void putAt (const T& value, const IPosition& where);
 
-  // Check for internal consistency. Returns False if
+  // Check for internal consistency. Returns false if
   // something nasty has happened to the ArrayLattice.
-  virtual Bool ok() const;
+  virtual bool ok() const;
   
   // Returns the maximum recommended number of pixels for a cursor.
   // For this class this is equal to the number of pixels in the lattice.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Get a slice in an optimized way (specifically for ArrLatticeIter).
   // It returns in <src>buffer</src> a reference to the lattice array.
@@ -216,7 +216,7 @@ public:
 
 protected:
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Do the actual putting of an array of values.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -225,7 +225,7 @@ protected:
   
 private:
   Array<T> itsData;
-  Bool     itsWritable;
+  bool     itsWritable;
 };
 
 

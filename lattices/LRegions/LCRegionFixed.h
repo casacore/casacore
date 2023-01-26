@@ -93,20 +93,20 @@ public:
     // Comparison. Mask is not checked. Use the 
     // LCRegionSingle::masksEqual function as well if 
     // you want to check the masks
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
     
     // Return the mask
-    const ArrayLattice<Bool>& getMask() const;
+    const ArrayLattice<bool>& getMask() const;
 
  protected:
     // Assignment (copy semantics) is only useful for derived classes.
     LCRegionFixed& operator= (const LCRegionFixed& other);
 
     // Set the mask.
-    void setMask (const Array<Bool>& mask);
+    void setMask (const Array<bool>& mask);
 
 private:
-    ArrayLattice<Bool> itsMask;
+    ArrayLattice<bool> itsMask;
 };
 
 

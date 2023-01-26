@@ -66,10 +66,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 //  form a constant function in 4-D space
-//  Constant<Double> constant(4); // constant in 4-D param space
+//  Constant<double> constant(4); // constant in 4-D param space
 //  constant.parameters()[0] = 22;
 //  // Evaluate at x0=5, x3=7
-//  Vector<Double> x(4);
+//  Vector<double> x(4);
 //  x=0; x[0]=5; x[3]=7;
 //  cout << "constant value: " << constant(x) << endl;
 //  constant value: 22
@@ -106,7 +106,7 @@ public:
   // Construct a constant in m-dimensional space.  By
   // default, the constant value is initialized to zero.
   // <group>
-  explicit ConstantNDParam(uInt m=0);
+  explicit ConstantNDParam(uint32_t m=0);
   // </group>
 
   // Copy constructor (deep copy)
@@ -128,9 +128,9 @@ public:
   // HyperPlanes are equal if they are of the same order and have the same
   // parameters
   // <group>
-  Bool operator==(const ConstantNDParam<T> &other) const {
+  bool operator==(const ConstantNDParam<T> &other) const {
     return (this->param_p == other.param_p); };
-  Bool operator!=(const ConstantNDParam<T> &other) const {
+  bool operator!=(const ConstantNDParam<T> &other) const {
     return (this->param_p != other.param_p); };
   // </group>
     
@@ -140,7 +140,7 @@ public:
     return x; };
 
   // What is the dimension of the parameter list
-  virtual uInt ndim() const { return _ndim; };
+  virtual uint32_t ndim() const { return _ndim; };
 
   //# Make members of parent classes known.
 protected:
@@ -148,7 +148,7 @@ protected:
 public:
   using Function<T>::nparameters;
 private:
-  uInt _ndim;
+  uint32_t _ndim;
 };
 
 

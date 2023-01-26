@@ -63,11 +63,11 @@ template <class T> class Lattice;
 
 // <example>
 // <srcblock>
-//    Vector<Double> pars(2):
+//    Vector<double> pars(2):
 //    pars(0) = 0.5;          // Mean
 //    pars(1) = 0.2;          // Variance
 //    LatticeAddNoise lan(Random::NORMAL, pars);
-//    ArrayLattice<Float> lat(IPosition(2,100,100));
+//    ArrayLattice<float> lat(IPosition(2,100,100));
 //    lan.add(lat);
 // </srcblock>
 // </example>
@@ -87,8 +87,8 @@ public:
    // are used to seed the MLCG object.
    LatticeAddNoise (
 		 Random::Types type,
-         const Vector<Double>& parameters,
-         Int seed1=0, Int seed2=1
+         const Vector<double>& parameters,
+         int32_t seed1=0, int32_t seed2=1
    );
 
 // Copy constructor (copy semantics)
@@ -103,7 +103,7 @@ public:
 // Set a new distribution.  An exception will occur if we cannot generate 
 // the distribution (e.g. illegal parameters).  
    void set (Random::Types type,
-             const Vector<Double>& parameters);
+             const Vector<double>& parameters);
 
 // Add noise of given type to lattice.  For complex types, the
 // noise is added to real and imaginary separately.
@@ -116,16 +116,16 @@ public:
 private:
 
    Random::Types itsType;
-   Vector<Double> itsParameters;
+   Vector<double> itsParameters;
    MLCG itsGen;
    Random* itsNoise;
 
 // Add noise to array.  For Complex, noise is added to
 // real and imaginary separately.
 // <group>
-   void addNoiseToArray (Array<Float>& data);
+   void addNoiseToArray (Array<float>& data);
    void addNoiseToArray (Array<Complex>& data);
-   void addNoiseToArray (Array<Double>& data);
+   void addNoiseToArray (Array<double>& data);
    void addNoiseToArray (Array<DComplex>& data);
 // </group>
 

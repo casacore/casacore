@@ -62,23 +62,23 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Antenna Id.<BR>
-    // Int.
+    // int32_t.
     ANTENNA_ID,  
     // Index in BEAM model table. This is a specialized model 
     // e.g. NRAO_VLA_BEAM would have parameters for polynomial.<BR>
-    // Int.
+    // int32_t.
     BEAM_ID,
     // Beam position offset (on sky but in antenna reference frame).<BR>
-    // Double(2,NUM_RECEPTORS) - rad - DIRECTION
+    // double(2,NUM_RECEPTORS) - rad - DIRECTION
     BEAM_OFFSET,
     // Feed id <BR>
-    // Int
+    // int32_t
     FEED_ID,
     // Interval for which this set of parameters is accurate <BR>
-    // Double - s
+    // double - s
     INTERVAL,
     // Number of receptors on this feed (probably 1 or 2) <BR>
-    // Int
+    // int32_t
     NUM_RECEPTORS,
     // D-matrix i.e. leakage between two receptors i.e. only makes
     // sense if NUM_RECEPTORS>1. Dimensionless coupling numbers. <BR>
@@ -89,25 +89,25 @@ public:
     // String(NUM_RECEPTORS)
     POLARIZATION_TYPE,
     // Position of feed relative to feed reference position for this antenna <BR>
-    // Double(3) - m - POSITION
+    // double(3) - m - POSITION
     POSITION,
     // The reference angle for polarization. Converts into
     //  Parallactic angle in the Sky domain. <BR>
-    // Double(2) - rad 
+    // double(2) - rad 
     RECEPTOR_ANGLE,
     // Spectral Window id <BR>
-    // Int
+    // int32_t
     SPECTRAL_WINDOW_ID,
     // Midpoint of time for which this set of parameters is accurate<BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME,
     // Focus length <BR>
-    // Double - m 
+    // double - m 
     FOCUS_LENGTH,
     // Phased feed id to index into PHASED_FEED table <BR>
-    // Int
+    // int32_t
     PHASED_FEED_ID,
     //
     // Not a column, but just a final enum specifying the number of enums.

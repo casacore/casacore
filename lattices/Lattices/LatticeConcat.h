@@ -80,24 +80,24 @@ class Slicer;
 //
 //// Make ArrayLattices 
 //
-//    ArrayLattice<Float> al1(a1); al1.set(1.0);
-//    ArrayLattice<Float> al2(a2); al2.set(10.0);
+//    ArrayLattice<float> al1(a1); al1.set(1.0);
+//    ArrayLattice<float> al2(a2); al2.set(10.0);
 //
 //// Turn these into MaskedLattices
 //
-//   SubLattice<Float> ml1(al1, True);
-//   SubLattice<Float> ml2(al2, True);
+//   SubLattice<float> ml1(al1, true);
+//   SubLattice<float> ml2(al2, true);
 //
 //// Concatenate along axis 1
 //         
-//   LatticeConcat<Float> lc (1);
+//   LatticeConcat<float> lc (1);
 //   lc.setLattice(ml1);
 //   lc.setLattice(ml2);
 //         
 //// Make output
 //         
-//   ArrayLattice<Float> al3(lc.shape());
-//   SubLattice<Float> ml3(al3, True);
+//   ArrayLattice<float> al3(lc.shape());
+//   SubLattice<float> ml3(al3, true);
 //
 //// Copy data to output (mask has to be copied separately)
 //         
@@ -132,10 +132,10 @@ public:
 // all internal lattice copies to be
 // opened/closed on demand, rather than just being left open.
 // This prevents open file limits being reached
-   LatticeConcat (uInt axis, Bool tempClose=True);
+   LatticeConcat (uint32_t axis, bool tempClose=true);
 
 // Default constructor.  Sets the concatenation axis to 0
-// and tempClose is True
+// and tempClose is true
    LatticeConcat ();
 
 // Copy constructor (reference semantics)
@@ -152,34 +152,34 @@ public:
    void setLattice (MaskedLattice<T>& lattice);
 
 // Return the number of lattices set so far
-   uInt nlattices() const
+   uint32_t nlattices() const
      {return lattices_p.nelements();}
 
 // Returns the current concatenation axis (0 relative)
-   uInt axis () const
+   uint32_t axis () const
      {return axis_p;}
 
 // Set the tempClose state.
-   void setTempClose (Bool tmpClose)
+   void setTempClose (bool tmpClose)
      { tempClose_p = tmpClose; }
 
 // Returns the tempClose constructor state
-   Bool isTempClose () const 
+   bool isTempClose () const 
      {return tempClose_p;} 
 
 // Returns the number of dimensions of the *input* lattices (may be different 
 // by one from output lattice).  Returns 0 if none yet set.
-   uInt latticeDim() const;
+   uint32_t latticeDim() const;
 
 // Return pointer for specified lattice.  Do not delete it.
-   MaskedLattice<T>* lattice(uInt i) const
+   MaskedLattice<T>* lattice(uint32_t i) const
      { return lattices_p[i]; }
 
 // Handle the (un)locking and syncing, etc.
 // <group>
-   virtual Bool lock (FileLocker::LockType, uInt nattempts);
+   virtual bool lock (FileLocker::LockType, uint32_t nattempts);
    virtual void unlock();
-   virtual Bool hasLock (FileLocker::LockType) const;
+   virtual bool hasLock (FileLocker::LockType) const;
    virtual void resync();
    virtual void flush();
    virtual void tempClose();
@@ -190,34 +190,34 @@ public:
 // LatticeConcat object in a fully closed state.  So always pair
 // a reopen with a tempClose.
 // <group>
-   void tempClose(uInt which);
-   void reopen(uInt which);
+   void tempClose(uint32_t which);
+   void reopen(uint32_t which);
 // </group>
 
 // Name.  Since many lattices may go into the concatenation, the name 
 // is rather meaningless.  Returns the string "Concatenation :"
-   virtual String name (Bool stripPath=False) const;
+   virtual String name (bool stripPath=false) const;
 
 // Make a copy of the derived object (reference semantics).
    virtual LatticeConcat<T>* cloneML() const;
 
 // Has the object really a mask?
-   virtual Bool isMasked() const;
+   virtual bool isMasked() const;
 
 // Get the region used (always returns 0).
    virtual const LatticeRegion* getRegionPtr() const;
    
-// If all of the underlying lattices are writable returns True
-   virtual Bool isWritable() const;
+// If all of the underlying lattices are writable returns true
+   virtual bool isWritable() const;
 
 // Does the lattice have a pixelmask?
-   virtual Bool hasPixelMask() const;
+   virtual bool hasPixelMask() const;
 
 // Get access to the pixelmask.
 // An exception is thrown if the lattice does not have a pixelmask
 // <group>
-   virtual const Lattice<Bool>& pixelMask() const;
-   virtual Lattice<Bool>& pixelMask();
+   virtual const Lattice<bool>& pixelMask() const;
+   virtual Lattice<bool>& pixelMask();
 // </group>
 
 // Find the shape that the concatenated lattice will be.
@@ -228,17 +228,17 @@ public:
 // Return the best cursor shape.  This isn't very meaningful  for a LatticeConcat
 // Lattice since it isn't on disk !  But if you do copy it out, this is 
 // what you should use.  The maxPixels aregument is ignored.
-   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+   virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
 // Do the actual get of the data.
-// The return value is always False, thus the buffer does not reference
+// The return value is always false, thus the buffer does not reference
 // another array.  Generally the user should use function getSlice
-   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+   virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
    
 // Do the actual get of the mask data.
-// The return value is always False, thus the buffer does not reference
+// The return value is always false, thus the buffer does not reference
 // another array. Generally the user should use function getMaskSlice
-   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+   virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
    
 // Do the actual put of the data into the Lattice.  This will change the underlying
 // lattices (if they are writable) that were used to create the
@@ -251,33 +251,33 @@ public:
  
 private:
    PtrBlock<MaskedLattice<T>* > lattices_p;
-   uInt axis_p;
+   uint32_t axis_p;
    IPosition shape_p;
-   Bool isMasked_p, dimUpOne_p, tempClose_p;
-   LatticeConcat<Bool>* pPixelMask_p;
+   bool isMasked_p, dimUpOne_p, tempClose_p;
+   LatticeConcat<bool>* pPixelMask_p;
 //
-   void checkAxis(uInt axis, uInt ndim) const;
+   void checkAxis(uint32_t axis, uint32_t ndim) const;
 //
    void setup1 (IPosition& blc, IPosition& trc, IPosition& stride,
                 IPosition& blc2, IPosition& trc2,
                 IPosition& blc3, IPosition& trc3, IPosition& stride3,
                 const Slicer& section);
-   Slicer setup2 (Bool& first, IPosition& blc2, IPosition& trc2,
-                  Int shape2, Int axis, const IPosition& blc,
-                  const IPosition& trc, const IPosition& stride, Int start);
-   Bool getSlice1 (Array<T>& buffer, const Slicer& section,
-                   uInt nLattices);
-   Bool getSlice2 (Array<T>& buffer, const Slicer& section,
-                   uInt nLattices);
-   Bool putSlice1 (const Array<T>& buffer, const IPosition& where,
-                   const IPosition& stride, uInt nLattices);
+   Slicer setup2 (bool& first, IPosition& blc2, IPosition& trc2,
+                  int32_t shape2, int32_t axis, const IPosition& blc,
+                  const IPosition& trc, const IPosition& stride, int32_t start);
+   bool getSlice1 (Array<T>& buffer, const Slicer& section,
+                   uint32_t nLattices);
+   bool getSlice2 (Array<T>& buffer, const Slicer& section,
+                   uint32_t nLattices);
+   bool putSlice1 (const Array<T>& buffer, const IPosition& where,
+                   const IPosition& stride, uint32_t nLattices);
 
-   Bool putSlice2 (const Array<T>& buffer, const IPosition& where,
-                   const IPosition& stride, uInt nLattices);
-   Bool getMaskSlice1 (Array<Bool>& buffer, const Slicer& section,
-                       uInt nLattices);
-   Bool getMaskSlice2 (Array<Bool>& buffer, const Slicer& section,
-                       uInt nLattices);
+   bool putSlice2 (const Array<T>& buffer, const IPosition& where,
+                   const IPosition& stride, uint32_t nLattices);
+   bool getMaskSlice1 (Array<bool>& buffer, const Slicer& section,
+                       uint32_t nLattices);
+   bool getMaskSlice2 (Array<bool>& buffer, const Slicer& section,
+                       uint32_t nLattices);
 };
 
 

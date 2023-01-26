@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // Construct the concatenation for a range (given as a relative box).
 // // Extend along the y-axis (axis numbers start counting at 0!).
 // // Take over the region pointers.
-// LCConcatenation region (True, cirPtr, 1, LCBox(n/2-n, n/2-1));
+// LCConcatenation region (true, cirPtr, 1, LCBox(n/2-n, n/2-1));
 // </srcblock>
 // </example>
 
@@ -103,15 +103,15 @@ public:
     LCConcatenation();
 
     // Combine the given regions.
-    // When <src>takeOver</src> is True, the destructor will delete the
+    // When <src>takeOver</src> is true, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
     // The extend range has to be given as a 1-dimensional box.
     // The default range is the entire axis.
     // <group>
-    LCConcatenation (Bool takeOver, const PtrBlock<const LCRegion*>& regions,
-		     Int extendAxis);
-    LCConcatenation (Bool takeOver, const PtrBlock<const LCRegion*>& regions,
-		     Int extendAxis, const LCBox& extendRange);
+    LCConcatenation (bool takeOver, const PtrBlock<const LCRegion*>& regions,
+		     int32_t extendAxis);
+    LCConcatenation (bool takeOver, const PtrBlock<const LCRegion*>& regions,
+		     int32_t extendAxis, const LCBox& extendRange);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -123,13 +123,13 @@ public:
     LCConcatenation& operator= (const LCConcatenation& other);
 
     // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
  
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
 
      // Get the extend axis.
-    Int extendAxis() const;
+    int32_t extendAxis() const;
 
     // Get the extend box.
     const LCBox& extendBox() const;
@@ -151,15 +151,15 @@ protected:
     // Construct another LCRegion (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box and mask.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
     // Do the actual getting of the mask.
-    virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
+    virtual void multiGetSlice (Array<bool>& buffer, const Slicer& section);
 
     // This function is needed here because the niceCursorShape of the
     // contributing region does not make any sense (other dimensionality). 
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
 private:
     // Fill the object.
@@ -168,13 +168,13 @@ private:
     void fill();
     // </group>
 
-    Int       itsExtendAxis;
+    int32_t       itsExtendAxis;
     IPosition itsRegionAxes;
     LCBox     itsExtendBox;
 };
 
 
-inline Int LCConcatenation::extendAxis() const
+inline int32_t LCConcatenation::extendAxis() const
 {
     return itsExtendAxis;
 }

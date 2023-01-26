@@ -55,9 +55,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-// Float func(const Vector<Float>& x) { return x(0)*x(1); }        // x*y
+// float func(const Vector<float>& x) { return x(0)*x(1); }        // x*y
 // // Convert C++ functions to Functionals
-// FunctionWrapper<Float> Func(func, 2);
+// FunctionWrapper<float> Func(func, 2);
 // </srcblock>
 //
 
@@ -67,7 +67,7 @@ template<class T> class WrapperBase {
   // Default constructor: zero dimension
   WrapperBase() : ndim_p(0), arg_p(0) {}
   // Standard constructor
-  explicit WrapperBase(const uInt dim) : ndim_p(dim), arg_p(dim) {}
+  explicit WrapperBase(const uint32_t dim) : ndim_p(dim), arg_p(dim) {}
 
   // Destructor
   virtual ~WrapperBase() {}
@@ -81,12 +81,12 @@ template<class T> class WrapperBase {
 
   //# Member functions
   // Get the dimensionality
-  virtual uInt ndim() const { return ndim_p; }
+  virtual uint32_t ndim() const { return ndim_p; }
 
  protected:
   //# Data
   // Dimensionality
-  uInt ndim_p;
+  uint32_t ndim_p;
   // Vector argument interface
   mutable Vector<T> arg_p;
 

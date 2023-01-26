@@ -85,7 +85,7 @@ public:
   // and (unlikely) multiple source table entries.
   // If the doppler sub table doesn't exist, the information is
   // retrieved from directly from the source sub table.
-  Bool dopplerInfo (Vector<Double>& restFrequency, Int spwId, Int fieldId);
+  bool dopplerInfo (Vector<double>& restFrequency, int32_t spwId, int32_t fieldId);
 
 private:
   // Prohibit null constructor, copy constructor and assignment for now

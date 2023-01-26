@@ -54,10 +54,10 @@
 
 // open and write a few rows
 // aMode == 0  open new
-void init (uInt aBucketSize,uInt aMode);
+void init (uint32_t aBucketSize,uint32_t aMode);
 
 // reopen table, and throw away a row
-void deleteRow(const uInt aRow);
+void deleteRow(const uint32_t aRow);
 
 // reopen table, and throw away a few rows
 void deleteRows(const Vector<rownr_t>& aNrRows);
@@ -85,7 +85,7 @@ void info(const Table aTable);
 
 int main (int argc, const char* argv[])
 {
-    uInt aNr = 500;
+    uint32_t aNr = 500;
     if (argc > 1) {
 	istringstream anIstr(argv[1]);
 	anIstr >> aNr;
@@ -99,7 +99,7 @@ int main (int argc, const char* argv[])
 	deleteRow          (2);
 	deleteRow          (40);
         Vector<rownr_t> aNrRows(35);
-	for (uInt i=0; i< 35; i++) {
+	for (uint32_t i=0; i< 35; i++) {
 	  aNrRows(i) = i+3;
 	}
 	deleteRows         (aNrRows);
@@ -116,7 +116,7 @@ int main (int argc, const char* argv[])
 
 void info( const Table aTable)
 {
-  for (uInt i=0; i< aTable.tableDesc().ncolumn(); i++) {
+  for (uint32_t i=0; i< aTable.tableDesc().ncolumn(); i++) {
     cout << aTable.tableDesc().columnNames()(i) << ": " 
 	 << aTable.tableDesc().columnDesc(i).dataType() << endl;
     if (aTable.tableDesc().columnDesc(i).dataType() == TpString) {
@@ -138,7 +138,7 @@ void info( const Table aTable)
 }
 
 // First build a description.
-void init (uInt aBucketSize, uInt aMode)
+void init (uint32_t aBucketSize, uint32_t aMode)
 {
   Table aTable;
   if (aMode == 0) {
@@ -160,7 +160,7 @@ void init (uInt aBucketSize, uInt aMode)
   }
   
   ScalarColumn<String> aa(aTable,"Col-1");
-  uInt start=0;
+  uint32_t start=0;
   String aString("String-1");
     
   if (aMode ==  1){
@@ -170,7 +170,7 @@ void init (uInt aBucketSize, uInt aMode)
   }
   
   // fill new column with data
-  for (uInt i=start; i<aTable.nrow(); i++) {
+  for (uint32_t i=start; i<aTable.nrow(); i++) {
     aa.put(i,aString);
     aString += " "+String::toString(i);
   }
@@ -211,9 +211,9 @@ void addDirArrayColumn()
   arrs(3)="Array-4";
   arrs(4)="Array-5";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     ab.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrs(j) += "-"+String::toString(i);
     }
   }
@@ -246,9 +246,9 @@ void addIndArrayColumn()
   arrs(3)="IndArr4";
   arrs(4)="IndArr5";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     ac.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrs(j) += "-"+String::toString(i);
     }
   }
@@ -284,9 +284,9 @@ void addSmallColumn()
   arrs(3)="SFS4";
   arrs(4)="SFS5";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     ae.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrs(j) = aS + String::toString(j) + "-"+String::toString(i);
     }
   }
@@ -313,12 +313,12 @@ void addEmptyColumn()
   }
   
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     af.setShape(i,IPosition(2,3,2));
   }
 
   // test replaceshape function.
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     af.setShape(i,IPosition(2,2,2));
   }
 
@@ -330,7 +330,7 @@ void addEmptyColumn()
   info(aTable);
 }
 
-void deleteRow(const uInt aRow)
+void deleteRow(const uint32_t aRow)
 {
   Table aTable = Table("tSSMStringHandler_tmp.data", Table::Update);
 
@@ -393,7 +393,7 @@ void replaceStrings()
   cout << "Try to change some datain Column 1" << endl;
   String aString="Much Bigger I Believe";
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     if (i == 25) {
       aString="Small";
     }
@@ -410,9 +410,9 @@ void replaceStrings()
   arrd(3)="A bigger Direct Array";
   arrd(4)="A bigger Direct Array";
 
-  for (uInt i=0; i<5; i++) {
+  for (uint32_t i=0; i<5; i++) {
     ab.put(i,arrd);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrd(j) += "-"+String::toString(i);
     }
   }
@@ -423,9 +423,9 @@ void replaceStrings()
   arrd(3)="Small";
   arrd(4)="Small";
 
-  for (uInt i=6; i<15; i++) {
+  for (uint32_t i=6; i<15; i++) {
     ab.put(i,arrd);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrd(j) += "-"+String::toString(i);
     }
   }
@@ -439,9 +439,9 @@ void replaceStrings()
   arri(3)="A bigger Indirect Array";
   arri(4)="A bigger Indirect Array";
 
-  for (uInt i=0; i<5; i++) {
+  for (uint32_t i=0; i<5; i++) {
     ac.put(i,arri);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arri(j) += "-"+String::toString(i);
     }
   }
@@ -452,9 +452,9 @@ void replaceStrings()
   arri(3)="Small";
   arri(4)="Small";
 
-  for (uInt i=6; i<15; i++) {
+  for (uint32_t i=6; i<15; i++) {
     ac.put(i,arri);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arri(j) += "-"+String::toString(i);
     }
   }

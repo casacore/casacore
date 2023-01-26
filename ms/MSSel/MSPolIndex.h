@@ -88,12 +88,12 @@ public:
 
   // Look up POLARIZATION_ID's for a given set of polarization correlation
   // types and receptor cross-products
-  Vector<Int> matchCorrTypeAndProduct(const Vector<Int>& corrType,
-				      const Matrix<Int>& corrProduct);
+  Vector<int32_t> matchCorrTypeAndProduct(const Vector<int32_t>& corrType,
+				      const Matrix<int32_t>& corrProduct);
   // ///////////////////  Add for MS selection //////////////////////////////
   // Only Look up POLARIZATION_ID's for a given set of polarization correlation
   // types
-  Vector<Int> matchCorrType(const Vector<Int>& corrType,Bool exactMatch=True);
+  Vector<int32_t> matchCorrType(const Vector<int32_t>& corrType,bool exactMatch=true);
 
 private:
   // Disallow null constructor
@@ -103,8 +103,8 @@ private:
   MSPolarizationColumns msPolarizationCols_p;
 
   // Vector cache of polarization id's
-  Vector<Int> polarizationIds_p;
-  Int nrows_p;
+  Vector<int32_t> polarizationIds_p;
+  int32_t nrows_p;
 };
 
 

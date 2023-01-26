@@ -33,7 +33,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 LinearFitSVD<T>::LinearFitSVD() :
   LinearFit<T>() {
-  svd_p = True;
+  svd_p = true;
   this->set(COLLINEARITY);
 }
 

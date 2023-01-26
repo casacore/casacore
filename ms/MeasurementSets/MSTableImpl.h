@@ -92,11 +92,11 @@ public:
     //   <li> AipsError
     // </thrown>
     static void addColumnToDesc(TableDesc &td, const String& colName,
-				Int colDType, const String& colComment,
+				int32_t colDType, const String& colComment,
 				const String& colUnit,
 				const String& colMeasure, 
-				Int ndim, const IPosition & shape,
-				Int option, const String& refCol);
+				int32_t ndim, const IPosition & shape,
+				int32_t option, const String& refCol);
 
     // add a keyword to a TableDesc
     // An exception is thrown for an invalid data type.  This indicates a 
@@ -105,7 +105,7 @@ public:
     //   <li> AipsError
     // </thrown>
     static void addKeyToDesc(TableDesc& td, const String& keyName,
-			     Int keyDType, const String& keyComment);
+			     int32_t keyDType, const String& keyComment);
 
     // add a MeasureColumn for the specified Measure, with default reference
     static void addMeasColumn(TableDesc &td, const String& colName,
@@ -113,42 +113,42 @@ public:
 
     // Add the compress option for the given column to the TableDesc.
     static void addColumnCompression (TableDesc&, const String& colName,
-				      Bool autoScale, const String& type);
+				      bool autoScale, const String& type);
 
     // Setup the compression data managers if needed.
     static SetupNewTable& setupCompression (SetupNewTable&);
 
     // Define an entry in the column maps
-    static void colMapDef(std::map<Int,String>& colMap,
-			  std::map<Int,Int>& colDTypeMap,
-			  std::map<Int,String>& colCommentMap,
-			  std::map<Int,String>& colUnitMap,
-			  std::map<Int,String>& colMeasureTypeMap,
-			  Int col,
+    static void colMapDef(std::map<int32_t,String>& colMap,
+			  std::map<int32_t,int32_t>& colDTypeMap,
+			  std::map<int32_t,String>& colCommentMap,
+			  std::map<int32_t,String>& colUnitMap,
+			  std::map<int32_t,String>& colMeasureTypeMap,
+			  int32_t col,
 			  const String& colName,
-			  Int colType,
+			  int32_t colType,
 			  const String& colComment,
 			  const String& colUnit,
 			  const String& colMeasureType);
 
     // Define an entry in the keyword maps
-    static void keyMapDef(std::map<Int,String>& keyMap,
-			  std::map<Int,Int>& keyDTypeMap,
-			  std::map<Int,String>& keyCommentMap,
-			  Int key,
+    static void keyMapDef(std::map<int32_t,String>& keyMap,
+			  std::map<int32_t,int32_t>& keyDTypeMap,
+			  std::map<int32_t,String>& keyCommentMap,
+			  int32_t key,
 			  const String& keyName,
-			  Int keyType,
+			  int32_t keyType,
 			  const String& keyComment);
 
     // tableDesc convenience functions
     // <group>
  
     // check that a TableDesc is valid 
-    static Bool validate(const TableDesc& tabDesc, 
+    static bool validate(const TableDesc& tabDesc, 
 			 const TableDesc& requiredTD);
  
     // check that the keyword set is valid 
-    static Bool validate(const TableRecord& tabRec, 
+    static bool validate(const TableRecord& tabRec, 
 			 const TableDesc& requiredTD);
  
     // </group>

@@ -50,7 +50,7 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   }
   vector<T> exec_p;
   exec_p.resize(0);
-  vector<Double>::const_iterator
+  vector<double>::const_iterator
     constp = this->functionPtr_p->getConst().begin();
   for (vector<FuncExprData::ExprOperator>::const_iterator
 	 pos = this->functionPtr_p->getCode().begin();
@@ -126,18 +126,18 @@ T CompiledFunction<T>::eval(typename Function<T>::FunctionArg x) const {
       break;
     case FuncExprData::GOTO:
       pos += pos->info -
-	(static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
+	(static_cast<uint32_t>(pos-this->functionPtr_p->getCode().begin())+1);
       break;
     case FuncExprData::GOTOF:
       if (exec_p.back() == T(0.0)) {
 	pos += pos->info -
-	  (static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
+	  (static_cast<uint32_t>(pos-this->functionPtr_p->getCode().begin())+1);
       }
       break;
     case FuncExprData::GOTOT:
       if (exec_p.back() != T(0.0)) {
 	pos += pos->info -
-	  (static_cast<uInt>(pos-this->functionPtr_p->getCode().begin())+1);
+	  (static_cast<uint32_t>(pos-this->functionPtr_p->getCode().begin())+1);
       }
       break;
 

@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSFieldGram = 0;
-  static Int                   posMSFieldGram = 0;
+  static int32_t                   posMSFieldGram = 0;
   // MSFieldGramwrap out of namespace
   
   //# Parse the command.
@@ -101,7 +101,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //     }
   // }
   
-  // TableExprNode msFieldGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs)
+  // TableExprNode msFieldGramParseCommand (const MeasurementSet* ms, const String& command, Vector<int32_t>& selectedIDs)
   // {
   //   //    MSFieldParse *thisParser = new MSFieldParse(ms);
   //   TableExprNode dummy,ten;
@@ -112,7 +112,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // }
 
   TableExprNode msFieldGramParseCommand (const MSField& msFieldSubTable, const TableExprNode& ten,
-					 const String& command, Vector<Int>& selectedIDs)
+					 const String& command, Vector<int32_t>& selectedIDs)
   {
     //    MSFieldParse *thisParser = new MSFieldParse(ms);
     TableExprNode fieldTEN;
@@ -130,7 +130,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return fieldTEN;
   }
 
-  TableExprNode baseMSFieldGramParseCommand (MSFieldParse* parser, const String& command, Vector<Int>& selectedIDs)
+  TableExprNode baseMSFieldGramParseCommand (MSFieldParse* parser, const String& command, Vector<int32_t>& selectedIDs)
   {
     //    MSFieldParse parser(ms);               // setup measurement set
     try 
@@ -163,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   void msFieldGramParseDeleteNode() {MSFieldParse::cleanup();}
   //# Give the string position.
-  Int& msFieldGramPosition()
+  int32_t& msFieldGramPosition()
   {
     return posMSFieldGram;
   }

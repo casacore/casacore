@@ -167,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MSSelection& operator=(const MSSelection& other);
     
     // Helper method for converting index vectors to expression strings
-    static String indexExprStr(Vector<Int> index);
+    static String indexExprStr(Vector<int32_t> index);
     
     // Helper method for converting name vectors to expression strings
     static String nameExprStr(Vector<String> name);
@@ -175,18 +175,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Expression setters.  The following set*Expr() methods only set
     // the expressions.  Parsing is done with a call to
     // toTableExprNode().
-    Bool setAntennaExpr(const String& antennaExpr);
-    Bool setFieldExpr(const String& fieldExpr);
-    Bool setSpwExpr(const String& spwExpr);
-    Bool setScanExpr(const String& scanExpr);
-    Bool setArrayExpr(const String& ArrayExpr);
-    Bool setTimeExpr(const String& timeExpr);
-    Bool setUvDistExpr(const String& uvDistExpr);
-    Bool setTaQLExpr(const String& taqlExpr);
-    Bool setPolnExpr(const String& polnExpr);
-    Bool setStateExpr(const String& stateExpr);
-    Bool setObservationExpr(const String& observationExpr);
-    Bool setFeedExpr(const String& feedExpr);
+    bool setAntennaExpr(const String& antennaExpr);
+    bool setFieldExpr(const String& fieldExpr);
+    bool setSpwExpr(const String& spwExpr);
+    bool setScanExpr(const String& scanExpr);
+    bool setArrayExpr(const String& ArrayExpr);
+    bool setTimeExpr(const String& timeExpr);
+    bool setUvDistExpr(const String& uvDistExpr);
+    bool setTaQLExpr(const String& taqlExpr);
+    bool setPolnExpr(const String& polnExpr);
+    bool setStateExpr(const String& stateExpr);
+    bool setObservationExpr(const String& observationExpr);
+    bool setFeedExpr(const String& feedExpr);
 
     // Accessor for the various selection expressions as strings.
     const String getExpr(const MSExprType type=NO_EXPR);
@@ -197,40 +197,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNode getTEN(const MeasurementSet*ms = NULL);
 
     // Accessor for the list of the selected scan IDs.
-    inline Vector<Int> getScanList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getScanList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return scanIDs_p;}
 
     // Accessor for the list of the selected observation IDs.
-    inline Vector<Int> getObservationList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getObservationList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return observationIDs_p;}
 
     // Accessor for the list of the selected feed1 IDs.
-    inline Vector<Int> getFeed1List(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getFeed1List(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return feed1IDs_p;}
 
     // Accessor for the list of the selected feed2 IDs.
-    inline Vector<Int> getFeed2List(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getFeed2List(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return feed2IDs_p;}
 
     // Similar to baselines for antennas
-    inline Matrix<Int> getFeedPairList(const MeasurementSet* ms=NULL) 
+    inline Matrix<int32_t> getFeedPairList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return feedPairIDs_p;}
     
     // Accessor for the list of selected sub-array IDs.
-    inline Vector<Int> getSubArrayList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getSubArrayList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return arrayIDs_p;}
     
     // Accessor for the list of antenna-1 of the selected baselines.
     // Antennas affected by the baseline negation operator have the
     // antenna IDs multiplied by -1.
-    inline Vector<Int> getAntenna1List(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getAntenna1List(const MeasurementSet* ms=NULL) 
     {// if (antenna1IDs_p.nelements() <= 0) 
 	getTEN(ms); return antenna1IDs_p;}
     
     // Accessor for the list of antenna-2 of the selected baselines.
     // Antennas affected by the baseline negation operator have the
     // antenna IDs multiplied by -1.
-    inline Vector<Int> getAntenna2List(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getAntenna2List(const MeasurementSet* ms=NULL) 
     {// if (antenna2IDs_p.nelements() <= 0) 
 	getTEN(ms); return antenna2IDs_p;}
     
@@ -251,37 +251,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The expression "!1&10" will result in a baseline list [-1,
     // -10].  Etc...
     //
-    inline Matrix<Int> getBaselineList(const MeasurementSet* ms=NULL) 
+    inline Matrix<int32_t> getBaselineList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return baselineIDs_p;}
     
     // Accessor for the list of selected field IDs.
-    inline Vector<Int> getFieldList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getFieldList(const MeasurementSet* ms=NULL) 
     {// if (fieldIDs_p.nelements() <= 0) 
 	getTEN(ms); return fieldIDs_p;}
 
     // Accessor for the list of selected state Obs_Modes.
-    inline Vector<Int> getStateObsModeList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getStateObsModeList(const MeasurementSet* ms=NULL) 
     {if (stateObsModeIDs_p.nelements() <= 0) getTEN(ms); return stateObsModeIDs_p;}
     
     // Accessor for the list of the specified time range(s) as the
     // start and end MJD values.  The time ranges are stored as columns,
     // i.e. the output Matrix is 2 x n_ranges.
-    inline Matrix<Double> getTimeList(const MeasurementSet* ms=NULL)
+    inline Matrix<double> getTimeList(const MeasurementSet* ms=NULL)
     {getTEN(ms); return selectedTimesList_p;}
     
     // Accessor for the list of the specified uv-range(s) as the start
     // and end values in units used in the MS.
-    inline Matrix<Double> getUVList(const MeasurementSet* ms=NULL) 
+    inline Matrix<double> getUVList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedUVRange_p;}
     
     // Accessor for the list of user defined units for the
     // uv-range(s).  The uv-range(s) return by getUVList is always in
     // the units used in the MS.
-    inline Vector<Bool> getUVUnitsList(const MeasurementSet* ms=NULL) 
+    inline Vector<bool> getUVUnitsList(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedUVUnits_p;}
 
     // Accessor for the list of the selected Spectral Window IDs.
-    inline Vector<Int> getSpwList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getSpwList(const MeasurementSet* ms=NULL) 
     {// if (spwIDs_p.nelements() <= 0) 
 	getTEN(ms); return spwIDs_p;}
     
@@ -296,18 +296,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // was supplied as part of the expression, the value of Step is
     // replaced with the value of the defaultStep parameter. Multiple
     // channel specifications for the same Spectral Window selection,
-    // results in multiple rows in the Matrix. If sorted is True, the
+    // results in multiple rows in the Matrix. If sorted is true, the
     // rows of the output Matrix will be sorted by the SPW IDs (the
     // entries in the first column).
-    Matrix<Int> getChanList(const MeasurementSet* ms=NULL, 
-			    const Int defaultStep=1,
-			    const Bool sorted=False);
+    Matrix<int32_t> getChanList(const MeasurementSet* ms=NULL, 
+			    const int32_t defaultStep=1,
+			    const bool sorted=false);
 
     //
     // Same as getChanList, except that the channels and steps are in Hz.
     //    
-    Matrix<Double> getChanFreqList(const MeasurementSet* ms=NULL, 
-				   const Bool sorted=False);
+    Matrix<double> getChanFreqList(const MeasurementSet* ms=NULL, 
+				   const bool sorted=false);
 
     // Accessor for the list of the selected Data Description IDs
     // (DDID) from the polarization expression parsing.  The actual
@@ -316,7 +316,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // getSPWDDIDList() below).
     // Note that there is no guarantee that returned vector
     // is inmight not be in sorted order.
-    inline Vector<Int> getDDIDList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getDDIDList(const MeasurementSet* ms=NULL) 
     {if (ddIDs_p.nelements() <= 0) getTEN(ms); return ddIDs_p;}
 
     // Accessor for the list of the selected Data Description IDs from
@@ -327,9 +327,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // The actual DDIDs selected will be an intersection of the lists
     // from getDDIDList() and getSPWDDIDList() (which can be generated
-    // using the set_intersection(Vector<Int>&, Vector<Int>&) global
+    // using the set_intersection(Vector<int32_t>&, Vector<int32_t>&) global
     // method in MSSelectionTool.{cc,h}).
-    inline Vector<Int> getSPWDDIDList(const MeasurementSet* ms=NULL) 
+    inline Vector<int32_t> getSPWDDIDList(const MeasurementSet* ms=NULL) 
     {if (spwDDIDs_p.nelements() <= 0) getTEN(ms); return spwDDIDs_p;}
 
     //
@@ -341,7 +341,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // what the user intended (i.e., e.g. not all DD IDs due to user
     // POL expression might be selected due to SPW expressions).
     //
-    inline std::map<Int, Vector<Int> > getPolMap(const MeasurementSet* ms=NULL) 
+    inline std::map<int32_t, Vector<int32_t> > getPolMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedPolMap_p;};
 
     //
@@ -417,7 +417,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // o To get a list of POLARIZATION IDs selected (rows of the POLARIZATION
     //   table), make a list of all the keys of this map.
-    inline std::map<Int, Vector<Vector<Int> > > getCorrMap(const MeasurementSet* ms=NULL) 
+    inline std::map<int32_t, Vector<Vector<int32_t> > > getCorrMap(const MeasurementSet* ms=NULL) 
     {getTEN(ms); return selectedSetupMap_p;};
 
     // Methods to convert the maps return by getChanList and
@@ -426,7 +426,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // polarizations.
     void getChanSlices(Vector<Vector<Slice> >& chanslices, 
 		       const MeasurementSet* ms=NULL, 
-		       const Int defaultChanStep=1);
+		       const int32_t defaultChanStep=1);
 
     void getCorrSlices(Vector<Vector<Slice> >& corrslices,
 		       const MeasurementSet* ms=NULL);
@@ -439,7 +439,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set all error handlers to a known state (NULL).
     void clearErrorHandlers();
 
-    Bool exprIsNull(const MSExprType type=NO_EXPR);
+    bool exprIsNull(const MSExprType type=NO_EXPR);
     
     // Convey to the various parsers to delete the TENs they hold
     void deleteNodes();
@@ -472,7 +472,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // mssSetData() MSSelectionTools.h which also returns the in-row
     // (corr/chan) slices that can be supplied to the VisIter object
     // for on-the-fly in-row selection.
-    Bool getSelectedMS(MeasurementSet& selectedMS,
+    bool getSelectedMS(MeasurementSet& selectedMS,
 		       const String& outMSName="");
     
     void resetMS(const MeasurementSet& ms) {resetTEN(); ms_p=&ms;};
@@ -566,14 +566,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // to generate error or warning messages if a value outside the
     // range is used in the expressions.  The default maximum value
     // for scan, observation and sub-array IDs is 1000.
-    inline void setMaxScans(const Int& n=1000) {maxScans_p=n;};
-    inline void setMaxObs(const Int& n=1000)   {maxObs_p=n;};
-    inline void setMaxArray(const Int& n=1000) {maxArray_p=n;};
+    inline void setMaxScans(const int32_t& n=1000) {maxScans_p=n;};
+    inline void setMaxObs(const int32_t& n=1000)   {maxObs_p=n;};
+    inline void setMaxArray(const int32_t& n=1000) {maxArray_p=n;};
     
     // Set the error handler to be used for reporting errors while
     // parsing the type of expression give by the first argument.
     void setErrorHandler(const MSExprType type, MSSelectionErrorHandler* mssEH,
-			 const Bool overRide=True);
+			 const bool overRide=true);
     
     // Initialize the error handler.  This is set the error-handler to
     // the user supplied error handler via setErrorHandler() or to the
@@ -591,14 +591,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     // Set into the order of the selection expression
-    Bool setOrder(MSSelection::MSExprType type);
+    bool setOrder(MSSelection::MSExprType type);
     
     // Initialize from a Record representing a selection
     // item from the user interface or CLI
     void fromSelectionItem(const Record& selectionItem);
     
     // Check if record field exists and is not unset
-    Bool definedAndSet(const Record& inpRec, const String& fieldName);
+    bool definedAndSet(const Record& inpRec, const String& fieldName);
     
     // Convert an MS select string to TaQL
     //   const String msToTaQL(const String& msSelect) {};
@@ -619,19 +619,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String observationExpr_p;
     String feedExpr_p;
     // Priority
-    Vector<Int> exprOrder_p;
-    Vector<Int> antenna1IDs_p,antenna2IDs_p,fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p,
+    Vector<int32_t> exprOrder_p;
+    Vector<int32_t> antenna1IDs_p,antenna2IDs_p,fieldIDs_p, spwIDs_p, scanIDs_p, arrayIDs_p,
       ddIDs_p,stateObsModeIDs_p, observationIDs_p, spwDDIDs_p, feed1IDs_p, feed2IDs_p;
-    Matrix<Int> chanIDs_p;
-    Matrix<Int> baselineIDs_p;
-    Matrix<Int> feedPairIDs_p;
-    Matrix<Double> selectedTimesList_p;
-    Matrix<Double> selectedUVRange_p;
-    Vector<Bool> selectedUVUnits_p;
-    std::map<Int, Vector<Int> > selectedPolMap_p;
-    std::map<Int, Vector<Vector<Int> > > selectedSetupMap_p;
-    Int maxScans_p, maxObs_p, maxArray_p;
-    Bool isMS_p,toTENCalled_p;
+    Matrix<int32_t> chanIDs_p;
+    Matrix<int32_t> baselineIDs_p;
+    Matrix<int32_t> feedPairIDs_p;
+    Matrix<double> selectedTimesList_p;
+    Matrix<double> selectedUVRange_p;
+    Vector<bool> selectedUVUnits_p;
+    std::map<int32_t, Vector<int32_t> > selectedPolMap_p;
+    std::map<int32_t, Vector<Vector<int32_t> > > selectedSetupMap_p;
+    int32_t maxScans_p, maxObs_p, maxArray_p;
+    bool isMS_p,toTENCalled_p;
   };
   
 } //# NAMESPACE CASACORE - END

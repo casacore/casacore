@@ -31,7 +31,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   FileUnbufferedIO::FileUnbufferedIO (const RegularFile& fileName,
                                       ByteIO::OpenOption option,
-                                      Bool useODirect)
+                                      bool useODirect)
     : itsUseODirect (useODirect)
   {
     attach (RegularFileIO::openCreate (fileName, option, useODirect),

@@ -64,7 +64,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::ITRF, frame);
       MVDirection mvd(obs.getValue());
-      EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"),
 			      frame);
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -78,7 +78,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
       MVDirection mvd(Quantity(0, "deg"), Quantity(90, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"),
 			      obs, MEpoch(MVEpoch(dat.day())));
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -91,12 +91,12 @@ int main() {
      cout << "----------- Along field ------" << endl;
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
-      Vector<Double> xvd(3);
+      Vector<double> xvd(3);
       xvd(0) = 18312;
       xvd(1) =  -381;
       xvd(2) = 45184;
       MVDirection mvd(xvd);
-      EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"),
 			      obs, MEpoch(MVEpoch(dat.day())));
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -110,7 +110,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::HADEC, frame);
       MVDirection mvd(Quantity(0, "deg"), Quantity( 52.7316, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"),
 			      obs, MEpoch(MVEpoch(dat.day())));
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -124,7 +124,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
       MVDirection mvd(Quantity(0, "deg"), Quantity(45, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(0, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(0, "km"),
 			      frame);
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -138,7 +138,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
       MVDirection mvd(Quantity(0, "deg"), Quantity(45, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(200, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(200, "km"),
 			      frame);
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -152,7 +152,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
       MVDirection mvd(Quantity(0, "deg"), Quantity(0, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(200, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(200, "km"),
 			      frame);
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -166,7 +166,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
       MVDirection mvd(Quantity(90, "deg"), Quantity(5, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(200, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(200, "km"),
 			      frame);
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -180,7 +180,7 @@ int main() {
     {
       MDirection::Ref mvref(MDirection::AZEL, frame);
       MVDirection mvd(Quantity(-90, "deg"), Quantity(5, "deg"));
-      EarthMagneticMachine fm(mvref, Quantum<Double>(200, "km"),
+      EarthMagneticMachine fm(mvref, Quantum<double>(200, "km"),
 			      frame);
       fm.calculate(mvd);
       cout << "LOS:           " << fm.getLOSField() << endl;
@@ -215,7 +215,7 @@ int main() {
       fm2.calculate(mvd);
       cout << "LOS:           " << fm2("G") << endl;
       cout << "------------- iterate height ------------" << endl;
-      Quantum<Double> qhgt(200, "km"); 
+      Quantum<double> qhgt(200, "km"); 
       cout << "LOS:           " << fm1("G") << endl;
       cout << "LOS:           " << fm1(qhgt) << endl;
       cout << "LOS:           " << fm1(qhgt, "G") << endl;
@@ -223,11 +223,11 @@ int main() {
       cout << "Long:          " << fm1.getLong("deg") << endl;
       cout << "Field:         " << fm1.getField() << endl;
       cout << "Pos:           " << fm1.getPosition() << endl;
-      qhgt = Quantum<Double>(190, "km");
+      qhgt = Quantum<double>(190, "km");
       cout << "LOS 190:       " << fm1(qhgt, "G") << endl;
-      qhgt = Quantum<Double>(200, "km");
+      qhgt = Quantum<double>(200, "km");
       cout << "LOS 200:       " << fm1(qhgt, "G") << endl;
-      qhgt = Quantum<Double>(210, "km");
+      qhgt = Quantum<double>(210, "km");
       cout << "LOS 210:       " << fm1(qhgt, "G") << endl;
     }
     

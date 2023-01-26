@@ -60,7 +60,7 @@ int main() {
 
 
 
-        Bool except = False;
+        bool except = false;
         try {
             // bogus units
             majAx = Quantity(4, "m");
@@ -69,10 +69,10 @@ int main() {
         }
         catch (std::exception& x) {
             cout << "Exception thrown as expected: " << x.what() << endl;
-            except = True;
+            except = true;
         }
         AlwaysAssert(except, AipsError);
-        except = False;
+        except = false;
         try {
             // major smaller than minor
             majAx = Quantity(2, "arcsec");
@@ -81,7 +81,7 @@ int main() {
         }
         catch (std::exception& x) {
             cout << "Exception thrown as expected: " << x.what() << endl;
-            except = True;
+            except = true;
         }
         AlwaysAssert(except, AipsError);
 
@@ -90,14 +90,14 @@ int main() {
         minAx = majAx;
         beam = GaussianBeam(majAx, minAx, pa);
         AlwaysAssert(beam.getArea("arcsec2") == Quantity(C::pi/4/C::ln2), AipsError);
-        except = False;
+        except = false;
         try {
             // bogus units
             beam.getArea("arcsec");
         }
         catch (std::exception& x) {
             cout << "Exception thrown as expected: " << x.what() << endl;
-            except = True;
+            except = true;
         }
         AlwaysAssert(except, AipsError);
 
@@ -105,7 +105,7 @@ int main() {
         Record rec = beam.toRecord();
         beam2 = GaussianBeam::fromRecord(rec);
         AlwaysAssert(beam == beam2, AipsError);
-        except = False;
+        except = false;
         try {
             // bogus record
             rec.define("bogus", 5);
@@ -114,7 +114,7 @@ int main() {
         }
         catch (std::exception& x) {
             cout << "Exception thrown as expected: " << x.what() << endl;
-            except = True;
+            except = true;
         }
         AlwaysAssert(except, AipsError);
         Vector<Quantity> v(3);
@@ -129,16 +129,16 @@ int main() {
         AlwaysAssert(beam4 == beam3, AipsError);
         {
             cout << "Test  setPA() and getPA() using unwrapping" << endl;
-            Double u = 60;
-            for (Double d=-660; d<=660; d+=30, u+=30) {
+            double u = 60;
+            for (double d=-660; d<=660; d+=30, u+=30) {
                 if (u > 90) {
                     u -= 180;
                 }
-                beam.setPA(Quantity(d, "deg"), False);
-                AlwaysAssert(beam.getPA(False).getValue("deg") == d, AipsError);
-                AlwaysAssert(beam.getPA(True).getValue("deg") == u, AipsError);
-                beam.setPA(Quantity(d, "deg"), True);
-                AlwaysAssert(beam.getPA(False).getValue("deg") == u, AipsError);
+                beam.setPA(Quantity(d, "deg"), false);
+                AlwaysAssert(beam.getPA(false).getValue("deg") == d, AipsError);
+                AlwaysAssert(beam.getPA(true).getValue("deg") == u, AipsError);
+                beam.setPA(Quantity(d, "deg"), true);
+                AlwaysAssert(beam.getPA(false).getValue("deg") == u, AipsError);
             }
         }
         {
@@ -148,63 +148,63 @@ int main() {
             static const Quantity qok(2, "arcsec");
             try {
                 GaussianBeam badBeam(inf, qok, qok);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 GaussianBeam badBeam(nan, qok, qok);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 GaussianBeam badBeam(qok, inf, qok);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 GaussianBeam badBeam(qok, nan, qok);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 GaussianBeam badBeam(qok, qok, inf);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 GaussianBeam badBeam(qok, qok, nan);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             GaussianBeam bok(qok, qok, qok);
             try {
                 bok.setMajorMinor(inf, qok);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 bok.setMajorMinor(nan, qok);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 bok.setMajorMinor(qok, inf);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 bok.setMajorMinor(qok, nan);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 bok.setPA(inf);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
             try {
                 bok.setPA(nan);
-                AlwaysAssert(False, AipsError);
+                AlwaysAssert(false, AipsError);
             }
             catch (const std::exception& x) {}
 

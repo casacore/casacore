@@ -56,11 +56,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-//    void func(Int *ptr); // some other function that takes a pointer
+//    void func(int32_t *ptr); // some other function that takes a pointer
 //    // ...
-//    // True below means it's an array, False (the default) would mean
+//    // true below means it's an array, false (the default) would mean
 //    // a singleton object.
-//    PtrHolder<Int> iholder(new Int[10000], True);
+//    PtrHolder<int32_t> iholder(new int32_t[10000], true);
 //    func(iholder);                           // converts automatically to ptr
 //    (iholder.ptr() + 5) = 11;                // use pointer explicitly
 //    some_function_that_throws_exception();   // pointer is deleted
@@ -86,7 +86,7 @@ public:
     // been allocated from <src>new</src>, since the destructor will
     // call <src>delete</src> on it. If the pointer is to an array,
     // i.e. allocated with operator <src>new[]</src>, then
-    // <src>isCarray</src> should be set to True. (This parameter is
+    // <src>isCarray</src> should be set to true. (This parameter is
     // required because C-arrays need to be deleted with
     // <src>delete[]</src>.)
     //
@@ -94,21 +94,21 @@ public:
     // not manually delete the pointer; the <src>PtrHolder</src>
     // object will do that, unless <src>set()</src> or
     // <src>clear()</src> is called with <src>deleteCurrentPtr</src>
-    // set to False. The pointer must also only be put into
+    // set to false. The pointer must also only be put into
     // <em>one</em> holder to avoid double deletion.
-    PtrHolder(T *pointer, Bool isCArray = False);
+    PtrHolder(T *pointer, bool isCArray = false);
 
     ~PtrHolder();
 
     // Set the pointer to a new value. If <src>deleteCurrentPtr </src>is
-    // True (the default), then delete the existing pointer first. If
-    // <src>isCarray</src> is True, then the new pointer is assumed to
+    // true (the default), then delete the existing pointer first. If
+    // <src>isCarray</src> is true, then the new pointer is assumed to
     // have been allocated with <src>new[]</src>.
-    void set(T *pointer, Bool isCarray = False, Bool deleteCurrentPtr = True);
+    void set(T *pointer, bool isCarray = false, bool deleteCurrentPtr = true);
 
-    // Set the current pointer to null; if <src>deletePtr</src> is True
+    // Set the current pointer to null; if <src>deletePtr</src> is true
     // (the default), then the current pointer is deleted first.
-    void clear(Bool deleteCurrentPtr = True);
+    void clear(bool deleteCurrentPtr = true);
 
     // Release the pointer for use.
     // <group>
@@ -128,7 +128,7 @@ public:
       { return ptr_p; }
 
     // See if the pointer points to a C-array.
-    Bool isCArray() const {return isCarray_p;}
+    bool isCArray() const {return isCarray_p;}
 
 private:
     //# Undefined and inaccessible
@@ -144,7 +144,7 @@ private:
 
     T *ptr_p;
     //# If space were critical, we could make isCarray_p a char
-    Bool isCarray_p;
+    bool isCarray_p;
 };
 
 
@@ -172,9 +172,9 @@ private:
 // <srcblock>
 //    void func(Table *ptr); // some other function that takes a pointer
 //    // ...
-//    // True below means it's an array, False (the default) would mean
+//    // true below means it's an array, false (the default) would mean
 //    // a singleton object.
-//    SPtrHolder<Int> iholder(new Table(...));
+//    SPtrHolder<int32_t> iholder(new Table(...));
 //    func(iholder);                           // converts automatically to ptr
 //    Table* tab = iholder.transfer();         // transfer ownership
 // </srcblock>

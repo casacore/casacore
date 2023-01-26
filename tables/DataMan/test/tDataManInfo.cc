@@ -43,10 +43,10 @@ using namespace std;
 void testDM()
 {
     TableDesc td;
-    td.addColumn(ScalarColumnDesc<Int>("col1"));
-    td.addColumn(ScalarColumnDesc<Int>("col2"));
-    td.addColumn(ScalarColumnDesc<Int>("col3"));
-    td.addColumn(ArrayColumnDesc<Int>("col4"));
+    td.addColumn(ScalarColumnDesc<int32_t>("col1"));
+    td.addColumn(ScalarColumnDesc<int32_t>("col2"));
+    td.addColumn(ScalarColumnDesc<int32_t>("col3"));
+    td.addColumn(ArrayColumnDesc<int32_t>("col4"));
     // Now create a new table from the description.
     SetupNewTable aNewTab("tTableCopy_tmp.dm", td, Table::New);
     Table tabl(aNewTab);
@@ -106,7 +106,7 @@ void finalizeTestNonEmpty()
     AlwaysAssertExit (rec.nfields() == 0);
   }
   TableDesc desc;
-  desc.addColumn (ScalarColumnDesc<Int>("col1"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col1"));
   Record rec;
   DataManInfo::mergeInfo (rec, dminfo);
   rec = DataManInfo::finalizeMerge (desc, dminfo);
@@ -123,14 +123,14 @@ void largeTest()
 {
   // Create a table description with various data manager types and names.
   TableDesc desc;
-  desc.addColumn (ScalarColumnDesc<Int>("col1"));
-  desc.addColumn (ScalarColumnDesc<Int>("col2", "", "dmtype1", "dmname1"));
-  desc.addColumn (ScalarColumnDesc<Int>("col3", "", "dmtype2", ""));
-  desc.addColumn (ScalarColumnDesc<Int>("col4", "", "dmtype1", "dmname2"));
-  desc.addColumn (ScalarColumnDesc<Int>("col5", "", "", "dmname3"));
-  desc.addColumn (ScalarColumnDesc<Int>("col6"));
-  desc.addColumn (ScalarColumnDesc<Int>("col7"));
-  desc.addColumn (ScalarColumnDesc<Int>("col8"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col1"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col2", "", "dmtype1", "dmname1"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col3", "", "dmtype2", ""));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col4", "", "dmtype1", "dmname2"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col5", "", "", "dmname3"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col6"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col7"));
+  desc.addColumn (ScalarColumnDesc<int32_t>("col8"));
   Record dminfoRes;
   {
     // Create a dminfo object for a few columns.

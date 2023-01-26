@@ -74,7 +74,7 @@ namespace casacore {
                        const StorageOption& storageOption,
                        const Record& dmInfo,
                        const TableLock& lockOptions,
-                       rownr_t nrrow, Bool initialize,
+                       rownr_t nrrow, bool initialize,
                        Table::EndianFormat endian,
                        const TSMOption& tsmOpt)
     {
@@ -104,12 +104,12 @@ namespace casacore {
                           const StorageOption& storageOption,
                           const Record& dmInfo,
                           const TableLock& lockOptions,
-                          rownr_t nrrow, Bool initialize,
+                          rownr_t nrrow, bool initialize,
                           Table::EndianFormat endian,
                           const TSMOption& tsmOpt)
     {
       // See if the subtable and its keyword already exist.
-      Int inx = parent.keywordSet().fieldNumber(subName);
+      int32_t inx = parent.keywordSet().fieldNumber(subName);
       if (inx >= 0) {
         if (parent.keywordSet().type(inx) != TpTable) {
           throw TableError("Subtable " + subName + " cannot be created in " +
@@ -134,14 +134,14 @@ namespace casacore {
       return subtab;
     }
 
-    Bool canDeleteTable (const String& tableName, Bool checkSubTables)
+    bool canDeleteTable (const String& tableName, bool checkSubTables)
     {
       String message;
       return canDeleteTable (message, tableName, checkSubTables);
     }
     
-    Bool canDeleteTable (String& message, const String& tableName,
-                         Bool checkSubTables, Bool splitColons)
+    bool canDeleteTable (String& message, const String& tableName,
+                         bool checkSubTables, bool splitColons)
     {
       if (splitColons) {
         std::pair<Table,String> t = findParentTable (tableName);
@@ -152,36 +152,36 @@ namespace casacore {
       String tabName = Path(tableName).absoluteName();
       if (! Table::isWritable (tabName)) {
         message = "table is not writable";
-        return False;
+        return false;
       }
       if (Table::isOpened (tabName)) {
         message = "table is still open in this process";
-        return False;
+        return false;
       }
       Table table(tabName);
       if (table.isMultiUsed()) {
         message = "table is still open in another process";
-        return False;
+        return false;
       }
-      if (checkSubTables  &&  table.isMultiUsed(True)) {
+      if (checkSubTables  &&  table.isMultiUsed(true)) {
         message = "a subtable of the table is still open in another process";
-        return False;
+        return false;
       }
-      return True;
+      return true;
     }
 
-    Bool canDeleteSubTable (String& message, const Table& parent,
+    bool canDeleteSubTable (String& message, const Table& parent,
                             const String& subtableName,
-                            Bool checkSubTables)
+                            bool checkSubTables)
     {
       // Get the full table name of the subtable.
       // Note: the temporary Table object is deleted before canDeleteTable.
       // Otherwise isOpened() used internally would be true.
       const String fullName (parent.keywordSet().asTable(subtableName).tableName());
-      return canDeleteTable (message, fullName, checkSubTables, False);
+      return canDeleteTable (message, fullName, checkSubTables, false);
     }
 
-    void deleteTable (const String& tableName, Bool checkSubTables)
+    void deleteTable (const String& tableName, bool checkSubTables)
     {
       // Check that the name is not empty, because making it absolute results in /
       if (tableName.empty()) {
@@ -208,7 +208,7 @@ namespace casacore {
     }
 
 
-    void deleteSubTable (Table& parent, const String& subtableName, Bool checkSubTables)
+    void deleteSubTable (Table& parent, const String& subtableName, bool checkSubTables)
     {
       String message;
       if (! canDeleteSubTable (message, parent, subtableName, checkSubTables)) {
@@ -219,7 +219,7 @@ namespace casacore {
       Table subtab = parent.keywordSet().asTable(subtableName);
       subtab.markForDelete();
       // If there, remove the keyword referring the subtable.
-      Int inx = parent.keywordSet().fieldNumber(subtableName);
+      int32_t inx = parent.keywordSet().fieldNumber(subtableName);
       if (inx >= 0) {
         if (parent.keywordSet().type(inx) == TpTable) {
           parent.reopenRW();
@@ -232,10 +232,10 @@ namespace casacore {
     rownr_t getLayout (TableDesc& desc, const String& tableName)
     {
       rownr_t nrow;
-      uInt format;
+      uint32_t format;
       String tp;
       AipsIO ios (Table::fileName(getFullName(tableName)));
-      uInt version = ios.getstart ("Table");
+      uint32_t version = ios.getstart ("Table");
       if (version > 3) {
         throw TableError ("Table version " + String::toString(version) +
                           " not supported by TableUtil in this version of Casacore");
@@ -243,7 +243,7 @@ namespace casacore {
       if (version > 2) {
         ios >> nrow;
       } else {
-        uInt n;
+        uint32_t n;
         ios >> n;
         nrow = n;
       }
@@ -305,7 +305,7 @@ namespace casacore {
           // Get name of last subtable.
           lastPart = names[names.size()-1];
           // Check if all subtables exist, except last one.
-          for (uInt i=1; i<names.size()-1; ++i) {
+          for (uint32_t i=1; i<names.size()-1; ++i) {
             if (! tab.keywordSet().isDefined(names[i])) {
               msg = "subtable " + names[i] + " is unknown";
               break;

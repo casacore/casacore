@@ -40,9 +40,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   VirtualTaQLColumn::VirtualTaQLColumn (const String& expr, const String& style)
 : itsDataType     (TpOther),
-  itsIsArray      (False),
-  itsIsConst      (False),
-  itsTempWritable (False),
+  itsIsArray      (false),
+  itsIsConst      (false),
+  itsTempWritable (false),
   itsExpr         (expr),
   itsStyle        (style),
   itsNode         (0),
@@ -52,9 +52,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 VirtualTaQLColumn::VirtualTaQLColumn (const Record& spec)
 : itsDataType     (TpOther),
-  itsIsArray      (False),
-  itsIsConst      (False),
-  itsTempWritable (False),
+  itsIsArray      (false),
+  itsIsConst      (false),
+  itsTempWritable (false),
   itsNode         (0),
   itsCurArray     (0),
   itsCurRow       (-1)
@@ -79,31 +79,31 @@ void VirtualTaQLColumn::makeCurArray()
   itsCurArray = 0;
   switch (itsDataType) {
   case TpBool:
-    itsCurArray = new Array<Bool>();
+    itsCurArray = new Array<bool>();
     break;
   case TpUChar:
-    itsCurArray = new Array<uChar>();
+    itsCurArray = new Array<unsigned char>();
     break;
   case TpShort:
-    itsCurArray = new Array<Short>();
+    itsCurArray = new Array<int16_t>();
     break;
   case TpUShort:
-    itsCurArray = new Array<uShort>();
+    itsCurArray = new Array<uint16_t>();
     break;
   case TpInt:
-    itsCurArray = new Array<Int>();
+    itsCurArray = new Array<int32_t>();
     break;
   case TpUInt:
-    itsCurArray = new Array<uInt>();
+    itsCurArray = new Array<uint32_t>();
     break;
   case TpInt64:
-    itsCurArray = new Array<Int64>();
+    itsCurArray = new Array<int64_t>();
     break;
   case TpFloat:
-    itsCurArray = new Array<Float>();
+    itsCurArray = new Array<float>();
     break;
   case TpDouble:
-    itsCurArray = new Array<Double>();
+    itsCurArray = new Array<double>();
     break;
   case TpComplex:
     itsCurArray = new Array<Complex>();
@@ -131,7 +131,7 @@ DataManagerColumn* VirtualTaQLColumn::makeScalarColumn (const String& name,
 {
   AlwaysAssert (dataType!=TpOther, AipsError);
   itsDataType   = dataType;
-  itsIsArray    = False;
+  itsIsArray    = false;
   itsColumnName = name;
   return this;
 }
@@ -142,7 +142,7 @@ DataManagerColumn* VirtualTaQLColumn::makeIndArrColumn (const String& name,
 {
   AlwaysAssert (dataType!=TpOther, AipsError);
   itsDataType   = dataType;
-  itsIsArray    = True;
+  itsIsArray    = true;
   itsColumnName = name;
   return this;
 }
@@ -152,9 +152,9 @@ void VirtualTaQLColumn::create64 (rownr_t)
 {
   // Define a keyword in the column telling the expression.
   // The table has to be writable for this operation only; otherwise it is not writable.
-  itsTempWritable = True;
+  itsTempWritable = true;
   TableColumn tabcol (table(), itsColumnName);
-  itsTempWritable = False;
+  itsTempWritable = false;
   tabcol.rwKeywordSet().define ("_VirtualTaQLEngine_CalcExpr", itsExpr);
   tabcol.rwKeywordSet().define ("_VirtualTaQLEngine_Style", itsStyle);
 }
@@ -250,7 +250,7 @@ void VirtualTaQLColumn::setShapeColumn (const IPosition& aShape)
   itsShape = aShape;
 }
 
-void VirtualTaQLColumn::setMaxLength (uInt maxLength)
+void VirtualTaQLColumn::setMaxLength (uint32_t maxLength)
 {
   itsMaxLen = maxLength;
 }
@@ -260,14 +260,14 @@ int VirtualTaQLColumn::dataType() const
   return itsDataType;
 }
 
-Bool VirtualTaQLColumn::isWritable() const
+bool VirtualTaQLColumn::isWritable() const
 {
-  // This is always False except temporarily in function create64 to define a keyword.
+  // This is always false except temporarily in function create64 to define a keyword.
   return itsTempWritable;
 }
 
 
-uInt VirtualTaQLColumn::ndim (rownr_t rownr)
+uint32_t VirtualTaQLColumn::ndim (rownr_t rownr)
 {
   return shape(rownr).nelements();
 }
@@ -290,43 +290,43 @@ IPosition VirtualTaQLColumn::shape (rownr_t rownr)
   return itsCurArray->shape();
 }
 
-Bool VirtualTaQLColumn::isShapeDefined (rownr_t)
+bool VirtualTaQLColumn::isShapeDefined (rownr_t)
 {
-  return True;
+  return true;
 }
 
 
-void VirtualTaQLColumn::getBool (rownr_t rownr, Bool* dataPtr)
+void VirtualTaQLColumn::getBool (rownr_t rownr, bool* dataPtr)
 {
   *dataPtr = itsNode->getBool (rownr);
 }
-void VirtualTaQLColumn::getuChar (rownr_t rownr, uChar* dataPtr)
+void VirtualTaQLColumn::getuChar (rownr_t rownr, unsigned char* dataPtr)
 {
-  *dataPtr = uChar(itsNode->getInt (rownr));
+  *dataPtr = static_cast<unsigned char>(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getShort (rownr_t rownr, Short* dataPtr)
+void VirtualTaQLColumn::getShort (rownr_t rownr, int16_t* dataPtr)
 {
-  *dataPtr = Short(itsNode->getInt (rownr));
+  *dataPtr = int16_t(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getuShort (rownr_t rownr, uShort* dataPtr)
+void VirtualTaQLColumn::getuShort (rownr_t rownr, uint16_t* dataPtr)
 {
-  *dataPtr = uShort(itsNode->getInt (rownr));
+  *dataPtr = uint16_t(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getInt (rownr_t rownr, Int* dataPtr)
+void VirtualTaQLColumn::getInt (rownr_t rownr, int32_t* dataPtr)
 {
-  *dataPtr = Int(itsNode->getInt (rownr));
+  *dataPtr = int32_t(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getuInt (rownr_t rownr, uInt* dataPtr)
+void VirtualTaQLColumn::getuInt (rownr_t rownr, uint32_t* dataPtr)
 {
-  *dataPtr = uInt(itsNode->getInt (rownr));
+  *dataPtr = uint32_t(itsNode->getInt (rownr));
 }
-void VirtualTaQLColumn::getInt64 (rownr_t rownr, Int64* dataPtr)
+void VirtualTaQLColumn::getInt64 (rownr_t rownr, int64_t* dataPtr)
 {
   *dataPtr = itsNode->getInt (rownr);
 }
 void VirtualTaQLColumn::getfloat (rownr_t rownr, float* dataPtr)
 {
-  *dataPtr = Float(itsNode->getDouble (rownr));
+  *dataPtr = float(itsNode->getDouble (rownr));
 }
 void VirtualTaQLColumn::getdouble (rownr_t rownr, double* dataPtr)
 {
@@ -366,70 +366,70 @@ void VirtualTaQLColumn::getResult (rownr_t rownr)
   switch (itsDataType) {
   case TpBool:
     {
-      Array<Bool> arr = itsNode->getArrayBool (rownr);
-      Array<Bool>& out = *static_cast<Array<Bool>*>(itsCurArray);
+      Array<bool> arr = itsNode->getArrayBool (rownr);
+      Array<bool>& out = *static_cast<Array<bool>*>(itsCurArray);
       out.reference (arr);
       break;
     }
   case TpUChar:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uChar>& out = *static_cast<Array<uChar>*>(itsCurArray);
+      Array<int64_t> arr = itsNode->getArrayInt (rownr);
+      Array<unsigned char>& out = *static_cast<Array<unsigned char>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
     }
   case TpShort:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Short>& out = *static_cast<Array<Short>*>(itsCurArray);
+      Array<int64_t> arr = itsNode->getArrayInt (rownr);
+      Array<int16_t>& out = *static_cast<Array<int16_t>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
     }
   case TpUShort:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uShort>& out = *static_cast<Array<uShort>*>(itsCurArray);
+      Array<int64_t> arr = itsNode->getArrayInt (rownr);
+      Array<uint16_t>& out = *static_cast<Array<uint16_t>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
     }
   case TpInt:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<Int>& out = *static_cast<Array<Int>*>(itsCurArray);
+      Array<int64_t> arr = itsNode->getArrayInt (rownr);
+      Array<int32_t>& out = *static_cast<Array<int32_t>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
     }
   case TpUInt:
     {
-      Array<Int64> arr = itsNode->getArrayInt (rownr);
-      Array<uInt>& out = *static_cast<Array<uInt>*>(itsCurArray);
+      Array<int64_t> arr = itsNode->getArrayInt (rownr);
+      Array<uint32_t>& out = *static_cast<Array<uint32_t>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
     }
   case TpInt64:
     {
-      Array<Int64> arr  = itsNode->getArrayInt (rownr);
-      Array<Int64>& out = *static_cast<Array<Int64>*>(itsCurArray);
+      Array<int64_t> arr  = itsNode->getArrayInt (rownr);
+      Array<int64_t>& out = *static_cast<Array<int64_t>*>(itsCurArray);
       out.reference (arr);
       break;
     }
   case TpFloat:
     {
-      Array<Double> arr = itsNode->getArrayDouble (rownr);
-      Array<Float>& out = *static_cast<Array<Float>*>(itsCurArray);
+      Array<double> arr = itsNode->getArrayDouble (rownr);
+      Array<float>& out = *static_cast<Array<float>*>(itsCurArray);
       out.resize (arr.shape());
       convertArray (out, arr);
       break;
     }
   case TpDouble:
     {
-      Array<Double> arr  = itsNode->getArrayDouble (rownr);
-      Array<Double>& out = *static_cast<Array<Double>*>(itsCurArray);
+      Array<double> arr  = itsNode->getArrayDouble (rownr);
+      Array<double>& out = *static_cast<Array<double>*>(itsCurArray);
       out.reference (arr);
       break;
     }
@@ -542,35 +542,35 @@ void VirtualTaQLColumn::fillColumnCache()
 
 void VirtualTaQLColumn::fillArray (ArrayBase& arr)
 {
-  Bool deleteIt;
+  bool deleteIt;
   void* ptr = arr.getVStorage (deleteIt);
   switch (itsDataType) {
   case TpBool:
-    objset (static_cast<Bool*>(ptr), itsBool, arr.size());
+    objset (static_cast<bool*>(ptr), itsBool, arr.size());
     break;
   case TpUChar:
-    objset (static_cast<uChar*>(ptr), itsuChar, arr.size());
+    objset (static_cast<unsigned char*>(ptr), itsuChar, arr.size());
     break;
   case TpShort:
-    objset (static_cast<Short*>(ptr), itsShort, arr.size());
+    objset (static_cast<int16_t*>(ptr), itsShort, arr.size());
     break;
   case TpUShort:
-    objset (static_cast<uShort*>(ptr), itsuShort, arr.size());
+    objset (static_cast<uint16_t*>(ptr), itsuShort, arr.size());
     break;
   case TpInt:
-    objset (static_cast<Int*>(ptr), itsInt, arr.size());
+    objset (static_cast<int32_t*>(ptr), itsInt, arr.size());
     break;
   case TpUInt:
-    objset (static_cast<uInt*>(ptr), itsuInt, arr.size());
+    objset (static_cast<uint32_t*>(ptr), itsuInt, arr.size());
     break;
   case TpInt64:
-    objset (static_cast<Int64*>(ptr), itsInt64, arr.size());
+    objset (static_cast<int64_t*>(ptr), itsInt64, arr.size());
     break;
   case TpFloat:
-    objset (static_cast<Float*>(ptr), itsFloat, arr.size());
+    objset (static_cast<float*>(ptr), itsFloat, arr.size());
     break;
   case TpDouble:
-    objset (static_cast<Double*>(ptr), itsDouble, arr.size());
+    objset (static_cast<double*>(ptr), itsDouble, arr.size());
     break;
   case TpComplex:
     objset (static_cast<Complex*>(ptr), itsComplex, arr.size());

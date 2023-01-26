@@ -84,7 +84,7 @@ public:
   ~NNLSMatrixSolver();
   
   // Solve for the X vector.
-  Bool solve();
+  bool solve();
   
 protected:
 

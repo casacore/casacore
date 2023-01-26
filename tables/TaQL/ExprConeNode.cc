@@ -36,8 +36,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
                                       const TableExprNodeSet& source,
                                       const vector<TENShPtr>& nodes,
-                                      const Block<Int>& dtypeOper,
-                                      uInt origin)
+                                      const Block<int32_t>& dtypeOper,
+                                      uint32_t origin)
   : TableExprFuncNode (ftype, dtype, VTScalar, source, nodes, dtypeOper),
     origin_p          (origin)
 {}
@@ -45,7 +45,7 @@ TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
 TableExprConeNode::~TableExprConeNode()
 {}
 
-Bool TableExprConeNode::getBool (const TableExprId& id)
+bool TableExprConeNode::getBool (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::anyconeFUNC:
@@ -59,19 +59,19 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
         throw TableInvExpr("Second ANYCONE argument "
                            "must have multiple of 3 values");
       }
-      Bool deleteSrc, deleteCone;
+      bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       const double ra  = src[0];
       const double dec = src[1];
-      Bool res = False;
+      bool res = false;
       for (size_t i=0; i<coneArr.nelements(); i+=3) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         const double radius  = cone[i+2];
         if (cos(radius) <= (sin(decCone) * sin(dec) +
                             cos(decCone) * cos(dec) * cos(raCone-ra))) {
-          res = True;
+          res = true;
           break;
         }
       }
@@ -90,7 +90,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
         throw TableInvExpr("Second CONES argument "
                            "must have multiple of 3 values");
       }
-      Bool deleteSrc, deleteCone;
+      bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       const double ra      = src[0];
@@ -98,7 +98,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       const double raCone  = cone[0];
       const double decCone = cone[1];
       const double radius  = cone[2];
-      Bool res = (cos(radius) <= (sin(decCone) * sin(dec) +
+      bool res = (cos(radius) <= (sin(decCone) * sin(dec) +
                                   cos(decCone) * cos(dec) * cos(raCone - ra)));
       srcArr.freeStorage (src, deleteSrc);
       coneArr.freeStorage (cone, deleteCone);
@@ -127,7 +127,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
         radval = operands()[2]->getDouble(id);
         rad = &radval;
       }
-      Bool deleteSrc, deleteCone, deleteRad;
+      bool deleteSrc, deleteCone, deleteRad;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       if (rad != &radval) {
@@ -135,16 +135,16 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       }
       const double ra  = src[0];
       const double dec = src[1];
-      Bool res = False;
+      bool res = false;
       for (size_t i=0; i<coneArr.nelements(); i+=2) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         double dist = (sin(decCone) * sin(dec) +
                        cos(decCone) * cos(dec) * cos(raCone-ra));
-        for (Int k=0; k<nrrad; k++) {
+        for (int32_t k=0; k<nrrad; k++) {
           const double radius  = rad[k];
           if (cos(radius) <= dist) {
-            res = True;
+            res = true;
             break;
           }
         }
@@ -169,7 +169,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
         throw TableInvExpr("Second CONES3 argument "
                            "must have multiple of 2 values");
       }
-      Bool deleteSrc, deleteCone;
+      bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       const double ra      = src[0];
@@ -177,7 +177,7 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
       const double raCone  = cone[0];
       const double decCone = cone[1];
       const double radius  = operands()[2]->getDouble(id);
-      Bool res = (cos(radius) <= (sin(decCone) * sin(dec) +
+      bool res = (cos(radius) <= (sin(decCone) * sin(dec) +
                                   cos(decCone) * cos(dec) * cos(raCone - ra)));
       srcArr.freeStorage (src, deleteSrc);
       coneArr.freeStorage (cone, deleteCone);
@@ -187,10 +187,10 @@ Bool TableExprConeNode::getBool (const TableExprId& id)
     throw (TableInvExpr ("TableExprConeNode::getBool, "
                          "unknown function"));
   }
-  return True;
+  return true;
 }
 
-Int64 TableExprConeNode::getInt (const TableExprId& id)
+int64_t TableExprConeNode::getInt (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::findconeFUNC:
@@ -205,12 +205,12 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
         throw TableInvExpr("Second FINDCONE argument "
                            "must have multiple of 3 values");
       }
-      Bool deleteSrc, deleteCone;
+      bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       const double ra  = src[0];
       const double dec = src[1];
-      Int64 res = -1;
+      int64_t res = -1;
       for (size_t i=0; i<coneArr.nelements(); i+=3) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
@@ -249,7 +249,7 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
         radval = operands()[2]->getDouble(id);
         rad = &radval;
       }
-      Bool deleteSrc, deleteCone, deleteRad;
+      bool deleteSrc, deleteCone, deleteRad;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       if (rad != &radval) {
@@ -257,13 +257,13 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
       }
       const double ra  = src[0];
       const double dec = src[1];
-      Int64 res = -1;
+      int64_t res = -1;
       for (size_t i=0; i<coneArr.nelements(); i+=2) {
         const double raCone  = cone[i];
         const double decCone = cone[i+1];
         double dist = (sin(decCone) * sin(dec) +
                        cos(decCone) * cos(dec) * cos(raCone-ra));
-        for (Int k=0; k<nrrad; k++) {
+        for (int32_t k=0; k<nrrad; k++) {
           const double radius  = rad[k];
           if (cos(radius) <= dist) {
             res = origin_p + k + nrrad*i/2;
@@ -288,27 +288,27 @@ Int64 TableExprConeNode::getInt (const TableExprId& id)
 
 
 TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
-                                 (Block<Int>& dtypeOper,
-                                  ValueType& resVT, Block<Int>&,
+                                 (Block<int32_t>& dtypeOper,
+                                  ValueType& resVT, Block<int32_t>&,
                                   FunctionType fType,
                                   const vector<TENShPtr>& nodes)
 {
   int nrarg = 3;
   switch (fType) {
   // The 2 argument cone functions accept arrays only.
-  // The result is a Bool scalar or array.
+  // The result is a bool scalar or array.
   case TableExprFuncNode::conesFUNC:
   case TableExprFuncNode::anyconeFUNC:
   case TableExprFuncNode::findconeFUNC:
     nrarg = 2;      // fall through
   // The 3 argument cone functions accept a scalar or array as the 3rd argument.
-  // The result is a Bool scalar or array.
+  // The result is a bool scalar or array.
   case TableExprFuncNode::cones3FUNC:
   case TableExprFuncNode::anycone3FUNC:
   case TableExprFuncNode::findcone3FUNC:
     {
       checkNumOfArg (nrarg, nrarg, nodes);
-      for (Int i=0; i<2; i++) {
+      for (int32_t i=0; i<2; i++) {
         if (nodes[i]->valueType() != VTArray) {
           throw TableInvExpr
             ("First 2 arguments of CONE functions must be double arrays");
@@ -317,8 +317,8 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
       // Result is a scalar or array.
       resVT = VTScalar;
       // Check the number of elements in the position node.
-      Int nvalPos = findNelem (nodes[0]);
-      Int nvalCone = findNelem (nodes[1]);
+      int32_t nvalPos = findNelem (nodes[0]);
+      int32_t nvalCone = findNelem (nodes[1]);
       // findcone returns an index value as integer.
       // This is a scalar if there is one source.
       if (fType == findconeFUNC  ||  fType == findcone3FUNC) {
@@ -345,9 +345,9 @@ TableExprNodeRep::NodeDataType TableExprConeNode::checkOperands
   }
 }
 
-Int TableExprConeNode::findNelem (const TENShPtr& node)
+int32_t TableExprConeNode::findNelem (const TENShPtr& node)
 {
-  Int64 nelem = -1;
+  int64_t nelem = -1;
   if (node->valueType() == VTSet) {
     const TableExprNodeSet* set =
       dynamic_cast<const TableExprNodeSet*>(node.get());
@@ -369,8 +369,8 @@ TableExprConeNodeArray::TableExprConeNodeArray (TableExprFuncNode::FunctionType 
                                                 NodeDataType dtype,
                                                 const TableExprNodeSet& source,
                                                 const vector<TENShPtr>& nodes,
-                                                const Block<Int>& dtypeOper,
-                                                uInt origin)
+                                                const Block<int32_t>& dtypeOper,
+                                                uint32_t origin)
   : TableExprFuncNodeArray (ftype, dtype, VTArray, source,
                             nodes, dtypeOper, TaQLStyle()),
     origin_p               (origin)
@@ -381,7 +381,7 @@ TableExprConeNodeArray::TableExprConeNodeArray (TableExprFuncNode::FunctionType 
 TableExprConeNodeArray::~TableExprConeNodeArray()
 {}
 
-MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::conesFUNC:
@@ -397,13 +397,13 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
                            "must have multiple of 3 values");
       }
       // The result shape is a matrix (#cones, #sources).
-      Int nsrc  = srcArr.nelements() / 2;
-      Int ncone = coneArr.nelements() / 3;
-      Array<Bool> resArr(IPosition(2,ncone,nsrc));
-      Bool deleteSrc, deleteCone;
+      int32_t nsrc  = srcArr.nelements() / 2;
+      int32_t ncone = coneArr.nelements() / 3;
+      Array<bool> resArr(IPosition(2,ncone,nsrc));
+      bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
-      Bool* res = resArr.data();
+      bool* res = resArr.data();
       for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double sindec = sin(src[j+1]);
@@ -418,7 +418,7 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
       }
       srcArr.freeStorage (src, deleteSrc);
       coneArr.freeStorage (cone, deleteCone);
-      return MArray<Bool>(resArr);
+      return MArray<bool>(resArr);
     }
   case TableExprFuncNode::cones3FUNC:
     {
@@ -445,16 +445,16 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
         rad = &radval;
       }
       // The result shape is a cube (#radii, #cones, #sources).
-      Int nsrc  = srcArr.nelements() / 2;
-      Int ncone = coneArr.nelements() / 2;
-      Bool deleteSrc, deleteCone, deleteRad;
+      int32_t nsrc  = srcArr.nelements() / 2;
+      int32_t ncone = coneArr.nelements() / 2;
+      bool deleteSrc, deleteCone, deleteRad;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       if (rad != &radval) {
         rad = radArr.getStorage (deleteRad);
       }
-      Array<Bool> resArr(IPosition(3,nrrad,ncone,nsrc));
-      Bool* res = resArr.data();
+      Array<bool> resArr(IPosition(3,nrrad,ncone,nsrc));
+      bool* res = resArr.data();
       for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double dec = src[j+1];
@@ -464,7 +464,7 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
           double dist = (sin(decCone) * sin(dec) +
                          cos(decCone) * cos(dec) * cos(raCone-ra));
 
-          for (Int k=0; k<nrrad; k++) {
+          for (int32_t k=0; k<nrrad; k++) {
             const double radius = rad[k];
             *res++ = cos(radius) <= dist;
           }
@@ -475,7 +475,7 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
       if (rad != &radval) {
         radArr.freeStorage (rad, deleteRad);
       }
-      return MArray<Bool>(resArr);
+      return MArray<bool>(resArr);
     }
   default:
     throw (TableInvExpr ("TableExprConeNodeArray::getArrayBool, "
@@ -483,7 +483,7 @@ MArray<Bool> TableExprConeNodeArray::getArrayBool (const TableExprId& id)
   }
 }
 
-MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
+MArray<int64_t> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
 {
   switch (funcType()) {
   case TableExprFuncNode::findconeFUNC:
@@ -507,11 +507,11 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
         shp = shpc;
         shp[0] = shp[0] / 2;
       }
-      Array<Int64> resArr(shp);
-      Bool deleteSrc, deleteCone;
+      Array<int64_t> resArr(shp);
+      bool deleteSrc, deleteCone;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
-      Int64* res = resArr.data();
+      int64_t* res = resArr.data();
       for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double dec = src[j+1];
@@ -530,7 +530,7 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       }
       srcArr.freeStorage (src, deleteSrc);
       coneArr.freeStorage (cone, deleteCone);
-      return MArray<Int64>(resArr);
+      return MArray<int64_t>(resArr);
     }
   case TableExprFuncNode::findcone3FUNC:
     {
@@ -564,12 +564,12 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
         shp = shpc;
         shp[0] = shp[0] / 2;
       }
-      Bool deleteSrc, deleteCone, deleteRad;
+      bool deleteSrc, deleteCone, deleteRad;
       const double* src  = srcArr.getStorage (deleteSrc);
       const double* cone = coneArr.getStorage (deleteCone);
       const double* rad = radArr.getStorage (deleteRad);
-      Array<Int64> resArr(shp);
-      Int64* res = resArr.data();
+      Array<int64_t> resArr(shp);
+      int64_t* res = resArr.data();
       for (size_t j=0; j<srcArr.nelements(); j+=2) {
         const double ra  = src[j];
         const double dec = src[j+1];
@@ -579,7 +579,7 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
           const double decCone = cone[i+1];
           double dist = (sin(decCone) * sin(dec) +
                          cos(decCone) * cos(dec) * cos(raCone-ra));
-          for (Int k=0; k<nrrad; k++) {
+          for (int32_t k=0; k<nrrad; k++) {
             if (cos(rad[k]) <= dist) {
               *res = origin_p + k + nrrad*i/2;
               break;
@@ -592,7 +592,7 @@ MArray<Int64> TableExprConeNodeArray::getArrayInt (const TableExprId& id)
       srcArr.freeStorage (src, deleteSrc);
       coneArr.freeStorage (cone, deleteCone);
       radArr.freeStorage (rad, deleteRad);
-      return MArray<Int64>(resArr);
+      return MArray<int64_t>(resArr);
     }
   default:
     throw (TableInvExpr ("TableExprConeNodeArray::getArrayInt, "

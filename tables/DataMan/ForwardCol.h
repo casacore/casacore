@@ -120,7 +120,7 @@ public:
 
 protected:
     // Do the preparation of the base class column object.
-    void basePrepare (const Table& thisTable, Bool writable);
+    void basePrepare (const Table& thisTable, bool writable);
 
     BaseColumn* colPtr() const
 	{ return colPtr_p; }
@@ -144,7 +144,7 @@ private:
 					Table::TableOption option);
 
     // This data manager may be able to handle changing array shapes.
-    Bool canChangeShape() const;
+    bool canChangeShape() const;
 
     // Get the data type of the column as defined in DataType.h.
     int dataType() const;
@@ -155,7 +155,7 @@ private:
     String dataTypeId() const;
 
     // Test if data can be put into this column.
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Set the shape of an direct array.
     // This only checks if the shape matches the referenced column.
@@ -165,23 +165,23 @@ private:
     void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (rownr_t rownr);
+    bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
-    uInt ndim (rownr_t rownr);
+    uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     IPosition shape (rownr_t rownr);
 
     // Get the scalar value with a standard data type in the given row.
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getBool     (rownr_t rownr, bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+    virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+    virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+    virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
     virtual void getfloat    (rownr_t rownr, float* dataPtr);
     virtual void getdouble   (rownr_t rownr, double* dataPtr);
     virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -194,13 +194,13 @@ private:
 
     // Put the scalar value with a standard data type into the given row.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putBool     (rownr_t rownr, const bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const unsigned char* dataPtr);
+    virtual void putShort    (rownr_t rownr, const int16_t* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uint16_t* dataPtr);
+    virtual void putInt      (rownr_t rownr, const int32_t* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uint32_t* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const int64_t* dataPtr);
     virtual void putfloat    (rownr_t rownr, const float* dataPtr);
     virtual void putdouble   (rownr_t rownr, const double* dataPtr);
     virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
@@ -339,7 +339,7 @@ private:
     TableColumn   refCol_p;            //# Column in referenced table
     //#                                    This is only filled in when
     //#                                    a new table is created.
-    Bool          writable_p;          //# True = column is writable
+    bool          writable_p;          //# true = column is writable
     Table         origTable_p;         //# The original table for this column
     BaseColumn*   colPtr_p;            //# pointer to column in original table
 };
@@ -469,10 +469,10 @@ private:
     ForwardColumnEngine& operator= (const ForwardColumnEngine&);
 
     // This data manager allows to add rows.
-    Bool canAddRow() const;
+    bool canAddRow() const;
 
     // This data manager allows to delete rows.
-    Bool canRemoveRow() const;
+    bool canRemoveRow() const;
 
     // Add rows to all columns.
     // This is not doing anything (but needed to override the default).
@@ -483,10 +483,10 @@ private:
     void removeRow64 (rownr_t rownr);
 
     // This data manager allows to add columns.
-    Bool canAddColumn() const;
+    bool canAddColumn() const;
 
     // This data manager allows to delete columns.
-    Bool canRemoveColumn() const;
+    bool canRemoveColumn() const;
 
     // Add a column.
     void addColumn (DataManagerColumn*);

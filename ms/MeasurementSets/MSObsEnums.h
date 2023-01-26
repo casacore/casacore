@@ -63,7 +63,7 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Row flag <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // Observing log <BR>
     // String(*)
@@ -75,7 +75,7 @@ public:
     // TpString
     PROJECT,
     // Release data, date when data may become public <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     RELEASE_DATE,
     // Observing schedule <BR>
     // String(*)
@@ -87,7 +87,7 @@ public:
     // TpString
     TELESCOPE_NAME,
     // Start and end times of observation <BR>
-    // Double(2)
+    // double(2)
     TIME_RANGE,
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME_RANGE,

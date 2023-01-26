@@ -28,8 +28,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Instantiate the templates.
-  template class FFTServer<Float, Complex>;
-  template class FFTServer<Double, DComplex>;
+  template class FFTServer<float, Complex>;
+  template class FFTServer<double, DComplex>;
 
 } //# NAMESPACE CASACORE - END
 

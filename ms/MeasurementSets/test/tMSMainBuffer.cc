@@ -44,7 +44,7 @@ int main() {
 //   const String filename = "tMSMainBuffer_tmp.table";
 //   try {
 //     const IPosition row1DataShape(2, 2, 8);
-//     const uInt nCat = 2;
+//     const uint32_t nCat = 2;
 //     const IPosition row1CatShape(3, row1DataShape(0), row1DataShape(1), nCat);
 //     const IPosition row1SigmaShape(1, row1DataShape(0));
 //     const IPosition row4DataShape(2, 4, 7);
@@ -119,33 +119,33 @@ int main() {
 //       { // test the flag functions.
 //  	AlwaysAssert(buffer.flag()(0).shape().isEqual(row1DataShape), 
 //  		     AipsError);
-//  	AlwaysAssert(allEQ(buffer.flag()(0), False), AipsError);
+//  	AlwaysAssert(allEQ(buffer.flag()(0), false), AipsError);
 //  	AlwaysAssert(buffer.flag()(4).shape().isEqual(row4DataShape), 
 //  		     AipsError);
-//  	AlwaysAssert(allEQ(buffer.flag()(4), False), AipsError);
-//       	buffer.flag().put(0, Matrix<Bool>(row1DataShape, True));
-//  	Matrix<Bool> flag(row4DataShape, True);
-//  	flag(0, 0) = False;
+//  	AlwaysAssert(allEQ(buffer.flag()(4), false), AipsError);
+//       	buffer.flag().put(0, Matrix<bool>(row1DataShape, true));
+//  	Matrix<bool> flag(row4DataShape, true);
+//  	flag(0, 0) = false;
 //       	buffer.flag().put(4, flag);
 //       }
 //       { // test the flagCategory functions.
 //   	AlwaysAssert(buffer.flagCategory()(0).shape().isEqual(row1CatShape), 
 //   		     AipsError);
-//   	AlwaysAssert(allEQ(buffer.flagCategory()(0), False), AipsError);
+//   	AlwaysAssert(allEQ(buffer.flagCategory()(0), false), AipsError);
 //   	AlwaysAssert(buffer.flagCategory()(4).shape().isEqual(row4CatShape), 
 //   		     AipsError);
-//   	AlwaysAssert(allEQ(buffer.flagCategory()(4), False), AipsError);
-//       	buffer.flagCategory().put(0, Cube<Bool>(row1CatShape, True));
-//  	Cube<Bool> flag(row4CatShape, True);
-//  	flag(0, 0, 0) = False;
+//   	AlwaysAssert(allEQ(buffer.flagCategory()(4), false), AipsError);
+//       	buffer.flagCategory().put(0, Cube<bool>(row1CatShape, true));
+//  	Cube<bool> flag(row4CatShape, true);
+//  	flag(0, 0, 0) = false;
 //       	buffer.flagCategory().put(3, flag);
 //       	buffer.flagCategory().put(4, flag);
 //       }
 //       { // test the flagRow functions.
-//    	AlwaysAssert(buffer.flagRow()(0) == False, AipsError);
-//    	AlwaysAssert(buffer.flagRow()(4) == False, AipsError);
-//    	buffer.flagRow().put(2, True);
-//    	buffer.flagRow().put(3, True);
+//    	AlwaysAssert(buffer.flagRow()(0) == false, AipsError);
+//    	AlwaysAssert(buffer.flagRow()(4) == false, AipsError);
+//    	buffer.flagRow().put(2, true);
+//    	buffer.flagRow().put(3, true);
 //       }
 //       { // test the interval functions.
 // 	AlwaysAssert(buffer.interval()(0) < 0.0, AipsError);
@@ -180,8 +180,8 @@ int main() {
 //   		     AipsError);
 //   	AlwaysAssert(allNear(buffer.sigma()(4), 1.0f, C::flt_epsilon),
 // 		     AipsError);
-//       	buffer.sigma().put(0, Vector<Float>(row1SigmaShape, 2.0));
-//  	Vector<Float> sigma(row4SigmaShape, 3.0);
+//       	buffer.sigma().put(0, Vector<float>(row1SigmaShape, 2.0));
+//  	Vector<float> sigma(row4SigmaShape, 3.0);
 //  	sigma(0) = 4.0;
 //       	buffer.sigma().put(4, sigma);
 //       }
@@ -204,7 +204,7 @@ int main() {
 //      	buffer.timeCentroid().put(4, 993.0);
 //       }
 //       { // test the uvw functions.
-// 	Vector<Double> uvw(3, 1E100);
+// 	Vector<double> uvw(3, 1E100);
 //  	AlwaysAssert(buffer.uvw()(0).shape().isEqual(IPosition(1,3)), 
 //  		     AipsError);
 //  	AlwaysAssert(allNear(buffer.uvw()(0), uvw, C::dbl_epsilon), AipsError);
@@ -221,8 +221,8 @@ int main() {
 // 		     AipsError);
 // 	AlwaysAssert(allNear(buffer.weight()(4), 1.0f, C::flt_epsilon), 
 // 		     AipsError);
-//       	buffer.weight().put(0, Vector<Float>(row1SigmaShape, 0.1));
-//  	Vector<Float> weight(row4SigmaShape, 0.2);
+//       	buffer.weight().put(0, Vector<float>(row1SigmaShape, 0.1));
+//  	Vector<float> weight(row4SigmaShape, 0.2);
 //  	weight(0) = 0.4;
 //       	buffer.weight().put(4, weight);
 //       }
@@ -236,9 +236,9 @@ int main() {
 //  	// is mirrored into the newBuffer object.
 //    	buffer.antenna1().put(1, 100);
 //  	buffer.fieldId().put(1, 101);
-// 	buffer.flagRow().put(1, True);
+// 	buffer.flagRow().put(1, true);
 // 	// Save the buffer to disk
-// 	buffer.save(filename, True);
+// 	buffer.save(filename, true);
 //       }
 //     }
 //     { // check the data has not been lost.
@@ -261,26 +261,26 @@ int main() {
 //       AlwaysAssert(newBuffer.fieldId()(4) ==  14, AipsError);
 //       AlwaysAssert(newBuffer.flag()(0).shape().isEqual(row1DataShape), 
 //  		   AipsError);
-//       AlwaysAssert(allEQ(newBuffer.flag()(0), True), AipsError);
+//       AlwaysAssert(allEQ(newBuffer.flag()(0), true), AipsError);
 //       {
-//  	Matrix<Bool> flag(row4DataShape, True);
-//  	flag(0,0) = False;
+//  	Matrix<bool> flag(row4DataShape, true);
+//  	flag(0,0) = false;
 //  	AlwaysAssert(newBuffer.flag()(4).shape().isEqual(row4DataShape), 
 //  		     AipsError);
 //  	AlwaysAssert(allEQ(newBuffer.flag()(4), flag), AipsError);
 //       }
 //       AlwaysAssert(newBuffer.flagCategory()(0).shape().isEqual(row1CatShape), 
 //  		   AipsError);
-//       AlwaysAssert(allEQ(newBuffer.flagCategory()(0), True), AipsError);
+//       AlwaysAssert(allEQ(newBuffer.flagCategory()(0), true), AipsError);
 //       {
-//  	Cube<Bool> flag(row4CatShape, True);
-//  	flag(0,0, 0) = False;
+//  	Cube<bool> flag(row4CatShape, true);
+//  	flag(0,0, 0) = false;
 //  	AlwaysAssert(newBuffer.flagCategory()(4).shape().isEqual(row4CatShape), 
 //  		     AipsError);
 //  	AlwaysAssert(allEQ(newBuffer.flagCategory()(4), flag), AipsError);
 //       }
-//       AlwaysAssert(newBuffer.flagRow()(2) == True, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(3) == True, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(2) == true, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(3) == true, AipsError);
 //       AlwaysAssert(near(newBuffer.interval()(0), 9.0f), AipsError);
 //       AlwaysAssert(near(newBuffer.interval()(4), 19.0f), AipsError);
 //       AlwaysAssert(newBuffer.observationId()(0) == 21, AipsError);
@@ -294,7 +294,7 @@ int main() {
 //       AlwaysAssert(allNear(newBuffer.sigma()(0), 2.0f, C::flt_epsilon),
 // 		   AipsError);
 //       {
-//   	Vector<Float> sigma(row4SigmaShape, 3.0);
+//   	Vector<float> sigma(row4SigmaShape, 3.0);
 //   	sigma(0) = 4.0;
 //   	AlwaysAssert(newBuffer.sigma()(4).shape().isEqual(row4SigmaShape), 
 //   		     AipsError);
@@ -308,7 +308,7 @@ int main() {
 //       AlwaysAssert(near(newBuffer.timeCentroid()(0), 992.0f), AipsError);
 //       AlwaysAssert(near(newBuffer.timeCentroid()(4), 993.0f), AipsError);
 //       {
-// 	Vector<Double> uvw(3, 0.0);
+// 	Vector<double> uvw(3, 0.0);
 //  	AlwaysAssert(newBuffer.uvw()(0).shape().isEqual(IPosition(1,3)), 
 //  		     AipsError);
 //  	AlwaysAssert(allNear(newBuffer.uvw()(0), uvw, C::dbl_epsilon), 
@@ -324,7 +324,7 @@ int main() {
 //       AlwaysAssert(allNear(newBuffer.weight()(0), 0.1f, C::flt_epsilon),
 // 		   AipsError);
 //       {
-//   	Vector<Float> weight(row4SigmaShape, 0.2);
+//   	Vector<float> weight(row4SigmaShape, 0.2);
 //   	weight(0) = 0.4;
 //   	AlwaysAssert(newBuffer.weight()(4).shape().isEqual(row4SigmaShape), 
 //   		     AipsError);
@@ -334,13 +334,13 @@ int main() {
 //       // check the reference semantics
 //       AlwaysAssert(newBuffer.antenna1()(1) ==  100, AipsError);
 //       AlwaysAssert(newBuffer.fieldId()(1) ==  101, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(1) == True, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(1) == true, AipsError);
 //     }
 //     { // Check the isValid functions
-//       AlwaysAssert(newBuffer.isValid(True) == True, AipsError);
-//       AlwaysAssert(newBuffer.isValid(3u) == False, AipsError);
-//       AlwaysAssert(newBuffer.isValid(4u) == True, AipsError);
-//       AlwaysAssert(newBuffer.isValid() == False, AipsError);
+//       AlwaysAssert(newBuffer.isValid(true) == true, AipsError);
+//       AlwaysAssert(newBuffer.isValid(3u) == false, AipsError);
+//       AlwaysAssert(newBuffer.isValid(4u) == true, AipsError);
+//       AlwaysAssert(newBuffer.isValid() == false, AipsError);
 //     }
 //     { // Check the match functions
 //     }

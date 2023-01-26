@@ -70,13 +70,13 @@ size_t IBMDataConversion::toLocal (unsigned int&   to,
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_UINT;
 }
-size_t IBMDataConversion::toLocal (Int64&          to,
+size_t IBMDataConversion::toLocal (int64_t&          to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
     return SIZE_IBM_INT64;
 }
-size_t IBMDataConversion::toLocal (uInt64&         to,
+size_t IBMDataConversion::toLocal (uint64_t&         to,
 					 const void* from) const
 {
     IBMConversion::toLocal (to, from);
@@ -132,13 +132,13 @@ size_t IBMDataConversion::toLocal (unsigned int*   to, const void* from,
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_UINT;
 }
-size_t IBMDataConversion::toLocal (Int64*          to, const void* from,
+size_t IBMDataConversion::toLocal (int64_t*          to, const void* from,
 					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
     return nr*SIZE_IBM_INT64;
 }
-size_t IBMDataConversion::toLocal (uInt64*         to, const void* from,
+size_t IBMDataConversion::toLocal (uint64_t*         to, const void* from,
 					 size_t nr) const
 {
     IBMConversion::toLocal (to, from, nr);
@@ -187,12 +187,12 @@ size_t IBMDataConversion::fromLocal (void* to, unsigned int   from) const
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_UINT;
 }
-size_t IBMDataConversion::fromLocal (void* to, Int64          from) const
+size_t IBMDataConversion::fromLocal (void* to, int64_t          from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_INT64;
 }
-size_t IBMDataConversion::fromLocal (void* to, uInt64         from) const
+size_t IBMDataConversion::fromLocal (void* to, uint64_t         from) const
 {
     IBMConversion::fromLocal (to, from);
     return SIZE_IBM_UINT64;
@@ -245,13 +245,13 @@ size_t IBMDataConversion::fromLocal (void* to, const unsigned int* from,
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_UINT;
 }
-size_t IBMDataConversion::fromLocal (void* to, const Int64* from,
+size_t IBMDataConversion::fromLocal (void* to, const int64_t* from,
 					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
     return nr*SIZE_IBM_INT64;
 }
-size_t IBMDataConversion::fromLocal (void* to, const uInt64* from,
+size_t IBMDataConversion::fromLocal (void* to, const uint64_t* from,
 					   size_t nr) const
 {
     IBMConversion::fromLocal (to, from, nr);
@@ -271,87 +271,87 @@ size_t IBMDataConversion::fromLocal (void* to, const double* from,
 }
 
 
-Bool IBMDataConversion::canCopy (const char*) const
+bool IBMDataConversion::canCopy (const char*) const
 {
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const unsigned char*) const
+bool IBMDataConversion::canCopy (const unsigned char*) const
 {
     if (sizeof(unsigned char) == SIZE_IBM_UCHAR) {
-	return True;
+	return true;
     }
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const short*) const
+bool IBMDataConversion::canCopy (const short*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(short) == SIZE_IBM_SHORT) {
-	return True;
+	return true;
     }
 #endif
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const unsigned short*) const
+bool IBMDataConversion::canCopy (const unsigned short*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(unsigned short) == SIZE_IBM_USHORT) {
-	return True;
+	return true;
     }
 #endif
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const int*) const
+bool IBMDataConversion::canCopy (const int*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(int) == SIZE_IBM_INT) {
-	return True;
+	return true;
     }
 #endif
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const unsigned int*) const
+bool IBMDataConversion::canCopy (const unsigned int*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
     if (sizeof(unsigned int) == SIZE_IBM_UINT) {
-	return True;
+	return true;
     }
 #endif
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const Int64*) const
+bool IBMDataConversion::canCopy (const int64_t*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(Int64) == SIZE_IBM_INT64) {
-	return True;
+    if (sizeof(int64_t) == SIZE_IBM_INT64) {
+	return true;
     }
 #endif
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const uInt64*) const
+bool IBMDataConversion::canCopy (const uint64_t*) const
 {
 #if !defined(AIPS_LITTLE_ENDIAN)
-    if (sizeof(uInt64) == SIZE_IBM_UINT64) {
-	return True;
+    if (sizeof(uint64_t) == SIZE_IBM_UINT64) {
+	return true;
     }
 #endif
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const float*) const
+bool IBMDataConversion::canCopy (const float*) const
 {
-    return False;
+    return false;
 }
 
-Bool IBMDataConversion::canCopy (const double*) const
+bool IBMDataConversion::canCopy (const double*) const
 {
-    return False;
+    return false;
 }
 
 
@@ -379,11 +379,11 @@ unsigned int IBMDataConversion::externalSize (const unsigned int*) const
 {
     return SIZE_IBM_UINT;
 }
-unsigned int IBMDataConversion::externalSize (const Int64*) const
+unsigned int IBMDataConversion::externalSize (const int64_t*) const
 {
     return SIZE_IBM_INT64;
 }
-unsigned int IBMDataConversion::externalSize (const uInt64*) const
+unsigned int IBMDataConversion::externalSize (const uint64_t*) const
 {
     return SIZE_IBM_UINT64;
 }

@@ -36,9 +36,9 @@ using namespace casacore;
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
-  Int ival;
+  int32_t ival;
   char * str;
-  Double dval[2];
+  double dval[2];
 }
 
 %token EQASS

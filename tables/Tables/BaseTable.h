@@ -118,13 +118,13 @@ public:
 
     // Is the table a null table?
     // By default it is not.
-    virtual Bool isNull() const;
+    virtual bool isNull() const;
 
     // Reopen the table for read/write.
     virtual void reopenRW() = 0;
 
     // Is the table stored in big or little endian format?
-    virtual Bool asBigEndian() const = 0;
+    virtual bool asBigEndian() const = 0;
 
     // Get the storage option used for the table.
     virtual const StorageOption& storageOption() const = 0;
@@ -132,7 +132,7 @@ public:
     // Is the table in use (i.e. open) in another process?
     // If <src>checkSubTables</src> is set, it is also checked if
     // a subtable is used in another process.
-    virtual Bool isMultiUsed(Bool checkSubTables) const = 0;
+    virtual bool isMultiUsed(bool checkSubTables) const = 0;
 
     // Get the locking info.
     virtual const TableLock& lockOptions() const = 0;
@@ -142,45 +142,45 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    virtual Bool hasLock (FileLocker::LockType) const = 0;
+    virtual bool hasLock (FileLocker::LockType) const = 0;
 
     // Try to lock the table for read or write access.
-    virtual Bool lock (FileLocker::LockType, uInt nattempts) = 0;
+    virtual bool lock (FileLocker::LockType, uint32_t nattempts) = 0;
 
     // Unlock the table. This will also synchronize the table data,
     // thus force the data to be written to disk.
     virtual void unlock() = 0;
 
     // Flush the table, i.e. write it to disk.
-    virtual void flush (Bool fsync, Bool recursive) = 0;
+    virtual void flush (bool fsync, bool recursive) = 0;
 
     // Resync the Table object with the table file.
     virtual void resync() = 0;
 
     // Get the modify counter.
-    virtual uInt getModifyCounter() const = 0;
+    virtual uint32_t getModifyCounter() const = 0;
 
     // Set the table to being changed. By default it does nothing.
     virtual void setTableChanged();
 
     // Do not write the table (used in in case of exceptions).
     void doNotWrite()
-	{ noWrite_p = True; }
+	{ noWrite_p = true; }
 
     // Test if this table is writable.
     // This tells if values can be put into a column.
-    virtual Bool isWritable() const = 0;
+    virtual bool isWritable() const = 0;
 
     // Test if the given column is writable.
     // <group>
-    Bool isColumnWritable (const String& columnName) const;
-    Bool isColumnWritable (uInt columnIndex) const;
+    bool isColumnWritable (const String& columnName) const;
+    bool isColumnWritable (uint32_t columnIndex) const;
     // </group>
 
     // Test if the given column is stored (otherwise it is virtual).
     // <group>
-    Bool isColumnStored (const String& columnName) const;
-    Bool isColumnStored (uInt columnIndex) const;
+    bool isColumnStored (const String& columnName) const;
+    bool isColumnStored (uint32_t columnIndex) const;
     // </group>
 
     // Get the table name.
@@ -189,7 +189,7 @@ public:
 
     // Get the names of the tables this table consists of.
     // The default implementation adds the name of this table to the block.
-    virtual void getPartNames (Block<String>& names, Bool recursive) const;
+    virtual void getPartNames (Block<String>& names, bool recursive) const;
 
     // Rename the table.
     // The following options can be given:
@@ -232,9 +232,9 @@ public:
 			   const Record& dataManagerInfo,
                            const StorageOption&,
 			   int tableOption,
-			   Bool valueCopy,
+			   bool valueCopy,
 			   int endianFormat,
-			   Bool noRows) const;
+			   bool noRows) const;
     // </group>
 
     // Get the table type.
@@ -249,15 +249,15 @@ public:
     // This means that the underlying table gets deleted when it is
     // actually destructed.
     // The scratchCallback function is called when needed.
-    void markForDelete (Bool callback, const String& oldName);
+    void markForDelete (bool callback, const String& oldName);
 
     // Unmark the table for delete.
     // This means the underlying table does not get deleted when destructed.
     // The scratchCallback function is called when needed.
-    void unmarkForDelete (Bool callback, const String& oldName);
+    void unmarkForDelete (bool callback, const String& oldName);
 
     // Test if the table is marked for delete.
-    Bool isMarkedForDelete() const
+    bool isMarkedForDelete() const
 	{ return delete_p; }
 
     // Get the table description.
@@ -272,11 +272,11 @@ public:
 
     // Show the table structure (implementation of Table::showStructure).
     void showStructure (std::ostream&,
-                        Bool showDataMan,
-                        Bool showColumns,
-                        Bool showSubTables,
-                        Bool sortColumns,
-                        Bool cOrder);
+                        bool showDataMan,
+                        bool showColumns,
+                        bool showSubTables,
+                        bool sortColumns,
+                        bool cOrder);
 
     // Get readonly access to the table keyword set.
     virtual TableRecord& keywordSet() = 0;
@@ -302,20 +302,20 @@ public:
 	{ return nrrow_p; }
 
     // Get a column object using its index.
-    virtual BaseColumn* getColumn (uInt columnIndex) const = 0;
+    virtual BaseColumn* getColumn (uint32_t columnIndex) const = 0;
 
     // Get a column object using its name.
     virtual BaseColumn* getColumn (const String& columnName) const = 0;
 
     // Test if it is possible to add a row to this table.
-    virtual Bool canAddRow() const;
+    virtual bool canAddRow() const;
 
     // Add one or more rows and possibly initialize them.
     // This will fail for tables not supporting addition of rows.
-    virtual void addRow (rownr_t nrrow = 1, Bool initialize = True);
+    virtual void addRow (rownr_t nrrow = 1, bool initialize = true);
 
     // Test if it is possible to remove a row from this table.
-    virtual Bool canRemoveRow() const;
+    virtual bool canRemoveRow() const;
 
     // Remove rows.
     // This will fail for tables not supporting removal of rows.
@@ -336,12 +336,12 @@ public:
     // <group>
     virtual void removeRow (rownr_t rownr);
     void removeRow (const Vector<rownr_t>& rownrs);
-    void removeRow (const Vector<uInt>& rownrs);
+    void removeRow (const Vector<uint32_t>& rownrs);
     // </group>
 
     // Find the data manager with the given name or for the given column.
     virtual DataManager* findDataManager (const String& name,
-                                          Bool byColumn) const = 0;
+                                          bool byColumn) const = 0;
 
     // Select rows using the given expression (which can be null).
     // Skip first <src>offset</src> matching rows.
@@ -357,8 +357,8 @@ public:
 
     // Select rows using a mask block.
     // The length of the block must match the number of rows in the table.
-    // If True, the corresponding row will be selected.
-    std::shared_ptr<BaseTable> select (const Block<Bool>& mask);
+    // If true, the corresponding row will be selected.
+    std::shared_ptr<BaseTable> select (const Block<bool>& mask);
 
     // Project the given columns (i.e. select the columns).
     std::shared_ptr<BaseTable> project (const Block<String>& columnNames);
@@ -381,36 +381,36 @@ public:
     std::shared_ptr<BaseTable> sort
     (const Block<String>& columnNames,
      const Block<CountedPtr<BaseCompare> >& compareObjects,
-     const Block<Int>& sortOrder, int sortOption,
+     const Block<int32_t>& sortOrder, int sortOption,
      std::shared_ptr<Vector<rownr_t>> sortIterBoundaries = nullptr,
      std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange = nullptr);
 
     // Create an iterator.
     BaseTableIterator* makeIterator (const Block<String>& columnNames,
                                      const Block<CountedPtr<BaseCompare> >&,
-                                     const Block<Int>& orders, int option,
+                                     const Block<int32_t>& orders, int option,
                                      bool cacheIterationBoundaries = false);
 
     // Add one or more columns to the table.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    virtual void addColumn (const ColumnDesc& columnDesc, Bool addToParent);
+    virtual void addColumn (const ColumnDesc& columnDesc, bool addToParent);
     virtual void addColumn (const ColumnDesc& columnDesc,
-			    const String& dataManager, Bool byName,
-                            Bool addToParent);
+			    const String& dataManager, bool byName,
+                            bool addToParent);
     virtual void addColumn (const ColumnDesc& columnDesc,
-			    const DataManager& dataManager, Bool addToParent);
+			    const DataManager& dataManager, bool addToParent);
     virtual void addColumn (const TableDesc& tableDesc,
-			    const DataManager& dataManager, Bool addToParent);
+			    const DataManager& dataManager, bool addToParent);
     // </group>
 
     // Add one or more columns to the table.
     // The data manager to use is described in the record.
     void addColumns (const TableDesc& tableDesc, const Record& dmInfo,
-                     Bool addToParent);
+                     bool addToParent);
 
     // Test if columns can be removed.
-    virtual Bool canRemoveColumn (const Vector<String>& columnNames) const = 0;
+    virtual bool canRemoveColumn (const Vector<String>& columnNames) const = 0;
 
     // Remove columns.
     virtual void removeColumn (const Vector<String>& columnNames) = 0;
@@ -419,11 +419,11 @@ public:
     // It checks if columns have not been specified twice and it
     // checks if they exist.
     // If the flag is set an exception is thrown if errors are found.
-    Bool checkRemoveColumn (const Vector<String>& columnNames,
-			    Bool throwException) const;
+    bool checkRemoveColumn (const Vector<String>& columnNames,
+			    bool throwException) const;
 
     // Test if a column can be renamed.
-    virtual Bool canRenameColumn (const String& columnName) const = 0;
+    virtual bool canRenameColumn (const String& columnName) const = 0;
 
     // Rename a column.
     virtual void renameColumn (const String& newName,
@@ -448,7 +448,7 @@ public:
     // By default it is, since normally a table is always in row order.
     // It is meant for RefTable-s, where the rows can be in
     // another (sorted) order.
-    virtual Bool rowOrder() const;
+    virtual bool rowOrder() const;
 
     // By the default the table cannot return the storage of rownrs.
     // That can only be done by a RefTable, where it is implemented.
@@ -457,8 +457,8 @@ public:
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in order.
-    virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
-			       Bool determineOrder) const;
+    virtual bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
+			       bool determineOrder) const;
 
     // Do the actual sort.
     // The default implementation is suitable for almost all cases.
@@ -466,14 +466,14 @@ public:
     virtual std::shared_ptr<BaseTable> doSort
     (PtrBlock<BaseColumn*>&,
      const Block<CountedPtr<BaseCompare> >&,
-     const Block<Int>& sortOrder,
+     const Block<int32_t>& sortOrder,
      int sortOption,
      std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
      std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange);
 
     // Create a RefTable object.
     // The returned object can be casted to RefTable using asRefTable() below.
-    std::shared_ptr<BaseTable> makeRefTable (Bool rowOrder,
+    std::shared_ptr<BaseTable> makeRefTable (bool rowOrder,
                                              rownr_t initialNrrow);
 
     // Check if the row number is valid.
@@ -492,20 +492,20 @@ protected:
     CountedPtr<TableDesc> tdescPtr_p;   //# Pointer to table description
     String         name_p;              //# table name
     int            option_p;            //# Table constructor option
-    Bool           noWrite_p;           //# False = do not write the table
-    Bool           delete_p;            //# True = delete when destructed
+    bool           noWrite_p;           //# false = do not write the table
+    bool           delete_p;            //# true = delete when destructed
     TableInfo      info_p;              //# Table information (type, etc.)
-    Bool           madeDir_p;           //# True = table dir has been created
+    bool           madeDir_p;           //# true = table dir has been created
     int            itsTraceId;          //# table-id for TableTrace tracing
 
 
     // Do the callback for scratch tables (if callback is set).
-    void scratchCallback (Bool isScratch, const String& oldName) const;
+    void scratchCallback (bool isScratch, const String& oldName) const;
 
     // Create the table directory when needed (and possible).
     // When the file already exists, check if it is a directory.
-    // It returns True when it actually created the directory.
-    Bool makeTableDir();
+    // It returns true when it actually created the directory.
+    bool makeTableDir();
 
     // Make a true deep copy of the table.
     void trueDeepCopy (const String& newName,
@@ -513,7 +513,7 @@ protected:
                        const StorageOption&,
 		       int tableOption,
 		       int endianFormat,
-		       Bool noRows) const;
+		       bool noRows) const;
 
     // Prepare for copying or renaming a table.
     // It checks if the target table already exists and removes it
@@ -529,18 +529,18 @@ protected:
     void throwIfTableExists();
 
     // Test if the table is opened for write.
-    Bool openedForWrite() const;
+    bool openedForWrite() const;
 
     // Start writing a table. It does a putstart and writes <src>nrrow_p</src>.
     // It should be ended by calling <src>writeEnd</src>.
-    void writeStart (AipsIO&, Bool bigEndian);
+    void writeStart (AipsIO&, bool bigEndian);
 
     // End writing a table.
     void writeEnd (AipsIO&);
 
     // Should the table be written.
-    // This flag is False if an exception was thrown.
-    Bool shouldNotWrite() const
+    // This flag is false if an exception was thrown.
+    bool shouldNotWrite() const
 	{ return noWrite_p; }
 
     // Read the TableInfo object.
@@ -563,9 +563,9 @@ private:
 
     // Show the info of the given columns.
     // Sort the columns if needed.
-    void showColumnInfo (ostream& os, const TableDesc&, uInt maxNameLength,
-                         const Array<String>& columnNames, Bool sort,
-                         Bool cOrder) const;
+    void showColumnInfo (ostream& os, const TableDesc&, uint32_t maxNameLength,
+                         const Array<String>& columnNames, bool sort,
+                         bool cOrder) const;
 
     // Throw an exception for checkRowNumber.
     void checkRowNumberThrow (rownr_t rownr) const;

@@ -35,44 +35,44 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
+template <class T> Vector<double> Fit2D::estimate(Fit2D::Types type,
                                const MaskedLattice<T>& data)
 {
    if (data.shape().nelements() !=2) {
       itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" <<
 	LogIO::EXCEPTION;
    }
-   auto pixels = data.get(True);
-   auto mask = data.getMask(True);
+   auto pixels = data.get(true);
+   auto mask = data.getMask(true);
    return estimate(type, pixels, mask);
 }
 
-template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
+template <class T> Vector<double> Fit2D::estimate(Fit2D::Types type,
                                const Lattice<T>& data)
 {
    if (data.shape().nelements() !=2) {
       itsLogger << "Fit2D::estimate - Lattice must be 2-dimensional" <<
 	LogIO::EXCEPTION;
    }
-   auto pixels = data.get(True);
-   Array<Bool> mask(pixels.shape(),True);
+   auto pixels = data.get(true);
+   Array<bool> mask(pixels.shape(),true);
    return estimate(type, pixels, mask);
 }
 
-template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
+template <class T> Vector<double> Fit2D::estimate(Fit2D::Types type,
                                const Array<T>& data)
 {
    if (data.shape().nelements() !=2) {
       itsLogger << "Fit2D::estimate - Array must be 2-dimensional" <<
 	LogIO::EXCEPTION;
    }
-   Array<Bool> mask(data.shape(),True);
+   Array<bool> mask(data.shape(),true);
    return estimate(type, data, mask);
 }
 
-template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
+template <class T> Vector<double> Fit2D::estimate(Fit2D::Types type,
                                const Array<T>& data,
-                               const Array<Bool>& mask) 
+                               const Array<bool>& mask) 
 // 
 // Work out an initial estimate to the solution using Bob Sault's 
 // probabilistic approach from Miriad imfit.for   Only works
@@ -86,7 +86,7 @@ template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
 	LogIO::EXCEPTION;
    }
 //
-   Vector<Double> parameters;
+   Vector<double> parameters;
    auto shape = data.shape();
    if (shape.nelements() !=2) {
       itsLogger << "Fit2D::estimate - Array must be 2-dimensional" <<
@@ -111,7 +111,7 @@ template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
 //
 // Accumulate sums.  Array indexing is not fast.
 //
-   Int includeThem = 0;
+   int32_t includeThem = 0;
    if (itsPixelRange.nelements()==2) {
      if (itsInclude) {
         includeThem = 1;
@@ -120,16 +120,16 @@ template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
      }
    }
 //
-   Double P, XP, YP, XYP, XXP, YYP;
-   Double t, fac, SP;
+   double P, XP, YP, XYP, XXP, YYP;
+   double t, fac, SP;
    P = XP = YP = XYP = XXP = YYP = 0.0;
    SP = 0.0;
 //
    IPosition pos(2);
-   Double ri, rj;
-   uInt nPts = 0;
-   for (Int j=0; j<shape(1); j++) {
-     for (Int i=0; i<shape(0); i++) {
+   double ri, rj;
+   uint32_t nPts = 0;
+   for (int32_t j=0; j<shape(1); j++) {
+     for (int32_t i=0; i<shape(0); i++) {
         pos(0) = i; pos(1) = j;
 //
         const T& val = data(pos);
@@ -156,7 +156,7 @@ template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
       return parameters;
    }
 //
-   Double t2;
+   double t2;
    if (type==Fit2D::GAUSSIAN || type==Fit2D::DISK) {
       parameters.resize(6);
 //
@@ -179,7 +179,7 @@ template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
       parameters(5) = paFromGauss2D(-t2);
       piRange(parameters(5));
 //
-      Double sn = 1.0;
+      double sn = 1.0;
       if (SP<0) sn = -1.0;
       parameters(0) = sn * fac * P / ( C::pi * parameters(3) * parameters(4));
    } else if (type==Fit2D::LEVEL) {
@@ -200,13 +200,13 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(
       return Fit2D::NOMODELS;
    }
 // Get data
-   auto pixels = data.get(True);
+   auto pixels = data.get(true);
    auto shape = pixels.shape();
    if (shape.nelements() !=2) {
       itsLogger << "Fit2D::fit - Region must be 2-dimensional" <<
     LogIO::EXCEPTION;
    }
-   auto mask = data.getMask(True);
+   auto mask = data.getMask(true);
 //
 // Do fit
 //
@@ -214,7 +214,7 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(
       Array<T> sigma2;
       return fit(pixels, mask, sigma2);
    } else {
-      auto sigma2 = sigma.get(True);
+      auto sigma2 = sigma.get(true);
       return fit(pixels, mask, sigma2);
    }
 }
@@ -226,18 +226,18 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(const Lattice<T>& data,
       itsErrorMessage = "No models have been set - use function addModel";
       return Fit2D::NOMODELS;
    }
-   auto pixels = data.get(True);
+   auto pixels = data.get(true);
    IPosition shape = pixels.shape();
    if (shape.nelements() !=2) {
       itsLogger << "Fit2D::fit - Region must be 2-dimensional" <<
     LogIO::EXCEPTION;
    }
-   Array<Bool> mask;
+   Array<bool> mask;
    if (sigma.ndim()==0) {
       Array<T> sigma2;
       return fit(pixels, mask, sigma2);
    } else {
-      auto sigma2 = sigma.get(True);
+      auto sigma2 = sigma.get(true);
       return fit(pixels, mask, sigma2);
    }
 }
@@ -260,10 +260,10 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(const Array<T>& data,
       }
    }
 //
-   Matrix<Double> pos;
-   Vector<Double> values;
-   Vector<Double> weights;
-   Array<Bool> mask;
+   Matrix<double> pos;
+   Vector<double> values;
+   Vector<double> weights;
+   Array<bool> mask;
    if (!selectData (pos, values, weights, data, mask, sigma)) {
       itsErrorMessage = String("There were no selected data points");
       return Fit2D::NOGOOD;
@@ -274,7 +274,7 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(const Array<T>& data,
 
 
 template <class T> Fit2D::ErrorTypes Fit2D::fit(const Array<T>& data,
-                             const Array<Bool>& mask,
+                             const Array<bool>& mask,
                              const Array<T>& sigma)
 {
    if (!itsValid) {
@@ -298,9 +298,9 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(const Array<T>& data,
       }
    }
 
-   Matrix<Double> pos;
-   Vector<Double> values;
-   Vector<Double> weights;
+   Matrix<double> pos;
+   Vector<double> values;
+   Vector<double> weights;
    if (!selectData (pos, values, weights, data, mask, sigma)) {
       itsErrorMessage = String("There were no selected data points");
       return Fit2D::NOGOOD;
@@ -312,7 +312,7 @@ template <class T> Fit2D::ErrorTypes Fit2D::fit(const Array<T>& data,
 
 template <class T> Fit2D::ErrorTypes Fit2D::residual(
         Array<T>& resid, Array<T>& model,
-        const Array<T>& data, Int xOffset, int yOffset
+        const Array<T>& data, int32_t xOffset, int yOffset
 ) const {
    ThrowIf(
       ! itsValid,
@@ -346,16 +346,16 @@ template <class T> Fit2D::ErrorTypes Fit2D::residual(
 // Create a functional with the solution (no axis conversion
 // necessary because functional interface takes axial ratio)
 
-   std::unique_ptr<Function<AutoDiff<Double>>> sumFunction(itsFunction.clone());
-   for (uInt i=0; i<itsSolution.nelements(); i++) {
+   std::unique_ptr<Function<AutoDiff<double>>> sumFunction(itsFunction.clone());
+   for (uint32_t i=0; i<itsSolution.nelements(); i++) {
        (*sumFunction)[i] = itsSolution[i];
    }
    IPosition loc(2);
-   for (Int j=0; j<shape(1); j++) {
+   for (int32_t j=0; j<shape(1); j++) {
      loc(1) = j;
-      for (Int i=0; i<shape(0); i++) {
+      for (int32_t i=0; i<shape(0); i++) {
          loc(0) = i;
-         model(loc) = (*sumFunction)(Double(i + xOffset), Double(j + yOffset)).value();
+         model(loc) = (*sumFunction)(double(i + xOffset), double(j + yOffset)).value();
          resid(loc) = data(loc) - model(loc);
       }
    }
@@ -363,9 +363,9 @@ template <class T> Fit2D::ErrorTypes Fit2D::residual(
 }
 
 
-template <class T> Bool Fit2D::selectData(
-    Matrix<Double>& pos, Vector<Double>& values, Vector<Double>& weights,
-    const Array<T>& pixels, const Array<Bool>& mask, const Array<T>& sigma
+template <class T> bool Fit2D::selectData(
+    Matrix<double>& pos, Vector<double>& values, Vector<double>& weights,
+    const Array<T>& pixels, const Array<bool>& mask, const Array<T>& sigma
 )
 //
 // Fish out the unmasked data.
@@ -374,7 +374,7 @@ template <class T> Bool Fit2D::selectData(
 // If the sigma array is of zero length the weights are given
 // the value 1.0
 //
-// If there are no good pixels returns False
+// If there are no good pixels returns false
 //
 {
    auto shape = pixels.shape();
@@ -382,8 +382,8 @@ template <class T> Bool Fit2D::selectData(
 //
 // Handle pixel ranges
 //
-   Vector<Double> pixelRange(2);
-   Int includeThem = 0;
+   Vector<double> pixelRange(2);
+   int32_t includeThem = 0;
    if (itsPixelRange.nelements()==2) {
       pixelRange(0) = itsPixelRange(0);
       pixelRange(1) = itsPixelRange(1);
@@ -396,20 +396,20 @@ template <class T> Bool Fit2D::selectData(
 //
 // Do we have sigmas ?
 //
-   itsHasSigma = False;
-   if (sigma.nelements() != 0) itsHasSigma = True;
+   itsHasSigma = false;
+   if (sigma.nelements() != 0) itsHasSigma = true;
 //
 // Find first unmasked point
 //
-   auto hasMask = True;
-   if (mask.nelements()==0) hasMask = False;
-   Double minVal(0);
-   Double maxVal(0);
+   auto hasMask = true;
+   if (mask.nelements()==0) hasMask = false;
+   double minVal(0);
+   double maxVal(0);
    if (hasMask) {
-      Bool deleteIt1, deleteIt2;
+      bool deleteIt1, deleteIt2;
       const auto* p1 = mask.getStorage(deleteIt1);
       const auto* p2 = pixels.getStorage(deleteIt2);
-      for (uInt i=0; i<nPoints; i++) {
+      for (uint32_t i=0; i<nPoints; i++) {
          if (p1[i]) {
             minVal = p2[i];
             maxVal = p2[i];
@@ -427,13 +427,13 @@ template <class T> Bool Fit2D::selectData(
 //
    values.resize(nPoints);
    weights.resize(nPoints);
-   Vector<Int> locX(nPoints);
-   Vector<Int> locY(nPoints);
+   Vector<int32_t> locX(nPoints);
+   Vector<int32_t> locY(nPoints);
    IPosition loc(2);
 //
    itsNumberPoints = 0;
-   for (Int j=0; j<shape(1); ++j) {
-      for (Int i=0; i<shape(0); ++i) {
+   for (int32_t j=0; j<shape(1); ++j) {
+      for (int32_t i=0; i<shape(0); ++i) {
          loc(0) = i;
          loc(1) = j;
          if (!hasMask || (hasMask && mask(loc))) {
@@ -454,19 +454,19 @@ template <class T> Bool Fit2D::selectData(
          }
       }
    }
-   if (itsNumberPoints==0) return False;
+   if (itsNumberPoints==0) return false;
 //
 // Resize arrays for actual number of selected points
 //
    pos.resize(itsNumberPoints,2);
-   values.resize(itsNumberPoints, True);
-   weights.resize(itsNumberPoints, True);
-   locX.resize(itsNumberPoints, True);
-   locY.resize(itsNumberPoints, True);
+   values.resize(itsNumberPoints, true);
+   weights.resize(itsNumberPoints, true);
+   locX.resize(itsNumberPoints, true);
+   locY.resize(itsNumberPoints, true);
 //
 // Just fill in the position matrix
 //
-   for (uInt k=0; k<itsNumberPoints; k++) {
+   for (uint32_t k=0; k<itsNumberPoints; k++) {
       pos(k,0) = locX(k);
       pos(k,1) = locY(k);
    }
@@ -474,7 +474,7 @@ template <class T> Bool Fit2D::selectData(
 //   cout << "weights = " << weights << endl;
 //   cout << "Pos = " << pos << endl;
 
-   return True;
+   return true;
 }
 
 } //# NAMESPACE CASACORE - END

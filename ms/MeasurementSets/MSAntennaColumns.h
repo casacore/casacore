@@ -86,16 +86,16 @@ public:
 
   // Access to required columns
   // <group>
-  ScalarColumn<Double>& dishDiameter() {return dishDiameter_p;}
-  ScalarQuantColumn<Double>& dishDiameterQuant() {return dishDiameterQuant_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<double>& dishDiameter() {return dishDiameter_p;}
+  ScalarQuantColumn<double>& dishDiameterQuant() {return dishDiameterQuant_p;}
+  ScalarColumn<bool>& flagRow() {return flagRow_p;}
   ScalarColumn<String>& mount() {return mount_p;}
   ScalarColumn<String>& name() {return name_p;}
-  ArrayColumn<Double>& offset() {return offset_p;}
-  ArrayQuantColumn<Double>& offsetQuant() {return offsetQuant_p;}
+  ArrayColumn<double>& offset() {return offset_p;}
+  ArrayQuantColumn<double>& offsetQuant() {return offsetQuant_p;}
   ScalarMeasColumn<MPosition>& offsetMeas() { return offsetMeas_p;}
-  ArrayColumn<Double>& position() {return position_p;}
-  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
+  ArrayColumn<double>& position() {return position_p;}
+  ArrayQuantColumn<double>& positionQuant() {return positionQuant_p;}
   ScalarMeasColumn<MPosition>& positionMeas() { return positionMeas_p;}
   ScalarColumn<String>& station() {return station_p;}
   ScalarColumn<String>& type() {return type_p;}
@@ -103,16 +103,16 @@ public:
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Double>& dishDiameter() const {return dishDiameter_p;}
-  const ScalarQuantColumn<Double>& dishDiameterQuant() const {return dishDiameterQuant_p;}
-  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<double>& dishDiameter() const {return dishDiameter_p;}
+  const ScalarQuantColumn<double>& dishDiameterQuant() const {return dishDiameterQuant_p;}
+  const ScalarColumn<bool>& flagRow() const {return flagRow_p;}
   const ScalarColumn<String>& mount() const {return mount_p;}
   const ScalarColumn<String>& name() const {return name_p;}
-  const ArrayColumn<Double>& offset() const {return offset_p;}
-  const ArrayQuantColumn<Double>& offsetQuant() const {return offsetQuant_p;}
+  const ArrayColumn<double>& offset() const {return offset_p;}
+  const ArrayQuantColumn<double>& offsetQuant() const {return offsetQuant_p;}
   const ScalarMeasColumn<MPosition>& offsetMeas() const { return offsetMeas_p;}
-  const ArrayColumn<Double>& position() const {return position_p;}
-  const ArrayQuantColumn<Double>& positionQuant() const {return positionQuant_p;}
+  const ArrayColumn<double>& position() const {return position_p;}
+  const ArrayQuantColumn<double>& positionQuant() const {return positionQuant_p;}
   const ScalarMeasColumn<MPosition>& positionMeas() const { return positionMeas_p;}
   const ScalarColumn<String>& station() const {return station_p;}
   const ScalarColumn<String>& type() const {return type_p;}
@@ -120,16 +120,16 @@ public:
 
   // Access to optional columns
   // <group>
-  ArrayColumn<Double>& meanOrbit() {return meanOrbit_p;}
-  ScalarColumn<Int>& orbitId() {return orbitId_p;}
-  ScalarColumn<Int>& phasedArrayId() {return phasedArrayId_p;}
+  ArrayColumn<double>& meanOrbit() {return meanOrbit_p;}
+  ScalarColumn<int32_t>& orbitId() {return orbitId_p;}
+  ScalarColumn<int32_t>& phasedArrayId() {return phasedArrayId_p;}
   // </group>
  
   // Const access to optional columns
   // <group>
-  const ArrayColumn<Double>& meanOrbit() const {return meanOrbit_p;}
-  const ScalarColumn<Int>& orbitId() const {return orbitId_p;}
-  const ScalarColumn<Int>& phasedArrayId() const {return phasedArrayId_p;}
+  const ArrayColumn<double>& meanOrbit() const {return meanOrbit_p;}
+  const ScalarColumn<int32_t>& orbitId() const {return orbitId_p;}
+  const ScalarColumn<int32_t>& phasedArrayId() const {return phasedArrayId_p;}
   // </group>
  
   // set the position type for the POSITION column. This can only be done when
@@ -157,20 +157,20 @@ public:
   // to see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int64 matchAntenna(const MPosition& antennaPos,
-                     const Quantum<Double>& tolerance, Int64 tryRow=-1);
+  int64_t matchAntenna(const MPosition& antennaPos,
+                     const Quantum<double>& tolerance, int64_t tryRow=-1);
 
   // Same as the previous function except that the antenna name must also
   // match.
-  Int64 matchAntenna(const String& antName, const MPosition& antennaPos,
-                     const Quantum<Double>& tolerance, Int64 tryRow=-1);
+  int64_t matchAntenna(const String& antName, const MPosition& antennaPos,
+                     const Quantum<double>& tolerance, int64_t tryRow=-1);
 
   // Same as the previous function except that the station name must also
   // match.
-  Int64 matchAntennaAndStation(const String& antName, 
+  int64_t matchAntennaAndStation(const String& antName, 
                                const String& stationName, // ignored when empty 
                                const MPosition& antennaPos,
-                               const Quantum<Double>& tolerance, Int64 tryRow=-1);
+                               const Quantum<double>& tolerance, int64_t tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -191,33 +191,33 @@ private:
   
   //# Functions which check the supplied values against the relevant column and
   //# the specified row.
-  Bool matchName(rownr_t row, const String& antName) const;
-  Bool matchStation(rownr_t row, const String& stationName) const;
-  Bool matchPosition(rownr_t row, const Vector<Double>& antPosInM,	
-		     const Double tolInM) const;
+  bool matchName(rownr_t row, const String& antName) const;
+  bool matchStation(rownr_t row, const String& stationName) const;
+  bool matchPosition(rownr_t row, const Vector<double>& antPosInM,	
+		     const double tolInM) const;
 
   //# required columns
-  ScalarColumn<Double> dishDiameter_p;
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<double> dishDiameter_p;
+  ScalarColumn<bool> flagRow_p;
   ScalarColumn<String> mount_p;
   ScalarColumn<String> name_p;
-  ArrayColumn<Double> offset_p;
-  ArrayColumn<Double> position_p;
+  ArrayColumn<double> offset_p;
+  ArrayColumn<double> position_p;
   ScalarColumn<String> station_p;
   ScalarColumn<String> type_p;
   //# optional columns
-  ArrayColumn<Double> meanOrbit_p;
-  ScalarColumn<Int> orbitId_p;
-  ScalarColumn<Int> phasedArrayId_p;
+  ArrayColumn<double> meanOrbit_p;
+  ScalarColumn<int32_t> orbitId_p;
+  ScalarColumn<int32_t> phasedArrayId_p;
 
   //# Access to Measure columns
   ScalarMeasColumn<MPosition> offsetMeas_p;
   ScalarMeasColumn<MPosition> positionMeas_p;
 
   //# Access to Quantum columns
-  ScalarQuantColumn<Double> dishDiameterQuant_p;
-  ArrayQuantColumn<Double> offsetQuant_p;
-  ArrayQuantColumn<Double> positionQuant_p;
+  ScalarQuantColumn<double> dishDiameterQuant_p;
+  ArrayQuantColumn<double> offsetQuant_p;
+  ArrayQuantColumn<double> positionQuant_p;
 
 };
 

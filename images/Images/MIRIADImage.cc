@@ -71,32 +71,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define USE_TILE  1
 
 MIRIADImage::MIRIADImage (const String& name)
-: ImageInterface<Float>(),
+: ImageInterface<float>(),
   name_p      (name),
   pPixelMask_p(0),
-  hasBlanks_p (False),
+  hasBlanks_p (false),
   dataType_p  (TpOther),
   fileOffset_p(0),
-  isClosed_p  (True)
+  isClosed_p  (true)
 {
    setup();
 }
 
 MIRIADImage::MIRIADImage (const String& name, const MaskSpecifier& maskSpec)
-: ImageInterface<Float>(),
+: ImageInterface<float>(),
   name_p      (name),
   maskSpec_p  (maskSpec),
   pPixelMask_p(0),
-  hasBlanks_p (False),
+  hasBlanks_p (false),
   dataType_p  (TpOther),
   fileOffset_p(0),
-  isClosed_p  (True)
+  isClosed_p  (true)
 {
    setup();
 }
 
 MIRIADImage::MIRIADImage (const MIRIADImage& other)
-: ImageInterface<Float>(other),
+: ImageInterface<float>(other),
   name_p      (other.name_p),
   maskSpec_p  (other.maskSpec_p),
   unit_p      (other.unit_p),
@@ -120,7 +120,7 @@ MIRIADImage& MIRIADImage::operator=(const MIRIADImage& other)
 //
 {
    if (this != &other) {
-      ImageInterface<Float>::operator= (other);
+      ImageInterface<float>::operator= (other);
 //
       pTiledFile_p = other.pTiledFile_p;             // Counted pointer
 //
@@ -162,7 +162,7 @@ void MIRIADImage::registerOpenFunction()
 }
 
 
-ImageInterface<Float>* MIRIADImage::cloneII() const
+ImageInterface<float>* MIRIADImage::cloneII() const
 {
    return new MIRIADImage (*this);
 }
@@ -173,7 +173,7 @@ String MIRIADImage::imageType() const
    return "MIRIADImage";
 }
 
-Bool MIRIADImage::isMasked() const
+bool MIRIADImage::isMasked() const
 {
    return hasBlanks_p;
 }
@@ -188,12 +188,12 @@ IPosition MIRIADImage::shape() const
    return shape_p.shape();
 }
 
-uInt MIRIADImage::advisedMaxPixels() const
+uint32_t MIRIADImage::advisedMaxPixels() const
 {
    return shape_p.tileShape().product();
 }
 
-IPosition MIRIADImage::doNiceCursorShape (uInt) const  
+IPosition MIRIADImage::doNiceCursorShape (uint32_t) const  
 {
    return shape_p.tileShape();
 }
@@ -203,26 +203,26 @@ void MIRIADImage::resize(const TiledShape&)
    throw (AipsError ("MIRIADImage::resize - a MIRIADImage is not writable"));
 }
 
-Bool MIRIADImage::doGetSlice(Array<Float>& buffer,
+bool MIRIADImage::doGetSlice(Array<float>& buffer,
                            const Slicer& section)
 {
    reopenIfNeeded();
    pTiledFile_p->get (buffer, section);
-   return False;                            // Not a reference
+   return false;                            // Not a reference
 } 
    
 
-void MIRIADImage::doPutSlice (const Array<Float>&, const IPosition&,
+void MIRIADImage::doPutSlice (const Array<float>&, const IPosition&,
                             const IPosition&)
 {
    throw (AipsError ("MIRIADImage::putSlice - "
 		     "is not possible yet as MIRIADImage is not writable"));
 }
 #if 0
-Bool MIRIADImage::setUnits (const Unit& unit)
+bool MIRIADImage::setUnits (const Unit& unit)
 {  
    unit_p = unit;
-   return True;
+   return true;
 }
    
 Unit MIRIADImage::units() const
@@ -231,7 +231,7 @@ Unit MIRIADImage::units() const
 }
 #endif
 
-String MIRIADImage::name (Bool stripPath) const
+String MIRIADImage::name (bool stripPath) const
 {
    Path path(name_p);
    if (stripPath) {
@@ -248,43 +248,43 @@ const RecordInterface& MIRIADImage::miscInfo() const
 }
  
 
-Bool MIRIADImage::setMiscInfo(const RecordInterface& rec)
+bool MIRIADImage::setMiscInfo(const RecordInterface& rec)
 { 
    rec_p = rec;
-   return True;
+   return true;
 }
  
-Bool MIRIADImage::isPersistent() const
+bool MIRIADImage::isPersistent() const
 {
-  return True;
+  return true;
 }
 
-Bool MIRIADImage::isPaged() const
+bool MIRIADImage::isPaged() const
 {
-  return True;
+  return true;
 }
 
-Bool MIRIADImage::isWritable() const
+bool MIRIADImage::isWritable() const
 {  
 // Its too hard to implement putMaskSlice becuase
 // magic blanking is used. It means we lose
 // the data values if the mask is put somewhere
 
-   return False;
+   return false;
 }
 
 
-Bool MIRIADImage::ok() const
+bool MIRIADImage::ok() const
 {
-   return True;
+   return true;
 }  
 
-Bool MIRIADImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+bool MIRIADImage::doGetMaskSlice (Array<bool>& buffer, const Slicer& section)
 {
    if (!hasBlanks_p) {
       buffer.resize (section.length());
-      buffer = True;
-      return False;
+      buffer = true;
+      return false;
    }
 //
    reopenIfNeeded();
@@ -292,12 +292,12 @@ Bool MIRIADImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
 }
 
 
-Bool MIRIADImage::hasPixelMask() const
+bool MIRIADImage::hasPixelMask() const
 {
    return hasBlanks_p;
 }  
 
-const Lattice<Bool>& MIRIADImage::pixelMask() const
+const Lattice<bool>& MIRIADImage::pixelMask() const
 {
    if (!hasBlanks_p) {
       throw (AipsError ("MIRIADImage::pixelMask - no pixelmask used"));
@@ -305,7 +305,7 @@ const Lattice<Bool>& MIRIADImage::pixelMask() const
    return *pPixelMask_p;
 }
 
-Lattice<Bool>& MIRIADImage::pixelMask()
+Lattice<bool>& MIRIADImage::pixelMask()
 {
    if (!hasBlanks_p) {
       throw (AipsError ("MIRIADImage::pixelMask - no pixelmask used"));
@@ -318,7 +318,7 @@ void MIRIADImage::tempClose()
    if (! isClosed_p) {
       delete pPixelMask_p;
       pTiledFile_p = 0;
-      isClosed_p = True;
+      isClosed_p = true;
    }
 }
 
@@ -329,16 +329,16 @@ void MIRIADImage::reopen()
    }
 }
 
-uInt MIRIADImage::maximumCacheSize() const
+uint32_t MIRIADImage::maximumCacheSize() const
 {
    reopenIfNeeded();
    return pTiledFile_p->maximumCacheSize() / ValType::getTypeSize(dataType_p);
 }
 
-void MIRIADImage::setMaximumCacheSize (uInt howManyPixels)
+void MIRIADImage::setMaximumCacheSize (uint32_t howManyPixels)
 {
    reopenIfNeeded();
-   const uInt sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
+   const uint32_t sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
    pTiledFile_p->setMaximumCacheSize (sizeInBytes);
 }
 
@@ -352,7 +352,7 @@ void MIRIADImage::setCacheSizeFromPath (const IPosition& sliceShape,
 			       windowLength, axisPath);
 }
 
-void MIRIADImage::setCacheSizeInTiles (uInt howManyTiles)  
+void MIRIADImage::setCacheSizeInTiles (uint32_t howManyTiles)  
 {  
    reopenIfNeeded();
    pTiledFile_p->setCacheSize (howManyTiles);
@@ -419,7 +419,7 @@ void MIRIADImage::setup()
 
    // See if there is a mask
 
-   hasBlanks_p = False;    // for now....
+   hasBlanks_p = false;    // for now....
 
    // Form the tile shape
    shape_p = TiledShape (shape, TiledFileAccess::makeTileShape(shape));
@@ -431,8 +431,8 @@ void MIRIADImage::setup()
 
 void MIRIADImage::open()
 {
-   Bool writable = False;
-   Bool canonical = True;    
+   bool writable = false;
+   bool canonical = true;    
    String iname = name_p + "/image";    // fails for very small miriad images !!
 
    // The tile shape must not be a subchunk in all dimensions
@@ -445,30 +445,30 @@ void MIRIADImage::open()
    // Shares the pTiledFile_p pointer. 
 
    if (hasBlanks_p) {
-     // pPixelMask_p = new Lattice<Bool>;
+     // pPixelMask_p = new Lattice<bool>;
      // pPixelMask_p.resize(shape_p.shape());
    }
 
 
    // Okay, it is open now.
 
-   isClosed_p = False;
+   isClosed_p = false;
 }
 
 
 void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
                                       IPosition& shape, ImageInfo& imageInfo,
                                       Unit& brightnessUnit, Record&, 
-                                      Bool& hasBlanks, const String& name)
+                                      bool& hasBlanks, const String& name)
 {
   LogIO os(LogOrigin("MIRIADImage", "getImageAttributes", WHERE));
   int naxis = MAXNAX, axes[MAXNAX];              // see miriad's maxdimc.h
   int i, ndim;
   // Projection projn;
-  // Vector<Double>   projp;
+  // Vector<double>   projp;
   // Projection::Type ptype;
-  Double offset = 1.0;                           // miriad crpix 'origin' is 1-based
-  Int rotationAxis = -1;
+  double offset = 1.0;                           // miriad crpix 'origin' is 1-based
+  int32_t rotationAxis = -1;
   
 
   xyopen_c(&tno_p, const_cast<char *>(name.chars()), "old", naxis, axes);    // open miriad file
@@ -488,16 +488,16 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   hasBlanks = FALSE;
 
   shape.resize(ndim);
-  for (Int i=0; i<ndim; i++) shape(i) = axes[i];
+  for (int32_t i=0; i<ndim; i++) shape(i) = axes[i];
   
   // get a coordinate system. MIRIAD is pretty simple,  it only knows
   // 'rectangular' coordinate systems, with the usual astronomical conventions
   // most of this code has been grabbed from CoordinateSystem::fromFITSHeader
 
-  Vector<Double> cdelt, crval, crpix;
-  Vector<Int> naxes;
+  Vector<double> cdelt, crval, crpix;
+  Vector<int32_t> naxes;
   Vector<String> ctype;
-  Matrix<Double> pc(2,2);
+  Matrix<double> pc(2,2);
   String tmps, digit;
   char tmps64[64];
   
@@ -540,7 +540,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       // cerr << tmps << "=>" << crpix(i) << endl;
   }
 
-  Int longAxis=-1, latAxis=-1, stokesAxis=-1, spectralAxis=-1;
+  int32_t longAxis=-1, latAxis=-1, stokesAxis=-1, spectralAxis=-1;
 
   for (i=0; i<ndim; i++) {
         String subRA(ctype(i).at(0,2));
@@ -549,14 +549,14 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	    if (longAxis >= 0) {
 		os << LogIO::SEVERE << "More than one longitude axis is "
 		    "present in header!";
-		// return False;
+		// return false;
 	    }
 	    longAxis = i;
 	} else if (subDEC==String("DEC") || ctype(i).contains("LAT") || subDEC.contains("MM")) {
 	    if (latAxis >= 0) {
 		os << LogIO::SEVERE << "More than one latitude axis is "
 		    "present in header!";
-		// return False; // we already have a latitude axis!
+		// return false; // we already have a latitude axis!
 	    }
 	    latAxis = i;
 	} else if (ctype(i).contains("STOKES")) {
@@ -573,27 +573,27 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
   if (longAxis >= 0 && latAxis < 0) {
 	os << LogIO::SEVERE << "We have a longitude axis but no latitude axis!";
-	// return False; 
+	// return false; 
   }
   if (latAxis >= 0 && longAxis < 0) {
 	os << LogIO::SEVERE << "We have a latitude axis but no longitude axis!";
-	// return False; 
+	// return false; 
   }
 
   // DIRECTION
 
   String proj1, proj2;
-  Bool isGalactic = False;
+  bool isGalactic = false;
   if (longAxis >= 0) {
     proj1 = ctype(longAxis);
     proj2 = ctype(latAxis);
 
-    if (proj1.contains("GLON")) isGalactic = True;
+    if (proj1.contains("GLON")) isGalactic = true;
 
     // Get rid of the first 4 characters, e.g., RA--
 
-    const Int l1 = proj1.length();
-    const Int l2 = proj2.length();
+    const int32_t l1 = proj1.length();
+    const int32_t l2 = proj2.length();
     proj1 = String(proj1.at(4, l1-4));
     proj2 = String(proj2.at(4, l2-4));
 
@@ -628,7 +628,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 
       os << LogIO::SEVERE << "Longitude and latitude axes have different"
 	" projections (" << proj1 << "!=" << proj2 << ")" << LogIO::POST;
-      // return False;
+      // return false;
     }
 
     // OK, let's make our Direction coordinate and add it to the
@@ -638,7 +638,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     // First, work out what the projection actually is.
     // Special case NCP - now SIN with  parameters
        
-    Vector<Double>   projp;
+    Vector<double>   projp;
     Projection::Type ptype;
 
     ptype =  Projection::SIN;
@@ -658,7 +658,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	 ptype = Projection::type(proj1);
 	 if (ptype == Projection::N_PROJ) {
 	   os << LogIO::SEVERE << "Unknown projection: (" << proj1 << ")";
-	   //return False;
+	   //return false;
 	 }
 	 // projp header keyword not used in miriad
     }
@@ -673,14 +673,14 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       os << LogIO::SEVERE << "Error forming projection, maybe the "
 	"wrong number of parameters\n(" << x.what() << ")" << 
 	LogIO::POST;
-      //return False;
+      //return false;
     } 
 
     // fish out LONG/LATPOLE  (use defaults, since miriad does not
     // use those in wcs headers
 
-    Double longPole = 999.0;
-    Double latPole = 999.0;
+    double longPole = 999.0;
+    double latPole = 999.0;
        
     // DEFAULT
        
@@ -688,7 +688,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     if (isGalactic) {
 	 radecsys = MDirection::GALACTIC;
     } else {
-      Double epoch;
+      double epoch;
       rdhdd_c(tno_p,"epoch", &epoch, 2000.0);
       if (::casacore::near(epoch, 1950.0)) {
 	radecsys = MDirection::B1950;
@@ -701,7 +701,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     pc(0,0) = pc(1,1) = 1.0;
     pc(0,1) = pc(1,0) = 0.0;
 
-    Matrix<Double> dirpc(2,2);
+    Matrix<double> dirpc(2,2);
     //cerr << "long/lat = " << longAxis << " " << latAxis << endl;
     dirpc(0,0) = pc(longAxis, longAxis);
     dirpc(0,1) = pc(longAxis, latAxis);
@@ -748,7 +748,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
     //  so, as opposed to doing it here, it should be done parallel to those places
     //
 
-    Int velref = 2; // Default is optical + topocentric ("OBS")
+    int32_t velref = 2; // Default is optical + topocentric ("OBS")
     if (ctype(spectralAxis).contains("VELO")) {
       velref = 258; // radio + OBS
     }
@@ -760,7 +760,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       velocityPreference = MDoppler::RADIO;   
     }
 
-    Double restFrequency;
+    double restFrequency;
     rdhdd_c(tno_p,"restfreq", &restFrequency, -1.0);
     restFrequency *= 1e9;   // miriad uses GHz
 
@@ -772,13 +772,13 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       spectralAxisQualifier = ctype(spectralAxis).after(4);
     }
 
-    Double referenceChannel = crpix(spectralAxis);
-    Double referenceFrequency = 0.0;
-    Double deltaFrequency = 0.0;
-    Vector<Double> frequencies;
+    double referenceChannel = crpix(spectralAxis);
+    double referenceFrequency = 0.0;
+    double deltaFrequency = 0.0;
+    Vector<double> frequencies;
 
     MFrequency::Types refFrame;
-    Bool ok = FITSSpectralUtil::frameFromTag(refFrame, 
+    bool ok = FITSSpectralUtil::frameFromTag(refFrame, 
 					spectralAxisQualifier, 
 						velref);
 
@@ -798,10 +798,10 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       }
     }
 
-    Int nChan = shape(spectralAxis);
-    Double delt = cdelt(spectralAxis);
-    Double rval = crval(spectralAxis);
-    Double rpix = crpix(spectralAxis);
+    int32_t nChan = shape(spectralAxis);
+    double delt = cdelt(spectralAxis);
+    double rval = crval(spectralAxis);
+    double rpix = crpix(spectralAxis);
     
     if (ctype(spectralAxis).contains("FREQ")) {
       delt *= 1e9;
@@ -809,8 +809,8 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       referenceFrequency = rval;
       deltaFrequency = delt;
       frequencies.resize(nChan);
-      for (Int i=0; i<nChan; i++) {
-	frequencies(i) = referenceFrequency + (Double(i)-referenceChannel)*delt;
+      for (int32_t i=0; i<nChan; i++) {
+	frequencies(i) = referenceFrequency + (double(i)-referenceChannel)*delt;
       }
       if (restFrequency<0) restFrequency = 0.0;
     } else if (ctype(spectralAxis).contains("FELO")) {
@@ -819,7 +819,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       if (restFrequency < 0) {
 	os << LogIO::SEVERE << "FELO axis does not have rest frequency "
 	  "information (RESTFREQ)" << LogIO::POST;
-	// return False;
+	// return false;
       } else {
 	// Have RESTFREQ, deduce freq's from velocities and rest freq
 	referenceChannel = rpix;
@@ -835,7 +835,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	  {
 	    os << LogIO::SEVERE << "FELO/RADIO is illegal" <<
 	      LogIO::POST;
-	    // return False;
+	    // return false;
 	  }
 	  break;
 	default:
@@ -844,9 +844,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	  }
 	}
 	frequencies.resize(nChan);
-	for (Int i=0; i<nChan; i++) {
+	for (int32_t i=0; i<nChan; i++) {
 	  frequencies(i) = referenceFrequency + 
-	    (Double(i)-referenceChannel) * deltaFrequency;
+	    (double(i)-referenceChannel) * deltaFrequency;
 	}
       }
     } else if (ctype(spectralAxis).contains("VELO")) {
@@ -855,7 +855,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       if (restFrequency < 0) {
 	os << LogIO::SEVERE << "VELO axis does not have rest frequency "
 	  "information (RESTFREQ)" << LogIO::POST;
-	// return False;
+	// return false;
       } else {
 	// Have RESTFREQ
 	os << LogIO::NORMAL << "ALTRVAL and ALTRPIX have not been "
@@ -876,7 +876,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	  {
 	    os << LogIO::SEVERE << 
 	      "VELO/OPTICAL is not implemented" <<LogIO::POST;
-	    // return False;
+	    // return false;
 	  }
 	  break;
 	default:
@@ -885,9 +885,9 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	  }
 	}
 	frequencies.resize(nChan);
-	for (Int i=0; i<nChan; i++) {
+	for (int32_t i=0; i<nChan; i++) {
 	  frequencies(i) = referenceFrequency + 
-	    (Double(i)-referenceChannel) * deltaFrequency;
+	    (double(i)-referenceChannel) * deltaFrequency;
 	}
       }
     } else {   // catch VELO/FELO/FREQ/....
@@ -907,22 +907,22 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
       if (shape(stokesAxis)>4) {
 	os << "Stokes axis longer than 4 pixels.  This is not acceptable" 
 	   << LogIO::EXCEPTION;       
-	//return False;
+	//return false;
       }
-      Vector<Int> stokes(shape(stokesAxis)); 
+      Vector<int32_t> stokes(shape(stokesAxis)); 
       
-      for (Int k=0; k<shape(stokesAxis); k++) {
+      for (int32_t k=0; k<shape(stokesAxis); k++) {
 	
 	// crpix is 0-relative
 	
-	Double tmp = crval(stokesAxis) + 
+	double tmp = crval(stokesAxis) + 
 		(k - crpix(stokesAxis))*cdelt(stokesAxis);
 	
 	// cerr << "Stokes: tmp = " << tmp << endl;
 	if (tmp >= 0) {
-	  stokes(k) = Int(tmp + 0.01);
+	  stokes(k) = int32_t(tmp + 0.01);
 	} else {
-	  stokes(k) = Int(tmp - 0.01);
+	  stokes(k) = int32_t(tmp - 0.01);
 	}
 
         switch (stokes(k)) {
@@ -1022,14 +1022,14 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 	cSys.addCoordinate(sc);
       } catch (std::exception& x) {
 	os << LogIO::SEVERE << "Error forming stokes axis : " << x.what() << LogIO::POST;
-	//return False;
+	//return false;
       } 
   }
 
 // Now we need to work out the transpose order
 
-  Vector<Int> order(ndim);
-  Int nspecial = 0;
+  Vector<int32_t> order(ndim);
+  int32_t nspecial = 0;
   if (longAxis >= 0) nspecial++;
   if (latAxis >= 0) nspecial++;
   if (stokesAxis >= 0) nspecial++;
@@ -1037,7 +1037,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 #if 0
 
   // I can't figure this out now, there is something wrong here for miriad
-  Int linused = 0;
+  int32_t linused = 0;
   for (i=0; i<ndim; i++) {
     if (i == longAxis) {
       order(i) = 0; // long is always first if it exist
@@ -1077,7 +1077,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   ImageInfo::ImageTypes type = ImageInfo::MiriadImageType (btype);
   if (type!=ImageInfo::Undefined) imageInfo.setImageType(type);
 //
-   Double bmaj, bmin, bpa;
+   double bmaj, bmin, bpa;
    rdhdd_c(tno_p, "bmaj", &bmaj, 0.0);
    rdhdd_c(tno_p, "bmin", &bmin, 0.0);
    rdhdd_c(tno_p, "bpa", &bpa, 0.0);
@@ -1093,7 +1093,7 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
   ObsInfo oi;
 
 // DATE-OBS
-  Double obstime;
+  double obstime;
   rdhdd_c(tno_p, "obstime", &obstime, -1.0);
   // cerr << "obstime=" << obstime << endl;
   if (obstime > -1.0) {

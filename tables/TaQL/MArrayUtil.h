@@ -59,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-//   MArray<Int> result = reorderArray (someArray, IPosition(2,1,3));
+//   MArray<int32_t> result = reorderArray (someArray, IPosition(2,1,3));
 // </srcblock>
 // Say that someArray is a 4D array with shape [3,4,5,6].
 // The non-specified axes get appended to the axis order
@@ -73,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 MArray<T> reorderArray (const MArray<T>& array,
                         const IPosition& newAxisOrder,
-                        Bool alwaysCopy = True)
+                        bool alwaysCopy = true)
 {
   return (array.isNull()  ?
           MArray<T>() :
@@ -115,7 +115,7 @@ MArray<T> reorderArray (const MArray<T>& array,
 template<class T>
 MArray<T> reverseArray (const MArray<T>& array,
                         const IPosition& reversedAxes,
-                        Bool alwaysCopy = True)
+                        bool alwaysCopy = true)
 {
   return (array.isNull()  ?
           MArray<T>() :

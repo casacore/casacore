@@ -64,7 +64,7 @@ WCEllipsoid::WCEllipsoid(
 	const Quantity& xcenter, const Quantity& ycenter,
 	const Quantity& majorAxis, const Quantity& minorAxis,
 	const Quantity& theta,
-	const uInt pixelAxis0, const uInt pixelAxis1,
+	const uint32_t pixelAxis0, const uint32_t pixelAxis1,
     const CoordinateSystem& csys,
     const RegionType::AbsRelType absRel
 ) : _csys(csys), _absRel(absRel), _specType(ELLIPSE_2D) {
@@ -144,28 +144,28 @@ WCEllipsoid& WCEllipsoid::operator= (const WCEllipsoid& that)
     return *this;
 }
 
-Bool WCEllipsoid::operator== (const WCRegion& other) const {
+bool WCEllipsoid::operator== (const WCRegion& other) const {
 	if (type() != other.type()) {
-		return False;
+		return false;
 	}
 
 	const WCEllipsoid& that = (const WCEllipsoid&)other;
 
 	if (_absRel != that._absRel) {
-		return False;
+		return false;
 	}
 	if (! near(_theta.getValue(), that._theta.getValue())) {
-		return False;
+		return false;
 	}
 	if (_theta.getUnit() != that._theta.getUnit()) {
-		return False;
+		return false;
 	}
 
 	if (_pixelAxes.size() != that._pixelAxes.size()) {
-		return False;
+		return false;
 	}
 
-	for (uInt i=0; i<_pixelAxes.size(); i++) {
+	for (uint32_t i=0; i<_pixelAxes.size(); i++) {
 		if (
 				! near(_center[i].getValue(), that._center[i].getValue())
 				|| _center[i].getUnit() != that._center[i].getUnit()
@@ -173,13 +173,13 @@ Bool WCEllipsoid::operator== (const WCRegion& other) const {
 				|| _radii[i].getUnit() != that._radii[i].getUnit()
 				|| _pixelAxes[i] != that._pixelAxes[i]
 		) {
-			return False;
+			return false;
 		}
 	}
 	if (! _csys.near(that._csys)) {
-		return False;
+		return false;
 	}
-	return True;
+	return true;
 }
 
 
@@ -188,8 +188,8 @@ WCRegion* WCEllipsoid::cloneRegion() const
    return new WCEllipsoid(*this);
 }
 
-Bool WCEllipsoid::canExtend() const {
-    return False;
+bool WCEllipsoid::canExtend() const {
+    return false;
 }
 
 String WCEllipsoid::type() const {
@@ -205,12 +205,12 @@ TableRecord WCEllipsoid::toRecord(const String&) const {
 	TableRecord rec;
 	defineRecordFields(rec, className());
 
-	rec.define("oneRel", True);
-	rec.define("type", Int(_specType));
-	rec.define("absrel", Int(_absRel));
+	rec.define("oneRel", true);
+	rec.define("type", int32_t(_specType));
+	rec.define("absrel", int32_t(_absRel));
 
-	const uInt nAxes = _pixelAxes.nelements();
-	Vector<Int> pixelAxes(nAxes);
+	const uint32_t nAxes = _pixelAxes.nelements();
+	Vector<int32_t> pixelAxes(nAxes);
 	pixelAxes = (_pixelAxes+1).asVector();
 	rec.define ("pixelAxes", pixelAxes);
 
@@ -220,8 +220,8 @@ TableRecord WCEllipsoid::toRecord(const String&) const {
 	{
 		// center
 		TableRecord rec2, rec3;
-		for (uInt i=0; i<_center.size(); i++) {
-			Double tmp = _center[i].getValue();
+		for (uint32_t i=0; i<_center.size(); i++) {
+			double tmp = _center[i].getValue();
 			String units = _center[i].getUnit();
 			if (units == "pix" && _absRel == RegionType::Abs) {
 				tmp += 1.0;
@@ -262,7 +262,7 @@ TableRecord WCEllipsoid::toRecord(const String&) const {
 		default:
 			// both general and 2-d ellipse go here
 			String error;
-			for (uInt i=0; i<_radii.size(); i++) {
+			for (uint32_t i=0; i<_radii.size(); i++) {
 				qh = QuantumHolder(_radii[i]);
 				if (! qh.toRecord(error, rec2)) {
 					throw (
@@ -306,13 +306,13 @@ WCEllipsoid* WCEllipsoid::fromRecord (
 
 	unitInit();
 	CoordinateSystem* csys =  CoordinateSystem::restore(rec,"coordinates");
-	Bool oneRel = rec.asBool("oneRel");
+	bool oneRel = rec.asBool("oneRel");
 	RegionType::AbsRelType absRel = RegionType::AbsRelType(rec.asInt("absrel"));
 	SpecialType specType = SpecialType(rec.asInt("type"));
 
 	// Get pixel axes and convert to zero rel.
 
-	Vector<Int> tmp = Vector<Int>(rec.toArrayInt ("pixelAxes"));
+	Vector<int32_t> tmp = Vector<int32_t>(rec.toArrayInt ("pixelAxes"));
 	IPosition pixelAxes(tmp);
 	if (oneRel) {
 		pixelAxes -= 1;
@@ -329,7 +329,7 @@ WCEllipsoid* WCEllipsoid::fromRecord (
 		// center
 		QuantumHolder qh;
 		const RecordInterface& subRecord = rec.asRecord("center");
-		for (uInt i=0; i<pixelAxes.size(); i++) {
+		for (uint32_t i=0; i<pixelAxes.size(); i++) {
 			const RecordInterface& centerRecord = subRecord.asRecord(i);
 			if (!qh.fromRecord(error, centerRecord)) {
 				throw (
@@ -381,7 +381,7 @@ WCEllipsoid* WCEllipsoid::fromRecord (
 		default:
 			{
 				const RecordInterface& radiusRecord = rec.asRecord("radii");
-				for (uInt i=0; i<pixelAxes.size(); i++) {
+				for (uint32_t i=0; i<pixelAxes.size(); i++) {
 					const RecordInterface& rec2 = radiusRecord.asRecord(i);
 					if (!qh.fromRecord(error, rec2)) {
 					throw (
@@ -424,18 +424,18 @@ LCRegion* WCEllipsoid::doToLCRegion(
     const IPosition& pixelAxesMap,
     const IPosition& outOrder
 ) const {
-	Vector<Double> wCenter(csys.referenceValue().copy());
+	Vector<double> wCenter(csys.referenceValue().copy());
 	Vector<String> centerUnits(csys.worldAxisUnits().copy());
 
-	Vector<Double> wRadius(csys.nWorldAxes(), 0);
+	Vector<double> wRadius(csys.nWorldAxes(), 0);
 	Vector<String> radiusUnits(csys.worldAxisUnits().copy());
 
 	// Reorder world coordinates for output CS and set units.
 	// "funny" values and units (pix, frac) are handled later and are
 	// ignored at this stage
-	for (uInt i=0; i<_pixelAxes.nelements(); i++) {
-		Int latticePixelAxis = pixelAxesMap[i];
-        Int worldAxis = csys.pixelAxisToWorldAxis(latticePixelAxis);
+	for (uint32_t i=0; i<_pixelAxes.nelements(); i++) {
+		int32_t latticePixelAxis = pixelAxesMap[i];
+        int32_t worldAxis = csys.pixelAxisToWorldAxis(latticePixelAxis);
 		Quantity value = _center[latticePixelAxis];
 		if (
 			value.getUnit() != "pix"
@@ -452,12 +452,12 @@ LCRegion* WCEllipsoid::doToLCRegion(
 	// Convert to pixels for all pixel axes of csys for center
 
 	CoordinateSystem mycsys = csys;
-	Vector<Int> absRel(wCenter.size(), _absRel);
+	Vector<int32_t> absRel(wCenter.size(), _absRel);
 	if (! mycsys.setWorldAxisUnits(centerUnits)) {
 		throw (AipsError ("WCEllipsoid::doToLCregion - center units are inconsistent with coordinate system"));
 	}
 	makeWorldAbsolute (wCenter, absRel, mycsys, latticeShape);
-	Vector<Double> pCenter;
+	Vector<double> pCenter;
 
 	if (! mycsys.toPixel(pCenter, wCenter)) {
 		throw (
@@ -466,9 +466,9 @@ LCRegion* WCEllipsoid::doToLCRegion(
 			)
 		);
 	}
-	for (uInt i=0; i<_pixelAxes.nelements(); i++) {
-		Int latticePixelAxis = pixelAxesMap[i];
-        Int worldAxis = csys.pixelAxisToWorldAxis(latticePixelAxis);
+	for (uint32_t i=0; i<_pixelAxes.nelements(); i++) {
+		int32_t latticePixelAxis = pixelAxesMap[i];
+        int32_t worldAxis = csys.pixelAxisToWorldAxis(latticePixelAxis);
 		Quantity value = _radii[latticePixelAxis];
 		if (
 			value.getUnit() != "pix"
@@ -483,9 +483,9 @@ LCRegion* WCEllipsoid::doToLCRegion(
 	if (! mycsys.setWorldAxisUnits(radiusUnits)) {
 		throw (AipsError ("WCEllipsoid::doToLCregion - center units are inconsistent with coordinate system"));
 	}
-	Vector<Double> pIncrement = mycsys.increment();
-	Vector<Double> pRadius(_radii.size());
-	for (uInt i=0; i<pRadius.size(); i++) {
+	Vector<double> pIncrement = mycsys.increment();
+	Vector<double> pRadius(_radii.size());
+	for (uint32_t i=0; i<pRadius.size(); i++) {
 		if (_radii[i].getUnit() == "pix") {
 			pRadius[i] = _radii[i].getValue();
 		}
@@ -497,15 +497,15 @@ LCRegion* WCEllipsoid::doToLCRegion(
 	// Now recover only those values from pCenter that we actually
 	// want.  Here we handle frac/pixel/default units as well.
 
-	Vector<Double> refPix = mycsys.referencePixel();
-	const uInt nAxes = outOrder.nelements();
-	Vector<Double> outCenter(nAxes);
-	Vector<Double> outRadius(nAxes);
+	Vector<double> refPix = mycsys.referencePixel();
+	const uint32_t nAxes = outOrder.nelements();
+	Vector<double> outCenter(nAxes);
+	Vector<double> outRadius(nAxes);
 
 	IPosition outShape(nAxes);
-	for (uInt i=0; i<_pixelAxes.nelements(); i++) {
-		Int latticePixelAxis = pixelAxesMap[i];
-		Double pixel = pCenter(latticePixelAxis);
+	for (uint32_t i=0; i<_pixelAxes.nelements(); i++) {
+		int32_t latticePixelAxis = pixelAxesMap[i];
+		double pixel = pCenter(latticePixelAxis);
 		convertPixel(
 			pixel, _center[i].getValue(), _center[i].getUnit(),
 			_absRel, refPix[i], latticeShape[latticePixelAxis]
@@ -551,7 +551,7 @@ void WCEllipsoid::_init() {
 	unitInit();
 	_checkUnits();
 
-	for (uInt i=0; i<_pixelAxes.nelements(); i++) {
+	for (uint32_t i=0; i<_pixelAxes.nelements(); i++) {
 		addAxisDesc (makeAxisDesc (_csys, _pixelAxes(i)));
 	}
 }
@@ -560,9 +560,9 @@ void WCEllipsoid::_checkPixelAxes() const {
 	ostringstream oss;
 	oss << _pixelAxes;
 	String paAsString = oss.str();
-	for (uInt i=0; i<_pixelAxes.size(); i++) {
+	for (uint32_t i=0; i<_pixelAxes.size(); i++) {
 		if (
-			_pixelAxes[i] > Int(_csys.nPixelAxes()-1)
+			_pixelAxes[i] > int32_t(_csys.nPixelAxes()-1)
 		) {
 			throw (
 				AipsError(
@@ -585,7 +585,7 @@ void WCEllipsoid::_checkPixelAxes() const {
 
 void WCEllipsoid::_checkUnits() const {
 	Vector<String> units(_radii.size());
-	for (uInt i=0; i<units.size(); i++) {
+	for (uint32_t i=0; i<units.size(); i++) {
 		units[i] = _radii[i].getUnit();
 	}
 	try {
@@ -596,7 +596,7 @@ void WCEllipsoid::_checkUnits() const {
 			std::string(x.what()) + " Checking radii units"
 		);
 	}
-	for (uInt i=0; i<units.size(); i++) {
+	for (uint32_t i=0; i<units.size(); i++) {
 		units[i] = _center[i].getUnit();
 	}
 	try {

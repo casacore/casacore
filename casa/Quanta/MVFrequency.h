@@ -55,13 +55,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </etymology>
 //
 // <synopsis>
-// An MVFrequency is a simple Double, to be used in the MFrequency measure.
+// An MVFrequency is a simple double, to be used in the MFrequency measure.
 // Requirements can be found in the 
 // <linkto class=MeasValue>MeasValue</linkto> base class.<br>
 // The only reasonable constructor is (but all MeasValue constructors are
 // present)
-// <src>MVFrequency(Double)</src> (with assumed Hz units);
-// and an <src>operator Double</src> takes
+// <src>MVFrequency(double)</src> (with assumed Hz units);
+// and an <src>operator double</src> takes
 // care of all other possibilities. Its external use is for
 //  <linkto class=MeasConvert>MeasConvert</linkto>, to distinguish between
 // input in internal Measure units, and values which have to have
@@ -103,12 +103,12 @@ public:
   MVFrequency(const MVFrequency &other);
   // Copy assignment
   MVFrequency &operator=(const MVFrequency &other);
-  // Constructor from Double, assuming Hz
-  MVFrequency(Double d);
+  // Constructor from double, assuming Hz
+  MVFrequency(double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVFrequency(const Quantity &other);
-  MVFrequency(const Quantum<Vector<Double> > &other);
+  MVFrequency(const Quantum<Vector<double> > &other);
   // </group>
   // Constructor from Vector. A zero value will be taken for an empty vector,
   // the canonical value for a quantum vector.
@@ -116,7 +116,7 @@ public:
   //  <li> AipsError if vector length > 1
   // </thrown>
   // <group>
-  MVFrequency(const Vector<Double> &other);
+  MVFrequency(const Vector<double> &other);
   MVFrequency(const Vector<Quantity> &other);
   // </group>
   
@@ -125,7 +125,7 @@ public:
   
   //# Operators
   // Conversion operator
-  operator Double() const;
+  operator double() const;
   
   // Addition
   // <group>
@@ -134,10 +134,10 @@ public:
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVFrequency &other) const;
-  Bool operator!=(const MVFrequency &other) const;
-  Bool near(const MVFrequency &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVFrequency &other, Double tol = 1e-13) const;
+  bool operator==(const MVFrequency &other) const;
+  bool operator!=(const MVFrequency &other) const;
+  bool near(const MVFrequency &other, double tol = 1e-13) const;
+  bool nearAbs(const MVFrequency &other, double tol = 1e-13) const;
   // </group>
   
   //# General member functions
@@ -153,32 +153,32 @@ public:
   virtual MeasValue *clone() const;
   // Adjust value: taken from base class, a NOP.
   // Get value in Hz
-  Double getValue() const;
+  double getValue() const;
   // Get quantity in Hz
   Quantity get() const;
   // Get the wave characteristics in (recognised) specified units
   Quantity get(const Unit &unit) const;
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<double> > getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
   
 private:
   //# Data
   // Value
-  Double val;
+  double val;
   
   //# Member functions
   // Get correct data type conversion factor from input Quantum
-  Double makeF(Double v, const Unit &dt, Bool rev=False) const;
+  double makeF(double v, const Unit &dt, bool rev=false) const;
 };
 
 

@@ -55,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // This class is useful for freeing the writer of other classes from having
 // to know how how a linear data set is stored or represented. For example,
-// four floating point numbers will probably be stored as a Vector<Float>,
+// four floating point numbers will probably be stored as a Vector<float>,
 // and kept in memory for fast access. But 400 million floating point
 // numbers cannot usually be kept in memory, and may be stored on disk as a
 // Table. By using a SampledFunctional writers of other classes
@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // T sum(SampledFunctional<T> data)
 // {
 //   T result = 0;
-//   for (uInt i = 0; i < data.nelements(); i++)
+//   for (uint32_t i = 0; i < data.nelements(); i++)
 //     result += data(i);
 //   return result;
 // }
@@ -97,13 +97,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </todo>
 
 template <class Range> class SampledFunctional: 
-  public Functional<uInt, Range>
+  public Functional<uint32_t, Range>
 {
 public:
   // Access the specified element of the data
-  virtual Range operator()(const uInt &index) const = 0;
+  virtual Range operator()(const uint32_t &index) const = 0;
   // Return the total size of the data set.
-  virtual uInt nelements() const = 0;
+  virtual uint32_t nelements() const = 0;
   // The virtual destructor does nothing
   virtual ~SampledFunctional(){}
 };

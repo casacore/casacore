@@ -32,10 +32,10 @@ RecordTransformable::~RecordTransformable() {
   // Nothing
 }
 
-Bool RecordTransformable::fromString(String & error, const String & inString) {
-  if (False) inString.empty();	// stop warning
+bool RecordTransformable::fromString(String & error, const String & inString) {
+  if (false) inString.empty();	// stop warning
   error += "Cannot initialise this object from a string\n";
-  return False;
+  return false;
 }
 
 const String &RecordTransformable::ident() const {

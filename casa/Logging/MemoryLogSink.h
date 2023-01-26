@@ -86,22 +86,22 @@ public:
   virtual ~MemoryLogSink();
 
   // Get number of messages in sink.
-  virtual uInt nelements() const;
+  virtual uint32_t nelements() const;
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime (uInt i) const;
-  virtual String getPriority (uInt i) const;
-  virtual String getMessage (uInt i) const;
-  virtual String getLocation (uInt i) const;
-  virtual String getObjectID (uInt i) const;
+  virtual double getTime (uint32_t i) const;
+  virtual String getPriority (uint32_t i) const;
+  virtual String getMessage (uint32_t i) const;
+  virtual String getLocation (uint32_t i) const;
+  virtual String getObjectID (uint32_t i) const;
   // </group>
 
   // If the message passes the filter, write it to memory
-  virtual Bool postLocally (const LogMessage& message);
+  virtual bool postLocally (const LogMessage& message);
 
   // Write a message (usually from another logsink) into the local one.
-  virtual void writeLocally (Double time, const String& message,
+  virtual void writeLocally (double time, const String& message,
 			     const String& priority, const String& location,
 			     const String& objectID);
 
@@ -119,10 +119,10 @@ private:
 
   // Rezize the blocks to the given size, but at least 64 elements
   // more than the current size.
-  void resize (uInt nrnew);
+  void resize (uint32_t nrnew);
 
-  uInt          nmsg_p;
-  Block<Double> time_p;
+  uint32_t          nmsg_p;
+  Block<double> time_p;
   Block<String> priority_p;
   Block<String> message_p;
   Block<String> location_p;

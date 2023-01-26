@@ -78,7 +78,7 @@ public:
     // String
     OBJECT_ID,
     // Observation id (index in OBSERVATION table) <BR>
-    // Int
+    // int32_t
     OBSERVATION_ID,
     // (Source code) Origin of message <BR>
     // String
@@ -87,7 +87,7 @@ public:
     // String
     PRIORITY,
     // Timestamp of message <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     //
     // Number of required columns

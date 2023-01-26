@@ -102,20 +102,20 @@ public:
     virtual ~TSMDataColumn();
 
     // Return the size of a pixel in the tile in external format.
-    uInt tilePixelSize() const;
+    uint32_t tilePixelSize() const;
 
     // Return the size of a pixel in the tile in local format.
-    uInt localPixelSize() const;
+    uint32_t localPixelSize() const;
 
     // Determine the length to store the given number of pixels.
-    uInt64 dataLength (uInt64 nrPixels) const;
+    uint64_t dataLength (uint64_t nrPixels) const;
 
     // Set column sequence number.
-    void setColumnNumber (uInt colnr);
+    void setColumnNumber (uint32_t colnr);
 
     // Changing array shapes for non-FixedShape columns when the
     // parent tiled storage manager can handle it.
-    Bool canChangeShape() const;
+    bool canChangeShape() const;
 
     // Set the shape of the data array in the given row.
     // It will check if it matches already defined data and coordinates shapes.
@@ -131,7 +131,7 @@ public:
 			const IPosition& tileShape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (rownr_t rownr);
+    bool isShapeDefined (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     IPosition shape (rownr_t rownr);
@@ -143,13 +143,13 @@ public:
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn get function).
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getBool     (rownr_t rownr, bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+    virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+    virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+    virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
     virtual void getfloat    (rownr_t rownr, float* dataPtr);
     virtual void getdouble   (rownr_t rownr, double* dataPtr);
     virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -160,13 +160,13 @@ public:
     // The buffer pointed to by dataPtr has to have the correct length
     // (which is guaranteed by the Scalar/ArrayColumn put function).
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putBool     (rownr_t rownr, const bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const unsigned char* dataPtr);
+    virtual void putShort    (rownr_t rownr, const int16_t* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uint16_t* dataPtr);
+    virtual void putInt      (rownr_t rownr, const int32_t* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uint32_t* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const int64_t* dataPtr);
     virtual void putfloat    (rownr_t rownr, const float* dataPtr);
     virtual void putdouble   (rownr_t rownr, const double* dataPtr);
     virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
@@ -244,15 +244,15 @@ public:
 
     // Read the data of the column from a tile.
     // (I.e. convert from external to local format).
-    void readTile (void* to, const void* from, uInt nrPixels);
+    void readTile (void* to, const void* from, uint32_t nrPixels);
 
     // Write the data of the column into a tile.
     // (I.e. convert from local to external format).
-    void writeTile (void* to, const void* from, uInt nrPixels);
+    void writeTile (void* to, const void* from, uint32_t nrPixels);
 
     // Get the function to convert from external to local format
-    // (or vice-versa if <src>writeFlag=True</src>).
-    Conversion::ValueFunction* getConvertFunction (Bool writeFlag) const
+    // (or vice-versa if <src>writeFlag=true</src>).
+    Conversion::ValueFunction* getConvertFunction (bool writeFlag) const
       { return writeFlag ?  writeFunc_p : readFunc_p; }
 
     // Get nr of elements in a value to convert (usually 1, but 2 for Complex).
@@ -260,21 +260,21 @@ public:
       { return convPixelSize_p; }
 
     // Does a conversion (byte swap) needs to be done?
-    Bool isConversionNeeded() const
+    bool isConversionNeeded() const
       { return mustConvert_p; }
 
 private:
     // The (canonical) size of a pixel in a tile.
-    uInt tilePixelSize_p;
+    uint32_t tilePixelSize_p;
     // The local size of a pixel.
-    uInt localPixelSize_p;
+    uint32_t localPixelSize_p;
     // The multiplication factor for a conversion operation.
     // This is the pixel size when a memcpy can be used, otherwise it is 1.
-    uInt convPixelSize_p;
+    uint32_t convPixelSize_p;
     // Is a conversion necessary?
-    Bool mustConvert_p;
+    bool mustConvert_p;
     // The column sequence number.
-    uInt colnr_p;
+    uint32_t colnr_p;
     // The conversion function needed when reading.
     Conversion::ValueFunction* readFunc_p;
     // The conversion function needed when writing.
@@ -291,67 +291,67 @@ private:
     // A cell can contain a scalar or an array (depending on the
     // column definition).
     void accessCell (rownr_t rownr,
-		     const void* dataPtr, Bool writeFlag);
+		     const void* dataPtr, bool writeFlag);
 
     // Read or write a slice of a data cell in the cube.
     void accessCellSlice (rownr_t rownr, const Slicer& ns,
-			  const void* dataPtr, Bool writeFlag);
+			  const void* dataPtr, bool writeFlag);
 
     // Read or write an entire column.
     // This can only be done if one hypercube is used.
-    void accessColumn (const void* dataPtr, Bool writeFlag);
+    void accessColumn (const void* dataPtr, bool writeFlag);
 
     // Read or write a slice from the entire column.
     // This can only be done if one hypercube is used.
     void accessColumnSlice (const Slicer& ns,
-			    const void* dataPtr, Bool writeFlag);
+			    const void* dataPtr, bool writeFlag);
 
     // Read or write some cells in a column.
     // It tries to optimize by looking for regular row strides.
     void accessColumnCells (const RefRows& rownrs,  const IPosition& shape,
-			    const void* dataPtr, Bool writeFlag);
+			    const void* dataPtr, bool writeFlag);
 
     // Read or write some cells in a column.
     // It tries to optimize by looking for regular row strides.
     void accessColumnSliceCells (const RefRows& rownrs, const Slicer& ns,
 				 const IPosition& shape,
-				 const void* dataPtr, Bool writeFlag);
+				 const void* dataPtr, bool writeFlag);
 
     // Read or write the full cells given by start,end,incr.
     void accessFullCells (TSMCube* hypercube,
-			  char* dataPtr, Bool writeFlag,
+			  char* dataPtr, bool writeFlag,
 			  const IPosition& start,
 			  const IPosition& end,
 			  const IPosition& incr);
 
     // Read or write the sliced cells given by start,end,incr.
     void accessSlicedCells (TSMCube* hypercube,
-			    char* dataPtr, Bool writeFlag,
+			    char* dataPtr, bool writeFlag,
 			    const IPosition& start,
 			    const IPosition& end,
 			    const IPosition& incr);
 };
 
 
-inline uInt TSMDataColumn::tilePixelSize() const
+inline uint32_t TSMDataColumn::tilePixelSize() const
 {
     return tilePixelSize_p;
 }
-inline uInt TSMDataColumn::localPixelSize() const
+inline uint32_t TSMDataColumn::localPixelSize() const
 {
     return localPixelSize_p;
 }
-inline void TSMDataColumn::setColumnNumber (uInt colnr)
+inline void TSMDataColumn::setColumnNumber (uint32_t colnr)
 {
     colnr_p = colnr;
 }
 inline void TSMDataColumn::readTile (void* to, const void* from,
-				     uInt nrPixels)
+				     uint32_t nrPixels)
 {
     readFunc_p (to, from, nrPixels * convPixelSize_p);
 }
 inline void TSMDataColumn::writeTile (void* to, const void* from,
-				      uInt nrPixels)
+				      uint32_t nrPixels)
 {
     writeFunc_p (to, from, nrPixels * convPixelSize_p);
 }

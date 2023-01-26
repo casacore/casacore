@@ -31,19 +31,19 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //The minimum size for the cacheTable
-const uInt MINSIZE = 31; 
+const uint32_t MINSIZE = 31; 
 
-Block<uInt>  Primes::cacheTable;
+Block<uint32_t>  Primes::cacheTable;
 std::mutex   Primes::theirMutex;
 
 
-Bool Primes::isPrime(uInt number)
+bool Primes::isPrime(uint32_t number)
 {
-    if (number < 2) return False;
-    return(smallestPrimeFactor(number)==number ? True : False);
+    if (number < 2) return false;
+    return(smallestPrimeFactor(number)==number ? true : false);
 }
 
-uInt Primes::aLargerPrimeThan( uInt number ) 
+uint32_t Primes::aLargerPrimeThan( uint32_t number ) 
 {    
     std::lock_guard<std::mutex> lock(theirMutex);
     // If number is equal to or larger than the last (and largest) element in 
@@ -54,8 +54,8 @@ uInt Primes::aLargerPrimeThan( uInt number )
 
     if ( number >= cacheTable[cacheTable.nelements() - 1] ) return 0;
 
-    Int index = -1;
-    for ( uInt i = cacheTable.nelements(); i > 0; i-- ) {
+    int32_t index = -1;
+    for ( uint32_t i = cacheTable.nelements(); i > 0; i-- ) {
 	if ( cacheTable[(i-1)] > number ) {
 	    index =(i-1);
 	}
@@ -63,10 +63,10 @@ uInt Primes::aLargerPrimeThan( uInt number )
     return cacheTable[ index ];
 }
 
-uInt Primes::nextLargerPrimeThan( uInt number ) 
+uint32_t Primes::nextLargerPrimeThan( uint32_t number ) 
 {
     std::lock_guard<std::mutex> lock(theirMutex);
-    uInt i;
+    uint32_t i;
     // This function increments number until it is prime.  It finds the next
     // entry in the table of primes which is larger, and stores this entry's
     // index number.  The table is resized to accomodate another entry, and
@@ -77,7 +77,7 @@ uInt Primes::nextLargerPrimeThan( uInt number )
 	initializeCache();
     }
     while( !isPrime( ++number ) ) {}
-    uInt index = cacheTable.nelements();
+    uint32_t index = cacheTable.nelements();
     for( i = cacheTable.nelements(); i > 0; i-- ) {
 	if ( cacheTable[(i-1)] == number ) {
 	    return number;
@@ -94,7 +94,7 @@ uInt Primes::nextLargerPrimeThan( uInt number )
     return number;
 }
  
-uInt Primes::smallestPrimeFactor( uInt number ) 
+uint32_t Primes::smallestPrimeFactor( uint32_t number ) 
 {
     // This function checks for factors: if found, the first (smallest) one is
     // returned, otherwise the original value is returned.
@@ -105,14 +105,14 @@ uInt Primes::smallestPrimeFactor( uInt number )
     if ((number % 2) == 0) return 2;
     if ((number % 3) == 0) return 3;
 
-    for (uInt i=5,k=7,sq=(uInt)(sqrt(Double(number))+1); i<sq; i=i+6,k=k+6) {
+    for (uint32_t i=5,k=7,sq=(uint32_t)(sqrt(double(number))+1); i<sq; i=i+6,k=k+6) {
 	if ((number % i) == 0) return i;
 	if ((number % k) == 0) return k;
     }
     return number;
 } 
 
-Block<uInt> Primes::factor( uInt number ) 
+Block<uint32_t> Primes::factor( uint32_t number ) 
 {
     //If number is zero or one, this function returns a one-cell block
     //containing number; otherwise this fuction continues to resize the 
@@ -120,13 +120,13 @@ Block<uInt> Primes::factor( uInt number )
     //block until number equals the product of all the factors stored 
     //in the block.
 
-    Block<uInt> multiples;
+    Block<uint32_t> multiples;
 
     if (number < 2) {
 	multiples.resize(1);
 	multiples[0] = number;
     } else {
-	for (uInt index=0; number > 1; index++) {
+	for (uint32_t index=0; number > 1; index++) {
 	    multiples.resize( index+1 );
 	    multiples[index] = smallestPrimeFactor(number);
 	    number = number / multiples[index];
@@ -140,7 +140,7 @@ void Primes::initializeCache()
     // This function resets the cache to a block of 30, which
     // contains the next prime greater than each power of two.
 
-    cacheTable.resize( 30, True, False );
+    cacheTable.resize( 30, true, false );
     cacheTable[0] = 3;
     cacheTable[1] = 5;      
     cacheTable[2] = 11;     

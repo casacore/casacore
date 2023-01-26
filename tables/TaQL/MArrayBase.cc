@@ -34,8 +34,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Construct from a mask.
-  MArrayBase::MArrayBase (const ArrayBase& arr, const Array<Bool>& mask,
-                          Bool isNull)
+  MArrayBase::MArrayBase (const ArrayBase& arr, const Array<bool>& mask,
+                          bool isNull)
     : itsMask   (mask),
       itsShape  (arr.shape()),
       itsSize   (arr.size()),
@@ -70,12 +70,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MArrayBase::resizeBase (const ArrayBase& arr, Bool useMask)
+  void MArrayBase::resizeBase (const ArrayBase& arr, bool useMask)
   {
     itsShape.resize (arr.ndim());
     itsShape = arr.shape();
     itsSize  = arr.size();
-    itsNull  = False;
+    itsNull  = false;
     if (useMask) {
       itsMask.resize (arr.shape());
       itsNValid = -1;
@@ -94,16 +94,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsNull   = other.itsNull;
   }
 
-  void MArrayBase::setBase (const ArrayBase& arr, const Array<Bool>& mask)
+  void MArrayBase::setBase (const ArrayBase& arr, const Array<bool>& mask)
   {
     itsShape.resize (arr.ndim());
     itsShape = arr.shape();
     itsSize  = arr.size();
-    itsNull  = False;
+    itsNull  = false;
     setMask (mask);
   }
 
-  void MArrayBase::setMask (const Array<Bool>& mask)
+  void MArrayBase::setMask (const Array<bool>& mask)
   {
     if (mask.empty()) {
       removeMask();
@@ -114,7 +114,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  Array<Bool> MArrayBase::combineMask (const MArrayBase& other) const
+  Array<bool> MArrayBase::combineMask (const MArrayBase& other) const
   {
     if (itsMask.empty()) {
       return other.itsMask;

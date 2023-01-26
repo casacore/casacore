@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define EXTBLSZ 32
 
 StManColumnAipsIO::StManColumnAipsIO (StManAipsIO* smptr,
-				      int dataType, Bool byPtr)
+				      int dataType, bool byPtr)
   : MSMColumn(smptr, dataType, byPtr)
 {}
 
@@ -59,9 +59,9 @@ void StManColumnAipsIO::initData (void*, rownr_t)
 void StManColumnAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 {
     ios.putstart ("StManColumnAipsIO", 2);     // class version 2
-    ios << uInt(nrval);
-    uInt nr;
-    for (uInt i=1; i<=nrext_p; i++) {
+    ios << uint32_t(nrval);
+    uint32_t nr;
+    for (uint32_t i=1; i<=nrext_p; i++) {
 	nr = ncum_p[i] - ncum_p[i-1];
 	if (nr > nrval) {
 	    nr = nrval;
@@ -75,29 +75,29 @@ void StManColumnAipsIO::putFile (rownr_t nrval, AipsIO& ios)
     ios.putend();
 }
 	
-void StManColumnAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
+void StManColumnAipsIO::putData (void* dp, uint32_t nrval, AipsIO& ios)
 {
     switch (dtype()) {
     case TpBool:
-	ios.put (nrval, (Bool*)dp);
+	ios.put (nrval, (bool*)dp);
 	break;
     case TpUChar:
-	ios.put (nrval, (uChar*)dp);
+	ios.put (nrval, (unsigned char*)dp);
 	break;
     case TpShort:
-	ios.put (nrval, (Short*)dp);
+	ios.put (nrval, (int16_t*)dp);
 	break;
     case TpUShort:
-	ios.put (nrval, (uShort*)dp);
+	ios.put (nrval, (uint16_t*)dp);
 	break;
     case TpInt:
-	ios.put (nrval, (Int*)dp);
+	ios.put (nrval, (int32_t*)dp);
 	break;
     case TpUInt:
-	ios.put (nrval, (uInt*)dp);
+	ios.put (nrval, (uint32_t*)dp);
 	break;
     case TpInt64:
-	ios.put (nrval, (Int64*)dp);
+	ios.put (nrval, (int64_t*)dp);
 	break;
     case TpFloat:
 	ios.put (nrval, (float*)dp);
@@ -123,8 +123,8 @@ void StManColumnAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 //# Read all data from AipsIO.
 void StManColumnAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
-    uInt version = ios.getstart ("StManColumnAipsIO");
-    uInt nr;
+    uint32_t version = ios.getstart ("StManColumnAipsIO");
+    uint32_t nr;
     //# Get and check nr of values.
     ios >> nr;
     if (nr != nrval) {
@@ -135,7 +135,7 @@ void StManColumnAipsIO::getFile (rownr_t nrval, AipsIO& ios)
     if (nrval > 0) {
 	resize (nrval);
 	void* datap = data_p[1];
-	uInt nrd=0;
+	uint32_t nrd=0;
 	while (nrd < nrval) {
 	    ios >> nr;
 	    if (nr == 0) {
@@ -153,32 +153,32 @@ void StManColumnAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 }
 
 
-void StManColumnAipsIO::getData (void* datap, uInt inx, uInt nrval,
-				 AipsIO& ios, uInt)
+void StManColumnAipsIO::getData (void* datap, uint32_t inx, uint32_t nrval,
+				 AipsIO& ios, uint32_t)
 {
-    uInt nr;
+    uint32_t nr;
     ios >> nr;
     switch (dtype()) {
     case TpBool:
-	ios.get (nrval, (Bool*)datap + inx);
+	ios.get (nrval, (bool*)datap + inx);
 	break;
     case TpUChar:
-	ios.get (nrval, (uChar*)datap + inx);
+	ios.get (nrval, (unsigned char*)datap + inx);
 	break;
     case TpShort:
-	ios.get (nrval, (Short*)datap + inx);
+	ios.get (nrval, (int16_t*)datap + inx);
 	break;
     case TpUShort:
-	ios.get (nrval, (uShort*)datap + inx);
+	ios.get (nrval, (uint16_t*)datap + inx);
 	break;
     case TpInt:
-	ios.get (nrval, (Int*)datap + inx);
+	ios.get (nrval, (int32_t*)datap + inx);
 	break;
     case TpUInt:
-	ios.get (nrval, (uInt*)datap + inx);
+	ios.get (nrval, (uint32_t*)datap + inx);
 	break;
     case TpInt64:
-	ios.get (nrval, (Int64*)datap + inx);
+	ios.get (nrval, (int64_t*)datap + inx);
 	break;
     case TpFloat:
 	ios.get (nrval, (float*)datap + inx);
@@ -251,7 +251,7 @@ DataManagerColumn* StManAipsIO::makeScalarColumn (const String& columnName,
     if (ncolumn() >= colSet_p.nelements()) {
 	colSet_p.resize (colSet_p.nelements() + 32);
     }
-    StManColumnAipsIO* colp = new StManColumnAipsIO (this, dataType, False);
+    StManColumnAipsIO* colp = new StManColumnAipsIO (this, dataType, false);
     colSet_p[ncolumn()] = colp;
     return colp;
 }
@@ -282,13 +282,13 @@ DataManagerColumn* StManAipsIO::makeIndArrColumn (const String& columnName,
     return colp;
 }
 
-Bool StManAipsIO::flush (AipsIO&, Bool)
+bool StManAipsIO::flush (AipsIO&, bool)
 {
     //# Do not write if nothing has been put.
     if (! hasPut_p) {
-	return False;
+	return false;
     }
-    uInt i;
+    uint32_t i;
     AipsIO ios(fileName(), ByteIO::New);
     ios.putstart ("StManAipsIO", 2);           // version 2
     //# Write the number of rows and columns and the column types.
@@ -298,7 +298,7 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
     ios << stmanName_p;                        // this is added in version 2
     ios << sequenceNr();
     ios << uniqnr_p;
-    ios << uInt(nrrow_p);
+    ios << uint32_t(nrrow_p);
     ios << ncolumn();
     for (i=0; i<ncolumn(); i++) {
 	ios << colSet_p[i]->dataType();
@@ -307,15 +307,15 @@ Bool StManAipsIO::flush (AipsIO&, Bool)
 	colSet_p[i]->putFile (nrrow_p, ios);
     }
     ios.putend();
-    hasPut_p = False;
-    return True;
+    hasPut_p = false;
+    return true;
 }
 
 void StManAipsIO::create64 (rownr_t nrrow)
 {
     nrrow_p = nrrow;
     //# Let the column create something if needed.
-    for (uInt i=0; i<ncolumn(); i++) {
+    for (uint32_t i=0; i<ncolumn(); i++) {
 	colSet_p[i]->doCreate (nrrow);
     }
     setHasPut();
@@ -331,9 +331,9 @@ rownr_t StManAipsIO::resync64 (rownr_t nrrow)
         iosfile_p->resync();
     }
     AipsIO ios(fileName());
-    uInt version = ios.getstart ("StManAipsIO");
+    uint32_t version = ios.getstart ("StManAipsIO");
     //# Get and check the number of rows and columns and the column types.
-    uInt i, nrr, nrc, snr;
+    uint32_t i, nrr, nrc, snr;
     int  dt;
     if (version > 1) {
 	ios >> stmanName_p;
@@ -375,7 +375,7 @@ rownr_t StManAipsIO::resync64 (rownr_t nrrow)
 	if (nrrow > nrr) {
 	    colSet_p[i]->addRow (nrrow, nrr);
 	} else if (nrrow < nrr) {
-	    for (uInt r=nrrow; r<nrr; r++) {
+	    for (uint32_t r=nrrow; r<nrr; r++) {
 	        colSet_p[i]->remove (nrrow);
 	    }
 	}
@@ -396,7 +396,7 @@ StManArrayFile* StManAipsIO::openArrayFile (ByteIO::OpenOption opt)
 
 void StManAipsIO::reopenRW()
 {
-    for (uInt i=0; i<ncolumn(); i++) {
+    for (uint32_t i=0; i<ncolumn(); i++) {
 	colSet_p[i]->reopenRW();
     }
 }
@@ -405,8 +405,8 @@ void StManAipsIO::deleteManager()
 {
     delete iosfile_p;
     iosfile_p = 0;
-    DOos::remove (fileName() + 'i', False, False);
-    DOos::remove (fileName(), False, False);
+    DOos::remove (fileName() + 'i', false, false);
+    DOos::remove (fileName(), false, false);
 }
 
 } //# NAMESPACE CASACORE - END

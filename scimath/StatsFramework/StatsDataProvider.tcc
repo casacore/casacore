@@ -33,7 +33,7 @@ CASA_STATD StatsDataProvider<CASA_STATP>::StatsDataProvider() {}
 
 CASA_STATD StatsDataProvider<CASA_STATP>::~StatsDataProvider() {}
 
-CASA_STATD uInt StatsDataProvider<CASA_STATP>::getNMaxThreads() const {
+CASA_STATD uint32_t StatsDataProvider<CASA_STATP>::getNMaxThreads() const {
     return 0;
 }
 

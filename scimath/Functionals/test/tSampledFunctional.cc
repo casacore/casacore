@@ -36,120 +36,120 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   {
-    Bool Failed = False;
-    uInt i;
-    Vector<Float> v(10); indgen(v);
-    ScalarSampledFunctional<Float> fv(v);
+    bool Failed = false;
+    uint32_t i;
+    Vector<float> v(10); indgen(v);
+    ScalarSampledFunctional<float> fv(v);
     for (i = 0; i < fv.nelements(); i++)
-      if (!near(fv(i), Float(i)))
-	Failed = True;
+      if (!near(fv(i), float(i)))
+	Failed = true;
 
     // Check the assignment operator and copy constructor 
     // for const ScalarSampledFunctionals use copy semantics
-    const ScalarSampledFunctional<Float> cfv(v);
-    ScalarSampledFunctional<Float> cfv1(cfv), cfv2;
+    const ScalarSampledFunctional<float> cfv(v);
+    ScalarSampledFunctional<float> cfv1(cfv), cfv2;
     cfv2 = cfv;
     v(0) = 100.0f; 
     if (!near(cfv(0), 100.0f))
-      Failed = True;
+      Failed = true;
     for (i = 1; i < cfv.nelements(); i++)
-      if (!near(cfv(i), Float(i)))
-	Failed = True;
+      if (!near(cfv(i), float(i)))
+	Failed = true;
     for (i = 0; i < cfv1.nelements(); i++)
-      if (!near(cfv1(i), Float(i)))
- 	Failed = True;
+      if (!near(cfv1(i), float(i)))
+ 	Failed = true;
     for (i = 0; i < cfv2.nelements(); i++)
-      if (!near(cfv2(i), Float(i)))
- 	Failed = True;
+      if (!near(cfv2(i), float(i)))
+ 	Failed = true;
 
     // Check the copy constructor uses reference sematics
-    ScalarSampledFunctional<Float> fv1(fv);
+    ScalarSampledFunctional<float> fv1(fv);
     for (i = 1; i < fv.nelements(); i++)
-      if (!near(fv1(i), Float(i)))
-	Failed = True;
+      if (!near(fv1(i), float(i)))
+	Failed = true;
     if (!near(fv(0),100.0f))
-      Failed = True;
+      Failed = true;
     if (!near(fv1(0),100.0f))
-      Failed = True;
+      Failed = true;
 
     // Check the assignment operator uses reference sematics
-    ScalarSampledFunctional<Float> fv2;
+    ScalarSampledFunctional<float> fv2;
     fv2 = fv1;
     for (i = 1; i < fv.nelements(); i++)
-      if (!near(fv1(i), Float(i)))
-	Failed = True;
+      if (!near(fv1(i), float(i)))
+	Failed = true;
     if (!near(fv1(0),100.0f))
-      Failed = True;
+      Failed = true;
 
     // The block constructor uses copy semantics
-    Block<Float> b(10);
+    Block<float> b(10);
     for (i = 0; i < fv.nelements(); i++)
-      b[i] = Float(i);
-    ScalarSampledFunctional<Float> fb(b);
+      b[i] = float(i);
+    ScalarSampledFunctional<float> fb(b);
     b = 0.0f;
     for (i = 0; i < fb.nelements(); i++)
-      if (!near(fb(i), Float(i)))
-	Failed = True;
+      if (!near(fb(i), float(i)))
+	Failed = true;
 
     if (Failed) {
       cout << "Failed"; 
-      anyFailures = True;
+      anyFailures = true;
     }
     else
       cout << "Passed";
     cout << " the ScalarSampledFunctional test" << endl;
   }
   {
-    Bool Failed = False;
-    uInt i;
-    Array<Double> a(IPosition(4,2,3,10,1)); indgen(a);
-    ArraySampledFunctional<Array<Double> > f(a);
-    Matrix<Double> m;
+    bool Failed = false;
+    uint32_t i;
+    Array<double> a(IPosition(4,2,3,10,1)); indgen(a);
+    ArraySampledFunctional<Array<double> > f(a);
+    Matrix<double> m;
     for (i = 0; i < f.nelements(); i++) {
       m = f(i);
-      if (!near(m(0,0), Double(6*i+0)))
-	Failed = True;
-      if (!near(m(1,0), Double(6*i+1)))
-	Failed = True;
-      if (!near(m(0,1), Double(6*i+2)))
-	Failed = True;
-      if (!near(m(1,1), Double(6*i+3)))
-	Failed = True;
-      if (!near(m(0,2), Double(6*i+4)))
-	Failed = True;
-      if (!near(m(1,2), Double(6*i+5)))
-	Failed = True;
+      if (!near(m(0,0), double(6*i+0)))
+	Failed = true;
+      if (!near(m(1,0), double(6*i+1)))
+	Failed = true;
+      if (!near(m(0,1), double(6*i+2)))
+	Failed = true;
+      if (!near(m(1,1), double(6*i+3)))
+	Failed = true;
+      if (!near(m(0,2), double(6*i+4)))
+	Failed = true;
+      if (!near(m(1,2), double(6*i+5)))
+	Failed = true;
       //      cout << "     f(" << i << ") = " << m << endl;;
     }
-    ArraySampledFunctional<Array<Double> > f1(f);
+    ArraySampledFunctional<Array<double> > f1(f);
     a(IPosition(4,0,0,0,0)) = 100.0;
 
-    ArraySampledFunctional<Array<Double> > f2;
+    ArraySampledFunctional<Array<double> > f2;
     f2 = f1;
     for (i = 1; i < f2.nelements(); i++) {
       m = f2(i);
-      if (!near(m(0,0), Double(6*i+0)))
-	Failed = True;
-      if (!near(m(1,0), Double(6*i+1)))
-	Failed = True;
-      if (!near(m(0,1), Double(6*i+2)))
-	Failed = True;
-      if (!near(m(1,1), Double(6*i+3)))
-	Failed = True;
-      if (!near(m(0,2), Double(6*i+4)))
-	Failed = True;
-      if (!near(m(1,2), Double(6*i+5)))
-	Failed = True;
+      if (!near(m(0,0), double(6*i+0)))
+	Failed = true;
+      if (!near(m(1,0), double(6*i+1)))
+	Failed = true;
+      if (!near(m(0,1), double(6*i+2)))
+	Failed = true;
+      if (!near(m(1,1), double(6*i+3)))
+	Failed = true;
+      if (!near(m(0,2), double(6*i+4)))
+	Failed = true;
+      if (!near(m(1,2), double(6*i+5)))
+	Failed = true;
     }
     m = f2(0);
     if (!near(m(0,0), 100.0))
-      Failed = True;
+      Failed = true;
 
     if (Failed) {
       cout << "Failed"; 
-      anyFailures = True;
+      anyFailures = true;
     }
     else
       cout << "Passed";

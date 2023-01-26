@@ -55,11 +55,11 @@ int main (int argc, const char* argv[])
       istr >> leng;
     }
     int incr = 0;
-    Bool setpos = False;
+    bool setpos = false;
     if (argc > 4) {
       istringstream istr(argv[4]);
       istr >> incr;
-      setpos = True;
+      setpos = true;
     }
     leng /= sizeof(int);
     int tleng = leng * sizeof(int);

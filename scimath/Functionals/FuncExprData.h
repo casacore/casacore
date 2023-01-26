@@ -169,13 +169,13 @@ public:
   // The compilation state descriptor
   struct ExprCompState {
     // Old index of low RPS boundary
-    uInt rpslow;
+    uint32_t rpslow;
     // # of values available on value stack
-    uInt nval;
+    uint32_t nval;
     // Argument count
-    uInt argcnt;
+    uint32_t argcnt;
     // Previous saved program counter
-    uInt pcptr;
+    uint32_t pcptr;
   };
   // The operator description: code; priority; # of arguments; # of arguments
   // used up (or produced for functions)
@@ -187,15 +187,15 @@ public:
     // The category
     opCategories category;
     // Execution priority
-    uInt priority;
+    uint32_t priority;
     // # of arguments necessary (or minimum)
-    uInt narg;
+    uint32_t narg;
     // max # of arguments (for function)
-    uInt nmaxarg;
+    uint32_t nmaxarg;
     // # of results produced/used
-    Int nresult;
+    int32_t nresult;
     // code info (like par/x index; jump distance
-    Int info;
+    int32_t info;
     // special action
     specAction special;
     // state

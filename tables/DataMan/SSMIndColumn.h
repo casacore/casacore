@@ -73,7 +73,7 @@ class AipsIO;
 // file, so for each row an array is present.
 // On the other hand adding a row does nothing for variable shaped arrays.
 // So when no data is put or shape is set, a row may contain no array at all.
-// In that case the function <src>isShapeDefined</src> returns False for
+// In that case the function <src>isShapeDefined</src> returns false for
 // that row.
 // <p>
 // Indirect arrays containing strings are not handled by this class, but
@@ -93,7 +93,7 @@ class SSMIndColumn : public SSMColumn
 public:
   // Create a column of the given data type.
   // It keeps the pointer to its parent (but does not own it).
-  SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMIndColumn (SSMBase* aParent, int aDataType, uint32_t aColNr);
   
   // Frees up the storage.
   ~SSMIndColumn();
@@ -101,29 +101,29 @@ public:
   // An array of 'fixed length' strings is not handled specially,
   // thus this function is ignored.
   // It is needed to override the bahviour of the base class.
-  virtual void setMaxLength (uInt maxLength);
+  virtual void setMaxLength (uint32_t maxLength);
 
   // Add (newNrrow-oldNrrow) rows to the column.
-  virtual void addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit);
+  virtual void addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit);
   
   // Set the (fixed) shape of the arrays in the entire column.
   virtual void setShapeColumn (const IPosition& aShape);
   
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (rownr_t aRowNr);
+  virtual uint32_t ndim (rownr_t aRowNr);
   
   // Set the shape of the array in the given row and allocate the array
   // in the file.
   void setShape (rownr_t aRowNr, const IPosition& aShape);
   
   // Is the shape defined (i.e. is there an array) in this row?
-  virtual Bool isShapeDefined (rownr_t aRowNr);
+  virtual bool isShapeDefined (rownr_t aRowNr);
   
   // Get the shape of the array in the given row.
   virtual IPosition shape (rownr_t aRowNr);
   
   // This storage manager can handle changing array shapes.
-  Bool canChangeShape() const;
+  bool canChangeShape() const;
   
   // Get an array value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
@@ -180,7 +180,7 @@ private:
   //# The shape off all arrays in case it is fixed
   IPosition       itsFixedShape;
   //# Switch indicating if the shape is fixed.
-  Bool            isShapeFixed;
+  bool            isShapeFixed;
   //# The file containing the arrays.
   StManArrayFile* itsIosFile;
   //# The indirect array object.

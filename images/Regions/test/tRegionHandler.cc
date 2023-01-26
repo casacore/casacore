@@ -45,7 +45,7 @@
 
 #include <casacore/casa/namespace.h>
 Table theTable;
-Table& getTable (void*, Bool)
+Table& getTable (void*, bool)
 {
   return theTable;
 }
@@ -79,12 +79,12 @@ void doIt (RegionHandler& reghand)
 
 // Define the region in the regions group and check it can be found.
   reghand.defineRegion ("regr1", box1, RegionHandler::Regions);
-  regptr = reghand.getRegion ("regr1", RegionHandler::Regions, False);
+  regptr = reghand.getRegion ("regr1", RegionHandler::Regions, false);
   AlwaysAssertExit (regptr != 0);
   delete regptr;
-  regptr = reghand.getRegion ("regr1", RegionHandler::Masks, False);
+  regptr = reghand.getRegion ("regr1", RegionHandler::Masks, false);
   AlwaysAssertExit (regptr == 0);
-  regptr = reghand.getRegion ("regr1", RegionHandler::Any, False);
+  regptr = reghand.getRegion ("regr1", RegionHandler::Any, false);
   AlwaysAssertExit (regptr != 0);
   delete regptr;
 
@@ -102,19 +102,19 @@ void doIt (RegionHandler& reghand)
 
 // Rename the region in the regions group and check it can be found.
   reghand.renameRegion ("regr2", "regr1", RegionHandler::Regions);
-  regptr = reghand.getRegion ("regr2", RegionHandler::Regions, False);
+  regptr = reghand.getRegion ("regr2", RegionHandler::Regions, false);
   AlwaysAssertExit (regptr != 0);
   delete regptr;
-  regptr = reghand.getRegion ("regr2", RegionHandler::Masks, False);
+  regptr = reghand.getRegion ("regr2", RegionHandler::Masks, false);
   AlwaysAssertExit (regptr == 0);
-  regptr = reghand.getRegion ("regr2", RegionHandler::Any, False);
+  regptr = reghand.getRegion ("regr2", RegionHandler::Any, false);
   AlwaysAssertExit (regptr != 0);
   delete regptr;
-  regptr = reghand.getRegion ("regr1", RegionHandler::Any, False);
+  regptr = reghand.getRegion ("regr1", RegionHandler::Any, false);
   AlwaysAssertExit (regptr == 0);
 
 // Create a lattice and mask and make it default region.
-  PagedArray<Float> lattice (shape, "tRegionHandler_tmp.lat");
+  PagedArray<float> lattice (shape, "tRegionHandler_tmp.lat");
   reghand.defineRegion ("reg2", reghand.makeMask (lattice, "reg2"),
 			RegionHandler::Masks);
   reghand.setDefaultMask ("reg2");

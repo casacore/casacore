@@ -38,34 +38,34 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Vector<Int> LatticeStatsBase::toStatisticTypes (const String& statsU, 
+Vector<int32_t> LatticeStatsBase::toStatisticTypes (const String& statsU, 
                                                 const std::regex& delimiter)
 { 
    Vector<String> statsStrings = stringToVector(statsU, delimiter);
    return LatticeStatsBase::toStatisticTypes(statsStrings);
 }
 
-Vector<Int> LatticeStatsBase::toStatisticTypes (const Vector<String>& statsU)
+Vector<int32_t> LatticeStatsBase::toStatisticTypes (const Vector<String>& statsU)
 { 
-   const uInt n = statsU.nelements();
-   Vector<Int> statsToPlot(n);
-   Int n2 = 0;
-   for (uInt i=0; i<n; i++) {
-      Int tmp = LatticeStatsBase::toStatisticType(statsU(i));
+   const uint32_t n = statsU.nelements();
+   Vector<int32_t> statsToPlot(n);
+   int32_t n2 = 0;
+   for (uint32_t i=0; i<n; i++) {
+      int32_t tmp = LatticeStatsBase::toStatisticType(statsU(i));
       if (tmp!=-1) {
          statsToPlot(n2) = tmp;
          n2++;
       }
    }
-   statsToPlot.resize(n2, True);
+   statsToPlot.resize(n2, true);
    return statsToPlot;
 }
 
-Int LatticeStatsBase::toStatisticType (const String& statU)
+int32_t LatticeStatsBase::toStatisticType (const String& statU)
 { 
    String stat = statU;
    stat.upcase();
-   Int statToPlot = -1;
+   int32_t statToPlot = -1;
    if (stat.contains("NPTS")) {
       statToPlot = NPTS;
    } else if (stat.contains("SUMSQ")) {
@@ -98,7 +98,7 @@ Int LatticeStatsBase::toStatisticType (const String& statU)
 }  
 
 
-String LatticeStatsBase::toStatisticName (Int iType)
+String LatticeStatsBase::toStatisticName (int32_t iType)
 {
    StatisticsTypes type = StatisticsTypes(iType);
    return toStatisticName(type);
@@ -139,14 +139,14 @@ String LatticeStatsBase::toStatisticName (StatisticsTypes type)
 
 
 
-Bool LatticeStatsBase::setNxy (Vector<Int>& nxy,
+bool LatticeStatsBase::setNxy (Vector<int32_t>& nxy,
                                ostream& os)
 {
-   Int n = nxy.nelements();
-   nxy.resize(2,True);
+   int32_t n = nxy.nelements();
+   nxy.resize(2,true);
    if (n > 2) {
       os << "Too many elements for argument nxy" << endl;
-      return False;
+      return false;
    } else if (n == 2) {
       nxy(0) = max(1,nxy(0));
       nxy(1) = max(1,nxy(1));
@@ -157,33 +157,33 @@ Bool LatticeStatsBase::setNxy (Vector<Int>& nxy,
       nxy(0) = 1;
       nxy(1) = 1;
    }
-   return True;
+   return true;
 }
 
 void LatticeStatsBase::setStorageImageShape(IPosition& storeImageShape,
-                                            const Bool& last,
-                                            const Int& axisSize,
-                                            const Vector<Int>& displayAxes, 
+                                            const bool& last,
+                                            const int32_t& axisSize,
+                                            const Vector<int32_t>& displayAxes, 
                                             const IPosition& imageShape)
 {
-   Int nStoreImageDim = displayAxes.nelements() + 1;
+   int32_t nStoreImageDim = displayAxes.nelements() + 1;
    storeImageShape.resize(nStoreImageDim);
 
    if (last) {
-      for (Int i=0; i<nStoreImageDim-1; i++) storeImageShape(i) = imageShape(displayAxes(i));
+      for (int32_t i=0; i<nStoreImageDim-1; i++) storeImageShape(i) = imageShape(displayAxes(i));
       storeImageShape(nStoreImageDim-1) = axisSize;
    } else {
-      for (Int i=1; i<nStoreImageDim; i++) 
+      for (int32_t i=1; i<nStoreImageDim; i++) 
         storeImageShape(i) = imageShape(displayAxes(i-1));
       storeImageShape(0) = axisSize;
    }
 }
 
-void LatticeStatsBase::stretchMinMax (Float& dMin, 
-                                      Float& dMax)
+void LatticeStatsBase::stretchMinMax (float& dMin, 
+                                      float& dMax)
 {
-   Float delta = 0.05*(dMax-dMin);
-   Float absmax = max(abs(dMax),abs(dMin));
+   float delta = 0.05*(dMax-dMin);
+   float absmax = max(abs(dMax),abs(dMin));
    if (delta < 1.0e-5*absmax) delta = 0.01 * absmax;
 
    if (dMin==dMax) {
@@ -202,9 +202,9 @@ void LatticeStatsBase::stretchMinMax (Float& dMin,
    }
 }
 
-std::set<Double> LatticeStatsBase::quartileFracs() {
-    const static Double fracs[] {0.25, 0.75};
-    return std::set<Double>(fracs, fracs+2);
+std::set<double> LatticeStatsBase::quartileFracs() {
+    const static double fracs[] {0.25, 0.75};
+    return std::set<double>(fracs, fracs+2);
 }
 
 } //# NAMESPACE CASACORE - END

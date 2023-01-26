@@ -99,60 +99,60 @@ public:
   // you.
   // <group>
   ScalarColumn<String>& code() {return code_p;}
-  ArrayColumn<Double>& delayDir() {return delayDir_p;}
+  ArrayColumn<double>& delayDir() {return delayDir_p;}
   ArrayMeasColumn<MDirection>& delayDirMeasCol() 
     {return delayDirMeas_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<bool>& flagRow() {return flagRow_p;}
   ScalarColumn<String>& name() {return name_p;}
-  ScalarColumn<Int>& numPoly() {return numPoly_p;}
-  ArrayColumn<Double>& phaseDir() {return phaseDir_p;}
+  ScalarColumn<int32_t>& numPoly() {return numPoly_p;}
+  ArrayColumn<double>& phaseDir() {return phaseDir_p;}
   ArrayMeasColumn<MDirection>& phaseDirMeasCol() 
     {return phaseDirMeas_p;}
-  ArrayColumn<Double>& referenceDir() {return referenceDir_p;}
+  ArrayColumn<double>& referenceDir() {return referenceDir_p;}
   ArrayMeasColumn<MDirection>& referenceDirMeasCol() 
     {return referenceDirMeas_p;}
-  ScalarColumn<Int>& sourceId() {return sourceId_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarQuantColumn<Double>& timeQuant() { return timeQuant_p;}
+  ScalarColumn<int32_t>& sourceId() {return sourceId_p;}
+  ScalarColumn<double>& time() {return time_p;}
+  ScalarQuantColumn<double>& timeQuant() { return timeQuant_p;}
   ScalarMeasColumn<MEpoch>& timeMeas() { return timeMeas_p;}
   // </group>
 
   // Const access to required columns
   // <group>
   const ScalarColumn<String>& code() const {return code_p;}
-  const ArrayColumn<Double>& delayDir() const {return delayDir_p;}
+  const ArrayColumn<double>& delayDir() const {return delayDir_p;}
   const ArrayMeasColumn<MDirection>& delayDirMeasCol() const
     {return delayDirMeas_p;}
-  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<bool>& flagRow() const {return flagRow_p;}
   const ScalarColumn<String>& name() const {return name_p;}
-  const ScalarColumn<Int>& numPoly() const {return numPoly_p;}
-  const ArrayColumn<Double>& phaseDir() const {return phaseDir_p;}
+  const ScalarColumn<int32_t>& numPoly() const {return numPoly_p;}
+  const ArrayColumn<double>& phaseDir() const {return phaseDir_p;}
   const ArrayMeasColumn<MDirection>& phaseDirMeasCol() const
     {return phaseDirMeas_p;}
-  const ArrayColumn<Double>& referenceDir() const {return referenceDir_p;}
+  const ArrayColumn<double>& referenceDir() const {return referenceDir_p;}
   const ArrayMeasColumn<MDirection>& referenceDirMeasCol() const
     {return referenceDirMeas_p;}
-  const ScalarColumn<Int>& sourceId() const {return sourceId_p;}
-  const ScalarColumn<Double>& time() const {return time_p;}
-  const ScalarQuantColumn<Double>& timeQuant() const { return timeQuant_p;}
+  const ScalarColumn<int32_t>& sourceId() const {return sourceId_p;}
+  const ScalarColumn<double>& time() const {return time_p;}
+  const ScalarQuantColumn<double>& timeQuant() const { return timeQuant_p;}
   const ScalarMeasColumn<MEpoch>& timeMeas() const { return timeMeas_p;}
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Int>& ephemerisId() {return ephemerisId_p;}
+  ScalarColumn<int32_t>& ephemerisId() {return ephemerisId_p;}
   // </group>
 
   // Const access to optional columns
   // <group>
-  const ScalarColumn<Int>& ephemerisId() const {return ephemerisId_p;}
+  const ScalarColumn<int32_t>& ephemerisId() const {return ephemerisId_p;}
   // </group>
 
 
   // Interpolate the direction Measure polynomial
   static MDirection interpolateDirMeas(const Array<MDirection>& arrDir, 
-				       Int numPoly, Double interTime, 
-				       Double timeOrigin);
+				       int32_t numPoly, double interTime, 
+				       double timeOrigin);
 
 
   // set the epoch reference type for the TIME column. 
@@ -161,10 +161,10 @@ public:
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty=true);
 
   // set the direction reference type for the REFERENCE_DIR, DELAY_DIR &
   // PHASE_DIR columns. This can only be done when the table has no
@@ -191,19 +191,19 @@ public:
   // In addtion to the directions, if there is an ephemeris available,
   // also the radial velocity and the distance rho can be accessed.
   //
-  // The method needInterTime returns True if there is a polynomial or ephemeris
+  // The method needInterTime returns true if there is a polynomial or ephemeris
   // connected to this field table row, and an interpolation time value should
   // be provided.
   // The method ephemPath returns the absolute path to the ephemeris table connected to 
   // the field table row, an empty string if there is none.  
   // <group>
-  MDirection delayDirMeas(rownr_t row, Double time = 0) const;
-  MDirection phaseDirMeas(rownr_t row, Double time = 0) const;
-  MDirection referenceDirMeas(rownr_t row, Double time = 0) const;
-  MDirection ephemerisDirMeas(rownr_t row, Double time = 0) const;
-  MRadialVelocity radVelMeas(rownr_t row, Double time = 0) const;
-  Quantity rho(rownr_t row, Double time = 0) const;
-  Bool needInterTime(rownr_t row) const;
+  MDirection delayDirMeas(rownr_t row, double time = 0) const;
+  MDirection phaseDirMeas(rownr_t row, double time = 0) const;
+  MDirection referenceDirMeas(rownr_t row, double time = 0) const;
+  MDirection ephemerisDirMeas(rownr_t row, double time = 0) const;
+  MRadialVelocity radVelMeas(rownr_t row, double time = 0) const;
+  Quantity rho(rownr_t row, double time = 0) const;
+  bool needInterTime(rownr_t row) const;
   String ephemPath(rownr_t row) const;
 
   // </group>
@@ -214,19 +214,19 @@ public:
   // returns the last row that has a reference direction, phase direction and
   // delay direction that match, to within the specified angular separation,
   // the supplied values. Only matches on rows where the direction is constant
-  // ie., NUM_POLY is 0 and where FLAG_ROW is False. Throws an exception
+  // ie., NUM_POLY is 0 and where FLAG_ROW is false. Throws an exception
   // (AipsError) if the reference frames do not match or if the separation does
   // not have angular units (when compiled in debug mode). Returns -1 if no
   // match could be found. If tryRow is positive, then that row is tested to
   // see if it matches before any others are tested. Setting tryRow to a
   // positive value greater than the table length will throw an exception
   // (AipsError), when compiled in debug mode.
-  Int64 matchDirection(const MDirection& referenceDirection, 
+  int64_t matchDirection(const MDirection& referenceDirection, 
                        const MDirection& delayDirection,
                        const MDirection& phaseDirection,
-                       const Quantum<Double>& maxSeparation, 
-                       Int64 tryRow=-1,
-                       Double time=0);
+                       const Quantum<double>& maxSeparation, 
+                       int64_t tryRow=-1,
+                       double time=0);
 
   // Update the MeasComets objects belonging to this FIELD table.
   // Needed when the entries in the EPHEMERIS_ID column have changed.
@@ -255,47 +255,47 @@ private:
   //# argument is a temporary that is passed in to prevent it from being
   //# created inside these small functions.
   // <group>
-  Bool matchReferenceDir(rownr_t row, const MVDirection& dirVal,
-			 const Double& sepInRad, 
-			 MVDirection& mvdir, Double time=0) const;
-  Bool matchDelayDir(rownr_t row, const MVDirection& dirVal, 
-		     const Double& sepInRad,
-		     MVDirection& mvdir, Double time=0) const;
-  Bool matchPhaseDir(rownr_t row, const MVDirection& dirVal,
-		     const Double& sepInRad,
-		     MVDirection& mvdir, Double time=0) const;
+  bool matchReferenceDir(rownr_t row, const MVDirection& dirVal,
+			 const double& sepInRad, 
+			 MVDirection& mvdir, double time=0) const;
+  bool matchDelayDir(rownr_t row, const MVDirection& dirVal, 
+		     const double& sepInRad,
+		     MVDirection& mvdir, double time=0) const;
+  bool matchPhaseDir(rownr_t row, const MVDirection& dirVal,
+		     const double& sepInRad,
+		     MVDirection& mvdir, double time=0) const;
   // </group>
 
-  Int measCometIndex(rownr_t row) const;
+  int32_t measCometIndex(rownr_t row) const;
 
   // Extract the direction Measure from the corresponding ephemeris
   // using the nominal position as an offset.
   // Note that interTime is assumed to use the same time reference frame
   // as originEpoch.
   MDirection extractDirMeas(const MDirection& offsetDir, 
-			    Int index, Double& interTime, 
+			    int32_t index, double& interTime, 
 			    MEpoch originEpoch) const;
 
-  void getMJDs(Double& originMJD, Double& interMJD, 
-	       const Double interTime, const MEpoch originEpoch) const;
+  void getMJDs(double& originMJD, double& interMJD, 
+	       const double interTime, const MEpoch originEpoch) const;
 
   //# MeasComet data
   String measCometsPath_p;
   Vector<MeasComet*> measCometsV_p;
-  std::map<Int, Int> ephIdToMeasComet_p;
+  std::map<int32_t, int32_t> ephIdToMeasComet_p;
 
   //# required columns
   ScalarColumn<String> name_p;
   ScalarColumn<String> code_p;
-  ScalarColumn<Double> time_p;
-  ScalarColumn<Int> numPoly_p;
-  ArrayColumn<Double> delayDir_p;
-  ArrayColumn<Double> phaseDir_p;
-  ArrayColumn<Double> referenceDir_p;
-  ScalarColumn<Int> sourceId_p;
-  ScalarColumn<Bool> flagRow_p;
+  ScalarColumn<double> time_p;
+  ScalarColumn<int32_t> numPoly_p;
+  ArrayColumn<double> delayDir_p;
+  ArrayColumn<double> phaseDir_p;
+  ArrayColumn<double> referenceDir_p;
+  ScalarColumn<int32_t> sourceId_p;
+  ScalarColumn<bool> flagRow_p;
   //# optional columns
-  ScalarColumn<Int> ephemerisId_p;
+  ScalarColumn<int32_t> ephemerisId_p;
   
   //# Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
@@ -304,7 +304,7 @@ private:
   ArrayMeasColumn<MDirection> referenceDirMeas_p;
 
   //# Access to Quantum columns
-  ScalarQuantColumn<Double> timeQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
 
 };
 

@@ -86,21 +86,21 @@ public:
   virtual ~MSAntennaIndex() {}
 
   // Look up ANTENNA_ID's for a given a regular expression or pattern
-  Vector<Int> matchAntennaRegexOrPattern(const String& pattern, const Bool regex=False);
+  Vector<int32_t> matchAntennaRegexOrPattern(const String& pattern, const bool regex=false);
   // Look up ANTENNA_ID's for a given antenna name, or set of antenna names
-  Vector<Int> matchAntennaName(const String& name);
-  Vector<Int> matchAntennaName(const Vector<String>& names);
+  Vector<int32_t> matchAntennaName(const String& name);
+  Vector<int32_t> matchAntennaName(const Vector<String>& names);
 
   // Look up ANTENNA_ID's for a given antenna station
-  Vector<Int> matchStationRegexOrPattern(const String& pattern, const Bool regex=False);
-  Vector<Int> matchStationName(const String& station);
-  Vector<Int> matchStationName(const Vector<String>& station);
+  Vector<int32_t> matchStationRegexOrPattern(const String& pattern, const bool regex=false);
+  Vector<int32_t> matchStationName(const String& station);
+  Vector<int32_t> matchStationName(const Vector<String>& station);
 
   // Look up ANTENNA_ID's for a given antenna and station name pair
-  Vector<Int> matchAntennaNameAndStation(const String& name,
+  Vector<int32_t> matchAntennaNameAndStation(const String& name,
 					 const String& station);
 
-  Vector<Int> matchId(const Vector<Int>& sourceId);
+  Vector<int32_t> matchId(const Vector<int32_t>& sourceId);
 private:
   // Default constructor
   MSAntennaIndex();
@@ -108,8 +108,8 @@ private:
   MSAntennaColumns msAntennaCols_p;
 
   // Vector cache of antenna id's
-  Vector<Int> antennaIds_p, stationIds_p;
-  Int nrows_p;
+  Vector<int32_t> antennaIds_p, stationIds_p;
+  int32_t nrows_p;
 };
 
 

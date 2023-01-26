@@ -34,14 +34,14 @@
 
 #include <casacore/casa/namespace.h>
 
-void roundtrip(Int &int_in, Int &int_out);
-Int check_str_type(String &qualstr);
+void roundtrip(int32_t &int_in, int32_t &int_out);
+int32_t check_str_type(String &qualstr);
 
 int main() {
 
 	try {
-		Int qualint;
-		Int myInt;
+		int32_t qualint;
+		int32_t myInt;
 		String qualstr;
 
 		// try a round trip for the first QualityType
@@ -88,13 +88,13 @@ int main() {
 
 		// check the functioning of in/excluding the
 		// undefined type
-		AlwaysAssert(Quality::allNames(False).size() == Quality::NumberOfTypes - 1, AipsError);
-		AlwaysAssert(Quality::allNames(True).size() == Quality::NumberOfTypes, AipsError);
+		AlwaysAssert(Quality::allNames(false).size() == Quality::NumberOfTypes - 1, AipsError);
+		AlwaysAssert(Quality::allNames(true).size() == Quality::NumberOfTypes, AipsError);
 
 		// just some eye-candy: present all names
-		Vector<String> allNames = Quality::allNames(True);
+		Vector<String> allNames = Quality::allNames(true);
 		cout << "All names: ";
-		for (uInt i=0; i<allNames.size(); i++) {
+		for (uint32_t i=0; i<allNames.size(); i++) {
 			cout << allNames[i] << " ";
 		}
 		cout << endl;
@@ -109,7 +109,7 @@ int main() {
 }
 
 
-void roundtrip(Int &int_in, Int &int_out){
+void roundtrip(int32_t &int_in, int32_t &int_out){
 	Quality::QualityTypes myType;
 	String myTypeName;
 
@@ -123,7 +123,7 @@ void roundtrip(Int &int_in, Int &int_out){
 			<< " --> int_out:  " << int_out <<  endl;
 }
 
-Int check_str_type(String &qualstr){
+int32_t check_str_type(String &qualstr){
 	Quality::QualityTypes myType;
 	String myTypeName;
 
@@ -139,5 +139,5 @@ Int check_str_type(String &qualstr){
 			<< endl;
 
 	// return just the type
-	return (Int)myType;
+	return (int32_t)myType;
 }

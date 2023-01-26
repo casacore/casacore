@@ -80,7 +80,7 @@ IPosition Adios2StManColumn::shape(rownr_t aRowNr)
     }
 }
 
-Bool Adios2StManColumn::canChangeShape() const
+bool Adios2StManColumn::canChangeShape() const
 {
     return !isShapeFixed;
 }
@@ -254,7 +254,7 @@ void Adios2StManColumn::putArrayColumnCellsV (const RefRows& rownrs, const Array
     {
         rownrs.convert();
     }
-    Bool deleteIt;
+    bool deleteIt;
     const void *dataPtr = data.getVStorage(deleteIt);
     itsAdiosCount[0] = 1;
     for (size_t i = 1; i < itsAdiosShape.size(); ++i)
@@ -262,7 +262,7 @@ void Adios2StManColumn::putArrayColumnCellsV (const RefRows& rownrs, const Array
         itsAdiosStart[i] = 0;
         itsAdiosCount[i] = itsAdiosShape[i];
     }
-    for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
+    for(uint32_t i = 0; i < rownrs.rowVector().size(); ++i)
     {
         itsAdiosStart[0] = rownrs.rowVector()[i];
         toAdios(dataPtr, i * itsCasaShape.nelements());
@@ -276,7 +276,7 @@ void Adios2StManColumn::getArrayColumnCellsV (const RefRows& rownrs, ArrayBase &
     {
         rownrs.convert();
     }
-    Bool deleteIt;
+    bool deleteIt;
     void *dataPtr = data.getVStorage(deleteIt);
     itsAdiosCount[0] = 1;
     for (size_t i = 1; i < itsAdiosShape.size(); ++i)
@@ -284,7 +284,7 @@ void Adios2StManColumn::getArrayColumnCellsV (const RefRows& rownrs, ArrayBase &
         itsAdiosStart[i] = 0;
         itsAdiosCount[i] = itsAdiosShape[i];
     }
-    for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
+    for(uint32_t i = 0; i < rownrs.rowVector().size(); ++i)
     {
         itsAdiosStart[0] = rownrs.rowVector()[i];
         fromAdios(dataPtr, i * itsCasaShape.nelements());
@@ -355,17 +355,17 @@ void Adios2StManColumn::get ## T(rownr_t rownr, T *dataPtr) \
 }
 
 
-DEFINE_GETPUT(Bool)
-DEFINE_GETPUT(uChar)
-DEFINE_GETPUT(Short)
-DEFINE_GETPUT(uShort)
-DEFINE_GETPUT(Int)
-DEFINE_GETPUT(uInt)
+DEFINE_GETPUT(bool)
+DEFINE_GETPUT(unsigned char)
+DEFINE_GETPUT(int16_t)
+DEFINE_GETPUT(uint16_t)
+DEFINE_GETPUT(int32_t)
+DEFINE_GETPUT(uint32_t)
 DEFINE_GETPUT(float)
 DEFINE_GETPUT(double)
 DEFINE_GETPUT(Complex)
 DEFINE_GETPUT(DComplex)
-DEFINE_GETPUT(Int64)
+DEFINE_GETPUT(int64_t)
 #undef DEFINE_GETPUT
 
 
@@ -401,7 +401,7 @@ void Adios2StManColumn::getString(rownr_t rownr, String *dataPtr)
 void Adios2StManColumnString::putArrayV(rownr_t rownr, const ArrayBase& data)
 {
     String combined;
-    Bool deleteIt;
+    bool deleteIt;
     auto *arrayPtr = reinterpret_cast<const Array<String> *>(&data);
     const String *dataPtr = arrayPtr->getStorage(deleteIt);
     for(auto &i : *arrayPtr)
@@ -416,7 +416,7 @@ void Adios2StManColumnString::getArrayV(rownr_t rownr, ArrayBase& data)
 {
     String combined;
     getString(rownr, &combined);
-    Bool deleteIt;
+    bool deleteIt;
     auto *arrayPtr = reinterpret_cast<Array<String> *>(&data);
     String *dataPtr = arrayPtr->getStorage(deleteIt);
     size_t pos = 0;

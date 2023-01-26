@@ -37,12 +37,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNode makeRecordExpr (const RecordDesc& desc,
-                              Int fieldNumber)
+                              int32_t fieldNumber)
 {
-  if (fieldNumber < 0  ||  fieldNumber >= Int(desc.nfields())) {
+  if (fieldNumber < 0  ||  fieldNumber >= int32_t(desc.nfields())) {
     throw TableInvExpr ("makeRecordExpr: invalid field number given");
   }
-  Block<Int> fieldNrs (1, fieldNumber);
+  Block<int32_t> fieldNrs (1, fieldNumber);
   if (desc.isArray (fieldNumber)) {
     return new TableExprNodeRecordFieldArray (desc.type(fieldNumber),
                                               fieldNrs);
@@ -55,7 +55,7 @@ TableExprNode makeRecordExpr (const RecordDesc& desc,
 TableExprNode makeRecordExpr (const RecordDesc& desc,
                               const String& fieldName)
 {
-  Int fld = desc.fieldNumber (fieldName);
+  int32_t fld = desc.fieldNumber (fieldName);
   if (fld < 0) {
     throw TableInvExpr ("makeRecordExpr: field name " + fieldName +
                         " is unknown");
@@ -71,12 +71,12 @@ TableExprNode makeRecordExpr (const RecordInterface& record,
   if (names.nelements() == 0) {
     throw TableInvExpr ("makeRecordExpr: empty field name given");
 }
-  Block<Int> fieldNrs (names.nelements());
+  Block<int32_t> fieldNrs (names.nelements());
   String name;
-  Int fld=0;
+  int32_t fld=0;
   const RecordInterface* recPtr = &record;
   RecordDesc desc(record.description());
-  for (uInt i=0; i<names.nelements(); i++) {
+  for (uint32_t i=0; i<names.nelements(); i++) {
     if (i != 0) {
       name += '.';
     }

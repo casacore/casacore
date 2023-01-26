@@ -51,7 +51,7 @@ public:
     setDataType (TableExprNodeRep::NTBool);
     setNDim (0);   //scalar
   }
-  Bool getBool (const TableExprId& id) {return operands()[0]->getInt(id) == 1;}
+  bool getBool (const TableExprId& id) {return operands()[0]->getInt(id) == 1;}
 };
 
 class TestUDFAggr: public UDFBase
@@ -66,16 +66,16 @@ public:
     AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
     setDataType (TableExprNodeRep::NTInt);
     setNDim (0);           // scalar
-    setAggregate (True);   // aggregate function
+    setAggregate (true);   // aggregate function
   }
-  Int64 getInt (const TableExprId& id)
+  int64_t getInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     const vector<TableExprId>& ids = aid.result().ids(id.rownr());
-    Int64 sum3 = 0;
+    int64_t sum3 = 0;
     for (vector<TableExprId>::const_iterator it=ids.begin();
          it!=ids.end(); ++it){
-      Int64 v = operands()[0]->getInt(*it);
+      int64_t v = operands()[0]->getInt(*it);
         sum3 += v*v*v;
     }
     return sum3;
@@ -85,12 +85,12 @@ public:
 void makeTable()
 {
   TableDesc td;
-  td.addColumn (ScalarColumnDesc<Int>("ANTENNA1"));
+  td.addColumn (ScalarColumnDesc<int32_t>("ANTENNA1"));
   SetupNewTable newtab("tExprNodeUDF_tmp.tab", td, Table::New);
   Table tab(newtab);
-  ScalarColumn<Int> ant1(tab, "ANTENNA1");
+  ScalarColumn<int32_t> ant1(tab, "ANTENNA1");
   tab.addRow (10);
-  for (uInt i=0; i<tab.nrow(); ++i) {
+  for (uint32_t i=0; i<tab.nrow(); ++i) {
     ant1.put (i, i%3);
   }
 }
@@ -129,7 +129,7 @@ int main()
       AlwaysAssertExit (aggrNodes.size() == 1);
       AlwaysAssertExit (aggrNodes[0]->isLazyAggregate());
       CountedPtr<vector<TableExprId> > ids(new vector<TableExprId>());
-      for (uInt i=0; i<tab.nrow(); ++i) {
+      for (uint32_t i=0; i<tab.nrow(); ++i) {
         ids->push_back (TableExprId(i));
       }
       vector<CountedPtr<vector<TableExprId> > > idVec(1, ids);
@@ -138,9 +138,9 @@ int main()
         (new TableExprGroupResult(funcVec, idVec));
       TableExprIdAggr aid(res);
       aid.setRownr (0);
-      Int64 val = node2.getInt(aid);
+      int64_t val = node2.getInt(aid);
       cout << "aggregated value=" << val << endl;
-      Vector<Int> colval (ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
+      Vector<int32_t> colval (ScalarColumn<int32_t>(tab, "ANTENNA1").getColumn());
       AlwaysAssertExit (val == sum(colval*colval*colval));
     }
   } catch (std::exception& x) {

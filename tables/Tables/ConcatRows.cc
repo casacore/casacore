@@ -32,7 +32,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void ConcatRows::add (rownr_t nrow)
   {
-    if (Int64(nrow) + itsRows[itsNTable] >= Int64(65536)*65536) {
+    if (int64_t(nrow) + itsRows[itsNTable] >= int64_t(65536)*65536) {
       throw TableError ("Concatenation of tables exceeds 2**32 rows");
     }
     itsNTable++;
@@ -47,8 +47,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			" past nr of rows (=" +
 			String::toString(itsRows[itsNTable]) + ')');
     }
-    Bool found;
-    Int inx = binarySearchBrackets (found, itsRows, rownr, itsNTable);
+    bool found;
+    int32_t inx = binarySearchBrackets (found, itsRows, rownr, itsNTable);
     if (!found) {
       inx--;
     }
@@ -85,9 +85,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       itsTabNr (0)
   {
     if (itsStart >= itsEnd) {
-      itsPastEnd = True;
+      itsPastEnd = true;
     } else {
-      itsPastEnd = False;
+      itsPastEnd = false;
       rows.mapRownr (itsTabNr, itsChunk[0], start);
       itsChunk[1] = std::min(rows[itsTabNr], itsEnd) - 1 - rows[itsTabNr-1];
       itsChunk[2] = itsIncr;
@@ -98,7 +98,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (!itsPastEnd) {
       if (itsTabNr+1 >= itsRows->ntable()  ||  (*itsRows)[itsTabNr] >= itsEnd) {
-	itsPastEnd = True;
+	itsPastEnd = true;
       } else {
 	itsChunk[0] = 0;
 	if (itsIncr != 1) {

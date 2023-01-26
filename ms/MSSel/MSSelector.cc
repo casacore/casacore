@@ -54,21 +54,21 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSSelector::MSSelector():msIter_p(0),initSel_p(False),dataDescId_p(0),
-		lastDataDescId_p(1,-1),useSlicer_p(False),
-		haveSlicer_p(False),wantedOne_p(-1),convert_p(False),
-		useIfrDefault_p(True)
+MSSelector::MSSelector():msIter_p(0),initSel_p(false),dataDescId_p(0),
+		lastDataDescId_p(1,-1),useSlicer_p(false),
+		haveSlicer_p(false),wantedOne_p(-1),convert_p(false),
+		useIfrDefault_p(true)
 { }
 
 MSSelector::MSSelector(MeasurementSet& ms):ms_p(ms),
 		selms_p(ms),savems_p(ms),
-		msIter_p(0),initSel_p(False),
+		msIter_p(0),initSel_p(false),
 		dataDescId_p(0),
 		lastDataDescId_p(1,-1),
-		useSlicer_p(False),
-		haveSlicer_p(False),
-		wantedOne_p(-1),convert_p(False),
-		useIfrDefault_p(True)
+		useSlicer_p(false),
+		haveSlicer_p(false),
+		wantedOne_p(-1),convert_p(false),
+		useIfrDefault_p(true)
 { }
 
 MSSelector::MSSelector(const MSSelector& other):msIter_p(0)
@@ -108,40 +108,40 @@ void MSSelector::setMS(MeasurementSet& ms)
 	savems_p=ms;
 	if (msIter_p) delete msIter_p;
 	msIter_p=0;
-	initSel_p=False;
+	initSel_p=false;
 	dataDescId_p=-1;
-	useSlicer_p=False;
-	haveSlicer_p=False;
+	useSlicer_p=false;
+	haveSlicer_p=false;
 	wantedOne_p=-1;
-	convert_p=False;
-	useIfrDefault_p=True;
+	convert_p=false;
+	useIfrDefault_p=true;
 }
 
-Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
+bool MSSelector::initSelection(const Vector<int32_t>& dataDescId, bool reset)
 {
 	LogIO os;
 	// first check if we want to throw all selections away & return the pristine
 	// MeasurementSet
 	if (reset) {
 		selms_p=ms_p;
-		initSel_p=False;
+		initSel_p=false;
 		dataDescId_p.resize(0);
 		lastDataDescId_p.resize(0);
-		useSlicer_p=False;
+		useSlicer_p=false;
 		polSlice_p=Slice();
 		chanSlice_p=Slice();
-		haveSlicer_p=False;
+		haveSlicer_p=false;
 		wantedOne_p=-1;
-		convert_p=False;
-		useIfrDefault_p=True;
-		return True;
+		convert_p=false;
+		useIfrDefault_p=true;
+		return true;
 	}
 
 	// check if we can reuse the saved selection
 	if (initSel_p && dataDescId.nelements()==lastDataDescId_p.nelements() &&
 			allEQ(dataDescId,lastDataDescId_p)) {
 		selms_p=savems_p;
-		return True;
+		return true;
 	} else {
 		// undo all previous selections
 		selms_p=ms_p;
@@ -149,7 +149,7 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 		rowIndex_p.resize(0,0);
 	}
 	// selection on data description is optional
-	Bool constantShape=True;
+	bool constantShape=true;
 	if (ms_p.dataDescription().nrow()<=1) {
 		if (dataDescId.nelements()>1) {
 			os << LogIO::NORMAL << "data desc id selection ignored, "
@@ -163,26 +163,26 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 	}
 	// check if the data shape is the same for all data
 	// if not: select first data desc id only
-	ScalarColumn<Int> dd(selms_p,MS::columnName(MS::DATA_DESC_ID));
+	ScalarColumn<int32_t> dd(selms_p,MS::columnName(MS::DATA_DESC_ID));
 	MSDataDescColumns ddc(selms_p.dataDescription());
-	Vector<Int> ddId=dd.getColumn();
-	Int ndd=GenSort<Int>::sort(ddId, Sort::Ascending,
+	Vector<int32_t> ddId=dd.getColumn();
+	int32_t ndd=GenSort<int32_t>::sort(ddId, Sort::Ascending,
 			Sort::HeapSort | Sort::NoDuplicates);
-	ddId.resize(ndd,True);
+	ddId.resize(ndd,true);
 	dataDescId_p.resize(ndd); dataDescId_p=ddId;
 	MSSpWindowColumns spwc(ms_p.spectralWindow());
 	MSPolarizationColumns polc(ms_p.polarization());
 	spwId_p.resize(ndd);
 	polId_p.resize(ndd);
-	for (Int i=0; i<ndd; i++) {
+	for (int32_t i=0; i<ndd; i++) {
 		spwId_p(i)=ddc.spectralWindowId()(ddId(i));
 		polId_p(i)=ddc.polarizationId()(ddId(i));
 	}
 
-	for (Int i=1; i<ndd; i++) {
+	for (int32_t i=1; i<ndd; i++) {
 		if (spwc.numChan()(spwId_p(i)) != spwc.numChan()(spwId_p(i-1)) ||
 				polc.numCorr()(polId_p(i)) != polc.numCorr()(polId_p(i-1))) {
-			constantShape = False;
+			constantShape = false;
 			break;
 		}
 	}
@@ -192,8 +192,8 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 		os<< LogIO::WARN << "Data shape varies, selected first data desc id"
 				" only"<< LogIO::POST;
 		dataDescId_p.resize(1);dataDescId_p(0)=ddId(0);
-		spwId_p.resize(1,True);
-		polId_p.resize(1,True);
+		spwId_p.resize(1,true);
+		polId_p.resize(1,true);
 	}
 	lastDataDescId_p.resize(0); lastDataDescId_p=dataDescId_p;
 
@@ -210,19 +210,19 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 
 		// Set polarization selection/conversion to all present
 		MSPolarizationColumns polc(selms_p.polarization());
-		Vector<Int> pols=polc.corrType()(polId_p(0));
+		Vector<int32_t> pols=polc.corrType()(polId_p(0));
 		Vector<String> polSel(pols.nelements());
-		for (uInt i=0; i<pols.nelements(); i++) {
+		for (uint32_t i=0; i<pols.nelements(); i++) {
 			polSel(i)=Stokes::name(Stokes::type(pols(i)));
 		}
 		// check that other polarization ids have the same polarizations
-		Bool polVaries = False;
-		for (uInt i=1; i<polId_p.nelements(); i++) {
+		bool polVaries = false;
+		for (uint32_t i=1; i<polId_p.nelements(); i++) {
 			if (polId_p(i)!=polId_p(i-1)) {
-				Vector<Int> pols2=polc.corrType()(polId_p(i));
-				for (uInt j=0; j<pols2.nelements(); j++) {
+				Vector<int32_t> pols2=polc.corrType()(polId_p(i));
+				for (uint32_t j=0; j<pols2.nelements(); j++) {
 					if (pols2(j)!=pols(j)) {
-						polVaries = True;
+						polVaries = true;
 						break;
 					}
 				}
@@ -242,32 +242,32 @@ Bool MSSelector::initSelection(const Vector<Int>& dataDescId, Bool reset)
 	return constantShape;
 }
 
-Bool MSSelector::initSelection(Bool reset) {
-	Vector<Int> ddIds;
+bool MSSelector::initSelection(bool reset) {
+	Vector<int32_t> ddIds;
 	return initSelection(ddIds,reset);
 }
 
-Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
+bool MSSelector::selectChannel(int32_t nChan, int32_t start, int32_t width, int32_t incr)
 {
 	LogIO os;
-	if (!checkSelection()) return False;
+	if (!checkSelection()) return false;
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
-	Bool ok = (nChan>0 && start>=0 && width>0 && incr>0);
+	bool ok = (nChan>0 && start>=0 && width>0 && incr>0);
 	if (!ok) {
 		os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
-		return False;
+		return false;
 	}
 	MSColumns msc(selms_p);
-	Int numChan=msc.spectralWindow().numChan()(spwId_p(0));
-	Int end=start+(nChan-1)*incr+(width-1);
+	int32_t numChan=msc.spectralWindow().numChan()(spwId_p(0));
+	int32_t end=start+(nChan-1)*incr+(width-1);
 	ok=(ok && end < numChan);
 	if (!ok) {
 		os << LogIO::SEVERE << "Illegal channel selection"<<LogIO::POST;
-		return False;
+		return false;
 	}
 	chanSel_p.resize(4);
 	chanSel_p(0)=nChan;
@@ -285,17 +285,17 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 	useSlicer_p=(!polSlice_p.all()||!chanSlice_p.all());
 	if (useSlicer_p) slicer_p=Slicer(polSlice_p,chanSlice_p);
 
-	Int nSpW=spwId_p.nelements();
-	Matrix<Double> chanFreq =
+	int32_t nSpW=spwId_p.nelements();
+	Matrix<double> chanFreq =
           msc.spectralWindow().chanFreq().getColumnCells(RefRows(RowNumbers(spwId_p)));
-	Matrix<Double> bandwidth =
+	Matrix<double> bandwidth =
           msc.spectralWindow().resolution().getColumnCells(RefRows(RowNumbers(spwId_p)));
-	for (Int i=0; i<nSpW; i++) {
+	for (int32_t i=0; i<nSpW; i++) {
 		chanFreq_p.resize(nChan,nSpW); bandwidth_p.resize(nChan,nSpW);
-		for (Int j=0; j<nChan; j++) {
-			Int n=1;
+		for (int32_t j=0; j<nChan; j++) {
+			int32_t n=1;
 			chanFreq_p(j,i)=chanFreq(start+incr*j,i);
-			for (Int k=1; k<width; k++) {
+			for (int32_t k=1; k<width; k++) {
 				chanFreq_p(j,i)+=chanFreq(start+incr*j+k,i);
 				n++;
 			}
@@ -312,10 +312,10 @@ Bool MSSelector::selectChannel(Int nChan, Int start, Int width, Int incr)
 	}
 	os << LogIO::DEBUG1 << "Channel selection: #chan="<<nChan<<
 			", start="<<start+1<<", width="<<width<<", incr="<<incr<<LogIO::POST;
-	return True;
+	return true;
 }
 
-Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
+bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 {
 	LogIO os;
 	// this selection/conversion assumes that parallactic angle rotation
@@ -325,20 +325,20 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
 	// first convert strings to enums
-	Int n=wantedPol.nelements();
-	Vector<Int> wanted(n);
-	for (Int i=0; i<n; i++) wanted(i)=Stokes::type(wantedPol(i));
+	int32_t n=wantedPol.nelements();
+	Vector<int32_t> wanted(n);
+	for (int32_t i=0; i<n; i++) wanted(i)=Stokes::type(wantedPol(i));
 
 	// check for duplicates
-	for (Int i=0; i<n-1; i++) {
-		for (Int j=i+1; j<n; j++) {
+	for (int32_t i=0; i<n-1; i++) {
+		for (int32_t j=i+1; j<n; j++) {
 			if (wanted(i)==wanted(j)) {
 				os << LogIO::WARN << " Duplicate polarizations in input not allowed -"
 						<< wantedPol   << LogIO::POST;
-				return False;
+				return false;
 			}
 		}
 	}
@@ -346,36 +346,36 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 	// now find out the input polarizations, assuming all selected data is
 	// the same
 	MSPolarizationColumns mspol(selms_p.polarization());
-	Int numCorr=mspol.numCorr()(polId_p(0));
-	Vector<Int> inputPol=mspol.corrType()(polId_p(0));
+	int32_t numCorr=mspol.numCorr()(polId_p(0));
+	Vector<int32_t> inputPol=mspol.corrType()(polId_p(0));
 
 	// check if wanted is just a subset or permutation of inputPol
-	subSet_p=True;
-	for (Int j=0; j<n; j++) {
-		Bool found=False;
-		for (Int i=0; i<numCorr; i++) {
-			if (wanted(j)==inputPol(i)) found=True;
+	subSet_p=true;
+	for (int32_t j=0; j<n; j++) {
+		bool found=false;
+		for (int32_t i=0; i<numCorr; i++) {
+			if (wanted(j)==inputPol(i)) found=true;
 		}
 		if (!found) {
-			subSet_p=False;
+			subSet_p=false;
 			break;
 		}
 	}
 	if (subSet_p) {
 		polIndex_p.resize(0);
 		if (n==1) {
-			for (Int i=0; i<numCorr; i++) {
+			for (int32_t i=0; i<numCorr; i++) {
 				if (wanted(0)==inputPol(i)) {
 					polSlice_p=Slice(i,1);
 					break;
 				}
 			}
 		} else if (n==2) {
-			Int id1=-1,id2=-1;
-			for (Int i=0; i<numCorr; i++) {
+			int32_t id1=-1,id2=-1;
+			for (int32_t i=0; i<numCorr; i++) {
 				if (inputPol(i)==wanted(0)) { id1=i; break;}
 			}
-			for (Int i=0; i<numCorr; i++) {
+			for (int32_t i=0; i<numCorr; i++) {
 				if (inputPol(i)==wanted(1)) { id2=i; break;}
 			}
 			polSlice_p=Slice(min(id1,id2),2,abs(id1-id2));
@@ -385,46 +385,46 @@ Bool MSSelector::selectPolarization(const Vector<String>& wantedPol)
 			}
 		} else {
 			polIndex_p.resize(n);
-			for (Int i=0; i<numCorr; i++) {
-				for (Int j=0; j<n; j++) {
+			for (int32_t i=0; i<numCorr; i++) {
+				for (int32_t j=0; j<n; j++) {
 					if (inputPol(i)==wanted(j)) polIndex_p(j)=i;
 				}
 			}
 			if (n==numCorr) {
-				Int j=1;
+				int32_t j=1;
 				for (;j<n;j++) if (polIndex_p(j)<polIndex_p(j-1)) break;
 				if (j==n) polIndex_p.resize(0); // want all in correct order
 			}
 		}
 	} else {
-		convert_p=True;
+		convert_p=true;
 		// check validity
-		for (Int i=0; i<n; i++) {
+		for (int32_t i=0; i<n; i++) {
 			if (wanted(i)==Stokes::Undefined) {
 				os << LogIO::SEVERE << "Unrecognized polarization: "<<wantedPol(i)	  << LogIO::POST;
-				return False;
+				return false;
 			}
 		}
-		stokesConverter_p.setConversion(wanted,inputPol,True);
+		stokesConverter_p.setConversion(wanted,inputPol,true);
 	}
 	useSlicer_p=(!polSlice_p.all()||!chanSlice_p.all());
 	if (useSlicer_p) slicer_p=Slicer(polSlice_p,chanSlice_p);
 	polSelection_p.resize(wantedPol.nelements()); polSelection_p=wantedPol;
 	os << LogIO::DEBUG1<< "Polarization selection: "<< wantedPol << LogIO::POST;
-	return True;
+	return true;
 }
 
-Bool MSSelector::select(const Record& items, Bool oneBased)
+bool MSSelector::select(const Record& items, bool oneBased)
 {
 	LogIO os;
-	if (!checkSelection()) return False;
+	if (!checkSelection()) return false;
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
-	Int n=items.nfields();
-	for (Int i=0; i<n; i++) {
+	int32_t n=items.nfields();
+	for (int32_t i=0; i<n; i++) {
 		String column=items.name(i);
 		MSS::Field fld=MSS::field(column);
 		column.upcase();
@@ -438,7 +438,7 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		case MSS::FIELD_ID:
 		case MSS::SCAN_NUMBER:
 		{
-			Vector<Int> id = items.asArrayInt(RecordFieldId(i));
+			Vector<int32_t> id = items.asArrayInt(RecordFieldId(i));
 			if (id.nelements()>0) {
 				if (oneBased) id-=1;
 				if (id.nelements()==1) {
@@ -454,19 +454,19 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		break;
 		case MSS::IFR_NUMBER:
 		{
-			Vector<Int> ifrNum = items.asArrayInt(RecordFieldId(i));
+			Vector<int32_t> ifrNum = items.asArrayInt(RecordFieldId(i));
 			// if (GlishArray(items.get(i)).get(ifrNum)) {
 			if (ifrNum.nelements()>0) {
 				// check input values for validity, squeeze out illegal values
-				Int nAnt=selms_p.antenna().nrow();
+				int32_t nAnt=selms_p.antenna().nrow();
 				if (oneBased) ifrNum-=1001;
-				for (uInt k=0; k<ifrNum.nelements(); k++) {
+				for (uint32_t k=0; k<ifrNum.nelements(); k++) {
 					if (ifrNum(k)/1000<0 || ifrNum(k)/1000>= nAnt ||
 							ifrNum(k)%1000<0 || ifrNum(k)%1000>=nAnt) {
-						for (uInt j=k; j<ifrNum.nelements()-1; j++) {
+						for (uint32_t j=k; j<ifrNum.nelements()-1; j++) {
 							ifrNum(j)=ifrNum(j+1);
 						}
-						ifrNum.resize(ifrNum.nelements()-1,True);
+						ifrNum.resize(ifrNum.nelements()-1,true);
 					}
 				}
 				if (ifrNum.nelements()==1) {
@@ -479,9 +479,9 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 							.in(ifrNum));
 				}
 				ifrSelection_p.reference(ifrNum);
-				useIfrDefault_p=False;
+				useIfrDefault_p=false;
 			} else {
-				useIfrDefault_p=True;
+				useIfrDefault_p=true;
 				ifrSelection_p.resize(0);
 			}
 			// } else {
@@ -492,9 +492,9 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		break;
 		case MSS::ROWS:
 		{
-			Vector<Int64> rows = items.toArrayInt64(RecordFieldId(i));
+			Vector<int64_t> rows = items.toArrayInt64(RecordFieldId(i));
 			if (rows.nelements()>0) {
-                                if (oneBased) rows-=Int64(1);
+                                if (oneBased) rows-=int64_t(1);
 				Vector<rownr_t> uRows(rows.size());
 				convertArray(uRows,rows);
 				// Select rows from the base table.
@@ -505,9 +505,9 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		break;
 		case MSS::TIME:
 		{
-			Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
+			Vector<double> range = items.asArrayDouble(RecordFieldId(i));
 			if (range.nelements()==2) {
-				TableExprNodeSetElem elem(True,range(0),range(1),True);
+				TableExprNodeSetElem elem(true,range(0),range(1),true);
 				TableExprNodeSet set;
 				set.add(elem);
 				selms_p=selms_p(selms_p.col(column).in(set));
@@ -520,7 +520,7 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		case MSS::TIMES:
 		{
 			column=MS::columnName(MS::TIME);
-			Vector<Double> time = items.asArrayDouble(RecordFieldId(i));
+			Vector<double> time = items.asArrayDouble(RecordFieldId(i));
 			if (time.nelements()>0) {
 				if (time.nelements()==1) {
 					selms_p=selms_p(selms_p.col(column) == time(0));
@@ -534,13 +534,13 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		case MSS::V:
 		case MSS::W:
 		{
-			Int uvwIndex=fld-MSS::U;
-			Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
+			int32_t uvwIndex=fld-MSS::U;
+			Vector<double> range = items.asArrayDouble(RecordFieldId(i));
 			if (range.nelements()==2) {
 				column=MS::columnName(MS::UVW);
 				TableExprNodeSet interval;
-				interval.add (TableExprNodeSetElem (True, range(0),
-						range(1), True));
+				interval.add (TableExprNodeSetElem (true, range(0),
+						range(1), true));
 				IPosition idx(1,uvwIndex);
 				selms_p=selms_p(selms_p.col(column)(idx).in(interval));
 			} else {
@@ -551,16 +551,16 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 		break;
 		case MSS::UVDIST:
 		{
-			Vector<Double> range = items.asArrayDouble(RecordFieldId(i));
+			Vector<double> range = items.asArrayDouble(RecordFieldId(i));
 			if (range.nelements()==2) {
 				range*=range; // square
-				ArrayColumn<Double> uvwcol(selms_p,MS::columnName(MS::UVW));
-				Int nrow=selms_p.nrow();
+				ArrayColumn<double> uvwcol(selms_p,MS::columnName(MS::UVW));
+				int32_t nrow=selms_p.nrow();
 				if (nrow>0) {
-					Matrix<Double> uvw=uvwcol.getColumn();
-					Block<Bool> rowsel(nrow);
-					for (Int k=0; k<nrow; k++) {
-						Double uvdist=square(uvw(0,k))+square(uvw(1,k));
+					Matrix<double> uvw=uvwcol.getColumn();
+					Block<bool> rowsel(nrow);
+					for (int32_t k=0; k<nrow; k++) {
+						double uvdist=square(uvw(0,k))+square(uvw(1,k));
 						//attempt to cope with roundoff error in square
 						rowsel[k]=
 								(( uvdist >= range(0) || near(uvdist,range(0)) ) &&
@@ -584,63 +584,63 @@ Bool MSSelector::select(const Record& items, Bool oneBased)
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is now empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
-	return True;
+	return true;
 }
 
-Bool MSSelector::select(const String& msSelect)
+bool MSSelector::select(const String& msSelect)
 {
 	LogIO os;
-	if (!checkSelection()) return False;
+	if (!checkSelection()) return false;
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
 	// check that a selection was given
-	Int len = msSelect.length();
-	Int nspace = msSelect.freq(' ');
-	if (msSelect.empty() || nspace==len) return False;
+	int32_t len = msSelect.length();
+	int32_t nspace = msSelect.freq(' ');
+	if (msSelect.empty() || nspace==len) return false;
 	String parseString="select from $1 where " + msSelect;
 	selms_p=tableCommand(parseString,selms_p).table();
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is now empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
-	return True;
+	return true;
 }
 
-static void averageId(Vector<Int>& vec)
+static void averageId(Vector<int32_t>& vec)
 {
 	// "average" a vector of integer id's - replace by length 1 vector with
 	// common value if all elements are the same, or -1 otherwise.
 	// Used below to "average" things like antenna id.
 	if (vec.nelements()>1) {
-		Int aver=vec(0);
+		int32_t aver=vec(0);
 		if (!allEQ(vec,aver)) aver=-1;
 		vec.resize(1);
 		vec(0)=aver;
 	}
 }
 
-static void averageDouble(Vector<Double>& vec) 
+static void averageDouble(Vector<double>& vec) 
 {
 	// average a vector of doubles
-	Int n=vec.nelements();
+	int32_t n=vec.nelements();
 	if (n>1) {
-		Double aver=vec(0);
-		for (Int i=1; i<n; i++) aver+=vec(i);
+		double aver=vec(0);
+		for (int32_t i=1; i<n; i++) aver+=vec(i);
 		aver/=n;
 		vec.resize(1);
 		vec(0)=aver;
 	}
 }
 
-Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
-		Int ifrAxisGap,
-		Int inc, Bool average, Bool oneBased)
+Record MSSelector::getData(const Vector<String>& items, bool ifrAxis,
+		int32_t ifrAxisGap,
+		int32_t inc, bool average, bool oneBased)
 {
 	LogIO os;
 	Record out(RecordInterface::Variable);
@@ -651,13 +651,13 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		return out;
 	}
 
-	Matrix<Bool> want(nFuncType,nDataType,False);
-	Bool wantFlag, wantFlagSum, wantWeight, wantSigma;
-	wantFlag=wantFlagSum=wantWeight=wantSigma=False;
+	Matrix<bool> want(nFuncType,nDataType,false);
+	bool wantFlag, wantFlagSum, wantWeight, wantSigma;
+	wantFlag=wantFlagSum=wantWeight=wantSigma=false;
 
-	Matrix<Double> uvw;
+	Matrix<double> uvw;
 
-	Int nItems=items.nelements(),nRows=selms_p.nrow();
+	int32_t nItems=items.nelements(),nRows=selms_p.nrow();
 	Table tab;
 	if (inc>1 && inc<=nRows) {
 		Vector<rownr_t> rows(nRows/inc);
@@ -667,9 +667,9 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		tab=selms_p;
 	}
 	MSColumns msc(tab);
-	Int nIfr = ifrSelection_p.nelements();
-	Int nSlot = 0;
-	Int nRow = tab.nrow();
+	int32_t nIfr = ifrSelection_p.nelements();
+	int32_t nSlot = 0;
+	int32_t nRow = tab.nrow();
 	if (ifrAxis && (nIfr==0 || useIfrDefault_p)) {
 		// set default
 		MSRange msRange(tab);
@@ -677,26 +677,26 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		ifrSelection_p = msRange.range(MSS::IFR_NUMBER).asArrayInt(0);
 		// GlishArray(msRange.range(MSS::IFR_NUMBER).get(0)).get(ifrSelection_p);
 		nIfr = ifrSelection_p.nelements();
-		useIfrDefault_p=True;
+		useIfrDefault_p=true;
 	}
 
-	Vector<Int> ifrIndex; // the index no into the ifrSelection Vector
-	Vector<Double> timeSlot; // the time for each slot
-	Vector<Int> ddSlot;   // the dataDescId for each slot
-	Vector<Int> slot; // the slot for each row
-	Bool doIfrAxis = (ifrAxis && nIfr>0);
+	Vector<int32_t> ifrIndex; // the index no into the ifrSelection Vector
+	Vector<double> timeSlot; // the time for each slot
+	Vector<int32_t> ddSlot;   // the dataDescId for each slot
+	Vector<int32_t> slot; // the slot for each row
+	bool doIfrAxis = (ifrAxis && nIfr>0);
 	if (doIfrAxis) {
 		if (ifrAxisGap>=0) {
 			// add a small gap before each antenna1 change
-			Int gapCount=0;
-			for (Int i=1; i<nIfr; i++) {
+			int32_t gapCount=0;
+			for (int32_t i=1; i<nIfr; i++) {
 				if (ifrSelection_p(i)/1000>ifrSelection_p(i-1)/1000) gapCount++;
 			}
 			ifrAxis_p.resize(nIfr+gapCount*ifrAxisGap);
 			ifrAxis_p(0)=ifrSelection_p(0);
-			for (Int i=1,j=1; i<nIfr; i++) {
+			for (int32_t i=1,j=1; i<nIfr; i++) {
 				if (ifrSelection_p(i)/1000>ifrSelection_p(i-1)/1000) {
-					for (Int k=0; k<ifrAxisGap; k++) ifrAxis_p(j++)=-1;
+					for (int32_t k=0; k<ifrAxisGap; k++) ifrAxis_p(j++)=-1;
 					ifrAxis_p(j++)=ifrSelection_p(i);
 				} else {
 					ifrAxis_p(j++)=ifrSelection_p(i);
@@ -707,14 +707,14 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 
 		// figure out which rows go with which slot
 		// Assume MS is in time order
-		Vector<Double> time=msc.time().getColumn();
-		Vector<Int> dd=msc.dataDescId().getColumn();
+		Vector<double> time=msc.time().getColumn();
+		Vector<int32_t> dd=msc.dataDescId().getColumn();
 		nRow=time.nelements();
 		timeSlot.resize(nRow);
 		ddSlot.resize(nRow);
 		slot.resize(nRow);     // the time/datadescid slot
 		timeSlot(0)=time(0); ddSlot(0)=dd(0); slot(0)=0;
-		for (Int i=1; i<nRow; i++) {
+		for (int32_t i=1; i<nRow; i++) {
 			if (time(i)!=timeSlot(nSlot)) {
 				// new time - add new slot
 				nSlot++;
@@ -722,7 +722,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				slot(i)=nSlot;
 			} else if (dd(i)!=ddSlot(nSlot)) {
 				// check if we've seen this dd before
-				Int j=nSlot-1;
+				int32_t j=nSlot-1;
 				while (j>=0 && timeSlot(j)==timeSlot(nSlot) &&
 						ddSlot(j)!=dd(i)) j--;
 				if (j<0 || (j>=0 && timeSlot(j)!=timeSlot(nSlot))) {
@@ -740,14 +740,14 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		}
 		nSlot++;
 		// resize to true size, copying values
-		timeSlot.resize(nSlot,True);
-		ddSlot.resize(nSlot,True);
+		timeSlot.resize(nSlot,true);
+		ddSlot.resize(nSlot,true);
 
-		Vector<Int> ifr=msc.antenna1().getColumn();
-		Int maxAnt=max(ifr);
+		Vector<int32_t> ifr=msc.antenna1().getColumn();
+		int32_t maxAnt=max(ifr);
 		ifr*=1000;
 		{
-			Vector<Int> ant2=msc.antenna2().getColumn();
+			Vector<int32_t> ant2=msc.antenna2().getColumn();
 			maxAnt=max(maxAnt,max(ant2));
 			ifr+=ant2;
 		}
@@ -755,24 +755,24 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 
 		ifrIndex.resize(nRow);
 
-		Matrix<Int> ifrSlot(maxAnt,maxAnt,-1);
-		for (Int i=0; i<nIfr; i++) {
-			Int j=ifrAxis_p(i);
-			Int ant1=j/1000,ant2=j%1000;
+		Matrix<int32_t> ifrSlot(maxAnt,maxAnt,-1);
+		for (int32_t i=0; i<nIfr; i++) {
+			int32_t j=ifrAxis_p(i);
+			int32_t ant1=j/1000,ant2=j%1000;
 			if (j>=0 && ant1<maxAnt && ant2<maxAnt) ifrSlot(ant1,ant2)=i;
 		}
 
-		for (Int i=0; i<nRow; i++) ifrIndex(i)=ifrSlot(ifr(i)/1000,ifr(i)%1000);
+		for (int32_t i=0; i<nRow; i++) ifrIndex(i)=ifrSlot(ifr(i)/1000,ifr(i)%1000);
 
 		rowIndex_p.resize(nIfr,nSlot); rowIndex_p.set(-1);
-		for (Int i=0; i<nRow; i++) rowIndex_p(ifrIndex(i),slot(i))=i;
+		for (int32_t i=0; i<nRow; i++) rowIndex_p(ifrIndex(i),slot(i))=i;
 
 	} else {
 		rowIndex_p.resize(0,0);
 	}
 
 	// now get out the data
-	for (Int it=0; it<nItems; it++) {
+	for (int32_t it=0; it<nItems; it++) {
 		String item=downcase(items(it));
 		MSS::Field fld=MSS::field(item);
 		switch (fld) {
@@ -782,19 +782,19 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::RATIO_AMPLITUDE:
 		case MSS::RESIDUAL_AMPLITUDE:
 		case MSS::OBS_RESIDUAL_AMPLITUDE:
-			want(Amp,fld-MSS::AMPLITUDE)=True;
+			want(Amp,fld-MSS::AMPLITUDE)=true;
 			break;
 		case MSS::ANTENNA1:
 			if (doIfrAxis) {
-				Vector<Int> ant1(nIfr);
+				Vector<int32_t> ant1(nIfr);
 				ant1=ifrAxis_p;
 				ant1/=1000;
-				for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ant1(i)=-1;
+				for (int32_t i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ant1(i)=-1;
 				if (oneBased) ant1+=1;
 				out.define(item,ant1);
 			}
 			else {
-				Vector<Int> ant=msc.antenna1().getColumn();
+				Vector<int32_t> ant=msc.antenna1().getColumn();
 				if (average) averageId(ant);
 				if (oneBased) ant+=1;
 				out.define(item,ant);
@@ -802,15 +802,15 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 			break;
 		case MSS::ANTENNA2:
 			if (doIfrAxis) {
-				Vector<Int> ant2(nIfr);
+				Vector<int32_t> ant2(nIfr);
 				ant2=ifrAxis_p;
 				ant2-=1000*(ifrAxis_p/1000);
-				for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ant2(i)=-1;
+				for (int32_t i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ant2(i)=-1;
 				if (oneBased) ant2+=1;
 				out.define(item,ant2);
 			}
 			else {
-				Vector<Int> ant= msc.antenna2().getColumn();
+				Vector<int32_t> ant= msc.antenna2().getColumn();
 				if (average) averageId(ant);
 				if (oneBased) ant+=1;
 				out.define(item,ant);
@@ -831,10 +831,10 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				// 3. ifr info
 				Record ifr_axis(RecordInterface::Variable);
 				if (oneBased) {
-					Vector<Int> ifr;
+					Vector<int32_t> ifr;
 					ifr=ifrAxis_p;
 					ifr+=1001;
-					for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ifr(i)=0;
+					for (int32_t i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ifr(i)=0;
 					ifr_axis.define("ifr_number",ifr);
 				} else {
 					ifr_axis.define("ifr_number",ifrSelection_p);
@@ -846,14 +846,14 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				// last antenna in table
 				String prefix =
 						common_prefix(antName(0),antName(antName.nelements()-1));
-				Matrix<Double> antPos=msc.antenna().position().getColumn();
-				Vector<Double> baseline(nIfr,-1.0);
+				Matrix<double> antPos=msc.antenna().position().getColumn();
+				Vector<double> baseline(nIfr,-1.0);
 				// PROBLEM: antName elements have string size extending beyond \0
 				// string catenation doesn't work correctly!
-				for (Int k=0; k<nIfr; k++) {
+				for (int32_t k=0; k<nIfr; k++) {
 					if (ifrAxis_p(k)>=0) {
-						Int ant1 = ifrAxis_p(k)/1000;
-						Int ant2 = ifrAxis_p(k)%1000;
+						int32_t ant1 = ifrAxis_p(k)/1000;
+						int32_t ant2 = ifrAxis_p(k)%1000;
 						ifrName(k)=antName(ant1).before('\0');
 						ifrName(k)+="-";
 						ifrName(k)+=antName(ant2).before('\0');
@@ -876,39 +876,39 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				// 4. time info
 				Record time_axis(RecordInterface::Variable);
 				msd_p.setAntennas(msc.antenna());
-				Vector<Double> time=msc.time().getColumn();
-				Vector<Int> fieldId=msc.fieldId().getColumn();
-				Int lastFieldId=-1;
-				Double startOfDay=( nSlot>0 ?
+				Vector<double> time=msc.time().getColumn();
+				Vector<int32_t> fieldId=msc.fieldId().getColumn();
+				int32_t lastFieldId=-1;
+				double startOfDay=( nSlot>0 ?
 						C::day*int(time(0)/C::day) : 0);
-				Int nT = (average ? 1 : nSlot);
-				Vector<Double> times(nT,0.0),ut(nT),ha(nT),last(nT);
+				int32_t nT = (average ? 1 : nSlot);
+				Vector<double> times(nT,0.0),ut(nT),ha(nT),last(nT);
 				MEpoch ep=msc.timeMeas()(0);
-				Bool doUT=False, doHA=False, doLAST=False;
-				for (Int k=0; k<nItems; k++) {
-					Int enumval=MSS::field(downcase(items(k)));
-					if (enumval == MSS::UT) doUT=True;
-					if (enumval == MSS::LAST) doLAST=True;
-					if (enumval == MSS::HA) doHA=True;
+				bool doUT=false, doHA=false, doLAST=false;
+				for (int32_t k=0; k<nItems; k++) {
+					int32_t enumval=MSS::field(downcase(items(k)));
+					if (enumval == MSS::UT) doUT=true;
+					if (enumval == MSS::LAST) doLAST=true;
+					if (enumval == MSS::HA) doHA=true;
 				}
 				// Note: HA conversion assumes there is a single fieldId for
 				// each time slot.
 				if (average) {
 					times(0)=0;
-					Int nTimes=0;
-					for (Int k=0; k<nSlot; k++) {
+					int32_t nTimes=0;
+					for (int32_t k=0; k<nSlot; k++) {
 						times(0)+=timeSlot(k);
 					}
 					if (nTimes>0) times(0)/=nTimes;
 				} else {
 					times=timeSlot;
 				}
-				for (Int k=0; k<nT; k++) {
+				for (int32_t k=0; k<nT; k++) {
 					if (doUT) {
 						ut(k)=times(k)-startOfDay;
 					}
 					if (doLAST || doHA) {
-						Int curFieldId=fieldId(rowIndex_p(0,k));
+						int32_t curFieldId=fieldId(rowIndex_p(0,k));
 						if (curFieldId!=lastFieldId) {
 							if (msc.field().numPoly()(curFieldId)==0)
 								msd_p.setFieldCenter(msc.field().phaseDirMeas(curFieldId));
@@ -938,16 +938,16 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::RATIO_DATA:
 		case MSS::RESIDUAL_DATA:
 		case MSS::OBS_RESIDUAL_DATA:
-			want(Data,fld-MSS::DATA)=True;
+			want(Data,fld-MSS::DATA)=true;
 			break;
 		case MSS::DATA_DESC_ID:
 			if (doIfrAxis) {
-				Vector<Int> id(nSlot); id=ddSlot;
+				Vector<int32_t> id(nSlot); id=ddSlot;
 				if (average) averageId(id);
 				if (oneBased) id+=1;
 				out.define(item,id);
 			} else {
-				Vector<Int> col=msc.dataDescId().getColumn();
+				Vector<int32_t> col=msc.dataDescId().getColumn();
 				if (average) averageId(col);
 				if (oneBased) col+=1;
 				out.define(item,col);
@@ -956,13 +956,13 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::FIELD_ID:
 		case MSS::SCAN_NUMBER:
 		{
-			Vector<Int> col = (fld == MSS::FIELD_ID ?
+			Vector<int32_t> col = (fld == MSS::FIELD_ID ?
 					msc.fieldId().getColumn() :
 					msc.scanNumber().getColumn());
 			if (doIfrAxis) {
-				Vector<Int> id(nSlot,-1);
-				for (Int k=0; k<nSlot; k++) {
-					Int i;
+				Vector<int32_t> id(nSlot,-1);
+				for (int32_t k=0; k<nSlot; k++) {
+					int32_t i;
 					for (i=0; i<nIfr && rowIndex_p(i,k)<0; i++) {}
 					if (i<nIfr) id(k)=col(rowIndex_p(i,k));
 				}
@@ -979,13 +979,13 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::FEED1:
 		case MSS::FEED2:
 		{
-			Vector<Int> col = (fld == MSS::FEED1 ?
+			Vector<int32_t> col = (fld == MSS::FEED1 ?
 					msc.feed1().getColumn() :
 					msc.feed2().getColumn());
 			if (doIfrAxis) {
-				Vector<Int> id(nSlot,-1);
-				for (Int k=0; k<nSlot; k++) {
-					Int i;
+				Vector<int32_t> id(nSlot,-1);
+				for (int32_t k=0; k<nSlot; k++) {
+					int32_t i;
 					for (i=0; i<nIfr && rowIndex_p(i,k)<0; i++) {}
 					if (i<nIfr) id(k)=col(rowIndex_p(i,k));
 				}
@@ -1000,14 +1000,14 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		}
 		break;
 		case MSS::FLAG:
-			wantFlag=True;
+			wantFlag=true;
 			break;
 		case MSS::FLAG_ROW:
 			if (doIfrAxis) {
-				Matrix<Bool> itFlag(nIfr,nSlot);
-				itFlag.set(True); // flag unfilled slots
-				Vector<Bool> flagRow=msc.flagRow().getColumn();
-				for (Int k=0; k<nRow; k++) {
+				Matrix<bool> itFlag(nIfr,nSlot);
+				itFlag.set(true); // flag unfilled slots
+				Vector<bool> flagRow=msc.flagRow().getColumn();
+				for (int32_t k=0; k<nRow; k++) {
 					itFlag(ifrIndex(k),slot(k))=flagRow(k);
 				}
 				out.define(item,itFlag);
@@ -1016,23 +1016,23 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 			}
 			break;
 		case MSS::FLAG_SUM:
-			wantFlagSum=True;
+			wantFlagSum=true;
 			break;
 		case MSS::IFR_NUMBER:
 		{
 			if (doIfrAxis) {
 				if (oneBased) {
-					Vector<Int> ifr;
+					Vector<int32_t> ifr;
 					ifr=ifrAxis_p;
 					ifr+=1001;
-					for (Int i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ifr(i)=0;
+					for (int32_t i=0; i<nIfr; i++) if (ifrAxis_p(i)<0) ifr(i)=0;
 					out.define(item,ifr);
 				} else {
 					out.define(item,ifrAxis_p);
 				}
 			} else {
-				Vector<Int> ant1=msc.antenna1().getColumn();
-				Array<Int> ant2=msc.antenna2().getColumn();
+				Vector<int32_t> ant1=msc.antenna1().getColumn();
+				Array<int32_t> ant2=msc.antenna2().getColumn();
 				if (oneBased) {
 					ant1+=1; ant2+=1;
 				}
@@ -1049,10 +1049,10 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::RATIO_IMAGINARY:
 		case MSS::RESIDUAL_IMAGINARY:
 		case MSS::OBS_RESIDUAL_IMAGINARY:
-			want(Imag,fld-MSS::IMAGINARY)=True;
+			want(Imag,fld-MSS::IMAGINARY)=true;
 			break;
 		case MSS::FLOAT_DATA:
-			want(Data,ObsFloat)=True;
+			want(Data,ObsFloat)=true;
 			break;
 		case MSS::PHASE:
 		case MSS::CORRECTED_PHASE:
@@ -1060,7 +1060,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::RATIO_PHASE:
 		case MSS::RESIDUAL_PHASE:
 		case MSS::OBS_RESIDUAL_PHASE:
-			want(Phase,fld-MSS::PHASE)=True;
+			want(Phase,fld-MSS::PHASE)=true;
 			break;
 		case MSS::REAL:
 		case MSS::CORRECTED_REAL:
@@ -1068,17 +1068,17 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::RATIO_REAL:
 		case MSS::RESIDUAL_REAL:
 		case MSS::OBS_RESIDUAL_REAL:
-			want(Real,fld-MSS::REAL)=True;
+			want(Real,fld-MSS::REAL)=true;
 			break;
 		case MSS::SIGMA:
 		{
-			Matrix<Float> sig = getWeight(msc.sigma(),True);
-			Int nCorr=sig.shape()(0);
+			Matrix<float> sig = getWeight(msc.sigma(),true);
+			int32_t nCorr=sig.shape()(0);
 			if (doIfrAxis) {
 				IPosition wtsidx(3,nCorr,nIfr,nSlot);
-				Cube<Float> wts(wtsidx); wts.set(0);
-				for (Int i=0; i<nRow; i++) {
-					for (Int j=0; j<nCorr; j++) {
+				Cube<float> wts(wtsidx); wts.set(0);
+				for (int32_t i=0; i<nRow; i++) {
+					for (int32_t j=0; j<nCorr; j++) {
 						wts(j, ifrIndex(i),slot(i))=sig(j,i);
 					}
 				}
@@ -1086,10 +1086,10 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 					// averaging sigma's doesn't make sense,
 					// return sqrt of sum of squares instead
 					IPosition sumwtidx(2,nCorr,nIfr);
-					Matrix<Float> sumsig(sumwtidx); sumsig=0;
-					for (Int i=0; i<nIfr; i++) {
+					Matrix<float> sumsig(sumwtidx); sumsig=0;
+					for (int32_t i=0; i<nIfr; i++) {
 						for (int j=0; j<nCorr; j++) {
-							for (Int k=0; k<nSlot; k++) {sumsig(j,i)+=square(wts(j,i,k));}
+							for (int32_t k=0; k<nSlot; k++) {sumsig(j,i)+=square(wts(j,i,k));}
 							sumsig(j,i)=sqrt(sumsig(j,i));
 						}
 					}
@@ -1100,9 +1100,9 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 			} else {
 				if (average) {
 					// return sqrt of sum of squares
-					Vector<Float> sumsig(nCorr); sumsig=0.0;
-					for (Int j=0; j<nCorr; j++) {
-						for (Int i=0; i<nRow; i++) {sumsig(j)+=square(sig(j,i));}
+					Vector<float> sumsig(nCorr); sumsig=0.0;
+					for (int32_t j=0; j<nCorr; j++) {
+						for (int32_t i=0; i<nRow; i++) {sumsig(j)+=square(sig(j,i));}
 						sumsig(j)=sqrt(sumsig(j));
 					}
 					out.define("sigma",sumsig);
@@ -1115,11 +1115,11 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::TIME:
 		{
 			if (doIfrAxis) {
-				Vector<Double> times; times=timeSlot;
+				Vector<double> times; times=timeSlot;
 				if (average) averageDouble(times);
 				out.define(item,times);
 			} else {
-				Vector<Double> time=msc.time().getColumn();
+				Vector<double> time=msc.time().getColumn();
 				if (average) averageDouble(time);
 				out.define(item,time);
 			}
@@ -1133,10 +1133,10 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 			//      if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 			uvw=msc.uvw().getColumn();
 			if (doIfrAxis) {
-				Cube<Double> uvw2(uvw.shape()(0),nIfr,nSlot); uvw2.set(0);
-				for (Int k=0; k<nRow; k++) {
-					Int ifr=ifrIndex(k);
-					Int time=slot(k);
+				Cube<double> uvw2(uvw.shape()(0),nIfr,nSlot); uvw2.set(0);
+				for (int32_t k=0; k<nRow; k++) {
+					int32_t ifr=ifrIndex(k);
+					int32_t time=slot(k);
 					uvw2(0,ifr,time)=uvw(0,k);
 					uvw2(1,ifr,time)=uvw(1,k);
 					uvw2(2,ifr,time)=uvw(2,k);
@@ -1150,12 +1150,12 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		case MSS::V:
 		case MSS::W:
 		{
-			Int index=fld-MSS::U;
+			int32_t index=fld-MSS::U;
 //			if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 			uvw=msc.uvw().getColumn();
 			if (doIfrAxis) {
-				Matrix<Double> uvw2(nIfr,nSlot); uvw2.set(0);
-				for (Int k=0; k<nRow; k++) {
+				Matrix<double> uvw2(nIfr,nSlot); uvw2.set(0);
+				for (int32_t k=0; k<nRow; k++) {
 					uvw2(ifrIndex(k),slot(k))=uvw(index,k);
 				}
 				out.define(item,uvw2);
@@ -1168,18 +1168,18 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		{
 //			if (uvw.nelements()==0) uvw=msc.uvw().getColumn();
 			uvw=msc.uvw().getColumn();
-			Vector<Double> u2(uvw.row(0)),v2(uvw.row(1));
+			Vector<double> u2(uvw.row(0)),v2(uvw.row(1));
 			u2*=u2;
 			v2*=v2;
 			u2+=v2;
 			// take square root - could use u2.apply(sqrt) but this can cause
 			// link conflicts with fortran
-			Bool deleteIt;
-			Double* pu2 = u2.getStorage(deleteIt);
-			for (Int i=0; i<nRows; i++) pu2[i]=sqrt(pu2[i]);
+			bool deleteIt;
+			double* pu2 = u2.getStorage(deleteIt);
+			for (int32_t i=0; i<nRows; i++) pu2[i]=sqrt(pu2[i]);
 			if (doIfrAxis) {
-				Matrix<Double> uvd(nIfr,nSlot); uvd.set(0);
-				for (Int k=0; k<nRow; k++) uvd(ifrIndex(k),slot(k))=pu2[k];
+				Matrix<double> uvd(nIfr,nSlot); uvd.set(0);
+				for (int32_t k=0; k<nRow; k++) uvd(ifrIndex(k),slot(k))=pu2[k];
 				u2.putStorage(pu2,deleteIt);
 				out.define(item,uvd);
 			} else {
@@ -1189,7 +1189,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		}
 		break;
 		case MSS::WEIGHT:
-			wantWeight=True;
+			wantWeight=true;
 			break;
 		case MSS::HA:
 		case MSS::LAST:
@@ -1205,17 +1205,17 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
 	uvw.resize(0,0); // reclaim storage before we get the big arrays
 	// save the flags and weights if we are averaging data over time/row
-	Array<Bool> flags,dataflags;
-	Array<Float> weights;
+	Array<bool> flags,dataflags;
+	Array<float> weights;
 
 	if (wantWeight || average) {
-		Matrix<Float> wt = getWeight(msc.weight());
-		Int nCorr=wt.shape()(0);
+		Matrix<float> wt = getWeight(msc.weight());
+		int32_t nCorr=wt.shape()(0);
 		if (doIfrAxis) {
 			IPosition wtsidx(3,nCorr,nIfr,nSlot);
-			Cube<Float> wts(wtsidx); wts.set(0);
-			for (Int i=0; i<nRow; i++) {
-				for (Int j=0; j<nCorr; j++) {
+			Cube<float> wts(wtsidx); wts.set(0);
+			for (int32_t i=0; i<nRow; i++) {
+				for (int32_t j=0; j<nCorr; j++) {
 					wts(j, ifrIndex(i),slot(i))=wt(j,i);
 				}
 			}
@@ -1224,10 +1224,10 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 					// averaging weights doesn't make sense,
 					// return sum of weights instead
 					IPosition sumwtidx(2,nCorr,nIfr);
-					Matrix<Float> sumwt(sumwtidx); sumwt=0;
-					for (Int i=0; i<nIfr; i++) {
+					Matrix<float> sumwt(sumwtidx); sumwt=0;
+					for (int32_t i=0; i<nIfr; i++) {
 						for (int j=0; j<nCorr; j++) {
-							for (Int k=0; k<nSlot; k++) {
+							for (int32_t k=0; k<nSlot; k++) {
 								sumwt(j,i)+=wts(j,i,k);
 							}
 						}
@@ -1242,9 +1242,9 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 			if (wantWeight) {
 				if (average) {
 					// return sum of weights
-					Vector<Float> sumwt(nCorr); sumwt=0.0;
-					for (Int i=0; i<nRow; i++) {
-						for (Int j=0; j<nCorr; j++) {
+					Vector<float> sumwt(nCorr); sumwt=0.0;
+					for (int32_t i=0; i<nRow; i++) {
+						for (int32_t j=0; j<nCorr; j++) {
 							sumwt(j)+=wt(j,i);
 						}
 					}
@@ -1258,16 +1258,16 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	}
 
 
-	Array<Bool> flag;
+	Array<bool> flag;
 	if (wantFlag || wantFlagSum ||
 			average ||                                  // time averaging
 			(chanSel_p.nelements()>0 && chanSel_p(2)>1) // channel averaging
 	) {
-		Array<Bool> avFlag;
+		Array<bool> avFlag;
 		flag=getAveragedFlag(avFlag,msc.flag());
-		uInt nPol=avFlag.shape()(0), nChan=avFlag.shape()(1), nRow=avFlag.shape()(2);
+		uint32_t nPol=avFlag.shape()(0), nChan=avFlag.shape()(1), nRow=avFlag.shape()(2);
 		if (doIfrAxis) {
-			MSSelUtil2<Bool>::reorderData(avFlag,ifrIndex,nIfr,slot,nSlot,True);
+			MSSelUtil2<bool>::reorderData(avFlag,ifrIndex,nIfr,slot,nSlot,true);
 		}
 		if (average) flags=avFlag;
 		if (wantFlag && !average) {
@@ -1275,16 +1275,16 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 		}
 		if (wantFlagSum) {
 			if (doIfrAxis) {
-				Cube<Int> flagSum(nPol,nChan,nIfr);
+				Cube<int32_t> flagSum(nPol,nChan,nIfr);
 				flagSum=0;
 				IPosition indx(4);
 				indx(0)=0;
-				for (uInt j=0; j<nPol; j++, indx(0)++) {
+				for (uint32_t j=0; j<nPol; j++, indx(0)++) {
 					indx(1)=0;
-					for (uInt k=0; k<nChan; k++, indx(1)++) {
+					for (uint32_t k=0; k<nChan; k++, indx(1)++) {
 						indx(2)=0;
-						for (Int l=0; l<nIfr; l++, indx(2)++) {
-							Int count=0;
+						for (int32_t l=0; l<nIfr; l++, indx(2)++) {
+							int32_t count=0;
 							for (indx(3)=0; indx(3)<nSlot; indx(3)++) {
 								if (avFlag(indx)) count++;
 							}
@@ -1294,13 +1294,13 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 				}
 				out.define("flag_sum",flagSum);
 			} else {
-				Matrix<Int> flagSum(nPol,nChan);
+				Matrix<int32_t> flagSum(nPol,nChan);
 				flagSum=0;
-				Cube<Bool> flag2(avFlag);
-				for (uInt j=0; j<nPol; j++) {
-					for (uInt k=0; k<nChan; k++) {
-						Int count=0;
-						for (uInt l=0; l<nRow; l++) {
+				Cube<bool> flag2(avFlag);
+				for (uint32_t j=0; j<nPol; j++) {
+					for (uint32_t k=0; k<nChan; k++) {
+						int32_t count=0;
+						for (uint32_t l=0; l<nRow; l++) {
 							if (flag2(j,k,l)) count++;
 						}
 						flagSum(j,k)=count;
@@ -1313,12 +1313,12 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 
 	if (want(Data,ObsFloat)) {
 		// get the data
-		Array<Float> fdata;
+		Array<float> fdata;
 		if (!msc.floatData().isNull()) {
 			getAveragedData(fdata,flag,msc.floatData());
-			if (doIfrAxis) MSSelUtil2<Float>::
-					reorderData(fdata,ifrIndex,nIfr,slot,nSlot,Float());
-			if (average) MSSelUtil2<Float>::
+			if (doIfrAxis) MSSelUtil2<float>::
+					reorderData(fdata,ifrIndex,nIfr,slot,nSlot,float());
+			if (average) MSSelUtil2<float>::
 					timeAverage(dataflags,fdata,flags,weights);
 			out.define("float_data",fdata);
 		} else {
@@ -1328,14 +1328,14 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 
 
 	Array<Complex> observed_data,corrected_data,model_data;
-	Bool keepObs = anyEQ(want.column(ObsResidual),True);
-	Bool keepMod = anyEQ(want.column(Residual),True)||
-			anyEQ(want.column(Ratio),True)|| keepObs;;
-	Bool keepCor = anyEQ(want.column(Residual),True)||
-			anyEQ(want.column(Ratio),True);
+	bool keepObs = anyEQ(want.column(ObsResidual),true);
+	bool keepMod = anyEQ(want.column(Residual),true)||
+			anyEQ(want.column(Ratio),true)|| keepObs;;
+	bool keepCor = anyEQ(want.column(Residual),true)||
+			anyEQ(want.column(Ratio),true);
 
-	for (Int dataType=Observed; dataType<=ObsResidual; dataType++) {
-		if (anyEQ(want.column(dataType),True)||
+	for (int32_t dataType=Observed; dataType<=ObsResidual; dataType++) {
+		if (anyEQ(want.column(dataType),true)||
 				(dataType==Observed && keepObs) ||
 				(dataType==Model && keepMod) ||
 				(dataType==Corrected && keepCor)) {
@@ -1414,23 +1414,23 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 	return out;
 }
 
-Bool MSSelector::putData(const Record& items)
+bool MSSelector::putData(const Record& items)
 {
 	LogIO os;
-	if (!checkSelection()) return False;
+	if (!checkSelection()) return false;
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
 	if (!selms_p.isWritable()) {
 		os << LogIO::SEVERE << "MeasurementSet is not writable"<< LogIO::POST;
-		return False;
+		return false;
 	}
 
 	MSColumns msc(selms_p);
-	Int n=items.nfields();
-	for (Int i=0; i<n; i++) {
+	int32_t n=items.nfields();
+	for (int32_t i=0; i<n; i++) {
 		String item=downcase(items.name(i));
 		MSS::Field fld=MSS::field(item);
 		switch (fld) {
@@ -1451,20 +1451,20 @@ Bool MSSelector::putData(const Record& items)
 			if (convert_p) {
 				os << LogIO::SEVERE <<"Polarization conversion not supported "
 						<< "when writing data" << LogIO::POST;
-				return False;
+				return false;
 			}
 			if (polIndex_p.nelements()>0) {
 				os << LogIO::SEVERE << "Polarization selection must be 1,2 or "
 						<< "all correlations,"<<endl<<
 						"in correct order (ie MeasurementSet order), when writing data"
 						<< LogIO::POST;
-				return False;
+				return false;
 			}
 			Array<Complex> data = items.toArrayComplex(RecordFieldId(i));
 			if (! col.isNull()) {
 				if (data.ndim()==4) {
-					if (data.shape()(2)==Int(rowIndex_p.nrow()) &&
-							data.shape()(3)==Int(rowIndex_p.ncolumn())) {
+					if (data.shape()(2)==int32_t(rowIndex_p.nrow()) &&
+							data.shape()(3)==int32_t(rowIndex_p.ncolumn())) {
 						MSSelUtil2<Complex>::reorderData(data, rowIndex_p,
 								selms_p.nrow());
 					} else {
@@ -1491,14 +1491,14 @@ Bool MSSelector::putData(const Record& items)
 			if (convert_p) {
 				os << LogIO::SEVERE <<"Polarization conversion not supported "
 						<< "when writing data" << LogIO::POST;
-				return False;
+				return false;
 			}
-			Array<Float> data = items.toArrayFloat(RecordFieldId(i));
+			Array<float> data = items.toArrayFloat(RecordFieldId(i));
 			//if (GlishArray(items.get(i)).get(data)) {
 			if (data.ndim()==4) {
-				if (data.shape()(2)==Int(rowIndex_p.nrow()) &&
-						data.shape()(3)==Int(rowIndex_p.ncolumn())) {
-					MSSelUtil2<Float>::reorderData(data, rowIndex_p,
+				if (data.shape()(2)==int32_t(rowIndex_p.nrow()) &&
+						data.shape()(3)==int32_t(rowIndex_p.ncolumn())) {
+					MSSelUtil2<float>::reorderData(data, rowIndex_p,
 							selms_p.nrow());
 				} else {
 					os << LogIO::SEVERE<<"Data shape inconsistent with "
@@ -1515,12 +1515,12 @@ Bool MSSelector::putData(const Record& items)
 		break;
 		case MSS::FLAG:
 		{
-			Array<Bool> flag = items.toArrayBool(RecordFieldId(i));
+			Array<bool> flag = items.toArrayBool(RecordFieldId(i));
 			// if (GlishArray(items.get(i)).get(flag)) {
 			if (flag.ndim()==4) {
-				if (flag.shape()(2)==Int(rowIndex_p.nrow()) &&
-						flag.shape()(3)==Int(rowIndex_p.ncolumn())) {
-					MSSelUtil2<Bool>::reorderData(flag, rowIndex_p, selms_p.nrow());
+				if (flag.shape()(2)==int32_t(rowIndex_p.nrow()) &&
+						flag.shape()(3)==int32_t(rowIndex_p.ncolumn())) {
+					MSSelUtil2<bool>::reorderData(flag, rowIndex_p, selms_p.nrow());
 				} else {
 					os << LogIO::SEVERE<<"Flag shape inconsistent with "
 							"current selection"<< LogIO::POST;
@@ -1535,7 +1535,7 @@ Bool MSSelector::putData(const Record& items)
 		break;
 		case MSS::FLAG_ROW:
 		{
-			Array<Bool> flagRow = items.toArrayBool(RecordFieldId(i));
+			Array<bool> flagRow = items.toArrayBool(RecordFieldId(i));
 			// if (GlishArray(items.get(i)).get(flagRow)) {
 			if (flagRow.ndim()==2) {
 				reorderFlagRow(flagRow);
@@ -1549,7 +1549,7 @@ Bool MSSelector::putData(const Record& items)
 		case MSS::SIGMA:
 		case MSS::WEIGHT:
 		{
-			Array<Float> weight = items.toArrayFloat(RecordFieldId(i));
+			Array<float> weight = items.toArrayFloat(RecordFieldId(i));
 			// if (GlishArray(items.get(i)).get(weight)) {
 			if (weight.ndim()==3) {
 				reorderWeight(weight);
@@ -1568,39 +1568,39 @@ Bool MSSelector::putData(const Record& items)
 			break;
 		}
 	}
-	return True;
+	return true;
 }
 
-Bool MSSelector::iterInit(const Vector<String>& columns,
-		Double interval, rownr_t maxRows,
-		Bool addDefaultSortColumns)
+bool MSSelector::iterInit(const Vector<String>& columns,
+		double interval, rownr_t maxRows,
+		bool addDefaultSortColumns)
 {
 	LogIO os;
-	if (!checkSelection()) return False;
+	if (!checkSelection()) return false;
 	if (selms_p.nrow()==0) {
 		os << LogIO::WARN << " Selected Table is empty - use selectinit"
 				<< LogIO::POST;
-		return False;
+		return false;
 	}
-	Int n=columns.nelements();
-	Block<Int> col(n);
-	for (Int i=0; i<n; i++) {
+	int32_t n=columns.nelements();
+	Block<int32_t> col(n);
+	for (int32_t i=0; i<n; i++) {
 		col[i]=MS::columnType(columns(i));
 		if (col[i]==MS::UNDEFINED_COLUMN) {
 			os << LogIO::SEVERE << "Iteration initialization failed: unrecognized"
 					" column name: "<<columns(i)<<LogIO::POST;
-			return False;
+			return false;
 		}
 	}
 	if (msIter_p) delete msIter_p;
 	msIter_p=new MSIter(selms_p,col,interval,addDefaultSortColumns);
 	maxRow_p = maxRows;
-	return True;
+	return true;
 }
 
-Bool MSSelector::iterNext()
+bool MSSelector::iterNext()
 {
-	Bool more=False;
+	bool more=false;
 	if (msIter_p) {
 		rownr_t nIterRow=msIter_p->table().nrow();
 		if (startRow_p==0 || startRow_p> nIterRow) {
@@ -1615,7 +1615,7 @@ Bool MSSelector::iterNext()
 			indgen(selRows_p,rownr_t(startRow_p),rownr_t(1));
 			startRow_p+=maxRow_p;
 			selms_p=msIter_p->table()(selRows_p);
-			more=True;
+			more=true;
 		} else {
 			if (more) selms_p=msIter_p->table();
 			else selms_p=msIter_p->ms(); // put back the original selection at the end
@@ -1624,9 +1624,9 @@ Bool MSSelector::iterNext()
 	return more;
 }
 
-Bool MSSelector::iterOrigin()
+bool MSSelector::iterOrigin()
 {
-	Bool ok=False;
+	bool ok=false;
 	if (msIter_p) {
 		startRow_p=0;
 		msIter_p->origin();
@@ -1639,25 +1639,25 @@ Bool MSSelector::iterOrigin()
 			selms_p=msIter_p->table()(selRows_p);
 			startRow_p=maxRow_p;
 		}
-		ok=True;
+		ok=true;
 	}
 	return ok;
 }
 
-Bool MSSelector::iterEnd()
+bool MSSelector::iterEnd()
 {
-	if (!msIter_p) return False;
+	if (!msIter_p) return false;
 	selms_p=msIter_p->ms();
-	return True;
+	return true;
 }
-void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
+void MSSelector::getAveragedData(Array<Complex>& avData, const Array<bool>& flag,
 		const ArrayColumn<Complex>& col) const
 {
 	getAveragedData(avData,flag,col,Slicer(Slice()));
 }
 
 
-void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag,
+void MSSelector::getAveragedData(Array<Complex>& avData, const Array<bool>& flag,
 		const ArrayColumn<Complex>& col,
 		const Slicer & rowSlicer) const
 {
@@ -1667,38 +1667,38 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 	} else {
 		data=col.getColumnRange(rowSlicer);
 	}
-	Int nPol=data.shape()(0);
-	Vector<Int> chanSel(chanSel_p);
+	int32_t nPol=data.shape()(0);
+	Vector<int32_t> chanSel(chanSel_p);
 	if (chanSel.nelements()==0) {
 		// not yet initialized, set to default
 		chanSel.resize(4);
 		chanSel(0)=data.shape()(1); chanSel(1)=0; chanSel(2)=1; chanSel(3)=1;
 	}
-	Int nChan=chanSel(0);
-	Int64 nRow=data.shape()(2);
+	int32_t nChan=chanSel(0);
+	int64_t nRow=data.shape()(2);
 	avData.resize(IPosition(3,nPol,nChan,nRow));
 	if (chanSel(2)==1) {
 		// no averaging, just copy the data across
 		avData=data;
 	} else {
 		// Average channel by channel
-		Array<Bool> mask(!flag);
-		Array<Float> wt(flag.shape(),0.0f); wt(mask)=1.0;
-		Array<Float> avWt(avData.shape(),0.0f);
-		for (Int i=0; i<nChan; i++) {
+		Array<bool> mask(!flag);
+		Array<float> wt(flag.shape(),0.0f); wt(mask)=1.0;
+		Array<float> avWt(avData.shape(),0.0f);
+		for (int32_t i=0; i<nChan; i++) {
 			// if width>1, the slice doesn't have an increment, so we take big steps
-			Int chn=i*chanSel(3);
+			int32_t chn=i*chanSel(3);
 			IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
 					cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
 			Array<Complex> ref(avData(is,ie)); ref=Complex(0.0);
-			Array<Float> wtref(avWt(is,ie));
+			Array<float> wtref(avWt(is,ie));
 			// average over channels
-			for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
+			for (int32_t j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
 				MaskedArray<Complex> mdata(data(cs,ce),mask(cs,ce));
 				ref+=mdata;
 				wtref+=wt(cs,ce);
 			}
-			ref(wtref>Float(0.0))/=wtref(wtref>Float(0.0));
+			ref(wtref>float(0.0))/=wtref(wtref>float(0.0));
 		}
 	}
 	// do the polarization conversion or selection
@@ -1707,11 +1707,11 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 		stokesConverter_p.convert(out,avData);
 		avData.reference(out);
 	} else if (polIndex_p.nelements()>0) {
-		Int n=polIndex_p.nelements();
+		int32_t n=polIndex_p.nelements();
 		Array<Complex> out(IPosition(3,n,nChan,nRow));
 		IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
 		IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
-		for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+		for (int32_t i=0; i<n; i++,sp(0)++,ep(0)++) {
 			sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
 			out(sp,ep)=avData(sav,eav);
 		}
@@ -1719,70 +1719,70 @@ void MSSelector::getAveragedData(Array<Complex>& avData, const Array<Bool>& flag
 	}
 }
 
-void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
-		const ArrayColumn<Float>& col) const
+void MSSelector::getAveragedData(Array<float>& avData, const Array<bool>& flag,
+		const ArrayColumn<float>& col) const
 {
 	getAveragedData(avData,flag,col,Slicer(Slice()));
 }
 
-void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
-		const ArrayColumn<Float>& col,
+void MSSelector::getAveragedData(Array<float>& avData, const Array<bool>& flag,
+		const ArrayColumn<float>& col,
 		const Slicer& rowSlicer) const
 {
-	Array<Float> data;
+	Array<float> data;
 	if (useSlicer_p) {
 		data=col.getColumnRange(rowSlicer,slicer_p);
 	} else {
 		data=col.getColumnRange(rowSlicer);
 	}
-	Int nPol=data.shape()(0);
-	Vector<Int> chanSel(chanSel_p);
+	int32_t nPol=data.shape()(0);
+	Vector<int32_t> chanSel(chanSel_p);
 	if (chanSel.nelements()==0) {
 		// not yet initialized, set to default
 		chanSel.resize(4);
 		chanSel(0)=data.shape()(1); chanSel(1)=0; chanSel(2)=1; chanSel(3)=1;
 	}
-	Int nChan=chanSel(0);
-	Int64 nRow=data.shape()(2);
+	int32_t nChan=chanSel(0);
+	int64_t nRow=data.shape()(2);
 	avData.resize(IPosition(3,nPol,nChan,nRow));
 	if (chanSel(2)==1) {
 		// no averaging, just copy the data across
 		avData=data;
 	} else {
 		// Average channel by channel
-		Array<Bool> mask(!flag);
-		Array<Float> wt(flag.shape(),0.0f); wt(mask)=1.0;
-		Array<Float> avWt(avData.shape(),0.0f);
-		for (Int i=0; i<nChan; i++) {
+		Array<bool> mask(!flag);
+		Array<float> wt(flag.shape(),0.0f); wt(mask)=1.0;
+		Array<float> avWt(avData.shape(),0.0f);
+		for (int32_t i=0; i<nChan; i++) {
 			// if width>1, the slice doesn't have an increment, so we take big steps
-			Int chn=i*chanSel(3);
+			int32_t chn=i*chanSel(3);
 			IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
 					cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
-			Array<Float> ref(avData(is,ie));
-			Array<Float> wtref(avWt(is,ie));
+			Array<float> ref(avData(is,ie));
+			Array<float> wtref(avWt(is,ie));
 			// average over channels
-			for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
-				MaskedArray<Float> mdata(data(cs,ce),mask(cs,ce));
+			for (int32_t j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
+				MaskedArray<float> mdata(data(cs,ce),mask(cs,ce));
 				ref+=mdata;
 				wtref+=wt(cs,ce);
 			}
-			ref(wtref>Float(0.0))/=wtref(wtref>Float(0.0));
+			ref(wtref>float(0.0))/=wtref(wtref>float(0.0));
 		}
 	}
 	// do the polarization conversion
 	if (convert_p) {
-		//    Array<Float> out;
+		//    Array<float> out;
 		//  stokesConverter_p.convert(out,avData);
 		//    avData.reference(out);
 		LogIO os;
 		os << LogIO::WARN << "Polarization conversion for FLOAT_DATA "
 				"not implemented" << LogIO::POST;
 	} else if (polIndex_p.nelements()>0) {
-		Int n=polIndex_p.nelements();
-		Array<Float> out(IPosition(3,n,nChan,nRow));
+		int32_t n=polIndex_p.nelements();
+		Array<float> out(IPosition(3,n,nChan,nRow));
 		IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
 		IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
-		for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+		for (int32_t i=0; i<n; i++,sp(0)++,ep(0)++) {
 			sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
 			out(sp,ep)=avData(sav,eav);
 		}
@@ -1790,58 +1790,58 @@ void MSSelector::getAveragedData(Array<Float>& avData, const Array<Bool>& flag,
 	}
 }
 
-Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-		const ArrayColumn<Bool>& col) const
+Array<bool> MSSelector::getAveragedFlag(Array<bool>& avFlag, 
+		const ArrayColumn<bool>& col) const
 {
 	return getAveragedFlag(avFlag,col,Slicer(Slice()));
 }
 
-Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag, 
-		const ArrayColumn<Bool>& col,
+Array<bool> MSSelector::getAveragedFlag(Array<bool>& avFlag, 
+		const ArrayColumn<bool>& col,
 		const Slicer& rowSlicer) const
 {
-	Array<Bool> flag;
+	Array<bool> flag;
 	if (useSlicer_p) {
 		flag=col.getColumnRange(rowSlicer,slicer_p);
 	} else {
 		flag=col.getColumnRange(rowSlicer);
 	}
-	Int nPol=flag.shape()(0);
-	Vector<Int> chanSel(chanSel_p);
+	int32_t nPol=flag.shape()(0);
+	Vector<int32_t> chanSel(chanSel_p);
 	if (chanSel.nelements()==0) {
 		// not yet initialized, set to default
 		chanSel.resize(4);
 		chanSel(0)=flag.shape()(1); chanSel(1)=0; chanSel(2)=1; chanSel(3)=1;
 	}
-	Int nChan=chanSel(0);
-	Int64 nRow=flag.shape()(2);
+	int32_t nChan=chanSel(0);
+	int64_t nRow=flag.shape()(2);
 	avFlag.resize(IPosition(3,nPol,nChan,nRow));
 	if (chanSel(2)==1) {
 		// no averaging, just copy flags
 		avFlag=flag;
 	} else {
-		avFlag=True;
-		for (Int i=0; i<nChan; i++) {
-			Int chn=i*chanSel(3);
+		avFlag=true;
+		for (int32_t i=0; i<nChan; i++) {
+			int32_t chn=i*chanSel(3);
 			IPosition is(3,0,i,0),ie(3,nPol-1,i,nRow-1),
 					cs(3,0,chn,0),ce(3,nPol-1,chn,nRow-1);
-			Array<Bool> ref(avFlag(is,ie));
+			Array<bool> ref(avFlag(is,ie));
 			// average over channels
-			for (Int j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
+			for (int32_t j=0; j<chanSel(2); j++,cs(1)++,ce(1)++) {
 				ref*=flag(cs,ce);
 			}
 		}
 	}
 	if (convert_p) {
-		Array<Bool> out;
+		Array<bool> out;
 		stokesConverter_p.convert(out,avFlag);
 		avFlag.reference(out);
 	} else if (polIndex_p.nelements()>0) {
-		Int n=polIndex_p.nelements();
-		Array<Bool> out(IPosition(3,n,nChan,nRow));
+		int32_t n=polIndex_p.nelements();
+		Array<bool> out(IPosition(3,n,nChan,nRow));
 		IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
 		IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
-		for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+		for (int32_t i=0; i<n; i++,sp(0)++,ep(0)++) {
 			sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
 			out(sp,ep)=avFlag(sav,eav);
 		}
@@ -1850,13 +1850,13 @@ Array<Bool> MSSelector::getAveragedFlag(Array<Bool>& avFlag,
 	return flag; // return the raw flags for use in data averaging
 }
 
-void MSSelector::putAveragedFlag(const Array<Bool>& avFlag, 
-		ArrayColumn<Bool>& col)
+void MSSelector::putAveragedFlag(const Array<bool>& avFlag, 
+		ArrayColumn<bool>& col)
 {
-	Array<Bool> polFlag=avFlag;
-	Array<Bool> out;
-	Int n=polIndex_p.nelements();
-	Int64 nRow=avFlag.shape()(2);
+	Array<bool> polFlag=avFlag;
+	Array<bool> out;
+	int32_t n=polIndex_p.nelements();
+	int64_t nRow=avFlag.shape()(2);
 	// check if we need to read the data before writing it back
 	if (convert_p || (n>2 && n<col.shape(0)(0))||
 			(chanSel_p(2)>1 && chanSel_p(3)>chanSel_p(2))) {
@@ -1877,16 +1877,16 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
 		if (chanSel_p(3)<=chanSel_p(2)) {
 			if (out.nelements()==0) out.resize(shape);
 		}
-		Int nChan=chanSel_p(0), st=chanSel_p(1), w=chanSel_p(2), inc=chanSel_p(3),
+		int32_t nChan=chanSel_p(0), st=chanSel_p(1), w=chanSel_p(2), inc=chanSel_p(3),
 				nRow=shape(2);
 		IPosition st1(3,0,st,0),st2(3,0,0,0),end1(3,shape(0)-1,st,nRow-1),
 				end2(3,shape(0)-1,0,nRow-1);
-		for (Int i=0; i<nChan; i++) {
+		for (int32_t i=0; i<nChan; i++) {
 			st2(1)=end2(1)=i;
-			for (Int j=0; j<w; j++) {
+			for (int32_t j=0; j<w; j++) {
 				st1(1)=end1(1)=st+i*inc+j;
 				if (n>0) {
-					for (Int k=0; k<n; k++) {
+					for (int32_t k=0; k<n; k++) {
 						st2(0)=end2(0)=k;
 						st1(0)=end1(0)=polIndex_p(k);
 						out(st1,end1)=polFlag(st2,end2);
@@ -1897,11 +1897,11 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
 			}
 		}
 	} else if (n>0) { // need to rearrange polarizations
-		Int nChan=chanSel_p(0);
+		int32_t nChan=chanSel_p(0);
 		if (out.nelements()==0) out.resize(IPosition(3,n,nChan,nRow));
 		IPosition sp(3,0,0,0),ep(3,0,nChan-1,nRow-1);
 		IPosition sav(3,0,0,0),eav(3,0,nChan-1,nRow-1);
-		for (Int i=0; i<n; i++,sp(0)++,ep(0)++) {
+		for (int32_t i=0; i<n; i++,sp(0)++,ep(0)++) {
 			sav(0)=polIndex_p(i);eav(0)=polIndex_p(i);
 			out(sav,eav)=polFlag(sp,ep);
 		}
@@ -1912,10 +1912,10 @@ void MSSelector::putAveragedFlag(const Array<Bool>& avFlag,
 	else col.putColumn(out);
 }
 
-Array<Float> MSSelector::getWeight(const ArrayColumn<Float>& wtCol,
-		Bool sigma) const
+Array<float> MSSelector::getWeight(const ArrayColumn<float>& wtCol,
+		bool sigma) const
 {
-	Array<Float> wt;
+	Array<float> wt;
 	if (wantedOne_p>=0) {
 		wt = wtCol.getColumn(Slicer(Slice(wantedOne_p,1)));
 	} else {
@@ -1923,7 +1923,7 @@ Array<Float> MSSelector::getWeight(const ArrayColumn<Float>& wtCol,
 	}
 	// apply the stokes conversion/selection to the weights
 	if (convert_p) {
-		Matrix<Float> outwt;
+		Matrix<float> outwt;
 		stokesConverter_p.convert(outwt,wt,sigma);
 		wt.reference(outwt);
 	}
@@ -1931,17 +1931,17 @@ Array<Float> MSSelector::getWeight(const ArrayColumn<Float>& wtCol,
 }
 
 // reorder from 2d to 1d (removing ifr axis)
-void MSSelector::reorderFlagRow(Array<Bool>& flagRow)
+void MSSelector::reorderFlagRow(Array<bool>& flagRow)
 {
-	Int nIfr=flagRow.shape()(0), nSlot=flagRow.shape()(1);
+	int32_t nIfr=flagRow.shape()(0), nSlot=flagRow.shape()(1);
 	rownr_t nRow=selms_p.nrow();
-	Bool deleteFlag, deleteRow;
-	const Bool* pFlag=flagRow.getStorage(deleteFlag);
-	const Int64* pRow=rowIndex_p.getStorage(deleteRow);
-	Vector<Bool> rowFlag(nRow);
-	Int offset=0;
-	for (Int i=0; i<nSlot; i++, offset+=nIfr) {
-		for (Int j=0; j<nIfr; j++) {
+	bool deleteFlag, deleteRow;
+	const bool* pFlag=flagRow.getStorage(deleteFlag);
+	const int64_t* pRow=rowIndex_p.getStorage(deleteRow);
+	Vector<bool> rowFlag(nRow);
+	int32_t offset=0;
+	for (int32_t i=0; i<nSlot; i++, offset+=nIfr) {
+		for (int32_t j=0; j<nIfr; j++) {
 			rownr_t k=pRow[offset+j];
 			if (k>0) {
 				rowFlag(k)=pFlag[offset+j];
@@ -1954,23 +1954,23 @@ void MSSelector::reorderFlagRow(Array<Bool>& flagRow)
 }
 
 // reorder from 3d to 2d (removing ifr axis)
-void MSSelector::reorderWeight(Array<Float>& weight)
+void MSSelector::reorderWeight(Array<float>& weight)
 {
-	Int nCorr=weight.shape()(0), nIfr=weight.shape()(1), nSlot=weight.shape()(2);
-	Int64 nRow=selms_p.nrow();
-	Bool deleteWeight, deleteRow, deleteRowWeight;
-	const Float* pWeight=weight.getStorage(deleteWeight);
-	const Int64* pRow=rowIndex_p.getStorage(deleteRow);
-	Matrix<Float> rowWeight(nCorr, nRow);
-	Float* pRowWeight=rowWeight.getStorage(deleteRowWeight);
-	Int offset=0;
-	for (Int i=0; i<nSlot; i++) {
-		for (Int j=0; j<nIfr; j++, offset++) {
+	int32_t nCorr=weight.shape()(0), nIfr=weight.shape()(1), nSlot=weight.shape()(2);
+	int64_t nRow=selms_p.nrow();
+	bool deleteWeight, deleteRow, deleteRowWeight;
+	const float* pWeight=weight.getStorage(deleteWeight);
+	const int64_t* pRow=rowIndex_p.getStorage(deleteRow);
+	Matrix<float> rowWeight(nCorr, nRow);
+	float* pRowWeight=rowWeight.getStorage(deleteRowWeight);
+	int32_t offset=0;
+	for (int32_t i=0; i<nSlot; i++) {
+		for (int32_t j=0; j<nIfr; j++, offset++) {
 			rownr_t k=pRow[offset];
 			if (k>0) {
-				Int wOffset = nCorr*offset;
-				Int rwOffset = nCorr*k;
-				for (Int c=0; c<nCorr; c++) {
+				int32_t wOffset = nCorr*offset;
+				int32_t rwOffset = nCorr*k;
+				for (int32_t c=0; c<nCorr; c++) {
 					pRowWeight[rwOffset++] = pWeight[wOffset++];
 				}
 			}
@@ -1982,7 +1982,7 @@ void MSSelector::reorderWeight(Array<Float>& weight)
 	weight.reference(rowWeight);
 }
 
-Bool MSSelector::checkSelection() {
+bool MSSelector::checkSelection() {
 	if (!initSel_p) {
 		LogIO os;
 		os << LogIO::NORMAL <<"Initializing with default selection"

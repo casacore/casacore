@@ -52,33 +52,33 @@ void a()
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class Table";
-    td.addColumn (ScalarColumnDesc<Bool>("abool"));
-    td.addColumn (ScalarColumnDesc<uChar>("auchar"));
-    td.addColumn (ScalarColumnDesc<Short>("ashort"));
-    td.addColumn (ScalarColumnDesc<Int>("aint"));
-    td.addColumn (ScalarColumnDesc<uInt>("auint"));
-    td.addColumn (ScalarColumnDesc<Float>("afloat"));
-    td.addColumn (ScalarColumnDesc<Double>("adouble"));
+    td.addColumn (ScalarColumnDesc<bool>("abool"));
+    td.addColumn (ScalarColumnDesc<unsigned char>("auchar"));
+    td.addColumn (ScalarColumnDesc<int16_t>("ashort"));
+    td.addColumn (ScalarColumnDesc<int32_t>("aint"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("auint"));
+    td.addColumn (ScalarColumnDesc<float>("afloat"));
+    td.addColumn (ScalarColumnDesc<double>("adouble"));
     td.addColumn (ScalarColumnDesc<Complex>("acomplex"));
     td.addColumn (ScalarColumnDesc<DComplex>("adcomplex"));
     td.addColumn (ScalarColumnDesc<String>("astring"));
 
     // Now create a new table from the description.
-    const Int nrrow = 10;
+    const int32_t nrrow = 10;
     SetupNewTable newtab("tColumnsIndex_tmp.data", td, Table::New);
     Table tab(newtab, nrrow);
-    ScalarColumn<Bool> abool(tab, "abool");
-    ScalarColumn<uChar> auchar(tab, "auchar");
-    ScalarColumn<Short> ashort(tab, "ashort");
-    ScalarColumn<Int> aint(tab, "aint");
-    ScalarColumn<uInt> auint(tab, "auint");
-    ScalarColumn<Float> afloat(tab,  "afloat");
-    ScalarColumn<Double> adouble(tab,"adouble");
+    ScalarColumn<bool> abool(tab, "abool");
+    ScalarColumn<unsigned char> auchar(tab, "auchar");
+    ScalarColumn<int16_t> ashort(tab, "ashort");
+    ScalarColumn<int32_t> aint(tab, "aint");
+    ScalarColumn<uint32_t> auint(tab, "auint");
+    ScalarColumn<float> afloat(tab,  "afloat");
+    ScalarColumn<double> adouble(tab,"adouble");
     ScalarColumn<Complex> acomplex(tab, "acomplex");
     ScalarColumn<DComplex> adcomplex(tab, "adcomplex");
     ScalarColumn<String> astring(tab, "astring");
     char str[8];
-    for (Int i=0; i<nrrow; i++) {
+    for (int32_t i=0; i<nrrow; i++) {
 	abool.put (i, (i%2 == 0));
 	auchar.put (i, i);
 	ashort.put (i, i);
@@ -96,7 +96,7 @@ void a()
 void b()
 {
     Table tab("tColumnsIndex_tmp.data", TableLock(TableLock::UserLocking));
-    const uInt nrrow = tab.nrow();
+    const uint32_t nrrow = tab.nrow();
     ColumnsIndex colInx0 (tab, "abool");
     ColumnsIndex colInx1 (tab, "auchar");
     ColumnsIndex colInx2 (tab, "ashort");
@@ -109,22 +109,22 @@ void b()
     ColumnsIndex colInx9 (tab, "astring");
     AlwaysAssertExit (! colInx0.isUnique());
     AlwaysAssertExit (colInx1.isUnique());
-    RecordFieldPtr<Bool> abool (colInx0.accessKey(), "abool");
-    RecordFieldPtr<uChar> auchar (colInx1.accessKey(), "auchar");
-    RecordFieldPtr<Short> ashort (colInx2.accessKey(), "ashort");
-    RecordFieldPtr<Int> aint (colInx3.accessKey(), "aint");
-    RecordFieldPtr<uInt> auint (colInx4.accessKey(), "auint");
-    RecordFieldPtr<Float> afloat (colInx5.accessKey(), "afloat");
-    RecordFieldPtr<Double> adouble (colInx6.accessKey(), "adouble");
+    RecordFieldPtr<bool> abool (colInx0.accessKey(), "abool");
+    RecordFieldPtr<unsigned char> auchar (colInx1.accessKey(), "auchar");
+    RecordFieldPtr<int16_t> ashort (colInx2.accessKey(), "ashort");
+    RecordFieldPtr<int32_t> aint (colInx3.accessKey(), "aint");
+    RecordFieldPtr<uint32_t> auint (colInx4.accessKey(), "auint");
+    RecordFieldPtr<float> afloat (colInx5.accessKey(), "afloat");
+    RecordFieldPtr<double> adouble (colInx6.accessKey(), "adouble");
     RecordFieldPtr<Complex> acomplex (colInx7.accessKey(), "acomplex");
     RecordFieldPtr<DComplex> adcomplex (colInx8.accessKey(), "adcomplex");
     RecordFieldPtr<String> astring (colInx9.accessKey(), "astring");
     Record rec;
     RowNumbers rows;
-    Bool found;
+    bool found;
     char str[8];
     // Test each individual type.
-    uInt i;
+    uint32_t i;
     for (i=0; i<nrrow; i++) {
         rec.define ("auint", i);
         AlwaysAssertExit ( (colInx4.getRowNumber(found, rec) == i
@@ -157,7 +157,7 @@ void b()
     colInx3.getRowNumber(found);
     AlwaysAssertExit ((!found));
     // Test a bool.
-    *abool = True;
+    *abool = true;
     try {
         colInx0.getRowNumber(found);
     } catch (std::exception& x) {
@@ -168,7 +168,7 @@ void b()
     for (i=0; i<rows.nelements(); i++) {
         AlwaysAssertExit (rows(i) == i*2);
     }
-    *abool = False;
+    *abool = false;
     rows.resize(0);
     rows = colInx0.getRowNumbers();
     AlwaysAssertExit (rows.nelements() == nrrow/2);
@@ -177,31 +177,31 @@ void b()
     }
     // Test a range.
     Record lower, upper;
-    lower.define ("auint", uInt(2));
-    upper.define ("auint", uInt(4));
+    lower.define ("auint", uint32_t(2));
+    upper.define ("auint", uint32_t(4));
     rows.resize(0);
-    rows = colInx4.getRowNumbers (lower, upper, True, False);
+    rows = colInx4.getRowNumbers (lower, upper, true, false);
     AlwaysAssertExit (rows.nelements()==2 && rows(0)==2 && rows(1)==3);
     rows.resize(0);
-    rows = colInx4.getRowNumbers (lower, upper, False, True);
+    rows = colInx4.getRowNumbers (lower, upper, false, true);
     AlwaysAssertExit (rows.nelements()==2 && rows(0)==3 && rows(1)==4);
-    upper.define ("auint", uInt(1));
+    upper.define ("auint", uint32_t(1));
     rows.resize(0);
-    rows = colInx4.getRowNumbers (lower, upper, True, True);
+    rows = colInx4.getRowNumbers (lower, upper, true, true);
     AlwaysAssertExit (rows.nelements()==0);
 }
 
-Int tcompare (const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
-	      const Block<Int>& dataTypes, rownr_t index)
+int32_t tcompare (const Block<void*>& fieldPtrs, const Block<void*>& dataPtrs,
+	      const Block<int32_t>& dataTypes, rownr_t index)
 {
     AlwaysAssert (dataTypes.nelements() == 2, AipsError);
     AlwaysAssert (dataTypes[0] == TpDouble  &&  dataTypes[1] == TpFloat,
 		 AipsError);
-    const Double keyTime = *(*(const RecordFieldPtr<Double>*)(fieldPtrs[0]));
-    const Double time = ((const Double*)(dataPtrs[0]))[index];
-    const Double width = ((const Float*)(dataPtrs[1]))[index];
-    const Double start = time - width/2;
-    const Double end = time + width/2;
+    const double keyTime = *(*(const RecordFieldPtr<double>*)(fieldPtrs[0]));
+    const double time = ((const double*)(dataPtrs[0]))[index];
+    const double width = ((const float*)(dataPtrs[1]))[index];
+    const double start = time - width/2;
+    const double end = time + width/2;
     if (keyTime < start) {
         return -1;
     } else if (keyTime > end) {
@@ -215,13 +215,13 @@ void c()
     Table tab("tColumnsIndex_tmp.data", Table::Update);
     // Create the index with the special compare function.
     ColumnsIndex colInx0 (tab, stringToVector("adouble,afloat"), tcompare);
-    RecordFieldPtr<Double> keydouble (colInx0.accessKey(), "adouble");
-    const Int nrrow = tab.nrow();
-    ScalarColumn<Int> aint(tab, "aint");
-    ScalarColumn<uInt> auint(tab, "auint");
-    ScalarColumn<Float> afloat(tab, "afloat");
+    RecordFieldPtr<double> keydouble (colInx0.accessKey(), "adouble");
+    const int32_t nrrow = tab.nrow();
+    ScalarColumn<int32_t> aint(tab, "aint");
+    ScalarColumn<uint32_t> auint(tab, "auint");
+    ScalarColumn<float> afloat(tab, "afloat");
     // Change a the values of a few columns.
-    Int i;
+    int32_t i;
     for (i=0; i<nrrow; i++) {
 	aint.put (i, -i);
 	auint.put (i, 1+2*(i/3));
@@ -232,10 +232,10 @@ void c()
     colInx0.setChanged ("auint");
     colInx0.setChanged ("afloat");
     // Now test the special compare function.
-    Bool found;
+    bool found;
     *keydouble = -0.5;
     for (i=0; i<21; i++) {
-        Int inx = colInx0.getRowNumber(found);
+        int32_t inx = colInx0.getRowNumber(found);
 	if (i%2 == 0) {
 	    AlwaysAssertExit ((!found));
 	} else {
@@ -248,16 +248,16 @@ void c()
 void d()
 {
     Table tab("tColumnsIndex_tmp.data", Table::Update);
-    Int nrrow = tab.nrow();
+    int32_t nrrow = tab.nrow();
     ColumnsIndex colInx3 (tab, "aint");
     ColumnsIndex colInx4 (tab, "auint");
-    RecordFieldPtr<Int> aint (colInx3.accessKey(), "aint");
-    RecordFieldPtr<uInt> auint (colInx4.accessKey(), "auint");
-    Bool found;
-    Int i;
+    RecordFieldPtr<int32_t> aint (colInx3.accessKey(), "aint");
+    RecordFieldPtr<uint32_t> auint (colInx4.accessKey(), "auint");
+    bool found;
+    int32_t i;
     for (i=0; i<nrrow; i++) {
         *aint = -i;
-        AlwaysAssertExit ( (Int(colInx3.getRowNumber(found)) == i
+        AlwaysAssertExit ( (int32_t(colInx3.getRowNumber(found)) == i
 				  && found));
         *auint = 1+2*(i/3);
 	cout << colInx4.getRowNumbers() << endl;
@@ -266,48 +266,48 @@ void d()
     }
     // Now test an index consisting of multiple columns.
     ColumnsIndex colInx5 (tab, stringToVector("abool,auint"));
-    RecordFieldPtr<Bool> abool1 (colInx5.accessKey(), "abool");
-    RecordFieldPtr<uInt> auint1 (colInx5.accessKey(), "auint");
+    RecordFieldPtr<bool> abool1 (colInx5.accessKey(), "abool");
+    RecordFieldPtr<uint32_t> auint1 (colInx5.accessKey(), "auint");
     for (i=0; i<(nrrow+2)/3; i++) {
         *auint1 = 1+2*i;
-	*abool1 = True;
+	*abool1 = true;
 	cout << colInx5.getRowNumbers() << ' ';
-	*abool1 = False;
+	*abool1 = false;
 	cout << colInx5.getRowNumbers() << endl;
     }
     // Now test a range of multiple columns.
-    RecordFieldPtr<Bool> abool1l (colInx5.accessLowerKey(), "abool");
-    RecordFieldPtr<uInt> auint1l (colInx5.accessLowerKey(), "auint");
-    RecordFieldPtr<Bool> abool1u (colInx5.accessUpperKey(), "abool");
-    RecordFieldPtr<uInt> auint1u (colInx5.accessUpperKey(), "auint");
-    *abool1l = True;
-    *abool1u = True;
+    RecordFieldPtr<bool> abool1l (colInx5.accessLowerKey(), "abool");
+    RecordFieldPtr<uint32_t> auint1l (colInx5.accessLowerKey(), "auint");
+    RecordFieldPtr<bool> abool1u (colInx5.accessUpperKey(), "abool");
+    RecordFieldPtr<uint32_t> auint1u (colInx5.accessUpperKey(), "auint");
+    *abool1l = true;
+    *abool1u = true;
     *auint1l = 3;
     *auint1u = 10;
-    cout << colInx5.getRowNumbers (True, True) << ' ';
-    cout << colInx5.getRowNumbers (False, False) << endl;
+    cout << colInx5.getRowNumbers (true, true) << ' ';
+    cout << colInx5.getRowNumbers (false, false) << endl;
     *auint1l = 0;
     *auint1u = 10;
-    cout << colInx5.getRowNumbers (True, True) << ' ';
-    cout << colInx5.getRowNumbers (False, False) << endl;
+    cout << colInx5.getRowNumbers (true, true) << ' ';
+    cout << colInx5.getRowNumbers (false, false) << endl;
     *auint1l = 2;
     *auint1u = 6;
-    cout << colInx5.getRowNumbers (True, True) << ' ';
-    cout << colInx5.getRowNumbers (False, False) << endl;
-    *abool1l = False;
-    *abool1u = False;
-    cout << colInx5.getRowNumbers (True, True) << ' ';
-    cout << colInx5.getRowNumbers (False, False) << endl;
+    cout << colInx5.getRowNumbers (true, true) << ' ';
+    cout << colInx5.getRowNumbers (false, false) << endl;
+    *abool1l = false;
+    *abool1u = false;
+    cout << colInx5.getRowNumbers (true, true) << ' ';
+    cout << colInx5.getRowNumbers (false, false) << endl;
 
     // Now test extending the table.
     // The index should be updated automatically, so create that first.
     ColumnsIndex colInx6 (tab, "adouble");
-    RecordFieldPtr<Double> adouble (colInx6.accessKey(), "adouble");
+    RecordFieldPtr<double> adouble (colInx6.accessKey(), "adouble");
     if (nrrow < 1000) {
         tab.addRow (1000-nrrow);
 	nrrow = 1000;
     }
-    ScalarColumn<Double> cdouble(tab, "adouble");
+    ScalarColumn<double> cdouble(tab, "adouble");
     // Change a the values of a few columns.
     for (i=0; i<nrrow; i++) {
 	cdouble.put (i, i);
@@ -316,7 +316,7 @@ void d()
     Timer timer;
     for (i=0; i<100*nrrow; i++) {
         *adouble = i/100;
-        AlwaysAssertExit ( (Int(colInx6.getRowNumber(found)) == i/100
+        AlwaysAssertExit ( (int32_t(colInx6.getRowNumber(found)) == i/100
 				  && found));
     }
     timer.show ("100000*find");

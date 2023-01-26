@@ -71,11 +71,11 @@ class TableExprNode;
 
 // Declare the bison parser (is implemented by bison command).
   // TableExprNode msFieldGramParseCommand (const MeasurementSet *ms, const String& command);
-  // TableExprNode msFieldGramParseCommand (MSSelectableTable *ms, const String& command,Vector<Int>&);
-  // TableExprNode msFieldGramParseCommand (const MeasurementSet *ms, const String& command,Vector<Int>&);
+  // TableExprNode msFieldGramParseCommand (MSSelectableTable *ms, const String& command,Vector<int32_t>&);
+  // TableExprNode msFieldGramParseCommand (const MeasurementSet *ms, const String& command,Vector<int32_t>&);
   TableExprNode msFieldGramParseCommand (const MSField& fieldSubTable, const TableExprNode& colAsTEN, 
-					 const String& command,Vector<Int>&);
-  TableExprNode baseMSFieldGramParseCommand (MSFieldParse *parser, const String& command,Vector<Int>&);
+					 const String& command,Vector<int32_t>&);
+  TableExprNode baseMSFieldGramParseCommand (MSFieldParse *parser, const String& command,Vector<int32_t>&);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -87,7 +87,7 @@ void msFieldGramParseDeleteNode() ;
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msFieldGramPosition();
+int32_t& msFieldGramPosition();
 
 // Declare the input routine for flex/bison.
 int msFieldGramInput (char* buf, int max_size);

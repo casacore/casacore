@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const T& value,
                                   const Table& fromTable,
                                   const String& fromColumn,
-                                  Bool preserveTileShape)
+                                  bool preserveTileShape)
   {
     TableColumn fromCol(fromTable, fromColumn);
     AlwaysAssert (fromCol.columnDesc().isArray(), AipsError);

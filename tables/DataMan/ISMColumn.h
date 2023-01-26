@@ -116,7 +116,7 @@ public:
     // Create a ISMColumn object with the given parent.
     // It initializes the various variables.
     // It keeps the pointer to its parent (but does not own it).
-    ISMColumn (ISMBase* parent, int dataType, uInt colnr);
+    ISMColumn (ISMBase* parent, int dataType, uint32_t colnr);
 
     ~ISMColumn();
 
@@ -125,7 +125,7 @@ public:
 
     // Get the dimensionality of the item in the given row.
     // This is the same for all rows.
-    virtual uInt ndim (rownr_t rownr);
+    virtual uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // This is the same for all rows.
@@ -140,7 +140,7 @@ public:
 
     // Flush and optionally fsync the data.
     // This is meant for a derived class.
-    virtual Bool flush (rownr_t nrrow, Bool fsync);
+    virtual bool flush (rownr_t nrrow, bool fsync);
 
     // Resync the storage manager with the new file contents.
     // It resets the last rownr put.
@@ -151,13 +151,13 @@ public:
 
     // Get a scalar value in the given row.
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getBool     (rownr_t rownr, bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+    virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+    virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+    virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
     virtual void getfloat    (rownr_t rownr, float* dataPtr);
     virtual void getdouble   (rownr_t rownr, double* dataPtr);
     virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -167,13 +167,13 @@ public:
 
     // Put a scalar value in the given row.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putBool     (rownr_t rownr, const bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const unsigned char* dataPtr);
+    virtual void putShort    (rownr_t rownr, const int16_t* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uint16_t* dataPtr);
+    virtual void putInt      (rownr_t rownr, const int32_t* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uint32_t* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const int64_t* dataPtr);
     virtual void putfloat    (rownr_t rownr, const float* dataPtr);
     virtual void putdouble   (rownr_t rownr, const double* dataPtr);
     virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
@@ -211,14 +211,14 @@ public:
     void remove (rownr_t bucketRownr, ISMBucket* bucket, rownr_t bucketNrrow,
 		 rownr_t newNrrow);
 
-    // Get the function needed to read/write a uInt and rownr from/to
+    // Get the function needed to read/write a uint32_t and rownr from/to
     // external format. This is used by other classes to read the length
     // of a variable data value.
     // <group>
-    static Conversion::ValueFunction* getReaduInt   (Bool asCanonical);
-    static Conversion::ValueFunction* getReadRownr  (Bool asCanonical);
-    static Conversion::ValueFunction* getWriteuInt  (Bool asCanonical);
-    static Conversion::ValueFunction* getWriteRownr (Bool asCanonical);
+    static Conversion::ValueFunction* getReaduInt   (bool asCanonical);
+    static Conversion::ValueFunction* getReadRownr  (bool asCanonical);
+    static Conversion::ValueFunction* getWriteuInt  (bool asCanonical);
+    static Conversion::ValueFunction* getWriteRownr (bool asCanonical);
     // </group>
 
     // Give a derived class the opportunity to react on the duplication
@@ -231,19 +231,19 @@ public:
 
     // Get the fixed length of the data value in a cell of this column
     // (0 = variable length).
-    uInt getFixedLength() const;
+    uint32_t getFixedLength() const;
 
     // Get the nr of elements in this data value.
-    uInt nelements() const;
+    uint32_t nelements() const;
 
 
 protected:
     // Test if the last value is invalid for this row.
-    Bool isLastValueInvalid (rownr_t rownr);
+    bool isLastValueInvalid (rownr_t rownr);
 
     // Get the value for this row.
     // Set the cache if the flag is set.
-    void getValue (rownr_t rownr, void* value, Bool setCache);
+    void getValue (rownr_t rownr, void* value, bool setCache);
 
     // Put the value for this row.
     void putValue (rownr_t rownr, const void* value);
@@ -252,18 +252,18 @@ protected:
     // Pointer to the parent storage manager.
     ISMBase*          stmanPtr_p;
     // Length of column cell value in storage format (0 = variable length).
-    // If 0, the value is always preceeded by a uInt giving the length.
-    uInt              fixedLength_p;
+    // If 0, the value is always preceeded by a uint32_t giving the length.
+    uint32_t              fixedLength_p;
     // Column sequence number of this column.
-    uInt              colnr_p;
+    uint32_t              colnr_p;
     // The shape of the column.
     IPosition         shape_p;
     // Number of elements in a value for this column.
-    uInt              nrelem_p;
+    uint32_t              nrelem_p;
     // Number of values to be copied.
     // Normally this is nrelem_p, but for complex types it is 2*nrelem_p.
     // When local format is used, it is the number of bytes.
-    uInt              nrcopy_p;
+    uint32_t              nrcopy_p;
     // Cache for interval for which last value read is valid.
     // The last value is valid for startRow_p till endRow_p (inclusive).
     rownr_t           startRow_p;
@@ -272,7 +272,7 @@ protected:
     // The last row for which a value has been put.
     rownr_t           lastRowPut_p;
     // The size of the data type in local format.
-    uInt              typeSize_p;
+    uint32_t              typeSize_p;
     // Pointer to a convert function for writing.
     Conversion::ValueFunction* writeFunc_p;
     // Pointer to a convert function for reading.
@@ -296,34 +296,34 @@ private:
     void clear();
 
     // Put the value in all buckets from the given row on.
-    void putFromRow (rownr_t rownr, const char* data, uInt lenData);
+    void putFromRow (rownr_t rownr, const char* data, uint32_t lenData);
 
     // Put a data value into the bucket.
     // When it is at the first row of the bucket, it replaces the value.
     // Otherwise it is added.
     void putData (ISMBucket* bucket, rownr_t bucketStartRow,
 		  rownr_t bucketNrrow, rownr_t bucketRownr,
-		  const char* data, uInt lenData,
-		  Bool afterLastRow, Bool canSplit);
+		  const char* data, uint32_t lenData,
+		  bool afterLastRow, bool canSplit);
 
     // Replace a value at the given offset in the bucket.
     // If the bucket is too small, it will be split (if allowed).
     void replaceData (ISMBucket* bucket, rownr_t bucketStartRow,
-		      rownr_t bucketNrrow, rownr_t bucketRownr, uInt& offset,
-		      const char* data, uInt lenData, Bool canSplit = True);
+		      rownr_t bucketNrrow, rownr_t bucketRownr, uint32_t& offset,
+		      const char* data, uint32_t lenData, bool canSplit = true);
 
     // Add a value at the given index in the bucket.
     // If the bucket is too small, it will be split (if allowed).
-    Bool addData (ISMBucket* bucket, rownr_t bucketStartRow,
-		  rownr_t bucketNrrow, rownr_t bucketRownr, uInt inx,
-		  const char* data, uInt lenData,
-		  Bool afterLastRow = False, Bool canSplit = True);
+    bool addData (ISMBucket* bucket, rownr_t bucketStartRow,
+		  rownr_t bucketNrrow, rownr_t bucketRownr, uint32_t inx,
+		  const char* data, uint32_t lenData,
+		  bool afterLastRow = false, bool canSplit = true);
 
     // Handle the duplicated values after a bucket split.
-    void handleSplit (ISMBucket& bucket, const Block<Bool>& duplicated);
+    void handleSplit (ISMBucket& bucket, const Block<bool>& duplicated);
 
     // Compare the values.
-    virtual Bool compareValue (const void* val1, const void* val2) const;
+    virtual bool compareValue (const void* val1, const void* val2) const;
 
     // Handle a String in copying to/from external format.
     // <group>
@@ -337,39 +337,39 @@ private:
     static size_t readStringLE (void* out, const void* in, size_t n);
     // </group>
 
-    void getScaCol (Vector<Bool>&);
-    void getScaCol (Vector<uChar>&);
-    void getScaCol (Vector<Short>&);
-    void getScaCol (Vector<uShort>&);
-    void getScaCol (Vector<Int>&);
-    void getScaCol (Vector<uInt>&);
-    void getScaCol (Vector<Int64>&);
+    void getScaCol (Vector<bool>&);
+    void getScaCol (Vector<unsigned char>&);
+    void getScaCol (Vector<int16_t>&);
+    void getScaCol (Vector<uint16_t>&);
+    void getScaCol (Vector<int32_t>&);
+    void getScaCol (Vector<uint32_t>&);
+    void getScaCol (Vector<int64_t>&);
     void getScaCol (Vector<float>&);
     void getScaCol (Vector<double>&);
     void getScaCol (Vector<Complex>&);
     void getScaCol (Vector<DComplex>&);
     void getScaCol (Vector<String>&);
 
-    void getScaColCells (const RefRows&, Vector<Bool>&);
-    void getScaColCells (const RefRows&, Vector<uChar>&);
-    void getScaColCells (const RefRows&, Vector<Short>&);
-    void getScaColCells (const RefRows&, Vector<uShort>&);
-    void getScaColCells (const RefRows&, Vector<Int>&);
-    void getScaColCells (const RefRows&, Vector<uInt>&);
-    void getScaColCells (const RefRows&, Vector<Int64>&);
+    void getScaColCells (const RefRows&, Vector<bool>&);
+    void getScaColCells (const RefRows&, Vector<unsigned char>&);
+    void getScaColCells (const RefRows&, Vector<int16_t>&);
+    void getScaColCells (const RefRows&, Vector<uint16_t>&);
+    void getScaColCells (const RefRows&, Vector<int32_t>&);
+    void getScaColCells (const RefRows&, Vector<uint32_t>&);
+    void getScaColCells (const RefRows&, Vector<int64_t>&);
     void getScaColCells (const RefRows&, Vector<float>&);
     void getScaColCells (const RefRows&, Vector<double>&);
     void getScaColCells (const RefRows&, Vector<Complex>&);
     void getScaColCells (const RefRows&, Vector<DComplex>&);
     void getScaColCells (const RefRows&, Vector<String>&);
 
-    void putScaCol (const Vector<Bool>&);
-    void putScaCol (const Vector<uChar>&);
-    void putScaCol (const Vector<Short>&);
-    void putScaCol (const Vector<uShort>&);
-    void putScaCol (const Vector<Int>&);
-    void putScaCol (const Vector<uInt>&);
-    void putScaCol (const Vector<Int64>&);
+    void putScaCol (const Vector<bool>&);
+    void putScaCol (const Vector<unsigned char>&);
+    void putScaCol (const Vector<int16_t>&);
+    void putScaCol (const Vector<uint16_t>&);
+    void putScaCol (const Vector<int32_t>&);
+    void putScaCol (const Vector<uint32_t>&);
+    void putScaCol (const Vector<int64_t>&);
     void putScaCol (const Vector<float>&);
     void putScaCol (const Vector<double>&);
     void putScaCol (const Vector<Complex>&);
@@ -378,17 +378,17 @@ private:
 };
 
 
-inline Bool ISMColumn::isLastValueInvalid (rownr_t rownr)
+inline bool ISMColumn::isLastValueInvalid (rownr_t rownr)
 {
     return rownr < startRow_p  ||  rownr > endRow_p;
 }
 
-inline uInt ISMColumn::getFixedLength() const
+inline uint32_t ISMColumn::getFixedLength() const
 {
     return fixedLength_p;
 }
 
-inline uInt ISMColumn::nelements() const
+inline uint32_t ISMColumn::nelements() const
 {
     return nrelem_p;
 }

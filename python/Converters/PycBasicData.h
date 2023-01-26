@@ -632,8 +632,8 @@ namespace casacore { namespace python {
 
 
   // Register all standard basic conversions.
-  // These are String, IPosition, Vector<String>, Vector<Int>,
-  // Vector<Double>, Vector<DComplex>.
+  // These are String, IPosition, Vector<String>, Vector<int32_t>,
+  // Vector<double>, Vector<DComplex>.
   void register_convert_basicdata();
 }}
 

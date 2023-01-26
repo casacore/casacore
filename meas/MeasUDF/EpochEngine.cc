@@ -36,7 +36,7 @@ namespace casacore {
   {}
 
   void EpochEngine::handleEpoch (vector<TENShPtr>& args,
-                                 uInt& argnr)
+                                 uint32_t& argnr)
   {
     // Initialize type to unknown.
     itsRefType = MEpoch::N_Types;
@@ -59,11 +59,11 @@ namespace casacore {
       throw AipsError ("Invalid epoch given in a MEAS function");
     }
     // Values can be given as [t1,t2,...],reftype
-    uInt nargnr = argnr+1;
+    uint32_t nargnr = argnr+1;
     // See if there is a reference type.
     if (args.size() > nargnr  &&
         args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      if (handleMeasType (args[nargnr], False)) {
+      if (handleMeasType (args[nargnr], false)) {
         nargnr++;
       }
     }
@@ -80,13 +80,13 @@ namespace casacore {
   String EpochEngine::stripMeasType (const String& type)
   {
     String str(type);
-    itsSidFrac = False;
+    itsSidFrac = false;
     // F_ (or F-) indicates a full time, thus no sidereal fraction.
     if (str.size() >= 2  &&  str[0] == 'F'  &&
         (str[1] == '-' || str[1] == '_')) {
       str = str.substr(2);
     } else if (str.size() >= 4  &&  str[2] == 'S'  &&  str[3] == 'T') {
-      itsSidFrac = True;
+      itsSidFrac = true;
     }
     return str;
   }
@@ -95,12 +95,12 @@ namespace casacore {
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
   }
 
-  void EpochEngine::setConverter (MEpoch::Types toType, Bool sidFrac)
+  void EpochEngine::setConverter (MEpoch::Types toType, bool sidFrac)
   {
     MEpoch::Ref ref(toType, itsFrame);
     itsConverter = MEpoch::Convert (toType, ref);
@@ -117,14 +117,14 @@ namespace casacore {
       unit = "s";
     }
     // Get values (as doubles or dates).
-    Array<Double> values;
+    Array<double> values;
     if (operand.getNodeRep()->isReal()) {
       values.reference (operand.getDoubleAS(id).array());
     } else {
       unit = "s";
       Array<MVTime> dates = operand.getDateAS(id).array();
       values.resize (dates.shape());
-      for (uInt i=0; i<dates.size(); ++i) {
+      for (uint32_t i=0; i<dates.size(); ++i) {
         values.data()[i] = dates.data()[i].second();
       }
     }
@@ -133,10 +133,10 @@ namespace casacore {
       itsRefType = MEpoch::UTC;
     }
     epochs.resize (values.shape());
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    bool delIt;
+    const double* valVec = values.getStorage (delIt);
     MEpoch* epVec = epochs.data();
-    for (uInt i=0; i<epochs.size(); ++i) {
+    for (uint32_t i=0; i<epochs.size(); ++i) {
       epVec[i] = MEpoch(Quantity(valVec[i], unit), itsRefType);
     }
     values.freeStorage (valVec, delIt);
@@ -157,7 +157,7 @@ namespace casacore {
     return epochs;
   }
 
-  Array<Double> EpochEngine::getArrayDouble (const TableExprId& id)
+  Array<double> EpochEngine::getArrayDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MEpoch> res (getEpochs(id));
@@ -167,7 +167,7 @@ namespace casacore {
       pos.reference (itsPositionEngine->getPositions (id));
     }
     // Convert the epoch to the given type for all positions.
-    Array<Double> out;
+    Array<double> out;
     if (res.size() > 0  &&  pos.size() > 0) {
       IPosition shape = res.shape();
       if (pos.size() > 1) {

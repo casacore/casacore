@@ -73,11 +73,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   const String ImageFITSConverter::CASAMBM = "casambm";
 
-  Bool ImageFITSConverter::FITSToImage
-  (ImageInterface<Float> *&newImage, String &error,
+  bool ImageFITSConverter::FITSToImage
+  (ImageInterface<float> *&newImage, String &error,
    const String &imageName, const String &fitsName,
-   uInt whichRep, Int whichHDU, uInt memoryInMB,
-   Bool allowOverwrite, Bool zeroBlanks)
+   uint32_t whichRep, int32_t whichHDU, uint32_t memoryInMB,
+   bool allowOverwrite, bool zeroBlanks)
   {
     LogIO os(LogOrigin("ImageFITSConverter"));
 
@@ -89,13 +89,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     if (!imageName.empty()) {
       File imfile(imageName);
-      if (!ImageFITSConverter::removeFile (error, imfile, imageName, allowOverwrite)) return False;
+      if (!ImageFITSConverter::removeFile (error, imfile, imageName, allowOverwrite)) return false;
 
       Directory imdir = imfile.path().dirName();
       if (!imdir.exists() || !imdir.isWritable()) {
         error = String("Directory ") + imdir.path().originalName() +
           " does not exist or is not writable";
-        return False;
+        return false;
       }
     }
 
@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         || ! fitsfile.isRegular()
         ) {
       error = fitsName + " does not exist or is not readable";
-      return False;
+      return false;
     }
 
     // OK, now see if we can attach the FITS reading classes
@@ -114,16 +114,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     if (infile.err()) {
       error = String("Cannot open file (or other I/O error): ") + fitsName;
-      return False;
+      return false;
     }
     //
     // Advance to the right HDU
     //
-    Int theHDU = whichHDU;
-    Int numHDU = infile.getnumhdu();
+    int32_t theHDU = whichHDU;
+    int32_t numHDU = infile.getnumhdu();
     if(whichHDU<0){
       // look for first readable HDU
-      for(Int i=0; i<numHDU; i++){
+      for(int32_t i=0; i<numHDU; i++){
         os << LogIO::NORMAL << "Processing HDU " << i << LogIO::POST;
         if (infile.err() ||
             infile.rectype() != FITS::HDURecord ||
@@ -140,27 +140,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         stringstream ss;
         ss << numHDU;
         error = "There are " + String(ss.str()) + " HDUs in FITS file " +fitsName + " . None of them is an image.";
-        return False;
+        return false;
       }
     }
     else{
-      for (Int i=0; i<whichHDU; i++) {
+      for (int32_t i=0; i<whichHDU; i++) {
         if (infile.skip_hdu() || infile.err()) {
           error = "Error advancing to image in file: " + fitsName;
-          return False;
+          return false;
         }
       }
       if (infile.rectype() != FITS::HDURecord ||
           (infile.hdutype() != FITS::PrimaryArrayHDU &&
            infile.hdutype() != FITS::ImageExtensionHDU)) {
         error = "No image at specified location in file " + fitsName;
-        return False;
+        return false;
       }
     }
 
     // The rest has to be done in a type dependent way - hand over to template
     // functions.
-    Bool success=False;
+    bool success=false;
     while(!success && theHDU<numHDU){
       try{
         switch(infile.datatype()) {
@@ -177,7 +177,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpChar, memoryInMB, zeroBlanks);
           }
-          success = True;
+          success = true;
           break;
         case FITS::SHORT:
           if (infile.hdutype() == FITS::PrimaryArrayHDU) {
@@ -192,7 +192,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpShort, memoryInMB, zeroBlanks);
           }
-          success = True;
+          success = true;
           break;
         case FITS::LONG:
           if (infile.hdutype() == FITS::PrimaryArrayHDU) {
@@ -207,44 +207,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpInt, memoryInMB, zeroBlanks);
           }
-          success = True;
+          success = true;
           break;
         case FITS::FLOAT: 
           if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-            PrimaryArray<Float> fitsdata(infile);
-            ImageFITSConverterImpl<PrimaryArray<Float> >::FITSToImage
+            PrimaryArray<float> fitsdata(infile);
+            ImageFITSConverterImpl<PrimaryArray<float> >::FITSToImage
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpFloat, memoryInMB, zeroBlanks);
           }
           else {
-            ImageExtension<Float> fitsdata(infile);
-            ImageFITSConverterImpl<ImageExtension<Float> >::FITSToImage
+            ImageExtension<float> fitsdata(infile);
+            ImageFITSConverterImpl<ImageExtension<float> >::FITSToImage
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpFloat, memoryInMB, zeroBlanks);
           }
-          success = True;
+          success = true;
           break;
         case FITS::DOUBLE: 
           if (infile.hdutype() == FITS::PrimaryArrayHDU) {
-            PrimaryArray<Double> fitsdata(infile);
-            ImageFITSConverterImpl<PrimaryArray<Double> >::FITSToImage
+            PrimaryArray<double> fitsdata(infile);
+            ImageFITSConverterImpl<PrimaryArray<double> >::FITSToImage
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpDouble,  memoryInMB, zeroBlanks);
           }
           else {
-            ImageExtension<Double> fitsdata(infile);
-            ImageFITSConverterImpl<ImageExtension<Double> >::FITSToImage
+            ImageExtension<double> fitsdata(infile);
+            ImageFITSConverterImpl<ImageExtension<double> >::FITSToImage
               (newImage, error, imageName, whichRep,
                fitsdata, fitsName, TpDouble, memoryInMB, zeroBlanks);
           }
-          success = True;
+          success = true;
           break;
         default:
           if(whichHDU>=0){
             error = "Unknown datatype  - no data returned";
-            return False;
+            return false;
           }
-          success = False;
+          success = false;
         }
       }
       catch(const std::exception& x){
@@ -252,7 +252,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           throw(x);
         }
         else{
-          success = False;
+          success = false;
         }
       }
       if(whichHDU>=0 || success){
@@ -281,20 +281,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       stringstream ss;
       ss << numHDU;
       error = "There are " + String(ss.str()) + " HDUs in FITS file " +fitsName + " . None of them is a legible image.";
-      return False;
+      return false;
     }
-    return True;
+    return true;
   }
 
-  Bool ImageFITSConverter::ImageToFITS
-  (String &error, ImageInterface<Float>& image,
-   const String &fitsName, uInt memoryInMB,
-   Bool preferVelocity, Bool opticalVelocity,
-   Int BITPIX, Float minPix, Float maxPix,
-   Bool allowOverwrite, Bool degenerateLast,
-   Bool verbose, Bool stokesLast,
-   Bool preferWavelength, Bool airWavelength,
-   const String& origin, Bool history)
+  bool ImageFITSConverter::ImageToFITS
+  (String &error, ImageInterface<float>& image,
+   const String &fitsName, uint32_t memoryInMB,
+   bool preferVelocity, bool opticalVelocity,
+   int32_t BITPIX, float minPix, float maxPix,
+   bool allowOverwrite, bool degenerateLast,
+   bool verbose, bool stokesLast,
+   bool preferWavelength, bool airWavelength,
+   const String& origin, bool history)
   {
     LogIO os;
     os << LogOrigin("ImageFitsConverter", __FUNCTION__, WHERE);
@@ -303,7 +303,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     FitsOutput *outfile=0;
     // create the FITS output
     if (!ImageFITSConverter::openFitsOutput(error, outfile, fitsName, allowOverwrite)){
-      return False;
+      return false;
     }
     // get the coo-sys and check for a quality axis
     CoordinateSystem cSys= image.coordinates();
@@ -314,7 +314,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
            preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
            degenerateLast, verbose, stokesLast,
            preferWavelength, airWavelength, origin, history)) {
-        return False;
+        return false;
       }
     }
     else{
@@ -323,21 +323,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           (error, os, image, outfile, memoryInMB,
            preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
            degenerateLast, verbose, stokesLast,
-           preferWavelength, airWavelength, True, True, origin, history)) {
-        return False;
+           preferWavelength, airWavelength, true, true, origin, history)) {
+        return false;
       }
     }
     if (outfile) {
       delete outfile;
     }
-    return True;
+    return true;
   }
 
   IPosition ImageFITSConverter::copyCursorShape(String &report,
                                                 const IPosition &shape, 
-                                                uInt imagePixelSize,
-                                                uInt fitsPixelSize,
-                                                uInt memoryInMB)
+                                                uint32_t imagePixelSize,
+                                                uint32_t fitsPixelSize,
+                                                uint32_t memoryInMB)
   {
 
     // We could make this more sophisticated by querying the actual tile
@@ -345,17 +345,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // last dimension in memory for efficient traversal.
     // This function should err on the side of making a too-small cursor.
 
-    const uInt ndim = shape.nelements();
+    const uint32_t ndim = shape.nelements();
 
     // *2 because the pixels might exist in a buffer as well. We should
     // be able to do away with that.
-    uInt maxPixels = memoryInMB * 1024 * 1024 / 
+    uint32_t maxPixels = memoryInMB * 1024 * 1024 / 
       (imagePixelSize*2 + fitsPixelSize*2);
 
     maxPixels /= 2; // because 1/2 the pixels are in FITS, 1/2 in Image
 
-    Int axis = ndim - 1;
-    if (shape.product() > Int(maxPixels)) {
+    int32_t axis = ndim - 1;
+    if (shape.product() > int32_t(maxPixels)) {
       while (--axis >= 0 && shape(axis) == 1) {
         ; // Nothing
       }
@@ -365,9 +365,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       axis = 0; // If we have a 1D image
     }
 
-    uInt prod = 1;
-    uInt i;
-    for (i=0; Int(i)<=axis; i++) {
+    uint32_t prod = 1;
+    uint32_t i;
+    for (i=0; int32_t(i)<=axis; i++) {
       prod *= shape(i);
     }
     // Correct for the probable tile shape
@@ -395,12 +395,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     IPosition cursorShape(ndim);
     cursorShape = 1;
-    for (i=0; Int(i)<=axis; i++) {
+    for (i=0; int32_t(i)<=axis; i++) {
       cursorShape(i) = shape(i);
     }
 
     ostringstream buffer;
-    if (axis == Int(ndim) - 1) {
+    if (axis == int32_t(ndim) - 1) {
       buffer << "All pixels fit in memory";
     } else {
       switch(axis) {
@@ -419,9 +419,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   CoordinateSystem ImageFITSConverter::getCoordinateSystem
-  (Int& stokesFITSValue, RecordInterface& headerRec,
+  (int32_t& stokesFITSValue, RecordInterface& headerRec,
    const Vector<String>& header, LogIO& os,
-   uInt whichRep, IPosition& shape, Bool dropStokes)
+   uint32_t whichRep, IPosition& shape, bool dropStokes)
   {
 
     // Get CS and return un-used cards in a Record for further use
@@ -433,7 +433,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
       CoordinateSystem cSys2;
       Vector<String> names(shape.nelements());
-      for (uInt i=0; i<names.nelements(); i++) {
+      for (uint32_t i=0; i<names.nelements(); i++) {
         ostringstream oss;
         oss << i;
         names(i) = String("linear") + String(oss);
@@ -447,10 +447,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (shape.nelements() != cSys.nPixelAxes()) {
       IPosition shape2;
       if (cSys.nPixelAxes() > shape.nelements()) {
-        Int nDeg = cSys.nPixelAxes() - shape.nelements();
+        int32_t nDeg = cSys.nPixelAxes() - shape.nelements();
         shape2.resize(cSys.nPixelAxes());
         shape2 = 1;
-        for (uInt i=0; i<shape.nelements(); i++) shape2(i) = shape(i);
+        for (uint32_t i=0; i<shape.nelements(); i++) shape2(i) = shape(i);
         shape.resize(0);
         shape = shape2;
         //
@@ -465,23 +465,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // pseudo-STokes value (e.g. optical dpeth) on it.  This is stored
     // in ImageInfo instead.
 
-    Int after = -1;
-    Int c = cSys.findCoordinate(Coordinate::STOKES, after);
+    int32_t after = -1;
+    int32_t c = cSys.findCoordinate(Coordinate::STOKES, after);
     if (dropStokes && c >= 0 && stokesFITSValue >= 0) {
-      uInt nS = cSys.stokesCoordinate(c).stokes().nelements();
+      uint32_t nS = cSys.stokesCoordinate(c).stokes().nelements();
       if (nS==1) {
         CoordinateSystem cSys2;
-        for (uInt i=0; i<cSys.nCoordinates(); i++) {
+        for (uint32_t i=0; i<cSys.nCoordinates(); i++) {
           if (cSys.type(i) != Coordinate::STOKES) {
             cSys2.addCoordinate(cSys.coordinate(i));
           } 
         }
         //
-        uInt dropAxis = cSys.pixelAxes(c)(0);
+        uint32_t dropAxis = cSys.pixelAxes(c)(0);
         cSys = cSys2;
         IPosition shape2(cSys.nPixelAxes());
-        uInt j = 0;
-        for (uInt i=0; i<shape.nelements(); i++) {
+        uint32_t j = 0;
+        for (uint32_t i=0; i<shape.nelements(); i++) {
           if (i!=dropAxis) {
             shape2(j) = shape(i);
             j++;
@@ -514,7 +514,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                               ) {
     ImageInfo ii;
     Vector<String> errors;
-    Bool ok = ii.fromFITS (errors, header);
+    bool ok = ii.fromFITS (errors, header);
     if (!ok) {
       LogIO log(LogOrigin("ImageFITSConverter::getImageInfo", "ImageToFITS", WHERE));
       log << errors << endl;
@@ -532,19 +532,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     switch (type) {
       // advance to correct location in the input
     case TpFloat: {
-      PrimaryArray<Float> fitsImage(input);
+      PrimaryArray<float> fitsImage(input);
       break;
     }
     case TpDouble: {
-      PrimaryArray<Double> fitsImage(input);
+      PrimaryArray<double> fitsImage(input);
       break;
     }
     case TpInt: {
-      PrimaryArray<Int> fitsImage(input);
+      PrimaryArray<int32_t> fitsImage(input);
       break;
     }
     case TpShort: {
-      PrimaryArray<Short> fitsImage(input);
+      PrimaryArray<int16_t> fitsImage(input);
       break;
     }
     default: {
@@ -574,15 +574,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     os << LogOrigin("ImageFITSConverter", __FUNCTION__)
        << LogIO::NORMAL << "Loading multiple beams from BEAMS table"
        << LogIO::POST;
-    uInt nChan = beamTable.keywordSet().asuInt("NCHAN");
-    uInt nPol  = beamTable.keywordSet().asuInt("NPOL");
+    uint32_t nChan = beamTable.keywordSet().asuInt("NCHAN");
+    uint32_t nPol  = beamTable.keywordSet().asuInt("NPOL");
 
     info.setAllBeams(nChan, nPol, GaussianBeam::NULL_BEAM);
-    ScalarColumn<Float> bmaj(beamTable, "BMAJ");
-    ScalarColumn<Float> bmin(beamTable, "BMIN");
-    ScalarColumn<Float> bpa(beamTable, "BPA");
-    ScalarColumn<Int> chan(beamTable, "CHAN");
-    ScalarColumn<Int> pol(beamTable, "POL");
+    ScalarColumn<float> bmaj(beamTable, "BMAJ");
+    ScalarColumn<float> bmin(beamTable, "BMIN");
+    ScalarColumn<float> bpa(beamTable, "BPA");
+    ScalarColumn<int32_t> chan(beamTable, "CHAN");
+    ScalarColumn<int32_t> pol(beamTable, "POL");
 
     String bmajUnit = bmaj.keywordSet().asString("TUNIT");
     String bminUnit = bmin.keywordSet().asString("TUNIT");
@@ -591,7 +591,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Quantity xmaj(0, bmajUnit);
     Quantity xmin(0, bminUnit);
     Quantity xpa(0, bpaUnit);
-    for (uInt i=0; i<beamTable.nrow(); i++) {
+    for (uint32_t i=0; i<beamTable.nrow(); i++) {
       xmaj.setValue(bmaj(i));
       xmin.setValue(bmin(i));
       xpa.setValue(bpa(i));
@@ -618,7 +618,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           u = UnitMap::fromFITS(Unit(unitString));
         } 
         else { // unit check failed
-          Bool uFixed = False;
+          bool uFixed = false;
           // try to recover by removing bracketed comments like in "K (Tb)"
           String::size_type bracketPos;
           String truncUnitString(unitString);
@@ -631,14 +631,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                << LogIO::POST;
             if (UnitVal::check(truncUnitString)) {
               u = UnitMap::fromFITS(Unit(truncUnitString));
-              uFixed = True;
+              uFixed = true;
             }
           }
           if(!uFixed){ // try adding the most common problematic units occuring in BUNIT
             UnitMap::putUser("Pixel",UnitVal(1.0),"Pixel unit");
             UnitMap::putUser("Beam",UnitVal(1.0),"Beam area");
             if (UnitVal::check(truncUnitString)) {
-              uFixed = True;
+              uFixed = true;
               u = UnitMap::fromFITS(Unit(truncUnitString));
               os << LogIO::NORMAL << "FITS unit \"" << truncUnitString << "\" does not conform to the FITS standard."
                  << endl << "Correct units are always lower case except when derived from a name." 
@@ -667,7 +667,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 
-  Bool ImageFITSConverter::extractMiscInfo (RecordInterface& miscInfo,
+  bool ImageFITSConverter::extractMiscInfo (RecordInterface& miscInfo,
                                             const RecordInterface& header)
   //
   // The new FITS parsing stuff puts the cards into a Record with structure
@@ -680,9 +680,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // So just discard the comment line and preserve the old structure
   //
   {
-    Bool ok = True;
-    const uInt n = header.nfields();
-    for (uInt i=0; i<n; i++) {
+    bool ok = true;
+    const uint32_t n = header.nfields();
+    for (uint32_t i=0; i<n; i++) {
       String name = header.name(i);
       if (header.type(i) == TpRecord) {
         Record subRec  = header.asRecord(i);
@@ -719,19 +719,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<String> lines;
     String groupType;
     kw.first();
-    uInt n;
+    uint32_t n;
     while ((n=FITSHistoryUtil::getHistoryGroup(lines, groupType, kw))!=0) {
       if (groupType == "LOGTABLE") {
-        FITSHistoryUtil::fromHISTORY(logger, lines, n, True);
+        FITSHistoryUtil::fromHISTORY(logger, lines, n, true);
       } else if (groupType == "") {
-        FITSHistoryUtil::fromHISTORY(logger, lines, n, False);
+        FITSHistoryUtil::fromHISTORY(logger, lines, n, false);
       }
     }
   }
 
-  Bool ImageFITSConverter::removeFile (String& error, const File& outFile,
+  bool ImageFITSConverter::removeFile (String& error, const File& outFile,
                                        const String& outName,
-                                       Bool allowOverwrite)
+                                       bool allowOverwrite)
   {
     String basename = outFile.path().baseName();
     if (basename.empty() || basename == "." || basename == "..") {
@@ -764,24 +764,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           if (msg != "") {
             error += ": (" + msg + ")";
           }
-          return False;
+          return false;
         }
       } else {
         error = outName + " already exists, will not overwrite.";
-        return False;
+        return false;
       }
     }
-    return True;
+    return true;
   }
 
-  Bool ImageFITSConverter::ImageHeaderToFITS
+  bool ImageFITSConverter::ImageHeaderToFITS
   (String &error, ImageFITSHeaderInfo& fhi,
-   const ImageInterface<Float>& image,
-   Bool preferVelocity, Bool opticalVelocity,
-   Int BITPIX, Float minPix, Float maxPix,
-   Bool degenerateLast, Bool verbose, Bool stokesLast,
-   Bool preferWavelength, Bool airWavelength, Bool primHead,
-   Bool allowAppend, const String& origin, Bool history)
+   const ImageInterface<float>& image,
+   bool preferVelocity, bool opticalVelocity,
+   int32_t BITPIX, float minPix, float maxPix,
+   bool degenerateLast, bool verbose, bool stokesLast,
+   bool preferWavelength, bool airWavelength, bool primHead,
+   bool allowAppend, const String& origin, bool history)
   {
     LogIO os;
     os << LogOrigin("ImageFitsConverter", __FUNCTION__, WHERE);
@@ -794,7 +794,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (cSys.nWorldAxes() != cSys.nPixelAxes()) {
       error = "FITS requires that the number of world and pixel axes be"
         " identical.";
-      return False;
+      return false;
     }
     //
     // Make degenerate axes last if requested
@@ -802,22 +802,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     IPosition shape = image.shape();
     fhi.newShape = shape;
-    const uInt ndim = shape.nelements();
+    const uint32_t ndim = shape.nelements();
     fhi.cursorOrder.resize(ndim); // to be used later in the actual data copying
-    for (uInt i=0; i<ndim; i++) {
+    for (uint32_t i=0; i<ndim; i++) {
       fhi.cursorOrder(i) = i;
     }
-    fhi.needNonOptimalCursor = False; // the default value for the case no axis reordering is necessary
+    fhi.needNonOptimalCursor = false; // the default value for the case no axis reordering is necessary
     if(stokesLast || degenerateLast){
-      Vector<Int> order(ndim);
+      Vector<int32_t> order(ndim);
       Vector<String> cNames = cSys.worldAxisNames();
-      uInt nStokes = 0; // number of stokes axes
+      uint32_t nStokes = 0; // number of stokes axes
       if(stokesLast){
-        for (uInt i=0; i<ndim; i++) { // loop over axes
+        for (uint32_t i=0; i<ndim; i++) { // loop over axes
           order(i) = i;
           fhi.newShape(i) = shape(i);
         }
-        for (uInt i=0; i<ndim; i++) { // loop over axes
+        for (uint32_t i=0; i<ndim; i++) { // loop over axes
           if (cNames(i) == "Stokes") { // swap to back
             nStokes++;
             order(ndim-nStokes) = i;
@@ -832,18 +832,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       if (degenerateLast) {
         // make sure the stokes axes stay where they are now
-        for (uInt i=ndim-nStokes; i<ndim; i++) {
+        for (uint32_t i=ndim-nStokes; i<ndim; i++) {
           order(i) = i;
         }
-        uInt j = 0;
-        for (uInt i=0; i<ndim-nStokes; i++) { // loop over axes
+        uint32_t j = 0;
+        for (uint32_t i=0; i<ndim-nStokes; i++) { // loop over axes
           if (shape(i)>1) { // axis is not degenerate
             order(j) = i; // put it in front, keeping order
             fhi.newShape(j) = shape(i);
             j++;
           }
         }
-        for (uInt i=0; i<ndim-nStokes; i++) { // loop over axes again
+        for (uint32_t i=0; i<ndim-nStokes; i++) { // loop over axes again
           if (shape(i)==1) { // axis is degenerate
             order(j) = i;
             fhi.newShape(j) = shape(i);
@@ -852,20 +852,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         }
         cSys.transpose(order,order); // apply the degenerate reordering
       }
-      for (uInt i=0; i<ndim; i++) {
+      for (uint32_t i=0; i<ndim; i++) {
         fhi.cursorOrder(i) = order(i);
-        if(order(i)!=(Int)i){
-          fhi.needNonOptimalCursor=True;
+        if(order(i)!=(int32_t)i){
+          fhi.needNonOptimalCursor=true;
         }
       }
 
     }
     //
-    fhi.applyMask = False;
+    fhi.applyMask = false;
     fhi.pMask = 0;
     if (image.isMasked()) {
-      fhi.applyMask = True;
-      fhi.pMask = new Array<Bool>(IPosition(0,0));
+      fhi.applyMask = true;
+      fhi.pMask = new Array<bool>(IPosition(0,0));
     }
     //
     // Find scale factors
@@ -873,7 +873,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Record header;
     fhi.maxshort = 32767;
     fhi.minshort = -32768;
-    fhi.hasBlanks = True;
+    fhi.hasBlanks = true;
     if (BITPIX == -32) {
 
       fhi.bscale = 1.0;
@@ -883,7 +883,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //
       // We don't yet know if the image has blanks or not, so assume it does.
       //
-      fhi.hasBlanks = True;
+      fhi.hasBlanks = true;
     } else if (BITPIX == 16) {
       header.define("bitpix", BITPIX);
       header.setComment("bitpix", "Short integer (16 bit)");
@@ -894,39 +894,39 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             "Finding scaling factors for BITPIX=16 and look for masked or blanked values" <<
             LogIO::POST;
         }
-        fhi.hasBlanks = False;
+        fhi.hasBlanks = false;
         //
         // Set up iterator
         //
         IPosition cursorShape(image.niceCursorShape());
-        RO_MaskedLatticeIterator<Float> iter
+        RO_MaskedLatticeIterator<float> iter
           (image, LatticeStepper(shape, cursorShape, LatticeStepper::RESIZE));
         ProgressMeter meter(0.0, 1.0*shape.product(),
                             "Searching pixels", "",
-                            "", "", True,
+                            "", "", true,
                             shape.product()/cursorShape.product()/50);
         //
         // Iterate
         //
-        uInt count = 0;
-        Bool deleteMaskPtr, deletePtr;
+        uint32_t count = 0;
+        bool deleteMaskPtr, deletePtr;
         for (iter.reset(); !iter.atEnd(); iter++) {
-          const Array<Float> &cursor = iter.cursor();
-          const Float *cptr = cursor.getStorage(deletePtr);
-          const uInt n = cursor.nelements();
+          const Array<float> &cursor = iter.cursor();
+          const float *cptr = cursor.getStorage(deletePtr);
+          const uint32_t n = cursor.nelements();
           //
           if (fhi.applyMask) {
             if (!fhi.pMask->shape().isEqual(cursor.shape())) {
               fhi.pMask->resize(cursor.shape());
             }
-            (*fhi.pMask) = iter.getMask(False);
-            const Bool* maskPtr = fhi.pMask->getStorage(deleteMaskPtr);
+            (*fhi.pMask) = iter.getMask(false);
+            const bool* maskPtr = fhi.pMask->getStorage(deleteMaskPtr);
             //
-            // If a pixel is a NaN or the mask is False, it goes out as a NaN
+            // If a pixel is a NaN or the mask is false, it goes out as a NaN
             //
-            for (uInt i=0; i<n; i++) {
+            for (uint32_t i=0; i<n; i++) {
               if (isNaN(cptr[i]) || !maskPtr[i]) {
-                fhi.hasBlanks = True;
+                fhi.hasBlanks = true;
               } else {
                 if (minPix > maxPix) {
                   minPix = maxPix = cptr[i];
@@ -938,9 +938,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             }
             fhi.pMask->freeStorage(maskPtr, deleteMaskPtr);
           } else {
-            for (uInt i=0; i<n; i++) {
+            for (uint32_t i=0; i<n; i++) {
               if (isNaN(cptr[i])) {
-                fhi.hasBlanks = True;
+                fhi.hasBlanks = true;
               } else {
                 if (minPix > maxPix) {
                   // First non-NaN we have run into. Init.
@@ -960,7 +960,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Make sure bscale does not come out to be zero
 
       if (::casacore::near(minPix, maxPix)) {
-        if (::casacore::near(Float(0.0), maxPix)) {
+        if (::casacore::near(float(0.0), maxPix)) {
           maxPix = 1.0;
         } else {
           maxPix = maxPix + 0.01*maxPix;
@@ -968,34 +968,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       //
       if (fhi.hasBlanks) {
-        fhi.bscale = Double(maxPix - minPix)/Double(Int(fhi.maxshort) -
-                                                    Int(fhi.minshort+1));
-        fhi.bzero  = Double(minPix) + fhi.bscale * (-Double(fhi.minshort+1));
+        fhi.bscale = double(maxPix - minPix)/double(int32_t(fhi.maxshort) -
+                                                    int32_t(fhi.minshort+1));
+        fhi.bzero  = double(minPix) + fhi.bscale * (-double(fhi.minshort+1));
       } else {
-        fhi.bscale = Double(maxPix - minPix)/Double(Int(fhi.maxshort) -
-                                                    Int(fhi.minshort));
-        fhi.bzero  = Double(minPix) + fhi.bscale * (-Double(fhi.minshort));
+        fhi.bscale = double(maxPix - minPix)/double(int32_t(fhi.maxshort) -
+                                                    int32_t(fhi.minshort));
+        fhi.bzero  = double(minPix) + fhi.bscale * (-double(fhi.minshort));
       }
     } else {
       error =
         "BITPIX must be -32 (floating point) or 16 (short integer)";
-      return False;
+      return false;
     }
 
     // At this point, for 32 floating point, we must apply the given
     // mask.  For 16bit, we may know that there are in fact no blanks
     // in the image, so we can dispense with looking at the mask again.
 
-    if (fhi.applyMask && !fhi.hasBlanks) fhi.applyMask = False;
+    if (fhi.applyMask && !fhi.hasBlanks) fhi.applyMask = false;
     //
-    Vector<Int> naxis(ndim);
-    uInt i;
+    Vector<int32_t> naxis(ndim);
+    uint32_t i;
     for (i=0; i < ndim; i++) {
       naxis(i) = fhi.newShape(i);
     }
     header.define("naxis", naxis);
     if (allowAppend)
-      header.define("extend", True);
+      header.define("extend", true);
     if (!primHead){
       header.define("PCOUNT", 0);
       header.define("GCOUNT", 1);
@@ -1020,7 +1020,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     const ImageInfo& ii = image.imageInfo();
     if (!ii.toFITS (error, header)) {
-      return False;
+      return false;
     }
     
     //header.define("COMMENT1", ""); // inserts spaces
@@ -1030,15 +1030,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     IPosition shapeCopy = fhi.newShape;
     Record saveHeader(header);
-    Bool ok = cSys.toFITSHeader(header, shapeCopy, True, 'c', True, // use WCS
+    bool ok = cSys.toFITSHeader(header, shapeCopy, true, 'c', true, // use WCS
                                 preferVelocity, opticalVelocity,
                                 preferWavelength, airWavelength);
     if (!ok) {
       os << LogIO::SEVERE << "Could not make a standard FITS header. Setting"
         " a simple linear coordinate system." << LogIO::POST;
       //
-      uInt n = cSys.nWorldAxes();
-      Matrix<Double> pc(n,n); pc=0.0; pc.diagonal() = 1.0;
+      uint32_t n = cSys.nWorldAxes();
+      Matrix<double> pc(n,n); pc=0.0; pc.diagonal() = 1.0;
       LinearCoordinate linear(cSys.worldAxisNames(),
                               cSys.worldAxisUnits(),
                               cSys.referenceValue(),
@@ -1052,18 +1052,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
       header = saveHeader;
       IPosition shapeCopy = fhi.newShape;
-      Bool ok = linCS.toFITSHeader(header, shapeCopy, True, 'c', False); // don't use WCS
+      bool ok = linCS.toFITSHeader(header, shapeCopy, true, 'c', false); // don't use WCS
       if (!ok) {
         error = "Fallback linear coordinate system fails also.";
-        return False;
+        return false;
       }
     }
-    // When this if test is True, it means some pixel axes had been removed from
+    // When this if test is true, it means some pixel axes had been removed from
     // the coordinate system and degenerate axes were added.
 
     if (naxis.nelements() != shapeCopy.nelements()) {
       naxis.resize(shapeCopy.nelements());
-      for (uInt j=0; j < shapeCopy.nelements(); j++) {
+      for (uint32_t j=0; j < shapeCopy.nelements(); j++) {
         naxis(j) = shapeCopy(j);
       }
       header.define("NAXIS", naxis);
@@ -1072,7 +1072,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Add in the fields from miscInfo that we can
     //
     const auto miscInfo = image.miscInfo();
-    const uInt nmisc = miscInfo.nfields();
+    const uint32_t nmisc = miscInfo.nfields();
     for (i=0; i<nmisc; i++) {
         String tmp0 = miscInfo.name(i);
         String miscname(tmp0.at(0,8));
@@ -1207,18 +1207,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
     // Set up the FITS header
-    fhi.kw = FITSKeywordUtil::makeKeywordList(primHead, True);
+    fhi.kw = FITSKeywordUtil::makeKeywordList(primHead, true);
     if (ii.hasMultipleBeams()) {
-      header.define(CASAMBM, True);
+      header.define(CASAMBM, true);
       header.setComment(CASAMBM, "CASA multiple BEAMS table present");
 
     }
-    //kw.mk(FITS::EXTEND, True, "Tables may follow");
+    //kw.mk(FITS::EXTEND, true, "Tables may follow");
     // add the general keywords for WCS and so on
     ok = FITSKeywordUtil::addKeywords(fhi.kw, header);
     if (! ok) {
       error = "Error creating initial FITS header";
-      return False;
+      return false;
     }
 
     if(history){
@@ -1228,9 +1228,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       const LoggerHolder& logger = image.logger();
       //
       vector<String> historyChunk;
-      uInt nstrings;
-      Bool aipsppFormat;
-      uInt firstLine = 0;
+      uint32_t nstrings;
+      bool aipsppFormat;
+      uint32_t firstLine = 0;
       while (1) {
         firstLine = FITSHistoryUtil::toHISTORY(historyChunk, aipsppFormat,
                                                nstrings, firstLine, logger);
@@ -1246,16 +1246,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // END
     //
     fhi.kw.end();
-    return True;
+    return true;
   }
 
-  Bool ImageFITSConverter::ImageToFITSOut
-  (String &error, LogIO &os, const ImageInterface<Float>& image,
-   FitsOutput *outfile, uInt memoryInMB, Bool preferVelocity,
-   Bool opticalVelocity, Int BITPIX, Float minPix, Float maxPix,
-   Bool degenerateLast, Bool verbose, Bool stokesLast,
-   Bool preferWavelength, Bool airWavelength, Bool primHead,
-   Bool allowAppend, const String& origin, Bool history)
+  bool ImageFITSConverter::ImageToFITSOut
+  (String &error, LogIO &os, const ImageInterface<float>& image,
+   FitsOutput *outfile, uint32_t memoryInMB, bool preferVelocity,
+   bool opticalVelocity, int32_t BITPIX, float minPix, float maxPix,
+   bool degenerateLast, bool verbose, bool stokesLast,
+   bool preferWavelength, bool airWavelength, bool primHead,
+   bool allowAppend, const String& origin, bool history)
   {
     // Write the headers.
     ImageFITSHeaderInfo fhi;
@@ -1265,7 +1265,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             degenerateLast, verbose, stokesLast,
                             preferWavelength, airWavelength, primHead,
                             allowAppend, origin, history)) {
-      return False;
+      return false;
     }
     //
     // Finally get around to copying the data
@@ -1274,7 +1274,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String report;
     IPosition newCursorShape =
       ImageFITSConverter::copyCursorShape (report, shape,
-                                           sizeof(Float), sizeof(Float),
+                                           sizeof(float), sizeof(float),
                                            memoryInMB);
     if(fhi.needNonOptimalCursor && fhi.newShape.nelements()>0){
       // use cursor the size of one image row in order to enable axis re-ordering
@@ -1290,97 +1290,97 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // If this fails, more development is needed
     //
-    AlwaysAssert(sizeof(Float) == sizeof(float), AipsError);
-    AlwaysAssert(sizeof(Short) == sizeof(short), AipsError);
+    AlwaysAssert(sizeof(float) == sizeof(float), AipsError);
+    AlwaysAssert(sizeof(int16_t) == sizeof(short), AipsError);
     try {
-      Int nIter = max(1,shape.product()/newCursorShape.product());
-      Int iUpdate = max(1,nIter/20);
+      int32_t nIter = max(1,shape.product()/newCursorShape.product());
+      int32_t iUpdate = max(1,nIter/20);
       //
       ProgressMeter* pMeter = 0;
       if (verbose) pMeter = new ProgressMeter(0.0, 1.0*shape.product(),
                                               "Image to FITS",
                                               "Pixels copied", "",
-                                              "", True, iUpdate);
-      uInt count = 0;
-      Double curpixels = 1.0*newCursorShape.product();
+                                              "", true, iUpdate);
+      uint32_t count = 0;
+      double curpixels = 1.0*newCursorShape.product();
       //
       LatticeStepper stepper(shape, newCursorShape, fhi.cursorOrder);
-      RO_MaskedLatticeIterator<Float> iter(image, stepper);
-      const Int bufferSize = newCursorShape.product();
+      RO_MaskedLatticeIterator<float> iter(image, stepper);
+      const int32_t bufferSize = newCursorShape.product();
 
-      PrimaryArray<Float>* fits32 = 0;
-      PrimaryArray<Short>* fits16 = 0;
+      PrimaryArray<float>* fits32 = 0;
+      PrimaryArray<int16_t>* fits16 = 0;
 
       if (BITPIX == -32) {
         if (primHead) {
-          fits32 = new PrimaryArray<Float>(fhi.kw);
+          fits32 = new PrimaryArray<float>(fhi.kw);
         }
         else {
-          fits32 = new ImageExtension<Float>(fhi.kw);
+          fits32 = new ImageExtension<float>(fhi.kw);
         }
         if (fits32==0 || fits32->err()) {
           error = "Error creating FITS file from keywords";
-          return False;
+          return false;
         }
         if (fits32->write_hdr(*outfile)) {
           error = "Error writing FITS header";
           delete outfile;
-          return False;
+          return false;
         }
       }
       else if (BITPIX == 16) {
         if (primHead) {
-          fits16 = new PrimaryArray<Short>(fhi.kw);
+          fits16 = new PrimaryArray<int16_t>(fhi.kw);
         }
         else {
-          fits16 = new ImageExtension<Short>(fhi.kw);
+          fits16 = new ImageExtension<int16_t>(fhi.kw);
         }
         if (fits16==0 || fits16->err()) {
           error = "Error creating FITS file from keywords";
-          return False;
+          return false;
         }
         if (fits16->write_hdr(*outfile)) {
           delete outfile;
           error = "Error writing FITS header";
-          return False;
+          return false;
         }
       }
       else {
         AlwaysAssert(0, AipsError); // NOTREACHED
       }
 
-      Short *buffer16 = 0; // Use this to write the scaled shorts into
+      int16_t *buffer16 = 0; // Use this to write the scaled shorts into
       if (fits16) {
-        buffer16 = new Short[bufferSize];
+        buffer16 = new int16_t[bufferSize];
         AlwaysAssert(buffer16, AipsError);
       }
       //
       // Iterate through the image.
       //
       for (iter.reset(); !iter.atEnd(); iter++) {
-        const Array<Float>& cursor = iter.cursor();
-        Bool deletePtr;
-        const Float* ptr = cursor.getStorage(deletePtr);
+        const Array<float>& cursor = iter.cursor();
+        bool deletePtr;
+        const float* ptr = cursor.getStorage(deletePtr);
         //
-        const Bool* maskPtr = 0;
-        Bool deleteMaskPtr;
+        const bool* maskPtr = 0;
+        bool deleteMaskPtr;
         if (fhi.applyMask) {
           if (!fhi.pMask->shape().isEqual(cursor.shape())) {
             fhi.pMask->resize(cursor.shape());
           }
-          (*fhi.pMask) = iter.getMask(False);
+          (*fhi.pMask) = iter.getMask(false);
           maskPtr = fhi.pMask->getStorage(deleteMaskPtr);
         }
         //
         //       pMeter->update((count*1.0 - 0.5)*curpixels);
         //
-        const uInt nPts = cursor.nelements();
+        const uint32_t nPts = cursor.nelements();
         error= "";
-        Int n = 0;
+        int32_t n = 0;
         if (fits32) {
           if (fhi.applyMask) {
-            Float* ptr2 = new float[nPts];
-            for (uInt j=0; j<nPts; j++) {
+            float* ptr2 = new float[nPts];
+            for (uint32_t j=0; j<nPts; j++) {
               if (maskPtr[j]) {
                 ptr2[j] = ptr[j];
               }
@@ -1395,25 +1395,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           else {
             fits32->store(ptr, bufferSize);
           }
-          Int hduErr = 0;
+          int32_t hduErr = 0;
           if (!(hduErr = fits32->err())){
             n = fits32->write(*outfile);
             if (n != bufferSize) {
               delete outfile;
               error = "Write failed (full disk or tape?)";
-              return False;
+              return false;
             }
           } else {
-            error = "ImageFITS2Converter: Storing FITS primary Float array failed with HDU error code "
+            error = "ImageFITS2Converter: Storing FITS primary float array failed with HDU error code "
               + String::toString(hduErr);
-            return False;
+            return false;
           }
         }
         else if (fits16) {
           short blankOffset = fhi.hasBlanks ? 1 : 0;
           //
           if (fhi.applyMask) {
-            for (Int j=0; j<bufferSize; j++) {
+            for (int32_t j=0; j<bufferSize; j++) {
               //                    if (ptr[j] != ptr[j] || maskPtr[j]) {
               if (isNaN(ptr[j]) || !maskPtr[j]) {
                 buffer16[j] = fhi.minshort;
@@ -1423,13 +1423,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                 } else if (ptr[j] < fhi.minPix) {
                   buffer16[j] = fhi.minshort + blankOffset;
                 } else {
-                  buffer16[j] = Short((ptr[j] - fhi.bzero)/fhi.bscale);
+                  buffer16[j] = int16_t((ptr[j] - fhi.bzero)/fhi.bscale);
                 }
               }
             }
           }
           else {
-            for (Int j=0; j<bufferSize; j++) {
+            for (int32_t j=0; j<bufferSize; j++) {
               //                    if (ptr[j] != ptr[j]) {
               if (isNaN(ptr[j])) {
                 buffer16[j] = fhi.minshort;
@@ -1439,25 +1439,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                 } else if (ptr[j] < fhi.minPix) {
                   buffer16[j] = fhi.minshort + blankOffset;
                 } else {
-                  buffer16[j] = Short((ptr[j] - fhi.bzero)/fhi.bscale);
+                  buffer16[j] = int16_t((ptr[j] - fhi.bzero)/fhi.bscale);
                 }
               }
             }
           }
           fits16->store(buffer16, bufferSize);
-          Int hduErr = 0;
+          int32_t hduErr = 0;
           if (!(hduErr = fits16->err())) {
             n = fits16->write(*outfile);
             if (n != bufferSize) {
               delete outfile;
               error = "Write failed (full disk or tape?";
-              return False;
+              return false;
             }
           }
           else {
-            error = "ImageFITS2Converter: Storing FITS primary Short array failed with HDU error code "
+            error = "ImageFITS2Converter: Storing FITS primary int16_t array failed with HDU error code "
               + String::toString(hduErr);
-            return False;
+            return false;
           }
         }
         else {
@@ -1472,7 +1472,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             outfile->err()) {
           error = String("Error writing into file!");
           delete outfile;
-          return False;
+          return false;
         }
         count++;
         if (verbose) pMeter->update(count*curpixels);
@@ -1495,14 +1495,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (outfile) {
         delete outfile;
       }
-      return False;
+      return false;
     }
     const ImageInfo& ii = image.imageInfo();
     if (ii.hasMultipleBeams()) {
       _writeBeamsTable(outfile, ii);
     }
 
-    return True;
+    return true;
   }
 
   void ImageFITSConverter::_writeBeamsTable(
@@ -1519,7 +1519,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     desc.addField("BMIN", TpFloat);
     units.define("BMIN", beam.getMinor().getUnit());
     desc.addField("BPA", TpFloat);
-    units.define("BPA", beam.getPA(True).getUnit());
+    units.define("BPA", beam.getPA(true).getUnit());
     desc.addField("CHAN", TpInt);
     desc.addField("POL", TpInt);
     Record extraKeywords;
@@ -1527,21 +1527,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     extraKeywords.define("EXTVER", 1);
     extraKeywords.define("XTENSION", "BINTABLE");
     extraKeywords.setComment("XTENSION", "Binary extension");
-    extraKeywords.define("NCHAN", (Int)info.getBeamSet().nchan());
-    extraKeywords.define("NPOL", (Int)info.getBeamSet().nstokes());
+    extraKeywords.define("NCHAN", (int32_t)info.getBeamSet().nchan());
+    extraKeywords.define("NPOL", (int32_t)info.getBeamSet().nstokes());
     FITSTableWriter writer(
                            outfile, desc, stringLengths,
                            info.getBeamSet().nelements(),
-                           extraKeywords, units, False
+                           extraKeywords, units, false
                            );
-    RecordFieldPtr<Float> bmaj(writer.row(), "BMAJ");
-    RecordFieldPtr<Float> bmin(writer.row(), "BMIN");
-    RecordFieldPtr<Float> bpa(writer.row(), "BPA");
-    RecordFieldPtr<Int> chan(writer.row(), "CHAN");
-    RecordFieldPtr<Int> pol(writer.row(), "POL");
+    RecordFieldPtr<float> bmaj(writer.row(), "BMAJ");
+    RecordFieldPtr<float> bmin(writer.row(), "BMIN");
+    RecordFieldPtr<float> bpa(writer.row(), "BPA");
+    RecordFieldPtr<int32_t> chan(writer.row(), "CHAN");
+    RecordFieldPtr<int32_t> pol(writer.row(), "POL");
     const ImageBeamSet& beamSet = info.getBeamSet();
     IPosition axisPath(2, 0, 1);
-    ArrayPositionIterator iter(beamSet.shape(), axisPath, False);
+    ArrayPositionIterator iter(beamSet.shape(), axisPath, false);
     while (! iter.pastEnd()) {
       const IPosition& pos = iter.pos();
       GaussianBeam beam = beamSet(pos[0], pos[1]);
@@ -1549,20 +1549,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       *pol = pos[1];
       *bmaj = beam.getMajor().getValue();
       *bmin = beam.getMinor().getValue();
-      *bpa = beam.getPA("deg", True);
+      *bpa = beam.getPA("deg", true);
       writer.write();
       iter.next();
     }
   }
 
-  Bool ImageFITSConverter::QualImgToFITSOut
-  (String &error, LogIO &os, ImageInterface<Float> &image,
-   FitsOutput *outfile, uInt memoryInMB,
-   Bool preferVelocity, Bool opticalVelocity,
-   Int BITPIX, Float minPix, Float maxPix,
-   Bool degenerateLast, Bool verbose, Bool stokesLast,
-   Bool preferWavelength, Bool airWavelength,
-   const String& origin, Bool history)
+  bool ImageFITSConverter::QualImgToFITSOut
+  (String &error, LogIO &os, ImageInterface<float> &image,
+   FitsOutput *outfile, uint32_t memoryInMB,
+   bool preferVelocity, bool opticalVelocity,
+   int32_t BITPIX, float minPix, float maxPix,
+   bool degenerateLast, bool verbose, bool stokesLast,
+   bool preferWavelength, bool airWavelength,
+   const String& origin, bool history)
   {
     // check whether the image is a generic FITS image
     FITSQualityImage *fitsQI=dynamic_cast<FITSQualityImage *>(&image);
@@ -1578,34 +1578,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //             respective FITS extensions.
 
       // load the data extension
-      FITSImage *fitsImg = new FITSImage(fitsQI->name(False), 0, fitsQI->whichDataHDU());
+      FITSImage *fitsImg = new FITSImage(fitsQI->name(false), 0, fitsQI->whichDataHDU());
 
       // put the data extension to FITSOut
       if (!ImageFITSConverter::ImageToFITSOut
           (error, os, *fitsImg, outfile, memoryInMB,
            preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
            degenerateLast, verbose, stokesLast,
-           preferWavelength, airWavelength, True, True, origin, history)) {
+           preferWavelength, airWavelength, true, true, origin, history)) {
         if (fitsImg)
           delete fitsImg;
-        return False;
+        return false;
       }
       delete fitsImg;
       fitsImg=0;
 
       // load the error extension
-      fitsImg = new FITSImage(fitsQI->name(False), 0, fitsQI->whichErrorHDU());
+      fitsImg = new FITSImage(fitsQI->name(false), 0, fitsQI->whichErrorHDU());
 
       // put the error extension  to the FITSOut
       if (!ImageFITSConverter::ImageToFITSOut
           (error, os, *fitsImg, outfile, memoryInMB,
            preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
            degenerateLast, verbose, stokesLast,
-           preferWavelength, airWavelength, False, False, origin, history)) {
+           preferWavelength, airWavelength, false, false, origin, history)) {
         if (fitsImg) {
           delete fitsImg;
         }
-        return False;
+        return false;
       }
       delete fitsImg;
 
@@ -1617,20 +1617,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // get the metadata (extension names etc.) for the data and the error
       if (!FITSQualityImage::qualFITSInfo(error, dataExtMiscInfo,
                                           errorExtMiscInfo, image.miscInfo())){
-        return False;
+        return false;
       }
 
       // find the quality axis
       CoordinateSystem cSys = image.coordinates();
-      Int qualAx = cSys.findCoordinate(Coordinate::QUALITY);
-      Vector<Int> nPixelQual = cSys.pixelAxes(qualAx);
-      uInt nAxisQual=nPixelQual(0);
+      int32_t qualAx = cSys.findCoordinate(Coordinate::QUALITY);
+      Vector<int32_t> nPixelQual = cSys.pixelAxes(qualAx);
+      uint32_t nAxisQual=nPixelQual(0);
 
       // build a slicer for the data
-      Int qualIndex;
+      int32_t qualIndex;
       if (!(cSys.qualityCoordinate(qualAx)).toPixel(qualIndex, Quality::DATA)){
         error = "Could not locate DATA index in quality coordinate!";
-        return False;
+        return false;
       }
       IPosition startPos(image.ndim(), 0);
       IPosition lengthPos=image.shape();
@@ -1639,7 +1639,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       Slicer subSlicer(startPos, lengthPos, Slicer::endIsLength);
 
       // create the data sub-image and set the metadata
-      SubImage<Float> *subData = new SubImage<Float>(image, subSlicer, AxesSpecifier(False));
+      SubImage<float> *subData = new SubImage<float>(image, subSlicer, AxesSpecifier(false));
       subData->setMiscInfo(dataExtMiscInfo);
 
       // put the data sub-image to FITSOut
@@ -1647,24 +1647,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           (error, os, *subData, outfile, memoryInMB,
            preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
            degenerateLast, verbose, stokesLast,
-           preferWavelength, airWavelength, True, True, origin, history)) {
+           preferWavelength, airWavelength, true, true, origin, history)) {
         if (subData) {
           delete subData;
         }
-        return False;
+        return false;
       }
       delete subData;
 
       // build the error slicer
       if (!(cSys.qualityCoordinate(qualAx)).toPixel(qualIndex, Quality::ERROR)){
         error = "Could not locate ERROR index in quality coordinate!";
-        return False;
+        return false;
       }
       startPos(nAxisQual)=qualIndex;
       subSlicer=Slicer(startPos, lengthPos, Slicer::endIsLength);
 
       // create the error sub-image and set the metadata
-      SubImage<Float> *subError = new SubImage<Float>(image, subSlicer, AxesSpecifier(False));
+      SubImage<float> *subError = new SubImage<float>(image, subSlicer, AxesSpecifier(false));
       subError->setMiscInfo(errorExtMiscInfo);
 
       // put the error sub-image to FITSOut
@@ -1672,21 +1672,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           (error, os, *subError, outfile, memoryInMB,
            preferVelocity, opticalVelocity, BITPIX, minPix, maxPix,
            degenerateLast, verbose, stokesLast,
-           preferWavelength, airWavelength, False, False, origin, history)) {
+           preferWavelength, airWavelength, false, false, origin, history)) {
         if (subError) {
           delete subError;
         }
-        return False;
+        return false;
       }
       delete subError;
     }
-    return True;
+    return true;
   }
 
-  Bool ImageFITSConverter::openFitsOutput(String &error,
+  bool ImageFITSConverter::openFitsOutput(String &error,
                                           FitsOutput *(&fitsOut),
                                           const String &fitsName,
-                                          const Bool &allowOverwrite)
+                                          const bool &allowOverwrite)
   {
     if (fitsName == "-") {
       // Write to stdout
@@ -1699,14 +1699,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       File fitsfile(fitsName);
       if (!ImageFITSConverter::removeFile (error, fitsfile,
                                            fitsName, allowOverwrite)) {
-        return False;
+        return false;
       }
       //
       Directory fitsdir = fitsfile.path().dirName();
       if (!fitsdir.exists() || !fitsdir.isWritable()) {
         error = String("Directory ") + fitsdir.path().originalName() +
           " does not exist or is not writable";
-        return False;
+        return false;
       }
       //
       // OK, it appears to be a writable etc. file, let's try opening it.
@@ -1721,9 +1721,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         delete fitsOut;
         fitsOut = 0;
       }
-      return False;
+      return false;
     }
-    return True;
+    return true;
   }
 
 } //# NAMESPACE CASACORE - END

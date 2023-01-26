@@ -35,14 +35,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name)
 : BaseColumnDesc (name, "", "", "",
 		  TpRecord, "TableRecord", 0,
-		  0, IPosition(), True, False, False)
+		  0, IPosition(), true, false, false)
 {}
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name,
 						const String& comment)
 : BaseColumnDesc (name, comment, "", "",
 		  TpRecord, "TableRecord", 0,
-		  0, IPosition(), True, False, False)
+		  0, IPosition(), true, false, false)
 {}
 
 ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name,
@@ -51,7 +51,7 @@ ScalarRecordColumnDesc::ScalarRecordColumnDesc (const String& name,
 						const String& dataManGroup)
 : BaseColumnDesc (name, comment, dataManName, dataManGroup,
 		  TpRecord, "TableRecord", 0,
-		  0, IPosition(), True, False, False)
+		  0, IPosition(), true, false, false)
 {}
   
 ScalarRecordColumnDesc::ScalarRecordColumnDesc
@@ -96,12 +96,12 @@ String ScalarRecordColumnDesc::className() const
 // the version is put "manually".
 void ScalarRecordColumnDesc::putDesc (AipsIO& ios) const
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
 }
 
 void ScalarRecordColumnDesc::getDesc (AipsIO& ios)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
 }
 

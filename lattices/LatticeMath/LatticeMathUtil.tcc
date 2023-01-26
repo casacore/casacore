@@ -89,13 +89,13 @@ void minMax(T & globalMin, T & globalMax,
 template <class T>
 void LatticeMathUtil::collapse (Array<T>& out, const IPosition& axes,
                                  const MaskedLattice<T>& in,
-                                 Bool dropDegenerateAxes) 
+                                 bool dropDegenerateAxes) 
 { 
    out.resize();
    if (axes.nelements()==0) {
       out = in.get(dropDegenerateAxes);
    } else {
-      LatticeStatistics<T> stats(in, False, False);
+      LatticeStatistics<T> stats(in, false, false);
       AlwaysAssert(stats.setAxes(axes.asVector()), AipsError);
       stats.getConvertedStatistic(out, LatticeStatsBase::MEAN, dropDegenerateAxes);
    }
@@ -103,11 +103,11 @@ void LatticeMathUtil::collapse (Array<T>& out, const IPosition& axes,
 
 template <class T>
 void LatticeMathUtil::collapse(
-	Array<T>& data, Array<Bool>& mask,
+	Array<T>& data, Array<bool>& mask,
     const IPosition& axes,
     const MaskedLattice<T>& in,
-    Bool dropDegenerateAxes,
-    Bool getPixels, Bool getMask,
+    bool dropDegenerateAxes,
+    bool getPixels, bool getMask,
     const LatticeStatsBase::StatisticsTypes stat
 )
 { 
@@ -125,7 +125,7 @@ void LatticeMathUtil::collapse(
 // argument won't match one to one with the lattice axes and
 // that would be confusing.  Pity.
                       
-   LatticeStatistics<T> stats(in, False, False);
+   LatticeStatistics<T> stats(in, false, false);
    stats.setAxes(axes.asVector());
 //
    if (getPixels) {
@@ -147,7 +147,7 @@ void LatticeMathUtil::collapse(
       ) ? 1.5 : 0.5;
       typename Array<T>::const_iterator itend = n.end();
       typename Array<T>::const_iterator it;
-      typename Array<Bool>::iterator mIt;
+      typename Array<bool>::iterator mIt;
       for (it=n.begin(),mIt=mask.begin(); it!=itend; ++it,++mIt) {
          *mIt = *it >= lim;
       }

@@ -34,9 +34,9 @@ BitVector::BitVector()
   bits_p   (0)
 {}
 
-BitVector::BitVector (uInt length, Bool state)
+BitVector::BitVector (uint32_t length, bool state)
 : size_p (length),
-  bits_p   ((length + WORDSIZE - 1) / WORDSIZE, uInt(0))
+  bits_p   ((length + WORDSIZE - 1) / WORDSIZE, uint32_t(0))
 {
     if (state) {
 	set (state);
@@ -58,13 +58,13 @@ BitVector& BitVector::operator= (const BitVector& that)
     return *this;
 }
 
-BitVector& BitVector::operator= (Bool state)
+BitVector& BitVector::operator= (bool state)
 {
     set (state);
     return *this;
 }
 
-void BitVector::putBit (uInt pos, Bool state)
+void BitVector::putBit (uint32_t pos, bool state)
 {
     if (state) {
 	setBit (pos);
@@ -73,29 +73,29 @@ void BitVector::putBit (uInt pos, Bool state)
     }
 }
 
-Bool BitVector::toggleBit (uInt pos)
+bool BitVector::toggleBit (uint32_t pos)
 {
-    Bool result = getBit (pos);
+    bool result = getBit (pos);
     putBit (pos,  (!result));
     return result;
 }
 
-Bool BitVector::getBit (uInt pos) const
+bool BitVector::getBit (uint32_t pos) const
 {
     DebugAssert (pos < size_p, AipsError);
-    uInt index = pos/WORDSIZE;
-    Bool result = True;
+    uint32_t index = pos/WORDSIZE;
+    bool result = true;
     if ((bits_p[index] & (1 << (pos - index*WORDSIZE)))  ==  0) {
-	result = False;
+	result = false;
     }
     return result;
 }
 
-void BitVector::resize (uInt length, Bool state, Bool copy)
+void BitVector::resize (uint32_t length, bool state, bool copy)
 {
     //# Do a true resize.
-    uInt oldSize = size_p;
-    bits_p.resize ((length + WORDSIZE - 1) / WORDSIZE, True, copy);
+    uint32_t oldSize = size_p;
+    bits_p.resize ((length + WORDSIZE - 1) / WORDSIZE, true, copy);
     size_p = length;
     if (!copy) {
 	set (state);
@@ -106,20 +106,20 @@ void BitVector::resize (uInt length, Bool state, Bool copy)
     }
 }
 
-void BitVector::set (Bool state)
+void BitVector::set (bool state)
 {
-    uInt value = 0;
+    uint32_t value = 0;
     if (state) {
 	value = ~value;
     }
-    for (uInt i=0; i<bits_p.nelements(); i++) {
+    for (uint32_t i=0; i<bits_p.nelements(); i++) {
 	bits_p[i] = value;
     }
 }
-void BitVector::set (uInt start, uInt length, Bool state)
+void BitVector::set (uint32_t start, uint32_t length, bool state)
 {
     //# Determine the end bit.
-    uInt end = start + length;
+    uint32_t end = start + length;
     if (end > size_p) {
 	throw (AipsError ("BitVector::set past end-of-vector"));
     }
@@ -128,12 +128,12 @@ void BitVector::set (uInt start, uInt length, Bool state)
     }
     //# Determine the full words that can be set.
     //# When setting till the end of the vector, make endWord last word.
-    uInt beginWord = (start + WORDSIZE - 1) / WORDSIZE;
-    uInt endWord   = end / WORDSIZE;
+    uint32_t beginWord = (start + WORDSIZE - 1) / WORDSIZE;
+    uint32_t endWord   = end / WORDSIZE;
     if (end == size_p) {
 	endWord = bits_p.nelements();
     }
-    uInt i;
+    uint32_t i;
     //# When there are no full words, we have to do part of a word only.
     if (beginWord >= endWord) {
 	for (i=start; i<end; i++) {
@@ -141,7 +141,7 @@ void BitVector::set (uInt start, uInt length, Bool state)
 	}
     }else{
 	//# Do some full words and part of the begin and end word.
-	uInt value = 0;
+	uint32_t value = 0;
 	if (state) {
 	    value = ~value;
 	}
@@ -157,8 +157,8 @@ void BitVector::set (uInt start, uInt length, Bool state)
     }
 }
 
-void BitVector::copy (uInt start, uInt length, const BitVector& that,
-		      uInt thatStart)
+void BitVector::copy (uint32_t start, uint32_t length, const BitVector& that,
+		      uint32_t thatStart)
 {
     if (start+length > size_p) {
 	throw (AipsError ("BitVector::set past end-of-thisvector"));
@@ -166,7 +166,7 @@ void BitVector::copy (uInt start, uInt length, const BitVector& that,
     if (thatStart+length > that.size_p) {
 	throw (AipsError ("BitVector::set past end-of-thatvector"));
     }
-    for (uInt i=0; i<length; i++) {
+    for (uint32_t i=0; i<length; i++) {
 	putBit (start+i, that.getBit (thatStart+i));
     }
 }
@@ -183,7 +183,7 @@ void BitVector::operator&= (const BitVector& that)
     if (size_p != that.size_p) {
 	throw (AipsError ("BitVector::operator&= with different lengths"));
     }
-    for (uInt i=0; i<bits_p.nelements(); i++) {
+    for (uint32_t i=0; i<bits_p.nelements(); i++) {
 	bits_p[i] &= that.bits_p[i];
     }
 }
@@ -198,7 +198,7 @@ void BitVector::operator|= (const BitVector& that)
     if (size_p != that.size_p) {
 	throw (AipsError ("BitVector::operator|= with different lengths"));
     }
-    for (uInt i=0; i<bits_p.nelements(); i++) {
+    for (uint32_t i=0; i<bits_p.nelements(); i++) {
 	bits_p[i] |= that.bits_p[i];
     }
 }
@@ -213,7 +213,7 @@ void BitVector::operator^= (const BitVector& that)
     if (size_p != that.size_p) {
 	throw (AipsError ("BitVector::operator^= with different lengths"));
     }
-    for (uInt i=0; i<bits_p.nelements(); i++) {
+    for (uint32_t i=0; i<bits_p.nelements(); i++) {
 	bits_p[i] ^= that.bits_p[i];
     }
 }
@@ -225,35 +225,35 @@ BitVector BitVector::operator~ () const
 }
 void BitVector::reverse()
 {
-    for (uInt i=0; i<bits_p.nelements(); i++) {
+    for (uint32_t i=0; i<bits_p.nelements(); i++) {
 	bits_p[i] = ~(bits_p[i]);
     }
 }
 
 
-Bool BitVector::operator== (const BitVector& that) const
+bool BitVector::operator== (const BitVector& that) const
 {
-    uInt endWord = size_p / WORDSIZE;
-    uInt i;
+    uint32_t endWord = size_p / WORDSIZE;
+    uint32_t i;
     for (i=0; i<endWord; i++) {
 	if (bits_p[i] != that.bits_p[i]) {
-	    return False;
+	    return false;
 	}
     }
     for (i=endWord*WORDSIZE; i<size_p; i++) {
 	if (getBit (i)  !=  that.getBit (i)) {
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
-Bool BitVector::operator!= (const BitVector& that) const
+bool BitVector::operator!= (const BitVector& that) const
 {
     if (*this == that) {
-	return False;
+	return false;
     }
-    return True;
+    return true;
 }
 
 
@@ -262,7 +262,7 @@ ostream& operator<< (ostream& os, const BitVector& vector)
     // The operator<< write out the less significant bit first
     // (write out first the bit in position zero).
     os << "[";
-    for (uInt i=0; i<vector.nbits(); i++) {
+    for (uint32_t i=0; i<vector.nbits(); i++) {
 	if (vector.getBit (i)) {
             os << "1";
 	}else{

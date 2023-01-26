@@ -47,7 +47,7 @@ class MyTestClass : public TableExprData
 {
 public:
   // Constructor checks if both vectors have equal length.
-  MyTestClass (const Vector<Int>& fld1, const Vector<String>& fld2)
+  MyTestClass (const Vector<int32_t>& fld1, const Vector<String>& fld2)
     : itsFld1(fld1), itsFld2(fld2), itsEntry(0)
     { AlwaysAssert (fld1.nelements() == fld2.nelements(), AipsError); }
   virtual ~MyTestClass()
@@ -56,7 +56,7 @@ public:
     { itsEntry++; }
   // Note that only the get functions for the possible types are needed.
   // The exception should never be thrown unless things are screwed up.
-  virtual Int64 getInt (const Block<Int>& fieldNrs) const
+  virtual int64_t getInt (const Block<int32_t>& fieldNrs) const
     { switch (fieldNrs[0]) {
       case 0:
         return itsFld1(itsEntry);
@@ -64,7 +64,7 @@ public:
         throw AipsError();
       }
     }
-  virtual String getString (const Block<Int>& fieldNrs) const
+  virtual String getString (const Block<int32_t>& fieldNrs) const
     { switch (fieldNrs[0]) {
       case 1:
         return itsFld2(itsEntry);
@@ -72,7 +72,7 @@ public:
         throw AipsError();
       }
     }
-  virtual DataType dataType (const Block<Int>& fieldNrs) const
+  virtual DataType dataType (const Block<int32_t>& fieldNrs) const
     { switch (fieldNrs[0]) {
       case 0:
         return TpInt;
@@ -92,12 +92,12 @@ public:
       return Record(desc);
     }
 private:
-  Vector<Int>    itsFld1;
+  Vector<int32_t>    itsFld1;
   Vector<String> itsFld2;
-  uInt           itsEntry;
+  uint32_t           itsEntry;
 };
   
-Vector<uInt> findMatches (const Vector<Int>& fld1,
+Vector<uint32_t> findMatches (const Vector<int32_t>& fld1,
                           const Vector<String>& fld2)
 {
   // Make some expression.
@@ -114,17 +114,17 @@ Vector<uInt> findMatches (const Vector<Int>& fld1,
   MyTestClass subj(fld1, fld2);
   TableExprId eid(subj);
   // The matching entry numbers are stored in a vector.
-  Vector<uInt> result(fld1.nelements());
-  uInt nr=0;
-  Bool valb;
-  for (uInt i=0; i<fld1.nelements(); i++) {
+  Vector<uint32_t> result(fld1.nelements());
+  uint32_t nr=0;
+  bool valb;
+  for (uint32_t i=0; i<fld1.nelements(); i++) {
     expr.get (eid, valb);
     if (valb) {
       result(nr++) = i;
     }
     subj.next();         // Next time the next entry must be used
   }
-  result.resize (nr, True);
+  result.resize (nr, true);
   return result;
 }
 
@@ -132,11 +132,11 @@ Vector<uInt> findMatches (const Vector<Int>& fld1,
 int main()
 {
   try {
-    Vector<Int> fld1(4);
+    Vector<int32_t> fld1(4);
     fld1(0) = 4; fld1(1) = 10; fld1(2) = 11; fld1(3) = 20;
     Vector<String> fld2(4);
     fld2(0) = "xxx"; fld2(1) = ""; fld2(2) = "axxxa"; fld2(3) = "axxax";
-    Vector<uInt> m = findMatches (fld1, fld2);
+    Vector<uint32_t> m = findMatches (fld1, fld2);
     AlwaysAssertExit (m.nelements() == 1);
     AlwaysAssertExit (m(0) == 3);
   } catch (std::exception& x) {

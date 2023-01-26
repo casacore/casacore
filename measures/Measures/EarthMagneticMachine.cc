@@ -35,14 +35,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 EarthMagneticMachine::EarthMagneticMachine() :
-  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  fex_p(false), pex_p(false), fil_p(0), cumf_p(0), clx_p(false) {
     init();
 }
 
 EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
-					   const Quantum<Double> &hgt,
+					   const Quantum<double> &hgt,
 					   MeasFrame &frame) :
-  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  fex_p(false), pex_p(false), fil_p(0), cumf_p(0), clx_p(false) {
   inref_p = in;
   inref_p.set(frame);
   hgt_p = hgt.getValue("m");
@@ -57,10 +57,10 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 }
 
 EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
-					   const Quantum<Double> &hgt,
+					   const Quantum<double> &hgt,
 					   const MPosition &pos,
 					   const MEpoch &tm) :
-  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  fex_p(false), pex_p(false), fil_p(0), cumf_p(0), clx_p(false) {
   inref_p = in;
   hgt_p = hgt.getValue("m");
   pos_p = MPosition::Convert(pos, MPosition::ITRF)().getValue();
@@ -72,7 +72,7 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 					   const MVDirection &dir,
 					   MeasFrame &frame) :
-  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  fex_p(false), pex_p(false), fil_p(0), cumf_p(0), clx_p(false) {
   inref_p = in;
   inref_p.set(frame);
   rin_p = dir;
@@ -90,7 +90,7 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 					   const MVDirection &dir,
 					   const MPosition &pos,
 					   const MEpoch &tm) :
-  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  fex_p(false), pex_p(false), fil_p(0), cumf_p(0), clx_p(false) {
   inref_p = in;
   rin_p = dir;
   pos_p = MPosition::Convert(pos, MPosition::ITRF)().getValue();
@@ -100,7 +100,7 @@ EarthMagneticMachine::EarthMagneticMachine(const MDirection::Ref &in,
 }
 
 EarthMagneticMachine::EarthMagneticMachine(const EarthMagneticMachine &other) :
-  fex_p(False), pex_p(False), fil_p(0), cumf_p(0), clx_p(False) {
+  fex_p(false), pex_p(false), fil_p(0), cumf_p(0), clx_p(false) {
   copy(other);
   reCalculate();
 }
@@ -118,37 +118,37 @@ EarthMagneticMachine
 EarthMagneticMachine::~EarthMagneticMachine() {}
 
 //# Operators
-Double EarthMagneticMachine::operator()() {
+double EarthMagneticMachine::operator()() {
   return getLOSField();
 }
 
-Quantum<Double> EarthMagneticMachine::operator()(const Unit &un) {
+Quantum<double> EarthMagneticMachine::operator()(const Unit &un) {
   return getLOSField(un);
 }
 
-Double EarthMagneticMachine::operator()(const MVDirection &in) {
+double EarthMagneticMachine::operator()(const MVDirection &in) {
   return getLOSField(in);
 }
 
-Quantum<Double> EarthMagneticMachine::operator()(const MVDirection &in,
+Quantum<double> EarthMagneticMachine::operator()(const MVDirection &in,
 						 const Unit &un) {
   return getLOSField(in, un);
 }
 
-Double EarthMagneticMachine::operator()(const Quantum<Double> &in) {
+double EarthMagneticMachine::operator()(const Quantum<double> &in) {
   return getLOSField(in);
 }
 
-Quantum<Double> EarthMagneticMachine::operator()(const Quantum<Double> &in,
+Quantum<double> EarthMagneticMachine::operator()(const Quantum<double> &in,
 						 const Unit &un) {
   return getLOSField(in, un);
 }
 
-Double EarthMagneticMachine::operator()(const Double in) {
+double EarthMagneticMachine::operator()(const double in) {
   return getLOSField(in);
 }
 
-Quantum<Double> EarthMagneticMachine::operator()(const Double in,
+Quantum<double> EarthMagneticMachine::operator()(const double in,
 						 const Unit &un) {
   return getLOSField(in, un);
 }
@@ -166,7 +166,7 @@ void EarthMagneticMachine::set(const MDirection::Ref &in) {
   init();
 }
 
-void EarthMagneticMachine::set(const Quantum<Double> &hgt) {
+void EarthMagneticMachine::set(const Quantum<double> &hgt) {
   hgt_p = hgt.getValue("m");
   fil_p |= 2;
   init();
@@ -197,49 +197,49 @@ void EarthMagneticMachine::set(const MVDirection &dir) {
   init();
 }
 
-Double EarthMagneticMachine::getLOSField() {
+double EarthMagneticMachine::getLOSField() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
   }
   if (!fex_p) {
-    fex_p = True;
+    fex_p = true;
     los_p = fld_p * in_p;
   }
   return los_p;
 }
 
-Double EarthMagneticMachine::getLOSField(const MVDirection &in) {
+double EarthMagneticMachine::getLOSField(const MVDirection &in) {
   calculate(in);
   return getLOSField();
 }
 
-Double EarthMagneticMachine::getLOSField(const Quantum<Double> &in) {
+double EarthMagneticMachine::getLOSField(const Quantum<double> &in) {
   calculate(in);
   return getLOSField();
 }
 
-Double EarthMagneticMachine::getLOSField(const Double in) {
+double EarthMagneticMachine::getLOSField(const double in) {
   calculate(in);
   return getLOSField();
 }
 
-Quantum<Double> EarthMagneticMachine::getLOSField(const Unit &un) {
-  return Quantum<Double>(getLOSField(), "nT").get(un);
+Quantum<double> EarthMagneticMachine::getLOSField(const Unit &un) {
+  return Quantum<double>(getLOSField(), "nT").get(un);
 }
 
-Quantum<Double> EarthMagneticMachine::getLOSField(const MVDirection &in,
+Quantum<double> EarthMagneticMachine::getLOSField(const MVDirection &in,
 						  const Unit &un) {
   calculate(in);
   return getLOSField(un);
 }
 
-Quantum<Double> EarthMagneticMachine::getLOSField(const Quantum<Double> &in,
+Quantum<double> EarthMagneticMachine::getLOSField(const Quantum<double> &in,
 						  const Unit &un) {
   calculate(in);
   return getLOSField(un);
 }
 
-Quantum<Double> EarthMagneticMachine::getLOSField(const Double in,
+Quantum<double> EarthMagneticMachine::getLOSField(const double in,
 						  const Unit &un) {
   calculate(in);
   return getLOSField(un);
@@ -257,27 +257,27 @@ const MVEarthMagnetic &EarthMagneticMachine::getField(const MVDirection &in) {
   return getField();
 }
 
-Double EarthMagneticMachine::getLong() {
+double EarthMagneticMachine::getLong() {
   if (!clx_p) {
     throw(AipsError("No value calculated for EarthMagneticMachine"));
   }
   if (!pex_p) {
-    pex_p = True;
+    pex_p = true;
     pl_p = sub_p.get();
   }
   return pl_p(1);
 }
 
-Double EarthMagneticMachine::getLong(const MVDirection &in) {
+double EarthMagneticMachine::getLong(const MVDirection &in) {
   calculate(in);
   return getLong();
 }
 
-Quantum<Double> EarthMagneticMachine::getLong(const Unit &un) {
-  return Quantum<Double>(getLong(), "rad").get(un);
+Quantum<double> EarthMagneticMachine::getLong(const Unit &un) {
+  return Quantum<double>(getLong(), "rad").get(un);
 }
 
-Quantum<Double> EarthMagneticMachine::getLong(const MVDirection &in,
+Quantum<double> EarthMagneticMachine::getLong(const MVDirection &in,
 					      const Unit &un) {
   calculate(in);
   return getLong(un);
@@ -295,24 +295,24 @@ const MVPosition &EarthMagneticMachine::getPosition(const MVDirection &in) {
   return getPosition();
 }
 
-Bool EarthMagneticMachine::calculate(const MVDirection &in) {
-  if ((cumf_p ^ 15) & 15) return False;
+bool EarthMagneticMachine::calculate(const MVDirection &in) {
+  if ((cumf_p ^ 15) & 15) return false;
   rin_p = in;
   fil_p |= 16;
   calculate();
   return clx_p;
 }
 
-Bool EarthMagneticMachine::calculate(const Quantum<Double> &hgt) {
-  if ((cumf_p ^ 29) & 29) return False;
+bool EarthMagneticMachine::calculate(const Quantum<double> &hgt) {
+  if ((cumf_p ^ 29) & 29) return false;
   hgt_p = hgt.getValue("m");
   fil_p |= 2;
   calculate();
   return clx_p;
 }
 
-Bool EarthMagneticMachine::calculate(const Double hgt) {
-  if ((cumf_p ^ 29) & 29) return False;
+bool EarthMagneticMachine::calculate(const double hgt) {
+  if ((cumf_p ^ 29) & 29) return false;
   hgt_p = hgt;
   fil_p |= 2;
   calculate();
@@ -339,9 +339,9 @@ void EarthMagneticMachine::init() {
       in_p = conv_p(in_p).getValue();
     }
     fil_p = 0;
-    pex_p = False;
-    fex_p = False;
-    clx_p = False;
+    pex_p = false;
+    fex_p = false;
+    clx_p = false;
   }
 }
 
@@ -353,22 +353,22 @@ void EarthMagneticMachine::copy(const EarthMagneticMachine &other) {
   conv_p = other.conv_p;
   fil_p = other.fil_p;
   cumf_p = other.cumf_p;
-  pex_p = False;
-  fex_p = False;
-  clx_p = False;
+  pex_p = false;
+  fex_p = false;
+  clx_p = false;
 }
 
 void EarthMagneticMachine::calculate() {
   init();
   // Angle between direction and Earth radius
-  Double an = pos_p * in_p;
-  Double x = sqrt(abs(an*an + subl_p));
+  double an = pos_p * in_p;
+  double x = sqrt(abs(an*an + subl_p));
   x = min(abs(-an + x), abs(-an - x));
   sub_p = pos_p + (x*in_p);
   fld_p = fldc_p(sub_p);
-  pex_p = False;
-  fex_p = False;
-  clx_p = True;
+  pex_p = false;
+  fex_p = false;
+  clx_p = true;
 }
 
 } //# NAMESPACE CASACORE - END

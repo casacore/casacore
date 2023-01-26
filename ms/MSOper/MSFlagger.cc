@@ -79,12 +79,12 @@ void MSFlagger::setMSSelector(MSSelector& msSel)
   buffer_p=Record(RecordInterface::Variable);
 }
 
-Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
+bool MSFlagger::fillDataBuffer(const String& item, bool ifrAxis)
 {
   LogIO os;
-  if (!check()) return False;
+  if (!check()) return false;
   String itm=downcase(item);
-  Int fld=MSS::field(itm);
+  int32_t fld=MSS::field(itm);
   switch (fld) {
   case MSS::AMPLITUDE:
   case MSS::CORRECTED_AMPLITUDE:
@@ -119,16 +119,16 @@ Bool MSFlagger::fillDataBuffer(const String& item, Bool ifrAxis)
       buffer_p=msSel_p->getData(items,ifrAxis);
       buffer_p.define("datafield",itm);
     }
-    return True;
+    return true;
   default:
     os << LogIO::WARN <<"No DATA derived item specified, buffer unchanged"
        << LogIO::POST;
   }
-  return False;
+  return false;
 }
 
-Record MSFlagger::diffDataBuffer(const String& direction, Int window,
-				      Bool doMedian)
+Record MSFlagger::diffDataBuffer(const String& direction, int32_t window,
+				      bool doMedian)
 {
   Record retVal(RecordInterface::Variable);
   LogIO os;
@@ -138,7 +138,7 @@ Record MSFlagger::diffDataBuffer(const String& direction, Int window,
       ", specify TIME or CHANNEL"<< LogIO::POST;
     return retVal;
   }
-  Int win=max(1,window);
+  int32_t win=max(1,window);
   if (win!=window) os <<LogIO::WARN<<"Setting window to "<<win<< LogIO::POST;
   if (doMedian) win=2*(win/2)+1; // make odd to keep it symmetric
   if (!buffer_p.isDefined("datafield")) {
@@ -147,12 +147,12 @@ Record MSFlagger::diffDataBuffer(const String& direction, Int window,
     return retVal;
   }
   String item = buffer_p.asString(RecordFieldId("datafield"));
-  Array<Bool> flag = buffer_p.asArrayBool(RecordFieldId("flag")); 
-  Array<Bool> flagRow = buffer_p.asArrayBool(RecordFieldId("flag_row")); ;
-  Int fld=MSS::field(item);
-  Array<Float> diff;
-  Int timeAxis=flag.ndim()-1;
-  Int chanAxis=1;
+  Array<bool> flag = buffer_p.asArrayBool(RecordFieldId("flag")); 
+  Array<bool> flagRow = buffer_p.asArrayBool(RecordFieldId("flag_row")); ;
+  int32_t fld=MSS::field(item);
+  Array<float> diff;
+  int32_t timeAxis=flag.ndim()-1;
+  int32_t chanAxis=1;
   switch (fld) {
   case MSS::DATA:
   case MSS::CORRECTED_DATA:
@@ -203,13 +203,13 @@ Record MSFlagger::diffDataBuffer(const String& direction, Int window,
   case MSS::RESIDUAL_REAL:
   case MSS::OBS_RESIDUAL_REAL:
     {
-      Array<Float> data = buffer_p.asArrayFloat(RecordFieldId(item));
+      Array<float> data = buffer_p.asArrayFloat(RecordFieldId(item));
       if (dir=="time") {
-	diff=MSSelUtil<Float>::diffData(data,flag,flagRow,timeAxis,win,
+	diff=MSSelUtil<float>::diffData(data,flag,flagRow,timeAxis,win,
 					doMedian);
       }
       else {
-	diff=MSSelUtil<Float>::diffData(data,flag,flagRow,chanAxis,win,
+	diff=MSSelUtil<float>::diffData(data,flag,flagRow,chanAxis,win,
 					doMedian);
       }
     }
@@ -225,8 +225,8 @@ Record MSFlagger::diffDataBuffer(const String& direction, Int window,
   return retVal;
 }
   
-void MSFlagger::addStats(Record& buf, const Array<Bool>& flag,
-			 const Array<Bool> flagRow, const Array<Float>& data)
+void MSFlagger::addStats(Record& buf, const Array<bool>& flag,
+			 const Array<bool> flagRow, const Array<float>& data)
 {
   // axes PFIT (Polarization, Freq, Interferometer, Time)
   // take median along T and F axes (medT, medF) 
@@ -234,7 +234,7 @@ void MSFlagger::addStats(Record& buf, const Array<Bool>& flag,
   // find outlying times and channels, estimate medTF as minumum of latter 2.
   // calculate average absolute deviations over T and F medians, and TF planes
   // (adT, adF and adTF).
-  Array<Float> medT, medF, medTmedF, medFmedT, medTF, adT, adF, adTF;
+  Array<float> medT, medF, medTmedF, medFmedT, medTF, adT, adF, adTF;
   getStats(medTF, adTF, medT, medFmedT, adT,
 	   medF, medTmedF, adF, data, flag, flagRow);
   buf.define("medTF",medTF);
@@ -247,56 +247,56 @@ void MSFlagger::addStats(Record& buf, const Array<Bool>& flag,
   buf.define("adF",adF);
 }
 
-void MSFlagger::applyRowFlags(Array<Bool>& flag, Array<Bool>& flagRow)
+void MSFlagger::applyRowFlags(Array<bool>& flag, Array<bool>& flagRow)
 {
-  const Int nXY=flag.shape()(0)*flag.shape()(1);
-  Bool deleteFlag, deleteFlagRow;
-  Bool* pflagRow = flagRow.getStorage(deleteFlagRow);
-  Bool* pflag = flag.getStorage(deleteFlag);
-  const Int nEl=flagRow.nelements();
-  DebugAssert(nEl*nXY==Int(flag.nelements()),AipsError);
-  Int offset=0;
-  for (Int i=0; i<nEl; i++, offset+=nXY) {
+  const int32_t nXY=flag.shape()(0)*flag.shape()(1);
+  bool deleteFlag, deleteFlagRow;
+  bool* pflagRow = flagRow.getStorage(deleteFlagRow);
+  bool* pflag = flag.getStorage(deleteFlag);
+  const int32_t nEl=flagRow.nelements();
+  DebugAssert(nEl*nXY==int32_t(flag.nelements()),AipsError);
+  int32_t offset=0;
+  for (int32_t i=0; i<nEl; i++, offset+=nXY) {
     if (pflagRow[i]) {
-      for (Int j=0; j<nXY; j++) pflag[offset+j]=True;
+      for (int32_t j=0; j<nXY; j++) pflag[offset+j]=true;
     } else {
-      Bool ok=False;
-      for (Int j=0; j<nXY && (ok=pflag[offset+j]); j++) {}
-      if (ok) pflagRow[i]=True;
+      bool ok=false;
+      for (int32_t j=0; j<nXY && (ok=pflag[offset+j]); j++) {}
+      if (ok) pflagRow[i]=true;
     }
   }
   flag.putStorage(pflag,deleteFlag);
   flagRow.putStorage(pflagRow,deleteFlagRow);
 }
 
-void MSFlagger::getStats(Array<Float>& medTF, Array<Float>& adTF, 
-			  Array<Float>& medT, Array<Float>& medFmedT, 
-			  Array<Float>& adT, Array<Float>& medF, 
-			  Array<Float>& medTmedF, Array<Float>& adF,
-			  const Array<Float>& diff, const Array<Bool>& flag,
-			  const Array<Bool>& flagRow)
+void MSFlagger::getStats(Array<float>& medTF, Array<float>& adTF, 
+			  Array<float>& medT, Array<float>& medFmedT, 
+			  Array<float>& adT, Array<float>& medF, 
+			  Array<float>& medTmedF, Array<float>& adF,
+			  const Array<float>& diff, const Array<bool>& flag,
+			  const Array<bool>& flagRow)
 {
   IPosition shape=diff.shape();
-  const Int nCorr=shape(0);
-  const Int nChan=shape(1);
-  Int nTime=shape(2);
-  Int nIfr=1;
-  const Int nXY=nCorr*nChan;
-  Array<Float> diff2(diff);
+  const int32_t nCorr=shape(0);
+  const int32_t nChan=shape(1);
+  int32_t nTime=shape(2);
+  int32_t nIfr=1;
+  const int32_t nXY=nCorr*nChan;
+  Array<float> diff2(diff);
   if (diff.ndim()==3) {
     // make 4D reference to diff's storage so diffMedian will return
     // correct shapes
-    Array<Float> ref(diff2.reform(IPosition(4,nCorr,nChan,nIfr,nTime)));
+    Array<float> ref(diff2.reform(IPosition(4,nCorr,nChan,nIfr,nTime)));
     diff2.reference(ref);
   } else {
     nIfr=nTime;
     nTime=shape(3);
   }
-  const Int nXYZ=nXY*nIfr;
-  Bool deleteFlag, deleteFlagRow, deleteDiff;
-  const Bool* pflagRow = flagRow.getStorage(deleteFlagRow);
-  const Bool* pflag = flag.getStorage(deleteFlag);
-  const Float* pdiff = diff2.getStorage(deleteDiff);
+  const int32_t nXYZ=nXY*nIfr;
+  bool deleteFlag, deleteFlagRow, deleteDiff;
+  const bool* pflagRow = flagRow.getStorage(deleteFlagRow);
+  const bool* pflag = flag.getStorage(deleteFlag);
+  const float* pdiff = diff2.getStorage(deleteDiff);
  
   medTF.resize(IPosition(2,nCorr,nIfr));
   adTF.resize(IPosition(2,nCorr,nIfr));
@@ -325,18 +325,18 @@ void MSFlagger::getStats(Array<Float>& medTF, Array<Float>& adTF,
 
   // calculate average absolute deviation of medians over time
   {
-    Bool deletemedT;
-    const Float* pmedT=medT.getStorage(deletemedT);
-    Int offset=0;
+    bool deletemedT;
+    const float* pmedT=medT.getStorage(deletemedT);
+    int32_t offset=0;
     IPosition polifr(2);
-    for (Int pol=0; pol<nCorr; pol++) {
+    for (int32_t pol=0; pol<nCorr; pol++) {
       polifr(0)=pol;
       offset=pol;
-      for (Int ifr=0; ifr<nIfr; ifr++, offset+=nXY) {
+      for (int32_t ifr=0; ifr<nIfr; ifr++, offset+=nXY) {
 	polifr(1)=ifr;
-	Float ad=0, med=medFmedT(polifr);
-	Int count=0, offchan=offset;
-	for (Int i=0; i<nChan; i++, offchan+=nCorr) {
+	float ad=0, med=medFmedT(polifr);
+	int32_t count=0, offchan=offset;
+	for (int32_t i=0; i<nChan; i++, offchan+=nCorr) {
 	  if (pmedT[offchan]>0) {
 	    count++;
 	    ad+=abs(pmedT[offchan]-med);
@@ -351,18 +351,18 @@ void MSFlagger::getStats(Array<Float>& medTF, Array<Float>& adTF,
 
   // calculate average absolute deviation of medians over channel
   {
-    Bool deletemedF;
-    const Float* pmedF=medF.getStorage(deletemedF);
-    Int offset=0, nXZ=nCorr*nIfr;
+    bool deletemedF;
+    const float* pmedF=medF.getStorage(deletemedF);
+    int32_t offset=0, nXZ=nCorr*nIfr;
     IPosition polifr(2);
-    for (Int pol=0; pol<nCorr; pol++) {
+    for (int32_t pol=0; pol<nCorr; pol++) {
       polifr(0)=pol;
       offset=pol;
-      for (Int ifr=0; ifr<nIfr; ifr++, offset+=nCorr) {
+      for (int32_t ifr=0; ifr<nIfr; ifr++, offset+=nCorr) {
 	polifr(1)=ifr;
-	Float ad=0, med=medTmedF(polifr);
-	Int count=0, offtime=offset, offrow=ifr;
-	for (Int i=0; i<nTime; i++, offtime+=nXZ, offrow+=nIfr) {
+	float ad=0, med=medTmedF(polifr);
+	int32_t count=0, offtime=offset, offrow=ifr;
+	for (int32_t i=0; i<nTime; i++, offtime+=nXZ, offrow+=nIfr) {
 	  if (!pflagRow[offrow]) {
 	    count++;
 	    ad+=abs(pmedF[offtime]-med);
@@ -378,16 +378,16 @@ void MSFlagger::getStats(Array<Float>& medTF, Array<Float>& adTF,
   // calculate overall average deviation (per pol and ifr)
   {
     IPosition polifr(2);
-    for (Int pol=0; pol<nCorr; pol++) {
+    for (int32_t pol=0; pol<nCorr; pol++) {
       polifr(0)=pol;
-      Int offset=pol;
-      for (Int ifr=0; ifr<nIfr; ifr++, offset+=nXY) {  
+      int32_t offset=pol;
+      for (int32_t ifr=0; ifr<nIfr; ifr++, offset+=nXY) {  
 	polifr(1)=ifr;
-	Float ad=0, med=medTF(polifr);
-	Int count=0, offset2=offset, offrow=ifr;
-	for (Int i=0; i<nTime; i++, offset2+=nXYZ, offrow+=nIfr) {
+	float ad=0, med=medTF(polifr);
+	int32_t count=0, offset2=offset, offrow=ifr;
+	for (int32_t i=0; i<nTime; i++, offset2+=nXYZ, offrow+=nIfr) {
 	  if (!pflagRow[offrow]) {
-	    for (Int j=0, offset3=offset2; j<nChan; j++,offset3+=nCorr) {
+	    for (int32_t j=0, offset3=offset2; j<nChan; j++,offset3+=nCorr) {
 	      if (!pflag[offset3]) {
 		count++;
 		ad+=abs(pdiff[offset3]-med);
@@ -407,37 +407,37 @@ void MSFlagger::getStats(Array<Float>& medTF, Array<Float>& adTF,
   diff2.freeStorage(pdiff,deleteDiff);
 }
 
-void MSFlagger::diffMedian(Array<Float>& out, const Array<Float>& in, 
-			    Int axis, const Array<Bool>& flag)
+void MSFlagger::diffMedian(Array<float>& out, const Array<float>& in, 
+			    int32_t axis, const Array<bool>& flag)
 {
   // collapse array "in" (with absolute differences) 
   // along specified axis by taking medians by profile taking into account
   // the flags.
-  Int nDim=in.ndim();
+  int32_t nDim=in.ndim();
   DebugAssert(axis>=0 && axis<nDim && in.ndim()>0, AipsError);
-  IPosition inShape=in.shape(), outShape(max(1,Int(in.ndim())-1));
+  IPosition inShape=in.shape(), outShape(max(1,int32_t(in.ndim())-1));
   outShape(0)=1; // cope with 1-d input
-  Int nLess=1, nGreater=1, nAxis=inShape(axis);
-  for (Int i=0, count=0; i<nDim; i++) {
+  int32_t nLess=1, nGreater=1, nAxis=inShape(axis);
+  for (int32_t i=0, count=0; i<nDim; i++) {
     if (i!=axis) outShape(count++)=inShape(i);
     if (i<axis) nLess*=inShape(i);
     if (i>axis) nGreater*=inShape(i);
   }
   out.resize(outShape);
 
-  Bool deleteIn, deleteFlag, deleteOut;
-  const Float* pin=in.getStorage(deleteIn);
-  const Bool* pflag=flag.getStorage(deleteFlag);
-  Float* pout=out.getStorage(deleteOut);
-  Block<Float> values(nAxis);
-  for (Int j=0, offj=0; j<nGreater; j++, offj+=nLess) {
-    for (Int k=0, offk=offj*nAxis, offout=offj; k<nLess; 
+  bool deleteIn, deleteFlag, deleteOut;
+  const float* pin=in.getStorage(deleteIn);
+  const bool* pflag=flag.getStorage(deleteFlag);
+  float* pout=out.getStorage(deleteOut);
+  Block<float> values(nAxis);
+  for (int32_t j=0, offj=0; j<nGreater; j++, offj+=nLess) {
+    for (int32_t k=0, offk=offj*nAxis, offout=offj; k<nLess; 
 	 k++, offk++, offout++) {
-      Int count=0;
-      for (Int l=0, offin=offk; l<nAxis; l++, offin+=nLess) {
+      int32_t count=0;
+      for (int32_t l=0, offin=offk; l<nAxis; l++, offin+=nLess) {
 	if (!pflag[offin]) values[count++]=pin[offin];
       }
-      if (count>0) pout[offout]=median(Vector<Float>(values.begin(),values.begin()+count));
+      if (count>0) pout[offout]=median(Vector<float>(values.begin(),values.begin()+count));
       else pout[offout]=0;
     }
   }
@@ -446,32 +446,32 @@ void MSFlagger::diffMedian(Array<Float>& out, const Array<Float>& in,
   out.putStorage(pout,deleteOut);
 }
 
-inline String multiple(Int n) { return n!=1 ? "s" : ""; }
+inline String multiple(int32_t n) { return n!=1 ? "s" : ""; }
 
-Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel, 
-				Float channelLevel)
+bool MSFlagger::clipDataBuffer(float pixelLevel, float timeLevel, 
+				float channelLevel)
 {
   LogIO os;
   if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN << "No data loaded into buffer yet"<<
       ", use fillbuffer first"<< LogIO::POST;
-    return False;
+    return false;
   }
   String item = buffer_p.asString(RecordFieldId("datafield"));
   if (item.contains("data")) {
     os << LogIO::WARN << "Can't clip complex data,"<<
        " use diffbuffer first or load a derived quantity"<< LogIO::POST;
-    return False;
+    return false;
   }
 
   // retrieve the data
-  Array<Bool> flag = buffer_p.asArrayBool(RecordFieldId("flag"));
-  Array<Bool> flagRow = buffer_p.asArrayBool(RecordFieldId("flag_row"));
-  Array<Float> diff = buffer_p.asArrayFloat(RecordFieldId(item));
+  Array<bool> flag = buffer_p.asArrayBool(RecordFieldId("flag"));
+  Array<bool> flagRow = buffer_p.asArrayBool(RecordFieldId("flag_row"));
+  Array<float> diff = buffer_p.asArrayFloat(RecordFieldId(item));
 
   // retrieve the stats
-  Matrix<Float> adT, adF, medTF, adTF, medFmedT, medTmedF;
-  Cube<Float> medT, medF;
+  Matrix<float> adT, adF, medTF, adTF, medFmedT, medTmedF;
+  Cube<float> medT, medF;
   if (!buffer_p.isDefined("medTF")) {
     // we haven't got stats yet
     applyRowFlags(flag,flagRow); // need to apply row flags to flags for stats
@@ -494,63 +494,63 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
   GlishArray(buffer_p.get("medTmedF")).get(medTmedF);
   GlishArray(buffer_p.get("adF")).get(adF);
 */
-  Bool deleteFlag, deleteFlagRow, deleteDiff;
-  Bool* pflagRow = flagRow.getStorage(deleteFlagRow);
-  Bool* pflag = flag.getStorage(deleteFlag);
-  const Float* pdiff = diff.getStorage(deleteDiff);
-  const Int nCorr=flag.shape()(0);
-  const Int nChan=flag.shape()(1);
-  Int nTime=flag.shape()(2);
-  const Int nXY=nCorr*nChan;
-  Int nIfr=1;
+  bool deleteFlag, deleteFlagRow, deleteDiff;
+  bool* pflagRow = flagRow.getStorage(deleteFlagRow);
+  bool* pflag = flag.getStorage(deleteFlag);
+  const float* pdiff = diff.getStorage(deleteDiff);
+  const int32_t nCorr=flag.shape()(0);
+  const int32_t nChan=flag.shape()(1);
+  int32_t nTime=flag.shape()(2);
+  const int32_t nXY=nCorr*nChan;
+  int32_t nIfr=1;
   if (flag.ndim()==4) {
     nIfr=nTime;
     nTime=flag.shape()(3);
   }
-  const Int nXYZ=nXY*nIfr;
+  const int32_t nXYZ=nXY*nIfr;
    
   // iterate till no more pixels are flagged
-  Bool iter=True;
-  Matrix<Int> sum(nCorr,nIfr),sumChan(nCorr,nIfr),sumTime(nCorr,nIfr);
+  bool iter=true;
+  Matrix<int32_t> sum(nCorr,nIfr),sumChan(nCorr,nIfr),sumTime(nCorr,nIfr);
   sum=0, sumChan=0, sumTime=0;
   while (iter) {
-    iter=False;
+    iter=false;
 
-    for (Int ifr=0, offset=0; ifr<nIfr; ifr++, offset=ifr*nXY) {
-      for (Int pol=0; pol<nCorr; pol++, offset++) {
+    for (int32_t ifr=0, offset=0; ifr<nIfr; ifr++, offset=ifr*nXY) {
+      for (int32_t pol=0; pol<nCorr; pol++, offset++) {
 	
 	// keep these values around
-	Float mfmt = medFmedT(pol,ifr);
-	Float adt  = adT(pol,ifr);
-	Float mtmf = medTmedF(pol,ifr);
-	Float adf  = adF(pol,ifr);
-	Float mtf  = medTF(pol,ifr);
-	Float adtf = adTF(pol,ifr);
+	float mfmt = medFmedT(pol,ifr);
+	float adt  = adT(pol,ifr);
+	float mtmf = medTmedF(pol,ifr);
+	float adf  = adF(pol,ifr);
+	float mtf  = medTF(pol,ifr);
+	float adtf = adTF(pol,ifr);
 
-	Int chanCount=0, timeCount=0, count=0;
+	int32_t chanCount=0, timeCount=0, count=0;
 	// flag bad channels
 	{
-	  for (Int i=0, offset2=offset; i<nChan; i++, offset2+=nCorr) {
-	    Float mt=medT(pol,i,ifr);
+	  for (int32_t i=0, offset2=offset; i<nChan; i++, offset2+=nCorr) {
+	    float mt=medT(pol,i,ifr);
 	    if ( (mt>0) && (abs(mt-mfmt) > channelLevel*adt)) {
 	      chanCount++;
-	      for (Int j=0, offset3=offset2; j<nTime; j++, offset3+=nXYZ) {
-		  pflag[offset3]=True;
+	      for (int32_t j=0, offset3=offset2; j<nTime; j++, offset3+=nXYZ) {
+		  pflag[offset3]=true;
 	      }
 	    }
 	  }
 	}
 	// flag bad times
 	{
-	  Int offrow=ifr;
-	  for (Int i=0, offset2=offset; i<nTime; 
+	  int32_t offrow=ifr;
+	  for (int32_t i=0, offset2=offset; i<nTime; 
 	       i++,offset2+=nXYZ,offrow+=nIfr) {
 	    if (!pflagRow[offrow]) {
-	      Float mf=medF(pol,ifr,i);
+	      float mf=medF(pol,ifr,i);
 	      if (mf>0 && abs(mf-mtmf) > timeLevel*adf) {
 		timeCount++;
-		for (Int j=0, offset3=offset2; j<nChan; j++, offset3+=nCorr) {
-		  pflag[offset3]=True;
+		for (int32_t j=0, offset3=offset2; j<nChan; j++, offset3+=nCorr) {
+		  pflag[offset3]=true;
 		}
 	      }
 	    }
@@ -558,14 +558,14 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
 	}
 	// flag bad pixels
 	{
-	  Int offrow=ifr;
-	  for (Int i=0, offset2=offset; i<nTime;
+	  int32_t offrow=ifr;
+	  for (int32_t i=0, offset2=offset; i<nTime;
 	       i++, offset2+=nXYZ, offrow+=nIfr) {
 	    if (!pflagRow[offrow]) {
-	      for (Int j=0, offset3=offset2; j<nChan; j++, offset3+=nCorr) {
+	      for (int32_t j=0, offset3=offset2; j<nChan; j++, offset3+=nCorr) {
 		if (!pflag[offset3] && 
 		    abs(pdiff[offset3]-mtf) > pixelLevel*adtf) {
-		  pflag[offset3]=True;
+		  pflag[offset3]=true;
 		  count++;
 		}
 	      }
@@ -595,8 +595,8 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
     }
   }
 
-  for (Int ifr=0; ifr<nIfr; ifr++) {
-    for (Int pol=0; pol<nCorr; pol++) {
+  for (int32_t ifr=0; ifr<nIfr; ifr++) {
+    for (int32_t pol=0; pol<nCorr; pol++) {
       if ((sumChan(pol,ifr)>0 || sumTime(pol,ifr)>0 || sum(pol,ifr)>0)) {
 	if (nIfr>1) {
 	  os << LogIO::NORMAL << "Polarization# = "<< pol+1 << 
@@ -638,34 +638,34 @@ Bool MSFlagger::clipDataBuffer(Float pixelLevel, Float timeLevel,
   buffer_p.define("adF",adF);
   buffer_p.define("medTmedF",medTmedF);
   buffer_p.define("medFmedT",medFmedT);
-  return True;
+  return true;
 }
 
-Bool MSFlagger::setDataBufferFlags(const Record& flags)
+bool MSFlagger::setDataBufferFlags(const Record& flags)
 {
   LogIO os;
   if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN <<
       "Data buffer is empty, use filldatabuffer first"<< LogIO::POST;
-    return False;
+    return false;
   }
   buffer_p.define("flag",flags.asArrayBool(RecordFieldId("flag")));
   buffer_p.define("flag_row",flags.asArrayBool(RecordFieldId("flag_row")));
-  return True;
+  return true;
 }
 
-Bool MSFlagger::writeDataBufferFlags()
+bool MSFlagger::writeDataBufferFlags()
 {
   LogIO os;
-  if (!check()) return False;
+  if (!check()) return false;
   if (!msSel_p->selectedTable().isWritable()) {
     os << LogIO::SEVERE << "MeasurementSet is not writable"<< LogIO::POST;
-    return False;
+    return false;
   }
   if (!buffer_p.isDefined("datafield")) {
     os << LogIO::WARN <<
       "Data buffer is empty, use filldatabuffer first"<< LogIO::POST;
-    return False;
+    return false;
   }
   Record items(RecordInterface::Variable);
   items.define("flag_row",buffer_p.asArrayBool(RecordFieldId("flag_row")));
@@ -673,53 +673,53 @@ Bool MSFlagger::writeDataBufferFlags()
   return msSel_p->putData(items);
 }
 
-Bool MSFlagger::createFlagHistory(Int nHis)
+bool MSFlagger::createFlagHistory(int32_t nHis)
 {
   LogIO os;
-  if (!check()) return False;
+  if (!check()) return false;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isWritable()) {
     os << LogIO::WARN << "MS is not writable"<< LogIO::POST;
-    return False;
+    return false;
   }
   if (nHis<2 || nHis>16) {
     os << LogIO::WARN << "Invalid argument: 2<=nHis<=16 "<< LogIO::POST;
-    return False;
+    return false;
   } 
   if (tab.isColumn(MS::FLAG_CATEGORY)) {
     os << LogIO::WARN << "FLAG_CATEGORY column already exists"<<LogIO::POST;
-    return False;
+    return false;
   }
   // Look for the FLAG column among the hypercolumns
   String flagHypercubeId="";
-  Bool found=findHypercubeId(flagHypercubeId,MS::columnName(MS::FLAG),tab);
+  bool found=findHypercubeId(flagHypercubeId,MS::columnName(MS::FLAG),tab);
  
   Vector<String> coordColNames(0), idColNames(1);
   TableDesc td1;
   if (!found) {
     // If there's no id, assume the data is fixed shape throughout
-    ArrayColumn<Bool> flagCol(tab,MS::columnName(MS::FLAG));
-    Int numCorr=flagCol.shape(0)(0);
-    Int numChan=flagCol.shape(0)(1);
+    ArrayColumn<bool> flagCol(tab,MS::columnName(MS::FLAG));
+    int32_t numCorr=flagCol.shape(0)(0);
+    int32_t numChan=flagCol.shape(0)(1);
     IPosition shape(3,nHis,numCorr,numChan);
     idColNames.resize(0);
-    td1.addColumn(ArrayColumnDesc<Bool>("FLAG_CATEGORY","flag history",shape,
+    td1.addColumn(ArrayColumnDesc<bool>("FLAG_CATEGORY","flag history",shape,
 					ColumnDesc::Direct));
     td1.defineHypercolumn("TiledFlagHistory",4,
 			  stringToVector("FLAG_CATEGORY"),coordColNames,
 			  idColNames);
     // fixed data shape
-    Int tileSize=numChan/10+1;
+    int32_t tileSize=numChan/10+1;
     IPosition tileShape(4,1,numCorr,tileSize,16384/numCorr/tileSize);
     TiledColumnStMan tiledStMan1("TiledFlagHistory",tileShape);
     tab.addColumn(td1,tiledStMan1);
     fillFlagHist(nHis,numCorr,numChan,tab);
   } else {
     {
-      ArrayColumn<Bool> flagCol(tab,MS::columnName(MS::FLAG));
+      ArrayColumn<bool> flagCol(tab,MS::columnName(MS::FLAG));
       idColNames(0)="FLAG_CATEGORY_HYPERCUBE_ID"; 
-      td1.addColumn(ArrayColumnDesc<Bool>("FLAG_CATEGORY","flag history",3));
-      td1.addColumn(ScalarColumnDesc<Int>("FLAG_CATEGORY_HYPERCUBE_ID",
+      td1.addColumn(ArrayColumnDesc<bool>("FLAG_CATEGORY","flag history",3));
+      td1.addColumn(ScalarColumnDesc<int32_t>("FLAG_CATEGORY_HYPERCUBE_ID",
 					  "hypercube index"));
       td1.defineHypercolumn("TiledFlagHistory",4,
 			    stringToVector("FLAG_CATEGORY"),coordColNames,
@@ -730,27 +730,27 @@ Bool MSFlagger::createFlagHistory(Int nHis)
       TiledDataStManAccessor flagCatAccessor(tab,"TiledFlagCategory");
 
       // get the hypercube ids, sort them, remove the duplicate values
-      ScalarColumn<Int> hypercubeId(tab,flagHypercubeId);
-      Vector<Int> ids=hypercubeId.getColumn();
-      Int nId=genSort(ids,Sort::Ascending,Sort::QuickSort+Sort::NoDuplicates);
-      ids.resize(nId,True); // resize and copy values
-      Vector<Bool> cubeAdded(nId,False);
+      ScalarColumn<int32_t> hypercubeId(tab,flagHypercubeId);
+      Vector<int32_t> ids=hypercubeId.getColumn();
+      int32_t nId=genSort(ids,Sort::Ascending,Sort::QuickSort+Sort::NoDuplicates);
+      ids.resize(nId,true); // resize and copy values
+      Vector<bool> cubeAdded(nId,false);
       Record values1; 
       values1.define("FLAG_CATEGORY_HYPERCUBE_ID",hypercubeId(0));
-      Int cube;
+      int32_t cube;
       for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(0)) break;
-      Int64 nRow=tab.nrow();
-      for (Int64 i=0; i<nRow; i++) {
+      int64_t nRow=tab.nrow();
+      for (int64_t i=0; i<nRow; i++) {
 	// add new hyperCube
 	if (i>0 && hypercubeId(i)!=hypercubeId(i-1)) {
 	  values1.define("FLAG_CATEGORY_HYPERCUBE_ID",hypercubeId(i));
 	  for (cube=0; cube<nId; cube++) if (ids(cube)==hypercubeId(i)) break;
 	}
 	if (!cubeAdded(cube)) {
-	  cubeAdded(cube)=True;
-	  Int numCorr=flagCol.shape(i)(0);
-	  Int numChan=flagCol.shape(i)(1);
-	  Int tileSize=numChan/10+1;
+	  cubeAdded(cube)=true;
+	  int32_t numCorr=flagCol.shape(i)(0);
+	  int32_t numChan=flagCol.shape(i)(1);
+	  int32_t tileSize=numChan/10+1;
 	  IPosition cubeShape(4,nHis,numCorr,numChan,0);
 	  IPosition tileShape(4,1,numCorr,tileSize,16384/numCorr/tileSize);
 	  flagCatAccessor.addHypercube(cubeShape,tileShape,values1);
@@ -761,31 +761,31 @@ Bool MSFlagger::createFlagHistory(Int nHis)
 
     TableIterator obsIter(tab,flagHypercubeId);
     for (;!obsIter.pastEnd(); obsIter.next()) {
-      ArrayColumn<Bool> flagCol(obsIter.table(),MS::columnName(MS::FLAG));
-      Int numCorr=flagCol.shape(0)(0);
-      Int numChan=flagCol.shape(0)(1);
+      ArrayColumn<bool> flagCol(obsIter.table(),MS::columnName(MS::FLAG));
+      int32_t numCorr=flagCol.shape(0)(0);
+      int32_t numChan=flagCol.shape(0)(1);
       Table tab=obsIter.table();
       fillFlagHist(nHis,numCorr,numChan,tab);
     }
   }    
-  return True;
+  return true;
 }
 
-Bool MSFlagger::findHypercubeId(String& hypercubeId, const String& column,
+bool MSFlagger::findHypercubeId(String& hypercubeId, const String& column,
 			    const Table& tab)
 {
   // to find the corresponding id column (if any)
   TableDesc td(tab.tableDesc());
   Vector<String> hypercolumnNames=td.hypercolumnNames();
-  Bool found=False;
+  bool found=false;
   hypercubeId="";
   if (hypercolumnNames.nelements()>0) {
-    for (uInt i=0; i<hypercolumnNames.nelements(); i++) {
+    for (uint32_t i=0; i<hypercolumnNames.nelements(); i++) {
       Vector<String> colNames,coordColNames,idColNames;
       td.hypercolumnDesc(hypercolumnNames(i),
 			 colNames,coordColNames,
 			 idColNames);
-      for (uInt j=0; j<colNames.nelements(); j++) {
+      for (uint32_t j=0; j<colNames.nelements(); j++) {
 	if (colNames(j)==column) {
 	  found=(idColNames.nelements()>0);
 	  if (found) hypercubeId=idColNames(0);
@@ -796,48 +796,48 @@ Bool MSFlagger::findHypercubeId(String& hypercubeId, const String& column,
   return found;
 }
 
-void MSFlagger::fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab)
+void MSFlagger::fillFlagHist(int32_t nHis, int32_t numCorr, int32_t numChan, Table& tab)
 {
   // fill the first two levels of flagging with the flags present 
   // in the MS columns FLAG and FLAG_ROW.
   const rownr_t maxRow=1000000/(numCorr*numChan); // of order 1 MB chunks
-  ArrayColumn<Bool> flagCol(tab,MS::columnName(MS::FLAG));
-  ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
-  Array<Bool> flagHis(IPosition(4,nHis,numCorr,numChan,maxRow));
+  ArrayColumn<bool> flagCol(tab,MS::columnName(MS::FLAG));
+  ArrayColumn<bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
+  Array<bool> flagHis(IPosition(4,nHis,numCorr,numChan,maxRow));
   // flag level 0
-  Cube<Bool> ref0(flagHis(IPosition(4,0,0,0,0),
+  Cube<bool> ref0(flagHis(IPosition(4,0,0,0,0),
 			  IPosition(4,0,numCorr-1,numChan-1,maxRow-1)).
 			  reform(IPosition(3,numCorr,numChan,maxRow)));
   // flag level 1
-  Cube<Bool> ref1(flagHis(IPosition(4,1,0,0,0),
+  Cube<bool> ref1(flagHis(IPosition(4,1,0,0,0),
 			  IPosition(4,1,numCorr-1,numChan-1,maxRow-1)).
 			  reform(IPosition(3,numCorr,numChan,maxRow)));
-  flagHis.set(False);
+  flagHis.set(false);
   rownr_t nRow=tab.nrow();
-  ScalarColumn<Bool> flagRowCol(tab,MS::columnName(MS::FLAG_ROW));
-  Array<Bool> flagCube;
-  Vector<Bool> flagRowVec;
+  ScalarColumn<bool> flagRowCol(tab,MS::columnName(MS::FLAG_ROW));
+  Array<bool> flagCube;
+  Vector<bool> flagRowVec;
   for (rownr_t i=0; i<=(nRow/maxRow); i+=maxRow) {
     rownr_t n=min(maxRow,nRow-maxRow*i);
     if (n<maxRow) {
       flagHis.resize(IPosition(4,nHis,numCorr,numChan,n));
-      flagHis.set(False);
-      Array<Bool> tmp0(flagHis(IPosition(4,0,0,0,0),
+      flagHis.set(false);
+      Array<bool> tmp0(flagHis(IPosition(4,0,0,0,0),
 			      IPosition(4,0,numCorr-1,numChan-1,n-1)).
 		      reform(IPosition(3,numCorr,numChan,n)));
       ref0.reference(tmp0);
-      Array<Bool> tmp1(flagHis(IPosition(4,1,0,0,0),
+      Array<bool> tmp1(flagHis(IPosition(4,1,0,0,0),
 			       IPosition(4,1,numCorr-1,numChan-1,n-1)).
 		       reform(IPosition(3,numCorr,numChan,n)));
       ref1.reference(tmp1);
     }
     Slicer rowSlice(Slice(i*maxRow,n));
-    flagRowCol.getColumnRange(rowSlice,flagRowVec,True);
-    flagCol.getColumnRange(rowSlice,flagCube,True);
+    flagRowCol.getColumnRange(rowSlice,flagRowVec,true);
+    flagCol.getColumnRange(rowSlice,flagCube,true);
     ref0=flagCube;
     for (rownr_t j=0; j<n; j++) {
       if (flagRowVec(j)) {
-	ref0.xyPlane(j).set(True);
+	ref0.xyPlane(j).set(true);
       }
     }
     ref1=ref0;
@@ -848,21 +848,21 @@ void MSFlagger::fillFlagHist(Int nHis, Int numCorr, Int numChan, Table& tab)
   flagHisCol.rwKeywordSet().define("FLAG_LEVEL",1);
 }
 
-Bool MSFlagger::saveFlags(Bool newLevel)
+bool MSFlagger::saveFlags(bool newLevel)
 {
   LogIO os;
-  if (!check()) return False;
+  if (!check()) return false;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isColumn(MS::FLAG_CATEGORY)) {
     os << LogIO::WARN << "FLAG_CATEGORY column does not exist"<<LogIO::POST;
-    return False;
+    return false;
   }
   if (!tab.isWritable()) {
     os << LogIO::WARN << "MS is not writable"<< LogIO::POST;
-    return False;
+    return false;
   }
-  ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
-  Int level;
+  ArrayColumn<bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
+  int32_t level;
   flagHisCol.keywordSet().get("FLAG_LEVEL",level);
   if (newLevel) {
     if (level+1>=flagHisCol.shape(0)(0)) {
@@ -874,7 +874,7 @@ Bool MSFlagger::saveFlags(Bool newLevel)
   } 
   
   String hypercubeId;
-  Bool found=findHypercubeId(hypercubeId,MS::columnName(MS::FLAG_CATEGORY),tab);
+  bool found=findHypercubeId(hypercubeId,MS::columnName(MS::FLAG_CATEGORY),tab);
   if (!found) {
     // data has fixed shape
     saveToFlagHist(level,tab);
@@ -887,68 +887,68 @@ Bool MSFlagger::saveFlags(Bool newLevel)
     }
   }
   if (newLevel) flagHisCol.rwKeywordSet().define("FLAG_LEVEL",level);
-  return True;
+  return true;
 }
 
-void MSFlagger::saveToFlagHist(Int level, Table& tab)
+void MSFlagger::saveToFlagHist(int32_t level, Table& tab)
 {
-  ArrayColumn<Bool> flagCol(tab,MS::columnName(MS::FLAG));
-  Int numCorr=flagCol.shape(0)(0);
-  Int numChan=flagCol.shape(0)(1);
+  ArrayColumn<bool> flagCol(tab,MS::columnName(MS::FLAG));
+  int32_t numCorr=flagCol.shape(0)(0);
+  int32_t numChan=flagCol.shape(0)(1);
   const rownr_t maxRow=1000000/(numCorr*numChan); // of order 1 MB chunks
-  Array<Bool> flagHis(IPosition(4,1,numCorr,numChan,maxRow));
-  Cube<Bool> ref(flagHis.reform(IPosition(3,numCorr,numChan,maxRow)));
+  Array<bool> flagHis(IPosition(4,1,numCorr,numChan,maxRow));
+  Cube<bool> ref(flagHis.reform(IPosition(3,numCorr,numChan,maxRow)));
   rownr_t nRow=tab.nrow();
-  Array<Bool> flagCube;
-  Vector<Bool> flagRowVec;
+  Array<bool> flagCube;
+  Vector<bool> flagRowVec;
   Slicer slicer(Slice(level,1),Slice(0,numCorr),Slice(0,numChan));
   for (rownr_t i=0; i<=(nRow/maxRow); i+=maxRow) {
     rownr_t n=min(maxRow,nRow-maxRow*i);
     if (n<maxRow) {
       flagHis.resize(IPosition(4,1,numCorr,numChan,n));
-      Array<Bool> tmp(flagHis.reform(IPosition(3,numCorr,numChan,n)));
+      Array<bool> tmp(flagHis.reform(IPosition(3,numCorr,numChan,n)));
       ref.reference(tmp);
     }
     RowNumbers rows(n);
     indgen(rows, i*maxRow);
     Table sel=tab(rows);
-    ArrayColumn<Bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
-    ArrayColumn<Bool> flagCol(sel,MS::columnName(MS::FLAG));
-    ScalarColumn<Bool> flagRowCol(sel,MS::columnName(MS::FLAG_ROW));
-    flagCol.getColumn(flagCube,True);
-    flagRowCol.getColumn(flagRowVec,True);
+    ArrayColumn<bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
+    ArrayColumn<bool> flagCol(sel,MS::columnName(MS::FLAG));
+    ScalarColumn<bool> flagRowCol(sel,MS::columnName(MS::FLAG_ROW));
+    flagCol.getColumn(flagCube,true);
+    flagRowCol.getColumn(flagRowVec,true);
     ref=flagCube;
     for (rownr_t j=0; j<n; j++) {
       if (flagRowVec(j)) {
-	ref.xyPlane(j).set(True);
+	ref.xyPlane(j).set(true);
       }
     }
     flagHisCol.putColumn(slicer,flagHis);
   }
 }
 
-Bool MSFlagger::restoreFlags(Int level)
+bool MSFlagger::restoreFlags(int32_t level)
 {
   LogIO os;
-  if (!check()) return False;
+  if (!check()) return false;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isColumn(MS::FLAG_CATEGORY)) {
     os << LogIO::WARN << "FLAG_CATEGORY column does not exist"<<LogIO::POST;
-    return False;
+    return false;
   }
   if (!tab.isWritable()) {
     os << LogIO::WARN << "MS is not writable"<< LogIO::POST;
-    return False;
+    return false;
   }
-  ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
-  Int flagLevel=level;
+  ArrayColumn<bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
+  int32_t flagLevel=level;
   if (flagLevel==-1) flagHisCol.keywordSet().get("FLAG_LEVEL",flagLevel);
   if (flagLevel<0 || flagLevel>=flagHisCol.shape(0)(0)) {
     os << LogIO::WARN << "Invalid flag level ("<<flagLevel+1<<")"<<LogIO::POST;
-    return False;
+    return false;
   }
   String hypercubeId;
-  Bool found=findHypercubeId(hypercubeId,MS::columnName(MS::FLAG_CATEGORY),tab);
+  bool found=findHypercubeId(hypercubeId,MS::columnName(MS::FLAG_CATEGORY),tab);
   if (!found) {
     // data has fixed shape
     applyFlagHist(flagLevel,tab);
@@ -961,13 +961,13 @@ Bool MSFlagger::restoreFlags(Int level)
     }
   }
   if (level!=-1) flagHisCol.rwKeywordSet().define("FLAG_LEVEL",level);
-  return True;
+  return true;
 }
 
-void MSFlagger::applyFlagHist(Int level, Table& tab)
+void MSFlagger::applyFlagHist(int32_t level, Table& tab)
 {
   rownr_t nRow=tab.nrow();
-  ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
+  ArrayColumn<bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
   IPosition shape=flagHisCol.shape(0); shape(0)=1;
   const rownr_t maxRow=1000000/(shape(1)*shape(2)); // of order 1 MB chunks
   Slicer slicer(Slice(level,1),Slice(0,shape(1)),Slice(0,shape(2)));
@@ -976,43 +976,43 @@ void MSFlagger::applyFlagHist(Int level, Table& tab)
     RowNumbers rows(n);
     indgen(rows, i*maxRow);
     Table sel=tab(rows);
-    ArrayColumn<Bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
-    Cube<Bool> flag(flagHisCol.getColumn(slicer).
+    ArrayColumn<bool> flagHisCol(sel,MS::columnName(MS::FLAG_CATEGORY));
+    Cube<bool> flag(flagHisCol.getColumn(slicer).
       reform(IPosition(3,shape(1),shape(2),n)));
-    ArrayColumn<Bool> flagCol(sel,MS::columnName(MS::FLAG));
-    ScalarColumn<Bool> flagRowCol(sel,MS::columnName(MS::FLAG_ROW));
+    ArrayColumn<bool> flagCol(sel,MS::columnName(MS::FLAG));
+    ScalarColumn<bool> flagRowCol(sel,MS::columnName(MS::FLAG_ROW));
     flagCol.putColumn(flag);
     for (rownr_t j=0; j<n; j++) {
-      if (allEQ(flag.xyPlane(j),True)) {
-	flagRowCol.put(j,True);
+      if (allEQ(flag.xyPlane(j),true)) {
+	flagRowCol.put(j,true);
       } else {
-	flagRowCol.put(j,False);
+	flagRowCol.put(j,false);
       }
     }
   }
 }
 
-Int MSFlagger::flagLevel()
+int32_t MSFlagger::flagLevel()
 {
   LogIO os;
-  if (!check()) return False;
+  if (!check()) return false;
   MeasurementSet tab=msSel_p->selectedTable();
   if (!tab.isColumn(MS::FLAG_CATEGORY)) {
     os << LogIO::WARN << "FLAG_CATEGORY column does not exist"<<LogIO::POST;
     return -1;
   }
-  ArrayColumn<Bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
-  Int flagLevel;
+  ArrayColumn<bool> flagHisCol(tab,MS::columnName(MS::FLAG_CATEGORY));
+  int32_t flagLevel;
   flagHisCol.keywordSet().get("FLAG_LEVEL",flagLevel);
   return flagLevel;
 }
   
-Bool MSFlagger::check() 
+bool MSFlagger::check() 
 {
   LogIO os;
-  if (msSel_p) return True;
+  if (msSel_p) return true;
   os << LogIO::WARN << "Flagger is uninitialized"<<LogIO::POST;
-  return False;
+  return false;
 }
 
 

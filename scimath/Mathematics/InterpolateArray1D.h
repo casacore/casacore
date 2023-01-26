@@ -68,7 +68,7 @@ template <class T> class Block;
 // </ul>
 //
 // The abscissa must be a simple type (scalar value) that
-// can be ordered. ie. an uInt, Int, Float or Double (not Complex). The
+// can be ordered. ie. an uint32_t, int32_t, float or double (not Complex). The
 // ordinate can be an Array of any data type that has addition, and 
 // subtraction defined as well as multiplication by a scalar of the abcissa 
 // type. 
@@ -92,13 +92,13 @@ template <class T> class Block;
 // This code fragment does cubic interpolation on (xin,yin) pairs to
 // produce (xout,yout) pairs.
 // <srcblock>
-//  Vector<Float> xin(4); indgen(xin); 
-//  Vector<Double> yin(4); indgen(yin); yin = yin*yin*yin;
-//  Vector<Float> xout(20); 
-//  for (Int i=0; i<20; i++) xout(i) = 1 + i*0.1;
-//  Vector<Double> yout;
-//  InterpolateArray1D<Float, Double>::interpolate(yout, xout, xin, yin, 
-//                         InterpolateArray1D<Float,Double>::cubic);
+//  Vector<float> xin(4); indgen(xin); 
+//  Vector<double> yin(4); indgen(yin); yin = yin*yin*yin;
+//  Vector<float> xout(20); 
+//  for (int32_t i=0; i<20; i++) xout(i) = 1 + i*0.1;
+//  Vector<double> yout;
+//  InterpolateArray1D<float, double>::interpolate(yout, xout, xin, yin, 
+//                         InterpolateArray1D<float,double>::cubic);
 // </srcblock>
 // </example>
  
@@ -110,7 +110,7 @@ template <class T> class Block;
  
 // <templating arg=Domain>
 // <li> The Domain class must be a type that can be ordered in a mathematical
-// sense. This includes uInt, Int, Float, Double, but not Complex. 
+// sense. This includes uint32_t, int32_t, float, double, but not Complex. 
 // </templating>
  
 // <templating arg=Range>
@@ -154,7 +154,7 @@ public:
 			  const Vector<Domain>& xout,
 			  const Vector<Domain>& xin, 
 			  const Array<Range>& yin,
-			  Int method);
+			  int32_t method);
 
   // deprecated version of previous function using Blocks - no longer needed
   // now that Vector has a fast index operator [].
@@ -162,41 +162,41 @@ public:
 			  const Block<Domain>& xout,
 			  const Block<Domain>& xin, 
 			  const Array<Range>& yin,
-			  Int method);
+			  int32_t method);
 
   // Interpolate in the last dimension of array yin whose x coordinates 
   // along this dimension are given by xin. 
   // Output array yout has interpolated values for x coordinates xout.
   // This version handles flagged data in a simple way: all outputs
   // depending on a flagged input are flagged.
-  // If goodIsTrue==True, then that means
-  // a good data point has a flag value of True (usually for 
-  // visibilities, good is False and for images good is True)
-  // If extrapolate==False, then xout points outside the range of xin
+  // If goodIsTrue==true, then that means
+  // a good data point has a flag value of true (usually for 
+  // visibilities, good is false and for images good is true)
+  // If extrapolate==false, then xout points outside the range of xin
   // will always be marked as flagged.
   // TODO: implement flags for cubic and spline (presently input flags
   // are copied to output).  
   static void interpolate(Array<Range>& yout, 
-			  Array<Bool>& youtFlags,
+			  Array<bool>& youtFlags,
 			  const Vector<Domain>& xout,
 			  const Vector<Domain>& xin, 
 			  const Array<Range>& yin,
-			  const Array<Bool>& yinFlags,
-			  Int method,
-                          Bool goodIsTrue=False,
-			  Bool extrapolate=False);
+			  const Array<bool>& yinFlags,
+			  int32_t method,
+                          bool goodIsTrue=false,
+			  bool extrapolate=false);
 
   // deprecated version of previous function using Blocks - no longer needed
   // now that Vector has a fast index operator [].
   static void interpolate(Array<Range>& yout, 
-			  Array<Bool>& youtFlags,
+			  Array<bool>& youtFlags,
 			  const Block<Domain>& xout,
 			  const Block<Domain>& xin, 
 			  const Array<Range>& yin,
-			  const Array<Bool>& yinFlags,
-			  Int method,
-                          Bool goodIsTrue=False,
-			  Bool extrapolate=False);
+			  const Array<bool>& yinFlags,
+			  int32_t method,
+                          bool goodIsTrue=false,
+			  bool extrapolate=false);
 
   // Interpolate in the middle axis in 3D array (yin) whose x coordinates along the
   // this dimension are given by xin.
@@ -207,82 +207,82 @@ public:
                           const Vector<Domain>& xout,
                           const Vector<Domain>& xin,
                           const Cube<Range>& yin,
-                          Int method);
+                          int32_t method);
 
   // Interpolate in the middle dimension of 3D array yin whose x coordinates 
   // along this dimension are given by xin. 
   // Output array yout has interpolated values for x coordinates xout.
   // This version handles flagged data in a simple way: all outputs
   // depending on a flagged input are flagged.
-  // If goodIsTrue==True, then that means
-  // a good data point has a flag value of True (usually for 
-  // visibilities, good is False and for images good is True)
-  // If extrapolate==False, then xout points outside the range of xin
+  // If goodIsTrue==true, then that means
+  // a good data point has a flag value of true (usually for 
+  // visibilities, good is false and for images good is true)
+  // If extrapolate==false, then xout points outside the range of xin
   // will always be marked as flagged.
   // Currently only linear interpolation method is implemented.
   // TODO: add support for nearest neiborhood, cubic, and cubic spline. 
   static void interpolatey(Cube<Range>& yout,
-			  Cube<Bool>& youtFlags,
+			  Cube<bool>& youtFlags,
                           const Vector<Domain>& xout,
                           const Vector<Domain>& xin,
                           const Cube<Range>& yin,
-			  const Cube<Bool>& yinFlags,
-                          Int method,
-                          Bool goodIsTrue=False,
-			  Bool extrapolate=False);
+			  const Cube<bool>& yinFlags,
+                          int32_t method,
+                          bool goodIsTrue=false,
+			  bool extrapolate=false);
 
 private:
   // Interpolate the y-vectors of length ny from x values xin to xout.
   static void interpolatePtr(PtrBlock<Range*>& yout, 
-			     Int ny, 
+			     int32_t ny, 
 			     const Vector<Domain>& xout, 
 			     const Vector<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
-			     Int method);
+			     int32_t method);
 
   // Interpolate the y-vectors of length ny from x values xin to xout.
   // Take flagging into account
   static void interpolatePtr(PtrBlock<Range*>& yout, 
-			     PtrBlock<Bool*>& youtFlags,
-			     Int ny, 
+			     PtrBlock<bool*>& youtFlags,
+			     int32_t ny, 
 			     const Vector<Domain>& xout, 
 			     const Vector<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
-			     const PtrBlock<const Bool*>& yinFlags, 
-			     Int method, Bool goodIsTrue,
-			     Bool extrapolate);
+			     const PtrBlock<const bool*>& yinFlags, 
+			     int32_t method, bool goodIsTrue,
+			     bool extrapolate);
 
   // Interpolate along yaxis 
   static void interpolateyPtr(PtrBlock<Range*>& yout,
-                             Int na,
-                             Int nb,
-                             Int nc,
+                             int32_t na,
+                             int32_t nb,
+                             int32_t nc,
                              const Vector<Domain>& xout,
                              const Vector<Domain>& xin,
                              const PtrBlock<const Range*>& yin,
-                             Int method);
+                             int32_t method);
 
   // Take flagging into account
   static void interpolateyPtr(PtrBlock<Range*>& yout, 
-			     PtrBlock<Bool*>& youtFlags,
-                             Int na,
-			     Int nb, 
-			     Int nc, 
+			     PtrBlock<bool*>& youtFlags,
+                             int32_t na,
+			     int32_t nb, 
+			     int32_t nc, 
 			     const Vector<Domain>& xout, 
 			     const Vector<Domain>& xin,
 			     const PtrBlock<const Range*>& yin, 
-			     const PtrBlock<const Bool*>& yinFlags, 
-			     Int method, Bool goodIsTrue,
-			     Bool extrapolate);
+			     const PtrBlock<const bool*>& yinFlags, 
+			     int32_t method, bool goodIsTrue,
+			     bool extrapolate);
 
   // Interpolate the y-vectors of length ny from x values xin to xout
   // using polynomial interpolation with specified order.
   static void polynomialInterpolation(PtrBlock<Range*>& yout, 
-				      Int ny, 
+				      int32_t ny, 
 				      const Vector<Domain>& xout, 
 				      const Vector<Domain>& xin,
 				      const PtrBlock<const Range*>& yin, 
-				      Int order);
+				      int32_t order);
 
 };
 

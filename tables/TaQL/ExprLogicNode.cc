@@ -41,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TableExprNodeEQBool::TableExprNodeEQBool (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQBool::getBool (const TableExprId& id)
+bool TableExprNodeEQBool::getBool (const TableExprId& id)
 {
     return lnode_p->getBool(id) == rnode_p->getBool(id);
 }
@@ -49,7 +49,7 @@ Bool TableExprNodeEQBool::getBool (const TableExprId& id)
 TableExprNodeEQInt::TableExprNodeEQInt (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQInt::getBool (const TableExprId& id)
+bool TableExprNodeEQInt::getBool (const TableExprId& id)
 {
     return lnode_p->getInt(id) == rnode_p->getInt(id);
 }
@@ -57,7 +57,7 @@ Bool TableExprNodeEQInt::getBool (const TableExprId& id)
 TableExprNodeEQDouble::TableExprNodeEQDouble (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQDouble::getBool (const TableExprId& id)
+bool TableExprNodeEQDouble::getBool (const TableExprId& id)
 {
     return lnode_p->getDouble(id) == rnode_p->getDouble(id);
 }
@@ -65,7 +65,7 @@ Bool TableExprNodeEQDouble::getBool (const TableExprId& id)
 TableExprNodeEQDComplex::TableExprNodeEQDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQDComplex::getBool (const TableExprId& id)
+bool TableExprNodeEQDComplex::getBool (const TableExprId& id)
 {
     return lnode_p->getDComplex(id) == rnode_p->getDComplex(id);
 }
@@ -73,7 +73,7 @@ Bool TableExprNodeEQDComplex::getBool (const TableExprId& id)
 TableExprNodeEQString::TableExprNodeEQString (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQString::getBool (const TableExprId& id)
+bool TableExprNodeEQString::getBool (const TableExprId& id)
 {
     return lnode_p->getString(id) == rnode_p->getString(id);
 }
@@ -81,7 +81,7 @@ Bool TableExprNodeEQString::getBool (const TableExprId& id)
 TableExprNodeEQRegex::TableExprNodeEQRegex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQRegex::getBool (const TableExprId& id)
+bool TableExprNodeEQRegex::getBool (const TableExprId& id)
 {
     return rnode_p->getRegex(id).match (lnode_p->getString(id));
 }
@@ -89,7 +89,7 @@ Bool TableExprNodeEQRegex::getBool (const TableExprId& id)
 TableExprNodeEQDate::TableExprNodeEQDate (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtEQ)
 {}
-Bool TableExprNodeEQDate::getBool (const TableExprId& id)
+bool TableExprNodeEQDate::getBool (const TableExprId& id)
 {
     return lnode_p->getDate(id) == rnode_p->getDate(id);
 }
@@ -98,7 +98,7 @@ Bool TableExprNodeEQDate::getBool (const TableExprId& id)
 TableExprNodeNEBool::TableExprNodeNEBool (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNEBool::getBool (const TableExprId& id)
+bool TableExprNodeNEBool::getBool (const TableExprId& id)
 {
     return lnode_p->getBool(id) != rnode_p->getBool(id);
 }
@@ -106,7 +106,7 @@ Bool TableExprNodeNEBool::getBool (const TableExprId& id)
 TableExprNodeNEInt::TableExprNodeNEInt (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNEInt::getBool (const TableExprId& id)
+bool TableExprNodeNEInt::getBool (const TableExprId& id)
 {
     return lnode_p->getInt(id) != rnode_p->getInt(id);
 }
@@ -114,7 +114,7 @@ Bool TableExprNodeNEInt::getBool (const TableExprId& id)
 TableExprNodeNEDouble::TableExprNodeNEDouble (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNEDouble::getBool (const TableExprId& id)
+bool TableExprNodeNEDouble::getBool (const TableExprId& id)
 {
     return lnode_p->getDouble(id) != rnode_p->getDouble(id);
 }
@@ -122,7 +122,7 @@ Bool TableExprNodeNEDouble::getBool (const TableExprId& id)
 TableExprNodeNEDComplex::TableExprNodeNEDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNEDComplex::getBool (const TableExprId& id)
+bool TableExprNodeNEDComplex::getBool (const TableExprId& id)
 {
     return lnode_p->getDComplex(id) != rnode_p->getDComplex(id);
 }
@@ -130,7 +130,7 @@ Bool TableExprNodeNEDComplex::getBool (const TableExprId& id)
 TableExprNodeNEString::TableExprNodeNEString (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNEString::getBool (const TableExprId& id)
+bool TableExprNodeNEString::getBool (const TableExprId& id)
 {
     return lnode_p->getString(id) != rnode_p->getString(id);
 }
@@ -138,7 +138,7 @@ Bool TableExprNodeNEString::getBool (const TableExprId& id)
 TableExprNodeNERegex::TableExprNodeNERegex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNERegex::getBool (const TableExprId& id)
+bool TableExprNodeNERegex::getBool (const TableExprId& id)
 {
     return ! rnode_p->getRegex(id).match (lnode_p->getString(id));
 }
@@ -146,7 +146,7 @@ Bool TableExprNodeNERegex::getBool (const TableExprId& id)
 TableExprNodeNEDate::TableExprNodeNEDate (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNE)
 {}
-Bool TableExprNodeNEDate::getBool (const TableExprId& id)
+bool TableExprNodeNEDate::getBool (const TableExprId& id)
 {
     return lnode_p->getDate(id) != rnode_p->getDate(id);
 }
@@ -155,7 +155,7 @@ Bool TableExprNodeNEDate::getBool (const TableExprId& id)
 TableExprNodeGTInt::TableExprNodeGTInt (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGT)
 {}
-Bool TableExprNodeGTInt::getBool (const TableExprId& id)
+bool TableExprNodeGTInt::getBool (const TableExprId& id)
 {
     return lnode_p->getInt(id) > rnode_p->getInt(id);
 }
@@ -163,7 +163,7 @@ Bool TableExprNodeGTInt::getBool (const TableExprId& id)
 TableExprNodeGTDouble::TableExprNodeGTDouble (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGT)
 {}
-Bool TableExprNodeGTDouble::getBool (const TableExprId& id)
+bool TableExprNodeGTDouble::getBool (const TableExprId& id)
 {
     return lnode_p->getDouble(id) > rnode_p->getDouble(id);
 }
@@ -171,7 +171,7 @@ Bool TableExprNodeGTDouble::getBool (const TableExprId& id)
 TableExprNodeGTDComplex::TableExprNodeGTDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGT)
 {}
-Bool TableExprNodeGTDComplex::getBool (const TableExprId& id)
+bool TableExprNodeGTDComplex::getBool (const TableExprId& id)
 {
     return lnode_p->getDComplex(id) > rnode_p->getDComplex(id);
 }
@@ -179,7 +179,7 @@ Bool TableExprNodeGTDComplex::getBool (const TableExprId& id)
 TableExprNodeGTString::TableExprNodeGTString (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGT)
 {}
-Bool TableExprNodeGTString::getBool (const TableExprId& id)
+bool TableExprNodeGTString::getBool (const TableExprId& id)
 {
     return lnode_p->getString(id) > rnode_p->getString(id);
 }
@@ -187,7 +187,7 @@ Bool TableExprNodeGTString::getBool (const TableExprId& id)
 TableExprNodeGTDate::TableExprNodeGTDate (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGT)
 {}
-Bool TableExprNodeGTDate::getBool (const TableExprId& id)
+bool TableExprNodeGTDate::getBool (const TableExprId& id)
 {
     return lnode_p->getDate(id) > rnode_p->getDate(id);
 }
@@ -196,7 +196,7 @@ Bool TableExprNodeGTDate::getBool (const TableExprId& id)
 TableExprNodeGEInt::TableExprNodeGEInt (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGE)
 {}
-Bool TableExprNodeGEInt::getBool (const TableExprId& id)
+bool TableExprNodeGEInt::getBool (const TableExprId& id)
 {
     return lnode_p->getInt(id) >= rnode_p->getInt(id);
 }
@@ -204,7 +204,7 @@ Bool TableExprNodeGEInt::getBool (const TableExprId& id)
 TableExprNodeGEDouble::TableExprNodeGEDouble (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGE)
 {}
-Bool TableExprNodeGEDouble::getBool (const TableExprId& id)
+bool TableExprNodeGEDouble::getBool (const TableExprId& id)
 {
     return lnode_p->getDouble(id) >= rnode_p->getDouble(id);
 }
@@ -212,7 +212,7 @@ Bool TableExprNodeGEDouble::getBool (const TableExprId& id)
 TableExprNodeGEDComplex::TableExprNodeGEDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGE)
 {}
-Bool TableExprNodeGEDComplex::getBool (const TableExprId& id)
+bool TableExprNodeGEDComplex::getBool (const TableExprId& id)
 {
     return lnode_p->getDComplex(id) >= rnode_p->getDComplex(id);
 }
@@ -220,7 +220,7 @@ Bool TableExprNodeGEDComplex::getBool (const TableExprId& id)
 TableExprNodeGEString::TableExprNodeGEString (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGE)
 {}
-Bool TableExprNodeGEString::getBool (const TableExprId& id)
+bool TableExprNodeGEString::getBool (const TableExprId& id)
 {
     return lnode_p->getString(id) >= rnode_p->getString(id);
 }
@@ -228,14 +228,14 @@ Bool TableExprNodeGEString::getBool (const TableExprId& id)
 TableExprNodeGEDate::TableExprNodeGEDate (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtGE)
 {}
-Bool TableExprNodeGEDate::getBool (const TableExprId& id)
+bool TableExprNodeGEDate::getBool (const TableExprId& id)
 {
     return lnode_p->getDate(id) >= rnode_p->getDate(id);
 }
 
 
 TableExprNodeINInt::TableExprNodeINInt (const TableExprNodeRep& node,
-                                        Bool)
+                                        bool)
 : TableExprNodeBinary (NTBool, node, OtIN)
 {}
 void TableExprNodeINInt::optimize()
@@ -246,19 +246,19 @@ void TableExprNodeINInt::doOptimize (TENShPtr& rnode)
 {
   if (rnode->isConstant()  &&  rnode->valueType() == VTArray) {
     // Convert a constant array for faster lookup.
-    MArray<Int64> values = rnode->getArrayInt(0);
-    Array<Int64> arr(values.array());
+    MArray<int64_t> values = rnode->getArrayInt(0);
+    Array<int64_t> arr(values.array());
     if (values.hasMask()) {
       // Remove masked elements.
       arr.reference (values.flatten());
     }
     // Use an unordered_map for fast lookup.
-    rnode.reset (new TableExprNodeSetOptUSet<Int64> (*rnode, arr));
+    rnode.reset (new TableExprNodeSetOptUSet<int64_t> (*rnode, arr));
   }
 }
-Bool TableExprNodeINInt::getBool (const TableExprId& id)
+bool TableExprNodeINInt::getBool (const TableExprId& id)
 {
-    Int64 val = lnode_p->getInt (id);
+    int64_t val = lnode_p->getInt (id);
     return rnode_p->contains (id, val);
 }
 
@@ -274,11 +274,11 @@ void TableExprNodeINDouble::doOptimize (TENShPtr& rnode)
   if (rnode->isConstant()  &&  rnode->valueType() == VTSet) {
     TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
     if (!set.isSingle()  &&  !set.isDiscrete()) {
-      rnode = TableExprNodeSetOptContSetBase<Double>::transform (set);
+      rnode = TableExprNodeSetOptContSetBase<double>::transform (set);
     }
   }
 }
-Bool TableExprNodeINDouble::getBool (const TableExprId& id)
+bool TableExprNodeINDouble::getBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getDouble (id));
 }
@@ -286,7 +286,7 @@ Bool TableExprNodeINDouble::getBool (const TableExprId& id)
 TableExprNodeINDComplex::TableExprNodeINDComplex (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtIN)
 {}
-Bool TableExprNodeINDComplex::getBool (const TableExprId& id)
+bool TableExprNodeINDComplex::getBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getDComplex (id));
 }
@@ -319,7 +319,7 @@ void TableExprNodeINString::doOptimize (TENShPtr& rnode)
     }
   }
 }
-Bool TableExprNodeINString::getBool (const TableExprId& id)
+bool TableExprNodeINString::getBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getString (id));
 }
@@ -336,11 +336,11 @@ void TableExprNodeINDate::doOptimize (TENShPtr& rnode)
   if (rnode->isConstant()  &&  rnode->valueType() == VTSet) {
     TableExprNodeSet& set = dynamic_cast<TableExprNodeSet&>(*rnode);
     if (!set.isSingle()  &&  !set.isDiscrete()) {
-      rnode = TableExprNodeSetOptContSetBase<Double>::transform (set);
+      rnode = TableExprNodeSetOptContSetBase<double>::transform (set);
     }
   }
 }
-Bool TableExprNodeINDate::getBool (const TableExprId& id)
+bool TableExprNodeINDate::getBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getDate (id));
 }
@@ -349,7 +349,7 @@ Bool TableExprNodeINDate::getBool (const TableExprId& id)
 TableExprNodeOR::TableExprNodeOR (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtOR)
 {}
-Bool TableExprNodeOR::getBool (const TableExprId& id)
+bool TableExprNodeOR::getBool (const TableExprId& id)
 {
     return lnode_p->getBool(id) || rnode_p->getBool(id);
 }
@@ -358,7 +358,7 @@ Bool TableExprNodeOR::getBool (const TableExprId& id)
 TableExprNodeAND::TableExprNodeAND (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtAND)
 {}
-Bool TableExprNodeAND::getBool (const TableExprId& id)
+bool TableExprNodeAND::getBool (const TableExprId& id)
 {
     return lnode_p->getBool(id) && rnode_p->getBool(id);
 }
@@ -367,7 +367,7 @@ Bool TableExprNodeAND::getBool (const TableExprId& id)
 TableExprNodeNOT::TableExprNodeNOT (const TableExprNodeRep& node)
 : TableExprNodeBinary (NTBool, node, OtNOT)
 {}
-Bool TableExprNodeNOT::getBool (const TableExprId& id)
+bool TableExprNodeNOT::getBool (const TableExprId& id)
 {
   return ! lnode_p->getBool(id);
 }
@@ -376,7 +376,7 @@ Bool TableExprNodeNOT::getBool (const TableExprId& id)
 
 void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
 {
-    Double dval = 0;
+    double dval = 0;
     TENShPtr tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
@@ -402,8 +402,8 @@ void TableExprNodeEQDouble::ranges (Block<TableExprRange>& blrange)
 
 void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
 {
-    Double st = 0;
-    Double end = 0;
+    double st = 0;
+    double end = 0;
     TENShPtr tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
@@ -431,8 +431,8 @@ void TableExprNodeGEDouble::ranges (Block<TableExprRange>& blrange)
 
 void TableExprNodeGTDouble::ranges (Block<TableExprRange>& blrange)
 {
-    Double st = 0;
-    Double end = 0;
+    double st = 0;
+    double end = 0;
     TENShPtr tsncol = 0;
     //# We can store a range if there is a scalar column and constant
     //# (left or right).
@@ -470,13 +470,13 @@ void TableExprNodeOR::ranges (Block<TableExprRange>& blrange)
     //# If a column appears in one, but not in the other it needs
     //# to be removed. Only equal columns can be combined and what
     //# gets created is a superset of the original blocks.
-    blrange.resize(0,True);
+    blrange.resize(0,true);
     size_t nr=0;
     for (size_t i=0; i<left.nelements(); i++) {
         for (size_t j=0; j<right.nelements(); j++) {
             if (right[j].getColumn().columnDesc().name() ==
                                 left[i].getColumn().columnDesc().name()) {
-                blrange.resize(nr+1, True);
+                blrange.resize(nr+1, true);
                 blrange[nr] = left[i];
                 blrange[nr].mixOr (right[j]);
                 nr++;
@@ -505,7 +505,7 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     //# First handle one and intersect its ranges with matching
     //# column names in the other one.
     //# Keep a vector with flags for non-processed other ones.
-    Vector<Int> vec(other.nelements());
+    Vector<int32_t> vec(other.nelements());
     vec = 0;
     for (size_t i=0; i<blrange.nelements(); i++) {
         for (size_t j=0; j<other.nelements(); j++) {
@@ -520,7 +520,7 @@ void TableExprNodeAND::ranges (Block<TableExprRange>& blrange)
     size_t nr = blrange.nelements();
     for (size_t i=0; i<other.nelements(); i++) {
         if (vec(i) == 0) {
-            blrange.resize(nr+1, True);
+            blrange.resize(nr+1, true);
             blrange[nr++] = other[i];
         }
     }

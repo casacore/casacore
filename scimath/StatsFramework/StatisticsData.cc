@@ -72,20 +72,20 @@ String StatisticsData::toString(STATS stat) {
     }
 }
 
-std::map<Double, uInt64> StatisticsData::indicesFromFractions(
-    uInt64 npts, const std::set<Double>& fractions
+std::map<double, uint64_t> StatisticsData::indicesFromFractions(
+    uint64_t npts, const std::set<double>& fractions
 ) {
-    std::map<Double, uInt64> fractionToIndexMap;
+    std::map<double, uint64_t> fractionToIndexMap;
     for_each(
         fractions.cbegin(), fractions.cend(),
-        [&fractionToIndexMap, &npts](Double q) {
+        [&fractionToIndexMap, &npts](double q) {
         auto idxWRT1 = q * npts;
         auto myfloor = floor(idxWRT1);
         if (near(idxWRT1, myfloor)) {
             // prevent rounding due to finite machine precision
             idxWRT1 = myfloor;
         }
-        fractionToIndexMap[q] = ((uInt64)ceil(idxWRT1) - 1);
+        fractionToIndexMap[q] = ((uint64_t)ceil(idxWRT1) - 1);
     });
     return fractionToIndexMap;
 }

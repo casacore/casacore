@@ -59,17 +59,17 @@ template<class T> class TabVecRep;
 
 // <group name=vectorComparison>
 template<class T>
-    Bool tabVecReptvLE (const TabVecRep<T>& left, const TabVecRep<T>& right);
+    bool tabVecReptvLE (const TabVecRep<T>& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecReptvLT (const TabVecRep<T>& left, const TabVecRep<T>& right);
+    bool tabVecReptvLT (const TabVecRep<T>& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecReptvGE (const TabVecRep<T>& left, const TabVecRep<T>& right);
+    bool tabVecReptvGE (const TabVecRep<T>& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecReptvGT (const TabVecRep<T>& left, const TabVecRep<T>& right);
+    bool tabVecReptvGT (const TabVecRep<T>& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecReptvEQ (const TabVecRep<T>& left, const TabVecRep<T>& right);
+    bool tabVecReptvEQ (const TabVecRep<T>& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecReptvNE (const TabVecRep<T>& left, const TabVecRep<T>& right);
+    bool tabVecReptvNE (const TabVecRep<T>& left, const TabVecRep<T>& right);
 // </group>
 
 
@@ -94,29 +94,29 @@ template<class T>
 
 // <group name=scalarComparison>
 template<class T>
-    Bool tabVecRepvalrLE (const TabVecRep<T>& left, const T& right);
+    bool tabVecRepvalrLE (const TabVecRep<T>& left, const T& right);
 template<class T>
-    Bool tabVecRepvallLE (const T& left, const TabVecRep<T>& right);
+    bool tabVecRepvallLE (const T& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecRepvalrLT (const TabVecRep<T>& left, const T& right);
+    bool tabVecRepvalrLT (const TabVecRep<T>& left, const T& right);
 template<class T>
-    Bool tabVecRepvallLT (const T& left, const TabVecRep<T>& right);
+    bool tabVecRepvallLT (const T& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecRepvalrGE (const TabVecRep<T>& left, const T& right);
+    bool tabVecRepvalrGE (const TabVecRep<T>& left, const T& right);
 template<class T>
-    Bool tabVecRepvallGE (const T& left, const TabVecRep<T>& right);
+    bool tabVecRepvallGE (const T& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecRepvalrGT (const TabVecRep<T>& left, const T& right);
+    bool tabVecRepvalrGT (const TabVecRep<T>& left, const T& right);
 template<class T>
-    Bool tabVecRepvallGT (const T& left, const TabVecRep<T>& right);
+    bool tabVecRepvallGT (const T& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecRepvalrEQ (const TabVecRep<T>& left, const T& right);
+    bool tabVecRepvalrEQ (const TabVecRep<T>& left, const T& right);
 template<class T>
-    Bool tabVecRepvallEQ (const T& left, const TabVecRep<T>& right);
+    bool tabVecRepvallEQ (const T& left, const TabVecRep<T>& right);
 template<class T>
-    Bool tabVecRepvalrNE (const TabVecRep<T>& left, const T& right);
+    bool tabVecRepvalrNE (const TabVecRep<T>& left, const T& right);
 template<class T>
-    Bool tabVecRepvallNE (const T& left, const TabVecRep<T>& right);
+    bool tabVecRepvallNE (const T& left, const TabVecRep<T>& right);
 // </group>
 
 

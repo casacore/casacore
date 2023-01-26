@@ -104,7 +104,7 @@ public:
     // An exception is thrown if the data manager type is not the incremental
     // storage manager.
     ROIncrementalStManAccessor (const Table& table, const String& name,
-                                Bool byColumn=False);
+                                bool byColumn=false);
 
     virtual ~ROIncrementalStManAccessor();
 
@@ -120,15 +120,15 @@ public:
     // The cache size given in this way is not persistent.
     // Only the cache size given to the constructors of the incremental
     // storage managers, is persistent.
-    // If <src>canExceedNrBuckets=True</src>, the given cache size can be
+    // If <src>canExceedNrBuckets=true</src>, the given cache size can be
     // larger than the nr of buckets in the file. In this way the cache can
     // be made large enough for a future file extnsion.
     // Otherwise, it is limited to the actual number of buckets. This is useful
     // if one wants the entire file to be cached.
-    void setCacheSize (uInt aSize, Bool canExceedNrBuckets=True);
+    void setCacheSize (uint32_t aSize, bool canExceedNrBuckets=true);
 
     // Get the cache size (in buckets).
-    uInt cacheSize() const;
+    uint32_t cacheSize() const;
 
     // Clear the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them
@@ -142,12 +142,12 @@ public:
     void showBucketLayout (ostream& os) const;
 
     // Check that there are no repeated rowIds in the buckets comprising this ISM
-    Bool checkBucketLayout (uInt& offendingCursor,
+    bool checkBucketLayout (uint32_t& offendingCursor,
                             rownr_t& offendingBucketStartRow,
-                            uInt& offendingBucketNrow,
-                            uInt& offendingBucketNr,
-                            uInt& offendingCol,
-                            uInt& offendingIndex,
+                            uint32_t& offendingBucketNrow,
+                            uint32_t& offendingBucketNr,
+                            uint32_t& offendingCol,
+                            uint32_t& offendingIndex,
                             rownr_t& offendingRow,
                             rownr_t& offendingPrevRow) const;
 

@@ -72,7 +72,7 @@ namespace casacore {
 // make it known to the image.
 // <srcblock>
 //   // Open the image (as readonly for the moment).
-//   PagedImage<Float> myimage ("image.name");
+//   PagedImage<float> myimage ("image.name");
 //   // Get access to attibute handler LOFAR_SOURCE.
 //   ImageExtrAttr& = myimage.attrHandler ("LOFAR_SOURCE");
 //   // Get the data for some field.
@@ -97,7 +97,7 @@ public:
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
   ImageAttrHandlerHDF5& attachTable (const Table& image,
-                                     Bool createHandler = False);
+                                     bool createHandler = false);
 
   virtual ~ImageAttrHandlerHDF5();
 
@@ -108,14 +108,14 @@ public:
   // is set.
   // Otherwise the handler is an empty one and no groups can be added to it.
   ImageAttrHandlerHDF5& attachHid (const HDF5Object& hid,
-                                   Bool createHandler,
-                                   Bool isWritable);
+                                   bool createHandler,
+                                   bool isWritable);
 
   // Flush the attibrutes if needed.
   virtual void flush();
 
   // Test if the given attribute group is present.
-  virtual Bool hasGroup (const String& name);
+  virtual bool hasGroup (const String& name);
 
   // Get all attribute group names.
   virtual Vector<String> groupNames() const;
@@ -131,7 +131,7 @@ public:
   virtual void closeGroup (const String& groupName);
 
 private:
-  Bool                                itsCanWrite;    //# writable?
+  bool                                itsCanWrite;    //# writable?
   CountedPtr<HDF5Group>               itsGroup;       //# HDF5 group to add to
   std::map<String,ImageAttrGroupHDF5> itsGroupMap;    //# attribute groups
 };

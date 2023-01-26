@@ -84,7 +84,7 @@ class LattRegionHolder;
 //# </todo>
 
 
-class LELRegion : public LELInterface<Bool>
+class LELRegion : public LELInterface<bool>
 {
 public: 
 // Constructor.
@@ -101,31 +101,31 @@ public:
 	{ return *region_p; }
 
 // Getting region data cannot be done (throws an exception).
-    virtual void eval(LELArray<Bool>&, const Slicer&) const;
+    virtual void eval(LELArray<bool>&, const Slicer&) const;
 
 // Getting region data cannot be done (throws an exception).
-    virtual LELScalar<Bool> getScalar() const;
+    virtual LELScalar<bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-    virtual Bool prepareScalarExpr();
+    virtual bool prepareScalarExpr();
 
 // Get class name
     virtual String className() const;
 
 // Form a compound from the regions.
 // <group>
-    static LELRegion* makeUnion (const LELInterface<Bool>& left,
-				 const LELInterface<Bool>& right);
-    static LELRegion* makeIntersection (const LELInterface<Bool>& left,
-					const LELInterface<Bool>& right);
-    static LELRegion* makeDifference (const LELInterface<Bool>& left,
-				      const LELInterface<Bool>& right);
-    static LELRegion* makeComplement (const LELInterface<Bool>& expr);
+    static LELRegion* makeUnion (const LELInterface<bool>& left,
+				 const LELInterface<bool>& right);
+    static LELRegion* makeIntersection (const LELInterface<bool>& left,
+					const LELInterface<bool>& right);
+    static LELRegion* makeDifference (const LELInterface<bool>& left,
+				      const LELInterface<bool>& right);
+    static LELRegion* makeComplement (const LELInterface<bool>& expr);
 // </group>
 
 private:
 // Get the LattRegionHolder after checking that the expression is a region.
-    static const LattRegionHolder& region (const LELInterface<Bool>& expr);
+    static const LattRegionHolder& region (const LELInterface<bool>& expr);
 
 // Check if both regions have the same type (pixel or world) and if
 // no LCSlicer type of region is used.
@@ -177,7 +177,7 @@ private:
 //# </todo>
 
 
-class LELRegionAsBool : public LELInterface<Bool>
+class LELRegionAsBool : public LELInterface<bool>
 {
 public: 
 // Constructor.
@@ -187,14 +187,14 @@ public:
     ~LELRegionAsBool();
 
 // Get region data.
-    virtual void eval(LELArray<Bool>& result,
+    virtual void eval(LELArray<bool>& result,
 		      const Slicer& section) const;
 
 // Getting region data as a scalar cannot be done (throws an exception).
-    virtual LELScalar<Bool> getScalar() const;
+    virtual LELScalar<bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-    virtual Bool prepareScalarExpr();
+    virtual bool prepareScalarExpr();
 
 // Get class name
     virtual String className() const;

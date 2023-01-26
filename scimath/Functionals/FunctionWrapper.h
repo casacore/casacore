@@ -73,9 +73,9 @@ template <class T> class WrapperBase;
 //
 // <example>
 // <srcblock>
-// Float func(const Vector<Float>& x) {return x(0)*x(1);}        // x*y
+// float func(const Vector<float>& x) {return x(0)*x(1);}        // x*y
 // // Convert C++ functions to Functionals
-// FunctionWrapper<Float> Func(func,2);
+// FunctionWrapper<float> Func(func,2);
 // </srcblock>
 //
 
@@ -90,10 +90,10 @@ public:
   FunctionWrapper(T(*f)());
   // A function with parameter and no arguments
   // (Note value of isPar irrelevant)
-  FunctionWrapper(T(*f)( const T&), const Bool isPar);
+  FunctionWrapper(T(*f)( const T&), const bool isPar);
   // A function with parameters and no arguments.
   // (Note value of isPar irrelevant)
-  FunctionWrapper(T(*f)(const Vector<T>&), const Bool isPar);
+  FunctionWrapper(T(*f)(const Vector<T>&), const bool isPar);
   // Construct a  1-dimensional function with no parameters.
   FunctionWrapper(T(*f)(const T&));
   // Construct a  1-dimensional function with parameter.
@@ -102,13 +102,13 @@ public:
   FunctionWrapper(T(*f)(const T&, const Vector<T>&),
 		    const Vector<T> &par);
   // Construct an n-dimensional  function with no parameters.
-  FunctionWrapper(T(*f)(const Vector<T>&), const Int dim=1);
+  FunctionWrapper(T(*f)(const Vector<T>&), const int32_t dim=1);
   // Construct an n-dimensional  function with parameter.
   FunctionWrapper(T(*f)(const Vector<T>&, const T&),
-		    const T &par, const uInt dim=1);
+		    const T &par, const uint32_t dim=1);
   // Construct an n-dimensional  function with parameters.
   FunctionWrapper(T(*f)(const Vector<T>&, const Vector<T>&),
-		    const Vector<T> &par, const uInt dim=1);
+		    const Vector<T> &par, const uint32_t dim=1);
   // Copy constructor (reference semantics)
   // <group>
   FunctionWrapper(const FunctionWrapper<T> &other);
@@ -127,7 +127,7 @@ public:
 
   //# Member functions
   // Get the dimensionality
-  virtual uInt ndim() const;
+  virtual uint32_t ndim() const;
   // Return a copy of this object from the heap. The caller is responsible 
   // for deleting this pointer.
   // <group>

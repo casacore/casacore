@@ -57,23 +57,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> MVBaseline() creates point at origin (0,0,0)
 //   <li> MVBaseline(MVBaseline) creates a copy
 //   <li> MVBaseline(MVPosition) creates (x,y,z) from the given position
-//   <li> MVBaseline(Double, Double, Double) creates (x,y,z) with
+//   <li> MVBaseline(double, double, double) creates (x,y,z) with
 //		specified values (assuming meters)
-//   <li> MVBaseline(Quantity length,Double, Double) creates a MVBaseline assuming
+//   <li> MVBaseline(Quantity length,double, double) creates a MVBaseline assuming
 //		that the two values are (in radians) angle along 'equator' 
 //		and towards 'pole'.
 //   <li> MVBaseline(Quantity length, Quantity, Quantity) creates a MVBaseline 
 //		assuming angles as in previous, or Baselines
-//   <li> <src>MVBaseline(Quantity, Quantum<Vector<Double> >)</src> creates a 
+//   <li> <src>MVBaseline(Quantity, Quantum<Vector<double> >)</src> creates a 
 //		MVBaseline from angle vector, using first two angles, and 
 //		assuming second as zero if not present.
-//   <li> <src>MVBaseline(Quantum<Vector<Double> ></src> creates from
+//   <li> <src>MVBaseline(Quantum<Vector<double> ></src> creates from
 //		angles or Baselines, depending on the units in the
 //		quantum vector. In the angle case,
 //		the data derived can be scaled with the readjust() function. If
 //		the unit of the quantum vector is length, Baseline is
 //		assumed.
-//    <li> <src>MVBaseline(Vector<Double></src> creates from angles (less than
+//    <li> <src>MVBaseline(Vector<double></src> creates from angles (less than
 //		or equal to two elements) or x,y,z (3 elements).
 //    <li> <src>MVBaseline(Vector<Quantity></src> creates from length+angles,
 //		angles, or x,y,z, depending on units.
@@ -82,10 +82,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    <li> <src>MVBaseline(MVPosition)</src> creates a baseline as defined by the
 //		position given (e.g. as derived from an offset MPosition)
 // </ul>
-// A void adjust(Double) function normalises the vector to a length of 1;
+// A void adjust(double) function normalises the vector to a length of 1;
 // a get() returns as a
-// Double 3-vector the length and angles of the Baseline vector;
-// a getAngle() returns a Quantum 2-vector, (uInt) returns the indicated 
+// double 3-vector the length and angles of the Baseline vector;
+// a getAngle() returns a Quantum 2-vector, (uint32_t) returns the indicated 
 // element, and getValue returns the vector.<br>
 // Baselines can be added and subtracted.<br>
 // The multiplication of two Baselines produces the in-product.<br>
@@ -115,14 +115,14 @@ public:
   // Creates from an MVPosition
   MVBaseline(const MVPosition &other);
   // Creates a specified vector
-  MVBaseline(Double in0, Double in1, Double in2);
+  MVBaseline(double in0, double in1, double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  explicit MVBaseline(Double in0);
+  explicit MVBaseline(double in0);
   MVBaseline(const Quantity &l);
   // </group>
   // Creates the Baseline from specified (azimuth,elevation) angles and length
-  MVBaseline(const Quantity &l, Double angle0, Double angle1);
+  MVBaseline(const Quantity &l, double angle0, double angle1);
   // Creates the Baseline from specified angles and length. or Baselines
   // <thrown>
   //    <li> AipsError if quantities not in angle format
@@ -131,12 +131,12 @@ public:
   MVBaseline(const Quantity &l, const Quantity &angle0, 
 	     const Quantity &angle1);
   // If not enough angles: pole assumed (if none), or elevation =0 (if 1)
-  MVBaseline(const Quantum<Vector<Double> > &angle);
-  MVBaseline(const Quantity &l, const Quantum<Vector<Double> > &angle);
+  MVBaseline(const Quantum<Vector<double> > &angle);
+  MVBaseline(const Quantity &l, const Quantum<Vector<double> > &angle);
   // </group>
   // Create from specified length and/or angles and/or Baseline
   // <group>
-  MVBaseline(const Vector<Double> &other);
+  MVBaseline(const Vector<double> &other);
   MVBaseline(const Vector<Quantity> &other);
   // </group>
   // Baseline as difference between positions (first - second (default(0,0,0))
@@ -147,16 +147,16 @@ public:
   //# Operators
   // Multiplication defined as in-product
   // <group>
-  Double operator*(const MVBaseline &other) const;
+  double operator*(const MVBaseline &other) const;
   // </group>
   
   // Equality comparisons
   // <group>
-  Bool operator== (const MVBaseline &other) const;
-  Bool operator!= (const MVBaseline &other) const;
-  Bool near(const MVBaseline &other, Double tol=1e-13) const;
-  Bool near(const MVBaseline &other, Quantity tol) const;
-  Bool nearAbs(const MVBaseline &other, Double tol=1e-13) const;
+  bool operator== (const MVBaseline &other) const;
+  bool operator!= (const MVBaseline &other) const;
+  bool near(const MVBaseline &other, double tol=1e-13) const;
+  bool near(const MVBaseline &other, Quantity tol) const;
+  bool nearAbs(const MVBaseline &other, double tol=1e-13) const;
   // </group>
   
   // Addition and subtraction
@@ -178,19 +178,19 @@ public:
   // Normalise direction aspects by adjusting the length to 1
   // <group>
   virtual void adjust();
-  virtual void adjust(Double &res);
-  virtual void readjust(Double res);
+  virtual void adjust(double &res);
+  virtual void readjust(double res);
   // </group>
   // Get radius of Baseline
-  virtual Double radius();
+  virtual double radius();
   // Generate a 3-vector of coordinates (length(m), angles(rad))
-  Vector<Double> get() const;
+  Vector<double> get() const;
   // Generate a 3-vector of x,y,z in m
-  const Vector<Double> &getValue() const;
+  const Vector<double> &getValue() const;
   // Generate angle 2-vector (in rad)
-  Quantum<Vector<Double> > getAngle() const;
+  Quantum<Vector<double> > getAngle() const;
   // and with specified units
-  Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+  Quantum<Vector<double> > getAngle(const Unit &unit) const;
   // Generate the length
   Quantity getLength() const;
   // and generate it with the specified units
@@ -198,13 +198,13 @@ public:
   // Get the Baseline angle between the directions. I.e. the angle between
   // the direction from one to the pole, and from one to the other.
   // <group>
-  Double BaselineAngle(const MVBaseline &other) const;
+  double BaselineAngle(const MVBaseline &other) const;
   Quantity BaselineAngle(const MVBaseline &other, 
 			 const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.
   // <group>
-  Double separation(const MVBaseline &other) const;
+  double separation(const MVBaseline &other) const;
   Quantity separation(const MVBaseline &other, 
 		      const Unit &unit) const;
   // </group>
@@ -217,20 +217,20 @@ public:
   virtual MeasValue *clone() const;
 
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
-  virtual Vector<Quantum<Double> > getXRecordValue() const;
-  virtual Vector<Quantum<Double> > getTMRecordValue() const {
+  virtual Vector<Quantum<double> > getRecordValue() const;
+  virtual Vector<Quantum<double> > getXRecordValue() const;
+  virtual Vector<Quantum<double> > getTMRecordValue() const {
     return getXRecordValue(); } ;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
   
 };
 
@@ -239,12 +239,12 @@ public:
 // <group>
 MVBaseline operator*(const RotMatrix &left, const MVBaseline &right);
 MVBaseline operator*(const MVBaseline &left, const RotMatrix &right);
-MVBaseline operator*(Double left, const MVBaseline &right);
-MVBaseline operator*(const MVBaseline &left, Double right);
-Double operator*(const Vector<Double> &left, const MVBaseline &right);
-Double operator*(const MVBaseline &left, const Vector<Double> &right);
-Double operator*(const MVPosition &left, const MVBaseline &right);
-Double operator*(const MVBaseline &left, const MVPosition &right);
+MVBaseline operator*(double left, const MVBaseline &right);
+MVBaseline operator*(const MVBaseline &left, double right);
+double operator*(const Vector<double> &left, const MVBaseline &right);
+double operator*(const MVBaseline &left, const Vector<double> &right);
+double operator*(const MVPosition &left, const MVBaseline &right);
+double operator*(const MVBaseline &left, const MVPosition &right);
 // </group>
 
 

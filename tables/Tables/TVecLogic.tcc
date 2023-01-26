@@ -34,40 +34,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define TVECLOGICOPER(NAME,OP) \
 template<class T> \
-Bool aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& l, const TabVecRep<T>& r) \
+bool aips_name2(tabVecReptv,NAME) (const TabVecRep<T>& l, const TabVecRep<T>& r) \
 { \
     rownr_t nr = r.nelements(); \
     l.validateConformance(nr); \
-    Bool retval = True; \
+    bool retval = true; \
     for (rownr_t i=0; i<nr; i++) { \
         if (! (l.value(i) OP r.value(i))) { \
-	    retval = False; \
+	    retval = false; \
 	    break; \
         } \
     } \
     return retval; \
 } \
 template<class T> \
-Bool aips_name2(tabVecRepvalr,NAME) (const TabVecRep<T>& tv, const T& val) \
+bool aips_name2(tabVecRepvalr,NAME) (const TabVecRep<T>& tv, const T& val) \
 { \
     rownr_t nr = tv.nelements(); \
-    Bool retval = True; \
+    bool retval = true; \
     for (rownr_t i=0; i<nr; i++) { \
         if (! (tv.value(i) OP val)) { \
-	    retval = False; \
+	    retval = false; \
 	    break; \
         } \
     } \
     return retval; \
 } \
 template<class T> \
-Bool aips_name2(tabVecRepvall,NAME) (const T& val, const TabVecRep<T>& tv) \
+bool aips_name2(tabVecRepvall,NAME) (const T& val, const TabVecRep<T>& tv) \
 { \
     rownr_t nr = tv.nelements(); \
-    Bool retval = True; \
+    bool retval = true; \
     for (rownr_t i=0; i<nr; i++) { \
         if (! (val OP tv.value(i))) { \
-	    retval = False; \
+	    retval = false; \
 	    break; \
         } \
     } \

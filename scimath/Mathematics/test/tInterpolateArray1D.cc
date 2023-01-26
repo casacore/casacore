@@ -53,7 +53,7 @@ do {                          \
 } while (0)
 
 unsigned tests_done = 0;
-const Bool debug = False;//True;
+const bool debug = false;//true;
 
 
 template <class T, class S>
@@ -64,21 +64,21 @@ public:
   {
 
     Array<S> a(IPosition(2,2,1000));
-    Array<Bool> aflags(IPosition(2,2,1000));
+    Array<bool> aflags(IPosition(2,2,1000));
     Array<S> expect(IPosition(2,2,1000));
-    Array<Bool> expflags(IPosition(2,2,1000));
+    Array<bool> expflags(IPosition(2,2,1000));
     
     Vector<T> ingrid(1000);
     
-    for(uInt i=0; i<1000; i++){
+    for(uint32_t i=0; i<1000; i++){
       a(IPosition(2,0,i)) = Complex(1.,1.);
       a(IPosition(2,1,i)) = Complex(1.,1.);
-      aflags(IPosition(2,0,i)) = False;
-      aflags(IPosition(2,1,i)) = False;
+      aflags(IPosition(2,0,i)) = false;
+      aflags(IPosition(2,1,i)) = false;
       expect(IPosition(2,0,i)) = Complex(1.,1.);	
       expect(IPosition(2,1,i)) = Complex(1.,1.); 	 
-      expflags(IPosition(2,0,i)) = False;
-      expflags(IPosition(2,1,i)) = False;
+      expflags(IPosition(2,0,i)) = false;
+      expflags(IPosition(2,1,i)) = false;
       ingrid(i) = (T)i;
     }
 
@@ -87,26 +87,26 @@ public:
     cout << "--- equidistant output grid ------------------------------------------------------------" << endl;
     cout << "--- change output grid width from identical to double width in steps of 1/iterations ---" << endl;
 
-    Double iterations = 1000.; // change output grid width from identical to double width in steps of 1/iterations
+    double iterations = 1000.; // change output grid width from identical to double width in steps of 1/iterations
     
-    for (Int it = 0; it < (Int)iterations; it++) {
+    for (int32_t it = 0; it < (int32_t)iterations; it++) {
 
       Array<S> yout; 
-      Array<Bool> youtFlags;
+      Array<bool> youtFlags;
       Vector<T> xout(1000);
       Vector<T> xin; 
       Array<S> yin;
-      Array<Bool> yinFlags;
-      Int method =  InterpolateArray1D<T,S>::linear;
-      Bool goodIsTrue=False;
-      Bool extrapolate=False;
+      Array<bool> yinFlags;
+      int32_t method =  InterpolateArray1D<T,S>::linear;
+      bool goodIsTrue=false;
+      bool extrapolate=false;
 
       xin.assign(ingrid);
       yin.assign(a);
       yinFlags.assign(aflags);
 
-      for(uInt i=0; i<1000; i++){
-	xout(i) = xin(i) + (Double)it * (i+1)/iterations;
+      for(uint32_t i=0; i<1000; i++){
+	xout(i) = xin(i) + (double)it * (i+1)/iterations;
       }
 
       InterpolateArray1D<T,S>::interpolate(yout, // the new visibilities
@@ -120,10 +120,10 @@ public:
 					   extrapolate // do not extrapolate
 					   );
 
-      for(uInt i=0; i<2; i++){
-	for(uInt j=0; j<500; j++){
-	  Double diffr = yout(IPosition(2,i,j)).real() - expect(IPosition(2,i,j)).real();
-	  Double diffi = yout(IPosition(2,i,j)).imag() - expect(IPosition(2,i,j)).imag();
+      for(uint32_t i=0; i<2; i++){
+	for(uint32_t j=0; j<500; j++){
+	  double diffr = yout(IPosition(2,i,j)).real() - expect(IPosition(2,i,j)).real();
+	  double diffi = yout(IPosition(2,i,j)).imag() - expect(IPosition(2,i,j)).imag();
 	  if(debug){
 	    cout << it << " " << i << " " << j << " " << xin(j) << " " << xout(j) << " " << yout(IPosition(2,i,j)) << " " << expect(IPosition(2,i,j)) << endl;
 	    cout << it << " flag " << i << " " << j << " " << youtFlags(IPosition(2,i,j)) << " " << expflags(IPosition(2,i,j)) << endl;
@@ -149,47 +149,47 @@ public:
   {
 
     Array<S> a(IPosition(2,2,1000));
-    Array<Bool> aflags(IPosition(2,2,1000));
+    Array<bool> aflags(IPosition(2,2,1000));
     Array<S> expect(IPosition(2,2,1000));
-    Array<Bool> expflags(IPosition(2,2,1000));
+    Array<bool> expflags(IPosition(2,2,1000));
     
     Vector<T> ingrid(1000);
     
-    for(uInt i=0; i<1000; i++){
-      a(IPosition(2,0,i)) = Complex((Float)i,(Float)i);
-      a(IPosition(2,1,i)) = Complex((Float)i,(Float)i);
-      aflags(IPosition(2,0,i)) = False;
-      aflags(IPosition(2,1,i)) = False;
+    for(uint32_t i=0; i<1000; i++){
+      a(IPosition(2,0,i)) = Complex((float)i,(float)i);
+      a(IPosition(2,1,i)) = Complex((float)i,(float)i);
+      aflags(IPosition(2,0,i)) = false;
+      aflags(IPosition(2,1,i)) = false;
       expect(IPosition(2,0,i)) = Complex(1.,1.);	
       expect(IPosition(2,1,i)) = Complex(1.,1.); 	 
-      expflags(IPosition(2,0,i)) = False;
-      expflags(IPosition(2,1,i)) = False;
+      expflags(IPosition(2,0,i)) = false;
+      expflags(IPosition(2,1,i)) = false;
       ingrid(i) = (T)i;
     }
 
     cout << "--- equidistant output grid, increasing values -----------------------------------------" << endl;
     cout << "--- change output grid width from identical to double width in steps of 1/iterations ---" << endl;
 
-    Double iterations = 1000.; // change output grid width from identical to double width in steps of 1/iterations
+    double iterations = 1000.; // change output grid width from identical to double width in steps of 1/iterations
     
-    for (Int it = 0; it < (Int)iterations; it++) {
+    for (int32_t it = 0; it < (int32_t)iterations; it++) {
 
       Array<S> yout; 
-      Array<Bool> youtFlags;
+      Array<bool> youtFlags;
       Vector<T> xout(1000);
       Vector<T> xin; 
       Array<S> yin;
-      Array<Bool> yinFlags;
-      Int method =  InterpolateArray1D<T,S>::linear;
-      Bool goodIsTrue=False;
-      Bool extrapolate=False;
+      Array<bool> yinFlags;
+      int32_t method =  InterpolateArray1D<T,S>::linear;
+      bool goodIsTrue=false;
+      bool extrapolate=false;
 
       xin.assign(ingrid);
       yin.assign(a);
       yinFlags.assign(aflags);
 
-      for(uInt i=0; i<1000; i++){
-	xout(i) = xin(i) + (Double)it * (i+1)/iterations;
+      for(uint32_t i=0; i<1000; i++){
+	xout(i) = xin(i) + (double)it * (i+1)/iterations;
       }
 
       InterpolateArray1D<T,S>::interpolate(yout, // the new visibilities
@@ -203,10 +203,10 @@ public:
 					   extrapolate // do not extrapolate
 					   );
 
-      for(uInt i=0; i<2; i++){
-	for(uInt j=0; j<500; j++){
-	  Double diffr = yout(IPosition(2,i,j)).real() - xout(j) * expect(IPosition(2,i,j)).real();
-	  Double diffi = yout(IPosition(2,i,j)).imag() - xout(j) * expect(IPosition(2,i,j)).imag();
+      for(uint32_t i=0; i<2; i++){
+	for(uint32_t j=0; j<500; j++){
+	  double diffr = yout(IPosition(2,i,j)).real() - xout(j) * expect(IPosition(2,i,j)).real();
+	  double diffi = yout(IPosition(2,i,j)).imag() - xout(j) * expect(IPosition(2,i,j)).imag();
 	  if(debug){
 	    cout << it << " " << i << " " << j << " " << xin(j) << " " << xout(j) << " " 
 		 << yout(IPosition(2,i,j)) << " " <<  xout(j) * expect(IPosition(2,i,j)) << " diffs: " << diffr << " " << diffi << endl;
@@ -233,23 +233,23 @@ public:
   TestNearestInterpolation1() 
   {
 
-    Int N(10);
+    int32_t N(10);
     Vector<T> Xa(N,0.0), Xd(N,0.0);
     Vector<S> Ya(N,0.0), Yd(N,0.0);
     indgen(Xa);
     indgen(Ya);
-    for (Int i=0;i<N;++i) {
+    for (int32_t i=0;i<N;++i) {
       Xd[i]=Xa[N-1-i];
       Yd[i]=Ya[N-1-i];
     }
 
-    Int n(90);
+    int32_t n(90);
     Vector<T> x(n,0.0);
     Vector<S> ya(n,0.0), yd(n,0.0);
     indgen(x);
     x/=static_cast<T>(10.0);    // tenths
 
-    Int method =  InterpolateArray1D<T,S>::nearestNeighbour;
+    int32_t method =  InterpolateArray1D<T,S>::nearestNeighbour;
 
     InterpolateArray1D<T,S>::interpolate(ya,x,Xa,Ya,method);  // Ascending abscissa
     InterpolateArray1D<T,S>::interpolate(yd,x,Xd,Yd,method);  // Descending abscissa
@@ -301,15 +301,15 @@ int main()
   tests_done = 0;
   try {
 
-      cout << "Testing 'linear' Float/Complex" << endl;
-      run_tests<Float, Complex>();
-      cout << "Testing 'linear' Double/Complex" << endl;
-      run_tests<Double, Complex>();
+      cout << "Testing 'linear' float/Complex" << endl;
+      run_tests<float, Complex>();
+      cout << "Testing 'linear' double/Complex" << endl;
+      run_tests<double, Complex>();
 
-      cout << "Testing 'nearestNeighbour' Float/Float, ascending/descending" << endl;
-      run_nearest_tests<Float,Float>();
-      cout << "Testing 'nearestNeighbour' Double/Float, ascending/descending" << endl;
-      run_nearest_tests<Double,Float>();
+      cout << "Testing 'nearestNeighbour' float/float, ascending/descending" << endl;
+      run_nearest_tests<float,float>();
+      cout << "Testing 'nearestNeighbour' double/float, ascending/descending" << endl;
+      run_nearest_tests<double,float>();
 
   }
   catch (std::exception& x) {

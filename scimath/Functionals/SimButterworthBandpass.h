@@ -95,9 +95,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   // Create a bandpass function centered on x=0.8 and cutoffs at 0 and 2.5.
 //   // The orders of the drop-offs will 4 at the low end and 5 at the high
 //   // end.  The peak will by 1.0 by default.
-//   SimButterworthBandpass<Double> butt(4, 5, 0, 2.5, 0.8);
+//   SimButterworthBandpass<double> butt(4, 5, 0, 2.5, 0.8);
 //   
-//   Double z = butt(1);    // z = 1.0
+//   double z = butt(1);    // z = 1.0
 //   z = butt(0);           // z = 1/sqrt(2)
 //   z = butt(2.5);         // z = 1/sqrt(2)
 //   z = butt(-25);         // z ~ 9.24e-9 ~ 0
@@ -142,7 +142,7 @@ public:
     SimButterworthBandpass();
   
     // create a Butterworth bandpass function.
-    SimButterworthBandpass(const uInt minord, const uInt maxord, 
+    SimButterworthBandpass(const uint32_t minord, const uint32_t maxord, 
 			   const T &mincut=T(-1), const T &maxcut=T(1), 
 			   const T &center=T(0), const T &peak=T(1));
   
@@ -188,11 +188,11 @@ public:
 
     // set the order of the Butterworth function for the minimum (high-pass)
     // portion of the bandpass
-    void setMinOrder(uInt order) { nl_p = order; }
+    void setMinOrder(uint32_t order) { nl_p = order; }
 
     // set the order of the Butterworth function for the maximum (low-pass)
     // portion of the bandpass
-    void setMaxOrder(uInt order) { nh_p = order; }
+    void setMaxOrder(uint32_t order) { nh_p = order; }
 
     // return the characteristic minimum (high-pass) cutoff value.  At this 
     // x-ordinate value, the function has a value reduced 30 dB from its 
@@ -206,11 +206,11 @@ public:
 
     // return the order of the Butterworth function for the minimum (high-pass)
     // portion of the bandpass
-    uInt getMinOrder() const { return nl_p; }
+    uint32_t getMinOrder() const { return nl_p; }
 
     // return the order of the Butterworth function for the maximum (low-pass)
     // portion of the bandpass
-    uInt getMaxOrder() const { return nh_p; }
+    uint32_t getMaxOrder() const { return nh_p; }
 
     // set the scale of the function by setting its peak value.  By default,
     // the peak value is T(1);
@@ -236,9 +236,9 @@ public:
     virtual void getMode(RecordInterface& mode) const;
     // </group>
 
-    // return True if the implementing function supports a mode.  This
-    // implementation always returns True.
-    virtual Bool hasMode() const;
+    // return true if the implementing function supports a mode.  This
+    // implementation always returns true.
+    virtual bool hasMode() const;
 
     // clone this function
     virtual Function<T> *clone() const {
@@ -248,9 +248,9 @@ public:
 private:
     //# Non-parameter Data
     // Minimum order
-    uInt nl_p;
+    uint32_t nl_p;
     // Maximum order
-    uInt nh_p;
+    uint32_t nh_p;
 
   //# Make members of parent classes known.
 protected:

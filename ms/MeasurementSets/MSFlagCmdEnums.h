@@ -62,25 +62,25 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // applied flag - true if flag has been applied to main table <BR>
-    // Bool
+    // bool
     APPLIED,
     // flag command <BR>
     // String
     COMMAND,
     // Time interval <BR>
-    // Double
+    // double
     INTERVAL,
     // Flag level - revision <BR>
-    // Int
+    // int32_t
     LEVEL,
     // Flag reason, user specified <BR>
     // String
     REASON,
     // severity code (0-10) <BR>
-    // Int
+    // int32_t
     SEVERITY,
     // Midpoint of time interval for which this flag command applies <BR>
-    // Double
+    // double
     TIME,
     // Flag type: FLAG or UNFLAG <BR>
     // String

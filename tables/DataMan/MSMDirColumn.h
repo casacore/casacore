@@ -78,7 +78,7 @@ public:
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim (rownr_t rownr);
+  virtual uint32_t ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
@@ -136,7 +136,7 @@ private:
 
 
   // The (unique) sequence number of the column.
-  uInt seqnr_p;
+  uint32_t seqnr_p;
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.

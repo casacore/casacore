@@ -28,7 +28,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
+RawIO::RawIO (ByteIO* byteIO, bool takeOver)
 : TypeIO (byteIO, takeOver)
 {}
 
@@ -48,69 +48,69 @@ RawIO::~RawIO()
 {}
 
 
-size_t RawIO::write (size_t nvalues, const Bool* value)
+size_t RawIO::write (size_t nvalues, const bool* value)
 {
     return TypeIO::write (nvalues, value);
 }
 
-size_t RawIO::write (size_t nvalues, const Char* value)
+size_t RawIO::write (size_t nvalues, const char* value)
 {
-    itsByteIO->write (nvalues * sizeof(Char), (void*) value);
-    return nvalues * sizeof(Char);
+    itsByteIO->write (nvalues * sizeof(char), (void*) value);
+    return nvalues * sizeof(char);
 }
 
-size_t RawIO::write (size_t nvalues, const uChar* value)
+size_t RawIO::write (size_t nvalues, const unsigned char* value)
 {
-    itsByteIO->write (nvalues * sizeof(uChar), (void*) value);
-    return nvalues * sizeof(uChar);
+    itsByteIO->write (nvalues * sizeof(unsigned char), (void*) value);
+    return nvalues * sizeof(unsigned char);
 }
 
-size_t RawIO::write (size_t nvalues, const Short* value)
+size_t RawIO::write (size_t nvalues, const int16_t* value)
 {
-    itsByteIO->write (nvalues * sizeof(Short), (void*) value);
-    return nvalues * sizeof(Short);
+    itsByteIO->write (nvalues * sizeof(int16_t), (void*) value);
+    return nvalues * sizeof(int16_t);
 }
 
-size_t RawIO::write (size_t nvalues, const uShort* value)
+size_t RawIO::write (size_t nvalues, const uint16_t* value)
 {
-    itsByteIO->write (nvalues * sizeof(uShort), (void*) value);
-    return nvalues * sizeof(uShort);
+    itsByteIO->write (nvalues * sizeof(uint16_t), (void*) value);
+    return nvalues * sizeof(uint16_t);
 }
 
-size_t RawIO::write (size_t nvalues, const Int* value)
+size_t RawIO::write (size_t nvalues, const int32_t* value)
 {
-    itsByteIO->write (nvalues * sizeof(Int), (void*) value);
-    return nvalues * sizeof(Int);
+    itsByteIO->write (nvalues * sizeof(int32_t), (void*) value);
+    return nvalues * sizeof(int32_t);
 }
 
-size_t RawIO::write (size_t nvalues, const uInt* value)
+size_t RawIO::write (size_t nvalues, const uint32_t* value)
 {
-    itsByteIO->write (nvalues * sizeof(uInt), (void*) value);
-    return nvalues * sizeof(uInt);
+    itsByteIO->write (nvalues * sizeof(uint32_t), (void*) value);
+    return nvalues * sizeof(uint32_t);
 }
 
-size_t RawIO::write (size_t nvalues, const Int64* value)
+size_t RawIO::write (size_t nvalues, const int64_t* value)
 {
-    itsByteIO->write (nvalues * sizeof(Int64), (void*) value);
-    return nvalues * sizeof(Int64);
+    itsByteIO->write (nvalues * sizeof(int64_t), (void*) value);
+    return nvalues * sizeof(int64_t);
 }
 
-size_t RawIO::write (size_t nvalues, const uInt64* value)
+size_t RawIO::write (size_t nvalues, const uint64_t* value)
 {
-    itsByteIO->write (nvalues * sizeof(uInt64), (void*) value);
-    return nvalues * sizeof(uInt64);
+    itsByteIO->write (nvalues * sizeof(uint64_t), (void*) value);
+    return nvalues * sizeof(uint64_t);
 }
 
-size_t RawIO::write (size_t nvalues, const Float* value)
+size_t RawIO::write (size_t nvalues, const float* value)
 {
-    itsByteIO->write (nvalues * sizeof(Float), (void*) value);
-    return nvalues * sizeof(Float);
+    itsByteIO->write (nvalues * sizeof(float), (void*) value);
+    return nvalues * sizeof(float);
 }
 
-size_t RawIO::write (size_t nvalues, const Double* value)
+size_t RawIO::write (size_t nvalues, const double* value)
 {
-    itsByteIO->write (nvalues * sizeof(Double), (void*) value);
-    return nvalues * sizeof(Double);
+    itsByteIO->write (nvalues * sizeof(double), (void*) value);
+    return nvalues * sizeof(double);
 }
 
 size_t RawIO::write (size_t nvalues, const Complex* value)
@@ -129,69 +129,69 @@ size_t RawIO::write (size_t nvalues, const String* value)
 }
 
 
-size_t RawIO::read (size_t nvalues, Bool* value)
+size_t RawIO::read (size_t nvalues, bool* value)
 {
     return TypeIO::read (nvalues, value);
 }
 
-size_t RawIO::read (size_t nvalues, Char* value)
+size_t RawIO::read (size_t nvalues, char* value)
 {
-    itsByteIO->read (nvalues * sizeof(Char), value);
-    return nvalues * sizeof(Char);
+    itsByteIO->read (nvalues * sizeof(char), value);
+    return nvalues * sizeof(char);
 }
 
-size_t RawIO::read (size_t nvalues, uChar* value)
+size_t RawIO::read (size_t nvalues, unsigned char* value)
 {
-    itsByteIO->read (nvalues * sizeof(uChar), value);
-    return nvalues * sizeof(uChar);
+    itsByteIO->read (nvalues * sizeof(unsigned char), value);
+    return nvalues * sizeof(unsigned char);
 }
 
-size_t RawIO::read (size_t nvalues, Short* value)
+size_t RawIO::read (size_t nvalues, int16_t* value)
 {
-    itsByteIO->read (nvalues * sizeof(Short), value);
-    return nvalues * sizeof(Short);
+    itsByteIO->read (nvalues * sizeof(int16_t), value);
+    return nvalues * sizeof(int16_t);
 }
 
-size_t RawIO::read (size_t nvalues, uShort* value)
+size_t RawIO::read (size_t nvalues, uint16_t* value)
 {
-    itsByteIO->read (nvalues * sizeof(uShort), value);
-    return nvalues * sizeof(uShort);
+    itsByteIO->read (nvalues * sizeof(uint16_t), value);
+    return nvalues * sizeof(uint16_t);
 }
 
-size_t RawIO::read (size_t nvalues, Int* value)
+size_t RawIO::read (size_t nvalues, int32_t* value)
 {
-    itsByteIO->read (nvalues * sizeof(Int), value);
-    return nvalues * sizeof(Int);
+    itsByteIO->read (nvalues * sizeof(int32_t), value);
+    return nvalues * sizeof(int32_t);
 }
 
-size_t RawIO::read (size_t nvalues, uInt* value)
+size_t RawIO::read (size_t nvalues, uint32_t* value)
 {
-    itsByteIO->read (nvalues * sizeof(uInt), value);
-    return nvalues * sizeof(uInt);
+    itsByteIO->read (nvalues * sizeof(uint32_t), value);
+    return nvalues * sizeof(uint32_t);
 }
 
-size_t RawIO::read (size_t nvalues, Int64* value)
+size_t RawIO::read (size_t nvalues, int64_t* value)
 {
-    itsByteIO->read (nvalues * sizeof(Int64), value);
-    return nvalues * sizeof(Int64);
+    itsByteIO->read (nvalues * sizeof(int64_t), value);
+    return nvalues * sizeof(int64_t);
 }
 
-size_t RawIO::read (size_t nvalues, uInt64* value)
+size_t RawIO::read (size_t nvalues, uint64_t* value)
 {
-    itsByteIO->read (nvalues * sizeof(uInt64), value);
-    return nvalues * sizeof(uInt64);
+    itsByteIO->read (nvalues * sizeof(uint64_t), value);
+    return nvalues * sizeof(uint64_t);
 }
 
-size_t RawIO::read (size_t nvalues, Float* value)
+size_t RawIO::read (size_t nvalues, float* value)
 {
-    itsByteIO->read (nvalues * sizeof(Float), value);
-    return nvalues * sizeof(Float);
+    itsByteIO->read (nvalues * sizeof(float), value);
+    return nvalues * sizeof(float);
 }
 
-size_t RawIO::read (size_t nvalues, Double* value)
+size_t RawIO::read (size_t nvalues, double* value)
 {
-    itsByteIO->read (nvalues * sizeof(Double), value);
-    return nvalues * sizeof(Double);
+    itsByteIO->read (nvalues * sizeof(double), value);
+    return nvalues * sizeof(double);
 }
 
 size_t RawIO::read (size_t nvalues, Complex* value)

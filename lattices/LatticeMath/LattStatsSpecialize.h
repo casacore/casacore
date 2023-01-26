@@ -66,57 +66,57 @@ class IPosition;
 class LattStatsSpecialize
 {
 public:
-   static Bool hasSomePoints (Double npts);
-   static Bool hasSomePoints (DComplex npts);
+   static bool hasSomePoints (double npts);
+   static bool hasSomePoints (DComplex npts);
 //
-   static void setUseItTrue (Float& useIt);
+   static void setUseItTrue (float& useIt);
    static void setUseItTrue (Complex& useIt);
 //
-   static Float usePixelInc (Float dMin, Float dMax, Float datum);
+   static float usePixelInc (float dMin, float dMax, float datum);
    static Complex usePixelInc (Complex dMin, Complex dMax, Complex datum);
 //
-   static Float usePixelExc (Float dMin, Float dMax, Float datum);
+   static float usePixelExc (float dMin, float dMax, float datum);
    static Complex usePixelExc (Complex dMin, Complex dMax, Complex datum);
 //
-   static Double getMean (Double sum, Double n);
+   static double getMean (double sum, double n);
    static DComplex getMean (DComplex sum, DComplex n);
 //
-   static Double getVariance (Double sum, Double sumsq, Double n);
+   static double getVariance (double sum, double sumsq, double n);
    static DComplex getVariance (DComplex sum, DComplex sumsq, DComplex n);
 //
-   static Double getSigma (Double sum, Double sumsq, Double n);
+   static double getSigma (double sum, double sumsq, double n);
    static DComplex getSigma (DComplex sum, DComplex sumsq, DComplex n);
 //
-   static Double getSigma (Double var);
+   static double getSigma (double var);
    static DComplex getSigma (DComplex var);
 //
-   static Double getRms (Double sumsq, Double n);
+   static double getRms (double sumsq, double n);
    static DComplex getRms (DComplex sumsq, DComplex n);
 //
-   static Float min(Float v1, Float v2);
+   static float min(float v1, float v2);
    static Complex min(Complex v1, Complex v2);
 //
-   static Float max(Float v1, Float v2);
+   static float max(float v1, float v2);
    static Complex max(Complex v1, Complex v2);
 //
-   static Float getNodeScalarValue(const LatticeExprNode& node, Float);
+   static float getNodeScalarValue(const LatticeExprNode& node, float);
    static Complex getNodeScalarValue(const LatticeExprNode& node, Complex);
 
-   template <class T> static Bool setIncludeExclude (String& errorMessage,
+   template <class T> static bool setIncludeExclude (String& errorMessage,
                                   Vector<T>& range,
-                                  Bool& noInclude, Bool& noExclude,
+                                  bool& noInclude, bool& noExclude,
                                   const Vector<T>& include,
                                   const Vector<T>& exclude);
-   static Bool setIncludeExclude (String& errorMessage,
+   static bool setIncludeExclude (String& errorMessage,
                                   Vector<Complex>& range,
-                                  Bool& noInclude, Bool& noExclude,
+                                  bool& noInclude, bool& noExclude,
                                   const Vector<Complex>& include,  
                                   const Vector<Complex>& exclude);
 //
-   static Bool minMax (Float& dataMin, Float& dataMax, const MaskedLattice<Float>* pLattice,
-                       const Vector<Float>& range, Bool noInclude, Bool noExclude);
-   static Bool minMax (Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
-                       const Vector<Complex>& range, Bool noInclude, Bool noExclude);
+   static bool minMax (float& dataMin, float& dataMax, const MaskedLattice<float>* pLattice,
+                       const Vector<float>& range, bool noInclude, bool noExclude);
+   static bool minMax (Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
+                       const Vector<Complex>& range, bool noInclude, bool noExclude);
 };
 
 

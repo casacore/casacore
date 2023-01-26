@@ -38,46 +38,46 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableExprNodeSet::TableExprNodeSet()
 : TableExprNodeRep (NTNumeric, VTSet, OtUndef, Constant),
-  itsSingle        (True),
-  itsDiscrete      (True),
-  itsBounded       (True),
-  itsCheckTypes    (True)
+  itsSingle        (true),
+  itsDiscrete      (true),
+  itsBounded       (true),
+  itsCheckTypes    (true)
 {}
 
 TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
 : TableExprNodeRep (NTInt, VTSet, OtUndef, Constant),
-  itsSingle        (True),
-  itsDiscrete      (True),
-  itsBounded       (True),
-  itsCheckTypes    (False)
+  itsSingle        (true),
+  itsDiscrete      (true),
+  itsBounded       (true),
+  itsCheckTypes    (false)
 {
-    uInt n = indices.size();
+    uint32_t n = indices.size();
     itsElems.resize (n);
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
       itsElems[i].reset (new TableExprNodeSetElemSingle
-                         (TableExprNode (Int64(indices(i)))));
+                         (TableExprNode (int64_t(indices(i)))));
     }
 }
 
 TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
 : TableExprNodeRep (NTInt, VTSet, OtUndef, Constant),
-  itsSingle        (False),
-  itsDiscrete      (True),
-  itsBounded       (True),
-  itsCheckTypes    (False)
+  itsSingle        (false),
+  itsDiscrete      (true),
+  itsBounded       (true),
+  itsCheckTypes    (false)
 {
-    uInt n = indices.ndim();
+    uint32_t n = indices.ndim();
     itsElems.resize (n);
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
         TableExprNode start;
         TableExprNode end;
         if (indices.start()(i) != Slicer::MimicSource) {
-          start = TableExprNode (Int64(indices.start()(i)));
+          start = TableExprNode (int64_t(indices.start()(i)));
         }
         if (indices.end()(i) != Slicer::MimicSource) {
-          end = TableExprNode (Int64(indices.end()(i)));
+          end = TableExprNode (int64_t(indices.end()(i)));
         }
-        TableExprNode incr (Int64(indices.stride()(i)));
+        TableExprNode incr (int64_t(indices.stride()(i)));
         itsElems[i].reset (new TableExprNodeSetElemDiscrete (start, end, incr));
     }
 }
@@ -89,7 +89,7 @@ TableExprNodeSet::TableExprNodeSet (const Vector<rownr_t>& rownrs,
   itsSingle        (set.isSingle()),
   itsDiscrete      (set.isDiscrete()),
   itsBounded       (set.isBounded()),
-  itsCheckTypes    (False)
+  itsCheckTypes    (false)
 {
     // Fill in all values.
     size_t nrel = set.size();
@@ -113,7 +113,7 @@ TableExprNodeSet::TableExprNodeSet (const TableExprNodeSet& that)
 TableExprNodeSet::~TableExprNodeSet()
 {}
 
-void TableExprNodeSet::add (const TENSEBShPtr& elemIn, Bool adaptType)
+void TableExprNodeSet::add (const TENSEBShPtr& elemIn, bool adaptType)
 {
     // Convert a constant mid-width interval to a normal interval.
     TENSEBShPtr elem (elemIn);
@@ -129,14 +129,14 @@ void TableExprNodeSet::add (const TENSEBShPtr& elemIn, Bool adaptType)
     }
     // See if the set properties change.
     if (! elem->isSingle()) {
-        itsSingle = False;
+        itsSingle = false;
         if (! elem->isDiscrete()) {
-            itsDiscrete = False;
-            itsBounded  = False;
+            itsDiscrete = false;
+            itsBounded  = false;
         } else {
             if (elem->end() == 0) {
                 // Note that an undefined start defaults to 0, this is bounded.
-                itsBounded = False;
+                itsBounded = false;
             }
         }
     }
@@ -172,7 +172,7 @@ void TableExprNodeSet::checkEqualDataTypes() const
     }
 }
 
-void TableExprNodeSet::show (ostream& os, uInt indent) const
+void TableExprNodeSet::show (ostream& os, uint32_t indent) const
 {
     TableExprNodeRep::show (os, indent);
     for (size_t j=0; j<itsElems.size(); j++) {
@@ -188,23 +188,23 @@ void TableExprNodeSet::flattenTree (std::vector<TableExprNodeRep*>& nodes)
     }
 }
 
-Bool TableExprNodeSet::hasArrays() const
+bool TableExprNodeSet::hasArrays() const
 {
     //# Check if a value is an array?
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         const TableExprNodeSetElemBase& elem = *itsElems[i];
         if (elem.start()  &&  elem.start()->valueType() == VTArray) {
-            return True;
+            return true;
         }
         if (elem.end()  &&  elem.end()->valueType() == VTArray) {
-            return True;
+            return true;
         }
         if (elem.increment()  &&  elem.increment()->valueType() == VTArray) {
-            return True;
+            return true;
         }
     }
-    return False;
+    return false;
 }
 
 TENShPtr TableExprNodeSet::setOrArray() const
@@ -269,7 +269,7 @@ void TableExprNodeSet::setShape()
   // If not, leave the shape empty.
   // Do the same for dimensionality.
   IPosition shp (itsElems[0]->shape());
-  uInt ndim = shp.size();
+  uint32_t ndim = shp.size();
   for (size_t i=1; i<itsElems.size(); ++i) {
     IPosition shp2 (itsElems[i]->shape());
     if (!shp2.isEqual(shp)) {
@@ -295,13 +295,13 @@ TENShPtr TableExprNodeSet::toConstArray() const
     TENShPtr tsnptr;
     switch (dataType()) {
     case NTBool:
-      tsnptr = new TableExprNodeArrayConstBool (toArray<Bool>(0));
+      tsnptr = new TableExprNodeArrayConstBool (toArray<bool>(0));
       break;
     case NTInt:
-      tsnptr = new TableExprNodeArrayConstInt (toArray<Int64>(0));
+      tsnptr = new TableExprNodeArrayConstInt (toArray<int64_t>(0));
       break;
     case NTDouble:
-      tsnptr = new TableExprNodeArrayConstDouble (toArray<Double>(0));
+      tsnptr = new TableExprNodeArrayConstDouble (toArray<double>(0));
       break;
     case NTComplex:
       tsnptr = new TableExprNodeArrayConstDComplex (toArray<DComplex>(0));
@@ -319,17 +319,17 @@ TENShPtr TableExprNodeSet::toConstArray() const
     return tsnptr;
 }
 
-MArray<Bool> TableExprNodeSet::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeSet::getArrayBool (const TableExprId& id)
 {
-  return toArray<Bool> (id);
+  return toArray<bool> (id);
 }
-MArray<Int64> TableExprNodeSet::getArrayInt (const TableExprId& id)
+MArray<int64_t> TableExprNodeSet::getArrayInt (const TableExprId& id)
 {
-  return toArray<Int64> (id);
+  return toArray<int64_t> (id);
 }
-MArray<Double> TableExprNodeSet::getArrayDouble (const TableExprId& id)
+MArray<double> TableExprNodeSet::getArrayDouble (const TableExprId& id)
 {
-  return toArray<Double> (id);
+  return toArray<double> (id);
 }
 MArray<DComplex> TableExprNodeSet::getArrayDComplex (const TableExprId& id)
 {
@@ -344,9 +344,9 @@ MArray<MVTime> TableExprNodeSet::getArrayDate (const TableExprId& id)
   return toArray<MVTime> (id);
 }
 
-Bool TableExprNodeSet::contains (const TableExprId& id, Bool value)
+bool TableExprNodeSet::contains (const TableExprId& id, bool value)
 {
-    Bool result = False;
+    bool result = false;
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchBool (&result, &value, 1, id);
@@ -354,9 +354,9 @@ Bool TableExprNodeSet::contains (const TableExprId& id, Bool value)
     }
     return result;
 }
-Bool TableExprNodeSet::contains (const TableExprId& id, Int64 value)
+bool TableExprNodeSet::contains (const TableExprId& id, int64_t value)
 {
-    Bool result = False;
+    bool result = false;
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchInt (&result, &value, 1, id);
@@ -364,9 +364,9 @@ Bool TableExprNodeSet::contains (const TableExprId& id, Int64 value)
     }
     return result;
 }
-Bool TableExprNodeSet::contains (const TableExprId& id, Double value)
+bool TableExprNodeSet::contains (const TableExprId& id, double value)
 {
-    Bool result = False;
+    bool result = false;
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchDouble (&result, &value, 1, id);
@@ -374,9 +374,9 @@ Bool TableExprNodeSet::contains (const TableExprId& id, Double value)
     }
     return result;
 }
-Bool TableExprNodeSet::contains (const TableExprId& id, DComplex value)
+bool TableExprNodeSet::contains (const TableExprId& id, DComplex value)
 {
-    Bool result = False;
+    bool result = false;
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchDComplex (&result, &value, 1, id);
@@ -384,9 +384,9 @@ Bool TableExprNodeSet::contains (const TableExprId& id, DComplex value)
     }
     return result;
 }
-Bool TableExprNodeSet::contains (const TableExprId& id, String value)
+bool TableExprNodeSet::contains (const TableExprId& id, String value)
 {
-    Bool result = False;
+    bool result = false;
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchString (&result, &value, 1, id);
@@ -394,9 +394,9 @@ Bool TableExprNodeSet::contains (const TableExprId& id, String value)
     }
     return result;
 }
-Bool TableExprNodeSet::contains (const TableExprId& id, MVTime value)
+bool TableExprNodeSet::contains (const TableExprId& id, MVTime value)
 {
-    Bool result = False;
+    bool result = false;
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
         itsElems[i]->matchDate (&result, &value, 1, id);
@@ -404,14 +404,14 @@ Bool TableExprNodeSet::contains (const TableExprId& id, MVTime value)
     }
     return result;
 }
-MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
-                                         const MArray<Bool>& value)
+MArray<bool> TableExprNodeSet::contains (const TableExprId& id,
+                                         const MArray<bool>& value)
 {
-    Array<Bool> result(value.shape());
-    result.set (False);
-    Bool deleteIn, deleteOut;
-    const Bool* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    Array<bool> result(value.shape());
+    result.set (false);
+    bool deleteIn, deleteOut;
+    const bool* in = value.array().getStorage (deleteIn);
+    bool* out = result.getStorage (deleteOut);
     size_t nval = value.size();
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
@@ -419,16 +419,16 @@ MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
-                                         const MArray<Int64>& value)
+MArray<bool> TableExprNodeSet::contains (const TableExprId& id,
+                                         const MArray<int64_t>& value)
 {
-    Array<Bool> result(value.shape());
-    result.set (False);
-    Bool deleteIn, deleteOut;
-    const Int64* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    Array<bool> result(value.shape());
+    result.set (false);
+    bool deleteIn, deleteOut;
+    const int64_t* in = value.array().getStorage (deleteIn);
+    bool* out = result.getStorage (deleteOut);
     size_t nval = value.size();
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
@@ -436,16 +436,16 @@ MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
-                                         const MArray<Double>& value)
+MArray<bool> TableExprNodeSet::contains (const TableExprId& id,
+                                         const MArray<double>& value)
 {
-    Array<Bool> result(value.shape());
-    result.set (False);
-    Bool deleteIn, deleteOut;
-    const Double* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    Array<bool> result(value.shape());
+    result.set (false);
+    bool deleteIn, deleteOut;
+    const double* in = value.array().getStorage (deleteIn);
+    bool* out = result.getStorage (deleteOut);
     size_t nval = value.size();
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
@@ -453,16 +453,16 @@ MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
+MArray<bool> TableExprNodeSet::contains (const TableExprId& id,
                                          const MArray<DComplex>& value)
 {
-    Array<Bool> result(value.shape());
-    result.set (False);
-    Bool deleteIn, deleteOut;
+    Array<bool> result(value.shape());
+    result.set (false);
+    bool deleteIn, deleteOut;
     const DComplex* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    bool* out = result.getStorage (deleteOut);
     size_t nval = value.size();
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
@@ -470,16 +470,16 @@ MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
+MArray<bool> TableExprNodeSet::contains (const TableExprId& id,
                                          const MArray<String>& value)
 {
-    Array<Bool> result(value.shape());
-    result.set (False);
-    Bool deleteIn, deleteOut;
+    Array<bool> result(value.shape());
+    result.set (false);
+    bool deleteIn, deleteOut;
     const String* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    bool* out = result.getStorage (deleteOut);
     size_t nval = value.size();
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
@@ -487,16 +487,16 @@ MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
 }
-MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
+MArray<bool> TableExprNodeSet::contains (const TableExprId& id,
                                          const MArray<MVTime>& value)
 {
-    Array<Bool> result(value.shape());
-    result.set (False);
-    Bool deleteIn, deleteOut;
+    Array<bool> result(value.shape());
+    result.set (false);
+    bool deleteIn, deleteOut;
     const MVTime* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    bool* out = result.getStorage (deleteOut);
     size_t nval = value.size();
     size_t n = itsElems.size();
     for (size_t i=0; i<n; i++) {
@@ -504,7 +504,7 @@ MArray<Bool> TableExprNodeSet::contains (const TableExprId& id,
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
 }
 
 } //# NAMESPACE CASACORE - END

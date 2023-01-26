@@ -62,7 +62,7 @@ class Unit;
 // <note role=warning>
 // Since interpretation of the keyword value string is done with the standard
 // input right-shift operator, specialisations are necessary for non-standard
-// cases like Bool and String. They are provided.
+// cases like bool and String. They are provided.
 // </note>
 // </templating>
 //
@@ -93,10 +93,10 @@ public:
   //# Member functions
   // The <src>find()</src> functions will, given a keyword, return the value
   // of a matched keyword found in the files. If no match found the
-  // function will be False, and the default returned if specified.
+  // function will be false, and the default returned if specified.
   // <group>
-  static Bool find(Vector<T> &value, const String &keyword);
-  static Bool find(Vector<T> &value, const String &keyword, 
+  static bool find(Vector<T> &value, const String &keyword);
+  static bool find(Vector<T> &value, const String &keyword, 
 		   const Vector<T> &deflt);
   // </group>
   // These <src>find()</src> functions will, given a keyword, read the values
@@ -105,34 +105,34 @@ public:
   // will be converted to the resun Unit. If no match found, the default
   // value is returned (see example above).
   // <group>
-  static Bool find(Vector<T> &value, const String &keyword,
+  static bool find(Vector<T> &value, const String &keyword,
 		   const Unit &defun, const Unit &resun);
-  static Bool find(Vector<T> &value, const String &keyword,
+  static bool find(Vector<T> &value, const String &keyword,
 		   const Unit &defun, const Unit &resun,
 		   const Vector<T> &deflt);
   // </group>
   // Functions to register keywords for later use in get() and set(). The
   // returned value is the index for get() and set().
   // <group>
-  static uInt registerRC(const String &keyword,
+  static uint32_t registerRC(const String &keyword,
 			 const Vector<T> &deflt);
-  static uInt registerRC(const String &keyword,
+  static uint32_t registerRC(const String &keyword,
 			 const Unit &defun, const Unit &resun,
 			 const Vector<T> &deflt);
   // </group>
   
   // Gets are like find, but using registered integers rather than names.
   // <group>
-  static const Vector<T> &get(uInt keyword);
+  static const Vector<T> &get(uint32_t keyword);
   // </group>
   
   // Sets allow registered values to be set
   // <group>
-  static void set(uInt keyword, const Vector<T> &deflt);
+  static void set(uint32_t keyword, const Vector<T> &deflt);
   // </group>
   
   // Save registered value to <src>$HOME/.aipsrc</src>
-  static void save(uInt keyword);
+  static void save(uint32_t keyword);
 
 private:
   //# Data
@@ -168,13 +168,13 @@ template <> class AipsrcVector_String<String> : public Aipsrc {
  public:
   AipsrcVector_String();
   ~AipsrcVector_String();
-  static Bool find(Vector<String> &value, const String &keyword);
-  static Bool find(Vector<String> &value, const String &keyword, 
+  static bool find(Vector<String> &value, const String &keyword);
+  static bool find(Vector<String> &value, const String &keyword, 
 		   const Vector<String> &deflt);
-  static uInt registerRC(const String &keyword, const Vector<String> &deflt);
-  static const Vector<String> &get(uInt keyword);
-  static void set(uInt keyword, const Vector<String> &deflt);
-  static void save(uInt keyword);
+  static uint32_t registerRC(const String &keyword, const Vector<String> &deflt);
+  static const Vector<String> &get(uint32_t keyword);
+  static void set(uint32_t keyword, const Vector<String> &deflt);
+  static void save(uint32_t keyword);
 
 private:
   static AipsrcVector_String myp_p;
@@ -190,7 +190,7 @@ private:
 
 #define AipsrcVector_Bool AipsrcVector
 
-// <summary> Specialization of AipsrcVector for Bool </summary>
+// <summary> Specialization of AipsrcVector for bool </summary>
 
 // <synopsis>
 // <note role=warning>
@@ -198,26 +198,26 @@ private:
 // documentation problems. Use <src>AipsrcVector</src> in your code.</note>
 // </synopsis>
 
-template <> class AipsrcVector_Bool<Bool> : public Aipsrc {
+template <> class AipsrcVector_Bool<bool> : public Aipsrc {
  public:
   AipsrcVector_Bool();
   ~AipsrcVector_Bool();
-  static Bool find(Vector<Bool> &value, const String &keyword);
-  static Bool find(Vector<Bool> &value, const String &keyword, 
-		   const Vector<Bool> &deflt);
-  static uInt registerRC(const String &keyword, const Vector<Bool> &deflt);
-  static const Vector<Bool> &get(uInt keyword);
-  static void set(uInt keyword, const Vector<Bool> &deflt);
-  static void save(uInt keyword);
+  static bool find(Vector<bool> &value, const String &keyword);
+  static bool find(Vector<bool> &value, const String &keyword, 
+		   const Vector<bool> &deflt);
+  static uint32_t registerRC(const String &keyword, const Vector<bool> &deflt);
+  static const Vector<bool> &get(uint32_t keyword);
+  static void set(uint32_t keyword, const Vector<bool> &deflt);
+  static void save(uint32_t keyword);
 
 private:
   static AipsrcVector_Bool myp_p;
   static std::mutex theirMutex;
-  Block<Vector<Bool> > tlst;
+  Block<Vector<bool> > tlst;
   Block<String> ntlst;
-  AipsrcVector_Bool<Bool>
-    &operator=(const AipsrcVector_Bool<Bool> &other);
-  AipsrcVector_Bool(const AipsrcVector_Bool<Bool> &other);
+  AipsrcVector_Bool<bool>
+    &operator=(const AipsrcVector_Bool<bool> &other);
+  AipsrcVector_Bool(const AipsrcVector_Bool<bool> &other);
 };
 
 #undef AipsrcVector_Bool

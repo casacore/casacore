@@ -43,7 +43,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value)
 : TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT))
 {
   M meas;
-  Vector<Quantum<Double> > val;
+  Vector<Quantum<double> > val;
   val = meas.getValue().getTMRecordValue();
   Vector<Unit> u;
   setMeasUnits (meas, val, u);
@@ -55,7 +55,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 : TableMeasDescBase(value, TableMeasRefDesc(M::DEFAULT))
 { 
   M meas;
-  Vector<Quantum<Double> > val;
+  Vector<Quantum<double> > val;
   val = meas.getValue().getTMRecordValue();
   setMeasUnits (meas, val, u);
 }
@@ -67,7 +67,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 {
   // Set the units of this measure.
   M meas;
-  Vector<Quantum<Double> > val;
+  Vector<Quantum<double> > val;
   val = meas.getValue().getTMRecordValue();
   Vector<Unit> u;
   setMeasUnits (meas, val, u);
@@ -84,7 +84,7 @@ TableMeasDesc<M>::TableMeasDesc (const TableMeasValueDesc& value,
 : TableMeasDescBase(value, ref)
 {
   M meas;
-  Vector<Quantum<Double> > val;
+  Vector<Quantum<double> > val;
   val = meas.getValue().getTMRecordValue();
   setMeasUnits (meas, val, u);
   if (ref.isRefCodeColumnInt()) {

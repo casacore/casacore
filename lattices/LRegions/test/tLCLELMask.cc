@@ -38,18 +38,18 @@
 
 
 #include <casacore/casa/namespace.h>
-void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
-		       Bool alternates)
+void testVectorROIter (const Lattice<bool>& lattice, bool firstValue,
+		       bool alternates)
 {
-    Int nstep;
+    int32_t nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Bool>  iter(lattice, step);
-    Bool value = firstValue;
+    RO_LatticeIterator<bool>  iter(lattice, step);
+    bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
         // Static cast avoids an SGI compiler bug.
-        AlwaysAssert(allEQ(static_cast<Vector<Bool> >(iter.vectorCursor()), value), AipsError);
+        AlwaysAssert(allEQ(static_cast<Vector<bool> >(iter.vectorCursor()), value), AipsError);
 	if (alternates) {
 	    value = (!value);
 	}
@@ -67,29 +67,29 @@ int main ()
 {
   try {
     IPosition latticeShape(2, 4, 8);
-    Array<Float> arr(latticeShape);
+    Array<float> arr(latticeShape);
     indgen (arr);
-    ArrayLattice<Float> arrlat(arr);
+    ArrayLattice<float> arrlat(arr);
     {
       LCLELMask mask(fmod(floor(arrlat/4), 2) == 0);
       AlwaysAssertExit (mask.hasMask());
       AlwaysAssertExit (! mask.isWritable());
       AlwaysAssertExit (mask.shape() == latticeShape);
       // Check the mask values using the iterator.
-      testVectorROIter (mask, True, True);
+      testVectorROIter (mask, true, true);
 
       LCLELMask mask1(fmod(floor(arrlat/4), 2) != 0);
       LCLELMask mask2(mask1);
       AlwaysAssertExit (mask2.hasMask());
       AlwaysAssertExit (! mask2.isWritable());
       AlwaysAssertExit (mask2.shape() == latticeShape);
-      testVectorROIter (mask2, False, True);
+      testVectorROIter (mask2, false, true);
 
       mask1 = mask;
       AlwaysAssertExit (mask1.hasMask());
       AlwaysAssertExit (! mask1.isWritable());
       AlwaysAssertExit (mask1.shape() == latticeShape);
-      testVectorROIter (mask, True, True);
+      testVectorROIter (mask, true, true);
 
       AlwaysAssertExit (mask1 != mask2);
     }

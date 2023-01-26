@@ -53,27 +53,27 @@ String VirtualScalarColumn<T>::dataTypeId() const
 //# Implement the get/put functions via a macro.
 //# In principle they are not possible.
 //# The implementation is done using global functions defined in the .h fie.
-#define VIRTUALSCALARCOLUMN_GETPUT(TP) \
+#define VIRTUALSCALARCOLUMN_GETPUT(TP,NM)         \
 template<class T> \
-void VirtualScalarColumn<T>::aips_name2(get,TP) (rownr_t rownr, TP* dataPtr) \
+void VirtualScalarColumn<T>::aips_name2(get,NM) (rownr_t rownr, TP* dataPtr) \
     { getVirtualScalar (this, rownr, dataPtr); } \
 template<class T> \
-void VirtualScalarColumn<T>::aips_name2(put,TP) (rownr_t rownr, \
+void VirtualScalarColumn<T>::aips_name2(put,NM) (rownr_t rownr, \
                                                  const TP* dataPtr) \
     { putVirtualScalar (this, rownr, dataPtr); }
 
-VIRTUALSCALARCOLUMN_GETPUT(Bool)
-VIRTUALSCALARCOLUMN_GETPUT(uChar)
-VIRTUALSCALARCOLUMN_GETPUT(Short)
-VIRTUALSCALARCOLUMN_GETPUT(uShort)
-VIRTUALSCALARCOLUMN_GETPUT(Int)
-VIRTUALSCALARCOLUMN_GETPUT(uInt)
-VIRTUALSCALARCOLUMN_GETPUT(Int64)
-VIRTUALSCALARCOLUMN_GETPUT(float)
-VIRTUALSCALARCOLUMN_GETPUT(double)
-VIRTUALSCALARCOLUMN_GETPUT(Complex)
-VIRTUALSCALARCOLUMN_GETPUT(DComplex)
-VIRTUALSCALARCOLUMN_GETPUT(String)
+VIRTUALSCALARCOLUMN_GETPUT(bool, Bool)
+VIRTUALSCALARCOLUMN_GETPUT(unsigned char, uChar)
+VIRTUALSCALARCOLUMN_GETPUT(int16_t, Short)
+VIRTUALSCALARCOLUMN_GETPUT(uint16_t, uShort)
+VIRTUALSCALARCOLUMN_GETPUT(int32_t, Int)
+VIRTUALSCALARCOLUMN_GETPUT(uint32_t, uInt)
+VIRTUALSCALARCOLUMN_GETPUT(int64_t, Int64)
+VIRTUALSCALARCOLUMN_GETPUT(float, float)
+VIRTUALSCALARCOLUMN_GETPUT(double, double)
+VIRTUALSCALARCOLUMN_GETPUT(Complex, Complex)
+VIRTUALSCALARCOLUMN_GETPUT(DComplex, DComplex)
+VIRTUALSCALARCOLUMN_GETPUT(String, String)
 
 template<class T>
 void VirtualScalarColumn<T>::getOther (rownr_t rownr, void* dataPtr)

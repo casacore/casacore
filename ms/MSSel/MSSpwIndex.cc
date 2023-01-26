@@ -45,32 +45,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSSpwIndex::MSSpwIndex(const MSSpectralWindow& msSpw):
         msSpwSubTable_p(msSpw) 
   {
-    Int nrows = msSpwSubTable_p.nrow();
+    int32_t nrows = msSpwSubTable_p.nrow();
     spwIDs.resize(nrows);
     indgen(spwIDs);
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchRegexOrPattern(const String& pattern,
-						     const Bool regex)
+  Vector<int32_t> MSSpwIndex::matchRegexOrPattern(const String& pattern,
+						     const bool regex)
   {
-    Int pos=0;
+    int32_t pos=0;
     Regex reg;
     if (regex) reg=pattern;
     else       reg=reg.fromPattern(pattern);
     
     //  cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
     IPosition sh(msSpwSubTable_p.name().getColumn().shape());
-    LogicalArray maskArray(sh,False);
+    LogicalArray maskArray(sh,false);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=(msSpwSubTable_p.name().getColumn()(i).matches(reg,pos));
+	int32_t ret=(msSpwSubTable_p.name().getColumn()(i).matches(reg,pos));
 	maskArray(i) = ( (ret>0) );//&&	 !msSpwSubTable_p.flagRow().getColumn()(i));
       }
     
-    MaskedArray<Int> maskSpwID(spwIDs,maskArray);
+    MaskedArray<int32_t> maskSpwID(spwIDs,maskArray);
     return maskSpwID.getCompressedArray();
   }
   //
@@ -79,7 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // greater than the number of SPWs by matching them as name
   // strings. Elements for which this match fails or which are less
   // than the number of SPWs remain unmodified.
-  void MSSpwIndex::matchNameAsIntID(Vector<Int>& list)
+  void MSSpwIndex::matchNameAsIntID(Vector<int32_t>& list)
   {
     int nSpw = msSpwSubTable_p.name().getColumn().nelements();
     for(unsigned int i=0;i<list.nelements();i++)
@@ -99,20 +99,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchName(const String& name)
+  Vector<int32_t> MSSpwIndex::matchName(const String& name)
   {
     LogicalArray maskArray = (msSpwSubTable_p.name().getColumn()==name);
       //      && !msSpwSubTable_p.flagRow().getColumn());
-    MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+    MaskedArray<int32_t> maskSpwId(spwIDs, maskArray);
 
     return maskSpwId.getCompressedArray();
   } 
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchId(const Vector<Int>& sourceId)
+  Vector<int32_t> MSSpwIndex::matchId(const Vector<int32_t>& sourceId)
   {
-    Vector<Int> IDs;
+    Vector<int32_t> IDs;
     IDs = set_intersection(sourceId,spwIDs);
     //
     // If IDs has less than sourceId, some sourceIds found no match.
@@ -124,7 +124,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	vector<int> tt = IDs.tovector();
 	ostringstream Mesg, tok;
 	Mesg << "Spw Expression: No match found for ";
-	for (uInt i=0;i<sourceId.nelements();i++)
+	for (uint32_t i=0;i<sourceId.nelements();i++)
 	  {
 	    vector<int>::iterator ndx = find(tt.begin(), tt.end(), sourceId[i]);
 	    if (ndx == tt.end()) tok << sourceId[i] << ",";
@@ -137,40 +137,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Bool MSSpwIndex::matchFrequencyRange(const Double f0, const Double f1, 
-				       Vector<Int>& spw, Vector<Int>& start, 
-				       Vector<Int>& nchan){
-    Int nspw=msSpwSubTable_p.nrow();
-    Bool found=False;
+  bool MSSpwIndex::matchFrequencyRange(const double f0, const double f1, 
+				       Vector<int32_t>& spw, Vector<int32_t>& start, 
+				       Vector<int32_t>& nchan){
+    int32_t nspw=msSpwSubTable_p.nrow();
+    bool found=false;
 
     spw.resize();
     start.resize();
     nchan.resize();
-    Int nmatch=0;
-    for (Int k=0; k < nspw; ++k){
-      Bool locfound=False;
-      Bool dum;
+    int32_t nmatch=0;
+    for (int32_t k=0; k < nspw; ++k){
+      bool locfound=false;
+      bool dum;
 
-      Vector<Double> chanfreq=msSpwSubTable_p.chanFreq()(k);
+      Vector<double> chanfreq=msSpwSubTable_p.chanFreq()(k);
 
-      Sort sort( chanfreq.getStorage(dum),sizeof(Double) );
-      sort.sortKey((uInt)0,TpDouble);
-      Int nch=chanfreq.nelements();
-      Vector<uInt> sortIndx;
+      Sort sort( chanfreq.getStorage(dum),sizeof(double) );
+      sort.sortKey((uint32_t)0,TpDouble);
+      int32_t nch=chanfreq.nelements();
+      Vector<uint32_t> sortIndx;
       sort.sort(sortIndx, nch);
-      Vector<Double>chanwidth=msSpwSubTable_p.chanWidth()(k);
+      Vector<double>chanwidth=msSpwSubTable_p.chanWidth()(k);
       if(f0 > chanfreq(sortIndx[0]) &&  f0 < chanfreq(sortIndx[nch-1])){
-	locfound=True;
+	locfound=true;
       }
       if(f1 > chanfreq(sortIndx[0]) &&  f1 < chanfreq(sortIndx[nch-1])){
-	locfound=True;
+	locfound=true;
       }
       if(locfound){
-        Vector<Int> chanIn(chanfreq.nelements());
+        Vector<int32_t> chanIn(chanfreq.nelements());
 	chanIn=-1;
-	Int numMatched=0;
+	int32_t numMatched=0;
 
-	for (uInt kk=0; kk < chanfreq.nelements(); ++kk){
+	for (uint32_t kk=0; kk < chanfreq.nelements(); ++kk){
 
 	  if( ((chanfreq[kk]+0.5*fabs(chanwidth[kk])) > f0) && ((chanfreq[kk]-0.5*fabs(chanwidth[kk])) < f1)   ) {
 	    chanIn[numMatched]=kk;
@@ -179,12 +179,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         }
         if(numMatched >0){
           ++nmatch;
-          spw.resize(nmatch, True);
+          spw.resize(nmatch, true);
           spw(nmatch-1)=k;
-          start.resize(nmatch, True);
-          nchan.resize(nmatch, True);
-          found=True;
-          chanIn.resize(numMatched, True);
+          start.resize(nmatch, true);
+          nchan.resize(nmatch, true);
+          found=true;
+          chanIn.resize(numMatched, true);
           start(nmatch-1)=min(chanIn);
           nchan(nmatch-1)=max(chanIn)-start(nmatch-1)+1;
         
@@ -193,13 +193,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //spw is fully inside region between f0 and f1
       else if((f0 < chanfreq(sortIndx[0])) && (f1 > chanfreq(sortIndx[nch-1]))){
 	++nmatch;
-	spw.resize(nmatch, True);
+	spw.resize(nmatch, true);
 	spw(nmatch-1)=k;
-	start.resize(nmatch, True);
+	start.resize(nmatch, true);
 	start(nmatch-1)=0;
-	nchan.resize(nmatch, True);
+	nchan.resize(nmatch, true);
 	nchan(nmatch-1)=nch;
-	found=True;
+	found=true;
       }
     }
     return found;
@@ -207,40 +207,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchFrequencyRange(const Float f0, const Float f1,
-					      Bool approx, const Float f3)
+  Vector<int32_t> MSSpwIndex::matchFrequencyRange(const float f0, const float f1,
+					      bool approx, const float f3)
   {
-    Int nSpwRows=msSpwSubTable_p.nrow();
-    Bool Found;
-    Int mode;
-    Vector<Int> IDs;
-    Float localStep;
+    int32_t nSpwRows=msSpwSubTable_p.nrow();
+    bool Found;
+    int32_t mode;
+    Vector<int32_t> IDs;
+    float localStep;
     mode=RANGE;
     if ((f1 < 0) || (f0==f1)) mode=EXACT;
     if (approx) mode=APPROX;
 
-    ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
-    ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
-    for(Int n=0;n<nSpwRows;n++)
+    ArrayColumn<double> chanWidth(msSpwSubTable_p.chanWidth());
+    ArrayColumn<double> chanFreq(msSpwSubTable_p.chanFreq());
+    for(int32_t n=0;n<nSpwRows;n++)
       {
-	Float totalBandWidth, refFreq;
+	float totalBandWidth, refFreq;
 	
-	Double maxChanWidth;
+	double maxChanWidth;
 	{
-	  Vector<Double> shouldNotBeRequired;
-	  chanWidth.get(n,shouldNotBeRequired,True);
+	  Vector<double> shouldNotBeRequired;
+	  chanWidth.get(n,shouldNotBeRequired,true);
 	  maxChanWidth = max(shouldNotBeRequired);
 	  if (f3 < 0) localStep=min(shouldNotBeRequired);
 	  else localStep = f3;
 	}
 
-	Found = False;
+	Found = false;
 	if (approx) totalBandWidth = msSpwSubTable_p.totalBandwidth()(n);
 	else totalBandWidth = 0;
 	//	refFreq = msSpwSubTable_p.refFrequency()(n);
-	Vector<Double> chanFreqList;
-	chanFreq.get(n,chanFreqList,True);
-	Int nChan=chanFreqList.nelements();
+	Vector<double> chanFreqList;
+	chanFreq.get(n,chanFreqList,true);
+	int32_t nChan=chanFreqList.nelements();
 	refFreq = (chanFreqList(nChan-1)+chanFreqList(0))/2.0;;
 
 	//cout << chanFreqList[0] << " " << chanFreqList[nChan-1] << " " << f0 << " " << f1 << " " << f3 << " " << maxChanWidth << endl;
@@ -249,7 +249,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  {
 	  case EXACT:
 	    {
-	      if (fabs(refFreq - f0) < maxChanWidth) Found = True;
+	      if (fabs(refFreq - f0) < maxChanWidth) Found = true;
 	      break;
 	    }
 	  case APPROX:
@@ -257,7 +257,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	      if ((fabs(refFreq-f0) <= totalBandWidth) 
 		  //		  && (!msSpwSubTable_p.flagRow()(n))
 		  )
-		Found = True;
+		Found = true;
 	      break;
 	    }
 	  case RANGE:
@@ -268,13 +268,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		      (refFreq <= f1)
 		      //		  && (!msSpwSubTable_p.flagRow()(n))
 		      )
-		    Found = True;
+		    Found = true;
 		  break;
 		}
 	      else
 		{
-		  for(Float freq=f0;freq <=f1; freq+=localStep) {
-		    if (fabs(freq - refFreq) < maxChanWidth) {Found = True;break;}
+		  for(float freq=f0;freq <=f1; freq+=localStep) {
+		    if (fabs(freq - refFreq) < maxChanWidth) {Found = true;break;}
                   }
 		  break;
 		}
@@ -290,7 +290,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    // Darn!  We don't use standard stuff (STL!)
 	    //
 	    //IDs.push_back(SpwIds(n));
-	    IDs.resize(IDs.nelements()+1,True);
+	    IDs.resize(IDs.nelements()+1,true);
 	    IDs(IDs.nelements()-1) = n;
 	    if (mode==EXACT) break;
 	  }
@@ -310,74 +310,74 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchLT(const Float* phyVal)
+  Vector<int32_t> MSSpwIndex::matchLT(const float* phyVal)
   {
-    Vector<Double> refFreqs= msSpwSubTable_p.refFrequency().getColumn();
-    LogicalArray maskArray = (refFreqs < (Double)phyVal[0]);
-    MaskedArray<Int> maskSpwId(spwIDs,maskArray);
+    Vector<double> refFreqs= msSpwSubTable_p.refFrequency().getColumn();
+    LogicalArray maskArray = (refFreqs < (double)phyVal[0]);
+    MaskedArray<int32_t> maskSpwId(spwIDs,maskArray);
     return maskSpwId.getCompressedArray();
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchGT(const Float* phyVal)
+  Vector<int32_t> MSSpwIndex::matchGT(const float* phyVal)
   {
-    Vector<Double> refFreqs= msSpwSubTable_p.refFrequency().getColumn();
-    LogicalArray maskArray = (refFreqs > (Double)phyVal[0]);
-    MaskedArray<Int> maskSpwId(spwIDs,maskArray);
+    Vector<double> refFreqs= msSpwSubTable_p.refFrequency().getColumn();
+    LogicalArray maskArray = (refFreqs > (double)phyVal[0]);
+    MaskedArray<int32_t> maskSpwId(spwIDs,maskArray);
     return maskSpwId.getCompressedArray();
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchGTAndLT(const Float* phyValMin, const Float *phyValMax)
+  Vector<int32_t> MSSpwIndex::matchGTAndLT(const float* phyValMin, const float *phyValMax)
   {
-    Vector<Double> refFreqs= msSpwSubTable_p.refFrequency().getColumn();
-    LogicalArray maskArray = ((refFreqs > (Double)phyValMin[0]) && 
-			      (refFreqs < (Double)phyValMax[0]));
-    MaskedArray<Int> maskSpwId(spwIDs,maskArray);
+    Vector<double> refFreqs= msSpwSubTable_p.refFrequency().getColumn();
+    LogicalArray maskArray = ((refFreqs > (double)phyValMin[0]) && 
+			      (refFreqs < (double)phyValMax[0]));
+    MaskedArray<int32_t> maskSpwId(spwIDs,maskArray);
     return maskSpwId.getCompressedArray();
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchLT(const Int n)
+  Vector<int32_t> MSSpwIndex::matchLT(const int32_t n)
   {
     LogicalArray maskArray = 
       //      ((spwIDs <= n));// && (!msSpwSubTable_p.flagRow().getColumn()));
       ((spwIDs < n));// && (!msSpwSubTable_p.flagRow().getColumn()));
-    MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+    MaskedArray<int32_t> maskSpwId(spwIDs, maskArray);
     return maskSpwId.getCompressedArray();
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchGT(const Int n)
+  Vector<int32_t> MSSpwIndex::matchGT(const int32_t n)
   {
     LogicalArray maskArray = 
       ((spwIDs > n));// && (!msSpwSubTable_p.flagRow().getColumn()));
-    MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+    MaskedArray<int32_t> maskSpwId(spwIDs, maskArray);
     return maskSpwId.getCompressedArray();
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::matchGTAndLT(const Int n0, const Int n1)
+  Vector<int32_t> MSSpwIndex::matchGTAndLT(const int32_t n0, const int32_t n1)
   {
     LogicalArray maskArray = 
       ((spwIDs > n0) && (spwIDs < n1));// &&(!msSpwSubTable_p.flagRow().getColumn()));
-    MaskedArray<Int> maskSpwId(spwIDs, maskArray);
+    MaskedArray<int32_t> maskSpwId(spwIDs, maskArray);
     return maskSpwId.getCompressedArray();
   }
   //
   //------------------------------------------------------------------
   //
-  Vector<Float> MSSpwIndex::convertToMKS(const Float f0, const Float f1, 
+  Vector<float> MSSpwIndex::convertToMKS(const float f0, const float f1, 
 					 const String& unit)
   {
-    Vector<Float> freqs(2);
+    Vector<float> freqs(2);
     String units(unit);   units.downcase();
-    Float factor=1.0;
+    float factor=1.0;
  
     if (units[0] == 'k') factor *= 1000;
     else if (units[0] == 'm') factor *= 1e6;
@@ -391,37 +391,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::convertToChannelIndex(const Vector<Int>& spw, 
-						const Vector<Float>& freqList,
-						Int &nFSpec)
+  Vector<int32_t> MSSpwIndex::convertToChannelIndex(const Vector<int32_t>& spw, 
+						const Vector<float>& freqList,
+						int32_t &nFSpec)
   {
     LogIO log_l(LogOrigin("MSSpw Expression parser", "MSSpwIndex::convertToChannelIndex", WHERE));
 
-    Vector<Int> localFreqList;
-    vector<Int> localFoundSpwList;
-    Vector<Int> numChans =  msSpwSubTable_p.numChan().getColumn();
+    Vector<int32_t> localFreqList;
+    vector<int32_t> localFoundSpwList;
+    Vector<int32_t> numChans =  msSpwSubTable_p.numChan().getColumn();
 
-    Int nSpw = spw.nelements(), nFList=freqList.nelements();
+    int32_t nSpw = spw.nelements(), nFList=freqList.nelements();
     nFSpec = nFList/4;  // 4 integers per channel specification
 
-    ArrayColumn<Double> chanWidth(msSpwSubTable_p.chanWidth());
-    ArrayColumn<Double> chanFreq(msSpwSubTable_p.chanFreq());
+    ArrayColumn<double> chanWidth(msSpwSubTable_p.chanWidth());
+    ArrayColumn<double> chanFreq(msSpwSubTable_p.chanFreq());
 
-    Bool someMatchFailed=False;
+    bool someMatchFailed=false;
     ostringstream Mesg;
 
     if (nFList > 0)
       {
 	localFreqList.resize(nSpw*nFSpec*3);
-	Int pos=0;
+	int32_t pos=0;
 
-	for(Int i=0;i<nSpw;i++)
-	  for(Int j=0;j<nFList;j+=4)
+	for(int32_t i=0;i<nSpw;i++)
+	  for(int32_t j=0;j<nFList;j+=4)
 	    {
 	      if ((freqList(j+3) == MSSpwIndex::MSSPW_INDEX) ||
 		  (freqList(j+3) == MSSpwIndex::MSSPW_INDEXRANGE))
 		{
-		  Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
+		  int32_t start=(int32_t)freqList(j), stop=(int32_t)freqList(j+1), step=(int32_t)freqList(j+2);
 		  if (start == -1) start = 0;
 		  if (stop == -1) stop = numChans(spw(i))-1;
 		  if (stop == start)
@@ -435,7 +435,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			  //			  throw(MSSelectionSpwError(Mesg.str()));
 			  log_l << Mesg.str() << LogIO::WARN << LogIO::POST;
 			  stop = start = numChans(spw(i))-1;
-			  someMatchFailed=True;
+			  someMatchFailed=true;
 			}
 		    }
 		  else
@@ -448,14 +448,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			       << " Limiting it to be within the available range.";
 			  //			  throw(MSSelectionSpwError(Mesg.str()));
 			  log_l << Mesg.str() << LogIO::WARN << LogIO::POST;
-			  someMatchFailed=True;
+			  someMatchFailed=true;
 			}
 		      start = max(0, min(start,numChans(spw(i))-1));
 		      stop  = min(numChans(spw(i))-1, max(stop,0));
 		    }
 		  if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
 
-		  step = (((Int)step <= 0) ? 1 : step);
+		  step = (((int32_t)step <= 0) ? 1 : step);
 
 		  localFreqList(pos++)=start;
 		  localFreqList(pos++)=stop;
@@ -463,14 +463,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		}
 	      else if (freqList(j+3) == MSSpwIndex::MSSPW_UNITHZ)  // If the spec is XXHz
 		{
-		  Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
-		  Vector<Double> cf,cw;
-		  chanFreq.get(spw(i),cf,True);
-		  chanWidth.get(spw(i),cw,True);
+		  float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
+		  Vector<double> cf,cw;
+		  chanFreq.get(spw(i),cf,true);
+		  chanWidth.get(spw(i),cw,true);
 		  if (abs(cw(0)) == 0)
 		    throw(MSSelectionSpwError("Error in the MS SPECTRAL_WINDOW sub-table (channel width==0)."));
 		      
-		  Int cwDir = (Int)(cw(0)/abs(cw(0)));
+		  int32_t cwDir = (int32_t)(cw(0)/abs(cw(0)));
 		  //
 		  // Do a brain-dead linear search for the channel
 		  // number (linear search is *probably* OK - unless
@@ -478,34 +478,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  //
 
 		  // Obfuscated code alert (but it was fun :))!
-		  someMatchFailed |= ((start = findChanIndex_p(start, cf, True,  (cwDir>0)))==-1);
-		  someMatchFailed |= ((stop  = findChanIndex_p(stop,  cf, False, (cwDir>0)))==-1);
+		  someMatchFailed |= ((start = findChanIndex_p(start, cf, true,  (cwDir>0)))==-1);
+		  someMatchFailed |= ((stop  = findChanIndex_p(stop,  cf, false, (cwDir>0)))==-1);
 
-		  // Bool found=False;
-		  // Int n=cf.nelements();
+		  // bool found=false;
+		  // int32_t n=cf.nelements();
 		  // {
 		  //   if (start <= cf(0)) start=0;
 		  //   else
 		  //     {
-		  // 	for(Int ii=0;ii<n;ii++)
-		  // 	  if (cf(ii) >= start) {start=ii;found=True;break;}
+		  // 	for(int32_t ii=0;ii<n;ii++)
+		  // 	  if (cf(ii) >= start) {start=ii;found=true;break;}
 			
 		  // 	if (!found)
-		  // 	  {someMatchFailed=True;start = -1;}
+		  // 	  {someMatchFailed=true;start = -1;}
 		  //     }
 		    
-		  //   found=False;
+		  //   found=false;
 		  //   if (stop >= cf(n-1)) stop = n-1;
 		  //   else
 		  //     {
-		  // 	for(Int ii=n-1;ii>=0;ii--)
-		  // 	  if (cf(ii) <= stop) {stop=ii;found=True;break;}
+		  // 	for(int32_t ii=n-1;ii>=0;ii--)
+		  // 	  if (cf(ii) <= stop) {stop=ii;found=true;break;}
 			
 		  // 	if (!found)
-		  // 	  {someMatchFailed=True; stop=-1;}
+		  // 	  {someMatchFailed=true; stop=-1;}
 		  //     }
 		  // }
-		  Double maxCW=max(cw), minCW=min(cw);
+		  double maxCW=max(cw), minCW=min(cw);
 		  if (minCW != maxCW)
 		    {
 		      log_l << "Channel width across the band is not constant.  "
@@ -522,17 +522,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  // cwDir carries the direction in which
 		  // freq. increases with increase channel index.
 		  //
-		  step = (((Int)step <= 0) ? 1 : step);//*cwDir;
+		  step = (((int32_t)step <= 0) ? 1 : step);//*cwDir;
 		  if (start > stop)
 		    {
-		      Float tmp=start;
+		      float tmp=start;
 		      start=stop;stop=tmp;
 		    }
 
 		  if ((start != -1) && (stop != -1)) localFoundSpwList.push_back(spw(i));
-		  localFreqList(pos++)=(Int)start;
-		  localFreqList(pos++)=(Int)stop;
-		  localFreqList(pos++)=(Int)step;
+		  localFreqList(pos++)=(int32_t)start;
+		  localFreqList(pos++)=(int32_t)stop;
+		  localFreqList(pos++)=(int32_t)step;
 		}
 	      else  // If the spec is XXKm/s
 		{
@@ -540,7 +540,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  // Now that I (SB) think about this, veloctiy based
 		  // selection in MSSelection does not make sense.
 		  //
-		  //Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
+		  //float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
 		  //
  		  // cerr << "Start = " << start << " Stop = " << stop << " Step = " << step << endl;
  		  // MRadialVelocity vstart(Quantity(start, "km/s"), MRadialVelocity::LSRK);
@@ -555,10 +555,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     else
       {
-	Int j=0;
+	int32_t j=0;
 	nFSpec=1;
  	localFreqList.resize(nSpw*3);
- 	for(Int i=0;i<nSpw;i++)
+ 	for(int32_t i=0;i<nSpw;i++)
  	  {
  	    localFreqList(j++)=0;
  	    localFreqList(j++)=numChans(spw(i))-1;
@@ -573,7 +573,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (someMatchFailed) {
       if (localFoundSpwList.size() != 0) {
 	// log_l << "Found match for SPW(s) "  
-	//       << Vector<Int>(localFoundSpwList) 
+	//       << Vector<int32_t>(localFoundSpwList) 
 	//       << " for some sub-expression." 
 	//       << LogIO::WARN << LogIO::POST;
 	;
@@ -590,11 +590,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Int MSSpwIndex::findChanIndex_p(const Float& freq, const Vector<Double>& chanFreqList,
-				  const Bool& greaterThan,
-				  const Bool& ascendingOrder)
+  int32_t MSSpwIndex::findChanIndex_p(const float& freq, const Vector<double>& chanFreqList,
+				  const bool& greaterThan,
+				  const bool& ascendingOrder)
   {
-    Int chanIndex=-1, n=chanFreqList.nelements();
+    int32_t chanIndex=-1, n=chanFreqList.nelements();
     if (ascendingOrder)
       {
 	if (greaterThan)
@@ -602,7 +602,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    if (freq <= chanFreqList(0)) 
 	      chanIndex=0;
 	    else
-	      for(Int ii=0;ii<n;ii++)
+	      for(int32_t ii=0;ii<n;ii++)
 		if (chanFreqList(ii) >= freq) {chanIndex=ii;break;}
 	  }
 	else
@@ -610,7 +610,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    if (freq >= chanFreqList(n-1))
 	      chanIndex=n-1;
 	    else
-	      for(Int ii=n-1;ii>=0;ii--)
+	      for(int32_t ii=n-1;ii>=0;ii--)
 		if (chanFreqList(ii) <= freq) {chanIndex=ii;break;}
 	  }
       }
@@ -621,7 +621,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    if (freq <= chanFreqList(n-1)) 
 	      chanIndex=n-1;
 	    else
-	      for(Int ii=n-1;ii>=0;ii--)
+	      for(int32_t ii=n-1;ii>=0;ii--)
 		if (chanFreqList(ii) >= freq) {chanIndex=ii;break;}
 	  }
 	else
@@ -629,7 +629,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    if (freq >= chanFreqList(0))
 	      chanIndex=0;
 	    else
-	      for(Int ii=0;ii<n;ii++)
+	      for(int32_t ii=0;ii<n;ii++)
 		if (chanFreqList(ii) <= freq) {chanIndex=ii;break;}
 	  }
       }
@@ -638,41 +638,41 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------
   //
-  Vector<Int> MSSpwIndex::convertToSpwIndex(const Vector<Float>& freqList,
-					    Int &nFSpec)
+  Vector<int32_t> MSSpwIndex::convertToSpwIndex(const Vector<float>& freqList,
+					    int32_t &nFSpec)
   {
-    Vector<Int> localFreqList;
-    Int nFList=freqList.nelements();
+    Vector<int32_t> localFreqList;
+    int32_t nFList=freqList.nelements();
     nFSpec = nFList/4;  // 4 integers per channel specification
     
     if (nFList > 0)
       {
 	//	localFreqList.resize(nFSpec);
-	Int pos=0;
+	int32_t pos=0;
 	
-	for(Int j=0;j<nFList;j+=4)
+	for(int32_t j=0;j<nFList;j+=4)
 	  {
 	    if ((freqList(j+3) == MSSpwIndex::MSSPW_INDEX) ||
 		(freqList(j+3) == MSSpwIndex::MSSPW_INDEXRANGE))
 	      {
-		Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
+		int32_t start=(int32_t)freqList(j), stop=(int32_t)freqList(j+1), step=(int32_t)freqList(j+2);
 		//		  if (step==0) step=1;
 		step = (step <= 0? 1 : step);
 
-		Int n=0;
-		for(Int ii=start;ii<=stop;ii+=step) n++;
-		localFreqList.resize(n+localFreqList.nelements(),True);
+		int32_t n=0;
+		for(int32_t ii=start;ii<=stop;ii+=step) n++;
+		localFreqList.resize(n+localFreqList.nelements(),true);
 		
-		for(Int ii=start;ii<=stop;ii+=step)
+		for(int32_t ii=start;ii<=stop;ii+=step)
 		  localFreqList(pos++)=ii;
 		//		  localFreqList(pos++)=stop;
 		//		  localFreqList(pos++)=step;
 	      }
 	    else if (freqList(j+3) == MSSpwIndex::MSSPW_UNITHZ)
 	      {
-		Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
+		float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
 		
-		localFreqList = matchFrequencyRange(start, stop, False, step);
+		localFreqList = matchFrequencyRange(start, stop, false, step);
 		//		  cout << "Freq SPW List  = " << start << " " << stop << " " << step << " " 
 		//		       << localFreqList;
 	      }

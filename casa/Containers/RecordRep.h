@@ -116,10 +116,10 @@ public:
     virtual ~RecordRep();
 
     // Get the comment for this field.
-    const String& comment (Int whichField) const;
+    const String& comment (int32_t whichField) const;
 
     // Set the comment for this field.
-    void setComment (Int whichField, const String& comment);
+    void setComment (int32_t whichField, const String& comment);
 
     // Describes the current structure of this Record.
     const RecordDesc& description() const;
@@ -127,39 +127,39 @@ public:
     // Change the structure of this Record to contain the fields in
     // newDescription. After calling restructure, <src>description() ==
     // newDescription</src>.
-    void restructure (const RecordDesc& newDescription, Bool recursive);
+    void restructure (const RecordDesc& newDescription, bool recursive);
 
-    // Returns True if this and other have the same RecordDesc, other
+    // Returns true if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
     // order of the fields must be identical (recursively for fixed
     // structured sub-Records in this).
     // <note role=caution>
-    // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-    // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+    // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+    // <br><src>thatRecord.conform(thisRecord) == true</src>, because
     // a variable record in one conforms a fixed record in that, but
     // not vice-versa.
     // </note>
-    Bool conform (const RecordRep& other) const;
+    bool conform (const RecordRep& other) const;
 
     // Copy all data of the Record.
     void copyData (const RecordRep& other);
 
     // Copy a data field.
     // This can only handle scalars and arrays.
-    void copyDataField (DataType type, Int whichField, const void* that) const;
+    void copyDataField (DataType type, int32_t whichField, const void* that) const;
 
     // Remove a field from the record.
-    void removeField (Int whichField);
+    void removeField (int32_t whichField);
 
     // Rename the given field.
-    void renameField (const String& newName, Int whichField);
+    void renameField (const String& newName, int32_t whichField);
 
     // Add a field with the given name and value to the record.
     // The data type of the field is determined by the data type of the value.
     // For arrays it is possible to define if the shape is fixed.
     // <group>
     void addDataField (const String& name, DataType type,
-		       const IPosition& shape, Bool fixedShape,
+		       const IPosition& shape, bool fixedShape,
 		       const void* data);
     void addField (const String& name, const Record& value,
 		   RecordInterface::RecordType type);
@@ -170,7 +170,7 @@ public:
     // When the field and value data type mismatch, type promotion
     // of scalars will be done if possible. If not possible, an exception
     // is thrown.
-    void defineDataField (Int whichField, DataType type, const void* value);
+    void defineDataField (int32_t whichField, DataType type, const void* value);
 
     // Put the description and data of the Record.
     // It also puts the fixedFlag attribute (of the mother object).
@@ -178,7 +178,7 @@ public:
 
     // Get the description and data of the Record.
     // It also gets the fixedFlag attribute (of the mother object).
-    void getRecord (AipsIO& os, Int& recordType);
+    void getRecord (AipsIO& os, int32_t& recordType);
 
     // Put the data of a record.
     // This is used to write a subrecord, whose description has
@@ -188,18 +188,18 @@ public:
     // Read the data of a record.
     // This is used to read a subrecord, whose description has
     // already been read.
-    void getData (AipsIO& os, uInt version);
+    void getData (AipsIO& os, uint32_t version);
 
     // Used by the RecordFieldPtr classes to attach in a type-safe way to the
     // correct field.
     // <group>
-    void* get_pointer (Int whichField, DataType type) const;
-    void* get_pointer (Int whichField, DataType type,
+    void* get_pointer (int32_t whichField, DataType type) const;
+    void* get_pointer (int32_t whichField, DataType type,
 		       const String& recordType) const;
     // </group>
 
     // Merge a field from another record into this record.
-    void mergeField (const RecordRep& other, Int whichFieldFromOther,
+    void mergeField (const RecordRep& other, int32_t whichFieldFromOther,
 		     RecordInterface::DuplicatesFlag);
 
     // Merge all fields from the other record into this record.
@@ -210,26 +210,26 @@ public:
     // Only the first <src>maxNrValues</src> of an array will be printed.
     // A value < 0 means the entire array.
     void print (std::ostream&,
-		Int maxNrValues = 25,
+		int32_t maxNrValues = 25,
 		const String& indent="") const;
 
 protected:
     // Utility functions to avoid code duplication in the public member 
     // functions.
     // <group>
-    void delete_myself (uInt nfields);
+    void delete_myself (uint32_t nfields);
     void copy_other (const RecordRep& other);
     // </group>
 
     // Get the field number for a given name.
-    virtual Int fieldNumber (const String& name) const;
+    virtual int32_t fieldNumber (const String& name) const;
 
     // Add the data pointer to the data block.
     // The block is extended when needed.
     void addDataPtr (void* ptr);
 
     // Remove a data pointer add the given index.
-    void removeDataPtr (Int index);
+    void removeDataPtr (int32_t index);
 
     // Check if the shape of the data array matches the shape of a
     // fixed-shaped array in the description.
@@ -238,13 +238,13 @@ protected:
 
     // Add a field to the description.
     virtual void addFieldToDesc (const String& name, DataType type,
-				 const IPosition& shape, Bool fixedShape);
+				 const IPosition& shape, bool fixedShape);
 
     // Remove a data field.
-    virtual void removeData (Int whichField, void* ptr, void* vecptr);
+    virtual void removeData (int32_t whichField, void* ptr, void* vecptr);
 
     // Remove a field from the description.
-    virtual void removeFieldFromDesc (Int whichField);
+    virtual void removeFieldFromDesc (int32_t whichField);
 
     // Create a data field for the given type and shape.
     // This can only handle scalars and arrays.
@@ -261,7 +261,7 @@ protected:
     // Print a data field.
     // This can only handle scalars and arrays.
     void printDataField (std::ostream& os, DataType type,
-			 const String& indent, Int maxNrValues,
+			 const String& indent, int32_t maxNrValues,
 			 const void* ptr) const;
 
     // Put a data field.
@@ -275,11 +275,11 @@ protected:
     // Make an array for a scalar data field.
     // It shares the data, so a change in the data is reflected in the array.
     // It is used to be able to access a scalar as an 1D array.
-    void makeDataVec (Int whichField, DataType type);
+    void makeDataVec (int32_t whichField, DataType type);
 
     // Get a Scalar/ArrayKeywordSet object as a Record.
     // (type 0 = ScalarKeywordSet;  type 1 = ArrayKeywordSet).
-    void getKeySet (AipsIO& os, uInt version, uInt type);
+    void getKeySet (AipsIO& os, uint32_t version, uint32_t type);
 
     // Get the description of a keyword set as a RecordDesc.
     void getKeyDesc (AipsIO& os, RecordDesc& desc);
@@ -298,7 +298,7 @@ protected:
     // Pointers to a vector of a scalar (to access a scalar as an array).
     Block<void*> datavec_p;
     // #Entries used in data_p.
-    uInt         nused_p;
+    uint32_t         nused_p;
 };
 
 
@@ -307,17 +307,17 @@ inline const RecordDesc& RecordRep::description() const
     return desc_p;
 }
 
-inline const String& RecordRep::comment (Int whichField) const
+inline const String& RecordRep::comment (int32_t whichField) const
 {
     return desc_p.comment (whichField);
 }
 
-inline void RecordRep::setComment (Int whichField, const String& comment)
+inline void RecordRep::setComment (int32_t whichField, const String& comment)
 {
     desc_p.setComment (whichField, comment);
 }
 
-inline void RecordRep::renameField (const String& newName, Int whichField)
+inline void RecordRep::renameField (const String& newName, int32_t whichField)
 {
     desc_p.renameField (newName, whichField);
 }

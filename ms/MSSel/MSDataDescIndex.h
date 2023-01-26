@@ -86,15 +86,15 @@ public:
   virtual ~MSDataDescIndex() {}
 
   // Look up DATA_DESC_ID's for a given spectral window id
-  Vector<Int> matchSpwId(const Int& spwId);
-  Vector<Int> matchSpwId(const Vector<Int>& spwIds);
+  Vector<int32_t> matchSpwId(const int32_t& spwId);
+  Vector<int32_t> matchSpwId(const Vector<int32_t>& spwIds);
 
   // Look up DATA_DESC_ID's for a given polarization id
-  Vector<Int> matchPolId(const Int& polId);
-  Vector<Int> matchPolId(const Vector<Int>& polIds);
+  Vector<int32_t> matchPolId(const int32_t& polId);
+  Vector<int32_t> matchPolId(const Vector<int32_t>& polIds);
 
   // Look up DATA_DESC_ID's for a given spectral window and polarization id.
-  Vector<Int> matchSpwIdAndPolznId(const Int& spwId, const Int& polznId);
+  Vector<int32_t> matchSpwIdAndPolznId(const int32_t& spwId, const int32_t& polznId);
 
 private:
   // Disallow null constructor
@@ -104,8 +104,8 @@ private:
   MSDataDescColumns msDataDescCols_p;
 
   // Vector cache of DataDesc id's
-  Vector<Int> dataDescIds_p;
-  Int nrows_p;
+  Vector<int32_t> dataDescIds_p;
+  int32_t nrows_p;
 };
 
 

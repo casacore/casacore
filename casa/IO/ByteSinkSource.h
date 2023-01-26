@@ -69,7 +69,7 @@ class TypeIO;
 // <srcblock>
 // main 
 // {
-//     Bool valb = True;
+//     bool valb = true;
 //     RegularFileIO regularFileIO ("test.dat", ByteIO::New);
 //     CanonicalIO canonicalIO(&regularFileIO);
 //     ByteSinkSource  sinkSource(&canonicalIO);
@@ -98,7 +98,7 @@ public:
     // object, but only keeps a pointer to it. If takeOver is true the this
     // class will delete the supplied pointer. Otherwise the caller is
     // responsible for this.
-    ByteSinkSource (TypeIO* typeIO, Bool takeOver=False);
+    ByteSinkSource (TypeIO* typeIO, bool takeOver=false);
 
     // The copy constructor uses reference semantics
     ByteSinkSource (const ByteSinkSource& sinkSource);

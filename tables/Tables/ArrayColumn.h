@@ -147,7 +147,7 @@ public:
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
     // Use the function isDefined to test if the cell contains an array.
-    uInt ndim (rownr_t rownr) const
+    uint32_t ndim (rownr_t rownr) const
 	{ TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
 
     // Get the shape of an array in a particular cell.
@@ -163,7 +163,7 @@ public:
     // array must be empty or its shape must conform the table array shape.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void get (rownr_t rownr, Array<T>& array, Bool resize = False) const;
+    void get (rownr_t rownr, Array<T>& array, bool resize = false) const;
     Array<T> get (rownr_t rownr) const;
     Array<T> operator() (rownr_t rownr) const;
     // </group>
@@ -181,7 +181,7 @@ public:
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
     void getSlice (rownr_t rownr, const Slicer& arraySection, Array<T>& array,
-		   Bool resize = False) const;
+		   bool resize = false) const;
     Array<T> getSlice (rownr_t rownr, const Slicer& arraySection) const;
     // </group>
 
@@ -212,7 +212,7 @@ public:
     // resized if not conforming.
     void getSlice (rownr_t rownr,
                    const Vector<Vector<Slice> >& arraySlices,
-                   Array<T>& arr, Bool resize = False) const;
+                   Array<T>& arr, bool resize = false) const;
     Array<T> getSlice (rownr_t rownr,
                        const Vector<Vector<Slice> >& arraySlices) const;
     // </group>
@@ -227,7 +227,7 @@ public:
     // array.
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
-    void getColumn (Array<T>& array, Bool resize = False) const;
+    void getColumn (Array<T>& array, bool resize = false) const;
     Array<T> getColumn() const;
     // </group>
 
@@ -243,7 +243,7 @@ public:
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
     void getColumn (const Slicer& arraySection, Array<T>& array,
-		    Bool resize = False) const;
+		    bool resize = false) const;
     Array<T> getColumn (const Slicer& arraySection) const;
     // </group>
 
@@ -272,7 +272,7 @@ public:
     // However, if the resize flag is set the destination array will be
     // resized if not conforming.
     void getColumn (const Vector<Vector<Slice> >& arraySection, Array<T>& array,
-		    Bool resize = False) const;
+		    bool resize = false) const;
     Array<T> getColumn (const Vector<Vector<Slice> >& arraySection) const;
     // </group>
 
@@ -289,10 +289,10 @@ public:
     // resized if not conforming.
     // <group>
     void getColumnRange (const Slicer& rowRange, Array<T>& arr,
-			 Bool resize = False) const;
+			 bool resize = false) const;
     Array<T> getColumnRange (const Slicer& rowRange) const;
     void getColumnCells (const RefRows& rownrs, Array<T>& arr,
-			 Bool resize = False) const;
+			 bool resize = false) const;
     Array<T> getColumnCells (const RefRows& rownrs) const;
     // </group>
 
@@ -311,12 +311,12 @@ public:
     // <group>
     void getColumnRange (const Slicer& rowRange,
 			 const Slicer& arraySection, Array<T>& arr,
-			 Bool resize = False) const;
+			 bool resize = false) const;
     Array<T> getColumnRange (const Slicer& rowRange,
 			     const Slicer& arraySection) const;
     void getColumnCells (const RefRows& rownrs,
 			 const Slicer& arraySection, Array<T>& arr,
-			 Bool resize = False) const;
+			 bool resize = false) const;
     Array<T> getColumnCells (const RefRows& rownrs,
 			     const Slicer& arraySection) const;
     // </group>
@@ -326,7 +326,7 @@ public:
     void getColumnCells (const RefRows& rows,
                          const ColumnSlicer & slicerSet,
                          Array<T>& destination,
-                         Bool resize = False) const;
+                         bool resize = false) const;
 
     // Set the shape of the array in the given row.
     // Setting the shape is needed if the array is put in slices,
@@ -352,15 +352,15 @@ public:
     // <group>
     // Use the same row numbers for both cells.
     void put (rownr_t rownr, const TableColumn& that,
-              Bool preserveTileShape=False)
+              bool preserveTileShape=false)
       { put (rownr, that, rownr, preserveTileShape); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
     void put (rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
-              Bool preserveTileShape=False);
-    // For backward compatibility (otherwise ambigious with put taking Bool).
-    void put (uInt thisRownr, const TableColumn& that, uInt thatRownr,
-              Bool preserveTileShape=False)
+              bool preserveTileShape=false);
+    // For backward compatibility (otherwise ambigious with put taking bool).
+    void put (uint32_t thisRownr, const TableColumn& that, uint32_t thatRownr,
+              bool preserveTileShape=false)
       { put (rownr_t(thisRownr), that, rownr_t(thatRownr), preserveTileShape); }
     // </group>
 
@@ -449,15 +449,15 @@ private:
 
 
 //# Explicitly instantiate these templates in ArrayColumn_tmpl.cc
-  extern template class ArrayColumn<Bool>;
-  extern template class ArrayColumn<Char>;
-  extern template class ArrayColumn<Short>;
-  extern template class ArrayColumn<uShort>;
-  extern template class ArrayColumn<Int>;
-  extern template class ArrayColumn<uInt>;
-  extern template class ArrayColumn<Int64>;
-  extern template class ArrayColumn<Float>;
-  extern template class ArrayColumn<Double>;
+  extern template class ArrayColumn<bool>;
+  extern template class ArrayColumn<char>;
+  extern template class ArrayColumn<int16_t>;
+  extern template class ArrayColumn<uint16_t>;
+  extern template class ArrayColumn<int32_t>;
+  extern template class ArrayColumn<uint32_t>;
+  extern template class ArrayColumn<int64_t>;
+  extern template class ArrayColumn<float>;
+  extern template class ArrayColumn<double>;
   extern template class ArrayColumn<Complex>;
   extern template class ArrayColumn<DComplex>;
   extern template class ArrayColumn<String>;

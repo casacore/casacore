@@ -80,10 +80,10 @@ public:
     // length <src>bufferLength</src>. For arrays not fitting in this buffer,
     // it uses a temporary buffer allocated on the heap.
     // <p>
-    // If takeOver is True the this class will delete the supplied
+    // If takeOver is true the this class will delete the supplied
     // pointer. Otherwise the caller is responsible for this.
-    explicit CanonicalIO (ByteIO* byteIO, uInt bufferLength=4096,
-			  Bool takeOver=False);
+    explicit CanonicalIO (ByteIO* byteIO, uint32_t bufferLength=4096,
+			  bool takeOver=false);
 
     // The copy constructor uses reference semantics
     CanonicalIO (const CanonicalIO& canonicalIO);
@@ -95,38 +95,38 @@ public:
     ~CanonicalIO();
 
     // Convert the values and write them to the ByteIO object.
-    // Bool, complex and String values are handled by the base class.
+    // bool, complex and String values are handled by the base class.
     // <group>
-    virtual size_t write (size_t nvalues, const Bool* value);
-    virtual size_t write (size_t nvalues, const Char* data);
-    virtual size_t write (size_t nvalues, const uChar* data);
-    virtual size_t write (size_t nvalues, const Short* data);
-    virtual size_t write (size_t nvalues, const uShort* data);
-    virtual size_t write (size_t nvalues, const Int* data);
-    virtual size_t write (size_t nvalues, const uInt* data);
-    virtual size_t write (size_t nvalues, const Int64* data);
-    virtual size_t write (size_t nvalues, const uInt64* data);
-    virtual size_t write (size_t nvalues, const Float* data);
-    virtual size_t write (size_t nvalues, const Double* data);
+    virtual size_t write (size_t nvalues, const bool* value);
+    virtual size_t write (size_t nvalues, const char* data);
+    virtual size_t write (size_t nvalues, const unsigned char* data);
+    virtual size_t write (size_t nvalues, const int16_t* data);
+    virtual size_t write (size_t nvalues, const uint16_t* data);
+    virtual size_t write (size_t nvalues, const int32_t* data);
+    virtual size_t write (size_t nvalues, const uint32_t* data);
+    virtual size_t write (size_t nvalues, const int64_t* data);
+    virtual size_t write (size_t nvalues, const uint64_t* data);
+    virtual size_t write (size_t nvalues, const float* data);
+    virtual size_t write (size_t nvalues, const double* data);
     virtual size_t write (size_t nvalues, const Complex* value);
     virtual size_t write (size_t nvalues, const DComplex* value);
     virtual size_t write (size_t nvalues, const String* value);
     // </group>
 
     // Read the values from the ByteIO object and convert them.
-    // Bool, complex and String values are handled by the base class.
+    // bool, complex and String values are handled by the base class.
     // <group>
-    virtual size_t read (size_t nvalues, Bool* value);
-    virtual size_t read (size_t nvalues, Char* data);
-    virtual size_t read (size_t nvalues, uChar* data);
-    virtual size_t read (size_t nvalues, Short* data);
-    virtual size_t read (size_t nvalues, uShort* data);
-    virtual size_t read (size_t nvalues, Int* data);
-    virtual size_t read (size_t nvalues, uInt* data);
-    virtual size_t read (size_t nvalues, Int64* data);
-    virtual size_t read (size_t nvalues, uInt64* data);
-    virtual size_t read (size_t nvalues, Float* data);
-    virtual size_t read (size_t nvalues, Double* data);
+    virtual size_t read (size_t nvalues, bool* value);
+    virtual size_t read (size_t nvalues, char* data);
+    virtual size_t read (size_t nvalues, unsigned char* data);
+    virtual size_t read (size_t nvalues, int16_t* data);
+    virtual size_t read (size_t nvalues, uint16_t* data);
+    virtual size_t read (size_t nvalues, int32_t* data);
+    virtual size_t read (size_t nvalues, uint32_t* data);
+    virtual size_t read (size_t nvalues, int64_t* data);
+    virtual size_t read (size_t nvalues, uint64_t* data);
+    virtual size_t read (size_t nvalues, float* data);
+    virtual size_t read (size_t nvalues, double* data);
     virtual size_t read (size_t nvalues, Complex* value);
     virtual size_t read (size_t nvalues, DComplex* value);
     virtual size_t read (size_t nvalues, String* value);
@@ -135,7 +135,7 @@ public:
 private:
     //# The buffer
     char* itsBuffer;
-    uInt itsBufferLength;
+    uint32_t itsBufferLength;
 };
 
 

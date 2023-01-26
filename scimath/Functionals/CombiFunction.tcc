@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 T CombiFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   T tmp(0);
-  for (uInt i = 0; i< this->nFunctions(); ++i) {
+  for (uint32_t i = 0; i< this->nFunctions(); ++i) {
     tmp += this->param_p[i]*(this->function(i))(x);
   }
   return tmp;

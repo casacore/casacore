@@ -41,7 +41,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
-			  MEpoch::Types system, DateStyle style, uInt precision)
+			  MEpoch::Types system, DateStyle style, uint32_t precision)
 {
     date = "invalid";
     timesys = "invalid";
@@ -50,9 +50,9 @@ void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
     switch (style) {
     case OLD:
 	{
-	    Int month = time.month();
-	    Int day = time.monthday();
-	    Int year = time.year() - 1900; 
+	    int32_t month = time.month();
+	    int32_t day = time.monthday();
+	    int32_t year = time.year() - 1900; 
 	    AlwaysAssert(year >= 0 && year<100, AipsError); // 20th century only
 	    ostringstream out;
 	    out << setfill('0') << setw(2) << day << "/" << setw(2) << month <<
@@ -114,11 +114,11 @@ void FITSDateUtil::toFITS(String &date, String &timesys, const MVTime &time,
     }
 }
 
-Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
+bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
 			    const String &date,
 			    const String &timesys)
 {
-    Bool ok = True;
+    bool ok = true;
     time = MVTime(1900,1,1.0);
     system = MEpoch::UTC;
 
@@ -132,12 +132,12 @@ Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
 	ok = ok && isdigit(date[4]);
 	ok = ok && isdigit(date[6]);
 	ok = ok && isdigit(date[7]);
-	Int zero = '0';
+	int32_t zero = '0';
 	if (ok) {
-	    Int year = (date[6]-zero)*10 + date[7]-zero;
+	    int32_t year = (date[6]-zero)*10 + date[7]-zero;
 	    year += 1900;
-	    Int month = (date[3]-zero)*10 + date[4]-zero;
-	    Double day = (date[0]-zero)*10 + date[1]-zero;
+	    int32_t month = (date[3]-zero)*10 + date[4]-zero;
+	    double day = (date[0]-zero)*10 + date[1]-zero;
 	    time = MVTime(year, month, day);
 	}
     } else {
@@ -188,41 +188,41 @@ Bool FITSDateUtil::fromFITS(MVTime &time, MEpoch::Types &system,
 	} else if (timesys == "GMST") { 
 	    system = MEpoch::GMST;
 	} else {
-	    ok = False;
+	    ok = false;
 	}
     }
 
     return ok;
 }
 
-Bool FITSDateUtil::convertDateString(String &out, const String &in)
+bool FITSDateUtil::convertDateString(String &out, const String &in)
 {
     MVTime time;
     MEpoch::Types system;
-    Bool ok = FITSDateUtil::fromFITS(time, system, in, "");
+    bool ok = FITSDateUtil::fromFITS(time, system, in, "");
     if (ok) {
 	String sys;
-	uInt precision = findPrecision(in);
+	uint32_t precision = findPrecision(in);
 	FITSDateUtil::toFITS(out, sys, time, 
 			     MEpoch::UTC, AUTO_PICK, precision);
     }
     return ok;
 }
 
-uInt FITSDateUtil::findPrecision(const String &fitsDate)
+uint32_t FITSDateUtil::findPrecision(const String &fitsDate)
 {
     if (fitsDate.contains("/")) {
 	return 0; // Old style has no time
     }
 
     // OK, new style
-    uInt prec = 0;
+    uint32_t prec = 0;
     if (fitsDate.contains("T")) {
 	prec += 6; // We are good at least to the second
-	Int decimalpos = fitsDate.index('.');
+	int32_t decimalpos = fitsDate.index('.');
 	if (decimalpos > 0) {
 	    // OK, we may have some decimal points, count 'em.
-	    for (uInt i=decimalpos+1; 
+	    for (uint32_t i=decimalpos+1; 
 		 i<fitsDate.length() && isdigit(fitsDate[i]); i++) {
 		prec++;
 	    }

@@ -55,12 +55,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </etymology>
 //
 // <synopsis>
-// An MVDoppler is a simple Double, to be used in the MDoppler measure.
+// An MVDoppler is a simple double, to be used in the MDoppler measure.
 // Requirements can be found in the 
 // <linkto class=MeasValue>MeasValue</linkto> base class.<br>
 // The only reasonable constructor is (but all MeasValue constructors are
 // present)
-// <src>MVDoppler(Double)</src>; and an <src>operator Double</src> takes
+// <src>MVDoppler(double)</src>; and an <src>operator double</src> takes
 // care of all other possibilities. Its external use is for
 //  <linkto class=MeasConvert>MeasConvert</linkto>, to distinguish between
 // input in internal Measure units, and values which have to have
@@ -97,12 +97,12 @@ public:
   MVDoppler(const MVDoppler &other);
   // Copy assignment
   MVDoppler &operator=(const MVDoppler &other);
-  // Constructor from Double
-  MVDoppler(Double d);
+  // Constructor from double
+  MVDoppler(double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVDoppler(const Quantity &other);
-  MVDoppler(const Quantum<Vector<Double> > &other);
+  MVDoppler(const Quantum<Vector<double> > &other);
   // </group>
   // Constructor from Vector. A zero value will be taken for an empty vector,
   // the canonical value for a quantum vector.
@@ -110,7 +110,7 @@ public:
   //  <li> AipsError if vector length > 1
   // </thrown>
   // <group>
-  MVDoppler(const Vector<Double> &other);
+  MVDoppler(const Vector<double> &other);
   MVDoppler(const Vector<Quantity> &other);
   // </group>
   
@@ -119,7 +119,7 @@ public:
   
   //# Operators
   // Conversion operator
-  operator Double() const;
+  operator double() const;
   
   // Addition
   // <group>
@@ -128,10 +128,10 @@ public:
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVDoppler &other) const;
-  Bool operator!=(const MVDoppler &other) const;
-  Bool near(const MVDoppler &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVDoppler &other, Double tol = 1e-13) const;
+  bool operator==(const MVDoppler &other) const;
+  bool operator!=(const MVDoppler &other) const;
+  bool near(const MVDoppler &other, double tol = 1e-13) const;
+  bool nearAbs(const MVDoppler &other, double tol = 1e-13) const;
   // </group>
   
   //# General member functions
@@ -147,32 +147,32 @@ public:
   virtual MeasValue *clone() const;
   // Adjust value: taken from base class, a NOP.
   // Get value as ratio
-  Double getValue() const;
+  double getValue() const;
   // Get quantity in m/s
   Quantity get() const;
   // Get the Doppler value in (recognised) specified units
   Quantity get(const Unit &unit) const;
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<double> > getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
 
 private:
   //# Data
   // Value
-  Double val;
+  double val;
   
   //# Member functions
   // Get correct data type conversion factor from input Quantum
-  Double makeD(Double v, const Unit &dt, Bool rev=False) const;
+  double makeD(double v, const Unit &dt, bool rev=false) const;
 };
 
 

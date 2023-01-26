@@ -33,13 +33,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGI
   {}
 
 #ifdef HAVE_HDF5
-  Bool HDF5Object::hasHDF5Support()
-    { return True; }
+  bool HDF5Object::hasHDF5Support()
+    { return true; }
   void HDF5Object::throwNoHDF5()
   {}
 #else
-  Bool HDF5Object::hasHDF5Support()
-    { return False; }
+  bool HDF5Object::hasHDF5Support()
+    { return false; }
   void HDF5Object::throwNoHDF5()
   {
     throw HDF5Error("HDF5 support is not compiled into this casacore version");

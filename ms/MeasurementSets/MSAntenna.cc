@@ -39,10 +39,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSAntenna::MSAntenna():hasBeenDestroyed_p(True) { }
+MSAntenna::MSAntenna():hasBeenDestroyed_p(true) { }
 
 MSAntenna::MSAntenna(const String &tableName, TableOption option) 
-    : MSTable<MSAntennaEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSAntennaEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -53,7 +53,7 @@ MSAntenna::MSAntenna(const String &tableName, TableOption option)
 MSAntenna::MSAntenna(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSAntennaEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -62,18 +62,18 @@ MSAntenna::MSAntenna(const String& tableName, const String &tableDescName,
 }
 
 MSAntenna::MSAntenna(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSAntennaEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSAntenna(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSAntenna(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSAntenna"));
 }
 
 MSAntenna::MSAntenna(const Table &table)
-    : MSTable<MSAntennaEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSAntennaEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -83,7 +83,7 @@ MSAntenna::MSAntenna(const Table &table)
 
 MSAntenna::MSAntenna(const MSAntenna &other)
     : MSTable<MSAntennaEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -103,7 +103,7 @@ MSAntenna::~MSAntenna()
            << "~MSAntenna() - Table written is not a valid MSAntenna"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -161,7 +161,7 @@ MSTableMaps MSAntenna::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

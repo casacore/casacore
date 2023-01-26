@@ -50,13 +50,13 @@ ColumnDescSet::~ColumnDescSet()
 ColumnDescSet& ColumnDescSet::operator= (const ColumnDescSet& that)
 {
     if (this != &that) {
-	uInt nrcol = that.cols_p.size();
+	uint32_t nrcol = that.cols_p.size();
 	colSeq_p.resize (nrcol);
         cols_p.clear();
 	//# Now we have to fill in the column order, which is the
 	//# same as the order in the source.
 	//# Make a copy of the ColumnDesc object and keep a pointer to it.
-        for (uInt i=0; i<nrcol; ++i) {
+        for (uint32_t i=0; i<nrcol; ++i) {
 	    const String& colName = that[i].name();
             CountedPtr<ColumnDesc> col = that.cols_p.at(colName);
             cols_p.insert (std::make_pair (colName,
@@ -101,7 +101,7 @@ ColumnDesc& ColumnDescSet::addColumn (const ColumnDesc& cd)
     //# Get actual column description object.
     ColumnDesc& coldes = *(cols_p.at(cd.name()));
     //# Add the new column to the sequence block.
-    uInt nrcol = ncolumn();
+    uint32_t nrcol = ncolumn();
     if (nrcol > colSeq_p.nelements()) {
 	colSeq_p.resize (nrcol + 63);
     }
@@ -118,8 +118,8 @@ void ColumnDescSet::remove (const String& name)
     ColumnDesc& cd = (*this)[name];
     cd.handleRemove (*this);
     //# Remove it first from the sequence block.
-    uInt nrcol = ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	if (colSeq_p[i] == &cd) {
 	    for (; i<nrcol-1; i++) {
 		colSeq_p[i] = colSeq_p[i+1];
@@ -144,7 +144,7 @@ void ColumnDescSet::rename (const String& newname, const String& oldname)
 			  " already exists"));
     }
     // Find the entry in the colSeq_p list, so it can be updated.
-    uInt inx;
+    uint32_t inx;
     for (inx=0; inx<colSeq_p.size(); ++inx) {
       if (static_cast<ColumnDesc*>(colSeq_p[inx])->name() == oldname) {
         break;
@@ -170,8 +170,8 @@ void ColumnDescSet::rename (const String& newname, const String& oldname)
 //# Check recursevily if the descriptions of all subtables are known.
 void ColumnDescSet::checkSubTableDesc() const
 {
-    uInt nrcol = ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	const ColumnDesc& cd = (*this)[i];
 	if (cd.dataType() == TpTable) {
 	    const TableDesc* tdp = cd.tableDesc();  // throws if unknown desc.
@@ -181,62 +181,62 @@ void ColumnDescSet::checkSubTableDesc() const
 }
 
 
-Bool ColumnDescSet::isEqual (const ColumnDescSet& other,
-			     Bool& equalDataTypes) const
+bool ColumnDescSet::isEqual (const ColumnDescSet& other,
+			     bool& equalDataTypes) const
 {
-    equalDataTypes = False;
+    equalDataTypes = false;
     if (ncolumn() != other.ncolumn()) {
-	return False;
+	return false;
     }
     return allExist (other, equalDataTypes);
 }
 
-Bool ColumnDescSet::isSubset (const ColumnDescSet& other,
-			      Bool& equalDataTypes) const
+bool ColumnDescSet::isSubset (const ColumnDescSet& other,
+			      bool& equalDataTypes) const
 {
-    equalDataTypes = False;
+    equalDataTypes = false;
     if (ncolumn() > other.ncolumn()) {
-	return False;
+	return false;
     }
     return allExist (other, equalDataTypes);
 }
 
-Bool ColumnDescSet::isStrictSubset (const ColumnDescSet& other,
-				    Bool& equalDataTypes) const
+bool ColumnDescSet::isStrictSubset (const ColumnDescSet& other,
+				    bool& equalDataTypes) const
 {
-    equalDataTypes = False;
+    equalDataTypes = false;
     if (ncolumn() >= other.ncolumn()) {
-	return False;
+	return false;
     }
     return allExist (other, equalDataTypes);
 }
 
-Bool ColumnDescSet::allExist (const ColumnDescSet& other,
-			      Bool& equalDataTypes) const
+bool ColumnDescSet::allExist (const ColumnDescSet& other,
+			      bool& equalDataTypes) const
 {
-    equalDataTypes = True;
-    uInt nrcol = ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    equalDataTypes = true;
+    uint32_t nrcol = ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	const ColumnDesc& thisCol = (*this)[i];
 	if (! other.isDefined (thisCol.name())) {
-	    return False;                     // name does not exist in other
+	    return false;                     // name does not exist in other
 	}
 	if (thisCol.dataType() != other[thisCol.name()].dataType()) {
-	    equalDataTypes = False;           // unequal data type
+	    equalDataTypes = false;           // unequal data type
 	}
     }
-    return True;                              // names are equal
+    return true;                              // names are equal
 }
 
-Bool ColumnDescSet::isDisjoint (const ColumnDescSet& other) const
+bool ColumnDescSet::isDisjoint (const ColumnDescSet& other) const
 {
-    uInt nrcol = other.ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = other.ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	if (isDefined (other[i].name())) {
-	    return False;                     //# name exists in other
+	    return false;                     //# name exists in other
 	}
     }
-    return True;
+    return true;
 }
 
 
@@ -251,8 +251,8 @@ void ColumnDescSet::add (const ColumnDescSet& set)
     if (! isDisjoint (set)) {
 	throw (TableError ("ColumnDescSet::add; column sets not disjoint"));
     }
-    uInt nrcol = set.ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = set.ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	addColumn (set[i]);
     }
 }
@@ -261,9 +261,9 @@ void ColumnDescSet::add (const ColumnDescSet& set)
 //# Put the object.
 void ColumnDescSet::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
-    uInt nrcol = ncolumn();
+    uint32_t nrcol = ncolumn();
     ios << nrcol;
-    for (uInt i=0; i<nrcol; i++) {
+    for (uint32_t i=0; i<nrcol; i++) {
 	(*this)[i].putFile (ios, parentAttr);
     }
 }
@@ -273,9 +273,9 @@ void ColumnDescSet::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
     //# Clear the entire set.
     *this = ColumnDescSet();
-    uInt nrcol;
+    uint32_t nrcol;
     ios >> nrcol;
-    for (uInt i=0; i<nrcol; i++) {
+    for (uint32_t i=0; i<nrcol; i++) {
 	ColumnDesc coldes;
 	coldes.getFile (ios, parentAttr);
 	addColumn (coldes);
@@ -285,8 +285,8 @@ void ColumnDescSet::getFile (AipsIO& ios, const TableAttr& parentAttr)
 
 void ColumnDescSet::show (ostream& os) const
 {
-    uInt nrcol = ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	os << (*this)[i];
 	os << endl;
     }

@@ -45,9 +45,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // This can be turned off by overriding the default `init' argument.
 //
 
-Input::Input (Int createEnv) 
-: is_closed(False),
-  do_prompt(False),
+Input::Input (int32_t createEnv) 
+: is_closed(false),
+  do_prompt(false),
   debug_level(0),
   p_count(0)
 {
@@ -110,7 +110,7 @@ void Input::create (const String& key, const String& value,
 
 // CreatePar() is the workhorse function, it is a private member function
 
-void Input::createPar (Int system, const String& key, const String& value,
+void Input::createPar (int32_t system, const String& key, const String& value,
 		       const String& help, const String& type,
 		       const String& range, const String& unit)
 {
@@ -128,7 +128,7 @@ void Input::createPar (Int system, const String& key, const String& value,
   
   if (key=="help") {
     if (value=="prompt") {
-      do_prompt = True;
+      do_prompt = true;
     }
     help_mode = value;
   }
@@ -139,7 +139,7 @@ void Input::createPar (Int system, const String& key, const String& value,
   }
   Param tmp(key,value,help,type,range,unit);
   if (system) {
-    tmp.setSystem(True);
+    tmp.setSystem(true);
   } else {
     tmp.setIndex(++p_count);
   }
@@ -152,7 +152,7 @@ void Input::close()
     String msg = "Input::Close: parameter creation is already closed.";
     throw(AipsError(msg));
   } else {
-    is_closed = True; 
+    is_closed = true; 
   }
   if (debug(1)) {       // Display Param as: 'key=val: help'
     cout << "INPUT> Closing parameter creation: \n";
@@ -166,9 +166,9 @@ void Input::close()
 }
 
 // Query functions
-Double Input::getDouble (const String& key)
+double Input::getDouble (const String& key)
 {
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg ="Input::GetDouble: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
@@ -180,9 +180,9 @@ Double Input::getDouble (const String& key)
   return x.getDouble();
 }
 
-Block<Double> Input::getDoubleArray (const String& key)
+Block<double> Input::getDoubleArray (const String& key)
 {
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg ="Input::GetDoubleArray: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
@@ -196,7 +196,7 @@ Block<Double> Input::getDoubleArray (const String& key)
 
 int Input::getInt (const String& key)
 {
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg ="Input::GetInt: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
@@ -208,9 +208,9 @@ int Input::getInt (const String& key)
   return x.getInt();
 }
 
-Block<Int> Input::getIntArray (const String& key)
+Block<int32_t> Input::getIntArray (const String& key)
 {
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg ="Input::GetIntArray: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
@@ -224,7 +224,7 @@ Block<Int> Input::getIntArray (const String& key)
 
 String Input::getString (const String& key)
 {
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg ="Input::GetString: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
@@ -236,9 +236,9 @@ String Input::getString (const String& key)
   return x.getString();
 }
 
-Bool Input::getBool (const String& key)
+bool Input::getBool (const String& key)
 {
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg ="Input::GetBool: Parameter " + key + " is unknown.";
     throw (AipsError(msg));
@@ -251,24 +251,24 @@ Bool Input::getBool (const String& key)
 }
 
 // Modifiers
-Bool Input::put (const String& key, const String& value)
+bool Input::put (const String& key, const String& value)
 {
   String akey, avalue;
   
   if (debug(5)) {
     cout << "PUT> " << key << "=" << value << "\n";
   }
-  Int i = getParam(key);
+  int32_t i = getParam(key);
   if (i<0) {
     String msg = "Input::Put: parameter " + key + " is unknown.";
     throw (AipsError(msg));
   }
   Param& x = parList_p[i];
   x.put(value);
-  return True;
+  return true;
 }
 
-Bool Input::put (const String& key)
+bool Input::put (const String& key)
 {
   String k = key;                  // Need non-const string
   String::size_type inx = key.index("=");
@@ -279,7 +279,7 @@ Bool Input::put (const String& key)
   return put (k.before(inx), k.after(inx));
 }
 
-Int Input::count() const
+int32_t Input::count() const
 {
   return parList_p.size();
 }
@@ -302,7 +302,7 @@ void Input::announce()
   }
   
   if (help_mode.contains("prompt")) {
-    do_prompt = True;
+    do_prompt = true;
   }
   if (help_mode.contains("keys")) {
     keys();
@@ -322,9 +322,9 @@ void Input::announce()
 // Move to the current named Parameter; return 0 if none found
 // A value >= 1 is the index (not used in K_ stuff)
 //
-Int Input::getParam (const String& name) const
+int32_t Input::getParam (const String& name) const
 {
-  for (uInt i=0; i<parList_p.size(); ++i) {
+  for (uint32_t i=0; i<parList_p.size(); ++i) {
     if (parList_p[i].getKey() == name) {
       return i;
     }
@@ -339,9 +339,9 @@ void Input::prompt (Param& x) const
       " doesn't have an associated help field.";
     throw(AipsError(msg));
   }
-  Bool ok = False;
-  Char input[1024];
-  while (ok==False) { 
+  bool ok = false;
+  char input[1024];
+  while (ok==false) { 
     cout << x.getHelp() << " [" << x.getString() << "]: " 
 	 << x.getKey() << "=";
     cin.getline(input,80);
@@ -349,12 +349,12 @@ void Input::prompt (Param& x) const
       String s = input;
       ok = x.put(s);
     } else {
-      ok = True;
+      ok = true;
     }
   }
 }
 
-void Input::envCreate (const Char *env, const String& key, const String& def)
+void Input::envCreate (const char *env, const String& key, const String& def)
 {
   String s (EnvironmentVariable::get(env));
   if (s.empty()) {
@@ -382,7 +382,7 @@ void Input::keys()
 // is assumed to be the program name.
 void Input::readArguments (int ac, char const* const* av)
 {
-  Int i;
+  int32_t i;
   createPar (1, "argv0", av[0], "Program name", "", "", "");
 
   if (debug(5)) {
@@ -443,29 +443,29 @@ void Input::readArguments (int ac, char const* const* av)
   announce();          // Announce and possibly die here
 }
 
-Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length,
-				       Bool oneRelative)
+Vector<bool> Input::makeMaskFromRanges(const String& ranges, uint32_t length,
+				       bool oneRelative)
 {
   Regex single("^[ \t]*[0-9]+[ \t]*$", 1);
   Regex range("^[ \t]*[0-9]+[ \t]*-[ \t]*[0-9]+[ \t]*$", 1);
   
-  Vector<Bool> mask(length);
-  mask = False;
+  Vector<bool> mask(length);
+  mask = false;
   
   // Step through the string, comma separated expression by comma separated
   // expression.
-  Int numberOfCommas = ranges.freq(",");
+  int32_t numberOfCommas = ranges.freq(",");
   Block<String> expressions(numberOfCommas + 1);
   split (ranges, expressions.storage(), numberOfCommas + 1, ",");
   
-  for (uInt i=0; i < expressions.nelements(); i++) {
+  for (uint32_t i=0; i < expressions.nelements(); i++) {
     // Validate
-    if (expressions[i].contains(single) == False &&
-	expressions[i].contains(range) == False) {
+    if (expressions[i].contains(single) == false &&
+	expressions[i].contains(range) == false) {
       throw (AipsError(String("Input::makeMaskFromRanges - "
 			      "invalid range:") + expressions[i]));
     }
-    Int left, right;
+    int32_t left, right;
     String::size_type inx = expressions[i].index('-');
     if (inx != String::npos) {
       left = atoi(expressions[i].before(inx).chars());
@@ -477,13 +477,13 @@ Vector<Bool> Input::makeMaskFromRanges(const String& ranges, uInt length,
       left -= 1;
       right -= 1;
     }
-    if (left + 1 > Int(mask.nelements()) ||
-	right + 1 > Int(mask.nelements()) ||
+    if (left + 1 > int32_t(mask.nelements()) ||
+	right + 1 > int32_t(mask.nelements()) ||
 	left > right) {
       throw (AipsError(String("Input::makeMaskFromRanges - "
 			      "out of range or end<start ") + ranges));
     }
-    mask(Slice(Int(left), Int(right-left+1))) = True;
+    mask(Slice(int32_t(left), int32_t(right-left+1))) = true;
   }
   
   return mask;

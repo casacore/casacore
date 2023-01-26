@@ -74,8 +74,8 @@ int main(int argc, const char* argv[])
     TableExprNode node = mss.toTableExprNode(&ms);
 
     cout << "Original table has rows " << ms.nrow() << endl;
-    Vector<Int> selectedFeed1, selectedFeed2;
-    Matrix<Int> selectedFeedPairs;
+    Vector<int32_t> selectedFeed1, selectedFeed2;
+    Matrix<int32_t> selectedFeedPairs;
     node = msFeedGramParseCommand(&ms, argv[2],
                                      selectedFeed1, selectedFeed2,
                                      selectedFeedPairs);

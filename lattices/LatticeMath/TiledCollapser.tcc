@@ -37,9 +37,9 @@ TiledCollapser<T,U>::~TiledCollapser()
 {}
 
 template<class T, class U>
-Bool TiledCollapser<T,U>::canHandleNullMask() const
+bool TiledCollapser<T,U>::canHandleNullMask() const
 {
-    return False;
+    return false;
 }
 
 } //# NAMESPACE CASACORE - END

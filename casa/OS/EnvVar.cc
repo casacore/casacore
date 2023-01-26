@@ -32,14 +32,14 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Bool EnvironmentVariable::isDefined (const String& name)
+bool EnvironmentVariable::isDefined (const String& name)
 {
   return getenv (name.chars());
 }
 
 String EnvironmentVariable::get (const String& name)
 {
-  Char* env = getenv (name.chars());
+  char* env = getenv (name.chars());
   if (env) return String(env);
   return String();
 }

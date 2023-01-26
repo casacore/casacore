@@ -86,7 +86,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-const uInt nCat = 6; // Number of Flag categories
+const uint32_t nCat = 6; // Number of Flag categories
 
 const String sigmaCol = "sigmaHyperColumn";
 const String dataCol = "dataHyperColumn";
@@ -104,8 +104,8 @@ struct MSFeedParameterExtractor : protected MSIter {
   
   MSFeedParameterExtractor(const MeasurementSet &ms) {
       msc_p=new MSColumns(ms);
-      msc_p->antenna().mount().getColumn(antennaMounts_p,True);
-      checkFeed_p=True;
+      msc_p->antenna().mount().getColumn(antennaMounts_p,true);
+      checkFeed_p=true;
       setFeedInfo();
   }
   // Return a string mount identifier for each antenna
@@ -117,7 +117,7 @@ struct MSFeedParameterExtractor : protected MSIter {
   // in the feed table). The cube axes are receptor, antenna, feed.
   using MSIter::getBeamOffsets;
 
-  // True if all elements of the cube returned by getBeamOffsets are zero
+  // true if all elements of the cube returned by getBeamOffsets are zero
   using MSIter::allBeamOffsetsZero;
 
 };
@@ -131,7 +131,7 @@ void NewMSSimulator::defaults() {
   autoCorrelationWt_p=1.0;
   telescope_p="Unknown";
   qIntegrationTime_p=Quantity(10.0, "s");
-  useHourAngle_p=True;
+  useHourAngle_p=true;
   Quantity today;
   MVTime::read(today, "today");
   mRefTime_p=MEpoch(today, MEpoch::UTC);
@@ -156,13 +156,13 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   // Add index columns for tiling. We use three tiles: data, sigma, and flag.
   // Some of these contain more than one column
   /*
-  msDesc.addColumn(ScalarColumnDesc<Int>(dataTileId,
+  msDesc.addColumn(ScalarColumnDesc<int32_t>(dataTileId,
 					 "Index for Data tiling"));
-  msDesc.addColumn(ScalarColumnDesc<Int>(scratchDataTileId,
+  msDesc.addColumn(ScalarColumnDesc<int32_t>(scratchDataTileId,
 					 "Index for Scratch Data tiling"));
-  msDesc.addColumn(ScalarColumnDesc<Int>(sigmaTileId,
+  msDesc.addColumn(ScalarColumnDesc<int32_t>(sigmaTileId,
 					 "Index for Sigma tiling"));
-  msDesc.addColumn(ScalarColumnDesc<Int>(flagTileId,
+  msDesc.addColumn(ScalarColumnDesc<int32_t>(flagTileId,
 					 "Index for Flag Category tiling"));
   */
   // setup hypercolumns for the data/flag/flag_catagory/sigma & weight columns.
@@ -230,7 +230,7 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   // Set the default Storage Manager to be the Incr one
   {
     IncrementalStMan incrStMan ("ismdata");
-    newMS.bindAll(incrStMan, True);
+    newMS.bindAll(incrStMan, true);
   }
   
   // Bind ANTENNA1, and ANTENNA2 to the standardStMan 
@@ -291,7 +291,7 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
 
   // add the SOURCE table  [copied from SimpleSimulator]
   TableDesc tdesc; // = MSSource::requiredTableDesc();
-  for (uInt i = 1 ; i<=MSSource::NUMBER_PREDEFINED_COLUMNS; i++) {
+  for (uint32_t i = 1 ; i<=MSSource::NUMBER_PREDEFINED_COLUMNS; i++) {
     MSSource::addColumnToDesc(tdesc, MSSource::PredefinedColumns(i));
   }
   MSSource::addColumnToDesc(tdesc, MSSourceEnums::REST_FREQUENCY, 1);
@@ -302,7 +302,7 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
 
 //  // add the STATE table  [copied from SimpleSimulator]
 //  TableDesc tdesc2;
-//  for (uInt i = 1 ; i<=MSState::NUMBER_PREDEFINED_COLUMNS; i++) {
+//  for (uint32_t i = 1 ; i<=MSState::NUMBER_PREDEFINED_COLUMNS; i++) {
 //    MSState::addColumnToDesc(tdesc2, MSState::PredefinedColumns(i));
 //  }
 //  SetupNewTable stateSetup(ms_p->stateTableName(),tdesc2,Table::New);
@@ -337,7 +337,7 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   hyperCubeID_p=-1;
   lastSpWID_p=-1;
   lastNchan_p=-1;
-  hasHyperCubes_p=False;
+  hasHyperCubes_p=false;
 }
 
 NewMSSimulator::NewMSSimulator(MeasurementSet& theMS) :
@@ -355,19 +355,19 @@ NewMSSimulator::NewMSSimulator(MeasurementSet& theMS) :
   
   TableDesc td(ms_p->tableDesc());
   if(td.isColumn(dataTileId)) {
-    hasHyperCubes_p=True;
+    hasHyperCubes_p=true;
     // Now we can make the accessors to be used when adding hypercolumns
     dataAcc_p = TiledDataStManAccessor(*ms_p, dataCol);
     scratchDataAcc_p = TiledDataStManAccessor(*ms_p, scratchDataCol);
     sigmaAcc_p = TiledDataStManAccessor(*ms_p, sigmaCol);
     flagAcc_p = TiledDataStManAccessor(*ms_p, flagCol);
     
-    ScalarColumn<Int> hyperCubeIDColumn(*ms_p, dataTileId);
+    ScalarColumn<int32_t> hyperCubeIDColumn(*ms_p, dataTileId);
     hyperCubeID_p=max(hyperCubeIDColumn.getColumn());
     os << "   last hyper cube ID = " << hyperCubeID_p << LogIO::POST;
   }
   else {
-    hasHyperCubes_p=False;
+    hasHyperCubes_p=false;
   }
   {
     MSColumns msc(*ms_p);
@@ -380,28 +380,28 @@ NewMSSimulator::NewMSSimulator(MeasurementSet& theMS) :
 }
 
 // Add new hypercubes as the shape changes
-void NewMSSimulator::addHyperCubes(const Int id, const Int nBase, const Int nChan,
-				   const Int nCorr)
+void NewMSSimulator::addHyperCubes(const int32_t id, const int32_t nBase, const int32_t nChan,
+				   const int32_t nCorr)
 {
   Record tileId;
-  const uInt chanTiles=(nChan+7)/8;
+  const uint32_t chanTiles=(nChan+7)/8;
   
-  tileId.define(sigmaTileId, static_cast<Int>(10*id));
+  tileId.define(sigmaTileId, static_cast<int32_t>(10*id));
   sigmaAcc_p.addHypercube(IPosition(2, nCorr, 0), 
 			  IPosition(2, nCorr, nBase),
 			  tileId);
   
-  tileId.define(dataTileId, static_cast<Int>(10*id+1));
+  tileId.define(dataTileId, static_cast<int32_t>(10*id+1));
   dataAcc_p.addHypercube(IPosition(3, nCorr, nChan, 0), 
 			 IPosition(3, nCorr, chanTiles, nBase),
 			 tileId);
   
-  tileId.define(scratchDataTileId, static_cast<Int>(10*id+2));
+  tileId.define(scratchDataTileId, static_cast<int32_t>(10*id+2));
   scratchDataAcc_p.addHypercube(IPosition(3, nCorr, nChan, 0), 
 				IPosition(3, nCorr, chanTiles, nBase),
 				tileId);
   
-  tileId.define(flagTileId, static_cast<Int>(10*id + 3));
+  tileId.define(flagTileId, static_cast<int32_t>(10*id + 3));
   flagAcc_p.addHypercube(IPosition(4, nCorr, nChan, nCat, 0), 
 			 IPosition(4, nCorr, chanTiles, nCat, nBase),
 			 tileId);
@@ -414,11 +414,11 @@ NewMSSimulator::NewMSSimulator(const NewMSSimulator & mss)
 
 
 void NewMSSimulator::initAnt(const String& telescope,
-			     const Vector<Double>& x, 
-			     const Vector<Double>& y, 
-			     const Vector<Double>& z,
-			     const Vector<Double>& dishDiameter,
-			     const Vector<Double>&,
+			     const Vector<double>& x, 
+			     const Vector<double>& y, 
+			     const Vector<double>& z,
+			     const Vector<double>& dishDiameter,
+			     const Vector<double>&,
 			     const Vector<String>& mount,
 			     const Vector<String>& name,
 			     const Vector<String>& padname,
@@ -429,11 +429,11 @@ void NewMSSimulator::initAnt(const String& telescope,
   
   telescope_p=telescope;
 
-  Int nAnt = x.nelements();
+  int32_t nAnt = x.nelements();
   
-  Vector<Double> xx( x.nelements() );
-  Vector<Double> yy( x.nelements() );
-  Vector<Double> zz( x.nelements() );
+  Vector<double> xx( x.nelements() );
+  Vector<double> yy( x.nelements() );
+  Vector<double> zz( x.nelements() );
   if (coordsystem == "global") {
     xx = x;  yy = y;  zz = z;    
     os << "Using global coordinates for the antennas" << LogIO::POST;
@@ -456,10 +456,10 @@ void NewMSSimulator::initAnt(const String& telescope,
        << coordsystem << LogIO::POST;
   }
   
-  Vector<Int> antId(nAnt);
-  Matrix<Double> antXYZ(3,nAnt);
+  Vector<int32_t> antId(nAnt);
+  Matrix<double> antXYZ(3,nAnt);
   
-  for (Int i=0; i<nAnt; i++) {
+  for (int32_t i=0; i<nAnt; i++) {
     antXYZ(0,i)=xx(i);
     antXYZ(1,i)=yy(i);
     antXYZ(2,i)=zz(i);
@@ -468,7 +468,7 @@ void NewMSSimulator::initAnt(const String& telescope,
 
   MSColumns msc(*ms_p);
   MSAntennaColumns& antc=msc.antenna();
-  Int numOfAnt=antc.nrow();
+  int32_t numOfAnt=antc.nrow();
   MSAntenna& ant=ms_p->antenna();
   
   ant.addRow(nAnt); // make nAnt rows
@@ -482,15 +482,15 @@ void NewMSSimulator::initAnt(const String& telescope,
   antc.position().putColumnRange(antSlice, antXYZ);
   //antc.station().fillColumn("");  
   antc.station().putColumnRange(antSlice,padname);
-  antc.flagRow().fillColumn(False);
+  antc.flagRow().fillColumn(false);
   antc.type().fillColumn("GROUND-BASED");
   os << "Added rows to ANTENNA table" << LogIO::POST;
 }
 
 //getAnt(telescope_p, nAnt, xyz_p, diam_p, offset_p, mount_p, antName_p, 
 //		    coordsystem_p, mRefLocation_p)) {
-bool NewMSSimulator::getAnt(String& telescope, Int& nAnt, Matrix<Double>* antXYZ, 
-			    Vector<Double>& antDiam, Vector<Double>& /*offset*/,
+bool NewMSSimulator::getAnt(String& telescope, int32_t& nAnt, Matrix<double>* antXYZ, 
+			    Vector<double>& antDiam, Vector<double>& /*offset*/,
 			    Vector<String>& mount, Vector<String>& name, Vector<String>& padname,
 			    String& coordsystem, MPosition& mRefLocation ) {
   // return already set config info
@@ -500,11 +500,11 @@ bool NewMSSimulator::getAnt(String& telescope, Int& nAnt, Matrix<Double>* antXYZ
   MSAntennaColumns& antc=msc.antenna();
   if(antc.nrow()==0) {
     os << "Antenna information not yet defined" << LogIO::WARN;
-    return False;
+    return false;
   }
   telescope=telescope_p;
   nAnt=antc.nrow();
-  if (!antXYZ) antXYZ = new Matrix<Double>(3,nAnt);
+  if (!antXYZ) antXYZ = new Matrix<double>(3,nAnt);
   antXYZ->resize(3,nAnt);
   antc.position().getColumn(*antXYZ);
   antc.dishDiameter().getColumn(antDiam);
@@ -518,43 +518,43 @@ bool NewMSSimulator::getAnt(String& telescope, Int& nAnt, Matrix<Double>* antXYZ
   MPosition mzero(mvzero,MPosition::ITRF);
   mRefLocation=mzero;
 
-  return True;
+  return true;
 }
 
 
 
 
 
-void NewMSSimulator::local2global(Vector<Double>& xGeo,
-				  Vector<Double>& yGeo,
-				  Vector<Double>& zGeo,
+void NewMSSimulator::local2global(Vector<double>& xGeo,
+				  Vector<double>& yGeo,
+				  Vector<double>& zGeo,
 				  const MPosition& mRefLocation,
-				  const Vector<Double>& xLocal,
-				  const Vector<Double>& yLocal,
-				  const Vector<Double>& zLocal) 
+				  const Vector<double>& xLocal,
+				  const Vector<double>& yLocal,
+				  const Vector<double>& zLocal) 
 {
-  uInt nn = xLocal.nelements();
+  uint32_t nn = xLocal.nelements();
   xGeo.resize(nn);
   yGeo.resize(nn);
   zGeo.resize(nn);
   
   MPosition::Convert loc2(mRefLocation, MPosition::ITRF);
   MPosition locitrf(loc2());
-  Vector<Double> xyz = locitrf.get("m").getValue();
+  Vector<double> xyz = locitrf.get("m").getValue();
   
-  Vector<Double> ang = locitrf.getAngle("rad").getValue();
-  Double d1, d2;
+  Vector<double> ang = locitrf.getAngle("rad").getValue();
+  double d1, d2;
   d1 = ang(0);
   d2 = ang(1);
-  Double cosLong = cos(d1);
-  Double sinLong = sin(d1);
-  Double cosLat = cos(d2);
-  Double sinLat = sin(d2);
+  double cosLong = cos(d1);
+  double sinLong = sin(d1);
+  double cosLat = cos(d2);
+  double sinLat = sin(d2);
   
-  for (uInt i=0; i< nn; i++) {
+  for (uint32_t i=0; i< nn; i++) {
     
-    Double xG1 = -sinLat * yLocal(i) + cosLat * zLocal(i);
-    Double yG1 = xLocal(i);
+    double xG1 = -sinLat * yLocal(i) + cosLat * zLocal(i);
+    double yG1 = xLocal(i);
     
     xGeo(i) =   cosLong * xG1 - sinLong * yG1  + xyz(0);
     yGeo(i) =   sinLong * xG1 + cosLong * yG1  + xyz(1);
@@ -564,13 +564,13 @@ void NewMSSimulator::local2global(Vector<Double>& xGeo,
   
 }
 
-void NewMSSimulator::longlat2global(Vector<Double>&,
-				    Vector<Double>&,
-				    Vector<Double>&,
+void NewMSSimulator::longlat2global(Vector<double>&,
+				    Vector<double>&,
+				    Vector<double>&,
 				    const MPosition&,
-				    const Vector<Double>&,
-				    const Vector<Double>&,
-				    const Vector<Double>&)
+				    const Vector<double>&,
+				    const Vector<double>&,
+				    const Vector<double>&)
 {
   LogIO os(LogOrigin("NewMSSimulator", "longlat2global()", WHERE));
   os <<  LogIO::SEVERE << "NewMSSimulator::longlat2global not yet implemented" << LogIO::POST;
@@ -585,9 +585,9 @@ void NewMSSimulator::initFields(const String& sourceName,
   
   MSColumns msc(*ms_p);
   MSFieldColumns& fieldc=msc.field();
-  Int baseFieldID=fieldc.nrow();
+  int32_t baseFieldID=fieldc.nrow();
   MSSourceColumns& sourcec=msc.source();
-  Int baseSrcID=sourcec.nrow();
+  int32_t baseSrcID=sourcec.nrow();
 
   const double forever=1.e30;
 
@@ -619,7 +619,7 @@ void NewMSSimulator::initFields(const String& sourceName,
   sourcec.sourceId().put(baseSrcID, baseSrcID);
   sourcec.directionMeas().put(baseSrcID,sourceDirection);
   sourcec.spectralWindowId().put(baseSrcID,-1);
-  Vector<Double> pmV(2,0.);
+  Vector<double> pmV(2,0.);
   sourcec.properMotion().put(baseSrcID,pmV);
   sourcec.numLines().put(baseSrcID, 0);
   sourcec.calibrationGroup().put(baseSrcID, 0);
@@ -648,18 +648,18 @@ void NewMSSimulator::initFields(const String& sourceName,
   if(spwc.nrow()>0) {
     sourcec.numLines().put(baseSrcID, 1);
     sourcec.spectralWindowId().put(baseSrcID,0);
-    Vector<Double> rfV(1, spwc.refFrequency()(0));
+    Vector<double> rfV(1, spwc.refFrequency()(0));
     sourcec.restFrequency().put(baseSrcID, rfV);
     Vector<String> tV(1,"X");
     sourcec.transition().put(baseSrcID, tV);
-    Vector<Double> svV(1, 0.);
+    Vector<double> svV(1, 0.);
     sourcec.sysvel().put(baseSrcID, svV); 
   }
 
 }
 
 
-  bool NewMSSimulator::getFields(Int& nField,
+  bool NewMSSimulator::getFields(int32_t& nField,
 				 Vector<String>& sourceName, 
 				 Vector<MDirection>& sourceDirection,
 				 Vector<String>& calCode)
@@ -678,11 +678,11 @@ void NewMSSimulator::initFields(const String& sourceName,
   sourceDirection.resize(nField);
   calCode.resize(nField);
 
-  for (Int i=0;i<nField;i++) {
+  for (int32_t i=0;i<nField;i++) {
     fieldc.name().get(i, sourceName[i]);
     fieldc.code().get(i, calCode[i]);
     Vector<MDirection> direction;
-    fieldc.referenceDirMeasCol().get(i,direction,True);
+    fieldc.referenceDirMeasCol().get(i,direction,true);
     // and if theres a varying reference direction per row, we'll just all go 
     // merrily off into lala land.
     sourceDirection[i]=direction[0];
@@ -700,7 +700,7 @@ NewMSSimulator::getMs () const
 
 
 void NewMSSimulator::initSpWindows(const String& spWindowName,
-				   const Int& nChan,
+				   const int32_t& nChan,
 				   const Quantity& startFreq,
 				   const Quantity& freqInc,
 				   const Quantity&,
@@ -710,11 +710,11 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   
   LogIO os(LogOrigin("MSsimulator", "initSpWindows()", WHERE)); 
   
-  Vector<Int> stokesTypes(4);
+  Vector<int32_t> stokesTypes(4);
   stokesTypes=Stokes::Undefined;
   String myStokesString = stokesString;
-  Int nCorr=0;
-  for (Int j=0; j<4; j++) {	  
+  int32_t nCorr=0;
+  for (int32_t j=0; j<4; j++) {	  
     while (myStokesString.at(0,1) == " ") {
       myStokesString.del(0,1);
     }
@@ -733,7 +733,7 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   MSSpWindowColumns& spwc=msc.spectralWindow();
   MSDataDescColumns& ddc=msc.dataDescription();
   MSPolarizationColumns& polc=msc.polarization();
-  Int baseSpWID=spwc.nrow();
+  int32_t baseSpWID=spwc.nrow();
   os << "Creating new spectral window " << spWindowName << ", ID "
      << baseSpWID+1 << LogIO::POST;
   // fill spectralWindow table
@@ -746,28 +746,28 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
   spwc.ifConvChain().fillColumn(0);
   spwc.freqGroup().fillColumn(0);
   spwc.freqGroupName().fillColumn("Group 1");
-  spwc.flagRow().fillColumn(False);
+  spwc.flagRow().fillColumn(false);
   //  spwc.measFreqRef().fillColumn(MFrequency::TOPO);
   spwc.measFreqRef().fillColumn(freqType);
-  polc.flagRow().fillColumn(False);
-  ddc.flagRow().fillColumn(False);
+  polc.flagRow().fillColumn(false);
+  ddc.flagRow().fillColumn(false);
   polc.numCorr().put(baseSpWID, nCorr);
-  Vector <Double> freqs(nChan), bandwidth(nChan);
+  Vector <double> freqs(nChan), bandwidth(nChan);
   bandwidth=freqInc.getValue("Hz");
   ddc.spectralWindowId().put(baseSpWID,baseSpWID);
   ddc.polarizationId().put(baseSpWID,baseSpWID);
-  Double vStartFreq(startFreq.getValue("Hz"));
-  Double vFreqInc(freqInc.getValue("Hz"));
-  for (Int chan=0; chan<nChan; chan++) {
+  double vStartFreq(startFreq.getValue("Hz"));
+  double vFreqInc(freqInc.getValue("Hz"));
+  for (int32_t chan=0; chan<nChan; chan++) {
     freqs(chan)=vStartFreq+chan*vFreqInc;
   }
 
   // translate stokesTypes into receptor products, catch invalid
   // fallibles.
-  Matrix<Int> corrProduct(uInt(2),uInt(nCorr));
-  Fallible<Int> fi;
-  stokesTypes.resize(nCorr, True);
-  for (Int j=0; j< nCorr; j++) {
+  Matrix<int32_t> corrProduct(uint32_t(2),uint32_t(nCorr));
+  Fallible<int32_t> fi;
+  stokesTypes.resize(nCorr, true);
+  for (int32_t j=0; j< nCorr; j++) {
     fi=Stokes::receptor1(Stokes::type(stokesTypes(j)));
     corrProduct(0,j)=(fi.isValid() ? fi.value() : 0);
     fi=Stokes::receptor2(Stokes::type(stokesTypes(j)));
@@ -784,9 +784,9 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
 
   {
     MSSpWindowColumns msSpW(ms_p->spectralWindow());
-    Int nSpw=ms_p->spectralWindow().nrow();
+    int32_t nSpw=ms_p->spectralWindow().nrow();
     if(nSpw==0) nSpw=1;
-    Matrix<Int> selection(2,nSpw);
+    Matrix<int32_t> selection(2,nSpw);
     selection.row(0)=0; //start
     selection.row(1)=msSpW.numChan().getColumn(); 
     ArrayColumn<Complex> mcd(*ms_p,"MODEL_DATA");
@@ -796,9 +796,9 @@ void NewMSSimulator::initSpWindows(const String& spWindowName,
 }
 
 // if known already e.g. from openfromms()
-bool NewMSSimulator::getSpWindows(Int& nSpw,
+bool NewMSSimulator::getSpWindows(int32_t& nSpw,
 				  Vector<String>& spWindowName,
-				  Vector<Int>& nChan,
+				  Vector<int32_t>& nChan,
 				  Vector<Quantity>& startFreq,
 				  Vector<Quantity>& freqInc,
 				  Vector<String>& stokesString)
@@ -818,12 +818,12 @@ bool NewMSSimulator::getSpWindows(Int& nSpw,
   freqInc.resize(nSpw);
   stokesString.resize(nSpw);
 
-  Int nPols(polc.nrow());
-  Vector<Int> stokes(4);
-  for (Int i=0;i<nSpw;i++) {
+  int32_t nPols(polc.nrow());
+  Vector<int32_t> stokes(4);
+  for (int32_t i=0;i<nSpw;i++) {
     spwc.name().get(i,spWindowName[i]);
     spwc.numChan().get(i,nChan[i]);
-    Double vStartFreq,vBW; //vFreqInc
+    double vStartFreq,vBW; //vFreqInc
     spwc.refFrequency().get(i,vStartFreq);
     startFreq[i].setValue(vStartFreq);
     startFreq[i].setUnit("Hz");
@@ -833,7 +833,7 @@ bool NewMSSimulator::getSpWindows(Int& nSpw,
     freqInc[i].setUnit("Hz");
     // need to translate enum Stokes::type back into strings... there's no
     // easy way to do that in C++, but there is a Stokes Name function:
-    Int nCorr;
+    int32_t nCorr;
     if (nPols==nSpw) {
       polc.numCorr().get(i, nCorr);
       stokes.resize(nCorr);
@@ -847,11 +847,11 @@ bool NewMSSimulator::getSpWindows(Int& nSpw,
       polc.corrType().get(0,stokes);
     }
     String t;
-    for (Int j=0; j<nCorr; j++) 
+    for (int32_t j=0; j<nCorr; j++) 
       t += Stokes::name(Stokes::StokesTypes(stokes(j))) + " ";
     stokesString[i]=t;
   }  
-  return True;
+  return true;
 }
 
 
@@ -863,36 +863,36 @@ void NewMSSimulator::initFeeds(const String& mode) {
     os << "Mode list not supported without x,y,pol set" << LogIO::EXCEPTION;
   }
 
-  Vector<Double> x;
-  Vector<Double> y;
+  Vector<double> x;
+  Vector<double> y;
   Vector<String> pol;
   initFeeds(mode, x, y, pol);
 }
 
 // NOTE:  initAnt and initSpWindows must be called before this one!
 void NewMSSimulator::initFeeds(const String& mode,
-			       const Vector<Double>& x,
-			       const Vector<Double>& y,
+			       const Vector<double>& x,
+			       const Vector<double>& y,
 			       const Vector<String>& pol)
 {
   LogIO os(LogOrigin("MSsimulator", "initFeeds()", WHERE));
   
   MSColumns msc(*ms_p);
   MSAntennaColumns& antc=msc.antenna();
-  Int nAnt=antc.nrow();
+  int32_t nAnt=antc.nrow();
   
   if (nAnt <= 0) {
     os <<  LogIO::SEVERE << "NewMSSimulator::initFeeds: must call initAnt() first" << LogIO::POST;
   }
   
-  Int nFeed=x.nelements();
+  int32_t nFeed=x.nelements();
 
   //  cout << "nFeed = " << nFeed << endl;
   
   String feedPol0="R", feedPol1="L";
-  Bool isList=False;
+  bool isList=false;
   if(nFeed>1) {
-    isList=True;
+    isList=true;
     if(x.nelements()!=y.nelements()) {
       os << "Feed x and y must be the same length" << LogIO::EXCEPTION;
     }
@@ -913,25 +913,25 @@ void NewMSSimulator::initFeeds(const String& mode,
   //cout << "Mode in initFeeds = " << mode << endl;
   //cout << "feedPol0,1 = " << feedPol0 << " " << feedPol1 << endl;
   
-  Int nRow=nFeed*nAnt;
-  Vector<Int> feedAntId(nRow);
-  Vector<Int> feedId(nRow); 
-  Vector<Int> feedSpWId(nRow);
-  Vector<Int> feedBeamId(nRow);
+  int32_t nRow=nFeed*nAnt;
+  Vector<int32_t> feedAntId(nRow);
+  Vector<int32_t> feedId(nRow); 
+  Vector<int32_t> feedSpWId(nRow);
+  Vector<int32_t> feedBeamId(nRow);
   
-  Vector<Int> feedNumRec(nRow);
-  Cube<Double> beamOffset(2,2,nRow);
+  Vector<int32_t> feedNumRec(nRow);
+  Cube<double> beamOffset(2,2,nRow);
   
   Matrix<String> feedPol(2,nRow);
-  Matrix<Double> feedXYZ(3,nRow);
-  Matrix<Double> feedAngle(2,nRow);
+  Matrix<double> feedXYZ(3,nRow);
+  Matrix<double> feedAngle(2,nRow);
   Cube<Complex> polResp(2,2,nRow);
   
   rownr_t iRow=0;
   if(isList) {
     polResp=Complex(0.0,0.0);
-    for (Int i=0; i<nAnt; i++) {
-      for (Int j=0; j<nFeed; j++) {
+    for (int32_t i=0; i<nAnt; i++) {
+      for (int32_t j=0; j<nFeed; j++) {
 	feedAntId(iRow)=i;
 	feedId(iRow) = j;
 	feedSpWId(iRow) = -1;
@@ -964,7 +964,7 @@ void NewMSSimulator::initFeeds(const String& mode,
   }
   else {
     polResp=Complex(0.0,0.0);
-    for (Int i=0; i<nAnt; i++) {
+    for (int32_t i=0; i<nAnt; i++) {
       feedAntId(iRow)=i;
       feedId(iRow) = 0;
       feedSpWId(iRow) = -1;
@@ -988,7 +988,7 @@ void NewMSSimulator::initFeeds(const String& mode,
   
   // fill Feed table - don't check to see if any of the positions match
   MSFeedColumns& feedc=msc.feed();
-  Int numFeeds=feedc.nrow();
+  int32_t numFeeds=feedc.nrow();
   Slicer feedSlice(IPosition(1,numFeeds),IPosition(1, nRow+numFeeds-1),
 		   IPosition(1,1), Slicer::endIsLast);
   ms_p->feed().addRow(nRow);
@@ -999,7 +999,7 @@ void NewMSSimulator::initFeeds(const String& mode,
   feedc.numReceptors().putColumnRange(feedSlice, feedNumRec);
   feedc.position().putColumnRange(feedSlice, feedXYZ);
   const double forever=1.e30;
-  for (Int i=numFeeds; i<(nRow+numFeeds); i++) {
+  for (int32_t i=numFeeds; i<(nRow+numFeeds); i++) {
     feedc.beamOffset().put(i,beamOffset.xyPlane(i-numFeeds));
     feedc.polarizationType().put(i,feedPol.column(i-numFeeds));
     feedc.polResponse().put(i,polResp.xyPlane(i-numFeeds));
@@ -1019,30 +1019,30 @@ bool NewMSSimulator::getFeedMode(String& mode)
   
   MSColumns msc(*ms_p);
   MSAntennaColumns& antc=msc.antenna();
-  Int nAnt=antc.nrow();
+  int32_t nAnt=antc.nrow();
   
   if (nAnt <= 0) {
     os <<  LogIO::SEVERE << "NewMSSimulator::getFeeds: must call initAnt() first" << LogIO::POST;
   }
   
   MSFeedColumns& feedc=msc.feed();
-  Int numFeeds=feedc.nrow();
+  int32_t numFeeds=feedc.nrow();
 
   if (numFeeds>nAnt)
     mode="list";
   else {
-    if (numFeeds<1) return False;
+    if (numFeeds<1) return false;
     // quick and dirty - assume all ants the same kind 
     Vector<String> feedPol(2);
-    feedc.polarizationType().get(0,feedPol,True);
+    feedc.polarizationType().get(0,feedPol,true);
     // we only support setting perfect feeds in Simulator.
-    Int nF = feedPol.shape()[0];
+    int32_t nF = feedPol.shape()[0];
     if (nF<2) 
       mode=feedPol[0];
     else
       mode=feedPol[0]+" "+feedPol[1];
   }
-  return True;
+  return true;
 }
  
 
@@ -1061,7 +1061,7 @@ NewMSSimulator & NewMSSimulator::operator=(const NewMSSimulator & other)
 }
 
 void NewMSSimulator::settimes(const Quantity& qIntegrationTime,
-			      const Bool useHourAngle,
+			      const bool useHourAngle,
 			      const MEpoch&   mRefTime)
 
 {
@@ -1071,7 +1071,7 @@ void NewMSSimulator::settimes(const Quantity& qIntegrationTime,
   useHourAngle_p=useHourAngle;
   mRefTime_p=mRefTime;
   if(useHourAngle_p) {
-    hourAngleDefined_p=False;
+    hourAngleDefined_p=false;
   }
   t_offset_p=0.0;
 }
@@ -1082,9 +1082,9 @@ void NewMSSimulator::observe(const String& sourceName,
 			     const String& spWindowName,
 			     const Quantity& qStartTime, 
 			     const Quantity& qStopTime,
-			     const Bool add_observation,
-			     const Bool state_sig,
-			     const Bool state_ref,
+			     const bool add_observation,
+			     const bool state_sig,
+			     const bool state_ref,
 			     const double& state_cal,
 			     const double& state_load,
 			     const unsigned int state_sub_scan,
@@ -1109,9 +1109,9 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 			     const Vector<Quantity>& qStartTimes, 
 			     const Vector<Quantity>& qStopTimes,
 			     const Vector<MDirection>& directions,
-			     const Bool add_observation,
-			     const Bool state_sig,
-			     const Bool state_ref,
+			     const bool add_observation,
+			     const bool state_sig,
+			     const bool state_ref,
 			     const double& state_cal,
 			     const double& state_load,
 			     const unsigned int state_sub_scan,
@@ -1134,10 +1134,10 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   if(antc.nrow()==0) {
     os << "Antenna information not yet defined" << LogIO::EXCEPTION;
   }
-  Int nAnt=antc.nrow();
-  Vector<Double> antDiam;
+  int32_t nAnt=antc.nrow();
+  Vector<double> antDiam;
   antc.dishDiameter().getColumn(antDiam);
-  Matrix<Double> antXYZ(3,nAnt);
+  Matrix<double> antXYZ(3,nAnt);
   antc.position().getColumn(antXYZ);
   
   MSDerivedValues msd;
@@ -1148,20 +1148,20 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   if(feedc.nrow()==0) {
     os << "Feed information not yet defined" << LogIO::EXCEPTION;
   }
-  Int nFeed=feedc.nrow()/nAnt;
+  int32_t nFeed=feedc.nrow()/nAnt;
   
   // Spectral window
   MSSpWindowColumns& spwc=msc.spectralWindow();
   if(spwc.nrow()==0) {
     os << "Spectral window information not yet defined" << LogIO::EXCEPTION;
   }
-  Int baseSpWID=spwc.nrow();
-  Int existingSpWID=-1;
+  int32_t baseSpWID=spwc.nrow();
+  int32_t existingSpWID=-1;
   // Check for existing spectral window with correct name
   if(baseSpWID>0) {
     Vector<String> spWindowNames;
     spwc.name().getColumn(spWindowNames);
-    for(uInt i=0;i<spWindowNames.nelements();i++) {
+    for(uint32_t i=0;i<spWindowNames.nelements();i++) {
       if (spWindowNames(i)==spWindowName) {
 	existingSpWID=i;
 	break;
@@ -1173,14 +1173,14 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   }
   MSPolarizationColumns& polc=msc.polarization();
   baseSpWID=existingSpWID;
-  Double startFreq;
-  Vector<Double> resolution;
+  double startFreq;
+  Vector<double> resolution;
   spwc.refFrequency().get(baseSpWID,startFreq);
   spwc.resolution().get(baseSpWID,resolution);
-  Int nChan=resolution.nelements();
-  Matrix<Int> corrProduct;
+  int32_t nChan=resolution.nelements();
+  Matrix<int32_t> corrProduct;
   polc.corrProduct().get(baseSpWID,corrProduct);
-  Int nCorr=corrProduct.ncolumn();
+  int32_t nCorr=corrProduct.ncolumn();
 //  {
 //    ostringstream oss;
 //    oss << "Spectral window : "<<spWindowName<<endl
@@ -1200,15 +1200,15 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   if(fieldc.nrow()==0) {
     os << "Field information not yet defined" << LogIO::EXCEPTION;
   }
-  Int baseFieldID=fieldc.nrow();
-  Int existingFieldID=-1;
-  Int iSrc=0;
+  int32_t baseFieldID=fieldc.nrow();
+  int32_t existingFieldID=-1;
+  int32_t iSrc=0;
 
   // Check for existing field with correct name
   if(baseFieldID>0) {
     Vector<String> fieldNames;
     fieldc.name().getColumn(fieldNames);
-    for(uInt i=0;i<fieldNames.nelements();i++) {
+    for(uint32_t i=0;i<fieldNames.nelements();i++) {
       if (fieldNames(i)==sourceNames[iSrc]) {
 	existingFieldID=i;
 	break;
@@ -1231,14 +1231,14 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 
 
   // A bit ugly solution to extract the information about beam offsets
-  Cube<RigidVector<Double, 2> > beam_offsets;
+  Cube<RigidVector<double, 2> > beam_offsets;
   Vector<String> antenna_mounts;
   { // to close MSIter, when the job is done
     MSFeedParameterExtractor msfpe_tmp(*ms_p);
     beam_offsets=msfpe_tmp.getBeamOffsets();
     antenna_mounts=msfpe_tmp.antennaMounts();
   }
-  if (beam_offsets.nplane()!=(uInt)nFeed || beam_offsets.ncolumn()!=(uInt)nAnt)
+  if (beam_offsets.nplane()!=(uint32_t)nFeed || beam_offsets.ncolumn()!=(uint32_t)nAnt)
       os<< "Feed table format is incompatible with existing code of NewMSSimulator::observe"<<LogIO::EXCEPTION;
   //
   
@@ -1251,9 +1251,9 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   // but we're using the t_offset_p calculated for only the _first_ pointing
   // which could lead to subtle effects
 
-  Double Tstart, Tend, Tint;
+  double Tstart, Tend, Tint;
   // number of pointings:
-  Int nPts=qStartTimes.shape()(0);
+  int32_t nPts=qStartTimes.shape()(0);
   AlwaysAssert(nPts==qStopTimes.shape()(0),AipsError);
   AlwaysAssert(nPts==sourceNames.shape()(0),AipsError);
 
@@ -1269,7 +1269,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     msd.setEpoch( mRefTime_p );
     msd.setFieldCenter(fieldCenter);  // set to first sourceName above
     t_offset_p = - msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
-    hourAngleDefined_p=True;
+    hourAngleDefined_p=true;
     //      os << "Times specified are interpreted as hour angles for first source observed" << endl
     //	 << "     offset in time = " << t_offset_p / 3600.0 << " hours from "
     //	 << formatTime(taiRefTime.get("s").getValue("s")) << LogIO::DEBUG1;
@@ -1289,17 +1289,17 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   // in the schedule information
   MSObservation& obs=ms_p->observation();
   MSObservationColumns& obsc=msc.observation();
-  Int nobsrow= obsc.nrow();
-  Int64 row=ms_p->nrow()-1;
-  Int maxObsId=-1;
-  Int maxArrayId=0;
+  int32_t nobsrow= obsc.nrow();
+  int64_t row=ms_p->nrow()-1;
+  int32_t maxObsId=-1;
+  int32_t maxArrayId=0;
 
   //cout << "OBSERVATION table has "<< nobsrow << " rows"<<endl;
 
   if (add_observation or nobsrow<=0) {
     obs.addRow();
     obsc.telescopeName().put(nobsrow,telescope_p);
-    Vector<Double> timeRange(2);
+    Vector<double> timeRange(2);
     timeRange(0)=Tstart;
     timeRange(1)=Tend;
     obsc.timeRange().put(nobsrow,timeRange);
@@ -1307,7 +1307,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     obsc.project().put(nobsrow,projectname);
     
     nobsrow= obsc.nrow();
-    Vector<Int> tmpids(row+1);
+    Vector<int32_t> tmpids(row+1);
     tmpids=msc.observationId().getColumn();
     if (tmpids.nelements()>0) maxObsId=max(tmpids);
     tmpids=msc.arrayId().getColumn();
@@ -1325,11 +1325,11 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 
   MSState& msstate = ms_p -> state();
   MSStateColumns& msstateCol = msc.state();
-  Int staterow = -1; // the state row to use in the main table
+  int32_t staterow = -1; // the state row to use in the main table
 
   //cout << "STATE table has " <<msstate.nrow() <<"rows.. searching for match"<<endl;
   
-  for (uInt i = 0; i < msstate.nrow(); i++) {
+  for (uint32_t i = 0; i < msstate.nrow(); i++) {
     if ((msstateCol.sig()(i) == state_sig) &&
 	(msstateCol.ref()(i) == state_ref) &&
 	(msstateCol.cal()(i) == state_cal) &&
@@ -1361,40 +1361,40 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   // RI TODO make sure to actually set correct state row in ms cols
 
 
-  Double Time=Tstart;
-  Bool firstTime = True;
+  double Time=Tstart;
+  bool firstTime = true;
   
-  uInt nShadowed = 0;
-  uInt nSubElevation = 0;
+  uint32_t nShadowed = 0;
+  uint32_t nSubElevation = 0;
   
   // Start scan number from last one (if there was one)
-  Int64 nMSRows=ms_p->nrow();
+  int64_t nMSRows=ms_p->nrow();
 
   // init counters past end
-  Int scan=0;
+  int32_t scan=0;
   
   if(nMSRows>0) {
     msc.scanNumber().get(nMSRows-1,scan);
   }
 
   // We can extend the ms and the hypercubes just once
-  Int nBaselines;
+  int32_t nBaselines;
   if(autoCorrelationWt_p > 0.0) {
     nBaselines =nAnt*(nAnt+1)/2;
   }
   else {
     nBaselines =nAnt*(nAnt-1)/2;
   }
-  Int64 nNewRows=nBaselines*nFeed;
+  int64_t nNewRows=nBaselines*nFeed;
 
-  //Int nIntegrations=max(1, Int(0.5+(Tend-Tstart)/Tint));
-  Int nIntegrations=0; 
-  Double Tstarti, Tendi;
-  for(Int i=0;i<nPts;i++) {
+  //int32_t nIntegrations=max(1, int32_t(0.5+(Tend-Tstart)/Tint));
+  int32_t nIntegrations=0; 
+  double Tstarti, Tendi;
+  for(int32_t i=0;i<nPts;i++) {
     Tstarti = qStartTimes(i).getValue("s");  
     // don't need to add RefTime and offset since we're just using the diff in this loop:   
     Tendi = qStopTimes(i).getValue("s"); 
-    nIntegrations+=max(1, Int(0.5+(Tendi-Tstarti)/Tint));
+    nIntegrations+=max(1, int32_t(0.5+(Tendi-Tstarti)/Tint));
   }
  
   nNewRows*=nIntegrations;
@@ -1402,17 +1402,17 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   // We need to do addition in this order to get a new TSM file.
 
   // Various conditions for new hypercube
-  Bool needNewHyperCube=False;
+  bool needNewHyperCube=false;
   if(hasHyperCubes_p) {
-    if(hyperCubeID_p<0) needNewHyperCube=True;
+    if(hyperCubeID_p<0) needNewHyperCube=true;
     if(lastSpWID_p<0) {
-      needNewHyperCube=True;
+      needNewHyperCube=true;
     }
     else if((baseSpWID!=lastSpWID_p) &&(lastNchan_p!=nChan)) {
-      needNewHyperCube=True;
+      needNewHyperCube=true;
     }
     if((maxData_p>0)&&(dataWritten_p>maxData_p)) {
-      needNewHyperCube=True;
+      needNewHyperCube=true;
     }
   }
   if(needNewHyperCube) {
@@ -1430,16 +1430,16 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   // ... Finally extend the hypercubes
   if(hasHyperCubes_p) {
     Record tileId;
-    tileId.define(sigmaTileId, static_cast<Int>(10*hyperCubeID_p));
+    tileId.define(sigmaTileId, static_cast<int32_t>(10*hyperCubeID_p));
     sigmaAcc_p.extendHypercube(nNewRows, tileId);
-    tileId.define(dataTileId, static_cast<Int>(10*hyperCubeID_p + 1));
+    tileId.define(dataTileId, static_cast<int32_t>(10*hyperCubeID_p + 1));
     dataAcc_p.extendHypercube(nNewRows, tileId);
-    tileId.define(scratchDataTileId, static_cast<Int>(10*hyperCubeID_p + 2));
+    tileId.define(scratchDataTileId, static_cast<int32_t>(10*hyperCubeID_p + 2));
     scratchDataAcc_p.extendHypercube(nNewRows, tileId);
-    tileId.define(flagTileId, static_cast<Int>(10*hyperCubeID_p + 3));
+    tileId.define(flagTileId, static_cast<int32_t>(10*hyperCubeID_p + 3));
     flagAcc_p.extendHypercube(nNewRows, tileId);
     // Size of scratch columns
-    Double thisChunk=16.0*Double(nChan)*Double(nCorr)*Double(nNewRows);
+    double thisChunk=16.0*double(nChan)*double(nCorr)*double(nNewRows);
     dataWritten_p+=thisChunk;
     //    os << "Written " << thisChunk/(1024.0*1024.0) << " Mbytes to scratch columns" << LogIO::DEBUG1;
   }
@@ -1447,26 +1447,26 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Matrix<Complex> data(nCorr,nChan); 
   data.set(Complex(0.0));
 
-  Matrix<Bool> flag(nCorr,nChan); 
-  flag=False;
+  Matrix<bool> flag(nCorr,nChan); 
+  flag=false;
 
   os << "Calculating a total of " << nIntegrations << " integrations" << endl 
      << LogIO::POST;
 
-  for(Int feed=0; feed<nFeed; feed++) {
+  for(int32_t feed=0; feed<nFeed; feed++) {
     //if (nFeed) 
       //       os << "Processing feed "<<feed<< LogIO::DEBUG1;
     // for now assume that all feeds have the same offsets w.r.t.
     // antenna frame for all antennas
-    RigidVector<Double, 2> beamOffset=beam_offsets(0,0,feed);
+    RigidVector<double, 2> beamOffset=beam_offsets(0,0,feed);
 
-    for(Int pointing=0; pointing<nPts; pointing++) {
+    for(int32_t pointing=0; pointing<nPts; pointing++) {
 
       Tstart = qStartTimes(pointing).getValue("s") + 
 	taiRefTime.get("s").getValue("s") + t_offset_p;
       Tend = qStopTimes(pointing).getValue("s") + 
 	taiRefTime.get("s").getValue("s") + t_offset_p;
-      nIntegrations=max(1, Int(0.5+(Tend-Tstart)/Tint));
+      nIntegrations=max(1, int32_t(0.5+(Tend-Tstart)/Tint));
       Time=Tstart;
 
       // current phase center for a beam without offset
@@ -1496,7 +1496,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	  if(baseFieldID>0) {
 	    Vector<String> fieldNames;
 	    fieldc.name().getColumn(fieldNames);
-	    for(uInt i=0;i<fieldNames.nelements();i++) {
+	    for(uint32_t i=0;i<fieldNames.nelements();i++) {
 	      if (fieldNames(i)==sourceNames(pointing)) {
 		existingFieldID=i;
 		break;
@@ -1540,24 +1540,24 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
       }
 
 
-    for(Int integration=0; integration<nIntegrations; integration++) {
+    for(int32_t integration=0; integration<nIntegrations; integration++) {
     
       MEpoch epUT1 (Quantity(Time/C::day, "d"), MEpoch::UT1);
       MEpoch::Ref refGMST1(MEpoch::GMST1);
       MEpoch::Convert epGMST1(epUT1, refGMST1);
-      Double gmst = epGMST1().get("d").getValue("d");
-      gmst = (gmst - Int(gmst)) * C::_2pi;  // Into Radians
+      double gmst = epGMST1().get("d").getValue("d");
+      gmst = (gmst - int32_t(gmst)) * C::_2pi;  // Into Radians
     
       MEpoch ep(Quantity((Time + Tint/2), "s"), MEpoch::UT1);
       msd.setEpoch(ep);
                   
       msd.setAntenna(0); // assume for now that all par. angles are the same 
 
-      Vector<Bool> isShadowed(nAnt);  isShadowed.set(False);
-      Vector<Bool> isTooLow(nAnt);    isTooLow.set(False);
-      Double fractionBlocked1=0.0, fractionBlocked2=0.0;
-      Int64 startingRow = row;
-      Double diamMax2 = square( max(antDiam) );
+      Vector<bool> isShadowed(nAnt);  isShadowed.set(false);
+      Vector<bool> isTooLow(nAnt);    isTooLow.set(false);
+      double fractionBlocked1=0.0, fractionBlocked2=0.0;
+      int64_t startingRow = row;
+      double diamMax2 = square( max(antDiam) );
 
       // fringe stopping center could be different for different feeds
       MDirection feed_phc=fcs(0);
@@ -1578,14 +1578,14 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
       // assume also that all mounts are the same and posit. angle is the same
       if (antenna_mounts[0]=="ALT-AZ" || antenna_mounts[0]=="alt-az") {
           // parallactic angle rotation is necessary
-          SquareMatrix<Double, 2> xform(SquareMatrix<Double, 2>::General);
+          SquareMatrix<double, 2> xform(SquareMatrix<double, 2>::General);
           // SquareMatrix' default constructor is a bit strange, we probably
           // need to change it in the future
 
       
-          const Double pa=msd.parAngle();  
-          const Double cpa=cos(pa);
-          const Double spa=sin(pa);
+          const double pa=msd.parAngle();  
+          const double cpa=cos(pa);
+          const double spa=sin(pa);
           xform(0,0)=cpa;
           xform(1,1)=cpa;
           xform(0,1)=-spa;
@@ -1593,34 +1593,34 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
           beamOffset*=xform;
       }
       // x direction is flipped to convert az-el type frame to ra-dec
-      feed_phc.shift(-beamOffset(0),beamOffset(1),True);
+      feed_phc.shift(-beamOffset(0),beamOffset(1),true);
       ///Below code is replaced with calcUVW that does a baseline conversion
       ///to J2000 too
     
-      //      Double ra, dec; // current phase center
+      //      double ra, dec; // current phase center
       //      ra = feed_phc.getAngle().getValue()(0);
       //      dec = feed_phc.getAngle().getValue()(1);
 
       // Transformation from antenna position difference (ant2-ant1) to uvw
-      //      Double H0 = gmst-ra, sH0=sin(H0), cH0=cos(H0), sd=sin(dec), cd=cos(dec);
-      //      Matrix<Double> trans(3,3,0);
+      //      double H0 = gmst-ra, sH0=sin(H0), cH0=cos(H0), sd=sin(dec), cd=cos(dec);
+      //      Matrix<double> trans(3,3,0);
       //      trans(0,0) = -sH0;    trans(0,1) = -cH0;
       //      trans(1,0) =  sd*cH0; trans(1,1) = -sd*sH0; trans(1,2) = -cd;
       //      trans(2,0) = -cd*cH0; trans(2,1) = cd*sH0;  trans(2,2) = -sd; 
-      //      Matrix<Double> antUVW(3,nAnt);	 
+      //      Matrix<double> antUVW(3,nAnt);	 
 
-      // for (Int ant1=0; ant1<nAnt; ant1++)
+      // for (int32_t ant1=0; ant1<nAnt; ant1++)
       //           antUVW.column(ant1)=product(trans,antXYZ.column(ant1)); 
       // Rotate antennas to correct frame
-      Matrix<Double> antUVW(3,nAnt);	      
+      Matrix<double> antUVW(3,nAnt);	      
       calcAntUVW(ep, feed_phc, antUVW);
 
    
-      for(Int ant1=0; ant1<nAnt; ant1++) {
-	Double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
-	Int startAnt2=ant1+1;
+      for(int32_t ant1=0; ant1<nAnt; ant1++) {
+	double x1=antUVW(0,ant1), y1=antUVW(1,ant1), z1=antUVW(2,ant1);
+	int32_t startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
-	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	for (int32_t ant2=startAnt2; ant2<nAnt; ant2++) {
 	  row++; 
 	  
 	  msc.antenna1().put(row,ant1);
@@ -1628,8 +1628,8 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	  msc.feed1().put(row,feed);
 	  msc.feed2().put(row,feed);
 	  
-	  Double x2=antUVW(0,ant2), y2=antUVW(1,ant2), z2=antUVW(2,ant2);
-	  Vector<Double> uvwvec(3);
+	  double x2=antUVW(0,ant2), y2=antUVW(1,ant2), z2=antUVW(2,ant2);
+	  Vector<double> uvwvec(3);
 	  uvwvec(0) = x2-x1;
 	  uvwvec(1) = y2-y1;
 	  uvwvec(2) = z2-z1;
@@ -1639,7 +1639,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	  msc.data().put(row,data);		  
 	  msc.data().put(row,data);		  
 	  msc.flag().put(row,flag);
-	  msc.flagRow().put(row,False);
+	  msc.flagRow().put(row,false);
 	  
 	  msc.correctedData().setShape(row, data.shape());
 	  msc.correctedData().put(row,data);
@@ -1650,20 +1650,20 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	    blockage(fractionBlocked1, fractionBlocked2,
 		     uvwvec, antDiam(ant1), antDiam(ant2) );
 	    if (fractionBlocked1 > fractionBlockageLimit_p) {
-	      isShadowed(ant1) = True;
+	      isShadowed(ant1) = true;
 	    }
 	    if (fractionBlocked2 > fractionBlockageLimit_p) {
-	      isShadowed(ant2) = True;
+	      isShadowed(ant2) = true;
 	    }
 	  }
 	  
 	  // Deal with differing diameter case
-	  Float sigma1 = diamMax2/(antDiam(ant1) * antDiam(ant2));
-	  Float wt = 1/square(sigma1);
+	  float sigma1 = diamMax2/(antDiam(ant1) * antDiam(ant2));
+	  float wt = 1/square(sigma1);
 	  if  (ant1 == ant2 ) {
 	    wt *= autoCorrelationWt_p;
 	  }		  
-	  Vector<Float> tmp(nCorr); tmp=wt;
+	  Vector<float> tmp(nCorr); tmp=wt;
 	  msc.weight().put(row, tmp);
 	  tmp=sigma1;
 	  msc.sigma().put(row,tmp);
@@ -1674,18 +1674,18 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     // go back and flag weights based on shadowing
     // Future option: we could increase sigma based on
     // fraction shadowed.
-    Matrix<Bool> trueFlag(nCorr,nChan); 
-    trueFlag=True;
+    Matrix<bool> trueFlag(nCorr,nChan); 
+    trueFlag=true;
 
-    Int64 reRow = startingRow;
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-	Int startAnt2=ant1+1;
+    int64_t reRow = startingRow;
+    for (int32_t ant1=0; ant1<nAnt; ant1++) {
+	int32_t startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
-	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	for (int32_t ant2=startAnt2; ant2<nAnt; ant2++) {
 	  reRow++; 
 	  if ( isShadowed(ant1) || isShadowed(ant2) ) {
 	    msc.flag().put(reRow,trueFlag);
-	    msc.flagRow().put(reRow, True);
+	    msc.flagRow().put(reRow, true);
 	    nShadowed++;
 	  }
 	}
@@ -1693,19 +1693,19 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
     
     
     // Find antennas pointing below the elevation limit
-    Vector<Double> azel(2);
-    for (Int ant1=0; ant1<nAnt; ant1++) {
+    Vector<double> azel(2);
+    for (int32_t ant1=0; ant1<nAnt; ant1++) {
 	
 	// We want to find elevation for each antenna separately (for VLBI)
 	msd.setAntenna(ant1);
 	azel=msd.azel().getAngle("rad").getValue("rad");      
 	
 	if (azel(1) < elevationLimit_p.getValue("rad")) {
-	  isTooLow(ant1) = True;
+	  isTooLow(ant1) = true;
 	}
 	if (firstTime) {
-	  firstTime = False;
-//	  Double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
+	  firstTime = false;
+//	  double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
 //	  os << "Starting conditions for antenna 1: " << LogIO::DEBUG1;
 //	  os << "     time = " << formatTime(Time) << LogIO::DEBUG1;
 //	  os << "     scan = " << scan+1 << LogIO::DEBUG1;
@@ -1717,32 +1717,32 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 
     // Now flag all antennas pointing below the elevation limit
     reRow = startingRow;    
-    for (Int ant1=0; ant1<nAnt; ant1++) {
-	Int startAnt2=ant1+1;
+    for (int32_t ant1=0; ant1<nAnt; ant1++) {
+	int32_t startAnt2=ant1+1;
 	if(autoCorrelationWt_p>0.0) startAnt2=ant1;
-	for (Int ant2=startAnt2; ant2<nAnt; ant2++) {
+	for (int32_t ant2=startAnt2; ant2<nAnt; ant2++) {
 	  reRow++; 
 	  if ( isTooLow(ant1) || isTooLow(ant2) ) {
 	    msc.flag().put(reRow,trueFlag);
-	    msc.flagRow().put(reRow, True);
+	    msc.flagRow().put(reRow, true);
 	    nSubElevation++;
 	  }
 	}
     }    
     
     // this is all still inside the single integration loop
-    Int64 numpointrows=nAnt;
+    int64_t numpointrows=nAnt;
     MSPointingColumns& pointingc=msc.pointing();
-    Int numPointing=pointingc.nrow();
+    int32_t numPointing=pointingc.nrow();
     ms_p->pointing().addRow(numpointrows);
     numpointrows += numPointing;
-    Double Tint=qIntegrationTime_p.getValue("s");
+    double Tint=qIntegrationTime_p.getValue("s");
     Vector<MDirection> direction(1);
     direction(0)=fieldCenter;
-    for (Int m=numPointing; m < (numPointing+nAnt); m++){
+    for (int32_t m=numPointing; m < (numPointing+nAnt); m++){
       pointingc.numPoly().put(m,0);
       pointingc.interval().put(m,-1);
-      pointingc.tracking().put(m,True);
+      pointingc.tracking().put(m,true);
       ///pointingc.time().put(m,Time);
       pointingc.time().put(m,Time+Tint/2);
       pointingc.timeOrigin().put(m,Tstart);
@@ -1760,10 +1760,10 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 
   {
     msd.setAntenna(0);
-    Vector<Double> azel=msd.azel().getAngle("rad").getValue("rad");
+    Vector<double> azel=msd.azel().getAngle("rad").getValue("rad");
 
 // sadly, messages from Core don't get filtered very well by casapy.
-//    Double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
+//    double ha1 = msd.hourAngle() *  180.0/C::pi / 15.0;
 //    os << "Stopping conditions for antenna 1: " << LogIO::DEBUG1;
 //    os << "     time = " << formatTime(Time) << LogIO::DEBUG1;
 //    os << "     scan = " << scan+1 << LogIO::DEBUG1;
@@ -1783,14 +1783,14 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 // We will want to put this somewhere else eventually, but I don't yet know where!
 // Till then.
 // Stolen from Fred Schwab
-void NewMSSimulator::blockage(Double &fraction1, Double &fraction2,
-			      const Vector<Double>& uvw, 
-			      const Double diam1, 
-			      const Double diam2)
+void NewMSSimulator::blockage(double &fraction1, double &fraction2,
+			      const Vector<double>& uvw, 
+			      const double diam1, 
+			      const double diam2)
 {
-  Double separation = sqrt( square(uvw(0)) + square(uvw(1)) );
-  Double rmin = 0.5 * min(abs(diam1),abs(diam2));
-  Double rmax = 0.5 * max(abs(diam1),abs(diam2));
+  double separation = sqrt( square(uvw(0)) + square(uvw(1)) );
+  double rmin = 0.5 * min(abs(diam1),abs(diam2));
+  double rmax = 0.5 * max(abs(diam1),abs(diam2));
   if (separation >= (rmin+rmax)) {
     fraction1 = 0.0;
     fraction2 = 0.0;
@@ -1798,20 +1798,20 @@ void NewMSSimulator::blockage(Double &fraction1, Double &fraction2,
     fraction1 = min(1.0, square(abs(diam2)/abs(diam1)));
     fraction2 = min(1.0, square(abs(diam1)/abs(diam2)));
   } else {
-    Double c = separation/(0.5 * abs(diam1));
-    Double s=abs(diam2)/abs(diam1);        
-    Double sinb=sqrt(2.0 * (square(c*s)+square(c)+square(s))-pow(c,4.0)-pow(s,4.0)-1.0)
+    double c = separation/(0.5 * abs(diam1));
+    double s=abs(diam2)/abs(diam1);        
+    double sinb=sqrt(2.0 * (square(c*s)+square(c)+square(s))-pow(c,4.0)-pow(s,4.0)-1.0)
       /(2.0 * c);
-    Double sina=sinb/s;
+    double sina=sinb/s;
     //  Due to roundoff, sina or sinb might be ever so slightly larger than 1
     //  in the case of unequal radii, with the center of one antenna pattern
     //  inside the other:
     sinb=min(1.0, sinb);
     sina=min(1.0, sina);
     
-    Double b=asin(sinb);
-    Double a=asin(sina);
-    Double area=(square(s)*a+b)-(square(s)*sina*cos(a)+sinb*cos(b));
+    double b=asin(sinb);
+    double a=asin(sina);
+    double area=(square(s)*a+b)-(square(s)*sina*cos(a)+sinb*cos(b));
     fraction1 = area/C::pi;
     fraction2 = fraction1/square(s);
   }
@@ -1837,13 +1837,13 @@ String NewMSSimulator::formatDirection(const MDirection& direction) {
   return String(oss);
 }
 
-String NewMSSimulator::formatTime(const Double time) {
+String NewMSSimulator::formatTime(const double time) {
   MVTime mvtime(Quantity(time, "s"));
   return mvtime.string(MVTime::DMY,7);
 }
 
-Bool NewMSSimulator::calcAntUVW(MEpoch& epoch, MDirection& refdir, 
-				      Matrix<Double>& uvwAnt){
+bool NewMSSimulator::calcAntUVW(MEpoch& epoch, MDirection& refdir, 
+				      Matrix<double>& uvwAnt){
 
   MSColumns msc(*ms_p);
  // Lets define a Measframe with the telescope nominal position
@@ -1867,11 +1867,11 @@ Bool NewMSSimulator::calcAntUVW(MEpoch& epoch, MDirection& refdir,
   if(refdir.getRef().getType() != MDirection::J2000)
     throw(AipsError("Ref direction is not in  J2000 "));
 
-  Int nAnt=msc.antenna().nrow();
+  int32_t nAnt=msc.antenna().nrow();
   uvwAnt.resize(3,nAnt);
   MBaseline::Convert elconv(basMeas, MBaseline::Ref(MBaseline::J2000));
   Muvw::Convert uvwconv(Muvw(), Muvw::Ref(Muvw::J2000, measFrame));
-  for(Int k=0; k< nAnt; ++k){
+  for(int32_t k=0; k< nAnt; ++k){
     MPosition antpos=msc.antenna().positionMeas()(k);
  
     MVBaseline mvblA(obsPos.getValue(), antpos.getValue());
@@ -1882,7 +1882,7 @@ Bool NewMSSimulator::calcAntUVW(MEpoch& epoch, MDirection& refdir,
     uvwAnt.column(k)=xyz;
   }
 
-  return True;
+  return true;
 
 }
 

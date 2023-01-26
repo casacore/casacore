@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsCommentEnd   = commentEnd;
     itsLevel = 1;
     itsFirstName.resize (1);
-    itsFirstName[0] = True;
+    itsFirstName[0] = true;
   }
 
   void JsonOut::end()
@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsIndent += itsIndentStep;
     itsLevel++;
     itsFirstName.resize (itsLevel);
-    itsFirstName[itsLevel-1] = True;
+    itsFirstName[itsLevel-1] = true;
   }
 
   void JsonOut::endNested()
@@ -191,7 +191,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsStream << itsIndent;
     if (itsFirstName[itsLevel-1]) {
       itsStream << ' ';
-      itsFirstName[itsLevel-1] = False;
+      itsFirstName[itsLevel-1] = false;
     } else {
       itsStream << ',';
     }
@@ -203,11 +203,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsStream << "null";
   }
 
-  void JsonOut::put (Bool value)
+  void JsonOut::put (bool value)
   {
     itsStream << (value ? "true" : "false");
   }
-  void JsonOut::put (Float value)
+  void JsonOut::put (float value)
   {
     if (! isFinite(value)) {
       putNull();
@@ -228,7 +228,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       itsStream << buf;
     }
   }
-  void JsonOut::put (Double value)
+  void JsonOut::put (double value)
   {
     if (! isFinite(value)) {
       putNull();
@@ -277,8 +277,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsIndent += itsIndentStep;
     itsLevel++;
     itsFirstName.resize (itsLevel);
-    itsFirstName[itsLevel-1] = True;
-    for (uInt i=0; i<rec.nfields(); ++i) {
+    itsFirstName[itsLevel-1] = true;
+    for (uint32_t i=0; i<rec.nfields(); ++i) {
       write (rec.name(i), rec.asValueHolder(i));
     }
     itsLevel--;

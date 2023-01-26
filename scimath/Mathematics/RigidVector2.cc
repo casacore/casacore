@@ -29,24 +29,24 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
-				 const RigidVector<Float,4>& v) {
+				 const RigidVector<float,4>& v) {
     Complex v0,v1,v2,v3;
     switch (m.type_p) {
-        case SquareMatrix<Float,4>::ScalarId: {
+        case SquareMatrix<float,4>::ScalarId: {
 	    v0=v.v_p[0]*m.a_p[0][0];
 	    v1=v.v_p[1]*m.a_p[0][0];
 	    v2=v.v_p[2]*m.a_p[0][0];
 	    v3=v.v_p[3]*m.a_p[0][0];
 	}
         break;
-	case SquareMatrix<Float,4>::Diagonal: {
+	case SquareMatrix<float,4>::Diagonal: {
 	    v0=v.v_p[0]*m.a_p[0][0];
 	    v1=v.v_p[1]*m.a_p[1][1];
 	    v2=v.v_p[2]*m.a_p[2][2];
 	    v3=v.v_p[3]*m.a_p[3][3];
 	}
         break;
-        case SquareMatrix<Float,4>::General: {
+        case SquareMatrix<float,4>::General: {
 	    v0=m.a_p[0][0]*v.v_p[0]+m.a_p[0][1]*v.v_p[1]+m.a_p[0][2]*v.v_p[2]+
 		m.a_p[0][3]*v.v_p[3];
 	    v1=m.a_p[1][0]*v.v_p[0]+m.a_p[1][1]*v.v_p[1]+m.a_p[1][2]*v.v_p[2]+

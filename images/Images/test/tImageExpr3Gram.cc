@@ -39,7 +39,7 @@
 #include <casacore/casa/namespace.h>
 int main (int argc, const char* argv[])
 {
-  Bool foundError = False;
+  bool foundError = false;
 
   try {
     Input inp(1);
@@ -49,35 +49,35 @@ int main (int argc, const char* argv[])
     inp.create("nz", "12", "Number of pixels along the z-axis", "int");
     inp.readArguments(argc, argv);
     
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const uint32_t nz=inp.getInt("nz");
     IPosition shape2(2, nx, ny);
     IPosition shape2b(3, nx, ny, 1);
     IPosition shape3(3, nx, ny, nz);
-    Array<Float> arr2(shape2);
+    Array<float> arr2(shape2);
     indgen (arr2);
-    Array<Float> arr2b(shape2b);
+    Array<float> arr2b(shape2b);
     indgen (arr2b);
-    Array<Float> arr3(shape3);
+    Array<float> arr3(shape3);
     indgen (arr3);
-    Array<Float> arr2a(shape3);
+    Array<float> arr2a(shape3);
     {
-      for (uInt i=0; i<nz; i++) {
+      for (uint32_t i=0; i<nz; i++) {
 	arr2a(IPosition(3,0,0,i), IPosition(3,nx-1,ny-1,i)) = arr2b;
       }
     }
 
     {    
-      PagedImage<Float> image2 (shape2,
+      PagedImage<float> image2 (shape2,
 				CoordinateUtil::defaultCoords2D(),
 				"tImageExpr3Gram_tmp.img2");
       image2.put (arr2);
-      PagedImage<Float> image2b (shape2b,
+      PagedImage<float> image2b (shape2b,
 				 CoordinateUtil::defaultCoords3D(),
 				 "tImageExpr3Gram_tmp.img2b");
       image2b.put (arr2b);
-      PagedImage<Float> image3 (shape3,
+      PagedImage<float> image3 (shape3,
 				CoordinateUtil::defaultCoords3D(),
 				"tImageExpr3Gram_tmp.img3");
       image3.put (arr3);
@@ -86,85 +86,85 @@ int main (int argc, const char* argv[])
     {
       cout << endl;
       cout << "Expr:  image3-image2" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 		    ("tImageExpr3Gram_tmp.img3 - tImageExpr3Gram_tmp.img2"));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr3-arr2a)) {
 	cout << "Result should be " << arr3-arr2a << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
       cout << endl;
       cout << "Expr:  image2-image3" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 		    ("tImageExpr3Gram_tmp.img2 - tImageExpr3Gram_tmp.img3"));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr2a-arr3)) {
 	cout << "Result should be " << arr2a-arr3 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
       cout << endl;
       cout << "Expr:  image3-image2b" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 		    ("tImageExpr3Gram_tmp.img3 - tImageExpr3Gram_tmp.img2b"));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr3-arr2a)) {
 	cout << "Result should be " << arr3-arr2a << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
       cout << endl;
       cout << "Expr:  image2b-image3" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 		    ("tImageExpr3Gram_tmp.img2b - tImageExpr3Gram_tmp.img3"));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr2a-arr3)) {
 	cout << "Result should be " << arr2a-arr3 << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
       cout << endl;
       cout << "Expr:  image2b-image2" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 		    ("tImageExpr3Gram_tmp.img2b - tImageExpr3Gram_tmp.img2"));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr2b-arr2b)) {
 	cout << "Result should be " << arr2b-arr2b << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
     {
       cout << endl;
       cout << "Expr:  image2-image2b" << endl;
-      LatticeExpr<Float> expr (ImageExprParse::command
+      LatticeExpr<float> expr (ImageExprParse::command
 		    ("tImageExpr3Gram_tmp.img2 - tImageExpr3Gram_tmp.img2b"));
-      Array<Float> result;
+      Array<float> result;
       expr.get (result);
       if (! allEQ (result, arr2b-arr2b)) {
 	cout << "Result should be " << arr2b-arr2b << endl;
 	cout << "Result is " << result << endl;
-	foundError = True;
+	foundError = true;
       }
     }
 
   } catch (std::exception& x) {
     cerr << "aipserror: error " << x.what() << endl;
-    foundError = True;
+    foundError = true;
   } 
 
   if (foundError) {

@@ -67,7 +67,7 @@ template<class Range> class SampledFunctional;
 // </ul>
 //
 // The restriction that each abcissus has a unique value can be lifted
-// by setting the <src>uniq=True </src> option in the appropriate
+// by setting the <src>uniq=true </src> option in the appropriate
 // functions. This imposes the following additional restrictions on
 // interpolation. 
 // <ul>
@@ -79,7 +79,7 @@ template<class Range> class SampledFunctional;
 // </ul>
 //
 // The abscissa must be a SampledFunctional that returns a scalar value that
-// can be ordered. ie. an uInt, Int, Float or Double (not Complex). The
+// can be ordered. ie. an uint32_t, int32_t, float or double (not Complex). The
 // ordinate can be any data type that has addition, and subtraction defined
 // as well as multiplication by a scalar. So the ordinate can be complex
 // numbers, where the interpolation is done separately on the real and
@@ -88,20 +88,20 @@ template<class Range> class SampledFunctional;
 //
 // This class will curently make an internal copy of the data supplied to
 // it, and sort the data if it is not told it is already sorted, by using
-// the <src> sorted=True </src> flag.
+// the <src> sorted=true </src> flag.
 // </synopsis>
 
 // <example>
 // This code fragment sets the interpolation method to cubic before
 // interpolating on the supplied (x,y) vectors.
 // <srcblock>
-//  Vector<Float> x(4); indgen(x); 
-//  Vector<Double> y(4); indgen(y); y = y*y*y;
-//  ScalarSampledFunctional<Float> fx(x)
-//  ScalarSampledFunctional<Double> fy(y);
-//  Interpolate1D<Float, Double> gain(fx, fy);
-//  gain.setMethod(Interpolate1D<Float,Double>::cubic);
-//  for (Float xs = -1; xs < 5; xs += 0.1)
+//  Vector<float> x(4); indgen(x); 
+//  Vector<double> y(4); indgen(y); y = y*y*y;
+//  ScalarSampledFunctional<float> fx(x)
+//  ScalarSampledFunctional<double> fy(y);
+//  Interpolate1D<float, double> gain(fx, fy);
+//  gain.setMethod(Interpolate1D<float,double>::cubic);
+//  for (float xs = -1; xs < 5; xs += 0.1)
 //    cout << "gain(" << xs << "):" << gain(xs) << endl;
 // </srcblock>
 // </example>
@@ -114,7 +114,7 @@ template<class Range> class SampledFunctional;
 
 // <templating arg=Domain>
 //  <li> The Domain class must be a type that can be ordered in a mathematical
-// sense. This includes uInt, Int, Float, Double, but not Complex. 
+// sense. This includes uint32_t, int32_t, float, double, but not Complex. 
 // </templating>
 
 // <templating arg=Range>
@@ -158,15 +158,15 @@ public:
   // Construct an object with the specified data
   Interpolate1D(const SampledFunctional<Domain> &x, 
 		const SampledFunctional<Range> &y, 
-		const Bool sorted=False, 
-		const Bool uniq=False);
+		const bool sorted=false, 
+		const bool uniq=false);
 
   // Define a new data set for the class to operate on. Equivalent in many
   // aspects to creating a new object.
   void setData(const SampledFunctional<Domain> &x, 
 	       const SampledFunctional<Range> &y, 
-	       const Bool sorted=False, 
-	       const Bool uniq=False);
+	       const bool sorted=false, 
+	       const bool uniq=false);
 
   // The standard copy constructor, assignment operator and
   // destructor. Internal data is copied in both cases (copy semantics)
@@ -191,8 +191,8 @@ public:
   // compiler limitations. See the example above (or the demo code) for the
   // recommended way to call these functions.
   // <group>
-  uInt getMethod() const {return curMethod;}
-  void setMethod(uInt method);
+  uint32_t getMethod() const {return curMethod;}
+  void setMethod(uint32_t method);
   // </group>
 
   // Access the data set that interpolation is done over. This will usually be
@@ -209,10 +209,10 @@ public:
 
 private:
   // A private function for doing polynomial interpolation
-  Range polynomialInterpolation(const Domain x, uInt n, uInt offset) const;
+  Range polynomialInterpolation(const Domain x, uint32_t n, uint32_t offset) const;
 
-  uInt curMethod;        // interpolation method to use
-  uInt nElements;        // how many elements in the data set
+  uint32_t curMethod;        // interpolation method to use
+  uint32_t nElements;        // how many elements in the data set
   Block<Domain> xValues; // the abscissa of the data set (sorted)
   Block<Range> yValues;  // The corresponding ordinate of the data set
   Block<Range> y2Values; // The numerical second derivates (only for splines)

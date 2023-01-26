@@ -99,7 +99,7 @@ class LELLattCoordBase;
 
 // <example>
 // <srcblock>
-//    PagedImage<Float> im("myimage");
+//    PagedImage<float> im("myimage");
 //    const LELCoordinates* pLatCoord = &(im.lelCoordinates());
 //    const LELImageCoord* pImCoord =
 //                  dynamic_cast<const LELImageCoord*>(pLatCoord);
@@ -139,12 +139,12 @@ public:
     LELCoordinates& operator= (const LELCoordinates& that);
 
     // Is the coordinates a null object?
-    Bool isNull() const
+    bool isNull() const
       { return coords_p.null(); }
 
     // Does the class have true coordinates?
-    // It returns False if this is a null object.
-    Bool hasCoordinates() const;
+    // It returns false if this is a null object.
+    bool hasCoordinates() const;
 
     // Check how the coordinates of this and that compare.
     // The return value tells how they compare.
@@ -152,7 +152,7 @@ public:
     // <br>0: equal 
     // <br>1: this is superset
     // <br>9: invalid (mismatch)
-    Int compare (const LELCoordinates& other) const;
+    int32_t compare (const LELCoordinates& other) const;
 
     // Return the underlying letter object.
     // This should in general not be used, but for specific (Image) cases

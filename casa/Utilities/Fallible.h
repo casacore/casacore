@@ -77,7 +77,7 @@ void AccessInvalidFallibleObject();
 // <srcblock>
 //    enum DayName {Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, 
 //                  Saturday};
-//    Fallible<DayName> dayFromDate(uInt day, uInt month, uInt year); // a func.
+//    Fallible<DayName> dayFromDate(uint32_t day, uint32_t month, uint32_t year); // a func.
 // </srcblock>
 // And we also have some other function that needs a day name, for example
 // just prints it:
@@ -121,10 +121,10 @@ template<class T> class Fallible
 {
 public: 
     // The default constructor creates an invalid object.
-    Fallible() : value_p(T()), isValid_p(False) {}
+    Fallible() : value_p(T()), isValid_p(false) {}
 
     // Create a valid object
-    Fallible(const T &value) : value_p(value), isValid_p(True) {}
+    Fallible(const T &value) : value_p(value), isValid_p(true) {}
 
     //# Actually, the default copy ctor and assignment operator would work
     Fallible(const Fallible<T> &other) : value_p(other.value_p),
@@ -145,10 +145,10 @@ public:
     T value() const { if (! isValid_p) AccessInvalidFallibleObject();
 		      return value_p; }
 
-    Bool isValid() const {return isValid_p;}
+    bool isValid() const {return isValid_p;}
 private:
     T value_p;
-    Bool isValid_p;
+    bool isValid_p;
 };
 
 

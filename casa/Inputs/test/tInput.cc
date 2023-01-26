@@ -37,7 +37,7 @@ int main(int argc, const char* argv[])
 {
   try {
     // The default constructor enables the creation of parameters. 
-    // If the optional Bool argument is True, the parameters "help" and "debug" 
+    // If the optional bool argument is true, the parameters "help" and "debug" 
     // are created from their shell environment values.
     // It puts the program in no-prompt mode unless environment variable HELP 
     // is defined with value "prompt". The output debug level is set according 
@@ -59,7 +59,7 @@ int main(int argc, const char* argv[])
     prgInput.create("two", "2.00", "the key named two"); 
     prgInput.create("three", "three", "the key named three", "String"); 
     prgInput.create("four", "True", "the key named four", "Bool", "N/A");
-    prgInput.create("five", "5,5,5,5,5", "a Block of fives", "Block<Int>", 
+    prgInput.create("five", "5,5,5,5,5", "a Block of fives", "Block<int32_t>", 
 		    "3-5", "meters/second");
     // <group>
     

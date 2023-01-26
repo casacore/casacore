@@ -38,7 +38,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-typedef Float FType;  // floating type (Float, Double)
+typedef float FType;  // floating type (float, double)
 
 //<summary>
 // MatrixSolver.h: the base class for solvers of linear equations AX=B
@@ -69,8 +69,8 @@ typedef Float FType;  // floating type (Float, Double)
 //  Array<FType> & psf);</src> Set the image and the Point Spread Function 
 //  (beam).  Setting this should reset the internal state, e.g. 
 //  CurrentIter()==0.
-//  <li> <src>Bool solve();</src>  Perform solution of AX=B.
-//       Returns True if algorithm has converged or stop criterium reached.
+//  <li> <src>bool solve();</src>  Perform solution of AX=B.
+//       Returns true if algorithm has converged or stop criterium reached.
 // </ol>
 // </synopsis> 
 //
@@ -105,10 +105,10 @@ public:
   void setX(const Vector<FType> & X);
   
   // Solve for the X vector.
-  virtual Bool solve();
+  virtual bool solve();
 
   // Is the current solution good enough?
-  Bool accurateSolution();
+  bool accurateSolution();
 
   // Return residual vector B-AX
   const Vector<FType> & getResidual();
@@ -123,10 +123,10 @@ public:
   FType Tolerance();
   
   // Set the maximum number of iterations.
-  void setMaxIters(uInt maxiters);
+  void setMaxIters(uint32_t maxiters);
   
   // Return the maximum number of iterations.
-  uInt MaxIters();
+  uint32_t MaxIters();
 
   // Set the gain for solution
   void setGain(FType g);
@@ -135,10 +135,10 @@ public:
   FType Gain();
 
   // Set status of solution
-  void setSolved(Bool s);
+  void setSolved(bool s);
 
   // Return status of solution
-  Bool Solved();
+  bool Solved();
 
   // Return norm of solution i.e. ||B-AX||
   FType getNorm();
@@ -172,10 +172,10 @@ private:
   FType SolTolerance; 
  
   // Maximum number of iterations
-  uInt MaxIterations;
+  uint32_t MaxIterations;
 
   // Has a solution been found?
-  Bool solved;
+  bool solved;
 
   // Gain
   FType gain;
@@ -188,10 +188,10 @@ inline void MatrixSolver::setTolerance(FType tol)
 inline FType MatrixSolver::Tolerance() 
 {return SolTolerance;}
 
-inline void MatrixSolver::setMaxIters(uInt maxiters) 
+inline void MatrixSolver::setMaxIters(uint32_t maxiters) 
 {MaxIterations = maxiters;}
 
-inline uInt MatrixSolver::MaxIters() 
+inline uint32_t MatrixSolver::MaxIters() 
 {return MaxIterations;}
 
 inline void MatrixSolver::setGain(FType g) 
@@ -200,10 +200,10 @@ inline void MatrixSolver::setGain(FType g)
 inline FType MatrixSolver::Gain() 
 {return gain;}
 
-inline void MatrixSolver::setSolved(Bool s) 
+inline void MatrixSolver::setSolved(bool s) 
 {solved=s;}
 
-inline Bool MatrixSolver::Solved() 
+inline bool MatrixSolver::Solved() 
 {return solved;}
 
 inline FType MatrixSolver::getNorm()

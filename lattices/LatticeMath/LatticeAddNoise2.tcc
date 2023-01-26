@@ -48,7 +48,7 @@ template <class T> void LatticeAddNoise::add (MaskedLattice<T>& lattice) {
 }
 
 template <class T> void LatticeAddNoise::add (Lattice<T>& lattice) {
-    SubLattice<T> ml(lattice, True);
+    SubLattice<T> ml(lattice, true);
     add(ml);
 }
 

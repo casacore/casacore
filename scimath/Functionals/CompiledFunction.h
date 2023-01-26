@@ -69,25 +69,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <src>x=[1.9,2,2.1]</src>.
 // <srcblock>
 // // the Gaussian
-// CompiledFunction<Double> prof;
+// CompiledFunction<double> prof;
 // prof.setFunction("p0*exp(-((x-p1)/p2)^2)");
 // prof[0] = 2;				// the height
 // prof[1] = 1.5;			// the center
 // prof[2] = 1;				// the width
-// Vector<Double> x(3);
+// Vector<double> x(3);
 // x[0] = 1.9; x[1] = 2.0; x[2] = 2.1;
-// for (uInt i=0; i<3; ++i) {
+// for (uint32_t i=0; i<3; ++i) {
 //   cout << "Gaussian at x=" << x[i] << ": " << prof(x[i]) << endl;
 // }
 // // Calculate automatic derivatives of same function:
-// CompiledFunction<AutoDiff<Double> > profad;
+// CompiledFunction<AutoDiff<double> > profad;
 // profad.setFunction("p0*exp(-((x-p1)/p2)^2)");
 // // Set the parameters (note the specification of the number of
 // // derivatives and which derivative the parameter is)
-// profad[0] = AutoDiff<Double>(2,  3,0);	// the height
-// profad[1] = AutoDiff<Double>(1.5,3,1);	// the center
-// profad[2] = AutoDiff<Double>(1,  3,2);      	// the width
-// for (uInt i=0; i<3; ++i) {
+// profad[0] = AutoDiff<double>(2,  3,0);	// the height
+// profad[1] = AutoDiff<double>(1.5,3,1);	// the center
+// profad[2] = AutoDiff<double>(1,  3,2);      	// the width
+// for (uint32_t i=0; i<3; ++i) {
 //   cout << "Gaussian at x=" << x[i] << ": " << profad(x[i]) << endl;
 // }
 // cout << "Value (x=2): " << profad(x[1]).value() << endl;

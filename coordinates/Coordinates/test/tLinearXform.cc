@@ -47,13 +47,13 @@ int main()
          LinearXform xf(1);
       }
       {
-         Vector<Double> crpix(3), cdelt(3);
+         Vector<double> crpix(3), cdelt(3);
          crpix(0) = 10.0; crpix(1) = 20.0; crpix(2) = 30.0;
          cdelt(0) = 1.0; cdelt(1) = 1.5; cdelt(2) = 2.0;
 //
          LinearXform lxf(crpix, cdelt);
 //
-         Matrix<Double> px(3,3);
+         Matrix<double> px(3,3);
          px = 0.0; px.diagonal() = 1.0;
          LinearXform lxf2(crpix, cdelt, px);
      }
@@ -61,7 +61,7 @@ int main()
 // Test near function
 
      {
-         Vector<Double> crpix(3), cdelt(3);
+         Vector<double> crpix(3), cdelt(3);
          crpix(0) = 10.0; crpix(1) = 20.0; crpix(2) = 30.0;
          cdelt(0) = 1.0; cdelt(1) = 1.5; cdelt(2) = 2.0;
          LinearXform lxf(crpix, cdelt);
@@ -69,7 +69,7 @@ int main()
          if (!lxf.near(lxf2)) {
             throw(AipsError("Failed near test 1"));
          }
-         Vector<Int> excludeAxes(1,1);
+         Vector<int32_t> excludeAxes(1,1);
          if (!lxf.near(lxf2, excludeAxes)) {
             throw(AipsError("Failed near test 2"));
          }
@@ -78,7 +78,7 @@ int main()
 // Test copy constructor
 
      {
-         Vector<Double> crpix(3), cdelt(3);
+         Vector<double> crpix(3), cdelt(3);
          crpix(0) = 10.0; crpix(1) = 20.0; crpix(2) = 30.0;
          cdelt(0) = 1.0; cdelt(1) = 1.5; cdelt(2) = 2.0;
          LinearXform lxf(crpix, cdelt);
@@ -91,7 +91,7 @@ int main()
 // Test assignment
 
      {
-         Vector<Double> crpix(3), cdelt(3);
+         Vector<double> crpix(3), cdelt(3);
          crpix(0) = 10.0; crpix(1) = 20.0; crpix(2) = 30.0;
          cdelt(0) = 1.0; cdelt(1) = 1.5; cdelt(2) = 2.0;
          LinearXform lxf(crpix, cdelt);
@@ -105,10 +105,10 @@ int main()
 // Test member functions
    
      {
-         Vector<Double> crpix(3), cdelt(3);
+         Vector<double> crpix(3), cdelt(3);
          crpix(0) = 10.0; crpix(1) = 20.0; crpix(2) = 30.0;
          cdelt(0) = 1.0; cdelt(1) = 1.5; cdelt(2) = 2.0;
-         Matrix<Double> px(3,3);
+         Matrix<double> px(3,3);
          px = 0.0; px.diagonal() = 1.0;
          LinearXform lxf(crpix, cdelt, px);
 //
@@ -150,11 +150,11 @@ int main()
 // Test Fourier inverter.  Can only do this by knowing the algorithm...
 //
      {
-         Vector<Double> crpix(2), cdelt(2);
+         Vector<double> crpix(2), cdelt(2);
          crpix(0) = 10.0; crpix(1) = 20.0; 
          cdelt(0) = 1.0; cdelt(1) = 1.5; 
-         Matrix<Double> pc(2,2);
-         Vector<Double> diag(2);
+         Matrix<double> pc(2,2);
+         Vector<double> diag(2);
          diag(0) = 1.0; diag(1) = 2.0;
          pc = 0.0; 
          pc.diagonal() = diag;
@@ -162,9 +162,9 @@ int main()
 
 // All axes
 
-         Vector<Bool> axes(2, True);
-         Vector<Double> crpix2(2);
-         Vector<Double> scale(2);
+         Vector<bool> axes(2, true);
+         Vector<double> crpix2(2);
+         Vector<double> scale(2);
          crpix2(0) = 1.0; crpix2(1) = 2.0;
          scale(0) = 5.0; scale(1) = 2.0;
          String errMsg;
@@ -174,7 +174,7 @@ int main()
             if (!casacore::allNear(crpix2, lxf2->crpix(),1e-13)) {
                throw(AipsError("fourierInvert (1) crpix test failed"));         
             }
-            Vector<Double> tmp(2);
+            Vector<double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             tmp(1) = 1.0 / cdelt(1) * scale(1);
             if (!casacore::allNear(tmp, lxf2->cdelt(),1e-13)) {
@@ -190,13 +190,13 @@ int main()
 // Not all axes
 
          {
-            axes(1) = False;
+            axes(1) = false;
             LinearXform* lxf2 = lxf.fourierInvert(errMsg, axes, crpix2, scale);
             if (!near(crpix2(0), lxf2->crpix()(0),1e-13) ||
                 !near(lxf.crpix()(1), lxf2->crpix()(1),1e-13)) {
                throw(AipsError("fourierInvert (2) crpix test failed"));         
             }
-            Vector<Double> tmp(2);
+            Vector<double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             if (!near(tmp(0), lxf2->cdelt()(0),1e-13) ||
                 !near(cdelt(1), lxf2->cdelt()(1),1e-13)) {
@@ -212,7 +212,7 @@ int main()
 // Non-diagonal pc matrix all axes
 
          {
-            axes.set(True);
+            axes.set(true);
             pc(1,0) = 2.0;
             pc(0,1) = 2.0;
             lxf.pc(pc);
@@ -220,7 +220,7 @@ int main()
             if (!casacore::allNear(crpix2, lxf2->crpix(),1e-13)) {
                throw(AipsError("fourierInvert (3) crpix test failed"));         
             }
-            Vector<Double> tmp(2);
+            Vector<double> tmp(2);
             tmp(0) = 1.0 / cdelt(0) * scale(0);
             tmp(1) = 1.0 / cdelt(1) * scale(1);
             if (!casacore::allNear(tmp, lxf2->cdelt(),1e-13)) {
@@ -236,8 +236,8 @@ int main()
 // Non-diagonal pc matrix not axes
 
          {
-            axes.set(True);
-            axes(1) = False;
+            axes.set(true);
+            axes(1) = false;
             pc(1,0) = 2.0;
             pc(0,1) = 2.0;
             lxf.pc(pc);
@@ -253,22 +253,22 @@ int main()
 // Test conversion
 
      {
-         Vector<Double> crpix(3), cdelt(3);
+         Vector<double> crpix(3), cdelt(3);
          crpix(0) = 10.0; crpix(1) = 20.0; crpix(2) = 30.0;
          cdelt(0) = 1.0; cdelt(1) = 1.5; cdelt(2) = 2.0;
-         Matrix<Double> px(3,3);
+         Matrix<double> px(3,3);
          px = 0.0; px.diagonal() = 1.0;
          LinearXform lxf(crpix, cdelt, px);
 //
-         Vector<Double> world(crpix.copy());
-         Vector<Double> pixel(3);
+         Vector<double> world(crpix.copy());
+         Vector<double> pixel(3);
          String error;
-         Bool ok = lxf.forward(pixel, world, error);
+         bool ok = lxf.forward(pixel, world, error);
          if (!ok) {
             throw(AipsError(String("Forwards conversion failed because ") +
                             error));
          }
-         for (uInt i=0; i<crpix.nelements(); i++) {
+         for (uint32_t i=0; i<crpix.nelements(); i++) {
             if (!near(pixel(i), (world(i)/cdelt(i))+crpix(i), 1e-6)) {
                throw(AipsError("Forwards conversion gave wrong answer"));
             }
@@ -280,7 +280,7 @@ int main()
             throw(AipsError(String("Forwards conversion failed because ") +
                             error));
          }
-         Vector<Double> world2;
+         Vector<double> world2;
          ok = lxf.reverse(world2, pixel, error);
          if (!casacore::allNear(world, world2, 1e-6)) {
             throw(AipsError("Conversion reflection failed"));

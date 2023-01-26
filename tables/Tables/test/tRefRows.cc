@@ -70,7 +70,7 @@ void doIt()
 	}
     }
     {
-	RefRows ref(vec, True);
+	RefRows ref(vec, true);
 	AlwaysAssertExit (ref.nrows() == 7);
 	AlwaysAssertExit (ref.isSliced());
 	RefRowsSliceIter iter1(ref);
@@ -82,7 +82,7 @@ void doIt()
 	}
     }
     {
-	RefRows ref(vec, False, True);
+	RefRows ref(vec, false, true);
 	AlwaysAssertExit (ref.nrows() == 18);
 	AlwaysAssertExit (ref.isSliced());
 	RefRowsSliceIter iter1(ref);
@@ -118,7 +118,7 @@ void doIt()
 	Vector<rownr_t> rows(18);
 	indgen (rows, rownr_t(1));
 	rows(17) = 0;
-	RefRows ref(rows, False, True);
+	RefRows ref(rows, false, true);
 	AlwaysAssertExit (ref.nrows() == 18);
 	AlwaysAssertExit (ref.isSliced());
 	RefRowsSliceIter iter1(ref);

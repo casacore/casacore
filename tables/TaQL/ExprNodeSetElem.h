@@ -75,29 +75,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual ~TableExprNodeSetElemBase() = default;
 
     // Show the node.
-    void show (ostream& os, uInt indent) const override;
+    void show (ostream& os, uint32_t indent) const override;
 
     // Flatten the node tree by adding the node and its children to the vector.
     virtual void flattenTree (std::vector<TableExprNodeRep*>&) override;
 
     // Is it a discrete set element.
-    // Default implementation returns False.
-    virtual Bool isDiscrete() const;
+    // Default implementation returns false.
+    virtual bool isDiscrete() const;
 
     // Is a single value given?
-    // Default implementation returns False.
-    virtual Bool isSingle() const;
+    // Default implementation returns false.
+    virtual bool isSingle() const;
 
     // Is the interval left or right closed?
-    // Default implementation returns False.
+    // Default implementation returns false.
     // <group>
-    virtual Bool isLeftClosed() const;
-    virtual Bool isRightClosed() const;
+    virtual bool isLeftClosed() const;
+    virtual bool isRightClosed() const;
     // </group>
 
     // Is the interval given as mid-width?
-    // Default implementation returns False.
-    virtual Bool isMidWidth() const;
+    // Default implementation returns false.
+    virtual bool isMidWidth() const;
 
     // Get the start, end or increment expression.
     // Note that the shared pointer returned can be null indicating that a
@@ -116,37 +116,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
-    virtual void fillVector (Vector<Bool>& vec, Int64& cnt,
+    virtual void fillVector (Vector<bool>& vec, int64_t& cnt,
                              const TableExprId& id) const;
-    virtual void fillVector (Vector<Int64>& vec, Int64& cnt,
+    virtual void fillVector (Vector<int64_t>& vec, int64_t& cnt,
                              const TableExprId& id) const;
-    virtual void fillVector (Vector<Double>& vec, Int64& cnt,
+    virtual void fillVector (Vector<double>& vec, int64_t& cnt,
                              const TableExprId& id) const;
-    virtual void fillVector (Vector<DComplex>& vec, Int64& cnt,
+    virtual void fillVector (Vector<DComplex>& vec, int64_t& cnt,
                              const TableExprId& id) const;
-    virtual void fillVector (Vector<String>& vec, Int64& cnt,
+    virtual void fillVector (Vector<String>& vec, int64_t& cnt,
                              const TableExprId& id) const;
-    virtual void fillVector (Vector<MVTime>& vec, Int64& cnt,
+    virtual void fillVector (Vector<MVTime>& vec, int64_t& cnt,
                              const TableExprId& id) const;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
     // This is used by the system to implement the IN operator.
-    // <br>Note that it does NOT set match values to False; it is assumed they
+    // <br>Note that it does NOT set match values to false; it is assumed they
     // are initialized that way.
     // <group>
-    virtual void matchBool     (Bool* match, const Bool* value, size_t nval,
+    virtual void matchBool     (bool* match, const bool* value, size_t nval,
                                 const TableExprId& id) const;
-    virtual void matchInt      (Bool* match, const Int64* value, size_t nval,
+    virtual void matchInt      (bool* match, const int64_t* value, size_t nval,
                                 const TableExprId& id) const;
-    virtual void matchDouble   (Bool* match, const Double* value, size_t nval,
+    virtual void matchDouble   (bool* match, const double* value, size_t nval,
                                 const TableExprId& id) const;
-    virtual void matchDComplex (Bool* match, const DComplex* value, size_t nval,
+    virtual void matchDComplex (bool* match, const DComplex* value, size_t nval,
                                 const TableExprId& id) const;
-    virtual void matchString   (Bool* match, const String* value, size_t nval,
+    virtual void matchString   (bool* match, const String* value, size_t nval,
                                 const TableExprId& id) const;
-    virtual void matchDate     (Bool* match, const MVTime* value, size_t nval,
+    virtual void matchDate     (bool* match, const MVTime* value, size_t nval,
                                 const TableExprId& id) const;
     // </group>
 
@@ -161,10 +161,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Let a set node convert itself to the given unit.
     void adaptSetUnits (const Unit&) override;
 
-    // Get the start or end value of a Double or DateTime interval.
+    // Get the start or end value of a double or DateTime interval.
     // <group>
-    void getStart (const TableExprId& id, Double&) const;
-    void getEnd (const TableExprId& id, Double& ) const;
+    void getStart (const TableExprId& id, double&) const;
+    void getEnd (const TableExprId& id, double& ) const;
     // </group>
 
     // Get the start or end value of a String interval.
@@ -224,47 +224,47 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~TableExprNodeSetElemSingle() override = default;
 
     // It is a discrete set element.
-    Bool isDiscrete() const override;
+    bool isDiscrete() const override;
 
     // A single value is given (which can be an array).
-    Bool isSingle() const override;
+    bool isSingle() const override;
 
     // Fill a vector with the value(s) from this element by appending them
     // at the end of the vector; the end is given by argument <src>cnt</src>
     // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
-    void fillVector (Vector<Bool>& vec, Int64& cnt,
+    void fillVector (Vector<bool>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<Int64>& vec, Int64& cnt,
+    void fillVector (Vector<int64_t>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<Double>& vec, Int64& cnt,
+    void fillVector (Vector<double>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<DComplex>& vec, Int64& cnt,
+    void fillVector (Vector<DComplex>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<String>& vec, Int64& cnt,
+    void fillVector (Vector<String>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<MVTime>& vec, Int64& cnt,
+    void fillVector (Vector<MVTime>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
     // This is used by the system to implement the IN operator.
-    // <br>Note that it does NOT set match values to False; it is assumed they
+    // <br>Note that it does NOT set match values to false; it is assumed they
     // are initialized that way.
     // <group>
-    void matchBool     (Bool* match, const Bool* value, size_t nval,
+    void matchBool     (bool* match, const bool* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchInt      (Bool* match, const Int64* value, size_t nval,
+    void matchInt      (bool* match, const int64_t* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchDouble   (Bool* match, const Double* value, size_t nval,
+    void matchDouble   (bool* match, const double* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchDComplex (Bool* match, const DComplex* value, size_t nval,
+    void matchDComplex (bool* match, const DComplex* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchString   (Bool* match, const String* value, size_t nval,
+    void matchString   (bool* match, const String* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchDate     (Bool* match, const MVTime* value, size_t nval,
+    void matchDate     (bool* match, const MVTime* value, size_t nval,
                         const TableExprId& id) const override;
     // </group>
 
@@ -299,13 +299,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <synopsis>
   // Class defining a set element containing a discrete range (start:end:incr)
-  // which can be of data type Int, Double and Datetime. They have to be scalars.
+  // which can be of data type int32_t, double and Datetime. They have to be scalars.
   // A range consists of a start, end and increment value, each of them optional.
   // Increment defaults to 1. The end value can be inclusive or exclusive
   // (as in Python).
   // It can be used for 2 purposes:
   // <br>- A slice in an array indexing operation which requires data
-  //       type Int. In that case start default to the beginning
+  //       type int32_t. In that case start default to the beginning
   //       of the dimension and end defaults to the end.
   // <br>- A discrete range in a set. Start has to be given.
   //       If end is not given, the result is an unbounded discrete range.
@@ -327,37 +327,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNodeSetElemDiscrete (const TableExprNode& start,
                                   const TableExprNode& end,
                                   const TableExprNode& incr,
-                                  Bool isEndExcl = False);
+                                  bool isEndExcl = false);
 
     ~TableExprNodeSetElemDiscrete() override = default;
 
     // It is a discrete set element.
-    Bool isDiscrete() const override;
+    bool isDiscrete() const override;
 
     // Fill a vector with the value(s) from this element by appending them
     // at the end of the vector; the end is given by argument <src>cnt</src>
     // which gets incremented with the number of values appended.
     // This is used by the system to convert a set to a vector.
     // <group>
-    void fillVector (Vector<Int64>& vec, Int64& cnt,
+    void fillVector (Vector<int64_t>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<Double>& vec, Int64& cnt,
+    void fillVector (Vector<double>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
-    void fillVector (Vector<MVTime>& vec, Int64& cnt,
+    void fillVector (Vector<MVTime>& vec, int64_t& cnt,
                      const TableExprId& id) const override;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
     // This is used by the system to implement the IN operator.
-    // <br>Note that it does NOT set match values to False; it is assumed they
+    // <br>Note that it does NOT set match values to false; it is assumed they
     // are initialized that way.
     // <group>
-    void matchInt      (Bool* match, const Int64* value, size_t nval,
+    void matchInt      (bool* match, const int64_t* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchDouble   (Bool* match, const Double* value, size_t nval,
+    void matchDouble   (bool* match, const double* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchDate     (Bool* match, const MVTime* value, size_t nval,
+    void matchDate     (bool* match, const MVTime* value, size_t nval,
                         const TableExprId& id) const override;
     // </group>
 
@@ -374,7 +374,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                   const TENShPtr& incr);
 
     //# Data members
-    Bool itsEndExcl;
+    bool itsEndExcl;
   };
 
 
@@ -409,14 +409,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Create the object for a continuous bounded interval. It can be
     // open or closed on either side.
-    TableExprNodeSetElemCont (Bool isLeftClosed, const TableExprNode& start,
-                              const TableExprNode& end, Bool isRightClosed);
+    TableExprNodeSetElemCont (bool isLeftClosed, const TableExprNode& start,
+                              const TableExprNode& end, bool isRightClosed);
 
     // Create the object for a continuous left-bounded interval.
-    TableExprNodeSetElemCont (Bool isLeftClosed, const TableExprNode& start);
+    TableExprNodeSetElemCont (bool isLeftClosed, const TableExprNode& start);
 
     // Create the object for a continuous right-bounded interval.
-    TableExprNodeSetElemCont (const TableExprNode& end, Bool isRightClosed);
+    TableExprNodeSetElemCont (const TableExprNode& end, bool isRightClosed);
 
     // Construct an element from the given parts and take over their pointers.
     // It is used by evaluate to construct an element in a rather cheap way.
@@ -427,21 +427,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Is the interval left or right closed?
     // <group>
-    Bool isLeftClosed() const override;
-    Bool isRightClosed() const override;
+    bool isLeftClosed() const override;
+    bool isRightClosed() const override;
     // </group>
 
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
     // This is used by the system to implement the IN operator.
-    // <br>Note that it does NOT set match values to False; it is assumed they
+    // <br>Note that it does NOT set match values to false; it is assumed they
     // are initialized that way.
     // <group>
-    void matchDouble   (Bool* match, const Double* value, size_t nval,
+    void matchDouble   (bool* match, const double* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchString   (Bool* match, const String* value, size_t nval,
+    void matchString   (bool* match, const String* value, size_t nval,
                         const TableExprId& id) const override;
-    void matchDate     (Bool* match, const MVTime* value, size_t nval,
+    void matchDate     (bool* match, const MVTime* value, size_t nval,
                         const TableExprId& id) const override;
     // </group>
 
@@ -457,12 +457,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
   private:
     // Setup the object for a continuous interval.
-    void setup (Bool isLeftClosed, const TableExprNode* start,
-                const TableExprNode* end, Bool isRightClosed);
+    void setup (bool isLeftClosed, const TableExprNode* start,
+                const TableExprNode* end, bool isRightClosed);
 
     //# Data members
-    Bool itsLeftClosed;
-    Bool itsRightClosed;
+    bool itsLeftClosed;
+    bool itsRightClosed;
   };
 
 
@@ -503,17 +503,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~TableExprNodeSetElemMidWidth() override = default;
 
     // The interval is given as mid-width.
-    Bool isMidWidth() const override;
+    bool isMidWidth() const override;
 
     // Set a flag in the match output array if the corresponding element
     // in the value array is included in this set element.
     // This is used by the system to implement the IN operator.
-    // <br>Note that it does NOT set match values to False; it is assumed they
+    // <br>Note that it does NOT set match values to false; it is assumed they
     // are initialized that way.
     // <group>
-    void matchDouble (Bool* match, const Double* value, size_t nval,
+    void matchDouble (bool* match, const double* value, size_t nval,
                       const TableExprId& id) const override;
-    void matchDate   (Bool* match, const MVTime* value, size_t nval,
+    void matchDate   (bool* match, const MVTime* value, size_t nval,
                       const TableExprId& id) const override;
     // </group>
 
@@ -578,18 +578,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNodeSetElem (const TableExprNode* start,
                           const TableExprNode* end,
                           const TableExprNode* incr,
-                          Bool isEndExcl = False);
+                          bool isEndExcl = false);
 
     // Create the object for a continuous bounded interval. It can be
     // open or closed on either side.
-    TableExprNodeSetElem (Bool isLeftClosed, const TableExprNode& start,
-                          const TableExprNode& end, Bool isRightClosed);
+    TableExprNodeSetElem (bool isLeftClosed, const TableExprNode& start,
+                          const TableExprNode& end, bool isRightClosed);
 
     // Create the object for a continuous left-bounded interval.
-    TableExprNodeSetElem (Bool isLeftClosed, const TableExprNode& start);
+    TableExprNodeSetElem (bool isLeftClosed, const TableExprNode& start);
 
     // Create the object for a continuous right-bounded interval.
-    TableExprNodeSetElem (const TableExprNode& end, Bool isRightClosed);
+    TableExprNodeSetElem (const TableExprNode& end, bool isRightClosed);
 
     // Create the object for a mid-width interval (closed on both sides).
     TableExprNodeSetElem (const TableExprNode& mid, const TableExprNode& width);
@@ -599,27 +599,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsElem; }
     
     // Show the node.
-    void show (ostream& os, uInt indent) const
+    void show (ostream& os, uint32_t indent) const
       { itsElem->show (os, indent); }
 
     // Is it a discrete set element.
-    Bool isDiscrete() const
+    bool isDiscrete() const
       { return itsElem->isDiscrete(); }
 
     // Is a single value given?
-    Bool isSingle() const
+    bool isSingle() const
       { return itsElem->isSingle(); }
 
     // Is the interval left or right closed?
     // <group>
-    Bool isLeftClosed() const
+    bool isLeftClosed() const
       { return itsElem->isLeftClosed(); }
-    Bool isRightClosed() const
+    bool isRightClosed() const
       { return itsElem->isRightClosed(); }
     // </group>
 
     // Is the interval given as mid-width?
-    Bool isMidWidth() const
+    bool isMidWidth() const
       { return itsElem->isMidWidth(); }
     
     // Get the start, end or increment expression.

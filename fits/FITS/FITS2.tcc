@@ -39,30 +39,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class StorageType>
 void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
-	      Array<Float> &data,
-	      Bool &ok, 
+	      Array<float> &data,
+	      bool &ok, 
 	      String &ErrorMessage,
 	      String *unitName,
 	      Vector<String> *axisNames,
-	      Vector<Float> *refPixel,
-	      Vector<Float> *refLocation,
-	      Vector<Float> *delta,
-              std::map<String, Double> *keywords,
+	      Vector<float> *refPixel,
+	      Vector<float> *refLocation,
+	      Vector<float> *delta,
+              std::map<String, double> *keywords,
 	      String *objectName)
 {
 
     IPosition shape;
-    Bool deleteIt;
+    bool deleteIt;
 	
     shape.resize(fitsdata.dims());
-    for (uInt i=0; i < shape.nelements(); i++) shape(i) = fitsdata.dim(i);
+    for (uint32_t i=0; i < shape.nelements(); i++) shape(i) = fitsdata.dim(i);
     data.resize(shape);
-    if (fitsdata.read() != Int(data.nelements())) {
+    if (fitsdata.read() != int32_t(data.nelements())) {
 	ErrorMessage = "Could not real all data";
-	ok = False;
+	ok = false;
 	return;
     }
-    Float *storage = data.getStorage(deleteIt);
+    float *storage = data.getStorage(deleteIt);
     fitsdata.copy(storage);
     data.putStorage(storage, deleteIt);
     
@@ -74,26 +74,26 @@ void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
     }
     if (axisNames) {
 	(*axisNames).resize(fitsdata.dims());
-	for (Int i=0; i<fitsdata.dims(); i++) {
+	for (int32_t i=0; i<fitsdata.dims(); i++) {
 	    (*axisNames)(i) = fitsdata.ctype(i);
 	    (*axisNames)(i).rtrim(' ');
 	}
     }
     if (refPixel) {
 	(*refPixel).resize(fitsdata.dims());
-	for (Int i=0; i<fitsdata.dims(); i++) {
+	for (int32_t i=0; i<fitsdata.dims(); i++) {
 	    (*refPixel)(i) = fitsdata.crpix(i) - 1.0f; // FITS is 1-relative
 	}
     }
     if (refLocation) {
 	(*refLocation).resize(fitsdata.dims());
-	for (Int i=0; i<fitsdata.dims(); i++) {
+	for (int32_t i=0; i<fitsdata.dims(); i++) {
 	    (*refLocation)(i) = fitsdata.crval(i); // FITS is 1-relative
 	}
     }
     if (delta) {
 	(*delta).resize(fitsdata.dims());
-	for (Int i=0; i<fitsdata.dims(); i++) {
+	for (int32_t i=0; i<fitsdata.dims(); i++) {
 	    (*delta)(i) = fitsdata.cdelt(i); // FITS is 1-relative
 	}
     }

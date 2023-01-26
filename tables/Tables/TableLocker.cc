@@ -32,14 +32,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableLocker::TableLocker (Table& table,
 			  FileLocker::LockType type,
-			  uInt nattempts)
+			  uint32_t nattempts)
 : itsTable   (table),
   itsHadLock (table.hasLock(type))
 {
   if (!itsHadLock) {
     if (type == FileLocker::Read  &&  !table.lockOptions().readLocking()) {
       // Read lock not needed if NoReadLocking.
-      itsHadLock = True;
+      itsHadLock = true;
     } else {
       // Acquire the lock.
       if (! itsTable.lock (type, nattempts)) {

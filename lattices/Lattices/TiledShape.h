@@ -115,7 +115,7 @@ public:
     TiledShape& operator= (const TiledShape& that);
 
     // Is the tile shape defined?
-    Bool isTileShapeDefined() const;
+    bool isTileShapeDefined() const;
 
     // Return the shape.
     const IPosition& shape() const;
@@ -125,8 +125,8 @@ public:
     // calculated using the given tile size and tolerance.
     // <br> The tolerance is used to determine the boundaries where
     // it is tried to fit an integral number of tiles.
-    IPosition tileShape (uInt nrPixelsPerTile = 32768,
-			 Double tolerance = 0.5) const;
+    IPosition tileShape (uint32_t nrPixelsPerTile = 32768,
+			 double tolerance = 0.5) const;
 
     // Derive the default tile shape from the shape for the given
     // number of pixels per tile. It is tried to get the same number
@@ -143,20 +143,20 @@ public:
     // The test program <src>tTiledShape</src> can be used to see how
     // the algorithm works out for a given shape and tile size.
     // <group>
-    IPosition defaultTileShape (uInt nrPixelsPerTile, Double tolerance) const;
-    IPosition defaultTileShape (uInt nrPixelsPerTile,
-				const Vector<Double>& tolerance,
-				const Vector<Double>& weight) const;
+    IPosition defaultTileShape (uint32_t nrPixelsPerTile, double tolerance) const;
+    IPosition defaultTileShape (uint32_t nrPixelsPerTile,
+				const Vector<double>& tolerance,
+				const Vector<double>& weight) const;
     // </group>
 
 private:
     IPosition itsShape;
     IPosition itsTileShape;
-    Bool      itsTileDefined;
+    bool      itsTileDefined;
 };
 
 
-inline Bool TiledShape::isTileShapeDefined() const
+inline bool TiledShape::isTileShapeDefined() const
 {
     return itsTileDefined;
 }
@@ -164,8 +164,8 @@ inline const IPosition& TiledShape::shape() const
 {
     return itsShape;
 }
-inline IPosition TiledShape::tileShape (uInt nrPixelsPerTile,
-					Double tolerance) const
+inline IPosition TiledShape::tileShape (uint32_t nrPixelsPerTile,
+					double tolerance) const
 {
     return (itsTileDefined  ?  itsTileShape :
 	                       defaultTileShape (nrPixelsPerTile, tolerance));

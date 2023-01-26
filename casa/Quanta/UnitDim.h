@@ -103,7 +103,7 @@ public:
     ~UnitDim();
 protected:
     void init( );
-    void init(Int pos);
+    void init(int32_t pos);
 
 private:
 //# Constructors
@@ -115,7 +115,7 @@ private:
 
 // Construct a unit dimension with a one in the indicated position (as
 // Dim enumerator) and zeroes in all other units
-    UnitDim(Int pos) { init(pos); }
+    UnitDim(int32_t pos) { init(pos); }
 
 //# Operators
 // Assignment (copy semantics)
@@ -133,25 +133,25 @@ private:
 // Compare dimension of units
 // <group name="compare">
 // Compare for equal dimensions
-    Bool operator==(const UnitDim &other) const;
+    bool operator==(const UnitDim &other) const;
 // Compare for unequal dimensions
-    Bool operator!=(const UnitDim &other) const;
+    bool operator!=(const UnitDim &other) const;
 // </group>
 
 //# General Member Functions
 // Raise all SI defining units to an integer power
-    UnitDim pow(Int p);
+    UnitDim pow(int32_t p);
 
 // Get the tag for specified dimension
-  static const String& dimName(uInt which);
+  static const String& dimName(uint32_t which);
 
 // Get the full name for the specified dimension
-  static const String& dimFull(uInt which);
+  static const String& dimFull(uint32_t which);
 
 //# Data Members
 // 1-byte vector to contain the dimensions of the defining SI units
-// (using same storage as Long vector for speed reasons)
-    Long unitLong[UNITDIM_DLNUMBER];
+// (using same storage as long vector for speed reasons)
+    long unitLong[UNITDIM_DLNUMBER];
     signed char *unitDim;
 
 };

@@ -78,7 +78,7 @@ public:
 
     // Return the current row number in the named table.  This returns
     // -1 if that table has no row as a result of the most recent gotoRow.
-    Int64 rowNumber(const String &name) const;
+    int64_t rowNumber(const String &name) const;
 
     // Return a reference to the MS
     const MeasurementSet &ms() const {return itsMS;}
@@ -98,7 +98,7 @@ private:
     MSValidIds itsIds;
 
     // this maps table name to an index used throughout this class
-    std::map<String, Int> itsTabId;
+    std::map<String, int32_t> itsTabId;
 
     // the indexes for the NS subtables
     Block<MSTableIndex> itsIndexes;
@@ -117,7 +117,7 @@ private:
     MSWeatherIndex itsWeather2Index;
 
     // table IDs for the standard tables
-    Int itsMainId, itsAnt1Id, itsAnt2Id, itsDDId, itsDopplerId, itsFeed1Id, itsFeed2Id, itsFieldId,
+    int32_t itsMainId, itsAnt1Id, itsAnt2Id, itsDDId, itsDopplerId, itsFeed1Id, itsFeed2Id, itsFieldId,
 	itsFlagCmdId, itsFreqOffsetId, itsObsId, itsPointing1Id, itsPointing2Id, itsPolId, itsProcId, 
 	itsSourceId, itsSpwId, itsStateId, itsSyscal1Id, itsSyscal2Id, itsWeather1Id, itsWeather2Id;
     // the table rows
@@ -125,7 +125,7 @@ private:
 
     // What row number for each table is the most recent gotoRow call.  Set to
     // -1 if there was no matching row as a result of that call.
-    Block<Int64> itsRowNumbers;
+    Block<int64_t> itsRowNumbers;
 
     // this empty record is returned by tableRow when the name argument does not exist
     Record emptyRecord;

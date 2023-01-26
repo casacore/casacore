@@ -53,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   AipsIO& operator>> (AipsIO& ios, std::vector<T>& v)
   {
     ios.getstart ("Block");
-    uInt nr;
+    uint32_t nr;
     ios >> nr;
     v.resize(nr);
     getAipsIO(ios, nr, &(v[0]));
@@ -64,7 +64,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   AipsIO& operator<< (AipsIO& ios, const std::vector<T>& v)
   {
     ios.putstart ("Block", 1);
-    putAipsIO (ios, (uInt)v.size(), &(v[0]));
+    putAipsIO (ios, (uint32_t)v.size(), &(v[0]));
     ios.putend();
     return ios;
   }
@@ -80,10 +80,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     m.clear();
     // Now read in the values and store them into the map.
     ios >> val;    // old default value; ignored
-    uInt nr,ni;
+    uint32_t nr,ni;
     ios >> nr;
     ios >> ni;     // old incr; ignored
-    for (uInt i=0; i<nr; i++) {
+    for (uint32_t i=0; i<nr; i++) {
       ios >> key;
       ios >> val;
       m.insert (std::make_pair(key,val));
@@ -97,8 +97,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     ios.putstart ("SimpleOrderedMap", 1);
     ios << V();       // old default value; ignored
-    ios << uInt(m.size());
-    ios << uInt(1);   // old incr; ignored
+    ios << uint32_t(m.size());
+    ios << uint32_t(1);   // old incr; ignored
     for (const auto& x : m) {
       ios << x.first;
       ios << x.second;

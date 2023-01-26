@@ -38,10 +38,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSFeed::MSFeed():hasBeenDestroyed_p(True) { }
+MSFeed::MSFeed():hasBeenDestroyed_p(true) { }
 
 MSFeed::MSFeed(const String &tableName, TableOption option) 
-    : MSTable<MSFeedEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSFeedEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -52,7 +52,7 @@ MSFeed::MSFeed(const String &tableName, TableOption option)
 MSFeed::MSFeed(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSFeedEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -61,18 +61,18 @@ MSFeed::MSFeed(const String& tableName, const String &tableDescName,
 }
 
 MSFeed::MSFeed(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSFeedEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSFeed(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSFeed(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSFeed"));
 }
 
 MSFeed::MSFeed(const Table &table)
-    : MSTable<MSFeedEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSFeedEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -82,7 +82,7 @@ MSFeed::MSFeed(const Table &table)
 
 MSFeed::MSFeed(const MSFeed &other)
     : MSTable<MSFeedEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -102,7 +102,7 @@ MSFeed::~MSFeed()
            << "~MSFeed() - Table written is not a valid MSFeed"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -172,7 +172,7 @@ MSTableMaps MSFeed::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

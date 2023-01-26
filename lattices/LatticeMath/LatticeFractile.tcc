@@ -41,10 +41,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
-uInt LatticeFractile<T>::findBin (uInt& fractileInx,
+uint32_t LatticeFractile<T>::findBin (uint32_t& fractileInx,
 				  T& stv, T& endv,
 				  T minv, T maxv,
-				  const Block<uInt>& hist,
+				  const Block<uint32_t>& hist,
 				  const Block<T>& boundaries)
 {
   // Return 0 if minimum and maximum value are about equal.
@@ -52,9 +52,9 @@ uInt LatticeFractile<T>::findBin (uInt& fractileInx,
     endv = (minv+maxv)/2;
     return 0;
   }
-  uInt foundBin = 0;
-  uInt ndone = 0;
-  const uInt nbins = hist.nelements()-1;
+  uint32_t foundBin = 0;
+  uint32_t ndone = 0;
+  const uint32_t nbins = hist.nelements()-1;
   // First determine the index of the bin containing the specified index.
   // If not found (rounding problems are possible) 0 is returned.
   while (ndone <= fractileInx) {
@@ -69,7 +69,7 @@ uInt LatticeFractile<T>::findBin (uInt& fractileInx,
   // The nr of values in there have to be examined again.
   // Determine the offset of the fractile in the bin.
   // The start/end values are reset to the boundaries of this bin.
-  uInt ntodo = hist[foundBin];
+  uint32_t ntodo = hist[foundBin];
   ndone -= ntodo;
   fractileInx -= ndone;
   stv  = boundaries[foundBin];
@@ -91,7 +91,7 @@ uInt LatticeFractile<T>::findBin (uInt& fractileInx,
 
 template <class T>
 void LatticeFractile<T>::unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
-					    Block<uInt>& hist,
+					    Block<uint32_t>& hist,
 					    Block<T>& boundaries,
 					    const Lattice<T>& lattice)
 {
@@ -102,38 +102,38 @@ void LatticeFractile<T>::unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
   // difference of image with median or so).
   // It is only a first guess, so nothing goes wrong if grossly incorrect.
   // It may only result in one more iteration.
-  const uInt nbins = hist.nelements() - 1;
+  const uint32_t nbins = hist.nelements() - 1;
   T step = 2*50./nbins;
   minv = 0;
   maxv = 0;
-  for (uInt i=0; i<=nbins; ++i) {
+  for (uint32_t i=0; i<=nbins; ++i) {
     boundaries[i] = i*step - 50.;
   }
   stv  = boundaries[0];
   endv = boundaries[nbins];
-  Bool firstTime = True;
+  bool firstTime = true;
   // Iterate through the lattice.
   RO_LatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
-    Bool delData;
+    bool delData;
     const Array<T>& array = iter.cursor();
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
+    uint32_t n = array.nelements();
     if (firstTime) {
-      firstTime = False;
+      firstTime = false;
       minv = dataPtr[0];
       maxv = dataPtr[0];
     }
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
       if (dataPtr[i] < minv) {
 	minv = dataPtr[i];
       } else if (dataPtr[i] > maxv) {
 	maxv = dataPtr[i];
       }
-      Int bin = Int((dataPtr[i] - stv)/step);
+      int32_t bin = int32_t((dataPtr[i] - stv)/step);
       if (bin < 0) {
 	hist[0]++;
-      } else if (bin >= Int(nbins)) {
+      } else if (bin >= int32_t(nbins)) {
 	hist[nbins-1]++;
       } else {
 	if (dataPtr[i] < boundaries[bin] &&  bin > 0) {
@@ -151,44 +151,44 @@ void LatticeFractile<T>::unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 
 
 template <class T>
-uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
-					  Block<uInt>& hist,
+uint32_t LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
+					  Block<uint32_t>& hist,
 					  Block<T>& boundaries,
 					  const MaskedLattice<T>& lattice)
 {
   AlwaysAssert (hist.nelements() == boundaries.nelements(), AipsError);
-  uInt ntodo = 0;
+  uint32_t ntodo = 0;
   // Find number of bins (last one is for extraneous values).
   // Scale between -50 and +50 (which is usually okay for
   // radio-astronomical images, both for the image itself and for
   // difference of image with median or so).
   // It is only a first guess, so nothing goes wrong if grossly incorrect.
   // It may only result in one more iteration.
-  const uInt nbins = hist.nelements() - 1;
+  const uint32_t nbins = hist.nelements() - 1;
   T step = 2*50./nbins;
   minv = 0;
   maxv = 0;
-  for (uInt i=0; i<=nbins; ++i) {
+  for (uint32_t i=0; i<=nbins; ++i) {
     boundaries[i] = i*step - 50.;
   }
   stv  = boundaries[0];
   endv = boundaries[nbins];
-  Bool firstTime = True;
+  bool firstTime = true;
   // Iterate through the lattice.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<bool> > mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask (mask);
-    const Bool* maskPtr = mask->getStorage (delMask);
+    const bool* maskPtr = mask->getStorage (delMask);
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = array.nelements();
+    for (uint32_t i=0; i<n; i++) {
       if (maskPtr[i]) {
 	ntodo++;
 	if (firstTime) {
-	  firstTime = False;
+	  firstTime = false;
 	  minv = dataPtr[i];
 	  maxv = dataPtr[i];
 	} else {
@@ -198,15 +198,15 @@ uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 	    maxv = dataPtr[i];
 	  }
 	}
-	Int bin = Int((dataPtr[i] - stv)/step);
+	int32_t bin = int32_t((dataPtr[i] - stv)/step);
 	if (bin < 0) {
 	  hist[0]++;
-	} else if (bin >= Int(nbins)) {
+	} else if (bin >= int32_t(nbins)) {
 	  hist[nbins-1]++;
 	} else {
 	  if (dataPtr[i] < boundaries[bin] &&  bin > 0 ) {
 	    bin--;
-	  } else if (dataPtr[i] >= boundaries[bin+1] &&  bin < Int(nbins)-1) {
+	  } else if (dataPtr[i] >= boundaries[bin+1] &&  bin < int32_t(nbins)-1) {
 	    bin++;
 	  }
 	  hist[bin]++;
@@ -223,14 +223,14 @@ uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
 
 template <class T>
 Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
-						Float fraction,
-						uInt smallSize)
+						float fraction,
+						uint32_t smallSize)
 						{
 	AlwaysAssert (fraction >= 0  &&  fraction <= 1, AipsError);
 	// Determine the number of elements in the lattice.
 	// If empty, return empty vector.
 	// If small enough, we read them all and do it in memory.
-	uInt ntodo = lattice.shape().product();
+	uint32_t ntodo = lattice.shape().product();
 	if (ntodo == 0) {
 		return Vector<T>();
 	}
@@ -248,19 +248,19 @@ Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
 	// Hopefully the start and end values make some sense.
 	// Make the block 1 element larger, because possible roundoff errors
 	// could result in a binnr just beyond the end.
-	const uInt nbins = 10000;
-	Block<uInt> hist(nbins+1, 0u);
+	const uint32_t nbins = 10000;
+	Block<uint32_t> hist(nbins+1, 0u);
 	Block<T> boundaries(nbins+1);
 	T stv, endv, minv, maxv;
 	unmaskedHistogram (stv, endv, minv, maxv, hist, boundaries, lattice);
 	// The index of the fractile in the lattice is the middle one.
 	// In case of an even nr of elements, it is the first one of the
 	// two middle ones.
-	uInt fractileInx = uInt(fraction * (ntodo-1));
+	uint32_t fractileInx = uint32_t(fraction * (ntodo-1));
 	// Iterate until the bin containing the fractile does not
 	// contain too many values anymore.
 	RO_LatticeIterator<T> iter(lattice);
-	while (True) {
+	while (true) {
 		// Determine which bin contains the fractile and update the various values.
 		// On return fractileInx,stv,endv form the basis of the new histogram.
 		ntodo = findBin (fractileInx, stv, endv, minv, maxv, hist, boundaries);
@@ -279,19 +279,19 @@ Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
 		maxv = stv;
 		hist = 0;
 		T step = (endv - stv) / nbins;
-		for (uInt i=0; i<=nbins; i++) {
+		for (uint32_t i=0; i<=nbins; i++) {
 			boundaries[i] = stv + i*step;
 		}
-		uInt ndone = 0;
+		uint32_t ndone = 0;
 		iter.reset();
 		while (! iter.atEnd()  &&  ndone<ntodo) {
 			const Array<T>& array = iter.cursor();
-			Bool delData;
+			bool delData;
 			const T* dataPtr = array.getStorage (delData);
-			uInt n = array.nelements();
-			for (uInt i=0; i<n; i++) {
+			uint32_t n = array.nelements();
+			for (uint32_t i=0; i<n; i++) {
 				if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
-					Int bin = Int((dataPtr[i] - stv) / step);
+					int32_t bin = int32_t((dataPtr[i] - stv) / step);
 					// Due to rounding the bin number might get one too low or high.
 					if (dataPtr[i] < boundaries[bin]) {
 						bin--;
@@ -324,14 +324,14 @@ Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
 	// elements. It may save a few reads from the lattice.
 	Block<T> tmp(ntodo);
 	T* tmpPtr = tmp.storage();
-	uInt ndone = 0;
+	uint32_t ndone = 0;
 	iter.reset();
 	while (! iter.atEnd()  &&  ndone<ntodo) {
 		const Array<T>& array = iter.cursor();
-		Bool delData;
+		bool delData;
 		const T* dataPtr = array.getStorage (delData);
-		uInt n = array.nelements();
-		for (uInt i=0; i<n; i++) {
+		uint32_t n = array.nelements();
+		for (uint32_t i=0; i<n; i++) {
 			if (dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
 				tmpPtr[ndone++] = dataPtr[i];
 				if (ndone == ntodo) {
@@ -355,8 +355,8 @@ Vector<T> LatticeFractile<T>::unmaskedFractile (const Lattice<T>& lattice,
 
 template <class T>
 Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
-					      Float fraction,
-					      uInt smallSize)
+					      float fraction,
+					      uint32_t smallSize)
 {
   AlwaysAssert (fraction >= 0  &&  fraction <= 1, AipsError);
   // If unmasked, a simpler way can be used.
@@ -365,7 +365,7 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   }
   // Determine the number of elements in the lattice.
   // If small enough, we read them all and do it in memory.
-  uInt ntodo = lattice.shape().product();
+  uint32_t ntodo = lattice.shape().product();
   if (ntodo <= smallSize) {
     return smallMaskedFractile (lattice, fraction);
   }
@@ -375,8 +375,8 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   // Hopefully the start and end values make some sense.
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
-  const uInt nbins = 10000;
-  Block<uInt> hist(nbins+1, 0u);
+  const uint32_t nbins = 10000;
+  Block<uint32_t> hist(nbins+1, 0u);
   Block<T> boundaries(nbins+1);
   T stv, endv, minv, maxv;
   ntodo = maskedHistogram (stv, endv, minv, maxv, hist, boundaries, lattice);
@@ -386,12 +386,12 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   // The index of the fractile in the lattice is the middle one.
   // In case of an even nr of elements, it is the first one of the
   // two middle ones.
-  uInt fractileInx = uInt(fraction * (ntodo-1));
+  uint32_t fractileInx = uint32_t(fraction * (ntodo-1));
   // Iterate until the bin containing the fractile does not
   // contain too many values anymore.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<bool> > mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the fractile and update the various values.
     // On return fractileInx,stv,endv form the basis of the new histogram.
     ntodo = findBin (fractileInx, stv, endv, minv, maxv, hist, boundaries);
@@ -410,21 +410,21 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
     maxv = stv;
     hist = 0;
     T step = (endv - stv) / nbins;
-    for (uInt i=0; i<=nbins; i++) {
+    for (uint32_t i=0; i<=nbins; i++) {
       boundaries[i] = stv + i*step;
     }
-    uInt ndone = 0;
+    uint32_t ndone = 0;
     iter.reset();
     while (! iter.atEnd()  &&  ndone<ntodo) {
-      Bool delData, delMask;
+      bool delData, delMask;
       const Array<T>& array = iter.cursor();
       iter.getMask (mask);
-      const Bool* maskPtr = mask->getStorage (delMask);
+      const bool* maskPtr = mask->getStorage (delMask);
       const T* dataPtr = array.getStorage (delData);
-      uInt n = array.nelements();
-      for (uInt i=0; i<n; i++) {
+      uint32_t n = array.nelements();
+      for (uint32_t i=0; i<n; i++) {
 	if (maskPtr[i]  &&  dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
-	  Int bin = Int((dataPtr[i] - stv) / step);
+	  int32_t bin = int32_t((dataPtr[i] - stv) / step);
 	  // Due to rounding the bin number might get one too low or high.
 	  if (dataPtr[i] < boundaries[bin]) {
 	    bin--;
@@ -458,16 +458,16 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   // elements. It may save a few reads from the lattice.
   Block<T> tmp(ntodo);
   T* tmpPtr = tmp.storage();
-  uInt ndone = 0;
+  uint32_t ndone = 0;
   iter.reset();
   while (! iter.atEnd()  &&  ndone<ntodo) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask (mask);
-    const Bool* maskPtr = mask->getStorage (delMask);
+    const bool* maskPtr = mask->getStorage (delMask);
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = array.nelements();
+    for (uint32_t i=0; i<n; i++) {
       if (maskPtr[i]  &&  dataPtr[i] >= stv  &&  dataPtr[i] < endv) {
 	tmpPtr[ndone++] = dataPtr[i];
 	if (ndone == ntodo) {
@@ -493,25 +493,25 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
 template <class T>
 Vector<T> LatticeFractile<T>::smallMaskedFractile
                                        (const MaskedLattice<T>& lattice,
-					Float fraction)
+					float fraction)
 {
   // Make a buffer to hold all masked-on elements.
   // The number of values is not more than the number of elements in the
   // lattice, so make the buffer that long.
-  uInt size = lattice.shape().product();
+  uint32_t size = lattice.shape().product();
   Block<T> buffer(size);
-  uInt npts = 0;
+  uint32_t npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<bool> > mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask (mask);
-    const Bool* maskPtr = mask->getStorage (delMask);
+    const bool* maskPtr = mask->getStorage (delMask);
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = array.nelements();
+    for (uint32_t i=0; i<n; i++) {
       if (maskPtr[i]) {
 	buffer[npts++] = dataPtr[i];
       }
@@ -530,7 +530,7 @@ Vector<T> LatticeFractile<T>::smallMaskedFractile
   if (fraction == 0.5) {
     result(0) = median (Array<T> (IPosition(1,npts), buffer.storage(), SHARE));
   } else {
-    uInt fractileInx = uInt (fraction * (npts-1));
+    uint32_t fractileInx = uint32_t (fraction * (npts-1));
     result(0) = GenSort<T>::kthLargest (buffer.storage(), npts, fractileInx);
   }
   return result;
@@ -539,23 +539,23 @@ Vector<T> LatticeFractile<T>::smallMaskedFractile
 
 template <class T>
 Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
-						 Float left, Float right,
-						 uInt smallSize)
+						 float left, float right,
+						 uint32_t smallSize)
 {
   AlwaysAssert (left >= 0  &&  left <= right  &&  right <= 1, AipsError);
   // Determine the number of elements in the lattice.
   // If small enough, we read them all and do it in memory.
-  uInt ntodo1 = lattice.shape().product();
+  uint32_t ntodo1 = lattice.shape().product();
   if (ntodo1 == 0) {
     return Vector<T>();
   }
   // Find which elements are left and right fractile.
-  uInt leftInx = uInt (left * (lattice.nelements()-1));
-  uInt rightInx = uInt (right * (lattice.nelements()-1));
+  uint32_t leftInx = uint32_t (left * (lattice.nelements()-1));
+  uint32_t rightInx = uint32_t (right * (lattice.nelements()-1));
   Vector<T> result(2);
   if (ntodo1 <= smallSize) {
     // We can hold all data in memory.
-    Bool delData;
+    bool delData;
     Array<T> array = lattice.get();
     T* dataPtr = array.getStorage (delData);
     result(0) = GenSort<T>::kthLargest (dataPtr, ntodo1, leftInx);
@@ -570,36 +570,36 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
   // Hopefully the start and end values make some sense.
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
-  const uInt nbins = 10000;
-  Block<uInt> hist1(nbins+1, 0u);
+  const uint32_t nbins = 10000;
+  Block<uint32_t> hist1(nbins+1, 0u);
   Block<T> boundaries1(nbins+1);
   T stv1, endv1, minv1, maxv1;
   unmaskedHistogram (stv1, endv1, minv1, maxv1, hist1, boundaries1, lattice);
   // Init variables for both fractiles.
-  uInt ntodo2 = ntodo1;
+  uint32_t ntodo2 = ntodo1;
   T stv2 = stv1;
   T endv2 = endv1;
   T minv2 = minv1;
   T maxv2 = maxv1;
-  Block<uInt> hist2 (hist1);
+  Block<uint32_t> hist2 (hist1);
   Block<T> boundaries2 (boundaries1);
-  Bool finished1 = False;
-  Bool finished2 = False;
+  bool finished1 = false;
+  bool finished2 = false;
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
   RO_LatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the requested values, determine
     // new boundaries, max/min and offset in bin.
     // Do that for left and right fractile.
-    uInt ntodo = 0;
+    uint32_t ntodo = 0;
     if (!finished1) {
       ntodo1 = findBin (leftInx,  stv1, endv1, minv1, maxv1,
 			hist1, boundaries1);
       // If only a 'few' more points to do, stop making histograms.
       // Otherwise histogram the fractile bin with a much smaller bin size.
       if (ntodo1 <= smallSize) {
-	finished1 = True;
+	finished1 = true;
 	if (ntodo1 == 0) {
 	  result(0) = endv1;
 	}
@@ -611,7 +611,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
       ntodo2 = findBin (rightInx, stv2, endv2, minv2, maxv2,
 			hist2, boundaries2);
       if (ntodo2 <= smallSize) {
-	finished2 = True;
+	finished2 = true;
 	if (ntodo2 == 0) {
 	  result(1) = endv2;
 	}
@@ -632,20 +632,20 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
     hist2 = 0;
     T step1 = (endv1 - stv1) / nbins;
     T step2 = (endv2 - stv2) / nbins;
-    for (uInt i=0; i<=nbins; i++) {
+    for (uint32_t i=0; i<=nbins; i++) {
       boundaries1[i] = stv1 + i*step1;
       boundaries2[i] = stv2 + i*step2;
     }
-    uInt ndone = 0;
+    uint32_t ndone = 0;
     iter.reset();
     while (! iter.atEnd()  &&  ndone<ntodo) {
       const Array<T>& array = iter.cursor();
-      Bool delData;
+      bool delData;
       const T* dataPtr = array.getStorage (delData);
-      uInt n = array.nelements();
-      for (uInt i=0; i<n; i++) {
+      uint32_t n = array.nelements();
+      for (uint32_t i=0; i<n; i++) {
 	if (!finished1  &&  dataPtr[i] >= stv1  &&  dataPtr[i] < endv1) {
-	  Int bin = Int((dataPtr[i] - stv1) / step1);
+	  int32_t bin = int32_t((dataPtr[i] - stv1) / step1);
 	  // Due to rounding the bin number might get one too low or high.
 	  if (dataPtr[i] < boundaries1[bin]) {
 	    bin--;
@@ -662,7 +662,7 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
 	  ndone++;
 	}
 	if (!finished2  &&  dataPtr[i] >= stv2  &&  dataPtr[i] < endv2) {
-	  Int bin = Int((dataPtr[i] - stv2) / step2);
+	  int32_t bin = int32_t((dataPtr[i] - stv2) / step2);
 	  // Due to rounding the bin number might get one too low or high.
 	  if (dataPtr[i] < boundaries2[bin]) {
 	    bin--;
@@ -701,15 +701,15 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
   Block<T> tmp2(ntodo2);
   T* tmpPtr1 = tmp1.storage();
   T* tmpPtr2 = tmp2.storage();
-  uInt ndone1 = 0;
-  uInt ndone2 = 0;
+  uint32_t ndone1 = 0;
+  uint32_t ndone2 = 0;
   iter.reset();
   while (! iter.atEnd() && (ndone1<ntodo1 || ndone2<ntodo2)) {
     const Array<T>& array = iter.cursor();
-    Bool delData;
+    bool delData;
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = array.nelements();
+    for (uint32_t i=0; i<n; i++) {
       if (ndone1 < ntodo1  &&  dataPtr[i] >= stv1  &&  dataPtr[i] < endv1) {
 	tmpPtr1[ndone1++] = dataPtr[i];
       }
@@ -737,8 +737,8 @@ Vector<T> LatticeFractile<T>::unmaskedFractiles (const Lattice<T>& lattice,
 
 template <class T>
 Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
-					       Float left, Float right,
-					       uInt smallSize)
+					       float left, float right,
+					       uint32_t smallSize)
 {
   AlwaysAssert (left >= 0  &&  left <= right  &&  right <= 1, AipsError);
   // If unmasked, a simpler way can be used.
@@ -747,7 +747,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
   }
   // Determine the number of elements in the lattice.
   // If small enough, we read them all and do it in memory.
-  uInt ntodo1 = lattice.shape().product();
+  uint32_t ntodo1 = lattice.shape().product();
   if (ntodo1 <= smallSize) {
     return smallMaskedFractiles (lattice, left, right);
   }
@@ -757,8 +757,8 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
   // Hopefully the start and end values make some sense.
   // Make the block 1 element larger, because possible roundoff errors
   // could result in a binnr just beyond the end.
-  const uInt nbins = 10000;
-  Block<uInt> hist1(nbins+1, 0u);
+  const uint32_t nbins = 10000;
+  Block<uint32_t> hist1(nbins+1, 0u);
   Block<T> boundaries1(nbins+1);
   T stv1, endv1, minv1, maxv1;
   ntodo1 = maskedHistogram (stv1, endv1, minv1, maxv1, hist1, boundaries1,
@@ -767,34 +767,34 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
     return Vector<T>();
   }
   // Find which elements are left and right fractile.
-  uInt leftInx = uInt (left * (ntodo1-1));
-  uInt rightInx = uInt (right * (ntodo1-1));
+  uint32_t leftInx = uint32_t (left * (ntodo1-1));
+  uint32_t rightInx = uint32_t (right * (ntodo1-1));
   // Init variables for both fractiles.
-  uInt ntodo2 = ntodo1;
+  uint32_t ntodo2 = ntodo1;
   T stv2 = stv1;
   T endv2 = endv1;
   T minv2 = minv1;
   T maxv2 = maxv1;
-  Block<uInt> hist2 (hist1);
+  Block<uint32_t> hist2 (hist1);
   Block<T> boundaries2 (boundaries1);
-  Bool finished1 = False;
-  Bool finished2 = False;
+  bool finished1 = false;
+  bool finished2 = false;
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<bool> > mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
-  while (True) {
+  while (true) {
     // Determine which bin contains the requested values, determine
     // new boundaries, max/min and offset in bin.
     // Do that for left and right fractile.
-    uInt ntodo = 0;
+    uint32_t ntodo = 0;
     if (!finished1) {
       ntodo1 = findBin (leftInx,  stv1, endv1, minv1, maxv1,
 			hist1, boundaries1);
       // If only a 'few' more points to do, stop making histograms.
       // Otherwise histogram the fractile bin with a much smaller bin size.
       if (ntodo1 <= smallSize) {
-	finished1 = True;
+	finished1 = true;
 	if (ntodo1 == 0) {
 	  result(0) = endv1;
 	}
@@ -806,7 +806,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
       ntodo2 = findBin (rightInx, stv2, endv2, minv2, maxv2,
 			hist2, boundaries2);
       if (ntodo2 <= smallSize) {
-	finished2 = True;
+	finished2 = true;
 	if (ntodo2 == 0) {
 	  result(1) = endv2;
 	}
@@ -827,23 +827,23 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
     hist2 = 0;
     T step1 = (endv1 - stv1) / nbins;
     T step2 = (endv2 - stv2) / nbins;
-    for (uInt i=0; i<=nbins; i++) {
+    for (uint32_t i=0; i<=nbins; i++) {
       boundaries1[i] = stv1 + i*step1;
       boundaries2[i] = stv2 + i*step2;
     }
-    uInt ndone = 0;
+    uint32_t ndone = 0;
     iter.reset();
     while (! iter.atEnd()  &&  ndone<ntodo) {
-      Bool delData, delMask;
+      bool delData, delMask;
       const Array<T>& array = iter.cursor();
       iter.getMask (mask);
-      const Bool* maskPtr = mask->getStorage (delMask);
+      const bool* maskPtr = mask->getStorage (delMask);
       const T* dataPtr = array.getStorage (delData);
-      uInt n = array.nelements();
-      for (uInt i=0; i<n; i++) {
+      uint32_t n = array.nelements();
+      for (uint32_t i=0; i<n; i++) {
 	if (maskPtr[i]) {
 	  if (!finished1  &&  dataPtr[i] >= stv1  &&  dataPtr[i] < endv1) {
-	    Int bin = Int((dataPtr[i] - stv1) / step1);
+	    int32_t bin = int32_t((dataPtr[i] - stv1) / step1);
 	    // Due to rounding the bin number might get one too low or high.
 	    if (dataPtr[i] < boundaries1[bin]) {
 	      bin--;
@@ -860,7 +860,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
 	    ndone++;
 	  }
 	  if (!finished2  &&  dataPtr[i] >= stv2  &&  dataPtr[i] < endv2) {
-	    Int bin = Int((dataPtr[i] - stv2) / step2);
+	    int32_t bin = int32_t((dataPtr[i] - stv2) / step2);
 	    // Due to rounding the bin number might get one too low or high.
 	    if (dataPtr[i] < boundaries2[bin]) {
 	      bin--;
@@ -901,17 +901,17 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
   Block<T> tmp2(ntodo2);
   T* tmpPtr1 = tmp1.storage();
   T* tmpPtr2 = tmp2.storage();
-  uInt ndone1 = 0;
-  uInt ndone2 = 0;
+  uint32_t ndone1 = 0;
+  uint32_t ndone2 = 0;
   iter.reset();
   while (! iter.atEnd() && (ndone1<ntodo1 || ndone2<ntodo2)) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask (mask);
-    const Bool* maskPtr = mask->getStorage (delMask);
+    const bool* maskPtr = mask->getStorage (delMask);
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = array.nelements();
+    for (uint32_t i=0; i<n; i++) {
       if (maskPtr[i]) {
 	if (ndone1 < ntodo1  &&  dataPtr[i] >= stv1  &&  dataPtr[i] < endv1) {
 	  tmpPtr1[ndone1++] = dataPtr[i];
@@ -944,25 +944,25 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
 template <class T>
 Vector<T> LatticeFractile<T>::smallMaskedFractiles
                                        (const MaskedLattice<T>& lattice,
-					Float left, Float right)
+					float left, float right)
 {
   // Make a buffer to hold all masked-on elements.
   // The number of values is not more than the number of elements in the
   // lattice, so make the buffer that long.
-  uInt size = lattice.shape().product();
+  uint32_t size = lattice.shape().product();
   Block<T> buffer(size);
-  uInt npts = 0;
+  uint32_t npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<bool> > mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
-    Bool delData, delMask;
+    bool delData, delMask;
     const Array<T>& array = iter.cursor();
     iter.getMask (mask);
-    const Bool* maskPtr = mask->getStorage (delMask);
+    const bool* maskPtr = mask->getStorage (delMask);
     const T* dataPtr = array.getStorage (delData);
-    uInt n = array.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = array.nelements();
+    for (uint32_t i=0; i<n; i++) {
       if (maskPtr[i]) {
 	buffer[npts++] = dataPtr[i];
       }
@@ -977,8 +977,8 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles
   // Use median of an Array instead of kthLargest directly, because
   // for a small array with an even number of elements, median takes
   // the average of the 2 middle elements.
-  uInt leftInx = uInt (left * (npts-1));
-  uInt rightInx = uInt (right * (npts-1));
+  uint32_t leftInx = uint32_t (left * (npts-1));
+  uint32_t rightInx = uint32_t (right * (npts-1));
   Vector<T> result(2);
   result(0) = GenSort<T>::kthLargest (buffer.storage(), npts, leftInx);
   result(1) = GenSort<T>::kthLargest (buffer.storage(), npts, rightInx);

@@ -83,13 +83,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-// Vector<Int> vi;
+// Vector<int32_t> vi;
 // ...  // Sets vi somehow
 // genSort(vi);
-// Int val;
-// Bool found;
+// int32_t val;
+// bool found;
 // while (cin >> val && val != -999) {
-//     Int where = binarySearch(found, vi, val, vi.nelements());
+//     int32_t where = binarySearch(found, vi, val, vi.nelements());
 //     if (found) {
 //       cout << "Found " << val << " at position " << where << endl;
 //     } else {
@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 //
 // <templating arg=Container>
-//    <li> operator(Int) or operator[Int] needs to be defined.
+//    <li> operator(int32_t) or operator[int32_t] needs to be defined.
 //    <li> The index must be zero based.
 //    <li> The result of that indexing must be an expression that can be 
 //         compared with an object of class ElType. Normally in fact it would
@@ -138,12 +138,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <group>
 // This version of the function is for containers that use () for indexing.
 template<class Container, class ElType>
-     Int binarySearch(Bool &found, const Container &container, 
-		      const ElType &value, uInt n, Int lower=0);
+     int32_t binarySearch(bool &found, const Container &container, 
+		      const ElType &value, uint32_t n, int32_t lower=0);
 // This version of the function is for containers that use [] for indexing.
 template<class Container, class ElType>
-     Int binarySearchBrackets(Bool &found, const Container &container, 
-			      const ElType &value, uInt n, Int lower=0);
+     int32_t binarySearchBrackets(bool &found, const Container &container, 
+			      const ElType &value, uint32_t n, int32_t lower=0);
 // </group>
 // </group>
 

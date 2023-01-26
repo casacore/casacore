@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Constructor: Fully automatic bin definition
 
 template<class T> 
-HistAcc<T>::HistAcc(const uInt n) {
+HistAcc<T>::HistAcc(const uint32_t n) {
     init();                         // bring into a known state
     initBuffer(n);                  // initialise temporary buffer
 } 
@@ -47,7 +47,7 @@ HistAcc<T>::HistAcc(const uInt n) {
 // Constructor: Semi-automatic (give bin width only).  
 
 template<class T> 
-HistAcc<T>::HistAcc(const uInt n, const T width) {
+HistAcc<T>::HistAcc(const uint32_t n, const T width) {
     init();                         // bring into a known state
     itsUserDefinedBinWidth = width; // user-defined bin width
     initBuffer(n);                 // initialise temporary buffer
@@ -59,7 +59,7 @@ template<class T>
 HistAcc<T>::HistAcc(const T low, const T high, const T width) {
     init();                        // bring into a known state
     defineBins(low,high,width);
-    itsAutoDefineMode = False;
+    itsAutoDefineMode = false;
 } 
 
 // Constructor: copy an existing histogram (that):
@@ -89,7 +89,7 @@ template<class T>
 void HistAcc<T>::reset ()
 {
     itsStatAcc.reset();
-    for (uInt i=0; i<itsBinContents.nelements(); i++) {
+    for (uint32_t i=0; i<itsBinContents.nelements(); i++) {
 	itsBinContents[i] = 0; 
     }
 }
@@ -102,10 +102,10 @@ void HistAcc<T>::copy (const HistAcc<T>& that)
     itsStatAcc = that.itsStatAcc;
 
     itsUserDefinedBinWidth = that.itsUserDefinedBinWidth;
-    uInt n = that.itsBinContents.nelements();
+    uint32_t n = that.itsBinContents.nelements();
     itsBinContents.resize(n); 
     itsBinHighLimit.resize(n);
-    uInt i;
+    uint32_t i;
     for (i=0; i<n; i++) {
 	itsBinContents[i] = that.itsBinContents[i];
 	itsBinHighLimit[i] = that.itsBinHighLimit[i];
@@ -133,13 +133,13 @@ HistAcc<T>& HistAcc<T>::operator= (const HistAcc<T>& that)
 // bin parameters can be determined automatically:
 
 template<class T>
-void HistAcc<T>::initBuffer (const uInt bufferLength)
+void HistAcc<T>::initBuffer (const uint32_t bufferLength)
 {
     if (bufferLength > 0) {
-	itsAutoDefineMode = True; 
+	itsAutoDefineMode = true; 
 	itsBuffer.resize(bufferLength);
     } else {
-	itsAutoDefineMode = False; 
+	itsAutoDefineMode = false; 
 	itsBuffer.resize(0);
     }
     itsBufferContents = 0;
@@ -167,11 +167,11 @@ void HistAcc<T>::putBuffer (const T v)
 template<class T>
 void HistAcc<T>::clearBuffer ()
 {
-    itsAutoDefineMode = False;            // BEFORE put1!
+    itsAutoDefineMode = false;            // BEFORE put1!
 
     // Transfer values from buffer to histogram
     itsStatAcc.reset();
-    for (uInt i=0; i<itsBufferContents; i++) {
+    for (uint32_t i=0; i<itsBufferContents; i++) {
 	put1(itsBuffer[i]);
     }
     // Clear up the temporary buffer.
@@ -193,31 +193,31 @@ void HistAcc<T>::autoDefineBins ()
 	itsStatAcc.put(itsBuffer);     // accumulate buffer values
 
 	// Calculate bin range from statistics:
-	Double hw = itsStatAcc.getRms();  // w.r.t. mean
+	double hw = itsStatAcc.getRms();  // w.r.t. mean
 	hw *= 3;                          // 3 sigma?
-	Double low = itsStatAcc.getMean();// lowest bin
-	Double high = low;                // highest bin
+	double low = itsStatAcc.getMean();// lowest bin
+	double high = low;                // highest bin
 	low -= hw;                        // mean - 3 rms
 	high += hw;                       // mean + 3 rms
 
 	// Calculate bin width:
 	T width = itsUserDefinedBinWidth; // use if defined
-	Int k = 0;
+	int32_t k = 0;
 	if (width <= 0) {                 // if not defined
 	    width = T((high - low)/11);   // default: 11 bins?     
 	    if (width <= 0) {             // if still not OK
 		width = 1;                // ....?
 	    } else {
 		// Truncate the width to decimal units (pretty):
-		Double q = 10000000;
-		Double q1;
-		for (uInt i=0; i<15; i++) {
+		double q = 10000000;
+		double q1;
+		for (uint32_t i=0; i<15; i++) {
 		    q /= 10;
 		    q1 = q;
 		    if (width < q1) {q1 = q/2;}
 		    if (width < q1) {q1 = q/5;}
 		    if (width >= q1) {
-			k = Int((width+q1/2)/q1);      // truncate
+			k = int32_t((width+q1/2)/q1);      // truncate
 			width = T(k * q1);
 			break;                    // escape
 		    }
@@ -227,9 +227,9 @@ void HistAcc<T>::autoDefineBins ()
 
 
 	// Make bin centres multiples of the bin width (pretty):
-	k = Int(high / width);            // nr of multiples  
+	k = int32_t(high / width);            // nr of multiples  
 	high = k * width;                 // adjust highest bin
-	k = Int(low / width);             // nr of multiples  
+	k = int32_t(low / width);             // nr of multiples  
 	low = (k-1) * width;              // adjust highest bin
 	
 	// Go ahead:
@@ -247,7 +247,7 @@ template<class T>
 void HistAcc<T>::defineBins(const T low, const T high, const T width) {
 
     T v;
-    uInt n = 0;
+    uint32_t n = 0;
     for (v=low; v<high+width; v+=width) {
 	n++;                              // count the bins
     }
@@ -256,7 +256,7 @@ void HistAcc<T>::defineBins(const T low, const T high, const T width) {
     itsBinHighLimit.resize(itsBinContents.nelements());
 
     v = low - width/2;                    // low limit of lowest bin
-    for (uInt i=0; i<n+2; i++) {
+    for (uint32_t i=0; i<n+2; i++) {
 	itsBinHighLimit[i] = v;           // high limit of bin 
 	itsBinContents[i] = 0;            // contents of bin (=0)
 	v += width;
@@ -268,8 +268,8 @@ void HistAcc<T>::defineBins(const T low, const T high, const T width) {
 
 template<class T>
 void HistAcc<T>::put(const Array<T>& v) {
-    uInt ntotal = v.nelements();
-    Bool vDelete;
+    uint32_t ntotal = v.nelements();
+    bool vDelete;
     const T* vStorage = v.getStorage(vDelete);
     const T* vs = vStorage;
     while (ntotal--) {put1(*vs++);}
@@ -280,7 +280,7 @@ void HistAcc<T>::put(const Array<T>& v) {
 
 template<class T>
 void HistAcc<T>::put(const Block<T>& v) {
-    for (uInt i=0; i < v.nelements(); i++){
+    for (uint32_t i=0; i < v.nelements(); i++){
 	put1(v[i]);
     }
 }
@@ -295,7 +295,7 @@ void HistAcc<T>::put1(const T v)
 
     } else {                         // put into histogram bins
 	itsStatAcc.put(v);           // accumulate statistics (all values!)
-	for (uInt i=0; i<itsBinContents.nelements()-1; i++) {
+	for (uint32_t i=0; i<itsBinContents.nelements()-1; i++) {
 	    if (v < itsBinHighLimit[i]) {
 		itsBinContents[i]++; 
 		return;              // escape
@@ -310,7 +310,7 @@ void HistAcc<T>::put1(const T v)
 //**********************************************************************
 // Result: get the internal Statistics accumulator, with the aim 
 // of getting the histogram statistics. 
-// Example: uInt count = h.getStatistics().getCount();
+// Example: uint32_t count = h.getStatistics().getCount();
 
 template<class T> 
 const StatAcc<T>& HistAcc<T>::getStatistics() 
@@ -325,7 +325,7 @@ const StatAcc<T>& HistAcc<T>::getStatistics()
 // Get the nr of spurious values:
 
 template<class T> 
-uInt HistAcc<T>::getSpurious(uInt& nlow, uInt& nhigh)
+uint32_t HistAcc<T>::getSpurious(uint32_t& nlow, uint32_t& nhigh)
 {
     if (itsAutoDefineMode) {
 	autoDefineBins();      
@@ -361,19 +361,19 @@ Fallible<T> HistAcc<T>::getMedian ()
 // input values below it. (the Median is the 50-percentile).
 
 template<class T> 
-Fallible<T> HistAcc<T>::getPercentile (const Float p)
+Fallible<T> HistAcc<T>::getPercentile (const float p)
 {
     if (itsAutoDefineMode) {
 	autoDefineBins();
     }
-    Double target = itsStatAcc.getWtot() * p/100;  // target value
+    double target = itsStatAcc.getWtot() * p/100;  // target value
 
-    uInt n1 = itsBinContents[0];          // spurious low
+    uint32_t n1 = itsBinContents[0];          // spurious low
     if (n1 > target) {
 	return Fallible<T>();             // not defined
     }
     // Go through the regular bins, excuding spurious high
-    for (uInt i=1; i<itsBinContents.nelements()-1; i++) {
+    for (uint32_t i=1; i<itsBinContents.nelements()-1; i++) {
 	n1 += itsBinContents[i];
 	if (n1 > target) {
 	    return getBinValue(i);        // OK
@@ -387,7 +387,7 @@ Fallible<T> HistAcc<T>::getPercentile (const Float p)
 // that is a full histogram-width away from the extreme bins.
 
 template<class T> 
-Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
+Fallible<T> HistAcc<T>::getBinValue (const uint32_t index) const
 {
     if (getBinWidth().isValid()) {
 	T width = getBinWidth();
@@ -415,23 +415,23 @@ Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
 
 // Result: get the Histogram itself in two Blocks (simple vectors)
    template<class T> 
-   Fallible<uInt> HistAcc<T>::getHistogram (Block<uInt>& binContents, 
+   Fallible<uint32_t> HistAcc<T>::getHistogram (Block<uint32_t>& binContents, 
     					    Block<T>& binValues) 
 {    
     if (itsAutoDefineMode) {
 	autoDefineBins();
     }
-    uInt n = itsBinContents.nelements();      // nr of bins
+    uint32_t n = itsBinContents.nelements();      // nr of bins
     if (n>0) {
 	binContents.resize(n-2);
 	binValues.resize(n-2);
-	for (uInt i=1; i<n-1; i++) {
+	for (uint32_t i=1; i<n-1; i++) {
 	    binContents[i-1] = itsBinContents[i];
 	    binValues[i-1] = getBinValue(i);
 	}
-        return Fallible<uInt>(n);
+        return Fallible<uint32_t>(n);
     } else {
-	return Fallible<uInt>();               // error
+	return Fallible<uint32_t>();               // error
     }
 }
 
@@ -442,7 +442,7 @@ Fallible<T> HistAcc<T>::getBinValue (const uInt index) const
 // spaced that their average density is less than one/bin.
 
 template<class T> 
-void HistAcc<T>::emptyBinsWithLessThan (const uInt nmin) 
+void HistAcc<T>::emptyBinsWithLessThan (const uint32_t nmin) 
 {
     if (itsAutoDefineMode) {
 	autoDefineBins();
@@ -455,8 +455,8 @@ void HistAcc<T>::emptyBinsWithLessThan (const uInt nmin)
 
 	// Deal with the regular bins:
 	itsStatAcc.reset();                    // reset accumulator
-	Float wgt;
-	for (uInt i=1; i<itsBinContents.nelements()-1; i++) {
+	float wgt;
+	for (uint32_t i=1; i<itsBinContents.nelements()-1; i++) {
 	    if (itsBinContents[i] < nmin) {    // low-contents bin
 		itsBinContents[i]=0;            // set to zero
 	    } else {                            // above the limit
@@ -480,10 +480,10 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
     ios::fmtflags flags = os.flags();         // save current setting
     os << " " << endl;               // skip line
     os << " Histogram: " << caption << endl; 
-    uInt pv = 3;                     // precision for bin values
-    uInt pc = 3;                     // precision for bin contents
+    uint32_t pv = 3;                     // precision for bin values
+    uint32_t pc = 3;                     // precision for bin contents
 
-    for (uInt i=1; i<itsBinContents.nelements()-1; i++) {
+    for (uint32_t i=1; i<itsBinContents.nelements()-1; i++) {
 	setprecision(pv);
 	os << "  bin value=" << setw(pv+4) << getBinValue(i);
 	setprecision(pc);
@@ -499,9 +499,9 @@ void HistAcc<T>::printHistogram (ostream& os, const String& caption)
     }
     os << endl;
 
-    uInt nlow;
-    uInt nhigh;
-    uInt nsp = getSpurious(nlow, nhigh);
+    uint32_t nlow;
+    uint32_t nhigh;
+    uint32_t nsp = getSpurious(nlow, nhigh);
     os << "  nSpurious=" << nsp;
     os << "   nLow=" << nlow;
     if (itsStatAcc.getMin().isValid()) {

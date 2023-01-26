@@ -26,8 +26,6 @@
 #ifndef CASA_AIPSDEF_H
 #define CASA_AIPSDEF_H
 
-#include <casacore/casa/aipstype.h>   //# needed for Bool
-
 //# Define the Casacore global macros
 
 //# Defined the "aips_name2" macro which is used to join two tokens.
@@ -45,9 +43,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // using this in your code should have no performance penalty in the normal
 // case. If compiled with AIPS_DEBUG, then aips_debug is (defined to )
 // a global boolean variable (so it can be turned on and off in a debugger) 
-// which is initialized to True.
+// which is initialized to true.
 
-extern Bool aips_debug_on;
+extern bool aips_debug_on;
 
 } //# NAMESPACE CASACORE - END
 

@@ -31,28 +31,28 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// <summary> A specialisation for T=Float of the NumericTraits class </summary>
+// <summary> A specialisation for T=float of the NumericTraits class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-template <> class NumericTraits<Float> {
+template <> class NumericTraits<float> {
 public:
   typedef Complex ConjugateType;
-  typedef Double PrecisionType;
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  typedef double PrecisionType;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
 };
 
-// <summary> A specialisation for T=Double of the NumericTraits class </summary>
+// <summary> A specialisation for T=double of the NumericTraits class </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
-template <> class NumericTraits<Double> {
+template <> class NumericTraits<double> {
 public:
   typedef DComplex ConjugateType;
-  typedef Double PrecisionType;
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  typedef double PrecisionType;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
 };
 
 // <summary> A specialisation for T=Complex of the NumericTraits class </summary>
@@ -60,11 +60,11 @@ public:
 // </reviewed>
 template <> class NumericTraits<Complex> {
 public:
-  typedef Float ConjugateType;
+  typedef float ConjugateType;
   typedef DComplex PrecisionType;
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
 };
 
 // <summary> A specialisation for T=DComplex of the NumericTraits class </summary>
@@ -82,11 +82,11 @@ public:
 
 template <> class NumericTraits<DComplex> {
 public:
-  typedef Double ConjugateType;
+  typedef double ConjugateType;
   typedef DComplex PrecisionType;
-  static const Double & epsilon;
-  static const Double & minimum;
-  static const Double & maximum;
+  static const double & epsilon;
+  static const double & minimum;
+  static const double & maximum;
 };
 
 

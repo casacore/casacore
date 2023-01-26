@@ -57,7 +57,7 @@ namespace casacore {
     }
     // Get the 'to' reference and value type.
     // Determine the argnr of the position.
-    uInt argnr = 0;
+    uint32_t argnr = 0;
     if (itsType == ITRFXYZ) {
       itsRefType   = MPosition::ITRF;
       itsValueType = 3;
@@ -83,7 +83,7 @@ namespace casacore {
       itsRefType   = MPosition::WGS84;
       itsValueType = 1;
     } else {
-      itsEngine.handleMeasType (operands()[0], True);
+      itsEngine.handleMeasType (operands()[0], true);
       itsRefType   = itsEngine.refType();
       itsValueType = itsEngine.valueType();
       argnr = 1;
@@ -117,14 +117,14 @@ namespace casacore {
     setAttributes (itsEngine.makeAttributes (itsRefType, itsValueType));
   }
 
-  Double PositionUDF::getDouble (const TableExprId& id)
+  double PositionUDF::getDouble (const TableExprId& id)
   {
     return itsEngine.getArrayDouble (id, itsRefType, itsValueType).data()[0];
   }
 
-  MArray<Double> PositionUDF::getArrayDouble (const TableExprId& id)
+  MArray<double> PositionUDF::getArrayDouble (const TableExprId& id)
   {
-    return MArray<Double>(itsEngine.getArrayDouble (id, itsRefType,
+    return MArray<double>(itsEngine.getArrayDouble (id, itsRefType,
                                                     itsValueType));
   }
 

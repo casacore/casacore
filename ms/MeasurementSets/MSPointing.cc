@@ -38,10 +38,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSPointing::MSPointing():hasBeenDestroyed_p(True) { }
+MSPointing::MSPointing():hasBeenDestroyed_p(true) { }
 
 MSPointing::MSPointing(const String &tableName, TableOption option) 
-    : MSTable<MSPointingEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSPointingEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -52,7 +52,7 @@ MSPointing::MSPointing(const String &tableName, TableOption option)
 MSPointing::MSPointing(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSPointingEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -61,18 +61,18 @@ MSPointing::MSPointing(const String& tableName, const String &tableDescName,
 }
 
 MSPointing::MSPointing(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSPointingEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSPointing(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSPointing(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSPointing"));
 }
 
 MSPointing::MSPointing(const Table &table)
-    : MSTable<MSPointingEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSPointingEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -82,7 +82,7 @@ MSPointing::MSPointing(const Table &table)
 
 MSPointing::MSPointing(const MSPointing &other)
     : MSTable<MSPointingEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -102,7 +102,7 @@ MSPointing::~MSPointing()
            << "~MSPointing() - Table written is not a valid MSPointing"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -147,7 +147,7 @@ MSTableMaps MSPointing::initMaps()
             "Time origin for direction","s","Epoch");
   // TRACKING
   colMapDef(maps, TRACKING, "TRACKING", TpBool,
-            "Tracking flag - True if on position","","");
+            "Tracking flag - true if on position","","");
   // ENCODER
   colMapDef(maps, ENCODER, "ENCODER", TpArrayDouble,
             "Encoder values","rad","Direction");
@@ -174,7 +174,7 @@ MSTableMaps MSPointing::initMaps()
   // all required keywords
   // First define the columns with known dimensionality
   addColumnToDesc(maps, DIRECTION, 2);
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

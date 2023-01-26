@@ -159,8 +159,8 @@ void DyscoStMan::registerClass() {
   DataManager::registerCtor("DyscoStMan", makeObject);
 }
 
-casacore::Bool DyscoStMan::flush(casacore::AipsIO &,
-                                 casacore::Bool /*doFsync*/) {
+bool DyscoStMan::flush(casacore::AipsIO &,
+                                 bool /*doFsync*/) {
   return false;
 }
 

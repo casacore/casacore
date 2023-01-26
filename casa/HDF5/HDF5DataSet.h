@@ -94,19 +94,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // It gets the given name, shape (also tile shape), and data type.
     // <group>
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const Bool*);
+		 const IPosition& tileShape, const bool*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const uChar*);
+		 const IPosition& tileShape, const unsigned char*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const Short*);
+		 const IPosition& tileShape, const int16_t*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const Int*);
+		 const IPosition& tileShape, const int32_t*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const Int64*);
+		 const IPosition& tileShape, const int64_t*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const Float*);
+		 const IPosition& tileShape, const float*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
-		 const IPosition& tileShape, const Double*);
+		 const IPosition& tileShape, const double*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
 		 const IPosition& tileShape, const Complex*);
     HDF5DataSet (const HDF5Object&, const String&, const IPosition& shape,
@@ -118,13 +118,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open an existing HDF5 data set in the given hid (file or group).
     // It checks if the internal type matches the given type.
     // <group>
-    HDF5DataSet (const HDF5Object&, const String&, const Bool*);
-    HDF5DataSet (const HDF5Object&, const String&, const uChar*);
-    HDF5DataSet (const HDF5Object&, const String&, const Short*);
-    HDF5DataSet (const HDF5Object&, const String&, const Int*);
-    HDF5DataSet (const HDF5Object&, const String&, const Int64*);
-    HDF5DataSet (const HDF5Object&, const String&, const Float*);
-    HDF5DataSet (const HDF5Object&, const String&, const Double*);
+    HDF5DataSet (const HDF5Object&, const String&, const bool*);
+    HDF5DataSet (const HDF5Object&, const String&, const unsigned char*);
+    HDF5DataSet (const HDF5Object&, const String&, const int16_t*);
+    HDF5DataSet (const HDF5Object&, const String&, const int32_t*);
+    HDF5DataSet (const HDF5Object&, const String&, const int64_t*);
+    HDF5DataSet (const HDF5Object&, const String&, const float*);
+    HDF5DataSet (const HDF5Object&, const String&, const double*);
     HDF5DataSet (const HDF5Object&, const String&, const Complex*);
     HDF5DataSet (const HDF5Object&, const String&, const DComplex*);
     HDF5DataSet (const HDF5Object&, const String&, const HDF5DataType&);
@@ -138,7 +138,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Set the cache size (in chunks) for the data set.
     // It needs to close and reopen the DataSet to take effect.
-    void setCacheSize (uInt nchunks);
+    void setCacheSize (uint32_t nchunks);
 
     // Get the data type for the data set with the given name.
     static DataType getDataType (hid_t, const String& name);
@@ -153,9 +153,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get a section of data into the array.
     // The array is resized if its shape does not match the slicer's shape.
-    // This is only possible if the array is empty or if resize=True.
+    // This is only possible if the array is empty or if resize=true.
     // It is not checked if the data type of array and HDF5DataSet match.
-    void get (const Slicer&, ArrayBase& buf, Bool resize=False);
+    void get (const Slicer&, ArrayBase& buf, bool resize=false);
     
     // Get a section of data.
     // The buffer must be large enough to hold the section.

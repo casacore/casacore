@@ -60,8 +60,8 @@ String VSCEngine<T>::dataManagerType() const
 
 // The column is in principle writable.
 template<class T>
-Bool VSCEngine<T>::isWritable() const
-    { return True; }
+bool VSCEngine<T>::isWritable() const
+    { return true; }
 
 template<class T>
 DataManagerColumn* VSCEngine<T>::makeScalarColumn (const String& columnName,

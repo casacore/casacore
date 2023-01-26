@@ -93,88 +93,88 @@ public:
   ~MSSourceColumns();
 
   // Is this object defined? (MSSource table is optional)
-  Bool isNull() const {return isNull_p;}
+  bool isNull() const {return isNull_p;}
 
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& calibrationGroup() {return calibrationGroup_p;}
+  ScalarColumn<int32_t>& calibrationGroup() {return calibrationGroup_p;}
   ScalarColumn<String>& code() {return code_p;}
-  ArrayColumn<Double>& direction() {return direction_p;}
-  ArrayQuantColumn<Double>& directionQuant() {return directionQuant_p;}
+  ArrayColumn<double>& direction() {return direction_p;}
+  ArrayQuantColumn<double>& directionQuant() {return directionQuant_p;}
   ScalarMeasColumn<MDirection>& directionMeas() {return directionMeas_p;}
-  ScalarColumn<Double>& interval() {return interval_p;}
-  ScalarQuantColumn<Double>& intervalQuant() {return intervalQuant_p;}
+  ScalarColumn<double>& interval() {return interval_p;}
+  ScalarQuantColumn<double>& intervalQuant() {return intervalQuant_p;}
   ScalarColumn<String>& name() {return name_p;}
-  ScalarColumn<Int>& numLines() {return numLines_p;}
-  ArrayColumn<Double>& properMotion() {return properMotion_p;}
-  ArrayQuantColumn<Double>& properMotionQuant() {return properMotionQuant_p;}
-  ScalarColumn<Int>& sourceId() {return sourceId_p;}
-  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarQuantColumn<Double>& timeQuant() {return timeQuant_p;}
+  ScalarColumn<int32_t>& numLines() {return numLines_p;}
+  ArrayColumn<double>& properMotion() {return properMotion_p;}
+  ArrayQuantColumn<double>& properMotionQuant() {return properMotionQuant_p;}
+  ScalarColumn<int32_t>& sourceId() {return sourceId_p;}
+  ScalarColumn<int32_t>& spectralWindowId() {return spectralWindowId_p;}
+  ScalarColumn<double>& time() {return time_p;}
+  ScalarQuantColumn<double>& timeQuant() {return timeQuant_p;}
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   // </group>
 
   // Access to optional columns
   // <group>
-  ArrayColumn<Double>& position() {return position_p;}
-  ArrayQuantColumn<Double>& positionQuant() {return positionQuant_p;}
+  ArrayColumn<double>& position() {return position_p;}
+  ArrayQuantColumn<double>& positionQuant() {return positionQuant_p;}
   ScalarMeasColumn<MPosition>& positionMeas() {return positionMeas_p;}
-  ScalarColumn<Int>& pulsarId() {return pulsarId_p;}
-  ArrayColumn<Double>& restFrequency() {return restFrequency_p;}
-  ArrayQuantColumn<Double>& restFrequencyQuant() {return restFrequencyQuant_p;}
+  ScalarColumn<int32_t>& pulsarId() {return pulsarId_p;}
+  ArrayColumn<double>& restFrequency() {return restFrequency_p;}
+  ArrayQuantColumn<double>& restFrequencyQuant() {return restFrequencyQuant_p;}
   ArrayMeasColumn<MFrequency>& restFrequencyMeas() {
     return restFrequencyMeas_p;}
   ScalarColumn<TableRecord>& sourceModel() {return sourceModel_p;}
-  ArrayColumn<Double>& sysvel() {return sysvel_p;}
-  ArrayQuantColumn<Double>& sysvelQuant() {return sysvelQuant_p;}
+  ArrayColumn<double>& sysvel() {return sysvel_p;}
+  ArrayQuantColumn<double>& sysvelQuant() {return sysvelQuant_p;}
   ArrayMeasColumn<MRadialVelocity>& sysvelMeas() {return sysvelMeas_p;}
   ArrayColumn<String>& transition() {return transition_p;}
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Int>& calibrationGroup() const {
+  const ScalarColumn<int32_t>& calibrationGroup() const {
     return calibrationGroup_p;}
   const ScalarColumn<String>& code() const {return code_p;}
-  const ArrayColumn<Double>& direction() const {return direction_p;}
-  const ArrayQuantColumn<Double>& directionQuant() const {
+  const ArrayColumn<double>& direction() const {return direction_p;}
+  const ArrayQuantColumn<double>& directionQuant() const {
     return directionQuant_p;}
   const ScalarMeasColumn<MDirection>& directionMeas() const {
     return directionMeas_p;}
-  const ScalarColumn<Double>& interval() const {return interval_p;}
-  const ScalarQuantColumn<Double>& intervalQuant() const {
+  const ScalarColumn<double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<double>& intervalQuant() const {
     return intervalQuant_p;}
   const ScalarColumn<String>& name() const {return name_p;}
-  const ScalarColumn<Int>& numLines() const {return numLines_p;}
-  const ArrayColumn<Double>& properMotion() const {return properMotion_p;}
-  const ArrayQuantColumn<Double>& properMotionQuant() const {
+  const ScalarColumn<int32_t>& numLines() const {return numLines_p;}
+  const ArrayColumn<double>& properMotion() const {return properMotion_p;}
+  const ArrayQuantColumn<double>& properMotionQuant() const {
     return properMotionQuant_p;}
-  const ScalarColumn<Int>& sourceId() const {return sourceId_p;}
-  const ScalarColumn<Int>& spectralWindowId() const {
+  const ScalarColumn<int32_t>& sourceId() const {return sourceId_p;}
+  const ScalarColumn<int32_t>& spectralWindowId() const {
     return spectralWindowId_p;}
-  const ScalarColumn<Double>& time() const {return time_p;}
-  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarColumn<double>& time() const {return time_p;}
+  const ScalarQuantColumn<double>& timeQuant() const {return timeQuant_p;}
   const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   // </group>
 
   // Const access to optional columns
   // <group>
-  const ArrayColumn<Double>& position() const {return position_p;}
-  const ArrayQuantColumn<Double>& positionQuant() const {
+  const ArrayColumn<double>& position() const {return position_p;}
+  const ArrayQuantColumn<double>& positionQuant() const {
     return positionQuant_p;}
   const ScalarMeasColumn<MPosition>& positionMeas() const {
     return positionMeas_p;}
-  const ScalarColumn<Int>& pulsarId() const {return pulsarId_p;}
-  const ArrayColumn<Double>& restFrequency() const {return restFrequency_p;}
-  const ArrayQuantColumn<Double>& restFrequencyQuant() const {
+  const ScalarColumn<int32_t>& pulsarId() const {return pulsarId_p;}
+  const ArrayColumn<double>& restFrequency() const {return restFrequency_p;}
+  const ArrayQuantColumn<double>& restFrequencyQuant() const {
     return restFrequencyQuant_p;}
   const ArrayMeasColumn<MFrequency>& restFrequencyMeas() const {
     return restFrequencyMeas_p;}
   const ScalarColumn<TableRecord>& sourceModel() const {
     return sourceModel_p;}
-  const ArrayColumn<Double>& sysvel() const {return sysvel_p;}
-  const ArrayQuantColumn<Double>& sysvelQuant() const {return sysvelQuant_p;}
+  const ArrayColumn<double>& sysvel() const {return sysvel_p;}
+  const ArrayQuantColumn<double>& sysvelQuant() const {return sysvelQuant_p;}
   const ArrayMeasColumn<MRadialVelocity>& sysvelMeas() const {
     return sysvelMeas_p;}
   const ArrayColumn<String>& transition() const {return transition_p;}
@@ -190,10 +190,10 @@ public:
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty=true);
 
   // set the direction type for the DIRECTION column. This can only be done
   // when the table has no rows. Trying to do so at other times will throw an
@@ -233,25 +233,25 @@ private:
   void attachOptionalCols(const MSSource& msSource);
   
   //# Is the object not attached to a Table.
-  Bool isNull_p;
+  bool isNull_p;
 
   //# required columns
-  ScalarColumn<Int> calibrationGroup_p;
+  ScalarColumn<int32_t> calibrationGroup_p;
   ScalarColumn<String> code_p;
-  ArrayColumn<Double> direction_p;
-  ScalarColumn<Double> interval_p;
+  ArrayColumn<double> direction_p;
+  ScalarColumn<double> interval_p;
   ScalarColumn<String> name_p;
-  ScalarColumn<Int> numLines_p;
-  ArrayColumn<Double> properMotion_p;
-  ScalarColumn<Int> sourceId_p;
-  ScalarColumn<Int> spectralWindowId_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<int32_t> numLines_p;
+  ArrayColumn<double> properMotion_p;
+  ScalarColumn<int32_t> sourceId_p;
+  ScalarColumn<int32_t> spectralWindowId_p;
+  ScalarColumn<double> time_p;
   //# optional columns
-  ArrayColumn<Double> position_p;
-  ScalarColumn<Int> pulsarId_p;
-  ArrayColumn<Double> restFrequency_p;
+  ArrayColumn<double> position_p;
+  ScalarColumn<int32_t> pulsarId_p;
+  ArrayColumn<double> restFrequency_p;
   ScalarColumn<TableRecord> sourceModel_p;
-  ArrayColumn<Double> sysvel_p;
+  ArrayColumn<double> sysvel_p;
   ArrayColumn<String> transition_p;
 
   //# Access to Measure columns
@@ -263,14 +263,14 @@ private:
   ArrayMeasColumn<MRadialVelocity> sysvelMeas_p;
 
   //# Access to Quantum columns
-  ArrayQuantColumn<Double> directionQuant_p;
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ArrayQuantColumn<Double> properMotionQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
+  ArrayQuantColumn<double> directionQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ArrayQuantColumn<double> properMotionQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
   //# Optional Quantum columns
-  ArrayQuantColumn<Double> positionQuant_p;
-  ArrayQuantColumn<Double> restFrequencyQuant_p;
-  ArrayQuantColumn<Double> sysvelQuant_p;
+  ArrayQuantColumn<double> positionQuant_p;
+  ArrayQuantColumn<double> restFrequencyQuant_p;
+  ArrayQuantColumn<double> sysvelQuant_p;
 };
 
 //# Define the RO version for backward compatibility.

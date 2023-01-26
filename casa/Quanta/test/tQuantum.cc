@@ -45,11 +45,11 @@ int main ()
     Quantity DEG(5,"deg");
     Quantity l4;
     Quantum<Complex> CQ(7,"ml");
-    Vector<Double> V(2),V2(2),V1(2);
-    Vector<Int> VI(2);
+    Vector<double> V(2),V2(2),V1(2);
+    Vector<int32_t> VI(2);
     V(0)=3; V(1)=4; V2=2; V1=3;
     VI(0)=7; VI(1)=8;
-    Quantum<Vector<Double> > VQ(V,"uA");
+    Quantum<Vector<double> > VQ(V,"uA");
     Vector<Quantity> QVQ(3);
     QVQ(0)=A; QVQ(1)=D; QVQ(2)=DEG;
 
@@ -183,8 +183,8 @@ try {
     
     cout << endl << "--------------------------" << endl;
     
-    Quantum<Int> ll5(5,Quantum<Double>(7.,"mm/s"));
-    cout << "Mixed Quantity/Quantum<Int>  " << ll5 << endl;
+    Quantum<int32_t> ll5(5,Quantum<double>(7.,"mm/s"));
+    cout << "Mixed Quantity/Quantum<int32_t>  " << ll5 << endl;
     
 } catch (std::exception& x) {
   cout << x.what() << endl;
@@ -274,35 +274,35 @@ try {
     );
     {
     	// getValue()
-    	Bool thrown = False;
+    	bool thrown = false;
     	try {
     		// doesn't throw by default
-    		Quantum<Double> q(1, "Hz");
+    		Quantum<double> q(1, "Hz");
     		q.getValue("K");
     	}
     	catch (const std::exception& x) {
-    		thrown = True;
+    		thrown = true;
     	}
     	AlwaysAssert(! thrown, AipsError);
 
     	try {
-    		Quantum<Double> q(1, "Hz");
-    		q.getValue("K", True);
+    		Quantum<double> q(1, "Hz");
+    		q.getValue("K", true);
     	}
     	catch (const std::exception& x) {
-    		thrown = True;
+    		thrown = true;
     	}
     	AlwaysAssert(thrown, AipsError);
 
-    	Quantum<Double> q(1, "m");
+    	Quantum<double> q(1, "m");
     	AlwaysAssert(q.getValue("km") == 0.001, AipsError);
-    	q = Quantum<Double>(1, "h");
+    	q = Quantum<double>(1, "h");
     	AlwaysAssert(q.getValue("deg") == 15, AipsError);
-    	q = Quantum<Double>(30, "deg");
+    	q = Quantum<double>(30, "deg");
     	AlwaysAssert(near(q.getValue("min"), 120.0), AipsError);
-    	q = Quantum<Double>(1.5, "GHz");
+    	q = Quantum<double>(1.5, "GHz");
     	AlwaysAssert(near(q.getValue("cm"), 19.9862, 1e-5), AipsError);
-    	q = Quantum<Double>(3, "mm");
+    	q = Quantum<double>(3, "mm");
     	AlwaysAssert(near(q.getValue("MHz"), 99930.8, 1e-5), AipsError);
 
     }
@@ -310,13 +310,13 @@ try {
     // Test copy construction and copy assignment with Vector does deep copying
     {
         // Copy constructor
-        Quantum<Vector<Int>> original({1, 2, 3}, "m");
-        Quantum<Vector<Int>> copy_constructed(original);
+        Quantum<Vector<int32_t>> original({1, 2, 3}, "m");
+        Quantum<Vector<int32_t>> copy_constructed(original);
         copy_constructed.getValue()[0] = 100;
         AlwaysAssert(original.getValue()[0] == 1, AipsError);
 
         // Copy assignment
-        Quantum<Vector<Int>> copy_assigned;
+        Quantum<Vector<int32_t>> copy_assigned;
         copy_assigned = original;
         copy_assigned.getValue()[0] = 100;
         AlwaysAssert(original.getValue()[0] == 1, AipsError);

@@ -71,8 +71,8 @@ class TableLock;
 // The fields in TableRecord may be of scalar type, array type, a Table
 // or a TableRecord.
 // The types are chosen to be compatible with the native
-// types of the Table system, viz: Bool, uChar, Short, Int, uInt, Int64, Float,
-// Double, Complex, DComplex, String.
+// types of the Table system, viz: bool, unsigned char, int16_t, int32_t, uint32_t, int64_t, float,
+// double, Complex, DComplex, String.
 // Arrays of all these types are also available.
 // Note that a TableRecord is not a space-efficient way of storing
 // small objects.
@@ -98,8 +98,8 @@ class TableLock;
 // The field names do not need to be identical however, only the types.
 // That is, the structure needs to be identical, but
 // not the labels. Note that field order is significant, 
-// <src>[ifield(type=Int),ffield(type=Float)]</src>
-// is not the same as <src>[ffield(type=Float),ifield(type=Int)]</src>
+// <src>[ifield(type=int32_t),ffield(type=float)]</src>
+// is not the same as <src>[ffield(type=float),ifield(type=int32_t)]</src>
 // <br>
 // Conformance is checked recursively for fixed subrecords. That is, a
 // variable structured subrecord is not checked, because any record
@@ -129,7 +129,7 @@ class TableLock;
 // <srcblock>
 //  {
 //    TableDesc td ("td", TableDesc::Scratch);
-//    td.addColumn (ScalarColumnDesc<Int> ("col1"));
+//    td.addColumn (ScalarColumnDesc<int32_t> ("col1"));
 //    td.addColumn (ScalarColumnDesc<float> ("col2"));
 //    SetupNewTable newtab ("tTableRecord_tmp.tab1", td1, Table::New);
 //    Table tab (newtab, 10);
@@ -283,40 +283,40 @@ public:
     // Change the structure of this TableRecord to contain the fields in
     // newDescription. After calling restructure, <src>description() ==
     // newDescription</src>. Any existing RecordFieldPtr objects are
-    // invalidated (their <src>isAttached()</src> members return False) after
+    // invalidated (their <src>isAttached()</src> members return false) after
     // this call.
     // <br>When the new description contains subrecords, those subrecords
-    // will be restructured if <src>recursive=True</src> is given.
+    // will be restructured if <src>recursive=true</src> is given.
     // Otherwise the subrecord is a variable empty record.
     // Subrecords will be variable if their description is empty (i.e. does
     // not contain any field), otherwise they are fixed.
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
     virtual void restructure (const RecordDesc& newDescription,
-			      Bool recursive=True);
+			      bool recursive=true);
 
-    // Returns True if this and other have the same RecordDesc, other
+    // Returns true if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
     // order of the fields must be identical (recursively for fixed
     // structured sub-Records in this).
     // <note role=caution>
-    // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-    // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+    // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+    // <br><src>thatRecord.conform(thisRecord) == true</src>, because
     // a variable record in one conforms a fixed record in that, but
     // not vice-versa.
     // </note>
-    Bool conform (const TableRecord& other) const;
+    bool conform (const TableRecord& other) const;
 
     // How many fields does this structure have? A convenient synonym for
     // <src>description().nfields()</src>.
-    virtual uInt nfields() const;
+    virtual uint32_t nfields() const;
 
     // Get the field number from the field name.
     // -1 is returned if the field name is unknown.
-    virtual Int fieldNumber (const String& fieldName) const;
+    virtual int32_t fieldNumber (const String& fieldName) const;
 
     // Get the data type of this field.
-    virtual DataType type (Int whichField) const;
+    virtual DataType type (int32_t whichField) const;
 
     // Remove a field from the record.
     // <note role=caution>
@@ -359,7 +359,7 @@ public:
     // Get the table from the given field.
     // By default the read/write option and lock options are inherited
     // from the parent table.
-    // If openWritable=True, the table is still opened as readonly if the file
+    // If openWritable=true, the table is still opened as readonly if the file
     // permissions do not permit write access.
     // <group>
     Table asTable (const RecordFieldId&) const;
@@ -395,14 +395,14 @@ public:
     void closeTables() const;
 
     // Flush all open subtables.
-    void flushTables (Bool fsync=False) const;
+    void flushTables (bool fsync=false) const;
 
     // Rename the subtables with a path containing the old parent table name.
     void renameTables (const String& newParentName,
 		       const String& oldParentName);
 
     // Are subtables used in other processes.
-    Bool areTablesMultiUsed() const;
+    bool areTablesMultiUsed() const;
 
     // Write the TableRecord to an output stream.
     friend AipsIO& operator<< (AipsIO& os, const TableRecord& rec);
@@ -428,13 +428,13 @@ public:
     // Read the data of a record.
     // This is used to read a subrecord, whose description has
     // already been read.
-    void getData (AipsIO& os, uInt version, const TableAttr&);
+    void getData (AipsIO& os, uint32_t version, const TableAttr&);
 
     // Print the contents of the record.
     // Only the first <src>maxNrValues</src> of an array will be printed.
     // A value < 0 means the entire array.
     virtual void print (std::ostream&,
-			Int maxNrValues = 25,
+			int32_t maxNrValues = 25,
 			const String& indent="") const;
 
     // Reopen possible tables in keywords as read/write.
@@ -449,7 +449,7 @@ public:
     // <br>However, it can also be used to achieve that all subtables of a
     // read/write table are opened as readonly. E.g.:
     // <srcblock>
-    //   TableAttr newAttr(String(), False, mainTable.lockOptions());
+    //   TableAttr newAttr(String(), false, mainTable.lockOptions());
     //   mainTable.keywordSet().setTableAttr (TableRecord(), newAttr);
     // </srcblock>
     void setTableAttr (const TableRecord& other, const TableAttr& defaultAttr);
@@ -463,8 +463,8 @@ protected:
     // Used by the RecordField classes to attach in a type-safe way to the
     // correct field.
     // <group>
-    virtual void* get_pointer (Int whichField, DataType type) const;
-    virtual void* get_pointer (Int whichField, DataType type,
+    virtual void* get_pointer (int32_t whichField, DataType type) const;
+    virtual void* get_pointer (int32_t whichField, DataType type,
 			       const String& recordType) const;
     // </group>
 
@@ -478,11 +478,11 @@ protected:
 
     // Add a field to the record.
     virtual void addDataField (const String& name, DataType type,
-			       const IPosition& shape, Bool fixedShape,
+			       const IPosition& shape, bool fixedShape,
 			       const void* value);
 
     // Define a value in the given field.
-    virtual void defineDataField (Int whichField, DataType type,
+    virtual void defineDataField (int32_t whichField, DataType type,
 				  const void* value);
 
 private:
@@ -517,7 +517,7 @@ inline const RecordDesc& TableRecord::description() const
     return ref().description();
 }
 
-inline Bool TableRecord::conform (const TableRecord& other) const
+inline bool TableRecord::conform (const TableRecord& other) const
 {
     return ref().conform (other.ref());
 }
@@ -528,7 +528,7 @@ inline void TableRecord::putData (AipsIO& os,
     ref().putData (os, parentAttr);
 }
 
-inline void TableRecord::getData (AipsIO& os, uInt version,
+inline void TableRecord::getData (AipsIO& os, uint32_t version,
 				  const TableAttr& parentAttr)
 {
     rwRef().getData (os, version, parentAttr);
@@ -544,7 +544,7 @@ inline void TableRecord::closeTables() const
     ref().closeTables();
 }
 
-inline void TableRecord::flushTables (Bool fsync) const
+inline void TableRecord::flushTables (bool fsync) const
 {
     ref().flushTables (fsync);
 }
@@ -555,7 +555,7 @@ inline void TableRecord::renameTables (const String& newParentName,
     rwRef().renameTables (newParentName, oldParentName);
 }
 
-inline Bool TableRecord::areTablesMultiUsed() const
+inline bool TableRecord::areTablesMultiUsed() const
 {
     return ref().areTablesMultiUsed();
 }

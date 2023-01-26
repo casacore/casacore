@@ -48,10 +48,10 @@ FITSMultiTable::FITSMultiTable(const Vector<String> &fileNames,
 			       FITSTabular* (*tabMaker)(const String&))
     : table_p(0), file_names_p(fileNames.copy()),  
       nfiles_p(fileNames.nelements()), which_file_p(0), 
-      hasChanged_p(False), row_p(RecordInterface::Variable)
+      hasChanged_p(false), row_p(RecordInterface::Variable)
 {
     AlwaysAssert(nfiles_p > 0, AipsError);
-    for (uInt i=0;i<nfiles_p;i++) {
+    for (uint32_t i=0;i<nfiles_p;i++) {
 	if (tabMaker) 
 	    table_p = tabMaker(fileNames(i));
 	else 
@@ -73,7 +73,7 @@ FITSMultiTable::~FITSMultiTable()
     table_p = 0;
 }
 
-Bool FITSMultiTable::isValid() const
+bool FITSMultiTable::isValid() const
 {
     return table_p->isValid();
 }
@@ -103,7 +103,7 @@ const Record &FITSMultiTable::nulls() const
     return table_p->nulls();
 }
 
-Bool FITSMultiTable::pastEnd() const
+bool FITSMultiTable::pastEnd() const
 {
     return (which_file_p >= nfiles_p);
 }
@@ -111,13 +111,13 @@ Bool FITSMultiTable::pastEnd() const
 void FITSMultiTable::next()
 {
     table_p->next();
-    Bool status = True;
-    uInt thisWhich = which_file_p;
+    bool status = true;
+    uint32_t thisWhich = which_file_p;
     if (table_p->pastEnd()) {
 	which_file_p++;
 	RecordDesc oldDescription = table_p->description();
-	status = False;
-	if (which_file_p >= nfiles_p) status = True;
+	status = false;
+	if (which_file_p >= nfiles_p) status = true;
 	while (which_file_p < nfiles_p && ! status) {
 	    status = table_p->reopen(file_names_p(which_file_p));
 	    if (!status) {
@@ -127,13 +127,13 @@ void FITSMultiTable::next()
 		which_file_p++;
 	    } else {
 		if (oldDescription != description()) {
-		    hasChanged_p = True;
+		    hasChanged_p = true;
 		    row_p.restructure(table_p->description());
 		}
 	    }
 	}
     }
-    // if status is False
+    // if status is false
     // reopen previous successfully opened file
     if (!status) {
 	table_p->reopen(file_names_p(thisWhich));
@@ -154,7 +154,7 @@ const Record &FITSMultiTable::currentRow() const
 // If this code is placed in place in filesInTimeRange where it
 // is used, both Centerline and Sun's CFRONT compilers complain
 // about not being able to find operator << (class ostream, unsigned int)
-// It seems to be tied to Vector<Double> in some sense since
+// It seems to be tied to Vector<double> in some sense since
 // commenting out all occurences of them makes the compiler
 // happy (but the code unusable, obviously).  Moving the output
 // cout outside of filesInTimeRange makes the problem go away.
@@ -162,7 +162,7 @@ const Record &FITSMultiTable::currentRow() const
 // elements of this class as I am unable to reproduce it except
 // in this class.
 
-void timeRangeStatusMsg(uInt count) 
+void timeRangeStatusMsg(uint32_t count) 
 {
     cout << "Found " << count
 	 << " files in specified time range."
@@ -171,11 +171,11 @@ void timeRangeStatusMsg(uInt count)
 
 Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName, 
 				const Time &startTime, const Time &endTime,
-						Bool verboseErrors,
-						Bool verboseStatus)
+						bool verboseErrors,
+						bool verboseStatus)
 {
     Time t1(startTime), t2(endTime); // Should not be necessary
-    Double timeRange = t2 - t1;
+    double timeRange = t2 - t1;
     // If the screwed up start and end, work anyway
     if (timeRange < 0) {
 	return filesInTimeRange(directoryName, endTime, startTime,
@@ -189,10 +189,10 @@ Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName,
     
     Directory dir(file);
     Path path(file.path());
-    uInt nfiles = dir.nEntries();
+    uint32_t nfiles = dir.nEntries();
     Vector<String> allfiles(nfiles);
-    Vector<Double> allStartTimes(nfiles);
-    uInt count = 0;
+    Vector<double> allStartTimes(nfiles);
+    uint32_t count = 0;
     // If this is still in use in the year 3xxx, it will fail!
     DirectoryIterator diriter(dir,
 			      Regex("^[12][0-9][0-9][0-9]_[0-9][0-9]_[0-9][0-9]_"
@@ -205,15 +205,15 @@ Vector<String> FITSMultiTable::filesInTimeRange(const String &directoryName,
 	diriter++;
     }
     Vector<String> files(allfiles(Slice(0, count)));
-    Vector<Double> startTimes(allStartTimes(Slice(0, count)));
+    Vector<double> startTimes(allStartTimes(Slice(0, count)));
     GenSort<String>::sort(files); // Sorted in ascending order
-    GenSort<Double>::sort(startTimes); // should sort exactly the same as files
+    GenSort<double>::sort(startTimes); // should sort exactly the same as files
 				// It would be nice if only a single sort were needed
 
     // Work out the end times, assume they may be as late as the start time
     // of the next file. Guard the end with a large number
-    Vector<Double> endTimes(files.nelements());
-    uInt i;
+    Vector<double> endTimes(files.nelements());
+    uint32_t i;
     for (i=0; i + 1< endTimes.nelements(); i++) {
 	endTimes(i) = startTimes(i + 1);
     }
@@ -254,19 +254,19 @@ Time FITSMultiTable::timeFromFile(const String &fileName)
   Path fpath(fileName);
   String fbase(fpath.baseName());
     const char zero = '0';
-    uInt year = fbase[3] - zero + 
+    uint32_t year = fbase[3] - zero + 
 	10*(fbase[2] - zero) + 
 	100*(fbase[1] - zero) +
 	1000*(fbase[0] - zero);
-    uInt month = fbase[6] - zero + 
+    uint32_t month = fbase[6] - zero + 
 	10*(fbase[5] - zero);
-    uInt day = fbase[9] - zero + 
+    uint32_t day = fbase[9] - zero + 
 	10*(fbase[8] - zero);
-    uInt hour = fbase[12] - zero + 
+    uint32_t hour = fbase[12] - zero + 
 	10*(fbase[11] - zero);
-    uInt minutes = fbase[15] - zero + 
+    uint32_t minutes = fbase[15] - zero + 
 	10*(fbase[14] - zero);
-    uInt seconds = fbase[18] - zero + 
+    uint32_t seconds = fbase[18] - zero + 
 	10*(fbase[17] - zero);
     return Time(year, month, day, hour, minutes, seconds*1.0);
 }

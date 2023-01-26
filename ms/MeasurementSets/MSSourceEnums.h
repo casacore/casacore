@@ -63,7 +63,7 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Number of grouping for calibration purpose.<BR>
-    // Int.
+    // int32_t.
     CALIBRATION_GROUP,  
     // Special characteristics of source, e.g. Bandpass calibrator.
     // We need to define a standard set that can be used for
@@ -71,45 +71,45 @@ public:
     // String.
     CODE,  
     // Direction (e.g. RA, DEC).<BR>
-    // Double(2) - rad - DIRECTION.
+    // double(2) - rad - DIRECTION.
     DIRECTION,  
     // Interval of time for which this set of parameters is accurate.<BR>
-    // Double - s
+    // double - s
     INTERVAL,  
     // Name of source as given during observations.<BR>
     // String.
     NAME,  
     // Number of spectral lines <BR>
-    // Int
+    // int32_t
     NUM_LINES,
     // Proper motion.<BR>
-    // Double(2) - rad/s - ?.
+    // double(2) - rad/s - ?.
     PROPER_MOTION,  
     // Source id.<BR>
-    // Int.
+    // int32_t.
     SOURCE_ID,
     // Spectral window id.<BR>
-    // Int.
+    // int32_t.
     SPECTRAL_WINDOW_ID,  
     // Midpoint of time for which this set of parameters is accurate.<BR>
-    // Double - s - EPOCH.
+    // double - s - EPOCH.
     TIME,  
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME,
     // Position (e.g. for solar system objects.<BR>
-    // Double(3) - m - POSITION.
+    // double(3) - m - POSITION.
     POSITION,  
     // Pulsar Id <BR>
-    // Int
+    // int32_t
     PULSAR_ID,
     // Line rest frequency <BR>
-    // Double(NUM_LINES) - Hz - Frequency
+    // double(NUM_LINES) - Hz - Frequency
     REST_FREQUENCY,
     // Default Component Source Model <BR>
     // TableRecord
     SOURCE_MODEL,
     // Systemic velocity at reference.<BR>
-    // Double(NUM_LINES) - m/s - RADIALVELOCITY.
+    // double(NUM_LINES) - m/s - RADIALVELOCITY.
     SYSVEL,  
     // Transition name <BR>
     // String(NUM_LINES)

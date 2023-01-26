@@ -34,7 +34,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class QVector;
 
-typedef QVector<Double> QVD;
+typedef QVector<double> QVD;
 
 // <summary>
 // Specialization for Quantum<Vector<T> >
@@ -51,7 +51,7 @@ typedef QVector<Double> QVD;
 // </etymology>
 //
 // <synopsis> 
-// Objects of type Quantum<Vector<Double> > are used often in our code.
+// Objects of type Quantum<Vector<double> > are used often in our code.
 // We need a way to access individual elements easily
 // </synopsis>
 
@@ -72,7 +72,7 @@ template <class T> class QVector : public Quantum<Vector<T> > {
 	QVector(const Vector<Quantum<T> >& q);
 
 	// access single element
-	Quantum<T> operator[](uInt index) const;
+	Quantum<T> operator[](uint32_t index) const;
 
 	size_t size() const;
 

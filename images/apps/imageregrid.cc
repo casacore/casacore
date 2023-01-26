@@ -62,9 +62,9 @@ int main(int argc, const char* argv[]) {
     inputs.create("decimate", "10", "decimation factor");
     inputs.create("dirref", "GALACTIC", "MDirection type");
     inputs.create("projection", "AIT", "Projection");
-    inputs.create("shape", "", "Output image shape", "Block<Int>");
+    inputs.create("shape", "", "Output image shape", "Block<int32_t>");
     inputs.create("refval", "", "New center of the image in degrees (reference value)", 
-		  "Block<Double>");
+		  "Block<double>");
     inputs.create("interpolation", "linear", "Interpolation method (linear, nearest, cubic,lanczos)");
     inputs.readArguments(argc, argv);
 
@@ -78,12 +78,12 @@ int main(int argc, const char* argv[]) {
       out = "regridded_"+in;
       cout << "No output name give using '" << out << "'." << endl;
     }
-    Bool outisfits = downcase(out).after(out.size()-6) == ".fits";
+    bool outisfits = downcase(out).after(out.size()-6) == ".fits";
 
-    const Int decimate = inputs.getInt("decimate");
+    const int32_t decimate = inputs.getInt("decimate");
     const String dirref = inputs.getString("dirref");
-    Block<Int> outshape = inputs.getIntArray("shape");
-    const Block<Double> refval = inputs.getDoubleArray("refval");
+    Block<int32_t> outshape = inputs.getIntArray("shape");
+    const Block<double> refval = inputs.getDoubleArray("refval");
     if (refval.size() != 2) {
       cerr << "Please specify valid reference value e.g. refval=0.0,0.0" << endl;
       exit(1);
@@ -94,27 +94,27 @@ int main(int argc, const char* argv[]) {
     FITSImage::registerOpenFunction();
     MIRIADImage::registerOpenFunction();
     LatticeBase* pLatt = ImageOpener::openImage(in);
-    ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
+    ImageInterface<float>* pImage = dynamic_cast<ImageInterface<float>*>(pLatt);
     if (!pImage) {
-      cout << "The input image must have data type Float" << endl;
+      cout << "The input image must have data type float" << endl;
       exit(1);
     }
     
-    Vector<uInt> itsAxes;
-    ImageInterface<Float>* itsImage = pImage;
-    ImageRegrid<Float> itsIr;
-    ImageInterface<Float>* itsTmp;
+    Vector<uint32_t> itsAxes;
+    ImageInterface<float>* itsImage = pImage;
+    ImageRegrid<float> itsIr;
+    ImageInterface<float>* itsTmp;
     Interpolate2D::Method itsMethod = Interpolate2D::stringToMethod(interpolation);
-    itsIr.disableReferenceConversions(False);
+    itsIr.disableReferenceConversions(false);
     itsIr.showDebugInfo(0);
-    Int itsDecimate = decimate;
+    int32_t itsDecimate = decimate;
     String itsProj = proj;
     String itsMDir = dirref;
     
-    //Bool changeRefFrame = False;
+    //bool changeRefFrame = false;
     //changeRefFrame = (itsProj != "" || itsMDir != "");
     CoordinateSystem csys(itsImage->coordinates());
-    Int dircoordNo = 
+    int32_t dircoordNo = 
         itsImage->coordinates().findCoordinate(Coordinate::DIRECTION, -1);
 
     DirectionCoordinate                                                 \
@@ -138,7 +138,7 @@ int main(int argc, const char* argv[]) {
     }
     // HARDCODED
     IPosition shapeOut = itsImage->shape();
-    Vector<Int> pAx, wAx;
+    Vector<int32_t> pAx, wAx;
     CoordinateUtil::findDirectionAxes(pAx, wAx, dircoordNo, csys);
     //use output shape if valid
     if (outshape.size() == 2) {
@@ -149,14 +149,14 @@ int main(int argc, const char* argv[]) {
 	   << "," << shapeOut[pAx(1)] << "." << endl;
     }
 
-    Vector<Double> refPixFrom = dirCoordFrom.referencePixel();
-    Vector<Double> incrFrom = dirCoordFrom.increment();
-    Vector<Double> refValFrom = dirCoordFrom.referenceValue();
+    Vector<double> refPixFrom = dirCoordFrom.referencePixel();
+    Vector<double> incrFrom = dirCoordFrom.increment();
+    Vector<double> refValFrom = dirCoordFrom.referenceValue();
     
     refValFrom[0] = Quantity(refval[0], "deg").getValue("rad");
     refValFrom[1] = Quantity(refval[1], "deg").getValue("rad");
-    refPixFrom[0]= Double(outshape[0])/2.0;
-    refPixFrom[1]= Double(outshape[1])/2.0;
+    refPixFrom[0]= double(outshape[0])/2.0;
+    refPixFrom[1]= double(outshape[1])/2.0;
     
     DirectionCoordinate dirCoordTo(mdirt, 
                                    project,
@@ -167,25 +167,25 @@ int main(int argc, const char* argv[]) {
     
     csys.replaceCoordinate(dirCoordTo, dircoordNo);
     IPosition outAxes(2, pAx(0), pAx(1));
-    itsTmp = new TempImage<Float>(shapeOut,csys);
+    itsTmp = new TempImage<float>(shapeOut,csys);
     cout << "Regridding image..." << endl; 
-    itsIr.regrid(*itsTmp, itsMethod, outAxes, *itsImage, False, 
-                 itsDecimate, False);
+    itsIr.regrid(*itsTmp, itsMethod, outAxes, *itsImage, false, 
+                 itsDecimate, false);
     cout << "Writing " << out << "..." << endl;
     if (outisfits) {
       String errMsg;
-      Bool res = ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out);
+      bool res = ImageFITSConverter::ImageToFITS(errMsg, *itsTmp, out);
       if (!res) {
 	cerr << errMsg << endl;
       }
     } else {
-      ImageInterface<Float>* pim = 0;
-      if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {
-        pim = new HDF5Image<Float> (itsTmp->shape(),
+      ImageInterface<float>* pim = 0;
+      if (dynamic_cast<HDF5Image<float>*>(pImage) != 0) {
+        pim = new HDF5Image<float> (itsTmp->shape(),
                                     itsTmp->coordinates(), out);
       }
       if (pim == 0) {
-        pim = new PagedImage<Float>(itsTmp->shape(), 
+        pim = new PagedImage<float>(itsTmp->shape(), 
 				    itsTmp->coordinates(), out);
       }
       pim->copyData(*itsTmp);

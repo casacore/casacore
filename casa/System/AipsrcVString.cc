@@ -44,18 +44,18 @@ AipsrcVector<String>::AipsrcVector() :
 //# Destructor
 AipsrcVector<String>::~AipsrcVector() {}
 
-Bool AipsrcVector<String>::find(Vector<String> &value,
+bool AipsrcVector<String>::find(Vector<String> &value,
 					    const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    int32_t m = res.freq(" ") +1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
     value = Vector<String>(m);
-    for (Int i=0; i<m; i++) {
+    for (int32_t i=0; i<m; i++) {
       value(i) = nres[i];
     }
     delete [] nres;
@@ -63,29 +63,29 @@ Bool AipsrcVector<String>::find(Vector<String> &value,
   return x;
 }
 
-Bool AipsrcVector<String>::find(Vector<String> &value,
+bool AipsrcVector<String>::find(Vector<String> &value,
 					    const String &keyword, 
 					    const Vector<String> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcVector<String>::registerRC(const String &keyword,
+uint32_t AipsrcVector<String>::registerRC(const String &keyword,
 						  const Vector<String> 
 						  &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
-const Vector<String> &AipsrcVector<String>::get(uInt keyword) {
+const Vector<String> &AipsrcVector<String>::get(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
-void AipsrcVector<String>::set(uInt keyword,
+void AipsrcVector<String>::set(uint32_t keyword,
 					   const Vector<String> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
@@ -93,12 +93,12 @@ void AipsrcVector<String>::set(uInt keyword,
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
-void AipsrcVector<String>::save(uInt keyword) {
+void AipsrcVector<String>::save(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostringstream oss;
-  Int n = ((myp_p.tlst)[keyword-1]).nelements();
-  for (Int i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
+  int32_t n = ((myp_p.tlst)[keyword-1]).nelements();
+  for (int32_t i=0; i<n; i++) oss << " " << ((myp_p.tlst)[keyword-1])(i);
   Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
 }
 

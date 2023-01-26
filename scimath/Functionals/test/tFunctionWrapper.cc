@@ -36,29 +36,29 @@
 
 #include <casacore/casa/namespace.h>
 // Some C++ functions
-static Double func0(const Vector<Double> &) {return 1;}            // 1
-static Double func1(const Vector<Double> &x) {return x(0);}         // x
-static Double func2(const Vector<Double> &x) {return sin(x(1));}    // sin(y)
-static Double func3(const Vector<Double> &x) {return x(0)*x(0);}    // x^2
-/*static void myfnc(Vector<Double> &y, const Double x) {
+static double func0(const Vector<double> &) {return 1;}            // 1
+static double func1(const Vector<double> &x) {return x(0);}         // x
+static double func2(const Vector<double> &x) {return sin(x(1));}    // sin(y)
+static double func3(const Vector<double> &x) {return x(0)*x(0);}    // x^2
+/*static void myfnc(Vector<double> &y, const double x) {
   y(0) = 1;
-  for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; }
+  for (uint32_t i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; }
 */
 
 int main() {
 //************ test one ****************
   {    
     // Convert C++ functions to Functionals
-    FunctionWrapper<Double> Func0(func0,2);
-    FunctionWrapper<Double> Func1(func1,2);
-    FunctionWrapper<Double> Func2(func2,2);
-    FunctionWrapper<Double> Func3(func3,2);
+    FunctionWrapper<double> Func0(func0,2);
+    FunctionWrapper<double> Func1(func1,2);
+    FunctionWrapper<double> Func2(func2,2);
+    FunctionWrapper<double> Func3(func3,2);
     
-    CombiFunction<Double> combination;
+    CombiFunction<double> combination;
     
     // form linear combination of functions
     // f(x,y) = a0 + a1*x+ a2*sin(y) + a3*x*x
-    Vector<Double> z0(2);
+    Vector<double> z0(2);
     z0[0] = 2; z0[1] = 3;
     combination.addFunction(Func0);
     combination.addFunction(Func1);

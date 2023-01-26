@@ -73,7 +73,7 @@ public:
     LCPagedMask (const TiledShape& latticeShape, const String& tableName);
     LCPagedMask (const TiledShape& maskShape, const LCBox& box,
 		 const String& tableName);
-    LCPagedMask (PagedArray<Bool>& mask, const LCBox& box);
+    LCPagedMask (PagedArray<bool>& mask, const LCBox& box);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -86,7 +86,7 @@ public:
     LCPagedMask& operator= (const LCPagedMask& other);
 
     // Comparison
-    virtual Bool operator==(const LCRegion& other) const;
+    virtual bool operator==(const LCRegion& other) const;
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -94,22 +94,22 @@ public:
     // This function is used by the LatticeIterator class to generate an
     // iterator of the correct type for this Lattice. Not recommended
     // for general use. 
-    virtual LatticeIterInterface<Bool>* makeIter
+    virtual LatticeIterInterface<bool>* makeIter
 				(const LatticeNavigator& navigator,
-				 Bool useRef) const;
+				 bool useRef) const;
 
     // Returns the maximum recommended number of pixels for a cursor.
     // This is the number of pixels in a tile. 
-    virtual uInt advisedMaxPixels() const;
+    virtual uint32_t advisedMaxPixels() const;
 
     // Help the user pick a cursor for most efficient access.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
     // Maximum size - not necessarily all used. In pixels.
-    virtual uInt maximumCacheSize() const;
+    virtual uint32_t maximumCacheSize() const;
 
     // Set the maximum (allowed) cache size as indicated.
-    virtual void setMaximumCacheSize (uInt howManyPixels);
+    virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
     // Set the cache size as to "fit" the indicated path.
     virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -122,7 +122,7 @@ public:
     // in other rows and is always clipped to be less than the maximum value
     // set using the setMaximumCacheSize member function.
     // tiles. Tiles are cached using a first in first out algorithm. 
-    virtual void setCacheSizeInTiles (uInt howManyTiles);
+    virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
     // Clears and frees up the caches, but the maximum allowed cache size is 
     // unchanged from when setCacheSize was called
@@ -135,15 +135,15 @@ public:
     virtual void handleDelete();
 
     // Handle renaming the region by renaming the associated table.
-    // If overwrite=False, an exception will be thrown if a table with the
+    // If overwrite=false, an exception will be thrown if a table with the
     // new name already exists.
-    virtual void handleRename (const String& newName, Bool overwrite);
+    virtual void handleRename (const String& newName, bool overwrite);
 
     // Handle the (un)locking.
     // <group>
-    virtual Bool lock (FileLocker::LockType, uInt nattempts);
+    virtual bool lock (FileLocker::LockType, uint32_t nattempts);
     virtual void unlock();
-    virtual Bool hasLock (FileLocker::LockType) const;
+    virtual bool hasLock (FileLocker::LockType) const;
     // </group>
 
     // Resynchronize the PagedArray object with the lattice file.
@@ -177,24 +177,24 @@ public:
 				    const String& tablename);
 
     // An LCPagedMask is writable if the underlying PagedArray is.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
 protected:
     // Construct another LCPagedMask (for e.g. another lattice) by moving
     // this one. It recalculates the bounding mask.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
 private:
     // Create the object from a record (for an existing mask).
-    LCPagedMask (PagedArray<Bool>& mask,
+    LCPagedMask (PagedArray<bool>& mask,
 		 const IPosition& blc,
 		 const IPosition& latticeShape);
 
 
     LCBox            itsBox;
-    PagedArray<Bool> itsMask;
+    PagedArray<bool> itsMask;
 };
 
 

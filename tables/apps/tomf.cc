@@ -42,8 +42,8 @@ int main (int argc, char* argv[])
   try {
     vector<String> fname;
     String outName;
-    Int64 blockSize = 1048576;
-    Bool useHDF5 = False;
+    int64_t blockSize = 1048576;
+    bool useHDF5 = false;
     for (int argnr=1; argnr<argc; ++argnr) {
       if (String(argv[argnr]) == "-b") {
         argnr++;
@@ -51,7 +51,7 @@ int main (int argc, char* argv[])
           blockSize = atoi (argv[argnr]);
         }
       } else if (String(argv[argnr]) == "-h") {
-        useHDF5 = True;
+        useHDF5 = true;
       } else if (argnr == argc-1) {
         outName = argv[argnr];
       } else {
@@ -79,12 +79,12 @@ int main (int argc, char* argv[])
       } else {
         int fd = RegularFileIO::openCreate (*iter, ByteIO::Old);
         FiledesIO file(fd, *iter);
-        Int64 todo = file.length();
+        int64_t todo = file.length();
         cout << "  copying " << todo << " bytes of " << *iter
              << " ..." << endl;
         MFFileIO outfile (mfile, *iter, ByteIO::New);
         while (todo > 0) {
-          Int64 sz = file.read (std::min(todo, blockSize), buffer.storage());
+          int64_t sz = file.read (std::min(todo, blockSize), buffer.storage());
           outfile.write (sz, buffer.storage());
           todo -= sz;
         }

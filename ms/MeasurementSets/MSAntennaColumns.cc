@@ -103,9 +103,9 @@ void MSAntennaColumns::setOffsetRef(MPosition::Types ref)
 }
 
 
-Int64 MSAntennaColumns::
-matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
-	     Int64 tryRow) {
+int64_t MSAntennaColumns::
+matchAntenna(const MPosition& antennaPos, const Quantum<double>& tolerance,
+	     int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -121,9 +121,9 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   // Convert the tolerance to meters
   const Unit m("m");
   DebugAssert(tolerance.check(m.getValue()), AipsError);
-  const Double tolInM = tolerance.getValue(m);
+  const double tolInM = tolerance.getValue(m);
   // Convert the position to meters
-  const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
+  const Vector<double>& antPosInM = antennaPos.getValue().getValue();
   // Main matching loop
   if (tryRow >= 0) {
     const rownr_t tr = tryRow;
@@ -148,20 +148,20 @@ matchAntenna(const MPosition& antennaPos, const Quantum<Double>& tolerance,
   return -1;
 }
 
-Int64 MSAntennaColumns::matchAntenna(const String& antName,
+int64_t MSAntennaColumns::matchAntenna(const String& antName,
                                      const MPosition& antennaPos,
-                                     const Quantum<Double>& tolerance,
-                                     Int64 tryRow) {
+                                     const Quantum<double>& tolerance,
+                                     int64_t tryRow) {
   return matchAntennaAndStation(antName, "",
 				antennaPos, tolerance, tryRow);
 
 }
 
-Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
+int64_t MSAntennaColumns::matchAntennaAndStation(const String& antName,
                                                const String& stationName,
                                                const MPosition& antennaPos,
-                                               const Quantum<Double>& tolerance,
-                                               Int64 tryRow) {
+                                               const Quantum<double>& tolerance,
+                                               int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the antenna position to something in m.
@@ -177,9 +177,9 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
   // Convert the tolerance to meters
   const Unit m("m");
   DebugAssert(tolerance.check(m.getValue()), AipsError);
-  const Double tolInM = tolerance.getValue(m);
+  const double tolInM = tolerance.getValue(m);
   // Convert the position to meters
-  const Vector<Double>& antPosInM = antennaPos.getValue().getValue();
+  const Vector<double>& antPosInM = antennaPos.getValue().getValue();
 
   // Main matching loop
   if (tryRow >= 0) {
@@ -189,7 +189,7 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
                       "row " + String::toString(tr) +
                       " you suggest is too big"));
     }
-    Bool stationMatches = stationName.empty() || matchStation(tr, stationName);
+    bool stationMatches = stationName.empty() || matchStation(tr, stationName);
     if (!flagRow()(tr) &&
 	stationMatches &&
 	matchName(tr, antName) &&
@@ -200,7 +200,7 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
   }
   while (r > 0) {
     r--;
-    Bool stationMatches = stationName.empty() || matchStation(r, stationName);
+    bool stationMatches = stationName.empty() || matchStation(r, stationName);
     if (!flagRow()(r) &&
 	stationMatches &&
 	matchName(r, antName) &&
@@ -212,19 +212,19 @@ Int64 MSAntennaColumns::matchAntennaAndStation(const String& antName,
 }
 
 
-Bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
+bool MSAntennaColumns::matchName(rownr_t row, const String& antName) const {
   DebugAssert(row < nrow(), AipsError);
   return antName.matches(name()(row));
 }
 
-Bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
+bool MSAntennaColumns::matchStation(rownr_t row, const String& stationName) const {
   DebugAssert(row < nrow(), AipsError);
   return stationName.matches(station()(row));
 }
 
-Bool MSAntennaColumns::
-matchPosition(rownr_t row, const Vector<Double>& antPosInM,
-	      const Double tolInM) const {
+bool MSAntennaColumns::
+matchPosition(rownr_t row, const Vector<double>& antPosInM,
+	      const double tolInM) const {
   DebugAssert(row < nrow(), AipsError);
   DebugAssert(antPosInM.nelements() == 3, AipsError);
   return allNearAbs(position()(row), antPosInM, tolInM);

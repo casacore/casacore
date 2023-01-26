@@ -43,8 +43,8 @@ MSObservationIndex::MSObservationIndex(const MSObservation& observationTable)
 // Output to private data:
 //    msObservationCols_p   MSObservationColumns  MSObservation columns 
 //                                                  accessor
-//    observationIds_p      Vector<Int>             Observation id.'s
-//    nrows_p               Int                     Number of rows
+//    observationIds_p      Vector<int32_t>             Observation id.'s
+//    nrows_p               int32_t                     Number of rows
 //
   // Generate an array of observation id's, used in later queries
   nrows_p = msObservationCols_p.nrow();
@@ -54,20 +54,20 @@ MSObservationIndex::MSObservationIndex(const MSObservation& observationTable)
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSObservationIndex::matchProjectCode(const String& projectCode)
+Vector<int32_t> MSObservationIndex::matchProjectCode(const String& projectCode)
 {
 // Match a project code
 // Input:
 //    projectCode        const String&            Project code
 // Output:
-//    matchProjectCode   Vector<Int>              Matching observation id.'s
+//    matchProjectCode   Vector<int32_t>              Matching observation id.'s
 //
 
   // Match the project code
   // by row and correlation index
   LogicalArray maskArray(msObservationCols_p.project().getColumn() == 
 			 projectCode);
-  MaskedArray<Int> maskObsIds(observationIds_p, maskArray);
+  MaskedArray<int32_t> maskObsIds(observationIds_p, maskArray);
   return maskObsIds.getCompressedArray();
 }
 

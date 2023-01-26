@@ -35,12 +35,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
-const Double Nutation::INTV = 0.04;
+const double Nutation::INTV = 0.04;
 
 //# Static data
-uInt Nutation::myInterval_reg = 0;
-uInt Nutation::myUseiers_reg = 0;
-uInt Nutation::myUsejpl_reg = 0;
+uint32_t Nutation::myInterval_reg = 0;
+uint32_t Nutation::myUseiers_reg = 0;
+uint32_t Nutation::myUsejpl_reg = 0;
 
 //# Constructors
 Nutation::Nutation() :
@@ -80,11 +80,11 @@ void Nutation::copy(const Nutation &other) {
   deqeq_p = other.deqeq_p;
   neval_p = other.neval_p;
   deval_p = other.deval_p;
-  for (uInt i=0; i<3; i++) {
+  for (uint32_t i=0; i<3; i++) {
     nval_p[i] = other.nval_p[i];
     dval_p[i] = other.dval_p[i];
   }
-  for (Int j=0; j<4; j++) {
+  for (int32_t j=0; j<4; j++) {
     result_p[j] = other.result_p[j];
   }
 }
@@ -94,46 +94,46 @@ Nutation::~Nutation() {}
 
 //# Operators
 // Calculate Nutation Euler angles
-const Euler &Nutation::operator()(Double epoch) {
+const Euler &Nutation::operator()(double epoch) {
   calcNut(epoch);
   lres_p++; lres_p %= 4;
-  for (uInt i=0; i<3; ++i) result_p[lres_p](i) = nval_p[i];
-  Double dt = epoch - checkEpoch_p;
+  for (uint32_t i=0; i<3; ++i) result_p[lres_p](i) = nval_p[i];
+  double dt = epoch - checkEpoch_p;
   if (dt != 0) {
-    for (uInt i=0; i<3; ++i) result_p[lres_p](i) += dt*dval_p[i];
+    for (uint32_t i=0; i<3; ++i) result_p[lres_p](i) += dt*dval_p[i];
   }
   return result_p[lres_p];
 }
 
 //# Member functions
 
-const Euler &Nutation::derivative(Double epoch) {
-  calcNut(epoch, True);
+const Euler &Nutation::derivative(double epoch) {
+  calcNut(epoch, true);
   lres_p++; lres_p %= 4;
-  for (uInt i=0; i<3; i++) result_p[lres_p](i) = dval_p[i];
+  for (uint32_t i=0; i<3; i++) result_p[lres_p](i) = dval_p[i];
   return result_p[lres_p];
 }
 
 void Nutation::fill() {
   checkEpoch_p = 1e30;
   checkDerEpoch_p = 1e30;
-  for (uInt i=0; i<4; i++) result_p[i].set(1,3,1);
+  for (uint32_t i=0; i<4; i++) result_p[i].set(1,3,1);
   // Get interval and other switches
   if (!Nutation::myInterval_reg) {
     myInterval_reg = 
-      AipsrcValue<Double>::registerRC(String("measures.nutation.d_interval"),
+      AipsrcValue<double>::registerRC(String("measures.nutation.d_interval"),
 				      Unit("d"), Unit("d"),
 				      Nutation::INTV);
   }
   if (!Nutation::myUseiers_reg) {
     myUseiers_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"),
-				    False);
+      AipsrcValue<bool>::registerRC(String("measures.nutation.b_useiers"),
+				    false);
   }
   if (!Nutation::myUsejpl_reg) {
     myUsejpl_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.nutation.b_usejpl"),
-				    False);
+      AipsrcValue<bool>::registerRC(String("measures.nutation.b_usejpl"),
+				    false);
   }
 }
 
@@ -142,51 +142,51 @@ void Nutation::refresh() {
   checkDerEpoch_p = 1e30;
 }
 
-Double Nutation::eqox(Double epoch) {
+double Nutation::eqox(double epoch) {
   calcNut(epoch);
-  Double dt = epoch - checkEpoch_p;
+  double dt = epoch - checkEpoch_p;
   if (dt == 0) return eqeq_p;
   return (eqeq_p + dt*deqeq_p);
 }
 
-Double Nutation::derivativeEqox(Double epoch) {
-  calcNut(epoch, True);
+double Nutation::derivativeEqox(double epoch) {
+  calcNut(epoch, true);
   return deqeq_p;
 }
 
-Double Nutation::eqoxCT(Double epoch) {
+double Nutation::eqoxCT(double epoch) {
   calcNut(epoch);
-  Double dt = epoch - checkEpoch_p;
+  double dt = epoch - checkEpoch_p;
   if (dt == 0) return neval_p;
   return neval_p + dt*deval_p;
 }
 
-Double Nutation::derivativeEqoxCT(Double epoch) {
-  calcNut(epoch, True);
+double Nutation::derivativeEqoxCT(double epoch) {
+  calcNut(epoch, true);
   return deval_p;
 }
 
-Quantity Nutation::getEqoxAngle(Double epoch) {
+Quantity Nutation::getEqoxAngle(double epoch) {
   return Quantity(eqox(epoch),"rad");
 }
 
-Quantity Nutation::getEqoxAngle(Double epoch, const Unit &unit) {
+Quantity Nutation::getEqoxAngle(double epoch, const Unit &unit) {
   return Quantity(eqox(epoch),"rad").get(unit);
 }
 
-void Nutation::calcNut(Double time, Bool calcDer) {
+void Nutation::calcNut(double time, bool calcDer) {
   // Calculate the nutation value at epoch
-  Double t = time;
-  Double epsilon = 1e-6;
+  double t = time;
+  double epsilon = 1e-6;
   if (!calcDer) {
-    epsilon = AipsrcValue<Double>::get(Nutation::myInterval_reg);
+    epsilon = AipsrcValue<double>::get(Nutation::myInterval_reg);
   }
-  Bool renew = False;
+  bool renew = false;
   if (!nearAbs(time, checkEpoch_p, epsilon)) {
     checkEpoch_p = time;
-    renew = True;
-    Double dEps = 0;
-    Double dPsi = 0;
+    renew = true;
+    double dEps = 0;
+    double dPsi = 0;
     switch (method_p) {
     case B1950:
       t = (t - MeasData::MJDB1900)/MeasData::JDCEN;
@@ -196,30 +196,30 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     default:
-      if (AipsrcValue<Bool>::get(Nutation::myUseiers_reg)) {
+      if (AipsrcValue<bool>::get(Nutation::myUseiers_reg)) {
 	dPsi = MeasTable::dPsiEps(0, t);
 	dEps = MeasTable::dPsiEps(1, t);
       }
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     }
-    Vector<Double> fa(5), dfa(5);
-    Vector<Double> pfa(14), pdfa(14);
-    Double dtmp;
-    nval_p[1] = Double(0);
-    nval_p[2] = Double(0);
+    Vector<double> fa(5), dfa(5);
+    Vector<double> pfa(14), pdfa(14);
+    double dtmp;
+    nval_p[1] = double(0);
+    nval_p[2] = double(0);
     neval_p = 0;
     switch (method_p) {
     case B1950:
       {
         nval_p[0] = MeasTable::fundArg1950(0)(t); 	//eps0
-        for (uInt i=0; i<5; i++) {
+        for (uint32_t i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg1950(i+1)(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC1950(t, 1e-6));
-        for (uInt i=0; i<69; i++) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC1950(t, 1e-6));
+        for (uint32_t i=0; i<69; i++) {
           dtmp = 0;
-          for (uInt j=0; j<5; j++) {
+          for (uint32_t j=0; j<5; j++) {
             dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
           }
           nval_p[1] += (*mul)(0,i) * sin(dtmp);
@@ -230,13 +230,13 @@ void Nutation::calcNut(Double time, Bool calcDer) {
     case IAU2000B:
       {
         nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
-        for (uInt i=0; i<5; i++) {
+        for (uint32_t i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000B(t, 1e-6));
-        for (Int i=76; i>=0; --i) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC2000B(t, 1e-6));
+        for (int32_t i=76; i>=0; --i) {
           dtmp = 0;
-          for (uInt j=0; j<5; j++) {
+          for (uint32_t j=0; j<5; j++) {
             dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
           }
           nval_p[1] += (*mul)(0,i) * sin(dtmp);
@@ -252,13 +252,13 @@ void Nutation::calcNut(Double time, Bool calcDer) {
     case IAU2000A:
       {
         nval_p[0] = MeasTable::fundArg2000(0)(t); 	//eps0
-        for (uInt i=0; i<5; i++) {
+        for (uint32_t i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000A(t, 1e-6));
-        for (Int i=677; i>=0; --i) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC2000A(t, 1e-6));
+        for (int32_t i=677; i>=0; --i) {
           dtmp = 0;
-          for (uInt j=0; j<5; j++) {
+          for (uint32_t j=0; j<5; j++) {
             dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
           }
           nval_p[1] += (*mul)(0,i) * sin(dtmp);
@@ -266,12 +266,12 @@ void Nutation::calcNut(Double time, Bool calcDer) {
           nval_p[1] += (*mul)(4,i) * cos(dtmp);
           nval_p[2] += (*mul)(5,i) * sin(dtmp);
         }
-        for (uInt i=0; i<14; i++) {
+        for (uint32_t i=0; i<14; i++) {
           pfa(i) = MeasTable::planetaryArg2000(i)(t);
         }
-        for (Int i=686; i>=0; --i) {
+        for (int32_t i=686; i>=0; --i) {
           dtmp = 0;
-          for (uInt j=0; j<14; j++) {
+          for (uint32_t j=0; j<14; j++) {
             dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
           }
           nval_p[1] += C::arcsec*1e-7 *
@@ -285,19 +285,19 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       break;
     default:
       nval_p[0] = MeasTable::fundArg(0)(t); 	//eps0
-      if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
-	Vector<Double> mypl =
+      if (AipsrcValue<bool>::get(Nutation::myUsejpl_reg)) {
+	Vector<double> mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
 	nval_p[1] = mypl[0];
 	nval_p[2] = mypl[1];
       } else {
-	for (uInt i=0; i<5; i++) {
+	for (uint32_t i=0; i<5; i++) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
 	}
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC(t, 1e-6));
-	for (uInt i=0; i<106; i++) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC(t, 1e-6));
+	for (uint32_t i=0; i<106; i++) {
 	  dtmp = 0;
-	  for (uInt j=0; j<5; j++) {
+	  for (uint32_t j=0; j<5; j++) {
 	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
 	  }
 	  nval_p[1] += (*mul)(0,i) * sin(dtmp);
@@ -315,22 +315,22 @@ void Nutation::calcNut(Double time, Bool calcDer) {
     // Complimentary terms equation of equinoxes
     switch (method_p) {
     case IAU2000B:
-      for (uInt i=0; i<14; i++) {
+      for (uint32_t i=0; i<14; i++) {
 	pfa(i) = MeasTable::planetaryArg2000(i)(t);
       }
       CASACORE_FALLTHROUGH;
     case IAU2000A:
       neval_p = 0;
-      for (Int i=32; i>=0; --i) {
+      for (int32_t i=32; i>=0; --i) {
 	dtmp = 0;
-	for (uInt j=0; j<14; j++) {
+	for (uint32_t j=0; j<14; j++) {
 	  dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
 	}
 	neval_p += MeasTable::mulSCEqEqCT2000(i)[0] * sin(dtmp);
 	neval_p += MeasTable::mulSCEqEqCT2000(i)[1] * cos(dtmp);
       }
       dtmp = 0;
-      for (uInt j=0; j<14; j++) {
+      for (uint32_t j=0; j<14; j++) {
 	dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
       }
       neval_p += t*MeasTable::mulSCEqEqCT2000(33)[0] * sin(dtmp);
@@ -360,24 +360,24 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     }
-    Vector<Double> fa(5), dfa(5);
-    Vector<Double> pfa(14), pdfa(14);
-    Double dtmp, ddtmp;
-    dval_p[1] = Double(0);
-    dval_p[2] = Double(0);
+    Vector<double> fa(5), dfa(5);
+    Vector<double> pfa(14), pdfa(14);
+    double dtmp, ddtmp;
+    dval_p[1] = double(0);
+    dval_p[2] = double(0);
     deval_p = 0;
     switch (method_p) {
     case B1950:
       {
         dval_p[0] = (MeasTable::fundArg1950(0).derivative())(t);
-        for (uInt i=0; i<5; i++) {
+        for (uint32_t i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg1950(i+1)(t);
           dfa(i) = (MeasTable::fundArg1950(i+1).derivative())(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC1950(t, 1e-6));
-        for (uInt i=0; i<69; i++) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC1950(t, 1e-6));
+        for (uint32_t i=0; i<69; i++) {
           dtmp = ddtmp = 0;
-          for (uInt j=0; j<5; j++) {
+          for (uint32_t j=0; j<5; j++) {
             dtmp += MeasTable::mulArg1950(i)[j] * fa[j];
             ddtmp += MeasTable::mulArg1950(i)[j] * dfa[j];
           }
@@ -389,14 +389,14 @@ void Nutation::calcNut(Double time, Bool calcDer) {
     case IAU2000B:
       {
         dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
-        for (uInt i=0; i<5; i++) {
+        for (uint32_t i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
           dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000B(t, 1e-6));
-        for (Int i=76; i>=0; --i) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC2000B(t, 1e-6));
+        for (int32_t i=76; i>=0; --i) {
           dtmp = ddtmp = 0;
-          for (uInt j=0; j<5; j++) {
+          for (uint32_t j=0; j<5; j++) {
             dtmp += MeasTable::mulArg2000B(i)[j] * fa[j];
             ddtmp += MeasTable::mulArg2000B(i)[j] * dfa[j];
           }
@@ -409,27 +409,27 @@ void Nutation::calcNut(Double time, Bool calcDer) {
     case IAU2000A:
       {
         dval_p[0] = (MeasTable::fundArg2000(0).derivative())(t)/MeasData::JDCEN;
-        for (uInt i=0; i<5; i++) {
+        for (uint32_t i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
           dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000A(t, 1e-6));
-        for (Int i=677; i>=0; --i) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC2000A(t, 1e-6));
+        for (int32_t i=677; i>=0; --i) {
           dtmp = ddtmp = 0;
-          for (uInt j=0; j<5; j++) {
+          for (uint32_t j=0; j<5; j++) {
             dtmp += MeasTable::mulArg2000A(i)[j] * fa[j];
             ddtmp += MeasTable::mulArg2000A(i)[j] * dfa[j];
           }
           dval_p[1] += (*mul)(2,i) * sin(dtmp) + (*mul)(0,i) * cos(dtmp) * ddtmp;
           dval_p[2] += (*mul)(3,i) * cos(dtmp) - (*mul)(1,i) * sin(dtmp) * ddtmp;
         }
-        for (uInt i=0; i<14; i++) {
+        for (uint32_t i=0; i<14; i++) {
           pfa(i) = MeasTable::planetaryArg2000(i)(t);
           pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
         }
-        for (Int i=686; i>=0; --i) {
+        for (int32_t i=686; i>=0; --i) {
           dtmp = ddtmp = 0;
-          for (uInt j=0; j<14; j++) {
+          for (uint32_t j=0; j<14; j++) {
             dtmp += MeasTable::mulPlanArg2000A(i)[j] * pfa[j];
             ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
           }
@@ -444,20 +444,20 @@ void Nutation::calcNut(Double time, Bool calcDer) {
       break;
     default:
       dval_p[0] = (MeasTable::fundArg(0).derivative())(t)/MeasData::JDCEN;
-      if (AipsrcValue<Bool>::get(Nutation::myUsejpl_reg)) {
-	Vector<Double> mypl =
+      if (AipsrcValue<bool>::get(Nutation::myUsejpl_reg)) {
+	Vector<double> mypl =
 	  MeasTable::Planetary(MeasTable::NUTATION, checkEpoch_p);
 	dval_p[1] = mypl[2]*MeasData::JDCEN;
 	dval_p[2] = mypl[3]*MeasData::JDCEN;
       } else {
-	for (uInt i=0; i<5; i++) {
+	for (uint32_t i=0; i<5; i++) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
 	  dfa(i) = (MeasTable::fundArg(i+1).derivative())(t);
 	}
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC(t, 1e-6));
-	for (uInt i=0; i<106; i++) {
+        CountedPtr<Matrix<double> > mul(MeasTable::mulSC(t, 1e-6));
+	for (uint32_t i=0; i<106; i++) {
 	  dtmp = ddtmp = 0;
-	  for (uInt j=0; j<5; j++) {
+	  for (uint32_t j=0; j<5; j++) {
 	    dtmp += MeasTable::mulArg(i)[j] * fa[j];
 	    ddtmp += MeasTable::mulArg(i)[j] * dfa[j];
 	  }
@@ -475,16 +475,16 @@ void Nutation::calcNut(Double time, Bool calcDer) {
     // Complimentary terms equation of equinoxes
     switch (method_p) {
     case IAU2000B:
-      for (uInt i=0; i<14; i++) {
+      for (uint32_t i=0; i<14; i++) {
 	pfa(i) = MeasTable::planetaryArg2000(i)(t);
 	pdfa(i) = (MeasTable::planetaryArg2000(i).derivative())(t);
       }
       CASACORE_FALLTHROUGH;
     case IAU2000A:
       neval_p = deval_p = 0;
-      for (Int i=32; i>=0; --i) {
+      for (int32_t i=32; i>=0; --i) {
 	dtmp = ddtmp = 0;
-	for (uInt j=0; j<14; j++) {
+	for (uint32_t j=0; j<14; j++) {
 	  dtmp += MeasTable::mulArgEqEqCT2000(i)[j] * pfa[j];
 	  ddtmp += MeasTable::mulPlanArg2000A(i)[j] * pdfa[j];
 	}
@@ -492,7 +492,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
 	  MeasTable::mulSCEqEqCT2000(i)[1] * sin(dtmp) * ddtmp;
       }
       dtmp = ddtmp = 0;
-      for (uInt j=0; j<14; j++) {
+      for (uint32_t j=0; j<14; j++) {
 	dtmp += MeasTable::mulArgEqEqCT2000(33)[j] * pfa[j];
 	ddtmp += MeasTable::mulPlanArg2000A(33)[j] * pdfa[j];
       }

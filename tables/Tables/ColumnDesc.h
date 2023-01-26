@@ -96,7 +96,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     Undefined is only useful for scalars. If not given, all possible
 //     values of the scalar have a meaning. If given, a value equal to
 //     the default value in the column description is an undefined value.
-//     The function TableColumn::isDefined will return False for such
+//     The function TableColumn::isDefined will return false for such
 //     values.
 // </dl>
 // </synopsis>
@@ -159,7 +159,7 @@ public:
     // Default constructor (needed for ColumnDescSet).
     ColumnDesc()
       : colPtr_p(0),
-        allocated_p (False)
+        allocated_p (false)
     {}
 
     ~ColumnDesc();
@@ -171,8 +171,8 @@ public:
     // Two descriptions are equal when their data types, value types
     // (scalar, array or table) and possible dimensionalities are equal.
     // <group>
-    Bool operator== (const ColumnDesc&) const;
-    Bool operator!= (const ColumnDesc&) const;
+    bool operator== (const ColumnDesc&) const;
+    bool operator!= (const ColumnDesc&) const;
     // </group>
 
     // Get access to the set of keywords.
@@ -221,8 +221,8 @@ public:
     String& dataManagerGroup()
 	{ return colPtr_p->dataManagerGroup(); }
 
-    // If <src>always==True</src> they are always set, otherwise only if empty.
-    void setDefaultDataManager (Bool always=True)
+    // If <src>always==true</src> they are always set, otherwise only if empty.
+    void setDefaultDataManager (bool always=true)
         { colPtr_p->setDefaultDataManager (always); }
 
     // Get comment string.
@@ -247,20 +247,20 @@ public:
     // Check if the column is defined with a fixed shape.
     // This is always true for scalars. For arrays it is true when
     // the FixedShape flag was set when the column was defined.
-    Bool isFixedShape() const;
+    bool isFixedShape() const;
 
     // Test if column is a scalar.
-    Bool isScalar() const
+    bool isScalar() const
 	{ return colPtr_p->isScalar(); }
     // Test if column is an array.
-    Bool isArray() const
+    bool isArray() const
 	{ return colPtr_p->isArray(); }
     // Test if column is a table.
-    Bool isTable() const
+    bool isTable() const
 	{ return colPtr_p->isTable(); }
 
     // Get the number of dimensions.
-    Int ndim() const
+    int32_t ndim() const
 	{ return colPtr_p->ndim(); }
 
     // Get the predefined shape.
@@ -274,7 +274,7 @@ public:
     // and the shape.
     // Otherwise it can only be used if the dimensionality has not been
     // defined yet.
-    void setNdim (uInt ndim)
+    void setNdim (uint32_t ndim)
 	{ colPtr_p->setNdim (ndim); }
 
     // Set the predefined shape.
@@ -287,7 +287,7 @@ public:
     // <group>
     void setShape (const IPosition& shape)
 	{ colPtr_p->setShape (shape); }
-    void setShape (const IPosition& shape, Bool directOption)
+    void setShape (const IPosition& shape, bool directOption)
 	{ colPtr_p->setShape (shape, directOption); }
     // </group>
 
@@ -299,7 +299,7 @@ public:
 	{ colPtr_p->setOptions (options); }
 
     // Get the maximum value length.
-    uInt maxLength() const
+    uint32_t maxLength() const
 	{ return colPtr_p->maxLength(); }
 
     // Set the maximum value length.
@@ -307,7 +307,7 @@ public:
     // An exception is thrown if the column data type is not TpString.
     // Some storage managers support fixed length strings and can store
     // them more efficiently than variable length strings.
-    void setMaxLength (uInt maxLength)
+    void setMaxLength (uint32_t maxLength)
 	{ colPtr_p->setMaxLength (maxLength); }
 
     // Get table description (in case column contains subtables).
@@ -421,7 +421,7 @@ private:
 
 protected:
     BaseColumnDesc* colPtr_p;
-    Bool            allocated_p;    //# False = not allocated -> do not delete
+    bool            allocated_p;    //# false = not allocated -> do not delete
 };
 
 

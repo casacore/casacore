@@ -35,14 +35,14 @@ int main() {
 	// Unit tests for toRecord(const StatsData<AccumType>& stats) from
 	// StatisticsTypes.
 	try {
-		struct StatsData<Double> stats;
-		stats.masked = True;
-		stats.max = new Double(27.3);
+		struct StatsData<double> stats;
+		stats.masked = true;
+		stats.max = new double(27.3);
 		stats.maxpos = std::make_pair(2, 55);
 		stats.mean = 22.1;
-		stats.median = new Double(22.8);
-		stats.medAbsDevMed = new Double(1.3);
-		stats.min = new Double(18.4);
+		stats.median = new double(22.8);
+		stats.medAbsDevMed = new double(1.3);
+		stats.min = new double(18.4);
 		stats.minpos = std::make_pair(1, 2);
 		stats.npts = 111.0;
 		stats.nvariance = 249.75;
@@ -52,7 +52,7 @@ int main() {
 		stats.sumsq = 54463.26;
 		stats.sumweights = 105.8;
 		stats.variance = 2.25;
-		stats.weighted = True;
+		stats.weighted = true;
 
 		// The following four tests should be done in the given order, as the
 		// sequence of tests incrementally removes some values from the "stats"
@@ -124,8 +124,8 @@ int main() {
 		}
 		{
 			// "sumweights" should be absent from output record when "weighted"
-			// flag is False.
-			stats.weighted = False;
+			// flag is false.
+			stats.weighted = false;
 			Record rec = toRecord(stats);
 			AlwaysAssert(
 				rec.isDefined(StatisticsData::toString(StatisticsData::SUMWEIGHTS)),

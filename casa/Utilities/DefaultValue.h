@@ -57,10 +57,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-// Int foo = 35;
+// int32_t foo = 35;
 // defaultValue(foo);
 // AlwaysAssert(foo == 0, AipsError);
-// Array<Float> bar;
+// Array<float> bar;
 // defaultValue(bar);
 // AlwaysAssert(allEQ(bar, 0.0f), AipsError);
 // </srcblock>
@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 //
 // <templating arg=T>
-//    <li> constructor T(Int)
+//    <li> constructor T(int32_t)
 //    <li> assignment operator (copy semantics)
 // </templating>
 //

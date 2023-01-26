@@ -55,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <br> The class is primarily developed for TaQL masked arrays, but
   // could be used elsewhere as well.
   //
-  // A mask value True means that the corresponding value is masked off, thus
+  // A mask value true means that the corresponding value is masked off, thus
   // not taken into account in reduction functions like <src>sum</src>. This
   // is the same as the numpy masked array.
   //
@@ -69,22 +69,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     // Default constructor creates a null array.
     MArray()
-      : MArrayBase (True)
+      : MArrayBase (true)
     {}
 
     // Construct from an array without a mask.
     // It references the given array.
     explicit MArray (const Array<T>& array)
-      : MArrayBase (False),
+      : MArrayBase (false),
         itsArray  (array)
     {
-      resizeBase (array, False);
+      resizeBase (array, false);
     }
 
     // Construct from an array and a mask.
     // It references the given arrays.
-    // <src>isNull=True</src> requires the arrays to be empty.
-    MArray (const Array<T>& array, const Array<Bool>& mask, Bool isNull=False)
+    // <src>isNull=true</src> requires the arrays to be empty.
+    MArray (const Array<T>& array, const Array<bool>& mask, bool isNull=false)
       : MArrayBase (array, mask, isNull),
         itsArray   (array)
     {}
@@ -99,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Construct from two MArrays, one the array, the other the mask.
     // If one of them is null, the constructed MArray is null.
-    MArray (const MArray<T>& array, const MArray<Bool>& mask)
+    MArray (const MArray<T>& array, const MArray<bool>& mask)
       : MArrayBase (array.isNull()  ||  mask.isNull())
     {
       if (! isNull()) {
@@ -117,7 +117,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Resize the array and optionally the mask.
     // It always sets the MArray to non-null.
-    void resize (const IPosition& shape, Bool useMask)
+    void resize (const IPosition& shape, bool useMask)
     {
       itsArray.resize (shape);
       resizeBase (itsArray, useMask);
@@ -143,7 +143,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {
       itsArray.resize (from.shape());
       convertArray (itsArray, from);
-      resizeBase (itsArray, False);
+      resizeBase (itsArray, false);
     }
 
     // Get access to the array.
@@ -203,14 +203,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else {
       // Copy only the valid elements.
       if (itsArray.contiguousStorage() && mask().contiguousStorage()) {
-        typename Array<Bool>::const_contiter miter = mask().cbegin();
+        typename Array<bool>::const_contiter miter = mask().cbegin();
         typename Array<T>::const_contiter iterEnd = itsArray.cend();
         for (typename Array<T>::const_contiter iter=itsArray.cbegin();
              iter!=iterEnd; ++iter, ++miter) {
           if (!*miter) out[nr++] = *iter;
         }
       } else {
-        typename Array<Bool>::const_iterator miter = mask().begin();
+        typename Array<bool>::const_iterator miter = mask().begin();
         typename Array<T>::const_iterator iterEnd = itsArray.end();
         for (typename Array<T>::const_iterator iter=itsArray.begin();
              iter!=iterEnd; ++iter, ++miter) {

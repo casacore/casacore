@@ -62,25 +62,25 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Antenna 1 id <BR>
-    // Int
+    // int32_t
     ANTENNA1,
     // Antenna 2 id <BR>
-    // Int
+    // int32_t
     ANTENNA2,
     // Feed id <BR>
-    // Int
+    // int32_t
     FEED_ID,
     // Time interval <BR>
-    // Double - s
+    // double - s
     INTERVAL,
     // Frequency offset <BR>
-    // Double - Hz
+    // double - Hz
     OFFSET,
     // Spectral window id <BR>
-    // Int
+    // int32_t
     SPECTRAL_WINDOW_ID,
     // Midpoint of time interval <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME,

@@ -46,7 +46,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ImageRegion::ImageRegion()
-: LattRegionHolder (uInt(0)),
+: LattRegionHolder (uint32_t(0)),
   itsWC            (0)
 {}
 
@@ -112,15 +112,15 @@ ImageRegion* ImageRegion::clone() const
     return new ImageRegion (*this);
 }
 
-Bool ImageRegion::operator== (const LattRegionHolder& other) const
+bool ImageRegion::operator== (const LattRegionHolder& other) const
 {
     if (! LattRegionHolder::operator== (other)) {
-	return False;
+	return false;
     }
     if (itsWC != 0) {
 	return (*itsWC == *other.asWCRegionPtr());
     }
-    return True;
+    return true;
 }
 
 ImageRegion* ImageRegion::fromLatticeExpression(const String& latticeExpression)
@@ -172,7 +172,7 @@ ImageRegion* ImageRegion::fromRecord(LogIO* logger,
   return pRegion;
 }
 
-Bool ImageRegion::isWCRegion() const
+bool ImageRegion::isWCRegion() const
 {
     return  (itsWC != 0);
 }
@@ -247,7 +247,7 @@ ImageRegion* ImageRegion::fromRecord (const TableRecord& record,
     // Convert to correct region object.
     // Note that in the following the ImageRegion constructors take
     // over the pointer returned by fromRecord.
-    Int regionType = record.asInt ("isRegion");       
+    int32_t regionType = record.asInt ("isRegion");       
     if (regionType == RegionType::LC) {
 	return new ImageRegion (LCRegion::fromRecord (record, tableName));
     }

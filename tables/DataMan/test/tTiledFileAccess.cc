@@ -44,15 +44,15 @@
 #include <casacore/casa/namespace.h>
 int main()
 {
-  // Test for a Float array written in big endian canonical format starting
+  // Test for a float array written in big endian canonical format starting
   // at offset 0.
   {
     IPosition shape(2,16,32);
-    Array<Float> arr(shape);
+    Array<float> arr(shape);
     indgen(arr);
     {
-      Bool deleteIt;
-      const Float* dataPtr = arr.getStorage (deleteIt);
+      bool deleteIt;
+      const float* dataPtr = arr.getStorage (deleteIt);
       RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
       CanonicalIO ios (&fios);
       ios.write (shape.product(), dataPtr);
@@ -61,7 +61,7 @@ int main()
     try {
       TiledFileAccess tfa ("tTiledFileAccess_tmp.dat", 0, shape,
 			   IPosition(2,16,1), TpFloat, TSMOption::Cache,
-                           False, True);
+                           false, true);
       AlwaysAssertExit (tfa.shape() == shape);
       AlwaysAssertExit (tfa.tileShape() == IPosition(2,16,1));
       AlwaysAssertExit (! tfa.isWritable());
@@ -80,21 +80,21 @@ int main()
     }
   }
 
-  // Test for a Float array written in local format starting
+  // Test for a float array written in local format starting
   // at offset 1. The tile size is half the length of the first axis.
   // This assumes local format is the same as local canonical format
   // which is true for all data types except long.
   {
     IPosition shape(2,32,16);
-    Array<Float> arr(shape);
+    Array<float> arr(shape);
     indgen(arr);
-    uInt off2;
+    uint32_t off2;
     {
-      Bool deleteIt;
-      const Float* dataPtr = arr.getStorage (deleteIt);
+      bool deleteIt;
+      const float* dataPtr = arr.getStorage (deleteIt);
       RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
       RawIO ios (&fios);
-      uChar nr  = 0;
+      unsigned char nr  = 0;
       off2 = ios.write (1, &nr);
       ios.write (shape.product(), dataPtr);
       arr.freeStorage (dataPtr, deleteIt);
@@ -128,9 +128,9 @@ int main()
     IPosition shape(2,17,40);
     Array<DComplex> arr(shape);
     indgen(arr);
-    uInt off2;
+    uint32_t off2;
     {
-      Bool deleteIt;
+      bool deleteIt;
       const DComplex* dataPtr = arr.getStorage (deleteIt);
       RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
       CanonicalIO ios (&fios);
@@ -143,14 +143,14 @@ int main()
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
 			    IPosition(2,17,1), TpDComplex,
-                            TSMOption::Cache, True, True);
+                            TSMOption::Cache, true, true);
       AlwaysAssertExit (tfac.isWritable());
       AlwaysAssertExit (allEQ (arr, tfac.getDComplex (slicer)));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
       TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
 			    IPosition(2,17,1), TpDComplex,
-                            TSMOption::Cache, True);
+                            TSMOption::Cache, true);
       AlwaysAssertExit (allEQ (arr, tfal.getDComplex (slicer)));
       tfac.put (tfac.getDComplex(slicer) + DComplex(1,2), slicer);
       tfal.put (tfal.getDComplex(slicer) + DComplex(3,5), slicer);
@@ -161,16 +161,16 @@ int main()
     try {
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
 			    IPosition(2,17,1), TpDComplex,
-                            TSMOption::Buffer, True, True);
+                            TSMOption::Buffer, true, true);
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,17,1));
       TiledFileAccess tfal ("tTiledFileAccess_tmp.dat", off2, shape,
 			    IPosition(2,17,1), TpDComplex,
-                            TSMOption::Buffer, True);
+                            TSMOption::Buffer, true);
       IPosition st(2,0,0);
       IPosition end(2,15,0);
       IPosition leng(2,16,1);
-      for (Int i=0; i<shape(0); i++) {
+      for (int32_t i=0; i<shape(0); i++) {
 	st(1) = i;
 	end(1) = i;
 	AlwaysAssertExit (allEQ (arr(st,end) + DComplex(1,2),
@@ -185,19 +185,19 @@ int main()
     }
   }
 
-  // Test for a uChar array written in canonical format.
-  // Read it also back as Float with a scale and offset.
+  // Test for a unsigned char array written in canonical format.
+  // Read it also back as float with a scale and offset.
   {
     IPosition shape(2,10,10);
-    Array<uChar> arrs(shape);
-    Array<Float> arrf(shape);
-    Float scale = 2;
-    Float offset = 2;
+    Array<unsigned char> arrs(shape);
+    Array<float> arrf(shape);
+    float scale = 2;
+    float offset = 2;
     indgen(arrs);
     indgen(arrf, float(2), float(2));
     {
-      Bool deleteIt;
-      const uChar* dataPtr = arrs.getStorage (deleteIt);
+      bool deleteIt;
+      const unsigned char* dataPtr = arrs.getStorage (deleteIt);
       RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
       CanonicalIO ios (&fios);
       ios.write (shape.product(), dataPtr);
@@ -207,10 +207,10 @@ int main()
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
 			    IPosition(2,10,5), TpUChar,
-                            TSMOption::Cache, True, True);
+                            TSMOption::Cache, true, true);
       AlwaysAssertExit (allEQ (arrs, tfac.getUChar (slicer)));
       AlwaysAssertExit (allEQ (arrf, tfac.getFloat (slicer, scale, offset,
-						    uChar(255))));
+						    static_cast<unsigned char>(255))));
       AlwaysAssertExit (tfac.shape() == shape);
       AlwaysAssertExit (tfac.tileShape() == IPosition(2,10,5));
     } catch (std::exception& x) {
@@ -219,19 +219,19 @@ int main()
     }
   }
 
-  // Test for a Short array written in canonical format.
-  // Read it also back as Float with a scale and offset.
+  // Test for a int16_t array written in canonical format.
+  // Read it also back as float with a scale and offset.
   {
     IPosition shape(2,17,40);
-    Array<Short> arrs(shape);
-    Array<Float> arrf(shape);
-    Float scale = 2;
-    Float offset = -10;
+    Array<int16_t> arrs(shape);
+    Array<float> arrf(shape);
+    float scale = 2;
+    float offset = -10;
     indgen(arrs);
     indgen(arrf, float(-10), float(2));
     {
-      Bool deleteIt;
-      const Short* dataPtr = arrs.getStorage (deleteIt);
+      bool deleteIt;
+      const int16_t* dataPtr = arrs.getStorage (deleteIt);
       RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
       CanonicalIO ios (&fios);
       ios.write (shape.product(), dataPtr);
@@ -241,7 +241,7 @@ int main()
       Slicer slicer (IPosition(2,0,0), shape);
       TiledFileAccess tfac ("tTiledFileAccess_tmp.dat", 0, shape,
 			    IPosition(2,17,4), TpShort,
-                            TSMOption::Cache, True, True);
+                            TSMOption::Cache, true, true);
       AlwaysAssertExit (allEQ (arrs, tfac.getShort (slicer)));
       AlwaysAssertExit (allEQ (arrf, tfac.getFloat (slicer, scale, offset,
 						    short(-32768))));

@@ -34,8 +34,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiHDF5::MultiHDF5 (const String& name, ByteIO::OpenOption option,
-                        Int blockSize)
-    : MultiFileBase (name, blockSize, False),     //# no O_DIRECT in HDF5
+                        int32_t blockSize)
+    : MultiFileBase (name, blockSize, false),     //# no O_DIRECT in HDF5
       itsFile       (new HDF5File(itsName, option)),
       itsHDF5       (itsFile.get())
   {
@@ -44,9 +44,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiHDF5::MultiHDF5 (const String& name,
                         const std::shared_ptr<MultiFileBase>& parent,
-                        ByteIO::OpenOption option, Int blockSize)
+                        ByteIO::OpenOption option, int32_t blockSize)
     // Use parent's block size if not specified.
-    : MultiFileBase (name, blockSize>0 ? blockSize:parent->blockSize(), False)
+    : MultiFileBase (name, blockSize>0 ? blockSize:parent->blockSize(), false)
   {
     // Get the overall HDF5 file object.
     MultiHDF5* parentHDF5 = dynamic_cast<MultiHDF5*>(parent.get());
@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   std::shared_ptr<MultiFileBase> MultiHDF5::makeNested
   (const std::shared_ptr<MultiFileBase>& parent, const String& name,
-   ByteIO::OpenOption option, Int blockSize) const
+   ByteIO::OpenOption option, int32_t blockSize) const
   {
     return std::shared_ptr<MultiFileBase> (new MultiHDF5 (name, parent,
                                                           option, blockSize));
@@ -88,10 +88,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void MultiHDF5::doOpenFile (MultiFileInfo& info)
   {
-    DebugAssert (! info.group->isValid(), AipsError);
+    DebugAssert (! info.group, AipsError);
     info.group.reset (new HDF5Group (*itsHDF5, info.name, true, false));
     info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
-                                         (const uChar*)0));
+                                         (const unsigned char*)0));
   }
 
   void MultiHDF5::doCloseFile (MultiFileInfo& info)
@@ -119,8 +119,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Close all datasets and groups.
     itsInfo.clear();
     itsFile->reopenRW();
-    readHeader (True);
-    itsWritable = True;
+    readHeader (true);
+    itsWritable = true;
   }
   
   void MultiHDF5::fsync()
@@ -133,8 +133,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rec.define ("blockSize", itsBlockSize);
     rec.define ("hdrCounter", itsHdrCounter);
     Vector<String> names(itsInfo.size());
-    Vector<Int64> sizes(itsInfo.size());
-    for (uInt i=0; i<itsInfo.size(); ++i) {
+    Vector<int64_t> sizes(itsInfo.size());
+    for (uint32_t i=0; i<itsInfo.size(); ++i) {
       names[i] = itsInfo[i].name;
       sizes[i] = itsInfo[i].fsize;
     }
@@ -143,21 +143,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     HDF5Record::writeRecord (*itsHDF5, "__MultiHDF5_Header__", rec);
   }
 
-  void MultiHDF5::readHeader (Bool always)
+  void MultiHDF5::readHeader (bool always)
   {
     Record rec = HDF5Record::readRecord (*itsHDF5, "__MultiHDF5_Header__");
     itsBlockSize  = rec.asInt64 ("blockSize");
-    Int64 hdrCounter = rec.asInt64 ("hdrCounter");
+    int64_t hdrCounter = rec.asInt64 ("hdrCounter");
     // Only if needed, interpret the rest of the header.
     if (hdrCounter == itsHdrCounter  &&  !always) {
       return;
     }
     itsHdrCounter = hdrCounter;
     Vector<String> names (rec.asArrayString("names"));
-    Vector<Int64> sizes(rec.asArrayInt64("sizes"));
+    Vector<int64_t> sizes(rec.asArrayInt64("sizes"));
     // Set info fields.
     itsInfo.reserve (names.size());
-    for (uInt i=0; i<names.size(); ++i) {
+    for (uint32_t i=0; i<names.size(); ++i) {
       MultiFileInfo info;
       info.name  = names[i];
       info.fsize = sizes[i];
@@ -172,7 +172,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
                                          IPosition(2, itsBlockSize, 0),
                                          IPosition(2, itsBlockSize, 1),
-                                         (const uChar*)0));
+                                         (const unsigned char*)0));
   }
 
   void MultiHDF5::doDeleteFile (MultiFileInfo& info)
@@ -184,16 +184,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     HDF5Group::remove (*itsHDF5, info.name);
   }
 
-  void MultiHDF5::doTruncateFile (MultiFileInfo&, uInt64)
+  void MultiHDF5::doTruncateFile (MultiFileInfo&, uint64_t)
   {}
   
-  void MultiHDF5::extend (MultiFileInfo& info, Int64 lastblk)
+  void MultiHDF5::extend (MultiFileInfo& info, int64_t lastblk)
   {
     info.dataSet->extend (IPosition(2, itsBlockSize, lastblk+1));
     itsNrBlock = lastblk+1;
   }
 
-  void MultiHDF5::readBlock (MultiFileInfo& info, Int64 blknr,
+  void MultiHDF5::readBlock (MultiFileInfo& info, int64_t blknr,
                              void* buffer)
   {
     Slicer slicer(IPosition(2, 0, blknr),
@@ -201,7 +201,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     info.dataSet->get (slicer, buffer);
   }
 
-  void MultiHDF5::writeBlock (MultiFileInfo& info, Int64 blknr,
+  void MultiHDF5::writeBlock (MultiFileInfo& info, int64_t blknr,
                               const void* buffer)
   {
     Slicer slicer(IPosition(2, 0, blknr),

@@ -36,7 +36,7 @@
 int main() {
 
 	try {
-		Int polint;
+		int32_t polint;
 		String polstr;
 
 		polint=5;
@@ -101,7 +101,7 @@ int main() {
 		} catch(std::exception& x) {
 			cout << " Caught exception of receptor correctly: "<<x.what()<<endl;
 		}
-		for (uInt i=0;i<Stokes::NumberOfTypes;i++) {
+		for (uint32_t i=0;i<Stokes::NumberOfTypes;i++) {
 			if (Stokes::fromFITSValue(Stokes::FITSValue(Stokes::type(i)))
 			!= Stokes::type(i)) {
 				cerr << "Stokes FITS value conversion failed" << endl;
@@ -112,12 +112,12 @@ int main() {
 		}
 		Vector<String> allNames = Stokes::allNames();
 		cout << "All names: ";
-		for (uInt i=0; i<allNames.size(); i++) {
+		for (uint32_t i=0; i<allNames.size(); i++) {
 			cout << allNames[i] << " ";
 		}
 		cout << endl;
-		AlwaysAssert(Stokes::allNames(False).size() == Stokes::NumberOfTypes - 1, AipsError);
-		AlwaysAssert(Stokes::allNames(True).size() == Stokes::NumberOfTypes, AipsError);
+		AlwaysAssert(Stokes::allNames(false).size() == Stokes::NumberOfTypes - 1, AipsError);
+		AlwaysAssert(Stokes::allNames(true).size() == Stokes::NumberOfTypes, AipsError);
 		cout << "ok" << endl;
 	}
 	catch (std::exception&) {

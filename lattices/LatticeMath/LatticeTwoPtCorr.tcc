@@ -55,7 +55,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation (MaskedLattice<T>& latOut,
                                            const MaskedLattice<T>& latIn,
                                            const IPosition& axes, 
                                            Method method,
-                                           Bool showProgress) const
+                                           bool showProgress) const
 { 
    LogIO os(LogOrigin("LatticeTwoPtCorr", "autoCorrelation(...)", WHERE));
 
@@ -123,7 +123,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation  (MaskedLattice<T>& latOut,
                                             const MaskedLattice<T>& latIn,
                                             const IPosition& axes, 
                                             FuncPtr funcPtr,
-                                            Bool showProgress) const
+                                            bool showProgress) const
 { 
    LogIO os(LogOrigin("LatticeTwoPtCorr", "autoCorrelation(...)", WHERE));
 
@@ -133,45 +133,45 @@ void LatticeTwoPtCorr<T>::autoCorrelation  (MaskedLattice<T>& latOut,
 //
    IPosition shapeIn = latIn.shape();
    IPosition shapeOut = latOut.shape();
-   uInt nDim = shapeIn.nelements();
+   uint32_t nDim = shapeIn.nelements();
    IPosition axisPath = IPosition::makeAxisPath (nDim, axes);
 
 // Make input iterator
 
-   Int nxIn = shapeIn(axes(0));
-   Int nyIn = shapeIn(axes(1));
+   int32_t nxIn = shapeIn(axes(0));
+   int32_t nyIn = shapeIn(axes(1));
    IPosition cursorShapeIn(2, nxIn, nyIn);
    LatticeStepper stepIn(shapeIn, cursorShapeIn, axes, axisPath);
    RO_MaskedLatticeIterator<T> itIn(latIn, stepIn);
-   Bool inIsMasked = latIn.hasPixelMask();
+   bool inIsMasked = latIn.hasPixelMask();
 
 // Make output iterators
 
-   Int nxOut = shapeOut(axes(0));
-   Int nyOut = shapeOut(axes(1));
+   int32_t nxOut = shapeOut(axes(0));
+   int32_t nyOut = shapeOut(axes(1));
    IPosition cursorShapeOut(2, nxOut, nyOut);
    LatticeStepper stepOut(shapeOut, cursorShapeOut, axes, axisPath);
    LatticeIterator<T> itOut(latOut, stepOut);
-   Bool outIsMasked = latOut.hasPixelMask() && latOut.pixelMask().isWritable();
-   LatticeIterator<Bool>* itOutMaskPtr = 0;
+   bool outIsMasked = latOut.hasPixelMask() && latOut.pixelMask().isWritable();
+   LatticeIterator<bool>* itOutMaskPtr = 0;
    if (outIsMasked) {
-      Lattice<Bool>& outMask = latOut.pixelMask();
-      itOutMaskPtr = new LatticeIterator<Bool>(outMask, stepOut);
+      Lattice<bool>& outMask = latOut.pixelMask();
+      itOutMaskPtr = new LatticeIterator<bool>(outMask, stepOut);
    }
 
 // Matrices for plane by plane iteration results
 
    Matrix<T> sumOut(nxOut, nyOut);   
-   Matrix<Float> nPtsOut(nxOut, nyOut);
-   Matrix<Bool> maskOut(nxOut,nyOut);
+   Matrix<float> nPtsOut(nxOut, nyOut);
+   Matrix<bool> maskOut(nxOut,nyOut);
 
 // Iterate through image, plane by plane.  The algorithm is too
 // complicated if I iterate tile by tile
 
-   Int lxOff = (nxOut-1) / 2; 
-   Int lyOff = (nyOut-1) / 2;
-   Int lx = 0;
-   Int ly = 0;
+   int32_t lxOff = (nxOut-1) / 2; 
+   int32_t lyOff = (nyOut-1) / 2;
+   int32_t lx = 0;
+   int32_t ly = 0;
 //
    for (itIn.reset(),itOut.reset(); !itIn.atEnd(); itIn++,itOut++) {
      if (showProgress) {
@@ -181,14 +181,14 @@ void LatticeTwoPtCorr<T>::autoCorrelation  (MaskedLattice<T>& latOut,
 // Get data and mask
 
      const Matrix<T>& dataIn(itIn.matrixCursor());
-     const Matrix<Bool>& maskIn(itIn.getMask(True));
+     const Matrix<bool>& maskIn(itIn.getMask(true));
 
 // Initialize output
 
      T zero(0.0);
      sumOut.set (zero);     
      nPtsOut.set(0.0);
-     maskOut.set(False);
+     maskOut.set(false);
 
 // Create ArrayAccessors to optimize access to Matricies
 
@@ -199,21 +199,21 @@ void LatticeTwoPtCorr<T>::autoCorrelation  (MaskedLattice<T>& latOut,
 //
      ArrayAccessor<T, Axis<1> > jjItS(sumOut);   // Inner loops
      ArrayAccessor<T, Axis<0> > iiItS(sumOut);
-     ArrayAccessor<Float, Axis<1> > jjItN(nPtsOut);  // Inner loops
-     ArrayAccessor<Float, Axis<0> > iiItN(nPtsOut);
+     ArrayAccessor<float, Axis<1> > jjItN(nPtsOut);  // Inner loops
+     ArrayAccessor<float, Axis<0> > iiItN(nPtsOut);
 //
-     Int i,j,ii,jj,id,jd;
+     int32_t i,j,ii,jj,id,jd;
      if (inIsMasked) {
 
 // Create Mask accessors
 
-       ArrayAccessor<Bool, Axis<1> > jItM(maskIn);         // Outer loops
-       ArrayAccessor<Bool, Axis<0> > iItM;
-       ArrayAccessor<Bool, Axis<1> > jjItM(maskIn);        // Inner loops
-       ArrayAccessor<Bool, Axis<0> > iiItM;
+       ArrayAccessor<bool, Axis<1> > jItM(maskIn);         // Outer loops
+       ArrayAccessor<bool, Axis<0> > iItM;
+       ArrayAccessor<bool, Axis<1> > jjItM(maskIn);        // Inner loops
+       ArrayAccessor<bool, Axis<0> > iiItM;
 //
-       ArrayAccessor<Bool, Axis<1> > jjItMOut(maskOut);   // Inner loops
-       ArrayAccessor<Bool, Axis<0> > iiItMOut(maskOut);
+       ArrayAccessor<bool, Axis<1> > jjItMOut(maskOut);   // Inner loops
+       ArrayAccessor<bool, Axis<0> > iiItMOut(maskOut);
 //
        for (j=0; j<nyIn; jIt++,jItM++,++j) {
          iIt = jIt;
@@ -238,7 +238,7 @@ void LatticeTwoPtCorr<T>::autoCorrelation  (MaskedLattice<T>& latOut,
                    lx = ii + id;
 //
                    iiItN[lx] += 1.0;
-                   iiItMOut[lx] = True;
+                   iiItMOut[lx] = true;
                    iiItS[lx] += ((*this).*funcPtr)(*iIt, *iiIt);
                  }
                }
@@ -275,15 +275,15 @@ void LatticeTwoPtCorr<T>::autoCorrelation  (MaskedLattice<T>& latOut,
 
 // There is no input mask so make all output mask points good
 
-       maskOut.set(True);
+       maskOut.set(true);
      }
 
 // Normalize; use STL iterators for fastest access
 
      typename Array<T>::iterator outIter;
      typename Array<T>::iterator sumIter;
-     typename Array<Float>::iterator nIter;
-     typename Array<Float>::iterator nIterEnd = nPtsOut.end();
+     typename Array<float>::iterator nIter;
+     typename Array<float>::iterator nIterEnd = nPtsOut.end();
      for (outIter=itOut.rwMatrixCursor().begin(),sumIter=sumOut.begin(),nIter=nPtsOut.begin();
           nIter!=nIterEnd; ++nIter,++sumIter,++outIter) {
         if (*nIter > 0.5) {

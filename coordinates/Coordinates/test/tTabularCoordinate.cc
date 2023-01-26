@@ -41,27 +41,27 @@
 
 TabularCoordinate makeLinearCoordinate(String& axisName,
                                        String& axisUnit,
-                                       Double& crval,
-                                       Double& crpix,
-                                       Double& cdelt);
+                                       double& crval,
+                                       double& crpix,
+                                       double& cdelt);
  
 TabularCoordinate makeNonLinearCoordinate (String& axisName,
                                            String& axisUnit,
-                                           Vector<Double>& pixelValues,
-                                           Vector<Double>& worldValues);
+                                           Vector<double>& pixelValues,
+                                           Vector<double>& worldValues);
 
 void doit (TabularCoordinate& lc, 
            const String& axisName,
            const String& axisUnit);
 
-void doitLinear (const Double refVal,
-                 const Double refPix,
-                 const Double incr,
-                 const Double linTrans,
+void doitLinear (const double refVal,
+                 const double refPix,
+                 const double incr,
+                 const double linTrans,
                  TabularCoordinate& lc);
 
-void doitNonLinear (const Vector<Double>& pixelValues,
-                    const Vector<Double>& worldValues,
+void doitNonLinear (const Vector<double>& pixelValues,
+                    const Vector<double>& worldValues,
                     TabularCoordinate& lc);
 
 
@@ -70,10 +70,10 @@ int main()
    try {
 
       String axisName, axisUnit;
-      Double crpix, crval, cdelt;
-      Matrix<Double> xform;
-      Vector<Double> pixelValues;
-      Vector<Double> worldValues;
+      double crpix, crval, cdelt;
+      Matrix<double> xform;
+      Vector<double> pixelValues;
+      Vector<double> worldValues;
 
 // Constructors
 
@@ -96,7 +96,7 @@ int main()
          if (!lc.near(lc2)) {
             throw(AipsError("Failed near test 1"));
          }
-         Vector<Int> excludeAxes(1, 0);
+         Vector<int32_t> excludeAxes(1, 0);
          if (!lc.near(lc2, excludeAxes)) {
             throw(AipsError("Failed near test 2"));
          }
@@ -105,16 +105,16 @@ int main()
 // Test Quantum constructor interfaces
   
      {
-        Double crval = 100.0;
-        Double crpix = 1.0;
-        Double cdelt = 1.2;
+        double crval = 100.0;
+        double crpix = 1.0;
+        double cdelt = 1.2;
         String name("length");
         String unit("m");
 //
         TabularCoordinate tc1(crval, cdelt, crpix, unit, name);
 //
-        Quantum<Double> crval2(crval, "m");
-        Quantum<Double> cdelt2(100*cdelt, "cm");
+        Quantum<double> crval2(crval, "m");
+        Quantum<double> cdelt2(100*cdelt, "cm");
         TabularCoordinate tc2(crval2, cdelt2, crpix, name);
 //
         if (!tc1.near(tc2)) {
@@ -124,8 +124,8 @@ int main()
 
 
      {
-        Vector<Double> world(3);
-        Vector<Double> pixel(3);
+        Vector<double> world(3);
+        Vector<double> pixel(3);
         pixel(0) = 1.0; pixel(1) = 3.0; pixel(2) = 6.0;
         world(0) = 10.0; world(1) = 30.0; world(2) = 60.0;
         String name("length");
@@ -133,7 +133,7 @@ int main()
 //
         TabularCoordinate tc1(pixel, world, unit, name);
 //
-        Quantum<Vector<Double> > world2(world, unit);
+        Quantum<Vector<double> > world2(world, unit);
         TabularCoordinate tc2(pixel, world2, name);
 //
         if (!tc1.near(tc2)) {
@@ -173,9 +173,9 @@ int main()
 
 TabularCoordinate makeLinearCoordinate(String& axisName,
                                        String& axisUnit,
-                                       Double& crval,
-                                       Double& crpix,
-                                       Double& cdelt)
+                                       double& crval,
+                                       double& crpix,
+                                       double& cdelt)
 {
    crval = 10.12;
    crpix = -128.32;
@@ -187,8 +187,8 @@ TabularCoordinate makeLinearCoordinate(String& axisName,
  
 TabularCoordinate makeNonLinearCoordinate (String& axisName,
                                            String& axisUnit,
-                                           Vector<Double>& pixelValues,
-                                           Vector<Double>& worldValues)
+                                           Vector<double>& pixelValues,
+                                           Vector<double>& worldValues)
 {
    pixelValues.resize(5);
    worldValues.resize(5);
@@ -267,32 +267,32 @@ void doit (TabularCoordinate& lc,
       throw(AipsError("Failed world axis units set/recovery test"));
    }
 //
-   Int prec;
+   int32_t prec;
    Coordinate::formatType fType = Coordinate::SCIENTIFIC;
-   lc.getPrecision(prec, fType, True, 6, 4, 2);
+   lc.getPrecision(prec, fType, true, 6, 4, 2);
    if (prec != 6) {
       throw(AipsError("Failed getPrecision test 1"));
    }
    fType = Coordinate::FIXED;
-   lc.getPrecision(prec, fType, True, 6, 4, 2);
+   lc.getPrecision(prec, fType, true, 6, 4, 2);
    if (prec != 4) {
       throw(AipsError("Failed getPrecision test 2"));
    }
 //
    String unit;
-   Double val = 20.12345;
-   Quantum<Double> valq(val, Unit(units(0)));
+   double val = 20.12345;
+   Quantum<double> valq(val, Unit(units(0)));
    String str = lc.format(unit, Coordinate::FIXED, val, 0,
-                          True, True, 4);
+                          true, true, 4);
    String str2 = lc.formatQuantity(unit, Coordinate::FIXED, valq, 0,
-                                   True, True, 4);
+                                   true, true, 4);
    if (str != "20.1234" || str2 != "20.1234") {
       throw(AipsError("Failed format test 1"));
    }
-   str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, True,
-                   True, 4);
-   str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, True,
-                            True, 4);
+   str = lc.format(unit, Coordinate::SCIENTIFIC, val, 0, true,
+                   true, 4);
+   str2 = lc.formatQuantity(unit, Coordinate::SCIENTIFIC, valq, 0, true,
+                            true, 4);
    if (str != "2.0123e+01" || str2 != "2.0123e+01") {
       throw(AipsError("Failed format test 2"));
    }
@@ -320,16 +320,16 @@ void doit (TabularCoordinate& lc,
 }   
 
 
-void doitLinear (const Double refVal,
-                 const Double refPix,
-                 const Double incr,
-                 const Double linTrans,
+void doitLinear (const double refVal,
+                 const double refPix,
+                 const double incr,
+                 const double linTrans,
                  TabularCoordinate& lc)
 {
-   Vector<Double> crval(1); crval(0) = refVal;
-   Vector<Double> crpix(1); crpix(0) = refPix;
-   Vector<Double> cdelt(1); cdelt(0) = incr;
-   Matrix<Double> xform(1,1); xform(0,0) = linTrans;
+   Vector<double> crval(1); crval(0) = refVal;
+   Vector<double> crpix(1); crpix(0) = refPix;
+   Vector<double> cdelt(1); cdelt(0) = incr;
+   Matrix<double> xform(1,1); xform(0,0) = linTrans;
 //
    if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
@@ -381,7 +381,7 @@ void doitLinear (const Double refVal,
 //
 // Test conversion
 //
-   Vector<Double> pixel(1), world2(1), world;
+   Vector<double> pixel(1), world2(1), world;
    pixel(0) = 12.2;
    if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toWorld conversion failed because ") + lc.errorMessage()));
@@ -395,7 +395,7 @@ void doitLinear (const Double refVal,
          throw(AipsError("toWorld conversion gave wrong answer"));
    }
 //
-   Vector<Double> pixel2;
+   Vector<double> pixel2;
    if (!lc.toPixel(pixel2, world)) {
       throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
    }
@@ -407,8 +407,8 @@ void doitLinear (const Double refVal,
 //
    {
       AlwaysAssert(lc.nPixelAxes()==1, AipsError);
-      Vector<Bool> axes(1, True);
-      Vector<Int> shape(1);
+      Vector<bool> axes(1, true);
+      Vector<int32_t> shape(1);
       shape(0) = 128;
 
 // All axes
@@ -418,8 +418,8 @@ void doitLinear (const Double refVal,
 //
          Vector<String> units2 = pC->worldAxisUnits();
          Vector<String> names2 = pC->worldAxisNames();
-         Vector<Double> crval2 = pC->referenceValue();
-         Vector<Double> crpix2 = pC->referencePixel();
+         Vector<double> crval2 = pC->referenceValue();
+         Vector<double> crpix2 = pC->referencePixel();
          String tt = String("1/") + lc.worldAxisUnits()(0);
          if (units2(0)!=tt) {
             throw(AipsError("makeFourierCoordinate (1) failed units test"));
@@ -431,8 +431,8 @@ void doitLinear (const Double refVal,
          if (!allNear(crval2,0.0,1e-13)) {
             throw(AipsError("makeFourierCoordinate (1) failed crval test"));
          }
-         for (uInt i=0; i<pC->nPixelAxes(); i++) {
-            if (!near(Double(Int(shape(i)/2)), crpix2(i))) {
+         for (uint32_t i=0; i<pC->nPixelAxes(); i++) {
+            if (!near(double(int32_t(shape(i)/2)), crpix2(i))) {
                throw(AipsError("makeFourierCoordinate (1) failed crpix test"));
             }
          }
@@ -442,7 +442,7 @@ void doitLinear (const Double refVal,
 // No axes   
           
       {
-         axes.set(False);
+         axes.set(false);
          Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
          if (pC) {
             delete pC;
@@ -452,14 +452,14 @@ void doitLinear (const Double refVal,
    }
 }
 
-void doitNonLinear (const Vector<Double>& pixelValues,
-                    const Vector<Double>& worldValues,
+void doitNonLinear (const Vector<double>& pixelValues,
+                    const Vector<double>& worldValues,
                     TabularCoordinate& lc)
 {
-   Vector<Double> crval(1); crval(0) = worldValues(0);
-   Vector<Double> crpix(1); crpix(0) = pixelValues(0);
-   Vector<Double> cdelt(1);
-   Matrix<Double> xform(1,1);
+   Vector<double> crval(1); crval(0) = worldValues(0);
+   Vector<double> crpix(1); crpix(0) = pixelValues(0);
+   Vector<double> cdelt(1);
+   Matrix<double> xform(1,1);
 //
    if (!allEQ(crval, lc.referenceValue())) {
       throw(AipsError("Failed reference value recovery test"));
@@ -503,7 +503,7 @@ void doitNonLinear (const Vector<Double>& pixelValues,
 //
 // Test conversion
 //
-   Vector<Double> pixel(1), world, pixel2;
+   Vector<double> pixel(1), world, pixel2;
    pixel(0) = 123.123;
    if (!lc.toWorld(world, pixel)) {
       throw(AipsError(String("toPixel conversion failed because ") + lc.errorMessage()));
@@ -518,8 +518,8 @@ void doitNonLinear (const Vector<Double>& pixelValues,
 // Fourier
 
    {
-      Vector<Bool> axes(lc.nPixelAxes(), True);      
-      Vector<Int> shape(lc.nPixelAxes(), 10);
+      Vector<bool> axes(lc.nPixelAxes(), true);      
+      Vector<int32_t> shape(lc.nPixelAxes(), 10);
       Coordinate* pC = lc.makeFourierCoordinate (axes, shape);
       if (pC) {
          delete pC;

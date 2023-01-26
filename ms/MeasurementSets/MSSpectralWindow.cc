@@ -39,10 +39,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSSpectralWindow::MSSpectralWindow():hasBeenDestroyed_p(True) { }
+MSSpectralWindow::MSSpectralWindow():hasBeenDestroyed_p(true) { }
 
 MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option) 
-    : MSTable<MSSpectralWindowEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSSpectralWindowEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -53,7 +53,7 @@ MSSpectralWindow::MSSpectralWindow(const String &tableName, TableOption option)
 MSSpectralWindow::MSSpectralWindow(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSSpectralWindowEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -62,18 +62,18 @@ MSSpectralWindow::MSSpectralWindow(const String& tableName, const String &tableD
 }
 
 MSSpectralWindow::MSSpectralWindow(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSSpectralWindowEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSSpectralWindow(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSSpectralWindow(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSSpectralWindow"));
 }
 
 MSSpectralWindow::MSSpectralWindow(const Table &table)
-    : MSTable<MSSpectralWindowEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSSpectralWindowEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -83,7 +83,7 @@ MSSpectralWindow::MSSpectralWindow(const Table &table)
 
 MSSpectralWindow::MSSpectralWindow(const MSSpectralWindow &other)
     : MSTable<MSSpectralWindowEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -103,7 +103,7 @@ MSSpectralWindow::~MSSpectralWindow()
            << "~MSSpectralWindow() - Table written is not a valid MSSpectralWindow"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -189,7 +189,7 @@ MSTableMaps MSSpectralWindow::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

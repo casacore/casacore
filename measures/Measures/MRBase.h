@@ -113,7 +113,7 @@ public:
   
   //# General Member Functions
   // Check if empty reference
-  virtual Bool empty() const = 0;
+  virtual bool empty() const = 0;
   // Check the type of Measure the reference can be used for:<br>
   //   <src> static const String &showMe() = 0; </src>.<br>
   // Return the type of the reference
@@ -121,7 +121,7 @@ public:
   // (and should be interpreted as), but
   // compiler does not accept it:</note>
   //   <src> Ms::Types getType();</src>
-  virtual uInt getType() const = 0;
+  virtual uint32_t getType() const = 0;
   // Return the frame of the reference
   virtual MeasFrame &getFrame() = 0;
   // Return the first frame which has specified information. Checking is done in 
@@ -149,8 +149,8 @@ public:
   // compiler does not accept it:</note>
   //   <src> void set(Ms::Types tp);</src>
   // <group>
-  virtual void setType(uInt tp) = 0;
-  virtual void set(uInt tp) = 0;
+  virtual void setType(uint32_t tp) = 0;
+  virtual void set(uint32_t tp) = 0;
   // </group>
   // Set a new offset:<br>
   //   void set(const Measure &ep);

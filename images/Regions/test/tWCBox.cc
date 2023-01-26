@@ -43,8 +43,8 @@ void setValues (IPosition& blcI,
                 IPosition& trcI,
                 IPosition& shape,
                 LCBox& checkBox,
-                Vector<Quantum<Double> >& wBlc,
-                Vector<Quantum<Double> >& wTrc,
+                Vector<Quantum<double> >& wBlc,
+                Vector<Quantum<double> >& wTrc,
                 const CoordinateSystem& cSys);
 
 
@@ -60,13 +60,13 @@ try {
 
 // Create default Coordinate System, [ra, dec, freq]
 
-   Vector<Int> absRel;
+   Vector<int32_t> absRel;
    CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
 
 // Create vectors
 
    IPosition shape, blcI, trcI;
-   Vector<Quantum<Double> > wBlc, wTrc;
+   Vector<Quantum<double> > wBlc, wTrc;
    LCBox checkBox;
 
 // Create WCBox
@@ -105,9 +105,9 @@ try {
    {
       IPosition axes(3,2,0,1);
       WCBox sbox1(box.splitBox (axes));
-      Vector<Quantum<Double> > blc2(axes.nelements());
-      Vector<Quantum<Double> > trc2(axes.nelements());
-      for (uInt i=0; i<axes.nelements(); i++) {
+      Vector<Quantum<double> > blc2(axes.nelements());
+      Vector<Quantum<double> > trc2(axes.nelements());
+      for (uint32_t i=0; i<axes.nelements(); i++) {
 	blc2(i) = wBlc(axes(i));
 	trc2(i) = wTrc(axes(i));
       }
@@ -115,10 +115,10 @@ try {
       AlwaysAssert (sbox1 == sbox2, AipsError);
       IPosition axesa(2,2,1);
       WCBox sbox1a(sbox1.splitBox (axesa));
-      Vector<Quantum<Double> > blc2a(axesa.nelements());
-      Vector<Quantum<Double> > trc2a(axesa.nelements());
+      Vector<Quantum<double> > blc2a(axesa.nelements());
+      Vector<Quantum<double> > trc2a(axesa.nelements());
       IPosition axesa2(2);
-      for (uInt i=0; i<axesa.nelements(); i++) {
+      for (uint32_t i=0; i<axesa.nelements(); i++) {
 	axesa2(i) = axes(axesa(i));
 	blc2a(i) = blc2(axesa(i));
 	trc2a(i) = trc2(axesa(i));
@@ -137,7 +137,7 @@ try {
      if (pWCBox !=0) delete pWCBox;
    }
 
-// Can extend is True
+// Can extend is true
 
    AlwaysAssert(box.canExtend(), AipsError);
 
@@ -240,16 +240,16 @@ try {
 //
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
       IPosition shape2(cSys2.nPixelAxes());
-      for (uInt i=0; i<shape2.nelements(); i++) shape2(i) = shape(i);
+      for (uint32_t i=0; i<shape2.nelements(); i++) shape2(i) = shape(i);
 //      cout << "toLCRegion called with shape = " << shape2 << endl; 
 //
-      Bool ok = False;
+      bool ok = false;
       try {
          LCRegion* pLCRegion = box3.toLCRegion(cSys2, shape2);
          if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
 //         cout << "aipserror: caught error " << x.what() << endl;
-         ok = True;
+         ok = true;
       } 
       if (!ok) {
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -265,21 +265,21 @@ try {
 //      cout << "world names [ra,dec,freq], [ra,dec,freq]" << endl;
 //      cout << "freq systems         LSR           TOPO" << endl;
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Int iSpec = cSys2.findCoordinate(Coordinate::SPECTRAL);
-      uInt iSpec2 = iSpec;
+      int32_t iSpec = cSys2.findCoordinate(Coordinate::SPECTRAL);
+      uint32_t iSpec2 = iSpec;
       SpectralCoordinate sCoord = cSys2.spectralCoordinate(iSpec2);
       sCoord.setFrequencySystem(MFrequency::TOPO);
       cSys2.replaceCoordinate(sCoord, iSpec2);
     
       LCRegion* pLCRegion = 0;
 //      cout << "toLCRegion called with shape = " << shape << endl;
-      Bool ok = False;
+      bool ok = false;
       try {
          pLCRegion =  box.toLCRegion(cSys2, shape);
          if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
 //         cout << "aipserror: caught error " << x.what() << endl;
-         ok = True;
+         ok = true;
       } 
       if (!ok) {
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -339,12 +339,12 @@ try {
       WCBox box1(wBlc, wTrc, cSys1, absRel);
 
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
-      Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+      int32_t pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      int32_t wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
       cSys2.removeWorldAxis(wSpec, cSys.referenceValue()(wSpec));
 //
       IPosition shape2(cSys2.nPixelAxes(),10);
-      for (uInt i=0; i<std::min(shape.nelements(),shape2.nelements()); i++) {
+      for (uint32_t i=0; i<std::min(shape.nelements(),shape2.nelements()); i++) {
          shape2(i) = shape(i);
       }
       LCRegion* pLCRegion = 0;
@@ -368,13 +368,13 @@ try {
 
       LCRegion* pLCRegion = 0;
 //      cout << "toLCRegion called with shape = " << shape2 << endl;
-      Bool ok = False;
+      bool ok = false;
       try {
          pLCRegion = box1.toLCRegion(cSys2, shape2);
          if (pLCRegion != 0) delete pLCRegion;
        } catch (std::exception& x) {
 //          cout << "aipserror: caught error " << x.what() << endl;
-          ok = True;
+          ok = true;
        } 
       if (!ok) {
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -394,14 +394,14 @@ try {
       IPosition shape2(cSys2.nPixelAxes()+1,10);
       LCRegion* pLCRegion = 0;
 
-      Bool ok = False;
+      bool ok = false;
       try {
 //         cout << "toLCRegion called with shape = " << shape2 << endl;
          pLCRegion = box1.toLCRegion(cSys2, shape2);
          if (pLCRegion != 0) delete pLCRegion;
       } catch (std::exception& x) {
 //         cout << "aipserror: caught expected error " << x.what() << endl;
-         ok = True;
+         ok = true;
       } 
       if (!ok) { 
          throw(AipsError("Conversion to LCRegion did not fail as expected"));
@@ -427,10 +427,10 @@ try {
       IPosition pixelAxes(2); 
       pixelAxes(0) = 1;
       pixelAxes(1) = 2;
-      Vector<Quantum<Double> > blc(2); 
+      Vector<Quantum<double> > blc(2); 
       blc(0) = wBlc(pixelAxes(0));
       blc(1) = wBlc(pixelAxes(1));
-      Vector<Quantum<Double> > trc(2); 
+      Vector<Quantum<double> > trc(2); 
       trc(0) = wTrc(pixelAxes(0));
       trc(1) = wTrc(pixelAxes(1));
 //      cout << "Construction with specified pixel axes" << endl;
@@ -477,15 +477,15 @@ void setValues (IPosition& blcI,
                 IPosition& trcI,
                 IPosition& shape,
                 LCBox& checkBox,
-                Vector<Quantum<Double> >& wBlc,
-                Vector<Quantum<Double> >& wTrc,
+                Vector<Quantum<double> >& wBlc,
+                Vector<Quantum<double> >& wTrc,
                 const CoordinateSystem& cSys)
 { 
-   uInt nDim = cSys.nPixelAxes();
+   uint32_t nDim = cSys.nPixelAxes();
    shape.resize(nDim);
    blcI.resize(nDim);
    trcI.resize(nDim);
-   uInt i;
+   uint32_t i;
    for (i=0; i<nDim; i++) {
       shape(i) = 10*(i+1) + 1;
       blcI(i) = 2*(i+1);
@@ -496,10 +496,10 @@ void setValues (IPosition& blcI,
 
 // Make some world values
 
-   Vector<Double> pBlc(nDim);
-   Vector<Double> pTrc(nDim);
-   Vector<Double> wBlc2(nDim);
-   Vector<Double> wTrc2(nDim);
+   Vector<double> pBlc(nDim);
+   Vector<double> pTrc(nDim);
+   Vector<double> wBlc2(nDim);
+   Vector<double> wTrc2(nDim);
 
    for (i=0; i<nDim; i++) {
       pBlc(i) = blcI(i);
@@ -517,7 +517,7 @@ void setValues (IPosition& blcI,
    cSys.toWorld(wBlc2, pBlc);
    cSys.toWorld(wTrc2, pTrc);
 
-   uInt j;
+   uint32_t j;
    for (j=0; j<wBlc2.nelements();j++) {
 //      cout << "i, wBlc = " << j << ", " << wBlc2(j) << endl;
    }
@@ -532,10 +532,10 @@ void setValues (IPosition& blcI,
    wTrc.resize(wTrc2.nelements());
 
    for (i=0;i<nDim;i++){
-      Int worldAxis = cSys.pixelAxisToWorldAxis(i);
+      int32_t worldAxis = cSys.pixelAxisToWorldAxis(i);
       if (worldAxis >=0) {
-         wBlc(i) = Quantum<Double>(wBlc2(i), cSys.worldAxisUnits()(worldAxis));
-         wTrc(i) = Quantum<Double>(wTrc2(i), cSys.worldAxisUnits()(worldAxis));
+         wBlc(i) = Quantum<double>(wBlc2(i), cSys.worldAxisUnits()(worldAxis));
+         wTrc(i) = Quantum<double>(wTrc2(i), cSys.worldAxisUnits()(worldAxis));
       }
    }
 }
@@ -543,12 +543,12 @@ void setValues (IPosition& blcI,
 
 void list (const RecordInterface& record)
 {
-   for (uInt j=0; j<record.nfields(); j++) {
+   for (uint32_t j=0; j<record.nfields(); j++) {
         cout << "field " << record.name(j) << " is of type " << record.type(j) << endl;
    }
 
-   Vector<Int> axes = Vector<Int>(record.asArrayInt ("pixelAxes"));
-   Vector<Int> absRel = Vector<Int>(record.asArrayInt("absrel"));
+   Vector<int32_t> axes = Vector<int32_t>(record.asArrayInt ("pixelAxes"));
+   Vector<int32_t> absRel = Vector<int32_t>(record.asArrayInt("absrel"));
    cout << "axes=" << axes << endl;
    cout << "absRel=" << absRel << endl;
 }

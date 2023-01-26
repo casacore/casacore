@@ -35,8 +35,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //  MSPolnParse* MSPolnParse::thisMSSParser = 0x0; // Global pointer to the parser object
   // TableExprNode* MSPolnParse::node_p = 0x0;
-  // Vector<Int> MSPolnParse::ddIDList;
-  // std::map<Int, Vector<Int> > MSPolnParse::polList(Vector<Int>(0)); 
+  // Vector<int32_t> MSPolnParse::ddIDList;
+  // std::map<int32_t, Vector<int32_t> > MSPolnParse::polList(Vector<int32_t>(0)); 
   //# Constructor
   //------------------------------------------------------------------------------
   //  
@@ -65,17 +65,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------------------
   //  
-  const TableExprNode MSPolnParse::selectFromIDList(const Vector<Int>& ddIDs)
+  const TableExprNode MSPolnParse::selectFromIDList(const Vector<int32_t>& ddIDs)
   {
     TableExprNode condition;
     if (ddIDs.nelements() > 0)
       condition = ms()->col(MS::columnName(MS::DATA_DESC_ID)).in(ddIDs);
 
-    // Int n=ddIDs.nelements();
+    // int32_t n=ddIDs.nelements();
     // const String DATA_DESC_ID = MS::columnName(MS::DATA_DESC_ID);
     // if (n > 0)
     //   {
-    // 	for(Int i=0; i<n; i++)
+    // 	for(int32_t i=0; i<n; i++)
     // 	  if (condition.isNull())
     // 	    condition = ((ms()->col(DATA_DESC_ID)==ddIDs[i]));
     // 	  else
@@ -97,43 +97,43 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------------------
   //  
-  Vector<Int> MSPolnParse::getMapToDDIDs(MSDataDescIndex& msDDNdx, 
+  Vector<int32_t> MSPolnParse::getMapToDDIDs(MSDataDescIndex& msDDNdx, 
 					 MSPolarizationIndex& /*msPolNdx*/,
-					 const Vector<Int>& spwIDs, 
-					 Vector<Int>& polnIDs,
-					 Vector<Int>& polnIndices)
+					 const Vector<int32_t>& spwIDs, 
+					 Vector<int32_t>& polnIDs,
+					 Vector<int32_t>& polnIndices)
   {
-    Vector<Int> ddIDs;
-    Vector<Int> thisDDList;
-    Vector<Int> validPolIDs, validPolIndices;
+    Vector<int32_t> ddIDs;
+    Vector<int32_t> thisDDList;
+    Vector<int32_t> validPolIDs, validPolIndices;
     if (polnIDs.nelements() == 0)
       {
 	ostringstream mesg;
 	mesg << "No match for polarization ID(s) ";
 	throw(MSSelectionPolnParseError(String(mesg.str())));
       }
-    for (uInt p=0; p<polnIDs.nelements(); p++)
+    for (uint32_t p=0; p<polnIDs.nelements(); p++)
       {
 	thisDDList.resize(0);
-	for (uInt s=0; s<spwIDs.nelements(); s++)
+	for (uint32_t s=0; s<spwIDs.nelements(); s++)
 	  {
-	    Int n;
-	    Vector<Int> tmp=msDDNdx.matchSpwIdAndPolznId(spwIDs[s],polnIDs[p]);
+	    int32_t n;
+	    Vector<int32_t> tmp=msDDNdx.matchSpwIdAndPolznId(spwIDs[s],polnIDs[p]);
 	    if (tmp.nelements() > 0)
 	      {
-		ddIDs.resize((n=ddIDs.nelements())+1,True);
+		ddIDs.resize((n=ddIDs.nelements())+1,true);
 		ddIDs[n]=tmp[0];
-		thisDDList.resize((n=thisDDList.nelements())+1,True);
+		thisDDList.resize((n=thisDDList.nelements())+1,true);
 		thisDDList[n]=tmp[0];
 	      }
 	  }
 	if (thisDDList.nelements() > 0) 
 	  {
-	    uInt n;
+	    uint32_t n;
 	    setIDLists(polnIDs[p], 1, thisDDList);
-	    validPolIDs.resize((n=validPolIDs.nelements())+1,True);
+	    validPolIDs.resize((n=validPolIDs.nelements())+1,true);
 	    validPolIDs[n]=polnIDs[p];
-	    validPolIndices.resize((n=validPolIndices.nelements())+1,True);
+	    validPolIndices.resize((n=validPolIndices.nelements())+1,true);
 	    validPolIndices[n]=polnIndices[p];
 	    //	    cout << "Found DDID for PolID " << polnIDs[p] << endl;
 	  }
@@ -147,14 +147,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------------------
   //  
-  Vector<Int> MSPolnParse::getMapToDDIDsV2(const String& polnExpr, 
-					   const Vector<Int>& spwIDs, 
-					   Vector<Int>& polnIDs,
-					   Vector<Int>& polnIndices)
+  Vector<int32_t> MSPolnParse::getMapToDDIDsV2(const String& polnExpr, 
+					   const Vector<int32_t>& spwIDs, 
+					   Vector<int32_t>& polnIDs,
+					   Vector<int32_t>& polnIndices)
   {
-    Vector<Int> ddIDs, polTypes;
-    Vector<Int> thisDDList;
-    Vector<Int> validPolIDs;//, validPolIndices;
+    Vector<int32_t> ddIDs, polTypes;
+    Vector<int32_t> thisDDList;
+    Vector<int32_t> validPolIDs;//, validPolIndices;
     MSDataDescIndex msDDNdx(ms()->dataDescription());
     MSPolarizationIndex msPolNdx(ms()->polarization());
     //    cout << "SpwIDs = " << spwIDs << endl;
@@ -167,25 +167,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	mesg << "No match for polarization ID(s) ";
 	throw(MSSelectionPolnParseError(String(mesg.str())));
       }
-    for (uInt p=0; p<polnIDs.nelements(); p++)
+    for (uint32_t p=0; p<polnIDs.nelements(); p++)
       {
-	Vector<Int> tt;
+	Vector<int32_t> tt;
 	tt = getPolnIndices(polnIDs[p],polTypes);
 	//	cout << "Poln indices for " << polnIDs[p] << " = " << tt << endl;
 	polnIndices.resize(0);
         polnIndices=tt;
 	thisDDList.resize(0);
-	for (uInt s=0; s<spwIDs.nelements(); s++)
+	for (uint32_t s=0; s<spwIDs.nelements(); s++)
 	  {
-	    Int n;
-	    Vector<Int> tmp=msDDNdx.matchSpwIdAndPolznId(spwIDs[s],polnIDs[p]);
+	    int32_t n;
+	    Vector<int32_t> tmp=msDDNdx.matchSpwIdAndPolznId(spwIDs[s],polnIDs[p]);
 	    if (tmp.nelements() > 0)
 	      {
-		ddIDs.resize((n=ddIDs.nelements())+1,True);
+		ddIDs.resize((n=ddIDs.nelements())+1,true);
 		ddIDs[n]=tmp[0];
-		thisDDList.resize((n=thisDDList.nelements())+1,True);
+		thisDDList.resize((n=thisDDList.nelements())+1,true);
 		thisDDList[n]=tmp[0];
-		setIDLists((Int)polnIDs[p],0,polnIndices);
+		setIDLists((int32_t)polnIDs[p],0,polnIndices);
 		polMap_p[polnIDs[p]].resize(0);
 		polMap_p[polnIDs[p]]=polnIndices;
 		//		cout << "DDIDs for SPW = " << spwIDs[s] << " = " << tmp[0] << endl;
@@ -193,11 +193,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  }
 	if (thisDDList.nelements() > 0) 
 	  {
-	    uInt n;
+	    uint32_t n;
 	    setIDLists(polnIDs[p], 1, thisDDList);
-	    validPolIDs.resize((n=validPolIDs.nelements())+1,True);
+	    validPolIDs.resize((n=validPolIDs.nelements())+1,true);
 	    validPolIDs[n]=polnIDs[p];
-	    // validPolIndices.resize((n=validPolIndices.nelements())+1,True);
+	    // validPolIndices.resize((n=validPolIndices.nelements())+1,true);
 	    // validPolIndices[n]=polnIndices[p];
 	  }
 	// else
@@ -221,21 +221,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //  IDs are defined as the enumrations Stokes::StokesTypes -
   //  i.e. "RR", "LL" etc.
   //
-  Vector<Int> MSPolnParse::matchPolIDsToPolTableRow(const Vector<Int>& polIds,
-						    std::map<Int, Vector<Int> >& /*polIndexMap*/,
-						    Vector<Int>& polIndices,
-						    Bool addToMap)
+  Vector<int32_t> MSPolnParse::matchPolIDsToPolTableRow(const Vector<int32_t>& polIds,
+						    std::map<int32_t, Vector<int32_t> >& /*polIndexMap*/,
+						    Vector<int32_t>& polIndices,
+						    bool addToMap)
   {
-    Vector<Int> rowList;
+    Vector<int32_t> rowList;
     MSPolarization mspol(ms()->polarizationTableName());
     MSPolarizationColumns mspolC(mspol);
     //
     // First extract the corrType column of the Polarization sub-table
     // row-by-row (since this column can be of variable shape!)
     //
-    for (uInt row=0; row<mspolC.nrow();row++)
+    for (uint32_t row=0; row<mspolC.nrow();row++)
       {
-	Vector<Int> corrType;
+	Vector<int32_t> corrType;
 	mspolC.corrType().get(row,corrType);
 	//
 	// Next - look for match between the supplied polId list in
@@ -246,16 +246,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	// following corrType lists: "RR LL", "RR LL LR RL", "RR",
 	// "LL".
 	//
-	Bool allFound=False;
-	uInt foundCounter=0;
-	//	Vector<Int> polIndices(0,-1);
-	for(uInt i=0; i<polIds.nelements(); i++)
+	bool allFound=false;
+	uint32_t foundCounter=0;
+	//	Vector<int32_t> polIndices(0,-1);
+	for(uint32_t i=0; i<polIds.nelements(); i++)
 	  {
-	    for(uInt j=0; j<corrType.nelements(); j++)
+	    for(uint32_t j=0; j<corrType.nelements(); j++)
 	      if (polIds[i] == corrType[j])
 		{
-		  Int m=0;
-		  polIndices.resize((m=polIndices.nelements())+1,True);
+		  int32_t m=0;
+		  polIndices.resize((m=polIndices.nelements())+1,true);
 		  polIndices[m]=j;
 		  foundCounter++;
 		  break;
@@ -264,12 +264,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	if ((allFound=(foundCounter == polIds.nelements())))
 	  {
-	    if (addToMap) setIDLists((Int)row,0,polIndices);
+	    if (addToMap) setIDLists((int32_t)row,0,polIndices);
 	  }
 	if (allFound)
 	  {
-	    uInt n;
-	    rowList.resize((n=rowList.nelements())+1,True);
+	    uint32_t n;
+	    rowList.resize((n=rowList.nelements())+1,true);
 	    rowList[n]=row;
 	  }
       }
@@ -279,22 +279,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------------------
   //  
-  Vector<Int> MSPolnParse::getPolnIndices(const Int& polId, const Vector<Int>& polnTypes)
+  Vector<int32_t> MSPolnParse::getPolnIndices(const int32_t& polId, const Vector<int32_t>& polnTypes)
   {
     MSPolarization mspol(ms()->polarizationTableName());
     MSPolarizationColumns mspolC(mspol);
-    Vector<Int> polIndices;
+    Vector<int32_t> polIndices;
 
-    //    for (uInt row=0; row<mspolC.nrow();row++)
+    //    for (uint32_t row=0; row<mspolC.nrow();row++)
       {
-	Vector<Int> corrType;
+	Vector<int32_t> corrType;
 	mspolC.corrType().get(polId,corrType);
-	for(uInt i=0; i<polnTypes.nelements(); i++)
-	  for(uInt j=0; j<corrType.nelements(); j++)
+	for(uint32_t i=0; i<polnTypes.nelements(); i++)
+	  for(uint32_t j=0; j<corrType.nelements(); j++)
 	    if (polnTypes[i] == corrType[j])
 	      {
-		Int m=0;
-		polIndices.resize((m=polIndices.nelements())+1,True);
+		int32_t m=0;
+		polIndices.resize((m=polIndices.nelements())+1,true);
 		polIndices[m]=j;
 		break;
 	      }
@@ -304,18 +304,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //------------------------------------------------------------------------------
   //  
-  Vector<Int> MSPolnParse::getPolnIDs(const String& polSpec, Vector<Int>& polIndices)
+  Vector<int32_t> MSPolnParse::getPolnIDs(const String& polSpec, Vector<int32_t>& polIndices)
   {
     String sep(",");
     Vector<String> tokens;
-    Vector<Int> idList, polIDList;
+    Vector<int32_t> idList, polIDList;
     //
     // Split the given string into ";" separated tokens.  Upcase the
     // string before splitting.
     //
-    tokenize(polSpec,sep,tokens,True);
+    tokenize(polSpec,sep,tokens,true);
     idList.resize(tokens.nelements());
-    for(uInt i=0;i<idList.nelements();i++)
+    for(uint32_t i=0;i<idList.nelements();i++)
       idList[i]=Stokes::type(tokens[i]);
 
     //
@@ -330,18 +330,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //  
 //------------------------------------------------------------------------------
   //  
-  Vector<Int> MSPolnParse::getPolnIDsV2(const String& polSpec, Vector<Int>& polTypes)
+  Vector<int32_t> MSPolnParse::getPolnIDsV2(const String& polSpec, Vector<int32_t>& polTypes)
   {
     String sep(",");
     Vector<String> tokens;
-    Vector<Int> polIDList, polIndices;
+    Vector<int32_t> polIDList, polIndices;
     //
     // Split the given string into ";" separated tokens.  Upcase the
     // string before splitting.
     //
-    tokenize(polSpec,sep,tokens,True);
+    tokenize(polSpec,sep,tokens,true);
     polTypes.resize(tokens.nelements());
-    for(uInt i=0;i<polTypes.nelements();i++)
+    for(uint32_t i=0;i<polTypes.nelements();i++)
       polTypes[i]=Stokes::type(tokens[i]);
     polIDList=matchPolIDsToPolTableRow(polTypes,polMap_p, polIndices);
     return polIDList;
@@ -354,23 +354,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //   2. Generate list of indices using SPW and POLN tokens.
   //   3. Generate the {SPW, POLN} --> DDID map
   //
-  Int MSPolnParse::theParser(const String& command) 
+  int32_t MSPolnParse::theParser(const String& command) 
   {
-    Int ret=0, nSpecList=0;
+    int32_t ret=0, nSpecList=0;
     Vector<String> polnSpecList;
     String sep(";");
 
     nSpecList=tokenize(command,sep,polnSpecList);
 
-    for(Int i=0;i<nSpecList;i++)
+    for(int32_t i=0;i<nSpecList;i++)
       {
 	Vector<String> tokens,tmp;
-	Vector<Int> spwIDs, spwDDIDs;
-	Matrix<Int> chanIDs;
-	Vector<Int> polnIDs;
+	Vector<int32_t> spwIDs, spwDDIDs;
+	Matrix<int32_t> chanIDs;
+	Vector<int32_t> polnIDs;
 
 	String s(":"), spwExpr, polnExpr;
-	Int nTokens;
+	int32_t nTokens;
 	//
 	// User suppport: Check if they tried [SPW:CHAN:]POLN kind of
 	// specification.  Darn - String::freq(...) does not work!
@@ -423,8 +423,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	//
 	try
 	  {
-	    Vector<Int> polIndices;
-	    Vector<Int> tddIDList,tt;
+	    Vector<int32_t> polIndices;
+	    Vector<int32_t> tddIDList,tt;
 	    // polnIDs=getPolnIDs(polnExpr, polIndices);
 	    // MSDataDescIndex msDDNdx(ms()->dataDescription());
 	    // MSPolarizationIndex msPolNdx(ms()->polarization());
@@ -464,19 +464,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //------------------------------------------------------------------------------
   //  A convenience method to set the vectors of Poln or DD IDs in the setupMap.
   //
-  void MSPolnParse::setIDLists(const Int key, const Int ndx, Vector<Int>& val)
+  void MSPolnParse::setIDLists(const int32_t key, const int32_t ndx, Vector<int32_t>& val)
   {
     if (ndx>1)
       throw(MSSelectionError("Internal error in MSPolnParse::setIDLists(): Index > 1"));
 
-    if (setupMap_p[key].nelements() !=2) setupMap_p[key].resize(2, True);
+    if (setupMap_p[key].nelements() !=2) setupMap_p[key].resize(2, true);
     if (val.nelements() > 0)
       {
-	Vector<Int> v0=val;
+	Vector<int32_t> v0=val;
 	auto elem = setupMap_p.find(key);
         if (elem != setupMap_p.end())
 	  {
-	    Vector<Int> t0;
+	    Vector<int32_t> t0;
 	    v0.resize(0);
 	    v0 = elem->second[ndx];
 	    t0=set_union(val,v0);

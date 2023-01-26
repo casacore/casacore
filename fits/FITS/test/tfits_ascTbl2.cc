@@ -60,13 +60,13 @@ int main()
 
 	// Create the initial keyword list
 	FitsKeywordList st;
-	st.mk(FITS::SIMPLE,True,"Standard FITS format");
+	st.mk(FITS::SIMPLE,true,"Standard FITS format");
 	st.mk(FITS::BITPIX,32,"Integer data");
 	st.mk(FITS::NAXIS,2,"This is a primary array");
 	st.mk(1,FITS::NAXIS,row);
 	st.mk(2,FITS::NAXIS,col);
-	st.mk(FITS::EXTEND,True,"Extension exists");
-	//st.mk(FITS::EXTEND,False,"Extension exists");
+	st.mk(FITS::EXTEND,true,"Extension exists");
+	//st.mk(FITS::EXTEND,false,"Extension exists");
 	st.spaces();
 	st.comment("This is test tfits_binTbl1.cc.");
 	st.spaces();

@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
    NodeDataType dtype, ValueType vtype,
    const TableExprNodeSet& source,
    const vector<TENShPtr>& nodes,
-   const Block<Int>& dtypeOper,
+   const Block<int32_t>& dtypeOper,
    const TaQLStyle& style)
    : TableExprFuncNodeArray (ftype, dtype, vtype, source,
                              nodes, dtypeOper, style)
@@ -58,12 +58,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return itsFunc;
   }
 
-  Bool TableExprAggrNodeArray::isAggregate() const
+  bool TableExprAggrNodeArray::isAggregate() const
   {
-    return True;
+    return true;
   }
   
-  Bool TableExprAggrNodeArray::isLazyAggregate() const
+  bool TableExprAggrNodeArray::isLazyAggregate() const
   {
     return itsFunc->isLazy();
   }
@@ -77,9 +77,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (funcType() == TableExprFuncNode::growidFUNC) {
       return new TableExprGroupRowid(this);
     } else if (funcType() == TableExprFuncNode::ghistFUNC) {
-      Int64  nbin  = operands()[1]->getInt(0);
-      Double start = operands()[2]->getDouble(0);
-      Double end   = operands()[3]->getDouble(0);
+      int64_t  nbin  = operands()[1]->getInt(0);
+      double start = operands()[2]->getDouble(0);
+      double end   = operands()[3]->getDouble(0);
       if (operands()[0]->valueType() == VTScalar) {
         return new TableExprGroupHistScalar (this, nbin, start, end);
       }
@@ -188,7 +188,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                         " is unknown");
   }
 
-  MArray<Bool> TableExprAggrNodeArray::getArrayBool (const TableExprId& id)
+  MArray<bool> TableExprAggrNodeArray::getArrayBool (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -197,7 +197,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayBool();
   }
-  MArray<Int64> TableExprAggrNodeArray::getArrayInt (const TableExprId& id)
+  MArray<int64_t> TableExprAggrNodeArray::getArrayInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -206,7 +206,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getArrayInt();
   }
-  MArray<Double> TableExprAggrNodeArray::getArrayDouble (const TableExprId& id)
+  MArray<double> TableExprAggrNodeArray::getArrayDouble (const TableExprId& id)
   {
     if (dataType() != NTDouble) {
       return TableExprNodeArray::getArrayDouble (id);

@@ -35,8 +35,8 @@
 
 #include <casacore/casa/namespace.h>
 
-Bool doLinearConv() {
-	Double beamData[] = {
+bool doLinearConv() {
+	double beamData[] = {
 			 2.7000172105e-25, 9.8635317948e-24, 3.0190166275e-22, 7.7421342681e-21, 1.6634945915e-19, 2.9946487959e-18, 4.5168693657e-17, 5.7081185033e-16, 6.0438070835e-15, 5.3616318199e-14, 3.9851734651e-13, 2.481758939e-12, 1.2949036808e-11, 5.6608499138e-11, 2.0734351736e-10, 6.3630173353e-10, 1.6360705013e-09, 3.5245522056e-09, 6.3616734103e-09, 9.6206465017e-09, 1.2189945942e-08, 1.2940859051e-08, 1.151038731e-08, 8.5778921743e-09, 5.3559525703e-09, 2.8019366827e-09, 1.2281282658e-09, 4.5101875012e-10, 1.3877438088e-10, 3.5776017565e-11, 7.7274167967e-12, 1.3984425597e-12, 2.1204007517e-13
 			 , 7.362798549e-24, 2.5496188929e-22, 7.3972968879e-21, 1.7982067704e-19, 3.6623942745e-18, 6.2496777531e-17, 8.9354691452e-16, 1.0703829994e-14, 1.0743044909e-13, 9.0339850401e-13, 6.3649528356e-12, 3.757297945e-11, 1.8583280748e-10, 7.7007639154e-10, 2.6736826086e-09, 7.7776736163e-09, 1.895640267e-08, 3.8710243899e-08, 6.623101001e-08, 9.4942500084e-08, 1.1403165701e-07, 1.1475035677e-07, 9.6749545264e-08, 6.8345009652e-08, 4.045116242e-08, 2.0059411909e-08, 8.334380297e-09, 2.9012920955e-09, 8.4619750096e-10, 2.0678624091e-10, 4.2338410555e-11, 7.2629064221e-12, 1.043881019e-12
 			 , 1.7142488945e-22, 5.6270084002e-21, 1.5475455831e-19, 3.5659326073e-18, 6.8844614491e-17, 1.1135950628e-15, 1.5092172168e-14, 1.7137238351e-13, 1.6304078313e-12, 1.2996222154e-11, 8.6796098087e-11, 4.8567921906e-10, 2.2770070274e-09, 8.9442311335e-09, 2.9436453275e-08, 8.1169602595e-08, 1.8752831465e-07, 3.6299820749e-07, 5.8871842157e-07, 7.9997084868e-07, 9.1076549324e-07, 8.6876599426e-07, 6.9432843475e-07, 4.6493357786e-07, 2.6084489946e-07, 1.2261305926e-07, 4.8290122123e-08, 1.5934691788e-08, 4.4054928594e-09, 1.0204967982e-09, 1.980565989e-10, 3.2205800526e-11, 4.3877583858e-12
@@ -71,7 +71,7 @@ Bool doLinearConv() {
 			 , 1.043881019e-12, 7.2629064221e-12, 4.2338410555e-11, 2.0678624091e-10, 8.4619750096e-10, 2.9012920955e-09, 8.334380297e-09, 2.0059411909e-08, 4.045116242e-08, 6.8345009652e-08, 9.6749545264e-08, 1.1475035677e-07, 1.1403165701e-07, 9.4942500084e-08, 6.623101001e-08, 3.8710243899e-08, 1.895640267e-08, 7.7776736163e-09, 2.6736826086e-09, 7.7007639154e-10, 1.8583280748e-10, 3.757297945e-11, 6.3649528356e-12, 9.0339850401e-13, 1.0743044909e-13, 1.0703829994e-14, 8.9354691452e-16, 6.2496777531e-17, 3.6623942745e-18, 1.7982067704e-19, 7.3972968879e-21, 2.5496188929e-22, 7.362798549e-24
 			 , 2.1204007517e-13, 1.3984425597e-12, 7.7274167967e-12, 3.5776017565e-11, 1.3877438088e-10, 4.5101875012e-10, 1.2281282658e-09, 2.8019366827e-09, 5.3559525703e-09, 8.5778921743e-09, 1.151038731e-08, 1.2940859051e-08, 1.2189945942e-08, 9.6206465017e-09, 6.3616734103e-09, 3.5245522056e-09, 1.6360705013e-09, 6.3630173353e-10, 2.0734351736e-10, 5.6608499138e-11, 1.2949036808e-11, 2.481758939e-12, 3.9851734651e-13, 5.3616318199e-14, 6.0438070835e-15, 5.7081185033e-16, 4.5168693657e-17, 2.9946487959e-18, 1.6634945915e-19, 7.7421342681e-21, 3.0190166275e-22, 9.8635317948e-24, 2.7000172105e-25
 	};
-	Double kernelData[] = {
+	double kernelData[] = {
 			 8.8039155317e-17, 6.24999142e-16, 4.0724755416e-15, 2.435668312e-14, 1.3370776925e-13, 6.7371672477e-13, 3.115852628e-12, 1.3226817211e-11, 5.1536528517e-11, 1.8431105253e-10, 6.0502119981e-10, 1.8229211474e-09, 5.0413362374e-09, 1.2796853355e-08, 2.981532532e-08, 6.3761078195e-08, 1.2515641856e-07, 2.2549069456e-07, 3.7289299826e-07, 5.6600407561e-07, 7.8855822494e-07, 1.0083938378e-06, 1.1835978739e-06, 1.275140221e-06, 1.2609335727e-06, 1.144472435e-06, 9.5345058071e-07, 7.2907391768e-07, 5.1171087989e-07, 3.2965331798e-07, 1.9492570402e-07, 1.0579386611e-07, 5.270264225e-08, 2.4098120832e-08, 1.0113783588e-08, 3.896059031e-09, 1.3775781627e-09, 4.4708234337e-10, 1.3317907888e-10, 3.6413785182e-11, 9.1384920464e-12, 2.1050526773e-12, 4.4507285227e-13, 8.6373352318e-14, 1.5385377705e-14
 			 , 3.328093829e-16, 2.350064113e-15, 1.523155991e-14, 9.0612467616e-14, 4.947798898e-13, 2.4797906784e-12, 1.1407623977e-11, 4.8168070227e-11, 1.8668117052e-10, 6.6408289978e-10, 2.1683261853e-09, 6.4983658454e-09, 1.7875782632e-08, 4.5134363802e-08, 1.0459863375e-07, 2.2249817277e-07, 4.3441593789e-07, 7.7851177593e-07, 1.2805753613e-06, 1.9334083845e-06, 2.6793047709e-06, 3.4080062505e-06, 3.9788533286e-06, 4.2637839215e-06, 4.1938587856e-06, 3.7862564568e-06, 3.1375191156e-06, 2.3864001832e-06, 1.6660155779e-06, 1.0675686326e-06, 6.2790070388e-07, 3.3897390495e-07, 1.6796612101e-07, 7.6393284587e-08, 3.1891108421e-08, 1.2219812717e-08, 4.2977306158e-09, 1.3873687754e-09, 4.1107886539e-10, 1.1179883408e-10, 2.7908076891e-11, 6.3944366295e-12, 1.3447870205e-12, 2.5958938775e-13, 4.5993617985e-14
 			 , 1.1891068854e-15, 8.352003205e-15, 5.3844241213e-14, 3.1861416717e-13, 1.7304994243e-12, 8.626971533e-12, 3.9475256397e-11, 1.6579430884e-10, 6.3913946358e-10, 2.2615160855e-09, 7.3449011317e-09, 2.1895267821e-08, 5.9909304184e-08, 1.5045921486e-07, 3.4683378658e-07, 7.338467185e-07, 1.4251776292e-06, 2.5404576718e-06, 4.1565654101e-06, 6.2421840994e-06, 8.6043446572e-06, 1.0886302334e-05, 1.264216462e-05, 1.347541729e-05, 1.3183888768e-05, 1.1839236322e-05, 9.7585025287e-06, 7.3828559835e-06, 5.1267684285e-06, 3.2677069157e-06, 1.9117092052e-06, 1.0265503079e-06, 5.0596344181e-07, 2.2889534534e-07, 9.5046139847e-08, 3.6225348055e-08, 1.2672709993e-08, 4.0691880976e-09, 1.1992874471e-09, 3.2442937226e-10, 8.055563161e-11, 1.8359098963e-11, 3.8404891246e-12, 7.3739988725e-13, 1.2995638907e-13
@@ -118,7 +118,7 @@ Bool doLinearConv() {
 			 , 4.5993617985e-14, 2.5958938775e-13, 1.3447870205e-12, 6.3944366295e-12, 2.7908076891e-11, 1.1179883408e-10, 4.1107886539e-10, 1.3873687754e-09, 4.2977306158e-09, 1.2219812717e-08, 3.1891108421e-08, 7.6393284587e-08, 1.6796612101e-07, 3.3897390495e-07, 6.2790070388e-07, 1.0675686326e-06, 1.6660155779e-06, 2.3864001832e-06, 3.1375191156e-06, 3.7862564568e-06, 4.1938587856e-06, 4.2637839215e-06, 3.9788533286e-06, 3.4080062505e-06, 2.6793047709e-06, 1.9334083845e-06, 1.2805753613e-06, 7.7851177593e-07, 4.3441593789e-07, 2.2249817277e-07, 1.0459863375e-07, 4.5134363802e-08, 1.7875782632e-08, 6.4983658454e-09, 2.1683261853e-09, 6.6408289978e-10, 1.8668117052e-10, 4.8168070227e-11, 1.1407623977e-11, 2.4797906784e-12, 4.947798898e-13, 9.0612467616e-14, 1.523155991e-14, 2.350064113e-15, 3.328093829e-16
 			 , 1.5385377705e-14, 8.6373352318e-14, 4.4507285227e-13, 2.1050526773e-12, 9.1384920464e-12, 3.6413785182e-11, 1.3317907888e-10, 4.4708234337e-10, 1.3775781627e-09, 3.896059031e-09, 1.0113783588e-08, 2.4098120832e-08, 5.270264225e-08, 1.0579386611e-07, 1.9492570402e-07, 3.2965331798e-07, 5.1171087989e-07, 7.2907391768e-07, 9.5345058071e-07, 1.144472435e-06, 1.2609335727e-06, 1.275140221e-06, 1.1835978739e-06, 1.0083938378e-06, 7.8855822494e-07, 5.6600407561e-07, 3.7289299826e-07, 2.2549069456e-07, 1.2515641856e-07, 6.3761078195e-08, 2.981532532e-08, 1.2796853355e-08, 5.0413362374e-09, 1.8229211474e-09, 6.0502119981e-10, 1.8431105253e-10, 5.1536528517e-11, 1.3226817211e-11, 3.115852628e-12, 6.7371672477e-13, 1.3370776925e-13, 2.435668312e-14, 4.0724755416e-15, 6.24999142e-16, 8.8039155317e-17
 	};
-	Double expectedData[] = {
+	double expectedData[] = {
 			3.8457113701e-11, 1.5355541691e-10, 5.7920120093e-10, 2.0639292626e-09, 6.9482251076e-09, 2.2098842466e-08, 6.6402420022e-08, 1.8850309303e-07, 5.0556217426e-07, 1.2810126683e-06, 3.06659351e-06, 6.9356002718e-06, 1.4819652283e-05, 2.9917072255e-05, 5.705953493e-05, 0.00010281732805, 0.00017503874276, 0.00028153515523, 0.00042782129724, 0.00061422032944, 0.00083314126713, 0.0010676929909, 0.0012927304956, 0.0014787814262, 0.0015982137736, 0.0016319284126, 0.0015743566474, 0.0014349650576, 0.0012357086523, 0.0010053742396, 0.00077281695595, 0.00056125865138, 0.00038511216981, 0.00024966029251, 0.00015291495955, 8.8488931151e-05, 4.8380080692e-05, 2.4990966756e-05, 1.2196591949e-05, 5.6238406258e-06, 2.4500030907e-06, 1.0084150159e-06, 3.921486349e-07, 1.4407876737e-07, 5.0013227699e-08,
 			1.1037329674e-10, 4.3723648337e-10, 1.636283973e-09, 5.7851833903e-09, 1.9324204644e-08, 6.0983850658e-08, 1.8182691085e-07, 5.12191586e-07, 1.3631335852e-06, 3.4274945331e-06, 8.1423193202e-06, 1.8274819301e-05, 3.8751829459e-05, 7.7636509936e-05, 0.00014695181449, 0.00026279645591, 0.00044401748663, 0.00070878913587, 0.0010689830016, 0.0015232165496, 0.002050642297, 0.0026082899464, 0.0031344387057, 0.0035587861881, 0.0038175297975, 0.0038690256129, 0.0037047558489, 0.0033516338781, 0.0028647894039, 0.0023134926721, 0.0017651555547, 0.0012724402206, 0.00086662547493, 0.0005576545782, 0.00033903063312, 0.00019473882134, 0.00010568324266, 5.4187582553e-05, 2.6250254403e-05, 1.2014546058e-05, 5.1954275555e-06, 2.1226342248e-06, 8.19348414e-07, 2.9881388688e-07, 1.0296019772e-07,
 			3.02794963e-10, 1.1903630654e-09, 4.420890157e-09, 1.5511886635e-08, 5.1422412525e-08, 1.6105547757e-07, 4.7657874712e-07, 1.332387126e-06, 3.5193554415e-06, 8.7828022265e-06, 2.0708118508e-05, 4.613027277e-05, 9.7088882143e-05, 0.00019305955886, 0.00036270343014, 0.00064379968217, 0.0010796643898, 0.0017106686218, 0.002560838833, 0.0036219127892, 0.0048398649227, 0.0061103785729, 0.0072885766648, 0.0082140466076, 0.0087460411453, 0.0087984438376, 0.0083625799933, 0.0075095660001, 0.00637132247, 0.0051072201955, 0.0038679413048, 0.002767677649, 0.0018710763746, 0.0011951101522, 0.00072121507978, 0.00041120854454, 0.00022151337315, 0.00011274006279, 5.4212208366e-05, 2.4629546404e-05, 1.0571975754e-05, 4.2874215176e-06, 1.6427676057e-06, 5.9469615434e-07, 2.0339998248e-07,
@@ -165,31 +165,31 @@ Bool doLinearConv() {
 			1.0296019769e-07, 2.9881388654e-07, 8.1934841385e-07, 2.1226342257e-06, 5.1954275553e-06, 1.2014546057e-05, 2.6250254403e-05, 5.4187582553e-05, 0.00010568324266, 0.00019473882134, 0.00033903063312, 0.0005576545782, 0.00086662547493, 0.0012724402206, 0.0017651555547, 0.0023134926721, 0.0028647894039, 0.0033516338781, 0.0037047558489, 0.0038690256129, 0.0038175297975, 0.0035587861881, 0.0031344387057, 0.0026082899464, 0.002050642297, 0.0015232165496, 0.0010689830016, 0.00070878913586, 0.00044401748663, 0.00026279645591, 0.00014695181449, 7.7636509936e-05, 3.8751829459e-05, 1.8274819301e-05, 8.1423193205e-06, 3.427494533e-06, 1.3631335849e-06, 5.1219158581e-07, 1.818269103e-07, 6.0983850308e-08, 1.9324204448e-08, 5.7851840157e-09, 1.6362833421e-09, 4.3723652767e-10, 1.1037296811e-10,
 			5.0013227583e-08, 1.4407876694e-07, 3.921486348e-07, 1.0084150167e-06, 2.4500030905e-06, 5.6238406247e-06, 1.2196591949e-05, 2.4990966756e-05, 4.8380080691e-05, 8.8488931151e-05, 0.00015291495955, 0.00024966029251, 0.00038511216981, 0.00056125865138, 0.00077281695595, 0.0010053742396, 0.0012357086523, 0.0014349650576, 0.0015743566474, 0.0016319284126, 0.0015982137736, 0.0014787814262, 0.0012927304956, 0.0010676929909, 0.00083314126713, 0.00061422032944, 0.00042782129724, 0.00028153515523, 0.00017503874276, 0.00010281732804, 5.705953493e-05, 2.9917072255e-05, 1.4819652283e-05, 6.9356002724e-06, 3.0665935102e-06, 1.2810126683e-06, 5.0556217397e-07, 1.8850309274e-07, 6.6402419511e-08, 2.2098842129e-08, 6.9482249317e-09, 2.0639297636e-09, 5.792005369e-10, 1.5355542172e-10, 3.8456906847e-11
 	};
-	Matrix<Double> beamMatrixIn(33, 33);
-	Double *p;
+	Matrix<double> beamMatrixIn(33, 33);
+	double *p;
 	p = beamData;
-	for (uInt i=0; i<33; i++) {
-		for (uInt j=0; j<33; j++) {
+	for (uint32_t i=0; i<33; i++) {
+		for (uint32_t j=0; j<33; j++) {
 			beamMatrixIn(i,j) = *p++;
 		}
 	}
-	Matrix<Double> kernelMatrix(45, 45);
-	Matrix<Double> beamMatrixOut;
+	Matrix<double> kernelMatrix(45, 45);
+	Matrix<double> beamMatrixOut;
 	p = kernelData;
-	for (uInt i=0; i<45; i++) {
-		for (uInt j=0; j<45; j++) {
+	for (uint32_t i=0; i<45; i++) {
+		for (uint32_t j=0; j<45; j++) {
 			kernelMatrix(i,j) = *p++;
 		}
 	}
-	Matrix<Double> expectedMatrix(45, 45);
+	Matrix<double> expectedMatrix(45, 45);
 	p = expectedData;
-	for (uInt i=0; i<45; i++) {
-		for (uInt j=0; j<45; j++) {
+	for (uint32_t i=0; i<45; i++) {
+		for (uint32_t j=0; j<45; j++) {
 			expectedMatrix(i,j) = *p++;
 		}
 	}
 
-	Convolver<Double> conv(beamMatrixIn, kernelMatrix.shape());
+	Convolver<double> conv(beamMatrixIn, kernelMatrix.shape());
 	conv.linearConv(beamMatrixOut, kernelMatrix);
 
     cout << "*** max " << max(abs(beamMatrixOut - expectedMatrix)) << endl;
@@ -197,36 +197,36 @@ Bool doLinearConv() {
 }
 
 int main() {
-  Bool anyFailures = False;
+  bool anyFailures = false;
   {
-    Bool failed = False;
+    bool failed = false;
     // Test the double precision constructor
-    Array<Double> psf(IPosition(1,4)); 
+    Array<double> psf(IPosition(1,4)); 
     psf = 0.;
     psf(IPosition(1,1)) = 0.1;
     psf(IPosition(1,2)) = 1.;
     psf(IPosition(1,3)) = 0.5;
-    Convolver<Double> conv(psf);
+    Convolver<double> conv(psf);
     // Now test circular Convolution (1 - Dimensional)
-    Vector<Double> mod(4);
+    Vector<double> mod(4);
     mod = 0;
     mod(3) = 1;
     mod(0) = 2;
-    Vector<Double> result;
+    Vector<double> result;
     conv.circularConv(result, mod);
-    Array<Double> expectedResult(IPosition(1,4));
+    Array<double> expectedResult(IPosition(1,4));
     expectedResult(IPosition(1,0)) = 2.5;
     expectedResult(IPosition(1,1)) = 1.0;
     expectedResult(IPosition(1,2)) = 0.1;
     expectedResult(IPosition(1,3)) = 1.2;
     if (!allNearAbs(expectedResult, result, 1.E-10))
-      failed = True;
+      failed = true;
 
     if (failed) 
       cout << "Failed";
     else
       cout << "Passed";
-    cout << " the Circular Convolution in Double Precision Test"
+    cout << " the Circular Convolution in double Precision Test"
 	 << endl;
     mod.resize(IPosition(1,6));
     mod = 0;
@@ -242,7 +242,7 @@ int main() {
       expectedResult(IPosition(1,4)) = 0.1;
       expectedResult(IPosition(1,5)) = 1.2;
       if (!allNearAbs(expectedResult, result, 1.E-10)){
-	failed = True;
+	failed = true;
 	cout << "Failed";
       }
       else
@@ -250,29 +250,29 @@ int main() {
       cout << " the Circular Convolution Resize Test"
 	   << endl;
     }
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test the single precision constructor
-    Matrix<Float> psf(2,2); 
+    Matrix<float> psf(2,2); 
     psf = 0.;
     psf(1,1) = 1;
     psf(0,1) = .5;
     psf(1,0) = .1;
     //    cout << "Psf:" << psf << endl;
-    Convolver<Float> conv(psf);
+    Convolver<float> conv(psf);
     // And test single precision circular convolution
-    Matrix<Float> mod(6,6);
+    Matrix<float> mod(6,6);
     mod = 0;
     mod(0,0) = 1;
     mod(5,5) = 2;
     mod(2,0) = 3;
     //    cout << "Model:" << mod << endl;
-    Matrix<Float> result;
+    Matrix<float> result;
     conv.circularConv(result, mod);
     //    cout << "Result:" << result << endl;
-    Matrix<Float> expectedResult(6,6);
+    Matrix<float> expectedResult(6,6);
     expectedResult = mod;
     expectedResult(5,0) = 0.5;
     expectedResult(0,5) = 0.1;
@@ -281,7 +281,7 @@ int main() {
     expectedResult(2,5) = 0.3;
     expectedResult(1,0) = 1.5;
     if (!allNearAbs(expectedResult, result, 1.E-5)){
-      failed = True;
+      failed = true;
       cout << "Failed";
     }
     
@@ -289,49 +289,49 @@ int main() {
       cout << "Passed";
     cout << " the Floating Point 2-D Circular Convolution Test"
 	 << endl;
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     // Test the double precision constructor with supplied image size
-    Array<Double> psf(IPosition(1,2)); 
+    Array<double> psf(IPosition(1,2)); 
     psf = 0.;
     psf(IPosition(1,0)) = .5;
     psf(IPosition(1,1)) = 1.;
-    Convolver<Double> conv(psf, IPosition(1,4));
+    Convolver<double> conv(psf, IPosition(1,4));
     // And test linear convolution
-    Array<Double> mod(IPosition(1,4)); 
+    Array<double> mod(IPosition(1,4)); 
     mod = 0.;
     mod(IPosition(1,0)) = 1.;
     mod(IPosition(1,3)) = 2.;
-    Array<Double> result;
-    conv.linearConv(result, mod, False);
-    Array<Double> expectedResult(IPosition(1,4));
+    Array<double> result;
+    conv.linearConv(result, mod, false);
+    Array<double> expectedResult(IPosition(1,4));
     expectedResult(IPosition(1,0)) = 1.;
     expectedResult(IPosition(1,1)) = 0.;
     expectedResult(IPosition(1,2)) = 1.;
     expectedResult(IPosition(1,3)) = 2.;
     if (!allNearAbs(expectedResult, result, 1.E-10)){
-      failed = True;
+      failed = true;
       cout << "Failed";
     }
     else
       cout << "Passed";
-    cout << " the Linear Convolution in Double Precision Test"
+    cout << " the Linear Convolution in double Precision Test"
 	 << endl;
     if (!failed){
       // see if the convolver can automatically resize if given a bigger image
-      Vector<Double> bigMod(8), bigResult; 
+      Vector<double> bigMod(8), bigResult; 
       bigMod = 0; bigMod(0) = 1; bigMod(7) = 2;
-      conv.linearConv(bigResult, bigMod, True);
-      Vector<Double> expectedBigResult(9);
+      conv.linearConv(bigResult, bigMod, true);
+      Vector<double> expectedBigResult(9);
       expectedBigResult = 0;
       expectedBigResult(0) = 0.5;
       expectedBigResult(1) = 1.0;
       expectedBigResult(7) = 1.0;
       expectedBigResult(8) = 2.0; 
       if (!allNearAbs(expectedBigResult, bigResult, 1.E-10)){
-	failed = True;
+	failed = true;
 	cout << "Failed";
       }
       else
@@ -355,7 +355,7 @@ int main() {
       expectedResult(IPosition(1,2)) = 2.0;
       expectedResult(IPosition(1,3)) = 0.6;
       if (!allNearAbs(expectedResult, result, 1.E-10)){
-	failed = True;
+	failed = true;
 	cout << "Failed";
       }
       else
@@ -373,7 +373,7 @@ int main() {
       expectedResult(IPosition(1,0)) = 1;
       expectedResult(IPosition(1,1)) = 0.3;
       if (!allNearAbs(expectedResult, result, 1.E-10)){
-	failed = True;
+	failed = true;
 	cout << "Failed";
       }
       else
@@ -381,27 +381,27 @@ int main() {
       cout << " the   small model test"
 	   << endl;
     }
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-    Bool failed = False;
+    bool failed = false;
     //    Test the linear convolution with Single precision 2-D functions
-    Matrix<Float> psf(2,4); 
+    Matrix<float> psf(2,4); 
     psf = 0.;
     psf(1,2) = 1.;
     psf(1,3) = .1;
-    Cube<Float> mod(2,4,3); 
-    Convolver<Float> conv(psf, mod.shape());
+    Cube<float> mod(2,4,3); 
+    Convolver<float> conv(psf, mod.shape());
     mod = 0.;
     mod(1,2,0) = 1.;
     mod(0,0,1) = 2.;
     mod(1,3,1) = 4.;
-    for (uInt i = 0; i < 4; i++)
-      for (uInt j = 0; j < 2; j++)
+    for (uint32_t i = 0; i < 4; i++)
+      for (uint32_t j = 0; j < 2; j++)
 	mod(j,i,2) = 1.;
-    Cube<Float> result;
-    conv.linearConv(result, mod, False);
-    Cube<Float> expectedResult(2,4,3);
+    Cube<float> result;
+    conv.linearConv(result, mod, false);
+    Cube<float> expectedResult(2,4,3);
     expectedResult = mod;
     expectedResult(1,3,0) = 0.1;
     expectedResult(0,1,1) = 0.2;
@@ -414,7 +414,7 @@ int main() {
     expectedResult(0,3,2) = 1.1;
     expectedResult(1,3,2) = 1.1;
     if (!allNearAbs(expectedResult, result, 1.E-5)){
-      failed = True;
+      failed = true;
       cout << "Failed";
     }
     
@@ -422,27 +422,27 @@ int main() {
       cout << "Passed";
     cout << " the Multiple Floating Point 2-D Linear Convolution Test"
 	 << endl;
-    if (failed) anyFailures = True;
+    if (failed) anyFailures = true;
   }
   {
-	  Bool failed = False;
+	  bool failed = false;
 	 if (! doLinearConv()) {
-		 failed = True;
+		 failed = true;
 		 cout << "Failed";
 	 }
 	 else {
 		 cout << "Passed";
 	 }
 	 cout << " the linear convolution test"  << endl;
-	 if (failed) anyFailures = True;
+	 if (failed) anyFailures = true;
 
 
 	  /*
-	  Matrix<Double> mat1 = doLinearConv();
-	  Matrix<Double> mat2 = doLinearConv();
-	  Matrix<Double> mat3 = doLinearConv();
-	  Matrix<Double> mat4 = doLinearConv();
-	  Matrix<Double> mat5 = doLinearConv();
+	  Matrix<double> mat1 = doLinearConv();
+	  Matrix<double> mat2 = doLinearConv();
+	  Matrix<double> mat3 = doLinearConv();
+	  Matrix<double> mat4 = doLinearConv();
+	  Matrix<double> mat5 = doLinearConv();
 
 	  cout << "*** all " << allTrue(mat0 == mat1) << endl;
 	  cout << "*** all " << allTrue(mat0 == mat2) << endl;

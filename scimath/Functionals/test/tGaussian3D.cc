@@ -39,58 +39,58 @@
 
 int main()
 {
-  Double height = 9.0;
-  Double xCen = 0.0;
-  Double yCen = 0.0;
-  Double zCen = 0.0;
-  Double xWidth = 1.0;
-  Double yWidth = 1.0;
-  Double zWidth = 1.0;
-  Double theta = 0.0;
-  Double phi = 0.0;
+  double height = 9.0;
+  double xCen = 0.0;
+  double yCen = 0.0;
+  double zCen = 0.0;
+  double xWidth = 1.0;
+  double yWidth = 1.0;
+  double zWidth = 1.0;
+  double theta = 0.0;
+  double phi = 0.0;
 
 // Specialized (hand-coded derivatives)
 
-  AutoDiff<Double> heightAD(height,9,0);
-  AutoDiff<Double> xCenAD(xCen,9,1);
-  AutoDiff<Double> yCenAD(yCen,9,2);
-  AutoDiff<Double> zCenAD(zCen,9,3);
-  AutoDiff<Double> xWidthAD(xWidth,9,4);
-  AutoDiff<Double> yWidthAD(yWidth,9,5);
-  AutoDiff<Double> zWidthAD(zWidth,9,6);
-  AutoDiff<Double> thetaAD(theta,9,7);
-  AutoDiff<Double> phiAD(phi,9,8);
-  Gaussian3D<AutoDiff<Double> > gauss3dAD(heightAD, xCenAD, yCenAD, zCenAD,
+  AutoDiff<double> heightAD(height,9,0);
+  AutoDiff<double> xCenAD(xCen,9,1);
+  AutoDiff<double> yCenAD(yCen,9,2);
+  AutoDiff<double> zCenAD(zCen,9,3);
+  AutoDiff<double> xWidthAD(xWidth,9,4);
+  AutoDiff<double> yWidthAD(yWidth,9,5);
+  AutoDiff<double> zWidthAD(zWidth,9,6);
+  AutoDiff<double> thetaAD(theta,9,7);
+  AutoDiff<double> phiAD(phi,9,8);
+  Gaussian3D<AutoDiff<double> > gauss3dAD(heightAD, xCenAD, yCenAD, zCenAD,
                                xWidthAD, yWidthAD, zWidthAD,
                                thetaAD, phiAD);
 
 // Automatic
 
-  AutoDiffA<Double> heightADA(height,9,0);
-  AutoDiffA<Double> xCenADA(xCen,9,1);
-  AutoDiffA<Double> yCenADA(yCen,9,2);
-  AutoDiffA<Double> zCenADA(zCen,9,3);
-  AutoDiffA<Double> xWidthADA(xWidth,9,4);
-  AutoDiffA<Double> yWidthADA(yWidth,9,5);
-  AutoDiffA<Double> zWidthADA(zWidth,9,6);
-  AutoDiffA<Double> thetaADA(theta,9,7);
-  AutoDiffA<Double> phiADA(phi,9,8);
-  Gaussian3D<AutoDiffA<Double> > gauss3dADA(heightADA, xCenADA, yCenADA, zCenADA,
+  AutoDiffA<double> heightADA(height,9,0);
+  AutoDiffA<double> xCenADA(xCen,9,1);
+  AutoDiffA<double> yCenADA(yCen,9,2);
+  AutoDiffA<double> zCenADA(zCen,9,3);
+  AutoDiffA<double> xWidthADA(xWidth,9,4);
+  AutoDiffA<double> yWidthADA(yWidth,9,5);
+  AutoDiffA<double> zWidthADA(zWidth,9,6);
+  AutoDiffA<double> thetaADA(theta,9,7);
+  AutoDiffA<double> phiADA(phi,9,8);
+  Gaussian3D<AutoDiffA<double> > gauss3dADA(heightADA, xCenADA, yCenADA, zCenADA,
                                             xWidthADA, yWidthADA, zWidthADA,
                                             thetaADA, phiADA);
 //
 /*
-  uInt npar = argc - 1;
+  uint32_t npar = argc - 1;
   if (npar > 9) npar = 9;
-  for (uInt i = 0; i < npar; i++) {
+  for (uint32_t i = 0; i < npar; i++) {
     gauss3dAD[i] = atof(argv[i+1]);  //set parameter
   }
 */
 
-  for (Double z = -0.25; z < 0.26; z+=0.25)  {
-    for (Double y = -1.0; y < 1.01; y+=0.25)    {
-      for (Double x = -1.0; x < 1.01; x+=0.25)       {
-        cout << "[" << Int(gauss3dAD(x,y,z).value()) << Int(gauss3dADA(x,y,z).value()) << "] ";
+  for (double z = -0.25; z < 0.26; z+=0.25)  {
+    for (double y = -1.0; y < 1.01; y+=0.25)    {
+      for (double x = -1.0; x < 1.01; x+=0.25)       {
+        cout << "[" << int32_t(gauss3dAD(x,y,z).value()) << int32_t(gauss3dADA(x,y,z).value()) << "] ";
         AlwaysAssertExit(near(gauss3dAD(x,y,z).value(),
                               gauss3dADA(x,y,z).value()));
       }
@@ -102,9 +102,9 @@ int main()
 
 // Check specialized and auto-derivatives
 
-  for (Double z = -0.25; z < 0.26; z+=0.25)  {
-    for (Double y = -1.0; y < 1.01; y+=0.25)    {
-      for (Double x = -1.0; x < 1.01; x+=0.25)       {
+  for (double z = -0.25; z < 0.26; z+=0.25)  {
+    for (double y = -1.0; y < 1.01; y+=0.25)    {
+      for (double x = -1.0; x < 1.01; x+=0.25)       {
         AlwaysAssertExit(allNearAbs(gauss3dAD(x,y,z).derivatives(),
                                     gauss3dADA(x,y,z).derivatives(), 1.0e-13));
       }

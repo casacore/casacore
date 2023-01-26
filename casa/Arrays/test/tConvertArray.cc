@@ -80,7 +80,7 @@ void tConvertNear (const IPosition& shape)
 
 BOOST_AUTO_TEST_CASE( converteq1 )
 {
-  tConvertEQ<int,short> (IPosition{40,50,6}); // size should fit in Short
+  tConvertEQ<int,short> (IPosition{40,50,6}); // size should fit in int16_t
 }
 
 BOOST_AUTO_TEST_CASE( converteq2 )

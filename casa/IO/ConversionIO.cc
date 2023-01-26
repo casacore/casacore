@@ -32,7 +32,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ConversionIO::ConversionIO (DataConversion* dataConversion,
-			    ByteIO* byteIO, uInt bufferLength, Bool takeOver)
+			    ByteIO* byteIO, uint32_t bufferLength, bool takeOver)
 : TypeIO          (byteIO, takeOver),
   itsConversion   (dataConversion, takeOver),
   itsBuffer       (new char[bufferLength]),
@@ -73,30 +73,30 @@ ConversionIO::~ConversionIO()
 
 void ConversionIO::init()
 {
-    itsCopyChar   = itsConversion->canCopy (static_cast<Char*>(0));
-    itsCopyuChar  = itsConversion->canCopy (static_cast<uChar*>(0));
-    itsCopyShort  = itsConversion->canCopy (static_cast<Short*>(0));
-    itsCopyuShort = itsConversion->canCopy (static_cast<uShort*>(0));
-    itsCopyInt    = itsConversion->canCopy (static_cast<Int*>(0));
-    itsCopyuInt   = itsConversion->canCopy (static_cast<uInt*>(0));
-    itsCopyInt64  = itsConversion->canCopy (static_cast<Int64*>(0));
-    itsCopyuInt64 = itsConversion->canCopy (static_cast<uInt64*>(0));
-    itsCopyFloat  = itsConversion->canCopy (static_cast<Float*>(0));
-    itsCopyDouble = itsConversion->canCopy (static_cast<Double*>(0));
-    itsSizeChar   = itsConversion->externalSize (static_cast<Char*>(0));
-    itsSizeuChar  = itsConversion->externalSize (static_cast<uChar*>(0));
-    itsSizeShort  = itsConversion->externalSize (static_cast<Short*>(0));
-    itsSizeuShort = itsConversion->externalSize (static_cast<uShort*>(0));
-    itsSizeInt    = itsConversion->externalSize (static_cast<Int*>(0));
-    itsSizeuInt   = itsConversion->externalSize (static_cast<uInt*>(0));
-    itsSizeInt64  = itsConversion->externalSize (static_cast<Int64*>(0));
-    itsSizeuInt64 = itsConversion->externalSize (static_cast<uInt64*>(0));
-    itsSizeFloat  = itsConversion->externalSize (static_cast<Float*>(0));
-    itsSizeDouble = itsConversion->externalSize (static_cast<Double*>(0));
+    itsCopyChar   = itsConversion->canCopy (static_cast<char*>(0));
+    itsCopyuChar  = itsConversion->canCopy (static_cast<unsigned char*>(0));
+    itsCopyShort  = itsConversion->canCopy (static_cast<int16_t*>(0));
+    itsCopyuShort = itsConversion->canCopy (static_cast<uint16_t*>(0));
+    itsCopyInt    = itsConversion->canCopy (static_cast<int32_t*>(0));
+    itsCopyuInt   = itsConversion->canCopy (static_cast<uint32_t*>(0));
+    itsCopyInt64  = itsConversion->canCopy (static_cast<int64_t*>(0));
+    itsCopyuInt64 = itsConversion->canCopy (static_cast<uint64_t*>(0));
+    itsCopyFloat  = itsConversion->canCopy (static_cast<float*>(0));
+    itsCopyDouble = itsConversion->canCopy (static_cast<double*>(0));
+    itsSizeChar   = itsConversion->externalSize (static_cast<char*>(0));
+    itsSizeuChar  = itsConversion->externalSize (static_cast<unsigned char*>(0));
+    itsSizeShort  = itsConversion->externalSize (static_cast<int16_t*>(0));
+    itsSizeuShort = itsConversion->externalSize (static_cast<uint16_t*>(0));
+    itsSizeInt    = itsConversion->externalSize (static_cast<int32_t*>(0));
+    itsSizeuInt   = itsConversion->externalSize (static_cast<uint32_t*>(0));
+    itsSizeInt64  = itsConversion->externalSize (static_cast<int64_t*>(0));
+    itsSizeuInt64 = itsConversion->externalSize (static_cast<uint64_t*>(0));
+    itsSizeFloat  = itsConversion->externalSize (static_cast<float*>(0));
+    itsSizeDouble = itsConversion->externalSize (static_cast<double*>(0));
 }
 
 
-size_t ConversionIO::write (size_t nvalues, const Bool* value)
+size_t ConversionIO::write (size_t nvalues, const bool* value)
 {
     return TypeIO::write (nvalues, value);
 }
@@ -116,7 +116,7 @@ size_t ConversionIO::write (size_t nvalues, const String* value)
     return TypeIO::write (nvalues, value);
 }
 
-size_t ConversionIO::read (size_t nvalues, Bool* value)
+size_t ConversionIO::read (size_t nvalues, bool* value)
 {
     return TypeIO::read (nvalues, value);
 }
@@ -137,11 +137,11 @@ size_t ConversionIO::read (size_t nvalues, String* value)
 }
 
 
-#define CONVERSIONIO_DOIT(T) \
+#define CONVERSIONIO_DOIT(T,TP)                               \
 size_t ConversionIO::write (size_t nvalues, const T* value) \
 { \
-    size_t size = nvalues * aips_name2(itsSize,T); \
-    if (aips_name2(itsCopy,T)) { \
+    size_t size = nvalues * aips_name2(itsSize,TP); \
+    if (aips_name2(itsCopy,TP)) { \
 	itsByteIO->write (size, value); \
     } else { \
 	if (size <= itsBufferLength) { \
@@ -158,8 +158,8 @@ size_t ConversionIO::write (size_t nvalues, const T* value) \
 } \
 size_t ConversionIO::read (size_t nvalues, T* value) \
 { \
-    size_t size = nvalues * aips_name2(itsSize,T); \
-    if (aips_name2(itsCopy,T)) { \
+    size_t size = nvalues * aips_name2(itsSize,TP); \
+    if (aips_name2(itsCopy,TP)) { \
 	itsByteIO->read (size, value); \
     } else { \
 	if (size <= itsBufferLength) { \
@@ -176,16 +176,16 @@ size_t ConversionIO::read (size_t nvalues, T* value) \
 }
 
 
-CONVERSIONIO_DOIT(Char)
-CONVERSIONIO_DOIT(uChar)
-CONVERSIONIO_DOIT(Short)
-CONVERSIONIO_DOIT(uShort)
-CONVERSIONIO_DOIT(Int)
-CONVERSIONIO_DOIT(uInt)
-CONVERSIONIO_DOIT(Int64)
-CONVERSIONIO_DOIT(uInt64)
-CONVERSIONIO_DOIT(Float)
-CONVERSIONIO_DOIT(Double)
+CONVERSIONIO_DOIT(char,Char)
+CONVERSIONIO_DOIT(unsigned char,uChar)
+CONVERSIONIO_DOIT(int16_t,Short)
+CONVERSIONIO_DOIT(uint16_t,uShort)
+CONVERSIONIO_DOIT(int32_t,Int)
+CONVERSIONIO_DOIT(uint32_t,uInt)
+CONVERSIONIO_DOIT(int64_t,Int64)
+CONVERSIONIO_DOIT(uint64_t,uInt64)
+CONVERSIONIO_DOIT(float,Float)
+CONVERSIONIO_DOIT(double,Double)
 
 } //# NAMESPACE CASACORE - END
 

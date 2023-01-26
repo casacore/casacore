@@ -29,52 +29,52 @@
 
 namespace casacore {
 
-	std::pair<Double, Double> Geometry::rotate2D(
-		Double x, Double y, const Quantity& theta
+	std::pair<double, double> Geometry::rotate2D(
+		double x, double y, const Quantity& theta
 	) {
-		Double thetaRad = theta.getValue("rad");
-		Double c = cos(thetaRad);
-		Double s = sin(thetaRad);
+		double thetaRad = theta.getValue("rad");
+		double c = cos(thetaRad);
+		double s = sin(thetaRad);
 		return std::make_pair(x*c - y*s, x*s + y*c);
 	}
 
 
-	Bool Geometry::doLineSegmentsIntersect(
-		Double a0x, Double a0y, Double a1x, Double a1y,
-		Double b0x, Double b0y, Double b1x, Double b1y
+	bool Geometry::doLineSegmentsIntersect(
+		double a0x, double a0y, double a1x, double a1y,
+		double b0x, double b0y, double b1x, double b1y
 	) {
-		Vector<Double > line0point0(2);
+		Vector<double > line0point0(2);
 		line0point0[0] = a0x;
 		line0point0[1] = a0y;
-		Vector<Double > line0point1(2);
+		Vector<double > line0point1(2);
 		line0point1[0] = a1x;
 		line0point1[1] = a1y;
-		Vector<Double > line1point0(2);
+		Vector<double > line1point0(2);
 		line1point0[0] = b0x;
 		line1point0[1] = b0y;
-		Vector<Double > line1point1(2);
+		Vector<double > line1point1(2);
 		line1point1[0] = b1x;
 		line1point1[1] = b1y;
 
-		Vector<Double> p = line0point0;
-		Vector<Double> r = line0point1 - line0point0;
-		Vector<Double> q = line1point0;
-		Vector<Double> s = line1point1 - line1point0;
-		Double rCrossS = crossProduct2D(r, s);
-		Vector<Double> diffQP = q-p;
+		Vector<double> p = line0point0;
+		Vector<double> r = line0point1 - line0point0;
+		Vector<double> q = line1point0;
+		Vector<double> s = line1point1 - line1point0;
+		double rCrossS = crossProduct2D(r, s);
+		Vector<double> diffQP = q-p;
 
 		if (rCrossS == 0) {
 			if (crossProduct2D(diffQP, r) == 0) {
 				// lines are coincident
-				return True;
+				return true;
 			}
 			else {
 				// lines are parallel
-				return False;
+				return false;
 			}
 		}
-		Double t = crossProduct2D(diffQP, s)/rCrossS;
-		Double u = crossProduct2D(diffQP, r)/rCrossS;
+		double t = crossProduct2D(diffQP, s)/rCrossS;
+		double u = crossProduct2D(diffQP, r)/rCrossS;
 		return t >= 0 && t <= 1 && u >= 0 && u <= 1;
 	}
 

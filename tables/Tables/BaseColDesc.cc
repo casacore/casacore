@@ -42,8 +42,8 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 				const String& dataManType,
 				const String& dataManGroup,
 				DataType dt, const String& dtId,
-				Int opt, uInt ndim, const IPosition& shape,
-				Bool isScalar, Bool isArray, Bool isTable)
+				int32_t opt, uint32_t ndim, const IPosition& shape,
+				bool isScalar, bool isArray, bool isTable)
 : colName_p     (name),
   comment_p     (comment),
   dataManType_p (dataManType),
@@ -74,7 +74,7 @@ BaseColumnDesc::BaseColumnDesc (const String& name, const String& comment,
 	}
     }
     // Set the default data manager type and group (if empty).
-    setDefaultDataManager (False);
+    setDefaultDataManager (false);
     // Create the keyword set.
     keySetPtr_p = new TableRecord();
 }
@@ -138,7 +138,7 @@ void BaseColumnDesc::renameAction (const String&, const String&)
 {}
 
 
-void BaseColumnDesc::setDefaultDataManager (Bool always)
+void BaseColumnDesc::setDefaultDataManager (bool always)
 {
     // The default data manager for standard types is StandardStMan.
     // For other types it is the virtual column engine handling
@@ -166,7 +166,7 @@ void BaseColumnDesc::setDefaultDataManager (Bool always)
 }
 
 // Dimensionality can only be changed if not set yet.
-void BaseColumnDesc::setNdim (uInt ndim)
+void BaseColumnDesc::setNdim (uint32_t ndim)
 {
     if (!isArray()) {
 	throw (TableInvOper ("setNdim: column "
@@ -193,7 +193,7 @@ void BaseColumnDesc::setShape (const IPosition& shape)
 	throw (TableInvOper ("setShape(): shape of column "
 			     + colName_p + " already defined"));
     }
-    if (nrdim_p > 0  &&  Int(shape.nelements()) != nrdim_p) {
+    if (nrdim_p > 0  &&  int32_t(shape.nelements()) != nrdim_p) {
 	throw (TableInvOper ("setShape(): dimensionality of column "
 			     + colName_p + " mismatches new shape"));
     }
@@ -205,7 +205,7 @@ void BaseColumnDesc::setShape (const IPosition& shape)
     option_p |= ColumnDesc::FixedShape;
 }
 
-void BaseColumnDesc::setShape (const IPosition& shape, Bool directOption)
+void BaseColumnDesc::setShape (const IPosition& shape, bool directOption)
 {
     setShape (shape);
     if (directOption) {
@@ -215,7 +215,7 @@ void BaseColumnDesc::setShape (const IPosition& shape, Bool directOption)
     }
 }
 
-void BaseColumnDesc::setOptions (Int options)
+void BaseColumnDesc::setOptions (int32_t options)
 {
     option_p = options;
     //# Option Direct forces FixedShape.
@@ -235,7 +235,7 @@ void BaseColumnDesc::setOptions (Int options)
     }
 }
 
-void BaseColumnDesc::setMaxLength (uInt maxLength)
+void BaseColumnDesc::setMaxLength (uint32_t maxLength)
 {
     if (dtype_p != TpString) {
 	throw (TableInvOper ("setMaxLength: column "
@@ -262,12 +262,12 @@ TableDesc* BaseColumnDesc::tableDesc()
 //# the version is put "manually".
 void BaseColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
     ios << colName_p;
     ios << comment_p;
     ios << dataManType_p;
     ios << dataManGroup_p;
-    Int dt = dtype_p;
+    int32_t dt = dtype_p;
     ios << dt;
     ios << option_p;
     ios << nrdim_p;
@@ -282,13 +282,13 @@ void BaseColumnDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 
 void BaseColumnDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
     ios >> colName_p;
     ios >> comment_p;
     ios >> dataManType_p;
     ios >> dataManGroup_p;
-    Int dtype;
+    int32_t dtype;
     ios >> dtype;
     if (dtype != dtype_p) {
 	throw (TableInternalError ("BaseColumnDesc: data type read mismatch"

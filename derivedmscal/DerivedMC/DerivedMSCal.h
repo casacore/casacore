@@ -153,10 +153,10 @@ public:
   virtual Record dataManagerSpec() const;
 
   // Columns can be added.
-  virtual Bool canAddColumn() const;
+  virtual bool canAddColumn() const;
   
   // Columns can be removed.
-  virtual Bool canRemoveColumn() const;
+  virtual bool canRemoveColumn() const;
   
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.

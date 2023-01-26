@@ -119,7 +119,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	MEpoch::Convert	toLST(	model,
 //				outref);
 //  // Output a series of sidereal times (formatted in ddd::hh:mm:ss)
-//	for (Double d = 12345; d<12346; d += 0.1) {
+//	for (double d = 12345; d<12346; d += 0.1) {
 //	  cout << "Converted from UTC to LAST: " <<
 //		d <<  " : " <<
 //		toLST(d).getValue() << endl;
@@ -347,7 +347,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	MDirection::Convert conv(MDirection::Ref( MDirection::B1950),
 //				 MDirection::Ref( MDirection::J2000));
 //	// We have some coordinates from somewhere, say coord(0:N-1):
-//	for (Int i=0; i<N; i++) {
+//	for (int32_t i=0; i<N; i++) {
 //	   cout << "B1950: " << coord(i) << "= J2000: " <<
 //		                conv(coord(i)) << endl;
 //      };
@@ -463,7 +463,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	M();			// some default, e.g. pole directoon, time ==0)
 // 	M(MV, MeasRef);
 //	M(Quantity, MeasRef);
-//	M(Quantum<Vector<Double> >, MeasRef);
+//	M(Quantum<Vector<double> >, MeasRef);
 //	M(Vector<Quantity>, MeasRef);
 // </srcblock>
 // But also some special ones (e.g. two Quantities for MDirection to specify
@@ -480,7 +480,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // for e.g. MDirection)
 // enable the user to obtain the value of the measure.<br>
 // A <src>String tellMe()</src> will tell the type of Measure; a 
-// <src>void assured(String)</src> and <src>Bool areYou(String)</src> will
+// <src>void assured(String)</src> and <src>bool areYou(String)</src> will
 // check the type; while a <src>String showType(Measure::TYPE)</src> will
 // return the string value of a reference type code (e.g. J2000).<br>
 // <p>
@@ -516,10 +516,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // instance will be <em>razed</em> to an integer number of days; hence providing
 // an easy way to specify sidereal times offset with the beginning of the
 // current sidereal day.<br>
-// To aid with external data, a <src>Bool giveMe(String, uInt)</src> will
+// To aid with external data, a <src>bool giveMe(String, uint32_t)</src> will
 // give the correct reference type to be used given the String type.
 // Note that the
-// uInt, rather than the corresponding enum is used, due to templating
+// uint32_t, rather than the corresponding enum is used, due to templating
 // restrictions in some compilers.<br>
 // The correct reference (MeasRef) and conversion (MeasConvert) class for
 // each Measure (a frequency cannot be converted into an epoch) are templated,
@@ -573,7 +573,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // conversion environment, filled with as much info as is needed at that stage.<br>
 // To aid and speed up, <src>resetEpoch()</src> and <src>resetPosition()</src>
 // methods are available. As arguments they accept the corresponding
-// MV or a variety of Double and Quantum arguments to reset the <em>value</em>
+// MV or a variety of double and Quantum arguments to reset the <em>value</em>
 // of the corresponding frame measure only. In that case the conversion engine
 // won't be redesigned, leading to fast recalculation when necessary, since
 // e.g. nutation values could be re-used.<br>
@@ -652,7 +652,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // The reference type can be set with a set() function, and set() functions
 // for the offset and frame will be present as well.<br>
-// A <src>Bool empty()</src> checks if the reference is empty; <src>get()</src>
+// A <src>bool empty()</src> checks if the reference is empty; <src>get()</src>
 // functions provide the information in the reference; and a 
 // <src>String showMe()</src> will return the type of measure (e.g. "Epoch") the
 // MeasRef can be used for.
@@ -680,7 +680,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // case), and then go to the goal).<br>
 // The actual conversion need a value to be converted, and it also can use
 // a default Unit, so that if your frequencies are in nm, you can once
-// specify that they are nm, and then simply convert a Double.<br>
+// specify that they are nm, and then simply convert a double.<br>
 // This means that the optimal constructor for a MeasConvert is:
 // <srcblock>
 // // The first argument will give the input reference, and, if a Quantum is
@@ -700,12 +700,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // a variety of values to return a converted Measure. Possibilities are:
 // <srcblock>
 //	()		// convert the value as specified in the 'model'
-//	(Double)	// convert the value first to appropiate units (if they
+//	(double)	// convert the value first to appropiate units (if they
 //			// were implicit in 'model' or explicitly set), and
 //			// then convert
-//	(Vector<Double>)// as Double
+//	(Vector<double>)// as double
 //	(Quantity)	// convert the full value, including its own units
-//	(Quantum<Vector<Double> >) // as Quantity
+//	(Quantum<Vector<double> >) // as Quantity
 //	(MeasValue)	// convert the specified appropiate MV
 //	(Measure)	// set up a new conversion chain, using the value as
 //			// 'model', and the old output reference,
@@ -743,7 +743,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	MEpoch::Convert	toLST(	model,
 //				outref);
 // // Output a series of sidereal times (formatted in ddd::hh:mm:ss)
-//	for (Double d = 12345; d<12346; d += 0.1) {
+//	for (double d = 12345; d<12346; d += 0.1) {
 //	  cout << "Converted from UTC to LAST: " <<
 //		d <<
 //		toLST(d).getValue() << endl;

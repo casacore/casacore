@@ -40,7 +40,7 @@ template<class SourceType, class TargetType>
 void retypedArrayEngineSet (Array<SourceType>& out,
 			    const Array<TargetType>& in)
 {
-    Bool deleteIn, deleteOut;
+    bool deleteIn, deleteOut;
     SourceType* dataOut = out.getStorage (deleteOut);
     const TargetType* dataIn = in.getStorage (deleteIn);
     objcopy ((TargetType*)dataOut, dataIn, in.nelements());
@@ -54,7 +54,7 @@ template<class SourceType, class TargetType>
 void retypedArrayEngineGet (Array<TargetType>& out,
 			    const Array<SourceType>& in)
 {
-    Bool deleteIn, deleteOut;
+    bool deleteIn, deleteOut;
     TargetType* dataOut = out.getStorage (deleteOut);
     const SourceType* dataIn = in.getStorage (deleteIn);
     objcopy (dataOut, (const TargetType*)dataIn, out.nelements());
@@ -71,11 +71,11 @@ void retypedArrayEngineSet (Array<SourceType>& out,
 			    const IPosition& shape,
 			    const void* extraArgument)
 {
-    Bool deleteIn, deleteOut;
+    bool deleteIn, deleteOut;
     SourceType* dataOut = out.getStorage (deleteOut);
     const TargetType* dataIn = in.getStorage (deleteIn);
     // Set element by element.
-    Int64 n = shape.product();
+    int64_t n = shape.product();
     SourceType* op  = dataOut;
     const TargetType* ip = dataIn;
     const TargetType* last = ip + in.nelements();
@@ -97,11 +97,11 @@ void retypedArrayEngineGet (Array<TargetType>& out,
 			    const IPosition& shape,
 			    const void* extraArgument)
 {
-    Bool deleteIn, deleteOut;
+    bool deleteIn, deleteOut;
     TargetType* dataOut = out.getStorage (deleteOut);
     const SourceType* dataIn = in.getStorage (deleteIn);
     // Set element by element.
-    Int64 n = shape.product();
+    int64_t n = shape.product();
     TargetType* op  = dataOut;
     const SourceType* ip = dataIn;
     const SourceType* last = ip + in.nelements();

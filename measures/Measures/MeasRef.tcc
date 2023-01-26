@@ -57,14 +57,14 @@ MeasRef<Ms>::operator=(const MeasRef<Ms> &other) {
 }
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp)
+MeasRef<Ms>::MeasRef(const uint32_t tp)
 {
   create();
   rep_p->type = Ms::castType(tp);
 }
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep)
+MeasRef<Ms>::MeasRef(const uint32_t tp, const Ms &ep)
 {
   create();
   rep_p->type = Ms::castType(tp);
@@ -72,7 +72,7 @@ MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep)
 }
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf)
+MeasRef<Ms>::MeasRef(const uint32_t tp, const MeasFrame &mf)
 {
   create();
   rep_p->type = Ms::castType(tp);
@@ -80,7 +80,7 @@ MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf)
 }
 
 template<class Ms>
-MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep)
+MeasRef<Ms>::MeasRef(const uint32_t tp, const MeasFrame &mf, const Ms &ep)
 {
   create();
   rep_p->type = Ms::castType(tp);
@@ -102,18 +102,18 @@ MeasRef<Ms>::~MeasRef()
 
 //# Operators
 template<class Ms>
-Bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
+bool MeasRef<Ms>::operator==(const MeasRef<Ms> &other) const {
   return (rep_p == other.rep_p);
 }
 
 template<class Ms>
-Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
+bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
   return (rep_p != other.rep_p);
 }
 
 //# Member functions
 template<class Ms>
-Bool MeasRef<Ms>::empty() const {
+bool MeasRef<Ms>::empty() const {
   return rep_p.null();
 }
 
@@ -123,7 +123,7 @@ const String &MeasRef<Ms>::showMe() {
 }
 
 template<class Ms>
-uInt MeasRef<Ms>::getType() const{
+uint32_t MeasRef<Ms>::getType() const{
   return (! empty() ? rep_p->type : 0);
 }
 
@@ -204,12 +204,12 @@ const Measure* MeasRef<Ms>::offset() const {
 }
 
 template<class Ms>
-void MeasRef<Ms>::setType(uInt tp) {
+void MeasRef<Ms>::setType(uint32_t tp) {
   set(tp);
 }
 
 template<class Ms>
-void MeasRef<Ms>::set(uInt tp) {
+void MeasRef<Ms>::set(uint32_t tp) {
   create();
   rep_p->type = Ms::castType(tp);
 }

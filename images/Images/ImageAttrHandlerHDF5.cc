@@ -35,22 +35,22 @@ using namespace std;
 namespace casacore {
 
   ImageAttrHandlerHDF5::ImageAttrHandlerHDF5()
-    : itsCanWrite (False)
+    : itsCanWrite (false)
   {}
 
   ImageAttrHandlerHDF5::~ImageAttrHandlerHDF5()
   {}
 
   ImageAttrHandlerHDF5& ImageAttrHandlerHDF5::attachHid (const HDF5Object& hid,
-                                                         Bool createHandler,
-                                                         Bool isWritable)
+                                                         bool createHandler,
+                                                         bool isWritable)
   {
     itsGroupMap.clear();
     // If ATTRGROUPS is defined, get all groups in it.
     if (HDF5Group::exists (hid, "ATTRGROUPS")) {
       itsGroup = CountedPtr<HDF5Group>(new HDF5Group(hid, "ATTRGROUPS", true));
       vector<String> names = HDF5Group::linkNames (*itsGroup);
-      for (uInt i=0; i<names.size(); ++i) {
+      for (uint32_t i=0; i<names.size(); ++i) {
         // Add group to map, but with a null object. It gets filled once
         // the group gets used.
         itsGroupMap[names[i]] = ImageAttrGroupHDF5();
@@ -63,7 +63,7 @@ namespace casacore {
                         "image is not writable");
       }
       itsGroup = CountedPtr<HDF5Group>(new HDF5Group(hid, "ATTRGROUPS", false));
-      itsCanWrite = True;
+      itsCanWrite = true;
     }
     return *this;
   }
@@ -76,7 +76,7 @@ namespace casacore {
     }
   }
 
-  Bool ImageAttrHandlerHDF5::hasGroup (const String& groupName)
+  bool ImageAttrHandlerHDF5::hasGroup (const String& groupName)
   {
     return (itsGroupMap.find(groupName) != itsGroupMap.end());
   }
@@ -84,7 +84,7 @@ namespace casacore {
   Vector<String> ImageAttrHandlerHDF5::groupNames() const
   {
     Vector<String> names(itsGroupMap.size());
-    uInt i=0;
+    uint32_t i=0;
     for (map<String,ImageAttrGroupHDF5>::const_iterator it=itsGroupMap.begin();
            it!=itsGroupMap.end(); ++it) {
       names[i++] = it->first;
@@ -117,7 +117,7 @@ namespace casacore {
       throw AipsError("ImageAttrHandlerHDF5: cannot create group " + groupName +
                       " because image is not writable");
     }
-    return itsGroupMap[groupName] = ImageAttrGroupHDF5 (True);
+    return itsGroupMap[groupName] = ImageAttrGroupHDF5 (true);
   }
 
   void ImageAttrHandlerHDF5::closeGroup (const String& groupName)

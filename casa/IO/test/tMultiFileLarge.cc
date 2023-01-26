@@ -47,23 +47,23 @@ namespace casacore {
   {
   public:
     MultiFileLarge (const String& name, ByteIO::OpenOption option,
-                    Int blockSize, Bool useODirect, Bool useCRC,
-                    Int testMode)
+                    int32_t blockSize, bool useODirect, bool useCRC,
+                    int32_t testMode)
       : MultiFile (name, option, blockSize, useODirect, useCRC),
         itsTestMode (testMode)
     {}
     ~MultiFileLarge() override
       { flush(); }
-    void readBlock (MultiFileInfo&, Int64, void*) override;
-    void writeBlock (MultiFileInfo&, Int64, const void*) override;
-    void extendVF (MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks) override;
-    void writeHeaderShow (Int64 ncont, Int64 todo) const override;
+    void readBlock (MultiFileInfo&, int64_t, void*) override;
+    void writeBlock (MultiFileInfo&, int64_t, const void*) override;
+    void extendVF (MultiFileInfo& info, int64_t lastblk, bool useFreeBlocks) override;
+    void writeHeaderShow (int64_t ncont, int64_t todo) const override;
     void writeHeaderTest() override;
   private:
-    Int itsTestMode;
+    int32_t itsTestMode;
   };
 
-  void MultiFileLarge::readBlock (MultiFileInfo& info, Int64 blknr,
+  void MultiFileLarge::readBlock (MultiFileInfo& info, int64_t blknr,
                                  void* buffer)
   {
     if (itsTestMode != 0) {
@@ -71,7 +71,7 @@ namespace casacore {
     }
   }
 
-  void MultiFileLarge::writeBlock (MultiFileInfo& info, Int64 blknr,
+  void MultiFileLarge::writeBlock (MultiFileInfo& info, int64_t blknr,
                               const void* buffer)
   {
     if (itsTestMode != 0) {
@@ -81,10 +81,10 @@ namespace casacore {
     }
   }
 
-  void MultiFileLarge::extendVF (MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks)
+  void MultiFileLarge::extendVF (MultiFileInfo& info, int64_t lastblk, bool useFreeBlocks)
   {
-    Int64 nrb1 = 0;
-    Int64 nrb2 = 0;
+    int64_t nrb1 = 0;
+    int64_t nrb2 = 0;
     if (!useFreeBlocks  &&  itsTestMode != 0) {
       nrb1 = itsNrBlock;
       itsNrBlock = 1 + itsHdrCont[0].blockNrs.size() + itsHdrCont[1].blockNrs.size();
@@ -98,11 +98,11 @@ namespace casacore {
     }
   }
 
-  void MultiFileLarge::writeHeaderShow (Int64 ncont, Int64 todo) const
+  void MultiFileLarge::writeHeaderShow (int64_t ncont, int64_t todo) const
   {
     if (itsTestMode != 0) {
       int newContInx = 1 - itsHdrContInx;
-      const std::vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
+      const std::vector<int64_t>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
       cout << ' ' << newContInx << itsHdrCont[0].blockNrs << itsHdrCont[1].blockNrs
            << hdrContNrs[0] << ' ' << ncont << ' ' << todo << endl;
     }
@@ -126,25 +126,25 @@ void readFile (const String& name)
   MultiFile mfile(name, ByteIO::Old);
   AlwaysAssertExit (! mfile.isWritable());
   mfile.show (cout);
-  for (uInt i=0; i<mfile.info().size(); ++i) {
+  for (uint32_t i=0; i<mfile.info().size(); ++i) {
     String nm = "file" + String::toString(i);
-    cout << nm << ' ' << mfile.fileId(nm, False) << endl;
+    cout << nm << ' ' << mfile.fileId(nm, false) << endl;
   }
 }
 
-void testLarge (Bool oDirect, Bool useCRC, int testMode)
+void testLarge (bool oDirect, bool useCRC, int testMode)
 {
   cout << "Test with ODirect=" << oDirect << ", useCRC=" << useCRC << endl;
   {
     // Use 4 KB blocks, but optionally use test mode (do not write actual data).
     MultiFileLarge mfile("tMultiFileLarge_tmp.dat", ByteIO::New, 4096,
                          oDirect, useCRC, testMode);
-    Int fid0 = mfile.createFile ("file0");
-    Int fid1 = mfile.createFile ("file1");
-    Vector<Int64> buf(4096/sizeof(Int64));
+    int32_t fid0 = mfile.createFile ("file0");
+    int32_t fid1 = mfile.createFile ("file1");
+    Vector<int64_t> buf(4096/sizeof(int64_t));
     indgen(buf);
-    Int64 offs0 = 0;
-    Int64 offs1 = 0;
+    int64_t offs0 = 0;
+    int64_t offs1 = 0;
     for (size_t i=0; i<1024; ++i) {
       for (size_t j=0; j<128; ++j) {
         mfile.write (fid0, buf.data(), 4096, offs0);
@@ -179,21 +179,21 @@ int main (int argc, char* argv[])
   //    testMode > 0:  create 1000000 blocks without writing data and exit prematurely
   //    testMode < 0:  read the file produced by testMode>0
   try {
-    Int testMode = 0;      // normal 
+    int32_t testMode = 0;      // normal 
     if (argc > 1) {
       testMode = atoi(argv[1]);
     }
     if (testMode == 0) {
       // Test a large MultiFile without actually writing data.
-      testLarge (False, False, -1);
-      testLarge (False, True, -1);
-      testLarge (True, False, -1);
-      testLarge (True, True, -1);
+      testLarge (false, false, -1);
+      testLarge (false, true, -1);
+      testLarge (true, false, -1);
+      testLarge (true, true, -1);
     } else if (testMode < 0) {
       readFile ("tMultiFileLarge_tmp.dat");
     } else {
       // Test a large MultiFile forcing an exception when itsNrBlock > 100000
-      testLarge (False, False, 100000);
+      testLarge (false, false, 100000);
     }
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;

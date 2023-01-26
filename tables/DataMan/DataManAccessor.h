@@ -84,7 +84,7 @@ public:
     // An exception is thrown if the name of the data manager or column is
     // unknown.
     RODataManAccessor (const Table& table, const String& name,
-                       Bool byColumn);
+                       bool byColumn);
 
     virtual ~RODataManAccessor();
 
@@ -104,7 +104,7 @@ public:
       { return itsDataManager->dataManagerName(); } 
 
     // Get the data manager sequence nr.
-    uInt dataManagerSeqNr() const
+    uint32_t dataManagerSeqNr() const
       { return itsDataManager->sequenceNr(); } 
 
     // Show IO statistics.

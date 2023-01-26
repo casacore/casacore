@@ -65,7 +65,7 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     _doMedAbsDevMed(other._doMedAbsDevMed), _rangeIsSet(other._rangeIsSet),
     _realMax(other._realMax.null() ? NULL : new AccumType(*other._realMax)),
     _realMin(other._realMin.null() ? NULL : new AccumType(*other._realMin)),
-    _isNullSet(False), _range(other._range) {}
+    _isNullSet(false), _range(other._range) {}
 
 CASA_STATD
 FitToHalfStatistics<CASA_STATP>::~FitToHalfStatistics() {}
@@ -100,8 +100,8 @@ FitToHalfStatistics<CASA_STATP>::clone() const {
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64> , CountedPtr<AccumType> ,
-    CountedPtr<AccumType> , uInt , Bool , uInt
+    CountedPtr<uint64_t> , CountedPtr<AccumType> ,
+    CountedPtr<AccumType> , uint32_t , bool , uint32_t
 ) {
     CountedPtr<AccumType> median = _getStatsData().median;
     if (! median) {
@@ -114,10 +114,10 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
-    std::map<Double, AccumType>& quantileToValue,
-    const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
+    std::map<double, AccumType>& quantileToValue,
+    const std::set<double>& quantiles, CountedPtr<uint64_t> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
+    uint32_t binningThreshholdSizeBytes, bool persistSortedArray, uint32_t nBins
 ) {
     // The median is trivial, we just need to compute the quantiles
     quantileToValue = getQuantiles(
@@ -129,9 +129,9 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt nBins
+    CountedPtr<uint64_t> knownNpts, CountedPtr<AccumType> knownMin,
+    CountedPtr<AccumType> knownMax, uint32_t binningThreshholdSizeBytes,
+    bool persistSortedArray, uint32_t nBins
 ) {
     if (! _getStatsData().medAbsDevMed) {
         _setRange();
@@ -142,8 +142,8 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
         );
         // The number of points to hand to the base class is the number of real
         // data points, or exactly half of the total number of points
-        CountedPtr<uInt64> realNPts = knownNpts.null()
-            ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
+        CountedPtr<uint64_t> realNPts = knownNpts.null()
+            ? new uint64_t(getNPts()/2) : new uint64_t(*knownNpts/2);
         CountedPtr<AccumType> realMin, realMax;
         // need to set the median in the quantile computer object here. The
         // getMedian() call will do that, so we don't need to capture the return
@@ -245,10 +245,10 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
 }
 
 CASA_STATD
-std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
+std::map<double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
+    const std::set<double>& fractions, CountedPtr<uint64_t> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
+    uint32_t binningThreshholdSizeBytes, bool persistSortedArray, uint32_t nBins
 ) {
     ThrowIf(
         *fractions.begin() <= 0 || *fractions.rbegin() >= 1,
@@ -265,18 +265,18 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     );
     // fractions that exist in the virtual part of the dataset are determined
     // from the real fractions reflected about the center point.
-    std::set<Double> realPortionFractions;
+    std::set<double> realPortionFractions;
     //auto fiter = fractions.cbegin();
     //auto fend = fractions.cend();
     // map the actual (full dataset) fractions to the real portion fractions
-    std::map<Double, Double> actualToReal;
-    Double freal = 0;
-    std::map<Double, AccumType> actual;
+    std::map<double, double> actualToReal;
+    double freal = 0;
+    std::map<double, AccumType> actual;
     //for ( ; fiter != fend; ++fiter) {
     for_each(
         fractions.cbegin(), fractions.cend(),
         [this, &actual, &knownNpts, &freal, &realPortionFractions, &actualToReal]
-         (Double q) {
+         (double q) {
         if (near(q, 0.5)) {
             AccumType realMin, realMax;
             _getRealMinMax(realMin, realMax);
@@ -287,9 +287,9 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
                 || (! _useLower && q < 0.5);
             if (isVirtualQ) {
                 // quantile is in virtual part of data set
-                std::set<Double> actualF;
+                std::set<double> actualF;
                 actualF.insert(q);
-                uInt64 allNPts = knownNpts.null() ? getNPts() : *knownNpts;
+                uint64_t allNPts = knownNpts.null() ? getNPts() : *knownNpts;
                 auto actualFToI = StatisticsData::indicesFromFractions(
                     allNPts, actualF
                 );
@@ -311,7 +311,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
                     actual[q] = TWO*_centerValue - realMin;
                 }
                 else {
-                    freal = Double(realIdx + 1)/Double(allNPts/2);
+                    freal = double(realIdx + 1)/double(allNPts/2);
                     if (freal == 1) {
                         AccumType mymin, mymax;
                         getMinMax(mymin, mymax);
@@ -340,8 +340,8 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     // of points in half. This is also true if we have to compute using
     // getNPts(), so we need our own value to pass in to the call of the base
     // class' method.
-    CountedPtr<uInt64> realNPts = knownNpts.null()
-        ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
+    CountedPtr<uint64_t> realNPts = knownNpts.null()
+        ? new uint64_t(getNPts()/2) : new uint64_t(*knownNpts/2);
     CountedPtr<AccumType> realMin, realMax;
     _getMinMax(realMin, realMax, knownMin, knownMax);
     auto realPart = ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
@@ -352,9 +352,9 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     // while (fiter != fend) {
     for_each(
         fractions.cbegin(), fractions.cend(),
-        [this, &actual, &actualToReal, &realPart](Double q) {
+        [this, &actual, &actualToReal, &realPart](double q) {
         if (actual.find(q) == actual.end()) {
-            Double realF = actualToReal[q];
+            double realF = actualToReal[q];
             auto actualValue = realPart[realF];
             if ((_useLower && q > 0.5) || (! _useLower && q < 0.5)) {
                 // quantile in virtual part of the data set, reflect
@@ -369,7 +369,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
 }
 
 CASA_STATD
-uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
+uint64_t FitToHalfStatistics<CASA_STATP>::getNPts() {
     if (_getStatsData().npts == 0) {
         _setRange();
         if (_isNullSet) {
@@ -379,11 +379,11 @@ uInt64 FitToHalfStatistics<CASA_STATP>::getNPts() {
         _getStatsData().npts
             = 2*ConstrainedRangeStatistics<CASA_STATP>::getNPts();
     }
-    return (uInt64)_getStatsData().npts;
+    return (uint64_t)_getStatsData().npts;
 }
 
 CASA_STATD
-void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
     ThrowIf(
         c, "FitToHalfStatistics does not support calculating statistics "
         "incrementally as data sets are added"
@@ -392,9 +392,9 @@ void FitToHalfStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::reset() {
-    _doMedAbsDevMed = False;
+    _doMedAbsDevMed = false;
     _statsData = initializeStatsData<AccumType>();
-    _rangeIsSet = False;
+    _rangeIsSet = false;
     _realMax.reset();
     _realMin.reset();
     ConstrainedRangeStatistics<CASA_STATP>::reset();
@@ -482,7 +482,7 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
     // to that call)
     ConstrainedRangeStatistics<CASA_STATP>::_setRange(_range);
     this->_getQuantileComputer()->setMedian(_getStatsData().median);
-    _rangeIsSet = True;
+    _rangeIsSet = true;
 }
 
 // use a define to ensure code is compiled inline
@@ -497,11 +497,11 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
 ) {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _unweightedStatsCodeFH
         StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
@@ -511,12 +511,12 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -534,13 +534,13 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _unweightedStatsCodeFH
@@ -554,14 +554,14 @@ void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride, const DataRanges& ranges,
+    bool isInclude
 ) {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -594,7 +594,7 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     StatsDataProvider<CASA_STATP> *dataProvider
         = this->_getDataset().getDataProvider();
     StatsData<AccumType>& stats = _getStatsData();
-    const Int64 iDataset = this->_getDataset().iDataset();
+    const int64_t iDataset = this->_getDataset().iDataset();
     if (
         iDataset == threadStats.maxpos.first
         && (stats.max.null() || *threadStats.max > *stats.max)
@@ -633,11 +633,11 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride
+    uint64_t nr, uint32_t dataStride
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _weightedStatsCodeFH
@@ -653,11 +653,11 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -680,13 +680,13 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -709,12 +709,12 @@ CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _weightedStatsCodeFH

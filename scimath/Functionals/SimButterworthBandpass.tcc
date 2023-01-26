@@ -45,8 +45,8 @@ SimButterworthBandpass<T>::SimButterworthBandpass() :
 }
 
 template <class T>
-SimButterworthBandpass<T>::SimButterworthBandpass(const uInt minord, 
-						      const uInt maxord, 
+SimButterworthBandpass<T>::SimButterworthBandpass(const uint32_t minord, 
+						      const uint32_t maxord, 
 						      const T &mincut, 
 						      const T &maxcut, 
 						      const T &center, 
@@ -114,19 +114,19 @@ eval(const typename  FunctionTraits<T>::ArgType *x) const {
 }
 
 template <class T>
-Bool SimButterworthBandpass<T>::hasMode() const { return True; }
+bool SimButterworthBandpass<T>::hasMode() const { return true; }
 
 template <class T>
 void SimButterworthBandpass<T>::setMode(const RecordInterface& in) {
-    uInt order=0;
+    uint32_t order=0;
 
     // min order
     if (in.isDefined(String("minOrder"))) {
 	RecordFieldId fld("minOrder");
 	if (in.type(in.idToNumber(fld)) == TpInt) {
-	    Int tmp;
+	    int32_t tmp;
 	    in.get(fld, tmp);
-	    order = static_cast<uInt>(abs(tmp));
+	    order = static_cast<uint32_t>(abs(tmp));
 	}
 	else if (in.type(in.idToNumber(fld)) == TpUInt) {
 	    in.get(fld, order);
@@ -138,9 +138,9 @@ void SimButterworthBandpass<T>::setMode(const RecordInterface& in) {
     if (in.isDefined(String("maxOrder"))) {
 	RecordFieldId fld("maxOrder");
 	if (in.type(in.idToNumber(fld)) == TpInt) {
-	    Int tmp;
+	    int32_t tmp;
 	    in.get(fld, tmp);
-	    order = static_cast<uInt>(abs(tmp));
+	    order = static_cast<uint32_t>(abs(tmp));
 	}
 	else if (in.type(in.idToNumber(fld)) == TpUInt) {
 	    in.get(fld, order);

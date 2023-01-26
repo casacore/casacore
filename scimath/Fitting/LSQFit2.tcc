@@ -45,52 +45,52 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Member functions
 
   template <class U>
-  void LSQFit::copy(const Double *beg, const Double *end,
+  void LSQFit::copy(const double *beg, const double *end,
 		    U &sol, LSQReal) {
     std::copy(beg, end, sol);
   }
 
   template <class U>
-  void LSQFit::copy(const Double *beg, const Double *end,
+  void LSQFit::copy(const double *beg, const double *end,
 		    U *sol, LSQReal) {
     std::copy(beg, end, sol);
   }
 
   template <class U>
-  void LSQFit::copy(const Double *beg, const Double *end,
+  void LSQFit::copy(const double *beg, const double *end,
 		    U &sol, LSQComplex) {
     typename std::iterator_traits<U>::pointer tsol = sol.pos();
-    for (const Double *i=beg; i!=end; i+=2) {
+    for (const double *i=beg; i!=end; i+=2) {
       *tsol++ = typename U::value_type(*i, *(i+1));
     }
   }
 
   template <class U>
-  void LSQFit::copy(const Double *beg, const Double *end,
+  void LSQFit::copy(const double *beg, const double *end,
 		    U *sol, LSQComplex) {
-    for (const Double *i=beg; i!=end; i+=2) {
+    for (const double *i=beg; i!=end; i+=2) {
       *sol++ = U(*i, *(i+1));
     }
   }
 
   template <class U>
-  void LSQFit::uncopy(Double *beg, const Double *end,
+  void LSQFit::uncopy(double *beg, const double *end,
 		      U &sol, LSQReal) {
     std::copy(sol, sol + (end-beg), beg);
   }
 
   template <class U>
-  void LSQFit::uncopy(Double *beg, const Double *end,
+  void LSQFit::uncopy(double *beg, const double *end,
 		      U *sol, LSQReal) {
     std::copy(sol, sol + (end-beg), beg);
   }
 
   template <class U>
-  void LSQFit::uncopy(Double *beg, const Double *end,
+  void LSQFit::uncopy(double *beg, const double *end,
 		      U &sol, LSQComplex) {
     typename U::difference_type n=(end-beg)/2;
     U solend = sol+n;
-    Double *tbeg = beg;
+    double *tbeg = beg;
     for (U i=sol; i<solend; ++i)  {
       *tbeg++ = (*i).real();
       *tbeg++ = (*i).imag();
@@ -98,9 +98,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U>
-  void LSQFit::uncopy(Double *beg, const Double *end,
+  void LSQFit::uncopy(double *beg, const double *end,
 		      U *sol, LSQComplex) {
-    Double *tbeg = beg;
+    double *tbeg = beg;
     for (U *i=sol; i<sol+((end-beg)/2); ++i)  {
       *tbeg++ = (*i).real();
       *tbeg++ = (*i).imag();
@@ -129,53 +129,53 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U>
-  Bool LSQFit::solveLoop(uInt &nRank,
-			 U *sol, Bool doSVD) {
-    Double fit;
+  bool LSQFit::solveLoop(uint32_t &nRank,
+			 U *sol, bool doSVD) {
+    double fit;
     return solveLoop(fit, nRank, sol, doSVD);
   }
 
   template <class U>
-  Bool LSQFit::solveLoop(uInt &nRank,
-			 std::complex<U> *sol, Bool doSVD) {
-    Double fit;
+  bool LSQFit::solveLoop(uint32_t &nRank,
+			 std::complex<U> *sol, bool doSVD) {
+    double fit;
     return solveLoop(fit, nRank, sol, doSVD);
   }
 
   template <class U>
-  Bool LSQFit::solveLoop(uInt &nRank,
-			 U &sol, Bool doSVD) {
-    Double fit;
+  bool LSQFit::solveLoop(uint32_t &nRank,
+			 U &sol, bool doSVD) {
+    double fit;
     return solveLoop(fit, nRank, sol, doSVD);
   }
 
   template <class U>
-  Bool LSQFit::solveLoop(Double &fit, uInt &nRank,
-			 U *sol, Bool doSVD) {
+  bool LSQFit::solveLoop(double &fit, uint32_t &nRank,
+			 U *sol, bool doSVD) {
     getWorkSOL();
     uncopy(wsol_p, wsol_p+nun_p, sol, LSQReal());
     if (solveItLoop(fit, nRank, doSVD)) {
       copy(wsol_p, wsol_p+nun_p, sol, LSQReal());
-      return True;
-    }
-    return False;
-  }
-
-  template <class U>
-  Bool LSQFit::solveLoop(Double &fit, uInt &nRank,
-			 std::complex<U> *sol, Bool doSVD) {
-    getWorkSOL();
-    uncopy(wsol_p, wsol_p+nun_p, sol, LSQComplex());
-    if (solveItLoop(fit, nRank, doSVD)) {
-      copy(wsol_p, wsol_p+nun_p, sol, LSQComplex());
-      return True;
+      return true;
     }
     return false;
   }
 
   template <class U>
-  Bool LSQFit::solveLoop(Double &fit, uInt &nRank,
-			 U &sol, Bool doSVD) {
+  bool LSQFit::solveLoop(double &fit, uint32_t &nRank,
+			 std::complex<U> *sol, bool doSVD) {
+    getWorkSOL();
+    uncopy(wsol_p, wsol_p+nun_p, sol, LSQComplex());
+    if (solveItLoop(fit, nRank, doSVD)) {
+      copy(wsol_p, wsol_p+nun_p, sol, LSQComplex());
+      return true;
+    }
+    return false;
+  }
+
+  template <class U>
+  bool LSQFit::solveLoop(double &fit, uint32_t &nRank,
+			 U &sol, bool doSVD) {
     getWorkSOL();
     uncopy(wsol_p, wsol_p+nun_p, sol,
 	   typename LSQTraits
@@ -184,33 +184,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       copy(wsol_p, wsol_p+nun_p, sol,
 	   typename LSQTraits
 	   <typename std::iterator_traits<U>::value_type>::num_type());
-      return True;
+      return true;
     }
     return false;
   }
 
-  // Note that the explicit conversions to Double are necessary for Solaris
-  // (Linux is ok). Solaris does not zero the low-order part of a Double from
-  // a Float, giving non-repeatable results.
+  // Note that the explicit conversions to double are necessary for Solaris
+  // (Linux is ok). Solaris does not zero the low-order part of a double from
+  // a float, giving non-repeatable results.
   template <class U, class V>
   void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      Double *i2 = norm_p->row(0);
+      double *i2 = norm_p->row(0);
       for (V cEqp=cEq; cEqp!=cEq+nun_p; ++cEqp) {
 	if (*cEqp != 0) {
 	  for (V i1=cEqp; i1!=cEq+nun_p; ++i1) {
-	    *i2++ += Double(*cEqp)*Double(weight)*Double(*i1);
+	    *i2++ += double(*cEqp)*double(weight)*double(*i1);
 	  }
 	} else i2 += cEq-cEqp+nun_p;
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      Double obswt = obs*weight;
+      double obswt = obs*weight;
       V cEqp = cEq; 
-      for (Double *kp = known_p; kp!=known_p+nun_p; kp++)
-	*kp += Double(*cEqp++)*obswt; 
+      for (double *kp = known_p; kp!=known_p+nun_p; kp++)
+	*kp += double(*cEqp++)*obswt; 
       error_p[NC] += 1;				//cnt equations
       error_p[SUMWEIGHT] += weight; 		//sum weight
       error_p[SUMLL] += obs*obswt;		//sum rms
@@ -220,33 +220,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template <class U, class V>
   void LSQFit::makeNorm(const V &cEq, const U &weight, const U &obs,
 			LSQFit::Real,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     makeNorm(cEq, weight, obs, doNorm, doKnown);
   }
 
   template <class U, class V>
   void LSQFit::makeNorm(const V &cEq, const U &weight,
 			const std::complex<U> &obs,
-			Bool doNorm, Bool doKnown) {
-    uInt ln(nun_p/2);
+			bool doNorm, bool doKnown) {
+    uint32_t ln(nun_p/2);
     if (doNorm) {
       std::complex<U> dci;
-      for (uInt i=0; i<ln; i++) {
-	Double *i2 = norm_p->row(2*i); 		//row pointer
-	for (uInt i1=i; i1<ln; i1++) {
+      for (uint32_t i=0; i<ln; i++) {
+	double *i2 = norm_p->row(2*i); 		//row pointer
+	for (uint32_t i1=i; i1<ln; i1++) {
 	  dci = cEq[i]*conj(cEq[i1])*weight;
 	  i2[2*i1] += dci.real();  		//real equations
 	  i2[2*i1+1] += dci.imag();       	//imag. equations
 	}
-	Double *i4 = norm_p->row(2*i+1);		//next line duplicate
-	for (uInt i1=2*i+1; i1<nun_p; i1+=2) i4[i1] = i2[i1-1];
-	for (uInt i1=2*i+2; i1<nun_p; i1+=2) i4[i1] = -i2[i1+1];
+	double *i4 = norm_p->row(2*i+1);		//next line duplicate
+	for (uint32_t i1=2*i+1; i1<nun_p; i1+=2) i4[i1] = i2[i1-1];
+	for (uint32_t i1=2*i+2; i1<nun_p; i1+=2) i4[i1] = -i2[i1+1];
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
       std::complex<U> dci;
-      for (uInt i1=0; i1<ln; i1++) {
+      for (uint32_t i1=0; i1<ln; i1++) {
 	dci = obs*conj(cEq[i1])*weight;
 	known_p[2*i1] += dci.real();		//real part
 	known_p[2*i1+1] += dci.imag();		//imag part
@@ -262,7 +262,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void LSQFit::makeNorm(const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Complex,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     makeNorm(cEq, weight, obs, doNorm, doKnown);
   }
 
@@ -270,28 +270,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void LSQFit::makeNorm(const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Separable,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nun_p; i+=2) {
-	Double *i2 = norm_p->row(i);		//row pointer
-	for (uInt i1=i; i1<nun_p-1; i1+=2) {
+      for (uint32_t i=0; i<nun_p; i+=2) {
+	double *i2 = norm_p->row(i);		//row pointer
+	for (uint32_t i1=i; i1<nun_p-1; i1+=2) {
 	  i2[i1]   += realMC(cEq[i], cEq[i1])*weight;
 	  i2[i1+1] += imagMC(cEq[i], cEq[i1+1])*weight;
 	}
       }
-      for (uInt i=1; i<nun_p; i+=2) {
-	Double *i2 = norm_p->row(i);		//row pointer
-	for (uInt i1=i; i1<nun_p-1; i1+=2) {
+      for (uint32_t i=1; i<nun_p; i+=2) {
+	double *i2 = norm_p->row(i);		//row pointer
+	for (uint32_t i1=i; i1<nun_p-1; i1+=2) {
 	  i2[i1]   += realMC(cEq[i], cEq[i1])*weight;
 	  i2[i1]   -= imagMC(cEq[i], cEq[i1+1])*weight;
 	}
-	uInt i1=nun_p-1;
+	uint32_t i1=nun_p-1;
 	i2[i1]   += realMC(cEq[i], cEq[i1])*weight;
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (uInt i1=0; i1<nun_p; i1+=2) {
+      for (uint32_t i1=0; i1<nun_p; i1+=2) {
 	known_p[i1]   += realMC(obs, cEq[i1])*weight;
 	known_p[i1+1] += imagMC(obs, cEq[i1+1])*weight;
       }
@@ -306,13 +306,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void LSQFit::makeNorm(const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::AsReal,
-			Bool doNorm, Bool doKnown) {
-    uInt ln(nun_p/2);
+			bool doNorm, bool doKnown) {
+    uint32_t ln(nun_p/2);
     if (doNorm) {
-      for (uInt i=0; i<ln; i++) {
-	Double *i2 = norm_p->row(2*i);		//row pointer real
-	Double *i2i= norm_p->row(2*i+1);		//row pointer imag
-	for (uInt i1=i; i1<ln; i1++) {		//real part
+      for (uint32_t i=0; i<ln; i++) {
+	double *i2 = norm_p->row(2*i);		//row pointer real
+	double *i2i= norm_p->row(2*i+1);		//row pointer imag
+	for (uint32_t i1=i; i1<ln; i1++) {		//real part
 	  i2[2*i1]    += cEq[i].real()*cEq[i1].real()*weight; //real part
 	  i2i[2*i1+1] += cEq[i].imag()*cEq[i1].imag()*weight; //imag part
 	}
@@ -320,7 +320,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (uInt i1=0; i1<ln; i1++) {
+      for (uint32_t i1=0; i1<ln; i1++) {
 	known_p[2*i1]   += cEq[i1].real()*obs.real()*weight; //real part
 	known_p[2*i1+1] += cEq[i1].imag()*obs.imag()*weight; //imag part
       }
@@ -335,28 +335,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void LSQFit::makeNorm(const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Conjugate,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nun_p; i+=2) {
-	Double *i2 = norm_p->row(i);		//row pointer
-	for (uInt i1=i; i1<nun_p; i1+=2) {
+      for (uint32_t i=0; i<nun_p; i+=2) {
+	double *i2 = norm_p->row(i);		//row pointer
+	for (uint32_t i1=i; i1<nun_p; i1+=2) {
 	  i2[i1]   += realMC(cEq[i]+cEq[i+1], cEq[i1]+cEq[i1+1])*weight;
 	  i2[i1+1] += imagMC(cEq[i]+cEq[i+1], cEq[i1]-cEq[i1+1])*weight;
 	}
       }
-      for (uInt i=1; i<nun_p; i+=2) {
-	Double *i2 = norm_p->row(i);		//row pointer
-	for (uInt i1=i; i1<nun_p-1; i1+=2) {
+      for (uint32_t i=1; i<nun_p; i+=2) {
+	double *i2 = norm_p->row(i);		//row pointer
+	for (uint32_t i1=i; i1<nun_p-1; i1+=2) {
 	  i2[i1]   += realMC(cEq[i-1]-cEq[i], cEq[i1-1]-cEq[i1])*weight;
 	  i2[i1+1] -= imagMC(cEq[i-1]-cEq[i], cEq[i1+1]+cEq[i1+2])*weight;
 	}
-	uInt i1=nun_p-1;
+	uint32_t i1=nun_p-1;
 	i2[i1] += realMC(cEq[i-1]-cEq[i], cEq[i1-1]-cEq[i1])*weight;
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (uInt i1=0; i1<nun_p; i1+=2) {
+      for (uint32_t i1=0; i1<nun_p; i1+=2) {
 	known_p[i1]   += realMC(obs, cEq[i1]+cEq[i1+1])*weight;
 	known_p[i1+1] += imagMC(obs, cEq[i1]-cEq[i1+1])*weight;
       }
@@ -367,33 +367,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  // Note that the explicit conversions to Double are necessary for Solaris
-  // (Linux is ok). Solaris does not zero the low-order part of a Double from
-  // a Float, giving non-repeatable results.
+  // Note that the explicit conversions to double are necessary for Solaris
+  // (Linux is ok). Solaris does not zero the low-order part of a double from
+  // a float, giving non-repeatable results.
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight,
 			const U &obs,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nIndex; ++i) {
-	uInt cEqIndex_i = cEqIndex[i];
-	Double *i2 = norm_p->row(cEqIndex_i);	//row pointer
-	Double eq(cEq[i]);
+      for (uint32_t i=0; i<nIndex; ++i) {
+	uint32_t cEqIndex_i = cEqIndex[i];
+	double *i2 = norm_p->row(cEqIndex_i);	//row pointer
+	double eq(cEq[i]);
 	eq *= weight;
-	for (uInt i1=i; i1<nIndex; ++i1) {
-	  uInt cEqIndex_i1 = cEqIndex[i1];
+	for (uint32_t i1=i; i1<nIndex; ++i1) {
+	  uint32_t cEqIndex_i1 = cEqIndex[i1];
 	  if (cEqIndex_i <= cEqIndex_i1)
-	    i2[cEqIndex_i1] += eq*Double(cEq[i1]); //equations
-	  else norm_p->row(cEqIndex_i1)[cEqIndex_i] += eq*Double(cEq[i1]);
+	    i2[cEqIndex_i1] += eq*double(cEq[i1]); //equations
+	  else norm_p->row(cEqIndex_i1)[cEqIndex_i] += eq*double(cEq[i1]);
 	}
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      Double obswt = obs*weight;
-      for (uInt i1=0; i1<nIndex; ++i1)
-	known_p[cEqIndex[i1]] += Double(cEq[i1])*obswt;	//data vector
+      double obswt = obs*weight;
+      for (uint32_t i1=0; i1<nIndex; ++i1)
+	known_p[cEqIndex[i1]] += double(cEq[i1])*obswt;	//data vector
       error_p[NC] += 1;				//cnt equations
       error_p[SUMWEIGHT] += weight;		//sum weight
       error_p[SUMLL] += obs*obswt;		//sum rms
@@ -401,35 +401,35 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const V &cEq2,
 			const U &weight,
 			const U &obs, const U &obs2,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nIndex; ++i) {
-	uInt cEqIndex_i = cEqIndex[i];
-	Double *i2 = norm_p->row(cEqIndex_i);	//row pointer
-	Double eq(cEq[i]);
-	Double eq2(cEq2[i]);
+      for (uint32_t i=0; i<nIndex; ++i) {
+	uint32_t cEqIndex_i = cEqIndex[i];
+	double *i2 = norm_p->row(cEqIndex_i);	//row pointer
+	double eq(cEq[i]);
+	double eq2(cEq2[i]);
 	eq *= weight;
 	eq2 *= weight;
-	for (uInt i1=i; i1<nIndex; ++i1) {
-	  uInt cEqIndex_i1 = cEqIndex[i1];
+	for (uint32_t i1=i; i1<nIndex; ++i1) {
+	  uint32_t cEqIndex_i1 = cEqIndex[i1];
 	  if (cEqIndex_i <= cEqIndex_i1)
-	    i2[cEqIndex_i1] += eq*Double(cEq[i1]) + eq2*Double(cEq2[i1]);
+	    i2[cEqIndex_i1] += eq*double(cEq[i1]) + eq2*double(cEq2[i1]);
 	  else norm_p->row(cEqIndex_i1)[cEqIndex_i] +=
-		 eq*Double(cEq[i1]) + eq2*Double(cEq2[i1]);
+		 eq*double(cEq[i1]) + eq2*double(cEq2[i1]);
 	}
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      Double obswt = obs*weight;
-      Double obswt2 = obs2*weight;
-      for (uInt i1=0; i1<nIndex; ++i1) 
-	known_p[cEqIndex[i1]] += Double(cEq[i1])*obswt +
-	  Double(cEq2[i1])*obswt2;		//data vector
+      double obswt = obs*weight;
+      double obswt2 = obs2*weight;
+      for (uint32_t i1=0; i1<nIndex; ++i1) 
+	known_p[cEqIndex[i1]] += double(cEq[i1])*obswt +
+	  double(cEq2[i1])*obswt2;		//data vector
       error_p[NC] += 2;				//cnt equations
       error_p[SUMWEIGHT] += 2*weight;		//sum weight
       error_p[SUMLL] += obs*obswt + obs2*obswt2;	//sum rms
@@ -437,34 +437,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight, const U &obs,
 			LSQFit::Real,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     makeNorm(nIndex, cEqIndex, cEq, weight, obs, doNorm, doKnown);
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight,
 			const std::complex<U> &obs,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
       std::complex<U> dci;
-      for (uInt i=0; i<nIndex; ++i) {
-	Double *i2 = norm_p->row(2*cEqIndex[i]);	//row pointer
-	for (uInt i1=0; i1<nIndex; ++i1) {
+      for (uint32_t i=0; i<nIndex; ++i) {
+	double *i2 = norm_p->row(2*cEqIndex[i]);	//row pointer
+	for (uint32_t i1=0; i1<nIndex; ++i1) {
 	  if (cEqIndex[i]<=cEqIndex[i1]) {
 	    dci = cEq[i]*conj(cEq[i1]);
 	    i2[2*cEqIndex[i1]]   += dci.real()*weight; //real equations
 	    i2[2*cEqIndex[i1]+1] += dci.imag()*weight; //imag. equations
 	  }
 	}
-	Double *i4 = norm_p->row(2*cEqIndex[i]+1);	//next line row pointer
-	for (uInt i1=2*cEqIndex[i]+1; i1<nun_p; i1+=2) {	//duplicate
+	double *i4 = norm_p->row(2*cEqIndex[i]+1);	//next line row pointer
+	for (uint32_t i1=2*cEqIndex[i]+1; i1<nun_p; i1+=2) {	//duplicate
 	  i4[i1] = i2[i1-1];
 	}
-	for (uInt i1=2*cEqIndex[i]+2; i1<nun_p; i1+=2) {
+	for (uint32_t i1=2*cEqIndex[i]+2; i1<nun_p; i1+=2) {
 	  i4[i1] = -i2[i1+1];
 	}
       }
@@ -472,7 +472,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (doKnown) {
       std::complex<U> dci;
-      for (uInt i1=0; i1<nIndex; i1++) {
+      for (uint32_t i1=0; i1<nIndex; i1++) {
 	dci = obs*conj(cEq[i1]);
 	known_p[2*cEqIndex[i1]]   += dci.real()*weight;	//real part
 	known_p[2*cEqIndex[i1]+1] += dci.imag()*weight;	//imag part
@@ -485,25 +485,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Complex,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     makeNorm(nIndex, cEqIndex, cEq, weight, obs, doNorm, doKnown);
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Separable,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nIndex; ++i) {
-	Double *i2 = norm_p->row(cEqIndex[i]);	//row pointer
+      for (uint32_t i=0; i<nIndex; ++i) {
+	double *i2 = norm_p->row(cEqIndex[i]);	//row pointer
 	if (cEqIndex[i]%2 == 0) {
-	  for (uInt i1=0; i1<nIndex; ++i1) {
+	  for (uint32_t i1=0; i1<nIndex; ++i1) {
 	    if (cEqIndex[i]<=cEqIndex[i1] && cEqIndex[i1]+1 < nun_p) {
 	      if (cEqIndex[i1]%2 == 0) {
 		i2[cEqIndex[i1]] += realMC(cEq[i], cEq[i1])*weight;
@@ -513,7 +513,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	  }
 	} else {
-	  for (uInt i1=0; i1<nIndex; ++i1) {
+	  for (uint32_t i1=0; i1<nIndex; ++i1) {
 	    if (cEqIndex[i]<=cEqIndex[i1]) {
 	      if (cEqIndex[i1] != nun_p-1) {
 		if (cEqIndex[i1]%2 != 0) {
@@ -531,7 +531,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (uInt i1=0; i1<nIndex; ++i1) {
+      for (uint32_t i1=0; i1<nIndex; ++i1) {
 	if (cEqIndex[i1]%2 == 0) {
 	  known_p[cEqIndex[i1]] += realMC(obs, cEq[i1])*weight;
 	} else {
@@ -546,16 +546,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::AsReal,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nIndex; ++i) {
-	Double *i2 = norm_p->row(2*cEqIndex[i]);	//row pointer real
-	Double *i2i= norm_p->row(2*cEqIndex[i]+1); //row pointer imag
-	for (uInt i1=0; i1<nIndex; ++i1) {
+      for (uint32_t i=0; i<nIndex; ++i) {
+	double *i2 = norm_p->row(2*cEqIndex[i]);	//row pointer real
+	double *i2i= norm_p->row(2*cEqIndex[i]+1); //row pointer imag
+	for (uint32_t i1=0; i1<nIndex; ++i1) {
 	  if (cEqIndex[i]<=cEqIndex[i1]) {
 	    i2[2*cEqIndex[i1]]    += cEq[i].real()*cEq[i1].real()*weight; //real
 	    i2i[2*cEqIndex[i1]+1] += cEq[i].imag()*cEq[i1].imag()*weight; //imag
@@ -565,7 +565,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (uInt i1=0; i1<nIndex; ++i1) {
+      for (uint32_t i1=0; i1<nIndex; ++i1) {
 	known_p[2*cEqIndex[i1]]   += cEq[i1].real()*obs.real()*weight ; //real
 	known_p[2*cEqIndex[i1]+1] += cEq[i1].imag()*obs.imag()*weight ; //imag
       }
@@ -577,21 +577,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V, class W>
-  void LSQFit::makeNorm(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNorm(uint32_t nIndex, const W &cEqIndex,
 			const V &cEq, const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Conjugate,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
       std::complex<U> tmp(0);
-      for (uInt i=0; i<nIndex; ++i) {
+      for (uint32_t i=0; i<nIndex; ++i) {
 	if (cEqIndex[i] < nun_p) {
-	  Double *i2 = norm_p->row(cEqIndex[i]);		//row pointer
-	  for (uInt i1=0; i1<nIndex; ++i1) {
+	  double *i2 = norm_p->row(cEqIndex[i]);		//row pointer
+	  for (uint32_t i1=0; i1<nIndex; ++i1) {
 	    if (cEqIndex[i1] < nun_p) {
 	      tmp = (cEq[i]*conj(cEq[i1]))*weight;
 	      if (cEqIndex[i]%2 == 0) {
-		Double *i2 = norm_p->row(cEqIndex[i]);	//row pointer
+		double *i2 = norm_p->row(cEqIndex[i]);	//row pointer
 		if (cEqIndex[i1]%2 == 0) {
 		  if (cEqIndex[i] <= cEqIndex[i1]) {
 		    i2[cEqIndex[i1]]   += tmp.real();
@@ -655,7 +655,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (doKnown) {
       std::complex<U> tmp(0);
-      for (uInt i1=0; i1<nIndex; ++i1) {
+      for (uint32_t i1=0; i1<nIndex; ++i1) {
 	tmp = obs*conj(cEq[i1])*weight;
 	if (cEqIndex[i1]%2 == 0) {
 	  known_p[cEqIndex[i1]]   += tmp.real();
@@ -673,29 +673,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight, const U &obs,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i=cEq.begin();
 	   i !=  cEq.end(); ++i) {
-	Double *i2 = norm_p->row(i->first);	//row pointer
-	Double eq(i->second);
+	double *i2 = norm_p->row(i->first);	//row pointer
+	double eq(i->second);
 	eq *= weight;
-	for (typename std::vector<std::pair<uInt, V> >::const_iterator i1=i;
+	for (typename std::vector<std::pair<uint32_t, V> >::const_iterator i1=i;
 	     i1 != cEq.end(); ++i1) {
-	  i2[i1->first] += eq*Double(i1->second); //equations
+	  i2[i1->first] += eq*double(i1->second); //equations
 	}
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      Double obswt = obs*weight;
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      double obswt = obs*weight;
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i1=cEq.begin();
 	   i1 != cEq.end(); ++i1) {
-	known_p[i1->first] += Double(i1->second)*obswt;	//data vector
+	known_p[i1->first] += double(i1->second)*obswt;	//data vector
       }
       error_p[NC] += 1;				//cnt equations
       error_p[SUMWEIGHT] += weight;		//sum weight
@@ -704,25 +704,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight, const U &obs,
 			LSQFit::Real,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     makeNorm(cEq, weight, obs, doNorm, doKnown);
   }
 
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight,
 			const std::complex<U> &obs,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
       std::complex<U> dci;
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i=cEq.begin();
 	   i !=  cEq.end(); ++i) {
-	Double *i2 = norm_p->row(2*i->first);	//row pointer
-	for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	double *i2 = norm_p->row(2*i->first);	//row pointer
+	for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	       i1=cEq.begin();
 	     i1 !=  cEq.end(); ++i1) {
 	  if (i->first<=i1->first) {
@@ -731,11 +731,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    i2[2*i1->first+1] += dci.imag()*weight; //imag. equations
 	  }
 	}
-	Double *i4 = norm_p->row(2*i->first+1);	//next line row pointer
-	for (uInt i1=2*i->first+1; i1<nun_p; i1+=2) {	//duplicate
+	double *i4 = norm_p->row(2*i->first+1);	//next line row pointer
+	for (uint32_t i1=2*i->first+1; i1<nun_p; i1+=2) {	//duplicate
 	  i4[i1] = i2[i1-1];
 	}
-	for (uInt i1=2*i->first+2; i1<nun_p; i1+=2) {
+	for (uint32_t i1=2*i->first+2; i1<nun_p; i1+=2) {
 	  i4[i1] = -i2[i1+1];
 	}
       }
@@ -743,7 +743,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (doKnown) {
       std::complex<U> dci;
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i1=cEq.begin();
 	   i1 !=  cEq.end(); ++i1) {
 	dci = obs*conj(i1->second);
@@ -758,27 +758,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Complex,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     makeNorm(cEq, weight, obs, doNorm, doKnown);
   }
 
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Separable,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i=cEq.begin();
 	   i !=  cEq.end(); ++i) {
-	Double *i2 = norm_p->row(i->first);	//row pointer
+	double *i2 = norm_p->row(i->first);	//row pointer
 	if (i->first%2 == 0) {
-	  for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	  for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 		 i1=cEq.begin();
 	       i1 !=  cEq.end(); ++i1) {
 	    if (i->first<=i1->first && i1->first+1 < nun_p) {
@@ -790,7 +790,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	  }
 	} else {
-	  for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	  for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 		 i1=cEq.begin();
 	       i1 !=  cEq.end(); ++i1) {
 	    if (i->first<=i1->first) {
@@ -810,7 +810,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i1=cEq.begin();
 	   i1 !=  cEq.end(); ++i1) {
 	if (i1->first%2 == 0) {
@@ -827,18 +827,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::AsReal,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i=cEq.begin();
 	   i !=  cEq.end(); ++i) {
-	Double *i2 = norm_p->row(2*i->first);	//row pointer real
-	Double *i2i= norm_p->row(2*i->first+1); //row pointer imag
-	for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	double *i2 = norm_p->row(2*i->first);	//row pointer real
+	double *i2i= norm_p->row(2*i->first+1); //row pointer imag
+	for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	       i1=cEq.begin();
 	     i1 !=  cEq.end(); ++i1) {
 	  if (i->first<=i1->first) {
@@ -852,7 +852,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i1=cEq.begin();
 	   i1 !=  cEq.end(); ++i1) {
 	known_p[2*i1->first]   += i1->second.real()*obs.real()*weight ; //real
@@ -866,25 +866,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template <class U, class V>
-  void LSQFit::makeNorm(const std::vector<std::pair<uInt, V> > &cEq,
+  void LSQFit::makeNorm(const std::vector<std::pair<uint32_t, V> > &cEq,
 			const U &weight,
 			const std::complex<U> &obs,
 			LSQFit::Conjugate,
-			Bool doNorm, Bool doKnown) {
+			bool doNorm, bool doKnown) {
     if (doNorm) {
       std::complex<U> tmp(0);
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i=cEq.begin();
 	   i !=  cEq.end(); ++i) {
 	if (i->first < nun_p) {
-	  Double *i2 = norm_p->row(i->first);		//row pointer
-	  for (typename std::vector<std::pair<uInt, V> >::const_iterator
+	  double *i2 = norm_p->row(i->first);		//row pointer
+	  for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 		 i1=cEq.begin();
 	       i1 !=  cEq.end(); ++i1) {
 	    if (i1->first < nun_p) {
 	      tmp = (i->second*conj(i1->second))*weight;
 	      if (i->first%2 == 0) {
-		Double *i2 = norm_p->row(i->first);	//row pointer
+		double *i2 = norm_p->row(i->first);	//row pointer
 		if (i1->first%2 == 0) {
 		  if (i->first <= i1->first) {
 		    i2[i1->first]   += tmp.real();
@@ -948,7 +948,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (doKnown) {
       std::complex<U> tmp(0);
-      for (typename std::vector<std::pair<uInt, V> >::const_iterator
+      for (typename std::vector<std::pair<uint32_t, V> >::const_iterator
 	     i1=cEq.begin();
 	   i1 !=  cEq.end(); ++i1) {
 	tmp = obs*conj(i1->second)*weight;
@@ -968,25 +968,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //
   template <class U, class V, class W>
-  void LSQFit::makeNormSorted(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNormSorted(uint32_t nIndex, const W &cEqIndex,
 			      const V &cEq,
 			      const U &weight, const U &obs,
-			      Bool doNorm, Bool doKnown) {
+			      bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nIndex; ++i) {
-	Double *i2 = norm_p->row(cEqIndex[i]);	// row pointer
-	Double eq(cEq[i]);
+      for (uint32_t i=0; i<nIndex; ++i) {
+	double *i2 = norm_p->row(cEqIndex[i]);	// row pointer
+	double eq(cEq[i]);
 	eq *= weight;
-	for (uInt i1=i; i1<nIndex; ++i1) {
-	  i2[cEqIndex[i1]] += eq*Double(cEq[i1]); // equations
+	for (uint32_t i1=i; i1<nIndex; ++i1) {
+	  i2[cEqIndex[i1]] += eq*double(cEq[i1]); // equations
 	}
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      Double obswt = obs*weight;
-      for (uInt i1=0; i1<nIndex; ++i1) {
-	known_p[cEqIndex[i1]] += Double(cEq[i1])*obswt; //data vector
+      double obswt = obs*weight;
+      for (uint32_t i1=0; i1<nIndex; ++i1) {
+	known_p[cEqIndex[i1]] += double(cEq[i1])*obswt; //data vector
       }
       error_p[NC] += 1;				 // cnt equations
       error_p[SUMWEIGHT] += weight;		 // sum weight
@@ -995,32 +995,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //
   template <class U, class V, class W>
-  void LSQFit::makeNormSorted(uInt nIndex, const W &cEqIndex,
+  void LSQFit::makeNormSorted(uint32_t nIndex, const W &cEqIndex,
 			      const V &cEq, const V &cEq2,
 			      const U &weight,
 			      const U &obs, const U &obs2,
-			      Bool doNorm, Bool doKnown) {
+			      bool doNorm, bool doKnown) {
     if (doNorm) {
-      for (uInt i=0; i<nIndex; ++i) {
-	Double *i2 = norm_p->row(cEqIndex[i]);	// row pointer
-	Double eq(cEq[i]);
-	Double eq2(cEq2[i]);
+      for (uint32_t i=0; i<nIndex; ++i) {
+	double *i2 = norm_p->row(cEqIndex[i]);	// row pointer
+	double eq(cEq[i]);
+	double eq2(cEq2[i]);
 	eq *= weight;
 	eq2 *= weight;
-	for (uInt i1=i; i1<nIndex; ++i1) {
-	  uInt cEqIndex_i1 = cEqIndex[i1];
-	  i2[cEqIndex_i1] += eq*Double(cEq[i1]); // equations
-	  i2[cEqIndex_i1] += eq2*Double(cEq2[i1]); // equations
+	for (uint32_t i1=i; i1<nIndex; ++i1) {
+	  uint32_t cEqIndex_i1 = cEqIndex[i1];
+	  i2[cEqIndex_i1] += eq*double(cEq[i1]); // equations
+	  i2[cEqIndex_i1] += eq2*double(cEq2[i1]); // equations
 	}
       }
       state_p &= ~TRIANGLE;
     }
     if (doKnown) {
-      Double obswt = obs*weight;
-      Double obswt2 = obs2*weight;
-      for (uInt i1=0; i1<nIndex; ++i1) {
-	known_p[cEqIndex[i1]] += Double(cEq[i1])*obswt +
-	  Double(cEq2[i1])*obswt2;		 //data vector
+      double obswt = obs*weight;
+      double obswt2 = obs2*weight;
+      for (uint32_t i1=0; i1<nIndex; ++i1) {
+	known_p[cEqIndex[i1]] += double(cEq[i1])*obswt +
+	  double(cEq2[i1])*obswt2;		 //data vector
       }
       error_p[NC] += 2;				 // cnt equations
       error_p[SUMWEIGHT] += weight * 2;		 // sum weight
@@ -1029,43 +1029,43 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //
   template <class U>
-  Bool LSQFit::getConstraint(uInt n, U *cEq) const {
+  bool LSQFit::getConstraint(uint32_t n, U *cEq) const {
     n += r_p;
     if (n<nun_p) {
-      Double r0 = 1;	       		        //normalisation
-      for (uInt i1=0; i1<r_p; ++i1) {
+      double r0 = 1;	       		        //normalisation
+      for (uint32_t i1=0; i1<r_p; ++i1) {
 	cEq[piv_p[i1]] = nceq_p->row(i1)[n]; 	//copy constraint
-	Double r1 = std::abs(cEq[piv_p[i1]]);
+	double r1 = std::abs(cEq[piv_p[i1]]);
 	if (r1 > 1e-8) r0 = std::min(r0, r1); 	//normalisation
       }
-      for (uInt i1=r_p; i1<nun_p; ++i1) {		//final values
+      for (uint32_t i1=r_p; i1<nun_p; ++i1) {		//final values
 	cEq[piv_p[i1]] = 0;
       }
       cEq[piv_p[n]] = 1;			        //unit extend
-      for (uInt i1=0; i1<=n; ++i1) cEq[piv_p[i1]] /= U(r0); //normalise
-      return True;
+      for (uint32_t i1=0; i1<=n; ++i1) cEq[piv_p[i1]] /= U(r0); //normalise
+      return true;
     }
-    return False;
+    return false;
   }
 
   template <class U>
-  Bool LSQFit::getConstraint(uInt n, std::complex<U> *cEq) const {
+  bool LSQFit::getConstraint(uint32_t n, std::complex<U> *cEq) const {
     if (2*n+1 < nun_p) {
       U *eqp = new U[2*nun_p];
       if (getConstraint(2*n, eqp) && getConstraint(2*n+1, eqp+nun_p)) {
-	for (uInt j=0; 2*j+1<nun_p; ++j) {
+	for (uint32_t j=0; 2*j+1<nun_p; ++j) {
 	  cEq[j] = std::complex<U>(eqp[2*j], -eqp[2*j+1]);
 	}
 	delete [] eqp;
-	return True;
+	return true;
       }
       delete [] eqp;
     }
-    return False;
+    return false;
   }
 
   template <class U>
-  Bool LSQFit::getConstraint(uInt n, U &cEq) const {
+  bool LSQFit::getConstraint(uint32_t n, U &cEq) const {
     if (n<nun_p) {
       typename std::iterator_traits<U>::pointer eqp =
 	new typename std::iterator_traits<U>::value_type[nun_p];
@@ -1075,27 +1075,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  value_type >::size;
 	std::copy(eqp, eqp+l, cEq);
 	delete [] eqp;
-	return True;
+	return true;
       }
       delete [] eqp;
     }
-    return False;
+    return false;
   }
 
   template <class U, class V>
-  Bool LSQFit::setConstraint(uInt n, const V &cEq, const U &obs) {
-    if (n>=ncon_p || nun_p==0) return False;
+  bool LSQFit::setConstraint(uint32_t n, const V &cEq, const U &obs) {
+    if (n>=ncon_p || nun_p==0) return false;
     std::copy(cEq, cEq+nun_p, constr_p+n*nun_p);
     known_p[nun_p+n] = obs;
     state_p &= ~TRIANGLE;
-    return True;
+    return true;
   }
 
   template <class U, class V>
-  Bool LSQFit::setConstraint(uInt n, const V &cEq,
+  bool LSQFit::setConstraint(uint32_t n, const V &cEq,
 			     const std::complex<U> &obs) {
-    if (2*n+1>=ncon_p || nun_p==0) return False;
-    for (uInt i=0; i<nun_p; i+=2) {
+    if (2*n+1>=ncon_p || nun_p==0) return false;
+    for (uint32_t i=0; i<nun_p; i+=2) {
       constr_p[2*n*nun_p+i]       =  cEq[i/2].real();
       constr_p[2*n*nun_p+i+1]     = -cEq[i/2].imag();
       constr_p[(2*n+1)*nun_p+i]   = -cEq[i/2].imag();
@@ -1104,25 +1104,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     known_p[nun_p+2*n]   = obs.real();
     known_p[nun_p+2*n+1] = obs.imag();
     state_p &= ~TRIANGLE;
-    return True;
+    return true;
   }
 
   template <class U, class V, class W>
-  Bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex,
+  bool LSQFit::setConstraint(uint32_t n, uint32_t nIndex, const W &cEqIndex,
 			     const V &cEq, const U &obs) {
-    if (n>=ncon_p || nun_p==0) return False;
-    for (uInt i=0; i<nIndex; ++i) constr_p[n*nun_p+cEqIndex[i]] = cEq[i];
+    if (n>=ncon_p || nun_p==0) return false;
+    for (uint32_t i=0; i<nIndex; ++i) constr_p[n*nun_p+cEqIndex[i]] = cEq[i];
     known_p[nun_p+n] = obs;
     state_p &= ~TRIANGLE;
-    return True;
+    return true;
   }
 
   template <class U, class V, class W>
-  Bool LSQFit::setConstraint(uInt n, uInt nIndex, const W &cEqIndex,
+  bool LSQFit::setConstraint(uint32_t n, uint32_t nIndex, const W &cEqIndex,
 			     const V &cEq,
 			     const std::complex<U> &obs) {
-    if (2*n+1>=ncon_p || nun_p == 0) return False;
-    for (uInt i=0; i<nIndex; ++i) {
+    if (2*n+1>=ncon_p || nun_p == 0) return false;
+    for (uint32_t i=0; i<nIndex; ++i) {
       constr_p[2*n*nun_p+cEqIndex[2*i]]       =  cEq[i].real();
       constr_p[2*n*nun_p+cEqIndex[2*i+1]]     = -cEq[i].imag();
       constr_p[(2*n+1)*nun_p+cEqIndex[2*i]]   = -cEq[i].imag();
@@ -1131,104 +1131,104 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     known_p[nun_p+2*n]   = obs.real();
     known_p[nun_p+2*n+1] = obs.imag();
     state_p &= ~TRIANGLE;
-    return True;
+    return true;
   }
 
   template <class U, class V>
-  Bool LSQFit::addConstraint(const V &cEq, const U &obs) {
+  bool LSQFit::addConstraint(const V &cEq, const U &obs) {
     extendConstraints(ncon_p+1);
     return setConstraint(ncon_p-1, cEq, obs);
   }
 
   template <class U, class V>
-  Bool LSQFit::addConstraint(const V &cEq,
+  bool LSQFit::addConstraint(const V &cEq,
 			     const std::complex<U> &obs) {
     extendConstraints(ncon_p+2);
     return setConstraint((ncon_p-2)/2, cEq, obs);
   }
 
   template <class U, class V, class W>
-  Bool LSQFit::addConstraint(uInt nIndex, const W &cEqIndex,
+  bool LSQFit::addConstraint(uint32_t nIndex, const W &cEqIndex,
 			     const V &cEq, const U &obs) {
     extendConstraints(ncon_p+1);
     return setConstraint(ncon_p-1, nIndex, cEqIndex, cEq, obs);
   }
 
   template <class U, class V, class W>
-  Bool LSQFit::addConstraint(uInt nIndex, const W &cEqIndex,
+  bool LSQFit::addConstraint(uint32_t nIndex, const W &cEqIndex,
 			     const V &cEq,
 			     const std::complex<U> &obs) {
     extendConstraints(ncon_p+2);
     return setConstraint((ncon_p-2)/2, nIndex, cEqIndex, cEq, obs);}
 
   template <class U>
-  Bool LSQFit::getCovariance(U *covar) {
-    if (!invertRect()) return False;
-    for (uInt i=0; i<nun_p; i++) {		// all columns
-      Double *j0 = nceq_p->row(i);
+  bool LSQFit::getCovariance(U *covar) {
+    if (!invertRect()) return false;
+    for (uint32_t i=0; i<nun_p; i++) {		// all columns
+      double *j0 = nceq_p->row(i);
       U *j2 = covar + i*nun_p;
-      for (uInt i1=0; i1<i; i1++) {		// return solution
+      for (uint32_t i1=0; i1<i; i1++) {		// return solution
 	j2[i1] = static_cast<U>(nceq_p->row(i1)[i]);
       }
-      for (uInt i1=i; i1<nun_p; i1++) {
+      for (uint32_t i1=i; i1<nun_p; i1++) {
 	j2[i1] = static_cast<U>(j0[i1]);
       }
     }
-    return True;
+    return true;
   }
 
   template <class U>
-  Bool LSQFit::getCovariance(std::complex<U> *covar) {
+  bool LSQFit::getCovariance(std::complex<U> *covar) {
     getWorkCOV();
-    if (!LSQFit::getCovariance(wcov_p)) return False;
-    for (uInt i=0; i<n_p; i += 2) {
-      for (uInt j=0; j<n_p; j += 2) {
+    if (!LSQFit::getCovariance(wcov_p)) return false;
+    for (uint32_t i=0; i<n_p; i += 2) {
+      for (uint32_t j=0; j<n_p; j += 2) {
 	covar[i*n_p/4 + j/2] =
 	  std::complex<U>(wcov_p[i*n_p + j], wcov_p[i*n_p + j+1]);
       }
     }
-    return True;
+    return true;
   }
 
   template <class U>
-  Bool LSQFit::getErrors(U *errors) {
-    if (!invertRect()) return False;
-    for (uInt i=0; i<nun_p; ++i) {		// all columns
+  bool LSQFit::getErrors(U *errors) {
+    if (!invertRect()) return false;
+    for (uint32_t i=0; i<nun_p; ++i) {		// all columns
       *errors++ = std::sqrt(std::abs(nceq_p->row(i)[i]))*error_p[CHI2];
     }
-    return True;
+    return true;
   }
 
   template <class U>
-  Bool LSQFit::getErrors(std::complex<U> *errors) {
-    if (!invertRect()) return False;
-    for (uInt i=0; i+1<nun_p; i+=2) {		// all columns
+  bool LSQFit::getErrors(std::complex<U> *errors) {
+    if (!invertRect()) return false;
+    for (uint32_t i=0; i+1<nun_p; i+=2) {		// all columns
       *errors++ = std::complex<U>(std::sqrt(std::abs(nceq_p->row(i)[i])),
 				  std::sqrt(std::abs(nceq_p->row(i+1)[i+1])))*
 	static_cast<U>(error_p[CHI2]);
     }
-    return True;
+    return true;
   }
 
   template <class U>
-  Bool LSQFit::getErrors(U &errors) {
-    if (!invertRect()) return False;
+  bool LSQFit::getErrors(U &errors) {
+    if (!invertRect()) return false;
     copyDiagonal(errors, 
 		 typename LSQTraits
 		 <typename std::iterator_traits<U>::value_type>::num_type());
-    return True;
+    return true;
   }
 
   template <class U>
   void LSQFit::copyDiagonal(U &errors, LSQReal) {
-    for (uInt i=0; i<nun_p; ++i) {		// all columns
+    for (uint32_t i=0; i<nun_p; ++i) {		// all columns
       *errors++ = std::sqrt(std::abs(*nceq_p->diag(i)))*error_p[CHI2];
     }
   }
 
   template <class U>
   void LSQFit::copyDiagonal(U &errors, LSQComplex) {
-    for (uInt i=0; i+1<nun_p; i+=2) {		// all columns
+    for (uint32_t i=0; i+1<nun_p; i+=2) {		// all columns
       *errors++ =
 	typename U::value_type(std::sqrt(std::abs(nceq_p->row(i)[i])),
 			       std::sqrt(std::abs(nceq_p->row(i+1)[i+1])))*

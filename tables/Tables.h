@@ -194,8 +194,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //             be generated dynamically
 //       </UL>
 //  <li> Only the standard Casacore data types can be used in filled
-//       columns, be they scalars or arrays:  Bool, uChar, Short, uShort,
-//       Int, uInt, Int64, float, double, Complex, DComplex and String.
+//       columns, be they scalars or arrays:  bool, unsigned char, int16_t, uint16_t,
+//       int32_t, uint32_t, int64_t, float, double, Complex, DComplex and String.
 //       Furthermore scalars containing
 //       <linkto class=TableRecord>record</linkto> values are possible
 //  <li> A column can have a default value, which will automatically be stored
@@ -284,8 +284,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <linkto class="ScalarColumn:description">ScalarColumn&lt;T&gt;</linkto>
 // and
 // <linkto class="ArrayColumn:description">ArrayColumn&lt;T&gt;</linkto>.
-// For scalars of a standard data type (i.e. Bool, uChar, Int, Short,
-// uShort, uInt, float, double, Complex, DComplex and String) you could
+// For scalars of a standard data type (i.e. bool, unsigned char, int32_t, int16_t,
+// uint16_t, uint32_t, float, double, Complex, DComplex and String) you could
 // instead use 
 // <linkto class="TableColumn">TableColumn::getScalar(...)</linkto> or
 // <linkto class="TableColumn">TableColumn::asXXX(...)</linkto>.
@@ -319,15 +319,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //     // Construct the various column objects.
 //     // Their data type has to match the data type in the table description.
-//     ScalarColumn<Int> acCol (tab, "ac");
-//     ArrayColumn<Float> arr2Col (tab, "arr2");
+//     ScalarColumn<int32_t> acCol (tab, "ac");
+//     ArrayColumn<float> arr2Col (tab, "arr2");
 //
 //     // Loop through all rows in the table.
-//     uInt nrrow = tab.nrow();
-//     for (uInt i=0; i<nrow; i++) {
+//     uint32_t nrrow = tab.nrow();
+//     for (uint32_t i=0; i<nrow; i++) {
 //         // Read the row for both columns.
 //         cout << "Column ac in row i = " << acCol(i) << endl;
-//         Array<Float> array = arr2Col.get (i);
+//         Array<float> array = arr2Col.get (i);
 //     }
 //
 //     // Show the entire column ac,
@@ -390,14 +390,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     // Step1 -- Build the table description.
 //     TableDesc td("tTableDesc", "1", TableDesc::Scratch);
 //     td.comment() = "A test of class SetupNewTable";
-//     td.addColumn (ScalarColumnDesc<Int> ("ab" ,"Comment for column ab"));
-//     td.addColumn (ScalarColumnDesc<Int> ("ac"));
-//     td.addColumn (ScalarColumnDesc<uInt> ("ad","comment for ad"));
-//     td.addColumn (ScalarColumnDesc<Float> ("ae"));
+//     td.addColumn (ScalarColumnDesc<int32_t> ("ab" ,"Comment for column ab"));
+//     td.addColumn (ScalarColumnDesc<int32_t> ("ac"));
+//     td.addColumn (ScalarColumnDesc<uint32_t> ("ad","comment for ad"));
+//     td.addColumn (ScalarColumnDesc<float> ("ae"));
 //     td.addColumn (ScalarRecordColumnDesc ("arec"));
-//     td.addColumn (ArrayColumnDesc<Float> ("arr1",3,ColumnDesc::Direct));
-//     td.addColumn (ArrayColumnDesc<Float> ("arr2",0));
-//     td.addColumn (ArrayColumnDesc<Float> ("arr3",0,ColumnDesc::Direct));
+//     td.addColumn (ArrayColumnDesc<float> ("arr1",3,ColumnDesc::Direct));
+//     td.addColumn (ArrayColumnDesc<float> ("arr2",0));
+//     td.addColumn (ArrayColumnDesc<float> ("arr3",0,ColumnDesc::Direct));
 // 
 //     // Step 2 -- Setup a new table from the description.
 //     SetupNewTable newtab("newtab.data", td, Table::New);
@@ -462,8 +462,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // let you write a value at a time or the entire column in one go.
 // For arrays you can "put" subsections of the arrays.
 //
-// As an alternative for scalars of a standard data type (i.e. Bool,
-// uChar, Int, Short, uShort, uInt, float, double, Complex, DComplex
+// As an alternative for scalars of a standard data type (i.e. bool,
+// unsigned char, int32_t, int16_t, uint16_t, uint32_t, float, double, Complex, DComplex
 // and String) you could use the functions
 // <linkto class="TableColumn">TableColumn::putScalar(...)</linkto>.
 // These functions offer an extra: automatic data type promotion; so that
@@ -488,8 +488,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     // First build the table description.
 //     TableDesc td("tTableDesc", "1", TableDesc::Scratch);
 //     td.comment() = "A test of class SetupNewTable";
-//     td.addColumn (ScalarColumnDesc<Int> ("ac"));
-//     td.addColumn (ArrayColumnDesc<Float> ("arr2",0));
+//     td.addColumn (ScalarColumnDesc<int32_t> ("ac"));
+//     td.addColumn (ArrayColumnDesc<float> ("arr2",0));
 // 
 //     // Setup a new table from the description,
 //     // and create the (still empty) table.
@@ -501,14 +501,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //     // Construct the various column objects.
 //     // Their data type has to match the data type in the description.
-//     ScalarColumn<Int> ac (tab, "ac");
-//     ArrayColumn<Float> arr2 (tab, "arr2");
-//     Vector<Float> vec2(100);
+//     ScalarColumn<int32_t> ac (tab, "ac");
+//     ArrayColumn<float> arr2 (tab, "arr2");
+//     Vector<float> vec2(100);
 //
 //     // Write the data into the columns.
 //     // In each cell arr2 will be a vector of length 100.
 //     // Since its shape is not set explicitly, it is done implicitly.
-//     for (uInt i=0; i<10; i++) {
+//     for (uint32_t i=0; i<10; i++) {
 //         tab.addRow();               // First add a row.
 //         ac.put (i, i+10);           // value is i+10 in row i
 //         indgen (vec2, float(i+20)); // vec2 gets i+20, i+21, ..., i+119
@@ -636,9 +636,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // objects could be used to allow for easy and fast access to
 // // the record which is refilled for each get.
 // RORecordFieldPtr<String> col1(row.record(), "col1");
-// RORecordFieldPtr<Double> col2(row.record(), "col2");
-// RORecordFieldPtr<Array<Int> > col3(row.record(), "col3");
-// for (uInt i=0; i<table.nrow(); i++) {
+// RORecordFieldPtr<double> col2(row.record(), "col2");
+// RORecordFieldPtr<Array<int32_t> > col3(row.record(), "col3");
+// for (uint32_t i=0; i<table.nrow(); i++) {
 //     row.get (i);
 //     someString = *col1;
 //     somedouble = *col2;
@@ -823,7 +823,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    //
 //    // Create the iterator. This will prepare the first subtable.
 //    TableIterator iter(tab, iv0);
-//    Int nr = 0;
+//    int32_t nr = 0;
 //    while (!iter.pastEnd()) {
 //        // Get the first subtable.
 //        // This will contain rows with equal Time and Baseline.
@@ -869,9 +869,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Note that if the table is readonly, putting data in the table vector
 //    // results in an exception.
 //    Table tab ("Table.data");
-//    TableVector<Int> tabvec(tab, "COL1");
+//    TableVector<int32_t> tabvec(tab, "COL1");
 //    // Multiply it by a constant. Result is kept in a Vector in memory.
-//    TableVector<Int> temp = 2 * tabvec;
+//    TableVector<int32_t> temp = 2 * tabvec;
 // </srcblock>
 //
 // In the next example we double the data in COL1 and put the result back
@@ -880,7 +880,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Create a table vector for column COL1.
 //    // It has to be a TableVector to be able to change the column.
 //    Table tab ("Table.data", Table::Update);
-//    TableVector<Int> tabvec(tab, "COL1");
+//    TableVector<int32_t> tabvec(tab, "COL1");
 //    // Multiply it by a constant.
 //    tabvec *= 2;
 // </srcblock>
@@ -965,15 +965,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     td.comment() = "A test of class TableDesc";
 //     td.rwKeywordSet().define ("ra" float(3.14));
 //     td.rwKeywordSet().define ("equinox", double(1950));
-//     td.rwKeywordSet().define ("aa", Int(1));
+//     td.rwKeywordSet().define ("aa", int32_t(1));
 //
 //     // Define an integer column ab.
-//     td.addColumn (ScalarColumnDesc<Int> ("ab", "Comment for column ab"));
+//     td.addColumn (ScalarColumnDesc<int32_t> ("ab", "Comment for column ab"));
 //
 //     // Add a scalar integer column ac, define keywords for it
 //     // and define a default value 0.
 //     // Overwrite the value of keyword unit.
-//     ScalarColumnDesc<Int> acColumn("ac");
+//     ScalarColumnDesc<int32_t> acColumn("ac");
 //     acColumn.rwKeywordSet().define ("scale" Complex(0,0));
 //     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);
@@ -987,9 +987,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     // This one is indirect and has no dimensionality mentioned yet.
 //     td.addColumn (ArrayColumnDesc<Complex> ("Arr1","comment for Arr1"));
 //     // This one is indirect and has 3-dim arrays.
-//     td.addColumn (ArrayColumnDesc<Int> ("A2r1","comment for Arr1",3));
+//     td.addColumn (ArrayColumnDesc<int32_t> ("A2r1","comment for Arr1",3));
 //     // This one is direct and has 2-dim arrays with axes length 4 and 7.
-//     td.addColumn (ArrayColumnDesc<uInt> ("Arr3","comment for Arr1",
+//     td.addColumn (ArrayColumnDesc<uint32_t> ("Arr3","comment for Arr1",
 //                                          IPosition(2,4,7),
 //                                          ColumnDesc::Direct));
 //
@@ -1006,7 +1006,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ol>
 //  <li> <A HREF="#Tables:storage managers">Storage managers</A> --
 //   which store the data as such. They can only handle the standard
-//   data types (Bool,...,String) as discussed in the section about the
+//   data types (bool,...,String) as discussed in the section about the
 //   <A HREF="#Tables:properties">table properties</A>).
 //  <li> <A HREF="#Tables:virtual column engines">Virtual column engines</A>
 //   -- which manipulate the data.
@@ -1034,7 +1034,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // part of the data manager name (in lowercase) before a dot or left arrow.
 // The dot makes it possible to have multiple data managers in a shared library,
 // while the left arrow is meant for templated data manager classes.
-// <br>E.g. if <src>BitFlagsEngine<uChar></src> was not registered, the shared
+// <br>E.g. if <src>BitFlagsEngine<unsigned char></src> was not registered, the shared
 // library <src>libbitflagsengine.so</src> (or .dylib) will be loaded. If
 // successful, its function <src>register_bitflagsengine()</src> will be
 // executed which should register the data manager(s). Thereafter it is known
@@ -1047,9 +1047,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   // Implement in .cc file.
 //   void register_bitflagsengine()
 //   {
-//     BitFlagsEngine<uChar>::registerClass();
-//     BitFlagsEngine<Short>::registerClass();
-//     BitFlagsEngine<Int>::registerClass();
+//     BitFlagsEngine<unsigned char>::registerClass();
+//     BitFlagsEngine<int16_t>::registerClass();
+//     BitFlagsEngine<int32_t>::registerClass();
 //   }
 // </srcblock>
 // There are several functions that can give information which data managers
@@ -1369,9 +1369,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   can have one of the standard data types supported by CTDS.
 //  <li> The class
 //   <linkto class="BitFlagsEngine:description">BitFlagsEngine</linkto>
-//   maps an integer bit flags column to a Bool column. A read and write mask
+//   maps an integer bit flags column to a bool column. A read and write mask
 //   can be defined telling which bits to take into account when mapping
-//   to and from Bool (thus when reading or writing the Bool).
+//   to and from bool (thus when reading or writing the bool).
 //  <li> The class
 //   <linkto class="CompressFloat:description">CompressFloat</linkto>
 //   compresses a single precision floating point array by scaling the
@@ -1535,7 +1535,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Table tab ("some.name",
 //            TableLock(TableLock::UserLocking),
 //            Table::Update);
-// while (True) {
+// while (true) {
 //     get input data
 //     tab.lock();     // Acquire a write lock and wait for it.
 //     tab.addRow();
@@ -1580,16 +1580,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // ColumnsIndex colInx(tab, "ANTENNA");
 // // Make a RecordFieldPtr for the ANTENNA field in the index key record.
 // // Its data type has to match the data type of the column.
-// RecordFieldPtr<Int> antFld(colInx.accessKey(), "ANTENNA");
+// RecordFieldPtr<int32_t> antFld(colInx.accessKey(), "ANTENNA");
 // // Now loop in some way and find the row for the antenna
 // // involved in that loop.
-// Bool found;
+// bool found;
 // while (...) {
 //     // Fill the key field and get the row number.
 //     // ANTENNA is a unique key, so only one row number matches.
 //     // Otherwise function getRowNumbers had to be used.
 //     *antFld = antenna;
-//     uInt antRownr = colInx.getRowNumber (found);
+//     uint32_t antRownr = colInx.getRowNumber (found);
 //     if (!found) {
 //         cout << "Antenna " << antenna << " is unknown" << endl;
 //     } else {

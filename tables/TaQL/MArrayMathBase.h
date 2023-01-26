@@ -62,7 +62,7 @@ namespace casacore {
   // <group name="Array basic functions">
 
   // Define STL-like accumulate function operating on arrays with masks.
-  // A mask value True means masked-off, thus is not taken into account.
+  // A mask value true means masked-off, thus is not taken into account.
   // <group>
   // <br>The first function initializes the accumulator to the first
   // unmasked value. This is useful if it is not possible to initialize
@@ -134,7 +134,7 @@ namespace casacore {
   {
     for (; first1!=last1; ++first1, ++first2, ++mask1, ++mask2) {
       if (!*mask1 && !*mask2) {
-        if (!op(*first1, *first2)) return False;
+        if (!op(*first1, *first2)) return false;
       }
     }
     return true;
@@ -148,7 +148,7 @@ namespace casacore {
   {
     for (; first1!=last1; ++first1, ++first2, ++mask1) {
       if (!*mask1) {
-        if (!op(*first1, *first2)) return False;
+        if (!op(*first1, *first2)) return false;
       }
     }
     return true;
@@ -164,7 +164,7 @@ namespace casacore {
   {
     for (; first1!=last1; ++first1, ++mask1) {
       if (!*mask1) {
-        if (!op(left, *first1)) return False;
+        if (!op(left, *first1)) return false;
       }
     }
     return true;
@@ -180,7 +180,7 @@ namespace casacore {
   {
     for (; first1!=last1; ++first1, ++mask1) {
       if (!*mask1) {
-        if (!op(*first1, right)) return False;
+        if (!op(*first1, right)) return false;
       }
     }
     return true;
@@ -189,7 +189,7 @@ namespace casacore {
 
   // Define a function to compare the unmasked elements of two sequences.
   // It returns true if any element compares true.
-  // If there are no unmasked elements, it returns False.
+  // If there are no unmasked elements, it returns false.
   // An example compare operator is <src>std::equal_to</src>.
   // <group>
   template<typename InputIterator1, typename InputIterator2,
@@ -204,7 +204,7 @@ namespace casacore {
         if (op(*first1, *first2)) return true;
       }
     }
-    return False;
+    return false;
   }
   template<typename InputIterator1, typename InputIterator2,
            typename MaskIterator, typename CompareOperator>
@@ -218,7 +218,7 @@ namespace casacore {
         if (op(*first1, *first2)) return true;
       }
     }
-    return False;
+    return false;
   }
   // For use with a constant left value.
   // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
@@ -234,7 +234,7 @@ namespace casacore {
         if (op(left, *first1)) return true;
       }
     }
-    return False;
+    return false;
   }
   // For use with a constant right value.
   // This avoids use of bind1st or bind2nd which can fail for gcc-4.3.
@@ -250,7 +250,7 @@ namespace casacore {
         if (op(*first1, right)) return true;
       }
     }
-    return False;
+    return false;
   }
   // </group>
 

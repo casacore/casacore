@@ -44,8 +44,8 @@ Interpolate1D() {
 template <class Domain, class Range> Interpolate1D<Domain, Range>::
 Interpolate1D(const SampledFunctional<Domain> &x,
 	      const SampledFunctional<Range> &y, 
-	      const Bool sorted, 
-	      const Bool uniq){
+	      const bool sorted, 
+	      const bool uniq){
   setData(x, y, sorted, uniq);
 }
 
@@ -53,8 +53,8 @@ Interpolate1D(const SampledFunctional<Domain> &x,
 template <class Domain, class Range> void Interpolate1D<Domain, Range>::
 setData(const SampledFunctional<Domain> &x,
 	const SampledFunctional<Range> &y, 
-	const Bool sorted, 
-	const Bool uniq){
+	const bool sorted, 
+	const bool uniq){
   nElements = x.nelements();
 
   // Set the default interpolation method
@@ -76,36 +76,36 @@ setData(const SampledFunctional<Domain> &x,
   // Sort the x and y data if required.
   xValues.resize(nElements);
   yValues.resize(nElements);
-  if (sorted == False) {
-    Vector<uInt> index;
+  if (sorted == false) {
+    Vector<uint32_t> index;
     // I will copy the data to a block prior to sorting as the
     // genSort function cannot handle a SampledFunctional
-    for (uInt j = 0; j < nElements; j++)
+    for (uint32_t j = 0; j < nElements; j++)
       xValues[j] = x(j);
     (void) genSort(index, xValues);
-    Int idx; 
-    for (uInt i = 0; i < nElements; i++) {
+    int32_t idx; 
+    for (uint32_t i = 0; i < nElements; i++) {
       idx = index(i);
       xValues[i] = x(idx);
       yValues[i] = y(idx);
     }
   }
   else {
-    for (uInt k = 0; k < nElements; k++) {
+    for (uint32_t k = 0; k < nElements; k++) {
       xValues[k] = x(k);
       yValues[k] = y(k);
     }
   }
   // Check that each x_value is unique. If it isn't then throw an
-  // exception. This check can be turned off (by setting uniq=True), but the
+  // exception. This check can be turned off (by setting uniq=true), but the
   // user will then have to interpolate under the following restrictions:
   // 1/ spline interpolation cannot be used
   // 2/ linear and nearestNeighbour interpolation cannot be used when when the
   //    specified x value is within one data point of a repeated x value.
   // 3/ cubic interpolation cannot be used when when the specified x value is
   //    within two data points of a repeated x value.
-  if (uniq == False) 
-    for (uInt i=0; i < nElements-1; i++) {
+  if (uniq == false) 
+    for (uint32_t i=0; i < nElements-1; i++) {
       if (nearAbs(xValues[i], xValues[i+1])) {
 	throw(AipsError("Interpolate1D::setData"
 			" data has repeated x values"));
@@ -148,7 +148,7 @@ Function<Domain, Range> *Interpolate1D<Domain, Range>::clone() const {
 }
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
-polynomialInterpolation(const Domain x_req, uInt n, uInt offset) const {
+polynomialInterpolation(const Domain x_req, uint32_t n, uint32_t offset) const {
   // A private function for doing polynomial interpolation
   // Based on Nevilles Algorithm (Numerical Recipies 2nd ed., Section 3.1)
   // x is the point we want to estimate, n is the number of points to use
@@ -158,7 +158,7 @@ polynomialInterpolation(const Domain x_req, uInt n, uInt offset) const {
   // copy the x, y data into the working arrays
   Block<Range> c(n), d(n);
   Block<Domain> x(n);
-  uInt i;
+  uint32_t i;
   for (i = 0; i < n; i++){
     d[i] = c[i] = yValues[offset]; 
     x[i] = xValues[offset];
@@ -167,10 +167,10 @@ polynomialInterpolation(const Domain x_req, uInt n, uInt offset) const {
   // Now do the interpolation using the rather opaque algorithm
   Range w, y;
   y = c[0];
-  const Float one = 1;
+  const float one = 1;
   for (i = 1; i < n; i++){
     // Calculate new C's and D's for each interation 
-    for (uInt j = 0; j < n-i; j++){
+    for (uint32_t j = 0; j < n-i; j++){
       if (nearAbs(x[j+i], x[j])) 
 	throw(AipsError("Interpolate1D::polynomailInterpolation"
 			" data has repeated x values"));
@@ -184,7 +184,7 @@ polynomialInterpolation(const Domain x_req, uInt n, uInt offset) const {
 }
 
 template <class Domain, class Range> void Interpolate1D<Domain, Range>::
-setMethod(uInt newMethod) {
+setMethod(uint32_t newMethod) {
   // Are we are switching to spline interpolation from something else?
   if (newMethod == spline && curMethod != spline){ // Calculate the y2Values
     y2Values.resize(nElements);
@@ -215,9 +215,9 @@ setMethod(uInt newMethod) {
 		      " data has repeated x values"));
     Domain a, b, delta;
     const Domain six = 6;
-    const Float one = 1;
+    const float one = 1;
     Range r;
-    uInt i;
+    uint32_t i;
     for (i = 1; i < nElements-1; i++){
       a = c;
       b = 2*(xValues[i+1] - xValues[i-1]);
@@ -243,7 +243,7 @@ setMethod(uInt newMethod) {
   }
   else if (curMethod == spline && newMethod != spline){ 
     // Delete the y2Values
-    y2Values.resize(uInt(0));
+    y2Values.resize(uint32_t(0));
   }
   curMethod = newMethod;
 }
@@ -262,8 +262,8 @@ getY() const {
 
 template <class Domain, class Range> Range Interpolate1D<Domain, Range>::
 eval(typename Function1D<Domain, Range>::FunctionArg x) const {
-  Bool found;
-  uInt where = binarySearchBrackets(found, xValues, x[0], nElements);  
+  bool found;
+  uint32_t where = binarySearchBrackets(found, xValues, x[0], nElements);  
   Domain x1,x2;
   Range y1,y2;
   switch (curMethod) {
@@ -296,7 +296,7 @@ eval(typename Function1D<Domain, Range>::FunctionArg x) const {
       where = 0;
     else
       where = nElements - 4;
-    return polynomialInterpolation(x[0], (uInt) 4, where);
+    return polynomialInterpolation(x[0], (uint32_t) 4, where);
   case spline: // natural cubic splines
     {
       if (where == nElements)

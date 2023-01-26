@@ -37,11 +37,11 @@ int main()
 
 // Test parameter setting and recovery
 
-      for (Int i=0; i<Projection::N_PROJ; i++) {
-         uInt nP = Projection::nParameters(Projection::Type(i));
-         Vector<Double> pars(nP);
-         for (uInt j=0; j<nP; j++) {
-           pars(j) = Double(j);
+      for (int32_t i=0; i<Projection::N_PROJ; i++) {
+         uint32_t nP = Projection::nParameters(Projection::Type(i));
+         Vector<double> pars(nP);
+         for (uint32_t j=0; j<nP; j++) {
+           pars(j) = double(j);
          }
          Projection::Type type = (Projection::Type)i;
          Projection proj(type, pars);
@@ -59,16 +59,16 @@ int main()
            throw(AipsError("Type recovery inconsistent"));
          }
 //
-         Bool isZen = Projection::isZenithal (type);
-         Bool ok = False;
+         bool isZen = Projection::isZenithal (type);
+         bool ok = false;
          if (isZen) {
             if (type==Projection::AZP || type==Projection::TAN || type==Projection::SIN ||      
                 type==Projection::STG || type==Projection::ARC || type==Projection::ZPN ||      
-                type==Projection::ZEA || type==Projection::AIR || type==Projection::SZP) ok = True;
+                type==Projection::ZEA || type==Projection::AIR || type==Projection::SZP) ok = true;
          } else {
             if (type!=Projection::AZP && type!=Projection::TAN && type!=Projection::SIN &&
                 type!=Projection::STG && type!=Projection::ARC && type!=Projection::ZPN &&      
-                type!=Projection::ZEA && type!=Projection::AIR && type!=Projection::SZP) ok = True;
+                type!=Projection::ZEA && type!=Projection::AIR && type!=Projection::SZP) ok = true;
          }
          if (!ok) {
            throw(AipsError("isZenithal fails"));
@@ -90,7 +90,7 @@ int main()
       
 // Test near function
 
-      Vector<Double> pars(2);
+      Vector<double> pars(2);
       pars(0) = 0.1; pars(1) = 0.2;
       {
          Projection proj(Projection::SIN, pars);

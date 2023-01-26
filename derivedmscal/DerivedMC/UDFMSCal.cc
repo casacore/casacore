@@ -44,7 +44,7 @@
 
 namespace casacore {
 
-  UDFMSCal::UDFMSCal (ColType type, Int arg)
+  UDFMSCal::UDFMSCal (ColType type, int32_t arg)
     : itsType (type),
       itsArg  (arg)
   {
@@ -61,7 +61,7 @@ namespace casacore {
   {}
 
   UDFMSCal::UDFMSCal (const String& funcName, const String& subtabName,
-                      const String& idcolName, Int arg)
+                      const String& idcolName, int32_t arg)
     : itsType       (GETVALUE),
       itsArg        (arg),
       itsFuncName   (funcName),
@@ -277,12 +277,12 @@ namespace casacore {
       // Make sure the unit is rad.
       // Turn the array into a vector.
       TableExprNodeUnit::adaptUnit (operand, "rad");
-      Array<Double> dirs(operand->getArrayDouble(0).array());
+      Array<double> dirs(operand->getArrayDouble(0).array());
       if (dirs.size() != 2) {
         throw AipsError ("Argument to MSCAL function is not an array "
                          "of 2 values");
       }
-      Vector<Double> dirVec(dirs.reform(IPosition(1,dirs.size())));
+      Vector<double> dirVec(dirs.reform(IPosition(1,dirs.size())));
       itsEngine.setDirection (MDirection(Quantity(dirVec[0], "rad"),
                                          Quantity(dirVec[1], "rad"),
                                          MDirection::J2000));
@@ -290,11 +290,11 @@ namespace casacore {
       // First try the string as a planetary object.
       // In the future comets can be supported like COMET:cometname.
       String str = operand->getString(0);
-      Bool fnd = True;
+      bool fnd = true;
       try {
         itsEngine.setDirection (MDirection::makeMDirection(str));
       } catch (std::exception&) {
-        fnd = False;
+        fnd = false;
       }
       if (!fnd) {
         // Now do it as a FIELD column name.
@@ -315,7 +315,7 @@ namespace casacore {
 
   void UDFMSCal::setupWvls (const Table& table,
                             vector<TENShPtr>& operands,
-                            uInt nargMax)
+                            uint32_t nargMax)
   {
     // There must be at least 1 argument (data).
     if (operands.size() > nargMax) {
@@ -325,11 +325,11 @@ namespace casacore {
     // Divide by lightspeed for conversion to wavelengths.
     // Determine the maximum nr of frequencies in a band.
     Table spwTab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
-    ScalarColumn<Double> refCol(spwTab, "REF_FREQUENCY");
-    ArrayColumn<Double> freqCol(spwTab, "CHAN_FREQ");
+    ScalarColumn<double> refCol(spwTab, "REF_FREQUENCY");
+    ArrayColumn<double> freqCol(spwTab, "CHAN_FREQ");
     itsWavel.reserve (spwTab.nrow());
     itsWavels.reserve (spwTab.nrow());
-    uInt nfreq = 0;
+    uint32_t nfreq = 0;
     for (rownr_t i=0; i<spwTab.nrow(); ++i) {
       itsWavel.push_back (refCol(i) / C::c);
       itsWavels.push_back (freqCol(i) / C::c);
@@ -346,7 +346,7 @@ namespace casacore {
     itsIdNode = table.col(itsIdColName);
     // Get the spectal window ids.
     Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
-    ScalarColumn<Int>(ddtab, "SPECTRAL_WINDOW_ID").getColumn (itsDDIds);
+    ScalarColumn<int32_t>(ddtab, "SPECTRAL_WINDOW_ID").getColumn (itsDDIds);
   }
 
   void UDFMSCal::setupStokes (const Table& table,
@@ -363,7 +363,7 @@ namespace casacore {
           operands[0]->dataType() == TableExprNodeRep::NTDouble  ||
           operands[0]->dataType() == TableExprNodeRep::NTComplex)) {
       throw AipsError ("First argument of MSCAL.STOKES must be a "
-                       "Complex, Double or Bool array");
+                       "Complex, double or bool array");
     }
     // The optional second argument gives the output correlation types.
     // Default is iquv.
@@ -379,13 +379,13 @@ namespace casacore {
       type.upcase();
     }
     // The optional third argument tells if a factor 2 must be applied to I.
-    Bool rescale = False;
+    bool rescale = false;
     if (operands.size() > 2) {
       if (! operands[2]->isConstant()  ||
           operands[2]->valueType() != TableExprNodeRep::VTScalar  ||
           operands[2]->dataType() != TableExprNodeRep::NTBool) {
         throw AipsError ("Second argument of MSCAL.STOKES must be a "
-                         "constant Bool scalar");
+                         "constant bool scalar");
       }
       rescale = operands[2]->getBool(0);
     }
@@ -395,7 +395,7 @@ namespace casacore {
       throw AipsError("POLARIZATION subtable of " + table.tableName() +
                       " is empty");
     }
-    Vector<Int> inTypes (ArrayColumn<Int>(polTable, "CORR_TYPE")(0));
+    Vector<int32_t> inTypes (ArrayColumn<int32_t>(polTable, "CORR_TYPE")(0));
     // Convert the output string types to ints.
     // First convert abbrevs.
     if (type == "IQUV"  ||  type == "STOKES") {
@@ -410,8 +410,8 @@ namespace casacore {
       throw AipsError("No polarization types given in second argument of "
                       "MSCAL.STOKES");
     }
-    Vector<Int> outTypes(types.size());
-    for (uInt i=0; i<types.size(); ++i) {
+    Vector<int32_t> outTypes(types.size());
+    for (uint32_t i=0; i<types.size(); ++i) {
       outTypes[i] = Stokes::type (types[i]);
     }
     itsStokesConv.setConversion (outTypes, inTypes, rescale);
@@ -450,9 +450,9 @@ namespace casacore {
         if (table.tableDesc().isColumn("ANTENNA2")) {
           a2 = TableExprNode (table.col("ANTENNA2"));
         }
-        Vector<Int> selectedAnts1;
-        Vector<Int> selectedAnts2;
-        Matrix<Int> selectedBaselines;
+        Vector<int32_t> selectedAnts1;
+        Vector<int32_t> selectedAnts2;
+        Matrix<int32_t> selectedBaselines;
         CountedPtr<MSSelectionErrorHandler> curHandler = MSAntennaParse::thisMSAErrorHandler;
         MSAntennaParse::thisMSAErrorHandler = new UDFMSCalErrorHandler();
         try {
@@ -479,7 +479,7 @@ namespace casacore {
       {
         MeasurementSet ms(table);
         TableExprNode node (table.col("TIME"));
-        Matrix<Double> times;
+        Matrix<double> times;
 	MSMainColInterface tmp;
         if (msTimeGramParseCommand (&ms,selStr, TableExprNode(),
 				    tmp,
@@ -503,8 +503,8 @@ namespace casacore {
         Table ddtab (table.keywordSet().asTable("DATA_DESCRIPTION"));
         Table spwtab(table.keywordSet().asTable("SPECTRAL_WINDOW"));
         TableExprNode colAsTEN = table.col("DATA_DESC_ID");
-        Vector<Int> spwid, spwDDID;
-        Matrix<Int> chanid;
+        Vector<int32_t> spwid, spwDDID;
+        Matrix<int32_t> chanid;
         if (msSpwGramParseCommand(MSSpectralWindow(spwtab),
                                   MSDataDescription(ddtab),
                                   colAsTEN, selStr,
@@ -518,7 +518,7 @@ namespace casacore {
       {
         Table fieldtab(table.keywordSet().asTable("FIELD"));
         TableExprNode colAsTEN = table.col("FIELD_ID");
-        Vector<Int> fldid;
+        Vector<int32_t> fldid;
         itsDataNode = msFieldGramParseCommand (fieldtab, colAsTEN, selStr,
                                                fldid);
         msFieldGramParseDeleteNode();
@@ -532,9 +532,9 @@ namespace casacore {
         if (table.tableDesc().isColumn("FEED2")) {
           f2 = TableExprNode (table.col("FEED2"));
         }
-        Vector<Int> selectedFeed1;
-        Vector<Int> selectedFeed2;
-        Matrix<Int> selectedFeedPairs;
+        Vector<int32_t> selectedFeed1;
+        Vector<int32_t> selectedFeed2;
+        Matrix<int32_t> selectedFeedPairs;
         CountedPtr<MSSelectionErrorHandler> curHandler = MSFeedParse::thisMSFErrorHandler;
         MSFeedParse::thisMSFErrorHandler = new UDFMSCalErrorHandler();
         try {
@@ -551,23 +551,23 @@ namespace casacore {
     case ARRAY:
       {
         MeasurementSet ms(table);
-        Vector<Int> arrid;
-        Int maxArr=1000;
+        Vector<int32_t> arrid;
+        int32_t maxArr=1000;
         itsDataNode = msArrayGramParseCommand(&ms, selStr, arrid, maxArr);
       }
       break;
     case SCAN:
       {
         MeasurementSet ms(table);
-        Vector<Int> scanid;
-        Int maxScan=1000;
+        Vector<int32_t> scanid;
+        int32_t maxScan=1000;
         itsDataNode = msScanGramParseCommand(&ms, selStr, scanid, maxScan);
       }
       break;
     case STATE:
       {
         MeasurementSet ms(table);
-        Vector<Int> stateid;
+        Vector<int32_t> stateid;
         CountedPtr<MSSelectionErrorHandler> curHandler = MSStateParse::thisMSSErrorHandler;
         MSStateParse::thisMSSErrorHandler = new UDFMSCalErrorHandler();
         try {
@@ -585,8 +585,8 @@ namespace casacore {
     case OBS:
       {
         MeasurementSet ms(table);
-        Vector<Int> obsid;
-	//        Int maxObs=1000;
+        Vector<int32_t> obsid;
+	//        int32_t maxObs=1000;
         TableExprNode colAsTEN = table.col("OBSERVATION_ID");
         itsDataNode = msObservationGramParseCommand(&ms, ms.observation(),
 						    colAsTEN,
@@ -609,7 +609,7 @@ namespace casacore {
       idinx = 1;
       if (itsSubTabName.empty()) idinx = 2;
     }
-    uInt nargReq = idinx;
+    uint32_t nargReq = idinx;
     // Id column must be given if id (ANTENNA1/2) is not part of function name.
     if (itsIdColName.empty()) nargReq++;
     if (operands.size() != nargReq) {
@@ -652,7 +652,7 @@ namespace casacore {
         // Subtable has an indirection via the DATA_DESCRIPTION.
         // Get the ids of the required column.
         Table ddtab(table.keywordSet().asTable("DATA_DESCRIPTION"));
-        ScalarColumn<Int>(ddtab, itsIdColName).getColumn (itsDDIds);
+        ScalarColumn<int32_t>(ddtab, itsIdColName).getColumn (itsDDIds);
         itsIdColName = "DATA_DESC_ID";
       }
       // Create the id node.
@@ -687,32 +687,32 @@ namespace casacore {
     }
   }
 
-  Int64 UDFMSCal::getRowNr (const TableExprId& id)
+  int64_t UDFMSCal::getRowNr (const TableExprId& id)
   {
-    Int64 rownr = itsIdNode.getInt(id);
+    int64_t rownr = itsIdNode.getInt(id);
     if (itsArg == 1) {
       rownr = itsDDIds[rownr];
     }
     return rownr;
   }
 
-  Array<Double> UDFMSCal::toWvls (const TableExprId& id)
+  Array<double> UDFMSCal::toWvls (const TableExprId& id)
   {
-    const Vector<Double>& wvl = itsWavels[itsDDIds[itsIdNode.getInt(id)]];
-    Double* ptr = itsTmpUvwWvl.data();
-    for (uInt i=0; i<wvl.size(); ++i) {
+    const Vector<double>& wvl = itsWavels[itsDDIds[itsIdNode.getInt(id)]];
+    double* ptr = itsTmpUvwWvl.data();
+    for (uint32_t i=0; i<wvl.size(); ++i) {
       for (int j=0; j<3; ++j) {
         *ptr++ = wvl[i] * itsTmpVector[j];
       }
     }
     // Return the correct part of the array.
-    if (itsTmpUvwWvl.shape()[1] == Int(wvl.size())) {
+    if (itsTmpUvwWvl.shape()[1] == int32_t(wvl.size())) {
       return itsTmpUvwWvl;
     }
     return itsTmpUvwWvl(IPosition(2,0,0), IPosition(2, 2, wvl.size()-1));
   }
 
-  Bool UDFMSCal::getBool (const TableExprId& id)
+  bool UDFMSCal::getBool (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
@@ -722,7 +722,7 @@ namespace casacore {
       {
         rownr_t rownr = getRowNr(id);
         if (itsArg < 0  &&  rownr >= itsDataNode.nrow()) {
-          return False;
+          return false;
         }
         return itsDataNode.getBool (rownr);
       }
@@ -731,7 +731,7 @@ namespace casacore {
     }
   }
 
-  Int64 UDFMSCal::getInt (const TableExprId& id)
+  int64_t UDFMSCal::getInt (const TableExprId& id)
   {
     switch (itsType) {
     case GETVALUE:
@@ -747,7 +747,7 @@ namespace casacore {
     }
   }
 
-  Double UDFMSCal::getDouble (const TableExprId& id)
+  double UDFMSCal::getDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
@@ -806,24 +806,24 @@ namespace casacore {
     }
   }
 
-  MArray<Bool> UDFMSCal::getArrayBool (const TableExprId& id)
+  MArray<bool> UDFMSCal::getArrayBool (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case STOKES:
       {
-        Array<Bool> out;
-        MArray<Bool> marr;
+        Array<bool> out;
+        MArray<bool> marr;
         itsDataNode.get (id, marr);
         // Combine the flags.
         itsStokesConv.convert (out, marr.array());
         if (! marr.hasMask()) {
-          return MArray<Bool>(out);
+          return MArray<bool>(out);
         }
         // Combine the mask elements.
-        Array<Bool> mask;
+        Array<bool> mask;
         itsStokesConv.convert (mask, marr.mask());
-        return MArray<Bool> (out, mask);
+        return MArray<bool> (out, mask);
       }
     case GETVALUE:
       return itsDataNode.getBoolAS (getRowNr(id));
@@ -832,7 +832,7 @@ namespace casacore {
     }
   }
 
-  MArray<Int64> UDFMSCal::getArrayInt (const TableExprId& id)
+  MArray<int64_t> UDFMSCal::getArrayInt (const TableExprId& id)
   {
     switch (itsType) {
     case GETVALUE:
@@ -842,45 +842,45 @@ namespace casacore {
     }
   }
 
-  MArray<Double> UDFMSCal::getArrayDouble (const TableExprId& id)
+  MArray<double> UDFMSCal::getArrayDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     switch (itsType) {
     case HADEC:
       itsEngine.getHaDec (itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case AZEL:
       itsEngine.getAzEl (itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case ITRF:
       itsEngine.getItrf (itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case UVWWVL:
       itsUvwCol.get (id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case UVWWVLS:
       itsUvwCol.get (id.rownr(), itsTmpVector);
-      return MArray<Double>(toWvls (id));
+      return MArray<double>(toWvls (id));
     case NEWUVW:
       itsEngine.getNewUVW (itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case NEWUVWWVL:
       itsEngine.getNewUVW (itsArg, id.rownr(), itsTmpVector);
       itsTmpVector *= itsWavel[itsDDIds[itsIdNode.getInt(id)]];
-      return MArray<Double>(itsTmpVector);
+      return MArray<double>(itsTmpVector);
     case NEWUVWWVLS:
       itsEngine.getNewUVW (itsArg, id.rownr(), itsTmpVector);
-      return MArray<Double>(toWvls (id));
+      return MArray<double>(toWvls (id));
     case STOKES:
       {
-        // Unfortunately stokes weight conversion is only defined for Float,
-        // while TableExprNode only has Double.
+        // Unfortunately stokes weight conversion is only defined for float,
+        // while TableExprNode only has double.
         // So conversions are necessary for the time being.
-        // In the future we can add Double support to StokesConverter.
-        MArray<Double> datad;
-        Array<Float>  dataf, outf;
-        Array<Double> outd;
+        // In the future we can add double support to StokesConverter.
+        MArray<double> datad;
+        Array<float>  dataf, outf;
+        Array<double> outd;
         itsDataNode.get (id, datad);
         dataf.resize (datad.shape());
         convertArray (dataf, datad.array());
@@ -888,12 +888,12 @@ namespace casacore {
         outd.resize (outf.shape());
         convertArray (outd, outf);
         if (! datad.hasMask()) {
-          return MArray<Double>(outd);
+          return MArray<double>(outd);
         }
         // Combine the mask elements.
-        Array<Bool> mask;
+        Array<bool> mask;
         itsStokesConv.convert (mask, datad.mask());
-        return MArray<Double>(outd, mask);
+        return MArray<double>(outd, mask);
       }
     case GETVALUE:
       return itsDataNode.getDoubleAS (getRowNr(id));
@@ -925,7 +925,7 @@ namespace casacore {
           return MArray<DComplex>(outd);
         }
         // Combine the mask elements.
-        Array<Bool> mask;
+        Array<bool> mask;
         itsStokesConv.convert (mask, datad.mask());
         return MArray<DComplex>(outd, mask);
       }

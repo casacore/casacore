@@ -35,18 +35,18 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableRowProxy::TableRowProxy()
-: isWritable_p (False)
+: isWritable_p (false)
 {}
 
 TableRowProxy::TableRowProxy (const TableProxy& tablep,
 			      const Vector<String>& columnNames,
-			      Bool exclude)
+			      bool exclude)
 : isWritable_p (tablep.isWritable())
 {
   if (columnNames.nelements() == 0) {
-    rorow_p = ROTableRow (tablep.table(), False);
+    rorow_p = ROTableRow (tablep.table(), false);
     if (isWritable_p) {
-      rwrow_p = TableRow (tablep.table(), False);
+      rwrow_p = TableRow (tablep.table(), false);
     }
   } else {
     rorow_p = ROTableRow (tablep.table(), columnNames, exclude);
@@ -75,18 +75,18 @@ TableRowProxy& TableRowProxy::operator= (const TableRowProxy& that)
   return *this;
 }
 
-Bool TableRowProxy::isNull() const
+bool TableRowProxy::isNull() const
 {
-  return (rorow_p.isAttached()  ?  False : True);
+  return (rorow_p.isAttached()  ?  false : true);
 }
 
-Record TableRowProxy::get (Int64 rownr) const
+Record TableRowProxy::get (int64_t rownr) const
 {
-  return rorow_p.get(rownr, True).toRecord();
+  return rorow_p.get(rownr, true).toRecord();
 }
 
-void TableRowProxy::put (Int64 rownr, const Record& record,
-			 Bool matchingFields)
+void TableRowProxy::put (int64_t rownr, const Record& record,
+			 bool matchingFields)
 {
   if (!isWritable_p) {
     throw TableError ("TableRowProxy: the given TableRow is not writable");

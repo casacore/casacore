@@ -66,7 +66,7 @@ int main() {
   }
 
   Complex f1(23.9,1.8), f2(9.2,8.2), f3(2.7,1.8), fo(237.561,0.9312), fi;
-  IComplex i1(5,2), i3(Int(f1.real()),Int(f1.imag()));
+  IComplex i1(5,2), i3(int32_t(f1.real()),int32_t(f1.imag()));
   DComplex d1, d2(f1.real(),f1.imag()), d3(0.921,7.812);
   fstream fio("tComplex_tmp.data", ios::out | ios::trunc);
 

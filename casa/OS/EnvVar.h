@@ -61,7 +61,7 @@ class EnvironmentVariable
 {
 public:
   // Is environment variable with given name defined? 
-  static Bool isDefined (const String& name);
+  static bool isDefined (const String& name);
 
   // Get the value of environment variable with given name.
   // If not defined, return an empty String.

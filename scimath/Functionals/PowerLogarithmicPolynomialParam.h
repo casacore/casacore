@@ -91,7 +91,7 @@ public:
   PowerLogarithmicPolynomialParam();
   
   // Makes a polynomial of the specified number of coefficients, all set to zero.
-  explicit PowerLogarithmicPolynomialParam(uInt n);
+  explicit PowerLogarithmicPolynomialParam(uint32_t n);
   
   PowerLogarithmicPolynomialParam(const vector<T>& parms);
 
@@ -110,9 +110,9 @@ public:
   //# Operators  
   // Comparisons.  
   // <group>
-  Bool operator==(const PowerLogarithmicPolynomialParam<T> &other) const {
+  bool operator==(const PowerLogarithmicPolynomialParam<T> &other) const {
     return (param_p == other.param_p); }
-  Bool operator!=(const PowerLogarithmicPolynomialParam<T> &other) const {
+  bool operator!=(const PowerLogarithmicPolynomialParam<T> &other) const {
     return (param_p != other.param_p); }
   // </group>
 
@@ -123,14 +123,14 @@ public:
 
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
-  T coefficient(uInt which) const {
+  T coefficient(uint32_t which) const {
     DebugAssert(which<=nparameters(), AipsError); return param_p[which]; }
   
   // Return all the coefficients as a vector.
   const Vector<T> &coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>. 
-  void setCoefficient(uInt which, const T value) {
+  void setCoefficient(uint32_t which, const T value) {
     DebugAssert(which<=nparameters(), AipsError); param_p[which] = value; }
   
   // Set all the coefficients at once, throw away all existing coefficients.

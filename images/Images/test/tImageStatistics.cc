@@ -40,12 +40,12 @@ int main() {
             writeTestString(
                 "test normal and copy constructors"
             );
-            ImageStatistics<Float> stats(image);
-            ImageStatistics<Float> stats2(stats);
+            ImageStatistics<float> stats(image);
+            ImageStatistics<float> stats2(stats);
             AlwaysAssert(stats.getBlc() == stats2.getBlc(), AipsError);
 
             stats.setBlc(IPosition(image.coordinates().nPixelAxes(),1));
-            ImageStatistics<Float> stats3(stats);
+            ImageStatistics<float> stats3(stats);
             AlwaysAssert(stats.getBlc() == stats3.getBlc(), AipsError);
 
     	}
@@ -56,24 +56,24 @@ int main() {
 			);
 			CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
 			IPosition shape(4, 10, 15, 4, 20);
-			TempImage<Float> tim(TiledShape(shape), csys);
-			Array<Float> arr(IPosition(4, shape[0], shape[1], 1, 1));
+			TempImage<float> tim(TiledShape(shape), csys);
+			Array<float> arr(IPosition(4, shape[0], shape[1], 1, 1));
 			indgen(arr);
-			for (uInt i=0; i<shape[2]; i++) {
-				for (uInt j=0; j<shape[3]; j++) {
+			for (uint32_t i=0; i<shape[2]; i++) {
+				for (uint32_t j=0; j<shape[3]; j++) {
 					tim.putSlice(arr, IPosition(4, 0, 0, i, j));
 				}
 			}
 			tim.setUnits("Jy/pixel");
-			ImageStatistics<Float> stats(tim);
-			Vector<Int> axes(2, 0);
+			ImageStatistics<float> stats(tim);
+			Vector<int32_t> axes(2, 0);
 			axes[1] = 1;
 			stats.setAxes(axes);
-			Vector<LatticeStatistics<Float>::AccumType> myStats;
-			Vector<LatticeStatistics<Float>::AccumType> exp;
-			for (uInt i=0; i<shape[2]; i++) {
-				for (uInt j=0; j<shape[3]; j++) {
-					stats.getStats(myStats, IPosition(2, i, j), False);
+			Vector<LatticeStatistics<float>::AccumType> myStats;
+			Vector<LatticeStatistics<float>::AccumType> exp;
+			for (uint32_t i=0; i<shape[2]; i++) {
+				for (uint32_t j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), false);
 					if (i == 0 && j == 0) {
 						exp = myStats;
 					}
@@ -89,11 +89,11 @@ int main() {
 			ImageInfo info = tim.imageInfo();
 			info.setRestoringBeam(beam);
 			tim.setImageInfo(info);
-			stats = ImageStatistics<Float>(tim);
+			stats = ImageStatistics<float>(tim);
 			stats.setAxes(axes);
-			for (uInt i=0; i<shape[2]; i++) {
-				for (uInt j=0; j<shape[3]; j++) {
-					stats.getStats(myStats, IPosition(2, i, j), False);
+			for (uint32_t i=0; i<shape[2]; i++) {
+				for (uint32_t j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), false);
 					if (i == 0 && j == 0) {
 						exp = myStats;
 					}
@@ -103,11 +103,11 @@ int main() {
 			info.removeRestoringBeam();
 			info.setAllBeams(shape[3], shape[2], beam);
 			tim.setImageInfo(info);
-			stats = ImageStatistics<Float>(tim);
+			stats = ImageStatistics<float>(tim);
 			stats.setAxes(axes);
-			for (uInt i=0; i<shape[2]; i++) {
-				for (uInt j=0; j<shape[3]; j++) {
-					stats.getStats(myStats, IPosition(2, i, j), False);
+			for (uint32_t i=0; i<shape[2]; i++) {
+				for (uint32_t j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), false);
 					if (i == 0 && j == 0) {
 						exp = myStats;
 					}
@@ -120,11 +120,11 @@ int main() {
 			);
 
 			tim.setImageInfo(info);
-			stats = ImageStatistics<Float>(tim);
+			stats = ImageStatistics<float>(tim);
 			stats.setAxes(axes);
-			for (uInt i=0; i<shape[2]; i++) {
-				for (uInt j=0; j<shape[3]; j++) {
-					stats.getStats(myStats, IPosition(2, i, j), False);
+			for (uint32_t i=0; i<shape[2]; i++) {
+				for (uint32_t j=0; j<shape[3]; j++) {
+					stats.getStats(myStats, IPosition(2, i, j), false);
 					if (i == 0 && j == 0) {
 						exp = myStats;
 					}
@@ -132,8 +132,8 @@ int main() {
 						Slice s(0, myStats.size() - 2);
 						AlwaysAssert(allTrue(myStats(s) == exp(s)), AipsError);
 						Quantity ratio = beam.getMajor()/info.restoringBeam(1, 1).getMajor();
-						Double gotFlux = myStats[myStats.size() - 1];
-						Double expFlux = ratio.getValue() * exp[exp.size() - 1];
+						double gotFlux = myStats[myStats.size() - 1];
+						double expFlux = ratio.getValue() * exp[exp.size() - 1];
 						AlwaysAssert(fabs(gotFlux - expFlux)/expFlux < 1e-7, AipsError)
 					}
 					else {
@@ -148,8 +148,8 @@ int main() {
     		);
     		CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
     		IPosition shape(3, 10, 15, 20);
-    		TempImage<Float> tim(TiledShape(shape), csys);
-    		Array<Float> arr(shape);
+    		TempImage<float> tim(TiledShape(shape), csys);
+    		Array<float> arr(shape);
     		indgen(arr);
     		tim.put(arr);
     		tim.setUnits("Jy/beam");
@@ -161,50 +161,50 @@ int main() {
     		ImageInfo info = tim.imageInfo();
     		info.setRestoringBeam(beam);
     		tim.setImageInfo(info);
-			ImageStatistics<Float> stats(tim);
-			Array<Float> flux;
+			ImageStatistics<float> stats(tim);
+			Array<float> flux;
 			AlwaysAssert(
 				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
 			);
 			AlwaysAssert(near(*flux.begin(), 111724.9893), AipsError);
-			Vector<Int> axes(2, 0);
+			Vector<int32_t> axes(2, 0);
 			axes[1] = 1;
 			stats.setAxes(axes);
 			AlwaysAssert(
 				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
 			);
 			AlwaysAssert(flux.shape() == IPosition(1, 20), AipsError);
-			Vector<Double> statVals;
-			Double area = beam.getArea("arcmin2");
-			for (uInt i=0; i<20; ++i) {
-				Float expFlux = sum(arr(IPosition(3,0,0,i), IPosition(3, 9, 14, i)))/area;
+			Vector<double> statVals;
+			double area = beam.getArea("arcmin2");
+			for (uint32_t i=0; i<20; ++i) {
+				float expFlux = sum(arr(IPosition(3,0,0,i), IPosition(3, 9, 14, i)))/area;
 				AlwaysAssert(near(flux(IPosition(1,i)), expFlux), AipsError);
 				AlwaysAssert(
 					stats.getStats(
-						statVals, IPosition(1, i), False
+						statVals, IPosition(1, i), false
 					), AipsError
 				);
 				AlwaysAssert(near(statVals[LatticeStatsBase::FLUX], expFlux), AipsError);
 			}
 			tim.setUnits("K");
-			stats = ImageStatistics<Float>(tim);
+			stats = ImageStatistics<float>(tim);
 			AlwaysAssert(
 				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
 			);
 			AlwaysAssert(near(*flux.begin(), 3.4180507464507e9), AipsError);
-			axes = Vector<Int>(2, 0);
+			axes = Vector<int32_t>(2, 0);
 			axes[1] = 1;
 			stats.setAxes(axes);
 			AlwaysAssert(
 				stats.getConvertedStatistic (flux, LatticeStatsBase::FLUX), AipsError
 			);
 			AlwaysAssert(flux.shape() == IPosition(1, 20), AipsError);
-			for (uInt i=0; i<20; ++i) {
-				Float expFlux = sum(arr(IPosition(3,0,0,i), IPosition(3, 9, 14, i)))*3600;
+			for (uint32_t i=0; i<20; ++i) {
+				float expFlux = sum(arr(IPosition(3,0,0,i), IPosition(3, 9, 14, i)))*3600;
 				AlwaysAssert(near(flux(IPosition(1,i)), expFlux), AipsError);
 				AlwaysAssert(
 					stats.getStats(
-						statVals, IPosition(1, i), False
+						statVals, IPosition(1, i), false
 					), AipsError
 				);
 				AlwaysAssert(near(statVals[LatticeStatsBase::FLUX], expFlux), AipsError);
@@ -212,7 +212,7 @@ int main() {
 			Vector<GaussianBeam> beams(20);
 			Vector<GaussianBeam>::iterator bIter = beams.begin();
 			Vector<GaussianBeam>::iterator bEnd = beams.end();
-			uInt count = 0;
+			uint32_t count = 0;
 			while (bIter != bEnd) {
 				*bIter = GaussianBeam(
 					Quantity(3 + count, "arcmin"),
@@ -227,9 +227,9 @@ int main() {
 			ii.setBeams(beamSet);
     		tim.setUnits("Jy/beam");
 			tim.setImageInfo(ii);
-			stats = ImageStatistics<Float> (tim);
+			stats = ImageStatistics<float> (tim);
 			stats.setAxes(indgen(2, 0, 1));
-			Array<Float> fluxDensities;
+			Array<float> fluxDensities;
 			AlwaysAssert(
 				stats.getConvertedStatistic (
 					fluxDensities, LatticeStatsBase::FLUX
@@ -237,8 +237,8 @@ int main() {
 			);
 			cout << "flux densities " << fluxDensities << endl;
 			// 0.2110611 is channel width in km/s
-			Double expected = sum(fluxDensities) * 0.2110611;
-			stats.setAxes(Vector<Int>());
+			double expected = sum(fluxDensities) * 0.2110611;
+			stats.setAxes(Vector<int32_t>());
 			AlwaysAssert(
 				stats.getConvertedStatistic(flux, LatticeStatsBase::FLUX),
 				AipsError

@@ -64,9 +64,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-// void globalFunction(Int arg)
+// void globalFunction(int32_t arg)
 // {
-//    LogMessage logMessage(LogOrigin("globalFunction(Int arg)", WHERE));
+//    LogMessage logMessage(LogOrigin("globalFunction(int32_t arg)", WHERE));
 //    ...
 //    logMessage.message("my message").line(__LINE__);
 //    ...
@@ -74,9 +74,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    ...
 // }
 //
-// void MyClass::member(Int arg)
+// void MyClass::member(int32_t arg)
 // {
-//    LogMessage logMessage(LogOrigin("myClass", "member(Int arg)", WHERE));
+//    LogMessage logMessage(LogOrigin("myClass", "member(int32_t arg)", WHERE));
 //    ...
 //    logMessage.message("my message").line(__LINE__);
 //    ...
@@ -148,11 +148,11 @@ public:
     // Get the message text.
     const String &message() const;
 
-    // Set the message text. If <src>keepLastTime</src> is <src>True</src>, the
+    // Set the message text. If <src>keepLastTime</src> is <src>true</src>, the
     // previous time will be used, otherwise the current time is used. This is
     // intended for messages that come out at essentially identical times to
     // aid in, e.g., Table selections.
-    LogMessage &message(const String &message, Bool keepLastTime = False);
+    LogMessage &message(const String &message, bool keepLastTime = false);
 
     // Get and set the line number in the
     // <linkto class="LogOrigin">LogOrigin</linkto>. While in principle you can
@@ -162,8 +162,8 @@ public:
     // change in a particular LogMessage object. Generally you will set the
     // line number with the <src>__LINE__</src> macro.
     // <group>
-    uInt line() const;
-    LogMessage &line(uInt which);
+    uint32_t line() const;
+    LogMessage &line(uint32_t which);
     // </group>
 
     // Set the source location - usually this will be called with the

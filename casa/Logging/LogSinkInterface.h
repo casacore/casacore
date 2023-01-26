@@ -116,28 +116,28 @@ public:
   // </group>
 
   // Get number of messages in sink.
-  virtual uInt nelements() const;
+  virtual uint32_t nelements() const;
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime (uInt i) const;
-  virtual String getPriority (uInt i) const;
-  virtual String getMessage (uInt i) const;
-  virtual String getLocation (uInt i) const;
-  virtual String getObjectID (uInt i) const;
+  virtual double getTime (uint32_t i) const;
+  virtual String getPriority (uint32_t i) const;
+  virtual String getMessage (uint32_t i) const;
+  virtual String getLocation (uint32_t i) const;
+  virtual String getObjectID (uint32_t i) const;
   // </group>
 
   // This function must be over-ridden in derived classes. If the filter
   // passes the message, do what is necessary with the message and return
-  // <src>True</src>.
-  virtual Bool postLocally(const LogMessage &message)= 0;
+  // <src>true</src>.
+  virtual bool postLocally(const LogMessage &message)= 0;
 
   // Write any pending output.
-  virtual void flush (Bool global=True);
+  virtual void flush (bool global=true);
 
   // Write a message (usually from another logsink) into the local one.
   // The default implementation does nothing.
-  virtual void writeLocally (Double time, const String& message,
+  virtual void writeLocally (double time, const String& message,
 			     const String& priority, const String& location,
 			     const String& objectID);
 

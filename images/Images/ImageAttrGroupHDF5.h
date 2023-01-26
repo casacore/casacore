@@ -57,30 +57,30 @@ class ImageAttrGroupHDF5 : public ImageAttrGroup
 {
 public: 
   // The default constructor creates a null object.
-  explicit ImageAttrGroupHDF5 (Bool isWritable=False)
-    : itsChanged  (False),
+  explicit ImageAttrGroupHDF5 (bool isWritable=false)
+    : itsChanged  (false),
       itsCanWrite (isWritable)
   {}
 
   // Construct the object for an attribute group in the image.
   // If present, it reads all attributes.
   ImageAttrGroupHDF5 (const HDF5Group& image, const String& attrGroupName,
-                      Bool writable);
+                      bool writable);
 
   virtual ~ImageAttrGroupHDF5();
 
   // Test if it is a null object.
-  Bool isNull() const
+  bool isNull() const
     { return itsRecord.empty(); }
 
   // Flush the attibrutes if needed.
   void flush (HDF5Group& image, const String& attrGroupName);
 
   // Get the number of rows in the group.
-  virtual uInt nrows() const;
+  virtual uint32_t nrows() const;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr (const String& attrName) const;
+  virtual bool hasAttr (const String& attrName) const;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const;
@@ -90,10 +90,10 @@ public:
   virtual DataType dataType (const String& attrName) const;
 
   // Get the data of the given attribute in the given row.
-  virtual ValueHolder getData (const String& attrName, uInt rownr);
+  virtual ValueHolder getData (const String& attrName, uint32_t rownr);
 
   // Get the data of all attributes in a rows.
-  virtual Record getDataRow (uInt rownr);
+  virtual Record getDataRow (uint32_t rownr);
 
   // Get the possible units of the values (stored as attrName_UNIT).
   // An empty vector is returned if the attribute has no units.
@@ -108,19 +108,19 @@ public:
   // of the vector. Otherwise the vector size has to match the table size.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, uInt rownr,
+  virtual void putData (const String& attrName, uint32_t rownr,
                         const ValueHolder& data,
                         const Vector<String>& units = Vector<String>(),
                         const Vector<String>& measInfo = Vector<String>());
 
 private:
   // Check the rownr and add a row if needed.
-  void checkRows (const String& attrName, uInt rownr);
+  void checkRows (const String& attrName, uint32_t rownr);
 
   //# Data members.
   Record itsRecord;     //# Record containing all attributes (subrecord per row)
-  Bool   itsChanged;    //# Has the Record changed?
-  Bool   itsCanWrite;   //# Can attributes be written?
+  bool   itsChanged;    //# Has the Record changed?
+  bool   itsCanWrite;   //# Can attributes be written?
 };
 
 } //# NAMESPACE CASACORE - END

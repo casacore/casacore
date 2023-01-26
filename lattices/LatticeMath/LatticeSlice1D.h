@@ -67,14 +67,14 @@ class String;
 // <example>
 // <srcBlock>
 // IPosition shape(2, 20, 30);                    // Create MaskedLattice
-// ArrayLattice<Float> arrLat(shape);
-// SubLattice<Float> subLat(arrLat);
-// LatticeSlice1D<Float> slicer(subLat);
+// ArrayLattice<float> arrLat(shape);
+// SubLattice<float> subLat(arrLat);
+// LatticeSlice1D<float> slicer(subLat);
 //
 // IPosition blc(2); blc = 0;                     // Extract slice between corners
 // IPosition trc(shape-1);
-// Vector<Float> data;
-// Vector<Bool> mask;
+// Vector<float> data;
+// Vector<bool> mask;
 // slicer.getSlice (data, mask, blc, trc);
 // </srcBlock>
 // </example>
@@ -114,20 +114,20 @@ public:
 // Get 1-D slice.  PixelCurve1D supplies the locus of the slice in
 // the plane specified by axis0 and axis1.  The pixel coordinate for
 // the rest of the lattice is specified in <src>coord</src>.
-   void getSlice (Vector<T>& data, Vector<Bool>& mask,
-                  const PixelCurve1D& curve, uInt axis0, uInt axis1,
+   void getSlice (Vector<T>& data, Vector<bool>& mask,
+                  const PixelCurve1D& curve, uint32_t axis0, uint32_t axis1,
                   const IPosition& coord);
 
 // Get 1-D slice between blc & trc. These start and end points must be 
 // in a cardinal plane of the lattice.  If nPts is 0 it is set automatically to
 // the length of the slice.   
-   void getSlice (Vector<T>& data, Vector<Bool>& mask,
-                  const IPosition& blc, const IPosition& trc, uInt nPts=0);
+   void getSlice (Vector<T>& data, Vector<bool>& mask,
+                  const IPosition& blc, const IPosition& trc, uint32_t nPts=0);
 
 // Get the (x,y) pixel coordinates from the last slice and the distance along
 // the slice in pixels.. Also recover the axes of the slice plane
-   void getPosition (uInt& axis0, uInt& axis1, Vector<Float>& x, 
-                     Vector<Float>& y, Vector<Float>& distance) const;
+   void getPosition (uint32_t& axis0, uint32_t& axis1, Vector<float>& x, 
+                     Vector<float>& y, Vector<float>& distance) const;
 
 // Recover interpolation method
    Method interpolationMethod () const {return itsMethod;};
@@ -142,7 +142,7 @@ private:
    void findPlane (const IPosition& blc,
                    const IPosition& trc);
 // Get the interpolated slice
-   void doGetSlice (Vector<T>& data, Vector<Bool>& mask,
+   void doGetSlice (Vector<T>& data, Vector<bool>& mask,
                     const PixelCurve1D& curve,
                     const IPosition& blc, const IPosition& trc);
 // Make Interpolator
@@ -152,11 +152,11 @@ private:
    MaskedLattice<T>* itsLatticePtr;
    Interpolate2D* itsInterpPtr;
    Method itsMethod;
-   Vector<Float> itsX;
-   Vector<Float> itsY;
-   Vector<Double> itsPos;
-   uInt itsAxis0;
-   uInt itsAxis1;
+   Vector<float> itsX;
+   Vector<float> itsY;
+   Vector<double> itsPos;
+   uint32_t itsAxis0;
+   uint32_t itsAxis1;
 };
 
 

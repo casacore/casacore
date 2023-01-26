@@ -52,14 +52,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </synopsis>
 class ArrayInitPolicy {
 public:
-  Bool operator ==(ArrayInitPolicy const &other) {
+  bool operator ==(ArrayInitPolicy const &other) {
     return init == other.init;
   }
-  Bool operator !=(ArrayInitPolicy const &other) {
+  bool operator !=(ArrayInitPolicy const &other) {
     return init != other.init;
   }
 private:
-  Bool init;
+  bool init;
   explicit constexpr ArrayInitPolicy(bool v): init(v) {}
   friend struct ArrayInitPolicies;
 };
@@ -358,7 +358,7 @@ protected:
 // it is discouraged to use this allocator.
 // Use <src>DefaultAllocator<T></src> or <src>AlignedAllocator<T, ALIGNMENT></src> as possible.
 // This allocator is provided only for compatibility for calling
-// <src>Array::takeStorage(), Block::replaceStorage(), Block(size_t, T *&, Bool)</src>  etc.
+// <src>Array::takeStorage(), Block::replaceStorage(), Block(size_t, T *&, bool)</src>  etc.
 // with a storage allocated by operator new[].
 template<typename T>
 class NewDelAllocator: public BaseAllocator<T, NewDelAllocator<T> > {

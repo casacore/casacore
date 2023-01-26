@@ -52,7 +52,7 @@ SDAntennaHandler::SDAntennaHandler()
       siteLongFldNum_p(-1), siteLatFldNum_p(-1), siteElevFldNum_p(-1)
 {;}
 
-SDAntennaHandler::SDAntennaHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
+SDAntennaHandler::SDAntennaHandler(MeasurementSet &ms, Vector<bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msAnt_p(0), msAntCols_p(0), rownr_p(-1),
       siteLongFldNum_p(-1), siteLatFldNum_p(-1), siteElevFldNum_p(-1)
@@ -103,7 +103,7 @@ SDAntennaHandler &SDAntennaHandler::operator=(const SDAntennaHandler &other)
     return *this;
 }
 
-void SDAntennaHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDAntennaHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -112,7 +112,7 @@ void SDAntennaHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, con
 void SDAntennaHandler::resetRow(const Record &row) 
 {
     clearRow();
-    Vector<Bool> dummyHandled;
+    Vector<bool> dummyHandled;
     initRow(dummyHandled, row);
 }
 
@@ -163,14 +163,14 @@ void SDAntennaHandler::fill(const Record &row)
 	    *flagRowKey_p = *flagRowField_p;
 	}
 	Vector<rownr_t> foundRows = index_p->getRowNumbers();
-	Bool found = False;
+	bool found = false;
 	MPosition pos;
-	Vector<Double> offset(3,0.0);
+	Vector<double> offset(3,0.0);
 	if (siteLongFldNum_p >= 0) {
 	    // construct an MPosition from these values
-	    Double siteLong = row.asDouble(siteLongFldNum_p);
-	    Double siteLat = row.asDouble(siteLatFldNum_p);
-	    Double siteElev = row.asDouble(siteElevFldNum_p);
+	    double siteLong = row.asDouble(siteLongFldNum_p);
+	    double siteLat = row.asDouble(siteLatFldNum_p);
+	    double siteElev = row.asDouble(siteElevFldNum_p);
 	    pos = MPosition(Quantity(siteLong,"m"),
 			    Quantity(siteLat,"deg"),
 			    Quantity(siteElev,"deg"),
@@ -179,10 +179,10 @@ void SDAntennaHandler::fill(const Record &row)
 	    // SITE* keywords take precendence over ARRAY_POSITION 
 	    if (positionField_p.isAttached()) {
 		// we write out this column as ITRF with all values in meters
-		pos = MPosition(MVPosition(Quantum<Vector<Double> >(*positionField_p,"m")),
+		pos = MPosition(MVPosition(Quantum<Vector<double> >(*positionField_p,"m")),
 				MPosition::ITRF);
 	    } else {
-		// if this returns False, pos will still be set at its unset value (0,0,0)
+		// if this returns false, pos will still be set at its unset value (0,0,0)
 		MeasTable::Observatory(pos,*nameKey_p);
 	    }
 	}
@@ -193,10 +193,10 @@ void SDAntennaHandler::fill(const Record &row)
 	}
 	if (foundRows.nelements() > 0) {
 	    // we have at least 1 candidate
-	    uInt whichOne = 0;
+	    uint32_t whichOne = 0;
 	    // if there are no positions, stop and use the first one
 	    if (siteLongFldNum_p < 0) {
-		found = True;
+		found = true;
 	    } else {
 		while (!found && whichOne<foundRows.nelements()) {
 		  found = pos.getValue() == msAntCols_p->positionMeas()(foundRows(whichOne)).getValue() &&
@@ -220,7 +220,7 @@ void SDAntennaHandler::fill(const Record &row)
 	    if (flagRowKey_p.isAttached()) {
 		msAntCols_p->flagRow().put(rownr_p,*flagRowKey_p);
 	    } else {
-		msAntCols_p->flagRow().put(rownr_p,False);
+		msAntCols_p->flagRow().put(rownr_p,false);
 	    }
 	    if (mountKey_p.isAttached()) {
 		msAntCols_p->mount().put(rownr_p,*mountKey_p);
@@ -228,7 +228,7 @@ void SDAntennaHandler::fill(const Record &row)
 		msAntCols_p->mount().put(rownr_p,"");
 	    }
 	    msAntCols_p->name().put(rownr_p, *nameKey_p);
-	    msAntCols_p->offset().put(uInt(rownr_p),offset);
+	    msAntCols_p->offset().put(uint32_t(rownr_p),offset);
 	    msAntCols_p->positionMeas().put(rownr_p,pos);
 	    if (stationKey_p.isAttached()) {
 		msAntCols_p->station().put(rownr_p,*stationKey_p);
@@ -292,7 +292,7 @@ void SDAntennaHandler::clearRow()
     rownr_p = -1;
 }
 
-void SDAntennaHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDAntennaHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     msAnt_p = new MSAntenna(ms.antenna());
     AlwaysAssert(msAnt_p, AipsError);
@@ -350,13 +350,13 @@ void SDAntennaHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, co
     // orbit_id and phased_array_id columns are dealt with elsewhere
 }
 
-void SDAntennaHandler::initRow(Vector<Bool> &handledCols, const Record &row)
+void SDAntennaHandler::initRow(Vector<bool> &handledCols, const Record &row)
 {
     AlwaysAssert(handledCols.nelements()==row.description().nfields(), AipsError);
 
     if (row.fieldNumber("TELESCOP") >= 0) {
 	telescopField_p.attachToRecord(row, "TELESCOP");
-	handledCols(row.fieldNumber("TELESCOP")) = True;
+	handledCols(row.fieldNumber("TELESCOP")) = true;
     }
     siteLongFldNum_p = row.fieldNumber("SITELONG");
     siteLatFldNum_p = row.fieldNumber("SITELAT");
@@ -364,54 +364,54 @@ void SDAntennaHandler::initRow(Vector<Bool> &handledCols, const Record &row)
 
     // its all or nothing with these
     if (siteLongFldNum_p >= 0 && siteLatFldNum_p >= 0 && siteElevFldNum_p >= 0) {
-	handledCols(siteLongFldNum_p) = True;
-	handledCols(siteLatFldNum_p) = True;
-	handledCols(siteElevFldNum_p) = True;
+	handledCols(siteLongFldNum_p) = true;
+	handledCols(siteLatFldNum_p) = true;
+	handledCols(siteElevFldNum_p) = true;
     } else {
 	siteLongFldNum_p = siteLatFldNum_p = siteElevFldNum_p = -1;
     }
 
     if (row.fieldNumber("ANTENNA_MOUNT") >= 0) {
 	mountField_p.attachToRecord(row, "ANTENNA_MOUNT");
-	handledCols(row.fieldNumber("ANTENNA_MOUNT")) = True;
+	handledCols(row.fieldNumber("ANTENNA_MOUNT")) = true;
     }
     if (row.fieldNumber("ANTENNA_NAME") >= 0) {
 	msNameField_p.attachToRecord(row, "ANTENNA_NAME");
-	handledCols(row.fieldNumber("ANTENNA_NAME")) = True;
+	handledCols(row.fieldNumber("ANTENNA_NAME")) = true;
     }
     if (row.fieldNumber("ANTENNA_STATION") >= 0) {
 	stationField_p.attachToRecord(row, "ANTENNA_STATION");
-	handledCols(row.fieldNumber("ANTENNA_STATION")) = True;
+	handledCols(row.fieldNumber("ANTENNA_STATION")) = true;
     }
     if (row.fieldNumber("ANTENNA_DISH_DIAMETER") >= 0 &&
 	row.dataType("ANTENNA_DISH_DIAMETER") == TpDouble) {
 	dishDiameterField_p.attachToRecord(row, "ANTENNA_DISH_DIAMETER");
-	handledCols(row.fieldNumber("ANTENNA_DISH_DIAMETER")) = True;
+	handledCols(row.fieldNumber("ANTENNA_DISH_DIAMETER")) = true;
     }
     if (row.fieldNumber("ANTENNA_OFFSET") >= 0 &&
 	row.dataType("ANTENNA_OFFSET") == TpArrayDouble) {
 	offsetField_p.attachToRecord(row, "ANTENNA_OFFSET");
-	handledCols(row.fieldNumber("ANTENNA_OFFSET")) = True;
+	handledCols(row.fieldNumber("ANTENNA_OFFSET")) = true;
     }
     if (row.fieldNumber("ANTENNA_ORBIT_ID") >= 0 &&
 	row.dataType("ANTENNA_ORBIT_ID") == TpInt) {
 	orbitIdField_p.attachToRecord(row, "ANTENNA_ORBIT_ID");
-	handledCols(row.fieldNumber("ANTENNA_ORBIT_ID")) = True;
+	handledCols(row.fieldNumber("ANTENNA_ORBIT_ID")) = true;
     }
     if (row.fieldNumber("ANTENNA_PHASED_ARRAY_ID") >= 0 &&
 	row.dataType("ANTENNA_PHASED_ARRAY_ID") == TpInt) {
 	phasedArrayIdField_p.attachToRecord(row, "ANTENNA_PHASED_ARRAY_ID");
-	handledCols(row.fieldNumber("ANTENNA_PHASED_ARRAY_ID")) = True;
+	handledCols(row.fieldNumber("ANTENNA_PHASED_ARRAY_ID")) = true;
     }
     if (row.fieldNumber("ANTENNA_POSITION") >= 0 &&
 	row.dataType("ANTENNA_POSITION") == TpArrayDouble) {
 	positionField_p.attachToRecord(row, "ANTENNA_POSITION");
-	handledCols(row.fieldNumber("ANTENNA_POSITION")) = True;
+	handledCols(row.fieldNumber("ANTENNA_POSITION")) = true;
     }
     if (row.fieldNumber("ANTENNA_FLAG_ROW") >= 0 &&
 	row.dataType("ANTENNA_FLAG_ROW") == TpBool) {
 	flagRowField_p.attachToRecord(row, "ANTENNA_FLAG_ROW");
-	handledCols(row.fieldNumber("ANTENNA_FLAG_ROW")) = True;
+	handledCols(row.fieldNumber("ANTENNA_FLAG_ROW")) = true;
     }
    // row number isn't set until the following fill
     rownr_p = -1;
@@ -434,7 +434,7 @@ void SDAntennaHandler::addPhasedArrayIdColumn()
 	msAntCols_p = new MSAntennaColumns(*msAnt_p);
 	AlwaysAssert(msAntCols_p, AipsError);
 	// and the index
-	indexNames.resize(indexNames.nelements()+1, True);
+	indexNames.resize(indexNames.nelements()+1, true);
 	indexNames(indexNames.nelements()-1) = 
 	    MSAntenna::columnName(MSAntenna::PHASED_ARRAY_ID);
 	index_p = new ColumnsIndex(*msAnt_p, indexNames);
@@ -479,7 +479,7 @@ void SDAntennaHandler::addOrbitIdColumn()
 	msAntCols_p = new MSAntennaColumns(*msAnt_p);
 	AlwaysAssert(msAntCols_p, AipsError);
 	// and the index
-	indexNames.resize(indexNames.nelements()+1, True);
+	indexNames.resize(indexNames.nelements()+1, true);
 	indexNames(indexNames.nelements()-1) = MSAntenna::columnName(MSAntenna::ORBIT_ID);
 	index_p = new ColumnsIndex(*msAnt_p, indexNames);
 	AlwaysAssert(index_p, AipsError);	

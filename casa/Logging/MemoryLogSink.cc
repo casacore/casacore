@@ -81,42 +81,42 @@ void MemoryLogSink::copy_other (const MemoryLogSink& other)
 MemoryLogSink::~MemoryLogSink()
 {}
 
-uInt MemoryLogSink::nelements() const
+uint32_t MemoryLogSink::nelements() const
 {
   return nmsg_p;
 }
 
-Double MemoryLogSink::getTime (uInt i) const
+double MemoryLogSink::getTime (uint32_t i) const
 {
   AlwaysAssert (i < nmsg_p, AipsError);
   return time_p[i];
 }
-String MemoryLogSink::getPriority (uInt i) const
+String MemoryLogSink::getPriority (uint32_t i) const
 {
   AlwaysAssert (i < nmsg_p, AipsError);
   return priority_p[i];
 }
-String MemoryLogSink::getMessage (uInt i) const
+String MemoryLogSink::getMessage (uint32_t i) const
 {
   AlwaysAssert (i < nmsg_p, AipsError);
   return message_p[i];
 }
-String MemoryLogSink::getLocation (uInt i) const
+String MemoryLogSink::getLocation (uint32_t i) const
 {
   AlwaysAssert (i < nmsg_p, AipsError);
   return location_p[i];
 }
-String MemoryLogSink::getObjectID (uInt i) const
+String MemoryLogSink::getObjectID (uint32_t i) const
 {
   AlwaysAssert (i < nmsg_p, AipsError);
   return objectID_p[i];
 }
 
-Bool MemoryLogSink::postLocally (const LogMessage& message)
+bool MemoryLogSink::postLocally (const LogMessage& message)
 {
-  Bool posted = False;
+  bool posted = false;
   if (filter().pass(message)) {
-    posted = True;
+    posted = true;
     if (nmsg_p >= time_p.nelements()) {
       resize (nmsg_p+1);
     }
@@ -132,7 +132,7 @@ Bool MemoryLogSink::postLocally (const LogMessage& message)
   return posted;
 }
 
-void MemoryLogSink::writeLocally (Double time,
+void MemoryLogSink::writeLocally (double time,
 				  const String& message,
 				  const String& priority,
 				  const String& location,
@@ -152,15 +152,15 @@ void MemoryLogSink::writeLocally (Double time,
 void MemoryLogSink::clearLocally()
 {
   // Resize the block to 0 elements.
-  time_p.resize     (0, True, True);
-  priority_p.resize (0, True, True);
-  message_p.resize  (0, True, True);
-  location_p.resize (0, True, True);
-  objectID_p.resize (0, True, True);
+  time_p.resize     (0, true, true);
+  priority_p.resize (0, true, true);
+  message_p.resize  (0, true, true);
+  location_p.resize (0, true, true);
+  objectID_p.resize (0, true, true);
   nmsg_p = 0;
 }
 
-void MemoryLogSink::resize (uInt nrnew)
+void MemoryLogSink::resize (uint32_t nrnew)
 {
   // Increase with at least 64 elements.
   if (nrnew < time_p.nelements()+64) {

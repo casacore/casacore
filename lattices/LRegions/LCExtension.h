@@ -86,7 +86,7 @@ public:
     LCExtension (const LCRegion& region,
 		 const IPosition& extendAxes,
 		 const LCBox& extendBox);
-    LCExtension (Bool takeOver,
+    LCExtension (bool takeOver,
 		 const LCRegion* region,
 		 const IPosition& extendAxes,
 		 const LCBox& extendBox);
@@ -101,7 +101,7 @@ public:
     LCExtension& operator= (const LCExtension& other);
 
     // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
  
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -132,15 +132,15 @@ protected:
     // Construct another LCRegion (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box and mask.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
     // Do the actual getting of the mask.
-    virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
+    virtual void multiGetSlice (Array<bool>& buffer, const Slicer& section);
 
     // This function is needed here because the niceCursorShape of the
     // contributing region does not make any sense (other dimensionality). 
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
 private:
     // Fill the object.

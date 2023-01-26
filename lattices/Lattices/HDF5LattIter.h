@@ -99,7 +99,7 @@ protected:
 protected:
   // Construct the Iterator with the supplied data, and iteration strategy
   HDF5LattIter (const HDF5Lattice<T>& data, const LatticeNavigator& method,
-		Bool useRef);
+		bool useRef);
 
   // The copy constructor uses reference sematics for the PagedArray and
   // copy semantics for the cursor and Navigator. This way the newly

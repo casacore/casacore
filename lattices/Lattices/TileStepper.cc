@@ -45,17 +45,17 @@ TileStepper::TileStepper(const IPosition& latticeShape,
   itsCurBlc(latticeShape.nelements()),
   itsCurTrc(latticeShape.nelements()),
   itsNsteps(0),
-  itsEnd(False),
-  itsStart(True)
+  itsEnd(false),
+  itsStart(true)
 {
-  const uInt nrdim = latticeShape.nelements();
+  const uint32_t nrdim = latticeShape.nelements();
   AlwaysAssert(nrdim > 0, AipsError);
   AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
-  for (uInt i=0; i<nrdim; i++) {
+  for (uint32_t i=0; i<nrdim; i++) {
     itsAxisPath(i) = i;
   }
   reset();
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 TileStepper::TileStepper(const IPosition& latticeShape, 
@@ -72,14 +72,14 @@ TileStepper::TileStepper(const IPosition& latticeShape,
   itsCurBlc(latticeShape.nelements()),
   itsCurTrc(latticeShape.nelements()),
   itsNsteps(0),
-  itsEnd(False),
-  itsStart(True)
+  itsEnd(false),
+  itsStart(true)
 {
-  const uInt nrdim = latticeShape.nelements();
+  const uint32_t nrdim = latticeShape.nelements();
   AlwaysAssert(nrdim > 0, AipsError);
   AlwaysAssert(tileShape.nelements() == nrdim, AipsError);
   reset();
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 // the copy constructor which uses copy semantics.
@@ -99,7 +99,7 @@ TileStepper::TileStepper(const TileStepper& other)
   itsEnd(other.itsEnd),
   itsStart(other.itsStart)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 TileStepper::~TileStepper()
@@ -124,37 +124,37 @@ TileStepper& TileStepper::operator=(const TileStepper& other)
     itsEnd = other.itsEnd;
     itsStart = other.itsStart;
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return *this;
 }
 
-Bool TileStepper::operator++(int)
+bool TileStepper::operator++(int)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (itsEnd) {
-    return False;
+    return false;
   }
-  itsStart = False;
+  itsStart = false;
   itsNsteps++;
   IPosition currentPos = itsTilerCursorPos;
   //# Move to the next tile.
   //# Set end-status if no more tiles.
-  Bool empty = True;
+  bool empty = true;
   while (empty) {
-    if (! itsTiler.tiledCursorMove (True, itsTilerCursorPos,
+    if (! itsTiler.tiledCursorMove (true, itsTilerCursorPos,
 				    itsTileShape, itsAxisPath)) {
-      itsEnd = True;
+      itsEnd = true;
       itsTilerCursorPos = currentPos;
-      return False;
+      return false;
     }
     //# Calculate the boundaries of the tile.
     itsCurBlc = itsTiler.absolutePosition (itsTilerCursorPos);
     itsCurTrc = itsCurBlc + itsTileShape - 1;
 //    cout << itsCurBlc << itsCurTrc << "   ";
-    empty = False;
+    empty = false;
     //# Calculate the first and last pixel in the tile taking the
     //# increment into account.
-    Int nrdim = itsCurBlc.nelements();
+    int32_t nrdim = itsCurBlc.nelements();
     for (int i=0; i<nrdim; i++) {
       if (itsCurTrc(i) > itsTrc(i)) {
 	itsCurTrc(i) = itsTrc(i);
@@ -171,42 +171,42 @@ Bool TileStepper::operator++(int)
       //# (e.g. when increment > tileshape).
 //	cout << itsCurBlc << itsCurTrc << endl;
       if (itsCurBlc(i) > itsCurTrc(i)) {
-	empty = True;
+	empty = true;
 	break;
       }
     }
   }
-  DebugAssert(ok() == True, AipsError);
-  return True;
+  DebugAssert(ok() == true, AipsError);
+  return true;
 }
 
-Bool TileStepper::operator--(int)
+bool TileStepper::operator--(int)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (itsStart) {
-    return False;
+    return false;
   }
-  itsEnd = False;
+  itsEnd = false;
   itsNsteps++;
   IPosition currentPos = itsTilerCursorPos;
   //# Move to the previous tile.
   //# Set start-status if no more tiles.
-  Bool empty = True;
+  bool empty = true;
   while (empty) {
-    if (! itsTiler.tiledCursorMove (False, itsTilerCursorPos,
+    if (! itsTiler.tiledCursorMove (false, itsTilerCursorPos,
 				    itsTileShape, itsAxisPath)) {
-      itsStart = True;
+      itsStart = true;
       itsTilerCursorPos = currentPos;
-      return False;
+      return false;
     }
     //# Calculate the boundaries of the tile.
     itsCurBlc = itsTiler.absolutePosition (itsTilerCursorPos);
     itsCurTrc = itsCurBlc + itsTileShape - 1;
 //    cout << itsCurBlc << itsCurTrc << "   ";
-    empty = False;
+    empty = false;
     //# Calculate the first and last pixel in the tile taking the
     //# increment into account.
-    Int nrdim = itsCurBlc.nelements();
+    int32_t nrdim = itsCurBlc.nelements();
     for (int i=0; i<nrdim; i++) {
       if (itsCurTrc(i) > itsTrc(i)) {
 	itsCurTrc(i) = itsTrc(i);
@@ -223,13 +223,13 @@ Bool TileStepper::operator--(int)
       //# (e.g. when increment > tileshape).
 //	cout << itsCurBlc << itsCurTrc << endl;
       if (itsCurBlc(i) > itsCurTrc(i)) {
-	empty = True;
+	empty = true;
 	break;
       }
     }
   }
-  DebugAssert(ok() == True, AipsError);
-  return True;
+  DebugAssert(ok() == true, AipsError);
+  return true;
 }
 
 void TileStepper::reset()
@@ -247,7 +247,7 @@ void TileStepper::reset()
 //  cout << itsCurBlc << itsCurTrc << "   ";
   //# Calculate the first and last pixel in the tile taking the
   //# increment into account.
-  Int nrdim = itsCurBlc.nelements();
+  int32_t nrdim = itsCurBlc.nelements();
   for (int i=0; i<nrdim; i++) {
     if (itsCurTrc(i) > itsTrc(i)) {
       itsCurTrc(i) = itsTrc(i);
@@ -263,32 +263,32 @@ void TileStepper::reset()
 //      cout << itsCurBlc << itsCurTrc << endl;
   }
   itsNsteps = 0;
-  itsEnd = False;
-  itsStart = True;
-  DebugAssert(ok() == True, AipsError);
+  itsEnd = false;
+  itsStart = true;
+  DebugAssert(ok() == true, AipsError);
 }
 
-Bool TileStepper::atStart() const
+bool TileStepper::atStart() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsStart;
 }
 
-Bool TileStepper::atEnd() const
+bool TileStepper::atEnd() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsEnd;
 }
 
-uInt TileStepper::nsteps() const
+uint32_t TileStepper::nsteps() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsNsteps;
 }
 
 IPosition TileStepper::position() const
 {
-  DebugAssert(ok() == True, AipsError)
+  DebugAssert(ok() == true, AipsError)
 //  cout << "position = " << itsTiler.absolutePosition(itsTilerCursorPos)
 //       << endl;
   return itsCurBlc;
@@ -296,43 +296,43 @@ IPosition TileStepper::position() const
 
 IPosition TileStepper::endPosition() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsCurTrc;
 }
 
 IPosition TileStepper::latticeShape() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsSubSection.fullShape();
 }
 
 IPosition TileStepper::subLatticeShape() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsSubSection.shape();
 }
 
 IPosition TileStepper::cursorShape() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return (itsCurTrc - itsCurBlc) / itsInc + 1;
 }
 
 IPosition TileStepper::cursorAxes() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsAxisPath;
 }
 
 IPosition TileStepper::tileShape() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsTileShape;
 }
 
-Bool TileStepper::hangOver() const
+bool TileStepper::hangOver() const
 {
-  return False;
+  return false;
 }
 
 // Function to specify a "section" of the Lattice to Navigate over. A
@@ -360,7 +360,7 @@ void TileStepper::subSection(const IPosition& blc, const IPosition& trc)
 // sub-Lattice has been defined return blc=0
 IPosition TileStepper::blc() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsBlc;
 }
 
@@ -368,7 +368,7 @@ IPosition TileStepper::blc() const
 // sub-Lattice has been defined return trc=latticeShape-1
 IPosition TileStepper::trc() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsTrc;
 }
 
@@ -376,19 +376,19 @@ IPosition TileStepper::trc() const
 // Lattice. If no sub-Lattice has been defined return inc=1
 IPosition TileStepper::increment() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsInc;
 }
 
 const IPosition& TileStepper::axisPath() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return itsAxisPath;
 }
 
-uInt TileStepper::calcCacheSize (const IPosition&,
+uint32_t TileStepper::calcCacheSize (const IPosition&,
                                  const IPosition&,
-                                 uInt, uInt) const
+                                 uint32_t, uint32_t) const
 {
   // Cache needs to be 1 tile only.
   return 1;
@@ -396,33 +396,33 @@ uInt TileStepper::calcCacheSize (const IPosition&,
 
 LatticeNavigator* TileStepper::clone() const
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return new TileStepper(*this);
 }
 
 
-Bool TileStepper::ok() const
+bool TileStepper::ok() const
 {
   ostringstream str;
   str << "TileStepper::ok - ";
-  const uInt latticeDim = itsTiler.ndim();
+  const uint32_t latticeDim = itsTiler.ndim();
   // Check the cursor shape is OK
   if (itsTileShape.nelements() != latticeDim) {
     str << "cursor shape " << itsTileShape
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
     throw AipsError (String(str.str()));
-    return False;
+    return false;
   }
-  for (uInt i=0; i < latticeDim; i++) {
+  for (uint32_t i=0; i < latticeDim; i++) {
     // the cursor shape must be <= the corresponding lattice axes AND
     // a cursor shape with an axis of length zero makes no sense
-    if (itsTileShape(i) > Int(itsTiler.shape(i)) || itsTileShape(i) <= 0) {
+    if (itsTileShape(i) > int32_t(itsTiler.shape(i)) || itsTileShape(i) <= 0) {
       str << "cursor shape " << itsTileShape
 	  << " is too big or small for lattice shape "
 	  << itsTiler.shape();
       throw AipsError (String(str.str()));
-      return False;
+      return false;
     }
   }
   // Check the cursor position is OK
@@ -431,7 +431,7 @@ Bool TileStepper::ok() const
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
     throw AipsError (String(str.str()));
-    return False;
+    return false;
   }
 
   // cursor position or its "far corner" must be inside the (sub)-Lattice
@@ -442,7 +442,7 @@ Bool TileStepper::ok() const
  	   << " is entirely outside the lattice shape "
  	   << itsTiler.shape();
     throw AipsError (String(str.str()));
-    return False;
+    return false;
   }
 
   // check the Axis Path is OK
@@ -451,38 +451,38 @@ Bool TileStepper::ok() const
 	<< " has wrong number of dimensions (ie. not "
 	<< latticeDim << ')';
     throw AipsError (String(str.str()));
-    return False;
+    return false;
   }
   // each itsAxisPath value must be a lattice axis number, 0..n-1
-  for (uInt n=0; n < latticeDim; n++) {
-    if (itsAxisPath(n) >= Int(latticeDim)) {
+  for (uint32_t n=0; n < latticeDim; n++) {
+    if (itsAxisPath(n) >= int32_t(latticeDim)) {
       str << "axis path " << itsAxisPath
 	  << " has elements bigger than the lattice dim -1 (ie. "
 	  << latticeDim - 1 << ')';
       throw AipsError (String(str.str()));
-      return False;
+      return false;
     }
   }
 
   // each itsAxisPath value must be unique
-  for (uInt k=0; k < (latticeDim - 1); k++) {
-    for (uInt j=k+1; j < latticeDim; j++) {
+  for (uint32_t k=0; k < (latticeDim - 1); k++) {
+    for (uint32_t j=k+1; j < latticeDim; j++) {
       if (itsAxisPath(k) == itsAxisPath(j)) {
 	str << "axis path " << itsAxisPath
 	    << " does not have unique elements";
 	throw AipsError (String(str.str()));
- 	return False;
+ 	return false;
       }
     }
   }
   // Check the LatticeIndexer is OK
-  if (itsTiler.ok() == False) {
+  if (itsTiler.ok() == false) {
     str << "LatticeIndexer thinks things are bad";
     throw AipsError (String(str.str()));
-    return False;
+    return false;
   }
   // Otherwise it has passed all the tests
-  return True;
+  return true;
 }
 
 } //# NAMESPACE CASACORE - END

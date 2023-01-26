@@ -36,7 +36,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasOffsetDesc::TableMeasOffsetDesc (const TableMeasDescBase& column,
-					  Bool asArray)
+					  bool asArray)
 : itsTMDesc(column.clone()),
   itsVarPerArr(asArray)
 {}
@@ -44,7 +44,7 @@ TableMeasOffsetDesc::TableMeasOffsetDesc (const TableMeasDescBase& column,
 TableMeasOffsetDesc::TableMeasOffsetDesc (const Measure& measure)
 : itsTMDesc(0),
   itsMeasure(measure),
-  itsVarPerArr(False)
+  itsVarPerArr(false)
 {}
 
 TableMeasOffsetDesc::TableMeasOffsetDesc (const TableMeasOffsetDesc& that)
@@ -76,7 +76,7 @@ TableMeasOffsetDesc::TableMeasOffsetDesc (const TableRecord& measInfo,
 					  const Table& tab)
 : itsTMDesc(0)
 {
-  Int fnr;
+  int32_t fnr;
   fnr = measInfo.fieldNumber(prefix + "Msr");
   if (fnr >= 0) {
     // this is a non-variable offset.  The offset is fully defined in the

@@ -54,7 +54,7 @@ int main()
   try {
     addRemove();
     Table tab ("tSSMAddRemove_tmp.tab");
-    ScalarColumn<Int> idcol(tab, "SOURCE_ID");
+    ScalarColumn<int32_t> idcol(tab, "SOURCE_ID");
     idcol(27);
   } catch (std::exception& x) {
     cout << x.what() << endl;

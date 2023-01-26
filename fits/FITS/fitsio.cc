@@ -65,19 +65,19 @@ FitsTape9Output::~FitsTape9Output() {
 
 //# Cache used to hold errors from read_header_rec, messages and accompanying error levels
 Block<String> messages_(32);
-Block<Int> errLevels_(32);
-uInt nerrs_ = 0;
+Block<int32_t> errLevels_(32);
+uint32_t nerrs_ = 0;
 //============================================================================================
 // special error handler function used by read_header_rec
 void readHeaderRecErrHandler(const char *errMessage,
         FITSError::ErrorLevel severity) {
     if (nerrs_ >= messages_.nelements()) {
-        uInt newSize = messages_.nelements() * 2;
-        messages_.resize(newSize, True, True);
-        errLevels_.resize(newSize, True, True);
+        uint32_t newSize = messages_.nelements() * 2;
+        messages_.resize(newSize, true, true);
+        errLevels_.resize(newSize, true, true);
     }
     messages_[nerrs_] = String(errMessage);
-    errLevels_[nerrs_] = Int(severity);
+    errLevels_[nerrs_] = int32_t(severity);
     nerrs_++;
 }
 //=============================================================================================
@@ -121,7 +121,7 @@ char *FitsDiskInput::skip(int n) { // skip n logical records and read
     // move the i/o pointer to the end position of the skipped block.
     // (m_iosize - m_current ) is the bytes of data left within the m_buffer
     // still need to test this part with big fits file.
-    OFF_T bytpost = (m_fptr->Fptr)->bytepos + (m_recsize * uInt(n)) - (m_iosize
+    OFF_T bytpost = (m_fptr->Fptr)->bytepos + (m_recsize * uint32_t(n)) - (m_iosize
             - m_current);
     int l_status = 0;
     ffmbyt(m_fptr, bytpost, REPORT_EOF, &l_status);
@@ -250,7 +250,7 @@ void FitsInput::init() {
     else {
         //cout<<"[FitsInput::init()] First call to BlockInput::read()." << endl;
         m_curr = m_fin.read();
-        m_got_rec = True;
+        m_got_rec = true;
         if (!m_curr) {
             errmsg(EMPTYFILE, "[FitsInput::init()] This is an empty file");
             m_rec_type = FITS::EndOfFile;
@@ -261,7 +261,7 @@ void FitsInput::init() {
             m_rec_type = FITS::BadBeginningRecord;
             return;
         }
-        m_kc.parse(m_curr, m_kw, 0, m_errfn, True);
+        m_kc.parse(m_curr, m_kw, 0, m_errfn, true);
 
         // get the fitsfile pointer
         m_fptr = m_fin.getfptr();
@@ -279,17 +279,17 @@ void FitsInput::init() {
             errmsg(NOPRIMARY,
                     "[FitsInput::init()] Missing primary header-data unit");
         } else {
-            m_isaprimary = True;
-            if (m_kw(FITS::SIMPLE)->asBool() == True)
-                m_valid_fits = True;
+            m_isaprimary = true;
+            if (m_kw(FITS::SIMPLE)->asBool() == true)
+                m_valid_fits = true;
             else
                 m_errfn(
                         "Value of keyword SIMPLE is FALSE; this file may not be a "
                             "valid FITS file [FitsInput::init()].",
                         FITSError::WARN);
             if (m_kw(FITS::EXTEND))
-                if (m_kw.curr()->asBool() == True)
-                    m_extend = True;
+                if (m_kw.curr()->asBool() == true)
+                    m_extend = true;
         }
         m_rec_type = FITS::HDURecord;
         // Next block of code is to get the total number of hdu in this fits file
@@ -316,7 +316,7 @@ void FitsInput::init() {
 }
 //===============================================================================================
 // return the header of the chdu as a Vector of Strings.
-Vector<String> FitsInput::kwlist_str(Bool length80) {
+Vector<String> FitsInput::kwlist_str(bool length80) {
     Vector<String> cards;
     if (!m_header_done) {
         cout << "[FitsInput::kwlist_str()] If you need call this method, "
@@ -367,7 +367,7 @@ Vector<String> FitsInput::kwlist_str(Bool length80) {
                     tmp(
                             "                                                                                ");
             //          12345678901234567890123456789012345678901234567890123456789012345678901234567890
-            for (uInt i = 0; i < cards.nelements(); i++) {
+            for (uint32_t i = 0; i < cards.nelements(); i++) {
                 String tmp2(tmp);
                 tmp2.replace(0, cards(i).length(), cards(i));
                 cards(i) = tmp2;
@@ -383,13 +383,13 @@ char * FitsInput::read_sp() {
     m_err_status = OK;
     if (m_rec_type == FITS::BadBeginningRecord) {
         if (m_got_rec) {
-            m_got_rec = False;
+            m_got_rec = false;
             return m_curr;
         }
         m_curr = m_fin.read();
         if (!m_curr) {
             m_rec_type = FITS::EndOfFile;
-            m_got_rec = True;
+            m_got_rec = true;
             return 0;
         }
         if (m_fin.err()) {
@@ -397,7 +397,7 @@ char * FitsInput::read_sp() {
             return m_curr;
         }
         m_kw.delete_all();
-        m_kc.parse(m_curr, m_kw, 0, m_errfn, True);
+        m_kc.parse(m_curr, m_kw, 0, m_errfn, true);
         HeaderDataUnit::HDUErrs n;
         if (!HeaderDataUnit::determine_type(m_kw, m_hdu_type, m_data_type,
                 m_errfn, n)) {
@@ -408,8 +408,8 @@ char * FitsInput::read_sp() {
             errmsg(NOPRIMARY,
                     "[FitsInput::read_sp()] Missing primary header-data unit.");
         } else {
-            if (m_kw(FITS::SIMPLE)->asBool() == True) {
-                m_valid_fits = True;
+            if (m_kw(FITS::SIMPLE)->asBool() == true) {
+                m_valid_fits = true;
             } else {
                 m_errfn(
                         "[FitsInput::read_sp()] Value of keyword SIMPLE is FALSE; this"
@@ -417,23 +417,23 @@ char * FitsInput::read_sp() {
                         FITSError::WARN);
             }
             if (m_kw(FITS::EXTEND)) {
-                if (m_kw.curr()->asBool() == True) {
-                    m_extend = True;
+                if (m_kw.curr()->asBool() == true) {
+                    m_extend = true;
                 }
             }
         }
         m_rec_type = FITS::HDURecord;
-        m_got_rec = True;
+        m_got_rec = true;
         return 0;
     } else if (m_rec_type == FITS::UnrecognizableRecord) {
         if (m_got_rec) {
-            m_got_rec = False;
+            m_got_rec = false;
             return m_curr;
         }
         m_curr = m_fin.read();
         if (!m_curr) {
             m_rec_type = FITS::EndOfFile;
-            m_got_rec = True;
+            m_got_rec = true;
             return 0;
         }
         if (m_fin.err()) {
@@ -442,24 +442,24 @@ char * FitsInput::read_sp() {
             return m_curr;
         }
         m_kw.delete_all();
-        m_kc.parse(m_curr, m_kw, 0, m_errfn, True);
+        m_kc.parse(m_curr, m_kw, 0, m_errfn, true);
         HeaderDataUnit::HDUErrs n;
         if (!HeaderDataUnit::determine_type(m_kw, m_hdu_type, m_data_type,
                 m_errfn, n)) {
             return m_curr;
         }
         m_rec_type = FITS::HDURecord;
-        m_got_rec = True;
+        m_got_rec = true;
         return 0;
     } else if (m_rec_type == FITS::SpecialRecord) {
         if (m_got_rec) {
-            m_got_rec = False;
+            m_got_rec = false;
             return m_curr;
         }
         m_curr = m_fin.read();
         if (!m_curr) {
             m_rec_type = FITS::EndOfFile;
-            m_got_rec = True;
+            m_got_rec = true;
             m_err_status = OK;
             return 0;
         }
@@ -490,7 +490,7 @@ void FitsInput::read_header_rec() {
         }
     } else { // reach the end of the fits file, end the program gracefully.
         m_curr = m_fin.read();
-        m_got_rec = True;
+        m_got_rec = true;
         if (!m_curr) {
             //cout << "[FitsInput::read_header_rec()] Reached the end of the FITS file" << endl;
             m_rec_type = FITS::EndOfFile;
@@ -525,7 +525,7 @@ void FitsInput::read_header_rec() {
     m_fin.reset_iosize();
     // end of the new code
     m_curr = m_fin.read();
-    m_got_rec = True;
+    m_got_rec = true;
     if (!m_curr) {
         //cout << "[FitsInput::read_header_rec()] Reached the end of the FITS file" << endl;;
         m_rec_type = FITS::EndOfFile;
@@ -540,9 +540,9 @@ void FitsInput::read_header_rec() {
     m_kw.delete_all();
     // reset the cache counter nevertheless
     nerrs_ = 0;
-    m_kc.parse(m_curr, m_kw, 0, readHeaderRecErrHandler, True);
+    m_kc.parse(m_curr, m_kw, 0, readHeaderRecErrHandler, true);
     //cout << "[ FitsInput::read_header_rec()] Number of errors from parsing: nerrs_ = " << nerrs_ <<endl;
-    uInt parseErrs = nerrs_;
+    uint32_t parseErrs = nerrs_;
     HeaderDataUnit::HDUErrs n;
     //cout << ">>FitsInput::read_header_rec() - hdu_type=" << m_hdu_type << endl;
     if (!HeaderDataUnit::determine_type(m_kw, m_hdu_type, m_data_type,
@@ -551,7 +551,7 @@ void FitsInput::read_header_rec() {
         // convey that are the ones returned by determine_type, the ones returned
         // by parse are useless and needlessly confusing, so don't show them
         //cout<< "[ FitsInput::read_header_rec()] Error mesages from determin_type(): " << endl;
-        for (uInt i = parseErrs; i < nerrs_; i++) {
+        for (uint32_t i = parseErrs; i < nerrs_; i++) {
             m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
         }
         nerrs_ = 0;
@@ -561,7 +561,7 @@ void FitsInput::read_header_rec() {
     //cout << "<<FitsInput::read_header_rec() + hdu_type=" << m_hdu_type << endl;
     // spit out all of the cached error messages
     // cout<< "[ FitsInput::read_header_rec()] Error message from parsing and determin_type():" << endl;
-    for (uInt i = 0; i < nerrs_; i++) {
+    for (uint32_t i = 0; i < nerrs_; i++) {
         m_errfn(messages_[i].chars(), FITSError::ErrorLevel(errLevels_[i]));
     }
     nerrs_ = 0;
@@ -571,7 +571,7 @@ void FitsInput::read_header_rec() {
                 "[FitsInput::read_header_rec()] Misplaced primary header-data unit.");
     }
     m_rec_type = FITS::HDURecord;
-    m_header_done = False;
+    m_header_done = false;
     //cout << "<<FitsInput::read_header_rec() ~ hdu_type=" << m_hdu_type << endl;
 }
 //========================================================================================
@@ -666,7 +666,7 @@ int FitsInput::skip_hdu() { //Skip an entire header-data unit
         strcpy(l_keyname, "EXTEND");
         if (!ffgkey(m_fptr, l_keyname, l_keyval, l_comm, &l_status)) {
             if (l_keyval[0] == 'T')
-                m_extend = True;
+                m_extend = true;
         }
     }
     // reset the m_iosize to 0, so that next m_fin.read() will start from where the file position pointer is;
@@ -711,7 +711,7 @@ int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
     FitsKeyword *x, *y;
     uk.first();
     y = uk.next(); // set the list pointer
-    for (;; m_kc.parse(m_curr, uk, cnt, m_errfn, True)) {
+    for (;; m_kc.parse(m_curr, uk, cnt, m_errfn, true)) {
         // The worst error is if there is no END keyword.
         uk.last();
         x = uk.prev(); // do backwards search for END
@@ -755,11 +755,11 @@ int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
     //cout << "[ FitsInput::process_header()] keyword list uk:\n" << uk << endl;
     if (!m_extend) {
         if (uk(FITS::EXTEND))
-            if (uk.curr()->asBool() == True)
-                m_extend = True;
+            if (uk.curr()->asBool() == true)
+                m_extend = true;
     }
     HeaderDataUnit::HDUErrs n;
-    Int nd;
+    int32_t nd;
     if (!HeaderDataUnit::compute_size(uk, m_data_size, nd, m_hdu_type,
             m_data_type, m_errfn, n)) {
         errmsg(BADSIZE,
@@ -771,11 +771,11 @@ int FitsInput::process_header(FITS::HDUType t, FitsKeywordList &uk) {
     //cout << "m_hdu_type=" << m_hdu_type << " m_header_done=" << m_header_done << endl;
     m_item_size = FITS::fitssize(m_data_type);
     m_curr_size = m_data_size;
-    m_header_done = True;
+    m_header_done = true;
 
     if (m_data_size > 0) {
         m_curr = m_fin.read();
-        m_got_rec = True;
+        m_got_rec = true;
         if (!m_curr) {
             m_hdu_type = FITS::NotAHDU;
             m_item_size = 0;
@@ -1092,7 +1092,7 @@ void FitsOutput::setfptr(fitsfile* ffp) {
 }
 //=========================================================================================
 int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t,
-        FITS::ValueType dt, OFF_T ds, Int is) {
+        FITS::ValueType dt, OFF_T ds, int32_t is) {
     if ((m_rec_type == FITS::EndOfFile) || (m_rec_type == FITS::SpecialRecord)
             || m_header_done || t == FITS::NotAHDU) {
         errmsg(BADOPER, "Illegal operation -- cannot write FITS header.");
@@ -1105,13 +1105,13 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t,
                     "[FitsOutput::write_hdr()] Primary Header must be written first.");
             return -1;
         } else {
-            m_isaprimary = True;
-            if (kwl(FITS::SIMPLE)->asBool() == True) {
-                m_valid_fits = True;
+            m_isaprimary = true;
+            if (kwl(FITS::SIMPLE)->asBool() == true) {
+                m_valid_fits = true;
             }
             if (kwl(FITS::EXTEND)) {
-                if (kwl.curr()->asBool() == True) {
-                    m_extend = True;
+                if (kwl.curr()->asBool() == true) {
+                    m_extend = true;
                 }
             }
         }
@@ -1130,7 +1130,7 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t,
         }
         if (!m_extend) {
             errmsg(BADOPER,
-                    "[FitsOutput::write_hdr()] Cannot write extension HDU - EXTEND not True");
+                    "[FitsOutput::write_hdr()] Cannot write extension HDU - EXTEND not true");
             return -1;
         } else {
             if (t == FITS::PrimaryArrayHDU || t == FITS::PrimaryGroupHDU || t
@@ -1148,7 +1148,7 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t,
     //-------------------
     // Create, initialize, and move the i/o pointer to a new extension appended to the end of the FITS file.
     /*
-     Int l_status = 0;
+     int32_t l_status = 0;
      if(ffcrhd(m_fptr, &l_status)){
      errmsg(BADOPER,"[FitsOutput::write_hdr() Create new HDU failed!");
      fits_report_error(stderr, l_status); // print error report
@@ -1172,9 +1172,9 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t,
 
     m_fout.write(m_curr);
     m_err_status = OK;
-    m_header_done = True;
+    m_header_done = true;
     if (m_data_size == 0) {
-        m_header_done = False;
+        m_header_done = false;
     }
 
     return 0;
@@ -1182,16 +1182,16 @@ int FitsOutput::write_hdr(FitsKeywordList &kwl, FITS::HDUType t,
 
 // FitsOutput::set_data_into() is used by PrimaryArray::write_priArr_hdr() etc.
 void FitsOutput::set_data_info(FitsKeywordList &kwl, FITS::HDUType t,
-        FITS::ValueType dt, OFF_T ds, Int is) {
+        FITS::ValueType dt, OFF_T ds, int32_t is) {
     if (t == FITS::PrimaryArrayHDU || t == FITS::PrimaryGroupHDU || t
             == FITS::PrimaryTableHDU) {
-        m_isaprimary = True;
-        if (kwl(FITS::SIMPLE)->asBool() == True) {
-            m_valid_fits = True;
+        m_isaprimary = true;
+        if (kwl(FITS::SIMPLE)->asBool() == true) {
+            m_valid_fits = true;
         }
         if (kwl(FITS::EXTEND)) {
-            if (kwl.curr()->asBool() == True) {
-                m_extend = True;
+            if (kwl.curr()->asBool() == true) {
+                m_extend = true;
             }
         }
     }
@@ -1204,9 +1204,9 @@ void FitsOutput::set_data_info(FitsKeywordList &kwl, FITS::HDUType t,
     m_curr_size = 0;
     m_bytepos = 0;
     m_err_status = OK;
-    m_header_done = True;
+    m_header_done = true;
     if (m_data_size == 0) {
-        m_header_done = False;
+        m_header_done = false;
     }
 }
 // write all data from addr
@@ -1239,12 +1239,12 @@ int FitsOutput::write_all(FITS::HDUType t, char *addr, char pad) {
     m_data_size = 0;
     m_curr_size = 0;
     m_err_status = OK;
-    m_header_done = False;
+    m_header_done = false;
     return 0;
 }
 // BlockOutput::write() is wraped to cfitsio already. So no need
 // to directly wrap FitsOuput::write(). GYL
-int FitsOutput::write(FITS::HDUType t, char *addr, Int bytes, char pad) {
+int FitsOutput::write(FITS::HDUType t, char *addr, int32_t bytes, char pad) {
     int n;
     if (!hdu_inprogress()) {
         errmsg(BADOPER,
@@ -1300,7 +1300,7 @@ int FitsOutput::write(FITS::HDUType t, char *addr, Int bytes, char pad) {
         }
         m_data_size = 0;
         m_curr_size = 0;
-        m_header_done = False;
+        m_header_done = false;
     }
     m_err_status = OK;
     //cout<<"[FitsOutput::write()] Ending."<< endl;
@@ -1353,8 +1353,8 @@ FitsTape9Output::FitsTape9Output(const char *f, int l, int n,
 }
 
 FitsIO::FitsIO(FITSErrorHandler errhandler) :
-    m_recsize(2880), m_valid_fits(False), m_extend(False), m_isaprimary(False),
-            m_header_done(False), m_rec_type(FITS::InitialState), m_hdu_type(
+    m_recsize(2880), m_valid_fits(false), m_extend(false), m_isaprimary(false),
+            m_header_done(false), m_rec_type(FITS::InitialState), m_hdu_type(
                     FITS::NotAHDU), m_errfn(errhandler), m_err_status(OK),
             m_curr(0), m_bytepos(0), m_item_size(0),
             m_data_type(FITS::NOVALUE), m_data_size(0), m_curr_size(0),
@@ -1364,7 +1364,7 @@ FitsIO::FitsIO(FITSErrorHandler errhandler) :
 FitsInput::FitsInput(const char *n, const FITS::FitsDevice &d, int b,
         FITSErrorHandler errhandler) :
     FitsIO(errhandler), m_fin(make_input(n, d, b, errhandler)),
-            m_got_rec(False) {
+            m_got_rec(false) {
     init();
 }
 

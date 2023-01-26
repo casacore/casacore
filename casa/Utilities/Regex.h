@@ -208,11 +208,11 @@ public:
   Regex();
     
   // Construct a regular expression from the string.
-  // If toECMAScript=True, function toEcma is called to convert the old cregex
+  // If toECMAScript=true, function toEcma is called to convert the old cregex
   // syntax to the new ECMAScript syntax.
-  // If fast=True, matching efficiency is preferred over efficiency constructing
+  // If fast=true, matching efficiency is preferred over efficiency constructing
   // the regex object.
-  explicit Regex(const String& exp, Bool fast=False, Bool toECMAScript=True);
+  explicit Regex(const String& exp, bool fast=false, bool toECMAScript=true);
 
   // Construct a new regex (using the default Regex constructor arguments).
   void operator=(const String& str);
@@ -261,12 +261,12 @@ public:
   // to test if a string matches a regular expression. 
   // <src>Regex::match</src> is pretty low-level.
   // </note>
-  String::size_type match(const Char* s,
+  String::size_type match(const char* s,
                           String::size_type len,
                           String::size_type pos=0) const;
 
   // Test if the regular expression matches the entire string.
-  Bool fullMatch(const Char* s, String::size_type len) const;
+  bool fullMatch(const char* s, String::size_type len) const;
 
   // Test if the regular expression occurs anywhere in string <src>s</src>.
   // The return value gives the position of the first substring
@@ -281,19 +281,19 @@ public:
   // <src>Regex::search</src> is pretty low-level.
   // </note>
   // <group>
-  String::size_type search(const Char* s,
+  String::size_type search(const char* s,
                            String::size_type len,
-                           Int& matchlen,
-                           Int pos=0) const;
-  String::size_type find(const Char* s, String::size_type len,
-                         Int& matchlen,
+                           int32_t& matchlen,
+                           int32_t pos=0) const;
+  String::size_type find(const char* s, String::size_type len,
+                         int32_t& matchlen,
                          String::size_type pos=0) const;
   // </group>
 
   // Search backwards.
-  String::size_type searchBack(const Char* s, String::size_type len,
-                               Int& matchlen,
-                               uInt pos) const;
+  String::size_type searchBack(const char* s, String::size_type len,
+                               int32_t& matchlen,
+                               uint32_t pos) const;
 
   // Write the regex string.
   friend ostream& operator<<(ostream& ios, const Regex& exp);

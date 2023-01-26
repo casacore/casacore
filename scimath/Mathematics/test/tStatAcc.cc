@@ -37,11 +37,11 @@ int main()
 {
     try {
 
-      Int v1 = -10;
-      Int v2 = 9;
-      Int v3 = 1;
-      uInt nv = 0;                     // nr ov test-values
-      Int v;
+      int32_t v1 = -10;
+      int32_t v2 = 9;
+      int32_t v3 = 1;
+      uint32_t nv = 0;                     // nr ov test-values
+      int32_t v;
       for (v=v1; v<=v2; v+=v3) {nv++;}  
       cout << "value-vector vv:  nv=" << nv;
       cout << "  v1=" << v1;
@@ -52,16 +52,16 @@ int main()
 
 // For testing other types, change them here:
 
-      String caption(" tStatAcc test for <Int>");
-      StatAcc<Int> s;               // accumulator
-      StatAcc<Int> s1;                   
-      Vector<Int> vv(nv,0);         // values of required type
-      Block<Int> bv(nv);            // values of required type
+      String caption(" tStatAcc test for <int32_t>");
+      StatAcc<int32_t> s;               // accumulator
+      StatAcc<int32_t> s1;                   
+      Vector<int32_t> vv(nv,0);         // values of required type
+      Block<int32_t> bv(nv);            // values of required type
 
-      Vector<Float> ww(nv,0.0);          // weights are always Float
-      Block<Float> bw(nv);             // weights are always Float
+      Vector<float> ww(nv,0.0);          // weights are always float
+      Block<float> bw(nv);             // weights are always float
       
-      Int i=0;                         // index
+      int32_t i=0;                         // index
       for (v=v1; v<=v2; v+=v3) {
 	  vv(i) = v;                   // Array values
 	  bv[i] = v;                   // Block values

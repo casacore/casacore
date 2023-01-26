@@ -126,7 +126,7 @@ void showHyper (const TableDesc& td, const String& name)
     Vector<String> idNames;
     Vector<String> coordNames;
     Vector<String> dataNames;
-    uInt ndim = td.hypercolumnDesc (name, dataNames, coordNames, idNames);
+    uint32_t ndim = td.hypercolumnDesc (name, dataNames, coordNames, idNames);
     cout << name << ": ndim=" << ndim << endl;
     cout << "  Data=" << dataNames;
     cout << "Coord=" << coordNames;
@@ -162,8 +162,8 @@ void excpDesc()
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
     td.addColumn (ScalarColumnDesc<float> ("Time"));
-    td.addColumn (ScalarColumnDesc<Bool> ("TimeNotNum"));
-    td.addColumn (ScalarColumnDesc<Short> ("TimeShort"));
+    td.addColumn (ScalarColumnDesc<bool> ("TimeNotNum"));
+    td.addColumn (ScalarColumnDesc<int16_t> ("TimeShort"));
     td.addColumn (ScalarColumnDesc<float> ("Baseline"));
     td.addColumn (ArrayColumnDesc<float>  ("Pol", 1));
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1));

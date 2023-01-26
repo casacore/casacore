@@ -47,7 +47,7 @@ TiledCellStMan::TiledCellStMan ()
 
 TiledCellStMan::TiledCellStMan (const String& hypercolumnName,
 				const IPosition& defaultTileShape,
-				uInt64 maximumCacheSize)
+				uint64_t maximumCacheSize)
 : TiledStMan         (hypercolumnName, maximumCacheSize),
   defaultTileShape_p (defaultTileShape)
 {}
@@ -91,9 +91,9 @@ IPosition TiledCellStMan::defaultTileShape() const
     return defaultTileShape_p;
 }
 
-Bool TiledCellStMan::canChangeShape() const
+bool TiledCellStMan::canChangeShape() const
 {
-    return True;
+    return true;
 }
 
 void TiledCellStMan::setShape (rownr_t, TSMCube* hypercube,
@@ -109,13 +109,13 @@ void TiledCellStMan::setupCheck (const TableDesc& tableDesc,
 {
     // The data columns should only contain arrays matching the
     // dimensionality of the hypercolumn.
-    for (uInt i=0; i<dataNames.nelements(); i++) {
+    for (uint32_t i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
 	if (! columnDesc.isArray()) {
 	    throw (TSMError ("TiledCellStMan cannot handle scalar column " +
 			     dataNames(i)));
 	}
-	if (Int(nrdim_p) != columnDesc.ndim()) {
+	if (int32_t(nrdim_p) != columnDesc.ndim()) {
 	    throw (TSMError ("Dimensionality of column " + dataNames(i) +
 			     " should be equal to hypercolumn"
 			     " definition when used in TiledCellStMan"));
@@ -139,19 +139,19 @@ void TiledCellStMan::create64 (rownr_t nrrow)
 }
 	    
 
-Bool TiledCellStMan::flush (AipsIO&, Bool fsync)
+bool TiledCellStMan::flush (AipsIO&, bool fsync)
 {
     // Flush the caches.
     // Exit if nothing has changed.
     if (! flushCaches (fsync)) {
-	return False;
+	return false;
     }
     // Create the header file and write data in it.
     // A zero pointer is returned when nothing has changed, thus nothing
     // has to be written.
     AipsIO* headerFile = headerFileCreate();
     if (headerFile == 0) {
-	return False;
+	return false;
     }
     headerFile->putstart ("TiledCellStMan", 1);
     *headerFile << defaultTileShape_p;
@@ -159,10 +159,10 @@ Bool TiledCellStMan::flush (AipsIO&, Bool fsync)
     headerFilePut (*headerFile, nrrow_p);
     headerFile->putend();
     headerFileClose (headerFile);
-    return True;
+    return true;
 }
 
-void TiledCellStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
+void TiledCellStMan::readHeader (rownr_t tabNrrow, bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
@@ -178,14 +178,14 @@ void TiledCellStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
 void TiledCellStMan::addRow64 (rownr_t nrow)
 {
     // Resize block when needed.
-    uInt64 size = cubeSet_p.nelements();
+    uint64_t size = cubeSet_p.nelements();
     if (size < nrrow_p + nrow) {
 	size += 32;
 	if (size < nrrow_p + nrow) {
 	    size = nrrow_p + nrow;
 	}
 	cubeSet_p.resize (size);
-	for (uInt64 i=nrrow_p; i<cubeSet_p.nelements(); i++) {
+	for (uint64_t i=nrrow_p; i<cubeSet_p.nelements(); i++) {
 	    cubeSet_p[i] = 0;
 	}
     }

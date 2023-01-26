@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    PoissonFunction<Double> sf(5.0);
+//    PoissonFunction<double> sf(5.0);
 //    sf(25);            // = 5.0
 // </srcblock>
 // </example>
@@ -110,7 +110,7 @@ public:
   virtual ~PoissonParam();
 
   //# Operators    
-  virtual uInt ndim() const { return 1; }
+  virtual uint32_t ndim() const { return 1; }
 
   //# Member functions
   // Give name of function

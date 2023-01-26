@@ -140,7 +140,7 @@ public:
     static ByteFunction* getmemcpy();
 
 private:
-    // Copy bits to Bool in an unoptimized way needed when 'to' is not
+    // Copy bits to bool in an unoptimized way needed when 'to' is not
     // aligned properly.
     static size_t bitToBool_ (void* to, const void* from,
                               size_t nvalues);

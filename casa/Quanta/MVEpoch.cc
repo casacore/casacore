@@ -36,7 +36,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
-const Double MVEpoch::secInDay(3600*24);
+const double MVEpoch::secInDay(3600*24);
 const Unit MVEpoch::unitDay("d");
 
 //# Constructors
@@ -51,7 +51,7 @@ MVEpoch::MVEpoch(const MVEpoch &other) :
   adjust();
 }
 
-MVEpoch::MVEpoch(Double inday, Double infrac) :
+MVEpoch::MVEpoch(double inday, double infrac) :
   wday(0), frday(0) {
   addTime(inday);
   addTime(infrac);
@@ -70,17 +70,17 @@ MVEpoch::MVEpoch(const Quantity &in1, const Quantity &in2) :
   adjust();
 }
 
-MVEpoch::MVEpoch(const Quantum<Vector<Double> > &in) : 
+MVEpoch::MVEpoch(const Quantum<Vector<double> > &in) : 
   wday(0), frday(0) {
-  for (uInt i=0; i<in.getValue().nelements(); i++) {
+  for (uint32_t i=0; i<in.getValue().nelements(); i++) {
     addTime(makeDay(Quantity((in.getValue())(i),in.getUnit())));
   }
   adjust();
 }
 
-MVEpoch::MVEpoch(const Vector<Double> &inday) :
+MVEpoch::MVEpoch(const Vector<double> &inday) :
   wday(0), frday(0) {
-  for (uInt i=0; i<inday.nelements(); i++) addTime(inday(i));
+  for (uint32_t i=0; i<inday.nelements(); i++) addTime(inday(i));
   adjust();
 }
 
@@ -129,19 +129,19 @@ MVEpoch MVEpoch::operator-(const MVEpoch &other) const {
   return tmp;
 }
 
-Bool MVEpoch::operator==(const MVEpoch &other) const {
+bool MVEpoch::operator==(const MVEpoch &other) const {
   return (wday == other.wday && frday == other.frday);
 }
 
-Bool MVEpoch::operator!=(const MVEpoch &other) const {
+bool MVEpoch::operator!=(const MVEpoch &other) const {
   return (!( *this == other));
 }
 
-Bool MVEpoch::near(const MVEpoch &other, Double tol) const {
+bool MVEpoch::near(const MVEpoch &other, double tol) const {
   return ::casacore::near(get(), other.get(), tol);
 }
 
-Bool MVEpoch::nearAbs(const MVEpoch &other, Double tol) const {
+bool MVEpoch::nearAbs(const MVEpoch &other, double tol) const {
   return ::casacore::nearAbs(get(), other.get(), tol);
 }
 
@@ -162,12 +162,12 @@ void MVEpoch::adjust() {
   }
 }
 
-void MVEpoch::adjust(Double &res) {
+void MVEpoch::adjust(double &res) {
   adjust();
   res = 1.0;
 }
 
-Double MVEpoch::get() const {
+double MVEpoch::get() const {
   return (wday + frday);
 }
 
@@ -179,20 +179,20 @@ Quantity MVEpoch::getTime(const Unit &unit) const {
   return (getTime().get(unit));
 }
 
-Double MVEpoch::getDay() const {
+double MVEpoch::getDay() const {
   return wday;
 }
 
-Double MVEpoch::getDayFraction() const {
+double MVEpoch::getDayFraction() const {
   return frday;
 }
 
 void MVEpoch::print(ostream &os) const {
-  Int h = ifloor(24.*frday);
-  Int m = ifloor(60.*(24.*frday - h));
-  Double s = MVEpoch::secInDay*frday - m*60. - h*3600.;
-  Int prec = os.precision();
-  Char fill = os.fill();
+  int32_t h = ifloor(24.*frday);
+  int32_t m = ifloor(60.*(24.*frday - h));
+  double s = MVEpoch::secInDay*frday - m*60. - h*3600.;
+  int32_t prec = os.precision();
+  char fill = os.fill();
   os << getDay() << "::";
   os << setfill('0') << setw(2) << h << ":" <<
     setw(2) << m << ':' << 
@@ -208,14 +208,14 @@ MeasValue *MVEpoch::clone() const {
   return (new MVEpoch(*this));
 }
 
-Vector<Double> MVEpoch::getVector() const {
-  Vector<Double> x(2);
+Vector<double> MVEpoch::getVector() const {
+  Vector<double> x(2);
   x(0) = wday;
   x(1) = frday;
   return x;
 }
 
-void MVEpoch::putVector(const Vector<Double> &in) {
+void MVEpoch::putVector(const Vector<double> &in) {
   if (in.nelements() < 2) {
     wday = 0.0; frday = 0.0;
     if (in.nelements() == 1) addTime(in(0));
@@ -225,29 +225,29 @@ void MVEpoch::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double> > MVEpoch::getRecordValue() const {
-  Vector<Quantum<Double> > tmp(1);
+Vector<Quantum<double> > MVEpoch::getRecordValue() const {
+  Vector<Quantum<double> > tmp(1);
   tmp(0) = getTime();
   return tmp;
 }
 
-Bool MVEpoch::putValue(const Vector<Quantum<Double> > &in) {
-  for (uInt i=0; i<in.nelements(); i++) {
-    if (!in(i).check(UnitVal::TIME)) return False;
+bool MVEpoch::putValue(const Vector<Quantum<double> > &in) {
+  for (uint32_t i=0; i<in.nelements(); i++) {
+    if (!in(i).check(UnitVal::TIME)) return false;
   }
   wday = frday = 0;
-  for (uInt i=0; i<in.nelements(); i++) addTime(makeDay(in(i)));
+  for (uint32_t i=0; i<in.nelements(); i++) addTime(makeDay(in(i)));
   adjust();
-  return True;
+  return true;
 }
 
-Double MVEpoch::makeDay(const Quantity &in) const {
+double MVEpoch::makeDay(const Quantity &in) const {
   in.assure(UnitVal::TIME);
   return in.get(unitDay).getValue();
 }
 
-void MVEpoch::addTime(Double in) {
-  Double t = std::floor(in);
+void MVEpoch::addTime(double in) {
+  double t = std::floor(in);
   wday += t;
   frday += (in-t);
 }

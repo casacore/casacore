@@ -47,7 +47,7 @@ FITSImgParser::FITSImgParser (const String& name)
 : name_p      (name),
   numhdu_p    (0),
   qualimglist_p(0),
-  hasmeasurement_p(False)
+  hasmeasurement_p(false)
 {
 	setup();
 	find_qualimgs();
@@ -62,7 +62,7 @@ FITSImgParser::FITSImgParser(const FITSImgParser& other):
 {
 	// allocate the extensions and copy the information
 	extensions_p = new FITSExtInfo[other.numhdu_p];
-	for (uInt index=0; index < numhdu_p; index++){
+	for (uint32_t index=0; index < numhdu_p; index++){
 		extensions_p[index] = other.extensions_p[index];
 	}
 }
@@ -81,14 +81,14 @@ FITSImgParser& FITSImgParser::operator=(const FITSImgParser& other){
 
    	// allocate the extensions and copy the information
    	extensions_p = new FITSExtInfo[other.numhdu_p];
-   	for (uInt index=0; index < numhdu_p; index++){
+   	for (uint32_t index=0; index < numhdu_p; index++){
    		extensions_p[index] = other.extensions_p[index];
    	}
    }
 	return *this;
 }
 
-String FITSImgParser::fitsname (Bool stripPath) const
+String FITSImgParser::fitsname (bool stripPath) const
 {
    Path path(name_p);
    if (stripPath) {
@@ -98,10 +98,10 @@ String FITSImgParser::fitsname (Bool stripPath) const
    }
 }
 
-Int FITSImgParser::get_index(const FITSExtInfo &extinfo)
+int32_t FITSImgParser::get_index(const FITSExtInfo &extinfo)
 {
 	// go over all extensions
-	for (Int index=0; index < (Int)numhdu_p; index++){
+	for (int32_t index=0; index < (int32_t)numhdu_p; index++){
 		// return the current index if is was the
 		// one you are looking for
 		if (extensions_p[index] == extinfo)
@@ -112,18 +112,18 @@ Int FITSImgParser::get_index(const FITSExtInfo &extinfo)
 	return -1;
 }
 
-Int FITSImgParser::find_extension(const String &extname, const Int &extversion){
+int32_t FITSImgParser::find_extension(const String &extname, const int32_t &extversion){
 
 	// generate an extinfo object from the input
-	FITSExtInfo   fext_info = FITSExtInfo(fitsname(True), 0, extname, extversion, True);
+	FITSExtInfo   fext_info = FITSExtInfo(fitsname(true), 0, extname, extversion, true);
 
 	// return its index
 	return get_index(fext_info);
 }
 
-uInt FITSImgParser::get_firstdata_index(void){
+uint32_t FITSImgParser::get_firstdata_index(void){
 	// go over all extensions
-	for (uInt index=0; index < numhdu_p; index++){
+	for (uint32_t index=0; index < numhdu_p; index++){
 		// check for data
 		if (extensions_p[index].has_data())
 			// return the index
@@ -135,19 +135,19 @@ uInt FITSImgParser::get_firstdata_index(void){
 }
 
 String FITSImgParser::get_extlist_string(const String &delimiter, const String &qualmarker,
-		const String &fitsmarker, const Bool &listall)
+		const String &fitsmarker, const bool &listall)
 {
 	String bigString="";
 
 	// add the quality image sets
 	if (listall){
-		for (uInt index=0; index < qualimglist_p.size(); index++){
-			bigString += qualmarker + fitsname(True) + String("[") + qualimglist_p(index) + String("]") + delimiter;
+		for (uint32_t index=0; index < qualimglist_p.size(); index++){
+			bigString += qualmarker + fitsname(true) + String("[") + qualimglist_p(index) + String("]") + delimiter;
 		}
 	}
 
 	// add the individual extensions
-	for (uInt index=0; index < numhdu_p; index++){
+	for (uint32_t index=0; index < numhdu_p; index++){
 		if (extensions_p[index].has_data())
 			bigString += fitsmarker + extensions_p[index].get_extexpr() + delimiter;
 	}
@@ -156,9 +156,9 @@ String FITSImgParser::get_extlist_string(const String &delimiter, const String &
 	return bigString;
 }
 
-Bool FITSImgParser::is_qualityimg(const String &extexpr){
+bool FITSImgParser::is_qualityimg(const String &extexpr){
 
-	Bool qualityimg;
+	bool qualityimg;
 	Vector<String> extlist;
 
 	// extract the list of extensions from the
@@ -168,56 +168,56 @@ Bool FITSImgParser::is_qualityimg(const String &extexpr){
 
 	if (extlist.size()<2){
 		//cout << "Only one extension given!" << endl;
-		return False;
+		return false;
 	}
 	else if(extlist.size()>3){
 		//cout << "More than three extensions given!" << endl;
-		return False;
+		return false;
 	}
 
 	// check for integer values in the extension list,
 	// which indicates rather an extension version
 	// number and not a quality image
-	for (uInt index=0; index<extlist.size();index++){
+	for (uint32_t index=0; index<extlist.size();index++){
 		if (String::toInt(extlist(index))){
 			//cout << "The extension: " << extlist(index) << " does not exist!" << endl;
-			return False;
+			return false;
 		}
 	}
 
 	// make sure all extensions do exist,
 	// store their index
-	Vector<Int> extindex(extlist.size());
-	for (uInt index=0; index<extlist.size();index++){
+	Vector<int32_t> extindex(extlist.size());
+	for (uint32_t index=0; index<extlist.size();index++){
 		extindex(index) = find_extension(extlist(index));
 		if (extindex(index)<0){
 			throw (AipsError("FITSImgParser::is_qualityimg - "
-					+ fitsname(True) + " does not have an extension: " + extlist(index)));
+					+ fitsname(true) + " does not have an extension: " + extlist(index)));
 		}
 	}
 
 	// create list for marking the identified extensions
-	Vector<Bool> identified(extlist.size(), False);
+	Vector<bool> identified(extlist.size(), false);
 
 	// get the data extension
 	// return "False" if there is no data extension
-	Int data_ext = get_dataindex(extindex);
+	int32_t data_ext = get_dataindex(extindex);
 	if (data_ext < 0)
-		return False;
+		return false;
 
 	// mark the data extension as identified
-	for (uInt index=0; index<extindex.size();index++){
+	for (uint32_t index=0; index<extindex.size();index++){
 		if (data_ext == extindex(index))
-			identified(index) = True;
+			identified(index) = true;
 	}
 
 	// search for the error extension and mark
 	// it as identified
 	String error_ext   = get_errorext(data_ext);
 	if (error_ext.size() > 0){
-		for (uInt index=0; index<extlist.size();index++){
+		for (uint32_t index=0; index<extlist.size();index++){
 			if (!error_ext.compare(extlist(index)))
-				identified(index) = True;
+				identified(index) = true;
 		}
 	}
 
@@ -229,18 +229,18 @@ Bool FITSImgParser::is_qualityimg(const String &extexpr){
 	String mask_ext = get_maskext(data_ext);
 	*/
 	if (mask_ext.size() > 0){
-		for (uInt index=0; index<extlist.size();index++){
+		for (uint32_t index=0; index<extlist.size();index++){
 			if (!mask_ext.compare(extlist(index)))
-				identified(index) = True;
+				identified(index) = true;
 		}
 	}
 
 	// check whether all given extensions
 	// have been identified
-	qualityimg=True;
-	for (uInt index=0; index<identified.size();index++){
+	qualityimg=true;
+	for (uint32_t index=0; index<identified.size();index++){
 		if (!identified(index)){
-			qualityimg = False;
+			qualityimg = false;
 		}
 	}
 
@@ -248,8 +248,8 @@ Bool FITSImgParser::is_qualityimg(const String &extexpr){
 	return qualityimg;
 }
 
-Bool FITSImgParser::get_quality_data(const String &extexpr, Int &data_HDU, Int &error_HDU,
-		                                 String &error_type, Int &mask_HDU, String &mask_type, Int &mask_value){
+bool FITSImgParser::get_quality_data(const String &extexpr, int32_t &data_HDU, int32_t &error_HDU,
+		                                 String &error_type, int32_t &mask_HDU, String &mask_type, int32_t &mask_value){
 	Vector<String> extlist;
 
 	// give some defaults for
@@ -264,8 +264,8 @@ Bool FITSImgParser::get_quality_data(const String &extexpr, Int &data_HDU, Int &
 	get_extlist(extexpr, extlist);
 
 	// store the index of each extension
-	Vector<Int> extindex(extlist.size(), -1);
-	for (uInt index=0; index<extlist.size();index++)
+	Vector<int32_t> extindex(extlist.size(), -1);
+	for (uint32_t index=0; index<extlist.size();index++)
 		extindex(index) = find_extension(extlist(index));
 
 	// identify the data extension
@@ -342,8 +342,8 @@ Bool FITSImgParser::get_quality_data(const String &extexpr, Int &data_HDU, Int &
 				// check whether the keyword exists
 				if (actkeyw){
 
-					// convert the keyword to Int
-					Int kw_maskval = actkeyw->asInt();
+					// convert the keyword to int32_t
+					int32_t kw_maskval = actkeyw->asInt();
 
 					// set the value if possible
 					if (kw_maskval)
@@ -361,7 +361,7 @@ Bool FITSImgParser::get_quality_data(const String &extexpr, Int &data_HDU, Int &
 		error_HDU =-1;
 		mask_HDU  =-1;
 	}
-	return True;
+	return true;
 }
 
 void FITSImgParser::setup(void)
@@ -395,9 +395,9 @@ void FITSImgParser::setup(void)
 	PrimaryArray<float> *paF;
 	PrimaryArray<double> *paD;
 
-	uInt extindex = 0;
-	Bool isfitsimg=True;
-	while (fin.rectype() != FITS::EndOfFile && isfitsimg && !fin.err() && extindex < (uInt)num_hdu){
+	uint32_t extindex = 0;
+	bool isfitsimg=true;
+	while (fin.rectype() != FITS::EndOfFile && isfitsimg && !fin.err() && extindex < (uint32_t)num_hdu){
 		extindex++;
 		if (fin.rectype() == FITS::HDURecord) {
 			switch (fin.hdutype()) {
@@ -464,13 +464,13 @@ void FITSImgParser::setup(void)
 				}
 				break;
 			case FITS::PrimaryGroupHDU:
-				isfitsimg = False;
+				isfitsimg = false;
 				break;
 			case FITS::AsciiTableHDU:
-				isfitsimg = False;
+				isfitsimg = false;
 				break;
 			case FITS::BinaryTableHDU:
-				isfitsimg = False;
+				isfitsimg = false;
 				break;
 			case FITS::UnknownExtensionHDU:
 				hdu = new ExtensionHeaderDataUnit(fin);
@@ -490,12 +490,12 @@ void FITSImgParser::setup(void)
 	}
 }
 
-void FITSImgParser::process_extension(HeaderDataUnit *h,const uInt &extindex)
+void FITSImgParser::process_extension(HeaderDataUnit *h,const uint32_t &extindex)
 {
 	String extname="";
-	Int    extversion=-1;
-	Bool   hasdata=False;
-	uInt   actindex=extindex-1;
+	int32_t    extversion=-1;
+	bool   hasdata=false;
+	uint32_t   actindex=extindex-1;
 	FITSExtInfo fExtInfo;
 	const FitsKeyword *actkeyw;
 	FitsKeywordList kwlist=FitsKeywordList();
@@ -506,7 +506,7 @@ void FITSImgParser::process_extension(HeaderDataUnit *h,const uInt &extindex)
 	// the next HDU
 	if (h->fitsdatasize())
 	{
-		hasdata = True;
+		hasdata = true;
 		h->skip();
 	}
 
@@ -532,7 +532,7 @@ void FITSImgParser::process_extension(HeaderDataUnit *h,const uInt &extindex)
 	}
 
 	// create an Info object and add the keywords
-	fExtInfo = FITSExtInfo(fitsname(True), actindex, extname, extversion, hasdata);
+	fExtInfo = FITSExtInfo(fitsname(true), actindex, extname, extversion, hasdata);
 	fExtInfo.add_kwlist(kwlist);
 
 	// add the extension information to the list;
@@ -540,17 +540,17 @@ void FITSImgParser::process_extension(HeaderDataUnit *h,const uInt &extindex)
 	extensions_p[numhdu_p++] = fExtInfo;
 }
 
-Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
+bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 
 	String extexpr_l = extexpr;
 	extexpr_l.trim();
 
 	// there is nothing to do
 	if (extexpr_l.size() < 1)
-		return True;
+		return true;
 
-	Int open_bracepos = 0;
-	Int close_bracepos= extexpr_l.size();
+	int32_t open_bracepos = 0;
+	int32_t close_bracepos= extexpr_l.size();
 
 	// check whether the strings ends with "]"
 	if (!extexpr_l.compare(extexpr_l.size()-1, 1, "]", 1)){
@@ -564,19 +564,19 @@ Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 	}
 
 	String  extexpr_b = String(extexpr_l, open_bracepos, close_bracepos);
-	Int n_comma = extexpr_b.freq(",");
+	int32_t n_comma = extexpr_b.freq(",");
 
-	Int f_start=0;
-	for (Int index=0; index<n_comma; index++){
+	int32_t f_start=0;
+	for (int32_t index=0; index<n_comma; index++){
 		// find the next comma
-		Int c_pos = extexpr_b.find(",", f_start);
+		int32_t c_pos = extexpr_b.find(",", f_start);
 
 		// create a substring
 		String tmp = String(extexpr_b, f_start, c_pos-f_start);
 		tmp.trim();
 
 		// extend the extension list and append the substring
-		extlist.resize(extlist.size()+1, True);
+		extlist.resize(extlist.size()+1, true);
 		extlist(extlist.size()-1)=tmp;
 		f_start=c_pos+1;
 	}
@@ -585,15 +585,15 @@ Bool FITSImgParser::get_extlist(const String &extexpr, Vector<String> &extlist){
 	tmp.upcase();
 
 	// extend the list and append the substring
-	extlist.resize(extlist.size()+1, True);
+	extlist.resize(extlist.size()+1, true);
 	extlist(extlist.size()-1)=tmp;
 
-	return True;
+	return true;
 }
 
-Int FITSImgParser::get_dataindex(const Vector<Int> &extindex){
+int32_t FITSImgParser::get_dataindex(const Vector<int32_t> &extindex){
 	// go over all extensions
-	for (uInt index=0; index<extindex.size();index++){
+	for (uint32_t index=0; index<extindex.size();index++){
 		// check whether the extension exists
 		if (extindex(index) > -1)
 			// check whether it is a data extension
@@ -605,15 +605,15 @@ Int FITSImgParser::get_dataindex(const Vector<Int> &extindex){
 	return -1;
 }
 
-String FITSImgParser::get_errorext(const Int &ext_index){
+String FITSImgParser::get_errorext(const int32_t &ext_index){
 	String error_ext;
 	FitsKeyword *actkeyw;
 
 	// make sure the extension index does exist
-	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
+	if (ext_index < 0 || ext_index > (int32_t)numhdu_p-1){
 		ostringstream os;
 		os << ext_index;
-		throw (AipsError("FITSImgParser::get_errorext - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
+		throw (AipsError("FITSImgParser::get_errorext - Can not access extension: "+String(os)+" in image: " + fitsname(true)));
 	}
 
 	// extract the keyword "ERRDATA"
@@ -629,7 +629,7 @@ String FITSImgParser::get_errorext(const Int &ext_index){
 		// check whether the HDUtype keyword
 		// has the correct value
 		if (kw_error.size()>0){
-			Int err_index = find_extension(kw_error);
+			int32_t err_index = find_extension(kw_error);
 			if (err_index > -1 && index_is_HDUtype(err_index, "ERROR"))
 				error_ext=kw_error;
 		}
@@ -637,15 +637,15 @@ String FITSImgParser::get_errorext(const Int &ext_index){
 	return error_ext;
 }
 
-String FITSImgParser::get_maskext(const Int &ext_index){
+String FITSImgParser::get_maskext(const int32_t &ext_index){
 	String mask_ext;
 	FitsKeyword *actkeyw;
 
 	// make sure the extension index does exist
-	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
+	if (ext_index < 0 || ext_index > (int32_t)numhdu_p-1){
 		ostringstream os;
 		os << ext_index;
-		throw (AipsError("FITSImgParser::get_maskext - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
+		throw (AipsError("FITSImgParser::get_maskext - Can not access extension: "+String(os)+" in image: " + fitsname(true)));
 	}
 
 	// extract the keyword "QUALDATA"
@@ -661,7 +661,7 @@ String FITSImgParser::get_maskext(const Int &ext_index){
 		// check whether the HDUtype keyword
 		// has the correct value
 		if (kw_mask.size()>0){
-			Int mask_index = find_extension(kw_mask);
+			int32_t mask_index = find_extension(kw_mask);
 			if (mask_index > -1 && index_is_HDUtype(mask_index, "QUALITY"))
 				mask_ext=kw_mask;
 		}
@@ -669,7 +669,7 @@ String FITSImgParser::get_maskext(const Int &ext_index){
 	return mask_ext;
 }
 
-Bool FITSImgParser::confirm_fix_keywords(const Int &ext_index){
+bool FITSImgParser::confirm_fix_keywords(const int32_t &ext_index){
 	FitsKeyword *actkeyw;
 
 	Vector<String> key_words(3), key_values(3);
@@ -677,7 +677,7 @@ Bool FITSImgParser::confirm_fix_keywords(const Int &ext_index){
 	key_values(0)=String("ESO");       key_values(1) = String("DICD");   key_values(2) = String("IMAGE");
 	//key_words(3) = String("HDUVERS");  key_values(3) = String("DICD version 6");
 
-	for (uInt index=0; index<key_words.size(); index++){
+	for (uint32_t index=0; index<key_words.size(); index++){
 		// extract the keyword
 		actkeyw = extensions_p[ext_index].get_keyword(key_words(index));
 
@@ -689,29 +689,29 @@ Bool FITSImgParser::confirm_fix_keywords(const Int &ext_index){
 
 			// compare the keyword value and return true if they are identical
 			if (kword_string.size()<1 || kword_string.compare(key_values(index)))
-				return False;
+				return false;
 		}
 		else{
-			return False;
+			return false;
 		}
 	}
-	return True;
+	return true;
 }
 
-Bool FITSImgParser::index_is_HDUtype(const Int &ext_index, const String &hdutype){
+bool FITSImgParser::index_is_HDUtype(const int32_t &ext_index, const String &hdutype){
 
 	FitsKeyword *actkeyw;
 
 	// make sure the extension index does exist
-	if (ext_index < 0 || ext_index > (Int)numhdu_p-1){
+	if (ext_index < 0 || ext_index > (int32_t)numhdu_p-1){
 		ostringstream os;
 		os << ext_index;
-		throw (AipsError("FITSImgParser::index_is_HDUtype - Can not access extension: "+String(os)+" in image: " + fitsname(True)));
+		throw (AipsError("FITSImgParser::index_is_HDUtype - Can not access extension: "+String(os)+" in image: " + fitsname(true)));
 	}
 
 	// verify the mandatory, fixed keywords
 	if (!confirm_fix_keywords(ext_index))
-		return False;
+		return false;
 
 	// extract the keyword "HDUCLAS2"
 	actkeyw = extensions_p[ext_index].get_keyword(String("HDUCLAS2"));
@@ -724,30 +724,30 @@ Bool FITSImgParser::index_is_HDUtype(const Int &ext_index, const String &hdutype
 
 		// compare the keyword value and return true if they are identical
 		if (kw_hdutype.size()>0 && !kw_hdutype.compare(hdutype))
-			return True;
+			return true;
 	}
 
-	// return False as default
-	return False;
+	// return false as default
+	return false;
 }
 
-Bool FITSImgParser::find_qualimgs(void)
+bool FITSImgParser::find_qualimgs(void)
 {
 	// go over all extensions
-	for (uInt index=0; index < numhdu_p; index++){
+	for (uint32_t index=0; index < numhdu_p; index++){
 
 		// identify the current extension
 		// as a data extension
-		if (index_is_HDUtype((Int)index, "DATA")){
+		if (index_is_HDUtype((int32_t)index, "DATA")){
 			String errext, maskext;
 
 			// search the corresponding error extension
-			errext = get_errorext((Int)index);
+			errext = get_errorext((int32_t)index);
 
 			// confirm the existence
 			// of the error extension
 			if (errext.size()>0){
-				Int err_index = find_extension(errext);
+				int32_t err_index = find_extension(errext);
 				if (err_index < 0)
 					errext = String("");
 			}
@@ -756,11 +756,11 @@ Bool FITSImgParser::find_qualimgs(void)
 			/* Loading a mask does not yet work,
 			 * hence the identification makes no sense
 			// search the corresponding mask extension
-			maskext = get_maskext((Int)index);
+			maskext = get_maskext((int32_t)index);
 
 			// confirm the existence of the mask extension
 			if (maskext.size()>0){
-				Int mask_index = find_extension(maskext);
+				int32_t mask_index = find_extension(maskext);
 				if (mask_index < 0)
 					maskext = String("");
 			}
@@ -777,16 +777,16 @@ Bool FITSImgParser::find_qualimgs(void)
 					qualimgstr += String(",") + maskext;
 
 				// extend the list and append the string representation
-				qualimglist_p.resize(qualimglist_p.size()+1, True);
+				qualimglist_p.resize(qualimglist_p.size()+1, true);
 				qualimglist_p(qualimglist_p.size()-1)=qualimgstr;
 			}
 		}
 	}
-	return True;
+	return true;
 }
 
-FITSExtInfo::FITSExtInfo(const String &name, const uInt &extindex, const String &extname,
-		const Int &extversion, const Bool &hasdata)
+FITSExtInfo::FITSExtInfo(const String &name, const uint32_t &extindex, const String &extname,
+		const int32_t &extversion, const bool &hasdata)
 : name_p       (name),
   extindex_p   (extindex),
   extname_p    (extname),
@@ -827,29 +827,29 @@ FITSExtInfo& FITSExtInfo::operator=(const FITSExtInfo& other){
 	return *this;
 }
 
-Bool FITSExtInfo::operator==(const FITSExtInfo &extinfo)
+bool FITSExtInfo::operator==(const FITSExtInfo &extinfo)
 {
 	if (name_p != extinfo.name_p)
-		return False;
+		return false;
 
 	if (extinfo.extname_p.length() > 0 && extinfo.extversion_p > -1)
 	{
 		//cout << "Comparing extname and extversion" << endl;
 		if (extname_p == extinfo.extname_p && extversion_p == extinfo.extversion_p)
-			return True;
+			return true;
 	}
 	else if (extinfo.extname_p.length() > 0) {
 		//cout << "Comparing extname" << endl;
 		if (extname_p == extinfo.extname_p)
-			return True;
+			return true;
 	}
 	else {
 		//cout << "Comparing index" << endl;
 		if (extindex_p == extinfo.extindex_p)
-			return True;
+			return true;
 	}
 
-	return False;
+	return false;
 }
 
 String FITSExtInfo::get_extexpr(void)

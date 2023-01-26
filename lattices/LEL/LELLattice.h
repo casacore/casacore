@@ -60,7 +60,7 @@ template <class T> class MaskedLattice;
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that access the pixels in
 // a Lattice. It works with Lattices of type 
-// Float,Double,Complex,DComplex and Bool.  
+// float,double,Complex,DComplex and bool.  
 //
 // A description of the implementation details of the LEL classes can
 // be found in
@@ -74,8 +74,8 @@ template <class T> class MaskedLattice;
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Float> y(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<float> y(shape); 
 // y.copyData(x);                 // y = x
 // </srcblock>
 // </example>
@@ -118,16 +118,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 

@@ -43,11 +43,11 @@ int main()
     cout << "Building some test tables." << endl;
 
     TableDesc td;
-    td.addColumn(ScalarColumnDesc<Int>("ICol1"));
-    td.addColumn(ScalarColumnDesc<Int>("ICol2"));
-    td.addColumn(ScalarColumnDesc<Float>("FCol"));
-    td.addColumn(ScalarColumnDesc<Double>("DCol"));
-    td.addColumn(ArrayColumnDesc<Int>("IACol", "",
+    td.addColumn(ScalarColumnDesc<int32_t>("ICol1"));
+    td.addColumn(ScalarColumnDesc<int32_t>("ICol2"));
+    td.addColumn(ScalarColumnDesc<float>("FCol"));
+    td.addColumn(ScalarColumnDesc<double>("DCol"));
+    td.addColumn(ArrayColumnDesc<int32_t>("IACol", "",
 					   IPosition(1,5), ColumnDesc::Direct));
 
     //  Ok, now a table with 5 rows
@@ -56,17 +56,17 @@ int main()
     Table maintab(newtab, 5);
 
     // fill the above
-    ScalarColumn<Int> ic1(maintab,"ICol1"), ic2(maintab,"ICol2");
-    ScalarColumn<Float> fc(maintab,"FCol");
-    ScalarColumn<Double> dc(maintab,"DCol");
-    ArrayColumn<Int> ac(maintab,"IACol");
-    Vector<Int> vtmp(5);
+    ScalarColumn<int32_t> ic1(maintab,"ICol1"), ic2(maintab,"ICol2");
+    ScalarColumn<float> fc(maintab,"FCol");
+    ScalarColumn<double> dc(maintab,"DCol");
+    ArrayColumn<int32_t> ac(maintab,"IACol");
+    Vector<int32_t> vtmp(5);
 
-    for (Int i=0; i<5; i++) {
+    for (int32_t i=0; i<5; i++) {
         ic1.put(i,i);
 	ic2.put(i, i*10);
-        fc.put(i,  Float(i)/10.);
-	dc.put(i,  Double(i*i));
+        fc.put(i,  float(i)/10.);
+	dc.put(i,  double(i*i));
 	indgen(vtmp, i*10, 10);
 	ac.put(i, vtmp);
     }
@@ -82,17 +82,17 @@ int main()
     //  second, one with some of the same columns as maintab, plus others
 
     TableDesc td2;
-    td2.addColumn(ScalarColumnDesc<Int>("ICol1"));
-    td2.addColumn(ScalarColumnDesc<Int>("ICol3"));
-    td2.addColumn(ScalarColumnDesc<uInt>("uICol"));
-    td2.addColumn(ArrayColumnDesc<Int>("IACol","",
+    td2.addColumn(ScalarColumnDesc<int32_t>("ICol1"));
+    td2.addColumn(ScalarColumnDesc<int32_t>("ICol3"));
+    td2.addColumn(ScalarColumnDesc<uint32_t>("uICol"));
+    td2.addColumn(ArrayColumnDesc<int32_t>("IACol","",
 					    IPosition(1,5),ColumnDesc::Direct));
-    td2.addColumn(ArrayColumnDesc<Int>("IACol2","",
+    td2.addColumn(ArrayColumnDesc<int32_t>("IACol2","",
 					    IPosition(1,3),ColumnDesc::Direct));
     SetupNewTable newtab2("tRowCopier_tmp_2",td2, Table::Scratch);
     Table partialtab(newtab2, 5);
-    ScalarColumn<Int> ic3col(partialtab,"ICol3");
-    for (uInt j=0; j<partialtab.nrow(); j++) ic3col.put(j,-1);
+    ScalarColumn<int32_t> ic3col(partialtab,"ICol3");
+    for (uint32_t j=0; j<partialtab.nrow(); j++) ic3col.put(j,-1);
 
 
     //  Ok, now some actual RowCopier testing
@@ -101,38 +101,38 @@ int main()
 	cout << "\nMake an exact copy using rowcopier" << endl;
 
 	RowCopier exact(exacttab, maintab);
-	uInt rownr;
+	uint32_t rownr;
 	for (rownr=0; rownr<maintab.nrow(); rownr++) {
 	    if ( !exact.copy(rownr)) {
-		cout << "Ooops, exact.copy(" << rownr << ") returned False!" 
+		cout << "Ooops, exact.copy(" << rownr << ") returned false!" 
 		    << endl;
 		cout << "tRowCopier fails!" << endl;
 		return 1;
 	    }
 	}
 	// and compare each Scalar column as a TableVector
-	TableVector<Int> ic1main(maintab, "ICol1"), ic1copy(exacttab, "ICol1");
+	TableVector<int32_t> ic1main(maintab, "ICol1"), ic1copy(exacttab, "ICol1");
         if (anyNE(ic1main, ic1copy)) {
 	    cout << "An exact copy was not made of ICol1"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
 	    return 1;
 	}
-	TableVector<Int> ic2main(maintab, "ICol2"), ic2copy(exacttab, "ICol2");
+	TableVector<int32_t> ic2main(maintab, "ICol2"), ic2copy(exacttab, "ICol2");
         if (anyNE(ic2main, ic2copy)) {
 	    cout << "An exact copy was not made of ICol2"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
 	    return 1;
 	}
-	TableVector<Float> fcmain(maintab, "FCol"), fccopy(exacttab, "FCol");
+	TableVector<float> fcmain(maintab, "FCol"), fccopy(exacttab, "FCol");
         if (anyNE(fcmain, fccopy)) {
 	    cout << "An exact copy was not made of FCol"
 		<< endl;
 	    cout << "tRowCopier fails!" << endl;
 	    return 1;
 	}
-	TableVector<Double> dcmain(maintab, "DCol"), dccopy(exacttab, "DCol");
+	TableVector<double> dcmain(maintab, "DCol"), dccopy(exacttab, "DCol");
         if (anyNE(dcmain, dccopy)) {
 	    cout << "An exact copy was not made of DCol"
 		<< endl;
@@ -140,7 +140,7 @@ int main()
 	    return 1;
 	}
 	// and check each Vector in IACol
-	ArrayColumn<Int> iamain(maintab, "IACol"), iacopy(exacttab, "IACol");
+	ArrayColumn<int32_t> iamain(maintab, "IACol"), iacopy(exacttab, "IACol");
 	for (rownr = 0; rownr < maintab.nrow(); rownr++) {
 	    if (anyNE(iamain(rownr), iacopy(rownr))) {
 		cout << "An exact copy was not made of the array column "
@@ -158,10 +158,10 @@ int main()
     {
 	cout << "\nCopy as much as allowed between two tables" << endl;
 	RowCopier limited(partialtab, maintab);
-	uInt rownr;
+	uint32_t rownr;
 	for (rownr=0; rownr<maintab.nrow(); rownr++) {
 	    if ( !limited.copy(rownr)) {
-		cout << "Ooops, limited.copy(" << rownr << ") returned False!"
+		cout << "Ooops, limited.copy(" << rownr << ") returned false!"
 		    << endl;
 		cout << "tRowCopier Fails!" << endl;
 		return 1;
@@ -169,15 +169,15 @@ int main()
 	}
 	// If it gets here, it really must have passed, but just check that
 	// ICol1 and IACol are exact copies
-	TableVector<Int> ic1main(maintab, "ICol1");
-	TableVector<Int> ic1part(partialtab, "ICol1");
+	TableVector<int32_t> ic1main(maintab, "ICol1");
+	TableVector<int32_t> ic1part(partialtab, "ICol1");
 	if (anyNE(ic1main, ic1part)) {
 	    cout << "ICol1 copy differs!" << endl;
 	    cout << "tRowCopier fails!" << endl;
 	    return 1;
 	}
 	// and check each Vector in IACol
-	ArrayColumn<Int> mia(maintab, "IACol"), pia(partialtab, "IACol");
+	ArrayColumn<int32_t> mia(maintab, "IACol"), pia(partialtab, "IACol");
 	for (rownr = 0; rownr < maintab.nrow(); rownr++) {
 	    if (anyNE(mia(rownr), pia(rownr))) {
 		cout << "The array columns do not match "
@@ -194,13 +194,13 @@ int main()
     {
 	cout << "\nNamed copy of ICol1 to ICol3" << endl;
 	// first, verify that any of ICol1 and ICol3 are not already equal
-	TableVector<Int> ic1main(maintab, "ICol1");
-	TableVector<Int> ic3part(partialtab, "ICol3");
+	TableVector<int32_t> ic1main(maintab, "ICol1");
+	TableVector<int32_t> ic3part(partialtab, "ICol3");
 	if (anyEQ(ic1main, ic3part)) {
 	    cout << "Hmm, ICol1 and ICol3 are already equal in some values!" 
 		<< endl;
 	    cout << "That should not happen yet" << endl;
-	    for (uInt rownr=0; rownr < maintab.nrow(); rownr++) {
+	    for (uint32_t rownr=0; rownr < maintab.nrow(); rownr++) {
 		cout << rownr << " "
 		     << ic1main(rownr) << " "
 		     << ic3part(rownr) << endl;
@@ -212,9 +212,9 @@ int main()
 	inname(0) = "ICol1";
 	outname(0) = "ICol3";
 	RowCopier named(partialtab, maintab, outname, inname);
-    	for (uInt rownr=0; rownr<maintab.nrow(); rownr++) {
+    	for (uint32_t rownr=0; rownr<maintab.nrow(); rownr++) {
 	    if ( !named.copy(rownr)) {
-		cout << "Ooops, named.copy(" << rownr << ") returned False!"
+		cout << "Ooops, named.copy(" << rownr << ") returned false!"
 		    << endl;
 		cout << "tRowCopier fails!" << endl;
 		return 1;
@@ -234,16 +234,16 @@ int main()
     {
 	cout << "Named copy of ICol1 to ICol3, in reverse order" << endl;
 	Vector<String> inname(1), outname(1);
-	uInt inrownr, outrownr;
+	uint32_t inrownr, outrownr;
 	inname(0) = "ICol1";
 	outname(0) = "ICol3";
 	RowCopier named(partialtab, maintab, outname, inname);
-	TableVector<Int> ic1main(maintab, "ICol1");
-	TableVector<Int> ic3part(partialtab, "ICol3");
+	TableVector<int32_t> ic1main(maintab, "ICol1");
+	TableVector<int32_t> ic3part(partialtab, "ICol3");
     	for (inrownr=0, outrownr=maintab.nrow()-1; 
 	     inrownr<maintab.nrow(); inrownr++, outrownr--) {
 	    if ( !named.copy(outrownr, inrownr)) {
-		cout << "Ooops, named.copy(" << inrownr << ") returned False!"
+		cout << "Ooops, named.copy(" << inrownr << ") returned false!"
 		    << endl;
 		cout << "tRowCopier fails!" << endl;
 		return 1;
@@ -265,7 +265,7 @@ int main()
     cout << "Note: since RowCopier is NOT derived from Cleanup, this" << endl;
     cout << "      section causes memory leaks." << endl;
 
-    Bool caught = False;
+    bool caught = false;
 
     // construct a copier using a non-existant column
     try {
@@ -274,11 +274,11 @@ int main()
 	colname(0) = "Garbage";
 	RowCopier rc(partialtab, maintab, colname, colname);
     } catch (TableError& x) {
-	caught = True;
+	caught = true;
     } 
     if (caught) {
 	cout << "OK" << endl;
-	caught = False;
+	caught = false;
     } else {
 	cout << "FAILS!" << endl;
 	return 1;
@@ -292,11 +292,11 @@ int main()
 	inname(0) = "FCol"; outname(0) = "DCol";
 	RowCopier rc(maintab, maintab, inname, outname);
     } catch (TableError& x) {
-	caught = True;
+	caught = true;
     } 
     if (caught) {
 	cout << "OK" << endl;
-	caught = False;
+	caught = false;
     } else {
 	cout << "FAILS!" << endl;
 	return 1;
@@ -309,11 +309,11 @@ int main()
 	inname(0) = "ICol1"; outname(0) = "IACol";
 	RowCopier rc(maintab, maintab, inname, outname);
     } catch (TableError& x) {
-	caught = True;
+	caught = true;
     } 
     if (caught) {
 	cout << "OK" << endl;
-	caught = False;
+	caught = false;
     } else {
 	cout << "FAILS!" << endl;
 	return 1;
@@ -326,18 +326,18 @@ int main()
 	inname(0) = "IACol"; outname(0) = "IACol"; outname(1) = "DCol";
 	RowCopier rc(maintab, maintab, inname, outname);
     } catch (TableError& x) {
-	caught = True;
+	caught = true;
     } 
     if (caught) {
 	cout << "OK" << endl;
-	caught = False;
+	caught = false;
     } else {
 	cout << "FAILS!" << endl;
 	return 1;
     }
 
-    // and finally, some checks that False is returned when appropriate.
-    cout << "\nChecking that copy() returns False when appropriate" << endl;
+    // and finally, some checks that false is returned when appropriate.
+    cout << "\nChecking that copy() returns false when appropriate" << endl;
     {
 	RowCopier rc(maintab, maintab);
 

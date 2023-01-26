@@ -73,7 +73,7 @@ class LatticeMathUtil
    template <class T>
    static void collapse (Array<T>& data, const IPosition& axes,
                          const MaskedLattice<T>& in,
-                         Bool dropDegenerateAxes);
+                         bool dropDegenerateAxes);
 //
 // Collapse the specified axes by averaging and recover either/and
 // the pixel values and mask. If axes is empty, then the data and mask just contains
@@ -81,11 +81,11 @@ class LatticeMathUtil
 // but dropDegenerateAxes is stil honoured
    template <class T>
    static void collapse (
-	Array<T>& data, Array<Bool>& mask,
+	Array<T>& data, Array<bool>& mask,
     const IPosition& axes,
     const MaskedLattice<T>& lat,
-    Bool dropDegenerateAxes,
-    Bool getPixels=True, Bool getMask=True,
+    bool dropDegenerateAxes,
+    bool getPixels=true, bool getMask=true,
     const LatticeStatsBase::StatisticsTypes stat=LatticeStatsBase::MEAN
    );
 
@@ -109,9 +109,9 @@ class LatticeMathUtil
 // <h4>Example 1:</h4>
 // Copy the lattice-type data between two Images.// <srcblock>
 //
-// PagedImage<Float> myImg ("myimagefile");
-// Float lmin;
-// Float lmax;
+// PagedImage<float> myImg ("myimagefile");
+// float lmin;
+// float lmax;
 // IPosition posMin = myImg.shape();
 // IPosition posMax = myImg.shape();
 // minMax( lmin, lmax, posMin, posMax, myImg );

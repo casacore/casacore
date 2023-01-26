@@ -40,7 +40,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-NewFile::NewFile(Bool deleteIfExists) : delete_p(deleteIfExists)
+NewFile::NewFile(bool deleteIfExists) : delete_p(deleteIfExists)
 {
     // Nothing
 }
@@ -63,7 +63,7 @@ NewFile::~NewFile()
     // Nothing
 }
 
-Bool NewFile::valueOK(const String &value, String &error) const
+bool NewFile::valueOK(const String &value, String &error) const
 {
     LogOrigin OR("NewFile", 
 		 "valueOK(const String &value, String &error) const",
@@ -71,11 +71,11 @@ Bool NewFile::valueOK(const String &value, String &error) const
     LogMessage msg(OR);
 
     error = "";
-    Bool retval = False;
+    bool retval = false;
 //
     if (value.empty()) {
        error = "File string is empty";
-       return False;
+       return false;
     }
 //
     File thefile(value);
@@ -86,26 +86,26 @@ Bool NewFile::valueOK(const String &value, String &error) const
 	choices(1) = "yes";
 	String remove = Choice::choice(text, choices);
 	if (remove == "yes") {
-	    Bool removed = False;
+	    bool removed = false;
 	    String extra_error = "";
 	    try {
 		if (thefile.isRegular()) {
 		    RegularFile rfile = thefile;
 		    rfile.remove();
-		    removed = True;
+		    removed = true;
 		} else if (thefile.isDirectory()) {
 		    // Assume that directories are tables.
 		    if (! Table::isWritable(value)) {
-			removed = False;
+			removed = false;
 			extra_error = "Table is not writable!";
 		    } else {
-			removed = False;
+			removed = false;
 			if (TableUtil::canDeleteTable(extra_error, value)) {
 			    try {
 				TableUtil::deleteTable(value);
-				removed = True;
+				removed = true;
 			    } catch (std::exception& xxx) {
-				removed = False;
+				removed = false;
 				extra_error = String("Error deleting table ")
 				    + value + ":" + xxx.what();
 			    } 
@@ -114,33 +114,33 @@ Bool NewFile::valueOK(const String &value, String &error) const
 		} else if (thefile.isSymLink()) {
 		    SymLink sfile = thefile;
 		    sfile.remove();
-		    removed = True;
+		    removed = true;
 		}
 	    } catch (std::exception& x) {
 		extra_error = x.what();
-		removed = False;
+		removed = false;
 	    } 
 	    if (!removed) {
-		retval = False;
+		retval = false;
 		error = String("Could not remove file ") + value;
 		if (extra_error != "") {
 		    error += String("(") + extra_error + ")";
 		}
 		error += ".";
 	    } else {
-		retval = True;
+		retval = true;
 		msg.message(String("Removed file ") + value + 
 	            " at users request").line(__LINE__).
 		    priority(LogMessage::NORMAL);
 		LogSink::postGlobally(msg);
 	    }
 	} else {
-	    retval = False;
+	    retval = false;
 	    error = String("File ") + value + 
 		" exists, and the user does not want to remove it.";
 	}
     } else {
-	retval = True;
+	retval = true;
     }
 
     return retval;

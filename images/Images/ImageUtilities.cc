@@ -58,12 +58,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-Bool ImageUtilities::pixToWorld (
+bool ImageUtilities::pixToWorld (
 	Vector<String>& sWorld,	const CoordinateSystem& cSysIn,
-	const Int& pixelAxis, const Vector<Int>& cursorAxes,
+	const int32_t& pixelAxis, const Vector<int32_t>& cursorAxes,
 	const IPosition& blc, const IPosition& trc,
-	const Vector<Double>& pixels,
-	const Int& prec, const Bool usePrecForMixed
+	const Vector<double>& pixels,
+	const int32_t& prec, const bool usePrecForMixed
 )
 //
 // This function converts pixel coordinates to world coordinates.
@@ -99,33 +99,33 @@ Bool ImageUtilities::pixToWorld (
 
 // CHeck blc,trc
 
-   if (blc.nelements()!=cSysIn.nPixelAxes() || trc.nelements()!=cSysIn.nPixelAxes()) return False;
+   if (blc.nelements()!=cSysIn.nPixelAxes() || trc.nelements()!=cSysIn.nPixelAxes()) return false;
 
 // Create pixel and world vectors for all pixel axes. Initialize pixel values
 // to reference pixel, but if an axis is a cursor axis (whose coordinate is
 // essentially being averaged) set the pixel to the mean pixel.
 
-   Vector<Double> pix(cSysIn.nPixelAxes());
-   Vector<Double> world(cSysIn.nPixelAxes());
+   Vector<double> pix(cSysIn.nPixelAxes());
+   Vector<double> world(cSysIn.nPixelAxes());
    pix = cSysIn.referencePixel(); 
-   Bool found;
-   uInt i;
+   bool found;
+   uint32_t i;
    for (i=0; i<pix.nelements(); i++) {
-     if (linearSearch(found, cursorAxes, Int(i), cursorAxes.nelements()) != -1) {
-        pix(i) = Double(blc(i) + trc(i)) / 2.0;
+     if (linearSearch(found, cursorAxes, int32_t(i), cursorAxes.nelements()) != -1) {
+        pix(i) = double(blc(i) + trc(i)) / 2.0;
      }
    }
          
             
 // Find the world axis for this pixel axis 
             
-   const Int worldAxis = cSysIn.pixelAxisToWorldAxis(pixelAxis);
+   const int32_t worldAxis = cSysIn.pixelAxisToWorldAxis(pixelAxis);
 
           
 // Convert to world and format 
 
    String formatUnits;
-   const uInt n1 = pixels.nelements();
+   const uint32_t n1 = pixels.nelements();
    sWorld.resize(n1);
 
 // Loop over list of pixel coordinates and convert to world
@@ -134,13 +134,13 @@ Bool ImageUtilities::pixToWorld (
       pix(pixelAxis) = pixels(i);
       if (cSysIn.toWorld(world,pix)) {
          sWorld(i) = cSysIn.format(formatUnits, Coordinate::DEFAULT, world(pixelAxis), 
-                                   worldAxis, True, True, prec, usePrecForMixed);
+                                   worldAxis, true, true, prec, usePrecForMixed);
       } else {
          sWorld(i) = "?";
       }
    }
 
-   return True;
+   return true;
 }
 
 String ImageUtilities::shortAxisName (const String& axisName)
@@ -171,16 +171,16 @@ String ImageUtilities::shortAxisName (const String& axisName)
 
 
 GaussianBeam ImageUtilities::makeFakeBeam(
-		LogIO& logIO, const CoordinateSystem& csys, Bool suppressWarnings
+		LogIO& logIO, const CoordinateSystem& csys, bool suppressWarnings
 	) {
-    Int dirCoordinate = csys.findCoordinate(Coordinate::DIRECTION);
+    int32_t dirCoordinate = csys.findCoordinate(Coordinate::DIRECTION);
     if (dirCoordinate==-1) {
         logIO << "CoordinateSystem does not contain "
             << "a DirectionCoordinate" << LogIO::EXCEPTION;
     }
     const DirectionCoordinate& dirCoord = csys.directionCoordinate(dirCoordinate);
 
-    Vector<Double> inc = dirCoord.increment();
+    Vector<double> inc = dirCoord.increment();
     Quantity majAx(abs(inc[0]), "rad");
     Quantity minAx(abs(inc[1]), "rad");
     Quantity pa(0,"rad");
@@ -201,8 +201,8 @@ void ImageUtilities::writeImage(
 		const TiledShape& mapShape,
 		const CoordinateSystem& coordinateInfo,
 		const String& imageName,
-		const Array<Float>& pixels, LogIO& log,
-		const Array<Bool>& maskPixels
+		const Array<float>& pixels, LogIO& log,
+		const Array<bool>& maskPixels
 ) {
 	// using pattern from ImageProxy
 	if (!maskPixels.empty()) {
@@ -211,7 +211,7 @@ void ImageUtilities::writeImage(
 				<< LogIO::EXCEPTION;
 		}
 	}
-	PagedImage<Float> *newImage = new PagedImage<Float>(
+	PagedImage<float> *newImage = new PagedImage<float>(
 			mapShape, coordinateInfo, imageName
 	);
 	if (newImage == 0) {
@@ -220,7 +220,7 @@ void ImageUtilities::writeImage(
 	}
 	newImage->put(pixels);
 	if (! maskPixels.empty()) {
-		newImage->makeMask("mask0", True, True).asMask().put(maskPixels);
+		newImage->makeMask("mask0", true, true).asMask().put(maskPixels);
 	}
 
 	log << LogIO::NORMAL << "Created image "
@@ -230,14 +230,14 @@ void ImageUtilities::writeImage(
 
 void ImageUtilities::getUnitAndDoppler(
 	String& xUnit, String& doppler,
-	const uInt axis, const CoordinateSystem& csys
+	const uint32_t axis, const CoordinateSystem& csys
 ) {
     xUnit = csys.worldAxisUnits()[axis];
     doppler = "";
-	Int specCoordIndex = csys.findCoordinate(Coordinate::SPECTRAL);
+	int32_t specCoordIndex = csys.findCoordinate(Coordinate::SPECTRAL);
     if (
     	specCoordIndex >= 0
-    	&& axis == (uInt)csys.pixelAxes(specCoordIndex)[0]
+    	&& axis == (uint32_t)csys.pixelAxes(specCoordIndex)[0]
     	&& ! csys.spectralCoordinate(specCoordIndex).velocityUnit().empty()
     ) {
     	SpectralCoordinate specCoord = csys.spectralCoordinate(specCoordIndex);
@@ -252,12 +252,12 @@ void ImageUtilities::copyAttributes (ImageAttrHandler& out,
                                      ImageAttrHandler& in)
 {
   Vector<String> groupNames = in.groupNames();
-  for (uInt i=0; i<groupNames.size(); ++i) {
+  for (uint32_t i=0; i<groupNames.size(); ++i) {
     ImageAttrGroup& inGroup  = in.openGroup (groupNames[i]);
     ImageAttrGroup& outGroup = out.createGroup (groupNames[i]);
     Vector<String> attrNames = inGroup.attrNames();
-    for (uInt rownr=0; rownr<inGroup.nrows(); ++rownr) {
-      for (uInt j=0; j<attrNames.size(); ++j) {
+    for (uint32_t rownr=0; rownr<inGroup.nrows(); ++rownr) {
+      for (uint32_t j=0; j<attrNames.size(); ++j) {
         outGroup.putData (attrNames[j], rownr,
                           inGroup.getData (attrNames[j], rownr),
                           inGroup.getUnit (attrNames[j]),

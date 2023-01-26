@@ -34,15 +34,15 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TiledShape::TiledShape()
-: itsTileDefined (True)
+: itsTileDefined (true)
 {}
 
 TiledShape::TiledShape (const IPosition& shape)
 : itsShape       (shape),
-  itsTileDefined (False)
+  itsTileDefined (false)
 {
-    uInt n = shape.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = shape.nelements();
+    for (uint32_t i=0; i<n; i++) {
 	if (shape(i) <= 0) {
 	    throw (AipsError ("TiledShape: shape has to be > 0"));
 	}
@@ -52,14 +52,14 @@ TiledShape::TiledShape (const IPosition& shape)
 TiledShape::TiledShape (const IPosition& shape, const IPosition& tileShape)
 : itsShape       (shape),
   itsTileShape   (tileShape),
-  itsTileDefined (True)
+  itsTileDefined (true)
 {
-    uInt n = shape.nelements();
+    uint32_t n = shape.nelements();
     if (tileShape.nelements() != n) {
 	throw (AipsError
                     ("TiledShape: #elements in shape and tileShape differ"));
     }
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
 	if (tileShape(i) <= 0) {
 	    throw (AipsError ("TiledShape: tileShape has to be > 0"));
 	}
@@ -91,36 +91,36 @@ TiledShape& TiledShape::operator= (const TiledShape& that)
 }
 
 
-IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
-					Double tolerance) const
+IPosition TiledShape::defaultTileShape (uint32_t nrPixelsPerTile,
+					double tolerance) const
 {
-    uInt n = itsShape.nelements();
-    Vector<Double> tol(n);
+    uint32_t n = itsShape.nelements();
+    Vector<double> tol(n);
     tol = tolerance;
     Vector<double> weight(n);
     weight = double(1);
     return defaultTileShape (nrPixelsPerTile, tol, weight);
 }
 
-IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
-					const Vector<Double>& tolerance,
-					const Vector<Double>& weight) const
+IPosition TiledShape::defaultTileShape (uint32_t nrPixelsPerTile,
+					const Vector<double>& tolerance,
+					const Vector<double>& weight) const
 {
-    uInt nrdim = itsShape.nelements();
+    uint32_t nrdim = itsShape.nelements();
     if (tolerance.nelements() != nrdim  ||  weight.nelements() != nrdim) {
 	throw (AipsError ("TiledShape::defaultTileShape: nelements mismatch"));
     }
     double nrLeft = nrPixelsPerTile;
     Vector<double> tmpShape(nrdim);
     IPosition tileShape(nrdim, 0);
-    uInt i;
-    Int j;
+    uint32_t i;
+    int32_t j;
     // Iterate until the tile shape is set nicely.
     // This is needed to prevent tile shape dimensions from underflow
     // or overflow.
-    while (True) {
+    while (true) {
 	double prod = 1;
-	uInt n = 0;
+	uint32_t n = 0;
 	for (i=0; i<nrdim; i++) {
 	    if (tileShape(i) == 0) {
 		prod *= itsShape(i) * weight(i);
@@ -134,7 +134,7 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
 	double factor = pow (nrLeft / prod, double(1) / n);
 	double maxDiff = 0;
 	double diff;
-	Int maxIndex = -1;
+	int32_t maxIndex = -1;
 	// Calculate the tile shape for the remaining dimensions.
 	// Determine the greatest difference in case of underflow/overflow.
 	// (note that the reciproke is used, thus in fact the minimum matters).
@@ -157,7 +157,7 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
 	if (maxDiff >= 1) {
 	    for (i=0; i<nrdim; i++) {
 		if (tileShape(i) == 0) {
-		    tileShape(i) = Int(tmpShape(i) + 0.5);   // round-off
+		    tileShape(i) = int32_t(tmpShape(i) + 0.5);   // round-off
 		}
 	    }
 	    break;
@@ -171,11 +171,11 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
 	}
     }
     // Return the found tile shape when fitting exactly.
-    Bool isFit = True;
-    Double size = 1;
+    bool isFit = true;
+    double size = 1;
     for (i=0; i<nrdim; i++) {
 	if (itsShape(i) % tileShape(i) != 0) {
-	    isFit = False;
+	    isFit = false;
 	}
 	size *= itsShape(i);
     }
@@ -192,12 +192,12 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     IPosition bestShape (tileShape);
     IPosition minShape (nrdim);
     IPosition maxShape (nrdim);
-    Double cubeSpace = 1;
+    double cubeSpace = 1;
     for (i=0; i<nrdim; i++) {
-	minShape(i) = Int (tileShape(i) * tolerance(i));
-	maxShape(i) = Int (tileShape(i) / tolerance(i) + 0.5);
+	minShape(i) = int32_t (tileShape(i) * tolerance(i));
+	maxShape(i) = int32_t (tileShape(i) / tolerance(i) + 0.5);
 	if (minShape(i) > maxShape(i)) {
-	    Int sav = minShape(i);
+	    int32_t sav = minShape(i);
 	    minShape(i) = maxShape(i);
 	    maxShape(i) = sav;
 	}
@@ -210,10 +210,10 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
 	cubeSpace *= itsShape(i);
     }
     // Find the shapes on each axis that will be tried.
-    Block<uInt> nval(nrdim, uInt(0));
-    PtrBlock<Block<Int>*> values(nrdim);
+    Block<uint32_t> nval(nrdim, uint32_t(0));
+    PtrBlock<Block<int32_t>*> values(nrdim);
     for (i=0; i<nrdim; i++) {
-	values[i] = new Block<Int> (maxShape(i) - minShape(i) + 1);
+	values[i] = new Block<int32_t> (maxShape(i) - minShape(i) + 1);
 	// First find exactly fitting shapes.
 	for (j=minShape(i); j<=maxShape(i); j++) {
 	    if (itsShape(i) % j == 0) {
@@ -232,26 +232,26 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     }
     // Now calculate the cost for all the possibilities.
     // Take the one with the lowest cost.
-    Block<uInt> ndone (nrdim, uInt(0));
+    Block<uint32_t> ndone (nrdim, uint32_t(0));
     IPosition tshape (nrdim);
     for (i=0; i<nrdim; i++) {
 	tshape(i) = (*values[i])[0];
     }
-    Double minCost = 1000000;
-    while (True) {
-	Int totalSize = 1;
-	Double totalSpace = 1;
-	Double costAxes = 0;
+    double minCost = 1000000;
+    while (true) {
+	int32_t totalSize = 1;
+	double totalSpace = 1;
+	double costAxes = 0;
 	for (i=0; i<nrdim; i++) {
 	    totalSize *= tshape(i);
-	    Int ntile = (itsShape(i) + tshape(i) - 1) / tshape(i);
+	    int32_t ntile = (itsShape(i) + tshape(i) - 1) / tshape(i);
 	    totalSpace *= ntile * tshape(i);
 	    costAxes += abs(tileShape(i) - tshape(i)) / double(tileShape(i));
 	}
-	Double waste = (totalSpace - cubeSpace) / cubeSpace;
-	Double diff  = abs(double(totalSize) -
+	double waste = (totalSpace - cubeSpace) / cubeSpace;
+	double diff  = abs(double(totalSize) -
 					   nrPixelsPerTile) / nrPixelsPerTile;
-	Double cost = (costAxes + 10*waste + diff);
+	double cost = (costAxes + 10*waste + diff);
 	if (cost < minCost) {
 	    bestShape = tshape;
 	    minCost = cost;
@@ -274,7 +274,7 @@ IPosition TiledShape::defaultTileShape (uInt nrPixelsPerTile,
     // number of tiles.
     for (i=0; i<nrdim; i++) {
 	delete values[i];
-	uInt nrtile = (itsShape(i) + bestShape(i) - 1) / bestShape(i);
+	uint32_t nrtile = (itsShape(i) + bestShape(i) - 1) / bestShape(i);
 	bestShape(i) = (itsShape(i) + nrtile - 1) / nrtile;
     }
     return bestShape;

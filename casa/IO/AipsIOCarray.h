@@ -68,14 +68,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	A ap[1000];
 //	AipsIO io ("file.data", ByteIO::New);
 //	io.putstart ("some",1);
-//	putAipsIO (io, uInt(1000), ap);
+//	putAipsIO (io, uint32_t(1000), ap);
 //	io.putend();
 //  }
 //  // Read the data back into a preallocated array.
 //  // First the number of elements have to be read.
 //  {
 //	A api[1000];
-//	uInt n;
+//	uint32_t n;
 //	AipsIO io ("file.data");
 //	io.getstart ("some");
 //	io >> n;
@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  // Delete the allocated array at the end.
 //  {
 //	A* api;
-//	uInt n;
+//	uint32_t n;
 //	AipsIO io ("file.data");
 //	io.getstart ("some");
 //	getnewAipsIO (io, n, &api);
@@ -101,12 +101,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Put a C-style array of n elements.
 // First the number of elements is put, thereafter all values.
 template<class T>
-void putAipsIO (AipsIO& aios, uInt n, const T* data);
+void putAipsIO (AipsIO& aios, uint32_t n, const T* data);
 
 // Get n elements into an already available C-style array.
 // The data buffer must be large enough to hold n values.
 template<class T>
-void getAipsIO (AipsIO& aios, uInt n, T* data);
+void getAipsIO (AipsIO& aios, uint32_t n, T* data);
 
 // Get elements into a C-style array to be allocated on the heap.
 // First the number of elements will be read. The array will be allocated
@@ -118,32 +118,32 @@ void getAipsIO (AipsIO& aios, uInt n, T* data);
 // overload on <src>T*& data</src> iso. <src>T** data</src>.
 // </note>
 template<class T>
-void getnewAipsIO (AipsIO& aios, uInt& n, T** data);
+void getnewAipsIO (AipsIO& aios, uint32_t& n, T** data);
 
 // </group>
 
 
 //# Specializations for the builtin data types.
 #define AIPSIO_FUNC_SPEC(T) \
-inline void putAipsIO (AipsIO& aios, uInt n, const T* data) \
+inline void putAipsIO (AipsIO& aios, uint32_t n, const T* data) \
     { aios.put (n, data); } \
-inline void getAipsIO (AipsIO& aios, uInt n, T* data) \
+inline void getAipsIO (AipsIO& aios, uint32_t n, T* data) \
     { aios.get (n, data); } \
-inline void getnewAipsIO (AipsIO& aios, uInt& n, T** data) \
+inline void getnewAipsIO (AipsIO& aios, uint32_t& n, T** data) \
     { aios.getnew (n, *data); }
 
 //# These macros expand to generate the appropriate inline functions
 //# for the built-in data types.
 
-AIPSIO_FUNC_SPEC(Bool)
-AIPSIO_FUNC_SPEC(Char)
-AIPSIO_FUNC_SPEC(uChar)
+AIPSIO_FUNC_SPEC(bool)
+AIPSIO_FUNC_SPEC(char)
+AIPSIO_FUNC_SPEC(unsigned char)
 AIPSIO_FUNC_SPEC(short)
 AIPSIO_FUNC_SPEC(unsigned short)
 AIPSIO_FUNC_SPEC(int)
 AIPSIO_FUNC_SPEC(unsigned int)
-AIPSIO_FUNC_SPEC(Int64)
-AIPSIO_FUNC_SPEC(uInt64)
+AIPSIO_FUNC_SPEC(int64_t)
+AIPSIO_FUNC_SPEC(uint64_t)
 AIPSIO_FUNC_SPEC(float)
 AIPSIO_FUNC_SPEC(double)
 AIPSIO_FUNC_SPEC(Complex)

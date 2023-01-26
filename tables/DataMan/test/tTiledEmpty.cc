@@ -45,7 +45,7 @@ void readTable(const TSMOption&, bool written);
 
 int main() {
   try {
-    for (uInt i=0; i<2; ++i) {
+    for (uint32_t i=0; i<2; ++i) {
       writeTable(TSMOption::Cache, i==0);
       readTable(TSMOption::Cache, i==0);
       readTable(TSMOption::Buffer, i==0);
@@ -78,7 +78,7 @@ void writeTable (const TSMOption& tsmOpt, bool write)
   SetupNewTable newtab("tTiledEmpty_tmp.data", td, Table::New);
   // Create a storage manager for it.
   TiledCellStMan sm1 ("TSMExample", tileShape);
-  Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+  Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
   table.addRow();
   ArrayColumn<float> col(table, "Data");
   col.setShape (0, cubeShape);

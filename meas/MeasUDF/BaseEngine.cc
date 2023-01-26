@@ -32,12 +32,12 @@ namespace casacore {
   BaseEngine::~BaseEngine()
   {}
   
-  void BaseEngine::adaptForConstant (const IPosition& shapeConstants, uInt nvalues)
+  void BaseEngine::adaptForConstant (const IPosition& shapeConstants, uint32_t nvalues)
   {
-    uInt size = shapeConstants.product();
+    uint32_t size = shapeConstants.product();
     // Set to shape if not empty.
     if (size > 0) {
-      itsIsConst = True;
+      itsIsConst = true;
       itsShape.resize (0);
       itsShape = shapeConstants;
       // Prepend with extra axis if needed.
@@ -62,14 +62,14 @@ namespace casacore {
     }
   }
   
-  void BaseEngine::extendBase (const BaseEngine& engine, Bool skipFirstAxis)
+  void BaseEngine::extendBase (const BaseEngine& engine, bool skipFirstAxis)
   {
     // An empty shape means it is a scalar or it is unknown.
     // ndim<0 means the dimensionality and shape are unknown.
     // ndim=0 means a scalar.
     // ndim>0 is a known dimensionality (but shape might be unknown).
     IPosition shp = engine.shape();
-    Int ndim = engine.ndim();
+    int32_t ndim = engine.ndim();
     IPosition shape;
     if (skipFirstAxis) {
       // Remove first axis (for e.g. position and direction).
@@ -94,14 +94,14 @@ namespace casacore {
       itsShape.append (shape);
     }
     if (! engine.isConstant()) {
-      itsIsConst = False;
+      itsIsConst = false;
     }
   }
 
-  void BaseEngine::deriveAttr (const Unit&, Int)
+  void BaseEngine::deriveAttr (const Unit&, int32_t)
   {}
 
-  void BaseEngine::setValueType (Int)
+  void BaseEngine::setValueType (int32_t)
   {}
 
   String BaseEngine::stripMeasType (const String& type)

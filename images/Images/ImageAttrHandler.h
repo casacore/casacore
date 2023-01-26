@@ -70,14 +70,14 @@ namespace casacore {
 // This example shows how to get attributes from an image.
 // <srcblock>
 //   // Open the image (done as read/write when having write access).
-//   PagedImage<Float> myimage ("image.name");
+//   PagedImage<float> myimage ("image.name");
 //   // Get access to the attibute handler.
 //   ImageAttrHandler& attrHandler = myimage.attrHandler();
 //   // Get the names of all attribute groups.
 //   Vector<String> groupNames = attrHandler.groupNames();
 //   // Create a new group and define an attribute defining Freq in Hz.
 //   ImageAttrGroup& newGroup = attrHandler.createGroup ("NEW_GROUP");
-//   newGroup.putAttr ("Freq", ValueHolder(Vector<Double>(1, 1e7)),
+//   newGroup.putAttr ("Freq", ValueHolder(Vector<double>(1, 1e7)),
 //                     Vector<String>(1,"Hz"));
 // </srcblock>
 // </example>
@@ -100,8 +100,8 @@ public:
   virtual void flush();
 
   // Test if the given attribute group is present.
-  // The default implementation returns False.
-  virtual Bool hasGroup (const String& name);
+  // The default implementation returns false.
+  virtual bool hasGroup (const String& name);
 
   // Get all attribute group names.
   // The default implementation returns an empty vector.

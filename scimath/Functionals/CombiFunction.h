@@ -72,15 +72,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // In the following example a second order polynomial is built from 3 separate
 // polynomials.
 // <srcblock>
-// Polynomial<Double> constant(0); 
-// Polynomial<Double> linear(1); 
-// Polynomial<Double> square(2);
+// Polynomial<double> constant(0); 
+// Polynomial<double> linear(1); 
+// Polynomial<double> square(2);
 // 
 // constant.setCoefficient(0, 1.0);   // 1
 // linear.setCoefficient(1, 1.0);     // x
 // square[2] = 1.0;     // x^2
 // 
-// CombiFunction<Double> combination;
+// CombiFunction<double> combination;
 // 
 // // form function, e0 + e1*x + e2*x^2
 // combination.addFunction(constant);
@@ -118,13 +118,13 @@ template <class T> class CombiFunction : public CombiParam<T> {
   // <group>
   CombiFunction(const CombiFunction<T> &other) :
     CombiParam<T>(other) {}
-  CombiFunction(const CombiFunction<T> &other, Bool) :
-    CombiParam<T>(other, True) {}
+  CombiFunction(const CombiFunction<T> &other, bool) :
+    CombiParam<T>(other, true) {}
   template <class W>
     CombiFunction(const CombiFunction<W> &other) : CombiParam<T>(other) {}
   template <class W>
-    CombiFunction(const CombiFunction<W> &other, Bool) :
-    CombiParam<T>(other, True) {}
+    CombiFunction(const CombiFunction<W> &other, bool) :
+    CombiParam<T>(other, true) {}
   // </group>
   // Make this object a (deep) copy of other.
   CombiFunction<T> &operator=(const CombiFunction<T> &other) {
@@ -146,7 +146,7 @@ template <class T> class CombiFunction : public CombiParam<T> {
     return new CombiFunction<typename FunctionTraits<T>::DiffType>(*this); }
   virtual Function<typename FunctionTraits<T>::BaseType> *cloneNonAD() const {
     return new CombiFunction<typename FunctionTraits<T>::BaseType>
-      (*this, True); }
+      (*this, true); }
   // </group>
 
   //# Make members of parent classes known.
@@ -205,7 +205,7 @@ public CombiParam<AutoDiff<T> > {
   virtual Function<typename FunctionTraits<AutoDiff<T> >::BaseType>
     *cloneNonAD() const {
     return new CombiFunction<typename FunctionTraits<AutoDiff<T> >::BaseType>
-      (*this, True); }
+      (*this, true); }
   // </group>
 
   //# Make members of parent classes known.

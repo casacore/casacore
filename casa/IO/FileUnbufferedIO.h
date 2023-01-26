@@ -70,13 +70,13 @@ class FileUnbufferedIO: public FiledesIO
 public: 
   // The constructor opens or creates a file.
   // For option NewNoReplace it is checked if the file does not exist yet.
-  // If useODirect=True and if supported by the OS, the file will be opened
+  // If useODirect=true and if supported by the OS, the file will be opened
   // with O_DIRECT which bypasses the kernel's file cache for more predictable
   // I/O behaviour. It requires the size and the alignment of the data read
   // or written to be a multiple of the the disk's logical block size.
   explicit FileUnbufferedIO (const RegularFile& fileName,
                              ByteIO::OpenOption option,
-                             Bool useODirect=False);
+                             bool useODirect=false);
 
   // The destructor closes the file.
   ~FileUnbufferedIO() override;
@@ -91,7 +91,7 @@ public:
   void reopenRW() override;
 
 private:
-  Bool itsUseODirect;
+  bool itsUseODirect;
 };
 
 

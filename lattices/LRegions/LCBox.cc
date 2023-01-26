@@ -76,40 +76,40 @@ LCBox::LCBox (const IPosition& blc, const IPosition& trc,
     fillBlcTrc();
 }
 
-LCBox::LCBox (const Vector<Float>& blc, const Vector<Float>& trc,
+LCBox::LCBox (const Vector<float>& blc, const Vector<float>& trc,
 	      const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsBlc        (blc.copy()),
   itsTrc        (trc.copy())
 {
-    uInt i;
+    uint32_t i;
     IPosition bl(blc.nelements());
     for (i=0; i<blc.nelements(); i++) {
-	bl(i) = Int(blc(i) + 0.5);
+	bl(i) = int32_t(blc(i) + 0.5);
     }
     IPosition tr(trc.nelements());
     for (i=0; i<trc.nelements(); i++) {
-	tr(i) = Int(trc(i) + 0.5);
+	tr(i) = int32_t(trc(i) + 0.5);
     }
     setSlicerBox (bl, tr);
 }
 
-LCBox::LCBox (const Vector<Double>& blc, const Vector<Double>& trc,
+LCBox::LCBox (const Vector<double>& blc, const Vector<double>& trc,
 	      const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsBlc        (blc.nelements()),
   itsTrc        (trc.nelements())
 {
-    uInt i;
+    uint32_t i;
     IPosition bl(blc.nelements());
     for (i=0; i<blc.nelements(); i++) {
 	itsBlc(i) = blc(i);
-	bl(i) = Int(blc(i) + 0.5);
+	bl(i) = int32_t(blc(i) + 0.5);
     }
     IPosition tr(trc.nelements());
     for (i=0; i<trc.nelements(); i++) {
 	itsTrc(i) = trc(i);
-	tr(i) = Int(trc(i) + 0.5);
+	tr(i) = int32_t(trc(i) + 0.5);
     }
     setSlicerBox (bl, tr);
 }
@@ -137,26 +137,26 @@ LCBox& LCBox::operator= (const LCBox& other)
 }
 
 
-Bool LCBox::operator== (const LCRegion& other) const
+bool LCBox::operator== (const LCRegion& other) const
 {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionFixed::operator== (other)) {
-	return False;
+	return false;
     }
     const LCBox& that = (const LCBox&)other;
     // Compare private data.
     if (itsBlc.nelements() != that.itsBlc.nelements()
     ||  itsTrc.nelements() != that.itsTrc.nelements()) {
-	return False;
+	return false;
     }
-    for (uInt i=0; i<itsBlc.nelements(); i++) {
+    for (uint32_t i=0; i<itsBlc.nelements(); i++) {
 	if (!near (itsBlc(i), that.itsBlc(i))
 	||  !near (itsTrc(i), that.itsTrc(i))) {
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
 LCRegion* LCBox::cloneRegion() const
@@ -164,13 +164,13 @@ LCRegion* LCBox::cloneRegion() const
     return new LCBox(*this);
 }
 
-LCRegion* LCBox::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCBox::doTranslate (const Vector<float>& translateVector,
 			      const IPosition& newLatticeShape) const
 {
-    uInt ndim = latticeShape().nelements();
-    Vector<Float> blc (itsBlc.copy());
-    Vector<Float> trc (itsTrc.copy());
-    for (uInt i=0; i<ndim; i++) {
+    uint32_t ndim = latticeShape().nelements();
+    Vector<float> blc (itsBlc.copy());
+    Vector<float> trc (itsTrc.copy());
+    for (uint32_t i=0; i<ndim; i++) {
         blc(i) += translateVector(i);
         trc(i) += translateVector(i);
     }
@@ -192,9 +192,9 @@ TableRecord LCBox::toRecord (const String&) const
     TableRecord rec;
     defineRecordFields (rec, className());
     // Write 1-relative.
-    rec.define ("oneRel", True);
-    rec.define ("blc", itsBlc + Float(1));
-    rec.define ("trc", itsTrc + Float(1));
+    rec.define ("oneRel", true);
+    rec.define ("blc", itsBlc + float(1));
+    rec.define ("trc", itsTrc + float(1));
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }
@@ -202,18 +202,18 @@ TableRecord LCBox::toRecord (const String&) const
 LCBox* LCBox::fromRecord (const TableRecord& rec, const String&)
 {
     // If 1-relative, subtract 1 from blc and trc.
-    Bool oneRel = rec.asBool ("oneRel");
-    Float off = (oneRel ? 1:0);
-    Array<Float> blc (rec.toArrayFloat ("blc"));
-    Array<Float> trc (rec.toArrayFloat ("trc"));
+    bool oneRel = rec.asBool ("oneRel");
+    float off = (oneRel ? 1:0);
+    Array<float> blc (rec.toArrayFloat ("blc"));
+    Array<float> trc (rec.toArrayFloat ("trc"));
     return new LCBox (blc-off, trc-off,
-		      Vector<Int>(rec.toArrayInt ("shape")));
+		      Vector<int32_t>(rec.toArrayInt ("shape")));
 }
 
 void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 {
     const IPosition& shape = latticeShape();
-    uInt ndim = shape.nelements();
+    uint32_t ndim = shape.nelements();
     if (blc.nelements() != ndim  ||  trc.nelements() != ndim) {
 	throw (AipsError ("LCBox::LCBox - "
 			  "length of blc and trc vectors have to match "
@@ -221,7 +221,7 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
     }
     IPosition bl(blc);
     IPosition tr(trc);
-    for (uInt i=0; i<ndim; i++) {
+    for (uint32_t i=0; i<ndim; i++) {
         if (bl(i) < 0) {
 	    bl(i) = 0;
 	}
@@ -243,31 +243,31 @@ void LCBox::setSlicerBox (const IPosition& blc, const IPosition& trc)
 void LCBox::fillBlcTrc()
 {
     const Slicer& sl = boundingBox();
-    uInt nd = sl.ndim();
+    uint32_t nd = sl.ndim();
     itsBlc.resize (nd);
     itsTrc.resize (nd);
-    for (uInt i=0; i<nd; i++) {
+    for (uint32_t i=0; i<nd; i++) {
 	itsBlc(i) = sl.start()(i);
 	itsTrc(i) = sl.end()(i);
     }
 }
 
-Bool LCBox::verify (IPosition& blc, IPosition& trc,
+bool LCBox::verify (IPosition& blc, IPosition& trc,
                     IPosition& inc, const IPosition& shape)
 {
    IPosition inBlc(blc);
    IPosition inTrc(trc);
    IPosition inInc(inc);
-   const Int nDim = shape.nelements();
+   const int32_t nDim = shape.nelements();
 
 // Check blc
 
-   const Int blcDim = blc.nelements();
-   blc.resize(nDim,True);
+   const int32_t blcDim = blc.nelements();
+   blc.resize(nDim,true);
    if (blcDim == 0) {
       blc = 0;
    } else {
-      for (Int i=0; i<nDim; i++) {
+      for (int32_t i=0; i<nDim; i++) {
          if (i > blcDim-1) {
             blc(i) = 0;
          } else {
@@ -278,12 +278,12 @@ Bool LCBox::verify (IPosition& blc, IPosition& trc,
 
 // Check trc
 
-   const Int trcDim = trc.nelements();
-   trc.resize(nDim,True);
+   const int32_t trcDim = trc.nelements();
+   trc.resize(nDim,true);
    if (trcDim == 0) {
       trc = shape- 1;
    } else {
-      for (Int i=0; i<nDim; i++) {
+      for (int32_t i=0; i<nDim; i++) {
          if (i > trcDim-1) {
             trc(i) = shape(i) - 1;
          } else {
@@ -296,12 +296,12 @@ Bool LCBox::verify (IPosition& blc, IPosition& trc,
 
 // Check increment
 
-   const Int incDim = inc.nelements();
-   inc.resize(nDim,True);
+   const int32_t incDim = inc.nelements();
+   inc.resize(nDim,true);
    if (incDim == 0) {
       inc = 1;
    } else {
-      for (Int i=0; i<nDim; i++) {
+      for (int32_t i=0; i<nDim; i++) {
          if (i > incDim-1) {
             inc(i) = 1;
          } else {
@@ -312,14 +312,14 @@ Bool LCBox::verify (IPosition& blc, IPosition& trc,
 
 // Check blc<trc 
 
-   for (Int i=0; i<nDim; i++) {
+   for (int32_t i=0; i<nDim; i++) {
       if (blc (i) > trc(i)) {
          blc(i) = 0;
          trc(i) = shape(i) - 1;
       }
    }
 //
-   Bool changed = (blc.nelements()!=inBlc.nelements() ||
+   bool changed = (blc.nelements()!=inBlc.nelements() ||
                          trc.nelements()!=inTrc.nelements() ||
                          inc.nelements()!=inInc.nelements());
    if (!changed) changed = (blc!=inBlc || trc!=inTrc || inc!=inInc);

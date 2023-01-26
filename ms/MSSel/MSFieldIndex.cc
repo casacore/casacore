@@ -44,8 +44,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //    field           const MSField&           Input MSField object
     // Output to private data:
     //    msFieldCols_p   MSFieldColumns         MSField columns accessor
-    //    fieldIds_p      Vector<Int>              Field id's
-    //    nrows_p         Int                      Number of rows
+    //    fieldIds_p      Vector<int32_t>              Field id's
+    //    nrows_p         int32_t                      Number of rows
     //
     // Generate an array of field id's, used in later queries
     nrows_p = msFieldCols_p.nrow();
@@ -55,10 +55,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern,
-						     const Bool regex)
+  Vector<int32_t> MSFieldIndex::matchFieldRegexOrPattern(const String& pattern,
+						     const bool regex)
   {
-    Vector<Int> IDs;
+    Vector<int32_t> IDs;
     IDs = matchFieldNameRegexOrPattern(pattern, regex);
     if (IDs.nelements()==0)
       IDs = matchFieldCodeRegexOrPattern(pattern, regex);
@@ -66,16 +66,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern,
-							 const Bool regex)
+  Vector<int32_t> MSFieldIndex::matchFieldNameRegexOrPattern(const String& pattern,
+							 const bool regex)
   {
     // Match a field name to a set of field id's
     // Input:
     //    name             const String&            Field name to match
     // Output:
-    //    matchFieldName   Vector<Int>              Matching field id's
+    //    matchFieldName   Vector<int32_t>              Matching field id's
     //
-    Int pos=0;
+    int32_t pos=0;
     Regex reg;
     //   String strippedPattern = stripWhite(pattern);
     const String& strippedPattern = pattern;
@@ -92,62 +92,62 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     //    cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
     Vector<String> names=msFieldCols_p.name().getColumn();
-    Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
+    Vector<bool> flagRow=msFieldCols_p.flagRow().getColumn();
     IPosition sh(names.shape());
-    LogicalArray maskArray(sh,False);
+    LogicalArray maskArray(sh,false);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
 	String sname = stripWhite(names(i)); // Strip leading and trailing blanks
-	Int ret=(sname.matches(reg,pos));
+	int32_t ret=(sname.matches(reg,pos));
 	maskArray(i) = ((ret>0) && !flagRow(i));
       }
     
-    MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
+    MaskedArray<int32_t> maskFieldID(fieldIds_p,maskArray);
     return maskFieldID.getCompressedArray();
   } 
 
-  Vector<Int> MSFieldIndex::maskFieldIDs(const Vector<Int>& ids)
+  Vector<int32_t> MSFieldIndex::maskFieldIDs(const Vector<int32_t>& ids)
   {
-    Vector<Int> tmp = set_intersection(fieldIds_p,ids); 
+    Vector<int32_t> tmp = set_intersection(fieldIds_p,ids); 
     return tmp;
   }
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern,
-							 const Bool regex)
+  Vector<int32_t> MSFieldIndex::matchFieldCodeRegexOrPattern(const String& pattern,
+							 const bool regex)
   {
     // Match a field name to a set of field id's
     // Input:
     //    name             const String&            Field name to match
     // Output:
-    //    matchFieldName   Vector<Int>              Matching field id's
+    //    matchFieldName   Vector<int32_t>              Matching field id's
     //
-    Int pos=0;
+    int32_t pos=0;
     Regex reg;
     if (regex) reg=pattern;
     else       reg=reg.fromPattern(pattern);
     
     //    cerr << "Pattern = " << pattern << "  Regex = " << reg.regexp() << endl;
-    Vector<Bool> flagRow=msFieldCols_p.flagRow().getColumn();
+    Vector<bool> flagRow=msFieldCols_p.flagRow().getColumn();
     Vector<String> codes=msFieldCols_p.code().getColumn();
     IPosition sh(codes.shape());
-    LogicalArray maskArray(sh,False);
+    LogicalArray maskArray(sh,false);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
-	Int ret=codes(i).matches(reg,pos);
+	int32_t ret=codes(i).matches(reg,pos);
 	maskArray(i) = ( (ret>0) && !flagRow(i));
       }
     
-    MaskedArray<Int> maskFieldID(fieldIds_p,maskArray);
+    MaskedArray<int32_t> maskFieldID(fieldIds_p,maskArray);
     return maskFieldID.getCompressedArray();
   } 
   
   //-------------------------------------------------------------------------
-  Vector<Int> MSFieldIndex::matchFieldNameOrCode(const String& name)
+  Vector<int32_t> MSFieldIndex::matchFieldNameOrCode(const String& name)
   {
-    Vector<Int> IDs;
+    Vector<int32_t> IDs;
     IDs = matchFieldName(name);
     if (IDs.nelements() == 0) 
       IDs = matchFieldCode(name);
@@ -155,17 +155,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldName(const String& name)
+  Vector<int32_t> MSFieldIndex::matchFieldName(const String& name)
   {
     // Match a field name to a set of field id's
     // Input:
     //    name             const String&            Field name to match
     // Output:
-    //    matchFieldName   Vector<Int>              Matching field id's
+    //    matchFieldName   Vector<int32_t>              Matching field id's
     //
     Vector<String> strippedNames = msFieldCols_p.name().getColumn();
     IPosition sh=strippedNames.shape();
-    for(Int i=0;i<sh(0);i++)
+    for(int32_t i=0;i<sh(0);i++)
       {
 	String name=strippedNames(i);
 	strippedNames(i) = stripWhite(name);
@@ -173,25 +173,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     LogicalArray maskArray = (strippedNames==name &&
 			      !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
 
     return maskFieldId.getCompressedArray();
   } 
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldCode(const String& code)
+  Vector<int32_t> MSFieldIndex::matchFieldCode(const String& code)
   {
     // Match a field code to a set of field id's
     // Input:
     //    code             const String&            Field code to match
     // Output:
-    //    matchFieldCode   Vector<Int>              Matching field id's
+    //    matchFieldCode   Vector<int32_t>              Matching field id's
     //
     Vector<String> strippedCodes = msFieldCols_p.code().getColumn();
-    Int n=strippedCodes.shape()(0);
+    int32_t n=strippedCodes.shape()(0);
 
-    for(Int i=0;i<n;i++)
+    for(int32_t i=0;i<n;i++)
       {
 	String name=strippedCodes(i);
 	strippedCodes(i) = stripWhite(name);
@@ -199,53 +199,53 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     LogicalArray maskArray = (strippedCodes==code &&
 			      !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
   } 
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchSubFieldName(const String& name)
+  Vector<int32_t> MSFieldIndex::matchSubFieldName(const String& name)
   {
     // Match a field name to a set of field id's
     // Input:
     //    name             const String&            Field name to match
     // Output:
-    //    matchFieldName   Vector<Int>              Matching field id's
+    //    matchFieldName   Vector<int32_t>              Matching field id's
     //
     
     Vector<String> fieldnames = msFieldCols_p.name().getColumn();
-    uInt len = fieldnames.nelements();
-    Vector<Bool> matchfieldnames(len, False);
-    for(uInt j = 0; j < len; j++) {
+    uint32_t len = fieldnames.nelements();
+    Vector<bool> matchfieldnames(len, false);
+    for(uint32_t j = 0; j < len; j++) {
       if(stripWhite(fieldnames[j]).contains(name))
-	matchfieldnames(j) = True;
+	matchfieldnames(j) = true;
     }
     LogicalArray maskArray( matchfieldnames && !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
   } 
   
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldName(const Vector<String>& names)
+  Vector<int32_t> MSFieldIndex::matchFieldName(const Vector<String>& names)
   {
     // Match a set of field names to a set of field id's
     // Input:
     //    names            const Vector<String>&    Field names to match
     // Output:
-    //    matchFieldNames  Vector<Int>              Matching field id's
+    //    matchFieldNames  Vector<int32_t>              Matching field id's
     //
-    Vector<Int> matchedFieldIds;
+    Vector<int32_t> matchedFieldIds;
     // Match each field name individually
-    for (uInt fld=0; fld<names.nelements(); fld++) {
+    for (uint32_t fld=0; fld<names.nelements(); fld++) {
       // Add to list of field id's
-      Vector<Int> currentMatch = matchFieldName(names(fld));
+      Vector<int32_t> currentMatch = matchFieldName(names(fld));
       if (currentMatch.nelements() > 0) {
-	Vector<Int> temp(matchedFieldIds);
+	Vector<int32_t> temp(matchedFieldIds);
 	matchedFieldIds.resize(matchedFieldIds.nelements() +
-			       currentMatch.nelements(), True);
+			       currentMatch.nelements(), true);
 	matchedFieldIds = concatenateArray(temp, currentMatch);
       }
     }
@@ -254,40 +254,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchSourceId(const Int& sourceId)
+  Vector<int32_t> MSFieldIndex::matchSourceId(const int32_t& sourceId)
   {
     // Match a source id to a set of field id's
     // Input:
-    //    sourceId        const Int&               Source id to match
+    //    sourceId        const int32_t&               Source id to match
     // Output:
-    //    matchSourceId   Vector<Int>              Matching field id's
+    //    matchSourceId   Vector<int32_t>              Matching field id's
     //
     LogicalArray maskArray = 
       (msFieldCols_p.sourceId().getColumn()==sourceId &&
        !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
   } 
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchSourceId(const Vector<Int>& sourceIds)
+  Vector<int32_t> MSFieldIndex::matchSourceId(const Vector<int32_t>& sourceIds)
   {
     // Match a set of source id's to a set of field id's
     // Input:
-    //    sourceIds       const Vector<Int>&       Source id's to match
+    //    sourceIds       const Vector<int32_t>&       Source id's to match
     // Output:
-    //    matchSourceIds  Vector<Int>              Matching field id's
+    //    matchSourceIds  Vector<int32_t>              Matching field id's
     //
-    Vector<Int> matchedFieldIds;
+    Vector<int32_t> matchedFieldIds;
     // Match each field name individually
-    for (uInt fld=0; fld<sourceIds.nelements(); fld++) {
+    for (uint32_t fld=0; fld<sourceIds.nelements(); fld++) {
       // Add to list of field id's
-      Vector<Int> currentMatch = matchSourceId(sourceIds(fld));
+      Vector<int32_t> currentMatch = matchSourceId(sourceIds(fld));
       if (currentMatch.nelements() > 0) {
-	Vector<Int> temp(matchedFieldIds);
+	Vector<int32_t> temp(matchedFieldIds);
 	matchedFieldIds.resize(matchedFieldIds.nelements() +
-			       currentMatch.nelements(), True);
+			       currentMatch.nelements(), true);
 	matchedFieldIds = concatenateArray(temp, currentMatch);
       }
     }
@@ -295,33 +295,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //-------------------------------------------------------------------------
-  Vector<Int> MSFieldIndex::matchFieldIDLT(const Int n)
+  Vector<int32_t> MSFieldIndex::matchFieldIDLT(const int32_t n)
   {
     LogicalArray maskArray = 
       (fieldIds_p < n &&
        !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
   }
 
   //-------------------------------------------------------------------------
-  Vector<Int> MSFieldIndex::matchFieldIDGT(const Int n)
+  Vector<int32_t> MSFieldIndex::matchFieldIDGT(const int32_t n)
   {
     LogicalArray maskArray = 
       (fieldIds_p > n &&
        !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
   }
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSFieldIndex::matchFieldIDGTAndLT(const Int n0, const Int n1)
+  Vector<int32_t> MSFieldIndex::matchFieldIDGTAndLT(const int32_t n0, const int32_t n1)
   {
     LogicalArray maskArray = 
       (fieldIds_p > n0 &&
        fieldIds_p < n1 &&
        !msFieldCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskFieldId(fieldIds_p, maskArray);
+    MaskedArray<int32_t> maskFieldId(fieldIds_p, maskArray);
     return maskFieldId.getCompressedArray();
   }
   //-------------------------------------------------------------------------
@@ -330,7 +330,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // names.  If a match is found, the element is replaced with the
   // matched name ID (sub-table row number).  Elements less than the
   // number of fields are left unmodified.
-  void MSFieldIndex::matchIdAgainstNames(Vector<Int>& list)
+  void MSFieldIndex::matchIdAgainstNames(Vector<int32_t>& list)
   {
     for (unsigned int i=0;i<list.nelements();i++)
       if ((unsigned int)list[i] >= fieldIds_p.nelements())
@@ -343,7 +343,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
   }
   //-------------------------------------------------------------------------
-  Vector<Int> MSFieldIndex::validateIndices(const Vector<Int>& ids)
+  Vector<int32_t> MSFieldIndex::validateIndices(const Vector<int32_t>& ids)
   {
     //
     // If any of the IDs is out of range, produce a warning message (and
@@ -351,10 +351,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // integar-as-name parsing (yuck) and produce a warning based on
     // the result.
     //
-    Vector<Int> modifiedIds(ids);  // Make a writeable copy
-    vector<Int> outOfRangeIdList, intAsNameIdList;
-    for (uInt i=0;i<ids.nelements();i++)
-      if ((ids[i] < 0) || (ids[i] > (Int)fieldIds_p.nelements()-1))
+    Vector<int32_t> modifiedIds(ids);  // Make a writeable copy
+    vector<int32_t> outOfRangeIdList, intAsNameIdList;
+    for (uint32_t i=0;i<ids.nelements();i++)
+      if ((ids[i] < 0) || (ids[i] > (int32_t)fieldIds_p.nelements()-1))
 	{
 	  ostringstream intAsName;
 	  outOfRangeIdList.push_back(ids[i]);
@@ -364,7 +364,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  // Integar-as-name parsing
 	  //
 	  intAsName << ids[i];
-	  Vector<Int> intAsNameID=matchFieldNameOrCode(intAsName.str());
+	  Vector<int32_t> intAsNameID=matchFieldNameOrCode(intAsName.str());
 	  if (intAsNameID.nelements() > 0)
 	    {
 	      modifiedIds[i]=intAsNameID[0];
@@ -376,15 +376,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	ostringstream Mesg;
 	Mesg << "Field Expression: Found out-of-range index(s) in the list (";
-	for (uInt i=0;i<outOfRangeIdList.size(); i++) Mesg << outOfRangeIdList[i] << " " ;
-	Mesg << ")" << " [TIP: Double-quoted strings forces name matching]";
+	for (uint32_t i=0;i<outOfRangeIdList.size(); i++) Mesg << outOfRangeIdList[i] << " " ;
+	Mesg << ")" << " [TIP: double-quoted strings forces name matching]";
 	logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
       }
     if (intAsNameIdList.size())
       {
 	ostringstream Mesg;
 	Mesg << "Field Expression: Successfully parsed \"";
-	for (uInt i=0;i<intAsNameIdList.size(); i++) Mesg << intAsNameIdList[i] << " " ;
+	for (uint32_t i=0;i<intAsNameIdList.size(); i++) Mesg << intAsNameIdList[i] << " " ;
 	Mesg << "\" as name(s) and failed for the rest (please ensure this is what you intended).";
 	logIO << Mesg.str() << LogIO::WARN << LogIO::POST;
       }

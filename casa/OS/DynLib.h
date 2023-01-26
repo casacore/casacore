@@ -97,12 +97,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <src>extern "C"</src>.
     // An exception is thrown if the library is loaded successfully, but
     // <src>funcName</src> could not be found.
-    // <br>If <src>closeOnDestruction=True</src>, the dynamic library is
+    // <br>If <src>closeOnDestruction=true</src>, the dynamic library is
     // closed on destruction of the DynLib object.
     DynLib (const std::string& library,
             const std::string& prefix=std::string(),
             const std::string& funcName=std::string(),
-            bool closeOnDestruction=True);
+            bool closeOnDestruction=true);
 
     // The same as above, but it is tried with and without the given version
     // (in that order).
@@ -110,14 +110,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             const std::string& prefix,
             const std::string& version,
             const std::string& funcName,
-            bool closeOnDestruction=True);
+            bool closeOnDestruction=true);
 
     // Load the dynamic library with the given name, prefix, and suffix.
     // If not loaded successfully, the internal handle is NULL.
-    // <br>If <src>closeOnDestruction=True</src>, the dynamic library is closed
+    // <br>If <src>closeOnDestruction=true</src>, the dynamic library is closed
     // when the DynLib object is destructed.
     DynLib (const std::string& library,
-            Bool closeOnDestruction,
+            bool closeOnDestruction,
             const std::string& prefix="lib",
 #ifdef __APPLE__
             const std::string& suffix=".dylib");
@@ -136,14 +136,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // function pointer. However, that problem cannot be solved.
     // For example:
     // <srcblock>
-    //   typedef Int MyFunc(Int, Int);
+    //   typedef int32_t MyFunc(int32_t, int32_t);
     //   void* initfunc = DynLib::getFunc (mod, ("register_"+name).c_str());
     //   if (initFunc) {
     //     MyFunc* func = reinterpret_cast<MyFunc*>(initfunc);
-    //     Int result = func(1,2);
+    //     int32_t result = func(1,2);
     //   }
     // </srcblock>
-    // casts to a function returning Int and taking two Ints.
+    // casts to a function returning int32_t and taking two Ints.
     // <br>A null pointer is returned if the function could not be found.
     void* getFunc (const std::string& funcName);
 
@@ -186,7 +186,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Handle to dynamic library; note that the pointer is not owned, so the
     //# generated copy ctor and assignment are fine.
     void*       itsHandle;
-    Bool        itsDoClose;
+    bool        itsDoClose;
     std::string itsError;
   };
 

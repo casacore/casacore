@@ -38,7 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 RegularFileIO::RegularFileIO (const RegularFile& regularFile,
                               ByteIO::OpenOption option,
-                              uInt bufferSize)
+                              uint32_t bufferSize)
 : itsOption      (option),
   itsRegularFile (regularFile)
 {
@@ -52,7 +52,7 @@ RegularFileIO::RegularFileIO (const RegularFile& regularFile,
 
 RegularFileIO::~RegularFileIO()
 {
-    detach (True);
+    detach (true);
     if (itsOption == ByteIO::Scratch  ||  itsOption == ByteIO::Delete) {
 	itsRegularFile.remove();
     }
@@ -60,11 +60,11 @@ RegularFileIO::~RegularFileIO()
 
 int RegularFileIO::openCreate (const RegularFile& file,
                                ByteIO::OpenOption option,
-                               Bool useODirect)
+                               bool useODirect)
 {
     const String& name = file.path().expandedName();
-    Bool create = False;
-    Int stropt;
+    bool create = false;
+    int32_t stropt;
     switch (option) {
     case ByteIO::Old:
 	stropt = O_RDONLY;
@@ -77,7 +77,7 @@ int RegularFileIO::openCreate (const RegularFile& file,
 	CASACORE_FALLTHROUGH;
     case ByteIO::New:
     case ByteIO::Scratch:
-        create = True;
+        create = true;
 	stropt = O_RDWR | O_CREAT | O_TRUNC;
 	break;
     case ByteIO::Append:
@@ -90,13 +90,13 @@ int RegularFileIO::openCreate (const RegularFile& file,
     default:
 	throw (AipsError ("RegularFileIO: unknown open option"));
     }
-    Int stropt_orig = stropt;
+    int32_t stropt_orig = stropt;
 #ifdef HAVE_O_DIRECT
     if (useODirect) {
       stropt |= O_DIRECT;
     }
 #else
-    useODirect = False;
+    useODirect = false;
 #endif
     // Open the file. Try it twice in case O_DIRECT fails.
     int fd;
@@ -132,8 +132,8 @@ void RegularFileIO::reopenRW()
 			  "not possible for file " +
 			  name + ": " + strerror(errno)));
     }
-    uInt bufsize = bufferSize();
-    detach (True);
+    uint32_t bufsize = bufferSize();
+    detach (true);
     attach (file, bufsize);
     // It can be reopened, so close and reopen.
     itsOption = ByteIO::Update;

@@ -88,10 +88,10 @@ class Record;
 // Iterating through that hypercube requires that some tiles are kept in
 // memory to avoid too many read operations. When iterating like
 // <srcblock>
-// for (uInt i3=0; i3<42; i3++)
-//   for (uInt i2=0; i2<30; i2++)
-//     for (uInt i1=0; i1<20; i1++)
-//       for (uInt i0=0; i0<12; i0++)
+// for (uint32_t i3=0; i3<42; i3++)
+//   for (uint32_t i2=0; i2<30; i2++)
+//     for (uint32_t i1=0; i1<20; i1++)
+//       for (uint32_t i0=0; i0<12; i0++)
 //         do something with data[i0,i1,i2,i3]
 // </srcblock>
 // it is clear that it is best to have a cache which can contain at least
@@ -164,7 +164,7 @@ public:
     // An exception is thrown if the data manager type is not any tiled
     // storage manager.
     ROTiledStManAccessor (const Table& table, const String& name,
-                          Bool byColumn=False);
+                          bool byColumn=false);
 
     virtual ~ROTiledStManAccessor();
 
@@ -181,14 +181,14 @@ public:
     // The maximum cache size given in this way is not persistent.
     // Only the maximum cache size given to the constructors of the tiled
     // storage managers, is persistent.
-    void setMaximumCacheSize (uInt nMiB);
+    void setMaximumCacheSize (uint32_t nMiB);
 
     // Get the maximum cache size (in MiB).
-    uInt maximumCacheSize() const;
+    uint32_t maximumCacheSize() const;
 
     // Get the current cache size (in buckets) for the hypercube in
     // the given row.
-    uInt cacheSize (rownr_t rownr) const;
+    uint32_t cacheSize (rownr_t rownr) const;
 
     // Get the hypercube shape of the data in the given row.
     const IPosition& hypercubeShape (rownr_t rownr) const;
@@ -197,28 +197,28 @@ public:
     const IPosition& tileShape (rownr_t rownr) const;
 
     // Get the bucket size (in bytes) of the hypercube in the given row.
-    uInt bucketSize (rownr_t rownr) const;
+    uint32_t bucketSize (rownr_t rownr) const;
 
     // Get coordinate and id values of the hypercube in the given row.
     const Record& valueRecord (rownr_t rownr) const;
 
     // Return the number of hypercubes.
-    uInt nhypercubes() const;
+    uint32_t nhypercubes() const;
 
     // Get the current cache size (in buckets) for the given hypercube.
-    uInt getCacheSize (uInt hypercube) const;
+    uint32_t getCacheSize (uint32_t hypercube) const;
 
     // Get the shape of the given hypercube.
-    const IPosition& getHypercubeShape (uInt hypercube) const;
+    const IPosition& getHypercubeShape (uint32_t hypercube) const;
 
     // Get the tile shape of the given hypercube.
-    const IPosition& getTileShape (uInt hypercube) const;
+    const IPosition& getTileShape (uint32_t hypercube) const;
 
      // Get the bucket size (in bytes) of the given hypercube.
-    uInt getBucketSize (uInt hypercube) const;
+    uint32_t getBucketSize (uint32_t hypercube) const;
 
     // Get coordinate and id values of the given hypercube.
-    const Record& getValueRecord (uInt hypercube) const;
+    const Record& getValueRecord (uint32_t hypercube) const;
 
     // Calculate the cache size (in buckets) for accessing the hypercube
     // containing the given row. It takes the maximum cache size into
@@ -240,9 +240,9 @@ public:
     // The non-specified <src>axisPath</src> parts get the natural order.
     // E.g. in the previous example axisPath=[2] defines the same path.
     // <group>
-    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
+    uint32_t calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
 			const IPosition& axisPath) const;
-    uInt calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
+    uint32_t calcCacheSize (rownr_t rownr, const IPosition& sliceShape,
 			const IPosition& windowStart,
 			const IPosition& windowLength,
 			const IPosition& axisPath) const;
@@ -250,29 +250,29 @@ public:
 
     // Set the cache size using the corresponding <src>calcCacheSize</src>
     // function mentioned above.
-    // <br>When forceSmaller is False, the cache is not resized when the
+    // <br>When forceSmaller is false, the cache is not resized when the
     // new size is smaller.
     // <group>
     void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
 		       const IPosition& axisPath,
-		       Bool forceSmaller = True);
+		       bool forceSmaller = true);
     void setCacheSize (rownr_t rownr, const IPosition& sliceShape,
 		       const IPosition& windowStart,
 		       const IPosition& windowLength,
 		       const IPosition& axisPath,
-		       Bool forceSmaller = True);
+		       bool forceSmaller = true);
     // </group>
 
     // Set the cache size for accessing the hypercube containing the given row.
     // When the give cache size exceeds the maximum cache size with more
     // than 10%, the maximum cache size is used instead.
-    // <br>When forceSmaller is False, the cache is not resized when the
+    // <br>When forceSmaller is false, the cache is not resized when the
     // new size is smaller.
-    void setCacheSize (rownr_t rownr, uInt nbuckets, Bool forceSmaller = True);
+    void setCacheSize (rownr_t rownr, uint32_t nbuckets, bool forceSmaller = true);
 
     // This version allows setting the tile cache for a particular hypercube.  This
     // is useful when iterating over the hypercubes in an StMan.
-    void setHypercubeCacheSize (uInt hypercube, uInt nbuckets, Bool forceSmaller = True);
+    void setHypercubeCacheSize (uint32_t hypercube, uint32_t nbuckets, bool forceSmaller = true);
 
     // Clear the caches used by the hypercubes in this storage manager.
     // It will flush the caches as needed and remove all buckets from them

@@ -133,29 +133,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // A size value -2 means reading that size from the aipsrc file.
     // The buffer size has to be given in bytes.
     // The maximum cache size has to be given in MibiBytes (1024*1024 bytes).
-    TSMOption (Option option=Aipsrc, Int bufferSize=-2,
-               Int maxCacheSizeMB=-2);
+    TSMOption (Option option=Aipsrc, int32_t bufferSize=-2,
+               int32_t maxCacheSizeMB=-2);
 
     // Fill the option in case Aipsrc or Default was given.
     // It is done as explained in the synopsis.
-    void fillOption (Bool newFile);
+    void fillOption (bool newFile);
 
     // Get the option.
     Option option() const
       { return itsOption; }
 
     // Get the buffer size.
-    Int bufferSize() const
+    int32_t bufferSize() const
       { return itsBufferSize; }
 
     // Get the maximum cache size (in MibiByte). -1 means undefined.
-    Int maxCacheSizeMB() const
+    int32_t maxCacheSizeMB() const
       { return itsMaxCacheSize; }
 
   private:
     Option itsOption;
-    Int    itsBufferSize;
-    Int    itsMaxCacheSize;
+    int32_t    itsBufferSize;
+    int32_t    itsMaxCacheSize;
   };
 
 } //# NAMESPACE CASACORE - END

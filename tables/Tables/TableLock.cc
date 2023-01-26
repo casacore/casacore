@@ -33,23 +33,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableLock::TableLock (LockOption option)
 : itsOption            (option),
-  itsReadLocking       (True),
+  itsReadLocking       (true),
   itsMaxWait           (0),
   itsInterval          (5),
-  itsIsDefaultLocking  (False),
-  itsIsDefaultInterval (True)
+  itsIsDefaultLocking  (false),
+  itsIsDefaultInterval (true)
 {
   init();
 }
 
 TableLock::TableLock (LockOption option, double inspectionInterval,
-		      uInt maxWait)
+		      uint32_t maxWait)
 : itsOption            (option),
-  itsReadLocking       (True),
+  itsReadLocking       (true),
   itsMaxWait           (maxWait),
   itsInterval          (inspectionInterval),
-  itsIsDefaultLocking  (False),
-  itsIsDefaultInterval (False)
+  itsIsDefaultLocking  (false),
+  itsIsDefaultInterval (false)
 {
   init();
 }
@@ -82,25 +82,25 @@ void TableLock::init()
 #ifdef AIPS_TABLE_NOLOCKING
   itsOption = NoLocking;
 #else
-  Bool opt;
-  AipsrcValue<Bool>::find (opt, "table.nolocking", False);
+  bool opt;
+  AipsrcValue<bool>::find (opt, "table.nolocking", false);
   if (opt) {
     itsOption = NoLocking;
   } else {
     if (itsOption == DefaultLocking) {
       itsOption           = AutoLocking;
-      itsIsDefaultLocking = True;
+      itsIsDefaultLocking = true;
     } else if (itsOption == AutoNoReadLocking) {
       itsOption      = AutoLocking;
-      itsReadLocking = False;
+      itsReadLocking = false;
     } else if (itsOption == UserNoReadLocking) {
       itsOption      = UserLocking;
-      itsReadLocking = False;
+      itsReadLocking = false;
     }
   }
 #endif
   if (itsOption == NoLocking) {
-    itsReadLocking = False;
+    itsReadLocking = false;
   }
 }
 
@@ -116,7 +116,7 @@ void TableLock::merge (const TableLock& that)
     if (itsIsDefaultLocking) {
       itsReadLocking = that.itsReadLocking;
     } else if (that.itsReadLocking) {
-      itsReadLocking = True;
+      itsReadLocking = true;
     }
     if (! that.itsIsDefaultInterval) {
       if (itsIsDefaultInterval  ||  itsInterval > that.itsInterval) {
@@ -126,13 +126,13 @@ void TableLock::merge (const TableLock& that)
   }
 }
 
-Bool TableLock::lockingDisabled()
+bool TableLock::lockingDisabled()
 {
 #ifdef AIPS_TABLE_NOLOCKING
-  return True;
+  return true;
 #else
-  Bool opt;
-  AipsrcValue<Bool>::find (opt, "table.nolocking", False);
+  bool opt;
+  AipsrcValue<bool>::find (opt, "table.nolocking", false);
   return opt;
 #endif
 }

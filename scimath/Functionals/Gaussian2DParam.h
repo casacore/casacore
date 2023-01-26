@@ -160,8 +160,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock> 
-// Gaussian2D<Double> g(10.0, 0.0, 0.0, 2.0, 1.0, 0.0);
-// Vector<Double> x(2);
+// Gaussian2D<double> g(10.0, 0.0, 0.0, 2.0, 1.0, 0.0);
+// Vector<double> x(2);
 // x(0) = 1.0; x(1) = 0.5;
 // cout << "g(" << x(0) << "," << x(1) << ") = " << g(x) << endl;
 // </srcblock>
@@ -223,7 +223,7 @@ public:
   //# Operators    
  
   // Variable dimensionality
-  virtual uInt ndim() const { return 2; }
+  virtual uint32_t ndim() const { return 2; }
 
   //# Member functions
   // Give name of function

@@ -32,7 +32,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableAttr::TableAttr()
-: openWritable_p (False)
+: openWritable_p (false)
 {}
 
 TableAttr::TableAttr (const Table& table)
@@ -41,12 +41,12 @@ TableAttr::TableAttr (const Table& table)
   lockOptions_p  (table.lockOptions())
 {}
 
-TableAttr::TableAttr (const String& name, Bool openWritable)
+TableAttr::TableAttr (const String& name, bool openWritable)
 : name_p         (name),
   openWritable_p (openWritable)
 {}
 
-TableAttr::TableAttr (const String& name, Bool openWritable,
+TableAttr::TableAttr (const String& name, bool openWritable,
 		      const TableLock& lockOptions)
 : name_p         (name),
   openWritable_p (openWritable),

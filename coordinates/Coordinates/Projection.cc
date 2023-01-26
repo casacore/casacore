@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	validate();
     }
     
-    Projection::Projection(Projection::Type which, const Vector<Double> &parameters)
+    Projection::Projection(Projection::Type which, const Vector<double> &parameters)
 	: which_p(which), parameters_p(parameters.copy())
     {
 	validate();
@@ -47,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     Projection::Projection(const String& ctypeLon,
 			   const String& ctypeLat,
-			   const Vector<Double>& parameters)
+			   const Vector<double>& parameters)
     {
 	String t1(ctypeLon);
 	String t2(ctypeLat);
@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
 	parameters_p = parameters;
 //
-	validate(True);
+	validate(true);
     }
     
     
@@ -195,7 +195,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	return retval;
     }
     
-    uInt Projection::nParameters(Projection::Type proj)
+    uint32_t Projection::nParameters(Projection::Type proj)
     {
 	// return maximum number of parameters
 	
@@ -233,7 +233,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	return 0; // NOTREACHED
     }
     
-    uInt Projection::nMinParameters(Projection::Type proj)
+    uint32_t Projection::nMinParameters(Projection::Type proj)
     {
 	// return minimum number of parameters
 	
@@ -271,32 +271,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	return 0; // NOTREACHED
     }
   
-    Bool Projection::near(const Projection &other, Double tol) const
+    bool Projection::near(const Projection &other, double tol) const
     {
-	if (which_p != other.which_p) return False;
-	if (parameters_p.nelements() != other.parameters_p.nelements()) return False;
+	if (which_p != other.which_p) return false;
+	if (parameters_p.nelements() != other.parameters_p.nelements()) return false;
 	
-	for (uInt i=0; i<parameters_p.nelements(); i++) {
-	    if (!casacore::near(parameters_p(i),other.parameters_p(i),tol)) return False;
+	for (uint32_t i=0; i<parameters_p.nelements(); i++) {
+	    if (!casacore::near(parameters_p(i),other.parameters_p(i),tol)) return false;
 	}
 	
-	return True;
+	return true;
     }
     
     
-    Bool Projection::isZenithal (Projection::Type proj)
+    bool Projection::isZenithal (Projection::Type proj)
     {
-	return Bool(proj==AZP || proj==TAN || proj==SIN ||
+	return bool(proj==AZP || proj==TAN || proj==SIN ||
 		    proj==STG || proj==ARC || proj==ZPN ||
 		    proj==ZEA || proj==AIR || proj==SZP);
     }
     
     
-    void Projection::validate(const Bool verbose)
+    void Projection::validate(const bool verbose)
     {	
-	uInt requiredSize = nParameters(which_p);
-	uInt minSize = nMinParameters(which_p);
-	uInt actualSize = parameters_p.nelements();
+	uint32_t requiredSize = nParameters(which_p);
+	uint32_t minSize = nMinParameters(which_p);
+	uint32_t actualSize = parameters_p.nelements();
 	if (actualSize < minSize) {
 	    throw(AipsError("Projection::validate() - there are missing"
 			    "obligatory parameters"));
@@ -315,7 +315,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    case AZP: 
 	    case SIN: 
 	    case ZPN:
-	        for (uInt i=actualSize; i<requiredSize; i++){
+	        for (uint32_t i=actualSize; i<requiredSize; i++){
 		    parameters_p(i) = 0.; // all default to 0
 		}
 		break;
@@ -324,7 +324,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		break;
 	    case CYP: 
 	    case CEA: 
-	        for (uInt i=actualSize; i<requiredSize; i++){
+	        for (uint32_t i=actualSize; i<requiredSize; i++){
 		    parameters_p(i) = 1.; // all default to 1.
 		}
 		break;
@@ -362,15 +362,15 @@ Projection::Type Projection::type (String& ctypeLong,
 {
 // Strip trailing spaces
 
-   Int i1 = ctypeLong.index(RXwhite,0);
+   int32_t i1 = ctypeLong.index(RXwhite,0);
    if (i1>=0) ctypeLong = String(ctypeLong.before(i1));
 //
    i1 = ctypeLat.index(RXwhite,0);
    if (i1>=0) ctypeLat = String(ctypeLat.before(i1));
 
-   Int l1 = ctypeLong.length();
-   Int l2 = ctypeLat.length();
-   Int n = 4;
+   int32_t l1 = ctypeLong.length();
+   int32_t l2 = ctypeLat.length();
+   int32_t n = 4;
    String proj1(ctypeLong.at(n, l1-4));
    String proj2(ctypeLat.at(n, l2-4));
         

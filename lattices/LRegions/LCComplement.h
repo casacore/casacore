@@ -73,9 +73,9 @@ public:
     LCComplement (const LCRegion& region1);
 
     // Construct from multiple regions given as a Block.
-    // When <src>takeOver</src> is True, the destructor will delete the
+    // When <src>takeOver</src> is true, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    LCComplement (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    LCComplement (bool takeOver, const PtrBlock<const LCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     LCComplement (const LCComplement& other);
@@ -86,7 +86,7 @@ public:
     LCComplement& operator= (const LCComplement& other);
 
     // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
  
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -108,11 +108,11 @@ protected:
     // Construct another LCRegion (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box and mask.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
     // Do the actual getting of the mask.
-    virtual void multiGetSlice (Array<Bool>& buffer, const Slicer& section);
+    virtual void multiGetSlice (Array<bool>& buffer, const Slicer& section);
 
 private:
     // Make the bounding box and determine the offsets.

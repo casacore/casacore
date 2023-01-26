@@ -34,12 +34,12 @@ int main() {
     try {
     	{
     		cout << "Text rotate2D()" << endl;
-    		Double x = 1;
-    		Double y = 0;
+    		double x = 1;
+    		double y = 0;
     		Quantity theta(30, "deg");
     		Quantity cumulative(30, "deg");
-    		for (uInt i=0; i<12; i++) {
-    			std::pair<Double, Double> rotated = Geometry::rotate2D(x, y, theta);
+    		for (uint32_t i=0; i<12; i++) {
+    			std::pair<double, double> rotated = Geometry::rotate2D(x, y, theta);
     			x = rotated.first;
     			y = rotated.second;
     			AlwaysAssert(nearAbs(x, cos(cumulative.getValue("rad"))), AipsError);

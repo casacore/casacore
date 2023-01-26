@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   DynLib::DynLib (const std::string& library,
-                  Bool closeOnDestruction,
+                  bool closeOnDestruction,
                   const std::string& prefix,
                   const std::string& suffix)
     : itsHandle  (0),
@@ -215,7 +215,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (! path.empty()) {
       // Split using : as delimiter.
       Vector<string> parts = strToVector (path, ':');
-      for (uInt j=0; j<parts.size(); ++j) {
+      for (uint32_t j=0; j<parts.size(); ++j) {
         if (! parts[j].empty()) {
           string libDir = parts[j] + '/';
           // Check if shared library can be found there.

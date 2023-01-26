@@ -105,11 +105,11 @@ public:
   // If the lattice has no masked-on elements, an empty vector is returned.
   // <group>
   static Vector<T> unmaskedFractile (const Lattice<T>& lattice,
-				     Float fraction,
-				     uInt smallSize = 4096*4096);
+				     float fraction,
+				     uint32_t smallSize = 4096*4096);
   static Vector<T> maskedFractile (const MaskedLattice<T>& lattice,
-				   Float fraction,
-				   uInt smallSize = 4096*4096);
+				   float fraction,
+				   uint32_t smallSize = 4096*4096);
   // </group>
 
   // Determine the values of the 2 elements at the given fractiles.
@@ -125,32 +125,32 @@ public:
   // If the lattice has no masked-on elements, an empty vector is returned.
   // <group>
   static Vector<T> unmaskedFractiles (const Lattice<T>& lattice,
-				      Float left, Float right,
-				      uInt smallSize = 4096*4096);
+				      float left, float right,
+				      uint32_t smallSize = 4096*4096);
   static Vector<T> maskedFractiles (const MaskedLattice<T>& lattice,
-				    Float left, Float right,
-				    uInt smallSize = 4096*4096);
+				    float left, float right,
+				    uint32_t smallSize = 4096*4096);
   // </group>
 
 private:
   // Determine the fractile for a small masked lattice.
   static Vector<T> smallMaskedFractile (const MaskedLattice<T>& lattice,
-					Float fraction);
+					float fraction);
 
   // Determine the fractiles for a small masked lattice.
   static Vector<T> smallMaskedFractiles (const MaskedLattice<T>& lattice,
-					 Float left, Float right);
+					 float left, float right);
 
   // Calculate the first histogram (with 10000 bins).
   // Also calculate the minimum and maximum. It returns the number
   // of masked-on values. Masked-off values are ignored.
   // <group>
-  static uInt maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
-			       Block<uInt>& hist,
+  static uint32_t maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
+			       Block<uint32_t>& hist,
 			       Block<T>& boundaries,
 			       const MaskedLattice<T>& lattice);
   static void unmaskedHistogram (T& stv, T& endv, T& minv, T& maxv,
-				 Block<uInt>& hist,
+				 Block<uint32_t>& hist,
 				 Block<T>& boundaries,
 				 const Lattice<T>& lattice);
   // </group>
@@ -166,10 +166,10 @@ private:
   // to minv and the last bin to maxv.
   // If the bins are getting too small (i.e. if stv is nearly endv), 0 is
   // returned. In that case endv contains the fractile.
-  static uInt findBin (uInt& fractileInx,
+  static uint32_t findBin (uint32_t& fractileInx,
 		       T& stv, T& endv,
 		       T minv, T maxv,
-		       const Block<uInt>& hist,
+		       const Block<uint32_t>& hist,
 		       const Block<T>& boundaries);
 };
 

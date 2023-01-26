@@ -73,10 +73,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // Constructing and using ArraySampledFunctionals
 // <srcblock> 
-// Array<Float> a(IPosition(4,4,3,20,1)); // Create an array
+// Array<float> a(IPosition(4,4,3,20,1)); // Create an array
 // ... Fill the array any way you like ... 
-// ArraySampledFunctional<Array<Float> >fa(a);
-// for(uInt i = 0; i < 20; i++)
+// ArraySampledFunctional<Array<float> >fa(a);
+// for(uint32_t i = 0; i < 20; i++)
 //  cout << "f(" << i << ") = " << fa(i) << endl;
 // // Each 'slice' is a 4 by 3 Matrix
 // </srcblock>
@@ -127,8 +127,8 @@ public:
 
   // Define the functions for the SampledFunction interface
   // <group>
-  virtual T operator()(const uInt & index) const;
-  virtual uInt nelements() const;
+  virtual T operator()(const uint32_t & index) const;
+  virtual uint32_t nelements() const;
   virtual ~ArraySampledFunctional();
   // </group>
 
@@ -136,14 +136,14 @@ public:
   // because it does not need to create as many temporary objects or copy the
   // Array data.
   // <group>
-  const T operator()(const uInt & index);
+  const T operator()(const uint32_t & index);
   // </group>
 
 private:
   T theRefData;
   IPosition theEnd;
-  uInt theLastAxis;
-  uInt theNelements;
+  uint32_t theLastAxis;
+  uint32_t theNelements;
 };
 
 

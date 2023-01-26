@@ -45,23 +45,23 @@ void createTables()
 {
   // Create a main table.
   TableDesc td("", "", TableDesc::Scratch);
-  td.addColumn (ScalarColumnDesc<Int>("RowNr"));
+  td.addColumn (ScalarColumnDesc<int32_t>("RowNr"));
   Table tab(TableUtil::createTable(mainName, td, Table::New));
   // Create 3 subtables (in different directories).
   TableDesc std("", "", TableDesc::Scratch);
-  std.addColumn (ScalarColumnDesc<Int>("col1"));
+  std.addColumn (ScalarColumnDesc<int32_t>("col1"));
   SetupNewTable newtab2(mainName + "/SubTab2a", std, Table::New);
   Table subtab2(newtab2, 2);
-  std.addColumn (ScalarColumnDesc<Int>("col2"));
+  std.addColumn (ScalarColumnDesc<int32_t>("col2"));
   SetupNewTable newtab3(mainName + "/subdata", std, Table::New);
   Table subtab3(newtab3, 3);
   // Store one subtable as a keyword in the main table, the
   // other as a column keyword.
   tab.rwKeywordSet().defineTable ("SubTab2", subtab2);
-  ScalarColumn<Int> col(tab, "RowNr");
+  ScalarColumn<int32_t> col(tab, "RowNr");
   col.rwKeywordSet().defineTable ("SubTab3", subtab3);
   // Store another subtable as a keyword in SubTab3.
-  std.addColumn (ScalarColumnDesc<Int>("col3"));
+  std.addColumn (ScalarColumnDesc<int32_t>("col3"));
   SetupNewTable newtab4(mainName + "/subdata/sub4", std,
                         Table::New);
   Table subtab4(newtab4, 4);
@@ -86,7 +86,7 @@ void readTables()
   Table subtab2 = tab.keywordSet().asTable ("SubTab2");
   AlwaysAssertExit (subtab2.nrow() == 2);
   AlwaysAssertExit (subtab2.tableDesc().ncolumn() == 1);
-  ScalarColumn<Int> col(tab, "RowNr");
+  ScalarColumn<int32_t> col(tab, "RowNr");
   Table subtab3 = col.keywordSet().asTable ("SubTab3");
   AlwaysAssertExit (subtab3.nrow() == 3);
   AlwaysAssertExit (subtab3.tableDesc().ncolumn() == 2);
@@ -135,11 +135,11 @@ void testDelete()
   }
   TableUtil::deleteTable (mainName + "::SubTab2::SubSubTab5");
   // Check it is deleted.
-  Bool ok = False;
+  bool ok = false;
   try {
     Table tab(TableUtil::openTable(mainName + "::SubTab2::SubSubTab5"));
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit (ok);
@@ -153,11 +153,11 @@ void testDelete()
     TableDesc td;
     Table tab(TableUtil::createTable(mainName + "::SubTab2::SubSubTab5",
                                      td, Table::NewNoReplace));
-    ok = False;
+    ok = false;
     try {
       TableUtil::deleteTable (mainName + "::SubTab2::SubSubTab5");
     } catch (const TableError& x) {
-      ok = True;
+      ok = true;
       cout << "Expected exception: " << x.what() << endl;
     }
     AlwaysAssertExit (ok);
@@ -194,43 +194,43 @@ void testErrors()
 {
   // Do some erroneous createTable calls.
   TableDesc td;
-  Bool ok = False;
+  bool ok = false;
   try {
     // SubTab22 does not exist
     TableUtil::createTable (mainName + "::SubTab22::SubSubTab4",
                             td, Table::New);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit (ok);
-  ok = False;
+  ok = false;
   try {
     // main33data does not exist.
     TableUtil::createTable ("tTableUtil_tmp/main33data::SubTab2::SubSubTab4",
                             td, Table::NewNoReplace);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit (ok);
-  ok = False;
+  ok = false;
   try {
     // SubSubTab4 already exists.
     TableUtil::createTable (mainName + "::SubTab2::SubSubTab4",
                             td, Table::NewNoReplace);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit (ok);
-  ok = False;
+  ok = false;
   try {
     // Empty part given.
     TableUtil::createTable ("tTableUtil_tmp/main3data::::SubTab2::SubSubTab4",
                             td, Table::New);
   } catch (const TableError& x) {
-    ok = True;
+    ok = true;
     cout << "Expected exception: " << x.what() << endl;
   }
   AlwaysAssertExit (ok);

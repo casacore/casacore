@@ -79,7 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // 
   const TableExprNode* MSAntennaParse::setTEN(TableExprNode& condition, 
                                               BaselineListType baselineType,
-                                              Bool negate)
+                                              bool negate)
   {
     if (baselineType==CrossOnly) 
       {
@@ -97,21 +97,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
 
-  const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds, 
+  const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<int32_t>& antennaIds, 
 							BaselineListType baselineType,
-							Bool negate) 
+							bool negate) 
   {
     TableExprNode condition;
     if ((baselineType==AutoCorrAlso) || (baselineType==AutoCorrOnly)) 
       {
-	Int n=antennaIds.nelements();
+	int32_t n=antennaIds.nelements();
 	if (n) 
 	  {
 	    // condition = ((ms()->col(colName1) == antennaIds[0]) &&
 	    // 		 (ms()->col(colName2) == antennaIds[0]));
 	    condition = ((column1AsTEN_p == antennaIds[0]) &&
 			 (column2AsTEN_p == antennaIds[0]));
-	    for (Int i=1;i<n;i++) 
+	    for (int32_t i=1;i<n;i++) 
 	      {
 		condition = condition || 
 		  ((column1AsTEN_p == antennaIds[i]) && (column2AsTEN_p == antennaIds[i]));
@@ -129,8 +129,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	   column2AsTEN_p.in(antennaIds)); //&& ms()->col(colName1) != ms()->col(colName2);
       }
     {
-      Int nrows_p = subTable().nrow();//ms()->antenna().nrow();
-      Vector<Int> a2(nrows_p);
+      int32_t nrows_p = subTable().nrow();//ms()->antenna().nrow();
+      Vector<int32_t> a2(nrows_p);
       a2.resize(nrows_p);
       indgen(a2);
 
@@ -143,21 +143,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return setTEN(condition, baselineType, negate);
   }
 
-  void MSAntennaParse::makeAntennaList(Vector<Int>& antList,const Vector<Int>& thisList,
-				       Bool negate)
+  void MSAntennaParse::makeAntennaList(Vector<int32_t>& antList,const Vector<int32_t>& thisList,
+				       bool negate)
   {
-    Vector<Int> a2;
+    Vector<int32_t> a2;
     if (negate) a2=-thisList;
     else        a2=thisList;
 
-    Vector<Int> tmp1(set_union(a2,antList));
+    Vector<int32_t> tmp1(set_union(a2,antList));
     antList.resize(tmp1.nelements());antList = tmp1;
   }
   
-  const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<Int>& antennaIds1,
-							const Vector<Int>& antennaIds2,
+  const TableExprNode* MSAntennaParse::selectAntennaIds(const Vector<int32_t>& antennaIds1,
+							const Vector<int32_t>& antennaIds2,
 							BaselineListType baselineType,
-							Bool negate)
+							bool negate)
   {
     TableExprNode condition;
 
@@ -177,12 +177,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna, 
 							   BaselineListType baselineType,
-							   Bool negate)
+							   bool negate)
   {
     //    MSAntennaIndex msAI(ms()->antenna());
     MSAntennaIndex msAI(subTable());
     
-    Vector<Int> ant=msAI.matchAntennaName(antenna);
+    Vector<int32_t> ant=msAI.matchAntennaName(antenna);
 
     //    TableExprNode condition =(ms()->col(colName1).in(ant) || ms()->col(colName2).in(ant));
     TableExprNode condition =(column1AsTEN_p.in(ant) || column2AsTEN_p.in(ant));
@@ -193,12 +193,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const TableExprNode* MSAntennaParse::selectNameOrStation(const Vector<String>& antenna1,
 							   const Vector<String>& antenna2,
 							   BaselineListType baselineType,
-							   Bool negate)
+							   bool negate)
   {
     //    MSAntennaIndex msAI(ms()->antenna());
     MSAntennaIndex msAI(subTable());
     
-    Vector<Int> a1=msAI.matchAntennaName(antenna1),
+    Vector<int32_t> a1=msAI.matchAntennaName(antenna1),
       a2 = msAI.matchAntennaName(antenna2);
 
     // TableExprNode condition =
@@ -214,7 +214,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const TableExprNode* MSAntennaParse::selectNameOrStation(const String& antenna1,
 							   const String& antenna2,
 							   BaselineListType baselineType,
-							   Bool negate)
+							   bool negate)
   {
     // TableExprNode condition =
     //   (ms()->col(colName1) >= antenna1 && ms()->col(colName2) <= antenna2) ||
@@ -228,18 +228,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   
   const TableExprNode* MSAntennaParse::selectLength
-  (const std::vector<double>& lengths, Bool negate)
+  (const std::vector<double>& lengths, bool negate)
   {
     TableExprNode selAnt1, selAnt2;
     Matrix<double> blength = getBaselineLengths();
-    Matrix<Bool> match(blength.shape());
-    match = False;
-    for (Int j=0; j<blength.shape()[1]; ++j) {
-      for (Int i=0; i<blength.shape()[0]; ++i) {
+    Matrix<bool> match(blength.shape());
+    match = false;
+    for (int32_t j=0; j<blength.shape()[1]; ++j) {
+      for (int32_t i=0; i<blength.shape()[0]; ++i) {
         double bl = blength(i,j);
-        for (uInt k=0; k<lengths.size(); k+=2) {
+        for (uint32_t k=0; k<lengths.size(); k+=2) {
           if (bl >= lengths[k]  &&  bl <= lengths[k+1]) {
-            match(i,j) = True;
+            match(i,j) = true;
           }
         }
       }
@@ -248,27 +248,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   const TableExprNode* MSAntennaParse::selectBLRegex
-  (const std::vector<String>& blRegex, Bool negate)
+  (const std::vector<String>& blRegex, bool negate)
   {
     TableExprNode selAnt1, selAnt2;
     Vector<String> names = ScalarColumn<String>(msSubTable_p, "NAME").getColumn();
-    Matrix<Bool> match(names.size(), names.size());
-    match = False;
+    Matrix<bool> match(names.size(), names.size());
+    match = false;
     for (std::vector<String>::const_iterator iter=blRegex.begin();
          iter!=blRegex.end(); ++iter) {
       // Create the Regex object. Take care of a possibly negated one.
       String str(*iter);
-      Bool neg = (str[0] == '^');
+      bool neg = (str[0] == '^');
       if (neg) {
         str = str.after(0);
       }
       Regex re(str);
       // Form all possible baseline names and see it they match.
-      for (uInt j=0; j<names.size(); ++j) {
-        for (uInt i=0; i<names.size(); ++i) {
+      for (uint32_t j=0; j<names.size(); ++j) {
+        for (uint32_t i=0; i<names.size(); ++i) {
           String bl = names[i] + '&' + names[j];
           if (bl.matches(re) != neg) {
-            match(i,j) = True;
+            match(i,j) = true;
           }
         }
       }
@@ -276,12 +276,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return makeBLNode (match, negate);
   }
 
-  const TableExprNode* MSAntennaParse::makeBLNode (const Matrix<Bool>& match,
-                                                   Bool negate)
+  const TableExprNode* MSAntennaParse::makeBLNode (const Matrix<bool>& match,
+                                                   bool negate)
   {
-    vector<Int> ant1, ant2;
-    for (Int i=0; i<match.shape()[0]; ++i) {
-      for (Int j=0; j<match.shape()[1]; ++j) {
+    vector<int32_t> ant1, ant2;
+    for (int32_t i=0; i<match.shape()[0]; ++i) {
+      for (int32_t j=0; j<match.shape()[1]; ++j) {
         if (match(i,j)) {
           ant1.push_back (i);
           ant2.push_back (j);
@@ -289,17 +289,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             IPosition newSize = baselineList.shape();
             int nb = newSize[0];
             newSize[0] = nb+1;
-            baselineList.resize (newSize,True);
+            baselineList.resize (newSize,true);
             baselineList(nb,0) = i;
             baselineList(nb,1) = j;
           }
         }
       }
     }
-    TableExprNode condition(False);
+    TableExprNode condition(false);
     if (ant1.size() > 0) {
-      Array<Int> arrAnt1(IPosition(1,ant1.size()), &(ant1[0]), SHARE);
-      Array<Int> arrAnt2(IPosition(1,ant1.size()), &(ant2[0]), SHARE);
+      Array<int32_t> arrAnt1(IPosition(1,ant1.size()), &(ant1[0]), SHARE);
+      Array<int32_t> arrAnt2(IPosition(1,ant1.size()), &(ant2[0]), SHARE);
       // condition = TableExprNode(any((ms()->col(colName1) == arrAnt1  &&
       //                                ms()->col(colName2) == arrAnt2)));
       condition = TableExprNode(any((column1AsTEN_p == arrAnt1  &&
@@ -316,7 +316,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // First get the antenna positions.
     vector<Vector<double> > antVec;
     antVec.reserve (msant.nrow());
-    for (uInt i=0; i<msant.nrow(); ++i) {
+    for (uint32_t i=0; i<msant.nrow(); ++i) {
       // Convert to ITRF and keep as x,y,z in m.
       antVec.push_back
         (MPosition::Convert(antCols.positionMeas()(i),
@@ -324,8 +324,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Fill in the length of each baseline.
     Matrix<double> blength(antVec.size(), antVec.size());
-    for (uInt j=0; j<antVec.size(); ++j) {
-      for (uInt i=0; i<antVec.size(); ++i) {
+    for (uint32_t j=0; j<antVec.size(); ++j) {
+      for (uint32_t i=0; i<antVec.size(); ++i) {
         Array<double> diff(antVec[i] - antVec[j]);
         blength(i,j) = sqrt(sum(diff*diff));
       }
@@ -346,23 +346,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return q.getValue (unit);
   }
 
-  Bool MSAntennaParse::addBaseline(const Matrix<Int>& baselist,
-                                   const Int ant1, const Int ant2, 
+  bool MSAntennaParse::addBaseline(const Matrix<int32_t>& baselist,
+                                   const int32_t ant1, const int32_t ant2, 
  				   BaselineListType baselineType)
   {
-    Bool doAutoCorr;
+    bool doAutoCorr;
     doAutoCorr = (baselineType==AutoCorrAlso) || (baselineType==AutoCorrOnly);
-    if ((ant1 == ant2) && (!doAutoCorr)) return False;
-    if ((baselineType==AutoCorrOnly) && (ant1!=ant2)) return False;
+    if ((ant1 == ant2) && (!doAutoCorr)) return false;
+    if ((baselineType==AutoCorrOnly) && (ant1!=ant2)) return false;
 
-    Int n=baselist.shape()(0);
-    for (Int i=0;i<n;i++) {
+    int32_t n=baselist.shape()(0);
+    for (int32_t i=0;i<n;i++) {
       if (((baselist(i,0)==ant1) && (baselist(i,1)==ant2)) ||
           ((baselist(i,1)==ant1) && (baselist(i,0)==ant2))) {
-        return False;
+        return false;
       }
     }
-    return True;
+    return true;
   }
 
   //
@@ -370,25 +370,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // antenna1 and antenna2.  The baselines list is appended to the
   // existing list.  The required sizing could be done better.
   //
-  void MSAntennaParse::makeBaselineList(const Vector<Int>& a1,
-                                        const Vector<Int>& a2, 
-					Matrix<Int>& baselist, 
+  void MSAntennaParse::makeBaselineList(const Vector<int32_t>& a1,
+                                        const Vector<int32_t>& a2, 
+					Matrix<int32_t>& baselist, 
 					BaselineListType baselineType,
-					Bool /*negate*/)
+					bool /*negate*/)
   {
-    Int n1,n2,nb0;
+    int32_t n1,n2,nb0;
     n1=a1.nelements();  n2=a2.nelements();
     nb0=baselist.shape()(0);
     IPosition newSize(2,nb0,2);
 
-    for (Int i1=0;i1<n1;i1++) {
+    for (int32_t i1=0;i1<n1;i1++) {
       for (int i2=0;i2<n2;i2++) {
-        Int ant1, ant2;
+        int32_t ant1, ant2;
         ant1=a1[i1]; ant2=a2[i2];
         if (addBaseline(baselist,ant1,ant2,baselineType)) {
           nb0++;
           newSize[0]=nb0;
-          baselist.resize(newSize,True);
+          baselist.resize(newSize,true);
           baselist(nb0-1,0)=ant1;
           baselist(nb0-1,1)=ant2;
         }

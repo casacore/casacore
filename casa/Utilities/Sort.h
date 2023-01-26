@@ -62,7 +62,7 @@ public:
     // Define a sort key in a given data array using the indicated
     // comparison object, stride and sort order.
     SortKey (const void* data, const CountedPtr<BaseCompare>&,
-             uInt increment, int order);
+             uint32_t increment, int order);
 
     // Copy constructor (copy semantics).
     SortKey (const SortKey&);
@@ -75,8 +75,8 @@ public:
     // Try if GenSort can be used for this single key.
     // If it succeeds, it returns the resulting number of elements.
     // Otherwise it returns 0.
-    uInt tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const;
-    uInt64 tryGenSort (Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const;
+    uint32_t tryGenSort (Vector<uint32_t>& indexVector, uint32_t nrrec, int opt) const;
+    uint64_t tryGenSort (Vector<uint64_t>& indexVector, uint64_t nrrec, int opt) const;
 
     // Get the sort order.
     int order() const
@@ -88,7 +88,7 @@ protected:
     // address of first data point
     const void*       data_p;
     // increment for next data point
-    uInt              incr_p;
+    uint32_t              incr_p;
     // comparison object; use CountedPtr for memory management
     CountedPtr<BaseCompare> ccmpObj_p;
     // comparison object; use raw pointer for performance
@@ -175,9 +175,9 @@ protected:
 //    Sort sort;
 //    sort.sortKey (idata, TpInt);                       // define 1st sort key
 //    sort.sortKey (ddata, TpDouble,0,Sort::Descending); // define 2nd sort key
-//    Vector<uInt> inx;
+//    Vector<uint32_t> inx;
 //    sort.sort (inx, nrdata);
-//    for (uInt i=0; i<nrdata; i++) {                    // show sorted data
+//    for (uint32_t i=0; i<nrdata; i++) {                    // show sorted data
 //        cout << idata[inx[i]] << " " << ddata[inx[i]] << endl;
 //    }
 // </srcblock>
@@ -193,7 +193,7 @@ protected:
 //         String as;
 //         double ad;
 //    }
-//    Vector<uInt> inx;
+//    Vector<uint32_t> inx;
 //    Sort sort (tsarr, sizeof(Ts));
 //    sort.sortKey ((char*)&tsarr[0].ad - (char*)tsarr, TpDouble);
 //    sort.sortKey ((char*)&tsarr[0].as - (char*)tsarr, TpString,
@@ -210,7 +210,7 @@ protected:
 //         String as;
 //         double ad;
 //    }
-//    Vector<uInt> inx;
+//    Vector<uint32_t> inx;
 //    Sort sort;
 //    sort.sortKey (&tsarr[0].ad, TpDouble, sizeof(Ts));
 //    sort.sortKey (&tsarr[0].as, TpString, sizeof(Ts), Sort::Descending);
@@ -235,7 +235,7 @@ protected:
 //        return 0;
 //      }
 //    };
-//    Vector<uInt> inx;
+//    Vector<uint32_t> inx;
 //    Sort sort;
 //    sort.sortKey (tsarr, compareTs, sizeof(Ts)); 
 //    sort.sort (inx, nrts);
@@ -265,7 +265,7 @@ public:
     // when an offset is given to the <src>sortKey</src> functions.
     // You can still pass additional data arrays to the
     // <src>sortKey</src> functions.
-    Sort (const void* data, uInt elementSize);
+    Sort (const void* data, uint32_t elementSize);
 
     // Copy constructor (copy semantics).
     Sort (const Sort&);
@@ -308,12 +308,12 @@ public:
     // single argument: the offset of the key in each element of the array.
     //
     // <group>
-    void sortKey (const void* data, DataType, uInt increment = 0,
+    void sortKey (const void* data, DataType, uint32_t increment = 0,
 		  Order = Ascending);
     void sortKey (const void* data, const CountedPtr<BaseCompare>&,
-                  uInt increment, Order = Ascending);
-    void sortKey (uInt offset, DataType, Order = Ascending);
-    void sortKey (uInt offset, const CountedPtr<BaseCompare>&,
+                  uint32_t increment, Order = Ascending);
+    void sortKey (uint32_t offset, DataType, Order = Ascending);
+    void sortKey (uint32_t offset, const CountedPtr<BaseCompare>&,
                   Order = Ascending);
     // </group>
 
@@ -323,10 +323,10 @@ public:
     // is resized to that number.
     // <br> By default it'll try if the faster GenSortIndirect can be used
     // if a sort on a single key is used.
-    uInt sort (Vector<uInt>& indexVector, uInt nrrec,
-               int options = DefaultSort, Bool tryGenSort = True) const;
-    uInt64 sort (Vector<uInt64>& indexVector, uInt64 nrrec,
-                 int options = DefaultSort, Bool tryGenSort = True) const;
+    uint32_t sort (Vector<uint32_t>& indexVector, uint32_t nrrec,
+               int options = DefaultSort, bool tryGenSort = true) const;
+    uint64_t sort (Vector<uint64_t>& indexVector, uint64_t nrrec,
+                 int options = DefaultSort, bool tryGenSort = true) const;
 
     // Get all unique records in a sorted array. The array order is
     // given in the indexVector (as possibly returned by the sort function).
@@ -345,24 +345,24 @@ public:
     // uniqueVector, and for each unique sorting group indicates the index
     // of the keyword that will change at the end of the group.
     // <group>
-    uInt unique (Vector<uInt>& uniqueVector, uInt nrrec) const;
-    uInt unique (Vector<uInt>& uniqueVector,
-                 const Vector<uInt>& indexVector) const;
-    uInt unique (Vector<uInt>& uniqueVector,
+    uint32_t unique (Vector<uint32_t>& uniqueVector, uint32_t nrrec) const;
+    uint32_t unique (Vector<uint32_t>& uniqueVector,
+                 const Vector<uint32_t>& indexVector) const;
+    uint32_t unique (Vector<uint32_t>& uniqueVector,
                  Vector<size_t>& changeKey,
-                 const Vector<uInt>& indexVector) const;
-    uInt64 unique (Vector<uInt64>& uniqueVector, uInt64 nrrec) const;
-    uInt64 unique (Vector<uInt64>& uniqueVector,
-                   const Vector<uInt64>& indexVector) const;
-    uInt64 unique (Vector<uInt64>& uniqueVector,
+                 const Vector<uint32_t>& indexVector) const;
+    uint64_t unique (Vector<uint64_t>& uniqueVector, uint64_t nrrec) const;
+    uint64_t unique (Vector<uint64_t>& uniqueVector,
+                   const Vector<uint64_t>& indexVector) const;
+    uint64_t unique (Vector<uint64_t>& uniqueVector,
                    Vector<size_t>& changeKey,
-                   const Vector<uInt64>& indexVector) const;
+                   const Vector<uint64_t>& indexVector) const;
     // </group>
 
 private:
     template<typename T>
     T doSort (Vector<T>& indexVector, T nrrec,
-              int options = DefaultSort, Bool tryGenSort = True) const;
+              int options = DefaultSort, bool tryGenSort = true) const;
 
     template <typename T>
     T doUnique (Vector<T>& uniqueVector, T nrrec) const;
@@ -377,7 +377,7 @@ private:
 
     // Add a sort key giving a data type and stride or the sort key.
     // <group>
-    void addKey (const void* data, DataType, uInt increment, int options);
+    void addKey (const void* data, DataType, uint32_t increment, int options);
     void addKey (SortKey*);
     // </group>
 
@@ -443,7 +443,7 @@ private:
     PtrBlock<SortKey*> keys_p;                    //# keys to sort on
     size_t             nrkey_p;                   //# #sort-keys
     const void*        data_p;                    //# pointer to data records
-    uInt               size_p;                    //# size of data record
+    uint32_t               size_p;                    //# size of data record
     int                order_p;                   //# -1=asc 0=mixed 1=desc
 };
 

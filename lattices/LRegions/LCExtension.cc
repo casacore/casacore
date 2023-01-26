@@ -40,13 +40,13 @@ LCExtension::LCExtension()
 LCExtension::LCExtension (const LCRegion& region,
 			  const IPosition& extendAxes,
 			  const LCBox& extendBox)
-: LCRegionMulti (True, region.cloneRegion())
+: LCRegionMulti (true, region.cloneRegion())
 {
     // Fill the other members variables and determine the bounding box.
     fill (extendAxes, extendBox);
 }
 
-LCExtension::LCExtension (Bool takeOver,
+LCExtension::LCExtension (bool takeOver,
 			  const LCRegion* region,
 			  const IPosition& extendAxes,
 			  const LCBox& extendBox)
@@ -79,21 +79,21 @@ LCExtension& LCExtension::operator= (const LCExtension& other)
     return *this;
 }
 
-Bool LCExtension::operator== (const LCRegion& other) const
+bool LCExtension::operator== (const LCRegion& other) const
 {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionMulti::operator== (other)) {
-	return False;
+	return false;
     }
     const LCExtension& that = (const LCExtension&)other;
     // Check the private data
     if (! itsExtendAxes.isEqual (that.itsExtendAxes)
     ||  ! itsRegionAxes.isEqual (that.itsRegionAxes)
     ||  !(itsExtendBox == that.itsExtendBox)) {
-	return False;
+	return false;
     }
-    return True;
+    return true;
 }
  
 
@@ -102,27 +102,27 @@ LCRegion* LCExtension::cloneRegion() const
     return new LCExtension (*this);
 }
 
-LCRegion* LCExtension::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCExtension::doTranslate (const Vector<float>& translateVector,
 				    const IPosition& newLatticeShape) const
 {
-    uInt i;
+    uint32_t i;
     // First translate the extendBox.
     // Take appropriate elements from the vectors.
-    uInt nre = itsExtendAxes.nelements();
-    Vector<Float> boxTransVec (nre);
+    uint32_t nre = itsExtendAxes.nelements();
+    Vector<float> boxTransVec (nre);
     IPosition boxLatShape (nre);
     for (i=0; i<nre; i++) {
-	uInt axis = itsExtendAxes(i);
+	uint32_t axis = itsExtendAxes(i);
 	boxTransVec(i) = translateVector(axis);
 	boxLatShape(i) = newLatticeShape(axis);
     }
     LCBox* boxPtr = (LCBox*)(itsExtendBox.translate (boxTransVec, boxLatShape));
     // Now translate the region.
-    uInt nrr = itsRegionAxes.nelements();
-    Vector<Float> regTransVec (nrr);
+    uint32_t nrr = itsRegionAxes.nelements();
+    Vector<float> regTransVec (nrr);
     IPosition regLatShape (nrr);
     for (i=0; i<nrr; i++) {
-	uInt axis = itsRegionAxes(i);
+	uint32_t axis = itsRegionAxes(i);
 	regTransVec(i) = translateVector(axis);
 	regLatShape(i) = newLatticeShape(axis);
     }
@@ -162,8 +162,8 @@ LCExtension* LCExtension::fromRecord (const TableRecord& rec,
     regPtr = LCRegion::fromRecord (rec.asRecord("region"), tableName);
     LCBox* boxPtr = 0;
     boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"), tableName));
-    LCExtension* extPtr = new LCExtension (True, regPtr,
-					  Vector<Int>(rec.toArrayInt ("axes")),
+    LCExtension* extPtr = new LCExtension (true, regPtr,
+					  Vector<int32_t>(rec.toArrayInt ("axes")),
 					  *boxPtr);
     delete boxPtr;
     return extPtr;
@@ -171,14 +171,14 @@ LCExtension* LCExtension::fromRecord (const TableRecord& rec,
 
 void LCExtension::fillRegionAxes()
 {
-    uInt nre = itsExtendAxes.nelements();
-    uInt nrr = region().ndim();
-    uInt nrdim = nre+nrr;
+    uint32_t nre = itsExtendAxes.nelements();
+    uint32_t nrr = region().ndim();
+    uint32_t nrdim = nre+nrr;
     // allAxes will get the remaining (thus region) axes at the end.
     IPosition allAxes = IPosition::makeAxisPath (nrdim, itsExtendAxes);
     itsRegionAxes.resize (nrr);
-    for (uInt i=nre; i<nrdim; i++) {
-        uInt axis = allAxes(i);
+    for (uint32_t i=nre; i<nrdim; i++) {
+        uint32_t axis = allAxes(i);
 	itsRegionAxes(i-nre) = axis;
     }
 }
@@ -189,7 +189,7 @@ void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
     // They do not need to be in ascending order, but duplicates are
     // not allowed. 
     IPosition regionShape = region().shape();
-    uInt nre = extendAxes.nelements();
+    uint32_t nre = extendAxes.nelements();
     if (nre == 0) {
 	throw (AipsError ("LCExtension::LCExtension - "
 			  "no extend axes have been specified"));
@@ -203,13 +203,13 @@ void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
     // So sort them and fill itsExtendAxes and itsExtendBox.
     itsExtendAxes.resize (nre);
     IPosition boxLatShape(nre);
-    Vector<Float> boxLatBlc(nre);
-    Vector<Float> boxLatTrc(nre);
-    Vector<uInt> reginx(nre);
-    GenSortIndirect<ssize_t,uInt>::sort (reginx, extendAxes.storage(), nre);
-    Int first = -1;
-    for (uInt i=0; i<nre; i++) {
-        uInt axis = reginx(i);
+    Vector<float> boxLatBlc(nre);
+    Vector<float> boxLatTrc(nre);
+    Vector<uint32_t> reginx(nre);
+    GenSortIndirect<ssize_t,uint32_t>::sort (reginx, extendAxes.storage(), nre);
+    int32_t first = -1;
+    for (uint32_t i=0; i<nre; i++) {
+        uint32_t axis = reginx(i);
 	itsExtendAxes(i) = extendAxes(axis);
 	boxLatShape(i) = extendBox.latticeShape()(axis);
 	boxLatBlc(i) = extendBox.blc()(axis);
@@ -226,16 +226,16 @@ void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
     fillRegionAxes();
     // Make up the lattice shape from the region and box latticeshape.
     // Fill the bounding box from blc/trc in region and box.
-    uInt nrr = itsRegionAxes.nelements();
-    uInt nrdim = nre+nrr;
+    uint32_t nrr = itsRegionAxes.nelements();
+    uint32_t nrdim = nre+nrr;
     IPosition latShape(nrdim);
     IPosition blc (nrdim);
     IPosition trc (nrdim);
     const IPosition& regionShp = region().latticeShape();
     const IPosition& regionBlc = region().boundingBox().start();
     const IPosition& regionTrc = region().boundingBox().end();
-    for (uInt i=0; i<nrr; i++) {
-        uInt axis = itsRegionAxes(i);
+    for (uint32_t i=0; i<nrr; i++) {
+        uint32_t axis = itsRegionAxes(i);
 	latShape(axis) = regionShp(i);
 	blc(axis) = regionBlc(i);
 	trc(axis) = regionTrc(i);
@@ -243,8 +243,8 @@ void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
     const IPosition& boxShp = itsExtendBox.latticeShape();
     const IPosition& boxBlc = itsExtendBox.boundingBox().start();
     const IPosition& boxTrc = itsExtendBox.boundingBox().end();
-    for (uInt i=0; i<nre; i++) {
-        uInt axis = itsExtendAxes(i);
+    for (uint32_t i=0; i<nre; i++) {
+        uint32_t axis = itsExtendAxes(i);
 	latShape(axis) = boxShp(i);
 	blc(axis) = boxBlc(i);
 	trc(axis) = boxTrc(i);
@@ -254,13 +254,13 @@ void LCExtension::fill (const IPosition& extendAxes, const LCBox& extendBox)
 }
 
 
-void LCExtension::multiGetSlice (Array<Bool>& buffer,
+void LCExtension::multiGetSlice (Array<bool>& buffer,
 				 const Slicer& section)
 {
     buffer.resize (section.length());
-    uInt i;
-    uInt nre = itsExtendAxes.nelements();
-    uInt nrr = itsRegionAxes.nelements();
+    uint32_t i;
+    uint32_t nre = itsExtendAxes.nelements();
+    uint32_t nrr = itsRegionAxes.nelements();
     // Read the required region section.
     // This means we have to create a Slicer for those axes only.
     IPosition blc(nrr);
@@ -268,17 +268,17 @@ void LCExtension::multiGetSlice (Array<Bool>& buffer,
     IPosition inc(nrr);
     IPosition shape(buffer.ndim(), 1);
     for (i=0; i<nrr; i++) {
-        uInt axis = itsRegionAxes(i);
+        uint32_t axis = itsRegionAxes(i);
 	blc(i) = section.start()(axis);
 	len(i) = section.length()(axis);
 	inc(i) = section.stride()(axis);
 	shape(axis) = len(i);
     }
-    Array<Bool> tmpbuf(len);
+    Array<bool> tmpbuf(len);
     LCRegion* reg = (LCRegion*)(regions()[0]);
     reg->doGetSlice (tmpbuf, Slicer(blc, len, inc));
     // Reform tmpbuf, so it has the same dimensionality as buffer.
-    Array<Bool> mask = tmpbuf.reform (shape);
+    Array<bool> mask = tmpbuf.reform (shape);
     // Now we have to extend tmpbuf along all extend axes.
     const IPosition& length = section.length();
     IPosition pos (buffer.ndim(), 0);
@@ -305,9 +305,9 @@ void LCExtension::multiGetSlice (Array<Bool>& buffer,
     }
 }
 
-IPosition LCExtension::doNiceCursorShape (uInt maxPixels) const
+IPosition LCExtension::doNiceCursorShape (uint32_t maxPixels) const
 {
-    return Lattice<Bool>::doNiceCursorShape (maxPixels);
+    return Lattice<bool>::doNiceCursorShape (maxPixels);
 }
 
 } //# NAMESPACE CASACORE - END

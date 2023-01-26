@@ -101,16 +101,16 @@ public:
   // </group>
 
   // Construct from the given image expression.
-  explicit WCLELMask (const ImageExpr<Bool>& expr);
+  explicit WCLELMask (const ImageExpr<bool>& expr);
 
   // Construct from the given lattice expression.
-  explicit WCLELMask (const LatticeExpr<Bool>& expr);
+  explicit WCLELMask (const LatticeExpr<bool>& expr);
 
   // Construct from the given lattice expression.
   // This constructor makes it possible to have an expression with an
   // unknown shape (e.g. using LEL function INDEXIN).
   // If the shape is known, the LatticeExprNode will be converted to
-  // a LatticeExpr<Bool>.
+  // a LatticeExpr<bool>.
   explicit WCLELMask (const LatticeExprNode& expr);
 
   // Copy constructor (copy semantics).
@@ -123,16 +123,16 @@ public:
   WCLELMask& operator= (const WCLELMask& other);
 
   // Comparison
-  virtual Bool operator== (const WCRegion& other) const;
+  virtual bool operator== (const WCRegion& other) const;
 
   // Clone a WCLELMask object.
   virtual WCRegion* cloneRegion() const;
 
   // Get the dimensionality (i.e. the number of axes).
-  virtual uInt ndim() const;
+  virtual uint32_t ndim() const;
 
   // WCLELMask cannot extend a region.
-  virtual Bool canExtend() const;
+  virtual bool canExtend() const;
 
   // Convert to an LCRegion using the given new coordinate system and shape.
   // If the region has coordinates, the WCRegion implementation will
@@ -165,21 +165,21 @@ public:
   // Return region type.  Returns the class name 
   virtual String type() const;
 
-  const ImageExpr<Bool>* getImageExpr() const {return itsImageExpr;}
+  const ImageExpr<bool>* getImageExpr() const {return itsImageExpr;}
 
 private:
   // Process the command.
   void processCommand();
 
   // Initialize as a LatticeExprNode if expression's shape is unknown.
-  // Otherwise as a LatticeExpr<Bool> if coordinates are unknown.
-  // Otherwise as an ImageExpr<Bool>.
+  // Otherwise as a LatticeExpr<bool> if coordinates are unknown.
+  // Otherwise as an ImageExpr<bool>.
   void init (const LatticeExprNode& expr);
 
 
   String             itsCommand;
-  ImageExpr<Bool>*   itsImageExpr;
-  LatticeExpr<Bool>* itsLattExpr;
+  ImageExpr<bool>*   itsImageExpr;
+  LatticeExpr<bool>* itsLattExpr;
   LatticeExprNode*   itsLattNode;
 };
 

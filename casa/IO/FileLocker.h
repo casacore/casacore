@@ -104,7 +104,7 @@ public:
     // This can be used to lock a segment of the given file.
     // The segment is given by start and length. Length=0 means till the
     // end of the file.
-    explicit FileLocker (int fd, uInt start=0, uInt length=0);
+    explicit FileLocker (int fd, uint32_t start=0, uint32_t length=0);
 
     ~FileLocker();
 
@@ -113,21 +113,21 @@ public:
     // A zero value indicates an infinite number of times (i.e. wait until
     // the lock is acquired).
     // A positive value means it waits 1 second between each attempt.
-    Bool acquire (LockType = Write, uInt nattempts = 0);
+    bool acquire (LockType = Write, uint32_t nattempts = 0);
 
     // Release a lock.
     // The return status indicates if an error occurred.
-    Bool release();
+    bool release();
 
     // Test if the file can be locked for read or write.
     // Optionally the PID of the process holding the lock is returned.
     // <group>
-    Bool canLock (LockType = Write);
-    Bool canLock (uInt& pid, LockType = Write);
+    bool canLock (LockType = Write);
+    bool canLock (uint32_t& pid, LockType = Write);
     // </group>
 
     // Test if the process has a lock for read or write on the file.
-    Bool hasLock (LockType = Write) const;
+    bool hasLock (LockType = Write) const;
 
     // Get the fd in use.
     int fd() const;
@@ -143,13 +143,13 @@ private:
     int    itsError;
     int    itsStart;
     int    itsLength;
-    Bool   itsMsgShown;           /// temporary for SUSE 6.1
-    Bool   itsReadLocked;
-    Bool   itsWriteLocked;
+    bool   itsMsgShown;           /// temporary for SUSE 6.1
+    bool   itsReadLocked;
+    bool   itsWriteLocked;
 };
 
 
-inline Bool FileLocker::hasLock (LockType type) const
+inline bool FileLocker::hasLock (LockType type) const
 {
     return (type == Write  ?  itsWriteLocked : itsReadLocked);
 }

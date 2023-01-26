@@ -114,7 +114,7 @@ public:
     EclecticFunctionFactory(const EclecticFunctionFactory& factory);
 
     // delete this EclecticFunctionFactory.  Those specific factories added
-    // via addFactory() with <em>own=True</em> will be deleted.
+    // via addFactory() with <em>own=true</em> will be deleted.
     virtual ~EclecticFunctionFactory();
 
     // create the Function object described in the given Record.  This
@@ -128,14 +128,14 @@ public:
     // add a factory for creating a specific type of function, associating
     // it with a given "functype" name.
     void addFactory(const String& type, FunctionFactory<T> *factory,
-		    Bool own=True);
+		    bool own=true);
 
     // return the number of factories that have been loaded thus far.
-    Int ndefined() { return lookup.ndefined(); }
+    int32_t ndefined() { return lookup.ndefined(); }
 
-    // return True if a factory with a given "functype" name has been 
+    // return true if a factory with a given "functype" name has been 
     // loaded.
-    Bool isDefined(const String& type) { return lookup.isDefined(type); }
+    bool isDefined(const String& type) { return lookup.isDefined(type); }
 
     // a shallow assignment operator
     EclecticFunctionFactory& operator=(const EclecticFunctionFactory& factory);
@@ -143,7 +143,7 @@ public:
 protected:
 
 private:
-    OrderedMap<String, OrderedPair<FunctionFactory<T>*, Bool> > lookup;
+    OrderedMap<String, OrderedPair<FunctionFactory<T>*, bool> > lookup;
 };
 
 

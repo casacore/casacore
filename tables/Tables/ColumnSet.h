@@ -113,13 +113,13 @@ public:
       { return multiFile_p; }
 
     // Are subtables used in other processes.
-    Bool areTablesMultiUsed() const;
+    bool areTablesMultiUsed() const;
 
     // Get a column by name.
     PlainColumn* getColumn (const String& columnName) const;
 
     // Get a column by index.
-    PlainColumn* getColumn (uInt columnIndex) const;
+    PlainColumn* getColumn (uint32_t columnIndex) const;
 
     // Add a data manager.
     // It increments seqCount_p and returns that as a unique sequence number.
@@ -130,7 +130,7 @@ public:
     // It creates the data manager column objects for each column
     // and it allows the data managers to link themselves to the
     // Table object and to initialize themselves.
-    void initDataManagers (rownr_t nrrow, Bool bigEndian,
+    void initDataManagers (rownr_t nrrow, bool bigEndian,
                            const TSMOption& tsmOption,
                            Table& tab);
 
@@ -145,8 +145,8 @@ public:
     // table is properly locked.
     // If autolocking is in effect, it locks the table when needed.
     // <group>
-    void checkReadLock (Bool wait);
-    void checkWriteLock (Bool wait);
+    void checkReadLock (bool wait);
+    void checkWriteLock (bool wait);
     // </group>
 
     // Inspect the auto lock when the inspection interval has expired and
@@ -154,23 +154,23 @@ public:
     void autoReleaseLock();
 
     // If needed, get a temporary user lock.
-    // It returns False if the lock was already there.
-    Bool userLock (FileLocker::LockType, Bool wait);
+    // It returns false if the lock was already there.
+    bool userLock (FileLocker::LockType, bool wait);
 
-    // Release a temporary user lock if the given release flag is True.
-    void userUnlock (Bool releaseFlag);
+    // Release a temporary user lock if the given release flag is true.
+    void userUnlock (bool releaseFlag);
 
     // Do all data managers and engines allow to add rows?
-    Bool canAddRow() const;
+    bool canAddRow() const;
 
     // Do all data managers and engines allow to remove rows?
-    Bool canRemoveRow() const;
+    bool canRemoveRow() const;
 
     // Can the given columns be removed from the data manager?
-    Bool canRemoveColumn (const Vector<String>& columnNames) const;
+    bool canRemoveColumn (const Vector<String>& columnNames) const;
 
     // Can a column be renamed in the data manager?
-    Bool canRenameColumn (const String& columnName) const;
+    bool canRenameColumn (const String& columnName) const;
 
     // Add rows to all data managers.
     void addRow (rownr_t nrrow);
@@ -189,16 +189,16 @@ public:
     // The default implementation throws an "invalid operation" exception.
     // <group>
     void addColumn (const ColumnDesc& columnDesc,
-		    Bool bigEndian, const TSMOption& tsmOption, Table& tab);
+		    bool bigEndian, const TSMOption& tsmOption, Table& tab);
     void addColumn (const ColumnDesc& columnDesc,
-		    const String& dataManager, Bool byName,
-		    Bool bigEndian, const TSMOption& tsmOption, Table& tab);
+		    const String& dataManager, bool byName,
+		    bool bigEndian, const TSMOption& tsmOption, Table& tab);
     void addColumn (const ColumnDesc& columnDesc,
 		    const DataManager& dataManager,
-		    Bool bigEndian, const TSMOption& tsmOption, Table& tab);
+		    bool bigEndian, const TSMOption& tsmOption, Table& tab);
     void addColumn (const TableDesc& tableDesc,
 		    const DataManager& dataManager,
-		    Bool bigEndian, const TSMOption& tsmOption, Table& tab);
+		    bool bigEndian, const TSMOption& tsmOption, Table& tab);
     // </group>
 
     // Get nr of rows.
@@ -209,7 +209,7 @@ public:
 
     // Get the data manager info.
     // Optionally only the virtual engines are retrieved.
-    Record dataManagerInfo (Bool virtualOnly=False) const;
+    Record dataManagerInfo (bool virtualOnly=false) const;
 
     // Get the trace-id of the table.
     int traceId() const
@@ -220,30 +220,30 @@ public:
 
     // Write all the data and let the data managers flush their data.
     // This function is called when a table gets written (i.e. flushed).
-    // It returns True if any data manager wrote something.
-    Bool putFile (Bool writeTable, AipsIO&, const TableAttr&, Bool fsync);
+    // It returns true if any data manager wrote something.
+    bool putFile (bool writeTable, AipsIO&, const TableAttr&, bool fsync);
 
     // Read the data, reconstruct the data managers, and link those to
     // the table object.
     // This function gets called when an existing table is read back.
     // It returns the number of rows in case a data manager thinks there are
     // more. That is in particular used by LofarStMan.
-    rownr_t getFile (AipsIO&, Table& tab, rownr_t nrrow, Bool bigEndian,
+    rownr_t getFile (AipsIO&, Table& tab, rownr_t nrrow, bool bigEndian,
                      const TSMOption& tsmOption);
 
     // Set the table to being changed.
     void setTableChanged();
 
     // Get the data manager change flags (used by PlainTable).
-    Block<Bool>& dataManChanged();
+    Block<bool>& dataManChanged();
 
     // Synchronize the data managers when data in them have changed.
     // It returns the number of rows it think it has, which is needed for
     // storage managers like LofarStMan.
-    // <src>forceSync=True</src> means that the data managers are forced
+    // <src>forceSync=true</src> means that the data managers are forced
     // to do a sync. Otherwise the contents of the lock file tell if a data
     // manager has to sync.
-    rownr_t resync (rownr_t nrrow, Bool forceSync);
+    rownr_t resync (rownr_t nrrow, bool forceSync);
 
     // Invalidate the column caches for all columns.
     void invalidateColumnCaches();
@@ -251,7 +251,7 @@ public:
     // Get the correct data manager.
     // This is used by the column objects to link themselves to the
     // correct datamanagers when they are read back.
-    DataManager* getDataManager (uInt seqnr) const;
+    DataManager* getDataManager (uint32_t seqnr) const;
 
     // Check if no double data manager names have been given.
     void checkDataManagerNames (const String& tableName) const;
@@ -260,7 +260,7 @@ public:
     // If the data manager or column is unknown, an exception is thrown.
     // A blank name means the data manager is unknown.
     DataManager* findDataManager (const String& name,
-                                  Bool byColumn=False) const;
+                                  bool byColumn=false) const;
 
     // Make a unique data manager name by appending a suffix _n if needed
     // where n is a number that makes the name unique.
@@ -280,22 +280,22 @@ private:
     void removeLastDataManager();
 
     // Let the data managers (from the given index on) initialize themselves.
-    void initSomeDataManagers (uInt from, Table& tab);
+    void initSomeDataManagers (uint32_t from, Table& tab);
 
     // Let the data managers (from the given index on) prepare themselves.
-    void prepareSomeDataManagers (uInt from);
+    void prepareSomeDataManagers (uint32_t from);
 
     // Open or create the MultiFile if needed.
-    void openMultiFile (uInt from, const Table& tab,
+    void openMultiFile (uint32_t from, const Table& tab,
                         ByteIO::OpenOption);
 
     // Check if a data manager name has not already been used.
     // Start checking at the given index in the array.
-    // It returns False if the name has already been used.
+    // It returns false if the name has already been used.
     // By default an exception is thrown if the name has already been used.
-    Bool checkDataManagerName (const String& name, uInt from,
+    bool checkDataManagerName (const String& name, uint32_t from,
                                const String& tableName,
-			       Bool doTthrow=True) const;
+			       bool doTthrow=true) const;
 
     // Do the actual addition of a column.
     void doAddColumn (const ColumnDesc& columnDesc, DataManager* dataManPtr);
@@ -304,14 +304,14 @@ private:
     // It returns a map of DataManager* telling how many columns for
     // a data manager have to be removed. A count of -1 means that all
     // columns have to be removed. For such columns the flag in the
-    // returned Block is False, otherwise True.
-    std::map<void*,Int> checkRemoveColumn (const Vector<String>& columnNames);
+    // returned Block is false, otherwise true.
+    std::map<void*,int32_t> checkRemoveColumn (const Vector<String>& columnNames);
 
     // Check if the table is locked for read or write.
     // If manual or permanent locking is in effect, it checks if the
     // table is properly locked.
     // If autolocking is in effect, it locks the table when needed.
-    void doLock (FileLocker::LockType, Bool wait);
+    void doLock (FileLocker::LockType, bool wait);
 
 
     //# Declare the variables.
@@ -322,10 +322,10 @@ private:
     BaseTable*              baseTablePtr_p;
     TableLockData*          lockPtr_p;        //# lock object
     std::map<String,void*>  colMap_p;         //# list of PlainColumns
-    uInt                    seqCount_p;       //# sequence number count
+    uint32_t                    seqCount_p;       //# sequence number count
     //#                                           (used for unique seqnr)
     Block<void*>            blockDataMan_p;   //# list of data managers
-    Block<Bool>             dataManChanged_p; //# data has changed
+    Block<bool>             dataManChanged_p; //# data has changed
 };
 
 
@@ -346,20 +346,20 @@ inline void ColumnSet::linkToLockObject (TableLockData* lockObject)
 {
     lockPtr_p = lockObject;
 }
-inline void ColumnSet::checkReadLock (Bool wait)
+inline void ColumnSet::checkReadLock (bool wait)
 {
     if (lockPtr_p->readLocking()
     &&  ! lockPtr_p->hasLock (FileLocker::Read)) {
 	doLock (FileLocker::Read, wait);
     }
 }
-inline void ColumnSet::checkWriteLock (Bool wait)
+inline void ColumnSet::checkWriteLock (bool wait)
 {
     if (! lockPtr_p->hasLock (FileLocker::Write)) {
 	doLock (FileLocker::Write, wait);
     }
 }
-inline void ColumnSet::userUnlock (Bool releaseFlag)
+inline void ColumnSet::userUnlock (bool releaseFlag)
 {
     if (releaseFlag) {
 	lockPtr_p->release();
@@ -369,7 +369,7 @@ inline void ColumnSet::autoReleaseLock()
 {
     lockPtr_p->autoRelease();
 }
-inline Block<Bool>& ColumnSet::dataManChanged()
+inline Block<bool>& ColumnSet::dataManChanged()
 {
     return dataManChanged_p;
 }

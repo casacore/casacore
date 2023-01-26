@@ -68,7 +68,7 @@ class Combinatorics {
   public:
  
   // Get n!
-  static uInt factorial(const uInt n)
+  static uint32_t factorial(const uint32_t n)
   {
     fillCache(n);
     return _factorialCache[n];
@@ -76,13 +76,13 @@ class Combinatorics {
   
   // "n choose k" = n!/(k!(n-k)!)
   // Exception is thrown if k > n.
-  static uInt choose(const uInt n, const uInt k);
+  static uint32_t choose(const uint32_t n, const uint32_t k);
 
   private:
-  static void fillCache(const uInt n);
+  static void fillCache(const uint32_t n);
 
-  static Vector<uInt> _factorialCache;
-  static volatile uInt _factorialCacheSize; //# volatile for double checked lock
+  static Vector<uint32_t> _factorialCache;
+  static volatile uint32_t _factorialCacheSize; //# volatile for double checked lock
   static std::mutex theirMutex;
 };
 } //# NAMESPACE CASACORE - END

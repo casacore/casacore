@@ -49,8 +49,8 @@ namespace casacore { namespace python {
     //   casacore::python::register_convert_basicdata();
     //   casacore::python::register_convert_casa_valueholder();
     //   casacore::python::register_convert_casa_record();
-    //   casacore::python::register_convert_std_vector<Bool>();
-    //   casacore::python::register_convert_std_vector<Int>();
+    //   casacore::python::register_convert_std_vector<bool>();
+    //   casacore::python::register_convert_std_vector<int32_t>();
     //   casacore::python::register_convert_std_vector<String>();
     //   // Instantiate the Python class object with possible arguments
     //   // for the __init__ function.

@@ -64,16 +64,16 @@ public:
   LogFilterExpr& operator= (const LogFilterExpr&);
 
   // Does this message match the expression?
-  Bool matches (const LogMessage& message);
+  bool matches (const LogMessage& message);
 
   // Get the data.
   // <group>
-  virtual Double getDouble (const Block<Int>& fieldNrs) const;
-  virtual String getString (const Block<Int>& fieldNrs) const;
+  virtual double getDouble (const Block<int32_t>& fieldNrs) const;
+  virtual String getString (const Block<int32_t>& fieldNrs) const;
   // </group>
 
   // Get the data type of the various values.
-  virtual DataType dataType (const Block<Int>& fieldNrs) const;
+  virtual DataType dataType (const Block<int32_t>& fieldNrs) const;
 
 private:
   TableExprNode*    itsExpr;

@@ -94,35 +94,35 @@ public:
 		      const TableExprNode& colAsTEN);
   ~MSObservationParse() {columnAsTEN_p=TableExprNode();}
 
-  const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
-  const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
-  const TableExprNode *selectObservationIds(const Vector<Int>& scanids);
-  inline const TableExprNode *selectObservationIds() {return selectObservationIds(Vector<Int>(parsedIDList_p));}
-  const TableExprNode *selectObservationIdsGT(const Vector<Int>& scanids);
-  const TableExprNode *selectObservationIdsLT(const Vector<Int>& scanids);
-  const TableExprNode *selectObservationIdsGTEQ(const Vector<Int>& scanids);
-  const TableExprNode *selectObservationIdsLTEQ(const Vector<Int>& scanids);
-  std::vector<Int>& accumulateIDs(const Int id0, const Int id1=-1);
+  const TableExprNode *selectRangeGTAndLT(const int32_t& n0, const int32_t& n1);
+  const TableExprNode *selectRangeGEAndLE(const int32_t& n0, const int32_t& n1);
+  const TableExprNode *selectObservationIds(const Vector<int32_t>& scanids);
+  inline const TableExprNode *selectObservationIds() {return selectObservationIds(Vector<int32_t>(parsedIDList_p));}
+  const TableExprNode *selectObservationIdsGT(const Vector<int32_t>& scanids);
+  const TableExprNode *selectObservationIdsLT(const Vector<int32_t>& scanids);
+  const TableExprNode *selectObservationIdsGTEQ(const Vector<int32_t>& scanids);
+  const TableExprNode *selectObservationIdsLTEQ(const Vector<int32_t>& scanids);
+  std::vector<int32_t>& accumulateIDs(const int32_t id0, const int32_t id1=-1);
 
     // Get table expression node object.
   const TableExprNode node();
 
-  Vector<Int> selectedIDs();
+  Vector<int32_t> selectedIDs();
 
   void reset(){idList.resize(0);}
   void cleanup() {}
 
-  void setMaxObs(const Int& n) {maxObs_p=n;}
+  void setMaxObs(const int32_t& n) {maxObs_p=n;}
 
   static MSObservationParse* thisMSObsParser;
 
 private:
   TableExprNode node_p;
-  Vector<Int> idList,obsIDList_p;
-  std::vector<Int>  parsedIDList_p;
+  Vector<int32_t> idList,obsIDList_p;
+  std::vector<int32_t>  parsedIDList_p;
   const String colName;
-  void appendToIDList(const Vector<Int>& v);
-  Int maxObs_p;
+  void appendToIDList(const Vector<int32_t>& v);
+  int32_t maxObs_p;
   static TableExprNode columnAsTEN_p;
 };
 

@@ -68,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <srcblock>
   //   {
   //   // Get an element (and create stack!)
-  //   SparseDiff<Double> elem;
+  //   SparseDiff<double> elem;
   //   // Use it
   //   elem.value() = 27;
   //   // Release it (automatic by dtor on elem)
@@ -110,10 +110,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void clear();
 
     // Test if stack empty
-    Bool empty() { return stack_p.empty(); };
+    bool empty() { return stack_p.empty(); };
 
     // return the stack extend (for debugging use and checking mainly)
-    uInt nelements() const { return stack_p.size(); };
+    uint32_t nelements() const { return stack_p.size(); };
 
   private:
     //# Data

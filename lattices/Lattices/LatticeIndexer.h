@@ -132,32 +132,32 @@ public:
   // Lattice.
   // <group>
   const IPosition& fullShape() const;
-  uInt fullShape (uInt axis) const;
+  uint32_t fullShape (uint32_t axis) const;
   // </group>
 
   // Returns the length of each axis (or the requested one) in the sub-Lattice.
   // <group>
   const IPosition& shape() const;
-  uInt shape (uInt axis) const;
+  uint32_t shape (uint32_t axis) const;
   // </group>
 
   // Function to return the increments along each axis (or the requested
   // one) of the Lattice.
   // <group>
   const IPosition& increment() const;
-  uInt increment (uInt axis) const;
+  uint32_t increment (uint32_t axis) const;
   // </group>
 
   // Function to return the offset (on a specified axis) between the
   // sub-Lattice and the parent one.
   // <group>
   const IPosition& offset() const;
-  uInt offset (uInt axis) const;
+  uint32_t offset (uint32_t axis) const;
   // </group>
 
   // Function which returns the number of dimensions in the Lattice (or
   // sub-Lattice).
-  uInt ndim() const;
+  uint32_t ndim() const;
 
   // Revert from a sub-Lattice description back to the main Lattice. This is
   // the only way to "increase" the the size of the sub-Lattice used by the
@@ -168,28 +168,28 @@ public:
   // this value is equal to the product of shape().
   size_t nelements() const;
 
-  // Function which increments (incr=True) or decrements (incr=False) the
+  // Function which increments (incr=true) or decrements (incr=false) the
   // cursor position (the first IPosition argument) by a cursor shape (the
   // second IPosition argument), tiling to the next/previous axis if
   // necessary.  The path of movement is based upon the third IPosition
   // argument (a cursor heading) that is zero-based e.g. IPosition(3,0,2,1)
   // implies starting movement along the x-axis, then the z-axis, and then
-  // the y-axis.  Returns a value of False if the beginning/end of the
+  // the y-axis.  Returns a value of false if the beginning/end of the
   // sub-Lattice is reached. The cursorPosition is relative to the origin of
   // the sub-Lattice. To get its location relative to the main Lattice use
   // the absolutePosition() function. 
-  Bool tiledCursorMove (Bool incr, IPosition& cursorPos, 
+  bool tiledCursorMove (bool incr, IPosition& cursorPos, 
 			const IPosition& cursorShape,
 			const IPosition& cursorHeading) const;
   
-  // Function which returns a value of True if the IPosition argument
-  // is within the sub-Lattice.  Returns False if the IPosition argument is 
+  // Function which returns a value of true if the IPosition argument
+  // is within the sub-Lattice.  Returns false if the IPosition argument is 
   // outside the sub-Lattice or if the argument doesn't conform to the 
   // data members.
   // <note role=warning> Due to zero-origins, an index argument equal to the
-  // shape of this sub-Lattice lies outside and returns False. 
+  // shape of this sub-Lattice lies outside and returns false. 
   // </note>
-  Bool isInside (const IPosition& index) const;
+  bool isInside (const IPosition& index) const;
 
   // Function which subsections a LatticeIndexer.  The argument IPositions
   // specify "bottom left" and "upper right" corners and axis increments
@@ -216,18 +216,18 @@ public:
   // Lattice(s).
   IPosition absolutePosition (const IPosition& position) const;
 
-  //# function which returns True if all the elements in this 
+  //# function which returns true if all the elements in this 
   //# LatticeIndexer, or LatticeIndexer subsection, are arranged contiguously, 
   //# i.e. without any gaps caused by increments or subSectioning.
-//#   Bool isContiguous() const;
+//#   bool isContiguous() const;
 
   // Is this LatticeIndexer consistent, i.e. are the class invariants valid?
-  // Returns True if every thing is fine otherwise returns False
-  Bool ok() const;
+  // Returns true if every thing is fine otherwise returns false
+  bool ok() const;
 
 private:
   IPosition itsFullShape;  //# Size of the main-Lattice.
-  uInt      itsNdim;       //# Number of dimensions in the main/sub-Lattice
+  uint32_t      itsNdim;       //# Number of dimensions in the main/sub-Lattice
   IPosition itsShape;      //# Shape of the sub-Lattice
   IPosition itsAxisInc;    //# Increment along each axis of main Lattice
   IPosition itsOffset;     //# Offset between a sub-Lattice and the main one.
@@ -250,7 +250,7 @@ inline const IPosition& LatticeIndexer::offset() const
 {
   return itsOffset;
 }
-inline uInt LatticeIndexer::ndim() const
+inline uint32_t LatticeIndexer::ndim() const
 {
   return itsNdim;
 }

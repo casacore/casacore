@@ -79,25 +79,25 @@ Coordinate::~Coordinate()
 {}
 
 
-Bool Coordinate::toWorldMany(Matrix<Double>& world,
-                             const Matrix<Double>& pixel,
-                             Vector<Bool>& failures) const
+bool Coordinate::toWorldMany(Matrix<double>& world,
+                             const Matrix<double>& pixel,
+                             Vector<bool>& failures) const
 {
     AlwaysAssert(nPixelAxes()==pixel.nrow(), AipsError);
-    const uInt nTransforms = pixel.ncolumn();
+    const uint32_t nTransforms = pixel.ncolumn();
     world.resize(nWorldAxes(), nTransforms);
     failures.resize(nTransforms);
 //
-    Vector<Double> pixTmp(nPixelAxes());
-    Vector<Double> worldTmp(nWorldAxes());
+    Vector<double> pixTmp(nPixelAxes());
+    Vector<double> worldTmp(nWorldAxes());
 //
-    ArrayAccessor<Double, Axis<1> > jPixel(pixel);
-    ArrayAccessor<Double, Axis<1> > jWorld(world);
+    ArrayAccessor<double, Axis<1> > jPixel(pixel);
+    ArrayAccessor<double, Axis<1> > jWorld(world);
 //
     String errorMsg;
-    uInt nError = 0;
-    uInt k,l;
-    ArrayAccessor<Double, Axis<0> > iPixel, iWorld;
+    uint32_t nError = 0;
+    uint32_t k,l;
+    ArrayAccessor<double, Axis<0> > iPixel, iWorld;
 //
     for (jPixel.reset(),jWorld.reset(),l=0; jPixel!=jPixel.end(); ++jPixel,++jWorld,l++) {
        iPixel = jPixel;            // Partial assignment
@@ -123,25 +123,25 @@ Bool Coordinate::toWorldMany(Matrix<Double>& world,
 }
 
 
-Bool Coordinate::toPixelMany(Matrix<Double>& pixel,
-                             const Matrix<Double>& world,
-                             Vector<Bool>& failures) const
+bool Coordinate::toPixelMany(Matrix<double>& pixel,
+                             const Matrix<double>& world,
+                             Vector<bool>& failures) const
 {
     AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
-    const uInt nTransforms = world.ncolumn();
+    const uint32_t nTransforms = world.ncolumn();
     pixel.resize(nPixelAxes(), nTransforms);
     failures.resize(nTransforms);
 //
-    Vector<Double> pixTmp(nPixelAxes());
-    Vector<Double> worldTmp(nWorldAxes());
+    Vector<double> pixTmp(nPixelAxes());
+    Vector<double> worldTmp(nWorldAxes());
 //
-    ArrayAccessor<Double, Axis<1> > jPixel(pixel);
-    ArrayAccessor<Double, Axis<1> > jWorld(world);
+    ArrayAccessor<double, Axis<1> > jPixel(pixel);
+    ArrayAccessor<double, Axis<1> > jWorld(world);
 //
     String errorMsg;
-    uInt nError = 0;
-    uInt k,l;
-    ArrayAccessor<Double, Axis<0> > iPixel, iWorld;
+    uint32_t nError = 0;
+    uint32_t k,l;
+    ArrayAccessor<double, Axis<0> > iPixel, iWorld;
 //
     for (jWorld.reset(),jPixel.reset(),l=0; jWorld!=jWorld.end(); ++jWorld,++jPixel,l++) {
        iWorld = jWorld;           // Partial assigment
@@ -167,39 +167,39 @@ Bool Coordinate::toPixelMany(Matrix<Double>& pixel,
 
 
 
-Bool Coordinate::toMix(Vector<Double>& worldOut,
-                       Vector<Double>& pixelOut,
-                       const Vector<Double>& worldIn,
-                       const Vector<Double>& pixelIn,
-                       const Vector<Bool>& worldAxes,
-                       const Vector<Bool>& pixelAxes,
-                       const Vector<Double>&,
-                       const Vector<Double>&) const
+bool Coordinate::toMix(Vector<double>& worldOut,
+                       Vector<double>& pixelOut,
+                       const Vector<double>& worldIn,
+                       const Vector<double>& pixelIn,
+                       const Vector<bool>& worldAxes,
+                       const Vector<bool>& pixelAxes,
+                       const Vector<double>&,
+                       const Vector<double>&) const
 //
 // Default implementation ok for non-coupled coordinated like
 // Linear.  Coupled coordinates like DirectionCoordinate
 // need their own implementation
 //
 {
-    static Vector<Double> pixel_tmp;
-    static Vector<Double> world_tmp;
+    static Vector<double> pixel_tmp;
+    static Vector<double> world_tmp;
 
-   const uInt nWorld = worldAxes.nelements();
-   const uInt nPixel = pixelAxes.nelements();
+   const uint32_t nWorld = worldAxes.nelements();
+   const uint32_t nPixel = pixelAxes.nelements();
 //
    DebugAssert(nWorld == nWorldAxes(), AipsError);
    DebugAssert(worldIn.nelements()==nWorld, AipsError);
    DebugAssert(nPixel == nPixelAxes(), AipsError);
    DebugAssert(pixelIn.nelements()==nPixel, AipsError);
 //
-   for (uInt i=0; i<nPixel; i++) {
+   for (uint32_t i=0; i<nPixel; i++) {
       if (pixelAxes(i) && worldAxes(i)) {
          set_error("Coordinate::toMix - duplicate pixel/world axes");
-         return False;
+         return false;
       }
       if (!pixelAxes(i) && !worldAxes(i)) {
          set_error("Coordinate::toMix - each axis must be either pixel or world");
-         return False;
+         return false;
       }
    }
 //
@@ -213,14 +213,14 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 // and overwrite with any input pixel values that were given
 //
    world_tmp = referenceValue();
-   for (uInt i=0; i<nWorld; i++) {
+   for (uint32_t i=0; i<nWorld; i++) {
       if (worldAxes(i)) world_tmp(i) = worldIn(i);
    }
-   if (!toPixel(pixel_tmp,world_tmp)) return False;
+   if (!toPixel(pixel_tmp,world_tmp)) return false;
 //
    if (pixelOut.nelements()!=nPixel) pixelOut.resize(nPixel);
    pixelOut = pixel_tmp;
-   for (uInt i=0; i<nPixel; i++) {
+   for (uint32_t i=0; i<nPixel; i++) {
       if (pixelAxes(i)) pixelOut(i) = pixelIn(i);
    }
 //
@@ -229,39 +229,39 @@ Bool Coordinate::toMix(Vector<Double>& worldOut,
 // and overwrite with any input world values that were given
 //
    pixel_tmp = referencePixel();
-   for (uInt i=0; i<nPixel; i++) {
+   for (uint32_t i=0; i<nPixel; i++) {
       if (pixelAxes(i)) pixel_tmp(i) = pixelIn(i);
    }
-   if (!toWorld(world_tmp,pixel_tmp)) return False;
+   if (!toWorld(world_tmp,pixel_tmp)) return false;
    if (worldOut.nelements()!=nWorld) worldOut.resize(nWorld);
    worldOut = world_tmp;
-   for (uInt i=0; i<nWorld; i++) {
+   for (uint32_t i=0; i<nWorld; i++) {
       if (worldAxes(i)) worldOut(i) = worldIn(i);
    }
 //
-   return True;
+   return true;
 }
 
 
 
 // Does everything except set the units vector, which must be done in the derived class.
-Bool Coordinate::setWorldAxisUnits(const Vector<String> &units)
+bool Coordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     if (units.nelements() != nWorldAxes()) {
 	set_error("Wrong number of elements in units vector");
-	return False;
+	return false;
     } else {
-	// If the units are unchanged just return True.
+	// If the units are unchanged just return true.
 	Vector<String> old = worldAxisUnits();
 	if (allEQ(old, units)) {
-	    return True;
+	    return true;
 	}
     }
 
-    Bool ok = True;
+    bool ok = true;
 
     String error;
-    Vector<Double> factor;
+    Vector<double> factor;
     ok = find_scale_factor(error, factor, units, worldAxisUnits());
     if (ok) {
       ok = setIncrement(increment() * factor);
@@ -276,7 +276,7 @@ Bool Coordinate::setWorldAxisUnits(const Vector<String> &units)
 }
 
 void Coordinate::checkFormat(Coordinate::formatType& format,
-                             const Bool ) const
+                             const bool ) const
 {
 // Scientific or fixed formats only are allowed.
 // Absolute or offset is irrelevant
@@ -289,12 +289,12 @@ void Coordinate::checkFormat(Coordinate::formatType& format,
 
 
 
-void Coordinate::getPrecision(Int &precision,
+void Coordinate::getPrecision(int32_t &precision,
                               Coordinate::formatType& format,
-                              Bool absolute,
-                              Int defPrecScientific,
-                              Int defPrecFixed,
-                              Int ) const
+                              bool absolute,
+                              int32_t defPrecScientific,
+                              int32_t defPrecFixed,
+                              int32_t ) const
 {
 
 // Absolute or offset is irrelevant
@@ -327,9 +327,9 @@ void Coordinate::getPrecision(Int &precision,
 
 String Coordinate::format(
 	String& units, Coordinate::formatType format,
-	Double worldValue, uInt worldAxis,
-	Bool isAbsolute, Bool showAsAbsolute,
-	Int precision, Bool usePrecForMixed
+	double worldValue, uint32_t worldAxis,
+	bool isAbsolute, bool showAsAbsolute,
+	int32_t precision, bool usePrecForMixed
 ) const
 //
 // isAbsolute
@@ -350,12 +350,12 @@ String Coordinate::format(
 
 // Set default precision
 
-   Int prec = precision;
+   int32_t prec = precision;
    if (prec < 0) getPrecision(prec, form, showAsAbsolute, -1, -1, -1);
 
 // Convert given world value to absolute or relative as needed
 
-   static Vector<Double> world;
+   static Vector<double> world;
    if (world.nelements()!=nWorldAxes()) world.resize(nWorldAxes());
 //
    if (showAsAbsolute) {
@@ -388,7 +388,7 @@ String Coordinate::format(
    if (currentUnitU != nativeUnitU) {
       throw(AipsError("Requested units are invalid for this Coordinate"));
    } else {
-      static Quantum<Double> q;
+      static Quantum<double> q;
       q.setValue(worldValue);
       q.setUnit(nativeUnitU);
       worldValue = q.getValue(currentUnitU);
@@ -398,19 +398,19 @@ String Coordinate::format(
    bool precision_set = false;
 
 // ensure that there is enough precision... may need more tweaking...
-   Vector<Double> inc(increment());
+   Vector<double> inc(increment());
    if ( inc.nelements( ) > 0 && ((worldValue - trunc(worldValue)) != 0) ) {
-      static Quantum<Double> qdelta;
+      static Quantum<double> qdelta;
       qdelta.setValue(inc(0));
       qdelta.setUnit(nativeUnitU);
-      Double worldIncr = qdelta.getValue(currentUnitU);
+      double worldIncr = qdelta.getValue(currentUnitU);
       int needed_precision = 1;
-      for ( Double compare = 1.0; fabs(worldValue) > compare; compare *= 10 ) { ++needed_precision; }
+      for ( double compare = 1.0; fabs(worldValue) > compare; compare *= 10 ) { ++needed_precision; }
       if ( fabs(worldIncr) < 1.0 )
-          for ( Double compare = 0.1; fabs(worldIncr) < compare; compare /= 10 ) { ++needed_precision; }
+          for ( double compare = 0.1; fabs(worldIncr) < compare; compare /= 10 ) { ++needed_precision; }
       else {
           int adjust = 1;
-          for ( Double compare = 1.0; fabs(worldIncr) > compare; compare *= 10 ) { ++adjust; }
+          for ( double compare = 1.0; fabs(worldIncr) > compare; compare *= 10 ) { ++adjust; }
           if ( adjust < needed_precision ) needed_precision -= adjust;
       }
       if ( needed_precision > 5 ) {
@@ -442,11 +442,11 @@ String Coordinate::format(
 
 String Coordinate::formatQuantity (String& units,
                                    Coordinate::formatType format2,
-                                   const Quantum<Double>& worldValue,
-                                   uInt worldAxis,
-                                   Bool isAbsolute,
-                                   Bool showAsAbsolute,
-                                   Int precision)
+                                   const Quantum<double>& worldValue,
+                                   uint32_t worldAxis,
+                                   bool isAbsolute,
+                                   bool showAsAbsolute,
+                                   int32_t precision)
 {
    DebugAssert(worldAxis < nWorldAxes(), AipsError);
 
@@ -459,20 +459,20 @@ String Coordinate::formatQuantity (String& units,
 
 
 // after = factor * before
-Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
+bool Coordinate::find_scale_factor(String &error, Vector<double> &factor,
 				   const Vector<String> &units,
 				   const Vector<String> &oldUnits)
 {
     factor.resize(units.nelements());
-    Bool ok = (units.nelements() == oldUnits.nelements());
+    bool ok = (units.nelements() == oldUnits.nelements());
     if (!ok) {
 	error = "units and oldUnits are different sizes!";
     } else {
 
 // Try to find the scaling factors between the old and new units
 
-	uInt n = units.nelements();
-	for (uInt i=0; i<n && ok; i++) {
+	uint32_t n = units.nelements();
+	for (uint32_t i=0; i<n && ok; i++) {
 	    if (UnitVal::check(oldUnits(i)) && UnitVal::check(units(i))) {
 		Unit before = oldUnits(i);
 		Unit after = units(i);
@@ -484,7 +484,7 @@ Bool Coordinate::find_scale_factor(String &error, Vector<Double> &factor,
 			after.getValue().getFac();
 		}
 	    } else {
-		ok = False;
+		ok = false;
 		error = "Unknown unit - cannot calculate scaling";
 	    }
 	}
@@ -526,8 +526,8 @@ void Coordinate::set_error(const String &errorMsg) const
 
 
 
-Coordinate* Coordinate::makeFourierCoordinate (const Vector<Bool>&,
-                                               const Vector<Int>&)  const
+Coordinate* Coordinate::makeFourierCoordinate (const Vector<bool>&,
+                                               const Vector<int32_t>&)  const
 {
    String tmp = String("Coordinates of type ") + showType() +
                 String(" cannot be Fourier Transformed");
@@ -536,7 +536,7 @@ Coordinate* Coordinate::makeFourierCoordinate (const Vector<Bool>&,
 
 
 void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInCanon,
-                               Coordinate::Type type, Int axis,
+                               Coordinate::Type type, int32_t axis,
                                const String& unitIn,
                                const String& nameIn) const
 
@@ -596,42 +596,42 @@ void Coordinate::fourierUnits (String& nameOut, String& unitOut, String& unitInC
 }
 
 
-void Coordinate::makeWorldAbsoluteMany (Matrix<Double>& value) const
+void Coordinate::makeWorldAbsoluteMany (Matrix<double>& value) const
 {
-   makeWorldAbsRelMany (value, True);
+   makeWorldAbsRelMany (value, true);
 }
 
-void Coordinate::makeWorldRelativeMany (Matrix<Double>& value) const
+void Coordinate::makeWorldRelativeMany (Matrix<double>& value) const
 {
-   makeWorldAbsRelMany (value, False);
+   makeWorldAbsRelMany (value, false);
 }
 
-void Coordinate::makePixelAbsoluteMany (Matrix<Double>& value) const
+void Coordinate::makePixelAbsoluteMany (Matrix<double>& value) const
 {
-   makePixelAbsRelMany (value, True);
+   makePixelAbsRelMany (value, true);
 }
 
-void Coordinate::makePixelRelativeMany (Matrix<Double>& value) const
+void Coordinate::makePixelRelativeMany (Matrix<double>& value) const
 {
-   makePixelAbsRelMany (value, False);
+   makePixelAbsRelMany (value, false);
 }
 
 
-void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const
+void Coordinate::makeWorldAbsRelMany (Matrix<double>& value, bool toAbs) const
 {
-    Vector<Double> col(nWorldAxes());
-    Vector<Double> lastInCol(nWorldAxes());
-    Vector<Double> lastOutCol(nWorldAxes());
-    uInt k,l;
-    Bool same;
-    ArrayAccessor<Double, Axis<0> > i;
-    ArrayAccessor<Double, Axis<1> > j(value);
+    Vector<double> col(nWorldAxes());
+    Vector<double> lastInCol(nWorldAxes());
+    Vector<double> lastOutCol(nWorldAxes());
+    uint32_t k,l;
+    bool same;
+    ArrayAccessor<double, Axis<0> > i;
+    ArrayAccessor<double, Axis<1> > j(value);
     for (j.reset(),l=0; j!=j.end(); j++,l++) {
        i = j;
-       same = True;
+       same = true;
        for (i.reset(),k=0; i!=i.end(); i++,k++) {
           col[k] = *i;
-          if (l==0 || (l!=0 && !casacore::near(col[k],lastInCol[k]))) same = False;
+          if (l==0 || (l!=0 && !casacore::near(col[k],lastInCol[k]))) same = false;
        }
        lastInCol = col;
 //
@@ -656,21 +656,21 @@ void Coordinate::makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const
 
 
 
-void Coordinate::makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const
+void Coordinate::makePixelAbsRelMany (Matrix<double>& value, bool abs) const
 {
-    Vector<Double> col(nPixelAxes());
-    Vector<Double> lastInCol(nPixelAxes());
-    Vector<Double> lastOutCol(nPixelAxes());
-    uInt k,l;
-    Bool same;
-    ArrayAccessor<Double, Axis<0> > i;
-    ArrayAccessor<Double, Axis<1> > j(value);
+    Vector<double> col(nPixelAxes());
+    Vector<double> lastInCol(nPixelAxes());
+    Vector<double> lastOutCol(nPixelAxes());
+    uint32_t k,l;
+    bool same;
+    ArrayAccessor<double, Axis<0> > i;
+    ArrayAccessor<double, Axis<1> > j(value);
     for (j.reset(),l=0; j!=j.end(); j++,l++) {
        i = j;
-       same = True;
+       same = true;
        for (i.reset(),k=0; i!=i.end(); i++,k++) {
           col[k] = *i;
-          if (l==0 || (l!=0 && !casacore::near(col[k],lastInCol[k]))) same = False;
+          if (l==0 || (l!=0 && !casacore::near(col[k],lastInCol[k]))) same = false;
        }
        lastInCol = col;
 //
@@ -696,35 +696,35 @@ void Coordinate::makePixelAbsRelMany (Matrix<Double>& value, Bool abs) const
 
 
 
-void Coordinate::makeWorldAbsolute (Vector<Double>& world) const
+void Coordinate::makeWorldAbsolute (Vector<double>& world) const
 {
    DebugAssert(world.nelements()==nWorldAxes(),AipsError);
    world += referenceValue();
 }
 
 
-void Coordinate::makeWorldAbsoluteRef (Vector<Double>& world,
-                                    const Vector<Double>& refVal) const
+void Coordinate::makeWorldAbsoluteRef (Vector<double>& world,
+                                    const Vector<double>& refVal) const
 {
    DebugAssert(world.nelements()==nWorldAxes(),AipsError);
    DebugAssert(refVal.nelements()==nWorldAxes(),AipsError);
    world += refVal;
 }
 
-void Coordinate::makeWorldRelative (Vector<Double>& world) const
+void Coordinate::makeWorldRelative (Vector<double>& world) const
 {
    DebugAssert(world.nelements()==nWorldAxes(),AipsError);
    world -= referenceValue();
 }
 
 
-void Coordinate::makePixelAbsolute (Vector<Double>& pixel) const
+void Coordinate::makePixelAbsolute (Vector<double>& pixel) const
 {
    DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
    pixel += referencePixel();
 }
 
-void Coordinate::makePixelRelative (Vector<Double>& pixel) const
+void Coordinate::makePixelRelative (Vector<double>& pixel) const
 {
    DebugAssert(pixel.nelements()==nPixelAxes(),AipsError);
    pixel -= referencePixel();
@@ -732,12 +732,12 @@ void Coordinate::makePixelRelative (Vector<Double>& pixel) const
 
 
 
-Bool Coordinate::setWorldMixRanges (const IPosition& shape)
+bool Coordinate::setWorldMixRanges (const IPosition& shape)
 {
-   const uInt n = shape.nelements();
+   const uint32_t n = shape.nelements();
    if (n!=nPixelAxes()) {
       set_error("Shape has must be of length nPixelAxes");
-      return False;
+      return false;
    }
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
 
@@ -747,10 +747,10 @@ Bool Coordinate::setWorldMixRanges (const IPosition& shape)
 
 // Do conversions 25% off edge of image
 
-   Vector<Double> pMin(n), pMax(n);
-   Vector<Double> wMin, wMax;
-   for (uInt i=0; i<n; i++) {
-      Double s2 = Double(shape(i)) / 2.0;
+   Vector<double> pMin(n), pMax(n);
+   Vector<double> wMin, wMax;
+   for (uint32_t i=0; i<n; i++) {
+      double s2 = double(shape(i)) / 2.0;
 //
       if (shape(i)==0) {
 
@@ -762,31 +762,31 @@ Bool Coordinate::setWorldMixRanges (const IPosition& shape)
          pMin(i) = 0 - 10.0;
          pMax(i) = 0 + 10.0;
       } else if (shape(i) > 0) {
-         Double n2 = 1.5 * s2;
+         double n2 = 1.5 * s2;
          pMin(i) = s2 - n2;
          pMax(i) = s2 + n2;
       }
    }
-   Bool ok1 = toWorld(wMin, pMin);
-   Bool ok2 = toWorld(wMax, pMax);
+   bool ok1 = toWorld(wMin, pMin);
+   bool ok2 = toWorld(wMax, pMax);
    if (ok1 && ok2) {
-      for (uInt i=0; i<n; i++) {
+      for (uint32_t i=0; i<n; i++) {
          if (shape(i) > 0) {             // If shape not known use default value
             worldMin_p(i) = wMin(i);
             worldMax_p(i) = wMax(i);
          }
       }
-      return True;
+      return true;
    } else {
-      return False;
+      return false;
    }
 //
-   return True;
+   return true;
 }
 
 void Coordinate::setDefaultWorldMixRanges ()
 {
-   const uInt n = nWorldAxes();
+   const uint32_t n = nWorldAxes();
    worldMin_p.resize(n);
    worldMax_p.resize(n);
    worldMin_p = -1.0e99;
@@ -794,35 +794,35 @@ void Coordinate::setDefaultWorldMixRanges ()
 }
 
 
-Bool Coordinate::doNearPixel (const Coordinate& other,
-                              const Vector<Bool>& thisAxes,
-                              const Vector<Bool>& otherAxes,
-                              Double tol) const
+bool Coordinate::doNearPixel (const Coordinate& other,
+                              const Vector<bool>& thisAxes,
+                              const Vector<bool>& otherAxes,
+                              double tol) const
 {
    if (type() != other.type()) {
       set_error("Coordinate types differ");
-      return False;
+      return false;
    }
 //
-   if (allEQ(thisAxes, False) && allEQ(otherAxes, False)) {
-      return True;
+   if (allEQ(thisAxes, false) && allEQ(otherAxes, false)) {
+      return true;
    }
 //
    if (nPixelAxes() != other.nPixelAxes()) {
       set_error("Number of pixel axes differs");
-      return False;
+      return false;
    }
    if (nWorldAxes() != other.nWorldAxes()) {
       set_error("Number of world axes differs");
-      return False;
+      return false;
    }
 //
-   const Vector<Double>&  thisRefVal(referenceValue());
-   const Vector<Double>& otherRefVal(other.referenceValue());
-   const Vector<Double>&  thisInc(increment());
-   const Vector<Double>& otherInc(other.increment());
-   const Vector<Double>&  thisRefPix(referencePixel());
-   const Vector<Double>& otherRefPix(other.referencePixel());
+   const Vector<double>&  thisRefVal(referenceValue());
+   const Vector<double>& otherRefVal(other.referenceValue());
+   const Vector<double>&  thisInc(increment());
+   const Vector<double>& otherInc(other.increment());
+   const Vector<double>&  thisRefPix(referencePixel());
+   const Vector<double>& otherRefPix(other.referencePixel());
 /*
    const Vector<String>&  thisNames(worldAxisNames());
    const Vector<String>& otherNames(other.worldAxisNames());
@@ -830,18 +830,18 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
    const Vector<String>&  thisUnits(worldAxisUnits());
    const Vector<String>& otherUnits(other.worldAxisUnits());
 //
-   const Matrix<Double>&  thisPC(linearTransform());
-   const Matrix<Double>& otherPC(other.linearTransform());
+   const Matrix<double>&  thisPC(linearTransform());
+   const Matrix<double>& otherPC(other.linearTransform());
    if (thisPC.nrow() != otherPC.nrow()) {
       set_error ("PC matrices have different numbers of rows");
-      return False;
+      return false;
    }
    if (thisPC.ncolumn() != otherPC.ncolumn()) {
       set_error ("PC matrices have different numbers of columns");
-      return False;
+      return false;
    }
 //
-   for (uInt i=0; i<nPixelAxes(); i++) {
+   for (uint32_t i=0; i<nPixelAxes(); i++) {
       if (thisAxes(i) && otherAxes(i)) {
 
 // Units
@@ -851,9 +851,9 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
          String x2 = otherUnits(i);
          x2.upcase();
 //
-         Int i1 = x1.index(RXwhite,0);
+         int32_t i1 = x1.index(RXwhite,0);
          if (i1==-1) i1 = x1.length();
-         Int i2 = x2.index(RXwhite,0);
+         int32_t i2 = x2.index(RXwhite,0);
          if (i2==-1) i2 = x2.length();
 //
          String y1 = String(x1.before(i1));
@@ -863,7 +863,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
            oss << "The Coordinates have differing axis units for axis "
                << i;
            set_error(String(oss));
-           return False;
+           return false;
          }
 
 // Ref val
@@ -872,7 +872,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
             oss << "The Coordinates have differing reference values for axis "
                  << i;
             set_error(String(oss));
-            return False;
+            return false;
          }
 
 // Increment
@@ -881,7 +881,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
             oss << "The Coordinates have differing increments for axis "
                  << i;
             set_error(String(oss));
-            return False;
+            return false;
          }
 
 // Ref pix
@@ -890,7 +890,7 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
             oss << "The Coordinates have differing reference pixels for axis "
                  << i;
             set_error(String(oss));
-            return False;
+            return false;
          }
 
 // pc matrix. Compare row by row.  An axis will turn up in the PC
@@ -902,22 +902,22 @@ Bool Coordinate::doNearPixel (const Coordinate& other,
 
          AlwaysAssert(thisPC.nrow()==thisPC.ncolumn(), AipsError);
 //
-         Vector<Double> r1 = thisPC.row(i);
-         Vector<Double> r2 = otherPC.row(i);
-         for (uInt j=0; j<r1.nelements(); j++) {
-            if (!casacore::near(r1(j),r2(j),tol)) return False;
+         Vector<double> r1 = thisPC.row(i);
+         Vector<double> r2 = otherPC.row(i);
+         for (uint32_t j=0; j<r1.nelements(); j++) {
+            if (!casacore::near(r1(j),r2(j),tol)) return false;
          }
 //
-         Vector<Double> c1 = thisPC.column(i);
-         Vector<Double> c2 = otherPC.column(i);
-         for (uInt j=0; j<r1.nelements(); j++) {
-            if (!casacore::near(c1(j),c2(j),tol)) return False;
+         Vector<double> c1 = thisPC.column(i);
+         Vector<double> c2 = otherPC.column(i);
+         for (uint32_t j=0; j<r1.nelements(); j++) {
+            if (!casacore::near(c1(j),c2(j),tol)) return false;
          }
       }
    }
 
 //
-   return True;
+   return true;
 }
 
 
@@ -927,20 +927,20 @@ Coordinate* Coordinate::rotate(const Quantity& angle) const {
 			"Coordinate::rotate: This coordinate does not have exactly two pixel axes. Rotation is not possible."
 		);
 	}
-	Matrix<Double> xf = linearTransform();
+	Matrix<double> xf = linearTransform();
 
 	// Generate rotation matrix components
-	Double angleRad = angle.getValue(Unit("rad"));
-	Matrix<Double> rotm(2, 2);
-	Double s = sin(-angleRad);
-	Double c = cos(-angleRad);
+	double angleRad = angle.getValue(Unit("rad"));
+	Matrix<double> rotm(2, 2);
+	double s = sin(-angleRad);
+	double c = cos(-angleRad);
 	rotm(0, 0) = c;
 	rotm(0, 1) = s;
 	rotm(1, 0) = -s;
 	rotm(1, 1) = c;
 
 	// Create new linear transform matrix
-	Matrix<Double> xform(2, 2);
+	Matrix<double> xform(2, 2);
 	xform(0, 0) = rotm(0, 0) * xf(0, 0) + rotm(0, 1) * xf(1, 0);
 	xform(0, 1) = rotm(0, 0) * xf(0, 1) + rotm(0, 1) * xf(1, 1);
 	xform(1, 0) = rotm(1, 0) * xf(0, 0) + rotm(1, 1) * xf(1, 0);
@@ -952,17 +952,17 @@ Coordinate* Coordinate::rotate(const Quantity& angle) const {
 	return result;
 }
 
-Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
+bool Coordinate::toWorldWCS (Vector<double>& world, const Vector<double>& pixel,
                              ::wcsprm& wcs) const
 {
-    const uInt nAxes = nPixelAxes();
+    const uint32_t nAxes = nPixelAxes();
     world.resize(nAxes);
 //
     DebugAssert(pixel.nelements() == nAxes, AipsError);
 
 // Generate pointers and intermediaries for wcs
 
-    Bool delPixel, delWorld;
+    bool delPixel, delWorld;
     const double* pixelStore = pixel.getStorage(delPixel);
     double* worldStore = world.getStorage(delWorld);
 //
@@ -972,7 +972,7 @@ Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
 
     int stat;
     int iret;
-    constexpr uInt NAXES_THRESHOLD = 10;
+    constexpr uint32_t NAXES_THRESHOLD = 10;
     // avoid dynamic memory allocation for modest number of coordinate axes
     // note that output stored in imgCrd is not used
     if (nAxes <= NAXES_THRESHOLD) {
@@ -990,24 +990,24 @@ Bool Coordinate::toWorldWCS (Vector<Double>& world, const Vector<Double>& pixel,
     if (iret!=0) {
        String errorMsg = String("wcslib wcsp2s error: ") + wcsp2s_errmsg[iret];
        set_error(errorMsg);
-       return False;
+       return false;
     }
 //
-    return True;
+    return true;
 }
 
 
 
-Bool Coordinate::toPixelWCS(Vector<Double> &pixel, const Vector<Double> &world,
+bool Coordinate::toPixelWCS(Vector<double> &pixel, const Vector<double> &world,
                             ::wcsprm& wcs) const
 {
    pixel.resize(world.nelements());
-   const uInt nAxes = nWorldAxes();
+   const uint32_t nAxes = nWorldAxes();
    DebugAssert(world.nelements() == nAxes, AipsError);
 
 // Generate pointers and intermediaries for wcs
 
-   Bool delPixel, delWorld;
+   bool delPixel, delWorld;
    double* pixelStore = pixel.getStorage(delPixel);
    const double* worldStore = world.getStorage(delWorld);
 //
@@ -1018,7 +1018,7 @@ Bool Coordinate::toPixelWCS(Vector<Double> &pixel, const Vector<Double> &world,
 
    int stat;
    int iret;
-   constexpr uInt NAXES_THRESHOLD = 10;
+   constexpr uint32_t NAXES_THRESHOLD = 10;
    // avoid dynamic memory allocation for modest number of coordinate axes
    // note that output stored in imgCrd is not used
    if (nAxes <= NAXES_THRESHOLD) {
@@ -1036,44 +1036,44 @@ Bool Coordinate::toPixelWCS(Vector<Double> &pixel, const Vector<Double> &world,
    if (iret!=0) {
       String errorMsg = String("wcslib wcss2p error: ") + wcss2p_errmsg[iret];
       set_error(errorMsg);
-      return False;
+      return false;
    }
 //
-   return True;
+   return true;
 }
 
 
 
-Bool Coordinate::toWorldManyWCS (Matrix<Double>& world, const Matrix<Double>& pixel,
-                                 Vector<Bool>& failures, ::wcsprm& wcs) const
+bool Coordinate::toWorldManyWCS (Matrix<double>& world, const Matrix<double>& pixel,
+                                 Vector<bool>& failures, ::wcsprm& wcs) const
 {
-    uInt nTransforms = pixel.ncolumn();
-    uInt nAxes = nPixelAxes();
+    uint32_t nTransforms = pixel.ncolumn();
+    uint32_t nAxes = nPixelAxes();
     AlwaysAssert(pixel.nrow()==nAxes, AipsError);
     world.resize(pixel.shape());
     failures.resize(nTransforms);
 
 // Generate pointers and intermediaries for wcs
 
-    Bool deleteWorld, deletePixel;
-    Double* pWorld = world.getStorage(deleteWorld);
-    const Double* pPixel = pixel.getStorage(deletePixel);
+    bool deleteWorld, deletePixel;
+    double* pWorld = world.getStorage(deleteWorld);
+    const double* pPixel = pixel.getStorage(deletePixel);
 //
-    Bool deleteImgCrd, deletePhi, deleteTheta, deleteStat;
-    Matrix<Double> imgCrd(nAxes,nTransforms);
-    Vector<Double> phi(nTransforms);
-    Vector<Double> theta(nTransforms);
-    Vector<Int> stat(nTransforms);
+    bool deleteImgCrd, deletePhi, deleteTheta, deleteStat;
+    Matrix<double> imgCrd(nAxes,nTransforms);
+    Vector<double> phi(nTransforms);
+    Vector<double> theta(nTransforms);
+    Vector<int32_t> stat(nTransforms);
 
 // Convert from pixel to world with wcs units
 
-    Double* pImgCrd = imgCrd.getStorage(deleteImgCrd);
-    Double* pPhi = phi.getStorage(deletePhi);
-    Double* pTheta = theta.getStorage(deleteTheta);
-    Int* pStat = stat.getStorage(deleteStat);
+    double* pImgCrd = imgCrd.getStorage(deleteImgCrd);
+    double* pPhi = phi.getStorage(deletePhi);
+    double* pTheta = theta.getStorage(deleteTheta);
+    int32_t* pStat = stat.getStorage(deleteStat);
 //
     int iret = wcsp2s (&wcs, nTransforms, nAxes, pPixel, pImgCrd, pPhi, pTheta, pWorld, pStat);
-    for (uInt i=0; i<nTransforms; i++) {
+    for (uint32_t i=0; i<nTransforms; i++) {
        failures[i] = pStat[i]!=0;
     }
 //
@@ -1088,44 +1088,44 @@ Bool Coordinate::toWorldManyWCS (Matrix<Double>& world, const Matrix<Double>& pi
         String errorMsg= "wcs wcsp2s_error: ";
         errorMsg += wcsp2s_errmsg[iret];
         set_error(errorMsg);
-        return False;
+        return false;
     }
 //
-    return True;
+    return true;
 }
 
 
-Bool Coordinate::toPixelManyWCS (Matrix<Double>& pixel, const Matrix<Double>& world,
-                                 Vector<Bool>& failures, ::wcsprm& wcs) const
+bool Coordinate::toPixelManyWCS (Matrix<double>& pixel, const Matrix<double>& world,
+                                 Vector<bool>& failures, ::wcsprm& wcs) const
 {
-    uInt nTransforms = world.ncolumn();
-    uInt nAxes = nWorldAxes();
+    uint32_t nTransforms = world.ncolumn();
+    uint32_t nAxes = nWorldAxes();
     AlwaysAssert(world.nrow()==nAxes, AipsError);
     pixel.resize(world.shape());
     failures.resize(nTransforms);
 
 // Generate wcs pointers and intermediaries
 
-    Bool deleteWorld, deletePixel;
-    Double* pPixel = pixel.getStorage(deletePixel);
-    const Double* pWorld = world.getStorage(deleteWorld);
+    bool deleteWorld, deletePixel;
+    double* pPixel = pixel.getStorage(deletePixel);
+    const double* pWorld = world.getStorage(deleteWorld);
 //
-    Bool deleteImgCrd, deletePhi, deleteTheta, deleteStat;
-    Matrix<Double> imgCrd(nAxes,nTransforms);
-    Vector<Double> phi(nTransforms);
-    Vector<Double> theta(nTransforms);
-    Vector<Int> stat(nTransforms);
+    bool deleteImgCrd, deletePhi, deleteTheta, deleteStat;
+    Matrix<double> imgCrd(nAxes,nTransforms);
+    Vector<double> phi(nTransforms);
+    Vector<double> theta(nTransforms);
+    Vector<int32_t> stat(nTransforms);
 //
-    Double* pImgCrd = imgCrd.getStorage(deleteImgCrd);
-    Double* pPhi = phi.getStorage(deletePhi);
-    Double* pTheta = theta.getStorage(deleteTheta);
-    Int* pStat = stat.getStorage(deleteStat);
+    double* pImgCrd = imgCrd.getStorage(deleteImgCrd);
+    double* pPhi = phi.getStorage(deletePhi);
+    double* pTheta = theta.getStorage(deleteTheta);
+    int32_t* pStat = stat.getStorage(deleteStat);
 
 // Convert from wcs units to pixel
 
     const int nC = nTransforms;
     int iret = wcss2p (&wcs, nC, nAxes, pWorld, pPhi, pTheta, pImgCrd, pPixel, pStat);
-    for (uInt i=0; i<nTransforms; i++) {
+    for (uint32_t i=0; i<nTransforms; i++) {
        failures[i] = pStat[i]!=0;
     }
 //
@@ -1140,38 +1140,38 @@ Bool Coordinate::toPixelManyWCS (Matrix<Double>& pixel, const Matrix<Double>& wo
         String errorMsg= "wcs wcss2p_error: ";
         errorMsg += wcss2p_errmsg[iret];
         set_error(errorMsg);
-        return False;
+        return false;
     }
-    return True;
+    return true;
 }
 
 
-void Coordinate::toCurrentMany(Matrix<Double>& world, const Vector<Double>& toCurrentFactors) const
+void Coordinate::toCurrentMany(Matrix<double>& world, const Vector<double>& toCurrentFactors) const
 {
-    for (uInt i=0; i<toCurrentFactors.nelements(); i++) {
-       Vector<Double> row(world.row(i));                // Reference
+    for (uint32_t i=0; i<toCurrentFactors.nelements(); i++) {
+       Vector<double> row(world.row(i));                // Reference
        row *= toCurrentFactors[i];
     }
 }
 
 
-void Coordinate::fromCurrentMany(Matrix<Double>& world, const Vector<Double>& toCurrentFactors) const
+void Coordinate::fromCurrentMany(Matrix<double>& world, const Vector<double>& toCurrentFactors) const
 {
-    for (uInt i=0; i<toCurrentFactors.nelements(); i++) {
-       Vector<Double> row(world.row(i));                // Reference
+    for (uint32_t i=0; i<toCurrentFactors.nelements(); i++) {
+       Vector<double> row(world.row(i));                // Reference
        row /= toCurrentFactors[i];
     }
 }
 
 
-void Coordinate::convertToMany (Matrix<Double>& world) const
+void Coordinate::convertToMany (Matrix<double>& world) const
 {
     AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
-    Vector<Double> worldTmp(nWorldAxes());
-    ArrayAccessor<Double, Axis<1> > jWorld(world);
-    ArrayAccessor<Double, Axis<0> > iWorld;
+    Vector<double> worldTmp(nWorldAxes());
+    ArrayAccessor<double, Axis<1> > jWorld(world);
+    ArrayAccessor<double, Axis<0> > iWorld;
 //
-    uInt k;
+    uint32_t k;
     for (jWorld.reset(); jWorld!=jWorld.end(); ++jWorld) {
        iWorld = jWorld;            // Partial assignment
        for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
@@ -1193,14 +1193,14 @@ void Coordinate::convertToMany (Matrix<Double>& world) const
 
 
 
-void Coordinate::convertFromMany (Matrix<Double>& world) const
+void Coordinate::convertFromMany (Matrix<double>& world) const
 {
     AlwaysAssert(nWorldAxes()==world.nrow(), AipsError);
-    Vector<Double> worldTmp(nWorldAxes());
-    ArrayAccessor<Double, Axis<1> > jWorld(world);
-    ArrayAccessor<Double, Axis<0> > iWorld;
+    Vector<double> worldTmp(nWorldAxes());
+    ArrayAccessor<double, Axis<1> > jWorld(world);
+    ArrayAccessor<double, Axis<0> > iWorld;
 //
-    uInt k;
+    uint32_t k;
     for (jWorld.reset(); jWorld!=jWorld.end(); ++jWorld) {
        iWorld = jWorld;            // Partial assignment
        for (iWorld.reset(),k=0; iWorld!=iWorld.end(); ++iWorld,k++) {
@@ -1220,28 +1220,28 @@ void Coordinate::convertFromMany (Matrix<Double>& world) const
     }
 }
 
-void Coordinate::pcToXform (Matrix<Double>& xform, const ::wcsprm& wcs) const
+void Coordinate::pcToXform (Matrix<double>& xform, const ::wcsprm& wcs) const
 {
-   uInt n = wcs.naxis;
+   uint32_t n = wcs.naxis;
    xform.resize(n,n);
 //
-   uInt count = 0;
-   for (uInt i=0; i<n; i++) {
-     for (uInt j=0; j<n; j++) {
+   uint32_t count = 0;
+   for (uint32_t i=0; i<n; i++) {
+     for (uint32_t j=0; j<n; j++) {
         xform(j,i) = wcs.pc[count];
         count++;
      }
    }
 }
 
-void Coordinate::xFormToPC (::wcsprm& wcs, const Matrix<Double>& xform) const
+void Coordinate::xFormToPC (::wcsprm& wcs, const Matrix<double>& xform) const
 {
-   uInt n = wcs.naxis;
+   uint32_t n = wcs.naxis;
    AlwaysAssert(xform.nrow()==n && xform.ncolumn()==n, AipsError);
 //
-   uInt count = 0;
-   for (uInt i=0; i<n; i++) {
-     for (uInt j=0; j<n; j++) {
+   uint32_t count = 0;
+   for (uint32_t i=0; i<n; i++) {
+     for (uint32_t j=0; j<n; j++) {
         wcs.pc[count] = xform(j,i);
         count++;
      }

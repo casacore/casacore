@@ -98,49 +98,49 @@ public:
 
     // Get a column by its index.
     // <group>
-    ColumnDesc& operator[] (uInt index)
+    ColumnDesc& operator[] (uint32_t index)
 	{ return *(ColumnDesc*)(colSeq_p[index]); }
-    const ColumnDesc& operator[] (uInt index) const
+    const ColumnDesc& operator[] (uint32_t index) const
 	{ return *(ColumnDesc*)(colSeq_p[index]); }
     // </group>
 
     // Get nr of columns in this set.
-    uInt ncolumn() const
+    uint32_t ncolumn() const
 	{ return cols_p.size(); }
 
     // Test if a column is defined in this set.
-    Bool isDefined (const String& name) const
+    bool isDefined (const String& name) const
         { return (cols_p.find(name) != cols_p.end()); }
 
     // Test if this set equals another one.
     // It is equal if the number of columns is equal and all field names in
     // this set occur in the other too. The order of the columns
     // is not important.
-    // <br>The flag equalDataTypes is set to True if the data types
+    // <br>The flag equalDataTypes is set to true if the data types
     // of all columns match.
-    Bool isEqual (const ColumnDescSet& other, Bool& equalDataTypes) const;
+    bool isEqual (const ColumnDescSet& other, bool& equalDataTypes) const;
 
     // Test if this set is a subset of another one.
     // It is similar to isEqual above.
-    Bool isSubset (const ColumnDescSet& other, Bool& equalDataTypes) const;
+    bool isSubset (const ColumnDescSet& other, bool& equalDataTypes) const;
 
     // Test if this set is a strict subset of another one, thus
     // if it is a subset and not equal.
-    Bool isStrictSubset (const ColumnDescSet& other,
-			 Bool& equalDataTypes) const;
+    bool isStrictSubset (const ColumnDescSet& other,
+			 bool& equalDataTypes) const;
 
     // Test if this set is a superset of another one.
-    Bool isSuperset (const ColumnDescSet& other, Bool& equalDataTypes) const
+    bool isSuperset (const ColumnDescSet& other, bool& equalDataTypes) const
 	{ return other.isSubset (*this, equalDataTypes); }
 
     // Test if this set is a strict superset of another one, thus
     // if it is a superset and not equal.
-    Bool isStrictSuperset (const ColumnDescSet& other,
-			   Bool& equalDataTypes) const
+    bool isStrictSuperset (const ColumnDescSet& other,
+			   bool& equalDataTypes) const
 	{ return other.isStrictSubset (*this, equalDataTypes); }
 
     // Test if this and the other column set are disjoint.
-    Bool isDisjoint (const ColumnDescSet& other) const;
+    bool isDisjoint (const ColumnDescSet& other) const;
 
     // Get const access to the column descriptions.
 //#//    const TypedKeywords<ColumnDesc>& columns() const
@@ -171,9 +171,9 @@ private:
     void rename (const String& newname, const String& oldname);
 
     // Test if all columns are part of the other set.
-    // The flag equalDataTypes is set to True if the data types of the
+    // The flag equalDataTypes is set to true if the data types of the
     // columns in both sets are the same.
-    Bool allExist (const ColumnDescSet&, Bool& equalDataTypes) const;
+    bool allExist (const ColumnDescSet&, bool& equalDataTypes) const;
 
     // Add another (disjoint) column set.
     // If the sets are not disjoint (i.e. the other set contains a column

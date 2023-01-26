@@ -37,9 +37,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	Mesg << messageList[0];
 	if (tokenList.size() > 0)
-	  for (uInt i=0;i<tokenList.size();i++) Mesg << tokenList[i] << " ";
+	  for (uint32_t i=0;i<tokenList.size();i++) Mesg << tokenList[i] << " ";
 	else
-	  for (uInt i=1;i<messageList.size(); i++) Mesg << endl << messageList[i];
+	  for (uint32_t i=1;i<messageList.size(); i++) Mesg << endl << messageList[i];
       }
     String casaMesg(Mesg.str());
     return casaMesg;

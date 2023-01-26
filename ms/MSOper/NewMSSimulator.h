@@ -107,24 +107,24 @@ public:
   
   // Set maximum amount of data (bytes) to be written into any one
   // scratch column hypercube
-  void setMaxData(const Double maxData=2e9) {maxData_p=maxData;}
+  void setMaxData(const double maxData=2e9) {maxData_p=maxData;}
   
   // set the antenna and array data. These are written immediately to the
   // existing MS. The same model is used for the other init infor.
   void initAnt(const String& telname,
-	       const Vector<Double>& x, 
-	       const Vector<Double>& y, 
-	       const Vector<Double>& z,
-	       const Vector<Double>& dishDiameter,
-	       const Vector<Double>& offset,
+	       const Vector<double>& x, 
+	       const Vector<double>& y, 
+	       const Vector<double>& z,
+	       const Vector<double>& dishDiameter,
+	       const Vector<double>& offset,
 	       const Vector<String>& mount,
 	       const Vector<String>& name,
 	       const Vector<String>& padname,
 	       const String& coordsystem,
 	       const MPosition& mRefLocation);
   // get the info back 
-  bool getAnt(String& telescope, Int& nAnt, Matrix<Double>* antXYZ, 
-	      Vector<Double>& antDiam, Vector<Double>& offset,
+  bool getAnt(String& telescope, int32_t& nAnt, Matrix<double>* antXYZ, 
+	      Vector<double>& antDiam, Vector<double>& offset,
 	      Vector<String>& mount, Vector<String>& name, Vector<String>& padname,
 	      String& coordsystem, MPosition& mRefLocation );
 
@@ -133,7 +133,7 @@ public:
 		  const MDirection& sourceDirection,
 		  const String& calCode);
 
-  bool getFields(Int& nField,
+  bool getFields(int32_t& nField,
 		 Vector<String>& sourceName, 
 		 Vector<MDirection>& sourceDirection,
 		 Vector<String>& calCode);
@@ -145,48 +145,48 @@ public:
 
   // set the Feeds;  Smart version
   void initFeeds(const String& mode,
-		 const Vector<Double>& x,
-		 const Vector<Double>& y,
+		 const Vector<double>& x,
+		 const Vector<double>& y,
 		 const Vector<String>& pol);
 
   // set the spectral windows information
   void initSpWindows(const String& spWindowName,
-		     const Int& nChan,
+		     const int32_t& nChan,
 		     const Quantity& startFreq,
 		     const Quantity& freqInc,
 		     const Quantity& freqRes,
 		     const MFrequency::Types& freqType,
 		     const String& stokesString);
 
-  bool getSpWindows(Int& nSpw,
+  bool getSpWindows(int32_t& nSpw,
 		    Vector<String>& spWindowName,
-		    Vector<Int>& nChan,
+		    Vector<int32_t>& nChan,
 		    Vector<Quantity>& startFreq,
 		    Vector<Quantity>& freqInc,
 		    Vector<String>& stokesString);
 
-  void setFractionBlockageLimit(const Double fraclimit) 
+  void setFractionBlockageLimit(const double fraclimit) 
     { fractionBlockageLimit_p = fraclimit; }
 
   void setElevationLimit(const Quantity& ellimit) 
     { elevationLimit_p = ellimit; }
 
-  void setAutoCorrelationWt(const Float autocorrwt) 
+  void setAutoCorrelationWt(const float autocorrwt) 
     { autoCorrelationWt_p = autocorrwt; }
 
   void settimes(const Quantity& qIntegrationTime, 
-		const Bool      useHourAngles,
+		const bool      useHourAngles,
 		const MEpoch&   mRefTime);
 
   void observe(const String& sourceName,
 	       const String& spWindowName,
 	       const Quantity& qStartTime, 
 	       const Quantity& qStopTime,
-               const Bool add_observation=True,
+               const bool add_observation=true,
 //# from int ASDM2MSFiller::addUniqueState(
 //# defaults for ALMA as known on 20100831
-               const Bool state_sig=True,
-               const Bool state_ref=True,
+               const bool state_sig=true,
+               const bool state_ref=true,
                const double& state_cal=0.,
                const double& state_load=0.,
                const unsigned int state_sub_scan=1,
@@ -200,11 +200,11 @@ public:
 	       const Vector<Quantity>& qStartTimes, 
 	       const Vector<Quantity>& qStopTimes,
 	       const Vector<MDirection>& directions,
-               const Bool add_observation=True,
+               const bool add_observation=true,
 //# from int ASDM2MSFiller::addUniqueState(
 //# defaults for ALMA as known on 20100831
-               const Bool state_sig=True,
-               const Bool state_ref=True,
+               const bool state_sig=true,
+               const bool state_ref=true,
                const double& state_cal=0.,
                const double& state_load=0.,
                const unsigned int state_sub_scan=1,
@@ -221,42 +221,42 @@ private:
   NewMSSimulator() {}
 
 //# Data Members
-  Double fractionBlockageLimit_p;
+  double fractionBlockageLimit_p;
   Quantity elevationLimit_p;
-  Float autoCorrelationWt_p;
+  float autoCorrelationWt_p;
   String telescope_p;
   Quantity qIntegrationTime_p;
-  Bool useHourAngle_p;
-  Bool hourAngleDefined_p;
+  bool useHourAngle_p;
+  bool hourAngleDefined_p;
   MEpoch mRefTime_p;
-  Double t_offset_p;
-  Double dataWritten_p;
-  Int hyperCubeID_p;
-  Bool hasHyperCubes_p;
-  Int lastSpWID_p;
-  Int lastNchan_p;
+  double t_offset_p;
+  double dataWritten_p;
+  int32_t hyperCubeID_p;
+  bool hasHyperCubes_p;
+  int32_t lastSpWID_p;
+  int32_t lastNchan_p;
 
   casacore::CountedPtr<MeasurementSet> ms_p;
 
   TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p;
 
-  Double maxData_p;
+  double maxData_p;
 
-  void local2global(Vector<Double>& xReturned,
-		    Vector<Double>& yReturned,
-		    Vector<Double>& zReturned,
+  void local2global(Vector<double>& xReturned,
+		    Vector<double>& yReturned,
+		    Vector<double>& zReturned,
 		    const MPosition& mRefLocation,
-		    const Vector<Double>& xIn,
-		    const Vector<Double>& yIn,
-		    const Vector<Double>& zIn);
+		    const Vector<double>& xIn,
+		    const Vector<double>& yIn,
+		    const Vector<double>& zIn);
 
-  void longlat2global(Vector<Double>& xReturned,
-		      Vector<Double>& yReturned,
-		      Vector<Double>& zReturned,
+  void longlat2global(Vector<double>& xReturned,
+		      Vector<double>& yReturned,
+		      Vector<double>& zReturned,
 		      const MPosition& mRefLocation,
-		      const Vector<Double>& xIn,
-		      const Vector<Double>& yIn,
-		      const Vector<Double>& zIn);
+		      const Vector<double>& xIn,
+		      const Vector<double>& yIn,
+		      const Vector<double>& zIn);
 
   // Returns the fractional blockage of one antenna by another
   // We will want to put this somewhere else eventually, but I don't yet know where!
@@ -264,19 +264,19 @@ private:
   // fraction1: fraction of antenna 1 that is blocked by 2
   // fraction2: fraction of antenna 2 that is blocked by 1
   // hint: at least one of the two will be 0.0
-  void  blockage(Double &fraction1, Double &fraction2,
-		 const Vector<Double>& uvw,             // uvw in same units as diam!
-		 const Double diam1, const Double diam2);
+  void  blockage(double &fraction1, double &fraction2,
+		 const Vector<double>& uvw,             // uvw in same units as diam!
+		 const double diam1, const double diam2);
 
   String formatDirection(const MDirection&);
-  String formatTime(const Double);
+  String formatTime(const double);
 
-  void addHyperCubes(const Int id, const Int nBase, const Int nChan, const Int nCorr);
+  void addHyperCubes(const int32_t id, const int32_t nBase, const int32_t nChan, const int32_t nCorr);
 
   void defaults();
 
-  Bool calcAntUVW(MEpoch& epoch, MDirection& refdir, 
-			Matrix<Double>& uvwAnt);
+  bool calcAntUVW(MEpoch& epoch, MDirection& refdir, 
+			Matrix<double>& uvwAnt);
 
 
 };

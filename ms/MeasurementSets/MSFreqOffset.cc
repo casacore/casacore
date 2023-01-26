@@ -38,11 +38,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSFreqOffset::MSFreqOffset():hasBeenDestroyed_p(True) { }
+MSFreqOffset::MSFreqOffset():hasBeenDestroyed_p(true) { }
 
 MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option) 
   : MSTable<MSFreqOffsetEnums>(tableName, option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -53,7 +53,7 @@ MSFreqOffset::MSFreqOffset(const String &tableName, TableOption option)
 MSFreqOffset::MSFreqOffset(const String& tableName, const String &tableDescName,
 			       TableOption option)
   : MSTable<MSFreqOffsetEnums>(tableName, tableDescName, option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -62,19 +62,19 @@ MSFreqOffset::MSFreqOffset(const String& tableName, const String &tableDescName,
 }
 
 MSFreqOffset::MSFreqOffset(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
   : MSTable<MSFreqOffsetEnums>(newTab, nrrow, initialize),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSFreqOffset(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSFreqOffset(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSFreqOffset"));
 }
 
 MSFreqOffset::MSFreqOffset(const Table &table)
   : MSTable<MSFreqOffsetEnums>(table),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -84,7 +84,7 @@ MSFreqOffset::MSFreqOffset(const Table &table)
 
 MSFreqOffset::MSFreqOffset(const MSFreqOffset &other)
   : MSTable<MSFreqOffsetEnums>(other),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -104,7 +104,7 @@ MSFreqOffset::~MSFreqOffset()
            << "~MSFreqOffset() - Table written is not a valid MSFreqOffset"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -147,7 +147,7 @@ MSTableMaps MSFreqOffset::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

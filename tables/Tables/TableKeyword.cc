@@ -108,7 +108,7 @@ void TableKeyword::setRW()
     }
 }
 
-Bool TableKeyword::isMultiUsed (Bool checkSubTables) const
+bool TableKeyword::isMultiUsed (bool checkSubTables) const
 {
     if (! table_p->isNull()) {
         return table_p->isMultiUsed (checkSubTables);
@@ -163,34 +163,34 @@ void TableKeyword::close() const
     *table_p = Table();
 }
 
-void TableKeyword::flush (Bool fsync) const
+void TableKeyword::flush (bool fsync) const
 {
     if (attr_p.openWritable()) {
         if (!table_p->isNull()) {
-	    table_p->flush (fsync, True);
+	    table_p->flush (fsync, true);
 	} else {
 	    // The table is not open here, but might be open elsewhere.
 	    // So only flush if open elsewhere, thus in the TableCache.
-            PlainTable::tableCache().flushTable (attr_p.name(), fsync, True);
+            PlainTable::tableCache().flushTable (attr_p.name(), fsync, true);
 	}
     }
 }
 
-Bool TableKeyword::conform (const TableKeyword& that) const
+bool TableKeyword::conform (const TableKeyword& that) const
 {
     // Only check for conformance if a description is fixed.
     if (isFixed()) {
         return conform (that.table());
     }
-    return True;
+    return true;
 }
 
-Bool TableKeyword::conform (const Table& that) const
+bool TableKeyword::conform (const Table& that) const
 {
     if (isFixed()  &&  tableDescName_p != that.tableDesc().getType()) {
-	return False;
+	return false;
     }
-    return True;
+    return true;
 }
 
 } //# NAMESPACE CASACORE - END

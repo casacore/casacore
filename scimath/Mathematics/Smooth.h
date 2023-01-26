@@ -66,8 +66,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     			       outFlags, // the output mask
 //			       yin, // the input
 //			       yinFlags, // the input mask
-//			       False,  // for flagging: good is not true
-//                             True); // use the default scheme for producing output flags 
+//			       false,  // for flagging: good is not true
+//                             true); // use the default scheme for producing output flags 
 // </srcBlock>
 // </example>
 
@@ -88,14 +88,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
   
   // Hanning smoothing
-  static void hanning(Vector<T>& out, Vector<Bool>& outmask, 
-		      Vector<T>& in, Vector<Bool>& mask, 
-		      Bool TrueIsGood, Bool relaxed=True);
+  static void hanning(Vector<T>& out, Vector<bool>& outmask, 
+		      Vector<T>& in, Vector<bool>& mask, 
+		      bool TrueIsGood, bool relaxed=true);
   
   // as above but calling hanningSmooth for each row of the 2D array
-  static void hanning(Array<T>& out, Array<Bool>& outmask, 
-		      Array<T>& in, Array<Bool>& mask, 
-		      Bool TrueIsGood, Bool relaxed=True);
+  static void hanning(Array<T>& out, Array<bool>& outmask, 
+		      Array<T>& in, Array<bool>& mask, 
+		      bool TrueIsGood, bool relaxed=true);
   };
   
   

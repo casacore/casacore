@@ -31,14 +31,14 @@ namespace casacore {
 
 StringDistance::StringDistance()
   : itsMaxDistance     (0),
-    itsCountSwaps      (False),
-    itsIgnoreBlanks    (False),
-    itsCaseInsensitive (False)
+    itsCountSwaps      (false),
+    itsIgnoreBlanks    (false),
+    itsCaseInsensitive (false)
 {}
 
 StringDistance::StringDistance (const String& source, int maxDistance,
-                                Bool countSwaps, Bool ignoreBlanks,
-                                Bool caseInsensitive)
+                                bool countSwaps, bool ignoreBlanks,
+                                bool caseInsensitive)
   : itsSource          (source),
     itsMaxDistance     (maxDistance),
     itsCountSwaps      (countSwaps),
@@ -59,7 +59,7 @@ StringDistance::StringDistance (const String& source, int maxDistance,
   itsMatrix = -1;
 }
 
-Bool StringDistance::match (const String& target) const
+bool StringDistance::match (const String& target) const
 {
   String t(target);
   if (itsIgnoreBlanks) {
@@ -79,7 +79,7 @@ Bool StringDistance::match (const String& target) const
   return doDistance(itsSource, t, itsCountSwaps, itsMatrix) <= itsMaxDistance;
 }
 
-Int StringDistance::distance (const String& target) const
+int32_t StringDistance::distance (const String& target) const
 {
   String t(target);
   if (itsIgnoreBlanks) {
@@ -94,18 +94,18 @@ Int StringDistance::distance (const String& target) const
   return doDistance (itsSource, t, itsCountSwaps, itsMatrix);
 }
 
-Int StringDistance::distance (const String& source, 
+int32_t StringDistance::distance (const String& source, 
                               const String& target,
-                              Bool countSwaps)
+                              bool countSwaps)
 {
-  Matrix<Int> matrix (source.size() + 1, target.size() + 1);
+  Matrix<int32_t> matrix (source.size() + 1, target.size() + 1);
   return doDistance (source, target, countSwaps, matrix);
 }
 
-Int StringDistance::doDistance (const String& source,
+int32_t StringDistance::doDistance (const String& source,
                                 const String& target,
-                                Bool countSwaps,
-                                Matrix<Int>& matrix)
+                                bool countSwaps,
+                                Matrix<int32_t>& matrix)
 {
   int n = source.size();
   int m = target.size();

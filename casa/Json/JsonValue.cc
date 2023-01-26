@@ -40,19 +40,19 @@ namespace casacore {
     itsValuePtr (0)
   {}
 
-  JsonValue::JsonValue (Bool value)
+  JsonValue::JsonValue (bool value)
   : itsDataType (TpBool),
-    itsValuePtr (new Bool(value))
+    itsValuePtr (new bool(value))
   {}
 
   JsonValue::JsonValue (int value)
   : itsDataType (TpInt64),
-    itsValuePtr (new Int64(value))
+    itsValuePtr (new int64_t(value))
   {}
 
-  JsonValue::JsonValue (Int64 value)
+  JsonValue::JsonValue (int64_t value)
   : itsDataType (TpInt64),
-    itsValuePtr (new Int64(value))
+    itsValuePtr (new int64_t(value))
   {}
 
   JsonValue::JsonValue (double value)
@@ -110,10 +110,10 @@ namespace casacore {
     if (itsValuePtr) {
       switch (itsDataType) {
       case TpBool:
-        delete (Bool*)itsValuePtr;
+        delete (bool*)itsValuePtr;
         break;
       case TpInt64:
-        delete (Int64*)itsValuePtr;
+        delete (int64_t*)itsValuePtr;
         break;
       case TpDouble:
         delete (double*)itsValuePtr;
@@ -143,10 +143,10 @@ namespace casacore {
     if (that.itsValuePtr) {
       switch (itsDataType) {
       case TpBool:
-        itsValuePtr = new Bool (that.getBool());
+        itsValuePtr = new bool (that.getBool());
         break;
       case TpInt64:
-        itsValuePtr = new Int64 (that.getInt());
+        itsValuePtr = new int64_t (that.getInt());
         break;
       case TpDouble:
         itsValuePtr = new double (that.getDouble());
@@ -238,8 +238,8 @@ namespace casacore {
   {
     IPosition shp(1,0);
     IPosition nshp;
-    Bool first  = True;
-    Bool nested = False;
+    bool first  = true;
+    bool nested = false;
     for (vector<JsonValue>::const_iterator iter=vec.begin();
          iter!=vec.end(); ++iter) {
       if (iter->dataType() == TpRecord) {
@@ -247,9 +247,9 @@ namespace casacore {
       }
       shp[0]++;
       if (first) {
-        first = False;
+        first = false;
         if (iter->isVector()) {
-          nested = True;
+          nested = true;
           nshp   = iter->shape();
         }
       } else {
@@ -271,9 +271,9 @@ namespace casacore {
     }
     switch (itsDataType) {
     case TpBool:
-      return ValueHolder(*(Bool*)itsValuePtr);
+      return ValueHolder(*(bool*)itsValuePtr);
     case TpInt64:
-      return ValueHolder(*(Int64*)itsValuePtr);
+      return ValueHolder(*(int64_t*)itsValuePtr);
     case TpDouble:
       return ValueHolder(*(double*)itsValuePtr);
     case TpDComplex:
@@ -290,9 +290,9 @@ namespace casacore {
     vector<JsonValue> vec = getVector();
     switch (vectorDataType(vec)) {
     case TpBool:
-      return ValueHolder(Vector<Bool>(getVecBool()));
+      return ValueHolder(Vector<bool>(getVecBool()));
     case TpInt64:
-      return ValueHolder(Vector<Int64>(getVecInt()));
+      return ValueHolder(Vector<int64_t>(getVecInt()));
     case TpDouble:
       return ValueHolder(Vector<double>(getVecDouble()));
     case TpDComplex:
@@ -300,29 +300,29 @@ namespace casacore {
     case TpString:
       return ValueHolder(Vector<String>(getVecString()));
     case TpOther:
-      return ValueHolder(1, True);    // untyped array with 1 axis
+      return ValueHolder(1, true);    // untyped array with 1 axis
     default:
       throw JsonError("JsonValue::getValueHolder - vector of mixed data types");
     }
   }
 
-  Bool JsonValue::getBool() const
+  bool JsonValue::getBool() const
   {
     switch (itsDataType) {
     case TpBool:
-      return *(Bool*)itsValuePtr;
+      return *(bool*)itsValuePtr;
     case TpInt64:
-      return (*(Int64*)itsValuePtr != 0);
+      return (*(int64_t*)itsValuePtr != 0);
     default:
       throw JsonError("JsonValue::getBool - invalid data type");
     }
   }
 
-  Int64 JsonValue::getInt() const
+  int64_t JsonValue::getInt() const
   {
     switch (itsDataType) {
     case TpInt64:
-      return *(Int64*)itsValuePtr;
+      return *(int64_t*)itsValuePtr;
     default:
       throw JsonError("JsonValue::getInt - invalid data type");
     }
@@ -335,7 +335,7 @@ namespace casacore {
     }
     switch (itsDataType) {
     case TpInt64:
-      return *(Int64*)itsValuePtr;
+      return *(int64_t*)itsValuePtr;
     case TpDouble:
       return *(double*)itsValuePtr;
     default:
@@ -350,7 +350,7 @@ namespace casacore {
     }
     switch (itsDataType) {
     case TpInt64:
-      return DComplex(*(Int64*)itsValuePtr, 0.0);
+      return DComplex(*(int64_t*)itsValuePtr, 0.0);
     case TpDouble:
       return DComplex(*(double*)itsValuePtr, 0.0);
     case TpDComplex:
@@ -370,32 +370,32 @@ namespace casacore {
     }
   }
 
-  vector<Bool> JsonValue::getVecBool() const
+  vector<bool> JsonValue::getVecBool() const
   {
     if (itsDataType == TpOther) {
       const vector<JsonValue>& kvvec = *(const vector<JsonValue>*)itsValuePtr;
-      vector<Bool> vec(kvvec.size());
+      vector<bool> vec(kvvec.size());
       for (size_t i=0; i<vec.size(); i++) {
         vec[i] = kvvec[i].getBool();
       }
       return vec;
     }
-    vector<Bool> vec(1);
+    vector<bool> vec(1);
     vec[0] = getBool();
     return vec;
   }
 
-  vector<Int64> JsonValue::getVecInt() const
+  vector<int64_t> JsonValue::getVecInt() const
   {
     if (itsDataType == TpOther) {
       const vector<JsonValue>& kvvec = *(const vector<JsonValue>*)itsValuePtr;
-      vector<Int64> vec(kvvec.size());
+      vector<int64_t> vec(kvvec.size());
       for (size_t i=0; i<vec.size(); i++) {
         vec[i] = kvvec[i].getInt();
       }
       return vec;
     }
-    vector<Int64> vec(1);
+    vector<int64_t> vec(1);
     vec[0] = getInt();
     return vec;
   }
@@ -468,18 +468,18 @@ namespace casacore {
     value = getValueMap();
   }
 
-  Array<Bool> JsonValue::getArrayBool() const
+  Array<bool> JsonValue::getArrayBool() const
   {
-    Array<Bool> arr(shape());
-    Bool* data = arr.data();
+    Array<bool> arr(shape());
+    bool* data = arr.data();
     fillArray (data, data+arr.size(), getVector());
     return arr;
   }
 
-  Array<Int64> JsonValue::getArrayInt() const
+  Array<int64_t> JsonValue::getArrayInt() const
   {
-    Array<Int64> arr(shape());
-    Int64* data = arr.data();
+    Array<int64_t> arr(shape());
+    int64_t* data = arr.data();
     fillArray (data, data+arr.size(), getVector());
     return arr;
   }
@@ -516,10 +516,10 @@ namespace casacore {
     } else {
       switch (param.itsDataType) {
       case TpBool:
-        js.put (*(Bool*)(param.itsValuePtr));
+        js.put (*(bool*)(param.itsValuePtr));
         break;
       case TpInt64:
-        js.put (*(Int64*)(param.itsValuePtr));
+        js.put (*(int64_t*)(param.itsValuePtr));
         break;
       case TpDouble:
         js.put (*(double*)(param.itsValuePtr));

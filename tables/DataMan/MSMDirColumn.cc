@@ -39,7 +39,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSMDirColumn::MSMDirColumn (MSMBase* smptr, int dataType)
-: MSMColumn (smptr, dataType, True),
+: MSMColumn (smptr, dataType, true),
   nrelem_p  (0)
 {}
 
@@ -66,7 +66,7 @@ void MSMDirColumn::addRow (rownr_t nrnew, rownr_t nrold)
   //# Allocate the fixed shape data arrays.
   void* ptr;
   for (; nrold<nrnew; nrold++) {
-    ptr = allocData (nrelem_p, False);
+    ptr = allocData (nrelem_p, false);
     putArrayPtr (nrold, ptr);
   }
 }
@@ -79,7 +79,7 @@ void MSMDirColumn::doCreate (rownr_t nrrow)
   } 
 }
 
-uInt MSMDirColumn::ndim (rownr_t)
+uint32_t MSMDirColumn::ndim (rownr_t)
   { return shape_p.nelements(); }
 
 IPosition MSMDirColumn::shape (rownr_t)
@@ -89,7 +89,7 @@ IPosition MSMDirColumn::shape (rownr_t)
 void MSMDirColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
-    Bool deleteIt;
+    bool deleteIt;
     void* data = arr.getVStorage (deleteIt);
     if (dtype() == TpString) {
       objcopy (static_cast<String*>(data),
@@ -105,7 +105,7 @@ void MSMDirColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 void MSMDirColumn::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
-    Bool deleteIt;
+    bool deleteIt;
     const void* data = arr.getVStorage (deleteIt);
     if (dtype() == TpString) {
       objcopy (static_cast<String*>(getArrayPtr (rownr)),
@@ -124,31 +124,31 @@ void MSMDirColumn::getSliceV (rownr_t rownr, const Slicer& slicer, ArrayBase& ar
 {
   switch (dtype()) {
   case TpBool:
-    doGetSlice (rownr, slicer, static_cast<Array<Bool>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<bool>&>(arr));
     break;
   case TpUChar:
-    doGetSlice (rownr, slicer, static_cast<Array<uChar>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<unsigned char>&>(arr));
     break;
   case TpShort:
-    doGetSlice (rownr, slicer, static_cast<Array<Short>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<int16_t>&>(arr));
     break;
   case TpUShort:
-    doGetSlice (rownr, slicer, static_cast<Array<uShort>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<uint16_t>&>(arr));
     break;
   case TpInt:
-    doGetSlice (rownr, slicer, static_cast<Array<Int>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<int32_t>&>(arr));
     break;
   case TpUInt:
-    doGetSlice (rownr, slicer, static_cast<Array<uInt>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<uint32_t>&>(arr));
     break;
   case TpInt64:
-    doGetSlice (rownr, slicer, static_cast<Array<Int64>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<int64_t>&>(arr));
     break;
   case TpFloat:
-    doGetSlice (rownr, slicer, static_cast<Array<Float>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<float>&>(arr));
     break;
   case TpDouble:
-    doGetSlice (rownr, slicer, static_cast<Array<Double>&>(arr));
+    doGetSlice (rownr, slicer, static_cast<Array<double>&>(arr));
     break;
   case TpComplex:
     doGetSlice (rownr, slicer, static_cast<Array<Complex>&>(arr));
@@ -168,31 +168,31 @@ void MSMDirColumn::putSliceV (rownr_t rownr, const Slicer& slicer, const ArrayBa
 {
   switch (dtype()) {
   case TpBool:
-    doPutSlice (rownr, slicer, static_cast<const Array<Bool>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<bool>&>(arr));
     break;
   case TpUChar:
-    doPutSlice (rownr, slicer, static_cast<const Array<uChar>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<unsigned char>&>(arr));
     break;
   case TpShort:
-    doPutSlice (rownr, slicer, static_cast<const Array<Short>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<int16_t>&>(arr));
     break;
   case TpUShort:
-    doPutSlice (rownr, slicer, static_cast<const Array<uShort>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<uint16_t>&>(arr));
     break;
   case TpInt:
-    doPutSlice (rownr, slicer, static_cast<const Array<Int>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<int32_t>&>(arr));
     break;
   case TpUInt:
-    doPutSlice (rownr, slicer, static_cast<const Array<uInt>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<uint32_t>&>(arr));
     break;
   case TpInt64:
-    doPutSlice (rownr, slicer, static_cast<const Array<Int64>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<int64_t>&>(arr));
     break;
   case TpFloat:
-    doPutSlice (rownr, slicer, static_cast<const Array<Float>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<float>&>(arr));
     break;
   case TpDouble:
-    doPutSlice (rownr, slicer, static_cast<const Array<Double>&>(arr));
+    doPutSlice (rownr, slicer, static_cast<const Array<double>&>(arr));
     break;
   case TpComplex:
     doPutSlice (rownr, slicer, static_cast<const Array<Complex>&>(arr));
@@ -220,7 +220,7 @@ void MSMDirColumn::remove (rownr_t rownr)
 void MSMDirColumn::deleteArray (rownr_t rownr)
 {
   void* datap = getArrayPtr (rownr);
-  deleteData (datap, False);
+  deleteData (datap, false);
 }
 
 } //# NAMESPACE CASACORE - END

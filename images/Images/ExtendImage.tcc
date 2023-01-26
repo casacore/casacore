@@ -99,48 +99,48 @@ String ExtendImage<T>::imageType() const
 
 
 template <class T>
-Bool ExtendImage<T>::ok() const
+bool ExtendImage<T>::ok() const
 {
   return itsExtLatPtr->ok();
 }
 
 template<class T>
-Bool ExtendImage<T>::isMasked() const
+bool ExtendImage<T>::isMasked() const
 {
   return itsExtLatPtr->isMasked();
 }
 
 template<class T>
-Bool ExtendImage<T>::isPersistent() const
+bool ExtendImage<T>::isPersistent() const
 {
   return itsExtLatPtr->isPersistent();
 }
 
 template<class T>
-Bool ExtendImage<T>::isPaged() const
+bool ExtendImage<T>::isPaged() const
 {
   return itsExtLatPtr->isPaged();
 }
 
 template<class T>
-Bool ExtendImage<T>::isWritable() const
+bool ExtendImage<T>::isWritable() const
 {
   return itsExtLatPtr->isWritable();
 }
 
 template<class T>
-Bool ExtendImage<T>::hasPixelMask() const
+bool ExtendImage<T>::hasPixelMask() const
 {
   return itsExtLatPtr->hasPixelMask();
 }
 
 template<class T>
-const Lattice<Bool>& ExtendImage<T>::pixelMask() const
+const Lattice<bool>& ExtendImage<T>::pixelMask() const
 {
   return itsExtLatPtr->pixelMask();
 }
 template<class T>
-Lattice<Bool>& ExtendImage<T>::pixelMask()
+Lattice<bool>& ExtendImage<T>::pixelMask()
 {
   return itsExtLatPtr->pixelMask();
 }
@@ -164,19 +164,19 @@ void ExtendImage<T>::resize (const TiledShape&)
 }
 
 template<class T>
-String ExtendImage<T>::name (Bool stripPath) const
+String ExtendImage<T>::name (bool stripPath) const
 {
   return itsImagePtr->name (stripPath);
 }
   
 template<class T>
-ImageAttrHandler& ExtendImage<T>::attrHandler (Bool createHandler)
+ImageAttrHandler& ExtendImage<T>::attrHandler (bool createHandler)
 {
   return itsImagePtr->attrHandler (createHandler);
 }
 
 template<class T>
-Bool ExtendImage<T>::doGetSlice (Array<T>& buffer,
+bool ExtendImage<T>::doGetSlice (Array<T>& buffer,
 			      const Slicer& section)
 {
   return itsExtLatPtr->doGetSlice (buffer, section);
@@ -191,20 +191,20 @@ void ExtendImage<T>::doPutSlice (const Array<T>& sourceBuffer,
 }
 
 template<class T>
-Bool ExtendImage<T>::doGetMaskSlice (Array<Bool>& buffer,
+bool ExtendImage<T>::doGetMaskSlice (Array<bool>& buffer,
 				     const Slicer& section)
 {
   return itsExtLatPtr->doGetMaskSlice (buffer, section);
 }
 
 template<class T>
-uInt ExtendImage<T>::advisedMaxPixels() const
+uint32_t ExtendImage<T>::advisedMaxPixels() const
 {
   return itsExtLatPtr->advisedMaxPixels();
 }
 
 template<class T>
-IPosition ExtendImage<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition ExtendImage<T>::doNiceCursorShape (uint32_t maxPixels) const
 {
   return itsExtLatPtr->niceCursorShape (maxPixels);
 }
@@ -212,13 +212,13 @@ IPosition ExtendImage<T>::doNiceCursorShape (uInt maxPixels) const
 template<class T>
 LatticeIterInterface<T>* ExtendImage<T>::makeIter
                                (const LatticeNavigator& navigator,
-				Bool useRef) const
+				bool useRef) const
 {
   return itsExtLatPtr->makeIter (navigator, useRef);
 }
 
 template<class T>
-Bool ExtendImage<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool ExtendImage<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return itsExtLatPtr->lock (type, nattempts);
 }
@@ -229,7 +229,7 @@ void ExtendImage<T>::unlock()
   itsImagePtr->unlock();
 }
 template<class T>
-Bool ExtendImage<T>::hasLock (FileLocker::LockType type) const
+bool ExtendImage<T>::hasLock (FileLocker::LockType type) const
 {
   return itsExtLatPtr->hasLock (type);
 }

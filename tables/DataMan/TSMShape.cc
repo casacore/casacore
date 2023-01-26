@@ -40,7 +40,7 @@ TSMShape::TSMShape (const IPosition& shape)
 {
     if (size_p > 0) {
 	data_p(0) = 1;
-	for (uInt i=1; i<size_p; i++) {
+	for (uint32_t i=1; i<size_p; i++) {
 	    data_p(i) = data_p(i-1) * shape(i-1);
 	}
     }
@@ -69,7 +69,7 @@ size_t TSMShape::offset (const IPosition& position) const
                                "TSMShape::offset - shapes do not conform"));
     }
     size_t off = 0;
-    for (uInt i=0; i<size_p; i++) {
+    for (uint32_t i=0; i<size_p; i++) {
 	off += position(i) * data_p(i);
     }
     return off;
@@ -83,7 +83,7 @@ size_t TSMShape::offset (const IPosition& position,
                                "TSMShape::offset - shapes do not conform"));
     }
     size_t off = 0;
-    for (uInt i=0; i<size_p; i++) {
+    for (uint32_t i=0; i<size_p; i++) {
 	off += (position(i) - origin(i)) * data_p(i);
     }
     return off;
@@ -94,7 +94,7 @@ IPosition TSMShape::position (size_t offset) const
 {
     IPosition pos(size_p);
     if (size_p > 0) {
-	for (uInt i=size_p-1; i>0; i--) {
+	for (uint32_t i=size_p-1; i>0; i--) {
 	    pos(i) = offset / data_p(i);
 	    offset -= pos(i) * data_p(i);
 	}
@@ -111,7 +111,7 @@ IPosition TSMShape::position (size_t offset, const IPosition& origin) const
     }
     IPosition pos(size_p);
     if (size_p > 0) {
-	for (uInt i=size_p-1; i>0; i--) {
+	for (uint32_t i=size_p-1; i>0; i--) {
 	    pos(i) = offset / data_p(i);
 	    offset -= pos(i) * data_p(i);
 	    pos(i) += origin(i);
@@ -128,7 +128,7 @@ IPosition TSMShape::offsetIncrement (const IPosition& subShape) const
                         "TSMShape::offsetIncrement - shapes do not conform"));
     }
     IPosition incr(size_p,1);
-    for (uInt i=1; i<size_p; i++) {
+    for (uint32_t i=1; i<size_p; i++) {
 	incr(i) = data_p(i) - subShape(i-1) * data_p(i-1);
     }
     return incr;
@@ -142,7 +142,7 @@ IPosition TSMShape::offsetIncrement (const IPosition& subShape,
                         "TSMShape::offsetIncrement - shapes do not conform"));
     }
     IPosition incr(size_p,1);
-    for (uInt i=1; i<size_p; i++) {
+    for (uint32_t i=1; i<size_p; i++) {
 	incr(i) = stride(i) * data_p(i) -
 	          subShape(i-1) * stride(i-1) * data_p(i-1);
     }

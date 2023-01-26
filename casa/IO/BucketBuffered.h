@@ -78,8 +78,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // bucketSize*nrOfBuckets bytes.
     // If the file is smaller, the remainder is indicated as an extension
     // similarly to the behaviour of function extend.
-    BucketBuffered (BucketFile* file, Int64 startOffset, uInt bucketSize,
-                    uInt nrOfBuckets);
+    BucketBuffered (BucketFile* file, int64_t startOffset, uint32_t bucketSize,
+                    uint32_t nrOfBuckets);
 
     virtual ~BucketBuffered();
 
@@ -88,11 +88,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsBuffer; }
 
     // Read the given part into the internal buffer at the given offset.
-    void read (uInt bucketNr, uInt bucketOffset, uInt nbytes,
-               uInt bufferOffset=0);
+    void read (uint32_t bucketNr, uint32_t bucketOffset, uint32_t nbytes,
+               uint32_t bufferOffset=0);
 
     // Write the given part from the internal buffer.
-    void write (uInt bucketNr, uInt bucketOffset, uInt nbytes);
+    void write (uint32_t bucketNr, uint32_t bucketOffset, uint32_t nbytes);
 
 private:
     // Copy constructor is not possible.
@@ -108,11 +108,11 @@ private:
     virtual void doResync();
 
     // Extend the file with the given number of buckets.
-    virtual void doExtend (uInt nrBucket);
+    virtual void doExtend (uint32_t nrBucket);
 
     // Initialize the bucket buffer.
     // The uninitialized buckets before this bucket are also initialized.
-    virtual void initializeBuckets (uInt bucketNr);
+    virtual void initializeBuckets (uint32_t bucketNr);
 
 
     // Data buffer.

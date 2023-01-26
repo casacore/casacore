@@ -28,9 +28,9 @@
 
 namespace casacore {
 
-const uInt ClassicalStatisticsData::CACHE_PADDING = 8;
+const uint32_t ClassicalStatisticsData::CACHE_PADDING = 8;
 
-const uInt ClassicalStatisticsData::BLOCK_SIZE = 4000;
+const uint32_t ClassicalStatisticsData::BLOCK_SIZE = 4000;
 
 }
 

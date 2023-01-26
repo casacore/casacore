@@ -70,7 +70,7 @@ class AipsIO;
 // The Record class is a particular type of a record class.
 // The fields in Record may be of scalar type, array type, or a Record.
 // The types are chosen to be compatible with the native
-// types of the Table system, viz: Bool, uChar, Short, Int, uInt, float,
+// types of the Table system, viz: bool, unsigned char, int16_t, int32_t, uint32_t, float,
 // double, Complex, DComplex, String.
 // Arrays of all these types are also available.
 // Note that a Record is not a space-efficient way of storing small objects.
@@ -95,8 +95,8 @@ class AipsIO;
 // The field names do not need to be identical however, only the types.
 // That is, the structure needs to be identical, but
 // not the labels. Note that field order is significant, 
-// <src>[ifield(type=Int),ffield(type=float)]</src>
-// is not the same as <src>[ffield(type=float),ifield(type=Int)]</src>
+// <src>[ifield(type=int32_t),ffield(type=float)]</src>
+// is not the same as <src>[ffield(type=float),ifield(type=int32_t)]</src>
 // <br>
 // Conformance is checked recursively for fixed subrecords. That is, a
 // variable structured subrecord is not checked, because any record
@@ -121,7 +121,7 @@ class AipsIO;
 // The above creates the description (structure) for some record objects.
 // <srcBlock>
 // Record employeeA(employeeDesc);
-// Record employeeB(employeeDesc, False);
+// Record employeeB(employeeDesc, false);
 // </srcBlock>
 // And these two lines create Record objects which share this common structure.
 // The first Record has a fixed structure, the 2nd variable.
@@ -157,7 +157,7 @@ class AipsIO;
 // the structure is changed, assignment is no longer possible, and all of the
 // field pointers are invalidated:
 // <srcBlock>
-//    employeeB.define ("age", (Int)40);
+//    employeeB.define ("age", (int32_t)40);
 //    employeeA = employeeB;                // exception - no longer conformant
 // </srcBlock>
 // </example>
@@ -254,10 +254,10 @@ public:
     // Change the structure of this Record to contain the fields in
     // newDescription. After calling restructure, <src>description() ==
     // newDescription</src>. Any existing RecordFieldPtr objects are
-    // invalidated (their <src>isAttached()</src> members return False) after
+    // invalidated (their <src>isAttached()</src> members return false) after
     // this call.
     // <br>When the new description contains subrecords, those subrecords
-    // will be restructured if <src>recursive=True</src> is given.
+    // will be restructured if <src>recursive=true</src> is given.
     // Otherwise the subrecord is a variable empty record.
     // Subrecords will be variable if their description is empty (i.e. does
     // not contain any field), otherwise they are fixed. The 2nd form of
@@ -267,30 +267,30 @@ public:
     // <br>Restructuring is not possible and an exception is thrown
     // if the Record has a fixed structure.
     void restructure (const RecordDesc& newDescription,
-                      Bool recursive = True) override;
+                      bool recursive = true) override;
 
-    // Returns True if this and other have the same RecordDesc, other
+    // Returns true if this and other have the same RecordDesc, other
     // than different names for the fields. That is, the number, type and the
     // order of the fields must be identical (recursively for fixed
     // structured sub-Records in this).
     // <note role=caution>
-    // <src>thisRecord.conform(thatRecord) == True</src> does not imply
-    // <br><src>thatRecord.conform(thisRecord) == True</src>, because
+    // <src>thisRecord.conform(thatRecord) == true</src> does not imply
+    // <br><src>thatRecord.conform(thisRecord) == true</src>, because
     // a variable record in one conforms a fixed record in that, but
     // not vice-versa.
     // </note>
-    Bool conform (const Record& other) const;
+    bool conform (const Record& other) const;
 
     // How many fields does this structure have? A convenient synonym for
     // <src>description().nfields()</src>.
-    uInt nfields() const override;
+    uint32_t nfields() const override;
 
     // Get the field number from the field name.
     // -1 is returned if the field name is unknown.
-    Int fieldNumber (const String& fieldName) const override;
+    int32_t fieldNumber (const String& fieldName) const override;
 
     // Get the data type of this field.
-    DataType type (Int whichField) const override;
+    DataType type (int32_t whichField) const override;
 
     // Remove a field from the record.
     // <note role=caution>
@@ -375,7 +375,7 @@ public:
     // Read the data of a record.
     // This is used to read a subrecord, whose description has
     // already been read.
-    void getData (AipsIO& os, uInt version);
+    void getData (AipsIO& os, uint32_t version);
 
     // Make a unique record representation
     // (to do copy-on-write in RecordFieldPtr).
@@ -385,7 +385,7 @@ public:
     // Only the first <src>maxNrValues</src> of an array will be printed.
     // A value < 0 means the entire array.
     void print (std::ostream&,
-                Int maxNrValues = 25,
+                int32_t maxNrValues = 25,
                 const String& indent="") const override;
 
 
@@ -393,8 +393,8 @@ protected:
     // Used by the RecordField classes to attach in a type-safe way to the
     // correct field.
     // <group>
-    void* get_pointer (Int whichField, DataType type) const override;
-    void* get_pointer (Int whichField, DataType type,
+    void* get_pointer (int32_t whichField, DataType type) const override;
+    void* get_pointer (int32_t whichField, DataType type,
                        const String& recordType) const override;
     // </group>
 
@@ -408,11 +408,11 @@ protected:
 
     // Add a field to the record.
     void addDataField (const String& name, DataType type,
-                       const IPosition& shape, Bool fixedShape,
+                       const IPosition& shape, bool fixedShape,
                        const void* value) override;
 
     // Define a value in the given field.
-    void defineDataField (Int whichField, DataType type,
+    void defineDataField (int32_t whichField, DataType type,
                           const void* value) override;
 
 private:
@@ -444,7 +444,7 @@ inline const RecordDesc& Record::description() const
     return ref().description();
 }
 
-inline Bool Record::conform (const Record& other) const
+inline bool Record::conform (const Record& other) const
 {
     return ref().conform (other.ref());
 }
@@ -464,7 +464,7 @@ inline AipsIO& operator>> (AipsIO& os, Record& rec)
     rec.getRecord (os);
     return os;
 }
-inline void Record::getData (AipsIO& os, uInt version)
+inline void Record::getData (AipsIO& os, uint32_t version)
 {
     rwRef().getData (os, version);
 }

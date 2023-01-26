@@ -29,31 +29,31 @@
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/namespace.h>
 
-void showdt(const LSQFit &lsq, Int n) {
-  uInt nun, np, ncon, ner, rk, *piv;
-  Double *norm, *known, *constr, *err, *sEq, *sol, prec, nonlin;
+void showdt(const LSQFit &lsq, int32_t n) {
+  uint32_t nun, np, ncon, ner, rk, *piv;
+  double *norm, *known, *constr, *err, *sEq, *sol, prec, nonlin;
   lsq.debugIt(nun, np, ncon, ner, rk, norm, known, constr, err,
 	      piv, sEq, sol, prec, nonlin);
   if (norm) {
-    for (Int i=0; i<(n*(n+1))/2; i++) {
+    for (int32_t i=0; i<(n*(n+1))/2; i++) {
       std::cout << "  Norm" << i << ": " << norm[i];
     }
   }
   std::cout << std::endl;
   if (err) {
-    for (Int i1=0; i1<4; i1++) {
+    for (int32_t i1=0; i1<4; i1++) {
       std::cout << "  Erra" << i1 << ": " << err[i1];
     }
   }
   std::cout << std::endl;
   if (known) {
-    for (Int i2=0; i2<n; i2++) {
+    for (int32_t i2=0; i2<n; i2++) {
       std::cout << "  Know" << i2 << ": " << known[i2];
     }
   }
   std::cout << std::endl;
   if (piv) {
-    for (Int i3=0; i3<n; i3++) {
+    for (int32_t i3=0; i3<n; i3++) {
       std::cout << "  Pivo" << i3 << ": " << piv[i3];
     }
   }
@@ -66,9 +66,9 @@ int main() {
   std::cout << "Test LSQ with 1 unknown" << std::endl;
   std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq1(1);
-  uInt nr1;
-  Double val1[] = {2, 1, 6};
-  Double sol1[1];
+  uint32_t nr1;
+  double val1[] = {2, 1, 6};
+  double sol1[1];
   showdt(lsq1,1);
   lsq1.makeNorm(&val1[0], val1[1], val1[2]);
   showdt(lsq1,1);
@@ -82,8 +82,8 @@ int main() {
   std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq3(1);
   {
-    uInt nr1;
-    Double val12[] = {3, 1, 12};
+    uint32_t nr1;
+    double val12[] = {3, 1, 12};
     lsq3.makeNorm(&val1[0], val1[1], val1[2]);
     lsq3.makeNorm(&val12[0], val12[1], val12[2]);
     showdt(lsq3,1);
@@ -100,10 +100,10 @@ int main() {
   std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq2(2);
   {
-    uInt nr1;
-    Double val1[] = {1, 1, 1, 5};
-    Double val12[] = {1, -1, 1, -1};
-    Double sol1[2];
+    uint32_t nr1;
+    double val1[] = {1, 1, 1, 5};
+    double val12[] = {1, -1, 1, -1};
+    double sol1[2];
     showdt(lsq2,2);
     lsq2.makeNorm(&val1[0], val1[2], val1[3]);
     lsq2.makeNorm(&val12[0], val12[2], val12[3]);
@@ -124,15 +124,15 @@ int main() {
   std::cout << "---------------------------------------------------" << std::endl;
   LSQFit lsq5(6);
   {
-    uInt nr1;
-    Double val1[6];
-    Double val12[512];
-    for (Int j=0; j<512; j++) val12[j] = 1+2*j;
-    Double sol1[6];
+    uint32_t nr1;
+    double val1[6];
+    double val12[512];
+    for (int32_t j=0; j<512; j++) val12[j] = 1+2*j;
+    double sol1[6];
     /// showdt(lsq5,6);
-    for (Int j0=0; j0<512; j0++) {
+    for (int32_t j0=0; j0<512; j0++) {
       val1[0] = 1;
-      for (uInt j1=1; j1<6; j1++) val1[j1] = val1[j1-1]*j0;
+      for (uint32_t j1=1; j1<6; j1++) val1[j1] = val1[j1-1]*j0;
       lsq5.makeNorm(&val1[0], 1.0, val12[j0]);
     }
     /// showdt(lsq5,6);
@@ -140,7 +140,7 @@ int main() {
     std::cout << ", rank=" << nr1 << std::endl;
     ///     showdt(lsq5,6);
     lsq5.solve(sol1);
-    for (uInt i=0; i<6; i++) { 
+    for (uint32_t i=0; i<6; i++) { 
       std::cout << "Sol" << i << ": " <<
 	sol1[i] << ", " << lsq5.getSD() << ", " << lsq5.getWeightedSD() << std::endl;
     }

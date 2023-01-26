@@ -68,7 +68,7 @@ public:
     // (preferably in canonical format) in a MemoryIO object.
     // A pointer to this MemoryIO object has to be returned. A zero pointer
     // can be returned when no synchronization data is available.
-    typedef MemoryIO* ReleaseCallBack (void* parentObject, Bool always);
+    typedef MemoryIO* ReleaseCallBack (void* parentObject, bool always);
 
     // Construct from the given TableLock object.
     TableLockData (const TableLock& lockOptions, ReleaseCallBack* = 0,
@@ -79,33 +79,33 @@ public:
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
-    void makeLock (const String& name, Bool create, FileLocker::LockType,
-		   uInt locknr = 0);
+    void makeLock (const String& name, bool create, FileLocker::LockType,
+		   uint32_t locknr = 0);
 
     // Acquire a read or write lock.
     // It throws an exception when acquire failed while it had to wait.
-    Bool acquire (MemoryIO* info, FileLocker::LockType, uInt nattempts);
+    bool acquire (MemoryIO* info, FileLocker::LockType, uint32_t nattempts);
 
-    // Release the lock. When always==False, the lock is not released
+    // Release the lock. When always==false, the lock is not released
     // when a permanent lock is used.
     // It does nothing when permanent locking is used.
     // It throws an exception when the release failed.
     // When the lock is released, the release callback function (if defined)
     // is called to write the synchronization data.
-    void release (Bool always = False);
+    void release (bool always = false);
 
     // When the inspection interval has expired, inspect if another process
     // needs the lock. If so, release the lock.
-    // <src>always=True</src> means that the inspection is always done,
+    // <src>always=true</src> means that the inspection is always done,
     // thus not every 25th call or so.
-    void autoRelease (Bool always=False);
+    void autoRelease (bool always=false);
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    Bool hasLock (FileLocker::LockType) const;
+    bool hasLock (FileLocker::LockType) const;
 
     // Is the table in use (i.e. open) in another process?
-    Bool isMultiUsed() const;
+    bool isMultiUsed() const;
 
     // Get or put the info in the lock file.
     // <group>
@@ -129,17 +129,17 @@ private:
 };
 
 
-inline Bool TableLockData::hasLock (FileLocker::LockType type) const
+inline bool TableLockData::hasLock (FileLocker::LockType type) const
 {
-    return (itsLock == 0  ?  True : itsLock->hasLock (type));
+    return (itsLock == 0  ?  true : itsLock->hasLock (type));
 }
-inline void TableLockData::autoRelease (Bool always)
+inline void TableLockData::autoRelease (bool always)
 {
     if (option() == AutoLocking  &&  itsLock->inspect(always)) {
 	release();
     }
 }
-inline Bool TableLockData::isMultiUsed() const
+inline bool TableLockData::isMultiUsed() const
 {
     return itsLock->isMultiUsed();
 }

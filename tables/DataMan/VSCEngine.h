@@ -105,15 +105,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  {
 //  public:
 //      A(): x_p(0), y_p(0) {}
-//      A(Int x, float y) : x_p(x), y_p(y) {}
+//      A(int32_t x, float y) : x_p(x), y_p(y) {}
 //      A(const A& that): x_p(that.x_p), y_p(that.y_p) {}
 //      static String dataTypeId()
 //          { return "A"; }
-//      Int x() const
+//      int32_t x() const
 //          { return x_p; }
 //      float y() const
 //          { return y_p; }
-//      Int& x()
+//      int32_t& x()
 //          { return x_p; }
 //      float& y()
 //          { return y_p; }
@@ -122,7 +122,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      int operator< (const A& that) const
 //          { return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p); }
 //  private:
-//      Int   x_p;
+//      int32_t   x_p;
 //      float y_p;
 //  };
 //
@@ -221,8 +221,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      String xTargetName_p;
 //      String yTargetName_p;
 //      // Objects for the target columns.
-//      ScalarColumn<Int>     colx;       // used by put
-//      ScalarColumn<Int>   rocolx;     // used by get
+//      ScalarColumn<int32_t>     colx;       // used by put
+//      ScalarColumn<int32_t>   rocolx;     // used by get
 //      ScalarColumn<float>   coly;       // used by put
 //      ScalarColumn<float> rocoly;     // used by get
 //
@@ -250,15 +250,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   // Create the table description.
 //   TableDesc td;
 //   td.addColumn (ScalarColumnDesc<A>("source"));
-//   td.addColumn (ScalarColumnDesc<Int>("xTarget"));
-//   td.addColumn (ScalarColumnDesc<Int>("yTarget"));
+//   td.addColumn (ScalarColumnDesc<int32_t>("xTarget"));
+//   td.addColumn (ScalarColumnDesc<int32_t>("yTarget"));
 //   SetupNewTable setup ("table.name", td, Table::New);
 //   // Define the engine for column "source".
 //   AVSCEngine engine ("source", "xTarget", "yTarget");
 //   Table tab (setup, 10);
 //   // Put data into column "source".
 //   ScalarColumn<A> col (tab, "source");
-//   for (uInt i=0; i<10; i++) {
+//   for (uint32_t i=0; i<10; i++) {
 //       col.put (i, someA);     // writes indirectly xTarget and yTarget
 //   }
 // </srcblock>
@@ -327,7 +327,7 @@ private:
     // The column is in principle writable.
     // This does not mean it is actually writable, because that
     // depends on the fact if the table is writable.
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Create the column object for the scalar column in this engine.
     // It will check if the given column name matches the source

@@ -46,7 +46,7 @@ SDMainHandler::SDMainHandler()
       intervalId_p(-1), weightId_p(-1), flagId_p(-1), timeCentroidId_p(-1)
 {;}
 
-SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+SDMainHandler::SDMainHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
     : ms_p(0), msCols_p(0),
       scanNumberId_p(-1), arrayIdId_p(-1), sigmaId_p(-1), flagRowId_p(-1),
       intervalId_p(-1), weightId_p(-1), flagId_p(-1), timeCentroidId_p(-1)
@@ -82,7 +82,7 @@ SDMainHandler &SDMainHandler::operator=(const SDMainHandler &other)
     return *this;
 }
 
-void SDMainHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDMainHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -91,21 +91,21 @@ void SDMainHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const 
 void SDMainHandler::resetRow(const Record &row)
 {
     clearRow();
-    Vector<Bool> dummyHandledCols;
+    Vector<bool> dummyHandledCols;
     initRow(dummyHandledCols, row);
 }
 
-void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, Int feedId,
-			 Int dataDescId, Int fieldId, const MVTime &exposure, 
-			 Int observationId, const Matrix<Float> &floatData)
+void SDMainHandler::fill(const Record &row, const MEpoch &time, int32_t antennaId, int32_t feedId,
+			 int32_t dataDescId, int32_t fieldId, const MVTime &exposure, 
+			 int32_t observationId, const Matrix<float> &floatData)
 {
     // don't bother unless there is something there
     if (ms_p) {
 	// fill it
-	Int rownr = ms_p->nrow();
+	int32_t rownr = ms_p->nrow();
 	ms_p->addRow();
 
-	Int ncorr = floatData.nrow();
+	int32_t ncorr = floatData.nrow();
 
 	msCols_p->timeMeas().put(rownr, time);
 	msCols_p->antenna1().put(rownr,antennaId);
@@ -115,14 +115,14 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 	msCols_p->dataDescId().put(rownr, dataDescId);
 	msCols_p->processorId().put(rownr, -1);
 	msCols_p->fieldId().put(rownr, fieldId);
-	Double texp = exposure.get("s").getValue();
+	double texp = exposure.get("s").getValue();
 	if (intervalId_p >= 0) {
 	    msCols_p->interval().put(rownr, row.asDouble(intervalId_p));
 	} else {
 	    msCols_p->interval().put(rownr, texp);
 	}
 	msCols_p->exposure().put(rownr, texp);
-	Int scanNumber = -1;
+	int32_t scanNumber = -1;
 	if (scanNumberId_p >= 0) {
 	    switch (scanNumberType_p) {
 	    case TpInt:
@@ -131,7 +131,7 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 		break;
 	    case TpDouble:
 	    case TpFloat:
-		scanNumber = Int(row.asDouble(scanNumberId_p)+0.5);
+		scanNumber = int32_t(row.asDouble(scanNumberId_p)+0.5);
 		break;
 	    default:
 		// a warning should be issued when the type is initially determined
@@ -147,23 +147,23 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 	}
 	msCols_p->observationId().put(rownr, observationId);
 	msCols_p->stateId().put(rownr, -1);
-	msCols_p->uvw().put(rownr, Vector<Double>(3,0.0));
+	msCols_p->uvw().put(rownr, Vector<double>(3,0.0));
 	msCols_p->floatData().put(rownr, floatData);
 	if (sigmaId_p >= 0) {
 	    msCols_p->sigma().put(rownr, row.asArrayFloat(sigmaId_p));
 	} else {
 	    // should this be TSYS and exposure based?
-	    msCols_p->sigma().put(rownr, Vector<Float>(ncorr, 1.0));
+	    msCols_p->sigma().put(rownr, Vector<float>(ncorr, 1.0));
 	}
 	if (weightId_p >= 0) {
 	    msCols_p->weight().put(rownr, row.asArrayFloat(weightId_p));
 	} else {
-	    msCols_p->weight().put(rownr, Vector<Float>(ncorr, 1.0));
+	    msCols_p->weight().put(rownr, Vector<float>(ncorr, 1.0));
 	}
 	if (flagId_p >= 0) {
 	    msCols_p->flag().put(rownr, row.asArrayBool(flagId_p));
 	} else {
-	    msCols_p->flag().put(rownr, Matrix<Bool>(floatData.shape(), False));
+	    msCols_p->flag().put(rownr, Matrix<bool>(floatData.shape(), false));
 	}
 	if (timeCentroidId_p >= 0) {
 	    msCols_p->timeCentroid().put(rownr, row.asDouble(timeCentroidId_p));
@@ -173,11 +173,11 @@ void SDMainHandler::fill(const Record &row, const MEpoch &time, Int antennaId, I
 	IPosition emptyFlagCatShape(3,0);
 	emptyFlagCatShape(0) = ncorr;
 	emptyFlagCatShape(1) = floatData.ncolumn();
-	msCols_p->flagCategory().put(rownr, Array<Bool>(emptyFlagCatShape));
+	msCols_p->flagCategory().put(rownr, Array<bool>(emptyFlagCatShape));
 	if (flagRowId_p >= 0) {
 	    msCols_p->flagRow().put(rownr, row.asBool(flagRowId_p));
 	} else {
-	    msCols_p->flagRow().put(rownr, False);
+	    msCols_p->flagRow().put(rownr, false);
 	}
     }
 }
@@ -199,7 +199,7 @@ void SDMainHandler::clearRow()
 	weightId_p = flagId_p = timeCentroidId_p = -1;
 }
 
-void SDMainHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDMainHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     ms_p = new MeasurementSet(ms);
     AlwaysAssert(ms_p, AipsError);
@@ -210,40 +210,40 @@ void SDMainHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const
     AlwaysAssert(msCols_p, AipsError);
 }
 
-void SDMainHandler::initRow(Vector<Bool> &handledCols, const Record &row)
+void SDMainHandler::initRow(Vector<bool> &handledCols, const Record &row)
 {
     scanNumberId_p = row.fieldNumber("SCAN");
     if (scanNumberId_p >= 0) {
-	handledCols(scanNumberId_p) = True;
+	handledCols(scanNumberId_p) = true;
 	scanNumberType_p = row.dataType(scanNumberId_p);
     }
     arrayIdId_p = row.fieldNumber("MAIN_ARRAY_ID");
-    if (arrayIdId_p >= 0) handledCols(arrayIdId_p) = True;
+    if (arrayIdId_p >= 0) handledCols(arrayIdId_p) = true;
     sigmaId_p = row.fieldNumber("MAIN_SIGMA");
-    if (sigmaId_p >= 0) handledCols(sigmaId_p) = True;
+    if (sigmaId_p >= 0) handledCols(sigmaId_p) = true;
     flagRowId_p = row.fieldNumber("MAIN_FLAG_ROW");
-    if (flagRowId_p >= 0) handledCols(flagRowId_p) = True;
+    if (flagRowId_p >= 0) handledCols(flagRowId_p) = true;
     intervalId_p = row.fieldNumber("MAIN_INTERVAL");
-    if (intervalId_p >= 0) handledCols(intervalId_p) = True;
+    if (intervalId_p >= 0) handledCols(intervalId_p) = true;
     weightId_p = row.fieldNumber("MAIN_WEIGHT");
-    if (weightId_p >= 0) handledCols(weightId_p) = True;
+    if (weightId_p >= 0) handledCols(weightId_p) = true;
     flagId_p = row.fieldNumber("MAIN_FLAG");
-    if (flagId_p >= 0) handledCols(flagId_p) = True;
+    if (flagId_p >= 0) handledCols(flagId_p) = true;
     timeCentroidId_p = row.fieldNumber("MAIN_TIME_CENTROID");
-    if (timeCentroidId_p >= 0) handledCols(timeCentroidId_p) = True;
+    if (timeCentroidId_p >= 0) handledCols(timeCentroidId_p) = true;
 
     // RADECSYS is fully covered elsewhere, ignore it if it exists
-    if (row.fieldNumber("RADECSYS") >= 0) handledCols(row.fieldNumber("RADECSYS")) = True;
+    if (row.fieldNumber("RADECSYS") >= 0) handledCols(row.fieldNumber("RADECSYS")) = true;
 
     // the following fields generated when MS v 1 was converted to an SDFITS file are ignored
     // There is no CORRELATOR table in MS 2 and it should never have been used for SD data
     // in MS 1.
     if (row.fieldNumber("MAIN_CORRELATOR_ID") >= 0) 
-	handledCols(row.fieldNumber("MAIN_CORRELATOR_ID")) = True;
+	handledCols(row.fieldNumber("MAIN_CORRELATOR_ID")) = true;
     // there is no PULSAR_BIN in MS 2 and its unlikely it will have been used by
     // single dish data in MS 1
     if (row.fieldNumber("MAIN_PULSAR_BIN") >= 0) 
-	handledCols(row.fieldNumber("MAIN_PULSAR_BIN")) = True;
+	handledCols(row.fieldNumber("MAIN_PULSAR_BIN")) = true;
 }
 
 } //# NAMESPACE CASACORE - END

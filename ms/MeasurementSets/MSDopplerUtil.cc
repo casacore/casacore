@@ -54,38 +54,38 @@ MSDopplerUtil::~MSDopplerUtil()
 
 //----------------------------------------------------------------------------
 
-Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
-				 Int spwId, Int fieldId)
+bool MSDopplerUtil::dopplerInfo (Vector<double>& restFrequency,
+				 int32_t spwId, int32_t fieldId)
 {
 // Retrieve a list of all rest frequencies used in Doppler
 // tracking of the specified spectral window id.
 // Output:
-//    restFrequency    Vector<Double>     List of rest frequencies
-//    dopplerInfo      Bool               True if Doppler info. found
+//    restFrequency    Vector<double>     List of rest frequencies
+//    dopplerInfo      bool               true if Doppler info. found
 //
   // Initialization
   restFrequency.resize();
-  Int nRestFreq = 0;
-  Bool found = False;
+  int32_t nRestFreq = 0;
+  bool found = false;
 
   // Accessor for the MS columns and sub-tables
   MSColumns msc (ms_p);
   // Retrieve the doppler id & source id
-  Int dopId = (msc.spectralWindow().dopplerId().isNull() ? 
+  int32_t dopId = (msc.spectralWindow().dopplerId().isNull() ? 
                -1 : msc.spectralWindow().dopplerId()(spwId));
-  Int srcId = msc.field().sourceId()(fieldId);
+  int32_t srcId = msc.field().sourceId()(fieldId);
     // Use the doppler table if specified and it exists
   if (dopId >= 0 && (!ms_p.doppler().isNull())) {
     // Find the matching DOPPLER sub-table rows for this DOPPLER_ID
-    for (uInt idoprow=0; idoprow<msc.doppler().nrow(); idoprow++) {
+    for (uint32_t idoprow=0; idoprow<msc.doppler().nrow(); idoprow++) {
       if (msc.doppler().dopplerId()(idoprow) == dopId &&
           msc.doppler().sourceId()(idoprow)== srcId) {
         // Find the rest frequency information in the SOURCE subtable
-        Int transId = msc.doppler().transitionId()(idoprow);
+        int32_t transId = msc.doppler().transitionId()(idoprow);
 
 	// When loading g192_a.ms (from regression) into plotxy (probably a
 	// wrong thing to do), transId is -1, which causes a segv further down
-	// when transId is used as an index. Returning False here causes things
+	// when transId is used as an index. Returning false here causes things
 	// to die with an allocation error later on...
 	if ( transId < 0 ) {
 	  throw( AipsError("MSDopplerUtil::dopplerInfo(): invalid transition id") );
@@ -98,26 +98,26 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
 	    sourceIndex.spectralWindowId() = spwId;
 	    Vector<rownr_t> rows = sourceIndex.getRowNumbers();
 	    for (rownr_t irow=0; irow<rows.nelements(); irow++) {
-	      Vector<Double> restFrq = msc.source().restFrequency()(irow);
+	      Vector<double> restFrq = msc.source().restFrequency()(irow);
 	      if(restFrq.nelements() >0){
 		// Does this already exist in the output rest frequency array ?
-		Bool exists = False;
-		for (uInt k=0; k<restFrequency.nelements(); k++) {
+		bool exists = false;
+		for (uint32_t k=0; k<restFrequency.nelements(); k++) {
 		  if (restFrq(transId)==restFrequency(k)) {
-		    exists = True;
+		    exists = true;
 		  }
 		}
 		if (!exists) {
-		  restFrequency.resize(restFrequency.nelements()+1, True);
+		  restFrequency.resize(restFrequency.nelements()+1, true);
 		  restFrequency(nRestFreq) = restFrq(transId);
 		  nRestFreq++;
-		  found = True;
+		  found = true;
 		}
 	      }
-	    } // for (Int irow=0..)
+	    } // for (int32_t irow=0..)
         } // if (!ms_p.source().isNull())
       } // if (msc.doppler().dopplerId()..)
-    } // for (Int idoprow=0;..)
+    } // for (int32_t idoprow=0;..)
   } else if (!ms_p.source().isNull()) {
     if((ms_p.source().nrow() > 0)){
       // use just the source table if it exists
@@ -128,24 +128,24 @@ Bool MSDopplerUtil::dopplerInfo (Vector<Double>& restFrequency,
       if (!msc.source().restFrequency().isNull()){
 	for (rownr_t irow=0; irow<rows.nelements(); irow++) {
 	  if ( msc.source().restFrequency().isDefined(rows(irow))) {
-	    Vector<Double> restFrq = msc.source().restFrequency()(rows(irow));
+	    Vector<double> restFrq = msc.source().restFrequency()(rows(irow));
 	    // Does this already exist in the output rest frequency array ?
-	    for (uInt transId=0; transId<restFrq.nelements(); transId++) {
-	      Bool exists = False;
-	      for (uInt k=0; k<restFrequency.nelements(); k++) {
+	    for (uint32_t transId=0; transId<restFrq.nelements(); transId++) {
+	      bool exists = false;
+	      for (uint32_t k=0; k<restFrequency.nelements(); k++) {
 		if (restFrq(transId)==restFrequency(k)) {
-		  exists = True;
+		  exists = true;
 		}
 	      }
 	      if (!exists) {
-		restFrequency.resize(restFrequency.nelements()+1, True);
+		restFrequency.resize(restFrequency.nelements()+1, true);
 		restFrequency(nRestFreq) = restFrq(transId);
 		nRestFreq++;
-		found = True;
+		found = true;
 	      }
 	    }
 	  } 
-	} // for (Int irow=0..)
+	} // for (int32_t irow=0..)
       }   
     }
   }

@@ -94,34 +94,34 @@ public:
 
   //  ~MSArrayParse() {if (node_p) delete node_p;node_p=0x0;}
 
-  const TableExprNode *selectRangeGTAndLT(const Int& n0, const Int& n1);
-  const TableExprNode *selectRangeGEAndLE(const Int& n0, const Int& n1);
-  const TableExprNode *selectArrayIds(const Vector<Int>& arrayids);
-  inline const TableExprNode *selectArrayIds() {return selectArrayIds(Vector<Int>(parsedIDList_p));}
-  const TableExprNode *selectArrayIdsGT(const Vector<Int>& arrayids);
-  const TableExprNode *selectArrayIdsLT(const Vector<Int>& arrayids);
-  const TableExprNode *selectArrayIdsGTEQ(const Vector<Int>& arrayids);
-  const TableExprNode *selectArrayIdsLTEQ(const Vector<Int>& arrayids);
-  std::vector<Int>& accumulateIDs(const Int id0, const Int id1=-1);
+  const TableExprNode *selectRangeGTAndLT(const int32_t& n0, const int32_t& n1);
+  const TableExprNode *selectRangeGEAndLE(const int32_t& n0, const int32_t& n1);
+  const TableExprNode *selectArrayIds(const Vector<int32_t>& arrayids);
+  inline const TableExprNode *selectArrayIds() {return selectArrayIds(Vector<int32_t>(parsedIDList_p));}
+  const TableExprNode *selectArrayIdsGT(const Vector<int32_t>& arrayids);
+  const TableExprNode *selectArrayIdsLT(const Vector<int32_t>& arrayids);
+  const TableExprNode *selectArrayIdsGTEQ(const Vector<int32_t>& arrayids);
+  const TableExprNode *selectArrayIdsLTEQ(const Vector<int32_t>& arrayids);
+  std::vector<int32_t>& accumulateIDs(const int32_t id0, const int32_t id1=-1);
 
     // Get table expression node object.
   const TableExprNode node();
 
-  Vector<Int> selectedIDs() {return idList;}
+  Vector<int32_t> selectedIDs() {return idList;}
   void reset(){idList.resize(0);parsedIDList_p.resize(0);}
   void cleanup() {}
 
-  void setMaxArray(const Int& n) {maxArrays_p=n;}
+  void setMaxArray(const int32_t& n) {maxArrays_p=n;}
 
   static MSArrayParse* thisMSAParser;
 
 private:
   TableExprNode node_p;
-  Vector<Int> idList;
-  std::vector<Int> parsedIDList_p;
+  Vector<int32_t> idList;
+  std::vector<int32_t> parsedIDList_p;
   const String colName;
-  void appendToIDList(const Vector<Int>& v);
-  Int maxArrays_p;
+  void appendToIDList(const Vector<int32_t>& v);
+  int32_t maxArrays_p;
 };
 
 } //# NAMESPACE CASACORE - END

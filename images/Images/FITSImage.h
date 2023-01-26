@@ -90,8 +90,8 @@ class FitsInput;
 // <srcblock>
 //    FITSImage im("in.fits"); 
 //    LogIO logger(or);
-//    ImageStatistics<Float> stats(im, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    ImageStatistics<float> stats(im, logger);
+//    bool ok = stats.display();                              // Display statistics
 // </srcblock>
 // </example>
 
@@ -103,14 +103,14 @@ class FitsInput;
 //# </todo>
 
 
-class FITSImage: public ImageInterface<Float>
+class FITSImage: public ImageInterface<float>
 {
 public: 
   // Construct a FITSImage from the disk FITS file name  and extension and apply mask.
-  explicit FITSImage(const String& name, uInt whichRep=0, uInt whichHDU=0);
+  explicit FITSImage(const String& name, uint32_t whichRep=0, uint32_t whichHDU=0);
 
   // Construct a FITSImage from the disk FITS file name and extension and apply mask or not.
-  FITSImage(const String& name, const MaskSpecifier& mask, uInt whichRep=0, uInt whichHDU=0);
+  FITSImage(const String& name, const MaskSpecifier& mask, uint32_t whichRep=0, uint32_t whichHDU=0);
 
   // Copy constructor (reference semantics)
   FITSImage(const FITSImage& other);
@@ -132,12 +132,12 @@ public:
   static String get_fitsname(const String &fullname);
 
   // Get the extension index for any extension specification given in the full name
-  static uInt get_hdunum(const String &fullname);
+  static uint32_t get_hdunum(const String &fullname);
 
   //# ImageInterface virtual functions
   
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Get the image type (returns FITSImage).
   virtual String imageType() const;
@@ -154,21 +154,21 @@ public:
 
   // Has the object really a mask?  The FITSImage always
   // has a pixel mask and never has a region mask so this
-  // always returns True
-  virtual Bool isMasked() const;
+  // always returns true
+  virtual bool isMasked() const;
 
-  // FITSimage always has a pixel mask so returns True
-  virtual Bool hasPixelMask() const;
+  // FITSimage always has a pixel mask so returns true
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  FITSImage always has a pixel mask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Do the actual get of the mask data.   The return value is always 
-  // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  // false, thus the buffer does not reference another array.
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // Get the region used.  There is no region. 
   // Always returns 0.
@@ -178,39 +178,39 @@ public:
   //# Lattice virtual functions
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice (Array<Float>& buffer, const Slicer& theSlice);
+  // Returns false as the data do not reference another Array
+  virtual bool doGetSlice (Array<float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.
-  virtual void doPutSlice (const Array<Float>& sourceBuffer,
+  virtual void doPutSlice (const Array<float>& sourceBuffer,
 			   const IPosition& where,
 			   const IPosition& stride);
 
   //# LatticeBase virtual functions
 
   // The lattice is paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // The FITSImage is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
   
   // return the shape of the FITSImage
   virtual IPosition shape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor. 
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -219,7 +219,7 @@ public:
   virtual void reopen();
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Return the data type (TpFloat).
   virtual DataType dataType() const;
@@ -229,14 +229,14 @@ public:
     { return dataType_p; }
 
   // Return the HDU number
-  uInt whichHDU () const
+  uint32_t whichHDU () const
     { return whichHDU_p; }
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -249,7 +249,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -260,28 +260,28 @@ public:
 
 protected:
   // Set the masking of values 0.0
-  void setMaskZero(Bool filterZero);
+  void setMaskZero(bool filterZero);
 
 private:  
   String         name_p;
   String         fullname_p;
   MaskSpecifier  maskSpec_p;
   CountedPtr<TiledFileAccess> pTiledFile_p;
-  Lattice<Bool>* pPixelMask_p;
+  Lattice<bool>* pPixelMask_p;
   TiledShape     shape_p;
-  Float          scale_p;
-  Float          offset_p;
-  Short          shortMagic_p;
-  uChar          uCharMagic_p;
-  Int            longMagic_p;
-  Bool           hasBlanks_p;
+  float          scale_p;
+  float          offset_p;
+  int16_t          shortMagic_p;
+  unsigned char          uCharMagic_p;
+  int32_t            longMagic_p;
+  bool           hasBlanks_p;
   DataType       dataType_p;
-  Int64          fileOffset_p;
-  Bool           isClosed_p;
-  Bool           filterZeroMask_p;
-  uInt           whichRep_p;
-  uInt           whichHDU_p;
-  Bool           _hasBeamsTable;
+  int64_t          fileOffset_p;
+  bool           isClosed_p;
+  bool           filterZeroMask_p;
+  uint32_t           whichRep_p;
+  uint32_t           whichHDU_p;
+  bool           _hasBeamsTable;
 
 // Reopen the image if needed.
    void reopenIfNeeded() const
@@ -297,29 +297,29 @@ private:
    void getImageAttributes (CoordinateSystem& cSys,
                             IPosition& shape, ImageInfo& info,
                             Unit& brightnessUnit, RecordInterface& miscInfo, 
-                            Int& recsize, Int& recno,
+                            int32_t& recsize, int32_t& recno,
                             FITS::ValueType& dataType,
-                            Float& scale, Float& offset, 
-			    uChar& uCharMagic, Short& shortMagic, 
-                            Int& longMagic, Bool& hasBlanks, const String& name,
-                            uInt whichRep, uInt whichHDU);
+                            float& scale, float& offset, 
+			    unsigned char& uCharMagic, int16_t& shortMagic, 
+                            int32_t& longMagic, bool& hasBlanks, const String& name,
+                            uint32_t whichRep, uint32_t whichHDU);
 
 // Crack a primary header
    template <typename T>
    void crackHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                      Unit& brightnessUnit, RecordInterface& miscInfo,
-                     Float& scale, Float& offset, uChar& magicUChar, Short& magicShort,
-                     Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
-                     uInt whichRep);
+                     float& scale, float& offset, unsigned char& magicUChar, int16_t& magicShort,
+                     int32_t& magicLong, bool& hasBlanks, LogIO& os, FitsInput& infile,
+                     uint32_t whichRep);
 
 // Crack an image extension header
    template <typename T>
    void crackExtHeader (CoordinateSystem& cSys, IPosition& shape, ImageInfo& imageInfo,
                         Unit& brightnessUnit, RecordInterface& miscInfo,
-                        Float& scale, Float& offset, uChar& uCharMagic,
-			Short& magicShort,
-                        Int& magicLong, Bool& hasBlanks, LogIO& os, FitsInput& infile,
-                        uInt whichRep);
+                        float& scale, float& offset, unsigned char& uCharMagic,
+			int16_t& magicShort,
+                        int32_t& magicLong, bool& hasBlanks, LogIO& os, FitsInput& infile,
+                        uint32_t whichRep);
 		     
 };
 

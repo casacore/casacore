@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 
 // The basic prime number operations are done in three functions: "isPrime"
 // determines whether a given number is a prime; "smallestPrimeFactor" finds
-// the smallest factor of a given number; and "factor" returns a Block<uInt>
+// the smallest factor of a given number; and "factor" returns a Block<uint32_t>
 // containing a number's factors.
 // </synopsis> 
 //
@@ -75,8 +75,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // Refer also to tPrimes.cc
 //
 // int main() {
-//     Block<uInt> BB, DD;
-//     uInt C, i;
+//     Block<uint32_t> BB, DD;
+//     uint32_t C, i;
 //     if(! Primes::isPrime(4)) {                         //if this number 
 //         cout<<"Four is not a prime number"<<endl;      //is not prime
 //         BB = Primes::factor(4);                        //than factor it
@@ -133,33 +133,33 @@ public:
  
     //This function takes number and returns "True" if number is prime, "False" 
     //if it is not.
-    static Bool isPrime(uInt number);
+    static bool isPrime(uint32_t number);
 
     //This function returns the closest integer larger than number from the 
     //table of primes.  If there is no entry in the table of primes which is 
     //larger than number, a zero is returned.
-    static uInt aLargerPrimeThan(uInt number);
+    static uint32_t aLargerPrimeThan(uint32_t number);
 
     //This function finds the next largest prime than number, returns that 
     //value and stores it in the table of primes.
-    static uInt nextLargerPrimeThan(uInt number);   // adds to cache
+    static uint32_t nextLargerPrimeThan(uint32_t number);   // adds to cache
 
     //This function returns the smallest factor of number.
-    static uInt smallestPrimeFactor(uInt number);
+    static uint32_t smallestPrimeFactor(uint32_t number);
 
     //This function returns a block, of variable length, with each factor 
     //indexed.  For example, if number equaled 4, then the return block would 
     //have a length of two, and have a two stored in each cell. One and zero
     //are special cases; this function returns a one-cell block which holds
     //one or zero, respectively.
-    static Block<uInt> factor(uInt number);
+    static Block<uint32_t> factor(uint32_t number);
 
     // This function returns the number of primes stored in the primes table.
-  //    static uInt nCachedPrimes()
+  //    static uint32_t nCachedPrimes()
   //	{ return cacheTable.nelements(); }
 
     //This function returns the table of prime numbers.
-    //static Block<uInt> cachedPrimes()
+    //static Block<uint32_t> cachedPrimes()
   //	{ return cacheTable; }
     
 private:
@@ -169,7 +169,7 @@ private:
     static void initializeCache();
 
     //This is the table which stores the prime numbers.
-    static Block<uInt> cacheTable;
+    static Block<uint32_t> cacheTable;
     static std::mutex  theirMutex;
 };
 

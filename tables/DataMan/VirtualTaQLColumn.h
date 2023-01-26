@@ -78,9 +78,9 @@ class TableExprNode;
 //    // Create the table description.
 //    TableDesc td;
 //    td.addColumn (ScalarColumnDesc<DComplex>("Col1"));
-//    td.addColumn (ScalarColumnDesc<Int>("Col2"));
-//    td.addColumn (ScalarColumnDesc<Bool>("Col3"));
-//    td.addColumn (ScalarColumnDesc<Double>("ColVirt"));
+//    td.addColumn (ScalarColumnDesc<int32_t>("Col2"));
+//    td.addColumn (ScalarColumnDesc<bool>("Col3"));
+//    td.addColumn (ScalarColumnDesc<double>("ColVirt"));
 //  
 //    // Now create a new table from the description.
 //    SetupNewTable newTab("tmtest", td, Table::New);
@@ -143,15 +143,15 @@ public:
   // Set the maximum length of a 'fixed length' string.
   // It is only called (right after the constructor) if the string has
   // a fixed length.
-  virtual void setMaxLength (uInt maxLength);
+  virtual void setMaxLength (uint32_t maxLength);
 
   // Functions to return column info.
   // <group>
   virtual int dataType() const;
-  virtual Bool isWritable() const;
-  virtual uInt ndim (rownr_t rownr);
+  virtual bool isWritable() const;
+  virtual uint32_t ndim (rownr_t rownr);
   virtual IPosition shape (rownr_t rownr);
-  virtual Bool isShapeDefined (rownr_t rownr);
+  virtual bool isShapeDefined (rownr_t rownr);
   // </group>
 
 private:
@@ -179,13 +179,13 @@ private:
 
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-  virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-  virtual void getShort    (rownr_t rownr, Short* dataPtr);
-  virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-  virtual void getInt      (rownr_t rownr, Int* dataPtr);
-  virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-  virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+  virtual void getBool     (rownr_t rownr, bool* dataPtr);
+  virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+  virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+  virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+  virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+  virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+  virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
   virtual void getfloat    (rownr_t rownr, float* dataPtr);
   virtual void getdouble   (rownr_t rownr, double* dataPtr);
   virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -220,25 +220,25 @@ private:
 
   //# Now define the data members.
   int            itsDataType;
-  Bool           itsIsArray;
-  Bool           itsIsConst;          //# Constant expression?
-  Bool           itsTempWritable;
+  bool           itsIsArray;
+  bool           itsIsConst;          //# Constant expression?
+  bool           itsTempWritable;
   String         itsColumnName;
   String         itsExpr;             //# TaQL expression
   String         itsStyle;            //# TaQL style
   TableExprNode* itsNode;             //# compiled TaQL expression
   IPosition      itsShape;            //# The shape of the column.
-  uInt           itsMaxLen;           //# The maximum length of a 'fixed length' string.
+  uint32_t           itsMaxLen;           //# The maximum length of a 'fixed length' string.
   union {
-    Bool     itsBool;                 //# Constant scalar values
-    uChar    itsuChar;
-    Short    itsShort;
-    uShort   itsuShort;
-    Int      itsInt;
-    uInt     itsuInt;
-    Int64    itsInt64;
-    Float    itsFloat;
-    Double   itsDouble;
+    bool     itsBool;                 //# Constant scalar values
+    unsigned char    itsuChar;
+    int16_t    itsShort;
+    uint16_t   itsuShort;
+    int32_t      itsInt;
+    uint32_t     itsuInt;
+    int64_t    itsInt64;
+    float    itsFloat;
+    double   itsDouble;
   };
   Complex    itsComplex;
   DComplex   itsDComplex;

@@ -34,62 +34,62 @@
 // Test program for unit handling in selection expressions.
 // </summary>
 
-Bool foundError = False;
+bool foundError = false;
 
 
 void checkScaBool (const String& str, const TableExprId& exprid,
 		   const TableExprNode& expr,
-		   const Bool& value)
+		   const bool& value)
 {
   cout << "checkScaBool " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpBool);
   AlwaysAssertExit (expr.unit().getName().empty());
-  Bool val;
+  bool val;
   expr.get (exprid, val);
   if (val != value) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
 
 void checkScaInt (const String& str, const TableExprId& exprid,
                   const TableExprNode& expr,
-                  const Int& value)
+                  const int32_t& value)
 {
   cout << "checkScaInt " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpInt64);
   AlwaysAssertExit (expr.unit().getName().empty());
-  Int64 val;
+  int64_t val;
   expr.get (exprid, val);
   if (val != value) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
 
 void checkScaDouble (const String& str, const TableExprId& exprid,
 		     const TableExprNode& expr,
-		     const Double& value,
+		     const double& value,
                      const String& unit)
 {
   cout << "checkScaDouble " << str << ' ' << expr.unit().getName() << endl;
   AlwaysAssertExit (expr.dataType() == TpDouble);
   AlwaysAssertExit (expr.unit().getName() == unit);
-  Double val;
+  double val;
   expr.get (exprid, val);
   if (!near (val,  value, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
 
 #define checkFailure(STR,EXPR)\
 {\
-  bool failed = False;\
+  bool failed = false;\
   try {\
     TableExprNode n(EXPR);\
   } catch (std::exception&) {\
-    failed = True;\
+    failed = true;\
   }\
   if (!failed) {\
     cout << STR << ": was expected to fail, but did not" << endl;\
@@ -118,18 +118,18 @@ void doIt()
   checkScaDouble ("e3/e2", 0, e3/e2, 1., "");
   checkScaDouble ("e3%e2", 0, e3%e2, 0., "m");
   // Comparison
-  checkScaBool ("e3*e2==e2*e3", 0, e3*e2==e2*e3, True);
-  checkScaBool ("e2==e3", 0, e2+0.00001==e3, False);
-  checkScaBool ("e2>=e3", 0, e2+0.00001>=e3, True);
-  checkScaBool ("e2>e3", 0, e2+0.00001>e3, True);
-  checkScaBool ("e2<=e3", 0, e2-0.00001<=e3, True);
-  checkScaBool ("e2<e3", 0, e2-0.00001<e3, True);
-  checkScaBool ("e2!=e3", 0, e2+0.00001!=e3, True);
+  checkScaBool ("e3*e2==e2*e3", 0, e3*e2==e2*e3, true);
+  checkScaBool ("e2==e3", 0, e2+0.00001==e3, false);
+  checkScaBool ("e2>=e3", 0, e2+0.00001>=e3, true);
+  checkScaBool ("e2>e3", 0, e2+0.00001>e3, true);
+  checkScaBool ("e2<=e3", 0, e2-0.00001<=e3, true);
+  checkScaBool ("e2<e3", 0, e2-0.00001<e3, true);
+  checkScaBool ("e2!=e3", 0, e2+0.00001!=e3, true);
   // Functions
-  checkScaBool ("near2(e2,e3)", 0, near(e2,e3), True);
-  checkScaBool ("near3(e2,e3)", 0, near(e2,e3,1e-10), True);
-  checkScaBool ("nearAbs2(e2,e3)", 0, nearAbs(e2,e3), True);
-  checkScaBool ("nearAbs3(e2,e3)", 0, nearAbs(e2,e3,1e-10), True);
+  checkScaBool ("near2(e2,e3)", 0, near(e2,e3), true);
+  checkScaBool ("near3(e2,e3)", 0, near(e2,e3,1e-10), true);
+  checkScaBool ("nearAbs2(e2,e3)", 0, nearAbs(e2,e3), true);
+  checkScaBool ("nearAbs3(e2,e3)", 0, nearAbs(e2,e3,1e-10), true);
   checkScaDouble ("min(e2,e3)", 0, min(e2,e3), 2, "cm");
   checkScaDouble ("max(e3,e2)", 0, max(e3,e2), 0.02, "m");
   checkScaDouble ("sin(30)", 0, sin(e30), 0.5, "");
@@ -173,15 +173,15 @@ void doIt()
   checkScaDouble ("avdev(e2)", 0, avdev(e2), 0., "cm");
   checkScaDouble ("rms(e2)", 0, rms(e2), 2., "cm");
   checkScaDouble ("median(e2)", 0, median(e2), 2., "cm");
-  checkScaBool ("isNaN(e2)", 0, isNaN(e2), False);
+  checkScaBool ("isNaN(e2)", 0, isNaN(e2), false);
   checkScaInt ("ndim(e2)", 0, ndim(e2), 0);
   checkScaDouble ("time", 0, time("17Apr09/12:00:00"), C::pi, "rad");
   checkScaDouble ("time", 0, time("1Jan08/12:00:00"), C::pi, "rad");
   checkScaDouble ("date-date", 0, date("17Apr2009")-"1Apr2009", 16., "d"); 
-  checkScaDouble ("iif(T,e2,e3+1)", 0, iif(True,e2,e3+1), 2., "cm"); 
-  checkScaDouble ("iif(F,e2,e3+1)", 0, iif(False,e2,e3+1), 102., "cm"); 
-  checkScaDouble ("iif(T,e3,e2+1)", 0, iif(True,e3,e2+1), 0.02, "m"); 
-  checkScaDouble ("iif(F,e3,e2+1)", 0, iif(False,e3,e2+1), 0.03, "m"); 
+  checkScaDouble ("iif(T,e2,e3+1)", 0, iif(true,e2,e3+1), 2., "cm"); 
+  checkScaDouble ("iif(F,e2,e3+1)", 0, iif(false,e2,e3+1), 102., "cm"); 
+  checkScaDouble ("iif(T,e3,e2+1)", 0, iif(true,e3,e2+1), 0.02, "m"); 
+  checkScaDouble ("iif(F,e3,e2+1)", 0, iif(false,e3,e2+1), 0.03, "m"); 
 
   // Check conversion from angle to time and back.
   checkScaDouble ("30deg h", 0, e30.useUnit("h"), 2., "h");

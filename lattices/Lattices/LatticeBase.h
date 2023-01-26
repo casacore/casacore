@@ -96,22 +96,22 @@ public:
   // Is the lattice persistent and can it be loaded by other processes as well?
   // That is the case for a PagedArray or PagedImage and for an ImageExpr
   // which does not use transient lattices or regions.
-  // <br>The default implementation returns False.
-  virtual Bool isPersistent() const;
+  // <br>The default implementation returns false.
+  virtual bool isPersistent() const;
 
   // Is the lattice paged to disk?
-  // <br>The default implementation returns False.
-  virtual Bool isPaged() const;
+  // <br>The default implementation returns false.
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
   // That is the case for an ArrayLattice or a Temp/SubLattice using it.
   // It is used by LatticeIterInterface.
-  // <br>The default implementation returns False.
-  virtual Bool canReferenceArray() const;
+  // <br>The default implementation returns false.
+  virtual bool canReferenceArray() const;
 
   // Is the lattice writable?
-  // <br>The default implementation returns True.
-  virtual Bool isWritable() const;
+  // <br>The default implementation returns true.
+  virtual bool isWritable() const;
 
   // Save the image in an AipsIO file with the given name.
   // Its purpose is to make ImageConcat and ImageExpr objects
@@ -124,12 +124,12 @@ public:
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <br>By default the functions do not do anything at all.
-  // lock() and hasLock return True, which is suitable for all
+  // lock() and hasLock return true, which is suitable for all
   // non-paged lattices.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -157,7 +157,7 @@ public:
   // be a file name for lattices that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
   // <br>The default implementation returns an empty string.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
 
   // Return the shape of the Lattice including all degenerate axes
   // (ie. axes with a length of one)
@@ -166,7 +166,7 @@ public:
   // Return the number of axes in this Lattice. This includes all
   // degenerate axes.
   // <br>The default implementation returns shape().nelements().
-  virtual uInt ndim() const;
+  virtual uint32_t ndim() const;
   
   // Return the total number of elements in this Lattice.
   // <br>The default implementation returns shape().product().
@@ -178,7 +178,7 @@ public:
 
   // Return a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".
-  Bool conform (const LatticeBase& other) const
+  bool conform (const LatticeBase& other) const
     { return shape().isEqual (other.shape()); }
 
   // Return the coordinates of the lattice.
@@ -189,7 +189,7 @@ public:
   // include in the cursor of an iterator. The Lattice class has a default
   // implementation which returns a number that is a power of two and
   // includes enough pixels to consume between 4 and 8 MBytes of memory.
-  virtual uInt advisedMaxPixels() const = 0;
+  virtual uint32_t advisedMaxPixels() const = 0;
 
   // Returns a recommended cursor shape for iterating through all the pixels
   // in the Lattice. The default implementation sets up a shape that
@@ -203,29 +203,29 @@ public:
   // </srcblock>
   // The default argument is the result of <src>advisedMaxPixels()</src>.
   // <group>
-  IPosition niceCursorShape (uInt maxPixels) const
+  IPosition niceCursorShape (uint32_t maxPixels) const
     { return doNiceCursorShape (maxPixels); }
   IPosition niceCursorShape() const
     { return doNiceCursorShape (advisedMaxPixels()); }
   // </group>
 
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // The function (in the derived classes) doing the actual work.
   // This function is public, so it can be used internally in the
   // various Lattice classes.
   // <br>The default implementation tries to fit as many axes
   // as possible given <src>maxPixels</src>.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Maximum cache size - not necessarily all used. In pixels.
   // Default returns 0, which means that there is no maximum.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
   // <br>The default implementation does nothing.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the actual cache size for this Array to be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
@@ -233,7 +233,7 @@ public:
   // set using the setMaximumCacheSize member function.
   // Tiles are cached using a first in first out algorithm.
   // <br>The default implementation does nothing.
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Set the cache size as to "fit" the indicated path.
   // <br>The default implementation does nothing.
@@ -263,7 +263,7 @@ protected:
     { return *this; }
   // </group>
 
-  // Throw an exception for arithmetic on a Bool Lattice.
+  // Throw an exception for arithmetic on a bool Lattice.
   void throwBoolMath() const;
 };
 

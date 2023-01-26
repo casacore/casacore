@@ -52,15 +52,15 @@
 
 
 #include <casacore/casa/namespace.h>
-void check (uInt axis, MaskedLattice<Float>& ml,
-            MaskedLattice<Float>& ml1, 
-            MaskedLattice<Float>& ml2);
-void check (uInt axis, MaskedLattice<Float>& ml,
-            MaskedLattice<Float>& ml1, 
-            MaskedLattice<Float>& ml2,
-            MaskedLattice<Float>& ml3);
-void checkMiscInfo (ImageConcat<Float>& image, Bool hasExtra);
-void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set);
+void check (uint32_t axis, MaskedLattice<float>& ml,
+            MaskedLattice<float>& ml1, 
+            MaskedLattice<float>& ml2);
+void check (uint32_t axis, MaskedLattice<float>& ml,
+            MaskedLattice<float>& ml1, 
+            MaskedLattice<float>& ml2,
+            MaskedLattice<float>& ml3);
+void checkMiscInfo (ImageConcat<float>& image, bool hasExtra);
+void makeMask (ImageInterface<float>& im, bool maskValue, bool set);
 void testLogger();
 
 int main() {
@@ -69,9 +69,9 @@ int main() {
 // Make some Arrays
 
       IPosition shape(2,5,10);
-      Array<Float> a1(shape);
-      Array<Float> a2(shape);
-      Int i, j;
+      Array<float> a1(shape);
+      Array<float> a2(shape);
+      int32_t i, j;
       for (i=0; i<shape(0); i++) {
 	for (j=0; j<shape(1); j++) {
 	    a1(IPosition(2,i,j)) = i + j;
@@ -81,19 +81,19 @@ int main() {
 
 // Make some PagedImages and give them a mask
 
-      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
+      PagedImage<float> im1(shape, CoordinateUtil::defaultCoords2D(),
                             "tImageConcat_tmp1.img");
-      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
+      PagedImage<float> im2(shape, CoordinateUtil::defaultCoords2D(),
                             "tImageConcat_tmp2.img");
-      makeMask(im1, True, True); 
-      makeMask(im2, False, True);
+      makeMask(im1, true, true); 
+      makeMask(im2, false, true);
       im1.put(a1); 
       im2.put(a2);
 
 // Make a MaskedLattice as well
 
-     ArrayLattice<Float> al1(a1);
-     SubLattice<Float> ml1(al1);
+     ArrayLattice<float> al1(a1);
+     SubLattice<float> ml1(al1);
  
 //
       {
@@ -101,9 +101,9 @@ int main() {
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0, True);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
+         ImageConcat<float> lc (0, true);
+         lc.setImage(im1, true);
+         lc.setImage(im2, true);
 
 // Find output shape
 
@@ -111,14 +111,14 @@ int main() {
          AlwaysAssert(outShape.nelements()==2, AipsError);
          AlwaysAssert(outShape(0)==shape(0)+shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
-         AlwaysAssert(lc.isMasked()==True, AipsError);
-         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
+         AlwaysAssert(lc.isMasked()==true, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==true, AipsError);
 
 // Make output
 
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
+         makeMask(ml3, true, false);
 
 // Copy to output
 
@@ -142,29 +142,29 @@ int main() {
 
 // Save the concatenated image and read it back.
          lc.save ("tImageConcat_tmp.imgconc");
-         checkMiscInfo (lc, False);
+         checkMiscInfo (lc, false);
          AlwaysAssertExit (lc.isPersistent());
          LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
-         ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
+         ImageConcat<float>* lc3 = dynamic_cast<ImageConcat<float>*>(latt);
          AlwaysAssertExit (lc3 != 0);
          AlwaysAssertExit (allEQ(lc3->get(), lc.get()));
          AlwaysAssertExit (allEQ(lc3->getMask(), lc.getMask()));
-         checkMiscInfo (*lc3, False);
+         checkMiscInfo (*lc3, false);
       }
       {
          LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
-         ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
+         ImageConcat<float>* lc3 = dynamic_cast<ImageConcat<float>*>(latt);
          TableRecord rec=lc3->miscInfo();
-         checkMiscInfo (*lc3, False);
+         checkMiscInfo (*lc3, false);
          rec.define("NewKey", "newvalue");
          lc3->setMiscInfo(rec);
-         checkMiscInfo (*lc3, True);
+         checkMiscInfo (*lc3, true);
          delete lc3;
       }
       {
          LatticeBase* latt = ImageOpener::openImage ("tImageConcat_tmp.imgconc");
-         ImageConcat<Float>* lc3 = dynamic_cast<ImageConcat<Float>*>(latt);
-         checkMiscInfo (*lc3, True);
+         ImageConcat<float>* lc3 = dynamic_cast<ImageConcat<float>*>(latt);
+         checkMiscInfo (*lc3, true);
          delete lc3;
       }
 
@@ -174,9 +174,9 @@ int main() {
 
 // Concatenate along axis 1
 
-         ImageConcat<Float> lc (1, False);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
+         ImageConcat<float> lc (1, false);
+         lc.setImage(im1, true);
+         lc.setImage(im2, true);
 
 // Find output shape
 
@@ -184,14 +184,14 @@ int main() {
          AlwaysAssert(outShape.nelements()==2, AipsError);
          AlwaysAssert(outShape(0)==shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1)+shape(1), AipsError);
-         AlwaysAssert(lc.isMasked()==True, AipsError);
-         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
+         AlwaysAssert(lc.isMasked()==true, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==true, AipsError);
 
 // Make output
 
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
+         makeMask(ml3, true, false);
 
 // Copy to output
 
@@ -209,9 +209,9 @@ int main() {
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
+         ImageConcat<float> lc (0);
+         lc.setImage(im1, true);
+         lc.setImage(im2, true);
          lc.setLattice(ml1);
 
 // Find output shape
@@ -220,15 +220,15 @@ int main() {
          AlwaysAssert(outShape.nelements()==2, AipsError);
          AlwaysAssert(outShape(0)==3*shape(0), AipsError);
          AlwaysAssert(outShape(1)==shape(1), AipsError);
-         AlwaysAssert(lc.isMasked()==True, AipsError);
-         AlwaysAssert(lc.hasPixelMask()==True, AipsError);
-         AlwaysAssert(lc.pixelMask().isWritable()==False, AipsError);
+         AlwaysAssert(lc.isMasked()==true, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==true, AipsError);
+         AlwaysAssert(lc.pixelMask().isWritable()==false, AipsError);
 
 // Make output
 
-         PagedImage<Float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml3(outShape, CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
+         makeMask(ml3, true, false);
 
 // Copy to output
 
@@ -252,35 +252,35 @@ int main() {
 
 
          IPosition shape2(2, 30, 10);
-         PagedImage<Float> ml3(shape2, CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml3(shape2, CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp3.img");
 //
          Slicer sl1(IPosition(2,0,0), IPosition(2,9,9), Slicer::endIsLast);
          Slicer sl2(IPosition(2,10,0), IPosition(2,19,9), Slicer::endIsLast);         
          Slicer sl3(IPosition(2,20,0), IPosition(2,29,9), Slicer::endIsLast);
 //
-         SubImage<Float> si1(ml3, sl1, True); si1.set(1.0);
-         SubImage<Float> si2(ml3, sl2, True); si2.set(2.0);
-         SubImage<Float> si3(ml3, sl3, True); si3.set(3.0);
+         SubImage<float> si1(ml3, sl1, true); si1.set(1.0);
+         SubImage<float> si2(ml3, sl2, true); si2.set(2.0);
+         SubImage<float> si3(ml3, sl3, true); si3.set(3.0);
 
 // Concatenate along axis 0
 
-         ImageConcat<Float> lc (0);
-         lc.setImage(si1, False);
-         lc.setImage(si2, False);
-         lc.setImage(si3, False);
+         ImageConcat<float> lc (0);
+         lc.setImage(si1, false);
+         lc.setImage(si2, false);
+         lc.setImage(si3, false);
 
 // Find output shape
 
          IPosition outShape = lc.shape();
          AlwaysAssert(outShape.nelements()==2, AipsError);
          AlwaysAssert(shape2.isEqual(outShape), AipsError);
-         AlwaysAssert(lc.isMasked()==False, AipsError);
-         AlwaysAssert(lc.hasPixelMask()==False, AipsError);
+         AlwaysAssert(lc.isMasked()==false, AipsError);
+         AlwaysAssert(lc.hasPixelMask()==false, AipsError);
 
 // Make output
 
-         PagedImage<Float> ml4(outShape, CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml4(outShape, CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp4.img");
 
 // Copy to output
@@ -296,9 +296,9 @@ int main() {
             
      {
          cout << "Testing locking" << endl;
-         ImageConcat<Float> lc2 (0, False);
-         lc2.setImage(im1, True);
-         lc2.setImage(im2, True);
+         ImageConcat<float> lc2 (0, false);
+         lc2.setImage(im1, true);
+         lc2.setImage(im2, true);
          AlwaysAssert(lc2.lock(FileLocker::Read, 1), AipsError);
          AlwaysAssert(lc2.hasLock(FileLocker::Read), AipsError);
          AlwaysAssert(lc2.lock(FileLocker::Write, 1), AipsError);
@@ -315,10 +315,10 @@ int main() {
 
      {
          cout << "Testing copy constructor" << endl;
-         ImageConcat<Float> lc (0);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
-         ImageConcat<Float> lc2(lc);
+         ImageConcat<float> lc (0);
+         lc.setImage(im1, true);
+         lc.setImage(im2, true);
+         ImageConcat<float> lc2(lc);
 
 // Find output shape
 
@@ -328,9 +328,9 @@ int main() {
 
 // Make output
    
-         PagedImage<Float> ml3(lc2.shape(), CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml3(lc2.shape(), CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
+         makeMask(ml3, true, false);
 
 // Copy to output
 
@@ -346,10 +346,10 @@ int main() {
 
      {
          cout << "Testing assignment " << endl;
-         ImageConcat<Float> lc (0);
-         lc.setImage(im1, True);
-         lc.setImage(im2, True);
-         ImageConcat<Float> lc2;
+         ImageConcat<float> lc (0);
+         lc.setImage(im1, true);
+         lc.setImage(im2, true);
+         ImageConcat<float> lc2;
          lc2 = lc;
 
 // Find output shape
@@ -360,9 +360,9 @@ int main() {
 
 // Make output
    
-         PagedImage<Float> ml3(lc2.shape(), CoordinateUtil::defaultCoords2D(),
+         PagedImage<float> ml3(lc2.shape(), CoordinateUtil::defaultCoords2D(),
                                "tImageConcat_tmp3.img");
-         makeMask(ml3, True, False);
+         makeMask(ml3, true, false);
 
 // Copy to output
 
@@ -379,11 +379,11 @@ int main() {
       {
          cout << "Forced errors" << endl;
 
-         ImageConcat<Float> lc (10);
-         Bool ok = True;
+         ImageConcat<float> lc (10);
+         bool ok = true;
          try {
-            lc.setImage(im1, True);
-            ok = False;
+            lc.setImage(im1, true);
+            ok = false;
          } catch (std::exception& x) {
          } 
          if (!ok) {
@@ -391,11 +391,11 @@ int main() {
          }
 //
          try {
-             PagedImage<Float> ml4(IPosition(3,10,10,10),
+             PagedImage<float> ml4(IPosition(3,10,10,10),
                                    CoordinateUtil::defaultCoords3D(),
                                "tImageConcat_tmp3.img");
-            lc.setImage(ml4, True);
-            ok = False;
+            lc.setImage(ml4, true);
+            ok = false;
          } catch (std::exception& x) {;} 
          if (!ok) {
             throw (AipsError("set forced failure did not work - this was unexpected"));  
@@ -408,37 +408,37 @@ int main() {
     {
     	  cout << "Noncontiguous spectral axis test - CAS-4317" << endl;
     	  CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
-    	  Vector<Double> freqs(4);
+    	  Vector<double> freqs(4);
     	  freqs[0] = 1.41e9;
     	  freqs[1] = 1.42e9;
     	  freqs[2] = 1.44e9;
     	  freqs[3] = 1.47e9;
-    	  Double restfreq1 = 1.40e9;
+    	  double restfreq1 = 1.40e9;
     	  SpectralCoordinate sp1(MFrequency::LSRK, freqs, restfreq1);
     	  csys.replaceCoordinate(sp1, 1);
-    	  TempImage<Float> t1(TiledShape(IPosition(3, 1, 1, 4)), csys);
+    	  TempImage<float> t1(TiledShape(IPosition(3, 1, 1, 4)), csys);
     	  ImageInfo info1 = t1.imageInfo();
     	  GaussianBeam beam1(Quantity(2, "arcsec"), Quantity(1, "arcsec"), Quantity(2, "deg"));
     	  info1.setRestoringBeam(beam1);
     	  t1.setImageInfo(info1);
-    	  Vector<Double> gfreqs(3);
+    	  Vector<double> gfreqs(3);
     	  gfreqs[0] = 1.52e9;
     	  gfreqs[1] = 1.53e9;
     	  gfreqs[2] = 1.54e9;
-    	  Double restfreq2 = 1.5e9;
+    	  double restfreq2 = 1.5e9;
     	  SpectralCoordinate sp2(MFrequency::LSRK, gfreqs, restfreq2);
     	  csys.replaceCoordinate(sp2, 1);
-    	  TempImage<Float> t2(TiledShape(IPosition(3, 1, 1, 3)), csys);
+    	  TempImage<float> t2(TiledShape(IPosition(3, 1, 1, 3)), csys);
     	  ImageInfo info2 = t2.imageInfo();
     	  GaussianBeam beam2(Quantity(4, "arcsec"), Quantity(3, "arcsec"), Quantity(20, "deg"));
     	  info2.setRestoringBeam(beam2);
     	  t2.setImageInfo(info2);
-    	  ImageConcat<Float> concat(2);
-    	  concat.setImage(t1, True);
-    	  concat.setImage(t2, True);
+    	  ImageConcat<float> concat(2);
+    	  concat.setImage(t1, true);
+    	  concat.setImage(t2, true);
     	  SpectralCoordinate newsp = concat.coordinates().spectralCoordinate();
-    	  Double world;
-    	  for (uInt i=0; i<7; i++) {
+    	  double world;
+    	  for (uint32_t i=0; i<7; i++) {
 			  newsp.toWorld(world, i);
 			  GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
     		  if (i < 4) {
@@ -456,21 +456,21 @@ int main() {
 
 
     	  cout << "Noncontiguous spectral axis test concating 3 images - CAS-4319" << endl;
-          Vector<Double> hfreqs(3);
+          Vector<double> hfreqs(3);
           hfreqs[0] = 1.61e9;
           hfreqs[1] = 1.62e9;
           hfreqs[2] = 1.64e9;
-          Double restfreq3 = 1.6e9;
+          double restfreq3 = 1.6e9;
           SpectralCoordinate sp3(MFrequency::LSRK, hfreqs, restfreq3);
           csys.replaceCoordinate(sp3, 1);
-    	  TempImage<Float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
+    	  TempImage<float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
     	  ImageInfo info3 = t3.imageInfo();
     	  GaussianBeam beam3(Quantity(10, "arcsec"), Quantity(7, "arcsec"), Quantity(80, "deg"));
     	  info3.setRestoringBeam(beam3);
     	  t3.setImageInfo(info3);
-    	  concat.setImage(t3, True);
+    	  concat.setImage(t3, true);
     	  newsp = concat.coordinates().spectralCoordinate();
-    	  for (uInt i=0; i<10; i++) {
+    	  for (uint32_t i=0; i<10; i++) {
     		  newsp.toWorld(world, i);
     		  GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
     		  if (i < 4) {
@@ -519,7 +519,7 @@ int main() {
           GaussianBeam gbeam2c(Quantity(14, "arcsec"), Quantity(7, "arcsec"),
                                Quantity(77, "deg"));
           ImageBeamSet bset2(10,1);
-          for (uInt i=0; i<10; ++i) {
+          for (uint32_t i=0; i<10; ++i) {
             bset2.setBeam(i, 0, GaussianBeam(Quantity(i+5, "arcsec"),
                                              Quantity(i+1, "arcsec"),
                                              Quantity(i+60, "deg")));
@@ -540,7 +540,7 @@ int main() {
           AlwaysAssertExit (concat.image(0).imageInfo().nChannels() == 4);
           AlwaysAssertExit (concat.image(1).imageInfo().nChannels() == 3);
           AlwaysAssertExit (concat.image(2).imageInfo().nChannels() == 3);
-          for (uInt i=0; i<4; ++i) {
+          for (uint32_t i=0; i<4; ++i) {
             AlwaysAssertExit (concat.image(0).imageInfo().getBeamSet()(i,0) ==
                               GaussianBeam(Quantity(i+5, "arcsec"),
                                            Quantity(i+1, "arcsec"),
@@ -560,7 +560,7 @@ int main() {
     {
     	cout << "*** single beams concat test with stokes, CAS-4423" << endl;
     	CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
-    	TempImage<Float> i0(TiledShape(IPosition(4, 10, 10, 1, 8)), csys);
+    	TempImage<float> i0(TiledShape(IPosition(4, 10, 10, 1, 8)), csys);
     	ImageInfo ii = i0.imageInfo();
     	ii.setAllBeams(
     		8, 1, GaussianBeam(
@@ -569,10 +569,10 @@ int main() {
     	);
     	i0.setImageInfo(ii);
 
-    	Vector<Double> refVal = csys.referenceValue();
+    	Vector<double> refVal = csys.referenceValue();
     	refVal[3] += 1e9;
     	csys.setReferenceValue(refVal);
-    	TempImage<Float> i1(TiledShape(IPosition(4, 10, 10, 1, 27)), csys);
+    	TempImage<float> i1(TiledShape(IPosition(4, 10, 10, 1, 27)), csys);
     	ii = i1.imageInfo();
     	ii.setAllBeams(
     		27, 1, GaussianBeam(
@@ -580,9 +580,9 @@ int main() {
     		)
   	    );
     	i1.setImageInfo(ii);
-    	ImageConcat<Float> concat(3, False);
-    	concat.setImage(i0, True);
-    	concat.setImage(i1, True);
+    	ImageConcat<float> concat(3, false);
+    	concat.setImage(i0, true);
+    	concat.setImage(i1, true);
 
 
 
@@ -590,22 +590,22 @@ int main() {
     {
     	cout << "*** Stokes concatenation" << endl;
     	CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
-    	TempImage<Float> i0(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
-    	TempImage<Float> i1(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
-    	SubImage<Float> s0(i0, Slicer(
+    	TempImage<float> i0(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
+    	TempImage<float> i1(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
+    	SubImage<float> s0(i0, Slicer(
     		IPosition(4, 0), IPosition(4, 4, 4, 0, 4),
     		Slicer::endIsLast)
     	);
-    	SubImage<Float> s1(i0, Slicer(
+    	SubImage<float> s1(i0, Slicer(
     		IPosition(4, 0, 0, 2, 0), IPosition(4, 4, 4, 2, 4),
     		Slicer::endIsLast)
     	);
     	cout << "first " << s0.coordinates().stokesCoordinate().stokes() << endl;
     	cout << "second " << s1.coordinates().stokesCoordinate().stokes() << endl;
-    	ImageConcat<Float> concat(2);
-    	concat.setImage(s0, False);
-    	concat.setImage(s1, False);
-        Vector<Int> outStokes = concat.coordinates().stokesCoordinate().stokes();
+    	ImageConcat<float> concat(2);
+    	concat.setImage(s0, false);
+    	concat.setImage(s1, false);
+        Vector<int32_t> outStokes = concat.coordinates().stokesCoordinate().stokes();
         AlwaysAssert(outStokes.size() == 2, AipsError);
         AlwaysAssert(outStokes[0] == 1, AipsError);
         AlwaysAssert(outStokes[1] == 3, AipsError);
@@ -613,31 +613,31 @@ int main() {
     {
         cout << "Test adding first image contiguous, next not produces expected world values" << endl;
     	CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
-        TempImage<Float> i0(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
-    	SubImage<Float> s0(i0, Slicer(
+        TempImage<float> i0(TiledShape(IPosition(4, 5, 5, 4, 5)), csys);
+    	SubImage<float> s0(i0, Slicer(
     		IPosition(4, 0), IPosition(4, 4, 4, 3, 0),
     		Slicer::endIsLast)
     	);
-    	SubImage<Float> s1(i0, Slicer(
+    	SubImage<float> s1(i0, Slicer(
     		IPosition(4, 0, 0, 0, 1), IPosition(4, 4, 4, 3, 1),
     		Slicer::endIsLast)
     	);
-    	SubImage<Float> s3(i0, Slicer(
+    	SubImage<float> s3(i0, Slicer(
     		IPosition(4, 0, 0, 0, 3), IPosition(4, 4, 4, 3, 3),
     		Slicer::endIsLast)
     	);
-        ImageConcat<Float> concat(3);
-        concat.setImage(s0, False);
-        Vector<Int> v0(4, 0);
-        Vector<Int> v1(4, 0);
+        ImageConcat<float> concat(3);
+        concat.setImage(s0, false);
+        Vector<int32_t> v0(4, 0);
+        Vector<int32_t> v1(4, 0);
         v1[3] = 1;
-        Vector<Int> v2(4, 0);
+        Vector<int32_t> v2(4, 0);
         v2[3] = 2;
         AlwaysAssert(
             concat.coordinates().toWorld(v0)[3] == s0.coordinates().toWorld(v0)[3],
             AipsError
         );
-        concat.setImage(s1, False);
+        concat.setImage(s1, false);
         AlwaysAssert(
             concat.coordinates().toWorld(v0)[3] == s0.coordinates().toWorld(v0)[3],
             AipsError
@@ -646,7 +646,7 @@ int main() {
             concat.coordinates().toWorld(v1)[3] == s1.coordinates().toWorld(v0)[3],
             AipsError
         );
-        concat.setImage(s3, True);
+        concat.setImage(s3, true);
         cout << "get " << std::setprecision(10) << concat.coordinates().toWorld(v0)[3] << endl;
         cout << "exp " << std::setprecision(10) << s0.coordinates().toWorld(v0)[3] << endl;
         AlwaysAssert(
@@ -671,29 +671,29 @@ int main() {
     {///Testing niceCursorShape 
       	cout << "Testing niceCursorShape " << endl;
 	{
-	  ImageConcat<Float> concat(1);
-	  concat.setImage(im1, True);
-	  concat.setImage(im2, True);
+	  ImageConcat<float> concat(1);
+	  concat.setImage(im1, true);
+	  concat.setImage(im2, true);
 	  AlwaysAssert(concat.niceCursorShape() == im1.niceCursorShape(),
 		       AipsError);
 	 
 	}
 	{
 	  CoordinateSystem csys = CoordinateUtil::defaultCoords4D();
-	  TempImage<Float> t0(TiledShape(IPosition(4, 50, 50, 1, 10)), csys, 0);
-	  TempImage<Float> t1(TiledShape(IPosition(4, 50, 50, 1, 5)), csys, 0);
+	  TempImage<float> t0(TiledShape(IPosition(4, 50, 50, 1, 10)), csys, 0);
+	  TempImage<float> t1(TiledShape(IPosition(4, 50, 50, 1, 5)), csys, 0);
 	  {
-	    ImageConcat<Float> concat(3);
-	    concat.setImage(t0, True);
-	    concat.setImage(t1, True);
+	    ImageConcat<float> concat(3);
+	    concat.setImage(t0, true);
+	    concat.setImage(t1, true);
 	     AlwaysAssert(concat.niceCursorShape() == t1.niceCursorShape(),
 			  AipsError);
 	  }
 	  //reverse order of concat
 	   {
-	    ImageConcat<Float> concat(3);
-	    concat.setImage(t1, True);
-	    concat.setImage(t0, True);
+	    ImageConcat<float> concat(3);
+	    concat.setImage(t1, true);
+	    concat.setImage(t0, true);
 	     AlwaysAssert(concat.niceCursorShape() == t1.niceCursorShape(),
 			  AipsError);
 	    
@@ -712,8 +712,8 @@ int main() {
 }
 
 
-void check (uInt axis, MaskedLattice<Float>& ml,
-            MaskedLattice<Float>& ml1, MaskedLattice<Float>& ml2)
+void check (uint32_t axis, MaskedLattice<float>& ml,
+            MaskedLattice<float>& ml1, MaskedLattice<float>& ml2)
 {
    IPosition shape1 = ml1.shape();
    IPosition shape2 = ml2.shape();
@@ -737,10 +737,10 @@ void check (uInt axis, MaskedLattice<Float>& ml,
 }
 
 
-void check (uInt axis, MaskedLattice<Float>& ml,
-            MaskedLattice<Float>& ml1, 
-            MaskedLattice<Float>& ml2,
-            MaskedLattice<Float>& ml3)
+void check (uint32_t axis, MaskedLattice<float>& ml,
+            MaskedLattice<float>& ml1, 
+            MaskedLattice<float>& ml2,
+            MaskedLattice<float>& ml3)
 {
    IPosition shape1 = ml1.shape();
    IPosition shape2 = ml2.shape();
@@ -772,7 +772,7 @@ void check (uInt axis, MaskedLattice<Float>& ml,
    }
 }
 
-void checkMiscInfo (ImageConcat<Float>& img, Bool hasExtraKey)
+void checkMiscInfo (ImageConcat<float>& img, bool hasExtraKey)
 {
   TableRecord rec = img.miscInfo();
   AlwaysAssertExit (rec.asInt("i4") == 4);
@@ -789,24 +789,24 @@ void checkMiscInfo (ImageConcat<Float>& img, Bool hasExtraKey)
 }
 
 
-void makeMask (ImageInterface<Float>& im, Bool maskValue, Bool set)
+void makeMask (ImageInterface<float>& im, bool maskValue, bool set)
 {
-   im.makeMask ("mask0", True, True, set, maskValue);
+   im.makeMask ("mask0", true, true, set, maskValue);
 }
 
 
 void testLogger()
 {
   // Make a concatenated image and make sure the image objects are gone.
-   ImageConcat<Float> lc (0, True);
-   ImageConcat<Float> lc2 (0, True);
+   ImageConcat<float> lc (0, true);
+   ImageConcat<float> lc2 (0, true);
    {
 // Make some Arrays
 
       IPosition shape(2,5,10);
-      Array<Float> a1(shape);
-      Array<Float> a2(shape);
-      Int i, j;
+      Array<float> a1(shape);
+      Array<float> a2(shape);
+      int32_t i, j;
       for (i=0; i<shape(0); i++) {
 	 for (j=0; j<shape(1); j++) {
 	    a1(IPosition(2,i,j)) = i + j;
@@ -817,17 +817,17 @@ void testLogger()
 // Make some PagedImages and add messages to their logger.
 // Add the images to the Concat.
 
-      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
+      PagedImage<float> im1(shape, CoordinateUtil::defaultCoords2D(),
                             "tImageConcat_tmp1.imga");
-      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
+      PagedImage<float> im2(shape, CoordinateUtil::defaultCoords2D(),
                             "tImageConcat_tmp2.imga");
       im1.put(a1); 
       im2.put(a2);
-      lc.setImage(im1, True);
-      lc.setImage(im2, True);
-      lc2.setImage(im2, True);
-      lc2.setImage(im1, True);
-      lc2.setImage(im2, True);
+      lc.setImage(im1, true);
+      lc.setImage(im2, true);
+      lc2.setImage(im2, true);
+      lc2.setImage(im1, true);
+      lc2.setImage(im2, true);
       im1.logger().logio() << "message1a" << LogIO::POST;
       im1.logger().logio() << "message1b" << LogIO::POST;
       im2.logger().logio() << "message2" << LogIO::POST;
@@ -835,7 +835,7 @@ void testLogger()
    // Add a message and check if the concatenation has 4 messages.
    LoggerHolder& logger = lc.logger();
    logger.logio() << "message_conc" << LogIO::POST;
-   uInt nmsg=0;
+   uint32_t nmsg=0;
    for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
       cout << iter->message() << endl;
       nmsg++;
@@ -844,11 +844,11 @@ void testLogger()
 
    // If it also works well with the copy ctor and the assignent operator.
    {
-     ImageConcat<Float> ic2(lc2);
+     ImageConcat<float> ic2(lc2);
      {
        LoggerHolder& logger = ic2.logger();
        logger.logio() << "message_conc2" << LogIO::POST;
-       uInt nmsg=0;
+       uint32_t nmsg=0;
        for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
 	 cout << iter->message() << endl;
 	 nmsg++;
@@ -858,7 +858,7 @@ void testLogger()
      ic2 = lc;
      {
        LoggerHolder& logger = ic2.logger();
-       uInt nmsg=0;
+       uint32_t nmsg=0;
        for (LoggerHolder::const_iterator iter = logger.begin(); iter != logger.end(); iter++) {
 	 cout << iter->message() << endl;
 	 nmsg++;
@@ -869,38 +869,38 @@ void testLogger()
    {
          cout << "Noncontiguous spectral axis test - CAS-4317" << endl;
          CoordinateSystem csys = CoordinateUtil::defaultCoords3D();
-         Vector<Double> freqs(4);
+         Vector<double> freqs(4);
          freqs[0] = 1.41e9;
          freqs[1] = 1.42e9;
          freqs[2] = 1.44e9;
          freqs[3] = 1.47e9;
-         Double restfreq1 = 1.40e9;
+         double restfreq1 = 1.40e9;
          SpectralCoordinate sp1(MFrequency::LSRK, freqs, restfreq1);
          csys.replaceCoordinate(sp1, 1);
-         TempImage<Float> t1(TiledShape(IPosition(3, 1, 1, 4)), csys);
+         TempImage<float> t1(TiledShape(IPosition(3, 1, 1, 4)), csys);
          ImageInfo info1 = t1.imageInfo();
          GaussianBeam beam1(Quantity(2, "arcsec"), Quantity(1, "arcsec"), Quantity(2, "deg"));
          info1.setRestoringBeam(beam1);
          t1.setImageInfo(info1);
-         Vector<Double> gfreqs(3);
+         Vector<double> gfreqs(3);
          gfreqs[0] = 1.52e9;
          gfreqs[1] = 1.53e9;
          gfreqs[2] = 1.54e9;
-         Double restfreq2 = 1.5e9;
+         double restfreq2 = 1.5e9;
          SpectralCoordinate sp2(MFrequency::LSRK, gfreqs, restfreq2);
          csys.replaceCoordinate(sp2, 1);
-         TempImage<Float> t2(TiledShape(IPosition(3, 1, 1, 3)), csys);
+         TempImage<float> t2(TiledShape(IPosition(3, 1, 1, 3)), csys);
          ImageInfo info2 = t2.imageInfo();
          GaussianBeam beam2(Quantity(4, "arcsec"), Quantity(3, "arcsec"), Quantity(20, "deg"));
          info2.setRestoringBeam(beam2);
          t2.setImageInfo(info2);
-         ImageConcat<Float> concat(2);
-         concat.setImage(t1, True);
+         ImageConcat<float> concat(2);
+         concat.setImage(t1, true);
          AlwaysAssert(concat.shape() == t1.shape(), AipsError);
-         concat.setImage(t2, True);
+         concat.setImage(t2, true);
          SpectralCoordinate newsp = concat.coordinates().spectralCoordinate();
-         Double world;
-         for (uInt i=0; i<7; i++) {
+         double world;
+         for (uint32_t i=0; i<7; i++) {
              newsp.toWorld(world, i);
              GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
              if (i < 4) {
@@ -914,21 +914,21 @@ void testLogger()
          }
          AlwaysAssert(newsp.restFrequency() == restfreq1, AipsError);
          cout << "Noncontiguous spectral axis test concating 3 images - CAS-4319" << endl;
-         Vector<Double> hfreqs(3);
+         Vector<double> hfreqs(3);
          hfreqs[0] = 1.61e9;
          hfreqs[1] = 1.62e9;
          hfreqs[2] = 1.64e9;
-         Double restfreq3 = 1.6e9;
+         double restfreq3 = 1.6e9;
          SpectralCoordinate sp3(MFrequency::LSRK, hfreqs, restfreq3);
          csys.replaceCoordinate(sp3, 1);
-         TempImage<Float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
+         TempImage<float> t3(TiledShape(IPosition(3, 1, 1, 3)), csys);
          ImageInfo info3 = t3.imageInfo();
          GaussianBeam beam3(Quantity(10, "arcsec"), Quantity(7, "arcsec"), Quantity(80, "deg"));
          info3.setRestoringBeam(beam3);
          t3.setImageInfo(info3);
-         concat.setImage(t3, True);
+         concat.setImage(t3, true);
          newsp = concat.coordinates().spectralCoordinate();
-         for (uInt i=0; i<10; i++) {
+         for (uint32_t i=0; i<10; i++) {
              newsp.toWorld(world, i);
              GaussianBeam beam = concat.imageInfo().restoringBeam(i, -1);
              if (i < 4) {

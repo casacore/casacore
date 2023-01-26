@@ -63,7 +63,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void reset() {message="";}
     MSSelectionError (const String& message,Category c=GENERAL);
     ~MSSelectionError () noexcept;
-    Bool hasMessage;
+    bool hasMessage;
   };
   //
   //-------------------------------------------------------------------
@@ -309,7 +309,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //-------------------------------------------------------------------
   //  
-  String constructMessage(const Int pos, const String& command);
+  String constructMessage(const int32_t pos, const String& command);
 } //# NAMESPACE CASACORE - END
 
 #endif

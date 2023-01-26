@@ -102,106 +102,106 @@ public:
     // Add scalar or array field. If of array type, the shape is set to [-1],
     // which indicates a variable sized array. Returns the number of fields in
     // the description.
-    uInt addField (const String& fieldName, DataType scalarOrArrayType);
+    uint32_t addField (const String& fieldName, DataType scalarOrArrayType);
 
     // Add an array field of the indicated type. The DataType is promoted
     // from a scalar type to an array type if necessary, e.g., 
     // <src>TpInt ->TpArrayInt</src>.  Returns the number of fields in
     // the description.
-    uInt addArray (const String& fieldName, DataType scalarOrArrayType,
+    uint32_t addArray (const String& fieldName, DataType scalarOrArrayType,
 		   const IPosition& shape);
 
     // Add a Record field to the description. This allows hierarchical
     // descriptions to be developed. Returns the number of fields in the
     // description.
-    uInt addRecord (const String& fieldName, const RecordDesc& subDesc);
+    uint32_t addRecord (const String& fieldName, const RecordDesc& subDesc);
 
     // Add a Table field to the description. The Table description has the
     // given name. Returns the number of fields in the description.
-    uInt addTable (const String& fieldName, const String& tableDescName);
+    uint32_t addTable (const String& fieldName, const String& tableDescName);
 
     // Get the comment for this field.
-    const String& comment (Int whichField) const;
+    const String& comment (int32_t whichField) const;
 
     // Set the comment for this field.
-    void setComment (Int whichField, const String& comment);
+    void setComment (int32_t whichField, const String& comment);
 
     // Set the shape for this field.
     // An exception will be thrown if the field is no array.
-    void setShape (Int whichField, const IPosition& shape);
+    void setShape (int32_t whichField, const IPosition& shape);
 
-    // Merge a single field from other.  If allowDuplicates is True, silently
+    // Merge a single field from other.  If allowDuplicates is true, silently
     // throw away fields if one with the same name and type already exists,
     // otherwise an exception is thrown.  Conflicting types always cause an
     // exception. Returns the number of fields in the description.
-    uInt mergeField (const RecordDescRep& other, Int whichFieldFromOther,
+    uint32_t mergeField (const RecordDescRep& other, int32_t whichFieldFromOther,
 		     int duplicateAction);
 
     // Add all the fields from another RecordDescRep to the current objects.
-    uInt merge (const RecordDescRep& other, int duplicateAction);
+    uint32_t merge (const RecordDescRep& other, int duplicateAction);
     
     // Remove the given field from the description.
-    virtual uInt removeField (Int whichField);
+    virtual uint32_t removeField (int32_t whichField);
 
     // Rename the given field.
-    virtual void renameField (const String& newName, Int whichField);
+    virtual void renameField (const String& newName, int32_t whichField);
 
     // Returns the index of the field named fieldName. Returns -1 if fieldName
     // does not exist.
-    Int fieldNumber (const String& fieldName) const;
+    int32_t fieldNumber (const String& fieldName) const;
 
     // Number of fields in the description.
-    uInt nfields() const;
+    uint32_t nfields() const;
 
     // What is the type of the given field. Returns TpRecord if the field is
     // a sub-Record.
-    DataType type (Int whichField) const;
+    DataType type (int32_t whichField) const;
 
     // What is the name of the given field.
-    const String& name (Int whichField) const;
+    const String& name (int32_t whichField) const;
 
     // Create a name for a field defined by index as *i (similar to glish).
     // It takes care that the resulting name is unique by adding a suffix _j
     // when needed.
-    String makeName (Int whichField) const;
+    String makeName (int32_t whichField) const;
 
     // Make the given name unique by adding a suffix _j when needed.
     // j is the minimal number needed to make it unique.
     String uniqueName (const String& name) const;
 
-    // Returns True if whichField is an array.
-    Bool isArray (Int whichField) const;
+    // Returns true if whichField is an array.
+    bool isArray (int32_t whichField) const;
 
-    // Returns True if whichField is a scalar.
-    Bool isScalar (Int whichField) const;
+    // Returns true if whichField is a scalar.
+    bool isScalar (int32_t whichField) const;
 
-    // Returns True if whichField is a sub-record.
-    Bool isSubRecord (Int whichField) const;
+    // Returns true if whichField is a sub-record.
+    bool isSubRecord (int32_t whichField) const;
 
-    // Returns True if whichField is a table.
-    Bool isTable (Int whichField) const;
+    // Returns true if whichField is a table.
+    bool isTable (int32_t whichField) const;
 
     // What is the shape of the given field. Returns [1] if the field is a
     // scalar, table or, sub-record, [-1] if it is a variable length array,
     // and the actual shape for a fixed length array.
-    const IPosition& shape (Int whichField) const;
+    const IPosition& shape (int32_t whichField) const;
 
     // What is the name of the table description associated with a table.
-    const String& tableDescName (Int whichField) const;
+    const String& tableDescName (int32_t whichField) const;
 
     // If whichField is a sub-record with a description,
     // return its description. Otherwise an exception is thrown.
     // <group>
-    const RecordDesc& subRecord (Int whichField) const;
-    RecordDesc& subRecord (Int whichField);
+    const RecordDesc& subRecord (int32_t whichField) const;
+    RecordDesc& subRecord (int32_t whichField);
     // </group>
 
     // <group>
     // This and other compare equal if the field types and shapes are identical
     // (recursively if there are described sub-records or tables).
     // The field names are not used.
-    Bool operator== (const RecordDescRep& other) const;
-    Bool operator!= (const RecordDescRep& other) const;
+    bool operator== (const RecordDescRep& other) const;
+    bool operator!= (const RecordDescRep& other) const;
     // </group>
 
     // Test if this description conforms the other.
@@ -210,30 +210,30 @@ public:
     // description.
     // <br>This is used by Record, to see if another record can be assigned
     // to this record.
-    Bool conform (const RecordDescRep& other) const;
+    bool conform (const RecordDescRep& other) const;
 
     // Test if this description equals another one.
     // It is equal if the number of fields is equal and all field names in
     // this description occur in the other too. The order of the fields
     // is not important.
-    // <br>The flag equalDataTypes is set to True if the data types
+    // <br>The flag equalDataTypes is set to true if the data types
     // of all fields match.
     // <br>Use function operator== if order and types are important,
     // but names are not.
-    Bool isEqual (const RecordDescRep& other, Bool& equalDataTypes) const;
+    bool isEqual (const RecordDescRep& other, bool& equalDataTypes) const;
 
     // Test if this description is a subset of another one.
     // It is similar to isEqual above.
-    Bool isSubset (const RecordDescRep& other, Bool& equalDataTypes) const;
+    bool isSubset (const RecordDescRep& other, bool& equalDataTypes) const;
 
     // Test if this description is a strict subset of another one, thus
     // if it is a subset and not equal.
-    Bool isStrictSubset (const RecordDescRep& other,
-			 Bool& equalDataTypes) const;
+    bool isStrictSubset (const RecordDescRep& other,
+			 bool& equalDataTypes) const;
 
     // Test if the set of field names in this and other record description
     // is disjoint (i.e. if they do not share names).
-    Bool isDisjoint (const RecordDescRep& other) const;
+    bool isDisjoint (const RecordDescRep& other) const;
 
 protected:
     // Add a field name and its type.
@@ -244,7 +244,7 @@ protected:
     // Add a field from another Record description.
     // This is used by the merge functions.
     virtual void addRepField (const RecordDescRep& other,
-			      const String& newName, Int whichField);
+			      const String& newName, int32_t whichField);
 
     // Add the field info. These are helper functions for the add functions
     // and can be used in derived classes too.
@@ -254,7 +254,7 @@ protected:
     // </group>
 
     // Set the shape (for a derived class).
-    void setShape (const IPosition& shape, Int whichField);
+    void setShape (const IPosition& shape, int32_t whichField);
 
     // Helper functions
     // <group>
@@ -264,14 +264,14 @@ protected:
 
 private:
     // Test if all fields are part of the other description.
-    // The flag equalDataTypes is set to True if the data types of the
+    // The flag equalDataTypes is set to true if the data types of the
     // fields in both descriptions are the same.
-    Bool allExist (const RecordDescRep&, Bool& equalDataTypes) const;
+    bool allExist (const RecordDescRep&, bool& equalDataTypes) const;
 
     // Number of fields in the description.
-    uInt n_p;
+    uint32_t n_p;
     // The DataType of each field.
-    Block<Int> types_p;
+    Block<int32_t> types_p;
     // The name of each field.
     Block<String> names_p;
     // The description of the subrecords. Null if the field is not a subrecord.
@@ -281,63 +281,63 @@ private:
     PtrBlock<RecordDesc*> sub_records_p;
     // The shape of the field [1] for scalars and sub-records.
     Block<IPosition> shapes_p;
-    // True if the corresponding field is an array.
-    Block<Bool> is_array_p;
+    // true if the corresponding field is an array.
+    Block<bool> is_array_p;
     // Table description name for table fields.
     Block<String> tableDescNames_p;
     // Comments for each field.
     Block<String> comments_p;
     // Mapping of field name to field number.
-    std::map<String,Int> name_map_p;
+    std::map<String,int32_t> name_map_p;
 };
 
-inline uInt RecordDescRep::nfields() const
+inline uint32_t RecordDescRep::nfields() const
 {
     return n_p;
 }
 
-inline DataType RecordDescRep::type (Int whichField) const
+inline DataType RecordDescRep::type (int32_t whichField) const
 {
     return DataType(types_p[whichField]);
 }
 
-inline const String& RecordDescRep::name (Int whichField) const
+inline const String& RecordDescRep::name (int32_t whichField) const
 {
     return names_p[whichField];
 }
 
-inline const IPosition& RecordDescRep::shape (Int whichField) const
+inline const IPosition& RecordDescRep::shape (int32_t whichField) const
 {
     return shapes_p[whichField];
 }
 
-inline Bool RecordDescRep::isArray (Int whichField) const
+inline bool RecordDescRep::isArray (int32_t whichField) const
 {
     return is_array_p[whichField];
 }
 
-inline Bool RecordDescRep::isScalar (Int whichField) const
+inline bool RecordDescRep::isScalar (int32_t whichField) const
 {
     return isScalarFun (DataType(types_p[whichField]));
 }
 
-inline Bool RecordDescRep::isSubRecord (Int whichField) const
+inline bool RecordDescRep::isSubRecord (int32_t whichField) const
 {
     return  (types_p[whichField] == TpRecord);
 }
 
-inline Bool RecordDescRep::isTable (Int whichField) const
+inline bool RecordDescRep::isTable (int32_t whichField) const
 {
     return  (types_p[whichField] == TpTable);
 }
 
-inline const RecordDesc& RecordDescRep::subRecord (Int whichField) const
+inline const RecordDesc& RecordDescRep::subRecord (int32_t whichField) const
 {
     //# The cast to non-const is completely safe.
     return ((RecordDescRep*)this)->subRecord (whichField);
 }
 
-inline const String& RecordDescRep::tableDescName (Int whichField) const
+inline const String& RecordDescRep::tableDescName (int32_t whichField) const
 {
     return tableDescNames_p[whichField];
 }

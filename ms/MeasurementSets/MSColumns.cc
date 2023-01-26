@@ -32,8 +32,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template class ArrayMeasColumn<MDirection>;
   template class ScalarMeasColumn<MPosition>;
   template class ScalarMeasColumn<MEpoch>;
-  template class ArrayQuantColumn<Double>;
-  template class ScalarQuantColumn<Double>;
+  template class ArrayQuantColumn<double>;
+  template class ScalarQuantColumn<double>;
 
 
 MSColumns::MSColumns(const MeasurementSet& ms):
@@ -60,7 +60,7 @@ MSColumns::MSColumns(const MeasurementSet& ms):
 
 MSColumns::~MSColumns() {}
 
-void MSColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty)
+void MSColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty)
 {
   // Adjust the relevant columns in the main table
   MSMainColumns::setEpochRef(ref, tableMustBeEmpty);

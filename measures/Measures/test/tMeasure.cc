@@ -228,7 +228,7 @@ int main()
 	cout << "LSR (J2000): " << 
 	    MDirection::Convert(lsr1900, MDirection::J2000)()
 		.getValue().getAngle("deg") << endl;
-	Vector<Double> vlsr1900(lsr1900.getValue().getValue());
+	Vector<double> vlsr1900(lsr1900.getValue().getValue());
 	if (nearAbs(vlsr1900(0), 0.0)) vlsr1900(0) = 0;
 	cout << "LSR (B1900): " << 
 	    vlsr1900 << endl;
@@ -282,7 +282,7 @@ int main()
 							  (MRadialVelocity::TOPO,
 							   frame))();
 	// The following necessary for errors in Intel chip
-	Double mrvback(MRadialVelocity::Convert(rvTopo,
+	double mrvback(MRadialVelocity::Convert(rvTopo,
 						MRadialVelocity::GEO)()
 		       .getValue());
 	if (nearAbs(mrvback, 0.0)) mrvback = 0;
@@ -431,7 +431,7 @@ int main()
 	MDirection::Convert eqgal(gpole,galref);
 	MDirection::Convert galeq(eqpole,eqref);
     
-	Vector<Double> veqgal(eqgal().getValue().getValue());
+	Vector<double> veqgal(eqgal().getValue().getValue());
 	if (nearAbs(veqgal(2), 1.0, 1e-10)) {
 	  veqgal(0) = 0;
 	  veqgal(1) = 0;
@@ -504,7 +504,7 @@ int main()
 	    j2000vec.getAngle("deg") << endl;
 	cout << "Apparent coordinate" <<
 	    appvec.getAngle("deg") << endl;
-	Double d1, d2 , d3;
+	double d1, d2 , d3;
 	frame.getLong(d1);
 	frame.getLat(d2);
 	frame.getLAST(d3);
@@ -580,18 +580,18 @@ int main()
     MRadialVelocity fmfrq0(MVRadialVelocity(100.), MRadialVelocity::LSRK);
     MeasFrame mf(tbm, pos, fmb0);
     mf.set(fmfrq0);
-    Vector<Double> tvec(3);
+    Vector<double> tvec(3);
     tvec = 0.0;
     
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MDirection conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVDirection mvd0(0.5, 0.5, 0.5);
-      Double tp;
-      for (uInt i=MDirection::J2000; i<MDirection::N_Types; i++) {
-	for (uInt j=MDirection::J2000; j<MDirection::N_Types; j++) {
+      double tp;
+      for (uint32_t i=MDirection::J2000; i<MDirection::N_Types; i++) {
+	for (uint32_t j=MDirection::J2000; j<MDirection::N_Types; j++) {
 	  if (i == MDirection::B1950 || i == MDirection::BMEAN ||
 	      i == MDirection::BTRUE || i == MDirection::B1950_VLA ||
 	      j == MDirection::B1950 || j == MDirection::BMEAN ||
@@ -609,7 +609,7 @@ int main()
 	      MDirection::showType(j) << ": " <<
 	      mb0.getValue().getValue() -
 	      backw(forw(mb0)).getValue().getValue() << endl;
-	    isok = False;
+	    isok = false;
 	  };
 	};
       };
@@ -623,14 +623,14 @@ int main()
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MPosition conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVPosition mvd0(-100, 100, -100);
-      Double tp;
-      for (uInt i=0; i<MPosition::N_Types; i++) {
+      double tp;
+      for (uint32_t i=0; i<MPosition::N_Types; i++) {
 	if (i == MPosition::WGS84) mvd0 = MVPosition(-100, 100, -100);
 	else mvd0 = MVPosition(-3.68663e+06, 3.68663e+06, -3.66196e+06);
-	for (uInt j=0; j<MPosition::N_Types; j++) {
+	for (uint32_t j=0; j<MPosition::N_Types; j++) {
 	  tp = 5e-8;
 	  MPosition::Ref rin(i, mf);
 	  MPosition::Ref rout(j, mf);
@@ -644,7 +644,7 @@ int main()
 	      MPosition::showType(j) << ": " <<
 	      mb0.getValue().getValue() -
 	      backw(forw(mb0)).getValue().getValue() << endl;
-	    isok = False;
+	    isok = false;
 	  };
 	};
       };
@@ -658,12 +658,12 @@ int main()
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MEpoch conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVEpoch mvd0(50930);
-      Double tp;
-      for (uInt i=0; i<MEpoch::N_Types; i++) {
-	for (uInt j=0; j<MEpoch::N_Types; j++) {
+      double tp;
+      for (uint32_t i=0; i<MEpoch::N_Types; i++) {
+	for (uint32_t j=0; j<MEpoch::N_Types; j++) {
 	  tp = 1e-9;
 	  MEpoch::Ref rin(i, mf);
 	  MEpoch::Ref rout(j, mf);
@@ -677,7 +677,7 @@ int main()
 	      MEpoch::showType(j) << ": " <<
 	      mb0.getValue().get() -
 	      backw(forw(mb0)).getValue().get() << endl;
-	    isok = False;
+	    isok = false;
 	  };
 	};
       };
@@ -693,12 +693,12 @@ int main()
       cout << "Testing all MFrequency conversions forward/backward" << endl;
       cout << "  including the \"impossible\" conversion to/from " 
 	   << MFrequency::showType(MFrequency::Undefined) << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVFrequency mvd0(1e9);
-      Double tp;
-      for (uInt i=0; i<MFrequency::N_Types; i++) {
-	for (uInt j=0; j<MFrequency::N_Types; j++) {
+      double tp;
+      for (uint32_t i=0; i<MFrequency::N_Types; i++) {
+	for (uint32_t j=0; j<MFrequency::N_Types; j++) {
 	  tp = 1e-6;
 	  MFrequency::Ref rin(i, mf);
 	  MFrequency::Ref rout(j, mf);
@@ -712,7 +712,7 @@ int main()
 	      MFrequency::showType(j) << ": " <<
 	      mb0.getValue().getValue() -
 	      backw(forw(mb0)).getValue().getValue() << endl;
-	    isok = False;
+	    isok = false;
 	  };
 	};
 	// try also the "impossible" conversion to/from Undefined
@@ -726,7 +726,7 @@ int main()
           forw.setOut (rundef);
 	  cout << MFrequency::showType(i) << " to " <<
 	    MFrequency::showType(MFrequency::Undefined) << " should not be possible." << endl;
-	  isok = False;
+	  isok = false;
 	}
 	catch(const std::exception& x){
 	  // expected error
@@ -758,14 +758,14 @@ int main()
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MDoppler conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVDoppler mvd0(0.01);
-      Double tp;
-      for (uInt i=0; i<MDoppler::N_Types; i++) {
+      double tp;
+      for (uint32_t i=0; i<MDoppler::N_Types; i++) {
 	if (i == MDoppler::GAMMA) mvd0 = MVDoppler(2);
 	else mvd0 = MVDoppler(0.01);
-	for (uInt j=0; j<MDoppler::N_Types; j++) {
+	for (uint32_t j=0; j<MDoppler::N_Types; j++) {
 	  tp = 1e-9;
 	  MDoppler::Ref rin(i, mf);
 	  MDoppler::Ref rout(j, mf);
@@ -779,7 +779,7 @@ int main()
 	      MDoppler::showType(j) << ": " <<
 	      mb0.getValue().getValue() -
 	      backw(forw(mb0)).getValue().getValue() << endl;
-	    isok = False;
+	    isok = false;
 	  };
 	};
       };
@@ -793,12 +793,12 @@ int main()
     {
       cout << "------------------------------------" << endl;
       cout << "Testing all MRadialVelocity conversions forward/backward" << endl;
-      Bool isok = True;
+      bool isok = true;
 
       MVRadialVelocity mvd0(100);
-      Double tp;
-      for (uInt i=0; i<MRadialVelocity::N_Types; i++) {
-	for (uInt j=0; j<MRadialVelocity::N_Types; j++) {
+      double tp;
+      for (uint32_t i=0; i<MRadialVelocity::N_Types; i++) {
+	for (uint32_t j=0; j<MRadialVelocity::N_Types; j++) {
 	  tp = 1e-9;
 	  MRadialVelocity::Ref rin(i, mf);
 	  MRadialVelocity::Ref rout(j, mf);
@@ -812,7 +812,7 @@ int main()
 	      MRadialVelocity::showType(j) << ": " <<
 	      mb0.getValue().getValue() -
 	      backw(forw(mb0)).getValue().getValue() << endl;
-	    isok = False;
+	    isok = false;
 	  };
 	};
       };

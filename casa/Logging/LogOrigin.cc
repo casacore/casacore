@@ -30,13 +30,13 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogOrigin::LogOrigin()
-: task_p(""), function_p(""), class_p(""), id_p(True), line_p(0), file_p(""), node_p(getNode())
+: task_p(""), function_p(""), class_p(""), id_p(true), line_p(0), file_p(""), node_p(getNode())
 {
     // Nothing
 }
 
 LogOrigin::LogOrigin(const String &globalFunctionName, const SourceLocation *where)
-  : task_p(""), function_p(globalFunctionName), class_p(""), id_p(True), 
+  : task_p(""), function_p(globalFunctionName), class_p(""), id_p(true), 
     line_p(where ? where->lineNumber : 0), 
     file_p(where ? where->fileName : ""),
     node_p(getNode())
@@ -46,7 +46,7 @@ LogOrigin::LogOrigin(const String &globalFunctionName, const SourceLocation *whe
 
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 		     const SourceLocation *where)
-  : task_p(""), function_p(memberFuncName), class_p(className), id_p(True), 
+  : task_p(""), function_p(memberFuncName), class_p(className), id_p(true), 
     line_p(where ? where->lineNumber : 0),
     file_p(where ? where->fileName : ""),
     node_p(getNode())
@@ -139,12 +139,12 @@ LogOrigin &LogOrigin::objectID(const ObjectID &id)
     return *this;
 }
 
-uInt LogOrigin::line() const
+uint32_t LogOrigin::line() const
 {
     return line_p;
 }
 
-LogOrigin &LogOrigin::line(uInt which)
+LogOrigin &LogOrigin::line(uint32_t which)
 {
     line_p = which;
     return *this;
@@ -212,7 +212,7 @@ String LogOrigin::toString() const
     return retval;
 }
 
-Bool LogOrigin::isUnset() const
+bool LogOrigin::isUnset() const
 {
   return (function_p == "" && class_p == "" && id_p.isNull() && 
 		line_p == 0 && file_p == "" && task_p == "");
@@ -227,7 +227,7 @@ ostream &operator<<(ostream &os, const LogOrigin &origin)
 // Goes with the following function. Not static function level because
 // causes problems with our exception emulation.
 static SourceLocation permanent;
-const SourceLocation *SourceLocation::canonicalize(const char *file, Int line)
+const SourceLocation *SourceLocation::canonicalize(const char *file, int32_t line)
 {
     permanent.fileName = file;
     permanent.lineNumber = line;

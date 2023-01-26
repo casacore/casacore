@@ -62,22 +62,22 @@ template <class Qtype> class Quantum;
 // This class can be used to handle a heterogeneous list of Quantums, and
 // can handle toRecord() and fromRecord() conversions.
 // A QuantumHolder
-// is created empty, from a Quantum (e.g. a <src>Quantum<Double></src>) or a
-// <src>Quantum<Vector<Float> ></src>).
+// is created empty, from a Quantum (e.g. a <src>Quantum<double></src>) or a
+// <src>Quantum<Vector<float> ></src>).
 //
 // The accepted range of Quantums is:
 // <ul>
-//  <li> <src>Quantum<Int>, Quantum<Float>, Quantum<Double> == Quantity</src>
+//  <li> <src>Quantum<int32_t>, Quantum<float>, Quantum<double> == Quantity</src>
 //  <li> <src>Quantum<Complex>, Quantum<DComplex></src>
-//  <li> <src>Quantum<Vector<Int> >, Quantum<Vector<Float> ></src>, 
-//	 <src>Quantum<Vector<Double> ></src>
+//  <li> <src>Quantum<Vector<int32_t> >, Quantum<Vector<float> ></src>, 
+//	 <src>Quantum<Vector<double> ></src>
 //  <li> <src>Quantum<Vector<Complex> >, Quantum<Vector<DComplex> ></src>
-//  <li> <src>Quantum<Array<Int> >, Quantum<Array<Float> ></src>, 
-//	 <src>Quantum<Array<Double> ></src>
+//  <li> <src>Quantum<Array<int32_t> >, Quantum<Array<float> ></src>, 
+//	 <src>Quantum<Array<double> ></src>
 //  <li> <src>Quantum<Array<Complex> >, Quantum<Array<DComplex> ></src>
 // </ul>
 // Scalars in the same group can be converted to any in the same group (e.g.
-// Int to Double); Vectors of length 1 can be converted to scalars in the 
+// int32_t to double); Vectors of length 1 can be converted to scalars in the 
 // corresponding group; Scalars can always be converted to Vectors in the 
 // corresponding group. Real scalar values can be converted to Complex values.
 // Vectors cannot be converted to other type vectors.
@@ -135,31 +135,31 @@ public:
 
 //# Member Functions
   // Check if it holds a Quantity. Note that a Vector of length 1 will give
-  // True to scalar questions.
+  // true to scalar questions.
   // <group>
-  Bool isEmpty() const;
-  Bool isQuantum() const;
-  Bool isScalar() const;
-  Bool isVector() const;
-  Bool isArray() const;
-  Bool isReal() const;
-  Bool isComplex() const;
-  Bool isQuantity() const;
-  Bool isQuantumDouble() const;
-  Bool isQuantumFloat() const;
-  Bool isQuantumInt() const;
-  Bool isQuantumComplex() const;
-  Bool isQuantumDComplex() const;
-  Bool isQuantumVectorDouble() const;
-  Bool isQuantumVectorFloat() const;
-  Bool isQuantumVectorInt() const;
-  Bool isQuantumVectorComplex() const;
-  Bool isQuantumVectorDComplex() const;
-  Bool isQuantumArrayDouble() const;
-  Bool isQuantumArrayFloat() const;
-  Bool isQuantumArrayInt() const;
-  Bool isQuantumArrayComplex() const;
-  Bool isQuantumArrayDComplex() const;
+  bool isEmpty() const;
+  bool isQuantum() const;
+  bool isScalar() const;
+  bool isVector() const;
+  bool isArray() const;
+  bool isReal() const;
+  bool isComplex() const;
+  bool isQuantity() const;
+  bool isQuantumDouble() const;
+  bool isQuantumFloat() const;
+  bool isQuantumInt() const;
+  bool isQuantumComplex() const;
+  bool isQuantumDComplex() const;
+  bool isQuantumVectorDouble() const;
+  bool isQuantumVectorFloat() const;
+  bool isQuantumVectorInt() const;
+  bool isQuantumVectorComplex() const;
+  bool isQuantumVectorDComplex() const;
+  bool isQuantumArrayDouble() const;
+  bool isQuantumArrayFloat() const;
+  bool isQuantumArrayInt() const;
+  bool isQuantumArrayComplex() const;
+  bool isQuantumArrayDComplex() const;
   // </group>
   // Get number of numeric elements (1 if scalar, else
   // vector length) or dimensions (0 if scalar)
@@ -167,8 +167,8 @@ public:
   //  <li> AipsError if holder empty
   // </thrown>
   // <group>
-  Int nelements() const;
-  Int ndim() const;
+  int32_t nelements() const;
+  int32_t ndim() const;
   // </group>
 
   // Get a Quantum from the holder (with lifetime as long 
@@ -179,20 +179,20 @@ public:
   // </thrown>
   // <group>
   const QBase &asQuantum() const;
-  const Quantum<Double> &asQuantity() ;
-  const Quantum<Double> &asQuantumDouble() ;
-  const Quantum<Float> &asQuantumFloat() ;
-  const Quantum<Int> &asQuantumInt() ;
+  const Quantum<double> &asQuantity() ;
+  const Quantum<double> &asQuantumDouble() ;
+  const Quantum<float> &asQuantumFloat() ;
+  const Quantum<int32_t> &asQuantumInt() ;
   const Quantum<Complex> &asQuantumComplex() ;
   const Quantum<DComplex> &asQuantumDComplex() ;
-  const Quantum<Vector<Double> > &asQuantumVectorDouble() ;
-  const Quantum<Vector<Float> > &asQuantumVectorFloat() ;
-  const Quantum<Vector<Int> > &asQuantumVectorInt() ;
+  const Quantum<Vector<double> > &asQuantumVectorDouble() ;
+  const Quantum<Vector<float> > &asQuantumVectorFloat() ;
+  const Quantum<Vector<int32_t> > &asQuantumVectorInt() ;
   const Quantum<Vector<Complex> > &asQuantumVectorComplex() ;
   const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
-  const Quantum<Array<Double> > &asQuantumArrayDouble() ;
-  const Quantum<Array<Float> > &asQuantumArrayFloat() ;
-  const Quantum<Array<Int> > &asQuantumArrayInt() ;
+  const Quantum<Array<double> > &asQuantumArrayDouble() ;
+  const Quantum<Array<float> > &asQuantumArrayFloat() ;
+  const Quantum<Array<int32_t> > &asQuantumArrayInt() ;
   const Quantum<Array<Complex> > &asQuantumArrayComplex() ;
   const Quantum<Array<DComplex> > &asQuantumArrayDComplex() ;
   // </group>
@@ -200,20 +200,20 @@ public:
   // Create a Quantum from a record or a string.
   // A valid record will contain the following fields:
   // <ul>
-  //  <li> value: contains a numeric value of Int, Float, Double, Complex,
+  //  <li> value: contains a numeric value of int32_t, float, double, Complex,
   //		DComplex or a vector thereof
   //  <li> unit: a string with a valid unit string.
   // </ul>
   // A valid string will be one of the special time/angle formats or a
   // value with a valid unit string.
-  // Illegal values or units will return False and write an error message.
+  // Illegal values or units will return false and write an error message.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
+  virtual bool fromRecord(String &error, const RecordInterface &in);
+  virtual bool fromString(String &error, const String &in);
   // </group>
-  // Create a record from a Quantum. A False return and an error message is
+  // Create a record from a Quantum. A false return and an error message is
   // only generated if there is no valid Quantum in the holder.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  virtual bool toRecord(String &error, RecordInterface &out) const;
   // this version throws an exception rather than returning false
   virtual void toRecord(RecordInterface &out) const;
   // this version throws an exception or returns the result Record.
@@ -231,9 +231,9 @@ private:
 
 //# General member functions
   // Convert to a different real scalar quantum
-  void toReal(const uInt &tp);
+  void toReal(const uint32_t &tp);
   // Convert to a different complex scalar quantum
-  void toComplex(const uInt &tp);
+  void toComplex(const uint32_t &tp);
   // Convert scalar to Vector
   void toVector();
   // Convert scalar to Array

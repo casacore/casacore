@@ -64,28 +64,28 @@ class ValueHolderRep
 public:
   // Create the object for the given value.
   // <group>
-  explicit ValueHolderRep (Bool value);
-  explicit ValueHolderRep (uChar value);
-  explicit ValueHolderRep (Short value);
-  explicit ValueHolderRep (uShort value);
-  explicit ValueHolderRep (Int value);
-  explicit ValueHolderRep (uInt value);
-  explicit ValueHolderRep (Int64 value);
-  explicit ValueHolderRep (Float value);
-  explicit ValueHolderRep (Double value);
+  explicit ValueHolderRep (bool value);
+  explicit ValueHolderRep (unsigned char value);
+  explicit ValueHolderRep (int16_t value);
+  explicit ValueHolderRep (uint16_t value);
+  explicit ValueHolderRep (int32_t value);
+  explicit ValueHolderRep (uint32_t value);
+  explicit ValueHolderRep (int64_t value);
+  explicit ValueHolderRep (float value);
+  explicit ValueHolderRep (double value);
   explicit ValueHolderRep (const Complex& value);
   explicit ValueHolderRep (const DComplex& value);
-  explicit ValueHolderRep (const Char* value);
+  explicit ValueHolderRep (const char* value);
   explicit ValueHolderRep (const String& value);
-  explicit ValueHolderRep (const Array<Bool>& value);
-  explicit ValueHolderRep (const Array<uChar>& value);
-  explicit ValueHolderRep (const Array<Short>& value);
-  explicit ValueHolderRep (const Array<uShort>& value);
-  explicit ValueHolderRep (const Array<Int>& value);
-  explicit ValueHolderRep (const Array<uInt>& value);
-  explicit ValueHolderRep (const Array<Int64>& value);
-  explicit ValueHolderRep (const Array<Float>& value);
-  explicit ValueHolderRep (const Array<Double>& value);
+  explicit ValueHolderRep (const Array<bool>& value);
+  explicit ValueHolderRep (const Array<unsigned char>& value);
+  explicit ValueHolderRep (const Array<int16_t>& value);
+  explicit ValueHolderRep (const Array<uint16_t>& value);
+  explicit ValueHolderRep (const Array<int32_t>& value);
+  explicit ValueHolderRep (const Array<uint32_t>& value);
+  explicit ValueHolderRep (const Array<int64_t>& value);
+  explicit ValueHolderRep (const Array<float>& value);
+  explicit ValueHolderRep (const Array<double>& value);
   explicit ValueHolderRep (const Array<Complex>& value);
   explicit ValueHolderRep (const Array<DComplex>& value);
   explicit ValueHolderRep (const Array<String>& value);
@@ -93,7 +93,7 @@ public:
   // </group>
 
   // Create an empty N-dim array.
-  ValueHolderRep (uInt ndim, Bool dummy);
+  ValueHolderRep (uint32_t ndim, bool dummy);
 
   // Destructor.
   ~ValueHolderRep();
@@ -104,27 +104,27 @@ public:
   // Get the value.
   // If possible, it converts the data as needed.
   // <group>
-  Bool                  asBool    () const;
-  uChar                 asuChar   () const;
-  Short                 asShort   () const;
-  uShort                asuShort  () const;
-  Int                   asInt     () const;
-  uInt                  asuInt    () const;
-  Int64                 asInt64   () const;
-  Float                 asFloat   () const;
-  Double                asDouble  () const;
+  bool                  asBool    () const;
+  unsigned char                 asuChar   () const;
+  int16_t                 asShort   () const;
+  uint16_t                asuShort  () const;
+  int32_t                   asInt     () const;
+  uint32_t                  asuInt    () const;
+  int64_t                 asInt64   () const;
+  float                 asFloat   () const;
+  double                asDouble  () const;
   Complex               asComplex () const;
   DComplex              asDComplex() const;
   const String&         asString  () const;
-  const Array<Bool>     asArrayBool    () const;
-  const Array<uChar>    asArrayuChar   () const;
-  const Array<Short>    asArrayShort   () const;
-  const Array<uShort>   asArrayuShort  () const;
-  const Array<Int>      asArrayInt     () const;
-  const Array<uInt>     asArrayuInt    () const;
-  const Array<Int64>    asArrayInt64   () const;
-  const Array<Float>    asArrayFloat   () const;
-  const Array<Double>   asArrayDouble  () const;
+  const Array<bool>     asArrayBool    () const;
+  const Array<unsigned char>    asArrayuChar   () const;
+  const Array<int16_t>    asArrayShort   () const;
+  const Array<uint16_t>   asArrayuShort  () const;
+  const Array<int32_t>      asArrayInt     () const;
+  const Array<uint32_t>     asArrayuInt    () const;
+  const Array<int64_t>    asArrayInt64   () const;
+  const Array<float>    asArrayFloat   () const;
+  const Array<double>   asArrayDouble  () const;
   const Array<Complex>  asArrayComplex () const; 
   const Array<DComplex> asArrayDComplex() const;
   const Array<String>   asArrayString  () const;
@@ -160,13 +160,13 @@ private:
   // </group>
 
 
-  uInt     itsNdim;
+  uint32_t     itsNdim;
   DataType itsType;
   union {
-    Bool   itsBool;
-    Int64  itsInt64;
-    Float  itsFloat;
-    Double itsDouble;
+    bool   itsBool;
+    int64_t  itsInt64;
+    float  itsFloat;
+    double itsDouble;
     void*  itsPtr;
   };
 };

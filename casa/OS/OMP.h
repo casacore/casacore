@@ -38,7 +38,7 @@ namespace casacore {
     // OpenMP sets it to the env.var. OMP_NUM_THREADS. If undefined, it is
     // the number of cores.
     // If OpenMP is not used, 1 is returned.
-    inline uInt maxThreads()
+    inline uint32_t maxThreads()
     {
 #ifdef _OPENMP
       return omp_get_max_threads();
@@ -47,22 +47,22 @@ namespace casacore {
 #endif
     }
     // Backward 
-    uInt nMaxThreads();
+    uint32_t nMaxThreads();
 
     // Set the number of threads to use. Note it can be overridden
     // for a parallel section by 'omp parallel num_threads(n)'.
     // Nothing is done if OpenMP is not used.
 #ifdef _OPENMP
-    inline void setNumThreads (uInt n)
+    inline void setNumThreads (uint32_t n)
       { omp_set_num_threads (n); }
 #else
-    inline void setNumThreads (uInt)
+    inline void setNumThreads (uint32_t)
       {}
 #endif
 
     // Get the number of threads used in a parallel piece of code.
     // If OpenMP is not used, 1 is returned.
-    inline uInt numThreads()
+    inline uint32_t numThreads()
     {
 #ifdef _OPENMP
       return omp_get_num_threads();
@@ -73,7 +73,7 @@ namespace casacore {
 
     // Get the thread number (0 till numThreads).
     // If OpenMP is not used, 0 is returned.
-    inline uInt threadNum()
+    inline uint32_t threadNum()
     {
 #ifdef _OPENMP
       return omp_get_thread_num();
@@ -85,10 +85,10 @@ namespace casacore {
     // Set if nested parallel sections are possible or not.
     // Nothing is done if OpenMP is not used.
 #ifdef _OPENMP
-    inline void setNested (Bool nest)
+    inline void setNested (bool nest)
       { omp_set_nested (nest); }
 #else
-    inline void setNested (Bool)
+    inline void setNested (bool)
       {}
 #endif
 

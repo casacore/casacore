@@ -36,8 +36,8 @@ TableColumn::TableColumn ()
 : baseTabPtr_p     (0),
   baseColPtr_p     (0),
   colCachePtr_p    (0),
-  canChangeShape_p (False),
-  isColWritable_p  (False)
+  canChangeShape_p (false),
+  isColWritable_p  (false)
 {}
 
 TableColumn::TableColumn (const Table& tab, const String& columnName)
@@ -54,7 +54,7 @@ TableColumn::TableColumn (const Table& tab, const String& columnName)
     isColWritable_p  = baseColPtr_p->isWritable();
 }
 
-TableColumn::TableColumn (const Table& tab, uInt columnIndex)
+TableColumn::TableColumn (const Table& tab, uint32_t columnIndex)
 : baseColPtr_p(0)
 {
     //# Get base table and base column.
@@ -125,52 +125,52 @@ Table TableColumn::table() const
     { return Table (baseTabPtr_p); }
 
 
-Bool TableColumn::asBool (rownr_t rownr) const
+bool TableColumn::asBool (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    Bool value;
+    bool value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
-uChar TableColumn::asuChar (rownr_t rownr) const
+unsigned char TableColumn::asuChar (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    uChar value;
+    unsigned char value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
-Short TableColumn::asShort (rownr_t rownr) const
+int16_t TableColumn::asShort (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    Short value;
+    int16_t value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
-uShort TableColumn::asuShort (rownr_t rownr) const
+uint16_t TableColumn::asuShort (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    uShort value;
+    uint16_t value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
-Int TableColumn::asInt (rownr_t rownr) const
+int32_t TableColumn::asInt (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    Int value;
+    int32_t value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
-uInt TableColumn::asuInt (rownr_t rownr) const
+uint32_t TableColumn::asuInt (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    uInt value;
+    uint32_t value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
-Int64 TableColumn::asInt64 (rownr_t rownr) const
+int64_t TableColumn::asInt64 (rownr_t rownr) const
 {
     TABLECOLUMNCHECKROW(rownr); 
-    Int64 value;
+    int64_t value;
     baseColPtr_p->getScalar (rownr, value);
     return value;
 }
@@ -212,7 +212,7 @@ String TableColumn::asString (rownr_t rownr) const
 
 
 void TableColumn::put (rownr_t thisRownr, const TableColumn& that,
-		       rownr_t thatRownr, Bool preserveTileShape)
+		       rownr_t thatRownr, bool preserveTileShape)
 {
   TABLECOLUMNCHECKROW(thisRownr);
   checkWritable();
@@ -285,49 +285,49 @@ void TableColumn::put (rownr_t thisRownr, const TableColumn& that,
       switch (that.columnDesc().dataType()) {
       case TpBool:
         {
-          Array<Bool> array(shape);
+          Array<bool> array(shape);
           baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpUChar:
         {
-          Array<uChar> array(shape);
+          Array<unsigned char> array(shape);
           baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpShort:
         {
-          Array<Short> array(shape);
+          Array<int16_t> array(shape);
           baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpUShort:
         {
-          Array<uShort> array(shape);
+          Array<uint16_t> array(shape);
           baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpInt:
         {
-          Array<Int> array(shape);
+          Array<int32_t> array(shape);
           baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpUInt:
         {
-          Array<uInt> array(shape);
+          Array<uint32_t> array(shape);
           baseColPtr(that)->getArray (thatRownr, array);
           vh = ValueHolder (array);
         }
         break;
       case TpInt64:
         {
-          Array<Int64> array(shape);
+          Array<int64_t> array(shape);
           baseColPtr(that)->get (thatRownr, &array);
           vh = ValueHolder (array);
         }
@@ -373,55 +373,55 @@ void TableColumn::put (rownr_t thisRownr, const TableColumn& that,
       switch (columnDesc().dataType()) {
       case TpBool:
         {
-          Array<Bool> arr (vh.asArrayBool());
+          Array<bool> arr (vh.asArrayBool());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpUChar:
         {
-          Array<uChar> arr (vh.asArrayuChar());
+          Array<unsigned char> arr (vh.asArrayuChar());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpShort:
         {
-          Array<Short> arr (vh.asArrayShort());
+          Array<int16_t> arr (vh.asArrayShort());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpUShort:
         {
-          Array<uShort> arr (vh.asArrayuShort());
+          Array<uint16_t> arr (vh.asArrayuShort());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpInt:
         {
-          Array<Int> arr (vh.asArrayInt());
+          Array<int32_t> arr (vh.asArrayInt());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpUInt:
         {
-          Array<uInt> arr (vh.asArrayuInt());
+          Array<uint32_t> arr (vh.asArrayuInt());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpInt64:
         {
-          Array<Int64> arr (vh.asArrayInt64());
+          Array<int64_t> arr (vh.asArrayInt64());
           baseColPtr_p->put (thisRownr, &arr);
         }
         break;
       case TpFloat:
         {
-          Array<Float> arr (vh.asArrayFloat());
+          Array<float> arr (vh.asArrayFloat());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
       case TpDouble:
         {
-          Array<Double> arr (vh.asArrayDouble());
+          Array<double> arr (vh.asArrayDouble());
           baseColPtr_p->putArray (thisRownr, arr);
         }
         break;
@@ -471,19 +471,19 @@ void TableColumn::throwNotWritable() const
                     baseTabPtr_p->tableName() + " is not writable");
 }
 
-Bool TableColumn::hasContent (rownr_t rownr) const
+bool TableColumn::hasContent (rownr_t rownr) const
 {
-  Bool retval = !isNull() && isDefined(rownr);
+  bool retval = !isNull() && isDefined(rownr);
   if (retval  &&  columnDesc().isArray()) {
     // The first cell seems to have something, but check for
     // degenerate Arrays.
     IPosition shp(shape(rownr));
     if (shp.empty()) {
-      retval = False;
+      retval = false;
     } else {
-      for (uInt i=0; i<shp.size(); ++i){
+      for (uint32_t i=0; i<shp.size(); ++i){
         if (shp[i] == 0) {
-          retval = False;
+          retval = false;
           break;
         }
       }

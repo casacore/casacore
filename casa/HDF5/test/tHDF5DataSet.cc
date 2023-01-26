@@ -34,11 +34,11 @@
  
 using namespace casacore;
 
-// Make a compound of a Complex, Int and Float[2].
+// Make a compound of a Complex, int32_t and float[2].
 struct Data {
   Complex f1;
-  Int     f2;
-  Float   f3[2];
+  int32_t     f2;
+  float   f3[2];
 };
 
 void testCompound()
@@ -49,8 +49,8 @@ void testCompound()
   names[1] = "f2";
   names[2] = "f3";
   types[0] = HDF5DataType((Complex*)0);
-  types[1] = HDF5DataType((Int*)0);
-  types[2] = HDF5DataType(HDF5DataType((Float*)0), IPosition(1,2));
+  types[1] = HDF5DataType((int32_t*)0);
+  types[2] = HDF5DataType(HDF5DataType((float*)0), IPosition(1,2));
   HDF5DataType dtcom(names, types);
   IPosition shape(1,3);
   {
@@ -84,10 +84,10 @@ void testCompound()
     dset.setCacheSize (10);
     Array<Data> ires(shape);
     dset.get (Slicer(IPosition(1,0), shape), ires);
-    AlwaysAssertExit (Int(ires.size()) == shape.product());
-    for (uInt i=0; i<ires.size(); ++i) {
+    AlwaysAssertExit (int32_t(ires.size()) == shape.product());
+    for (uint32_t i=0; i<ires.size(); ++i) {
       AlwaysAssertExit (near(ires.data()[i].f1, Complex(i-10., i+10.)));
-      AlwaysAssertExit (ires.data()[i].f2 == Int(i));
+      AlwaysAssertExit (ires.data()[i].f2 == int32_t(i));
       AlwaysAssertExit (ires.data()[i].f3[0] == i+100.);
       AlwaysAssertExit (ires.data()[i].f3[1] == i-100.);
     }
@@ -103,13 +103,13 @@ int main()
   try {
     IPosition shape(2,5,6);
     IPosition ts(shape);
-    Array<Int> iarr(shape);
+    Array<int32_t> iarr(shape);
     indgen(iarr);
     {
       // Create the file.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::New);
       // Create a data set in it.
-      HDF5DataSet dset(file, "array", IPosition(2,0,shape[1]), ts, (Int*)0);
+      HDF5DataSet dset(file, "array", IPosition(2,0,shape[1]), ts, (int32_t*)0);
       AlwaysAssertExit (dset.getName() == "array");
       AlwaysAssertExit (dset.shape() == IPosition(2,0,shape[1]));
       AlwaysAssertExit (dset.tileShape() == shape);
@@ -122,17 +122,17 @@ int main()
     {
       // Open the file and data set.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::Old);
-      HDF5DataSet dset(file, "array", (Int*)0);
+      HDF5DataSet dset(file, "array", (int32_t*)0);
       AlwaysAssertExit (dset.getName() == "array");
       AlwaysAssertExit (dset.shape() == shape);
       AlwaysAssertExit (dset.tileShape() == shape);
       // Set the cache size in chunks.
       dset.setCacheSize (10);
-      Array<Int> ires(shape);
+      Array<int32_t> ires(shape);
       dset.get (Slicer(IPosition(2,0), shape), ires);
       AlwaysAssertExit (allEQ(iarr, ires));
       Slicer section(IPosition(2,1), IPosition(2,2), IPosition(2,2));
-      Array<Int> ires2(section.length());
+      Array<int32_t> ires2(section.length());
       dset.get (section, ires2.data());
       cout<< ires2<< iarr(section)<<endl;
       //      AlwaysAssertExit (allEQ(iarr(section), ires2));
@@ -156,7 +156,7 @@ int main()
     {
       // Yet another with boolean values.
       HDF5File file("tHDF5DataSet_tmp", ByteIO::Update);
-      HDF5DataSet dset(file, "mask", shape, ts, (Bool*)0);
+      HDF5DataSet dset(file, "mask", shape, ts, (bool*)0);
       AlwaysAssertExit (dset.shape() == shape);
       AlwaysAssertExit (dset.tileShape() == shape);
     }

@@ -40,7 +40,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SortKey::SortKey (const void* dat, const CountedPtr<BaseCompare>& cmpobj,
-                  uInt inc, int opt)
+                  uint32_t inc, int opt)
 : order_p   (opt),
   data_p    (dat),
   incr_p    (inc),
@@ -75,76 +75,76 @@ SortKey& SortKey::operator= (const SortKey& that)
     return *this;
 }
 
-uInt SortKey::tryGenSort (Vector<uInt>& indexVector, uInt nrrec, int opt) const
+uint32_t SortKey::tryGenSort (Vector<uint32_t>& indexVector, uint32_t nrrec, int opt) const
 {
     Sort::Order ord = (order_p < 0  ?  Sort::Ascending : Sort::Descending);
     DataType dtype = cmpObj_p->dataType();
     if (dtype == TpDouble) {
-	if (incr_p == sizeof(Double)) {
-          return GenSortIndirect<Double,uInt>::sort (indexVector, (Double*)data_p,
+	if (incr_p == sizeof(double)) {
+          return GenSortIndirect<double,uint32_t>::sort (indexVector, (double*)data_p,
                                                      nrrec, ord, opt);
 	}
     } else if (dtype == TpFloat) {
-	if (incr_p == sizeof(Float)) {
-          return GenSortIndirect<Float,uInt>::sort (indexVector, (Float*)data_p,
+	if (incr_p == sizeof(float)) {
+          return GenSortIndirect<float,uint32_t>::sort (indexVector, (float*)data_p,
                                                     nrrec, ord, opt);
 	}
     } else if (dtype == TpUInt) {
-	if (incr_p == sizeof(uInt)) {
-          return GenSortIndirect<uInt,uInt>::sort (indexVector, (uInt*)data_p,
+	if (incr_p == sizeof(uint32_t)) {
+          return GenSortIndirect<uint32_t,uint32_t>::sort (indexVector, (uint32_t*)data_p,
                                                    nrrec, ord, opt);
 	}
     } else if (dtype == TpInt) {
-	if (incr_p == sizeof(Int)) {
-          return GenSortIndirect<Int,uInt>::sort (indexVector, (Int*)data_p,
+	if (incr_p == sizeof(int32_t)) {
+          return GenSortIndirect<int32_t,uint32_t>::sort (indexVector, (int32_t*)data_p,
                                                   nrrec, ord, opt);
 	}
     } else if (dtype == TpInt64) {
-	if (incr_p == sizeof(Int64)) {
-          return GenSortIndirect<Int64,uInt>::sort (indexVector, (Int64*)data_p,
+	if (incr_p == sizeof(int64_t)) {
+          return GenSortIndirect<int64_t,uint32_t>::sort (indexVector, (int64_t*)data_p,
                                                     nrrec, ord, opt);
 	}
     } else if (dtype == TpString) {
 	if (incr_p == sizeof(String)) {
-          return GenSortIndirect<String,uInt>::sort (indexVector, (String*)data_p,
+          return GenSortIndirect<String,uint32_t>::sort (indexVector, (String*)data_p,
                                                      nrrec, ord, opt);
 	}
     }
     return 0;
 }
 
-uInt64 SortKey::tryGenSort (Vector<uInt64>& indexVector, uInt64 nrrec, int opt) const
+uint64_t SortKey::tryGenSort (Vector<uint64_t>& indexVector, uint64_t nrrec, int opt) const
 {
     Sort::Order ord = (order_p < 0  ?  Sort::Ascending : Sort::Descending);
     DataType dtype = cmpObj_p->dataType();
     if (dtype == TpDouble) {
-	if (incr_p == sizeof(Double)) {
-	    return GenSortIndirect<Double,uInt64>::sort (indexVector, (Double*)data_p,
+	if (incr_p == sizeof(double)) {
+	    return GenSortIndirect<double,uint64_t>::sort (indexVector, (double*)data_p,
                                                          nrrec, ord, opt);
 	}
     } else if (dtype == TpFloat) {
-	if (incr_p == sizeof(Float)) {
-	    return GenSortIndirect<Float,uInt64>::sort (indexVector, (Float*)data_p,
+	if (incr_p == sizeof(float)) {
+	    return GenSortIndirect<float,uint64_t>::sort (indexVector, (float*)data_p,
                                                         nrrec, ord, opt);
 	}
     } else if (dtype == TpUInt) {
-	if (incr_p == sizeof(uInt)) {
-	    return GenSortIndirect<uInt,uInt64>::sort (indexVector, (uInt*)data_p,
+	if (incr_p == sizeof(uint32_t)) {
+	    return GenSortIndirect<uint32_t,uint64_t>::sort (indexVector, (uint32_t*)data_p,
                                                        nrrec, ord, opt);
 	}
     } else if (dtype == TpInt) {
-	if (incr_p == sizeof(Int)) {
-            return GenSortIndirect<Int,uInt64>::sort (indexVector, (Int*)data_p,
+	if (incr_p == sizeof(int32_t)) {
+            return GenSortIndirect<int32_t,uint64_t>::sort (indexVector, (int32_t*)data_p,
                                                       nrrec, ord, opt);
 	}
     } else if (dtype == TpInt64) {
-	if (incr_p == sizeof(Int64)) {
-	    return GenSortIndirect<Int64,uInt64>::sort (indexVector, (Int64*)data_p,
+	if (incr_p == sizeof(int64_t)) {
+	    return GenSortIndirect<int64_t,uint64_t>::sort (indexVector, (int64_t*)data_p,
                                                         nrrec, ord, opt);
 	}
     } else if (dtype == TpString) {
 	if (incr_p == sizeof(String)) {
-	    return GenSortIndirect<String,uInt64>::sort (indexVector, (String*)data_p,
+	    return GenSortIndirect<String,uint64_t>::sort (indexVector, (String*)data_p,
                                                          nrrec, ord, opt);
 	}
     }
@@ -161,7 +161,7 @@ Sort::Sort()
   order_p (0)
 {}
 
-Sort::Sort (const void* dat, uInt sz)
+Sort::Sort (const void* dat, uint32_t sz)
 : nrkey_p (0),
   data_p  (dat),
   size_p  (sz),
@@ -207,23 +207,23 @@ void Sort::copy (const Sort& that)
     order_p = that.order_p;
 }
 
-void Sort::sortKey (const void* dat, DataType dt, uInt inc, Order ord)
+void Sort::sortKey (const void* dat, DataType dt, uint32_t inc, Order ord)
 {
     addKey (dat, dt, inc, ord);
 }
 void Sort::sortKey (const void* dat, const CountedPtr<BaseCompare>& cmp,
-                    uInt inc, Order ord)
+                    uint32_t inc, Order ord)
 {
     addKey (new SortKey(dat, cmp, inc, ord));
 }
-void Sort::sortKey (uInt off, DataType dt, Order ord)
+void Sort::sortKey (uint32_t off, DataType dt, Order ord)
 {
     if (data_p == 0) {
 	throw SortNoData();
     }
     addKey ((char*)data_p+off, dt, size_p, ord);
 }
-void Sort::sortKey (uInt off, const CountedPtr<BaseCompare>& cmp, Order ord)
+void Sort::sortKey (uint32_t off, const CountedPtr<BaseCompare>& cmp, Order ord)
 {
     if (data_p == 0) {
 	throw SortNoData();
@@ -232,9 +232,9 @@ void Sort::sortKey (uInt off, const CountedPtr<BaseCompare>& cmp, Order ord)
 }
 
 
-void Sort::addKey (const void* dat, DataType dt, uInt inc, int ord)
+void Sort::addKey (const void* dat, DataType dt, uint32_t inc, int ord)
 {
-    uInt sz = ValType::getTypeSize (dt);
+    uint32_t sz = ValType::getTypeSize (dt);
     if (inc != 0) {
 	if (sz > inc) {
 	    throw SortInvIncr();
@@ -259,36 +259,36 @@ void Sort::addKey (SortKey* key)
 }
 
 
-uInt Sort::sort (Vector<uInt>& indexVector, uInt nrrec,
-                 int options, Bool tryGenSort) const
+uint32_t Sort::sort (Vector<uint32_t>& indexVector, uint32_t nrrec,
+                 int options, bool tryGenSort) const
   { return doSort (indexVector, nrrec, options, tryGenSort); }
 
-uInt64 Sort::sort (Vector<uInt64>& indexVector, uInt64 nrrec,
-                   int options, Bool tryGenSort) const
+uint64_t Sort::sort (Vector<uint64_t>& indexVector, uint64_t nrrec,
+                   int options, bool tryGenSort) const
   { return doSort (indexVector, nrrec, options, tryGenSort); }
 
-uInt Sort::unique (Vector<uInt>& uniqueVector, uInt nrrec) const
+uint32_t Sort::unique (Vector<uint32_t>& uniqueVector, uint32_t nrrec) const
   { return doUnique (uniqueVector, nrrec); }
 
-uInt Sort::unique (Vector<uInt>& uniqueVector,
-                   const Vector<uInt>& indexVector) const
+uint32_t Sort::unique (Vector<uint32_t>& uniqueVector,
+                   const Vector<uint32_t>& indexVector) const
   { return doUnique (uniqueVector, indexVector); }
 
-uInt Sort::unique (Vector<uInt>& uniqueVector,
+uint32_t Sort::unique (Vector<uint32_t>& uniqueVector,
                    Vector<size_t>& changeKey,
-                   const Vector<uInt>& indexVector) const
+                   const Vector<uint32_t>& indexVector) const
   { return doUnique (uniqueVector, changeKey, indexVector); }
 
-uInt64 Sort::unique (Vector<uInt64>& uniqueVector, uInt64 nrrec) const
+uint64_t Sort::unique (Vector<uint64_t>& uniqueVector, uint64_t nrrec) const
   { return doUnique (uniqueVector, nrrec); }
 
-uInt64 Sort::unique (Vector<uInt64>& uniqueVector,
-                     const Vector<uInt64>& indexVector) const
+uint64_t Sort::unique (Vector<uint64_t>& uniqueVector,
+                     const Vector<uint64_t>& indexVector) const
   { return doUnique (uniqueVector, indexVector); }
 
-uInt64 Sort::unique (Vector<uInt64>& uniqueVector,
+uint64_t Sort::unique (Vector<uint64_t>& uniqueVector,
                      Vector<size_t>& changeKey,
-                     const Vector<uInt64>& indexVector) const
+                     const Vector<uint64_t>& indexVector) const
   { return doUnique (uniqueVector, changeKey, indexVector); }
     // </group>
 

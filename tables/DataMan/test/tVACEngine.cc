@@ -73,7 +73,7 @@ void a() {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class TableDesc";
-    td.addColumn (ArrayColumnDesc<Int>    ("x"));
+    td.addColumn (ArrayColumnDesc<int32_t>    ("x"));
     td.addColumn (ArrayColumnDesc<float>  ("y"));
     td.addColumn (ArrayColumnDesc<String> ("z"));
     td.addColumn (ArrayColumnDesc<VACExample> ("colA"));
@@ -105,10 +105,10 @@ void a() {
     } 
 }
 
-void checkArrs (int st, int len, const Array<Int>& x, const Array<float>& y,
+void checkArrs (int st, int len, const Array<int32_t>& x, const Array<float>& y,
                 const Array<String>& z)
 {
-  uInt sz = len;
+  uint32_t sz = len;
   AlwaysAssertExit(x.size()==sz && y.size()==sz && z.size()==sz);
   AlwaysAssertExit(x.ndim()==1 && y.ndim()==1 && z.ndim()==1);
   for (int j=0; j<len; ++j) {
@@ -121,7 +121,7 @@ void checkArrs (int st, int len, const Array<Int>& x, const Array<float>& y,
 
 void checkVac (int st, int len, const Array<VACExample>& vac)
 {
-  AlwaysAssertExit(vac.size()==uInt(len));
+  AlwaysAssertExit(vac.size()==uint32_t(len));
   AlwaysAssertExit(vac.ndim()==1);
   for (int j=0; j<len; ++j) {
     String expz = String::toString(st+j+2);
@@ -136,13 +136,13 @@ void b()
   cout << 'x'<<endl;
     // Read back the table.
     Table tab("tVACEngine_tmp.data");
-    ArrayColumn<Int>    colx (tab, "x");
+    ArrayColumn<int32_t>    colx (tab, "x");
     ArrayColumn<float>  coly (tab, "y");
     ArrayColumn<String> colz (tab, "z");
     ArrayColumn<VACExample> colA(tab, "colA");
     for (int i=0; i<10; i++) {
 	cout << "get row " << i << endl;
-        Array<Int> x = colx.get(i);
+        Array<int32_t> x = colx.get(i);
         Array<float> y = coly.get(i);
         Array<String> z = colz.get(i);
         Array<VACExample> vac = colA.get(i);

@@ -42,16 +42,16 @@ class Table;
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
-//# Data types Bool, Int64, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
-//# Float to Double, and Complex to DComplex.
+//# Data types bool, int64_t, double, DComplex and String are used.
+//# char, unsigned char, int16_t, uint16_t, int32_t, and uint32_t are converted to int64_t,
+//# float to double, and Complex to DComplex.
 //# Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 //# Also &&, ||, parentheses and unary +, - and ! are recognized.
 
 
 
 // <summary>
-// Constant Bool in table select expression tree
+// Constant bool in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -73,16 +73,16 @@ class Table;
 class TableExprNodeConstBool : public TableExprNodeBinary
 {
 public:
-    TableExprNodeConstBool (const Bool& value);
+    TableExprNodeConstBool (const bool& value);
     ~TableExprNodeConstBool() override = default;
-    Bool getBool (const TableExprId& id) override;
+    bool getBool (const TableExprId& id) override;
 private:
-    Bool value_p;
+    bool value_p;
 };
 
 
 // <summary>
-// Constant Int64 in table select expression tree
+// Constant int64_t in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -104,18 +104,18 @@ private:
 class TableExprNodeConstInt : public TableExprNodeBinary
 {
 public:
-    TableExprNodeConstInt (const Int64& value);
+    TableExprNodeConstInt (const int64_t& value);
     ~TableExprNodeConstInt() override = default;
-    Int64    getInt      (const TableExprId& id) override;
-    Double   getDouble   (const TableExprId& id) override;
+    int64_t    getInt      (const TableExprId& id) override;
+    double   getDouble   (const TableExprId& id) override;
     DComplex getDComplex (const TableExprId& id) override;
 private:
-    Int64 value_p;
+    int64_t value_p;
 };
 
 
 // <summary>
-// Constant Double in table select expression tree
+// Constant double in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -137,12 +137,12 @@ private:
 class TableExprNodeConstDouble : public TableExprNodeBinary
 {
 public:
-    TableExprNodeConstDouble (const Double& value);
+    TableExprNodeConstDouble (const double& value);
     ~TableExprNodeConstDouble() override = default;
-    Double   getDouble   (const TableExprId& id) override;
+    double   getDouble   (const TableExprId& id) override;
     DComplex getDComplex (const TableExprId& id) override;
 private:
-    Double value_p;
+    double value_p;
 };
 
 
@@ -265,7 +265,7 @@ class TableExprNodeConstDate : public TableExprNodeBinary
 public:
     TableExprNodeConstDate (const MVTime& value);
     ~TableExprNodeConstDate() override = default;
-    Double getDouble(const TableExprId& id) override;
+    double getDouble(const TableExprId& id) override;
     MVTime getDate  (const TableExprId& id) override;
 private:
     MVTime value_p;
@@ -310,26 +310,26 @@ public:
     void applySelection (const Vector<rownr_t>& rownrs) override;
 
     // Get the data type of this scalar column.
-    Bool getColumnDataType (DataType&) const override;
+    bool getColumnDataType (DataType&) const override;
 
     // Get the data for the given id.
-    Bool     getBool     (const TableExprId& id) override;
-    Int64    getInt      (const TableExprId& id) override;
-    Double   getDouble   (const TableExprId& id) override;
+    bool     getBool     (const TableExprId& id) override;
+    int64_t    getInt      (const TableExprId& id) override;
+    double   getDouble   (const TableExprId& id) override;
     DComplex getDComplex (const TableExprId& id) override;
     String   getString   (const TableExprId& id) override;
     const TableColumn& getColumn() const;
 
     // Get the data for the given rows.
-    Array<Bool>     getColumnBool (const Vector<rownr_t>& rownrs) override;
-    Array<uChar>    getColumnuChar (const Vector<rownr_t>& rownrs) override;
-    Array<Short>    getColumnShort (const Vector<rownr_t>& rownrs) override;
-    Array<uShort>   getColumnuShort (const Vector<rownr_t>& rownrs) override;
-    Array<Int>      getColumnInt (const Vector<rownr_t>& rownrs) override;
-    Array<uInt>     getColumnuInt (const Vector<rownr_t>& rownrs) override;
-    Array<Int64>    getColumnInt64 (const Vector<rownr_t>& rownrs) override;
-    Array<Float>    getColumnFloat (const Vector<rownr_t>& rownrs) override;
-    Array<Double>   getColumnDouble (const Vector<rownr_t>& rownrs) override;
+    Array<bool>     getColumnBool (const Vector<rownr_t>& rownrs) override;
+    Array<unsigned char>    getColumnuChar (const Vector<rownr_t>& rownrs) override;
+    Array<int16_t>    getColumnShort (const Vector<rownr_t>& rownrs) override;
+    Array<uint16_t>   getColumnuShort (const Vector<rownr_t>& rownrs) override;
+    Array<int32_t>      getColumnInt (const Vector<rownr_t>& rownrs) override;
+    Array<uint32_t>     getColumnuInt (const Vector<rownr_t>& rownrs) override;
+    Array<int64_t>    getColumnInt64 (const Vector<rownr_t>& rownrs) override;
+    Array<float>    getColumnFloat (const Vector<rownr_t>& rownrs) override;
+    Array<double>   getColumnDouble (const Vector<rownr_t>& rownrs) override;
     Array<Complex>  getColumnComplex (const Vector<rownr_t>& rownrs) override;
     Array<DComplex> getColumnDComplex (const Vector<rownr_t>& rownrs) override;
     Array<String>   getColumnString (const Vector<rownr_t>& rownrs) override;
@@ -340,7 +340,7 @@ public:
 protected:
     TableExprInfo tableInfo_p;
     TableColumn   tabCol_p;
-    Bool          applySelection_p;
+    bool          applySelection_p;
 };
 
 
@@ -369,13 +369,13 @@ protected:
 class TableExprNodeRownr : public TableExprNodeBinary
 {
 public:
-    TableExprNodeRownr (const TableExprInfo&, uInt origin);
+    TableExprNodeRownr (const TableExprInfo&, uint32_t origin);
     ~TableExprNodeRownr() override = default;
     TableExprInfo getTableInfo() const override;
-    Int64  getInt (const TableExprId& id) override;
+    int64_t  getInt (const TableExprId& id) override;
 private:
     TableExprInfo tableInfo_p;
-    uInt          origin_p;
+    uint32_t          origin_p;
 };
 
 
@@ -409,7 +409,7 @@ public:
     ~TableExprNodeRowid() override = default;
     TableExprInfo getTableInfo() const override;
     void applySelection (const Vector<rownr_t>& rownrs) override;
-    Int64 getInt (const TableExprId& id) override;
+    int64_t getInt (const TableExprId& id) override;
 private:
     TableExprInfo   tableInfo_p;
     Vector<rownr_t> rownrs_p;
@@ -442,7 +442,7 @@ public:
     TableExprNodeRandom (const TableExprInfo&);
     ~TableExprNodeRandom() override = default;
     TableExprInfo getTableInfo() const override;
-    Double getDouble (const TableExprId& id) override;
+    double getDouble (const TableExprId& id) override;
 private:
     TableExprInfo tableInfo_p;
     MLCG          generator_p;

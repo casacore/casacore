@@ -92,7 +92,7 @@ public:
     MSObservation (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
     MSObservation (SetupNewTable &newTab, rownr_t nrrow = 0,
-		    Bool initialize = False);
+		    bool initialize = false);
     MSObservation (const Table &table);
     MSObservation (const MSObservation &other);
     // </group>
@@ -126,7 +126,7 @@ public:
 private:
 
     // required by the need to throw an exception in the destructor
-    Bool hasBeenDestroyed_p;
+    bool hasBeenDestroyed_p;
 };
 
 

@@ -53,30 +53,30 @@ public:
 };
 
 
-// <summary> uInt sequence for general use </summary>
+// <summary> uint32_t sequence for general use </summary>
 // <use visibility=export>
 // <reviewed reviewer="Friso Olnon" date="1995/03/17" tests="" demos="">
 // </reviewed>
 
 // <synopsis>
-// This class provides a <src>uInt</src> based sequence for general use.
+// This class provides a <src>uint32_t</src> based sequence for general use.
 // </synopsis>
 
-class uIntSequence : public Sequence<uInt> {
+class uIntSequence : public Sequence<uint32_t> {
 
 public:
-    // Get the next <src>uInt</src> value in the sequence (thread-safe).
+    // Get the next <src>uint32_t</src> value in the sequence (thread-safe).
     // <group>
-    uInt getNext()
+    uint32_t getNext()
       { return SgetNext(); }
-    static uInt SgetNext();
+    static uint32_t SgetNext();
     // </group>
 
 private:
 #if defined(USE_THREADS)
-    static std::atomic<uInt> next;
+    static std::atomic<uint32_t> next;
 #else
-    static uInt next;
+    static uint32_t next;
 #endif
 };
 

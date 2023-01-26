@@ -31,11 +31,11 @@
 
 namespace casacore {
 
-std::map<uInt64, Double> ZScoreCalculator::_nptsToMaxZScore;
+std::map<uint64_t, double> ZScoreCalculator::_nptsToMaxZScore;
 
 std::mutex ZScoreCalculator::_mutex;
 
-Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
+double ZScoreCalculator::getMaxZScore(uint64_t npts) {
     std::lock_guard<std::mutex> lock(_mutex);
     if (_nptsToMaxZScore.empty()) {
         // initialize the map
@@ -64,7 +64,7 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
     if (npts > _nptsToMaxZScore.rbegin()->first) {
         auto zscoreMax = _nptsToMaxZScore.rbegin()->second;
         auto z = zscoreMax + 0.5;
-        while (True) {
+        while (true) {
             auto nptsmin = zscoreToNpts(z);
             if (nptsmin >= npts) {
                 _nptsToMaxZScore[nptsmin] = z;
@@ -82,9 +82,9 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
         }
     }
     else {
-        // distance must be an Int
-        Int distance(_nptsToMaxZScore.size()/2);
-        while (True) {
+        // distance must be an int32_t
+        int32_t distance(_nptsToMaxZScore.size()/2);
+        while (true) {
             advance(lowiter, distance);
             advance(upiter, distance);
             if (lowiter->first < npts && upiter->first > npts) {
@@ -101,7 +101,7 @@ Double ZScoreCalculator::getMaxZScore(uInt64 npts) {
     auto lz = lowiter->second;
     auto uz = upiter->second;
     auto z = (lz + uz)/2;
-    while (True) {
+    while (true) {
         auto nptsmin = zscoreToNpts(z);
         if (_nptsToMaxZScore.size() < 1000000) {
             _nptsToMaxZScore[nptsmin] = z;

@@ -31,8 +31,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MSArrayParse* MSArrayParse::thisMSAParser = 0x0; // Global pointer to the parser object
   // TableExprNode* MSArrayParse::node_p = 0x0;
-  // std::vector<Int> MSArrayParse::parsedIDList_p;
-  // Vector<Int> MSArrayParse::idList;
+  // std::vector<int32_t> MSArrayParse::parsedIDList_p;
+  // Vector<int32_t> MSArrayParse::idList;
   
   //# Constructor
   MSArrayParse::MSArrayParse ()
@@ -48,9 +48,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     parsedIDList_p.resize(0);
   }
   
-  std::vector<Int>& MSArrayParse::accumulateIDs(const Int id0, const Int id1)
+  std::vector<int32_t>& MSArrayParse::accumulateIDs(const int32_t id0, const int32_t id1)
   {
-    Vector<Int> theIDs;
+    Vector<int32_t> theIDs;
     if (id1 < 0) 
       {
 	parsedIDList_p.push_back(id0);theIDs.resize(1);theIDs[0]=id0;
@@ -68,17 +68,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return parsedIDList_p;
   }
 
-  void MSArrayParse::appendToIDList(const Vector<Int>& v)
+  void MSArrayParse::appendToIDList(const Vector<int32_t>& v)
   {
-    Int currentSize = idList.nelements();
-    Int n = v.nelements() + currentSize;
-    Int j=0;
+    int32_t currentSize = idList.nelements();
+    int32_t n = v.nelements() + currentSize;
+    int32_t j=0;
 
-    idList.resize(n, True);
-    for(Int i=currentSize;i<n;i++) idList[i] = v[j++];
+    idList.resize(n, true);
+    for(int32_t i=currentSize;i<n;i++) idList[i] = v[j++];
   }
 
-  const TableExprNode *MSArrayParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
+  const TableExprNode *MSArrayParse::selectRangeGTAndLT(const int32_t& n0,const int32_t& n1)
   {
     TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
 					     (ms()->col(colName) < n1));
@@ -90,16 +90,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	   << n1 << " (upper bound)";
 	throw(MSSelectionArrayParseError(os.str()));
       }
-    Vector<Int> tmp(n1-n0-1);
-    Int j=n0+1;
-    for(uInt i=0;i<tmp.nelements();i++) tmp[i]=j++;
+    Vector<int32_t> tmp(n1-n0-1);
+    int32_t j=n0+1;
+    for(uint32_t i=0;i<tmp.nelements();i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p, condition);
     
     return &node_p;
   }
   
-  const TableExprNode *MSArrayParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
+  const TableExprNode *MSArrayParse::selectRangeGEAndLE(const int32_t& n0,const int32_t& n1)
   {
     TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
 					     (ms()->col(colName) <= n1));
@@ -111,16 +111,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	   << n1 << " (upper bound)";
 	throw(MSSelectionArrayParseError(os.str()));
       }
-    Vector<Int> tmp(n1-n0+1);
-    Int j=n0;
-    for(uInt i=0;i<tmp.nelements();i++) tmp[i]=j++;
+    Vector<int32_t> tmp(n1-n0+1);
+    int32_t j=n0;
+    for(uint32_t i=0;i<tmp.nelements();i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p, condition);
     
     return &node_p;
   }
   
-  const TableExprNode *MSArrayParse::selectArrayIds(const Vector<Int>& arrayids)
+  const TableExprNode *MSArrayParse::selectArrayIds(const Vector<int32_t>& arrayids)
   {
     if (arrayids.size() > 0)
       {
@@ -132,50 +132,50 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode *MSArrayParse::selectArrayIdsGT(const Vector<Int>& arrayids)
+  const TableExprNode *MSArrayParse::selectArrayIdsGT(const Vector<int32_t>& arrayids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) > arrayids[0]);
     
-    Int n=maxArrays_p-arrayids[0]+1,j;
-    Vector<Int> tmp(n);
+    int32_t n=maxArrays_p-arrayids[0]+1,j;
+    Vector<int32_t> tmp(n);
     j=arrayids[0]+1;
-    for(Int i=0;i<n;i++) tmp[i]=j++;
+    for(int32_t i=0;i<n;i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p, condition);
     
     return &node_p;
   }
   
-  const TableExprNode *MSArrayParse::selectArrayIdsLT(const Vector<Int>& arrayids)
+  const TableExprNode *MSArrayParse::selectArrayIdsLT(const Vector<int32_t>& arrayids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) < arrayids[0]);
-    Vector<Int> tmp(arrayids[0]);
-    for(Int i=0;i<arrayids[0];i++) tmp[i] = i;
+    Vector<int32_t> tmp(arrayids[0]);
+    for(int32_t i=0;i<arrayids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
     addCondition(node_p, condition);
     
     return &node_p;
   }
 
-  const TableExprNode *MSArrayParse::selectArrayIdsGTEQ(const Vector<Int>& arrayids)
+  const TableExprNode *MSArrayParse::selectArrayIdsGTEQ(const Vector<int32_t>& arrayids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) >= arrayids[0]);
     
-    Int n=maxArrays_p-arrayids[0]+1,j;
-    Vector<Int> tmp(n);
+    int32_t n=maxArrays_p-arrayids[0]+1,j;
+    Vector<int32_t> tmp(n);
     j=arrayids[0];
-    for(Int i=0;i<n;i++) tmp[i]=j++;
+    for(int32_t i=0;i<n;i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p, condition);
     
     return &node_p;
   }
   
-  const TableExprNode *MSArrayParse::selectArrayIdsLTEQ(const Vector<Int>& arrayids)
+  const TableExprNode *MSArrayParse::selectArrayIdsLTEQ(const Vector<int32_t>& arrayids)
   {
     TableExprNode condition = TableExprNode(ms()->col(colName) <= arrayids[0]);
-    Vector<Int> tmp(arrayids[0]+1);
-    for(Int i=0;i<=arrayids[0];i++) tmp[i] = i;
+    Vector<int32_t> tmp(arrayids[0]+1);
+    for(int32_t i=0;i<=arrayids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
     addCondition(node_p, condition);
     

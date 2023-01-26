@@ -89,10 +89,10 @@ public:
 	};
 
 	// Construct a FITSImage from the disk FITS file name  and extension and apply mask.
-  explicit FITSErrorImage(const String& name, uInt whichRep=0, uInt whichHDU=0, FITSErrorImage::ErrorType errtype=MSE);
+  explicit FITSErrorImage(const String& name, uint32_t whichRep=0, uint32_t whichHDU=0, FITSErrorImage::ErrorType errtype=MSE);
 
   // Construct a FITSImage from the disk FITS file name and extension and apply mask or not.
-  FITSErrorImage(const String& name, const MaskSpecifier& mask, uInt whichRep=0, uInt whichHDU=0, FITSErrorImage::ErrorType errtype=MSE);
+  FITSErrorImage(const String& name, const MaskSpecifier& mask, uint32_t whichRep=0, uint32_t whichHDU=0, FITSErrorImage::ErrorType errtype=MSE);
 
   // Copy constructor (reference semantics)
   FITSErrorImage(const FITSErrorImage& other);
@@ -104,17 +104,17 @@ public:
   FITSErrorImage& operator=(const FITSErrorImage& other);
 
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Get the image type (returns "FITSErrorImage").
   virtual String imageType() const;
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice (Array<Float>& buffer, const Slicer& theSlice);
+  // Returns false as the data do not reference another Array
+  virtual bool doGetSlice (Array<float>& buffer, const Slicer& theSlice);
 
   // The FITSImage is not writable, so this throws an exception.
-  virtual void doPutSlice (const Array<Float>& sourceBuffer,
+  virtual void doPutSlice (const Array<float>& sourceBuffer,
 			   const IPosition& where,
 			   const IPosition& stride);
 
@@ -133,7 +133,7 @@ private:
   // Set the correct masking.
   void setupMask();
 
-  Array<Float>              buffer_p;
+  Array<float>              buffer_p;
   FITSErrorImage::ErrorType errtype_p;
 };
 

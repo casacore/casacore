@@ -32,11 +32,11 @@
 #include <casacore/casa/namespace.h>
 int main() 
 {
-  Int err=0;
+  int32_t err=0;
   try {
     StokesConverter sc;
     {
-      Vector<Int> out(7),in(4);
+      Vector<int32_t> out(7),in(4);
       
       in(0)=Stokes::RR;
       in(1)=Stokes::LL;
@@ -71,9 +71,9 @@ int main()
 	cerr << "dataout="<<dataout<<endl;
       }
 
-      Vector<Bool> flagout, flagin(4);
-      flagin.set(False);
-      flagin(2)=True;
+      Vector<bool> flagout, flagin(4);
+      flagin.set(false);
+      flagin(2)=true;
       sc.convert(flagout,flagin);
       if (flagout(0) || !flagout(1) || !flagout(2) || flagout(3) ||
 	  !flagout(4) || !flagout(5) || !flagout(6)) {
@@ -95,12 +95,12 @@ int main()
       datain(2)=0.3; //U
       datain(3)=0.1; //V
       Matrix<Complex> data(4,5);
-      Vector<Int> out(4),in(4);
-      for (Int i=0; i<5; i++) {
+      Vector<int32_t> out(4),in(4);
+      for (int32_t i=0; i<5; i++) {
 	if (i>0) datain=data.column(i);
-	for (Int j=0; j<4; j++) in(j)=4*i+j+1;
-	for (Int k=0; k<5; k++) {
-	  for (Int l=0; l<4; l++) out(l)=4*k+l+1;
+	for (int32_t j=0; j<4; j++) in(j)=4*i+j+1;
+	for (int32_t k=0; k<5; k++) {
+	  for (int32_t l=0; l<4; l++) out(l)=4*k+l+1;
 	  
 	  sc.setConversion(out,in);
 	  sc.convert(dataout,datain);

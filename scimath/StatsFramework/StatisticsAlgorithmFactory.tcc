@@ -47,7 +47,7 @@ StatisticsAlgorithmFactory<CASA_STATP>::~StatisticsAlgorithmFactory() {}
 
 CASA_STATD
 void StatisticsAlgorithmFactory<CASA_STATP>::configureBiweight(
-    Int maxIter, Double c
+    int32_t maxIter, double c
 ) {
     _algorithm = StatisticsData::BIWEIGHT;
     _biweightData.maxIter = maxIter;
@@ -71,13 +71,13 @@ void StatisticsAlgorithmFactory<CASA_STATP>::configureFitToHalf(
 }
 
 CASA_STATD
-void StatisticsAlgorithmFactory<CASA_STATP>::configureHingesFences(Double f) {
+void StatisticsAlgorithmFactory<CASA_STATP>::configureHingesFences(double f) {
     _algorithm = StatisticsData::HINGESFENCES;
     _hf = f;
 }
 
 CASA_STATD void StatisticsAlgorithmFactory<CASA_STATP>::configureChauvenet(
-    Double zscore, Int maxIterations
+    double zscore, int32_t maxIterations
 ) {
     _algorithm = StatisticsData::CHAUVENETCRITERION;
     _chauvData.zScore = zscore;
@@ -138,7 +138,7 @@ StatisticsAlgorithmFactory<CASA_STATP>::biweightData() const {
 }
 
 CASA_STATD
-Double StatisticsAlgorithmFactory<CASA_STATP>::hingesFencesFactor() const {
+double StatisticsAlgorithmFactory<CASA_STATP>::hingesFencesFactor() const {
     ThrowIf(
         _algorithm != StatisticsData::HINGESFENCES,
         "Object is currently not configured to use the hinges-fences algorithm"
@@ -202,7 +202,7 @@ CASA_STATD Record StatisticsAlgorithmFactory<CASA_STATP>::toRecord() const {
 
 CASA_STATD StatisticsAlgorithmFactory<CASA_STATP>
 StatisticsAlgorithmFactory<CASA_STATP>::fromRecord(const Record& r) {
-    Int fieldNum = r.fieldNumber("algorithm");
+    int32_t fieldNum = r.fieldNumber("algorithm");
     ThrowIf(fieldNum < 0, "field 'algorithm' not defined");
     // algorithm can be a string or int
     DataType dt = r.type(fieldNum);

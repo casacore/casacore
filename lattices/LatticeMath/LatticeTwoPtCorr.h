@@ -101,13 +101,13 @@ enum Method {
    {}
 
 // Compute specified autocorrelation function for the planes of the given TWO axes.
-// If the output lattice has a mask, it will first be set to False (bad)
+// If the output lattice has a mask, it will first be set to false (bad)
 // and then any output pixel with some contributing values will be set to
-// True (good).
+// true (good).
 // <group>
    void autoCorrelation (MaskedLattice<T>& out, const MaskedLattice<T>& in,
                          const IPosition& axes, Method method,
-                         Bool showProgress=True) const;
+                         bool showProgress=true) const;
 // </group>
 
 // Helper function to provide output lattice shape give the input shape
@@ -128,7 +128,7 @@ private:
    void autoCorrelation (MaskedLattice<T>& out, const MaskedLattice<T>& in,
                          const IPosition& axes, 
                          FuncPtr,                
-                         Bool showProgress) const;
+                         bool showProgress) const;
 
 // Check Output lattice shape
    void check (LogIO& os, const MaskedLattice<T>& latOut,

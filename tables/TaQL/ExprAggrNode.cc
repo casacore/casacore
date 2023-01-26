@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                         ValueType vtype,
                                         const TableExprNodeSet& source,
                                         const vector<TENShPtr>& nodes,
-                                        const Block<Int>& dtypeOper)
+                                        const Block<int32_t>& dtypeOper)
     : TableExprFuncNode (ftype, dtype, vtype, source, nodes, dtypeOper)
   {
     // Always treat an aggregate as a variable expression.
@@ -49,13 +49,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     exprtype_p = Variable;
   }
 
-  Bool TableExprAggrNode::isAggregate() const
+  bool TableExprAggrNode::isAggregate() const
   {
-    return True;
+    return true;
   }
   
   TableExprFuncNode::NodeDataType TableExprAggrNode::checkOperands
-  (Block<Int>& dtypeOper, ValueType& resVT, FunctionType ftype,
+  (Block<int32_t>& dtypeOper, ValueType& resVT, FunctionType ftype,
    vector<TENShPtr>& nodes)
   {
     if (ftype >= FirstAggrArrayFunc  &&  ftype < LastAggrArrayFunc  &&
@@ -187,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return itsFunc;
   }
 
-  Bool TableExprAggrNode::isLazyAggregate() const
+  bool TableExprAggrNode::isLazyAggregate() const
   {
     return itsFunc->isLazy();
   }
@@ -414,7 +414,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                         String::toString(operands()[0]->dataType()));
   }
 
-  Bool TableExprAggrNode::getBool (const TableExprId& id)
+  bool TableExprAggrNode::getBool (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -423,7 +423,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getBool();
   }
-  Int64 TableExprAggrNode::getInt (const TableExprId& id)
+  int64_t TableExprAggrNode::getInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
     if (itsFunc->isLazy()) {
@@ -432,7 +432,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& set = aid.result().funcSet(id.rownr());
     return set.getFuncs()[itsFunc->seqnr()]->getInt();
   }
-  Double TableExprAggrNode::getDouble (const TableExprId& id)
+  double TableExprAggrNode::getDouble (const TableExprId& id)
   {
     if (dataType() != NTDouble) {
       return TableExprNodeRep::getDouble (id);

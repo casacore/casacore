@@ -51,10 +51,10 @@ int main() {
 			    MEpoch::TAI)),
 		     mLocation);
     // A source position
-    Vector<Double> d1(2);
+    Vector<double> d1(2);
     d1(0) = 3.25745692;	// 3C291
     d1(1) = 0.040643336;
-    Quantum<Vector<Double> > dir (d1, "rad");
+    Quantum<Vector<double> > dir (d1, "rad");
     MDirection mImage(dir, MDirection::B1950);
     MDirection mIm1;
     MDirection mIm2;
@@ -86,7 +86,7 @@ int main() {
       cout << "New UVW:        " << uvw << endl;
       cout << "Phase rotation: " << uvw * um.rotationPhase() << endl;
       uvw = UVW;
-      Double ph;
+      double ph;
       um.convertUVW(ph, uvw);
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
 
@@ -151,7 +151,7 @@ int main() {
       cout << "New UVW:        " << uvw << endl;
       cout << "Phase rotation: " << uvw * um.rotationPhase() << endl;
       uvw = UVW;
-      Double ph;
+      double ph;
       um.convertUVW(ph, uvw);
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
@@ -179,7 +179,7 @@ int main() {
       UVW1 = uvw;	// save
       cout << "Phase rotation: " << uvw * um.rotationPhase() << endl;
       uvw = UVW;
-      Double ph;
+      double ph;
       um.convertUVW(ph, uvw);
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
@@ -202,7 +202,7 @@ int main() {
       cout << "New UVW:        " << uvw << endl;
       cout << "Phase rotation: " << uvw * um.rotationPhase() << endl;
       uvw = UVW1;
-      Double ph;
+      double ph;
       um.convertUVW(ph, uvw);
       cout << "Phase: "  << ph << ", UVW: " << uvw << endl;
     }
@@ -223,9 +223,9 @@ int main() {
 				  Quantity(34, "deg"))),
 		     MDirection::Ref(MDirection::J2000));
     // A UVW machine without projection
-    UVWMachine um(odir, indir, False, False);
+    UVWMachine um(odir, indir, false, false);
     // A UVW machine with projection
-    UVWMachine ump(odir, indir, False, True);
+    UVWMachine ump(odir, indir, false, true);
     cout << "Input coordinates:    " << indir << endl;
     cout << "                 :    " << indir.getAngle("deg") << endl;
     cout << "Output coordinates:   " << odir << endl;  
@@ -235,7 +235,7 @@ int main() {
     cout << "UVW rotation:         " << um.rotationUVW() << endl;
     // Save UVW
     MVPosition u1(uvw);
-    Double ph;
+    double ph;
     um.convertUVW(ph, u1);
     cout << "Phase correction:     " << ph << endl;
     cout << "Corrected UVW:        " << u1 << endl;
@@ -247,8 +247,8 @@ int main() {
     ump.convertUVW(ph, u1);
     cout << "-------------- Projected: ------------" << endl;
     RotMatrix roma = ump.rotationUVW();
-    if (nearAbs(roma(0,1), Double(0), 1e-15)) roma(0,1) = 0;
-    if (nearAbs(roma(1,0), Double(0), 1e-15)) roma(1,0) = 0;
+    if (nearAbs(roma(0,1), double(0), 1e-15)) roma(0,1) = 0;
+    if (nearAbs(roma(1,0), double(0), 1e-15)) roma(1,0) = 0;
     cout << "UVW rotation:         " << roma << endl;
     cout << "Phase correction:     " << ph << endl;
     cout << "Corrected UVW:        " << u1 << endl;
@@ -258,7 +258,7 @@ int main() {
     u1 = uvw;
     cout << "Phase correction:     " << ump.getPhase(u1) << endl;
     cout << "Corrected UVW:        " << u1 << endl;
-    Vector<Double> vd;
+    Vector<double> vd;
     vd = uvw.getValue();
     cout << "Phase correction:     " << ump.getPhase(vd) << endl;
     cout << "Corrected UVW:        " << MVPosition(vd) << endl;
@@ -273,7 +273,7 @@ int main() {
     cout << "---------------Vectors: ---------------" << endl;
     UVWMachine umcp(um);
     UVWMachine umas = um;
-    Vector<Vector<Double> > vdd(1);
+    Vector<Vector<double> > vdd(1);
     Vector<MVPosition> vmv(1);
     cout << "Input uvw:            " << uvw << endl;
     vdd(0) = uvw.getValue();
@@ -283,7 +283,7 @@ int main() {
     umcp.convertUVW(vdd);
     cout << "Corrected UVW:        " << MVPosition(vdd(0)) << endl;
     vdd(0) = uvw.getValue();
-    Vector<Vector<Double> > vddo;
+    Vector<Vector<double> > vddo;
     vddo =  um(vdd);
     cout << "Corrected UVW:        " << MVPosition(vddo(0)) << endl;
 

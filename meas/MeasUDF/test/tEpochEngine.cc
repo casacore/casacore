@@ -51,7 +51,7 @@ void testScalar()
                 MPosition::WGS84);         // near WSRT
   MeasFrame frame(pos);
   {
-    Double value = MEpoch::Convert
+    double value = MEpoch::Convert
       (epo, MEpoch::Ref(MEpoch::LAST,frame))()
         .getValue().get();
     TableExprNode node(tableCommand
@@ -59,7 +59,7 @@ void testScalar()
                         "mjdtodate(50217.625d),'UTC',"
                         "6.60417deg, 52.8deg, 10m, 'WGS84')d").node());
     AlwaysAssertExit (node.getNodeRep()->isConstant());
-    Double sca1 = node.getDouble(0);
+    double sca1 = node.getDouble(0);
     AlwaysAssertExit (node.unit().getName() == "d");
     AlwaysAssertExit (near(value, sca1, 1e-8));
   }
@@ -68,7 +68,7 @@ void testScalar()
                        ("calc "
                         "meas.epoch('ut1', 50217.625d,'UTC')d").node());
     AlwaysAssertExit (node.getNodeRep()->isConstant());
-    Double sca1 = node.getDouble(0);
+    double sca1 = node.getDouble(0);
     AlwaysAssertExit (node.unit().getName() == "d");
     AlwaysAssertExit (sca1 - 50217.625 != 0);
   }
@@ -77,7 +77,7 @@ void testScalar()
                        ("calc meas.epoch('utc',"
                         "meas.epoch('ut1', 50217.625d,'UTC'))d").node());
     AlwaysAssertExit (node.getNodeRep()->isConstant());
-    Double sca1 = node.getDouble(0);
+    double sca1 = node.getDouble(0);
     AlwaysAssertExit (node.unit().getName() == "d");
     AlwaysAssertExit (near(50217.625, sca1, 1e-10));
   }
@@ -103,8 +103,8 @@ void testArray()
   AlwaysAssertExit (node2.getNodeRep()->isConstant());
   ///cout << "taql=" << node1.getArrayDouble(0) << endl;
   ///cout << "taql=" << node2.getArrayDouble(0) << endl;
-  Array<Double> arr1 = node1.getArrayDouble(0);
-  Array<Double> arr2 = node2.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr2 = node2.getArrayDouble(0);
   AlwaysAssertExit (arr1.shape() == IPosition(2,3,2));
   cout<<arr2.shape()<<endl;
   AlwaysAssertExit (arr2.shape() == IPosition(4,1,3,2,1));
@@ -123,8 +123,8 @@ void testArray()
                      Quantity(-60.60417,"deg"), Quantity(-32.8,"deg"),
                      MPosition::WGS84);
   int inx=0;
-  for (uInt ip=0; ip<pos.size(); ++ip) {
-    for (uInt ie=0; ie<epo.size(); ++ie) {
+  for (uint32_t ip=0; ip<pos.size(); ++ip) {
+    for (uint32_t ie=0; ie<epo.size(); ++ie) {
       double epn = MEpoch::Convert
         (epo[ie],
          MEpoch::Ref(MEpoch::LAST, MeasFrame(pos[ip])))()
@@ -186,13 +186,13 @@ void testColumn()
   AlwaysAssertExit (node2.isScalar());
   AlwaysAssertExit (node3.isScalar());
   AlwaysAssertExit (node4.isScalar());
-  for (uInt i=0; i<3; ++i) {
+  for (uint32_t i=0; i<3; ++i) {
     ///cout << "taql=" << node1.getArrayDouble(i) << endl;
     ///cout << "taql=" << node2.getArrayDouble(i) << endl;
-    Double sca1 = node1.getDouble(i);
-    Double sca2 = node2.getDouble(i);
-    Double sca3 = node3.getDouble(i);
-    Double sca4 = node4.getDouble(i);
+    double sca1 = node1.getDouble(i);
+    double sca2 = node2.getDouble(i);
+    double sca3 = node3.getDouble(i);
+    double sca4 = node4.getDouble(i);
     double epn = MEpoch::Convert
       (epo[i],
        MEpoch::Ref(MEpoch::LAST, MeasFrame(pos[i])))()
@@ -206,7 +206,7 @@ void testColumn()
 
 int checkErr (const String& command)
 {
-  Bool fail = False;
+  bool fail = false;
   try {
     TableExprNode node(tableCommand(command).node());
     if (node.isScalar()) {
@@ -216,7 +216,7 @@ int checkErr (const String& command)
     }
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    fail = True;
+    fail = true;
   }
   if (!fail) {
     cout << "Command '" + command + "' should have failed" << endl;

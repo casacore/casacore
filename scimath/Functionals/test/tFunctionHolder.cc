@@ -43,13 +43,13 @@
 
 #include <casacore/casa/namespace.h>
 // Make near zero zero
-Double Y(const Double in) {
-  return (abs(in)<1e-15 ? Double(0.0) : in);
+double Y(const double in) {
+  return (abs(in)<1e-15 ? double(0.0) : in);
 }
 
-AutoDiff<Double> Y(AutoDiff<Double> in) {
+AutoDiff<double> Y(AutoDiff<double> in) {
   in.value() = Y(in.value());
-  for (uInt i=0; i<in.nDerivatives(); ++i) {
+  for (uint32_t i=0; i<in.nDerivatives(); ++i) {
     in.deriv(i) = Y(in.deriv(i));
   }
   return in;
@@ -60,73 +60,73 @@ int main() {
   cout << "---------------- test FunctionHolder ---------------" << endl;
   cout << "------------------------ Unary ---------------------" << endl;
   {
-    UnaryFunction<Double> fn(5, 7, 3);
-    for (Double x=3; x<11.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
+    UnaryFunction<double> fn(5, 7, 3);
+    for (double x=3; x<11.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
 				       Y(fn(x)) << endl;
-    UnaryFunction<AutoDiff<Double> > fnd;
-    fnd[0] = AutoDiff<Double>(5, 3, 0);
-    fnd[1] = AutoDiff<Double>(7, 3, 1);
-    fnd[2] = AutoDiff<Double>(3, 3, 2);
-    for (Double x=3; x<11.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
+    UnaryFunction<AutoDiff<double> > fnd;
+    fnd[0] = AutoDiff<double>(5, 3, 0);
+    fnd[1] = AutoDiff<double>(7, 3, 1);
+    fnd[2] = AutoDiff<double>(3, 3, 2);
+    for (double x=3; x<11.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
 				       Y(fnd(x)) << endl;
   }
   cout << "------------------------ Dirac delta ----------------" << endl;
   {
-    DiracDFunction<Double> fn(5, 7);
-    for (Double x=6; x<8.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
+    DiracDFunction<double> fn(5, 7);
+    for (double x=6; x<8.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
 				       Y(fn(x)) << endl;
-    DiracDFunction<AutoDiff<Double> > fnd;
-    fnd[0] = AutoDiff<Double>(5, 2, 0);
-    fnd[1] = AutoDiff<Double>(7, 2, 1);
-    for (Double x=6; x<8.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
+    DiracDFunction<AutoDiff<double> > fnd;
+    fnd[0] = AutoDiff<double>(5, 2, 0);
+    fnd[1] = AutoDiff<double>(7, 2, 1);
+    for (double x=6; x<8.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
 				      Y(fnd(x)) << endl;
   }
   cout << "------------------------ Normal noise ---------------" << endl;
   {
-    GNoiseFunction<Double> fn(0, 2.0);
-    for (uInt i=0; i<10; ++i) cout << fn() << endl;
-    GNoiseFunction<AutoDiff<Double> > fnd;
-    for (uInt i=0; i<10; ++i) cout << fnd() << endl;
+    GNoiseFunction<double> fn(0, 2.0);
+    for (uint32_t i=0; i<10; ++i) cout << fn() << endl;
+    GNoiseFunction<AutoDiff<double> > fnd;
+    for (uint32_t i=0; i<10; ++i) cout << fnd() << endl;
   }
   cout << "------------------------ Kaiser-Bessel --------------" << endl;
   {
-    KaiserBFunction<Double> fn;
-    for (Double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
+    KaiserBFunction<double> fn;
+    for (double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
 					  Y(fn(x)) << endl;
-    for (Double x=6; x<8.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
+    for (double x=6; x<8.2; x+=1.0) cout << "x=" << Y(x) << ": " <<
 				      Y(fn(x)) << endl;
-    KaiserBFunction<AutoDiff<Double> > fnd;
-    fnd[0] = AutoDiff<Double>(1, 4, 0);
-    fnd[1] = AutoDiff<Double>(0, 4, 1);
-    fnd[2] = AutoDiff<Double>(1, 4, 2);
-    fnd[3] = AutoDiff<Double>(2.5, 4, 2);
-    for (Double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
+    KaiserBFunction<AutoDiff<double> > fnd;
+    fnd[0] = AutoDiff<double>(1, 4, 0);
+    fnd[1] = AutoDiff<double>(0, 4, 1);
+    fnd[2] = AutoDiff<double>(1, 4, 2);
+    fnd[3] = AutoDiff<double>(2.5, 4, 2);
+    for (double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
 					  Y(fnd(x)) << endl;
   }
   cout << "------------------------ sinc -----------------------" << endl;
   {
-    SincFunction<Double> fn;
-    for (Double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
+    SincFunction<double> fn;
+    for (double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
 					  Y(fn(x)) << endl;
-    SincFunction<AutoDiff<Double> > fnd;
-    fnd[0] = AutoDiff<Double>(1, 3, 0);
-    fnd[1] = AutoDiff<Double>(0, 3, 1);
-    fnd[2] = AutoDiff<Double>(1, 3, 2);
-    for (Double x=-1.19999; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
+    SincFunction<AutoDiff<double> > fnd;
+    fnd[0] = AutoDiff<double>(1, 3, 0);
+    fnd[1] = AutoDiff<double>(0, 3, 1);
+    fnd[2] = AutoDiff<double>(1, 3, 2);
+    for (double x=-1.19999; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
 					      Y(fnd(x)) << endl;
   }
   cout << "------------------------ Gaussian1D -----------------" << endl;
   {
-    Gaussian1D<Double> fn;
-    FunctionHolder<Double> fh(fn);
-    for (Double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
+    Gaussian1D<double> fn;
+    FunctionHolder<double> fh(fn);
+    for (double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
 					  fh.asFunction()(x) << endl;
-    Gaussian1D<AutoDiff<Double> > fnd;
-    fnd[0] = AutoDiff<Double>(1, 3, 0);
-    fnd[1] = AutoDiff<Double>(0, 3, 1);
-    fnd[2] = AutoDiff<Double>(1, 3, 2);
-    ///    FunctionHolder<AutoDiff<Double> > fhd(fnd);
-    for (Double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
+    Gaussian1D<AutoDiff<double> > fnd;
+    fnd[0] = AutoDiff<double>(1, 3, 0);
+    fnd[1] = AutoDiff<double>(0, 3, 1);
+    fnd[2] = AutoDiff<double>(1, 3, 2);
+    ///    FunctionHolder<AutoDiff<double> > fhd(fnd);
+    for (double x=-1.2; x<1.21; x+=0.2) cout << "x=" << Y(x) << ": " <<
     ///					  fhd.asFunction()(x) << endl;
 					  Y(fnd(x)) << endl;
   }

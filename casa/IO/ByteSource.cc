@@ -33,7 +33,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSource::ByteSource()
 {}
 
-ByteSource::ByteSource (TypeIO* typeIO, Bool takeOver)
+ByteSource::ByteSource (TypeIO* typeIO, bool takeOver)
 : BaseSinkSource (typeIO, takeOver)
 {    
     if (!isReadable()) {
@@ -55,67 +55,67 @@ ByteSource::~ByteSource()
 {}
 
 
-ByteSource& ByteSource::operator>> (Bool& value)
+ByteSource& ByteSource::operator>> (bool& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Char& value)
+ByteSource& ByteSource::operator>> (char& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (uChar& value)
+ByteSource& ByteSource::operator>> (unsigned char& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Short& value)
+ByteSource& ByteSource::operator>> (int16_t& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (uShort& value)
+ByteSource& ByteSource::operator>> (uint16_t& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Int& value)
+ByteSource& ByteSource::operator>> (int32_t& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (uInt& value)
+ByteSource& ByteSource::operator>> (uint32_t& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Int64& value)
+ByteSource& ByteSource::operator>> (int64_t& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (uInt64& value)
+ByteSource& ByteSource::operator>> (uint64_t& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Float& value)
+ByteSource& ByteSource::operator>> (float& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
 }
 
-ByteSource& ByteSource::operator>> (Double& value)
+ByteSource& ByteSource::operator>> (double& value)
 {
     itsTypeIO->read (1, &value);
     return *this;
@@ -140,57 +140,57 @@ ByteSource& ByteSource::operator>> (String& value)
 }
 
 
-void ByteSource::read (size_t nvalues, Bool* value)
+void ByteSource::read (size_t nvalues, bool* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, Char* value)
+void ByteSource::read (size_t nvalues, char* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, uChar* value)
+void ByteSource::read (size_t nvalues, unsigned char* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, Short* value)
+void ByteSource::read (size_t nvalues, int16_t* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, uShort* value)
+void ByteSource::read (size_t nvalues, uint16_t* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, Int* value)
+void ByteSource::read (size_t nvalues, int32_t* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, uInt* value)
+void ByteSource::read (size_t nvalues, uint32_t* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, Int64* value)
+void ByteSource::read (size_t nvalues, int64_t* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, uInt64* value)
+void ByteSource::read (size_t nvalues, uint64_t* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, Float* value)
+void ByteSource::read (size_t nvalues, float* value)
 {
     itsTypeIO->read (nvalues, value);
 }
 
-void ByteSource::read (size_t nvalues, Double* value)
+void ByteSource::read (size_t nvalues, double* value)
 {
     itsTypeIO->read (nvalues, value);
 }

@@ -57,45 +57,45 @@ template <class T> class Quantum;
 
 // <group name=QuantumType>
 
- inline uInt quantumType (const Quantum<Double>*)
+ inline uint32_t quantumType (const Quantum<double>*)
    { return 1; }
- inline uInt quantumType (const Quantum<Float>*)
+ inline uint32_t quantumType (const Quantum<float>*)
    { return 2; }
- inline uInt quantumType (const Quantum<Int>*)
+ inline uint32_t quantumType (const Quantum<int32_t>*)
    { return 3; }
- inline uInt quantumType (const Quantum<DComplex>*)
+ inline uint32_t quantumType (const Quantum<DComplex>*)
    { return 4; }
- inline uInt quantumType (const Quantum<Complex>*)
+ inline uint32_t quantumType (const Quantum<Complex>*)
    { return 5; }
- inline uInt quantumType (const Quantum< Vector<Double> >*)
+ inline uint32_t quantumType (const Quantum< Vector<double> >*)
    { return 6; }
- inline uInt quantumType (const Quantum< Vector<Float> >*)
+ inline uint32_t quantumType (const Quantum< Vector<float> >*)
    { return 7; }
- inline uInt quantumType (const Quantum< Vector<Int> >*)
+ inline uint32_t quantumType (const Quantum< Vector<int32_t> >*)
    { return 8; }
- inline uInt quantumType (const Quantum< Vector<DComplex> >*)
+ inline uint32_t quantumType (const Quantum< Vector<DComplex> >*)
    { return 9; }
- inline uInt quantumType (const Quantum< Vector<Complex> >*)
+ inline uint32_t quantumType (const Quantum< Vector<Complex> >*)
    { return 10; }
- inline uInt quantumType (const Quantum< Array<Double> >*)
+ inline uint32_t quantumType (const Quantum< Array<double> >*)
    { return 11; }
- inline uInt quantumType (const Quantum< Array<Float> >*)
+ inline uint32_t quantumType (const Quantum< Array<float> >*)
    { return 12; }
- inline uInt quantumType (const Quantum< Array<Int> >*)
+ inline uint32_t quantumType (const Quantum< Array<int32_t> >*)
    { return 13; }
- inline uInt quantumType (const Quantum< Array<DComplex> >*)
+ inline uint32_t quantumType (const Quantum< Array<DComplex> >*)
    { return 14; }
- inline uInt quantumType (const Quantum< Array<Complex> >*)
+ inline uint32_t quantumType (const Quantum< Array<Complex> >*)
    { return 15; }
- inline uInt quantumType (const Quantum< Matrix<Double> >*)
+ inline uint32_t quantumType (const Quantum< Matrix<double> >*)
    { return 16; }
- inline uInt quantumType (const Quantum< Matrix<Float> >*)
+ inline uint32_t quantumType (const Quantum< Matrix<float> >*)
    { return 17; }
- inline uInt quantumType (const Quantum< Matrix<Int> >*)
+ inline uint32_t quantumType (const Quantum< Matrix<int32_t> >*)
    { return 18; }
- inline uInt quantumType (const Quantum< Matrix<DComplex> >*)
+ inline uint32_t quantumType (const Quantum< Matrix<DComplex> >*)
    { return 19; }
- inline uInt quantumType (const Quantum< Matrix<Complex> >*)
+ inline uint32_t quantumType (const Quantum< Matrix<Complex> >*)
    { return 20; }
 
 // </group>

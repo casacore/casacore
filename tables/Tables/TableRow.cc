@@ -46,19 +46,19 @@ ROTableRow::ROTableRow()
     init();
 }
 
-ROTableRow::ROTableRow (const Table& table, Bool storedColumnsOnly)
+ROTableRow::ROTableRow (const Table& table, bool storedColumnsOnly)
 : itsRecord (0)
 {
     init();
-    create (table, storedColumnsOnly, False);
+    create (table, storedColumnsOnly, false);
 }
 
 ROTableRow::ROTableRow (const Table& table, const Vector<String>& columnNames,
-			Bool exclude)
+			bool exclude)
 : itsRecord (0)
 {
     init();
-    create (table, columnNames, exclude, False);
+    create (table, columnNames, exclude, false);
 }
 
 ROTableRow::ROTableRow (const ROTableRow& that)
@@ -71,7 +71,7 @@ ROTableRow::ROTableRow (const ROTableRow& that)
 void ROTableRow::init()
 {
     itsLastRow = -1;
-    itsReread = True;
+    itsReread = true;
 }
 
 ROTableRow::~ROTableRow()
@@ -102,9 +102,9 @@ void ROTableRow::copy (const ROTableRow& that)
 Vector<String> ROTableRow::columnNames() const
 {
     const RecordDesc& desc = itsRecord->description();
-    uInt nfield = desc.nfields();
+    uint32_t nfield = desc.nfields();
     Vector<String> names(nfield);
-    for (uInt i=0; i<nfield; i++) {
+    for (uint32_t i=0; i<nfield; i++) {
 	names(i) = desc.name(i);
     }
     return names;
@@ -116,56 +116,56 @@ void ROTableRow::deleteObjects()
 	return;
     }
     const RecordDesc& description = itsRecord->description();
-    for (uInt i=0; i<itsNrused; i++) {
+    for (uint32_t i=0; i<itsNrused; i++) {
 	delete (TableColumn*)(itsTabCols[i]);
 	switch (description.type(i)) {
 	case TpBool:
-	    delete (ScalarColumn<Bool>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Bool>*)(itsFields[i]);
+	    delete (ScalarColumn<bool>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<bool>*)(itsFields[i]);
 	    break;
 	case TpArrayBool:
-	    delete (ArrayColumn<Bool>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Array<Bool> >*)(itsFields[i]);
+	    delete (ArrayColumn<bool>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<bool> >*)(itsFields[i]);
 	    break;
 	case TpUChar:
-	    delete (ScalarColumn<uChar>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<uChar>*)(itsFields[i]);
+	    delete (ScalarColumn<unsigned char>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<unsigned char>*)(itsFields[i]);
 	    break;
 	case TpArrayUChar:
-	    delete (ArrayColumn<uChar>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Array<uChar> >*)(itsFields[i]);
+	    delete (ArrayColumn<unsigned char>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<unsigned char> >*)(itsFields[i]);
 	    break;
 	case TpShort:
-	    delete (ScalarColumn<Short>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Short>*)(itsFields[i]);
+	    delete (ScalarColumn<int16_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<int16_t>*)(itsFields[i]);
 	    break;
 	case TpArrayShort:
-	    delete (ArrayColumn<Short>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Array<Short> >*)(itsFields[i]);
+	    delete (ArrayColumn<int16_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<int16_t> >*)(itsFields[i]);
 	    break;
 	case TpInt:
-	    delete (ScalarColumn<Int>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Int>*)(itsFields[i]);
+	    delete (ScalarColumn<int32_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<int32_t>*)(itsFields[i]);
 	    break;
 	case TpArrayInt:
-	    delete (ArrayColumn<Int>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Array<Int> >*)(itsFields[i]);
+	    delete (ArrayColumn<int32_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<int32_t> >*)(itsFields[i]);
 	    break;
 	case TpUInt:
-	    delete (ScalarColumn<uInt>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<uInt>*)(itsFields[i]);
+	    delete (ScalarColumn<uint32_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<uint32_t>*)(itsFields[i]);
 	    break;
 	case TpArrayUInt:
-	    delete (ArrayColumn<uInt>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Array<uInt> >*)(itsFields[i]);
+	    delete (ArrayColumn<uint32_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<uint32_t> >*)(itsFields[i]);
 	    break;
 	case TpInt64:
-	    delete (ScalarColumn<Int64>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Int64>*)(itsFields[i]);
+	    delete (ScalarColumn<int64_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<int64_t>*)(itsFields[i]);
 	    break;
 	case TpArrayInt64:
-	    delete (ArrayColumn<Int64>*)(itsColumns[i]);
-	    delete (RecordFieldPtr<Array<Int64> >*)(itsFields[i]);
+	    delete (ArrayColumn<int64_t>*)(itsColumns[i]);
+	    delete (RecordFieldPtr<Array<int64_t> >*)(itsFields[i]);
 	    break;
 	case TpFloat:
 	    delete (ScalarColumn<float>*)(itsColumns[i]);
@@ -224,7 +224,7 @@ void ROTableRow::deleteObjects()
 
 void ROTableRow::addColumnToDesc (RecordDesc& description,
 				  const TableColumn& column,
-				  Bool skipOther)
+				  bool skipOther)
 {
     const ColumnDesc& columnDesc = column.columnDesc();
     DataType dataType = columnDesc.dataType();
@@ -242,8 +242,8 @@ void ROTableRow::addColumnToDesc (RecordDesc& description,
     }
 }
 
-void ROTableRow::create (const Table& table, Bool storedColumnsOnly,
-			 Bool writable)
+void ROTableRow::create (const Table& table, bool storedColumnsOnly,
+			 bool writable)
 {
     itsTable = table;
     // Loop through all columns in the table.
@@ -252,18 +252,18 @@ void ROTableRow::create (const Table& table, Bool storedColumnsOnly,
     // or no stored columns are asked for..
     itsNrused = 0;
     RecordDesc description;
-    uInt nrcol = itsTable.tableDesc().ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = itsTable.tableDesc().ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	if ((!storedColumnsOnly  ||  itsTable.isColumnStored (i))
 	&&  (!writable  ||  itsTable.isColumnWritable (i))) {
-	    addColumnToDesc (description, TableColumn (itsTable, i), True);
+	    addColumnToDesc (description, TableColumn (itsTable, i), true);
 	}
     }
     makeObjects (description);
 }
 	    
 void ROTableRow::create (const Table& table, const Vector<String>& columnNames,
-			 Bool exclude, Bool writable)
+			 bool exclude, bool writable)
 {
     itsTable = table;
     // Loop through all column names.
@@ -273,11 +273,11 @@ void ROTableRow::create (const Table& table, const Vector<String>& columnNames,
     if (exclude) {
 	makeDescExclude (description, columnNames, writable);
     }else{
-	uInt nrcol = columnNames.nelements();
-	for (uInt i=0; i<nrcol; i++) {
+	uint32_t nrcol = columnNames.nelements();
+	for (uint32_t i=0; i<nrcol; i++) {
 	    addColumnToDesc (description,
 			     TableColumn (itsTable, columnNames(i)),
-			     True);
+			     true);
 	}
     }
     makeObjects (description);
@@ -285,27 +285,27 @@ void ROTableRow::create (const Table& table, const Vector<String>& columnNames,
 	    
 void ROTableRow::makeDescExclude (RecordDesc& description,
 				  const Vector<String>& columnNames,
-				  Bool writable)
+				  bool writable)
 {
     // Loop through all columns in the table.
     // Add it to the RecordDesc when the column is writable or
     // when we do not need to write. Skip the columns to exclude.
-    uInt nrcol  = itsTable.tableDesc().ncolumn();
-    uInt nrexcl = columnNames.nelements();
+    uint32_t nrcol  = itsTable.tableDesc().ncolumn();
+    uint32_t nrexcl = columnNames.nelements();
     const TableDesc& tableDesc = itsTable.tableDesc();
-    for (uInt i=0; i<nrcol; i++) {
+    for (uint32_t i=0; i<nrcol; i++) {
 	if (!writable  ||  itsTable.isColumnWritable (i)) {
 	    const String& name = tableDesc[i].name();
-	    Bool found = False;
-	    for (uInt j=0; j<nrexcl; j++) {
+	    bool found = false;
+	    for (uint32_t j=0; j<nrexcl; j++) {
 		if (name == columnNames(j)) {
-		    found = True;
+		    found = true;
 		    break;
 		}
 	    }
 	    if (!found) {
 		addColumnToDesc (description, TableColumn (itsTable, i),
-				 True);
+				 true);
 	    }
 	}
     }
@@ -317,47 +317,47 @@ void ROTableRow::makeObjects (const RecordDesc& description)
     // Create the TableRecord from the description.
     itsRecord = new TableRecord (description);
     // Initialize the column and field block.
-    itsTabCols.resize (itsNrused, False, False);
+    itsTabCols.resize (itsNrused, false, false);
     itsTabCols.set (static_cast<void*>(0));
-    itsColumns.resize (itsNrused, False, False);
+    itsColumns.resize (itsNrused, false, false);
     itsColumns.set (static_cast<void*>(0));
-    itsFields.resize (itsNrused, False, False);
+    itsFields.resize (itsNrused, false, false);
     itsFields.set (static_cast<void*>(0));
-    itsDefined.resize (itsNrused, False, False);
-    itsDefined.set (True);
+    itsDefined.resize (itsNrused, false, false);
+    itsDefined.set (true);
     // Create the correct column object for each field.
     // (if not writing, an RO version is sufficient).
     // Also create a RecordFieldPtr object for each column.
     // This makes a fast data copy possible.
-    uInt nrfield = description.nfields();
-    for (uInt i=0; i<nrfield; i++) {
+    uint32_t nrfield = description.nfields();
+    for (uint32_t i=0; i<nrfield; i++) {
 	const String& name = description.name(i);
 	TableColumn* tabColPtr = new TableColumn (itsTable, name);
 	itsTabCols[i] = tabColPtr;
 	switch (description.type(i)) {
 	case TpBool:
-            itsColumns[i] = new ScalarColumn<Bool> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Bool>(*itsRecord, i);
+            itsColumns[i] = new ScalarColumn<bool> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<bool>(*itsRecord, i);
 	    break;
 	case TpUChar:
-	    itsColumns[i] = new ScalarColumn<uChar> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<uChar>(*itsRecord, i);
+	    itsColumns[i] = new ScalarColumn<unsigned char> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<unsigned char>(*itsRecord, i);
 	    break;
 	case TpShort:
-	    itsColumns[i] = new ScalarColumn<Short> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Short>(*itsRecord, i);
+	    itsColumns[i] = new ScalarColumn<int16_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<int16_t>(*itsRecord, i);
 	    break;
 	case TpInt:
-	    itsColumns[i] = new ScalarColumn<Int> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Int>(*itsRecord, i);
+	    itsColumns[i] = new ScalarColumn<int32_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<int32_t>(*itsRecord, i);
 	    break;
 	case TpUInt:
-	    itsColumns[i] = new ScalarColumn<uInt> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<uInt>(*itsRecord, i);
+	    itsColumns[i] = new ScalarColumn<uint32_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<uint32_t>(*itsRecord, i);
 	    break;
 	case TpInt64:
-	    itsColumns[i] = new ScalarColumn<Int64> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Int64>(*itsRecord, i);
+	    itsColumns[i] = new ScalarColumn<int64_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<int64_t>(*itsRecord, i);
 	    break;
 	case TpFloat:
 	    itsColumns[i] = new ScalarColumn<float> (itsTable, name);
@@ -384,28 +384,28 @@ void ROTableRow::makeObjects (const RecordDesc& description)
 	    itsFields[i] = new RecordFieldPtr<TableRecord>(*itsRecord, i);
 	    break;
 	case TpArrayBool:
-	    itsColumns[i] = new ArrayColumn<Bool> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Array<Bool> >(*itsRecord, i);
+	    itsColumns[i] = new ArrayColumn<bool> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<bool> >(*itsRecord, i);
 	    break;
 	case TpArrayUChar:
-	    itsColumns[i] = new ArrayColumn<uChar> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Array<uChar> >(*itsRecord, i);
+	    itsColumns[i] = new ArrayColumn<unsigned char> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<unsigned char> >(*itsRecord, i);
 	    break;
 	case TpArrayShort:
-	    itsColumns[i] = new ArrayColumn<Short> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Array<Short> >(*itsRecord, i);
+	    itsColumns[i] = new ArrayColumn<int16_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<int16_t> >(*itsRecord, i);
 	    break;
 	case TpArrayInt:
-	    itsColumns[i] = new ArrayColumn<Int> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Array<Int> >(*itsRecord, i);
+	    itsColumns[i] = new ArrayColumn<int32_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<int32_t> >(*itsRecord, i);
 	    break;
 	case TpArrayUInt:
-	    itsColumns[i] = new ArrayColumn<uInt> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Array<uInt> >(*itsRecord, i);
+	    itsColumns[i] = new ArrayColumn<uint32_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<uint32_t> >(*itsRecord, i);
 	    break;
 	case TpArrayInt64:
-	    itsColumns[i] = new ArrayColumn<Int64> (itsTable, name);
-	    itsFields[i] = new RecordFieldPtr<Array<Int64> >(*itsRecord, i);
+	    itsColumns[i] = new ArrayColumn<int64_t> (itsTable, name);
+	    itsFields[i] = new RecordFieldPtr<Array<int64_t> >(*itsRecord, i);
 	    break;
 	case TpArrayFloat:
 	    itsColumns[i] = new ArrayColumn<float> (itsTable, name);
@@ -434,21 +434,21 @@ void ROTableRow::makeObjects (const RecordDesc& description)
     }
 }
 
-const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
+const TableRecord& ROTableRow::get (rownr_t rownr, bool alwaysRead) const
 {
     // Only read when needed.
-    if (Int64(rownr) == itsLastRow  &&  !itsReread  &&  !alwaysRead) {
+    if (int64_t(rownr) == itsLastRow  &&  !itsReread  &&  !alwaysRead) {
 	return *itsRecord;
     }
     const RecordDesc& desc = itsRecord->description();
-    Int ndim = 0;
-    uInt nrfield = desc.nfields();
-    for (uInt i=0; i<nrfield; i++) {
+    int32_t ndim = 0;
+    uint32_t nrfield = desc.nfields();
+    for (uint32_t i=0; i<nrfield; i++) {
 	//# First determine if an array value is defined.
 	//# If not, get its default dimensionality.
-	Bool isDefined = True;
+	bool isDefined = true;
 	if (! (*(TableColumn*)(itsTabCols[i])).isDefined (rownr)) {
-	    isDefined = False;
+	    isDefined = false;
 	    ndim = (*(TableColumn*)(itsTabCols[i])).columnDesc().ndim();
 	    if (ndim < 0) {
 		ndim = 0;
@@ -459,93 +459,93 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 	//# with the correct dimensionality.
 	switch (desc.type(i)) {
 	case TpBool:
-	    (*(const ScalarColumn<Bool>*)(itsColumns[i])).get (
-		       rownr, *(*(RecordFieldPtr<Bool>*) itsFields[i]));
+	    (*(const ScalarColumn<bool>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<bool>*) itsFields[i]));
 	    break;
 	case TpArrayBool:
 	    if (isDefined) {
-		(*(const ArrayColumn<Bool>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<bool>*)(itsColumns[i])).get (
 		       rownr,
-		       *(*(RecordFieldPtr<Array<Bool> >*) itsFields[i]),
-		       True);
+		       *(*(RecordFieldPtr<Array<bool> >*) itsFields[i]),
+		       true);
 	    }else{
-		(*(RecordFieldPtr<Array<Bool> >*)(itsFields[i])).define (
-		                         Array<Bool> (IPosition(ndim, 0)));
+		(*(RecordFieldPtr<Array<bool> >*)(itsFields[i])).define (
+		                         Array<bool> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpUChar:
-	    (*(const ScalarColumn<uChar>*)(itsColumns[i])).get (
-		       rownr, *(*(RecordFieldPtr<uChar>*) itsFields[i]));
+	    (*(const ScalarColumn<unsigned char>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<unsigned char>*) itsFields[i]));
 	    break;
 	case TpArrayUChar:
 	    if (isDefined) {
-		(*(const ArrayColumn<uChar>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<unsigned char>*)(itsColumns[i])).get (
 		       rownr,
-		       *(*(RecordFieldPtr<Array<uChar> >*) itsFields[i]),
-		       True);
+		       *(*(RecordFieldPtr<Array<unsigned char> >*) itsFields[i]),
+		       true);
 	    }else{
-		(*(RecordFieldPtr<Array<uChar> >*)(itsFields[i])).define (
-		                         Array<uChar> (IPosition(ndim, 0)));
+		(*(RecordFieldPtr<Array<unsigned char> >*)(itsFields[i])).define (
+		                         Array<unsigned char> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpShort:
-	    (*(const ScalarColumn<Short>*)(itsColumns[i])).get (
-		       rownr, *(*(RecordFieldPtr<Short>*) itsFields[i]));
+	    (*(const ScalarColumn<int16_t>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<int16_t>*) itsFields[i]));
 	    break;
 	case TpArrayShort:
 	    if (isDefined) {
-		(*(const ArrayColumn<Short>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<int16_t>*)(itsColumns[i])).get (
 		       rownr,
-		       *(*(RecordFieldPtr<Array<Short> >*) itsFields[i]),
-		       True);
+		       *(*(RecordFieldPtr<Array<int16_t> >*) itsFields[i]),
+		       true);
 	    }else{
-		(*(RecordFieldPtr<Array<Short> >*)(itsFields[i])).define (
-		                         Array<Short> (IPosition(ndim, 0)));
+		(*(RecordFieldPtr<Array<int16_t> >*)(itsFields[i])).define (
+		                         Array<int16_t> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpInt:
-	    (*(const ScalarColumn<Int>*)(itsColumns[i])).get (
-		       rownr, *(*(RecordFieldPtr<Int>*) itsFields[i]));
+	    (*(const ScalarColumn<int32_t>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<int32_t>*) itsFields[i]));
 	    break;
 	case TpArrayInt:
 	    if (isDefined) {
-		(*(const ArrayColumn<Int>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<int32_t>*)(itsColumns[i])).get (
 		       rownr,
-		       *(*(RecordFieldPtr<Array<Int> >*) itsFields[i]),
-		       True);
+		       *(*(RecordFieldPtr<Array<int32_t> >*) itsFields[i]),
+		       true);
 	    }else{
-		(*(RecordFieldPtr<Array<Int> >*)(itsFields[i])).define (
-		                         Array<Int> (IPosition(ndim, 0)));
+		(*(RecordFieldPtr<Array<int32_t> >*)(itsFields[i])).define (
+		                         Array<int32_t> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpUInt:
-	    (*(const ScalarColumn<uInt>*)(itsColumns[i])).get (
-		       rownr, *(*(RecordFieldPtr<uInt>*) itsFields[i]));
+	    (*(const ScalarColumn<uint32_t>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<uint32_t>*) itsFields[i]));
 	    break;
 	case TpArrayUInt:
 	    if (isDefined) {
-		(*(const ArrayColumn<uInt>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<uint32_t>*)(itsColumns[i])).get (
 		       rownr,
-		       *(*(RecordFieldPtr<Array<uInt> >*) itsFields[i]),
-		       True);
+		       *(*(RecordFieldPtr<Array<uint32_t> >*) itsFields[i]),
+		       true);
 	    }else{
-		(*(RecordFieldPtr<Array<uInt> >*)(itsFields[i])).define (
-		                         Array<uInt> (IPosition(ndim, 0)));
+		(*(RecordFieldPtr<Array<uint32_t> >*)(itsFields[i])).define (
+		                         Array<uint32_t> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpInt64:
-	    (*(const ScalarColumn<Int64>*)(itsColumns[i])).get (
-		       rownr, *(*(RecordFieldPtr<Int64>*) itsFields[i]));
+	    (*(const ScalarColumn<int64_t>*)(itsColumns[i])).get (
+		       rownr, *(*(RecordFieldPtr<int64_t>*) itsFields[i]));
 	    break;
 	case TpArrayInt64:
 	    if (isDefined) {
-		(*(const ArrayColumn<Int64>*)(itsColumns[i])).get (
+		(*(const ArrayColumn<int64_t>*)(itsColumns[i])).get (
 		       rownr,
-		       *(*(RecordFieldPtr<Array<Int64> >*) itsFields[i]),
-		       True);
+		       *(*(RecordFieldPtr<Array<int64_t> >*) itsFields[i]),
+		       true);
 	    }else{
-		(*(RecordFieldPtr<Array<Int64> >*)(itsFields[i])).define (
-		                         Array<Int64> (IPosition(ndim, 0)));
+		(*(RecordFieldPtr<Array<int64_t> >*)(itsFields[i])).define (
+		                         Array<int64_t> (IPosition(ndim, 0)));
 	    }
 	    break;
 	case TpFloat:
@@ -557,7 +557,7 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 		(*(const ArrayColumn<float>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<float> >*) itsFields[i]),
-		       True);
+		       true);
 	    }else{
 		(*(RecordFieldPtr<Array<float> >*)(itsFields[i])).define (
 		                         Array<float> (IPosition(ndim, 0)));
@@ -572,7 +572,7 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 		(*(const ArrayColumn<double>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<double> >*) itsFields[i]),
-		       True);
+		       true);
 	    }else{
 		(*(RecordFieldPtr<Array<double> >*)(itsFields[i])).define (
 		                         Array<double> (IPosition(ndim, 0)));
@@ -587,7 +587,7 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 		(*(const ArrayColumn<Complex>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<Complex> >*) itsFields[i]),
-		       True);
+		       true);
 	    }else{
 		(*(RecordFieldPtr<Array<Complex> >*)(itsFields[i])).define (
 		                         Array<Complex> (IPosition(ndim, 0)));
@@ -602,7 +602,7 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 		(*(const ArrayColumn<DComplex>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<DComplex> >*) itsFields[i]),
-		       True);
+		       true);
 	    }else{
 		(*(RecordFieldPtr<Array<DComplex> >*)(itsFields[i])).define (
 		                         Array<DComplex> (IPosition(ndim, 0)));
@@ -617,7 +617,7 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 		(*(const ArrayColumn<String>*)(itsColumns[i])).get (
 		       rownr,
 		       *(*(RecordFieldPtr<Array<String> >*) itsFields[i]),
-		       True);
+		       true);
 	    }else{
 		(*(RecordFieldPtr<Array<String> >*)(itsFields[i])).define (
 		                         Array<String> (IPosition(ndim, 0)));
@@ -632,7 +632,7 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 	}
     }
     itsLastRow = rownr;
-    itsReread  = False;
+    itsReread  = false;
     return *itsRecord;
 }
 
@@ -640,104 +640,104 @@ const TableRecord& ROTableRow::get (rownr_t rownr, Bool alwaysRead) const
 // internal record. Be sure to reread when the same row is asked for.
 void ROTableRow::setReread (rownr_t rownr)
 {
-    if (Int64(rownr) == itsLastRow) {
-	itsReread = True;
+    if (int64_t(rownr) == itsLastRow) {
+	itsReread = true;
     }
 }
 
 // put into column, convert if necessary
-#define PUTFIELD_ARRAY(type) \
+#define PUTFIELD_ARRAY(type,TP)                   \
 	do { \
 		try { \
 			(*(ArrayColumn<type>*)(itsColumns[whichColumn])).put \
-			(rownr, record.asArray##type (whichField)); \
+			(rownr, record.asArray##TP (whichField)); \
 		} \
 		catch (const AipsError & e) { \
 			(*(ArrayColumn<type>*)(itsColumns[whichColumn])).put \
-				(rownr, record.toArray##type (whichField)); \
+				(rownr, record.toArray##TP (whichField)); \
 		} \
 	} while (0)
 
 void ROTableRow::putField (rownr_t rownr, const TableRecord& record,
-			   Int whichColumn, Int whichField)
+			   int32_t whichColumn, int32_t whichField)
 {
     switch (itsRecord->description().type(whichColumn)) {
     case TpBool:
-	(*(ScalarColumn<Bool>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<bool>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asBool (whichField));
 	break;
     case TpArrayBool:
-	PUTFIELD_ARRAY(Bool);
+      PUTFIELD_ARRAY(bool,Bool);
 	break;
     case TpUChar:
-	(*(ScalarColumn<uChar>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<unsigned char>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asuChar (whichField));
 	break;
     case TpArrayUChar:
-	PUTFIELD_ARRAY(uChar);
+        PUTFIELD_ARRAY(unsigned char,uChar);
 	break;
     case TpShort:
-	(*(ScalarColumn<Short>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<int16_t>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asShort (whichField));
 	break;
     case TpArrayShort:
-	PUTFIELD_ARRAY(Short);
+        PUTFIELD_ARRAY(int16_t,Short);
 	break;
     case TpInt:
-	(*(ScalarColumn<Int>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<int32_t>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asInt (whichField));
 	break;
     case TpArrayInt:
-	PUTFIELD_ARRAY(Int);
+        PUTFIELD_ARRAY(int32_t,Int);
 	break;
     case TpUInt:
-	(*(ScalarColumn<uInt>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<uint32_t>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asuInt (whichField));
 	break;
     case TpArrayUInt:
-	PUTFIELD_ARRAY(uInt);
+        PUTFIELD_ARRAY(uint32_t,uInt);
 	break;
     case TpInt64:
-	(*(ScalarColumn<Int64>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<int64_t>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asInt64 (whichField));
 	break;
     case TpArrayInt64:
-	PUTFIELD_ARRAY(Int64);
+        PUTFIELD_ARRAY(int64_t,Int64);
 	break;
     case TpFloat:
-	(*(ScalarColumn<Float>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<float>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asfloat (whichField));
 	break;
     case TpArrayFloat:
-	PUTFIELD_ARRAY(Float);
+        PUTFIELD_ARRAY(float,Float);
 	break;
     case TpDouble:
-	(*(ScalarColumn<Double>*)(itsColumns[whichColumn])).put
+	(*(ScalarColumn<double>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asdouble (whichField));
 	break;
     case TpArrayDouble:
-	PUTFIELD_ARRAY(Double);
+        PUTFIELD_ARRAY(double,Double);
 	break;
     case TpComplex:
 	(*(ScalarColumn<Complex>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asComplex (whichField));
 	break;
     case TpArrayComplex:
-	PUTFIELD_ARRAY(Complex);
+        PUTFIELD_ARRAY(Complex,Complex);
 	break;
     case TpDComplex:
 	(*(ScalarColumn<DComplex>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asDComplex (whichField));
 	break;
     case TpArrayDComplex:
-	PUTFIELD_ARRAY(DComplex);
+        PUTFIELD_ARRAY(DComplex,DComplex);
 	break;
     case TpString:
 	(*(ScalarColumn<String>*)(itsColumns[whichColumn])).put
 		                (rownr, record.asString (whichField));
 	break;
     case TpArrayString:
-	PUTFIELD_ARRAY(String);
+        PUTFIELD_ARRAY(String,String);
 	break;
     case TpRecord:
 	(*(ScalarColumn<TableRecord>*)(itsColumns[whichColumn])).put
@@ -751,56 +751,56 @@ void ROTableRow::putField (rownr_t rownr, const TableRecord& record,
 void ROTableRow::putRecord (rownr_t rownr)
 {
     const RecordDesc& desc = itsRecord->description();
-    uInt nrfield = desc.nfields();
-    for (uInt i=0; i<nrfield; i++) {
+    uint32_t nrfield = desc.nfields();
+    for (uint32_t i=0; i<nrfield; i++) {
 	switch (desc.type(i)) {
 	case TpBool:
-	    (*(ScalarColumn<Bool>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Bool>*) itsFields[i]).get());
+	    (*(ScalarColumn<bool>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<bool>*) itsFields[i]).get());
 	    break;
 	case TpArrayBool:
-	    (*(ArrayColumn<Bool>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Array<Bool> >*) itsFields[i]).get());
+	    (*(ArrayColumn<bool>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<bool> >*) itsFields[i]).get());
 	    break;
 	case TpUChar:
-	    (*(ScalarColumn<uChar>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<uChar>*) itsFields[i]).get());
+	    (*(ScalarColumn<unsigned char>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<unsigned char>*) itsFields[i]).get());
 	    break;
 	case TpArrayUChar:
-	    (*(ArrayColumn<uChar>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Array<uChar> >*) itsFields[i]).get());
+	    (*(ArrayColumn<unsigned char>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<unsigned char> >*) itsFields[i]).get());
 	    break;
 	case TpShort:
-	    (*(ScalarColumn<Short>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Short>*) itsFields[i]).get());
+	    (*(ScalarColumn<int16_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<int16_t>*) itsFields[i]).get());
 	    break;
 	case TpArrayShort:
-	    (*(ArrayColumn<Short>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Array<Short> >*) itsFields[i]).get());
+	    (*(ArrayColumn<int16_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<int16_t> >*) itsFields[i]).get());
 	    break;
 	case TpInt:
-	    (*(ScalarColumn<Int>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Int>*) itsFields[i]).get());
+	    (*(ScalarColumn<int32_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<int32_t>*) itsFields[i]).get());
 	    break;
 	case TpArrayInt:
-	    (*(ArrayColumn<Int>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Array<Int> >*) itsFields[i]).get());
+	    (*(ArrayColumn<int32_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<int32_t> >*) itsFields[i]).get());
 	    break;
 	case TpUInt:
-	    (*(ScalarColumn<uInt>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<uInt>*) itsFields[i]).get());
+	    (*(ScalarColumn<uint32_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<uint32_t>*) itsFields[i]).get());
 	    break;
 	case TpArrayUInt:
-	    (*(ArrayColumn<uInt>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Array<uInt> >*) itsFields[i]).get());
+	    (*(ArrayColumn<uint32_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<uint32_t> >*) itsFields[i]).get());
 	    break;
 	case TpInt64:
-	    (*(ScalarColumn<Int64>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Int64>*) itsFields[i]).get());
+	    (*(ScalarColumn<int64_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<int64_t>*) itsFields[i]).get());
 	    break;
 	case TpArrayInt64:
-	    (*(ArrayColumn<Int64>*)(itsColumns[i])).put (rownr,
-	         (*(RecordFieldPtr<Array<Int64> >*) itsFields[i]).get());
+	    (*(ArrayColumn<int64_t>*)(itsColumns[i])).put (rownr,
+	         (*(RecordFieldPtr<Array<int64_t> >*) itsFields[i]).get());
 	    break;
 	case TpFloat:
 	    (*(ScalarColumn<float>*)(itsColumns[i])).put (rownr,
@@ -861,23 +861,23 @@ TableRow::TableRow()
 : ROTableRow()
 {}
 
-TableRow::TableRow (const Table& table, Bool storedColumnsOnly)
+TableRow::TableRow (const Table& table, bool storedColumnsOnly)
 : ROTableRow()
 {
     if (! table.isWritable()) {
 	throw (TableError ("TableRow cannot be used: table is not writable"));
     }
-    create (table, storedColumnsOnly, True);
+    create (table, storedColumnsOnly, true);
 }
 
 TableRow::TableRow (const Table& table, const Vector<String>& columnNames,
-		    Bool exclude)
+		    bool exclude)
 : ROTableRow()
 {
     if (! table.isWritable()) {
 	throw (TableError ("TableRow cannot be used: table is not writable"));
     }
-    create (table, columnNames, exclude, True);
+    create (table, columnNames, exclude, true);
 }
 
 TableRow::TableRow (const TableRow& that)
@@ -899,9 +899,9 @@ void TableRow::putMatchingFields (rownr_t rownr, const TableRecord& record)
 {
     const RecordDesc& thisDesc = itsRecord->description();
     const RecordDesc& thatDesc = record.description();
-    uInt nrfield = thatDesc.nfields();
-    Int field;
-    for (uInt i=0; i<nrfield; i++) {
+    uint32_t nrfield = thatDesc.nfields();
+    int32_t field;
+    for (uint32_t i=0; i<nrfield; i++) {
 	field = thisDesc.fieldNumber (thatDesc.name(i));
 	if (field >= 0) {
 	    putField (rownr, record, field, i);
@@ -921,7 +921,7 @@ void TableRow::put()
 }
 
 void TableRow::put (rownr_t rownr, const TableRecord& record,
-		    Bool checkConformance)
+		    bool checkConformance)
 {
     if (checkConformance) {
 	if (! namesConform (record)) {
@@ -929,8 +929,8 @@ void TableRow::put (rownr_t rownr, const TableRecord& record,
 	}
     }
     const RecordDesc& thisDesc = itsRecord->description();
-    uInt nrfield = thisDesc.nfields();
-    for (uInt i=0; i<nrfield; i++) {
+    uint32_t nrfield = thisDesc.nfields();
+    for (uint32_t i=0; i<nrfield; i++) {
 	putField (rownr, record, i, i);
     }
     // The values (might) have changed, which is not reflected in the
@@ -939,8 +939,8 @@ void TableRow::put (rownr_t rownr, const TableRecord& record,
 }
 
 void TableRow::put (rownr_t rownr, const TableRecord& record,
-		    const Block<Bool>& valuesDefined,
-		    Bool checkConformance)
+		    const Block<bool>& valuesDefined,
+		    bool checkConformance)
 {
     if (checkConformance) {
 	if (! namesConform (record)) {
@@ -948,9 +948,9 @@ void TableRow::put (rownr_t rownr, const TableRecord& record,
 	}
     }
     const RecordDesc& thisDesc = itsRecord->description();
-    uInt nrfield = thisDesc.nfields();
+    uint32_t nrfield = thisDesc.nfields();
     AlwaysAssert (valuesDefined.nelements() >= nrfield, AipsError);
-    for (uInt i=0; i<nrfield; i++) {
+    for (uint32_t i=0; i<nrfield; i++) {
         if (valuesDefined[i]) {
 	    putField (rownr, record, i, i);
 	}
@@ -960,19 +960,19 @@ void TableRow::put (rownr_t rownr, const TableRecord& record,
     setReread (rownr);
 }
 
-Bool TableRow::namesConform (const TableRecord& that) const
+bool TableRow::namesConform (const TableRecord& that) const
 {
     if (that.nfields() != itsNrused) {
-	return False;
+	return false;
     }
     const RecordDesc& thisDesc = itsRecord->description();
     const RecordDesc& thatDesc = that.description();
-    for (uInt i=0; i<itsNrused; i++) {
+    for (uint32_t i=0; i<itsNrused; i++) {
 	if (thisDesc.name(i) != thatDesc.name(i)) {
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
 } //# NAMESPACE CASACORE - END

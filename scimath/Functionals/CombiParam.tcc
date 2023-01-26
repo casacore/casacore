@@ -39,14 +39,14 @@ template <class T>
 CombiParam<T>::CombiParam(const CombiParam<T> &other) :
   Function<T>(other), ndim_p(other.ndim_p),
   functionPtr_p(other.functionPtr_p.nelements()) { 
-  for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+  for (uint32_t i=0; i<functionPtr_p.nelements(); ++i) {
     functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
   }
 }
 
 template <class T>
 CombiParam<T>::~CombiParam() {
-  for (uInt i=0; i<functionPtr_p.nelements(); i++) {
+  for (uint32_t i=0; i<functionPtr_p.nelements(); i++) {
     delete functionPtr_p[i]; functionPtr_p[i] = 0;
   }
 }
@@ -56,11 +56,11 @@ CombiParam<T>& CombiParam<T>::operator=(const CombiParam<T> &other) {
   if (this != &other) {
     Function<T>::operator=(other);
     ndim_p = other.ndim_p;
-    for (uInt i=0; i<functionPtr_p.nelements(); i++) {
+    for (uint32_t i=0; i<functionPtr_p.nelements(); i++) {
       delete functionPtr_p[i]; functionPtr_p[i] = 0;
     }
     functionPtr_p =  PtrBlock<Function<T> *>(other.functionPtr_p.nelements());
-    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
     }
   }
@@ -68,19 +68,19 @@ CombiParam<T>& CombiParam<T>::operator=(const CombiParam<T> &other) {
 }
 
 template <class T>
-uInt CombiParam<T>::addFunction(const Function<T> &newFunction) {
+uint32_t CombiParam<T>::addFunction(const Function<T> &newFunction) {
   if (functionPtr_p.nelements() != 0 && newFunction.ndim() != ndim_p) {
     throw(AipsError("CombiParam::addFunction() -- "
 		    "Inconsistent function dimension"));
   }
   // Add the function
-  uInt i = functionPtr_p.nelements();
+  uint32_t i = functionPtr_p.nelements();
   functionPtr_p.resize(i + 1);
   functionPtr_p[i] = newFunction.clone();
   ndim_p = (*(functionPtr_p[i])).ndim();
   // Set parameters
   this->param_p = FunctionParam<T>(i+1);
-  for (uInt j=0; j<i+1; ++j) this->param_p[j] = T(1.0);
+  for (uint32_t j=0; j<i+1; ++j) this->param_p[j] = T(1.0);
   return i;
 }
 

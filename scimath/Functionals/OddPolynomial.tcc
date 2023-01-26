@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Operators
 template<class T>
 T OddPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
-  Int j = nparameters();
+  int32_t j = nparameters();
   T accum = param_p[--j]*x[0];
   while (--j >= 0) {
     accum *= x[0];

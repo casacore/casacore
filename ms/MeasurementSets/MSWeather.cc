@@ -38,10 +38,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSWeather::MSWeather():hasBeenDestroyed_p(True) { }
+MSWeather::MSWeather():hasBeenDestroyed_p(true) { }
 
 MSWeather::MSWeather(const String &tableName, TableOption option) 
-    : MSTable<MSWeatherEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSWeatherEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -52,7 +52,7 @@ MSWeather::MSWeather(const String &tableName, TableOption option)
 MSWeather::MSWeather(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSWeatherEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -61,18 +61,18 @@ MSWeather::MSWeather(const String& tableName, const String &tableDescName,
 }
 
 MSWeather::MSWeather(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSWeatherEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSWeather(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSWeather(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSWeather"));
 }
 
 MSWeather::MSWeather(const Table &table)
-    : MSTable<MSWeatherEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSWeatherEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -82,7 +82,7 @@ MSWeather::MSWeather(const Table &table)
 
 MSWeather::MSWeather(const MSWeather &other)
     : MSTable<MSWeatherEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -102,7 +102,7 @@ MSWeather::~MSWeather()
            << "~MSWeather() - Table written is not a valid MSWeather"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -181,7 +181,7 @@ MSTableMaps MSWeather::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

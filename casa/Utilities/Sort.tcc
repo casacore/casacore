@@ -39,14 +39,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   T Sort::doSort (Vector<T>& indexVector, T nrrec, int opt,
-                  Bool doTryGenSort) const
+                  bool doTryGenSort) const
   {
     if (nrrec == 0) {
       return nrrec;
     }
     //# Try if we can use the faster GenSort when we have one key only.
     if (doTryGenSort  &&  nrkey_p == 1) {
-      uInt n = keys_p[0]->tryGenSort (indexVector, nrrec, opt);
+      uint32_t n = keys_p[0]->tryGenSort (indexVector, nrrec, opt);
       if (n > 0) {
         return n;
       }
@@ -55,7 +55,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     indgen (indexVector);
     // Pass the sort function a C-array of indices, because indexing
     // in there is (much) faster than in a vector.
-    Bool del;
+    bool del;
     T* inx = indexVector.getStorage (del);
     // Choose the sort required.
     int nodup = opt & NoDuplicates;
@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #ifdef _OPENMP
     nthr = omp_get_max_threads();
     // Do not use more threads than there are values.
-    if (uInt(nthr) > nrrec) nthr = nrrec;
+    if (uint32_t(nthr) > nrrec) nthr = nrrec;
 #endif
     if (type == DefaultSort) {
       type = (nrrec<1000 || nthr==1  ?  QuickSort : ParSort);
@@ -106,7 +106,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If n < nrrec, some duplicates have been deleted.
     // This means we have to resize the Vector.
     if (n < nrrec) {
-      indexVector.resize (n, True);
+      indexVector.resize (n, true);
     }
     return n;
   }
@@ -139,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Pass the sort function a C-array of indices, because indexing
     // in there is (much) faster than in a vector.
-    Bool delInx, delUniq, delChange;
+    bool delInx, delUniq, delChange;
     const T* inx = indexVector.getStorage (delInx);
     T* uniq = uniqueVector.getStorage (delUniq);
     size_t* change = changeKey.getStorage (delChange);
@@ -147,7 +147,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     T nruniq = 1;
     size_t idxComp;
     for (T i=1; i<nrrec; i++) {
-      Int cmp = compareChangeIdx (inx[i-1], inx[i], idxComp);
+      int32_t cmp = compareChangeIdx (inx[i-1], inx[i], idxComp);
       if (cmp != 1  &&  cmp != -1) {
         change[nruniq-1] = idxComp;
         uniq[nruniq++] = i;
@@ -157,8 +157,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     uniqueVector.putStorage (uniq, delUniq);
     changeKey.putStorage (change, delChange);
     if (nruniq < nrrec) {
-      uniqueVector.resize (nruniq, True);
-      changeKey.resize (nruniq, True);
+      uniqueVector.resize (nruniq, true);
+      changeKey.resize (nruniq, true);
     }
     return nruniq;
   }
@@ -281,7 +281,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   T Sort::insSort (T nrrec, T* inx) const
   {
     for (T i=1; i<nrrec; i++) {
-      Int64 j = i;
+      int64_t j = i;
       T cur = inx[i];
       while (--j>=0  &&  compare(inx[j], cur) <= 0) {
         inx[j+1] = inx[j];
@@ -300,13 +300,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     T nr = 1;
     int cmp = 0;
     for (T i=1; i<nrrec; i++) {
-      Int64 j = nr;
+      int64_t j = nr;
       T cur = inx[i];
       // Continue as long as key is out of order.
       while (--j>=0  &&  (cmp = compare (inx[j], cur)) == 0) {
       }
       if (j<0 || cmp==2) {                   // no equal key
-        for (Int64 k=nr-1; k>j; k--) {
+        for (int64_t k=nr-1; k>j; k--) {
           inx[k+1] = inx[k];                 // now shift to right
         }
         inx[j+1] = cur;                      // insert in right place

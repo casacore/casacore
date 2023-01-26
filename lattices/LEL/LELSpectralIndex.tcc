@@ -48,19 +48,19 @@ LELSpectralIndex<T>::LELSpectralIndex (const Block<LatticeExprNode>& expr)
   arg1_p = expr[1];
   // Spectralindex cannot handle scalars.
   // Expect 2 equal data types.
-  Block<Int> argType(2);
+  Block<int32_t> argType(2);
   argType[0] = arg0_p.dataType();
   argType[1] = argType[0];
-  setAttr (LatticeExprNode::checkArg (expr, argType, True, False));
+  setAttr (LatticeExprNode::checkArg (expr, argType, true, false));
   // Get the spectral coordinate info of the arguments.
   const LELAttribute& attr0 = arg0_p.getAttribute();
   const LELAttribute& attr1 = arg1_p.getAttribute();
-  Vector<Double> freq0, freq1;
+  Vector<double> freq0, freq1;
   itsFreqAxis = attr0.coordinates().coordinates().getSpectralInfo
                                                       (freq0, attr0.shape());
-  Int freqAxis1 = attr1.coordinates().coordinates().getSpectralInfo
+  int32_t freqAxis1 = attr1.coordinates().coordinates().getSpectralInfo
                                                       (freq1, attr1.shape());
-  Vector<Double> logFreq;
+  Vector<double> logFreq;
   if (freq0.nelements() == 1) {
     logFreq = log (freq0(0) / freq1);
   } else if (freq1.nelements() == 1) {
@@ -72,7 +72,7 @@ LELSpectralIndex<T>::LELSpectralIndex (const Block<LatticeExprNode>& expr)
   // Note that a Block is faster than Vector (in function eval),
   // so we rather use a Block.
   itsLogFreq.resize (logFreq.nelements());
-  for (uInt i=0; i<logFreq.nelements(); i++) {
+  for (uint32_t i=0; i<logFreq.nelements(); i++) {
     if (logFreq(i) == 0) {
       itsLogFreq[i] = 0;
     } else {
@@ -80,7 +80,7 @@ LELSpectralIndex<T>::LELSpectralIndex (const Block<LatticeExprNode>& expr)
     }
   }
   // Compare the coordinates and shapes.
-  Int result = attr0.compareCoord (attr1);
+  int32_t result = attr0.compareCoord (attr1);
   if (result == 0) {
     AlwaysAssert (itsFreqAxis == freqAxis1, AipsError);
   } else if (result == -1) {
@@ -130,43 +130,43 @@ void LELSpectralIndex<T>::eval (LELArray<T>& result,
   // 'Split' the data into the part before the frequency axis and
   // the part after the frequency axis.
   const IPosition& shp = result.value().shape();
-  uInt nrt = result.value().nelements();
-  uInt stf = 0;           // start in itsLogFreq
-  uInt endf = 0;          // end in itsLogFreq
-  uInt incrf = 1;         // step in itsLogFreq
-  uInt nrb = 1;
-  uInt nre = 1;
+  uint32_t nrt = result.value().nelements();
+  uint32_t stf = 0;           // start in itsLogFreq
+  uint32_t endf = 0;          // end in itsLogFreq
+  uint32_t incrf = 1;         // step in itsLogFreq
+  uint32_t nrb = 1;
+  uint32_t nre = 1;
   if (itsFreqAxis < 0) {
     nrb = nrt;
   } else {
     stf = section.start()(itsFreqAxis);
     endf = section.end()(itsFreqAxis);
     incrf = section.stride()(itsFreqAxis);
-    for (uInt i=0; i<shp.nelements(); i++) {
-      if (Int(i) < itsFreqAxis) {
+    for (uint32_t i=0; i<shp.nelements(); i++) {
+      if (int32_t(i) < itsFreqAxis) {
 	nrb *= shp(i);
-      } else if (Int(i) > itsFreqAxis) {
+      } else if (int32_t(i) > itsFreqAxis) {
 	nre *= shp(i);
       }
     }
   }
   // Loop through all the data in that way.
-  Bool deleteRes, deleteTmp;
+  bool deleteRes, deleteTmp;
   T* res = result.value().getStorage (deleteRes);
   T* resd = res;
   const T* tmp = tempr.value().getStorage (deleteTmp);
   const T* tmpd = tmp;
-  for (uInt i=0; i<nre; i++) {
-    for (uInt j=stf; j<=endf; j+=incrf) {
-      const Float fact = itsLogFreq[j];
+  for (uint32_t i=0; i<nre; i++) {
+    for (uint32_t j=stf; j<=endf; j+=incrf) {
+      const float fact = itsLogFreq[j];
       if (fact == 0) {
-	for (uInt k=0; k<nrb; k++) {
+	for (uint32_t k=0; k<nrb; k++) {
 	  *resd = 0;
 	  resd++;
 	  tmpd++;
 	}
       } else {
-	for (uInt k=0; k<nrb; k++) {
+	for (uint32_t k=0; k<nrb; k++) {
 	  if (*tmpd == 0) {
 	    *resd = 0;
 	  } else {
@@ -190,10 +190,10 @@ String LELSpectralIndex<T>::className() const
 
 
 template <class T>
-Bool LELSpectralIndex<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool LELSpectralIndex<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   if (! arg0_p.lock (type, nattempts)) {
-    return False;
+    return false;
   }
   return arg1_p.lock (type, nattempts);
 }
@@ -204,10 +204,10 @@ void LELSpectralIndex<T>::unlock()
   arg1_p.unlock();
 }
 template <class T>
-Bool LELSpectralIndex<T>::hasLock (FileLocker::LockType type) const
+bool LELSpectralIndex<T>::hasLock (FileLocker::LockType type) const
 {
   if (! arg0_p.hasLock (type)) {
-    return False;
+    return false;
   }
   return arg1_p.hasLock (type);
 }
@@ -231,12 +231,12 @@ LELScalar<T> LELSpectralIndex<T>::getScalar() const
 
 
 template <class T>
-Bool LELSpectralIndex<T>::prepareScalarExpr()
+bool LELSpectralIndex<T>::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
   cout << "LELSpectralIndex::prepare" << endl;
 #endif
-  return False;
+  return false;
 }
 
 } //# NAMESPACE CASACORE - END

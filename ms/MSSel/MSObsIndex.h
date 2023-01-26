@@ -87,7 +87,7 @@ public:
   virtual ~MSObservationIndex() {}
 
   // Look up OBSERVATION_ID's for a given project code
-  Vector<Int> matchProjectCode(const String& projectCode);
+  Vector<int32_t> matchProjectCode(const String& projectCode);
 
 private:
   // Disallow null constructor
@@ -97,8 +97,8 @@ private:
   MSObservationColumns msObservationCols_p;
 
   // Vector cache of observation id's
-  Vector<Int> observationIds_p;
-  Int nrows_p;
+  Vector<int32_t> observationIds_p;
+  int32_t nrows_p;
 };
 
 

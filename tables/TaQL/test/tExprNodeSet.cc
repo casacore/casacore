@@ -45,7 +45,7 @@
 
 void doSetBool()
 {
-  TableExprNodeSetElem elem((TableExprNode(True)));
+  TableExprNodeSetElem elem((TableExprNode(true)));
   TableExprNodeSet set;
   set.add (elem);
   set.add (elem);
@@ -54,8 +54,8 @@ void doSetBool()
   AlwaysAssertExit (set.isBounded());
   AlwaysAssertExit (set.size() == 2);
   AlwaysAssertExit (!set.hasArrays());
-  AlwaysAssertExit (set.contains (0, True));
-  AlwaysAssertExit (!set.contains (0, False));
+  AlwaysAssertExit (set.contains (0, true));
+  AlwaysAssertExit (!set.contains (0, false));
 }
 
 void doSetInt()
@@ -73,7 +73,7 @@ void doSetInt()
   TableExprNode st(3);
   TableExprNode end(10);
   TableExprNode incr(3);
-  set.add (TableExprNodeSetElem(&st, &end, &incr, True));
+  set.add (TableExprNodeSetElem(&st, &end, &incr, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
@@ -83,7 +83,7 @@ void doSetInt()
   AlwaysAssertExit (!set.contains (0, 2));
   AlwaysAssertExit (set.contains (0, 3));
   AlwaysAssertExit (!set.contains (0, 4));
-  set.add (TableExprNodeSetElem(&st, 0, 0, True));
+  set.add (TableExprNodeSetElem(&st, 0, 0, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
@@ -110,7 +110,7 @@ void doSetDouble()
   TableExprNode st(3.);
   TableExprNode end(10);
   TableExprNode incr(3);
-  set.add (TableExprNodeSetElem(&st, &end, &incr, True));
+  set.add (TableExprNodeSetElem(&st, &end, &incr, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
@@ -120,7 +120,7 @@ void doSetDouble()
   AlwaysAssertExit (!set.contains (0, 2.));
   AlwaysAssertExit (set.contains (0, 3.));
   AlwaysAssertExit (!set.contains (0, 4.));
-  set.add (TableExprNodeSetElem(&st, 0, 0, True));
+  set.add (TableExprNodeSetElem(&st, 0, 0, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
@@ -181,7 +181,7 @@ void doSetString()
   AlwaysAssertExit (!set.contains (0, "Ger"));
   TableExprNode st("ger1");
   TableExprNode end("ger9");
-  set.add (TableExprNodeSetElem(True, st, end, True));
+  set.add (TableExprNodeSetElem(true, st, end, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (!set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
@@ -191,7 +191,7 @@ void doSetString()
   AlwaysAssertExit (!set.contains (0, "Ger"));
   AlwaysAssertExit (set.contains (0, "ger1"));
   AlwaysAssertExit (!set.contains (0, "ger99"));
-  set.add (TableExprNodeSetElem(True, st));
+  set.add (TableExprNodeSetElem(true, st));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (!set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
@@ -218,7 +218,7 @@ void doSetDate()
   TableExprNode st(datetime("5Apr09/12:"));    // MJD 54926.5
   TableExprNode end(datetime("7May09/12:"));   // MJD 54958.5
   TableExprNode incr(3);
-  set.add (TableExprNodeSetElem(&st, &end, &incr, True));
+  set.add (TableExprNodeSetElem(&st, &end, &incr, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (set.isBounded());
@@ -228,7 +228,7 @@ void doSetDate()
   AlwaysAssertExit (!set.contains (0, 54927.5));
   AlwaysAssertExit (set.contains (0, 54929.5));
   AlwaysAssertExit (!set.contains (0, 54957.5));
-  set.add (TableExprNodeSetElem(&st, 0, 0, True));
+  set.add (TableExprNodeSetElem(&st, 0, 0, true));
   AlwaysAssertExit (!set.isSingle());
   AlwaysAssertExit (set.isDiscrete());
   AlwaysAssertExit (!set.isBounded());
@@ -318,10 +318,10 @@ void doEmpty()
 
 #define tryError(CMD) \
   { \
-    Bool ok = True;                            \
+    bool ok = true;                            \
     try { \
       CMD; \
-      ok = False; \
+      ok = false; \
     } catch (const std::exception& x) { \
       cout << "Expected: " << x.what() << endl; \
     } \
@@ -342,22 +342,22 @@ void doErrors()
   TableExprNodeSetElem db2Elem(db2Node);
   TableExprNodeSetElem strElem(strNode);
   TableExprNodeSet set;
-  set.add (intElem, True);
-  set.add (dblElem, True);
+  set.add (intElem, true);
+  set.add (dblElem, true);
   tryError (intNode.in (set));          // mismatching data types
   TableExprNode setarr(set.setOrArray());
   AlwaysAssertExit (setarr.getRep()->valueType() == TableExprNodeRep::VTArray);
   intNode.in (setarr);
-  tryError (set.add (strElem, True));   // data type cannot be coerced
+  tryError (set.add (strElem, true));   // data type cannot be coerced
   {
     TableExprNodeSet set2(set);
-    set2.add (db2Elem, True);
+    set2.add (db2Elem, true);
     TableExprNode setarr2(set2.setOrArray());
     AlwaysAssertExit (setarr2.getRep()->valueType() == TableExprNodeRep::VTSet);
   }
   {
     TableExprNodeSet set2(set);
-    set2.add (rangeElem, True);
+    set2.add (rangeElem, true);
     tryError (set2.setOrArray());       // no start in rangeElem
   }
 }

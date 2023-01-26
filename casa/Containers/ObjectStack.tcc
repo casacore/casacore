@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Destructor
   template <class T>
   ObjectStack<T>::~ObjectStack() {
-    for (uInt i=0; i<stack_p.size(); ++i) {
+    for (uint32_t i=0; i<stack_p.size(); ++i) {
       delete stack_p[i];
       stack_p[i]=0;
     }

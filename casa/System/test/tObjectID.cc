@@ -70,12 +70,12 @@ int main()
     AlwaysAssertExit(ID1 == ID1copy);
     assert_hash(ID1copy);
 
-    ObjectID null(True);
+    ObjectID null(true);
     AlwaysAssertExit(null.isNull());
 
     String copied;
     ID1.toString(copied);
-    ID1 = ObjectID(True);
+    ID1 = ObjectID(true);
     String error;
     AlwaysAssertExit(ID1.fromString(error, copied));
     AlwaysAssertExit(ID1 == ID1copy);

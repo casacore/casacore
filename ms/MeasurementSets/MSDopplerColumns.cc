@@ -28,12 +28,12 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MSDopplerColumns::MSDopplerColumns():
-  isNull_p(True)
+  isNull_p(true)
 {
 }
 
 MSDopplerColumns::MSDopplerColumns(const MSDoppler& msDoppler):
-  isNull_p(True)
+  isNull_p(true)
 {
   attach(msDoppler);
 }
@@ -60,7 +60,7 @@ void MSDopplerColumns::attach(const MSDoppler& msDoppler)
 
 void MSDopplerColumns::setVelDefRef(MDoppler::Types ref)
 {
-  velDefMeas_p.setDescRefCode(ref,False);
+  velDefMeas_p.setDescRefCode(ref,false);
 }
 
 } //# NAMESPACE CASACORE - END

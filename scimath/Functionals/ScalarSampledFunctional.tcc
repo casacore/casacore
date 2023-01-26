@@ -79,11 +79,11 @@ operator=(const ScalarSampledFunctional<T> &other) {
 }
 
 template<class T> T ScalarSampledFunctional<T>::
-operator()(const uInt &index) const {
+operator()(const uint32_t &index) const {
   return refData(index);
 }
 
-template<class T> uInt ScalarSampledFunctional<T>::
+template<class T> uint32_t ScalarSampledFunctional<T>::
 nelements() const {
   return refData.nelements();
 }

@@ -33,21 +33,21 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELAttribute::LELAttribute()
-: isScalar_p  (True),
-  isReduced_p (True),
-  isRegion_p  (False),
-  isMasked_p  (False),
+: isScalar_p  (true),
+  isReduced_p (true),
+  isRegion_p  (false),
+  isMasked_p  (false),
   coords_p    (new LELLattCoord())
 {}
 
-LELAttribute::LELAttribute (Bool isMasked,
+LELAttribute::LELAttribute (bool isMasked,
 			    const IPosition& shape,
 			    const IPosition& tileShape,
 			    const LELCoordinates& coordinates,
-			    Bool isReduced)
-: isScalar_p  (False),
+			    bool isReduced)
+: isScalar_p  (false),
   isReduced_p (isReduced),
-  isRegion_p  (False),
+  isRegion_p  (false),
   isMasked_p  (isMasked),
   shape_p     (shape),
   tileShape_p (tileShape),
@@ -58,11 +58,11 @@ LELAttribute::LELAttribute (Bool isMasked,
   }
 }
 
-LELAttribute::LELAttribute (uInt regionNdim)
-: isScalar_p  (False),
-  isReduced_p (False),
-  isRegion_p  (True),
-  isMasked_p  (False),
+LELAttribute::LELAttribute (uint32_t regionNdim)
+: isScalar_p  (false),
+  isReduced_p (false),
+  isRegion_p  (true),
+  isMasked_p  (false),
   shape_p     (IPosition(regionNdim, 0)),
   coords_p    (new LELLattCoord())
 {}
@@ -79,19 +79,19 @@ LELAttribute::LELAttribute (const LELAttribute& other)
 
 LELAttribute::LELAttribute (const LELAttribute& leftAttr,
 			    const LELAttribute& rightAttr,
-			    Bool matchAxes)
+			    bool matchAxes)
 {
-  isScalar_p = False;
-  isRegion_p = False;
+  isScalar_p = false;
+  isRegion_p = false;
   isMasked_p = (leftAttr.isMasked() || rightAttr.isMasked());
   if (leftAttr.isRegion()  ||  rightAttr.isRegion()) {
     throw (AipsError ("LELAttribute: regions cannot be combined here"));
   }
   if (leftAttr.isScalar()) {
     if (rightAttr.isScalar()) {
-      isScalar_p  = True;
-      isReduced_p = True;
-      isMasked_p  = False;
+      isScalar_p  = true;
+      isReduced_p = true;
+      isMasked_p  = false;
     } else {
       isReduced_p = rightAttr.isReduced();
       shape_p     = rightAttr.shape();
@@ -107,16 +107,16 @@ LELAttribute::LELAttribute (const LELAttribute& leftAttr,
       // Two arrays are combined.
       // The result is reduced if one of them is reduced.
       if (rightAttr.isReduced()) {
-	isReduced_p = True;
+	isReduced_p = true;
       }
       // Check shapes if both are defined.
       const IPosition& rShape = rightAttr.shape();
-      Bool ok = False;
+      bool ok = false;
       if (shape_p.nelements() == 0) {
 	shape_p = rShape;
-	ok = True;
+	ok = true;
       } else if (rShape.nelements() == 0) {
-	ok = True;
+	ok = true;
       }       
       if (!ok  &&  matchAxes) {
 	ok = shape_p.isEqual (rShape);
@@ -135,7 +135,7 @@ LELAttribute::LELAttribute (const LELAttribute& leftAttr,
       }
       if (rightAttr.coordinates().hasCoordinates()) {
 	if (coords_p.hasCoordinates()) {
-	  Int result = leftAttr.coordinates().compare
+	  int32_t result = leftAttr.coordinates().compare
                                                  (rightAttr.coordinates());
 	  if (matchAxes) {
 	    if (result != 0) {
@@ -179,14 +179,14 @@ LELAttribute& LELAttribute::operator= (const LELAttribute& other)
   return *this;
 }
 
-Int LELAttribute::compareCoord (const LELAttribute& other) const
+int32_t LELAttribute::compareCoord (const LELAttribute& other) const
 {
   // Both scalars is always equal.
   if (isScalar()  ||  other.isScalar()) {
     return 0;
   }
   // Compare coordinates; exit if not equal.
-  Int result = coordinates().compare (other.coordinates());
+  int32_t result = coordinates().compare (other.coordinates());
   if (result != 0) {
     return result;
   }
@@ -197,7 +197,7 @@ Int LELAttribute::compareCoord (const LELAttribute& other) const
   if (thisShape.nelements() != thatShape.nelements()) {
     return 8;
   }
-  for (uInt i=0; i<thisShape.nelements(); i++) {
+  for (uint32_t i=0; i<thisShape.nelements(); i++) {
     if (thisShape(i) != thatShape(i)) {
       if (thisShape(i) == 1  &&  thatShape(i) > 1) {
 	// This is subset of that; check if not already the other way.

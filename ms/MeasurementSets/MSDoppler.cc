@@ -40,11 +40,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSDoppler::MSDoppler():hasBeenDestroyed_p(True) { }
+MSDoppler::MSDoppler():hasBeenDestroyed_p(true) { }
 
 MSDoppler::MSDoppler(const String &tableName, 
 				     TableOption option) 
-    : MSTable<MSDopplerEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSDopplerEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     addVelDef();
@@ -67,7 +67,7 @@ void MSDoppler::addVelDef()
 	TableDesc td; 
 	addColumnToDesc(td,VELDEF);
 	addColumn(td[0]);
-	ScalarColumn<Double> velDef(*this,columnName(VELDEF));
+	ScalarColumn<double> velDef(*this,columnName(VELDEF));
 	velDef.fillColumn(0);
       }
     }
@@ -77,7 +77,7 @@ void MSDoppler::addVelDef()
 MSDoppler::MSDoppler(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSDopplerEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     addVelDef();
@@ -87,19 +87,19 @@ MSDoppler::MSDoppler(const String& tableName, const String &tableDescName,
 }
 
 MSDoppler::MSDoppler(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSDopplerEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     addVelDef();
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSDoppler(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSDoppler(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSDoppler"));
 }
 
 MSDoppler::MSDoppler(const Table &table)
-    : MSTable<MSDopplerEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSDopplerEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     addVelDef();
@@ -110,7 +110,7 @@ MSDoppler::MSDoppler(const Table &table)
 
 MSDoppler::MSDoppler(const MSDoppler &other)
     : MSTable<MSDopplerEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -131,7 +131,7 @@ MSDoppler::~MSDoppler()
            << "~MSDoppler() - Table written is not a valid MSDoppler"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -164,7 +164,7 @@ MSTableMaps MSDoppler::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

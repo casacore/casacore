@@ -43,10 +43,10 @@ RefColumn::~RefColumn()
 {}
 
 
-Bool RefColumn::isWritable() const
+bool RefColumn::isWritable() const
     { return colPtr_p->isWritable(); }
 
-Bool RefColumn::isStored() const
+bool RefColumn::isStored() const
     { return colPtr_p->isStored(); }
 
 TableRecord& RefColumn::rwKeywordSet()
@@ -74,23 +74,23 @@ void RefColumn::setShape (rownr_t rownr, const IPosition& shape,
 			  const IPosition& tileShape)
     { colPtr_p->setShape (refTabPtr_p->rootRownr(rownr), shape, tileShape); }
 
-uInt RefColumn::ndimColumn() const
+uint32_t RefColumn::ndimColumn() const
     { return colPtr_p->ndimColumn(); }
 
 IPosition RefColumn::shapeColumn() const
     { return colPtr_p->shapeColumn(); }
 
-uInt RefColumn::ndim (rownr_t rownr) const
+uint32_t RefColumn::ndim (rownr_t rownr) const
     { return colPtr_p->ndim (refTabPtr_p->rootRownr(rownr)); }
 
 IPosition RefColumn::shape(rownr_t rownr) const
     { return colPtr_p->shape (refTabPtr_p->rootRownr(rownr)); }
 
-Bool RefColumn::isDefined (rownr_t rownr) const
+bool RefColumn::isDefined (rownr_t rownr) const
     { return colPtr_p->isDefined (refTabPtr_p->rootRownr(rownr)); }
 
 
-Bool RefColumn::canChangeShape() const
+bool RefColumn::canChangeShape() const
     { return colPtr_p->canChangeShape(); }
 
 
@@ -181,12 +181,12 @@ void RefColumn::putColumnSliceCells (const RefRows& rownrs,
 ColumnCache& RefColumn::columnCache()
     { return colCache_p; }
 
-void RefColumn::setMaximumCacheSize (uInt nbytes)
+void RefColumn::setMaximumCacheSize (uint32_t nbytes)
     { colPtr_p->setMaximumCacheSize (nbytes); }
 
 
 void RefColumn::makeSortKey (Sort& sortobj, CountedPtr<BaseCompare>& cmpObj,
-			     Int order, CountedPtr<ArrayBase>& dataSave)
+			     int32_t order, CountedPtr<ArrayBase>& dataSave)
     { colPtr_p->makeRefSortKey (sortobj, cmpObj, order,
 				refTabPtr_p->rowNumbers(), dataSave); }
 

@@ -35,30 +35,30 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Matrix<Double> qfn(Int nlevels, Double thresh, Double dcoff)
+Matrix<double> qfn(int32_t nlevels, double thresh, double dcoff)
 {
   // works for odd numbers of levels
-  Matrix<Double> result(2,nlevels);
-  for (Int i=0;i<(nlevels-1);i++) {
+  Matrix<double> result(2,nlevels);
+  for (int32_t i=0;i<(nlevels-1);i++) {
     result(0,i) = -(nlevels-2)*thresh+2*i*thresh-dcoff;
   }
-  for (Int i=0;i<nlevels;i++) {
+  for (int32_t i=0;i<nlevels;i++) {
     result(1,i) = -(nlevels-1)/2 + i;
   }
   return result;
 }
 
-void showTable(const Vector<Double> rs, const Vector<Double> rhos,
+void showTable(const Vector<double> rs, const Vector<double> rhos,
 	       VanVleck &vv)
 {
   cout.precision(9);
-  for (uInt i=0;i<rs.nelements();i++) {
+  for (uint32_t i=0;i<rs.nelements();i++) {
     cout << i << " " << rs[i] << " " << rhos[i] 
 	 << " : " << vv.r(rs[i]) << endl;
   }
 }
 
-void showThresh(VanVleck &vv, Int n, Double zerolag)
+void showThresh(VanVleck &vv, int32_t n, double zerolag)
 {
   zerolag *= 16.0;
   cout << n << " : " << zerolag << " -> " << vv.thresh(n, zerolag) << endl;
@@ -73,12 +73,12 @@ int main() {
       //     zero-mean input signals with voltage thresholds set 
       //     at the optimal values of +/- ~0.612003 sigma.)
 
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       //      qx = qfn(3,0.61200318096,0.0);
       //      qy = qx;
       //      vv.setQuantization(qx,qy);
       vv.setEquiSpaced(0.61200318096, 0.61200318096, 0.0, 0.0, 3);
-      Vector<Double> rs, rhos;
+      Vector<double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
       cout << "Prediction : "
@@ -93,12 +93,12 @@ int main() {
       //     were set non-optimally at 0.7 sigma and there were a d.c.
       //     offset of -.02 sigma in the y-inputs
 
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       //qx = qfn(3,.6,.01);
       //qy = qfn(3,.7,-.02);
       //vv.setQuantization(qx,qy);
       vv.setEquiSpaced(.6, .7, .01, -.02, 3);
-      Vector<Double> rs, rhos;
+      Vector<double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
     }
@@ -110,11 +110,11 @@ int main() {
       //     the 3-level x-quantizer's input signal and the 9-level
       //     y-quantizer's input signal.)
 
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       qx = qfn(3,0.61200318096,0.0);
       qy = qfn(9,0.26691110435,0.0);
       //vv.setQuantization(qx,qy);
-      //Vector<Double> rs, rhos;
+      //Vector<double> rs, rhos;
       //vv.getTable(rs,rhos);
       //showTable(rs,rhos,vv);
     }
@@ -126,12 +126,12 @@ int main() {
       //     zero-mean input signals with voltage thresholds set 
       //     at the optimal values of +/- (2k-1)*0.266911 sigma, k=1,2,3,4.)
 
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       //qx = qfn(9,0.26691110435,0.);
       //qy = qx;
       //vv.setQuantization(qx,qy);
       vv.setEquiSpaced(0.26691110435, 0.26691110435, 0.0, 0.0, 9);
-      Vector<Double> rs, rhos;
+      Vector<double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
       cout << "Prediction : "
@@ -142,30 +142,30 @@ int main() {
       // how long does it take to set up the interpolation fn
       // do it 100 times for the 9x9 optimized case
       Timer timer;
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       // qx = qfn(9,0.26691110435,0.);
       // qy = qx;
-      for (uInt i=0;i<100;i++) {
+      for (uint32_t i=0;i<100;i++) {
 	  // vv.setQuantization(qx,qy);
 	  vv.setEquiSpaced(0.26691110435, 0.26691110435, 0.0, 0.0, 9);
       }
       timer.show("Set up 9x9 100 times");
       timer.mark();
       // divide up -1 to 1 by 80000 segments and get corresponding one
-      Double rho = -1.0;
-      Double incr = 2.0/80001.0;
-      for (uInt i=0;i<80001;i++) {
+      double rho = -1.0;
+      double incr = 2.0/80001.0;
+      for (uint32_t i=0;i<80001;i++) {
 	vv.r(rho);
 	rho += incr;
       }
       timer.show("After 80000 calls to ()");
       // the chebyshev polynomials for size=65 and
       // corresponding rs from vv interpolator
-      Double twoN = 2.0*65.0;
-      Double denom = cos(C::pi/twoN);
-      for (uInt i=0;i<65;i++) {
-	Double rho = -cos(Double(2*i+1)*C::pi/twoN)/denom;
-	Double r = vv.r(rho);
+      double twoN = 2.0*65.0;
+      double denom = cos(C::pi/twoN);
+      for (uint32_t i=0;i<65;i++) {
+	double rho = -cos(double(2*i+1)*C::pi/twoN)/denom;
+	double r = vv.r(rho);
 	cout << i << " " << r << " " << rho << endl;
       }
     }
@@ -174,19 +174,19 @@ int main() {
       // how long does it take to set up the interpolation fn
       // do it 100 times for the 3x3 optimized case
       Timer timer;
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       // qx = qfn(3,0.61200318096,0.0);
       // qy = qx;
-      for (uInt i=0;i<100;i++) {
+      for (uint32_t i=0;i<100;i++) {
 	  // vv.setQuantization(qx,qy);
 	  vv.setEquiSpaced(0.61200318096, 0.61200318096, 0.0, 0.0, 3);
       }
       timer.show("Set up 3x3 100 times");
       timer.mark();
       // divide up -1 to 1 by 80000 segments and get corresponding one
-      Double rho = -1.0;
-      Double incr = 2.0/80001.0;
-      for (uInt i=0;i<80001;i++) {
+      double rho = -1.0;
+      double incr = 2.0/80001.0;
+      for (uint32_t i=0;i<80001;i++) {
 	vv.r(rho);
 	rho += incr;
       }
@@ -496,8 +496,8 @@ int main() {
       showThresh(vv,9,0.1341681);
       showThresh(vv,9,0.1254652);
 
-      Double thresh = 0.1254652*16.0;
-      Double result = vv.thresh(9,thresh);
+      double thresh = 0.1254652*16.0;
+      double result = vv.thresh(9,thresh);
       cout << thresh << " -> "
 	   << result << " -> "
 	   << vv.predict(9,result) << endl;
@@ -507,22 +507,22 @@ int main() {
       cout << thresh << " -> "
 	   << result << " -> "
 	   << vv.predict(9,result) << endl;
-      Matrix<Double> qx, qy;
+      Matrix<double> qx, qy;
       // qx = qfn(9,result,0.);
       // qy = qx;
       // vv.setQuantization(qx,qy);
       vv.setEquiSpaced(result, result, 0.0, 0.0, 9);
-      Vector<Double> rs, rhos;
+      Vector<double> rs, rhos;
       vv.getTable(rs,rhos);
       showTable(rs,rhos,vv);
       cout << "vv.r(zerolag) : " << vv.r(thresh) << endl;
 
       // test of dcoff
-      Double zerolag = 0.4925;
-      Double bias = 6.7e-4;
+      double zerolag = 0.4925;
+      double bias = 6.7e-4;
       cout << "vv.dcoff for n==3 and zerolag==" << zerolag
 	   << " and bias == " << bias << endl;
-      Double dcoffset, threshold;
+      double dcoffset, threshold;
       cout << "return value : " <<
 	  vv.dcoff(dcoffset, threshold, 3, zerolag, bias) << endl;
       cout << "dcoffset : " << dcoffset << endl;

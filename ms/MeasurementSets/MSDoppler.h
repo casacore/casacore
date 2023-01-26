@@ -92,7 +92,7 @@ public:
     MSDoppler (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
     MSDoppler (SetupNewTable &newTab, rownr_t nrrow = 0,
-		    Bool initialize = False);
+		    bool initialize = false);
     MSDoppler (const Table &table);
     MSDoppler (const MSDoppler &other);
     // </group>
@@ -130,7 +130,7 @@ private:
     void addVelDef();
 
     // required by the need to throw an exception in the destructor
-    Bool hasBeenDestroyed_p;
+    bool hasBeenDestroyed_p;
 
 };
 

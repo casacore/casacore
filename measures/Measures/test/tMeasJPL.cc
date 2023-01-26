@@ -61,7 +61,7 @@ int main()
       os << "---------------------------" << endl;
 
       os << setprecision(9);
-      Vector<Double> val(6);
+      Vector<double> val(6);
 
       os << "DE200: " << dat << endl;
       os << "---------------------------" << endl;
@@ -71,7 +71,7 @@ int main()
       os << "Mercury:    " << val << endl;
       MeasJPL::get(val, MeasJPL::DE200, MeasJPL::VENUS, dat);
       os << "Venus:      " << val << endl;
-      for (uInt i=0; i<3; i++) {
+      for (uint32_t i=0; i<3; i++) {
         mvd1(i) = val(i);
       }
       mvd1.adjust();
@@ -95,7 +95,7 @@ int main()
     Vector<String> openTables = PlainTable::tableCache().getTableNames();
     if (openTables.size() > 0){
       cout << "ERROR: cache not empty!" << endl;
-      for (uInt i=0; i<openTables.size(); ++i) {
+      for (uint32_t i=0; i<openTables.size(); ++i) {
 	cout << "    " << i << ": \"" <<  openTables[i] << "\"" << endl;
       }
     }
@@ -109,7 +109,7 @@ int main()
       ostr << dd;
       ofstream os(("tMeasJPL_tmp.out_b" + ostr.str()).c_str());
       os << setprecision(9);
-      Vector<Double> val(6);
+      Vector<double> val(6);
 
       MeasJPL::get(val, MeasJPL::DE200, MeasJPL::MOON, dat);
       os << "Moon:       " << val << endl;

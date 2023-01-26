@@ -97,7 +97,7 @@ public:
   // but is not to indicate it can be changed. </note>
   // <group>
   SubLattice (const Lattice<T>& lattice, AxesSpecifier=AxesSpecifier());
-  SubLattice (Lattice<T>& lattice, Bool writableIfPossible,
+  SubLattice (Lattice<T>& lattice, bool writableIfPossible,
 	      AxesSpecifier=AxesSpecifier());
   // </group>
 
@@ -110,7 +110,7 @@ public:
   // but is not to indicate it can be changed. </note>
   // <group>
   SubLattice (const MaskedLattice<T>& lattice, AxesSpecifier=AxesSpecifier());
-  SubLattice (MaskedLattice<T>& lattice, Bool writableIfPossible,
+  SubLattice (MaskedLattice<T>& lattice, bool writableIfPossible,
 	      AxesSpecifier=AxesSpecifier());
   // </group>
 
@@ -126,11 +126,11 @@ public:
   SubLattice (const Lattice<T>& lattice, const LatticeRegion& region,
 	      AxesSpecifier=AxesSpecifier());
   SubLattice (Lattice<T>& lattice, const LatticeRegion& region,
-	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+	      bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   SubLattice (const MaskedLattice<T>& lattice, const LatticeRegion& region,
 	      AxesSpecifier=AxesSpecifier());
   SubLattice (MaskedLattice<T>& lattice, const LatticeRegion& region,
-	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+	      bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   // </group>
   
   // Create a SubLattice from the given (Masked)Lattice and slicer.
@@ -142,11 +142,11 @@ public:
   SubLattice (const Lattice<T>& lattice, const Slicer& slicer,
 	      AxesSpecifier=AxesSpecifier());
   SubLattice (Lattice<T>& lattice, const Slicer& slicer,
-	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+	      bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   SubLattice (const MaskedLattice<T>& lattice, const Slicer& slicer,
 	      AxesSpecifier=AxesSpecifier());
   SubLattice (MaskedLattice<T>& lattice, const Slicer& slicer,
-  	      Bool writableIfPossible, AxesSpecifier=AxesSpecifier());
+  	      bool writableIfPossible, AxesSpecifier=AxesSpecifier());
   // </group>
   
   // Copy constructor (reference semantics).
@@ -162,21 +162,21 @@ public:
 
   // Is the lattice masked?
   // It is if its parent lattice or its region is masked.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // A SubLattice is persistent if no region is applied to the parent lattice.
   // That is true if the region has the same shape as the parent lattice
   // and the region has no mask.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // Is the SubLattice paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the SubLattice writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Handle locking of the SubLattice which is delegated to its parent.
   // <br>It is strongly recommended to use class
@@ -184,9 +184,9 @@ public:
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -208,23 +208,23 @@ public:
   virtual void reopen();
 
   // Does the SubLattice have a pixelmask?
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.
   // An exception is thrown if the SubLattice does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Use the given mask as the pixelmask.
   // If another mask was already used, the new one will be used instead.
   // It checks if its shape matches the shape of the sublattice.
-  // <br>If <code>mayExist=False</code>, setting the pixelmask is only
+  // <br>If <code>mayExist=false</code>, setting the pixelmask is only
   // possible if the underlying lattice does not have a pixelmask.
-  // <br>If <code>mayExist=True</code>, the resulting pixelmask is the
+  // <br>If <code>mayExist=true</code>, the resulting pixelmask is the
   // AND of the given pixelmask and the pixelmask of the underlying lattice.
-  void setPixelMask (const Lattice<Bool>& pixelMask, Bool mayExist);
+  void setPixelMask (const Lattice<bool>& pixelMask, bool mayExist);
 
   // Get a pointer the region/mask object describing this sublattice.
   virtual const LatticeRegion* getRegionPtr() const;
@@ -234,11 +234,11 @@ public:
   virtual IPosition shape() const;
   
   // Return the name of the parent lattice.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Get or put a single element in the lattice.
   // <group>
@@ -246,17 +246,17 @@ public:
   virtual void putAt (const T& value, const IPosition& where);
   // </group>
   
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
   virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-					     Bool useRef) const;
+					     bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -264,10 +264,10 @@ public:
 			   const IPosition& stride);
   
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Set the axes mapping from the specification.
   const AxesMapping& getAxesMap() const
@@ -307,7 +307,7 @@ protected:
   // It takes over the pointer and deletes the object in the destructor.
   void setPtr (Lattice<T>* latticePtr,
 	       MaskedLattice<T>* maskLatPtr,
-	       Bool writableIfPossible);
+	       bool writableIfPossible);
 
   // Set the axes mapping from the specification.
   void setAxesMap (const AxesSpecifier&);
@@ -316,28 +316,28 @@ protected:
 private:
   // Get mask data from region and mask.
   // <group>
-  Bool getRegionDataSlice (Array<Bool>& buffer, const Slicer& section);
-  Bool getMaskDataSlice (Array<Bool>& buffer, const Slicer& section);
+  bool getRegionDataSlice (Array<bool>& buffer, const Slicer& section);
+  bool getMaskDataSlice (Array<bool>& buffer, const Slicer& section);
   // </group>
 
   // And tmpbuf into buffer. If buffer is a reference, first a copy is made.
-  void andMask (Array<Bool>& buffer, Bool ref,
-		const Array<Bool>& tmpbuf) const;
+  void andMask (Array<bool>& buffer, bool ref,
+		const Array<bool>& tmpbuf) const;
 
   Lattice<T>*       itsLatticePtr;
   MaskedLattice<T>* itsMaskLatPtr;
   LatticeRegion     itsRegion;
-  Bool              itsWritable;
-  Bool              itsHasLattPMask;   //# has underlying lattice a pixelmask?
-  Lattice<Bool>*    itsPixelMask;      //# AND of lattice and own pixelmask
-  Lattice<Bool>*    itsOwnPixelMask;   //# own pixelmask
+  bool              itsWritable;
+  bool              itsHasLattPMask;   //# has underlying lattice a pixelmask?
+  Lattice<bool>*    itsPixelMask;      //# AND of lattice and own pixelmask
+  Lattice<bool>*    itsOwnPixelMask;   //# own pixelmask
   AxesSpecifier     itsAxesSpec;
   AxesMapping       itsAxesMap;
 };
 
 //# Declare extern templates for often used types.
-  extern template class SubLattice<Bool>;
-  extern template class SubLattice<Float>;
+  extern template class SubLattice<bool>;
+  extern template class SubLattice<float>;
 
 
 } //# NAMESPACE CASACORE - END

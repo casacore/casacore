@@ -42,14 +42,14 @@ int main()
     try {
 	// to from FITSHeader
 	String ctype, cunit;
-	Double crval, cdelt, crpix, altrval, altrpix;
-	Int velref;
-	Bool haveAlt;
+	double crval, cdelt, crpix, altrval, altrpix;
+	int32_t velref;
+	bool haveAlt;
 	String specsys;
-	Double restFreq = 1420.4058e6;
-	Double refFreq = 1400.0e6;
-	Double freqInc = 2.5e6;
-	Double refPix = 512.0;
+	double restFreq = 1420.4058e6;
+	double refFreq = 1400.0e6;
+	double freqInc = 2.5e6;
+	double refPix = 512.0;
 	MFrequency::Types refFrame = MFrequency::GALACTO;
 	MDoppler::Types velPref = MDoppler::RADIO;
 	LogIO logger;
@@ -59,7 +59,7 @@ int main()
 				      altrpix, velref, restFreq, 
 				      specsys, logger,
 				      refFreq, refPix, freqInc,
-				      refFrame, True, velPref));
+				      refFrame, true, velPref));
 	// Actually construct the header record
 	Record header;
 	if (restFreq > 0) {
@@ -87,7 +87,7 @@ int main()
 	
 	// dummy primary header axes
 	Vector<String> ctypeVec(2), cunitVec(2);
-	Vector<Double> crvalVec(2), crpixVec(2), cdeltVec(2);
+	Vector<double> crvalVec(2), crpixVec(2), cdeltVec(2);
 	
 	ctypeVec(0) = ctype;
 	crvalVec(0) = crval;
@@ -110,9 +110,9 @@ int main()
 	header.define("cunit", cunitVec);
 	
 	// and the other direction
-	Int whichAxis;
-	Double refPixOut, refFreqOut, freqIncOut, restFreqOut;
-	Vector<Double> freqs;
+	int32_t whichAxis;
+	double refPixOut, refFreqOut, freqIncOut, restFreqOut;
+	Vector<double> freqs;
 	MFrequency::Types refFrameOut = MFrequency::GALACTO;
 	MDoppler::Types velPrefOut = MDoppler::RADIO;
 	AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis,
@@ -126,9 +126,9 @@ int main()
 							  logger,
 							  header,
 							  'c',
-							  False));
+							  false));
 	AlwaysAssertExit(whichAxis==0);
-	// note: the following is only true when onRelative==False in 
+	// note: the following is only true when onRelative==false in 
 	// fromFITSHeader
 	AlwaysAssertExit(near(refPix,refPixOut));
 	AlwaysAssertExit(near(refFreq,refFreqOut));
@@ -138,9 +138,9 @@ int main()
 	AlwaysAssertExit(near(restFreq,restFreqOut));
 	
 	// tags from/to frames
-	for (uInt i=0;i<MFrequency::N_Types; i++) {
+	for (uint32_t i=0;i<MFrequency::N_Types; i++) {
 	    String tag;
-	    Int velref;
+	    int32_t velref;
 	    MFrequency::Types inFrame, outFrame;
 	    inFrame = MFrequency::Types(i);
 	    if (!FITSSpectralUtil::tagFromFrame(tag, velref, inFrame)) {
@@ -173,13 +173,13 @@ int main()
     try { // same as above, however with wavelength spectral axis
 	// to from FITSHeader
       String ctype, cunit, specsys;
-	Double crval, cdelt, crpix, altrval, altrpix;
-	Int velref;
-	Bool haveAlt;
-	Double restFreq = 1420.4058e6;
-	Double refFreq = 1400.0e6;
-	Double freqInc = 2.5e6;
-	Double refPix = 512.0;
+	double crval, cdelt, crpix, altrval, altrpix;
+	int32_t velref;
+	bool haveAlt;
+	double restFreq = 1420.4058e6;
+	double refFreq = 1400.0e6;
+	double freqInc = 2.5e6;
+	double refPix = 512.0;
 	MFrequency::Types refFrame = MFrequency::GALACTO;
 	MDoppler::Types velPref = MDoppler::RADIO;
 	LogIO logger;
@@ -189,8 +189,8 @@ int main()
 				      altrpix, velref, restFreq, 
 				      specsys, logger,
 				      refFreq, refPix, freqInc,
-				      refFrame, False, velPref,
-				      True)); // wavelength preferred
+				      refFrame, false, velPref,
+				      true)); // wavelength preferred
 	// Actually construct the header record
 	Record header;
 	if (restFreq > 0) {
@@ -218,7 +218,7 @@ int main()
 
 	// dummy primary header axes
 	Vector<String> ctypeVec(2), cunitVec(2);
-	Vector<Double> crvalVec(2), crpixVec(2), cdeltVec(2);
+	Vector<double> crvalVec(2), crpixVec(2), cdeltVec(2);
 	
 	ctypeVec(0) = ctype;
 	crvalVec(0) = crval;
@@ -241,9 +241,9 @@ int main()
 	header.define("cunit", cunitVec);
 	
 	// and the other direction
-	Int whichAxis;
-	Double refPixOut, refFreqOut, freqIncOut, restFreqOut;
-	Vector<Double> freqs;
+	int32_t whichAxis;
+	double refPixOut, refFreqOut, freqIncOut, restFreqOut;
+	Vector<double> freqs;
 	MFrequency::Types refFrameOut = MFrequency::GALACTO;
 	MDoppler::Types velPrefOut = MDoppler::RADIO;
 	AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis,
@@ -257,9 +257,9 @@ int main()
 							  logger,
 							  header,
 							  'c',
-							  False));
+							  false));
 	AlwaysAssertExit(whichAxis==0);
-	// note: the following is only true when onRelative==False in 
+	// note: the following is only true when onRelative==false in 
 	// fromFITSHeader
 	AlwaysAssertExit(near(refPix,refPixOut));
 	AlwaysAssertExit(near(refFreq,refFreqOut));
@@ -274,13 +274,13 @@ int main()
     try { // same as above, however with air wavelength spectral axis
     	// to from FITSHeader
     	String ctype, cunit, specsys;
-    	Double crval, cdelt, crpix, altrval, altrpix;
-    	Int velref;
-    	Bool haveAlt;
-    	Double restFreq = 1420.4058e6;
-    	Double refFreq = 1400.0e6;
-    	Double freqInc = 2.5e6;
-    	Double refPix = 512.0;
+    	double crval, cdelt, crpix, altrval, altrpix;
+    	int32_t velref;
+    	bool haveAlt;
+    	double restFreq = 1420.4058e6;
+    	double refFreq = 1400.0e6;
+    	double freqInc = 2.5e6;
+    	double refPix = 512.0;
     	MFrequency::Types refFrame = MFrequency::GALACTO;
     	MDoppler::Types velPref = MDoppler::RADIO;
     	LogIO logger;
@@ -290,8 +290,8 @@ int main()
     					altrpix, velref, restFreq,
     					specsys, logger,
     					refFreq, refPix, freqInc,
-    					refFrame, False, velPref,
-    					True, True)); // air wavelength preferred
+    					refFrame, false, velPref,
+    					true, true)); // air wavelength preferred
     	// Actually construct the header record
     	Record header;
     	if (restFreq > 0) {
@@ -319,7 +319,7 @@ int main()
 
     	// dummy primary header axes
     	Vector<String> ctypeVec(2), cunitVec(2);
-    	Vector<Double> crvalVec(2), crpixVec(2), cdeltVec(2);
+    	Vector<double> crvalVec(2), crpixVec(2), cdeltVec(2);
 
     	ctypeVec(0) = ctype;
     	crvalVec(0) = crval;
@@ -342,9 +342,9 @@ int main()
     	header.define("cunit", cunitVec);
 
     	// and the other direction
-    	Int whichAxis;
-    	Double refPixOut, refFreqOut, freqIncOut, restFreqOut;
-    	Vector<Double> freqs;
+    	int32_t whichAxis;
+    	double refPixOut, refFreqOut, freqIncOut, restFreqOut;
+    	Vector<double> freqs;
     	MFrequency::Types refFrameOut = MFrequency::GALACTO;
     	MDoppler::Types velPrefOut = MDoppler::RADIO;
     	AlwaysAssertExit(FITSSpectralUtil::fromFITSHeader(whichAxis,
@@ -358,9 +358,9 @@ int main()
     			logger,
     			header,
     			'c',
-    			False));
+    			false));
     	AlwaysAssertExit(whichAxis==0);
-    	// note: the following is only true when onRelative==False in
+    	// note: the following is only true when onRelative==false in
     	// fromFITSHeader
     	AlwaysAssertExit(near(refPix,refPixOut));
     	AlwaysAssertExit(near(refFreq,refFreqOut, 1E-11));

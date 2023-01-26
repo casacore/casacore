@@ -88,7 +88,7 @@ void MBaseline::assure(const Measure& in) {
   }
 }
 
-MBaseline::Types MBaseline::castType(uInt tp) {
+MBaseline::Types MBaseline::castType(uint32_t tp) {
   MBaseline::checkMyTypes();
   AlwaysAssert(tp < MBaseline::N_Types, AipsError);
   return static_cast<MBaseline::Types>(tp);
@@ -123,14 +123,14 @@ const String &MBaseline::showType(MBaseline::Types tp) {
   return tname[tp];
 }
 
-const String &MBaseline::showType(uInt tp) {
+const String &MBaseline::showType(uint32_t tp) {
   return MBaseline::showType(MBaseline::castType(tp));
 }
 
-const String* MBaseline::allMyTypes(Int &nall, Int &nextra,
-                                    const uInt *&typ) {
-  static const Int N_name  = 24;
-  static const Int N_extra = 0;
+const String* MBaseline::allMyTypes(int32_t &nall, int32_t &nextra,
+                                    const uint32_t *&typ) {
+  static const int32_t N_name  = 24;
+  static const int32_t N_extra = 0;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -157,7 +157,7 @@ const String* MBaseline::allMyTypes(Int &nall, Int &nextra,
     "TOPO",
     "ICRS" };
   
-  static const uInt oname[N_name] = {
+  static const uint32_t oname[N_name] = {
     MBaseline::J2000,
     MBaseline::JMEAN,
     MBaseline::JTRUE,
@@ -190,8 +190,8 @@ const String* MBaseline::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String* MBaseline::allTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ) const {
+const String* MBaseline::allTypes(int32_t &nall, int32_t &nextra,
+                                  const uint32_t *&typ) const {
   return MBaseline::allMyTypes(nall, nextra, typ);
 }
 
@@ -201,27 +201,27 @@ void MBaseline::checkTypes() const {
 
 void MBaseline::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
-    Int nall, nex;
-    const uInt *typ;
+    first = false;
+    int32_t nall, nex;
+    const uint32_t *typ;
     const String *const tps = MBaseline::allMyTypes(nall,nex, typ);
     MBaseline::Types tp;
-    for (Int i=0; i<nall; i++) {
+    for (int32_t i=0; i<nall; i++) {
       AlwaysAssert(MBaseline::getType(tp, MBaseline::showType(typ[i])) &&
-		   tp == Int(typ[i]) &&
+		   tp == int32_t(typ[i]) &&
 		   MBaseline::getType(tp, tps[i]) &&
-		   tp == Int(typ[i]), AipsError);
+		   tp == int32_t(typ[i]), AipsError);
     }
-    for (Int i=0; i<N_Types; i++) {
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(MBaseline::getType(tp, MBaseline::showType(i)) &&
 		   tp == i, AipsError);
     }
     // Check if baseline types are identical to direction types
-    AlwaysAssert(static_cast<Int>(MBaseline::N_Types) == 
-		 static_cast<Int>(MDirection::N_Types), AipsError);
-    for (Int i=0; i<N_Types; i++) {
+    AlwaysAssert(static_cast<int32_t>(MBaseline::N_Types) == 
+		 static_cast<int32_t>(MDirection::N_Types), AipsError);
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(MBaseline::showType(i) == MDirection::showType(i),
 		   AipsError);
     }
@@ -230,50 +230,50 @@ void MBaseline::checkMyTypes() {
 
 MBaseline::Types MBaseline::fromDirType(const MDirection::Types in) {
   MBaseline::checkMyTypes();
-  return static_cast<MBaseline::Types>(static_cast<uInt>(in));
+  return static_cast<MBaseline::Types>(static_cast<uint32_t>(in));
 }
 
 MDirection::Types MBaseline::toDirType(const MBaseline::Types in) {
   MBaseline::checkMyTypes();
-  return static_cast<MDirection::Types>(static_cast<uInt>(in));
+  return static_cast<MDirection::Types>(static_cast<uint32_t>(in));
 }
 
-Bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+bool MBaseline::getType(MBaseline::Types &tp, const String &in) {
+  const uint32_t *oname;
+  int32_t nall, nex;
   const String *tname = MBaseline::allMyTypes(nall, nex, oname);
   
-  Int i = Measure::giveMe(in, nall, tname);
+  int32_t i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) return False;
+  if (i>=nall) return false;
   else tp = static_cast<MBaseline::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
+bool MBaseline::giveMe(MBaseline::Ref &mr, const String &in) {
   MBaseline::Types tp;
   if (MBaseline::getType(tp, in)) mr = MBaseline::Ref(tp);
   else {
     mr = MBaseline::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MBaseline::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MBaseline*>(&in)) return False;
+bool MBaseline::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MBaseline*>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MBaseline::setRefString(const String &in) {
+bool MBaseline::setRefString(const String &in) {
   MBaseline::Types tp;
   if (MBaseline::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MBaseline::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MBaseline::getDefaultType() const {
@@ -284,15 +284,15 @@ String MBaseline::getRefString() const {
   return MBaseline::showType(ref.getType());
 }
 
-Quantum<Vector<Double> > MBaseline::get(const Unit &inunit) const {
-    return Quantum<Vector<Double> >(data.getValue(),"m").get(inunit);
+Quantum<Vector<double> > MBaseline::get(const Unit &inunit) const {
+    return Quantum<Vector<double> >(data.getValue(),"m").get(inunit);
 }
 
-Quantum<Vector<Double> > MBaseline::getAngle() const {
+Quantum<Vector<double> > MBaseline::getAngle() const {
     return (data.getAngle());
 }
 
-Quantum<Vector<Double> > MBaseline::getAngle(const Unit &inunit) const {
+Quantum<Vector<double> > MBaseline::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 

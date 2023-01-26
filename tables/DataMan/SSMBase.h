@@ -69,7 +69,7 @@ class SSMStringHandler;
 // chunks called buckets. There are 3 types of buckets:
 // <ul>
 //  <li> Data buckets containing the fixed length data (scalars and
-//       direct arrays of data type Int, Float, Bool, etc.).
+//       direct arrays of data type int32_t, float, bool, etc.).
 //       For variable shaped data (strings and indirect arrays) they
 //       contain references to the actual data position in the
 //       string buckets or in an external file.
@@ -90,7 +90,7 @@ class SSMStringHandler;
 // but when columns are added, new bucket streams might be created.
 // <p>
 // For example, we have an SSM with a bucket size of 100 bytes.
-// There are 5 Int columns (A,B,C,D,E) each taking 4 bytes per row.
+// There are 5 int32_t columns (A,B,C,D,E) each taking 4 bytes per row.
 // Column A, B, C, and D are stored in bucket stream 1, while column
 // E is stored in bucket stream 2. So in stream 1 each bucket can hold
 // 6 rows, while in stream 2 each bucket can hold 25 rows.
@@ -109,7 +109,7 @@ class SSMStringHandler;
 //       Note that column data in a bucket are adjacent, which is done
 //       to make it easier to use the
 //       <linkto class=ColumnCache>ColumnCache</linkto> object in SSMColumn
-//       and to be able to efficiently store Bool values as bits.
+//       and to be able to efficiently store bool values as bits.
 //  <li> Each column has an <linkto class=SSMColumn>SSMColumn</linkto>
 //       object knowing how many bits each data cell takes in a bucket.
 //       The SSMColumn objects handle all access to data in the columns
@@ -157,13 +157,13 @@ class SSMBase: public DataManager
 {
 public:
   // Create a Standard storage manager with default name SSM.
-  explicit SSMBase (Int aBucketSize=0,
-		    uInt aCacheSize=1);
+  explicit SSMBase (int32_t aBucketSize=0,
+		    uint32_t aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   explicit SSMBase (const String& aDataManName,
-		    Int aBucketSize=0,
-		    uInt aCacheSize=1);
+		    int32_t aBucketSize=0,
+		    uint32_t aCacheSize=1);
   
   // Create a Standard storage manager with the given name.
   // The specifications are part of the record (as created by dataManagerSpec).
@@ -193,22 +193,22 @@ public:
 
   // Modify data manager properties.
   // Only MaxCacheSize can be used. It is similar to function setCacheSize
-  // with <src>canExceedNrBuckets=False</src>.
+  // with <src>canExceedNrBuckets=false</src>.
   virtual void setProperties (const Record& spec);
 
   // Get the version of the class.
-  uInt getVersion() const;
+  uint32_t getVersion() const;
   
   // Set the cache size (in buckets).
-  // If <src>canExceedNrBuckets=True</src>, the given cache size can be
+  // If <src>canExceedNrBuckets=true</src>, the given cache size can be
   // larger than the nr of buckets in the file. In this way the cache can
   // be made large enough for a future file extension.
   // Otherwise, it is limited to the actual number of buckets. This is useful
   // if one wants the entire file to be cached.
-  void setCacheSize (uInt aCacheSize, Bool canExceedNrBuckets=True);
+  void setCacheSize (uint32_t aCacheSize, bool canExceedNrBuckets=true);
 
   // Get the current cache size (in buckets).
-  uInt getCacheSize() const;
+  uint32_t getCacheSize() const;
   
   // Clear the cache used by this storage manager.
   // It will flush the cache as needed and remove all buckets from it.
@@ -224,22 +224,22 @@ public:
   void showBaseStatistics (ostream & anOs) const;
 
   // Get the bucket size.
-  uInt getBucketSize() const;
+  uint32_t getBucketSize() const;
   
   // Get the number of rows in this storage manager.
   rownr_t getNRow() const;
   
   // The storage manager can add rows.
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
   
   // The storage manager can delete rows.
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
   
   // The storage manager can add columns.
-  virtual Bool canAddColumn() const;
+  virtual bool canAddColumn() const;
   
   // The storage manager can delete columns.
-  virtual Bool canRemoveColumn() const;
+  virtual bool canRemoveColumn() const;
   
   // Make the object from the type name string.
   // This function gets registered in the DataManager "constructor" map.
@@ -248,10 +248,10 @@ public:
 				  const Record& spec);
   
   // Get access to the given column.
-  SSMColumn& getColumn (uInt aColNr);
+  SSMColumn& getColumn (uint32_t aColNr);
   
   // Get access to the given Index.
-  SSMIndex& getIndex (uInt anIdxNr);
+  SSMIndex& getIndex (uint32_t anIdxNr);
   
   // Make the current bucket in the cache dirty (i.e. something has been
   // changed in it and it needs to be written when removed from the cache).
@@ -265,21 +265,21 @@ public:
   // Find the bucket containing the column and row and return the pointer
   // to the beginning of the column data in that bucket.
   // It also fills in the start and end row for the column data.
-  char* find (rownr_t aRowNr,     uInt aColNr, 
+  char* find (rownr_t aRowNr,     uint32_t aColNr, 
 	      rownr_t& aStartRow, rownr_t& anEndRow,
               const String& colName);
 
   // Add a new bucket and get its bucket number.
-  uInt getNewBucket();
+  uint32_t getNewBucket();
 
   // Read the bucket (if needed) and return the pointer to it.
-  char* getBucket (uInt aBucketNr);
+  char* getBucket (uint32_t aBucketNr);
 
   // Remove a bucket from the bucket cache.
-  void removeBucket (uInt aBucketNr);
+  void removeBucket (uint32_t aBucketNr);
 
   // Get rows per bucket for the given column.
-  uInt getRowsPerBucket (uInt aColumn) const;
+  uint32_t getRowsPerBucket (uint32_t aColumn) const;
 
   // Return a pointer to the (one and only) StringHandler object.
   SSMStringHandler* getStringHandler();
@@ -305,11 +305,11 @@ private:
   void recreate();
   
   // The data manager supports use of MultiFile.
-  virtual Bool hasMultiFileSupport() const;
+  virtual bool hasMultiFileSupport() const;
 
   // Flush and optionally fsync the data.
-  // It returns a True status if it had to flush (i.e. if data have changed).
-  virtual Bool flush (AipsIO&, Bool doFsync);
+  // It returns a true status if it had to flush (i.e. if data have changed).
+  virtual bool flush (AipsIO&, bool doFsync);
   
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.
@@ -337,10 +337,10 @@ private:
 
   // Determine and set the bucket size.
   // It returns the number of rows per bucket.
-  uInt setBucketSize();
+  uint32_t setBucketSize();
   
   // Get the number of indices in use.
-  uInt getNrIndices() const;
+  uint32_t getNrIndices() const;
   
   // Add rows to the storage manager.
   // Per column it extends number of rows.
@@ -401,10 +401,10 @@ private:
   rownr_t         itsNrRows;
   
   // Column offset
-  Block<uInt> itsColumnOffset;
+  Block<uint32_t> itsColumnOffset;
 
   // Row Index ID containing all the columns in a bucket
-  Block<uInt> itsColIndexMap;
+  Block<uint32_t> itsColIndexMap;
 
   // Will contain all indices
   PtrBlock<SSMIndex*>  itsPtrIndex;
@@ -419,54 +419,54 @@ private:
   SSMStringHandler* itsStringHandler;
 
   // The persistent cache size.
-  uInt itsPersCacheSize;
+  uint32_t itsPersCacheSize;
   
   // The actual cache size.
-  uInt itsCacheSize;
+  uint32_t itsCacheSize;
   
   // The initial number of buckets in the cache.
-  uInt itsNrBuckets;
+  uint32_t itsNrBuckets;
 
   // Nr of buckets needed for index.
-  uInt itsNrIdxBuckets;
+  uint32_t itsNrIdxBuckets;
 
   // Number of the first index bucket
-  Int itsFirstIdxBucket;
+  int32_t itsFirstIdxBucket;
 
   // Offset of index in first bucket.
   // If >0, the index fits in a single bucket.
-  uInt itsIdxBucketOffset;
+  uint32_t itsIdxBucketOffset;
 
   // Number of the first String Bucket
-  Int itsLastStringBucket;
+  int32_t itsLastStringBucket;
 
   // length of index memoryblock
-  uInt itsIndexLength;
+  uint32_t itsIndexLength;
 
   // The nr of free buckets.
-  uInt itsFreeBucketsNr;
+  uint32_t itsFreeBucketsNr;
   
   // The first free bucket.
-  Int itsFirstFreeBucket;
+  int32_t itsFirstFreeBucket;
   
   // The bucket size.
-  uInt itsBucketSize;
-  uInt itsBucketRows;
+  uint32_t itsBucketSize;
+  uint32_t itsBucketRows;
   
   // The assembly of all columns.
   PtrBlock<SSMColumn*> itsPtrColumn;
   
   // Has the data changed since the last flush?
-  Bool isDataChanged;
+  bool isDataChanged;
 };
 
 
-inline uInt SSMBase::getNrIndices() const
+inline uint32_t SSMBase::getNrIndices() const
 {
   return itsPtrIndex.nelements();
 }
 
-inline uInt SSMBase::getCacheSize() const
+inline uint32_t SSMBase::getCacheSize() const
 {
   return itsCacheSize;
 }
@@ -476,7 +476,7 @@ inline rownr_t SSMBase::getNRow() const
   return itsNrRows;
 }
 
-inline uInt SSMBase::getBucketSize() const
+inline uint32_t SSMBase::getBucketSize() const
 {
   return itsBucketSize;
 }
@@ -489,12 +489,12 @@ inline BucketCache& SSMBase::getCache()
   return *itsCache;
 }
 
-inline SSMColumn& SSMBase::getColumn (uInt aColNr)
+inline SSMColumn& SSMBase::getColumn (uint32_t aColNr)
 {
   return *(itsPtrColumn[aColNr]);
 }
 
-inline SSMIndex& SSMBase::getIndex (uInt anIdxNr)
+inline SSMIndex& SSMBase::getIndex (uint32_t anIdxNr)
 {
   return *(itsPtrIndex[anIdxNr]);
 }

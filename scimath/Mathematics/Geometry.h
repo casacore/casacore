@@ -62,17 +62,17 @@ public:
 	// <src>theta</src>. The output pair will have x as the first
 	// member and y as the second. <src>theta</src> must have angular units (no explicit
 	// checking is done, but an exception will be thrown from the Quanta code if not).
-	static std::pair<Double, Double> rotate2D(
-		Double x, Double y, const Quantity& theta
+	static std::pair<double, double> rotate2D(
+		double x, double y, const Quantity& theta
 	);
 
 	// Determine if two coplanar line segments, a and b, intersect. Line segment a
 	// has end points a0 and a1, and line segment b has endpoints b0 and b1.
 	// Algorithm from
 	// http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-	static Bool doLineSegmentsIntersect(
-		Double a0x, Double a0y, Double a1x, Double a1y,
-		Double b0x, Double b0y, Double b1x, Double b1y
+	static bool doLineSegmentsIntersect(
+		double a0x, double a0y, double a1x, double a1y,
+		double b0x, double b0y, double b1x, double b1y
 	);
 
 };

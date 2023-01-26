@@ -70,9 +70,9 @@ public:
 	    NumberOfTypes = 3
 	    };
 	
-	// Convert Int to QualityTypes, returns Quality::Undefined if
+	// Convert int32_t to QualityTypes, returns Quality::Undefined if
 	// it is an invalid type
-	static QualityTypes type(Int qualityNumber);
+	static QualityTypes type(int32_t qualityNumber);
 
 	// Convert String to QualityTypes, returns Quality::Undefined if
 	// it is an unrecognized string.  The valid strings are the
@@ -86,7 +86,7 @@ public:
 
 	// Get all recognized quality names in no guaranteed order.
 	// The undefined type can be included.
-	static Vector<String> allNames(Bool includeUndefined = False);
+	static Vector<String> allNames(bool includeUndefined = false);
 
 private:
 };

@@ -198,7 +198,7 @@ String makeMSName (int seqnr, const String& msName)
   return name;
 }
 
-void showParmsHDF5 (const IPosition& tileShape, uInt tileSize, uInt nspw,
+void showParmsHDF5 (const IPosition& tileShape, uint32_t tileSize, uint32_t nspw,
                     const Record& attr)
 {
   cout << " nms       = " << myNPart << "    " << myMsName << endl;
@@ -231,18 +231,18 @@ void showParms()
 {
   String name = makeMSName (0, myMsName);
   if (!Table::isReadable(name)) {
-    myIsHDF5 = True;
+    myIsHDF5 = true;
     return;
   }
   Table tab(name);
   if (! tab.tableDesc().isColumn ("DATA")) {
-    myReadData = False;
+    myReadData = false;
   }
   if (! tab.tableDesc().isColumn ("FLOAT_DATA")) {
-    myReadFloatData = False;
+    myReadFloatData = false;
   }
   if (! tab.tableDesc().isColumn ("WEIGHT_SPECTRUM")) {
-    myReadWeightSpectrum = False;
+    myReadWeightSpectrum = false;
   }
   Block<String> parts = tab.getPartNames();
   cout << " nms       = " << myNPart << "    " << myMsName;
@@ -257,13 +257,13 @@ void showParms()
   TableIterator iter(ms, "TIME", TableIterator::Ascending,
                      TableIterator::NoSort);
   Table tab1 = iter.table();
-  Int64 ntime  = ms.nrow() / tab1.nrow();
-  Int64 nspw   = tableCommand("select unique DATA_DESC_ID from $1", tab1).table().nrow();
-  Int64 nbl    = tableCommand("select unique ANTENNA1,ANTENNA2 from $1", tab1).table().nrow();
-  Int64 nant   = ms.antenna().nrow();
-  Int64 nfield = ms.field().nrow();
-  Int64 ntimefield = 0;
-  if (Int64(tab1.nrow()) != nbl*nspw*nfield) {
+  int64_t ntime  = ms.nrow() / tab1.nrow();
+  int64_t nspw   = tableCommand("select unique DATA_DESC_ID from $1", tab1).table().nrow();
+  int64_t nbl    = tableCommand("select unique ANTENNA1,ANTENNA2 from $1", tab1).table().nrow();
+  int64_t nant   = ms.antenna().nrow();
+  int64_t nfield = ms.field().nrow();
+  int64_t ntimefield = 0;
+  if (int64_t(tab1.nrow()) != nbl*nspw*nfield) {
     TableIterator iterfld(ms, "FIELD_ID", TableIterator::Ascending,
                           TableIterator::NoSort);
     ntimefield = iterfld.table().nrow() / tab1.nrow();
@@ -282,7 +282,7 @@ void showParms()
   if (ms.tableDesc().isColumn("DATA")) {
     dataShape = ArrayColumn<Complex>(ms, "DATA").shape(0);
   } else {
-    dataShape = ArrayColumn<Float>(ms, "FLOAT_DATA").shape(0);
+    dataShape = ArrayColumn<float>(ms, "FLOAT_DATA").shape(0);
   }
   cout << " nchan     = " << dataShape[1] << endl;
   cout << " startchan = " << myStartChan << endl;
@@ -294,7 +294,7 @@ void showParms()
   cout << " readflag            = " << myReadFlag << endl;
   cout << " readweightspectrum  = " << myReadWeightSpectrum << endl;
   try {
-    ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", True);
+    ROTiledStManAccessor acc(ms, ms.tableDesc().isColumn("DATA") ? "DATA" : "FLOAT_DATA", true);
     cout << " data tileshape      = " << acc.tileShape(0)
          << "   (tilesize = " << acc.bucketSize(0) << " bytes)" << endl;
   } catch (const AipsError&) {
@@ -322,7 +322,7 @@ void showParms()
 
 void readRows (ArrayColumn<Complex>& dataCol,
                ArrayColumn<float>& floatDataCol,
-               ArrayColumn<Bool>& flagCol,
+               ArrayColumn<bool>& flagCol,
                ArrayColumn<float>& weightCol)
 {
   if (myReadRowWise) {
@@ -358,7 +358,7 @@ void readRows (ArrayColumn<Complex>& dataCol,
 
 void readRows (ArrayColumn<Complex>& dataCol,
                ArrayColumn<float>& floatDataCol,
-               ArrayColumn<Bool>& flagCol,
+               ArrayColumn<bool>& flagCol,
                ArrayColumn<float>& weightCol,
                const Slicer& slicer)
 {
@@ -393,18 +393,18 @@ void readRows (ArrayColumn<Complex>& dataCol,
   }
 }
 
-Int64 readNoIter (MeasurementSet& tab, Int64& niter)
+int64_t readNoIter (MeasurementSet& tab, int64_t& niter)
 {
   Array<Complex> data;
-  Array<Float> floatData;
-  Array<Bool> flags;
-  Array<Float> weights;
+  Array<float> floatData;
+  Array<bool> flags;
+  Array<float> weights;
   ArrayColumn<Complex> dataCol;
   if (myReadData) dataCol.attach(tab, "DATA");
-  ArrayColumn<Float> floatDataCol;
+  ArrayColumn<float> floatDataCol;
   if (myReadFloatData) floatDataCol.attach(tab, "FLOAT_DATA");
-  ArrayColumn<Bool> flagCol(tab, "FLAG");
-  ArrayColumn<Float> weightSpectrumCol;
+  ArrayColumn<bool> flagCol(tab, "FLAG");
+  ArrayColumn<float> weightSpectrumCol;
   if (myReadWeightSpectrum) weightSpectrumCol.attach(tab, "WEIGHT_SPECTRUM");
   const RecordInterface& attr = tab.keywordSet().asRecord ("ATTR");
   rownr_t ntoread = attr.asInt("NBaseline");
@@ -438,16 +438,16 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
         Slicer slicer(IPosition(2,0,fchan),
                       IPosition(2,npol,nchan), stride);
         // Read the data per time step.
-        if (myReadData) dataCol.getColumnRange (rowRange, slicer, data, True);
-        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, slicer, floatData, True);
-        if (myReadFlag) flagCol.getColumnRange (rowRange, slicer, flags, True);
-        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, slicer, weights, True);
+        if (myReadData) dataCol.getColumnRange (rowRange, slicer, data, true);
+        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, slicer, floatData, true);
+        if (myReadFlag) flagCol.getColumnRange (rowRange, slicer, flags, true);
+        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, slicer, weights, true);
         niter++;
       } else {
-        if (myReadData) dataCol.getColumnRange (rowRange, data, True);
-        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, floatData, True);
-        if (myReadFlag) flagCol.getColumnRange (rowRange, flags, True);
-        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, weights, True);
+        if (myReadData) dataCol.getColumnRange (rowRange, data, true);
+        if (myReadFloatData) floatDataCol.getColumnRange (rowRange, floatData, true);
+        if (myReadFlag) flagCol.getColumnRange (rowRange, flags, true);
+        if (myReadWeightSpectrum) weightSpectrumCol.getColumnRange (rowRange, weights, true);
         niter++;
       }
     }
@@ -458,7 +458,7 @@ Int64 readNoIter (MeasurementSet& tab, Int64& niter)
   return tab.nrow();
 }
 
-Int64 readSteps (MeasurementSet& ms, Int64& niter)
+int64_t readSteps (MeasurementSet& ms, int64_t& niter)
 {
   niter = 0;
   Table tab(ms);
@@ -466,7 +466,7 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
     return readNoIter (ms, niter);
   }
   // Read with iteration (outer and/or inner).
-  Int64 nrow = 0;
+  int64_t nrow = 0;
   Block<String> itercols1(myIterCols1.size());
   std::copy (myIterCols1.begin(), myIterCols1.end(), itercols1.begin());
   Block<String> itercols2(myIterCols2.size());
@@ -475,7 +475,7 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
                       TableIterator::NoSort);
   while (!iter1.pastEnd()) {
     Table tab1 (iter1.table());
-    IPosition shape = ArrayColumn<Bool>(tab1, "FLAG").shape(0);
+    IPosition shape = ArrayColumn<bool>(tab1, "FLAG").shape(0);
     int lastchan = myStartChan + myNChan;
     if (myNChan == 0) {
       lastchan = shape[1];
@@ -489,7 +489,7 @@ Int64 readSteps (MeasurementSet& ms, Int64& niter)
                           TableIterator::NoSort);
       while (!iter2.pastEnd()) {
         Table tab2 (iter2.table());
-        ArrayColumn<Bool> flagCol(tab2, "FLAG");
+        ArrayColumn<bool> flagCol(tab2, "FLAG");
         ArrayColumn<Complex> dataCol;
         if (myReadData) {
           dataCol.attach (tab2, "DATA");
@@ -535,28 +535,28 @@ void showCacheStatistics (const MeasurementSet& ms)
   try {
     if (myReadData) {
       cout << "DATA: ";
-      RODataManAccessor(ms, "DATA", True).showCacheStatistics (cout);
+      RODataManAccessor(ms, "DATA", true).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadFloatData) {
       cout << "FLOAT_DATA: ";
-      RODataManAccessor(ms, "FLOAT_DATA", True).showCacheStatistics (cout);
+      RODataManAccessor(ms, "FLOAT_DATA", true).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadFlag) {
       cout << "FLAG: ";
-      RODataManAccessor(ms, "FLAG", True).showCacheStatistics (cout);
+      RODataManAccessor(ms, "FLAG", true).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
   }
   try {
     if (myReadWeightSpectrum) {
       cout << "WEIGHT_SPECTRUM: ";
-      RODataManAccessor(ms, "WEIGHT_SPECTRUM", True).showCacheStatistics (cout);
+      RODataManAccessor(ms, "WEIGHT_SPECTRUM", true).showCacheStatistics (cout);
     }
   } catch (std::exception&) {
   }
@@ -566,8 +566,8 @@ void setTSMCacheSize (const Table& tab, const String& columnName,
                       int cacheSize)
 {
   if (cacheSize > 0) {
-    ROTiledStManAccessor acc(tab, columnName, True);
-    for (uInt i=0; i<acc.nhypercubes(); ++i) {
+    ROTiledStManAccessor acc(tab, columnName, true);
+    for (uint32_t i=0; i<acc.nhypercubes(); ++i) {
       acc.setHypercubeCacheSize (i, cacheSize);
     }
   }
@@ -577,20 +577,20 @@ void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
                    const CountedPtr<HDF5DataSet>& hdata,
                    const CountedPtr<HDF5DataSet>& hfloatdata,
                    const CountedPtr<HDF5DataSet>& hweight,
-                   Int64 row,
-                   Int64 nrow)
+                   int64_t row,
+                   int64_t nrow)
 {
   if (myReadRowWise) {
     IPosition shp(hflag->shape());
     shp[2] = 1;
     Array<Complex> data(shp);
-    Array<Float> fdata(shp);
-    Array<Bool> flags(shp);
-    Array<Float> weights(shp);
+    Array<float> fdata(shp);
+    Array<bool> flags(shp);
+    Array<float> weights(shp);
     IPosition s(3,0);
     IPosition e(shp-1);
     Slicer slicer(s, shp);
-    for (Int64 r=0; r<nrow; ++r) {
+    for (int64_t r=0; r<nrow; ++r) {
       s[2] = row+r;
       e[2] = row+r;
       slicer.setStart (s);
@@ -617,15 +617,15 @@ void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
       hdata->get (slicer, data);
     }
     if (myReadFloatData) {
-      Array<Float> fdata(shp);
+      Array<float> fdata(shp);
       hfloatdata->get (slicer, fdata);
     }
     if (myReadFlag) {
-      Array<Bool> flags(shp);
+      Array<bool> flags(shp);
       hflag->get (slicer, flags);
     }
     if (myReadWeightSpectrum) {
-      Array<Float> weights(shp);
+      Array<float> weights(shp);
       hweight->get (slicer, weights);
     }
   }
@@ -640,18 +640,18 @@ void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
   IPosition shp(slicer.length());
   IPosition s(slicer.start());
   IPosition e(slicer.end());
-  Int64 srow = s[2];
-  Int64 erow = e[2];
+  int64_t srow = s[2];
+  int64_t erow = e[2];
   if (myReadRowWise) {
     shp[2] = 1;
     Array<Complex> data(shp);
-    Array<Float> fdata(shp);
-    Array<Bool> flags(shp);
-    Array<Float> weights(shp);
+    Array<float> fdata(shp);
+    Array<bool> flags(shp);
+    Array<float> weights(shp);
     // Make a slicer with length 1.
     s[2] = 1;
     Slicer slicer(s, shp);
-    for (Int64 row=srow; row<=erow; ++row) {
+    for (int64_t row=srow; row<=erow; ++row) {
       s[2] = row;
       e[2] = row;
       slicer.setStart (s);
@@ -675,26 +675,26 @@ void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
       hdata->get (slicer, data);
     }
     if (myReadFloatData) {
-      Array<Float> fdata(shp);
+      Array<float> fdata(shp);
       hfloatdata->get (slicer, fdata);
     }
     if (myReadFlag) {
-      Array<Bool> flags(shp);
+      Array<bool> flags(shp);
       hflag->get (slicer, flags);
     }
     if (myReadWeightSpectrum) {
-      Array<Float> weights(shp);
+      Array<float> weights(shp);
       hweight->get (slicer, weights);
     }
   }
 }
 
-Int64 readStepsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
+int64_t readStepsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
                      const CountedPtr<HDF5DataSet>& hdata,
                      const CountedPtr<HDF5DataSet>& hfloatdata,
                      const CountedPtr<HDF5DataSet>& hweightspectrum,
-                     Int64 nrow,
-                     Int64& niter)
+                     int64_t nrow,
+                     int64_t& niter)
 {
   niter = 0;
   IPosition shape = hflag->shape();
@@ -708,7 +708,7 @@ Int64 readStepsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
   }
   for (int fchan=myStartChan; fchan<lastchan; fchan+=chansize) {
     int lchan = fchan + chansize;
-    for (Int64 row=0; row<shape[2]; row+=nrow) {
+    for (int64_t row=0; row<shape[2]; row+=nrow) {
       if (fchan > 0  ||  lchan < shape[1]  ||  myNPol < shape[0]) {
         AlwaysAssert (fchan < shape[1], AipsError);
         int nchan = std::min(lchan, int(shape[1])) - fchan;
@@ -732,15 +732,15 @@ Int64 readStepsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
   return shape[2];
 }
 
-std::vector<Int64> doHDF5 (int seqnr, const String& name)
+std::vector<int64_t> doHDF5 (int seqnr, const String& name)
 {
   Timer timer;
-  std::vector<Int64> res(2);
+  std::vector<int64_t> res(2);
   res[0] = 0;
   HDF5File hfile(name, ByteIO::Old);
   // There is a group per spectral window. Get all groups.
   std::vector<String> groupNames (HDF5Group::linkNames (hfile));
-  for (uInt i=0; i<groupNames.size(); ++i) {
+  for (uint32_t i=0; i<groupNames.size(); ++i) {
     HDF5Group hspw(hfile, groupNames[i]);
     // Get the attributes.
     Record attr (HDF5Record::readRecord (hspw, "ATTR"));
@@ -748,11 +748,11 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
     CountedPtr<HDF5DataSet> hfloatdata;
     CountedPtr<HDF5DataSet> hflag;
     CountedPtr<HDF5DataSet> hweightspectrum;
-    hflag = new HDF5DataSet (hspw, "FLAG", (Bool*)0);
+    hflag = new HDF5DataSet (hspw, "FLAG", (bool*)0);
     IPosition shape = hflag->shape();
     IPosition tileShape = hflag->tileShape();
-    uInt tileSize = 0;
-    uInt cacheSize = (shape[1] + tileShape[1] - 1) / tileShape[1];
+    uint32_t tileSize = 0;
+    uint32_t cacheSize = (shape[1] + tileShape[1] - 1) / tileShape[1];
     if (myReadFlag) {
       hflag->setCacheSize (myCacheSizeFlag==0 ? cacheSize:myCacheSizeFlag);
     }
@@ -762,10 +762,10 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
       if (myReadData) {
         hdata->setCacheSize (myCacheSizeData==0 ? cacheSize:myCacheSizeData);
         tileSize = tileShape.product() * sizeof(Complex);
-        myReadFloatData = False;
+        myReadFloatData = false;
       }
     } catch (const std::exception&) {
-      myReadData = False;
+      myReadData = false;
     }
     if (! myReadData) {
       try {
@@ -773,10 +773,10 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
         tileShape = hdata->tileShape();
         if (myReadFloatData) {
           hfloatdata->setCacheSize (myCacheSizeData==0 ? cacheSize:myCacheSizeData);
-          tileSize = tileShape.product() * sizeof(Float);
+          tileSize = tileShape.product() * sizeof(float);
         }
       } catch (const std::exception&) {
-        myReadFloatData = False;
+        myReadFloatData = false;
       }
     }
     if (myReadWeightSpectrum) {
@@ -794,8 +794,8 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
     // Determine nr of rows to read per time step.
     int ntoread = attr.asInt("NBaseline");
     if (attr.asInt("NTimeField") > 0) ntoread *= attr.asInt("NField");
-    Int64 niter;
-    Int64 nrow = readStepsHDF5 (hflag, hdata, hfloatdata, hweightspectrum,
+    int64_t niter;
+    int64_t nrow = readStepsHDF5 (hflag, hdata, hfloatdata, hweightspectrum,
                                 ntoread, niter);
     res[0] += nrow;
     timer.show ("Read " + String::toString(nrow) + " rows (in " +
@@ -805,7 +805,7 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
   return res;
 }
 
-std::vector<Int64> doOne (int seqnr, const String& msName)
+std::vector<int64_t> doOne (int seqnr, const String& msName)
 {
   // Form the MS name.
   // If it contains %d, use that to fill in the seqnr.
@@ -814,7 +814,7 @@ std::vector<Int64> doOne (int seqnr, const String& msName)
   if (myIsHDF5) {
     return doHDF5 (seqnr, name);
   }
-  vector<Int64> res(2);
+  vector<int64_t> res(2);
   // Open the MS.
   Timer timer;
   Table tab(name);
@@ -858,8 +858,8 @@ std::vector<Int64> doOne (int seqnr, const String& msName)
     timer.mark();
   }
   MeasurementSet ms(tab);
-  Int64 niter;
-  Int64 nrow = readSteps (ms, niter);
+  int64_t niter;
+  int64_t nrow = readSteps (ms, niter);
   timer.show ("Read " + String::toString(nrow) + " rows (in " +
               String::toString(niter) + " iterations) from MS " + msName);
   if (seqnr == 0) {
@@ -870,13 +870,13 @@ std::vector<Int64> doOne (int seqnr, const String& msName)
 
 void doAll()
 {
-  Int64 nrow, selNrow;
+  int64_t nrow, selNrow;
   int nthread = OMP::maxThreads();
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)
 #endif
   for (int i=0; i<myNPart; ++i) {
-    vector<Int64> res = doOne (i, myMsName);
+    vector<int64_t> res = doOne (i, myMsName);
     if (i == 0) {
       nrow = res[0];
       selNrow = res[1];

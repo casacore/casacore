@@ -31,14 +31,14 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-  BucketBase::BucketBase (BucketFile* file, Int64 startOffset,
-                          uInt bucketSize, uInt nrOfBuckets)
+  BucketBase::BucketBase (BucketFile* file, int64_t startOffset,
+                          uint32_t bucketSize, uint32_t nrOfBuckets)
     : itsFile           (file),
       itsStartOffset    (startOffset),
       itsBucketSize     (bucketSize),
       itsCurNrOfBuckets (0),
       itsNewNrOfBuckets (nrOfBuckets),
-      itsHasWritten     (False)
+      itsHasWritten     (false)
   {
     // The bucketsize must be set.
     if (bucketSize == 0) {
@@ -47,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open the file if not open yet and get its physical size.
     // Use that to determine the number of buckets in the file.
     itsFile->open();
-    Int64 size = itsFile->fileSize();
+    int64_t size = itsFile->fileSize();
     if (size > startOffset) {
       itsCurNrOfBuckets = (size - startOffset) / bucketSize;
       if (itsCurNrOfBuckets > itsNewNrOfBuckets) {
@@ -59,20 +59,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   BucketBase::~BucketBase()
   {}
 
-  Bool BucketBase::flush()
+  bool BucketBase::flush()
   {
     if (itsNewNrOfBuckets > 0) {
       initializeBuckets (itsNewNrOfBuckets - 1);
     }
     if (itsHasWritten) {
       doFlush();
-      itsHasWritten = False;
-      return True;
+      itsHasWritten = false;
+      return true;
     }
-    return False;
+    return false;
   }
 
-  void BucketBase::resync (uInt nrBucket)
+  void BucketBase::resync (uint32_t nrBucket)
   {
     // Remap the file (if extended).
     if (nrBucket > itsNewNrOfBuckets) {
@@ -82,13 +82,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsCurNrOfBuckets = nrBucket;
   }
 
-  void BucketBase::extend (uInt nrBucket)
+  void BucketBase::extend (uint32_t nrBucket)
   {
     // Extend the file by writing the last byte.
     if (nrBucket > 0) {
       itsNewNrOfBuckets += nrBucket;
       doExtend (nrBucket);
-      itsHasWritten = True;
+      itsHasWritten = true;
     }
   }
 

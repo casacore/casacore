@@ -36,55 +36,55 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-ValueHolderRep::ValueHolderRep (Bool value)
+ValueHolderRep::ValueHolderRep (bool value)
   : itsNdim (0),
     itsType (TpBool),
     itsBool (value)
 {}
 
-ValueHolderRep::ValueHolderRep (uChar value)
+ValueHolderRep::ValueHolderRep (unsigned char value)
   : itsNdim (0),
     itsType (TpUChar),
     itsInt64(value)
 {}
 
-ValueHolderRep::ValueHolderRep (Short value)
+ValueHolderRep::ValueHolderRep (int16_t value)
   : itsNdim (0),
     itsType (TpShort),
     itsInt64(value)
 {}
 
-ValueHolderRep::ValueHolderRep (uShort value)
+ValueHolderRep::ValueHolderRep (uint16_t value)
   : itsNdim (0),
     itsType (TpUShort),
     itsInt64(value)
 {}
 
-ValueHolderRep::ValueHolderRep (Int value)
+ValueHolderRep::ValueHolderRep (int32_t value)
   : itsNdim (0),
     itsType (TpInt),
     itsInt64(value)
 {}
 
-ValueHolderRep::ValueHolderRep (uInt value)
+ValueHolderRep::ValueHolderRep (uint32_t value)
   : itsNdim (0),
     itsType (TpUInt),
     itsInt64(value)
 {}
 
-ValueHolderRep::ValueHolderRep (Int64 value)
+ValueHolderRep::ValueHolderRep (int64_t value)
   : itsNdim (0),
     itsType (TpInt64),
     itsInt64(value)
 {}
 
-ValueHolderRep::ValueHolderRep (Float value)
+ValueHolderRep::ValueHolderRep (float value)
   : itsNdim (0),
     itsType  (TpFloat),
     itsFloat (value)
 {}
 
-ValueHolderRep::ValueHolderRep (Double value)
+ValueHolderRep::ValueHolderRep (double value)
   : itsNdim (0),
     itsType   (TpDouble),
     itsDouble (value)
@@ -108,64 +108,64 @@ ValueHolderRep::ValueHolderRep (const String& value)
     itsPtr  (new String(value))
 {}
 
-ValueHolderRep::ValueHolderRep (const Array<Bool>& value)
+ValueHolderRep::ValueHolderRep (const Array<bool>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayBool),
-    itsPtr  (new Array<Bool>(value))
+    itsPtr  (new Array<bool>(value))
 {}
 
-ValueHolderRep::ValueHolderRep (const Array<uChar>& value)
+ValueHolderRep::ValueHolderRep (const Array<unsigned char>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayUChar),
-    itsPtr  (new Array<Int>(value.shape()))
+    itsPtr  (new Array<int32_t>(value.shape()))
 {
-  convertArray(*(static_cast<Array<Int>*>(itsPtr)), value);
+  convertArray(*(static_cast<Array<int32_t>*>(itsPtr)), value);
 }
 
-ValueHolderRep::ValueHolderRep (const Array<Short>& value)
+ValueHolderRep::ValueHolderRep (const Array<int16_t>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayShort),
-    itsPtr  (new Array<Int>(value.shape()))
+    itsPtr  (new Array<int32_t>(value.shape()))
 {
-  convertArray(*(static_cast<Array<Int>*>(itsPtr)), value);
+  convertArray(*(static_cast<Array<int32_t>*>(itsPtr)), value);
 }
 
-ValueHolderRep::ValueHolderRep (const Array<uShort>& value)
+ValueHolderRep::ValueHolderRep (const Array<uint16_t>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayUInt),
-    itsPtr  (new Array<uInt>(value.shape()))
+    itsPtr  (new Array<uint32_t>(value.shape()))
 {
-  convertArray (*static_cast<Array<uInt>*>(itsPtr), value);
+  convertArray (*static_cast<Array<uint32_t>*>(itsPtr), value);
 }
 
-ValueHolderRep::ValueHolderRep (const Array<Int>& value)
+ValueHolderRep::ValueHolderRep (const Array<int32_t>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayInt),
-    itsPtr  (new Array<Int>(value))
+    itsPtr  (new Array<int32_t>(value))
 {}
 
-ValueHolderRep::ValueHolderRep (const Array<uInt>& value)
+ValueHolderRep::ValueHolderRep (const Array<uint32_t>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayUInt),
-    itsPtr  (new Array<uInt>(value))
+    itsPtr  (new Array<uint32_t>(value))
 {}
 
-ValueHolderRep::ValueHolderRep (const Array<Int64>& value)
+ValueHolderRep::ValueHolderRep (const Array<int64_t>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayInt64),
-    itsPtr  (new Array<Int64>(value))
+    itsPtr  (new Array<int64_t>(value))
 {}
 
-ValueHolderRep::ValueHolderRep (const Array<Float>& value)
+ValueHolderRep::ValueHolderRep (const Array<float>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayFloat),
-    itsPtr  (new Array<Float>(value))
+    itsPtr  (new Array<float>(value))
 {}
 
-ValueHolderRep::ValueHolderRep (const Array<Double>& value)
+ValueHolderRep::ValueHolderRep (const Array<double>& value)
   : itsNdim (value.ndim()),
     itsType (TpArrayDouble),
-    itsPtr  (new Array<Double>(value))
+    itsPtr  (new Array<double>(value))
 {}
 
 ValueHolderRep::ValueHolderRep (const Array<Complex>& value)
@@ -192,7 +192,7 @@ ValueHolderRep::ValueHolderRep (const Record& value)
     itsPtr  (new Record(value))
 {}
 
-ValueHolderRep::ValueHolderRep (uInt ndim, Bool)
+ValueHolderRep::ValueHolderRep (uint32_t ndim, bool)
   : itsNdim (ndim),
     itsType (TpOther),
     itsPtr  (0)
@@ -211,25 +211,25 @@ ValueHolderRep::~ValueHolderRep()
     delete static_cast<String*>(itsPtr);
     break;
   case TpArrayBool:
-    delete static_cast<Array<Bool>*>(itsPtr);
+    delete static_cast<Array<bool>*>(itsPtr);
     break;
   case TpArrayUChar:
   case TpArrayShort:
   case TpArrayUShort:
   case TpArrayInt:
-    delete static_cast<Array<Int>*>(itsPtr);
+    delete static_cast<Array<int32_t>*>(itsPtr);
     break;
   case TpArrayUInt:
-    delete static_cast<Array<uInt>*>(itsPtr);
+    delete static_cast<Array<uint32_t>*>(itsPtr);
     break;
   case TpArrayInt64:
-    delete static_cast<Array<Int64>*>(itsPtr);
+    delete static_cast<Array<int64_t>*>(itsPtr);
     break;
   case TpArrayFloat:
-    delete static_cast<Array<Float>*>(itsPtr);
+    delete static_cast<Array<float>*>(itsPtr);
     break;
   case TpArrayDouble:
-    delete static_cast<Array<Double>*>(itsPtr);
+    delete static_cast<Array<double>*>(itsPtr);
     break;
   case TpArrayComplex:
     delete static_cast<Array<Complex>*>(itsPtr);
@@ -249,7 +249,7 @@ ValueHolderRep::~ValueHolderRep()
 }
 
 
-Bool ValueHolderRep::asBool() const
+bool ValueHolderRep::asBool() const
 {
   switch (itsType) {
   case TpBool:
@@ -272,7 +272,7 @@ Bool ValueHolderRep::asBool() const
                    String::toString(itsType));
 }
 
-uChar ValueHolderRep::asuChar() const
+unsigned char ValueHolderRep::asuChar() const
 {
   switch (itsType) {
   case TpUChar:
@@ -285,10 +285,10 @@ uChar ValueHolderRep::asuChar() const
     return itsInt64;
   case TpFloat:
     AlwaysAssert (itsFloat >= 0  &&  itsFloat < 256, AipsError);
-    return uChar(itsFloat);
+    return static_cast<unsigned char>(itsFloat);
   case TpDouble:
     AlwaysAssert (itsDouble >= 0  &&  itsDouble < 256, AipsError);
-    return uChar(itsDouble);
+    return static_cast<unsigned char>(itsDouble);
   default:
     ;
   }
@@ -296,7 +296,7 @@ uChar ValueHolderRep::asuChar() const
                    String::toString(itsType));
 }
 
-Short ValueHolderRep::asShort() const
+int16_t ValueHolderRep::asShort() const
 {
   switch (itsType) {
   case TpUChar:
@@ -309,10 +309,10 @@ Short ValueHolderRep::asShort() const
     return itsInt64;
   case TpFloat:
     AlwaysAssert (itsFloat >= -32768  &&  itsFloat < 32768, AipsError);
-    return Short(itsFloat);
+    return int16_t(itsFloat);
   case TpDouble:
     AlwaysAssert (itsDouble >= -32768  &&  itsDouble < 32768, AipsError);
-    return Short(itsDouble);
+    return int16_t(itsDouble);
   default:
     ;
   }
@@ -320,7 +320,7 @@ Short ValueHolderRep::asShort() const
                    String::toString(itsType));
 }
 
-uShort ValueHolderRep::asuShort() const
+uint16_t ValueHolderRep::asuShort() const
 {
   switch (itsType) {
   case TpUChar:
@@ -333,10 +333,10 @@ uShort ValueHolderRep::asuShort() const
     return itsInt64;
   case TpFloat:
     AlwaysAssert (itsFloat >= 0  &&  itsFloat < 65536, AipsError);
-    return uShort(itsFloat);
+    return uint16_t(itsFloat);
   case TpDouble:
     AlwaysAssert (itsDouble >= 0  &&  itsDouble < 65536, AipsError);
-    return uShort(itsDouble);
+    return uint16_t(itsDouble);
   default:
     ;
   }
@@ -344,7 +344,7 @@ uShort ValueHolderRep::asuShort() const
                    String::toString(itsType));
 }
 
-Int ValueHolderRep::asInt() const
+int32_t ValueHolderRep::asInt() const
 {
   switch (itsType) {
   case TpUChar:
@@ -353,11 +353,11 @@ Int ValueHolderRep::asInt() const
   case TpInt:
   case TpUInt:
   case TpInt64:
-    return Int(itsInt64);
+    return int32_t(itsInt64);
   case TpFloat:
-    return Int(itsFloat);
+    return int32_t(itsFloat);
   case TpDouble:
-    return Int(itsDouble);
+    return int32_t(itsDouble);
   default:
     ;
   }
@@ -365,7 +365,7 @@ Int ValueHolderRep::asInt() const
                    String::toString(itsType));
 }
 
-uInt ValueHolderRep::asuInt() const
+uint32_t ValueHolderRep::asuInt() const
 {
   switch (itsType) {
   case TpUChar:
@@ -378,10 +378,10 @@ uInt ValueHolderRep::asuInt() const
     return itsInt64;
   case TpFloat:
     AlwaysAssert (itsFloat >= 0, AipsError);
-    return uInt(itsFloat);
+    return uint32_t(itsFloat);
   case TpDouble:
     AlwaysAssert (itsDouble >= 0, AipsError);
-    return uInt(itsDouble);
+    return uint32_t(itsDouble);
   default:
     ;
   }
@@ -389,7 +389,7 @@ uInt ValueHolderRep::asuInt() const
                    String::toString(itsType));
 }
 
-Int64 ValueHolderRep::asInt64() const
+int64_t ValueHolderRep::asInt64() const
 {
   switch (itsType) {
   case TpUChar:
@@ -400,9 +400,9 @@ Int64 ValueHolderRep::asInt64() const
   case TpInt64:
     return itsInt64;
   case TpFloat:
-    return static_cast<Int64> (itsFloat);
+    return static_cast<int64_t> (itsFloat);
   case TpDouble:
-    return static_cast<Int64> (itsDouble);
+    return static_cast<int64_t> (itsDouble);
   default:
     ;
   }
@@ -410,7 +410,7 @@ Int64 ValueHolderRep::asInt64() const
                    String::toString(itsType));
 }
 
-Float ValueHolderRep::asFloat() const
+float ValueHolderRep::asFloat() const
 {
   switch (itsType) {
   case TpUChar:
@@ -431,7 +431,7 @@ Float ValueHolderRep::asFloat() const
                    String::toString(itsType));
 }
 
-Double ValueHolderRep::asDouble() const
+double ValueHolderRep::asDouble() const
 {
   switch (itsType) {
   case TpUChar:
@@ -515,15 +515,15 @@ const String& ValueHolderRep::asString() const
                    String::toString(itsType));
 }
 
-const Array<Bool> ValueHolderRep::asArrayBool() const
+const Array<bool> ValueHolderRep::asArrayBool() const
 {
   // Empty array from numpy (which is untyped).
   if (itsType == TpOther) {
-    return Array<Bool>(IPosition(itsNdim, 0));
+    return Array<bool>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayBool:
-    return *static_cast<Array<Bool>*>(itsPtr);
+    return *static_cast<Array<bool>*>(itsPtr);
   case TpArrayUChar:
   case TpArrayShort:
   case TpArrayUShort:
@@ -531,28 +531,28 @@ const Array<Bool> ValueHolderRep::asArrayBool() const
   case TpArrayUInt:
   case TpArrayInt64:
     {
-      const Array<Int64> from = asArrayInt64();
-      Array<Bool> to(from.shape());
+      const Array<int64_t> from = asArrayInt64();
+      Array<bool> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
   case TpArrayDouble:
     {
-      const Array<Double> from = asArrayDouble();
-      Array<Bool> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<bool> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<Bool> (1, asBool());
+    return Vector<bool> (1, asBool());
   }
 }
 
-const Array<uChar> ValueHolderRep::asArrayuChar() const
+const Array<unsigned char> ValueHolderRep::asArrayuChar() const
 {
   if (itsType == TpOther) {
-    return Array<uChar>(IPosition(itsNdim, 0));
+    return Array<unsigned char>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
@@ -560,36 +560,36 @@ const Array<uChar> ValueHolderRep::asArrayuChar() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<uChar> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<unsigned char> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
   case TpArrayInt64:
     {
-      const Array<Int64> from = asArrayInt64();
-      Array<uChar> to(from.shape());
+      const Array<int64_t> from = asArrayInt64();
+      Array<unsigned char> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
   case TpArrayDouble:
     {
-      const Array<Double> from = asArrayDouble();
-      Array<uChar> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<unsigned char> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<uChar> (1, asuChar());
+    return Vector<unsigned char> (1, asuChar());
   }
 }
 
-const Array<Short> ValueHolderRep::asArrayShort() const
+const Array<int16_t> ValueHolderRep::asArrayShort() const
 {
   if (itsType == TpOther) {
-    return Array<Short>(IPosition(itsNdim, 0));
+    return Array<int16_t>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
@@ -597,36 +597,36 @@ const Array<Short> ValueHolderRep::asArrayShort() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<Short> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<int16_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
   case TpArrayInt64:
     {
-      const Array<Int64> from = asArrayInt64();
-      Array<Short> to(from.shape());
+      const Array<int64_t> from = asArrayInt64();
+      Array<int16_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
   case TpArrayDouble:
     {
-      const Array<Double> from = asArrayDouble();
-      Array<Short> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<int16_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<Short> (1, asShort());
+    return Vector<int16_t> (1, asShort());
   }
 }
 
-const Array<uShort> ValueHolderRep::asArrayuShort() const
+const Array<uint16_t> ValueHolderRep::asArrayuShort() const
 {
   if (itsType == TpOther) {
-    return Array<uShort>(IPosition(itsNdim, 0));
+    return Array<uint16_t>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
@@ -634,106 +634,68 @@ const Array<uShort> ValueHolderRep::asArrayuShort() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<uShort> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<uint16_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
   case TpArrayInt64:
     {
-      const Array<Int64> from = asArrayInt64();
-      Array<uShort> to(from.shape());
+      const Array<int64_t> from = asArrayInt64();
+      Array<uint16_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
   case TpArrayDouble:
     {
-      const Array<Double> from = asArrayDouble();
-      Array<uShort> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<uint16_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<uShort> (1, asuShort());
+    return Vector<uint16_t> (1, asuShort());
   }
 }
 
-const Array<Int> ValueHolderRep::asArrayInt() const
+const Array<int32_t> ValueHolderRep::asArrayInt() const
 {
   if (itsType == TpOther) {
-    return Array<Int>(IPosition(itsNdim, 0));
+    return Array<int32_t>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
   case TpArrayShort:
   case TpArrayUShort:
   case TpArrayInt:
-    return *static_cast<Array<Int>*>(itsPtr);
+    return *static_cast<Array<int32_t>*>(itsPtr);
   case TpArrayUInt:
   case TpArrayInt64:
     {
-      const Array<Int64> from = asArrayInt64();
-      Array<Int> to(from.shape());
+      const Array<int64_t> from = asArrayInt64();
+      Array<int32_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
   case TpArrayDouble:
     {
-      const Array<Double> from = asArrayDouble();
-      Array<Int> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<int32_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<Int> (1, asInt());
+    return Vector<int32_t> (1, asInt());
   }
 }
 
-const Array<uInt> ValueHolderRep::asArrayuInt() const
+const Array<uint32_t> ValueHolderRep::asArrayuInt() const
 {
   if (itsType == TpOther) {
-    return Array<uInt>(IPosition(itsNdim, 0));
-  }
-  switch (itsType) {
-  case TpArrayUChar:
-  case TpArrayShort:
-  case TpArrayUShort:
-  case TpArrayInt:
-    {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<uInt> to(from.shape());
-      convertArray (to, from);
-      return to;
-    }
-  case TpArrayUInt:
-    return *static_cast<Array<uInt>*>(itsPtr);
-  case TpArrayInt64:
-    {
-      const Array<Int64> from = asArrayInt64();
-      Array<uInt> to(from.shape());
-      convertArray (to, from);
-      return to;
-    }
-  case TpArrayFloat:
-  case TpArrayDouble:
-    {
-      const Array<Double> from = asArrayDouble();
-      Array<uInt> to(from.shape());
-      convertArray (to, from);
-      return to;
-    }
-  default:
-    return Vector<uInt> (1, asuInt());
-  }
-}
-
-const Array<Int64> ValueHolderRep::asArrayInt64() const
-{
-  if (itsType == TpOther) {
-    return Array<Int64>(IPosition(itsNdim, 0));
+    return Array<uint32_t>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
@@ -741,37 +703,37 @@ const Array<Int64> ValueHolderRep::asArrayInt64() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<Int64> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<uint32_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
+    return *static_cast<Array<uint32_t>*>(itsPtr);
+  case TpArrayInt64:
     {
-      const Array<uInt> from = asArrayuInt();
-      Array<Int64> to(from.shape());
+      const Array<int64_t> from = asArrayInt64();
+      Array<uint32_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
-  case TpArrayInt64:
-    return *static_cast<Array<Int64>*>(itsPtr);
   case TpArrayFloat:
   case TpArrayDouble:
     {
-      const Array<Double> from = asArrayDouble();
-      Array<Int64> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<uint32_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<Int64> (1, asInt64());
+    return Vector<uint32_t> (1, asuInt());
   }
 }
 
-const Array<Float> ValueHolderRep::asArrayFloat() const
+const Array<int64_t> ValueHolderRep::asArrayInt64() const
 {
   if (itsType == TpOther) {
-    return Array<Float>(IPosition(itsNdim, 0));
+    return Array<int64_t>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
@@ -779,43 +741,37 @@ const Array<Float> ValueHolderRep::asArrayFloat() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<Float> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<int64_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
     {
-      const Array<uInt>& from = *static_cast<Array<uInt>*>(itsPtr);
-      Array<Float> to(from.shape());
+      const Array<uint32_t> from = asArrayuInt();
+      Array<int64_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayInt64:
-    {
-      const Array<Int64>& from = *static_cast<Array<Int64>*>(itsPtr);
-      Array<Float> to(from.shape());
-      convertArray (to, from);
-      return to;
-    }
+    return *static_cast<Array<int64_t>*>(itsPtr);
   case TpArrayFloat:
-    return *static_cast<Array<Float>*>(itsPtr);
   case TpArrayDouble:
     {
-      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
-      Array<Float> to(from.shape());
+      const Array<double> from = asArrayDouble();
+      Array<int64_t> to(from.shape());
       convertArray (to, from);
       return to;
     }
   default:
-    return Vector<Float> (1, asFloat());
+    return Vector<int64_t> (1, asInt64());
   }
 }
 
-const Array<Double> ValueHolderRep::asArrayDouble() const
+const Array<float> ValueHolderRep::asArrayFloat() const
 {
   if (itsType == TpOther) {
-    return Array<Double>(IPosition(itsNdim, 0));
+    return Array<float>(IPosition(itsNdim, 0));
   }
   switch (itsType) {
   case TpArrayUChar:
@@ -823,36 +779,80 @@ const Array<Double> ValueHolderRep::asArrayDouble() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<Double> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<float> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
     {
-      const Array<uInt>& from = *static_cast<Array<uInt>*>(itsPtr);
-      Array<Double> to(from.shape());
+      const Array<uint32_t>& from = *static_cast<Array<uint32_t>*>(itsPtr);
+      Array<float> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayInt64:
     {
-      const Array<Int64>& from = *static_cast<Array<Int64>*>(itsPtr);
-      Array<Double> to(from.shape());
+      const Array<int64_t>& from = *static_cast<Array<int64_t>*>(itsPtr);
+      Array<float> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayFloat:
+    return *static_cast<Array<float>*>(itsPtr);
+  case TpArrayDouble:
+    {
+      const Array<double>& from = *static_cast<Array<double>*>(itsPtr);
+      Array<float> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  default:
+    return Vector<float> (1, asFloat());
+  }
+}
+
+const Array<double> ValueHolderRep::asArrayDouble() const
+{
+  if (itsType == TpOther) {
+    return Array<double>(IPosition(itsNdim, 0));
+  }
+  switch (itsType) {
+  case TpArrayUChar:
+  case TpArrayShort:
+  case TpArrayUShort:
+  case TpArrayInt:
+    {
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<double> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayUInt:
+    {
+      const Array<uint32_t>& from = *static_cast<Array<uint32_t>*>(itsPtr);
+      Array<double> to(from.shape());
+      convertArray (to, from);
+      return to;
+    }
+  case TpArrayInt64:
+    {
+      const Array<int64_t>& from = *static_cast<Array<int64_t>*>(itsPtr);
+      Array<double> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
     {
-      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
-      Array<Double> to(from.shape());
+      const Array<float>& from = *static_cast<Array<float>*>(itsPtr);
+      Array<double> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayDouble:
-    return *static_cast<Array<Double>*>(itsPtr);
+    return *static_cast<Array<double>*>(itsPtr);
   default:
-    return Vector<Double> (1, asDouble());
+    return Vector<double> (1, asDouble());
   }
 }
 
@@ -867,35 +867,35 @@ const Array<Complex> ValueHolderRep::asArrayComplex() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
       Array<Complex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
     {
-      const Array<uInt>& from = *static_cast<Array<uInt>*>(itsPtr);
+      const Array<uint32_t>& from = *static_cast<Array<uint32_t>*>(itsPtr);
       Array<Complex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayInt64:
     {
-      const Array<Int64>& from = *static_cast<Array<Int64>*>(itsPtr);
+      const Array<int64_t>& from = *static_cast<Array<int64_t>*>(itsPtr);
       Array<Complex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
     {
-      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      const Array<float>& from = *static_cast<Array<float>*>(itsPtr);
       Array<Complex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayDouble:
     {
-      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      const Array<double>& from = *static_cast<Array<double>*>(itsPtr);
       Array<Complex> to(from.shape());
       convertArray (to, from);
       return to;
@@ -925,35 +925,35 @@ const Array<DComplex> ValueHolderRep::asArrayDComplex() const
   case TpArrayUShort:
   case TpArrayInt:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
       Array<DComplex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayUInt:
     {
-      const Array<uInt>& from = *static_cast<Array<uInt>*>(itsPtr);
+      const Array<uint32_t>& from = *static_cast<Array<uint32_t>*>(itsPtr);
       Array<DComplex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayInt64:
     {
-      const Array<Int64>& from = *static_cast<Array<Int64>*>(itsPtr);
+      const Array<int64_t>& from = *static_cast<Array<int64_t>*>(itsPtr);
       Array<DComplex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayFloat:
     {
-      const Array<Float>& from = *static_cast<Array<Float>*>(itsPtr);
+      const Array<float>& from = *static_cast<Array<float>*>(itsPtr);
       Array<DComplex> to(from.shape());
       convertArray (to, from);
       return to;
     }
   case TpArrayDouble:
     {
-      const Array<Double>& from = *static_cast<Array<Double>*>(itsPtr);
+      const Array<double>& from = *static_cast<Array<double>*>(itsPtr);
       Array<DComplex> to(from.shape());
       convertArray (to, from);
       return to;
@@ -1036,39 +1036,39 @@ void ValueHolderRep::toRecord (Record& rec, const RecordFieldId& id) const
     rec.define (id, *static_cast<String*>(itsPtr));
     break;
   case TpArrayBool:
-    rec.define (id, *static_cast<Array<Bool>*>(itsPtr));
+    rec.define (id, *static_cast<Array<bool>*>(itsPtr));
     break;
   case TpArrayUChar:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<uChar> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<unsigned char> to(from.shape());
       convertArray (to, from);
       rec.define (id, to);
       break;
     }
   case TpArrayShort:
     {
-      const Array<Int>& from = *static_cast<Array<Int>*>(itsPtr);
-      Array<Short> to(from.shape());
+      const Array<int32_t>& from = *static_cast<Array<int32_t>*>(itsPtr);
+      Array<int16_t> to(from.shape());
       convertArray (to, from);
       rec.define (id, to);
       break;
     }
   case TpArrayUShort:
   case TpArrayInt:
-    rec.define (id, *static_cast<Array<Int>*>(itsPtr));
+    rec.define (id, *static_cast<Array<int32_t>*>(itsPtr));
     break;
   case TpArrayUInt:
-    rec.define (id, *static_cast<Array<uInt>*>(itsPtr));
+    rec.define (id, *static_cast<Array<uint32_t>*>(itsPtr));
     break;
   case TpArrayInt64:
-    rec.define (id, *static_cast<Array<Int64>*>(itsPtr));
+    rec.define (id, *static_cast<Array<int64_t>*>(itsPtr));
     break;
   case TpArrayFloat:
-    rec.define (id, *static_cast<Array<Float>*>(itsPtr));
+    rec.define (id, *static_cast<Array<float>*>(itsPtr));
     break;
   case TpArrayDouble:
-    rec.define (id, *static_cast<Array<Double>*>(itsPtr));
+    rec.define (id, *static_cast<Array<double>*>(itsPtr));
     break;
   case TpArrayComplex:
     rec.define (id, *static_cast<Array<Complex>*>(itsPtr));

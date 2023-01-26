@@ -82,7 +82,7 @@ class RecordInterface;
 //# <li>
 //# </todo>
 
-class LCRegion : public Lattice<Bool>
+class LCRegion : public Lattice<bool>
 {
 public:
     LCRegion();
@@ -96,7 +96,7 @@ public:
     virtual ~LCRegion();
 
     // Equality 
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
 
     // Non-equality.  Be careful, do not use this anywhere in the derived
     // class structure.  You must use, e.g.,
@@ -104,11 +104,11 @@ public:
     // rather than <src>if (LCRegion::operator!= (...))</src> as the
     // latter will invoke an infinite loop.  It is ok to use when applying
     // to a concrete class object.
-    Bool operator!= (const LCRegion& other) const;
+    bool operator!= (const LCRegion& other) const;
 
     // Make a copy of the derived object.
     // <group>
-    virtual Lattice<Bool>* clone() const;
+    virtual Lattice<bool>* clone() const;
     virtual LCRegion* cloneRegion() const = 0;
     // </group>
 
@@ -118,7 +118,7 @@ public:
 
     // Handle renaming the region by renaming possible tables.
     // The default implementation does nothing.
-    virtual void handleRename (const String& newName, Bool overwrite);
+    virtual void handleRename (const String& newName, bool overwrite);
 
     // Region type.  Returns className() of derived class.
     virtual String type() const = 0;
@@ -130,7 +130,7 @@ public:
     // </group>
 
     // Does the region have a mask?
-    virtual Bool hasMask() const = 0;
+    virtual bool hasMask() const = 0;
 
     // Construct another LCRegion (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box and mask.
@@ -139,8 +139,8 @@ public:
     LCRegion* translate (const IPosition& translateVector) const;
     LCRegion* translate (const IPosition& translateVector,
 			 const IPosition& newLatticeShape) const;
-    LCRegion* translate (const Vector<Float>& translateVector) const;
-    LCRegion* translate (const Vector<Float>& translateVector,
+    LCRegion* translate (const Vector<float>& translateVector) const;
+    LCRegion* translate (const Vector<float>& translateVector,
 			 const IPosition& newLatticeShape) const;
     // </group>
 
@@ -169,28 +169,28 @@ public:
 				 const String& tableName);
 
     // Return the dimensionality of the region.
-    virtual uInt ndim() const;
+    virtual uint32_t ndim() const;
 
     // Return the shape of the region (i.e. of its bounding box).
     virtual IPosition shape() const;
 
     // Usually the lattice (i.e. the region mask) is not writable.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Regions can usually not be put; i.e. no putSlice, etc. can be
     // done on their masks.
     // Hence LCRegion throws by default an exception for the
     // following functions.
     // <group>
-    virtual void doPutSlice (const Array<Bool>& sourceBuffer,
+    virtual void doPutSlice (const Array<bool>& sourceBuffer,
 			     const IPosition& where,
 			     const IPosition& stride);
-    virtual void set (const Bool& value);
-    virtual void apply (Bool (*function)(Bool));
-    virtual void apply (Bool (*function)(const Bool&));
-    virtual void apply (const Functional<Bool,Bool>& function);
-    virtual void putAt (const Bool& value, const IPosition& where);
-    virtual void copyData (const Lattice<Bool>& from);
+    virtual void set (const bool& value);
+    virtual void apply (bool (*function)(bool));
+    virtual void apply (bool (*function)(const bool&));
+    virtual void apply (const Functional<bool,bool>& function);
+    virtual void putAt (const bool& value, const IPosition& where);
+    virtual void copyData (const Lattice<bool>& from);
     // </group>
 
 protected:
@@ -208,7 +208,7 @@ protected:
     // </group>
 
     // Do the actual translate in a derived class.
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const = 0;
 
     // Define the type and class name in the record.
@@ -234,7 +234,7 @@ inline LCRegion* LCRegion::translate (const IPosition& translateVector) const
 {
     return translate (translateVector, itsShape);
 }
-inline LCRegion* LCRegion::translate (const Vector<Float>& translateVector)
+inline LCRegion* LCRegion::translate (const Vector<float>& translateVector)
                                                                         const
 {
     return translate (translateVector, itsShape);
@@ -248,7 +248,7 @@ inline void LCRegion::setComment (const String& comment)
     itsComment = comment;
 }
 
-inline Bool LCRegion::operator!= (const LCRegion& other) const
+inline bool LCRegion::operator!= (const LCRegion& other) const
 //
 // Watch out !  You must not, in the derived class structure,
 // invoke LCRegion::operator!=  If you do,  you will be stuck 

@@ -31,34 +31,34 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
-				  Int observationType, Int nIfr, Int nInt)
+				  int32_t observationType, int32_t nIfr, int32_t nInt)
 {
   //Try to bypass most stupid choices
   if(nIfr<1) 
     nIfr=100;
   if(nInt<1)
     nInt=1;
-  const Int ioBlockSize = 131072; // 131072 * sizeOf(Complex) = 1 MB
+  const int32_t ioBlockSize = 131072; // 131072 * sizeOf(Complex) = 1 MB
   IPosition tileShape(3,0,0,0);
   if (dataShape.nelements()==2 && dataShape(0)>0 && dataShape(1)>0) {
     // Always read all polarizations, since we'll often want to do conversion
-    Int corrSize = dataShape(0);     
+    int32_t corrSize = dataShape(0);     
     // Read all channels, in order to minimize the overhead of the
     // i/o layer
     //Read all the channels for fast mosaic
-    Int chanSize = dataShape(1);
-    Int rowSize=max(1, ioBlockSize/corrSize/chanSize);
+    int32_t chanSize = dataShape(1);
+    int32_t rowSize=max(1, ioBlockSize/corrSize/chanSize);
     if(observationType==0){
       if(chanSize <100){
 	chanSize=max(1, ioBlockSize/corrSize/nIfr);
       }
       else if(chanSize < 10000) {
-	chanSize=Int(floor(sqrt(Float(chanSize)/99.9)))*10;
+	chanSize=int32_t(floor(sqrt(float(chanSize)/99.9)))*10;
       }
       else{
 	chanSize=100;
       }
-      Int elIOBlkSize=ioBlockSize;
+      int32_t elIOBlkSize=ioBlockSize;
       while(((ioBlockSize/corrSize/chanSize) > 10*nIfr*nInt) && chanSize < dataShape(1)){
 	chanSize+=2;
       } 
@@ -85,10 +85,10 @@ IPosition MSTileLayout::tileShape(const IPosition& dataShape,
 }
 
 IPosition MSTileLayout::tileShape(const IPosition& dataShape,
-					 Int observationType, 
+					 int32_t observationType, 
 					 const String& array)
 {
-  Int nIfr=200;
+  int32_t nIfr=200;
   if (array=="ATCA") nIfr=15;
   if (array=="VLA") nIfr=351;
   if (array=="WSRT") nIfr=91;

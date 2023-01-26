@@ -37,16 +37,16 @@ using namespace std;
 void createTable()
 {
   // Create main 'MS-like' table.
-  const uInt nant=5;
+  const uint32_t nant=5;
   TableDesc td(MS::requiredTableDesc());
   SetupNewTable setup("tUDFMSCal_tmp.tab", td, Table::New);
   MeasurementSet ms(setup);
   ms.createDefaultSubtables(Table::New);
-  ScalarColumn<Int> a1col(ms, "ANTENNA1");
-  ScalarColumn<Int> a2col(ms, "ANTENNA2");
-  Int row=0;
-  for (uInt i=0; i<nant; ++i) {
-    for (uInt j=i; j<nant; ++j) {
+  ScalarColumn<int32_t> a1col(ms, "ANTENNA1");
+  ScalarColumn<int32_t> a2col(ms, "ANTENNA2");
+  int32_t row=0;
+  for (uint32_t i=0; i<nant; ++i) {
+    for (uint32_t j=i; j<nant; ++j) {
       ms.addRow();
       a1col.put (row, i);
       a2col.put (row, j);
@@ -57,7 +57,7 @@ void createTable()
   Table anttab(ms.antenna());
   anttab.addRow (nant);
   ScalarColumn<String> namecol(anttab, "NAME");
-  for (uInt i=0; i<nant; ++i) {
+  for (uint32_t i=0; i<nant; ++i) {
     ostringstream ostr;
     ostr << "RT" << i;
     namecol.put (i, ostr.str());
@@ -68,9 +68,9 @@ void testUDF()
 {
   Table tab = tableCommand("select from tUDFMSCal_tmp.tab "
                            "where mscal.baseline('RT[2-4]')").table();
-  Vector<Int> a1 (ScalarColumn<Int>(tab, "ANTENNA1").getColumn());
-  Vector<Int> a2 (ScalarColumn<Int>(tab, "ANTENNA2").getColumn());
-  for (uInt i=0; i<tab.nrow(); ++i) {
+  Vector<int32_t> a1 (ScalarColumn<int32_t>(tab, "ANTENNA1").getColumn());
+  Vector<int32_t> a2 (ScalarColumn<int32_t>(tab, "ANTENNA2").getColumn());
+  for (uint32_t i=0; i<tab.nrow(); ++i) {
     cout << a1[i] << ' '<< a2[i] << endl;
   }
   // Try with an invalid function.

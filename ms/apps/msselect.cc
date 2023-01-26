@@ -97,7 +97,7 @@ void copyOtherDirs (const String& msName, const String& outName, bool deep)
           }
           // Create a symlink to the directory.
           SymLink slink(outName + '/' + bname);
-          slink.create (newName.absoluteName(), False);
+          slink.create (newName.absoluteName(), false);
           cout << "Created symlink to subdirectory " << bname << endl;
         }
       }

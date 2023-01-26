@@ -68,7 +68,7 @@ void testLogFilter()
     AlwaysAssertExit((tmp.lowestPriority() == copy.lowestPriority()) &&
 		     (tmp.lowestPriority() == LogMessage::SEVERE));
     
-    // Bool pass(const LogMessage &message) const;
+    // bool pass(const LogMessage &message) const;
     message.priority(LogMessage::DEBUGGING);
     AlwaysAssertExit(low.pass(message) && !normal.pass(message) &&
 		     !warn.pass(message) && !severe.pass(message));
@@ -143,10 +143,10 @@ void testLogMessage()
     }
 
 
-    // LogMessage &message(const String &message, Bool keepLastTime = False);
+    // LogMessage &message(const String &message, bool keepLastTime = false);
     // const Time &messageTime() const;
-    // uInt line() const;
-    // LogMessage &line(uInt which);
+    // uint32_t line() const;
+    // LogMessage &line(uint32_t which);
     // LogMessage &origin(const LogOrigin &origin);
     // LogMessage &priority(Priority which);
     // static const String &toString(Priority which);
@@ -187,7 +187,7 @@ void testLogOrigin()
     // const String &functionName() const;
     // const String &className() const;
     // const ObjectID &objectID() const;
-    // uInt line() const;
+    // uint32_t line() const;
     // LogOrigin &fileName(const String &fileName);
     {
         LogOrigin empty;
@@ -203,7 +203,7 @@ void testLogOrigin()
     location.lineNumber = 10;
 
     // LogOrigin(const String &globalFunctionName, const char *fileName=0,
-    //           uInt lineNumber = 0);
+    //           uint32_t lineNumber = 0);
     {
         LogOrigin global("global", &location);
 	AlwaysAssertExit(global.functionName() == "global" &&
@@ -214,7 +214,7 @@ void testLogOrigin()
     }
 
     // LogOrigin(const String &className, const String &memberFuncName,
-    // 	      const char *fileName=0, uInt lineNumber = 0);
+    // 	      const char *fileName=0, uint32_t lineNumber = 0);
     {
         LogOrigin member("class", "member", &location);
 	AlwaysAssertExit(member.functionName() == "member" &&
@@ -225,14 +225,14 @@ void testLogOrigin()
     }
 
     // LogOrigin(const String &className, const String &memberFuncName,
-    //         const ObjectID &id, const char *fileName=0, uInt lineNumber = 0);
+    //         const ObjectID &id, const char *fileName=0, uint32_t lineNumber = 0);
     // LogOrigin(const LogOrigin &other);
     // LogOrigin &operator=(const LogOrigin &other);
     // String fullName() const;
     // LogOrigin &functionName(const String &funcName);
     // LogOrigin &className(const String &className);
     // LogOrigin &objectID(const ObjectID &id);
-    // LogOrigin &line(uInt which);
+    // LogOrigin &line(uint32_t which);
     // const String &fileName() const;
     // String toString() const;
     // global ostream &operator<<(ostream &os, const LogOrigin &origin);
@@ -314,7 +314,7 @@ void testLogSink()
     AlwaysAssertExit(copy = &LogSink::globalSink());
     LogMessage message;
     message.message("test");
-    // Bool post(const LogMessage &message);
+    // bool post(const LogMessage &message);
     AlwaysAssertExit(! sink1.post(message) &&
 		     ! sink2.post(message) &&
 		     ! sink3.post(message));
@@ -344,10 +344,10 @@ void testLogSink()
 		     messageColumn(2) == "test");
     AlwaysAssertExit(logTable2.nrow() == 5 &&
 		     messageColumn2(4) == "test");
-    // static Bool postGlobally(const LogMessage &message);
+    // static bool postGlobally(const LogMessage &message);
     sink5.postGlobally(message);
     AlwaysAssertExit(logTable2.nrow() == 6);
-    // virtual Bool postLocally(const LogMessage &message);
+    // virtual bool postLocally(const LogMessage &message);
     sink5.postLocally(message);
     AlwaysAssertExit(logTable.nrow() == 4);
     // const LogSinkInterface &localSink() const;
@@ -361,22 +361,22 @@ void testLogSink()
 		     lowestPriority() == LogMessage::NORMAL);
 
     // void postThenThrow(const LogMessage &message);
-    Bool caught = False;
+    bool caught = false;
     try {
         sink5.postThenThrow(message, AipsError());
     } catch (std::exception& x) {
-        caught = True;
+        caught = true;
 	AlwaysAssertExit(String(x.what()).contains("test"));
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 7);
     } 
     AlwaysAssertExit(caught);
 
     // static void postGloballyThenThrow(const LogMessage &message);
-    caught = False;
+    caught = false;
     try {
         sink5.postGloballyThenThrow(message);
     } catch (std::exception& x) {
-        caught = True;
+        caught = true;
 	AlwaysAssertExit(String(x.what()).contains("test"));
 	AlwaysAssertExit(logTable.nrow() == 5 && logTable2.nrow() == 8);
     } 
@@ -452,12 +452,12 @@ void testLogIO()
 	ostringstream ostr;
 	LogSink sls(LogMessage::NORMAL, &ostr);
 	LogIO os(sls);
-	Bool caught = False;
+	bool caught = false;
 	try {
 	    //     void postThenThrow();
 	    os << "This SHOULD post" << LogIO::EXCEPTION;
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssert(caught, AipsError);
 	String s(ostr);
@@ -468,13 +468,13 @@ void testLogIO()
 	ostringstream ostr;
 	LogSink sls(LogMessage::NORMAL, &ostr);
 	LogIO os(sls);
-	Bool caught = False;
+	bool caught = false;
 	try {
 	    //     void postThenThrow();
             os << "This SHOULD post";
             os.postThenThrow (DuplError("duplicate"));
 	} catch (DuplError& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssert(caught, AipsError);
 	String s(ostr);
@@ -515,7 +515,7 @@ void testLogAny (LogSink& sink)
 void testLogMemory()
 {
   LogFilter tmp;
-  LogSink sink(tmp, False);
+  LogSink sink(tmp, false);
   testLogAny (sink);
 }
 

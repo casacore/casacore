@@ -115,14 +115,14 @@ namespace casacore {
 // class, so making it a specialization of the higher level ClassicalStatistics
 // seems the better choice.
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool*,
+    class AccumType, class DataIterator, class MaskIterator=const bool*,
     class WeightsIterator=DataIterator
 >
 class BiweightStatistics
     : public ClassicalStatistics<CASA_STATP> {
 public:
 
-    BiweightStatistics(Int maxNiter=3, Double c=6.0);
+    BiweightStatistics(int32_t maxNiter=3, double c=6.0);
 
     // copy semantics
     BiweightStatistics(const BiweightStatistics<CASA_STATP>& other);
@@ -143,53 +143,53 @@ public:
     // these statistics are not supported. The methods, which override
     // the virtual ancestor versions, throw exceptions.
     virtual AccumType getMedian(
-        CountedPtr<uInt64> knownNpts=nullptr,
+        CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     );
 
     virtual AccumType getMedianAndQuantiles(
-        std::map<Double, AccumType>& quantileToValue,
-        const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts=nullptr,
+        std::map<double, AccumType>& quantileToValue,
+        const std::set<double>& quantiles, CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     );
 
     virtual AccumType getMedianAbsDevMed(
-        CountedPtr<uInt64> knownNpts=nullptr,
+        CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     );
 
-    virtual std::map<Double, AccumType> getQuantiles(
-        const std::set<Double>& quantiles, CountedPtr<uInt64> npts=nullptr,
+    virtual std::map<double, AccumType> getQuantiles(
+        const std::set<double>& quantiles, CountedPtr<uint64_t> npts=nullptr,
         CountedPtr<AccumType> min=nullptr, CountedPtr<AccumType> max=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     );
 
-    virtual std::pair<Int64, Int64> getStatisticIndex(
+    virtual std::pair<int64_t, int64_t> getStatisticIndex(
         StatisticsData::STATS stat
     );
     // </group>
 
     // returns the number of iterations performed to
     // compute the current location and scale values
-    Int getNiter() const;
+    int32_t getNiter() const;
 
     // reset object to initial state. Clears all private fields including data,
     // accumulators, etc.
     virtual void reset();
 
-    // If c is True, an exception is thrown; this algorithm does not support
+    // If c is true, an exception is thrown; this algorithm does not support
     // computing stats as data are added.
-    virtual void setCalculateAsAdded(Bool c);
+    virtual void setCalculateAsAdded(bool c);
 
     // Provide guidance to algorithms by specifying a priori which statistics
     // the caller would like calculated. This algorithm always needs to compute
@@ -205,12 +205,12 @@ protected:
     virtual StatsData<AccumType> _getStatistics();
 
 private:
-    Double _c{0};
-    Int _niter{0}, _maxNiter{0};
+    double _c{0};
+    int32_t _niter{0}, _maxNiter{0};
     AccumType _location{0}, _scale{0};
     std::pair<AccumType, AccumType> _range{};
     // _npts is the number of points computed using ClassicalStatistics
-    uInt64 _npts{0};
+    uint64_t _npts{0};
 
     // because the compiler gets confused if these aren't explicitly typed
     static const AccumType FOUR;
@@ -219,19 +219,19 @@ private:
     void _computeLocationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
         AccumType& ww_4u2, DataIterator dataIter, MaskIterator maskIter,
-        WeightsIterator weightsIter, uInt64 dataCount,
+        WeightsIterator weightsIter, uint64_t dataCount,
         const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
     );
 
     void _computeLocationSums(
         AccumType& sxw2, AccumType& sw2, DataIterator dataIter,
-        MaskIterator maskIter, WeightsIterator weightsIter, uInt64 dataCount,
+        MaskIterator maskIter, WeightsIterator weightsIter, uint64_t dataCount,
         const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
     );
 
     void _computeScaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, DataIterator dataIter,
-        MaskIterator maskIter, WeightsIterator weightsIter, uInt64 dataCount,
+        MaskIterator maskIter, WeightsIterator weightsIter, uint64_t dataCount,
         const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
     ) const;
 
@@ -248,52 +248,52 @@ private:
     // ww_4u2 = sum((1 - u_i^2) * (1 - 5*u_i^2)) = sum(w_i * (w_i - 4*u_i^2))
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
 
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
-    ) const;
-
-    void _locationAndScaleSums(
-        AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
-        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride
     ) const;
 
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
+    ) const;
+
+    void _locationAndScaleSums(
+        AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
+        const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationAndScaleSums(
         AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride
     ) const;
     // </group>
 
@@ -302,48 +302,48 @@ private:
     // sw2 = sum((1-u_i^2)^2)
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride
+        uint64_t nr, uint32_t dataStride
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     void _locationSums(
         AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
     // </group>
 
@@ -352,49 +352,49 @@ private:
     // ww_4u2 = sum((1 - u_i^2) * (1 - 5*u_i^2)) = sum(w_i * (w_i - 4*u_i^2))
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride
+        uint64_t nr, uint32_t dataStride
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges,
-        Bool isInclude
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges,
+        bool isInclude
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     void _scaleSums(
         AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
     // </group>
 

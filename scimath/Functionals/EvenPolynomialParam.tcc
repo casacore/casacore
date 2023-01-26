@@ -37,7 +37,7 @@ EvenPolynomialParam<T>::EvenPolynomialParam() :
   Function1D<T>(1) {}
 
 template<class T>
-EvenPolynomialParam<T>::EvenPolynomialParam(uInt order) :
+EvenPolynomialParam<T>::EvenPolynomialParam(uint32_t order) :
   Function1D<T>(order/2 + 1) {}
 
 template<class T>

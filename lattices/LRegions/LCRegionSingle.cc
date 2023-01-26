@@ -39,13 +39,13 @@ LCRegionSingle::LCRegionSingle()
 
 LCRegionSingle::LCRegionSingle (const IPosition& latticeShape)
 : LCRegion   (latticeShape),
-  itsHasMask (False),
+  itsHasMask (false),
   itsMaskPtr (0)
 {}
 
 LCRegionSingle::LCRegionSingle (const LCRegionSingle& other)
 : LCRegion   (other),
-  itsHasMask (False),
+  itsHasMask (false),
   itsMaskPtr (0)
 {}
 
@@ -58,132 +58,132 @@ LCRegionSingle& LCRegionSingle::operator= (const LCRegionSingle& other)
     return *this;
 }
 
-void LCRegionSingle::setMaskPtr (Lattice<Bool>& mask)
+void LCRegionSingle::setMaskPtr (Lattice<bool>& mask)
 {
     itsMaskPtr = &mask;
     if (mask.nelements() != 0) {
-        itsHasMask = True;
+        itsHasMask = true;
     }
 }
 
 
-Bool LCRegionSingle::masksEqual (const LCRegion& other) const
+bool LCRegionSingle::masksEqual (const LCRegion& other) const
 {
     // Object type check.
     if (type() != other.type()) {
-	return False;
+	return false;
     }
     // Not equal if one has a mask and the other has not.
     if (hasMask() != other.hasMask()) {
-	return False;
+	return false;
     }
-    // True if both do not have a mask.
+    // true if both do not have a mask.
     if (!hasMask() && !other.hasMask()) {
-	return True;
+	return true;
     }
     // Cast (is safe because object types are equal).
     const LCRegionSingle& that = (const LCRegionSingle&)other;
     // See if masks are the same shape.
     if (itsMaskPtr->shape() != that.itsMaskPtr->shape()) {
-	return False;
+	return false;
     }
     // Now we must check the values.  
-    RO_LatticeIterator<Bool> iter1(*itsMaskPtr, 
+    RO_LatticeIterator<bool> iter1(*itsMaskPtr, 
 				   itsMaskPtr->niceCursorShape());
-    RO_LatticeIterator<Bool> iter2(*(that.itsMaskPtr), 
+    RO_LatticeIterator<bool> iter2(*(that.itsMaskPtr), 
 				   itsMaskPtr->niceCursorShape());
     while (!iter1.atEnd()) {   
 	if (anyNE (iter1.cursor(), iter2.cursor())) {
-	    return False;
+	    return false;
 	}
 	iter1++; 
 	iter2++;
     }
-    return True;
+    return true;
 }
 
-const Array<Bool> LCRegionSingle::maskArray() const
+const Array<bool> LCRegionSingle::maskArray() const
 {
     // Return a [] shaped array if there is no mask
     IPosition shape;
     if (hasMask()) {
 	shape = itsMaskPtr->shape();
     }
-    COWPtr<Array<Bool> > pMask(new Array<Bool>(shape));
+    COWPtr<Array<bool> > pMask(new Array<bool>(shape));
     if (hasMask()) {
 	itsMaskPtr->get (pMask);
     }
     return *pMask;
 }
 
-Bool LCRegionSingle::hasMask() const
+bool LCRegionSingle::hasMask() const
 {
     return itsHasMask;
 }
 
-Bool LCRegionSingle::doGetSlice (Array<Bool>& buffer,
+bool LCRegionSingle::doGetSlice (Array<bool>& buffer,
 				 const Slicer& section)
 {
     if (itsHasMask != 0) {
         return itsMaskPtr->getSlice (buffer, section);
     }
     buffer.resize (section.length());
-    buffer = True;
-    return False;
+    buffer = true;
+    return false;
 }
 
-IPosition LCRegionSingle::doNiceCursorShape (uInt maxPixels) const
+IPosition LCRegionSingle::doNiceCursorShape (uint32_t maxPixels) const
 {
     if (itsHasMask != 0) {
         return itsMaskPtr->niceCursorShape (maxPixels);
     }
-    return Lattice<Bool>::doNiceCursorShape (maxPixels);
+    return Lattice<bool>::doNiceCursorShape (maxPixels);
 }
 
-LatticeIterInterface<Bool>* LCRegionSingle::makeIter
+LatticeIterInterface<bool>* LCRegionSingle::makeIter
                                 (const LatticeNavigator& navigator,
-				 Bool useRef) const
+				 bool useRef) const
 {
     if (itsHasMask != 0) {
         return itsMaskPtr->makeIter (navigator, useRef);
     }
-    return Lattice<Bool>::makeIter (navigator, useRef);
+    return Lattice<bool>::makeIter (navigator, useRef);
 }
 
 
-void LCRegionSingle::doPutSlice (const Array<Bool>& sourceBuffer,
+void LCRegionSingle::doPutSlice (const Array<bool>& sourceBuffer,
 				 const IPosition& where,
 				 const IPosition& stride)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->putSlice (sourceBuffer, where, stride);
 }
-void LCRegionSingle::set (const Bool& value)
+void LCRegionSingle::set (const bool& value)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->set (value);
 }
-void LCRegionSingle::apply (Bool (*function)(Bool))
+void LCRegionSingle::apply (bool (*function)(bool))
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->apply (function);
 }
-void LCRegionSingle::apply (Bool (*function)(const Bool&))
+void LCRegionSingle::apply (bool (*function)(const bool&))
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->apply (function);
 }
-void LCRegionSingle::apply (const Functional<Bool,Bool>& function)
+void LCRegionSingle::apply (const Functional<bool,bool>& function)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->apply (function);
 }
-void LCRegionSingle::putAt (const Bool& value, const IPosition& where)
+void LCRegionSingle::putAt (const bool& value, const IPosition& where)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->putAt (value, where);
 }
-void LCRegionSingle::copyData (const Lattice<Bool>& from)
+void LCRegionSingle::copyData (const Lattice<bool>& from)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsMaskPtr->copyData (from);

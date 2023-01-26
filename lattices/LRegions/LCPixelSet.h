@@ -68,7 +68,7 @@ public:
 
     // Construct from the box defining the position of the mask.
     // The shape of the region and mask must be the same.
-    LCPixelSet (const Array<Bool>& mask, const LCBox& region);
+    LCPixelSet (const Array<bool>& mask, const LCBox& region);
 
     // Copy constructor (copy semantics).
     LCPixelSet (const LCPixelSet& other);
@@ -79,7 +79,7 @@ public:
     LCPixelSet& operator= (const LCPixelSet& other);
 
     // Comparison
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
  
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -101,7 +101,7 @@ protected:
     // Construct another LCPixelSet (for e.g. another lattice) by moving
     // this one. It recalculates the bounding mask.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
 private:

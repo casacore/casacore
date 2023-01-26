@@ -298,9 +298,9 @@ std::mutex FFTW::theirMutex;
   {}
   void FFTW::c2r(const IPosition&, std::complex<double>*, double*)
   {}
-  void FFTW::c2c(const IPosition&, std::complex<float>*, Bool)
+  void FFTW::c2c(const IPosition&, std::complex<float>*, bool)
   {}
-  void FFTW::c2c(const IPosition&, std::complex<double>*, Bool)
+  void FFTW::c2c(const IPosition&, std::complex<double>*, bool)
   {}
 
   FFTW::Plan FFTW::plan_redft00(const IPosition &, float *, float *)

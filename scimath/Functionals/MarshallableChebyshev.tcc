@@ -52,7 +52,7 @@ void MarshallableChebyshev<T>::store(Record& out) const {
     out.define(FUNCFIELDS[MODE], modenames[this->getOutOfIntervalMode()]);
     out.define(FUNCFIELDS[DEF], this->getDefault());
 
-    Vector<Double> intv(2);
+    Vector<double> intv(2);
     intv(0) = this->getIntervalMin();
     intv(1) = this->getIntervalMax();
     out.define(FUNCFIELDS[INTERVAL], intv);
@@ -73,7 +73,7 @@ MarshallableChebyshev<T>::MarshallableChebyshev(const Record& gr)
     }
     if (input.exists(FUNCFIELDS[MODE])) {
 	String modename;
-	uInt i=0;
+	uint32_t i=0;
 	input.get(modename, FUNCFIELDS[MODE]);
 	for(i=0; i < ChebyshevEnums::NOutOfIntervalModes; i++) {
 	    if (modename == modenames[i]) break;

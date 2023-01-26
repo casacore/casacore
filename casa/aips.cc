@@ -28,9 +28,9 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #if defined(AIPS_DEBUG)
-Bool aips_debug_on = True;
+bool aips_debug_on = true;
 #else
-Bool aips_debug_on = False;
+bool aips_debug_on = false;
 #endif
 
 } //# NAMESPACE CASACORE - END

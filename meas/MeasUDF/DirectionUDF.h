@@ -93,7 +93,7 @@ namespace casacore {
 
     // Create for the given function type.
     // The Bools tell if rise/set times have to be calculated.
-    explicit DirectionUDF (FuncType, Bool riseSet=False);
+    explicit DirectionUDF (FuncType, bool riseSet=false);
 
     // Function to create an object.
     static UDFBase* makeDIR     (const String&);
@@ -113,8 +113,8 @@ namespace casacore {
     virtual void setup (const Table&, const TaQLStyle&);
 
     // Get the value.
-    virtual Double getDouble (const TableExprId& id);
-    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual double getDouble (const TableExprId& id);
+    virtual MArray<double> getArrayDouble (const TableExprId& id);
     virtual MArray<MVTime> getArrayDate (const TableExprId& id);
 
   private:
@@ -124,7 +124,7 @@ namespace casacore {
     PositionEngine    itsPositionEngine;
     FuncType          itsType;
     MDirection::Types itsRefType;
-    Bool              itsRiseSet;   //# True = calculate rise/set time
+    bool              itsRiseSet;   //# true = calculate rise/set time
   };
 
 } //end namespace

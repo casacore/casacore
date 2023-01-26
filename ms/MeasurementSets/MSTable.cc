@@ -27,10 +27,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  Int MSTableMaps::mapType (const std::map<Int,String>& nameMap, const String& name) const
+  int32_t MSTableMaps::mapType (const std::map<int32_t,String>& nameMap, const String& name) const
   {
     // find first occurrence of name in the map (should be only occurrence)
-    Int type = 0; //# 0=UNDEFINED_COLUMN for all enums
+    int32_t type = 0; //# 0=UNDEFINED_COLUMN for all enums
     for (const auto& kv : nameMap) {
       if (kv.second == name) {
         type = kv.first;

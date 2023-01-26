@@ -89,8 +89,8 @@ class Slice;
 //  <li> Comparison operators ==, >, >=, <, <=, and !=.
 //  <li> Logical operators &&, ||, and !.
 //  <li> Constant single and double precision values.
-//       <br>No exponent or exponent "e" results in single precision (Float),
-//           while "d" results in double precision (Double).
+//       <br>No exponent or exponent "e" results in single precision (float),
+//           while "d" results in double precision (double).
 //  <li> The imaginary part of a complex value can be given by the suffix "i".
 //       A full complex number can be given by addition. E.g. "3+4i".
 //       The complex is single (Complex) or double (DComplex) precision
@@ -129,10 +129,10 @@ class Slice;
 //          $HOME\/image.data
 //          "ab'c"'d"e'          results in  ab'cd"e
 //       </srcblock>
-//       Only input images with data type Float and Complex are supported,
+//       Only input images with data type float and Complex are supported,
 //       because those data types are the only ones used so far.
-//       Support of Bool, Double, and DComplex is very simple to build in.
-//       The resulting lattice can be of type Bool, Float, Double,
+//       Support of bool, double, and DComplex is very simple to build in.
+//       The resulting lattice can be of type bool, float, double,
 //       Complex, and DComplex.
 //  <li> An image can also be given by means of the <src>$n</src> notation,
 //       where <src>n</src> is the sequence number in the
@@ -149,7 +149,7 @@ class Slice;
 // <p>
 // The data types of the images and constants involved can be different.
 // The data type of a subexpression is the common data type (e.g.
-// Float and Double result in Double; Complex and Double result in DComplex).
+// float and double result in double; Complex and double result in DComplex).
 // Automatic implicit conversions are done where needed. However, for
 // performance reasons it may sometimes be better to convert explicitly.
 // See below in the first example.
@@ -166,9 +166,9 @@ class Slice;
 //       They do not need to have conforming shapes and coordinates,
 //       because only the mean of img2 is used.
 //       <br>Note that pi is explicitly converted to single precision,
-//       because pi() results in a Double. If that was not done,
-//       the expression result would be a Double with the effect that
-//       all data of img1 had to be converted to Double.
+//       because pi() results in a double. If that was not done,
+//       the expression result would be a double with the effect that
+//       all data of img1 had to be converted to double.
 //  <dt> <src> min(img1, (min(img1)+max(img1))/2) </src>
 //  <dd> This example shows that there are 2 min functions. One with a
 //       single argument returning the minimum value of that image.
@@ -179,8 +179,8 @@ class Slice;
 
 // <example>
 // <srcblock>
-//    LatticeExpr<Double> expr ("a + sin(b)");
-//    ArrayLattice<Double> arr(expr.shape());
+//    LatticeExpr<double> expr ("a + sin(b)");
+//    ArrayLattice<double> arr(expr.shape());
 //    arr.copyData (expr);
 // </srcblock>
 // Line 1 creates a LatticeExpr object for the given expression. Note that
@@ -223,13 +223,13 @@ public:
 
     // Construct a literal object for the given type.
     // <group>
-    ImageExprParse (Bool value);
-    ImageExprParse (Int value);
-    ImageExprParse (Float value);
-    ImageExprParse (Double value);
+    ImageExprParse (bool value);
+    ImageExprParse (int32_t value);
+    ImageExprParse (float value);
+    ImageExprParse (double value);
     ImageExprParse (const Complex& value);
     ImageExprParse (const DComplex& value);
-    ImageExprParse (const Char* value);
+    ImageExprParse (const char* value);
     ImageExprParse (const String& value);
     // </group>
 
@@ -301,8 +301,8 @@ private:
     static String addDir (const String& fileName);
 
     // Try if the name represent a lattice or image.
-    // Return False if not.
-    Bool tryLatticeNode (LatticeExprNode& node, const String& name) const;
+    // Return false if not.
+    bool tryLatticeNode (LatticeExprNode& node, const String& name) const;
 
     // Make the node from the image name and a mask name.
     // The mask name can be NOMASK (case insensitive) meaning that no mask
@@ -311,7 +311,7 @@ private:
 				   const String& mask) const;
 
     // Callback function for RegionHandlerTable to get the table to be used.
-    static Table& getRegionTable (void*, Bool);
+    static Table& getRegionTable (void*, bool);
 
     // Callback function for RegionHandlerHDF5 to get the file to be used.
     static const CountedPtr<HDF5File>& getRegionHDF5 (void*);
@@ -322,13 +322,13 @@ private:
     //# The names of the images used in the expression.
     //# and the level of nesting.
     static vector<String> theirNames;
-    static Int theirLevel;
+    static int32_t theirLevel;
 
     DataType itsType;
-    Bool     itsBval;              //# boolean literal
-    Int      itsIval;              //# integer literal
-    Float    itsFval;              //# Float literal
-    Double   itsDval;              //# Double literal
+    bool     itsBval;              //# boolean literal
+    int32_t      itsIval;              //# integer literal
+    float    itsFval;              //# float literal
+    double   itsDval;              //# double literal
     Complex  itsCval;              //# Complex literal
     DComplex itsDCval;             //# DComplex literal
     String   itsSval;              //# lattice name; function name

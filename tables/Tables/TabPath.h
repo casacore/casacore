@@ -71,14 +71,14 @@ public:
     ~TabPath ();
 
     // Find a file in one of the directories.
-    Bool found (const String&, String&) const;
+    bool found (const String&, String&) const;
 
     // Get the directory name.
-    const String& dir (uInt dirnr) const;
+    const String& dir (uint32_t dirnr) const;
    
 private:
     Block<String>  tabDir_p;           // file directories
-    uInt           nrDir_p;            // # directories
+    uint32_t           nrDir_p;            // # directories
 };
 
 

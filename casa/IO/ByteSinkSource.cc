@@ -32,7 +32,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSinkSource::ByteSinkSource ()
 {}
 
-ByteSinkSource::ByteSinkSource (TypeIO* typeIO, Bool takeOver)
+ByteSinkSource::ByteSinkSource (TypeIO* typeIO, bool takeOver)
   : BaseSinkSource (typeIO, takeOver)
 {}
 

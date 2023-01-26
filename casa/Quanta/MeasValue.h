@@ -116,13 +116,13 @@ public:
   // Each derived class should have at least the following constructors:
   // <srcblock>
   //	MV()			// some default
-  //	MV(Double)		// some default or error if vector expected
-  //	MV(Vector<Double>)	// with check for array number of elements
+  //	MV(double)		// some default or error if vector expected
+  //	MV(Vector<double>)	// with check for array number of elements
   //	MV(Quantity)
   //	MV(Vector<Quantity>)
-  //	MV(Quantum<Vector<Double> >
+  //	MV(Quantum<Vector<double> >
   // </srcblock>
-  // Float (or other standard type) versions could be added if appropiate.
+  // float (or other standard type) versions could be added if appropiate.
   // Dummy for cxx2html
   void dummy_constr() const {;};
   
@@ -135,10 +135,10 @@ public:
   // <srcblock>
   // MV &operator+=(const MV &meas);
   // MV &operator-=(const MV &meas);
-  // Bool operator==(const MV &meas) const;
-  // Bool operator!=(const MV &meas) const;
-  // Bool near(const MV &meas, Double tol = 1e-13) const;
-  // Bool nearAbs(const MV &meas, Double tol = 1e-13) const;
+  // bool operator==(const MV &meas) const;
+  // bool operator!=(const MV &meas) const;
+  // bool near(const MV &meas, double tol = 1e-13) const;
+  // bool nearAbs(const MV &meas, double tol = 1e-13) const;
   // </srcblock>
   // Dummy for cxx2html
   void dummy_operator() const {;};
@@ -150,10 +150,10 @@ public:
   // Clone a MeasValue
   virtual MeasValue *clone() const = 0;
 
-  // Get the internal value as a <src>Vector<Double></src>.
+  // Get the internal value as a <src>Vector<double></src>.
   // Note that the vector could
   // be empty, or not be a true representation (different data sizes e.g.)
-  virtual Vector<Double> getVector() const = 0;
+  virtual Vector<double> getVector() const = 0;
 
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
@@ -161,19 +161,19 @@ public:
   // the TableMeasures.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const = 0;
-  virtual Vector<Quantum<Double> > getXRecordValue() const;
-  virtual Vector<Quantum<Double> > getTMRecordValue() const;
+  virtual Vector<Quantum<double> > getRecordValue() const = 0;
+  virtual Vector<Quantum<double> > getXRecordValue() const;
+  virtual Vector<Quantum<double> > getTMRecordValue() const;
   // </group>
   // Set the internal value from a Vector of values (obtained in principle
   // with a getVector()). It will be assumed that the Vector is correctly 
   // formatted. If Vector is too long, the remainder will be discarded.
   // If Vector is too short, action will depend on the individual classes,
   // but in general act the same way as a constructor with a short Vector. 
-  virtual void putVector(const Vector<Double> &in) = 0;
+  virtual void putVector(const Vector<double> &in) = 0;
 
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in) = 0;
+  virtual bool putValue(const Vector<Quantum<double> > &in) = 0;
 
   // Some of the Measure values used need the occasional adjustments to proper
   // values. Examples are MVDirection (direction cosines) which have to be
@@ -183,9 +183,9 @@ public:
   // Adjust value
   virtual void adjust();
   // Adjust value and return a normalisation value
-  virtual void adjust(Double &val);
+  virtual void adjust(double &val);
   // Re-adjust, i.e. undo a previous adjust, with value
-  virtual void readjust(Double val);
+  virtual void readjust(double val);
   // </group>
 private:
 };

@@ -31,12 +31,12 @@
 #include <casacore/casa/namespace.h>
 int main(){
   cout << "The example from the Header File" << endl;
-  uInt ndim = 2;
-  Float height = 1;
-  Vector<Float> mean(ndim); mean(0) = 0, mean(1) = 1;
-  Vector<Float> variance(ndim); variance(0) = .1, variance(1) = 7;
-  GaussianND<Float> g(ndim, height, mean, variance); 
-  Vector<Float> x(ndim); x = 0;
+  uint32_t ndim = 2;
+  float height = 1;
+  Vector<float> mean(ndim); mean(0) = 0, mean(1) = 1;
+  Vector<float> variance(ndim); variance(0) = .1, variance(1) = 7;
+  GaussianND<float> g(ndim, height, mean, variance); 
+  Vector<float> x(ndim); x = 0;
   cout << "g("<< x <<") = " << g(x) <<endl; // g([0,0])=1*exp(-1/2*1/7);
   x(1)++;
   cout << "g("<< x <<") = " <<g(x) <<endl;  // g([0,1])= 1

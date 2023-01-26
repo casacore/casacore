@@ -61,7 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Error handlers for the HDUs would need to be indicated in
 // their constructors.  For example:
 // <srcblock>
-// PrimaryArray<Float> pa(fin, coutErrHandler);
+// PrimaryArray<float> pa(fin, coutErrHandler);
 // </srcblock>
 // The default error handler is FITSError::defaultHandler which
 // sends the error message to the global log sink at the

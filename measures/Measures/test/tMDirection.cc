@@ -27,21 +27,21 @@
 #include <casacore/measures/Measures/MDirection.h>
 #include <casacore/casa/namespace.h>
 
-Bool testShiftAngle() {
-	Double rav = 30;
-	Double decv = 40;
+bool testShiftAngle() {
+	double rav = 30;
+	double decv = 40;
 	Quantity ra(rav, "deg");
 	Quantity dec(decv, "deg");
 	MDirection x(ra, dec);
 	Quantity offset(4, "arcmin");
 	Quantity pa(0, "deg");
 	x.shiftAngle(offset, pa);
-	Quantum<Vector<Double> > angle = x.getAngle();
+	Quantum<Vector<double> > angle = x.getAngle();
 	AlwaysAssert(
 		abs((angle.getValue("deg")[0] - rav)/rav) < 1e-6,
 		AipsError
 	);
-	Double exp = (dec + offset).getValue("deg");
+	double exp = (dec + offset).getValue("deg");
 	AlwaysAssert(
 		abs((angle.getValue("deg")[1] - exp)/exp) < 1e-6,
 		AipsError
@@ -93,13 +93,13 @@ Bool testShiftAngle() {
 		AipsError
 	);
 
-	return True;
+	return true;
 }
 
 
 int main() {
 	try {
-		Bool success = True;
+		bool success = true;
 		success = success && testShiftAngle();
 
 		if (success) {

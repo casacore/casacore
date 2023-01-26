@@ -38,7 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 LCEllipsoid::LCEllipsoid() : _theta(0)
 {}
 
-LCEllipsoid::LCEllipsoid (const IPosition& center, Float radius,
+LCEllipsoid::LCEllipsoid (const IPosition& center, float radius,
         const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsRadii      (latticeShape.nelements(), radius),
@@ -49,7 +49,7 @@ LCEllipsoid::LCEllipsoid (const IPosition& center, Float radius,
     defineMask();
 }
 
-LCEllipsoid::LCEllipsoid (const Vector<Float>& center, Float radius,
+LCEllipsoid::LCEllipsoid (const Vector<float>& center, float radius,
         const IPosition& latticeShape)
 : LCRegionFixed (latticeShape), itsCenter(center.copy()),
   itsRadii      (latticeShape.nelements(), radius),
@@ -59,21 +59,21 @@ LCEllipsoid::LCEllipsoid (const Vector<Float>& center, Float radius,
     defineMask();
 }
 
-LCEllipsoid::LCEllipsoid(const Vector<Double>& center, Double radius,
+LCEllipsoid::LCEllipsoid(const Vector<double>& center, double radius,
         const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsCenter     (center.size()),
   itsRadii      (center.size(), radius),
   _theta        (0)
 {
-    for (uInt i=0; i<center.size(); ++i) {
+    for (uint32_t i=0; i<center.size(); ++i) {
         itsCenter[i] = center[i];
     }
     setBoundingBox(makeBox(itsRadii, latticeShape));
     defineMask();
 }
 
-LCEllipsoid::LCEllipsoid(const Vector<Float>& center, const Vector<Float>& radii,
+LCEllipsoid::LCEllipsoid(const Vector<float>& center, const Vector<float>& radii,
         const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsCenter     (center.copy()),
@@ -84,15 +84,15 @@ LCEllipsoid::LCEllipsoid(const Vector<Float>& center, const Vector<Float>& radii
     defineMask();
 }
 
-LCEllipsoid::LCEllipsoid(const Vector<Double>& center,
-        const Vector<Double>& radii,
+LCEllipsoid::LCEllipsoid(const Vector<double>& center,
+        const Vector<double>& radii,
         const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsCenter     (center.size()),
   itsRadii      (radii.size()),
   _theta        (0)
 {
-    for (uInt i=0; i<center.size(); ++i) {
+    for (uint32_t i=0; i<center.size(); ++i) {
         itsCenter[i] = center[i];
         if (i < radii.size()) {
             itsRadii[i] = radii[i];
@@ -103,10 +103,10 @@ LCEllipsoid::LCEllipsoid(const Vector<Double>& center,
 }
 
 LCEllipsoid::LCEllipsoid (
-    const Float xcenter, const Float ycenter,
-    const Float majorAxis, const Float minorAxis,
-    const Float theta, const IPosition& latticeShape
-) : LCRegionFixed (latticeShape), _theta(fmod(theta, Float(C::pi))) {
+    const float xcenter, const float ycenter,
+    const float majorAxis, const float minorAxis,
+    const float theta, const IPosition& latticeShape
+) : LCRegionFixed (latticeShape), _theta(fmod(theta, float(C::pi))) {
     itsCenter.resize(2);
     itsCenter[0] = xcenter;
     itsCenter[1] = ycenter;
@@ -123,14 +123,14 @@ LCEllipsoid::LCEllipsoid (
         itsRadii[0] = majorAxis;
         itsRadii[1] = minorAxis;
     }
-    if (near(_theta, Float(0))) {
+    if (near(_theta, float(0))) {
         setBoundingBox(makeBox(itsRadii, latticeShape));
         defineMask();
     }
     else {
         // overkill but the general way to find the minimal
         // box eludes me atm.
-        Vector<Float> proj(itsRadii.size(), max(itsRadii));
+        Vector<float> proj(itsRadii.size(), max(itsRadii));
         setBoundingBox(makeBox(proj, latticeShape));
         _defineMask2D();
     }
@@ -160,12 +160,12 @@ LCEllipsoid& LCEllipsoid::operator= (const LCEllipsoid& other)
     return *this;
 }
 
-Bool LCEllipsoid::operator== (const LCRegion& other) const
+bool LCEllipsoid::operator== (const LCRegion& other) const
 {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionFixed::operator== (other)) {
-        return False;
+        return false;
     }
     const LCEllipsoid& that = (const LCEllipsoid&)other;
     // Compare private data.
@@ -173,20 +173,20 @@ Bool LCEllipsoid::operator== (const LCRegion& other) const
         itsCenter.nelements() != that.itsCenter.nelements()
         ||  itsRadii.nelements()  != that.itsRadii.nelements()
     ) {
-        return False;
+        return false;
     }
-    for (uInt i=0; i<itsCenter.nelements(); ++i) {
+    for (uint32_t i=0; i<itsCenter.nelements(); ++i) {
         if (
             !near (itsCenter(i), that.itsCenter(i))
             ||  !near (itsRadii(i),  that.itsRadii(i))
         ) {
-            return False;
+            return false;
         }
         if (itsRadii.size() == 2 && ! near(_theta, that._theta)) {
-            return False;
+            return false;
         }
     }
-    return True;
+    return true;
 }
 
 LCRegion* LCEllipsoid::cloneRegion() const
@@ -194,13 +194,13 @@ LCRegion* LCEllipsoid::cloneRegion() const
     return new LCEllipsoid(*this);
 }
 
-LCRegion* LCEllipsoid::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCEllipsoid::doTranslate (const Vector<float>& translateVector,
     const IPosition& newLatticeShape) const
 {
-    uInt ndim = latticeShape().nelements();
-    Vector<Float> center;
+    uint32_t ndim = latticeShape().nelements();
+    Vector<float> center;
     center = itsCenter;
-    for (uInt i=0; i<ndim; ++i) {
+    for (uint32_t i=0; i<ndim; ++i) {
         center[i] += translateVector[i];
     }
     if (itsCenter.size() != 2 || _theta == 0) {
@@ -230,8 +230,8 @@ TableRecord LCEllipsoid::toRecord (const String&) const
     TableRecord rec;
     defineRecordFields(rec, className());
     // Write 1-relative.
-    rec.define ("oneRel", True);
-    rec.define ("center", itsCenter + Float(1));
+    rec.define ("oneRel", true);
+    rec.define ("center", itsCenter + float(1));
     rec.define ("radii", itsRadii);
     rec.define ("shape", latticeShape().asVector());
     if (itsRadii.size() == 2) {
@@ -244,21 +244,21 @@ LCEllipsoid* LCEllipsoid::fromRecord(const TableRecord& rec,
         const String&)
 {
     // If 1-relative, subtract 1 from center.
-    Bool oneRel = rec.asBool ("oneRel");
-    Float off = (oneRel ? 1:0);
-    Array<Float> center (rec.toArrayFloat ("center"));
+    bool oneRel = rec.asBool ("oneRel");
+    float off = (oneRel ? 1:0);
+    Array<float> center (rec.toArrayFloat ("center"));
     if (center.size() != 2 || ! rec.isDefined("theta")) {
         return new LCEllipsoid (center-off,
-            Vector<Float>(rec.toArrayFloat ("radii")),
-            Vector<Int>(rec.toArrayInt ("shape"))
+            Vector<float>(rec.toArrayFloat ("radii")),
+            Vector<int32_t>(rec.toArrayInt ("shape"))
         );
     }
     else {
-        Vector<Float> radii (rec.toArrayFloat ("radii"));
+        Vector<float> radii (rec.toArrayFloat ("radii"));
         return new LCEllipsoid(
             center(IPosition(1,0))-off, center(IPosition(1,1))-off,
             radii[0], radii[1], rec.asFloat("theta"),
-            Vector<Int>(rec.toArrayInt ("shape"))
+            Vector<int32_t>(rec.toArrayInt ("shape"))
         );
     }
 }
@@ -266,15 +266,15 @@ LCEllipsoid* LCEllipsoid::fromRecord(const TableRecord& rec,
 void LCEllipsoid::fillCenter(const IPosition& center)
 {
     itsCenter.resize (center.nelements());
-    for (uInt i=0; i<center.nelements(); ++i) {
+    for (uint32_t i=0; i<center.nelements(); ++i) {
         itsCenter(i) = center(i);
     }
 }
 
 Slicer LCEllipsoid::makeBox(
-    const Vector<Float>& radii, const IPosition& latticeShape
+    const Vector<float>& radii, const IPosition& latticeShape
 ) {
-    uInt nrdim = itsCenter.size();
+    uint32_t nrdim = itsCenter.size();
     // First make sure dimensionalities conform.
     if (latticeShape.size() != nrdim  ||  radii.size() != nrdim) {
         ThrowCc("dimensionality of center,radii,lattice mismatch");
@@ -283,10 +283,10 @@ Slicer LCEllipsoid::makeBox(
     IPosition blc(nrdim);
     IPosition trc(nrdim);
     _epsilon.resize(nrdim);
-    _centerIsInside = True;
-    for (uInt i=0; i<nrdim; ++i) {
+    _centerIsInside = true;
+    for (uint32_t i=0; i<nrdim; ++i) {
         if (itsCenter[i] > latticeShape[i]-1  ||  itsCenter[i] < 0) {
-            _centerIsInside = False;
+            _centerIsInside = false;
             ThrowIf(
                 itsCenter[i] + radii[i] < 0
                 || itsCenter[i] - radii[i] > latticeShape[i] - 1,
@@ -294,8 +294,8 @@ Slicer LCEllipsoid::makeBox(
             );
         }
         _epsilon[i] = powf(10.0, int(log10(2*radii[i]))-5);
-        blc[i] = max(Int(itsCenter[i] - radii[i] + 1 - _epsilon[i]), 0);
-        trc[i] = min(Int(itsCenter[i] + radii[i] + _epsilon[i]), latticeShape[i] - 1);
+        blc[i] = max(int32_t(itsCenter[i] - radii[i] + 1 - _epsilon[i]), 0);
+        trc[i] = min(int32_t(itsCenter[i] + radii[i] + _epsilon[i]), latticeShape[i] - 1);
         if (blc[i] > trc[i]) {
             ostringstream rstr;
             rstr << radii;
@@ -308,7 +308,7 @@ Slicer LCEllipsoid::makeBox(
     return Slicer(blc, trc, Slicer::endIsLast);
 }
 
-const Float& LCEllipsoid::theta() const {
+const float& LCEllipsoid::theta() const {
     ThrowIf(
         itsRadii.size() != 2,
         "Angle can only be gotten for 2-D ellipses"
@@ -321,28 +321,28 @@ void LCEllipsoid::defineMask() {
         _doOutside();
         return;
     }
-    uInt i;
+    uint32_t i;
     // Create the mask with the shape of the bounding box.
-    // Set the mask initially to False.
+    // Set the mask initially to false.
     const IPosition& length = boundingBox().length();
-    uInt nrdim = length.nelements();
-    Array<Bool> mask(length);
-    mask = False;
+    uint32_t nrdim = length.nelements();
+    Array<bool> mask(length);
+    mask = false;
     // Get access to the mask storage.
-    Bool deleteIt;
-    Bool* maskData = mask.getStorage (deleteIt);
+    bool deleteIt;
+    bool* maskData = mask.getStorage (deleteIt);
     // Initialize some variables for the loop below.
-    Float center0 = itsCenter[0] - boundingBox().start()[0];
-    Float radsq0 = itsRadii[0] * itsRadii[0];
-    Int np = length(0);
+    float center0 = itsCenter[0] - boundingBox().start()[0];
+    float radsq0 = itsRadii[0] * itsRadii[0];
+    int32_t np = length(0);
     IPosition pos (nrdim, 0);
-    Vector<Float> center (nrdim);
-    Vector<Float> radsq (nrdim);
-    Vector<Float> dist (nrdim, 0.0);
-    Float distsq = 0;
+    Vector<float> center (nrdim);
+    Vector<float> radsq (nrdim);
+    Vector<float> dist (nrdim, 0.0);
+    float distsq = 0;
     for (i=1; i<nrdim; ++i) {
         center[i] = itsCenter[i] - boundingBox().start()[i];
-        Float d = max (float(0), center[i]) / itsRadii[i];
+        float d = max (float(0), center[i]) / itsRadii[i];
         dist[i] = d * d;
         distsq += dist[i];
     }
@@ -354,14 +354,14 @@ void LCEllipsoid::defineMask() {
     i = 1;
     for (;;) {
         // Ignore the line when the distance exceeds the radius.
-        Float d = 1 - distsq;
+        float d = 1 - distsq;
         if (d >= 0) {
             d = sqrt(d * radsq0);
             d += _epsilon[0];
-            Int start = max(Int(center0 - d + 1 - _epsilon[i]), 0);
-            Int end = min(Int(center0 + d + _epsilon[i]), np-1);
-            for (Int j=start; j<=end; j++) {
-                maskData[j] = True;
+            int32_t start = max(int32_t(center0 - d + 1 - _epsilon[i]), 0);
+            int32_t end = min(int32_t(center0 + d + _epsilon[i]), np-1);
+            for (int32_t j=start; j<=end; j++) {
+                maskData[j] = true;
             }
         }
         // Go to the next line and update the line distance.
@@ -369,7 +369,7 @@ void LCEllipsoid::defineMask() {
         for (i=1; i<nrdim; ++i) {
             distsq -= dist[i];
             if (++pos[i] < length[i]) {
-                Float d = abs(center[i] - pos[i]);
+                float d = abs(center[i] - pos[i]);
                 d = max(float(0), d) / itsRadii[i];
                 dist[i] = d*d;
                 distsq += dist[i];
@@ -377,7 +377,7 @@ void LCEllipsoid::defineMask() {
             }
             // This dimension is done. Reset it and continue with the next.
             pos[i] = 0;
-            Float d = max (float(0), center[i]) / itsRadii[i];
+            float d = max (float(0), center[i]) / itsRadii[i];
             dist(i) = d*d;
             distsq += dist[i];
         }
@@ -393,32 +393,32 @@ void LCEllipsoid::defineMask() {
 
 void LCEllipsoid::_defineMask2D() {
     // Create the mask with the shape of the bounding box.
-    // Set the mask initially to False.
+    // Set the mask initially to false.
     const IPosition& length = boundingBox().length();
-    uInt ndim = length.size();
+    uint32_t ndim = length.size();
     AlwaysAssert(ndim == 2, AipsError);
-    Array<Bool> mask(length);
-    mask = False;
+    Array<bool> mask(length);
+    mask = false;
     // Get access to the mask storage.
-    Bool deleteIt;
-    Bool* maskData = mask.getStorage (deleteIt);
-    Vector<Float> center(ndim);
-    Vector<Float> rad2(ndim);
-    for (uInt i=0; i<ndim; ++i) {
-        center[i] = itsCenter[i] - Float(boundingBox().start()[i]);
+    bool deleteIt;
+    bool* maskData = mask.getStorage (deleteIt);
+    Vector<float> center(ndim);
+    Vector<float> rad2(ndim);
+    for (uint32_t i=0; i<ndim; ++i) {
+        center[i] = itsCenter[i] - float(boundingBox().start()[i]);
         rad2[i] = itsRadii[i]*itsRadii[i];
     }
     // Initialize some variables for the loop below.
-    Float prevSum = 0;
-    for (Int y=0; y<length[1]; ++y) {
-        Float ydiff = Float(y-center[1]);
-        for (Int x=0; x<length[0]; ++x) {
-            Float xdiff = Float(x-center[0]);
-            Float xp = xdiff*cos(-_theta) - ydiff*sin(-_theta);
-            Float yp = xdiff*sin(-_theta) + ydiff*cos(-_theta);
-            Float sum = xp*xp/rad2[0] + yp*yp/rad2[1];
+    float prevSum = 0;
+    for (int32_t y=0; y<length[1]; ++y) {
+        float ydiff = float(y-center[1]);
+        for (int32_t x=0; x<length[0]; ++x) {
+            float xdiff = float(x-center[0]);
+            float xp = xdiff*cos(-_theta) - ydiff*sin(-_theta);
+            float yp = xdiff*sin(-_theta) + ydiff*cos(-_theta);
+            float sum = xp*xp/rad2[0] + yp*yp/rad2[1];
             if (sum <= 1) {
-                maskData[x] = True;
+                maskData[x] = true;
             }
             else if (x != 0 && sum > prevSum) {
                 break;
@@ -437,43 +437,43 @@ void LCEllipsoid::_defineMask2D() {
 
 void LCEllipsoid::_doOutside() {
     // Create the mask with the shape of the bounding box.
-    // Set the mask initially to False.
+    // Set the mask initially to false.
     const IPosition& length = boundingBox().length();
-    Float center0 = itsCenter[0] - boundingBox().start()[0];
-    uInt ndim = length.size();
-    Array<Bool> mask(length);
-    Int np = length[0];
-    mask = False;
+    float center0 = itsCenter[0] - boundingBox().start()[0];
+    uint32_t ndim = length.size();
+    Array<bool> mask(length);
+    int32_t np = length[0];
+    mask = false;
     // Get access to the mask storage.
-    Bool deleteIt;
-    Bool* maskData = mask.getStorage (deleteIt);
-    Vector<Float> center(ndim);
-    Vector<Float> rad2 = itsRadii * itsRadii;
+    bool deleteIt;
+    bool* maskData = mask.getStorage (deleteIt);
+    Vector<float> center(ndim);
+    Vector<float> rad2 = itsRadii * itsRadii;
     IPosition pos(ndim, 0);
-    Vector<Float> d2(ndim);
-    Float curD2 = 0;
-    for (uInt i=1; i<ndim; ++i) {
-        center[i] = itsCenter[i] - Float(boundingBox().start()[i]);
+    Vector<float> d2(ndim);
+    float curD2 = 0;
+    for (uint32_t i=1; i<ndim; ++i) {
+        center[i] = itsCenter[i] - float(boundingBox().start()[i]);
         d2[i] = center[i]*center[i]/rad2[i];
         // sumsq of all components except the first
         curD2 += d2[i];
     }
-    uInt i = 1;
-    while (True) {
+    uint32_t i = 1;
+    while (true) {
         if (1 - curD2 >= 0) {
             // x**2/rad2[0] = 1 - curD2
-            Float maxXDiff = itsRadii[0] * sqrt(1 - curD2);
-            Int start = max(Int(center0 - maxXDiff + 1 - _epsilon[0]), 0);
-            Int end = min(Int(center0 + maxXDiff + _epsilon[0]), np-1);
-            for (Int j=start; j<=end; ++j) {
-                maskData[j] = True;
+            float maxXDiff = itsRadii[0] * sqrt(1 - curD2);
+            int32_t start = max(int32_t(center0 - maxXDiff + 1 - _epsilon[0]), 0);
+            int32_t end = min(int32_t(center0 + maxXDiff + _epsilon[0]), np-1);
+            for (int32_t j=start; j<=end; ++j) {
+                maskData[j] = true;
             }
         }
         maskData += np;
         for (i=1; i<ndim; ++i) {
             curD2 -= d2[i];
             if (++pos[i] < length[i]) {
-                Float d = center[i] - pos[i];
+                float d = center[i] - pos[i];
                 d /= itsRadii[i];
                 d2[i] = d*d;
                 curD2 += d2[i];
@@ -481,7 +481,7 @@ void LCEllipsoid::_doOutside() {
             }
             // This dimension is done. Reset it and continue with the next.
             pos[i] = 0;
-            Float d = center[i]/itsRadii[i];
+            float d = center[i]/itsRadii[i];
             d2[i] = d*d;
             curD2 += d2[i];
         }

@@ -75,7 +75,7 @@ class MSSelector;
 // //   data_desc_id=[0,1,2]];
 // // Now preselect on data_desc_id
 // MSSelector mss(myMS);
-// Vector<Int> dd(2); dd(0)=1; dd(1)=2;
+// Vector<int32_t> dd(2); dd(0)=1; dd(1)=2;
 // mss.selectinit(0,dd); // select data desc ids 1 and 2
 // MSRange r2(mss);
 // items(2)="amplitude";
@@ -135,65 +135,65 @@ public:
   // Items with varying array shape will not be returned by this function (i.e.
   //  you may need to preselect the MS passed to MSRange).
   // See the enum description in MSSelector for the list of supported items.
-  // Use the data flags if useFlags is True.
-  // Correct for one-based indexing if oneBased is True.
+  // Use the data flags if useFlags is true.
+  // Correct for one-based indexing if oneBased is true.
   Record range(const Vector<String>& items, 
-		    Bool useFlags=True,
-		    Bool OneBased=False);
+		    bool useFlags=true,
+		    bool OneBased=false);
 
   // Same as previous function, with Vector of MSS::Field keys instead
   // of Strings
-  Record range(const Vector<Int>& items, 
-		    Bool useFlags=True,
-		    Bool OneBased=False);
+  Record range(const Vector<int32_t>& items, 
+		    bool useFlags=true,
+		    bool OneBased=false);
 
   // Similar to above, with a single enum, for convenience
   Record range(MSS::Field item,
-		    Bool useFlags=True);
+		    bool useFlags=true);
 
   // Set the block size (in Mbytes) to use when reading the data column.
   // The default is 10 MB. Actual memory used is higher due to 
   // temporaries and caching.
-  void setBlockSize(Int blockSize=10);
+  void setBlockSize(int32_t blockSize=10);
 
 protected:
 
   // check the data description selection (one or more with same shape, or
   // varying shape)
-  Bool checkShapes();
+  bool checkShapes();
 
-  // get the range of a ScalarColumn<Int>, correct for 1-based 
-  // indexing if oneBased is True, and add to out record.
+  // get the range of a ScalarColumn<int32_t>, correct for 1-based 
+  // indexing if oneBased is true, and add to out record.
   void scalarRange(Record& out, const String& item, 
-		   const ScalarColumn<Int>& id, Bool oneBased);
+		   const ScalarColumn<int32_t>& id, bool oneBased);
 
-  // get the range of a ScalarColumn<Int>
-  Vector<Int> scalarRange(const ScalarColumn<Int>& id);
+  // get the range of a ScalarColumn<int32_t>
+  Vector<int32_t> scalarRange(const ScalarColumn<int32_t>& id);
 
   // get the minimum and maximum of a Complex data column, after
-  // application of some function to convert to Float (e.g., real,
+  // application of some function to convert to float (e.g., real,
   // amplitude,...). This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
-  void minMax(Matrix<Float>& minmax, 
-	      const Vector<Bool>& funcSel,
+  void minMax(Matrix<float>& minmax, 
+	      const Vector<bool>& funcSel,
 	      const ArrayColumn<Complex>& data1,
 	      const ArrayColumn<Complex>& data2,
-	      const ArrayColumn<Bool>& flag,
-	      Int dataType,
-	      Bool useFlags);
+	      const ArrayColumn<bool>& flag,
+	      int32_t dataType,
+	      bool useFlags);
 
-  // get the minimum and maximum of a Float data column
+  // get the minimum and maximum of a float data column
   // This function reads the data in blocks of
   // size blockSize, as set by the setBlockSize function.
-  void minMax(Float& mini, Float& maxi, 
-	      const ArrayColumn<Float>& data,
-	      const ArrayColumn<Bool>& flag,
-	      Bool useFlags);
+  void minMax(float& mini, float& maxi, 
+	      const ArrayColumn<float>& data,
+	      const ArrayColumn<bool>& flag,
+	      bool useFlags);
 
   // Get the range of interferometer numbers given the antenna1 and antenna2
   // columns.
-  Vector<Int> ifrNumbers(const ScalarColumn<Int>& ant1,
-			 const ScalarColumn<Int>& ant2);
+  Vector<int32_t> ifrNumbers(const ScalarColumn<int32_t>& ant1,
+			 const ScalarColumn<int32_t>& ant2);
 
 private:
   // The function types
@@ -203,11 +203,11 @@ private:
   enum {Observed,Corrected,Model,Ratio,Residual,ObsResidual,ObsFloat,nDataType};
 
   MeasurementSet ms_p; // the original ms
-  Int blockSize_p;
-  Vector<Int> ddId_p;
-  Vector<uInt> spwId_p;
-  Vector<uInt> polId_p;
-  Bool constantShape_p;
+  int32_t blockSize_p;
+  Vector<int32_t> ddId_p;
+  Vector<uint32_t> spwId_p;
+  Vector<uint32_t> polId_p;
+  bool constantShape_p;
   const MSSelector* sel_p;
 };
 

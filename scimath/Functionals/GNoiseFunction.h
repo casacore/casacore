@@ -61,7 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    GNoiseFunction<Double> sf;
+//    GNoiseFunction<double> sf;
 //    sf();            // = 0.12
 // </srcblock>
 // </example>
@@ -83,7 +83,7 @@ public:
   // mean=0, var=1.0
   // <group>
   GNoiseFunction() : GNoiseParam<T>() {}
-  GNoiseFunction(const Double &mean, const Double &var) :
+  GNoiseFunction(const double &mean, const double &var) :
     GNoiseParam<T>(mean, var) {}
   // </group>
 

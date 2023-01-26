@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-//    Sinusoid1D<Double> sf(5.0, 25.0, 7);
+//    Sinusoid1D<double> sf(5.0, 25.0, 7);
 //    sf(25);              // = -0.9369
 //    sf.setAmplitude(1.0);
 //    sf[PERIOD] = 2.0;                

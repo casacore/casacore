@@ -53,7 +53,7 @@ public:
     // the number of desired bins. No padding of the min/max values is done
     // internally, so the caller should do that prior to construction if
     // necessary.
-    StatsHistogram(AccumType minLimit, AccumType maxLimit, uInt nBins);
+    StatsHistogram(AccumType minLimit, AccumType maxLimit, uint32_t nBins);
 
     ~StatsHistogram();
 
@@ -61,7 +61,7 @@ public:
     AccumType getBinWidth() const;
 
     // get the index of the bin containing the specified value
-    uInt getIndex(AccumType value) const;
+    uint32_t getIndex(AccumType value) const;
 
     // max limit values for all bins
     const std::vector<AccumType>& getMaxBinLimits() const;
@@ -73,12 +73,12 @@ public:
     AccumType getMinHistLimit() const;
 
     // get the number of bins
-    uInt getNBins() const;
+    uint32_t getNBins() const;
 
 private:
 
     AccumType _binWidth{0}, _minHistLimit{0}, _maxHistLimit{0};
-    uInt _nBins{0};
+    uint32_t _nBins{0};
     // maximum values for all bins
     std::vector<AccumType> _maxBinLimits{};
 
@@ -86,12 +86,12 @@ private:
     // specializations (implemented below after the close of the class
     // definition) are used solely to permit compilation. In general, those
     // versions should never actually be called
-    inline static uInt _getUInt(const AccumType& v) {
-        return (uInt)v;
+    inline static uint32_t _getUInt(const AccumType& v) {
+        return (uint32_t)v;
     }
 
     void _minMaxIdxRange(
-        Int& minIdx, Int& maxIdx, AccumType value, Bool higher
+        int32_t& minIdx, int32_t& maxIdx, AccumType value, bool higher
     ) const;
 
 };
@@ -101,7 +101,7 @@ private:
 // general, these versions should never actually be called
 
 template<>
-inline uInt StatsHistogram<casacore::Complex>::_getUInt(
+inline uint32_t StatsHistogram<casacore::Complex>::_getUInt(
     const casacore::Complex&
 ) {
     ThrowCc(
@@ -111,7 +111,7 @@ inline uInt StatsHistogram<casacore::Complex>::_getUInt(
 }
 
 template<>
-inline uInt StatsHistogram<casacore::DComplex>::_getUInt(
+inline uint32_t StatsHistogram<casacore::DComplex>::_getUInt(
     const casacore::DComplex&
 ) {
     ThrowCc(

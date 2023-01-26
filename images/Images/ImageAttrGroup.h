@@ -77,7 +77,7 @@ namespace casacore {
 // This example shows how to get attributes from an image.
 // <srcblock>
 //   // Open the image.
-//   PagedImage<Float> myimage ("image.name");
+//   PagedImage<float> myimage ("image.name");
 //   // Open the attribute handler.
 //   ImageAttrHandler& attrHandler = myimage.attrHandler();
 //   // Get access to attibute group LOFAR_SOURCE.
@@ -93,7 +93,7 @@ namespace casacore {
 // The following example shows how to add a group and attribute.
 // <srcblock>
 //   // Open the image.
-//   PagedImage<Float> myimage ("image.name");
+//   PagedImage<float> myimage ("image.name");
 //   // Open the attribute handler.
 //   ImageAttrHandler& attrHandler = myimage.attrHandler();
 //   // Add attribute group LOFAR_SOURCE.
@@ -121,10 +121,10 @@ public:
   virtual ~ImageAttrGroup();
 
   // Get the number of rows in the group.
-  virtual uInt nrows() const = 0;
+  virtual uint32_t nrows() const = 0;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr (const String& attrName) const = 0;
+  virtual bool hasAttr (const String& attrName) const = 0;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const = 0;
@@ -134,10 +134,10 @@ public:
   virtual DataType dataType (const String& attrName) const = 0;
 
   // Get the data of the given attribute in the given row
-  virtual ValueHolder getData (const String& attrName, uInt rownr) = 0;
+  virtual ValueHolder getData (const String& attrName, uint32_t rownr) = 0;
 
   // Get the data of all attributes in a rows.
-  virtual Record getDataRow (uInt rownr) = 0;
+  virtual Record getDataRow (uint32_t rownr) = 0;
 
   // Get the possible units of the values.
   // An empty vector is returned if the attribute has no units.
@@ -152,7 +152,7 @@ public:
   // new row must be directly after the last row in the group.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, uInt rownr,
+  virtual void putData (const String& attrName, uint32_t rownr,
                         const ValueHolder& data,
                         const Vector<String>& units = Vector<String>(),
                         const Vector<String>& measInfo = Vector<String>()) = 0;

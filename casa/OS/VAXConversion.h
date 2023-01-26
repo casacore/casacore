@@ -89,8 +89,8 @@ public:
     static void toLocal (unsigned short& to, const void* from);
     static void toLocal (int&            to, const void* from);
     static void toLocal (unsigned int&   to, const void* from);
-    static void toLocal (Int64&          to, const void* from);
-    static void toLocal (uInt64&         to, const void* from);
+    static void toLocal (int64_t&          to, const void* from);
+    static void toLocal (uint64_t&         to, const void* from);
     static void toLocal (float&          to, const void* from);
     static void toLocal (double&         to, const void* from);
     // </group>
@@ -110,9 +110,9 @@ public:
 			 size_t nr);
     static void toLocal (unsigned int*   to, const void* from,
 			 size_t nr);
-    static void toLocal (Int64*          to, const void* from,
+    static void toLocal (int64_t*          to, const void* from,
 			 size_t nr);
-    static void toLocal (uInt64*         to, const void* from,
+    static void toLocal (uint64_t*         to, const void* from,
 			 size_t nr);
     static void toLocal (float*          to, const void* from,
 			 size_t nr);
@@ -129,8 +129,8 @@ public:
     static void fromLocal (void* to, unsigned short from);
     static void fromLocal (void* to, int            from);
     static void fromLocal (void* to, unsigned int   from);
-    static void fromLocal (void* to, Int64          from);
-    static void fromLocal (void* to, uInt64         from);
+    static void fromLocal (void* to, int64_t          from);
+    static void fromLocal (void* to, uint64_t         from);
     static void fromLocal (void* to, float          from);
     static void fromLocal (void* to, double         from);
     // </group>
@@ -150,9 +150,9 @@ public:
 			   size_t nr);
     static void fromLocal (void* to, const unsigned int*   from,
 			   size_t nr);
-    static void fromLocal (void* to, const Int64*          from,
+    static void fromLocal (void* to, const int64_t*          from,
 			   size_t nr);
-    static void fromLocal (void* to, const uInt64*         from,
+    static void fromLocal (void* to, const uint64_t*         from,
 			   size_t nr);
     static void fromLocal (void* to, const float*          from,
 			   size_t nr);
@@ -201,12 +201,12 @@ inline void VAXConversion::toLocal (unsigned int& to, const void* from)
     LittleEndianConversion::toLocal (to, from);
 }
 
-inline void VAXConversion::toLocal (Int64& to, const void* from)
+inline void VAXConversion::toLocal (int64_t& to, const void* from)
 {
     LittleEndianConversion::toLocal (to, from);
 }
 
-inline void VAXConversion::toLocal (uInt64& to, const void* from)
+inline void VAXConversion::toLocal (uint64_t& to, const void* from)
 {
     LittleEndianConversion::toLocal (to, from);
 }
@@ -257,13 +257,13 @@ inline void VAXConversion::toLocal (unsigned int* to, const void* from,
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
-inline void VAXConversion::toLocal (Int64* to, const void* from,
+inline void VAXConversion::toLocal (int64_t* to, const void* from,
 				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
 }
 
-inline void VAXConversion::toLocal (uInt64* to, const void* from,
+inline void VAXConversion::toLocal (uint64_t* to, const void* from,
 				    size_t nr)
 {
     LittleEndianConversion::toLocal (to, from, nr);
@@ -300,12 +300,12 @@ inline void VAXConversion::fromLocal (void* to, unsigned int from)
     LittleEndianConversion::fromLocal (to, from);
 }
 
-inline void VAXConversion::fromLocal (void* to, Int64 from)
+inline void VAXConversion::fromLocal (void* to, int64_t from)
 {
     LittleEndianConversion::fromLocal (to, from);
 }
 
-inline void VAXConversion::fromLocal (void* to, uInt64 from)
+inline void VAXConversion::fromLocal (void* to, uint64_t from)
 {
     LittleEndianConversion::fromLocal (to, from);
 }
@@ -356,13 +356,13 @@ inline void VAXConversion::fromLocal (void* to, const unsigned int* from,
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
-inline void VAXConversion::fromLocal (void* to, const Int64* from,
+inline void VAXConversion::fromLocal (void* to, const int64_t* from,
 				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);
 }
 
-inline void VAXConversion::fromLocal (void* to, const uInt64* from,
+inline void VAXConversion::fromLocal (void* to, const uint64_t* from,
 				      size_t nr)
 { 
     LittleEndianConversion::fromLocal (to, from, nr);

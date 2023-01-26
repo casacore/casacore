@@ -107,10 +107,10 @@ void MSTableImpl::addMeasColumn(TableDesc& td, const String& column,
 }
 
 void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
-				  Int colDType, const String& colComment,
+				  int32_t colDType, const String& colComment,
 				  const String& colUnit,
-				  const String& colMeasure, Int ndim,
-				  const IPosition& shape, Int option,
+				  const String& colMeasure, int32_t ndim,
+				  const IPosition& shape, int32_t option,
 				  const String& refCol)
 {
     // if the column already exists, simply return
@@ -119,16 +119,16 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
     if ((colDType>=TpBool && colDType<=TpString)|| colDType==TpRecord) {
 	switch (colDType) {
 	case TpBool:
-	    td.addColumn(ScalarColumnDesc<Bool>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<bool>(colName,colComment));
 	    break;
 	case TpInt:
-	    td.addColumn(ScalarColumnDesc<Int>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<int32_t>(colName,colComment));
 	    break;
 	case TpFloat:
-	    td.addColumn(ScalarColumnDesc<Float>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<float>(colName,colComment));
 	    break;
 	case TpDouble:
-	    td.addColumn(ScalarColumnDesc<Double>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<double>(colName,colComment));
 	    // Check if this should be a TableMeasure column
 	    if (colMeasure=="Epoch" || colMeasure=="Frequency" ||
 		colMeasure=="Doppler") { 
@@ -148,19 +148,19 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	    break;
 /* these are not needed in the MS
 	case TpChar:
-	    td.addColumn(ScalarColumnDesc<Char>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<char>(colName,colComment));
 	    break;
 	case TpUChar:
-	    td.addColumn(ScalarColumnDesc<uChar>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<unsigned char>(colName,colComment));
 	    break;
 	case TpShort:
-	    td.addColumn(ScalarColumnDesc<Short>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<int16_t>(colName,colComment));
 	    break;
 	case TpUShort:
-	    td.addColumn(ScalarColumnDesc<uShort>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<uint16_t>(colName,colComment));
 	    break;
 	case TpUInt:
-	    td.addColumn(ScalarColumnDesc<uInt>(colName,colComment));
+	    td.addColumn(ScalarColumnDesc<uint32_t>(colName,colComment));
 	    break;
 	case TpDComplex:
 	    td.addColumn(ScalarColumnDesc<DComplex>(colName,colComment));
@@ -173,16 +173,16 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	if (option==0) {
 	    switch (colDType) {
 	    case TpArrayBool:
-		td.addColumn(ArrayColumnDesc<Bool>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<bool>(colName,colComment,ndim));
 		break;
 	    case TpArrayInt:
-		td.addColumn(ArrayColumnDesc<Int>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<int32_t>(colName,colComment,ndim));
 		break;
 	    case TpArrayFloat:
-		td.addColumn(ArrayColumnDesc<Float>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<float>(colName,colComment,ndim));
 		break;
 	    case TpArrayDouble:
-		td.addColumn(ArrayColumnDesc<Double>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<double>(colName,colComment,ndim));
 		// Check if this should be a TableMeasure column
 		if (colMeasure!="") {
 		  addMeasColumn(td, colName, colMeasure, refCol);
@@ -196,19 +196,19 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 		break;
 /*
 	    case TpArrayChar:
-		td.addColumn(ArrayColumnDesc<Char>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<char>(colName,colComment,ndim));
 		break;
 	    case TpArrayUChar:
-		td.addColumn(ArrayColumnDesc<uChar>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<unsigned char>(colName,colComment,ndim));
 		break;
 	    case TpArrayShort:
-		td.addColumn(ArrayColumnDesc<Short>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<int16_t>(colName,colComment,ndim));
 		break;
 	    case TpArrayUShort:
-		td.addColumn(ArrayColumnDesc<uShort>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<uint16_t>(colName,colComment,ndim));
 		break;
 	    case TpArrayUInt:
-		td.addColumn(ArrayColumnDesc<uInt>(colName,colComment,ndim));
+		td.addColumn(ArrayColumnDesc<uint32_t>(colName,colComment,ndim));
 		break;
 	    case TpArrayDComplex:
 		td.addColumn(ArrayColumnDesc<DComplex>(colName,colComment,ndim));
@@ -220,19 +220,19 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 	} else {
 	    switch (colDType) {
 	    case TpArrayBool:
-		td.addColumn(ArrayColumnDesc<Bool>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<bool>(colName,colComment,
 						   shape,option));
 		break;
 	    case TpArrayInt:
-		td.addColumn(ArrayColumnDesc<Int>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<int32_t>(colName,colComment,
 						  shape,option));
 		break;
 	    case TpArrayFloat:
-		td.addColumn(ArrayColumnDesc<Float>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<float>(colName,colComment,
 						    shape,option));
 		break;
 	    case TpArrayDouble:
-		td.addColumn(ArrayColumnDesc<Double>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<double>(colName,colComment,
 						     shape,option));
 		// Check if this should be a TableMeasure column
 		if (colMeasure!="") {
@@ -249,23 +249,23 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 		break;
 /*
 	    case TpArrayChar:
-		td.addColumn(ArrayColumnDesc<Char>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<char>(colName,colComment,
 						   shape,option));
 		break;
 	    case TpArrayUChar:
-		td.addColumn(ArrayColumnDesc<uChar>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<unsigned char>(colName,colComment,
 						    shape,option));
 		break;
 	    case TpArrayShort:
-		td.addColumn(ArrayColumnDesc<Short>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<int16_t>(colName,colComment,
 						    shape,option));
 		break;
 	    case TpArrayUShort:
-		td.addColumn(ArrayColumnDesc<uShort>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<uint16_t>(colName,colComment,
 						     shape,option));
 		break;
 	    case TpArrayUInt:
-		td.addColumn(ArrayColumnDesc<uInt>(colName,colComment,
+		td.addColumn(ArrayColumnDesc<uint32_t>(colName,colComment,
 						   shape,option));
 		break;
 	    case TpArrayDComplex:
@@ -298,15 +298,15 @@ void MSTableImpl::addColumnToDesc(TableDesc &td, const String& colName,
 }
 
 void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
-			       Int keyDType, const String& keyComment)
+			       int32_t keyDType, const String& keyComment)
 {
     switch (keyDType) {
     case TpInt:
-	td.rwKeywordSet().define(keyName,Int(0));
+	td.rwKeywordSet().define(keyName,int32_t(0));
 	td.rwKeywordSet().setComment(keyName, keyComment);
 	break;
     case TpFloat:
-        td.rwKeywordSet().define(keyName, Float(0));
+        td.rwKeywordSet().define(keyName, float(0));
 	td.rwKeywordSet().setComment(keyName, keyComment);
 	break;
     case TpString:
@@ -328,16 +328,16 @@ void MSTableImpl::addKeyToDesc(TableDesc& td, const String& keyName,
 }
 
 void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
-					Bool autoScale, const String& type)
+					bool autoScale, const String& type)
 {
   // Check if the column name exists in the description.
-  // Check it is a Float or Complex array.
+  // Check it is a float or Complex array.
   AlwaysAssert (td.isColumn (colName), AipsError);
   ColumnDesc& cdesc = td.rwColumnDesc(colName);
   DataType dtype = cdesc.trueDataType();
   AlwaysAssert (dtype == TpArrayFloat  ||  dtype == TpArrayComplex, AipsError);
   if (dtype == TpArrayFloat) {
-    td.addColumn (ArrayColumnDesc<Short> (colName + "_COMPRESSED",
+    td.addColumn (ArrayColumnDesc<int16_t> (colName + "_COMPRESSED",
 					  "",
 					  cdesc.dataManagerType(),
 					  cdesc.dataManagerGroup(),
@@ -346,7 +346,7 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
     cdesc.rwKeywordSet().define ("CompressFloat_AutoScale", autoScale);
     cdesc.rwKeywordSet().define ("CompressFloat_Type", type);
   } else {
-    td.addColumn (ArrayColumnDesc<Int> (colName + "_COMPRESSED",
+    td.addColumn (ArrayColumnDesc<int32_t> (colName + "_COMPRESSED",
 					"",
 					cdesc.dataManagerType(),
 					cdesc.dataManagerGroup(),
@@ -359,8 +359,8 @@ void MSTableImpl::addColumnCompression (TableDesc& td, const String& colName,
     ColumnDesc& cd = td.rwColumnDesc (colName + "_COMPRESSED");
     cd.setShape (cdesc.shape());
   }
-  td.addColumn (ScalarColumnDesc<Float> (colName + "_SCALE"));
-  td.addColumn (ScalarColumnDesc<Float> (colName + "_OFFSET"));
+  td.addColumn (ScalarColumnDesc<float> (colName + "_SCALE"));
+  td.addColumn (ScalarColumnDesc<float> (colName + "_OFFSET"));
 }
 
 SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
@@ -370,7 +370,7 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
   // create a compression engine, bind the compressed column to the
   // data manager of the original column, and bind the column to the engine.
   const TableDesc& td = newtab.tableDesc();
-  for (uInt i=0; i<td.ncolumn(); i++) {
+  for (uint32_t i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td[i];
     const TableRecord& keyset = cdesc.keywordSet();
     String cname;
@@ -409,20 +409,20 @@ SetupNewTable& MSTableImpl::setupCompression (SetupNewTable& newtab)
     if (! cname.empty()) {
       std::map<String,String> old2new;
       old2new.insert (std::make_pair(cdesc.name(), cname));
-      newtab.adjustHypercolumns (old2new, True);
+      newtab.adjustHypercolumns (old2new, true);
     }
   }
   return newtab;
 }
 
-void MSTableImpl::colMapDef(std::map<Int,String>& columnMap,
-			    std::map<Int,Int>& colDTypeMap,
-			    std::map<Int,String>& colCommentMap,
-			    std::map<Int,String>& colUnitMap,
-			    std::map<Int,String>& colMeasureTypeMap,
-			    Int col,
+void MSTableImpl::colMapDef(std::map<int32_t,String>& columnMap,
+			    std::map<int32_t,int32_t>& colDTypeMap,
+			    std::map<int32_t,String>& colCommentMap,
+			    std::map<int32_t,String>& colUnitMap,
+			    std::map<int32_t,String>& colMeasureTypeMap,
+			    int32_t col,
 			    const String& colName,
-			    Int colType,
+			    int32_t colType,
 			    const String& colComment,
 			    const String& colUnit,
 			    const String& colMeasureType)
@@ -434,12 +434,12 @@ void MSTableImpl::colMapDef(std::map<Int,String>& columnMap,
     colMeasureTypeMap[col] = colMeasureType;
 }
 
-void MSTableImpl::keyMapDef(std::map<Int,String>& keywordMap,
-			    std::map<Int,Int>& keyDTypeMap,
-			    std::map<Int,String>& keyCommentMap,
-			    Int key,
+void MSTableImpl::keyMapDef(std::map<int32_t,String>& keywordMap,
+			    std::map<int32_t,int32_t>& keyDTypeMap,
+			    std::map<int32_t,String>& keyCommentMap,
+			    int32_t key,
 			    const String& keyName,
-			    Int keyType,
+			    int32_t keyType,
 			    const String& keyComment)
 {
     keywordMap[key] = keyName;
@@ -447,11 +447,11 @@ void MSTableImpl::keyMapDef(std::map<Int,String>& keywordMap,
     keyCommentMap[key] = keyComment;
 }
 
-Bool MSTableImpl::validate(const TableDesc& tabDesc, 
+bool MSTableImpl::validate(const TableDesc& tabDesc, 
 			   const TableDesc& requiredTD)
 {
-    Bool eqDTypes;
-    Bool temp = tabDesc.columnDescSet().
+    bool eqDTypes;
+    bool temp = tabDesc.columnDescSet().
 	isSuperset(requiredTD.columnDescSet(), eqDTypes);
 #if defined(AIPS_DEBUG)
     if (!temp) {
@@ -460,10 +460,10 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
 #endif
     // check all of the UNIT and MEASINFO-Type values against 
     // the standard values
-    Bool detail = True;
-    uInt colnr = 0;
+    bool detail = true;
+    uint32_t colnr = 0;
     Vector<String> colNames(requiredTD.columnNames());
-    uInt ncol = colNames.nelements();
+    uint32_t ncol = colNames.nelements();
     while (temp && eqDTypes && detail && colnr < ncol) {
         TableRecord keySet = tabDesc[colNames(colnr)].keywordSet();
         TableRecord reqKeySet = requiredTD[colNames(colnr)].keywordSet();
@@ -516,11 +516,11 @@ Bool MSTableImpl::validate(const TableDesc& tabDesc,
     return temp && eqDTypes && detail;
 }
  
-Bool MSTableImpl::validate(const TableRecord& tabRec, 
+bool MSTableImpl::validate(const TableRecord& tabRec, 
 			   const TableDesc& requiredTD)
 {
-    Bool eqDTypes;
-    Bool temp = tabRec.description().
+    bool eqDTypes;
+    bool temp = tabRec.description().
 	isSuperset(requiredTD.keywordSet().description(), eqDTypes);
     return temp && eqDTypes;
 }
@@ -535,7 +535,7 @@ Table MSTableImpl::referenceCopy(const Table& tab, const String& newTableName,
   // first bind all columns to the forwarding engine
   setup.bindAll(fwdEngine);
   // now bind columns specified to AipsIO storage manager
-  for (uInt i=0; i<writableColumns.nelements(); i++) {
+  for (uint32_t i=0; i<writableColumns.nelements(); i++) {
     setup.bindColumn(writableColumns[i], aipsStMan);
   }
   Table msTab(setup,tab.nrow());

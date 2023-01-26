@@ -79,7 +79,7 @@ void show(HeaderDataUnit *h) {
 	int i, j, n0, n1; \
 	cout<< " The header card images are( testing kwlist_str()): " << endl; \
 	Vector<String> imageCards = x.kwlist_str();   \
-	for( uInt k = 0; k< imageCards.nelements(); k++ ){  \
+	for( uint32_t k = 0; k< imageCards.nelements(); k++ ){  \
 	    cout << imageCards[ k ] << endl;\
 	}\
 	if (x.fitsdatasize()) \
@@ -176,7 +176,7 @@ void do_binary_table(BinaryTableExtension &x) {
 			break;
 		    case FITS::BIT: 
 			{
-			    Int nbytes = maxsize / 8;
+			    int32_t nbytes = maxsize / 8;
 			    if (maxsize % 8) nbytes++;
 			    maxsize = nbytes;
 			}
@@ -241,7 +241,7 @@ void do_binary_table(BinaryTableExtension &x) {
 		  {
 		    unsigned char *vptr = (unsigned char *)(vaptr[i]);
 		    FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
-		    Int whichByte = 0;
+		    int32_t whichByte = 0;
 		    unsigned char mask = 0200;
 		    cout << (vptr[0] & mask);
 		    for (int k=1;k<thisva.num();++k) {

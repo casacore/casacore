@@ -64,87 +64,87 @@ T Lattice<T>::operator() (const IPosition& where) const
 }
 
 template<class T>
-Bool Lattice<T>::get (COWPtr<Array<T> >& buffer,
-		      Bool removeDegenerateAxes) const
+bool Lattice<T>::get (COWPtr<Array<T> >& buffer,
+		      bool removeDegenerateAxes) const
 {
-  uInt nd = ndim();
+  uint32_t nd = ndim();
   return getSlice (buffer, Slicer(IPosition(nd,0), shape()),
 		   removeDegenerateAxes);
 }
 
 template<class T>
-Bool Lattice<T>::get (Array<T>& buffer,
-		      Bool removeDegenerateAxes)
+bool Lattice<T>::get (Array<T>& buffer,
+		      bool removeDegenerateAxes)
 {
-  uInt nd = ndim();
+  uint32_t nd = ndim();
   return getSlice (buffer, Slicer(IPosition(nd,0), shape()),
 		   removeDegenerateAxes);
 }
 
 template<class T>
-Array<T> Lattice<T>::get (Bool removeDegenerateAxes) const
+Array<T> Lattice<T>::get (bool removeDegenerateAxes) const
 {
-  uInt nd = ndim();
+  uint32_t nd = ndim();
   return getSlice (Slicer(IPosition(nd,0), shape()),
 		   removeDegenerateAxes);
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
 			   const IPosition& shape,
-			   Bool removeDegenerateAxes) const
+			   bool removeDegenerateAxes) const
 {
   return getSlice (buffer, Slicer(start, shape),
 		   removeDegenerateAxes);
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
 			   const IPosition& shape,
 			   const IPosition& stride,
-			   Bool removeDegenerateAxes) const
+			   bool removeDegenerateAxes) const
 {
   return getSlice (buffer, Slicer(start, shape, stride),
 		   removeDegenerateAxes);
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer,
+bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer,
 			   const Slicer& section,
-			   Bool removeDegenerateAxes) const
+			   bool removeDegenerateAxes) const
 {
   // Cast pointer to non-const.
   // This is safe, since the array is copied when needed by COWptr.
   Lattice<T>* This = (Lattice<T>*)this;
   // The COWPtr takes over the pointer to the array.
   Array<T>* arr = new Array<T>;
-  Bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
-  buffer = COWPtr<Array<T> > (arr, True, isARef);
-  return False;
+  bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
+  buffer = COWPtr<Array<T> > (arr, true, isARef);
+  return false;
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (Array<T>& buffer, const IPosition& start,
+bool Lattice<T>::getSlice (Array<T>& buffer, const IPosition& start,
 			   const IPosition& shape,
-			   Bool removeDegenerateAxes)
+			   bool removeDegenerateAxes)
 {
   return getSlice (buffer, Slicer(start, shape), removeDegenerateAxes);
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (Array<T>& buffer, const IPosition& start,
+bool Lattice<T>::getSlice (Array<T>& buffer, const IPosition& start,
 			   const IPosition& shape, const IPosition& stride,
-			   Bool removeDegenerateAxes)
+			   bool removeDegenerateAxes)
 {
   return getSlice (buffer, Slicer(start, shape, stride),
 		   removeDegenerateAxes);
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
-			   Bool removeDegenerateAxes)
+bool Lattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
+			   bool removeDegenerateAxes)
 {
-  Bool isARef;
+  bool isARef;
   // When the slicer is fixed, it can be used immediately.
   // Otherwise unspecified values are to be filled in.
   if (section.isFixed()) {
@@ -168,7 +168,7 @@ Bool Lattice<T>::getSlice (Array<T>& buffer, const Slicer& section,
 template<class T>
 Array<T> Lattice<T>::getSlice (const IPosition& start,
 			       const IPosition& shape,
-			       Bool removeDegenerateAxes) const
+			       bool removeDegenerateAxes) const
 {
   return getSlice (Slicer(start,shape), removeDegenerateAxes);
 }
@@ -177,14 +177,14 @@ template<class T>
 Array<T> Lattice<T>::getSlice (const IPosition& start,
 			       const IPosition& shape,
 			       const IPosition& stride,
-			       Bool removeDegenerateAxes) const
+			       bool removeDegenerateAxes) const
 {
   return getSlice (Slicer(start,shape,stride), removeDegenerateAxes);
 }
 
 template<class T>
 Array<T> Lattice<T>::getSlice (const Slicer& section,
-			       Bool removeDegenerateAxes) const
+			       bool removeDegenerateAxes) const
 {
   // Cast pointer to non-const.
   // This is safe, since the array is copied when needed.
@@ -192,7 +192,7 @@ Array<T> Lattice<T>::getSlice (const Slicer& section,
   // Note that getSlice is used to be sure that section gets filled
   // when needed.
   Array<T> arr;
-  Bool isARef = This->getSlice (arr, section, removeDegenerateAxes);
+  bool isARef = This->getSlice (arr, section, removeDegenerateAxes);
   // When not referenced, return it as such.
   // Otherwise make a copy.
   if (!isARef) {
@@ -214,14 +214,14 @@ void Lattice<T>::putSlice (const Array<T>& sourceBuffer,
 template<class T>
 void Lattice<T>::put (const Array<T>& sourceBuffer)
 {
-  uInt nd = ndim();
+  uint32_t nd = ndim();
   doPutSlice (sourceBuffer, IPosition(nd,0), IPosition(nd,1));
 }
 
 template<class T>
 void Lattice<T>::set (const T& value)
 {
-  LatticeIterator<T> iter(*this, True);
+  LatticeIterator<T> iter(*this, true);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.woCursor() = value;
   }
@@ -230,7 +230,7 @@ void Lattice<T>::set (const T& value)
 template<class T>
 void Lattice<T>::apply (T (*function) (T))
 {
-  LatticeIterator<T> iter(*this, True);
+  LatticeIterator<T> iter(*this, true);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.rwCursor().apply (function);
   }
@@ -239,7 +239,7 @@ void Lattice<T>::apply (T (*function) (T))
 template<class T>
 void Lattice<T>::apply (T (*function) (const T&))
 {
-  LatticeIterator<T> iter(*this, True);
+  LatticeIterator<T> iter(*this, true);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.rwCursor().apply(function);
   }
@@ -248,7 +248,7 @@ void Lattice<T>::apply (T (*function) (const T&))
 template<class T>
 void Lattice<T>::apply (const Functional<T,T>& function)
 {
-  LatticeIterator<T> iter(*this, True);
+  LatticeIterator<T> iter(*this, true);
   for (iter.reset(); !iter.atEnd(); iter++) {
     iter.rwCursor().apply([&function](T t){ return function(t); });
   }
@@ -262,7 +262,7 @@ T Lattice<T>::getAt (const IPosition& where) const
   ((Lattice<T>*)this)->doGetSlice (tmp, Slicer(where));
   // Since the array contains 1 element only, getStorage does not
   // create a copy.
-  Bool deleteIt;
+  bool deleteIt;
   return *(tmp.getStorage(deleteIt));
 }
 
@@ -300,7 +300,7 @@ void Lattice<T>::copyDataTo (Lattice<T>& to) const
   // Create an iterator for the output to setup the cache.
   // It is not used, because using putSlice directly is faster and as easy.
   LatticeIterator<T> dummyIter(to, stepper);
-  RO_LatticeIterator<T> iter(*this, stepper, True);
+  RO_LatticeIterator<T> iter(*this, stepper, true);
   for (iter.reset(); !iter.atEnd(); iter++) {
     to.putSlice (iter.cursor(), iter.position());
   }
@@ -319,8 +319,8 @@ void Lattice<T>::handleMathTo (Lattice<T>& to, int oper) const
   LatticeStepper stepper (shapeOut, cursorShape, LatticeStepper::RESIZE);
   // Create an iterator for the output.
   // If possible, use reference semantics in the iterators.
-  LatticeIterator<T> toIter(to, stepper, True);
-  RO_LatticeIterator<T> iter(*this, stepper, True);
+  LatticeIterator<T> toIter(to, stepper, true);
+  RO_LatticeIterator<T> iter(*this, stepper, true);
   switch (oper) {
   case 0:
     for (iter.reset(); !iter.atEnd(); iter++, toIter++) {
@@ -349,17 +349,17 @@ void Lattice<T>::handleMathTo (Lattice<T>& to, int oper) const
 
 template<class T>
 LatticeIterInterface<T>* Lattice<T>::makeIter (const LatticeNavigator& nav,
-					       Bool useRef) const
+					       bool useRef) const
 {
   return new LatticeIterInterface<T>(*this, nav, useRef);
 }
 
 template<class T>
-uInt Lattice<T>::advisedMaxPixels() const
+uint32_t Lattice<T>::advisedMaxPixels() const
 {
   // The returned number of pixels is always a power of two for unknown
   // reasons, and occupies between 4 and 8 MBytes
-  return (uInt) pow (2.0, ceil(log(4.0*1024.0*1024.0/sizeof(T))/log(2.0)));
+  return (uint32_t) pow (2.0, ceil(log(4.0*1024.0*1024.0/sizeof(T))/log(2.0)));
 }
 
 } //# NAMESPACE CASACORE - END

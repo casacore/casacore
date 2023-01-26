@@ -37,7 +37,7 @@ String removeDir (const String& msg)
   return s;
 }
 
-void testCloneColumn (const DataManager& tsm, Bool fixed)
+void testCloneColumn (const DataManager& tsm, bool fixed)
 {
   cout << "testCloneColumn ..." << endl;
   // First create a table.
@@ -48,14 +48,14 @@ void testCloneColumn (const DataManager& tsm, Bool fixed)
     td.addColumn (ArrayColumnDesc<Complex>("DATA", 1));
   }
   td.addColumn (ScalarColumnDesc<String>("SCALAR", 1));
-  td.addColumn (ArrayColumnDesc<Int>("ARRAY", 0));
+  td.addColumn (ArrayColumnDesc<int32_t>("ARRAY", 0));
   SetupNewTable newtab("tTableCopy_tmp.data", td, Table::New);
   StandardStMan ssm;
   newtab.bindAll (ssm);
   newtab.bindColumn ("DATA", tsm);
   Table tab(newtab, 4);
   ArrayColumn<Complex> col(tab, "DATA");
-  for (uInt row=0; row<tab.nrow(); ++row) {
+  for (uint32_t row=0; row<tab.nrow(); ++row) {
     Vector<Complex> vec(10*row+1);
     if (fixed) vec.resize(10);
     indgen (vec);
@@ -69,14 +69,14 @@ void testCloneColumn (const DataManager& tsm, Bool fixed)
   TableCopy::cloneColumn (tab, "DATA", tab, "DATA1");
   TableCopy::cloneColumn (tab, "DATA", tab, "DATA2", "Data2StMan");
   TableCopy::cloneColumnTyped<DComplex> (tab, "DATA", tab, "DATA3");
-  TableCopy::cloneColumnTyped<Int> (tab, "SCALAR", tab, "SCALAR3");
-  TableCopy::copyColumnData (tab, "DATA", tab, "DATA1", False);
+  TableCopy::cloneColumnTyped<int32_t> (tab, "SCALAR", tab, "SCALAR3");
+  TableCopy::copyColumnData (tab, "DATA", tab, "DATA1", false);
   TableCopy::copyColumnData (tab, "DATA", tab, "DATA3");
   cout << tab.dataManagerInfo() << endl;
   // Check if the data are the same.
   ArrayColumn<Complex> col1(tab, "DATA1");
   ArrayColumn<DComplex> col3(tab, "DATA3");
-  for (uInt row=0; row<tab.nrow(); ++row) {
+  for (uint32_t row=0; row<tab.nrow(); ++row) {
     if (col.isDefined(row)) {
       Vector<Complex> vec(col(row));
       Vector<DComplex> vecd(vec.shape());
@@ -92,13 +92,13 @@ void testCloneColumn (const DataManager& tsm, Bool fixed)
   // Initialize the scalar and other array.
   TableCopy::fillColumnData (tab, "SCALAR", "str");
   TableCopy::fillColumnData (tab, "SCALAR3", 2);
-  TableCopy::fillArrayColumn (tab, "ARRAY", Vector<Int>(3,2));
+  TableCopy::fillArrayColumn (tab, "ARRAY", Vector<int32_t>(3,2));
   // Check if the data are correct.
   ArrayColumn<Complex> col2(tab, "DATA2");
   ScalarColumn<String> cols(tab, "SCALAR");
-  ScalarColumn<Int> cols3(tab, "SCALAR3");
-  ArrayColumn<Int> cola(tab, "ARRAY");
-  for (uInt row=0; row<tab.nrow(); ++row) {
+  ScalarColumn<int32_t> cols3(tab, "SCALAR3");
+  ArrayColumn<int32_t> cola(tab, "ARRAY");
+  for (uint32_t row=0; row<tab.nrow(); ++row) {
     if (col.isDefined(row)) {
       AlwaysAssertExit (col.shape(row).isEqual (col2.shape(row)));
       AlwaysAssertExit (allEQ (col2(row), Complex(-1,-2)));
@@ -107,18 +107,18 @@ void testCloneColumn (const DataManager& tsm, Bool fixed)
     }
     AlwaysAssertExit (cols(row) == "str");
     AlwaysAssertExit (cols3(row) == 2);
-    AlwaysAssertExit (allEQ (cola(row), Vector<Int>(3,2)));
+    AlwaysAssertExit (allEQ (cola(row), Vector<int32_t>(3,2)));
   }
 }
 
 void testCloneColumns()
 {
   TiledShapeStMan tsm1("DATA_stm", IPosition(2,8,2));
-  testCloneColumn (tsm1, False);
+  testCloneColumn (tsm1, false);
   TiledCellStMan tsm2("DATA_stm", IPosition(2,8,2));
-  testCloneColumn (tsm2, False);
+  testCloneColumn (tsm2, false);
   TiledColumnStMan tsm3("DATA_stm", IPosition(2,8,2));
-  testCloneColumn (tsm3, True);
+  testCloneColumn (tsm3, true);
 }
 
 
@@ -130,14 +130,14 @@ int main (int argc, const char* argv[])
       ttyp = Table::Memory;
     }
   }
-  Bool noRows = False;
+  bool noRows = false;
   if (argc > 2  &&  String(argv[2]) == String("n")) {
-    noRows = True;
+    noRows = true;
   }
   try {
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A SDMemTable";
-    td.addColumn(ScalarColumnDesc<Int>("Test"));
+    td.addColumn(ScalarColumnDesc<int32_t>("Test"));
     // Now create a new table from the description.
     SetupNewTable aNewTab("tTableCopy_tmp.tbl", td, Table::New);
     Table tabl(aNewTab, ttyp, 0);

@@ -47,30 +47,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MVuvw::MVuvw() :
   MVPosition() {}
 
-MVuvw::MVuvw(Double in) :
+MVuvw::MVuvw(double in) :
   MVPosition(in) {}
 
 MVuvw::MVuvw(const Quantity &l) :
   MVPosition(l) {}
 
-MVuvw::MVuvw(Double in0, Double in1, Double in2) : 
+MVuvw::MVuvw(double in0, double in1, double in2) : 
   MVPosition(in0, in1, in2) {}
 
-MVuvw::MVuvw(const Quantity &l, Double angle0, Double angle1) : 
+MVuvw::MVuvw(const Quantity &l, double angle0, double angle1) : 
   MVPosition(l, angle0, angle1) {}
 
 MVuvw::MVuvw(const Quantity &l, const Quantity &angle0, 
 		       const Quantity &angle1) : 
   MVPosition(l, angle0, angle1) {}
 
-MVuvw::MVuvw(const Quantum<Vector<Double> > &angle) :
+MVuvw::MVuvw(const Quantum<Vector<double> > &angle) :
   MVPosition(angle) {}
 
 MVuvw::MVuvw(const Quantity &l, 
-		       const Quantum<Vector<Double> > &angle) :
+		       const Quantum<Vector<double> > &angle) :
   MVPosition(l, angle) {}
 
-MVuvw::MVuvw(const Vector<Double> &other) :
+MVuvw::MVuvw(const Vector<double> &other) :
   MVPosition(other) {}
 
 MVuvw::MVuvw(const Vector<Quantity> &other) :
@@ -80,7 +80,7 @@ MVuvw::MVuvw(const Vector<Quantity> &other) :
     }
   }
 
-MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) :
+MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, bool ew) :
   MVPosition() {
   // Next for sgi_ntv to get it working properly
   MVDirection dr1(dr);
@@ -95,35 +95,35 @@ MVuvw::MVuvw(const MVPosition &other) :
   MVPosition(other) {}
 
 //# Operators
-Bool MVuvw::
+bool MVuvw::
 operator==(const MVuvw &other) const {
   return (allEQ(xyz, other.xyz));
 }
 
-Bool MVuvw::
+bool MVuvw::
 operator!=(const MVuvw &other) const {
   return (!(*this == other));
 }
 
-Bool MVuvw::
-near(const MVuvw &other, Double tol) const {
+bool MVuvw::
+near(const MVuvw &other, double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
-Bool MVuvw::
+bool MVuvw::
 near(const MVuvw &other, Quantity tol) const {
   return (separation(other,"rad") <= tol);
 }
 
-Bool MVuvw::
-nearAbs(const MVuvw &other, Double tol) const {
+bool MVuvw::
+nearAbs(const MVuvw &other, double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
-Double MVuvw::
+double MVuvw::
 operator*(const MVuvw &other) const {
-  Double tmp = 0.0;
-  for (Int i=0; i<3; i++) {
+  double tmp = 0.0;
+  for (int32_t i=0; i<3; i++) {
     tmp += xyz(i) * other.xyz(i);
   }
   return tmp;
@@ -167,14 +167,14 @@ void MVuvw::assure(const MeasValue &in) {
 
 void MVuvw::adjust() {}
 
-void MVuvw::adjust(Double &res) {
+void MVuvw::adjust(double &res) {
   res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   }
 }
 
-void MVuvw::readjust(Double res) {
+void MVuvw::readjust(double res) {
   if (res == 0.0) {
     xyz *= 1e-12;
   } else {
@@ -182,15 +182,15 @@ void MVuvw::readjust(Double res) {
   }
 }
 
-Double MVuvw::radius() {
+double MVuvw::radius() {
   return (std::sqrt(operator*(*this)));
 }
 
-Vector<Double> MVuvw::get() const{
-  Vector<Double> tmp(3);
+Vector<double> MVuvw::get() const{
+  Vector<double> tmp(3);
   tmp(0) = std::sqrt(operator*(*this));
-  Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
-  Double loc = xyz(0)/ln;
+  double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
+  double loc = xyz(0)/ln;
   if (loc == 0) {
     tmp(1) = std::asin(xyz(1)/ln);
   } else {
@@ -200,24 +200,24 @@ Vector<Double> MVuvw::get() const{
   return tmp;
 }
 
-const Vector<Double> &MVuvw::getValue() const {
+const Vector<double> &MVuvw::getValue() const {
   return xyz;
 }
 
-Quantum<Vector<Double> > MVuvw::getAngle() const{
-  Vector<Double> tp(3), tmp(2);
+Quantum<Vector<double> > MVuvw::getAngle() const{
+  Vector<double> tp(3), tmp(2);
   tp = get();
   tmp(0) = tp(1);
   tmp(1) = tp(2);
-  return Quantum<Vector<Double> >(tmp,"rad");
+  return Quantum<Vector<double> >(tmp,"rad");
 }
 
-Quantum<Vector<Double> > MVuvw::getAngle(const Unit &unit) const{
+Quantum<Vector<double> > MVuvw::getAngle(const Unit &unit) const{
   return getAngle().get(unit);
 }
 
 Quantity MVuvw::getLength() const{
-  Double tmp = std::sqrt(operator*(*this));
+  double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp,"m");
 }
 
@@ -225,19 +225,19 @@ Quantity MVuvw::getLength(const Unit &unit) const {
   return getLength().get(unit);
 }
 
-Double MVuvw::uvwAngle(const MVuvw &other) const {
-  Vector<Double> t1(3);
-  Vector<Double> t2(3);
+double MVuvw::uvwAngle(const MVuvw &other) const {
+  Vector<double> t1(3);
+  Vector<double> t2(3);
   t1 = get();
   t2 = other.get();
-  Double s1,c1;
+  double s1,c1;
   c1 = std::cos(t1(2)) * std::sin(t2(2)) -
     std::sin(t1(2)) * std::cos(t2(2)) * std::cos(t1(1) - t2(1));
   s1 = -std::cos(t2(2)) * std::sin(t1(1) - t2(1));
   if (s1 != 0 || c1 != 0) {
     return std::atan2(s1, c1);
   } else {
-    return Double(0.0);
+    return double(0.0);
   }
 }
 
@@ -246,12 +246,12 @@ Quantity MVuvw::uvwAngle(const MVuvw &other,
   return Quantity(uvwAngle(other), "rad").get(unit);
 }
 
-Double MVuvw::separation(const MVuvw &other) const {
+double MVuvw::separation(const MVuvw &other) const {
   MVuvw t1(*this);
   MVuvw t2(other);
   t1.adjust(); t2.adjust();
   t1 -= t2;
-  Double d1 = t1.radius()/2.0;
+  double d1 = t1.radius()/2.0;
   d1 = (d1 < 1.0 ? d1 : 1.0);
   return (2*std::asin(d1));
 }
@@ -277,87 +277,87 @@ MeasValue *MVuvw::clone() const {
   return (new MVuvw(*this));
 }
 
-Vector<Double> MVuvw::getVector() const {
+Vector<double> MVuvw::getVector() const {
   return xyz;
 }
 
-void MVuvw::putVector(const Vector<Double> &in) {
+void MVuvw::putVector(const Vector<double> &in) {
   if (in.nelements() == 3) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (uInt i=0; i<in.nelements();i++) xyz(i) = in(i);
+    for (uint32_t i=0; i<in.nelements();i++) xyz(i) = in(i);
   }
 }
 
-Vector<Quantum<Double> > MVuvw::getRecordValue() const {
-  Vector<Double> t(3);
+Vector<Quantum<double> > MVuvw::getRecordValue() const {
+  Vector<double> t(3);
   t = get();
-  Vector<Quantum<Double> > tmp(3);
+  Vector<Quantum<double> > tmp(3);
   tmp(2) = Quantity(t(0), "m");
   tmp(0) = Quantity(t(1), "rad"); 
   tmp(1) = Quantity(t(2), "rad"); 
   return tmp;
 }
 
-Vector<Quantum<Double> > MVuvw::getXRecordValue() const {
-  Vector<Quantum<Double> > tmp(3);
+Vector<Quantum<double> > MVuvw::getXRecordValue() const {
+  Vector<Quantum<double> > tmp(3);
   tmp(0) = Quantity(xyz(0), "m");
   tmp(1) = Quantity(xyz(1), "m");
   tmp(2) = Quantity(xyz(2), "m");
   return tmp;
 }
 
-Bool MVuvw::putValue(const Vector<Quantum<Double> > &in) {
-  uInt i = in.nelements();
-  if (i != 3 ) return False;
+bool MVuvw::putValue(const Vector<Quantum<double> > &in) {
+  uint32_t i = in.nelements();
+  if (i != 3 ) return false;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) &&
 	in(2).check(UnitVal::LENGTH)) {
-      for (uInt j = 0; j<i; j++) {
+      for (uint32_t j = 0; j<i; j++) {
 	xyz(j) = in(j).getBaseValue();
       }
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      for (uInt j=1; j < i; j++) {
+      Vector<double> tsin(2), tcos(2);
+      for (uint32_t j=1; j < i; j++) {
 	tsin(j-1) = (sin(in(j))).getValue(); 
 	tcos(j-1) = (cos(in(j))).getValue(); 
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
       readjust(in(0).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) &&
 	in(1).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      Int j;
+      Vector<double> tsin(2), tcos(2);
+      int32_t j;
       for (j=0; j < 2; j++) {
 	tsin(j) = (sin(in(j))).getValue(); 
 	tcos(j) = (cos(in(j))).getValue(); 
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
       readjust(in(2).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 MVuvw operator*(const RotMatrix &left, const MVuvw &right) {
   MVuvw result;
-  for (Int i=0; i<3; i++) {
+  for (int32_t i=0; i<3; i++) {
     result(i) = 0;
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       result(i) += left(i,j) * right(j);
     }
   }
@@ -370,34 +370,34 @@ MVuvw operator*(const MVuvw &left, const RotMatrix &right) {
   return result;
 }
 
-MVuvw operator*(Double left, const MVuvw &right) {
+MVuvw operator*(double left, const MVuvw &right) {
   MVuvw result(right);
   result *= left;
   return result;
 }
 
-MVuvw operator*(const MVuvw &left, Double right) {
+MVuvw operator*(const MVuvw &left, double right) {
   MVuvw result(left);
   result *= right;
   return result;
 }
 
-Double operator*(const Vector<Double> &left, const MVuvw &right) {
+double operator*(const Vector<double> &left, const MVuvw &right) {
   MVuvw tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVuvw &left, const Vector<Double> &right) {
+double operator*(const MVuvw &left, const Vector<double> &right) {
   MVuvw tmp(right);
   return (tmp * left);
 }
 
-Double operator*(const MVPosition &left, const MVuvw &right) {
+double operator*(const MVPosition &left, const MVuvw &right) {
   MVuvw tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVuvw &left, const MVPosition &right) {
+double operator*(const MVuvw &left, const MVPosition &right) {
   MVuvw tmp(right);
   return (tmp * left);
 }

@@ -90,14 +90,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {}
 
     // Reserve the block for the given nr of tables.
-    void reserve (uInt ntable)
+    void reserve (uint32_t ntable)
       { itsRows.resize (ntable+1); }
 
     // Add a table with the given nr of rows.
     void add (rownr_t nrow);
 
     // Give the nr of tables.
-    uInt ntable() const
+    uint32_t ntable() const
       { return itsNTable; }
 
     // Get the total nr of rows.
@@ -105,15 +105,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsRows[itsNTable]; }
 
     // Give the nr of rows for the i-th table.
-    rownr_t operator[] (uInt i) const
+    rownr_t operator[] (uint32_t i) const
       { return itsRows[i+1]; }
 
     // Give the offset for the i-th table.
-    rownr_t offset (uInt i) const
+    rownr_t offset (uint32_t i) const
       { return itsRows[i]; }
 
     // Map an overall row number to a table and row number.
-    void mapRownr (uInt& tableNr, rownr_t& tabRownr, rownr_t rownr) const
+    void mapRownr (uint32_t& tableNr, rownr_t& tabRownr, rownr_t rownr) const
     {
       if (rownr < itsLastStRow  ||  rownr >= itsLastEndRow) {
 	findRownr (rownr);
@@ -128,10 +128,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     //# Data members.
     Block<rownr_t>  itsRows;
-    uInt            itsNTable;
+    uint32_t            itsNTable;
     mutable rownr_t itsLastStRow;         //# Cached variables to spped up
     mutable rownr_t itsLastEndRow;        //# function mapRownr().
-    mutable uInt    itsLastTableNr;
+    mutable uint32_t    itsLastTableNr;
   };
 
 
@@ -200,7 +200,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ConcatRowsIter (const ConcatRows&, rownr_t start, rownr_t end, rownr_t incr=1);
 
     // Is the iterator past the end?
-    Bool pastEnd() const
+    bool pastEnd() const
       { return itsPastEnd; }
 
     // Go the next chunk.
@@ -214,10 +214,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the current chunk.
     RefRows getChunk() const
-      { return RefRows(itsChunk, True); }
+      { return RefRows(itsChunk, true); }
 
     // Get the nr of the table the current chunk is in.
-    uInt tableNr() const
+    uint32_t tableNr() const
       { return itsTabNr; }
 
   private:
@@ -226,8 +226,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rownr_t           itsStart;
     rownr_t           itsEnd;
     rownr_t           itsIncr;
-    uInt              itsTabNr;
-    Bool              itsPastEnd;
+    uint32_t              itsTabNr;
+    bool              itsPastEnd;
   };
 
 

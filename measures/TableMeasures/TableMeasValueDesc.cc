@@ -89,7 +89,7 @@ void TableMeasValueDesc::checkColumn (const TableDesc& td) const
 		      + itsColumn));
   } else if (td.columnDesc(itsColumn).dataType() != TpDouble) {
     throw (AipsError ("TableMeasValueDesc::checkColumn; Column's type "
-		      "must be Double: " + itsColumn));
+		      "must be double: " + itsColumn));
   }
 }
 

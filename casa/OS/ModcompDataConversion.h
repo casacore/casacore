@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 // <todo asof="$DATE$">
-//  <li> Support data type long Double.
+//  <li> Support data type long double.
 // </todo>
 
 
@@ -72,90 +72,90 @@ public:
     // Convert one value from Modcomp format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual size_t toLocal (Char&   to, const void* from) const;
-    virtual size_t toLocal (uChar&  to, const void* from) const;
-    virtual size_t toLocal (Short&  to, const void* from) const;
-    virtual size_t toLocal (uShort& to, const void* from) const;
-    virtual size_t toLocal (Int&    to, const void* from) const;
-    virtual size_t toLocal (uInt&   to, const void* from) const;
-    virtual size_t toLocal (Int64&  to, const void* from) const;
-    virtual size_t toLocal (uInt64& to, const void* from) const;
-    virtual size_t toLocal (Float&  to, const void* from) const;
-    virtual size_t toLocal (Double& to, const void* from) const;
+    virtual size_t toLocal (char&   to, const void* from) const;
+    virtual size_t toLocal (unsigned char&  to, const void* from) const;
+    virtual size_t toLocal (int16_t&  to, const void* from) const;
+    virtual size_t toLocal (uint16_t& to, const void* from) const;
+    virtual size_t toLocal (int32_t&    to, const void* from) const;
+    virtual size_t toLocal (uint32_t&   to, const void* from) const;
+    virtual size_t toLocal (int64_t&  to, const void* from) const;
+    virtual size_t toLocal (uint64_t& to, const void* from) const;
+    virtual size_t toLocal (float&  to, const void* from) const;
+    virtual size_t toLocal (double& to, const void* from) const;
     // </group>
     
     // Convert nr values from Modcomp format to local format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual size_t toLocal (Char*   to, const void* from, size_t nr) const;
-    virtual size_t toLocal (uChar*  to, const void* from, size_t nr) const;
-    virtual size_t toLocal (Short*  to, const void* from, size_t nr) const;
-    virtual size_t toLocal (uShort* to, const void* from, size_t nr) const;
-    virtual size_t toLocal (Int*    to, const void* from, size_t nr) const;
-    virtual size_t toLocal (uInt*   to, const void* from, size_t nr) const;
-    virtual size_t toLocal (Int64*  to, const void* from, size_t nr) const;
-    virtual size_t toLocal (uInt64* to, const void* from, size_t nr) const;
-    virtual size_t toLocal (Float*  to, const void* from, size_t nr) const;
-    virtual size_t toLocal (Double* to, const void* from, size_t nr) const;
+    virtual size_t toLocal (char*   to, const void* from, size_t nr) const;
+    virtual size_t toLocal (unsigned char*  to, const void* from, size_t nr) const;
+    virtual size_t toLocal (int16_t*  to, const void* from, size_t nr) const;
+    virtual size_t toLocal (uint16_t* to, const void* from, size_t nr) const;
+    virtual size_t toLocal (int32_t*    to, const void* from, size_t nr) const;
+    virtual size_t toLocal (uint32_t*   to, const void* from, size_t nr) const;
+    virtual size_t toLocal (int64_t*  to, const void* from, size_t nr) const;
+    virtual size_t toLocal (uint64_t* to, const void* from, size_t nr) const;
+    virtual size_t toLocal (float*  to, const void* from, size_t nr) const;
+    virtual size_t toLocal (double* to, const void* from, size_t nr) const;
     // </group>
 
     // Convert one value from local format to Modcomp format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual size_t fromLocal (void* to, Char   from) const;
-    virtual size_t fromLocal (void* to, uChar  from) const;
-    virtual size_t fromLocal (void* to, Short  from) const;
-    virtual size_t fromLocal (void* to, uShort from) const;
-    virtual size_t fromLocal (void* to, Int    from) const;
-    virtual size_t fromLocal (void* to, uInt   from) const;
-    virtual size_t fromLocal (void* to, Int64  from) const;
-    virtual size_t fromLocal (void* to, uInt64 from) const;
-    virtual size_t fromLocal (void* to, Float  from) const;
-    virtual size_t fromLocal (void* to, Double from) const;
+    virtual size_t fromLocal (void* to, char   from) const;
+    virtual size_t fromLocal (void* to, unsigned char  from) const;
+    virtual size_t fromLocal (void* to, int16_t  from) const;
+    virtual size_t fromLocal (void* to, uint16_t from) const;
+    virtual size_t fromLocal (void* to, int32_t    from) const;
+    virtual size_t fromLocal (void* to, uint32_t   from) const;
+    virtual size_t fromLocal (void* to, int64_t  from) const;
+    virtual size_t fromLocal (void* to, uint64_t from) const;
+    virtual size_t fromLocal (void* to, float  from) const;
+    virtual size_t fromLocal (void* to, double from) const;
     // </group>
     
     // Convert nr values from local format to ModComp format.
     // The from and to buffer should not overlap.
     // <group>
-    virtual size_t fromLocal (void* to, const Char*   from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const uChar*  from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const Short*  from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const uShort* from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const Int*    from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const uInt*   from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const Int64*  from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const uInt64* from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const Float*  from, size_t nr) const;
-    virtual size_t fromLocal (void* to, const Double* from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const char*   from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const unsigned char*  from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const int16_t*  from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const uint16_t* from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const int32_t*    from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const uint32_t*   from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const int64_t*  from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const uint64_t* from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const float*  from, size_t nr) const;
+    virtual size_t fromLocal (void* to, const double* from, size_t nr) const;
     // </group>
 
     // Determine if the data for a data type can be simply copied, thus
     // if no conversion is needed.
     // <group>
-    virtual Bool canCopy (const Char*) const;
-    virtual Bool canCopy (const uChar*) const;
-    virtual Bool canCopy (const Short*) const;
-    virtual Bool canCopy (const uShort*) const;
-    virtual Bool canCopy (const Int*) const;
-    virtual Bool canCopy (const uInt*) const;
-    virtual Bool canCopy (const Int64*) const;
-    virtual Bool canCopy (const uInt64*) const;
-    virtual Bool canCopy (const Float*) const;
-    virtual Bool canCopy (const Double*) const;
+    virtual bool canCopy (const char*) const;
+    virtual bool canCopy (const unsigned char*) const;
+    virtual bool canCopy (const int16_t*) const;
+    virtual bool canCopy (const uint16_t*) const;
+    virtual bool canCopy (const int32_t*) const;
+    virtual bool canCopy (const uint32_t*) const;
+    virtual bool canCopy (const int64_t*) const;
+    virtual bool canCopy (const uint64_t*) const;
+    virtual bool canCopy (const float*) const;
+    virtual bool canCopy (const double*) const;
     // </group>
 
     // Get the external size of the data type.
     // <group>
-    virtual uInt externalSize (const Char*) const;
-    virtual uInt externalSize (const uChar*) const;
-    virtual uInt externalSize (const Short*) const;
-    virtual uInt externalSize (const uShort*) const;
-    virtual uInt externalSize (const Int*) const;
-    virtual uInt externalSize (const uInt*) const;
-    virtual uInt externalSize (const Int64*) const;
-    virtual uInt externalSize (const uInt64*) const;
-    virtual uInt externalSize (const Float*) const;
-    virtual uInt externalSize (const Double*) const;
+    virtual uint32_t externalSize (const char*) const;
+    virtual uint32_t externalSize (const unsigned char*) const;
+    virtual uint32_t externalSize (const int16_t*) const;
+    virtual uint32_t externalSize (const uint16_t*) const;
+    virtual uint32_t externalSize (const int32_t*) const;
+    virtual uint32_t externalSize (const uint32_t*) const;
+    virtual uint32_t externalSize (const int64_t*) const;
+    virtual uint32_t externalSize (const uint64_t*) const;
+    virtual uint32_t externalSize (const float*) const;
+    virtual uint32_t externalSize (const double*) const;
     // </group>
 };
 

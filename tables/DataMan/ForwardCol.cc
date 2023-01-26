@@ -62,7 +62,7 @@ ForwardColumnEngine::ForwardColumnEngine (const Table& referencedTable)
 
 ForwardColumnEngine::~ForwardColumnEngine()
 {
-    for (uInt i=0; i<refColumns_p.nelements(); i++) {
+    for (uint32_t i=0; i<refColumns_p.nelements(); i++) {
 	delete refColumns_p[i];
     }
 }
@@ -95,26 +95,26 @@ void ForwardColumnEngine::setRefTable (const Table& refTable)
 }
 
 
-Bool ForwardColumnEngine::canAddRow() const
-{ return True; }
-Bool ForwardColumnEngine::canRemoveRow() const
-{ return True; }
+bool ForwardColumnEngine::canAddRow() const
+{ return true; }
+bool ForwardColumnEngine::canRemoveRow() const
+{ return true; }
 void ForwardColumnEngine::addRow64 (rownr_t)
 {}
 void ForwardColumnEngine::removeRow64 (rownr_t)
 {}
 
 
-Bool ForwardColumnEngine::canAddColumn() const
-    { return True; }
-Bool ForwardColumnEngine::canRemoveColumn() const
-    { return True; }
+bool ForwardColumnEngine::canAddColumn() const
+    { return true; }
+bool ForwardColumnEngine::canRemoveColumn() const
+    { return true; }
 
 // Note that the column has already been added by makeXXColumn.
 // This function is merely for initializing the added column.
 void ForwardColumnEngine::addColumn (DataManagerColumn* colp)
 {
-    for (uInt i=0; i<ncolumn(); i++) {
+    for (uint32_t i=0; i<ncolumn(); i++) {
 	if (colp == refColumns_p[i]) {
 	    refColumns_p[i]->fillTableName (table(), refTable_p);
 	    refColumns_p[i]->prepare (table());
@@ -127,7 +127,7 @@ void ForwardColumnEngine::addColumn (DataManagerColumn* colp)
 
 void ForwardColumnEngine::removeColumn (DataManagerColumn* colp)
 {
-    for (uInt i=0; i<ncolumn(); i++) {
+    for (uint32_t i=0; i<ncolumn(); i++) {
 	if (refColumns_p[i] == colp) {
 	    delete refColumns_p[i];
 	    decrementNcolumn();
@@ -145,7 +145,7 @@ void ForwardColumnEngine::removeColumn (DataManagerColumn* colp)
 
 void ForwardColumnEngine::addForwardColumn (ForwardColumn* colp)
 {
-    uInt nr = refColumns_p.nelements();
+    uint32_t nr = refColumns_p.nelements();
     refColumns_p.resize(nr + 1);
     refColumns_p[nr] = colp;
 }
@@ -180,7 +180,7 @@ void ForwardColumnEngine::baseCreate()
     table().rwKeywordSet().define
 	                 (keywordName ("_ForwardColumn_Name"), dataManName_p);
     // Define a keyword in all columns telling the original table.
-    for (uInt i=0; i<refColumns_p.nelements(); i++) {
+    for (uint32_t i=0; i<refColumns_p.nelements(); i++) {
 	refColumns_p[i]->fillTableName (table(), refTable_p);
     }
 }
@@ -199,14 +199,14 @@ void ForwardColumnEngine::basePrepare()
 	dataManName_p = keySet.asString (keyword);
     }
     // Attach all forwarding columns.
-    for (uInt i=0; i<refColumns_p.nelements(); i++) {
+    for (uint32_t i=0; i<refColumns_p.nelements(); i++) {
 	refColumns_p[i]->prepare (table());
     }
 }
 
 void ForwardColumnEngine::reopenRW()
 {
-    for (uInt i=0; i<refColumns_p.nelements(); i++) {
+    for (uint32_t i=0; i<refColumns_p.nelements(); i++) {
 	refColumns_p[i]->setRW();
     }
 }
@@ -273,7 +273,7 @@ void ForwardColumn::fillTableName (const Table& thisTable,
     // Set the column (temporarily) to writable, so a TableColumn
     // object can be created for adding the keyword.
     // Prepare will set the writable switch correctly.
-    writable_p = True;
+    writable_p = true;
     // When the table (in which this virtual column is used) is new,
     // the name of the outermost non-forwarding table will be stored
     // as a column keyword.
@@ -300,10 +300,10 @@ void ForwardColumn::fillTableName (const Table& thisTable,
 
 void ForwardColumn::prepare (const Table& thisTable)
 {
-    basePrepare (thisTable, True);
+    basePrepare (thisTable, true);
 }
 
-void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
+void ForwardColumn::basePrepare (const Table& thisTable, bool writable)
 {
     TableColumn thisCol (thisTable, colName_p);
     // Open the original table as stored in the special keyword.
@@ -315,7 +315,7 @@ void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
     writable_p = writable;
     if (writable_p) {
 	if (!(thisTable.isWritable()  &&  Table::isWritable(name))) {
-	    writable_p = False;
+	    writable_p = false;
 	}
     }
     if (writable_p) {
@@ -339,7 +339,7 @@ void ForwardColumn::basePrepare (const Table& thisTable, Bool writable)
 }
 
 
-Bool ForwardColumn::isWritable() const
+bool ForwardColumn::isWritable() const
     { return writable_p; }
 
 
@@ -355,7 +355,7 @@ void ForwardColumn::setRW()
 	}
     }
     if (origTable_p.isColumnWritable (colName_p)) {
-	writable_p = True;
+	writable_p = true;
     }
 }
 
@@ -373,18 +373,18 @@ void ForwardColumn::setShapeColumn (const IPosition& shape)
 void ForwardColumn::setShape (rownr_t rownr, const IPosition& shape)
     { colPtr_p->setShape (rownr, shape); }
 
-uInt ForwardColumn::ndim (rownr_t rownr)
+uint32_t ForwardColumn::ndim (rownr_t rownr)
     { return colPtr_p->ndim (rownr); }
 
 IPosition ForwardColumn::shape(rownr_t rownr)
     { return colPtr_p->shape (rownr); }
 
-Bool ForwardColumn::isShapeDefined (rownr_t rownr)
+bool ForwardColumn::isShapeDefined (rownr_t rownr)
     { return colPtr_p->isDefined (rownr); }
 
-Bool ForwardColumn::canChangeShape() const
+bool ForwardColumn::canChangeShape() const
 {
-    return (colPtr_p == 0  ?  False : colPtr_p->canChangeShape());
+    return (colPtr_p == 0  ?  false : colPtr_p->canChangeShape());
 }
 
 void ForwardColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
@@ -448,13 +448,13 @@ void ForwardColumn::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
 void ForwardColumn::aips_name2(put,NM) (rownr_t rownr, const T* dataPtr) \
     { colPtr_p->put (rownr, dataPtr); }
 
-FORWARDCOLUMN_GETPUT(Bool,Bool)
-FORWARDCOLUMN_GETPUT(uChar,uChar)
-FORWARDCOLUMN_GETPUT(Short,Short)
-FORWARDCOLUMN_GETPUT(uShort,uShort)
-FORWARDCOLUMN_GETPUT(Int,Int)
-FORWARDCOLUMN_GETPUT(uInt,uInt)
-FORWARDCOLUMN_GETPUT(Int64,Int64)
+FORWARDCOLUMN_GETPUT(bool,Bool)
+FORWARDCOLUMN_GETPUT(unsigned char,uChar)
+FORWARDCOLUMN_GETPUT(int16_t,Short)
+FORWARDCOLUMN_GETPUT(uint16_t,uShort)
+FORWARDCOLUMN_GETPUT(int32_t,Int)
+FORWARDCOLUMN_GETPUT(uint32_t,uInt)
+FORWARDCOLUMN_GETPUT(int64_t,Int64)
 FORWARDCOLUMN_GETPUT(float,float)
 FORWARDCOLUMN_GETPUT(double,double)
 FORWARDCOLUMN_GETPUT(Complex,Complex)

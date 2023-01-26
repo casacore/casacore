@@ -187,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     *theirStream << '*' << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
-                          Int64 row)
+                          int64_t row)
   {
     writeTraceFirst (tabid, columnName, oper);
     *theirStream << row << endl;
@@ -209,7 +209,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     *theirStream << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
-                          Int64 row, const IPosition& shape)
+                          int64_t row, const IPosition& shape)
   {
     writeTraceFirst (tabid, columnName, oper);
     *theirStream << row << ' ';
@@ -238,7 +238,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     *theirStream << endl;
   }
   void TableTrace::trace (int tabid, const String& columnName, char oper,
-                          Int64 row, const IPosition& shape,
+                          int64_t row, const IPosition& shape,
                           const IPosition& blc, const IPosition& trc,
                           const IPosition& inc)
   {
@@ -297,7 +297,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     AipsrcValue<String>::find (operStr, "table.trace.operation", "");
     if (! operStr.empty()) {
       operStr.downcase();
-      for (uInt i=0; i<operStr.size(); ++i) {
+      for (uint32_t i=0; i<operStr.size(); ++i) {
         if (operStr[i] == 's') {
           theirDoTrace |= 2;
         } else if (operStr[i] == 'r') {
@@ -318,7 +318,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     AipsrcValue<String>::find (colStr, "table.trace.column", "");
     if (! typeStr.empty()) {
       typeStr.downcase();
-      for (uInt i=0; i<typeStr.size(); ++i) {
+      for (uint32_t i=0; i<typeStr.size(); ++i) {
         if (typeStr[i] == 's') {
           theirColType |= SCALAR;
         } else if (typeStr[i] == 'a') {
@@ -333,7 +333,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     Vector<String> cols = stringToVector (colStr, ',');
     theirColumns.reserve (cols.size());
-    for (uInt i=0; i<cols.size(); ++i) {
+    for (uint32_t i=0; i<cols.size(); ++i) {
       if (! cols[i].empty()) {
         theirColumns.push_back (Regex(Regex::fromPattern(cols[i])));
       }

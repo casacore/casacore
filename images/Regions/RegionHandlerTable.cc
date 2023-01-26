@@ -70,9 +70,9 @@ void RegionHandlerTable::setObjectPtr (void* objectPtr)
   itsObjectPtr = objectPtr;
 }
 
-Bool RegionHandlerTable::canDefineRegion() const
+bool RegionHandlerTable::canDefineRegion() const
 {
-  return True;
+  return true;
 }
 
 void RegionHandlerTable::setDefaultMask (const String& regionName)
@@ -96,26 +96,26 @@ String RegionHandlerTable::getDefaultMask() const
 {
   const Table& tab = table();
   const TableRecord& keys = tab.keywordSet();
-  Int field = keys.fieldNumber ("Image_defaultmask");
+  int32_t field = keys.fieldNumber ("Image_defaultmask");
   if (field < 0) {
     return "";
   }
   return keys.asString(field);
 }
 
-Bool RegionHandlerTable::defineRegion (const String& name,
+bool RegionHandlerTable::defineRegion (const String& name,
 				       const ImageRegion& region,
 				       RegionHandler::GroupType type,
-				       Bool overwrite)
+				       bool overwrite)
 {
   Table& tab = rwTable();
   if (! tab.isWritable()) {
-    return False;
+    return false;
   }
   // First check if the region is already defined in "regions" or "masks".
   // If so, remove it if possible. Otherwise throw an exception.
   TableRecord& keys = tab.rwKeywordSet();
-  Int groupField = findRegionGroup (name, RegionHandler::Any, False);
+  int32_t groupField = findRegionGroup (name, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (!overwrite) {
       throw (AipsError ("RegionHandlerTable::defineRegion - table " +
@@ -139,31 +139,31 @@ Bool RegionHandlerTable::defineRegion (const String& name,
   // Now define the region in the group.
   keys.rwSubRecord(groupName).defineRecord
                         (name, region.toRecord (tab.tableName()));
-  return True;
+  return true;
 }
 
-Bool RegionHandlerTable::hasRegion (const String& name,
+bool RegionHandlerTable::hasRegion (const String& name,
 				    RegionHandler::GroupType type) const
 {
-  return  (findRegionGroup (name, type, False) >= 0);
+  return  (findRegionGroup (name, type, false) >= 0);
 }
 
-Bool RegionHandlerTable::renameRegion (const String& newName,
+bool RegionHandlerTable::renameRegion (const String& newName,
 				       const String& oldName,
 				       RegionHandler::GroupType type,
-				       Bool overwrite)
+				       bool overwrite)
 {
   Table& tab = rwTable();
   if (! tab.isWritable()) {
-    return False;
+    return false;
   }
   // Check that the region exists.
-  Int oldGroupField = findRegionGroup (oldName, type, True);
+  int32_t oldGroupField = findRegionGroup (oldName, type, true);
   // First check if the region is already defined.
   // Check that the region is in the same group as the original.
   // Remove it if overwrite is true. Otherwise throw an exception.
   TableRecord& keys = tab.rwKeywordSet();
-  Int groupField = findRegionGroup (newName, RegionHandler::Any, False);
+  int32_t groupField = findRegionGroup (newName, RegionHandler::Any, false);
   if (groupField >= 0) {
     if (groupField != oldGroupField) {
       throw (AipsError ("RegionHandlerTable::renameRegion - table " +
@@ -180,7 +180,7 @@ Bool RegionHandlerTable::renameRegion (const String& newName,
     regs.removeField (newName);
   }
   TableRecord& regs = keys.rwSubRecord(oldGroupField);
-  ImageRegion* regPtr = getRegion (oldName, type, True);
+  ImageRegion* regPtr = getRegion (oldName, type, true);
   // First rename a possible mask table, which could in principle fail.
   // We only need to do that when it is an LCRegion.
   // We need to clone it to make it non-const.
@@ -200,31 +200,31 @@ Bool RegionHandlerTable::renameRegion (const String& newName,
   if (getDefaultMask() == oldName) {
       keys.define ("Image_defaultmask", newName);
   }
-  return True;
+  return true;
 }
 
-Bool RegionHandlerTable::removeRegion (const String& name,
+bool RegionHandlerTable::removeRegion (const String& name,
 				       RegionHandler::GroupType type,
-				       Bool throwIfUnknown)
+				       bool throwIfUnknown)
 {
   Table& tab = rwTable();
   if (! tab.isWritable()) {
-    return False;
+    return false;
   }
-  Int groupField = findRegionGroup (name, type, throwIfUnknown);
+  int32_t groupField = findRegionGroup (name, type, throwIfUnknown);
   if (groupField >= 0) {
-    ImageRegion* regPtr = getRegion (name, type, True);
+    ImageRegion* regPtr = getRegion (name, type, true);
     // Delete a possible mask table.
     // We only need to do that when it is an LCRegion.
     // We need to clone it to make it non-const.
     if (regPtr->isLCRegion()) {
       LCRegion* lcPtr = regPtr->asLCRegion().cloneRegion();
       String msg;
-      Bool error = False;
+      bool error = false;
       try {
 	lcPtr->handleDelete();
       } catch (std::exception& x) {
-	error = True;
+	error = true;
 	msg = x.what();
       }
       delete lcPtr;
@@ -241,34 +241,34 @@ Bool RegionHandlerTable::removeRegion (const String& name,
   if (getDefaultMask() == name) {
     setDefaultMask ("");
   }
-  return True;
+  return true;
 }
 
 Vector<String> RegionHandlerTable::regionNames
 					(RegionHandler::GroupType type) const
 {
   const Table& tab = table();
-  uInt nreg = 0;
-  uInt nmask = 0;
+  uint32_t nreg = 0;
+  uint32_t nmask = 0;
   const RecordDesc* regs = 0;
   const RecordDesc* masks = 0;
   const TableRecord& keys = tab.keywordSet();
   if (type != RegionHandler::Masks) {
-    Int field = keys.fieldNumber ("regions");
+    int32_t field = keys.fieldNumber ("regions");
     if (field >= 0) {
       regs = &(keys.subRecord(field).description());
       nreg = regs->nfields();
     }
   }
   if (type != RegionHandler::Regions) {
-    Int field = keys.fieldNumber ("masks");
+    int32_t field = keys.fieldNumber ("masks");
     if (field >= 0) {
       masks = &(keys.subRecord(field).description());
       nmask = masks->nfields();
     }
   }
   Vector<String> names(nreg + nmask);
-  uInt i;
+  uint32_t i;
   for (i=0; i<nreg; i++) {
     names(i) = regs->name(i);
   }
@@ -280,13 +280,13 @@ Vector<String> RegionHandlerTable::regionNames
 
 ImageRegion* RegionHandlerTable::getRegion (const String& name,
 					    RegionHandler::GroupType type,
-					    Bool throwIfUnknown) const
+					    bool throwIfUnknown) const
 {
   const Table& tab = table();
-  Int groupField = findRegionGroup (name, type, throwIfUnknown);
+  int32_t groupField = findRegionGroup (name, type, throwIfUnknown);
   if (groupField >= 0) {
     const TableRecord& regs = tab.keywordSet().subRecord(groupField);
-    Int field = regs.fieldNumber (name);
+    int32_t field = regs.fieldNumber (name);
     if (field >= 0) {
       return ImageRegion::fromRecord (regs.subRecord (field),
 				      tab.tableName());
@@ -295,16 +295,16 @@ ImageRegion* RegionHandlerTable::getRegion (const String& name,
   return 0;
 }
 
-Int RegionHandlerTable::findRegionGroup (const String& regionName,
+int32_t RegionHandlerTable::findRegionGroup (const String& regionName,
 					 RegionHandler::GroupType type,
-					 Bool throwIfUnknown) const
+					 bool throwIfUnknown) const
 {
   const Table& tab = table();
   // Check if the region is defined in "regions" or "masks".
   // If so, return its groupName.
   const TableRecord& keys = tab.keywordSet();
   if (type != RegionHandler::Masks) {
-    Int field = keys.fieldNumber ("regions");
+    int32_t field = keys.fieldNumber ("regions");
     if (field >= 0) {
       const TableRecord& regs = keys.subRecord(field);
       if (regs.isDefined (regionName)) {
@@ -313,7 +313,7 @@ Int RegionHandlerTable::findRegionGroup (const String& regionName,
     }
   }
   if (type != RegionHandler::Regions) {
-    Int field = keys.fieldNumber ("masks");
+    int32_t field = keys.fieldNumber ("masks");
     if (field >= 0) {
       const TableRecord& regs = keys.subRecord(field);
       if (regs.isDefined (regionName)) {

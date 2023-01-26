@@ -65,7 +65,7 @@ int main() {
 	EarthField ef(EarthField::STANDARD, dat.day());
 	cout << "Result:    " << ef(obs.getValue()) << endl;
 	cout << "Derivatives: " << endl;
-	for (Int i0=0; i0<3; i0++) {
+	for (int32_t i0=0; i0<3; i0++) {
 	  cout << "     " << ef.derivative(obs.getValue())[i0] << endl;
 	};
 

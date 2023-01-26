@@ -34,7 +34,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCBaseline::ToRef_p[N_Routes][3] = {
+uint32_t MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::GALACTIC,	 	MBaseline::J2000,	0},
   {MBaseline::GALACTIC,		MBaseline::B1950,	2},
   {MBaseline::J2000,		MBaseline::GALACTIC,	0},
@@ -83,7 +83,7 @@ uInt MCBaseline::ToRef_p[N_Routes][3] = {
   {MBaseline::TOPO,		MBaseline::APP,		0},
   {MBaseline::ICRS,		MBaseline::J2000,	0},
   {MBaseline::J2000,		MBaseline::ICRS,	0} };
-uInt MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
+uint32_t MCBaseline::FromTo_p[MBaseline::N_Types][MBaseline::N_Types];
 std::once_flag MCBaseline::theirInitOnceFlag;
 
 //# Constructors
@@ -102,10 +102,10 @@ void MCBaseline::getConvert(MConvertBase &mc,
 			    const MRBase &inref, 
 			    const MRBase &outref) {
     
-  Int iin  = inref.getType();
-  Int iout = outref.getType();
+  int32_t iin  = inref.getType();
+  int32_t iout = outref.getType();
   if (iin != iout) {
-    Int tmp;
+    int32_t tmp;
     while (iin != iout) {
       tmp = FromTo_p[iin][iout];
       iin = ToRef_p[tmp][1];
@@ -119,8 +119,8 @@ void MCBaseline::clearConvert() {
 }
 
 //# Conversion routines
-void MCBaseline::initConvert(uInt which, MConvertBase &mc) {
-  if (False) initConvert(which, mc);	// Stop warning
+void MCBaseline::initConvert(uint32_t which, MConvertBase &mc) {
+  if (false) initConvert(which, mc);	// Stop warning
   
   switch (which) {
     
@@ -202,13 +202,13 @@ void MCBaseline::doConvert(MVBaseline &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  Double g2;
+  double g2;
   // Planetary aberration factor
-  Double lengthP = 0;
+  double lengthP = 0;
   
   measMath.initFrame(inref, outref);
   
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
     
     switch (mc.getMethod(i)) {
       
@@ -238,43 +238,43 @@ void MCBaseline::doConvert(MVBaseline &in,
       
     case J2000_B1950:
       in.adjust(g2);
-      measMath.applyJ2000toB1950(in, False);
+      measMath.applyJ2000toB1950(in, false);
       in.readjust(g2);
       break;
       
     case J2000_B1950_VLA:
       in.adjust(g2);
-      measMath.applyJ2000toB1950_VLA(in, False);
+      measMath.applyJ2000toB1950_VLA(in, false);
       in.readjust(g2);
       break;
     
     case B1950_J2000:
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950(in, False);
+      measMath.deapplyJ2000toB1950(in, false);
       in.readjust(g2);
       break;
     
     case B1950_VLA_J2000:
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950_VLA(in, False);
+      measMath.deapplyJ2000toB1950_VLA(in, false);
       in.readjust(g2);
       break;
 
     case B1950_B1950_VLA:
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950(in, False);
+      measMath.deapplyJ2000toB1950(in, false);
       in.readjust(g2);
       in.adjust(g2);
-      measMath.applyJ2000toB1950_VLA(in, False);
+      measMath.applyJ2000toB1950_VLA(in, false);
       in.readjust(g2);
       break;
 
     case B1950_VLA_B1950:
       in.adjust(g2);
-      measMath.deapplyJ2000toB1950_VLA(in, False);
+      measMath.deapplyJ2000toB1950_VLA(in, false);
       in.readjust(g2);
       in.adjust(g2);
-      measMath.applyJ2000toB1950(in, False);
+      measMath.applyJ2000toB1950(in, false);
       in.readjust(g2);
       break;
     
@@ -312,13 +312,13 @@ void MCBaseline::doConvert(MVBaseline &in,
     
     case J2000_JNAT:
       in.adjust(g2);
-      measMath.applySolarPos(in, False);
+      measMath.applySolarPos(in, false);
       in.readjust(g2);
       break;
     
     case JNAT_APP:
       in.adjust(g2);
-      measMath.applyAberration(in, False);
+      measMath.applyAberration(in, false);
       in.readjust(g2);
       measMath.applyPrecNutat(in);
       break;
@@ -326,33 +326,33 @@ void MCBaseline::doConvert(MVBaseline &in,
     case APP_JNAT:
       measMath.deapplyPrecNutat(in);
       in.adjust(g2);
-      measMath.deapplyAberration(in, False);
+      measMath.deapplyAberration(in, false);
       in.readjust(g2);
       break;
     
     case JNAT_J2000:
       in.adjust(g2);
-      measMath.deapplySolarPos(in, False);
+      measMath.deapplySolarPos(in, false);
       in.readjust(g2);
       break;
     
     case B1950_APP: 
       in.adjust(g2);
-      measMath.applyPrecNutatB1950(in, False);
-      measMath.applyAberrationB1950(in, False);
+      measMath.applyPrecNutatB1950(in, false);
+      measMath.applyAberrationB1950(in, false);
       in.readjust(g2);
       break;
     
     case APP_B1950:
       in.adjust(g2);
-      measMath.deapplyAberrationB1950(in, False);
-      measMath.deapplyPrecNutatB1950(in, False);
+      measMath.deapplyAberrationB1950(in, false);
+      measMath.deapplyPrecNutatB1950(in, false);
       in.readjust(g2);
       break;
     
     case TOPO_HADEC: 
       in.adjust(g2);
-      measMath.applyTOPOtoHADEC(in, False);
+      measMath.applyTOPOtoHADEC(in, false);
       in.readjust(g2);
       break;
     
@@ -374,19 +374,19 @@ void MCBaseline::doConvert(MVBaseline &in,
      
     case HADEC_TOPO: 
       in.adjust(g2);
-      measMath.deapplyTOPOtoHADEC(in, False);
+      measMath.deapplyTOPOtoHADEC(in, false);
       in.readjust(g2);
       break;
     
     case APP_TOPO: 
       in.adjust(g2);
-      measMath.applyAPPtoTOPO(in, lengthP, False);
+      measMath.applyAPPtoTOPO(in, lengthP, false);
       in.readjust(g2);
       break;
    
     case TOPO_APP: 
       in.adjust(g2);
-      measMath.deapplyAPPtoTOPO(in, lengthP, False);
+      measMath.deapplyAPPtoTOPO(in, lengthP, false);
       in.readjust(g2);
       break;
 

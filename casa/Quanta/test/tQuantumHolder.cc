@@ -44,8 +44,8 @@ int main() {
     String error;
     QuantumHolder q00, q01;
     Quantity x00(12.5, "km/s");
-    Quantum<Float> x01(30.3, "Jy/a");
-    Quantum<Int> x02(2, "pc3/d");
+    Quantum<float> x01(30.3, "Jy/a");
+    Quantum<int32_t> x02(2, "pc3/d");
     String s00("12:30:00");
     String s01("-97.8 Mpc/a");
     String s02("12.5JY");
@@ -74,16 +74,16 @@ int main() {
     cout << "Is array:                    " << q00.isArray() << endl;
     cout << "Is real:                     " << q00.isReal() << endl;
     cout << "Is complex:                  " << q00.isComplex() << endl;
-    cout << "Is Double:                   " << q00.isQuantumDouble() << endl;
-    cout << "Is Float:                    " << q00.isQuantumFloat() << endl;
-    cout << "Is Int:                      " << q00.isQuantumInt() << endl;
+    cout << "Is double:                   " << q00.isQuantumDouble() << endl;
+    cout << "Is float:                    " << q00.isQuantumFloat() << endl;
+    cout << "Is int32_t:                      " << q00.isQuantumInt() << endl;
     cout << "Is Complex:                  " << q00.isQuantumComplex() << endl;
     cout << "Is DComplex:                 " << q00.isQuantumDComplex() << endl;
-    cout << "Is Vector Double:            " <<
+    cout << "Is Vector double:            " <<
       q00.isQuantumVectorDouble() << endl;
-    cout << "Is Vector Float:             " <<
+    cout << "Is Vector float:             " <<
       q00.isQuantumVectorFloat() << endl;
-    cout << "Is Vector Int:               " <<
+    cout << "Is Vector int32_t:               " <<
       q00.isQuantumVectorInt() << endl;
     cout << "Is Vector Complex:           " <<
       q00.isQuantumVectorComplex() << endl;
@@ -91,14 +91,14 @@ int main() {
       q00.isQuantumVectorDComplex() << endl;
     q01 = q00;
     cout << "As quantity:                 " << q00.asQuantity() << endl;
-    cout << "As Double:                   " << q00.asQuantumDouble() << endl;
-    cout << "As Vector Double:            " <<
+    cout << "As double:                   " << q00.asQuantumDouble() << endl;
+    cout << "As Vector double:            " <<
       q00.asQuantumVectorDouble() << endl;
-    cout << "As Float:                    " << q00.asQuantumFloat() << endl;
-    cout << "As Vector Float:             " <<
+    cout << "As float:                    " << q00.asQuantumFloat() << endl;
+    cout << "As Vector float:             " <<
       q00.asQuantumVectorFloat() << endl;
-    cout << "As Int:                      " << q00.asQuantumInt() << endl;
-    cout << "As Vector Int:               " <<
+    cout << "As int32_t:                      " << q00.asQuantumInt() << endl;
+    cout << "As Vector int32_t:               " <<
       q00.asQuantumVectorInt() << endl;
     q00 = q01;
     cout << "As Complex:                  " << q00.asQuantumComplex() << endl;

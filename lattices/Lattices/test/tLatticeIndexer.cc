@@ -102,91 +102,91 @@ int main ()
       IPosition shape(3,3);
       IPosition heading(3,0,2,1); // move along the x-axis then z-axis
       // Move forward through all the locations
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,3,0,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,0,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,3,0,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,0,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,3,0,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,3,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,3,3,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,3,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,3,3,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,3,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,3,3,6), AipsError);
       // Should not be able to move any further
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading)==False, 
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading)==false, 
 		   AipsError);
       // Now move backwards one step and check we ended up where we were
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,0,3,6), AipsError);
       // set the position to the last element and move backwards from there
       point = l.shape() - 1;
       heading = IPosition(3,2,1,0);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,5,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,5,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,2,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,2,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,2,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,-1,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,-1,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,4,-1,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,5,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,5,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,5,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,2,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,2,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,2,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,-1,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,-1,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,1,-1,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,5,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,5,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,5,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,2,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,2,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,2,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,-1,6), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,-1,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),AipsError);
       AlwaysAssert(point == IPosition(3,-2,-1,0), AipsError);
       // Should not be able to move back any further
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading)==False, 
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading)==false, 
 		   AipsError);
     }
     {
@@ -197,35 +197,35 @@ int main ()
       IPosition shape(3,2,2,1);
       IPosition heading(3,0,1,2); // move along the x-axis then the y-axis
       // Move forward through all the locations
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,2,0,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,2,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,2,2,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading)==False, 
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading)==false, 
 		   AipsError);
       // Move backward through all the locations. 
       point = l.shape() - 1;
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,3,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,2,1,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,1,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,2,-1,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading), AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading), AipsError);
       AlwaysAssert(point == IPosition(3,0,-1,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading)==False, 
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading)==false, 
 		   AipsError);
     }
     {
       LatticeIndexer l(IPosition(3,7,9,1), IPosition(3,1,1,0), 
 		       IPosition(3,6,8,0), IPosition(3,2,2,1));
-      AlwaysAssert(l.isInside(IPosition(3,2,3,0))==True, AipsError);
-      AlwaysAssert(l.isInside(IPosition(3,3,3,0))==False, AipsError);
-      AlwaysAssert(l.isInside(IPosition(3,-1,0,0))==False, AipsError);
+      AlwaysAssert(l.isInside(IPosition(3,2,3,0))==true, AipsError);
+      AlwaysAssert(l.isInside(IPosition(3,3,3,0))==false, AipsError);
+      AlwaysAssert(l.isInside(IPosition(3,-1,0,0))==false, AipsError);
       
     }
     {
@@ -233,98 +233,98 @@ int main ()
       IPosition shape(2,3);
       IPosition point(2,0);
       IPosition heading(2,0,1);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
 		   AipsError);
       AlwaysAssert(point == IPosition(2,3,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
 		   AipsError);
       AlwaysAssert(point == IPosition(2,6,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading)
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading)
 		   , AipsError);
       AlwaysAssert(point == IPosition(2,0,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading)
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading)
 		   , AipsError);
       AlwaysAssert(point == IPosition(2,3,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading)
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading)
 		   , AipsError);
       AlwaysAssert(point == IPosition(2,6,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading) == False
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading) == false
 		   , AipsError);
       //
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,3,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,0,3), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,6,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,3,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,0,0), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading)
- 		   == False, AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading)
+ 		   == false, AipsError);
 
       point = IPosition(2,1,1);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,4,1), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,7,1), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,-2,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,1,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,4,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,7,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(True, point, shape, heading)
-		   == False, AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(true, point, shape, heading)
+		   == false, AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
 		   AipsError);
       AlwaysAssert(point == IPosition(2,4,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,1,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,-2,4), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,7,1), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,4,1), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,1,1), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,-2,1), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,7,-2), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,4,-2), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,1,-2), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading),
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading),
  		   AipsError);
       AlwaysAssert(point == IPosition(2,-2,-2), AipsError);
-      AlwaysAssert(l.tiledCursorMove(False, point, shape, heading)
- 		   == False, AipsError);
+      AlwaysAssert(l.tiledCursorMove(false, point, shape, heading)
+ 		   == false, AipsError);
     }
     cout << "OK" << endl;
     return 0;

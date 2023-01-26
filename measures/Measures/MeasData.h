@@ -101,19 +101,19 @@ public:
   // General constants
   // <group>
   // MJD of J2000.0
-  static const Double MJD2000;
+  static const double MJD2000;
   // MJD of B1950.0
-  static const Double MJDB1950;
+  static const double MJDB1950;
   // MJD of B1900.0
-  static const Double MJDB1900;
+  static const double MJDB1900;
   // MJD of B1850.0
-  static const Double MJDB1850;
+  static const double MJDB1850;
   // Length Tropical century
-  static const Double TROPCEN;
+  static const double TROPCEN;
   // Length Julian century
-  static const Double JDCEN;
+  static const double JDCEN;
   // Length of day in sec
-  static const Double SECinDAY;
+  static const double SECinDAY;
   // </group>
   
   //# General Member Functions
@@ -128,15 +128,15 @@ public:
 
   // Get one of the 4 3x3 sub rotation matrices for B1950-J2000 conversions
   // <group>
-  static const RotMatrix &MToB1950(uInt which);
-  static const RotMatrix &MToJ2000(uInt which);
+  static const RotMatrix &MToB1950(uint32_t which);
+  static const RotMatrix &MToJ2000(uint32_t which);
   // </group>
 
   // Get the solar semi diameter at 1 AU in rad
-  static Double SunSemiDiameter();
+  static double SunSemiDiameter();
 
   // J2000 obliquity
-  static Double eps0J2000();
+  static double eps0J2000();
   
 private:
   

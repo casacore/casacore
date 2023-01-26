@@ -80,9 +80,9 @@ public:
     // Therefore we have to declare it as a void*.
 //#    static void set (void* copyInfo, Array<RetypedArrayEx1>& out,
     static void set (void* copyInfo, void* out,
-		     const casacore::Array<casacore::Float>& in,
+		     const casacore::Array<float>& in,
 		     const casacore::IPosition& shape);
-    static void get (void* copyInfo, casacore::Array<casacore::Float>& out,
+    static void get (void* copyInfo, casacore::Array<float>& out,
 		     const void* in,
 		     const casacore::IPosition& shape);
 
@@ -131,8 +131,8 @@ public:
 	void get (Array<DComplex>& out, const void* in,
 		  const IPosition& sourceElementShape);
     private:
-	Vector<Bool>* mask_p;
-	uInt nrTrue_p;
+	Vector<bool>* mask_p;
+	uint32_t nrTrue_p;
     };
 
     static void set (void* copyInfo, void* out,

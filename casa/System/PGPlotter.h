@@ -74,7 +74,7 @@ class String;
 // <example>
 // <srcblock>
 //     // plot y = x*x
-//     Vector<Float> x(100), y(100);
+//     Vector<float> x(100), y(100);
 //     indgen(x);
 //     y = x*x;
 
@@ -94,18 +94,18 @@ class PGPlotter : public PGPlotterInterface
 public:
     // Define the signature of a function creating a PGPlotter object.
     typedef PGPlotter CreateFunction (const String &device,
-				      uInt mincolors, uInt maxcolors,
-				      uInt sizex, uInt sizey);
+				      uint32_t mincolors, uint32_t maxcolors,
+				      uint32_t sizex, uint32_t sizey);
 
     // The default constructor does not attach to any plotter, that is
-    // <src>isAttached()</src> returns False. An exception is thrown if you 
+    // <src>isAttached()</src> returns false. An exception is thrown if you 
     // attempt to plot to an unattached PGPlotter.
     PGPlotter();
 
     // Create PGPlotter object using the curreent create function.
     PGPlotter (const String &device,
-	       uInt mincolors=2, uInt maxcolors=100,
-	       uInt sizex=600, uInt sizey=450);
+	       uint32_t mincolors=2, uint32_t maxcolors=100,
+	       uint32_t sizex=600, uint32_t sizey=450);
 
     // Create from the given PGPlotterInterface instantiation.
     // It takes over the pointer.
@@ -123,19 +123,19 @@ public:
 
     // Create a PGPlotter object using the current create function.
     static PGPlotter create (const String &device,
-			     uInt mincolors=2, uInt maxcolors=100,
-			     uInt sizex=600, uInt sizey=450);
+			     uint32_t mincolors=2, uint32_t maxcolors=100,
+			     uint32_t sizex=600, uint32_t sizey=450);
 
     // Set the create function. It returns the current create function.
     // It is, for example, used by ObjectController to attach to glish.
     // The initial create function creates a detached PGPlotter object.
-    // If <src>override==False</src>, the function is only set if it was
+    // If <src>override==false</src>, the function is only set if it was
     // not already set.
     static CreateFunction* setCreateFunction (CreateFunction*,
-					      Bool override=True);
+					      bool override=true);
 
-    // True if it is OK to plot to this object.
-    virtual Bool isAttached() const;
+    // true if it is OK to plot to this object.
+    virtual bool isAttached() const;
 
     // Detach from the object. If this is the last reference to the object,
     // call its destructor (this will call pgclos on a local device).
@@ -150,10 +150,10 @@ public:
     // This is an emulated standard PGPLOT command. It returns a record
     // containing the fields:
     // <srcblock>
-    // [ok=Bool, x=Float, y=Float, ch=String];
+    // [ok=bool, x=float, y=float, ch=String];
     // If the remote device cannot do cursor feedback, ok==F.
     // </srcblock>
-    virtual Record curs(Float x, Float y);
+    virtual Record curs(float x, float y);
 
     // Standard PGPLOT commands. Documentation for the individual commands
     // can be found in the Glish manual and in the standard PGPLOT documentation
@@ -166,125 +166,125 @@ public:
     //        if the plotter is unattached.
     // </thrown>
     // <group>
-    virtual void arro(Float x1, Float y1, Float x2, Float y2);
-    virtual void ask(Bool flag);
+    virtual void arro(float x1, float y1, float x2, float y2);
+    virtual void ask(bool flag);
     virtual void bbuf();
-    virtual void bin(const Vector<Float> &x, const Vector<Float> &data,
-		     Bool center);
-    virtual void box(const String &xopt, Float xtick, Int nxsub, 
-	     const String &yopt, Float ytick, Int nysub);
-    virtual void circ(Float xcent, Float ycent, Float radius);
-    virtual void conb(const Matrix<Float> &a, const Vector<Float> &c,
-		      const Vector<Float> &tr, Float blank);
-    virtual void conl(const Matrix<Float> &a, Float c,
-		      const Vector<Float> &tr, const String &label,
-		      Int intval, Int minint);
-    virtual void cons(const Matrix<Float> &a, const Vector<Float> &c,
-		      const Vector<Float> &tr);
-    virtual void cont(const Matrix<Float> &a, const Vector<Float> &c,
-		      Bool nc, const Vector<Float> &tr);
-    virtual void ctab(const Vector<Float> &l, const Vector<Float> &r,
-		      const Vector<Float> &g, const Vector<Float> &b,
-		      Float contra, Float bright);
-    virtual void draw(Float x, Float y);
+    virtual void bin(const Vector<float> &x, const Vector<float> &data,
+		     bool center);
+    virtual void box(const String &xopt, float xtick, int32_t nxsub, 
+	     const String &yopt, float ytick, int32_t nysub);
+    virtual void circ(float xcent, float ycent, float radius);
+    virtual void conb(const Matrix<float> &a, const Vector<float> &c,
+		      const Vector<float> &tr, float blank);
+    virtual void conl(const Matrix<float> &a, float c,
+		      const Vector<float> &tr, const String &label,
+		      int32_t intval, int32_t minint);
+    virtual void cons(const Matrix<float> &a, const Vector<float> &c,
+		      const Vector<float> &tr);
+    virtual void cont(const Matrix<float> &a, const Vector<float> &c,
+		      bool nc, const Vector<float> &tr);
+    virtual void ctab(const Vector<float> &l, const Vector<float> &r,
+		      const Vector<float> &g, const Vector<float> &b,
+		      float contra, float bright);
+    virtual void draw(float x, float y);
     virtual void ebuf();
-    virtual void env(Float xmin, Float xmax, Float ymin, Float ymax, Int just,
-	     Int axis);
+    virtual void env(float xmin, float xmax, float ymin, float ymax, int32_t just,
+	     int32_t axis);
     virtual void eras();
-    virtual void errb(Int dir, const Vector<Float> &x, const Vector<Float> &y,
-	      const Vector<Float> &e, Float t);
-    virtual void errx(const Vector<Float> &x1, const Vector<Float> &x2,
-		      const Vector<Float> &y, Float t);
-    virtual void erry(const Vector<Float> &x, const Vector<Float> &y1,
-	      const Vector<Float> &y2, Float t);
-    virtual void gray(const Matrix<Float> &a, Float fg, Float bg,
-		      const Vector<Float> &tr); 
-    virtual void hi2d(const Matrix<Float> &data, const Vector<Float> &x,
-		      Int ioff, Float bias, Bool center, 
-		      const Vector<Float> &ylims);
-    virtual void hist(const Vector<Float> &data, Float datmin, Float datmax, 
-		    Int nbin, Int pcflag);
+    virtual void errb(int32_t dir, const Vector<float> &x, const Vector<float> &y,
+	      const Vector<float> &e, float t);
+    virtual void errx(const Vector<float> &x1, const Vector<float> &x2,
+		      const Vector<float> &y, float t);
+    virtual void erry(const Vector<float> &x, const Vector<float> &y1,
+	      const Vector<float> &y2, float t);
+    virtual void gray(const Matrix<float> &a, float fg, float bg,
+		      const Vector<float> &tr); 
+    virtual void hi2d(const Matrix<float> &data, const Vector<float> &x,
+		      int32_t ioff, float bias, bool center, 
+		      const Vector<float> &ylims);
+    virtual void hist(const Vector<float> &data, float datmin, float datmax, 
+		    int32_t nbin, int32_t pcflag);
     virtual void iden();
-    virtual void imag(const Matrix<Float> &a, Float a1, Float a2,
-		      const Vector<Float> &tr);
+    virtual void imag(const Matrix<float> &a, float a1, float a2,
+		      const Vector<float> &tr);
     virtual void lab(const String &xlbl, const String &ylbl, 
 		   const String &toplbl);
     virtual void ldev();
-    virtual Vector<Float> len(Int units, const String &string);
-    virtual void line(const Vector<Float> &xpts, const Vector<Float> &ypts);
-    virtual void move(Float x, Float y);
-    virtual void mtxt(const String &side, Float disp, Float coord, Float fjust,
+    virtual Vector<float> len(int32_t units, const String &string);
+    virtual void line(const Vector<float> &xpts, const Vector<float> &ypts);
+    virtual void move(float x, float y);
+    virtual void mtxt(const String &side, float disp, float coord, float fjust,
 		    const String &text);
-    virtual String numb(Int mm, Int pp, Int form);
+    virtual String numb(int32_t mm, int32_t pp, int32_t form);
     virtual void page();
-    virtual void panl(Int ix, Int iy);
-    virtual void pap(Float width, Float aspect);
-    virtual void pixl(const Matrix<Int> &ia, Float x1, Float x2,
-		      Float y1, Float y2);
-    virtual void pnts(const Vector<Float> &x, const Vector<Float> &y,
-		      const Vector<Int> symbol);
-    virtual void poly(const Vector<Float> &xpts, const Vector<Float> &ypts);
-    virtual void pt(const Vector<Float> &xpts, const Vector<Float> &ypts, 
-		  Int symbol);
-    virtual void ptxt(Float x, Float y, Float angle, Float fjust, 
+    virtual void panl(int32_t ix, int32_t iy);
+    virtual void pap(float width, float aspect);
+    virtual void pixl(const Matrix<int32_t> &ia, float x1, float x2,
+		      float y1, float y2);
+    virtual void pnts(const Vector<float> &x, const Vector<float> &y,
+		      const Vector<int32_t> symbol);
+    virtual void poly(const Vector<float> &xpts, const Vector<float> &ypts);
+    virtual void pt(const Vector<float> &xpts, const Vector<float> &ypts, 
+		  int32_t symbol);
+    virtual void ptxt(float x, float y, float angle, float fjust, 
 		    const String &text);
-    virtual Vector<Float>  qah();
-    virtual Int qcf();
-    virtual Float qch();
-    virtual Int qci();
-    virtual Vector<Int> qcir();
-    virtual Vector<Int> qcol();
-    virtual Vector<Float> qcr(Int ci);
-    virtual Vector<Float> qcs(Int units);
-    virtual Int qfs();
-    virtual Vector<Float> qhs();
-    virtual Int qid();
+    virtual Vector<float>  qah();
+    virtual int32_t qcf();
+    virtual float qch();
+    virtual int32_t qci();
+    virtual Vector<int32_t> qcir();
+    virtual Vector<int32_t> qcol();
+    virtual Vector<float> qcr(int32_t ci);
+    virtual Vector<float> qcs(int32_t units);
+    virtual int32_t qfs();
+    virtual Vector<float> qhs();
+    virtual int32_t qid();
     virtual String qinf(const String &item);
-    virtual Int qitf();
-    virtual Int qls();
-    virtual Int qlw();
-    virtual Vector<Float> qpos();
-    virtual Int qtbg();
-    virtual Vector<Float> qtxt(Float x, Float y, Float angle, Float fjust, 
+    virtual int32_t qitf();
+    virtual int32_t qls();
+    virtual int32_t qlw();
+    virtual Vector<float> qpos();
+    virtual int32_t qtbg();
+    virtual Vector<float> qtxt(float x, float y, float angle, float fjust, 
 		    const String &text);
-    virtual Vector<Float> qvp(Int units);
-    virtual Vector<Float> qvsz(Int units);
-    virtual Vector<Float> qwin();
-    virtual void rect(Float x1, Float x2, Float y1, Float y2);
-    virtual Float rnd(Float x, Int nsub);
-    virtual Vector<Float> rnge(Float x1, Float x2);
-    virtual void sah(Int fs, Float angle, Float vent);
+    virtual Vector<float> qvp(int32_t units);
+    virtual Vector<float> qvsz(int32_t units);
+    virtual Vector<float> qwin();
+    virtual void rect(float x1, float x2, float y1, float y2);
+    virtual float rnd(float x, int32_t nsub);
+    virtual Vector<float> rnge(float x1, float x2);
+    virtual void sah(int32_t fs, float angle, float vent);
     virtual void save();
-    virtual void scf(Int font);
-    virtual void sch(Float size);
-    virtual void sci(Int ci);
-    virtual void scir(Int icilo, Int icihi);
-    virtual void scr(Int ci, Float cr, Float cg, Float cb);
-    virtual void scrn(Int ci, const String &name);
-    virtual void sfs(Int fs);
-    virtual void shls(Int ci, Float ch, Float cl, Float cs);
-    virtual void shs(Float angle, Float sepn, Float phase);
-    virtual void sitf(Int itf);
-    virtual void sls(Int ls);
-    virtual void slw(Int lw);
-    virtual void stbg(Int tbci);
-    virtual void subp(Int nxsub, Int nysub);
-    virtual void svp(Float xleft, Float xright, Float ybot, Float ytop);
-    virtual void swin(Float x1, Float x2, Float y1, Float y2);
-    virtual void tbox(const String &xopt, Float xtick, Int nxsub,
-		    const String &yopt, Float ytick, Int nysub);
-    virtual void text(Float x, Float y, const String &text);
+    virtual void scf(int32_t font);
+    virtual void sch(float size);
+    virtual void sci(int32_t ci);
+    virtual void scir(int32_t icilo, int32_t icihi);
+    virtual void scr(int32_t ci, float cr, float cg, float cb);
+    virtual void scrn(int32_t ci, const String &name);
+    virtual void sfs(int32_t fs);
+    virtual void shls(int32_t ci, float ch, float cl, float cs);
+    virtual void shs(float angle, float sepn, float phase);
+    virtual void sitf(int32_t itf);
+    virtual void sls(int32_t ls);
+    virtual void slw(int32_t lw);
+    virtual void stbg(int32_t tbci);
+    virtual void subp(int32_t nxsub, int32_t nysub);
+    virtual void svp(float xleft, float xright, float ybot, float ytop);
+    virtual void swin(float x1, float x2, float y1, float y2);
+    virtual void tbox(const String &xopt, float xtick, int32_t nxsub,
+		    const String &yopt, float ytick, int32_t nysub);
+    virtual void text(float x, float y, const String &text);
     virtual void unsa();
     virtual void updt();
-    virtual void vect(const Matrix<Float> &a, const Matrix<Float> &b,
-		      Float c, Int nc, 
-		      const Vector<Float> &tr, Float blank);
-    virtual void vsiz(Float xleft, Float xright, Float ybot,
-		      Float ytop);
+    virtual void vect(const Matrix<float> &a, const Matrix<float> &b,
+		      float c, int32_t nc, 
+		      const Vector<float> &tr, float blank);
+    virtual void vsiz(float xleft, float xright, float ybot,
+		      float ytop);
     virtual void vstd();
-    virtual void wedg(const String &side, Float disp, Float width,
-		      Float fg, Float bg, const String &label);
-    virtual void wnad(Float x1, Float x2, Float y1, Float y2);
+    virtual void wedg(const String &side, float disp, float width,
+		      float fg, float bg, const String &label);
+    virtual void wnad(float x1, float x2, float y1, float y2);
     // </group>
  private:
     CountedPtr<PGPlotterInterface> worker_p;

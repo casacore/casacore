@@ -247,7 +247,7 @@ AutoDiff<T> pow(const AutoDiff<T> &a, const AutoDiff<T> &b) {
   T temp2 = tb * pow(ta, tb - T(1));
   AutoDiff<T> tmp(b);
   tmp.derivatives() *= value * T(log(ta));
-  for (uInt i=0; i<a.nDerivatives(); i++) {
+  for (uint32_t i=0; i<a.nDerivatives(); i++) {
     tmp.derivatives()[i] += a.derivatives()[i]*temp2;
   }
   tmp.value() = value;
@@ -347,219 +347,219 @@ template<class T> AutoDiff<T> ceil(const AutoDiff<T> &ad) {
 }
 
 template<class T>
-Bool operator>(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool operator>(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.value() > right.value());
 }
 
 template<class T>
-Bool operator<(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool operator<(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.value() < right.value());
 }
 
 template<class T>
-Bool operator>=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool operator>=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.value() >= right.value());
 }
 
 template<class T>
-Bool operator<=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool operator<=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.value() <= right.value());
 }
 
 template<class T>
-Bool operator==(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool operator==(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.value() == right.value());
 }
 
 template<class T>
-Bool operator!=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool operator!=(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (left.value() != right.value());
 }
 
 // Compare an AutoDiff and a constant
-template<class T> Bool operator>(const AutoDiff<T> &left,const T &right) {
+template<class T> bool operator>(const AutoDiff<T> &left,const T &right) {
   return (left.value() > right);
 }
 
-template<class T> Bool operator<(const AutoDiff<T> &left,const T &right) {
+template<class T> bool operator<(const AutoDiff<T> &left,const T &right) {
   return (left.value() < right);
 }
 
-template<class T> Bool operator>=(const AutoDiff<T> &left,const T &right) {
+template<class T> bool operator>=(const AutoDiff<T> &left,const T &right) {
   return (left.value() >= right);
 }
 
-template<class T> Bool operator<=(const AutoDiff<T> &left,const T &right) {
+template<class T> bool operator<=(const AutoDiff<T> &left,const T &right) {
   return (left.value() <= right);
 }
 
-template<class T> Bool operator==(const AutoDiff<T> &left,const T &right) {
+template<class T> bool operator==(const AutoDiff<T> &left,const T &right) {
   return (left.value() == right);
 }
 
-template<class T> Bool operator!=(const AutoDiff<T> &left,const T &right) {
+template<class T> bool operator!=(const AutoDiff<T> &left,const T &right) {
   return (left.value() != right);
 }
 
 // Compare a constant and an AutoDiff
-template<class T> Bool operator>(const T &left, const AutoDiff<T> &right) {
+template<class T> bool operator>(const T &left, const AutoDiff<T> &right) {
   return (left > right.value());
 }
 
-template<class T> Bool operator<(const T &left, const AutoDiff<T> &right) {
+template<class T> bool operator<(const T &left, const AutoDiff<T> &right) {
   return (left < right.value());
 }
 
-template<class T> Bool operator>=(const T &left, const AutoDiff<T> &right) {
+template<class T> bool operator>=(const T &left, const AutoDiff<T> &right) {
   return (left >= right.value());
 }
 
-template<class T> Bool operator<=(const T &left, const AutoDiff<T> &right) {
+template<class T> bool operator<=(const T &left, const AutoDiff<T> &right) {
   return (left <= right.value());
 }
 
-template<class T> Bool operator==(const T &left, const AutoDiff<T> &right) {
+template<class T> bool operator==(const T &left, const AutoDiff<T> &right) {
   return (left == right.value());
 }
 
-template<class T> Bool operator!=(const T &left, const AutoDiff<T> &right) {
+template<class T> bool operator!=(const T &left, const AutoDiff<T> &right) {
   return (left != right.value());
 }
 
 // Near comparisons
 
 template<class T>
-Bool near(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool near(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (near(left.value(), right.value()));
 }
 
 template<class T>
-Bool near(const T &left, const AutoDiff<T> &right) {
+bool near(const T &left, const AutoDiff<T> &right) {
   return near(left, right.value());
 }
 
 template<class T>
-Bool near(const AutoDiff<T> &left, const T &right) {
+bool near(const AutoDiff<T> &left, const T &right) {
   return near(left.value(), right);
 }
 
 template<class T>
-Bool near(const AutoDiff<T> &left, const AutoDiff<T> &right,
-	  const Double tol) {
+bool near(const AutoDiff<T> &left, const AutoDiff<T> &right,
+	  const double tol) {
   return near(left.value(), right.value(), tol);
 }
 
 template<class T>
-Bool near(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool near(const T &left, const AutoDiff<T> &right, const double tol) {
   return near(left, right.value(), tol);
 }
 
 template<class T>
-Bool near(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool near(const AutoDiff<T> &left, const T &right, const double tol) {
   return near(left.value(), right, tol);
 }
 
 template<class T>
-Bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (near(left.value(), right.value()));
 }
 
 template<class T>
-Bool allnear(const T &left, const AutoDiff<T> &right) {
+bool allnear(const T &left, const AutoDiff<T> &right) {
   return near(left, right.value());
 }
 
 template<class T>
-Bool allnear(const AutoDiff<T> &left, const T &right) {
+bool allnear(const AutoDiff<T> &left, const T &right) {
   return near(left.value(), right);
 }
 
 template<class T>
-Bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right,
-	     const Double tol) {
+bool allnear(const AutoDiff<T> &left, const AutoDiff<T> &right,
+	     const double tol) {
   return near(left.value(), right.value(), tol);
 }
 
 template<class T>
-Bool allnear(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool allnear(const T &left, const AutoDiff<T> &right, const double tol) {
   return near(left, right.value(), tol);
 }
 
 template<class T>
-Bool allnear(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool allnear(const AutoDiff<T> &left, const T &right, const double tol) {
   return near(left.value(), right, tol);
 }
 
 template<class T>
-Bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (nearAbs(left.value(), right.value()));
 }
 
 template<class T>
-Bool nearAbs(const T &left, const AutoDiff<T> &right) {
+bool nearAbs(const T &left, const AutoDiff<T> &right) {
   return nearAbs(left, right.value());
 }
 
 template<class T>
-Bool nearAbs(const AutoDiff<T> &left, const T &right) {
+bool nearAbs(const AutoDiff<T> &left, const T &right) {
   return nearAbs(left.value(), right);
 }
 
 template<class T>
-Bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right,
-	     const Double tol) {
+bool nearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right,
+	     const double tol) {
   return nearAbs(left.value(), right.value(), tol);
 }
 
 template<class T>
-Bool nearAbs(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool nearAbs(const T &left, const AutoDiff<T> &right, const double tol) {
   return nearAbs(left, right.value(), tol);
 }
 
 template<class T>
-Bool nearAbs(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool nearAbs(const AutoDiff<T> &left, const T &right, const double tol) {
   return nearAbs(left.value(), right, tol);
 }
 
 template<class T>
-Bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right) {
+bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right) {
   return (nearAbs(left.value(), right.value()));
 }
 
 template<class T>
-Bool allnearAbs(const T &left, const AutoDiff<T> &right) {
+bool allnearAbs(const T &left, const AutoDiff<T> &right) {
   return nearAbs(left, right.value());
 }
 
 template<class T>
-Bool allnearAbs(const AutoDiff<T> &left, const T &right) {
+bool allnearAbs(const AutoDiff<T> &left, const T &right) {
   return nearAbs(left.value(), right);
 }
 
 template<class T>
-Bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right,
-		const Double tol) {
+bool allnearAbs(const AutoDiff<T> &left, const AutoDiff<T> &right,
+		const double tol) {
   return nearAbs(left.value(), right.value(), tol);
 }
 
 template<class T>
-Bool allnearAbs(const T &left, const AutoDiff<T> &right, const Double tol) {
+bool allnearAbs(const T &left, const AutoDiff<T> &right, const double tol) {
   return nearAbs(left, right.value(), tol);
 }
 
 template<class T>
-Bool allnearAbs(const AutoDiff<T> &left, const T &right, const Double tol) {
+bool allnearAbs(const AutoDiff<T> &left, const T &right, const double tol) {
   return nearAbs(left.value(), right, tol);
 }
 
 // Test special values
 template<class T>
-Bool isNaN (const AutoDiff<T> &val) {
+bool isNaN (const AutoDiff<T> &val) {
   return isNaN(val.value());
 }
 
 template<class T>
-Bool isInf(AutoDiff<T> &val) {
+bool isInf(AutoDiff<T> &val) {
   return isInf(val.value());
 }
 

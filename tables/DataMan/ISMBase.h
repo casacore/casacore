@@ -89,15 +89,15 @@ public:
     // The bucket size has to be given in bytes and the cache size in buckets.
     // The bucket size is checked or calculated (if 0) as described in
     // IncrementalStMan.h.
-    explicit ISMBase (uInt bucketSize = 0, Bool checkBucketSize = True,
-		      uInt cacheSize = 1);
+    explicit ISMBase (uint32_t bucketSize = 0, bool checkBucketSize = true,
+		      uint32_t cacheSize = 1);
 
     // Create an incremental storage manager with the given name.
     // The bucket size has to be given in bytes and the cache size in buckets.
     // The bucket size is checked or calculated (if 0) as described in
     // IncrementalStMan.h.
     ISMBase (const String& dataManagerName,
-	     uInt bucketSize, Bool checkBucketSize, uInt cacheSize);
+	     uint32_t bucketSize, bool checkBucketSize, uint32_t cacheSize);
 
     // Create an incremental storage manager with the given name.
     // The specifications are in the record (as created by dataManagerSpec).
@@ -127,22 +127,22 @@ public:
 
     // Modify data manager properties.
     // Only MaxCacheSize can be used. It is similar to function setCacheSize
-    // with <src>canExceedNrBuckets=False</src>.
+    // with <src>canExceedNrBuckets=false</src>.
     virtual void setProperties (const Record& spec);
 
     // Get the version of the class.
-    uInt version() const;
+    uint32_t version() const;
 
     // Set the cache size (in buckets).
-    // If <src>canExceedNrBuckets=True</src>, the given cache size can be
+    // If <src>canExceedNrBuckets=true</src>, the given cache size can be
     // larger than the nr of buckets in the file. In this way the cache can
     // be made large enough for a future file extnsion.
     // Otherwise, it is limited to the actual number of buckets. This is useful
     // if one wants the entire file to be cached.
-   void setCacheSize (uInt cacheSize, Bool canExceedNrBuckets);
+   void setCacheSize (uint32_t cacheSize, bool canExceedNrBuckets);
 
     // Get the current cache size (in buckets).
-    uInt cacheSize() const;
+    uint32_t cacheSize() const;
 
     // Clear the cache used by this storage manager.
     // It will flush the cache as needed and remove all buckets from it.
@@ -158,13 +158,13 @@ public:
     void showBucketLayout (ostream& os);
 
     // Get the bucket size (in bytes).
-    uInt bucketSize() const;
+    uint32_t bucketSize() const;
 
-    // Get the size of a uInt in external format (can be canonical or local).
-    uInt uIntSize() const;
+    // Get the size of a uint32_t in external format (can be canonical or local).
+    uint32_t uIntSize() const;
 
     // Get the size of a rownr in external format (can be canonical or local).
-    uInt rownrSize() const;
+    uint32_t rownrSize() const;
 
     // Get the bucket containing the given row.
     // Also return the first and last row of that bucket.
@@ -179,7 +179,7 @@ public:
     // After each iteration BucketStartRow and bucketNrrow are set.
     // A 0 is returned when no more buckets.
     // The bucket object is created and deleted by the caching mechanism.
-    ISMBucket* nextBucket (uInt& cursor, rownr_t& bucketStartRow,
+    ISMBucket* nextBucket (uint32_t& cursor, rownr_t& bucketStartRow,
 			   rownr_t& bucketNrrow);
 
     // Get access to the temporary buffer.
@@ -188,22 +188,22 @@ public:
     // Get a unique column number for the column
     // (it is only unique for this storage manager).
     // This is used by ISMColumnIndArr to create a unique file name.
-    uInt uniqueNr();
+    uint32_t uniqueNr();
 
     // Get the number of rows in this storage manager.
     rownr_t nrow() const;
 
     // Can the storage manager add rows? (yes)
-    virtual Bool canAddRow() const;
+    virtual bool canAddRow() const;
 
     // Can the storage manager delete rows? (yes)
-    virtual Bool canRemoveRow() const;
+    virtual bool canRemoveRow() const;
 
     // Can the storage manager add columns? (not yet)
-    virtual Bool canAddColumn() const;
+    virtual bool canAddColumn() const;
 
     // Can the storage manager delete columns? (not yet)
-    virtual Bool canRemoveColumn() const;
+    virtual bool canRemoveColumn() const;
 
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
@@ -212,7 +212,7 @@ public:
 				    const Record& spec);
 
     // Get access to the given column.
-    ISMColumn& getColumn (uInt colnr);
+    ISMColumn& getColumn (uint32_t colnr);
 
     // Add a bucket to the storage manager (i.e. to the cache).
     // The pointer is taken over.
@@ -228,12 +228,12 @@ public:
     StManArrayFile* openArrayFile (ByteIO::OpenOption opt);
 
     // Check that there are no repeated rowIds in the buckets comprising this ISM.
-    Bool checkBucketLayout (uInt& offendingCursor,
+    bool checkBucketLayout (uint32_t& offendingCursor,
                             rownr_t& offendingBucketStartRow,
-                            uInt& offendingBucketNrow,
-                            uInt& offendingBucketNr,
-                            uInt& offendingCol,
-                            uInt& ffendingIndex,
+                            uint32_t& offendingBucketNrow,
+                            uint32_t& offendingBucketNr,
+                            uint32_t& offendingCol,
+                            uint32_t& ffendingIndex,
                             rownr_t& offendingRow,
                             rownr_t& offendingPrevRow);
 
@@ -248,11 +248,11 @@ private:
     void recreate();
 
     // The data manager supports use of MultiFile.
-    virtual Bool hasMultiFileSupport() const;
+    virtual bool hasMultiFileSupport() const;
 
     // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    virtual bool flush (AipsIO&, bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
@@ -342,11 +342,11 @@ private:
     // Name of data manager.
     String       dataManName_p;
     // The version of the class.
-    uInt         version_p;
+    uint32_t         version_p;
     // The file containing the indirect arrays.
     StManArrayFile* iosfile_p;
     // Unique nr for column in this storage manager.
-    uInt         uniqnr_p;
+    uint32_t         uniqnr_p;
     // The number of rows in the columns.
     rownr_t      nrrow_p;
     // The assembly of all columns.
@@ -358,41 +358,41 @@ private:
     // The ISM bucket index.
     ISMIndex*    index_p;
     // The persistent cache size.
-    uInt persCacheSize_p;
+    uint32_t persCacheSize_p;
     // The actual cache size.
-    uInt cacheSize_p;
+    uint32_t cacheSize_p;
     // The initial number of buckets in the cache.
-    uInt nbucketInit_p;
+    uint32_t nbucketInit_p;
     // The nr of free buckets.
-    uInt nFreeBucket_p;
+    uint32_t nFreeBucket_p;
     // The first free bucket.
-    Int firstFree_p;
+    int32_t firstFree_p;
     // The bucket size.
-    uInt bucketSize_p;
+    uint32_t bucketSize_p;
     // Check a positive bucketsize?
-    Bool checkBucketSize_p;
+    bool checkBucketSize_p;
     // Has the data changed since the last flush?
-    Bool dataChanged_p;
-    // The size of a uInt in external format (local or canonical).
-    uInt uIntSize_p;
+    bool dataChanged_p;
+    // The size of a uint32_t in external format (local or canonical).
+    uint32_t uIntSize_p;
     // The size of a rownr in external format (local or canonical).
-    uInt rownrSize_p;
+    uint32_t rownrSize_p;
     // A temporary read/write buffer (also for other classes).
     char* tempBuffer_p;
 };
 
 
-inline uInt ISMBase::version() const
+inline uint32_t ISMBase::version() const
 {
     return version_p;
 }
 
-inline uInt ISMBase::cacheSize() const
+inline uint32_t ISMBase::cacheSize() const
 {
     return cacheSize_p;
 }
 
-inline uInt ISMBase::uniqueNr()
+inline uint32_t ISMBase::uniqueNr()
 {
     return uniqnr_p++;
 }
@@ -402,17 +402,17 @@ inline rownr_t ISMBase::nrow() const
     return nrrow_p;
 }
 
-inline uInt ISMBase::bucketSize() const
+inline uint32_t ISMBase::bucketSize() const
 {
     return bucketSize_p;
 }
 
-inline uInt ISMBase::uIntSize() const
+inline uint32_t ISMBase::uIntSize() const
 {
     return uIntSize_p;
 }
 
-inline uInt ISMBase::rownrSize() const
+inline uint32_t ISMBase::rownrSize() const
 {
     return rownrSize_p;
 }
@@ -438,7 +438,7 @@ inline ISMIndex& ISMBase::getIndex()
     return *index_p;
 }
 
-inline ISMColumn& ISMBase::getColumn (uInt colnr)
+inline ISMColumn& ISMBase::getColumn (uint32_t colnr)
 {
     return *(colSet_p[colnr]);
 }

@@ -68,8 +68,8 @@ class Regex;
 //		starting at the beginning of the string
 //   <li> testX(arg)  -- all test methods test if the next available
 //		character(s) fulfill the specified argument test. E.g.
-//		<src>Bool testSign()</src> test if current character is + or -.
-//		If at end of string; False is returned, except for 
+//		<src>bool testSign()</src> test if current character is + or -.
+//		If at end of string; false is returned, except for 
 //		<src>testBlank()</src>. No pointer update. Any method with
 //		<em>NC</em> at the end (for no-case) will test irrespective
 //		of the case.
@@ -77,14 +77,14 @@ class Regex;
 //		fulfilling the specified argument. E.g.
 //		<src>void skipSign()</src> will skip all + and - found at
 //		the current and subsequent positions. Pointer updated.
-//   <li> tSkipX(arg) -- will skip as skipX, and return Bool as in testX.
+//   <li> tSkipX(arg) -- will skip as skipX, and return bool as in testX.
 //		Pointer updated
 //   <li> getX(arg)   -- will get the indicated X value from the string.
 //		Pointer updated. A get will always return a valid result.
 //		However, if the value did not exist (e.g. 
-//		<src>Double getDouble()</src> form a string like <src>"abc"</src>
-//		will return 0.0) a False status will be saved. It can be
-//		interrogated by the <src>Bool status()</src> function.
+//		<src>double getDouble()</src> form a string like <src>"abc"</src>
+//		will return 0.0) a false status will be saved. It can be
+//		interrogated by the <src>bool status()</src> function.
 //		The string part used in producing the value is also
 //		saved, and can be obtained with 
 //		<src>const String &lastGet()</src>.
@@ -93,12 +93,12 @@ class Regex;
 //		pointer (for maybe later restoration) a <src>void push()</src>
 //		and <src>void pop()</src> are available
 //   <li> pointer -- the pointer can be manipulated with <src>void setPtr()</src>
-//		 and <src>Int getPtr()</src>. Pointers are always protected in
+//		 and <src>int32_t getPtr()</src>. Pointers are always protected in
 //		their value.
 // </ul> 
 // The following types (<em>X</em> in the above list) are available
 // <ul>
-//   <li> Char -- a single character
+//   <li> char -- a single character
 //   <li> CharNC -- a single character with no case
 //   <li> String -- a string
 //   <li> StringNC -- a string without case
@@ -108,15 +108,15 @@ class Regex;
 //		Alpha or Num
 //   <li> Sign -- a plus or minus
 //   <li> Blank -- a space ar a tab
-//   <li> uInt -- unsigned integer
-//   <li> Int -- an optionally signed integer
-//   <li> Double -- a double value
+//   <li> uint32_t -- unsigned integer
+//   <li> int32_t -- an optionally signed integer
+//   <li> double -- a double value
 // </ul>
 // General string aids are available. The main one a minimax, caseless
 // check of an input String against a vector:
-// <src>static uInt minimaxNC(String in, Int N_name, String name[])</src>
+// <src>static uint32_t minimaxNC(String in, int32_t N_name, String name[])</src>
 // and its vector equivalent: 
-// <src>static uInt minimaxNC(String in, Vector<String> name)</src>.
+// <src>static uint32_t minimaxNC(String in, Vector<String> name)</src>.
 // Success is indicated by a return value less than N_name or the
 // vector length.
 // </synopsis>
@@ -130,12 +130,12 @@ class Regex;
 //  res = Quantity(0.0, "rad");	// result
 //  MUString tmp(in);		// Pointed non-const String
 //  tmp.skipBlank();
-//  Double s = tmp.getSign();	// sign
+//  double s = tmp.getSign();	// sign
 //  tmp.push();			// Save position to rescan
-//  Double r = tmp.getuInt();	// first field
-//  Int tp = 0;			// distributor
+//  double r = tmp.getuInt();	// first field
+//  int32_t tp = 0;			// distributor
 //  if (tmp.tSkipChar('.')) {	// if more than one ., dms format
-//    Double r1 = tmp.getuInt();
+//    double r1 = tmp.getuInt();
 //    if (tmp.tSkipChar('.')) {
 //      r += r1/60.0 + tmp.getDouble()/3600.0;
 //      tp = 4;
@@ -153,31 +153,31 @@ class Regex;
 //  switch (tp) {
 // case 0: {
 //    UnitVal u; String us;
-//    if (!MVAngle::unitString(u,us,tmp)) return False;
+//    if (!MVAngle::unitString(u,us,tmp)) return false;
 //    r *= s;
 //    if (u == UnitVal::NODIM) {	// check correct dimension
 //      res = Quantity(r,"rad");
-//      return True;
+//      return true;
 //    };
 //    if (u == UnitVal::ANGLE) {
 //      res = Quantity(r,us);
-//      return True;
+//      return true;
 //    };
 //    if (u == UnitVal::TIME) {
 //      res = Quantity(Quantity(r/240.,us).getBaseValue(), "deg");
-//      return True;
+//      return true;
 //    };
-//    return False;
+//    return false;
 //  };
 //  break;
 //
 //  case 1:
 //  case 2:
 //  case 3: {			// get remainder od ms and hms formats
-//    Char tc = 'm';
+//    char tc = 'm';
 //    if (tp == 3) tc = ':';
 //    tmp.push();
-//    Double r1 = tmp.getuInt();
+//    double r1 = tmp.getuInt();
 //    if (tmp.tSkipChar('.')) {
 //      tmp.pop();
 //      r += tmp.getDouble()/3600.;
@@ -210,7 +210,7 @@ class Regex;
 //    break;
 //
 //  };
-//  return True;
+//  return true;
 // </srcblock>
 // </example>
 //
@@ -239,7 +239,7 @@ public:
   // Create from String; setting pointer at start
   // <group>
   MUString(const String &in);
-  MUString(const Char *in);
+  MUString(const char *in);
   MUString(char in);
   // </group>
   // Copy constructor; new pointer will be same as old
@@ -265,74 +265,74 @@ public:
   // Act on whitespace; adjusting pointer if skip
   // <group>
   void skipBlank();
-  Bool testBlank() const;
-  Bool tSkipBlank();
+  bool testBlank() const;
+  bool tSkipBlank();
   // </group>
 
   // Act on sign; return +1 or -1 depending on signs found (-- == +)
   // <group>
   void skipSign();
-  Bool testSign() const;
-  Bool tSkipSign();
-  Int getSign();
+  bool testSign() const;
+  bool tSkipSign();
+  int32_t getSign();
   // </group>
 
-  // Act on integer field. If no integer found in 0 returned; and False
+  // Act on integer field. If no integer found in 0 returned; and false
   // <group>
   void skipInt();
-  Bool testInt() const;
-  Bool tSkipInt();
-  Int getInt();
+  bool testInt() const;
+  bool tSkipInt();
+  int32_t getInt();
   void skipuInt();
-  Bool tSkipuInt();
-  Bool testuInt() const;
-  uInt getuInt();
+  bool tSkipuInt();
+  bool testuInt() const;
+  uint32_t getuInt();
   // </group>
 
-  // Act on Double field. If no value 0 returned and False.
+  // Act on double field. If no value 0 returned and false.
   // <group>
   void skipDouble();
-  Bool testDouble() const;
-  Bool tSkipDouble();
-  Double getDouble();
+  bool testDouble() const;
+  bool tSkipDouble();
+  double getDouble();
   // </group>
 
   // Act on character(s)
   // <group>
-  void skipChar(Int n=1);
-  void skipChar(Char ch);
-  Bool tSkipChar(Char nc);
-  void skipCharNC(Char ch);
-  Bool tSkipCharNC(Char ch);
-  Bool tSkipOneChar(Char ch);
-  Bool tSkipOneCharNC(Char ch);
+  void skipChar(int32_t n=1);
+  void skipChar(char ch);
+  bool tSkipChar(char nc);
+  void skipCharNC(char ch);
+  bool tSkipCharNC(char ch);
+  bool tSkipOneChar(char ch);
+  bool tSkipOneCharNC(char ch);
   void skipChar(const Regex &ex);
-  Bool tSkipChar(const Regex &ex);
+  bool tSkipChar(const Regex &ex);
   void skipAlpha();
-  Bool tSkipAlpha();
+  bool tSkipAlpha();
   void skipNum();
-  Bool tSkipNum();
+  bool tSkipNum();
   void skipAlphaNum();
-  Bool tSkipAlphaNum();
-  Bool testChar(Char ch) const;
-  Bool testCharNC(Char ch) const;
-  Bool testChar(const Regex &ex) const;
-  Bool testAlpha() const;
-  Bool testNum() const;
-  Bool testAlphaNum() const;
-  Char getChar();
+  bool tSkipAlphaNum();
+  bool testChar(char ch) const;
+  bool testCharNC(char ch) const;
+  bool testChar(const Regex &ex) const;
+  bool testAlpha() const;
+  bool testNum() const;
+  bool testAlphaNum() const;
+  char getChar();
   String getAlpha();
   String getAlphaNum();
   // </group>
 
   // Act on series of characters
   // <group>
-  Bool testString(const Regex &ex) const;
-  Bool testString(const String &ex) const;
-  Bool testStringNC(const String &ex) const;
-  Bool tSkipString(const Regex &ex);
-  Bool tSkipString(const String &ex);
-  Bool tSkipStringNC(const String &ex);
+  bool testString(const Regex &ex) const;
+  bool testString(const String &ex) const;
+  bool testStringNC(const String &ex) const;
+  bool tSkipString(const Regex &ex);
+  bool tSkipString(const String &ex);
+  bool tSkipStringNC(const String &ex);
   void skipString(const Regex &ex);
   void skipString(const String &ex);
   void skipStringNC(const String &ex);
@@ -342,42 +342,42 @@ public:
   // </group>
 
   // Match a pair of opening(at pointer)/closing characters (e.g. ( and )).
-  // Return False if wrong semantics. The string between the pair 
+  // Return false if wrong semantics. The string between the pair 
   // (excluding them)
-  // will be put in Last. If false, the ptr will be as originally; if True
+  // will be put in Last. If false, the ptr will be as originally; if true
   // it will point beyond the matched closing character
-  Bool matchPair(Char nd);
+  bool matchPair(char nd);
 
   // Get frequency of occurrence
-  Int freqChar(Char ch) const;
+  int32_t freqChar(char ch) const;
 
   // Get part of string
   // <group>
   String get();
-  String get(uInt st);
-  String get(uInt st, uInt nd);
+  String get(uint32_t st);
+  String get(uint32_t st, uint32_t nd);
   // </group>
 
   // Get pointer
-  Int getPtr() const;
+  int32_t getPtr() const;
 
   // (Re-)set pointer
-  void setPtr(Int in=0);
+  void setPtr(int32_t in=0);
 
   // test for end of string
-  Bool eos() const;
+  bool eos() const;
 
   // Get status last get
-  Bool status() const;
+  bool status() const;
 
   // Get String found at last get
   const String &lastGet() const;
 
   // Do minimax check on list of Strings
   // <group>
-  static uInt minimaxNC(const String &in, Int N_name, 
+  static uint32_t minimaxNC(const String &in, int32_t N_name, 
 			const String tname[]);
-  static uInt minimaxNC(const String &in, const Vector<String> &tname);
+  static uint32_t minimaxNC(const String &in, const Vector<String> &tname);
   // </group>
 
 private:
@@ -385,26 +385,26 @@ private:
  // String value
   String str;
   // 0-based pointer into string
-  uInt ptr;
+  uint32_t ptr;
   // Length of string
-  uInt len;
+  uint32_t len;
   // Pointer stack
-  Block<uInt> stack;
+  Block<uint32_t> stack;
   // Pointer into stack
-  uInt stpt;
+  uint32_t stpt;
   // Status of last get
-  Bool stat;
+  bool stat;
   // String found at last get
   String lget;
 
   // Member functions
   // Make a new pointer between 0 and len inclusive
-  void adjustPtr(Int in);
+  void adjustPtr(int32_t in);
 
   // Initialise last settings; return pointer
-  Int initLast();
+  int32_t initLast();
   // Set last settings
-  void setLast(Int st);
+  void setLast(int32_t st);
 
 };
 

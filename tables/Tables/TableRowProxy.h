@@ -75,7 +75,7 @@ public:
 
   // Construct for the given columns in the table.
   TableRowProxy (const TableProxy& table,
-		 const Vector<String>& columnNames, Bool exclude);
+		 const Vector<String>& columnNames, bool exclude);
 
   // Copy constructor (copy semantics).
   TableRowProxy (const TableRowProxy&);
@@ -86,26 +86,26 @@ public:
   TableRowProxy& operator= (const TableRowProxy&);
 
   // Test if the underlying TableRow object is invalid.
-  Bool isNull() const;
+  bool isNull() const;
 
   // Test if values can be written.
-  Bool isWritable() const;
+  bool isWritable() const;
 
   // Get values for the given row.
-  Record get (Int64 rownr) const;
+  Record get (int64_t rownr) const;
 
   // Put values for the given row.
   // The given record has to conform the fields in the table row.
-  void put (Int64 rownr, const Record& values, Bool matchingFields);
+  void put (int64_t rownr, const Record& values, bool matchingFields);
 
 private:
-  Bool       isWritable_p;
+  bool       isWritable_p;
   ROTableRow rorow_p;
   TableRow   rwrow_p;
 };
 
 
-inline Bool TableRowProxy::isWritable() const
+inline bool TableRowProxy::isWritable() const
 {
   return isWritable_p;
 }

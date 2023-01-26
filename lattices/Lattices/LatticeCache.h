@@ -96,8 +96,8 @@ public:
 
   // Constructor: cachesize in units of T. tileOverlap is the fractional
   // overlap between neighbouring tile. 
-  LatticeCache(Lattice<T> &image, Int cacheSize, IPosition tileShape,
-	       Vector<Float>& tileOverlap, Bool additive);
+  LatticeCache(Lattice<T> &image, int32_t cacheSize, IPosition tileShape,
+	       Vector<float>& tileOverlap, bool additive);
 
   LatticeCache(const LatticeCache<T> & other);
 
@@ -107,8 +107,8 @@ public:
 
   // Return the tile for a given location
   // <group>
-  Array<T>& tile(IPosition& cacheLoc, const IPosition& tileLoc, Bool discard=True);
-  Array<T>& tile(const IPosition& tileLoc, Bool discard=True);
+  Array<T>& tile(IPosition& cacheLoc, const IPosition& tileLoc, bool discard=true);
+  Array<T>& tile(const IPosition& tileLoc, bool discard=true);
   // </group>
 
   // const version is needed
@@ -130,27 +130,27 @@ protected:
 
   LatticeCache() {};
 
-  Int numberTiles;
+  int32_t numberTiles;
   IPosition tileShape;
-  Vector<Int> tileShapeVec, tileOffsetVec;
-  Vector<Float> tileOverlap;
-  Bool additive;
+  Vector<int32_t> tileShapeVec, tileOffsetVec;
+  Vector<float> tileOverlap;
+  bool additive;
 
-  Int cacheSize;
-  Int cacheAccesses;
-  Int cacheHits;
-  Int cacheMisses;
-  Int cacheReads;
-  Int cacheWrites;
+  int32_t cacheSize;
+  int32_t cacheAccesses;
+  int32_t cacheHits;
+  int32_t cacheMisses;
+  int32_t cacheReads;
+  int32_t cacheWrites;
 
-  Int getFreeTile(Bool readonly);
+  int32_t getFreeTile(bool readonly);
 
   Block<IPosition> tileLocs;
-  Block<Int> tileSequence;
+  Block<int32_t> tileSequence;
   Block<Array<T> > tileContents;
 
-  void writeTile(Int tile);
-  void readTile(Int tile, Bool readonly);
+  void writeTile(int32_t tile);
+  void readTile(int32_t tile, bool readonly);
 
   Lattice<T>* image_p;
 };

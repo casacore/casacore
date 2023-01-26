@@ -74,8 +74,8 @@ int main(int argc, const char* argv[])
 
     MeasurementSet* mssel = 0;
     cout << "Original table has rows " << ms.nrow() << endl;
-    Vector<Int> selectedAnt1, selectedAnt2;
-    Matrix<Int> selectedBaselines;
+    Vector<int32_t> selectedAnt1, selectedAnt2;
+    Matrix<int32_t> selectedBaselines;
     node = msAntennaGramParseCommand(&ms, argv[2],
                                      selectedAnt1, selectedAnt2,
                                      selectedBaselines);

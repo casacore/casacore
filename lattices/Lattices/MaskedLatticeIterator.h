@@ -65,12 +65,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // In principle, iteration through a MaskedLattice can be done as:
 // <srcblock>
-// void someFunc (const MaskedLattice<Float>& lattice)
+// void someFunc (const MaskedLattice<float>& lattice)
 // {
-//   RO_LatticeIterator<Float> iter(lattice);
-//   Array<Bool> mask;
+//   RO_LatticeIterator<float> iter(lattice);
+//   Array<bool> mask;
 //   while (! iter.atEnd()) {
-//     const Array<Float>& array = iter.cursor();
+//     const Array<float>& array = iter.cursor();
 //     lattice.getMaskSlice (mask, iter.position(), array.shape());
 //     iter++;
 //   }
@@ -79,12 +79,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Using a MaskedLatticeIterator makes getting the mask slightly more
 // convenient.
 // <srcblock>
-// void someFunc (const MaskedLattice<Float>& lattice)
+// void someFunc (const MaskedLattice<float>& lattice)
 // {
-//   RO_MaskedLatticeIterator<Float> iter(lattice);
-//   Array<Bool> mask;
+//   RO_MaskedLatticeIterator<float> iter(lattice);
+//   Array<bool> mask;
 //   while (! iter.atEnd()) {
-//     const Array<Float>& array = iter.cursor();
+//     const Array<float>& array = iter.cursor();
 //     iter.getMask (mask);
 //     iter++;
 //   }
@@ -131,23 +131,23 @@ public:
 
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
-  // useRef=True means that if possible the cursor arrays returned
+  // useRef=true means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
   explicit RO_MaskedLatticeIterator (const MaskedLattice<T>& data,
-				     Bool useRef=True);
+				     bool useRef=true);
 
   // Construct the Iterator with the supplied data, and iteration strategy
   RO_MaskedLatticeIterator (const MaskedLattice<T>& data,
 			    const LatticeNavigator& method,
-			    Bool useRef=True);
+			    bool useRef=true);
 
   // Construct the Iterator with the supplied data.
   // It uses a LatticeStepper with the supplied cursor shape as the
   // iteration strategy.
   RO_MaskedLatticeIterator (const MaskedLattice<T>& data,
 			    const IPosition& cursorShape,
-			    Bool useRef=True);
+			    bool useRef=true);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -174,16 +174,16 @@ public:
     { return const_cast<MaskedLattice<T>&>(*itsMaskLattPtr); }
 
   // Is the underlying MaskedLattice really masked?
-  Bool isMasked() const
+  bool isMasked() const
     { return itsMaskLattPtr->isMasked(); }
 
   // Get the mask for the current position.
   // It returns the same flag as
   // <linkto class=MaskedLattice>MaskedLattice::getMaskSlice</linkto>.
   // <group>
-  Bool getMask (COWPtr<Array<Bool> >&, Bool removeDegenerateAxes=False) const;
-  Bool getMask (Array<Bool>&, Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMask (Bool removeDegenerateAxes=False) const;
+  bool getMask (COWPtr<Array<bool> >&, bool removeDegenerateAxes=false) const;
+  bool getMask (Array<bool>&, bool removeDegenerateAxes=false) const;
+  Array<bool> getMask (bool removeDegenerateAxes=false) const;
   // </group>
 
 private:

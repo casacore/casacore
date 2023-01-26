@@ -148,9 +148,9 @@ class LatticeNavigator;
 // <p>
 // Here's a typical iterator declaration:
 // <srcblock>
-// RO_LatticeIterator<Float> iterator(pagedArray, stepper);
+// RO_LatticeIterator<float> iterator(pagedArray, stepper);
 // </srcblock>
-// The template identifier <src>Float</src> defines the data type of 
+// The template identifier <src>float</src> defines the data type of 
 // Array object that will be the iterator's cursor. 
 //<br>
 // The <src>pagedArray</src> constructor argument names a PagedArray object,
@@ -165,7 +165,7 @@ class LatticeNavigator;
 // <srcblock>
 // void demonstrateIterator (const String& filename)
 // {
-//   PagedArray<Float> pagedArray(filename);
+//   PagedArray<float> pagedArray(filename);
 //   IPosition latticeShape = pagedArray.shape();
 //   cout << "paged array has shape: " << latticeShape << endl;
 // 
@@ -173,12 +173,12 @@ class LatticeNavigator;
 //   // use the read-only class, which disallows writing back to the cursor.
 //   // No navigator is given, so the default TileStepper is used
 //   // which ensures optimum performance.
-//   RO_LatticeIterator<Float> iterator(pagedArray);
+//   RO_LatticeIterator<float> iterator(pagedArray);
 // 
 //   // Add for each iteration step the sum of the cursor elements to the sum.
 //   // Note that the cursor is an Array object and that the function sum
 //   // is defined in ArrayMath.h.
-//   Float runningSum = 0.0;
+//   float runningSum = 0.0;
 //   for (iterator.reset(); !iterator.atEnd(); iterator++) {
 //       runningSum += sum(iterator.cursor());
 //   }
@@ -214,20 +214,20 @@ public:
 
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
-  // useRef=True means that if possible the cursor arrays returned
+  // useRef=true means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
-  explicit RO_LatticeIterator (const Lattice<T>& data, Bool useRef=True);
+  explicit RO_LatticeIterator (const Lattice<T>& data, bool useRef=true);
 
   // Construct the Iterator with the supplied data, and iteration strategy
   RO_LatticeIterator (const Lattice<T>& data, const LatticeNavigator& method,
-		      Bool useRef=True);
+		      bool useRef=true);
 
   // Construct the Iterator with the supplied data.
   // It uses a LatticeStepper with the supplied cursor shape as the
   // iteration strategy.
   RO_LatticeIterator (const Lattice<T>& data, const IPosition& cursorShape,
-		      Bool useRef=True);
+		      bool useRef=true);
 
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -250,7 +250,7 @@ public:
   RO_LatticeIterator<T> copy() const;
 
   // Is the iterator object empty?
-  Bool isNull() const
+  bool isNull() const
     { return itsIterPtr.null(); }
 
   // Return the underlying lattice.
@@ -260,21 +260,21 @@ public:
   // Increment operator - increment the cursor to the next position.  These
   // functions are forwarded to the current LatticeNavigator and both
   // postfix and prefix versions will do the same thing.
-  // <br>They return True if the cursor moved (which should always be the
+  // <br>They return true if the cursor moved (which should always be the
   // case if the iterator is not at the end).
   // <group>
-  Bool operator++();
-  Bool operator++(int);
+  bool operator++();
+  bool operator++(int);
   // </group>
 
   // Decrement operator - decrement the cursor to the previous
   // position. These functions are forwarded to the current LatticeNavigator
   // and both postfix and prefix versions will do the same thing.
-  // <br>They return True if the cursor moved (which should always be the
+  // <br>They return true if the cursor moved (which should always be the
   // case if the iterator is not at the start).
   // <group>
-  Bool operator--();
-  Bool operator--(int);
+  bool operator--();
+  bool operator--(int);
   // </group>
   
   // Function which resets the cursor to the beginning of the Lattice and
@@ -283,17 +283,17 @@ public:
 
   // Function which returns a value of "True" if the cursor is at the
   // beginning of the Lattice, otherwise, returns "False".
-  Bool atStart() const;
+  bool atStart() const;
 
   // Function which returns a value of "True" if an attempt has been made
   // to move the cursor beyond the end of the Lattice.
-  Bool atEnd() const;
+  bool atEnd() const;
   
   // Function to return the number of steps (increments or decrements) taken
   // since construction (or since last reset).  This is a running count of
   // all cursor movement, thus doing N increments followed by N decrements
   // results in 2N steps.
-  uInt nsteps() const;
+  uint32_t nsteps() const;
   
   // Function which returns the current position of the beginning of the
   // cursor within the Lattice. The returned IPosition will have the same
@@ -330,8 +330,8 @@ public:
   // </group>
   
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine otherwise returns False.
-  Bool ok() const;
+  // Returns true if everything is fine otherwise returns false.
+  bool ok() const;
 
 protected:
   // The pointer to the Iterator
@@ -385,11 +385,11 @@ protected:
 // See <linkto class=LatticeStepper>LatticeStepper</linkto> for an
 // explanation of the navigator used here.
 // <srcblock>
-//      PagedArray<Float> pa("someName");
+//      PagedArray<float> pa("someName");
 //      IPosition windowShape(2,pa.shape(0), pa.shape(1));
 //      LatticeStepper stepper(pa.shape(), windowShape);
-//      LatticeIterator<Float> iterator(pa, stepper);
-//      Int planeNumber = 0;
+//      LatticeIterator<float> iterator(pa, stepper);
+//      int32_t planeNumber = 0;
 //      for (iterator.reset(); !iterator.atEnd(); iterator++) {
 //        iterator.woCursor() = planeNumber++;
 //      }
@@ -400,12 +400,12 @@ protected:
 // See <linkto class=TiledLineStepper>TiledLineStepper</linkto> for an
 // explanation of the navigator used here.
 // <srcblock>
-//      PagedArray<Float> pa("someName");
+//      PagedArray<float> pa("someName");
 //      TiledLineStepper stepper(pa.shape(), pa.niceCursorShape(), 0);
-//      LatticeIterator<Float> iterator(pa, stepper);
-//      Int planeNumber = 0;
+//      LatticeIterator<float> iterator(pa, stepper);
+//      int32_t planeNumber = 0;
 //      for (iterator.reset(); !iterator.atEnd(); iterator++) {
-//        Float meanLine = mean(iterator.cursor());
+//        float meanLine = mean(iterator.cursor());
 //        if (meanLine < 0) {
 //          iterator.rwCursor() -= meanLine;
 //        }
@@ -434,19 +434,19 @@ public:
 
   // Construct the Iterator with the supplied data.
   // It uses a TileStepper as the default iteration strategy.
-  // useRef=True means that if possible the cursor arrays returned
+  // useRef=true means that if possible the cursor arrays returned
   // reference the data in the underlying lattice. This is only possible
   // for ArrayLattice objects (or e.g. a SubLattice using it).
-  explicit LatticeIterator (Lattice<T>& data, Bool useRef=True);
+  explicit LatticeIterator (Lattice<T>& data, bool useRef=true);
 
   // Construct the Iterator with the supplied data, and iteration strategy
   LatticeIterator (Lattice<T>& data, const LatticeNavigator& method,
-		   Bool useRef=True);
+		   bool useRef=true);
   
   // Iterate through the data with a LatticeStepper that has uses the
   // supplied cursorShape.
   LatticeIterator (Lattice<T>& data, const IPosition& cursorShape,
-		   Bool useRef=True);
+		   bool useRef=true);
   
   // The copy constructor uses reference semantics (ie. NO real copy is made).
   // The function <src>copy</src> can be used to make a true copy.
@@ -498,8 +498,8 @@ public:
   //</group>
   
   // Function which checks the internals of the class for consistency.
-  // Returns True if everything is fine. Otherwise returns False.
-  Bool ok() const;
+  // Returns true if everything is fine. Otherwise returns false.
+  bool ok() const;
 
   //# Make members of parent class known.
 public:

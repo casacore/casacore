@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Vector<Quantity> trc(1);
 // blc(0) = Quantity (0.25, "frac");
 // trc(0) = Quantity (0.75, "frac");
-// WCConcatenation region (True, cirPtr, WCBox(blc, trc, cSys, IPosition(1,2));
+// WCConcatenation region (true, cirPtr, WCBox(blc, trc, cSys, IPosition(1,2));
 // </srcblock>
 // This example is artificial in the sense that WCEllipsoid does not
 // exist yet and the WCBox constructor looks a bit different.
@@ -108,13 +108,13 @@ class WCConcatenation: public WCCompound
 {
 public:
     // Combine the given regions.
-    // When <src>takeOver</src> is True, the destructor will delete the
+    // When <src>takeOver</src> is true, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
     // The extend range has to be given as a 1-dimensional box.
     // <group>
     WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
 		     const WCBox& extendRange);
-    WCConcatenation (Bool takeOver, const PtrBlock<const WCRegion*>& regions,
+    WCConcatenation (bool takeOver, const PtrBlock<const WCRegion*>& regions,
 		     const WCBox& extendRange);
     // </group>
 
@@ -127,7 +127,7 @@ public:
     WCConcatenation& operator= (const WCConcatenation& other);
 
     // Comparison
-    virtual Bool operator== (const WCRegion& other) const;
+    virtual bool operator== (const WCRegion& other) const;
 
     // Make a copy of the derived object.
     virtual WCRegion* cloneRegion() const;

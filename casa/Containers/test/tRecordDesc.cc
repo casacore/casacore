@@ -30,7 +30,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void doIt (Bool doExcp);
+void doIt (bool doExcp);
 
 int main (int argc, const char*[])
 {
@@ -43,9 +43,9 @@ int main (int argc, const char*[])
     return 0;                           // exit with success status
 }
 
-void doIt (Bool doExcp)
+void doIt (bool doExcp)
 {
-    Bool equalDataTypes;
+    bool equalDataTypes;
 //    RecordDesc();
     RecordDesc a, b;
     AlwaysAssertExit(a == b && a.nfields() == 0 && b.nfields() == 0);
@@ -57,23 +57,23 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (! a.isStrictSuperset (b, equalDataTypes));
     AlwaysAssertExit (! a.isStrictSubset (b, equalDataTypes));
     
-//    uInt addField(const String &fieldName, DataType type);
-//    void setComment (uInt whichField, const String& comment);
+//    uint32_t addField(const String &fieldName, DataType type);
+//    void setComment (uint32_t whichField, const String& comment);
     a.addField("a", TpString);
     a.addField("b", TpArrayDComplex);
     a.setComment (1, "comment for field b");
-//    Int fieldNumber(const String &fieldName);
-//    uInt nfields() const;
-//    DataType type(uInt whichField) const;
-//    const String &comment (uInt whichField) const;
-//    const String &name(uInt whichField) const;
-//    const IPosition &shape(uInt whichField) const;
-//    Bool isArray(uInt whichField) const;
-//    Bool isScalar(uInt whichField) const;
-//    Bool isSubRecord(uInt whichField) const;
-//    Bool isTable(uInt whichField) const;
-//    Bool operator==(const RecordDesc &other) const;
-//    Bool operator!=(const RecordDesc &other) const;
+//    int32_t fieldNumber(const String &fieldName);
+//    uint32_t nfields() const;
+//    DataType type(uint32_t whichField) const;
+//    const String &comment (uint32_t whichField) const;
+//    const String &name(uint32_t whichField) const;
+//    const IPosition &shape(uint32_t whichField) const;
+//    bool isArray(uint32_t whichField) const;
+//    bool isScalar(uint32_t whichField) const;
+//    bool isSubRecord(uint32_t whichField) const;
+//    bool isTable(uint32_t whichField) const;
+//    bool operator==(const RecordDesc &other) const;
+//    bool operator!=(const RecordDesc &other) const;
     AlwaysAssertExit (a.isDisjoint (b));
     AlwaysAssertExit (b.isDisjoint (a));
     AlwaysAssertExit (! a.isEqual (b, equalDataTypes));
@@ -111,32 +111,32 @@ void doIt (Bool doExcp)
     a.addField("c1", TpRecord);
 
     if (doExcp) {
-	Bool caught = False;
+	bool caught = false;
 	try {
 	    a.addField("a", TpDouble); // already exists
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssertExit(caught);
-	caught = False;
+	caught = false;
 	try {
 	    a.addField("a", TpDouble, IPosition(1,1)); // already exists
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssertExit(caught);
-	caught = False;
+	caught = false;
 	try {
 	    a.addField("a", TpDouble, IPosition(1,1)); // already exists
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssertExit(caught);
-	caught = False;
+	caught = false;
 	try {
 	    a.addField("aaa", TpOther);                // invalid type
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssertExit(caught);
     }
@@ -151,27 +151,27 @@ void doIt (Bool doExcp)
     AlwaysAssertExit (equalDataTypes);
     AlwaysAssertExit (! a.isStrictSubset (b, equalDataTypes));
 
-//    uInt addField(const String &fieldName, const RecordDesc &subDesc);
+//    uint32_t addField(const String &fieldName, const RecordDesc &subDesc);
     b.addField("c", a);
     AlwaysAssertExit(b.nfields() == 4 && b.fieldNumber("c") == 3);
-//    const RecordDesc &subRecord(uInt i) const;
+//    const RecordDesc &subRecord(uint32_t i) const;
     AlwaysAssertExit(b.subRecord(3) == a && b.isSubRecord(3) &&
 	!b.isScalar(3) && !b.isArray(3));
-//    uInt removeField(uInt whichField);
+//    uint32_t removeField(uint32_t whichField);
     b.removeField(2);
     AlwaysAssertExit(b.nfields() == 3);
 
-//    uInt addField(const String &fieldName, DataType scalarOrArrayType,
+//    uint32_t addField(const String &fieldName, DataType scalarOrArrayType,
 //		  const IPosition &shape);
-    uInt whichField = b.addField("array", TpArrayInt, IPosition(2,3,4));
+    uint32_t whichField = b.addField("array", TpArrayInt, IPosition(2,3,4));
     whichField--;
     AlwaysAssertExit(b.shape(whichField) == IPosition(2,3,4));
     b.removeField(whichField);
 
     {
-//    uInt mergeField(const RecordDesc &other, uInt whichFieldFromOther,
+//    uint32_t mergeField(const RecordDesc &other, uint32_t whichFieldFromOther,
 //	       DuplicatesFlag DuplicateAction = ThrowOnDuplicates);
-//    uInt merge(const RecordDesc &other, 
+//    uint32_t merge(const RecordDesc &other, 
 //	       DuplicatesFlag DuplicateAction = ThrowOnDuplicates);
 	RecordDesc ab, cd;
 	ab.addField("a", TpInt);
@@ -200,12 +200,12 @@ void doIt (Bool doExcp)
 	AlwaysAssertExit (ab.comment (3) == "a-comment-a");
 	AlwaysAssertExit(ab.type(ab.fieldNumber("a")) == TpString);
 	if (doExcp) {
-	    Bool caught = False;
+	    bool caught = false;
 	    try {
 		ab.mergeField(cd, cd.fieldNumber("a"), 
 			      RecordInterface::ThrowOnDuplicates);
 	    } catch (std::exception& x) {
-		caught = True;
+		caught = true;
 	    } 
 	    AlwaysAssertExit(caught);
 	}
@@ -241,7 +241,7 @@ void doIt (Bool doExcp)
     g.addField("TpArrayComplex", TpArrayComplex, IPosition(1,1));
     g.addField("TpArrayDComplex", TpArrayDComplex, IPosition(1,1));
     g.addField("TpArrayString", TpArrayString, IPosition(1,1));
-    Int gn = g.nfields() - 1;
+    int32_t gn = g.nfields() - 1;
     AlwaysAssert (gn == g.fieldNumber("TpArrayString"), AipsError);
     AlwaysAssert (g.shape(gn) == IPosition(1,1), AipsError);
 
@@ -278,18 +278,18 @@ void doIt (Bool doExcp)
     }
 
     if (doExcp) {
-	Bool caught = False;
+	bool caught = false;
 	try {
 	    g.addField("Other", TpRecord, IPosition(1,1));
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssertExit(caught);
-        caught = False;
+        caught = false;
 	try {
 	    g.addField("Other", TpTable, IPosition(1,1));
 	} catch (std::exception& x) {
-	    caught = True;
+	    caught = true;
 	} 
 	AlwaysAssertExit(caught);
     }

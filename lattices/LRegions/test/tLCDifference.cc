@@ -40,9 +40,9 @@ void doIt (const IPosition& latticeShape,
 	   const IPosition& start,
 	   const IPosition& end,
 	   const IPosition& center,
-	   Float radius)
+	   float radius)
 {
-    uInt ndim = latticeShape.nelements();
+    uint32_t ndim = latticeShape.nelements();
     LCBox box (start, end, latticeShape);
     LCEllipsoid cir (center, radius, latticeShape);
     LCDifference inters (box, cir);
@@ -51,7 +51,7 @@ void doIt (const IPosition& latticeShape,
     cout << inters.hasMask() << ' ' << endl;
     cout << inters.boundingBox().start() << inters.boundingBox().end()
 	 << inters.boundingBox().length() << inters.latticeShape() << endl;
-    Array<Bool> mask;
+    Array<bool> mask;
     inters.getSlice (mask, IPosition(ndim,0), inters.boundingBox().length(),
 		     IPosition(ndim,1));
     cout << mask << endl;
@@ -62,7 +62,7 @@ void doIt (const IPosition& latticeShape,
       cout << inters.hasMask() << ' ' << endl;
       cout << inters.boundingBox().start() << inters.boundingBox().end()
 	   << inters.boundingBox().length() << inters.latticeShape() << endl;
-      Array<Bool> mask;
+      Array<bool> mask;
       inters.getSlice (mask, IPosition(ndim,0), inters.boundingBox().length(),
 		       IPosition(ndim,1));
       cout << mask << endl;
@@ -79,7 +79,7 @@ void doIt (const IPosition& latticeShape,
 			  interscop->boundingBox().stride());
 	AlwaysAssertExit (inters.boundingBox().length() ==
 			  interscop->boundingBox().length());
-	Array<Bool> arr;
+	Array<bool> arr;
 	interscop->getSlice (arr, IPosition(ndim,0),
 			     inters.boundingBox().length(),
 			     IPosition(ndim,1));
@@ -98,7 +98,7 @@ void doIt (const IPosition& latticeShape,
 			  interscop->boundingBox().stride());
 	AlwaysAssertExit (inters.boundingBox().length() ==
 			  interscop->boundingBox().length());
-	Array<Bool> arr;
+	Array<bool> arr;
 	interscop->getSlice (arr, IPosition(ndim,0),
 			     inters.boundingBox().length(),
 			     IPosition(ndim,1));

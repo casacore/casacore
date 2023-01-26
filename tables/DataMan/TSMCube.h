@@ -121,14 +121,14 @@ public:
 	     const IPosition& cubeShape,
 	     const IPosition& tileShape,
 	     const Record& values,
-             Int64 fileOffset,
-             Bool useDerived = False);
+             int64_t fileOffset,
+             bool useDerived = false);
 
     // Reconstruct the hypercube by reading its data from the AipsIO stream.
     // It will link itself to the correct TSMFile. The TSMFile objects
     // must have been reconstructed in advance.
     TSMCube (TiledStMan* stman, AipsIO& ios,
-             Bool useDerived = False);
+             bool useDerived = false);
 
     virtual ~TSMCube();
 
@@ -137,7 +137,7 @@ public:
 
     // Clear the cache, so data will be reread.
     // If wanted, the data is flushed before the cache is cleared.
-    void clearCache (Bool doFlush = True);
+    void clearCache (bool doFlush = true);
 
     // Empty the cache.
     // It will flush the cache as needed and remove all buckets from it
@@ -154,21 +154,21 @@ public:
     // Get the data of the object from the AipsIO stream.
     // It returns the data manager sequence number, which is -1 if
     // no file is attached to the cube (for cells without a value).
-    Int getObject (AipsIO& ios);
+    int32_t getObject (AipsIO& ios);
 
     // Resync the object with the data file.
     // It reads the object, and adjusts the cache.
     virtual void resync (AipsIO& ios);
 
     // Is the hypercube extensible?
-    Bool isExtensible() const;
+    bool isExtensible() const;
 
     // Get the bucket size (bytes).
     // It is the length of a tile in external format.
-    uInt bucketSize() const;
+    uint32_t bucketSize() const;
 
     // Get the length of a tile (in bytes) in local format.
-    uInt localTileLength() const;
+    uint32_t localTileLength() const;
 
     // Set the hypercube shape.
     // This is only possible if the shape was not defined yet.
@@ -186,7 +186,7 @@ public:
 
     // Get the size of a coordinate (i.e. the number of values in it).
     // If not defined, it returns zero.
-    uInt coordinateSize (const String& coordinateName) const;
+    uint32_t coordinateSize (const String& coordinateName) const;
 
     // Get the record containing the id and coordinate values.
     // It is used by TSMIdColumn and TSMCoordColumn.
@@ -196,12 +196,12 @@ public:
     // </group>
 
     // Test if the id values match.
-    Bool matches (const PtrBlock<TSMColumn*>& idColSet,
+    bool matches (const PtrBlock<TSMColumn*>& idColSet,
                  const Record& idValues);
 
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
-    virtual void extend (uInt64 nr, const Record& coordValues,
+    virtual void extend (uint64_t nr, const Record& coordValues,
                          const TSMColumn* lastCoordColumn);
 
     // Extend the coordinates vector for the given coordinate
@@ -209,41 +209,41 @@ public:
     // It will be initialized to zero if no coordValues are given.
     // If the coordinate vector does not exist yet, it will be created.
     void extendCoordinates (const Record& coordValues,
-			    const String& coordName, uInt length);
+			    const String& coordName, uint32_t length);
 
     // Read or write a section in the cube.
     // It is assumed that the section buffer is long enough.
     virtual void accessSection (const IPosition& start, const IPosition& end,
-                                char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize,
-                                Bool writeFlag);
+                                char* section, uint32_t colnr,
+                                uint32_t localPixelSize, uint32_t externalPixelSize,
+                                bool writeFlag);
 
     // Read or write a section in a strided way.
     // It is assumed that the section buffer is long enough.
     virtual void accessStrided (const IPosition& start, const IPosition& end,
                                 const IPosition& stride,
-                                char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize,
-                                Bool writeFlag);
+                                char* section, uint32_t colnr,
+                                uint32_t localPixelSize, uint32_t externalPixelSize,
+                                bool writeFlag);
 
     // Get the current cache size (in buckets).
-    uInt cacheSize() const;
+    uint32_t cacheSize() const;
 
     // Calculate the cache size (in buckets) for the given slice
     // and access path.
     // <group>
-    uInt calcCacheSize (const IPosition& sliceShape,
+    uint32_t calcCacheSize (const IPosition& sliceShape,
 			const IPosition& windowStart,
 			const IPosition& windowLength,
 			const IPosition& axisPath) const;
-    static uInt calcCacheSize (const IPosition& cubeShape,
+    static uint32_t calcCacheSize (const IPosition& cubeShape,
                                const IPosition& tileShape,
-                               Bool extensible,
+                               bool extensible,
                                const IPosition& sliceShape,
                                const IPosition& windowStart,
                                const IPosition& windowLength,
                                const IPosition& axisPath,
-                               uInt maxCacheSizeMiB, uInt bucketSize);
+                               uint32_t maxCacheSizeMiB, uint32_t bucketSize);
     // </group>
 
     // Set the cache size for the given slice and access path.
@@ -251,29 +251,29 @@ public:
                                const IPosition& windowStart,
                                const IPosition& windowLength,
                                const IPosition& axisPath,
-                               Bool forceSmaller, Bool userSet);
+                               bool forceSmaller, bool userSet);
 
     // Resize the cache object.
-    // If forceSmaller is False, the cache will only be resized when it grows.
+    // If forceSmaller is false, the cache will only be resized when it grows.
     // If the given size exceeds the maximum size with more
     // than 10%, the maximum size will be used.
     // The cacheSize has to be given in buckets.
     // <br>The flag <src>userSet</src> inidicates if the cache size is set by
     // the user (by an Accessor object) or automatically (by TSMDataColumn).
-    virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
+    virtual void setCacheSize (uint32_t cacheSize, bool forceSmaller, bool userSet);
 
     // Validate the cache size (in buckets).
     // This means it will return the given cache size (in buckets) if
     // smaller than the maximum cache size (given in MiB).
     // Otherwise the maximum is returned.
     // <group>
-    uInt validateCacheSize (uInt cacheSize) const;
-    static uInt validateCacheSize (uInt cacheSize, uInt maxSizeMiB,
-                                   uInt bucketSize);
+    uint32_t validateCacheSize (uint32_t cacheSize) const;
+    static uint32_t validateCacheSize (uint32_t cacheSize, uint32_t maxSizeMiB,
+                                   uint32_t bucketSize);
     // </group>
 
     // Determine if the user set the cache size (using setCacheSize).
-    Bool userSetCache() const;
+    bool userSetCache() const;
 
     // Functions for TSMDataColumn to keep track of the last type of
     // access to a hypercube. It uses it to determine if the cache
@@ -323,13 +323,13 @@ private:
     virtual void deleteCache();
 
     // Access a line in a more optimized way.
-    void accessLine (char* section, uInt pixelOffset,
-		     uInt localPixelSize,
-		     Bool writeFlag, BucketCache* cachePtr,
-		     const IPosition& startTile, uInt endTile,
+    void accessLine (char* section, uint32_t pixelOffset,
+		     uint32_t localPixelSize,
+		     bool writeFlag, BucketCache* cachePtr,
+		     const IPosition& startTile, uint32_t endTile,
 		     const IPosition& startPixelInFirstTile,
-		     uInt endPixelInLastTile,
-		     uInt lineIndex);
+		     uint32_t endPixelInLastTile,
+		     uint32_t lineIndex);
 
     // Define the callback functions for the BucketCache.
     // <group>
@@ -355,15 +355,15 @@ protected:
     // Pointer to the parent storage manager.
     TiledStMan*     stmanPtr_p;
     // Is the class used directly or only by a derived class only?
-    Bool            useDerived_p;
+    bool            useDerived_p;
     // The values of the possible id and coordinate columns.
     Record          values_p;
     // Is the hypercube extensible?
-    Bool            extensible_p;
+    bool            extensible_p;
     // Dimensionality of the hypercube.
-    uInt            nrdim_p;
+    uint32_t            nrdim_p;
     // Number of tiles in the hypercube.
-    uInt            nrTiles_p;
+    uint32_t            nrTiles_p;
     // The shape of the hypercube.
     IPosition       cubeShape_p;
     // The shape of the tiles in the hypercube.
@@ -375,25 +375,25 @@ protected:
     // Precomputed tilesPerDim information.
     TSMShape        expandedTilesPerDim_p;
     // Number of tiles in all but last dimension (used when extending).
-    uInt            nrTilesSubCube_p;
+    uint32_t            nrTilesSubCube_p;
     // The tilesize in bytes.
-    uInt            tileSize_p;
+    uint32_t            tileSize_p;
     // Pointer to the TSMFile object holding the data.
     TSMFile*        filePtr_p;
     // Offset in the TSMFile object where the data of this hypercube starts.
-    Int64           fileOffset_p;
+    int64_t           fileOffset_p;
     // Offset for each data column in a tile (in external format).
-    Block<uInt>     externalOffset_p;
+    Block<uint32_t>     externalOffset_p;
     // Offset for each data column in a tile (in local format).
-    Block<uInt>     localOffset_p;
+    Block<uint32_t>     localOffset_p;
     // The bucket size in bytes (is equal to tile size in bytes).
-    uInt            bucketSize_p;
+    uint32_t            bucketSize_p;
     // The tile size in bytes in local format.
-    uInt            localTileLength_p;
+    uint32_t            localTileLength_p;
     // The bucket cache.
     BucketCache*    cache_p;
     // Did the user set the cache size?
-    Bool            userSetCache_p;
+    bool            userSetCache_p;
     // Was the last column access to a cell, slice, or column?
     AccessType      lastColAccess_p;
     // The slice shape of the last column access to a slice.
@@ -425,11 +425,11 @@ inline BucketCache* TSMCube::getCache()
     }
     return cache_p;
 }
-inline uInt TSMCube::bucketSize() const
+inline uint32_t TSMCube::bucketSize() const
 { 
     return bucketSize_p;
 }
-inline uInt TSMCube::localTileLength() const
+inline uint32_t TSMCube::localTileLength() const
 { 
     return localTileLength_p;
 }
@@ -449,7 +449,7 @@ inline Record& TSMCube::rwValueRecord()
 {
     return values_p;
 }
-inline Bool TSMCube::userSetCache() const
+inline bool TSMCube::userSetCache() const
 {
     return userSetCache_p;
 }

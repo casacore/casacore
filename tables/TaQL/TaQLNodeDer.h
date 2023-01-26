@@ -52,7 +52,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 // <synopsis> 
 // This class is a TaQLNodeRep holding a constant expression or a table name.
-// The types supported are Bool, Int, Double, DComplex, String, and MVTime.
+// The types supported are bool, int32_t, double, DComplex, String, and MVTime.
 // Note that a keyword or column name is represented by TaQLKeyColNodeRep.
 // </synopsis> 
 
@@ -66,16 +66,16 @@ public:
              CTComplex=3,
              CTString =4,
              CTTime   =5};
-  explicit TaQLConstNodeRep (Bool value);
-  explicit TaQLConstNodeRep (Int64 value);
-  explicit TaQLConstNodeRep (Double value);
-  explicit TaQLConstNodeRep (Double value, const String& unit);
+  explicit TaQLConstNodeRep (bool value);
+  explicit TaQLConstNodeRep (int64_t value);
+  explicit TaQLConstNodeRep (double value);
+  explicit TaQLConstNodeRep (double value, const String& unit);
   explicit TaQLConstNodeRep (DComplex value);
-  explicit TaQLConstNodeRep (const String& value, Bool isTableName=False);
+  explicit TaQLConstNodeRep (const String& value, bool isTableName=false);
   explicit TaQLConstNodeRep (const MVTime& value);
-  explicit TaQLConstNodeRep (Int64 value, const String& subTableName);
+  explicit TaQLConstNodeRep (int64_t value, const String& subTableName);
   void setIsTableName()
-    { itsIsTableName = True; }
+    { itsIsTableName = true; }
   const String& getString() const;
   const String& getUnit() const
     { return itsUnit; }
@@ -85,10 +85,10 @@ public:
   static TaQLNode restore (AipsIO& aio);
 
   Type     itsType;
-  Bool     itsIsTableName;
-  Bool     itsBValue;
-  Int64    itsIValue;
-  Double   itsRValue;
+  bool     itsIsTableName;
+  bool     itsBValue;
+  int64_t    itsIValue;
+  double   itsRValue;
   DComplex itsCValue;
   String   itsSValue;
   MVTime   itsTValue;
@@ -117,19 +117,19 @@ class TaQLRegexNodeRep: public TaQLNodeRep
 {
 public:
   explicit TaQLRegexNodeRep (const String& value);
-  TaQLRegexNodeRep (const String& value, Bool caseInsensitive, Bool negate,
-                    Bool ignoreBlanks, Int maxDistance);
+  TaQLRegexNodeRep (const String& value, bool caseInsensitive, bool negate,
+                    bool ignoreBlanks, int32_t maxDistance);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
   virtual void save (AipsIO& aio) const override;
   static TaQLNode restore (AipsIO& aio);
 
   String itsValue;
-  Bool   itsCaseInsensitive;
-  Bool   itsNegate;             //# True means !~
+  bool   itsCaseInsensitive;
+  bool   itsNegate;             //# true means !~
   //# The following members are only used for distance.
-  Bool   itsIgnoreBlanks;
-  Int    itsMaxDistance;
+  bool   itsIgnoreBlanks;
+  int32_t    itsMaxDistance;
 };
 
 
@@ -245,16 +245,16 @@ public:
 class TaQLMultiNodeRep: public TaQLNodeRep
 {
 public:
-  explicit TaQLMultiNodeRep (Bool isSetOrArray=False);
+  explicit TaQLMultiNodeRep (bool isSetOrArray=false);
   TaQLMultiNodeRep(const String& prefix, const String& postfix,
-                   Bool isSetOrArray=False);
+                   bool isSetOrArray=false);
   void setIsSetOrArray()
-    { itsIsSetOrArray = True; }
+    { itsIsSetOrArray = true; }
   void setPPFix (const String& prefix, const String& postfix)
     { itsPrefix = prefix; itsPostfix = postfix; }
   void setSeparator (const String& sep)
     { itsSep = sep; }
-  void setSeparator (uInt incr, const String& sep)
+  void setSeparator (uint32_t incr, const String& sep)
   { itsIncr = incr; itsSep2 = sep; }
   void add (const TaQLNode& node)
     { itsNodes.push_back (node); }
@@ -266,12 +266,12 @@ public:
   static TaQLMultiNode restore (AipsIO& aio);
 
   std::vector<TaQLNode> itsNodes;
-  Bool   itsIsSetOrArray;
+  bool   itsIsSetOrArray;
   String itsPrefix;
   String itsPostfix;
   String itsSep;
   String itsSep2;
-  uInt   itsIncr;
+  uint32_t   itsIncr;
 };
 
 
@@ -322,11 +322,11 @@ public:
 class TaQLRangeNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start,
-                    const TaQLNode& end, Bool rightClosed,
-                    Bool asMidWidth=False);
-  TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start);
-  TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed);
+  TaQLRangeNodeRep (bool leftClosed, const TaQLNode& start,
+                    const TaQLNode& end, bool rightClosed,
+                    bool asMidWidth=false);
+  TaQLRangeNodeRep (bool leftClosed, const TaQLNode& start);
+  TaQLRangeNodeRep (const TaQLNode& end, bool rightClosed);
   TaQLRangeNodeRep (const TaQLNode& mid, const TaQLNode& width);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
@@ -335,9 +335,9 @@ public:
 
   TaQLNode itsStart;
   TaQLNode itsEnd;
-  Bool     itsLeftClosed;
-  Bool     itsRightClosed;
-  Bool     itsAsMidWidth;
+  bool     itsLeftClosed;
+  bool     itsRightClosed;
+  bool     itsAsMidWidth;
 };
 
 
@@ -513,13 +513,13 @@ public:
 class TaQLColumnsNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLColumnsNodeRep (Bool distinct, const TaQLMultiNode& nodes);
+  TaQLColumnsNodeRep (bool distinct, const TaQLMultiNode& nodes);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
   virtual void save (AipsIO& aio) const override;
   static TaQLNode restore (AipsIO& aio);
 
-  Bool          itsDistinct;
+  bool          itsDistinct;
   TaQLMultiNode itsNodes;
 };
 
@@ -610,13 +610,13 @@ public:
   // Do not change the values of this enum, as objects might be persistent.
   enum Type {Ascending =0,
              Descending=1};
-  TaQLSortNodeRep (Bool unique, Type type, const TaQLMultiNode& keys);
+  TaQLSortNodeRep (bool unique, Type type, const TaQLMultiNode& keys);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
   virtual void save (AipsIO& aio) const override;
   static TaQLNode restore (AipsIO& aio);
 
-  Bool          itsUnique;
+  bool          itsUnique;
   Type          itsType;
   TaQLMultiNode itsKeys;
 };
@@ -746,16 +746,16 @@ class TaQLQueryNodeRep: public TaQLNodeRep
 public:
   TaQLQueryNodeRep (int nodeType);
   void setBrackets()
-    { itsBrackets = True; }
+    { itsBrackets = true; }
   void setNoExecute()
-    { itsNoExecute = True; }
+    { itsNoExecute = true; }
   void setFromExecute()
-    { itsFromExecute = True; }
-  Bool getBrackets() const
+    { itsFromExecute = true; }
+  bool getBrackets() const
     { return itsBrackets; }
-  Bool getNoExecute() const
+  bool getNoExecute() const
     { return itsNoExecute; }
-  Bool getFromExecute() const
+  bool getFromExecute() const
     { return itsFromExecute; }
   virtual void show (std::ostream& os) const override;
 protected:
@@ -763,9 +763,9 @@ protected:
   void restoreSuper (AipsIO& aio);
 private:
   virtual void showDerived (std::ostream& os) const = 0;
-  Bool itsBrackets;
-  Bool itsNoExecute;    //# no execute in EXISTS operator
-  Bool itsFromExecute;  //# special execute in FROM
+  bool itsBrackets;
+  bool itsNoExecute;    //# no execute in EXISTS operator
+  bool itsFromExecute;  //# special execute in FROM
 };
 
 
@@ -1196,13 +1196,13 @@ public:
 class TaQLRenDropNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLRenDropNodeRep (Int type, const TaQLMultiNode& cols);
+  TaQLRenDropNodeRep (int32_t type, const TaQLMultiNode& cols);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
   virtual void save (AipsIO& aio) const override;
   static TaQLNode restore (AipsIO& aio);
 
-  Int           itsType;
+  int32_t           itsType;
   TaQLMultiNode itsNames;
 };
 

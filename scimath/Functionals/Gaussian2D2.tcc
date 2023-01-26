@@ -71,7 +71,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   tmp.value() = this->param_p[this->HEIGHT].value()*exponential;
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
-    for (uInt k = 0; k < tmp.nDerivatives(); k++) tmp.deriv(k) = 0.0;
+    for (uint32_t k = 0; k < tmp.nDerivatives(); k++) tmp.deriv(k) = 0.0;
     // derivative wrt height
     T dev = exponential;
     if (this->param_p.mask(this->HEIGHT)) tmp.deriv(this->HEIGHT) = dev;

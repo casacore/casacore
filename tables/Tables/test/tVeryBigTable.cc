@@ -55,16 +55,16 @@ void createTableISM()
   cout << "Creating ISM table with 10*" << nrowStep << " rows" << endl;
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn (ScalarColumnDesc<Int>("ad"));
+  td.addColumn (ScalarColumnDesc<int32_t>("ad"));
   // Now create a new table from the description.
   SetupNewTable newtab("tVeryBigTable_tmp.ism", td, Table::New);
   // Create a storage manager for it.
-  IncrementalStMan sm1 ("ISM", 256, False);
+  IncrementalStMan sm1 ("ISM", 256, false);
   newtab.bindAll (sm1);
   Table tab(newtab, 0);
-  ScalarColumn<Int> ad(tab,"ad");
+  ScalarColumn<int32_t> ad(tab,"ad");
   rownr_t rownr = 0;
-  for (Int i=0; i<10; i++) {
+  for (int32_t i=0; i<10; i++) {
     tab.addRow (nrowStep);
     ad.put (rownr, i);
     rownr += nrowStep;
@@ -77,16 +77,16 @@ void createTableSSM()
   cout << "Creating SSM table with 10*" << nrowStep << " rows" << endl;
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn (ScalarColumnDesc<Int>("ad"));
+  td.addColumn (ScalarColumnDesc<int32_t>("ad"));
   // Now create a new table from the description.
   SetupNewTable newtab("tVeryBigTable_tmp.ssm", td, Table::New);
   // Create a storage manager for it.
   StandardStMan sm1 ("SSM", 4*1024*1024);
   newtab.bindAll (sm1);
   Table tab(newtab, 0);
-  ScalarColumn<Int> ad(tab,"ad");
+  ScalarColumn<int32_t> ad(tab,"ad");
   rownr_t rownr = 0;
-  for (Int i=0; i<10; i++) {
+  for (int32_t i=0; i<10; i++) {
     tab.addRow (nrowStep);
     ad.put (rownr, i);
     ad.put (rownr+1, i);
@@ -106,7 +106,7 @@ void createTableTSM()
   cout << "Creating TSM table with 10*" << nrowStep << " rows" << endl;
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
-  td.addColumn (ArrayColumnDesc<Int>("ad", IPosition(1,1)));
+  td.addColumn (ArrayColumnDesc<int32_t>("ad", IPosition(1,1)));
   // Now create a new table from the description.
   SetupNewTable newtab("tVeryBigTable_tmp.tsm", td, Table::New);
   // Create a storage manager for it.
@@ -114,10 +114,10 @@ void createTableTSM()
   TiledShapeStMan sm1 ("TSM", IPosition(2,1,1024*1024));
   newtab.bindAll (sm1);
   Table tab(newtab, 0);
-  ArrayColumn<Int> ad(tab,"ad");
-  Vector<Int> vec(1);
+  ArrayColumn<int32_t> ad(tab,"ad");
+  Vector<int32_t> vec(1);
   rownr_t rownr = 0;
-  for (Int i=0; i<10; i++) {
+  for (int32_t i=0; i<10; i++) {
     tab.addRow (nrowStep);
     vec[0] = i;
     ad.put (rownr, vec);
@@ -133,14 +133,14 @@ void createTableTSM()
   AlwaysAssertExit (tab.nrow() == 10 * nrowStep);
 }
 
-void readTable (const String& name, Int add)
+void readTable (const String& name, int32_t add)
 {
   cout << "Reading some rows from ISM table with " << 10*nrowStep << " rows" << endl;
   Table tab(name);
   AlwaysAssertExit (tab.nrow() == 10 * nrowStep);
-  ScalarColumn<Int> ad(tab,"ad");
+  ScalarColumn<int32_t> ad(tab,"ad");
   rownr_t rownr = 0;
-  for (Int i=0; i<10; i++) {
+  for (int32_t i=0; i<10; i++) {
     AlwaysAssertExit (ad(rownr) == i+add);
     AlwaysAssertExit (ad(rownr+1) == i);
     rownr +=  nrowStep/2;
@@ -159,9 +159,9 @@ void testSelection()
   {
     // Take a few rows as a RefTable and make it persistent.
     Vector<rownr_t> rows(30);
-    uInt inx = 0;
+    uint32_t inx = 0;
     rownr_t rownr = 0;
-    for (uInt i=0; i<10; ++i) {
+    for (uint32_t i=0; i<10; ++i) {
       rows[inx++] = rownr;
       rownr +=  nrowStep/2;
       rows[inx++] = rownr;
@@ -175,9 +175,9 @@ void testSelection()
   {
     // Open the RefTable and check the data.
     Table tab("tVeryBigTable_tmp.sel");
-    ScalarColumn<Int> ad(tab,"ad");
+    ScalarColumn<int32_t> ad(tab,"ad");
     rownr_t rownr = 0;
-    for (Int i=0; i<10; i++) {
+    for (int32_t i=0; i<10; i++) {
       AlwaysAssertExit (ad(rownr) == i);
       rownr++;
       AlwaysAssertExit (ad(rownr) == i);
@@ -191,9 +191,9 @@ void testSelection()
 void testUpdate()
 {
   Table tab("tVeryBigTable_tmp.ism", Table::Update);
-  ScalarColumn<Int> ad(tab,"ad");
+  ScalarColumn<int32_t> ad(tab,"ad");
   rownr_t rownr = 0;
-  for (uInt i=0; i<10; ++i) {
+  for (uint32_t i=0; i<10; ++i) {
     ad.put (rownr, i+100);
     rownr +=  nrowStep/2;
     ad.put (rownr, i+100);

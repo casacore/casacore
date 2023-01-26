@@ -95,7 +95,7 @@ void writeFixed(const TSMOption& tsmOpt)
     newtab.setShapeColumn ("Freq", IPosition(1,25));
     newtab.setShapeColumn ("Data", IPosition(2,16,25));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -107,7 +107,7 @@ void writeFixed(const TSMOption& tsmOpt)
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<101; i++) {
 	table.addRow();
@@ -156,7 +156,7 @@ void readTable(const TSMOption& tsmOpt)
     indgen (polValues, float(300));
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
@@ -197,7 +197,7 @@ void writeVar(const TSMOption& tsmOpt)
     // Create a storage manager for it.
     TiledCellStMan sm1 ("TSMExample", IPosition(2,5,6));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::BigEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -209,7 +209,7 @@ void writeVar(const TSMOption& tsmOpt)
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<5; i++) {
 	table.addRow();
@@ -251,7 +251,7 @@ void writeFixVar(const TSMOption& tsmOpt)
     // Create a storage manager for it.
     TiledCellStMan sm1 ("TSMExample", IPosition(2,5,6));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LocalEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -263,7 +263,7 @@ void writeFixVar(const TSMOption& tsmOpt)
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<5; i++) {
 	table.addRow();
@@ -305,7 +305,7 @@ void writeNoHyper(const TSMOption& tsmOpt)
     newtab.setShapeColumn ("Data", IPosition(2,16,25));
     newtab.bindColumn ("Data", sm1);
     newtab.bindColumn ("Weight", sm1);
-    Table table(newtab, 0, False, Table::AipsrcEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::AipsrcEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -317,7 +317,7 @@ void writeNoHyper(const TSMOption& tsmOpt)
     ArrayColumn<float> weight (table, "Weight");
     Matrix<float> array(IPosition(2,16,25));
     Matrix<float> result(IPosition(2,16,25));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<101; i++) {
 	table.addRow();

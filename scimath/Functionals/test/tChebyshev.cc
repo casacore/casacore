@@ -42,9 +42,9 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-    Chebyshev<Double> cheb;
+    Chebyshev<double> cheb;
 
-    Vector<Double> coeffs(4, 0);
+    Vector<double> coeffs(4, 0);
     coeffs(3) = 2.0;
     cheb.setCoefficients(coeffs);
 
@@ -83,39 +83,39 @@ int main() {
     AlwaysAssertExit(coeffs(0) == 1 && coeffs(1) == -4 && 
 		     coeffs(2) == 4 && coeffs(3) ==  8   );
 
-    Double xmin = 0, xmax = 4, xp;
+    double xmin = 0, xmax = 4, xp;
     cheb.setInterval(xmin, xmax);
     AlwaysAssertExit(xmin == cheb.getIntervalMin());
     AlwaysAssertExit(xmax == cheb.getIntervalMax());
 
-    Polynomial<Double> poly(3);
+    Polynomial<double> poly(3);
     poly.setCoefficients(coeffs);
-    Chebyshev<Double> chebp = cheb.derivative();
+    Chebyshev<double> chebp = cheb.derivative();
 
 #ifdef DIAGNOSTICS
-    Vector<Double> dce;
+    Vector<double> dce;
     dce = chebp.getCoefficients();
     chebp.chebyshevToPower(dce);
     cout << "dcheb: " << dce << endl;
 #endif
-    Polynomial<Double> polyp = poly.derivative();
+    Polynomial<double> polyp = poly.derivative();
     polyp.setCoefficients(polyp.coefficients() * (2/(xmax-xmin)));
 #ifdef DIAGNOSTICS
     cout << "dpoly: " << polyp.coefficients() << endl;
 #endif
 
-    for (Double x=xmin; x <= xmax; x += 0.1) {
+    for (double x=xmin; x <= xmax; x += 0.1) {
 	xp = (2*x-xmin-xmax)/(xmax-xmin);
 	AlwaysAssertExit(nearAbs(cheb(x), poly(xp), 1.0e-14));
 	AlwaysAssertExit(nearAbs(chebp(x), polyp(xp), 1.0e-14));
     }
 
     // Test auto differentiation wrt x
-    Chebyshev<AutoDiffA<Double> > chebad(cheb.nparameters());
+    Chebyshev<AutoDiffA<double> > chebad(cheb.nparameters());
     chebad.setInterval(cheb.getIntervalMin(), cheb.getIntervalMax());
-    ///    for (uInt i=0; i<4; ++i) chebad[i] = AutoDiffA<Double>(cheb[i]);
-    for (uInt i=0; i<4; ++i) chebad[i] = cheb[i];
-    for (AutoDiffA<Double> x(xmin, 1, 0); x <= xmax; x += 0.1) {
+    ///    for (uint32_t i=0; i<4; ++i) chebad[i] = AutoDiffA<double>(cheb[i]);
+    for (uint32_t i=0; i<4; ++i) chebad[i] = cheb[i];
+    for (AutoDiffA<double> x(xmin, 1, 0); x <= xmax; x += 0.1) {
       AlwaysAssertExit(nearAbs(chebp(x.value()), chebad(x).deriv(0), 1.0e-14));
     }
 
@@ -152,7 +152,7 @@ int main() {
     AlwaysAssertExit(cheb.hasMode());
 
     Record rec;
-    Vector<Double> intv(2);
+    Vector<double> intv(2);
     intv(0) = -10.0; intv(1) = 10.0;
     rec.define(RecordFieldId("intervalMode"), "cyclic");
     rec.define(RecordFieldId("interval"), intv);
@@ -174,7 +174,7 @@ int main() {
 	             cheb.getDefault() == 80.0);
 
     // test setMode() via constructor
-    Chebyshev<Double> cheb2(2, rec);
+    Chebyshev<double> cheb2(2, rec);
     AlwaysAssertExit(cheb2.getOutOfIntervalMode() == 
 		         ChebyshevEnums::CYCLIC  &&
                      cheb2.getIntervalMin() == -10.0 &&
@@ -189,10 +189,10 @@ int main() {
     cheb.getMode(rec2);
 
     try {
-	Vector<Double> tmp(2);
+	Vector<double> tmp(2);
 	rec2.get(RecordFieldId("interval"), tmp);
 
-	Double def;
+	double def;
 	rec2.get(RecordFieldId("default"), def);
 
 	String mode;

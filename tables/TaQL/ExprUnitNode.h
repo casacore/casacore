@@ -66,7 +66,7 @@ public:
 
   // Calculate the conversion factor and return it.
   // It is static to be useful for TableExprNodeArrayFunc as well.
-  static Double set (TableExprNodeRep& parent,
+  static double set (TableExprNodeRep& parent,
                      const TENShPtr& child,
                      const Unit& unit);
 
@@ -85,12 +85,12 @@ public:
                           TENShPtr& node3);
 
   // Get the unit factor.
-  virtual Double getUnitFactor() const;
+  virtual double getUnitFactor() const;
 
-  virtual Double   getDouble   (const TableExprId& id);
+  virtual double   getDouble   (const TableExprId& id);
   virtual DComplex getDComplex (const TableExprId& id);
 private:
-  Double factor_p;
+  double factor_p;
 };
 
 
@@ -122,11 +122,11 @@ class TableExprNodeArrayUnit : public TableExprNodeArray
 public:
   TableExprNodeArrayUnit (const TENShPtr& child, const Unit& unit);
   ~TableExprNodeArrayUnit();
-  virtual Double getUnitFactor() const;
-  virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+  virtual double getUnitFactor() const;
+  virtual MArray<double>   getArrayDouble   (const TableExprId& id);
   virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
 private:
-  Double factor_p;
+  double factor_p;
 };
 
 

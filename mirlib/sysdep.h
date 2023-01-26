@@ -128,7 +128,7 @@ typedef long long int int8;
 /* left old style build compatible check in bug.c */
 
 
-/*  Short cut routines when no conversion is necessary. These are
+/*  int16_t cut routines when no conversion is necessary. These are
     used for any IEEE floating point machine with FITS ordered bytes.	
 
     WORDS_BIGENDIAN is also defined though the 'autoconf' package

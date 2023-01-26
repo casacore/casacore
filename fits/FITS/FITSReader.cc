@@ -36,7 +36,7 @@ void showHDU(HeaderDataUnit *h) {
     os << LogOrigin("FITSReader", "showHDU", WHERE)
        << LogIO::DEBUGGING
        << "Data type   " << h->datatype() << "\n"
-       << "Data size   " << (uInt)(h->fitsdatasize()) << "\n"
+       << "Data size   " << (uint32_t)(h->fitsdatasize()) << "\n"
        << "Dimensions  " << h->dims() << "\n"
        << LogIO::POST;
     for (int n = 0; n < h->dims(); n++) {
@@ -90,7 +90,7 @@ void showHDU(HeaderDataUnit *h) {
                  case FITS::LOGICAL: 
                     oss.width(22);
                     oss << right;
-                    oss << ((*((Bool *)x->value()) == True) ? "T" : "F"); break;
+                    oss << ((*((bool *)x->value()) == true) ? "T" : "F"); break;
                  case FITS::BIT: 
                     oss.width(22);
                     oss << right;
@@ -102,7 +102,7 @@ void showHDU(HeaderDataUnit *h) {
                  case FITS::BYTE: 
                     oss.width(22);
                     oss << right;
-                    n = *((uChar *)x->value()); oss << n; break;
+                    n = *((unsigned char *)x->value()); oss << n; break;
                  case FITS::SHORT: 
                     oss.width(22);
                     oss << right;
@@ -304,7 +304,7 @@ void showBinaryTable(BinaryTableExtension &x) {
                break;
             case FITS::BIT: 
             {
-                Int nbytes = maxsize / 8;
+                int32_t nbytes = maxsize / 8;
                 if (maxsize % 8) nbytes++;
                 maxsize = nbytes;
             }
@@ -376,7 +376,7 @@ void showBinaryTable(BinaryTableExtension &x) {
               {
                 unsigned char *vptr = (unsigned char *)(vaptr[i]);
                 FITS::f2l(vptr, (void *)(theheap + thisva.offset()), thisva.num());
-                Int whichByte = 0;
+                int32_t whichByte = 0;
                 unsigned char mask = 0200;
                 oss << (vptr[0] & mask);
                 for (int k=1;k<thisva.num();++k) {

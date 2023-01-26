@@ -41,7 +41,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-StreamIO::StreamIO(const String& hostname, uShort portNumber) 
+StreamIO::StreamIO(const String& hostname, uint16_t portNumber) 
   :ByteIO(),
    itsSockDesc(-1)
 {
@@ -85,11 +85,11 @@ StreamIO::~StreamIO() {
   }
 }
 
-void StreamIO::write(Int64 size, const void* buf) {
-  Int64 bytesToWrite = size;
-  const Char* bytePtr = static_cast<const Char*>(buf);
+void StreamIO::write(int64_t size, const void* buf) {
+  int64_t bytesToWrite = size;
+  const char* bytePtr = static_cast<const char*>(buf);
   while (bytesToWrite > 0) {
-    const Int64 bytesWritten = ::write(itsSockDesc, bytePtr, bytesToWrite);
+    const int64_t bytesWritten = ::write(itsSockDesc, bytePtr, bytesToWrite);
     if (bytesWritten <= 0) {
       const String fString = "StreamIO::write - cannot write ";
       if (bytesToWrite == size) {
@@ -103,11 +103,11 @@ void StreamIO::write(Int64 size, const void* buf) {
   }    
 }
 
-Int64 StreamIO::read(Int64 size, void* buf, Bool throwException) {
-  Int64 bytesToRead = size;
-  Char* bytePtr = static_cast<Char*>(buf);
+int64_t StreamIO::read(int64_t size, void* buf, bool throwException) {
+  int64_t bytesToRead = size;
+  char* bytePtr = static_cast<char*>(buf);
   while (bytesToRead > 0) {
-    const Int64 bytesRead = ::read(itsSockDesc, bytePtr, bytesToRead);
+    const int64_t bytesRead = ::read(itsSockDesc, bytePtr, bytesToRead);
     if (bytesRead < 0) {
       throw (AipsError(String("StreamIO::read - ") +
 		       String("Error returned by system call")));
@@ -127,25 +127,25 @@ Int64 StreamIO::read(Int64 size, void* buf, Bool throwException) {
   return size - bytesToRead;
 }
 
-Int64 StreamIO::doSeek (Int64, ByteIO::SeekOption) {
+int64_t StreamIO::doSeek (int64_t, ByteIO::SeekOption) {
   throw(AipsError("StreamIO::doSeek - streams are not seekable."));
   return -1;
 }
 
-Int64 StreamIO::length() {
+int64_t StreamIO::length() {
   return -1;
 }
    
-Bool StreamIO::isReadable() const {
-  return True;
+bool StreamIO::isReadable() const {
+  return true;
 }
 
-Bool StreamIO::isWritable() const {
-  return True;
+bool StreamIO::isWritable() const {
+  return true;
 }
 
-Bool StreamIO::isSeekable() const {
-  return False;
+bool StreamIO::isSeekable() const {
+  return false;
 }
 
 } //# NAMESPACE CASACORE - END

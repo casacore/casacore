@@ -58,25 +58,25 @@ namespace casacore { //#Begin namespace casacore
 
     // Construct from a Vector or std::vector of old style row numbers.
 #ifdef IMPLICIT_CTDS_32BIT
-    RowNumbers (const Vector<uInt>& rows);
-    RowNumbers (const std::vector<uInt>& rows);
+    RowNumbers (const Vector<uint32_t>& rows);
+    RowNumbers (const std::vector<uint32_t>& rows);
 #else
-    explicit RowNumbers (const Vector<uInt>& rows);
-    explicit RowNumbers (const std::vector<uInt>& rows);
+    explicit RowNumbers (const Vector<uint32_t>& rows);
+    explicit RowNumbers (const std::vector<uint32_t>& rows);
 #endif
     
-    // Conversion operator to convert Vector<rownr_t> to Vector<uInt>.
+    // Conversion operator to convert Vector<rownr_t> to Vector<uint32_t>.
     // This is for backward compatibility of Table::rowNumbers.
 #ifdef IMPLICIT_CTDS_32BIT
-    operator Vector<uInt>() const
+    operator Vector<uint32_t>() const
 #else
-    explicit operator Vector<uInt>() const
+    explicit operator Vector<uint32_t>() const
 #endif
       { return convertRownrVector (*this); }
 
     // Do the actual conversion.
     // An exception is thrown if a row number exceeds 32 bits.
-    static Vector<uInt> convertRownrVector (const Vector<rownr_t>&);
+    static Vector<uint32_t> convertRownrVector (const Vector<rownr_t>&);
   };
   
 } //#End namespace casacore

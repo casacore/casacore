@@ -3,32 +3,32 @@
 <<<
 LELAttribute
 
-LELLattice<Float> 
+LELLattice<float> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELLattice<Double> 
+LELLattice<double> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 LELLattice<Complex> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 LELLattice<DComplex> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELLattice<Bool> 
+LELLattice<bool> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELUnaryConst<Float>
+LELUnaryConst<float>
       Caught expected exception; message is: LELUnaryConst::eval - cannot be used
-LELUnaryConst<Double>
+LELUnaryConst<double>
       Caught expected exception; message is: LELUnaryConst::eval - cannot be used
 LELUnaryConst<Complex>
       Caught expected exception; message is: LELUnaryConst::eval - cannot be used
 LELUnaryConst<DComplex>
       Caught expected exception; message is: LELUnaryConst::eval - cannot be used
-LELUnaryConst<Bool>
+LELUnaryConst<bool>
       Caught expected exception; message is: LELUnaryConst::eval - cannot be used
 
-LELUnary<Float>
+LELUnary<float>
    Operator -
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELUnary<Double>
+LELUnary<double>
    Operator -
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 LELUnary<Complex>
@@ -42,7 +42,7 @@ LELUnaryBool
    Operator !
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELBinary<Float>
+LELBinary<float>
    Operator +
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Operator -
@@ -52,7 +52,7 @@ LELBinary<Float>
    Operator /
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELBinary<Double>
+LELBinary<double>
    Operator +
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Operator -
@@ -82,7 +82,7 @@ LELBinary<DComplex>
    Operator /
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELBinaryCmp<Float>
+LELBinaryCmp<float>
    Operator ==
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Operator !=
@@ -92,7 +92,7 @@ LELBinaryCmp<Float>
    Operator >=
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELBinaryCmp<Double>
+LELBinaryCmp<double>
    Operator ==
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Operator !=
@@ -130,7 +130,7 @@ LELBinaryBool
    Operator &&
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELFunction1D<Float>
+LELFunction1D<float>
    Function sin
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function sinh
@@ -158,7 +158,7 @@ LELFunction1D<Float>
    Function sum
       Caught expected exception; message is: LELFunction1D::eval - unknown function
 
-LELFunction1D<Double>
+LELFunction1D<double>
    Function sin
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function sinh
@@ -230,7 +230,7 @@ LELFunction1D<DComplex>
    Function max
       Caught expected exception; message is: LELFunction1D::eval - unknown function
 
-LELFunctionND<Float>
+LELFunctionND<float>
    Function iif
      Scalar, scalar, scalar
      Scalar, scalar, array
@@ -247,7 +247,7 @@ LELFunctionND<Float>
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELFunctionND<Double>
+LELFunctionND<double>
    Function iif
      Scalar, scalar, scalar
      Scalar, scalar, array
@@ -298,7 +298,7 @@ LELFunctionND<DComplex>
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELFunctionReal1D<Float>
+LELFunctionReal1D<float>
    Function asin
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function acos
@@ -312,7 +312,7 @@ LELFunctionReal1D<Float>
    Function floor
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
-LELFunctionReal1D<Double>
+LELFunctionReal1D<double>
    Function asin
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function acos
@@ -346,11 +346,11 @@ LELFunctionFloat
    Function imag
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function fractile
-      Caught expected exception; message is: LELFunctionFloat::eval - unknown Float function
+      Caught expected exception; message is: LELFunctionFloat::eval - unknown float function
    Function fractilerange 2
-      Caught expected exception; message is: LELFunctionFloat::eval - unknown Float function
+      Caught expected exception; message is: LELFunctionFloat::eval - unknown float function
    Function fractilerange 3
-      Caught expected exception; message is: LELFunctionFloat::eval - unknown Float function
+      Caught expected exception; message is: LELFunctionFloat::eval - unknown float function
 
 LELFunctionDouble
    Function min
@@ -372,17 +372,17 @@ LELFunctionDouble
    Function imag
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
    Function ntrue
-      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown double function
    Function nfalse
-      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown double function
    Function nelements
-      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown double function
    Function fractile
-      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown double function
    Function fractilerange 2
-      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown double function
    Function fractilerange 3
-      Caught expected exception; message is: LELFunctionDouble::eval - unknown Double function
+      Caught expected exception; message is: LELFunctionDouble::eval - unknown double function
 
 LELFunctionComplex
    Function pow
@@ -413,21 +413,21 @@ LELFunctionBool
       Caught expected exception; message is: LELFunctionBool::getScalar - unknown function
       Caught expected exception; message is: LELFunctionBool::getScalar - unknown function
 
-LELConvert<Float,Double> 
+LELConvert<float,double> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELConvert<Double,Float> 
+LELConvert<double,float> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 LELConvert<Complex,DComplex> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 LELConvert<DComplex,Complex> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELConvert<Complex,Float> 
+LELConvert<Complex,float> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELConvert<Complex,Double> 
+LELConvert<Complex,double> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELConvert<DComplex,Float> 
+LELConvert<DComplex,float> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
-LELConvert<DComplex,Double> 
+LELConvert<DComplex,double> 
       Caught expected exception; message is: LELLattice::getScalar - cannot be used
 
 ok

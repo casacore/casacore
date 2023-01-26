@@ -29,7 +29,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-CompositeNumber::CompositeNumber(const uInt maxval) {
+CompositeNumber::CompositeNumber(const uint32_t maxval) {
 
   itsMaxComplete = maxval;
   if (itsMaxComplete < 2) { itsMaxComplete = 2; }
@@ -37,26 +37,26 @@ CompositeNumber::CompositeNumber(const uInt maxval) {
 
 }
 
-void CompositeNumber::generate(const uInt maxval) {
+void CompositeNumber::generate(const uint32_t maxval) {
   
   itsMaxComplete = maxval;
 
-  uInt n2 = (uInt)(log((Float)maxval)/log(2.0) + 1) +1;
-  uInt n3 = (uInt)(log((Float)maxval)/log(3.0) + 1) +1;
-  uInt n5 = (uInt)(log((Float)maxval)/log(5.0) + 1) +1;
+  uint32_t n2 = (uint32_t)(log((float)maxval)/log(2.0) + 1) +1;
+  uint32_t n3 = (uint32_t)(log((float)maxval)/log(3.0) + 1) +1;
+  uint32_t n5 = (uint32_t)(log((float)maxval)/log(5.0) + 1) +1;
   
   itsNumbers.resize(n2*n3*n5);
-  uInt n = 0;
-  for (uInt i2=0; i2<n2; i2++) {
-    for (uInt i3=0; i3<n3; i3++) {
-      for (uInt i5=0; i5<n5; i5++) {
-	itsNumbers[n] = (uInt)(pow(2.0, (Float)i2) * pow(3.0, (Float)i3) * 
-			       pow(5.0, (Float)i5) );
+  uint32_t n = 0;
+  for (uint32_t i2=0; i2<n2; i2++) {
+    for (uint32_t i3=0; i3<n3; i3++) {
+      for (uint32_t i5=0; i5<n5; i5++) {
+	itsNumbers[n] = (uint32_t)(pow(2.0, (float)i2) * pow(3.0, (float)i3) * 
+			       pow(5.0, (float)i5) );
 	n++;
       }
     }
   }
-  GenSort<uInt>::sort(itsNumbers, n2*n3*n5);
+  GenSort<uint32_t>::sort(itsNumbers, n2*n3*n5);
 }
 
 
@@ -65,12 +65,12 @@ CompositeNumber::~CompositeNumber() {}
 
 
 
-uInt CompositeNumber::nextLarger(const uInt testValue) {
+uint32_t CompositeNumber::nextLarger(const uint32_t testValue) {
 
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
-  for (uInt i=0;i< itsNumbers.nelements(); i++) {
+  for (uint32_t i=0;i< itsNumbers.nelements(); i++) {
     if (itsNumbers[i] > testValue) {
       return itsNumbers[i];
     }
@@ -80,12 +80,12 @@ uInt CompositeNumber::nextLarger(const uInt testValue) {
     
 
 
-uInt CompositeNumber::nextSmaller(const uInt testValue) {
+uint32_t CompositeNumber::nextSmaller(const uint32_t testValue) {
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
 
-  for (Int i=itsNumbers.nelements()-1; i>=0; i--) {
+  for (int32_t i=itsNumbers.nelements()-1; i>=0; i--) {
     if (itsNumbers[i] < testValue) {
       return itsNumbers[i];
     }
@@ -96,15 +96,15 @@ uInt CompositeNumber::nextSmaller(const uInt testValue) {
 
 
 
-uInt CompositeNumber::nearest(const uInt testValue) {
+uint32_t CompositeNumber::nearest(const uint32_t testValue) {
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
-  for (uInt i=0;i< itsNumbers.nelements(); i++) {
+  for (uint32_t i=0;i< itsNumbers.nelements(); i++) {
     if (itsNumbers[i] > testValue) {
       if (i==0) {
 	return itsNumbers[0];
-      } else if (abs((Int)(itsNumbers[i]-testValue)) < abs((Int)(itsNumbers[(i-1)]-testValue)) ) {
+      } else if (abs((int32_t)(itsNumbers[i]-testValue)) < abs((int32_t)(itsNumbers[(i-1)]-testValue)) ) {
 	return itsNumbers[i];
       } else {
 	return itsNumbers[(i-1)];
@@ -119,12 +119,12 @@ uInt CompositeNumber::nearest(const uInt testValue) {
 
 
 
-uInt CompositeNumber::nextLargerEven(const uInt testValue) {
+uint32_t CompositeNumber::nextLargerEven(const uint32_t testValue) {
 
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
-  for (uInt i=0;i< itsNumbers.nelements(); i++) {
+  for (uint32_t i=0;i< itsNumbers.nelements(); i++) {
     if (itsNumbers[i] > testValue && (itsNumbers[i]%2==0)) {
       return itsNumbers[i];
     }
@@ -133,12 +133,12 @@ uInt CompositeNumber::nextLargerEven(const uInt testValue) {
 }
     
 
-uInt CompositeNumber::nextSmallerEven(const uInt testValue) {
+uint32_t CompositeNumber::nextSmallerEven(const uint32_t testValue) {
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
 
-  for (Int i=itsNumbers.nelements()-1; i>=0; i--) {
+  for (int32_t i=itsNumbers.nelements()-1; i>=0; i--) {
     if (itsNumbers[i] < testValue && (itsNumbers[i]%2==0)) {
       return itsNumbers[i];
     }
@@ -147,11 +147,11 @@ uInt CompositeNumber::nextSmallerEven(const uInt testValue) {
 }
     
 
-uInt CompositeNumber::nearestEven(const uInt testValue) {
+uint32_t CompositeNumber::nearestEven(const uint32_t testValue) {
 
-  uInt up = nextLargerEven( testValue );
-  uInt down = nextSmallerEven( testValue );
-  if (abs((Int)(up-testValue)) < abs((Int)(down-testValue)) ) {
+  uint32_t up = nextLargerEven( testValue );
+  uint32_t down = nextSmallerEven( testValue );
+  if (abs((int32_t)(up-testValue)) < abs((int32_t)(down-testValue)) ) {
     return up;
   } else {
     return down;
@@ -159,16 +159,16 @@ uInt CompositeNumber::nearestEven(const uInt testValue) {
 }
     
 
-Bool CompositeNumber::isComposite(const uInt testValue) {
+bool CompositeNumber::isComposite(const uint32_t testValue) {
   if (testValue >  itsMaxComplete) {
     generate(testValue);
   }
-  for (uInt i=0;i< itsNumbers.nelements(); i++) {
+  for (uint32_t i=0;i< itsNumbers.nelements(); i++) {
     if (itsNumbers[i] == testValue) {
-      return True;
+      return true;
     }
   }
-  return False;
+  return false;
 } 
 
 

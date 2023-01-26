@@ -105,7 +105,7 @@ namespace casacore {
                        const Record& dmInfo = Record(),
                        const TableLock& lockOptions = TableLock(),
                        rownr_t nrrow = 0,
-                       Bool initialize = False,
+                       bool initialize = false,
                        Table::EndianFormat = Table::AipsrcEndian,
                        const TSMOption& = TSMOption());
     Table createSubTable (Table& parent, const String& subtableName,
@@ -115,7 +115,7 @@ namespace casacore {
                           const Record& dmInfo = Record(),
                           const TableLock& lockOptions = TableLock(),
                           rownr_t nrrow = 0,
-                          Bool initialize = False,
+                          bool initialize = false,
                           Table::EndianFormat = Table::AipsrcEndian,
                           const TSMOption& = TSMOption());
 
@@ -124,20 +124,20 @@ namespace casacore {
     // If not, message contains the reason why (e.g. 'table is not writable').
     // It checks if the table is writable, is not open in this process
     // and is not open in another process.
-    // If <src>splitColons=True</src> the table name can contain :: to
+    // If <src>splitColons=true</src> the table name can contain :: to
     // denote subtables.
     // <br>If <src>checkSubTables</src> is set, it also checks if
     // a subtable is not open in another process.
     // <br> <src>canDeleteSubTable</src> can be used to check a subtable of the
     // given parent.
     // <group>
-    Bool canDeleteTable (const String& tableName,
-                         Bool checkSubTables=False);
-    Bool canDeleteTable (String& message, const String& tableName,
-                         Bool checkSubTables=False, Bool splitColons=True);
-    Bool canDeleteSubTable (String& message, const Table& parent,
+    bool canDeleteTable (const String& tableName,
+                         bool checkSubTables=false);
+    bool canDeleteTable (String& message, const String& tableName,
+                         bool checkSubTables=false, bool splitColons=true);
+    bool canDeleteSubTable (String& message, const Table& parent,
                             const String& subtableName,
-                            Bool checkSubTables=False);
+                            bool checkSubTables=false);
     // </group>
 
     // Delete the table.
@@ -149,9 +149,9 @@ namespace casacore {
     // <br> <src>deleteSubTable</src> can be used to delete a subtable of the
     // given parent.
     void deleteTable (const String& tableName,
-                      Bool checkSubTables=False);
+                      bool checkSubTables=false);
     void deleteSubTable (Table& parent, const String& subtableName,
-                         Bool checkSubTables = False);
+                         bool checkSubTables = false);
 
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of

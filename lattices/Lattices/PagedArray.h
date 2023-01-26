@@ -208,9 +208,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // const IPosition arrayShape(4,1024,1024,4,256);
 // const String filename("myData_tmp.array");
-// PagedArray<Float> diskArray(arrayShape, filename);
+// PagedArray<float> diskArray(arrayShape, filename);
 // cout << "Created a PagedArray of shape " << diskArray.shape() 
-//   << " (" << diskArray.shape().product()/1024/1024*sizeof(Float) 
+//   << " (" << diskArray.shape().product()/1024/1024*sizeof(float) 
 //   << " MBytes)" << endl
 //   << "in the table called " << diskArray.tableName() << endl;
 // diskArray.set(0.0f);
@@ -223,18 +223,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Read the PagedArray produced in Example 1 and put a Gaussian profile into
 // each spectral channel.
 // <srcblock>
-// PagedArray<Float> diskArray("myData_tmp.array");
+// PagedArray<float> diskArray("myData_tmp.array");
 // IPosition shape = diskArray.shape();
 // // Construct a Gaussian Profile to be 10 channels wide and centred on
 // // channel 16. Its height is 1.0.
-// Gaussian1D<Float> g(1.0f, 16.0f, 10.0f);
+// Gaussian1D<float> g(1.0f, 16.0f, 10.0f);
 // // Create a vector to cache a sampled version of this profile.
-// Vector<Float> profile(shape(3));
+// Vector<float> profile(shape(3));
 // indgen(profile);
 // profile.apply(g);
 // // Now put this profile into every spectral channel in the paged array. This
 // // is best done using an iterator.
-// LatticeIterator<Float> iter(diskArray, 
+// LatticeIterator<float> iter(diskArray, 
 //                          TiledLineStepper(shape, diskArray.tileShape(), 3));
 // for (iter.reset(); !iter.atEnd(); iter++) {
 //    iter.woCursor() = profile;
@@ -248,7 +248,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // sized chunks.
 // <srcblock>
 // Table t("myData_tmp.array", Table::Update);
-// PagedArray<Float> da(t);
+// PagedArray<float> da(t);
 // const IPosition latticeShape = da.shape();
 // const nx = latticeShape(0);
 // const ny = latticeShape(1);
@@ -258,7 +258,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // cursorShape(2) = 1;
 // LatticeStepper step(latticeShape, cursorShape);
 // step.subSection(IPosition(4,0), IPosition(4,nx-1,ny-1,0,nchan-1));
-// LatticeIterator<Float> iter(da, step);
+// LatticeIterator<float> iter(da, step);
 // for (iter.reset(); !iter.atEnd(); iter++) {
 //    iter.rwCursor() *= 10.0f;
 // }
@@ -273,12 +273,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // SetupNewTable maskSetup("mask_tmp.array", TableDesc(), Table::New);
 // Table maskTable(maskSetup);
-// PagedArray<Bool> maskArray(IPosition(4,1024,1024,4,256), maskTable);
-// maskArray.set(False);
-// COWPtr<Array<Bool> > maskPtr;
+// PagedArray<bool> maskArray(IPosition(4,1024,1024,4,256), maskTable);
+// maskArray.set(false);
+// COWPtr<Array<bool> > maskPtr;
 // maskArray.getSlice(maskPtr, IPosition(4,240,240,3,0),
 // 		      IPosition(4,32,32,1,1), IPosition(4,1));
-// maskPtr.rwRef() = True;
+// maskPtr.rwRef() = true;
 // maskArray.putSlice(*maskPtr, IPosition(4,240,240,3,1));
 // </srcblock>
 // 
@@ -288,7 +288,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // illustrate the results when running on an Ultra 1/140 with 64MBytes
 // of memory.
 // <srcblock>
-// PagedArray<Float> pa(IPosition(4,128,128,4,32));
+// PagedArray<float> pa(IPosition(4,128,128,4,32));
 // const IPosition latticeShape = pa.shape();
 // cout << "The tile shape is:" << pa.tileShape() << endl;
 // // The tile shape is:[32, 16, 4, 16]
@@ -296,7 +296,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // Setup to access the PagedArray a row at a time
 // const IPosition sliceShape(4,latticeShape(0), 1, 1, 1);
 // const IPosition stride(4,1);
-// Array<Float> row(sliceShape);
+// Array<float> row(sliceShape);
 // IPosition start(4, 0);
 //   
 // // Set the cache size to enough pixels for one tile only. This uses
@@ -355,7 +355,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <templating arg=T>
 //  <li> Due to storage in Tables, the templated type must be able to be 
 // stored in a Casacore Table.  This restricts the template argument to all
-// the common types Bool, Float, Double, Complex, String etc.) More details
+// the common types bool, float, double, Complex, String etc.) More details
 // can be found in the RetypedArrayEngine class.
 // </templating>
 
@@ -398,7 +398,7 @@ public:
   // Construct a new PagedArray, with the specified shape, in the specified
   // row and column of the supplied Table.
   PagedArray (const TiledShape& shape, Table& file,
-	      const String& columnName, uInt rowNum);
+	      const String& columnName, uint32_t rowNum);
 
   // Reconstruct from a pre-existing PagedArray in the default row and
   // column of the supplied Table with the supplied filename.
@@ -410,7 +410,7 @@ public:
 
   // Reconstruct from a pre-existing PagedArray in the specified row and
   // column of the supplied Table.
-  PagedArray (Table& file, const String& columnName, uInt rowNum);
+  PagedArray (Table& file, const String& columnName, uint32_t rowNum);
 
   // The copy constructor which uses reference semantics. Copying by value
   // doesn't make sense, because it would require the creation of a
@@ -428,20 +428,20 @@ public:
   virtual Lattice<T>* clone() const;
 
   // A PagedArray is always persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // A PagedArray is always paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Is the PagedArray writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the shape of the PagedArray.
   virtual IPosition shape() const;
 
   // Return the current Table name. By default this includes the full path. 
   // The path preceeding the file name can be stripped off on request.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
 
   // Functions to resize the PagedArray. The old contents are lost. Usage of
   // this function is NOT currently recommended (see the <linkto
@@ -467,34 +467,34 @@ public:
   const ROTiledStManAccessor& accessor() const;
 
   // Returns the current row number of this PagedArray.
-  uInt rowNumber() const;
+  uint32_t rowNumber() const;
 
   // Returns the default row number for a PagedArray.
-  static uInt defaultRow();
+  static uint32_t defaultRow();
 
   // Returns the current tile shape for this PagedArray.
   IPosition tileShape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Set the maximum allowed cache size for all Arrays in this column of the
   // Table.  The actual value used may be smaller. A value of zero means
   // that there is no maximum.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Return the maximum allowed cache size (in pixels) for all Arrays in
   // this column of the Table. The actual cache size may be smaller. A
   // value of zero means that no maximum is currently defined.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the actual cache size for this Array to be big enough for the
   // indicated number of tiles. This cache is not shared with PagedArrays
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // Tiles are cached using a first in first out algorithm.
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Set the actual cache size for this Array to "fit" the indicated
   // path. This cache is not shared with PagedArrays in other rows and is
@@ -524,19 +524,19 @@ public:
   // Put the value of a single element.
   virtual void putAt (const T& value, const IPosition& where);
 
-  // A function which checks for internal consistency. Returns False if
+  // A function which checks for internal consistency. Returns false if
   // something nasty has happened to the PagedArray. In that case
   // it also throws an exception.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for a specified Lattice. Not recommended
   // for general use. 
   virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-					     Bool useRef) const;
+					     bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -544,13 +544,13 @@ public:
 			   const IPosition& stride);
   
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the PagedArray object with the lattice file.
@@ -590,11 +590,11 @@ private:
 
   mutable Table     itsTable;
           String    itsColumnName;
-          uInt      itsRowNumber;
-  mutable Bool      itsIsClosed;
-  mutable Bool      itsMarkDelete;
+          uint32_t      itsRowNumber;
+  mutable bool      itsIsClosed;
+  mutable bool      itsMarkDelete;
           String    itsTableName;
-          Bool      itsWritable;
+          bool      itsWritable;
           TableLock itsLockOpt;
   mutable ArrayColumn<T>       itsArray;
   mutable ROTiledStManAccessor itsAccessor;
@@ -609,7 +609,7 @@ inline ArrayColumn<T>& PagedArray<T>::getRWArray()
   }
   if (!itsWritable) {
     itsTable.reopenRW();
-    itsWritable = True;
+    itsWritable = true;
   }
   return itsArray;
 }
@@ -646,13 +646,13 @@ inline const ROTiledStManAccessor& PagedArray<T>::accessor() const
 }
 
 template<class T>
-inline uInt PagedArray<T>::rowNumber() const
+inline uint32_t PagedArray<T>::rowNumber() const
 {
   return itsRowNumber;
 }
 
 template<class T>
-inline uInt PagedArray<T>::defaultRow()
+inline uint32_t PagedArray<T>::defaultRow()
 {
   return 0;
 }
@@ -666,7 +666,7 @@ void PagedArray<T>::doReopen() const
 }
 
 //# Declare extern templates for often used types.
-  extern template class PagedArray<Float>;
+  extern template class PagedArray<float>;
   extern template class PagedArray<Complex>;
 
 

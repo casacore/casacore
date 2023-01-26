@@ -40,7 +40,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
+const int32_t maxLatSize = HostInfo::memoryTotal()/1024/8;
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver()
@@ -50,21 +50,21 @@ LatticeConvolver()
    itsFFTShape(IPosition(1,1)),
    itsXfr(0),
    itsPsf(0),
-   itsCachedPsf(False)
+   itsCachedPsf(false)
 {
   itsXfr->set(typename NumericTraits<T>::ConjugateType(1));
-  doFast_p=False;
+  doFast_p=false;
 } 
 
 template<class T> LatticeConvolver<T>::
-LatticeConvolver(const Lattice<T> & psf, Bool doFast)
+LatticeConvolver(const Lattice<T> & psf, bool doFast)
   :itsPsfShape(psf.shape()),
    itsModelShape(itsPsfShape),
    itsType(ConvEnums::CIRCULAR),
    itsFFTShape(psf.ndim(), 0),
    itsXfr(0),
    itsPsf(0),
-   itsCachedPsf(False)
+   itsCachedPsf(false)
 {
   DebugAssert(itsPsfShape.product() != 0, AipsError);
   doFast_p=doFast;
@@ -73,14 +73,14 @@ LatticeConvolver(const Lattice<T> & psf, Bool doFast)
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape, 
-		 Bool doFast) 
+		 bool doFast) 
   :itsPsfShape(psf.shape()),
    itsModelShape(modelShape),
    itsType(ConvEnums::LINEAR),
    itsFFTShape(psf.ndim(), 0),
    itsXfr(0),
    itsPsf(0),
-   itsCachedPsf(False)
+   itsCachedPsf(false)
 {
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
@@ -94,14 +94,14 @@ LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
 
 template<class T> LatticeConvolver<T>::
 LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
-		 ConvEnums::ConvType type, Bool doFast) 
+		 ConvEnums::ConvType type, bool doFast) 
   :itsPsfShape(psf.shape()),
    itsModelShape(modelShape),
    itsType(type),
    itsFFTShape(psf.ndim(), 0),
    itsXfr(0),
    itsPsf(0),
-   itsCachedPsf(False)
+   itsCachedPsf(false)
 {
   // Check that everything is the same dimension and that none of the
   // dimensions is zero length.
@@ -189,7 +189,7 @@ circular(Lattice<T> & modelAndResult){
 template<class T> void LatticeConvolver<T>::
 convolve(Lattice<T> & result, const Lattice<T> & model) const {
   //  cerr << "convolve: " << model.shape() << " " << itsXfr->shape() << endl;
-  const uInt ndim = itsFFTShape.nelements();
+  const uint32_t ndim = itsFFTShape.nelements();
   DebugAssert(result.ndim() == ndim, AipsError);
   DebugAssert(model.ndim() == ndim, AipsError);
   const IPosition modelShape = model.shape();
@@ -203,17 +203,17 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
 								 maxLatSize);
   // Copy the model into a larger Lattice that has the appropriate padding.
   // (if necessary)
-  Bool doPadding = False;
+  bool doPadding = false;
   const Lattice<T>* modelPtr = 0;
   Lattice<T>* resultPtr = 0;
   if (!(itsFFTShape <= modelShape)) {
-    doPadding = True;
+    doPadding = true;
     resultPtr = new TempLattice<T>(itsFFTShape, maxLatSize);
     modelPtr = resultPtr;
   } 
 
   IPosition sliceShape(ndim,1);
-  for (uInt n = 0; n < ndim; n++) {
+  for (uint32_t n = 0; n < ndim; n++) {
     if (itsFFTShape(n) > 1) {
       sliceShape(n) = modelShape(n);
     }
@@ -222,7 +222,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
   for (ls.reset(); !ls.atEnd(); ls++) {
     const Slicer sl(ls.position(), sliceShape);
     const SubLattice<T> modelSlice(model, sl);
-    SubLattice<T> resultSlice(result, sl, True);
+    SubLattice<T> resultSlice(result, sl, true);
     if (doPadding) {
       pad(*resultPtr, modelSlice);
     } else {
@@ -231,11 +231,11 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
     }
     // Do the forward transform
 
-    LatticeFFT::rcfft(fftModel, *modelPtr, True, doFast_p);
+    LatticeFFT::rcfft(fftModel, *modelPtr, true, doFast_p);
     { // Multiply the transformed model with the transfer function
       IPosition tileShape(itsXfr->niceCursorShape());
       const IPosition otherTileShape(fftModel.niceCursorShape());
-      for (uInt i = 0; i < ndim; i++) {
+      for (uint32_t i = 0; i < ndim; i++) {
 	if (tileShape(i) > otherTileShape(i)) tileShape(i) = otherTileShape(i);
       }
       TileStepper tiledNav(XFRShape, tileShape);
@@ -252,7 +252,7 @@ convolve(Lattice<T> & result, const Lattice<T> & model) const {
     // We have done a fft with no shift to the psf and the incoming 
     // image to be convolved now we fft back and shift for the final
     // image.
-    LatticeFFT::crfft(*resultPtr, fftModel, True, doFast_p);
+    LatticeFFT::crfft(*resultPtr, fftModel, true, doFast_p);
     if (doPadding) { // Unpad the result
       unpad(resultSlice, *resultPtr);
     }
@@ -303,7 +303,7 @@ resize(const IPosition & modelShape, ConvEnums::ConvType type) {
     if (newFFTShape == itsFFTShape) return;
   }
   // need to know the psf.
-  if (itsCachedPsf == False) { // calculate the psf from the transfer function
+  if (itsCachedPsf == false) { // calculate the psf from the transfer function
     TempLattice<T> psf(itsPsfShape, maxLatSize);
     makePsf(psf);
     makeXfr(psf);
@@ -339,12 +339,12 @@ type() const {
 template<class T> void LatticeConvolver<T>::
 pad(Lattice<T> & paddedLat, const Lattice<T> & inLat) {
   paddedLat.set(T(0));
-  const uInt ndim = inLat.ndim();
+  const uint32_t ndim = inLat.ndim();
   const IPosition inLatShape = inLat.shape();
   const IPosition FFTShape = paddedLat.shape();
   IPosition inBlc(ndim, 0);
   IPosition patchShape(inLatShape);
-  for (uInt k = 0; k < ndim; k++) {
+  for (uint32_t k = 0; k < ndim; k++) {
     if (FFTShape(k) < inLatShape(k)) {
       inBlc(k) = inLatShape(k)/2 - FFTShape(k)/2;
       patchShape(k) = FFTShape(k);
@@ -354,7 +354,7 @@ pad(Lattice<T> & paddedLat, const Lattice<T> & inLat) {
   const SubLattice<T> inLatPatch(inLat, inLatSlice); 
   const IPosition outBlc = FFTShape/2 - patchShape/2;
   const Slicer paddedSlice(outBlc, patchShape);
-  SubLattice<T> paddedPatch(paddedLat, paddedSlice, True); 
+  SubLattice<T> paddedPatch(paddedLat, paddedSlice, true); 
   paddedPatch.copyData(inLatPatch);
 }
 
@@ -399,11 +399,11 @@ makeXfr(const Lattice<T> & psf) {
     itsXfr = new TempLattice<typename NumericTraits<T>::ConjugateType>(XFRShape, 
 								   maxLatSize);
     if (itsFFTShape == itsPsfShape) { // no need to pad the psf
-        LatticeFFT::rcfft(*itsXfr, psf, True, doFast_p);
+        LatticeFFT::rcfft(*itsXfr, psf, true, doFast_p);
     } else { // need to pad the psf 
       TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
       pad(paddedPsf, psf);
-      LatticeFFT::rcfft(*itsXfr, paddedPsf, True, doFast_p);
+      LatticeFFT::rcfft(*itsXfr, paddedPsf, true, doFast_p);
     }
   }
   // Only cache the psf if it cannot be reconstructed from the transfer
@@ -415,14 +415,14 @@ makeXfr(const Lattice<T> & psf) {
     }
     itsPsf = new TempLattice<T>(itsPsfShape, 1); // Prefer to put this on disk
     itsPsf->copyData(psf);
-    itsCachedPsf = True;
+    itsCachedPsf = true;
   } else {
     if(itsPsf) {
       delete itsPsf;
       itsPsf = 0;
     }
     itsPsf = new TempLattice<T>();
-    itsCachedPsf = False;
+    itsCachedPsf = false;
   }
   //  cerr << "makeXfr" << endl;
 }
@@ -433,10 +433,10 @@ makePsf(Lattice<T> & psf) const {
   DebugAssert(itsPsfShape == psf.shape(), AipsError);
   if (itsFFTShape == itsPsfShape) { // If the Transfer function has not been
                                     // padded so no unpadding is necessary 
-    LatticeFFT::crfft(psf, *itsXfr, True, doFast_p);
+    LatticeFFT::crfft(psf, *itsXfr, true, doFast_p);
   } else { // need to unpad the transfer function
     TempLattice<T> paddedPsf(itsFFTShape, maxLatSize);
-    LatticeFFT::crfft(paddedPsf, *itsXfr, True, doFast_p);
+    LatticeFFT::crfft(paddedPsf, *itsXfr, true, doFast_p);
     unpad(psf, paddedPsf);
   }
 }
@@ -463,8 +463,8 @@ calcFFTShape(const IPosition & psfShape, const IPosition & modelShape,
   // FFTShape on this axis is set to one. The iteration is done in the convolve
   // function.
   IPosition FFTShape = modelShape + psfShape/2;
-  const uInt ndim = FFTShape.nelements();
-  for (uInt i = 0; i < ndim; i++) {
+  const uint32_t ndim = FFTShape.nelements();
+  for (uint32_t i = 0; i < ndim; i++) {
     if (psfShape(i) == 1 || modelShape(i) == 1) {
       FFTShape(i) = 1; 
     } else if (FFTShape(i) < psfShape(i)) {
@@ -477,7 +477,7 @@ calcFFTShape(const IPosition & psfShape, const IPosition & modelShape,
 
 template<class T> void LatticeConvolver<T>::
 setFastConvolve(){
-  doFast_p=True;
+  doFast_p=true;
 }
 
 // Local Variables: 

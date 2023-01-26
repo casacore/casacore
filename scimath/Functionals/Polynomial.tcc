@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Operators
 template<class T>
 T Polynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
-  Int j = nparameters();
+  int32_t j = nparameters();
   T accum = param_p[--j];
   while (--j >= 0) {
     accum *= x[0];
@@ -47,10 +47,10 @@ T Polynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
 
 template<class T>
 Polynomial<T> Polynomial<T>::derivative() const {
-  Int ord = order() - 1;
+  int32_t ord = order() - 1;
   if (ord < 0) return Polynomial<T>(0);
   Polynomial<T> result(ord);
-  for (uInt i=1; i <= order(); ++i) result[i-1] = T(i)*(*this)[i];
+  for (uint32_t i=1; i <= order(); ++i) result[i-1] = T(i)*(*this)[i];
   return result;
 }
 

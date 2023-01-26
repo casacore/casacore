@@ -32,26 +32,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Define static members of MathFunc<T> for g++
 //
 #if defined(__GNUC__) && (__GNUC__<3 || (__GNUC__==3 && __GNUC_MINOR__<4))
-Float MathFunc<Float>::defcutoff_p = (2.0);
-Float MathFunc<Float>::defwidth_p = (1.3);
-Float MathFunc<Float>::defKBwidth_p = (2.0);
-Float MathFunc<Float>::defKBparm_p = (2.5);
-Float MathFunc<Float>::defmodKBparm_p = (3.0);
-Float MathFunc<Float>::defSphcutoff_p = (3.0);
-Float MathFunc<Float>::defSphparm_p = (1.0);
-Float MathFunc<Float>::defSincparm_p = (1.14);
-Float MathFunc<Float>::defExpPower_p = (2.0);
-Float MathFunc<Float>::defExpScale_p = (1.3/sqrt(4.0*C::ln2));
-Double MathFunc<Double>::defcutoff_p = (2.0);
-Double MathFunc<Double>::defwidth_p = (1.3);
-Double MathFunc<Double>::defKBwidth_p = (2.0);
-Double MathFunc<Double>::defKBparm_p = (2.5);
-Double MathFunc<Double>::defmodKBparm_p = (3.0);
-Double MathFunc<Double>::defSphcutoff_p = (3.0);
-Double MathFunc<Double>::defSphparm_p = (1.0);
-Double MathFunc<Double>::defSincparm_p = (1.14);
-Double MathFunc<Double>::defExpPower_p = (2.0);
-Double MathFunc<Double>::defExpScale_p = (1.3/sqrt(4.0*C::ln2));
+float MathFunc<float>::defcutoff_p = (2.0);
+float MathFunc<float>::defwidth_p = (1.3);
+float MathFunc<float>::defKBwidth_p = (2.0);
+float MathFunc<float>::defKBparm_p = (2.5);
+float MathFunc<float>::defmodKBparm_p = (3.0);
+float MathFunc<float>::defSphcutoff_p = (3.0);
+float MathFunc<float>::defSphparm_p = (1.0);
+float MathFunc<float>::defSincparm_p = (1.14);
+float MathFunc<float>::defExpPower_p = (2.0);
+float MathFunc<float>::defExpScale_p = (1.3/sqrt(4.0*C::ln2));
+double MathFunc<double>::defcutoff_p = (2.0);
+double MathFunc<double>::defwidth_p = (1.3);
+double MathFunc<double>::defKBwidth_p = (2.0);
+double MathFunc<double>::defKBparm_p = (2.5);
+double MathFunc<double>::defmodKBparm_p = (3.0);
+double MathFunc<double>::defSphcutoff_p = (3.0);
+double MathFunc<double>::defSphparm_p = (1.0);
+double MathFunc<double>::defSincparm_p = (1.14);
+double MathFunc<double>::defExpPower_p = (2.0);
+double MathFunc<double>::defExpScale_p = (1.3/sqrt(4.0*C::ln2));
 #endif
 
 
@@ -65,12 +65,12 @@ extern "C" {
 #endif
 
 /* Table of constant values 
-static Int c__1 = 1;
-static Int c__8 = 8;
+static int32_t c__1 = 1;
+static int32_t c__8 = 8;
 */
 
-/* Subroutine */ Int sphfn(Int *ialf, Int *im, Int *iflag, float *
-	eta, float *psi, Int *ierr)
+/* Subroutine */ int32_t sphfn(int32_t *ialf, int32_t *im, int32_t *iflag, float *
+	eta, float *psi, int32_t *ierr)
 {
     /* Initialized data */
 
@@ -178,13 +178,13 @@ static Int c__8 = 8;
 
     /* 
     Builtin functions 
-    Int s_wsfe(cilist *), do_fio(Int *, char *, ftnlen), e_wsfe();
+    int32_t s_wsfe(cilist *), do_fio(int32_t *, char *, ftnlen), e_wsfe();
     */
 
     /* Local variables */
-    static Int j, k;
+    static int32_t j, k;
     static float x;
-    extern /* Subroutine */ int msgwrt_(Int *);
+    extern /* Subroutine */ int msgwrt_(int32_t *);
     static float eta2;
 
     /* Fortran I/O blocks 
@@ -357,7 +357,7 @@ L900:
 /*   
     io___23.ciunit = msgtxt;
      s_wsfe(&io___23);
-    do_fio(&c__1, (char *)&(*ierr), (ftnlen)sizeof(Int));
+    do_fio(&c__1, (char *)&(*ierr), (ftnlen)sizeof(int32_t));
     e_wsfe();
     msgwrt_(&c__8);
 */
@@ -372,9 +372,9 @@ L999:
 	}
 #endif
 
-float sphfn(Int ialf, Int im, float eta)
+float sphfn(int32_t ialf, int32_t im, float eta)
 {
-  Int ialphahold, imhold, iflaghold, ierrhold;
+  int32_t ialphahold, imhold, iflaghold, ierrhold;
   ialphahold = ialf;
   imhold = im; 
   iflaghold = 0;

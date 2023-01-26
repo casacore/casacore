@@ -101,8 +101,8 @@ LatticeSlice1D<T>& LatticeSlice1D<T>::operator=(const LatticeSlice1D<T>& other)
 }
 
 template<class T>
-void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
-                                  const PixelCurve1D& curve, uInt axis0, uInt axis1,
+void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<bool>& mask,
+                                  const PixelCurve1D& curve, uint32_t axis0, uint32_t axis1,
                                   const IPosition& coord)
 {
    AlwaysAssert(itsLatticePtr, AipsError);
@@ -125,9 +125,9 @@ void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
 
 
 template<class T>
-void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
+void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<bool>& mask,
                                   const IPosition& blc, const IPosition& trc,
-                                  uInt nPts) 
+                                  uint32_t nPts) 
 {
    AlwaysAssert(itsLatticePtr, AipsError);
 
@@ -149,9 +149,9 @@ void LatticeSlice1D<T>::getSlice (Vector<T>& data, Vector<Bool>& mask,
 
 
 template<class T>
-void LatticeSlice1D<T>::getPosition (uInt& axis0, uInt& axis1,
-                                     Vector<Float>& x, Vector<Float>& y,
-                                     Vector<Float>& distance) const
+void LatticeSlice1D<T>::getPosition (uint32_t& axis0, uint32_t& axis1,
+                                     Vector<float>& x, Vector<float>& y,
+                                     Vector<float>& distance) const
 {
    x.resize(0);
    x = itsX;
@@ -160,7 +160,7 @@ void LatticeSlice1D<T>::getPosition (uInt& axis0, uInt& axis1,
 //
    distance.resize(x.nelements());
    distance[0] = 0.0;
-   for (uInt i=1; i<x.nelements(); i++) {
+   for (uint32_t i=1; i<x.nelements(); i++) {
       distance[i] = sqrt(square(x[i]-x[i-1]) + square(y[i]-y[i-1])) + distance[i-1];
    }
 //
@@ -179,7 +179,7 @@ void LatticeSlice1D<T>::checkCurve (IPosition& blc, IPosition& trc,
 
 // Check
 
-   const uInt nDim = itsLatticePtr->ndim();
+   const uint32_t nDim = itsLatticePtr->ndim();
    if (coord.nelements() != nDim) {
       throw(AipsError("coord must be of length number of image dimensions"));
    }
@@ -187,7 +187,7 @@ void LatticeSlice1D<T>::checkCurve (IPosition& blc, IPosition& trc,
 // Check curve in domain of lattice [-0.5 -> shape-0.5]
 
    const IPosition shape = itsLatticePtr->shape();
-   const uInt nPts = curve.npoints();
+   const uint32_t nPts = curve.npoints();
    curve.getPixelCoord (itsX, itsY, 0u, nPts-1, 1u);
    if (itsX[0]<-0.5 || itsY[0]<-0.5) {
       throw(AipsError("x or y start of curve falls outside of lattice"));
@@ -201,7 +201,7 @@ void LatticeSlice1D<T>::checkCurve (IPosition& blc, IPosition& trc,
 
    blc.resize(nDim);
    trc.resize(nDim);
-   for (uInt i=0; i<nDim; i++) {
+   for (uint32_t i=0; i<nDim; i++) {
       if (i==itsAxis0) {
         blc(i) = 0;
         trc(i) = shape(itsAxis0) - 1;
@@ -221,7 +221,7 @@ template<class T>
 void LatticeSlice1D<T>::findPlane (const IPosition& blc, 
                                    const IPosition& trc)
 {
-   const uInt nDim = itsLatticePtr->ndim();
+   const uint32_t nDim = itsLatticePtr->ndim();
 //
    if (blc.nelements() != nDim) {
       throw(AipsError("blc must be of length number of image dimensions"));
@@ -234,10 +234,10 @@ void LatticeSlice1D<T>::findPlane (const IPosition& blc,
 // assumed to hold the plane to extract the slice from.
 
    IPosition shape = trc - blc + 1;
-   Int axis0 = -1;
-   Int axis1 = -1;
-   uInt n = 0;
-   for (uInt i=0; i<shape.nelements(); i++) {
+   int32_t axis0 = -1;
+   int32_t axis1 = -1;
+   uint32_t n = 0;
+   for (uint32_t i=0; i<shape.nelements(); i++) {
       if (shape(i) > 1) {
          n++;
          if (axis0==-1) {
@@ -263,7 +263,7 @@ void LatticeSlice1D<T>::findPlane (const IPosition& blc,
 
 
 template<class T>
-void LatticeSlice1D<T>::doGetSlice (Vector<T>& data, Vector<Bool>& mask,
+void LatticeSlice1D<T>::doGetSlice (Vector<T>& data, Vector<bool>& mask,
                                     const PixelCurve1D&, 
                                     const IPosition& blc, const IPosition& trc)
 {
@@ -272,15 +272,15 @@ void LatticeSlice1D<T>::doGetSlice (Vector<T>& data, Vector<Bool>& mask,
 // 2D (checked) so can assign to Matrix safely
 
    const IPosition shape = trc - blc + 1;
-   const Matrix<T>& dataIn = itsLatticePtr->getSlice (blc, shape, True);
-   const Matrix<Bool>& maskIn = itsLatticePtr->getMaskSlice (blc, shape, True);
+   const Matrix<T>& dataIn = itsLatticePtr->getSlice (blc, shape, true);
+   const Matrix<bool>& maskIn = itsLatticePtr->getMaskSlice (blc, shape, true);
 
 // Interpolate
 
-   const uInt nPts = itsX.nelements();
+   const uint32_t nPts = itsX.nelements();
    data.resize(nPts);
    mask.resize(nPts);
-   for (uInt i=0; i<nPts; i++) {
+   for (uint32_t i=0; i<nPts; i++) {
       itsPos[0] = itsX[i];
       itsPos[1] = itsY[i];
       mask[i] = itsInterpPtr->interp (data[i], itsPos, dataIn, maskIn);

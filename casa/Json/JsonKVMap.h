@@ -86,7 +86,7 @@ namespace casacore {
     JsonKVMap& operator= (const JsonKVMap& that);
       
     // Is a key defined?
-    Bool isDefined (const String& name) const
+    bool isDefined (const String& name) const
       { return find(name) != end(); }
 
     // Get the value of a key. An exception is thrown if undefined.
@@ -95,8 +95,8 @@ namespace casacore {
     // \name Get the typed value of a key
     // Use the default if not existing.
     // <group>
-    Bool getBool (const String& name, Bool defVal) const;
-    Int64 getInt (const String& name, Int64 defVal) const;
+    bool getBool (const String& name, bool defVal) const;
+    int64_t getInt (const String& name, int64_t defVal) const;
     double getDouble (const String& name, double defVal) const;
     DComplex getDComplex (const String& name, const DComplex& defVal) const;
     const String& getString (const String& name, const String& defVal) const;

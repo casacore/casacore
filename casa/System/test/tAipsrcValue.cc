@@ -39,9 +39,9 @@ int main(){
   String aipsrcKeyword1("mine.double.test");
   String aipsrcKeyword2("mine.bool.test");
   String aipsrcValue;
-  Double aVal;
-  Bool bVal;
-  Vector<Double> vVal;
+  double aVal;
+  bool bVal;
+  Vector<double> vVal;
 
   Aipsrc::find(aipsrcValue, aipsrcKeyword);
   cout << aipsrcKeyword << " " << aipsrcValue << endl;
@@ -49,19 +49,19 @@ int main(){
   Aipsrc::find(aipsrcValue, aipsrcKeyword1);
   cout << aipsrcKeyword1 << " " << aipsrcValue << endl;
 
-  AipsrcValue<Double>::find(aVal, aipsrcKeyword, 10.5);
+  AipsrcValue<double>::find(aVal, aipsrcKeyword, 10.5);
   cout << aipsrcKeyword << " (D): " << aVal << endl;
 
-  AipsrcValue<Double>::find(aVal, aipsrcKeyword1, 22.9);
+  AipsrcValue<double>::find(aVal, aipsrcKeyword1, 22.9);
   cout << aipsrcKeyword1 << " (D): " << aVal << endl;
 
-  AipsrcValue<Bool>::find(bVal, aipsrcKeyword2, True);
+  AipsrcValue<bool>::find(bVal, aipsrcKeyword2, true);
   cout << aipsrcKeyword2 << " (B): " << bVal << endl;
 
-  AipsrcVector<Double>::find(vVal, aipsrcKeyword1);
+  AipsrcVector<double>::find(vVal, aipsrcKeyword1);
   cout << aipsrcKeyword1 << " (V): " << vVal << endl;
 
-  AipsrcValue<Double>::find(aVal, aipsrcKeyword1, "m/s", "km/s");
+  AipsrcValue<double>::find(aVal, aipsrcKeyword1, "m/s", "km/s");
   cout << aipsrcKeyword1 << " (Q): " << aVal << endl;
 
   cout << "AIPSROOT: " << Aipsrc::aipsRoot() << endl;
@@ -71,24 +71,24 @@ int main(){
   cout << "AIPSHOME: " << Aipsrc::aipsHome() << endl;
 
   {
-    uInt n = AipsrcValue<Double>::registerRC(aipsrcKeyword, 100.05);
-    uInt n1= AipsrcValue<Double>::registerRC(aipsrcKeyword1, 220.09);
-    uInt n2= AipsrcValue<Bool>::registerRC(aipsrcKeyword2, False);
+    uint32_t n = AipsrcValue<double>::registerRC(aipsrcKeyword, 100.05);
+    uint32_t n1= AipsrcValue<double>::registerRC(aipsrcKeyword1, 220.09);
+    uint32_t n2= AipsrcValue<bool>::registerRC(aipsrcKeyword2, false);
     cout << "Registrations: " << n << ", " << n1 << ", " << n2 << endl;
-    Double aVal1;
-    aVal = AipsrcValue<Double>::get(n);
-    aVal1 = AipsrcValue<Double>::get(n1);
-    bVal = AipsrcValue<Bool>::get(n2);
+    double aVal1;
+    aVal = AipsrcValue<double>::get(n);
+    aVal1 = AipsrcValue<double>::get(n1);
+    bVal = AipsrcValue<bool>::get(n2);
     cout << "Values: " << aVal << ", " << aVal1 << ", " << bVal << endl;
-    n = AipsrcValue<Double>::registerRC(aipsrcKeyword, 2345);
-    AipsrcValue<Double>::set(n1, 9876);
+    n = AipsrcValue<double>::registerRC(aipsrcKeyword, 2345);
+    AipsrcValue<double>::set(n1, 9876);
     cout << "Registrations: " << n << ", " << n1 << endl;
-    aVal = AipsrcValue<Double>::get(n);
-    aVal1 = AipsrcValue<Double>::get(n1);
+    aVal = AipsrcValue<double>::get(n);
+    aVal1 = AipsrcValue<double>::get(n1);
     cout << "Values: " << aVal << ", " << aVal1 << endl;
-    AipsrcValue<Double>::save(n);
-    AipsrcValue<Double>::save(n1);
-    AipsrcValue<Bool>::save(n2);
+    AipsrcValue<double>::save(n);
+    AipsrcValue<double>::save(n1);
+    AipsrcValue<bool>::save(n2);
   }
 
   return 0; 

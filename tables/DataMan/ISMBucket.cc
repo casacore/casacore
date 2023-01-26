@@ -47,13 +47,13 @@ ISMBucket::ISMBucket (ISMBase* parent, const char* bucketStorage)
   dataLeng_p (0),
   indexLeng_p(0),
   rowIndex_p (parent->ncolumn(), static_cast<Block<rownr_t>*>(0)),
-  offIndex_p (parent->ncolumn(), static_cast<Block<uInt>*>(0)),
-  indexUsed_p(parent->ncolumn(), (uInt)0)
+  offIndex_p (parent->ncolumn(), static_cast<Block<uint32_t>*>(0)),
+  indexUsed_p(parent->ncolumn(), (uint32_t)0)
 {
-    uInt nrcol = stmanPtr_p->ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = stmanPtr_p->ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	rowIndex_p[i] = new Block<rownr_t>;
-	offIndex_p[i] = new Block<uInt>;
+	offIndex_p[i] = new Block<uint32_t>;
     }
     // Get the initial index length.
     // This consists of the offset at the beginning of the bucket
@@ -70,8 +70,8 @@ ISMBucket::ISMBucket (ISMBase* parent, const char* bucketStorage)
 
 ISMBucket::~ISMBucket()
 {
-    uInt nrcol = stmanPtr_p->ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = stmanPtr_p->ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	delete rowIndex_p[i];
 	delete offIndex_p[i];
     }
@@ -83,12 +83,12 @@ void ISMBucket::copy (const ISMBucket& that)
     dataLeng_p  = that.dataLeng_p;
     indexLeng_p = that.indexLeng_p;
     indexUsed_p = that.indexUsed_p;
-    uInt nrcol = stmanPtr_p->ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
-	uInt nused = indexUsed_p[i];
+    uint32_t nrcol = stmanPtr_p->ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
+	uint32_t nused = indexUsed_p[i];
 	rowIndex_p[i]->resize (nused);
 	offIndex_p[i]->resize (nused);
-	for (uInt j=0; j<nused; j++) {
+	for (uint32_t j=0; j<nused; j++) {
 	    (*(rowIndex_p[i]))[j] = (*(that.rowIndex_p[i]))[j];
 	    (*(offIndex_p[i]))[j] = (*(that.offIndex_p[i]))[j];
 	}
@@ -97,10 +97,10 @@ void ISMBucket::copy (const ISMBucket& that)
 }
 
 
-uInt& ISMBucket::getOffset (uInt colnr, rownr_t rownr)
+uint32_t& ISMBucket::getOffset (uint32_t colnr, rownr_t rownr)
 {
-    Bool found;
-    uInt inx = binarySearchBrackets (found, *(rowIndex_p[colnr]),
+    bool found;
+    uint32_t inx = binarySearchBrackets (found, *(rowIndex_p[colnr]),
 				     rownr, indexUsed_p[colnr]);
     // If no exact match, start of interval is previous index.
     if (!found) {
@@ -109,14 +109,14 @@ uInt& ISMBucket::getOffset (uInt colnr, rownr_t rownr)
     return (*(offIndex_p[colnr]))[inx];
 }
 
-uInt ISMBucket::getInterval (uInt colnr, rownr_t rownr, rownr_t bucketNrrow,
-			     rownr_t& start, rownr_t& end, uInt& offset) const
+uint32_t ISMBucket::getInterval (uint32_t colnr, rownr_t rownr, rownr_t bucketNrrow,
+			     rownr_t& start, rownr_t& end, uint32_t& offset) const
 {
     Block<rownr_t>& rowIndex = *(rowIndex_p[colnr]);
-    Bool found;
-    uInt inx = binarySearchBrackets (found, rowIndex,
+    bool found;
+    uint32_t inx = binarySearchBrackets (found, rowIndex,
 				     rownr, indexUsed_p[colnr]);
-    uInt index = inx;
+    uint32_t index = inx;
     // If no exact match, start of interval is previous index.
     if (!found) {
 	inx--;
@@ -136,16 +136,16 @@ uInt ISMBucket::getInterval (uInt colnr, rownr_t rownr, rownr_t bucketNrrow,
 }
 
 
-Bool ISMBucket::canReplaceData (uInt newLeng, uInt oldLeng) const
+bool ISMBucket::canReplaceData (uint32_t newLeng, uint32_t oldLeng) const
 {
     if (dataLeng_p + newLeng - oldLeng + indexLeng_p <=
 	                                         stmanPtr_p->bucketSize()) {
-	return True;
+	return true;
     }
-    return False;
+    return false;
 }
-void ISMBucket::replaceData (uInt& offset, const char* data, uInt newLeng,
-			     uInt oldLeng)
+void ISMBucket::replaceData (uint32_t& offset, const char* data, uint32_t newLeng,
+			     uint32_t oldLeng)
 {
 #ifdef AIPS_TRACE
     cout << "  replace at offset "<<offset<< ": oldleng="<<oldLeng<<", new="<<newLeng<<endl;
@@ -164,25 +164,25 @@ void ISMBucket::replaceData (uInt& offset, const char* data, uInt newLeng,
 }
 
 
-Bool ISMBucket::canAddData (uInt leng) const
+bool ISMBucket::canAddData (uint32_t leng) const
 {
     // Adding adds the length of the data plus an entry for offset and rownr.
     if (dataLeng_p + leng + indexLeng_p + uIntSize_p + rownrSize_p <=
 	                                         stmanPtr_p->bucketSize()) {
-	return True;
+	return true;
     }
-    return False;
+    return false;
 }
 
-void ISMBucket::addData (uInt colnr, rownr_t rownr, uInt index,
-			 const char* data, uInt leng)
+void ISMBucket::addData (uint32_t colnr, rownr_t rownr, uint32_t index,
+			 const char* data, uint32_t leng)
 {
 #ifdef AIPS_TRACE
     cout << "  add at index "<< index<<endl;
 #endif
     Block<rownr_t>& rowIndex = *(rowIndex_p[colnr]);
-    Block<uInt>& offIndex = *(offIndex_p[colnr]);
-    uInt nrused = indexUsed_p[colnr];
+    Block<uint32_t>& offIndex = *(offIndex_p[colnr]);
+    uint32_t nrused = indexUsed_p[colnr];
     DebugAssert ((index == 0  ||  rowIndex[index-1] < rownr)  &&
 		 (index <= nrused)  &&
 		 (index == nrused  ||  rowIndex[index] >= rownr), AipsError);
@@ -196,7 +196,7 @@ void ISMBucket::addData (uInt colnr, rownr_t rownr, uInt index,
 	rowIndex[index]++;
     }
     // Shift to the right.
-    for (uInt i=nrused; i>index; i--) {
+    for (uint32_t i=nrused; i>index; i--) {
 	rowIndex[i] = rowIndex[i-1];
 	offIndex[i] = offIndex[i-1];
     }
@@ -208,13 +208,13 @@ void ISMBucket::addData (uInt colnr, rownr_t rownr, uInt index,
 }
 
 
-uInt ISMBucket::getLength (uInt fixedLength, const char* data) const
+uint32_t ISMBucket::getLength (uint32_t fixedLength, const char* data) const
 {
     if (fixedLength != 0) {
 	return fixedLength;
     }
     // Get the data item length if it is variable.
-    uInt leng;
+    uint32_t leng;
     Conversion::ValueFunction* readuInt =
 	                  ISMColumn::getReaduInt (stmanPtr_p->asBigEndian());
     readuInt (&leng, data, 1);
@@ -222,14 +222,14 @@ uInt ISMBucket::getLength (uInt fixedLength, const char* data) const
 }
 
 
-void ISMBucket::shiftLeft (uInt index, uInt nr, Block<rownr_t>& rowIndex,
-			   Block<uInt>& offIndex, uInt& nused, uInt leng)
+void ISMBucket::shiftLeft (uint32_t index, uint32_t nr, Block<rownr_t>& rowIndex,
+			   Block<uint32_t>& offIndex, uint32_t& nused, uint32_t leng)
 {
 #ifdef AIPS_TRACE
     cout<<"   shift left "<<nr<<" elements"<<endl;
 #endif
     // First remove the data items.
-    for (uInt i=0; i<nr; i++) {
+    for (uint32_t i=0; i<nr; i++) {
 	removeData (offIndex[index+i], leng);
     }
     // Now shift row numbers and offsets to the left.
@@ -242,7 +242,7 @@ void ISMBucket::shiftLeft (uInt index, uInt nr, Block<rownr_t>& rowIndex,
     nused -= nr;
 }
 
-void ISMBucket::removeData (uInt offset, uInt leng)
+void ISMBucket::removeData (uint32_t offset, uint32_t leng)
 {
     // Get the data item length if it is variable.
     leng = getLength (leng, data_p + offset);
@@ -255,10 +255,10 @@ void ISMBucket::removeData (uInt offset, uInt leng)
     if (dataLeng_p > offset) {
 	memmove (data_p + offset, data_p + offset + leng, dataLeng_p - offset);
 	// Decrement the offset of all other items following this one.
-	uInt nrcol = offIndex_p.nelements();
-	for (uInt i=0; i<nrcol; i++) {
-	    Block<uInt>& offIndex = *(offIndex_p[i]);
-	    for (uInt j=0; j<indexUsed_p[i]; j++) {
+	uint32_t nrcol = offIndex_p.nelements();
+	for (uint32_t i=0; i<nrcol; i++) {
+	    Block<uint32_t>& offIndex = *(offIndex_p[i]);
+	    for (uint32_t j=0; j<indexUsed_p[i]; j++) {
 		if (offIndex[j] > offset) {
 		    offIndex[j] -= leng;
 		}
@@ -267,12 +267,12 @@ void ISMBucket::removeData (uInt offset, uInt leng)
     }
 }
 
-uInt ISMBucket::insertData (const char* data, uInt leng)
+uint32_t ISMBucket::insertData (const char* data, uint32_t leng)
 {
     AlwaysAssert (dataLeng_p + leng + indexLeng_p <= stmanPtr_p->bucketSize(),
 		  AipsError);
     memcpy (data_p + dataLeng_p, data, leng);
-    uInt offset = dataLeng_p;
+    uint32_t offset = dataLeng_p;
     dataLeng_p += leng;
 #ifdef AIPS_TRACE
     cout<<"  inserted "<<leng<<" bytes at "<<offset << endl;
@@ -304,7 +304,7 @@ char* ISMBucket::initCallBack (void* owner)
 
 void ISMBucket::write (char* bucketStorage) const
 {
-    uInt nrcol = stmanPtr_p->ncolumn();
+    uint32_t nrcol = stmanPtr_p->ncolumn();
     Conversion::ValueFunction* writeuInt =
 	                  ISMColumn::getWriteuInt (stmanPtr_p->asBigEndian());
     Conversion::ValueFunction* writeRownr =
@@ -312,18 +312,18 @@ void ISMBucket::write (char* bucketStorage) const
     // See if all rownrs fit in 32 bits.
     // This will often be the case and makes it possible to use an older
     // Casacore version.
-    Bool use32 = True;
-    for (uInt i=0; i<nrcol; i++) {
-	uInt nr = indexUsed_p[i];
+    bool use32 = true;
+    for (uint32_t i=0; i<nrcol; i++) {
+	uint32_t nr = indexUsed_p[i];
         if (nr > 0  &&  (*rowIndex_p[i])[nr-1] > DataManager::MAXROWNR32) {
-          use32 = False;
+          use32 = false;
           break;
         }
     }
     // The index will be written just after the data.
     // Set high bit if 64 bit row numbers are used.
-    uInt offset = dataLeng_p + uIntSize_p;
-    uInt woffset = offset;
+    uint32_t offset = dataLeng_p + uIntSize_p;
+    uint32_t woffset = offset;
     if (!use32) {
         woffset |= 0x80000000;
     }
@@ -331,12 +331,12 @@ void ISMBucket::write (char* bucketStorage) const
     // Copy the data.
     memcpy (bucketStorage + uIntSize_p, data_p, dataLeng_p);
     // Write the index.
-    for (uInt i=0; i<nrcol; i++) {
+    for (uint32_t i=0; i<nrcol; i++) {
 	offset += writeuInt (bucketStorage+offset, &(indexUsed_p[i]), 1);
-	uInt nr = indexUsed_p[i];
+	uint32_t nr = indexUsed_p[i];
         if (use32) {
-            uInt tmp32;
-            for (uInt j=0; j<nr; ++j) {
+            uint32_t tmp32;
+            for (uint32_t j=0; j<nr; ++j) {
                 tmp32 = (*rowIndex_p[i])[j];
                 offset += writeuInt (bucketStorage+offset, &tmp32, 1);
             }
@@ -353,37 +353,37 @@ void ISMBucket::write (char* bucketStorage) const
 
 void ISMBucket::read (const char* bucketStorage)
 {
-    uInt nrcol = stmanPtr_p->ncolumn();
+    uint32_t nrcol = stmanPtr_p->ncolumn();
     Conversion::ValueFunction* readuInt =
 	                  ISMColumn::getReaduInt  (stmanPtr_p->asBigEndian());
     Conversion::ValueFunction* readRownr =
 	                  ISMColumn::getReadRownr (stmanPtr_p->asBigEndian());
     // Get the offset of the index.
-    uInt offset;
+    uint32_t offset;
     readuInt (&offset, bucketStorage, 1);
     indexLeng_p = uIntSize_p;
     // The high 4 bits (currently 1 bit is used) give the type/version.
     // If set, the rownrs are written as 64 bits.
     // If unset, it is 32 bit which is also the old Casacore behaviour making
     // it backward compatible.
-    uInt type = offset & 0xf0000000;
+    uint32_t type = offset & 0xf0000000;
     offset &= 0x0fffffff;
     // See if old version, thus rownrs use 32 bits.
-    Bool use32 = (type == 0);
+    bool use32 = (type == 0);
     // Copy the data, which are just before the index.
     dataLeng_p = offset - uIntSize_p;
     memcpy (data_p, bucketStorage + uIntSize_p, dataLeng_p);
     // Read the index.
     // Calculate length of index always with full rownr length.
-    uInt rownr32;
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t rownr32;
+    for (uint32_t i=0; i<nrcol; i++) {
 	offset += readuInt (&(indexUsed_p[i]), bucketStorage+offset, 1);
         indexLeng_p += uIntSize_p;
-	uInt nr = indexUsed_p[i];
+	uint32_t nr = indexUsed_p[i];
 	rowIndex_p[i]->resize (nr);
 	offIndex_p[i]->resize (nr);
         if (use32) {
-          for (uInt j=0; j<nr; ++j) {
+          for (uint32_t j=0; j<nr; ++j) {
             offset += readuInt (&rownr32, bucketStorage+offset, 1);
             (*rowIndex_p[i])[j] = rownr32;
           }
@@ -398,14 +398,14 @@ void ISMBucket::read (const char* bucketStorage)
 }
 
 
-Bool ISMBucket::simpleSplit (ISMBucket* left, ISMBucket* right,
-			     Block<Bool>& duplicated,
+bool ISMBucket::simpleSplit (ISMBucket* left, ISMBucket* right,
+			     Block<bool>& duplicated,
 			     rownr_t& splitRownr, rownr_t rownr)
 {
     // Determine the last rownr in the bucket.
     rownr_t lastRow = 0;
-    uInt nrcol = stmanPtr_p->ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = stmanPtr_p->ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	rownr_t row = (*(rowIndex_p[i]))[indexUsed_p[i]-1];
         if (row > lastRow) {
 	    lastRow = row;
@@ -413,24 +413,24 @@ Bool ISMBucket::simpleSplit (ISMBucket* left, ISMBucket* right,
     }
     // Don't do a simple split if the row is not the last row in the bucket.
     if (rownr < lastRow) {
-	return False;
+	return false;
     }
     // The last values of the bucket are the starting values of the
     // right one, so copy them.
     // The left bucket is this bucket.
     // Remove the last value from the left if the rownr is in the bucket. 
     left->copy (*this);
-    for (uInt i=0; i<nrcol; i++) {
-	uInt index = indexUsed_p[i] - 1;
+    for (uint32_t i=0; i<nrcol; i++) {
+	uint32_t index = indexUsed_p[i] - 1;
 	rownr_t row = (*(rowIndex_p[i]))[index];
 	copyData (*right, i, 0, index, 0);
-	duplicated[i] = True;
+	duplicated[i] = true;
 	if (row == rownr) {
 	    left->shiftLeft (index, 1,
 			     left->rowIndex(i), left->offIndex(i),
 			     left->indexUsed(i),
 			     stmanPtr_p->getColumn(i).getFixedLength());
-	    duplicated[i] = False;
+	    duplicated[i] = false;
 	}
     }
     splitRownr = rownr;
@@ -443,16 +443,16 @@ Bool ISMBucket::simpleSplit (ISMBucket* left, ISMBucket* right,
     cout << "Right" << endl;
     right->show (cout);
 #endif
-    return True;
+    return true;
 }
 
 rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
-                          Block<Bool>& duplicated,
+                          Block<bool>& duplicated,
                           rownr_t bucketStartRow, rownr_t bucketNrrow,
-                          uInt colnr, rownr_t rownr, uInt lengToAdd)
+                          uint32_t colnr, rownr_t rownr, uint32_t lengToAdd)
 {
     AlwaysAssert (bucketNrrow > 1, AipsError);
-    uInt nrcol = stmanPtr_p->ncolumn();
+    uint32_t nrcol = stmanPtr_p->ncolumn();
     duplicated.resize (nrcol);
     left  = new ISMBucket (stmanPtr_p, 0);
     right = new ISMBucket (stmanPtr_p, 0);
@@ -465,8 +465,8 @@ rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
 	}
     }
     // Count the number of values in all columns.
-    uInt nr = 0;
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nr = 0;
+    for (uint32_t i=0; i<nrcol; i++) {
 	nr += indexUsed_p[i];
     }
     // Create a block containing the row numbers of all
@@ -474,32 +474,32 @@ rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     Block<rownr_t> rows(nr + 1);
     rows[0] = rownr;               // new item
     nr = 1;
-    for (uInt i=0; i<nrcol; i++) {
-	for (uInt j=0; j<indexUsed_p[i]; j++) {
+    for (uint32_t i=0; i<nrcol; i++) {
+	for (uint32_t j=0; j<indexUsed_p[i]; j++) {
 	    rows[nr++] = (*rowIndex_p[i])[j];
 	}
     }
     // Sort it (uniquely) to get all row numbers with a value.
-    uInt nruniq = GenSort<rownr_t>::sort (rows, rows.nelements(), 
+    uint32_t nruniq = GenSort<rownr_t>::sort (rows, rows.nelements(), 
                                           Sort::Ascending, Sort::NoDuplicates);
     // If the bucket contains values of only one row, a simple split
     // can be done (and should succeed).
     if (nruniq == 1) {
-	Bool split = simpleSplit (left, right, duplicated, splitRownr, rownr);
+	bool split = simpleSplit (left, right, duplicated, splitRownr, rownr);
 	AlwaysAssert (split, AipsError);
 	return splitRownr;
     }
     // Now get the length of all data items in the rows.
     // Also determine the index of the row to be added.
-    Matrix<uInt> itemLeng(nrcol, nruniq);
+    Matrix<uint32_t> itemLeng(nrcol, nruniq);
     itemLeng = 0;
-    Block<uInt> cursor(nrcol, uInt(0));
-    uInt index = 0;
-    for (uInt j=0; j<nruniq; j++) {
-	for (uInt i=0; i<nrcol; i++) {
+    Block<uint32_t> cursor(nrcol, uint32_t(0));
+    uint32_t index = 0;
+    for (uint32_t j=0; j<nruniq; j++) {
+	for (uint32_t i=0; i<nrcol; i++) {
 	    if (cursor[i] < indexUsed_p[i]
 	    &&  (*rowIndex_p[i])[cursor[i]] == rows[j]) {
-		uInt leng = getLength (
+		uint32_t leng = getLength (
 		                  stmanPtr_p->getColumn(i).getFixedLength(),
 		                  data_p + (*offIndex_p[i])[cursor[i]]);
 		itemLeng(i,j) = 2*uIntSize_p + leng;
@@ -519,12 +519,12 @@ rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     }
     // Now determine the length of all items in each row.
     // Determine the cumulative and total size.
-    Block<uInt> size(nrcol, uInt(0));
-    Block<uInt> rowLeng(nruniq, uInt(0));
-    Block<uInt> cumLeng(nruniq);
-    uInt totLeng = 0;
-    for (uInt j=0; j<nruniq; j++) {
-	for (uInt i=0; i<nrcol; i++) {
+    Block<uint32_t> size(nrcol, uint32_t(0));
+    Block<uint32_t> rowLeng(nruniq, uint32_t(0));
+    Block<uint32_t> cumLeng(nruniq);
+    uint32_t totLeng = 0;
+    for (uint32_t j=0; j<nruniq; j++) {
+	for (uint32_t i=0; i<nrcol; i++) {
 	    if (itemLeng(i,j) != 0) {
 		size[i]  = itemLeng(i,j);
 		totLeng += itemLeng(i,j);
@@ -541,9 +541,9 @@ rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     // each column. A row has to be copied completely, because a row
     // cannot be split over multiple buckets.
     cursor = 0;
-    for (uInt j=0; j<index; j++) {
+    for (uint32_t j=0; j<index; j++) {
 	rownr_t row = rows[j];
-	for (uInt i=0; i<nrcol; i++) {
+	for (uint32_t i=0; i<nrcol; i++) {
 	    if (cursor[i] < indexUsed_p[i]
             &&  (*rowIndex_p[i])[cursor[i]] == row) {
 		copyData (*left, i, row, cursor[i], cursor[i]);
@@ -556,23 +556,23 @@ rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     // Take from this index if the row number matches, otherwise
     // from the previous index. Fill the duplicate switch.
     splitRownr = rows[index];
-    for (uInt i=0; i<nrcol; i++) {
+    for (uint32_t i=0; i<nrcol; i++) {
 	if (cursor[i] < indexUsed_p[i]
         &&  (*rowIndex_p[i])[cursor[i]] == splitRownr) {
 	    copyData (*right, i, 0, cursor[i], 0);
 	    cursor[i]++;
-	    duplicated[i] = False;
+	    duplicated[i] = false;
 	}else{
 	    copyData (*right, i, 0, cursor[i]-1, 0);
-	    duplicated[i] = True;
+	    duplicated[i] = true;
 	}
     }
     // Now copy the rest of the values.
-    Block<uInt> toCursor(nrcol, 1);
+    Block<uint32_t> toCursor(nrcol, 1);
     index++;
     while (index < nruniq) {
 	rownr_t row = rows[index];
-	for (uInt i=0; i<nrcol; i++) {
+	for (uint32_t i=0; i<nrcol; i++) {
 	    if (cursor[i] < indexUsed_p[i]
             &&  (*rowIndex_p[i])[cursor[i]] == row) {
 		copyData (*right, i, row - splitRownr,
@@ -594,11 +594,11 @@ rownr_t ISMBucket::split (ISMBucket*& left, ISMBucket*& right,
     return splitRownr;
 }
 
-uInt ISMBucket::getSplit (uInt totLeng, const Block<uInt>& rowLeng,
-			  const Block<uInt>& cumLeng)
+uint32_t ISMBucket::getSplit (uint32_t totLeng, const Block<uint32_t>& rowLeng,
+			  const Block<uint32_t>& cumLeng)
 {
     // If there are only 2 elements, we can only split in the middle.
-    uInt nr = rowLeng.nelements();
+    uint32_t nr = rowLeng.nelements();
     if (nr <= 2) {
 	return 1;
     }
@@ -613,8 +613,8 @@ uInt ISMBucket::getSplit (uInt totLeng, const Block<uInt>& rowLeng,
     //   length of right bucket = rowLeng[i] + totleng - cumLeng[i]
     // Loop until left size exceeds right size or until we get at the
     // rightmost index.
-    uInt i=1;
-    uInt diff = 0;
+    uint32_t i=1;
+    uint32_t diff = 0;
     while (cumLeng[i-1]  <  rowLeng[i] + totLeng - cumLeng[i]  &&  i<nr-1) {
 	diff = rowLeng[i] + totLeng - cumLeng[i] - cumLeng[i-1];
 	i++;
@@ -630,13 +630,13 @@ uInt ISMBucket::getSplit (uInt totLeng, const Block<uInt>& rowLeng,
 }
 
 
-uInt ISMBucket::copyData (ISMBucket& other, uInt colnr, rownr_t toRownr,
-			  uInt fromIndex, uInt toIndex) const
+uint32_t ISMBucket::copyData (ISMBucket& other, uint32_t colnr, rownr_t toRownr,
+			  uint32_t fromIndex, uint32_t toIndex) const
 {
     // Determine the length of the data item.
     // If variable, read it from the data.
     char* data = data_p + (*offIndex_p[colnr])[fromIndex];
-    uInt leng = getLength (stmanPtr_p->getColumn(colnr).getFixedLength(),
+    uint32_t leng = getLength (stmanPtr_p->getColumn(colnr).getFixedLength(),
 			   data);
     other.addData (colnr, toRownr, toIndex, data, leng);
     return leng;
@@ -645,8 +645,8 @@ uInt ISMBucket::copyData (ISMBucket& other, uInt colnr, rownr_t toRownr,
 
 void ISMBucket::show (ostream& os) const
 {
-    uInt nrcol = stmanPtr_p->ncolumn();
-    for (uInt i=0; i<nrcol; i++) {
+    uint32_t nrcol = stmanPtr_p->ncolumn();
+    for (uint32_t i=0; i<nrcol; i++) {
 	cout << "  rows: ";
 	showBlock (os, *(rowIndex_p[i]), indexUsed_p[i]);
 	cout << endl;
@@ -656,22 +656,22 @@ void ISMBucket::show (ostream& os) const
     }
 }
 
-Bool ISMBucket::check (uInt& offendingCol, uInt& offendingIndex,
+bool ISMBucket::check (uint32_t& offendingCol, uint32_t& offendingIndex,
                        rownr_t& offendingRow, rownr_t& offendingPrevRow) const
 {
-  uInt ncols = stmanPtr_p->ncolumn();
-  for (uInt col_i=0; col_i<ncols; ++col_i) {
-    for (uInt it=1; it<indexUsed_p[col_i]; ++it) {
+  uint32_t ncols = stmanPtr_p->ncolumn();
+  for (uint32_t col_i=0; col_i<ncols; ++col_i) {
+    for (uint32_t it=1; it<indexUsed_p[col_i]; ++it) {
       if ( (*(rowIndex_p[col_i]))[it] <= (*(rowIndex_p[col_i]))[it-1] ) {
         offendingCol = col_i;
         offendingIndex = it;
         offendingRow = (*(rowIndex_p[col_i]))[it];
         offendingPrevRow = (*(rowIndex_p[col_i]))[it-1];
-        return False;
+        return false;
       }
     }
   }
-  return True;
+  return true;
 }
 
 } //# NAMESPACE CASACORE - END

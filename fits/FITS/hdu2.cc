@@ -123,7 +123,7 @@ void HeaderDataUnit::errmsg(HDUErrs e, const char *s) {
 //== determine_type of HeaderDataUnit ========================================
 
 // This function determines the HDU type and the data type
-Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype, 
+bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype, 
 	FITS::ValueType &dtype, FITSErrorHandler errhandler, HDUErrs &errstat) {
         //cout << "HeaderDataUnit::determine_type        kw=\n" << kw << endl;
 	errstat = OK;
@@ -135,7 +135,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    errstat = MISSKEY; 
 	    errhandler("There are no keywords", FITSError::SEVERE);
 	    htype = FITS::NotAHDU;
-	    return False;
+	    return false;
 	}
 	FitsKeyword *p_bitpix = kw.next();
       	FitsKeyword *naxis = kw.next();
@@ -191,11 +191,11 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	}
 	if (errstat != OK) {
 	    htype = FITS::NotAHDU;
-	    return False;
+	    return false;
 	}
 
 	// OK, got'em
-	Int bitpix = p_bitpix->asInt(); // get value of BITPIX
+	int32_t bitpix = p_bitpix->asInt(); // get value of BITPIX
 	switch (bitpix) {
 	    case 8:   dtype = FITS::BYTE; break;
 	    case 16:  dtype = FITS::SHORT; break;
@@ -206,7 +206,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 		errstat = BADBITPIX; 
 		errhandler("Invalid value of BITPIX", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	}
 	if (word1->kw().name() == FITS::SIMPLE) {
             //cout << "naxis=" << naxis->asInt() << " naxis2=" << naxis2->asInt()
@@ -240,7 +240,7 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 	    	htype = FITS::UnknownExtensionHDU;
             //cout << "<<HeaderDataUnit::determine_type - extension- htype=" << htype << endl; 
 	}
-	return True;
+	return true;
 }
 
 //== compute_size of HeaderDataUnit ==========================================
@@ -249,17 +249,17 @@ Bool HeaderDataUnit::determine_type(FitsKeywordList &kw, FITS::HDUType &htype,
 // of dimensions is also determined.  This routine assumes that hdu type
 // has been appropriately set, but it may be changed in the process.  Data
 // type is also determined.
-Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
-	Int &dims, FITS::HDUType &htype, FITS::ValueType &dtype,
+bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
+	int32_t &dims, FITS::HDUType &htype, FITS::ValueType &dtype,
 	FITSErrorHandler errhandler, HDUErrs &st) {
 
 	datasize = 0;
 	dims   = 0;
 	dtype = FITS::NOVALUE;
 	if (htype == FITS::NotAHDU)
-		return True;
+		return true;
 
-	Int bitpix = kw(FITS::BITPIX)->asInt(); // get value of BITPIX
+	int32_t bitpix = kw(FITS::BITPIX)->asInt(); // get value of BITPIX
 	dims = kw(FITS::NAXIS)->asInt(); // get value of NAXIS
 	switch (bitpix) {
 	    case 8:   dtype = FITS::BYTE; break;
@@ -271,10 +271,10 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		st = BADBITPIX; 
 		errhandler("Invalid value of BITPIX", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	}
 	if (dims == 0) // There is no data
-	    return True;
+	    return true;
 	int n;
 	FitsKeyword *naxisn;
 	// Primary Array HDU
@@ -292,7 +292,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 				                 FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
-		        return False;
+		        return false;
 		      } else{
 			     errhandler("NAXISn keyword is out of order.",
 				     FITSError::WARN);
@@ -301,13 +301,13 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		 datasize *= naxisn->asInt();
 	  }// end of for loop.
 	    datasize *= FITS::fitssize(dtype);
-	    return True;
+	    return true;
 	}// end of if( htype == ...).
 	// Primary Table HDU
 	else if (htype == FITS::PrimaryTableHDU) {
 	    //NAXIS1 = 777777701 and NAXIS2 = 0
 	    datasize = 0; //by definition
-	    return True;
+	    return true;
 	}
 	// Primary Group HDU 
 	else if ( htype == FITS::PrimaryGroupHDU) {
@@ -325,7 +325,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 				   FITSError::SEVERE);
 		    	   datasize = 0;
 		    	   htype = FITS::NotAHDU;
-		    	   return False;
+		    	   return false;
 		      } else
 			     errhandler("NAXISn keyword is out of order.",
 				   FITSError::WARN);
@@ -338,7 +338,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    datasize += kw.curr()->asInt();		 
 	    if (!kw(FITS::GCOUNT)) {
@@ -347,7 +347,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    datasize *= kw.curr()->asInt();		 
 	    datasize *= FITS::fitssize(dtype);		 
@@ -358,7 +358,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		    errhandler("Missing required GROUPS keyword",
 			       FITSError::WARN); 
 		}
-	    return True;
+	    return true;
 	} 
 
 	// Image Extension HDU
@@ -377,7 +377,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 				   FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
-		        return False;
+		        return false;
 		    } else
 			errhandler("NAXISn keyword is out of order.",
 				   FITSError::WARN);
@@ -403,7 +403,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			   FITSError::WARN); 
 	    }
 	    datasize *= FITS::fitssize(dtype);
-	    return True;
+	    return true;
 
 	} 
 
@@ -422,7 +422,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 				   FITSError::SEVERE);
 		        datasize = 0;
 		        htype = FITS::NotAHDU;
-		        return False;
+		        return false;
 		    } else
 			errhandler("NAXISn keyword is out of order.",
 				   FITSError::SEVERE);
@@ -435,7 +435,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    datasize += kw.curr()->asInt();
 	    if (!kw(FITS::GCOUNT)) {
@@ -444,11 +444,11 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			   FITSError::SEVERE);
 		datasize = 0;
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    datasize *= kw.curr()->asInt();
 	    datasize *= FITS::fitssize(dtype);
-	    return True;
+	    return true;
 
 	} 
 
@@ -459,7 +459,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		errhandler("BITPIX must be 8",
 			   FITSError::SEVERE);
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    dtype = FITS::CHAR; // This is the proper type
 	    if (dims != 2) {
@@ -467,7 +467,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		errhandler("NAXIS must be 2",
 			   FITSError::SEVERE);
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    datasize = 1;
 	    for (n = 1; n <= dims; n++) {
@@ -479,7 +479,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			       FITSError::SEVERE);
 		    datasize = 0;
 		    htype = FITS::NotAHDU;
-		    return False;
+		    return false;
 		}
 		datasize *= naxisn->asInt();
 	    }
@@ -503,7 +503,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		st = BADGCOUNT; 
 		errhandler("GCOUNT must be 1", FITSError::WARN); 
 	    }
-	    return True;
+	    return true;
 
 	} 
 
@@ -513,13 +513,13 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		st = BADBITPIX; 
 		errhandler("BITPIX must be 8", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    if (dims != 2) {
 		st = BADNAXIS; 
 		errhandler("NAXIS must be 2", FITSError::SEVERE);
 		htype = FITS::NotAHDU;
-		return False;
+		return false;
 	    }
 	    datasize = 1;
 	    for (n = 1; n <= dims; n++) {
@@ -531,7 +531,7 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 			       FITSError::SEVERE);
 		    datasize = 0;
 		    htype = FITS::NotAHDU;
-		    return False;
+		    return false;
 		}
 		datasize *= naxisn->asInt();
 	    }
@@ -554,9 +554,9 @@ Bool HeaderDataUnit::compute_size(FitsKeywordList &kw, OFF_T &datasize,
 		st = BADGCOUNT; 
 		errhandler("GCOUNT must be 1", FITSError::WARN); 
 	    }
-	    return True;
+	    return true;
 	}
-	return False;
+	return false;
 }
 //============================================================================
 HeaderDataUnit::~HeaderDataUnit() {
@@ -614,7 +614,7 @@ HeaderDataUnit::HeaderDataUnit(FitsInput &f, FITS::HDUType t,
         //cout << "[HeaderDataUnit::HeaderDataUnit] no_dims=" << no_dims << endl;
 
 	if (no_dims > 0) {
-	    if ((dimn = new Int [no_dims]) == 0) {
+	    if ((dimn = new int32_t [no_dims]) == 0) {
 		errmsg(NOMEM,"[HeaderDataUnit::HeaderDataUnit] Cannot allocate memory.");
 		no_dims = 0;
 		return;
@@ -697,7 +697,7 @@ bool HeaderDataUnit::init_data_unit( FITS::HDUType t ){
 	    return false;
 	}
 	if (no_dims > 0) {
-	   if ((dimn = new Int [no_dims]) == 0) {
+	   if ((dimn = new int32_t [no_dims]) == 0) {
 		   errmsg(NOMEM,"Cannot allocate memory[HeaderDataUnit::init_data_unit]");
 		   no_dims = 0;
 		   return false;
@@ -745,12 +745,12 @@ char * HeaderDataUnit::assign(FITS::ReservedName nm, int ndx) {
 	return s;
 }
 //=============================================================================
-Vector<String> HeaderDataUnit::kwlist_str(Bool length80){ return fin->kwlist_str(length80); }
+Vector<String> HeaderDataUnit::kwlist_str(bool length80){ return fin->kwlist_str(length80); }
 //=============================================================================
-int HeaderDataUnit::read_data(char *addr, Int nb) {
+int HeaderDataUnit::read_data(char *addr, int32_t nb) {
 	return (fin ? fin->read(hdu_type,addr,nb) : 0); }
 //=============================================================================
-int HeaderDataUnit::write_data(FitsOutput &f, char *addr, Int nb) {
+int HeaderDataUnit::write_data(FitsOutput &f, char *addr, int32_t nb) {
 	return f.write(hdu_type,addr,nb,pad_char); }
 //=============================================================================
 OFF_T HeaderDataUnit::read_all_data(char *addr) {
@@ -759,7 +759,7 @@ OFF_T HeaderDataUnit::read_all_data(char *addr) {
 int HeaderDataUnit::write_all_data(FitsOutput &f, char *addr) {
 	return f.write_all(hdu_type,addr,pad_char); }
 //=============================================================================
-int HeaderDataUnit::skip(uInt n) {
+int HeaderDataUnit::skip(uint32_t n) {
 	return (fin ? fin->skip(hdu_type,n) : 0); }
 //=============================================================================
 int HeaderDataUnit::skip() {
@@ -985,7 +985,7 @@ void AsciiTableExtension::at_assign() {
 	fitsrow = 0;
 	tablerowsize = 0;
 	fitsrowsize = 0;
-   isoptimum = False;
+   isoptimum = false;
 	beg_row = 0;
 	end_row = 0;
 	curr_row = 0;
@@ -1007,11 +1007,11 @@ void AsciiTableExtension::at_assign() {
 	referenc_x = assign(FITS::REFERENC);
 	if (tfields_x == 0)
             return;
-	tbcol_x = new Int [tfields_x];
+	tbcol_x = new int32_t [tfields_x];
 	tform_x = new char * [tfields_x];
 	tscal_x = new double [tfields_x];
 	tzero_x = new double [tfields_x];
-	isatnull_x = new Bool [tfields_x];
+	isatnull_x = new bool [tfields_x];
 	tnull_x = new int [tfields_x];
 	tnulla_x = new char * [tfields_x];
 	ttype_x = new char * [tfields_x];
@@ -1031,7 +1031,7 @@ void AsciiTableExtension::at_assign() {
 	    tform_x[i] = assign(FITS::TFORM,(i + 1));
 	    tscal_x[i] = asgdbl(FITS::TSCAL,(i + 1),1.0);
 	    tzero_x[i] = asgdbl(FITS::TZERO,(i + 1),0.0);
-	    isatnull_x[i] = False;
+	    isatnull_x[i] = false;
 	    tnull_x[i] = Int_null;
 	    if (kwlist_(FITS::TNULL,(i + 1)) != 0) {
 	       if (kwlist_.curr()->type() == FITS::STRING) {
@@ -1057,10 +1057,10 @@ void AsciiTableExtension::at_assign() {
 
 	// Allocate space for field pointer and create the fields
 	fld = new FitsBase * [tfields()];
-	fits_offset = new uInt [tfields()];
-	fits_width = new uInt [tfields()];
+	fits_offset = new uint32_t [tfields()];
+	fits_width = new uint32_t [tfields()];
         format = new char * [tfields()];
-	table_offset = new uInt [tfields()];
+	table_offset = new uint32_t [tfields()];
         data_addr = new void * [tfields()];
 	if (fld == 0 || fits_offset == 0 || fits_width == 0 || 
 	    format == 0 || table_offset == 0 || data_addr == 0) {
@@ -1125,7 +1125,7 @@ void AsciiTableExtension::at_assign() {
 	tablerowsize = 0;
 	for (i = 0; i < tfields(); ++i)
 	    tablerowsize += fld[i]->localfieldsize();
-	isoptimum = False;
+	isoptimum = false;
 
 	// Determine field offsets for FITS and table rows
 	for (i = 0; i < tfields(); ++i) {
@@ -1314,7 +1314,7 @@ int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &fout, // I - FITS output 
 	   return -1;
 	}
 	if (!fout.isextend()) {
-		errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Cannot write extension HDU - EXTEND not True.");
+		errmsg(BADOPER,"[AsciiTableExtension::write_ascTbl_hdr()] Cannot write extension HDU - EXTEND not true.");
 		return -1;
 	}
 	if( !fout.required_keys_only() ){
@@ -1385,7 +1385,7 @@ int AsciiTableExtension::write_ascTbl_hdr( FitsOutput &fout, // I - FITS output 
 	char* l_header = &l_headerbytes[0];
 	OFF_T l_usedbytes = 0;
 	while( l_usedbytes < (l_datastart - l_headstart )){
-  	   fout.getkc().parse( l_header, kwlist_ ,0, errfn,True);
+  	   fout.getkc().parse( l_header, kwlist_ ,0, errfn,true);
 		l_usedbytes = l_usedbytes + fout.fitsrecsize();
 		l_header = &l_headerbytes[ l_usedbytes ];	
 	}
@@ -1483,7 +1483,7 @@ BinaryTableExtension::~BinaryTableExtension() {
 void BinaryTableExtension::bt_assign() {
 	int i, j, n;
 	size_t row_align;
-	uInt ne;
+	uint32_t ne;
 	const char *s;
 	const char *p;
 	int *dd;
@@ -1511,7 +1511,7 @@ void BinaryTableExtension::bt_assign() {
 	fitsrow = 0;
 	tablerowsize = 0;
 	fitsrowsize = 0;
-        isoptimum = False;
+        isoptimum = false;
 	beg_row = 0;
 	end_row = 0;
 	curr_row = 0;
@@ -1535,7 +1535,7 @@ void BinaryTableExtension::bt_assign() {
 	tform_x = new char * [tfields_x];
 	tscal_x = new double [tfields_x];
 	tzero_x = new double [tfields_x];
-	isatnull_x = new Bool [tfields_x];
+	isatnull_x = new bool [tfields_x];
 	tnull_x = new int [tfields_x];
 	ttype_x = new char * [tfields_x];
 	tunit_x = new char * [tfields_x];
@@ -1552,16 +1552,16 @@ void BinaryTableExtension::bt_assign() {
 	    tscal_x[i] = asgdbl(FITS::TSCAL,(i + 1),1.0);
 	    tzero_x[i] = asgdbl(FITS::TZERO,(i + 1),0.0);
 	    if (kwlist_(FITS::TNULL,(i + 1)) == 0) {
-	        isatnull_x[i] = False;
+	        isatnull_x[i] = false;
 	        tnull_x[i] = Int_null;
 	    } else {
 	        if (kwlist_.curr()->type() != FITS::LONG) {
 		    errmsg(BADTYPE,"Invalid value for keyword TNULL.");
-	            isatnull_x[i] = False;
+	            isatnull_x[i] = false;
 	            tnull_x[i] = Int_null;
 	        } else {
 	            tnull_x[i] = kwlist_.curr()->asInt();
-	            isatnull_x[i] = True;
+	            isatnull_x[i] = true;
 	        }
 	    }
 	    ttype_x[i] = assign(FITS::TTYPE,(i + 1));
@@ -1572,8 +1572,8 @@ void BinaryTableExtension::bt_assign() {
 
 	// Allocate space for field pointer and create the fields
 	fld = new FitsBase * [tfields()];
-	fits_offset = new uInt [tfields()];
-	table_offset = new uInt [tfields()];
+	fits_offset = new uint32_t [tfields()];
+	table_offset = new uint32_t [tfields()];
         data_addr = new void * [tfields()];
 	if (fld == 0 || fits_offset == 0 || table_offset == 0 ||
 	    data_addr == 0) {
@@ -1683,12 +1683,12 @@ void BinaryTableExtension::bt_assign() {
 	// compute FITS rowsize and tablerowsize
 	fitsrowsize = 0;
 	tablerowsize = 0;
-	isoptimum = True;
+	isoptimum = true;
 	for (i = 0; i < tfields(); ++i) {
 	    fitsrowsize += fld[i]->fitsfieldsize();
 	    tablerowsize += fld[i]->localfieldsize();
 	    if (fld[i]->fitsfieldsize() != fld[i]->localfieldsize())
-		isoptimum = False;
+		isoptimum = false;
 	}
 	
 	// check for consistency
@@ -1707,7 +1707,7 @@ void BinaryTableExtension::bt_assign() {
 	    if (n > (int)sizeof(double))// since DComplex is implemented in 
 		n = sizeof(double);     // terms of doubles, this is sufficient
 	    if ((fits_offset[i] % n) != 0)
-		isoptimum = False;
+		isoptimum = false;
 	}
 
 	if (isoptimum) {
@@ -1815,14 +1815,14 @@ void BinaryTableExtension::bt_assign() {
 
 	// check row alignment
 	if ((tablerowsize % row_align) != 0) {
-	    isoptimum = False;
+	    isoptimum = false;
 	    // must add padding to a table row
             tablerowsize += row_align - (tablerowsize % row_align);
 	}
 
 //#     We can never take the 'optimum' route if we have to convert fields
 #       if defined(AIPS_LITTLE_ENDIAN)
-        isoptimum = False;
+        isoptimum = false;
 #       endif
 
 	// set data buffers and associated bounds markers
@@ -1950,7 +1950,7 @@ int BinaryTableExtension::set_next(int n) {
         return n;
 }
 //================================================================================
-void BinaryTableExtension::set_fitsrow(Int n) {
+void BinaryTableExtension::set_fitsrow(int32_t n) {
 	curr_row = n;
 	unsigned char *addr = &table[(curr_row - beg_row) * tablerowsize];
 	if (isoptimum)
@@ -1968,7 +1968,7 @@ int BinaryTableExtension::write(FitsOutput &fout) {
 		 return (write_data(fout,(char *)table,n)); // It was above. GYL
 	} else {
 	    // write rows from beg_row to end_row
-	    for (n = uInt(beg_row); n <= uInt(end_row); ++n) {
+	    for (n = uint32_t(beg_row); n <= uint32_t(end_row); ++n) {
 	        set_fitsrow(n);
 	        if (writerow(fout) == -1)
 		    return -1;
@@ -2017,7 +2017,7 @@ int BinaryTableExtension::write_binTbl_hdr( FitsOutput &fout, // I - FITS output
 	   return -1;
 	}
 	if (!fout.isextend()) {
-		errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Cannot write extension HDU - EXTEND not True.");
+		errmsg(BADOPER,"[BinaryTableExtension::write_bintbl_hdr()] Cannot write extension HDU - EXTEND not true.");
 		return -1;
 	}
 	if( !fout.required_keys_only() ){
@@ -2092,7 +2092,7 @@ int BinaryTableExtension::write_binTbl_hdr( FitsOutput &fout, // I - FITS output
 	char* l_header = &l_headerbytes[0];
 	OFF_T l_usedbytes = 0;
 	while( l_usedbytes < (l_datastart - l_headstart )){
-  	   fout.getkc().parse( l_header, kwlist_ ,0, errfn,True);
+  	   fout.getkc().parse( l_header, kwlist_ ,0, errfn,true);
 		l_usedbytes = l_usedbytes + fout.fitsrecsize();
 		l_header = &l_headerbytes[ l_usedbytes ];	
 	}

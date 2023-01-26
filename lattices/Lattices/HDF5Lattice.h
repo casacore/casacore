@@ -82,9 +82,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <srcblock>
   // const IPosition arrayShape(4,1024,1024,4,256);
   // const String filename("myData_tmp.array");
-  // HDF5Lattice<Float> diskArray(arrayShape, filename);
+  // HDF5Lattice<float> diskArray(arrayShape, filename);
   // cout << "Created a HDF5Lattice of shape " << diskArray.shape() 
-  //   << " (" << diskArray.shape().product()/1024/1024*sizeof(Float) 
+  //   << " (" << diskArray.shape().product()/1024/1024*sizeof(float) 
   //   << " MBytes)" << endl
   //   << "in the table called " << diskArray.tableName() << endl;
   // diskArray.set(0.0f);
@@ -101,7 +101,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <templating arg=T>
   // <li> HDF5DataSet supports only a limited amount of types.
   // This restricts the template argument to
-  // the types Bool, Int Float, Double, Complex, and DComplex.
+  // the types bool, int32_t float, double, Complex, and DComplex.
   // </templating>
 
   template<typename T> class HDF5Lattice : public Lattice<T>
@@ -167,13 +167,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual Lattice<T>* clone() const;
 
     // A HDF5Lattice is always persistent.
-    virtual Bool isPersistent() const;
+    virtual bool isPersistent() const;
 
     // A HDF5Lattice is always paged to disk.
-    virtual Bool isPaged() const;
+    virtual bool isPaged() const;
 
     // Is the HDF5Lattice writable?
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Returns the shape of the HDF5Lattice.
     virtual IPosition shape() const;
@@ -181,7 +181,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Return the current HDF5 file name.
     // By default this includes the full path. 
     // The path preceeding the file name can be stripped off on request.
-    virtual String name (Bool stripPath=False) const;
+    virtual String name (bool stripPath=false) const;
 
     // Return the current HDF5File object.
     const CountedPtr<HDF5File>& file() const
@@ -206,7 +206,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // indicated number of tiles. This cache is not shared with other
     // HDF5Lattices,
     // Tiles are cached using an LRU algorithm.
-    virtual void setCacheSizeInTiles (uInt howManyTiles);
+    virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
     // Set the cache size as to "fit" the indicated access pattern.
     virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -222,19 +222,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Put the value of a single element.
     virtual void putAt (const T& value, const IPosition& where);
 
-    // A function which checks for internal consistency. Returns False if
+    // A function which checks for internal consistency. Returns false if
     // something nasty has happened to the HDF5Lattice. In that case
     // it also throws an exception.
-    virtual Bool ok() const;
+    virtual bool ok() const;
 
     // This function is used by the LatticeIterator class to generate an
     // iterator of the correct type for a specified Lattice. Not recommended
     // for general use. 
     virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-					       Bool useRef) const;
+					       bool useRef) const;
 
     // Do the actual getting of an array of values.
-    virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+    virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
     // Do the actual getting of an array of values.
     virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -243,10 +243,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Returns the maximum recommended number of pixels for a cursor. This is
     // the number of pixels in a tile.
-    virtual uInt advisedMaxPixels() const;
+    virtual uint32_t advisedMaxPixels() const;
 
     // Get the best cursor shape.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
     // Flush the data (but do not unlock).
     virtual void flush();

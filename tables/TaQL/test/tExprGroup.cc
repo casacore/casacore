@@ -42,16 +42,16 @@
 // </summary>
 
 // Keeps track if errors occurred.
-Bool foundError = False;
+bool foundError = false;
 
 
 #define checkFailure(STR,EXPR)\
 {\
-  bool failed = False;\
+  bool failed = false;\
   try {\
     TableExprNode n(EXPR);\
   } catch (std::exception&) {\
-    failed = True;\
+    failed = true;\
   }\
   if (!failed) {\
     cout << STR << ": was expected to fail, but did not" << endl;\
@@ -60,21 +60,21 @@ Bool foundError = False;
 
 void check (const TableExprNode& expr,
             const vector<Record>& recs,
-            Bool expVal, const String& str)
+            bool expVal, const String& str)
 {
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i=0; i<recs.size(); ++i) {
+  for (uint32_t i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
   }
   func->finish();
-  Bool val = func->getBool();
+  bool val = func->getBool();
   if (val != expVal) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected "
          << expVal << endl;
   }
@@ -82,21 +82,21 @@ void check (const TableExprNode& expr,
 
 void check (const TableExprNode& expr,
             const vector<Record>& recs,
-            Int expVal, const String& str)
+            int32_t expVal, const String& str)
 {
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i=0; i<recs.size(); ++i) {
+  for (uint32_t i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
   }
   func->finish();
-  Int val = func->getInt();
+  int32_t val = func->getInt();
   if (val != expVal) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected "
          << expVal << endl;
   }
@@ -104,21 +104,21 @@ void check (const TableExprNode& expr,
 
 void check (const TableExprNode& expr,
             const vector<Record>& recs,
-            Double expVal, const String& str)
+            double expVal, const String& str)
 {
   cout << "Test " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i=0; i<recs.size(); ++i) {
+  for (uint32_t i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
   }
   func->finish();
-  Double val = func->getDouble();
+  double val = func->getDouble();
   if (!near (val, expVal, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected "
          << expVal << endl;
   }
@@ -133,14 +133,14 @@ void check (const TableExprNode& expr,
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  for (uInt i=0; i<recs.size(); ++i) {
+  for (uint32_t i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
   }
   func->finish();
   DComplex val = func->getDComplex();
   if (!near (val, expVal, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected "
          << expVal << endl;
   }
@@ -148,22 +148,22 @@ void check (const TableExprNode& expr,
 
 void checkLazy (const TableExprNode& expr,
                 const vector<Record>& recs,
-                Double expVal, const String& str)
+                double expVal, const String& str)
 {
   cout << "Test lazy " << str << endl;
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
   TableExprGroupExprId funcid(0);
-  for (uInt i=0; i<recs.size(); ++i) {
+  for (uint32_t i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     funcid.apply (id);
   }
   funcid.finish();
   CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
-  Double val = func->getDouble (*funcid.getIds());
+  double val = func->getDouble (*funcid.getIds());
   if (val != expVal) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected "
          << expVal << endl;
   }
@@ -174,11 +174,11 @@ void doBool()
 {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Bool> vecb(9);
-  vecb = False; vecb[3] = True;  vecb[4] = True;
+  Vector<bool> vecb(9);
+  vecb = false; vecb[3] = true;  vecb[4] = true;
   // Define records containing the vector elements.
   vector<Record> recs(vecb.size());
-  for (uInt i=0; i<vecb.size(); ++i) {
+  for (uint32_t i=0; i<vecb.size(); ++i) {
     recs[i].define ("fld", vecb[i]);
   }
   // Form the expression node from the record field.
@@ -189,22 +189,22 @@ void doBool()
   check (TableExprNode::newFunctionNode(TableExprFuncNode::ganyFUNC, expr),
          recs, anyTrue(vecb), "any");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gntrueFUNC, expr),
-         recs, Int(ntrue(vecb)), "ntrue");
+         recs, int32_t(ntrue(vecb)), "ntrue");
   check (TableExprNode::newFunctionNode(TableExprFuncNode::gnfalseFUNC, expr),
-         recs, Int(nfalse(vecb)), "nfalse");
+         recs, int32_t(nfalse(vecb)), "nfalse");
 }
 
 void doInt()
 {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Int> veci(9);
+  Vector<int32_t> veci(9);
   indgen(veci); veci[1]=-4; veci[6] = 20;
-  Vector<Double> vecd(9);
+  Vector<double> vecd(9);
   indgen(vecd); vecd[1]=-4; vecd[6] = 20;
   // Define records containing the vector elements.
   vector<Record> recs(veci.size());
-  for (uInt i=0; i<veci.size(); ++i) {
+  for (uint32_t i=0; i<veci.size(); ++i) {
     recs[i].define ("fld", veci[i]);
   }
   // Form the expression node from the record field.
@@ -243,11 +243,11 @@ void doInt()
 void doDouble()
 {
   // Define a Vector with values.
-  Vector<Double> vecd(40);
+  Vector<double> vecd(40);
   indgen(vecd); vecd[1]=-40; vecd[6] = 20;
   // Define records containing the vector elements.
   vector<Record> recs(vecd.size());
-  for (uInt i=0; i<vecd.size(); ++i) {
+  for (uint32_t i=0; i<vecd.size(); ++i) {
     recs[i].define ("fld", vecd[i]);
   }
   // Form the expression node from the record field.
@@ -290,7 +290,7 @@ void doDComplex()
   indgen(vecd, DComplex(0.1,0.2), DComplex(-0.015,0.025));
   // Define records containing the vector elements.
   vector<Record> recs(vecd.size());
-  for (uInt i=0; i<vecd.size(); ++i) {
+  for (uint32_t i=0; i<vecd.size(); ++i) {
     recs[i].define ("fld", vecd[i]);
   }
   // Form the expression node from the record field.
@@ -310,8 +310,8 @@ void doDComplex()
 void doBoolArr()
 {
   // Define a Vector with values.
-  Vector<Bool> vecb(9);
-  vecb = False; vecb[3] = True;  vecb[4] = True;
+  Vector<bool> vecb(9);
+  vecb = false; vecb[3] = true;  vecb[4] = true;
   // Define two records containing part of the vector.
   // The aggregate functions will evaluate all reocrds, thus full vector.
   for (int i=0; i<2; ++i) {
@@ -331,9 +331,9 @@ void doBoolArr()
     check (TableExprNode::newFunctionNode(TableExprFuncNode::ganyFUNC, expr),
            recs, anyTrue(vecb), "any");
     check (TableExprNode::newFunctionNode(TableExprFuncNode::gntrueFUNC, expr),
-           recs, Int(ntrue(vecb)), "ntrue");
+           recs, int32_t(ntrue(vecb)), "ntrue");
     check (TableExprNode::newFunctionNode(TableExprFuncNode::gnfalseFUNC, expr),
-           recs, Int(nfalse(vecb)), "nfalse");
+           recs, int32_t(nfalse(vecb)), "nfalse");
   }
 }
 
@@ -341,9 +341,9 @@ void doIntArr()
 {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Int> veci(9);
+  Vector<int32_t> veci(9);
   indgen(veci); veci[1]=-4; veci[6] = 20;
-  Vector<Double> vecd(9);
+  Vector<double> vecd(9);
   indgen(vecd); vecd[1]=-4; vecd[6] = 20;
   // Define two records containing part of the vector.
   // The aggregate functions will evaluate all reocrds, thus full vector.
@@ -387,9 +387,9 @@ void doDoubleArr()
 {
   // Define a Vector with values.
   // Use odd length (so median behaves fine).
-  Vector<Double> vecd(41);
+  Vector<double> vecd(41);
   indgen(vecd); vecd[1]=-40; vecd[6] = 20;
-  Vector<Double> vec2;   //# test empty array
+  Vector<double> vec2;   //# test empty array
   // Define records containing part of the vector.
   // The aggregate functions will evaluate all reocrds, thus full vector.
   vector<Record> recs(5);

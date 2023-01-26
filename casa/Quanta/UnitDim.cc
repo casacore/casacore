@@ -31,21 +31,21 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 void UnitDim::init() {
-    for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
+    for (int32_t i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
     }
     unitDim = reinterpret_cast<signed char *>(unitLong);
 }
 
 UnitDim::UnitDim(const UnitDim &other) {
-    for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
+    for (int32_t i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = other.unitLong[i];
     }
     unitDim = reinterpret_cast<signed char *>(unitLong);
 }
 
-void UnitDim::init(Int pos) {
-    for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
+void UnitDim::init(int32_t pos) {
+    for (int32_t i=0; i<UNITDIM_DLNUMBER; i++) {
 	unitLong[i] = 0;
     }
     unitDim = reinterpret_cast<signed char *>(unitLong);
@@ -56,7 +56,7 @@ UnitDim::~UnitDim() {}
 
 UnitDim &UnitDim::operator=(const UnitDim &other) {
     if (this != &other) {
-	for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
+	for (int32_t i=0; i<UNITDIM_DLNUMBER; i++) {
 	    unitLong[i] = other.unitLong[i];
 	}
         unitDim = reinterpret_cast<signed char *>(unitLong);
@@ -65,7 +65,7 @@ UnitDim &UnitDim::operator=(const UnitDim &other) {
 }
 
 UnitDim &UnitDim::operator*=(const UnitDim &other) {
-    for (Int i=0; i<Dnumber; i++) {
+    for (int32_t i=0; i<Dnumber; i++) {
 	unitDim[i] += other.unitDim[i];
     }
     return *this;
@@ -78,7 +78,7 @@ UnitDim UnitDim::operator*(const UnitDim &other) const {
 }
 
 UnitDim &UnitDim::operator/=(const UnitDim &other) {
-    for (Int i=0; i<Dnumber; i++) {
+    for (int32_t i=0; i<Dnumber; i++) {
 	unitDim[i] -= other.unitDim[i];
     }
     return *this;
@@ -90,29 +90,29 @@ UnitDim UnitDim::operator/(const UnitDim &other) const {
     return result;
 }
 
-UnitDim UnitDim::pow(Int p) {
+UnitDim UnitDim::pow(int32_t p) {
     UnitDim loc= *this;
-    for (Int i=0; i<Dnumber; i++) {
+    for (int32_t i=0; i<Dnumber; i++) {
 	loc.unitDim[i] *= p;
     }
     return loc;
 }
 
-Bool UnitDim::operator==(const UnitDim &other) const {
-    for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
-	if (unitLong[i] != other.unitLong[i]) { return False;}
+bool UnitDim::operator==(const UnitDim &other) const {
+    for (int32_t i=0; i<UNITDIM_DLNUMBER; i++) {
+	if (unitLong[i] != other.unitLong[i]) { return false;}
      }
-    return True;
+    return true;
 }
 
-Bool UnitDim::operator!=(const UnitDim &other) const {
-    for (Int i=0; i<UNITDIM_DLNUMBER; i++) {
-	if (unitLong[i] != other.unitLong[i]) { return True;}
+bool UnitDim::operator!=(const UnitDim &other) const {
+    for (int32_t i=0; i<UNITDIM_DLNUMBER; i++) {
+	if (unitLong[i] != other.unitLong[i]) { return true;}
      }
-    return False;
+    return false;
 }
 
-const String& UnitDim::dimName(uInt which) {
+const String& UnitDim::dimName(uint32_t which) {
   static const String Nlist[UnitDim::Dnumber] = {
     "m",
     "kg",
@@ -128,7 +128,7 @@ const String& UnitDim::dimName(uInt which) {
   return Nlist[which];
 }
 
-const String& UnitDim::dimFull(uInt which) {
+const String& UnitDim::dimFull(uint32_t which) {
   static const String Flist[UnitDim::Dnumber] = {
     "metre",
     "kilogram",
@@ -146,12 +146,12 @@ const String& UnitDim::dimFull(uInt which) {
 
 ostream& operator<< (ostream &os, const UnitDim &du) {
     String chck(" ");
-    for (Int i=0; i<UnitDim::Dnumber; i++) {
+    for (int32_t i=0; i<UnitDim::Dnumber; i++) {
 	if (du.unitDim[i] != 0) {
 	    if (du.unitDim[i] == 1) {
 		os << chck << UnitDim::dimName(i);
 	    } else {
-		os << chck << UnitDim::dimName(i) << Int(du.unitDim[i]);
+		os << chck << UnitDim::dimName(i) << int32_t(du.unitDim[i]);
 	    }
 	    chck = ".";
 	}

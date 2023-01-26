@@ -73,7 +73,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpRecordGram = 0;
-static Int          posRecordGram = 0;
+static int32_t          posRecordGram = 0;
 
 //# Static pointer to the record when parsing the fields.
 //# Static pointer to the node holding the final expression tree.
@@ -135,7 +135,7 @@ int recordGramParseCommand (const String& command)
 }
 
 //# Give the string position.
-Int& recordGramPosition()
+int32_t& recordGramPosition()
 {
     return posRecordGram;
 }
@@ -160,19 +160,19 @@ void RecordGramerror (const char*)
 }
 
 
-Bool RecordGram::expr2Bool (const String& expr, const Record& vars)
+bool RecordGram::expr2Bool (const String& expr, const Record& vars)
 {
   // Convert expression to tree.
   TableExprNode node (RecordGram::parse(vars, expr));
   // Evaluate.
-  Bool result;
+  bool result;
   node.get (vars, result);
   return result;
 }
 
-Int64 RecordGram::expr2Int (const String& expr, const Record& vars)
+int64_t RecordGram::expr2Int (const String& expr, const Record& vars)
 {
-  return Int64(expr2Double (expr, vars) + 0.0001);
+  return int64_t(expr2Double (expr, vars) + 0.0001);
 }
 
 double RecordGram::expr2Double (const String& expr, const Record& vars,
@@ -221,14 +221,14 @@ MVTime RecordGram::expr2Date (const String& expr, const Record& vars)
   return result;
 }
 
-Array<Bool> RecordGram::expr2ArrayBool (const String& expr,
+Array<bool> RecordGram::expr2ArrayBool (const String& expr,
                                         const Record& vars)
 {
   String ex = expr;
   // Convert expression to tree.
   TableExprNode node (RecordGram::parse(vars, expr));
   // Evaluate.
-  Array<Bool> result;
+  Array<bool> result;
   if (node.isScalar()) {
     result.resize (IPosition(1,1));
     node.get (vars, result.data()[0]);
@@ -238,13 +238,13 @@ Array<Bool> RecordGram::expr2ArrayBool (const String& expr,
   return result;
 }
 
-Array<Int64> RecordGram::expr2ArrayInt (const String& expr,
+Array<int64_t> RecordGram::expr2ArrayInt (const String& expr,
                                         const Record& vars)
 {
   // Convert expression to tree.
   TableExprNode node (RecordGram::parse(vars, expr));
   // Evaluate.
-  Array<Int64> result;
+  Array<int64_t> result;
   if (node.isScalar()) {
     result.resize (IPosition(1,1));
     node.get (vars, result.data()[0]);
@@ -350,7 +350,7 @@ TableExprNode RecordGram::doParse (const String& expression)
     theirTokens.clear();
     String message;
     String command = expression + '\n';
-    Bool error = False;
+    bool error = false;
     TableExprNode result;
     try {
         // Parse and execute the command.
@@ -362,7 +362,7 @@ TableExprNode RecordGram::doParse (const String& expression)
         result = *theirNodePtr;
     } catch (const std::exception& x) {
         message = x.what();
-        error = True;
+        error = true;
     }
     // Delete possibly non-deleted tokens (usually in case of exception).
     deleteTokenStorage();
@@ -442,13 +442,13 @@ TableExprNode RecordGram::handleFunc (const String& name,
 {
   // The ROWNR function can only be used with tables.
   if (theirTabPtr == 0) {
-    Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
+    Vector<int32_t> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
     return TableParseFunc::makeFuncNode (0, name, arguments,
                                           ignoreFuncs, TableExprInfo(),
                                           theirTaQLStyle);
   }
   return TableParseFunc::makeFuncNode (0, name, arguments,
-                                       Vector<Int>(),
+                                       Vector<int32_t>(),
                                        TableExprInfo(*theirTabPtr),
                                        theirTaQLStyle);
 }
@@ -456,17 +456,17 @@ TableExprNode RecordGram::handleFunc (const String& name,
 TableExprNode RecordGram::handleRegex (const TableExprNode& left,
                                        const String& regex)
 {
-  Bool caseInsensitive = False;
-  Bool negate          = False;
-  Int sz = regex.size();
+  bool caseInsensitive = false;
+  bool negate          = false;
+  int32_t sz = regex.size();
   if (sz > 0  &&  regex[sz-1] == 'i') {
-    caseInsensitive = True;
+    caseInsensitive = true;
     --sz;
   }
   AlwaysAssert (sz >= 4  &&  regex[sz-1] != ' ', AipsError);
-  Int inx = 0;
+  int32_t inx = 0;
   if (regex[0] == '!') {
-    negate = True;
+    negate = true;
     ++inx;
   }
   AlwaysAssert (regex[inx] == '~', AipsError);
@@ -483,7 +483,7 @@ TableExprNode RecordGram::handleRegex (const TableExprNode& left,
   if (caseInsensitive) {
     str = Regex::makeCaseInsensitive (str);
   }
-  TableExprNode rnode((Regex(str, True)));
+  TableExprNode rnode((Regex(str, true)));
   if (negate) {
     lnode = (lnode != rnode);
   } else {

@@ -70,17 +70,17 @@ int main (int argc, const char*[])
 void a(const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Create the file.
-    BucketFile file ("tBucketFile_tmp.data", 0, False, mfile);
+    BucketFile file ("tBucketFile_tmp.data", 0, false, mfile);
     AlwaysAssertExit (file.isWritable());
     AlwaysAssertExit (file.name() == "tBucketFile_tmp.data");
-    Int ival=10;
+    int32_t ival=10;
     float fval=20;
-    file.write (&ival, sizeof(Int));
+    file.write (&ival, sizeof(int32_t));
     file.write (&fval, sizeof(fval));
-    Int ival2;
+    int32_t ival2;
     float fval2;
     file.seek (0);
-    file.read (&ival2, sizeof(Int));
+    file.read (&ival2, sizeof(int32_t));
     file.read (&fval2, sizeof(fval));
     AlwaysAssertExit (ival2 == ival);
     AlwaysAssertExit (fval2 == fval);
@@ -89,15 +89,15 @@ void a(const std::shared_ptr<MultiFileBase>& mfile)
 void b(const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Open the file.
-    BucketFile file ("tBucketFile_tmp.data", False, 0, False, mfile);
+    BucketFile file ("tBucketFile_tmp.data", false, 0, false, mfile);
     AlwaysAssertExit (! file.isWritable());
     AlwaysAssertExit (file.name() == "tBucketFile_tmp.data");
     file.open();
-    Int ival=10;
+    int32_t ival=10;
     float fval=20;
-    Int ival2;
+    int32_t ival2;
     float fval2;
-    file.read (&ival2, sizeof(Int));
+    file.read (&ival2, sizeof(int32_t));
     file.read (&fval2, sizeof(fval));
     AlwaysAssertExit (ival2 == ival);
     AlwaysAssertExit (fval2 == fval);
@@ -105,19 +105,19 @@ void b(const std::shared_ptr<MultiFileBase>& mfile)
     // Set the file to read/write access.
     file.setRW();
     file.seek (0);
-    file.read (&ival2, sizeof(Int));
+    file.read (&ival2, sizeof(int32_t));
     file.read (&fval2, sizeof(fval));
     AlwaysAssertExit (ival2 == ival);
     AlwaysAssertExit (fval2 == fval);
     file.write (&fval, sizeof(fval));
-    file.write (&ival, sizeof(Int));
+    file.write (&ival, sizeof(int32_t));
     file.seek (0);
-    file.read (&ival2, sizeof(Int));
+    file.read (&ival2, sizeof(int32_t));
     file.read (&fval2, sizeof(fval));
     AlwaysAssertExit (ival2 == ival);
     AlwaysAssertExit (fval2 == fval);
     file.read (&fval2, sizeof(fval));
-    file.read (&ival2, sizeof(Int));
+    file.read (&ival2, sizeof(int32_t));
     AlwaysAssertExit (ival2 == ival);
     AlwaysAssertExit (fval2 == fval);
 }
@@ -125,12 +125,12 @@ void b(const std::shared_ptr<MultiFileBase>& mfile)
 void c(const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Do some erroneous calls.
-    Bool flag = False;
-    BucketFile file1 ("tBucketFile_tmp.data1", False, 0, False, mfile);
+    bool flag = false;
+    BucketFile file1 ("tBucketFile_tmp.data1", false, 0, false, mfile);
     try {
 	file1.open();
     } catch (const std::exception& x) {
-	flag = True;
+	flag = true;
 	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
@@ -139,34 +139,34 @@ void c(const std::shared_ptr<MultiFileBase>& mfile)
     RegularFile rfile("tBucketFile_tmp.data");
     rfile.setPermissions (0444);
     
-    flag = False;
-    BucketFile file2 ("tBucketFile_tmp.data", True);
+    flag = false;
+    BucketFile file2 ("tBucketFile_tmp.data", true);
     try {
 	file2.open();
     } catch (const std::exception& x) {
-	flag = True;
+	flag = true;
 	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
     
-    flag = False;
-    BucketFile file3 ("tBucketFile_tmp.data", False);
+    flag = false;
+    BucketFile file3 ("tBucketFile_tmp.data", false);
     file3.setRW();
     try {
 	file3.open();
     } catch (const std::exception& x) {
-	flag = True;
+	flag = true;
 	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);
 
-    flag = False;
-    BucketFile file4 ("tBucketFile_tmp.data", False);
+    flag = false;
+    BucketFile file4 ("tBucketFile_tmp.data", false);
     file4.open();
     try {
 	file4.setRW();
     } catch (const std::exception& x) {
-	flag = True;
+	flag = true;
 	cout << x.what() << endl;
     } 
     AlwaysAssertExit (flag);

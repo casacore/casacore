@@ -82,11 +82,11 @@ template<class T> class Lattice;
 // The following simple example shows how you can write a function that uses a
 // Functional object. 
 // <srcblock>
-// Double integrate1D(const Functional<Float,Float> &f,
-//                    Double x1, Double x2, Double dx) {
-//     uInt n = (xend - xstart) / dx;
-//     Double sum = 0.0;
-//     for (uInt i=0; i < n; i++) sum += f(x1 + i*dx) * dx;
+// double integrate1D(const Functional<float,float> &f,
+//                    double x1, double x2, double dx) {
+//     uint32_t n = (xend - xstart) / dx;
+//     double sum = 0.0;
+//     for (uint32_t i=0; i < n; i++) sum += f(x1 + i*dx) * dx;
 //     return sum; 
 // }
 // </srcblock>

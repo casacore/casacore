@@ -69,17 +69,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : commandType_p   (commandType),
       tableProject_p  (tableList_p),
       resultType_p    (0),
-      resultCreated_p (False),
+      resultCreated_p (false),
       endianFormat_p  (Table::AipsrcEndian),
-      overwrite_p     (True),
+      overwrite_p     (true),
       resultSet_p     (0),
-      distinct_p      (False),
+      distinct_p      (false),
       limit_p         (0),
       endrow_p        (0),
       offset_p        (0),
       stride_p        (1),
       insSel_p        (0),
-      noDupl_p        (False),
+      noDupl_p        (false),
       order_p         (Sort::Ascending)
   {}
 
@@ -99,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Lookup a field name in the table for which the shorthand is given.
   //# If no shorthand is given, use the first table.
   //# The shorthand and name are separated by a period.
-  TableExprNode TableParseQuery::handleKeyCol (const String& name, Bool tryProj)
+  TableExprNode TableParseQuery::handleKeyCol (const String& name, bool tryProj)
   {
     return tableProject_p.handleKeyCol (name, tryProj, *this);
   }
@@ -125,7 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                              const TaQLStyle& style)
   {
     //# No functions have to be ignored.
-    Vector<Int> ignoreFuncs;
+    Vector<int32_t> ignoreFuncs;
     // Use a default table if no one available.
     if (tableList_p.empty()) {
       return TableParseFunc::makeFuncNode (this, name, arguments, ignoreFuncs,
@@ -146,7 +146,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Only take the part beyond the period.
   //# Extend the block each time. Since there are only a few column names,
   //# this will not be too expensive.
-  void TableParseQuery::handleColumn (Int stringType,
+  void TableParseQuery::handleColumn (int32_t stringType,
                                       const String& name,
                                       const TableExprNode& expr,
                                       const String& newName,
@@ -159,7 +159,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Finish the additions to the block of column names
   //# by removing the deleted empty names and creating Expr objects as needed.
-  void TableParseQuery::handleColumnFinish (Bool distinct)
+  void TableParseQuery::handleColumnFinish (bool distinct)
   {
     distinct_p = distinct;
     projectExprTable_p = tableProject_p.handleColumnFinish
@@ -167,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   Table TableParseQuery::createTable (const TableDesc& td,
-                                      Int64 nrow, const Record& dmInfo,
+                                      int64_t nrow, const Record& dmInfo,
                                       const std::vector<const Table*>& tempTables,
                                       const std::vector<TableParseQuery*>& stack)
   {
@@ -193,13 +193,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     SetupNewTable newtab(resultName_p, td, topt, storageOption_p);
     newtab.bindCreate (dmInfo);
-    Table tab(newtab, ttype, nrow, False, endianFormat_p);
-    resultCreated_p = True;
+    Table tab(newtab, ttype, nrow, false, endianFormat_p);
+    resultCreated_p = true;
     return tab;
   }
 
   Table TableParseQuery::createSubTable (const String& subtableName,
-                                         const TableDesc& td, Int64 nrow,
+                                         const TableDesc& td, int64_t nrow,
                                          const Record& dmInfo,
                                          const std::vector<const Table*>& tempTables,
                                          const std::vector<TableParseQuery*>& stack)
@@ -209,7 +209,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return TableUtil::createSubTable (parent, subtableName, td,
                                       overwrite_p ? Table::New : Table::NewNoReplace,
                                       storageOption_p, dmInfo, TableLock(),
-                                      nrow, False, endianFormat_p, TSMOption());
+                                      nrow, false, endianFormat_p, TSMOption());
   }
 
   //# Add a column specification.
@@ -217,13 +217,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                        const String& likeColName,
                                        const String& dtstr,
                                        const Record& spec,
-                                       Bool isCOrder)
+                                       bool isCOrder)
   {
     tableProject_p.handleColSpec (colName, likeColName, dtstr, spec, isCOrder);
   }
 
   void TableParseQuery::handleGroupby (const std::vector<TableExprNode>& nodes,
-                                       Bool rollup)
+                                       bool rollup)
   {
     groupby_p.handleGroupby (nodes, rollup);
   }
@@ -293,8 +293,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   ValueHolder TableParseQuery::getRecFld (const String& name)
   {
     String keyName;
-    const TableRecord& keyset = findKeyword (name, keyName, False);
-    Int fieldnr = keyset.fieldNumber (keyName);
+    const TableRecord& keyset = findKeyword (name, keyName, false);
+    int32_t fieldnr = keyset.fieldNumber (keyName);
     if (fieldnr < 0) {
       throw (TableInvExpr ("Keyword " + name + " does not exist"));
     }
@@ -303,14 +303,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableRecord& TableParseQuery::findKeyword (const String& name,
                                              String& keyName,
-                                             Bool update)
+                                             bool update)
   {
     //# Split the name into optional shorthand, column, and keyword.
     String shand, columnName;
     Vector<String> fieldNames;
     TableParseUtil::splitName (shand, columnName, fieldNames,
-                               name, True, True, False);
-    Table tab = tableList_p.findTable (shand, False).table();
+                               name, true, true, false);
+    Table tab = tableList_p.findTable (shand, false).table();
     if (tab.isNull()) {
       throw (TableInvExpr("Shorthand " + shand + " not defined in FROM clause"));
     }
@@ -350,12 +350,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void TableParseQuery::handleCopyCol (Bool showTimings)
+  void TableParseQuery::handleCopyCol (bool showTimings)
   {
     // Note that table_p, tableDesc_p and dminfo_p have already been set.
     Timer timer;
     handleAddCol (Record());
-    doUpdate (False, Table(), table_p, table_p.rowNumbers());
+    doUpdate (false, Table(), table_p, table_p.rowNumbers());
     if (showTimings) {
       timer.show ("  Copy Column ");
     }
@@ -383,7 +383,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void TableParseQuery::handleSort (const std::vector<TableParseSortKey>& sort,
-                                    Bool noDuplicates,
+                                    bool noDuplicates,
                                     Sort::Order order)
   {
     noDupl_p = noDuplicates;
@@ -398,11 +398,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //# Execute a query in the FROM clause and return the resulting table.
-  Table TableParseQuery::doFromQuery (Bool showTimings)
+  Table TableParseQuery::doFromQuery (bool showTimings)
   {
     Timer timer;
     // Execute the nested command.
-    execute (False, False, True, 0);
+    execute (false, false, true, 0);
     if (showTimings) {
       timer.show ("  From query  ");
     }
@@ -410,25 +410,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //# Execute a subquery for an EXISTS operator.
-  TableExprNode TableParseQuery::doExists (Bool notexists, Bool showTimings)
+  TableExprNode TableParseQuery::doExists (bool notexists, bool showTimings)
   {
     Timer timer;
     // Execute the nested command.
     // Default limit_p is 1.
-    execute (False, True, True, 1);
+    execute (false, true, true, 1);
     if (showTimings) {
       timer.show ("  Exists query");
     }
     // Flag notexists tells if NOT EXISTS or EXISTS was given.
-    return TableExprNode (notexists == (Int64(table_p.nrow()) < limit_p));
+    return TableExprNode (notexists == (int64_t(table_p.nrow()) < limit_p));
   }
 
   //# Execute a subquery and create the correct node object for it.
-  TableExprNode TableParseQuery::doSubQuery (Bool showTimings)
+  TableExprNode TableParseQuery::doSubQuery (bool showTimings)
   {
     Timer timer;
     // Execute the nested command.
-    execute (False, True, True, 0);
+    execute (false, true, true, 0);
     TableExprNode result;
     if (resultSet_p != 0) {
       // A set specification was given, so make the set.
@@ -493,7 +493,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                          "tables are given in the FROM clause");
     }
     // Use 1 row if limit_p nor endrow_p is given.
-    Int64 nrow = 1;
+    int64_t nrow = 1;
     if (limit_p > 0) {
       nrow = limit_p + offset_p;
     } else if (endrow_p > 0) {
@@ -502,7 +502,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Add a temp table with no columns and some rows to the FROM list.
     Table tab(Table::Memory);
     tab.addRow(nrow);
-    tableList_p.addTable (-1, String(), tab, String(), True,
+    tableList_p.addTable (-1, String(), tab, String(), true,
                           std::vector<const Table*>(),
                           std::vector<TableParseQuery*>());
   }
@@ -512,21 +512,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     table_p.addRow (evalIntScaExpr (expr));
   }
 
-  Int64 TableParseQuery::evalIntScaExpr (const TableExprNode& expr) const
+  int64_t TableParseQuery::evalIntScaExpr (const TableExprNode& expr) const
   {
     TableParseGroupby::checkAggrFuncs (expr);
-    if (! TableExprNodeUtil::getNodeTables (expr.getRep().get(), False).empty()) {
+    if (! TableExprNodeUtil::getNodeTables (expr.getRep().get(), false).empty()) {
       throw TableInvExpr ("LIMIT or OFFSET expression cannot contain columns");
     }
     // Get the value as a double, because some expressions result in double.
     // Round it to an integer.
     TableExprId rowid(0);
-    Double val;
+    double val;
     expr.get (rowid, val);
     if (val >= 0) {
-      return static_cast<Int64>(val+0.5);
+      return static_cast<int64_t>(val+0.5);
     }
-    return -static_cast<Int64>(-val+0.5);
+    return -static_cast<int64_t>(-val+0.5);
   }
 
   void TableParseQuery::handleUpdate()
@@ -550,7 +550,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                           String::toString(colNames.size()) +
                           ") mismatches "
                           "number of VALUES expressions (=" +
-                          String::toString(Int(update_p.size())) + ")");
+                          String::toString(int32_t(update_p.size())) + ")");
     }
     tableProject_p.setUpdateNames (update_p);
   }
@@ -566,7 +566,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //# Execute the updates.
-  void TableParseQuery::doUpdate (Bool showTimings, const Table& origTable,
+  void TableParseQuery::doUpdate (bool showTimings, const Table& origTable,
                                   Table& updTable, const Vector<rownr_t>& rownrs,
                                   const CountedPtr<TableExprGroupResult>& groups)
   {
@@ -583,10 +583,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       throw TableInvExpr ("Table " + updTable.tableName() + " is not writable");
     }
     //# First check if the update columns and values are correct.
-    uInt nrkey = update_p.size();
+    uint32_t nrkey = update_p.size();
     Block<TableColumn> cols(nrkey);
-    Block<ArrayColumn<Bool> > maskCols(nrkey);
-    for (uInt i=0; i<nrkey; i++) {
+    Block<ArrayColumn<bool> > maskCols(nrkey);
+    for (uint32_t i=0; i<nrkey; i++) {
       TableParseUpdate& key = *(update_p[i]);
       key.check (origTable, updTable);
       // Correct, so attach the TableColumn objects.
@@ -602,7 +602,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprIdAggr rowid(groups);
     for (rownr_t row=0; row<rownrs.size(); ++row) {
       rowid.setRownr (rownrs[row]);
-      for (uInt i=0; i<nrkey; i++) {
+      for (uint32_t i=0; i<nrkey; i++) {
         update_p[i]->updateColumn (cols[i], maskCols[i], row, rowid);
       }
     }
@@ -612,7 +612,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //# Execute the inserts.
-  Table TableParseQuery::doInsert (Bool showTimings, Table& table)
+  Table TableParseQuery::doInsert (bool showTimings, Table& table)
   {
     Timer timer;
     // Reopen the table for write.
@@ -623,10 +623,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Add rows if the inserts are given as expressions.
     // Select rows and use update to put the expressions into the rows.
     if (update_p.size() > 0) {
-      uInt  nexpr  = insertExprs_p.size();
-      Int64 nrowex = nexpr / update_p.size();
+      uint32_t  nexpr  = insertExprs_p.size();
+      int64_t nrowex = nexpr / update_p.size();
       AlwaysAssert (nrowex*update_p.size() == nexpr, AipsError);
-      Int64 nrow   = nrowex;
+      int64_t nrow   = nrowex;
       if (limit_p > 0) {
         // See if #rows is given explicitly.
         nrow = limit_p;
@@ -645,15 +645,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // Add one row at a time, because an insert expression might use
       // the table itself.
-      Int64 inx = 0;
-      for (Int64 i=0; i<nrow; ++i) {
+      int64_t inx = 0;
+      for (int64_t i=0; i<nrow; ++i) {
         selRownrs[0] = table.nrow();
         table.addRow();
         Table sel = table(selRownrs);
-        for (uInt j=0; j<update_p.size(); ++j) {
+        for (uint32_t j=0; j<update_p.size(); ++j) {
           update_p[j]->setNode (insertExprs_p[inx*update_p.size() + j]);
         }
-        doUpdate (False, Table(), sel, selRownrs);
+        doUpdate (false, Table(), sel, selRownrs);
         inx++;
         if (inx == nrowex) inx = 0;
       }
@@ -661,7 +661,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Handle the inserts from another selection.
     // Do the selection.
-    insSel_p->execute (False, False, False, 0);
+    insSel_p->execute (false, false, false, 0);
     Table sel = insSel_p->getTable();
     if (sel.nrow() == 0) {
       return Table();
@@ -688,7 +688,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Check if the data types match.
     const TableDesc& tdesc1 = table.tableDesc();
     const TableDesc& tdesc2 = sel.tableDesc();
-    for (uInt i=0; i<colNames.size(); i++) {
+    for (uint32_t i=0; i<colNames.size(); i++) {
       if (tdesc1[colNames[i]].trueDataType() !=
           tdesc2[sourceNames[i]].trueDataType()) {
         throw TableInvExpr ("Error in INSERT command; data type of columns " +
@@ -705,7 +705,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableRow rowto (tab, Vector<String>(colNames.begin(), colNames.end()));
     ROTableRow rowfrom (sel, Vector<String>(sourceNames.begin(), sourceNames.end()));
     for (rownr_t i=0; i<sel.nrow(); i++) {
-      rowto.put (i, rowfrom.get(i), False);
+      rowto.put (i, rowfrom.get(i), false);
     }
     if (showTimings) {
       timer.show ("  Insert      ");
@@ -715,7 +715,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   //# Execute the deletes.
-  void TableParseQuery::doDelete (Bool showTimings, Table& table)
+  void TableParseQuery::doDelete (bool showTimings, Table& table)
   {
     //# If the selection is empty, return immediately.
     if (rownrs_p.empty()) {
@@ -736,17 +736,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   //# Execute the counts.
-  Table TableParseQuery::doCount (Bool showTimings, const Table& table)
+  Table TableParseQuery::doCount (bool showTimings, const Table& table)
   {
     Timer timer;
     // First do the column projection.
-    Table intab = doProject (False, table);
+    Table intab = doProject (false, table);
     // Create an empty memory table with the same description as the input table.
-    Table tab = TableCopy::makeEmptyMemoryTable ("", intab, True);
-    // Add the Int64 _COUNT_ column.
-    ScalarColumnDesc<Int64> countDesc ("_COUNT_");
+    Table tab = TableCopy::makeEmptyMemoryTable ("", intab, true);
+    // Add the int64_t _COUNT_ column.
+    ScalarColumnDesc<int64_t> countDesc ("_COUNT_");
     tab.addColumn (countDesc);
-    ScalarColumn<Int64> countCol(tab, "_COUNT_");
+    ScalarColumn<int64_t> countCol(tab, "_COUNT_");
     // Iterate for all columns through the input table.
     Vector<String> colNames = intab.tableDesc().columnNames();
     Block<String> bcolNames(colNames.size());
@@ -772,7 +772,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Execute the groupby.
   CountedPtr<TableExprGroupResult> TableParseQuery::doGroupby
-  (Bool showTimings)
+  (bool showTimings)
   {
     Timer timer;
     CountedPtr<TableExprGroupResult> result = groupby_p.execGroupAggr(rownrs_p);
@@ -795,12 +795,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return tab;
   }
 
-  Bool TableParseQuery::doHaving (Bool showTimings,
+  bool TableParseQuery::doHaving (bool showTimings,
                                   const CountedPtr<TableExprGroupResult>& groups)
   {
     Timer timer;
     // Find the rows matching the HAVING expression.
-    Bool done = groupby_p.execHaving (rownrs_p, groups);
+    bool done = groupby_p.execHaving (rownrs_p, groups);
     if (showTimings) {
       timer.show ("  Having      ");
     }
@@ -808,7 +808,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //# Execute the sort.
-  void TableParseQuery::doSort (Bool showTimings)
+  void TableParseQuery::doSort (bool showTimings)
   {
     //# If no rows, return immediately.
     //# (the code below will fail if empty)
@@ -841,12 +841,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
-  void TableParseQuery::doLimOff (Bool showTimings)
+  void TableParseQuery::doLimOff (bool showTimings)
   {
     Timer timer;
     Vector<rownr_t> newRownrs;
     // Negative values mean from the end (a la Python indexing).
-    Int64 nrow = rownrs_p.size();
+    int64_t nrow = rownrs_p.size();
     if (offset_p < 0) {
       offset_p += nrow;
       if (offset_p < 0) offset_p = 0;
@@ -863,7 +863,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     if (endrow_p > nrow) endrow_p = nrow;
     if (offset_p < endrow_p) {
-      Int64 nr = 1 + (endrow_p - offset_p - 1) / stride_p;
+      int64_t nr = 1 + (endrow_p - offset_p - 1) / stride_p;
       newRownrs.reference (rownrs_p(Slice(offset_p, nr, stride_p)).copy());
     }
     rownrs_p.reference (newRownrs);
@@ -872,12 +872,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  Table TableParseQuery::doLimOff (Bool showTimings, const Table& table)
+  Table TableParseQuery::doLimOff (bool showTimings, const Table& table)
   {
     Timer timer;
     rownrs_p.resize (table.nrow());
     indgen (rownrs_p);
-    doLimOff (False);
+    doLimOff (false);
     return table(rownrs_p);
     if (showTimings) {
       timer.show ("  Limit/Offset");
@@ -886,7 +886,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   Table TableParseQuery::doProject
-  (Bool showTimings, const Table& table,
+  (bool showTimings, const Table& table,
    const CountedPtr<TableExprGroupResult>& groups)
   {
     Timer timer;
@@ -896,7 +896,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     update_p.clear();
     if (tableProject_p.hasExpressions()) {
       // Expressions used, so make a real table.
-      tabp = doProjectExpr (False, groups);
+      tabp = doProjectExpr (false, groups);
     } else {
       // Only column names used, so make a reference table.
       tabp = table(rownrs_p);
@@ -912,7 +912,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   Table TableParseQuery::doProjectExpr
-  (Bool useSel, const CountedPtr<TableExprGroupResult>& groups)
+  (bool useSel, const CountedPtr<TableExprGroupResult>& groups)
   {
     if (! rownrs_p.empty()) {
       // Add the rows if not done yet.
@@ -922,13 +922,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Turn the expressions of the selected columns into update objects.
       tableProject_p.makeUpdate (useSel, *this);
       // Fill the columns in the table.
-      doUpdate (False, Table(), projectExprTable_p, rownrs_p, groups);
+      doUpdate (false, Table(), projectExprTable_p, rownrs_p, groups);
       projectExprTable_p.flush();
     }
     return projectExprTable_p;
   }
 
-  Table TableParseQuery::doFinish (Bool showTimings, Table& table,
+  Table TableParseQuery::doFinish (bool showTimings, Table& table,
                                    const std::vector<const Table*>& tempTables,
                                    const std::vector<TableParseQuery*>& stack)
   {
@@ -953,7 +953,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (resultType_p > 0) {
         table.deepCopy (fullName, tableProject_p.dminfo(), storageOption_p,
                         overwrite_p ? Table::New : Table::NewNoReplace,
-                        True, endianFormat_p);
+                        true, endianFormat_p);
         result = Table(fullName);
       } else {
         // Normal reference table.
@@ -973,7 +973,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return result;
   }
 
-  Table TableParseQuery::doDistinct (Bool showTimings, const Table& table)
+  Table TableParseQuery::doDistinct (bool showTimings, const Table& table)
   {
     Timer timer;
     Table result;
@@ -1004,12 +1004,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseQuery::handleGiving (const String& name, const Record& rec)
   {
     resultName_p = name;
-    for (uInt i=0; i<rec.nfields(); ++i) {
+    for (uint32_t i=0; i<rec.nfields(); ++i) {
       String fldName = rec.name(i);
       fldName.downcase();
-      Bool done=False;
+      bool done=false;
       if (rec.dataType(i) == TpBool) {
-        done = True;
+        done = true;
         if (fldName == "memory") {
           resultType_p = 1;
         } else if (fldName == "scratch") {
@@ -1028,18 +1028,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         } else if (fldName == "overwrite") {
           overwrite_p = rec.asBool(i);
         } else {
-          done = False;
+          done = false;
         }
       }
       if (done) {
         if (fldName != "overwrite"  &&  !rec.asBool(i)) {
           throw TableParseError ("Field name " + rec.name(i) +
-                                 " should not have a False value");
+                                 " should not have a false value");
         }
       } else if (fldName == "type") {
-        Bool ok = False;
+        bool ok = false;
         if (rec.dataType(i) == TpString) {
-          ok = True;
+          ok = true;
           String str = rec.asString(i);
           str.downcase();
           if (str == "plain") {
@@ -1049,7 +1049,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           } else if (str == "memory") {
             resultType_p = 1;
           } else {
-            ok = False;
+            ok = false;
           }
         }
         if (!ok) {
@@ -1057,9 +1057,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                 "plain, scratch or memory");
         }
       } else if (fldName == "endian") {
-        Bool ok = False;
+        bool ok = false;
         if (rec.dataType(i) == TpString) {
-          ok = True;
+          ok = true;
           String str = rec.asString(i);
           str.downcase();
           if (str == "big") {
@@ -1071,7 +1071,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           } else if (str == "aipsrc") {
             endianFormat_p = Table::AipsrcEndian;
           } else {
-            ok = False;
+            ok = false;
           }
         }
         if (!ok) {
@@ -1079,9 +1079,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                 "big, little, local or aipsrc");
         }
       } else if (fldName == "storage") {
-        Bool ok = False;
+        bool ok = false;
         if (rec.dataType(i) == TpString) {
-          ok = True;
+          ok = true;
           String str = rec.asString(i);
           str.downcase();
           if (str == "multifile") {
@@ -1095,7 +1095,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           } else if (str == "aipsrc") {
             storageOption_p.setOption (StorageOption::Aipsrc);
           } else {
-            ok = False;
+            ok = false;
           }
         }
         if (!ok) {
@@ -1132,9 +1132,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //# Execute all parts of a TaQL command doing some selection.
-  void TableParseQuery::execute (Bool showTimings, Bool setInGiving,
-                                 Bool mustSelect, rownr_t maxRow,
-                                 Bool doTracing,
+  void TableParseQuery::execute (bool showTimings, bool setInGiving,
+                                 bool mustSelect, rownr_t maxRow,
+                                 bool doTracing,
                                  const std::vector<const Table*>& tempTables,
                                  const std::vector<TableParseQuery*>& stack)
   {
@@ -1204,14 +1204,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
            << " aggregate nodes" << endl;
     }
     // Column nodes used in aggregate functions should not adhere applySelection.
-    uInt ndisabled = groupby_p.disableApplySelection();
+    uint32_t ndisabled = groupby_p.disableApplySelection();
     if (doTracing) {
       cerr << "  disableApplySelection done in " << ndisabled
            << " column nodes of aggregate nodes" << endl;
     }
     // Select distinct makes no sense if aggregate and no groupby is given.
     if (groupby_p.isOnlyAggr()) {
-      distinct_p = False;
+      distinct_p = false;
     }
     //# The first table in the list is the source table.
     Table table = tableList_p.firstTable();
@@ -1236,7 +1236,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       //#//        cout << "Showing TableExprRange values ..." << endl;
       //#//        Block<TableExprRange> rang;
       //#//        node_p->ranges(rang);
-      //#//        for (Int i=0; i<rang.size(); i++) {
+      //#//        for (int32_t i=0; i<rang.size(); i++) {
       //#//            cout << rang[i].getColumn().columnDesc().name() << rang[i].start()
       //#//                 << rang[i].end() << endl;
       //#//        }
@@ -1268,7 +1268,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Do the projection of SELECT columns used in HAVING or ORDERBY.
     // Thereafter the column nodes need to use rownrs 0..n.
     if (tableProject_p.nColumnsPreCalc() > 0) {
-      doProjectExpr (True, groupResult);
+      doProjectExpr (true, groupResult);
       resultTable = adjustApplySelNodes(table);
       table = resultTable;
       if (doTracing) {
@@ -1312,11 +1312,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           projectExprTable_p.deepCopy
             (resultName_p, tableProject_p.dminfo(), storageOption_p,
              overwrite_p ? Table::New : Table::NewNoReplace,
-             True, endianFormat_p);
+             true, endianFormat_p);
           projectExprTable_p = Table(resultName_p);
           TableUtil::deleteTable (resultName_p + "_tmpproject");
           // Indicate it does not have to be created anymore.
-          resultCreated_p = True;
+          resultCreated_p = true;
         }
         resultTable = projectExprTable_p;
       }
@@ -1370,18 +1370,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   String TableParseQuery::getTableStructure (const Vector<String>& parts,
                                              const TaQLStyle& style)
   {
-    Bool showdm = False;
-    Bool showcol = True;
-    Bool showsub = False;
-    Bool sortcol = False;
-    Bool tabkey = False;
-    Bool colkey = False;
-    for (uInt i=2; i<parts.size(); ++i) {
+    bool showdm = false;
+    bool showcol = true;
+    bool showsub = false;
+    bool sortcol = false;
+    bool tabkey = false;
+    bool colkey = false;
+    for (uint32_t i=2; i<parts.size(); ++i) {
       String opt(parts[i]);
       opt.downcase();
-      Bool fop = True;
+      bool fop = true;
       if (opt.size() > 2   &&  opt.substr(0,2) == "no") {
-        fop = False;
+        fop = false;
         opt = opt.substr(2);
       }
       if (opt == "dm") {

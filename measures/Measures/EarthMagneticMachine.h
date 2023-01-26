@@ -122,9 +122,9 @@ public:
   //   <li> AipsError if frame does not contain position and time
   // </thrown>
   // <group>
-  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt,
+  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<double> &hgt,
 		       MeasFrame &frame);
-  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<Double> &hgt,
+  EarthMagneticMachine(const MDirection::Ref &in, const Quantum<double> &hgt,
 		       const MPosition &pos, const MEpoch &tm);
   EarthMagneticMachine(const MDirection::Ref &in, const MVDirection &dir,
 		       MeasFrame &frame);
@@ -143,21 +143,21 @@ public:
   // Return line-of-sight field (nT or given units) (from previous calculate
   // if no direction or height given)
   // <group>
-  Double operator()();
-  Quantum<Double> operator()(const Unit &un);
-  Double operator()(const MVDirection &in);
-  Quantum<Double> operator()(const MVDirection &in, const Unit &un);
-  Double operator()(const Quantum<Double> &in);
-  Quantum<Double> operator()(const Quantum<Double> &in, const Unit &un);
-  Double operator()(const Double in);
-  Quantum<Double> operator()(const Double in, const Unit &un);
+  double operator()();
+  Quantum<double> operator()(const Unit &un);
+  double operator()(const MVDirection &in);
+  Quantum<double> operator()(const MVDirection &in, const Unit &un);
+  double operator()(const Quantum<double> &in);
+  Quantum<double> operator()(const Quantum<double> &in, const Unit &un);
+  double operator()(const double in);
+  Quantum<double> operator()(const double in, const Unit &un);
   // </group>
 
   //# Member functions
   // Set or reset part of the machine
   // <group>
   void set(const MDirection::Ref &in);
-  void set(const Quantum<Double> &hgt);
+  void set(const Quantum<double> &hgt);
   void set(MeasFrame &frame);
   void set(const MPosition &pos);
   void set(const MEpoch &tm);
@@ -165,25 +165,25 @@ public:
   //</group>
   // Calculate a value from direction or height (in m if not Quantity)
   // <group>
-  Bool calculate(const MVDirection &in);
-  Bool calculate(const Quantum<Double> &hgt);
-  Bool calculate(const Double hgt);
+  bool calculate(const MVDirection &in);
+  bool calculate(const Quantum<double> &hgt);
+  bool calculate(const double hgt);
   // </group>
   // Return data
   // <group>
   // Line-of-sight field in nT
   // <group>
-  Double getLOSField();
-  Double getLOSField(const MVDirection &in);
-  Double getLOSField(const Quantum<Double> &in);
-  Double getLOSField(const Double in);
+  double getLOSField();
+  double getLOSField(const MVDirection &in);
+  double getLOSField(const Quantum<double> &in);
+  double getLOSField(const double in);
   // </group>
   // Line-of-sight field in specified units (e.g. G)
   // <group>
-  Quantum<Double> getLOSField(const Unit &un);
-  Quantum<Double> getLOSField(const MVDirection &in, const Unit &un);
-  Quantum<Double> getLOSField(const Quantum<Double> &in, const Unit &un);
-  Quantum<Double> getLOSField(const Double in, const Unit &un);
+  Quantum<double> getLOSField(const Unit &un);
+  Quantum<double> getLOSField(const MVDirection &in, const Unit &un);
+  Quantum<double> getLOSField(const Quantum<double> &in, const Unit &un);
+  Quantum<double> getLOSField(const double in, const Unit &un);
   // </group>
   // Field (in nT, in ITRF)
   // <group>
@@ -192,13 +192,13 @@ public:
   // </group>
   // Longitude (rad)
   // <group>
-  Double getLong();
-  Double getLong(const MVDirection &in);
+  double getLong();
+  double getLong(const MVDirection &in);
   // </group>
   // Longitude in units (e.g. deg)
   // <group>
-  Quantum<Double> getLong(const Unit &un);
-  Quantum<Double> getLong(const MVDirection &in, const Unit &un);
+  Quantum<double> getLong(const Unit &un);
+  Quantum<double> getLong(const MVDirection &in, const Unit &un);
   // </group>
   // Position point
   // <group>
@@ -215,15 +215,15 @@ private:
   // Input direction reference
   MDirection::Ref inref_p;
   // Height (m)
-  Double hgt_p;
+  double hgt_p;
   // Observatory position
   MVPosition pos_p;
   // Distance to Earth centre
-  Double posl_p;
+  double posl_p;
   // Distance squared to sub-point
-  Double subl_p;
+  double subl_p;
   // Epoch
-  Double epo_p;
+  double epo_p;
   // Conversion engine
   MDirection::Convert conv_p;
   // Input position
@@ -232,8 +232,8 @@ private:
   MVDirection rin_p;
   // Extension calculated
   // <group>
-  Bool fex_p;
-  Bool pex_p;
+  bool fex_p;
+  bool pex_p;
   // </group>
   // Position sub-point
   MVPosition sub_p;
@@ -242,15 +242,15 @@ private:
   // Magnetic field
   MVEarthMagnetic fld_p;
   // Line-of-sight field
-  Double los_p;
+  double los_p;
   // Field position
-  Vector<Double> pl_p;
+  Vector<double> pl_p;
   // Fields filled
-  Int fil_p;
+  int32_t fil_p;
   // Cumulative filled fields
-  Int cumf_p;
+  int32_t cumf_p;
   // Calc done
-  Bool clx_p;
+  bool clx_p;
 
   //# Private Member Functions
   // Initialise machinery

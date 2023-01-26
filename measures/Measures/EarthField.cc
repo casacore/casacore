@@ -35,10 +35,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
-const Double EarthField::INTV = 50000;
+const double EarthField::INTV = 50000;
 
 //# Static data
-uInt EarthField::interval_reg_p = 0;
+uint32_t EarthField::interval_reg_p = 0;
 
 //# Constructors
 EarthField::EarthField() :
@@ -52,7 +52,7 @@ EarthField::EarthField(const EarthField &other) {
   copy(other);
 }
 
-EarthField::EarthField(EarthFieldTypes model, Double catepoch) :
+EarthField::EarthField(EarthFieldTypes model, double catepoch) :
   method_p(model), fixedEpoch_p(catepoch),
   p_p(0), q_p(0), cl_p(0), sl_p(0),
   lres_p(0) {
@@ -70,7 +70,7 @@ void EarthField::init() {
   fillField();
 }
 
-void EarthField::init(EarthFieldTypes model, Double catepoch) {
+void EarthField::init(EarthFieldTypes model, double catepoch) {
   method_p = model;
   fixedEpoch_p = catepoch;
   fillField();
@@ -81,11 +81,11 @@ EarthField::~EarthField() {}
 
 //# Operators
 // Calculate EarthField components
-const Vector<Double> &EarthField::operator()(const MVPosition &pos) {
+const Vector<double> &EarthField::operator()(const MVPosition &pos) {
   calcField(pos);
-  Vector<Double> dx((pos-checkPos_p).getValue());
+  Vector<double> dx((pos-checkPos_p).getValue());
   lres_p++; lres_p %= 4;
-  for (Int i=0; i<3; i++) {
+  for (int32_t i=0; i<3; i++) {
     result_p[lres_p](i) = pval_p[i] +
       dx(0)*dval_p[0][i] + dx(1)*dval_p[1][i] + dx(2)*dval_p[2][i];
   }
@@ -93,12 +93,12 @@ const Vector<Double> &EarthField::operator()(const MVPosition &pos) {
 }
 
 //# Member functions
-const Vector<Double> *EarthField::derivative(const MVPosition &pos) {
+const Vector<double> *EarthField::derivative(const MVPosition &pos) {
   calcField(pos);
   lres_p=0;		// Make sure contiguous set
-  for (Int j=0; j<3; j++) {
+  for (int32_t j=0; j<3; j++) {
     lres_p++; lres_p %= 4;
-    for (Int i=0; i<3; i++) {
+    for (int32_t i=0; i<3; i++) {
       result_p[lres_p](i) = dval_p[j][i];
     }
   }
@@ -110,11 +110,11 @@ void EarthField::copy(const EarthField &other) {
   fixedEpoch_p = other.fixedEpoch_p;
   agh_p = other.agh_p;
   checkPos_p = other.checkPos_p;
-  for (Int i=0; i<3; i++) {
+  for (int32_t i=0; i<3; i++) {
     pval_p[i] = other.pval_p[i];
-    for (Int k=0; k<3; k++) dval_p[i][k] = other.dval_p[i][k];
+    for (int32_t k=0; k<3; k++) dval_p[i][k] = other.dval_p[i][k];
   }
-  for (Int j=0; j<4; j++) {
+  for (int32_t j=0; j<4; j++) {
     result_p[j] = other.result_p[j];
   }
 }
@@ -124,7 +124,7 @@ void EarthField::fillField() {
   // Get the interpolation interval
   if (!EarthField::interval_reg_p) {
     interval_reg_p = 
-      AipsrcValue<Double>::registerRC(String("measures.earthfield.d_interval"),
+      AipsrcValue<double>::registerRC(String("measures.earthfield.d_interval"),
 				      Unit("km"), Unit("m"),
 				      EarthField::INTV);
   }
@@ -140,13 +140,13 @@ void EarthField::fillField() {
     sl_p.resize(2*PQ_LEN);
     break;
   }
-  for (Int j=0; j<4; j++) {
+  for (int32_t j=0; j<4; j++) {
     result_p[j].resize(3);
-    for (Int k=0; k<3; ++k) result_p[j][k] = 0;
+    for (int32_t k=0; k<3; ++k) result_p[j][k] = 0;
   }
-  for (Int j=0; j<3; ++j) {
+  for (int32_t j=0; j<3; ++j) {
     pval_p[j] = 0;
-    for (Int k=0; k<3; ++k) dval_p[j][k] = 0;
+    for (int32_t k=0; k<3; ++k) dval_p[j][k] = 0;
   }
 }
 
@@ -156,24 +156,24 @@ void EarthField::refresh() {
 
 void EarthField::calcField(const MVPosition &pos) {
   if (!pos.nearAbs(checkPos_p,
-		   AipsrcValue<Double>::get(EarthField::interval_reg_p))) {
+		   AipsrcValue<double>::get(EarthField::interval_reg_p))) {
     checkPos_p = pos;
-    Vector<Double> posmv(3);
+    Vector<double> posmv(3);
     posmv = pos.getValue();
-    Vector<Double> posv(3);
+    Vector<double> posv(3);
     posv = pos.get();
     switch (method_p) {
     case NONE: {
-      for (uInt j=0; j<3; j++) {
+      for (uint32_t j=0; j<3; j++) {
 	pval_p[j] =0;
-	for (uInt i=0; i<3; i++) dval_p[j][i] =0;
+	for (uint32_t i=0; i<3; i++) dval_p[j][i] =0;
       }
     }
     break;
     default: {
-      Double slat, clat, slong, clong, x, y, z, ratio, rr(0), one, two, three;
-      Int l, m, n, fn(0), fm, j, i;
-      for (Int lp=0; lp<4; lp++) {
+      double slat, clat, slong, clong, x, y, z, ratio, rr(0), one, two, three;
+      int32_t l, m, n, fn(0), fm, j, i;
+      for (int32_t lp=0; lp<4; lp++) {
 	slat = cos(C::pi_2 - posv(2));
 	clat = sin(C::pi_2 - posv(2));
 	slong = sin(posv(1));
@@ -199,11 +199,11 @@ void EarthField::calcField(const MVPosition &pos) {
 	q_p(2) = -3.0 * clat * slat;
 	q_p(3) = 1.7320508 * (slat * slat - clat * clat);
 	
-	for (Int k=0; k<PQ_LEN; k++) {
+	for (int32_t k=0; k<PQ_LEN; k++) {
 	  if (n-m-1 < 0) {
 	    m = -1;
 	    n++;
-	    rr = pow(ratio, Double(n+2));
+	    rr = pow(ratio, double(n+2));
 	    fn = n;
 	  }
 	  fm = m+1;
@@ -216,7 +216,7 @@ void EarthField::calcField(const MVPosition &pos) {
 	      sl_p(m) = sl_p(m-1) * cl_p(0) + cl_p(m-1) * sl_p(0);
 	      cl_p(m) = cl_p(m-1) * cl_p(0)-sl_p(m-1) * sl_p(0);
 	    } else {
-	      one = sqrt(Double(fn * fn - fm * fm));
+	      one = sqrt(double(fn * fn - fm * fm));
 	      two = sqrt((fn-1.0) * (fn-1.0) - fm * fm)/one;
 	      three = (2.0 * fn - 1.0)/one;
 	      i = k-n;

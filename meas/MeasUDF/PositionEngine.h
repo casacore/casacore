@@ -130,36 +130,36 @@ namespace casacore {
 
     // Get the value type. It also gives the nr of output values per position.
     //  0=default, 1=height, 2=angles, 3=xyz
-    Int valueType() const
+    int32_t valueType() const
       { return itsValueType; }
 
     // Get the values.
-    Array<Double> getArrayDouble (const TableExprId& id,
+    Array<double> getArrayDouble (const TableExprId& id,
                                   MPosition::Types toRefType,
-                                  Int toValueType);
+                                  int32_t toValueType);
 
     // Get the positions.
     Array<MPosition> getPositions (const TableExprId& id);
 
     // Handle the argument(s) giving the input positions and reference type.
     // The position can be a column in a table.
-    void handlePosition (Int toValueType,
+    void handlePosition (int32_t toValueType,
                          const std::vector<TENShPtr>& args,
-                         uInt& argnr);
+                         uint32_t& argnr);
 
   private:
     virtual String stripMeasType (const String& type);
-    virtual void deriveAttr (const Unit& unit, Int nval);
+    virtual void deriveAttr (const Unit& unit, int32_t nval);
     // Let a derived class set its value type.
     // By default is does nothing.
-    virtual void setValueType (Int valueType);
+    virtual void setValueType (int32_t valueType);
     
     // Make an MPosition from xyz or height,angles.
     MPosition makePosition (const Quantity& qh,
                             const Quantity& q1,
                             const Quantity& q2) const;
     void handleScalars (const TENShPtr& e1, const TENShPtr& e2,
-                        const TENShPtr& e3, Int nval);
+                        const TENShPtr& e3, int32_t nval);
     void handleObservatory (const TENShPtr& operand);
     void handlePosArray (const TENShPtr& angles, const TENShPtr& height);
     virtual void handleValues (TableExprNode& operand,
@@ -168,7 +168,7 @@ namespace casacore {
 
     //# Data members.
     //# 0=unknown, 1=height, 2=angles, 3=xyz, -3=angles,height
-    Int  itsValueType;
+    int32_t  itsValueType;
   };
 
 } //end namespace

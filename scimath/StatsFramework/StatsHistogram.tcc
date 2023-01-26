@@ -36,16 +36,16 @@ namespace casacore {
 
 template <class AccumType>
 StatsHistogram<AccumType>::StatsHistogram(
-    AccumType minLimit, AccumType maxLimit, uInt nBins
+    AccumType minLimit, AccumType maxLimit, uint32_t nBins
 ) : _binWidth(0), _minHistLimit(minLimit), _maxHistLimit(maxLimit),
     _nBins(nBins), _maxBinLimits(nBins) {
     ThrowIf (minLimit > maxLimit, "minLimit must be less than maxLimit");
     _binWidth = (_maxHistLimit - _minHistLimit)/(AccumType)nBins;
-    // in case of AccumType = Int, this can happen even if max and min are
-    // different. One would hope that AccumType=Int would never be used, but
+    // in case of AccumType = int32_t, this can happen even if max and min are
+    // different. One would hope that AccumType=int32_t would never be used, but
     // just in case. The check incurs a negligible performance hit.
     ThrowIf(_binWidth == AccumType(0), "Histogram bin width is 0");
-    uInt j = 1;
+    uint32_t j = 1;
     for_each(
         _maxBinLimits.begin(), _maxBinLimits.end(), [&j, this]
         (AccumType& val) {
@@ -63,7 +63,7 @@ AccumType StatsHistogram<AccumType>::getBinWidth() const {
 }
 
 template <class AccumType>
-uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
+uint32_t StatsHistogram<AccumType>::getIndex(AccumType value) const {
     // we do not explicitly check if the value is within the histogram,
     // because the caller has already done that
     // estimate the index
@@ -73,22 +73,22 @@ uInt StatsHistogram<AccumType>::getIndex(AccumType value) const {
         return idx;
     }
     auto higher = value >= _maxBinLimits[idx];
-    Int testIdx = higher ? idx + 1 : idx - 1;
+    int32_t testIdx = higher ? idx + 1 : idx - 1;
     // should never happen, but check just in case...
     if (higher) {
-        ThrowIf(testIdx >= (Int)_nBins, "testIdx >= nBins");
+        ThrowIf(testIdx >= (int32_t)_nBins, "testIdx >= nBins");
     }
     else {
         ThrowIf(testIdx < 0, "testIdx < 0");
     }
-    Int minIdx = higher ? idx : testIdx;
-    Int maxIdx = higher ? testIdx : idx;
+    int32_t minIdx = higher ? idx : testIdx;
+    int32_t maxIdx = higher ? testIdx : idx;
     // we must first establish a bin index
     // range which includes the target value
     _minMaxIdxRange(minIdx, maxIdx, value, higher);
     // bin index limits established, so now do binary search to find the
     // correct bin
-    while (True) {
+    while (true) {
         ThrowIf(
             maxIdx < minIdx,
             "Logic Error: maxIdx (" + String::toString(maxIdx) + ") < minIdx ("
@@ -138,15 +138,15 @@ AccumType StatsHistogram<AccumType>::getMinHistLimit() const {
     return _minHistLimit;
 }
 
-template <class AccumType> uInt StatsHistogram<AccumType>::getNBins() const {
+template <class AccumType> uint32_t StatsHistogram<AccumType>::getNBins() const {
     return _nBins;
 }
 
 template <class AccumType> void StatsHistogram<AccumType>::_minMaxIdxRange(
-    Int& minIdx, Int& maxIdx, AccumType value, Bool higher
+    int32_t& minIdx, int32_t& maxIdx, AccumType value, bool higher
 ) const {
-    Int mult = 2;
-    while(True) {
+    int32_t mult = 2;
+    while(true) {
         auto mymin = minIdx == 0 ? _minHistLimit : _maxBinLimits[minIdx - 1];
         if (value >= mymin && value < _maxBinLimits[maxIdx]) {
             // limits established
@@ -155,14 +155,14 @@ template <class AccumType> void StatsHistogram<AccumType>::_minMaxIdxRange(
         mult *= 2;
         if (higher) {
             minIdx = maxIdx + 1;
-            if (minIdx >= (Int)_nBins) {
+            if (minIdx >= (int32_t)_nBins) {
                 minIdx = _nBins - 1;
                 maxIdx = minIdx;
                 // minIdx can't get any larger, so return
                 return;
             }
             maxIdx = minIdx + mult;
-            if (maxIdx >= (Int)_nBins) {
+            if (maxIdx >= (int32_t)_nBins) {
                 maxIdx = _nBins - 1;
                 // maxIdx can't get any larger, so return
                 return;

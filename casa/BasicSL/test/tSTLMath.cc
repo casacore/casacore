@@ -34,31 +34,31 @@
 
 void testStdVectorPlus()
 {
-  std::vector<Int> a(3);
-  std::vector<Int> b(3);
+  std::vector<int32_t> a(3);
+  std::vector<int32_t> b(3);
   a[0] = 0; a[1] = 1; a[2] = 2;
   b[0] = 5; b[1] = 6; b[2] = 7;
-  std::vector<Int> c = a + b;
+  std::vector<int32_t> c = a + b;
   AlwaysAssertExit(c.size() == 3  &&  c[0] == 5  &&
                    c[1] == 7  &&  c[2] == 9);
   std::vector<int> d(2);
-  Bool caught = False;
+  bool caught = false;
   try {
     std::vector<int> e = a + d;
     // exception should be thrown, shouldn't get here.
-    AlwaysAssertExit(False);
+    AlwaysAssertExit(false);
   }
   catch (const AipsError& exc) {
-    caught = True;
+    caught = true;
   }
   AlwaysAssertExit(caught);
 }
 
 void testStdVectorDivide()
 {
-  std::vector<Int> a(3);
+  std::vector<int32_t> a(3);
   a[0] = 0; a[1] = 2; a[2] = 4;
-  std::vector<Int> b = a/2;
+  std::vector<int32_t> b = a/2;
   AlwaysAssertExit(b.size() == 3  &&  b[0] == 0  &&
                    b[1] == 1  &&  b[2] == 2);
 }

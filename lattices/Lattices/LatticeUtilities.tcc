@@ -54,29 +54,29 @@ namespace casacore {  //# namespace casacore begin
 template <class T>
 void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
                                        const MaskedLattice<T>& in, 
-                                       Bool zeroMasked)
+                                       bool zeroMasked)
 //
 // This function coould be implemented with LEL
-// but requires two passes if zeroMask=True so
+// but requires two passes if zeroMask=true so
 // we leave it as it is
 {  
 
 // Do we need to stuff about with masks ?  Even if the input
-// does not have a mask, it has a 'virtual' mask of all True.
+// does not have a mask, it has a 'virtual' mask of all true.
 // Therefore we need to transfer those mask values to the
 // output if an output mask exists.
 
-   Bool doMask = out.isMasked() && out.hasPixelMask();
-   Lattice<Bool>* pMaskOut = 0;
+   bool doMask = out.isMasked() && out.hasPixelMask();
+   Lattice<bool>* pMaskOut = 0;
    if (doMask) {
       pMaskOut = &out.pixelMask();
       if (!pMaskOut->isWritable()) {
-         doMask = False;
+         doMask = false;
          os << LogIO::WARN << "The output image has a mask but it is not writable" << endl;
          os << LogIO::WARN << "So the mask will not be transferred to the output" << LogIO::POST;
       }
    }                        
-   if (!doMask) zeroMasked = False;
+   if (!doMask) zeroMasked = false;
 
 // Use the same stepper for input and output.
                       
@@ -93,9 +93,9 @@ void LatticeUtilities::copyDataAndMask(LogIO& os, MaskedLattice<T>& out,
       IPosition cursorShape = iter.cursorShape();
       if (zeroMasked) {
          Array<T> pixels = iter.cursor().copy();
-         const Array<Bool>& mask = iter.getMask();
+         const Array<bool>& mask = iter.getMask();
 //
-         typename Array<Bool>::const_iterator mIt;
+         typename Array<bool>::const_iterator mIt;
          typename Array<T>::iterator dIt;
 	 typename Array<T>::iterator dItend = pixels.end();
          for (dIt=pixels.begin(),mIt=mask.begin(); dIt!=dItend; ++dIt,++mIt) {
@@ -120,7 +120,7 @@ void LatticeUtilities::replicate (Lattice<T>& lat,
                                   const Slicer& region,
                                   const Array<T>& pixels)
 {
-   SubLattice<T> subLattice(lat, region, True); 
+   SubLattice<T> subLattice(lat, region, true); 
    const IPosition shapePixels = pixels.shape();
    const IPosition shapeLattice = subLattice.shape();
    AlwaysAssert(shapePixels.nelements()<=shapeLattice.nelements(),AipsError);
@@ -135,10 +135,10 @@ void LatticeUtilities::replicate (Lattice<T>& lat,
 
 template <class T>
 void  LatticeUtilities::addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T>& latIn, 
-                                           uInt nDim)
+                                           uint32_t nDim)
 {
    delete pLatOut; pLatOut = 0;
-   const uInt dimIn = latIn.ndim();
+   const uint32_t dimIn = latIn.ndim();
    if (nDim < dimIn ) {
       throw (AipsError ("Input Lattice has more dimensions than desired output Lattice"));
    } else if (nDim == dimIn) {
@@ -156,21 +156,21 @@ void  LatticeUtilities::addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T
 
 template <typename T> 
 void LatticeUtilities::bin (MaskedArray<T>& out, const MaskedArray<T>& in, 
-                            uInt axis, uInt bin)
+                            uint32_t axis, uint32_t bin)
 {
 
 // Check
 
-   const uInt nDim = in.ndim();
+   const uint32_t nDim = in.ndim();
    AlwaysAssert(axis<nDim, AipsError);
 
 // Make input MaskedLattice
 
    ArrayLattice<T> data(in.getArray());
-   ArrayLattice<Bool> mask(in.getMask());
+   ArrayLattice<bool> mask(in.getMask());
 //
    SubLattice<T> mLat(data);
-   mLat.setPixelMask(mask, False);
+   mLat.setPixelMask(mask, false);
 
 // Create binner
 

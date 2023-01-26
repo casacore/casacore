@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//  Polynomial<Float> pf(3); // Third order polynomial - coeffs 0 by default
+//  Polynomial<float> pf(3); // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(1, 1.0);
 //  pf[2] = 2.0;
 //  pf.setCoefficient(3, 3.0);  // 3x^3 + 2x^2 + x
@@ -94,7 +94,7 @@ public:
   Polynomial() : PolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit Polynomial(uInt order) : PolynomialParam<T>(order) {}
+  explicit Polynomial(uint32_t order) : PolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   Polynomial(const Polynomial<T> &other) : PolynomialParam<T>(other) {}
@@ -152,7 +152,7 @@ public:
   // Constructs one dimensional Polynomials.
   // <group>
   Polynomial_PS() : PolynomialParam<AutoDiff<T> >() {}
-  explicit Polynomial_PS(uInt order) :
+  explicit Polynomial_PS(uint32_t order) :
     PolynomialParam<AutoDiff<T> >(order) {}
   // </group>
 

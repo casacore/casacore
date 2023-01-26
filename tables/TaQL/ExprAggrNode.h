@@ -85,14 +85,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprAggrNode (FunctionType, NodeDataType, ValueType,
                        const TableExprNodeSet& source,
                        const vector<TENShPtr>& nodes,
-                       const Block<Int>& dtypeOper);
+                       const Block<int32_t>& dtypeOper);
 
     // This node does aggregation.
-    virtual Bool isAggregate() const;
+    virtual bool isAggregate() const;
     
     // Check the operands of the aggregate function and return the
     // result's data type.
-    static NodeDataType checkOperands (Block<Int>& dtypeOper,
+    static NodeDataType checkOperands (Block<int32_t>& dtypeOper,
                                        ValueType& resVT, FunctionType ftype,
                                        std::vector<TENShPtr>& nodes);
 
@@ -105,13 +105,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Is the aggregate function a lazy or an immediate one?
-    virtual Bool isLazyAggregate() const;
+    virtual bool isLazyAggregate() const;
 
     // Functions to get the result of an aggregate function.
     // <group>
-    virtual Bool      getBool     (const TableExprId& id);
-    virtual Int64     getInt      (const TableExprId& id);
-    virtual Double    getDouble   (const TableExprId& id);
+    virtual bool      getBool     (const TableExprId& id);
+    virtual int64_t     getInt      (const TableExprId& id);
+    virtual double    getDouble   (const TableExprId& id);
     virtual DComplex  getDComplex (const TableExprId& id);
     virtual String    getString   (const TableExprId& id);
     virtual MVTime    getDate     (const TableExprId& id);

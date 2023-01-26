@@ -74,8 +74,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Double> y(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<double> y(shape); 
 // y.copyData(x[x>5]);                 // y = x;
 // </srcblock>
 // The LELCondition class is embedded in the tree at construction time
@@ -95,7 +95,7 @@ protected:
 public: 
 // Construct the condition on the given expression.
    LELCondition (const CountedPtr<LELInterface<T> >& expr,
-		 const CountedPtr<LELInterface<Bool> >& cond);
+		 const CountedPtr<LELInterface<bool> >& cond);
 
 // Destructor does nothing
   ~LELCondition();
@@ -108,22 +108,22 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
 private:
    CountedPtr<LELInterface<T> >    pExpr_p;
-   CountedPtr<LELInterface<Bool> > pCond_p;
+   CountedPtr<LELInterface<bool> > pCond_p;
 };
 
 

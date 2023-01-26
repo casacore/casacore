@@ -67,7 +67,7 @@ class ColumnSet;
 // <linkto class=ScalarColumnDesc>ScalarColumnDesc</linkto> used
 // to define column descriptions for scalars with a standard data type.
 // <p>
-// The data managers handle a record as an indirect Vector of uChar,
+// The data managers handle a record as an indirect Vector of unsigned char,
 // because class
 // <linkto class=ScalarRecordColumnData>ScalarRecordColumnData</linkto>
 // converts a record to such a vector before passing it to the data manager.
@@ -86,7 +86,7 @@ class ColumnSet;
 //
 //     // Add a scalar integer column ac, define keywords for it
 //     // and define a default value 0.
-//     ScalarRecordColumnDesc<Int> acColumn("ac");
+//     ScalarRecordColumnDesc<int32_t> acColumn("ac");
 //     acColumn.rwKeywordSet().define ("scale", Complex(0));
 //     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);

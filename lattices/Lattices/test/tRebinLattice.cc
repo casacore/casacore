@@ -45,7 +45,7 @@
 void doit1 (const IPosition& shape, const IPosition& factors);
 void doit2 ();
 void doit3 ();
-void doit4 (RebinLattice<Float>& rb, const IPosition& shape, 
+void doit4 (RebinLattice<float>& rb, const IPosition& shape, 
             const IPosition& factors);
 
 
@@ -63,8 +63,8 @@ try {
    inputs.create("shape", "-10", "shape");
    inputs.create("factors", "-10", "factors");
    inputs.readArguments(argc, argv);
-   const Block<Int> factorsU(inputs.getIntArray("factors"));
-   const Block<Int> shapeU(inputs.getIntArray("shape"));
+   const Block<int32_t> factorsU(inputs.getIntArray("factors"));
+   const Block<int32_t> shapeU(inputs.getIntArray("shape"));
 
 // Convert inputs
 
@@ -74,10 +74,10 @@ try {
          shapeIn = IPosition(2, 10, 10);
       } else {
          shapeIn.resize(shapeU.nelements());
-         for (uInt i=0; i<shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
+         for (uint32_t i=0; i<shapeIn.nelements(); i++) shapeIn(i) = shapeU[i];
       }
    }
-   uInt nDim = shapeIn.nelements();
+   uint32_t nDim = shapeIn.nelements();
 //
    IPosition factors;
    if (factorsU.nelements()>0) {
@@ -87,7 +87,7 @@ try {
       } else {
          AlwaysAssert(factorsU.nelements()==nDim, AipsError);
          factors.resize(nDim);
-         for (uInt i=0; i<nDim; i++) factors(i) = factorsU[i];
+         for (uint32_t i=0; i<nDim; i++) factors(i) = factorsU[i];
       }
    }
 
@@ -202,9 +202,9 @@ void doit1 (const IPosition& shapeIn, const IPosition& factors)
 // Make input ML
 
    TiledShape shape2(shapeIn);
-   TempLattice<Float> inLat(shape2);
+   TempLattice<float> inLat(shape2);
    inLat.set(1.0);
-   SubLattice<Float> inML(inLat, True);
+   SubLattice<float> inML(inLat, true);
 
 // Unmasked input
 
@@ -212,15 +212,15 @@ void doit1 (const IPosition& shapeIn, const IPosition& factors)
  
 // Make rebinner
 
-      RebinLattice<Float> reBinLat(inML, factors);
+      RebinLattice<float> reBinLat(inML, factors);
 //
-      const Array<Float>& data = reBinLat.get();
-      Float val(1.0);
-      Bool ok = ::allNear(data, val, 1.0e-6);
+      const Array<float>& data = reBinLat.get();
+      float val(1.0);
+      bool ok = ::allNear(data, val, 1.0e-6);
       AlwaysAssert(ok, AipsError);
 //
-      const Array<Bool>& mask = reBinLat.getMask();
-      ok = ::allEQ(mask, True);
+      const Array<bool>& mask = reBinLat.getMask();
+      ok = ::allEQ(mask, true);
       AlwaysAssert(ok, AipsError);
     }
 
@@ -228,21 +228,21 @@ void doit1 (const IPosition& shapeIn, const IPosition& factors)
 
    {
 
-      TempLattice<Bool> inMask(shape2);
-      inMask.set(True);
-      inML.setPixelMask(inMask, True);
+      TempLattice<bool> inMask(shape2);
+      inMask.set(true);
+      inML.setPixelMask(inMask, true);
  
 // Make rebinner
 
-      RebinLattice<Float> reBinLat(inML, factors);
+      RebinLattice<float> reBinLat(inML, factors);
 //
-      const Array<Float>& data = reBinLat.get();
-      Float val(1.0);
-      Bool ok = ::allNear(data, val, 1.0e-6);
+      const Array<float>& data = reBinLat.get();
+      float val(1.0);
+      bool ok = ::allNear(data, val, 1.0e-6);
       AlwaysAssert(ok, AipsError);
 //
-      const Array<Bool>& mask = reBinLat.getMask();
-      ok = ::allEQ(mask, True);
+      const Array<bool>& mask = reBinLat.getMask();
+      ok = ::allEQ(mask, true);
       AlwaysAssert(ok, AipsError);
     }
 }
@@ -255,29 +255,29 @@ void doit2 ()
 
    IPosition factors(1, 2);
    IPosition shapeIn(1, 6);
-   Array<Float> dataIn(shapeIn);
+   Array<float> dataIn(shapeIn);
    IPosition pos(1);
-   for (Int j=0; j<shapeIn(0); j++) {
+   for (int32_t j=0; j<shapeIn(0); j++) {
       pos(0) = j;
-      dataIn(pos) = Float(j);
+      dataIn(pos) = float(j);
    }
    IPosition shapeOut(1, 3);
-   Array<Float> dataOut(shapeOut);
-   for (Int j=0; j<shapeOut(0); j++) {
+   Array<float> dataOut(shapeOut);
+   for (int32_t j=0; j<shapeOut(0); j++) {
       pos(0) = j;
-      dataOut(pos) = 2*Float(j) + 0.5;
+      dataOut(pos) = 2*float(j) + 0.5;
    }
 
 // Make MLs   
 
    TiledShape shape2(shapeIn);
-   TempLattice<Float> inLat(shape2);
+   TempLattice<float> inLat(shape2);
    inLat.put(dataIn);
-   TempLattice<Bool> inMask(shape2);
-   inMask.set(True);
+   TempLattice<bool> inMask(shape2);
+   inMask.set(true);
 //
-   SubLattice<Float> inML(inLat, True);
-   inML.setPixelMask(inMask, True);
+   SubLattice<float> inML(inLat, true);
+   inML.setPixelMask(inMask, true);
 //
    cerr << endl << endl;
    cerr << "factors = " << factors << endl;
@@ -285,14 +285,14 @@ void doit2 ()
 
 // Make rebinner
 
-   RebinLattice<Float> reBinLat(inML, factors);
+   RebinLattice<float> reBinLat(inML, factors);
 //
-   const Array<Float>& dataOut2 = reBinLat.get();
-   Bool ok = ::allNear(dataOut, dataOut2, 1.0e-6);
+   const Array<float>& dataOut2 = reBinLat.get();
+   bool ok = ::allNear(dataOut, dataOut2, 1.0e-6);
    AlwaysAssert(ok, AipsError);
 //
-   const Array<Bool>& maskOut2 = reBinLat.getMask();
-   ok = ::allEQ(maskOut2, True);
+   const Array<bool>& maskOut2 = reBinLat.getMask();
+   ok = ::allEQ(maskOut2, true);
    AlwaysAssert(ok, AipsError);
 /*
    cerr << "Data = " << endl;
@@ -316,27 +316,27 @@ void doit3 ()
 
    IPosition factors(1, 2);
    IPosition shapeIn(1, 6);
-   Array<Float> dataIn(shapeIn);
+   Array<float> dataIn(shapeIn);
    IPosition pos(1);
-   for (Int j=0; j<shapeIn(0); j++) {
+   for (int32_t j=0; j<shapeIn(0); j++) {
       pos(0) = j;
-      dataIn(pos) = Float(j);
+      dataIn(pos) = float(j);
    }
 
 // Make MLs   
 
    TiledShape shape2(shapeIn);
-   TempLattice<Float> inLat(shape2);
+   TempLattice<float> inLat(shape2);
    inLat.put(dataIn);
-   TempLattice<Bool> inMask(shape2);
-   inMask.set(True);
+   TempLattice<bool> inMask(shape2);
+   inMask.set(true);
 //
-   SubLattice<Float> inML(inLat, True);
-   inML.setPixelMask(inMask, True);
+   SubLattice<float> inML(inLat, true);
+   inML.setPixelMask(inMask, true);
 
 // Make rebinner
 
-   RebinLattice<Float> rb(inML, factors);
+   RebinLattice<float> rb(inML, factors);
 
 // Test it
 
@@ -344,17 +344,17 @@ void doit3 ()
 
 // Copy constructor
 
-   RebinLattice<Float> rb2(rb);
+   RebinLattice<float> rb2(rb);
    doit4(rb2, shapeIn, factors);
 
 // Assignment
 
-   RebinLattice<Float> rb3;
+   RebinLattice<float> rb3;
    rb3 = rb;
    doit4(rb3, shapeIn, factors);
 }
 
-void doit4 (RebinLattice<Float>& rb, const IPosition& shape, 
+void doit4 (RebinLattice<float>& rb, const IPosition& shape, 
             const IPosition& factors)
 {
 

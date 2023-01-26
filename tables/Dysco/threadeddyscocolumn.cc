@@ -107,7 +107,7 @@ template <typename DataType>
 void ThreadedDyscoColumn<DataType>::getValues(
     casacore::rownr_t rowNr, casacore::Array<DataType> *dataArr) {
   // Make sure array storage is contiguous.
-  casacore::Bool deleteIt;
+  bool deleteIt;
   DataType* dataPtr = dataArr->getStorage (deleteIt);
   if (!areOffsetsInitialized()) {
     // Trying to read before first block was written -- return zero
@@ -170,7 +170,7 @@ template <typename DataType>
 void ThreadedDyscoColumn<DataType>::putValues(
     casacore::rownr_t rowNr, const casacore::Array<DataType> *dataArr) {
   // Make sure array storage is contiguous.
-  casacore::Bool deleteIt;
+  bool deleteIt;
   const DataType* dataPtr = dataArr->getStorage (deleteIt);
   if (!areOffsetsInitialized()) {
     // If the manager did not initialize its offsets yet, then it is determined

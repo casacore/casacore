@@ -88,7 +88,7 @@ public:
     WCComplement& operator= (const WCComplement& other);
 
     // Comparison
-    virtual Bool operator== (const WCRegion& other) const;
+    virtual bool operator== (const WCRegion& other) const;
 
     // Make a copy of the derived object.
     // cloneRegion needs to return a WCRegion * because the
@@ -109,9 +109,9 @@ public:
 				     const String& tableName);
 
     // Construct from multiple regions.
-    // When <src>takeOver</src> is True, the destructor will delete the
+    // When <src>takeOver</src> is true, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    WCComplement (Bool takeOver,
+    WCComplement (bool takeOver,
 		  const PtrBlock<const WCRegion*>& regions);
 
 protected:

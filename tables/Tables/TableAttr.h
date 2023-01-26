@@ -83,8 +83,8 @@ public:
 
     // Construct with given values.
     // <group>
-    explicit TableAttr (const String& name, Bool openWritable = False);
-    TableAttr (const String& name, Bool openWritable, const TableLock&);
+    explicit TableAttr (const String& name, bool openWritable = false);
+    TableAttr (const String& name, bool openWritable, const TableLock&);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -103,7 +103,7 @@ public:
 
     // Set the keyword to read/write access.
     void setRW()
-      { openWritable_p = True; }
+      { openWritable_p = true; }
 
     void setName (const String& name)
       { name_p = name; }
@@ -112,7 +112,7 @@ public:
     // <group>
     const String& name() const
       { return name_p; }
-    Bool openWritable() const
+    bool openWritable() const
       { return openWritable_p; }
     const TableLock& lockOptions() const
       { return lockOptions_p; }
@@ -120,7 +120,7 @@ public:
 
 private:
     String    name_p;
-    Bool      openWritable_p;
+    bool      openWritable_p;
     TableLock lockOptions_p;
 };
 

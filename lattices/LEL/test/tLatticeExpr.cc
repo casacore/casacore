@@ -38,30 +38,30 @@
 
 
 #include <casacore/casa/namespace.h>
-Bool checkFloat(Lattice<Float>& expr, 
-                const Float result,
+bool checkFloat(Lattice<float>& expr, 
+                const float result,
                 const IPosition shape,
-                const Bool supress);
+                const bool supress);
 
-Bool checkDouble(Lattice<Double>& expr, 
-                const Double result,
+bool checkDouble(Lattice<double>& expr, 
+                const double result,
                 const IPosition shape,
-                const Bool supress);
+                const bool supress);
 
-Bool checkComplex(Lattice<Complex>& expr, 
+bool checkComplex(Lattice<Complex>& expr, 
                 const Complex result,
                 const IPosition shape,
-                const Bool supress);
+                const bool supress);
 
-Bool checkDComplex(Lattice<DComplex>& expr, 
+bool checkDComplex(Lattice<DComplex>& expr, 
                 const DComplex result,
                 const IPosition shape,
-                const Bool supress);
+                const bool supress);
 
-Bool checkBool(Lattice<Bool>& expr, 
-                const Bool result,
+bool checkBool(Lattice<bool>& expr, 
+                const bool result,
                 const IPosition shape,
-                const Bool supress);
+                const bool supress);
 
 
 int main (int argc, const char* argv[])
@@ -74,31 +74,31 @@ int main (int argc, const char* argv[])
     inp.create("sup", "False", "Supress expected exceptions messages", "Bool");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const Bool supress=inp.getBool("sup");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const bool supress=inp.getBool("sup");
 
     IPosition shape(2,nx,ny);
-    Bool ok = True;
+    bool ok = true;
  
-// Bool Lattices
+// bool Lattices
     
-    ArrayLattice<Bool> aB(shape);
-    Bool aBVal = True;
+    ArrayLattice<bool> aB(shape);
+    bool aBVal = true;
     aB.set(aBVal);
 
     
 // FLoat Lattices
     
-    ArrayLattice<Float> aF(shape);   
-    Float aFVal = 2.0;
+    ArrayLattice<float> aF(shape);   
+    float aFVal = 2.0;
     aF.set(aFVal);
     
     
-// Double Lattices
+// double Lattices
  
-    ArrayLattice<Double> aD(shape);
-    Double aDVal = 2.0;
+    ArrayLattice<double> aD(shape);
+    double aDVal = 2.0;
     aD.set(aDVal);  
   
 // Complex Lattices
@@ -116,46 +116,46 @@ int main (int argc, const char* argv[])
 
 
 //
-// <Float>
+// <float>
 // 
      {
        cout << "Float" << endl;
        LatticeExprNode node(aF);
-       LatticeExpr<Float> expr(node);
-       if (!checkFloat(expr, aFVal, shape, supress)) ok = False;
+       LatticeExpr<float> expr(node);
+       if (!checkFloat(expr, aFVal, shape, supress)) ok = false;
 
-       LatticeExpr<Float> expr2(expr);
-       if (!checkFloat(expr2, aFVal, shape, supress)) ok = False;
+       LatticeExpr<float> expr2(expr);
+       if (!checkFloat(expr2, aFVal, shape, supress)) ok = false;
  
-       LatticeExpr<Float> expr3;
+       LatticeExpr<float> expr3;
        expr3 = expr;      
-       if (!checkFloat(expr2, aFVal, shape, supress)) ok = False;
+       if (!checkFloat(expr2, aFVal, shape, supress)) ok = false;
 
-       Lattice<Float>* pExpr;
+       Lattice<float>* pExpr;
        pExpr = expr.clone();
-       if (!checkFloat(*pExpr, aFVal, shape, supress)) ok = False;
+       if (!checkFloat(*pExpr, aFVal, shape, supress)) ok = false;
        delete pExpr;
      }
 
 //
-// <Double>
+// <double>
 // 
      {
        cout << "Double" << endl;
        LatticeExprNode node(aD);
-       LatticeExpr<Double> expr(node);
-       if (!checkDouble(expr, aDVal, shape, supress)) ok = False;
+       LatticeExpr<double> expr(node);
+       if (!checkDouble(expr, aDVal, shape, supress)) ok = false;
 
-       LatticeExpr<Double> expr2(expr);
-       if (!checkDouble(expr2, aDVal, shape, supress)) ok = False;
+       LatticeExpr<double> expr2(expr);
+       if (!checkDouble(expr2, aDVal, shape, supress)) ok = false;
  
-       LatticeExpr<Double> expr3;
+       LatticeExpr<double> expr3;
        expr3 = expr;      
-       if (!checkDouble(expr2, aDVal, shape, supress)) ok = False;
+       if (!checkDouble(expr2, aDVal, shape, supress)) ok = false;
 
-       Lattice<Double>* pExpr;
+       Lattice<double>* pExpr;
        pExpr = expr.clone();
-       if (!checkDouble(*pExpr, aDVal, shape, supress)) ok = False;
+       if (!checkDouble(*pExpr, aDVal, shape, supress)) ok = false;
        delete pExpr;
      }
 
@@ -166,18 +166,18 @@ int main (int argc, const char* argv[])
        cout << "Complex" << endl;
        LatticeExprNode node(aC);
        LatticeExpr<Complex> expr(node);
-       if (!checkComplex(expr, aCVal, shape, supress)) ok = False;
+       if (!checkComplex(expr, aCVal, shape, supress)) ok = false;
 
        LatticeExpr<Complex> expr2(expr);
-       if (!checkComplex(expr2, aCVal, shape, supress)) ok = False;
+       if (!checkComplex(expr2, aCVal, shape, supress)) ok = false;
  
        LatticeExpr<Complex> expr3;
        expr3 = expr;      
-       if (!checkComplex(expr2, aCVal, shape, supress)) ok = False;
+       if (!checkComplex(expr2, aCVal, shape, supress)) ok = false;
 
        Lattice<Complex>* pExpr;
        pExpr = expr.clone();
-       if (!checkComplex(*pExpr, aCVal, shape, supress)) ok = False;
+       if (!checkComplex(*pExpr, aCVal, shape, supress)) ok = false;
        delete pExpr;
      }
 
@@ -188,40 +188,40 @@ int main (int argc, const char* argv[])
        cout << "DComplex" << endl;
        LatticeExprNode node(aDC);
        LatticeExpr<DComplex> expr(node);
-       if (!checkDComplex(expr, aDCVal, shape, supress)) ok = False;
+       if (!checkDComplex(expr, aDCVal, shape, supress)) ok = false;
 
        LatticeExpr<DComplex> expr2(expr);
-       if (!checkDComplex(expr2, aDCVal, shape, supress)) ok = False;
+       if (!checkDComplex(expr2, aDCVal, shape, supress)) ok = false;
  
        LatticeExpr<DComplex> expr3;
        expr3 = expr;      
-       if (!checkDComplex(expr2, aDCVal, shape, supress)) ok = False;
+       if (!checkDComplex(expr2, aDCVal, shape, supress)) ok = false;
 
        Lattice<DComplex>* pExpr;
        pExpr = expr.clone();
-       if (!checkDComplex(*pExpr, aDCVal, shape, supress)) ok = False;
+       if (!checkDComplex(*pExpr, aDCVal, shape, supress)) ok = false;
        delete pExpr;
      }
 
 //
-// <Bool>
+// <bool>
 // 
      {
        cout << "Bool" << endl;
        LatticeExprNode node(aB);
-       LatticeExpr<Bool> expr(node);
-       if (!checkBool(expr, aBVal, shape, supress)) ok = False;
+       LatticeExpr<bool> expr(node);
+       if (!checkBool(expr, aBVal, shape, supress)) ok = false;
 
-       LatticeExpr<Bool> expr2(expr);
-       if (!checkBool(expr2, aBVal, shape, supress)) ok = False;
+       LatticeExpr<bool> expr2(expr);
+       if (!checkBool(expr2, aBVal, shape, supress)) ok = false;
  
-       LatticeExpr<Bool> expr3;
+       LatticeExpr<bool> expr3;
        expr3 = expr;      
-       if (!checkBool(expr2, aBVal, shape, supress)) ok = False;
+       if (!checkBool(expr2, aBVal, shape, supress)) ok = false;
 
-       Lattice<Bool>* pExpr;
+       Lattice<bool>* pExpr;
        pExpr = expr.clone();
-       if (!checkBool(*pExpr, aBVal, shape, supress)) ok = False;
+       if (!checkBool(*pExpr, aBVal, shape, supress)) ok = false;
        delete pExpr;
      }
 
@@ -245,25 +245,25 @@ int main (int argc, const char* argv[])
 }
 
 
-Bool checkFloat(Lattice<Float>& expr, 
-                const Float result,
+bool checkFloat(Lattice<float>& expr, 
+                const float result,
                 const IPosition shape,
-                const Bool supress)
+                const bool supress)
 {
-   Bool ok = True;
-   Array<Float> outArr(shape);  
-   ArrayLattice<Float> outLat(shape);
+   bool ok = true;
+   Array<float> outArr(shape);  
+   ArrayLattice<float> outLat(shape);
    IPosition origin(shape); origin = 0;
    IPosition stride(outArr.ndim(),1);
           
    if (expr.shape() != shape) {
       cout << "   Shape should be " << shape << endl;
       cout << "   Shape is " << expr.shape()  << endl;
-      ok = False;
+      ok = false;
    }
    if (expr.isWritable()) {
       cout << "   LatticeExpr should not be writable" << endl;
-      ok = False;
+      ok = false;
    }
 
    try {
@@ -282,14 +282,14 @@ Bool checkFloat(Lattice<Float>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(outArr, origin, shape, stride);
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    Slicer slicer(origin, shape, stride);
@@ -297,17 +297,17 @@ Bool checkFloat(Lattice<Float>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
 
-   COWPtr<Array<Float> > moo;
+   COWPtr<Array<float> > moo;
    expr.getSlice(moo, origin, shape, stride);
    outArr.reference(moo.rwRef());
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(moo, slicer);
@@ -315,7 +315,7 @@ Bool checkFloat(Lattice<Float>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.copyDataTo(outLat);
@@ -323,32 +323,32 @@ Bool checkFloat(Lattice<Float>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    return ok;
 }
 
 
-Bool checkDouble(Lattice<Double>& expr, 
-                const Double result,
+bool checkDouble(Lattice<double>& expr, 
+                const double result,
                 const IPosition shape,
-                const Bool supress)
+                const bool supress)
 {
-   Bool ok = True;
-   Array<Double> outArr(shape);  
-   ArrayLattice<Double> outLat(shape);
+   bool ok = true;
+   Array<double> outArr(shape);  
+   ArrayLattice<double> outLat(shape);
    IPosition origin(shape); origin = 0;
    IPosition stride(outArr.ndim(),1);
           
    if (expr.shape() != shape) {
       cout << "   Shape should be " << shape << endl;
       cout << "   Shape is " << expr.shape()  << endl;
-      ok = False;
+      ok = false;
    }
    if (expr.isWritable()) {
       cout << "   LatticeExpr should not be writable" << endl;
-      ok = False;
+      ok = false;
    }
 
    try {
@@ -367,14 +367,14 @@ Bool checkDouble(Lattice<Double>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(outArr, origin, shape, stride);
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    Slicer slicer(origin, shape, stride);
@@ -382,17 +382,17 @@ Bool checkDouble(Lattice<Double>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
 
-   COWPtr<Array<Double> > moo;
+   COWPtr<Array<double> > moo;
    expr.getSlice(moo, origin, shape, stride);
    outArr.reference(moo.rwRef());
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(moo, slicer);
@@ -400,7 +400,7 @@ Bool checkDouble(Lattice<Double>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.copyDataTo(outLat);
@@ -408,19 +408,19 @@ Bool checkDouble(Lattice<Double>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    return ok;
 }
 
 
-Bool checkComplex(Lattice<Complex>& expr, 
+bool checkComplex(Lattice<Complex>& expr, 
                 const Complex result,
                 const IPosition shape,
-                const Bool supress)
+                const bool supress)
 {
-   Bool ok = True;
+   bool ok = true;
    Array<Complex> outArr(shape);  
    ArrayLattice<Complex> outLat(shape);
    IPosition origin(shape); origin = 0;
@@ -429,11 +429,11 @@ Bool checkComplex(Lattice<Complex>& expr,
    if (expr.shape() != shape) {
       cout << "   Shape should be " << shape << endl;
       cout << "   Shape is " << expr.shape()  << endl;
-      ok = False;
+      ok = false;
    }
    if (expr.isWritable()) {
       cout << "   LatticeExpr should not be writable" << endl;
-      ok = False;
+      ok = false;
    }
 
    try {
@@ -452,14 +452,14 @@ Bool checkComplex(Lattice<Complex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(outArr, origin, shape, stride);
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    Slicer slicer(origin, shape, stride);
@@ -467,7 +467,7 @@ Bool checkComplex(Lattice<Complex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
 
@@ -477,7 +477,7 @@ Bool checkComplex(Lattice<Complex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(moo, slicer);
@@ -485,7 +485,7 @@ Bool checkComplex(Lattice<Complex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.copyDataTo(outLat);
@@ -493,7 +493,7 @@ Bool checkComplex(Lattice<Complex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    return ok;
@@ -501,12 +501,12 @@ Bool checkComplex(Lattice<Complex>& expr,
 
 
 
-Bool checkDComplex(Lattice<DComplex>& expr, 
+bool checkDComplex(Lattice<DComplex>& expr, 
                 const DComplex result,
                 const IPosition shape,
-                const Bool supress)
+                const bool supress)
 {
-   Bool ok = True;
+   bool ok = true;
    Array<DComplex> outArr(shape);  
    ArrayLattice<DComplex> outLat(shape);
    IPosition origin(shape); origin = 0;
@@ -515,11 +515,11 @@ Bool checkDComplex(Lattice<DComplex>& expr,
    if (expr.shape() != shape) {
       cout << "   Shape should be " << shape << endl;
       cout << "   Shape is " << expr.shape()  << endl;
-      ok = False;
+      ok = false;
    }
    if (expr.isWritable()) {
       cout << "   LatticeExpr should not be writable" << endl;
-      ok = False;
+      ok = false;
    }
 
    try {
@@ -538,14 +538,14 @@ Bool checkDComplex(Lattice<DComplex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(outArr, origin, shape, stride);
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    Slicer slicer(origin, shape, stride);
@@ -553,7 +553,7 @@ Bool checkDComplex(Lattice<DComplex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
 
@@ -563,7 +563,7 @@ Bool checkDComplex(Lattice<DComplex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(moo, slicer);
@@ -571,7 +571,7 @@ Bool checkDComplex(Lattice<DComplex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.copyDataTo(outLat);
@@ -579,7 +579,7 @@ Bool checkDComplex(Lattice<DComplex>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    return ok;
@@ -588,25 +588,25 @@ Bool checkDComplex(Lattice<DComplex>& expr,
 
 
 
-Bool checkBool(Lattice<Bool>& expr, 
-                const Bool result,
+bool checkBool(Lattice<bool>& expr, 
+                const bool result,
                 const IPosition shape,
-                const Bool supress)
+                const bool supress)
 {
-   Bool ok = True;
-   Array<Bool> outArr(shape);  
-   ArrayLattice<Bool> outLat(shape);
+   bool ok = true;
+   Array<bool> outArr(shape);  
+   ArrayLattice<bool> outLat(shape);
    IPosition origin(shape); origin = 0;
    IPosition stride(outArr.ndim(),1);
           
    if (expr.shape() != shape) {
       cout << "   Shape should be " << shape << endl;
       cout << "   Shape is " << expr.shape()  << endl;
-      ok = False;
+      ok = false;
    }
    if (expr.isWritable()) {
       cout << "   LatticeExpr should not be writable" << endl;
-      ok = False;
+      ok = false;
    }
 
    try {
@@ -625,14 +625,14 @@ Bool checkBool(Lattice<Bool>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(outArr, origin, shape, stride);
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    Slicer slicer(origin, shape, stride);
@@ -640,17 +640,17 @@ Bool checkBool(Lattice<Bool>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
 
-   COWPtr<Array<Bool> > moo;
+   COWPtr<Array<bool> > moo;
    expr.getSlice(moo, origin, shape, stride);
    outArr.reference(moo.rwRef());
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.getSlice(moo, slicer);
@@ -658,7 +658,7 @@ Bool checkBool(Lattice<Bool>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    expr.copyDataTo(outLat);
@@ -666,7 +666,7 @@ Bool checkBool(Lattice<Bool>& expr,
    if (!allEQ (outArr, result)) {
 	cout << "   Result should be " << result << endl;
 	cout << "   Result is " << outArr(origin) << endl;
-	ok = False;
+	ok = false;
    }
 
    return ok;

@@ -30,7 +30,7 @@
 #include <casacore/casa/aipsenv.h>
 
 //# Define the standard types used by Casacore.
-#include <casacore/casa/aipstype.h>
+#include <cstdint>
 
 //# Define the extra non-standard types used by Casacore
 #include <casacore/casa/aipsxtype.h>

@@ -57,9 +57,9 @@ size_t RawDataConversion::fromLocal (void* to, const T* from, \
     memcpy (to, from, nr * sizeof(T)); \
     return nr * sizeof(T); \
 } \
-Bool RawDataConversion::canCopy (const T*) const \
+bool RawDataConversion::canCopy (const T*) const \
 { \
-    return True; \
+    return true; \
 } \
 unsigned int RawDataConversion::externalSize (const T*) const \
 { \
@@ -73,8 +73,8 @@ RAWDATACONVERSION_DOIT(short)
 RAWDATACONVERSION_DOIT(unsigned short)
 RAWDATACONVERSION_DOIT(int)
 RAWDATACONVERSION_DOIT(unsigned int)
-RAWDATACONVERSION_DOIT(Int64)
-RAWDATACONVERSION_DOIT(uInt64)
+RAWDATACONVERSION_DOIT(int64_t)
+RAWDATACONVERSION_DOIT(uint64_t)
 RAWDATACONVERSION_DOIT(float)
 RAWDATACONVERSION_DOIT(double)
 

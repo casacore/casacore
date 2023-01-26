@@ -19,7 +19,7 @@ Different column types : OK
 Different column dimensionality, scalar vs array : OK
 Different dimensionality of the two Vector<String> : OK
 
-Checking that copy() returns False when appropriate
+Checking that copy() returns false when appropriate
 Input row number exceeds number of rows in input column : OK
 Output row number exceeds number of rows in output column : OK
 

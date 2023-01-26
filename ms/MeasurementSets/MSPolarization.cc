@@ -38,10 +38,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSPolarization::MSPolarization():hasBeenDestroyed_p(True) { }
+MSPolarization::MSPolarization():hasBeenDestroyed_p(true) { }
 
 MSPolarization::MSPolarization(const String &tableName, TableOption option) 
-    : MSTable<MSPolarizationEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSPolarizationEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -52,7 +52,7 @@ MSPolarization::MSPolarization(const String &tableName, TableOption option)
 MSPolarization::MSPolarization(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSPolarizationEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -61,18 +61,18 @@ MSPolarization::MSPolarization(const String& tableName, const String &tableDescN
 }
 
 MSPolarization::MSPolarization(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSPolarizationEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSPolarization(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSPolarization(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSPolarization"));
 }
 
 MSPolarization::MSPolarization(const Table &table)
-    : MSTable<MSPolarizationEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSPolarizationEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -82,7 +82,7 @@ MSPolarization::MSPolarization(const Table &table)
 
 MSPolarization::MSPolarization(const MSPolarization &other)
     : MSTable<MSPolarizationEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -102,7 +102,7 @@ MSPolarization::~MSPolarization()
            << "~MSPolarization() - Table written is not a valid MSPolarization"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -137,7 +137,7 @@ MSTableMaps MSPolarization::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

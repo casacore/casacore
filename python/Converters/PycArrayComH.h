@@ -24,21 +24,21 @@
 //#                        Charlottesville, VA 22903-2475 USA
 
   // Check if the PyObject is an array object.
-  Bool PycArrayCheck (PyObject* obj_ptr);
+  bool PycArrayCheck (PyObject* obj_ptr);
 
   // Check if the API is or can be imported.
   // <group>
-  Bool isImported();
-  inline Bool canImport()
-    { return True; }
-  Bool importArray();
+  bool isImported();
+  inline bool canImport()
+    { return true; }
+  bool importArray();
   void loadAPI();
   // </group>
 
   // Convert the python array to a Casacore array in the ValueHolder.
-  // If copyData is True, the array data is always copied.
+  // If copyData is true, the array data is always copied.
   // Otherwise only if needed.
-  ValueHolder makeArray (PyObject* obj_ptr, Bool copyData);
+  ValueHolder makeArray (PyObject* obj_ptr, bool copyData);
 
   // Copy/convert the array data as needed.
   // Specializations are defined for complex and string.

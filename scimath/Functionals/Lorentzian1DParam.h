@@ -100,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-//    Lorentzian1D<Double> gf(5.0, 25.0, 7);
+//    Lorentzian1D<double> gf(5.0, 25.0, 7);
 //    gf(25);            // = 5.0
 //    gf.setHeight(1.0);
 //    gf[WIDTH](2.0);                

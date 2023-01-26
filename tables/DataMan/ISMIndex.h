@@ -90,11 +90,11 @@ public:
     // Remove a row from the index.
     // If the result of this is that the entire bucket gets empty,
     // that bucketnr is returned. Otherwise -1 is returned.
-    Int removeRow (rownr_t rownr);
+    int32_t removeRow (rownr_t rownr);
 
     // Get the bucket number for the given row.
     // Also return the start row of the bucket and the number of rows in it.
-    uInt getBucketNr (rownr_t rownr, rownr_t& bucketStartRow,
+    uint32_t getBucketNr (rownr_t rownr, rownr_t& bucketStartRow,
 		      rownr_t& bucketNrrow) const;
 
     // Read the bucket index from the AipsIO object.
@@ -107,20 +107,20 @@ public:
     // Argument <src>rownr</src> gives the starting row of the bucket.
     // It is used to add the bucket number at the correct place
     // (such that the row numbers are kept in ascending order).
-    void addBucketNr (rownr_t rownr, uInt bucketNr);
+    void addBucketNr (rownr_t rownr, uint32_t bucketNr);
 
     // Get the number of the next bucket from the index and return
     // it in <src>bucketNr</src>. The starting row of that bucket and
     // the number of rows in the bucket are also returned.
-    // Return status False indicates that no more buckets are available.
+    // Return status false indicates that no more buckets are available.
     // <br>The start of the iteration is indicated by cursor=0.
     // The first bucket returned is the bucket containing the rownr
     // given in <src>bucketStartRow</src> (thus set bucketStartRow
     // to 0 if you want to start at the first bucket).
     // <br>The next iterations return the next bucket number and fill
     // the starting row and number of rows.
-    Bool nextBucketNr (uInt& cursor, rownr_t& bucketStartRow,
-                       rownr_t& bucketNrrow, uInt& bucketNr) const;
+    bool nextBucketNr (uint32_t& cursor, rownr_t& bucketStartRow,
+                       rownr_t& bucketNrrow, uint32_t& bucketNr) const;
 
     // Show the index.
     void show (std::ostream&) const;
@@ -133,18 +133,18 @@ private:
     ISMIndex& operator= (const ISMIndex&);
 
     // Get the index of the bucket containing the given row.
-    uInt getIndex (rownr_t rownr) const;
+    uint32_t getIndex (rownr_t rownr) const;
 
 
     //# Declare member variables.
     // Pointer to the parent storage manager.
     ISMBase*          stmanPtr_p;
     // Number of entries used.
-    uInt              nused_p;
+    uint32_t              nused_p;
     // Rownr index (i.e. row rows_p[i] starts in bucketNr_p[i]).
     Block<rownr_t>    rows_p;
     // Corresponding bucket number.
-    Block<uInt>       bucketNr_p;
+    Block<uint32_t>       bucketNr_p;
 };
 
 

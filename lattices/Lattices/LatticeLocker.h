@@ -85,7 +85,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 // // Open a lattice to be updated.
-// PagedArray<Float> myLattice (Table ("theLattice",
+// PagedArray<float> myLattice (Table ("theLattice",
 //                              LatticeLock::UserLocking,
 //                              Lattice::Update);
 // // Start of some critical section requiring a lock.
@@ -122,7 +122,7 @@ public:
     // An exception is thrown when the lock cannot be acquired.
     explicit LatticeLocker (LatticeBase& lattice,
 			    FileLocker::LockType,
-			    uInt nattempts = 0);
+			    uint32_t nattempts = 0);
 
     // If the constructor acquired the lock, the destructor releases
     // the lock and flushes the data if changed.
@@ -130,7 +130,7 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    Bool hasLock (FileLocker::LockType) const;
+    bool hasLock (FileLocker::LockType) const;
 
 private:
     // The copy constructor and assignment are not possible.
@@ -147,12 +147,12 @@ private:
 
     //# Variables.
     LatticeBase* itsLatticePtr;
-    Bool         itsOwnLock;
-    Bool         itsHadReadLock;
+    bool         itsOwnLock;
+    bool         itsHadReadLock;
 };
 
 
-inline Bool LatticeLocker::hasLock (FileLocker::LockType type) const
+inline bool LatticeLocker::hasLock (FileLocker::LockType type) const
 {
     return itsLatticePtr->hasLock (type);
 }

@@ -61,17 +61,17 @@ AipsIO &operator<<(AipsIO &ios, const Array<T> &a)
 }
 
 template<class T>
-void putArray (AipsIO &ios, const Array<T> &a, const Char* name)
+void putArray (AipsIO &ios, const Array<T> &a, const char* name)
 {
     if (a.size() * sizeof(T) > 2147483647) {
       throw AipsError("AipsIO putArray too large (exceeds 2**31 bytes)");
     }
     ios.putstart(name, Array<T>::arrayVersion());
     // Write out dimensionality
-    ios << uInt(a.ndim());
+    ios << uint32_t(a.ndim());
     // Write out length
     for (size_t i=0; i < a.ndim(); i++) {
-      ios << uInt(a.shape()(i));
+      ios << uint32_t(a.shape()(i));
     }
     // Now write out the data
     bool deleteIt;
@@ -111,7 +111,7 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
 	    ios >> orig;
 	}
     }
-    uInt v;
+    uint32_t v;
     for (int i=0; i < ndim; i++) {
       ios >> v;
       shape(i) = v;
@@ -123,7 +123,7 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
     bool deleteIt;
     T *storage = a.getStorage(deleteIt);
 
-    uInt nwritten;
+    uint32_t nwritten;
     ios >> nwritten;
     if (nwritten != a.nelements())
 	throw(ArrayError("AipsIO &operator>>(AipsIO, Array<T>"

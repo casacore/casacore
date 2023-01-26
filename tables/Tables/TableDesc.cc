@@ -76,7 +76,7 @@ TableDesc::TableDesc (const String& nam, const String& version,
 }
 
 TableDesc::TableDesc (const TableDesc& td, const String& nam,
-		      const String& version, TDOption opt, Bool copyColumns)
+		      const String& version, TDOption opt, bool copyColumns)
 : name_p     (nam),
   vers_p     (version),
   option_p   (opt)
@@ -86,7 +86,7 @@ TableDesc::TableDesc (const TableDesc& td, const String& nam,
 
 TableDesc::TableDesc (const TableDesc& td, const String& nam,
 		      const String& version, const TabPath& tdpath,
-		      TDOption opt, Bool copyColumns)
+		      TDOption opt, bool copyColumns)
 : name_p     (nam),
   vers_p     (version),
   option_p   (opt)
@@ -97,7 +97,7 @@ TableDesc::TableDesc (const TableDesc& td, const String& nam,
 TableDesc::TableDesc (const TableDesc& td, TDOption opt)
 : option_p   (opt)
 {
-    copy (td, TabPath(), True);              // use default search path
+    copy (td, TabPath(), true);              // use default search path
 }
 
 
@@ -127,7 +127,7 @@ TableDesc::~TableDesc ()
 void TableDesc::init (const TabPath& tdpath)
 {
     //# Initialize some variables.
-    swwrite_p = False;                         // writing is not possible yet
+    swwrite_p = false;                         // writing is not possible yet
     //# If non-scratch, check if name is not blank and look if the
     //# description already exists.
     if (option_p == Scratch) {
@@ -136,7 +136,7 @@ void TableDesc::init (const TabPath& tdpath)
 	if (name_p.empty()) {
 	    throw TableDescNoName();
 	}
-        Bool exsw = tdpath.found (name_p + ".tabdsc", dir_p);
+        bool exsw = tdpath.found (name_p + ".tabdsc", dir_p);
         if (option_p == NewNoReplace) {
 	    if (exsw) {
 		throw (TableDuplFile("desc. " + name_p));// table already exists
@@ -192,7 +192,7 @@ void TableDesc::init (const TabPath& tdpath)
 	    }
 	}
     }
-    swwrite_p = True;                          // writing is possible now
+    swwrite_p = true;                          // writing is possible now
 }
 
 
@@ -200,7 +200,7 @@ void TableDesc::init (const TabPath& tdpath)
 //   <li> TableInvOpt
 // </thrown>
 void TableDesc::copy (const TableDesc& td, const TabPath& tdpath,
-		      Bool copyColumns)
+		      bool copyColumns)
 {
     //# Check the options; it has to be a new description.
     if (option_p != New  &&  option_p != NewNoReplace
@@ -225,7 +225,7 @@ void TableDesc::copy (const TableDesc& td, const TabPath& tdpath,
 
 
 // Test if a description exists.
-Bool TableDesc::isReadable (const String& tableDescName)
+bool TableDesc::isReadable (const String& tableDescName)
 {
     File file(tableDescName + ".tabdsc");
     return file.isReadable();
@@ -236,14 +236,14 @@ Bool TableDesc::isReadable (const String& tableDescName)
 Vector<String> TableDesc::columnNames() const
 {
     Vector<String> names(ncolumn());
-    for (uInt i=0; i<names.nelements(); i++) {
+    for (uint32_t i=0; i<names.nelements(); i++) {
 	names(i) = columnDesc(i).name();
     }
     return names;
 }
 
 
-void TableDesc::add (const TableDesc& that, Bool addKeywordSet)
+void TableDesc::add (const TableDesc& that, bool addKeywordSet)
 {
     // First check if all sets are disjoint.
     if (! col_p.isDisjoint (that.col_p)) {
@@ -301,7 +301,7 @@ void TableDesc::putFile (AipsIO& ios, const TableAttr& parentAttr) const
 
 void TableDesc::getFile (AipsIO& ios, const TableAttr& parentAttr)
 {
-    uInt tvers = ios.getstart ("TableDesc");
+    uint32_t tvers = ios.getstart ("TableDesc");
     ios >> name_p;
     ios >> vers_p;
     ios >> comm_p;
@@ -325,7 +325,7 @@ void TableDesc::renameColumn (const String& newname,
   // Now adjust the hypercolumn descriptions.
   std::map<String,String> old2new;
   // First fill the map with all columns and replace it for the new name.
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     const String nm = columnDesc(i).name();
     old2new.insert (std::make_pair(nm, nm));
   }
@@ -334,7 +334,7 @@ void TableDesc::renameColumn (const String& newname,
 }
 
 void TableDesc::defineHypercolumn (const String& hypercolumnName,
-				   uInt ndim,
+				   uint32_t ndim,
 				   const Vector<String>& dataColumnNames)
 {
     Vector<String> columnNames;
@@ -342,7 +342,7 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 		       columnNames, columnNames);
 }
 void TableDesc::defineHypercolumn (const String& hypercolumnName,
-				   uInt ndim,
+				   uint32_t ndim,
 				   const Vector<String>& dataColumnNames,
 				   const Vector<String>& coordColumnNames)
 {
@@ -352,7 +352,7 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 }
 
 void TableDesc::defineHypercolumn (const String& hypercolumnName,
-				   uInt ndim,
+				   uint32_t ndim,
 				   const Vector<String>& dataColumnNames,
 				   const Vector<String>& coordColumnNames,
 				   const Vector<String>& idColumnNames)
@@ -364,18 +364,18 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
     if (ndim < 1) {
 	throwHypercolumn (hypercolumnName, "ndim < 1");
     }
-    uInt ncoord = coordColumnNames.nelements();
+    uint32_t ncoord = coordColumnNames.nelements();
     if (ncoord != 0  &&  ncoord != ndim) {
 	throwHypercolumn (hypercolumnName,
 			  "#coordColumnNames mismatches ndim");
     }
-    uInt i, j;
+    uint32_t i, j;
     // Check if the coordinate columns exist and are numeric
     // scalars or vectors. An empty coordinate name is allowed meaning
     // that the axis has no coordinate.
     // Get the number of vectors.
-    uInt firstCoordSca = 0;
-    uInt lastCoordVec = 0;
+    uint32_t firstCoordSca = 0;
+    uint32_t lastCoordVec = 0;
     for (i=0; i<ncoord; i++) {
 	if (! coordColumnNames(i).empty()) {
 	    if (!isColumn (coordColumnNames(i))) {
@@ -401,7 +401,7 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 	    ||  dataType == TpInt64  ||  dataType == TpArrayInt64) {
 		throwHypercolumn (hypercolumnName, "coordColumn " +
 				  coordColumnNames(i) +
-				  ": (u)Char, (u)Short and Int64 not supported");
+				  ": (u)char, (u)int16_t and int64_t not supported");
 	    }
 	    if (desc.isArray()) {
 		if (desc.ndim() != 1) {
@@ -426,8 +426,8 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
     // Also check if their dimensionality matches the number of
     // coordinate vectors (if coordinates are defined).
     // Find out if all data columns have FixedShape.
-    Bool fixedShape = True;
-    uInt cellNdim = 0;
+    bool fixedShape = true;
+    uint32_t cellNdim = 0;
     for (i=0; i<dataColumnNames.nelements(); i++) {
 	if (!isColumn (dataColumnNames(i))) {
 	    throwHypercolumn (hypercolumnName, "dataColumn " +
@@ -450,14 +450,14 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 	if (cellNdim == 0) {
 	    cellNdim = desc.ndim();
 	}
-	if (Int(cellNdim) != desc.ndim()) {
+	if (int32_t(cellNdim) != desc.ndim()) {
 	    throwHypercolumn (hypercolumnName,
 			      "the dimensionality of data column " +
 			      dataColumnNames(i) +
 			      " mismatches that of previous data columns");
 	}
         if (! desc.isFixedShape()) {
-	    fixedShape = False;
+	    fixedShape = false;
 	}
     }
     if ((firstCoordSca > 0  &&  firstCoordSca <= cellNdim)
@@ -468,7 +468,7 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
 			  " vector value");
     }
     // Check if the ID columns exist and are scalars (not type Other).
-    // Type (u)Char and (u)Short are not possible.
+    // Type (u)char and (u)int16_t are not possible.
     for (i=0; i<idColumnNames.nelements(); i++) {
 	if (!isColumn (idColumnNames(i))) {
 	    throwHypercolumn (hypercolumnName, "idColumn " +
@@ -488,12 +488,12 @@ void TableDesc::defineHypercolumn (const String& hypercolumnName,
         ||  dataType == TpShort  ||  dataType == TpUShort
         ||  dataType == TpInt64) {
 	    throwHypercolumn (hypercolumnName, "idColumn " + idColumnNames(i) +
-			      ": (u)Char, (u)Short and Int64 not supported");
+			      ": (u)char, (u)int16_t and int64_t not supported");
 	}
     }
     // Check if all names are used only once.
     // Copying them into one vector makes life easier.
-    uInt nr = dataColumnNames.nelements() + coordColumnNames.nelements() +
+    uint32_t nr = dataColumnNames.nelements() + coordColumnNames.nelements() +
 	      idColumnNames.nelements();
     Vector<String> names(nr);
     names(Slice(0,dataColumnNames.nelements())) = dataColumnNames;
@@ -540,16 +540,16 @@ void TableDesc::throwHypercolumn (const String& name, const String& message)
 }
 
 
-Bool TableDesc::isHypercolumn (const String& name) const
+bool TableDesc::isHypercolumn (const String& name) const
 {
     return privKey_p->isDefined (theHyperPrefix + name);
 }
 
 Vector<String> TableDesc::hypercolumnNames() const
 {
-    uInt i;
-    uInt nhyp = 0;
-    uInt nkey = privKey_p->nfields();
+    uint32_t i;
+    uint32_t nhyp = 0;
+    uint32_t nkey = privKey_p->nfields();
     for (i=0; i<nkey; i++) {
 	if (privKey_p->type(i) == TpRecord) {
 	    const String& key = privKey_p->description().name (i);
@@ -575,7 +575,7 @@ Vector<String> TableDesc::hypercolumnNames() const
     return result;
 }
 
-uInt TableDesc::hypercolumnDesc (const String& name,
+uint32_t TableDesc::hypercolumnDesc (const String& name,
 				 Vector<String>& dataColumnNames,
 				 Vector<String>& coordColumnNames,
 				 Vector<String>& idColumnNames) const
@@ -593,18 +593,18 @@ uInt TableDesc::hypercolumnDesc (const String& name,
 
 void TableDesc::adjustHypercolumns
                         (const std::map<String, String>& old2new,
-			 Bool keepUnknownData, Bool keepUnknownCoord,
-			 Bool keepUnknownId)
+			 bool keepUnknownData, bool keepUnknownCoord,
+			 bool keepUnknownId)
 {
   Vector<String> hcNames = hypercolumnNames();
   Vector<String> dataNames, coordNames, idNames;
-  for (uInt i=0; i<hcNames.nelements(); i++) {
+  for (uint32_t i=0; i<hcNames.nelements(); i++) {
     // Get hypercolumn description and delete it.
-    uInt ndim = hypercolumnDesc (hcNames(i), dataNames, coordNames, idNames);
+    uint32_t ndim = hypercolumnDesc (hcNames(i), dataNames, coordNames, idNames);
     privKey_p->removeField (theHyperPrefix + hcNames(i));
     // Rename/remove columns in the hypercolumn description.
-    uInt nr = 0;
-    for (uInt j=0; j<dataNames.nelements(); j++) {
+    uint32_t nr = 0;
+    for (uint32_t j=0; j<dataNames.nelements(); j++) {
       std::map<String,String>::const_iterator iter = old2new.find (dataNames(j));
       if (iter != old2new.end()) {
 	dataNames(nr++) = iter->second;
@@ -614,9 +614,9 @@ void TableDesc::adjustHypercolumns
     }
     // If no data columns left, there is no need to recreate the hypercolumn.
     if (nr > 0) {
-      dataNames.resize (nr, True);
+      dataNames.resize (nr, true);
       nr = 0;
-      for (uInt j=0; j<coordNames.nelements(); j++) {
+      for (uint32_t j=0; j<coordNames.nelements(); j++) {
         std::map<String,String>::const_iterator iter = old2new.find (dataNames(j));
         if (iter != old2new.end()) {
           coordNames(nr++) = iter->second;
@@ -628,13 +628,13 @@ void TableDesc::adjustHypercolumns
       // that they cannot be used anymore.
       // That also means their default storage manager has to be reset.
       if (nr != ndim) {
-	for (uInt j=0; j<nr; j++) {
+	for (uint32_t j=0; j<nr; j++) {
 	  rwColumnDesc(coordNames(j)).setDefaultDataManager();
 	}
 	coordNames.resize (0);
       }
       nr = 0;
-      for (uInt j=0; j<idNames.nelements(); j++) {
+      for (uint32_t j=0; j<idNames.nelements(); j++) {
         std::map<String,String>::const_iterator iter = old2new.find (dataNames(j));
         if (iter != old2new.end()) {
           idNames(nr++) = iter->second;
@@ -642,7 +642,7 @@ void TableDesc::adjustHypercolumns
 	  nr++;
 	}
       }
-      idNames.resize (nr, True);
+      idNames.resize (nr, true);
       // Add the hypercolumn again.
       defineHypercolumn (hcNames(i), ndim, dataNames, coordNames, idNames);
     }
@@ -652,11 +652,11 @@ void TableDesc::adjustHypercolumns
 void TableDesc::removeIDhypercolumns (const Vector<String>& hcNames)
 {
   Vector<String> dataNames, coordNames, idNames;
-  for (uInt i=0; i<hcNames.nelements(); i++) {
+  for (uint32_t i=0; i<hcNames.nelements(); i++) {
     // Get hypercolumn description and delete it.
-    uInt ndim = hypercolumnDesc (hcNames(i), dataNames, coordNames, idNames);
+    uint32_t ndim = hypercolumnDesc (hcNames(i), dataNames, coordNames, idNames);
     if (idNames.nelements() > 0) {
-      for (uInt j=0; j<idNames.nelements(); j++) {
+      for (uint32_t j=0; j<idNames.nelements(); j++) {
 	ColumnDesc& cd = rwColumnDesc(idNames(j));
 	cd.dataManagerType() = "IncrementalStMan";
 	cd.dataManagerGroup() = "ISM_TSM";
@@ -689,7 +689,7 @@ void TableDesc::renameHypercolumn (const String& newHypercolumnName,
     }  
     // Get hypercolumn description
     Vector<String> dataNames, coordNames, idNames;
-    uInt ndim = hypercolumnDesc (hypercolumnName, dataNames, coordNames, idNames);
+    uint32_t ndim = hypercolumnDesc (hypercolumnName, dataNames, coordNames, idNames);
     // delete the hypercolumn
     privKey_p->removeField (theHyperPrefix + hypercolumnName);
     // recreate it under new name (will also change the column descriptions)

@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // and keyword may correctly be used to refer to each other.
 // 
 // The class Param (see Param.h) implements one single such parameter.
-// Values may be Int, Block<Int>, double, Block<double>, Bool, or
+// Values may be int32_t, Block<int32_t>, double, Block<double>, bool, or
 // Strings.  In addition to a name and a value, a Param parameter has a
 // variety of other attributes, such as a one-line help string (useful
 // when being prompted for input or with hypertext identifiers, etc...),
@@ -154,7 +154,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 16    inputs.readArguments(argc, argv);
 // 17
 // 18    try {
-// 19      const Char *filename = inputs.getString("xyfile");
+// 19      const char *filename = inputs.getString("xyfile");
 // 20      AipsIO xyfile(filename, ByteIO::Old);
 // 21      Vector<float> x, y;
 // 22      Plot plot;
@@ -164,7 +164,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 26
 // 27      for (;;) { // forever
 // 28          xyfile >> x >> y;
-// 29          if (inputs.getBool("overplot") == True) {
+// 29          if (inputs.getBool("overplot") == true) {
 // 30              plot(x,y,inputs.getBool("lines"));
 // 31          } else {
 // 32              plot.newPlot();
@@ -216,7 +216,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 
 // 12 - This is another instantiation of a Param inside of Input.  This
 // parameter will be referenced by the keyword "overplot".  It is
-// initialized to False and is of type Bool.
+// initialized to false and is of type bool.
 // 
 // 13 - This line is the third and final Param placed in inputs and is
 // recognized by the code when accessed with keyword "lines".

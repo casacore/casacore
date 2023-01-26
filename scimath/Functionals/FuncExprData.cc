@@ -103,7 +103,7 @@ FuncExprData::FuncExprData() :
     // End of list
     {NOP,     "NOP",     SPEC,  FINPRI,    0, 0, 0, 0, NONE,    state}
   };
-  uInt i = 0;
+  uint32_t i = 0;
   for (i=0; olist[i].code != NOP; ++i) {
     switch (olist[i].category) {
     case UNA2:

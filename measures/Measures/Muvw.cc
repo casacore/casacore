@@ -86,7 +86,7 @@ void Muvw::assure(const Measure &in) {
   }
 }
 
-Muvw::Types Muvw::castType(uInt tp) {
+Muvw::Types Muvw::castType(uint32_t tp) {
   Muvw::checkMyTypes();
   AlwaysAssert(tp < Muvw::N_Types, AipsError);
   return static_cast<Muvw::Types>(tp);
@@ -121,14 +121,14 @@ const String &Muvw::showType(Muvw::Types tp) {
   return tname[tp];
 }
 
-const String &Muvw::showType(uInt tp) {
+const String &Muvw::showType(uint32_t tp) {
   return Muvw::showType(Muvw::castType(tp));
 }
 
-const String* Muvw::allMyTypes(Int &nall, Int &nextra,
-                               const uInt *&typ) {
-  static const Int N_name  = 24;
-  static const Int N_extra = 0;
+const String* Muvw::allMyTypes(int32_t &nall, int32_t &nextra,
+                               const uint32_t *&typ) {
+  static const int32_t N_name  = 24;
+  static const int32_t N_extra = 0;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -155,7 +155,7 @@ const String* Muvw::allMyTypes(Int &nall, Int &nextra,
     "TOPO",
     "ICRS" };
   
-  static const uInt oname[N_name] = {
+  static const uint32_t oname[N_name] = {
     Muvw::J2000,
     Muvw::JMEAN,
     Muvw::JTRUE,
@@ -188,8 +188,8 @@ const String* Muvw::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String* Muvw::allTypes(Int &nall, Int &nextra,
-                             const uInt *&typ) const {
+const String* Muvw::allTypes(int32_t &nall, int32_t &nextra,
+                             const uint32_t *&typ) const {
   return Muvw::allMyTypes(nall, nextra, typ);
 }
 
@@ -199,27 +199,27 @@ void Muvw::checkTypes() const {
 
 void Muvw::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
-    Int nall, nex;
-    const uInt *typ;
+    first = false;
+    int32_t nall, nex;
+    const uint32_t *typ;
     const String *const tps = Muvw::allMyTypes(nall,nex, typ);
     Muvw::Types tp;
-    for (Int i=0; i<nall; i++) {
+    for (int32_t i=0; i<nall; i++) {
       AlwaysAssert(Muvw::getType(tp, Muvw::showType(typ[i])) &&
-		   tp == Int(typ[i]) &&
+		   tp == int32_t(typ[i]) &&
 		   Muvw::getType(tp, tps[i]) &&
-		   tp == Int(typ[i]), AipsError);
+		   tp == int32_t(typ[i]), AipsError);
     }
-    for (Int i=0; i<N_Types; i++) {
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(Muvw::getType(tp, Muvw::showType(i)) &&
 		   tp == i, AipsError);
     }
     // Check if uvw types are identical to direction types
-    AlwaysAssert(static_cast<Int>(Muvw::N_Types) == 
-		 static_cast<Int>(MDirection::N_Types), AipsError);
-    for (Int i=0; i<N_Types; i++) {
+    AlwaysAssert(static_cast<int32_t>(Muvw::N_Types) == 
+		 static_cast<int32_t>(MDirection::N_Types), AipsError);
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(Muvw::showType(i) == MDirection::showType(i),
 		   AipsError);
     }
@@ -228,50 +228,50 @@ void Muvw::checkMyTypes() {
 
 Muvw::Types Muvw::fromDirType(const MDirection::Types in) {
   Muvw::checkMyTypes();
-  return static_cast<Muvw::Types>(static_cast<uInt>(in));
+  return static_cast<Muvw::Types>(static_cast<uint32_t>(in));
 }
 
 MDirection::Types Muvw::toDirType(const Muvw::Types in) {
   Muvw::checkMyTypes();
-  return static_cast<MDirection::Types>(static_cast<uInt>(in));
+  return static_cast<MDirection::Types>(static_cast<uint32_t>(in));
 }
 
-Bool Muvw::getType(Muvw::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+bool Muvw::getType(Muvw::Types &tp, const String &in) {
+  const uint32_t *oname;
+  int32_t nall, nex;
   const String *tname = Muvw::allMyTypes(nall, nex, oname);
   
-  Int i = Measure::giveMe(in, nall, tname);
+  int32_t i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) return False;
+  if (i>=nall) return false;
   else tp = static_cast<Muvw::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
+bool Muvw::giveMe(Muvw::Ref &mr, const String &in) {
   Muvw::Types tp;
   if (Muvw::getType(tp, in)) mr = Muvw::Ref(tp);
   else {
     mr = Muvw::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool Muvw::setOffset(const Measure &in) {
-  if (!dynamic_cast<const Muvw*>(&in)) return False;
+bool Muvw::setOffset(const Measure &in) {
+  if (!dynamic_cast<const Muvw*>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool Muvw::setRefString(const String &in) {
+bool Muvw::setRefString(const String &in) {
   Muvw::Types tp;
   if (Muvw::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(Muvw::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &Muvw::getDefaultType() const {
@@ -282,17 +282,17 @@ String Muvw::getRefString() const {
   return Muvw::showType(ref.getType());
 }
 
-Quantum<Vector<Double> > Muvw::get(const Unit &inunit) const {
-  Vector<Double> x;
+Quantum<Vector<double> > Muvw::get(const Unit &inunit) const {
+  Vector<double> x;
   x = data.getValue();
-  return Quantum<Vector<Double> >(x, "m").get(inunit);
+  return Quantum<Vector<double> >(x, "m").get(inunit);
 }
 
-Quantum<Vector<Double> > Muvw::getAngle() const {
+Quantum<Vector<double> > Muvw::getAngle() const {
     return (data.getAngle());
 }
 
-Quantum<Vector<Double> > Muvw::getAngle(const Unit &inunit) const {
+Quantum<Vector<double> > Muvw::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 

@@ -48,8 +48,8 @@ MSPolarizationIndex::MSPolarizationIndex(const MSPolarization&
 // Output to private data:
 //    msPolarizationCols_p   MSPolarizationColumns   MSPolarization columns 
 //                                                     accessor
-//    polarizationIds_p      Vector<Int>               Polarization id.'s
-//    nrows_p                Int                       Number of rows
+//    polarizationIds_p      Vector<int32_t>               Polarization id.'s
+//    nrows_p                int32_t                       Number of rows
 //
   // Generate an array of polarization id's, used in later queries
   nrows_p = msPolarizationCols_p.nrow();
@@ -59,35 +59,35 @@ MSPolarizationIndex::MSPolarizationIndex(const MSPolarization&
 
 //-------------------------------------------------------------------------
 
-Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>& 
+Vector<int32_t> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<int32_t>& 
 							 corrType,
-							 const Matrix<Int>&
+							 const Matrix<int32_t>&
 							 corrProduct)
 {
 // Match a set of polarization correlation types and receptor cross-products
 // Input:
-//    corrType       const Vector<Int>&       Set of polarization correlation
+//    corrType       const Vector<int32_t>&       Set of polarization correlation
 //                                            types (as defined in Stokes.h)
-//    corrProduct    const Matrix<Int>&       Set of receptor cross-products
+//    corrProduct    const Matrix<int32_t>&       Set of receptor cross-products
 // Output:
-//    matchCorrTypeAndProduct   Vector<Int>   Matching polarization id.'s
+//    matchCorrTypeAndProduct   Vector<int32_t>   Matching polarization id.'s
 //
 
   // Match the polarization correlation types and receptor cross-products 
   // by row and correlation index
-  uInt numCorr = std::min(corrType.nelements(), corrProduct.ncolumn());
-  uInt nrows = msPolarizationCols_p.nrow();
-  Vector<Bool> corrMatch(nrows, False);
-  for (uInt row=0; row<nrows; row++) {
-    Vector<Int> rowCorrType;
+  uint32_t numCorr = std::min(corrType.nelements(), corrProduct.ncolumn());
+  uint32_t nrows = msPolarizationCols_p.nrow();
+  Vector<bool> corrMatch(nrows, false);
+  for (uint32_t row=0; row<nrows; row++) {
+    Vector<int32_t> rowCorrType;
     msPolarizationCols_p.corrType().get(row, rowCorrType);
-    Matrix<Int> rowCorrProduct;
+    Matrix<int32_t> rowCorrProduct;
     msPolarizationCols_p.corrProduct().get(row, rowCorrProduct);
     corrMatch(row) = (rowCorrType.nelements() == numCorr &&
 		      rowCorrProduct.ncolumn() == numCorr);
 
     if (corrMatch(row)) {
-      for (uInt i=0; i < numCorr; i++) {
+      for (uint32_t i=0; i < numCorr; i++) {
 	corrMatch(row) = (corrMatch(row) &&
 			  rowCorrType(i) == corrType(i) &&
 			  rowCorrProduct(0,i) == corrProduct(0,i) &&
@@ -97,46 +97,46 @@ Vector<Int> MSPolarizationIndex::matchCorrTypeAndProduct(const Vector<Int>&
   }
 
   LogicalArray maskArray(corrMatch);
-  MaskedArray<Int> maskRowNumbers(polarizationIds_p, maskArray);
+  MaskedArray<int32_t> maskRowNumbers(polarizationIds_p, maskArray);
   return maskRowNumbers.getCompressedArray();
 }
 
 // Add for MS selection 
-  Vector<Int> MSPolarizationIndex::matchCorrType(const Vector<Int>& corrType, Bool exactMatch)
+  Vector<int32_t> MSPolarizationIndex::matchCorrType(const Vector<int32_t>& corrType, bool exactMatch)
 {
 // Match a set of polarization correlation types 
 // Input:
-//    corrType       const Vector<Int>&       Set of polarization correlation
+//    corrType       const Vector<int32_t>&       Set of polarization correlation
 //                                            types (as defined in Stokes.h)
 // Output:
-//    matchCorrType  Vector<Int>   Matching polarization id.'s
+//    matchCorrType  Vector<int32_t>   Matching polarization id.'s
 //
 
   // Match the polarization correlation types by row and correlation index
-  uInt numCorr = corrType.nelements();
-  uInt nrows = msPolarizationCols_p.nrow();
+  uint32_t numCorr = corrType.nelements();
+  uint32_t nrows = msPolarizationCols_p.nrow();
   
-  Vector<Bool> allMatch(numCorr);
-  Vector<Bool> corrMatch(nrows, False);
-  allMatch=False;
-  for (uInt row=0; row<nrows; row++) 
+  Vector<bool> allMatch(numCorr);
+  Vector<bool> corrMatch(nrows, false);
+  allMatch=false;
+  for (uint32_t row=0; row<nrows; row++) 
     {
-      Vector<Int> rowCorrType;
+      Vector<int32_t> rowCorrType;
       msPolarizationCols_p.corrType().get(row, rowCorrType);
       if (exactMatch)
-	for (uInt i=0; i < numCorr; i++) 
+	for (uint32_t i=0; i < numCorr; i++) 
 	  corrMatch(row) = (rowCorrType(i) == corrType(i));
       else
 	{
-	  for(uInt i=0; i<numCorr; i++)
-	    for(uInt j=0; j<rowCorrType.nelements(); j++)
-	      if (rowCorrType(j) == corrType(i)) {allMatch(i)=True;break;}
+	  for(uint32_t i=0; i<numCorr; i++)
+	    for(uint32_t j=0; j<rowCorrType.nelements(); j++)
+	      if (rowCorrType(j) == corrType(i)) {allMatch(i)=true;break;}
 	  corrMatch(row)=allTrue(allMatch);
 	}
     }
 
   LogicalArray maskArray(corrMatch);
-  MaskedArray<Int> maskRowNumbers(polarizationIds_p, maskArray);
+  MaskedArray<int32_t> maskRowNumbers(polarizationIds_p, maskArray);
   return maskRowNumbers.getCompressedArray();
 }
 

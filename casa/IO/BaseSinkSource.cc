@@ -33,7 +33,7 @@ BaseSinkSource::BaseSinkSource()
 : itsTypeIO ()
 {}
 
-BaseSinkSource::BaseSinkSource (TypeIO* typeIO, Bool takeOver)
+BaseSinkSource::BaseSinkSource (TypeIO* typeIO, bool takeOver)
 : itsTypeIO (typeIO, takeOver)
 {}
 
@@ -63,31 +63,31 @@ const TypeIO& BaseSinkSource::typeIO() const
     return *itsTypeIO;
 }
 
-Int64 BaseSinkSource::seek (Int64 offset, ByteIO::SeekOption option)
+int64_t BaseSinkSource::seek (int64_t offset, ByteIO::SeekOption option)
 {
     return itsTypeIO->seek (offset, option);
 }
-Int64 BaseSinkSource::seek (Int offset, ByteIO::SeekOption option)
+int64_t BaseSinkSource::seek (int32_t offset, ByteIO::SeekOption option)
 {
     return itsTypeIO->seek (offset, option);
 }
 
-Bool BaseSinkSource::isReadable() const
+bool BaseSinkSource::isReadable() const
 {
     return itsTypeIO->isReadable();
 }
 
-Bool BaseSinkSource::isWritable() const
+bool BaseSinkSource::isWritable() const
 {
     return itsTypeIO->isWritable();
 }
 
-Bool BaseSinkSource::isSeekable() const
+bool BaseSinkSource::isSeekable() const
 {
     return itsTypeIO->isSeekable();
 }
 
-Bool BaseSinkSource::isNull() const
+bool BaseSinkSource::isNull() const
 {
     return itsTypeIO.null();
 }

@@ -71,8 +71,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    FiledesIO fio (fd);
 //    AipsIO stream (&fio);
 //    // Read the data.
-//    Int vali;
-//    Bool valb;
+//    int32_t vali;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -106,39 +106,39 @@ public:
     virtual ~FiledesIO();
 
     // Write the number of bytes.
-    virtual void write (Int64 size, const void* buf);
+    virtual void write (int64_t size, const void* buf);
 
     // Write the number of bytes at offset from start of the file.
     // The file offset is not changed
-    virtual void pwrite (Int64 size, Int64 offset, const void* buf);
+    virtual void pwrite (int64_t size, int64_t offset, const void* buf);
 
     // Read <src>size</src> bytes from the descriptor. Returns the number of
     // bytes actually read or a negative number if an error occurred. Will throw
     // an Exception (AipsError) if the requested number of bytes could not be
-    // read, or an error occured, unless throwException is set to False. Will
+    // read, or an error occured, unless throwException is set to false. Will
     // always throw an exception if the descriptor is not readable or the
     // system call returned an undocumented value.
-    virtual Int64 read (Int64 size, void* buf, Bool throwException=True);    
+    virtual int64_t read (int64_t size, void* buf, bool throwException=true);    
 
     // Like read except reads from offset of the start of the file.
     // The file offset is not changed
-    virtual Int64 pread (Int64 size, Int64 offset, void* buf, Bool throwException=True);
+    virtual int64_t pread (int64_t size, int64_t offset, void* buf, bool throwException=true);
 
     // Get the length of the byte stream.
-    virtual Int64 length();
+    virtual int64_t length();
        
     // Is the IO stream readable?
-    virtual Bool isReadable() const;
+    virtual bool isReadable() const;
 
     // Is the IO stream writable?
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Is the IO stream seekable?
-    virtual Bool isSeekable() const;
+    virtual bool isSeekable() const;
 
     // Set that the IO stream is writable.
     void setWritable()
-      { itsWritable = True; }
+      { itsWritable = true; }
 
     // Get the file name of the file attached.
     virtual String fileName() const;
@@ -147,14 +147,14 @@ public:
     virtual void fsync();
 
     // Truncate the file to the given size.
-    virtual void truncate (Int64 size);
+    virtual void truncate (int64_t size);
   
     // Some static convenience functions for file create/open/close.
     // Close is only done if the fd is non-negative.
     // <group>
-    static int create (const Char* name, int mode = 0666);
-    static int open   (const Char* name, Bool writable = False,
-		       Bool throwExcp = True);
+    static int create (const char* name, int mode = 0666);
+    static int open   (const char* name, bool writable = false,
+		       bool throwExcp = true);
     static void close (int fd);
     // </group>
 
@@ -172,12 +172,12 @@ protected:
 
     // Reset the position pointer to the given value. It returns the
     // new position.
-    virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+    virtual int64_t doSeek (int64_t offset, ByteIO::SeekOption);
 
 private:
-    Bool   itsSeekable;
-    Bool   itsReadable;
-    Bool   itsWritable;
+    bool   itsSeekable;
+    bool   itsReadable;
+    bool   itsWritable;
     int    itsFile;
     String itsFileName;
 

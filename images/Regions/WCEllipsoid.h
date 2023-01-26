@@ -97,7 +97,7 @@ public:
 		const Quantity& xcenter, const Quantity& ycenter,
 		const Quantity& majorAxis, const Quantity& minorAxis,
 		const Quantity& theta,
-		const uInt pixelAxis0, const uInt pixelAxis1,
+		const uint32_t pixelAxis0, const uint32_t pixelAxis1,
         const CoordinateSystem& cSys,
         const RegionType::AbsRelType absRel=RegionType::Abs
 	);
@@ -106,11 +106,11 @@ public:
 
 	WCEllipsoid& operator= (const WCEllipsoid& that);
 
-	Bool operator== (const WCRegion& other) const;
+	bool operator== (const WCRegion& other) const;
 
 	WCRegion* cloneRegion() const;
 
-	Bool canExtend() const;
+	bool canExtend() const;
 
 	String type() const;
 

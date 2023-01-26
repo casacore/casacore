@@ -48,30 +48,30 @@ template <class T> class Block;
 struct MSTableMaps
 {
   // ColEnum -> name
-  std::map<Int, String> columnMap_p;
+  std::map<int32_t, String> columnMap_p;
   // ColEnum -> DataType
-  std::map<Int, Int> colDTypeMap_p;
+  std::map<int32_t, int32_t> colDTypeMap_p;
   // ColEnum -> comment string
-  std::map<Int, String> colCommentMap_p;
+  std::map<int32_t, String> colCommentMap_p;
   // ColEnum -> UNIT string
-  std::map<Int, String> colUnitMap_p;
+  std::map<int32_t, String> colUnitMap_p;
   // ColEnum -> MEASURE_TYPE string
-  std::map<Int, String> colMeasureTypeMap_p;
+  std::map<int32_t, String> colMeasureTypeMap_p;
   // KeyEnum -> name
-  std::map<Int, String> keywordMap_p;
+  std::map<int32_t, String> keywordMap_p;
   // KeyEnum -> DataType
-  std::map<Int, Int> keyDTypeMap_p;
+  std::map<int32_t, int32_t> keyDTypeMap_p;
   // KeyEnum -> comment string
-  std::map<Int, String> keyCommentMap_p;
+  std::map<int32_t, String> keyCommentMap_p;
   // The required TableDesc
   TableDesc requiredTD_p;
 
   // Convert a name to a ColEnum or KeyEnum.
-  Int columnType (const String& name) const
+  int32_t columnType (const String& name) const
     { return mapType (columnMap_p, name); }
-  Int keywordType (const String& name) const
+  int32_t keywordType (const String& name) const
     { return mapType (keywordMap_p, name); }
-  Int mapType (const std::map<Int,String>&, const String& name) const;
+  int32_t mapType (const std::map<int32_t,String>&, const String& name) const;
 };
 
 
@@ -150,21 +150,21 @@ public:
     // ColEnum convenience functions
     // <group name=columns>
     // check to see if a column exists
-    Bool isColumn(ColEnum which) const;
+    bool isColumn(ColEnum which) const;
 
     // check to see if a column is writable
     // <group>
-    Bool isColumnWritable(ColEnum which) const;
-    Bool isColumnWritable (const String& columnName) const 
+    bool isColumnWritable(ColEnum which) const;
+    bool isColumnWritable (const String& columnName) const 
     { return Table::isColumnWritable(columnName); }
-    Bool isColumnWritable (uInt columnIndex) const
+    bool isColumnWritable (uint32_t columnIndex) const
     { return Table::isColumnWritable(columnIndex); }
     // </group>
 
     // Information about scalar vs array of a column
     // <group>
-    Bool isScalar(ColEnum which) const;
-    Bool isArray(ColEnum which) const;  
+    bool isScalar(ColEnum which) const;
+    bool isArray(ColEnum which) const;  
     // </group>
 
     // Return the UNIT keyword value associated with the specified column
@@ -196,7 +196,7 @@ public:
     //   <li> AipsError
     // </thrown>
     static void addColumnToDesc(TableDesc & tabDesc, ColEnum which,
-				Int ndim=-1,const String& refCol="");
+				int32_t ndim=-1,const String& refCol="");
     // add a column to a TableDesc, defining the shape and setting
     // the ColumnDesc option (Fixed, Undefined, Direct) 
     // For Measure columns you can define a variable reference column.
@@ -204,7 +204,7 @@ public:
                                 const IPosition& shape, ColumnDesc::Option option,
 				const String& refCol="");
     static void addColumnToDesc(MSTableMaps&, ColEnum which,
-				Int ndim=-1,const String& refCol="");
+				int32_t ndim=-1,const String& refCol="");
     // add a column to a TableDesc, defining the shape and setting
     // the ColumnDesc option (Fixed, Undefined, Direct) 
     // For Measure columns you can define a variable reference column.
@@ -222,7 +222,7 @@ public:
     static const String& keywordStandardComment(KeyEnum which);
 
     // check to see if a keyword exists
-    Bool isKeyword(KeyEnum which) const;
+    bool isKeyword(KeyEnum which) const;
 
     // add a keyword to a TableDesc
     // An exception is thrown for an invalid data type.  This indicates a 
@@ -239,25 +239,25 @@ public:
     // <group>
  
     // check that a TableDesc is valid 
-    static Bool validate(const TableDesc& tabDesc);
+    static bool validate(const TableDesc& tabDesc);
  
     // check that the keyword set is valid 
-    static Bool validate(const TableRecord& tabKeySet);
+    static bool validate(const TableRecord& tabKeySet);
  
     // validate self (make sure that this MS is valid)
-    Bool validate() const 
-      { return this->isNull() ? False : validate(this->tableDesc());}
+    bool validate() const 
+      { return this->isNull() ? false : validate(this->tableDesc());}
  
     // return the required table description
     static const TableDesc& requiredTableDesc();
 
     // Add the compress option for the given column to the TableDesc.
-    // It can only be used for a Float or a Complex column.
+    // It can only be used for a float or a Complex column.
     // For complex columns the type determines which CompressComplex
     // engine is used. "SD" means that CompressComplexSD is used; otherwise
     // CompressComplex is used.
     static void addColumnCompression (TableDesc& td, ColEnum which,
-				      Bool autoScale = True,
+				      bool autoScale = true,
 				      const String& type = String());
 
     // </group>
@@ -275,14 +275,14 @@ protected:
     MSTable (const String &tableName, const String &tableDescName,
 	     const TableLock& lockOptions, TableOption option);
     MSTable (SetupNewTable &newTab, rownr_t nrrow,
-	     Bool initialize);
+	     bool initialize);
     MSTable (SetupNewTable &newTab, const TableLock& lockOptions, rownr_t nrrow,
-	     Bool initialize);
+	     bool initialize);
 #ifdef HAVE_MPI
     MSTable (MPI_Comm comm, SetupNewTable &newTab, rownr_t nrrow,
-	     Bool initialize);
+	     bool initialize);
     MSTable (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions,
-             rownr_t nrrow, Bool initialize);
+             rownr_t nrrow, bool initialize);
 #endif // HAVE_MPI
     MSTable (const Table &table);
     MSTable (const MSTable<MSEnum> &other);

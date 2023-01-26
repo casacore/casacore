@@ -61,11 +61,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     // Set the key's value.
     // <group>
-    void set (Bool v)
+    void set (bool v)
       { itsBool = v; }
-    void set (Int64 v)
+    void set (int64_t v)
       { itsInt64 = v; }
-    void set (Double v)
+    void set (double v)
       { itsDouble = v; }
     void set (const String& v)
       { itsString = v; }
@@ -79,9 +79,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     TableExprNodeRep::NodeDataType itsDT;
-    Bool   itsBool = false;
-    Int64  itsInt64 = 0;
-    Double itsDouble = 0.0;
+    bool   itsBool = false;
+    int64_t  itsInt64 = 0;
+    double itsDouble = 0.0;
     String itsString;
   };
 
@@ -152,13 +152,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets,
      const vector<CountedPtr<vector<TableExprId> > >& ids);
     // Get the nr of groups.
-    uInt ngroup() const
+    uint32_t ngroup() const
       { return itsFuncSets.size(); }
     // Get the set of functions (and their results) for the given group.
-    TableExprGroupFuncSet& funcSet (uInt group) const
+    TableExprGroupFuncSet& funcSet (uint32_t group) const
       { return *itsFuncSets[group]; }
     // Get the set of TableExprIds for the given group.
-    const vector<TableExprId>& ids (uInt group) const
+    const vector<TableExprId>& ids (uint32_t group) const
       { return *itsIds[group]; }
   private:
     vector<CountedPtr<TableExprGroupFuncSet> > itsFuncSets;
@@ -204,13 +204,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     explicit TableExprGroupFuncBase (TableExprNodeRep* node);
     virtual ~TableExprGroupFuncBase();
     // Does the aggregate function use lazy semantics?
-    // The default implementation returns False.
-    virtual Bool isLazy() const;
+    // The default implementation returns false.
+    virtual bool isLazy() const;
     // Get the function's sequence nr.
-    uInt seqnr() const
+    uint32_t seqnr() const
       { return itsSeqnr; }
     // Set the function's sequence nr.
-    void setSeqnr (uInt seqnr)
+    void setSeqnr (uint32_t seqnr)
       { itsSeqnr = seqnr; }
     // Get the operand's value for the given row and apply it to the aggregation.
     // This function should not be called for lazy classes.
@@ -226,15 +226,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // lazy classes will get the values of all rows given by the TableExprIds
     // and do the aggregation.
     // <group>
-    virtual Bool getBool (const vector<TableExprId>& = vector<TableExprId>());
-    virtual Int64 getInt (const vector<TableExprId>& = vector<TableExprId>());
-    virtual Double getDouble (const vector<TableExprId>& = vector<TableExprId>());
+    virtual bool getBool (const vector<TableExprId>& = vector<TableExprId>());
+    virtual int64_t getInt (const vector<TableExprId>& = vector<TableExprId>());
+    virtual double getDouble (const vector<TableExprId>& = vector<TableExprId>());
     virtual DComplex getDComplex (const vector<TableExprId>& = vector<TableExprId>());
     virtual MVTime getDate (const vector<TableExprId>& = vector<TableExprId>());
     virtual String getString (const vector<TableExprId>& = vector<TableExprId>());
-    virtual MArray<Bool> getArrayBool (const vector<TableExprId>& = vector<TableExprId>());
-    virtual MArray<Int64> getArrayInt (const vector<TableExprId>& = vector<TableExprId>());
-    virtual MArray<Double> getArrayDouble (const vector<TableExprId>& = vector<TableExprId>());
+    virtual MArray<bool> getArrayBool (const vector<TableExprId>& = vector<TableExprId>());
+    virtual MArray<int64_t> getArrayInt (const vector<TableExprId>& = vector<TableExprId>());
+    virtual MArray<double> getArrayDouble (const vector<TableExprId>& = vector<TableExprId>());
     virtual MArray<DComplex> getArrayDComplex (const vector<TableExprId>& = vector<TableExprId>());
     virtual MArray<MVTime> getArrayDate (const vector<TableExprId>& = vector<TableExprId>());
     virtual MArray<String> getArrayString (const vector<TableExprId>& = vector<TableExprId>());
@@ -247,7 +247,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data member
     TableExprNodeRep* itsNode;      // refers the node (not owned)
     TableExprNodeRep* itsOperand;   // refers the operand (not owned)
-    uInt              itsSeqnr;
+    uint32_t              itsSeqnr;
   };
 
 
@@ -266,7 +266,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     explicit TableExprGroupNull (TableExprNodeRep* node);
     virtual ~TableExprGroupNull();
-    virtual Bool isLazy() const;
+    virtual bool isLazy() const;
     virtual void apply (const TableExprId& id);
   };
 
@@ -286,15 +286,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     explicit TableExprGroupFirst (TableExprNodeRep* node);
     virtual ~TableExprGroupFirst();
     virtual void apply (const TableExprId& id);
-    virtual Bool getBool (const vector<TableExprId>&);
-    virtual Int64 getInt (const vector<TableExprId>&);
-    virtual Double getDouble (const vector<TableExprId>&);
+    virtual bool getBool (const vector<TableExprId>&);
+    virtual int64_t getInt (const vector<TableExprId>&);
+    virtual double getDouble (const vector<TableExprId>&);
     virtual DComplex getDComplex (const vector<TableExprId>&);
     virtual MVTime getDate (const vector<TableExprId>&);
     virtual String getString (const vector<TableExprId>&);
-    virtual MArray<Bool> getArrayBool (const vector<TableExprId>&);
-    virtual MArray<Int64> getArrayInt (const vector<TableExprId>&);
-    virtual MArray<Double> getArrayDouble (const vector<TableExprId>&);
+    virtual MArray<bool> getArrayBool (const vector<TableExprId>&);
+    virtual MArray<int64_t> getArrayInt (const vector<TableExprId>&);
+    virtual MArray<double> getArrayDouble (const vector<TableExprId>&);
     virtual MArray<DComplex> getArrayDComplex (const vector<TableExprId>&);
     virtual MArray<MVTime> getArrayDate (const vector<TableExprId>&);
     virtual MArray<String> getArrayString (const vector<TableExprId>&);
@@ -337,7 +337,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     explicit TableExprGroupExprId (TableExprNodeRep* node);
     virtual ~TableExprGroupExprId();
-    virtual Bool isLazy() const;
+    virtual bool isLazy() const;
     virtual void apply (const TableExprId& id);
     virtual CountedPtr<vector<TableExprId> > getIds() const;
   private:
@@ -358,9 +358,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     explicit TableExprGroupRowid (TableExprNodeRep* node);
     virtual ~TableExprGroupRowid();
-    virtual Bool isLazy() const;
+    virtual bool isLazy() const;
     virtual void apply (const TableExprId& id);
-    virtual MArray<Int64> getArrayInt (const vector<TableExprId>&);
+    virtual MArray<int64_t> getArrayInt (const vector<TableExprId>&);
   };
 
   // <summary>
@@ -378,11 +378,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   public:
     explicit TableExprGroupAggr (TableExprNodeRep* node);
     virtual ~TableExprGroupAggr();
-    virtual Bool isLazy() const;
+    virtual bool isLazy() const;
     virtual void apply (const TableExprId& id);
-    virtual MArray<Bool> getArrayBool (const vector<TableExprId>&);
-    virtual MArray<Int64> getArrayInt (const vector<TableExprId>&);
-    virtual MArray<Double> getArrayDouble (const vector<TableExprId>&);
+    virtual MArray<bool> getArrayBool (const vector<TableExprId>&);
+    virtual MArray<int64_t> getArrayInt (const vector<TableExprId>&);
+    virtual MArray<double> getArrayDouble (const vector<TableExprId>&);
     virtual MArray<DComplex> getArrayDComplex (const vector<TableExprId>&);
     virtual MArray<MVTime> getArrayDate (const vector<TableExprId>&);
     virtual MArray<String> getArrayString (const vector<TableExprId>&);
@@ -402,7 +402,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Use the first non-null value to determine the shape and if masked.
       MArray<T> arr;
       size_t id;
-      Bool hasMask = False;
+      bool hasMask = false;
       IPosition shp;
       for (id=0; id<ids.size(); ++id) {
         itsOperand->get (ids[id], arr);
@@ -420,11 +420,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       Array<T> result(shp);
       ArrayIterator<T> iter (result, arr.ndim());
-      Array<Bool> mask;
-      CountedPtr<ArrayIterator<Bool> > miter;
+      Array<bool> mask;
+      CountedPtr<ArrayIterator<bool> > miter;
       if (hasMask) {
         mask.resize (shp);
-        miter = new ArrayIterator<Bool> (mask, arr.ndim());
+        miter = new ArrayIterator<bool> (mask, arr.ndim());
       }
       for (; id<ids.size(); ++id) {
         MArray<T> values;
@@ -441,9 +441,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       if (ndef < ids.size()) {
         shp[shp.size() - 1] = ndef;
-        result.resize (shp, True);
+        result.resize (shp, true);
         if (hasMask) {
-          mask.resize (shp, True);
+          mask.resize (shp, true);
         }
       }
       return MArray<T>(result, mask);
@@ -470,14 +470,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     explicit TableExprGroupFuncBool (TableExprNodeRep* node)
       : TableExprGroupFuncBase (node)
     {}
-    TableExprGroupFuncBool (TableExprNodeRep* node, Bool initValue)
+    TableExprGroupFuncBool (TableExprNodeRep* node, bool initValue)
       : TableExprGroupFuncBase (node),
         itsValue (initValue)
     {}
     virtual ~TableExprGroupFuncBool();
-    virtual Bool getBool (const vector<TableExprId>&);
+    virtual bool getBool (const vector<TableExprId>&);
   protected:
-    Bool itsValue;
+    bool itsValue;
   };
 
   // <summary>
@@ -496,15 +496,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupFuncInt: public TableExprGroupFuncBase
   {
   public:
-    explicit TableExprGroupFuncInt (TableExprNodeRep* node, Int64 initValue=0)
+    explicit TableExprGroupFuncInt (TableExprNodeRep* node, int64_t initValue=0)
       : TableExprGroupFuncBase (node),
         itsValue (initValue)
     {}
     virtual ~TableExprGroupFuncInt();
-    virtual Int64  getInt (const vector<TableExprId>&);
-    virtual Double getDouble (const vector<TableExprId>&);
+    virtual int64_t  getInt (const vector<TableExprId>&);
+    virtual double getDouble (const vector<TableExprId>&);
   protected:
-    Int64 itsValue;
+    int64_t itsValue;
   };
 
   // <summary>
@@ -524,14 +524,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     explicit TableExprGroupFuncDouble (TableExprNodeRep* node,
-                                       Double initValue = 0)
+                                       double initValue = 0)
       : TableExprGroupFuncBase (node),
         itsValue (initValue)
     {}
     virtual ~TableExprGroupFuncDouble();
-    virtual Double getDouble (const vector<TableExprId>&);
+    virtual double getDouble (const vector<TableExprId>&);
   protected:
-    Double itsValue;
+    double itsValue;
   };
 
   // <summary>
@@ -635,12 +635,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       : TableExprGroupFuncBase (node)
     {}
     virtual ~TableExprGroupFuncArrayBool();
-    virtual MArray<Bool> getArrayBool (const vector<TableExprId>&);
+    virtual MArray<bool> getArrayBool (const vector<TableExprId>&);
   protected:
     // If not empty, check if the shape matches that of <src>itsValue</src>.
     // If <src>itsValue</src> is still empty, it is sized.
-    Bool checkShape (const MArrayBase& arr, const String& func);
-    MArray<Bool> itsValue;
+    bool checkShape (const MArrayBase& arr, const String& func);
+    MArray<bool> itsValue;
   };
 
   // <summary>
@@ -663,12 +663,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       : TableExprGroupFuncBase (node)
     {}
     virtual ~TableExprGroupFuncArrayInt();
-    virtual MArray<Int64> getArrayInt (const vector<TableExprId>&);
+    virtual MArray<int64_t> getArrayInt (const vector<TableExprId>&);
   protected:
     // If not empty, check if the shape matches that of <src>itsValue</src>.
     // If <src>itsValue</src> is still empty, it is sized.
-    Bool checkShape (const MArrayBase& arr, const String& func);
-    MArray<Int64> itsValue;
+    bool checkShape (const MArrayBase& arr, const String& func);
+    MArray<int64_t> itsValue;
   };
 
   // <summary>
@@ -691,12 +691,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       : TableExprGroupFuncBase (node)
     {}
     virtual ~TableExprGroupFuncArrayDouble();
-    virtual MArray<Double> getArrayDouble (const vector<TableExprId>&);
+    virtual MArray<double> getArrayDouble (const vector<TableExprId>&);
   protected:
     // If not empty, check if the shape matches that of <src>itsValue</src>.
     // If <src>itsValue</src> is still empty, it is sized.
-    Bool checkShape (const MArrayBase& arr, const String& func);
-    MArray<Double> itsValue;
+    bool checkShape (const MArrayBase& arr, const String& func);
+    MArray<double> itsValue;
   };
 
   // <summary>
@@ -723,7 +723,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   protected:
     // If not empty, check if the shape matches that of <src>itsValue</src>.
     // If <src>itsValue</src> is still empty, it is sized.
-    Bool checkShape (const MArrayBase& arr, const String& func);
+    bool checkShape (const MArrayBase& arr, const String& func);
     MArray<DComplex> itsValue;
   };
 
@@ -751,7 +751,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   protected:
     // If not empty, check if the shape matches that of <src>itsValue</src>.
     // If <src>itsValue</src> is still empty, it is sized.
-    Bool checkShape (const MArrayBase& arr, const String& func);
+    bool checkShape (const MArrayBase& arr, const String& func);
     MArray<MVTime> itsValue;
   };
 
@@ -779,7 +779,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   protected:
     // If not empty, check if the shape matches that of <src>itsValue</src>.
     // If <src>itsValue</src> is still empty, it is sized.
-    Bool checkShape (const MArrayBase& arr, const String& func);
+    bool checkShape (const MArrayBase& arr, const String& func);
     MArray<String> itsValue;
   };
 

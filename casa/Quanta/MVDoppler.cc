@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MVDoppler::MVDoppler() : 
   val(0.0){}
 
-MVDoppler::MVDoppler(Double d) : 
+MVDoppler::MVDoppler(double d) : 
   val(d){}
 
 MVDoppler::MVDoppler(const MVDoppler &other) :
@@ -49,10 +49,10 @@ MVDoppler::MVDoppler(const Quantity &other) {
   val = makeD(other.getValue(), other.getFullUnit());
 }
 
-MVDoppler::MVDoppler(const Quantum<Vector<Double> > &other) {
-  Vector<Double> tmp;
+MVDoppler::MVDoppler(const Quantum<Vector<double> > &other) {
+  Vector<double> tmp;
   tmp = other.getValue();
-  uInt i = tmp.nelements();
+  uint32_t i = tmp.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -62,8 +62,8 @@ MVDoppler::MVDoppler(const Quantum<Vector<Double> > &other) {
   }
 }
 
-MVDoppler::MVDoppler(const Vector<Double> &other) {
-  uInt i = other.nelements();
+MVDoppler::MVDoppler(const Vector<double> &other) {
+  uint32_t i = other.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -90,7 +90,7 @@ MVDoppler &MVDoppler::operator=(const MVDoppler &other) {
 MVDoppler::~MVDoppler() {}
 
 // Operators
-MVDoppler::operator Double() const {
+MVDoppler::operator double() const {
   return val;
 }
 
@@ -104,19 +104,19 @@ MVDoppler &MVDoppler::operator-=(const MVDoppler &other) {
   return *this;
 }
 
-Bool MVDoppler::operator==(const MVDoppler &other) const {
+bool MVDoppler::operator==(const MVDoppler &other) const {
   return (val == other.val);
 }
 
-Bool MVDoppler::operator!=(const MVDoppler &other) const {
+bool MVDoppler::operator!=(const MVDoppler &other) const {
   return (val != other.val);
 }
 
-Bool MVDoppler::near(const MVDoppler &other, Double tol) const {
+bool MVDoppler::near(const MVDoppler &other, double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-Bool MVDoppler::nearAbs(const MVDoppler &other, Double tol) const {
+bool MVDoppler::nearAbs(const MVDoppler &other, double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -136,7 +136,7 @@ MeasValue *MVDoppler::clone() const {
   return (new MVDoppler(*this));
 }
 
-Double MVDoppler::getValue() const {
+double MVDoppler::getValue() const {
   return val;
 }
 
@@ -145,16 +145,16 @@ Quantity MVDoppler::get() const {
 }
 
 Quantity MVDoppler::get(const Unit &unit) const {
-  return Quantity(makeD(val, unit, True), unit);
+  return Quantity(makeD(val, unit, true), unit);
 }
 
-Vector<Double> MVDoppler::getVector() const {
-  Vector<Double> x(1);
+Vector<double> MVDoppler::getVector() const {
+  Vector<double> x(1);
   x(0) = val;
   return x;
 }
 
-void MVDoppler::putVector(const Vector<Double> &in) {
+void MVDoppler::putVector(const Vector<double> &in) {
   if (in.nelements() < 1) {
     val = 0.0;
   } else {
@@ -162,15 +162,15 @@ void MVDoppler::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double> > MVDoppler::getRecordValue() const {
-  Vector<Quantum<Double> > tmp(1);
+Vector<Quantum<double> > MVDoppler::getRecordValue() const {
+  Vector<Quantum<double> > tmp(1);
   tmp(0) = get();
   return tmp;
 }
 
-Bool MVDoppler::putValue(const Vector<Quantum<Double> > &in) {
+bool MVDoppler::putValue(const Vector<Quantum<double> > &in) {
   static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  uInt i = in.nelements();
+  uint32_t i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -179,18 +179,18 @@ Bool MVDoppler::putValue(const Vector<Quantum<Double> > &in) {
 	dt == Velocity) {
       val = makeD(in(0).getValue(), in(0).getFullUnit());
     } else {
-      return False;
+      return false;
     }
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Double MVDoppler::makeD(Double v, const Unit &dt, Bool rev) const{
+double MVDoppler::makeD(double v, const Unit &dt, bool rev) const{
   static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  static const Double LVel = QC::c( ).getBaseValue();
-  Double x;
+  static const double LVel = QC::c( ).getBaseValue();
+  double x;
   if (dt.getValue() == UnitVal::NODIM) {
     x = dt.getValue().getFac();
   } else {

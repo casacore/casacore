@@ -357,62 +357,62 @@ namespace C {
   // Irrationals:
   // <group>
   // sqrt(2)
-  extern const Double sqrt2;
+  extern const double sqrt2;
   // sqrt(3)
-  extern const Double sqrt3;
+  extern const double sqrt3;
   // 1/sqrt(2)
-  extern const Double _1_sqrt2;
+  extern const double _1_sqrt2;
   // 1/sqrt(3)
-  extern const Double _1_sqrt3;
+  extern const double _1_sqrt3;
   // </group>
 
   // Pi and functions thereof:
   // <group>
   // pi
-  extern const Double pi;
+  extern const double pi;
   // 2*pi
-  extern const Double _2pi;
+  extern const double _2pi;
   // pi/2
-  extern const Double pi_2;
+  extern const double pi_2;
   // pi/4
-  extern const Double pi_4;
+  extern const double pi_4;
   // 1/pi
-  extern const Double _1_pi;
+  extern const double _1_pi;
   // 2/pi
-  extern const Double _2_pi;
+  extern const double _2_pi;
   // 1/sqrt(pi)
-  extern const Double _1_sqrtpi;
+  extern const double _1_sqrtpi;
   // 2/sqrt(pi)
-  extern const Double _2_sqrtpi;
+  extern const double _2_sqrtpi;
   // </group>
   
   // e and functions thereof:
   // <group>
   // e
-  extern const Double e;
+  extern const double e;
   // ln(2)
-  extern const Double ln2;  
+  extern const double ln2;  
   // ln(10)
-  extern const Double ln10; 
+  extern const double ln10; 
   // log2(e)
-  extern const Double log2e; 
+  extern const double log2e; 
   // log10(e)
-  extern const Double log10e;
+  extern const double log10e;
   // </group>
   
   // gamma and functions thereof:
   // <group>
   // gamma
-  extern const Double gamma;
+  extern const double gamma;
   // ln(gamma)
-  extern const Double lngamma;
+  extern const double lngamma;
   // e**gamma
-  extern const Double etogamma;
+  extern const double etogamma;
   // </group>
  
   // statistics related
   // 1/(Phi^(-1)(3/4), see https://en.wikipedia.org/wiki/Median_absolute_deviation#Relation_to_standard_deviation
-  extern const Double probit_3_4;
+  extern const double probit_3_4;
 
   //#--------------------------------------------------------------------
   //# Mathematical constants
@@ -428,26 +428,26 @@ namespace C {
   // <group>
   // the minimum single precision floating point number, 
   // excluding denormalised numbers
-  extern const Double flt_min;
+  extern const double flt_min;
   // the minimum single precision floating point number, 
   // including denormalised numbers
-  extern const Double minfloat;
+  extern const double minfloat;
   // the minimum double precision floating point number,
   // excluding denormalised numbers
-  extern const Double dbl_min;
+  extern const double dbl_min;
   // the minimum double precision floating point number,
   // including denormalised numbers
-  extern const Double mindouble;
+  extern const double mindouble;
   // the maximum single precision floating point number 
-  extern const Double  flt_max;
+  extern const double  flt_max;
   // the maximum double precision floating point number 
-  extern const Double  dbl_max;
+  extern const double  dbl_max;
   // Minimum single precision floating point number X such that 1+X does not
   // equal X
-  extern const Double flt_epsilon;
+  extern const double flt_epsilon;
   // Minimum double precision floating point number X such that 1+X does not
   // equal X
-  extern const Double dbl_epsilon;
+  extern const double dbl_epsilon;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -463,7 +463,7 @@ namespace C {
   // Fundamental physical constants (SI units):
   // <group>
   // velocity of light -- for legacy reasons only -- refer to PC
-  extern const Double c;
+  extern const double c;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -486,73 +486,73 @@ namespace C {
   //  Numerical conversion factors
   // <group>
   // e+24 (Y)
-  extern const Double yotta;
+  extern const double yotta;
   // e+21 (Z)
-  extern const Double zetta;
+  extern const double zetta;
   // e+18 (E)
-  extern const Double exa;
+  extern const double exa;
   // e+15 (P)
-  extern const Double peta;
+  extern const double peta;
   // e+12 (T)
-  extern const Double tera;
+  extern const double tera;
   // e+09 (G)
-  extern const Double giga;
+  extern const double giga;
   // e+06 (M)
-  extern const Double mega;
+  extern const double mega;
   // e+03 (k)
-  extern const Double kilo;
+  extern const double kilo;
   // e+02 (h)
-  extern const Double hecto;
+  extern const double hecto;
   // e+01 (da)
-  extern const Double deka;
+  extern const double deka;
   // e-01 (d)
-  extern const Double deci;
+  extern const double deci;
   // e-02 (c)
-  extern const Double centi;
+  extern const double centi;
   // e-03 (m)
-  extern const Double milli;
+  extern const double milli;
   // e-06 (u)
-  extern const Double micro;
+  extern const double micro;
   // e-09 (n)
-  extern const Double nano;
+  extern const double nano;
   // e-12 (p)
-  extern const Double pico;
+  extern const double pico;
   // e-15 (f)
-  extern const Double femto;
+  extern const double femto;
   // e-18 (a)
-  extern const Double atto;
+  extern const double atto;
   // e-21 (z)
-  extern const Double zepto;
+  extern const double zepto;
   // e-24 (y)
-  extern const Double yocto;
+  extern const double yocto;
   // </group>
   
   // Angular measure:
   // <group>
   // radian
-  extern const Double radian;
+  extern const double radian;
   // circle
-  extern const Double circle; 
+  extern const double circle; 
   // degree
-  extern const Double degree;
+  extern const double degree;
   // arcminute
-  extern const Double arcmin;
+  extern const double arcmin;
   // arcsecond
-  extern const Double arcsec;
+  extern const double arcsec;
   // </group>
   
   // Solid angular measure:
   // <group>
   // steradian
-  extern const Double steradian;
+  extern const double steradian;
   // sphere
-  extern const Double sphere;
+  extern const double sphere;
   // square degree
-  extern const Double square_degree;
+  extern const double square_degree;
   // square arcminute
-  extern const Double square_arcmin;
+  extern const double square_arcmin;
   // square arcsecond
-  extern const Double square_arcsec;
+  extern const double square_arcsec;
   // </group>
   
   //#-----------------------------
@@ -569,15 +569,15 @@ namespace C {
   // Time interval [T]:
   // <group>
   // second
-  extern const Double second;
+  extern const double second;
   // minute
-  extern const Double minute;
+  extern const double minute;
   // hour
-  extern const Double hour;
+  extern const double hour;
   // day
-  extern const Double day;
+  extern const double day;
   // Difference between Julian Day and Modified Julian Day
-  extern const Double MJD0;
+  extern const double MJD0;
   // </group>
   
   //#----------------------------

@@ -84,7 +84,7 @@ class AipsIO;
 // file, so for each row an array is present.
 // On the other hand adding a row does nothing for variable shaped arrays.
 // So when no data is put or shape is set, a row may contain no array at all.
-// In that case the function <src>isShapeDefined</src> returns False for
+// In that case the function <src>isShapeDefined</src> returns false for
 // that row.
 // </synopsis> 
 
@@ -100,7 +100,7 @@ public:
 
     // Create a column of the given data type.
     // It keeps the pointer to its parent (but does not own it).
-    ISMIndColumn (ISMBase* parent, int dataType, uInt colnr);
+    ISMIndColumn (ISMBase* parent, int dataType, uint32_t colnr);
 
     // Frees up the storage.
     virtual ~ISMIndColumn();
@@ -112,20 +112,20 @@ public:
     virtual void setShapeColumn (const IPosition& shape);
 
     // Get the dimensionality of the item in the given row.
-    virtual uInt ndim (rownr_t rownr);
+    virtual uint32_t ndim (rownr_t rownr);
 
     // Set the shape of the array in the given row and allocate the array
     // in the file.
     virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the shape defined (i.e. is there an array) in this row?
-    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual bool isShapeDefined (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     virtual IPosition shape (rownr_t rownr);
 
     // This storage manager can handle changing array shapes.
-    virtual Bool canChangeShape() const;
+    virtual bool canChangeShape() const;
 
     // Get an array value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
@@ -154,7 +154,7 @@ public:
     virtual void getFile (rownr_t nrrow);
 
     // Flush and optionally fsync the data.
-    virtual Bool flush (rownr_t nrrow, Bool fsync);
+    virtual bool flush (rownr_t nrrow, bool fsync);
 
     // Resync the storage manager with the new file contents.
     virtual void resync (rownr_t nrrow);
@@ -184,9 +184,9 @@ private:
 
     // Compare the values to check if a value to be put matches the
     // value in the previous or next row.
-    // It always return False, because comparing large arrays is
+    // It always return false, because comparing large arrays is
     // too expensive (it could be changed in the future). 
-    virtual Bool compareValue (const void* val1, const void* val2) const;
+    virtual bool compareValue (const void* val1, const void* val2) const;
 
     // Read the shape at the given row.
     // This will cache the information in the StIndArray
@@ -210,21 +210,21 @@ private:
     // When needed, create an array in the given row with the given shape.
     // When the array is created, its data are copied when the flag is set.
     StIndArray* putArrayPtr (rownr_t rownr, const IPosition& shape,
-			     Bool copyData);
+			     bool copyData);
 
 
     // The (unique) sequence number of the column.
-    uInt            seqnr_p;
+    uint32_t            seqnr_p;
     // The shape of all arrays in case it is fixed.
     IPosition       fixedShape_p;
     // Switch indicating if the shape is fixed.
-    Bool            shapeIsFixed_p;
+    bool            shapeIsFixed_p;
     // The file containing the arrays.
     StManArrayFile* iosfile_p;
     // The indirect array object.
     StIndArray      indArray_p;
     // The indirect array exists for the row interval last accessed.
-    Bool            foundArray_p;
+    bool            foundArray_p;
 };
 
 

@@ -53,7 +53,7 @@ void testDopplerScalar()
                         ("calc meas.doppler ('Z',"
                          "0.5, 'BETA')").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
-    Double val1 = node1.getDouble(0);
+    double val1 = node1.getDouble(0);
     ///cout << "taql=" << arr1 << endl;
     AlwaysAssertExit (node1.unit().getName() == "");
     AlwaysAssertExit (near(ndop.getValue(), val1, 1e-8));
@@ -73,7 +73,7 @@ void testRadVelScalar()
                         ("calc meas.doppler ('Z',"
                          "200 'km/s', 'BARY')").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
-    Double val1 = node1.getDouble(0);
+    double val1 = node1.getDouble(0);
     ///cout << "taql=" << arr1 << endl;
     AlwaysAssertExit (node1.unit().getName() == "");
     AlwaysAssertExit (near(ndop.getValue(), val1, 1e-8));
@@ -95,7 +95,7 @@ void testFreqScalar()
                         ("calc meas.doppler ('Z',"
                          "200 MHz, 'LSRK', 1.425445GHz)").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
-    Double val1 = node1.getDouble(0);
+    double val1 = node1.getDouble(0);
     ///cout << "taql=" << arr1 << endl;
     AlwaysAssertExit (node1.unit().getName() == "");
     AlwaysAssertExit (near(ndop.getValue(), val1, 1e-8));
@@ -105,7 +105,7 @@ void testFreqScalar()
                         ("calc meas.doppler ('Z',"
                          "200 MHz, 'LSRK', 'CII166A')").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
-    Double val1 = node1.getDouble(0);
+    double val1 = node1.getDouble(0);
     ///cout << "taql=" << arr1 << endl;
     AlwaysAssertExit (node1.unit().getName() == "");
     AlwaysAssertExit (near(ndop.getValue(), val1, 1e-8));
@@ -129,7 +129,7 @@ void testDopplerArray()
                          "[0.5, 0.6], 'RADIO')").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
     AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     ///cout<<arr1.shape()<<endl;
     AlwaysAssertExit (arr1.shape() == IPosition(1,2));
     ///cout << "taql=" << arr1 << endl;
@@ -156,7 +156,7 @@ void testRadVelArray()
                          "[200,300] 'km/s', 'BARY')").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
     AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     ///cout<<arr1.shape()<<endl;
     AlwaysAssertExit (arr1.shape() == IPosition(1,2));
     ///cout << "taql=" << arr1 << endl;
@@ -194,7 +194,7 @@ void testFreqArray()
                          "[[200,300]] MHz, 'LSRK', [[1.425445GHz,4.874157GHz]])").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
     AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     ///cout<<arr1.shape()<<endl;
     AlwaysAssertExit (arr1.shape() == IPosition(2,2,1));
     ///cout << "taql=" << arr1 << endl;
@@ -208,7 +208,7 @@ void testFreqArray()
                          "[200,300] MHz, 'LSRK', ['CII166A','H110A'])").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
     AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     ///cout<<arr1.shape()<<endl;
     AlwaysAssertExit (arr1.shape() == IPosition(1,2));
     ///cout << "taql=" << arr1 << endl;
@@ -222,7 +222,7 @@ void testFreqArray()
                          "200 MHz, 'LSRK', ['CII166A','H110A'])").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
     AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     ///cout<<arr1.shape()<<endl;
     AlwaysAssertExit (arr1.shape() == IPosition(1,2));
     ///cout << "taql=" << arr1 << endl;
@@ -236,7 +236,7 @@ void testFreqArray()
                          "[200,300] MHz, 'LSRK', 'CII166A')").node());
     AlwaysAssertExit (node1.getNodeRep()->isConstant());
     AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
-    Array<Double> arr1 = node1.getArrayDouble(0);
+    Array<double> arr1 = node1.getArrayDouble(0);
     ///cout<<arr1.shape()<<endl;
     AlwaysAssertExit (arr1.shape() == IPosition(1,2));
     ///cout << "taql=" << arr1 << endl;
@@ -263,10 +263,10 @@ void testDopplerColumn()
   AlwaysAssertExit (! node1.getNodeRep()->isConstant());
   AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTScalar);
   AlwaysAssertExit (node1.unit().getName() == "");
-  Double val1 = node1.getDouble(0);
+  double val1 = node1.getDouble(0);
   ///cout << "taql=" << arr1 << endl;
   AlwaysAssertExit (near(ndop1.getValue(), val1, 1e-8));
-  Double val2 = node1.getDouble(1);
+  double val2 = node1.getDouble(1);
   AlwaysAssertExit (near(ndop2.getValue(), val2, 1e-8));
 }
 
@@ -288,13 +288,13 @@ void testRadVelColumn()
   AlwaysAssertExit (! node1.getNodeRep()->isConstant());
   AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTArray);
   AlwaysAssertExit (node1.unit().getName() == "");
-  Array<Double> arr1 = node1.getArrayDouble(0);
+  Array<double> arr1 = node1.getArrayDouble(0);
   ///cout<<arr1.shape()<<endl;
   AlwaysAssertExit (arr1.shape() == IPosition(1,2));
   ///cout << "taql=" << arr1 << endl;
   AlwaysAssertExit (near(ndop1.getValue(), arr1.data()[0], 1e-8));
   AlwaysAssertExit (near(ndop2.getValue(), arr1.data()[1], 1e-8));
-  Array<Double> arr2 = node1.getArrayDouble(1);
+  Array<double> arr2 = node1.getArrayDouble(1);
   AlwaysAssertExit (arr2.shape() == IPosition(1,2));
   AlwaysAssertExit (near(ndop2.getValue(), arr2.data()[0], 1e-8));
   AlwaysAssertExit (near(ndop1.getValue(), arr2.data()[1], 1e-8));
@@ -319,17 +319,17 @@ void testFreqColumn()
   AlwaysAssertExit (! node1.getNodeRep()->isConstant());
   AlwaysAssertExit (node1.getNodeRep()->valueType() == TableExprNodeRep::VTScalar);
   AlwaysAssertExit (node1.unit().getName() == "");
-  Double val1 = node1.getDouble(0);
+  double val1 = node1.getDouble(0);
   ///cout << "taql=" << arr1 << endl;
   AlwaysAssertExit (near(ndop1.getValue(), val1, 1e-8));
-  Double val2 = node1.getDouble(1);
+  double val2 = node1.getDouble(1);
   AlwaysAssertExit (near(ndop2.getValue(), val2, 1e-8));
 }
 
 
 int checkErr (const String& command)
 {
-  Bool fail = False;
+  bool fail = false;
   try {
     TableExprNode node(tableCommand(command).node());
     if (node.isScalar()) {
@@ -339,7 +339,7 @@ int checkErr (const String& command)
     }
   } catch (const std::exception& x) {
     cout << "Expected exception: " << x.what() << endl;
-    fail = True;
+    fail = true;
   }
   if (!fail) {
     cout << "Command '" + command + "' should have failed" << endl;

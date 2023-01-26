@@ -93,7 +93,7 @@ class MultiFileBase;
 //     file.open();
 //     file.write (someBuffer, someLength);
 //     // Get the length of the file.
-//     uInt size = file.fileSize();
+//     uint32_t size = file.fileSize();
 // </srcblock>
 // </example>
 
@@ -112,7 +112,7 @@ public:
     // created for the file. If a MultiFileBase is used, memory-mapped IO
     // cannot be used and mappedFile is ignored.
     explicit BucketFile (const String& fileName,
-                         uInt bufSizeFile=0, Bool mappedFile=False,
+                         uint32_t bufSizeFile=0, bool mappedFile=false,
                          const std::shared_ptr<MultiFileBase>& mfile=std::shared_ptr<MultiFileBase>());
 
     // Create a BucketFile object for an existing file.
@@ -121,8 +121,8 @@ public:
     // It can be indicated if a MMapfdIO and/or FilebufIO object must be
     // created for the file. If a MultiFileBase is used, memory-mapped IO
     // cannot be used and mappedFile is ignored.
-    BucketFile (const String& fileName, Bool writable,
-                uInt bufSizeFile=0, Bool mappedFile=False,
+    BucketFile (const String& fileName, bool writable,
+                uint32_t bufSizeFile=0, bool mappedFile=false,
                          const std::shared_ptr<MultiFileBase>& mfile=std::shared_ptr<MultiFileBase>());
 
     // The destructor closes the file (if open).
@@ -130,7 +130,7 @@ public:
 
     // Make a (temporary) buffered IO object for this file.
     // That object should not close the file.
-    virtual CountedPtr<ByteIO> makeFilebufIO (uInt bufferSize);
+    virtual CountedPtr<ByteIO> makeFilebufIO (uint32_t bufferSize);
 
     // Get the mapped file object.
     MMapfdIO* mappedFile()
@@ -160,38 +160,38 @@ public:
     virtual const String& name() const;
     
     // Has the file logically been indicated as writable?
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Read bytes from the file.
-    virtual uInt read (void* buffer, uInt length);
+    virtual uint32_t read (void* buffer, uint32_t length);
 
     // Write bytes into the file.
-    virtual uInt write (const void* buffer, uInt length);
+    virtual uint32_t write (const void* buffer, uint32_t length);
 
     // Seek in the file.
     // <group>
-    virtual void seek (Int64 offset);
-    void seek (Int offset);
+    virtual void seek (int64_t offset);
+    void seek (int32_t offset);
     // </group>
 
     // Get the (physical) size of the file.
     // This is doing a seek and sets the file pointer to end-of-file.
-    virtual Int64 fileSize() const;
+    virtual int64_t fileSize() const;
 
     // Is the file cached, mapped, or buffered?
     // <group>
-    Bool isCached() const;
-    Bool isMapped() const;
-    Bool isBuffered() const;
+    bool isCached() const;
+    bool isMapped() const;
+    bool isBuffered() const;
     // </group>
 
 private:
     // The file name.
     String name_p;
     // The (logical) writability of the file.
-    Bool isWritable_p;
-    Bool isMapped_p;
-    uInt bufSize_p;
+    bool isWritable_p;
+    bool isMapped_p;
+    uint32_t bufSize_p;
     int  fd_p;    //  fd (if used) of unbuffered file
     // The unbuffered file.
     CountedPtr<ByteIO> file_p;
@@ -220,17 +220,17 @@ private:
 inline const String& BucketFile::name() const
     { return name_p; }
 
-inline Bool BucketFile::isWritable() const
+inline bool BucketFile::isWritable() const
     { return isWritable_p; }
 
-inline void BucketFile::seek (Int offset)
-    { seek (Int64(offset)); }
+inline void BucketFile::seek (int32_t offset)
+    { seek (int64_t(offset)); }
 
-inline Bool BucketFile::isCached() const
+inline bool BucketFile::isCached() const
     { return !isMapped_p && bufSize_p==0; }
-inline Bool BucketFile::isMapped() const
+inline bool BucketFile::isMapped() const
     { return isMapped_p; }
-inline Bool BucketFile::isBuffered() const
+inline bool BucketFile::isBuffered() const
     { return bufSize_p>0; }
 
 

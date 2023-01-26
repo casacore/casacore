@@ -57,7 +57,7 @@ int main()
 
 // Create a PagedImage.
     {
-      PagedImage<Float> pIm(shape, CoordinateUtil::defaultCoords2D(),
+      PagedImage<float> pIm(shape, CoordinateUtil::defaultCoords2D(),
 			    "tPagedImage2_tmp.img");
       AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (pIm.isWritable());
@@ -72,7 +72,7 @@ int main()
       ImageRegion reg = pIm.getRegion("reg1");
       AlwaysAssertExit (reg == ImageRegion(box1));
       AlwaysAssertExit (pIm.getImageRegionPtr
-                            ("reg1", RegionHandler::Regions, False) == 0);
+                            ("reg1", RegionHandler::Regions, false) == 0);
 
 // Define the region as the default.
       pIm.setDefaultMask ("reg1");
@@ -86,7 +86,7 @@ int main()
     }
 
     { 
-      PagedImage<Float> pIm ("tPagedImage2_tmp.img");
+      PagedImage<float> pIm ("tPagedImage2_tmp.img");
       AlwaysAssertExit (pIm.getDefaultMask() == "reg1");
       AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (! pIm.hasPixelMask());
@@ -99,23 +99,23 @@ int main()
 // Define the region in the regions group and check it can be found.
       pIm.defineRegion ("regr1", reg, RegionHandler::Regions);
       const ImageRegion* imregptr;
-      imregptr = pIm.getImageRegionPtr ("regr1", RegionHandler::Regions, False);
+      imregptr = pIm.getImageRegionPtr ("regr1", RegionHandler::Regions, false);
       AlwaysAssertExit (imregptr != 0);
       delete imregptr;
       AlwaysAssertExit (pIm.getImageRegionPtr
-                            ("regr1", RegionHandler::Masks, False) == 0);
-      imregptr = pIm.getImageRegionPtr ("regr1", RegionHandler::Any, False);
+                            ("regr1", RegionHandler::Masks, false) == 0);
+      imregptr = pIm.getImageRegionPtr ("regr1", RegionHandler::Any, false);
       AlwaysAssertExit (imregptr != 0);
       delete imregptr;
 
 // Rename the region in the regions group and check it can be found.
       pIm.renameRegion ("regr2", "regr1", RegionHandler::Regions);
-      imregptr = pIm.getImageRegionPtr ("regr2", RegionHandler::Regions, False);
+      imregptr = pIm.getImageRegionPtr ("regr2", RegionHandler::Regions, false);
       AlwaysAssertExit (imregptr != 0);
       delete imregptr;
       AlwaysAssertExit (pIm.getImageRegionPtr
-                            ("regr2", RegionHandler::Masks, False) == 0);
-      imregptr = pIm.getImageRegionPtr ("regr2", RegionHandler::Any, False);
+                            ("regr2", RegionHandler::Masks, false) == 0);
+      imregptr = pIm.getImageRegionPtr ("regr2", RegionHandler::Any, false);
       AlwaysAssertExit (imregptr != 0);
       delete imregptr;
 
@@ -123,12 +123,12 @@ int main()
       AlwaysAssertExit (! pIm.isMasked());
       AlwaysAssertExit (pIm.getRegionPtr() == 0);
 
-      Array<Bool> mask(shape);
-      mask = True;
+      Array<bool> mask(shape);
+      mask = true;
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 
 // Create a mask and make it default region.
-      pIm.makeMask ("reg2", True, True);
+      pIm.makeMask ("reg2", true, true);
       AlwaysAssertExit (pIm.getDefaultMask() == "reg2");
       AlwaysAssertExit (File("tPagedImage2_tmp.img/reg2").isDirectory());
       AlwaysAssertExit (pIm.isMasked());
@@ -136,7 +136,7 @@ int main()
       AlwaysAssertExit (pIm.pixelMask().isWritable());
 
 // Put a mask and check it is correct.
-      mask(IPosition(2,0,0)) = False;
+      mask(IPosition(2,0,0)) = false;
       pIm.pixelMask().put (mask);
       AlwaysAssertExit (allEQ(pIm.getMask(), mask));
 

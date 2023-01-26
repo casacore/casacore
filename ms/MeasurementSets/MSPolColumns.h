@@ -80,18 +80,18 @@ public:
   
   // Access to required columns
   // <group>
-  ArrayColumn<Int>& corrProduct() {return corrProduct_p;}
-  ArrayColumn<Int>& corrType() {return corrType_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-  ScalarColumn<Int>& numCorr() {return numCorr_p;}
+  ArrayColumn<int32_t>& corrProduct() {return corrProduct_p;}
+  ArrayColumn<int32_t>& corrType() {return corrType_p;}
+  ScalarColumn<bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<int32_t>& numCorr() {return numCorr_p;}
   // </group>
   
   // Const access to required columns
   // <group>
-  const ArrayColumn<Int>& corrProduct() const {return corrProduct_p;}
-  const ArrayColumn<Int>& corrType() const {return corrType_p;}
-  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ScalarColumn<Int>& numCorr() const {return numCorr_p;}
+  const ArrayColumn<int32_t>& corrProduct() const {return corrProduct_p;}
+  const ArrayColumn<int32_t>& corrType() const {return corrType_p;}
+  const ScalarColumn<bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<int32_t>& numCorr() const {return numCorr_p;}
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -104,7 +104,7 @@ public:
   // others are tested. Setting tryRow to a positive value greater than the
   // table length will throw an exception (AipsError), when compiled in debug
   // mode.
-  Int64 match(const Vector<Stokes::StokesTypes>& polType, Int64 tryRow=-1);
+  int64_t match(const Vector<Stokes::StokesTypes>& polType, int64_t tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -122,14 +122,14 @@ private:
 
   //# Functions which check the supplied values against the relevant column and
   //# the specified row.
-  Bool matchCorrType(rownr_t row, const Vector<Int>& polType) const;
-  Bool matchCorrProduct(rownr_t row, const Matrix<Int>& polProduct) const;
+  bool matchCorrType(rownr_t row, const Vector<int32_t>& polType) const;
+  bool matchCorrProduct(rownr_t row, const Matrix<int32_t>& polProduct) const;
 
   //# required columns
-  ArrayColumn<Int> corrProduct_p;
-  ArrayColumn<Int> corrType_p;
-  ScalarColumn<Bool> flagRow_p;
-  ScalarColumn<Int> numCorr_p;
+  ArrayColumn<int32_t> corrProduct_p;
+  ArrayColumn<int32_t> corrType_p;
+  ScalarColumn<bool> flagRow_p;
+  ScalarColumn<int32_t> numCorr_p;
 };
 
 //# Define the RO version for backward compatibility.

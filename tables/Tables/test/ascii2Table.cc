@@ -97,9 +97,9 @@ void calc(Table& tab, const String& name)
 	return;
     }
 
-    uInt nrrow = tab.nrow();
+    uint32_t nrrow = tab.nrow();
     Vector<double> vec(nrrow);
-    for (uInt i=0; i<nrrow; i++) {
+    for (uint32_t i=0; i<nrrow; i++) {
 	tabcol.getScalar (i, vec(i));
     }
     double vmean = mean (vec);
@@ -107,7 +107,7 @@ void calc(Table& tab, const String& name)
     double vmax  = max (vec);
     double vadev = avdev (vec, vmean);
     double vsdev = stddev (vec, vmean);
-    double vmed  = median (vec, False);
+    double vmed  = median (vec, false);
     cout << "Min    " << name << ":  " << vmin << endl;
     cout << "Max    " << name << ":  " << vmax << endl;
     cout << "Mean   " << name << ":  " << vmean << endl;

@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 void UnitMap::initUMSI1(UMaps& maps) {
   map<String, UnitName>& mapDef = maps.mapDef;
   map<String, UnitName>& mapSI  = maps.mapSI;
-  for (Int i=0; i<UnitDim::Dnumber; i++) {
+  for (int32_t i=0; i<UnitDim::Dnumber; i++) {
     mapDef.insert(map<String, UnitName>::value_type
 			    (UnitDim::dimName(i),
 			     UnitName(UnitDim::dimName(i),

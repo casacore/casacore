@@ -42,45 +42,45 @@
 int main() {
 
   //     CompoundFunction();
-  CompoundFunction<Double> sumfunc;
+  CompoundFunction<double> sumfunc;
   AlwaysAssertExit(sumfunc.nparameters() == 0 && sumfunc(-11.0) == 0.0);
 
-  //     uInt addFunction(const Function<T> &newFunction);
-  Polynomial<Double> poly(2); poly[2] = 1.0; 	     // x^2
-  Gaussian1D<Double> gauss(1.0, 0.0, sqrt(log(16.0)));   // e^{-x^2}
+  //     uint32_t addFunction(const Function<T> &newFunction);
+  Polynomial<double> poly(2); poly[2] = 1.0; 	     // x^2
+  Gaussian1D<double> gauss(1.0, 0.0, sqrt(log(16.0)));   // e^{-x^2}
   sumfunc.addFunction(poly);
   sumfunc.addFunction(gauss);                             // x^2 + e^{-x^2}
 
   //   T operator()(const T &x) const;
   AlwaysAssertExit(near(sumfunc(2.0), 2.0*2.0 + 1.0/C::e/C::e/C::e/C::e));
-  Double xvec = 1.0;
+  double xvec = 1.0;
   AlwaysAssertExit(near(sumfunc(xvec), 1.0*1.0 + 1.0/C::e));
 
-  //   uInt nparameters()
+  //   uint32_t nparameters()
   AlwaysAssertExit(sumfunc.nparameters() == 6);
   
   //     CompoundFunction(const CompoundFunction<T> &other);
   //     operator=(const CompoundFunction<T> &other);
-  CompoundFunction<Double> f2(sumfunc);
-  CompoundFunction<Double> f3;
+  CompoundFunction<double> f2(sumfunc);
+  CompoundFunction<double> f3;
   f3 = sumfunc;
 
-  //     void setParameter(uInt which, const T &val);
+  //     void setParameter(uint32_t which, const T &val);
   AlwaysAssertExit(allEQ(sumfunc.parameters().getParameters(),
 			 f2.parameters().getParameters()) &&
 		   allEQ(sumfunc.parameters().getParameters(), 
 			 f3.parameters().getParameters()));
 
-  //     uInt nFunctions() const { return functions_p.nelements(); }
+  //     uint32_t nFunctions() const { return functions_p.nelements(); }
   AlwaysAssertExit(sumfunc.nFunctions() == 2 && f2.nFunctions() == 2 &&
 		   f3.nFunctions() == 2);
 
-  //     const Function<T> *function(uInt which) const
-  //     Function<T> *function(uInt which);
-  const CompoundFunction<Double> sfref = sumfunc;
+  //     const Function<T> *function(uint32_t which) const
+  //     Function<T> *function(uint32_t which);
+  const CompoundFunction<double> sfref = sumfunc;
   AlwaysAssertExit( (sumfunc.function(0))(3.0) == 9.0);
   AlwaysAssertExit( near((sfref.function(1))(-1.0), 1.0/C::e ));
-  //     T getparameter(uInt which) const;
+  //     T getparameter(uint32_t which) const;
   AlwaysAssertExit(sumfunc[0] == 0.0 &&
 		   sumfunc[1] == 0.0 &&
 		   sumfunc[2] == 1.0 &&
@@ -88,13 +88,13 @@ int main() {
 		   sumfunc[4] == 0.0 &&
 		   near(sumfunc[5] , sqrt(log(16.0))));
   
-  //     virtual void setParameter(uInt which, const T &val);
+  //     virtual void setParameter(uint32_t which, const T &val);
   sumfunc[4] = 2.0;
   AlwaysAssertExit(near(sumfunc(3.0), 3.0*3.0 + 1.0/C::e));
   
   //     virtual Function<T> *cloneFunction() const;
   //     ~CompoundFunction();
-  Function<Double> *fptr = sumfunc.clone();
+  Function<double> *fptr = sumfunc.clone();
   AlwaysAssertExit(allEQ(sumfunc.parameters().getParameters(), 
 			  fptr->parameters().getParameters()));
   delete fptr;

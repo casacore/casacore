@@ -90,18 +90,18 @@ public:
 // Initialize the process.
 // It sets the expected number of steps and 
 // calls initDerived, so a derived class can initialize itself.
-    void init (uInt expectedNsteps);
+    void init (uint32_t expectedNsteps);
 
 // Tell the number of steps done so far.
 // The default implementation does nothing. A derived class
 // should call the ProgressMeter function <src>update</src>
-    virtual void nstepsDone (uInt nsteps);
+    virtual void nstepsDone (uint32_t nsteps);
 
 // The process has ended.
     virtual void done();
 
 // Recovers the expected number of total steps.
-    uInt expectedNsteps() const
+    uint32_t expectedNsteps() const
         { return itsExpectedNsteps; }
 
 protected:
@@ -112,7 +112,7 @@ protected:
     virtual void initDerived();
 
 private:
-    uInt itsExpectedNsteps;
+    uint32_t itsExpectedNsteps;
 };
 
 

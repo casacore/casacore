@@ -101,9 +101,9 @@ public:
     // </group>
 
     // Construct from multiple regions given as a Block.
-    // When <src>takeOver</src> is True, the destructor will delete the
+    // When <src>takeOver</src> is true, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    WCCompound (Bool takeOver, const PtrBlock<const WCRegion*>& regions);
+    WCCompound (bool takeOver, const PtrBlock<const WCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     WCCompound (const WCCompound& other);
@@ -111,7 +111,7 @@ public:
     virtual ~WCCompound();
 
     // Comparison
-    virtual Bool operator==(const WCRegion& other) const;
+    virtual bool operator==(const WCRegion& other) const;
 
     // Get the contributing regions.
     const PtrBlock<const WCRegion*>& regions() const;
@@ -143,7 +143,7 @@ private:
 
     // Check if the regions are correct.
     // If needed, make a copy of the region objects.
-    void init (Bool takeOver);
+    void init (bool takeOver);
 
     //# Member variables.
     PtrBlock<const WCRegion*> itsRegions;

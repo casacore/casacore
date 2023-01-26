@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class M>
 ScalarMeasColumn<M>::ScalarMeasColumn()
-  :  itsConvFlag  (False),
+  :  itsConvFlag  (false),
      itsArrDataCol(0),
      itsScaDataCol(0),
      itsRefIntCol (0),
@@ -57,7 +57,7 @@ template<class M>
 ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
                                        const String& columnName)
   : TableMeasColumn (tab, columnName),
-    itsConvFlag  (False),
+    itsConvFlag  (false),
     itsArrDataCol(0),
     itsScaDataCol(0),
     itsRefIntCol (0),
@@ -74,9 +74,9 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
   itsNvals = tMeas.getValue().getTMRecordValue().nelements();
   AlwaysAssert (itsNvals <= tmDesc.getUnits().size(), AipsError);
   if (itsNvals == 1) {
-    itsScaDataCol = new ScalarColumn<Double>(tab, columnName);
+    itsScaDataCol = new ScalarColumn<double>(tab, columnName);
   } else {
-    itsArrDataCol = new ArrayColumn<Double>(tab, columnName);
+    itsArrDataCol = new ArrayColumn<double>(tab, columnName);
   }
 
   // Set up the reference code component of the MeasRef
@@ -85,7 +85,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
     if ((tab.tableDesc().columnDesc(rcName).dataType() == TpString)) {
       itsRefStrCol = new ScalarColumn<String>(tab, rcName);
     } else {
-      itsRefIntCol = new ScalarColumn<Int>(tab, rcName);
+      itsRefIntCol = new ScalarColumn<int32_t>(tab, rcName);
     }
   } else {
     itsMeasRef.set (tmDesc.getRefCode());
@@ -106,7 +106,7 @@ ScalarMeasColumn<M>::ScalarMeasColumn (const Table& tab,
 
   // Only need to convert (during a put) if some component of the reference
   // for the column is fixed.
-  itsConvFlag = (itsVarRefFlag == False) || (itsOffsetCol == 0);
+  itsConvFlag = (itsVarRefFlag == false) || (itsOffsetCol == 0);
   // For an old table write the reference codes and types.
   if (tab.isWritable()) {
     tmDesc.writeIfOld (tab);
@@ -154,13 +154,13 @@ void ScalarMeasColumn<M>::reference (const ScalarMeasColumn<M>& that)
   itsOffsetCol  = that.itsOffsetCol;
   itsMeasRef = that.itsMeasRef;
   if (itsArrDataCol != 0) {
-    itsArrDataCol = new ArrayColumn<Double>(*itsArrDataCol);
+    itsArrDataCol = new ArrayColumn<double>(*itsArrDataCol);
   }
   if (itsScaDataCol != 0) {
-    itsScaDataCol = new ScalarColumn<Double>(*itsScaDataCol);
+    itsScaDataCol = new ScalarColumn<double>(*itsScaDataCol);
   }
   if (itsRefIntCol != 0) {
-    itsRefIntCol = new ScalarColumn<Int>(*itsRefIntCol);
+    itsRefIntCol = new ScalarColumn<int32_t>(*itsRefIntCol);
   }
   if (itsRefStrCol != 0) {
     itsRefStrCol = new ScalarColumn<String>(*itsRefStrCol);
@@ -180,16 +180,16 @@ void ScalarMeasColumn<M>::attach (const Table& tab,
 template<class M>
 void ScalarMeasColumn<M>::get (rownr_t rownr, M& meas) const
 {
-  Vector<Quantum<Double> > qvec(itsNvals);
+  Vector<Quantum<double> > qvec(itsNvals);
   const Vector<Unit>& units = measDesc().getUnits();
   if (itsScaDataCol != 0) {
     qvec(0).setValue ((*itsScaDataCol)(rownr));
     qvec(0).setUnit (units(0));
   } else {
-    Array<Double> tmpArr((*itsArrDataCol)(rownr));
-    Bool deleteData;
-    const Double* d_p = tmpArr.getStorage (deleteData);
-    for (uInt i=0; i<itsNvals; i++) {
+    Array<double> tmpArr((*itsArrDataCol)(rownr));
+    bool deleteData;
+    const double* d_p = tmpArr.getStorage (deleteData);
+    for (uint32_t i=0; i<itsNvals; i++) {
       qvec(i).setValue (d_p[i]);
       qvec(i).setUnit (units(i));
     }
@@ -208,7 +208,7 @@ M ScalarMeasColumn<M>::convert (rownr_t rownr, const MeasRef<M>& measRef) const
 }
 
 template<class M> 
-M ScalarMeasColumn<M>::convert (rownr_t rownr, uInt refCode) const
+M ScalarMeasColumn<M>::convert (rownr_t rownr, uint32_t refCode) const
 {
   M tmp;
   get (rownr, tmp);
@@ -249,8 +249,8 @@ MeasRef<M> ScalarMeasColumn<M>::makeMeasRef (rownr_t rownr) const
 
 
 template<class M>
-void ScalarMeasColumn<M>::setDescRefCode (uInt refCode,
-					  Bool tableMustBeEmpty)
+void ScalarMeasColumn<M>::setDescRefCode (uint32_t refCode,
+					  bool tableMustBeEmpty)
 {
   Table tab = table();
   if (tableMustBeEmpty  &&  tab.nrow() != 0) {
@@ -264,7 +264,7 @@ void ScalarMeasColumn<M>::setDescRefCode (uInt refCode,
 
 template<class M>
 void ScalarMeasColumn<M>::setDescOffset (const Measure& offset,
-					 Bool tableMustBeEmpty)
+					 bool tableMustBeEmpty)
 {
   Table tab = table();
   if (tableMustBeEmpty  &&  tab.nrow() != 0) {
@@ -278,7 +278,7 @@ void ScalarMeasColumn<M>::setDescOffset (const Measure& offset,
 
 template<class M>
 void ScalarMeasColumn<M>::setDescUnits (const Vector<Unit>& units,
-					Bool tableMustBeEmpty)
+					bool tableMustBeEmpty)
 {
   Table tab = table();
   if (tableMustBeEmpty  &&  tab.nrow() != 0) {
@@ -349,7 +349,7 @@ void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
     if (itsRefStrCol != 0) {
       itsRefStrCol->put(rownr, M::showType(locMeas.getRef().getType()));
     } else {
-      uInt tp = locMeas.getRef().getType();
+      uint32_t tp = locMeas.getRef().getType();
       itsRefIntCol->put(rownr, measDesc().getRefDesc().cur2tab (tp));
     }
   }
@@ -362,12 +362,12 @@ void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
   }
 
   const Vector<Unit>& units = measDesc().getUnits();
-  Vector<Quantum<Double> > qvec = locMeas.getValue().getTMRecordValue();
+  Vector<Quantum<double> > qvec = locMeas.getValue().getTMRecordValue();
   if (itsScaDataCol != 0) {
     itsScaDataCol->put (rownr, qvec(0).getValue(units(0)));
   } else {
-    Vector<Double> d_vec(itsNvals);
-    for (uInt i=0; i<itsNvals; i++) {
+    Vector<double> d_vec(itsNvals);
+    for (uint32_t i=0; i<itsNvals; i++) {
       d_vec(i) = qvec(i).getValue(units(i));
     }
     itsArrDataCol->put (rownr, d_vec);
@@ -375,7 +375,7 @@ void ScalarMeasColumn<M>::put (rownr_t rownr, const M& meas)
 }
 
 template<class M>
-Bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
+bool ScalarMeasColumn<M>::equalRefs (const MRBase& r1, const MRBase& r2) const
 {
   return ((r1.getType() == r2.getType()) && (r1.offset() == r2.offset()));
 }

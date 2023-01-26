@@ -35,50 +35,50 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> 
-Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
-				    const Array<Bool>& flag,
-				    const Array<Bool>& flagRow,
-				    Int diffAxis,
-				    Int window,
-				    Bool doMedian)
+Array<float> MSSelUtil<T>::diffData(const Array<T>& data,
+				    const Array<bool>& flag,
+				    const Array<bool>& flagRow,
+				    int32_t diffAxis,
+				    int32_t window,
+				    bool doMedian)
 {
   IPosition shape=data.shape();
-  Array<Float> diff(shape); diff.set(0);
-  const Int nCorr=shape(0);
-  const Int nChan=shape(1);
-  const Int nXY=nCorr*nChan;
-  Int nTime=shape(2), nIfr=1;
+  Array<float> diff(shape); diff.set(0);
+  const int32_t nCorr=shape(0);
+  const int32_t nChan=shape(1);
+  const int32_t nXY=nCorr*nChan;
+  int32_t nTime=shape(2), nIfr=1;
   if (data.ndim()==4) {
     nIfr=shape(2);
     nTime=shape(3);
   }
-  const Int nOff=nXY*nIfr;
-  const Int win=max(2,window);
-  Bool deleteData, deleteFlag, deleteFlagRow, deleteDiff;
+  const int32_t nOff=nXY*nIfr;
+  const int32_t win=max(2,window);
+  bool deleteData, deleteFlag, deleteFlagRow, deleteDiff;
   const T* pdata = data.getStorage(deleteData);
-  const Bool* pflag = flag.getStorage(deleteFlag);
-  const Bool* pflagRow = flagRow.getStorage(deleteFlagRow);
-  Float* pdiff = diff.getStorage(deleteDiff);
+  const bool* pflag = flag.getStorage(deleteFlag);
+  const bool* pflagRow = flagRow.getStorage(deleteFlagRow);
+  float* pdiff = diff.getStorage(deleteDiff);
   T zero(0.), sum;
-  Block<Float> buf(win);
+  Block<float> buf(win);
   // diffAxis == 1: channel, 2: row, 3: time
   if (diffAxis!=1) {
     // do row or time difference
-    Int offset=0, rowOffset=0;
-    for (Int i=0; i<nTime; i++, rowOffset+=nIfr) {
-      Int st=max(0,i-win/2), end=min(nTime-1,i-win/2+win-1);
-      for (Int ifr=0; ifr<nIfr; ifr++) {
+    int32_t offset=0, rowOffset=0;
+    for (int32_t i=0; i<nTime; i++, rowOffset+=nIfr) {
+      int32_t st=max(0,i-win/2), end=min(nTime-1,i-win/2+win-1);
+      for (int32_t ifr=0; ifr<nIfr; ifr++) {
 	if (!pflagRow[rowOffset+ifr]) {
-	  for (Int j=0; j<nXY; j++) {
+	  for (int32_t j=0; j<nXY; j++) {
 	    if (!pflag[offset]) {
 	      if (win==2) {
 		if (i>0 && !pflag[offset-nOff]) {
 		  pdiff[offset]=abs(pdata[offset]-pdata[offset-nOff]);
 		}
 	      } else if (!doMedian) {
-		Int count=0;
+		int32_t count=0;
 		sum=zero;
-		for (Int k=st, koff=offset+(st-i)*nOff; k<end; k++, koff+=nOff) {
+		for (int32_t k=st, koff=offset+(st-i)*nOff; k<end; k++, koff+=nOff) {
 		  if (!pflag[koff]) {
 		    count++;
 		    sum+=pdata[koff];
@@ -87,14 +87,14 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 		if (count>1) sum/=count;
 		if (count>0) pdiff[offset]=abs(pdata[offset]-sum);
 	      } else { // use median
-		Int count=0;
-		for (Int k=st, koff=offset+(st-i)*nOff; k<end; k++, koff+=nOff) {
+		int32_t count=0;
+		for (int32_t k=st, koff=offset+(st-i)*nOff; k<end; k++, koff+=nOff) {
 		  if (!pflag[koff]) {
 		    buf[count++]=abs(pdata[offset]-pdata[koff]);
 		  }
 		}
 		if (count>0) {
-		  pdiff[offset]=median(Vector<Float>(buf.begin(),buf.begin()+count));
+		  pdiff[offset]=median(Vector<float>(buf.begin(),buf.begin()+count));
 	        }
 	      }
 	    }
@@ -107,22 +107,22 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
     }
   } else {
     // do channel difference
-    Int offset=0, rowOffset=0;
-    for (Int i=0; i<nTime; i++, rowOffset+=nIfr) {
-      for (Int ifr=0; ifr<nIfr; ifr++) {
+    int32_t offset=0, rowOffset=0;
+    for (int32_t i=0; i<nTime; i++, rowOffset+=nIfr) {
+      for (int32_t ifr=0; ifr<nIfr; ifr++) {
 	if (!pflagRow[rowOffset+ifr]) {
-	  for (Int j=0; j<nChan; j++) {
-	    Int st=max(0,j-win/2), end=min(nChan-1,j-win/2+win-1);
-	    for (Int pol=0; pol<nCorr; pol++) {
+	  for (int32_t j=0; j<nChan; j++) {
+	    int32_t st=max(0,j-win/2), end=min(nChan-1,j-win/2+win-1);
+	    for (int32_t pol=0; pol<nCorr; pol++) {
 	      if (!pflag[offset]) {
 		if (win==2) {
 		  if (j>0 && !pflag[offset-nCorr]) {
 		    pdiff[offset]=abs(pdata[offset]-pdata[offset-nCorr]);
 		  }
 		} else if (!doMedian) {
-		  Int count=0;
+		  int32_t count=0;
 		  sum=zero;
-		  for (Int k=st, koff=offset+(st-j)*nCorr; k<end;
+		  for (int32_t k=st, koff=offset+(st-j)*nCorr; k<end;
 		       k++, koff+=nCorr) {
 		    if (!pflag[koff]) {
 		      count++;
@@ -132,15 +132,15 @@ Array<Float> MSSelUtil<T>::diffData(const Array<T>& data,
 		  if (count>1) sum/=count;
 		  if (count>0) pdiff[offset]=abs(pdata[offset]-sum);
 		} else { // use median
-		  Int count=0;
-		  for (Int k=st, koff=offset+(st-j)*nCorr; k<end; 
+		  int32_t count=0;
+		  for (int32_t k=st, koff=offset+(st-j)*nCorr; k<end; 
 		       k++, koff+=nCorr) {
 		    if (!pflag[koff]) {
 		      buf[count++]=abs(pdata[offset]-pdata[koff]);
 		    }
 		  }
 		  if (count>0) {
-		    pdiff[offset]=median(Vector<Float>(buf.begin(),buf.begin()+count));
+		    pdiff[offset]=median(Vector<float>(buf.begin(),buf.begin()+count));
 		  }
 		}
 	      }

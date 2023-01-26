@@ -31,27 +31,27 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template <class T, Int n>
+template <class T, int32_t n>
 RigidVector<T,n>& 
 RigidVector<T,n>::operator*=(const SquareMatrix<T,n>& m) {
   switch (m.type_p) {
   case SquareMatrix<T,n>::ScalarId: {
-    for (Int i=0; i<n; i++) v_p[i]*=m.a_p[0][0];
+    for (int32_t i=0; i<n; i++) v_p[i]*=m.a_p[0][0];
     return *this;
   }
   case SquareMatrix<T,n>::Diagonal: {
-    for (Int i=0; i<n; i++) v_p[i]*=m.a_p[i][i];
+    for (int32_t i=0; i<n; i++) v_p[i]*=m.a_p[i][i];
     return *this;
   }
   //  case SquareMatrix<T,n>::General:
   default:
     {
       T v[n], tmp;
-      Int i;
+      int32_t i;
       for (i=0; i<n; i++) v[i]=v_p[i];
       for (i=0; i<n; i++) {
 	v_p[i]=m.a_p[i][0]; v_p[i]*=v[0];
-	for (Int j=1; j<n; j++) {
+	for (int32_t j=1; j<n; j++) {
 	  //#v_p[i]+=m.a_p[i][j]*v[j]; inlining fails
 	  tmp=m.a_p[i][j]; tmp*=v[j]; v_p[i]+=tmp;
 	}
@@ -60,25 +60,25 @@ RigidVector<T,n>::operator*=(const SquareMatrix<T,n>& m) {
     }
   }
 }
-template <class T, Int n>
+template <class T, int32_t n>
 RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
       RigidVector<T,n> tmp;
-      for (Int i=0; i<n; i++) tmp.v_p[i]=::sqrt(v.v_p[i]);
+      for (int32_t i=0; i<n; i++) tmp.v_p[i]=::sqrt(v.v_p[i]);
       return tmp;
     }
 
  
 // // Needed for Image<RigidVector>
-// template <class T, Int n>
+// template <class T, int32_t n>
 // void* RigidVector<T,n>::newCopyInfo (const TableRecord&, const IPosition&)
 // { return 0; }
 
-// template <class T, Int n>
+// template <class T, int32_t n>
 // void RigidVector<T,n>::deleteCopyInfo (void*)
 // {}
 
 // // For set and get, we don't need to do anything sophisticated
-// template <class T, Int n>
+// template <class T, int32_t n>
 // void RigidVector<T,n>::set (void* ci, void* vout,
 // 			const Array<T>& in,
 // 			const IPosition& shape)
@@ -91,7 +91,7 @@ RigidVector<T,n> sqrt(const RigidVector<T,n>& v) {
 //     }
 // }
 
-// template <class T, Int n>
+// template <class T, int32_t n>
 // void RigidVector<T,n>::get (void* ci, Array<T>& out,
 // 			   const void* vin,
 // 			   const IPosition& shape)

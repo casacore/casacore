@@ -37,7 +37,7 @@ template <class T> QVector<T>::QVector(const Vector<T>& v, const Unit& u) : Quan
 
 template <class T> QVector<T>::QVector(const Vector<Quantum<T> >& q)
     : Quantum<Vector<T> >(Vector<T>(q.size()), "") {
-    uInt n = q.size();
+    uint32_t n = q.size();
     if (n == 0) {
         return;
     }
@@ -48,14 +48,14 @@ template <class T> QVector<T>::QVector(const Vector<Quantum<T> >& q)
     typename Vector<T>::iterator end = copy.end();
     typename Vector<Quantum<T> >::const_iterator qiter = q.begin();
     while (iter != end) {
-        *iter = qiter->getValue(u, True);
+        *iter = qiter->getValue(u, true);
         ++iter;
         ++qiter;
     }
     this->setValue(copy);
 }
 
-template <class T> Quantum<T> QVector<T>::operator[](uInt index) const {
+template <class T> Quantum<T> QVector<T>::operator[](uint32_t index) const {
 	return Quantum<T>(this->getValue()[index], this->getUnit());
 }
 

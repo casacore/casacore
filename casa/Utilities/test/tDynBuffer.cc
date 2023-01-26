@@ -34,10 +34,10 @@
 // The results are written to stdout. A script executes this test program.
 
 int main () {
-    uInt nrval,n;
+    uint32_t nrval,n;
     union {
-        Char* ptr;
-	uInt  p;                           // to display a pointer
+        char* ptr;
+	uint32_t  p;                           // to display a pointer
     };
     DynBuffer buf;
     nrval = 100;

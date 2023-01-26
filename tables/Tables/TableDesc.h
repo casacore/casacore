@@ -131,12 +131,12 @@ class TabPath;
 //
 //     // Define an integer column ab using the TableDesc::addColumn
 //     // function which creates a scalar column description.
-//     td.addColumn (ScalarColumnDesc<Int>("ab", "Comment for column ab"));
+//     td.addColumn (ScalarColumnDesc<int32_t>("ab", "Comment for column ab"));
 //
 //     // Add a scalar integer column ac, define keywords for it
 //     // and define a default value 0.
 //     // Overwrite the value of keyword unit.
-//     ScalarColumnDesc<Int> acColumn("ac");
+//     ScalarColumnDesc<int32_t> acColumn("ac");
 //     acColumn.rwKeywordSet().define ("scale", Complex(0.0f));
 //     acColumn.rwKeywordSet().define ("unit", "");
 //     acColumn.setDefault (0);
@@ -150,9 +150,9 @@ class TabPath;
 //     // This one is indirect and has no dimensionality mentioned yet.
 //     td.addColumn (ArrayColumnDesc<Complex>("Arr1","comment for Arr1"));
 //     // This one is indirect and has 3-dim arrays.
-//     td.addColumn (ArrayColumnDesc<Int>("A2r1","comment for Arr1",3));
+//     td.addColumn (ArrayColumnDesc<int32_t>("A2r1","comment for Arr1",3));
 //     // This one is direct and has 2-dim arrays with axes length 4 and 7.
-//     td.addColumn (ArrayColumnDesc<uInt>("Arr3","comment for Arr1",
+//     td.addColumn (ArrayColumnDesc<uint32_t>("Arr3","comment for Arr1",
 //        				   IPosition(2,4,7),
 // 					   ColumnDesc::Direct));
 //
@@ -162,7 +162,7 @@ class TabPath;
 //
 //     // Define hypercolumn "dataCube".
 //     td.addColumn (ArrayColumnDesc<Complex>("data",2));
-//     td.addColumn (ArrayColumnDesc<Int>("pol",1));
+//     td.addColumn (ArrayColumnDesc<int32_t>("pol",1));
 //     td.addColumn (ArrayColumnDesc<float>("freq",1));
 //     td.addColumn (ScalarColumnDesc<float>("time"));
 //     td.addColumn (ScalarColumnDesc<float>("baseline"));
@@ -222,7 +222,7 @@ public:
     // The default table description path is used for the description file.
     // The only options allowed are New, NewNoReplace and Scratch.
     TableDesc (const TableDesc&, const String& type, const String& version,
-	       TDOption, Bool copyColumns=True);
+	       TDOption, bool copyColumns=true);
 
     // Create a table description object with the given name (i.e. table type)
     // and version by copying the input table description.
@@ -231,7 +231,7 @@ public:
     // The given table description path is used for the description file.
     // The only options allowed are New, NewNoReplace and Scratch.
     TableDesc (const TableDesc&, const String& type, const String& version,
-	       const TabPath&, TDOption, Bool copyColumns=True);
+	       const TabPath&, TDOption, bool copyColumns=true);
 
     // This copy constructor makes a copy of the table description
     // maintaining its name and version. By default a Scratch copy is made.
@@ -243,7 +243,7 @@ public:
     ~TableDesc();
 
     // Test if a description file exists (i.e. isReadable).
-    static Bool isReadable (const String& tableDescName);
+    static bool isReadable (const String& tableDescName);
 
     // Get access to the set of column descriptions.
     // In this way const <linkto class=ColumnDescSet>ColumnDescSet</linkto>
@@ -253,11 +253,11 @@ public:
     // Add another table description to this table description.
     // It merges the column descriptions, the special keywordSet
     // (containing hypercolumn definitions) and the user keywordSet
-    // (this last one is not added if the flag is False).
+    // (this last one is not added if the flag is false).
     // The two table descriptions have to be disjoint, i.e. no column
     // nor keyword should already exist. Otherwise an TableInvOper
     // exception is thrown and nothing gets added.
-    void add (const TableDesc& other, Bool addKeywordSet = True);
+    void add (const TableDesc& other, bool addKeywordSet = true);
 
     // Get access to the keyword set.
     // <group>
@@ -305,10 +305,10 @@ public:
     void renameColumn (const String& newname, const String& oldname);
 
     // Get number of columns.
-    uInt ncolumn() const;
+    uint32_t ncolumn() const;
 
     // Test if a column with this name exists.
-    Bool isColumn (const String& name) const;
+    bool isColumn (const String& name) const;
 
     // Get a vector containing all column names.
     Vector<String> columnNames() const;
@@ -319,10 +319,10 @@ public:
     // <group>
     const ColumnDesc& columnDesc (const String& name) const;
     const ColumnDesc& operator[] (const String& name) const;
-    const ColumnDesc& columnDesc (uInt index) const;
-    const ColumnDesc& operator[] (uInt index) const;
+    const ColumnDesc& columnDesc (uint32_t index) const;
+    const ColumnDesc& operator[] (uint32_t index) const;
     ColumnDesc& rwColumnDesc (const String& name);
-    ColumnDesc& rwColumnDesc (uInt index);
+    ColumnDesc& rwColumnDesc (uint32_t index);
     // </group>
 
     // Get comment string.
@@ -367,7 +367,7 @@ public:
     //  <dd> which are the columns containing the hypercube data.
     //       When multiple columns are used, the shapes of the data
     //       in their cells must be the same in the same row.
-    //       All data columns must contain numeric or Bool scalars or arrays.
+    //       All data columns must contain numeric or bool scalars or arrays.
     //       <dl>
     //        <dt> array:
     //        <dd> Its dimensionality has to be less than or equal to the
@@ -382,7 +382,7 @@ public:
     //       </dl>
     //  <dt> Coordinate column names (optional)
     //  <dd> which are the columns containing the coordinates of the
-    //       hypercubes. They must be (u)Int, float, double or (D)Complex.
+    //       hypercubes. They must be (u)int32_t, float, double or (D)Complex.
     //       When given, the number of coordinate columns must match the
     //       dimensionality of the hypercolumn.
     //       <br>
@@ -394,8 +394,8 @@ public:
     //  <dd> have to be given when a hypercolumn can consist of multiple
     //       hypercubes. They define the column(s) determining which
     //       hypercube has to be used for a data array.
-    //       The id columns must contain scalar values ((u)Int, float,
-    //       double, (D)Complex, String and/or Bool).
+    //       The id columns must contain scalar values ((u)int32_t, float,
+    //       double, (D)Complex, String and/or bool).
     // </dl>
     // It will be checked if the given columns exists and have
     // an appropriate type.
@@ -426,21 +426,21 @@ public:
     // of Strings.
     // <group name=defineHypercolumn>
     void defineHypercolumn (const String& hypercolumnName,
-			    uInt ndim,
+			    uint32_t ndim,
 			    const Vector<String>& dataColumnNames);
     void defineHypercolumn (const String& hypercolumnName,
-			    uInt ndim,
+			    uint32_t ndim,
 			    const Vector<String>& dataColumnNames,
 			    const Vector<String>& coordColumnNames);
     void defineHypercolumn (const String& hypercolumnName,
-			    uInt ndim,
+			    uint32_t ndim,
 			    const Vector<String>& dataColumnNames,
 			    const Vector<String>& coordColumnNames,
 			    const Vector<String>& idColumnNames);
     // </group>
 
     // Test if the given hypercolumn exists.
-    Bool isHypercolumn (const String& hypercolumnName) const;
+    bool isHypercolumn (const String& hypercolumnName) const;
 
     // Get the names of all hypercolumns.
     Vector<String> hypercolumnNames() const;
@@ -448,7 +448,7 @@ public:
     // Get the columns involved in a hypercolumn.
     // It returns the dimensionality of the hypercolumn.
     // An exception is thrown if the hypercolumn does not exist.
-    uInt hypercolumnDesc (const String& hypercolumnName,
+    uint32_t hypercolumnDesc (const String& hypercolumnName,
 			  Vector<String>& dataColumnNames,
 			  Vector<String>& coordColumnNames,
 			  Vector<String>& idColumnNames) const;
@@ -456,13 +456,13 @@ public:
     // Adjust the hypercolumn definitions (for a RefTable).
     // It removes and/or renames columns as necessary.
     // Column names which are not part of the map are removed if
-    // <src>keepUnknown==False</src>.
+    // <src>keepUnknown==false</src>.
     // If all data columns of a hypercolumn are removed, the entire
     // hypercolumn is removed.
     void adjustHypercolumns (const std::map<String,String>& old2new,
-			     Bool keepUnknownData = False,
-			     Bool keepUnknownCoord = False,
-			     Bool keppUnknownId = False);
+			     bool keepUnknownData = false,
+			     bool keepUnknownCoord = false,
+			     bool keppUnknownId = false);
 
     // Remove ID-columns from the given hypercolumn definitions
     // and set their default data manager type to IncrementalStMan
@@ -490,7 +490,7 @@ private:
     TableRecord*       key_p;           //# user set of keywords
     TableRecord*       privKey_p;       //# Private set of keywords
     ColumnDescSet      col_p;           //# set of column names + indices
-    Bool               swwrite_p;       //# True = description can be written
+    bool               swwrite_p;       //# true = description can be written
     TDOption           option_p;        //# Table desc. open option
     AipsIO             iofil_p;         //# File
 
@@ -504,7 +504,7 @@ private:
     void init (const TabPath&);
 
     // Initialize and copy a table description.
-    void copy (const TableDesc&, const TabPath&, Bool copyColumns);
+    void copy (const TableDesc&, const TabPath&, bool copyColumns);
 
     // Throw an invalid hypercolumn exception.
     void throwHypercolumn (const String& hyperColumnName,
@@ -523,11 +523,11 @@ public:
 
 
 //# Get number of columns.
-inline uInt TableDesc::ncolumn () const
+inline uint32_t TableDesc::ncolumn () const
     { return col_p.ncolumn(); }
 
 //# Test if column exists.
-inline Bool TableDesc::isColumn (const String& name) const
+inline bool TableDesc::isColumn (const String& name) const
     { return col_p.isDefined(name); }
 
 //# Get a column description.
@@ -535,13 +535,13 @@ inline const ColumnDesc& TableDesc::columnDesc (const String& name) const
     { return col_p[name]; }
 inline const ColumnDesc& TableDesc::operator[] (const String& name) const
     { return col_p[name]; }
-inline const ColumnDesc& TableDesc::columnDesc (uInt index) const
+inline const ColumnDesc& TableDesc::columnDesc (uint32_t index) const
     { return col_p[index]; }
-inline const ColumnDesc& TableDesc::operator[] (uInt index) const
+inline const ColumnDesc& TableDesc::operator[] (uint32_t index) const
     { return col_p[index]; }
 inline ColumnDesc& TableDesc::rwColumnDesc (const String& name)
     { return col_p[name]; }
-inline ColumnDesc& TableDesc::rwColumnDesc (uInt index)
+inline ColumnDesc& TableDesc::rwColumnDesc (uint32_t index)
     { return col_p[index]; }
 
 

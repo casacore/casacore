@@ -37,9 +37,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
 // Length of P and Q arrays, half length of CL/SL arrays in IGRF model
-const Int PQ_LEN = 104;
+const int32_t PQ_LEN = 104;
 // Interval (m) for derivatives in IGRF model
-const Double DER_INTV = 10000;
+const double DER_INTV = 10000;
 
 // <summary> EarthField class model calculations </summary>
 
@@ -71,7 +71,7 @@ const Double DER_INTV = 10000;
 // <ul>
 //   <li> EarthField() default; assuming IGRF and MJD2000
 //   <li> EarthField(method); assuming J2000 as epoch
-//   <li> EarthField(method, epoch) with epoch Double(MJD)
+//   <li> EarthField(method, epoch) with epoch double(MJD)
 // </ul>
 // Actual EarthField for a certain position on Earth is calculated by the () 
 // operator. Arguments can be:
@@ -130,7 +130,7 @@ public:
 
   //# Constants
   // Default interval to be used for linear approximation (in m)
-  static const Double INTV;
+  static const double INTV;
 
   //# Enumerations
   // Known EarthField calculation models
@@ -149,7 +149,7 @@ public:
   // Copy constructor
   EarthField(const EarthField &other);
   // Constructor with epoch in MJulian days (default is J2000) 
-  explicit EarthField(EarthFieldTypes model, Double catepoch=51544.5);
+  explicit EarthField(EarthFieldTypes model, double catepoch=51544.5);
   // Copy assignment
   EarthField &operator=(const EarthField &other);
   
@@ -160,19 +160,19 @@ public:
   // Return the EarthField components. Note that the value returned has only
   // a lifetime as long as the EarthField container exists, and no new
   // derivative is asked for.
-  const Vector<Double> &operator()(const MVPosition &pos);
+  const Vector<double> &operator()(const MVPosition &pos);
   
   //# General Member Functions
   // Return derivatives of field (to X, Y, Z). Note that the value returned
   // has only a lifetime as long as the EarthField container exists, and
   // no new components or derivative is calculated. The returned value should
   // not be deleted.
-  const Vector<Double> *derivative(const MVPosition &pos);
+  const Vector<double> *derivative(const MVPosition &pos);
   // Re-initialise EarthField object with specified model and epoch, or
   // defaults STANDARD and J2000.
   // <group>
   void init();
-  void init(EarthFieldTypes model, Double catepoch=51544.5);
+  void init(EarthFieldTypes model, double catepoch=51544.5);
   // </group>
   // Refresh calculations
   void refresh();
@@ -182,30 +182,30 @@ public:
   // Method to be used
   EarthFieldTypes method_p;
   // Fixed epoch to be used (MJD)
-  Double fixedEpoch_p;
+  double fixedEpoch_p;
   // List of spherical components
-  Vector<Double> agh_p;
+  Vector<double> agh_p;
   // Work arrays for calculations
   // <group>
-  Vector<Double> p_p;
-  Vector<Double> q_p;
-  Vector<Double> cl_p;
-  Vector<Double> sl_p;
+  Vector<double> p_p;
+  Vector<double> q_p;
+  Vector<double> cl_p;
+  Vector<double> sl_p;
   // </group>
   // Check position
   MVPosition checkPos_p;
   // Cached calculated field components
-  Double pval_p[3];
+  double pval_p[3];
   // Cached derivatives
-  Double dval_p[3][3];
+  double dval_p[3][3];
   // To reference results, and use a few in interim calculations, results are
   // calculated in a circular buffer.
   // Current result pointer
-  Int lres_p;
+  int32_t lres_p;
   // Last calculation
-  Vector<Double> result_p[4];
+  Vector<double> result_p[4];
   // Interpolation interval
-  static uInt interval_reg_p;
+  static uint32_t interval_reg_p;
 
   //# Member functions
   // Make a copy

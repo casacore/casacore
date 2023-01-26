@@ -48,17 +48,17 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Double LattStatsSpecialize::getMean (Double sum, Double n)
+double LattStatsSpecialize::getMean (double sum, double n)
 {
-   Double tmp = 0.0;
+   double tmp = 0.0;
    if (n > 0.5) tmp = sum / n;
    return tmp;
 }
 
 DComplex LattStatsSpecialize::getMean (DComplex sum, DComplex n)
 {
-   Double vR = 0.0; 
-   Double vI = 0.0;
+   double vR = 0.0; 
+   double vI = 0.0;
 //
    if (real(n) > 0.5) vR = real(sum)/real(n);
    if (imag(n) > 0.5) vI  = imag(sum)/imag(n);
@@ -67,9 +67,9 @@ DComplex LattStatsSpecialize::getMean (DComplex sum, DComplex n)
 }
 
 
-Double LattStatsSpecialize::getVariance (Double sum, Double sumsq, Double n)
+double LattStatsSpecialize::getVariance (double sum, double sumsq, double n)
 {
-   Double tmp = 0.0;
+   double tmp = 0.0;
    if (n > 1.5) tmp = (sumsq - (sum*sum/n)) / (n-1);
    return tmp;
 }
@@ -83,9 +83,9 @@ DComplex LattStatsSpecialize::getVariance (DComplex sum, DComplex sumsq, DComple
 
 
 
-Double LattStatsSpecialize::getSigma (Double sum, Double sumsq, Double n)
+double LattStatsSpecialize::getSigma (double sum, double sumsq, double n)
 {
-   Double var = getVariance (sum, sumsq, n);
+   double var = getVariance (sum, sumsq, n);
    if (var>0) {
       return sqrt(var);
    } else {
@@ -94,7 +94,7 @@ Double LattStatsSpecialize::getSigma (Double sum, Double sumsq, Double n)
    return 0.0;
 }
 
-Double LattStatsSpecialize::getSigma (Double var)
+double LattStatsSpecialize::getSigma (double var)
 {
    if (var>0) {
       return sqrt(var);
@@ -104,9 +104,9 @@ Double LattStatsSpecialize::getSigma (Double var)
    return 0.0;
 }
 
-Double LattStatsSpecialize::getRms (Double sumsq, Double n)
+double LattStatsSpecialize::getRms (double sumsq, double n)
 {
-   Float tmp = 0.0;
+   float tmp = 0.0;
    if (n > 0.5) tmp = sqrt(sumsq/n);
    return tmp;
 }
@@ -129,7 +129,7 @@ DComplex LattStatsSpecialize::getRms (DComplex sumsq, DComplex n)
    return DComplex(getRms(real(sumsq),real(n)), getRms(imag(sumsq), imag(n)));
 }
 
-Float LattStatsSpecialize::min(Float v1, Float v2)
+float LattStatsSpecialize::min(float v1, float v2)
 {
    return std::min(v1, v2);
 }
@@ -139,7 +139,7 @@ Complex LattStatsSpecialize::min(Complex v1, Complex v2)
    return Complex(std::min(real(v1),real(v2)),std::min(imag(v1),imag(v2)));
 }
 
-Float LattStatsSpecialize::max(Float v1, Float v2)
+float LattStatsSpecialize::max(float v1, float v2)
 {
    return std::max(v1, v2);
 }
@@ -149,7 +149,7 @@ Complex LattStatsSpecialize::max(Complex v1, Complex v2)
    return Complex(std::max(real(v1),real(v2)),std::max(imag(v1),imag(v2)));
 }
 
-Float LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, Float)
+float LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, float)
 {
    return node.getFloat();
 }
@@ -160,7 +160,7 @@ Complex LattStatsSpecialize::getNodeScalarValue(const LatticeExprNode& node, Com
 }
 
 
-Float LattStatsSpecialize::usePixelInc (Float dMin, Float dMax, Float datum)
+float LattStatsSpecialize::usePixelInc (float dMin, float dMax, float datum)
 {
    return ( (datum >= dMin && datum <= dMax) ? 1.0 : -1.0 );
 }
@@ -171,7 +171,7 @@ Complex LattStatsSpecialize::usePixelInc (Complex dMin, Complex dMax, Complex da
                   usePixelInc(imag(dMin), imag(dMax), imag(datum)));
 }
 
-Float LattStatsSpecialize::usePixelExc (Float dMin, Float dMax, Float datum)
+float LattStatsSpecialize::usePixelExc (float dMin, float dMax, float datum)
 {
    return ( (datum < dMin || datum > dMax) ? 1.0 : -1.0 );
 }
@@ -183,7 +183,7 @@ Complex LattStatsSpecialize::usePixelExc (Complex dMin, Complex dMax, Complex da
                   usePixelExc(imag(dMin), imag(dMax), imag(datum)));
 }
 
-void LattStatsSpecialize::setUseItTrue (Float& useIt)
+void LattStatsSpecialize::setUseItTrue (float& useIt)
 {
    useIt = 1.0;
 }
@@ -196,71 +196,71 @@ void LattStatsSpecialize::setUseItTrue (Complex& useIt)
 }
 
 
-Bool LattStatsSpecialize::hasSomePoints (Double npts)
+bool LattStatsSpecialize::hasSomePoints (double npts)
 {
    return (npts > 0.5);
 }
 
-Bool LattStatsSpecialize::hasSomePoints (DComplex npts)
+bool LattStatsSpecialize::hasSomePoints (DComplex npts)
 {
    return (real(npts) > 0.5 || imag(npts)>0.5);
 }
 
-Bool LattStatsSpecialize::setIncludeExclude (String& errorMessage, 
+bool LattStatsSpecialize::setIncludeExclude (String& errorMessage, 
                                              Vector<Complex>& range,
-                                             Bool& noInclude,
-                                             Bool& noExclude,
+                                             bool& noInclude,
+                                             bool& noExclude,
                                              const Vector<Complex>& include,
                                              const Vector<Complex>& exclude)
 
 {      
-   Vector<Float> rangeReal;
-   Bool okReal = LattStatsSpecialize::setIncludeExclude<Float> (errorMessage, rangeReal, noInclude, noExclude,
+   Vector<float> rangeReal;
+   bool okReal = LattStatsSpecialize::setIncludeExclude<float> (errorMessage, rangeReal, noInclude, noExclude,
                                                          real(include), real(exclude));
-   if (!okReal) return False;
+   if (!okReal) return false;
 //
-   Vector<Float> rangeImag;
-   Bool okImag = LattStatsSpecialize::setIncludeExclude<Float> (errorMessage, rangeImag, noInclude, noExclude,
+   Vector<float> rangeImag;
+   bool okImag = LattStatsSpecialize::setIncludeExclude<float> (errorMessage, rangeImag, noInclude, noExclude,
                                                          imag(include), imag(exclude));
-   if (!okImag) return False;
+   if (!okImag) return false;
 //
    if (rangeReal.nelements() != rangeImag.nelements()) {
       throw (AipsError("Internal error in LattStatsSpecialize"));
    }
 // 
    range.resize(rangeReal.nelements());
-   for (uInt i=0; i<range.nelements(); i++) {
+   for (uint32_t i=0; i<range.nelements(); i++) {
      range(i) = Complex(rangeReal(i), rangeImag(i));
    }
 //
-   return True;
+   return true;
 }
  
 
-Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax, const MaskedLattice<Float>* pLattice,
-                                 const Vector<Float>& range, Bool noInclude, Bool noExclude)
+bool LattStatsSpecialize::minMax(float& dataMin, float& dataMax, const MaskedLattice<float>* pLattice,
+                                 const Vector<float>& range, bool noInclude, bool noExclude)
 
 {  
-  RO_LatticeIterator<Float> it(*pLattice);
+  RO_LatticeIterator<float> it(*pLattice);
 //  
   dataMin = 1.e30;
   dataMax = -1.0e30;
 //
-  const Float* pData = 0;
-  Bool deleteData;
+  const float* pData = 0;
+  bool deleteData;
 //
   if (pLattice->isMasked()) {
-     const Bool* pMask = 0;
-     Bool deleteMask;
+     const bool* pMask = 0;
+     bool deleteMask;
 //
      for (it.reset(); !it.atEnd(); it++) {  
-        const Array<Float>& data = it.cursor();
-        const Array<Bool>& mask = pLattice->getMaskSlice(it.position(), it.cursor().shape(), False);
+        const Array<float>& data = it.cursor();
+        const Array<bool>& mask = pLattice->getMaskSlice(it.position(), it.cursor().shape(), false);
         pData = data.getStorage(deleteData);
         pMask = mask.getStorage(deleteMask);
-        uInt n = data.nelements();
+        uint32_t n = data.nelements();
         if (!noInclude) {
-           for (uInt i=0; i<n; i++) {
+           for (uint32_t i=0; i<n; i++) {
               if (pMask[i] &&
                   LattStatsSpecialize::usePixelInc (range[0], range[1], pData[i]) > 0) {
                  dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
@@ -268,7 +268,7 @@ Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax, const MaskedLat
               }
            }
         } else if (!noExclude) {
-           for (uInt i=0; i<n; i++) {
+           for (uint32_t i=0; i<n; i++) {
               if (pMask[i] &&
                   LattStatsSpecialize::usePixelExc (range[0], range[1], pData[i]) > 0) {
                  dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
@@ -276,7 +276,7 @@ Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax, const MaskedLat
               }
            }
         } else {
-           for (uInt i=0; i<n; i++) {
+           for (uint32_t i=0; i<n; i++) {
               if (pMask[i]) {
                  dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
                  dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
@@ -289,25 +289,25 @@ Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax, const MaskedLat
      }
   } else {
      for (it.reset(); !it.atEnd(); it++) {  
-        const Array<Float>& data = it.cursor();
+        const Array<float>& data = it.cursor();
         pData = data.getStorage(deleteData);
-        uInt n = data.nelements();
+        uint32_t n = data.nelements();
         if (!noInclude) {
-           for (uInt i=0; i<n; i++) {
+           for (uint32_t i=0; i<n; i++) {
               if (LattStatsSpecialize::usePixelInc (range[0], range[1], pData[i]) > 0) {
                  dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
                  dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
               }
            }
         } else if (!noExclude) {
-           for (uInt i=0; i<n; i++) {
+           for (uint32_t i=0; i<n; i++) {
               if (LattStatsSpecialize::usePixelExc (range[0], range[1], pData[i]) > 0) {
                  dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
                  dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
               }
            }
         } else {
-           for (uInt i=0; i<n; i++) {
+           for (uint32_t i=0; i<n; i++) {
               dataMin = (dataMin < (pData[i])) ? dataMin : (pData[i]);
               dataMax = (dataMax > (pData[i])) ? dataMax : (pData[i]);
            }
@@ -320,15 +320,15 @@ Bool LattStatsSpecialize::minMax(Float& dataMin, Float& dataMax, const MaskedLat
   return (dataMax > dataMin);
 }
 
-Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
-                                 const Vector<Complex>& range, Bool noInclude, Bool noExclude)
+bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax, const MaskedLattice<Complex>* pLattice,
+                                 const Vector<Complex>& range, bool noInclude, bool noExclude)
 {
    LatticeExprNode nodeR(real(*pLattice));
    LatticeExprNode nodeI(imag(*pLattice));
-   LatticeExpr<Float> latR(nodeR);   
-   LatticeExpr<Float> latI(nodeR);   
+   LatticeExpr<float> latR(nodeR);   
+   LatticeExpr<float> latI(nodeR);   
 //
-   Vector<Float> realRange, imagRange;
+   Vector<float> realRange, imagRange;
    if (!noInclude && !noExclude) {
       realRange.resize(2);
       imagRange.resize(2);
@@ -339,8 +339,8 @@ Bool LattStatsSpecialize::minMax(Complex& dataMin, Complex& dataMax, const Maske
       imagRange[1] = imag(range[1]);
    }   
 //
-   Float realMin, realMax, imagMin, imagMax;
-   Bool ok = LattStatsSpecialize::minMax(realMin, realMax, &latR, realRange, noInclude, noExclude);
+   float realMin, realMax, imagMin, imagMax;
+   bool ok = LattStatsSpecialize::minMax(realMin, realMax, &latR, realRange, noInclude, noExclude);
    if (ok) {
       ok = LattStatsSpecialize::minMax(imagMin, imagMax, &latI, imagRange, noInclude, noExclude);
    }

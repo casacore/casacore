@@ -222,7 +222,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {INT}     {
             recordGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtol(RecordGramtext, &endPtr, 10);
+            int64_t v = strtol(RecordGramtext, &endPtr, 10);
             if (endPtr != RecordGramtext+yyleng) {
                 throw TableInvExpr ("Integer number not fully parsed");
             }
@@ -235,7 +235,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 {HEXINT}  {
             recordGramPosition() += yyleng;
             char* endPtr;
-            Int64 v = strtol(RecordGramtext, &endPtr, 0);
+            int64_t v = strtol(RecordGramtext, &endPtr, 0);
             if (endPtr != RecordGramtext+yyleng) {
                 throw TableInvExpr ("Hex number not fully parsed");
             }
@@ -250,7 +250,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new RecordGramVal();
             RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'b';
-	    lvalp->val->bval = True;
+	    lvalp->val->bval = true;
 	    return LITERAL;
 	  }
 {FALSE}   {
@@ -258,7 +258,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
             lvalp->val = new RecordGramVal();
             RecordGram::addToken (lvalp->val);
 	    lvalp->val->type = 'b';
-	    lvalp->val->bval = False;
+	    lvalp->val->bval = false;
 	    return LITERAL;
 	  }
 {STRING}  {

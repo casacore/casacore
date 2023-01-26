@@ -41,7 +41,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-QualityCoordinate::QualityCoordinate(const Vector<Int> &whichQuality)
+QualityCoordinate::QualityCoordinate(const Vector<int32_t> &whichQuality)
 : Coordinate(),
   values_p(whichQuality.nelements()),
   crval_p(0), 
@@ -105,86 +105,86 @@ String QualityCoordinate::showType() const
     return String("Quality");
 }
 
-uInt QualityCoordinate::nPixelAxes() const
+uint32_t QualityCoordinate::nPixelAxes() const
 {
 	// tested: tQualityCoordinate: 181
     return 1;
 }
 
-uInt QualityCoordinate::nWorldAxes() const
+uint32_t QualityCoordinate::nWorldAxes() const
 {
 	// tested: tQualityCoordinate: 188
 	return 1;
 }
 
-Bool QualityCoordinate::toWorld(Quality::QualityTypes &quality, Int pixel) const
+bool QualityCoordinate::toWorld(Quality::QualityTypes &quality, int32_t pixel) const
 {
 	// tested: tQualityCoordinate: 443
-    Double world;
-    if (toWorld (world, static_cast<Double>(pixel))) {
+    double world;
+    if (toWorld (world, static_cast<double>(pixel))) {
        quality = Quality::type(values_p[pixel]);
-       return True;
+       return true;
     }
-    return False;
+    return false;
 }
 
 
-Bool QualityCoordinate::toPixel(Int& pixel, Quality::QualityTypes quality) const
+bool QualityCoordinate::toPixel(int32_t& pixel, Quality::QualityTypes quality) const
 {
 	// tested: tQualityCoordinate: 437
-    Double tmp;
-    if (toPixel(tmp, static_cast<Double>(quality))) {
-       pixel = Int(tmp + 0.5);    
-       return True;
+    double tmp;
+    if (toPixel(tmp, static_cast<double>(quality))) {
+       pixel = int32_t(tmp + 0.5);    
+       return true;
     }
-    return False;
+    return false;
 }
 
 
-Bool QualityCoordinate::toWorld(Vector<Double>& world,
-			       const Vector<Double>& pixel, Bool) const
+bool QualityCoordinate::toWorld(Vector<double>& world,
+			       const Vector<double>& pixel, bool) const
 {
 	// tested: tQualityCoordinate: 403
     DebugAssert(pixel.nelements()==1, AipsError);
     world.resize(1);
 
     //
-    Double tmp;
+    double tmp;
     if (toWorld(tmp, pixel(0))) {
     	world(0) = tmp;
-    	return True;
+    	return true;
     }
-    return False;
+    return false;
 }
 
 
-Bool QualityCoordinate::toPixel(Vector<Double> &pixel,
-    	                       const Vector<Double> &world) const
+bool QualityCoordinate::toPixel(Vector<double> &pixel,
+    	                       const Vector<double> &world) const
 {
 	// tested: tQualityCoordinate: 411
     DebugAssert(world.nelements()==1, AipsError);
     pixel.resize(1);
 
     //
-    Double tmp;
+    double tmp;
     if (toPixel(tmp, world(0))) {
     	pixel(0) = tmp;
-    	return True;
+    	return true;
     }
-    return False;
+    return false;
 }
 
-Double QualityCoordinate::toWorld (Quality::QualityTypes quality)
+double QualityCoordinate::toWorld (Quality::QualityTypes quality)
 {
 	// tested: tQualityCoordinate: 456
-    return static_cast<Double>(quality);
+    return static_cast<double>(quality);
 }
 
 
-Quality::QualityTypes QualityCoordinate::toWorld (Double world)
+Quality::QualityTypes QualityCoordinate::toWorld (double world)
 {
 	// tested: tQualityCoordinate: 456
-    Int i = Int(world + 0.5);
+    int32_t i = int32_t(world + 0.5);
     if (i < 0 ||  i>=Quality::NumberOfTypes) {
        return Quality::Undefined;
     }
@@ -193,26 +193,26 @@ Quality::QualityTypes QualityCoordinate::toWorld (Double world)
 }
 
 
-Vector<Int> QualityCoordinate::quality() const
+Vector<int32_t> QualityCoordinate::quality() const
 {
 	// tested: tQualityCoordinate: 257, 435
-    return Vector<Int>(values_p.begin(), values_p.end());
+    return Vector<int32_t>(values_p.begin(), values_p.end());
 }
 
 
-void QualityCoordinate::setQuality (const Vector<Int> &whichQuality)
+void QualityCoordinate::setQuality (const Vector<int32_t> &whichQuality)
 {
 	// implicitly tested via the constructor
     AlwaysAssert(whichQuality.nelements()>0, AipsError);
 
     // Make sure the quality occur at most once
-    Block<Bool> alreadyUsed(Quality::NumberOfTypes);
-    alreadyUsed = False;
-    for (uInt i=0; i<whichQuality.nelements(); i++) {
+    Block<bool> alreadyUsed(Quality::NumberOfTypes);
+    alreadyUsed = false;
+    for (uint32_t i=0; i<whichQuality.nelements(); i++) {
     	if (alreadyUsed[whichQuality(i)]) {
     		throw(AipsError("You have specified the same Quality more than once"));
     	}
-    	alreadyUsed[whichQuality(i)] = True;
+    	alreadyUsed[whichQuality(i)] = true;
     }
 
     //
@@ -245,42 +245,42 @@ Vector<String> QualityCoordinate::worldAxisUnits() const
     return units;
 }
 
-Vector<Double> QualityCoordinate::referencePixel() const
+Vector<double> QualityCoordinate::referencePixel() const
 {
 	// tested: tQualityCoordinate: 315
-    Vector<Double> crpix(1);
+    Vector<double> crpix(1);
     crpix = crpix_p;
     return crpix;
 }
 
-Matrix<Double> QualityCoordinate::linearTransform() const
+Matrix<double> QualityCoordinate::linearTransform() const
 {
 	// tested: tQualityCoordinate: 307
-    Matrix<Double> matrix(1,1);
+    Matrix<double> matrix(1,1);
     matrix(0,0) = matrix_p;
     return matrix;
 }
 
-Vector<Double> QualityCoordinate::increment() const
+Vector<double> QualityCoordinate::increment() const
 {
 	// tested: tQualityCoordinate: 307
-    Vector<Double> cdelt(1);
+    Vector<double> cdelt(1);
     cdelt = cdelt_p;
     return cdelt;
 }
 
-Vector<Double> QualityCoordinate::referenceValue() const
+Vector<double> QualityCoordinate::referenceValue() const
 {
 	// tested: tQualityCoordinate: 299
-    Vector<Double> crval(1);
+    Vector<double> crval(1);
     crval = crval_p;
     return crval;
 }
 
-Bool QualityCoordinate::setWorldAxisNames(const Vector<String> &names)
+bool QualityCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
 	// tested: tQualityCoordinate: 204
-    Bool ok = names.nelements()==1;
+    bool ok = names.nelements()==1;
     if (!ok) {
        set_error ("names vector must be of length 1");
     } else {
@@ -289,71 +289,71 @@ Bool QualityCoordinate::setWorldAxisNames(const Vector<String> &names)
     return ok;
 }
 
-Bool QualityCoordinate::setWorldAxisUnits(const Vector<String> &)
+bool QualityCoordinate::setWorldAxisUnits(const Vector<String> &)
 {
 	// tested: tQualityCoordinate: 227, 242
-    return True;
+    return true;
 }
 
-Bool QualityCoordinate::setReferencePixel(const Vector<Double> &)
+bool QualityCoordinate::setReferencePixel(const Vector<double> &)
 {
 	// tested: tQualityCoordinate: 365
-	return True;
+	return true;
 }
 
 
-Bool QualityCoordinate::setLinearTransform(const Matrix<Double> &)
+bool QualityCoordinate::setLinearTransform(const Matrix<double> &)
 {
 	// tested: tQualityCoordinate: 380
-	return True;
+	return true;
 }
 
-Bool QualityCoordinate::setIncrement(const Vector<Double> &)
+bool QualityCoordinate::setIncrement(const Vector<double> &)
 {
 	// tested: tQualityCoordinate: 350
-   return True;
+   return true;
 }
 
-Bool QualityCoordinate::setReferenceValue(const Vector<Double> &)
+bool QualityCoordinate::setReferenceValue(const Vector<double> &)
 {
 	// tested: tQualityCoordinate: 336
-	return True;
+	return true;
 }
 
 
-Bool QualityCoordinate::near(const Coordinate& other,
-                            Double tol) const
+bool QualityCoordinate::near(const Coordinate& other,
+                            double tol) const
 {
 	// tested: basic test criteria in many
 	// tests in tQualityCoordinate
-	Vector<Int> excludeAxes;
+	Vector<int32_t> excludeAxes;
    return near(other, excludeAxes, tol);
 }
 
-Bool QualityCoordinate::near(const Coordinate& other,
-                            const Vector<Int>& excludeAxes,
-                            Double) const
+bool QualityCoordinate::near(const Coordinate& other,
+                            const Vector<int32_t>& excludeAxes,
+                            double) const
 {
 	// tested: basic test criteria in many
 	// tests in tQualityCoordinate
 	if (other.type() != this->type()) {
 		set_error("Comparison is not with another QualityCoordinate");
-		return False;
+		return false;
 	}
 
 	// Check name
 	const QualityCoordinate& sCoord = dynamic_cast<const QualityCoordinate&>(other);
 	if (name_p != sCoord.name_p) {
 		set_error("The QualityCoordinates have differing world axis names");
-		return False;
+		return false;
 	}
 
 	// Number of pixel and world axes is the same for a QualityCoordinate
 	// and it always 1. So if excludeAxes contains "0" we are done.
 	// Add an assertion check should this change
-	Bool found;
+	bool found;
 	if (linearSearch(found, excludeAxes, 0, excludeAxes.nelements()) >= 0)
-		return True;
+		return true;
 
 
 	// The only other thing that really matters in the QualityCoordinate
@@ -361,21 +361,21 @@ Bool QualityCoordinate::near(const Coordinate& other,
 	// is ever actually used.
 	if (nValues_p != sCoord.nValues_p) {
 		set_error("The QualityCoordinates have different numbers of Quality values");
-		return False;
+		return false;
 	}
 
-	return True;
+	return true;
 }
 
-Bool QualityCoordinate::doNearPixel (const Coordinate& other,
-                                    const Vector<Bool>&,
-                                    const Vector<Bool>&,
-                                    Double) const
+bool QualityCoordinate::doNearPixel (const Coordinate& other,
+                                    const Vector<bool>&,
+                                    const Vector<bool>&,
+                                    double) const
 {
 	// tested: tQualityCoordinate: 568
 	if (other.type() != Coordinate::QUALITY) {
 		set_error("Other Coordinate type is not Quality");
-		return False;
+		return false;
 	}
 
 	//
@@ -388,27 +388,27 @@ Bool QualityCoordinate::doNearPixel (const Coordinate& other,
 	const QualityCoordinate& sCoord = dynamic_cast<const QualityCoordinate&>(other);
 	if (nValues_p != sCoord.nValues_p) {
 		set_error("The QualityCoordinates have different numbers of Quality values");
-		return False;
+		return false;
 	}
 
 	//
-	return True;
+	return true;
 }
 
 
 
-Bool QualityCoordinate::save(RecordInterface &container,
+bool QualityCoordinate::save(RecordInterface &container,
 			    const String &fieldName) const
 
 {
 	// tested: tQualityCoordinate: 267
-    Bool ok = !container.isDefined(fieldName);
+    bool ok = !container.isDefined(fieldName);
     if (ok) {
 		Record subrec;
 		subrec.define("axes", worldAxisNames());
 		//
 		Vector<String> quality(nValues_p);
-		for (Int i=0; i<nValues_p; i++) {
+		for (int32_t i=0; i<nValues_p; i++) {
 			quality(i) = Quality::name(Quality::type(values_p[i]));
 		}
 		subrec.define("quality", quality);
@@ -453,8 +453,8 @@ QualityCoordinate *QualityCoordinate::restore(const RecordInterface &container,
     }
     Vector<String> quality;
     subrec.get("quality", quality);
-    Vector<Int> iquality(quality.nelements());
-    for (uInt i=0; i<iquality.nelements(); i++) {
+    Vector<int32_t> iquality(quality.nelements());
+    for (uint32_t i=0; i<iquality.nelements(); i++) {
 	iquality(i) = Quality::type(quality(i));
     }
 
@@ -478,9 +478,9 @@ Coordinate *QualityCoordinate::clone() const
 
 String QualityCoordinate::format(String& units,
                                 Coordinate::formatType,
-                                Double worldValue,
-                                uInt worldAxis,
-                                Bool, Bool, Int, Bool) const
+                                double worldValue,
+                                uint32_t worldAxis,
+                                bool, bool, int32_t, bool) const
 //
 // world  abs=rel for Quality
 //
@@ -492,7 +492,7 @@ String QualityCoordinate::format(String& units,
 
 
 
-void QualityCoordinate::makePixelRelative (Vector<Double>& pixel) const
+void QualityCoordinate::makePixelRelative (Vector<double>& pixel) const
 //       
 // rel = abs - ref
 //
@@ -501,7 +501,7 @@ void QualityCoordinate::makePixelRelative (Vector<Double>& pixel) const
 	DebugAssert(pixel.nelements()==1, AipsError);
 
 	//
-	Int index = Int(pixel(0) + 0.5);
+	int32_t index = int32_t(pixel(0) + 0.5);
 	if (index >= 0 && index < nValues_p) {
 		pixel -= referencePixel();
 	} else {
@@ -513,7 +513,7 @@ void QualityCoordinate::makePixelRelative (Vector<Double>& pixel) const
 }
    
  
-void QualityCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
+void QualityCoordinate::makePixelAbsolute (Vector<double>& pixel) const
 //
 // abs = rel + ref
 //
@@ -523,7 +523,7 @@ void QualityCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
 	pixel += referencePixel();
 
 	//
-	Int index = Int(pixel(0) + 0.5);
+	int32_t index = int32_t(pixel(0) + 0.5);
 	if (index < 0 ||  index >= nValues_p) {
 		ostringstream os;
 		os << "Absolute pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
@@ -533,7 +533,7 @@ void QualityCoordinate::makePixelAbsolute (Vector<Double>& pixel) const
 }
    
 
-void QualityCoordinate::makeWorldRelative (Vector<Double>&) const
+void QualityCoordinate::makeWorldRelative (Vector<double>&) const
 //
 // By definition, for QualityCoordinate, world abs = rel
 //
@@ -542,7 +542,7 @@ void QualityCoordinate::makeWorldRelative (Vector<Double>&) const
 }
 
 
-void QualityCoordinate::makeWorldAbsolute (Vector<Double>&) const
+void QualityCoordinate::makeWorldAbsolute (Vector<double>&) const
 //
 // By definition, for QualityCoordinate, world abs = rel
 //
@@ -553,32 +553,32 @@ void QualityCoordinate::makeWorldAbsolute (Vector<Double>&) const
 
 
 // Private functions
-Bool QualityCoordinate::toWorld(Double& world, const Double pixel) const
+bool QualityCoordinate::toWorld(double& world, const double pixel) const
 {
 	// implicitly tested via the public method
 	// toWorld()
-	Int index = Int(pixel + 0.5);
+	int32_t index = int32_t(pixel + 0.5);
     if (index >= 0 && index < nValues_p) {
     	world = values_p[index];
-    	return True;
+    	return true;
     }
     else {
     	ostringstream os;
     	os << "Pixel " << index << " is out of range [0.." << nValues_p-1 << "]";
     	set_error(os);
-    	return False;
+    	return false;
     }
 }
 
 
-Bool QualityCoordinate::toPixel(Double& pixel,  const Double world) const
+bool QualityCoordinate::toPixel(double& pixel,  const double world) const
 {
 	// implicitly tested via the public method
 	// toWorld()
-    Bool found = False;
-    Int index;
+    bool found = false;
+    int32_t index;
     for (index=0; index<nValues_p; index++) {
-    	found = casacore::near(world, Double(values_p[index]));
+    	found = casacore::near(world, double(values_p[index]));
     	if (found) break;
     }
     if (!found) {
@@ -587,24 +587,24 @@ Bool QualityCoordinate::toPixel(Double& pixel,  const Double world) const
         String t = Quality::name(t0);
         os << "Quality value " << t << " is not contained in this QualityCoordinate";
         set_error(os);
-        return False;
+        return false;
     }
-    pixel = Double(index);
-    return True;
+    pixel = double(index);
+    return true;
 }
 
-Bool QualityCoordinate::setWorldMixRanges (const IPosition&)
+bool QualityCoordinate::setWorldMixRanges (const IPosition&)
 {
 	// is identical to setDefaultWorldMixRanges()
 	setDefaultWorldMixRanges();
-	return True;
+	return true;
 }
 
 
 void QualityCoordinate::setDefaultWorldMixRanges ()
 {
 	// implicitly tested via the constructor
-	Vector<Double> pixel(nPixelAxes());
+	Vector<double> pixel(nPixelAxes());
 	pixel(0) = 0;
 	toWorld(worldMin_p, pixel);
 	pixel(0) = nValues_p - 1;

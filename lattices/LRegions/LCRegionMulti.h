@@ -80,7 +80,7 @@ public:
     LCRegionMulti (const LCRegion& region1, const LCRegion& region2);
 
     // Construct from multiple regions.
-    LCRegionMulti (Bool takeOver, const LCRegion* region1,
+    LCRegionMulti (bool takeOver, const LCRegion* region1,
 		   const LCRegion* region2 = 0,
 		   const LCRegion* region3 = 0,
 		   const LCRegion* region4 = 0,
@@ -92,9 +92,9 @@ public:
 		   const LCRegion* region10 = 0);
 
     // Construct from multiple regions given as a Block.
-    // When <src>takeOver</src> is True, the destructor will delete the
+    // When <src>takeOver</src> is true, the destructor will delete the
     // given regions. Otherwise a copy of the regions is made.
-    LCRegionMulti (Bool takeOver, const PtrBlock<const LCRegion*>& regions);
+    LCRegionMulti (bool takeOver, const PtrBlock<const LCRegion*>& regions);
 
     // Copy constructor (copy semantics).
     LCRegionMulti (const LCRegionMulti& other);
@@ -105,10 +105,10 @@ public:
     LCRegionMulti& operator= (const LCRegionMulti& other);
 
     // Comparison 
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
 
     // Does the region have a mask?
-    virtual Bool hasMask() const;
+    virtual bool hasMask() const;
 
 protected:
     // Store the contributing regions in a record.
@@ -121,17 +121,17 @@ protected:
 
     // Translate all regions.
     void multiTranslate (PtrBlock<const LCRegion*>&,
-			 const Vector<Float>& translateVector,
+			 const Vector<float>& translateVector,
 			 const IPosition& newLatticeShape) const;
 
     // Determine if all regions have mask (used by LCIntersection).
     void fillHasMask();
 
     // Find which area of the section and region are needed.
-    // False is returned if no part of the region is included in the section.
-    Bool findAreas (IPosition& bufStart, IPosition& bufEnd,
+    // false is returned if no part of the region is included in the section.
+    bool findAreas (IPosition& bufStart, IPosition& bufEnd,
 		    IPosition& regStart, IPosition& regEnd,
-		    const Slicer& section, uInt regNr) const;
+		    const Slicer& section, uint32_t regNr) const;
 
     // Get the contributing regions.
     const PtrBlock<const LCRegion*>& regions() const;
@@ -143,25 +143,25 @@ protected:
     LCRegionMulti (const LCRegion* region, const IPosition& latticeShape);
 
     // Do the actual getting of an array of values.
-    virtual Bool doGetSlice (Array<Bool>& buffer, const Slicer& section);
+    virtual bool doGetSlice (Array<bool>& buffer, const Slicer& section);
 
     // Get the values from the class derived from Multi.
     // It is called when there is a mask. Note that it is not sure
     // whether the buffer has the correct size.
-    virtual void multiGetSlice (Array<Bool>& buffer,
+    virtual void multiGetSlice (Array<bool>& buffer,
 				const Slicer& section) = 0;
 
     // Get the best cursor shape.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
 private:
     // Check if the regions are correct.
     // If needed, make a copy of the region objects.
-    void init (Bool takeOver);
+    void init (bool takeOver);
 
     //# >=0 means this region has a mask.
     //# Its value gives the region with the biggest mask.
-    Int itsHasMask;
+    int32_t itsHasMask;
     PtrBlock<const LCRegion*> itsRegions;
 };
 

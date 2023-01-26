@@ -48,46 +48,46 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
 
 //# Constants
-const Double MeasIERS::INTV = 5;
+const double MeasIERS::INTV = 5;
 
 //# Static data
 std::once_flag MeasIERS::theirCallOnceFlag;
-uInt MeasIERS::predicttime_reg = 0;
-uInt MeasIERS::notable_reg = 0;
-uInt MeasIERS::forcepredict_reg = 0;
-Double MeasIERS::dateNow = 0.0;
-Vector<Double> MeasIERS::ldat[MeasIERS::N_Files][MeasIERS::N_Types];
+uint32_t MeasIERS::predicttime_reg = 0;
+uint32_t MeasIERS::notable_reg = 0;
+uint32_t MeasIERS::forcepredict_reg = 0;
+double MeasIERS::dateNow = 0.0;
+Vector<double> MeasIERS::ldat[MeasIERS::N_Files][MeasIERS::N_Types];
 const String MeasIERS::tp[MeasIERS::N_Files] = {"IERSeop97", "IERSpredict"};
-uInt MeasIERS::sizeNote = 0;
-uInt MeasIERS::nNote = 0;
+uint32_t MeasIERS::sizeNote = 0;
+uint32_t MeasIERS::nNote = 0;
 MeasIERS::CLOSEFUN *MeasIERS::toclose = 0;
 
 
 //# Member functions
-Bool MeasIERS::get(Double &returnValue,
+bool MeasIERS::get(double &returnValue,
                    MeasIERS::Files file,
                    MeasIERS::Types type,
-                   Double date) {
+                   double date) {
   returnValue = 0.0;
   std::call_once(theirCallOnceFlag, initMeas);
 
   // Exit if no table has to be used.
-  if (AipsrcValue<Bool>::get(MeasIERS::notable_reg)) {
-    return True;
+  if (AipsrcValue<bool>::get(MeasIERS::notable_reg)) {
+    return true;
   }
 
   // Test if PREDICTED has to be used.
-  Int which = MEASURED;
+  int32_t which = MEASURED;
   if (file == PREDICTED ||
       ldat[MEASURED][0].empty() ||
-      AipsrcValue<Bool>::get(MeasIERS::forcepredict_reg) ||
-      (dateNow-date) <= AipsrcValue<Double>::get(MeasIERS::predicttime_reg)) {
+      AipsrcValue<bool>::get(MeasIERS::forcepredict_reg) ||
+      (dateNow-date) <= AipsrcValue<double>::get(MeasIERS::predicttime_reg)) {
     which = PREDICTED;
   }
 
-  Int ut = ifloor(date);
+  int32_t ut = ifloor(date);
   if (which == MEASURED) {
-    const Vector<Double>& mjds = ldat[which][0];
+    const Vector<double>& mjds = ldat[which][0];
     if (ut < mjds[0]  ||  ut >= mjds[mjds.size()-1]) {
       which = PREDICTED;
     }
@@ -95,17 +95,17 @@ Bool MeasIERS::get(Double &returnValue,
 
   if (which == PREDICTED) {
 #if defined(USE_THREADS)
-    static std::atomic<Bool> msgDone;
+    static std::atomic<bool> msgDone;
 #else
-    static Bool msgDone;
+    static bool msgDone;
 #endif
-    const Vector<Double>& mjds = ldat[which][0];
+    const Vector<double>& mjds = ldat[which][0];
     if (mjds.empty()  ||  ut < mjds[0]  ||  ut >= mjds[mjds.size()-1]) {
       // It is harmless if the message accidentally appears multiple times.
       if (!msgDone) {
-        msgDone = True;
+        msgDone = true;
         LogIO os(LogOrigin("MeasIERS",
-                           "fillMeas(MeasIERS::Files, Double)",
+                           "fillMeas(MeasIERS::Files, double)",
                            WHERE));
         Time now;       // current time
         if (date > now.modifiedJulianDay()){
@@ -124,32 +124,32 @@ Bool MeasIERS::get(Double &returnValue,
              << LogIO::POST;
         }
       }
-      return False;
+      return false;
     }
   }
 
   // Interpolation fraction
-  Int indx = Int(date - ldat[which][0][0]);
+  int32_t indx = int32_t(date - ldat[which][0][0]);
 
   // old version in use up to Jan 2016
-  // if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
-  //   Double f = date - ldat[which][0][indx];
+  // if (indx >= 0  &&  indx < int32_t(ldat[which][0].size())-1) {
+  //   double f = date - ldat[which][0][indx];
   //   returnValue = ldat[which][type][indx+1]*f - ldat[which][type][indx]*(f-1.0);
-  //   return True;
+  //   return true;
   // }
 
-  if (indx >= 0  &&  indx < Int(ldat[which][0].size())-1) {
-    Double f = date - ldat[which][0][indx]; // Fraction
-    Double vlo = ldat[which][type][indx]; // Get daily values
-    Double vhi = ldat[which][type][indx+1];
+  if (indx >= 0  &&  indx < int32_t(ldat[which][0].size())-1) {
+    double f = date - ldat[which][0][indx]; // Fraction
+    double vlo = ldat[which][type][indx]; // Get daily values
+    double vhi = ldat[which][type][indx+1];
     if (abs(vhi-vlo) > 0.5) { // Jump
       vhi -= sign(vhi-vlo); // Remove jump
     }
     returnValue = vhi*f - vlo*(f-1.0);
-    return True;
+    return true;
   }
 
-  return False;
+  return false;
 }
 
 
@@ -172,24 +172,24 @@ void MeasIERS::initMeas() {
                                        "measures.ierspredict.directory"};
 
   predicttime_reg = 
-    AipsrcValue<Double>::registerRC(String("measures.measiers.d_predicttime"),
+    AipsrcValue<double>::registerRC(String("measures.measiers.d_predicttime"),
                                     Unit("d"), Unit("d"),
                                     MeasIERS::INTV);
   notable_reg = 
-    AipsrcValue<Bool>::registerRC(String("measures.measiers.b_notable"),
-                                  False);
+    AipsrcValue<bool>::registerRC(String("measures.measiers.b_notable"),
+                                  false);
   forcepredict_reg = 
-    AipsrcValue<Bool>::registerRC(String("measures.measiers.b_forcepredict"),
-                                  False);
+    AipsrcValue<bool>::registerRC(String("measures.measiers.b_forcepredict"),
+                                  false);
   dateNow = Time().modifiedJulianDay();
 
   TableRecord kws;
   Table tab;
   TableRow row;
-  RORecordFieldPtr<Double> rfp[N_Types];
-  Double dt;
+  RORecordFieldPtr<double> rfp[N_Types];
+  double dt;
   String vs;
-  for (Int which=0; which<N_Files; ++which) {
+  for (int32_t which=0; which<N_Files; ++which) {
     if (!MeasIERS::getTable(tab, kws, row,
                             rfp, vs, dt, 
                             N_Types, names, tp[which],
@@ -203,11 +203,11 @@ void MeasIERS::initMeas() {
     } else {
       MeasIERS::openNote(&MeasIERS::closeMeas);
       // Read the entire file.
-      for (Int i=0; i<MeasIERS::N_Types; ++i) {
-        ScalarColumn<Double>(tab, names[i]).getColumn (ldat[which][i]);
+      for (int32_t i=0; i<MeasIERS::N_Types; ++i) {
+        ScalarColumn<double>(tab, names[i]).getColumn (ldat[which][i]);
       }
       // Check if MJD in first and last row match and have step 1.
-      const Vector<Double>& mjds = ldat[which][0];
+      const Vector<double>& mjds = ldat[which][0];
       if (mjds[mjds.size()-1] != mjds[0] + mjds.size()-1) {
         LogIO os(LogOrigin("MeasIERS",
                            "initMeas(MeasIERS::Files)",
@@ -224,8 +224,8 @@ void MeasIERS::closeMeas() {
   // But this is only used to check for memory leaks at the end and possibly
   // to compare tables in tests, so don't bother. Apply pray and HACK below...
   dateNow = 0.0;
-  for (uInt i=0; i<N_Files; ++i) {
-    for (uInt j=0; j<N_Types; ++j) {
+  for (uint32_t i=0; i<N_Files; ++i) {
+    for (uint32_t j=0; j<N_Types; ++j) {
       ldat[i][j].resize();
     }
   }
@@ -239,8 +239,8 @@ void MeasIERS::openNote(CLOSEFUN fun) {
   // Resize if too small.
   if (nNote >= sizeNote) {
     CLOSEFUN *tmp = new CLOSEFUN[sizeNote+10];
-    for (uInt i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
-    for (uInt i=sizeNote; i<sizeNote+10; ++i) tmp[i] = 0;
+    for (uint32_t i=0; i<sizeNote; ++i) tmp[i] = toclose[i];
+    for (uint32_t i=sizeNote; i<sizeNote+10; ++i) tmp[i] = 0;
     delete [] toclose;
     toclose = tmp;
     sizeNote += 10;
@@ -249,7 +249,7 @@ void MeasIERS::openNote(CLOSEFUN fun) {
 }
 
 void MeasIERS::closeTables() {
-  for (uInt i=nNote; i>0; --i) {
+  for (uint32_t i=nNote; i>0; --i) {
     if (toclose[i-1] != 0) {
       toclose[i-1]();
       toclose[i-1] = 0;
@@ -261,23 +261,23 @@ void MeasIERS::closeTables() {
 }
 
 // Table handling
-Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
-                        RORecordFieldPtr<Double> rfp[],
-                        String &vs, Double &dt,
-                        Int N, const String rfn[],
+bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
+                        RORecordFieldPtr<double> rfp[],
+                        String &vs, double &dt,
+                        int32_t N, const String rfn[],
                         const String &name,
                         const String &rc, const String &dir,
                         const Table *tabin) {
   Table tab;
-  Bool ok = findTab(tab, tabin, rc, dir, name);
+  bool ok = findTab(tab, tabin, rc, dir, name);
 
   if(!ok)
     return false;            // findTab logs its own errors.
   
   LogIO os(LogOrigin("MeasIERS",
                      String("getTable(Table &, TableRecord &, "
-                            "ROTableRow &, RORecordFieldPtr<Double> *, "
-                            "String &vs, Double &dt, "
+                            "ROTableRow &, RORecordFieldPtr<double> *, "
+                            "String &vs, double &dt, "
                             "Int N, const String *, const String &, "
                             "const String &, const String &)"),
                      WHERE));
@@ -289,12 +289,12 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
   ROTableRow rw(tab);
   if (ok) {
     // Check that the table is not missing any expected columns.
-    for (Int i=0; i < N; i++) {
+    for (int32_t i=0; i < N; i++) {
       if (!rw.record().isDefined(rfn[i])) {
         os << LogIO::SEVERE
            << "Column " << rfn[i] << " is missing."
            << LogIO::POST;
-        ok = False;// break;
+        ok = false;// break;
       }
     }
   }
@@ -302,19 +302,19 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     os << name << " has an incompatible format."
        << "\nYou may want to notify the CASA system manager about it."
        << LogIO::EXCEPTION;
-    return False;
+    return false;
   }
   table = tab;
   kws = ks;
   row = rw;
-  for (Int i=0; i < N; i++)
-    rfp[i] = RORecordFieldPtr<Double>(row.record(), rfn[i]);
-  return True;
+  for (int32_t i=0; i < N; i++)
+    rfp[i] = RORecordFieldPtr<double>(row.record(), rfn[i]);
+  return true;
 }
 
-Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
-                        Vector<RORecordFieldPtr<Double> >& rfp,
-                        String &vs, Double &dt,
+bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
+                        Vector<RORecordFieldPtr<double> >& rfp,
+                        String &vs, double &dt,
                         const Vector<String>& reqcols,
                         Vector<String>& optcols,
                         const String &name,
@@ -322,7 +322,7 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
                         const Table *tabin)
 {
   Table tab;
-  Bool ok = findTab(tab, tabin, rc, dir, name);
+  bool ok = findTab(tab, tabin, rc, dir, name);
 
   if(!ok)
     return false;            // findTab logs its own errors.
@@ -337,12 +337,12 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
   ROTableRow rw(tab);
   if(ok){
     // Check that the table is not missing any required columns.
-    for(Int i = reqcols.nelements(); i--;){
+    for(int32_t i = reqcols.nelements(); i--;){
       if(!rw.record().isDefined(reqcols[i])){
         os << LogIO::SEVERE
            << "Required column " << reqcols[i] << " is missing."
            << LogIO::POST;
-        ok = False;// break;
+        ok = false;// break;
       }
     }
   }
@@ -350,13 +350,13 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
     os << name + " has an incompatible format."
        << "\nYou may want to notify the CASA system manager about it."
        << LogIO::EXCEPTION;
-    return False;
+    return false;
   }
 
   // Now look for optional columns.
   Vector<String> foundoptcols;
-  uInt noptcolsfound = 0;
-  for(uInt i = 0; i < optcols.nelements(); ++i){
+  uint32_t noptcolsfound = 0;
+  for(uint32_t i = 0; i < optcols.nelements(); ++i){
     if(rw.record().isDefined(optcols[i])){
       ++noptcolsfound;
       foundoptcols.resize(noptcolsfound, true);
@@ -372,18 +372,18 @@ Bool MeasIERS::getTable(Table &table, TableRecord &kws, ROTableRow &row,
   kws = ks;
   row = rw;
   rfp.resize(reqcols.nelements() + noptcolsfound);
-  for(uInt i = 0; i < reqcols.nelements(); ++i)
-    rfp[i] = RORecordFieldPtr<Double>(row.record(), reqcols[i]);
-  for(uInt i = 0; i < noptcolsfound; ++i)
-    rfp[reqcols.nelements() + i] = RORecordFieldPtr<Double>(row.record(), optcols[i]);
-  return True;
+  for(uint32_t i = 0; i < reqcols.nelements(); ++i)
+    rfp[i] = RORecordFieldPtr<double>(row.record(), reqcols[i]);
+  for(uint32_t i = 0; i < noptcolsfound; ++i)
+    rfp[reqcols.nelements() + i] = RORecordFieldPtr<double>(row.record(), optcols[i]);
+  return true;
 }
 
 // Helper function for getTable().
-Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
+bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
                        const String &dir, const String &name)
 {
-  Bool ok = true;
+  bool ok = true;
   LogIO os(LogOrigin("MeasIERS", "findTab", WHERE));
   
   if(!tabin){                                // No table object given: search name
@@ -399,36 +399,36 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
         "/geodetic/"
       };
 
-      Bool found = False;
+      bool found = false;
       const std::string &measures_data = AppStateSource::fetch( ).measuresDir( );
       if ( measures_data.size( ) > 0 ) {
-        for (Int i=0; i<2; i++) {
+        for (int32_t i=0; i<2; i++) {
           Path mpath = Path(measures_data + "/" + (std::string) path[i]);
           ldir = mpath.absoluteName()+"/";
-          searched.resize(searched.nelements()+1, True);
+          searched.resize(searched.nelements()+1, true);
           searched[searched.nelements()-1] = ldir;
           if  (Table::isReadable(ldir+name)) {
-            found = True;
+            found = true;
             break;
           }
         }
-          if ( found == False ) {
+          if ( found == false ) {
             throw(AipsError(std::string("Measures directory specified which does not contain the IERS data: ") + measures_data));
           }
       }
 
-      if ( found == False ) {
+      if ( found == false ) {
         const std::list<std::string> &state_path = AppStateSource::fetch( ).dataPath( );
         if ( state_path.size( ) > 0 ) {
           String mdir;
           for ( std::list<std::string>::const_iterator it=state_path.begin(); ! found && it != state_path.end(); ++it ) {
-            for (Int i=0; i<2; i++) {
+            for (int32_t i=0; i<2; i++) {
               Path mpath = Path(*it + "/" + (std::string) path[i]);
               ldir = mpath.absoluteName()+"/";
-              searched.resize(searched.nelements()+1, True);
+              searched.resize(searched.nelements()+1, true);
               searched[searched.nelements()-1] = ldir;
               if  (Table::isReadable(ldir+name)) {
-                found = True;
+                found = true;
                 break;
               }
             }
@@ -437,7 +437,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 
           if (Aipsrc::find(ldir, rc)){
             ldir += '/';
-            searched.resize(searched.nelements() + 1, True);
+            searched.resize(searched.nelements() + 1, true);
             searched[searched.nelements() - 1] = ldir;
           }
           else {
@@ -452,13 +452,13 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
               mdir.trim();
               Path mpath = Path(mdir);
               mpath.append(udir);
-              for (Int i=0; i<2; i++) {
+              for (int32_t i=0; i<2; i++) {
                 Path mpath = Path(mdir +"/" + path[i]);
                 ldir = mpath.absoluteName()+"/";
-                searched.resize(searched.nelements()+1, True);
+                searched.resize(searched.nelements()+1, true);
                 searched[searched.nelements()-1] = ldir;
                 if  (Table::isReadable(ldir+name)) {
-                  found = True;
+                  found = true;
                   break;
                 }
               }
@@ -468,12 +468,12 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
               casadata.gsub("%CASAROOT%", Aipsrc::aipsRoot());
               casadata.gsub("%CASAHOME%", Aipsrc::aipsHome());
               Path cdatapath(casadata);
-              for (Int i=0; i<2; i++) {
+              for (int32_t i=0; i<2; i++) {
                 ldir = cdatapath.absoluteName() + path[i];
-                searched.resize(searched.nelements() + 1, True);
+                searched.resize(searched.nelements() + 1, true);
                 searched[searched.nelements() - 1] = ldir;
                 if (Table::isReadable(ldir + name)) {
-                  found = True;
+                  found = true;
                   break;
                 }
               }
@@ -486,11 +486,11 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
       os << LogIO::WARN
          << "Requested data table " << name
          << " cannot be found in the searched directories:\n";
-      for(uInt i = 0; i < searched.nelements(); ++i) {
+      for(uint32_t i = 0; i < searched.nelements(); ++i) {
         os << searched[i] << "\n";
       }
       os << LogIO::POST;
-      return False;
+      return false;
     }
     tab = Table(ldir + name);
   } else {
@@ -501,16 +501,16 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 }
 
 // Helper function for getTable().
-Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
+bool MeasIERS::handle_keywords(double &dt, String &vs, const TableRecord& ks,
                                const Table& tab)
 {
   LogIO os(LogOrigin("MeasIERS", "handle_keywords", WHERE));
-  Bool ok = true;
+  bool ok = true;
   
   if(!ks.isDefined("VS_DATE") || !ks.isDefined("VS_VERSION") ||
      !ks.isDefined("VS_CREATE") || !ks.isDefined("VS_TYPE") ||
      (tab.tableInfo().type() != "IERS")) {
-    ok = False;
+    ok = false;
     os << LogIO::DEBUG1
        << "ks.isDefined(VS_DATE) " << ks.isDefined("VS_DATE")
        << "\nks.isDefined(VS_VERSION) " << ks.isDefined("VS_VERSION")
@@ -525,7 +525,7 @@ Bool MeasIERS::handle_keywords(Double &dt, String &vs, const TableRecord& ks,
       dt = MVTime(ldt);
       vs = ks.asString("VS_VERSION");
     } else {
-      ok = False;
+      ok = false;
     }
   }
   return ok;

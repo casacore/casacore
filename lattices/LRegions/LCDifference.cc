@@ -37,12 +37,12 @@ LCDifference::LCDifference()
 {}
 
 LCDifference::LCDifference (const LCRegion& region1, const LCRegion& region2)
-: LCRegionMulti (False, &region1, &region2)
+: LCRegionMulti (false, &region1, &region2)
 {
     defineBox();
 }
 
-LCDifference::LCDifference (Bool takeOver,
+LCDifference::LCDifference (bool takeOver,
 			    const PtrBlock<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
@@ -64,7 +64,7 @@ LCDifference& LCDifference::operator= (const LCDifference& other)
     return *this;
 }
 
-Bool LCDifference::operator== (const LCRegion& other) const
+bool LCDifference::operator== (const LCRegion& other) const
 { 
     return LCRegionMulti::operator== (other);
 }
@@ -75,12 +75,12 @@ LCRegion* LCDifference::cloneRegion() const
     return new LCDifference (*this);
 }
 
-LCRegion* LCDifference::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCDifference::doTranslate (const Vector<float>& translateVector,
 				     const IPosition& newLatticeShape) const
 {
     PtrBlock<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
-    return new LCDifference (True, regions);
+    return new LCDifference (true, regions);
 }
 
 String LCDifference::className()
@@ -106,7 +106,7 @@ LCDifference* LCDifference::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new LCDifference (True, regions);
+    return new LCDifference (true, regions);
 }
 
 void LCDifference::defineBox()
@@ -116,40 +116,40 @@ void LCDifference::defineBox()
 }
 
 
-void LCDifference::multiGetSlice (Array<Bool>& buffer,
+void LCDifference::multiGetSlice (Array<bool>& buffer,
 				  const Slicer& section)
 {
     // Get the required part from region1.
     // Note this getSlice version ensures that the result is not
     // referencing some internal Lattice array.
-    Array<Bool> tmp = regions()[0]->getSlice(section);
+    Array<bool> tmp = regions()[0]->getSlice(section);
     buffer.reference(tmp);
     // Determine which part to get from region2.
     // Get and store negation in buffer when anything found.
     const IPosition& shape = buffer.shape();
-    uInt nrdim = shape.nelements();
+    uint32_t nrdim = shape.nelements();
     IPosition stbuf(nrdim);
     IPosition endbuf(nrdim);
     IPosition streg(nrdim);
     IPosition endreg(nrdim);
     const IPosition& inc = section.stride();
     if (findAreas (stbuf, endbuf, streg, endreg, section, 1)) {
-        Array<Bool> tmpbuf;
+        Array<bool> tmpbuf;
 	LCRegion* reg = (LCRegion*)(regions()[1]);
 	reg->doGetSlice (tmpbuf, Slicer(streg, endreg, inc,
 					Slicer::endIsLast));
-	Array<Bool> bufreg = buffer(stbuf,endbuf);
+	Array<bool> bufreg = buffer(stbuf,endbuf);
 	DebugAssert (bufreg.shape() == tmpbuf.shape(), AipsError);
-	// Make pixel in buffer False when tmpbuf has a True pixel.
-	Bool deleteBuf, deleteTmp;
-	Bool* buf = bufreg.getStorage (deleteBuf);
-	Bool* bufptr = buf;
-	Bool* bufend = buf + bufreg.nelements();
-	const Bool* tmp = tmpbuf.getStorage (deleteTmp);
-	const Bool* tmpptr = tmp;
+	// Make pixel in buffer false when tmpbuf has a true pixel.
+	bool deleteBuf, deleteTmp;
+	bool* buf = bufreg.getStorage (deleteBuf);
+	bool* bufptr = buf;
+	bool* bufend = buf + bufreg.nelements();
+	const bool* tmp = tmpbuf.getStorage (deleteTmp);
+	const bool* tmpptr = tmp;
 	while (bufptr < bufend) {
 	    if (*tmpptr++) {
-	        *bufptr = False;
+	        *bufptr = false;
 	    }
 	    bufptr++;
 	}

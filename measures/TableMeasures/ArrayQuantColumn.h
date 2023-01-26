@@ -89,7 +89,7 @@ class String;
 // <srcblock>
 //    // Create the column object with default units "deg".
 //    // It gets the quantum array from row 0 and prints it to stdout.
-//    ArrayQuantColumn<Double> roaqCol(qtab, "ArrQuantDouble", "deg");
+//    ArrayQuantColumn<double> roaqCol(qtab, "ArrQuantDouble", "deg");
 //    cout << roaqCol(0) << endl;
 //    // This retrieves the same array with units converted to "m/s".	
 //    cout << roaqCol(0, "m/s") << endl;
@@ -158,23 +158,23 @@ public:
   // </group>
 
   // Get the quantum array in the specified row.
-  // If resize is True the resulting array is resized if its shape
+  // If resize is true the resulting array is resized if its shape
   // is not correct. Otherwise a "conformance exception" is thrown
   // if the array is not empty and its shape mismatches.
   // <group name="get">
-  void get (rownr_t rownr, Array<Quantum<T> >& q, Bool resize = False) const;
+  void get (rownr_t rownr, Array<Quantum<T> >& q, bool resize = false) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the given unit.
   void get (rownr_t rownr, Array<Quantum<T> >& q,
-	    const Unit&, Bool resize = False) const;
+	    const Unit&, bool resize = false) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the given units.
   void get (rownr_t rownr, Array<Quantum<T> >& q,
-	    const Vector<Unit>&, Bool resize = False) const;
+	    const Vector<Unit>&, bool resize = false) const;
   // Get the quantum array in the specified row. Each quantum is
   // converted to the unit in other.
   void get (rownr_t rownr, Array<Quantum<T> >& q,
-	    const Quantum<T>& other, Bool resize = False) const;
+	    const Quantum<T>& other, bool resize = false) const;
   // </group>
 
   // Return the quantum array stored in the specified row.
@@ -197,7 +197,7 @@ public:
   void put (rownr_t rownr, const Array<Quantum<T> >& q);
 
   // Test whether the Quantum column has variable units
-  Bool isUnitVariable() const
+  bool isUnitVariable() const
     { return (itsArrUnitsCol || itsScaUnitsCol); }
 
   // Returns the column's units as a vector of strings.
@@ -205,7 +205,7 @@ public:
   Vector<String> getUnits() const;
 
   // Test if the object is null.
-  Bool isNull() const
+  bool isNull() const
     { return (itsDataCol == 0); }
 
   // Throw an exception if the object is null.
@@ -234,7 +234,7 @@ private:
   //# Units to retrieve the data in.
   Vector<Unit> itsUnitOut;
   //# Convert unit when getting data?
-  Bool itsConvOut;
+  bool itsConvOut;
 
 
   // Initialize the ArrayQuantColumn from the specified table and column.
@@ -245,14 +245,14 @@ private:
   void cleanUp();
 
   // Get the data without possible conversion.
-  void getData (rownr_t rownr, Array<Quantum<T> >& q, Bool resize) const;
+  void getData (rownr_t rownr, Array<Quantum<T> >& q, bool resize) const;
 
   // Assignment makes no sense in a read only class.
   // Declaring this operator private makes it unusable.
   ArrayQuantColumn& operator= (const ArrayQuantColumn<T>& that);
 
   // Comparison is not defined, since its semantics are unclear.
-  Bool operator== (const ArrayQuantColumn<T>& that);
+  bool operator== (const ArrayQuantColumn<T>& that);
 };
 
 } //# NAMESPACE CASACORE - END

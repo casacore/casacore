@@ -108,7 +108,7 @@ public:
 
     // Create a column of the given type.
     // It will maintain a pointer to its parent storage manager.
-    StManColumnAipsIO (StManAipsIO* stMan, int dataType, Bool byPtr);
+    StManColumnAipsIO (StManAipsIO* stMan, int dataType, bool byPtr);
 
     // Frees up the storage.
     virtual ~StManColumnAipsIO();
@@ -127,12 +127,12 @@ protected:
 
     // Put the data (nrval elements) in an extension (starting at datap)
     // into AipsIO.
-    virtual void putData (void* datap, uInt nrval, AipsIO&);
+    virtual void putData (void* datap, uint32_t nrval, AipsIO&);
 
     // Get data (nrval elements) into an extension (starting at datap
     // plus the given index).
-    virtual void getData (void* datap, uInt index, uInt nrval, AipsIO&,
-			  uInt version);
+    virtual void getData (void* datap, uint32_t index, uint32_t nrval, AipsIO&,
+			  uint32_t version);
 
 private:
     // Forbid copy constructor.
@@ -219,7 +219,7 @@ public:
     // Get a unique column number for the column
     // (it is only unique for this storage manager).
     // This is used by StManIndArrayColumnAipsIO to create a unique file name.
-    uInt uniqueNr()
+    uint32_t uniqueNr()
 	{ return uniqnr_p++; }
 
     // Make the object from the string.
@@ -240,8 +240,8 @@ private:
     StManAipsIO& operator= (const StManAipsIO&);
 
     // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    virtual bool flush (AipsIO&, bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
@@ -278,7 +278,7 @@ private:
 
 
     // Unique nr for column in this storage manager.
-    uInt uniqnr_p;
+    uint32_t uniqnr_p;
     // The file containing the indirect arrays.
     StManArrayFile* iosfile_p;
 };

@@ -33,7 +33,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 LCLELMask::LCLELMask()
 {}
 
-LCLELMask::LCLELMask (const LatticeExpr<Bool>& expr)
+LCLELMask::LCLELMask (const LatticeExpr<bool>& expr)
 : LCRegionSingle (expr.shape()),
   itsExpr (expr)
 {
@@ -67,12 +67,12 @@ LCLELMask& LCLELMask::operator= (const LCLELMask& that)
   return *this;
 }
 
-Bool LCLELMask::operator== (const LCRegion& that) const
+bool LCLELMask::operator== (const LCRegion& that) const
 {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (! LCRegionSingle::operator== (that)) {
-    return False;
+    return false;
   }
   const LCLELMask& That = dynamic_cast<const LCLELMask&>(that);
   // Check the box and mask.
@@ -86,7 +86,7 @@ LCRegion* LCLELMask::cloneRegion() const
 }
 
 
-Bool LCLELMask::lock (FileLocker::LockType type, uInt nattempts)
+bool LCLELMask::lock (FileLocker::LockType type, uint32_t nattempts)
 {
    return itsExpr.lock (type, nattempts);
 }
@@ -94,7 +94,7 @@ void LCLELMask::unlock()
 {
   itsExpr.unlock();
 }
-Bool LCLELMask::hasLock (FileLocker::LockType type) const
+bool LCLELMask::hasLock (FileLocker::LockType type) const
 {
   return itsExpr.hasLock (type);
 }
@@ -112,7 +112,7 @@ void LCLELMask::reopen()
 }
 
 
-LCRegion* LCLELMask::doTranslate (const Vector<Float>&,
+LCRegion* LCLELMask::doTranslate (const Vector<float>&,
 				  const IPosition&) const
 {
   // An LCLELMask cannot be translated.

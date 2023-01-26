@@ -63,7 +63,7 @@ class TaQLStyle
 {
 public:
   // Default style is Glish and no timing/tracing.
-  explicit TaQLStyle (uInt origin=1);
+  explicit TaQLStyle (uint32_t origin=1);
 
   // Reset to the default Glish style and no timing/tracing.
   void reset();
@@ -89,36 +89,36 @@ public:
 
   // Get the various style values.
   // <group>
-  uInt origin() const
+  uint32_t origin() const
     { return itsOrigin; }
-  Bool isEndExcl() const
+  bool isEndExcl() const
     { return itsEndExcl; }
-  Bool isCOrder() const
+  bool isCOrder() const
     { return itsCOrder; }
   // </group>
 
   // Set if timing needs to be done.
-  void setTiming (Bool doTiming)
+  void setTiming (bool doTiming)
     { itsDoTiming = doTiming; }
 
   // Should timing be done?
-  Bool doTiming() const
+  bool doTiming() const
     { return itsDoTiming; }
 
   // Set if tracing needs to be done.
-  void setTracing (Bool doTracing)
+  void setTracing (bool doTracing)
     { itsDoTracing = doTracing; }
 
   // Should tracing be done?
-  Bool doTracing() const
+  bool doTracing() const
     { return itsDoTracing; }
 
 private:
-  uInt itsOrigin;
-  Bool itsEndExcl;
-  Bool itsCOrder;
-  Bool itsDoTiming;
-  Bool itsDoTracing;
+  uint32_t itsOrigin;
+  bool itsEndExcl;
+  bool itsCOrder;
+  bool itsDoTiming;
+  bool itsDoTracing;
   std::map<String,String> itsUDFLibNameMap;
 };
 

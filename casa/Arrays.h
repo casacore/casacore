@@ -172,8 +172,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // IPosition threeSpace(3, 24, 48, 16);
 //
 // // get the value of the ith axis (note: C++ is zero based!)
-// Int xShape = threeSpace(0);
-// Int zShape = threeSpace(2);
+// int32_t xShape = threeSpace(0);
+// int32_t zShape = threeSpace(2);
 //
 // // construct another with all three axes values equal to 666;
 // IPosition threeSpaceAlso(3,666);

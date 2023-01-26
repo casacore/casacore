@@ -65,19 +65,19 @@ public:
     UNDEFINED_COLUMN=0,
     // Center frequencies for each channel in the data matrix.
     // Can therefore be non-linear to allow for e.g. AOS <BR>
-    // Double(NUM_CHAN) - Hz - FREQUENCY
+    // double(NUM_CHAN) - Hz - FREQUENCY
     CHAN_FREQ,
     // The channel width for each channel <BR>
-    // Double(NUM_CHAN) - Hz
+    // double(NUM_CHAN) - Hz
     CHAN_WIDTH,
     // The effective noise bandwidth of each channel <BR>
-    // Double(NUM_CHAN) - Hz
+    // double(NUM_CHAN) - Hz
     EFFECTIVE_BW,
     // Row flag <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // The frequency group <BR>
-    // Int
+    // int32_t
     FREQ_GROUP,
     // The frequency group name <BR>
     // String
@@ -85,29 +85,29 @@ public:
     // The IF conversion chain (to distinguish the separate electronic paths for
     // simultaneous observations at multiple frequencies). E.g., VLA A-C and 
     // B-D should always be numbered 0 and 1 resp.<BR>
-    // Int
+    // int32_t
     IF_CONV_CHAIN,
     // The frequency measure reference <BR>
-    // Int
+    // int32_t
     MEAS_FREQ_REF,
     // Spectral window name <BR>
     // String
     NAME,
     // Net sideband for this spectral window (+/- 1) <BR>
-    // Int
+    // int32_t
     NET_SIDEBAND,
     // Number of spectral channels <BR>
-    // Int
+    // int32_t
     NUM_CHAN,
     // The reference frequency (as specified on-line). <BR>
-    // Double - Hz - FREQUENCY
+    // double - Hz - FREQUENCY
     REF_FREQUENCY,
     // The effective spectral resolution of each channel
     // The Vector nature allows for variable-width channels.<BR>
-    // Double(NUM_CHAN) - Hz
+    // double(NUM_CHAN) - Hz
     RESOLUTION,
     // The total bandwidth (as specified on-line). <BR>
-    // Double - Hz
+    // double - Hz
     TOTAL_BANDWIDTH,
     //
     // Not a column, but just an enum specifying the number of required columns.
@@ -116,20 +116,20 @@ public:
     // String(*)
     ASSOC_NATURE,
     // Associated spectral window id's, e.g. averaged spectra
-    // Int(*)
+    // int32_t(*)
     ASSOC_SPW_ID,
     // Baseband converter number <BR>
-    // Int
+    // int32_t
     BBC_NO,
     // Baseband converter sideband <BR>
-    // Int
+    // int32_t
     BBC_SIDEBAND,
     // Doppler id, points to DOPPLER table <BR>
-    // Int
+    // int32_t
     DOPPLER_ID,
     // Receiver id, identifies receiver used for this spectral window.
     // May point to optional RECEIVER table <BR>
-    // Int
+    // int32_t
     RECEIVER_ID,
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=RECEIVER_ID

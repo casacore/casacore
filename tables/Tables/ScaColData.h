@@ -105,7 +105,7 @@ public:
     virtual void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Test if the given cell contains a defined value.
-    virtual Bool isDefined (rownr_t rownr) const;
+    virtual bool isDefined (rownr_t rownr) const;
 
     // Get the value from a particular cell.
     virtual void get (rownr_t rownr, void*) const;
@@ -139,10 +139,10 @@ public:
 
     // Add the sort key to the Sort object on behalf of the Table sort function.
     // <group>
-    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
+    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, int32_t order,
                               CountedPtr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
-    void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
+    void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, int32_t order,
 			 const Vector<rownr_t>& rownrs,
                          CountedPtr<ArrayBase>& dataSave);
     // </group>
@@ -164,7 +164,7 @@ private:
     // Pointer to column description.
     const ScalarColumnDesc<T>* scaDescPtr_p;
     // Undefined value can exist?
-    Bool undefFlag_p;
+    bool undefFlag_p;
     // Undefined value.
     T undefVal_p;
     
@@ -194,7 +194,7 @@ private:
     //   <li> TableInvSort
     // </thrown>
     void fillSortKey (const Vector<T>* dataPtr, Sort&,
-		      CountedPtr<BaseCompare>& cmpObj, Int order);
+		      CountedPtr<BaseCompare>& cmpObj, int32_t order);
 };
 
 

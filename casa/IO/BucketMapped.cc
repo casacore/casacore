@@ -32,8 +32,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-  BucketMapped::BucketMapped (BucketFile* file, Int64 startOffset,
-                              uInt bucketSize, uInt nrOfBuckets)
+  BucketMapped::BucketMapped (BucketFile* file, int64_t startOffset,
+                              uint32_t bucketSize, uint32_t nrOfBuckets)
     : BucketBase (file, startOffset, bucketSize, nrOfBuckets)
   {
     AlwaysAssert (itsFile->mappedFile() != 0, AipsError);
@@ -52,35 +52,35 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsFile->mappedFile()->flush();
   }
 
-  void BucketMapped::doExtend (uInt)
+  void BucketMapped::doExtend (uint32_t)
   {
     // Extend the file by writing the last byte.
     char ch=0;
     itsFile->mappedFile()->seek (itsStartOffset + 
-                                 Int64(itsNewNrOfBuckets)*itsBucketSize - 1);
+                                 int64_t(itsNewNrOfBuckets)*itsBucketSize - 1);
     itsFile->mappedFile()->write (1, &ch);
   }
 
-  const char* BucketMapped::getBucket (uInt bucketNr)
+  const char* BucketMapped::getBucket (uint32_t bucketNr)
   {
     if (bucketNr >= itsCurNrOfBuckets) {
       if (bucketNr >= itsNewNrOfBuckets) {
-	throw (indexError<Int> (bucketNr));
+	throw (indexError<int32_t> (bucketNr));
       }
       initializeBuckets (bucketNr);
     }
     return static_cast<const char*>(itsFile->mappedFile()->getReadPointer
-      (itsStartOffset + Int64(bucketNr)*itsBucketSize));
+      (itsStartOffset + int64_t(bucketNr)*itsBucketSize));
   }
 
-  void BucketMapped::initializeBuckets (uInt bucketNr)
+  void BucketMapped::initializeBuckets (uint32_t bucketNr)
   {
     if (itsCurNrOfBuckets <= bucketNr) {
       doExtend (0);
       // Initialize this bucket and all uninitialized ones before it.
       while (itsCurNrOfBuckets <= bucketNr) {
         char* data = static_cast<char*>(itsFile->mappedFile()->getWritePointer
-                   (itsStartOffset + Int64(itsCurNrOfBuckets)*itsBucketSize));
+                   (itsStartOffset + int64_t(itsCurNrOfBuckets)*itsBucketSize));
         memset (data, 0, itsBucketSize);
         itsCurNrOfBuckets++;
         setWritten();

@@ -103,8 +103,8 @@ public:
 
     // Comparison
     // <group>
-    virtual Bool operator==(const WCRegion& other) const;
-    Bool operator!=(const WCRegion& other) const;
+    virtual bool operator==(const WCRegion& other) const;
+    bool operator!=(const WCRegion& other) const;
     // </group>
 
     // Clone a WCRegion object.
@@ -119,26 +119,26 @@ public:
     // (e.g. WCLELMask) that may not be the case.
     // The default implementation returns the number of axes in the
     // axes description.
-    virtual uInt ndim() const;
+    virtual uint32_t ndim() const;
 
     // Get the description of all axes.
     const Record& getAxesDesc() const;
 
     // Get the description of the given axis.
     // It is a record containing some fields describing the axis.
-    const Record& getAxisDesc (uInt axis) const;
+    const Record& getAxisDesc (uint32_t axis) const;
 
     // Return the axis number of the description of an axis in the full
     // axes description.
     // -1 is returned if not found.
-    Int axisNr (const Record& desc, const Record& axesDesc) const;
+    int32_t axisNr (const Record& desc, const Record& axesDesc) const;
 
     // Are both axis descriptions equal?
-    Bool isAxisDescEqual (const Record& desc1, const Record& desc2) const;
+    bool isAxisDescEqual (const Record& desc1, const Record& desc2) const;
 
     // Can the region extend itself?
     // By default it cannot.
-    virtual Bool canExtend() const;
+    virtual bool canExtend() const;
 
     // Get or set the comment.
     // <group>
@@ -197,7 +197,7 @@ protected:
     void addAxisDesc (const Record& axisDesc);
 
     // Make a description of a pixel axis in the coordinate system.
-    Record makeAxisDesc (const CoordinateSystem& cSys, uInt pixelAxis) const;
+    Record makeAxisDesc (const CoordinateSystem& cSys, uint32_t pixelAxis) const;
 
     // Make a description of all pixel axes in the coordinate system
     // (in pixel axes order).
@@ -216,8 +216,8 @@ protected:
 				    const IPosition& extendAxes) const = 0;
 
 // Convert relative to absolute world as needed
-    void makeWorldAbsolute (Vector<Double>& world,
-                            const Vector<Int>& absRel,
+    void makeWorldAbsolute (Vector<double>& world,
+                            const Vector<int32_t>& absRel,
                             const CoordinateSystem& cSys,
                             const IPosition& shape) const;
 
@@ -230,12 +230,12 @@ protected:
     ) const;
 
 	static void convertPixel(
-		Double& pixel,
-	    const Double& value,
+		double& pixel,
+	    const double& value,
 	    const String& unit,
-	    const Int absRel,
-	    const Double refPix,
-	    const Int shape
+	    const int32_t absRel,
+	    const double refPix,
+	    const int32_t shape
 	);
 private:
     String itsComment;
@@ -243,7 +243,7 @@ private:
 };
 
 
-inline Bool WCRegion::operator!= (const WCRegion& other) const
+inline bool WCRegion::operator!= (const WCRegion& other) const
 {
    return (!operator==(other));
 }

@@ -176,7 +176,7 @@ ForwardColumnIndexedRow::~ForwardColumnIndexedRow()
 
 void ForwardColumnIndexedRow::prepare (const Table& thisTable)
 {
-    basePrepare (thisTable, False);
+    basePrepare (thisTable, false);
 }
 
 
@@ -186,18 +186,18 @@ void ForwardColumnIndexedRow::setShape (rownr_t, const IPosition&)
            ("setShape not supported by data manager ForwardColumnIndexedRow"));
 }
 
-uInt ForwardColumnIndexedRow::ndim (rownr_t rownr)
+uint32_t ForwardColumnIndexedRow::ndim (rownr_t rownr)
     { return colPtr()->ndim (convertRownr(rownr)); }
 
 IPosition ForwardColumnIndexedRow::shape(rownr_t rownr)
     { return colPtr()->shape (convertRownr(rownr)); }
 
-Bool ForwardColumnIndexedRow::isShapeDefined (rownr_t rownr)
+bool ForwardColumnIndexedRow::isShapeDefined (rownr_t rownr)
     { return colPtr()->isDefined (convertRownr(rownr)); }
 
-Bool ForwardColumnIndexedRow::canChangeShape() const
+bool ForwardColumnIndexedRow::canChangeShape() const
 {
-    return False;       // put is not supported
+    return false;       // put is not supported
 }
 
 void ForwardColumnIndexedRow::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
@@ -229,13 +229,13 @@ void ForwardColumnIndexedRow::aips_name2(put,NM) (rownr_t, const T*) \
            ("put not supported by data manager ForwardColumnIndexedRow")); \
 }
 
-FORWARDCOLUMNINDEXEDROW_GETPUT(Bool,Bool)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uChar,uChar)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Short,Short)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uShort,uShort)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Int,Int)
-FORWARDCOLUMNINDEXEDROW_GETPUT(uInt,uInt)
-FORWARDCOLUMNINDEXEDROW_GETPUT(Int64,Int64)
+FORWARDCOLUMNINDEXEDROW_GETPUT(bool,Bool)
+FORWARDCOLUMNINDEXEDROW_GETPUT(unsigned char,uChar)
+FORWARDCOLUMNINDEXEDROW_GETPUT(int16_t,Short)
+FORWARDCOLUMNINDEXEDROW_GETPUT(uint16_t,uShort)
+FORWARDCOLUMNINDEXEDROW_GETPUT(int32_t,Int)
+FORWARDCOLUMNINDEXEDROW_GETPUT(uint32_t,uInt)
+FORWARDCOLUMNINDEXEDROW_GETPUT(int64_t,Int64)
 FORWARDCOLUMNINDEXEDROW_GETPUT(float,float)
 FORWARDCOLUMNINDEXEDROW_GETPUT(double,double)
 FORWARDCOLUMNINDEXEDROW_GETPUT(Complex,Complex)

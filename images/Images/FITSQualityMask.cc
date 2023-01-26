@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 FITSQualityMask::FITSQualityMask(FITSImage *fitsData, FITSErrorImage *fitsError)
 : itsFitsData(fitsData),
   itsFitsError(fitsError),
-  itsFilterZero(False)
+  itsFilterZero(false)
 
 {
 	// check the shapes are equal!
@@ -44,7 +44,7 @@ FITSQualityMask::FITSQualityMask(FITSImage *fitsData, FITSErrorImage *fitsError)
 }
 
 FITSQualityMask::FITSQualityMask (const FITSQualityMask& other)
-: Lattice<Bool>(other),
+: Lattice<bool>(other),
   itsFitsData(other.itsFitsData),
   itsFitsError(other.itsFitsError),
   itsFilterZero(other.itsFilterZero)
@@ -66,15 +66,15 @@ FITSQualityMask& FITSQualityMask::operator= (const FITSQualityMask& other)
 	return *this;
 }
 
-Lattice<Bool>* FITSQualityMask::clone() const
+Lattice<bool>* FITSQualityMask::clone() const
 {
   return new FITSQualityMask (*this);
 }
 
 
-Bool FITSQualityMask::isWritable() const
+bool FITSQualityMask::isWritable() const
 {
-  return False;
+  return false;
 }
 
 IPosition FITSQualityMask::shape() const
@@ -83,18 +83,18 @@ IPosition FITSQualityMask::shape() const
 	IPosition mm_shape(data_shape.nelements()+1);
 
 	// set the shape
-	for (uInt index=0; index<data_shape.nelements(); index++)
+	for (uint32_t index=0; index<data_shape.nelements(); index++)
 		mm_shape(index) = data_shape(index);
 	mm_shape(mm_shape.nelements()-1)=2;
 
 	return mm_shape;
 }
 
-Bool FITSQualityMask::doGetSlice (Array<Bool>& buffer, const Slicer& section)
+bool FITSQualityMask::doGetSlice (Array<bool>& buffer, const Slicer& section)
 {
 	// get the section dimension
 	IPosition shp = section.length();
-	uInt ndim=section.ndim();
+	uint32_t ndim=section.ndim();
 
 	// resize the buffer
 	if (!buffer.shape().isEqual(shp)) buffer.resize(shp);
@@ -103,7 +103,7 @@ Bool FITSQualityMask::doGetSlice (Array<Bool>& buffer, const Slicer& section)
 	IPosition tmpStart(ndim-1);
 	IPosition tmpEnd(ndim-1);
 	IPosition tmpStride(ndim-1);
-	for (uInt index=0; index<ndim-1; index++) {
+	for (uint32_t index=0; index<ndim-1; index++) {
 		tmpStart(index)  = section.start()(index);
 		tmpEnd(index)    = section.end()(index);
 		tmpStride(index) = section.stride()(index);
@@ -117,15 +117,15 @@ Bool FITSQualityMask::doGetSlice (Array<Bool>& buffer, const Slicer& section)
 	if (section.start()(ndim-1) != section.end()(ndim-1)){
 
 		// data and error is requested
-		Array<Bool> subData;
-		Array<Bool> subError;
-		Array<Bool> tmp;
+		Array<bool> subData;
+		Array<bool> subError;
+		Array<bool> tmp;
 
 		// prepare the call
 		// for data mask
 		IPosition subStart(ndim);
 		IPosition subEnd(ndim);
-		for (uInt index=0; index<ndim-1; index++) {
+		for (uint32_t index=0; index<ndim-1; index++) {
 			subStart(index)  = 0;
 			subEnd(index)    = shp(index)-1;
 		}
@@ -167,14 +167,14 @@ Bool FITSQualityMask::doGetSlice (Array<Bool>& buffer, const Slicer& section)
 	else if (section.start()(ndim-1)==0) {
 
 		// only data is requested
-		Array<Bool> subData;
-		Array<Bool> tmp;
+		Array<bool> subData;
+		Array<bool> tmp;
 
 		// prepare the call
 		// for data mask values
 		IPosition subStart(ndim);
 		IPosition subEnd(ndim);
-		for (uInt index=0; index<ndim-1; index++) {
+		for (uint32_t index=0; index<ndim-1; index++) {
 			subStart(index)  = 0;
 			subEnd(index)    = shp(index)-1;
 		}
@@ -199,14 +199,14 @@ Bool FITSQualityMask::doGetSlice (Array<Bool>& buffer, const Slicer& section)
 	else if (section.start()(ndim-1)==1) {
 
 		// only error is requested
-		Array<Bool> subError;
-		Array<Bool> tmp;
+		Array<bool> subError;
+		Array<bool> tmp;
 
 		// prepare the call
 		// for error mask values
 		IPosition subStart(ndim);
 		IPosition subEnd(ndim);
-		for (uInt index=0; index<ndim-1; index++) {
+		for (uint32_t index=0; index<ndim-1; index++) {
 			subStart(index)  = 0;
 			subEnd(index)    = shp(index)-1;
 		}
@@ -238,44 +238,44 @@ Bool FITSQualityMask::doGetSlice (Array<Bool>& buffer, const Slicer& section)
 	mask.putStorage(pMask, deletePtrM);
 	*/
 
-	return False;            // Not a reference
+	return false;            // Not a reference
 }
 
-void FITSQualityMask::doPutSlice (const Array<Bool>&,
+void FITSQualityMask::doPutSlice (const Array<bool>&,
                            const IPosition&, 	
                            const IPosition&)
 {
    throw(AipsError("FITSQualityMask object is not writable"));
 }
 
-void FITSQualityMask::setFilterZero(Bool filterZero)
+void FITSQualityMask::setFilterZero(bool filterZero)
 {
 	itsFilterZero = filterZero;
 }
 
-Bool FITSQualityMask::filterNaN(Bool *pMask, const Float *pData, const uInt nelems)
+bool FITSQualityMask::filterNaN(bool *pMask, const float *pData, const uint32_t nelems)
 {
 	// loop over all elements
-	for (uInt i=0; i<nelems; i++) {
+	for (uint32_t i=0; i<nelems; i++) {
 		// set defaults;
 		// blanked values are NaNs.
-		pMask[i] = True;
-		if (isNaN(pData[i])) pMask[i] = False;
+		pMask[i] = true;
+		if (isNaN(pData[i])) pMask[i] = false;
 	}
 
-	return True;
+	return true;
 }
 
-Bool FITSQualityMask::filterZeroNaN(Bool *pMask, const Float *pData, const uInt nelems)
+bool FITSQualityMask::filterZeroNaN(bool *pMask, const float *pData, const uint32_t nelems)
 {
 	// loop over all elements
-	for (uInt i=0; i<nelems; i++) {
+	for (uint32_t i=0; i<nelems; i++) {
 		// set defaults;
 		// blanked values are NaNs and "0.0"
-		pMask[i] = True;
-		if (isNaN(pData[i]) || pData[i] == (Float)0.0) pMask[i] = False;
+		pMask[i] = true;
+		if (isNaN(pData[i]) || pData[i] == (float)0.0) pMask[i] = false;
 	}
-	return True;
+	return true;
 }
 
 } //# NAMESPACE CASACORE - END

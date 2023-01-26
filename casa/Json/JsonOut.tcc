@@ -52,7 +52,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   inline void JsonOut::writeKV (const String& name, const Array<T>& value)
   {
     // Use extra indentation for possible continuation lines.
-    putArray (value, indentValue(itsIndent, name), True);
+    putArray (value, indentValue(itsIndent, name), true);
   }
 
   template <typename T>
@@ -61,30 +61,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <typename T>
   inline void JsonOut::putArray (const Array<T>& arr,
-                                 const String& indent, Bool firstLine)
+                                 const String& indent, bool firstLine)
   {
-    putArray (arr, indent, firstLine, False);
+    putArray (arr, indent, firstLine, false);
   }
   inline void JsonOut::putArray (const Array<String>& arr,
-                                 const String& indent, Bool firstLine)
+                                 const String& indent, bool firstLine)
   {
-    putArray (arr, indent, firstLine, True);
+    putArray (arr, indent, firstLine, true);
   }
 
   template <typename T>
   void JsonOut::putArray (const Array<T>& arr, const String& indent,
-                          Bool firstLine, Bool valueEndl)
+                          bool firstLine, bool valueEndl)
   {
     if (!firstLine) itsStream << indent;
     itsStream << '[';
-    Bool first = True;
+    bool first = true;
     if (arr.ndim() <= 1) {
       size_t todo = arr.size();
       typename Array<T>::const_iterator iterEnd = arr.end();
       for (typename Array<T>::const_iterator iter=arr.begin();
            iter!=iterEnd; ++iter) {
         if (first) {
-          first = False;
+          first = false;
         } else if (!valueEndl) {
           itsStream << ", ";
         } else {
@@ -97,13 +97,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         }
       }
     } else {
-      ArrayIterator<T> iter(arr, IPosition(1, arr.ndim()-1), False);
+      ArrayIterator<T> iter(arr, IPosition(1, arr.ndim()-1), false);
       while (! iter.pastEnd()) {
         if (!first) {
           itsStream << ',' << endl;
         }
         putArray (iter.array(), indent+' ', first);
-        first = False;
+        first = false;
         iter.next();
       }
     }

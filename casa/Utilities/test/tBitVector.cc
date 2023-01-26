@@ -30,12 +30,12 @@
 #include <casacore/casa/namespace.h>
 void doIt()
 {
-    uInt maxbits=35;
+    uint32_t maxbits=35;
     // Create bit vectors
     BitVector b;
-    BitVector c(maxbits,True);
+    BitVector c(maxbits,true);
     BitVector d;
-    uInt i;
+    uint32_t i;
     b.resize (maxbits);
 
     for (i=0; i<(maxbits/2); i++)  {
@@ -55,12 +55,12 @@ void doIt()
     for (i=0; i<(maxbits/2); i++) {
 	c.clearBit(i*2);
     }
-    c[maxbits-1] = False;
+    c[maxbits-1] = false;
     cout << "c =   " << c;
 
     d = b^c; // Operator XOR with two bit vectors
     cout << "b^c = " << d;
-    d.set (31, 2, False);
+    d.set (31, 2, false);
     cout << "d =   " << d;
     cout << "b|c = " << (b|c);
     d = b&c; // Operator AND with two bit vectors
@@ -79,16 +79,16 @@ void doIt()
     cout << "b1 = " << b1;
     b1.resize (b.nbits());                   // resize shorter with copy
     cout << "b1 = " << b1;
-    b1.resize (70, True);                    // resize longer with copy
+    b1.resize (70, true);                    // resize longer with copy
     cout << "b1 = " << b1;
     b1 = b;
     cout << "b1 = " << b1;
-    b1.resize (70, False, False);            // resize without copy
+    b1.resize (70, false, false);            // resize without copy
     cout << "b1 = " << b1;
-    b1.resize (35, True, False);             // resize without copy
+    b1.resize (35, true, false);             // resize without copy
     cout << "b1 = " << b1;
 
-    b1.resize (70, True, False);             // resize without copy
+    b1.resize (70, true, false);             // resize without copy
     b1.copy (30, 23, c, 8);
     cout << "b1 = " << b1;
     
@@ -101,20 +101,20 @@ void doIt()
     }
 
     b1.resize (128);
-    b1 = False;
-    b1.set (32, 64, True);
+    b1 = false;
+    b1.set (32, 64, true);
     for (i=0; i<32; i++) {
 	if (b1[i] || !b1[i+32] || !b1[i+64] || b1[i=96]) {
-	    cout << "error in b1.set(True,32,64)" << endl;
+	    cout << "error in b1.set(true,32,64)" << endl;
 	}
     }
 
-    BitVector bv1(4,False);
-    bv1[0] = True;
-    bv1[1] = True;
-    BitVector bv2(4,False);
-    bv2[0] = True;
-    bv2[2] = True;
+    BitVector bv1(4,false);
+    bv1[0] = true;
+    bv1[1] = true;
+    BitVector bv2(4,false);
+    bv2[0] = true;
+    bv2[2] = true;
     BitVector bv3(bv2);
     bv2.reverse();
     if (bv2 != ~bv3  ||  bv2[0] || !bv2[1] || bv2[2] || !bv2[3]) {

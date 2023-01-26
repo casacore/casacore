@@ -102,7 +102,7 @@ public:
   // means that case-insensitive comparison will be used.
   TableIterProxy (const TableProxy& tab, const Vector<String>& columns,
 		  const String& order, const String& sortType,
-                  const Vector<Double>& intervals = Vector<Double>());
+                  const Vector<double>& intervals = Vector<double>());
 
   // Copy constructor (copy semantics).
   TableIterProxy (const TableIterProxy&);
@@ -113,7 +113,7 @@ public:
   TableIterProxy& operator= (const TableIterProxy&);
 
   // Is the internal iterator object null?
-  Bool isNull() const
+  bool isNull() const
     { return iter_p.isNull(); }
 
   // Get the TableIterator object.
@@ -121,8 +121,8 @@ public:
     { return iter_p; }
 
   // Get the next subtable and return it in the TableProxy argument.
-  // When no more subtables are available, it returns False.
-  Bool nextPart (TableProxy& table);
+  // When no more subtables are available, it returns false.
+  bool nextPart (TableProxy& table);
 
   // Iterate to the next part (for Python use).
   // An IterError exception is thrown at the end of the loop.
@@ -136,13 +136,13 @@ private:
   // Make an iterator where iteration intervals may have been given.
   void makeStepIter (const Table& tab,
                      const Block<String>& columns,
-                     const Vector<Double>& iterSteps,
+                     const Vector<double>& iterSteps,
                      TableIterator::Order order,
                      TableIterator::Option sortType);
 
   //# Data members
   TableIterator iter_p;
-  Bool          firstTime_p;           //# True = first time
+  bool          firstTime_p;           //# true = first time
 };
 
 

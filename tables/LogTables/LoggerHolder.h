@@ -82,7 +82,7 @@ class TableLogSink;
 
 // <example>
 // <srcblock>
-//  LoggerHolder logger ("tLoggerHolder_tmp.log", True);
+//  LoggerHolder logger ("tLoggerHolder_tmp.log", true);
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
 //  for (LoggerHolder::const_iterator iter = logger.begin();
@@ -96,7 +96,7 @@ class TableLogSink;
 // The latter part shows how to iterate through all messages.
 //
 // <srcblock>
-//  LoggerHolder logger (False);
+//  LoggerHolder logger (false);
 //  logger.addParent (parent.logger());
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
@@ -118,10 +118,10 @@ class LoggerHolder
 {
 public:
   // Create with a NullSink or MemoryLogSink (default).
-  explicit LoggerHolder (Bool nullSink = False);
+  explicit LoggerHolder (bool nullSink = false);
 
   // Create with a TableLogSink.
-  LoggerHolder (const String& logTableName, Bool isWritable);
+  LoggerHolder (const String& logTableName, bool isWritable);
 
   // Copy constructor (reference sematics).
   LoggerHolder (const LoggerHolder&);
@@ -145,7 +145,7 @@ public:
 
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
-  void tempClose (Bool closeParents = True) const;
+  void tempClose (bool closeParents = true) const;
 
   // Unlock the log table.
   void unlock();
@@ -157,7 +157,7 @@ public:
   void resync();
 
   // Is the log table temporarily closed?
-  Bool isTempClosed() const;
+  bool isTempClosed() const;
 
   // Get access to the logger.
   // It assumes that it will be used to post a message, so it reopens
@@ -186,7 +186,7 @@ public:
   // Only a const forward iterator is available.
   // It makes it possible to iterate through all messages in the logger.
   // <srcblock>
-  //  LoggerHolder logger("log.name", False)
+  //  LoggerHolder logger("log.name", false)
   //  for (LoggerHolder::const_iterator iter=arr.begin();
   //       iter!=arr.end(); iter++) {
   //    cout << iter.message() << endl;
@@ -239,10 +239,10 @@ class LoggerHolderRep
 {
 public:
   // Create with a NullSink or MemoryLogSink (default).
-  LoggerHolderRep (Bool nullSink);
+  LoggerHolderRep (bool nullSink);
 
   // Create with a TableLogSink.
-  LoggerHolderRep (const String& logTableName, Bool isWritable);
+  LoggerHolderRep (const String& logTableName, bool isWritable);
 
   // Copy constructor.
   LoggerHolderRep (const LoggerHolderRep&);
@@ -268,7 +268,7 @@ public:
 
   // Temporarily close all log tables.
   // By default the possible parent log tables are also closed.
-  void tempClose (Bool closeParents = True);
+  void tempClose (bool closeParents = true);
 
   // Unlock the log table.
   void unlock();
@@ -280,7 +280,7 @@ public:
   void resync();
 
   // Is the log table temporarily closed?
-  Bool isTempClosed() const
+  bool isTempClosed() const
     { return itsIsClosed; }
 
   // Get access to the logger.
@@ -308,7 +308,7 @@ public:
   // Only a const forward iterator is available.
   // It makes it possible to iterate through all messages in the logger.
   // <srcblock>
-  //  LoggerHolder logger("log.name", False)
+  //  LoggerHolder logger("log.name", false)
   //  for (LoggerHolder::const_iterator iter=arr.begin();
   //       iter!=arr.end(); iter++) {
   //    cout << iter.message() << endl;
@@ -333,8 +333,8 @@ private:
   LogIO               itsLogger;
   String              itsTableName;
   TableLogSink*       itsTablePtr;
-  Bool                itsIsWritable;
-  Bool                itsIsClosed;
+  bool                itsIsWritable;
+  bool                itsIsClosed;
 };
 
 
@@ -365,7 +365,7 @@ public:
   LogHolderIterEntry()
     : itsSink(0), itsIndex(0) {}
 
-  LogHolderIterEntry (const LogSink* sink, uInt index)
+  LogHolderIterEntry (const LogSink* sink, uint32_t index)
     : itsSink(sink), itsIndex(index) {}
 
   LogHolderIterEntry (const LogHolderIterEntry& that)
@@ -379,7 +379,7 @@ public:
 
   // Get the message parts.
   // <group>
-  Double time() const
+  double time() const
     { return itsSink->getTime(itsIndex); }
   String message() const
     { return itsSink->getMessage(itsIndex); }
@@ -393,7 +393,7 @@ public:
 
 private:
   const LogSink* itsSink;
-  uInt           itsIndex;
+  uint32_t           itsIndex;
 };
 
 
@@ -430,8 +430,8 @@ public:
   ~LogHolderIter();
 
   // Increment to next message.
-  // Returns False if at the end.
-  Bool next();
+  // Returns false if at the end.
+  bool next();
 
   // Get the entry.
   const LogHolderIterEntry& getEntry() const
@@ -449,9 +449,9 @@ private:
 
 
   const LoggerHolder* itsLogger;
-  Bool                itsTempClosed;
+  bool                itsTempClosed;
   LogHolderIter*      itsParentIter;
-  uInt                itsCounter;
+  uint32_t                itsCounter;
   LogHolderIterEntry  itsEntry;
 };
 
@@ -479,7 +479,7 @@ private:
 
 // <example>
 // <srcblock>
-//  LoggerHolder logger ("tLoggerHolder_tmp.log", True);
+//  LoggerHolder logger ("tLoggerHolder_tmp.log", true);
 //  logger.logio() << "test1" << LogIO::POST;
 //  logger.logio() << "test2" << LogIO::POST;
 //  for (LoggerHolder::const_iterator iter = logger.begin();
@@ -494,7 +494,7 @@ class LoggerHolderIterator
 {
 public:
   LoggerHolderIterator()
-    : itsIter(0), itsNotAtEnd(False) {}
+    : itsIter(0), itsNotAtEnd(false) {}
 
   LoggerHolderIterator (const LoggerHolder*);
 
@@ -514,7 +514,7 @@ public:
   // </group>
 
   // Is the iterator not at the end yet?
-  Bool operator!= (const LoggerHolderIterator&)
+  bool operator!= (const LoggerHolderIterator&)
     { return itsNotAtEnd; }
 
   // Get the entry.
@@ -535,7 +535,7 @@ private:
 
 
   LogHolderIter* itsIter;
-  Bool           itsNotAtEnd;
+  bool           itsNotAtEnd;
 };
 
 
@@ -544,7 +544,7 @@ inline void LoggerHolder::reopen()
 {
   itsRep->reopen();
 }
-inline Bool LoggerHolder::isTempClosed() const
+inline bool LoggerHolder::isTempClosed() const
 {
   return itsRep->isTempClosed();
 }

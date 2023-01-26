@@ -46,31 +46,31 @@ TableSyncData::~TableSyncData()
     itsAipsIO.close();
 }
 
-void TableSyncData::write (rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
-			   const Block<Bool>& dataManChanged)
+void TableSyncData::write (rownr_t nrrow, uint32_t nrcolumn, bool tableChanged,
+			   const Block<bool>& dataManChanged)
 {
     // Increment change counter when the table has changed.
-    Bool changed = False;
+    bool changed = false;
     itsNrrow    = nrrow;
     itsNrcolumn = nrcolumn;
     if (tableChanged) {
 	itsTableChangeCounter++;
-	changed = True;
+	changed = true;
     }
     // Increment a counter when a data manager has changed.
     // Resize and initialize the block when needed.
-    uInt ndmOld = itsDataManChangeCounter.nelements();
-    uInt ndmNew = dataManChanged.nelements();
+    uint32_t ndmOld = itsDataManChangeCounter.nelements();
+    uint32_t ndmNew = dataManChanged.nelements();
     if (ndmNew != ndmOld) {
-	itsDataManChangeCounter.resize (ndmNew, True, True);
-	for (uInt i=ndmOld; i<ndmNew; i++) {
+	itsDataManChangeCounter.resize (ndmNew, true, true);
+	for (uint32_t i=ndmOld; i<ndmNew; i++) {
 	    itsDataManChangeCounter[i] = 0;
 	}
     }
-    for (uInt i=0; i<ndmNew; i++) {
+    for (uint32_t i=0; i<ndmNew; i++) {
 	if (dataManChanged[i]) {
 	    itsDataManChangeCounter[i]++;
-	    changed = True;
+	    changed = true;
 	}
     }
     // Increment modify counter if anything has changed.
@@ -86,7 +86,7 @@ void TableSyncData::write (rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
       itsAipsIO << itsNrrow;
     } else {
       itsAipsIO.putstart ("sync", 1);
-      itsAipsIO << uInt(itsNrrow);
+      itsAipsIO << uint32_t(itsNrrow);
     }
     itsAipsIO << itsNrcolumn;
     itsAipsIO << itsModifyCounter;
@@ -111,20 +111,20 @@ void TableSyncData::write (rownr_t nrrow)
       itsAipsIO << itsNrrow;
     } else {
       itsAipsIO.putstart ("sync", 1);
-      itsAipsIO << uInt(itsNrrow);
+      itsAipsIO << uint32_t(itsNrrow);
     }
     itsAipsIO << itsNrcolumn;
     itsAipsIO << itsModifyCounter;
     itsAipsIO.putend();
 }
 
-Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
-			  Block<Bool>& dataManChanged)
+bool TableSyncData::read (rownr_t& nrrow, uint32_t& nrcolumn, bool& tableChanged,
+			  Block<bool>& dataManChanged)
 {
     // Read the data into the memoryIO object.
     // When no columns, don't read the remaining part (then it is used
     // by an external filler).
-    Int nrcol = -1;
+    int32_t nrcol = -1;
     if (itsMemIO.length() > 0) {
         uint version = itsAipsIO.getstart ("sync");
         if (version > 2) {
@@ -132,7 +132,7 @@ Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
                             " not supported by this version of Casacore");
         }
         if (version == 1) {
-          uInt n;
+          uint32_t n;
           itsAipsIO >> n;
           nrrow = n;
         } else {
@@ -142,19 +142,19 @@ Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
 	itsAipsIO >> itsModifyCounter;
     }
     if (nrcol < 0) {
-	tableChanged = True;
-	dataManChanged.set (True);
+	tableChanged = true;
+	dataManChanged.set (true);
 	if (itsMemIO.length() > 0) {
 	    itsAipsIO.getend();
-	    return True;                       // not empty
+	    return true;                       // not empty
 	}
 	nrcolumn = 0;
-	return False;                          // empty MemoryIO object
+	return false;                          // empty MemoryIO object
     }
     nrcolumn = nrcol;
     // The table has changed when the change counter has changed.
-    uInt tableChangeCounter;
-    Block<uInt> dataManChangeCounter;
+    uint32_t tableChangeCounter;
+    Block<uint32_t> dataManChangeCounter;
     itsAipsIO >> tableChangeCounter;
     itsAipsIO >> dataManChangeCounter;
     itsAipsIO.getend();
@@ -163,24 +163,24 @@ Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
     // A data manager has changed when its change counter has changed.
     // Increment a change counter when a data manager has changed.
     // Resize and initialize the array when needed.
-    uInt ndmOld = itsDataManChangeCounter.nelements();
-    uInt ndmNew = dataManChangeCounter.nelements();
-    dataManChanged.resize (ndmNew, True, False);
-    dataManChanged.set (False);
+    uint32_t ndmOld = itsDataManChangeCounter.nelements();
+    uint32_t ndmNew = dataManChangeCounter.nelements();
+    dataManChanged.resize (ndmNew, true, false);
+    dataManChanged.set (false);
     if (ndmNew != ndmOld) {
-	itsDataManChangeCounter.resize (ndmNew, True, True);
-	for (uInt i=ndmOld; i<ndmNew; i++) {
-	    dataManChanged[i] = True;
+	itsDataManChangeCounter.resize (ndmNew, true, true);
+	for (uint32_t i=ndmOld; i<ndmNew; i++) {
+	    dataManChanged[i] = true;
 	    itsDataManChangeCounter[i] = dataManChangeCounter[i];
 	}
     }
-    for (uInt i=0; i<ndmNew; i++) {
+    for (uint32_t i=0; i<ndmNew; i++) {
 	if (dataManChangeCounter[i] != itsDataManChangeCounter[i]) {
-	    dataManChanged[i] = True;
+	    dataManChanged[i] = true;
 	    itsDataManChangeCounter[i] = dataManChangeCounter[i];
 	}
     }
-    return True;
+    return true;
 }
 
 

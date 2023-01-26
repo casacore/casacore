@@ -31,15 +31,15 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 #define MSTableStatics(ColEnum,KeyEnum) \
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::columnMap_p(""); \
-SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther); \
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colCommentMap_p(""); \
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::colUnitMap_p(""); \
-SimpleOrderedMap<Int, String> \
+SimpleOrderedMap<int32_t, String> MSTable<ColEnum,KeyEnum>::columnMap_p(""); \
+SimpleOrderedMap<int32_t, int32_t> MSTable<ColEnum,KeyEnum>::colDTypeMap_p(TpOther); \
+SimpleOrderedMap<int32_t, String> MSTable<ColEnum,KeyEnum>::colCommentMap_p(""); \
+SimpleOrderedMap<int32_t, String> MSTable<ColEnum,KeyEnum>::colUnitMap_p(""); \
+SimpleOrderedMap<int32_t, String> \
   MSTable<ColEnum,KeyEnum>::colMeasureTypeMap_p(""); \
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keywordMap_p(""); \
-SimpleOrderedMap<Int, Int> MSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther); \
-SimpleOrderedMap<Int, String> MSTable<ColEnum,KeyEnum>::keyCommentMap_p(""); \
+SimpleOrderedMap<int32_t, String> MSTable<ColEnum,KeyEnum>::keywordMap_p(""); \
+SimpleOrderedMap<int32_t, int32_t> MSTable<ColEnum,KeyEnum>::keyDTypeMap_p(TpOther); \
+SimpleOrderedMap<int32_t, String> MSTable<ColEnum,KeyEnum>::keyCommentMap_p(""); \
 SimpleCountedConstPtr<TableDesc> MSTable<ColEnum,KeyEnum>::requiredTD_p;
  
 MSTableStatics(MS::PredefinedColumns,MS::PredefinedKeywords)

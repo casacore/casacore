@@ -92,7 +92,7 @@ public:
     MSField (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
     MSField (SetupNewTable &newTab, rownr_t nrrow = 0,
-		    Bool initialize = False);
+		    bool initialize = false);
     MSField (const Table &table);
     MSField (const MSField &other);
     // </group>
@@ -123,14 +123,14 @@ public:
     // EPHEM<id>_<comment>.tab
     // If any tables of the same id exist already, they are removed beforehand.
     // The optional EPHEMERIS_ID column is added if it doesn't exist, yet.
-    // Return False in case of errors.
-    Bool addEphemeris(const uInt id, const String& inputEphemTableName,
+    // Return false in case of errors.
+    bool addEphemeris(const uint32_t id, const String& inputEphemTableName,
 		      const String& comment);
 
     // Remove (delete) any ephemeris tables with given id (without changes to
     // the EPHEMERIS_ID column).
-    // Return False in case of errors (but True if the id didn't exist).
-    Bool removeEphemeris(const uInt id);
+    // Return false in case of errors (but true if the id didn't exist).
+    bool removeEphemeris(const uint32_t id);
 
     // Initialize the statics appropriately. This does not need to be
     // called by users, it is called by the implementation class
@@ -140,7 +140,7 @@ public:
 private:
 
     // required by the need to throw an exception in the destructor
-    Bool hasBeenDestroyed_p;
+    bool hasBeenDestroyed_p;
 };
 
 

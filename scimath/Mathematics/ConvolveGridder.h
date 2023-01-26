@@ -48,29 +48,29 @@ public:
 
   virtual ~ConvolveGridder() {}
 
-  virtual Bool grid(Array<Range>& gridded,
+  virtual bool grid(Array<Range>& gridded,
 		    const Vector<Domain>& position,
 		    const Range& value);
 
-  virtual Bool degrid(const Array<Range>& gridded,
+  virtual bool degrid(const Array<Range>& gridded,
 		      const Vector<Domain>& position,
 		      Range& value);
 
-  Vector<Double>& cFunction();
+  Vector<double>& cFunction();
 
-  Vector<Int>& cSupport();
+  Vector<int32_t>& cSupport();
 
-  Int& cSampling();
+  int32_t& cSampling();
 
 protected:
-  virtual Range correctionFactor1D(Int loc, Int len);
+  virtual Range correctionFactor1D(int32_t loc, int32_t len);
 
 private:
-  Vector<Double> convFunc;
-  Vector<Int> supportVec;
-  Vector<Int> loc;
-  Int sampling;
-  Int support;
+  Vector<double> convFunc;
+  Vector<int32_t> supportVec;
+  Vector<int32_t> loc;
+  int32_t sampling;
+  int32_t support;
   String cType;
 
 public:

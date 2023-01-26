@@ -85,16 +85,16 @@ public:
 
   void attach(const MSSysCal &sysCal);
 
-  // access to the antenna ID key, throws an exception if isNull() is False
-  Int &antennaId() {return *antennaId_p;}
+  // access to the antenna ID key, throws an exception if isNull() is false
+  int32_t &antennaId() {return *antennaId_p;}
 
-  // access to the feed ID key, throws an exception if isNull() is False
-  Int &feedId() {return *feedId_p;}
+  // access to the feed ID key, throws an exception if isNull() is false
+  int32_t &feedId() {return *feedId_p;}
 
-  // access to the spectral window ID key, throws an exception if isNull() is False
-  Int &spectralWindowId() {return *spwId_p;}
+  // access to the spectral window ID key, throws an exception if isNull() is false
+  int32_t &spectralWindowId() {return *spwId_p;}
 private:
-  RecordFieldPtr<Int> antennaId_p, feedId_p, spwId_p;
+  RecordFieldPtr<int32_t> antennaId_p, feedId_p, spwId_p;
 
   void attachIds();
 };

@@ -93,7 +93,7 @@ void MRadialVelocity::assure(const Measure &in) {
   }
 }
 
-MRadialVelocity::Types MRadialVelocity::castType(uInt tp) {
+MRadialVelocity::Types MRadialVelocity::castType(uint32_t tp) {
   MRadialVelocity::checkMyTypes();
   AlwaysAssert(tp < MRadialVelocity::N_Types, AipsError);
   return static_cast<MRadialVelocity::Types>(tp);
@@ -114,14 +114,14 @@ const String &MRadialVelocity::showType(MRadialVelocity::Types tp) {
   return tname[tp];
 }
 
-const String &MRadialVelocity::showType(uInt tp) {
+const String &MRadialVelocity::showType(uint32_t tp) {
   return MRadialVelocity::showType(MRadialVelocity::castType(tp));
 }
 
-const String* MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
-					  const uInt *&typ) {
-  static const Int N_name  = 8;
-  static const Int N_extra = 0;
+const String* MRadialVelocity::allMyTypes(int32_t &nall, int32_t &nextra,
+					  const uint32_t *&typ) {
+  static const int32_t N_name  = 8;
+  static const int32_t N_extra = 0;
   static const String tname[N_name] = {
     "LSRK",
     "LSRD",
@@ -132,7 +132,7 @@ const String* MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
     "LGROUP",
     "CMB" }; 
 
-  static const uInt oname[N_name] = {
+  static const uint32_t oname[N_name] = {
     MRadialVelocity::LSRK,
     MRadialVelocity::LSRD,
     MRadialVelocity::BARY,
@@ -149,8 +149,8 @@ const String* MRadialVelocity::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String* MRadialVelocity::allTypes(Int &nall, Int &nextra,
-					const uInt *&typ) const {
+const String* MRadialVelocity::allTypes(int32_t &nall, int32_t &nextra,
+					const uint32_t *&typ) const {
   return MRadialVelocity::allMyTypes(nall, nextra, typ);
 }
 
@@ -160,21 +160,21 @@ void MRadialVelocity::checkTypes() const {
 
 void MRadialVelocity::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
-    Int nall, nex;
-    const uInt *typ;
+    first = false;
+    int32_t nall, nex;
+    const uint32_t *typ;
     const String *const tps = MRadialVelocity::allMyTypes(nall,nex, typ);
     MRadialVelocity::Types tp;
-    for (Int i=0; i<nall; i++) {
+    for (int32_t i=0; i<nall; i++) {
       AlwaysAssert
 	(MRadialVelocity::getType(tp, MRadialVelocity::showType(typ[i])) &&
-	 tp == Int(typ[i]) &&
+	 tp == int32_t(typ[i]) &&
 	 MRadialVelocity::getType(tp, tps[i]) &&
-	 tp == Int(typ[i]), AipsError);
+	 tp == int32_t(typ[i]), AipsError);
     }
-    for (Int i=0; i<N_Types; i++) {
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(MRadialVelocity::getType(tp,
 					    MRadialVelocity::showType(i)) &&
 		   tp == i, AipsError);
@@ -182,42 +182,42 @@ void MRadialVelocity::checkMyTypes() {
   }
 }
 
-Bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+bool MRadialVelocity::getType(MRadialVelocity::Types &tp, const String &in) {
+  const uint32_t *oname;
+  int32_t nall, nex;
   const String *tname = MRadialVelocity::allMyTypes(nall, nex, oname);
   
-  Int i = Measure::giveMe(in, nall, tname);
+  int32_t i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) return False;
+  if (i>=nall) return false;
   else tp = static_cast<MRadialVelocity::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
+bool MRadialVelocity::giveMe(MRadialVelocity::Ref &mr, const String &in) {
   MRadialVelocity::Types tp;
   if (MRadialVelocity::getType(tp, in)) mr = MRadialVelocity::Ref(tp);
   else {
     mr = MRadialVelocity::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MRadialVelocity::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MRadialVelocity*>(&in)) return False;
+bool MRadialVelocity::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MRadialVelocity*>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MRadialVelocity::setRefString(const String &in) {
+bool MRadialVelocity::setRefString(const String &in) {
   MRadialVelocity::Types tp;
   if (MRadialVelocity::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MRadialVelocity::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MRadialVelocity::getDefaultType() const {
@@ -233,18 +233,18 @@ Quantity MRadialVelocity::get(const Unit &un) const {
 }
 
 MDoppler MRadialVelocity::toDoppler() {
-    Double t = data.getValue() / C::c;
+    double t = data.getValue() / C::c;
     return MDoppler( MVDoppler(t), MDoppler::BETA);
 }
 
 MDoppler MRadialVelocity::toDoppler(const Measure &in) {
   MRadialVelocity::assure(in);
-  Double t = ((MVRadialVelocity *)(in.getData()))->getValue() / C::c;
+  double t = ((MVRadialVelocity *)(in.getData()))->getValue() / C::c;
   return MDoppler( MVDoppler(t), MDoppler::BETA);
 }
 
 MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop) {
-    Double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
+    double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
 	.getValue().getValue();
     return MRadialVelocity(MVRadialVelocity(t),
 		      MRadialVelocity::LSRK);
@@ -252,7 +252,7 @@ MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop) {
 
 MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop,
 					     MRadialVelocity::Types typ) {
-    Double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
+    double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
 	.getValue().getValue();
     return MRadialVelocity(MVRadialVelocity(t),
 			   typ);
@@ -261,7 +261,7 @@ MRadialVelocity MRadialVelocity::fromDoppler(const MDoppler &dop,
 MRadialVelocity MRadialVelocity::fromDoppler(const Measure &dop,
 					     MRadialVelocity::Types typ) {
   MDoppler::assure(dop);
-  Double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
+  double t = C::c * MDoppler::Convert(dop, MDoppler::BETA)()
     .getValue().getValue();
   return MRadialVelocity(MVRadialVelocity(t),
 			 typ);

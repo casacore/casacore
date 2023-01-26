@@ -51,31 +51,31 @@ int main(int argc, const char* argv[])
 		   "Bool");
     inputs.readArguments (argc, argv);
 
-    if (inputs.getBool("interactive") == False) {
+    if (inputs.getBool("interactive") == false) {
       cout << "UNTESTED" << endl;
       return 3;
     }
     const Path device(inputs.getString("device"));
-    const uInt recordSize = inputs.getInt("record");
-    uInt totalBytes = inputs.getInt("bytes");
-    const Bool checkContents = inputs.getBool("check");;
-    const uInt nRecords = totalBytes/recordSize;
+    const uint32_t recordSize = inputs.getInt("record");
+    uint32_t totalBytes = inputs.getInt("bytes");
+    const bool checkContents = inputs.getBool("check");;
+    const uint32_t nRecords = totalBytes/recordSize;
     totalBytes = nRecords * recordSize; // To account for roundoff.
-    uChar* writeBuffer = new uChar[recordSize];
+    unsigned char* writeBuffer = new unsigned char[recordSize];
     { // Do the write test
-      TapeIO tape(device, True);
+      TapeIO tape(device, true);
       AlwaysAssert(tape.isWritable(), AipsError);
       tape.rewind();
       ACG g;
       DiscreteUniform rand(&g, 0, 255);
-      for (uInt i = 0; i < recordSize; i++) {
-	writeBuffer[i] = static_cast<uChar>(rand.asInt());
+      for (uint32_t i = 0; i < recordSize; i++) {
+	writeBuffer[i] = static_cast<unsigned char>(rand.asInt());
       }
       Timer clock;
-      for (uInt i = 0; i < nRecords; i++) {
+      for (uint32_t i = 0; i < nRecords; i++) {
 	tape.write(recordSize, writeBuffer);
       }
-      Double elapsedTime = clock.real();
+      double elapsedTime = clock.real();
       cout << "It took " << elapsedTime << " seconds to write " 
 	   << totalBytes/1024 << " kbytes using a record size of " 
 	   << recordSize << " bytes" << endl;
@@ -87,11 +87,11 @@ int main(int argc, const char* argv[])
       TapeIO tape(device);
       tape.rewind();
       AlwaysAssert(tape.isReadable(), AipsError);
-      uChar* readBuffer = new uChar[recordSize];
-      Int bytesRead = tape.read(recordSize, readBuffer, False);
-      AlwaysAssert(bytesRead == Int(recordSize), AipsError);
+      unsigned char* readBuffer = new unsigned char[recordSize];
+      int32_t bytesRead = tape.read(recordSize, readBuffer, false);
+      AlwaysAssert(bytesRead == int32_t(recordSize), AipsError);
       tape.skip(1);
-      bytesRead = tape.read(recordSize, readBuffer, False);
+      bytesRead = tape.read(recordSize, readBuffer, false);
       AlwaysAssert(bytesRead == 0, AipsError);
       delete [] readBuffer;
     }
@@ -101,20 +101,20 @@ int main(int argc, const char* argv[])
       TapeIO tape(fd);
       AlwaysAssert(tape.isReadable(), AipsError);
       tape.rewind();
-      uChar* readBuffer = new uChar[recordSize];
-      for (uInt i = 0; i < recordSize; i++) {
-	*(readBuffer + i) = uChar(0xa5);
+      unsigned char* readBuffer = new unsigned char[recordSize];
+      for (uint32_t i = 0; i < recordSize; i++) {
+	*(readBuffer + i) = static_cast<unsigned char>(0xa5);
       }
       Timer clock;
-      for (uInt l = 0; l < nRecords; l++) {
+      for (uint32_t l = 0; l < nRecords; l++) {
 	tape.read(recordSize, readBuffer);
 	if (checkContents) {
-	  for (uInt i = 0; i < recordSize; i++) {
+	  for (uint32_t i = 0; i < recordSize; i++) {
 	    AlwaysAssert(readBuffer[i] == writeBuffer[i], AipsError);
 	  }
  	}
       }
-      Double elapsedTime = clock.real();
+      double elapsedTime = clock.real();
       cout << "It took " << elapsedTime << " seconds to read " 
 	   << totalBytes/1024 << " kbytes using a record size of " 
 	   << recordSize << " bytes" << endl;

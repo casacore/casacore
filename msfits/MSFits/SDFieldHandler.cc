@@ -46,7 +46,7 @@ SDFieldHandler::SDFieldHandler()
     : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
 {;}
 
-SDFieldHandler::SDFieldHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
+SDFieldHandler::SDFieldHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) 
     : msField_p(0), msFieldCols_p(0), rownr_p(-1), index_p(0)
 {
     initAll(ms, handledCols, row);
@@ -92,7 +92,7 @@ SDFieldHandler &SDFieldHandler::operator=(const SDFieldHandler &other)
     return *this;
 }
 
-void SDFieldHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFieldHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -101,30 +101,30 @@ void SDFieldHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const
 void SDFieldHandler::resetRow(const Record &row)
 {
     clearRow();
-    Vector<Bool> dummyCols(row.nfields());
+    Vector<bool> dummyCols(row.nfields());
     initRow(dummyCols, row);
 }
 
-void SDFieldHandler::fill(const Record &, const String &name, Int directionRefType,
-			  const Matrix<Double> &directionPoly, Double time, Int sourceId)
+void SDFieldHandler::fill(const Record &, const String &name, int32_t directionRefType,
+			  const Matrix<double> &directionPoly, double time, int32_t sourceId)
 {
     // don't bother unless there is something there
     if (msField_p) {
-	Bool found = False;
-	Bool checkPhase, checkRef;
-	checkPhase = checkRef = False;
-	Matrix<Double> dirPoly = directionPoly;
-	Matrix<Double> phasePoly = directionPoly;
-	Matrix<Double> referencePoly = directionPoly;
-	Int npoly = dirPoly.nrow() - 1;
+	bool found = false;
+	bool checkPhase, checkRef;
+	checkPhase = checkRef = false;
+	Matrix<double> dirPoly = directionPoly;
+	Matrix<double> phasePoly = directionPoly;
+	Matrix<double> referencePoly = directionPoly;
+	int32_t npoly = dirPoly.nrow() - 1;
 
 	// adjustments to the above given possible former MS columns
 	if (delayDirField_p.isAttached()) {
 	    // old MS 1 is always accompanied by a delayDirRateField_p
 	    if (delayDirRateField_p.isAttached()) {
 		// only use this if the rate is non-zero AND non-inf AND not a NaN
-		Vector<Double> ddRate(*delayDirRateField_p);
-		Double d0, d1;
+		Vector<double> ddRate(*delayDirRateField_p);
+		double d0, d1;
 		d0 = ddRate(0);
 		d1 = ddRate(1);
 		if (!near(d0,0.0) && !near(d1,0.0) && !isInf(d0) && !isInf(d1) &&
@@ -141,12 +141,12 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 	    }
 	}
 	if (phaseDirField_p.isAttached()) {
-	    checkPhase = True;
+	    checkPhase = true;
 	    // old MS 1 is always accompanied by a phaseDirRateField_p
 	    if (phaseDirRateField_p.isAttached()) {
 		// only use this if the rate is non-zero AND non-inf AND not a NaN
-		Vector<Double> pdRate(*phaseDirRateField_p);
-		Double p0, p1;
+		Vector<double> pdRate(*phaseDirRateField_p);
+		double p0, p1;
 		p0 = pdRate(0);
 		p1 = pdRate(1);
 		if (!near(p0,0.0) && !near(p1,0.0) && !isInf(p0) && !isInf(p1) &&
@@ -163,12 +163,12 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 	    }
 	}
 	if (referenceDirField_p.isAttached()) {
-	    checkRef = True;
+	    checkRef = true;
 	    // old MS 1 is always accompanied by a referenceDirRateField_p
 	    if (referenceDirRateField_p.isAttached()) {
 		// only use this if the rate is non-zero AND non-inf AND not a NaN
-		Vector<Double> rdRate(*referenceDirRateField_p);
-		Double r0, r1;
+		Vector<double> rdRate(*referenceDirRateField_p);
+		double r0, r1;
 		r0 = rdRate(0);
 		r1 = rdRate(1);
 		if (!near(r0,0.0) && !near(r1,0.0) && !isInf(r0) && !isInf(r1) &&
@@ -187,8 +187,8 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 	
 	if (fieldIdField_p.isAttached() && *fieldIdField_p >= 0) {
 	    // see if this row can be reused
-	    Int thisRow = *fieldIdField_p;
-	    Bool found = thisRow >= 0 && uInt(thisRow) < msField_p->nrow();
+	    int32_t thisRow = *fieldIdField_p;
+	    bool found = thisRow >= 0 && uint32_t(thisRow) < msField_p->nrow();
 	    found = found && msFieldCols_p->sourceId()(thisRow) == sourceId;
 	    if (found && codeField_p.isAttached()) {
 		found = *codeField_p == msFieldCols_p->code()(thisRow);
@@ -218,9 +218,9 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 	    *sourceIdKey_p = sourceId;
 	    *timeKey_p = time;
 	    Vector<rownr_t> rows = index_p->getRowNumbers();
-	    uInt i=0;
+	    uint32_t i=0;
 	    while (i<rows.nelements() && !found) {
-		uInt thisRow = rows(i);
+		uint32_t thisRow = rows(i);
 		found = npoly == msFieldCols_p->numPoly()(thisRow);
 		found = found && allEQ(msFieldCols_p->delayDir()(thisRow),dirPoly);
 		// that is enough for a standard SDFITS fill, the following additional
@@ -267,7 +267,7 @@ void SDFieldHandler::fill(const Record &, const String &name, Int directionRefTy
 	    if (flagRowField_p.isAttached()) {
 		msFieldCols_p->flagRow().put(rownr_p, *flagRowField_p);
 	    } else {
-		msFieldCols_p->flagRow().put(rownr_p, False);
+		msFieldCols_p->flagRow().put(rownr_p, false);
 	    }
 	}
     }
@@ -303,7 +303,7 @@ void SDFieldHandler::clearRow()
     flagRowField_p.detach();
 }
 
-void SDFieldHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFieldHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     msField_p = new MSField(ms.field());
     AlwaysAssert(msField_p, AipsError);
@@ -320,55 +320,55 @@ void SDFieldHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, cons
     initRow(handledCols, row);
 }
 
-void SDFieldHandler::initRow(Vector<Bool> &handledCols, const Record &row)
+void SDFieldHandler::initRow(Vector<bool> &handledCols, const Record &row)
 {
     rownr_p = -1;
 
     if (row.fieldNumber("MAIN_FIELD_ID") >= 0 && row.dataType("MAIN_FIELD_ID") == TpInt) {
 	fieldIdField_p.attachToRecord(row,"MAIN_FIELD_ID");
-	handledCols(row.fieldNumber("MAIN_FIELD_ID")) = True;
+	handledCols(row.fieldNumber("MAIN_FIELD_ID")) = true;
     }
     if (row.fieldNumber("FIELD_CODE") >= 0 && row.dataType("FIELD_CODE") == TpString) {
 	codeField_p.attachToRecord(row,"FIELD_CODE");
-	handledCols(row.fieldNumber("FIELD_CODE")) = True;
+	handledCols(row.fieldNumber("FIELD_CODE")) = true;
     }
     if (row.fieldNumber("FIELD_NAME") >= 0 && row.dataType("FIELD_NAME") == TpString) {
 	nameField_p.attachToRecord(row,"FIELD_NAME");
-	handledCols(row.fieldNumber("FIELD_NAME")) = True;
+	handledCols(row.fieldNumber("FIELD_NAME")) = true;
     }
     if (row.fieldNumber("FIELD_TIME") >= 0 && row.dataType("FIELD_TIME") == TpDouble) {
 	timeField_p.attachToRecord(row,"FIELD_TIME");
-	handledCols(row.fieldNumber("FIELD_TIME")) = True;
+	handledCols(row.fieldNumber("FIELD_TIME")) = true;
     }
     if (row.fieldNumber("FIELD_DELAY_DIR") >= 0 && row.dataType("FIELD_DELAY_DIR") == TpArrayDouble) {
 	delayDirField_p.attachToRecord(row,"FIELD_DELAY_DIR");
-	handledCols(row.fieldNumber("FIELD_DELAY_DIR")) = True;
+	handledCols(row.fieldNumber("FIELD_DELAY_DIR")) = true;
     }
     if (row.fieldNumber("FIELD_DELAY_DIR_RATE") >= 0 && row.dataType("FIELD_DELAY_DIR_RATE") == TpArrayDouble) {
 	delayDirRateField_p.attachToRecord(row,"FIELD_DELAY_DIR_RATE");
-	handledCols(row.fieldNumber("FIELD_DELAY_DIR_RATE")) = True;
+	handledCols(row.fieldNumber("FIELD_DELAY_DIR_RATE")) = true;
     }
     if (row.fieldNumber("FIELD_PHASE_DIR") >= 0 && row.dataType("FIELD_PHASE_DIR") == TpArrayDouble) {
 	phaseDirField_p.attachToRecord(row,"FIELD_PHASE_DIR");
-	handledCols(row.fieldNumber("FIELD_PHASE_DIR")) = True;
+	handledCols(row.fieldNumber("FIELD_PHASE_DIR")) = true;
     }
     if (row.fieldNumber("FIELD_PHASE_DIR_RATE") >= 0 && row.dataType("FIELD_PHASE_DIR_RATE") == TpArrayDouble) {
 	phaseDirRateField_p.attachToRecord(row,"FIELD_PHASE_DIR_RATE");
-	handledCols(row.fieldNumber("FIELD_PHASE_DIR_RATE")) = True;
+	handledCols(row.fieldNumber("FIELD_PHASE_DIR_RATE")) = true;
     }
     if (row.fieldNumber("FIELD_REFERENCE_DIR") >= 0 && row.dataType("FIELD_REFERENCE_DIR") == TpArrayDouble) {
 	referenceDirField_p.attachToRecord(row,"FIELD_REFERENCE_DIR");
-	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR")) = True;
+	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR")) = true;
     }
     if (row.fieldNumber("FIELD_REFERENCE_DIR_RATE") >= 0 && 
 	row.dataType("FIELD_REFERENCE_DIR_RATE") == TpArrayDouble) {
 	referenceDirRateField_p.attachToRecord(row,"FIELD_REFERENCE_DIR_RATE");
-	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR_RATE")) = True;
+	handledCols(row.fieldNumber("FIELD_REFERENCE_DIR_RATE")) = true;
     }
     if (row.fieldNumber ("FIELD_FLAG_ROW") >= 0 &&
 	row.dataType("FIELD_FLAG_ROW") == TpBool) {
 	flagRowField_p.attachToRecord(row, "FIELD_FLAG_ROW");
-	handledCols(row.fieldNumber("FIELD_FLAG_ROW")) = True;
+	handledCols(row.fieldNumber("FIELD_FLAG_ROW")) = true;
     }
 }
 

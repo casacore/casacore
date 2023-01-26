@@ -36,7 +36,7 @@ int main() {
     try {
         // just check for compilation success, the real tests are in
         // tImageStatistics2
-        Double data[] = {
+        double data[] = {
             -2.61279178e+00,  -2.59342551e+00,  -2.16943479e+00,
             -2.13970494e+00,  -1.91509378e+00,  -1.91133809e+00,
             -1.84780550e+00,  -1.67959487e+00,  -1.55754685e+00,
@@ -75,82 +75,82 @@ int main() {
         };
         {
             // zscore=3.5, no iterations
-            ChauvenetCriterionStatistics<Double, Double*, Bool*> cs(3.5, 0);
+            ChauvenetCriterionStatistics<double, double*, bool*> cs(3.5, 0);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 106, AipsError);
             AlwaysAssert(*sd.max == 8, AipsError);
         }
         {
             // zscore=3.5, one iteration
-            ChauvenetCriterionStatistics<Double, Double*, Bool*> cs(3.5, 1);
+            ChauvenetCriterionStatistics<double, double*, bool*> cs(3.5, 1);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 104, AipsError);
             AlwaysAssert(*sd.max == 6, AipsError);
             // test cloning gives same results
             std::shared_ptr<
                 ChauvenetCriterionStatistics<
-                    Double, Double*, Bool*
+                    double, double*, bool*
                 >
             > cs1(
                 dynamic_cast<
-                    ChauvenetCriterionStatistics<Double, Double*, Bool*>*
+                    ChauvenetCriterionStatistics<double, double*, bool*>*
                 >(cs.clone())
             ); 
-            StatsData<Double> sd1 = cs1->getStatistics();
+            StatsData<double> sd1 = cs1->getStatistics();
             AlwaysAssert(sd1.npts == 104, AipsError);
             AlwaysAssert(*sd1.max == 6, AipsError);
         }
         {
             // zscore=3.5, iterate until converged
-            ChauvenetCriterionStatistics<Double, Double*, Bool*> cs(3.5, -1);
+            ChauvenetCriterionStatistics<double, double*, bool*> cs(3.5, -1);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 102, AipsError);
             AlwaysAssert(*sd.max == 4, AipsError);
         }
         {
             // use Chauvenet criterion, no iterations
-            ChauvenetCriterionStatistics<Double, Double*, Bool*> cs(-1, 0);
+            ChauvenetCriterionStatistics<double, double*, bool*> cs(-1, 0);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 106, AipsError);
             AlwaysAssert(*sd.max == 8, AipsError);
         }
         {
             // use Chauvenet criterion, one iteration
-            ChauvenetCriterionStatistics<Double, Double*, Bool*> cs(-1, 1);
+            ChauvenetCriterionStatistics<double, double*, bool*> cs(-1, 1);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 103, AipsError);
             AlwaysAssert(*sd.max == 5, AipsError);
         }
         {
             // use Chauvenet criterion, iterate until converged
-            ChauvenetCriterionStatistics<Double, Double*, Bool*> cs(-1, -1);
+            ChauvenetCriterionStatistics<double, double*, bool*> cs(-1, -1);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 100, AipsError);
             AlwaysAssert(*sd.max == data[99], AipsError);
         }
         {
-            // a compile test: change final template parameter to Int*
-            ChauvenetCriterionStatistics<Double, Double*, Bool*, Int*> cs(-1, -1);
+            // a compile test: change final template parameter to int32_t*
+            ChauvenetCriterionStatistics<double, double*, bool*, int32_t*> cs(-1, -1);
             cs.setData(data, 107);
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.npts == 100, AipsError);
             AlwaysAssert(*sd.max == data[99], AipsError);
         }
         {
             // illustrate fix of CAS-10103
-            ChauvenetCriterionStatistics<Double, vector<Float>::const_iterator> cs(3);
-            vector<Float> v0;
+            ChauvenetCriterionStatistics<double, vector<float>::const_iterator> cs(3);
+            vector<float> v0;
             v0.push_back(1.0);
             cs.setData(v0.begin(), v0.size());
-            StatsData<Double> sd = cs.getStatistics();
+            StatsData<double> sd = cs.getStatistics();
             AlwaysAssert(sd.mean == 1, AipsError);
-            vector<Float> v1;
+            vector<float> v1;
             v1.push_back(10);
             v1.push_back(11);
             cs.setData(v1.begin(), v1.size());

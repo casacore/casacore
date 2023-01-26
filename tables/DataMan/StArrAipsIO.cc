@@ -40,14 +40,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManColumnArrayAipsIO::StManColumnArrayAipsIO (StManAipsIO* smptr,
 						int dataType)
-: StManColumnAipsIO (smptr, dataType, True),
+: StManColumnAipsIO (smptr, dataType, true),
   nrelem_p  (0)
 {}
 
 StManColumnArrayAipsIO::~StManColumnArrayAipsIO()
 {
-  uInt nr = stmanPtr_p->nrow();
-  for (uInt i=0; i<nr; i++) {
+  uint32_t nr = stmanPtr_p->nrow();
+  for (uint32_t i=0; i<nr; i++) {
     deleteArray (i);
   }
 }
@@ -66,7 +66,7 @@ void StManColumnArrayAipsIO::addRow (rownr_t nrnew, rownr_t nrold)
   //# Allocate the fixed shape data arrays.
   void* ptr;
   for (; nrold<nrnew; nrold++) {
-    ptr = allocData (nrelem_p, False);
+    ptr = allocData (nrelem_p, false);
     putArrayPtr (nrold, ptr);
   }
 }
@@ -74,12 +74,12 @@ void StManColumnArrayAipsIO::addRow (rownr_t nrnew, rownr_t nrold)
 void StManColumnArrayAipsIO::doCreate (rownr_t nrrow)
 {
   addRow (nrrow, 0);
-  for (uInt i=0; i<nrrow; i++) {
+  for (uint32_t i=0; i<nrrow; i++) {
     initData (getArrayPtr(i), nrelem_p);
   } 
 }
 
-uInt StManColumnArrayAipsIO::ndim (rownr_t)
+uint32_t StManColumnArrayAipsIO::ndim (rownr_t)
   { return shape_p.nelements(); }
 
 IPosition StManColumnArrayAipsIO::shape (rownr_t)
@@ -89,7 +89,7 @@ IPosition StManColumnArrayAipsIO::shape (rownr_t)
 void StManColumnArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
-    Bool deleteIt;
+    bool deleteIt;
     void* data = arr.getVStorage (deleteIt);
     if (dtype() == TpString) {
       objcopy (static_cast<String*>(data),
@@ -105,7 +105,7 @@ void StManColumnArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
 void StManColumnArrayAipsIO::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
     DebugAssert (shape_p.isEqual (arr.shape()), AipsError);
-    Bool deleteIt;
+    bool deleteIt;
     const void* data = arr.getVStorage (deleteIt);
     if (dtype() == TpString) {
       objcopy (static_cast<String*>(getArrayPtr (rownr)),
@@ -131,7 +131,7 @@ void StManColumnArrayAipsIO::remove (rownr_t rownr)
 void StManColumnArrayAipsIO::deleteArray (rownr_t rownr)
 {
     void* datap = getArrayPtr (rownr);
-    deleteData (datap, False);
+    deleteData (datap, false);
 }
 
 
@@ -148,10 +148,10 @@ void StManColumnArrayAipsIO::putFile (rownr_t nrval, AipsIO& ios)
 //# Read all data from AipsIO.
 void StManColumnArrayAipsIO::getFile (rownr_t nrval, AipsIO& ios)
 {
-    uInt version = ios.getstart ("StManColumnArrayAipsIO");
+    uint32_t version = ios.getstart ("StManColumnArrayAipsIO");
     if (version == 1) {
 	IPosition shape;
-	uInt n;
+	uint32_t n;
 	ios >> n;            // data type
 	ios >> shape;
 	ios >> n;            // nelem
@@ -165,35 +165,35 @@ void StManColumnArrayAipsIO::getFile (rownr_t nrval, AipsIO& ios)
     { \
 	T** dpa = (T**)dp; \
 	while (nrval--) { \
-          ios.put (nrelem_p, *dpa, False);   \
+          ios.put (nrelem_p, *dpa, false);   \
 	    dpa++; \
 	} \
     }
 
-void StManColumnArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
+void StManColumnArrayAipsIO::putData (void* dp, uint32_t nrval, AipsIO& ios)
 {
     ios << nrval * nrelem_p;
     switch (dtype()) {
     case TpBool:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(Bool)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(bool)
 	break;
     case TpUChar:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(uChar)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(unsigned char)
 	break;
     case TpShort:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(Short)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(int16_t)
 	break;
     case TpUShort:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(uShort)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(uint16_t)
 	break;
     case TpInt:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(Int)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(int32_t)
 	break;
     case TpUInt:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(uInt)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(uint32_t)
 	break;
     case TpInt64:
-	STMANCOLUMNARRAYAIPSIO_PUTDATA(Int64)
+	STMANCOLUMNARRAYAIPSIO_PUTDATA(int64_t)
 	break;
     case TpFloat:
 	STMANCOLUMNARRAYAIPSIO_PUTDATA(float)
@@ -218,11 +218,11 @@ void StManColumnArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 
 #define STMANCOLUMNARRAYAIPSIO_GETDATA(T) \
     { \
-	uInt nr; \
+	uint32_t nr; \
 	T** dparr = (T**)dp + inx; \
         T* dpd; \
 	while (nrval--) { \
-            dpd = (T*) allocData (nrelem_p, False);    \
+            dpd = (T*) allocData (nrelem_p, false);    \
 	    *dparr++ = dpd; \
             if (version == 1) { \
 	        ios >> nr; \
@@ -231,34 +231,34 @@ void StManColumnArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
 	} \
     }
 
-void StManColumnArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
-				      AipsIO& ios, uInt version)
+void StManColumnArrayAipsIO::getData (void* dp, uint32_t inx, uint32_t nrval,
+				      AipsIO& ios, uint32_t version)
 {
-    uInt nr;
+    uint32_t nr;
     if (version > 1) {
 	ios >> nr;
     }
     switch (dtype()) {
     case TpBool:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(Bool)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(bool)
 	break;
     case TpUChar:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(uChar)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(unsigned char)
 	break;
     case TpShort:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(Short)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(int16_t)
 	break;
     case TpUShort:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(uShort)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(uint16_t)
 	break;
     case TpInt:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(Int)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(int32_t)
 	break;
     case TpUInt:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(uInt)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(uint32_t)
 	break;
     case TpInt64:
-	STMANCOLUMNARRAYAIPSIO_GETDATA(Int64)
+	STMANCOLUMNARRAYAIPSIO_GETDATA(int64_t)
 	break;
     case TpFloat:
 	STMANCOLUMNARRAYAIPSIO_GETDATA(float)

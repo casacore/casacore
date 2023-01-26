@@ -116,7 +116,7 @@ public:
     // create an n-th order Chebyshev polynomial with the coefficients
     // equal to zero.  The bounded domain is [T(-1), T(1)].  The 
     // OutOfDomainMode is CONSTANT, and the default value is T(0).
-    explicit MarshallableChebyshev(const uInt n) : 
+    explicit MarshallableChebyshev(const uint32_t n) : 
 	Chebyshev<T>(n), FunctionMarshallable(FUNCTYPE)  {}
 
     // create a zero-th order Chebyshev polynomical with the first coefficient

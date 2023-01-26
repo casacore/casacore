@@ -56,25 +56,25 @@ class String;
 // <templating arg=T>
 // <li> A statistics accumulator accepts (weighted) input values and 
 // calculates simple statistice (min, max, weighted mean, rms etc).
-// The accepted input types are real, i.e. Int, uInt, Float, Double, 
+// The accepted input types are real, i.e. int32_t, uint32_t, float, double, 
 // but not Complex. The reason for this is that the < operator of
 // Complex (needed for min/max) works on the norm in any case, and
 // the sqrt function (needed for rms) yields an ambiguous result.
 //   
 // Restriction to real types also allows the internal arithmetic type 
-// to be Double rather than the input type. The latter would give
+// to be double rather than the input type. The latter would give
 // all kinds of complications with weighting, accuracy and overflow
-// if the input type would be Int or uInt.
+// if the input type would be int32_t or uint32_t.
 // </templating>
 
 // <synopsis>
 // The (weighted) values are fed to StatAcc via the member function
 // `put'. They can be fed individually, or in the form of an
 // Array. The weights are optional (default = 1) and always have 
-// type Float.
+// type float.
 //
 // Asking for a result does not change the internal state. The 
-// type of the returned results is always Fallible<Double>.
+// type of the returned results is always Fallible<double>.
 // A result is invalid if no input values with non-zero weight
 // have been accumulated yet.
 //
@@ -90,12 +90,12 @@ class String;
 //
 // <example>
 // <srcblock>
-//   StatAcc<T> s;               // T is Float, Double, Int etc
+//   StatAcc<T> s;               // T is float, double, int32_t etc
 //   Matrix<T> vv(2,5);          // a matrix (array) of input values
-//   Matrix<Float> wgt(2,5);     // an associated matrix of weights
+//   Matrix<float> wgt(2,5);     // an associated matrix of weights
 //   .... fill vv and wgt with values and individual weights ... 
 //   s.put(vv,wgt);              // accumulate the weighted values   
-//   Fallible<Double> min = s.getMin();    // return the minimum value
+//   Fallible<double> min = s.getMin();    // return the minimum value
 //
 //   s.reset();                  // re-initialise
 //   s.put(vv);                  // if wgt omitted, default = 1.0
@@ -145,11 +145,11 @@ public:
     // If weight is omitted, the default=1.
     // <group>
     inline void put(const T v);           
-    inline void put(const T v, const Float w);
+    inline void put(const T v, const float w);
     void put(const Array<T>& v);      
-    void put(const Array<T>& v, const Array<Float>& w);
+    void put(const Array<T>& v, const Array<float>& w);
     void put(const Block<T>& v);      
-    void put(const Block<T>& v, const Block<Float>& w);
+    void put(const Block<T>& v, const Block<float>& w);
     // </group>
 
     // Get statistics results one at a time.
@@ -158,14 +158,14 @@ public:
     // Rms is defined w.r.t. the mean, and is the square of Variance. 
     // RmsAbs is the root-mean-square of the absolute input values.
     // <group>
-    Double getWtot() const;           
-    uInt             getCount() const;
-    Fallible<Double> getMin() const;        
-    Fallible<Double> getMax() const;      
-    Fallible<Double> getMean() const;        
-    Fallible<Double> getRms() const;      
-    Fallible<Double> getVariance() const;      
-    Fallible<Double> getRmsAbs() const; 
+    double getWtot() const;           
+    uint32_t             getCount() const;
+    Fallible<double> getMin() const;        
+    Fallible<double> getMax() const;      
+    Fallible<double> getMean() const;        
+    Fallible<double> getRms() const;      
+    Fallible<double> getVariance() const;      
+    Fallible<double> getRmsAbs() const; 
     // </group>
 
     // Print summary of accumulated statistics.
@@ -179,15 +179,15 @@ public:
     // </group>
 	
 private:
-    Double itsWtot;               //# Sum of weights
-    Double itsWsum;               //# Sum of weighted values
-    Double itsWssum;              //# Sum of weighted squares
-    Double itsMin;                //# Minimum value
-    Double itsMax;                //# Maximum value       
-    uInt   itsCount;              //# Number of samples
+    double itsWtot;               //# Sum of weights
+    double itsWsum;               //# Sum of weighted values
+    double itsWssum;              //# Sum of weighted squares
+    double itsMin;                //# Minimum value
+    double itsMax;                //# Maximum value       
+    uint32_t   itsCount;              //# Number of samples
 
     // Accumulate a single weighted value.
-    void put1(const T, const Float);
+    void put1(const T, const float);
 
 };
 
@@ -204,7 +204,7 @@ inline void StatAcc<T>::put(const T v) {
 }
 
 template<class T> 
-inline void StatAcc<T>::put(const T v, const Float w) {
+inline void StatAcc<T>::put(const T v, const float w) {
     put1(v, w);
 }    
 

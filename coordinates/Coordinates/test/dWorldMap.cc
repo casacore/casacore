@@ -31,8 +31,8 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
-           Vector<Int>& pmap, Vector<Int>& ptranspose,
+void list (bool ok, bool ok2, Vector<int32_t>& wmap, Vector<int32_t>& wtranspose,
+           Vector<int32_t>& pmap, Vector<int32_t>& ptranspose,
            CoordinateSystem& cSys1,
            CoordinateSystem& cSys2);
 
@@ -43,14 +43,14 @@ int main()
 //
 {
 try {
-   Vector<Int> wmap, pmap, wtranspose, ptranspose;
-   Vector<Bool> refChange;
+   Vector<int32_t> wmap, pmap, wtranspose, ptranspose;
+   Vector<bool> refChange;
    {
       cout << "2D [ra, dec] & 0D" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2;
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -59,8 +59,8 @@ try {
       cout << "0D & 2D [ra, dec]" << endl;
       CoordinateSystem cSys1;
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -69,8 +69,8 @@ try {
       cout << "3D [ra, dec, spec] & 3D [ra, dec, spec]" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -79,8 +79,8 @@ try {
       cout << "2D [ra, dec] & 3D [ra, dec, spec]" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -89,8 +89,8 @@ try {
       cout << "3D [ra, dec, spec] & 2D [ra, dec]" << endl;
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -100,13 +100,13 @@ try {
      
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Vector<Int> worldOrder(cSys2.nWorldAxes());
-      Vector<Int> pixelOrder(cSys2.nPixelAxes());
+      Vector<int32_t> worldOrder(cSys2.nWorldAxes());
+      Vector<int32_t> pixelOrder(cSys2.nPixelAxes());
       worldOrder(0) = 1; worldOrder(1) = 2; worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys2.transpose(worldOrder, pixelOrder);
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -115,14 +115,14 @@ try {
       cout << "2D [ra,dec] & 3D [ra, dec, spec] " << endl;
       cout << "   [0, 1]   &    [0, 1, -1]" << endl;
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      int32_t pSpec = CoordinateUtil::findSpectralAxis(cSys2);
       if (pSpec >= 0) {
-         Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+         int32_t wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
          cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
 //
          CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
-         Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-         Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+         bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+         bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
          list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       } else {
          cout << "Spectral missing.  This was not expected" << endl;
@@ -136,19 +136,19 @@ try {
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords2D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords3D();
 
-      Vector<Int> worldOrder(cSys2.nWorldAxes());
-      Vector<Int> pixelOrder(cSys2.nPixelAxes());
+      Vector<int32_t> worldOrder(cSys2.nWorldAxes());
+      Vector<int32_t> pixelOrder(cSys2.nPixelAxes());
       worldOrder(0) = 2; worldOrder(1) = 1; worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys2.transpose(worldOrder, pixelOrder);
 //
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys2);
+      int32_t pSpec = CoordinateUtil::findSpectralAxis(cSys2);
       if (pSpec >= 0) {
-         Int wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
+         int32_t wSpec = cSys2.pixelAxisToWorldAxis(pSpec);
          cSys2.removeWorldAxis(wSpec, cSys2.referenceValue()(wSpec));
 //
-         Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-         Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+         bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+         bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
          list (ok, ok2,wmap, wtranspose, pmap, ptranspose, cSys1, cSys2); 
       } else {
          cout << "Spectral missing.  This was not expected" << endl;
@@ -163,19 +163,19 @@ try {
       CoordinateSystem cSys1 = CoordinateUtil::defaultCoords3D();
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
 
-      Vector<Int> worldOrder(cSys1.nWorldAxes());
-      Vector<Int> pixelOrder(cSys1.nPixelAxes());
+      Vector<int32_t> worldOrder(cSys1.nWorldAxes());
+      Vector<int32_t> pixelOrder(cSys1.nPixelAxes());
       worldOrder(0) = 2; worldOrder(1) = 1; worldOrder(2) = 0;
       pixelOrder = worldOrder;
       cSys1.transpose(worldOrder, pixelOrder);
 //
-      Int pSpec = CoordinateUtil::findSpectralAxis(cSys1);
+      int32_t pSpec = CoordinateUtil::findSpectralAxis(cSys1);
       if (pSpec >= 0) {
-         Int wSpec = cSys1.pixelAxisToWorldAxis(pSpec);
+         int32_t wSpec = cSys1.pixelAxisToWorldAxis(pSpec);
          cSys1.removeWorldAxis(wSpec, cSys1.referenceValue()(wSpec));
 //
-         Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-         Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+         bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+         bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
          list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       } else {
          cout << "Spectral missing.  This was not expected" << endl;
@@ -191,8 +191,8 @@ try {
       CoordinateUtil::addFreqAxis(cSys2);
       CoordinateUtil::addIQUVAxis(cSys2);
 
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -206,8 +206,8 @@ try {
       CoordinateUtil::addIQUVAxis(cSys2);
       CoordinateUtil::addFreqAxis(cSys2);
  
-      Bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
-      Bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
+      bool ok = cSys1.worldMap(wmap, wtranspose, refChange, cSys2);
+      bool ok2 = cSys1.pixelMap(pmap, ptranspose, cSys2);
       list (ok, ok2, wmap, wtranspose, pmap, ptranspose, cSys1, cSys2);
       cout << endl << endl;
    }
@@ -221,8 +221,8 @@ return 0;
 
 }
 
-void list (Bool ok, Bool ok2, Vector<Int>& wmap, Vector<Int>& wtranspose,
-           Vector<Int>& pmap, Vector<Int>& ptranspose,
+void list (bool ok, bool ok2, Vector<int32_t>& wmap, Vector<int32_t>& wtranspose,
+           Vector<int32_t>& pmap, Vector<int32_t>& ptranspose,
            CoordinateSystem& cSys1,
            CoordinateSystem& cSys2)
 {

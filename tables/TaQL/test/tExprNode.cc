@@ -42,47 +42,47 @@
 // Test program for class TableExprNode.
 // </summary>
 
-Bool foundError = False;
+bool foundError = false;
 
 
 void checkScaBool (const String& str, TableExprId& exprid,
 		   const TableExprNode& expr,
-		   const Bool& value)
+		   const bool& value)
 {
   cout << "checkScaBool " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpBool);
-  Bool val;
+  bool val;
   expr.get (exprid, val);
   if (val != value) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
 
 void checkScaInt (const String& str, TableExprId& exprid,
                   const TableExprNode& expr,
-                  const Int& value)
+                  const int32_t& value)
 {
   cout << "checkScaInt " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpInt64);
-  Int64 val;
+  int64_t val;
   expr.get (exprid, val);
   if (val != value) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
 
 void checkScaDouble (const String& str, TableExprId& exprid,
 		     const TableExprNode& expr,
-		     const Double& value)
+		     const double& value)
 {
   cout << "checkScaDouble " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpDouble);
-  Double val;
+  double val;
   expr.get (exprid, val);
   if (!near (val,  value, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
@@ -96,7 +96,7 @@ void checkScaDComplex (const String& str, TableExprId& exprid,
   DComplex val;
   expr.get (exprid, val);
   if (!near (val,  value, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
@@ -110,7 +110,7 @@ void checkScaString (const String& str, TableExprId& exprid,
   String val;
   expr.get (exprid, val);
   if (val != value) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
@@ -123,23 +123,23 @@ void checkScaDate (const String& str, TableExprId& exprid,
   AlwaysAssertExit (expr.dataType() == TpQuantity);
   MVTime val;
   expr.get (exprid, val);
-  if (!near (Double(val), Double(value), 1.e-10)) {
-    foundError = True;
-    cout << str << ": found value " << Double(val) << "; expected "
-         << Double(value) << endl;
+  if (!near (double(val), double(value), 1.e-10)) {
+    foundError = true;
+    cout << str << ": found value " << double(val) << "; expected "
+         << double(value) << endl;
   }
 }
 
 void checkArrBool (const String& str, TableExprId& exprid,
 		   const TableExprNode& expr,
-		   const Array<Bool>& value)
+		   const Array<bool>& value)
 {
   cout << "checkArrBool " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpBool);
-  MArray<Bool> val;
+  MArray<bool> val;
   expr.get (exprid, val);
   if (! allEQ (val.array(), value)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array()
          << "; expected " << value << endl;
   }
@@ -147,30 +147,30 @@ void checkArrBool (const String& str, TableExprId& exprid,
 
 void checkArrInt (const String& str, TableExprId& exprid,
                   const TableExprNode& expr,
-                  const Array<Int>& value)
+                  const Array<int32_t>& value)
 {
   cout << "checkArrInt " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpInt64);
-  MArray<Int64> val64;
+  MArray<int64_t> val64;
   expr.get (exprid, val64);
-  Array<Int> val(val64.shape());
+  Array<int32_t> val(val64.shape());
   convertArray (val, val64.array());
   if (! allEQ (val, value)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val << "; expected " << value << endl;
   }
 }
 
 void checkArrDouble (const String& str, TableExprId& exprid,
 		     const TableExprNode& expr,
-		     const Array<Double>& value)
+		     const Array<double>& value)
 {
   cout << "checkArrDouble " << str << endl;
   AlwaysAssertExit (expr.dataType() == TpDouble);
-  MArray<Double> val;
+  MArray<double> val;
   expr.get (exprid, val);
   if (! allNear (val.array(), value, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array()
          << "; expected " << value << endl;
   }
@@ -185,7 +185,7 @@ void checkArrDComplex (const String& str, TableExprId& exprid,
   MArray<DComplex> val;
   expr.get (exprid, val);
   if (! allNear (val.array(), value, 1.e-10)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array()
          << "; expected " << value << endl;
   }
@@ -200,7 +200,7 @@ void checkArrString (const String& str, TableExprId& exprid,
   MArray<String> val;
   expr.get (exprid, val);
   if (! allEQ (val.array(), value)) {
-    foundError = True;
+    foundError = true;
     cout << str << ": found value " << val.array()
          << "; expected " << value << endl;
   }
@@ -208,11 +208,11 @@ void checkArrString (const String& str, TableExprId& exprid,
 
 #define checkFailure(STR,EXPR)\
 {\
-  bool failed = False;\
+  bool failed = false;\
   try {\
     TableExprNode n(EXPR);\
   } catch (std::exception&) {\
-    failed = True;\
+    failed = true;\
   }\
   if (!failed) {\
     cout << STR << ": was expected to fail, but did not" << endl;\
@@ -226,54 +226,54 @@ void doIt()
   // Define arrays for various data types with the same values,
   // so they can be used when checking results.
   IPosition shp(2,4,5);
-  Vector<Int> shpVec(2);
+  Vector<int32_t> shpVec(2);
   convertArray (shpVec, shp.asVector());
-  Matrix<Bool> arrb1(shp);
-  arrb1 = True;
-  arrb1(2,3) = False;
-  Matrix<Bool> arrb2(shp);
-  arrb2 = True;
-  arrb2(2,3) = False;
-  arrb2(1,4) = False;
-  Matrix<Int> arrbi(shp);
+  Matrix<bool> arrb1(shp);
+  arrb1 = true;
+  arrb1(2,3) = false;
+  Matrix<bool> arrb2(shp);
+  arrb2 = true;
+  arrb2(2,3) = false;
+  arrb2(1,4) = false;
+  Matrix<int32_t> arrbi(shp);
   arrbi=0;
   arrbi(2,3) = 1;
-  Matrix<Double> arrbd(shp);
+  Matrix<double> arrbd(shp);
   arrbd=1.;
   arrbd(2,3)=0.;
-  Matrix<Int>  arri1(shp);
-  Matrix<Double> arrid1(shp);
+  Matrix<int32_t>  arri1(shp);
+  Matrix<double> arrid1(shp);
   Matrix<DComplex> arriz1(shp);
   indgen (arri1, -1);
   indgen (arrid1, -1.);
   indgen (arriz1, DComplex(-1.,0));
-  Matrix<Int> arrisign(shp);
-  Matrix<Double> arridsign(shp);
-  Matrix<Double> arridarg(shp);
+  Matrix<int32_t> arrisign(shp);
+  Matrix<double> arridsign(shp);
+  Matrix<double> arridarg(shp);
   arrisign = 1;
   arrisign.data()[0] = -1;
   convertArray (arridarg, arrisign);
   arridarg = (arridarg-1.)*C::pi/-2.;
   arrisign.data()[1] = 0;
   convertArray (arridsign, arrisign);
-  Matrix<Int>  arri2(shp);
-  Matrix<Double> arrid2(shp);
+  Matrix<int32_t>  arri2(shp);
+  Matrix<double> arrid2(shp);
   Matrix<DComplex> arriz2(shp);
   indgen (arri2, 100, 2);
   indgen (arrid2, 100., 2.);
   indgen (arriz2, DComplex(100.,0.), DComplex(2.,0.));
-  Matrix<Double> arrd1(shp);
+  Matrix<double> arrd1(shp);
   Matrix<DComplex> arrdz1(shp);
-  Matrix<Double> arrdsign(shp);
-  Matrix<Int> arrdi1(shp);
+  Matrix<double> arrdsign(shp);
+  Matrix<int32_t> arrdi1(shp);
   indgen (arrd1, -222.1, 20.);
   indgen (arrdz1, DComplex(-222.1,0.), DComplex(20.,0.));
   arrdsign = 1.;
   arrdsign(IPosition(2,0,0),IPosition(2,3,2)) = -1.;
   convertArray (arrdi1, arrd1);
-  Matrix<Double> arrdzero(shp);
+  Matrix<double> arrdzero(shp);
   arrdzero = 0.;
-  Matrix<Double> arrd2(shp);
+  Matrix<double> arrd2(shp);
   Matrix<DComplex> arrdz2(shp);
   indgen (arrd2, 300., 2.);
   indgen (arrdz2, DComplex(300.,0.), DComplex(2.,0.));
@@ -293,26 +293,26 @@ void doIt()
   AlwaysAssertExit (arrs1.size() == 4);
   Vector<String> arrs2 = stringToVector("s1, s12, s123, s1234");
   Matrix<String> mats1(shp);
-  for (Int i=0; i<shp[1]; ++i) {
+  for (int32_t i=0; i<shp[1]; ++i) {
     mats1[i] = arrs1;
   }
   // Do the same for scalars.
-  Bool sb1 = True;
-  Bool sb2 = False;
-  Int si1 = 1;
-  Double sid1 = si1;
+  bool sb1 = true;
+  bool sb2 = false;
+  int32_t si1 = 1;
+  double sid1 = si1;
   DComplex siz1 = sid1;
-  Int si2 = 2;
-  Double sid2 = si2;
+  int32_t si2 = 2;
+  double sid2 = si2;
   DComplex siz2 = sid2;
-  Double sd1 = 3.1;
-  Array<Double> sd1arr(shp);
+  double sd1 = 3.1;
+  Array<double> sd1arr(shp);
   sd1arr = sd1;
   DComplex sdz1(sd1);
   Array<DComplex> sdz1arr(shp);
   sdz1arr = sdz1;
-  Double sd2 = -4;
-  Array<Double> sd2arr(shp);
+  double sd2 = -4;
+  Array<double> sd2arr(shp);
   sd2arr = sd2;
   DComplex sdz2(sd2);
   Array<DComplex> sdz2arr(shp);
@@ -415,7 +415,7 @@ void doIt()
   // Form combinations of scalars and arrays (and constants).
   checkScaBool ("|| sb-sb", exprid, esb1||esb2, sb1||sb2);
   checkScaBool ("&& sb-sb", exprid, esb1&&esb2, sb1&&sb2);
-  checkScaBool ("&& sb", exprid, esb1&&True, sb1&&True);
+  checkScaBool ("&& sb", exprid, esb1&&true, sb1&&true);
   checkScaBool ("! sb1", exprid, !esb1, !sb1);
   checkScaBool ("! sb2", exprid, !esb2, !sb2);
   checkArrBool ("|| ab-ab", exprid, earrb1||earrb2, arrb1||arrb2);
@@ -509,7 +509,7 @@ void doIt()
   checkScaBool ("== sb-sb", exprid, esb1==esb2, sb1==sb2);
   checkScaBool ("!= sb-sb", exprid, esb1!=esb2, sb1!=sb2);
   checkArrBool ("== ab-ab", exprid, earrb1==earrb2, arrb1==arrb2);
-  checkArrBool ("== ab-t", exprid, earrb1==True, arrb1==True);
+  checkArrBool ("== ab-t", exprid, earrb1==true, arrb1==true);
   checkArrBool ("== sb-ab", exprid, esb1==earrb2, sb1==arrb2);
   checkArrBool ("!= ab-ab", exprid, earrb1!=earrb2, arrb1!=arrb2);
   checkArrBool ("!= ", exprid, earrb1!=esb2, arrb1!=sb2);
@@ -679,7 +679,7 @@ void doIt()
 
   // Test various functions.
   // They are done in order of their definition in ExprFuncNode.h.
-  // First the ones taking one Double or DComplex argument.
+  // First the ones taking one double or DComplex argument.
   checkScaDouble ("sin si", exprid, sin(esi1), sin(sid1));
   checkArrDouble ("sin ai", exprid, sin(earri1), sin(arrid1));
   checkScaDouble ("sin sd", exprid, sin(esd1), sin(sd1));
@@ -780,7 +780,7 @@ void doIt()
   checkArrDouble ("imag az", exprid, imag(earrz1), imag(arrz1));
   checkScaInt ("integer si", exprid, integer(esi1), si1);
   checkArrInt ("integer ai", exprid, integer(earri1), arri1);
-  checkScaInt ("integer sd", exprid, integer(esd1), Int(sd1));
+  checkScaInt ("integer sd", exprid, integer(esd1), int32_t(sd1));
   checkArrInt ("integer ad", exprid, integer(earrd1), arrdi1);
   checkScaDComplex ("complex si", exprid, formComplex(esi1, 0), siz1);
   checkArrDComplex ("complex ai", exprid, formComplex(earri1, 0), arriz1);
@@ -933,9 +933,9 @@ void doIt()
   checkArrDComplex ("max az-sd", exprid, max(earrz1,esd2), max(arrz1,sdz2));
 
   // Test the iif functions in various ways.
-  checkScaDouble ("iif sb-sd-sd", exprid, iif(True,esd1,esd2), sd1);
-  checkScaDouble ("iif sb-sd-si", exprid, iif(False,esd1,esi2), sid2);
-  checkArrDouble ("iif sb-ad-si", exprid, iif(False,earrd1,0), arrdzero);
+  checkScaDouble ("iif sb-sd-sd", exprid, iif(true,esd1,esd2), sd1);
+  checkScaDouble ("iif sb-sd-si", exprid, iif(false,esd1,esi2), sid2);
+  checkArrDouble ("iif sb-ad-si", exprid, iif(false,earrd1,0), arrdzero);
   checkArrInt    ("iif ab-si-si", exprid, iif(earrb1,0,1), arrbi);
   checkArrDouble ("iif ab-si-sd", exprid, iif(earrb1,1,0.), arrbd);
 
@@ -997,25 +997,25 @@ void doIt()
   checkScaDComplex ("sumSquare(arrz)", exprid, sumSquare(earrz1),
                     Complex(-358100,859440));
 
-  // Check the functions operating on Bool arrays (and scalars).
+  // Check the functions operating on bool arrays (and scalars).
   checkScaBool ("any(sb)", exprid, any(esb1), sb1);
   checkScaBool ("all(sb)", exprid, all(esb1), sb1);
   checkScaInt ("ntrue(sb)", exprid, ntrue(esb1), 1);
   checkScaInt ("nfalse(sb)", exprid, nfalse(esb1), 0);
-  checkScaBool ("any(ab)", exprid, any(earrb1), True);
-  checkScaBool ("any(ab)", exprid, any(earrb1==earrb1), True);
-  checkScaBool ("any(ab)", exprid, any(earrb1!=earrb1), False);
-  checkScaBool ("all(ab)", exprid, all(earrb1), False);
-  checkScaBool ("all(ab)", exprid, all(earrb1==earrb1), True);
-  checkScaBool ("all(ab)", exprid, all(earrb1!=earrb1), False);
+  checkScaBool ("any(ab)", exprid, any(earrb1), true);
+  checkScaBool ("any(ab)", exprid, any(earrb1==earrb1), true);
+  checkScaBool ("any(ab)", exprid, any(earrb1!=earrb1), false);
+  checkScaBool ("all(ab)", exprid, all(earrb1), false);
+  checkScaBool ("all(ab)", exprid, all(earrb1==earrb1), true);
+  checkScaBool ("all(ab)", exprid, all(earrb1!=earrb1), false);
   checkScaInt ("ntrue(ab)", exprid, ntrue(earrb1), 19);
   checkScaInt ("nfalse(ab)", exprid, nfalse(earrb1), 1);
-  checkScaBool ("isnan(si)", exprid, isNaN(esi1), False);
-  checkScaBool ("isnan(sd)", exprid, isNaN(esd1), False);
-  checkScaBool ("isnan(sz)", exprid, isNaN(esz1), False);
-  checkScaBool ("isnan(ai)", exprid, any(isNaN(earri1)), False);
-  checkScaBool ("isnan(ad)", exprid, any(isNaN(earrd1)), False);
-  checkScaBool ("isnan(az)", exprid, any(isNaN(earrz1)), False);
+  checkScaBool ("isnan(si)", exprid, isNaN(esi1), false);
+  checkScaBool ("isnan(sd)", exprid, isNaN(esd1), false);
+  checkScaBool ("isnan(sz)", exprid, isNaN(esz1), false);
+  checkScaBool ("isnan(ai)", exprid, any(isNaN(earri1)), false);
+  checkScaBool ("isnan(ad)", exprid, any(isNaN(earrd1)), false);
+  checkScaBool ("isnan(az)", exprid, any(isNaN(earrz1)), false);
 
   // Check array functions.
   checkScaInt ("array(ab2)", exprid, ntrue(array(esb1,shp)), 20);
@@ -1049,12 +1049,12 @@ void doIt()
   checkScaString ("replace(ss,rg2,ss)", exprid, replace(TableExprNode("abcdefab"),Regex("a."), "xaz"), "xazcdefxaz");
   checkScaString ("replace(ss,rg1,ss)", exprid, replace(TableExprNode("abcdefab"),Regex("a.$"), "xaz"), "abcdefxaz");
   checkArrString ("replace(as,Regex(.*)", exprid, replace(earrs1,Regex(".*")), Vector<String>(arrs1.size(), ""));
-  checkScaBool ("ss==regex", exprid, ess1==regex(TableExprNode("s.*")), True);
-  checkScaBool ("ss==regex", exprid, ess1==regex(TableExprNode("as.*")), False);
-  checkScaBool ("ss==patt", exprid, ess1==pattern(TableExprNode("s*")), True);
-  checkScaBool ("ss==patt", exprid, ess1==pattern(TableExprNode("as*")), False);
-  checkScaBool ("ss==sqlpatt", exprid, ess1==sqlpattern(TableExprNode("s%")), True);
-  checkScaBool ("ss==sqlpatt", exprid, ess1==sqlpattern(TableExprNode("as%")), False);
+  checkScaBool ("ss==regex", exprid, ess1==regex(TableExprNode("s.*")), true);
+  checkScaBool ("ss==regex", exprid, ess1==regex(TableExprNode("as.*")), false);
+  checkScaBool ("ss==patt", exprid, ess1==pattern(TableExprNode("s*")), true);
+  checkScaBool ("ss==patt", exprid, ess1==pattern(TableExprNode("as*")), false);
+  checkScaBool ("ss==sqlpatt", exprid, ess1==sqlpattern(TableExprNode("s%")), true);
+  checkScaBool ("ss==sqlpatt", exprid, ess1==sqlpattern(TableExprNode("as%")), false);
 
   // Check date functions.
   checkScaDouble ("time", exprid, time("5Apr09/12:"), C::pi);

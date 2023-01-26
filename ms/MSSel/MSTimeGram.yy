@@ -37,10 +37,10 @@ using namespace casacore;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
   const MEpoch* tval;
-  Int ival;
-  Double dval;
-  Double dval3[3];
-  Int ival3[3];
+  int32_t ival;
+  double dval;
+  double dval3[3];
+  int32_t ival3[3];
   TimeFields timeFields;
 }
 
@@ -90,17 +90,17 @@ using namespace casacore;
 %{
 #include <casacore/ms/MSSel/MSSelectionError.h>
   //  extern MSTimeParse *thisMSTParser;
-  Bool MSTimeEdgeInclusiveRange=False;
-  Float MSTimeEdgeBuffer=-1.0;
+  bool MSTimeEdgeInclusiveRange=false;
+  float MSTimeEdgeBuffer=-1.0;
   int MSTimeGramlex (YYSTYPE*);
   inline void MSTGgarbageCollector(const MEpoch* tval){if (tval) delete tval;}
-  void splitSec(const Double& fsec, Int &sec, Int &milliSec) 
+  void splitSec(const double& fsec, int32_t &sec, int32_t &milliSec) 
   {
-    sec = (Int)(fsec);
+    sec = (int32_t)(fsec);
     if (sec < 0)
       milliSec = -1;
     else
-      milliSec = (Int)((fsec - sec)*1000);
+      milliSec = (int32_t)((fsec - sec)*1000);
   }
 %}
 
@@ -148,8 +148,8 @@ singletimeexpr: yeartimeexpr
 LBRACKET: LSQBRACKET {$$=-1.0;}
         | FNUMBER LSQBRACKET {$$=$1;}
 
-brangetimeexpr: LBRACKET {MSTimeEdgeInclusiveRange=True;MSTimeEdgeBuffer=$1;}  rangetimeexpr RSQBRACKET {$$=$3;MSTimeEdgeInclusiveRange=False;MSTimeEdgeBuffer=-1.0;}
-              | rangetimeexpr            {MSTimeEdgeInclusiveRange=False;MSTimeEdgeBuffer=-1.0;$$=$1;}
+brangetimeexpr: LBRACKET {MSTimeEdgeInclusiveRange=true;MSTimeEdgeBuffer=$1;}  rangetimeexpr RSQBRACKET {$$=$3;MSTimeEdgeInclusiveRange=false;MSTimeEdgeBuffer=-1.0;}
+              | rangetimeexpr            {MSTimeEdgeInclusiveRange=false;MSTimeEdgeBuffer=-1.0;$$=$1;}
 rangetimeexpr: yeartimeexpr DASH yeartimeexpr 
                  {
 		   MSTimeParse::thisMSTParser->setDefaults($1);
@@ -167,13 +167,13 @@ rangetimeexpr: yeartimeexpr DASH yeartimeexpr
 		   MSTimeParse::thisMSTParser->setDefaults($3,false);
 		   MSTimeParse::thisMSTParser->validate($1);
 		   MSTimeParse::thisMSTParser->validate($3);
-		   Double s0 = Double($1.sec) + Double($1.fsec) / 1000.0;
-		   Double s1 = Double($3.sec) + Double($3.fsec) / 1000.0;
+		   double s0 = double($1.sec) + double($1.fsec) / 1000.0;
+		   double s1 = double($3.sec) + double($3.fsec) / 1000.0;
 
 		   Time time0($1.year,$1.month,$1.day,$1.hour,$1.minute,s0);
 		   Time time1($3.year,$3.month,$3.day,$3.hour,$3.minute,s1);
-		   Double mjd0 = time0.modifiedJulianDay();
-		   Double mjd1 = time1.modifiedJulianDay();
+		   double mjd0 = time0.modifiedJulianDay();
+		   double mjd1 = time1.modifiedJulianDay();
 		   MVEpoch mve0(mjd0);
 		   MVEpoch mve1(mjd0, mjd1);
 		   const MEpoch *t0=new MEpoch(mve0);
@@ -228,9 +228,9 @@ yearObj: yFields yFields wildNumber {/* YYYY/MM/DD */ $$[0]=$1; $$[1]=$2; $$[2]=
 yeartimeexpr: yearObj SLASH timeObj
                  {
 		   // YY/MM/DD/HH:MM:SS.FF
-		   Int sec,milliSec;
+		   int32_t sec,milliSec;
 		   splitSec($3[2],sec,milliSec);
-		   msTimeGramSetTimeFields($$,$1[0],$1[1],$1[2],(Int)$3[0],(Int)$3[1],sec,milliSec);
+		   msTimeGramSetTimeFields($$,$1[0],$1[1],$1[2],(int32_t)$3[0],(int32_t)$3[1],sec,milliSec);
 
 /* 		   cout << $1[0] << " "  */
 /* 			<< $1[1] << " " */
@@ -250,9 +250,9 @@ yeartimeexpr: yearObj SLASH timeObj
 		 }
             | timeObj 
                  {
-		   Int sec,milliSec;
+		   int32_t sec,milliSec;
 		   splitSec($1[2],sec,milliSec);
-		   msTimeGramSetTimeFields($$,-1,-1,-1,(Int)$1[0],(Int)$1[1],sec,milliSec);
+		   msTimeGramSetTimeFields($$,-1,-1,-1,(int32_t)$1[0],(int32_t)$1[1],sec,milliSec);
 /* 		   cout << -1 << " " */
 /* 			<< -1 << " " */
 /* 			<< -1 << " " */
@@ -266,7 +266,7 @@ yeartimeexpr: WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER
               COLON WNUMBER COLON FLOAT
                 {
 		  // YY/MM/DD/HH:MM:SS.FF
-		  Int sec,milliSec;
+		  int32_t sec,milliSec;
 		  splitSec($11,sec,milliSec);
 		  msTimeGramSetTimeFields($$,$1,$3,$5,$7,$9,sec,milliSec);
 		}
@@ -290,34 +290,34 @@ yeartimeexpr: WNUMBER SLASH WNUMBER SLASH WNUMBER SLASH WNUMBER
                 COLON WNUMBER COLON FLOAT
                 {
 		  // MM/DD/HH:MM:SS.FF
-		  Int sec,milliSec;
+		  int32_t sec,milliSec;
 		  splitSec($9,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,$1,$3,$5,$7,sec,milliSec);
 		}
               | WNUMBER COLON WNUMBER COLON FLOAT
                 {
 		  // HH:MM:SS.FF
-		  Int sec,milliSec;
+		  int32_t sec,milliSec;
 		  splitSec($5,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,-1,-1,$1,$3,sec,milliSec);
 		}
               | WNUMBER COLON FLOAT
                 {
 		  // MM:SS.FF
-		  Int sec,milliSec;
+		  int32_t sec,milliSec;
 		  splitSec($3,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,-1,-1,-1,$1,sec,milliSec);
 		}
               | FLOAT
                 {
-		  Int sec,milliSec;
+		  int32_t sec,milliSec;
 		  splitSec($1,sec,milliSec);
 		  msTimeGramSetTimeFields($$,-1,-1,-1,-1,-1,sec,milliSec);
 		}
              | WNUMBER SLASH WNUMBER COLON WNUMBER COLON FLOAT 
                {
 		 // DD/HH:MM:SS
-		 Int sec,milliSec;
+		 int32_t sec,milliSec;
 		 splitSec($7,sec,milliSec);
 		 msTimeGramSetTimeFields($$,-1,-1,$1,$3,$5,sec,milliSec);
 	       }

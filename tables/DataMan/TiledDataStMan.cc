@@ -44,7 +44,7 @@ TiledDataStMan::TiledDataStMan ()
 {}
 
 TiledDataStMan::TiledDataStMan (const String& hypercolumnName,
-				uInt64 maximumCacheSize)
+				uint64_t maximumCacheSize)
 : TiledStMan     (hypercolumnName, maximumCacheSize),
   nrrowLast_p    (0)
 {}
@@ -89,12 +89,12 @@ void TiledDataStMan::create64 (rownr_t nrrow)
 }
 	    
 
-Bool TiledDataStMan::flush (AipsIO&, Bool fsync)
+bool TiledDataStMan::flush (AipsIO&, bool fsync)
 {
     // Flush the caches.
     // Exit if nothing has changed.
     if (! flushCaches (fsync)) {
-	return False;
+	return false;
     }
     // Create the header file and write data in it.
     AipsIO* headerFile = headerFileCreate();
@@ -106,30 +106,30 @@ Bool TiledDataStMan::flush (AipsIO&, Bool fsync)
     *headerFile << rowMap_p << cubeMap_p << posMap_p;
     headerFile->putend();
     headerFileClose (headerFile);
-    return True;
+    return true;
 }
 
-void TiledDataStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
+void TiledDataStMan::readHeader (rownr_t tabNrrow, bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
-    uInt version = headerFile->getstart ("TiledDataStMan");
+    uint32_t version = headerFile->getstart ("TiledDataStMan");
     // Let the base class read and initialize its data.
-    uInt hdrVersion = headerFileGet (*headerFile, tabNrrow, firstTime, -1);
+    uint32_t hdrVersion = headerFileGet (*headerFile, tabNrrow, firstTime, -1);
     // Read the data for this object.
     // Version 1 was not incremented at the change to rownr_t, but the
     // parent class TiledStMan was. So test that version as well.
     if (version == 1  &&  hdrVersion < 3) {
-        uInt nrow;
+        uint32_t nrow;
         *headerFile >> nrow;
         nrrowLast_p = nrow;
     } else {
         *headerFile >> nrrowLast_p;
     }
     if (version == 1) {
-      uInt nused;
+      uint32_t nused;
       *headerFile >> nused;
-      std::vector<uInt> rowMap;
+      std::vector<uint32_t> rowMap;
       *headerFile >> rowMap;
       rowMap_p.insert (rowMap_p.end(), rowMap.begin(), rowMap.end());
       *headerFile >> cubeMap_p >> posMap_p;
@@ -149,7 +149,7 @@ void TiledDataStMan::addRow64 (rownr_t nrow)
 
 
 void TiledDataStMan::checkNrrow (const IPosition& cubeShape,
-				 uInt64 incrInLastDim) const
+				 uint64_t incrInLastDim) const
 {
     rownr_t nrrow = addedNrrow (cubeShape, incrInLastDim);
     if (nrrowLast_p + nrrow > nrrow_p) {
@@ -168,20 +168,20 @@ void TiledDataStMan::addHypercube (const IPosition& cubeShape,
     // Check the hypercube definition and create the hypercube.
     checkAddHypercube (cubeShape, values);
     TSMCube* hypercube = makeHypercube (cubeShape, tileShape, values);
-    uInt ncube = cubeSet_p.nelements();
+    uint32_t ncube = cubeSet_p.nelements();
     cubeSet_p.resize (ncube + 1);
     cubeSet_p[ncube] = hypercube;
     // Update the row map with the number of pixels in last dimension.
     updateRowMap (ncube, cubeShape(nrdim_p-1));
 }
 
-void TiledDataStMan::extendHypercube (uInt64 incrInLastDim,
+void TiledDataStMan::extendHypercube (uint64_t incrInLastDim,
 				      const Record& values)
 {
     // Check if id values are correctly given.
     // Get the hypercube using the id values.
     checkValues (idColSet_p, values);
-    Int cubeNr = getCubeIndex (values);
+    int32_t cubeNr = getCubeIndex (values);
     if (cubeNr < 0) {
 	throw (TSMError ("extendHypercube with unknown id values"));
     }
@@ -197,7 +197,7 @@ void TiledDataStMan::extendHypercube (uInt64 incrInLastDim,
 }
 
 
-void TiledDataStMan::updateRowMap (uInt cubeNr, uInt64 incrInLastDim)
+void TiledDataStMan::updateRowMap (uint32_t cubeNr, uint64_t incrInLastDim)
 {
     if (incrInLastDim == 0) {
 	return;
@@ -225,8 +225,8 @@ TSMCube* TiledDataStMan::getHypercube (rownr_t rownr, IPosition& position)
 	throw (TSMError ("getHypercube: rownr is too high"));
     }
     // Find the closest row number in the map (equal or less).
-    Bool found;
-    uInt index = binarySearchBrackets (found, rowMap_p, rownr, rowMap_p.size());
+    bool found;
+    uint32_t index = binarySearchBrackets (found, rowMap_p, rownr, rowMap_p.size());
     if (!found) {
 	index--;
     }
@@ -241,7 +241,7 @@ TSMCube* TiledDataStMan::getHypercube (rownr_t rownr, IPosition& position)
     const IPosition& shape = hypercube->cubeShape();
     position.resize (0);
     position = shape;
-    for (uInt i=nrCoordVector_p; i<nrdim_p-1; i++) {
+    for (uint32_t i=nrCoordVector_p; i<nrdim_p-1; i++) {
 	position(i) = rowDiff % shape(i);
 	rowDiff /= shape(i);
     }

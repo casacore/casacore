@@ -110,16 +110,16 @@ public:
     {}
 
     // Is the id given by row number?
-    Bool byRow() const;
+    bool byRow() const;
 
     // Is the id given as a RecordInterface?
-    Bool byRecord() const;
+    bool byRecord() const;
 
     // Is the id given as a TableExprData?
-    Bool byData() const;
+    bool byData() const;
 
     // Get the row number.
-    Int64 rownr() const;
+    int64_t rownr() const;
 
     // Get the Record reference.
     const RecordInterface& record() const;
@@ -134,9 +134,9 @@ public:
     void setRecord (const RecordInterface&);
 
 private:
-    Int                          type_p;
+    int32_t                          type_p;
     union {
-      Int64                      row_p;
+      int64_t                      row_p;
       const RecordInterface*     record_p;
       const TableExprData*       data_p;
     };
@@ -164,7 +164,7 @@ inline TableExprId::TableExprId (const TableExprData& data)
     data_p (&data)
 {}
 
-inline Int64 TableExprId::rownr() const
+inline int64_t TableExprId::rownr() const
 {
     return row_p;
 }
@@ -189,17 +189,17 @@ inline void TableExprId::setRecord (const RecordInterface& record)
     record_p = &record;
 }
 
-inline Bool TableExprId::byRow() const
+inline bool TableExprId::byRow() const
 {
     return type_p >= 0;
 }
 
-inline Bool TableExprId::byRecord() const
+inline bool TableExprId::byRecord() const
 {
     return type_p == -1;
 }
 
-inline Bool TableExprId::byData() const
+inline bool TableExprId::byData() const
 {
     return type_p == -2;
 }

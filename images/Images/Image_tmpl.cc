@@ -34,14 +34,14 @@
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class PagedImage<Float>;
+  template class PagedImage<float>;
   template class PagedImage<Complex>;
-  template class ImageStatistics<Float>;
-  template class ImageRegrid<Float>;
-  template class ImageInterface<Float>;
+  template class ImageStatistics<float>;
+  template class ImageRegrid<float>;
+  template class ImageInterface<float>;
   template class ImageInterface<Complex>;
-  template class TempImage<Float>;
+  template class TempImage<float>;
   template class TempImage<Complex>;
-  template class SubImage<Float>;
+  template class SubImage<float>;
   template class SubImage<Complex>;
 }

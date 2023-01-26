@@ -114,26 +114,26 @@ MaskedLattice<T>* ImageInterface<T>::cloneML() const
 
 // reset coords
 template <class T> 
-Bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
+bool ImageInterface<T>::setCoordinateInfo(const CoordinateSystem &coords)
 {
     ostringstream errmsg;
     errmsg << "Cannot set coordinate system: ";
-    Bool ok = (coords.nPixelAxes() == shape().nelements());
+    bool ok = (coords.nPixelAxes() == shape().nelements());
     if (!ok) {
 	errmsg << "coords.nPixelAxes() == " << coords.nPixelAxes()
                << ", image.ndim() == " << shape().nelements();
     } else {
 	// Check that the shape is compatible with the stokes coordinates
-	Int stkcrd = -1;
+	int32_t stkcrd = -1;
 	while (ok && (stkcrd = coords.findCoordinate(Coordinate::STOKES, 				  stkcrd)) >= 0) {
-	    ok = True;
-	    Int axis = coords.pixelAxes(stkcrd)(0);
+	    ok = true;
+	    int32_t axis = coords.pixelAxes(stkcrd)(0);
 	    const StokesCoordinate &stokes = coords.stokesCoordinate(stkcrd);
 	    if (axis >= 0) {
-		Int nstokes = stokes.stokes().nelements();
-		Int axislength = shape()(axis);
+		int32_t nstokes = stokes.stokes().nelements();
+		int32_t axislength = shape()(axis);
 		if (axislength > nstokes) {
-		    ok = False;
+		    ok = false;
 		    errmsg << "Stokes axis is length " << axislength <<
 			" but we only have " << nstokes << 
  			" stokes values in Stokes Coordinate " << stkcrd
@@ -173,10 +173,10 @@ LELCoordinates ImageInterface<T>::lelCoordinates() const
 
 template <class T>
 ImageRegion ImageInterface<T>::makeMask (const String& name,
-					 Bool defineAsRegion,
-					 Bool setAsDefaultMask,
-					 Bool initialize,
-					 Bool value)
+					 bool defineAsRegion,
+					 bool setAsDefaultMask,
+					 bool initialize,
+					 bool value)
 {
   ImageRegion region = regHandPtr_p->makeMask (*this, name);
   if (initialize) {
@@ -195,12 +195,12 @@ template <class T>
 void ImageInterface<T>::defineRegion (const String& name,
 				      const ImageRegion& region,
 				      RegionHandler::GroupType type,
-				      Bool overwrite)
+				      bool overwrite)
 {
   regHandPtr_p->defineRegion (name, region, type, overwrite);
 }
 template <class T>
-Bool ImageInterface<T>::hasRegion (const String& name,
+bool ImageInterface<T>::hasRegion (const String& name,
 				   RegionHandler::GroupType type) const
 {
   return regHandPtr_p->hasRegion (name, type);
@@ -209,7 +209,7 @@ template <class T>
 ImageRegion* ImageInterface<T>::getImageRegionPtr
                                      (const String& name,
 				      RegionHandler::GroupType type,
-				      Bool throwIfUnknown) const
+				      bool throwIfUnknown) const
 {
   return regHandPtr_p->getRegion (name, type, throwIfUnknown);
 }
@@ -217,14 +217,14 @@ template <class T>
 void ImageInterface<T>::renameRegion (const String& newName,
 				      const String& oldName,
 				      RegionHandler::GroupType type,
-				      Bool throwIfUnknown)
+				      bool throwIfUnknown)
 {
   regHandPtr_p->renameRegion (newName, oldName, type, throwIfUnknown);
 }
 template <class T>
 void ImageInterface<T>::removeRegion (const String& name,
 				      RegionHandler::GroupType type,
-				      Bool throwIfUnknown)
+				      bool throwIfUnknown)
 {
   regHandPtr_p->removeRegion (name, type, throwIfUnknown);
 }
@@ -256,7 +256,7 @@ template <class T>
 ImageRegion ImageInterface<T>::getRegion (const String& regionName,
 					  RegionHandler::GroupType type) const
 {
-  ImageRegion* regptr = getImageRegionPtr (regionName, type, True);
+  ImageRegion* regptr = getImageRegionPtr (regionName, type, true);
   ImageRegion reg(*regptr);
   delete regptr;
   return reg;
@@ -264,7 +264,7 @@ ImageRegion ImageInterface<T>::getRegion (const String& regionName,
 
 template<class T>
 String ImageInterface<T>::makeUniqueRegionName (const String& rootName,
-						uInt startNumber) const
+						uint32_t startNumber) const
 {
   return regHandPtr_p->makeUniqueRegionName (rootName, startNumber);
 }
@@ -279,45 +279,45 @@ void ImageInterface<T>::setImageInfoMember(const ImageInfo& info)
 }    
 
 template<class T>
-Bool ImageInterface<T>::setImageInfo(const ImageInfo& info)
+bool ImageInterface<T>::setImageInfo(const ImageInfo& info)
 //
 // Derived classes like PagedImage have to put this in the
 // permanent table keywordSet
 // 
 {
   setImageInfoMember (info);
-  return True;
+  return true;
 }    
 
 template<class T>
-Bool ImageInterface<T>::setMiscInfo(const RecordInterface& miscInfo)
+bool ImageInterface<T>::setMiscInfo(const RecordInterface& miscInfo)
 //
 // Derived classes like PagedImage have to put this in the
 // permanent table keywordSet
 // 
 { 
    miscInfo_p = miscInfo;
-   return True;
+   return true;
 }    
    
 template<class T>
-Bool ImageInterface<T>::setUnits(const Unit& unit)
+bool ImageInterface<T>::setUnits(const Unit& unit)
 //
 // Derived classes like PagedImage have to put this in the
 // permanent table keywordSet
 // 
 { 
    unit_p = unit;
-   return True;
+   return true;
 }    
 
 template<class T>
-Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
+bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
 {
 //
 // Save the current ImageInterface object to an output state record
 // 
-   Vector<Int> shape=this->shape().asVector();
+   Vector<int32_t> shape=this->shape().asVector();
    outRec.define("shape", shape);
 //
    CoordinateSystem coordsys = coordinates();
@@ -325,7 +325,7 @@ Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
    coordsys.save(coordinateRecord, "coordsys");
    outRec.defineRecord("coordsys", coordinateRecord, Record::Variable);
 //
-   outRec.define("imagearray", this->get(), False);
+   outRec.define("imagearray", this->get(), false);
 //
    Record imageInfoRecord;
    String errorString;             
@@ -333,14 +333,14 @@ Bool ImageInterface<T>::toRecord(String& error, RecordInterface& outRec)
    outRec.defineRecord("imageinfo", imageInfoRecord, 
 		       RecordInterface::Variable);
    error = String();
-   return True;
+   return true;
 }                        
 
 template<class T>
-Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
+bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
 {
 // Restore the current ImageInterface object from an input state record
-   Vector<Int> shape;
+   Vector<int32_t> shape;
    inRec.get("shape", shape);
    IPosition shape2(shape);
    TiledShape newShape(shape2);  
@@ -360,11 +360,11 @@ Bool ImageInterface<T>::fromRecord(String& error, const RecordInterface& inRec)
    imageInfo_p.fromRecord(errorString, imageInfoRecord); 
 
    error = String();
-   return True;
+   return true;
 }
 
 template<class T>
-ImageAttrHandler& ImageInterface<T>::attrHandler (Bool)
+ImageAttrHandler& ImageInterface<T>::attrHandler (bool)
 {
   return itsBaseAttrHandler;
 }

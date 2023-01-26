@@ -106,11 +106,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // This class consists of several static functions to convert
 // data from local (=native) format to a canonical format.
 // The canonical length of each data type is:
-// <br>- Bool: 1 bit
+// <br>- bool: 1 bit
 // <br>- char: 1 byte
 // <br>- short: 2 bytes
 // <br>- int: 4 bytes
-// <br>- Int64: 8 bytes
+// <br>- int64_t: 8 bytes
 // <br>- float: 4 bytes
 // <br>- double: 8 bytes
 // <br> The canonical format is big-endian IEEE format, so on many machines
@@ -134,7 +134,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-// void someFunction (const uInt* data, uInt nrval)
+// void someFunction (const uint32_t* data, uint32_t nrval)
 // {
 //     char* buffer = new char[nrval*CanonicalConversion::canonicalSize(data)];
 //     CanonicalConversion::fromLocal (buffer, data, nrval);
@@ -168,8 +168,8 @@ public:
     static size_t toLocal (unsigned short& to, const void* from);
     static size_t toLocal (int&            to, const void* from);
     static size_t toLocal (unsigned int&   to, const void* from);
-    static size_t toLocal (Int64&          to, const void* from);
-    static size_t toLocal (uInt64&         to, const void* from);
+    static size_t toLocal (int64_t&          to, const void* from);
+    static size_t toLocal (uint64_t&         to, const void* from);
     static size_t toLocal (float&          to, const void* from);
     static size_t toLocal (double&         to, const void* from);
     // </group>
@@ -185,8 +185,8 @@ public:
     static size_t fromLocal (void* to, const unsigned short& from);
     static size_t fromLocal (void* to, const int&            from);
     static size_t fromLocal (void* to, const unsigned int&   from);
-    static size_t fromLocal (void* to, const Int64&          from);
-    static size_t fromLocal (void* to, const uInt64&         from);
+    static size_t fromLocal (void* to, const int64_t&          from);
+    static size_t fromLocal (void* to, const uint64_t&         from);
     static size_t fromLocal (void* to, const float&          from);
     static size_t fromLocal (void* to, const double&         from);
     // </group>
@@ -206,9 +206,9 @@ public:
                            size_t nr);
     static size_t toLocal (unsigned int*   to, const void* from,
                            size_t nr);
-    static size_t toLocal (Int64*          to, const void* from,
+    static size_t toLocal (int64_t*          to, const void* from,
                            size_t nr);
-    static size_t toLocal (uInt64*         to, const void* from,
+    static size_t toLocal (uint64_t*         to, const void* from,
                            size_t nr);
     static size_t toLocal (float*          to, const void* from,
                            size_t nr);
@@ -231,9 +231,9 @@ public:
                              size_t nr);
     static size_t fromLocal (void* to, const unsigned int*   from,
                              size_t nr);
-    static size_t fromLocal (void* to, const Int64*          from,
+    static size_t fromLocal (void* to, const int64_t*          from,
                              size_t nr);
-    static size_t fromLocal (void* to, const uInt64*         from,
+    static size_t fromLocal (void* to, const uint64_t*         from,
                              size_t nr);
     static size_t fromLocal (void* to, const float*          from,
                              size_t nr);
@@ -357,8 +357,8 @@ public:
     static Conversion::ValueFunction* getToLocal (const unsigned short*);
     static Conversion::ValueFunction* getToLocal (const int*);
     static Conversion::ValueFunction* getToLocal (const unsigned int*);
-    static Conversion::ValueFunction* getToLocal (const Int64*);
-    static Conversion::ValueFunction* getToLocal (const uInt64*);
+    static Conversion::ValueFunction* getToLocal (const int64_t*);
+    static Conversion::ValueFunction* getToLocal (const uint64_t*);
     static Conversion::ValueFunction* getToLocal (const float*);
     static Conversion::ValueFunction* getToLocal (const double*);
     static Conversion::ValueFunction* getFromLocal (const char*);
@@ -367,8 +367,8 @@ public:
     static Conversion::ValueFunction* getFromLocal (const unsigned short*);
     static Conversion::ValueFunction* getFromLocal (const int*);
     static Conversion::ValueFunction* getFromLocal (const unsigned int*);
-    static Conversion::ValueFunction* getFromLocal (const Int64*);
-    static Conversion::ValueFunction* getFromLocal (const uInt64*);
+    static Conversion::ValueFunction* getFromLocal (const int64_t*);
+    static Conversion::ValueFunction* getFromLocal (const uint64_t*);
     static Conversion::ValueFunction* getFromLocal (const float*);
     static Conversion::ValueFunction* getFromLocal (const double*);
     // </group>
@@ -383,8 +383,8 @@ public:
     static Conversion::ByteFunction* getByteToLocal (const unsigned short*);
     static Conversion::ByteFunction* getByteToLocal (const int*);
     static Conversion::ByteFunction* getByteToLocal (const unsigned int*);
-    static Conversion::ByteFunction* getByteToLocal (const Int64*);
-    static Conversion::ByteFunction* getByteToLocal (const uInt64*);
+    static Conversion::ByteFunction* getByteToLocal (const int64_t*);
+    static Conversion::ByteFunction* getByteToLocal (const uint64_t*);
     static Conversion::ByteFunction* getByteToLocal (const float*);
     static Conversion::ByteFunction* getByteToLocal (const double*);
     static Conversion::ByteFunction* getByteFromLocal (const char*);
@@ -393,8 +393,8 @@ public:
     static Conversion::ByteFunction* getByteFromLocal (const unsigned short*);
     static Conversion::ByteFunction* getByteFromLocal (const int*);
     static Conversion::ByteFunction* getByteFromLocal (const unsigned int*);
-    static Conversion::ByteFunction* getByteFromLocal (const Int64*);
-    static Conversion::ByteFunction* getByteFromLocal (const uInt64*);
+    static Conversion::ByteFunction* getByteFromLocal (const int64_t*);
+    static Conversion::ByteFunction* getByteFromLocal (const uint64_t*);
     static Conversion::ByteFunction* getByteFromLocal (const float*);
     static Conversion::ByteFunction* getByteFromLocal (const double*);
     // </group>
@@ -407,8 +407,8 @@ public:
     static unsigned int canonicalSize (const unsigned short*);
     static unsigned int canonicalSize (const int*);
     static unsigned int canonicalSize (const unsigned int*);
-    static unsigned int canonicalSize (const Int64*);
-    static unsigned int canonicalSize (const uInt64*);
+    static unsigned int canonicalSize (const int64_t*);
+    static unsigned int canonicalSize (const uint64_t*);
     static unsigned int canonicalSize (const float*);
     static unsigned int canonicalSize (const double*);
     //#//static unsigned int canonicalSize (const long double*);
@@ -462,7 +462,7 @@ inline void CanonicalConversion::reverse4 (void* to, const void* from)
 
 inline void CanonicalConversion::reverse8 (void* to, const void* from)
 {
-    uInt64 x, xsw;
+    uint64_t x, xsw;
     memcpy(&x, from, 8);
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
     xsw = __builtin_bswap64(x);
@@ -577,9 +577,9 @@ inline size_t CanonicalConversion::toLocal (unsigned int& to,
     return SIZE_CAN_UINT;
 }
 
-inline size_t CanonicalConversion::toLocal (Int64& to, const void* from)
+inline size_t CanonicalConversion::toLocal (int64_t& to, const void* from)
 {
-    if (sizeof(Int64) != 8) {
+    if (sizeof(int64_t) != 8) {
 	if (((signed char*)from)[0] < 0) {
 	    to = -1;
 	}else{
@@ -589,20 +589,20 @@ inline size_t CanonicalConversion::toLocal (Int64& to, const void* from)
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (&to, from);
 #else
-    move8 (((char*)&to)+sizeof(Int64)-8, from);
+    move8 (((char*)&to)+sizeof(int64_t)-8, from);
 #endif
     return SIZE_CAN_INT64;
 }
 
-inline size_t CanonicalConversion::toLocal (uInt64& to, const void* from)
+inline size_t CanonicalConversion::toLocal (uint64_t& to, const void* from)
 {
-    if (sizeof(uInt64) != 8) {
+    if (sizeof(uint64_t) != 8) {
 	to = 0;
     }
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (&to, from);
 #else
-    move8 (((char*)&to)+sizeof(uInt64)-8, from);
+    move8 (((char*)&to)+sizeof(uint64_t)-8, from);
 #endif
     return SIZE_CAN_UINT64;
 }
@@ -686,23 +686,23 @@ inline size_t CanonicalConversion::fromLocal (void* to,
 }
 
 inline size_t CanonicalConversion::fromLocal (void* to,
-                                              const Int64& from)
+                                              const int64_t& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
 #else
-    move8 (to, ((char*)&from)+sizeof(Int64)-8);
+    move8 (to, ((char*)&from)+sizeof(int64_t)-8);
 #endif
     return SIZE_CAN_INT64;
 }
 
 inline size_t CanonicalConversion::fromLocal (void* to,
-                                              const uInt64& from)
+                                              const uint64_t& from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     reverse8 (to, &from);
 #else
-    move8 (to, ((char*)&from)+sizeof(uInt64)-8);
+    move8 (to, ((char*)&from)+sizeof(uint64_t)-8);
 #endif
     return SIZE_CAN_UINT64;
 }
@@ -766,13 +766,13 @@ inline size_t CanonicalConversion::toLocal (unsigned int*   to,
 {
     return toLocalUInt (to, from, nr);
 }
-inline size_t CanonicalConversion::toLocal (Int64*          to,
+inline size_t CanonicalConversion::toLocal (int64_t*          to,
                                             const void* from,
                                             size_t nr)
 {
     return toLocalInt64 (to, from, nr);
 }
-inline size_t CanonicalConversion::toLocal (uInt64*         to,
+inline size_t CanonicalConversion::toLocal (uint64_t*         to,
                                             const void* from,
                                             size_t nr)
 {
@@ -828,13 +828,13 @@ inline size_t CanonicalConversion::fromLocal (void* to,
     return fromLocalUInt (to, from, nr);
 }
 inline size_t CanonicalConversion::fromLocal (void* to,
-                                              const Int64*          from,
+                                              const int64_t*          from,
                                               size_t nr)
 {
     return fromLocalInt64 (to, from, nr);
 }
 inline size_t CanonicalConversion::fromLocal (void* to,
-                                              const uInt64*         from,
+                                              const uint64_t*         from,
                                               size_t nr)
 {
     return fromLocalUInt64 (to, from, nr);
@@ -884,12 +884,12 @@ inline Conversion::ValueFunction* CanonicalConversion::getToLocal
     return toLocalUInt;
 }
 inline Conversion::ValueFunction* CanonicalConversion::getToLocal
-                                                      (const Int64*)
+                                                      (const int64_t*)
 {
     return toLocalInt64;
 }
 inline Conversion::ValueFunction* CanonicalConversion::getToLocal
-                                                      (const uInt64*)
+                                                      (const uint64_t*)
 {
     return toLocalUInt64;
 }
@@ -935,12 +935,12 @@ inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
     return fromLocalUInt;
 }
 inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
-                                                      (const Int64*)
+                                                      (const int64_t*)
 {
     return fromLocalInt64;
 }
 inline Conversion::ValueFunction* CanonicalConversion::getFromLocal
-                                                      (const uInt64*)
+                                                      (const uint64_t*)
 {
     return fromLocalUInt64;
 }
@@ -968,9 +968,9 @@ inline unsigned int CanonicalConversion::canonicalSize (const int*)
     {return SIZE_CAN_INT;}
 inline unsigned int CanonicalConversion::canonicalSize (const unsigned int*)
     {return SIZE_CAN_UINT;}
-inline unsigned int CanonicalConversion::canonicalSize (const Int64*)
+inline unsigned int CanonicalConversion::canonicalSize (const int64_t*)
     {return SIZE_CAN_INT64;}
-inline unsigned int CanonicalConversion::canonicalSize (const uInt64*)
+inline unsigned int CanonicalConversion::canonicalSize (const uint64_t*)
     {return SIZE_CAN_UINT64;}
 inline unsigned int CanonicalConversion::canonicalSize (const float*)
     {return SIZE_CAN_FLOAT;}

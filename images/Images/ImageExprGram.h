@@ -77,7 +77,7 @@ void ImageExprGramerror (const char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& imageExprGramPosition();
+int32_t& imageExprGramPosition();
 
 // Declare the input routine for flex/bison.
 int imageExprGramInput (char* buf, int max_size);

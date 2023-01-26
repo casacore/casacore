@@ -47,7 +47,7 @@
 
 
 void check (const String& path, const String& expanded,
-	    const String& absolute, Bool& success)
+	    const String& absolute, bool& success)
 {
     cout << ">>> testing path = " << path << endl;
     cout << "<<<" << endl;
@@ -56,24 +56,24 @@ void check (const String& path, const String& expanded,
     if (ov != path) {
 	cout << "original: " << ov << endl;
 	cout << "expected: " << path << endl;
-	success = False;
+	success = false;
     }
     const String& ev = test.expandedName();
     if (ev != expanded) {
 	cout << "expanded: " << ev << endl;
 	cout << "expected: " << expanded << endl;
-	success = False;
+	success = false;
     }
     const String& av = test.absoluteName();
     if (av != absolute) {
 	cout << "absolute: " << av << endl;
 	cout << "expected: " << absolute << endl;
-	success = False;
+	success = false;
     }
 }
 
 void checkDirBase (const String& path, const String& dir,
-		   const String& base, Bool& success)
+		   const String& base, bool& success)
 {
     cout << "testing dirbase path = " << path << endl;
     Path test (path);
@@ -81,17 +81,17 @@ void checkDirBase (const String& path, const String& dir,
     if (dv != dir) {
 	cout << "dir:      " << dv << endl;
 	cout << "expected: " << dir << endl;
-	success = False;
+	success = false;
     }
     String bv = test.baseName();
     if (bv != base) {
 	cout << "base:     " << bv << endl;
 	cout << "expected: " << base << endl;
-	success = False;
+	success = false;
     }
 }
 
-void doIt (Bool doExcp, Bool& success)
+void doIt (bool doExcp, bool& success)
 {
     // Get the home directory.
     String home (EnvironmentVariable::get ("HOME"));
@@ -137,12 +137,12 @@ void doIt (Bool doExcp, Bool& success)
     AlwaysAssertExit (Path("$tPath_Env_Curr/tPath_tmpdir//d1/../d1/.//d2/").
                       resolvedName() == tpDir + "/d1/d2");
     if (doExcp) {
-      Bool ok = True;
+      bool ok = true;
 	try {
             Path("/a/b").resolvedName();
 	} catch (std::exception& x) {
             cout << ">>> " << x.what() << endl << "<<<" << endl;
-            ok = False;
+            ok = false;
 	}
         AlwaysAssertExit (!ok);
     }
@@ -262,7 +262,7 @@ void doIt (Bool doExcp, Bool& success)
 
 int main (int argc, const char*[])
 {
-    Bool success = True;
+    bool success = true;
     try {
 	doIt ( (argc<2), success);
     } catch (std::exception& x) {

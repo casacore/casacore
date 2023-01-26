@@ -165,7 +165,7 @@ size_t ArrayPositionIterator::nextStep()
     // This could and should be made more efficient. 
     // next will step past the end (as it needs to for pastEnd to trigger).
 
-    // Short circuit if we are iterating by the same dimensionality
+    // int16_t circuit if we are iterating by the same dimensionality
     // as the array.
     if (iterationAxes.nelements() == 0){
         atOrBeyondEnd = true;

@@ -135,24 +135,24 @@ attachOptionalCols(const MSSpectralWindow& msSpWindow)
   if (cds.isDefined(receiverId)) receiverId_p.attach(msSpWindow,receiverId);
 }
 
-Int64 MSSpWindowColumns::
-matchSpw(const MFrequency& refFreq, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance, Int64 tryRow) const {
+int64_t MSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, uint32_t nChan, 
+	 const Quantum<double>& bandwidth, int32_t ifChain,
+	 const Quantum<double>& tolerance, int64_t tryRow) const {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the reference frequency to Hz
   const MFrequency::Types refType = 
     MFrequency::castType(refFreq.getRef().getType());
-  const Double refFreqInHz = refFreq.getValue().getValue();
+  const double refFreqInHz = refFreq.getValue().getValue();
   // Convert the totalBandwidth to Hz
   const Unit Hz("Hz");
   DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
-  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  const double bandwidthInHz = bandwidth.getValue(Hz);
 
   // Convert the tolerance to Hz
   DebugAssert(tolerance.check(Hz.getValue()), AipsError);
-  const Double tolInHz = tolerance.getValue(Hz);
+  const double tolInHz = tolerance.getValue(Hz);
   // Main matching loop
   if (tryRow >= 0) {
     const rownr_t tr = tryRow;
@@ -185,20 +185,20 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
   return -1;
 }
 // this version has info of MeasFrame.
-Int64 MSSpWindowColumns::
+int64_t MSSpWindowColumns::
 matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasFrame& measFrm,
-    const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance, Int64 tryRow) const {
+    const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uint32_t nChan, 
+	 const Quantum<double>& bandwidth, int32_t ifChain,
+	 const Quantum<double>& tolerance, int64_t tryRow) const {
   rownr_t r = nrow();
   if (r == 0) return -1;
   // Convert the totalBandwidth to Hz
   const Unit Hz("Hz");
   DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
-  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  const double bandwidthInHz = bandwidth.getValue(Hz);
   // Convert the tolerance to Hz
   DebugAssert(tolerance.check(Hz.getValue()), AipsError);
-  const Double tolInHz = tolerance.getValue(Hz);
+  const double tolInHz = tolerance.getValue(Hz);
   // Main matching loop
   if (tryRow >= 0) {
     const rownr_t tr = tryRow;
@@ -212,8 +212,8 @@ matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasF
 	      matchIfConvChain(tr, ifChain) &&
   	      //matchTotalBandwidth(tr, bandwidthInHz, nChan*tolInHz/4) &&
 			matchTotalBandwidth(tr, bandwidthInHz, bandwidthInHz/4.) &&
-	      ( /*matchRefFreqCnvtrd(tr, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
-	      matchRefFreqCnvtrd(tr, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+	      ( /*matchRefFreqCnvtrd(tr, chanFreq1, false, measFrm, msdopc, mssrcc, tolInHz)||*/
+	      matchRefFreqCnvtrd(tr, refFreq, true, measFrm, msdopc, mssrcc, tolInHz))) {
 		   return tr;
     }
     if (tr == r-1) r--;
@@ -225,8 +225,8 @@ matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasF
 	      matchIfConvChain(r, ifChain) &&
 	      //matchTotalBandwidth(r, bandwidthInHz, nChan*tolInHz/4) &&
 			matchTotalBandwidth(r, bandwidthInHz, bandwidthInHz/4.) &&
-	      ( /*matchRefFreqCnvtrd(r, chanFreq1, False, measFrm, msdopc, mssrcc, tolInHz)||*/
-	        matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+	      ( /*matchRefFreqCnvtrd(r, chanFreq1, false, measFrm, msdopc, mssrcc, tolInHz)||*/
+	        matchRefFreqCnvtrd(r, refFreq, true, measFrm, msdopc, mssrcc, tolInHz))) {
          return r;
     }
   }
@@ -234,23 +234,23 @@ matchSpw(const MFrequency& refFreq, const MFrequency& /*chanFreq1*/, const MeasF
 }
 
 RowNumbers MSSpWindowColumns::
-allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance) const {
+allMatchedSpw(const MFrequency& refFreq, uint32_t nChan, 
+	 const Quantum<double>& bandwidth, int32_t ifChain,
+	 const Quantum<double>& tolerance) const {
   rownr_t r = nrow();
   RowNumbers matched;
   if (r == 0) return matched;
   // Convert the reference frequency to Hz
   const MFrequency::Types refType = 
     MFrequency::castType(refFreq.getRef().getType());
-  const Double refFreqInHz = refFreq.getValue().getValue();
+  const double refFreqInHz = refFreq.getValue().getValue();
   // Convert the totalBandwidth to Hz
   const Unit Hz("Hz");
   DebugAssert(bandwidth.check(Hz.getValue()), AipsError);
-  const Double bandwidthInHz = bandwidth.getValue(Hz);
+  const double bandwidthInHz = bandwidth.getValue(Hz);
   // Convert the tolerance to Hz
   DebugAssert(tolerance.check(Hz.getValue()), AipsError);
-  const Double tolInHz = tolerance.getValue(Hz);
+  const double tolInHz = tolerance.getValue(Hz);
 
 
   size_t numMatch=0;
@@ -263,9 +263,9 @@ allMatchedSpw(const MFrequency& refFreq, uInt nChan,
 	//matchTotalBandwidth(k, bandwidthInHz, nChan*tolInHz/4) &&
 	matchTotalBandwidth(k, bandwidthInHz, bandwidthInHz/4.) &&
  	matchRefFrequency(k, refType, refFreqInHz, tolInHz)) {
-	//matchRefFreqCnvtrd(r, refFreq, True, measFrm, msdopc, mssrcc, tolInHz))) {
+	//matchRefFreqCnvtrd(r, refFreq, true, measFrm, msdopc, mssrcc, tolInHz))) {
       ++numMatch;
-      matched.resize(numMatch, True);
+      matched.resize(numMatch, true);
       matched(numMatch-1)=k;
     }
 
@@ -276,15 +276,15 @@ allMatchedSpw(const MFrequency& refFreq, uInt nChan,
 }
 
 
-Int64 MSSpWindowColumns::
-matchSpw(const MFrequency& refFreq, uInt nChan, 
-	 const Quantum<Double>& bandwidth, Int ifChain,
-	 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
-	 Bool& reversed) const
+int64_t MSSpWindowColumns::
+matchSpw(const MFrequency& refFreq, uint32_t nChan, 
+	 const Quantum<double>& bandwidth, int32_t ifChain,
+	 const Quantum<double>& tolerance, Vector<double>& otherFreqs, 
+	 bool& reversed) const
 {
-  reversed=False;
+  reversed=false;
   
-  Int matchedSpw=-1;
+  int32_t matchedSpw=-1;
 
   RowNumbers allMatchSpw=
     allMatchedSpw(refFreq, nChan, bandwidth, ifChain, tolerance);
@@ -294,7 +294,7 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
 
   // if only one channel then return the first match
   if (nChan == 1) return allMatchSpw[0];
-  Double tolInHz= tolerance.get("Hz").getValue();
+  double tolInHz= tolerance.get("Hz").getValue();
   for (size_t k=0; k < nMatches; ++k){
 
     matchedSpw=allMatchSpw[k];
@@ -303,12 +303,12 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
       return matchedSpw;
     }
     else{ 
-      Vector<Double> reverseFreq(otherFreqs.shape());
-      for (uInt f=0; f < nChan ; ++f){
+      Vector<double> reverseFreq(otherFreqs.shape());
+      for (uint32_t f=0; f < nChan ; ++f){
 	reverseFreq[f]=otherFreqs[nChan-1-f];
       }
       if(matchChanFreq(matchedSpw, reverseFreq, tolInHz)){
-	reversed=True;
+	reversed=true;
 	return matchedSpw;
       }
     }
@@ -318,19 +318,19 @@ matchSpw(const MFrequency& refFreq, uInt nChan,
 }
 
 
-Bool MSSpWindowColumns::
+bool MSSpWindowColumns::
 matchRefFrequency(rownr_t row, MFrequency::Types refType, 
-		  Double refFreqInHz, Double tolInHz) const {
+		  double refFreqInHz, double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
   const MFrequency rowFreq = refFrequencyMeas()(row); 
   if (MFrequency::castType(rowFreq.getRef().getType()) != refType) {
-    return False;
+    return false;
   }
   return nearAbs(rowFreq.getValue().getValue(), refFreqInHz, tolInHz);
 }
-Bool MSSpWindowColumns::
-matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const MeasFrame& measFrm,
-        const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, Double tolInHz) const {
+bool MSSpWindowColumns::
+matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const bool isRefFreq, const MeasFrame& measFrm,
+        const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, double tolInHz) const {
   // measFrm is the frame info for the current spw.
   DebugAssert(row < nrow(), AipsError);
   // Since sometimes when the channel frequency does not match, the reference frequency actually matches.
@@ -347,11 +347,11 @@ matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const 
   const MFrequency::Types refType = MFrequency::castType(refFreq.getRef().getType());
   const MFrequency::Types rowType = MFrequency::castType(rowFreq.getRef().getType());
   //cout.precision(8);
-  const Double refFreqInHz = refFreq.getValue().getValue();
-  const Double rowFreqInHz = rowFreq.getValue().getValue();
+  const double refFreqInHz = refFreq.getValue().getValue();
+  const double rowFreqInHz = rowFreq.getValue().getValue();
 
-  Double refFreqInHzCnvtrd = refFreqInHz;
-  Double rowFreqInHzCnvtrd = rowFreqInHz;
+  double refFreqInHzCnvtrd = refFreqInHz;
+  double rowFreqInHzCnvtrd = rowFreqInHz;
   if (rowType != refType) {
     MFrequency::Convert freqCnvtr;
 	 if( rowType == MFrequency::TOPO ){ // One match for NGC7538
@@ -364,11 +364,11 @@ matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const 
 	     // the info for MEpoch of the previous spw are not persisted. Hard coding it in for now.
 	     measFrmTo.set( *(measFrm.position()) );
 		  // get the epoch
-		  uInt doppler_id = dopplerId()( row );
+		  uint32_t doppler_id = dopplerId()( row );
 		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
 		  // table. But for subtable DOPPLER, doppler_id is the same as row number. So we can use the
 		  // source_id directly in the call below.
-		  uInt source_id = msdopc.sourceId()(doppler_id );
+		  uint32_t source_id = msdopc.sourceId()(doppler_id );
 		  MEpoch epochTo = mssrcc.timeMeas()( source_id );
 		  // set the Epoch to that of rowFreq.
 		  measFrmTo.set( epochTo );
@@ -385,11 +385,11 @@ matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const 
 	     // the info for MEpoch and MDirection of the previous spw are not persisted. Hard coding it in for now.
 	     measFrmFrom.set( *(measFrm.position()) );
 		  // get the epoch
-		  uInt doppler_id = dopplerId()( row );
+		  uint32_t doppler_id = dopplerId()( row );
 		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
 		  // table. But for subtable SOURCE, source_id is the same as row number. So we can use the
 		  // source_id directly in the call below.
-		  uInt source_id = msdopc.sourceId()( doppler_id );
+		  uint32_t source_id = msdopc.sourceId()( doppler_id );
 		  MEpoch epochFrom = mssrcc.timeMeas()( source_id );
 		  // get the field direction
 		  MDirection fieldDirFrom = mssrcc.directionMeas()(source_id);
@@ -421,11 +421,11 @@ matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const 
 	     MeasFrame measFrmTo = MeasFrame();
 	     measFrmTo.set( *(measFrm.position()) );
 		  // get the epoch
-		  uInt doppler_id = dopplerId()( row );
+		  uint32_t doppler_id = dopplerId()( row );
 		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
 		  // table. But for subtable DOPPLER, doppler_id is the same as row number. So we can use the
 		  // source_id directly in the call below.
-		  uInt source_id = msdopc.sourceId()(doppler_id );
+		  uint32_t source_id = msdopc.sourceId()(doppler_id );
 		  // Note what is required in operator () of ScalarColumns< Measures > is the row number of the 
 		  // table. But for subtable SOURCE, source_id is the same as row number. So we can use the
 		  // source_id directly in the call below.
@@ -446,33 +446,33 @@ matchRefFreqCnvtrd(rownr_t row, MFrequency refFreq, const Bool isRefFreq, const 
   return nearAbs(rowFreqInHzCnvtrd, refFreqInHzCnvtrd, tolInHz);
 }
 
-Bool MSSpWindowColumns::
-matchChanFreq(rownr_t row, const Vector<Double>& chanFreqInHz,
-	      Double tolInHz) const {
+bool MSSpWindowColumns::
+matchChanFreq(rownr_t row, const Vector<double>& chanFreqInHz,
+	      double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
   DebugAssert(chanFreq().ndim(row) == 1, AipsError);
   // Check the number of channels
-  const uInt nChan = chanFreq().shape(row)(0);
-  if (nChan != chanFreqInHz.nelements()) return False;
+  const uint32_t nChan = chanFreq().shape(row)(0);
+  if (nChan != chanFreqInHz.nelements()) return false;
   // Check the values in each channel
   return allNearAbs(chanFreq()(row), chanFreqInHz, tolInHz);
 }
   
-Bool MSSpWindowColumns::
-matchIfConvChain(rownr_t row, Int ifChain) const {
+bool MSSpWindowColumns::
+matchIfConvChain(rownr_t row, int32_t ifChain) const {
   DebugAssert(row < nrow(), AipsError);
   return ifChain == ifConvChain()(row);
 }
 
-Bool MSSpWindowColumns::
-matchTotalBandwidth(rownr_t row, Double bandwidthInHz,
-		    Double tolInHz) const {
+bool MSSpWindowColumns::
+matchTotalBandwidth(rownr_t row, double bandwidthInHz,
+		    double tolInHz) const {
   DebugAssert(row < nrow(), AipsError);
   return nearAbs(totalBandwidth()(row), bandwidthInHz, fabs(tolInHz));
 }
 
-Bool MSSpWindowColumns::
-matchNumChan(rownr_t row, Int nChan) const {
+bool MSSpWindowColumns::
+matchNumChan(rownr_t row, int32_t nChan) const {
   DebugAssert(row < nrow(), AipsError);
   return nChan == numChan()(row);
 }

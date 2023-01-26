@@ -43,19 +43,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // This function creates the CRC lookup table.
   // It is executed thread-safe on the first time called.
-  static const std::array<uInt, 256>& CRCTable() 
+  static const std::array<uint32_t, 256>& CRCTable() 
   {
-    static std::array<uInt, 256> result = [] () -> std::array<uInt, 256> {
-      std::array<uInt, 256> res;
+    static std::array<uint32_t, 256> result = [] () -> std::array<uint32_t, 256> {
+      std::array<uint32_t, 256> res;
       
-      const uInt polynom = 0x4c11db7;
-      const uInt highbit = (uInt)1<<(32-1);
+      const uint32_t polynom = 0x4c11db7;
+      const uint32_t highbit = (uint32_t)1<<(32-1);
       // make CRC lookup table used by table algorithms
       for (int i=0; i<256; i++) {
-        uInt crc = i;
+        uint32_t crc = i;
         crc<<= 32-8;
         for (int j=0; j<8; j++) {
-          uInt bit = crc & highbit;
+          uint32_t bit = crc & highbit;
           crc<<= 1;
           if (bit) crc^= polynom;
         }			
@@ -97,7 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
  */
 
   MultiFile::MultiFile (const String& name, ByteIO::OpenOption option,
-                        Int blockSize, Bool useODirect, Bool useCRC)
+                        int32_t blockSize, bool useODirect, bool useCRC)
     : MultiFileBase (name, blockSize, useODirect),
       itsNrContUsed {0,0},
       itsHdrContInx (0),     // Start using the first continuation block
@@ -109,13 +109,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MultiFile::MultiFile (const String& name,
                         const std::shared_ptr<MultiFileBase>& parent,
-                        ByteIO::OpenOption option, Int blockSize)
+                        ByteIO::OpenOption option, int32_t blockSize)
     // Use parent's block size if not specified.
     // A child MultiFile does not use CRC.
-    : MultiFileBase (name, blockSize>0 ? blockSize:parent->blockSize(), False),
+    : MultiFileBase (name, blockSize>0 ? blockSize:parent->blockSize(), false),
       itsNrContUsed {0,0},
       itsHdrContInx (0),     // Start using the first continuation block
-      itsUseCRC     (False)
+      itsUseCRC     (false)
   {
     itsIO.reset (new MFFileIO (parent, name, option));
     init (option);
@@ -123,7 +123,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   std::shared_ptr<MultiFileBase> MultiFile::makeNested
   (const std::shared_ptr<MultiFileBase>& parent, const String& name,
-   ByteIO::OpenOption option, Int blockSize) const
+   ByteIO::OpenOption option, int32_t blockSize) const
   {
     return std::shared_ptr<MultiFileBase> (new MultiFile (name, parent,
                                                           option, blockSize));
@@ -167,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return;
     }
     itsIO->reopenRW();
-    itsWritable = True;
+    itsWritable = true;
   }
 
   void MultiFile::fsync()
@@ -186,10 +186,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     CanonicalIO cio(&mio);
     AipsIO aio(&cio);
     itsHdrCounter++;
-    Int64 zero64 = 0;
-    uInt  zero32 = 0;
+    int64_t zero64 = 0;
+    uint32_t  zero32 = 0;
     char  char8[8] = {0,0,0,0,0,0,0,0};
-    Int   version = 2;
+    int32_t   version = 2;
     // Start with a zero to distinguish it from version 1.
     // The first value in version 1 is always > 0.
     cio.write (1, &zero64);
@@ -218,13 +218,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // actually used blocknrs.
     // If continuation is needed, they might change and cannot
     // be written yet.
-    Int64 todo = mio.length();
+    int64_t todo = mio.length();
     DebugAssert (todo <= mio.allocated(), AipsError);
-    Int64 totalSize = todo + 2*sizeof(uInt) + (2 + itsHdrCont[0].blockNrs.size() +
-                              itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
+    int64_t totalSize = todo + 2*sizeof(uint32_t) + (2 + itsHdrCont[0].blockNrs.size() +
+                              itsHdrCont[1].blockNrs.size()) * sizeof(int64_t);
     // Allocate a temp buffer if header too large or if O_DIRECT.
     // This buffer is used by writeRemainder and 
-    Bool hasRemainder = (totalSize > itsBlockSize);
+    bool hasRemainder = (totalSize > itsBlockSize);
     MultiFileBuffer mfbuf(itsUseODirect || hasRemainder  ?  itsBlockSize:0,
                           itsUseODirect);
     // First write the remainder and adjust the header as needed.
@@ -239,11 +239,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       cio.write (2, itsNrContUsed);
     }
     // Writing the first part of the header is done as the last step.
-    uChar* buf = const_cast<uChar*>(mio.getBuffer());
+    unsigned char* buf = const_cast<unsigned char*>(mio.getBuffer());
     todo = mio.length();
     CanonicalConversion::fromLocal (buf+32, todo);  // header size
     if (itsUseCRC) {
-      uInt crc = calcCRC (buf, todo);
+      uint32_t crc = calcCRC (buf, todo);
       crc = calcCRC (buf, todo);
       CanonicalConversion::fromLocal (buf+28, crc);
     }
@@ -262,7 +262,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     char* iobuf = mfbuf.data();
     // Get the size of the remainder.
-    Int64 todo = mio.length() - itsBlockSize;
+    int64_t todo = mio.length() - itsBlockSize;
     // Use the other continuation set.
     int newContInx = 1 - itsHdrContInx;
     // Determine the nr of continuation blocks to be used.
@@ -273,14 +273,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // might require an extra block, etc.
     // To avoid that the free list is changed and needs to be rewritten,
     // new continuation blocks are created by adding a new block.
-    Int64 contBlkSize = itsBlockSize - sizeof(Int64);
-    Int64 ncontOther = itsHdrCont[itsHdrContInx].blockNrs.size();
-    Int64 ncontOld   = itsHdrCont[newContInx].blockNrs.size();
-    Int64 ncont      = (todo + contBlkSize - 1) / contBlkSize;
-    Int64 ncontNew   = std::max(ncont, ncontOld);
-    while (True) {
-      Int64 szCont = (todo + 2*sizeof(uInt) +
-                      (ncontOther + ncontNew + 2) * sizeof(Int64));
+    int64_t contBlkSize = itsBlockSize - sizeof(int64_t);
+    int64_t ncontOther = itsHdrCont[itsHdrContInx].blockNrs.size();
+    int64_t ncontOld   = itsHdrCont[newContInx].blockNrs.size();
+    int64_t ncont      = (todo + contBlkSize - 1) / contBlkSize;
+    int64_t ncontNew   = std::max(ncont, ncontOld);
+    while (true) {
+      int64_t szCont = (todo + 2*sizeof(uint32_t) +
+                      (ncontOther + ncontNew + 2) * sizeof(int64_t));
       ncont = (szCont + contBlkSize - 1) / contBlkSize;
       if (ncont <= ncontNew) {
         break;
@@ -289,7 +289,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Extend the virtual file.
     if (ncontNew > ncontOld) {
-      extendVF (itsHdrCont[newContInx], ncontNew, False);
+      extendVF (itsHdrCont[newContInx], ncontNew, false);
     }
     // Write the continuation blocknrs.
     writeVector (cio, itsHdrCont[0].blockNrs);
@@ -297,20 +297,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsNrContUsed[newContInx] = ncontNew;
     cio.write (2, itsNrContUsed);
     // Write the continuation blocks.
-    const std::vector<Int64>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
-    const uChar* remHdr = mio.getBuffer() + itsBlockSize;
+    const std::vector<int64_t>& hdrContNrs = itsHdrCont[newContInx].blockNrs;
+    const unsigned char* remHdr = mio.getBuffer() + itsBlockSize;
     todo = mio.length() - itsBlockSize;
     writeHeaderShow (ncont, todo);
-    for (Int64 i=0; i<ncont; ++i) {
-      Int64 next = (i==ncont-1 ? Int64(0) : hdrContNrs[i+1]);
+    for (int64_t i=0; i<ncont; ++i) {
+      int64_t next = (i==ncont-1 ? int64_t(0) : hdrContNrs[i+1]);
       CanonicalConversion::fromLocal (iobuf, next);
-      memcpy (iobuf + sizeof(Int64), remHdr, std::min(todo,contBlkSize));
+      memcpy (iobuf + sizeof(int64_t), remHdr, std::min(todo,contBlkSize));
       remHdr += contBlkSize;
       todo -= contBlkSize;
       itsIO->pwrite (itsBlockSize, hdrContNrs[i]*itsBlockSize, iobuf);
     }
     // Store first continuation blocknr in header.
-    uChar* buf = const_cast<uChar*>(mio.getBuffer());
+    unsigned char* buf = const_cast<unsigned char*>(mio.getBuffer());
     CanonicalConversion::fromLocal (buf+8, hdrContNrs[0]);
     // Swap continuation sets.
     itsHdrContInx = newContInx;
@@ -318,29 +318,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     CanonicalConversion::fromLocal (buf+48, itsNrBlock);
   }
 
-  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<Int64>& index)
+  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<int64_t>& index)
   {
     // Write in the same way as AipsIO is doing.
-    Int64 sz = index.size();
+    int64_t sz = index.size();
     cio.write (1, &sz);
     if (sz > 0) {
       cio.write (index.size(), index.data());
     }
   }
 
-  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<uInt>& index)
+  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<uint32_t>& index)
   {
     // Write in the same way as AipsIO is doing.
-    Int64 sz = index.size();
+    int64_t sz = index.size();
     cio.write (1, &sz);
     if (sz > 0) {
       cio.write (index.size(), index.data());
     }
   }
 
-  void MultiFile::readVector (CanonicalIO& cio, std::vector<Int64>& index)
+  void MultiFile::readVector (CanonicalIO& cio, std::vector<int64_t>& index)
   {
-    Int64 sz;
+    int64_t sz;
     cio.read (1, &sz);
     if (sz > 0) {
       index.resize (sz);
@@ -350,9 +350,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::readVector (CanonicalIO& cio, std::vector<uInt>& index)
+  void MultiFile::readVector (CanonicalIO& cio, std::vector<uint32_t>& index)
   {
-    Int64 sz;
+    int64_t sz;
     cio.read (1, &sz);
     if (sz > 0) {
       index.resize (sz);
@@ -362,43 +362,43 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::readHeader (Bool always)
+  void MultiFile::readHeader (bool always)
   {
     /*  header layout is described in Casacore note 260, but repeated here.
         version 1
-          Int64  header size
-          Int64  blockSize
-          Int64  hdrCounter
+          int64_t  header size
+          int64_t  blockSize
+          int64_t  hdrCounter
           AipsIO 'MultiFile' version 1
-              Int64   nr of blocks used
+              int64_t   nr of blocks used
               nfile*fileinfo
                   String   file name
-                  Int64[n] index (MultiFile block containing file block i)
-                  Int64    file size (bytes)
+                  int64_t[n] index (MultiFile block containing file block i)
+                  int64_t    file size (bytes)
               Note that .hdrext is used if header does not fit in first block
         version 2
-          Int64  0
-          Int64  first block of header continuation (<0=none)
-          Int64  hdrCounter
+          int64_t  0
+          int64_t  first block of header continuation (<0=none)
+          int64_t  hdrCounter
           Int32  version
           uInt32 headerCRC
-          Int64  header size
-          Int64  blockSize
+          int64_t  header size
+          int64_t  blockSize
           char   useCRC
           char[7] spare
           AipsIO 'MultiFile' with same version as above
-              Int64   nr of blocks used
+              int64_t   nr of blocks used
               nfile*fileinfo
                   String   file name
-                  Int64    file size (bytes)
-                  Bool     nested MultiFile?
+                  int64_t    file size (bytes)
+                  bool     nested MultiFile?
           nfile*index
-              Int64        size of packed index
-              Int64[size]  packed index (MultiFile block of file block i)
+              int64_t        size of packed index
+              int64_t[size]  packed index (MultiFile block of file block i)
           index      packed index of free blocks
           Int32[nblock]    CRC value of each block (only if useCRC=1)
-          Int64[ncont0]    block numbers of header continuation buffer 0
-          Int64[ncont1]    block numbers of header continuation buffer 1
+          int64_t[ncont0]    block numbers of header continuation buffer 0
+          int64_t[ncont1]    block numbers of header continuation buffer 1
               Note that 'first block of header' tells if cont.block 0 or 1
               is used by comparing it with the first entry.
 
@@ -410,18 +410,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     - Make CRC of entire header (with 0 in headerCRC)
     - First write cont.blocks and finally first block (reset cont.blocknr)
     */
-    // Read the first 24 bytes (3x Int64) of the header.
-    std::vector<char> buf(3*sizeof(Int64));
+    // Read the first 24 bytes (3x int64_t) of the header.
+    std::vector<char> buf(3*sizeof(int64_t));
     itsIO->pread (buf.size(), 0, buf.data());
     // First get the header change count.
-    Int64 hdrCounter;
+    int64_t hdrCounter;
     CanonicalConversion::toLocal (hdrCounter, &(buf[16]));
     // Only if needed, read the rest of the header.
     if (always  ||  hdrCounter != itsHdrCounter) {
       itsHdrCounter = hdrCounter;
       // In version 1 the headerSize is in the first 8 bytes.
       // For version 2 and higher it is 0.
-      Int64 headerSize;
+      int64_t headerSize;
       CanonicalConversion::toLocal (headerSize, buf.data());
       if (headerSize == 0) {
         readHeaderVersion2 (buf);
@@ -431,14 +431,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Initialize remaining info fields.
       for (MultiFileInfo& info : itsInfo) {
         info.curBlock = -1;
-        info.dirty    = False;
+        info.dirty    = false;
       }
     }
   }
 
-  void MultiFile::readHeaderVersion1 (Int64 headerSize, std::vector<char>& buf)
+  void MultiFile::readHeaderVersion1 (int64_t headerSize, std::vector<char>& buf)
   {
-    Int64 leadSize = buf.size();
+    int64_t leadSize = buf.size();
     AlwaysAssert (leadSize==24, AipsError);
     CanonicalConversion::toLocal (itsBlockSize, &(buf[8]));
     buf.resize (headerSize);
@@ -456,7 +456,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MemoryIO mio(&(buf[leadSize]), headerSize - leadSize);
     CanonicalIO cio(&mio);
     AipsIO aio(&cio);
-    Int version = aio.getstart ("MultiFile");
+    int32_t version = aio.getstart ("MultiFile");
     AlwaysAssert (version==1, AipsError);
     aio >> itsNrBlock;
     getInfoVersion1 (aio, itsInfo);
@@ -466,12 +466,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void MultiFile::readHeaderVersion2 (std::vector<char>& buf)
   {
-    Int64 leadSize = buf.size();
+    int64_t leadSize = buf.size();
     AlwaysAssert (leadSize==24, AipsError);
-    Int64 contBlockNr = 0;
-    Int64 headerSize;
-    uInt  headerCRC = 0;
-    Int   version;
+    int64_t contBlockNr = 0;
+    int64_t headerSize;
+    uint32_t  headerCRC = 0;
+    int32_t   version;
     // For version 2 and higher the next 40 bytes have to be read.
     buf.resize (leadSize + 40);
     itsIO->pread (40, leadSize, &(buf[leadSize]));
@@ -503,9 +503,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Check the CRC if needed.
     if (itsUseCRC) {
       // Set headerCRC in buffer to 0 to calculate the correct CRC.
-      uInt zero32 = 0;
+      uint32_t zero32 = 0;
       CanonicalConversion::fromLocal (&(buf[28]), zero32);
-      uInt crc = calcCRC (buf.data(), headerSize);
+      uint32_t crc = calcCRC (buf.data(), headerSize);
       if (crc != headerCRC) {
         throw AipsError("MultiFile header CRC mismatch in " + fileName());
       }
@@ -514,16 +514,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MemoryIO mio(&(buf[leadSize]), headerSize - leadSize);
     CanonicalIO cio(&mio);
     AipsIO aio(&cio);
-    Int vers = aio.getstart ("MultiFile");
+    int32_t vers = aio.getstart ("MultiFile");
     AlwaysAssert (vers==version, AipsError);
     aio >> itsInfo;
     aio.getend();
     getInfoVersion2 (contBlockNr, cio);
   }
 
-  void MultiFile::getInfoVersion2 (Int64 contBlockNr, CanonicalIO& cio)
+  void MultiFile::getInfoVersion2 (int64_t contBlockNr, CanonicalIO& cio)
   {
-    std::vector<Int64> bl;
+    std::vector<int64_t> bl;
     for (MultiFileInfo& fileInfo: itsInfo) {
       readVector (cio, bl);
       fileInfo.blockNrs = unpackIndex(bl);
@@ -546,19 +546,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::readRemainder (Int64 headerSize, Int64 blockNr,
+  void MultiFile::readRemainder (int64_t headerSize, int64_t blockNr,
                                  std::vector<char>& buf)
   {
     MultiFileBuffer mfbuf(itsBlockSize, itsUseODirect);
     char* iobuf = mfbuf.data();
     size_t off = itsBlockSize;
-    Int64 blknr = blockNr;
-    Int64 todo = headerSize - itsBlockSize;
-    Int64 contBlkSize = itsBlockSize - sizeof(Int64);
+    int64_t blknr = blockNr;
+    int64_t todo = headerSize - itsBlockSize;
+    int64_t contBlkSize = itsBlockSize - sizeof(int64_t);
     while (off < buf.size()) {
       AlwaysAssert (blknr!=0, AipsError);
       itsIO->pread (itsBlockSize, blknr*itsBlockSize, iobuf);
-      memcpy (&(buf[off]), iobuf + sizeof(Int64),
+      memcpy (&(buf[off]), iobuf + sizeof(int64_t),
               std::min(todo,contBlkSize));
       off += contBlkSize;
       todo -= contBlkSize;
@@ -583,7 +583,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     doTruncateFile (info, 0);
   }
   
-  void MultiFile::doTruncateFile (MultiFileInfo& info, uInt64 nrblk)
+  void MultiFile::doTruncateFile (MultiFileInfo& info, uint64_t nrblk)
   {
     if (nrblk < info.blockNrs.size()) {
       // Add the blocknrs to the free list.
@@ -609,7 +609,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Possibly check here if cont.blocks are stored at the end. If so,
     // move them upfront if possible by using first free blocks. !!!!!
     // Truncate the file for free blocks at the end of the file.
-    Int lastBlock = itsNrBlock-1;
+    int32_t lastBlock = itsNrBlock-1;
     size_t i=0;
     for (; i<itsFreeBlocks.size(); ++i) {
       if (itsFreeBlocks[i] != lastBlock) {
@@ -627,18 +627,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::extend (MultiFileInfo& info, Int64 lastblk)
+  void MultiFile::extend (MultiFileInfo& info, int64_t lastblk)
   {
-    extendVF (info, lastblk, True);
+    extendVF (info, lastblk, true);
   }
 
-  void MultiFile::extendVF (MultiFileInfo& info, Int64 lastblk,
-                            Bool useFreeBlocks)
+  void MultiFile::extendVF (MultiFileInfo& info, int64_t lastblk,
+                            bool useFreeBlocks)
   {
-    Int64 curnrb = info.blockNrs.size();
+    int64_t curnrb = info.blockNrs.size();
     info.blockNrs.resize (lastblk);
-    Int64 nfree = itsFreeBlocks.size();
-    for (Int64 i=curnrb; i<lastblk; ++i) {
+    int64_t nfree = itsFreeBlocks.size();
+    for (int64_t i=curnrb; i<lastblk; ++i) {
       if (!useFreeBlocks  ||  nfree==0) {
         info.blockNrs[i] = itsNrBlock;
         itsNrBlock++;
@@ -646,17 +646,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         info.blockNrs[i] = itsFreeBlocks[--nfree];
       }
     }
-    if (nfree != Int64(itsFreeBlocks.size())) {
+    if (nfree != int64_t(itsFreeBlocks.size())) {
       itsFreeBlocks.resize (nfree);
     }
   }
 
-  void MultiFile::writeHeaderShow(Int64, Int64) const
+  void MultiFile::writeHeaderShow(int64_t, int64_t) const
   {}
   void MultiFile::writeHeaderTest()
   {}
   
-  void MultiFile::readBlock (MultiFileInfo& info, Int64 blknr,
+  void MultiFile::readBlock (MultiFileInfo& info, int64_t blknr,
                              void* buffer)
   {
     itsIO->pread (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
@@ -665,7 +665,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::writeBlock (MultiFileInfo& info, Int64 blknr,
+  void MultiFile::writeBlock (MultiFileInfo& info, int64_t blknr,
                               const void* buffer)
   {
     itsIO->pwrite (itsBlockSize, info.blockNrs[blknr] * itsBlockSize, buffer);
@@ -674,33 +674,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::storeCRC (const void* buffer, Int64 blknr)
+  void MultiFile::storeCRC (const void* buffer, int64_t blknr)
   {
-    if (blknr >= Int64(itsCRC.size())) {
+    if (blknr >= int64_t(itsCRC.size())) {
       itsCRC.resize (blknr+1);
     }
     itsCRC[blknr] = calcCRC (buffer, itsBlockSize);
   }
 
-  void MultiFile::checkCRC (const void* buffer, Int64 blknr) const
+  void MultiFile::checkCRC (const void* buffer, int64_t blknr) const
   {
-    AlwaysAssert (blknr < Int64(itsCRC.size()), AipsError);
-    uInt crc = calcCRC (buffer, itsBlockSize);
+    AlwaysAssert (blknr < int64_t(itsCRC.size()), AipsError);
+    uint32_t crc = calcCRC (buffer, itsBlockSize);
     if (crc != itsCRC[blknr]) {
       throw AipsError ("Mismatch in CRC of MultiFile block " +
                        String::toString(blknr));
     }
   }
 
-  uInt MultiFile::calcCRC (const void* buffer, Int64 size) const
+  uint32_t MultiFile::calcCRC (const void* buffer, int64_t size) const
   {
     // The algorithm is taken from crctester.c by Sven Reifegerste
     // (www.zorc/reflex)
     // See also https://www.lammertbies.nl/comm/info/crc-calculation
-    const uChar* buf = static_cast<const uChar*>(buffer);
-    const uInt crcinit = 0x46af6449;
+    const unsigned char* buf = static_cast<const unsigned char*>(buffer);
+    const uint32_t crcinit = 0x46af6449;
     //# The above value is calculated from:
-    //#         const uInt highbit = (uInt)1<<(32-1);
+    //#         const uint32_t highbit = (uint32_t)1<<(32-1);
     //#		crcinit = 0xffffffff;
     //#		for (i=0; i<32; i++) {
     //#			bit = crcinit & 1;
@@ -709,8 +709,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //#			if (bit) crcinit|= highbit;
     //#		}	
     // Normal lookup table algorithm with augmented zero bytes.
-    uInt crc = crcinit;
-    for (Int64 i=0; i<size; ++i) {
+    uint32_t crc = crcinit;
+    for (int64_t i=0; i<size; ++i) {
       crc = ((crc << 8) | buf[i]) ^ CRCTable()[ (crc >> (32-8))  & 0xff];
     }
     // Augment zero bytes.
@@ -732,23 +732,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
        << "  free=" << freeBlocks() << endl;
   }
 
-  std::vector<Int64> MultiFile::packIndex (const std::vector<Int64>& blockNrs)
+  std::vector<int64_t> MultiFile::packIndex (const std::vector<int64_t>& blockNrs)
   {
     // See if subsequent block numbers are used, so the index can be
     // compressed.
     // Compression is done by counting the nr of subsequent blocknrs
     // and writing the negative count if > 0.
     // Note that the count does not include the first block number.
-    std::vector<Int64> buf;
+    std::vector<int64_t> buf;
     if (blockNrs.empty()) {
-      return std::vector<Int64>();
+      return std::vector<int64_t>();
     }
     buf.reserve (blockNrs.size());
     buf.push_back (blockNrs[0]);
-    Int64 next = blockNrs[0] + 1;
+    int64_t next = blockNrs[0] + 1;
     for (size_t j=1; j<blockNrs.size(); ++j) {
       if (blockNrs[j] != next) {
-        Int64 nr = next - buf.back() - 1;
+        int64_t nr = next - buf.back() - 1;
         if (nr > 0) {
           buf.push_back (-nr);
         }
@@ -757,22 +757,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       next++;
     }
-    Int64 nr = next - buf.back() - 1;
+    int64_t nr = next - buf.back() - 1;
     if (nr > 0) {
       buf.push_back (-nr);
     }
     return buf;
   }
 
-  std::vector<Int64> MultiFile::unpackIndex (const std::vector<Int64>& blockNrs)
+  std::vector<int64_t> MultiFile::unpackIndex (const std::vector<int64_t>& blockNrs)
   {
     // Expand if subsequent block numbers are used indicated by a
     // negative value.
-    std::vector<Int64> buf;
+    std::vector<int64_t> buf;
     buf.reserve (blockNrs.size());
     for (auto bl : blockNrs) {
       if (bl < 0) {
-        Int64 next = buf.back() + 1;
+        int64_t next = buf.back() + 1;
         size_t nr = -bl;
         for (size_t i=0; i<nr; ++i) {
           buf.push_back (next+i);

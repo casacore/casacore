@@ -71,20 +71,20 @@ MSDerivedValues::getAntennaPositions () const
 }
 
 
-Int MSDerivedValues::setAntennas(const MSAntennaColumns& ac)
+int32_t MSDerivedValues::setAntennas(const MSAntennaColumns& ac)
 {
-  Int nAnt=ac.position().nrow();
+  int32_t nAnt=ac.position().nrow();
 
   mAntPos_p.resize(nAnt);
   Vector<String> mount(nAnt);
-  Vector<Double> avPos(3); avPos=0;
-  for (Int ant=0; ant<nAnt; ant++) {
+  Vector<double> avPos(3); avPos=0;
+  for (int32_t ant=0; ant<nAnt; ant++) {
     mAntPos_p(ant) = ac.positionMeas()(ant);
     mount(ant) = ac.mount()(ant);
     avPos+=ac.position()(ant);
   }
   if (nAnt>0) {
-    avPos/=Double(nAnt);
+    avPos/=double(nAnt);
     mObsPos_p = mAntPos_p(0);
     mObsPos_p.set(MVPosition(avPos));
     setAntennaMount(mount);
@@ -96,15 +96,15 @@ Int MSDerivedValues::setAntennas(const MSAntennaColumns& ac)
 MSDerivedValues& MSDerivedValues::setAntennaPositions(const Vector<MPosition>&
 						      antPosition)
 {
-  Int nAnt=antPosition.nelements();
+  int32_t nAnt=antPosition.nelements();
   AlwaysAssert(nAnt>0,AipsError);
   mAntPos_p.resize(nAnt);
   mAntPos_p=antPosition;
-  Vector<Double> avPos(3); avPos=0;
-  for (Int i=0; i<nAnt; i++) {
+  Vector<double> avPos(3); avPos=0;
+  for (int32_t i=0; i<nAnt; i++) {
     avPos+=mAntPos_p(i).getValue().get();
   }
-  avPos/=Double(nAnt);
+  avPos/=double(nAnt);
   mObsPos_p=mAntPos_p(0);
   mObsPos_p.set(MVPosition(avPos));
   setAntenna(0);
@@ -133,30 +133,30 @@ MSDerivedValues& MSDerivedValues::setMeasurementSet(const MeasurementSet& ms){
     MFrequency::castType(refreq0.getRef().getType());
   setFrequencyReference(freqType);
 
-  hasMS_p=True;
+  hasMS_p=true;
   return *this;
 
 }
 
-Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const Int whichline){
+bool MSDerivedValues::setRestFrequency(const int32_t fieldid, const int32_t spwid, const int32_t whichline){
 
   if(hasMS_p){
     MSDopplerUtil msdoppler(ms_p);
-    Vector<Double> restFreqVec;
+    Vector<double> restFreqVec;
     try{
       msdoppler.dopplerInfo(restFreqVec ,spwid,fieldid);
     }
     catch(...){
       setRestFrequency(Quantity(0.0, "Hz"));
-      return False;
+      return false;
     }
     
-    if((restFreqVec.nelements() >0) && (uInt(whichline)<=restFreqVec.nelements())){
+    if((restFreqVec.nelements() >0) && (uint32_t(whichline)<=restFreqVec.nelements())){
       //using  the first
       
       setRestFrequency(Quantity(restFreqVec[whichline], "Hz"));
 		       
-		       return True;
+		       return true;
     }
     else{
       setRestFrequency(Quantity(0.0, "Hz"));
@@ -164,7 +164,7 @@ Bool MSDerivedValues::setRestFrequency(const Int fieldid, const Int spwid, const
 
   }
 
-  return False;
+  return false;
 
 
 
@@ -178,10 +178,10 @@ MSDerivedValues& MSDerivedValues::setRestFrequency(const Quantity& restfrq){
 
 MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
 {
-  Int nAnt=mount.nelements();
+  int32_t nAnt=mount.nelements();
   if (nAnt>0) {
     mount_p.resize(nAnt);
-    for (Int i=0; i<nAnt; i++) {
+    for (int32_t i=0; i<nAnt; i++) {
       if (mount(i)=="alt-az" || mount(i)=="ALT-AZ" || mount(i)=="") {
 	mount_p(i)=0;
       } else if (mount(i)=="alt-az+rotator" || mount(i)=="ALT-AZ+ROTATOR") {
@@ -219,7 +219,7 @@ MSDerivedValues& MSDerivedValues::setFieldCenter(const MDirection& fieldCenter)
   return *this;
 }
 
-MSDerivedValues& MSDerivedValues::setFieldCenter(uInt fieldid)
+MSDerivedValues& MSDerivedValues::setFieldCenter(uint32_t fieldid)
 {
 
   if(hasMS_p && (ms_p.field().nrow() > fieldid)){
@@ -239,10 +239,10 @@ MSDerivedValues& MSDerivedValues::setFieldCenter(uInt fieldid)
 }
 
 
-MSDerivedValues& MSDerivedValues::setAntenna(Int antenna)
+MSDerivedValues& MSDerivedValues::setAntenna(int32_t antenna)
 {
   DebugAssert(antenna>=-1,AipsError);
-  DebugAssert(antenna<Int(mAntPos_p.nelements()),AipsError);
+  DebugAssert(antenna<int32_t(mAntPos_p.nelements()),AipsError);
   // Reset the reference frame used in the conversion machines to be
   // for this antenna.
   if (antenna==-1) {
@@ -255,7 +255,7 @@ MSDerivedValues& MSDerivedValues::setAntenna(Int antenna)
 }
 
 // compute parallactic angle.
-Double MSDerivedValues::parAngle()
+double MSDerivedValues::parAngle()
 {
   DebugAssert(mAntPos_p.nelements()==mount_p.nelements(),AipsError);
   // Calculate Parallactic angle for this UT. To do this we find
@@ -264,7 +264,7 @@ Double MSDerivedValues::parAngle()
  
   // Do conversion. Can use the same conversion machine for
   // all antennas & times since we just change the Frame
-  Double pa=0;
+  double pa=0;
 
   if (mount_p(antenna_p)==0 || mount_p(antenna_p)==4 ||
       mount_p(antenna_p)==5) {
@@ -290,8 +290,8 @@ Double MSDerivedValues::parAngle()
     //#  " has PA = "<<pa_p(iant)*57.28<<endl;
     
   } else if (mount_p(antenna_p)==3) {
-    Double ha = cRADecToHADec_p().getValue().get()(0);
-    Double dec = cRADecToHADec_p().getValue().get()(1);
+    double ha = cRADecToHADec_p().getValue().get()(0);
+    double dec = cRADecToHADec_p().getValue().get()(1);
     pa = atan2(-cos(ha), -sin(ha) * sin(dec));
   } else if (mount_p(antenna_p)==1) {
     // nothing to do for equatorial mounts, pa is always 0
@@ -330,7 +330,7 @@ MSDerivedValues& MSDerivedValues::setFrequencyReference(MFrequency::Types frqTyp
   return *this;
 }
 
-Double MSDerivedValues::hourAngle() 
+double MSDerivedValues::hourAngle() 
 {
   return cRADecToHADec_p().getValue().get()(0);
 }
@@ -403,7 +403,7 @@ void MSDerivedValues::init()
   frqref_p= MFrequency::Ref(MFrequency::LSRK);
   velref_p=MDoppler::Ref(MDoppler::RADIO);
   restFreq_p=Quantity(0.0, "Hz");
-  hasMS_p=False;
+  hasMS_p=false;
 
 }
 

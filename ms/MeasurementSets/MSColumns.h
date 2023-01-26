@@ -179,10 +179,10 @@ public:
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty=true);
 
   // set the DIRECTION reference type for FIELD, POINTING and SOURCE tables
   // (except for antenna frame directions). 
@@ -216,8 +216,8 @@ typedef MSColumns ROMSColumns;
   extern template class ArrayMeasColumn<MDirection>;
   extern template class ScalarMeasColumn<MPosition>;
   extern template class ScalarMeasColumn<MEpoch>;
-  extern template class ArrayQuantColumn<Double>;
-  extern template class ScalarQuantColumn<Double>;
+  extern template class ArrayQuantColumn<double>;
+  extern template class ScalarQuantColumn<double>;
 
 } //# NAMESPACE CASACORE - END
 

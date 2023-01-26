@@ -37,12 +37,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 T PowerLogarithmicPolynomial<T>::eval(typename Function1D<T>::FunctionArg x) const {
   // Test below outcommented, because pointer can never be <0.
-  // Test on x[0]<=0 gives compile error if T is AutoDiffA<Double>.
+  // Test on x[0]<=0 gives compile error if T is AutoDiffA<double>.
   ///if (x <= 0) {
   ///		throw AipsError("PowerLogarithmicPolynomial<T>::eval(): x must be greater than zero");
   ///	}
 	T lnx = log(x[0]);
-	Int j = nparameters();
+	int32_t j = nparameters();
 	T accum = param_p[--j];
 	while (--j >= 1) {
 		accum *= lnx;

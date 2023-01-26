@@ -144,8 +144,8 @@ public:
 // backwards compatibility - null values should be supplied instead.
 // The record field names are: "restoringbeam, imagetype, objectname".
 // <group>
-    virtual Bool toRecord(String& error, RecordInterface& outRecord) const;
-    virtual Bool fromRecord(String& error, const RecordInterface& inRecord);
+    virtual bool toRecord(String& error, RecordInterface& outRecord) const;
+    virtual bool fromRecord(String& error, const RecordInterface& inRecord);
 // </group>
 
 // In some circumstances it might be useful to know what the defaults for
@@ -162,14 +162,14 @@ public:
 // should probably not be regarded as fatal as the default ImageInfo
 // values are viable.  For each item contained
 // in the ImageInfo, an attempt to decode it from FITS is made.
-// If any of them fail, False is returned, but it attempts to decode
+// If any of them fail, false is returned, but it attempts to decode
 // them all.  For those that fail an error message is held in <src>error</src> 
 // in the order restoring beam, and image type.
 // <src>error</src> will be returned of length 0 if the return 
-// value is True, else it will be length 2.
+// value is true, else it will be length 2.
 // <group>
-    Bool toFITS(String & error, RecordInterface & outRecord) const;
-    Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
+    bool toFITS(String & error, RecordInterface & outRecord) const;
+    bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
 // </group>
 
 // This function takes an unofficial fitsValue found on the Stokes axis
@@ -178,7 +178,7 @@ public:
 // the value as an ImageType in ImageInfo.  Only values pertaining
 // to beam, optical depth and spectral index are handled here.  All others
 // give back Undefined.  See usage in Image FITS conversion classes.
-    static ImageInfo::ImageTypes imageTypeFromFITS(Int fitsValue);
+    static ImageInfo::ImageTypes imageTypeFromFITS(int32_t fitsValue);
 
 // It might be useful to know what FITS keyword names are used in to/from
 // FITS so we can remove them so they won't be used more than once. The
@@ -196,16 +196,16 @@ public:
     // necessary and used if and only if the ImageBeamSet
     // has multiple beams for such an axis. If just a single beam, that beam
     // is returned. If no (or a null) beam, a null beam is returned.
-    GaussianBeam restoringBeam(Int channel=-1, Int stokes=-1) const;
+    GaussianBeam restoringBeam(int32_t channel=-1, int32_t stokes=-1) const;
 
     // Set the single global restoring beam. An exception will be
     // thrown if this object already has multiple beams. In that case,
     // the caller must call removeRestoringBeam() first.
     void setRestoringBeam(const GaussianBeam& beam);
   //#/// Added to build casarest with nrao-nov12
-    void setRestoringBeam(const Quantum<Double>& major,
-                          const Quantum<Double>& minor,
-                          const Quantum<Double>& pa)
+    void setRestoringBeam(const Quantum<double>& major,
+                          const Quantum<double>& minor,
+                          const Quantum<double>& pa)
       { setRestoringBeam (GaussianBeam (major, minor, pa)); }
 
     // Remove all beams (global or per plane) associated with this object.
@@ -224,36 +224,36 @@ public:
     // ImageInterface<T>::setImageInfo().
     // <br>This function cannot be used if no beams have been set via set(All)Beams.
     // <group>
-    void setBeam(Int channel, Int stokes, const Quantity& major,
+    void setBeam(int32_t channel, int32_t stokes, const Quantity& major,
                  const Quantity& minor, const Quantity& pa);
 
-    void setBeam(Int channel, Int stokes, const GaussianBeam& beam);
+    void setBeam(int32_t channel, int32_t stokes, const GaussianBeam& beam);
     // </group>
 
     // does this object contain multiple beams?
-    Bool hasMultipleBeams() const
+    bool hasMultipleBeams() const
       { return _beams.hasMultiBeam(); }
 
     // does this object contain a single beam
-    Bool hasSingleBeam() const
+    bool hasSingleBeam() const
       { return _beams.hasSingleBeam(); }
 
     // Does this object contain one or more beams?
-    Bool hasBeam() const
+    bool hasBeam() const
       { return ! _beams.empty(); }
 
     // <group>
     // Number of channels and stokes in per hyper-plane beam array
-    uInt nChannels() const
+    uint32_t nChannels() const
       { return _beams.nchan(); }
-    uInt nStokes() const
+    uint32_t nStokes() const
       { return _beams.nstokes(); }
     // </group>
 
     // <group>
     // Initialize all per-plane beams to the same value
     void setAllBeams(
-    	const uInt nChannels, const uInt nStokes,
+    	const uint32_t nChannels, const uint32_t nStokes,
     	const GaussianBeam& beam
     );
 
@@ -264,12 +264,12 @@ public:
     // This method is not meant for common use. New code should not use it.
     // Get the restoring beam from a LoggerHolder (where the history is stored)
     // as AIPS writes the beam in the FITS history rather than the header
-    // keywords. If there is no beam,  False is returned, and the internal
+    // keywords. If there is no beam,  false is returned, and the internal
     // state of the object is unchanged.
-    Bool getRestoringBeam (LoggerHolder& logger);
+    bool getRestoringBeam (LoggerHolder& logger);
 
     // Convert the given beam to a Record.
-    Record beamToRecord(Int channel, Int stokes) const;
+    Record beamToRecord(int32_t channel, int32_t stokes) const;
 
     // Check if the beam set matches the coordinate axes sizes.
     void checkBeamSet (const CoordinateSystem& coords,
@@ -278,7 +278,7 @@ public:
 
     // Append the other beamset to this one.
     void appendBeams (ImageInfo& infoThat,
-                      Int axis, Bool relax, LogIO& os,
+                      int32_t axis, bool relax, LogIO& os,
                       const CoordinateSystem& csysThis,
                       const CoordinateSystem& csysThat,
                       const IPosition& shapeThis,
@@ -289,56 +289,56 @@ public:
     // If channel or stokes is the concatenation axis, that beam axis
     // is concatenated. Otherwise it is checked if both beam sets
     // match and are merged.
-    // If relax=False, an exception is thrown if mismatching.
+    // If relax=false, an exception is thrown if mismatching.
     void combineBeams (const ImageInfo& infoThat,
                        const IPosition& shapeThis,
                        const IPosition& shapeThat,
                        const CoordinateSystem& csysThis,
                        const CoordinateSystem& csysThat,
-                       Int axis,
-                       Bool relax,
+                       int32_t axis,
+                       bool relax,
                        LogIO& os);
 
     // Reset the info and beamset of this image with the appropriate part of
     // the beam set of the concat image it is part of.
     // It returns the number of channels or polarizations handled.
-    uInt setInfoSplitBeamSet (uInt ndone, const ImageInfo& concatInfo,
+    uint32_t setInfoSplitBeamSet (uint32_t ndone, const ImageInfo& concatInfo,
                               const IPosition& shape,
-                              const CoordinateSystem& csys, Int concatAxis);
+                              const CoordinateSystem& csys, int32_t concatAxis);
   
     // Concatenate the beam sets along the frequency axis.
     void concatFreqBeams (ImageBeamSet& beamsOut,
                           const ImageInfo& infoThat,
-                          Int nchanThis,
-                          Int nchanThat,
-                          Bool relax,
+                          int32_t nchanThis,
+                          int32_t nchanThat,
+                          bool relax,
                           LogIO& os) const;
 
     // Concatenate the beam sets along the stokes axis.
     void concatPolBeams (ImageBeamSet& beamsOut,
                          const ImageInfo& infoThat,
-                         Int npolThis,
-                         Int npolThat,
-                         Bool relax,
+                         int32_t npolThis,
+                         int32_t npolThat,
+                         bool relax,
                          LogIO& os) const;
 
     // Merge the beam sets and check if they match.
     void mergeBeams (ImageBeamSet& beamsOut,
                      const ImageInfo& infoThat,
-                     Bool relax,
+                     bool relax,
                      LogIO& os) const;
 
-    // If relax=True, give a warning message if warn=True and set to False.
+    // If relax=true, give a warning message if warn=true and set to false.
     // Otherwise give an error showing msg1 only.
-    static void logMessage(Bool& warn, LogIO& os, Bool relax,
+    static void logMessage(bool& warn, LogIO& os, bool relax,
                            const String& msg1, const String msg2=String());
 
     // Get the beam area in terms of pixel size of the specified
     // DirectionCoordinate
-    Double getBeamAreaInPixels(Int channel, Int stokes,
+    double getBeamAreaInPixels(int32_t channel, int32_t stokes,
                                const DirectionCoordinate&) const;
  
-    static Double getBeamAreaInPixels(
+    static double getBeamAreaInPixels(
     	const GaussianBeam& beam, const DirectionCoordinate& dc
     );
 
@@ -351,13 +351,13 @@ private:
 
   // Check if the beam shape matches the coordinates.
   // It sets nchan and npol to the values in the image shape.
-  void _checkBeamShape (uInt& nchan, uInt& npol,
+  void _checkBeamShape (uint32_t& nchan, uint32_t& npol,
                        const IPosition& shape,
                        const CoordinateSystem& csys) const;
 
   //# Data members
   ImageBeamSet _beams;
-  mutable Bool _warnBeam;   //# tell if warning is already given
+  mutable bool _warnBeam;   //# tell if warning is already given
   ImageTypes   itsImageType;
   String       itsObjectName;
 };

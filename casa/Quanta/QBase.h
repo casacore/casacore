@@ -60,7 +60,7 @@ class LogIO;
 // Quantities are values with a unit. Their basic specification can be one of
 // two forms:
 // <srcblock>
-// Quantity( Double value, String unit);	// or: Unit unit
+// Quantity( double value, String unit);	// or: Unit unit
 // Quantum<Type> ( Type value, String unit)	// or: Unit unit
 // </srcblock>
 // See <linkto class=Quantum>Quantum</linkto> for details.
@@ -111,9 +111,9 @@ public:
   // Check for conformal matching units (e.g. dam and Mpc)
   // <group name="check">
   // Using specified units
-  Bool isConform(const Unit &s) const;
+  bool isConform(const Unit &s) const;
   // Using units specified in QBase
-  Bool isConform(const QBase &other) const;
+  bool isConform(const QBase &other) const;
   // </group>
   
   // Get a copy of Quantum
@@ -125,8 +125,8 @@ public:
   virtual void print(ostream &os) const = 0;
   // Get the type of derived Quantum (using QuantumType).
   // All should have:
-  // static uInt myType();
-  virtual uInt type() const = 0;
+  // static uint32_t myType();
+  virtual uint32_t type() const = 0;
   
 protected:
   //# Data members

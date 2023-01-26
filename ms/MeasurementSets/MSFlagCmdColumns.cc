@@ -57,7 +57,7 @@ void MSFlagCmdColumns::attach(const MSFlagCmd& msFlagCmd)
   timeQuant_p.attach(msFlagCmd, MSFlagCmd::columnName(MSFlagCmd::TIME));
 }
 
-void MSFlagCmdColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty){
+void MSFlagCmdColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty){
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 

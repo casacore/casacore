@@ -167,42 +167,42 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // created.
 // <srcblock>
 //   // set coeffs to desired values
-//   Vector<Double> coeffs(3, 1);   
+//   Vector<double> coeffs(3, 1);   
 //
 //   // configure the function   
-//   Chebyshev<Double> cheb;
+//   Chebyshev<double> cheb;
 //   cheb.setInterval(-0.8, 7.2);
 //   cheb.setDefault(1.0);
 //   cheb.setCoefficients(coeffs);
 //
 //   // evaluate the function as necessary
-//   Double z = cheb(-0.5);    // -0.5 is within range, z = 0.78625
+//   double z = cheb(-0.5);    // -0.5 is within range, z = 0.78625
 //   z = cheb(4.2);            // 4.2 is within range, z = 0.375
 //   z = cheb(-3);             // -3 is out of the interval, z = 1
 // </srcblock>
 //
 // The next example illustrates how to use the 
 // <linkto class="AutoDiff">AutoDiff</linkto> class to simultaneously
-// calculate derivatives.  Here, we replace the Double type with 
-// AutoDiff<Double>.
+// calculate derivatives.  Here, we replace the double type with 
+// AutoDiff<double>.
 // <srcblock>
-//   Chebyshev<AutoDiffA<Double> > cheb;
-//   cheb.setDefault(AutoDiffA<Double>(1));
-//   cheb.setInterval(AutoDiffA<Double>(-0.8), AutoDiffA<Double>(7.2));
+//   Chebyshev<AutoDiffA<double> > cheb;
+//   cheb.setDefault(AutoDiffA<double>(1));
+//   cheb.setInterval(AutoDiffA<double>(-0.8), AutoDiffA<double>(7.2));
 //
 //   // we'll track derivatives with respect to x and each of our
 //   // coefficients; for a second-order series, this makes 4
 //   // derivatives total.  x will be the first variable; the
 //   // coefficients will the 2nd-4th variables
-//   cheb.setCoefficient(0, AutoDiffA<Double>(3.1, 4, 1));   // c0 = 3.1
-//   cheb.setCoefficient(1, AutoDiffA<Double>(2.4, 4, 2));   // c1 = 2.4
-//   cheb.setCoefficient(2, AutoDiffA<Double>(0.5, 4, 3));   // c2 = 0.5
+//   cheb.setCoefficient(0, AutoDiffA<double>(3.1, 4, 1));   // c0 = 3.1
+//   cheb.setCoefficient(1, AutoDiffA<double>(2.4, 4, 2));   // c1 = 2.4
+//   cheb.setCoefficient(2, AutoDiffA<double>(0.5, 4, 3));   // c2 = 0.5
 //   
 //   // now evaluate the function
-//   AutoDiffA<Double> x(1.2, 4, 0);    // x = 1.2
-//   AutoDiffA<Double> y = cheb(x);     // y = 1.65
-//   Double dydx = y.derivative(0);     // dy/dx = 0.35
-//   Double dydc1 = y.derivative(2);    // dy/dc1 = -0.5
+//   AutoDiffA<double> x(1.2, 4, 0);    // x = 1.2
+//   AutoDiffA<double> y = cheb(x);     // y = 1.65
+//   double dydx = y.derivative(0);     // dy/dx = 0.35
+//   double dydc1 = y.derivative(2);    // dy/dc1 = -0.5
 // </srcblock>
 // </example>
 //
@@ -242,7 +242,7 @@ public:
     // create an n-th order Chebyshev polynomial with the coefficients
     // equal to zero.  The bounded domain is [T(-1), T(1)].  The 
     // OutOfDomainMode is CONSTANT, and the default value is T(0).
-    explicit Chebyshev(const uInt n) : ChebyshevParamModeImpl<T>(n) {}
+    explicit Chebyshev(const uint32_t n) : ChebyshevParamModeImpl<T>(n) {}
 
     // create a zero-th order Chebyshev polynomical with the first coefficient
     // equal to one.  
@@ -282,7 +282,7 @@ public:
     // <linkto class="ChebyshevParam">ChebyshevPara::setMode()</linkto> 
     // function.
     // <group>
-    Chebyshev(uInt order, const RecordInterface& mode) :
+    Chebyshev(uint32_t order, const RecordInterface& mode) :
 	ChebyshevParamModeImpl<T>(order, mode) { }
     Chebyshev(const Vector<T> &coeffs, const RecordInterface& mode) :
 	ChebyshevParamModeImpl<T>(coeffs, mode) { }

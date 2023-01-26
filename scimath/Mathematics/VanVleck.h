@@ -94,10 +94,10 @@ class VanVleck
 public:
     // Set the interpolation table size.
     // Should be an odd number.  The default size is 65.
-    static void size(uInt npts);
+    static void size(uint32_t npts);
 
     // get the current size.
-    static uInt getsize();
+    static uint32_t getsize();
     
     // Set the x and y quantization functions.
     // Each matrix should have dimensions (2,n)
@@ -107,40 +107,40 @@ public:
     // on those thresholds.  The thresholds may 
     // include a DC offset. The (0,(n-1)) element is
     // never used and need not be set.
-    static void setQuantization(const Matrix<Double> &qx,
-				const Matrix<Double> &qy);
+    static void setQuantization(const Matrix<double> &qx,
+				const Matrix<double> &qy);
 
     // Set the x and y quantization levels for the case
     // of equi-spaced levels with a possible non-zero
     // offset.  The total number of levels is given by n,
-    // which must be 3 or 9.  If n is not 3 or 9, False
+    // which must be 3 or 9.  If n is not 3 or 9, false
     // will be returned and no quantization will have been
     // set.  For the 3- and 9- level cases a bivarate normal
     // integral calculation will be used.  That is much faster
     // than the more general numerical integration used 
     // by setQuantization.
-    static Bool setEquiSpaced(Double xlev, Double ylev,
-			      Double xmean, Double ymean,
-			      Int n);
+    static bool setEquiSpaced(double xlev, double ylev,
+			      double xmean, double ymean,
+			      int32_t n);
     
     // Get the data used in setting up the interpolation
-    static void getTable(Vector<Double> &rs, Vector<Double> &rhos);
+    static void getTable(Vector<double> &rs, Vector<double> &rhos);
     
     // Given a rho return the corresponding corrected r
     // Returns 0.0 if no quantization has been set yet.
-    static Double r(const Double rho);
+    static double r(const double rho);
     
     // Given a measured zero-lag autocorrelation and number of
     // levels (n>=3) return the first positive quantizer input
     // threshold level.  This can be used to set the up the
     // matrix arguments used in setQuantization.
-    static Double thresh(Int n, Double zerolag)
+    static double thresh(int32_t n, double zerolag)
     { return ( (n>3) ? threshNgt3(n,zerolag) : threshN3(zerolag) ); }
     
     // Predict a given zero-lag given n and a threshold.  This
     // is included here to be used as a check against the output
     // of thresh.
-    static Double predict(Int n, Double threshhold)
+    static double predict(int32_t n, double threshhold)
     { return ( (n>3) ? predictNgt3(n,threshhold) : predictN3(threshhold));}
 
     // Compute an approximation to the mean signal level (DC offset)
@@ -158,33 +158,33 @@ public:
     // and the dcoffset can not be determined.  In that case,
     // the returned dcoffset is 0 and thresh() is used to set
     // the threshold level.
-    static Bool dcoff(Double &dcoffset, Double &threshold,
-		      Int n, Double zerolag, Double bias);
+    static bool dcoff(double &dcoffset, double &threshold,
+		      int32_t n, double zerolag, double bias);
 		      
     
 private:
     // the number of points to use in setting up the interpolator
-    static uInt itsSize, itsNx, itsNy;
+    static uint32_t itsSize, itsNx, itsNy;
 
-    static Bool itsEquiSpaced;
+    static bool itsEquiSpaced;
 
-    static Double itsXlev, itsYlev, itsXmean, itsYmean;
+    static double itsXlev, itsYlev, itsXmean, itsYmean;
     
     // The interpolator
-    static Interpolate1D<Double, Double> *itsInterp;
+    static Interpolate1D<double, double> *itsInterp;
     
     // the quantization functions
-    static Vector<Double> itsQx0, itsQx1, itsQy0, itsQy1;
+    static Vector<double> itsQx0, itsQx1, itsQy0, itsQy1;
     
     // Useful combinations of the above - to speed up drbydrho
     // these are -1/2*(Qx0*Qx0) and -1/2*(Qy0*Qy0)
     // These are only used for i up to (itsQx0.nelements() and
     // for j up to (itsQy0.nelements()).
-    static Vector<Double> itsQx0Qx0, itsQy0Qy0;
+    static Vector<double> itsQx0Qx0, itsQy0Qy0;
     // This is Qx0[i]*Qy0[j]
-    static Matrix<Double> itsQx0Qy0;
+    static Matrix<double> itsQx0Qy0;
     // This is (Qx1[i+1]-Qx1[i])*(Qy1[j+1]*Qy1[j])
-    static Matrix<Double> itsQx1Qy1diffs;
+    static Matrix<double> itsQx1Qy1diffs;
     // The mutex to make the functions thread-safe.
     static std::mutex theirMutex;
 
@@ -194,42 +194,42 @@ private:
     // via Price's theorem, the value dr/drho of the derivative,
     // with respect to rho, of the expected value of the correlator
     // output.
-    static Double drbydrho(Double *rho);
+    static double drbydrho(double *rho);
     
     // For a given rhoi, rhof, this produces a high-accuracy numerical
     // approximation to the integral of drbydrho over the range
     // rhoi to rhof.  It calls the standard QUADPACK adaptive Gaussian quadrature
     // procedure, dqags, to do the numerical integration.
-    static Double rinc(Double &rhoi, Double &rhof);
+    static double rinc(double &rhoi, double &rhof);
     
     // initialize the interpolator
     static void initInterpolator();
     
     // compute first threshhold for a given zerolag for n>3
-    static Double threshNgt3(Int n, Double zerolag);
+    static double threshNgt3(int32_t n, double zerolag);
     
     // compute first threshhold for a given zerolag for n==3
-    static Double threshN3(Double zerolag)
+    static double threshN3(double zerolag)
     { return sqrt(2.0)*invErfc(zerolag);}
     
     // inverse err fn - used by invErfc
-    static Double invErf(Double x);
+    static double invErf(double x);
     
     // inverse complementary err fn - used by threshN3
-    static Double invErfc(Double x);
+    static double invErfc(double x);
     
     // Predict a zero-lag value given the indicated first threshold level
     // for n>3.
-    static Double predictNgt3(Int n, Double threshhold);
+    static double predictNgt3(int32_t n, double threshhold);
     
     // Predict a zero-lag value given the indicated first threshold level
     // for n=3.
-    static Double predictN3(Double threshhold)
+    static double predictN3(double threshhold)
     { return ::erfc(threshhold/sqrt(2.0));}
 
     // implementation of dcoff for the 3-level case
-    static Bool dcoff3(Double &dcoffset, Double &threshold,
-		       Double zerolag, Double bias);
+    static bool dcoff3(double &dcoffset, double &threshold,
+		       double zerolag, double bias);
 };
 
 

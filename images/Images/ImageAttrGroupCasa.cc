@@ -47,16 +47,16 @@ namespace casacore {
   void ImageAttrGroupCasa::flush()
   {
     if (! itsTable.table().isNull()) {
-      itsTable.flush (True);
+      itsTable.flush (true);
     }
   }
   
-  uInt ImageAttrGroupCasa::nrows() const
+  uint32_t ImageAttrGroupCasa::nrows() const
   {
     return itsTable.table().nrow();
   }
 
-  Bool ImageAttrGroupCasa::hasAttr (const String& attrName) const
+  bool ImageAttrGroupCasa::hasAttr (const String& attrName) const
   {
     return itsTable.table().tableDesc().isColumn(attrName);
   }
@@ -75,16 +75,16 @@ namespace casacore {
     return TpOther;
   }
 
-  ValueHolder ImageAttrGroupCasa::getData (const String& attrName, uInt rownr)
+  ValueHolder ImageAttrGroupCasa::getData (const String& attrName, uint32_t rownr)
   {
     ValueHolder value (itsTable.getCell (attrName, rownr));
     if (value.isNull()) {
-      value = ValueHolder (Array<Int>());
+      value = ValueHolder (Array<int32_t>());
     }
     return value;
   }
 
-  Record ImageAttrGroupCasa::getDataRow (uInt rownr)
+  Record ImageAttrGroupCasa::getDataRow (uint32_t rownr)
   {
     ROTableRow tabrow (itsTable.table());
     // Transform TableRecord to Record.
@@ -114,7 +114,7 @@ namespace casacore {
   }
 
   void ImageAttrGroupCasa::putData (const String& attrName,
-                                    uInt rownr,
+                                    uint32_t rownr,
                                     const ValueHolder& data,
                                     const Vector<String>& units,
                                     const Vector<String>& measInfo)
@@ -126,7 +126,7 @@ namespace casacore {
     // so only put them for the first time, thus if the column has been added.
       TableColumn col(itsTable.table(), attrName);
       if (!units.empty()) {
-        itsTable.putKeyword (attrName, "QuantumUnits", -1, False,
+        itsTable.putKeyword (attrName, "QuantumUnits", -1, false,
                              ValueHolder(units));
       }
       if (!measInfo.empty()) {
@@ -136,19 +136,19 @@ namespace casacore {
           TableRecord rec;
           col.rwKeywordSet().defineRecord ("MEASINFO", rec);
         }
-        itsTable.putKeyword (attrName, "MEASINFO.type", -1, False,
+        itsTable.putKeyword (attrName, "MEASINFO.type", -1, false,
                              ValueHolder(measInfo[0]));
-        itsTable.putKeyword (attrName, "MEASINFO.Ref",  -1, False,
+        itsTable.putKeyword (attrName, "MEASINFO.Ref",  -1, false,
                              ValueHolder(measInfo[1]));
       }
     }
     checkRows (attrName, rownr);
-    itsTable.putCell (attrName, Vector<Int64>(1,rownr), data);
+    itsTable.putCell (attrName, Vector<int64_t>(1,rownr), data);
   }
 
-  void ImageAttrGroupCasa::checkRows (const String& attrName, uInt rownr)
+  void ImageAttrGroupCasa::checkRows (const String& attrName, uint32_t rownr)
   {
-    uInt nrow = itsTable.nrows();
+    uint32_t nrow = itsTable.nrows();
     // A new row can only be added right after the last row.
     if (rownr > nrow) {
       throw AipsError("ImageAttrGroupCasa: row " + String::toString(rownr) +
@@ -161,23 +161,23 @@ namespace casacore {
     }
   }
 
-  Bool ImageAttrGroupCasa::addNewColumn (const String& attrName,
+  bool ImageAttrGroupCasa::addNewColumn (const String& attrName,
                                          const ValueHolder& data)
   {
     Table& tab = itsTable.table();
     if (tab.tableDesc().isColumn(attrName)) {
       // Column already exists.
-      return False;
+      return false;
     }
     // Add the column with the correct type.
     // Assume arrays can have varying shapes.
     IPosition colShape(1,1);
     switch (data.dataType()) {
     case TpBool:
-      tab.addColumn (ScalarColumnDesc<Bool>(attrName));
+      tab.addColumn (ScalarColumnDesc<bool>(attrName));
       break;
     case TpArrayBool:
-      tab.addColumn (ArrayColumnDesc<Bool> (attrName));
+      tab.addColumn (ArrayColumnDesc<bool> (attrName));
       break;
     case TpChar:
     case TpUChar:
@@ -185,22 +185,22 @@ namespace casacore {
     case TpUShort:
     case TpInt:
     case TpUInt:
-      tab.addColumn (ScalarColumnDesc<Int>(attrName));
+      tab.addColumn (ScalarColumnDesc<int32_t>(attrName));
       break;
     case TpArrayInt:
-      tab.addColumn (ArrayColumnDesc<Int> (attrName));
+      tab.addColumn (ArrayColumnDesc<int32_t> (attrName));
       break;
     case TpFloat:
-      tab.addColumn (ScalarColumnDesc<Float>(attrName));
+      tab.addColumn (ScalarColumnDesc<float>(attrName));
       break;
     case TpArrayFloat:
-      tab.addColumn (ArrayColumnDesc<Float> (attrName));
+      tab.addColumn (ArrayColumnDesc<float> (attrName));
       break;
     case TpDouble:
-      tab.addColumn (ScalarColumnDesc<Double>(attrName));
+      tab.addColumn (ScalarColumnDesc<double>(attrName));
       break;
     case TpArrayDouble:
-      tab.addColumn (ArrayColumnDesc<Double> (attrName));
+      tab.addColumn (ArrayColumnDesc<double> (attrName));
       break;
     case TpComplex:
       tab.addColumn (ScalarColumnDesc<Complex>(attrName));
@@ -224,7 +224,7 @@ namespace casacore {
       throw AipsError("ImageAttrGroupCasa::addNewColumn: Unknown datatype " +
                       String::toString(data.dataType()));
     }
-    return True;
+    return true;
   }
 
 } //# NAMESPACE CASACORE - END

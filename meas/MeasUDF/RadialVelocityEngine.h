@@ -99,18 +99,18 @@ namespace casacore {
     RadialVelocityEngine();
 
     // Get the values.
-    Array<Double> getArrayDouble (const TableExprId& id);
+    Array<double> getArrayDouble (const TableExprId& id);
 
     // Get the radial velocities.
     Array<MRadialVelocity> getRadialVelocities (const TableExprId& id);
 
     // Handle the argument(s) giving the input radial velocities and reference type.
     // The radial velocity can be a column in a table.
-    // If 'proper' is True, it is tested if a proper radial velocity is given
-    // (with proper unit and/or type). If not. False is returned.
-    // If 'proper' is False, the value is always considered as radial velocity.
+    // If 'proper' is true, it is tested if a proper radial velocity is given
+    // (with proper unit and/or type). If not. false is returned.
+    // If 'proper' is false, the value is always considered as radial velocity.
     void handleRadialVelocity (std::vector<TENShPtr>& args,
-                               uInt& argnr);
+                               uint32_t& argnr);
 
     // Set the MeasConvert object.
     void setConverter (MRadialVelocity::Types toType);

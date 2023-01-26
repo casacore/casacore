@@ -83,7 +83,7 @@ public:
 
   // Create the table in memory using the definitions in the
   // SetupNewTable object.
-  MemoryTable (SetupNewTable&, rownr_t nrrow, Bool initialize);
+  MemoryTable (SetupNewTable&, rownr_t nrrow, bool initialize);
 
   // The destructor deletes all data.
   virtual ~MemoryTable();
@@ -94,14 +94,14 @@ public:
 
   // Is the table stored in big or little endian format?
   // It returns the endian format of the machine.
-  virtual Bool asBigEndian() const;
+  virtual bool asBigEndian() const;
 
   // Get the storage option used for the table.
   virtual const StorageOption& storageOption() const;
 
   // Is the table in use (i.e. open) in another process?
-  // It always returns False.
-  virtual Bool isMultiUsed (Bool checkSubTable) const;
+  // It always returns false.
+  virtual bool isMultiUsed (bool checkSubTable) const;
 
   // Get the locking info.
   // It returns PermanentLocking.
@@ -113,26 +113,26 @@ public:
 
   // Has this process the read or write lock, thus can the table
   // be read or written safely?
-  // It always returns True.
-  virtual Bool hasLock (FileLocker::LockType) const;
+  // It always returns true.
+  virtual bool hasLock (FileLocker::LockType) const;
 
   // Locking the table is a no-op.
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
 
   // Unlocking the table is a no-op.
   virtual void unlock();
 
   // Flushing the table is a no-op.
-  virtual void flush (Bool fsync, Bool recursive);
+  virtual void flush (bool fsync, bool recursive);
 
   // Resyncing the Table is a no-op.
   virtual void resync();
 
   // Get the modify counter. It always returns 0.
-  virtual uInt getModifyCounter() const;
+  virtual uint32_t getModifyCounter() const;
 
-  // Test if the table is opened as writable. It always returns True.
-  virtual Bool isWritable() const;
+  // Test if the table is opened as writable. It always returns true.
+  virtual bool isWritable() const;
 
   // Copy the table and all its subtables.
   // It copies the contents of each row to get a real copy.
@@ -141,8 +141,8 @@ public:
   virtual void deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
                          const StorageOption&,
-			 int tableOption, Bool, int endianFormat,
-			 Bool noRows) const;
+			 int tableOption, bool, int endianFormat,
+			 bool noRows) const;
   // </group>
 
   // Rename the table. The tableOption is ignored.
@@ -167,47 +167,47 @@ public:
   virtual void flushTableInfo();
 
   // Get a column object using its index.
-  virtual BaseColumn* getColumn (uInt columnIndex) const;
+  virtual BaseColumn* getColumn (uint32_t columnIndex) const;
 
   // Get a column object using its name.
   virtual BaseColumn* getColumn (const String& columnName) const;
 
   // Test if it is possible to add a row to this table (yes).
-  virtual Bool canAddRow() const;
+  virtual bool canAddRow() const;
 
   // Add one or more rows and possibly initialize them.
   // This will fail for tables not supporting addition of rows.
-  virtual void addRow (rownr_t nrrow = 1, Bool initialize = True);
+  virtual void addRow (rownr_t nrrow = 1, bool initialize = true);
 
   // Test if it is possible to remove a row from this table (yes).
-  virtual Bool canRemoveRow() const;
+  virtual bool canRemoveRow() const;
 
   // Remove the given row.
   virtual void removeRow (rownr_t rownr);
 
   // Add a column to the table.
   // If the DataManager is not a virtual engine, MemoryStMan will be used.
-  // The last Bool argument is not used in MemoryTable, but can be used in
+  // The last bool argument is not used in MemoryTable, but can be used in
   // other classes derived from BaseTable.
   // <group>
-  virtual void addColumn (const ColumnDesc& columnDesc, Bool addToParent);
+  virtual void addColumn (const ColumnDesc& columnDesc, bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
-			  const String& dataManager, Bool byName,
-                          Bool addToParent);
+			  const String& dataManager, bool byName,
+                          bool addToParent);
   virtual void addColumn (const ColumnDesc& columnDesc,
-			  const DataManager& dataManager, Bool addToParent);
+			  const DataManager& dataManager, bool addToParent);
   virtual void addColumn (const TableDesc& tableDesc,
-			  const DataManager& dataManager, Bool addToParent);
+			  const DataManager& dataManager, bool addToParent);
   // </group>
 
   // Test if columns can be removed (yes).
-  virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
+  virtual bool canRemoveColumn (const Vector<String>& columnNames) const;
 
   // Remove columns.
   virtual void removeColumn (const Vector<String>& columnNames);
 
   // Test if a column can be renamed (yes).
-  virtual Bool canRenameColumn (const String& columnName) const;
+  virtual bool canRenameColumn (const String& columnName) const;
 
   // Rename a column.
   virtual void renameColumn (const String& newName, const String& oldName);
@@ -219,7 +219,7 @@ public:
   // Find the data manager with the given name or for the given column.
   // There is only one storage manager (MemoryStMan) with name MSM.
   virtual DataManager* findDataManager (const String& name,
-                                        Bool byColumn) const;
+                                        bool byColumn) const;
 
 
 private:

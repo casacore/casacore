@@ -56,18 +56,18 @@
 // compares the results with the reference output file.
 
 void writeFixed(const TSMOption&);
-void readTable(const TSMOption&, Bool readKeys);
+void readTable(const TSMOption&, bool readKeys);
 void writeNoHyper(const TSMOption&);
 void extendOnly(const TSMOption&);
 
 int main () {
     try {
         writeFixed(TSMOption::Cache);
-	readTable(TSMOption::MMap, True);
+	readTable(TSMOption::MMap, true);
 	writeNoHyper(TSMOption::MMap);
-	readTable(TSMOption::Buffer, False);
+	readTable(TSMOption::Buffer, false);
         writeFixed(TSMOption::Buffer);
-	readTable(TSMOption::Cache, False);
+	readTable(TSMOption::Cache, false);
         extendOnly(TSMOption::Cache);
     } catch (std::exception& x) {
 	cout << "Caught an exception: " << x.what() << endl;
@@ -100,7 +100,7 @@ void writeFixed(const TSMOption& tsmOpt)
     newtab.setShapeColumn ("Freq", IPosition(1,20));
     newtab.setShapeColumn ("Data", IPosition(2,16,20));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
 
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
@@ -115,7 +115,7 @@ void writeFixed(const TSMOption& tsmOpt)
     ScalarColumn<float> time (table, "Time");
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<51; i++) {
 	table.addRow();
@@ -163,7 +163,7 @@ void writeFixed(const TSMOption& tsmOpt)
     AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
 
-void readTable (const TSMOption& tsmOpt, Bool readKeys)
+void readTable (const TSMOption& tsmOpt, bool readKeys)
 {
   Table table("tTiledColumnStMan_tmp.data", Table::Old, tsmOpt);
     ROTiledStManAccessor accessor (table, "TSMExample");
@@ -180,7 +180,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
     timeValue = 34;
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<table.nrow(); i++) {
 	data.get (i, result);
@@ -224,7 +224,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 	    cout << "shape of getColumn result is incorrect" << endl;
 	}else{
 	    indgen (array);
-	    uInt i=0;
+	    uint32_t i=0;
 	    ArrayIterator<float> iter (result, 2);
 	    while (! iter.pastEnd()) {
 		if (! allEQ (iter.array(), array)) {
@@ -242,7 +242,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 
     // Get slices in the entire column.
     {
-	uInt i, j;
+	uint32_t i, j;
 	Cube<float> array(1,1,51);
 	for (i=0; i<51; i++) {
 	    array(0,0,i) = 200*i;
@@ -265,7 +265,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 
     // Get strided slices in the entire column.
     {
-	uInt i, j;
+	uint32_t i, j;
 	Cube<float> array(2,2,51);
 	for (i=0; i<51; i++) {
 	    array(0,0,i) = 200*i;
@@ -295,7 +295,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 
     // Get slices from each cell.
     {
-	uInt i, j, k;
+	uint32_t i, j, k;
 	Matrix<float> array(2,4);
 	Array<float> result;
 	for (k=0; k<table.nrow(); k++) {
@@ -326,7 +326,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 
     // Get a strided slice from each cell.
     {
-	uInt i, j, k;
+	uint32_t i, j, k;
 	Matrix<float> array(8,5);
 	Array<float> result;
 	for (k=0; k<table.nrow(); k++) {
@@ -378,7 +378,7 @@ void writeNoHyper(const TSMOption& tsmOpt)
     newtab.setShapeColumn ("Data", IPosition(2,16,20));
     newtab.bindColumn ("Data", sm1);
     newtab.bindColumn ("Weight", sm1);
-    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::BigEndian, tsmOpt);
 
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
@@ -393,7 +393,7 @@ void writeNoHyper(const TSMOption& tsmOpt)
     ScalarColumn<float> time (table, "Time");
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
-    uInt i;
+    uint32_t i;
     indgen (array);
     for (i=0; i<51; i++) {
 	table.addRow();
@@ -454,10 +454,10 @@ void extendOnly(const TSMOption& tsmOpt)
     // Create a storage manager for it.
     TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,1));
     newtab.bindColumn ("Weight", sm1);
-    Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LocalEndian, tsmOpt);
 
     ArrayColumn<float> weight (table, "Weight");
-    uInt i;
+    uint32_t i;
     for (i=0; i<51; i++) {
 	table.addRow();
     }

@@ -93,68 +93,68 @@ public:
 
   // Print and plot the information.
   // Currently, not all information is utilized.
-  Bool info(const Bool lastcall,
-	    const Int iteration,
-	    const Int numberIterations,
-	    const Vector<Float>& maxima,
+  bool info(const bool lastcall,
+	    const int32_t iteration,
+	    const int32_t numberIterations,
+	    const Vector<float>& maxima,
 	    const Block<IPosition>& posMaximum,
-	    const Float strengthOptimum,
-	    const Int optimumScale,
+	    const float strengthOptimum,
+	    const int32_t optimumScale,
 	    const IPosition& positionOptimum,
-	    const Float& totalFlux,
-	    const Vector<Float>& totalFluxScale,
-	    const Bool resetBase=False);
+	    const float& totalFlux,
+	    const Vector<float>& totalFluxScale,
+	    const bool resetBase=false);
   
 protected:
 
 private:
 
   // initizalize the arrays and such
-  void initialize(const uInt nScales, 
-		  const Float& maxResidual, 
-		  const uInt numIterations);
+  void initialize(const uint32_t nScales, 
+		  const float& maxResidual, 
+		  const uint32_t numIterations);
 
   // As the iterations trickle in, we will from time to time
   // need to make the Matrices larger.  Increase to 2*n+1
   void resizeDataStorage();
 
   // this will redraw the plot with a new scale;
-  // if plotMatrices = False, just draw the boxes,
+  // if plotMatrices = false, just draw the boxes,
   // else, replot all past data.
   //
-  void basicSetUp(Bool plotMatrices = False);
+  void basicSetUp(bool plotMatrices = false);
 
   // Note: you MUST call  basicSetUp before calling this.
-  void plotOne(const Int iteration, 
-               const Vector<Float>& resid, const Vector<Float>& flux);
+  void plotOne(const int32_t iteration, 
+               const Vector<float>& resid, const Vector<float>& flux);
 
   PGPlotter* itsPgplotter;
 
-  Vector<Float> iterationNumber;
-  Matrix<Float> maxResiduals;
-  Matrix<Float> posResiduals;
-  Matrix<Float> negResiduals;
-  Matrix<Float> totalFluxesPer;
-  Vector<Float> totalFluxes;
-  uInt currentIndex;
-  uInt currentTotalIterations;
-  Float currentFluxScale;
-  Float currentMinFluxScale;
-  Float currentMaxResidual;
-  Float currentMinResidual;
+  Vector<float> iterationNumber;
+  Matrix<float> maxResiduals;
+  Matrix<float> posResiduals;
+  Matrix<float> negResiduals;
+  Matrix<float> totalFluxesPer;
+  Vector<float> totalFluxes;
+  uint32_t currentIndex;
+  uint32_t currentTotalIterations;
+  float currentFluxScale;
+  float currentMinFluxScale;
+  float currentMaxResidual;
+  float currentMinResidual;
 
-  Float logMinRes;
-  Float logMaxRes;
-  Float deltaY;
-  Float xMin;
-  Float xMax;
+  float logMinRes;
+  float logMaxRes;
+  float deltaY;
+  float xMin;
+  float xMax;
   
-  Float fluxScaleJump;
-  Float residScaleJump;
+  float fluxScaleJump;
+  float residScaleJump;
 
-  Float forbidden;
+  float forbidden;
 
-  Vector<Float> baseFluxes;
+  Vector<float> baseFluxes;
 
 };
 

@@ -35,8 +35,8 @@
 // Test program for the BucketBuffered class
 // </summary>
 
-void a (Bool);
-void b (Bool);
+void a (bool);
+void b (bool);
 
 int main (int argc, const char*[])
 {
@@ -51,16 +51,16 @@ int main (int argc, const char*[])
 }
 
 // Build a file.
-void a (Bool)
+void a (bool)
 {
   // Create the file.
-  BucketFile file ("tBucketBuffered_tmp.data", 4000, False);
+  BucketFile file ("tBucketBuffered_tmp.data", 4000, false);
   file.open();
   BucketBuffered cache (&file, 512, 32768, 5);
-  Int i;
+  int32_t i;
   union {
     char buf[32768];
-    Int  bufi[32768/4];
+    int32_t  bufi[32768/4];
   };
   for (i=0; i<32768; i++) {
     buf[i] = 0;
@@ -75,28 +75,28 @@ void a (Bool)
   for (i=0; i<100; i++) {
     cache.read (i, 0, 32768);
     const char* buf = cache.getBuffer();
-    if (*(const Int*)buf != i+1  ||  *(const Int*)(buf+32760) != i+10) {
+    if (*(const int32_t*)buf != i+1  ||  *(const int32_t*)(buf+32760) != i+10) {
       cout << "xError in bucket " << i << endl;
-      cout << *(const Int*)buf <<' '<<  *(const Int*)(buf+32760) <<endl;
+      cout << *(const int32_t*)buf <<' '<<  *(const int32_t*)(buf+32760) <<endl;
     }
   }
   cache.flush();
   cout << "wrote " << cache.nBucket() << " buckets of 32768 bytes" << endl;
 }
 
-void b (Bool)
+void b (bool)
 {
   // Open the file.
-  BucketFile file("tBucketBuffered_tmp.data", False, 1000, False);
+  BucketFile file("tBucketBuffered_tmp.data", false, 1000, false);
   file.open();
-  Int i;
+  int32_t i;
   BucketBuffered cache (&file, 512, 32768, 105);
   for (i=0; i<100; i++) {
     cache.read (i, 0, 32768);
     const char* buf = cache.getBuffer();
-    if (*(const Int*)buf != i+1  ||  *(const Int*)(buf+32760) != i+10) {
+    if (*(const int32_t*)buf != i+1  ||  *(const int32_t*)(buf+32760) != i+10) {
       cout << "Error in bucket " << i << endl;
-      cout << *(const Int*)buf <<' '<<  *(const Int*)(buf+32760) <<endl;
+      cout << *(const int32_t*)buf <<' '<<  *(const int32_t*)(buf+32760) <<endl;
     }
   }
   for (i=100; i<105; i++) {

@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <li> A Record is stored as a group. Its values (scalars and arrays)
 //       are stored as attributes, while nested records are stored as
 //       nested groups.
-//  <li> Bool values are stored as chars.
+//  <li> bool values are stored as chars.
 //  <li> Complex values are stored as compounds of two real values.
 //  <li> Large arrays can be stored in HDF5 DataSets with an optional tile size
 //       (chunk size in HDF5 terminology). The array axes are reversed (fully

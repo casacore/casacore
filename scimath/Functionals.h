@@ -111,7 +111,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // class, but leaves that to the final users. This means that a lot of
 // copying between intermediate and final users is not necessary
 // (like between a Gaussian fitter with fixed parameters
-// and the Fitting routines: the Gaussian fitter just sets a flag to False, and
+// and the Fitting routines: the Gaussian fitter just sets a flag to false, and
 // let the Fitting worry about what to do internally).
 // </note>
 // 
@@ -217,27 +217,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Since Function1D is derived from Functional, the
 // above function will also work with classes derived from Function1D. To
 // behave sensibly, the Domain and Range types should be real, <em>i.e.</em>,
-// Float or Double.
+// float or double.
 //
 // To calculate the value of a polynomial
 // <srcblock>2 + 4x<sup>2</sup> + 6x<sup>4</sup></srcblock>
 // at <src>x=5.1</src>:
 // <srcblock>
-//      Polynomial<Double> pol(4);
+//      Polynomial<double> pol(4);
 //	pol[0] = 2; pol[2] = 4; pol[4] = 6;
 //	cout << "Polynomial value at 5.1: " << pol(5.1) << endl;
 // </srcblock>
 //
 // Create a simple function (1-dimensional) with 2 parameters (A and B):
 // <srcblock>
-//	Double myf(const Double x, const Vector<Double> p) {
+//	double myf(const double x, const Vector<double> p) {
 //	  return p[0]*sin(p[1]*x); }
 // </srcblock>
 // make it into a function object for initial parameters 2 and pi:
 // <srcblock>
-//	Vector<Double> p(2);
+//	Vector<double> p(2);
 //	p[0] = 2; p[1] = C::pi;
-//	FunctionWrapper<Double> f0(myf, p, 2);
+//	FunctionWrapper<double> f0(myf, p, 2);
 // </srcblock>
 // Make the first parameter 3:
 // <srcblock>
@@ -266,7 +266,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // Which can be called as:
 // <srcblock>
-//	objf<Double> f1;
+//	objf<double> f1;
 //	f1[0] = 2; f1[1] = C::pi;
 //	cout << "The value " << myf(3) << " should be equal to the value " <<
 //	  f1(3) << endl;

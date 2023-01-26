@@ -119,11 +119,11 @@ int mydebug = 0;
 // Returns the 0-based position of the key string in the map,
 // which is a list of strings.  Looks for the "Which" occurrance
 // of the key.
-static Int getIndex(Vector<String>& map, const String& key, uInt which = 0)
+static int32_t getIndex(Vector<String>& map, const String& key, uint32_t which = 0)
 {
-  uInt count = 0;
-  const uInt nMap = map.nelements();
-  for (uInt i = 0; i < nMap; i++) {
+  uint32_t count = 0;
+  const uint32_t nMap = map.nelements();
+  for (uint32_t i = 0; i < nMap; i++) {
     if (map(i) == key) {
       if (count == which) {
 	return i;
@@ -136,12 +136,12 @@ static Int getIndex(Vector<String>& map, const String& key, uInt which = 0)
 }
 
 // Like getIndex, but only checks for containment, not exact identity
-static Int getIndexContains(Vector<String>& map, const String& key, 
-			    uInt which = 0)
+static int32_t getIndexContains(Vector<String>& map, const String& key, 
+			    uint32_t which = 0)
 {
-  uInt count = 0;
-  const uInt nMap = map.nelements();
-  for (uInt i = 0; i < nMap; i++) {
+  uint32_t count = 0;
+  const uint32_t nMap = map.nelements();
+  for (uint32_t i = 0; i < nMap; i++) {
     if (map(i).contains(key)) {
       if (count == which) {
 	return i;
@@ -153,29 +153,29 @@ static Int getIndexContains(Vector<String>& map, const String& key,
   return -1;
 }
 
-Bool FITSIDItoMS1::firstMain = True; // initialize the class variable firstMain
-Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSyscal
-Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWeather
-Bool FITSIDItoMS1::firstGainCurve = True; // initialize the class variable firstGainCurve
-Bool FITSIDItoMS1::firstPhaseCal = True; // initialize the class variable firstPhaseCal
-Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
+bool FITSIDItoMS1::firstMain = true; // initialize the class variable firstMain
+bool FITSIDItoMS1::firstSyscal = true; // initialize the class variable firstSyscal
+bool FITSIDItoMS1::firstWeather = true; // initialize the class variable firstWeather
+bool FITSIDItoMS1::firstGainCurve = true; // initialize the class variable firstGainCurve
+bool FITSIDItoMS1::firstPhaseCal = true; // initialize the class variable firstPhaseCal
+double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
-std::map<Int,Int> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
-std::map<Int,Int> FITSIDItoMS1::digiLevels; // initialize the class variable digiLevels
-Vector<Double> FITSIDItoMS1::effChBw;
+std::map<int32_t,int32_t> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
+std::map<int32_t,int32_t> FITSIDItoMS1::digiLevels; // initialize the class variable digiLevels
+Vector<double> FITSIDItoMS1::effChBw;
 
 //	
 // Constructor
 //	
 FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
-			   const Int& obsType, const Bool& initFirstMain,
-			   const Float& vanVleck, const Int& zeroPad)
+			   const int32_t& obsType, const bool& initFirstMain,
+			   const float& vanVleck, const int32_t& zeroPad)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
     itsMSKN(itsNrMSKs," "),
     itsMSKV(itsNrMSKs," "),
-    itsgotMSK(itsNrMSKs,False),
+    itsgotMSK(itsNrMSKs,false),
     ///infile_p(fitsin),
     itsObsType(obsType),
     itsCorrelat(correlat),
@@ -189,20 +189,20 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
   //
   // Get some things to remember.
   //
-  Int nfield = tfields();      // nr of fields in the FITS table
+  int32_t nfield = tfields();      // nr of fields in the FITS table
   itsNelem.resize(nfield);     // nrs of elements per field
   itsNelem = 0;
   itsIsArray.resize(nfield);   // array flags per field
-  itsIsArray = False;          // assume scalar-type
+  itsIsArray = false;          // assume scalar-type
   
   if(initFirstMain){
-      firstMain = True;
-      firstSyscal = True;
-      firstWeather = True;
-      firstGainCurve = True;
-      firstPhaseCal = True;
-      weather_hasWater_p = False;
-      weather_hasElectron_p = False;
+      firstMain = true;
+      firstSyscal = true;
+      firstWeather = true;
+      firstGainCurve = true;
+      firstPhaseCal = true;
+      weather_hasWater_p = false;
+      weather_hasElectron_p = false;
       antIdFromNo.clear();
       digiLevels.clear();
       rdate = 0.;
@@ -226,7 +226,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
   // Step 1a: Read the table.info from the MSK table keywords TYPE,
   // SUBTYPE and README, and clear the relevant MSK buffer entries.
   //
-  for (uInt ikey=0; ikey<itsNrMSKs; ikey++) {
+  for (uint32_t ikey=0; ikey<itsNrMSKs; ikey++) {
     if (itsgotMSK(ikey) && itsMSKC(ikey)==" ") {
       //
       // This is a table keyword.
@@ -238,7 +238,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
       } else if (itsMSKN(ikey) == "README") {
 	itsTableInfo.readmeAddLine(itsMSKV(ikey));
       }
-      itsgotMSK(ikey) = False;
+      itsgotMSK(ikey) = false;
     }
   }
   
@@ -310,7 +310,7 @@ void FITSIDItoMS1::fillRow()
     //
     // Loop over each field.
     //
-    for (Int icol=0; icol<tfields(); icol++) {
+    for (int32_t icol=0; icol<tfields(); icol++) {
 	//		and switch on the FITS type
 	TableColumn tabcol(itsCurRowTab, icol);
 	switch (field(icol).fieldtype()) {
@@ -318,12 +318,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::LOGICAL:
 	{
 	    FitsField<FitsLogical> thisfield = *(FitsField<FitsLogical>* )&field(icol);
-	    Vector<Bool> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    Vector<bool> vec(itsNelem(icol));
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<Bool> arrcol(tabcol);
+		ArrayColumn<bool> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -334,12 +334,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::BIT:
 	{
 	    FitsField<FitsBit> thisfield = *(FitsField<FitsBit>* )&field(icol);
-	    Vector<Bool> vec(itsNelem(icol));
-	    for (uInt ie=0; ie<field(icol).nelements(); ie++) {
+	    Vector<bool> vec(itsNelem(icol));
+	    for (uint32_t ie=0; ie<field(icol).nelements(); ie++) {
 		vec(ie) = (int(thisfield(ie)));
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<Bool> arrcol(tabcol);
+		ArrayColumn<bool> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -350,12 +350,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::BYTE:
 	{
 	    FitsField<unsigned char> thisfield = *(FitsField<unsigned char>* )&field(icol);
-	    Vector<uChar> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    Vector<unsigned char> vec(itsNelem(icol));
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<uChar> arrcol(tabcol);
+		ArrayColumn<unsigned char> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -368,14 +368,14 @@ void FITSIDItoMS1::fillRow()
 	{
 	    FitsField<char> thisfield = *(FitsField<char>* )&field(icol);
 	    char* cptr = (char* )thisfield.data();
-	    uInt length = thisfield.nelements();
+	    uint32_t length = thisfield.nelements();
 	    if (itsIsArray(icol)) {
 		//
 		// Decode the string into a vector of strings.
 		// Using whitespac,etc. as separator.
 		//
 		IPosition shp (tabcol.shapeColumn());
-		uInt nr = shp.product();
+		uint32_t nr = shp.product();
 		istringstream istr(String(cptr,length));
 		Vector<String> vec;
 		istr >> vec;
@@ -402,7 +402,7 @@ void FITSIDItoMS1::fillRow()
 			     << " values expected for column "
 			     << tabcol.columnDesc().name()
 			     << ", found " << nr << endl;
-			vec.resize (nr, True);
+			vec.resize (nr, true);
 		    }
 		}
 		arrcol.put(0,vec.reform(shp));
@@ -423,12 +423,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::SHORT:
 	{
 	    FitsField<short> thisfield = *(FitsField<short>* )&field(icol);
-	    Vector<Short> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    Vector<int16_t> vec(itsNelem(icol));
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<Short> arrcol(tabcol);
+		ArrayColumn<int16_t> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -439,12 +439,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::LONG:
 	{
 	    FitsField<FitsLong> thisfield = * (FitsField<FitsLong>* )&field(icol);
-	    Vector<Int> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
-		vec(ie) = (Int )thisfield(ie);
+	    Vector<int32_t> vec(itsNelem(icol));
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
+		vec(ie) = (int32_t )thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<Int> arrcol(tabcol);
+		ArrayColumn<int32_t> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -455,12 +455,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::FLOAT:
 	{
 	    FitsField<float> thisfield = *(FitsField<float>* )&field(icol);
-	    Vector<Float> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    Vector<float> vec(itsNelem(icol));
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<Float> arrcol(tabcol);
+		ArrayColumn<float> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -471,12 +471,12 @@ void FITSIDItoMS1::fillRow()
 	case FITS::DOUBLE:
 	{
 	    FitsField<double> thisfield = *(FitsField<double>* )&field(icol);
-	    Vector<Double> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    Vector<double> vec(itsNelem(icol));
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
-		ArrayColumn<Double> arrcol(tabcol);
+		ArrayColumn<double> arrcol(tabcol);
 		arrcol.put(0,vec.reform(tabcol.shapeColumn()));
 	    } else if (itsNelem(icol) == 1) {
 		tabcol.putScalar(0,vec(0));
@@ -488,7 +488,7 @@ void FITSIDItoMS1::fillRow()
 	{
 	    FitsField<Complex> thisfield = *(FitsField<Complex>* )&field(icol);
 	    Vector<Complex> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
@@ -504,7 +504,7 @@ void FITSIDItoMS1::fillRow()
 	{
 	    FitsField<DComplex> thisfield = *(FitsField<DComplex>* )&field(icol);
 	    Vector<DComplex> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 		vec(ie) = thisfield(ie);
 	    }
 	    if (itsIsArray(icol)) {
@@ -520,7 +520,7 @@ void FITSIDItoMS1::fillRow()
 	{
 	    FitsField<IComplex> thisfield = *(FitsField<IComplex> *)&field(icol);
 	    Vector<DComplex> vec(itsNelem(icol));
-	    for (Int ie=0; ie<itsNelem(icol); ie++) {
+	    for (int32_t ie=0; ie<itsNelem(icol); ie++) {
 	      const IComplex& val = thisfield(ie);
 		vec(ie) = DComplex (val.real(), val.imag());
 	    }
@@ -546,7 +546,7 @@ void FITSIDItoMS1::fillRow()
     // Loop over all virtual columns if necessary.
     //
     if (itsKwSet.nfields() > 0) {
-	for (uInt icol=0; icol<itsKwSet.nfields(); icol++) {
+	for (uint32_t icol=0; icol<itsKwSet.nfields(); icol++) {
 	    TableColumn tabcol(itsCurRowTab, itsKwSet.name(icol));
 	    switch (itsKwSet.type(icol)) {
 	    case TpBool:
@@ -607,7 +607,7 @@ Table FITSIDItoMS1::oldfullTable(const String& tabname)
     //
     SetupNewTable newtab(tabname, getDescriptor(), Table::Scratch); 
 
-    Int nRows = nrows();
+    int32_t nRows = nrows();
     StandardStMan stanStMan (-nRows);
     newtab.bindAll(stanStMan);      
 
@@ -627,7 +627,7 @@ Table FITSIDItoMS1::oldfullTable(const String& tabname)
     //
     // Loop over all rows remaining.
     //
-    for (Int outrow = 0, infitsrow = currrow();
+    for (int32_t outrow = 0, infitsrow = currrow();
 	 infitsrow < nrows(); 
 	 outrow++, infitsrow++) {
 	//
@@ -711,7 +711,7 @@ void FITSIDItoMS1::convertKeywords()
     //
     // Buffer for storing the MSK's, MS-specific FITS keywords.
     //
-    uInt iMSK = 0; 
+    uint32_t iMSK = 0; 
 
     //
     // Loop through the FITS keyword list.
@@ -752,15 +752,15 @@ void FITSIDItoMS1::convertKeywords()
 		    if (iMSK > itsNrMSKs) {
 			// Extend the MSK buffers with 10 elements.
 			itsNrMSKs += 10;
-			itsMSKC.resize(itsNrMSKs,True);
-			itsMSKN.resize(itsNrMSKs,True);
-			itsMSKV.resize(itsNrMSKs,True);
-			itsgotMSK.resize(itsNrMSKs,True);
-			for (uInt ikey=iMSK-1; ikey<itsNrMSKs; ikey++) {
-			    itsgotMSK(ikey) = False;
+			itsMSKC.resize(itsNrMSKs,true);
+			itsMSKN.resize(itsNrMSKs,true);
+			itsMSKV.resize(itsNrMSKs,true);
+			itsgotMSK.resize(itsNrMSKs,true);
+			for (uint32_t ikey=iMSK-1; ikey<itsNrMSKs; ikey++) {
+			    itsgotMSK(ikey) = false;
 			}
 		    }
-		    itsgotMSK(iMSK-1) = True;
+		    itsgotMSK(iMSK-1) = true;
 		    //
 		    // String values shorter than 8 characters are
 		    // padded with blanks. Remove those.
@@ -843,13 +843,13 @@ void FITSIDItoMS1::convertKeywords()
 //
 void FITSIDItoMS1::describeColumns()
 {
-    Int defaultOption = ColumnDesc::FixedShape;
-    Int option = defaultOption;
+    int32_t defaultOption = ColumnDesc::FixedShape;
+    int32_t option = defaultOption;
     //
     // Loop over the fields in the FITS table.
     //
     Regex trailing(" *$"); // trailing blanks
-    Int nfield = tfields();    // nr of fields in the FITS table
+    int32_t nfield = tfields();    // nr of fields in the FITS table
 
     ConstFitsKeywordList& kwl = kwlist();
 
@@ -860,14 +860,14 @@ void FITSIDItoMS1::describeColumns()
     String extname(FITSIDItoMS1::extname());
     extname = extname.before(trailing);
 
-    Vector<Int> maxis(0);
+    Vector<int32_t> maxis(0);
     if(extname=="UV_DATA"){
 	const FitsKeyword* kw;
         String kwname;
         kwl.first();
-        uInt ctr=0;
+        uint32_t ctr=0;
 
-	weightypKwPresent_p = False;
+	weightypKwPresent_p = false;
 	weightyp_p = "";
 	nStokes_p = 1;
 	nBand_p = 1;
@@ -875,7 +875,7 @@ void FITSIDItoMS1::describeColumns()
         while((kw = kwl.next())){
 	    kwname = kw->name();
 	    if(kwname.at(0,5)=="MAXIS"){ 
-		maxis.resize(++ctr,True);
+		maxis.resize(++ctr,true);
 		maxis(ctr-1)=kw->asInt();
 //		cout << "**maxis=" << maxis << endl;
 	    }
@@ -888,7 +888,7 @@ void FITSIDItoMS1::describeColumns()
 //		cout << "**nBand=" << nBand_p << endl;
 	    }
 	    else if(kwname.at(0,8)=="WEIGHTYP"){
-	        weightypKwPresent_p = True;
+	        weightypKwPresent_p = true;
 		weightyp_p = kw->asString();
 		weightyp_p.upcase();
 		weightyp_p.trim();
@@ -902,25 +902,25 @@ void FITSIDItoMS1::describeColumns()
 
 	if(maxis.nelements()>1){
 	    if(maxis(1)==2){
-		uv_data_hasWeights_p = False;
+		uv_data_hasWeights_p = false;
 	    }
 	    else if(maxis(1)==3){
-		uv_data_hasWeights_p = True;
+		uv_data_hasWeights_p = true;
 	    }
 	    else{
-		uv_data_hasWeights_p = False;
+		uv_data_hasWeights_p = false;
 		*itsLog << LogIO::WARN << "Invalid value for MAXIS1 keyword in UV_DATA table "
 			<< maxis(1) << " should be 2 or 3. Will try to continue ..." << LogIO::POST;
 	    }
 	}
 	else{
-	    uv_data_hasWeights_p = False;
+	    uv_data_hasWeights_p = false;
 	    *itsLog << LogIO::WARN << "Could not find MAXIS1 keyword in UV_DATA table. FITS IDI file probably invalid."
 		    << LogIO::POST;
 	}
     }
 
-    for (Int icol=0; icol<nfield; icol++) {
+    for (int32_t icol=0; icol<nfield; icol++) {
 	itsNelem(icol) = field(icol).nelements();
 	
 	//
@@ -938,9 +938,9 @@ void FITSIDItoMS1::describeColumns()
 	}
 
 	if(extname=="WEATHER" && colname=="WVR_H2O")
-	  weather_hasWater_p = True;
+	  weather_hasWater_p = true;
 	if(extname=="WEATHER" && colname=="IONOS_ELECTRON")
-	  weather_hasElectron_p = True;
+	  weather_hasElectron_p = true;
 
 	//
 	// Check if the name exists.
@@ -971,9 +971,9 @@ void FITSIDItoMS1::describeColumns()
 	}
 	
 	//
-	// Get a shorthand Bool for array versus scalar.  
+	// Get a shorthand bool for array versus scalar.  
 	//
-	Bool isSHAPEd = False;
+	bool isSHAPEd = false;
 	String SHAPEstr = "()";
 //	cout << colname << " is";
 	if (field(icol).fieldtype() == FITS::CHAR
@@ -982,21 +982,21 @@ void FITSIDItoMS1::describeColumns()
 	    //
 	    // See whether MSK SHAPE is defined. If so: array.
 	    //
-	    for (uInt ikey=0; ikey<itsNrMSKs; ikey++) {
+	    for (uint32_t ikey=0; ikey<itsNrMSKs; ikey++) {
 		if (itsgotMSK(ikey) && (itsMSKC(ikey)==colname)) {
 		    if (itsMSKN(ikey) == "SHAPE") {
-			isSHAPEd = True;
+			isSHAPEd = true;
 			SHAPEstr = itsMSKV(ikey);
-			itsIsArray(icol) = True;
+			itsIsArray(icol) = true;
 			cout << " (Array)";
-			itsgotMSK(ikey) = False;
+			itsgotMSK(ikey) = false;
 		    }
 		}
 	    }
 
 	} else if (itsNelem(icol) > 1) {
 	    // multi-element vector or other array
-	    itsIsArray(icol) = True;
+	    itsIsArray(icol) = true;
 //	    cout << " a multi-element non-String-type Array column";
 
 	} else {
@@ -1004,14 +1004,14 @@ void FITSIDItoMS1::describeColumns()
 	    //
 	    // See whether MSK SHAPE is defined. If so: array.
 	    //
-	    for (uInt ikey=0; ikey<itsNrMSKs; ikey++) {
+	    for (uint32_t ikey=0; ikey<itsNrMSKs; ikey++) {
 		if (itsgotMSK(ikey) && (itsMSKC(ikey)==colname)) {
 		    if (itsMSKN(ikey) == "SHAPE") {
 			SHAPEstr = itsMSKV(ikey);
-			itsIsArray(icol) = True;
-			isSHAPEd = True;
+			itsIsArray(icol) = true;
+			isSHAPEd = true;
 //			cout << " (0/1 element Vector)";
-			itsgotMSK(ikey) = False;
+			itsgotMSK(ikey) = false;
 		    }
 		}
 	    }
@@ -1021,7 +1021,7 @@ void FITSIDItoMS1::describeColumns()
 	//
 	// Get the shape vector for arrays.
 	//
-	Int ndim = 1;
+	int32_t ndim = 1;
 	IPosition shape(ndim);
 
 	if (itsIsArray(icol)) {
@@ -1035,7 +1035,7 @@ void FITSIDItoMS1::describeColumns()
 	    if(extname=="UV_DATA" && colname=="DATA")
 	      {
 		shape.resize(maxis(0));
-		for (Int id=0; id<maxis(0); id++) {
+		for (int32_t id=0; id<maxis(0); id++) {
 		    shape(id) = maxis(id+1);
 		}
 //		cout << "   shape = " << shape << endl;
@@ -1058,7 +1058,7 @@ void FITSIDItoMS1::describeColumns()
 		Vector<String> dimvec(stringToVector(dimstr));
 		ndim = dimvec.nelements();
 		shape.resize(ndim);
-		for (Int id=0; id<ndim; id++) {
+		for (int32_t id=0; id<ndim; id++) {
 		    shape(id) = atoi(dimvec(id).chars());
 		}
 //		cout << "   shape = " << shape << endl;
@@ -1093,7 +1093,7 @@ void FITSIDItoMS1::describeColumns()
 	    // column. Otherwise set the default option.
 	    //
 	    option = defaultOption;
-	    for (uInt ikey=0; ikey<itsNrMSKs; ikey++) {
+	    for (uint32_t ikey=0; ikey<itsNrMSKs; ikey++) {
 		if (itsgotMSK(ikey) && (itsMSKC(ikey)==colname)) {
 		    if (itsMSKN(ikey) == "OPTIONS") {
 			if (itsMSKV(ikey) == "DIRECT") {
@@ -1104,7 +1104,7 @@ void FITSIDItoMS1::describeColumns()
 			    *itsLog << LogIO::WARN << "Invalid MSK OPTIONS = "
 				    << itsMSKV(ikey) << " is ignored." << LogIO::POST;
 			}
-			itsgotMSK(ikey) = False;
+			itsgotMSK(ikey) = false;
 		    }
 		}
 	    }
@@ -1128,38 +1128,38 @@ void FITSIDItoMS1::describeColumns()
 	    
 	case FITS::LOGICAL:
 	    if (itsIsArray(icol)) {
-		itsTableDesc.addColumn(ArrayColumnDesc<Bool>
+		itsTableDesc.addColumn(ArrayColumnDesc<bool>
 				       (colname,"",shape,option));
 	    } else {
-		itsTableDesc.addColumn(ScalarColumnDesc<Bool>(colname,""));
+		itsTableDesc.addColumn(ScalarColumnDesc<bool>(colname,""));
 	    }
 	    break;
 	    
 	case FITS::BYTE:
-	    // BYTE stored as uChar.
+	    // BYTE stored as unsigned char.
 	    if (itsIsArray(icol)) {
-		itsTableDesc.addColumn(ArrayColumnDesc<uChar>
+		itsTableDesc.addColumn(ArrayColumnDesc<unsigned char>
 				       (colname,"",shape,option));
 	    } else {
-		itsTableDesc.addColumn(ScalarColumnDesc<uChar>(colname,""));
+		itsTableDesc.addColumn(ScalarColumnDesc<unsigned char>(colname,""));
 	    }
 	    break;
 	    
 	case FITS::SHORT:
 	    if (itsIsArray(icol)) {
-		itsTableDesc.addColumn(ArrayColumnDesc<Short>
+		itsTableDesc.addColumn(ArrayColumnDesc<int16_t>
 				       (colname,"",shape,option));
 	    } else {
-		itsTableDesc.addColumn(ScalarColumnDesc<Short>(colname,""));
+		itsTableDesc.addColumn(ScalarColumnDesc<int16_t>(colname,""));
 	    }
 	    break;
 	    
 	case FITS::LONG:
 	    if (itsIsArray(icol)) {
-		itsTableDesc.addColumn(ArrayColumnDesc<Int>
+		itsTableDesc.addColumn(ArrayColumnDesc<int32_t>
 				       (colname,"",shape,option));
 	    } else {
-		itsTableDesc.addColumn(ScalarColumnDesc<Int>(colname,""));
+		itsTableDesc.addColumn(ScalarColumnDesc<int32_t>(colname,""));
 	    }
 	    break;
 	    
@@ -1176,19 +1176,19 @@ void FITSIDItoMS1::describeColumns()
 	    
 	case FITS::FLOAT:
 	    if (itsIsArray(icol)) {
-		itsTableDesc.addColumn(ArrayColumnDesc<Float>
+		itsTableDesc.addColumn(ArrayColumnDesc<float>
 				       (colname,"",shape,option));
 	    } else {
-		itsTableDesc.addColumn(ScalarColumnDesc<Float>(colname,""));
+		itsTableDesc.addColumn(ScalarColumnDesc<float>(colname,""));
 	    }
 	    break;
 	    
 	case FITS::DOUBLE:
 	    if (itsIsArray(icol)) {
-		itsTableDesc.addColumn(ArrayColumnDesc<Double>
+		itsTableDesc.addColumn(ArrayColumnDesc<double>
 				       (colname,"",shape,option));
 	    } else {
-		itsTableDesc.addColumn(ScalarColumnDesc<Double>(colname,""));
+		itsTableDesc.addColumn(ScalarColumnDesc<double>(colname,""));
 	    }
 	    break;
 	    
@@ -1286,7 +1286,7 @@ void FITSIDItoMS1::describeColumns()
 //
 void FITSIDItoMS1::convertMSKeywords()
 {
-    for (uInt ikey=0; ikey<itsNrMSKs; ikey++) {
+    for (uint32_t ikey=0; ikey<itsNrMSKs; ikey++) {
 	if (itsgotMSK(ikey)) {
 	    if (itsMSKC(ikey) == " ") {
 		//
@@ -1323,19 +1323,19 @@ void FITSIDItoMS1::getAxisInfo()
   //
   String extname(FITSIDItoMS1::extname());
   extname = extname.before(trailing);
-  Vector<Int> maxis(0);
+  Vector<int32_t> maxis(0);
   
   if(extname=="UV_DATA"){
-    Int nAxis = 0;
-    uInt imaxis = 0;
-    uInt idx = 0;
-    //    Bool setMAXIS = False;
+    int32_t nAxis = 0;
+    uint32_t imaxis = 0;
+    uint32_t idx = 0;
+    //    bool setMAXIS = false;
     const FitsKeyword* kw;
     String kwname;
     kwl.first();
     
     
-    //while((kw = kwl.next())&& setMAXIS == False) 
+    //while((kw = kwl.next())&& setMAXIS == false) 
     while((kw = kwl.next())){
       kwname = kw->name();
       //cout << "kwname1=" << kwname <<endl;
@@ -1344,7 +1344,7 @@ void FITSIDItoMS1::getAxisInfo()
       if(kwname == "MAXIS"){
 	nAxis = kw->asInt();
 	//cout << "nAxis=" << nAxis << endl;;
-        //	setMAXIS = True;
+        //	setMAXIS = true;
       }
     }
     if (nAxis < 1) {
@@ -1385,18 +1385,18 @@ void FITSIDItoMS1::getAxisInfo()
     
 
     /**
-      for(Int ctr=0;ctr<nAxis;ctr++)
+      for(int32_t ctr=0;ctr<nAxis;ctr++)
 	{
           //coordType_p(ctr) = priGroup_p.ctype(ctr);
           //coordType_p(ctr) = coordType_p(ctr).before(trailing);
-          //refVal_p(ctr) = static_cast<Double>(priGroup_p.crval(ctr));
-          //refPix_p(ctr) = static_cast<Double>(priGroup_p.crpix(ctr));
-          //delta_p(ctr) = static_cast<Double>(priGroup_p.cdelt(ctr));	  
+          //refVal_p(ctr) = static_cast<double>(priGroup_p.crval(ctr));
+          //refPix_p(ctr) = static_cast<double>(priGroup_p.crpix(ctr));
+          //delta_p(ctr) = static_cast<double>(priGroup_p.cdelt(ctr));	  
           coordType_p(ctr) = ctype(ctr);
           coordType_p(ctr) = coordType_p(ctr).before(trailing);
-          refVal_p(ctr) = static_cast<Double>(crval(ctr));
-          refPix_p(ctr) = static_cast<Double>(crpix(ctr));
-          delta_p(ctr) = static_cast<Double>(cdelt(ctr));	  
+          refVal_p(ctr) = static_cast<double>(crval(ctr));
+          refPix_p(ctr) = static_cast<double>(crpix(ctr));
+          delta_p(ctr) = static_cast<double>(cdelt(ctr));	  
 	}
       **/
 
@@ -1433,10 +1433,10 @@ void FITSIDItoMS1::getAxisInfo()
     
   // Sort out the order of the polarizations and find the sort indices
   // to put them in 'standard' order: PP,PQ,QP,QQ
-  const uInt iPol = getIndex(coordType_p, "STOKES");
-  const uInt numCorr = nPixel_p(iPol);
+  const uint32_t iPol = getIndex(coordType_p, "STOKES");
+  const uint32_t numCorr = nPixel_p(iPol);
   corrType_p.resize(numCorr); 
-  for (uInt i = 0; i < numCorr; i++) {
+  for (uint32_t i = 0; i < numCorr; i++) {
     // note: 1-based ref pix
     corrType_p(i) = ifloor(refVal_p(iPol) +
 			   (i+1-refPix_p(iPol))*delta_p(iPol)+0.5);
@@ -1477,22 +1477,22 @@ void FITSIDItoMS1::getAxisInfo()
     }
   }
 
-  Vector<Int> tmp(corrType_p.copy());
+  Vector<int32_t> tmp(corrType_p.copy());
   // Sort the polarizations to standard order. Could probably use
   // GenSortIndirect here.
-  GenSort<Int>::sort(corrType_p);
+  GenSort<int32_t>::sort(corrType_p);
   corrIndex_p.resize(numCorr);
   // Get the sort indices to rearrange the data to standard order
-  for (uInt i = 0; i < numCorr; i++) {
-    for (uInt j = 0; j < numCorr; j++) {
+  for (uint32_t i = 0; i < numCorr; i++) {
+    for (uint32_t j = 0; j < numCorr; j++) {
       if (corrType_p(j) == tmp(i)) corrIndex_p[i] = j;
     }
   }
   // Get the sort indexes to rearrange the data in swapped
   // cross-polarization order
   corrSwapIndex_p.resize(numCorr);
-  for (uInt i = 0; i < numCorr; i++) {
-    Int tmpType = tmp(i);
+  for (uint32_t i = 0; i < numCorr; i++) {
+    int32_t tmpType = tmp(i);
     switch (tmpType) {
     case Stokes::XY:
       tmpType = Stokes::YX;
@@ -1507,16 +1507,16 @@ void FITSIDItoMS1::getAxisInfo()
       tmpType = Stokes::RL;
       break;
     }
-    for (uInt j = 0; j < numCorr; j++) {
+    for (uint32_t j = 0; j < numCorr; j++) {
       if (corrType_p(j) == tmpType) corrSwapIndex_p[i] = j;
     }
   }
 
   // Figure out the correlation products from the polarizations
   corrProduct_p.resize(2, numCorr); corrProduct_p = 0;
-  for (uInt i = 0; i < numCorr; i++) {
+  for (uint32_t i = 0; i < numCorr; i++) {
     const Stokes::StokesTypes cType = Stokes::type(corrType_p(i));
-    Fallible<Int> receptor = Stokes::receptor1(cType);
+    Fallible<int32_t> receptor = Stokes::receptor1(cType);
     if (receptor.isValid()) {
       corrProduct_p(0,i) = receptor;
 //      cout << "corrProcut_p(0,"<< i <<")=" << corrProduct_p(0,i);
@@ -1556,11 +1556,11 @@ void FITSIDItoMS1::getAxisInfo()
   restfreq_p = 0.0;
   Record header;
   Vector<String> ignore;
-  Bool ok = FITSKeywordUtil::getKeywords(header, kwlist(), ignore);
+  bool ok = FITSKeywordUtil::getKeywords(header, kwlist(), ignore);
   if (ok) {
-    Int spectralAxis;
-    Double referenceChannel, referenceFrequency, deltaFrequency;
-    Vector<Double> frequencies;
+    int32_t spectralAxis;
+    double referenceChannel, referenceFrequency, deltaFrequency;
+    Vector<double> frequencies;
     MDoppler::Types velPref;
     // Many of the following aren't used since they have been obtained
     // in other ways.
@@ -1578,14 +1578,14 @@ void FITSIDItoMS1::getAxisInfo()
 
 }
 
-void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM, 
-				       Bool mainTbl, Bool addCorrMod,
-				       Bool addSyscal, Bool addWeather,
-				       Bool addGainCurve, Bool addPhaseCal) {
+void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, bool useTSM, 
+				       bool mainTbl, bool addCorrMod,
+				       bool addSyscal, bool addWeather,
+				       bool addGainCurve, bool addPhaseCal) {
   
-  Int nCorr = 0;
-  Int nChan = 0;
-  Int nIF_p = 0;
+  int32_t nCorr = 0;
+  int32_t nChan = 0;
+  int32_t nIF_p = 0;
 
   String telescop;
 
@@ -1643,9 +1643,9 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
   SetupNewTable newtab(MSFileName, td, Table::New);
   
   // Set the default Storage Manager to be the Incr one
-  uInt cache_val=32768;
+  uint32_t cache_val=32768;
   IncrementalStMan incrStMan ("ISMData",cache_val);
-  newtab.bindAll(incrStMan, True);
+  newtab.bindAll(incrStMan, true);
 
   // Choose an appropriate tileshape
   IPosition dataShape(2, nCorr, nChan);
@@ -1778,15 +1778,15 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     String name = "GAIN_CURVE";
 
     td.comment() = "Gain curve table";
-    td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
-    td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
-    td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
-    td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
-    td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<int32_t>("ANTENNA_ID", "Antenna identifier"));
+    td.addColumn(ScalarColumnDesc<int32_t>("FEED_ID", "Feed identifier"));
+    td.addColumn(ScalarColumnDesc<int32_t>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+    td.addColumn(ScalarColumnDesc<double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<double>("INTERVAL", "Interval for which this set of parameters is accurate"));
     td.addColumn(ScalarColumnDesc<String>("TYPE", "Gain curve type"));
-    td.addColumn(ScalarColumnDesc<Int>("NUM_POLY", "Number of terms in polynomial"));
-    td.addColumn(ArrayColumnDesc<Float>("GAIN", "Gain polynomial"));
-    td.addColumn(ArrayColumnDesc<Float>("SENSITIVITY", "Antenna sensitivity"));
+    td.addColumn(ScalarColumnDesc<int32_t>("NUM_POLY", "Number of terms in polynomial"));
+    td.addColumn(ArrayColumnDesc<float>("GAIN", "Gain polynomial"));
+    td.addColumn(ArrayColumnDesc<float>("SENSITIVITY", "Antenna sensitivity"));
     TableMeasValueDesc measVal(td, "TIME");
     TableMeasDesc<MEpoch> measCol(measVal);
     measCol.write(td);
@@ -1805,15 +1805,15 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     String name = "PHASE_CAL";
 
     td.comment() = "Phase calibration table";
-    td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
-    td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
-    td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
-    td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
-    td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
-    td.addColumn(ScalarColumnDesc<Int>("NUM_TONES", "Number of phase-cal tones"));
-    td.addColumn(ArrayColumnDesc<Double>("TONE_FREQUENCY", "Phase-cal tone frequency"));
+    td.addColumn(ScalarColumnDesc<int32_t>("ANTENNA_ID", "Antenna identifier"));
+    td.addColumn(ScalarColumnDesc<int32_t>("FEED_ID", "Feed identifier"));
+    td.addColumn(ScalarColumnDesc<int32_t>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+    td.addColumn(ScalarColumnDesc<double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<int32_t>("NUM_TONES", "Number of phase-cal tones"));
+    td.addColumn(ArrayColumnDesc<double>("TONE_FREQUENCY", "Phase-cal tone frequency"));
     td.addColumn(ArrayColumnDesc<Complex>("PHASE_CAL", "Phase-cal measurement"));
-    td.addColumn(ScalarColumnDesc<Double>("CABLE_CAL", "Cable calibration measurement"));
+    td.addColumn(ScalarColumnDesc<double>("CABLE_CAL", "Cable calibration measurement"));
     TableMeasValueDesc measVal(td, "TIME");
     TableMeasDesc<MEpoch> measCol(measVal);
     measCol.write(td);
@@ -1845,17 +1845,17 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
 }
 
 // Van Vleck relationship
-static Double rho_2(Double r)
+static double rho_2(double r)
 {
   return sin((C::pi * r) / 2);
 }
 
 // Fred Schwab's rational approximation for 2-bit sampling with n =
 // 3.336 and optimally chosen v_0.  See VLBA Correlator Memo 75.
-static Double rho_4(Double r)
+static double rho_4(double r)
 {
-  Double rr = r*r;
-  Double num, den;
+  double rr = r*r;
+  double num, den;
 
   num = 1.1329552 - 3.1056902 * rr + 2.9296994 * rr*rr - 0.90122460 * rr*rr*rr;
   den = 1 - 2.7056559 * rr + 2.5012473 * rr*rr - 0.73985978 * rr*rr*rr;
@@ -1863,7 +1863,7 @@ static Double rho_4(Double r)
   return (num / den) * r;
 }
 
-void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW)
+void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, int32_t& nField, int32_t& nSpW)
 {
 
   // Get access to the MS columns
@@ -1880,10 +1880,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   const Regex trailing(" *$"); // trailing blanks
 
   // get the random group parameter names
-  Int tFields; //(nParams)
-  Int nRows;  //(nGroups)
-  Int MSnRows; MSnRows = msc.nrow();
-  Vector<Int> scans; scans=0;
+  int32_t tFields; //(nParams)
+  int32_t nRows;  //(nGroups)
+  int32_t MSnRows; MSnRows = msc.nrow();
+  Vector<int32_t> scans; scans=0;
   msc.scanNumber().getColumn(scans); 
   //cout << msc.scanNumber().getColumn() <<endl;
   //cout << msc.scanNumber(0)<<endl;
@@ -1897,7 +1897,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
   Vector<String> tType(tFields);
 
-  for (Int i=0; i < tFields; i++) {
+  for (int32_t i=0; i < tFields; i++) {
     tType(i) = ttype(i); 
     tType(i) = tType(i).before(trailing);
   }
@@ -1907,30 +1907,30 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   //cout << "STOKES POS=" << getIndex(coordType_p,"STOKES") << endl;
   //cout << "FREQ POS=" << getIndex(coordType_p,"FREQ") << endl;
 
-  Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
-  Int nChan = nPixel_p(getIndex(coordType_p,"FREQ"));
+  int32_t nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
+  int32_t nChan = nPixel_p(getIndex(coordType_p,"FREQ"));
   //cout << "nCorr=" << nCorr << endl;
   //cout << "nChan=" << nChan << endl;
 
   Matrix<Complex> vis(nCorr,nChan);
-  Matrix<Float> sigmaSpec(nCorr, nChan);
-  Matrix<Float> weightSpec(nCorr, nChan);
+  Matrix<float> sigmaSpec(nCorr, nChan);
+  Matrix<float> weightSpec(nCorr, nChan);
 
   std::vector<float> fftIn(nChan + 1), fftOut(nChan + 1);
   FFTW::Plan redftPlan = FFTW::plan_redft00( IPosition(1, nChan+1), fftIn.data(), fftOut.data() );
 
-  const Int nCat = 3; // three initial categories
+  const int32_t nCat = 3; // three initial categories
   // define the categories
   Vector<String> cat(nCat);
   cat(0)="FLAG_CMD";
   cat(1)="ORIGINAL"; 
   cat(2)="USER"; 
   msc.flagCategory().rwKeywordSet().define("CATEGORY",cat);
-  Cube<Bool> flagCat(nCorr,nChan,nCat,False);
-  Matrix<Bool> flag = flagCat.xyPlane(0); // references flagCat's storage
+  Cube<bool> flagCat(nCorr,nChan,nCat,false);
+  Matrix<bool> flag = flagCat.xyPlane(0); // references flagCat's storage
 
   // find out the indices for U, V and W, there are several naming schemes
-  Int iU,iV,iW;
+  int32_t iU,iV,iW;
   iU = getIndexContains(tType,"UU"); 
   iV = getIndexContains(tType,"VV");
   iW = getIndexContains(tType,"WW");
@@ -1939,22 +1939,22 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   }
   
   // get index for baseline
-  Int iBsln = getIndex(tType, "BASELINE");
+  int32_t iBsln = getIndex(tType, "BASELINE");
   // get indices for time
-  Int iTime0 = getIndex(tType, "DATE");
-  Int iTime1 = getIndex(tType, "TIME");
+  int32_t iTime0 = getIndex(tType, "DATE");
+  int32_t iTime1 = getIndex(tType, "TIME");
   // get index for source
-  Int iSource = getIndex(tType, "SOURCE_ID"); 
+  int32_t iSource = getIndex(tType, "SOURCE_ID"); 
   if (iSource < 0)
     iSource = getIndex(tType, "SOURCE");
   // get index for Freq
-  Int iFreq = getIndex(tType, "FREQID");
+  int32_t iFreq = getIndex(tType, "FREQID");
   // get index for FLUX
-  Int iFlux = getIndex(tType, "FLUX");
+  int32_t iFlux = getIndex(tType, "FLUX");
   // get index for Integration time
-  Int iInttim = getIndex(tType, "INTTIM"); 
+  int32_t iInttim = getIndex(tType, "INTTIM"); 
   // get index for weight
-  Int iWeight = getIndex(tType, "WEIGHT");
+  int32_t iWeight = getIndex(tType, "WEIGHT");
 
   /*
   cout << "iU=" << iU << endl;
@@ -1972,22 +1972,22 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   nAnt_p=0;
   *itsLog << LogIO::NORMAL << "Reading and writing visibility data"<< LogIO::POST;
 
-  Int row=-1;
-  Double startTime;
-  Float interval;
+  int32_t row=-1;
+  double startTime;
+  float interval;
   startTime=0.0; interval=1;
 
   ProgressMeter meter(0.0, nRows*1.0, "FITS-IDI Filler", "Rows copied", "",
- 		      "", True,  nRows/100);
+ 		      "", true,  nRows/100);
 
-  Vector<Double> uvw(3); // Move this temporary out of the loop
-  Vector<Float> _uvw(3); 
-  Int lastSpW;
+  Vector<double> uvw(3); // Move this temporary out of the loop
+  Vector<float> _uvw(3); 
+  int32_t lastSpW;
   lastSpW=-1;
-  Int putrow = -1;
-  //  Double lastTime=0;
-  //  Bool lastRowFlag=False;
-  Int nScan = 0;
+  int32_t putrow = -1;
+  //  double lastTime=0;
+  //  bool lastRowFlag=false;
+  int32_t nScan = 0;
 
   if (firstMain) {
     putrow = -1; 
@@ -1997,62 +1997,62 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
   }
   //cout << "scanNumber=" << nScan<< endl;
 
-  for (Int trow=0; trow<nRows; trow++) {
+  for (int32_t trow=0; trow<nRows; trow++) {
     // Read next row and
     // get time in MJD seconds
-    const Double JDofMJD0=2400000.5;
+    const double JDofMJD0=2400000.5;
     read(1);
     
     //
     //get actual Time0 data value from field array,
     //then multiply by scale factor and add offset.
     //
-    Double time;
-    memcpy(&time, (static_cast<Double *>(data_addr[iTime0])), sizeof(Double));
+    double time;
+    memcpy(&time, (static_cast<double *>(data_addr[iTime0])), sizeof(double));
     time *= tscal(iTime0);
     time += tzero(iTime0);  
     time -= JDofMJD0;
     //cout << "TIME=" << time << endl; 
 
     if (iTime1>=0){
-      Double time1;
-      memcpy(&time1, (static_cast<Double *>(data_addr[iTime1])), sizeof(Double));
+      double time1;
+      memcpy(&time1, (static_cast<double *>(data_addr[iTime1])), sizeof(double));
       time1 *= tscal(iTime1);
       time1 += tzero(iTime1); 
       time += time1;
     }
     //cout << "TIME=" << time << endl; 
 
-    Int _baseline;
-    Float baseline;
-    memcpy(&_baseline, (static_cast<Int *>(data_addr[iBsln])), sizeof(Int));
-    baseline=static_cast<Float>(_baseline); 
+    int32_t _baseline;
+    float baseline;
+    memcpy(&_baseline, (static_cast<int32_t *>(data_addr[iBsln])), sizeof(int32_t));
+    baseline=static_cast<float>(_baseline); 
     baseline *= tscal(iBsln);
     baseline += tzero(iBsln); 
     //cout << "BASELINE=" << baseline << endl; 
 
     if(field(iU).fieldtype() == FITS::FLOAT) {
-      uvw(0) = *static_cast<Float *>(data_addr[iU]);
+      uvw(0) = *static_cast<float *>(data_addr[iU]);
     } else {
-      uvw(0) = *static_cast<Double *>(data_addr[iU]);
+      uvw(0) = *static_cast<double *>(data_addr[iU]);
     }    
     uvw(0) *= tscal(iU);
     uvw(0) += tzero(iU); 
     //cout << "uvw(0)=" << uvw(0) << endl; 
 
     if(field(iV).fieldtype() == FITS::FLOAT) {
-      uvw(1) = *static_cast<Float *>(data_addr[iV]);
+      uvw(1) = *static_cast<float *>(data_addr[iV]);
     } else {
-      uvw(1) = *static_cast<Double *>(data_addr[iV]);
+      uvw(1) = *static_cast<double *>(data_addr[iV]);
     }
     uvw(1) *= tscal(iV);
     uvw(1) += tzero(iV); 
     //cout << "uvw(1)=" << uvw(1) << endl; 
 
     if(field(iW).fieldtype() == FITS::FLOAT) {
-      uvw(2) = *static_cast<Float *>(data_addr[iW]);
+      uvw(2) = *static_cast<float *>(data_addr[iW]);
     } else {
-      uvw(2) = *static_cast<Double *>(data_addr[iW]);
+      uvw(2) = *static_cast<double *>(data_addr[iW]);
     }
     uvw(2) *= tscal(iW);
     uvw(2) += tzero(iW); 
@@ -2071,7 +2071,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
     // If integration time is available, use it:
     if (iInttim > -1) {
-      memcpy(&interval, (static_cast<Float *>(data_addr[iInttim])), sizeof(Float));
+      memcpy(&interval, (static_cast<float *>(data_addr[iInttim])), sizeof(float));
       interval *= tscal(iInttim);
       // cout << "INTTIM=" << setprecision(11) << interval << endl; 
     } else {
@@ -2092,9 +2092,9 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       lastTime_p = time+interval;
     }
 
-    Int array = Int(100.0*(baseline - Int(baseline)+0.001));
-    Int ant1 = Int(baseline)/256; 
-    Int ant2 = Int(baseline) - ant1*256; 
+    int32_t array = int32_t(100.0*(baseline - int32_t(baseline)+0.001));
+    int32_t ant1 = int32_t(baseline)/256; 
+    int32_t ant2 = int32_t(baseline) - ant1*256; 
     if(antIdFromNo.find(ant1) != antIdFromNo.end()){
     	ant1 = antIdFromNo[ant1];
     }
@@ -2112,38 +2112,38 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     nAnt_p = max(nAnt_p,ant1+1);
     nAnt_p = max(nAnt_p,ant2+1);
 
-    Bool doConjugateVis = False;
+    bool doConjugateVis = false;
 
     if(ant1>ant2){ // swap indices and multiply UVW by -1
-      Int tant = ant1;
+      int32_t tant = ant1;
       ant1 = ant2;
       ant2 = tant;
       uvw *= -1.;
-      doConjugateVis = True;
+      doConjugateVis = true;
     }
 
     // Convert U,V,W from units of seconds to meters
     uvw *= C::c;
 
-    Int count = 0;
+    int32_t count = 0;
 
-    Float test_baseline;
-    memcpy(&test_baseline,fitsrow,sizeof(Int));
+    float test_baseline;
+    memcpy(&test_baseline,fitsrow,sizeof(int32_t));
     //cout << "*****TEST_BASELINE FITS=" << test_baseline << endl;
 
-    memcpy(&test_baseline,table,sizeof(Int));
+    memcpy(&test_baseline,table,sizeof(int32_t));
     //cout << "*****TEST_BASELINE TABLE=" << test_baseline << endl;
 
-    Int new_baseline;
-    memcpy(&new_baseline,static_cast<Int *>(data_addr[iBsln]),sizeof(Int));
+    int32_t new_baseline;
+    memcpy(&new_baseline,static_cast<int32_t *>(data_addr[iBsln]),sizeof(int32_t));
     //cout << "*****NEW_BASELINE ADDR=" << new_baseline << endl;
         
 
-    Float visReal = 0.;
-    Float visImag = 0.;
-    Float visWeight = 1.;
+    float visReal = 0.;
+    float visImag = 0.;
+    float visWeight = 1.;
 
-    Int nIF_p = 0;
+    int32_t nIF_p = 0;
     nIF_p = getIndex(coordType_p,"BAND");
     if (nIF_p>=0) {
       nIF_p=nPixel_p(nIF_p);
@@ -2153,23 +2153,23 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
     
     //cout <<"ifnomax ="<<max(1,nIF_p)<<endl;
 
-    for (Int ifno=0; ifno<max(1,nIF_p); ifno++) {
+    for (int32_t ifno=0; ifno<max(1,nIF_p); ifno++) {
       // BANDs go to separate rows in the MS
       ms.addRow();
       row++;
       putrow++;
  
-      for (Int chan=0; chan<nChan; chan++) {
-	for (Int pol=0; pol<nCorr; pol++) {
+      for (int32_t chan=0; chan<nChan; chan++) {
+	for (int32_t pol=0; pol<nCorr; pol++) {
            
-          memcpy(&visReal, (static_cast<Float *>(data_addr[iFlux])) + count++, sizeof(Float));
+          memcpy(&visReal, (static_cast<float *>(data_addr[iFlux])) + count++, sizeof(float));
 //          if(count<9){
 //	    cout << "COUNT=" << count <<"ifno="<< ifno <<"chan="<< chan<<"pol="<< pol  << " corrindex " << corrIndex_p[pol] << endl;
 //	  }
 	  //visReal *= tscal(iFlux);
 	  //visReal += tzero(iFlux); 
 
-	  memcpy(&visImag, (static_cast<Float *>(data_addr[iFlux])) + count++, sizeof(Float));     
+	  memcpy(&visImag, (static_cast<float *>(data_addr[iFlux])) + count++, sizeof(float));     
 	  //visImag *= tscal(iFlux);
 	  //visImag += tzero(iFlux); 
 //	  if(count<10){
@@ -2177,21 +2177,21 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 //	  }
 
 	  if (uv_data_hasWeights_p) {
-	    memcpy(&visWeight, (static_cast<Float *>(data_addr[iFlux])) + count++, sizeof(Float));
+	    memcpy(&visWeight, (static_cast<float *>(data_addr[iFlux])) + count++, sizeof(float));
 	  } else if (iWeight>=0) {
-	    memcpy(&visWeight, (static_cast<Float *>(data_addr[iWeight])) + ifno * nStokes_p + pol, sizeof(Float));
+	    memcpy(&visWeight, (static_cast<float *>(data_addr[iWeight])) + ifno * nStokes_p + pol, sizeof(float));
 	  }
 
-	  //const Float wt = priGroup_p(count++); 
+	  //const float wt = priGroup_p(count++); 
 
-	  const Int p = doConjugateVis ? corrSwapIndex_p[pol] : corrIndex_p[pol];
+	  const int32_t p = doConjugateVis ? corrSwapIndex_p[pol] : corrIndex_p[pol];
 
  	  if (visWeight <= 0.0) {
 	    weightSpec(p, chan) = -visWeight;
-	    flag(p, chan) = True;
+	    flag(p, chan) = true;
 	  } else {                            
 	    weightSpec(p, chan) = visWeight;
-	    flag(p, chan) = False;
+	    flag(p, chan) = false;
 	  }
 
 	  if(doConjugateVis){ // need a conjugation to follow the ant1<=ant2 rule
@@ -2222,10 +2222,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       // literature instead of using a lookup table.
       if (itsCorrelat == "DIFX") {
 	const double A = 5.36;
-	const Double H = 0.87890625;
-	Double bfacta, bfactc;
-	Double Rm, gamma, alfa;
-	Double (*rho)(Double) = NULL;
+	const double H = 0.87890625;
+	double bfacta, bfactc;
+	double Rm, gamma, alfa;
+	double (*rho)(double) = NULL;
 
 	if (digiLevels[ant1] == 4 && digiLevels[ant2] == 4) {
 	  Rm = 4.3048;
@@ -2267,10 +2267,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  vis *= Complex(bfacta);
 	} else {
 	  // Auto-correlations, with zero-padding
-	  for (Int p=0; p<nCorr; p++) {
+	  for (int32_t p=0; p<nCorr; p++) {
 	    if (corrProduct_p(0, p) == corrProduct_p(1, p)) {
 
-	      for (Int chan=0; chan<nChan; chan++)
+	      for (int32_t chan=0; chan<nChan; chan++)
 		fftIn[chan] = bfacta * vis(p, chan).real();
 
 	      if (std::abs(fftIn[0]) < 1e-20)
@@ -2284,8 +2284,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
               redftPlan.Execute(fftIn.data(), fftOut.data());
 
 	      // Apply digital correction.
-	      for (Int chan = 1; chan<nChan; chan++) {
-                Float wt = 1.0 - ((Float)chan / nChan);
+	      for (int32_t chan = 1; chan<nChan; chan++) {
+                float wt = 1.0 - ((float)chan / nChan);
                 fftOut[chan] = (wt * fftOut[0]) * rho(fftOut[chan] / (wt * fftOut[0]));
 	      }
 	      fftOut[nChan] = 0.0;
@@ -2293,10 +2293,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	      // Cosine transform back to frequency domain
 	      redftPlan.Execute(fftOut.data(), fftIn.data());
 
-	      for (Int chan=0; chan<nChan; chan++)
+	      for (int32_t chan=0; chan<nChan; chan++)
 		vis(p, chan) = fftIn[chan] / (2*nChan);
 	    } else {
-	      for (Int chan=0; chan<nChan; chan++)
+	      for (int32_t chan=0; chan<nChan; chan++)
 		vis(p, chan) *= Complex(bfactc);
 	    }
 	  }
@@ -2307,11 +2307,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	vis /= weightSpec;
 
       // determine the spectralWindowId
-      Int spW = ifno;
+      int32_t spW = ifno;
       if (iFreq>=0) {
-	memcpy(&spW, (static_cast<Int *>(data_addr[iFreq])), sizeof(Int));
-	spW *= (Int)tscal(iFreq);
-	spW += (Int)tzero(iFreq); 
+	memcpy(&spW, (static_cast<int32_t *>(data_addr[iFreq])), sizeof(int32_t));
+	spW *= (int32_t)tscal(iFreq);
+	spW += (int32_t)tzero(iFreq); 
 	spW--; // make 0-based
 	if (nIF_p>0) {
 	  spW *=nIF_p; 
@@ -2324,9 +2324,9 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	lastSpW=spW;
       }
 
-      for (Int chan=0; chan<nChan; chan++) {
-	for (Int pol=0; pol<nCorr; pol++) {
-	  const Int p = corrIndex_p[pol];
+      for (int32_t chan=0; chan<nChan; chan++) {
+	for (int32_t pol=0; pol<nCorr; pol++) {
+	  const int32_t p = corrIndex_p[pol];
 
 	  if (ant1 == ant2)
 	    weightSpec(p, chan) *= interval * effChBw(spW);
@@ -2343,12 +2343,12 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       // fill in values for all the unused columns
       msc.feed1().put(putrow,0);
       msc.feed2().put(putrow,0);
-      msc.flagRow().put(putrow,False);
+      msc.flagRow().put(putrow,false);
       msc.processorId().put(putrow,-1);
       msc.observationId().put(putrow,0);
       msc.stateId().put(putrow,-1);
 
-      Vector<Float> tmpValue(nCorr);
+      Vector<float> tmpValue(nCorr);
       tmpValue=1.0;
       msc.sigma().put(putrow,tmpValue);
       tmpValue=0.0;
@@ -2360,8 +2360,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 
       msc.data().put(putrow,vis);
 
-      const Vector<Float> sigma = partialMedians(sigmaSpec, IPosition(1, 1));
-      const Vector<Float> weight = partialMedians(weightSpec, IPosition(1, 1));
+      const Vector<float> sigma = partialMedians(sigmaSpec, IPosition(1, 1));
+      const Vector<float> weight = partialMedians(weightSpec, IPosition(1, 1));
       msc.sigma().put(putrow,sigma);
       msc.weight().put(putrow,weight);
 
@@ -2373,7 +2373,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.flag().put(putrow,flag);
       msc.flagCategory().put(putrow,flagCat);
 
-      Bool rowFlag=allEQ(flag,True);
+      bool rowFlag=allEQ(flag,true);
       msc.flagRow().put(putrow,rowFlag);
 
       msc.antenna1().put(putrow,ant1);
@@ -2384,12 +2384,12 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       msc.uvw().put(putrow,uvw);
       
       // store the sourceId 
-      Int sourceId = 0;
+      int32_t sourceId = 0;
       if (iSource>=0) {
  	// make 0-based
-        memcpy(&sourceId, (static_cast<Int *>(data_addr[iSource])), sizeof(Int));
-        sourceId *= (Int)tscal(iSource);
-        sourceId += (Int)tzero(iSource); 
+        memcpy(&sourceId, (static_cast<int32_t *>(data_addr[iSource])), sizeof(int32_t));
+        sourceId *= (int32_t)tscal(iSource);
+        sourceId += (int32_t)tzero(iSource); 
  	sourceId--; // make 0-based
       }
       msc.fieldId().put(putrow,sourceId);
@@ -2406,7 +2406,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 void FITSIDItoMS1::fillObsTables() {
   const Regex trailing(" *$"); // trailing blanks
   const FitsKeyword* kwp;
-  Vector<Double> times(2);
+  Vector<double> times(2);
   
   if(firstMain) {
     ms_p.observation().addRow();
@@ -2441,7 +2441,7 @@ void FITSIDItoMS1::fillObsTables() {
   //cout << "times=" << times(0) << "," << times(1)<< endl;
     msObsCol.timeRange().put(0,times);
     msObsCol.releaseDate().put(0,times(0));  //just use TIME_RANGE for now
-    msObsCol.flagRow().put(0,False);
+    msObsCol.flagRow().put(0,false);
   } else {
     times = msc_p->observation().timeRange()(0);
     MSObservationColumns msObsCol(ms_p.observation());
@@ -2458,12 +2458,12 @@ void FITSIDItoMS1::fillObsTables() {
   MVTime timeVal;
   MEpoch::Types epochRef;
   FITSDateUtil::fromFITS(timeVal,epochRef,date,"UTC");
-  Double time=timeVal.second();
+  double time=timeVal.second();
 
   String history = (kwp=kw(FITS::HISTORY)) ? kwp->comm(): "";
   history = history.before(trailing);
   MSHistoryColumns msHisCol(ms_p.history());
-  Int row=-1;
+  int32_t row=-1;
   while (history!="") {
     ms_p.history().addRow(); row++;
     msHisCol.observationId().put(row,0);
@@ -2483,9 +2483,9 @@ void FITSIDItoMS1::fillAntennaTable()
   const Regex trailing(" *$"); // trailing blanks
   TableRecord btKeywords=getKeywords();
   
-  Int nAnt=nrows();
+  int32_t nAnt=nrows();
   receptorAngle_p.resize(2*nAnt);
-  Vector<Double> arrayXYZ(3);
+  Vector<double> arrayXYZ(3);
   arrayXYZ=0.0;
   if(!btKeywords.isDefined("ARRAYX")||!btKeywords.isDefined("ARRAYY")||
      !btKeywords.isDefined("ARRAYZ")) {
@@ -2502,11 +2502,11 @@ void FITSIDItoMS1::fillAntennaTable()
    if(btKeywords.isDefined("RDATE")) {
      srdate=btKeywords.asString("RDATE");
    }
-   Double gst=0.0;
+   double gst=0.0;
    if(btKeywords.isDefined("GSTIA0")) {
      gst=btKeywords.asdouble("GSTIA0")*C::degree;
    }
-   Double degpdy=0.0;
+   double degpdy=0.0;
    if(btKeywords.isDefined("DEGPDY")) {
      degpdy=btKeywords.asdouble("DEGPDY");
    }
@@ -2565,20 +2565,20 @@ void FITSIDItoMS1::fillAntennaTable()
    //save value to set time reference frame elsewhere
    timsys_p=timsys;
 
-   Float diameter=0.; // default (meaning "not set")
+   float diameter=0.; // default (meaning "not set")
 
    Table anTab=oldfullTable("");
 
    MSAntennaColumns& ant(msc_p->antenna());
    ScalarColumn<String> name(anTab,"ANNAME");
-   ArrayColumn<Double> antXYZ(anTab,"STABXYZ");
-   ArrayColumn<Float> dantXYZ(anTab,"DERXYZ");
+   ArrayColumn<double> antXYZ(anTab,"STABXYZ");
+   ArrayColumn<float> dantXYZ(anTab,"DERXYZ");
    // following is for space-born telescope
-   //ScalarColumn<Int> orbp(anTab,"ORBPARM");
-   ScalarColumn<Int> anNo(anTab,"NOSTA");
-   ScalarColumn<Int> mntid(anTab,"MNTSTA");
-   ArrayColumn<Float> offset(anTab,"STAXOF");
-   ScalarColumn<Float> diam;
+   //ScalarColumn<int32_t> orbp(anTab,"ORBPARM");
+   ScalarColumn<int32_t> anNo(anTab,"NOSTA");
+   ScalarColumn<int32_t> mntid(anTab,"MNTSTA");
+   ArrayColumn<float> offset(anTab,"STAXOF");
+   ScalarColumn<float> diam;
    if(anTab.tableDesc().isColumn("DIAMETER")){
      diam.attach(anTab,"DIAMETER"); // this column is optional
    }
@@ -2592,14 +2592,14 @@ void FITSIDItoMS1::fillAntennaTable()
 
    // All "VLBI" (==arrayXYZ<1000) requires y-axis reflection:
    //  (ATCA looks like "VLBI" in UVFITS, but is already correct)
-   //Bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));     
+   //bool doVLBIRefl= ((array_p!="ATCA") && allLE(abs(arrayXYZ),1000.0));     
 
 
    // continue definition of antenna number to antenna id mapping 
-   for (Int inRow=0; inRow<nAnt; inRow++) {
-     Int ii = anNo(inRow);
+   for (int32_t inRow=0; inRow<nAnt; inRow++) {
+     int32_t ii = anNo(inRow);
      if(antIdFromNo.find(ii) == antIdFromNo.end()){
-       Int sz = antIdFromNo.size();
+       int32_t sz = antIdFromNo.size();
        antIdFromNo[ii] = sz; // append assuming uniqueness
        *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo[ii] << endl;
      }
@@ -2609,11 +2609,11 @@ void FITSIDItoMS1::fillAntennaTable()
    ant.setPositionRef(MPosition::ITRF);
 
    // take into account that the ANTENNA table may already contain rows 
-   Int newRows = antIdFromNo.size() - ms_p.antenna().nrow();
+   int32_t newRows = antIdFromNo.size() - ms_p.antenna().nrow();
    ms_p.antenna().addRow(newRows);
 
-   Int row=0;
-   for (Int i=0; i<newRows; i++) {
+   int32_t row=0;
+   for (int32_t i=0; i<newRows; i++) {
      
      row = antIdFromNo[anNo(i)];
 
@@ -2633,7 +2633,7 @@ void FITSIDItoMS1::fillAntennaTable()
      case 5: mount="ALT-AZ+NASMYTH-L"; break;
      default: mount="UNKNOWN"; break;
      }
-     ant.flagRow().put(row,False);
+     ant.flagRow().put(row,false);
      ant.mount().put(row,mount);
      String temps = String::toString(anNo(i));
      if(anNo(i)<10){
@@ -2647,16 +2647,16 @@ void FITSIDItoMS1::fillAntennaTable()
        ant.name().put(row, name(i));
        ant.station().put(row,name(i));
      }
-     Vector<Float> tempf=offset(i);
-     Vector<Double> tempd(3);
-     for (Int j=0; j<3; j++) tempd[j]=tempf[j];
+     Vector<float> tempf=offset(i);
+     Vector<double> tempd(3);
+     for (int32_t j=0; j<3; j++) tempd[j]=tempf[j];
      ant.offset().put(row,tempd);
 
      ant.type().put(row,"GROUND-BASED");
 
      // Do UVFITS-dependent position corrections:
      // ArrayColumn antXYZ(i) may need coord transform; do it in corXYZ:
-     Vector<Double> corXYZ=antXYZ(i);
+     Vector<double> corXYZ=antXYZ(i);
 /***
      // If nec, rotate coordinates out of local VLA frame to ITRF
      if ( doVLARot ) corXYZ=product(posRot,corXYZ);
@@ -2681,8 +2681,8 @@ void FITSIDItoMS1::fillFeedTable() {
   const FitsKeyword* fkw;
   String kwname;
   kwl.first();
-  Int nIF = 1;
-  Int nPcal = 0;
+  int32_t nIF = 1;
+  int32_t nPcal = 0;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_STKD") {
@@ -2705,9 +2705,9 @@ void FITSIDItoMS1::fillFeedTable() {
 
   //access fitsidi AN table
   Table anTab = oldfullTable("");
-  ScalarColumn<Double> time(anTab, "TIME");
-  ScalarColumn<Float> timeint;
-  ScalarColumn<Double> timeintd;
+  ScalarColumn<double> time(anTab, "TIME");
+  ScalarColumn<float> timeint;
+  ScalarColumn<double> timeintd;
   try{
     timeint.attach(anTab, "TIME_INTERVAL");
   }
@@ -2717,19 +2717,19 @@ void FITSIDItoMS1::fillFeedTable() {
 	    << LogIO::POST;
   }    
   ScalarColumn<String> name(anTab, "ANNAME");
-  ScalarColumn<Int> anNo(anTab, "ANTENNA_NO");
-  ScalarColumn<Int> array(anTab, "ARRAY");
-  ScalarColumn<Int> fqid(anTab, "FREQID");
-  ScalarColumn<Int> digLev(anTab, "NO_LEVELS");
+  ScalarColumn<int32_t> anNo(anTab, "ANTENNA_NO");
+  ScalarColumn<int32_t> array(anTab, "ARRAY");
+  ScalarColumn<int32_t> fqid(anTab, "FREQID");
+  ScalarColumn<int32_t> digLev(anTab, "NO_LEVELS");
   ScalarColumn<String> poltya(anTab, "POLTYA");
   ScalarColumn<String> poltyb(anTab, "POLTYB");
 
   // if the values for all bands are the same, POLAA, POLAB, POLCALA and POLCALB can be scalar
-  Bool POLAisScalar = False;
-  ArrayColumn<Float> polaa;
-  ArrayColumn<Float> polab;
-  ScalarColumn<Float> polaaS;
-  ScalarColumn<Float> polabS;
+  bool POLAisScalar = false;
+  ArrayColumn<float> polaa;
+  ArrayColumn<float> polab;
+  ScalarColumn<float> polaaS;
+  ScalarColumn<float> polabS;
   try{
     polaa.attach(anTab, "POLAA");
     polab.attach(anTab, "POLAB");
@@ -2737,13 +2737,13 @@ void FITSIDItoMS1::fillFeedTable() {
   catch(std::exception& x){
     polaaS.attach(anTab, "POLAA");
     polabS.attach(anTab, "POLAB");
-    POLAisScalar = True;
+    POLAisScalar = true;
     *itsLog << LogIO::WARN << "Treating POLAA and POLAB columns in input ANTENNA table as scalar," 
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }
 
-  ArrayColumn<Float> polcala;
-  ArrayColumn<Float> polcalb;
+  ArrayColumn<float> polcala;
+  ArrayColumn<float> polcalb;
   if(nPcal > 0){
     if(anTab.tableDesc().isColumn("POLCALA") && anTab.tableDesc().isColumn("POLCALB")){
       polcala.attach(anTab, "POLCALA");
@@ -2754,57 +2754,57 @@ void FITSIDItoMS1::fillFeedTable() {
     }
   }
 
-  //  ArrayColumn<Float> beamfwhm(anTab, "BEAMFWHM"); // this column is optional and there is presently
+  //  ArrayColumn<float> beamfwhm(anTab, "BEAMFWHM"); // this column is optional and there is presently
                                                     // no place for this information in the MS
   Matrix<Complex> polResponse(2,2); 
   polResponse=0.; polResponse(0,0)=polResponse(1,1)=1.;
-  Matrix<Double> offset(2,2); offset=0.;
-  Int nAnt = anTab.nrow();
+  Matrix<double> offset(2,2); offset=0.;
+  int32_t nAnt = anTab.nrow();
   //cout <<"nAnt="<<nAnt<<", nIF="<< nIF;
-  Vector<Double> position(3); position=0.;
+  Vector<double> position(3); position=0.;
   Vector<String> polType(2);
   receptorAngle_p = 0;
   receptorAngle_p.resize(2*nAnt*nIF);
   if(POLAisScalar){
-    Vector<Float> polanga(nAnt); 
-    Vector<Float> polangb(nAnt); 
+    Vector<float> polanga(nAnt); 
+    Vector<float> polangb(nAnt); 
     polaaS.getColumn(polanga); 
     polabS.getColumn(polangb); 
-    for(Int i=0; i<nAnt; i++){
-      for(Int j=0; j<nIF; j++){
-	Int k = (i*nIF + j);
-	receptorAngle_p(2*k+0)=static_cast<Double>(polanga[i])*C::degree;
-	receptorAngle_p(2*k+1)=static_cast<Double>(polangb[i])*C::degree;
+    for(int32_t i=0; i<nAnt; i++){
+      for(int32_t j=0; j<nIF; j++){
+	int32_t k = (i*nIF + j);
+	receptorAngle_p(2*k+0)=static_cast<double>(polanga[i])*C::degree;
+	receptorAngle_p(2*k+1)=static_cast<double>(polangb[i])*C::degree;
       }
     }
   }
   else{
-    Matrix<Float> polanga(nIF,nAnt); 
-    Matrix<Float> polangb(nIF,nAnt); 
+    Matrix<float> polanga(nIF,nAnt); 
+    Matrix<float> polangb(nIF,nAnt); 
     polaa.getColumn(polanga); 
     polab.getColumn(polangb); 
-    for(Int i=0; i<nAnt; i++){
-      for(Int j=0; j<nIF; j++){
-	Int k = (i*nIF + j);
-	receptorAngle_p(2*k+0)=static_cast<Double>(polanga(j,i))*C::degree;
-	receptorAngle_p(2*k+1)=static_cast<Double>(polangb(j,i))*C::degree;
+    for(int32_t i=0; i<nAnt; i++){
+      for(int32_t j=0; j<nIF; j++){
+	int32_t k = (i*nIF + j);
+	receptorAngle_p(2*k+0)=static_cast<double>(polanga(j,i))*C::degree;
+	receptorAngle_p(2*k+1)=static_cast<double>(polangb(j,i))*C::degree;
       }
     }
   }
-  //Double testval=1.0;
+  //double testval=1.0;
 
   // start/continue definition of antenna number to ID mapping in case this table is read before the MS Antenna table is filled
-  for (Int inRow=0; inRow<nAnt; inRow++) {
-    Int ii = anNo(inRow);
+  for (int32_t inRow=0; inRow<nAnt; inRow++) {
+    int32_t ii = anNo(inRow);
     if(antIdFromNo.find(ii) == antIdFromNo.end()){
-      Int sz = antIdFromNo.size();
+      int32_t sz = antIdFromNo.size();
       antIdFromNo[ii] = sz; // append assuming uniqueness
        *itsLog << LogIO::NORMAL << "   antenna_no " << ii << " -> antenna ID " << antIdFromNo[ii] << endl;
     }
   }
 
   // record number of digitizer levels for each antenna
-  for (Int inRow=0; inRow<nAnt; inRow++) {
+  for (int32_t inRow=0; inRow<nAnt; inRow++) {
     digiLevels[antIdFromNo[anNo(inRow)]] = digLev(inRow);
     if (itsCorrelat == "DIFX" && digLev(inRow) != 2 && digLev(inRow) != 4) {
       *itsLog << LogIO::SEVERE << "unsupported number of digitizer levels for ANTENNA_NO " << anNo(inRow) << "."
@@ -2814,10 +2814,10 @@ void FITSIDItoMS1::fillFeedTable() {
   }
 
   // fill the feed table
-  Int outRow=-1;
-  for (Int inRow=0; inRow<nAnt; inRow++) {
-    for (Int inIF=0; inIF<nIF; inIF++) { 
-      Int k = inRow*nIF + inIF;
+  int32_t outRow=-1;
+  for (int32_t inRow=0; inRow<nAnt; inRow++) {
+    for (int32_t inIF=0; inIF<nIF; inIF++) { 
+      int32_t k = inRow*nIF + inIF;
       ms_p.feed().addRow(); outRow++;
       if(antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()){
     	msfc.antennaId().put(outRow,antIdFromNo[anNo(inRow)]);
@@ -2863,11 +2863,11 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   ConstFitsKeywordList& kwl = kwlist();
   const FitsKeyword* kw;
   String kwname;
-  Int nCorr = 1;
-  Int nIF_p = 0;
-  Int nChan = 0;
-  Double zeroRefFreq = 0.0;
-  Double refChan = 0.0;
+  int32_t nCorr = 1;
+  int32_t nIF_p = 0;
+  int32_t nChan = 0;
+  double zeroRefFreq = 0.0;
+  double refChan = 0.0;
   kwl.first();
   while ((kw = kwl.next()))
     {
@@ -2893,9 +2893,9 @@ void FITSIDItoMS1::fillSpectralWindowTable()
       }
     }
 
-//  Int iFreq = getIndex(coordType_p, "FREQ");
-//  Int nChan = nPixel_p(iFreq);
-//  Int nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
+//  int32_t iFreq = getIndex(coordType_p, "FREQ");
+//  int32_t nChan = nPixel_p(iFreq);
+//  int32_t nCorr = nPixel_p(getIndex(coordType_p,"STOKES"));
  
   // fill out the polarization info (only single entry allowed in fits input)
   corrType_p = 1;
@@ -2904,43 +2904,43 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   msPol.numCorr().put(0,nCorr);
   msPol.corrType().put(0,corrType_p);
   msPol.corrProduct().put(0,corrProduct_p);
-  msPol.flagRow().put(0,False);
+  msPol.flagRow().put(0,false);
 
   //access fitsidi FQ table 
   //Table fqTab=bt.fullTable("",Table::Scratch);
   Table fqTab=oldfullTable("");
-  Int nRow=fqTab.nrow();
-  ScalarColumn<Int> colFqid(fqTab,"FREQID");
-  Matrix<Double> ifFreq(nIF_p,nRow);
-  Matrix<Float> chWidth(nIF_p,nRow);
-  Matrix<Float> totalBandwidth(nIF_p,nRow);
-  Matrix<Int> sideband(nIF_p,nRow);
+  int32_t nRow=fqTab.nrow();
+  ScalarColumn<int32_t> colFqid(fqTab,"FREQID");
+  Matrix<double> ifFreq(nIF_p,nRow);
+  Matrix<float> chWidth(nIF_p,nRow);
+  Matrix<float> totalBandwidth(nIF_p,nRow);
+  Matrix<int32_t> sideband(nIF_p,nRow);
   //cout << "nIF_p=" << nIF_p << endl;
   //cout << "nRow=" << nRow << endl;
 
 
-  Int nSpW = nIF_p;
+  int32_t nSpW = nIF_p;
   effChBw.resize(nSpW);
 
   // The type of the column changes according to the number of entries
   if (nIF_p==1) {
 
-    ScalarColumn<Double> colIFFreq(fqTab, "BANDFREQ");
-    ScalarColumn<Float> colChWidth(fqTab, "CH_WIDTH"); 
-    ScalarColumn<Float> colTotalBW(fqTab,"TOTAL_BANDWIDTH");
-    ScalarColumn<Int> colSideBand(fqTab, "SIDEBAND");
+    ScalarColumn<double> colIFFreq(fqTab, "BANDFREQ");
+    ScalarColumn<float> colChWidth(fqTab, "CH_WIDTH"); 
+    ScalarColumn<float> colTotalBW(fqTab,"TOTAL_BANDWIDTH");
+    ScalarColumn<int32_t> colSideBand(fqTab, "SIDEBAND");
 
-    for (Int i=0; i<nRow; i++) {
+    for (int32_t i=0; i<nRow; i++) {
       ifFreq(0,i)=colIFFreq(i);
       chWidth(0,i)=colChWidth(i);
       totalBandwidth(0,i)=colTotalBW(i);
       sideband(0,i) = colSideBand(i);
     }
   } else {
-    ArrayColumn<Double> colIFFreq(fqTab, "BANDFREQ");
-    ArrayColumn<Float> colChWidth(fqTab, "CH_WIDTH");
-    ArrayColumn<Float> colTotalBW(fqTab, "TOTAL_BANDWIDTH");
-    ArrayColumn<Int> colSideBand(fqTab, "SIDEBAND");
+    ArrayColumn<double> colIFFreq(fqTab, "BANDFREQ");
+    ArrayColumn<float> colChWidth(fqTab, "CH_WIDTH");
+    ArrayColumn<float> colTotalBW(fqTab, "TOTAL_BANDWIDTH");
+    ArrayColumn<int32_t> colSideBand(fqTab, "SIDEBAND");
 
     colIFFreq.getColumn(ifFreq);
     colChWidth.getColumn(chWidth);
@@ -2948,31 +2948,31 @@ void FITSIDItoMS1::fillSpectralWindowTable()
     colSideBand.getColumn(sideband);
   }
 
-  for (Int spw=0; spw<nSpW; spw++) {
+  for (int32_t spw=0; spw<nSpW; spw++) {
     ms_p.spectralWindow().addRow();
     ms_p.dataDescription().addRow();
     msDD.spectralWindowId().put(spw,spw);
     //msDD.polarizationId().put(spw,0);
-    msDD.flagRow().put(spw,False);
-    Int ifc=0;
-    Int freqGroup = 0;
+    msDD.flagRow().put(spw,false);
+    int32_t ifc=0;
+    int32_t freqGroup = 0;
     if (nIF_p>0) {
       ifc=spw%nIF_p;
       freqGroup = spw/nIF_p;
     }
-    Int fqRow=spw/max(1,nIF_p);
+    int32_t fqRow=spw/max(1,nIF_p);
     //if (fqRow != colFrqSel(fqRow)-1)
     if (fqRow != colFqid(fqRow)-1)
       *itsLog << LogIO::WARN << "Trouble interpreting FQ table, ids may be wrong" << LogIO::POST;
     msSpW.name().put(spw,"none");
     msSpW.ifConvChain().put(spw,ifc);
     msSpW.numChan().put(spw,nChan);
-    //Double refChan = refPix_p(iFreq);
-    //Double refFreq=refVal_p(iFreq)+ifFreq(ifc,fqRow);
-    Double refFreq=zeroRefFreq+ifFreq(ifc,fqRow);
-    Double chanBandwidth=chWidth(ifc,fqRow);
-    Vector<Double> chanFreq(nChan),resolution(nChan);
-    for (Int i=0; i < nChan; i++) {
+    //double refChan = refPix_p(iFreq);
+    //double refFreq=refVal_p(iFreq)+ifFreq(ifc,fqRow);
+    double refFreq=zeroRefFreq+ifFreq(ifc,fqRow);
+    double chanBandwidth=chWidth(ifc,fqRow);
+    Vector<double> chanFreq(nChan),resolution(nChan);
+    for (int32_t i=0; i < nChan; i++) {
       chanFreq(i)= refFreq + (i+1-refChan) * chanBandwidth;
     }
     effChBw(spw)=abs(chanBandwidth);
@@ -2986,7 +2986,7 @@ void FITSIDItoMS1::fillSpectralWindowTable()
     msSpW.netSideband().put(spw,sideband(ifc, fqRow));
     msSpW.freqGroup().put(spw,freqGroup);
     msSpW.freqGroupName().put(spw,"none");
-    msSpW.flagRow().put(spw,False);
+    msSpW.flagRow().put(spw,false);
     // set the reference frames for frequency
     freqsys_p = MFrequency::TOPO;
     msSpW.measFreqRef().put(spw,freqsys_p);
@@ -3002,7 +3002,7 @@ void FITSIDItoMS1::fillFieldTable()
   Table suTab=oldfullTable("");
 
   //access the columns in source FITS-IDI subtable
-  ScalarColumn<Int> id;
+  ScalarColumn<int32_t> id;
   if(suTab.tableDesc().isColumn("SOURCE_ID")){
     id.attach(suTab, "SOURCE_ID");
   }
@@ -3016,30 +3016,30 @@ void FITSIDItoMS1::fillFieldTable()
   }
 
   ScalarColumn<String> name(suTab,"SOURCE");
-  ScalarColumn<Int> qual(suTab,"QUAL");
+  ScalarColumn<int32_t> qual(suTab,"QUAL");
   ScalarColumn<String> code(suTab,"CALCODE");
-  ScalarColumn<Int> fqid(suTab,"FREQID");
+  ScalarColumn<int32_t> fqid(suTab,"FREQID");
 
   // if the values are the same for all bands, the flux, alpha, freqoff, sysvel, and restfreq columns can be scalar
-  ArrayColumn<Float> iflux;
-  ArrayColumn<Float> qflux;
-  ArrayColumn<Float> uflux;
-  ArrayColumn<Float> vflux;
-  ArrayColumn<Float> alpha;
-  ArrayColumn<Float> foffset;  
-  ArrayColumn<Double> foffsetD;  
-  ArrayColumn<Double> sysvel;
-  ArrayColumn<Double> restfreq;
+  ArrayColumn<float> iflux;
+  ArrayColumn<float> qflux;
+  ArrayColumn<float> uflux;
+  ArrayColumn<float> vflux;
+  ArrayColumn<float> alpha;
+  ArrayColumn<float> foffset;  
+  ArrayColumn<double> foffsetD;  
+  ArrayColumn<double> sysvel;
+  ArrayColumn<double> restfreq;
 
-  ScalarColumn<Float> ifluxS;
-  ScalarColumn<Float> qfluxS;
-  ScalarColumn<Float> ufluxS;
-  ScalarColumn<Float> vfluxS;
-  ScalarColumn<Float> alphaS;
-  ScalarColumn<Float> foffsetS;
-  ScalarColumn<Double> foffsetSD;
-  ScalarColumn<Double> sysvelS;
-  ScalarColumn<Double> restfreqS;
+  ScalarColumn<float> ifluxS;
+  ScalarColumn<float> qfluxS;
+  ScalarColumn<float> ufluxS;
+  ScalarColumn<float> vfluxS;
+  ScalarColumn<float> alphaS;
+  ScalarColumn<float> foffsetS;
+  ScalarColumn<double> foffsetSD;
+  ScalarColumn<double> sysvelS;
+  ScalarColumn<double> restfreqS;
 
   try{ // try array column first
     iflux.attach(suTab,"IFLUX"); // I (Jy)
@@ -3052,7 +3052,7 @@ void FITSIDItoMS1::fillFieldTable()
     }
     catch(std::exception& x){
       foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
-      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      *itsLog << LogIO::WARN << "Column FREQOFF is double but should be float." << LogIO::POST;
     }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
@@ -3068,7 +3068,7 @@ void FITSIDItoMS1::fillFieldTable()
     }
     catch(std::exception& x){
       foffsetSD.attach(suTab,"FREQOFF"); // fq. offset  
-      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      *itsLog << LogIO::WARN << "Column FREQOFF is double but should be float." << LogIO::POST;
     }
     sysvelS.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreqS.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
@@ -3076,30 +3076,30 @@ void FITSIDItoMS1::fillFieldTable()
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }      
 
-  ScalarColumn<Double> ra(suTab,"RAEPO");    //degrees
-  ScalarColumn<Double> dec(suTab,"DECEPO");  //degrees
+  ScalarColumn<double> ra(suTab,"RAEPO");    //degrees
+  ScalarColumn<double> dec(suTab,"DECEPO");  //degrees
   ScalarColumn<String> equinox;
-  ScalarColumn<Double> epoch; //years, alternative for equinox
+  ScalarColumn<double> epoch; //years, alternative for equinox
   if(suTab.tableDesc().isColumn("EQUINOX")){
     equinox.attach(suTab,"EQUINOX"); // string
   }
   else if(suTab.tableDesc().isColumn("EPOCH")){
     epoch.attach(suTab,"EPOCH");
   }
-  ScalarColumn<Double> raapp(suTab,"RAAPP");    //degrees
-  ScalarColumn<Double> decapp(suTab,"DECAPP");  //degrees
+  ScalarColumn<double> raapp(suTab,"RAAPP");    //degrees
+  ScalarColumn<double> decapp(suTab,"DECAPP");  //degrees
   ScalarColumn<String> veltype(suTab,"VELTYP"); //   
   ScalarColumn<String> veldef(suTab,"VELDEF"); //   
-  ScalarColumn<Double> pmra(suTab,"PMRA");   //deg/day
-  ScalarColumn<Double> pmdec(suTab,"PMDEC"); //deg/day
-  ScalarColumn<Float> pllx(suTab,"PARALLAX"); //arcsec 
+  ScalarColumn<double> pmra(suTab,"PMRA");   //deg/day
+  ScalarColumn<double> pmdec(suTab,"PMDEC"); //deg/day
+  ScalarColumn<float> pllx(suTab,"PARALLAX"); //arcsec 
 
-  //if (Int(suTab.nrow())<nField) {
+  //if (int32_t(suTab.nrow())<nField) {
   //  *itsLog << LogIO::NORMAL
   //     << "Input Source id's not sequential, adding empty rows in output"
   //     << LogIO::POST;
   //}
-  Int outRow=-1;
+  int32_t outRow=-1;
   //cout << "epoch(fillFieldTable) = " << epoch(0) << endl;
   // set the DIRECTION MEASURE REFERENCE for appropriate columns
   MDirection::Types epochRefZero=MDirection::J2000;
@@ -3114,12 +3114,12 @@ void FITSIDItoMS1::fillFieldTable()
     }
   }    
   msc_p->setDirectionRef(epochRefZero);
-  for (Int inRow=0; inRow<(Int)suTab.nrow(); inRow++) {
+  for (int32_t inRow=0; inRow<(int32_t)suTab.nrow(); inRow++) {
     if (id(inRow) < 1) {
       *itsLog << LogIO::WARN
 	      << "Input source id < 1, invalid source id!" << LogIO::POST;     
     }
-    Int fld = id(inRow)-1;
+    int32_t fld = id(inRow)-1;
     // temp. fix for wrong source id in sma data
     if (fld == -2) fld = fld + 2 ; 
 
@@ -3133,13 +3133,13 @@ void FITSIDItoMS1::fillFieldTable()
       msField.phaseDirMeasCol().put(outRow,nullDir);
       msField.delayDirMeasCol().put(outRow,nullDir);
       msField.referenceDirMeasCol().put(outRow,nullDir);
-      msField.flagRow().put(outRow,True);
+      msField.flagRow().put(outRow,true);
     }
 
     msField.sourceId().put(fld,-1); // source table not yet filled in
     msField.code().put(fld,code(inRow));
     msField.name().put(fld,name(inRow));
-    Int numPoly = 0;
+    int32_t numPoly = 0;
     //cout << "pmra = "<< pmra(inRow)<< endl;
     //cout << "pmdec = "<< pmdec(inRow) << endl;
     //cout << "abs(pmra) = "<< abs(pmra(inRow)) << endl;
@@ -3209,21 +3209,21 @@ void FITSIDItoMS1::fillFieldTable()
     msField.delayDirMeasCol().put(fld,radecMeas);
     msField.phaseDirMeasCol().put(fld,radecMeas);
     msField.referenceDirMeasCol().put(fld,radecMeas);
-    msField.flagRow().put(fld,False);
+    msField.flagRow().put(fld,false);
   }
 }
 
-Bool FITSIDItoMS1::fillCorrelatorModelTable()
+bool FITSIDItoMS1::fillCorrelatorModelTable()
 {
 
   *itsLog << LogOrigin("FitsIDItoMS()", "fillCorrelatorModelTable");
 //  MSCorrelatorModelColumns& msCorrMod(msc_p->correlatorModel());
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
+  return false;
 
 }
 
-Bool FITSIDItoMS1::fillSysCalTable()
+bool FITSIDItoMS1::fillSysCalTable()
 {
   *itsLog << LogOrigin("FitsIDItoMS()", "fillSysCalTable");
   MSSysCalColumns& msSysCal(msc_p->sysCal());
@@ -3232,7 +3232,7 @@ Bool FITSIDItoMS1::fillSysCalTable()
   const FitsKeyword* fkw;
   String kwname;
   kwl.first();
-  Int nIF = 1;
+  int32_t nIF = 1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_BAND") {
@@ -3240,42 +3240,42 @@ Bool FITSIDItoMS1::fillSysCalTable()
     }
   }
 
-  Int nVal=nrows();
-  Bool dualPol=False;
-  Bool TSYSisScalar=False;
+  int32_t nVal=nrows();
+  bool dualPol=false;
+  bool TSYSisScalar=false;
 
   Table tyTab = oldfullTable("");
-  ScalarColumn<Double> time(tyTab, "TIME");
-  ScalarColumn<Float> timeint(tyTab, "TIME_INTERVAL");
-  ScalarColumn<Int> anNo(tyTab, "ANTENNA_NO");
-  ArrayColumn<Float> tsys_1;
-  ArrayColumn<Float> tsys_2;
-  ScalarColumn<Float> tsys_1S;
-  ScalarColumn<Float> tsys_2S;
+  ScalarColumn<double> time(tyTab, "TIME");
+  ScalarColumn<float> timeint(tyTab, "TIME_INTERVAL");
+  ScalarColumn<int32_t> anNo(tyTab, "ANTENNA_NO");
+  ArrayColumn<float> tsys_1;
+  ArrayColumn<float> tsys_2;
+  ScalarColumn<float> tsys_1S;
+  ScalarColumn<float> tsys_2S;
   try{
     tsys_1.attach(tyTab, "TSYS_1");
     if(tyTab.tableDesc().isColumn("TSYS_2")) {
       tsys_2.attach(tyTab, "TSYS_2"); // this column is optional
-      dualPol=True;
+      dualPol=true;
     }
   }
   catch(std::exception&){
     tsys_1S.attach(tyTab, "TSYS_1");
     if(tyTab.tableDesc().isColumn("TSYS_2")) {
       tsys_2S.attach(tyTab, "TSYS_2"); // this column is optional
-      dualPol=True;
+      dualPol=true;
     }
-    TSYSisScalar=True;
+    TSYSisScalar=true;
     if (nIF > 1) {
       *itsLog << LogIO::WARN << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
 	      << endl << " i.e. using same value for all bands." << LogIO::POST;
     }
   }
-  Vector<Float> tsys(dualPol ? 2 : 1);
+  Vector<float> tsys(dualPol ? 2 : 1);
 
-  Int outRow=-1;
-  for (Int inRow=0; inRow<nVal; inRow++) {
-    for (Int inIF=0; inIF<nIF; inIF++) {
+  int32_t outRow=-1;
+  for (int32_t inRow=0; inRow<nVal; inRow++) {
+    for (int32_t inIF=0; inIF<nIF; inIF++) {
       ms_p.sysCal().addRow(); outRow++;
       if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
 	msSysCal.antennaId().put(outRow, antIdFromNo[anNo(inRow)]);
@@ -3300,10 +3300,10 @@ Bool FITSIDItoMS1::fillSysCalTable()
     }
   }
 
-  return True;
+  return true;
 }
 
-Bool FITSIDItoMS1::fillFlagCmdTable()
+bool FITSIDItoMS1::fillFlagCmdTable()
 {
   *itsLog << LogOrigin("FitsIDItoMS()", "fillFlagCmdTable");
   MSFlagCmdColumns& msFlagCmd(msc_p->flagCmd());
@@ -3312,8 +3312,8 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
   const FitsKeyword* fkw;
   String kwname;
   kwl.first();
-  Int noSTKD = 0;
-  Int firstSTK = -1;
+  int32_t noSTKD = 0;
+  int32_t firstSTK = -1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_STKD") {
@@ -3332,32 +3332,32 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
 	    << "NO_STKD" << noSTKD << LogIO::EXCEPTION;
   }
 
-  Int nVal=nrows();
+  int32_t nVal=nrows();
 
   Table flagTab = oldfullTable("");
-  ScalarColumn<Int> srcid(flagTab, "SOURCE_ID");
-  ScalarColumn<Int> array(flagTab, "ARRAY");
-  ArrayColumn<Int> ants(flagTab, "ANTS");
-  ScalarColumn<Int> fqid(flagTab, "FREQID");
-  ArrayColumn<Float> timerang(flagTab, "TIMERANG");
-  Bool BANDSisScalar = False;
-  ArrayColumn<Int> bands;
-  ScalarColumn<Int> bandsS;
-  ArrayColumn<Int> chans(flagTab, "CHANS");
-  ArrayColumn<Int> pflags(flagTab, "PFLAGS");
+  ScalarColumn<int32_t> srcid(flagTab, "SOURCE_ID");
+  ScalarColumn<int32_t> array(flagTab, "ARRAY");
+  ArrayColumn<int32_t> ants(flagTab, "ANTS");
+  ScalarColumn<int32_t> fqid(flagTab, "FREQID");
+  ArrayColumn<float> timerang(flagTab, "TIMERANG");
+  bool BANDSisScalar = false;
+  ArrayColumn<int32_t> bands;
+  ScalarColumn<int32_t> bandsS;
+  ArrayColumn<int32_t> chans(flagTab, "CHANS");
+  ArrayColumn<int32_t> pflags(flagTab, "PFLAGS");
   ScalarColumn<String> reason(flagTab, "REASON");
-  ScalarColumn<Int> severity(flagTab, "SEVERITY");
+  ScalarColumn<int32_t> severity(flagTab, "SEVERITY");
 
   try {
     bands.attach(flagTab, "BANDS");
   }
   catch(std::exception& x){
     bandsS.attach(flagTab, "BANDS");
-    BANDSisScalar = True;
+    BANDSisScalar = true;
   }
 
-  Int outRow=-1;
-  for (Int inRow=0; inRow<nVal; inRow++) {
+  int32_t outRow=-1;
+  for (int32_t inRow=0; inRow<nVal; inRow++) {
     // Check whether flag specification is supported; skip row if it isn't.
     if (array(inRow) != 0) {
       *itsLog << LogIO::SEVERE << "Flagging by array number not supported"
@@ -3371,8 +3371,8 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     }
 
     // Check antenna numbers; fail if there are inconsistencies.
-    Int ant1 = ants(inRow)(IPosition(1, 0));
-    Int ant2 = ants(inRow)(IPosition(1, 1));
+    int32_t ant1 = ants(inRow)(IPosition(1, 0));
+    int32_t ant2 = ants(inRow)(IPosition(1, 1));
     if (ant1 != 0 && antIdFromNo.find(ant1) == antIdFromNo.end()) {
     	*itsLog << LogIO::SEVERE << "No mapping for antenna "
 				<< ant1 << LogIO::EXCEPTION;
@@ -3383,16 +3383,16 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     }
 
     // Check channel numbers; fail if there are inconsistencies.
-    Int chan1 = chans(inRow)(IPosition(1, 0));
-    Int chan2 = chans(inRow)(IPosition(1, 1));
+    int32_t chan1 = chans(inRow)(IPosition(1, 0));
+    int32_t chan2 = chans(inRow)(IPosition(1, 1));
     if (chan1 > chan2 || chan1 < -1 || chan2 < -1) {
     	*itsLog << LogIO::SEVERE << "incorrect channel range "
 		<< chan1 << "-" << chan2 <<  LogIO::EXCEPTION;
     }
 
     ms_p.flagCmd().addRow(); outRow++;
-    Double time = (timerang(inRow)(IPosition(1, 0)) + timerang(inRow)(IPosition(1, 1))) / 2;
-    Double interval = timerang(inRow)(IPosition(1, 1)) - timerang(inRow)(IPosition(1, 0));
+    double time = (timerang(inRow)(IPosition(1, 0)) + timerang(inRow)(IPosition(1, 1))) / 2;
+    double interval = timerang(inRow)(IPosition(1, 1)) - timerang(inRow)(IPosition(1, 0));
     msFlagCmd.time().put(outRow, time * C::day + rdate);
     msFlagCmd.interval().put(outRow, interval * C::day);
     msFlagCmd.type().put(outRow, "FLAG");
@@ -3423,10 +3423,10 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
 
     // spw selection
     ostringstream spw;
-    Vector<Int> bandsV;
-    Bool needSpw = False;
+    Vector<int32_t> bandsV;
+    bool needSpw = false;
     if (BANDSisScalar)
-      bandsV = Vector<Int>(1, bandsS(inRow));
+      bandsV = Vector<int32_t>(1, bandsS(inRow));
     else
       bandsV = bands(inRow);
     for (int band = 0; band < bandsV.shape()(0); band++) {
@@ -3435,7 +3435,7 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
 	  spw << ",";
 	spw << band;
       } else {
-	needSpw = True;
+	needSpw = true;
       }
     }
     if (!needSpw)
@@ -3452,15 +3452,15 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
 
     // correlation selection
     ostringstream corr;
-    Vector<Int> pflagsV = pflags(inRow);
-    Bool needCorr = False;
+    Vector<int32_t> pflagsV = pflags(inRow);
+    bool needCorr = false;
     for (int stk = 0; stk < noSTKD; stk++) {
       if (pflagsV[stk]) {
 	if (corr.str().size())
 	  corr << ",";
 	corr << stokes[stk - firstSTK - 1];
       } else {
-	needCorr = True;
+	needCorr = true;
       }
     }
     if (needCorr) {
@@ -3472,34 +3472,34 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     msFlagCmd.command().put(outRow, cmd.str());
   }
 
-  return True;
+  return true;
 }
 
-Bool FITSIDItoMS1::fillWeatherTable()
+bool FITSIDItoMS1::fillWeatherTable()
 {
   *itsLog << LogOrigin("FitsIDItoMS()", "fillWeatherTable");
   MSWeatherColumns& msWeather(msc_p->weather());
 
-  Int nVal=nrows();
+  int32_t nVal=nrows();
 
   Table wxTab = oldfullTable("");
-  ScalarColumn<Double> time(wxTab, "TIME");
-  ScalarColumn<Float> timeint(wxTab, "TIME_INTERVAL");
-  ScalarColumn<Int> anNo(wxTab, "ANTENNA_NO");
-  ScalarColumn<Float> temperature(wxTab, "TEMPERATURE");
-  ScalarColumn<Float> pressure(wxTab, "PRESSURE");
-  ScalarColumn<Float> dewpoint(wxTab, "DEWPOINT");
-  ScalarColumn<Float> wind_velocity(wxTab, "WIND_VELOCITY");
-  ScalarColumn<Float> wind_direction(wxTab, "WIND_DIRECTION");
-  ScalarColumn<Float> wvr_h2o;
+  ScalarColumn<double> time(wxTab, "TIME");
+  ScalarColumn<float> timeint(wxTab, "TIME_INTERVAL");
+  ScalarColumn<int32_t> anNo(wxTab, "ANTENNA_NO");
+  ScalarColumn<float> temperature(wxTab, "TEMPERATURE");
+  ScalarColumn<float> pressure(wxTab, "PRESSURE");
+  ScalarColumn<float> dewpoint(wxTab, "DEWPOINT");
+  ScalarColumn<float> wind_velocity(wxTab, "WIND_VELOCITY");
+  ScalarColumn<float> wind_direction(wxTab, "WIND_DIRECTION");
+  ScalarColumn<float> wvr_h2o;
   if(weather_hasWater_p)
     wvr_h2o.attach(wxTab, "WVR_H2O");
-  ScalarColumn<Float> ionos_electron;
+  ScalarColumn<float> ionos_electron;
   if(weather_hasElectron_p)
     wvr_h2o.attach(wxTab, "IONOS_ELECTRON");
 
-  Int outRow=-1;
-  for (Int inRow=0; inRow<nVal; inRow++) {
+  int32_t outRow=-1;
+  for (int32_t inRow=0; inRow<nVal; inRow++) {
       ms_p.weather().addRow(); outRow++;
       if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
 	msWeather.antennaId().put(outRow, antIdFromNo[anNo(inRow)]);
@@ -3520,10 +3520,10 @@ Bool FITSIDItoMS1::fillWeatherTable()
 	msWeather.ionosElectron().put(outRow,wvr_h2o(inRow));
   }
 
-  return True;
+  return true;
 }
 
-Bool FITSIDItoMS1::handleGainCurve()
+bool FITSIDItoMS1::handleGainCurve()
 {
   *itsLog << LogOrigin("FitsIDItoMS()", "handleGainCurve");
 
@@ -3531,8 +3531,8 @@ Bool FITSIDItoMS1::handleGainCurve()
   const FitsKeyword* fkw;
   String kwname;
   kwl.first();
-  Int nIF = 1;
-  Int nTabs = 1;
+  int32_t nIF = 1;
+  int32_t nTabs = 1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_BAND") {
@@ -3547,15 +3547,15 @@ Bool FITSIDItoMS1::handleGainCurve()
   String name = "GAIN_CURVE";
 
   td.comment() = "Gain curve table";
-  td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
-  td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
-  td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
-  td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
-  td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<int32_t>("ANTENNA_ID", "Antenna identifier"));
+  td.addColumn(ScalarColumnDesc<int32_t>("FEED_ID", "Feed identifier"));
+  td.addColumn(ScalarColumnDesc<int32_t>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+  td.addColumn(ScalarColumnDesc<double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<double>("INTERVAL", "Interval for which this set of parameters is accurate"));
   td.addColumn(ScalarColumnDesc<String>("TYPE", "Gain curve type"));
-  td.addColumn(ScalarColumnDesc<Int>("NUM_POLY", "Number of terms in polynomial"));
-  td.addColumn(ArrayColumnDesc<Float>("GAIN", "Gain polynomial"));
-  td.addColumn(ArrayColumnDesc<Float>("SENSITIVITY", "Antenna sensitivity"));
+  td.addColumn(ScalarColumnDesc<int32_t>("NUM_POLY", "Number of terms in polynomial"));
+  td.addColumn(ArrayColumnDesc<float>("GAIN", "Gain polynomial"));
+  td.addColumn(ArrayColumnDesc<float>("SENSITIVITY", "Antenna sensitivity"));
   TableMeasValueDesc measVal(td, "TIME");
   TableMeasDesc<MEpoch> measCol(measVal);
   measCol.write(td);
@@ -3568,39 +3568,39 @@ Bool FITSIDItoMS1::handleGainCurve()
   SetupNewTable tableSetup(ms_p.tableName() + "/" + name, td, Table::New);
   ms_p.rwKeywordSet().defineTable("GAIN_CURVE", Table(tableSetup));
 
-  Int nVal=nrows();
-  Bool dualPol=False;
-  Bool GCisScalar=False;
+  int32_t nVal=nrows();
+  bool dualPol=false;
+  bool GCisScalar=false;
 
   Table gcTab = oldfullTable("");
-  ScalarColumn<Int> anNo(gcTab, "ANTENNA_NO");
-  ScalarColumn<Int> array(gcTab, "ARRAY");
-  ScalarColumn<Int> fqid(gcTab, "FREQID");
-  ArrayColumn<Int> type_1;
-  ArrayColumn<Int> nterm_1;
-  ArrayColumn<Int> xtyp_1;
-  ArrayColumn<Int> ytyp_1;
-  ArrayColumn<Float> gain_1;
-  ArrayColumn<Float> sens_1;
-  ArrayColumn<Int> type_2;
-  ArrayColumn<Int> nterm_2;
-  ArrayColumn<Int> xtyp_2;
-  ArrayColumn<Int> ytyp_2;
-  ArrayColumn<Float> gain_2;
-  ArrayColumn<Float> sens_2;
-  ScalarColumn<Int> type_1S;
-  ScalarColumn<Int> nterm_1S;
-  ScalarColumn<Int> xtyp_1S;
-  ScalarColumn<Int> ytyp_1S;
-  ScalarColumn<Float> gain_1S;
-  ScalarColumn<Float> sens_1S;
-  ScalarColumn<Int> type_2S;
-  ScalarColumn<Int> nterm_2S;
-  ScalarColumn<Int> xtyp_2S;
-  ScalarColumn<Int> ytyp_2S;
-  ScalarColumn<Float> gain_2S;
-  ScalarColumn<Float> sens_2S;
-  Int ytyp = 0, nterm = 0;
+  ScalarColumn<int32_t> anNo(gcTab, "ANTENNA_NO");
+  ScalarColumn<int32_t> array(gcTab, "ARRAY");
+  ScalarColumn<int32_t> fqid(gcTab, "FREQID");
+  ArrayColumn<int32_t> type_1;
+  ArrayColumn<int32_t> nterm_1;
+  ArrayColumn<int32_t> xtyp_1;
+  ArrayColumn<int32_t> ytyp_1;
+  ArrayColumn<float> gain_1;
+  ArrayColumn<float> sens_1;
+  ArrayColumn<int32_t> type_2;
+  ArrayColumn<int32_t> nterm_2;
+  ArrayColumn<int32_t> xtyp_2;
+  ArrayColumn<int32_t> ytyp_2;
+  ArrayColumn<float> gain_2;
+  ArrayColumn<float> sens_2;
+  ScalarColumn<int32_t> type_1S;
+  ScalarColumn<int32_t> nterm_1S;
+  ScalarColumn<int32_t> xtyp_1S;
+  ScalarColumn<int32_t> ytyp_1S;
+  ScalarColumn<float> gain_1S;
+  ScalarColumn<float> sens_1S;
+  ScalarColumn<int32_t> type_2S;
+  ScalarColumn<int32_t> nterm_2S;
+  ScalarColumn<int32_t> xtyp_2S;
+  ScalarColumn<int32_t> ytyp_2S;
+  ScalarColumn<float> gain_2S;
+  ScalarColumn<float> sens_2S;
+  int32_t ytyp = 0, nterm = 0;
   try {
     type_1.attach(gcTab, "TYPE_1");
     nterm_1.attach(gcTab, "NTERM_1");
@@ -3613,7 +3613,7 @@ Bool FITSIDItoMS1::handleGainCurve()
       xtyp_2.attach(gcTab, "X_TYP_2");
       ytyp_2.attach(gcTab, "Y_TYP_2");
       sens_2.attach(gcTab, "SENS_2");
-      dualPol=True;
+      dualPol=true;
     }
   }
   catch (std::exception&) {
@@ -3628,9 +3628,9 @@ Bool FITSIDItoMS1::handleGainCurve()
       xtyp_2S.attach(gcTab, "X_TYP_2");
       ytyp_2S.attach(gcTab, "Y_TYP_2");
       sens_2S.attach(gcTab, "SENS_2");
-      dualPol=True;
+      dualPol=true;
     }
-    GCisScalar=True;
+    GCisScalar=true;
     if (nIF > 1) {
       *itsLog << LogIO::WARN << "Treating columns in input GAIN_CURVE table as scalar,"
 	      << endl << " i.e. using same value for all bands." << LogIO::POST;
@@ -3647,22 +3647,22 @@ Bool FITSIDItoMS1::handleGainCurve()
   }
 
   Table msgc = ms_p.rwKeywordSet().asTable("GAIN_CURVE");
-  Vector<Float> sens(dualPol ? 2 : 1);
+  Vector<float> sens(dualPol ? 2 : 1);
 
-  Int outRow=-1;
-  for (Int inRow=0; inRow<nVal; inRow++) {
-    for (Int inIF=0; inIF<nIF; inIF++) {
+  int32_t outRow=-1;
+  for (int32_t inRow=0; inRow<nVal; inRow++) {
+    for (int32_t inIF=0; inIF<nIF; inIF++) {
       msgc.addRow(); outRow++;
 
-      ScalarColumn<Int> antennaIdCol(msgc, "ANTENNA_ID");
-      ScalarColumn<Int> feedIdCol(msgc, "FEED_ID");
-      ScalarColumn<Int> spwIdCol(msgc, "SPECTRAL_WINDOW_ID");
-      ScalarColumn<Double> timeCol(msgc, "TIME");
-      ScalarColumn<Double> intervalCol(msgc, "INTERVAL");
+      ScalarColumn<int32_t> antennaIdCol(msgc, "ANTENNA_ID");
+      ScalarColumn<int32_t> feedIdCol(msgc, "FEED_ID");
+      ScalarColumn<int32_t> spwIdCol(msgc, "SPECTRAL_WINDOW_ID");
+      ScalarColumn<double> timeCol(msgc, "TIME");
+      ScalarColumn<double> intervalCol(msgc, "INTERVAL");
       ScalarColumn<String> typeCol(msgc, "TYPE");
-      ScalarColumn<Int> npolyCol(msgc, "NUM_POLY");
-      ArrayColumn<Float>  gainCol(msgc,"GAIN");
-      ArrayColumn<Float> sensCol(msgc, "SENSITIVITY");
+      ScalarColumn<int32_t> npolyCol(msgc, "NUM_POLY");
+      ArrayColumn<float>  gainCol(msgc,"GAIN");
+      ArrayColumn<float> sensCol(msgc, "SENSITIVITY");
 
       IPosition thisIF = IPosition(1,inIF);
       if (GCisScalar && inIF == 0) {
@@ -3729,7 +3729,7 @@ Bool FITSIDItoMS1::handleGainCurve()
       timeCol.put(outRow, (startTime_p + lastTime_p) / 2);
       intervalCol.put(outRow, lastTime_p - startTime_p);
       npolyCol.put(outRow,nterm);
-      Matrix<Float> gain(dualPol ? 2 : 1, nterm);
+      Matrix<float> gain(dualPol ? 2 : 1, nterm);
       if (GCisScalar && nTabs == 1) {
 	gain.row(0)=gain_1S(inRow);
 	if (dualPol)
@@ -3755,10 +3755,10 @@ Bool FITSIDItoMS1::handleGainCurve()
 
   ms_p.rwKeywordSet().asTable("GAIN_CURVE").flush();
 
-  return True;
+  return true;
 }
 
-Bool FITSIDItoMS1::handlePhaseCal()
+bool FITSIDItoMS1::handlePhaseCal()
 {
   *itsLog << LogOrigin("FitsIDItoMS()", "handlePhaseCal");
 
@@ -3766,8 +3766,8 @@ Bool FITSIDItoMS1::handlePhaseCal()
   const FitsKeyword* fkw;
   String kwname;
   kwl.first();
-  Int nIF = 1;
-  Int nTones = 0;
+  int32_t nIF = 1;
+  int32_t nTones = 0;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_BAND") {
@@ -3782,15 +3782,15 @@ Bool FITSIDItoMS1::handlePhaseCal()
   String name = "PHASE_CAL";
 
   td.comment() = "Phase calibration table";
-  td.addColumn(ScalarColumnDesc<Int>("ANTENNA_ID", "Antenna identifier"));
-  td.addColumn(ScalarColumnDesc<Int>("FEED_ID", "Feed identifier"));
-  td.addColumn(ScalarColumnDesc<Int>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
-  td.addColumn(ScalarColumnDesc<Double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
-  td.addColumn(ScalarColumnDesc<Double>("INTERVAL", "Interval for which this set of parameters is accurate"));
-  td.addColumn(ScalarColumnDesc<Int>("NUM_TONES", "Number of phase-cal tones"));
-  td.addColumn(ArrayColumnDesc<Double>("TONE_FREQUENCY", "Phase-cal tone frequency"));
+  td.addColumn(ScalarColumnDesc<int32_t>("ANTENNA_ID", "Antenna identifier"));
+  td.addColumn(ScalarColumnDesc<int32_t>("FEED_ID", "Feed identifier"));
+  td.addColumn(ScalarColumnDesc<int32_t>("SPECTRAL_WINDOW_ID", "Spectral window identifier"));
+  td.addColumn(ScalarColumnDesc<double>("TIME", "Midpoint of time for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<double>("INTERVAL", "Interval for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<int32_t>("NUM_TONES", "Number of phase-cal tones"));
+  td.addColumn(ArrayColumnDesc<double>("TONE_FREQUENCY", "Phase-cal tone frequency"));
   td.addColumn(ArrayColumnDesc<Complex>("PHASE_CAL", "Phase-cal measurement"));
-  td.addColumn(ScalarColumnDesc<Double>("CABLE_CAL", "Cable calibration measurement"));
+  td.addColumn(ScalarColumnDesc<double>("CABLE_CAL", "Cable calibration measurement"));
   TableMeasValueDesc measVal(td, "TIME");
   TableMeasDesc<MEpoch> measCol(measVal);
   measCol.write(td);
@@ -3805,29 +3805,29 @@ Bool FITSIDItoMS1::handlePhaseCal()
   SetupNewTable tableSetup(ms_p.tableName() + "/" + name, td, Table::New);
   ms_p.rwKeywordSet().defineTable("PHASE_CAL", Table(tableSetup));
 
-  Int nVal=nrows();
-  Bool dualPol=False;
-  Bool PCisScalar=False;
+  int32_t nVal=nrows();
+  bool dualPol=false;
+  bool PCisScalar=false;
 
   Table pcTab = oldfullTable("");
-  ScalarColumn<Double> time(pcTab, "TIME");
-  ScalarColumn<Float> timeint(pcTab, "TIME_INTERVAL");
-  ScalarColumn<Int> anNo(pcTab, "ANTENNA_NO");
-  ScalarColumn<Int> array(pcTab, "ARRAY");
-  ScalarColumn<Int> fqid(pcTab, "FREQID");
-  ScalarColumn<Double> cable_cal(pcTab, "CABLE_CAL");
-  ArrayColumn<Double> pc_freq_1;
-  ArrayColumn<Float> pc_real_1;
-  ArrayColumn<Float> pc_imag_1;
-  ArrayColumn<Double> pc_freq_2;
-  ArrayColumn<Float> pc_real_2;
-  ArrayColumn<Float> pc_imag_2;
-  ScalarColumn<Double> pc_freq_1S;
-  ScalarColumn<Float> pc_real_1S;
-  ScalarColumn<Float> pc_imag_1S;
-  ScalarColumn<Double> pc_freq_2S;
-  ScalarColumn<Float> pc_real_2S;
-  ScalarColumn<Float> pc_imag_2S;
+  ScalarColumn<double> time(pcTab, "TIME");
+  ScalarColumn<float> timeint(pcTab, "TIME_INTERVAL");
+  ScalarColumn<int32_t> anNo(pcTab, "ANTENNA_NO");
+  ScalarColumn<int32_t> array(pcTab, "ARRAY");
+  ScalarColumn<int32_t> fqid(pcTab, "FREQID");
+  ScalarColumn<double> cable_cal(pcTab, "CABLE_CAL");
+  ArrayColumn<double> pc_freq_1;
+  ArrayColumn<float> pc_real_1;
+  ArrayColumn<float> pc_imag_1;
+  ArrayColumn<double> pc_freq_2;
+  ArrayColumn<float> pc_real_2;
+  ArrayColumn<float> pc_imag_2;
+  ScalarColumn<double> pc_freq_1S;
+  ScalarColumn<float> pc_real_1S;
+  ScalarColumn<float> pc_imag_1S;
+  ScalarColumn<double> pc_freq_2S;
+  ScalarColumn<float> pc_real_2S;
+  ScalarColumn<float> pc_imag_2S;
   try{
     pc_freq_1.attach(pcTab, "PC_FREQ_1");
     pc_real_1.attach(pcTab, "PC_REAL_1");
@@ -3836,7 +3836,7 @@ Bool FITSIDItoMS1::handlePhaseCal()
       pc_freq_2.attach(pcTab, "PC_FREQ_2"); // this column is optional
       pc_real_2.attach(pcTab, "PC_REAL_2"); // this column is optional
       pc_imag_2.attach(pcTab, "PC_IMAG_2"); // this column is optional
-      dualPol=True;
+      dualPol=true;
     }
   }
   catch(std::exception&){
@@ -3847,27 +3847,27 @@ Bool FITSIDItoMS1::handlePhaseCal()
       pc_freq_2S.attach(pcTab, "PC_FREQ_2"); // this column is optional
       pc_real_2S.attach(pcTab, "PC_REAL_2"); // this column is optional
       pc_imag_2S.attach(pcTab, "PC_IMAG_2"); // this column is optional
-      dualPol=True;
+      dualPol=true;
     }
-    PCisScalar=True;
+    PCisScalar=true;
   }
 
   Table mspc = ms_p.rwKeywordSet().asTable("PHASE_CAL");
 
-  Int outRow=-1;
-  for (Int inRow=0; inRow<nVal; inRow++) {
-    for (Int inIF=0; inIF<nIF; inIF++) {
+  int32_t outRow=-1;
+  for (int32_t inRow=0; inRow<nVal; inRow++) {
+    for (int32_t inIF=0; inIF<nIF; inIF++) {
       mspc.addRow(); outRow++;
 
-      ScalarColumn<Int> antennaIdCol(mspc, "ANTENNA_ID");
-      ScalarColumn<Int> feedIdCol(mspc, "FEED_ID");
-      ScalarColumn<Int> spwIdCol(mspc, "SPECTRAL_WINDOW_ID");
-      ScalarColumn<Double> timeCol(mspc, "TIME");
-      ScalarColumn<Double> intervalCol(mspc, "INTERVAL");
-      ScalarColumn<Int> ntonesCol(mspc, "NUM_TONES");
-      ArrayColumn<Double> freqCol(mspc, "TONE_FREQUENCY");
+      ScalarColumn<int32_t> antennaIdCol(mspc, "ANTENNA_ID");
+      ScalarColumn<int32_t> feedIdCol(mspc, "FEED_ID");
+      ScalarColumn<int32_t> spwIdCol(mspc, "SPECTRAL_WINDOW_ID");
+      ScalarColumn<double> timeCol(mspc, "TIME");
+      ScalarColumn<double> intervalCol(mspc, "INTERVAL");
+      ScalarColumn<int32_t> ntonesCol(mspc, "NUM_TONES");
+      ArrayColumn<double> freqCol(mspc, "TONE_FREQUENCY");
       ArrayColumn<Complex> phaseCalCol(mspc, "PHASE_CAL");
-      ScalarColumn<Double> cableCalCol(mspc, "CABLE_CAL");
+      ScalarColumn<double> cableCalCol(mspc, "CABLE_CAL");
 
       if (antIdFromNo.find(anNo(inRow)) != antIdFromNo.end()) {
 	antennaIdCol.put(outRow, antIdFromNo[anNo(inRow)]);
@@ -3880,7 +3880,7 @@ Bool FITSIDItoMS1::handlePhaseCal()
       timeCol.put(outRow, time(inRow)*C::day + rdate);
       intervalCol.put(outRow, timeint(inRow)*C::day);
       ntonesCol.put(outRow, nTones);
-      Matrix<Double> freq(dualPol ? 2 : 1, nTones);
+      Matrix<double> freq(dualPol ? 2 : 1, nTones);
       if (PCisScalar) {
 	freq.row(0)=pc_freq_1S(inRow);
 	if (dualPol)
@@ -3897,7 +3897,7 @@ Bool FITSIDItoMS1::handlePhaseCal()
 	if (dualPol)
 	  phase_cal.row(1)=Complex(pc_real_2S(inRow), pc_imag_2S(inRow));
       } else {
-	for (Int i=0; i<nTones; i++) {
+	for (int32_t i=0; i<nTones; i++) {
 	  IPosition thisTone=IPosition(1,inIF*nTones+i);
 	  phase_cal(0,i)=Complex(pc_real_1(inRow)(thisTone),
 				 pc_imag_1(inRow)(thisTone));
@@ -3913,16 +3913,16 @@ Bool FITSIDItoMS1::handlePhaseCal()
 
   ms_p.rwKeywordSet().asTable("PHASE_CAL").flush();
 
-  return True;
+  return true;
 }
 
-Bool FITSIDItoMS1::handleModelComps()
+bool FITSIDItoMS1::handleModelComps()
 {
 
   *itsLog << LogOrigin("FitsIDItoMS()", "handleModelComps");
   // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
+  return false;
 
 }
 
@@ -3931,8 +3931,8 @@ void FITSIDItoMS1::fixEpochReferences() {
   *itsLog << LogOrigin("FitsIDItoMS()", "fixEpochReferences");
   if (timsys_p=="IAT") timsys_p="TAI";
   if (timsys_p=="UTC" || timsys_p=="TAI") {
-    if (timsys_p=="UTC") msc_p->setEpochRef(MEpoch::UTC, False);
-    if (timsys_p=="TAI") msc_p->setEpochRef(MEpoch::TAI, False);
+    if (timsys_p=="UTC") msc_p->setEpochRef(MEpoch::UTC, false);
+    if (timsys_p=="TAI") msc_p->setEpochRef(MEpoch::TAI, false);
   } else {
     if (timsys_p!="")
       *itsLog << LogIO::SEVERE << "Unhandled time reference frame: "<<timsys_p<<LogIO::POST;
@@ -3941,7 +3941,7 @@ void FITSIDItoMS1::fixEpochReferences() {
 
 void FITSIDItoMS1::updateTables(const String& MStmpDir)
 {
-  const Vector<Double> obsTime = msc_p->observation().timeRange()(0);
+  const Vector<double> obsTime = msc_p->observation().timeRange()(0);
   //update polarization table
   //this should be a polarization table in _tmp directory  
   //This is expected to call after getAxisInfo.
@@ -3960,10 +3960,10 @@ void FITSIDItoMS1::updateTables(const String& MStmpDir)
   MeasurementSet mssub2(MSFileName,Table::Update);
   ms_p = mssub2;
   msc_p = new MSColumns(ms_p);
-  Int nrow = ms_p.field().nrow();
+  int32_t nrow = ms_p.field().nrow();
   MSFieldColumns& msFld(msc_p->field());
   
-  for (Int row = 0; row < nrow; row++) { 
+  for (int32_t row = 0; row < nrow; row++) { 
     msFld.time().put(row,obsTime(0)); 
     //    cout << "update: obsTime=" << obsTime(0) << endl;
   }
@@ -3978,7 +3978,7 @@ void FITSIDItoMS1::updateTables(const String& MStmpDir)
   nrow = ms_p.feed().nrow();
   MSFeedColumns& msFeed(msc_p->feed());
   
-  for (Int row = 0; row < nrow; row++) { 
+  for (int32_t row = 0; row < nrow; row++) { 
     // cout << "update: feed time =" << msFeed.time()(row) << ", rdate " << rdate  << endl;
     msFeed.time().put(row, msFeed.time()(row) + rdate); // add the reference date  
     // cout << "update: feed time new =" << msFeed.time()(row)  << endl;
@@ -3997,7 +3997,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
 
   
 
-  Int nField=0, nSpW=0;
+  int32_t nField=0, nSpW=0;
   
   String tmpPolTab;
 
@@ -4014,8 +4014,8 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
       getAxisInfo();
       
       if(firstMain){
-	Bool useTSM=True;
-	Bool mainTbl=True;
+	bool useTSM=true;
+	bool mainTbl=true;
 	
 	setupMeasurementSet(msFile, useTSM, mainTbl);
 	
@@ -4026,7 +4026,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
 	
 	updateTables(tmpdir); 
 	
-	firstMain=False;
+	firstMain=false;
       }
       else{
 	fillMSMainTable(msFile, nField, nSpW);
@@ -4035,38 +4035,38 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     }
   
   else{
-    Bool useTSM=False;
-    Bool mainTbl=False;
-    Bool addCorrMode=False;
-    Bool addSyscal=False;
-    Bool addWeather=False;
-    Bool addGainCurve=False;
-    Bool addPhaseCal=False;
+    bool useTSM=false;
+    bool mainTbl=false;
+    bool addCorrMode=false;
+    bool addSyscal=false;
+    bool addWeather=false;
+    bool addGainCurve=false;
+    bool addPhaseCal=false;
 
     if (firstSyscal && extname == "SYSTEM_TEMPERATURE") {
-      addSyscal=True;
-      firstSyscal=False;
+      addSyscal=true;
+      firstSyscal=false;
     }
 
     if (firstWeather && extname == "WEATHER") {
-      addWeather=True;
-      firstWeather=False;
+      addWeather=true;
+      firstWeather=false;
     }
 
     if (firstGainCurve && extname == "GAIN_CURVE") {
-      addGainCurve=True;
-      firstGainCurve=False;
+      addGainCurve=true;
+      firstGainCurve=false;
     }
 
     if (firstPhaseCal && extname == "PHASE-CAL") {
-      addPhaseCal=True;
-      firstPhaseCal=False;
+      addPhaseCal=true;
+      firstPhaseCal=false;
     }
 
     setupMeasurementSet(msFile, useTSM, mainTbl, addCorrMode, addSyscal,
 			addWeather, addGainCurve, addPhaseCal);
     
-    Bool success = True; // for the optional tables, we have a return value permitting us
+    bool success = true; // for the optional tables, we have a return value permitting us
                          // to skip them if they cannot be read
 
     if(extname=="ARRAY_GEOMETRY") fillAntennaTable();
@@ -4086,21 +4086,21 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
 	    ){
       *itsLog << LogIO::WARN << "FITS-IDI table " << extname 
 	      << " not yet supported. Will ignore it." << LogIO::POST;
-      return False;
+      return false;
     }
     else {
       *itsLog << LogIO::WARN << "Extension " << extname 
 	      << " not part of the FITS-IDI convention. Will ignore it." << LogIO::POST;
-      return False;
+      return false;
     }  
     if(!success){
       *itsLog << LogIO::WARN << "The optional FITS-IDI table " << extname 
 	      << " could not be read. Will ignore it." << LogIO::POST;
-      return False;
+      return false;
     }
   }
 
-  return True;
+  return true;
 
 } 
 

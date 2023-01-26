@@ -135,7 +135,7 @@ public:
     void get (rownr_t rownr, T& value) const
     {
 	TABLECOLUMNCHECKROW(rownr);
-	Int off = colCachePtr_p->offset(rownr);
+	int32_t off = colCachePtr_p->offset(rownr);
 	if (off >= 0) {
 	    value = ((T*)(colCachePtr_p->dataPtr()))[off];
 	}else{
@@ -160,7 +160,7 @@ public:
     // According to the assignment rules of class Array, the destination
     // vector must be empty or its length must be the number of cells
     // in the column (i.e. the number of rows in the table).
-    void getColumn (Vector<T>& vec, Bool resize = False) const;
+    void getColumn (Vector<T>& vec, bool resize = false) const;
 
     // Get the vector of all values in the column.
     Vector<T> getColumn() const;
@@ -172,7 +172,7 @@ public:
     // vector must be empty or its length must be the number of cells
     // in the column (i.e. the number of rows in the slicer).
     void getColumnRange (const Slicer& rowRange, Vector<T>& vec,
-			 Bool resize = False) const;
+			 bool resize = false) const;
 
     // Get the vector of a range of values in the column.
     // The Slicer object can be used to specify start, end (or length),
@@ -186,7 +186,7 @@ public:
     // vector must be empty or its length must be the number of cells
     // in the column (i.e. the number of rows in the RefRows object).
     void getColumnCells (const RefRows& rownrs, Vector<T>& vec,
-			 Bool resize = False) const;
+			 bool resize = false) const;
 
     // Get the vector of some values in the column.
     Vector<T> getColumnCells (const RefRows& rownrs) const;
@@ -214,12 +214,12 @@ public:
     // Otherwise an exception is thrown.
     // <group>
     // Use the same row numbers for both cells.
-    void put (rownr_t rownr, const TableColumn& that, Bool=False)
+    void put (rownr_t rownr, const TableColumn& that, bool=false)
 	{ put (rownr, that, rownr); }
     // Use possibly different row numbers for that (i.e. input) and
     // and this (i.e. output) cell.
     void put (rownr_t thisRownr, const TableColumn& that, rownr_t thatRownr,
-              Bool=False);
+              bool=false);
     // </group>
 
     // Put the vector of all values in the column.
@@ -255,15 +255,15 @@ private:
 
 
 //# Explicitly instantiate these templates in ScalarColumn_tmpl.cc
-  extern template class ScalarColumn<Bool>;
-  extern template class ScalarColumn<Char>;
-  extern template class ScalarColumn<Short>;
-  extern template class ScalarColumn<uShort>;
-  extern template class ScalarColumn<Int>;
-  extern template class ScalarColumn<uInt>;
-  extern template class ScalarColumn<Int64>;
-  extern template class ScalarColumn<Float>;
-  extern template class ScalarColumn<Double>;
+  extern template class ScalarColumn<bool>;
+  extern template class ScalarColumn<char>;
+  extern template class ScalarColumn<int16_t>;
+  extern template class ScalarColumn<uint16_t>;
+  extern template class ScalarColumn<int32_t>;
+  extern template class ScalarColumn<uint32_t>;
+  extern template class ScalarColumn<int64_t>;
+  extern template class ScalarColumn<float>;
+  extern template class ScalarColumn<double>;
   extern template class ScalarColumn<Complex>;
   extern template class ScalarColumn<DComplex>;
   extern template class ScalarColumn<String>;

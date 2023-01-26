@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELScalar<T>::LELScalar()
-: itsMask(False)
+: itsMask(false)
 {
     ValType::getUndef (&itsValue);
 }

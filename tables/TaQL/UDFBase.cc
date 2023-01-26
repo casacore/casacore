@@ -40,9 +40,9 @@ namespace casacore {
   UDFBase::UDFBase()
     : itsDataType       (TableExprNodeRep::NTAny),
       itsNDim           (-2),
-      itsIsConstant     (False),
-      itsIsAggregate    (False),
-      itsApplySelection (True)
+      itsIsConstant     (false),
+      itsIsAggregate    (false),
+      itsApplySelection (true)
   {}
 
   UDFBase::~UDFBase()
@@ -53,7 +53,7 @@ namespace casacore {
   {
     // Link to the operands.
     itsOperands.resize (operands.size());
-    for (uInt i=0; i<operands.size(); ++i) {
+    for (uint32_t i=0; i<operands.size(); ++i) {
       itsOperands[i] = operands[i];
     }
     setup (tableInfo.table(), style);
@@ -67,7 +67,7 @@ namespace casacore {
 
   void UDFBase::flattenTree (std::vector<TableExprNodeRep*>& nodes)
   {
-    for (uInt i=0; i<itsOperands.size(); ++i) {
+    for (uint32_t i=0; i<itsOperands.size(); ++i) {
       itsOperands[i]->flattenTree (nodes);
     }
   }
@@ -77,11 +77,11 @@ namespace casacore {
     itsDataType = dataType;
   }
 
-  void UDFBase::setNDim (Int ndim)
+  void UDFBase::setNDim (int32_t ndim)
   {
     AlwaysAssert (ndim >= -1, AipsError);
     if (itsShape.size() > 0) {
-      AlwaysAssert (ndim == Int(itsShape.size()), AipsError);
+      AlwaysAssert (ndim == int32_t(itsShape.size()), AipsError);
     }
     itsNDim = ndim;
   }
@@ -89,7 +89,7 @@ namespace casacore {
   void UDFBase::setShape (const IPosition& shape)
   {
     if (itsNDim >= 0) {
-      AlwaysAssert (Int(shape.size()) == itsNDim, AipsError);
+      AlwaysAssert (int32_t(shape.size()) == itsNDim, AipsError);
     }
     itsShape = shape;
     itsNDim  = itsShape.size();
@@ -105,21 +105,21 @@ namespace casacore {
     itsAttributes = attributes;
   }
 
-  void UDFBase::setConstant (Bool isConstant)
+  void UDFBase::setConstant (bool isConstant)
   {
     itsIsConstant = isConstant;
   }
 
-  void UDFBase::setAggregate (Bool isAggregate)
+  void UDFBase::setAggregate (bool isAggregate)
   {
     itsIsAggregate = isAggregate;
   }
 
-  Bool      UDFBase::getBool     (const TableExprId&)
+  bool      UDFBase::getBool     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getBool not implemented"); }
-  Int64     UDFBase::getInt      (const TableExprId&)
+  int64_t     UDFBase::getInt      (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getInt not implemented"); }
-  Double    UDFBase::getDouble   (const TableExprId&)
+  double    UDFBase::getDouble   (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getDouble not implemented"); }
   DComplex  UDFBase::getDComplex (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getDComplex not implemented"); }
@@ -129,11 +129,11 @@ namespace casacore {
     { throw TableInvExpr ("UDFBase::getRegex not implemented"); }
   MVTime    UDFBase::getDate     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getDate not implemented"); }
-  MArray<Bool>     UDFBase::getArrayBool     (const TableExprId&)
+  MArray<bool>     UDFBase::getArrayBool     (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayBool not implemented"); }
-  MArray<Int64>    UDFBase::getArrayInt      (const TableExprId&)
+  MArray<int64_t>    UDFBase::getArrayInt      (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayInt not implemented"); }
-  MArray<Double>  UDFBase:: getArrayDouble   (const TableExprId&)
+  MArray<double>  UDFBase:: getArrayDouble   (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDouble not implemented"); }
   MArray<DComplex> UDFBase::getArrayDComplex (const TableExprId&)
     { throw TableInvExpr ("UDFBase::getArrayDComplex not implemented"); }
@@ -150,7 +150,7 @@ namespace casacore {
     if (itsApplySelection) {
       recreateColumnObjects (rownrs);
       // Clear switch in case called for a second time.
-      itsApplySelection = False;
+      itsApplySelection = false;
     }
   }
 
@@ -159,9 +159,9 @@ namespace casacore {
     String fname(name);
     fname.downcase();
     // The library name is the first part.
-    Int j = fname.index('.');
+    int32_t j = fname.index('.');
     String libname;
-    if (j > 0  &&  j < Int(fname.size())-1) {
+    if (j > 0  &&  j < int32_t(fname.size())-1) {
       libname = fname.substr(0,j);
     } else {
       throw TableInvExpr("UDF " + name + " has an invalid name (no dot)");
@@ -202,9 +202,9 @@ namespace casacore {
     String sfname(fname);
     // Split name in library and function name.
     // Require that a . is found and is not the first or last character.
-    Int j = fname.index('.');
+    int32_t j = fname.index('.');
     String libname;
-    if (j > 0  &&  j < Int(fname.size())-1) {
+    if (j > 0  &&  j < int32_t(fname.size())-1) {
       // Replace a possible synonym for the library name.
       libname = fname.substr(0,j);
       libname = style.findSynonym (libname);
@@ -221,7 +221,7 @@ namespace casacore {
       if (iter == theirRegistry.end()) {
         // Try to load the dynamic library.
         DynLib dl(libname, string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
-                  "register_"+libname, False);
+                  "register_"+libname, false);
         if (dl.getHandle()) {
           // Add to map to indicate library has been loaded.
           theirRegistry[libname] = 0;

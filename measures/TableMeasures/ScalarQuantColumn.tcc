@@ -45,7 +45,7 @@ template<class T>
 ScalarQuantColumn<T>::ScalarQuantColumn()
 : itsDataCol (0),
   itsUnitsCol(0),
-  itsConvOut (False)
+  itsConvOut (false)
 {}
 
 template<class T>
@@ -53,7 +53,7 @@ ScalarQuantColumn<T>::ScalarQuantColumn (const Table& tab,
                                          const String& columnName)
 : itsDataCol (0),
   itsUnitsCol(0),
-  itsConvOut (False)
+  itsConvOut (false)
 {
   init (tab, columnName);
   itsUnitOut = itsUnit;
@@ -247,7 +247,7 @@ std::shared_ptr<Quantum<Vector<T> > > ScalarQuantColumn<T>::getColumn(const Unit
         Vector<T>& val = qv->getValue();
         itsDataCol->getColumn(val);
         Quantum<T> q;
-        for (uInt i = 0; i < val.size(); ++i) {
+        for (uint32_t i = 0; i < val.size(); ++i) {
             get(i, q, unitOut);
             val[i] = q.getValue();
         }

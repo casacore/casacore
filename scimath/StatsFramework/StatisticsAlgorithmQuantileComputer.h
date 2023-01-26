@@ -38,7 +38,7 @@ namespace casacore {
 // classes. See the documentation of StatisticsAlgorithm for more details.
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class AccumType, class DataIterator, class MaskIterator=const bool *,
     class WeightsIterator=DataIterator
 >
 class StatisticsAlgorithmQuantileComputer {

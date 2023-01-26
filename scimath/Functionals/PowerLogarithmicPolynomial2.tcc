@@ -38,7 +38,7 @@ template<class T>
 AutoDiff<T> PowerLogarithmicPolynomial<AutoDiff<T> >::
 eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 	AutoDiff<T> tmp;
-	for (uInt i=0; i<this->nparameters(); ++i) {
+	for (uint32_t i=0; i<this->nparameters(); ++i) {
 		if (this->param_p[i].nDerivatives() > 0) {
 			tmp = this->param_p[i];
 			break;
@@ -46,7 +46,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 	}
 	// function value
 	T lnx = log(x[0]);
-	Int j = nparameters();
+	int32_t j = nparameters();
 	T accum = this->param_p[--j].value();
 	while (--j >= 1) {
 		accum *= lnx;
@@ -56,12 +56,12 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 	tmp.value() = value;
 	// get derivatives
 
-	Double prod = value;
+	double prod = value;
 	if (tmp.nDerivatives() > 0) {
-		for (uInt j=0; j<tmp.nDerivatives(); j++) {
+		for (uint32_t j=0; j<tmp.nDerivatives(); j++) {
 			tmp.deriv(j) = 0.0;
 		}
-		for (uInt i=0; i<this->nparameters(); ++i) {
+		for (uint32_t i=0; i<this->nparameters(); ++i) {
 			if (i == 0 && this->param_p.mask(0)) {
 				tmp.deriv(0) = value/this->param_p[0].value();
 			}

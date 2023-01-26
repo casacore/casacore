@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 MSMIndColumn::MSMIndColumn (MSMBase* smptr, int dataType)
-: MSMColumn (smptr, dataType, True)
+: MSMColumn (smptr, dataType, true)
 {}
 
 //# Delete all objects created.
@@ -90,24 +90,24 @@ MSMIndColumn::Data* MSMIndColumn::getShape (rownr_t rownr)
   return static_cast<Data*>(ptr);
 }
 
-Bool MSMIndColumn::isShapeDefined (rownr_t rownr)
-  { return (getArrayPtr(rownr) == 0  ?  False : True); }
+bool MSMIndColumn::isShapeDefined (rownr_t rownr)
+  { return (getArrayPtr(rownr) == 0  ?  false : true); }
 
-uInt MSMIndColumn::ndim (rownr_t rownr)
+uint32_t MSMIndColumn::ndim (rownr_t rownr)
   { return getShape(rownr)->shape().nelements(); }
 
 IPosition MSMIndColumn::shape (rownr_t rownr)
   { return getShape(rownr)->shape(); }
 
-Bool MSMIndColumn::canChangeShape() const
-  { return True; }
+bool MSMIndColumn::canChangeShape() const
+  { return true; }
 
 
 void MSMIndColumn::getArrayV (rownr_t rownr, ArrayBase& arr)
 {
   Data* data = getShape(rownr);   //# also checks if row contains data
   DebugAssert (data->shape().isEqual (arr.shape()), AipsError);
-  Bool deleteIt;
+  bool deleteIt;
   void* arrData = arr.getVStorage (deleteIt);
   if (dtype() == TpString) {
     objcopy (static_cast<String*>(arrData),
@@ -125,7 +125,7 @@ void MSMIndColumn::putArrayV (rownr_t rownr, const ArrayBase& arr)
 {
   Data* data = getShape(rownr);   //# also checks if row contains data
   DebugAssert (shape(rownr).isEqual (arr.shape()), AipsError);
-  Bool deleteIt;
+  bool deleteIt;
   const void* arrData = arr.getVStorage (deleteIt);
   if (dtype() == TpString) {
     objcopy (static_cast<String*>(data->data()),
@@ -149,52 +149,52 @@ void MSMIndColumn::getSliceV (rownr_t rownr, const Slicer& ns,
   ns.inferShapeFromSource (shp, blc, trc, inc);
   switch (dtype()) {
   case TpBool:
-    arr.assignBase (Array<Bool>(shp, static_cast<Bool*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+    arr.assignBase (Array<bool>(shp, static_cast<bool*>(data->data()), SHARE)
+                    (blc, trc, inc), false);
     break;
   case TpUChar:
-    arr.assignBase (Array<uChar>(shp, static_cast<uChar*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+    arr.assignBase (Array<unsigned char>(shp, static_cast<unsigned char*>(data->data()), SHARE)
+                    (blc, trc, inc), false);
     break;
   case TpShort:
     arr.assignBase (Array<short>(shp, static_cast<short*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+                    (blc, trc, inc), false);
     break;
   case TpUShort:
-    arr.assignBase (Array<uShort>(shp, static_cast<uShort*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+    arr.assignBase (Array<uint16_t>(shp, static_cast<uint16_t*>(data->data()), SHARE)
+                    (blc, trc, inc), false);
     break;
   case TpInt:
-    arr.assignBase (Array<Int>(shp, static_cast<Int*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+    arr.assignBase (Array<int32_t>(shp, static_cast<int32_t*>(data->data()), SHARE)
+                    (blc, trc, inc), false);
     break;
   case TpUInt:
-    arr.assignBase (Array<uInt>(shp, static_cast<uInt*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+    arr.assignBase (Array<uint32_t>(shp, static_cast<uint32_t*>(data->data()), SHARE)
+                    (blc, trc, inc), false);
     break;
   case TpInt64:
-    arr.assignBase (Array<Int64>(shp, static_cast<Int64*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+    arr.assignBase (Array<int64_t>(shp, static_cast<int64_t*>(data->data()), SHARE)
+                    (blc, trc, inc), false);
     break;
   case TpFloat:
     arr.assignBase (Array<float>(shp, static_cast<float*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+                    (blc, trc, inc), false);
     break;
   case TpDouble:
     arr.assignBase (Array<double>(shp, static_cast<double*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+                    (blc, trc, inc), false);
     break;
   case TpComplex:
     arr.assignBase (Array<Complex>(shp, static_cast<Complex*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+                    (blc, trc, inc), false);
     break;
   case TpDComplex:
     arr.assignBase (Array<DComplex>(shp, static_cast<DComplex*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+                    (blc, trc, inc), false);
     break;
   case TpString:
     arr.assignBase (Array<String>(shp, static_cast<String*>(data->data()), SHARE)
-                    (blc, trc, inc), False);
+                    (blc, trc, inc), false);
     break;
   default:
     throw DataManInvDT ("MSMIndColumn::getSliceV");
@@ -210,52 +210,52 @@ void MSMIndColumn::putSliceV (rownr_t rownr, const Slicer& ns,
   ns.inferShapeFromSource (shp, blc, trc, inc);
   switch (dtype()) {
   case TpBool:
-    Array<Bool>(shp, static_cast<Bool*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<bool>(shp, static_cast<bool*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpUChar:
-    Array<uChar>(shp, static_cast<uChar*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<unsigned char>(shp, static_cast<unsigned char*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpShort:
-    Array<Short>(shp, static_cast<Short*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<int16_t>(shp, static_cast<int16_t*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpUShort:
-    Array<uShort>(shp, static_cast<uShort*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<uint16_t>(shp, static_cast<uint16_t*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpInt:
-    Array<Int>(shp, static_cast<Int*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<int32_t>(shp, static_cast<int32_t*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpUInt:
-    Array<uInt>(shp, static_cast<uInt*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<uint32_t>(shp, static_cast<uint32_t*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpInt64:
-    Array<Int64>(shp, static_cast<Int64*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+    Array<int64_t>(shp, static_cast<int64_t*>(data->data()), SHARE)
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpFloat:
     Array<float>(shp, static_cast<float*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpDouble:
     Array<double>(shp, static_cast<double*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpComplex:
     Array<Complex>(shp, static_cast<Complex*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpDComplex:
     Array<DComplex>(shp, static_cast<DComplex*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+      (blc, trc, inc).assignBase (arr, false);
     break;
   case TpString:
     Array<String>(shp, static_cast<String*>(data->data()), SHARE)
-      (blc, trc, inc).assignBase (arr, False);
+      (blc, trc, inc).assignBase (arr, false);
     break;
   default:
     throw DataManInvDT ("MSMIndColumn::putSliceV");
@@ -287,7 +287,7 @@ void MSMIndColumn::deleteArray (rownr_t rownr)
 : shape_p (shape),
   data_p  (0)
 {
-  Int64 nelem = shape.product();
+  int64_t nelem = shape.product();
   if (dtype == TpString) {
     data_p = new String[nelem];
   } else {

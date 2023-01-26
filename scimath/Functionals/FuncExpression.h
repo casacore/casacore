@@ -97,21 +97,21 @@ class FuncExpression {
 
   //# Member functions
   // Create an executable program
-  Bool create(const String &prog);
+  bool create(const String &prog);
   // Get the current error message
   const String &errorMessage() { return error_p; }
   // Get the executable program
   const vector<FuncExprData::ExprOperator> &getCode() const;
   // Get the number of parameters in executable program
-  uInt getNpar() const { return npar_p; }
+  uint32_t getNpar() const { return npar_p; }
   // Get the number of dimensions of executable program
-  uInt getNdim() const {return ndim_p; }
+  uint32_t getNdim() const {return ndim_p; }
   // Get reference to the compiled program
   const vector<FuncExprData::ExprOperator> &getCode() { return code_p; }
   // Get reference to compiled constants
-  const vector<Double> &getConst() { return const_p; }
+  const vector<double> &getConst() { return const_p; }
   // Execute the program
-  Bool exec(Double &res) const;
+  bool exec(double &res) const;
   // Print the stack information (mainly for debugging)
   void print(ostream &os) const;
 
@@ -128,27 +128,27 @@ class FuncExpression {
   // The current state of the compilation
   FuncExprData::ExprCompState state_p;
   // The current constant stack
-  vector<Double> const_p;
+  vector<double> const_p;
   // The number of parameters in code
-  uInt npar_p;
+  uint32_t npar_p;
   // The number of dimensions of expression
-  uInt ndim_p;
+  uint32_t ndim_p;
   // Executing stack
-  mutable vector<Double> exec_p;
+  mutable vector<double> exec_p;
 
   //# Member functions
   // Compile a statement (in prg, which will be adjusted)
-  Bool compStmt(MUString &prg);
+  bool compStmt(MUString &prg);
   // Compile an expression (in prg, which will be adjusted)
-  Bool compExpr(MUString &prg);
+  bool compExpr(MUString &prg);
   // Compile a term (in prg, which will be adjusted)
-  Bool compTerm(MUString &prg);
+  bool compTerm(MUString &prg);
   // Save an operation on compilation RP stack.
-  Bool setOp(FuncExprData::ExprOperator &oper);
+  bool setOp(FuncExprData::ExprOperator &oper);
   // Save a value on constant stack.
-  Bool setVal(const Double &val);
+  bool setVal(const double &val);
   // Save an executable code
-  Bool setCode(const FuncExprData::ExprOperator &oper);
+  bool setCode(const FuncExprData::ExprOperator &oper);
   // Initialise the state
   void initState();
 };

@@ -81,25 +81,25 @@ template <class T> class MaskedLattice;
 // <example>
 // <srcblock>
 //      IPosition shape(2, 10, 20);
-//      PagedImage<Float> im1(shape, CoordinateUtil::defaultCoords2D(),
+//      PagedImage<float> im1(shape, CoordinateUtil::defaultCoords2D(),
 //                            "tImageConcat_tmp1.img");
 //      im1.set(1.0);
-//      PagedImage<Float> im2(shape, CoordinateUtil::defaultCoords2D(),
+//      PagedImage<float> im2(shape, CoordinateUtil::defaultCoords2D(),
 //                            "tImageConcat_tmp2.img");
 //      im2.set(2.0);
 //
 //// Make concatenator for axis 0
 //
-//      ImageConcat<Float> concat(0);
+//      ImageConcat<float> concat(0);
 //
 //// Relax coordinate constraints
 //
-//      concat.setImage(im1, True);
-//      concat.setImage(im2, True);
+//      concat.setImage(im1, true);
+//      concat.setImage(im2, true);
 //
 //// Make output image  and mask (if required, which it will be in this case)
 //
-//      PagedImage<Float> im3(concat.shape(), CoordinateUtil::defaultCoords2D(),
+//      PagedImage<float> im3(concat.shape(), CoordinateUtil::defaultCoords2D(),
 //                            "tImageConcat_tmp3.img");
 //
 //// Copy to output
@@ -126,8 +126,8 @@ template <class T> class ImageConcat : public ImageInterface<T>
 public:
 
 // Constructor. Specify the pixel axis for concatenation
-  explicit ImageConcat (uInt axis, Bool tempClose=True,
-                        Bool combineMiscInfo=True);
+  explicit ImageConcat (uint32_t axis, bool tempClose=true,
+                        bool combineMiscInfo=true);
 
 // Construct the object from a Json file with the given name.
 // This constructor is usually called by ImageOpener::openImageConcat.
@@ -155,26 +155,26 @@ public:
 
 // Replace the miscinfo in the ConcatImage, which writes the image.concat file.
 // It can fail if, e.g., the directory to write to is not writable.
-   virtual Bool setMiscInfo (const RecordInterface& newInfo);
+   virtual bool setMiscInfo (const RecordInterface& newInfo);
 
   // Set the ImageInfo in the super class ImageInterface and in each
   // underlying image. If needed, its restoring beam is split along the
   // frequency or polarisation axis and set in each underlying image.
-  virtual Bool setImageInfo(const ImageInfo& info);
+  virtual bool setImageInfo(const ImageInfo& info);
 
 // Get the image type (returns name of derived class).
    virtual String imageType() const;
 
 // Is the lattice persistent and can it be loaded by other processes as well?
-   virtual Bool isPersistent() const;
+   virtual bool isPersistent() const;
 
 // Sets a new image into the list to be concatenated.  
-// If relax is False, throws an exception if the images
+// If relax is false, throws an exception if the images
 // are not contiguous along the concatenation axis.
-// If relax is True, it will create a non-regular TabularCoordinate
+// If relax is true, it will create a non-regular TabularCoordinate
 // for non-contiguous images if the coordinates are monotonic.
 // Otherwise, it just uses the coordinates of the image
-   void setImage (ImageInterface<T>& image, Bool relax);
+   void setImage (ImageInterface<T>& image, bool relax);
 
 // Add a clone of the lattice to the list to be concatenated.  
 // You can only concatenate a lattice with an image if
@@ -183,27 +183,27 @@ public:
    void setLattice (MaskedLattice<T>& lattice);
 
 // Return the number of images/lattices set so far
-   uInt nimages() const
+   uint32_t nimages() const
      { return latticeConcat_p.nlattices(); }
 
 // Returns the current concatenation axis (0 relative)
-   uInt axis () const
+   uint32_t axis () const
      { return latticeConcat_p.axis(); }
 
 // Returns the number of dimensions of the *input* images/lattices
 // Returns 0 if none yet set. 
-   uInt imageDim() const
+   uint32_t imageDim() const
      { return latticeConcat_p.latticeDim(); }
 
 // Return a reference to the i-th image.
-  ImageInterface<T>& image(uInt i) const
+  ImageInterface<T>& image(uint32_t i) const
     { return dynamic_cast<ImageInterface<T>&>(*(latticeConcat_p.lattice(i))); }
 
 // Handle the (un)locking and syncing, etc.
 // <group>
-   virtual Bool lock (FileLocker::LockType, uInt nattempts);
+   virtual bool lock (FileLocker::LockType, uint32_t nattempts);
    virtual void unlock();
-   virtual Bool hasLock (FileLocker::LockType) const;
+   virtual bool hasLock (FileLocker::LockType) const;
    virtual void resync();
    virtual void flush();
    virtual void tempClose();
@@ -213,26 +213,26 @@ public:
 // Return the name of the current ImageInterface object.
 // If the object is persistent, it returns its file name.
 // Otherwise it returns the string "Concatenation :"
-   virtual String name (Bool stripPath=False) const;
+   virtual String name (bool stripPath=false) const;
 
 // Has the object really a mask?
-   virtual Bool isMasked() const;
+   virtual bool isMasked() const;
 
 // Does the image have a pixelmask?
-   virtual Bool hasPixelMask() const;
+   virtual bool hasPixelMask() const;
 
 // Get access to the pixelmask.
 // An exception is thrown if the image does not have a pixelmask
 // <group>
-   virtual const Lattice<Bool>& pixelMask() const;
-   virtual Lattice<Bool>& pixelMask();
+   virtual const Lattice<bool>& pixelMask() const;
+   virtual Lattice<bool>& pixelMask();
   // </group>
   
 // Get the region used (always returns 0)
    virtual const LatticeRegion* getRegionPtr() const;
 
-// If all of the underlying lattices are writable returns True
-   virtual Bool isWritable() const;
+// If all of the underlying lattices are writable returns true
+   virtual bool isWritable() const;
    
 // Return the shape of the concatenated image
    virtual IPosition shape() const;
@@ -242,17 +242,17 @@ public:
 //smallest constituent image along the non-direction axes (in order to minimize 
 //bouncing from one image to another while iterating which may involve lots of 
 //open and tempclose).  
-   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+   virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
 // Do the actual get of the data.
-// The return value is always False, thus the buffer does not reference
+// The return value is always false, thus the buffer does not reference
 // another array.  Generally the user should use function getSlice
-   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+   virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
    
 // Do the actual get of the mask data.
-// The return value is always False, thus the buffer does not reference
+// The return value is always false, thus the buffer does not reference
 // another array. Generally the user should use function getMaskSlice
-   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+   virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
 // Do the actual put of the data into the Lattice.  This will change the
 // underlying images (if they are writable) that were used to create the
@@ -266,42 +266,42 @@ public:
    virtual void resize(const TiledShape&);
 
 // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
   
 // These are the implementations of the LatticeIterator letters.
 // <note> not for public use </note>
   virtual LatticeIterInterface<T> *makeIter
                                (const LatticeNavigator &navigator,
-				Bool useRef) const;
+				bool useRef) const;
 
 
 private:
    LatticeConcat<T> latticeConcat_p;
-   Bool combineMiscInfo_p;
-   Bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
-   Bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
-   Bool isContig_p;
+   bool combineMiscInfo_p;
+   bool warnAxisNames_p, warnAxisUnits_p, warnImageUnits_p;
+   bool warnContig_p, warnRefPix_p, warnRefVal_p, warnInc_p, warnTab_p;
+   bool isContig_p;
    mutable String fileName_p;     // Empty if not persistent
-   Vector<Bool> isImage_p;
-   Vector<Double> pixelValues_p;
-   Vector<Double> worldValues_p;
+   Vector<bool> isImage_p;
+   Vector<double> pixelValues_p;
+   Vector<double> worldValues_p;
    Coordinate::Type originalAxisType_p;
 
-   Double coordConvert(Int& worldAxis, LogIO& os,
+   double coordConvert(int32_t& worldAxis, LogIO& os,
                        const CoordinateSystem& cSys,
-                       uInt axis, Double pixelCoord) const;
+                       uint32_t axis, double pixelCoord) const;
 
    void _checkContiguous(const IPosition& shape1,
                             const CoordinateSystem& cSys1,
                             const CoordinateSystem& cSys2,
-                            LogIO& os, uInt axis, Bool relax);
+                            LogIO& os, uint32_t axis, bool relax);
 
    void checkNonConcatAxisCoordinates (LogIO& os,
                                        const ImageInterface<T>& image,
-                                       Bool relax);
+                                       bool relax);
 
-   Vector<Int> makeNewStokes(const Vector<Int>& stokes1,
-                             const Vector<Int>& stokes2);
+   Vector<int32_t> makeNewStokes(const Vector<int32_t>& stokes1,
+                             const Vector<int32_t>& stokes2);
 
    // Updates the CoordinateSystem in the ImageConcat image. The first lattice must
    // be an image.  The first lattice is contiguous by definition.  The Coordinate
@@ -309,7 +309,7 @@ private:
    // the first image, this function just sets up worldValues and pixelValues
    void setCoordinates();
 
-   void _updatePixelAndWorldValues(uInt iIm);
+   void _updatePixelAndWorldValues(uint32_t iIm);
 
   //# Make members of parent class known.
 public:

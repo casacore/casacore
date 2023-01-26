@@ -55,13 +55,13 @@ template <class T> class Quantum;
 // </etymology>
 //
 // <synopsis>
-// An MVRadialVelocity is a simple Double, to be used in the MRadialVelocity 
+// An MVRadialVelocity is a simple double, to be used in the MRadialVelocity 
 // measure.
 // Requirements can be found in the 
 // <linkto class=MeasValue>MeasValue</linkto> base class.<br>
 // The only reasonable constructor is (but all MeasValue constructors are
 // present)
-// <src>MVRadialVelocity(Double)</src>; and an <src>operator Double</src> takes
+// <src>MVRadialVelocity(double)</src>; and an <src>operator double</src> takes
 // care of all other possibilities. Its external use is for
 //  <linkto class=MeasConvert>MeasConvert</linkto>, to distinguish between
 // input in internal Measure units, and values which have to have
@@ -99,12 +99,12 @@ public:
   MVRadialVelocity(const MVRadialVelocity &other);
   // Copy assignment
   MVRadialVelocity &operator=(const MVRadialVelocity &other);
-  // Constructor from Double (assume m/s)
-  MVRadialVelocity(Double d);
+  // Constructor from double (assume m/s)
+  MVRadialVelocity(double d);
   // Constructor from Quantum
   // <group>
   MVRadialVelocity(const Quantity &other);
-  MVRadialVelocity(const Quantum<Vector<Double> > &other);
+  MVRadialVelocity(const Quantum<Vector<double> > &other);
   // </group>
   // Constructor from Vector. A zero value will be taken for an empty vector,
   // the first element for a quantum vector.
@@ -112,7 +112,7 @@ public:
   //  <li> AipsError if vector length > 1
   // </thrown>
   // <group>
-  MVRadialVelocity(const Vector<Double> &other);
+  MVRadialVelocity(const Vector<double> &other);
   MVRadialVelocity(const Vector<Quantity> &other);
   // </group>
   
@@ -121,7 +121,7 @@ public:
   
   //# Operators
   // Conversion operator
-  operator Double() const;
+  operator double() const;
   
   // Addition
   // <group>
@@ -130,10 +130,10 @@ public:
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVRadialVelocity &other) const;
-  Bool operator!=(const MVRadialVelocity &other) const;
-  Bool near(const MVRadialVelocity &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVRadialVelocity &other, Double tol = 1e-13) const;
+  bool operator==(const MVRadialVelocity &other) const;
+  bool operator!=(const MVRadialVelocity &other) const;
+  bool near(const MVRadialVelocity &other, double tol = 1e-13) const;
+  bool nearAbs(const MVRadialVelocity &other, double tol = 1e-13) const;
   // </group>
   
   //# General member functions
@@ -149,40 +149,40 @@ public:
   virtual MeasValue *clone() const;
   // Adjust value: taken from base class, a NOP.
   // Get value in m/s
-  Double getValue() const;
+  double getValue() const;
   // Get quantity in m/s
   Quantity get() const;
   // Get the wave characteristics in (recognised) specified units
   Quantity get(const Unit &unit) const;
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<double> > getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
   // Shift the input frequencies to the output frequencies. In the case of
-  // simple Double inputs, it is assumed that the values are linearly dependent
+  // simple double inputs, it is assumed that the values are linearly dependent
   // on frequency. I.e. frequencies given as wavelength or time cannot be used.
   // <group>
-  Vector<Double> shiftFrequency(const Vector<Double> &freq) const;
-  Quantum<Vector<Double> >
-    shiftFrequency(const Quantum<Vector<Double> > &freq) const;
+  Vector<double> shiftFrequency(const Vector<double> &freq) const;
+  Quantum<Vector<double> >
+    shiftFrequency(const Quantum<Vector<double> > &freq) const;
   // </group>
   
 private:
   //# Data
   // Value
-  Double val;
+  double val;
   
   //# Member functions
   // Get correct data type conversion factor from input Quantum
-  Double makeF(const Unit &dt) const;
+  double makeF(const Unit &dt) const;
 };
 
 

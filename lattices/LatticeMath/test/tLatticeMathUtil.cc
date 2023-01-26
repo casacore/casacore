@@ -74,7 +74,7 @@ int main()
 void doMinMax()
 {
     cerr << "minMax " << endl;
-    TempLattice<Float> lat(IPosition(3,512,512,10), 1.0);
+    TempLattice<float> lat(IPosition(3,512,512,10), 1.0);
     lat.set(0.0);
     lat.putAt( 1.0, IPosition(3, 10, 10, 0) );
     lat.putAt( -1.0, IPosition(3, 20, 20, 2) );
@@ -85,7 +85,7 @@ void doMinMax()
     lat.putAt( 3.0, IPosition(3, 400, 100, 7) );
     lat.putAt( -3.0, IPosition(3, 500, 100, 8) );
 
-    Float lmin, lmax;
+    float lmin, lmax;
     IPosition lminPos(3, 0);
     IPosition lmaxPos(3, 0);
 
@@ -102,53 +102,53 @@ void doCollapse ()
 {
     cerr << "Collapse" << endl;
     IPosition shape(3, 10, 20, 30);
-    ArrayLattice<Float> latIn(shape);
+    ArrayLattice<float> latIn(shape);
     latIn.set(1.0);
-    Array<Float> data;
-    Array<Bool> mask;
+    Array<float> data;
+    Array<bool> mask;
     IPosition axes(2); axes(0) = 1; axes(1) = 2;
 
 // Unmasked input
 
     {       
        cerr << "  Unmasked" << endl;
-       SubLattice<Float> mLatIn(latIn);
+       SubLattice<float> mLatIn(latIn);
 //
-       LatticeMathUtil::collapse (data, axes, mLatIn, True);
+       LatticeMathUtil::collapse (data, axes, mLatIn, true);
        AlwaysAssert(data.ndim()==1, AipsError);       
        AlwaysAssert(data.shape()(0)==shape(0), AipsError);
-       AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
+       AlwaysAssert(allNear(data, float(1.0), 1.0e-6), AipsError);
 //
-       LatticeMathUtil::collapse (data, mask, axes, mLatIn, True, True, True);
+       LatticeMathUtil::collapse (data, mask, axes, mLatIn, true, true, true);
        AlwaysAssert(data.ndim()==1, AipsError);       
        AlwaysAssert(mask.ndim()==1, AipsError);
        AlwaysAssert(data.shape()(0)==shape(0), AipsError);
        AlwaysAssert(mask.shape()(0)==shape(0), AipsError);
-       AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
-       AlwaysAssert(allEQ(mask, True), AipsError);
+       AlwaysAssert(allNear(data, float(1.0), 1.0e-6), AipsError);
+       AlwaysAssert(allEQ(mask, true), AipsError);
     }
 
 // Masked Input
 
     {       
        cerr << "  Masked" << endl;
-       SubLattice<Float> mLatIn(latIn);
+       SubLattice<float> mLatIn(latIn);
 //
-       ArrayLattice<Bool> maskLat(shape);
-       maskLat.set(True);       
-       mLatIn.setPixelMask(maskLat, True);
+       ArrayLattice<bool> maskLat(shape);
+       maskLat.set(true);       
+       mLatIn.setPixelMask(maskLat, true);
 //
-       LatticeMathUtil::collapse (data, axes, mLatIn, True);
+       LatticeMathUtil::collapse (data, axes, mLatIn, true);
        AlwaysAssert(data.ndim()==1, AipsError);       
        AlwaysAssert(data.shape()(0)==shape(0), AipsError);
-       AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
+       AlwaysAssert(allNear(data, float(1.0), 1.0e-6), AipsError);
 //
-       LatticeMathUtil::collapse (data, mask, axes, mLatIn, True, True, True);
+       LatticeMathUtil::collapse (data, mask, axes, mLatIn, true, true, true);
        AlwaysAssert(data.ndim()==1, AipsError);       
        AlwaysAssert(mask.ndim()==1, AipsError);
        AlwaysAssert(data.shape()(0)==shape(0), AipsError);
        AlwaysAssert(mask.shape()(0)==shape(0), AipsError);
-       AlwaysAssert(allNear(data, Float(1.0), 1.0e-6), AipsError);
-       AlwaysAssert(allEQ(mask, True), AipsError);
+       AlwaysAssert(allNear(data, float(1.0), 1.0e-6), AipsError);
+       AlwaysAssert(allEQ(mask, true), AipsError);
     }
 }

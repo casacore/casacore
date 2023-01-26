@@ -34,109 +34,109 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T>
-Bool Interpolate2D::interpNearest(T &result, 
-				  const Vector<Double> &where,
+bool Interpolate2D::interpNearest(T &result, 
+				  const Vector<double> &where,
 				  const Matrix<T> &data,
-				  const Matrix<Bool>* &maskPtr) const {
+				  const Matrix<bool>* &maskPtr) const {
   // definition of the 'neighborhood' of outer edge data elements.
-  static const Double half= .5001;
+  static const double half= .5001;
 
   const IPosition &shape = data.shape();
 
-  Double imax = shape(0) - 1.;
-  Double wi = where[0];
-  if(wi < 0. - half || wi > imax + half || imax < 0) return False;
+  double imax = shape(0) - 1.;
+  double wi = where[0];
+  if(wi < 0. - half || wi > imax + half || imax < 0) return false;
 
-  Double jmax = shape(1) - 1.;
-  Double wj = where[1];
-  if(wj < 0 - half || wj > jmax + half || jmax < 0) return False;
+  double jmax = shape(1) - 1.;
+  double wj = where[1];
+  if(wj < 0 - half || wj > jmax + half || jmax < 0) return false;
 
-  uInt i = (wi <= 0.)?		0
-	 : (wi >= imax)?	uInt(imax)
-	 :			uInt(wi + .5);
+  uint32_t i = (wi <= 0.)?		0
+	 : (wi >= imax)?	uint32_t(imax)
+	 :			uint32_t(wi + .5);
       
-  uInt j = (wj <= 0.)?		0
-	 : (wj >= jmax)?	uInt(jmax)
-	 :			uInt(wj + .5);
+  uint32_t j = (wj <= 0.)?		0
+	 : (wj >= jmax)?	uint32_t(jmax)
+	 :			uint32_t(wj + .5);
       
-  Bool dataValid = !maskPtr || (*maskPtr)(i,j);
+  bool dataValid = !maskPtr || (*maskPtr)(i,j);
   if (dataValid) result = data(i,j);
   return dataValid;
 }
 
 template <typename T>
-Bool Interpolate2D::interpLinear(T &result, 
-				 const Vector<Double> &where, 
+bool Interpolate2D::interpLinear(T &result, 
+				 const Vector<double> &where, 
 				 const Matrix<T> &data,
-				 const Matrix<Bool>* &maskPtr) const {
+				 const Matrix<bool>* &maskPtr) const {
   const IPosition &shape = data.shape();
 
   // We find 4 points surrounding the one of interest.
-  // Negatives will give big positive value for the uInt 
+  // Negatives will give big positive value for the uint32_t 
   // and these will fail the  shape test below.
   // Make sure we don't access i+1 or j+1 because the 
   // big positive plus 1 may become 0 and then we will spuriously
   // pass the shape test
-  uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
-  uInt j = Int(where[1]);
-  uInt si = uInt(shape(0)-1);
-  uInt sj = uInt(shape(1)-1);
+  uint32_t i = int32_t(where[0]);               // Assuming int32_t does (1.2 -> 1)
+  uint32_t j = int32_t(where[1]);
+  uint32_t si = uint32_t(shape(0)-1);
+  uint32_t sj = uint32_t(shape(1)-1);
 
   // Handle edge. Just move start left/down by one,
   if (i==si) --i;
   if (j==sj) --j;
 
   // 2x2 starting from [i,j]
-  // mask==True is a good pixel
+  // mask==true is a good pixel
   if (i < si && j < sj) {                   
     if (maskPtr) {
       if (!(*maskPtr)(i,j) || !(*maskPtr)(i+1,j) ||
-	  !(*maskPtr)(i,j+1) || !(*maskPtr)(i+1,j+1)) return False;
+	  !(*maskPtr)(i,j+1) || !(*maskPtr)(i+1,j+1)) return false;
     }
-    Double TT = where[0] - i;
-    Double UU = where[1] - j;
+    double TT = where[0] - i;
+    double UU = where[1] - j;
     result = (1.0-TT)*(1.0-UU)*data(i,j) +
       TT*(1.0-UU)*data(i+1,j) +
       TT*UU*data(i+1,j+1) +
       (1.0-TT)*UU*data(i,j+1);
-    return True;
-  } else return False;
+    return true;
+  } else return false;
 }
 
 template <typename T>
-Bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, 
-				  const Vector<Double> &where, 
+bool Interpolate2D::interpLinear2(T &resultI, T &resultJ, 
+				  const Vector<double> &where, 
 				  const Matrix<T> &dataI,
 				  const Matrix<T> &dataJ,
-				  const Matrix<Bool> &mask) const {
+				  const Matrix<bool> &mask) const {
   const IPosition &shape = mask.shape();
 
   // We find 4 points surrounding the one of interest.
-  // Negatives will give big positive value for the uInt 
+  // Negatives will give big positive value for the uint32_t 
   // and these will fail the  shape test below.
   // Make sure we don't access i+1 or j+1 because the 
   // big positive plus 1 may become 0 and then we will spuriously
   // pass the shape test
 
-  uInt i = Int(where[0]);               // Assuming Int does (1.2 -> 1)
-  uInt j = Int(where[1]);
-  uInt si = uInt(shape[0]-1);
-  uInt sj = uInt(shape[1]-1);
+  uint32_t i = int32_t(where[0]);               // Assuming int32_t does (1.2 -> 1)
+  uint32_t j = int32_t(where[1]);
+  uint32_t si = uint32_t(shape[0]-1);
+  uint32_t sj = uint32_t(shape[1]-1);
   // Handle edge. Just move start left/down by one,
   if (i==si) --i;
   if (j==sj) --j;
   // 2x2 starting from [i,j]
-  // mask==True is a good pixel
+  // mask==true is a good pixel
   if (i < si && j < sj) {
-    uInt k0 = dataI.steps()[0];
-    uInt k1 = dataI.steps()[1];
-    const Bool *m = &mask(i,j);
-    if ( !*m || !*(m+k0) || !*(m+k1) || !*(m+k0+k1)) return False;
-    Double TT = where[0] - i;
-    Double UU = where[1] - j;
-    Double x1 = (1.0-TT);
-    Double y1 = (1.0-UU);
-    Double x = x1*y1;
+    uint32_t k0 = dataI.steps()[0];
+    uint32_t k1 = dataI.steps()[1];
+    const bool *m = &mask(i,j);
+    if ( !*m || !*(m+k0) || !*(m+k1) || !*(m+k0+k1)) return false;
+    double TT = where[0] - i;
+    double UU = where[1] - j;
+    double x1 = (1.0-TT);
+    double y1 = (1.0-UU);
+    double x = x1*y1;
     const T *dI = &dataI(i,j);
     const T *dJ = &dataJ(i,j);
     resultI = x * *dI;
@@ -150,15 +150,15 @@ Bool Interpolate2D::interpLinear2(T &resultI, T &resultJ,
     x = x1*UU;;;
     resultI += x * *(dI+k1);
     resultJ += x * *(dJ+k1);
-    return True;
-  } else return False;
+    return true;
+  } else return false;
 }
 
 template <typename T>
-Bool Interpolate2D::interpCubic(T &result, 
-				const Vector<Double> &where, 
+bool Interpolate2D::interpCubic(T &result, 
+				const Vector<double> &where, 
 				const Matrix<T> &data,
-				const Matrix<Bool>* &maskPtr) const {
+				const Matrix<bool>* &maskPtr) const {
   //
   // bi-cubic interpolation
   //
@@ -175,8 +175,8 @@ Bool Interpolate2D::interpCubic(T &result,
    // we use points in a 4 x 4 grid in total (to get derivatives)
    // [i-1,j-1] -> [i+2,j+2]
    
-   Int i = Int(where[0]);
-   Int j = Int(where[1]);
+   int32_t i = int32_t(where[0]);
+   int32_t j = int32_t(where[1]);
    
    // Handle edge (and beyond) by using linear.
    
@@ -186,18 +186,18 @@ Bool Interpolate2D::interpCubic(T &result,
    
    // Handle mask
    
-   if (anyBadMaskPixels(maskPtr, i-1, i+2, j-1, j+2)) return False;
+   if (anyBadMaskPixels(maskPtr, i-1, i+2, j-1, j+2)) return false;
    
    // Do it
    
-   Double TT = where[0] - i;
-   Double UU = where[1] - j;
+   double TT = where[0] - i;
+   double UU = where[1] - j;
    
-   Double itsY[4];
-   Double itsY1[4];
-   Double itsY2[4];
-   Double itsY12[4];
-   Double itsC[4][4];
+   double itsY[4];
+   double itsY1[4];
+   double itsY2[4];
+   double itsY12[4];
+   double itsC[4][4];
    //
    // define values of function and its derivatives on the
    // square of points bounding "where"
@@ -231,7 +231,7 @@ Bool Interpolate2D::interpCubic(T &result,
      data(i, j+2) - data(i+2, j);
    itsY12[3] =  data(i+1, j+2) + data(i-1, j) - 
      data(i-1, j+2) - data(i+1, j);
-   for (uInt i=0; i<4; ++i) {
+   for (uint32_t i=0; i<4; ++i) {
      itsY1[i]  /= 2.0;
      itsY2[i]  /= 2.0;
      itsY12[i] /= 4.0;
@@ -241,34 +241,34 @@ Bool Interpolate2D::interpCubic(T &result,
    
    bcucof(itsC, itsY, itsY1, itsY2, itsY12);
    result = 0.0;
-   for (Int i=3; i>=0; --i) {
+   for (int32_t i=3; i>=0; --i) {
      result = TT*result + ((itsC[i][3]*UU + itsC[i][2])*UU + 
 			   itsC[i][1])*UU + itsC[i][0];
    }
    //
-   return True;
+   return true;
 }
 
 template <typename T>
-Bool Interpolate2D::interpLanczos(T &result, 
-        const Vector<Double> &where, 
+bool Interpolate2D::interpLanczos(T &result, 
+        const Vector<double> &where, 
         const Matrix<T> &data,
-        const Matrix<Bool>* &maskPtr) const {
+        const Matrix<bool>* &maskPtr) const {
     //
     // Lanczos 2D interpolation
     //
 
     // Hardcoded kernel size
-    const Double a = 3;
+    const double a = 3;
 
     const IPosition& shape = data.shape();
-    const Double x = where[0];
-    const Double y = where[1];
+    const double x = where[0];
+    const double y = where[1];
     const T floorx = std::floor(x);
     const T floory = std::floor(y);
 
     // Handle mask
-    if (anyBadMaskPixels(maskPtr, x-a+1, x+a, y-a+1, y+a)) return False;
+    if (anyBadMaskPixels(maskPtr, x-a+1, x+a, y-a+1, y+a)) return false;
 
     // Where we can't sum over the full support of the kernel due to proximity
     // to the edge, set the pixel value to zero. This is just one way of
@@ -276,7 +276,7 @@ Bool Interpolate2D::interpLanczos(T &result,
     // interpolation.
     if (floorx < a || floorx >= shape[0] - a || floory < a || floory >= shape[1] - a) {
         result = 0;
-        return True;
+        return true;
     }
 
     // Interpolate
@@ -287,7 +287,7 @@ Bool Interpolate2D::interpLanczos(T &result,
         }
     }
 
-    return True;
+    return true;
 }
 
 // Lanczos interpolation: helper function
@@ -301,7 +301,7 @@ T Interpolate2D::sinc(const T x) const {
 
 // Lanczos interpolation: helper function
 template <typename T>
-T Interpolate2D::L(const T x, const Int a) const {
+T Interpolate2D::L(const T x, const int32_t a) const {
     if (-a < x && x < a) {
         return sinc(x) * sinc (x/a);
     }

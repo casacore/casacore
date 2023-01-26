@@ -38,10 +38,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSProcessor::MSProcessor():hasBeenDestroyed_p(True) { }
+MSProcessor::MSProcessor():hasBeenDestroyed_p(true) { }
 
 MSProcessor::MSProcessor(const String &tableName, TableOption option) 
-    : MSTable<MSProcessorEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSProcessorEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -52,7 +52,7 @@ MSProcessor::MSProcessor(const String &tableName, TableOption option)
 MSProcessor::MSProcessor(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSProcessorEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -61,18 +61,18 @@ MSProcessor::MSProcessor(const String& tableName, const String &tableDescName,
 }
 
 MSProcessor::MSProcessor(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSProcessorEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSProcessor(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSProcessor(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSProcessor"));
 }
 
 MSProcessor::MSProcessor(const Table &table)
-    : MSTable<MSProcessorEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSProcessorEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -82,7 +82,7 @@ MSProcessor::MSProcessor(const Table &table)
 
 MSProcessor::MSProcessor(const MSProcessor &other)
     : MSTable<MSProcessorEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -102,7 +102,7 @@ MSProcessor::~MSProcessor()
            << "~MSProcessor() - Table written is not a valid MSProcessor"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -142,7 +142,7 @@ MSTableMaps MSProcessor::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

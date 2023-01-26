@@ -82,7 +82,7 @@ void TiledDataStManAccessor::addHypercube (const IPosition& cubeShape,
     tiledDataManPtr_p->addHypercube (cubeShape, tileShape, values);
 }
 
-void TiledDataStManAccessor::extendHypercube (uInt incrInLastDim,
+void TiledDataStManAccessor::extendHypercube (uint32_t incrInLastDim,
 					      const Record& values)
 {
     tiledDataManPtr_p->extendHypercube (incrInLastDim, values);

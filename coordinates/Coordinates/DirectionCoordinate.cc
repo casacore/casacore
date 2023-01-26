@@ -63,11 +63,11 @@ DirectionCoordinate::DirectionCoordinate()
   type_p(MDirection::J2000), 
   conversionType_p(type_p), 
   projection_p(Projection(Projection::CAR)),
-  names_p(axisNames(type_p,False).copy()),
+  names_p(axisNames(type_p,false).copy()),
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0)
 {
-    Matrix<Double> xform(2,2); 
+    Matrix<double> xform(2,2); 
     xform = 0.0;
     xform.diagonal() = 1.0;
     makeDirectionCoordinate (type_p, projection_p, 0.0, 0.0, 1.0, 1.0,
@@ -78,16 +78,16 @@ DirectionCoordinate::DirectionCoordinate()
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Projection &projection,
-                                         Double refLong, Double refLat,
-                                         Double incLong, Double incLat,
-                                         const Matrix<Double> &xform,
-                                         Double refX, Double refY,
-                                         Double longPole, Double latPole)
+                                         double refLong, double refLat,
+                                         double incLong, double incLat,
+                                         const Matrix<double> &xform,
+                                         double refX, double refY,
+                                         double longPole, double latPole)
 : Coordinate(),
   type_p(directionType), 
   conversionType_p(type_p), 
   projection_p(projection),
-  names_p(axisNames(directionType,False).copy()),
+  names_p(axisNames(directionType,false).copy()),
   units_p(2),
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0)
@@ -99,11 +99,11 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 }
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
-                                         const ::wcsprm& wcs, Bool oneRel)
+                                         const ::wcsprm& wcs, bool oneRel)
 : Coordinate(),
   type_p(directionType),
   conversionType_p(type_p),
-  names_p(axisNames(type_p,False).copy()),
+  names_p(axisNames(type_p,false).copy()),
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0)
 {
@@ -118,9 +118,9 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 
    String ctypeLon(wcs.ctype[0]);
    String ctypeLat(wcs.ctype[1]);
-   uInt n = wcs.npv;
-   Vector<Double> pars(n);
-   for (uInt i=0; i<n; i++) pars(i) = wcs.pv[i].value;
+   uint32_t n = wcs.npv;
+   Vector<double> pars(n);
+   for (uint32_t i=0; i<n; i++) pars(i) = wcs.pv[i].value;
    projection_p = Projection(ctypeLon, ctypeLat, pars);
 
 // Copy wcs structure
@@ -148,19 +148,19 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
 
 DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
                                          const Projection &projection,  
-                                         const Quantum<Double>& refLong,
-                                         const Quantum<Double>& refLat,  
-                                         const Quantum<Double>& incLong,
-                                         const Quantum<Double>& incLat,
-                                         const Matrix<Double> &xform,
-                                         Double refX, Double refY,
-                                         const Quantum<Double>& longPole,
-                                         const Quantum<Double>& latPole)
+                                         const Quantum<double>& refLong,
+                                         const Quantum<double>& refLat,  
+                                         const Quantum<double>& incLong,
+                                         const Quantum<double>& incLat,
+                                         const Matrix<double> &xform,
+                                         double refX, double refY,
+                                         const Quantum<double>& longPole,
+                                         const Quantum<double>& latPole)
 : Coordinate(),
   type_p(directionType), 
   conversionType_p(type_p), 
   projection_p(projection),
-  names_p(axisNames(directionType,False).copy()),
+  names_p(axisNames(directionType,false).copy()),
   units_p(2),
   pConversionMachineTo_p(0),
   pConversionMachineFrom_p(0)
@@ -180,13 +180,13 @@ DirectionCoordinate::DirectionCoordinate(MDirection::Types directionType,
       throw(AipsError("Specified latitude increment is not angular"));
    }
 //
-   Double lon = refLong.getValue(rad);
-   Double lat = refLat.getValue(rad);
-   Double dlon = incLong.getValue(rad);
-   Double dlat = incLat.getValue(rad);
+   double lon = refLong.getValue(rad);
+   double lat = refLat.getValue(rad);
+   double dlon = incLong.getValue(rad);
+   double dlat = incLat.getValue(rad);
 //
-   Double dLongPole = longPole.getValue();
-   Double dLatPole = latPole.getValue();
+   double dLongPole = longPole.getValue();
+   double dLatPole = latPole.getValue();
 //
 // Any value >=999 is taken as the default, regardless of units
 //
@@ -254,12 +254,12 @@ String DirectionCoordinate::showType() const
 }
 
 
-uInt DirectionCoordinate::nPixelAxes() const
+uint32_t DirectionCoordinate::nPixelAxes() const
 {
     return 2;
 }
 
-uInt DirectionCoordinate::nWorldAxes() const
+uint32_t DirectionCoordinate::nWorldAxes() const
 {
     return 2;
 }
@@ -289,8 +289,8 @@ void DirectionCoordinate::setReferenceConversion (MDirection::Types type)
    makeConversionMachines();
 }
 
-Bool DirectionCoordinate::toWorld(Vector<Double> &world,
- 				  const Vector<Double> &pixel, Bool useConversionFrame) const
+bool DirectionCoordinate::toWorld(Vector<double> &world,
+ 				  const Vector<double> &pixel, bool useConversionFrame) const
 {
 // To World with wcs
 
@@ -304,18 +304,18 @@ Bool DirectionCoordinate::toWorld(Vector<Double> &world,
        if (useConversionFrame) {
            convertTo(world);
        }
-       return True;
+       return true;
     } else {
-       return False;
+       return false;
     }
 }
   
 
 
-Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
-				  const Vector<Double> &world) const
+bool DirectionCoordinate::toPixel(Vector<double> &pixel,
+				  const Vector<double> &world) const
 {
-    static Vector<Double> world_tmp;
+    static Vector<double> world_tmp;
     DebugAssert(world.nelements() == nWorldAxes(), AipsError);
        
 // Convert from specified conversion reference type
@@ -336,23 +336,23 @@ Bool DirectionCoordinate::toPixel(Vector<Double> &pixel,
 
 
 
-Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
-                                Vector<Double>& pixelOut,
-                                const Vector<Double>& worldIn,
-                                const Vector<Double>& pixelIn,
-                                const Vector<Bool>& worldAxes,
-                                const Vector<Bool>& pixelAxes,
-                                const Vector<Double>& worldMin,
-                                const Vector<Double>& worldMax) const
+bool DirectionCoordinate::toMix(Vector<double>& worldOut,
+                                Vector<double>& pixelOut,
+                                const Vector<double>& worldIn,
+                                const Vector<double>& pixelIn,
+                                const Vector<bool>& worldAxes,
+                                const Vector<bool>& pixelAxes,
+                                const Vector<double>& worldMin,
+                                const Vector<double>& worldMax) const
 {
-   Bool useConversionType = False;
+   bool useConversionType = false;
          
 // Temporaries
        
-   static Vector<Double> in_tmp;
-   static Vector<Double> out_tmp;
+   static Vector<double> in_tmp;
+   static Vector<double> out_tmp;
 //
-   const uInt nPixel = pixelAxes.nelements();
+   const uint32_t nPixel = pixelAxes.nelements();
    DebugAssert(worldAxes.nelements()==nWorldAxes(), AipsError);
    DebugAssert(pixelAxes.nelements()==nPixelAxes(), AipsError);
    DebugAssert(worldIn.nelements()==worldAxes.nelements(), AipsError);
@@ -360,14 +360,14 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
    DebugAssert(worldMin.nelements()==worldAxes.nelements(), AipsError);
    DebugAssert(worldMax.nelements()==worldAxes.nelements(), AipsError);
 //
-   for (uInt i=0; i<nPixel; i++) {
+   for (uint32_t i=0; i<nPixel; i++) {
       if (pixelAxes(i) && worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - duplicate pixel/world axes");
-         return False;
+         return false;
       }
       if (!pixelAxes(i) && !worldAxes(i)) {
          set_error("DirectionCoordinate::toMix - each coordinate must be either pixel or world");
-         return False;
+         return false;
       }
    }
 //
@@ -378,14 +378,14 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
 //
 // pixel->world
 //
-      if (!toWorld(worldOut, pixelIn)) return False;
+      if (!toWorld(worldOut, pixelIn)) return false;
       pixelOut[0] = pixelIn[0];
       pixelOut[1] = pixelIn[1];
    } else if (worldAxes[0] && worldAxes[1]) {
 //
 // world->pixel
 //
-      if (!toPixel(pixelOut, worldIn)) return False;
+      if (!toPixel(pixelOut, worldIn)) return false;
       worldOut[0] = worldIn[0];
       worldOut[1] = worldIn[1];
    } else if (pixelAxes[0] && worldAxes[1]) {
@@ -398,8 +398,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       in_tmp[0] = pixelIn[0];
       in_tmp[1] = worldIn[1];
       if (!toMix2(out_tmp, in_tmp, worldMin,
-                  worldMax, False)) {
-         return False;
+                  worldMax, false)) {
+         return false;
       }
 //
       pixelOut[0] = in_tmp[0];
@@ -420,8 +420,8 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
       in_tmp[0] = worldIn[0];
       in_tmp[1] = pixelIn[1];
       if (!toMix2(out_tmp, in_tmp, worldMin,
-                  worldMax, True)) {
-         return False;
+                  worldMax, true)) {
+         return false;
       }
 //
       pixelOut[0] = out_tmp[0];
@@ -433,14 +433,14 @@ Bool DirectionCoordinate::toMix(Vector<Double>& worldOut,
          convertTo(worldOut);
       }
    }
-   return True;
+   return true;
 }
 
  
 
-Bool DirectionCoordinate::toWorldMany (Matrix<Double>& world,
-                                       const Matrix<Double>& pixel,
-                                       Vector<Bool>& failures) const
+bool DirectionCoordinate::toWorldMany (Matrix<double>& world,
+                                       const Matrix<double>& pixel,
+                                       Vector<bool>& failures) const
 { 
 // To World with wcs
 
@@ -454,22 +454,22 @@ Bool DirectionCoordinate::toWorldMany (Matrix<Double>& world,
 
        if (pConversionMachineTo_p) convertToMany(world);  
     } else {
-       return False;
+       return false;
     }
 //
-    return True;
+    return true;
 }     
 
 
-Bool DirectionCoordinate::toPixelMany (Matrix<Double>& pixel,
-                                       const Matrix<Double>& world,
-                                       Vector<Bool>& failures) const
+bool DirectionCoordinate::toPixelMany (Matrix<double>& pixel,
+                                       const Matrix<double>& world,
+                                       Vector<bool>& failures) const
 {
     AlwaysAssert(world.nrow()==nWorldAxes(), AipsError);
 
 // Copy input as we have to convert it to all sorts of things
 
-    Matrix<Double> world2(world.copy());    
+    Matrix<double> world2(world.copy());    
 
 // Convert from specified conversion reference type
 
@@ -487,7 +487,7 @@ Bool DirectionCoordinate::toPixelMany (Matrix<Double>& pixel,
  
 
 
-MDirection::Types DirectionCoordinate::directionType(Bool showConversion) const
+MDirection::Types DirectionCoordinate::directionType(bool showConversion) const
 {
     if (showConversion) {
        return conversionType_p;
@@ -514,61 +514,61 @@ Vector<String> DirectionCoordinate::worldAxisUnits() const
     return units_p;
 }
 
-Vector<Double> DirectionCoordinate::referenceValue() const
+Vector<double> DirectionCoordinate::referenceValue() const
 {
-    Vector<Double> crval(2);
+    Vector<double> crval(2);
     crval[0] = wcs_p.crval[0];
     crval[1] = wcs_p.crval[1];                    // degrees
     toCurrent(crval);
     return crval;
 }
 
-Vector<Double> DirectionCoordinate::increment() const
+Vector<double> DirectionCoordinate::increment() const
 {
-    Vector<Double> cdelt(2);
+    Vector<double> cdelt(2);
     cdelt[0] = wcs_p.cdelt[0];
     cdelt[1] = wcs_p.cdelt[1];            // degrees
     toCurrent(cdelt);
     return cdelt;
 }
 
-Matrix<Double> DirectionCoordinate::linearTransform() const
+Matrix<double> DirectionCoordinate::linearTransform() const
 {
-   Matrix<Double> tmp;
+   Matrix<double> tmp;
    pcToXform (tmp, wcs_p);
    return tmp;
 }
 
 
-Vector<Double> DirectionCoordinate::referencePixel() const
+Vector<double> DirectionCoordinate::referencePixel() const
 {
-    Vector<Double> crpix(2);
+    Vector<double> crpix(2);
     crpix[0] = wcs_p.crpix[0];
     crpix[1] = wcs_p.crpix[1]; 
     return crpix;
 }
 
-Bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
+bool DirectionCoordinate::setWorldAxisNames(const Vector<String> &names)
 {
     if (!(names.nelements()==nWorldAxes())) {
        set_error("names vector must be of length 2");
-       return False;
+       return false;
     }
 //
     names_p = names;
-    return True;
+    return true;
 }
 
-Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
+bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
 {
     if (!(units.nelements()==nWorldAxes())) {
        set_error("units vector must be of length 2");
-       return False;
+       return false;
     }
 //
     String error;
-    Vector<Double> factor;
-    Bool ok = find_scale_factor(error, factor, units, worldAxisUnits());
+    Vector<double> factor;
+    bool ok = find_scale_factor(error, factor, units, worldAxisUnits());
     if (ok) {
       to_degrees_p[0] /= factor[0];
       to_degrees_p[1] /= factor[1];
@@ -587,11 +587,11 @@ Bool DirectionCoordinate::setWorldAxisUnits(const Vector<String> &units)
 }
 
 
-Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
+bool DirectionCoordinate::setReferencePixel(const Vector<double> &refPix)
 {
     if (!(refPix.nelements()==nPixelAxes())) {
        set_error("reference pixels vector must be of length 2");
-       return False;
+       return false;
     }
 //
     //cout << "refPix[0]=" << refPix[0]
@@ -602,16 +602,16 @@ Bool DirectionCoordinate::setReferencePixel(const Vector<Double> &refPix)
     wcs_p.crpix[1] = refPix[1];
     set_wcs(wcs_p);
 //
-    return True;
+    return true;
 }
 
-Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
+bool DirectionCoordinate::setLinearTransform(const Matrix<double> &xform)
 {
-    Bool ok = (xform.nrow() == nWorldAxes() && 
+    bool ok = (xform.nrow() == nWorldAxes() && 
                xform.ncolumn() == nWorldAxes());
     if (!ok) {
        set_error("linear transform matrix has wrong shape");
-       return False;
+       return false;
     }
 
 // Set PC cards
@@ -620,18 +620,18 @@ Bool DirectionCoordinate::setLinearTransform(const Matrix<Double> &xform)
     set_wcs(wcs_p);
     normalizePCMatrix();
 //      
-    return True;
+    return true;
 }
 
-Bool DirectionCoordinate::setIncrement(const Vector<Double> &inc)
+bool DirectionCoordinate::setIncrement(const Vector<double> &inc)
 {
-    Bool ok = (inc.nelements()==nWorldAxes());
+    bool ok = (inc.nelements()==nWorldAxes());
     if (!ok) {
        set_error("Two increments must be provided!");
-       return False;
+       return false;
     }
 //
-    Vector<Double> tmp(inc.copy());
+    Vector<double> tmp(inc.copy());
     fromCurrent(tmp);
 
     wcs_p.cdelt[0] = tmp[0];  
@@ -641,15 +641,15 @@ Bool DirectionCoordinate::setIncrement(const Vector<Double> &inc)
     return ok;
 }
 
-Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
+bool DirectionCoordinate::setReferenceValue(const Vector<double> &refval)
 {
-    Bool ok = (refval.nelements()==nWorldAxes());
+    bool ok = (refval.nelements()==nWorldAxes());
     if (!ok) {
        set_error("Two ref. values must be provided!");
-       return False;
+       return false;
     }
 //
-    Vector<Double> tmp(refval.copy());
+    Vector<double> tmp(refval.copy());
     fromCurrent(tmp);
 //
     // special treatment for SFL projection (see Calabretta & Greisen 2002)
@@ -674,7 +674,7 @@ Bool DirectionCoordinate::setReferenceValue(const Vector<Double> &refval)
 }
 
 Vector<String> DirectionCoordinate::axisNames(MDirection::Types type, 
-					      Bool FITSName)
+					      bool FITSName)
 {
     Vector<String> names(2);
     if (FITSName) {
@@ -763,9 +763,9 @@ Vector<String> DirectionCoordinate::axisNames(MDirection::Types type,
     return names;
 }
 
-Bool DirectionCoordinate::isNCP() const {
+bool DirectionCoordinate::isNCP() const {
 	if (projection_p.type() == Projection::SIN) {
-		Vector<Double> pars =  projection_p.parameters();
+		Vector<double> pars =  projection_p.parameters();
 		if (pars.size() == 2 && (anyNE(pars, 0.0)) && pars[0] == 0) {
 			Quantity dec(referenceValue()[1], worldAxisUnits()[1]);
 			return (
@@ -774,11 +774,11 @@ Bool DirectionCoordinate::isNCP() const {
 			);
 		}
 	}
-	return False;
+	return false;
 }
 
 void DirectionCoordinate::checkFormat(Coordinate::formatType& format,
-                                      Bool absolute) const
+                                      bool absolute) const
 {   
    MDirection::GlobalTypes gtype = MDirection::globalType(type_p);
 
@@ -808,18 +808,18 @@ DirectionCoordinate DirectionCoordinate::convert(
         "square pixels"
     );
     // create the rotated coordinate
-    Matrix<Double> xform(2, 2, 0);
+    Matrix<double> xform(2, 2, 0);
     xform.diagonal() = 1.0;
-    Vector<Double> refPix = referencePixel();
-    Vector<Double> inc = increment();
+    Vector<double> refPix = referencePixel();
+    Vector<double> inc = increment();
     Vector<Quantity> incQ(2);
     incQ[0] = Quantity(inc[0], units_p[0]);
     incQ[1] = Quantity(inc[1], units_p[1]);
     DirectionCoordinate myClone(*this);
     myClone.setReferenceConversion(directionType);
-    Vector<Double> refValNewFrame;
+    Vector<double> refValNewFrame;
     ThrowIf(
-        ! myClone.toWorld(refValNewFrame, refPix, True),
+        ! myClone.toWorld(refValNewFrame, refPix, true),
         "Unable to convert reference pixel to world value of new frame"
     );
     Vector<Quantity> refValNewFrameQ(2);
@@ -834,7 +834,7 @@ DirectionCoordinate DirectionCoordinate::convert(
     // zero the reference pixel to avoid precision loss by potentially needing
     // to subtract two large numbers that differ beyond less than 1
     ThrowIf(
-        ! myClone.setReferencePixel(Vector<Double>(2, 0)),
+        ! myClone.setReferencePixel(Vector<double>(2, 0)),
         "Failed to zero reference pixel in temporary coordinate"
     );
     // make the increment and units more friendly for this computation
@@ -843,8 +843,8 @@ DirectionCoordinate DirectionCoordinate::convert(
         ! myClone.setWorldAxisUnits(Vector<String>(2, unit)),
         "Failed to set world axis units in temporary coordinate"
     );
-    Vector<Double> cloneInc(2, 1);
-    for (uInt i=0; i<2; ++i) {
+    Vector<double> cloneInc(2, 1);
+    for (uint32_t i=0; i<2; ++i) {
         if (sign(inc[i] < 0)) {
             cloneInc[i] = -1;
         }
@@ -858,12 +858,12 @@ DirectionCoordinate DirectionCoordinate::convert(
     Vector<Quantity> offsetValNewFrameQ = refValNewFrameQ.copy();
     // avoid offsetting over the poles by offsetting north if the refval is
     // south of the equator, offset south if refval is north of or on equator
-    Bool offsetNorth = refValNewFrame[1] < 0;
+    bool offsetNorth = refValNewFrame[1] < 0;
     offsetValNewFrameQ[1] += Quantity(offsetNorth ? 1 : -1, unit);
-    Vector<Double> offsetValNewFrame(2);
+    Vector<double> offsetValNewFrame(2);
     offsetValNewFrame[0] = offsetValNewFrameQ[0].getValue(unit);
     offsetValNewFrame[1] = offsetValNewFrameQ[1].getValue(unit);
-    Vector<Double> offsetPixel;
+    Vector<double> offsetPixel;
     ThrowIf(
         ! myClone.toPixel(offsetPixel, offsetValNewFrame),
         "Unable to convert offset world value to offset pixel value"
@@ -871,10 +871,10 @@ DirectionCoordinate DirectionCoordinate::convert(
     if (! offsetNorth) {
         offsetPixel = -offsetPixel;
     }
-    Double signX = sign(offsetPixel[0]);
-    Double yFrame = offsetPixel[1];
+    double signX = sign(offsetPixel[0]);
+    double yFrame = offsetPixel[1];
     // Remember that acos never returns a negative value
-    Double angleInRad = acos(yFrame/sqrt(sum(offsetPixel*offsetPixel)));
+    double angleInRad = acos(yFrame/sqrt(sum(offsetPixel*offsetPixel)));
     // get the quadrant right
     if (signX > 0) {
         // we have to rotate the world coordinate counter-clockwise to align
@@ -887,12 +887,12 @@ DirectionCoordinate DirectionCoordinate::convert(
     return converted;
 }
 
-void DirectionCoordinate::getPrecision (Int& precision,
+void DirectionCoordinate::getPrecision (int32_t& precision,
                                         Coordinate::formatType& format,
-                                        Bool absolute,
-                                        Int defPrecScientific,
-                                        Int defPrecFixed,
-                                        Int defPrecTime) const
+                                        bool absolute,
+                                        int32_t defPrecScientific,
+                                        int32_t defPrecFixed,
+                                        int32_t defPrecTime) const
 {
 // Fill in DEFAULT
 
@@ -925,18 +925,18 @@ void DirectionCoordinate::getPrecision (Int& precision,
 
 String DirectionCoordinate::format(String& units,
                                    Coordinate::formatType format,
-                                   Double worldValue,
-                                   uInt worldAxis,
-                                   Bool isAbsolute,
-                                   Bool showAsAbsolute,
-                                   Int precision, Bool) const
+                                   double worldValue,
+                                   uint32_t worldAxis,
+                                   bool isAbsolute,
+                                   bool showAsAbsolute,
+                                   int32_t precision, bool) const
 {
    DebugAssert(worldAxis< nWorldAxes(), AipsError);
    DebugAssert(nWorldAxes()==2, AipsError);
 
 // Convert given world value to absolute or relative as needed
    
-   static Vector<Double> world;
+   static Vector<double> world;
    world.resize(nWorldAxes());
 //
    if (showAsAbsolute) {
@@ -965,7 +965,7 @@ String DirectionCoordinate::format(String& units,
 
 // Set default precision if needed
 
-   Int prec = precision;
+   int32_t prec = precision;
    if (prec < 0) getPrecision(prec, form, showAsAbsolute, -1, -1, -1);
 
 // Set global DirectionCoordinate type
@@ -987,7 +987,7 @@ String DirectionCoordinate::format(String& units,
    
 // Convert value to radians first so we can make an MVAngle from it
 
-   Double worldValue2;
+   double worldValue2;
    worldValue2 = C::degree * worldValue * to_degrees_p[worldAxis];
    MVAngle mVA(worldValue2);
 
@@ -1012,9 +1012,9 @@ String DirectionCoordinate::format(String& units,
 
 String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
                                              MDirection::GlobalTypes gtype,
-                                             Bool absolute, 
+                                             bool absolute, 
                                              Coordinate::formatType form,
-                                             Int prec) const
+                                             int32_t prec) const
 {
    ostringstream oss;         
    MVAngle mVA2(mVA);
@@ -1044,8 +1044,8 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
 
 // Continue on with other format types
 
-   Double value = mVA2.get().getValue();     // Radians
-   Bool emptyUnits = units.empty();
+   double value = mVA2.get().getValue();     // Radians
+   bool emptyUnits = units.empty();
 //
    if (gtype==MDirection::GRADEC){ 
       if (absolute) mVA2 = mVA(0.0);                   // 0->2pi (0->360)
@@ -1115,9 +1115,9 @@ String DirectionCoordinate::formatLongitude (String& units, MVAngle& mVA,
 }
 
 String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
-                                            Bool absolute, 
+                                            bool absolute, 
                                             Coordinate::formatType form,
-                                            Int prec) const
+                                            int32_t prec) const
 {
    ostringstream oss;         
    MVAngle mVA2(mVA);
@@ -1131,8 +1131,8 @@ String DirectionCoordinate::formatLatitude (String& units, MVAngle& mVA,
 
 // Continue on with other format types
 
-   Double value = mVA2.get().getValue();     // Radians
-   Bool emptyUnits = units.empty();
+   double value = mVA2.get().getValue();     // Radians
+   bool emptyUnits = units.empty();
 //
    if (!emptyUnits) {
       value = mVA2.get(Unit(units)).getValue();
@@ -1172,23 +1172,23 @@ Coordinate *DirectionCoordinate::clone() const
 
 
 
-Bool DirectionCoordinate::near(const Coordinate& other, 
-                               Double tol) const
+bool DirectionCoordinate::near(const Coordinate& other, 
+                               double tol) const
 {
-   Vector<Int> excludeAxes;
+   Vector<int32_t> excludeAxes;
    return near(other, excludeAxes, tol);
 }
 
 
 
-Bool DirectionCoordinate::near(const Coordinate& other, 
-                               const Vector<Int>& excludeAxes,
-                               Double tol) const
+bool DirectionCoordinate::near(const Coordinate& other, 
+                               const Vector<int32_t>& excludeAxes,
+                               double tol) const
 
 {
    if (this->type() != other.type()) {
       set_error("Comparison is not with another DirectionCoordinate");
-      return False;
+      return false;
    }
 //     
    const DirectionCoordinate& dCoord = dynamic_cast<const DirectionCoordinate&>(other);
@@ -1197,14 +1197,14 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
    if (!projection_p.near(dCoord.projection_p, tol)) {
       set_error("The DirectionCoordinates have differing projections");
-      return False;
+      return false;
    }
 
 // Type
 
    if (type_p != dCoord.type_p) {
       set_error("The DirectionCoordinates have differing types");
-      return False;
+      return false;
    }
 
 // Conversion type
@@ -1214,20 +1214,20 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 // Should this be an error or a warning ?
 
       set_error("The DirectionCoordinates have differing conversion types");
-      return False;
+      return false;
    }
 
 
 // Number of pixel and world axes is the same for a DirectionCoordinate
  
    AlwaysAssert(nPixelAxes()==nWorldAxes(), AipsError);
-   Vector<Bool> exclude(nPixelAxes());   
-   exclude = False;
-   Bool found;
-   const uInt nExcl = excludeAxes.nelements();
+   Vector<bool> exclude(nPixelAxes());   
+   exclude = false;
+   bool found;
+   const uint32_t nExcl = excludeAxes.nelements();
    if (nExcl > 0) {
-      for (uInt i=0; i<nPixelAxes(); i++) {
-         if (linearSearch(found, excludeAxes, Int(i), nExcl) >= 0) exclude[i] = True;
+      for (uint32_t i=0; i<nPixelAxes(); i++) {
+         if (linearSearch(found, excludeAxes, int32_t(i), nExcl) >= 0) exclude[i] = true;
       }
    }
 
@@ -1236,15 +1236,15 @@ Bool DirectionCoordinate::near(const Coordinate& other,
    ostringstream oss;
    if (names_p.nelements() != dCoord.names_p.nelements()) {
       set_error("The DirectionCoordinates have differing numbers of world axis names");
-      return False;
+      return false;
    }
-   for (uInt i=0; i<names_p.nelements(); i++) {
+   for (uint32_t i=0; i<names_p.nelements(); i++) {
       if (!exclude[i]) {
          if (names_p[i] != dCoord.names_p[i]) {
             oss << "The DirectionCoordinates have differing axis names for axis "
                 << i;
             set_error(String(oss));
-            return False;      
+            return false;      
          }
       }
    }
@@ -1253,49 +1253,49 @@ Bool DirectionCoordinate::near(const Coordinate& other,
 
    if (units_p.nelements() != dCoord.units_p.nelements()) {
       set_error("The DirectionCoordinates have differing numbers of axis units");
-      return False;
+      return false;
    }
-   for (uInt i=0; i<units_p.nelements(); i++) {
+   for (uint32_t i=0; i<units_p.nelements(); i++) {
       if (!exclude[i]) {
          if (units_p[i] != dCoord.units_p[i]) {
             oss << "The DirectionCoordinates have differing axis units for axis "
                 << i;
             set_error(String(oss));
-            return False;      
+            return false;      
          }
       }
    }
 
 // {lon,lat}poles
 
-    if (!casacore::near(Double(wcs_p.lonpole), Double(dCoord.wcs_p.lonpole))) {
+    if (!casacore::near(double(wcs_p.lonpole), double(dCoord.wcs_p.lonpole))) {
        oss << "The DirectionCoordinates have differing lonpoles";
        set_error(String(oss));
-       return False;      
+       return false;      
     }
-    if (!casacore::near(Double(wcs_p.latpole), Double(dCoord.wcs_p.latpole))) {
+    if (!casacore::near(double(wcs_p.latpole), double(dCoord.wcs_p.latpole))) {
        oss << "The DirectionCoordinates have differing latpoles";
        set_error(String(oss));
-       return False;      
+       return false;      
     }
 
 
 // Check reference  value
 
    {
-      const Vector<Double>& thisVal = referenceValue();
-      const Vector<Double>& thatVal = dCoord.referenceValue();
+      const Vector<double>& thisVal = referenceValue();
+      const Vector<double>& thatVal = dCoord.referenceValue();
       if (thisVal.nelements() != thatVal.nelements()) {
          set_error("The DirectionCoordinates have differing reference values");
-         return False;
+         return false;
       }
-      for (uInt i=0; i<thisVal.nelements(); i++) {
+      for (uint32_t i=0; i<thisVal.nelements(); i++) {
          if (!exclude[i]) {
             if (!casacore::near(thisVal[i],thatVal[i], tol)) {
                oss << "The DirectionCoordinates have differing reference values for axis "
                    << i;
                set_error(String(oss));
-               return False;      
+               return false;      
             }
          }
       }
@@ -1308,19 +1308,19 @@ Bool DirectionCoordinate::near(const Coordinate& other,
    if (!(thisVal.near(thatVal, excludeAxes))) {
       oss << "The DirectionCoordinates have differing LinearXform components";
       set_error(String(oss));
-      return False;      
+      return false;      
    }
 
-   return True;
+   return true;
 }
 
 
 
 
-Bool DirectionCoordinate::save(RecordInterface &container,
+bool DirectionCoordinate::save(RecordInterface &container,
                                const String &fieldName) const
 {
-    Bool ok = (!container.isDefined(fieldName));
+    bool ok = (!container.isDefined(fieldName));
     if (ok) {
 	Record subrec;
 	Projection proj = projection();
@@ -1386,7 +1386,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     }
     String projname;
     subrec.get("projection", projname);
-    Vector<Double> projparms(subrec.toArrayDouble("projection_parameters"));
+    Vector<double> projparms(subrec.toArrayDouble("projection_parameters"));
     Projection proj(Projection::type(projname), projparms);
 //
     if (!subrec.isDefined("crval")) {
@@ -1395,7 +1395,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     		<< "crval is not defined.";
     	throw AipsError(oss.str());
     }
-    Vector<Double> crval(subrec.toArrayDouble("crval"));
+    Vector<double> crval(subrec.toArrayDouble("crval"));
 //
     if (!subrec.isDefined("crpix")) {
     	ostringstream oss;
@@ -1403,7 +1403,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     		<< "crpix is not defined.";
     	throw AipsError(oss.str());
     }
-    Vector<Double> crpix(subrec.toArrayDouble("crpix"));
+    Vector<double> crpix(subrec.toArrayDouble("crpix"));
 //
     if (!subrec.isDefined("cdelt")) {
     	ostringstream oss;
@@ -1411,7 +1411,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     		<< "cdelt is not defined.";
     	throw AipsError(oss.str());
     }
-    Vector<Double> cdelt(subrec.toArrayDouble("cdelt"));
+    Vector<double> cdelt(subrec.toArrayDouble("cdelt"));
 //
     if (!subrec.isDefined("pc")) {
     	ostringstream oss;
@@ -1419,9 +1419,9 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
     		<< "pc is not defined.";
     	throw AipsError(oss.str());
     }
-    Matrix<Double> pc(subrec.toArrayDouble("pc"));
+    Matrix<double> pc(subrec.toArrayDouble("pc"));
 //
-    Double longPole, latPole;
+    double longPole, latPole;
     longPole = latPole = 999.0;            // Optional
     if (subrec.isDefined("longpole")) {    
        subrec.get("longpole", longPole);   // Always degrees
@@ -1455,10 +1455,10 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
 // See that function for further comments
 // 
 
-    Quantum<Double> refLong(crval[0], units[0]);
-    Quantum<Double> refLat(crval[1], units[1]);
-    Quantum<Double> incLong(cdelt[0], units[0]);
-    Quantum<Double> incLat(cdelt[1], units[1]);
+    Quantum<double> refLong(crval[0], units[0]);
+    Quantum<double> refLat(crval[1], units[1]);
+    Quantum<double> incLong(cdelt[0], units[0]);
+    Quantum<double> incLat(cdelt[1], units[1]);
     DirectionCoordinate* pDirection = new DirectionCoordinate(sys, proj, 
                                 refLong.getValue(Unit("rad")), 
                                 refLat.getValue(Unit("rad")), 
@@ -1479,7 +1479,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
        String conversionSystem;
        subrec.get("conversionSystem", conversionSystem);
        MDirection::Types cSystem;
-       Bool ok = MDirection::getType(cSystem, conversionSystem);
+       bool ok = MDirection::getType(cSystem, conversionSystem);
        if (ok) {
           pDirection->setReferenceConversion(cSystem);
        }
@@ -1491,7 +1491,7 @@ DirectionCoordinate* DirectionCoordinate::restore(const RecordInterface &contain
 
 void DirectionCoordinate::setProjection(const Projection& p)
 {
-  Matrix<Double> xform;
+  Matrix<double> xform;
   pcToXform(xform, wcs_p);
   projection_p = p;
   makeWCS (wcs_p, xform, projection_p, type_p, wcs_p.crpix[0], wcs_p.crpix[1],
@@ -1501,7 +1501,7 @@ void DirectionCoordinate::setProjection(const Projection& p)
 
 void DirectionCoordinate::setReferenceFrame(const MDirection::Types rf)
 {
-  Matrix<Double> xform;
+  Matrix<double> xform;
   pcToXform(xform, wcs_p);
   type_p = rf;
   makeWCS (wcs_p, xform, projection_p, type_p, wcs_p.crpix[0], wcs_p.crpix[1],
@@ -1509,35 +1509,35 @@ void DirectionCoordinate::setReferenceFrame(const MDirection::Types rf)
            wcs_p.lonpole, wcs_p.latpole);
 }
 
-Bool DirectionCoordinate::hasSquarePixels() const
+bool DirectionCoordinate::hasSquarePixels() const
 {
-	Vector<Double> inc = increment();
+	Vector<double> inc = increment();
 	return casacore::near(fabs(inc[0]), fabs(inc[1]), 2e-10);
 }
 
-void DirectionCoordinate::toCurrent(Vector<Double>& value) const
+void DirectionCoordinate::toCurrent(Vector<double>& value) const
 {
     value[0] /= to_degrees_p[0];
     value[1] /= to_degrees_p[1];
 }
 
-const Vector<Double> DirectionCoordinate::toCurrentFactors () const
+const Vector<double> DirectionCoordinate::toCurrentFactors () const
 {
     return 1.0 / to_degrees_p;
 }
 
-void DirectionCoordinate::fromCurrent(Vector<Double>& value) const
+void DirectionCoordinate::fromCurrent(Vector<double>& value) const
 {
     value[0] *= to_degrees_p[0];
     value[1] *= to_degrees_p[1];
 }
 
 
-Bool DirectionCoordinate::toMix2(Vector<Double>& out,
-                                 const Vector<Double>& in,
-                                 const Vector<Double>& minWorld,
-                                 const Vector<Double>& maxWorld,
-                                 Bool longIsWorld) const
+bool DirectionCoordinate::toMix2(Vector<double>& out,
+                                 const Vector<double>& in,
+                                 const Vector<double>& minWorld,
+                                 const Vector<double>& maxWorld,
+                                 bool longIsWorld) const
 //
 // vectors must be of length 2. no checking
 //
@@ -1594,7 +1594,7 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
         errorMsg= "wcs wcsmix_error: ";
         errorMsg += wcsmix_errmsg[iret];
         set_error(errorMsg);
-        return False;
+        return false;
     }
 //
 // Fish out the results
@@ -1614,11 +1614,11 @@ Bool DirectionCoordinate::toMix2(Vector<Double>& out,
 //    phi = mix_phi / to_degrees_p[0];
 //    theta = mix_theta / to_degrees_p[1];
 //
-    return True;
+    return true;
 }
 
 Coordinate* DirectionCoordinate::makeFourierCoordinate(
-    const Vector<Bool>& axes, const Vector<Int>& shape
+    const Vector<bool>& axes, const Vector<int32_t>& shape
 ) const {
     // axes says which axes in the coordinate are to be transformed
     // shape is the shape of the image for all axes in this coordinate
@@ -1664,18 +1664,18 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate(
         return 0;
     }
     // Create a LinearXform to do the inversion
-    Vector<Double> cdelt = dc.increment().copy();
+    Vector<double> cdelt = dc.increment().copy();
     dc.fromCurrent(cdelt);
     LinearXform linear(dc.referencePixel(), cdelt, dc.linearTransform());
 
     // Now make the new output LinearCoordinate.  
 
-    Vector<Double> crpix(2), scale(2), crval(2,0.0);
-    crpix[0] = Int(shape[0] / 2);
-    crpix[1] = Int(shape[1] / 2);
+    Vector<double> crpix(2), scale(2), crval(2,0.0);
+    crpix[0] = int32_t(shape[0] / 2);
+    crpix[1] = int32_t(shape[1] / 2);
 
-    scale[0] = dc.to_degrees_p[0] / Double(shape[0]);
-    scale[1] = dc.to_degrees_p[1] / Double(shape[1]);
+    scale[0] = dc.to_degrees_p[0] / double(shape[0]);
+    scale[1] = dc.to_degrees_p[1] / double(shape[1]);
 
     String errMsg;
     std::unique_ptr<LinearXform> pLinearF(
@@ -1693,16 +1693,16 @@ Coordinate* DirectionCoordinate::makeFourierCoordinate(
 
 void DirectionCoordinate::makeDirectionCoordinate(MDirection::Types directionType, 
                                                   const Projection& proj,
-                                                  Double refLong, Double refLat,
-                                                  Double incLong, Double incLat,
-                                                  const Matrix<Double>& xform,
-                                                  Double refX, Double refY,
-                                                  Double longPole, Double latPole)
+                                                  double refLong, double refLat,
+                                                  double incLong, double incLat,
+                                                  const Matrix<double>& xform,
+                                                  double refX, double refY,
+                                                  double longPole, double latPole)
 {
     initializeFactors();
 //
-    Double longPole2 = longPole;
-    Double latPole2 = latPole;
+    double longPole2 = longPole;
+    double latPole2 = latPole;
     if (longPole < 999.0) {
        longPole2 = longPole * to_degrees_p[0];
     }
@@ -1721,7 +1721,7 @@ void DirectionCoordinate::makeDirectionCoordinate(MDirection::Types directionTyp
 
 
 
-Bool DirectionCoordinate::cylindricalFix (Int shapeLong, Int shapeLat)
+bool DirectionCoordinate::cylindricalFix (int32_t shapeLong, int32_t shapeLat)
 //
 // Fix up Cylindrical parameters for when longitude outside of [-180,180] range
 // This has to be in its own function because the image shape intrudes.
@@ -1742,20 +1742,20 @@ Bool DirectionCoordinate::cylindricalFix (Int shapeLong, Int shapeLat)
 //
    if (ierr==-1) {
 //      os << LogIO::NORMAL << "No cylindrical coordinate update was required" << LogIO::POST;
-      return True;
+      return true;
    }
 //
    if (ierr == 0) {
 
 // Update internals of DirectionCoordinate
 
-      Vector<Double> refVal(nWorldAxes());
+      Vector<double> refVal(nWorldAxes());
       refVal[0] = wcs_p.crval[0];
       refVal[1] = wcs_p.crval[1];
       toCurrent(refVal);   
       setReferenceValue (refVal);
 //    
-      Vector<Double> refPix(nPixelAxes());
+      Vector<double> refPix(nPixelAxes());
       refPix[0] = wcs_p.crpix[0];
       refPix[1] = wcs_p.crpix[1];
       setReferencePixel(refPix);
@@ -1764,17 +1764,17 @@ Bool DirectionCoordinate::cylindricalFix (Int shapeLong, Int shapeLat)
    } else {
       set_error(String("DirectionCoordinate::cylindricalFix - ") +
                 String("Could not convert CYL header to [-180,180] longitude range"));
-      return False;
+      return false;
    }
 //
-   return True;
+   return true;
 }
 
 
 
-Vector<Double> DirectionCoordinate::longLatPoles () const
+Vector<double> DirectionCoordinate::longLatPoles () const
 {
-    Vector<Double> x(4);
+    Vector<double> x(4);
     x[0] = wcs_p.crval[0];          // refLong;
     x[1] = wcs_p.crval[1];          // refLat;
     x[2] = wcs_p.lonpole;           // longPole
@@ -1783,7 +1783,7 @@ Vector<Double> DirectionCoordinate::longLatPoles () const
 }
 
 Quantity DirectionCoordinate::getPixelArea() const {
-	Vector<Double> cdelt = increment();
+	Vector<double> cdelt = increment();
 	Quantity forUnit = Quantity(1, units_p[0]) * Quantity(1, units_p[1]);
 	return Quantity(fabs(cdelt[0]*cdelt[1]), forUnit.getUnit());
 }
@@ -1791,7 +1791,7 @@ Quantity DirectionCoordinate::getPixelArea() const {
 
 // These world abs/rel functions are independent of the conversion direction type.
 
-void DirectionCoordinate::makeWorldRelative (Vector<Double>& world) const
+void DirectionCoordinate::makeWorldRelative (Vector<double>& world) const
 {
     static MVDirection mv;
     DebugAssert(world.nelements()==2, AipsError);
@@ -1807,19 +1807,19 @@ void DirectionCoordinate::makeWorldRelative (MDirection& world) const
 {
     static MVDirection mv;
     mv = world.getValue() * rot_p;
-    Double lon = mv.getLong();
-    Double lat = mv.getLat();
+    double lon = mv.getLong();
+    double lat = mv.getLat();
     mv.setAngle(cos(lat)*lon, lat);
     world.set(mv);
 }
 
 
-void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
+void DirectionCoordinate::makeWorldAbsolute (Vector<double>& world) const
 {
     static MVDirection mv;
     DebugAssert(world.nelements()==2, AipsError);
 //   
-    Double lat = world[1]*to_radians_p[1];
+    double lat = world[1]*to_radians_p[1];
     mv.setAngle(world[0]*to_radians_p[0]/cos(lat), lat);
     mv = rot_p * mv;
 //
@@ -1827,8 +1827,8 @@ void DirectionCoordinate::makeWorldAbsolute (Vector<Double>& world) const
     world[1]= mv.getLat()  / to_radians_p[1];
 }
 
-void DirectionCoordinate::makeWorldAbsoluteRef (Vector<Double>& world,
-                                                const Vector<Double>& refVal) const
+void DirectionCoordinate::makeWorldAbsoluteRef (Vector<double>& world,
+                                                const Vector<double>& refVal) const
 {
     static MVDirection mv;
     DebugAssert(world.nelements()==2, AipsError);
@@ -1837,7 +1837,7 @@ void DirectionCoordinate::makeWorldAbsoluteRef (Vector<Double>& world,
     RotMatrix rot;
     setRotationMatrix(rot, refVal[0], refVal[1]);
 //
-    Double lat = world[1]*to_radians_p[1];
+    double lat = world[1]*to_radians_p[1];
     mv.setAngle(world[0]*to_radians_p[0]/cos(lat), lat);
     mv = rot * mv;
 //
@@ -1849,8 +1849,8 @@ void DirectionCoordinate::makeWorldAbsolute (MDirection& world) const
 {
     static MVDirection mv;
 //
-    Double lon = world.getValue().getLong();
-    Double lat = world.getValue().getLat();
+    double lon = world.getValue().getLong();
+    double lat = world.getValue().getLat();
     mv.setAngle(lon/cos(lat), lat);
 //
     world.set(rot_p * mv);
@@ -1858,13 +1858,13 @@ void DirectionCoordinate::makeWorldAbsolute (MDirection& world) const
 
 
 
-Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
+bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
 {
    AlwaysAssert(nWorldAxes()==nPixelAxes(), AipsError);
-   const uInt n = shape.nelements();
+   const uint32_t n = shape.nelements();
    if (n!=nPixelAxes()) {
       set_error("Shape must be of length nPixelAxes");
-      return False;
+      return false;
    }
 
 // Find centre of image.
@@ -1872,28 +1872,28 @@ Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
 // axis (user may have removed a pixel axis in CoordinateSystem)
 // Use reference pixel in this case
 
-   const Vector<Double>& cdelt = increment();
-   Vector<Double> pixelIn(referencePixel().copy());
-   Vector<Double> worldOut(nWorldAxes());
-   for (uInt i=0; i<nPixelAxes(); i++) {
+   const Vector<double>& cdelt = increment();
+   Vector<double> pixelIn(referencePixel().copy());
+   Vector<double> worldOut(nWorldAxes());
+   for (uint32_t i=0; i<nPixelAxes(); i++) {
       if (shape(i) > 0) {
          pixelIn(i) = shape(i) / 2.0;
       }
    }
-   if (!toWorld(worldOut, pixelIn)) return False;
+   if (!toWorld(worldOut, pixelIn)) return false;
 //
    Vector<String> units = worldAxisUnits();
-   Double cosdec = cos(worldOut[1] * to_radians_p[1]);
-   Double fac = 1.0;
+   double cosdec = cos(worldOut[1] * to_radians_p[1]);
+   double fac = 1.0;
 
 // If the shape is -1, it means its not known for this world
 // axis (user may have removed a pixel axis in CoordinateSystem)
 // They might have also have removed a pixel axis  but not a world axis.
 // Really, in this case, the replacement world value should be used.
 
-   Float frac = 0.5;
-   Int n2 = 0;
-   for (uInt i=0; i<2; i++) {
+   float frac = 0.5;
+   int32_t n2 = 0;
+   for (uint32_t i=0; i<2; i++) {
       fac = 1.0;
       if (i==0) fac = cosdec;
 
@@ -1903,7 +1903,7 @@ Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
       if (shape(i)<=1) {
          n2 = 10;
       } else  if (shape(i) > 0) { 
-         n2 = (shape(i) + Int(frac*shape(i))) / 2;
+         n2 = (shape(i) + int32_t(frac*shape(i))) / 2;
       }
 //
       worldMin_p(i) = worldOut(i) - abs(cdelt(i))*n2/fac;    
@@ -1915,27 +1915,27 @@ Bool DirectionCoordinate::setWorldMixRanges (const IPosition& shape)
       }
    }
 //
-   return True;
+   return true;
 }
 
 
 
-void DirectionCoordinate::setWorldMixRanges (const Vector<Bool>& which,
-                                             const Vector<Double>& world)
+void DirectionCoordinate::setWorldMixRanges (const Vector<bool>& which,
+                                             const Vector<double>& world)
 {
    AlwaysAssert(which.nelements()==nWorldAxes(), AipsError);
    AlwaysAssert(world.nelements()==nWorldAxes(), AipsError);
 //
-   const Vector<Double>& cdelt = increment();
+   const Vector<double>& cdelt = increment();
    const Vector<String>& units = worldAxisUnits();
 //
-   Vector<Double> pixelIn(referencePixel().copy());
-   Vector<Double> worldOut;
+   Vector<double> pixelIn(referencePixel().copy());
+   Vector<double> worldOut;
    toWorld(worldOut, pixelIn);
 //
-   Double cosdec = cos(worldOut[1] * to_radians_p[1]);
-   Int n = 10;                                          // Arbitrary offset
-   for (uInt i=0; i<nWorldAxes(); i++) {
+   double cosdec = cos(worldOut[1] * to_radians_p[1]);
+   int32_t n = 10;                                          // Arbitrary offset
+   for (uint32_t i=0; i<nWorldAxes(); i++) {
       if (which(i)) {
          if (i==0) {
             worldMin_p(i) = world(i) - abs(cdelt(i))*n/cosdec;    
@@ -1975,13 +1975,13 @@ void DirectionCoordinate::setRotationMatrix ()
 
 
 void DirectionCoordinate::setRotationMatrix (RotMatrix& rot, 
-                                             Double lon, Double lat) const
+                                             double lon, double lat) const
 // 
 // Set rotation matrix for use in handling offset coordinates
 //
 {
-    Double refLon = lon * to_radians_p[0];
-    Double refLat = lat * to_radians_p[1];
+    double refLon = lon * to_radians_p[0];
+    double refLat = lat * to_radians_p[1];
 //
     MVDirection refPos(refLon, refLat);
     Euler eul(refLat, 2u, -refLon, 3);
@@ -2020,7 +2020,7 @@ void DirectionCoordinate::initializeFactors ()
 
 
 
-void DirectionCoordinate::convertTo (Vector<Double>& world) const
+void DirectionCoordinate::convertTo (Vector<double>& world) const
 {
    static MVDirection inMV;
 
@@ -2035,7 +2035,7 @@ void DirectionCoordinate::convertTo (Vector<Double>& world) const
 
 
 
-void DirectionCoordinate::convertFrom (Vector<Double>& world) const
+void DirectionCoordinate::convertFrom (Vector<double>& world) const
 {
    static MVDirection inMV;
 
@@ -2050,13 +2050,13 @@ void DirectionCoordinate::convertFrom (Vector<Double>& world) const
 
 
 
-Double DirectionCoordinate::putLongInPiRange (Double lon, const String& unit) const
+double DirectionCoordinate::putLongInPiRange (double lon, const String& unit) const
 {  
    Unit u(unit);
-   Quantum<Double> q(lon, u);
+   Quantum<double> q(lon, u);
    MVAngle mva(q);
    const MVAngle& mva2 = mva();
-   Double t = mva2.get(u).getValue();
+   double t = mva2.get(u).getValue();
 //   if (t < 0) t += 360.0/to_degrees_p[0];
    return t;
 }
@@ -2064,12 +2064,12 @@ Double DirectionCoordinate::putLongInPiRange (Double lon, const String& unit) co
 
 // Helper functions to help us interface to WCS
 
-void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
+void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<double>& xform,
                                   const Projection& proj, MDirection::Types directionType,
-                                  Double refPixLong, Double refPixLat,
-                                  Double refLong, Double refLat,
-                                  Double incLong, Double incLat,
-                                  Double longPole, Double latPole)
+                                  double refPixLong, double refPixLat,
+                                  double refLong, double refLat,
+                                  double incLong, double incLat,
+                                  double longPole, double latPole)
 //
 // wcs used 1-rel pixel coordinates
 //
@@ -2097,19 +2097,19 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
         
 // Construct FITS ctype vector   
      
-    Vector<String> axisNames = DirectionCoordinate::axisNames(directionType, True);
+    Vector<String> axisNames = DirectionCoordinate::axisNames(directionType, true);
     Vector<String> ctype = FITSCoordinateUtil::cTypeFromDirection (proj, axisNames,
-                                                                   False);
+                                                                   false);
     strncpy (wcs.ctype[0], ctype[0].chars(), 9);
     strncpy (wcs.ctype[1], ctype[1].chars(), 9);
 //
     String name = Projection::name(proj.type());
-    const Vector<Double>& projParameters = proj.parameters();
-    const uInt nProj = projParameters.nelements();
-    uInt startAt = ((proj.type() == Projection::ZPN) ? 0 : 1);     // Only ZPN uses prjprm->p[0]
+    const Vector<double>& projParameters = proj.parameters();
+    const uint32_t nProj = projParameters.nelements();
+    uint32_t startAt = ((proj.type() == Projection::ZPN) ? 0 : 1);     // Only ZPN uses prjprm->p[0]
 //
     wcs.npv = nProj;
-    for (uInt i=0; i < nProj; i++) {
+    for (uint32_t i=0; i < nProj; i++) {
 //
        wcs.pv[i].i = 2;                  // Latitude, 1-relative
        wcs.pv[i].m = i+startAt;
@@ -2130,30 +2130,30 @@ void DirectionCoordinate::makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
 
 void DirectionCoordinate::normalizePCMatrix()
 {
-    Bool changed(False);
+    bool changed(false);
 
     // go over each of the two rows 
-    for (uInt i=0; i<2; i++) {
-       Double pcNorm = 0;
+    for (uint32_t i=0; i<2; i++) {
+       double pcNorm = 0;
        
        // compute the factor
-       uInt jStart = i*2;
-       uInt jEnd   = jStart + 2;
-       uInt idiag =  jStart + i;
-       Double rowSign = wcs_p.pc[idiag]/fabs(wcs_p.pc[idiag]);
+       uint32_t jStart = i*2;
+       uint32_t jEnd   = jStart + 2;
+       uint32_t idiag =  jStart + i;
+       double rowSign = wcs_p.pc[idiag]/fabs(wcs_p.pc[idiag]);
 
-       for (uInt j=jStart; j < jEnd; j++){
+       for (uint32_t j=jStart; j < jEnd; j++){
 	  pcNorm += wcs_p.pc[j]*wcs_p.pc[j];
        }
 	
        if (pcNorm != 0.0 && pcNorm != 1.0){
-	  changed=True;
+	  changed=true;
 	  pcNorm = sqrt(pcNorm);
 	  // make diagonal element positive
 	  pcNorm *=rowSign; 
 	  
 	  // normalize all elements
-	  for (uInt j=jStart; j < jEnd; j++){
+	  for (uint32_t j=jStart; j < jEnd; j++){
 	     wcs_p.pc[j] /= pcNorm;
 	  }
 	    

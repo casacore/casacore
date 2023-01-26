@@ -108,8 +108,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-// Gaussian3D<Double> g(9.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0);
-// Vector<Double> x(3);
+// Gaussian3D<double> g(9.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0);
+// Vector<double> x(3);
 // x(0) = 1.0; x(1) = 0.5; x(2) = 0.0
 // cout << "g(" << x(0) << "," << x(1) << "," << x(2) << ")=" << g(x) << endl;
 // </srcblock>

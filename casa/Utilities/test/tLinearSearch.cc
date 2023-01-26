@@ -41,7 +41,7 @@
 #include <casacore/casa/namespace.h>
 int main()
 {
-    Bool found;
+    bool found;
     {
 	IPosition ip1(1, 5);
 	AlwaysAssertExit(linearSearch(found, ip1, 1, ip1.nelements()) == -1 && 

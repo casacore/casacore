@@ -47,7 +47,7 @@ SDObservationHandler::SDObservationHandler()
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)
 {;}
 
-SDObservationHandler::SDObservationHandler(MeasurementSet &ms, Vector<Bool> &handledCols,
+SDObservationHandler::SDObservationHandler(MeasurementSet &ms, Vector<bool> &handledCols,
 				   const Record &row) 
     : index_p(0), msObs_p(0), msObsCols_p(0), rownr_p(-1)
 {
@@ -102,7 +102,7 @@ SDObservationHandler &SDObservationHandler::operator=(const SDObservationHandler
     return *this;
 }
 
-void SDObservationHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDObservationHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -111,12 +111,12 @@ void SDObservationHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols,
 void SDObservationHandler::resetRow(const Record &row) 
 {
     clearRow();
-    Vector<Bool> dummyHandled;
+    Vector<bool> dummyHandled;
     initRow(dummyHandled, row);
 }
 
 void SDObservationHandler::fill(const Record &, const String &telescopeName,
-				const Vector<Double> &timeRange)
+				const Vector<double> &timeRange)
 {
     // don't bother unless there is something there
     if (msObs_p) {
@@ -159,18 +159,18 @@ void SDObservationHandler::fill(const Record &, const String &telescopeName,
 	    *flagRowKey_p = *flagRow_p;
 	} else {
 	    // default is not flag the row
-	    *flagRowKey_p = False;
+	    *flagRowKey_p = false;
 	}
-	Bool found = False;
-	uInt whichRow =0;
+	bool found = false;
+	uint32_t whichRow =0;
 
 	// if there is a time range field, there may be more than one matching row
 	if (timeRange_p.isAttached()) {
 	    Vector<rownr_t> rows = index_p->getRowNumbers();
-	    uInt whichElement = 0;
+	    uint32_t whichElement = 0;
 	    while (!found && whichElement < rows.nelements()) {
 		whichRow = rows(whichElement++);
-		if (allEQ(*timeRange_p, msObsCols_p->timeRange()(whichRow))) found = True;
+		if (allEQ(*timeRange_p, msObsCols_p->timeRange()(whichRow))) found = true;
 	    }
 	} else {
 	    // otherwise, there should be just a single match
@@ -235,7 +235,7 @@ void SDObservationHandler::clearRow()
     rownr_p = -1;
 }
 
-void SDObservationHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDObservationHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     msObs_p = new MSObservation(ms.observation());
     AlwaysAssert(msObs_p, AipsError);
@@ -257,7 +257,7 @@ void SDObservationHandler::makeIndex()
     delete index_p;
     index_p = 0;
 
-    Int nKeys = 5;
+    int32_t nKeys = 5;
     if (!nsObsIdCol_p.isNull()) nKeys++;
 
     Vector<String> keys(nKeys);
@@ -288,53 +288,53 @@ void SDObservationHandler::makeIndex()
     }
 }
 
-void SDObservationHandler::initRow(Vector<Bool> &handledCols, const Record &row)
+void SDObservationHandler::initRow(Vector<bool> &handledCols, const Record &row)
 {
     AlwaysAssert(handledCols.nelements()==row.description().nfields(), AipsError);
 
     if (row.fieldNumber("OBSERVER") >= 0) {
 	observer_p.attachToRecord(row, "OBSERVER");
-	handledCols(row.fieldNumber("OBSERVER")) = True;
+	handledCols(row.fieldNumber("OBSERVER")) = true;
     }
 
     if (row.fieldNumber("PROJID") >= 0) {
 	projid_p.attachToRecord(row, "PROJID");
-	handledCols(row.fieldNumber("PROJID")) = True;
+	handledCols(row.fieldNumber("PROJID")) = true;
     }
 
     if (row.fieldNumber("OBSID") >= 0) {
 	obsid_p.attachToRecord(row, "OBSID");
-	handledCols(row.fieldNumber("OBSID")) = True;
+	handledCols(row.fieldNumber("OBSID")) = true;
     }
 
     if (row.fieldNumber("OBSERVATION_FLAG_ROW") >= 0) {
 	flagRow_p.attachToRecord(row, "OBSERVATION_FLAG_ROW");
-	handledCols(row.fieldNumber("OBSERVATION_FLAG_ROW")) = True;
+	handledCols(row.fieldNumber("OBSERVATION_FLAG_ROW")) = true;
     }
 
     if (row.fieldNumber("OBSERVATION_RELEASE_DATE") >= 0) {
 	releaseDate_p.attachToRecord(row, "OBSERVATION_RELEASE_DATE");
-	handledCols(row.fieldNumber("OBSERVATION_RELEASE_DATE")) = True;
+	handledCols(row.fieldNumber("OBSERVATION_RELEASE_DATE")) = true;
     }
 
     if (row.fieldNumber("OBSERVATION_TIME_RANGE") >= 0) {
 	timeRange_p.attachToRecord(row, "OBSERVATION_TIME_RANGE");
-	handledCols(row.fieldNumber("OBSERVATION_TIME_RANGE")) = True;
+	handledCols(row.fieldNumber("OBSERVATION_TIME_RANGE")) = true;
     }
 
     // ignore MAIN_OBSERVATION_ID
     if (row.fieldNumber("MAIN_OBSERVATION_ID") >= 0) {
-	handledCols(row.fieldNumber("MAIN_OBSERVATION_ID")) = True;
+	handledCols(row.fieldNumber("MAIN_OBSERVATION_ID")) = true;
     }
 
     // row number isn't set until the following fill
     rownr_p = -1;
 }
 
-void SDObservationHandler::updateTimeRange(const Vector<Double> &timeRange)
+void SDObservationHandler::updateTimeRange(const Vector<double> &timeRange)
 {
     if (rownr_p >= 0) {
-	Vector<Double> oldTimeRange = msObsCols_p->timeRange()(rownr_p);
+	Vector<double> oldTimeRange = msObsCols_p->timeRange()(rownr_p);
 	oldTimeRange(0) = min(oldTimeRange(0),timeRange(0));
 	oldTimeRange(1) = max(oldTimeRange(1),timeRange(1));
 	msObsCols_p->timeRange().put(rownr_p, oldTimeRange);

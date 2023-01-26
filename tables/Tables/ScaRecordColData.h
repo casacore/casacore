@@ -106,7 +106,7 @@ public:
     virtual void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Test if the given cell contains a defined value.
-    virtual Bool isDefined (rownr_t rownr) const;
+    virtual bool isDefined (rownr_t rownr) const;
 
     // Get the value from a particular cell.
     virtual void get (rownr_t rownr, void*) const;
@@ -142,11 +142,11 @@ public:
     // Sorting on records is not supported, so an exception is thrown.
     // <group>
     virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
-                              Int order,
+                              int32_t order,
 			      CountedPtr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
     virtual void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
-                                 Int order,
+                                 int32_t order,
                                  const Vector<rownr_t>& rownrs,
                                  CountedPtr<ArrayBase>& dataSave);
     // </group>
@@ -186,7 +186,7 @@ private:
     virtual void getFileDerived (AipsIO&, const ColumnSet&);
 
     // Handle getting and putting a record.
-    // It is stored as a Vector of uChar.
+    // It is stored as a Vector of unsigned char.
     // <group>
     void getRecord (rownr_t rownr, TableRecord& rec) const;
     void putRecord (rownr_t rownr, const TableRecord& rec);

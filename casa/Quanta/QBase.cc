@@ -52,11 +52,11 @@ void QBase::setUnit(const QBase &other) {
     qUnit = other.qUnit;
 }
 
-Bool QBase::isConform(const Unit &s) const {
+bool QBase::isConform(const Unit &s) const {
     return (qUnit.getValue() == s.getValue());
 }
 
-Bool QBase::isConform(const QBase &other) const {
+bool QBase::isConform(const QBase &other) const {
     return (qUnit.getValue() == other.qUnit.getValue());
 }
 

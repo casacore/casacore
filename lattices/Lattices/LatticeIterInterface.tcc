@@ -44,29 +44,29 @@ LatticeIterInterface<T>::LatticeIterInterface()
 : itsNavPtr   (0),
   itsLattPtr  (0),
   itsCurPtr   (0),
-  itsUseRef   (False),
-  itsIsRef    (False),
-  itsHaveRead (False),
-  itsRewrite  (False)
+  itsUseRef   (false),
+  itsIsRef    (false),
+  itsHaveRead (false),
+  itsRewrite  (false)
 {}
 
 template <class T>
 LatticeIterInterface<T>::LatticeIterInterface (const Lattice<T>& lattice,
 					       const LatticeNavigator& nav,
-					       Bool useRef)
+					       bool useRef)
 : itsNavPtr     (nav.clone()),
   itsLattPtr    (lattice.clone()),
   itsUseRef     (useRef && lattice.canReferenceArray()),
-  itsIsRef      (False),
-  itsHaveRead   (False),
-  itsRewrite    (False),
+  itsIsRef      (false),
+  itsHaveRead   (false),
+  itsRewrite    (false),
   itsCursorAxes (nav.cursorAxes())
 {
   allocateCurPtr();
   if (!itsUseRef) {
     allocateBuffer();
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 template <class T>
@@ -75,7 +75,7 @@ LatticeIterInterface<T>::LatticeIterInterface
 : itsCurPtr (0)
 {
   copyBase (other);
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
    
 template <class T>
@@ -95,7 +95,7 @@ LatticeIterInterface<T>& LatticeIterInterface<T>::operator=
     rewriteData();
     copyBase (other);
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return *this;
 }
 
@@ -111,7 +111,7 @@ void LatticeIterInterface<T>::copyBase (const LatticeIterInterface<T>& other)
   itsUseRef     = other.itsUseRef;
   itsIsRef      = other.itsIsRef;
   itsHaveRead   = other.itsHaveRead;
-  itsRewrite    = False;
+  itsRewrite    = false;
   itsCursorAxes = other.itsCursorAxes;
   allocateCurPtr();
   if (!itsIsRef) {
@@ -133,30 +133,30 @@ LatticeIterInterface<T>* LatticeIterInterface<T>::clone() const
 }
 
 template<class T>
-Bool LatticeIterInterface<T>::operator++(int)
+bool LatticeIterInterface<T>::operator++(int)
 {
   if (itsRewrite) {
     rewriteData();
   }
-  Bool moved = itsNavPtr->operator++();
+  bool moved = itsNavPtr->operator++();
   if (moved) {
     cursorUpdate();
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return moved;
 }
 
 template<class T>
-Bool LatticeIterInterface<T>::operator--(int)
+bool LatticeIterInterface<T>::operator--(int)
 {
   if (itsRewrite) {
     rewriteData();
   }
-  Bool moved = itsNavPtr->operator--();
+  bool moved = itsNavPtr->operator--();
   if (moved) {
     cursorUpdate();
   }
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   return moved;
 }
 
@@ -166,14 +166,14 @@ void LatticeIterInterface<T>::reset()
   rewriteData();
   itsNavPtr->reset();
   cursorUpdate();
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
 }
 
 template<class T>
-Vector<T>& LatticeIterInterface<T>::vectorCursor (Bool doRead,
-						  Bool autoRewrite)
+Vector<T>& LatticeIterInterface<T>::vectorCursor (bool doRead,
+						  bool autoRewrite)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (itsCurPtr->ndim() != 1) {
     throw(AipsError("LatticeIterInterface<T>::vectorCursor"
 		    " - check the cursor has only one non-degenerate axis"));
@@ -182,16 +182,16 @@ Vector<T>& LatticeIterInterface<T>::vectorCursor (Bool doRead,
     readData (doRead);
   }
   if (autoRewrite) {
-    itsRewrite = True;
+    itsRewrite = true;
   }
   return *(Vector<T>*)itsCurPtr;
 }
 
 template<class T>
-Matrix<T>& LatticeIterInterface<T>::matrixCursor (Bool doRead,
-						  Bool autoRewrite)
+Matrix<T>& LatticeIterInterface<T>::matrixCursor (bool doRead,
+						  bool autoRewrite)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (itsCurPtr->ndim() != 2) {
     throw(AipsError("LatticeIterInterface<T>::matrixCursor"
 		    " - check the cursor has only two non-degenerate axes"));
@@ -200,15 +200,15 @@ Matrix<T>& LatticeIterInterface<T>::matrixCursor (Bool doRead,
     readData (doRead);
   }
   if (autoRewrite) {
-    itsRewrite = True;
+    itsRewrite = true;
   }
   return *(Matrix<T>*)itsCurPtr;
 }
 
 template<class T>
-Cube<T>& LatticeIterInterface<T>::cubeCursor (Bool doRead, Bool autoRewrite)
+Cube<T>& LatticeIterInterface<T>::cubeCursor (bool doRead, bool autoRewrite)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (itsCurPtr->ndim() != 3) {
     throw(AipsError("LatticeIterInterface<T>::cubeCursor"
 		    " - check the cursor has only three non-degenerate axes"));
@@ -217,38 +217,38 @@ Cube<T>& LatticeIterInterface<T>::cubeCursor (Bool doRead, Bool autoRewrite)
     readData (doRead);
   }
   if (autoRewrite) {
-    itsRewrite = True;
+    itsRewrite = true;
   }
   return *(Cube<T>*)itsCurPtr;
 }
 
 template<class T>
-Array<T>& LatticeIterInterface<T>::cursor (Bool doRead, Bool autoRewrite)
+Array<T>& LatticeIterInterface<T>::cursor (bool doRead, bool autoRewrite)
 {
-  DebugAssert(ok() == True, AipsError);
+  DebugAssert(ok() == true, AipsError);
   if (!itsHaveRead) {
     readData (doRead);
   }
   if (autoRewrite) {
-    itsRewrite = True;
+    itsRewrite = true;
   }
   return itsCursor;
 }
 
 
 template<class T>
-void LatticeIterInterface<T>::readData (Bool doRead)
+void LatticeIterInterface<T>::readData (bool doRead)
 {
   if (doRead  ||  itsUseRef) {
     const IPosition shape = itsNavPtr->cursorShape();
     const IPosition start = itsNavPtr->position();
     const IPosition incr  = itsNavPtr->increment();
     IPosition extractShape;
-    Bool hangOver = itsNavPtr->hangOver();
+    bool hangOver = itsNavPtr->hangOver();
     if (hangOver) {
       extractShape = 1 + (itsNavPtr->endPosition() - start) / incr;
       if (extractShape == shape) {
-	hangOver = False;
+	hangOver = false;
       }
     }
     if (!hangOver) {
@@ -259,20 +259,20 @@ void LatticeIterInterface<T>::readData (Bool doRead)
 	DebugAssert (itsIsRef, AipsError);
 	setCurPtr2Cursor();
       } else {
-	itsIsRef = False;
+	itsIsRef = false;
 	if (doRead) {
 	  // Use a temporary array pointing to the same storage as itsCursor. 
 	  // When getSlice returns a reference, tmp is pointing to that
 	  // referenced storage, so we have to copy the data.
 	  Array<T> tmp (itsCursor);
-	  Bool isARef = itsLattPtr->getSlice (tmp, start, shape, incr);
+	  bool isARef = itsLattPtr->getSlice (tmp, start, shape, incr);
 	  if (isARef) {
 	    itsCursor = tmp;
 	  }
 	}
       }
     } else {
-      itsIsRef = False;
+      itsIsRef = false;
       if (itsUseRef) {
 	allocateBuffer();
       }
@@ -281,15 +281,15 @@ void LatticeIterInterface<T>::readData (Bool doRead)
       itsBuffer = overHangVal;
       // Fill in the appropriate region with the bit that does not overhang.
       // Use the same method as above to deal with possible references.
-      const uInt nrdim = extractShape.nelements();
+      const uint32_t nrdim = extractShape.nelements();
       Array<T> subArr(itsCursor(IPosition(nrdim, 0), extractShape-1));
-      Bool isARef = itsLattPtr->getSlice (subArr, start, extractShape, incr);
+      bool isARef = itsLattPtr->getSlice (subArr, start, extractShape, incr);
       if (isARef) {
 	itsCursor(IPosition(nrdim, 0), extractShape-1) = subArr;
       }
     }
   }
-  itsHaveRead = True;
+  itsHaveRead = true;
 }
 
 
@@ -308,17 +308,17 @@ void LatticeIterInterface<T>::rewriteData()
     if (!itsIsRef) {
       const IPosition start = itsNavPtr->position();
       const IPosition incr = itsNavPtr->increment();
-      if (itsNavPtr->hangOver() == False) {
+      if (itsNavPtr->hangOver() == false) {
 	itsLattPtr->putSlice (itsCursor, start, incr);
       } else {
 	// Write the appropriate region.
 	IPosition extractShape = 1 + (itsNavPtr->endPosition() - start) / incr;
-	const uInt nrdim = extractShape.nelements();
+	const uint32_t nrdim = extractShape.nelements();
 	Array<T> subArr(itsCursor(IPosition(nrdim, 0), extractShape-1));
 	itsLattPtr->putSlice (subArr, start, incr); 
       }
     }
-    itsRewrite = False;
+    itsRewrite = false;
   }
 }
 
@@ -326,8 +326,8 @@ template<class T>
 void LatticeIterInterface<T>::cursorUpdate()
 {
   // Set to data not read.
-  itsHaveRead = False;
-  itsIsRef = False;
+  itsHaveRead = false;
+  itsIsRef = false;
   // Reshape the cursor array if needed.
   if (!itsUseRef  &&  itsCursor.shape() != itsNavPtr->cursorShape()) {
     allocateBuffer();
@@ -339,7 +339,7 @@ void LatticeIterInterface<T>::allocateCurPtr()
 {
   const IPosition cursorShape(itsNavPtr->cursorShape());
   const IPosition realShape(cursorShape.nonDegenerate(itsCursorAxes));
-  const uInt ndim = realShape.nelements();
+  const uint32_t ndim = realShape.nelements();
   AlwaysAssert(ndim > 0, AipsError);
   switch (ndim) {
   case 1:
@@ -380,58 +380,58 @@ void LatticeIterInterface<T>::allocateBuffer()
   if (itsBuffer.nelements() == 0) {
     itsBuffer.resize (itsNavPtr->cursorShape());
   }
-  Bool isACopy;
+  bool isACopy;
   T* data = itsBuffer.getStorage(isACopy);
-  DebugAssert(isACopy == False, AipsError);
+  DebugAssert(isACopy == false, AipsError);
   itsCursor.takeStorage (itsNavPtr->cursorShape(), data, SHARE);
   DebugAssert (itsBuffer.nelements() >= itsCursor.nelements(), AipsError);
   setCurPtr2Cursor();
 }
 
 template<class T>
-Bool LatticeIterInterface<T>::ok() const
+bool LatticeIterInterface<T>::ok() const
 {
   String message;
-  Bool flag = True;
+  bool flag = true;
   // Check that we have a pointer to a cursor and not a NULL pointer.
   if (itsCurPtr == 0) {
     message += "Cursor pointer is uninitialized\n";
-    flag = False;
+    flag = false;
   }
   // Check the cursor is OK (by calling its "ok" function).
-  if (itsCurPtr->ok() == False) {
+  if (itsCurPtr->ok() == false) {
     message += "Cursor internals are inconsistent\n"; 
-    flag = False;
+    flag = false;
   }
   // Do the same for the Array cursor
-  if (itsCursor.ok() == False) {
+  if (itsCursor.ok() == false) {
     message += "Array Cursor internals are inconsistent\n";
-    flag = False;
+    flag = false;
   }
   // Check that both cursors have the same number of elements
   if (itsCursor.nelements() != itsCurPtr->nelements()) {
     message += "Cursors have inconsistent lengths\n"; 
-    flag = False;
+    flag = false;
   }
   // Check that both cursors point to the same data.
   if (itsCursor.data() != itsCurPtr->data()) {
     message += "Cursors contain different data\n"; 
-    flag = False;
+    flag = false;
   }
   // Check that we have a pointer to a navigator and not a NULL pointer.
   if (itsNavPtr == 0) {
     message += "Navigator pointer is uninitialized\n";
-    flag = False;
+    flag = false;
   }
   // Check the navigator is OK (by calling its "ok" function).
-  if (itsNavPtr->ok() == False) {
+  if (itsNavPtr->ok() == false) {
     message += "Navigator internals are inconsistent\n"; 
-    flag = False;
+    flag = false;
   }
   // Check the Navigator and Lattice are the same shape
   if (!(itsNavPtr->latticeShape().isEqual(itsLattPtr->shape()))) {
     message += "Navigator Lattice and Data Lattice have different shapes\n";
-    flag = False;
+    flag = false;
   }
   // We do not check if the Navigator cursor and itsCursor are the same shape,
   // because ArrLatticeIter resizes the cursor only when it is being used.

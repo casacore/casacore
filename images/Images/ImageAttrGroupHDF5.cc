@@ -34,8 +34,8 @@ namespace casacore {
 
   ImageAttrGroupHDF5::ImageAttrGroupHDF5 (const HDF5Group& image,
                                           const String& attrName,
-                                          Bool isWritable)
-    : itsChanged  (False),
+                                          bool isWritable)
+    : itsChanged  (false),
       itsCanWrite (isWritable)
   {
     itsRecord = HDF5Record::readRecord (image, attrName);
@@ -48,19 +48,19 @@ namespace casacore {
   {
     if (itsChanged) {
       HDF5Record::writeRecord (image, attrName, itsRecord);
-      itsChanged = False;
+      itsChanged = false;
     }
   }
 
-  uInt ImageAttrGroupHDF5::nrows() const
+  uint32_t ImageAttrGroupHDF5::nrows() const
   {
     return itsRecord.nfields();
   }
 
-  Bool ImageAttrGroupHDF5::hasAttr (const String& attrName) const
+  bool ImageAttrGroupHDF5::hasAttr (const String& attrName) const
   {
     if (itsRecord.empty()) {
-      return False;
+      return false;
     }
     return itsRecord.subRecord(0).isDefined (attrName);
   }
@@ -72,8 +72,8 @@ namespace casacore {
     }
     const Record& subRecord = itsRecord.subRecord(0);
     Vector<String> names(subRecord.size());
-    uInt nr = 0;
-    for (uInt i=0; i<names.size(); ++i) {
+    uint32_t nr = 0;
+    for (uint32_t i=0; i<names.size(); ++i) {
       // Only names not ending in _UNIT or _MEASINFO
       String name = subRecord.name(i);
       if (!((name.size() >= 5  &&  name.substr(name.size()-5) == "_UNIT")  ||
@@ -81,7 +81,7 @@ namespace casacore {
         names[nr++] = subRecord.name(i);
       }
     }
-    names.resize (nr, True);
+    names.resize (nr, true);
     return names;
   }
 
@@ -97,7 +97,7 @@ namespace casacore {
     return TpOther;
   }
 
-  ValueHolder ImageAttrGroupHDF5::getData (const String& attrName, uInt rownr)
+  ValueHolder ImageAttrGroupHDF5::getData (const String& attrName, uint32_t rownr)
   {
     if (rownr >= itsRecord.nfields()) {
       throw AipsError("ImageAttrGroupHDF5: rownr " + String::toString(rownr) +
@@ -107,7 +107,7 @@ namespace casacore {
     return subRecord.asValueHolder (attrName);
   }
 
-  Record ImageAttrGroupHDF5::getDataRow (uInt rownr)
+  Record ImageAttrGroupHDF5::getDataRow (uint32_t rownr)
   {
     if (rownr >= itsRecord.nfields()) {
       throw AipsError("ImageAttrGroupHDF5: rownr " + String::toString(rownr) +
@@ -139,7 +139,7 @@ namespace casacore {
   }
 
   void ImageAttrGroupHDF5::putData (const String& attrName,
-                                    uInt rownr,
+                                    uint32_t rownr,
                                     const ValueHolder& data,
                                     const Vector<String>& units,
                                     const Vector<String>& measInfo)
@@ -157,19 +157,19 @@ namespace casacore {
       AlwaysAssert (measInfo.size() == 2, AipsError);
       subRecord.define (attrName + "_MEASINFO", measInfo);
     }
-    itsChanged = True;
+    itsChanged = true;
   }
 
-  String makeRowName (uInt rownr)
+  String makeRowName (uint32_t rownr)
   {
     ostringstream ostr;
     ostr << std::setfill('0') << std::setw(5) << rownr;
     return ostr.str();
   }
 
-  void ImageAttrGroupHDF5::checkRows (const String& attrName, uInt rownr)
+  void ImageAttrGroupHDF5::checkRows (const String& attrName, uint32_t rownr)
   {
-    uInt nrow = itsRecord.nfields();
+    uint32_t nrow = itsRecord.nfields();
     // A new row can only be added right after the last row.
     if (rownr > nrow) {
       throw AipsError("ImageAttrGroupHDF5: row " + String::toString(rownr) +

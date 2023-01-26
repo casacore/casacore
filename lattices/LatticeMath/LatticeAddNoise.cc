@@ -45,7 +45,7 @@ LatticeAddNoise::LatticeAddNoise()
    
 LatticeAddNoise::LatticeAddNoise(
 	Random::Types type,
-    const Vector<Double>& parameters, Int seed1, Int seed2
+    const Vector<double>& parameters, int32_t seed1, int32_t seed2
 )
 : itsType(type),
   itsParameters(parameters.copy()),
@@ -82,7 +82,7 @@ LatticeAddNoise::~LatticeAddNoise()
 }
  
 void LatticeAddNoise::set (Random::Types type,
-                           const Vector<Double>& parameters)
+                           const Vector<double>& parameters)
 {
    itsType = type;
    itsParameters.resize(0);
@@ -92,21 +92,21 @@ void LatticeAddNoise::set (Random::Types type,
 
 // Private
 
-void LatticeAddNoise::addNoiseToArray (Array<Float>& data) 
+void LatticeAddNoise::addNoiseToArray (Array<float>& data) 
 {
-   Bool deleteIt;
+   bool deleteIt;
    auto* p = data.getStorage(deleteIt);
-   std::for_each(p, p + data.nelements(), [&](Float& datum) {
+   std::for_each(p, p + data.nelements(), [&](float& datum) {
        datum += (*itsNoise)();
    });
    data.putStorage(p, deleteIt);
 }
 
-void LatticeAddNoise::addNoiseToArray (Array<Double>& data)
+void LatticeAddNoise::addNoiseToArray (Array<double>& data)
 {
-   Bool deleteIt;
+   bool deleteIt;
    auto* p = data.getStorage(deleteIt);
-   std::for_each(p, p + data.nelements(), [&](Double& datum) {
+   std::for_each(p, p + data.nelements(), [&](double& datum) {
        datum += (*itsNoise)();
    });
    data.putStorage(p, deleteIt);
@@ -114,9 +114,9 @@ void LatticeAddNoise::addNoiseToArray (Array<Double>& data)
 
 void LatticeAddNoise::addNoiseToArray (Array<Complex>& data) 
 {
-   Bool deleteIt;
+   bool deleteIt;
    auto* p = data.getStorage(deleteIt);
-   Float rr, ii;
+   float rr, ii;
    std::for_each(p, p + data.nelements(), [&](Complex& datum) {
        // Add noise to real and imag separately
        rr = real(datum) + (*itsNoise)();
@@ -128,9 +128,9 @@ void LatticeAddNoise::addNoiseToArray (Array<Complex>& data)
 
 void LatticeAddNoise::addNoiseToArray (Array<DComplex>& data)
 {
-   Bool deleteIt;
+   bool deleteIt;
    auto* p = data.getStorage(deleteIt);
-   Double rr, ii;
+   double rr, ii;
    std::for_each(p, p + data.nelements(), [&](DComplex& datum) {
        // Add noise to real and imag separately
        rr = real(datum) + (*itsNoise)();

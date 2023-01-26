@@ -42,14 +42,14 @@ void doIt()
     WCBox dummy;
     CoordinateSystem cSys (CoordinateUtil::defaultCoords3D());
     {
-      Vector<Int> absRel(2);
+      Vector<int32_t> absRel(2);
       absRel = RegionType::Abs;
-      Vector<Quantum<Double> > blc(2);
-      Vector<Quantum<Double> > trc(2);
-      blc(0) = Quantum<Double> (10.0, "pix");
-      blc(1) = Quantum<Double> (1.0, "pix");
-      trc(0) = Quantum<Double> (14.0, "pix");
-      trc(1) = Quantum<Double> (3.0, "pix");
+      Vector<Quantum<double> > blc(2);
+      Vector<Quantum<double> > trc(2);
+      blc(0) = Quantum<double> (10.0, "pix");
+      blc(1) = Quantum<double> (1.0, "pix");
+      trc(0) = Quantum<double> (14.0, "pix");
+      trc(1) = Quantum<double> (3.0, "pix");
       WCBox box1(blc, trc, cSys, absRel);
       {
 	LCRegion* regptr = box1.toLCRegion (cSys, IPosition(3,30,40,50));
@@ -60,8 +60,8 @@ void doIt()
       IPosition axes(2);
       axes(0) = 1;
       axes(1) = 0;
-      blc(1) = Quantum<Double> (2.0, "pix");
-      trc(0) = Quantum<Double> (12.0, "pix");
+      blc(1) = Quantum<double> (2.0, "pix");
+      trc(0) = Quantum<double> (12.0, "pix");
       WCBox box2(blc, trc, axes, cSys, absRel);
       {
 	LCRegion* regptr = box2.toLCRegion (cSys, IPosition(3,30,40,50));
@@ -71,8 +71,8 @@ void doIt()
       }
       axes(0) = 2;
       axes(1) = 0;
-      blc(0) = Quantum<Double> (10.0, "pix");
-      trc(0) = Quantum<Double> (14.0, "pix");
+      blc(0) = Quantum<double> (10.0, "pix");
+      trc(0) = Quantum<double> (14.0, "pix");
       {
 	WCBox box(blc, trc, axes, cSys, absRel);
 	LCRegion* regptr = box.toLCRegion (cSys, IPosition(3,30,40,50));
@@ -90,12 +90,12 @@ void doIt()
       }
     }
     {
-      Vector<Int> absRel(1);
+      Vector<int32_t> absRel(1);
       absRel = RegionType::Abs;
-      Vector<Quantum<Double> > blc(1);
-      Vector<Quantum<Double> > trc(1);
-      blc(0) = Quantum<Double> (10.0, "pix");
-      trc(0) = Quantum<Double> (14.0, "pix");
+      Vector<Quantum<double> > blc(1);
+      Vector<Quantum<double> > trc(1);
+      blc(0) = Quantum<double> (10.0, "pix");
+      trc(0) = Quantum<double> (14.0, "pix");
       {
 	WCBox box1(blc, trc, cSys, absRel);
 	IPosition axes(1);

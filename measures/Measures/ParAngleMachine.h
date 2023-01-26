@@ -123,21 +123,21 @@ class ParAngleMachine {
   ~ParAngleMachine();
 
   //# Operators
-  // Return parallactic angles (epoch in days if given as Double)
+  // Return parallactic angles (epoch in days if given as double)
   // <thrown>
   // <li> AipsError if no frame or a frame without an Epoch (for type) or       
   //    Position.
   // </thrown>
   // <group>
-  Quantum<Vector<Double> >
-    operator()(const Quantum<Vector<Double> > &ep) const;
-  Quantum<Vector<Double> > operator()(const Vector<MVEpoch> &ep) const;
-  Quantum<Vector<Double> > operator()(const Vector<MEpoch> &ep) const;
-  Quantum<Double> operator()(const Quantum<Double> &ep) const;
-  Quantum<Double> operator()(const MVEpoch &ep) const;
-  Quantum<Double> operator()(const MEpoch &ep) const;
-  Double operator()(const Double &ep) const;
-  Vector<Double> operator()(const Vector<Double> &ep) const;
+  Quantum<Vector<double> >
+    operator()(const Quantum<Vector<double> > &ep) const;
+  Quantum<Vector<double> > operator()(const Vector<MVEpoch> &ep) const;
+  Quantum<Vector<double> > operator()(const Vector<MEpoch> &ep) const;
+  Quantum<double> operator()(const Quantum<double> &ep) const;
+  Quantum<double> operator()(const MVEpoch &ep) const;
+  Quantum<double> operator()(const MEpoch &ep) const;
+  double operator()(const double &ep) const;
+  Vector<double> operator()(const Vector<double> &ep) const;
   // </group>
 
   //# Member functions
@@ -148,7 +148,7 @@ class ParAngleMachine {
   void set(const MeasFrame &frame);
   // </group>
   // Set the test interval (in days) over which to use simple formula
-  void setInterval(const Double ttime);
+  void setInterval(const double ttime);
 
 private:
 
@@ -164,42 +164,42 @@ private:
   // Intermediate conversion result
   mutable MVDirection mvdir_p;
   // Time of last full solution (in days)
-  mutable Double lastep_p;
+  mutable double lastep_p;
   // Default time interval over which to do simple solution (days)
-  mutable Double defintvl_p;
+  mutable double defintvl_p;
   // Time interval over which to do simple solution (days)
-  mutable Double intvl_p;
+  mutable double intvl_p;
   // Calculation cache
   // <group>
-  mutable Double UTfactor_p;
-  mutable Double longoff_p;
-  mutable Double longdiff_p;
-  mutable Double slat1_p;
-  mutable Double clat1_p;
-  mutable Double slat2_p;
-  mutable Double clat2_p;
+  mutable double UTfactor_p;
+  mutable double longoff_p;
+  mutable double longdiff_p;
+  mutable double slat1_p;
+  mutable double clat1_p;
+  mutable double slat2_p;
+  mutable double clat2_p;
   // </group>
 
   //# Constructors
 
   //# Private Member Functions
-  // Get position angle (Epoch is supposed to be in days if Double)
+  // Get position angle (Epoch is supposed to be in days if double)
   // <thrown>
   // <li> AipsError if no frame or a frame without an Epoch (for type) or
   // 	Position.
   // </thrown>
   // <group>
-  Double posAngle(const Quantum<Double> &ep) const;
-  Vector<Double> posAngle(const Quantum<Vector<Double> > &ep) const;
-  Double posAngle(const Double &ep) const;
-  Vector<Double> posAngle(const Vector<Double> &ep) const;
+  double posAngle(const Quantum<double> &ep) const;
+  Vector<double> posAngle(const Quantum<Vector<double> > &ep) const;
+  double posAngle(const double &ep) const;
+  Vector<double> posAngle(const Vector<double> &ep) const;
   // </group>
   // Initialise machinery
   void init();
   // Initialise conversion
   void initConv() const;
   // Calculate position angle
-  Double calcAngle(const Double ep) const;
+  double calcAngle(const double ep) const;
 };
 
 

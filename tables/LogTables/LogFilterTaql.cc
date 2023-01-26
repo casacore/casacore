@@ -66,7 +66,7 @@ LogFilterTaql* LogFilterTaql::clone() const
   return new LogFilterTaql(*this);
 }
 
-Bool LogFilterTaql::pass (const LogMessage& message) const
+bool LogFilterTaql::pass (const LogMessage& message) const
 {
   return expr_p->matches (message);
 }

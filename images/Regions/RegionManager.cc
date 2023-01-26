@@ -87,7 +87,7 @@ namespace casacore { //# name space casa begins
    *************************************************************/
 
   // Private method
-  String RegionManager::absreltype(const Int absrelval){
+  String RegionManager::absreltype(const int32_t absrelval){
     *itsLog << LogOrigin("RegionManager", "absreltype");
 
     if(absrelval == RegionType::Abs)
@@ -115,11 +115,11 @@ namespace casacore { //# name space casa begins
 	  return *itsCSys;
   }
 
-  Bool RegionManager::isPixelRegion(const ImageRegion& reg ){
+  bool RegionManager::isPixelRegion(const ImageRegion& reg ){
       return  reg.isLCRegion();
   }
 	
-  Bool RegionManager::isWorldRegion(const ImageRegion& reg ){
+  bool RegionManager::isWorldRegion(const ImageRegion& reg ){
       return  reg.isWCRegion();
   }
 	
@@ -129,11 +129,11 @@ namespace casacore { //# name space casa begins
    **  Make BOX region routines                               **
    *************************************************************/
 
-  Record* RegionManager::box(const Vector<Double>& blc, 
-			     const Vector<Double>& trc, 
-			     const Vector<Double>& inc, 
+  Record* RegionManager::box(const Vector<double>& blc, 
+			     const Vector<double>& trc, 
+			     const Vector<double>& inc, 
                              const String& absrel, 
-			     const Bool frac, const String& comment){
+			     const bool frac, const String& comment){
     *itsLog << LogOrigin("RegionManager", "box");
     /*   if(blc.nelements() != trc.nelements())
       throw(AipsError("blc and trc do not have the shape"));
@@ -151,9 +151,9 @@ namespace casacore { //# name space casa begins
   }
 	
 
-  Record* RegionManager::box(const Vector<Double>& blc, 
-			     const Vector<Double>& trc, 
-			     const Vector<Int>& shape, 
+  Record* RegionManager::box(const Vector<double>& blc, 
+			     const Vector<double>& trc, 
+			     const Vector<int32_t>& shape, 
 			     const String& comment){
   
     ThrowIf(blc.nelements() != trc.nelements(),
@@ -170,13 +170,13 @@ namespace casacore { //# name space casa begins
 
   ImageRegion* RegionManager::wbox(const Vector<Quantity>& blc, 
 				   const Vector<Quantity>& trc, 
-				   const Vector<Int>& pixelaxes, 
+				   const Vector<int32_t>& pixelaxes, 
 				   const CoordinateSystem& csys, 
 				   const String& absrel){
 
     *itsLog << LogOrigin("RegionManager", "wbox");
     RegionType::AbsRelType leType=RegionType::absRelTypeFromString(absrel);
-    Vector<Int> absRel(blc.nelements(), leType);
+    Vector<int32_t> absRel(blc.nelements(), leType);
     WCBox worldbox;
 
     if(pixelaxes.nelements() > 0 && pixelaxes[0] <0){
@@ -191,7 +191,7 @@ namespace casacore { //# name space casa begins
 
   Record* RegionManager::wbox(const Vector<Quantity>& blc, 
 			      const Vector<Quantity>& trc, 
-			      const Vector<Int>& pixelaxes, 
+			      const Vector<int32_t>& pixelaxes, 
 			      const CoordinateSystem& csys, 
 			      const String& absrel, const String& comment){
     setcoordsys(csys);    
@@ -200,7 +200,7 @@ namespace casacore { //# name space casa begins
 
   Record* RegionManager::wbox(const Vector<Quantity>& blc, 
 			      const Vector<Quantity>& trc, 
-			      const Vector<Int>& pixelaxes,  
+			      const Vector<int32_t>& pixelaxes,  
 			      const String& absrel, const String& comment){
  
     if(!itsCSys) {
@@ -219,7 +219,7 @@ namespace casacore { //# name space casa begins
     QuantumHolder qh;
     if(leString.contains("pix")){
       leString=leString.before("pix");
-      Double value=atof(leString.chars());
+      double value=atof(leString.chars());
       out=Quantity(value, "pix");
     }
     else{
@@ -235,28 +235,28 @@ namespace casacore { //# name space casa begins
   }
   Record* RegionManager::wbox(const Vector<String>& blc, 
 			      const Vector<String>& trc, 
-			      const Vector<Int>& pixelaxes,  
+			      const Vector<int32_t>& pixelaxes,  
 			      const String& absrel, const String& comment){
     ThrowIf(! itsCSys, "Coordinate system has not been set");
     Vector<Quantity> losBlc(blc.nelements());
     Vector<Quantity> losTrc(trc.nelements());
     QuantumHolder qh;
     //Stokes is not known in Quantity
-    Int stInd = itsCSys->findCoordinate(Coordinate::STOKES);
-    StokesCoordinate  stCoord(Vector<Int>(1, Stokes::I));
-    Int wSt=-1;
+    int32_t stInd = itsCSys->findCoordinate(Coordinate::STOKES);
+    StokesCoordinate  stCoord(Vector<int32_t>(1, Stokes::I));
+    int32_t wSt=-1;
     if(stInd>=0){
      wSt= (itsCSys->worldAxes(stInd))[0];
      stCoord=itsCSys->stokesCoordinate(stInd);
     }
-    for (Int k=0; k < blc.shape()(0); ++k){
+    for (int32_t k=0; k < blc.shape()(0); ++k){
       if(k != wSt){
 	toQuantity(losBlc[k], blc[k]);
 	toQuantity(losTrc[k], trc[k]);
       }
       else{
 	//Stokes is not known in Quantity...have to convert them to pix
-	Int stpix=-1;
+	int32_t stpix=-1;
 	if(blc[k].contains("pix"))
 	  toQuantity(losBlc[k], blc[k]);
 	else if(stCoord.toPixel(stpix, Stokes::type(blc[k])))
@@ -275,7 +275,7 @@ namespace casacore { //# name space casa begins
 
   Record* RegionManager::wbox(const Vector<String>& blc, 
 			      const Vector<String>& trc, 
-			      const Vector<Int>& pixelaxes, const CoordinateSystem& csys,  
+			      const Vector<int32_t>& pixelaxes, const CoordinateSystem& csys,  
 			      const String& absrel, const String& comment){
     setcoordsys(csys);    
     return wbox(blc, trc, pixelaxes, absrel, comment);
@@ -288,12 +288,12 @@ namespace casacore { //# name space casa begins
 
   ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, 
 				       const Vector<Quantity>& y, 
-				       const Vector<Int>& pixelaxes, 
+				       const Vector<int32_t>& pixelaxes, 
 				       const CoordinateSystem& csys, 
 				       const String& absrel){
     
     *itsLog << LogOrigin("RegionManager", "wpolygon");
-    Vector<Int> pixax=pixelaxes;
+    Vector<int32_t> pixax=pixelaxes;
     if(pixax.nelements() > 0 && pixax[0] <0){ 
 
       pixax.resize(2);
@@ -305,24 +305,24 @@ namespace casacore { //# name space casa begins
       throw(AipsError("Y values of vertices not same length as the X values"));
 
     //Now lets convert everything to one unit in this instance the the pix unit
-    uInt nvertices=y.nelements();
-    Vector<Double> leX(nvertices);
-    Vector<Double> leY(nvertices);
+    uint32_t nvertices=y.nelements();
+    Vector<double> leX(nvertices);
+    Vector<double> leY(nvertices);
     String xUnit=csys.worldAxisUnits()[pixax[0]];
     String yUnit=csys.worldAxisUnits()[pixax[1]];
-    //  Vector<Int> worldaxes(2);
+    //  Vector<int32_t> worldaxes(2);
     // worldaxes(0)=csys.pixelAxisToWorldAxis(pixax[0]);
     // worldaxes(1)=csys.pixelAxisToWorldAxis(pixax[1]);
     const DirectionCoordinate& dirCoor=csys.directionCoordinate(csys.findCoordinate(Coordinate::DIRECTION));
-    Vector<Double> world = csys.referenceValue();
-    Vector<Double> pixel(world.nelements());
-    for (uInt k=0; k < nvertices; ++k){
+    Vector<double> world = csys.referenceValue();
+    Vector<double> pixel(world.nelements());
+    for (uint32_t k=0; k < nvertices; ++k){
       if(x[k].getUnit().contains("pix") && y[k].getUnit().contains("pix") ){
 	
-	Vector<Double> lepix(2);
+	Vector<double> lepix(2);
 	lepix[0]=x[k].getValue();
 	lepix[1]=y[k].getValue();
-	Vector<Double> lemonde(2);
+	Vector<double> lemonde(2);
 	dirCoor.toWorld(lemonde, lepix);
 	leX[k]=lemonde[0]; leY[k]=lemonde[1];
 	
@@ -343,8 +343,8 @@ namespace casacore { //# name space casa begins
       }
       
     }
-    Quantum<Vector<Double> > elX(leX, xUnit);
-    Quantum<Vector<Double> > elY(leY, yUnit);
+    Quantum<Vector<double> > elX(leX, xUnit);
+    Quantum<Vector<double> > elY(leY, yUnit);
 
 
     RegionType::AbsRelType leType=RegionType::absRelTypeFromString(absrel);
@@ -355,7 +355,7 @@ namespace casacore { //# name space casa begins
   } 
   ImageRegion* RegionManager::wpolygon(const Vector<Quantity>& x, 
 				       const Vector<Quantity>& y, 
-				       const Vector<Int>& pixelaxes,  
+				       const Vector<int32_t>& pixelaxes,  
 				       const String& absrel){
     *itsLog << LogOrigin("RegionManager", "wpolygon");
     if(itsCSys){
@@ -375,8 +375,8 @@ namespace casacore { //# name space casa begins
 		  const Quantity& a,
 		  const Quantity& b,
 		  const Quantity& pa,
-		  const uInt pixelAxis0,
-		  const uInt pixelAxis1,
+		  const uint32_t pixelAxis0,
+		  const uint32_t pixelAxis1,
 		  const CoordinateSystem& csys,
 		  const String& absrel
   ) {
@@ -391,8 +391,8 @@ namespace casacore { //# name space casa begins
 		  const Quantity& a,
 		  const Quantity& b,
 		  const Quantity& pa,
-		  const uInt pixelAxis0,
-		  const uInt pixelAxis1,
+		  const uint32_t pixelAxis0,
+		  const uint32_t pixelAxis1,
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
@@ -405,7 +405,7 @@ namespace casacore { //# name space casa begins
   ImageRegion* RegionManager::wsphere(
 		  const Vector<Quantity>& center,
 		  const Quantity& radius,
-		  const Vector<Int>& pixelAxes,
+		  const Vector<int32_t>& pixelAxes,
 		  const CoordinateSystem& csys,
 		  const String& absrel
 
@@ -418,7 +418,7 @@ namespace casacore { //# name space casa begins
   ImageRegion* RegionManager::wsphere(
 		  const Vector<Quantity>& center,
 		  const Quantity& radius,
-		  const Vector<Int>& pixelAxes,
+		  const Vector<int32_t>& pixelAxes,
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
@@ -431,7 +431,7 @@ namespace casacore { //# name space casa begins
   ImageRegion* RegionManager::wellipsoid(
 		  const Vector<Quantity>& center,
 		  const Vector<Quantity>& radii,
-		  const Vector<Int>& pixelAxes,
+		  const Vector<int32_t>& pixelAxes,
 		  const CoordinateSystem& csys,
 		  const String& absrel
   ) {
@@ -443,7 +443,7 @@ namespace casacore { //# name space casa begins
   ImageRegion* RegionManager::wellipsoid(
 		  const Vector<Quantity>& center,
 		  const Vector<Quantity>& radii,
-		  const Vector<Int>& pixelAxes,
+		  const Vector<int32_t>& pixelAxes,
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
@@ -458,11 +458,11 @@ namespace casacore { //# name space casa begins
 		  const Vector<Quantity>& center,
 		  const Vector<Quantity>& innerRadii,
 		  const Vector<Quantity>& outerRadii,
-		  const Vector<Int>& pixelAxes,
+		  const Vector<int32_t>& pixelAxes,
 		  const CoordinateSystem& csys,
 		  const String& absrel
   ) {
-	  for (uInt i=0; i<innerRadii.size(); i++) {
+	  for (uint32_t i=0; i<innerRadii.size(); i++) {
 		  if (
 				  innerRadii[i].getValue()
 				  > outerRadii[i].getValue(innerRadii[i].getUnit())
@@ -487,7 +487,7 @@ namespace casacore { //# name space casa begins
 		  const Vector<Quantity>& center,
 		  const Vector<Quantity>& innerRadii,
 		  const Vector<Quantity>& outerRadii,
-		  const Vector<Int>& pixelAxes,
+		  const Vector<int32_t>& pixelAxes,
 		  const String& absrel
   ) const {
 	  *itsLog << LogOrigin("RegionManager", __FUNCTION__);
@@ -518,7 +518,7 @@ namespace casacore { //# name space casa begins
 
   ImageRegion*  RegionManager::doUnion(const PtrBlock<const WCRegion*>& regions) {
       *itsLog << LogOrigin("RegionManager", String(__FUNCTION__) + "_2");
-      WCUnion leUnion(False, regions);
+      WCUnion leUnion(false, regions);
       ImageRegion* leReturn= new ImageRegion(leUnion);
       return leReturn;
   }
@@ -556,7 +556,7 @@ namespace casacore { //# name space casa begins
   ImageRegion*  RegionManager::doIntersection(
       const PtrBlock<const WCRegion*>& regions)
   {
-      WCIntersection leIntersect(False, regions);
+      WCIntersection leIntersect(false, regions);
       ImageRegion* leReturn= new ImageRegion(leIntersect);
       return leReturn;
   }
@@ -588,7 +588,7 @@ namespace casacore { //# name space casa begins
 
   ImageRegion*  RegionManager::doComplement(const PtrBlock<const WCRegion*>& regions){
       *itsLog << LogOrigin("RegionManager", "doComplement");
-      WCComplement leComplement(False, regions);
+      WCComplement leComplement(false, regions);
       ImageRegion* leReturn= new ImageRegion(leComplement);
       return leReturn;
   }
@@ -625,7 +625,7 @@ namespace casacore { //# name space casa begins
   ImageRegion*  RegionManager::doDifference(
       const PtrBlock<const WCRegion*>& regions)
   {
-      WCDifference leDiff(False, regions);
+      WCDifference leDiff(false, regions);
       ImageRegion* leReturn = new ImageRegion(leDiff);
       return leReturn;
   }
@@ -664,7 +664,7 @@ namespace casacore { //# name space casa begins
       const PtrBlock<const WCRegion*>& regions, 
       const WCBox& box)
   {
-      WCConcatenation leConcat(False, regions, box);
+      WCConcatenation leConcat(false, regions, box);
       ImageRegion* leReturn= new ImageRegion(leConcat);
       return leReturn;
   }
@@ -675,7 +675,7 @@ namespace casacore { //# name space casa begins
   {
       *itsLog << LogOrigin("RegionManager", "doConcatenation");
 
-      for ( uInt i=0; regions.nelements(); i++ )
+      for ( uint32_t i=0; regions.nelements(); i++ )
 	  *itsLog << LogIO::DEBUGGING
 		  << "\nregion " << i 
 		  << "'s type (WCRegion/LCRegion/LCSLicer): " 
@@ -707,7 +707,7 @@ namespace casacore { //# name space casa begins
       PtrBlock<const ImageRegion*> imageRegions(regions.nfields());
       ImageRegion* reg=0;
       TableRecord tblRec;
-      for( uInt i=0; i < (regions.nfields()); i++ )
+      for( uint32_t i=0; i < (regions.nfields()); i++ )
       {
 	  tblRec.assign(regions.asRecord(casacore::RecordFieldId(0)));
 	  reg=ImageRegion::fromRecord(tblRec, "");
@@ -769,7 +769,7 @@ namespace casacore { //# name space casa begins
       return leRecord;
   }
 
-  Bool RegionManager::writeImageFile(const String& file, const String& regionname, const Record& regionRecord){
+  bool RegionManager::writeImageFile(const String& file, const String& regionname, const Record& regionRecord){
 
     TableRecord regionTblRecord(regionRecord);
     ImageRegion *imageReg=ImageRegion::fromRecord(regionTblRecord, "");
@@ -783,27 +783,27 @@ namespace casacore { //# name space casa begins
       }
 
      delete imageReg;
-     return True;
+     return true;
 
   }
 
 	
-  String RegionManager::imageRegionToTable(const String& tabName, const ImageRegion& imreg, const String& regName, Bool asmask){
+  String RegionManager::imageRegionToTable(const String& tabName, const ImageRegion& imreg, const String& regName, bool asmask){
     tab_p=Table(tabName, Table::Update);
     RegionHandlerTable regtab (getTable, this);
     String newName=regName;
-    Bool retval=False;
+    bool retval=false;
     if(regtab.hasRegion(newName) || newName=="")
       newName=regtab.makeUniqueRegionName(regName, 0);
     if(asmask){
       try{
-	PagedImage<Float> myimage(tabName);
-	SubImage<Float> subim(myimage, imreg, True);
-	ImageRegion outreg=myimage.makeMask(newName, False, False);
+	PagedImage<float> myimage(tabName);
+	SubImage<float> subim(myimage, imreg, true);
+	ImageRegion outreg=myimage.makeMask(newName, false, false);
 	LCRegion& mask=outreg.asMask();
 	LatticeRegion latReg=imreg.toLatticeRegion(myimage.coordinates(), myimage.shape());
-	SubLattice<Bool> subMask(mask, latReg, True);
-	subMask.set(True);
+	SubLattice<bool> subMask(mask, latReg, true);
+	subMask.set(true);
 	myimage.defineRegion (newName, mask, RegionHandler::Masks);
 	retval=myimage.hasRegion(newName);
       }
@@ -827,7 +827,7 @@ namespace casacore { //# name space casa begins
       return String("");
 
  }
-  String RegionManager::recordToTable(const String& tabName, const RecordInterface& rec, const String& regName, Bool asmask){
+  String RegionManager::recordToTable(const String& tabName, const RecordInterface& rec, const String& regName, bool asmask){
 
     if(!Table::isWritable(tabName)){
     
@@ -864,7 +864,7 @@ namespace casacore { //# name space casa begins
       return 0;
 
     }
-    ImageRegion* imreg=regtab.getRegion(regname, RegionHandler::Any, False);
+    ImageRegion* imreg=regtab.getRegion(regname, RegionHandler::Any, false);
     Record * leRecord = new Record();
     leRecord->assign( imreg->toRecord(String("")) );
     delete imreg;
@@ -890,18 +890,18 @@ namespace casacore { //# name space casa begins
     return retval;
   }
 
-  Bool RegionManager::removeRegionInTable(const String& tabName, const String& regName){
-    Bool retval;
+  bool RegionManager::removeRegionInTable(const String& tabName, const String& regName){
+    bool retval;
     if(!Table::isWritable(tabName)){
       *itsLog << LogIO::WARN  << tabName << " is not a valid or writable table" 
 	      << LogIO::POST;
-      return False;
+      return false;
 
     }
     if(regName==""){
       *itsLog << LogIO::WARN  << "No region name given to remove...nothing done" 
 	      << LogIO::POST;
-      return False;
+      return false;
     }
     tab_p=Table(tabName, Table::Update);
     RegionHandlerTable regtab (getTable, this);
@@ -910,10 +910,10 @@ namespace casacore { //# name space casa begins
 	      << regName << LogIO::POST;
       tab_p.relinquishAutoLocks(); 
       tab_p=Table();
-      return False;
+      return false;
 
     }
-    retval=regtab.removeRegion(regName, RegionHandler::Any, False);
+    retval=regtab.removeRegion(regName, RegionHandler::Any, false);
     tab_p.relinquishAutoLocks();
     tab_p=Table();
     return retval;
@@ -921,7 +921,7 @@ namespace casacore { //# name space casa begins
   }
 
 
-  Table& RegionManager::getTable(void* ptr, Bool)
+  Table& RegionManager::getTable(void* ptr, bool)
   {
     RegionManager* rg = static_cast<RegionManager*>(ptr);
     return rg->tab_p;

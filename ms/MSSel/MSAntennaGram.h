@@ -74,40 +74,40 @@ class TableExprNode;
 // It returns a TaQL expression tree.
   TableExprNode msAntennaGramParseCommand (MSSelectableTable& msLike,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) ;
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) ;
   TableExprNode msAntennaGramParseCommand (MSAntennaParse* thisParser,
 					   const TableExprNode& col1TEN,
 					   const TableExprNode& col2TEN,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) ;
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) ;
   TableExprNode msAntennaGramParseCommand (Table& subTable,
 					   TableExprNode& col1TEN,
 					   TableExprNode& col2TEN,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) ;
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) ;
   TableExprNode msAntennaGramParseCommand (const MeasurementSet *ms,
 					   const String& command,
-					   Vector<Int>& selectedAnt1,
-					   Vector<Int>& selectedAnt2,
-					   Matrix<Int>& selectedBaselines);
+					   Vector<int32_t>& selectedAnt1,
+					   Vector<int32_t>& selectedAnt2,
+					   Matrix<int32_t>& selectedBaselines);
   
   TableExprNode baseMSAntennaGramParseCommand(MSAntennaParse* parser, const String& command,
-					      Vector<Int>& selectedAnts1,
-					      Vector<Int>& selectedAnts2,
-					      Matrix<Int>& selectedBaselines);
+					      Vector<int32_t>& selectedAnts1,
+					      Vector<int32_t>& selectedAnts2,
+					      Matrix<int32_t>& selectedBaselines);
   // The yyerror function for the parser.
   // It throws an exception with the current token.
     void MSAntennaGramerror (const char*);
   
   // Give the current position in the string.
   // This can be used when parse errors occur.
-  Int& msAntennaGramPosition();
+  int32_t& msAntennaGramPosition();
   
   // Declare the input routine for flex/bison.
   int msAntennaGramInput (char* buf, int max_size);

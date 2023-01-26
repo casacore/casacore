@@ -44,7 +44,7 @@ int main(int argc, const char* argv[]) {
     Input inputs(1);
     inputs.create("in", "", "Input image name", "string");
     inputs.create("out", "sliced_<in>", "Output image name", "string");
-    inputs.create("outregion", "", "Output image region, specify start/end pairs for each axis and use -1 to use the input image shape", "Block<Int>");
+    inputs.create("outregion", "", "Output image region, specify start/end pairs for each axis and use -1 to use the input image shape", "Block<int32_t>");
     inputs.readArguments(argc, argv);
 
     const String in = inputs.getString("in");
@@ -57,16 +57,16 @@ int main(int argc, const char* argv[]) {
     if ( out.empty() ) {
       out = "sliced_"+in;
     }
-    Bool outisfits = downcase(out).after(out.size()-6) == ".fits";
+    bool outisfits = downcase(out).after(out.size()-6) == ".fits";
 
-    const Block<Int> outregion = inputs.getIntArray("outregion");
+    const Block<int32_t> outregion = inputs.getIntArray("outregion");
 
     FITSImage::registerOpenFunction();
     MIRIADImage::registerOpenFunction();
     LatticeBase* pLatt = ImageOpener::openImage(in);
-    ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
+    ImageInterface<float>* pImage = dynamic_cast<ImageInterface<float>*>(pLatt);
     if (!pImage) {
-      cout << "The input image must have data type Float" << endl;
+      cout << "The input image must have data type float" << endl;
       exit(1);
     }
 
@@ -80,7 +80,7 @@ int main(int argc, const char* argv[]) {
     
     IPosition start(imshape); start = 0;
     IPosition end(imshape);end-=1;
-    for (uInt i=0; i < outregion.nelements(); ++i) {
+    for (uint32_t i=0; i < outregion.nelements(); ++i) {
       if ( outregion[i]  > -1 ) {
         if ( i%2  == 0 ) {        
           start(i/2) = outregion[i];
@@ -90,20 +90,20 @@ int main(int argc, const char* argv[]) {
       }
     }
     Slicer slice(start, end, Slicer::endIsLast);
-    SubImage<Float> subim(*pImage, slice);
+    SubImage<float> subim(*pImage, slice);
     
     if (outisfits) {
       String errMsg;
       ImageFITSConverter::ImageToFITS(errMsg, subim, out,
-                                      128, False, False);
+                                      128, false, false);
     } else {
-      ImageInterface<Float>* pim = 0;
-      if (dynamic_cast<HDF5Image<Float>*>(pImage) != 0) {
-	pim = new HDF5Image<Float> (subim.shape(),
+      ImageInterface<float>* pim = 0;
+      if (dynamic_cast<HDF5Image<float>*>(pImage) != 0) {
+	pim = new HDF5Image<float> (subim.shape(),
 				    subim.coordinates(), out);
       }
       if (pim == 0) {
-	pim = new PagedImage<Float> (subim.shape(), 
+	pim = new PagedImage<float> (subim.shape(), 
 				     subim.coordinates(), out);
       }
       pim->copyData(subim);

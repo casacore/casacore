@@ -46,16 +46,16 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile)
   itsUCharMagic(0),
   itsShortMagic(0),
   itsLongMagic(0),
-  itsHasIntBlanks(False),
-  itsFilterZero(False)
+  itsHasIntBlanks(false),
+  itsFilterZero(false)
 {
    AlwaysAssert(itsTiledFilePtr->dataType()==TpFloat ||
                 itsTiledFilePtr->dataType()==TpDouble,
                 AipsError);
 }
 
-FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
-                    uChar magic, Bool hasBlanks)
+FITSMask::FITSMask (TiledFileAccess* tiledFile, float scale, float offset,
+                    unsigned char magic, bool hasBlanks)
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
   itsOffset(offset),
@@ -63,13 +63,13 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
   itsShortMagic(0),
   itsLongMagic(0),
   itsHasIntBlanks(hasBlanks),
-  itsFilterZero(False)
+  itsFilterZero(false)
 {
    AlwaysAssert(itsTiledFilePtr->dataType()==TpUChar, AipsError);
 }
 
-FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
-                    Short magic, Bool hasBlanks)
+FITSMask::FITSMask (TiledFileAccess* tiledFile, float scale, float offset,
+                    int16_t magic, bool hasBlanks)
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
   itsOffset(offset),
@@ -77,13 +77,13 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
   itsShortMagic(magic),
   itsLongMagic(0),
   itsHasIntBlanks(hasBlanks),
-  itsFilterZero(False)
+  itsFilterZero(false)
 {
    AlwaysAssert(itsTiledFilePtr->dataType()==TpShort, AipsError);
 }
 
-FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
-                    Int magic, Bool hasBlanks)
+FITSMask::FITSMask (TiledFileAccess* tiledFile, float scale, float offset,
+                    int32_t magic, bool hasBlanks)
 : itsTiledFilePtr(tiledFile),
   itsScale(scale),
   itsOffset(offset),
@@ -91,14 +91,14 @@ FITSMask::FITSMask (TiledFileAccess* tiledFile, Float scale, Float offset,
   itsShortMagic(0),
   itsLongMagic(magic),
   itsHasIntBlanks(hasBlanks),
-  itsFilterZero(False)
+  itsFilterZero(false)
 {
    AlwaysAssert(itsTiledFilePtr->dataType()==TpInt, AipsError);
 }
 
 
 FITSMask::FITSMask (const FITSMask& other)
-: Lattice<Bool>(other),
+: Lattice<bool>(other),
   itsTiledFilePtr(other.itsTiledFilePtr),
   itsScale(other.itsScale),
   itsOffset(other.itsOffset),
@@ -129,14 +129,14 @@ FITSMask& FITSMask::operator= (const FITSMask& other)
   return *this;
 }
 
-Lattice<Bool>* FITSMask::clone() const
+Lattice<bool>* FITSMask::clone() const
 {
   return new FITSMask (*this);
 }
 
-Bool FITSMask::isWritable() const
+bool FITSMask::isWritable() const
 {
-  return False;
+  return false;
 }
 
 IPosition FITSMask::shape() const
@@ -144,7 +144,7 @@ IPosition FITSMask::shape() const
   return itsTiledFilePtr->shape();
 }
 
-Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
+bool FITSMask::doGetSlice (Array<bool>& mask, const Slicer& section)
 {
    IPosition shp = section.length();
    if (!mask.shape().isEqual(shp)) mask.resize(shp);
@@ -153,7 +153,7 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
    if (itsTiledFilePtr->dataType()==TpFloat) {
       itsTiledFilePtr->get(itsBuffer, section);
    } else if (itsTiledFilePtr->dataType()==TpDouble) {
-      Array<Double> tmp(shp);
+      Array<double> tmp(shp);
       itsTiledFilePtr->get(tmp, section);
       convertArray(itsBuffer, tmp);
    } else if (itsTiledFilePtr->dataType()==TpInt) {
@@ -167,10 +167,10 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
                            itsUCharMagic, itsHasIntBlanks);
    }
 //
-   Bool deletePtrD;
-   const Float* pData = itsBuffer.getStorage(deletePtrD);
-   Bool deletePtrM;
-   Bool* pMask = mask.getStorage(deletePtrM);
+   bool deletePtrD;
+   const float* pData = itsBuffer.getStorage(deletePtrD);
+   bool deletePtrM;
+   bool* pMask = mask.getStorage(deletePtrM);
 //
    // Apply the according filtering
    if (!itsFilterZero) {
@@ -182,37 +182,37 @@ Bool FITSMask::doGetSlice (Array<Bool>& mask, const Slicer& section)
    itsBuffer.freeStorage(pData, deletePtrD);
    mask.putStorage(pMask, deletePtrM);
 //
-   return False;            // Not a reference
+   return false;            // Not a reference
 }
 
-void FITSMask::filterNaN (Bool *pMask, const Float *pData, uInt nelems)
+void FITSMask::filterNaN (bool *pMask, const float *pData, uint32_t nelems)
 {
   // loop over all elements
-  for (uInt i=0; i<nelems; i++) {
+  for (uint32_t i=0; i<nelems; i++) {
     // set defaults;
     // blanked values are NaNs.
-    pMask[i] = True;
-    if (isNaN(pData[i])) pMask[i] = False;
+    pMask[i] = true;
+    if (isNaN(pData[i])) pMask[i] = false;
   }
 }
 
-void FITSMask::filterZeroNaN (Bool *pMask, const Float *pData, uInt nelems)
+void FITSMask::filterZeroNaN (bool *pMask, const float *pData, uint32_t nelems)
 {
   // loop over all elements
-  for (uInt i=0; i<nelems; i++) {
+  for (uint32_t i=0; i<nelems; i++) {
     // set defaults;
     // blanked values are NaNs and "0.0"
-    pMask[i] = True;
-    if (isNaN(pData[i]) || pData[i] == (Float)0.0) pMask[i] = False;
+    pMask[i] = true;
+    if (isNaN(pData[i]) || pData[i] == (float)0.0) pMask[i] = false;
   }
 }
 
-void FITSMask::setFilterZero(Bool filterZero)
+void FITSMask::setFilterZero(bool filterZero)
 {
   itsFilterZero = filterZero;
 }
 
-void FITSMask::doPutSlice (const Array<Bool>&,
+void FITSMask::doPutSlice (const Array<bool>&,
                            const IPosition&, 	
                            const IPosition&)
 {

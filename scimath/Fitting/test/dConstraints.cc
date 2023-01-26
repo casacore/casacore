@@ -49,20 +49,20 @@
 int main (int argc, const char* argv[])
 {
 
-  uChar tp = '0';			// # of constraints
-  uChar ft = '0';			// Function type (compiled or compound)
+  unsigned char tp = '0';			// # of constraints
+  unsigned char ft = '0';			// Function type (compiled or compound)
   if (argc>1) tp = argv[1][0];
   if (argc>2) ft = argv[2][0];
-  NonLinearFitLM<Double> fitter;
-  Vector<Double> solution;
-  Double newChiSquare;
-  const uInt n = 100;
-  Vector<Double> x(n); 
-  for (uInt i=0; i<n; ++i) x[i] = i*0.5;
-  Vector<Double> y(n); 
-  Vector<Double> sigma(n, 1.0);
-  Matrix<Double> z(n,2);
-  Vector<Double> constrArg(7, 0.0);
+  NonLinearFitLM<double> fitter;
+  Vector<double> solution;
+  double newChiSquare;
+  const uint32_t n = 100;
+  Vector<double> x(n); 
+  for (uint32_t i=0; i<n; ++i) x[i] = i*0.5;
+  Vector<double> y(n); 
+  Vector<double> sigma(n, 1.0);
+  Matrix<double> z(n,2);
+  Vector<double> constrArg(7, 0.0);
   
   MLCG generator; 
   Normal noise(&generator, 0.0, 0.3);  
@@ -75,7 +75,7 @@ int main (int argc, const char* argv[])
   ///fitter.setCriteria(0.0001);
   
   // Function
-  Function<AutoDiff<Double>, AutoDiff<Double> > *gauss;
+  Function<AutoDiff<double>, AutoDiff<double> > *gauss;
 
   cout << endl << "****** Fit a double 1D gaussian function *****" << endl;
   cout << "Run program as " << endl <<
@@ -84,43 +84,43 @@ int main (int argc, const char* argv[])
     "     y = compiled/compound function ([0]/1)" << endl;
   // Make some fake data sets
   //  20.0 * exp (-((x-10)/4)^2) + 10.0 * exp (-((x-33)/4)^2) + 10
-  Double v[7]  = {20, 10, 4, 10, 33, 4, 10};
+  double v[7]  = {20, 10, 4, 10, 33, 4, 10};
   // Must give an initial guess for the set of fitted parameters.
-  Double vi[7] = {22, 11, 5, 10, 30, 5, 9};
+  double vi[7] = {22, 11, 5, 10, 30, 5, 9};
 
   // Select compiled or Gaussian1Ds
   switch (ft) {
   case '1': {
     v[2]  = v[5]  = 4.0*sqrt(log(16.0));
     vi[2] = vi[5] = 5.0*sqrt(log(16.0));
-    gauss = new CompoundFunction<AutoDiff<Double> >;
-    Gaussian1D<AutoDiff<Double> > g1;
-    Gaussian1D<AutoDiff<Double> > g2;
-    Polynomial<AutoDiff<Double> > p1(0);
-    dynamic_cast<CompoundFunction<AutoDiff<Double> > *>(gauss)
+    gauss = new CompoundFunction<AutoDiff<double> >;
+    Gaussian1D<AutoDiff<double> > g1;
+    Gaussian1D<AutoDiff<double> > g2;
+    Polynomial<AutoDiff<double> > p1(0);
+    dynamic_cast<CompoundFunction<AutoDiff<double> > *>(gauss)
       ->addFunction(g1);
-    dynamic_cast<CompoundFunction<AutoDiff<Double> > *>(gauss)
+    dynamic_cast<CompoundFunction<AutoDiff<double> > *>(gauss)
       ->addFunction(g2);
-    dynamic_cast<CompoundFunction<AutoDiff<Double> > *>(gauss)
+    dynamic_cast<CompoundFunction<AutoDiff<double> > *>(gauss)
       ->addFunction(p1);
-    ///    for (uInt i=0; i<7; ++i) (*gauss)[i] = AutoDiff<Double>(v[i],7,i);
+    ///    for (uint32_t i=0; i<7; ++i) (*gauss)[i] = AutoDiff<double>(v[i],7,i);
     cout << "Using a Compound of Gaussians and Polynomial" << endl;
   }
   break;
   default: {
-    gauss = new CompiledFunction<AutoDiff<Double> >;
-    dynamic_cast<CompiledFunction<AutoDiff<Double> > *>(gauss)
+    gauss = new CompiledFunction<AutoDiff<double> >;
+    dynamic_cast<CompiledFunction<AutoDiff<double> > *>(gauss)
       ->setFunction("p6+p0*exp(-((x-p1)/p2)^2) + p3*exp(-((x-p4)/p5)^2)");
-    ///for (uInt i=0; i<7; ++i) (*gauss)[i] = v[i];
+    ///for (uint32_t i=0; i<7; ++i) (*gauss)[i] = v[i];
     cout << "Using a Compiled string function" << endl;
   }
   break;
   }
 
-  for (uInt i=0; i<7; ++i) (*gauss)[i] = AutoDiff<Double>(v[i],7,i);
-  for (uInt i=0; i<n; ++i) y[i] = (*gauss)(x[i]).value() + noise();
+  for (uint32_t i=0; i<7; ++i) (*gauss)[i] = AutoDiff<double>(v[i],7,i);
+  for (uint32_t i=0; i<n; ++i) y[i] = (*gauss)(x[i]).value() + noise();
   // Set the function and initial guess
-  for (uInt i=0; i<7; ++i) (*gauss)[i] = vi[i];
+  for (uint32_t i=0; i<7; ++i) (*gauss)[i] = vi[i];
   fitter.setFunction(*gauss);
   
   try {
@@ -146,7 +146,7 @@ int main (int argc, const char* argv[])
     }
     
     // Perform fit
-    Vector<Double> solution = fitter.fit(x, y, sigma);
+    Vector<double> solution = fitter.fit(x, y, sigma);
     // compute new chi-square for the solution
     newChiSquare = fitter.chiSquare();
     
@@ -157,15 +157,15 @@ int main (int argc, const char* argv[])
     cout << "Converged after " << fitter.currentIteration()
 	 <<"  iterations" <<endl;
     cout << "Initial guess for fitted parameters:" << endl << "[";
-    for (uInt i=0; i<gauss->nparameters()-1; ++i) cout << vi[i] << ", "; 
+    for (uint32_t i=0; i<gauss->nparameters()-1; ++i) cout << vi[i] << ", "; 
     cout << vi[gauss->nparameters()-1] << "]" << endl;
     cout << "Solution for fitted parameters:" << endl << solution <<endl;
     cout << "chi-square after convergence " <<  newChiSquare << endl;
     cout << "Converge criteria " << fitter.getCriteria() << endl;
-    Matrix<Double> covariance = fitter.compuCovariance();
-    Vector<Double> errors = fitter.errors();
+    Matrix<double> covariance = fitter.compuCovariance();
+    Vector<double> errors = fitter.errors();
     // Compare solution with gauss1 parameters
-    for (uInt i=0; i<gauss->parameters().nMaskedParameters(); i++) {
+    for (uint32_t i=0; i<gauss->parameters().nMaskedParameters(); i++) {
       cout << "Expected, Computed Parameter " << v[i];
       cout << ", " << solution[i] << " Std Dev " <<
 	errors[i] << endl;

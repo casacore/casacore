@@ -74,9 +74,9 @@ Gridder<Domain, Range>::Gridder(const IPosition& ishape,
 // Turn a Domain position into a grid location. This should move
 // to the nearest grid point (27.8->28, 28.2->28, -27.4->-27, etc)
 template <class Domain, class Range>
-Vector<Int>& Gridder<Domain, Range>::location(Vector<Int>& loc, const Vector<Domain>& pos)
+Vector<int32_t>& Gridder<Domain, Range>::location(Vector<int32_t>& loc, const Vector<Domain>& pos)
 {
-  for (Int axis=0;axis<ndim;axis++) {
+  for (int32_t axis=0;axis<ndim;axis++) {
     loc(axis)=nint(scale(axis)*pos(axis)+offset(axis));
   }  
   return loc;
@@ -87,7 +87,7 @@ template <class Domain, class Range>
 Vector<Domain>& Gridder<Domain, Range>::position(Vector<Domain>& gpos,
 						 const Vector<Domain>& pos)
 {
-  for (Int axis=0;axis<ndim;axis++) {
+  for (int32_t axis=0;axis<ndim;axis++) {
     gpos(axis)=scale(axis)*pos(axis)+offset(axis);
   }  
   return gpos;
@@ -96,44 +96,44 @@ Vector<Domain>& Gridder<Domain, Range>::position(Vector<Domain>& gpos,
 
 // Is the location on the grid?
 template <class Domain, class Range>
-Bool Gridder<Domain, Range>::onGrid(const Vector<Int>& loc)
+bool Gridder<Domain, Range>::onGrid(const Vector<int32_t>& loc)
 {
-  for (Int i=0;i<ndim;i++) {
-    if(loc(i)>=shapeVec(i)) return False;
-    if(loc(i)<0) return False;
+  for (int32_t i=0;i<ndim;i++) {
+    if(loc(i)>=shapeVec(i)) return false;
+    if(loc(i)<0) return false;
   }
-  return True;
+  return true;
 }
 
 // Is the location (plus of minus deltas) on the grid?
 template <class Domain, class Range>
-Bool Gridder<Domain, Range>::onGrid(const Vector<Int>& loc, const Vector<Int>& delta)
+bool Gridder<Domain, Range>::onGrid(const Vector<int32_t>& loc, const Vector<int32_t>& delta)
 {
-  for (Int i=0;i<ndim;i++) {
-    if((loc(i)+delta(i))>=shapeVec(i)) return False;
-    if((loc(i)+delta(i))<0) return False;
-    if((loc(i)-delta(i))>=shapeVec(i)) return False;
-    if((loc(i)-delta(i))<0) return False;
+  for (int32_t i=0;i<ndim;i++) {
+    if((loc(i)+delta(i))>=shapeVec(i)) return false;
+    if((loc(i)+delta(i))<0) return false;
+    if((loc(i)-delta(i))>=shapeVec(i)) return false;
+    if((loc(i)-delta(i))<0) return false;
   }
-  return True;
+  return true;
 }
 
 // Is the position on the grid?
 template <class Domain, class Range>
-Bool Gridder<Domain, Range>::onGrid(const Vector<Domain>& pos)
+bool Gridder<Domain, Range>::onGrid(const Vector<Domain>& pos)
 {
-  Int loc;
-  for (Int i=0;i<ndim;i++) {
+  int32_t loc;
+  for (int32_t i=0;i<ndim;i++) {
     loc=nint(scale(i)*pos(i)+offset(i));
-    if(loc>=shapeVec(i)) return False;
-    if(loc<0) return False;
+    if(loc>=shapeVec(i)) return false;
+    if(loc<0) return false;
   }  
-  return True;
+  return true;
 }
 
 // Set the offset IP
 template <class Domain, class Range>
-void Gridder<Domain, Range>::setOffset(const Vector<Int>& off)
+void Gridder<Domain, Range>::setOffset(const Vector<int32_t>& off)
 {
   offsetVec=off;
 }
@@ -150,7 +150,7 @@ template <class Domain, class Range>
 Range Gridder<Domain, Range>::correct(const IPosition& loc) 
 {
   Range factor=1.0;
-  for (Int dim=0;dim<ndim;dim++) {
+  for (int32_t dim=0;dim<ndim;dim++) {
     factor*=correctionVectors(dim)(loc(dim));
   }
   return factor;
@@ -160,7 +160,7 @@ Range Gridder<Domain, Range>::correct(const IPosition& loc)
 // must be divided to get a correct flux.
 template <class Domain, class Range>
 void Gridder<Domain, Range>::correctX1D(Vector<Range>& factor,
-					const Int locy)
+					const int32_t locy)
 {
   factor=correctionVectors(0);
   Range yFactor;
@@ -175,14 +175,14 @@ template <class Domain, class Range>
 void Gridder<Domain, Range>::fillCorrectionVectors()
 {
   correctionVectors.resize(ndim);
-  for (Int dim=0;dim<ndim;dim++) {
+  for (int32_t dim=0;dim<ndim;dim++) {
     correctionVectors(dim).resize(shape(dim));
     Range tmp; // need to split this up for egcs1.1.1 on alpha
     tmp = 1.0;
     correctionVectors(dim)= tmp;
     //    correctionVectors(dim)=Range(1.0);
     if(shape(dim)>1) {
-      for (Int loc=0;loc<shape(dim);loc++) {
+      for (int32_t loc=0;loc<shape(dim);loc++) {
 	correctionVectors(dim)(loc)=correctionFactor1D(loc, shape(dim));
       }
     }

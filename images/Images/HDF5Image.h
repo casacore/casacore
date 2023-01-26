@@ -78,12 +78,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // make it known to the image.
   // <srcblock>
   //   // Open the image (as readonly for the moment).
-  //   HDF5Image<Float> myimage ("image.name");
+  //   HDF5Image<float> myimage ("image.name");
   //   // Create a mask for the image.
   //   // The mask will be stored in a subtable of the image.
   //   LCPagedMask mask (RegionHandler::makeMask (myimage, "mask.name"));
-  //   // Fill the mask with whatever values (e.g. all True).
-  //   mask.set (True);
+  //   // Fill the mask with whatever values (e.g. all true).
+  //   mask.set (true);
   //   // Make the mask known to the image (with name mask1).
   //   myimage.defineRegion ("mask1", mask, RegionHandler::Masks);
   //   // Make the mask the default mask for this image.
@@ -146,20 +146,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Return the current HDF5 file name. By default this includes the full path. 
     // The path preceding the file name can be stripped off on request.
-    virtual String name (Bool stripPath=False) const;
+    virtual String name (bool stripPath=false) const;
 
     // Function which changes the shape of the ImageExpr.
     // Throws an exception as an HDF5Image cannot be resized.
     virtual void resize(const TiledShape& newShape);
 
     // Check for symmetry in data members.
-    virtual Bool ok() const;
+    virtual bool ok() const;
 
     // Return the shape of the image.
     virtual IPosition shape() const;
 
     // Function which extracts an array from the map.
-    virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
+    virtual bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
   
     // Function to replace the values in the map with soureBuffer.
     virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -171,22 +171,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual const LatticeRegion* getRegionPtr() const;
 
     // An HDF5Image is always persistent.
-    virtual Bool isPersistent() const;
+    virtual bool isPersistent() const;
 
     // An HDF5Image is always paged to disk.
-    virtual Bool isPaged() const;
+    virtual bool isPaged() const;
 
     // Is the HDF5Image writable?
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Does the image object use a pixelmask?
-    virtual Bool hasPixelMask() const;
+    virtual bool hasPixelMask() const;
 
     // Get access to the pixelmask used.
     // An exception is thrown if the image does not use a pixelmask.
     // <group>
-    virtual const Lattice<Bool>& pixelMask() const;
-    virtual Lattice<Bool>& pixelMask();
+    virtual const Lattice<bool>& pixelMask() const;
+    virtual Lattice<bool>& pixelMask();
     // </group>
 
     // Set the default pixelmask to the mask with the given name
@@ -222,12 +222,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Function which sets the units associated with the image
     // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
-    // False if it cannot set the unit for some reason (e.g. the underlying
+    // false if it cannot set the unit for some reason (e.g. the underlying
     // file is not writable).
-    virtual Bool setUnits (const Unit& newUnits);
+    virtual bool setUnits (const Unit& newUnits);
 
     // Flushes the new coordinate system to disk if the file is writable.
-    virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
+    virtual bool setCoordinateInfo (const CoordinateSystem& coords);
 
     // These are the true implementations of the paran operator.
     // <note> Not for public use </note>
@@ -238,20 +238,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Replace the miscinfo in the HDF5Image.
     // It can fail if, e.g., the underlying file is not writable.
-    virtual Bool setMiscInfo (const RecordInterface& newInfo);
+    virtual bool setMiscInfo (const RecordInterface& newInfo);
 
     // The ImageInfo object contains some miscellaneous information about the
     // image, which unlike that stored in MiscInfo, has a standard list of
     // things, such as the restoring beam.
     // Note that setImageInfo REPLACES the information with the new information.
     // It can fail if, e.g., the underlying file is not writable.
-    virtual Bool setImageInfo(const ImageInfo& info);
+    virtual bool setImageInfo(const ImageInfo& info);
 
     // Get access to the attribute handler.
     // If a handler keyword does not exist yet, it is created if
     // <src>createHandler</src> is set.
     // Otherwise the handler is empty and no groups can be created for it.
-    virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+    virtual ImageAttrHandler& attrHandler (bool createHandler=false);
 
     // Remove a region/mask belonging to the image from the given group
     // (which can be Any).
@@ -259,20 +259,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <br>Optionally an exception is thrown if the region does not exist.
     virtual void removeRegion (const String& name,
 			       RegionHandler::GroupType = RegionHandler::Any,
-			       Bool throwIfUnknown = True);
+			       bool throwIfUnknown = true);
 
     // This is the implementation of the letter for the envelope Iterator
     // class. <note> Not for public use </note>.
     virtual LatticeIterInterface<T>* makeIter
     (const LatticeNavigator& navigator,
-     Bool useRef) const;
+     bool useRef) const;
 
     // Returns the maximum recommended number of pixels for a cursor. This is
     // the number of pixels in a tile. 
-    virtual uInt advisedMaxPixels() const;
+    virtual uint32_t advisedMaxPixels() const;
 
     // Help the user pick a cursor for most efficient access.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
     // Flush the data.
     virtual void flush();
@@ -319,7 +319,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // Tell if HDF5 images can be used.
-  inline Bool canUseHDF5Image()
+  inline bool canUseHDF5Image()
     { return HDF5Object::hasHDF5Support(); }
 
   // Determine the pixel type in the HDF5Image contained in
@@ -328,7 +328,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <group name="pixeltype")
   DataType hdf5imagePixelType (const String& fileName);
   // Check if this HDF5 file is an HDF5 image.
-  Bool isHDF5Image (const String& fileName);
+  bool isHDF5Image (const String& fileName);
   // </group>
 
 

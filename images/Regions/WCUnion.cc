@@ -55,7 +55,7 @@ WCUnion::WCUnion (const PtrBlock<const ImageRegion*>& regions)
 : WCCompound (regions)
 {}
 
-WCUnion::WCUnion (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
+WCUnion::WCUnion (bool takeOver, const PtrBlock<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -74,7 +74,7 @@ WCUnion& WCUnion::operator= (const WCUnion& other)
     return *this;
 }
 
-Bool WCUnion::operator== (const WCRegion& other) const
+bool WCUnion::operator== (const WCRegion& other) const
 {
    return WCCompound::operator== (other);
 }
@@ -91,7 +91,7 @@ LCRegion* WCUnion::doToLCRegion (const CoordinateSystem& cSys,
 {
     PtrBlock<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
-    return new LCUnion (True, regions);
+    return new LCUnion (true, regions);
 }
 
 String WCUnion::className()
@@ -117,7 +117,7 @@ WCUnion* WCUnion::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new WCUnion (True, regions);
+    return new WCUnion (true, regions);
 }
 
 } //# NAMESPACE CASACORE - END

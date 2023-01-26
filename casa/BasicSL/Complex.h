@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <note role=tip> In the following all references to <src>Complex</src>
 // can be replaced with <src>DComplex</src>. with simultaneous
-// replacement of <src>Float</src> with <src>Double</src>. </note>
+// replacement of <src>float</src> with <src>double</src>. </note>
 //
 // Complex numbers may be constructed and used in the following ways:
 // <dl>
@@ -78,22 +78,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dt>Complex u(x); Complex v = x;</dt>
 // <dd>  Set u and v to the same value as x. </dd>
 // 
-// <dt>Float real(Complex& x);</dt>
+// <dt>float real(Complex& x);</dt>
 // <dd>  returns the real part of x. </dd>
 // 
-// <dt>Float imag(Complex& x);</dt>
+// <dt>float imag(Complex& x);</dt>
 // <dd>  returns the imaginary part of x. </dd>
 // 
-// <dt>Float abs(Complex& x);</dt>
+// <dt>float abs(Complex& x);</dt>
 // <dd>  returns the magnitude of x. </dd>
 // 
-// <dt>Float norm(Complex& x);</dt>
+// <dt>float norm(Complex& x);</dt>
 // <dd>  returns the square of the magnitude of x. </dd>
 // 
-// <dt>Float arg(Complex& x);</dt>
+// <dt>float arg(Complex& x);</dt>
 // <dd>  returns the argument (amplitude) of x. </dd>
 // 
-// <dt>Complex polar(Float r, Float t = 0.0);</dt>
+// <dt>Complex polar(float r, float t = 0.0);</dt>
 // <dd>  returns a Complex with abs of r and arg of t. </dd>
 // 
 // <dt>Complex conj(Complex& x);</dt>
@@ -132,13 +132,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dt> Complex max(Complex x,Complex y);
 // <dd> Returns the maximum of x,y (using operator>=, i.e. the norm).
 //
-// <dt>Bool near(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
+// <dt>bool near(Complex val1, Complex val2, double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is relatively near val2 (see Math.h).
-//	(Note the Double tolerance) </dd>
+//	(Note the double tolerance) </dd>
 //
-// <dt>Bool nearAbs(Complex val1, Complex val2, Double tol = 1.0e-5);</dt>
+// <dt>bool nearAbs(Complex val1, Complex val2, double tol = 1.0e-5);</dt>
 // <dd>  returns whether val1 is absolutely near val2 (see Math.h).
-//	(Note the Double tolerance) </dd>
+//	(Note the double tolerance) </dd>
 //
 // <dt>ostream << x;</dt>
 // <dd>  prints x in the form (re, im). </dd>
@@ -158,11 +158,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name="Complex NaN and Infinity">
-Bool isNaN (const Complex& val);
+bool isNaN (const Complex& val);
 void setNaN(Complex& val);
-Bool isInf (const Complex& val);
+bool isInf (const Complex& val);
 void setInf(Complex& val);
-Bool isFinite(const Complex& val);
+bool isFinite(const Complex& val);
 // </group>
 
 // <summary>Complex comparisons </summary>
@@ -171,14 +171,14 @@ Bool isFinite(const Complex& val);
 // <group name="Complex comparisons">
 //# On Linux comparing the norm does not work well in debug mode
 //# for equal values. Therefore they are compared for equality first.
-inline Bool operator>= (const Complex& left, const Complex& right)
-  { return left==right  ?  True : norm(left) >= norm(right); }
-inline Bool operator>  (const Complex& left, const Complex& right)
-  { return left==right  ?  False : norm(left) > norm(right); }
-inline Bool operator<= (const Complex& left, const Complex& right)
-  { return left==right  ?  True : norm(left) <= norm(right); }
-inline Bool operator<  (const Complex& left, const Complex& right)
-  { return left==right  ?  False : norm(left) < norm(right); }
+inline bool operator>= (const Complex& left, const Complex& right)
+  { return left==right  ?  true : norm(left) >= norm(right); }
+inline bool operator>  (const Complex& left, const Complex& right)
+  { return left==right  ?  false : norm(left) > norm(right); }
+inline bool operator<= (const Complex& left, const Complex& right)
+  { return left==right  ?  true : norm(left) <= norm(right); }
+inline bool operator<  (const Complex& left, const Complex& right)
+  { return left==right  ?  false : norm(left) < norm(right); }
 // </group>
 
 
@@ -186,24 +186,24 @@ inline Bool operator<  (const Complex& left, const Complex& right)
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name="DComplex NaN and Infinity">
-Bool isNaN (const DComplex& val);
+bool isNaN (const DComplex& val);
 void setNaN(DComplex& val);
-Bool isInf (const DComplex& val);
+bool isInf (const DComplex& val);
 void setInf(DComplex& val);
-Bool isFinite(const DComplex& val);
+bool isFinite(const DComplex& val);
 // </group>
 
 // <summary> DComplex comparisons </summary>
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name="DComplex comparisons">
-inline Bool operator>= (const DComplex& left, const DComplex& right)
+inline bool operator>= (const DComplex& left, const DComplex& right)
   { return norm(left) >= norm(right); }
-inline Bool operator>  (const DComplex& left, const DComplex& right)
+inline bool operator>  (const DComplex& left, const DComplex& right)
   { return norm(left) >  norm(right); }
-inline Bool operator<= (const DComplex& left, const DComplex& right)
+inline bool operator<= (const DComplex& left, const DComplex& right)
   { return norm(left) <= norm(right); }
-inline Bool operator<  (const DComplex& left, const DComplex& right)
+inline bool operator<  (const DComplex& left, const DComplex& right)
   { return norm(left) <  norm(right); }
 // </group>
 
@@ -213,8 +213,8 @@ inline Bool operator<  (const DComplex& left, const DComplex& right)
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name=math>
-inline Double fabs(const DComplex &val) { return std::abs(val); }
-inline Float fabs(const Complex &val) { return std::abs(val); }
+inline double fabs(const DComplex &val) { return std::abs(val); }
+inline float fabs(const Complex &val) { return std::abs(val); }
 
 inline DComplex square(const DComplex &val) { return val*val; }
 inline Complex square(const Complex &val) { return val*val; }
@@ -223,7 +223,7 @@ inline DComplex cube(const DComplex &val) { return val*val*val; }
 inline Complex cube(const Complex &val) { return val*val*val; }
 
 // ArrayMath::pow needs this pow function.
-///inline Complex pow(const Complex& val, Double p) { return std::pow(val,Float(p)); }
+///inline Complex pow(const Complex& val, double p) { return std::pow(val,float(p)); }
 
 // We have to explicitly implement these for different type operands
 inline DComplex operator+(const DComplex& d, const Complex& c) {
@@ -244,18 +244,18 @@ inline DComplex operator-(const Complex& c, const DComplex& d) {
 
 // QMath and scimath need these operators * and / 
 // <group>
-inline Complex operator*(const Complex& val, Double f) { return val*Float(f); }
-inline Complex operator*(Double f, const Complex& val) { return val*Float(f); }
-inline Complex operator/(const Complex& val, Double f) { return val/Float(f); }
-inline Complex operator/(Double f, const Complex& val) { return Float(f)/val; }
+inline Complex operator*(const Complex& val, double f) { return val*float(f); }
+inline Complex operator*(double f, const Complex& val) { return val*float(f); }
+inline Complex operator/(const Complex& val, double f) { return val/float(f); }
+inline Complex operator/(double f, const Complex& val) { return float(f)/val; }
 // </group>
-// These operators are useful, otherwise both Float and Double are applicable
+// These operators are useful, otherwise both float and double are applicable
 // for Ints.
 // <group>
-inline Complex operator*(const Complex& val, Int f) { return val*Float(f); }
-inline Complex operator*(Int f, const Complex& val) { return val*Float(f); }
-inline Complex operator/(const Complex& val, Int f) { return val/Float(f); }
-inline Complex operator/(Int f, const Complex& val) { return Float(f)/val; }
+inline Complex operator*(const Complex& val, int32_t f) { return val*float(f); }
+inline Complex operator*(int32_t f, const Complex& val) { return val*float(f); }
+inline Complex operator/(const Complex& val, int32_t f) { return val/float(f); }
+inline Complex operator/(int32_t f, const Complex& val) { return float(f)/val; }
 // </group>
 // </group>
 
@@ -263,21 +263,21 @@ inline Complex operator/(Int f, const Complex& val) { return Float(f)/val; }
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="" demos="">
 // </reviewed>
 // <group name=near>
-Bool near(const Complex &val1, const Complex &val2, Double tol=1.0e-5);
-Bool near(const DComplex &val1, const DComplex &val2, Double tol=1.0e-13);
-Bool nearAbs(const Complex &val1, const Complex &val2, Double tol=1.0e-5);
-Bool nearAbs(const DComplex &val1, const DComplex &val2, Double tol=1.0e-13);
-inline Bool allNear(const Complex &val1, const Complex &val2,
-		    Double tol=1.0e-5)
+bool near(const Complex &val1, const Complex &val2, double tol=1.0e-5);
+bool near(const DComplex &val1, const DComplex &val2, double tol=1.0e-13);
+bool nearAbs(const Complex &val1, const Complex &val2, double tol=1.0e-5);
+bool nearAbs(const DComplex &val1, const DComplex &val2, double tol=1.0e-13);
+inline bool allNear(const Complex &val1, const Complex &val2,
+		    double tol=1.0e-5)
   { return near(val1, val2, tol); }
-inline Bool allNear(const DComplex &val1, const DComplex &val2, 
-		    Double tol=1.0e-13)
+inline bool allNear(const DComplex &val1, const DComplex &val2, 
+		    double tol=1.0e-13)
   { return near(val1, val2, tol); }
-inline Bool allNearAbs(const Complex &val1, const Complex &val2, 
-		       Double tol=1.0e-5)
+inline bool allNearAbs(const Complex &val1, const Complex &val2, 
+		       double tol=1.0e-5)
   { return nearAbs(val1, val2, tol); }
-inline Bool allNearAbs(const DComplex &val1, const DComplex &val2, 
-		       Double tol=1.0e-13)
+inline bool allNearAbs(const DComplex &val1, const DComplex &val2, 
+		       double tol=1.0e-13)
   { return nearAbs(val1, val2, tol); }
 // </group>
 

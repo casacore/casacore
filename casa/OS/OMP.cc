@@ -28,7 +28,7 @@
 namespace casacore {
   namespace OMP {
 
-    uInt nMaxThreads() {
+    uint32_t nMaxThreads() {
 #ifdef _OPENMP
         return (omp_get_num_threads() > 1) ? 1 : omp_get_max_threads();
 #else

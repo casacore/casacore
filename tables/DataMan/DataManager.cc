@@ -63,7 +63,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 DataManager::DataManager()
 : nrcol_p       (0),
   seqnr_p       (0),
-  asBigEndian_p (False),
+  asBigEndian_p (false),
   tsmOption_p   (TSMOption::Buffer, 0, 0),
   clone_p       (0)
 {
@@ -92,54 +92,54 @@ Record DataManager::getProperties() const
 void DataManager::setProperties (const Record&)
     {}
 
-Bool DataManager::isStorageManager() const
-    { return True; }
+bool DataManager::isStorageManager() const
+    { return true; }
 
 
 
 void DataManager::create64 (rownr_t nrrow)
 {
-  AlwaysAssert (nrrow <= std::numeric_limits<uInt>::max(), AipsError);
-  create (uInt(nrrow));
+  AlwaysAssert (nrrow <= std::numeric_limits<uint32_t>::max(), AipsError);
+  create (uint32_t(nrrow));
 }
   
 rownr_t DataManager::open64 (rownr_t nrrow, AipsIO& ios)
 {
-  return open1 (uInt(nrrow), ios);
+  return open1 (uint32_t(nrrow), ios);
 }
 
 rownr_t DataManager::resync64 (rownr_t nrrow)
 {
-  AlwaysAssert (nrrow < std::numeric_limits<uInt>::max(), AipsError);
-  return resync1 (uInt(nrrow));
+  AlwaysAssert (nrrow < std::numeric_limits<uint32_t>::max(), AipsError);
+  return resync1 (uint32_t(nrrow));
 }
 
 
-uInt DataManager::open1 (uInt nrrow, AipsIO& ios)
+uint32_t DataManager::open1 (uint32_t nrrow, AipsIO& ios)
 {
     open (nrrow, ios);
     return nrrow;
 }
 
-uInt DataManager::resync1 (uInt nrrow)
+uint32_t DataManager::resync1 (uint32_t nrrow)
 {
     resync (nrrow);
     return nrrow;
 }
 
-void DataManager::create (uInt)
+void DataManager::create (uint32_t)
 {
     { throw DataManInvOper ("DataManager::create not implemented for "
                             "data manager type " + dataManagerType()); }
 }
 
-void DataManager::open (uInt, AipsIO&)
+void DataManager::open (uint32_t, AipsIO&)
 {
     { throw DataManInvOper ("DataManager::open not implemented for "
                             "data manager type " + dataManagerType()); }
 }
 
-void DataManager::resync (uInt)
+void DataManager::resync (uint32_t)
 {
     { throw DataManInvOper ("DataManager::resync not implemented for "
                             "data manager type " + dataManagerType()); }
@@ -149,7 +149,7 @@ void DataManager::resync (uInt)
 void DataManager::reopenRW()
 {}
 
-void DataManager::setMaximumCacheSize (uInt)
+void DataManager::setMaximumCacheSize (uint32_t)
 {}
 
 void DataManager::showCacheStatistics (ostream&) const
@@ -180,7 +180,7 @@ DataManagerColumn* DataManager::createScalarColumn (const String& columnName,
 						  dataTypeId);
     colPtr->setColumnName (columnName);
     checkDataType (colPtr, columnName, dataType, dataTypeId);
-    colPtr->setIsFixedShape (True);
+    colPtr->setIsFixedShape (true);
     nrcol_p++;
     return colPtr;
 }
@@ -241,11 +241,11 @@ void DataManager::throwDataTypeOther (const String& columnName,
 }
 
 
-Bool DataManager::hasMultiFileSupport() const
-    { return False; }
+bool DataManager::hasMultiFileSupport() const
+    { return false; }
 
-Bool DataManager::canReallocateColumns() const
-    { return False; }
+bool DataManager::canReallocateColumns() const
+    { return false; }
 DataManagerColumn* DataManager::reallocateColumn (DataManagerColumn* column)
     { return column; }
 
@@ -272,8 +272,8 @@ String DataManager::fileName() const
 ByteIO::OpenOption DataManager::fileOption() const
     { return PlainTable::toAipsIOFoption (table_p->tableOption()); }
 
-Bool DataManager::isRegular() const
-    { return True; }
+bool DataManager::isRegular() const
+    { return true; }
 
 void DataManager::linkToTable (Table& tab)
 {
@@ -285,38 +285,38 @@ void DataManager::prepare()
 {}
 
 
-Bool DataManager::canAddRow() const
-    { return False; }
+bool DataManager::canAddRow() const
+    { return false; }
 
-Bool DataManager::canRemoveRow() const
-    { return False; }
+bool DataManager::canRemoveRow() const
+    { return false; }
 
-Bool DataManager::canAddColumn() const
-    { return False; }
+bool DataManager::canAddColumn() const
+    { return false; }
 
-Bool DataManager::canRemoveColumn() const
-    { return False; }
+bool DataManager::canRemoveColumn() const
+    { return false; }
 
-Bool DataManager::canRenameColumn() const
-    { return True; }
+bool DataManager::canRenameColumn() const
+    { return true; }
 
 void DataManager::addRow64 (rownr_t nrrow)
 {
-  AlwaysAssert (nrrow < std::numeric_limits<uInt>::max(), AipsError);
-  addRow (uInt(nrrow));
+  AlwaysAssert (nrrow < std::numeric_limits<uint32_t>::max(), AipsError);
+  addRow (uint32_t(nrrow));
 }
 
 void DataManager::removeRow64 (rownr_t rownr)
 {
-  AlwaysAssert (rownr < std::numeric_limits<uInt>::max(), AipsError);
-  removeRow (uInt(rownr));
+  AlwaysAssert (rownr < std::numeric_limits<uint32_t>::max(), AipsError);
+  removeRow (uint32_t(rownr));
 }
 
-void DataManager::addRow (uInt)
+void DataManager::addRow (uint32_t)
     { throw DataManInvOper ("DataManager::addRow not allowed for "
                             "data manager type " + dataManagerType()); }
 
-void DataManager::removeRow (uInt)
+void DataManager::removeRow (uint32_t)
     { throw DataManInvOper ("DataManager::removeRow not allowed for "
                             "data manager type " + dataManagerType()); }
 
@@ -336,7 +336,7 @@ void DataManager::removeColumn (DataManagerColumn*)
 std::map<String,DataManagerCtor>
         DataManager::theirRegisterMap(initRegisterMap());
 std::recursive_mutex DataManager::theirMutex;
-// Define the nr of rows fitting in an Int which is used by the data
+// Define the nr of rows fitting in an int32_t which is used by the data
 // managers. Test programs can set it to a lower value to test storing
 // 64-bit rownrs without the need of having very large tables.
 rownr_t DataManager::MAXROWNR32 (2147483647);
@@ -350,7 +350,7 @@ void DataManager::registerCtor (const String& type, DataManagerCtor func)
 }
 
 //# Test if the data manager is registered.
-Bool DataManager::isRegistered (const String& type)
+bool DataManager::isRegistered (const String& type)
 {
     std::lock_guard<std::recursive_mutex> lock(theirMutex);
     return theirRegisterMap.find(type) != theirRegisterMap.end();
@@ -379,7 +379,7 @@ DataManagerCtor DataManager::getCtor (const String& type)
     }
     // Try to load and initialize the dynamic library.
     DynLib dl(libname, string("libcasa_"), CASACORE_STRINGIFY(SOVERSION),
-              "register_"+libname, False);
+              "register_"+libname, false);
     if (dl.getHandle()) {
         // See if registered now.
         iter = theirRegisterMap.find (type);
@@ -440,12 +440,12 @@ std::map<String,DataManagerCtor> DataManager::initRegisterMap()
                                           ForwardColumnEngine::makeObject));
   theirRegisterMap.insert (std::make_pair(VirtualTaQLColumn::className(),
                                           VirtualTaQLColumn::makeObject));
-  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<uChar>::className(),
-                                          BitFlagsEngine<uChar>::makeObject));
-  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<Short>::className(),
-                                          BitFlagsEngine<Short>::makeObject));
-  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<Int>::className(),
-                                          BitFlagsEngine<Int>::makeObject));
+  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<unsigned char>::className(),
+                                          BitFlagsEngine<unsigned char>::makeObject));
+  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<int16_t>::className(),
+                                          BitFlagsEngine<int16_t>::makeObject));
+  theirRegisterMap.insert (std::make_pair(BitFlagsEngine<int32_t>::className(),
+                                          BitFlagsEngine<int32_t>::makeObject));
 
   return regMap;
 }

@@ -53,7 +53,7 @@ Unit::Unit(const char *other)
     check();
 }
 
-Unit::Unit(const  char *other, Int len) 
+Unit::Unit(const  char *other, int32_t len) 
 : uName(other, len), uVal() {
     check();
 }
@@ -74,15 +74,15 @@ Unit &Unit::operator=(const Unit &other) {
     return *this;
 }
 
-Bool Unit::operator==(const Unit &other) const {
+bool Unit::operator==(const Unit &other) const {
     return (uVal == other.uVal);
 }
 
-Bool Unit::operator!=(const Unit &other) const {
+bool Unit::operator!=(const Unit &other) const {
     return (uVal != other.uVal);
 }
 
-Bool Unit::empty() const{
+bool Unit::empty() const{
     return (uName.empty());
 }
 

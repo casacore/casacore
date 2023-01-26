@@ -45,36 +45,36 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSStateIndex::matchStateRegexOrPattern(const String& pattern,
-						     const Bool regex)
+  Vector<int32_t> MSStateIndex::matchStateRegexOrPattern(const String& pattern,
+						     const bool regex)
   {
-    Vector<Int> IDs;
+    Vector<int32_t> IDs;
     IDs = matchStateObsModeRegexOrPattern(pattern, regex);
     // if (IDs.nelements()==0)
     //   IDs = matchStateCodeRegexOrPattern(pattern, regex);
     return IDs;
   }
   //-------------------------------------------------------------------------
-  Int MSStateIndex::matchAnyRegex(const Vector<String>& strList, 
+  int32_t MSStateIndex::matchAnyRegex(const Vector<String>& strList, 
 				  const Regex& regex, 
-				  const Int pos)
+				  const int32_t pos)
   {
-    Int ret=0;
-    for(uInt i=0;i<strList.nelements();i++)
+    int32_t ret=0;
+    for(uint32_t i=0;i<strList.nelements();i++)
       if ((ret=strList[i].matches(regex,pos)) > 0) break;
     return ret;
   }
   //-------------------------------------------------------------------------
-  Vector<Int> MSStateIndex::matchStateObsModeRegexOrPattern(const String& pattern,
-							    const Bool regex)
+  Vector<int32_t> MSStateIndex::matchStateObsModeRegexOrPattern(const String& pattern,
+							    const bool regex)
   {
     // Match a state name to a set of state id's
     // Input:
     //    name             const String&            State name to match
     // Output:
-    //    matchStateName   Vector<Int>              Matching state id's
+    //    matchStateName   Vector<int32_t>              Matching state id's
     //
-    Int pos=0;
+    int32_t pos=0;
     Regex reg;
     //   String strippedPattern = stripWhite(pattern);
     const String& strippedPattern = pattern;
@@ -91,79 +91,79 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     //cerr << "Pattern = " << strippedPattern << "  Regex = " << reg.regexp() << endl;
     IPosition sh(msStateCols_p.obsMode().getColumn().shape());
-    LogicalArray maskArray(sh,False);
+    LogicalArray maskArray(sh,false);
     IPosition i=sh;
     for(i(0)=0;i(0)<sh(0);i(0)++)
       {
 	String name = msStateCols_p.obsMode().getColumn()(i);
 	String sname = stripWhite(name); // Strip leading and trailing blanks
-	//	Int ret=(sname.matches(reg,pos));
+	//	int32_t ret=(sname.matches(reg,pos));
 	Vector<String> substr;
 	split(sname,',',substr);
-	Int ret=matchAnyRegex(substr,reg,pos);
+	int32_t ret=matchAnyRegex(substr,reg,pos);
 	maskArray(i) = ((ret>0) && !msStateCols_p.flagRow().getColumn()(i));
       }
     
-    MaskedArray<Int> maskStateID(stateIds_p,maskArray);
+    MaskedArray<int32_t> maskStateID(stateIds_p,maskArray);
     return maskStateID.getCompressedArray();
   } 
 
-  Vector<Int> MSStateIndex::maskStateIDs(const Vector<Int>& ids)
+  Vector<int32_t> MSStateIndex::maskStateIDs(const Vector<int32_t>& ids)
   {
-    Vector<Int> tmp = set_intersection(stateIds_p,ids); 
+    Vector<int32_t> tmp = set_intersection(stateIds_p,ids); 
     return tmp;
   }
   //-------------------------------------------------------------------------
 
-  Vector<Int> MSStateIndex::matchStateObsMode(const String& name)
+  Vector<int32_t> MSStateIndex::matchStateObsMode(const String& name)
   {
     // Match a state name to a set of state id's
     // Input:
     //    name             const String&            State name to match
     // Output:
-    //    matchStateName   Vector<Int>              Matching state id's
+    //    matchStateName   Vector<int32_t>              Matching state id's
     //
     IPosition irow(1,nrows_p);
-    LogicalArray tmaskArray(irow,False); 
+    LogicalArray tmaskArray(irow,false); 
 
     for(irow(0)=0;irow(0)<nrows_p;irow(0)++)
       if (!msStateCols_p.flagRow().getColumn()[irow(0)])
 	{
 	  Vector<String> substr;
 	  split(msStateCols_p.obsMode().getColumn()[irow(0)],',',substr);
-	  for (uInt istr=0; istr<substr.nelements(); istr++)
+	  for (uint32_t istr=0; istr<substr.nelements(); istr++)
 	    if (substr[istr]==name)
 	      {
-		tmaskArray(irow)=True;
+		tmaskArray(irow)=true;
 		break;
 	      }
 	}
     // LogicalArray maskArray = (msStateCols_p.obsMode().getColumn()==name &&
     // 			      !msStateCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskStateId(stateIds_p, tmaskArray);
+    MaskedArray<int32_t> maskStateId(stateIds_p, tmaskArray);
 
     return maskStateId.getCompressedArray();
   } 
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSStateIndex::matchStateObsMode(const Vector<String>& names)
+  Vector<int32_t> MSStateIndex::matchStateObsMode(const Vector<String>& names)
   {
     // Match a set of state names to a set of state id's
     // Input:
     //    names            const Vector<String>&    State names to match
     // Output:
-    //    matchStateNames  Vector<Int>              Matching state id's
+    //    matchStateNames  Vector<int32_t>              Matching state id's
     //
-    Vector<Int> matchedStateIds;
+    Vector<int32_t> matchedStateIds;
     // Match each state name individually
-    for (uInt fld=0; fld<names.nelements(); fld++) {
+    for (uint32_t fld=0; fld<names.nelements(); fld++) {
       // Add to list of state id's
-      Vector<Int> currentMatch = matchStateObsMode(names(fld));
+      Vector<int32_t> currentMatch = matchStateObsMode(names(fld));
       if (currentMatch.nelements() > 0) {
-	Vector<Int> temp(matchedStateIds);
+	Vector<int32_t> temp(matchedStateIds);
 	matchedStateIds.resize(matchedStateIds.nelements() +
-			       currentMatch.nelements(), True);
+			       currentMatch.nelements(), true);
 	matchedStateIds = concatenateArray(temp, currentMatch);
       }
     }
@@ -172,40 +172,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSStateIndex::matchStateId(const Int& stateId)
+  Vector<int32_t> MSStateIndex::matchStateId(const int32_t& stateId)
   {
     // Match a source id to a set of state id's
     // Input:
-    //    sourceId        const Int&               Source id to match
+    //    sourceId        const int32_t&               Source id to match
     // Output:
-    //    matchSourceId   Vector<Int>              Matching state id's
+    //    matchSourceId   Vector<int32_t>              Matching state id's
     //
     LogicalArray maskArray = 
       (stateIds_p==stateId &&
        !msStateCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskStateId(stateIds_p, maskArray);
+    MaskedArray<int32_t> maskStateId(stateIds_p, maskArray);
     return maskStateId.getCompressedArray();
   } 
   
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSStateIndex::matchStateId(const Vector<Int>& stateIds)
+  Vector<int32_t> MSStateIndex::matchStateId(const Vector<int32_t>& stateIds)
   {
     // Match a set of state id's to a set of state id's
     // Input:
-    //    stateIds       const Vector<Int>&       State id's to match
+    //    stateIds       const Vector<int32_t>&       State id's to match
     // Output:
-    //    matchStateIds  Vector<Int>              Matching state id's
+    //    matchStateIds  Vector<int32_t>              Matching state id's
     //
-    Vector<Int> matchedStateIds;
+    Vector<int32_t> matchedStateIds;
     // Match each state name individually
-    for (uInt fld=0; fld<stateIds.nelements(); fld++) {
+    for (uint32_t fld=0; fld<stateIds.nelements(); fld++) {
       // Add to list of state id's
-      Vector<Int> currentMatch = matchStateId(stateIds(fld));
+      Vector<int32_t> currentMatch = matchStateId(stateIds(fld));
       if (currentMatch.nelements() > 0) {
-	Vector<Int> temp(matchedStateIds);
+	Vector<int32_t> temp(matchedStateIds);
 	matchedStateIds.resize(matchedStateIds.nelements() +
-			       currentMatch.nelements(), True);
+			       currentMatch.nelements(), true);
 	matchedStateIds = concatenateArray(temp, currentMatch);
       }
     }
@@ -213,29 +213,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //-------------------------------------------------------------------------
-  Vector<Int> MSStateIndex::matchStateIDLT(const Int n)
+  Vector<int32_t> MSStateIndex::matchStateIDLT(const int32_t n)
   {
     LogicalArray maskArray = 
       //      (msStateCols_p.stateId().getColumn() < n &&
       (stateIds_p < n &&
        !msStateCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskStateId(stateIds_p, maskArray);
+    MaskedArray<int32_t> maskStateId(stateIds_p, maskArray);
     return maskStateId.getCompressedArray();
   }
 
   //-------------------------------------------------------------------------
-  Vector<Int> MSStateIndex::matchStateIDGT(const Int n)
+  Vector<int32_t> MSStateIndex::matchStateIDGT(const int32_t n)
   {
     LogicalArray maskArray = 
       //      (msStateCols_p.stateId().getColumn() > n &&
       (stateIds_p > n &&
        !msStateCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskStateId(stateIds_p, maskArray);
+    MaskedArray<int32_t> maskStateId(stateIds_p, maskArray);
     return maskStateId.getCompressedArray();
   }
   //-------------------------------------------------------------------------
   
-  Vector<Int> MSStateIndex::matchStateIDGTAndLT(const Int n0, const Int n1)
+  Vector<int32_t> MSStateIndex::matchStateIDGTAndLT(const int32_t n0, const int32_t n1)
   {
     LogicalArray maskArray = 
 //       (msStateCols_p.stateId().getColumn() >= n0 &&
@@ -243,7 +243,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       (stateIds_p > n0 &&
        stateIds_p < n1 &&
        !msStateCols_p.flagRow().getColumn());
-    MaskedArray<Int> maskStateId(stateIds_p, maskArray);
+    MaskedArray<int32_t> maskStateId(stateIds_p, maskArray);
     return maskStateId.getCompressedArray();
   }
   //-------------------------------------------------------------------------

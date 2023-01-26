@@ -37,7 +37,7 @@ namespace casacore {
 // Provides a single interface for creation of stats algorithm objects
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class AccumType, class DataIterator, class MaskIterator=const bool *,
     class WeightsIterator=DataIterator
 >
 class StatisticsAlgorithmFactory {
@@ -57,7 +57,7 @@ public:
 
     ~StatisticsAlgorithmFactory();
 
-    void configureBiweight(Int maxIter=3, Double c=6.0);
+    void configureBiweight(int32_t maxIter=3, double c=6.0);
 
     void configureClassical();
 
@@ -70,10 +70,10 @@ public:
     );
 
     // configure to use hinges-fences algorithm
-    void configureHingesFences(Double f);
+    void configureHingesFences(double f);
 
     // configure to use Chauvenet's criterion
-    void configureChauvenet(Double zscore=-1, Int maxIterations=-1);
+    void configureChauvenet(double zscore=-1, int32_t maxIterations=-1);
 
     // copy the data from this object to an object with different template
     // types. Note that the AccumType of <src>other</src> must be the same as
@@ -101,7 +101,7 @@ public:
 
     // Throws an exception if the current configuration is not relevant
     // to the hinges-fences algorithm
-    Double hingesFencesFactor() const;
+    double hingesFencesFactor() const;
 
     // Throws an exception if the current configuration is not relevant
     // to the fit-to-half algorithm
@@ -119,7 +119,7 @@ private:
 
     StatisticsData::ALGORITHM _algorithm;
     // hinges-fences f factor
-    Double _hf;
+    double _hf;
     StatisticsAlgorithmFactoryData::BiweightData _biweightData;
     StatisticsAlgorithmFactoryData::FitToHalfData<AccumType> _fitToHalfData;
     StatisticsAlgorithmFactoryData::ChauvenetData _chauvData;

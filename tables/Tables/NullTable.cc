@@ -37,15 +37,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 NullTable::NullTable()
 : BaseTable ("Null table object", Table::Old, 0)
 {
-  delete_p = False;
+  delete_p = false;
 }
 
 NullTable::~NullTable()
 {}
 
-Bool NullTable::isNull() const
+bool NullTable::isNull() const
 {
-  return True;
+  return true;
 }
 
 void NullTable::reopenRW()
@@ -53,12 +53,12 @@ void NullTable::reopenRW()
   throw makeError ("reopenRW");
 }
 
-Bool NullTable::asBigEndian() const
+bool NullTable::asBigEndian() const
 {
   throw makeError ("asBigEndian");
 }
 
-Bool NullTable::isMultiUsed (Bool) const
+bool NullTable::isMultiUsed (bool) const
 {
   throw makeError ("isMultiUsed");
 }
@@ -78,12 +78,12 @@ void NullTable::mergeLock (const TableLock&)
   throw makeError ("mergeLoc");
 }
 
-Bool NullTable::hasLock (FileLocker::LockType) const
+bool NullTable::hasLock (FileLocker::LockType) const
 {
   throw makeError ("hasLock");
 }
 
-Bool NullTable::lock (FileLocker::LockType, uInt)
+bool NullTable::lock (FileLocker::LockType, uint32_t)
 {
   throw makeError ("lock");
 }
@@ -93,7 +93,7 @@ void NullTable::unlock()
   throw makeError ("unlock");
 }
 
-void NullTable::flush (Bool, Bool)
+void NullTable::flush (bool, bool)
 {
   throw makeError ("flush");
 }
@@ -103,19 +103,19 @@ void NullTable::resync()
   throw makeError ("resync");
 }
 
-uInt NullTable::getModifyCounter() const
+uint32_t NullTable::getModifyCounter() const
 {
   throw makeError ("getModifyCounter");
 }
 
-Bool NullTable::isWritable() const
+bool NullTable::isWritable() const
 {
   throw makeError ("isWritable");
 }
 
 void NullTable::deepCopy (const String&, const Record&,
-                          const StorageOption&, int, Bool,
-			  int, Bool) const
+                          const StorageOption&, int, bool,
+			  int, bool) const
 {
   throw makeError ("deepCopy");
 }
@@ -140,7 +140,7 @@ TableRecord& NullTable::rwKeywordSet()
   throw makeError ("rwKeywordSet");
 }
 
-BaseColumn* NullTable::getColumn (uInt) const
+BaseColumn* NullTable::getColumn (uint32_t) const
 {
   throw makeError ("getColumn");
 }
@@ -150,17 +150,17 @@ BaseColumn* NullTable::getColumn (const String&) const
   throw makeError ("getColumn");
 }
 
-Bool NullTable::canAddRow() const
+bool NullTable::canAddRow() const
 {
   throw makeError ("canAddRow");
 }
 
-void NullTable::addRow (rownr_t, Bool)
+void NullTable::addRow (rownr_t, bool)
 {
   throw makeError ("addRow");
 }
 
-Bool NullTable::canRemoveRow() const
+bool NullTable::canRemoveRow() const
 {
   throw makeError ("canRemoveRow");
 }
@@ -170,35 +170,35 @@ void NullTable::removeRow (rownr_t)
   throw makeError ("removeRow");
 }
 
-DataManager* NullTable::findDataManager (const String&, Bool) const
+DataManager* NullTable::findDataManager (const String&, bool) const
 {
   throw makeError ("findDataManager");
 }
 
-void NullTable::addColumn (const ColumnDesc&, Bool)
+void NullTable::addColumn (const ColumnDesc&, bool)
 {
   throw makeError ("addColumn");
 }
 
 void NullTable::addColumn (const ColumnDesc&,
-			   const String&, Bool, Bool)
+			   const String&, bool, bool)
 {
   throw makeError ("addColumn");
 }
 
 void NullTable::addColumn (const ColumnDesc&,
-			   const DataManager&, Bool)
+			   const DataManager&, bool)
 {
   throw makeError ("addColumn");
 }
 
 void NullTable::addColumn (const TableDesc& ,
-			   const DataManager&, Bool)
+			   const DataManager&, bool)
 {
   throw makeError ("addColumn");
 }
 
-Bool NullTable::canRemoveColumn (const Vector<String>&) const
+bool NullTable::canRemoveColumn (const Vector<String>&) const
 {
   throw makeError ("canRemoveColumn");
 }
@@ -208,7 +208,7 @@ void NullTable::removeColumn (const Vector<String>&)
   throw makeError ("removeColumn");
 }
 
-Bool NullTable::canRenameColumn (const String&) const
+bool NullTable::canRenameColumn (const String&) const
 {
   throw makeError ("canRenameColumn");
 }
@@ -233,7 +233,7 @@ BaseTable* NullTable::root()
   throw makeError ("root");
 }
 
-Bool NullTable::rowOrder() const
+bool NullTable::rowOrder() const
 {
   throw makeError ("rowOrder");
 }
@@ -243,15 +243,15 @@ Vector<rownr_t>& NullTable::rowStorage()
   throw makeError ("rowStorage");
 }
 
-Bool NullTable::adjustRownrs (rownr_t, Vector<rownr_t>&,
-			      Bool) const
+bool NullTable::adjustRownrs (rownr_t, Vector<rownr_t>&,
+			      bool) const
 {
   throw makeError ("adjustRownrs");
 }
 
   std::shared_ptr<BaseTable> NullTable::doSort (PtrBlock<BaseColumn*>&,
                                                 const Block<CountedPtr<BaseCompare> >&,
-                                                const Block<Int>&,
+                                                const Block<int32_t>&,
                                                 int,
                                                 std::shared_ptr<Vector<rownr_t>>,
                                                 std::shared_ptr<Vector<size_t>>)

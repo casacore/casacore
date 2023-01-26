@@ -37,7 +37,7 @@ SofaTest::SofaTest() :
   n_p(0), sum_p(0), sq_p(0), max_p(-1e30), min_p(1e30),
   hstep_p(0), hsize_p(HISTO_WIDTH), histo_p(0) {
   hwidth_p = 2*hsize_p;
-  histo_p = new Int[hwidth_p];
+  histo_p = new int32_t[hwidth_p];
   clear();
 }
 
@@ -66,10 +66,10 @@ void SofaTest::clear() {
   min_p = 1e30;
   hstep_p = 0;
   hwidth_p = 2*hsize_p;
-  for (uInt i=0; i<hwidth_p; i++) histo_p[i] = 0;
+  for (uint32_t i=0; i<hwidth_p; i++) histo_p[i] = 0;
 }
 
-void SofaTest::put(const Double in) {
+void SofaTest::put(const double in) {
   n_p++;
   sum_p += in;
   sq_p += in*in;
@@ -78,17 +78,17 @@ void SofaTest::put(const Double in) {
   if (hstep_p <= 0.0) hstep_p = 0.001/hsize_p/2.0;
   while (abs(in/hstep_p)>hsize_p) {
     hstep_p *= 2.0;
-    for (uInt i=0; i<hsize_p/2; i++) {
+    for (uint32_t i=0; i<hsize_p/2; i++) {
       histo_p[hsize_p+i] = histo_p[hsize_p+2*i] + histo_p[hsize_p+2*i+1];
       histo_p[hsize_p-i-1] = histo_p[hsize_p-2*i-1] += histo_p[hsize_p-2*i-2];
     }
-    for (uInt i=0; i<hsize_p/2; i++) {
+    for (uint32_t i=0; i<hsize_p/2; i++) {
       histo_p[hsize_p+hsize_p/2+i] = 0;
       histo_p[hsize_p-hsize_p/2-i-1] = 0;
     }
   }
-  Int n=Int(floor(in/hstep_p)+hsize_p);
-  if (n>=0 && n<Int(hwidth_p)) histo_p[n]++;
+  int32_t n=int32_t(floor(in/hstep_p)+hsize_p);
+  if (n>=0 && n<int32_t(hwidth_p)) histo_p[n]++;
 }
 
 void SofaTest::show(ostream &os) {
@@ -106,27 +106,27 @@ void SofaTest::show(ostream &os) {
 }
 
 void SofaTest::showHisto(ostream &os) {
-  Int cnt[41];
-  for (uInt i=0; i<41; i++) cnt[i]=0;
-  Int n=Int(ceil(Double(hwidth_p)/40.));
-  Int k=0;
-  for (Int i=-20; i<20; i++) {
-    for (Int j=hsize_p +i*n; j<Int(hsize_p +(i+1)*n); j++) {
-      if (j>=0 && j<Int(hwidth_p)) cnt[k] += histo_p[j];
+  int32_t cnt[41];
+  for (uint32_t i=0; i<41; i++) cnt[i]=0;
+  int32_t n=int32_t(ceil(double(hwidth_p)/40.));
+  int32_t k=0;
+  for (int32_t i=-20; i<20; i++) {
+    for (int32_t j=hsize_p +i*n; j<int32_t(hsize_p +(i+1)*n); j++) {
+      if (j>=0 && j<int32_t(hwidth_p)) cnt[k] += histo_p[j];
     }
     k++;
   }
-  Double step = n*hstep_p;
+  double step = n*hstep_p;
   k=0;
-  for (uInt i=0; i<41; i++) k = (cnt[i]>k) ? cnt[i] : k;
-  n = Int(ceil(Double(k)/60.));
+  for (uint32_t i=0; i<41; i++) k = (cnt[i]>k) ? cnt[i] : k;
+  n = int32_t(ceil(double(k)/60.));
   if (n==0) n=1;
   os << endl << n << " counts per step; " << step << " value." << endl; 
-  for (uInt i=0; i<41; i++) {
+  for (uint32_t i=0; i<41; i++) {
     if (i==19) os << " _";
     else os << " |";
     if (cnt[i] != 0) {
-      for (Int j=0; j<cnt[i]/n; j++) os << "-";
+      for (int32_t j=0; j<cnt[i]/n; j++) os << "-";
     }
     os << "*" << endl;
   }
@@ -142,8 +142,8 @@ void SofaTest::copy(const SofaTest &other) {
   hsize_p = other.hsize_p;
   hwidth_p = 2*hsize_p;
   delete [] histo_p; histo_p = 0;
-  histo_p = new Int[hwidth_p];
-  for (uInt i=0; i<hwidth_p; i++) histo_p[i] = other.histo_p[i];
+  histo_p = new int32_t[hwidth_p];
+  for (uint32_t i=0; i<hwidth_p; i++) histo_p[i] = other.histo_p[i];
 }
 
 } //# NAMESPACE CASACORE - END

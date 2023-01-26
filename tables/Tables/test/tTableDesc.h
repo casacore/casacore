@@ -53,14 +53,14 @@ class ExampleDesc
 {
 public:
     ExampleDesc(): x_p(0), y_p(0) {}
-    ExampleDesc(Int x, float y) : x_p(x), y_p(y) {}
+    ExampleDesc(int32_t x, float y) : x_p(x), y_p(y) {}
     static String dataTypeId()
 	{ return "ExampleDesc"; }
-    Int x() const
+    int32_t x() const
 	{ return x_p; }
     float y() const
 	{ return y_p; }
-    Int& x()
+    int32_t& x()
 	{ return x_p; }
     float& y()
 	{ return y_p; }
@@ -69,7 +69,7 @@ public:
     int operator< (const ExampleDesc& that) const
 	{ return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p); }
 private:
-    Int   x_p;
+    int32_t   x_p;
     float y_p;
 };
 

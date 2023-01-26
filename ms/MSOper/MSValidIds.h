@@ -93,42 +93,42 @@ public:
     // optional subtables) or the indicated row number does not exist
     // in that sub-table where appropriate.
     // <group>
-    Int antenna1(rownr_t rownr) const;
-    Int antenna2(rownr_t rownr) const;
-    Int dataDescId(rownr_t rownr) const;
-    Int fieldId(rownr_t rownr) const;
-    Int observationId(rownr_t rownr) const;
-    Int processorId(rownr_t rownr) const;
-    Int stateId(rownr_t rownr) const;
+    int32_t antenna1(rownr_t rownr) const;
+    int32_t antenna2(rownr_t rownr) const;
+    int32_t dataDescId(rownr_t rownr) const;
+    int32_t fieldId(rownr_t rownr) const;
+    int32_t observationId(rownr_t rownr) const;
+    int32_t processorId(rownr_t rownr) const;
+    int32_t stateId(rownr_t rownr) const;
     // The polarizationId comes from the DATA_DESCRIPTION subtable, so dataDescId must
     // first be valid in order for this to also be valid.
-    Int polarizationId(rownr_t rownr) const;
+    int32_t polarizationId(rownr_t rownr) const;
     // The spectralWindowId comes from the DATA_DESCRIPTION subtable, so dataDescId must
     // first be valid in order for this to also be valid.
-    Int spectralWindowId(rownr_t rownr) const;
+    int32_t spectralWindowId(rownr_t rownr) const;
     // the dopplerId comes from the SPECTRAL_WINDOW subtable so spectralWindowId must
     // first be valid in order for this to also be valid.  Since the DOPPLER subtable
     // is not simply indexed by DOPPLER_ID, the DOPPLER subtable exists and a dopplerId
     // can be found in the SPECTRAL_WINDOW subtable, that value will be returned, whatever
     // it is.
-    Int dopplerId(rownr_t rownr) const;
+    int32_t dopplerId(rownr_t rownr) const;
     // The sourceId comes from the FIELD subtable so fieldId must first be valid
     // in order for this to also be valid.  Since the SOURCE table is also
     // indexed by TIME, the only additional check is that a SOURCE table must
     // exist in order for this to be valid.
-    Int sourceId(rownr_t rownr) const;
+    int32_t sourceId(rownr_t rownr) const;
     // </group>
 private:
     MeasurementSet ms_p;
     MSColumns *romsCols_p;
 
-    Bool hasDoppler_p, hasSource_p;
+    bool hasDoppler_p, hasSource_p;
     
     void clear();
-    Int checkResult(Int testResult, const Table &mstable) const
+    int32_t checkResult(int32_t testResult, const Table &mstable) const
     { return (testResult < 0 || rownr_t(testResult) >= mstable.nrow()) ? -1 : testResult;}
 
-    Bool checkRow(rownr_t rownr) const {return rownr < ms_p.nrow();}
+    bool checkRow(rownr_t rownr) const {return rownr < ms_p.nrow();}
 };
 
 

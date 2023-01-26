@@ -40,7 +40,7 @@
 // compares the output with a reference output file.
 
 // Test case-insensitive sort.
-void sort1 (Int option)
+void sort1 (int32_t option)
 {
   String arr[10];
   arr[0] = "aaa";
@@ -56,18 +56,18 @@ void sort1 (Int option)
   CountedPtr<BaseCompare> cmp(new CompareNoCase());
   Sort sort;
   sort.sortKey (arr, cmp, sizeof(String));
-  Vector<uInt> inx;
+  Vector<uint32_t> inx;
   sort.sort (inx, 10, option);
-  for (uInt i=0; i<inx.size(); ++i) {
+  for (uint32_t i=0; i<inx.size(); ++i) {
     cout << arr[inx[i]] << ' ';
   }
   cout << endl;
 }
 
 // Test real interval sort.
-void sort2 (Int option)
+void sort2 (int32_t option)
 {
-  Double arr[10];
+  double arr[10];
   arr[0] = 1;
   arr[1] = 12;
   arr[2] = 4.5;
@@ -78,21 +78,21 @@ void sort2 (Int option)
   arr[7] = 9;
   arr[8] = 8.99;
   arr[9] = -5;
-  CountedPtr<BaseCompare> cmp(new CompareIntervalReal<Double>(2,1));
+  CountedPtr<BaseCompare> cmp(new CompareIntervalReal<double>(2,1));
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(Double));
-  Vector<uInt> inx;
+  sort.sortKey (arr, cmp, sizeof(double));
+  Vector<uint32_t> inx;
   sort.sort (inx, 10, option);
-  for (uInt i=0; i<inx.size(); ++i) {
+  for (uint32_t i=0; i<inx.size(); ++i) {
     cout << arr[inx[i]] << ' ';
   }
   cout << endl;
 }
 
 // Test other interval.
-void sort3 (Int option)
+void sort3 (int32_t option)
 {
-  Double arr[10];
+  double arr[10];
   arr[0] = 1;
   arr[1] = 12;
   arr[2] = 4;
@@ -103,12 +103,12 @@ void sort3 (Int option)
   arr[7] = 9;
   arr[8] = -8;
   arr[9] = -5;
-  CountedPtr<BaseCompare> cmp(new CompareIntervalReal<Double>(3,0));
+  CountedPtr<BaseCompare> cmp(new CompareIntervalReal<double>(3,0));
   Sort sort;
-  sort.sortKey (arr, cmp, sizeof(Double));
-  Vector<uInt> inx;
+  sort.sortKey (arr, cmp, sizeof(double));
+  Vector<uint32_t> inx;
   sort.sort (inx, 10, option);
-  for (uInt i=0; i<inx.size(); ++i) {
+  for (uint32_t i=0; i<inx.size(); ++i) {
     cout << arr[inx[i]] << ' ';
   }
   cout << endl;

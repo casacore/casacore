@@ -80,13 +80,13 @@ class String;
 // </srcblock>
 // To get a static state transition matrix:
 // <srcblock>
-//	static Bool made = False;		// set not yet done
+//	static bool made = false;		// set not yet done
 //	enum types {				// states
 //		A=0, B, C, D, E, ntyp };
 //	enum routes {				// routes
 //		A_B, B_C, B_D, C_D, C_E,
 //		D_C, C_B, B_A, D_B, E_C, nrout };
-//	static uInt list [nrout][3] = {		// description. The third number
+//	static uint32_t list [nrout][3] = {		// description. The third number
 //		{A, B, 0},			// is a penalty hop to weight
 //		{B, C, 0},			// against using this route
 //		{B, D, 0},
@@ -97,11 +97,11 @@ class String;
 //		{B, A, 0},
 //		{D, B, 0},
 //		{E, C, 0} };
-//	static uInt state[ntyp][ntyp];	// the resultant transition matrix
+//	static uint32_t state[ntyp][ntyp];	// the resultant transition matrix
 //					// diagonal == nrout
 //	// Make the state machine
 //	MCBase::makeState(state[0], ntyp, nrout, routes);
-//      made = True;
+//      made = true;
 // </srcblock>
 // </example>
 //
@@ -140,7 +140,7 @@ public:
 			  const MRBase &outref) = 0;
   
   // Create help structures for Measure conversion routines
-  virtual void initConvert(uInt which, MConvertBase &mc) = 0;
+  virtual void initConvert(uint32_t which, MConvertBase &mc) = 0;
   
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert() = 0;
@@ -165,20 +165,20 @@ protected:
   // </ul>
   // <group>
   // Routine to make the transition table if necessary
-  static void makeState(uInt *state,
-			const uInt ntyp, const uInt nrout,
-			const uInt list[][3]);
+  static void makeState(uint32_t *state,
+			const uint32_t ntyp, const uint32_t nrout,
+			const uint32_t list[][3]);
   // Return a fromatted String with matrix information (based on < 100 types)
-  static String showState(uInt *state,
-			  const uInt ntyp, const uInt nrout,
-			  const uInt list[][3]);
+  static String showState(uint32_t *state,
+			  const uint32_t ntyp, const uint32_t nrout,
+			  const uint32_t list[][3]);
 private:
   // Routine to find the shortest route between two points 
-  static Bool findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
-			Bool *visit, const uInt *tcnt, const uInt *tree,
-			const uInt &in, const uInt &out,
-			const uInt ntyp, const uInt nrout,
-			const uInt list[][3]);
+  static bool findState(uint32_t &len, uint32_t *state, uint32_t *mcnt, bool &okall,
+			bool *visit, const uint32_t *tcnt, const uint32_t *tree,
+			const uint32_t &in, const uint32_t &out,
+			const uint32_t ntyp, const uint32_t nrout,
+			const uint32_t list[][3]);
   // </group>
 
 };

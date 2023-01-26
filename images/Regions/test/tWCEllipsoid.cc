@@ -40,9 +40,9 @@
   Array<bool> mask = ellipse.get();
   IPosition shape = mask.shape();
   IPosition index = shape-1;
-  uInt j=0;
-  while(True) {
-  for (uInt i=0; i<shape(0); i++) {
+  uint32_t j=0;
+  while(true) {
+  for (uint32_t i=0; i<shape(0); i++) {
   index[0] = i;
   cout << mask(index) << " ";
   }
@@ -65,8 +65,8 @@
 */
 /*
   cout << shape << endl;
-  for (Int j=shape(1)-1; j>=0; j--) {
-  for (uInt i=0; i<shape(0); i++) {
+  for (int32_t j=shape(1)-1; j>=0; j--) {
+  for (uint32_t i=0; i<shape(0); i++) {
 
   IPosition x;
   x.
@@ -91,7 +91,7 @@ int main()
       IPosition pixelAxes(3, 0, 1, 2);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch (std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
@@ -99,7 +99,7 @@ int main()
       radius[2] = Quantity(50, "MHz");
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch (std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
@@ -108,7 +108,7 @@ int main()
       pixelAxes[2] = 3;
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch (std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
@@ -116,23 +116,23 @@ int main()
       pixelAxes = IPosition(3, 0, 0, 1);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch (std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
       }
       pixelAxes = IPosition(3, 0, 1, 2);
-      center.resize(2, True);
+      center.resize(2, true);
       try {
         WCEllipsoid(center, radius, pixelAxes, csys);
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch (std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
       }
 
       // generic ellipsoid tests
-      center.resize(3, True);
+      center.resize(3, true);
       center[2] = Quantity(1.41501, "GHz");
       radius[1] = Quantity(1200, "arcsec");
       radius[2] = Quantity(50, "kHz");
@@ -157,17 +157,17 @@ int main()
       LCEllipsoid *lcEllipse = dynamic_cast<LCEllipsoid *>(lcReg);
       IPosition lcShape = lcReg->shape();
 
-      Vector<Float> lcCenter = lcEllipse->center();
+      Vector<float> lcCenter = lcEllipse->center();
       AlwaysAssert(near(lcCenter[0], 0.0), AipsError);
       AlwaysAssert(near(lcCenter[1], 20.5), AipsError);
       AlwaysAssert(near(lcCenter[2], 10.0), AipsError);
-      Vector<Float> lcRadii = lcEllipse->radii();
-      Vector<Double> pixel(3, 1);
-      Vector<Double> world1;
+      Vector<float> lcRadii = lcEllipse->radii();
+      Vector<double> pixel(3, 1);
+      Vector<double> world1;
       csys.toWorld(world1, pixel);
       pixel = 2;
 
-      Vector<Double> world2;
+      Vector<double> world2;
 
       csys.toWorld(world2, pixel);
       AlwaysAssert(near(lcRadii[0], 5.0), AipsError);
@@ -250,13 +250,13 @@ int main()
         WCEllipsoid sphere(
                            center, r, pixelAxes, csys
                            );
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch(std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
       }
-      pixelAxes.resize(2, True);
-      center.resize(2, True);
+      pixelAxes.resize(2, true);
+      center.resize(2, true);
       WCEllipsoid sphere(
                          center, r, pixelAxes, csys
                          );
@@ -285,7 +285,7 @@ int main()
                             center[0], center[1], radius[0], radius[1],
                             theta, pixelAxes[0], pixelAxes[1], csys
                             );
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch(std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
@@ -297,7 +297,7 @@ int main()
                             center[0], center[1], radius[0], radius[1],
                             theta, pixelAxes[0], pixelAxes[2], csys
                             );
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch(std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;
@@ -327,7 +327,7 @@ int main()
                               center[1], center[0], radius[1], radius[0],
                               theta, pixelAxes[1], pixelAxes[0], csys
                               );
-        AlwaysAssert(False, AipsError);
+        AlwaysAssert(false, AipsError);
       }
       catch(std::exception& x) {
         cout << "Caught as expected " << x.what() << endl;

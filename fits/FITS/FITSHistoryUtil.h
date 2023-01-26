@@ -109,7 +109,7 @@ public:
     // (otherwise the same history will be extracted more than once). This method
     // can be used as follows:
     // <srcBlock>
-    // uInt n;
+    // uint32_t n;
     // Vector<String> group;
     // String type;
     // ConstFITSKeywordList keys(...);
@@ -122,7 +122,7 @@ public:
     // strings will have no embedded newlines. strings is not resized if it is more 
     // than large enough to hold the number of history cards in the group (i.e. there
     // may be values at the end of strings which are not part of the requested group.
-    static uInt getHistoryGroup(Vector<String> &strings, String &groupType,
+    static uint32_t getHistoryGroup(Vector<String> &strings, String &groupType,
 				ConstFitsKeywordList &in);
 
     // Add history strings of the specified groupType to an existing FitsKeywordList.
@@ -133,7 +133,7 @@ public:
     // newlines, but they must have no other non-printable characters.
     static void addHistoryGroup(FitsKeywordList &out,
 				const std::vector<String> &strings,
-				uInt nstrings, const String &groupType);
+				uint32_t nstrings, const String &groupType);
 
     // Some functions to help convert between log tables and FITS HISTORY cards.
     // It is intended that these functions will only be used by the functions in
@@ -160,13 +160,13 @@ public:
     // <group>
     static void fromHISTORY(LoggerHolder& logSink, 
 			    const Vector<String>& history, 
-			    uInt nstrings, Bool aipsppFormat);
+			    uint32_t nstrings, bool aipsppFormat);
 
     // toHistory signals that it is done by setting nstrings to 0.
     // The returned value is firstLine + n_lines_read, i.e. use
     // it as firstLine in your next call.
-    static uInt toHISTORY(std::vector<String>& history, Bool& aipsppFormat,
-			  uInt& nstrings, uInt firstLine, 
+    static uint32_t toHISTORY(std::vector<String>& history, bool& aipsppFormat,
+			  uint32_t& nstrings, uint32_t firstLine, 
 			  const LoggerHolder& logSink);
     // </group>
 

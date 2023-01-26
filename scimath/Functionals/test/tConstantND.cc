@@ -44,12 +44,12 @@ int main() {
   try {
     // Construct a constant in m dimensional space.  By
 
-    ConstantND<Double> constant(3);
+    ConstantND<double> constant(3);
     
-    ConstantND<Double> const2(constant);
+    ConstantND<double> const2(constant);
     const2[0] = 22;
     
-    ConstantND<Double> const3 = const2;
+    ConstantND<double> const3 = const2;
     
     cout << "nparms " << constant.nparameters() << endl;
     AlwaysAssertExit(
@@ -75,13 +75,13 @@ int main() {
     	&& const3.parameters()[0] == 22
     );
 
-    Vector<Double> v(1, 45.5);
+    Vector<double> v(1, 45.5);
     
     // Set the value of a coefficient. 
     // Get the value of a coefficient.  
     // f(x,y,z) = 45.5
       constant[0] = 45.5;
-      AlwaysAssertExit(constant[0] == Double(45.5));
+      AlwaysAssertExit(constant[0] == double(45.5));
 
     
     // Set all coefficients at once. 
@@ -89,64 +89,64 @@ int main() {
     constant.parameters().setParameters(v);
     AlwaysAssertExit(allEQ(constant.parameters().getParameters(), v));
     
-    Vector<Double> x(3);
+    Vector<double> x(3);
     x[0] = 20;
     x[1] = 40;
     x[2] = 90;
     // Evaluate the function at <src>x</src>.
     // f(x,y,z) = 45.5
-    AlwaysAssertExit((constant(x) - Double(45.5)) < 1.e-6);
+    AlwaysAssertExit((constant(x) - double(45.5)) < 1.e-6);
 
 
-      constant.mask(0) = False;
+      constant.mask(0) = false;
       AlwaysAssertExit(! constant.mask(0));
       AlwaysAssertExit(constant.parameters().nMaskedParameters() == 0);
-      constant.mask(0) = True;
+      constant.mask(0) = true;
       AlwaysAssertExit(constant.parameters().nMaskedParameters() == 1);
 
       AlwaysAssertExit(constant.parameters().getMaskedParameters()[0] == 45.5);
 
       // test specialized AutoDiff
-      Vector<AutoDiffA<Double> > v6(1, 0);
-      ConstantND<AutoDiff<Double> > s5(3);
+      Vector<AutoDiffA<double> > v6(1, 0);
+      ConstantND<AutoDiff<double> > s5(3);
       v.resize(3);
-      for (uInt i=0; i<3; i++) {
+      for (uint32_t i=0; i<3; i++) {
 
-    	  s5[0] = AutoDiff<Double>(0,1,0);
+    	  s5[0] = AutoDiff<double>(0,1,0);
           cout << "s5 " << i << " " << s5[0] << endl;
 
     	  v[i] = i+10;
 
       }
-      //Double y = s5(v).value();
-      Vector<Double> z = s5(v).derivatives();
+      //double y = s5(v).value();
+      Vector<double> z = s5(v).derivatives();
       cout << "AutoDiff " << s5(v) << endl;
 
 /*
   
     // f(x,y,z) = 10x + 11y + 12*z + 13
-    Vector<AutoDiffA<Double> > v6(3);
-    HyperPlane<AutoDiff<Double> > s5(3);
-    for (uInt i=0; i<3; i++) {
-      s5[i] = AutoDiff<Double>(i+10,3,i);
-      AlwaysAssertExit(s5[i] == Double(i+10));
+    Vector<AutoDiffA<double> > v6(3);
+    HyperPlane<AutoDiff<double> > s5(3);
+    for (uint32_t i=0; i<3; i++) {
+      s5[i] = AutoDiff<double>(i+10,3,i);
+      AlwaysAssertExit(s5[i] == double(i+10));
       v[i] = i+10;
       v6(i) = i+10;
     }
-    Double y50 = s5(v).value();
-    Vector<Double> y51;
+    double y50 = s5(v).value();
+    Vector<double> y51;
     y51 = s5(v).derivatives();
     cout << "AutoDiff:  " << s5(v) << endl;
     
     // Generic AutoDiff
-    HyperPlane<AutoDiffA<Double> > s6(3);
-    for (uInt i=0; i<3; i++) {
-      s6[i] = AutoDiffA<Double>(i+10,3,i);
-      AlwaysAssertExit(s6[i].value() == Double(i+10));
+    HyperPlane<AutoDiffA<double> > s6(3);
+    for (uint32_t i=0; i<3; i++) {
+      s6[i] = AutoDiffA<double>(i+10,3,i);
+      AlwaysAssertExit(s6[i].value() == double(i+10));
       v6(i) = i+10;
     }
-    Double y60 = s6(v6).value();
-    Vector<Double> y61;
+    double y60 = s6(v6).value();
+    Vector<double> y61;
     y61 = s6(v6).derivatives();
     cout << "AutoDiffA: " << s6(v6) << endl;
     AlwaysAssertExit(near(y60, y50) &&

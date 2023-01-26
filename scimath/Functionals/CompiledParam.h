@@ -67,15 +67,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // derivatives with respect to the parameters are calculated at <src>x=2</src>.
 // <srcblock>
 // // the Gaussian
-// CompiledFunction<Double> prof("p0*exp(-((x-p1)/p2)^2)");
+// CompiledFunction<double> prof("p0*exp(-((x-p1)/p2)^2)");
 // prof[0] = 2;				// the height
 // prof[1] = 1.5;			// the center
 // prof[2] = 1;				// the width
-// Vector<Double> x(3);
+// Vector<double> x(3);
 // X[0] = 1.9; x[1] = 2.0; x[2] = 2.1;
 // cout << "Gaussian at x=" << x << ": " << prof(x) << endl;
 // // and an automatic derivative one:
-// CompiledFunction<AutoDiff<Double> > profad("p0*exp(-((x-p1)/p2)^2)");
+// CompiledFunction<AutoDiff<double> > profad("p0*exp(-((x-p1)/p2)^2)");
 // cout << "Gaussian at x=" << x << ": " << profad(x) << endl;
 // </srcblock>
 // will produce the output:
@@ -127,9 +127,9 @@ template <class T> class CompiledParam : public Function<T> {
   virtual const String &name() const { static String x("compiled");
     return x; }
 
-  // Set a function. The return will be False (and an error message will be
+  // Set a function. The return will be false (and an error message will be
   // set) if a compilation error occurs 
-  Bool setFunction(const String &newFunction);
+  bool setFunction(const String &newFunction);
 
   // Return the error message of the compilation
   const String &errorMessage() const { return msg_p; }
@@ -138,7 +138,7 @@ template <class T> class CompiledParam : public Function<T> {
   const FuncExpression &function() const;
 
   // Returns the dimension of function
-  virtual uInt ndim() const { return ndim_p; }
+  virtual uint32_t ndim() const { return ndim_p; }
 
   // Returns the text of the function string
   const String &getText() const { return text_p; }
@@ -150,7 +150,7 @@ template <class T> class CompiledParam : public Function<T> {
 protected:
   //# Data
   // Number of dimensions of underlying function
-  uInt ndim_p;
+  uint32_t ndim_p;
   // Possible error message
   String msg_p;
   // Input text string

@@ -36,40 +36,40 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Bool near(uInt val1, uInt val2, Double tol) {
+bool near(uint32_t val1, uint32_t val2, double tol) {
   if (tol <= 0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   } else if (val1 > val2) {
-    return (Double(val1-val2) <= tol*max(val1,val2));
+    return (double(val1-val2) <= tol*max(val1,val2));
   } else {
-    return (Double(val2-val1) <= tol*max(val1,val2));
+    return (double(val2-val1) <= tol*max(val1,val2));
   }
 }
 
-Bool near(Int val1, Int val2, Double tol) {
+bool near(int32_t val1, int32_t val2, double tol) {
   if (tol <=0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   }
   if ((0<val1) != (0<val2)) {
-    return False;
+    return false;
   }
-  const Int aval1 = std::abs(val1);
-  const Int aval2 = std::abs(val2);
-  return (Double(aval1-aval2) <= tol*Double(max(aval1,aval2)));
+  const int32_t aval1 = std::abs(val1);
+  const int32_t aval2 = std::abs(val2);
+  return (double(aval1-aval2) <= tol*double(max(aval1,aval2)));
 }
 
-Bool near(Float val1, Float val2, Double tol) {
+bool near(float val1, float val2, double tol) {
   if (tol <=0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   }
   if (val1 == 0) {
     return (fabs(val2) <= (1+tol)*C::flt_min);
@@ -78,25 +78,25 @@ Bool near(Float val1, Float val2, Double tol) {
     return (fabs(val1) <= (1+tol)*C::flt_min);
   }
   if ((0<val1) != (0<val2)) {
-    return False;
+    return false;
   }
   return (fabs(val1-val2) <= tol*max(fabs(val1),fabs(val2)));
 }
 
-Bool near(Float val1, Double val2, Double tol) {
-   return near(Double(val1), val2, tol);
+bool near(float val1, double val2, double tol) {
+   return near(double(val1), val2, tol);
 }
 
-Bool near(Double val1, Float val2, Double tol) {
-   return near(val1, Double(val2), tol);
+bool near(double val1, float val2, double tol) {
+   return near(val1, double(val2), tol);
 }
 
-Bool near(Double val1, Double val2, Double tol) {
+bool near(double val1, double val2, double tol) {
   if (tol <=0) {
     return (val1 == val2);
   }
   if (val1 == val2) {
-    return True;
+    return true;
   }
   if (val1 == 0) {
     return (fabs(val2) <= (1+tol)*C::dbl_min);
@@ -105,42 +105,42 @@ Bool near(Double val1, Double val2, Double tol) {
     return (fabs(val1) <= (1+tol)*C::dbl_min);
   }
   if ((0<val1) != (0<val2)) {
-    return False;
+    return false;
   }
   return (fabs(val1-val2) <= tol*max(fabs(val1),fabs(val2)));
 }
 
-Bool nearAbs(uInt val1, uInt val2, Double tol) {
+bool nearAbs(uint32_t val1, uint32_t val2, double tol) {
   if (val1 == val2) {
-    return True;
+    return true;
   } else if (val1 > val2) {
-    return (tol >= Double(val1 - val2));
+    return (tol >= double(val1 - val2));
   } else {
-    return (tol >= Double(val2 - val1));
+    return (tol >= double(val2 - val1));
   }
 }
 
-Bool nearAbs(Int val1, Int val2, Double tol) {
-  return (tol >= Double(std::abs(val2 - val1)));
+bool nearAbs(int32_t val1, int32_t val2, double tol) {
+  return (tol >= double(std::abs(val2 - val1)));
 }
 
-Bool nearAbs(Float val1, Float val2, Double tol) {
-  return (tol >= Double(fabs(val2 - val1)));
+bool nearAbs(float val1, float val2, double tol) {
+  return (tol >= double(fabs(val2 - val1)));
 }
 
-Bool nearAbs(Double val1, Double val2, Double tol) {
+bool nearAbs(double val1, double val2, double tol) {
   return (tol >= fabs(val2 - val1));
 }
 
 
-Float floatNaN() {
-  static Float nanval;
-  static Bool init = False;
+float floatNaN() {
+  static float nanval;
+  static bool init = false;
   if (!init) {
-    init = True;
+    init = true;
     // All bits on is a NaN
-    uChar *uptr = (uChar *)&nanval;
-    for (uInt i=0; i<sizeof(nanval); i++) {
+    unsigned char *uptr = (unsigned char *)&nanval;
+    for (uint32_t i=0; i<sizeof(nanval); i++) {
       uptr[i] = 255;
     }
     AlwaysAssert(isNaN(nanval), AipsError);
@@ -148,14 +148,14 @@ Float floatNaN() {
   return nanval;
 }
 
-Double doubleNaN() {
-  static Double nanval;
-  static Bool init = False;
+double doubleNaN() {
+  static double nanval;
+  static bool init = false;
   if (!init) {
-    init = True;
+    init = true;
     // All bits on is a NaN
-    uChar *uptr = (uChar *)&nanval;
-    for (uInt i=0; i<sizeof(nanval); i++) {
+    unsigned char *uptr = (unsigned char *)&nanval;
+    for (uint32_t i=0; i<sizeof(nanval); i++) {
       uptr[i] = 255;
     }
     AlwaysAssert(isNaN(nanval), AipsError);
@@ -163,90 +163,90 @@ Double doubleNaN() {
   return nanval;
 }
 
-void setNaN(Float& val) {
+void setNaN(float& val) {
   val = floatNaN();
 }
 
-void setNaN(Double& val) {
+void setNaN(double& val) {
   val = doubleNaN();
 }
 
-Bool isInf(Float val) {
+bool isInf(float val) {
   // first see if the OS has a function for determining if the number is
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
 #if defined(AIPS_LINUX)
-  return (std::isinf(Double(val)));
+  return (std::isinf(double(val)));
 #elif defined(AIPS_DARWIN)
-  return (std::isinf(Double(val)));
+  return (std::isinf(double(val)));
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-  return (!finite(Double(val)) && !isnanf(val));
+  return (!finite(double(val)) && !isnanf(val));
 #else // Otherwise this is a default implementation.
-  const uChar* uptr = (const uChar*) &val;
-  uInt start, stop;
+  const unsigned char* uptr = (const unsigned char*) &val;
+  uint32_t start, stop;
 #if defined(AIPS_LITTLE_ENDIAN)
     if (((uptr[sizeof(val)-1] & 0x7f) != 0x7f) || 
         (uptr[sizeof(val)-2] != 0x80) ) {
-      return False;
+      return false;
     }
     start = 0; 
     stop = sizeof(val)-2;
 #else
     if (((uptr[0] & 0x7f) != 0x7f) || (uptr[1] != 0x80) ) {
-      return False;
+      return false;
     }
     start = 2; 
     stop = sizeof(val);
 #endif
-  for (uInt i = start; i < stop; i++) {
-    if (uptr[i] != 0x00) return False;
+  for (uint32_t i = start; i < stop; i++) {
+    if (uptr[i] != 0x00) return false;
   }
-  return True;
+  return true;
 #endif
 }
 
-Bool isInf(Double val) {
+bool isInf(double val) {
   // first see if the OS has a function for determining if the number is
   // infinite. I can only have access to Solaris, Linux and SGI machines to
   // determine this.
 #if defined(AIPS_LINUX)
-  return (std::isinf(Double(val)));
+  return (std::isinf(double(val)));
 #elif defined(AIPS_DARWIN)
-  return (std::isinf(Double(val)));
+  return (std::isinf(double(val)));
 #elif defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-  return (!finite(Double(val)) && !isnanf(val));
+  return (!finite(double(val)) && !isnanf(val));
 #else // Otherwise this is a default implementation.
-  const uChar* uptr = (const uChar*) &val;
-  uInt start, stop;
+  const unsigned char* uptr = (const unsigned char*) &val;
+  uint32_t start, stop;
 #if defined(AIPS_LITTLE_ENDIAN)
     if (((uptr[sizeof(val)-1] & 0x7f) != 0x7f) || 
         (uptr[sizeof(val)-2] != 0xf0) ) {
-      return False;
+      return false;
     }
     start = 0; 
     stop = sizeof(val)-2;
 #else
     if (((uptr[0] & 0x7f) != 0x7f) || (uptr[1] != 0xf0) ) {
-      return False;
+      return false;
     }
     start = 2; 
     stop = sizeof(val);
 #endif
-  for (uInt i = start; i < stop; i++) {
-    if (uptr[i] != 0x00) return False;
+  for (uint32_t i = start; i < stop; i++) {
+    if (uptr[i] != 0x00) return false;
   }
-  return True;
+  return true;
 #endif
 }
 
-Float floatInf() {
-  static Float infval;
-  static Bool init = False;
+float floatInf() {
+  static float infval;
+  static bool init = false;
   if (!init) {
-    init = True;
-    uChar *uptr = (uChar*) &infval;
+    init = true;
+    unsigned char *uptr = (unsigned char*) &infval;
 
-    for (uInt i=0; i<sizeof(infval); i++) {
+    for (uint32_t i=0; i<sizeof(infval); i++) {
       uptr[i] = 0x00;
     }
 #if defined(AIPS_LITTLE_ENDIAN)
@@ -261,13 +261,13 @@ Float floatInf() {
   return infval;
 }
 
-Double doubleInf() {
-  static Double infval;
-  static Bool init = False;
+double doubleInf() {
+  static double infval;
+  static bool init = false;
   if (!init) {
-    init = True;
-    uChar *uptr = (uChar*) &infval;
-    for (uInt i=0; i<sizeof(infval); i++) {
+    init = true;
+    unsigned char *uptr = (unsigned char*) &infval;
+    for (uint32_t i=0; i<sizeof(infval); i++) {
       uptr[i] = 0x00;
     }
 #if defined(AIPS_LITTLE_ENDIAN)
@@ -282,26 +282,26 @@ Double doubleInf() {
   return infval;
 }
 
-void setInf(Float& val) {
+void setInf(float& val) {
   val = floatInf();
 }
 
-void setInf(Double& val) {
+void setInf(double& val) {
   val = doubleInf();
 }
 
-Double roundDouble(Double val, Double ndigit) {
-  Double sign = 1;
+double roundDouble(double val, double ndigit) {
+  double sign = 1;
   if (val == 0) {
     return 0;
   } else if (val < 0) {
     sign = -1;
   }
   val *= sign;
-  Double lgr = log10(val) - ndigit;
+  double lgr = log10(val) - ndigit;
   // E.g. log10(0.1) gives -0.9999999, so add little number when truncating.
-  Int i = Int(lgr >= 0  ?  lgr + 1.000001 : lgr - 0.000001);
-  Double temp = val * pow(10.0, -i);
+  int32_t i = int32_t(lgr >= 0  ?  lgr + 1.000001 : lgr - 0.000001);
+  double temp = val * pow(10.0, -i);
   using std::round;
   return sign*round(temp)*pow(10.0, i);
 }

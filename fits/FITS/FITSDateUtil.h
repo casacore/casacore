@@ -90,21 +90,21 @@ public:
     // no time (equivalent to NEW_DATEONLY).
     static void toFITS(String &date, String &timesys, const MVTime &time,
 		       MEpoch::Types system = MEpoch::UTC,
-		       DateStyle style= AUTO_PICK, uInt precision=12);
+		       DateStyle style= AUTO_PICK, uint32_t precision=12);
 
     // Convert a FITS date string and TIMESYS keyword value into an MVTime and system. 
-    // Returns False if it can't decode date and timesys. It tries to convert as
+    // Returns false if it can't decode date and timesys. It tries to convert as
     // much as possible, for example if it can't decode timesys it still
     // attempts to decode the time. It sets the date to Jan 1/1900 if it can't
     // decode the time, and UTC if it can't decode timesys. If timesys is the
     // empty string then UTC is assumed.
-    static Bool fromFITS(MVTime &time, MEpoch::Types &system,
+    static bool fromFITS(MVTime &time, MEpoch::Types &system,
 			 const String &date, 
 			 const String &timesys);
 
     // Convert a FITS Date string to the current format. If the "in" format is
     // already correct it is just copied through.
-    static Bool convertDateString(String &out, const String &in);
+    static bool convertDateString(String &out, const String &in);
 
 
     // Determine the precision in a FITS date string.
@@ -115,7 +115,7 @@ public:
     //
     // This is mostly meant to be a helper function for convertDateString, but
     // it may be called by anyone.
-    static uInt findPrecision(const String &fitsDate);
+    static uint32_t findPrecision(const String &fitsDate);
 };
 
 

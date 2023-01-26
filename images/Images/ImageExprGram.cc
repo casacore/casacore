@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpImageExprGram = 0;
-static Int          posImageExprGram = 0;
+static int32_t          posImageExprGram = 0;
 
   
 // Define a class to delete the yy_buffer in case of an exception.
@@ -101,7 +101,7 @@ int imageExprGramParseCommand (const String& command)
     // Save current state for re-entrancy.
     int sav_yy_start = yy_start;
     const char* savStrpImageExprGram = strpImageExprGram;
-    Int savPosImageExprGram= posImageExprGram;
+    int32_t savPosImageExprGram= posImageExprGram;
     YY_BUFFER_STATE sav_state = YY_CURRENT_BUFFER;
     // Create a new state buffer for new expression.
     ImageExprGramState next (ImageExprGram_create_buffer (ImageExprGramin, YY_BUF_SIZE));
@@ -121,7 +121,7 @@ int imageExprGramParseCommand (const String& command)
 }
 
 //# Give the string position.
-Int& imageExprGramPosition()
+int32_t& imageExprGramPosition()
 {
     return posImageExprGram;
 }

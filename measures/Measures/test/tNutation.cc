@@ -35,7 +35,7 @@ void doIt (int nthr, int n)
   // Do nutation a number of times, if possible in parallel.
 #pragma omp parallel for
   for (int i=0; i<nthr; ++i) {
-    Double dat = 51116 + i*incr;
+    double dat = 51116 + i*incr;
     ostringstream ostr;
     ostr << i;
     ofstream os(("tNutation_tmp.out_a" + ostr.str()).c_str());

@@ -39,18 +39,18 @@
 
 
 #include <casacore/casa/namespace.h>
-void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
-		       Bool alternates)
+void testVectorROIter (const Lattice<bool>& lattice, bool firstValue,
+		       bool alternates)
 {
-    Int nstep;
+    int32_t nstep;
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(1,latticeShape(0));
     LatticeStepper step(latticeShape, cursorShape);
-    RO_LatticeIterator<Bool>  iter(lattice, step);
-    Bool value = firstValue;
+    RO_LatticeIterator<bool>  iter(lattice, step);
+    bool value = firstValue;
     for (iter.reset(); !iter.atEnd(); iter++){
         // static_cast is a work around for an SGI compiler bug
-        AlwaysAssert(allEQ(static_cast<Vector<Bool> >(iter.vectorCursor()), value), AipsError);
+        AlwaysAssert(allEQ(static_cast<Vector<bool> >(iter.vectorCursor()), value), AipsError);
 	if (alternates) {
 	    value = (!value);
 	}
@@ -64,11 +64,11 @@ void testVectorROIter (const Lattice<Bool>& lattice, Bool firstValue,
 }
 
 
-void testArrayRWIter (Lattice<Bool>& lattice)
+void testArrayRWIter (Lattice<bool>& lattice)
 {
     const IPosition latticeShape(lattice.shape());
     const IPosition cursorShape(latticeShape);
-    LatticeIterator<Bool>  iter(lattice, cursorShape);
+    LatticeIterator<bool>  iter(lattice, cursorShape);
     for (iter.reset(); !iter.atEnd(); ++iter){
         iter.rwCursor() = !(iter.cursor());
     }
@@ -80,33 +80,33 @@ int main ()
   try {
     {
       IPosition latticeShape(2, 4, 8);
-      Array<Bool> arr(latticeShape);
-      arr.set(True);
-      arr(IPosition(2,0,0)) = False;
+      Array<bool> arr(latticeShape);
+      arr.set(true);
+      arr(IPosition(2,0,0)) = false;
       LCMask mask(latticeShape);
       mask.put (arr);
       cout << mask.hasMask() << mask.maskArray() << endl;
     }
     {
       IPosition latticeShape(4, 16, 12, 4, 32);
-      Array<Bool> arr(latticeShape);
-      arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = True;
-      arr(IPosition(4,0,1,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = False;
+      Array<bool> arr(latticeShape);
+      arr(IPosition(4,0,0,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = true;
+      arr(IPosition(4,0,1,0,0), latticeShape-1, IPosition(4,1,2,1,1)) = false;
       LCMask mask(latticeShape);
       mask.put (arr);
       AlwaysAssertExit (mask.isWritable());
       AlwaysAssertExit (mask.hasMask());
       AlwaysAssertExit (mask.shape() == latticeShape);
       // Check the mask functions using the iterator.
-      testVectorROIter (mask, True, True);
+      testVectorROIter (mask, true, true);
       testArrayRWIter (mask);
-      testVectorROIter (mask, False, True);
+      testVectorROIter (mask, false, true);
 
       LCMask mask2(mask);
       AlwaysAssertExit (mask2 == mask);
       LCMask mask3(latticeShape-1);
-      Array<Bool> arr3(latticeShape-1);
-      arr3.set(True);
+      Array<bool> arr3(latticeShape-1);
+      arr3.set(true);
       AlwaysAssertExit (mask3 != mask);
 
     }

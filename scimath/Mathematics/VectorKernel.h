@@ -98,27 +98,27 @@ enum KernelTypes {
 
 // Create kernel vector for width in pixels.  For Gaussian, width is FWHM,
 // for Boxcar, width is full width.  For Hanning width is ignored.
-// If useShapeExactly is True, the provided shape is used exactly. 
-// If useShapeExactly is False,
+// If useShapeExactly is true, the provided shape is used exactly. 
+// If useShapeExactly is false,
 // the kernel length will be the max of the provided shape and an
 // autoestimate (e.g. from +/- 5sigma limits for a Gaussian).  
 // <group>   
-   static Vector<Double> make(KernelTypes kernelType, Double width, 
-                              uInt shape, Bool useShapeExactly, Bool peakIsUnity=False);
-   static Vector<Float> make(KernelTypes kernelType, Float width, 
-                             uInt shape, Bool useShapeExactly, Bool peakIsUnity=False);
+   static Vector<double> make(KernelTypes kernelType, double width, 
+                              uint32_t shape, bool useShapeExactly, bool peakIsUnity=false);
+   static Vector<float> make(KernelTypes kernelType, float width, 
+                             uint32_t shape, bool useShapeExactly, bool peakIsUnity=false);
 // </group>   
 
 
 // Helper function to convert a string containing a list of desired smoothed kernel types
-// to the correct <src>Vector<Int></src> required for the <src>setSmooth</src> function.
+// to the correct <src>Vector<int32_t></src> required for the <src>setSmooth</src> function.
 // This may be usful if your user interface involves strings rather than integers.
 // A new value is added to the output vector (which is resized appropriately) if any of the 
 // substrings "boxcar", "gaussian" or "hanning" (actually "box", "gauss", and "hann"
 // will do) is present.
-   static Vector<Int> toKernelTypes (const String& kernels,
+   static Vector<int32_t> toKernelTypes (const String& kernels,
                                      const std::regex& delimiter);
-   static Vector<Int> toKernelTypes (const Vector<String>& kernels);
+   static Vector<int32_t> toKernelTypes (const Vector<String>& kernels);
    static VectorKernel::KernelTypes toKernelType (const String& kernel);
    static String fromKernelType (KernelTypes kernelType);
 };

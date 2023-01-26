@@ -102,16 +102,16 @@ Quantum<Qtype> operator/(const Qtype &left,
 
 // pow. Implemented as a repeated multiplication/division:
 // - to cater for all data types
-// - only Int powers allowed
+// - only int32_t powers allowed
 // - limited values of exponentials foreseen
 template <class Qtype>
-Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
+Quantum<Qtype> pow(const Quantum<Qtype> &left, int32_t p) {
     if (::abs(p) >= 100) throw (AipsError("Quantum::pow exponent too large")); 
 // Make sure 1 in current data type available
     Quantum<Qtype> res;
     Qtype tmp; tmp = left.getValue() * 0. + 1.;
 
-    Int i;
+    int32_t i;
     if (p>=0) {
 	for (i=0; i<p; i++) tmp *= left.getValue();
     } else {
@@ -125,18 +125,18 @@ Quantum<Qtype> pow(const Quantum<Qtype> &left, Int p) {
 	sloc += "-";
 	p = -p;
       }
-      if (p/10 != 0) sloc += Char(Int(p)/10 + '0');
-      sloc += Char(Int(p)%10 + '0');
+      if (p/10 != 0) sloc += char(int32_t(p)/10 + '0');
+      sloc += char(int32_t(p)%10 + '0');
       res.setUnit(sloc);
     }
     return res;
 }
 
 template <class Qtype>
-Quantum<Qtype> root(const Quantum<Qtype> &left, Int p) {
+Quantum<Qtype> root(const Quantum<Qtype> &left, int32_t p) {
   if (p == 0) throw (AipsError("Quantum::root exponent zero"));
   Quantum<Qtype> res;
-  res.setValue(casacore::pow(left.getValue(), 1.0/Double(p)));
+  res.setValue(casacore::pow(left.getValue(), 1.0/double(p)));
   UnitVal vres(left.getFullUnit().getValue().root(p));
   ostringstream oss;
   oss << vres.getDim();

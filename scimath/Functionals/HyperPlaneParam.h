@@ -72,11 +72,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // // form the hyper plane function of this form: 
 // // 6*x0 + 2*x3 
-//  HyperPlane<Double> hyper(4); // 4-dim hyperplane
+//  HyperPlane<double> hyper(4); // 4-dim hyperplane
 //  hyper.parameters()[0] = 6;   
 //  hyper.parameters()[3] = 2;
 //  // Evaluate at x0=5, x3=7
-//  Vector<Double> x(4);
+//  Vector<double> x(4);
 //  x=0; x[0]=5; x[3]=7;
 //  cout << "Hypervalue: " << hyper(x) << endl;
 //  Hypervalue: 44
@@ -110,7 +110,7 @@ public:
   // default, the coefficients are initialized to zero. The default plane has
   // <src>m=0</src>
   // <group>
-  explicit HyperPlaneParam(uInt m=0);
+  explicit HyperPlaneParam(uint32_t m=0);
   // </group>
 
   // Copy constructor (deep copy)
@@ -132,9 +132,9 @@ public:
   // HyperPlanes are equal if they are of the same order and have the same
   // parameters
   // <group>
-  Bool operator==(const HyperPlaneParam<T> &other) const {
+  bool operator==(const HyperPlaneParam<T> &other) const {
     return (this->param_p == other.param_p); }
-  Bool operator!=(const HyperPlaneParam<T> &other) const {
+  bool operator!=(const HyperPlaneParam<T> &other) const {
     return (this->param_p != other.param_p); }
   // </group>
     
@@ -144,7 +144,7 @@ public:
     return x; }
 
   // What is the dimension of the parameter list
-  virtual uInt ndim() const { return this->param_p.nelements(); }
+  virtual uint32_t ndim() const { return this->param_p.nelements(); }
 
   //# Make members of parent classes known.
 protected:

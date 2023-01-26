@@ -45,7 +45,7 @@ template <class T>
 LELLattice<T>::LELLattice(const Lattice<T>& lattice) 
 : pLattice_p (new SubLattice<T> (lattice))
 {
-   setAttr(LELAttribute(False, 
+   setAttr(LELAttribute(false, 
 			lattice.shape(), lattice.niceCursorShape(),
 			lattice.lelCoordinates()));
 
@@ -92,7 +92,7 @@ void LELLattice<T>::eval(LELArray<T>& result,
    Array<T> tmp = pLattice_p->getSlice (section);
    result.value().reference(tmp);
    if (getAttribute().isMasked()) {
-      Array<Bool> mask = pLattice_p->getMaskSlice (section);
+      Array<bool> mask = pLattice_p->getMaskSlice (section);
       result.setMask (mask);
    } else {
       result.removeMask();
@@ -113,7 +113,7 @@ void LELLattice<T>::evalRef(LELArrayRef<T>& result,
    // Cast to its base class LELArray to use the non-const value function.
    ((LELArray<T>&)result).value().reference(tmp);
    if (getAttribute().isMasked()) {
-      Array<Bool> mask = pLattice_p->getMaskSlice (section);
+      Array<bool> mask = pLattice_p->getMaskSlice (section);
       result.setMask (mask);
    } else {
       result.removeMask();
@@ -128,9 +128,9 @@ LELScalar<T> LELLattice<T>::getScalar() const
 }
 
 template <class T>
-Bool LELLattice<T>::prepareScalarExpr()
+bool LELLattice<T>::prepareScalarExpr()
 {
-    return False;
+    return false;
 }
 
 template <class T>
@@ -141,7 +141,7 @@ String LELLattice<T>::className() const
 
 
 template<class T>
-Bool LELLattice<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool LELLattice<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
     return pLattice_p->lock (type, nattempts);
 }
@@ -151,7 +151,7 @@ void LELLattice<T>::unlock()
     pLattice_p->unlock();
 }
 template<class T>
-Bool LELLattice<T>::hasLock (FileLocker::LockType type) const
+bool LELLattice<T>::hasLock (FileLocker::LockType type) const
 {
     return pLattice_p->hasLock (type);
 }

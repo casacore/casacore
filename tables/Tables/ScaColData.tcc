@@ -47,11 +47,11 @@ ScalarColumnData<T>::ScalarColumnData (const ScalarColumnDesc<T>* cd,
 				       ColumnSet* csp)
 : PlainColumn  (cd, csp),
   scaDescPtr_p (cd),
-  undefFlag_p  (False),
+  undefFlag_p  (false),
   undefVal_p   (cd->defaultValue())
 {
     if ((cd->options() & ColumnDesc::Undefined)  ==  ColumnDesc::Undefined) {
-	undefFlag_p = True;
+	undefFlag_p = true;
     }
 }
 
@@ -83,10 +83,10 @@ void ScalarColumnData<T>::initialize (rownr_t startRow, rownr_t endRow)
 }	
 
 template<class T>
-Bool ScalarColumnData<T>::isDefined (rownr_t rownr) const
+bool ScalarColumnData<T>::isDefined (rownr_t rownr) const
 {
     if (!undefFlag_p) {
-	return True;
+	return true;
     }
     T val;
     dataColPtr_p->get (rownr, &val);
@@ -100,7 +100,7 @@ void ScalarColumnData<T>::get (rownr_t rownr, void* val) const
     if (rtraceColumn_p) {
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr);
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->get (rownr, static_cast<T*>(val));
     autoReleaseLock();
 }
@@ -115,7 +115,7 @@ void ScalarColumnData<T>::getScalarColumn (ArrayBase& val) const
     if (val.ndim() != 1  ||  val.nelements() != nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumn"));
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getScalarColumnV (val);
     autoReleaseLock();
 }
@@ -130,7 +130,7 @@ void ScalarColumnData<T>::getScalarColumnCells (const RefRows& rownrs,
     if (val.ndim() != 1  ||  val.nelements() != rownrs.nrow()) {
 	throw (TableArrayConformanceError("ScalarColumnData::getScalarColumnCells"));
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getScalarColumnCellsV (rownrs, val);
     autoReleaseLock();
 }
@@ -143,7 +143,7 @@ void ScalarColumnData<T>::put (rownr_t rownr, const void* val)
       TableTrace::trace (traceId(), columnDesc().name(), 'w', rownr);
     }
     checkValueLength (static_cast<const T*>(val));
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->put (rownr, static_cast<const T*>(val));
     autoReleaseLock();
 }
@@ -158,7 +158,7 @@ void ScalarColumnData<T>::putScalarColumn (const ArrayBase& val)
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (static_cast<const Array<T>*>(&val));
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putScalarColumnV (val);
     autoReleaseLock();
 }
@@ -174,7 +174,7 @@ void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError("ScalarColumnData::putColumn"));
     }
     checkValueLength (static_cast<const Array<T>*>(&val));
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putScalarColumnCellsV (rownrs, val);
     autoReleaseLock();
 }
@@ -183,7 +183,7 @@ void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 template<class T>
 void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
 				       CountedPtr<BaseCompare>& cmpObj,
-				       Int order,
+				       int32_t order,
 				       CountedPtr<ArrayBase>& dataSave)
 {
     //# Get the data as a column.
@@ -197,7 +197,7 @@ void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
 template<class T>
 void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
                                           CountedPtr<BaseCompare>& cmpObj,
-					  Int order,
+					  int32_t order,
 					  const Vector<rownr_t>& rownrs,
 					  CountedPtr<ArrayBase>& dataSave)
 {
@@ -212,7 +212,7 @@ template<class T>
 void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
 				       Sort& sortobj,
                                        CountedPtr<BaseCompare>& cmpObj,
-				       Int order)
+				       int32_t order)
 {
     //# Pass the real vector storage as the sort data.
     //# Use the compare function if given, otherwise pass data type.
@@ -253,7 +253,7 @@ void ScalarColumnData<T>::freeIterBuf (void*& lastVal, void*& curVal)
 template<class T>
 void ScalarColumnData<T>::putFileDerived (AipsIO& ios)
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
     ios << dataManPtr_p->sequenceNr();
 }
 
@@ -261,9 +261,9 @@ template<class T>
 void ScalarColumnData<T>::getFileDerived (AipsIO& ios,
 					  const ColumnSet& colset)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
-    uInt seqnr;
+    uint32_t seqnr;
     ios >> seqnr;
     dataManPtr_p = colset.getDataManager (seqnr);
     createDataManagerColumn();

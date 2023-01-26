@@ -73,11 +73,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // // form the hyper plane function of this form: 
 // // 6*x0 + 2*x3 
-//  HyperPlane<Double> hyper(4); // 4-dim hyperplane
+//  HyperPlane<double> hyper(4); // 4-dim hyperplane
 //  hyper.parameters()[0] = 6;   
 //  hyper.parameters()[3] = 2;
 //  // Evaluate at x0=5, x3=7
-//  Vector<Double> x(4);
+//  Vector<double> x(4);
 //  x=0; x[0]=5; x[3]=7;
 //  cout << "Hypervalue: " << hyper(x) << endl;
 //  Hypervalue: 44
@@ -109,7 +109,7 @@ public:
   //# Constructors
   // Construct an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialised to zero, and <src>m=0</src>
-  explicit HyperPlane(const uInt m=0) : HyperPlaneParam<T>(m) {;}
+  explicit HyperPlane(const uint32_t m=0) : HyperPlaneParam<T>(m) {;}
   // Copy constructor/assignment (deep copy)
   // <group>
   HyperPlane(const HyperPlane<T> &other) : HyperPlaneParam<T>(other) {}
@@ -161,7 +161,7 @@ public:
   //# Construct
   // Constructors an m-dimensional hyper plane which has m parameters.  By 
   // default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit HyperPlane_PS(const uInt m=0) :
+  explicit HyperPlane_PS(const uint32_t m=0) :
     HyperPlaneParam<AutoDiff<T> >(m) {}
   // Copy constructor/assignment (deep copy)
   // <group>

@@ -42,7 +42,7 @@ LCIntersection::LCIntersection (const LCRegion& region1,
     defineBox();
 }
 
-LCIntersection::LCIntersection (Bool takeOver, const LCRegion* region1,
+LCIntersection::LCIntersection (bool takeOver, const LCRegion* region1,
 				const LCRegion* region2,
 				const LCRegion* region3,
 				const LCRegion* region4,
@@ -58,7 +58,7 @@ LCIntersection::LCIntersection (Bool takeOver, const LCRegion* region1,
     defineBox();
 }
 
-LCIntersection::LCIntersection (Bool takeOver,
+LCIntersection::LCIntersection (bool takeOver,
 				const PtrBlock<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
@@ -82,7 +82,7 @@ LCIntersection& LCIntersection::operator= (const LCIntersection& other)
     return *this;
 }
 
-Bool LCIntersection::operator== (const LCRegion& other) const
+bool LCIntersection::operator== (const LCRegion& other) const
 {
     return LCRegionMulti::operator== (other);
 }
@@ -93,12 +93,12 @@ LCRegion* LCIntersection::cloneRegion() const
     return new LCIntersection (*this);
 }
 
-LCRegion* LCIntersection::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCIntersection::doTranslate (const Vector<float>& translateVector,
 				       const IPosition& newLatticeShape) const
 {
     PtrBlock<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
-    return new LCIntersection (True, regions);
+    return new LCIntersection (true, regions);
 }
 
 String LCIntersection::className()
@@ -124,23 +124,23 @@ LCIntersection* LCIntersection::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new LCIntersection (True, regions);
+    return new LCIntersection (true, regions);
 }
 
 void LCIntersection::defineBox()
 {
-    uInt i;
+    uint32_t i;
     // Get the intersection of blc and trc.
     const IPosition& shape = latticeShape();
-    uInt nrdim = shape.nelements();
+    uint32_t nrdim = shape.nelements();
     IPosition blc(nrdim, 0);
     IPosition trc(shape - 1);
-    uInt nr = regions().nelements();
-    itsOffsets.resize (nr, True);
+    uint32_t nr = regions().nelements();
+    itsOffsets.resize (nr, true);
     for (i=0; i<nr; i++) {
 	const IPosition& regblc = regions()[i]->boundingBox().start();
 	const IPosition& regtrc = regions()[i]->boundingBox().end();
-	for (uInt j=0; j<nrdim; j++) {
+	for (uint32_t j=0; j<nrdim; j++) {
 	    if (regtrc(j) < blc(j)  ||  regblc(j) > trc(j)) {
 	        throw (AipsError ("LCIntersection::LCIntersection - "
 				  "regions do not overlap"));
@@ -165,30 +165,30 @@ void LCIntersection::defineBox()
 }
 
 
-void LCIntersection::multiGetSlice (Array<Bool>& buffer,
+void LCIntersection::multiGetSlice (Array<bool>& buffer,
 				    const Slicer& section)
 {
     // Get the required part from the first region.
     // Note this getSlice version ensures that the result is not
     // referencing some internal Lattice array.
-    Array<Bool> tmp = regions()[0]->getSlice
+    Array<bool> tmp = regions()[0]->getSlice
                               (Slicer(section.start()+itsOffsets[0],
 				      section.length(),
 				      section.stride()));
     buffer.reference(tmp);
-    Bool deleteBuf, deleteTmp;
-    Bool* buf = buffer.getStorage (deleteBuf);
-    Bool* bufend = buf + section.length().product();
-    Array<Bool> tmpbuf (buffer.shape());
-    uInt nr = regions().nelements();
-    for (uInt i=1; i<nr; i++) {
+    bool deleteBuf, deleteTmp;
+    bool* buf = buffer.getStorage (deleteBuf);
+    bool* bufend = buf + section.length().product();
+    Array<bool> tmpbuf (buffer.shape());
+    uint32_t nr = regions().nelements();
+    for (uint32_t i=1; i<nr; i++) {
         LCRegion* reg = (LCRegion*)(regions()[i]);
         reg->doGetSlice (tmpbuf, Slicer(section.start()+itsOffsets[i],
 					section.length(),
 					section.stride()));
-        const Bool* tmp = tmpbuf.getStorage (deleteTmp);
-	const Bool* tmpptr = tmp;
-	Bool* bufptr = buf;
+        const bool* tmp = tmpbuf.getStorage (deleteTmp);
+	const bool* tmpptr = tmp;
+	bool* bufptr = buf;
 	// Take the 'and' of all elements.
 	while (bufptr < bufend) {
 	    if (*bufptr) {

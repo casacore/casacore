@@ -30,10 +30,10 @@ using namespace casacore;
 
 int main()
 {
-  HelpMeasUDF::showFuncsPosition (std::cout, False);
-  HelpMeasUDF::showFuncsEpoch (std::cout, False);
-  HelpMeasUDF::showFuncsDirection (std::cout, False);
-  HelpMeasUDF::showFuncsEarthMagnetic (std::cout, False);
-  HelpMeasUDF::showFuncsFrequency (std::cout, False);
-  HelpMeasUDF::showFuncsRadialVelocity (std::cout, False);
+  HelpMeasUDF::showFuncsPosition (std::cout, false);
+  HelpMeasUDF::showFuncsEpoch (std::cout, false);
+  HelpMeasUDF::showFuncsDirection (std::cout, false);
+  HelpMeasUDF::showFuncsEarthMagnetic (std::cout, false);
+  HelpMeasUDF::showFuncsFrequency (std::cout, false);
+  HelpMeasUDF::showFuncsRadialVelocity (std::cout, false);
 }

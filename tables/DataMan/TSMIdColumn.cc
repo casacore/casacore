@@ -61,31 +61,31 @@ void TSMIdColumn::putfloat (rownr_t rownr, const float* dataPtr)
 
 
 
-#define TSMIDCOLUMN_GETPUT(T) \
-void TSMIdColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
+#define TSMIDCOLUMN_GETPUT(T,NM)                                  \
+void TSMIdColumn::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
 { \
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr); \
     hypercube->valueRecord().get (columnName(), *dataPtr); \
 } \
-void TSMIdColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
+void TSMIdColumn::aips_name2(put,NM) (rownr_t rownr, const T* dataPtr) \
 { \
     T value; \
-    TSMIdColumn::aips_name2(get,T) (rownr, &value); \
+    TSMIdColumn::aips_name2(get,NM) (rownr, &value); \
     if (value != *dataPtr) { \
 	throw TSMError ("TSMIdColumn::put: new value mismatches existing" \
                         " in id column " + columnName()); \
     } \
 }
 
-TSMIDCOLUMN_GETPUT(Bool)
-TSMIDCOLUMN_GETPUT(Int)
-TSMIDCOLUMN_GETPUT(uInt)
-TSMIDCOLUMN_GETPUT(Int64)
-//#TSMIDCOLUMN_GETPUT(float)
-TSMIDCOLUMN_GETPUT(double)
-TSMIDCOLUMN_GETPUT(Complex)
-TSMIDCOLUMN_GETPUT(DComplex)
-TSMIDCOLUMN_GETPUT(String)
+TSMIDCOLUMN_GETPUT(bool, Bool)
+TSMIDCOLUMN_GETPUT(int32_t, Int)
+TSMIDCOLUMN_GETPUT(uint32_t, uInt)
+TSMIDCOLUMN_GETPUT(int64_t, Int64)
+//#TSMIDCOLUMN_GETPUT(float, float)
+TSMIDCOLUMN_GETPUT(double, double)
+TSMIDCOLUMN_GETPUT(Complex, Complex)
+TSMIDCOLUMN_GETPUT(DComplex, DComplex)
+TSMIDCOLUMN_GETPUT(String, String)
 
 } //# NAMESPACE CASACORE - END
 

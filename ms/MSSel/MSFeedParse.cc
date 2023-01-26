@@ -79,7 +79,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // 
   const TableExprNode* MSFeedParse::setTEN(TableExprNode& condition, 
                                               BaselineListType baselineType,
-                                              Bool negate)
+                                              bool negate)
   {
     if (baselineType==CrossOnly) 
       {
@@ -95,19 +95,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
 
-  const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds, 
+  const TableExprNode* MSFeedParse::selectFeedIds(const Vector<int32_t>& feedIds, 
 							BaselineListType baselineType,
-							Bool negate) 
+							bool negate) 
   {
     TableExprNode condition;
     if ((baselineType==AutoCorrAlso) || (baselineType==AutoCorrOnly)) 
       {
-	Int n=feedIds.nelements();
+	int32_t n=feedIds.nelements();
 	if (n) 
 	  {
 	    condition = ((column1AsTEN_p == feedIds[0]) &&
 			 (column2AsTEN_p == feedIds[0]));
-	    for (Int i=1;i<n;i++) 
+	    for (int32_t i=1;i<n;i++) 
 	      {
 		condition = condition || 
 		  ((column1AsTEN_p == feedIds[i]) && (column2AsTEN_p == feedIds[i]));
@@ -123,11 +123,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {
       // cannot use indgen for this, rows of feed table may have same feed ID
       MSFeedColumns* msfc = new MSFeedColumns(subTable());
-      Vector<Int> f2 = msfc->feedId().getColumn();
+      Vector<int32_t> f2 = msfc->feedId().getColumn();
       delete msfc;
       /*
-      Int nrows_p = subTable().nrow();
-      Vector<Int> f2(nrows_p);
+      int32_t nrows_p = subTable().nrow();
+      Vector<int32_t> f2(nrows_p);
       f2.resize(nrows_p);
       indgen(f2);
       */
@@ -140,21 +140,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return setTEN(condition, baselineType, negate);
   }
 
-  void MSFeedParse::makeFeedList(Vector<Int>& feedList,const Vector<Int>& thisList,
-				       Bool negate)
+  void MSFeedParse::makeFeedList(Vector<int32_t>& feedList,const Vector<int32_t>& thisList,
+				       bool negate)
   {
-    Vector<Int> f2;
+    Vector<int32_t> f2;
     if (negate) f2=-thisList;
     else        f2=thisList;
 
-    Vector<Int> tmp1(set_union(f2,feedList));
+    Vector<int32_t> tmp1(set_union(f2,feedList));
     feedList.resize(tmp1.nelements());feedList = tmp1;
   }
   
-  const TableExprNode* MSFeedParse::selectFeedIds(const Vector<Int>& feedIds1,
-							const Vector<Int>& feedIds2,
+  const TableExprNode* MSFeedParse::selectFeedIds(const Vector<int32_t>& feedIds1,
+							const Vector<int32_t>& feedIds2,
 							BaselineListType baselineType,
-							Bool negate)
+							bool negate)
   {
     TableExprNode condition;
 
@@ -170,48 +170,48 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return setTEN(condition,baselineType,negate);
   }
 
-  Bool MSFeedParse::addFeedPair(const Matrix<Int>& feedpairlist,
-                                   const Int feed1, const Int feed2, 
+  bool MSFeedParse::addFeedPair(const Matrix<int32_t>& feedpairlist,
+                                   const int32_t feed1, const int32_t feed2, 
  				   BaselineListType baselineType)
   {
-    Bool doAutoCorr;
+    bool doAutoCorr;
     doAutoCorr = (baselineType==AutoCorrAlso) || (baselineType==AutoCorrOnly);
-    if ((feed1 == feed2) && (!doAutoCorr)) return False;
-    if ((baselineType==AutoCorrOnly) && (feed1!=feed2)) return False;
+    if ((feed1 == feed2) && (!doAutoCorr)) return false;
+    if ((baselineType==AutoCorrOnly) && (feed1!=feed2)) return false;
 
-    Int n=feedpairlist.shape()(0);
-    for (Int i=0;i<n;i++) {
+    int32_t n=feedpairlist.shape()(0);
+    for (int32_t i=0;i<n;i++) {
       if (((feedpairlist(i,0)==feed1) && (feedpairlist(i,1)==feed2)) ||
           ((feedpairlist(i,1)==feed1) && (feedpairlist(i,0)==feed2))) {
-        return False;
+        return false;
       }
     }
-    return True;
+    return true;
   }
   //
   // Method to make a list of unique feed pairs, given a list of
   // feed1 and feed2.  The feed pairs list is appended to the
   // existing list.  The required sizing could be done better.
   //
-  void MSFeedParse::makeFeedPairList(const Vector<Int>& f1,
-                    const Vector<Int>& f2, 
-					Matrix<Int>& feedpairlist, 
+  void MSFeedParse::makeFeedPairList(const Vector<int32_t>& f1,
+                    const Vector<int32_t>& f2, 
+					Matrix<int32_t>& feedpairlist, 
 					BaselineListType baselineType,
-					Bool /*negate*/)
+					bool /*negate*/)
   {
-    Int n1,n2,nb0;
+    int32_t n1,n2,nb0;
     n1=f1.nelements();  n2=f2.nelements();
     nb0=feedpairlist.shape()(0);
     IPosition newSize(2,nb0,2);
 
-    for (Int i1=0;i1<n1;i1++) {
+    for (int32_t i1=0;i1<n1;i1++) {
       for (int i2=0;i2<n2;i2++) {
-        Int feed1, feed2;
+        int32_t feed1, feed2;
         feed1=f1[i1]; feed2=f2[i2];
         if (addFeedPair(feedpairlist,feed1,feed2,baselineType)) {
           nb0++;
           newSize[0]=nb0;
-          feedpairlist.resize(newSize,True);
+          feedpairlist.resize(newSize,true);
           feedpairlist(nb0-1,0)=feed1;
           feedpairlist(nb0-1,1)=feed2;
         }

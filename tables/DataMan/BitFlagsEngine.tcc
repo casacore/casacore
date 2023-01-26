@@ -1,4 +1,4 @@
-//# BitFlagsEngine.tcc: Templated virtual column engine to map bit flags to a Bool
+//# BitFlagsEngine.tcc: Templated virtual column engine to map bit flags to a bool
 //# Copyright (C) 2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -47,12 +47,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   BitFlagsEngine<T>::BitFlagsEngine (const String& virtualColumnName,
                                      const String& storedColumnName,
                                      T readMask, T writeMask)
-  : BaseMappedArrayEngine<Bool,T> (virtualColumnName, storedColumnName),
+  : BaseMappedArrayEngine<bool,T> (virtualColumnName, storedColumnName),
     itsBFEReadMask  (readMask),
     itsBFEWriteMask (writeMask),
     itsReadMask     (readMask),
     itsWriteMask    (writeMask),
-    itsIsNew        (False)
+    itsIsNew        (false)
   {}
 
   template<typename T>
@@ -60,18 +60,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                      const String& storedColumnName,
                                      const Array<String>& readMaskKeys,
                                      const Array<String>& writeMaskKeys)
-  : BaseMappedArrayEngine<Bool,T> (virtualColumnName, storedColumnName),
+  : BaseMappedArrayEngine<bool,T> (virtualColumnName, storedColumnName),
     itsBFEReadMask  (readMaskKeys, 0xffffffff),
     itsBFEWriteMask (writeMaskKeys, 1),
     itsReadMask     (0xffffffff),
     itsWriteMask    (1),
-    itsIsNew        (False)
+    itsIsNew        (false)
   {}
 
   template<typename T>
   BitFlagsEngine<T>::BitFlagsEngine (const Record& spec)
-    : BaseMappedArrayEngine<Bool,T>(),
-      itsIsNew (False)
+    : BaseMappedArrayEngine<bool,T>(),
+      itsIsNew (false)
   {
     if (spec.isDefined("SOURCENAME")  &&  spec.isDefined("TARGETNAME")) {
       setNames (spec.asString("SOURCENAME"), spec.asString("TARGETNAME"));
@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   BitFlagsEngine<T>::BitFlagsEngine (const BitFlagsEngine<T>& that)
-  : BaseMappedArrayEngine<Bool,T> (that),
+  : BaseMappedArrayEngine<bool,T> (that),
     itsBFEReadMask   (that.itsBFEReadMask),
     itsBFEWriteMask  (that.itsBFEWriteMask),
     itsReadMask      (that.itsReadMask),
@@ -166,14 +166,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   void BitFlagsEngine<T>::create64 (rownr_t initialNrrow)
   {
-    BaseMappedArrayEngine<Bool,T>::create64 (initialNrrow);
-    itsIsNew = True;
+    BaseMappedArrayEngine<bool,T>::create64 (initialNrrow);
+    itsIsNew = true;
   }
 
   template<typename T>
   void BitFlagsEngine<T>::prepare()
   {
-    BaseMappedArrayEngine<Bool,T>::prepare();
+    BaseMappedArrayEngine<bool,T>::prepare();
     // If a new table, derive the mask here.
     // This cannot be done in create, because the other column may not
     // be created yet.
@@ -198,14 +198,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   template<typename T>
-  void BitFlagsEngine<T>::getArray (rownr_t rownr, Array<Bool>& array)
+  void BitFlagsEngine<T>::getArray (rownr_t rownr, Array<bool>& array)
   {
     Array<T> target(array.shape());
     column().get (rownr, target);
     mapOnGet (array, target);
   }
   template<typename T>
-  void BitFlagsEngine<T>::putArray (rownr_t rownr, const Array<Bool>& array)
+  void BitFlagsEngine<T>::putArray (rownr_t rownr, const Array<bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -214,7 +214,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   void BitFlagsEngine<T>::getSlice (rownr_t rownr, const Slicer& slicer,
-                                    Array<Bool>& array)
+                                    Array<bool>& array)
   {
     Array<T> target(array.shape());
     column().getSlice (rownr, slicer, target);
@@ -222,7 +222,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   template<typename T>
   void BitFlagsEngine<T>::putSlice (rownr_t rownr, const Slicer& slicer,
-                                    const Array<Bool>& array)
+                                    const Array<bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -230,14 +230,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  void BitFlagsEngine<T>::getArrayColumn (Array<Bool>& array)
+  void BitFlagsEngine<T>::getArrayColumn (Array<bool>& array)
   {
     Array<T> target(array.shape());
     column().getColumn (target);
     mapOnGet (array, target);
   }
   template<typename T>
-  void BitFlagsEngine<T>::putArrayColumn (const Array<Bool>& array)
+  void BitFlagsEngine<T>::putArrayColumn (const Array<bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -246,7 +246,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   void BitFlagsEngine<T>::getArrayColumnCells (const RefRows& rownrs,
-                                               Array<Bool>& array)
+                                               Array<bool>& array)
   {
     Array<T> target(array.shape());
     column().getColumnCells (rownrs, target);
@@ -254,7 +254,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   template<typename T>
   void BitFlagsEngine<T>::putArrayColumnCells (const RefRows& rownrs,
-                                               const Array<Bool>& array)
+                                               const Array<bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -263,7 +263,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename T>
   void BitFlagsEngine<T>::getColumnSlice (const Slicer& slicer,
-                                          Array<Bool>& array)
+                                          Array<bool>& array)
   {
     Array<T> target(array.shape());
     column().getColumn (slicer, target);
@@ -271,7 +271,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   template<typename T>
   void BitFlagsEngine<T>::putColumnSlice (const Slicer& slicer,
-                                          const Array<Bool>& array)
+                                          const Array<bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -281,7 +281,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   void BitFlagsEngine<T>::getColumnSliceCells (const RefRows& rownrs,
                                                const Slicer& slicer,
-                                               Array<Bool>& array)
+                                               Array<bool>& array)
   {
     Array<T> target(array.shape());
     column().getColumnCells (rownrs, slicer, target);
@@ -290,7 +290,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<typename T>
   void BitFlagsEngine<T>::putColumnSliceCells (const RefRows& rownrs,
                                                const Slicer& slicer,
-                                               const Array<Bool>& array)
+                                               const Array<bool>& array)
   {
     Array<T> target(array.shape());
     mapOnPut (array, target);
@@ -298,14 +298,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  void BitFlagsEngine<T>::mapOnGet (Array<Bool>& array,
+  void BitFlagsEngine<T>::mapOnGet (Array<bool>& array,
                                     const Array<T>& stored)
   {
     arrayTransform (stored, array, FlagsToBool(itsReadMask));
   }
 
   template<typename T>
-  void BitFlagsEngine<T>::mapOnPut (const Array<Bool>& array,
+  void BitFlagsEngine<T>::mapOnPut (const Array<bool>& array,
                                     Array<T>& stored)
   {
     arrayTransformInPlace (stored, array, BoolToFlags(itsWriteMask));

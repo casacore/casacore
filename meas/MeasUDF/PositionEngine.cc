@@ -35,9 +35,9 @@ namespace casacore {
   PositionEngine::~PositionEngine()
   {}
 
-  void PositionEngine::handlePosition (Int toValueType,
+  void PositionEngine::handlePosition (int32_t toValueType,
                                        const std::vector<TENShPtr>& args,
-                                       uInt& argnr)
+                                       uint32_t& argnr)
   {
     // Handle the input position values and possibly type.
     // Set values to unknown, because they might have been set by
@@ -45,8 +45,8 @@ namespace casacore {
     itsRefType    = MPosition::N_Types;
     itsInUnit     = "";
     itsValueType  = 0;
-    uInt nargnr   = argnr+1;
-    Bool asScalar = False;
+    uint32_t nargnr   = argnr+1;
+    bool asScalar = false;
     if (args[argnr]->dataType() == TableExprNodeRep::NTString) {
       // Position is given by observatory name.
       handleObservatory (args[argnr]);
@@ -61,7 +61,7 @@ namespace casacore {
       if (args.size() > argnr  &&
           args[argnr]->isReal()  &&
           args[argnr]->valueType() == TableExprNodeRep::VTScalar) {
-        asScalar = True;
+        asScalar = true;
         if (args.size() > nargnr  &&
             args[nargnr]->isReal()  &&
             args[nargnr]->valueType() == TableExprNodeRep::VTScalar) {
@@ -74,11 +74,11 @@ namespace casacore {
         node3 = args[nargnr];
         nargnr++;
       }
-      uInt nval = nargnr-argnr;
+      uint32_t nval = nargnr-argnr;
       // See if there is a reference type.
       if (args.size() > nargnr  &&
           args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-        handleMeasType (args[nargnr], True);
+        handleMeasType (args[nargnr], true);
         nargnr++;
       }
       // Process as scalars or as array.
@@ -127,7 +127,7 @@ namespace casacore {
     return type;
   }
 
-  void PositionEngine::deriveAttr (const Unit& unit, Int nval)
+  void PositionEngine::deriveAttr (const Unit& unit, int32_t nval)
   {
     // This function checks and sets attributes.
     // There are two attributes (itsInUnit and itsValueType) which can be
@@ -213,7 +213,7 @@ namespace casacore {
     }
   }
 
-  void PositionEngine::setValueType (Int valueType)
+  void PositionEngine::setValueType (int32_t valueType)
   {
     itsValueType = valueType;
   }
@@ -221,7 +221,7 @@ namespace casacore {
   void PositionEngine::handleScalars (const TENShPtr& e1,
                                       const TENShPtr& e2,
                                       const TENShPtr& e3,
-                                      Int nval)
+                                      int32_t nval)
   {
     if (! e1->isConstant()  ||
         (e2  &&  ! e2->isConstant())  ||
@@ -290,7 +290,7 @@ namespace casacore {
     }
     Array<String> names = operand->getStringAS(0).array();
     itsConstants.resize (names.shape());
-    for (uInt i=0; i<names.size(); ++i) {
+    for (uint32_t i=0; i<names.size(); ++i) {
       if (! MeasTable::Observatory (itsConstants.data()[i], names.data()[i])) {
         throw AipsError ("Observatory '" + names.data()[i] + "' used as a"
                          " position in a MEAS function is unknown");
@@ -318,10 +318,10 @@ namespace casacore {
     // If found, try to handle it as a TableMeasures column.
     const TableExprNodeArrayColumn* colNode =
       dynamic_cast<TableExprNodeArrayColumn*>(operand.get());
-    Bool directCol = True;
+    bool directCol = true;
     if (!colNode) {
       // The node is an expression, not a column.
-      directCol = False;
+      directCol = false;
       // Try if the node is an array part of a column.
       TableExprNodeArrayPart* partNode =
         dynamic_cast<TableExprNodeArrayPart*>(operand.get());
@@ -341,7 +341,7 @@ namespace casacore {
         MPosition::Types nodeRefType = MPosition::N_Types;
         if (! (measTmp.measDesc().isRefCodeVariable()  ||
                measTmp.measDesc().hasOffset())) {
-          uInt refCode = measTmp.measDesc().getRefCode();
+          uint32_t refCode = measTmp.measDesc().getRefCode();
           itsRefType = static_cast<MPosition::Types>(refCode);
         }
         // A direct column can directly be accessed using TableMeasures.
@@ -387,12 +387,12 @@ namespace casacore {
       throw AipsError ("Position reference type suffix in a MEAS function is "
                        "given as xyz, while heights are used");
     }
-    Array<Double> angles = anglesNode->getArrayDouble(0).array();
+    Array<double> angles = anglesNode->getArrayDouble(0).array();
     if (angles.empty()  ||  angles.shape()[0] %2 != 0) {
       throw AipsError ("Angles given as position in a MEAS function must "
                        "be a constant double array of multiple of 2 values");
     }
-    Array<Double> height = heightNode->getArrayDouble(0).array();
+    Array<double> height = heightNode->getArrayDouble(0).array();
     if (angles.size() != 2*height.size()) {
       throw AipsError ("Angles and heights given as position in a MEAS "
                        "function have mismatching sizes");
@@ -402,13 +402,13 @@ namespace casacore {
     Unit hUnit = heightNode->unit();
     if (aUnit.empty()) aUnit = "rad";
     if (hUnit.empty()) hUnit = "m";
-    Vector<Double> aVec(angles.reform(IPosition(1,angles.size())));
-    Vector<Double> hVec(height.reform(IPosition(1,height.size())));
+    Vector<double> aVec(angles.reform(IPosition(1,angles.size())));
+    Vector<double> hVec(height.reform(IPosition(1,height.size())));
     if (itsRefType == MPosition::N_Types) {
       itsRefType = MPosition::WGS84;
     }
     itsConstants.resize (height.shape());
-    for (uInt i=0; i<hVec.size(); ++i) {
+    for (uint32_t i=0; i<hVec.size(); ++i) {
       itsConstants.data()[i] = MPosition (Quantity(hVec[i], hUnit),
                                           Quantity(aVec[2*i], aUnit),
                                           Quantity(aVec[2*i+1], aUnit),
@@ -420,8 +420,8 @@ namespace casacore {
                                      const TableExprId& id,
                                      Array<MPosition>& positions)
   {
-    Array<Double> values = operand.getArrayDouble(id);
-    uInt nrv = abs(itsValueType);
+    Array<double> values = operand.getArrayDouble(id);
+    uint32_t nrv = abs(itsValueType);
     const IPosition& shape = values.shape();
     if (shape[0] % nrv != 0) {
       throw AipsError ("Number of values in a position in a MEAS function "
@@ -442,10 +442,10 @@ namespace casacore {
     if (itsValueType != 1  &&  itsValueType != 3) {
       q3 = Quantity(0, "m");
     }
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    bool delIt;
+    const double* valVec = values.getStorage (delIt);
     MPosition* posVec = positions.data();
-    for (uInt i=0; i<positions.size(); ++i) {
+    for (uint32_t i=0; i<positions.size(); ++i) {
       q1.setValue (valVec[i*nrv]);
       if (nrv > 1) {
         q2.setValue (valVec[i*nrv+1]);
@@ -472,13 +472,13 @@ namespace casacore {
     return pos;
   }
 
-  Array<Double> PositionEngine::getArrayDouble (const TableExprId& id,
+  Array<double> PositionEngine::getArrayDouble (const TableExprId& id,
                                                 MPosition::Types toRefType,
-                                                Int toValueType)
+                                                int32_t toValueType)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MPosition> res (getPositions(id));
-    Array<Double> out;
+    Array<double> out;
     if (res.size() > 0) {
       if (toValueType == 1) {
         out.resize (res.shape());
@@ -492,15 +492,15 @@ namespace casacore {
         }
         out.resize (shape);
       }
-      VectorIterator<Double> outIter(out);
+      VectorIterator<double> outIter(out);
       Array<MPosition>::const_contiter resIter = res.cbegin();
-      for (uInt i=0; i<res.size(); ++i, ++resIter) {
+      for (uint32_t i=0; i<res.size(); ++i, ++resIter) {
         MPosition pos = MPosition::Convert (*resIter, toRefType)();
         if (toValueType == 1) {
           // Get as height.
           out.data()[i] = pos.getValue().getLength().getValue();
         } else if (toValueType == -3) {
-          Vector<Double> ang = pos.getValue().getAngle().getValue();
+          Vector<double> ang = pos.getValue().getAngle().getValue();
           out.data()[i*3]   = ang[0];
           out.data()[i*3+1] = ang[1];
           out.data()[i*3+2] = pos.getValue().getLength().getValue();;

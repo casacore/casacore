@@ -87,7 +87,7 @@ public:
     SDSysCalHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDSysCalHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDSysCalHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDSysCalHandler(const SDSysCalHandler &other);
@@ -98,32 +98,32 @@ public:
     SDSysCalHandler &operator=(const SDSysCalHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
     
     // fill - a new row is added as necessary, there is no lookback to see if a row could be
     // reused.  Only the current row might be reused.
-    void fill(const Record &row, Int antennaId, Int feedId, Int spectralWindowId,
-	      Double time, Vector<Double> timeRange, uInt numReceptors);
+    void fill(const Record &row, int32_t antennaId, int32_t feedId, int32_t spectralWindowId,
+	      double time, Vector<double> timeRange, uint32_t numReceptors);
 private:
     MSSysCal *msSysCal_p;
     MSSysCalColumns *msSysCalCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
-    uInt nrecpt_p;
+    uint32_t nrecpt_p;
 
-    Int tcalId_p, tsysId_p, trxId_p;
+    int32_t tcalId_p, tsysId_p, trxId_p;
 
-    Bool hasTsysCol_p, hasTcalCol_p, hasTrxCol_p;
+    bool hasTsysCol_p, hasTcalCol_p, hasTrxCol_p;
 
     // fields which come from a previous incarnation as a MS
-    RORecordFieldPtr<Double> intervalField_p, timeField_p;
-    RORecordFieldPtr<Float> phaseDiffField_p;
-    RORecordFieldPtr<Bool> tcalFlagField_p, trxFlagField_p, tsysFlagField_p, phaseDiffFlagField_p;
-    RORecordFieldPtr<Array<Float> > tcalField_p, trxField_p, tsysField_p;
+    RORecordFieldPtr<double> intervalField_p, timeField_p;
+    RORecordFieldPtr<float> phaseDiffField_p;
+    RORecordFieldPtr<bool> tcalFlagField_p, trxFlagField_p, tsysFlagField_p, phaseDiffFlagField_p;
+    RORecordFieldPtr<Array<float> > tcalField_p, trxField_p, tsysField_p;
 
     // cleanup everything
     void clearAll();
@@ -132,10 +132,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

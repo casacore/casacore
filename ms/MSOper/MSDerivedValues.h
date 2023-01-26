@@ -79,11 +79,11 @@ class String;
 // ep.set(MVEpoch(Quantity(msc.time()(0),"s")));
 // msd.setEpoch(ep);
 // MDirection dir=MS::directionMeasure(msc.field().phaseDir());
-// dir.set(MVDirection(Vector<Double>(msc.field().phaseDir()(0))));
+// dir.set(MVDirection(Vector<double>(msc.field().phaseDir()(0))));
 // msd.setFieldCenter(dir);
 // msd.setVelocityFrame(MRadialVelocity::LSRK);
 // // now we are ready for the calculations:
-// Double parAngle = msd.parangle();
+// double parAngle = msd.parangle();
 // MRadialVelocity observatoryVel = msd.obsVel();
 // </srcblock>
 // </example>
@@ -121,7 +121,7 @@ public:
   // Set antenna position from an antenna table
   // Returns the number of antennas. Also
   // sets the observatory position to the average of the antenna positions.
-  Int setAntennas(const MSAntennaColumns& ac);
+  int32_t setAntennas(const MSAntennaColumns& ac);
 
   // Set antenna positions, index in vector is antenna number
   // for calls below.
@@ -143,11 +143,11 @@ public:
 
   //If you have used setMeasurementSet then this version of 
   //setFieldCenter using field id makes sense
-  MSDerivedValues& setFieldCenter(uInt fieldid=0);
+  MSDerivedValues& setFieldCenter(uint32_t fieldid=0);
 
   // Set antenna index, sets the position reference for the conversions. 
   // Use -1 to set the reference frame to the observatory position.
-  MSDerivedValues& setAntenna(Int antenna);
+  MSDerivedValues& setAntenna(int32_t antenna);
 
   // Set the velocity frame type (e.g., MRadialVelocity::LSRK) 
   MSDerivedValues& setVelocityFrame(MRadialVelocity::Types vType);
@@ -160,10 +160,10 @@ public:
   MSDerivedValues& setFrequencyReference(MFrequency::Types frqType);
 
   // get hour angle
-  Double hourAngle();
+  double hourAngle();
 
   // get parallactic angle
-  Double parAngle();
+  double parAngle();
 
   // get azimuth & elevation
   const MDirection& azel();
@@ -180,10 +180,10 @@ public:
 
 
   //Set restFrequencies...make it look for it for the fieldid, spwid and line 
-  //number defined in the SOURCE table return False if it fails to find the 
+  //number defined in the SOURCE table return false if it fails to find the 
   //restFrquency
-  Bool setRestFrequency(const Int fieldid, const Int spwid, 
-		       const Int linenum=0);
+  bool setRestFrequency(const int32_t fieldid, const int32_t spwid, 
+		       const int32_t linenum=0);
 
   //
   MSDerivedValues& setRestFrequency(const Quantity& restFreq);
@@ -205,7 +205,7 @@ private:
   // initialize data
   void init();
 
-  Int antenna_p;
+  int32_t antenna_p;
   MEpoch::Convert cUTCToLAST_p;
   Vector<MPosition> mAntPos_p;
   MDirection::Convert cRADecToAzEl_p;
@@ -219,13 +219,13 @@ private:
   MRadialVelocity::Convert cTOPOToLSR_p;
   MDoppler::Ref velref_p;
   MFrequency::Ref frqref_p;
-  Bool hasMS_p;
+  bool hasMS_p;
   Quantity restFreq_p;
-  Vector<Int> mount_p;
+  Vector<int32_t> mount_p;
   MeasurementSet ms_p;
   MRadialVelocity::Types radialVelocityType_p;
 
-  //  Vector<Double> receptorAngle_p;
+  //  Vector<double> receptorAngle_p;
  
 
 };

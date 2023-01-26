@@ -38,7 +38,7 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-    SimButterworthBandpass<Double> butt(1,1,-1.0,1.0,0.0,1.0);
+    SimButterworthBandpass<double> butt(1,1,-1.0,1.0,0.0,1.0);
 
     AlwaysAssertExit(butt.getCenter()    ==  0.0 &&
 		     butt.getPeak()      ==  1.0   );
@@ -67,9 +67,9 @@ int main() {
     butt.setMaxCutoff(9.0);
     AlwaysAssertExit(butt.getMaxCutoff() == 9.0);
 
-    Double pk = butt.getPeak();
-    Double cen = butt.getCenter();
-    //Double irt2 = 1.0/sqrt(2.0);
+    double pk = butt.getPeak();
+    double cen = butt.getCenter();
+    //double irt2 = 1.0/sqrt(2.0);
     AlwaysAssertExit(butt(cen) == pk);
     //AlwaysAssertExit(butt(fabs(butt.getMinCutoff()) - irt2*pk) < DBL_EPSILON && 
 //	             butt(fabs(butt.getMaxCutoff()) - irt2*pk) < DBL_EPSILON);
@@ -89,7 +89,7 @@ int main() {
     Record rec2;
     butt.getMode(rec2);
     try {
-	uInt mino, maxo;
+	uint32_t mino, maxo;
 	rec2.get(RecordFieldId("minOrder"), mino);
 	rec2.get(RecordFieldId("maxOrder"), maxo);
 	AlwaysAssertExit(mino == 2 && maxo ==3);

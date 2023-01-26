@@ -48,10 +48,10 @@ namespace casacore {
 
 
   // Define the constants as used in the Column classes.
-  const uInt ntime=10;
-  const uInt nant=3;
-  const uInt npol=4;
-  const uInt nchan=8;
+  const uint32_t ntime=10;
+  const uint32_t nant=3;
+  const uint32_t npol=4;
+  const uint32_t nchan=8;
 
 
   //# Forward Declarations.
@@ -84,19 +84,19 @@ namespace casacore {
     virtual Record dataManagerSpec() const;
 
     // The storage manager is not a regular one.
-    virtual Bool isRegular() const;
+    virtual bool isRegular() const;
   
     // The storage manager cannot add rows.
-    virtual Bool canAddRow() const;
+    virtual bool canAddRow() const;
   
     // The storage manager cannot delete rows.
-    virtual Bool canRemoveRow() const;
+    virtual bool canRemoveRow() const;
   
     // The storage manager can add columns, which does not really do something.
-    virtual Bool canAddColumn() const;
+    virtual bool canAddColumn() const;
   
     // Columns can be removed, but it does not do anything at all.
-    virtual Bool canRemoveColumn() const;
+    virtual bool canRemoveColumn() const;
   
     // Make the object from the type name string.
     // This function gets registered in the DataManager "constructor" map.
@@ -120,8 +120,8 @@ namespace casacore {
     LofarStMan& operator= (const LofarStMan& that);
   
     // Flush and optionally fsync the data.
-    // It does nothing, and returns False.
-    virtual Bool flush (AipsIO&, Bool doFsync);
+    // It does nothing, and returns false.
+    virtual bool flush (AipsIO&, bool doFsync);
   
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
@@ -197,7 +197,7 @@ namespace casacore {
     {}
     virtual ~LofarColumn();
     // Most columns are not writable (only DATA is writable).
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
     // Set column shape of fixed shape columns; it does nothing.
     virtual void setShapeColumn (const IPosition& shape);
     // Prepare the column. By default it does nothing.
@@ -214,7 +214,7 @@ namespace casacore {
     explicit Ant1Column (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~Ant1Column();
-    virtual void getInt (rownr_t rowNr, Int* dataPtr);
+    virtual void getInt (rownr_t rowNr, int32_t* dataPtr);
   };
 
   // <summary>ANTENNA2 column in the LOFAR Storage Manager.</summary>
@@ -225,7 +225,7 @@ namespace casacore {
     explicit Ant2Column (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~Ant2Column();
-    virtual void getInt (rownr_t rowNr, Int* dataPtr);
+    virtual void getInt (rownr_t rowNr, int32_t* dataPtr);
   };
 
   // <summary>TIME and TIME_CENTROID column in the LOFAR Storage Manager.</summary>
@@ -236,7 +236,7 @@ namespace casacore {
     explicit TimeColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~TimeColumn();
-    virtual void getdouble (rownr_t rowNr, Double* dataPtr);
+    virtual void getdouble (rownr_t rowNr, double* dataPtr);
   };
 
   // <summary>INTERVAL and EXPOSURE column in the LOFAR Storage Manager.</summary>
@@ -247,7 +247,7 @@ namespace casacore {
     explicit IntervalColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~IntervalColumn();
-    virtual void getdouble (rownr_t rowNr, Double* dataPtr);
+    virtual void getdouble (rownr_t rowNr, double* dataPtr);
   };
 
   // <summary>All columns in the LOFAR Storage Manager with value 0.</summary>
@@ -258,12 +258,12 @@ namespace casacore {
     explicit ZeroColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~ZeroColumn();
-    virtual void getInt (rownr_t rowNr, Int* dataPtr);
+    virtual void getInt (rownr_t rowNr, int32_t* dataPtr);
   private:
-    Int itsValue;
+    int32_t itsValue;
   };
 
-  // <summary>All columns in the LOFAR Storage Manager with value False.</summary>
+  // <summary>All columns in the LOFAR Storage Manager with value false.</summary>
   // <use visibility=local>
   class FalseColumn : public LofarColumn
   {
@@ -271,9 +271,9 @@ namespace casacore {
     explicit FalseColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FalseColumn();
-    virtual void getBool (rownr_t rowNr, Bool* dataPtr);
+    virtual void getBool (rownr_t rowNr, bool* dataPtr);
   private:
-    Bool itsValue;
+    bool itsValue;
   };
 
   // <summary>UVW column in the LOFAR Storage Manager.</summary>
@@ -296,7 +296,7 @@ namespace casacore {
     explicit DataColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~DataColumn();
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
     virtual IPosition shape (rownr_t rownr);
     virtual void getArrayV (rownr_t rowNr, ArrayBase& dataPtr);
     virtual void putArrayV (rownr_t rowNr, const ArrayBase& dataPtr);
@@ -358,16 +358,16 @@ namespace casacore {
     explicit FlagCatColumn (LofarStMan* parent, int dtype)
       : LofarColumn(parent, dtype) {}
     virtual ~FlagCatColumn();
-    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual bool isShapeDefined (rownr_t rownr);
     virtual IPosition shape (rownr_t rownr);
   };
 
 
   LofarColumn::~LofarColumn()
   {}
-  Bool LofarColumn::isWritable() const
+  bool LofarColumn::isWritable() const
   {
-    return False;
+    return false;
   }
   void LofarColumn::setShapeColumn (const IPosition&)
   {}
@@ -376,7 +376,7 @@ namespace casacore {
 
   Ant1Column::~Ant1Column()
   {}
-  void Ant1Column::getInt (rownr_t rownr, Int* dataPtr)
+  void Ant1Column::getInt (rownr_t rownr, int32_t* dataPtr)
   {
     // Use 3 antennae (baselines 0-0, 0-1, 0-2, 1-0, 1-1, 1-2, 2-0, 2-1, 2-2).
     *dataPtr = (rownr%(nant*nant)) / nant;
@@ -384,7 +384,7 @@ namespace casacore {
 
   Ant2Column::~Ant2Column()
   {}
-  void Ant2Column::getInt (rownr_t rownr, Int* dataPtr)
+  void Ant2Column::getInt (rownr_t rownr, int32_t* dataPtr)
   {
     // Use 3 antennae (baselines 0-0, 0-1, 0-2, 1-0, 1-1, 1-2, 2-0, 2-1, 2-2).
     *dataPtr = rownr%nant;
@@ -392,21 +392,21 @@ namespace casacore {
 
   TimeColumn::~TimeColumn()
   {}
-  void TimeColumn::getdouble (rownr_t rownr, Double* dataPtr)
+  void TimeColumn::getdouble (rownr_t rownr, double* dataPtr)
   {
     *dataPtr = 1 + 2 * (rownr/(nant*nant));
   }
 
   IntervalColumn::~IntervalColumn()
   {}
-  void IntervalColumn::getdouble (rownr_t, Double* dataPtr)
+  void IntervalColumn::getdouble (rownr_t, double* dataPtr)
   {
     *dataPtr = 2;
   }
 
   ZeroColumn::~ZeroColumn()
   {}
-  void ZeroColumn::getInt (rownr_t, Int* dataPtr)
+  void ZeroColumn::getInt (rownr_t, int32_t* dataPtr)
   {
     itsValue = 0;
     columnCache().setIncrement (0);
@@ -418,9 +418,9 @@ namespace casacore {
 
   FalseColumn::~FalseColumn()
   {}
-  void FalseColumn::getBool (rownr_t, Bool* dataPtr)
+  void FalseColumn::getBool (rownr_t, bool* dataPtr)
   {
-    itsValue = False;
+    itsValue = false;
     columnCache().setIncrement (0);
     if (itsParent->getNRow() > 0) {
       columnCache().set (0, itsParent->getNRow()-1, &itsValue);
@@ -437,7 +437,7 @@ namespace casacore {
   void UvwColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
     DebugAssert (dtype() == TpDouble, AipsError);
-    Bool deleteIt;
+    bool deleteIt;
     void* ptr = dataPtr.getVStorage (deleteIt);
     double* p = static_cast<double*>(ptr);
     p[0] = rownr * 0.1;
@@ -448,9 +448,9 @@ namespace casacore {
 
   DataColumn::~DataColumn()
   {}
-  Bool DataColumn::isWritable() const
+  bool DataColumn::isWritable() const
   {
-    return True;
+    return true;
   }
   IPosition DataColumn::shape (rownr_t)
   {
@@ -478,9 +478,9 @@ namespace casacore {
   void FlagColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
     DebugAssert (dtype() == TpBool, AipsError);
-    Array<Bool>& arr = static_cast<Array<Bool>&>(dataPtr);
-    arr = False;
-    arr(IPosition(2,rownr%npol, rownr%nchan)) = True;
+    Array<bool>& arr = static_cast<Array<bool>&>(dataPtr);
+    arr = false;
+    arr(IPosition(2,rownr%npol, rownr%nchan)) = true;
   }
 
 
@@ -493,7 +493,7 @@ namespace casacore {
   void WeightColumn::getArrayV (rownr_t, ArrayBase& dataPtr)
   {
     DebugAssert (dtype() == TpFloat, AipsError);
-    Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
+    Array<float>& arr = static_cast<Array<float>&>(dataPtr);
     arr = float(1);
   }
 
@@ -506,7 +506,7 @@ namespace casacore {
   void SigmaColumn::getArrayV (rownr_t, ArrayBase& dataPtr)
   {
     DebugAssert (dtype() == TpFloat, AipsError);
-    Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
+    Array<float>& arr = static_cast<Array<float>&>(dataPtr);
     arr = float(1);
   }
 
@@ -519,15 +519,15 @@ namespace casacore {
   void WSpectrumColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
   {
     DebugAssert (dtype() == TpFloat, AipsError);
-    Array<Float>& arr = static_cast<Array<Float>&>(dataPtr);
+    Array<float>& arr = static_cast<Array<float>&>(dataPtr);
     arr = float(rownr);
   }
 
   FlagCatColumn::~FlagCatColumn()
   {}
-  Bool FlagCatColumn::isShapeDefined (rownr_t)
+  bool FlagCatColumn::isShapeDefined (rownr_t)
   {
-    return False;
+    return false;
   }
   IPosition FlagCatColumn::shape (rownr_t)
   {
@@ -553,7 +553,7 @@ namespace casacore {
 
   LofarStMan::~LofarStMan()
   {
-    for (uInt i=0; i<ncolumn(); i++) {
+    for (uint32_t i=0; i<ncolumn(); i++) {
       delete itsColumns[i];
     }
   }
@@ -644,25 +644,25 @@ namespace casacore {
     DataManager::registerCtor ("LofarStMan", makeObject);
   }
 
-  Bool LofarStMan::isRegular() const
+  bool LofarStMan::isRegular() const
   {
-    return False;
+    return false;
   }
-  Bool LofarStMan::canAddRow() const
+  bool LofarStMan::canAddRow() const
   {
-    return False;
+    return false;
   }
-  Bool LofarStMan::canRemoveRow() const
+  bool LofarStMan::canRemoveRow() const
   {
-    return False;
+    return false;
   }
-  Bool LofarStMan::canAddColumn() const
+  bool LofarStMan::canAddColumn() const
   {
-    return True;
+    return true;
   }
-  Bool LofarStMan::canRemoveColumn() const
+  bool LofarStMan::canRemoveColumn() const
   {
-    return True;
+    return true;
   }
 
   void LofarStMan::addRow64 (rownr_t)
@@ -678,9 +678,9 @@ namespace casacore {
   void LofarStMan::removeColumn (DataManagerColumn*)
   {}
 
-  Bool LofarStMan::flush (AipsIO&, Bool)
+  bool LofarStMan::flush (AipsIO&, bool)
   {
-    return False;
+    return false;
   }
 
   void LofarStMan::create64 (rownr_t)
@@ -733,30 +733,30 @@ void createTable()
   // Add all mandatory columns of the MS main table.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn (ScalarColumnDesc<Double>("TIME"));
-  td.addColumn (ScalarColumnDesc<Int>("ANTENNA1"));
-  td.addColumn (ScalarColumnDesc<Int>("ANTENNA2"));
-  td.addColumn (ScalarColumnDesc<Int>("FEED1"));
-  td.addColumn (ScalarColumnDesc<Int>("FEED2"));
-  td.addColumn (ScalarColumnDesc<Int>("DATA_DESC_ID"));
-  td.addColumn (ScalarColumnDesc<Int>("PROCESSOR_ID"));
-  td.addColumn (ScalarColumnDesc<Int>("FIELD_ID"));
-  td.addColumn (ScalarColumnDesc<Int>("ARRAY_ID"));
-  td.addColumn (ScalarColumnDesc<Int>("OBSERVATION_ID"));
-  td.addColumn (ScalarColumnDesc<Int>("STATE_ID"));
-  td.addColumn (ScalarColumnDesc<Int>("SCAN_NUMBER"));
-  td.addColumn (ScalarColumnDesc<Double>("INTERVAL"));
-  td.addColumn (ScalarColumnDesc<Double>("EXPOSURE"));
-  td.addColumn (ScalarColumnDesc<Double>("TIME_CENTROID"));
-  td.addColumn (ScalarColumnDesc<Bool>("FLAG_ROW"));
-  td.addColumn (ArrayColumnDesc<Double>("UVW",IPosition(1,3),
+  td.addColumn (ScalarColumnDesc<double>("TIME"));
+  td.addColumn (ScalarColumnDesc<int32_t>("ANTENNA1"));
+  td.addColumn (ScalarColumnDesc<int32_t>("ANTENNA2"));
+  td.addColumn (ScalarColumnDesc<int32_t>("FEED1"));
+  td.addColumn (ScalarColumnDesc<int32_t>("FEED2"));
+  td.addColumn (ScalarColumnDesc<int32_t>("DATA_DESC_ID"));
+  td.addColumn (ScalarColumnDesc<int32_t>("PROCESSOR_ID"));
+  td.addColumn (ScalarColumnDesc<int32_t>("FIELD_ID"));
+  td.addColumn (ScalarColumnDesc<int32_t>("ARRAY_ID"));
+  td.addColumn (ScalarColumnDesc<int32_t>("OBSERVATION_ID"));
+  td.addColumn (ScalarColumnDesc<int32_t>("STATE_ID"));
+  td.addColumn (ScalarColumnDesc<int32_t>("SCAN_NUMBER"));
+  td.addColumn (ScalarColumnDesc<double>("INTERVAL"));
+  td.addColumn (ScalarColumnDesc<double>("EXPOSURE"));
+  td.addColumn (ScalarColumnDesc<double>("TIME_CENTROID"));
+  td.addColumn (ScalarColumnDesc<bool>("FLAG_ROW"));
+  td.addColumn (ArrayColumnDesc<double>("UVW",IPosition(1,3),
                                         ColumnDesc::Direct));
   td.addColumn (ArrayColumnDesc<Complex>("DATA"));
-  td.addColumn (ArrayColumnDesc<Float>("SIGMA"));
-  td.addColumn (ArrayColumnDesc<Float>("WEIGHT"));
-  td.addColumn (ArrayColumnDesc<Float>("WEIGHT_SPECTRUM"));
-  td.addColumn (ArrayColumnDesc<Bool>("FLAG"));
-  td.addColumn (ArrayColumnDesc<Bool>("FLAG_CATEGORY"));
+  td.addColumn (ArrayColumnDesc<float>("SIGMA"));
+  td.addColumn (ArrayColumnDesc<float>("WEIGHT"));
+  td.addColumn (ArrayColumnDesc<float>("WEIGHT_SPECTRUM"));
+  td.addColumn (ArrayColumnDesc<bool>("FLAG"));
+  td.addColumn (ArrayColumnDesc<bool>("FLAG_CATEGORY"));
   // Now create a new table from the description.
   SetupNewTable newtab("tLofarStMan_tmp.data", td, Table::New);
   // Create the storage manager and bind all columns to it.
@@ -774,44 +774,44 @@ void readTable()
   // Open the table and check if #rows is as expected.
   Table tab("tLofarStMan_tmp.data");
   rownr_t nrow = tab.nrow();
-  uInt nbasel = nant*nant;
+  uint32_t nbasel = nant*nant;
   AlwaysAssertExit (nrow = ntime*nbasel);
   AlwaysAssertExit (!tab.canAddRow());
   AlwaysAssertExit (!tab.canRemoveRow());
   AlwaysAssertExit (tab.canRemoveColumn(Vector<String>(1, "DATA")));
   // Create objects for all mandatory MS columns.
   ArrayColumn<Complex> dataCol(tab, "DATA");
-  ArrayColumn<Float> weightCol(tab, "WEIGHT");
-  ArrayColumn<Float> wspecCol(tab, "WEIGHT_SPECTRUM");
-  ArrayColumn<Float> sigmaCol(tab, "SIGMA");
-  ArrayColumn<Double> uvwCol(tab, "UVW");
-  ArrayColumn<Bool> flagCol(tab, "FLAG");
-  ArrayColumn<Bool> flagcatCol(tab, "FLAG_CATEGORY");
-  ScalarColumn<Double> timeCol(tab, "TIME");
-  ScalarColumn<Double> centCol(tab, "TIME_CENTROID");
-  ScalarColumn<Double> intvCol(tab, "INTERVAL");
-  ScalarColumn<Double> expoCol(tab, "EXPOSURE");
-  ScalarColumn<Int> ant1Col(tab, "ANTENNA1");
-  ScalarColumn<Int> ant2Col(tab, "ANTENNA2");
-  ScalarColumn<Int> feed1Col(tab, "FEED1");
-  ScalarColumn<Int> feed2Col(tab, "FEED2");
-  ScalarColumn<Int> ddidCol(tab, "DATA_DESC_ID");
-  ScalarColumn<Int> pridCol(tab, "PROCESSOR_ID");
-  ScalarColumn<Int> fldidCol(tab, "FIELD_ID");
-  ScalarColumn<Int> arridCol(tab, "ARRAY_ID");
-  ScalarColumn<Int> obsidCol(tab, "OBSERVATION_ID");
-  ScalarColumn<Int> stidCol(tab, "STATE_ID");
-  ScalarColumn<Int> scnrCol(tab, "SCAN_NUMBER");
-  ScalarColumn<Bool> flagrowCol(tab, "FLAG_ROW");
+  ArrayColumn<float> weightCol(tab, "WEIGHT");
+  ArrayColumn<float> wspecCol(tab, "WEIGHT_SPECTRUM");
+  ArrayColumn<float> sigmaCol(tab, "SIGMA");
+  ArrayColumn<double> uvwCol(tab, "UVW");
+  ArrayColumn<bool> flagCol(tab, "FLAG");
+  ArrayColumn<bool> flagcatCol(tab, "FLAG_CATEGORY");
+  ScalarColumn<double> timeCol(tab, "TIME");
+  ScalarColumn<double> centCol(tab, "TIME_CENTROID");
+  ScalarColumn<double> intvCol(tab, "INTERVAL");
+  ScalarColumn<double> expoCol(tab, "EXPOSURE");
+  ScalarColumn<int32_t> ant1Col(tab, "ANTENNA1");
+  ScalarColumn<int32_t> ant2Col(tab, "ANTENNA2");
+  ScalarColumn<int32_t> feed1Col(tab, "FEED1");
+  ScalarColumn<int32_t> feed2Col(tab, "FEED2");
+  ScalarColumn<int32_t> ddidCol(tab, "DATA_DESC_ID");
+  ScalarColumn<int32_t> pridCol(tab, "PROCESSOR_ID");
+  ScalarColumn<int32_t> fldidCol(tab, "FIELD_ID");
+  ScalarColumn<int32_t> arridCol(tab, "ARRAY_ID");
+  ScalarColumn<int32_t> obsidCol(tab, "OBSERVATION_ID");
+  ScalarColumn<int32_t> stidCol(tab, "STATE_ID");
+  ScalarColumn<int32_t> scnrCol(tab, "SCAN_NUMBER");
+  ScalarColumn<bool> flagrowCol(tab, "FLAG_ROW");
   // Create and initialize expected data and weight.
   Array<Complex> dataExp(IPosition(2,npol,nchan));
   indgen (dataExp, Complex(0, 0.5));
-  Array<Float> weightExp(IPosition(2,1,nchan), 0.0f);
+  Array<float> weightExp(IPosition(2,1,nchan), 0.0f);
   // Loop through all rows in the table and check the data.
   rownr_t row=0;
-  for (uInt i=0; i<ntime; ++i) {
-    for (uInt j=0; j<nant; ++j) {
-      for (uInt k=0; k<nant; ++k) {
+  for (uint32_t i=0; i<ntime; ++i) {
+    for (uint32_t j=0; j<nant; ++j) {
+      for (uint32_t k=0; k<nant; ++k) {
         // Contents must be present except for FLAG_CATEGORY.
 	AlwaysAssertExit (dataCol.isDefined (row));
 	AlwaysAssertExit (weightCol.isDefined (row));
@@ -822,31 +822,31 @@ void readTable()
         // Check data, weight, sigma, weight_spectrum, flag
         AlwaysAssertExit (allNear (dataCol(row), dataExp, 1e-7));
         AlwaysAssertExit (weightCol.shape(row) == IPosition(1,npol));
-        AlwaysAssertExit (allEQ (weightCol(row), Float(1)));
+        AlwaysAssertExit (allEQ (weightCol(row), float(1)));
         AlwaysAssertExit (sigmaCol.shape(row) == IPosition(1,npol));
-        AlwaysAssertExit (allEQ (sigmaCol(row), Float(1)));
-        Array<Float> weights = wspecCol(row);
+        AlwaysAssertExit (allEQ (sigmaCol(row), float(1)));
+        Array<float> weights = wspecCol(row);
         AlwaysAssertExit (weights.shape() == IPosition(2,npol,nchan));
-        Array<Bool> flagExp (weights.shape(), False);
-        flagExp(IPosition(2,row%npol, row%nchan)) = True;
+        Array<bool> flagExp (weights.shape(), false);
+        flagExp(IPosition(2,row%npol, row%nchan)) = true;
         AlwaysAssertExit (allEQ (flagCol(row), flagExp));
         // Check ANTENNA1 and ANTENNA2
-        AlwaysAssertExit (ant1Col(row) == Int(j));
-        AlwaysAssertExit (ant2Col(row) == Int(k));
+        AlwaysAssertExit (ant1Col(row) == int32_t(j));
+        AlwaysAssertExit (ant2Col(row) == int32_t(k));
         dataExp += Complex(1, 1);
-        weightExp += Float(1);
+        weightExp += float(1);
         ++row;
       }
     }
   }
   // Check values in TIME column.
   const double interval = 2;
-  Vector<Double> times = timeCol.getColumn();
+  Vector<double> times = timeCol.getColumn();
   AlwaysAssertExit (times.size() == nrow);
   row=0;
   double startTime = 1;
-  for (uInt i=0; i<ntime; ++i) {
-    for (uInt j=0; j<nbasel; ++j) {
+  for (uint32_t i=0; i<ntime; ++i) {
+    for (uint32_t j=0; j<nbasel; ++j) {
       AlwaysAssertExit (near(times[row], startTime));
       ++row;
     }
@@ -865,7 +865,7 @@ void readTable()
   AlwaysAssertExit (allEQ(obsidCol.getColumn(), 0));
   AlwaysAssertExit (allEQ(stidCol.getColumn(), 0));
   AlwaysAssertExit (allEQ(scnrCol.getColumn(), 0));
-  AlwaysAssertExit (allEQ(flagrowCol.getColumn(), False));
+  AlwaysAssertExit (allEQ(flagrowCol.getColumn(), false));
   // Check the UVW coordinates.
   Array<double> uvwExp(IPosition(1,3));
   indgen (uvwExp, 0., 0.03);

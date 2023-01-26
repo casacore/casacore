@@ -38,12 +38,12 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-// set hasBeenDestroyed to True to avoid validity check in destructor.
-MSSysCal::MSSysCal():hasBeenDestroyed_p(True) { }
+// set hasBeenDestroyed to true to avoid validity check in destructor.
+MSSysCal::MSSysCal():hasBeenDestroyed_p(true) { }
 
 MSSysCal::MSSysCal(const String &tableName, TableOption option) 
   : MSTable<MSSysCalEnums>(tableName, option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,7 +54,7 @@ MSSysCal::MSSysCal(const String &tableName, TableOption option)
 MSSysCal::MSSysCal(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSSysCalEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -63,18 +63,18 @@ MSSysCal::MSSysCal(const String& tableName, const String &tableDescName,
 }
 
 MSSysCal::MSSysCal(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSSysCalEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSSysCal(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSSysCal(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSSysCal"));
 }
 
 MSSysCal::MSSysCal(const Table &table)
-    : MSTable<MSSysCalEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSSysCalEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -84,7 +84,7 @@ MSSysCal::MSSysCal(const Table &table)
 
 MSSysCal::MSSysCal(const MSSysCal &other)
     : MSTable<MSSysCalEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -104,7 +104,7 @@ MSSysCal::~MSSysCal()
            << "~MSSysCal() - Table written is not a valid MSSysCal"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -207,7 +207,7 @@ MSTableMaps MSSysCal::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

@@ -62,11 +62,11 @@ class Time;
 // </etymology>
 //
 // <synopsis>
-// An MVTime is a simple Double for date/time conversions and I/O.
+// An MVTime is a simple double for date/time conversions and I/O.
 // Its internal value is in MJD. For high precision the 
 // <linkto class=MVEpoch>MVEpoch</linkto> class should be used.<br>
-// It can be constructed from a Double (in which case MJD are assumed),
-// or from a Quantity (<src>Quantum<Double></src>). Quantities must be in
+// It can be constructed from a double (in which case MJD are assumed),
+// or from a Quantity (<src>Quantum<double></src>). Quantities must be in
 // either angle or time units, or from a
 // <linkto class=MVEpoch>MVEpoch</linkto><br>
 // The <linkto class=Time>OS/Time class</linkto> can be used as both input
@@ -75,27 +75,27 @@ class Time;
 // Construction from year, month, day is also supported.
 // <note role=caution> Dates before 16 Oct 1582 are considered to be Julian, 
 // rather than Gregorian</note>
-// It has an automatic conversion to Double, so all standard mathematical
+// It has an automatic conversion to double, so all standard mathematical
 // operations can operate on it.<br>
 // The class has a number of special functions to obtain data:
 // <ul>
-//   <li> <src>Double day()</src> will return value in days
-//   <li> <src>Double hour()</src> will return value in hours
-//   <li> <src>Double minute()</src> will return value in minutes
-//   <li> <src>Double second()</src> will return value in seconds
+//   <li> <src>double day()</src> will return value in days
+//   <li> <src>double hour()</src> will return value in hours
+//   <li> <src>double minute()</src> will return value in minutes
+//   <li> <src>double second()</src> will return value in seconds
 //   <li> <src>Quantity get()</src> will return days
 //   <li> <src>Quantity get(Unit)</src> will return in specified units 
 //		(angle(in which case it will be between -pi and +pi) or time)
-//   <li> <src>uInt weekday()</src> will return day of week (1=Mon, 7=Sun)
-//   <li> <src>uInt month()</src> will return month (1=Jan)
-//   <li> <src>Int year()</src> will return year
-//   <li> <src>uInt monthday()</src> will return day of the month
-//   <li> <src>uInt yearday()</src> will return day of year (Jan01 = 1)
-//   <li> <src>uInt yearweek()</src> will return week of year
+//   <li> <src>uint32_t weekday()</src> will return day of week (1=Mon, 7=Sun)
+//   <li> <src>uint32_t month()</src> will return month (1=Jan)
+//   <li> <src>int32_t year()</src> will return year
+//   <li> <src>uint32_t monthday()</src> will return day of the month
+//   <li> <src>uint32_t yearday()</src> will return day of year (Jan01 = 1)
+//   <li> <src>uint32_t yearweek()</src> will return week of year
 //		(week containing Jan04 = 1, week start on Monday).
 //		The week before the first week will be called 0, contrary
 //		to standard practice (week 53/52 of previous year).
-//   <li> <src>Int ymd()</src> will return yyyymmdd as a single number
+//   <li> <src>int32_t ymd()</src> will return yyyymmdd as a single number
 //   <li> <src>const String &dayName()</src> will return name of day
 //		(Sun, Mon, Tue, Wed, Thu, Fri, Sat)
 //   <li> <src>const String &monthName()</src> will retrun name of Month
@@ -209,7 +209,7 @@ class Time;
 // a <src>print</src> or <src>string</src> that accepts a Format object.
 //
 // Strings and input can be converted to an MVTime (or Quantity) by
-// <src>Bool read(Quantity &out, const String &in)</src> and
+// <src>bool read(Quantity &out, const String &in)</src> and
 // <src> istream >> MVTime &</src>. In the latter case the actual
 // reading is done by the String read, which reads between white-spaces.<br>
 // The following input formats (note no blanks allowed) are supported
@@ -313,16 +313,16 @@ class MVTime {
 	public:
 	friend class MVTime;
 	Format(MVTime::formatTypes intyp = MVTime::TIME,
-	       uInt inprec = 0) :
+	       uint32_t inprec = 0) :
 	typ(intyp), prec(inprec) {;};
-	Format(uInt inprec) :
+	Format(uint32_t inprec) :
 	typ(MVTime::TIME), prec(inprec) {;};
 // Construct from type and precision (present due to overlaoding problems)
-	Format(uInt intyp, uInt inprec) :
+	Format(uint32_t intyp, uint32_t inprec) :
 	typ((MVTime::formatTypes)intyp), prec(inprec) {;};
 	private:
 	MVTime::formatTypes typ;
-	uInt prec;
+	uint32_t prec;
     };
 
 //# Friends
@@ -340,8 +340,8 @@ class MVTime {
     MVTime(const MVTime &other);
 // Copy assignment
     MVTime &operator=(const MVTime &other);
-// Constructor from Double (in MJD)
-    MVTime(Double d);
+// Constructor from double (in MJD)
+    MVTime(double d);
 // Constructor from Quantum : value can be an angle or time
 // <thrown>
 //   <li> AipsError if not a time or angle
@@ -352,32 +352,32 @@ class MVTime {
 // Constructor from MVEpoch;
     MVTime(const MVEpoch &other);
 // Constructor from yy, mm, dd, dd (all dd with fractions allowed)
-    MVTime(Int yy, Int mm, Double dd, Double d=0.0);
+    MVTime(int32_t yy, int32_t mm, double dd, double d=0.0);
 
 //# Destructor
     ~MVTime();
 
 //# Operators
 // Conversion operator
-    operator Double() const;
+    operator double() const;
 
 //# General member functions
   // Make res time Quantity from string. The String version will accept
-  // a time/angle Quantity as well. It returns False in case of an error.
-  // chk=True means that the entire string should be consumed.
-  // throwExcp=True means that an exception is thrown in case of an error.
+  // a time/angle Quantity as well. It returns false in case of an error.
+  // chk=true means that the entire string should be consumed.
+  // throwExcp=true means that an exception is thrown in case of an error.
   // <group>
-  static Bool read(Quantity &res, const String &in, Bool chk=True);
-  static Bool read(Quantity &res, MUString &in, Bool chk=True);
-  static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
-  static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
+  static bool read(Quantity &res, const String &in, bool chk=true);
+  static bool read(Quantity &res, MUString &in, bool chk=true);
+  static bool read(Quantity &res, const String &in, bool chk, bool throwExcp);
+  static bool read(Quantity &res, MUString &in, bool chk, bool throwExcp);
   // </group>
 // Get value of date/time (MJD) in given units
 // <group>
-    Double day() const;
-    Double hour() const;
-    Double minute() const;
-    Double second() const;
+    double day() const;
+    double hour() const;
+    double minute() const;
+    double second() const;
     Quantity get() const;
     Quantity get(const Unit &inunit) const;
     Time getTime() const;
@@ -385,18 +385,18 @@ class MVTime {
 // Get indicated part of the time/date
 // <group>
   const String &dayName() const;
-  static const String &dayName(uInt which);
+  static const String &dayName(uint32_t which);
   const String &monthName() const;
-  static const String &monthName(uInt which);
+  static const String &monthName(uint32_t which);
   // Mon = 1; Sun = 7;
-  uInt weekday() const;
+  uint32_t weekday() const;
   // Jan =1
-  uInt month() const;
-  uInt monthday() const;
-  Int year() const;
-  Int ymd() const;
-  uInt yearday() const;
-  uInt yearweek() const;
+  uint32_t month() const;
+  uint32_t monthday() const;
+  int32_t year() const;
+  int32_t ymd() const;
+  uint32_t yearday() const;
+  uint32_t yearweek() const;
 // </group>
 // Output data.
 // <note role=warning>
@@ -406,9 +406,9 @@ class MVTime {
 // </note>
 // <group>
     String string() const;
-    String string(MVTime::formatTypes intyp, uInt inprec = 0) const;
-    String string(uInt intyp, uInt inprec) const;
-    String string(uInt inprec) const;
+    String string(MVTime::formatTypes intyp, uint32_t inprec = 0) const;
+    String string(uint32_t intyp, uint32_t inprec) const;
+    String string(uint32_t inprec) const;
     String string(const MVTime::Format &form) const;
     void print(ostream &oss, const MVTime::Format &form) const;
 // </group>
@@ -420,9 +420,9 @@ class MVTime {
 // </note>
 // <group>
     static Format setFormat(MVTime::formatTypes intyp, 
-			    uInt inprec = 0);
-    static Format setFormat(uInt intyp, uInt inprec);
-    static Format setFormat(uInt inprec = 0);
+			    uint32_t inprec = 0);
+    static Format setFormat(uint32_t intyp, uint32_t inprec);
+    static Format setFormat(uint32_t inprec = 0);
     static Format setFormat(const Format &form);
 // </group>
   // Get default format
@@ -430,23 +430,23 @@ class MVTime {
   // Get code belonging to string. 0 if not known
   static MVTime::formatTypes  giveMe(const String &in);
   // Get time zone offset (in days)
-static Double timeZone();
+static double timeZone();
 
     private:
 //# Data
 // Value
-    Double val;
+    double val;
 // Default format
     static MVTime::Format defaultFormat;
 // Temporary format
 // <group>
     static MVTime::Format interimFormat;
-    static Bool interimSet;
+    static bool interimSet;
 // </group>
 
 //# Member functions
   // Get the y,m,d values
-  void ymd(Int &yyyy, Int &mm, Int &dd) const;
+  void ymd(int32_t &yyyy, int32_t &mm, int32_t &dd) const;
 };
 
 // Global functions.
@@ -458,19 +458,19 @@ ostream &operator>>(ostream &is, MVTime &meas);
 ostream &operator<<(ostream &os, const MVTime::Format &form);
 // </group>
 
-// equality and comparison operators, use operator Double which returns days
-inline Bool operator==(const MVTime &lh, const MVTime &rh) 
-{ return (lh.operator Double() == rh.operator Double());}
-inline Bool operator!=(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() != rh.operator Double());}
-inline Bool operator<(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() < rh.operator Double());}
-inline Bool operator<=(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() <= rh.operator Double());}
-inline Bool operator>(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() > rh.operator Double());}
-inline Bool operator>=(const MVTime &lh, const MVTime &rh)
-{ return (lh.operator Double() >= rh.operator Double());}
+// equality and comparison operators, use operator double which returns days
+inline bool operator==(const MVTime &lh, const MVTime &rh) 
+{ return (lh.operator double() == rh.operator double());}
+inline bool operator!=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator double() != rh.operator double());}
+inline bool operator<(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator double() < rh.operator double());}
+inline bool operator<=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator double() <= rh.operator double());}
+inline bool operator>(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator double() > rh.operator double());}
+inline bool operator>=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator double() >= rh.operator double());}
 
 
 

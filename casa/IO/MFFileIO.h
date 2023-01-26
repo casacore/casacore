@@ -62,12 +62,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //    // Use it (for example) as the sink of AipsIO.
   //    AipsIO stream (&mf1);
   //    // Write values.
-  //    stream << (Int)10;
-  //    stream << True;
+  //    stream << (int32_t)10;
+  //    stream << true;
   //    // Seek to beginning of file and read data in.
   //    stream.setpos (0);
-  //    Int vali;
-  //    Bool valb;
+  //    int32_t vali;
+  //    bool valb;
   //    stream >> vali >> valb;
   // </srcblock>
   // </example>
@@ -88,11 +88,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Read <src>size</src> bytes from the byte stream. Returns the number of
     // bytes actually read, or a negative number if an error occurred. Will also
     // throw an Exception (AipsError) if the requested number of bytes could
-    // not be read unless throwException is set to False.
-    Int64 read (Int64 size, void* buf, Bool throwException=True) override;
+    // not be read unless throwException is set to false.
+    int64_t read (int64_t size, void* buf, bool throwException=true) override;
 
     // Write a block at the current offset.
-    void write (Int64 size, const void* buffer) override;
+    void write (int64_t size, const void* buffer) override;
 
     // Reopen the file (and possibly underlying MultiFileBase) for read/write access.
     // Nothing will be done if the stream is writable already.
@@ -108,16 +108,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void flush() override;
 
     // Get the length of the file.
-    Int64 length() override;
+    int64_t length() override;
        
     // The file is always readable.
-    Bool isReadable() const override;
+    bool isReadable() const override;
 
     // Is the file writable?
-    Bool isWritable() const override;
+    bool isWritable() const override;
 
     // The file is always seekable.
-    Bool isSeekable() const override;
+    bool isSeekable() const override;
 
     // Get the file name of the file attached.
     String fileName() const override;
@@ -126,11 +126,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void fsync() override;
 
     // Truncate the file to the given size.
-    void truncate (Int64 size) override;
+    void truncate (int64_t size) override;
   
     // Reset the position pointer to the given value. It returns the
     // new position.
-    Int64 doSeek (Int64 offset, ByteIO::SeekOption) override;
+    int64_t doSeek (int64_t offset, ByteIO::SeekOption) override;
 
     // Get the MultiFileInfo object for this file.
     const MultiFileInfo& getInfo() const;
@@ -138,10 +138,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   private:
     //# Data members
     std::shared_ptr<MultiFileBase> itsFile;
-    Int64          itsPosition;
+    int64_t          itsPosition;
     String         itsName;
-    Int            itsId;
-    Bool           itsIsWritable;
+    int32_t            itsId;
+    bool           itsIsWritable;
   };
 
 

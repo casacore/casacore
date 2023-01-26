@@ -86,7 +86,7 @@ int main (int argc, const char* argv[])
 void a (const char* argum[])
 {
     // Convert the command line arguments to shapes.
-    uInt i, nrdim, maxCacheSize;
+    uint32_t i, nrdim, maxCacheSize;
     istringstream istr0(argum[1]);
     istr0 >> nrdim;
     Vector<String> cubeV (stringToVector (argum[2]));
@@ -122,7 +122,7 @@ void a (const char* argum[])
 	cellShape(i) = cubeShape(i);
     }
     //# Determine # rows needed.
-    uInt nrrow = 1;
+    uint32_t nrrow = 1;
     for (i=nrdim; i<cubeShape.nelements(); i++) {
 	nrrow *= cubeShape(i);
     }
@@ -144,7 +144,7 @@ void a (const char* argum[])
     }
     // Now test with slices in orthogonal direction.
     if (cubeShape.product() < 10*1024*1024) {
-	uInt nr = cubeShape.product() / 1024;
+	uint32_t nr = cubeShape.product() / 1024;
 	if (nr == 0) {
 	    nr = 1;
 	}
@@ -197,7 +197,7 @@ void a (const char* argum[])
 void b()
 {
     IPosition cellShape;
-    uInt i, nrrow;
+    uint32_t i, nrrow;
     Timer timer;
     {
 	Table table("tTiledDataStM_1_tmp.data");
@@ -215,7 +215,7 @@ void b()
 	accessor.showCacheStatistics (cout);
 	accessor.clearCaches();
     }
-    uInt nrdim = cellShape.nelements();
+    uint32_t nrdim = cellShape.nelements();
     IPosition length (nrdim, 1);
     length(0) = cellShape(0);
     IPosition origin (nrdim, 0);
@@ -226,7 +226,7 @@ void b()
 	Array<float> result;
 	ArrayPositionIterator iter (cellShape, origin, size_t(1));
 	timer.mark();
-	uInt nr = 0;
+	uint32_t nr = 0;
 	while (! iter.pastEnd()) {
 	    nr++;
 	    data.getColumn (Slicer(iter.pos(), length), result);
@@ -244,7 +244,7 @@ void b()
 	Array<float> result;
 	ArrayPositionIterator iter (cellShape, origin, size_t(0));
 	length(0) = 1;
-	uInt nr = 0;
+	uint32_t nr = 0;
 	timer.mark();
 	while (! iter.pastEnd()) {
 	    nr++;

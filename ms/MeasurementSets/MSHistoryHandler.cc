@@ -172,7 +172,7 @@ void MSHistoryHandler::cliCommand(LogIO& cliComm){
 }
 void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
 
- uInt numCliComm=sink.nelements();
+ uint32_t numCliComm=sink.nelements();
  if (numCliComm == 0)
    return;
 
@@ -180,7 +180,7 @@ void MSHistoryHandler::cliCommand(LogSinkInterface& sink){
  rownr_t row = histTable_p.nrow();
  histTable_p.addRow();
  Vector<String> cliComm(numCliComm);
- for (uInt k=0; k< numCliComm; ++k){
+ for (uint32_t k=0; k< numCliComm; ++k){
    cliComm[k]=sink.getMessage(k);   
  }
  msHistCol_p->time().put(row, sink.getTime(0));

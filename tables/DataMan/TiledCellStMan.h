@@ -136,7 +136,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  Cube<float> imageValues(IPosition(3,512,512,64));
 //  indgen (imageValues);
 //  // Write some data into the data columns.
-//  for (uInt i=0; i<4; i++) {
+//  for (uint32_t i=0; i<4; i++) {
 //      table.addRow();
 //	image.put (i, imageValues);
 //      ra.put (i, raValues);
@@ -172,7 +172,7 @@ public:
     // <group>
     TiledCellStMan (const String& hypercolumnName,
 		    const IPosition& defaultTileShape,
-		    uInt64 maximumCacheSize = 0);
+		    uint64_t maximumCacheSize = 0);
     TiledCellStMan (const String& hypercolumnName,
 		    const Record& spec);
     // </group>
@@ -187,7 +187,7 @@ public:
     String dataManagerType() const;
 
     // This tiled storage manager can handle changing array shapes.
-    Bool canChangeShape() const;
+    bool canChangeShape() const;
 
     // Set the shape and tile shape of the hypercube.
     virtual void setShape (rownr_t rownr, TSMCube* hypercube,
@@ -229,15 +229,15 @@ private:
 			     const Vector<String>& dataNames) const;
 
     // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    virtual bool flush (AipsIO&, bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
     virtual void create64 (rownr_t nrrow);
 
     // Read the header info.
-    virtual void readHeader (rownr_t nrrow, Bool firstTime);
+    virtual void readHeader (rownr_t nrrow, bool firstTime);
 
 
     //# Declare the data members.

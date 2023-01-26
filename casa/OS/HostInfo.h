@@ -79,7 +79,7 @@ class HostMachineInfo;
 // cout << "This host has " << HostInfo::swapTotal( ) << "K of swap space [ " <<
 //         HostInfo::swapUsed( ) << " used, " <<
 //         HostInfo::swapFree( ) << " free ]." << endl;
-// Double now = HostInfo::secondsFrom1970();
+// double now = HostInfo::secondsFrom1970();
 // doSomething();
 // cout << "Function doSomething() took " << 
 //         HostInfo::secondsFrom1970() - now << " seconds to execute."  << endl;
@@ -102,15 +102,15 @@ class HostInfo
 public:
 
     static String hostName();
-    static Int processID();
-    static Double secondsFrom1970();
+    static int32_t processID();
+    static double secondsFrom1970();
 
-    // Returns True for big endian machines (like SUN).
-    // Returns False for little endian machines (like PC).
-    static Bool bigEndian();
+    // Returns true for big endian machines (like SUN).
+    // Returns false for little endian machines (like PC).
+    static bool bigEndian();
 
     // Returns 0 if unable to determine the number of CPUs.
-    static Int numCPUs(bool use_aipsrc=false);
+    static int32_t numCPUs(bool use_aipsrc=false);
 
     // Get memory info (in KBytes).
     // Returns -1 if unable to determine memory info.
@@ -135,8 +135,8 @@ public:
     // Returns the value previously stored
     // <group>
     static ptrdiff_t setMemoryTotal(ptrdiff_t memory);
-    static Int setMemoryFraction(Int memfrac);
-    static Int setNumCPUs(Int numCPUs);
+    static int32_t setMemoryFraction(int32_t memfrac);
+    static int32_t setNumCPUs(int32_t numCPUs);
     // </group>
 
 private:
@@ -146,17 +146,17 @@ private:
 
     static HostMachineInfo *info;
     static ptrdiff_t resources_memory;
-    static Int resources_memfrac;
-    static Int resources_numCPUs;
+    static int32_t resources_memfrac;
+    static int32_t resources_numCPUs;
 };
 
 
-inline Bool HostInfo::bigEndian()
+inline bool HostInfo::bigEndian()
 {
 #if defined(AIPS_LITTLE_ENDIAN)
-    return False;
+    return false;
 #else
-    return True;
+    return true;
 #endif
 }
 

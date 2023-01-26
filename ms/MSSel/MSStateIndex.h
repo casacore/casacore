@@ -86,27 +86,27 @@ public:
   // Null destructor
   virtual ~MSStateIndex() {}
 
-  Vector<Int> matchStateIntent(const String& name);
-  Vector<Int> matchStateIntent(const Vector<String>& names);
+  Vector<int32_t> matchStateIntent(const String& name);
+  Vector<int32_t> matchStateIntent(const Vector<String>& names);
 
   //ADD for file name wildcard selection
-  Vector<Int> matchStateObsMode(const String& name);
-  Vector<Int> matchStateObsMode(const Vector<String>& names);
+  Vector<int32_t> matchStateObsMode(const String& name);
+  Vector<int32_t> matchStateObsMode(const Vector<String>& names);
 
   // Look up FIELD_ID's for a given pattern/regex for source name/code
-  Vector<Int> matchStateRegexOrPattern(const String& pattern,
-				       const Bool regex=False);
-  Vector<Int> matchStateObsModeRegexOrPattern(const String& pattern,
-					   const Bool regex=False);
+  Vector<int32_t> matchStateRegexOrPattern(const String& pattern,
+				       const bool regex=false);
+  Vector<int32_t> matchStateObsModeRegexOrPattern(const String& pattern,
+					   const bool regex=false);
   // Look up FIELD_ID's for a given source id
-  Vector<Int> matchStateId(const Int& sourceId);
-  Vector<Int> matchStateId(const Vector<Int>& sourceIds);
+  Vector<int32_t> matchStateId(const int32_t& sourceId);
+  Vector<int32_t> matchStateId(const Vector<int32_t>& sourceIds);
 
-  Vector<Int> maskStateIDs(const Vector<Int>& ids);
+  Vector<int32_t> maskStateIDs(const Vector<int32_t>& ids);
 
-  Vector<Int> matchStateIDLT(const Int n);
-  Vector<Int> matchStateIDGT(const Int n);
-  Vector<Int> matchStateIDGTAndLT(const Int n0, const int n1);
+  Vector<int32_t> matchStateIDLT(const int32_t n);
+  Vector<int32_t> matchStateIDGT(const int32_t n);
+  Vector<int32_t> matchStateIDGTAndLT(const int32_t n0, const int n1);
 private:
   // Disallow null constructor
   MSStateIndex();
@@ -115,9 +115,9 @@ private:
   MSStateColumns msStateCols_p;
 
   // Vector cache of field id's
-  Vector<Int> stateIds_p;
-  Int nrows_p;
-  Int matchAnyRegex(const Vector<String>& strList, const Regex& regex, const Int pos=0);
+  Vector<int32_t> stateIds_p;
+  int32_t nrows_p;
+  int32_t matchAnyRegex(const Vector<String>& strList, const Regex& regex, const int32_t pos=0);
 };
 
 

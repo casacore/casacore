@@ -31,7 +31,7 @@
 using namespace casacore;
 
 template<typename T>
-void testDT (DataType dt, DataType arrdt, uInt sz, Bool isC=False)
+void testDT (DataType dt, DataType arrdt, uint32_t sz, bool isC=false)
 {
   // Test scalar.
   HDF5DataType hdt((T*)0);
@@ -58,8 +58,8 @@ void testCompound()
   names[1] = "f2";
   names[2] = "f3";
   types[0] = HDF5DataType((Complex*)0);
-  types[1] = HDF5DataType((Int*)0);
-  types[2] = HDF5DataType((Float*)0);
+  types[1] = HDF5DataType((int32_t*)0);
+  types[2] = HDF5DataType((float*)0);
   HDF5DataType dtcom1(names, types);
   AlwaysAssertExit (dtcom1.size() == 16);
   AlwaysAssertExit (HDF5DataType::getDataType(dtcom1.getHidMem()) == TpRecord);
@@ -67,7 +67,7 @@ void testCompound()
   names.push_back ("fa1");
   names.push_back ("fa2");
   names.push_back ("fc");
-  types.push_back (HDF5DataType(HDF5DataType((Bool*)0), IPosition(1,8)));
+  types.push_back (HDF5DataType(HDF5DataType((bool*)0), IPosition(1,8)));
   types.push_back (HDF5DataType(HDF5DataType((DComplex*)0), IPosition(2,1,2)));
   types.push_back (dtcom1);
   HDF5DataType dtcom2(names, types);
@@ -82,16 +82,16 @@ int main()
     return 3;
   }
   try {
-    testDT<Bool> (TpBool, TpArrayBool, 1);
-    testDT<uChar> (TpUChar, TpArrayUChar, 1);
-    testDT<Short> (TpShort, TpArrayShort, 2);
-    testDT<Int> (TpInt, TpArrayInt, 4);
-    testDT<uInt> (TpUInt, TpArrayUInt, 4);
-    testDT<Int64> (TpInt64, TpArrayInt64, 8);
-    testDT<Float> (TpFloat, TpArrayFloat, 4);
-    testDT<Double> (TpDouble, TpArrayDouble, 8);
-    testDT<Complex> (TpComplex, TpArrayComplex, 8, True);
-    testDT<DComplex> (TpDComplex, TpArrayDComplex, 16, True);
+    testDT<bool> (TpBool, TpArrayBool, 1);
+    testDT<unsigned char> (TpUChar, TpArrayUChar, 1);
+    testDT<int16_t> (TpShort, TpArrayShort, 2);
+    testDT<int32_t> (TpInt, TpArrayInt, 4);
+    testDT<uint32_t> (TpUInt, TpArrayUInt, 4);
+    testDT<int64_t> (TpInt64, TpArrayInt64, 8);
+    testDT<float> (TpFloat, TpArrayFloat, 4);
+    testDT<double> (TpDouble, TpArrayDouble, 8);
+    testDT<Complex> (TpComplex, TpArrayComplex, 8, true);
+    testDT<DComplex> (TpDComplex, TpArrayDComplex, 16, true);
     testCompound();
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;

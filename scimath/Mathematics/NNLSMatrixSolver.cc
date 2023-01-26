@@ -62,12 +62,12 @@ NNLSMatrixSolver::NNLSMatrixSolver(const Matrix<FType> & A,
 // Destructor
 NNLSMatrixSolver::~NNLSMatrixSolver() {}
 
-Bool NNLSMatrixSolver::solve() // Solve AX=B for X
+bool NNLSMatrixSolver::solve() // Solve AX=B for X
 {
   
   LogMessage message(LogOrigin("NNLSMatrixSolver","solve"));
 
-  Bool delete_it;
+  bool delete_it;
   FType *a_data = AMatrix.getStorage(delete_it);
   FType *x_data = XVector.getStorage(delete_it);
   FType *b_data = BVector.getStorage(delete_it);
@@ -90,26 +90,26 @@ Bool NNLSMatrixSolver::solve() // Solve AX=B for X
     ostringstream o;o<<"dimensions set up incorrectly";
     message.priority(LogMessage::SEVERE);
     message.message(o);logSink().post(message);
-    setSolved(False);
+    setSolved(false);
     return Solved();
   }
   if (mode==3) {
     ostringstream o;o<<"Exceeded number of iterations";
     message.priority(LogMessage::SEVERE);
     message.message(o);logSink().post(message);
-    setSolved(False);
+    setSolved(false);
     return Solved();
   }
   
   if(accurateSolution()) {
     ostringstream o;o<<"Solution acheived";
     message.message(o);logSink().post(message);
-    setSolved(True);
+    setSolved(true);
   }
   else {
     ostringstream o;o<<"Solution not formally accurate enough";
     message.message(o);logSink().post(message);
-    setSolved(False);
+    setSolved(false);
   }
   return Solved();
 }

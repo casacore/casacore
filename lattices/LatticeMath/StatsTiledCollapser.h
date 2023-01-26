@@ -83,7 +83,7 @@ namespace casacore {
 //// This is the first output axis getting  collapsed values. In LatticeStatistics
 //// this is the last axis of the output lattice
 // 
-//   Int newOutAxis = outLattice.ndim()-1;
+//   int32_t newOutAxis = outLattice.ndim()-1;
 //
 //// tiledApply does the work by passing the collapser data in chunks
 //// and by writing the results into the output lattice 
@@ -111,38 +111,38 @@ template <class T, class U=T>
 class StatsTiledCollapser : public TiledCollapser<T, U> {
 public:
     // Constructor provides pixel selection range and whether that
-    // range is an inclusion or exclusion range.  If <src>fixedMinMax=True</src>
+    // range is an inclusion or exclusion range.  If <src>fixedMinMax=true</src>
     // and an inclusion range is given, the min and max is set to
     // that inclusion range.
     StatsTiledCollapser(
-        const Vector<T>& pixelRange, Bool noInclude,
-        Bool noExclude, Bool fixedMinMax
+        const Vector<T>& pixelRange, bool noInclude,
+        bool noExclude, bool fixedMinMax
     );
 
     virtual ~StatsTiledCollapser() {}
 
     // Initialize process, making some checks
-    virtual void init (uInt nOutPixelsPerCollapse);
+    virtual void init (uint32_t nOutPixelsPerCollapse);
 
     // Initialiaze the accumulator
-    virtual void initAccumulator (uInt64 n1, uInt64 n3);
+    virtual void initAccumulator (uint64_t n1, uint64_t n3);
 
     // Process the data in the current chunk.
     virtual void process (
-        uInt accumIndex1, uInt accumIndex3,
-        const T* inData, const Bool* inMask,
-        uInt dataIncr, uInt maskIncr,
-        uInt nrval,    const IPosition& startPos,
+        uint32_t accumIndex1, uint32_t accumIndex3,
+        const T* inData, const bool* inMask,
+        uint32_t dataIncr, uint32_t maskIncr,
+        uint32_t nrval,    const IPosition& startPos,
         const IPosition& shape
     );
 
     // End the accumulation process and return the result arrays
     virtual void endAccumulator(Array<U>& result,
-                                Array<Bool>& resultMask,
+                                Array<bool>& resultMask,
                                 const IPosition& shape);
 
     // Can handle null mask
-    virtual Bool canHandleNullMask() const {return True;};
+    virtual bool canHandleNullMask() const {return true;};
 
     // Find the location of the minimum and maximum data values
     // in the input lattice.
@@ -150,27 +150,27 @@ public:
 
 private:
     Vector<T> _range;
-    Bool _include, _exclude, _fixedMinMax, _isReal;
+    bool _include, _exclude, _fixedMinMax, _isReal;
     IPosition _minpos, _maxpos;
 
     // Accumulators for sum, sum squared, number of points
     // minimum, and maximum
 
-    CountedPtr<Block<Double> > _npts;
+    CountedPtr<Block<double> > _npts;
     CountedPtr<Block<U> > _sum, _sumSq,
         _mean, _variance, _nvariance, _sigma;
     CountedPtr<Block<T> > _min, _max;
-    CountedPtr<Block<Bool> > _initMinMax;
+    CountedPtr<Block<bool> > _initMinMax;
 
-    uInt64 _n1, _n3;
+    uint64_t _n1, _n3;
 
     void _convertNPts(
-        Double*& nptsPtr, CountedPtr<Block<Double> > npts,
+        double*& nptsPtr, CountedPtr<Block<double> > npts,
         CountedPtr<Block<DComplex> > nptsComplex
     ) const;
 
     void _convertNPts(
-        DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
+        DComplex*& nptsPtr, CountedPtr<Block<double> > npts,
         CountedPtr<Block<DComplex> > nptsComplex
     ) const;
 };

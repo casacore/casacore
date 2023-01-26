@@ -40,15 +40,15 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Bool AppInfo::need_init_p = True;
-uInt AppInfo::tz_r = 0;
+bool AppInfo::need_init_p = true;
+uint32_t AppInfo::tz_r = 0;
 
-Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB)
+Vector<String> AppInfo::workDirectories(uint32_t minimumFreeSpaceInMB)
 {
-    static Bool init = False;
-    static uInt workdir = 0;
+    static bool init = false;
+    static uint32_t workdir = 0;
     if (!init) {
-	init = True;
+	init = true;
 	// Default is an empty vector
 	Vector<String> empty;
 	workdir = AipsrcVector<String>::registerRC("user.directories.work", 
@@ -70,23 +70,23 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB)
 	}
     }
     // OK, elmiinate candidates (if any).
-    Vector<Bool> good(workdirs.nelements());
-    good = True;
-    for (uInt i=0; i<workdirs.nelements(); i++) {
+    Vector<bool> good(workdirs.nelements());
+    good = true;
+    for (uint32_t i=0; i<workdirs.nelements(); i++) {
 	File dir(workdirs(i));
 	if (!dir.exists() || !dir.isWritable() || !dir.isDirectory()) {
 	    // Whinge if it's for an odd reason
-	    LogIO os(LogOrigin("AppInfo", "workDirectories(uInt)", WHERE));
+	    LogIO os(LogOrigin("AppInfo", "workDirectories(uint32_t)", WHERE));
 	    os << LogIO::WARN << "Work directory candidate '" <<
 		dir.path().originalName() << "' does not exist or is not" <<
 		" writable.\n" <<
 		"Check aipsrc variable user.directories.work." << 
 		LogIO::POST;
-	    good(i) = False;
+	    good(i) = false;
 	} else {
 	    Directory asdir = dir;
-	    if (asdir.freeSpace()/(1024*1024) < uLong(minimumFreeSpaceInMB)) {
-		good(i) = False;
+	    if (asdir.freeSpace()/(1024*1024) < static_cast<unsigned long>(minimumFreeSpaceInMB)) {
+		good(i) = false;
 	    }
 	}
     }
@@ -97,13 +97,13 @@ Vector<String> AppInfo::workDirectories(uInt minimumFreeSpaceInMB)
     return workdirs;
 }
 
-String AppInfo::workDirectory(uInt minimumFreeSpaceInMB)
+String AppInfo::workDirectory(uint32_t minimumFreeSpaceInMB)
 {
-    static uInt count = 0;
+    static uint32_t count = 0;
     count++;
     Vector<String> candidates = workDirectories(minimumFreeSpaceInMB);
     if (candidates.nelements() == 0) {
-	LogIO os(LogOrigin("AppInfo", "workDirectory(uInt)", WHERE));
+	LogIO os(LogOrigin("AppInfo", "workDirectory(uint32_t)", WHERE));
 	os << LogIO::SEVERE << "No work directory with at least " <<
 	    minimumFreeSpaceInMB << "MB free can be found." << endl <<
 	    "Check aipsrc variable user.directories.work." << 
@@ -112,7 +112,7 @@ String AppInfo::workDirectory(uInt minimumFreeSpaceInMB)
     return candidates((count-1) % candidates.nelements());
 }
 
-String AppInfo::workFileName(uInt minimumFreeSpaceInMB,
+String AppInfo::workFileName(uint32_t minimumFreeSpaceInMB,
 			     const String &filenamePrefix)
 {
     String dir = workDirectory(minimumFreeSpaceInMB);
@@ -120,12 +120,12 @@ String AppInfo::workFileName(uInt minimumFreeSpaceInMB,
 }
 
 void AppInfo::init() {
-  need_init_p = False;
+  need_init_p = false;
   
   // timezone
-  Double tz;
+  double tz;
   // Get System offset as default
-  tz_r = AipsrcValue<Double>::
+  tz_r = AipsrcValue<double>::
     registerRC("system.time.tzoffset", "h", "d", Time::timeZoneDays());
   tz = AppInfo::timeZone();
   

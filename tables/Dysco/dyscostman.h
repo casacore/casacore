@@ -186,27 +186,27 @@ class DyscoStMan : public casacore::DataManager {
    * Whether rows can be added.
    * @returns @c true
    */
-  virtual casacore::Bool canAddRow() const final override { return true; }
+  virtual bool canAddRow() const final override { return true; }
 
   /**
    * Whether rows can be removed.
    * @returns @c true (but only rows at the end can actually be removed)
    */
-  virtual casacore::Bool canRemoveRow() const final override { return true; }
+  virtual bool canRemoveRow() const final override { return true; }
 
   /**
    * Whether columns can be added.
    * @returns @c true (but restrictions apply; columns can only be added as long
    * as no writes have been performed on the set).
    */
-  virtual casacore::Bool canAddColumn() const final override { return true; }
+  virtual bool canAddColumn() const final override { return true; }
 
   /**
    * Whether columns can be removed.
    * @return @c true (but restrictions apply -- still to be checked)
    * @todo Describe restrictons
    */
-  virtual casacore::Bool canRemoveColumn() const final override { return true; }
+  virtual bool canRemoveColumn() const final override { return true; }
 
   /**
    * Create an object with given name and spec.
@@ -291,7 +291,7 @@ class DyscoStMan : public casacore::DataManager {
    * This method returns @c true when the number of rows per block and the
    * number of antennae per block are known. This is only the case once the
    * first time- block was written to the file.
-   * @returns True when the nr of rows per block and antennae are available.
+   * @returns true when the nr of rows per block and antennae are available.
    */
   bool areOffsetsInitialized() const { return _rowsPerBlock != 0; }
 
@@ -330,8 +330,8 @@ class DyscoStMan : public casacore::DataManager {
   // Flush and optionally fsync the data.
   // The AipsIO stream represents the main table file and can be
   // used by virtual column engines to store SMALL amounts of data.
-  virtual casacore::Bool flush(casacore::AipsIO &,
-                               casacore::Bool doFsync) final override;
+  virtual bool flush(casacore::AipsIO &,
+                               bool doFsync) final override;
 
   // Let the storage manager create files as needed for a new table.
   // This allows a column with an indirect array to create its file.

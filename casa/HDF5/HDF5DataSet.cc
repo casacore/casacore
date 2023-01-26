@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const Bool* type)
+			    const bool* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const uChar* type)
+			    const unsigned char* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -51,7 +51,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const Short* type)
+			    const int16_t* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -59,7 +59,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const Int* type)
+			    const int32_t* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const Int64* type)
+			    const int64_t* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -75,7 +75,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const Float* type)
+			    const float* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -83,7 +83,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
 			    const IPosition& shape, const IPosition& tileShape,
-			    const Double* type)
+			    const double* type)
     : itsDataType (type)
   {
     create (parentHid, name, shape, tileShape);
@@ -114,49 +114,49 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const Bool* type)
+			    const bool* type)
     : itsDataType (type)
   {
     open (parentHid, name);
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const uChar* type)
+			    const unsigned char* type)
     : itsDataType (type)
   {
     open (parentHid, name);
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const Short* type)
+			    const int16_t* type)
     : itsDataType (type)
   {
     open (parentHid, name);
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const Int* type)
+			    const int32_t* type)
     : itsDataType (type)
   {
     open (parentHid, name);
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const Int64* type)
+			    const int64_t* type)
     : itsDataType (type)
   {
     open (parentHid, name);
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const Float* type)
+			    const float* type)
     : itsDataType (type)
   {
     open (parentHid, name);
   }
 
   HDF5DataSet::HDF5DataSet (const HDF5Object& parentHid, const String& name,
-			    const Double* type)
+			    const double* type)
     : itsDataType (type)
   {
     open (parentHid, name);
@@ -200,7 +200,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsShape     = shape;
     itsTileShape = IPosition(shape.nelements(), 1);
     // Trailing elements already have value 1; set the first elements.
-    for (uInt i=0; i<tileShape.nelements(); ++i) {
+    for (uint32_t i=0; i<tileShape.nelements(); ++i) {
       if (shape[i] > 0) {
         itsTileShape[i] = std::min(tileShape[i], shape[i]);
       }
@@ -213,7 +213,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     int rank = itsShape.nelements();
     Block<hsize_t> ls = HDF5DataType::fromShape (itsShape);
     Block<hsize_t> maxls(ls);
-    for (uInt i=0; i<maxls.size(); ++i) {
+    for (uint32_t i=0; i<maxls.size(); ++i) {
       if (maxls[i] == 0) {
         maxls[i] = H5S_UNLIMITED;
       }
@@ -301,7 +301,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsDaplid.close();
   }
 
-  void HDF5DataSet::setCacheSize (uInt nchunks)
+  void HDF5DataSet::setCacheSize (uint32_t nchunks)
   {
     // Setting the cache size takes only effect when opening the dataset.
     // So close it first.
@@ -309,7 +309,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Use LRU caching (4th argument is 0).
     // Hash size should be a prime according to the HDF5 documentation and
     // preferably 100 times the nr of chunks. This seems excessive, so use 20x.
-    uInt nhash = 1;
+    uint32_t nhash = 1;
     if (nchunks > 1) {
       nhash = Primes::nextLargerPrimeThan(nchunks*100);
     }
@@ -340,7 +340,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return HDF5DataType::getDataType (dtid);
   }
 
-  void HDF5DataSet::get (const Slicer& section, ArrayBase& arr, Bool resize)
+  void HDF5DataSet::get (const Slicer& section, ArrayBase& arr, bool resize)
   {
     const IPosition& shp = section.length();
     if (! shp.isEqual (arr.shape())) {
@@ -352,7 +352,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                         " mismatch in get of dataset " + std::string(getName()));
       }
     }
-    Bool deleteIt;
+    bool deleteIt;
     void* buf = arr.getVStorage (deleteIt);
     get (section, buf);
     arr.putVStorage (buf, deleteIt);
@@ -392,7 +392,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                       " and array " + arr.shape().toString() +
                       " mismatch in put of dataset " + std::string(getName()));
     }
-    Bool deleteIt;
+    bool deleteIt;
     const void* buf = arr.getVStorage (deleteIt);
     put (section, buf);
     arr.freeVStorage (buf, deleteIt);
@@ -429,11 +429,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     AlwaysAssert (shape.size() == itsShape.size(), AipsError);
     // Extend the data set if one of the axes is larger than the current shape.
     IPosition newShape(itsShape);
-    Bool ext = False;
-    for (uInt i=0; i<shape.size(); ++i) {
+    bool ext = false;
+    for (uint32_t i=0; i<shape.size(); ++i) {
       if (shape[i] > newShape[i]) {
         newShape[i] = shape[i];
-        ext = True;
+        ext = true;
       }
     }
     if (ext) {
@@ -464,13 +464,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void HDF5DataSet::close()
   {}
 
-  void HDF5DataSet::setCacheSize (uInt)
+  void HDF5DataSet::setCacheSize (uint32_t)
   {}
 
   DataType HDF5DataSet::getDataType (hid_t, const String&)
     { return TpOther; }
 
-  void HDF5DataSet::get (const Slicer&, ArrayBase&, Bool)
+  void HDF5DataSet::get (const Slicer&, ArrayBase&, bool)
   {}
     
   void HDF5DataSet::get (const Slicer&, void*)

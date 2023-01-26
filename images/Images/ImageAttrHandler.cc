@@ -38,9 +38,9 @@ namespace casacore {
   void ImageAttrHandler::flush()
   {}
 
-  Bool ImageAttrHandler::hasGroup (const String&)
+  bool ImageAttrHandler::hasGroup (const String&)
   {
-    return False;
+    return false;
   }
 
   Vector<String> ImageAttrHandler::groupNames() const

@@ -86,7 +86,7 @@ Invalid description of hypercolumn TSMExample: coordColumn Timex does not exist
 Invalid description of hypercolumn TSMExample: dataColumn Datax does not exist
 Invalid description of hypercolumn TSMExample: idColumn Idx does not exist
 Invalid description of hypercolumn TSMExample: coordColumn TimeNotNum is not numeric
-Invalid description of hypercolumn TSMExample: coordColumn TimeShort: (u)Char, (u)Short and Int64 not supported
+Invalid description of hypercolumn TSMExample: coordColumn TimeShort: (u)char, (u)int16_t and int64_t not supported
 Invalid description of hypercolumn TSMExample: coordColumn Data is not a scalar or vector
 Invalid description of hypercolumn TSMExample: coordinate vectors have to describe the first axes
 Invalid description of hypercolumn TSMExample: the dimensionality of data column Data0 is undefined
@@ -94,6 +94,6 @@ Invalid description of hypercolumn TSMExample: the dimensionality of data column
 Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
 Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
 Invalid description of hypercolumn TSMExample: the dimensionality of the data columns mismatches nr of coordinate columns with a vector value
-Invalid description of hypercolumn TSMExample: idColumn TimeShort: (u)Char, (u)Short and Int64 not supported
+Invalid description of hypercolumn TSMExample: idColumn TimeShort: (u)char, (u)int16_t and int64_t not supported
 Invalid description of hypercolumn TSMExample: idColumn Data is not a scalar
 Invalid description of hypercolumn TSMExample: column name Time is multiply used

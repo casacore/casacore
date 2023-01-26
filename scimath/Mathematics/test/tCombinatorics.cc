@@ -44,12 +44,12 @@ int main() {
        
         {
         	// test exception is thrown if k > n
-            Bool res = False;
+            bool res = false;
             try {
                 Combinatorics::choose(3,5);
             }
             catch (std::exception&) {
-                res = True;
+                res = true;
             }
             AlwaysAssert(res, AipsError);
         }

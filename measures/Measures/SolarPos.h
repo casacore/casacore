@@ -65,10 +65,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> SolarPos() default; assuming JD2000, IAU1980
 //   <li> SolarPos(method) assuming the correct default epoch of
 //		JD2000
-//   <li> SolarPos(method,epoch) with epoch Double(MJD)
+//   <li> SolarPos(method,epoch) with epoch double(MJD)
 // </ul>
 // Actual SolarPos for a certain Epoch is calculated by the () operator
-// as SolarPos(epoch), with epoch Double MJD, as an MVPosition vector.<br>
+// as SolarPos(epoch), with epoch double MJD, as an MVPosition vector.<br>
 // It returns the geocentric position of the heliocentre in rectangular
 // coordinates in AU.<br>
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
@@ -109,7 +109,7 @@ class SolarPos {
 public:
 //# Constants
 // Interval to be used for linear approximation (in days)
-    static const Double INTV;
+    static const double INTV;
 
 //# Enumerations
 // Types of known SolarPos calculations (at 1995/09/04 STANDARD == IAU1980)
@@ -130,19 +130,19 @@ public:
 
 //# Operators
 // Operator () calculates the geocentric Solar Position in AU
-    const MVPosition&operator()(Double epoch);
+    const MVPosition&operator()(double epoch);
 
 //# General Member Functions
 // <group>
 // Return derivatives of SolarPos (d<sup>-1</sup>)
-    const MVPosition &derivative (Double epoch);
-    const MVPosition &baryEarthDerivative (Double epoch);
-    const MVPosition &barySunDerivative (Double epoch);
+    const MVPosition &derivative (double epoch);
+    const MVPosition &baryEarthDerivative (double epoch);
+    const MVPosition &barySunDerivative (double epoch);
 // </group>
 // Barycentric position of Earth
-    const MVPosition &baryEarth(Double epoch);
+    const MVPosition &baryEarth(double epoch);
 // Barycentric position of Sun
-    const MVPosition &barySun(Double epoch);
+    const MVPosition &barySun(double epoch);
 
 // Re-initialise SolarPos object
 // <group>
@@ -158,26 +158,26 @@ private:
 // Method to be used
     SolarPosTypes method;
 // Check epoch for linear approximation
-    Double checkEpoch;
-    Double checkSunEpoch;
+    double checkEpoch;
+    double checkSunEpoch;
 // Cached calculated Earth positions
-    Double eval[3];
+    double eval[3];
 // Cached derivatives
-    Double deval[3];
+    double deval[3];
 // Cached calculated Sun positions
-    Double sval[3];
+    double sval[3];
 // Cached derivatives
-    Double dsval[3];
+    double dsval[3];
 // To be able to use references in simple calculations, results are calculated
 // in a circular buffer.
 // Current buffer pointer
-    Int lres;
+    int32_t lres;
 // Last calculation
     MVPosition result[6];
 // Interpolation interval
-    static uInt interval_reg;
+    static uint32_t interval_reg;
 // JPL use
-    static uInt usejpl_reg;
+    static uint32_t usejpl_reg;
 
 //# Member functions
 // Copy
@@ -185,9 +185,9 @@ private:
 // Fill an empty copy
     void fill();
 // Calculate heliocentric Earth position for time t
-    void calcEarth(Double t);
+    void calcEarth(double t);
 // Calculate heliocentric barycentre position
-    void calcSun(Double t);
+    void calcSun(double t);
 };
 
 

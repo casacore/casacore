@@ -45,19 +45,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSGroupWriter::FITSGroupWriter(const String &fileName,
 				 const RecordDesc &description,
-				 uInt nrows,
+				 uint32_t nrows,
 				 const Record &extraKeywords,
-				 Bool freeOutput)
+				 bool freeOutput)
     : delete_writer_p(freeOutput), writer_p(0), nrows_written_p(0),
       nrows_total_p(nrows),  group_p(0), error_count_p(0)
 {
     LogIO log(LogOrigin("FITSGroupWriter", "FITSGroupWriter", WHERE));
 
     // Verify the description before doing anything else
-    const uInt nfields = description.nfields();
+    const uint32_t nfields = description.nfields();
 
-    Int arrayField = -1;
-    uInt i;
+    int32_t arrayField = -1;
+    uint32_t i;
     for (i=0; i<nfields; i++) {
 	if (description.type(i) == TpArrayFloat ) {
 	    arrayField = i;
@@ -86,14 +86,14 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     FitsKeywordList kw;
 
     // SIMPLE
-    kw.mk(FITS::SIMPLE,True,"Standard FITS format");
+    kw.mk(FITS::SIMPLE,true,"Standard FITS format");
 
     // BITPIX
     kw.mk(FITS::BITPIX,-32,"Floating point values");
 
     // NAXIS
     IPosition shape = description.shape(arrayField);
-    kw.mk(FITS::NAXIS,Int(shape.nelements()+1));
+    kw.mk(FITS::NAXIS,int32_t(shape.nelements()+1));
 
     // NAXIS1
     kw.mk(1, FITS::NAXIS, 0, "Random groups, NOT image");
@@ -104,19 +104,19 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     }
 
     // EXTEND
-    kw.mk(FITS::EXTEND, True, "Tables may follow");
+    kw.mk(FITS::EXTEND, true, "Tables may follow");
 
     // BLOCKED
-    kw.mk(FITS::BLOCKED, True, "File may be blocked");
+    kw.mk(FITS::BLOCKED, true, "File may be blocked");
 
     // GROUPS
-    kw.mk(FITS::GROUPS, True, "Random Group UV data");
+    kw.mk(FITS::GROUPS, true, "Random Group UV data");
 
     // PCOUNT (-1 because the array takes one slot)
-    kw.mk(FITS::PCOUNT, Int(nfields-1), "Number of random parameters");
+    kw.mk(FITS::PCOUNT, int32_t(nfields-1), "Number of random parameters");
 
     // GCOUNT
-    kw.mk(FITS::GCOUNT, Int(nrows), "Number of groups (rows) in the file");
+    kw.mk(FITS::GCOUNT, int32_t(nrows), "Number of groups (rows) in the file");
 
     kw.spaces();
 
@@ -138,8 +138,8 @@ FITSGroupWriter::FITSGroupWriter(const String &fileName,
     kw.end();
 
     // Rquires a bit more development if this is ever false
-    AlwaysAssert(sizeof(Float) == 4, AipsError);
-    group_p = new PrimaryGroup<Float>(kw);
+    AlwaysAssert(sizeof(float) == 4, AipsError);
+    group_p = new PrimaryGroup<float>(kw);
 
     AlwaysAssert(group_p, AipsError);
     check_error("creating random groups from keywords");
@@ -159,7 +159,7 @@ FITSGroupWriter::~FITSGroupWriter()
 	    nrows_written_p << " have been." << endl <<
 	    "Not enough rows were written, repeating the final row" << 
 	    LogIO::POST;
-	for (uInt i=nrows_written_p; i<nrows_total_p; i++) {
+	for (uint32_t i=nrows_written_p; i<nrows_total_p; i++) {
 	    write();
 	}
     }
@@ -174,7 +174,7 @@ FITSGroupWriter::~FITSGroupWriter()
 
 void FITSGroupWriter::write()
 {
-    static Array<Float> tmp;
+    static Array<float> tmp;
 
     if (nrows_written_p >= nrows_total_p) {
 	LogIO log(LogOrigin("FITSGroupWriter", "write", WHERE));
@@ -183,15 +183,15 @@ void FITSGroupWriter::write()
       return;
     }
 
-    uInt nfields = row_p.nfields();
+    uint32_t nfields = row_p.nfields();
     // This could be sped up by keeping external copies of the field pointers
-    Int param = 0;
-    for (uInt i=0; i<nfields; i++) {
+    int32_t param = 0;
+    for (uint32_t i=0; i<nfields; i++) {
 	if (row_p.type(i) == TpArrayFloat) {
 	    // The data array
 	    row_p.get(i, tmp);
-	    Bool deleteIt;
-	    Float *ptr = tmp.getStorage(deleteIt);
+	    bool deleteIt;
+	    float *ptr = tmp.getStorage(deleteIt);
 
 	    // It looks to me like store is doing the wrong thing for primary groups
 	    group_p->store(ptr);
@@ -199,7 +199,7 @@ void FITSGroupWriter::write()
 	    tmp.putStorage(ptr, deleteIt);
 	} else {
 	    // A random "parameter"
-	    Float tmp2;
+	    float tmp2;
 	    row_p.get(i, tmp2);
 	    group_p->rawparm(param) = tmp2;
 	    check_error("setting group parameter");

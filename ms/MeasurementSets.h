@@ -206,17 +206,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //      // fill MeasurementSet via its Table interface
 //      // For example, construct one of the column access objects.
 //      TableColumn feed(simpleMS, MS::columnName(MS::FEED1));
-//      uInt rownr = 0;
+//      uint32_t rownr = 0;
 //      // add a row
 //      simpleMS.addRow();
 //      // set the values in that row, e.g. the feed column
 //      feed.putScalar(rownr,1);
 //      // Access the position column in the ANTENNA subtable
-//      ArrayColumn<Double> antpos(simpleMS.antenna(),
+//      ArrayColumn<double> antpos(simpleMS.antenna(),
 //                                 MSAntenna::columnName(MSAntenna::POSITION));
 //      // Add a row to it and fill in the position
 //      simpleMS.antenna().addRow();
-//      Array<Double> position(3); 
+//      Array<double> position(3); 
 //      position(0)=1.; position(1)=2.; position(2)=3.;
 //      antpos.put(0,position);
 //      // .

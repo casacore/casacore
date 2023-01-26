@@ -32,7 +32,7 @@
 
 int main() {
     try {
-        StatisticsAlgorithmFactory<Double, Float*> saf;
+        StatisticsAlgorithmFactory<double, float*> saf;
         AlwaysAssert(
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::CLASSICAL,
             AipsError
@@ -52,19 +52,19 @@ int main() {
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::HINGESFENCES,
             AipsError
         );
-        StatisticsAlgorithmFactory<Double, Float*> saf2;
+        StatisticsAlgorithmFactory<double, float*> saf2;
         Record r = saf2.toRecord();
-        saf = StatisticsAlgorithmFactory<Double, Float*>::fromRecord(r);
+        saf = StatisticsAlgorithmFactory<double, float*>::fromRecord(r);
         AlwaysAssert(
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::CLASSICAL,
             AipsError
         );
 
-        Double zscore = 4.5;
-        Int maxIter = 20;
+        double zscore = 4.5;
+        int32_t maxIter = 20;
         saf2.configureChauvenet(zscore, maxIter);
         r = saf2.toRecord();
-        saf = StatisticsAlgorithmFactory<Double, Float*>::fromRecord(r);
+        saf = StatisticsAlgorithmFactory<double, float*>::fromRecord(r);
         AlwaysAssert(
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::CHAUVENETCRITERION,
             AipsError
@@ -79,15 +79,15 @@ int main() {
 
         FitToHalfStatisticsData::CENTER center = FitToHalfStatisticsData::CVALUE;
         FitToHalfStatisticsData::USE_DATA side = FitToHalfStatisticsData::GE_CENTER;
-        Double centerValue = 5.5;
+        double centerValue = 5.5;
         saf2.configureFitToHalf(center, side, centerValue);
         r = saf2.toRecord();
-        saf = StatisticsAlgorithmFactory<Double, Float*>::fromRecord(r);
+        saf = StatisticsAlgorithmFactory<double, float*>::fromRecord(r);
         AlwaysAssert(
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::FITTOHALF,
             AipsError
         );
-        StatisticsAlgorithmFactoryData::FitToHalfData<Double> fd = saf.fitToHalfData();
+        StatisticsAlgorithmFactoryData::FitToHalfData<double> fd = saf.fitToHalfData();
         AlwaysAssert(
             fd.center == center, AipsError
         );
@@ -98,10 +98,10 @@ int main() {
             fd.side == side, AipsError
         );
 
-        Double hf = 45.2;
+        double hf = 45.2;
         saf2.configureHingesFences(hf);
         r = saf2.toRecord();
-        saf = StatisticsAlgorithmFactory<Double, Float*>::fromRecord(r);
+        saf = StatisticsAlgorithmFactory<double, float*>::fromRecord(r);
         AlwaysAssert(
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::HINGESFENCES,
             AipsError
@@ -109,10 +109,10 @@ int main() {
         AlwaysAssert(saf.hingesFencesFactor() == hf, AipsError);
 
         maxIter = 22;
-        Double c = 15.2;
+        double c = 15.2;
         saf2.configureBiweight(maxIter, c);
         r = saf2.toRecord();
-        saf = StatisticsAlgorithmFactory<Double, Float*>::fromRecord(r);
+        saf = StatisticsAlgorithmFactory<double, float*>::fromRecord(r);
         AlwaysAssert(
             saf.createStatsAlgorithm()->algorithm() == StatisticsData::BIWEIGHT,
             AipsError

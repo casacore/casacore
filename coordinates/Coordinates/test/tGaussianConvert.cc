@@ -41,20 +41,20 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
+void doit (double majorPixels, double minorPixels, const Quantum<double>& pa1,
            const CoordinateSystem& cSys,
-           const Vector<uInt>& worldAxes,
-           Double exMinorWorld, Double exMajorWorld, Double exPAWorld);
+           const Vector<uint32_t>& worldAxes,
+           double exMinorWorld, double exMajorWorld, double exPAWorld);
 
 
-void doit2 (Vector<Double>& pixel, const CoordinateSystem& cSys,
-           const Vector<uInt>& worldAxes);
+void doit2 (Vector<double>& pixel, const CoordinateSystem& cSys,
+           const Vector<uint32_t>& worldAxes);
 
 int main()
 {
    try {
       CoordinateSystem cSys = CoordinateUtil::defaultCoords2D();
-      Vector<uInt> worldAxes(2);
+      Vector<uint32_t> worldAxes(2);
       worldAxes(0) = 0;
       worldAxes(1) = 1;
 //
@@ -66,55 +66,55 @@ int main()
 // Axis conversions
 //
       {
-         Vector<Double> deltas(2);
+         Vector<double> deltas(2);
          deltas(0) = -1.0;
          deltas(1) = 1.0;
          cSys.setIncrement(deltas);
 //      cout << "inc = " << cSys.increment() << endl;
 //
-         Double majorPixels = 10.0;
-         Double minorPixels = 5.0;
-         Quantum<Double> pa1(30.0, Unit("deg"));
+         double majorPixels = 10.0;
+         double minorPixels = 5.0;
+         Quantum<double> pa1(30.0, Unit("deg"));
          doit(majorPixels, minorPixels, pa1, cSys, worldAxes,
               5.0, 10.0, 30.0);
          
       }
       {
-         Vector<Double> deltas(2);
+         Vector<double> deltas(2);
          deltas(0) = 1.0;
          deltas(1) = 1.0;
          cSys.setIncrement(deltas);
 //      cout << "inc = " << cSys.increment() << endl;
 //
-         Double majorPixels = 10.0;
-         Double minorPixels = 5.0;
-         Quantum<Double> pa1(30, Unit("deg"));
+         double majorPixels = 10.0;
+         double minorPixels = 5.0;
+         Quantum<double> pa1(30, Unit("deg"));
          doit(majorPixels, minorPixels, pa1, cSys, worldAxes,
               5.0, 10.0, 150.0);
       }
       {
-         Vector<Double> deltas(2);
+         Vector<double> deltas(2);
          deltas(0) = -1.0;
          deltas(1) = 2.0;
          cSys.setIncrement(deltas);
 //      cout << "inc = " << cSys.increment() << endl;
 //
-         Double majorPixels = 10.0;
-         Double minorPixels = 10.0;
-         Quantum<Double> pa1(0.0, Unit("deg"));
+         double majorPixels = 10.0;
+         double minorPixels = 10.0;
+         Quantum<double> pa1(0.0, Unit("deg"));
          doit(majorPixels, minorPixels, pa1, cSys, worldAxes,
               10.0, 20.0, 0.0);
       }
       {
-         Vector<Double> deltas(2);
+         Vector<double> deltas(2);
          deltas(0) = -1.0;
          deltas(1) = 2.0;
          cSys.setIncrement(deltas);
 //      cout << "inc = " << cSys.increment() << endl;
 //
-         Double majorPixels = 10.0;
-         Double minorPixels = 5.0;
-         Quantum<Double> pa1(90.0, Unit("deg"));
+         double majorPixels = 10.0;
+         double minorPixels = 5.0;
+         Quantum<double> pa1(90.0, Unit("deg"));
          doit(majorPixels, minorPixels, pa1, cSys, worldAxes,
               10.0, 10.0, 45.0);
       }
@@ -122,7 +122,7 @@ int main()
 // Position conversions
 //
       {
-         Vector<Double> pixel(cSys.referencePixel().copy());
+         Vector<double> pixel(cSys.referencePixel().copy());
          doit2 (pixel, cSys, worldAxes);
       }
    } catch (std::exception& x) {
@@ -135,24 +135,24 @@ int main()
 }
 
 
-void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
+void doit (double majorPixels, double minorPixels, const Quantum<double>& pa1,
            const CoordinateSystem& cSys,
-           const Vector<uInt>& worldAxes,
-           Double exMinorWorld, Double exMajorWorld, Double exPAWorld)
+           const Vector<uint32_t>& worldAxes,
+           double exMinorWorld, double exMajorWorld, double exPAWorld)
 {
 //
 // Convert from pixels to world
 //
    GaussianConvert gc(cSys, worldAxes);
-   Quantum<Double> majorWorld, minorWorld;
-   Quantum<Double> pa2;
+   Quantum<double> majorWorld, minorWorld;
+   Quantum<double> pa2;
    AlwaysAssert(gc.toWorld(majorWorld, minorWorld, pa2,
                            majorPixels,  minorPixels, pa1), AipsError);
 //
 // Reflect back to pixels
 //
-   Double majorPixels2, minorPixels2;
-   Quantum<Double> pa3;
+   double majorPixels2, minorPixels2;
+   Quantum<double> pa3;
    AlwaysAssert(gc.toPixel(majorPixels2, minorPixels2, pa3,
                            majorWorld, minorWorld, pa2), AipsError);
 //
@@ -173,19 +173,19 @@ void doit (Double majorPixels, Double minorPixels, const Quantum<Double>& pa1,
 }
 
 
-void doit2 (Vector<Double>& pixel, const CoordinateSystem& cSys,
-           const Vector<uInt>& worldAxes)
+void doit2 (Vector<double>& pixel, const CoordinateSystem& cSys,
+           const Vector<uint32_t>& worldAxes)
 {
 //
 // Convert from pixels to world
 //
    GaussianConvert gc(cSys, worldAxes);
-   Vector<Quantum<Double> > world;
+   Vector<Quantum<double> > world;
    AlwaysAssert(gc.toWorld(world, pixel), AipsError);
 //
 // Reflect back to pixels
 //
-   Vector<Double> pixel2;
+   Vector<double> pixel2;
    AlwaysAssert(gc.toPixel(pixel2, world), AipsError);
    AlwaysAssert(allNear(pixel2,pixel,1e-6), AipsError);
 //

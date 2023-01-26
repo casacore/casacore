@@ -99,10 +99,10 @@ public:
   // called in MeasBase: </note>
   //   <src> MeasRef(Ms::Types tp); </src>
   // Furthermore, default arguments are not supported with templated classes:
-  explicit MeasRef(const uInt tp);
-  MeasRef(const uInt tp, const Ms &ep);
-  MeasRef(const uInt tp, const MeasFrame &mf);
-  MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep);
+  explicit MeasRef(const uint32_t tp);
+  MeasRef(const uint32_t tp, const Ms &ep);
+  MeasRef(const uint32_t tp, const MeasFrame &mf);
+  MeasRef(const uint32_t tp, const MeasFrame &mf, const Ms &ep);
   // </group>
   
   //# Destructor
@@ -110,13 +110,13 @@ public:
   
   //# Operators
   // Check if same MeasRef
-  Bool operator==(const MeasRef<Ms> &other) const;
+  bool operator==(const MeasRef<Ms> &other) const;
   // Check if unequal MeasRef
-  Bool operator!=(const MeasRef<Ms> &other) const;
+  bool operator!=(const MeasRef<Ms> &other) const;
   
   //# General Member Functions
   // Check if empty reference
-  virtual Bool empty() const;
+  virtual bool empty() const;
   // Check the type of Measure the reference can be used for
   // <group>
   static const String &showMe();
@@ -126,7 +126,7 @@ public:
   // (and should be interpreted as), but
   // cannot create a virtual function:</note>
   //   <src> Ms::Types getType();</src>
-  virtual uInt getType() const;
+  virtual uint32_t getType() const;
   // Return the frame of reference
   virtual MeasFrame &getFrame();
   // Return the first frame which has specified information. Checking is done in 
@@ -157,8 +157,8 @@ public:
   // compiler does not accept it, since a virtual function:</note>
   //   <src> void set(Ms::Types tp);</src>
   // <group>
-  virtual void setType(uInt tp);
-  virtual void set(uInt tp);
+  virtual void setType(uint32_t tp);
+  virtual void set(uint32_t tp);
   // </group>
   // Set a new offset
   void set(const Ms &ep);

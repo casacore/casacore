@@ -54,7 +54,7 @@ class String;
 // </etymology>
 //
 // <templating arg=T>
-// <li> The accepted input types are real, i.e. Int, uInt, Float, Double, 
+// <li> The accepted input types are real, i.e. int32_t, uint32_t, float, double, 
 // but not Complex. 
 // </templating>
 
@@ -81,7 +81,7 @@ class String;
 //   HistAcc<T> h(25);            // use the first 25 values to define bins 
 //   h.put(vv);                   // accumulate values into histogram 
 //   h.printHistogram(cout,"vv"); // print the histogram of vv
-//   Fallible<Double> median = h1.getMedian();  // return the median
+//   Fallible<double> median = h1.getMedian();  // return the median
 // </srcblock>
 //  
 // In some cases the bin parameters are pre-defined:
@@ -90,15 +90,15 @@ class String;
 //   vv = ...                    // fill the vector
 //   HistAcc<T> h(-10,20,3);     // bins with width 3, between -10 and 20
 //   h.put(vv);                  // accumulate values into histogram   
-//   uInt n = h.getSpurious(l,h);// get the number outside the bins
+//   uint32_t n = h.getSpurious(l,h);// get the number outside the bins
 // </srcblock>
 //
 // The internal statistics accumulator can be interrogated explicitly
 // or implicitly:
 // <srcblock>
 //   StatAcc<T> s = h.getStatistics();     // return the internal StatAcc
-//   Fallible<Double> mean = s.getMean();  // get the mean of the input values
-//   Fallible<Double> mean = h.getStatistics().getMean();  // alternative
+//   Fallible<double> mean = s.getMean();  // get the mean of the input values
+//   Fallible<double> mean = h.getStatistics().getMean();  // alternative
 // </srcblock>
 
 // </example>
@@ -119,8 +119,8 @@ public:
     // specified, they will be determined automatically from the
     // first nBuff input values (which are stored in a temporary buffer).
     // <group>
-    HistAcc(const uInt nBuff);                 //# fully automatic  
-    HistAcc(const uInt nBuff, const T width);  //# semi-automatic    
+    HistAcc(const uint32_t nBuff);                 //# fully automatic  
+    HistAcc(const uint32_t nBuff, const T width);  //# semi-automatic    
     HistAcc(const T low, const T high, const T width);  //# fully specified
     HistAcc(const HistAcc&);                   //# copy an existing one
     ~HistAcc(){;} 
@@ -145,13 +145,13 @@ public:
 
     // Empty all bins whose contents is < nmin (e.g. nmin=2). 
     // This is useful to remove `noise' values from the histogram.
-    void emptyBinsWithLessThan(const uInt nmin);
+    void emptyBinsWithLessThan(const uint32_t nmin);
 
     // The median is the 50-percentile (getPercentile(50)), i.e. the 
     // value which has 50 percent of the input values below it.
     // Calculation takes into account the spurious
     // input values, i.e. values that fell outside the bins.
-    Fallible<T> getPercentile(const Float p); 
+    Fallible<T> getPercentile(const float p); 
     Fallible<T> getMedian();                 
 
     // All bins have the same width.
@@ -164,11 +164,11 @@ public:
     // The return value is the nr of histogram bins, and is invalid
     // if the number is zero. The given blocks/vectors are resized,
     // and contain the contents and centre values of the bins. 
-    Fallible<uInt> getHistogram(Block<uInt>& bins, Block<T>& values);
+    Fallible<uint32_t> getHistogram(Block<uint32_t>& bins, Block<T>& values);
 
     // Get the nr of `spurious' values, i.e. the ones that fell
     // outside the defined bins. 
-    uInt getSpurious(uInt& tooSmall, uInt& tooLarge);        
+    uint32_t getSpurious(uint32_t& tooSmall, uint32_t& tooLarge);        
 
     // Print histogram.
     // <group>
@@ -176,15 +176,15 @@ public:
     // </group>
 	
 private:
-    Block<uInt> itsBinContents;   //# Contents of histogram bins
+    Block<uint32_t> itsBinContents;   //# Contents of histogram bins
     Block<T> itsBinHighLimit;     //# High limit of each bin
     T itsUserDefinedBinWidth;     //# if defined
 
     StatAcc<T> itsStatAcc;        //# private Statistics Accumulator
 
-    Bool itsAutoDefineMode;       //# If true: automatic mode
+    bool itsAutoDefineMode;       //# If true: automatic mode
     Block<T> itsBuffer;           //# temporary storage of input T-values
-    uInt itsBufferContents;       //# nr of T-values in buffer 
+    uint32_t itsBufferContents;       //# nr of T-values in buffer 
 
     // Accumulate a single value into the histogram.
     void put1(const T);
@@ -195,7 +195,7 @@ private:
     // Internal helper functions for the automatic definition of
     // histogram parameters, using the contents of itsBuffer.  
     // <group> 
-    void initBuffer(const uInt size); 
+    void initBuffer(const uint32_t size); 
     void putBuffer(const T v);     //# add input value to itsBuffer 
     void clearBuffer();            //# transfer from buffer to bins
     void autoDefineBins(); 
@@ -204,7 +204,7 @@ private:
     // Other internal helper function(s).
     // <group>
     void init();   
-    Fallible<T> getBinValue(const uInt index) const;  //# bin centre value
+    Fallible<T> getBinValue(const uint32_t index) const;  //# bin centre value
     // </group>
 
 };

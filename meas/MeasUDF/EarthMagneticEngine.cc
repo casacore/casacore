@@ -34,10 +34,10 @@ namespace casacore {
   EarthMagneticEngine::EarthMagneticEngine()
     : itsValueType       (0),
       itsToValueType     (0),
-      itsAsLOS           (False),
-      itsAsLong          (False),
-      itsUseModel        (False),
-      itsConvertModel    (False),
+      itsAsLOS           (false),
+      itsAsLong          (false),
+      itsUseModel        (false),
+      itsConvertModel    (false),
       itsEpochEngine     (0),
       itsPositionEngine  (0),
       itsDirectionEngine (0)
@@ -49,13 +49,13 @@ namespace casacore {
   {}
   
   void EarthMagneticEngine::handleEarthMagnetic (vector<TENShPtr>& args,
-                                                 uInt& argnr)
+                                                 uint32_t& argnr)
   {
     // Types are unknown.
     itsRefType    = MEarthMagnetic::ITRF;
     itsValueType  = 0;
-    uInt nargnr   = argnr+1;
-    Bool asScalar = False;
+    uint32_t nargnr   = argnr+1;
+    bool asScalar = false;
     if (! args[argnr]->isReal()) {
       throw AipsError ("Non-real EarthMagnetic values given in a MEAS "
                        "function");
@@ -69,13 +69,13 @@ namespace casacore {
         args[nargnr]->valueType() == TableExprNodeRep::VTScalar  &&
         args[nargnr+1]->isReal()  &&
         args[nargnr+1]->valueType() == TableExprNodeRep::VTScalar) {
-      asScalar = True;
+      asScalar = true;
       nargnr += 2;
     }
     // See if there is a reference type.
     if (args.size() > nargnr  &&
         args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      handleMeasType (args[nargnr], False);
+      handleMeasType (args[nargnr], false);
       if (itsRefType == MEarthMagnetic::IGRF) {
         throw AipsError ("The 'from' EarthMagnetic reference type given in "
                          "a MEAS function cannot be IGRF; "
@@ -126,7 +126,7 @@ namespace casacore {
     return type;
   }
   
-  void EarthMagneticEngine::deriveAttr (const Unit& unit, Int)
+  void EarthMagneticEngine::deriveAttr (const Unit& unit, int32_t)
   {
     // Check if the unit is length or angle.
     if (unit.empty()) {
@@ -146,7 +146,7 @@ namespace casacore {
     }
   }
 
-  void EarthMagneticEngine::setValueType (Int valueType)
+  void EarthMagneticEngine::setValueType (int32_t valueType)
   {
     itsValueType = valueType;
   }
@@ -191,7 +191,7 @@ namespace casacore {
                                           const TableExprId& id,
                                           Array<MEarthMagnetic>& earthMagnetics)
   {
-    Array<Double> values;
+    Array<double> values;
     values = operand.getArrayDouble(id);
     IPosition shape = values.shape();
     if (shape[0] % 3 != 0) {
@@ -212,10 +212,10 @@ namespace casacore {
     if (itsValueType == -3) {
       qh = Quantity(0, "nT");
     }
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    bool delIt;
+    const double* valVec = values.getStorage (delIt);
     MEarthMagnetic* emVec = earthMagnetics.data();
-    for (uInt i=0; i<earthMagnetics.size(); ++i) {
+    for (uint32_t i=0; i<earthMagnetics.size(); ++i) {
       q1.setValue (valVec[i*3]);
       q2.setValue (valVec[i*3+1]);
       qh.setValue (valVec[i*3+2]);
@@ -228,7 +228,7 @@ namespace casacore {
   {
     AlwaysAssert (itsEpochEngine == 0, AipsError);
     itsEpochEngine = &engine;
-    extendBase (engine, False);
+    extendBase (engine, false);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MEpoch());
   }
@@ -237,7 +237,7 @@ namespace casacore {
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
   }
@@ -246,14 +246,14 @@ namespace casacore {
   {
     AlwaysAssert (itsDirectionEngine == 0, AipsError);
     itsDirectionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MDirection());
   }
 
   void EarthMagneticEngine::set (MEarthMagnetic::Types toRefType,
-                                 Int toValueType,
-                                 Bool asLOS, Bool asLong, Bool useModel)
+                                 int32_t toValueType,
+                                 bool asLOS, bool asLong, bool useModel)
   {
     itsToValueType = toValueType;
     itsAsLOS       = asLOS;
@@ -262,7 +262,7 @@ namespace casacore {
     if (itsUseModel  &&  !itsAsLOS  &&  !itsAsLong  && 
         toRefType != MEarthMagnetic::ITRF) {
       // A model result needs to be converted from ITRF to another frame.
-      itsConvertModel = True;
+      itsConvertModel = true;
     }
     // Determine the output unit, shape, and ndim.
     itsOutUnit = "nT";
@@ -289,12 +289,12 @@ namespace casacore {
     return earthMagnetics;
   }
 
-  Array<Double> EarthMagneticEngine::getHeights (const TableExprId& id)
+  Array<double> EarthMagneticEngine::getHeights (const TableExprId& id)
   {
     return itsExprNode.getDoubleAS(id).array();
   }
 
-  Array<Double> EarthMagneticEngine::getArrayDouble (const TableExprId& id)
+  Array<double> EarthMagneticEngine::getArrayDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     // Get epochs and positions if given.
@@ -310,10 +310,10 @@ namespace casacore {
     IPosition vshape;
     Array<MEarthMagnetic> ems;
     Array<MDirection>     dirs;
-    Array<Double>         heights;
+    Array<double>         heights;
     const MEarthMagnetic* ePtr = 0;
     const MDirection*     dPtr = 0;
-    const Double*         hPtr = 0;
+    const double*         hPtr = 0;
     size_t nval1 = 1;
     size_t nval2 = 1;
     if (itsUseModel) {
@@ -336,7 +336,7 @@ namespace casacore {
       cout<<"ems="<<ems<<endl;
     }
     // Convert the earthMagnetic to the given type for all values.
-    Array<Double> out;
+    Array<double> out;
     if (nval1==0 || nval2==0 || eps.empty() || pos.empty()) {
       return out;
     }

@@ -99,7 +99,7 @@ class Time {
      //  <li>  year. Beware, because '94' refers to the early Christian era, not
      // the 20th century.
      // </ul>
-   Time (uInt year, uInt month, uInt day, uInt hour=0, uInt min=0, 
+   Time (uint32_t year, uint32_t month, uint32_t day, uint32_t hour=0, uint32_t min=0, 
          double sec=0.0);
 
      // Copy constructor
@@ -116,38 +116,38 @@ class Time {
    double operator - (const Time& begin);
    Time operator + (const double plus);
 
-   Bool operator == (const Time& other) const;
-   Bool operator != (const Time& other) const;
-   Bool operator > (const Time& other) const;
-   Bool operator < (const Time& other) const;
+   bool operator == (const Time& other) const;
+   bool operator != (const Time& other) const;
+   bool operator > (const Time& other) const;
+   bool operator < (const Time& other) const;
 
-    // if iso is True, then use ISO 8601 format
+    // if iso is true, then use ISO 8601 format
     // otherwise, produce the string of the form
     // Tue Mar 22 16:40:24 1994
     // with GMT time
-  String toString(const Bool iso=False) const;
+  String toString(const bool iso=false) const;
 
     // returns a String in ISO 8601 format YYYY-MM-DDTHH:MM:SS in GMT
     // note: for dates beyond year 9999, use more digits for year
   const String ISODate() const
-    { return toString(True); }
+    { return toString(true); }
 
     // write the current time, GMT, in format
     //        Tue Mar 22 16:40:24 1994
   friend ostream& operator<<(ostream& out, const Time& other)
   {
-    out << other.toString(False);
+    out << other.toString(false);
     return out;
   }
 
      // read in date, which must be in the following format
      //     month/day/year,hour:min:sec
-     // where month,day,year,hour,min and sec are uInt.
+     // where month,day,year,hour,min and sec are uint32_t.
    friend istream& operator >> (istream&, Time&);
 
      // reset date to the present instant
    void now ();
-   void setDate  (uInt year, uInt month, uInt day, uInt hour=0, uInt min=0, 
+   void setDate  (uint32_t year, uint32_t month, uint32_t day, uint32_t hour=0, uint32_t min=0, 
                 double sec=0.0);
 
      // number of seconds which have elapsed since Time object was created
@@ -156,36 +156,36 @@ class Time {
 
    // Return the seconds, minutes or hour part of the time.
    // <group>
-   uInt seconds ();
+   uint32_t seconds ();
    double dseconds ();
-   uInt minutes ();
-   uInt hours ();
+   uint32_t minutes ();
+   uint32_t hours ();
    // </group>
 
-   uInt dayOfMonth ();
-   uInt month ();
+   uint32_t dayOfMonth ();
+   uint32_t month ();
 
-   uInt year ();
+   uint32_t year ();
 
-   uInt dayOfWeek ();
+   uint32_t dayOfWeek ();
 
 
-   uInt dayOfYear ();
+   uint32_t dayOfYear ();
 
-   static uInt howManyDaysInMonth ();
+   static uint32_t howManyDaysInMonth ();
 
-   static uInt howManyDaysInMonth (uInt month,uInt year);
+   static uint32_t howManyDaysInMonth (uint32_t month,uint32_t year);
 
-   static Bool isLeapYear ();
+   static bool isLeapYear ();
 
-   static Bool isLeapYear (uInt year);
+   static bool isLeapYear (uint32_t year);
 
      // Returns the difference, in seconds, between UTC and local time.
      // Negative values are west of GMT, positive are east.
-   static Int timeZoneSeconds ();
+   static int32_t timeZoneSeconds ();
      // Same as timeZoneSeconds(), but returns fractional days rather
      // than seconds.
-   static Double timeZoneDays ();
+   static double timeZoneDays ();
      // Returns a string, e.g. "EST" or "MDT", describing the current
      // local time zone.
    static String timeZoneName ();
@@ -194,7 +194,7 @@ class Time {
 
      // Modified Julian day number
      // 40587 modified Julian day number = 00:00:00 January 1, 1970, GMT.
-   uInt mJulianDay;
+   uint32_t mJulianDay;
      // the fraction of the day
    double mJulianDayfrac;
 
@@ -404,7 +404,7 @@ class Time {
 //# <code>
 //#
 //# Time t;
-//# uInt month=1,month2=2,year=1992;
+//# uint32_t month=1,month2=2,year=1992;
 //#
 //# cout<<"how many days are in this month "<< howManyDaysInMonth() <<"\n"
 //# cout<<"how many days are in January "<< howManyDaysInMonth(month) <<"\n";
@@ -413,8 +413,8 @@ class Time {
 //#
 //# </code>
 //#
-//# The function isLeapYear() return bool value. True if is a leap year
-//# and False in other case.
+//# The function isLeapYear() return bool value. true if is a leap year
+//# and false in other case.
 //#
 //# The function is invoked looks as follows
 //#
@@ -422,7 +422,7 @@ class Time {
 //#
 //# Time t;
 //#
-//# uInt year=1992;
+//# uint32_t year=1992;
 //#
 //# if(isLeapYear(year))
 //#   cout<<"Is a leap year";

@@ -82,9 +82,9 @@ public:
     // Construct from the Vector's defining the bottom-left and
     // top-right corner of the box.
     // <group>
-    LCBox (const Vector<Float>& blc, const Vector<Float>& trc,
+    LCBox (const Vector<float>& blc, const Vector<float>& trc,
 	   const IPosition& latticeShape);
-    LCBox (const Vector<Double>& blc, const Vector<Double>& trc,
+    LCBox (const Vector<double>& blc, const Vector<double>& trc,
 	   const IPosition& latticeShape);
     // </group>
 
@@ -98,7 +98,7 @@ public:
 
     // Comparison.  Mask not checked. Use function 
     // LRegionSingle::maskEqual  to do this
-    virtual Bool operator== (const LCRegion& other) const;
+    virtual bool operator== (const LCRegion& other) const;
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -117,16 +117,16 @@ public:
 			      const String& tablename);
 
     // Get the box blc
-    Vector<Float> blc() const;
+    Vector<float> blc() const;
 
     // Get the box trc
-    Vector<Float> trc() const;
+    Vector<float> trc() const;
 
 // Verify a box specification.  Illegal (inlcuding blc > trc) or
 // unspecified values are  given 0 (blc) shape (trc) or
-// unity (inc).  Returns <src>True</src> if any of the blc/trc/inc 
-// are changed from their input values, else returns <src>False</src>
-   static Bool verify (IPosition& blc, IPosition& trc,
+// unity (inc).  Returns <src>true</src> if any of the blc/trc/inc 
+// are changed from their input values, else returns <src>false</src>
+   static bool verify (IPosition& blc, IPosition& trc,
                        IPosition& inc, const IPosition& shape);
 
 
@@ -134,7 +134,7 @@ protected:
     // Construct another LCBox (for e.g. another lattice) by moving
     // this one. It recalculates the bounding box.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
 private:
@@ -147,16 +147,16 @@ private:
 
 
     //# Variables
-    Vector<Float> itsBlc;
-    Vector<Float> itsTrc;
+    Vector<float> itsBlc;
+    Vector<float> itsTrc;
 };
 
 
-inline Vector<Float> LCBox::blc() const
+inline Vector<float> LCBox::blc() const
 {
     return itsBlc;
 }
-inline Vector<Float> LCBox::trc() const
+inline Vector<float> LCBox::trc() const
 {
     return itsTrc;
 }

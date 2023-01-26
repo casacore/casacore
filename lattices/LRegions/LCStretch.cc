@@ -40,13 +40,13 @@ LCStretch::LCStretch()
 LCStretch::LCStretch (const LCRegion& region,
 		      const IPosition& stretchAxes,
 		      const LCBox& stretchBox)
-: LCRegionMulti (True, region.cloneRegion())
+: LCRegionMulti (true, region.cloneRegion())
 {
     // Fill the other members variables and determine the bounding box.
     fill (stretchAxes, stretchBox);
 }
 
-LCStretch::LCStretch (Bool takeOver,
+LCStretch::LCStretch (bool takeOver,
 		      const LCRegion* region,
 		      const IPosition& stretchAxes,
 		      const LCBox& stretchBox)
@@ -76,20 +76,20 @@ LCStretch& LCStretch::operator= (const LCStretch& other)
     return *this;
 }
 
-Bool LCStretch::operator== (const LCRegion& other) const
+bool LCStretch::operator== (const LCRegion& other) const
 {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionMulti::operator== (other)) {
-	return False;
+	return false;
     }
     const LCStretch& that = (const LCStretch&)other;
     // Check the private data
     if (! itsStretchAxes.isEqual (that.itsStretchAxes)
     ||  !(itsStretchBox == that.itsStretchBox)) {
-	return False;
+	return false;
     }
-    return True;
+    return true;
 }
  
 
@@ -98,17 +98,17 @@ LCRegion* LCStretch::cloneRegion() const
     return new LCStretch (*this);
 }
 
-LCRegion* LCStretch::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCStretch::doTranslate (const Vector<float>& translateVector,
 				  const IPosition& newLatticeShape) const
 {
-    uInt i;
+    uint32_t i;
     // First translate the stretchBox.
     // Take appropriate elements from the vectors.
-    uInt nre = itsStretchAxes.nelements();
-    Vector<Float> boxTransVec (nre);
+    uint32_t nre = itsStretchAxes.nelements();
+    Vector<float> boxTransVec (nre);
     IPosition boxLatShape (nre);
     for (i=0; i<nre; i++) {
-	uInt axis = itsStretchAxes(i);
+	uint32_t axis = itsStretchAxes(i);
 	boxTransVec(i) = translateVector(axis);
 	boxLatShape(i) = newLatticeShape(axis);
     }
@@ -151,8 +151,8 @@ LCStretch* LCStretch::fromRecord (const TableRecord& rec,
     regPtr = LCRegion::fromRecord (rec.asRecord("region"), tableName);
     LCBox* boxPtr = 0;
     boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"), tableName));
-    LCStretch* extPtr = new LCStretch (True, regPtr,
-				       Vector<Int>(rec.toArrayInt ("axes")),
+    LCStretch* extPtr = new LCStretch (true, regPtr,
+				       Vector<int32_t>(rec.toArrayInt ("axes")),
 				       *boxPtr);
     delete boxPtr;
     return extPtr;
@@ -164,8 +164,8 @@ void LCStretch::fill (const IPosition& stretchAxes, const LCBox& stretchBox)
     // They do not need to be in ascending order, but duplicates are
     // not allowed. 
     IPosition regionShape = region().shape();
-    uInt nrdim = regionShape.nelements();
-    uInt nrs = stretchAxes.nelements();
+    uint32_t nrdim = regionShape.nelements();
+    uint32_t nrs = stretchAxes.nelements();
     if (nrs == 0) {
 	throw (AipsError ("LCStretch::LCStretch - "
 			  "no stretch axes have been specified"));
@@ -177,18 +177,18 @@ void LCStretch::fill (const IPosition& stretchAxes, const LCBox& stretchBox)
     }
     itsStretchAxes.resize (nrs);
     IPosition boxLatShape(nrs);
-    Vector<Float> boxLatBlc(nrs);
-    Vector<Float> boxLatTrc(nrs);
-    Vector<uInt> reginx(nrs);
-    GenSortIndirect<ssize_t,uInt>::sort (reginx, stretchAxes.storage(), nrs);
-    Int first = -1;
-    for (uInt i=0; i<nrs; i++) {
-        uInt axis = reginx(i);
+    Vector<float> boxLatBlc(nrs);
+    Vector<float> boxLatTrc(nrs);
+    Vector<uint32_t> reginx(nrs);
+    GenSortIndirect<ssize_t,uint32_t>::sort (reginx, stretchAxes.storage(), nrs);
+    int32_t first = -1;
+    for (uint32_t i=0; i<nrs; i++) {
+        uint32_t axis = reginx(i);
 	itsStretchAxes(i) = stretchAxes(axis);
 	boxLatShape(i) = stretchBox.latticeShape()(axis);
 	boxLatBlc(i) = stretchBox.blc()(axis);
 	boxLatTrc(i) = stretchBox.trc()(axis);
-	if (itsStretchAxes(i) <= first  ||  itsStretchAxes(i) >= Int(nrdim)) {
+	if (itsStretchAxes(i) <= first  ||  itsStretchAxes(i) >= int32_t(nrdim)) {
 	    throw (AipsError ("LCStretch::LCStretch - "
 			      "stretch axes multiply specified "
 			      "or exceed nrdim"));
@@ -208,8 +208,8 @@ void LCStretch::fill (const IPosition& stretchAxes, const LCBox& stretchBox)
     const IPosition& boxShp = itsStretchBox.latticeShape();
     const IPosition& boxBlc = itsStretchBox.boundingBox().start();
     const IPosition& boxTrc = itsStretchBox.boundingBox().end();
-    for (uInt i=0; i<nrs; i++) {
-        uInt axis = itsStretchAxes(i);
+    for (uint32_t i=0; i<nrs; i++) {
+        uint32_t axis = itsStretchAxes(i);
 	latShape(axis) = boxShp(i);
 	blc(axis) = boxBlc(i);
 	trc(axis) = boxTrc(i);
@@ -219,7 +219,7 @@ void LCStretch::fill (const IPosition& stretchAxes, const LCBox& stretchBox)
 }
 
 
-void LCStretch::multiGetSlice (Array<Bool>& buffer,
+void LCStretch::multiGetSlice (Array<bool>& buffer,
 			       const Slicer& section)
 {
     buffer.resize (section.length());
@@ -228,14 +228,14 @@ void LCStretch::multiGetSlice (Array<Bool>& buffer,
     IPosition blc(section.start());
     IPosition len(section.length());
     IPosition inc(section.stride());
-    uInt nrs = itsStretchAxes.nelements();
-    for (uInt i=0; i<nrs; i++) {
-        uInt axis = itsStretchAxes(i);
+    uint32_t nrs = itsStretchAxes.nelements();
+    for (uint32_t i=0; i<nrs; i++) {
+        uint32_t axis = itsStretchAxes(i);
 	blc(axis) = 0;
 	len(axis) = 1;
 	inc(axis) = 1;
     }
-    Array<Bool> tmpbuf(len);
+    Array<bool> tmpbuf(len);
     LCRegion* reg = (LCRegion*)(regions()[0]);
     reg->doGetSlice (tmpbuf, Slicer(blc, len, inc));
     // Now we have to stretch tmpbuf along all stretch axes.
@@ -244,13 +244,13 @@ void LCStretch::multiGetSlice (Array<Bool>& buffer,
     IPosition end (buffer.shape() - 1);
     //# Iterate along itsStretchAxes through the new mask.
     for (;;) {
-	for (uInt i=0; i<nrs; i++) {
+	for (uint32_t i=0; i<nrs; i++) {
 	    end(itsStretchAxes(i)) = pos(itsStretchAxes(i));
 	}
 	//# Set each section of the mask to the mask of the region.
 	buffer(pos,end) = tmpbuf;
 	//# Go to the next section.
-	uInt dim;
+	uint32_t dim;
 	for (dim=0; dim<nrs; dim++) {
 	    if (++pos(itsStretchAxes(dim)) < length(itsStretchAxes(dim))) {
 		break;
@@ -265,9 +265,9 @@ void LCStretch::multiGetSlice (Array<Bool>& buffer,
     }
 }
 
-IPosition LCStretch::doNiceCursorShape (uInt maxPixels) const
+IPosition LCStretch::doNiceCursorShape (uint32_t maxPixels) const
 {
-    return Lattice<Bool>::doNiceCursorShape (maxPixels);
+    return Lattice<bool>::doNiceCursorShape (maxPixels);
 }
 
 } //# NAMESPACE CASACORE - END

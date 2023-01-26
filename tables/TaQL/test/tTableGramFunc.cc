@@ -47,7 +47,7 @@
 int ntest=0;
 
 
-int checkScaBool (const String& func, const String& arg, Bool expResult)
+int checkScaBool (const String& func, const String& arg, bool expResult)
 {
   ntest++;
   String comm = "using style python calc " + func + '(' + arg + ')';
@@ -56,7 +56,7 @@ int checkScaBool (const String& func, const String& arg, Bool expResult)
     TableExprNode node = result.node();
     if (node.dataType() != TpBool) {
       cout << "Bool error in evaluating: " + comm << endl;
-      cout << " expected data type Bool, found "
+      cout << " expected data type bool, found "
            << ValType::getTypeStr(node.dataType()) << endl;
       return 1;
     }
@@ -75,7 +75,7 @@ int checkScaBool (const String& func, const String& arg, Bool expResult)
   return 0;
 }
 
-int checkScaInt (const String& func, const String& arg, Int expResult)
+int checkScaInt (const String& func, const String& arg, int32_t expResult)
 {
   ntest++;
   String comm = "using style python calc " + func + '(' + arg + ')';
@@ -84,7 +84,7 @@ int checkScaInt (const String& func, const String& arg, Int expResult)
     TableExprNode node = result.node();
     if (node.dataType() != TpInt64) {
       cout << "Int error in evaluating: " + comm << endl;
-      cout << " expected data type Int, found "
+      cout << " expected data type int32_t, found "
            << ValType::getTypeStr(node.dataType()) << endl;
       return 1;
     }
@@ -103,7 +103,7 @@ int checkScaInt (const String& func, const String& arg, Int expResult)
   return 0;
 }
 
-int checkScaDouble (const String& func, const String& arg, Double expResult,
+int checkScaDouble (const String& func, const String& arg, double expResult,
                     const String& unit = String(), double tol=1e-5)
 {
   ntest++;
@@ -113,7 +113,7 @@ int checkScaDouble (const String& func, const String& arg, Double expResult,
     TableExprNode node = result.node();
     if (node.dataType() != TpDouble) {
       cout << "Double error in evaluating: " + comm << endl;
-      cout << " expected data type Double, found "
+      cout << " expected data type double, found "
            << ValType::getTypeStr(node.dataType()) << endl;
       return 1;
     }
@@ -229,7 +229,7 @@ int checkArrBool (const String& func, const String& arg, const String& expResult
     TableExprNode node2 = result2.node();
     if (node1.dataType() != TpBool) {
       cout << "Bool Array error in evaluating: " + comm1 << endl;
-      cout << " expected data type Bool, found "
+      cout << " expected data type bool, found "
            << ValType::getTypeStr(node1.dataType()) << endl;
       return 1;
     }
@@ -259,7 +259,7 @@ int checkArrInt (const String& func, const String& arg, const String& expResult)
     TableExprNode node2 = result2.node();
     if (node1.dataType() != TpInt64) {
       cout << "Int Array error in evaluating: " + comm1 << endl;
-      cout << " expected data type Int, found "
+      cout << " expected data type int32_t, found "
            << ValType::getTypeStr(node1.dataType()) << endl;
       return 1;
     }
@@ -289,7 +289,7 @@ int checkArrDouble (const String& func, const String& arg, const String& expResu
     TableExprNode node2 = result2.node();
     if (node1.dataType() != TpDouble) {
       cout << "Double Array error in evaluating: " + comm1 << endl;
-      cout << " expected data type Double, found "
+      cout << " expected data type double, found "
            << ValType::getTypeStr(node1.dataType()) << endl;
       return 1;
     }
@@ -445,54 +445,54 @@ int checkExcp (const String& func, const String& arg,
 
 int testScaBool()
 {
-  cout<<"  testing scalar Bool functions ..."<<endl;
+  cout<<"  testing scalar bool functions ..."<<endl;
   int nfail = 0;
-  nfail += checkScaBool ("near", "2., 2.0000001, 1e-5", True);
-  nfail += checkScaBool ("near", "2., 2.0000001", False);
-  nfail += checkScaBool ("near", "2+3i, 2.0000001+3i", False);
-  nfail += checkScaBool ("near", "2+3i, 2+3.0000001i", False);
-  nfail += checkScaBool ("near", "2+3i, 2.0000001+3.0000001i, 1e-5", True);
-  nfail += checkScaBool ("near", "2, 2+3i", False);
-  nfail += checkScaBool ("nearAbs", "2, 3", False);
-  nfail += checkScaBool ("nearAbs", "2, 3, 2", True);
-  nfail += checkScaBool ("nearAbs", "2+3i, 2.0000001+3.0000001i", False);
-  nfail += checkScaBool ("nearAbs", "2+3i, 2.0000001+3.0000001i, 1e-5", True);
-  nfail += checkScaBool ("isnan", "2", False);
-  nfail += checkScaBool ("isnan", "0/0", True);
-  nfail += checkScaBool ("isinf", "2", False);
-  nfail += checkScaBool ("isinf", "2/0", True);
-  nfail += checkScaBool ("isfinite", "2", True);
-  nfail += checkScaBool ("isnan", "2.", False);
-  nfail += checkScaBool ("isinf", "2.", False);
-  nfail += checkScaBool ("isfinite", "2.", True);
-  nfail += checkScaBool ("isfinite", "2./0", False);
-  nfail += checkScaBool ("isnan", "2i", False);
-  nfail += checkScaBool ("isinf", "2i", False);
-  nfail += checkScaBool ("isfinite", "2j", True);
-  nfail += checkScaBool ("isfinite", "0j/0", False);
-  nfail += checkScaBool ("isnull", "nullarray(1)", True);
-  nfail += checkScaBool ("isnull", "array(1, [0])", False);
-  nfail += checkScaBool ("iif", "T,F,T", False);
-  nfail += checkScaBool ("iif", "F,F,T", True);
-  nfail += checkScaBool ("bool", "F", False);
-  nfail += checkScaBool ("bool", "T", True);
-  nfail += checkScaBool ("bool", "0", False);
-  nfail += checkScaBool ("bool", "-1", True);
-  nfail += checkScaBool ("bool", "0.", False);
-  nfail += checkScaBool ("bool", "2.5", True);
-  nfail += checkScaBool ("bool", "0+0i", False);
-  nfail += checkScaBool ("bool", "2.5+1j", True);
-  nfail += checkScaBool ("bool", "date()", True);
-  nfail += checkScaBool ("bool", "' F '", False);
-  nfail += checkScaBool ("bool", "'y'", True);
-  nfail += checkScaBool ("bool", "'0'", False);
-  nfail += checkScaBool ("bool", "'-1'", True);
+  nfail += checkScaBool ("near", "2., 2.0000001, 1e-5", true);
+  nfail += checkScaBool ("near", "2., 2.0000001", false);
+  nfail += checkScaBool ("near", "2+3i, 2.0000001+3i", false);
+  nfail += checkScaBool ("near", "2+3i, 2+3.0000001i", false);
+  nfail += checkScaBool ("near", "2+3i, 2.0000001+3.0000001i, 1e-5", true);
+  nfail += checkScaBool ("near", "2, 2+3i", false);
+  nfail += checkScaBool ("nearAbs", "2, 3", false);
+  nfail += checkScaBool ("nearAbs", "2, 3, 2", true);
+  nfail += checkScaBool ("nearAbs", "2+3i, 2.0000001+3.0000001i", false);
+  nfail += checkScaBool ("nearAbs", "2+3i, 2.0000001+3.0000001i, 1e-5", true);
+  nfail += checkScaBool ("isnan", "2", false);
+  nfail += checkScaBool ("isnan", "0/0", true);
+  nfail += checkScaBool ("isinf", "2", false);
+  nfail += checkScaBool ("isinf", "2/0", true);
+  nfail += checkScaBool ("isfinite", "2", true);
+  nfail += checkScaBool ("isnan", "2.", false);
+  nfail += checkScaBool ("isinf", "2.", false);
+  nfail += checkScaBool ("isfinite", "2.", true);
+  nfail += checkScaBool ("isfinite", "2./0", false);
+  nfail += checkScaBool ("isnan", "2i", false);
+  nfail += checkScaBool ("isinf", "2i", false);
+  nfail += checkScaBool ("isfinite", "2j", true);
+  nfail += checkScaBool ("isfinite", "0j/0", false);
+  nfail += checkScaBool ("isnull", "nullarray(1)", true);
+  nfail += checkScaBool ("isnull", "array(1, [0])", false);
+  nfail += checkScaBool ("iif", "T,F,T", false);
+  nfail += checkScaBool ("iif", "F,F,T", true);
+  nfail += checkScaBool ("bool", "F", false);
+  nfail += checkScaBool ("bool", "T", true);
+  nfail += checkScaBool ("bool", "0", false);
+  nfail += checkScaBool ("bool", "-1", true);
+  nfail += checkScaBool ("bool", "0.", false);
+  nfail += checkScaBool ("bool", "2.5", true);
+  nfail += checkScaBool ("bool", "0+0i", false);
+  nfail += checkScaBool ("bool", "2.5+1j", true);
+  nfail += checkScaBool ("bool", "date()", true);
+  nfail += checkScaBool ("bool", "' F '", false);
+  nfail += checkScaBool ("bool", "'y'", true);
+  nfail += checkScaBool ("bool", "'0'", false);
+  nfail += checkScaBool ("bool", "'-1'", true);
   return nfail;
 }
 
 int testScaInt()
 {
-  cout<<"  testing scalar Int functions ..."<<endl;
+  cout<<"  testing scalar int32_t functions ..."<<endl;
   int nfail = 0;
   nfail += checkScaInt ("sqr", "4", 16);
   nfail += checkScaInt ("cube", "4", 64);
@@ -536,7 +536,7 @@ int testScaInt()
 
 int testScaDouble()
 {
-  cout<<"  testing scalar Double functions ..."<<endl;
+  cout<<"  testing scalar double functions ..."<<endl;
   int nfail = 0;
   nfail += checkScaDouble ("pi", "", C::pi);
   nfail += checkScaDouble ("e", "", C::e);
@@ -755,12 +755,12 @@ int testRegex()
 {
   cout<<"  testing Regex functions ..."<<endl;
   int nfail = 0;
-  nfail += checkScaBool ("'abcde' = pattern", "'ab*'", True);
-  nfail += checkScaBool ("'fabcde' = pattern", "'ab*'", False);
-  nfail += checkScaBool ("'abcde' = regex", "'ab*'", False);
-  nfail += checkScaBool ("'abcde' = regex", "'ab.*'", True);
-  nfail += checkScaBool ("'abcde' = sqlpattern", "'ab%'", True);
-  nfail += checkScaBool ("'fabcde' = sqlpattern", "'ab%'", False);
+  nfail += checkScaBool ("'abcde' = pattern", "'ab*'", true);
+  nfail += checkScaBool ("'fabcde' = pattern", "'ab*'", false);
+  nfail += checkScaBool ("'abcde' = regex", "'ab*'", false);
+  nfail += checkScaBool ("'abcde' = regex", "'ab.*'", true);
+  nfail += checkScaBool ("'abcde' = sqlpattern", "'ab%'", true);
+  nfail += checkScaBool ("'fabcde' = sqlpattern", "'ab%'", false);
   nfail += checkScaString ("replace", "'', pattern('*'), 'b'", "");
   nfail += checkScaString ("replace", "'a123ab', pattern('*'), 'xyz'", "xyz");
   nfail += checkScaString ("replace", "'a123ab', pattern('a'), '..'", "..123..b");
@@ -774,15 +774,15 @@ int testCone()
   int nfail = 0;
   // Note angdist 1,2 to 1.1,2.1 is 0.1100137372 rad
   // Note angdist 1,2 to 0.9,1.9 is 0.1065205744 rad
-  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1,0.11]", False);
-  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1], 0.110014", True);
+  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1,0.11]", false);
+  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1], 0.110014", true);
   nfail += checkScaInt ("findcone", "[1,2], [1.1,2.1,0.11]", -1);
   nfail += checkScaInt ("findcone", "[1,2], [1.1,2.1], 0.110014", 0);
-  nfail += checkScaBool ("cones", "[1,2], [1.1,2.1,0.11]", False);
-  nfail += checkScaBool ("cones", "[1,2], [1.1,2.1], 0.110014", True);
-  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1,0.11, 1.1,2.1,0.12]", True);
-  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1],[0.11,0.12]", True);
-  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1],[0.11,0.10]", False);
+  nfail += checkScaBool ("cones", "[1,2], [1.1,2.1,0.11]", false);
+  nfail += checkScaBool ("cones", "[1,2], [1.1,2.1], 0.110014", true);
+  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1,0.11, 1.1,2.1,0.12]", true);
+  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1],[0.11,0.12]", true);
+  nfail += checkScaBool ("anycone", "[1,2], [1.1,2.1],[0.11,0.10]", false);
   nfail += checkScaInt ("findcone", "[1,2], [1.1,2.1,0.11, 1.1,2.1,0.12]", 1);
   nfail += checkScaInt ("findcone", "[1,2], [1.1,2.1, 0.9,1.9], [0.11,0.12]", 1);
   nfail += checkArrInt ("findcone", "[1,2,3,4], [1.1,2.1, 0.9,1.9], [0.11,0.12]", "[1,-1]");
@@ -795,7 +795,7 @@ int testCone()
 
 int testArrBool()
 {
-  cout<<"  testing array Bool functions ..."<<endl;
+  cout<<"  testing array bool functions ..."<<endl;
   int nfail = 0;
   nfail += checkArrBool ("near", "-1., [3., -1.]", "[F,T]");
   nfail += checkArrBool ("near", "[1.,-1], 1.", "[T,F]");
@@ -832,7 +832,7 @@ int testArrBool()
 
 int testArrInt()
 {
-  cout<<"  testing array Int functions ..."<<endl;
+  cout<<"  testing array int32_t functions ..."<<endl;
   int nfail = 0;
   nfail += checkArrInt2 ("min", "-1", "3", "1");
   nfail += checkArrInt2 ("max", "-1", "3", "1");
@@ -861,7 +861,7 @@ int testArrInt()
 
 int testArrDouble()
 {
-  cout<<"  testing array Double functions ..."<<endl;
+  cout<<"  testing array double functions ..."<<endl;
   int nfail = 0;
   nfail += checkArrDouble1 ("sin", "1.1rad", "34deg");
   nfail += checkArrDouble1 ("cos", "1.1rad", "34deg");
@@ -960,8 +960,8 @@ int testMaskedArr()
                         "[[-1,-2,-3],[-4,-5,-6]]");
   // Check with a scalar argument.
   nfail += checkArrInt ("arraydata", "1", "[1]");
-  nfail += checkArrInt ("arraydata", "marray(1, True)", "[1]");
-  nfail += checkArrBool ("arraymask", "marray(1, True)", "[T]");
+  nfail += checkArrInt ("arraydata", "marray(1, true)", "[1]");
+  nfail += checkArrBool ("arraymask", "marray(1, true)", "[T]");
   nfail += checkArrBool ("arraymask", "1", "[F]");
   nfail += checkArrBool ("arraymask", "negatemask(1)", "[T]");
   nfail += checkArrInt ("arraydata", "replacemasked(1, 2)", "[1]");
@@ -1268,7 +1268,7 @@ int testInvScaArg()
   nfail += checkExcp ("near", "F,T", "- invalid operand data type");
   nfail += checkExcp ("near", "'4', '5'", "- invalid operand data type");
   nfail += checkExcp ("near", "date(), date()", "- invalid operand data type");
-  nfail += checkExcp ("nearAbs", "True,False", "- invalid operand data type");
+  nfail += checkExcp ("nearAbs", "True,false", "- invalid operand data type");
   nfail += checkExcp ("nearAbs", "'4', '5'", "- invalid operand data type");
   nfail += checkExcp ("nearAbs", "date(), date()", "- invalid operand data type");
   nfail += checkExcp ("sin", "T", "- invalid operand data type");

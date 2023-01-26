@@ -64,7 +64,7 @@ class RecordInterface;
 // to parse input that is beyond the programs control e.g. user input from
 // glish or Table records that may have been generated elsewhere. Hence
 // exceptions should not thrown be thrown by these functions. Instead the
-// function should return False and append an error message to the supplied
+// function should return false and append an error message to the supplied
 // String when the transformation cannot be accomplished.
 //
 // <note role=warning>
@@ -111,25 +111,25 @@ public:
   // already contain fields and these fields may be silently overridden. New
   // fields may be added to the input Record. If the transformation succeeds
   // then the error String is unchanged and the function returns
-  // True. Otherwise the function returns False and appends an error message to
+  // true. Otherwise the function returns false and appends an error message to
   // the supplied String giving the reason why the conversion failed.
-  virtual Bool toRecord(String & error, RecordInterface & outRecord) const = 0;
+  virtual bool toRecord(String & error, RecordInterface & outRecord) const = 0;
 
   // Initialise the class from a Record representation. The input record should
   // contain the fields that are required by the class. Other fields will be
   // ignored. If the transformation succeeds then the error String is unchanged
-  // and the function returns True. Otherwise the function returns False and
+  // and the function returns true. Otherwise the function returns false and
   // appends an error message to the supplied String giving the reason why the
   // conversion failed.
-  virtual Bool fromRecord(String & error, const RecordInterface & inRecord) =0;
+  virtual bool fromRecord(String & error, const RecordInterface & inRecord) =0;
 
   // Initialise the class from a String representation. A string cannot
   // contain enough information for many objects. Hence the default
-  // implementation of this class returns False, indicating that the class
+  // implementation of this class returns false, indicating that the class
   // could not be initialised and an error message is appended to the supplied
   // string. If the class can be initialised from a string then this function
   // should be overridden.
-  virtual Bool fromString(String & error, const String & inString);
+  virtual bool fromString(String & error, const String & inString);
 
   // Specify the identification of the record (e.g. 'meas', 'quant'). The
   // default implementation returns a empty string.

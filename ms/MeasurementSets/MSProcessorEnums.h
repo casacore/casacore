@@ -63,16 +63,16 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Row flag <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // Processor mode id <BR>
-    // Int
+    // int32_t
     MODE_ID,
     // The Processor type <BR>
     // String
     TYPE,
     // Processor type id - points to subtype_type subtable <BR>
-    // Int
+    // int32_t
     TYPE_ID,
     // Processor sub type <BR>
     // String
@@ -80,7 +80,7 @@ public:
     // Number of required columns <BR>
     NUMBER_REQUIRED_COLUMNS=SUB_TYPE,
     // Processor pass number <BR>
-    // Int
+    // int32_t
     PASS_ID,
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=PASS_ID

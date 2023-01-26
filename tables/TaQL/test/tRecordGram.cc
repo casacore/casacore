@@ -47,14 +47,14 @@ void doIt()
 {
   // Check if it handles a normal record field.
   TableRecord rec;
-  rec.define ("fld1", Int(1));
+  rec.define ("fld1", int32_t(1));
   TableExprNode expr (RecordGram::parse(rec, "fld1 == 1."));
-  Bool result;
+  bool result;
   expr.get (rec, result);
   AlwaysAssertExit (result);
   // Check if it can also handle a record where fld1 is e.g. a float.
   rec.removeField ("fld1");
-  rec.define ("fld1", Float(2));
+  rec.define ("fld1", float(2));
   expr.get (rec, result);
   AlwaysAssertExit (!result);
 
@@ -75,7 +75,7 @@ void doIt()
 					 "sub1.sub2.fld1 == 1 && fld1 > 1"));
   expr3.get (rec, result);
   AlwaysAssertExit (result);
-  rec.define ("fld1", Float(1));
+  rec.define ("fld1", float(1));
   expr3.get (rec, result);
   AlwaysAssertExit (!result);
 
@@ -93,12 +93,12 @@ void doIt()
   expr4a.get (rect, result);
   AlwaysAssertExit (!result);
   // Still undefined.
-  rect.define ("fld2", True);
+  rect.define ("fld2", true);
   rect.defineRecord ("sub1", subrect1);
   expr4a.get (rect, result);
   AlwaysAssertExit (!result);
   // Still undefined because field has incorrect type.
-  subrect2.define ("fld1", True);
+  subrect2.define ("fld1", true);
   subrect1.defineRecord ("sub2", subrect2);
   rect.defineRecord ("sub1", subrect1);
   expr4a.get (rect, result);
@@ -125,7 +125,7 @@ void doIt()
   AlwaysAssertExit (result);
 
   // Check if array fields are handled correctly.
-  Array<Int> arr(IPosition(3,6,8,12));
+  Array<int32_t> arr(IPosition(3,6,8,12));
   indgen (arr);
   rec.define ("arr1", arr);
   TableExprNode expr6a (RecordGram::parse (rec, "max (arr1) > 6*8*12"));
@@ -181,12 +181,12 @@ void doIt()
 
   // Check if rownumber is indeed an invalid function.
   {
-    Bool err = False;
+    bool err = false;
     try {
       TableExprNode expr8 (RecordGram::parse (rec, "rownumber() > 3"));
     } catch (std::exception& x) {
       cout << "Expected exception:\n" << x.what() << endl;
-      err = True;
+      err = true;
     }
     AlwaysAssertExit (err);
   }
@@ -197,7 +197,7 @@ void doIt()
 void testExpr2()
 {
   Record vars;
-  AlwaysAssertExit (RecordGram::expr2Bool("T||F") == True);
+  AlwaysAssertExit (RecordGram::expr2Bool("T||F") == true);
   AlwaysAssertExit (RecordGram::expr2Int("2*2") == 4);
   AlwaysAssertExit (RecordGram::expr2Double("4") == 4);
   AlwaysAssertExit (RecordGram::expr2Complex("4") == DComplex(4,0));
@@ -206,8 +206,8 @@ void testExpr2()
                           MVTime(Time(2017,3,12,12,34,56.7)).second()));
   AlwaysAssertExit (RecordGram::expr2Double("4 kHz", vars, "Hz") == 4000);
   AlwaysAssertExit (RecordGram::expr2Double("1.2m", vars, "m") == 1.2);
-  Array<Bool> arrb;
-  Array<Int64> arri;
+  Array<bool> arrb;
+  Array<int64_t> arri;
   Array<double> arrd;
   Array<DComplex> arrc;
   Array<String> arrs;
@@ -221,7 +221,7 @@ void testExpr2()
   arrs = RecordGram::expr2ArrayString("'str'", vars);
   arrm = RecordGram::expr2ArrayDate("12Mar2017/12:34:56.7", vars);
   AlwaysAssertExit (arrb.shape() == IPosition(1,1)  &&
-                    arrb.data()[0] == True);
+                    arrb.data()[0] == true);
   AlwaysAssertExit (arri.shape() == IPosition(1,1)  &&
                     arri.data()[0] == 10);
   AlwaysAssertExit (arrd.shape() == IPosition(1,1)  &&
@@ -241,7 +241,7 @@ void testExpr2()
   arrm.reference (RecordGram::expr2ArrayDate("[12Mar2017/12:34:56.7, "
                                              "12Mar2017/12:34:56.7 + 2d]"));
   AlwaysAssertExit (arrb.shape() == IPosition(1,2)  &&
-                    arrb.data()[0] == True  &&  arrb.data()[1] == False);
+                    arrb.data()[0] == true  &&  arrb.data()[1] == false);
   AlwaysAssertExit (arri.shape() == IPosition(1,2)  &&
                     arri.data()[0] == 10  &&  arri.data()[1] == 11);
   AlwaysAssertExit (arrd.shape() == IPosition(1,2)  &&

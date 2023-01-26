@@ -42,8 +42,8 @@ void putData(MSDataDescColumns& cols) {
   cols.polarizationId().put(0, 1);
   cols.polarizationId().put(4, 3);
   // test the flagRow functions.
-  cols.flagRow().put(0, False);
-  cols.flagRow().put(4, True);
+  cols.flagRow().put(0, false);
+  cols.flagRow().put(4, true);
 }
 
 void getData(const MSDataDescColumns& cols) {
@@ -54,10 +54,10 @@ void getData(const MSDataDescColumns& cols) {
   AlwaysAssert(cols.polarizationId()(0) == 1, AipsError);
   AlwaysAssert(cols.polarizationId()(4) == 3, AipsError);
   // test the flagRow functions.
-  AlwaysAssert(cols.flagRow()(0) == False, AipsError);
-  AlwaysAssert(cols.flagRow()(4) == True, AipsError);
+  AlwaysAssert(cols.flagRow()(0) == false, AipsError);
+  AlwaysAssert(cols.flagRow()(4) == true, AipsError);
   // Check the optional columns do not exist
-  AlwaysAssert(cols.lagId().isNull() == True, AipsError);
+  AlwaysAssert(cols.lagId().isNull() == true, AipsError);
 }
 
 int main() {

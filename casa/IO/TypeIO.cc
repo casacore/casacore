@@ -30,7 +30,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-TypeIO::TypeIO (ByteIO* byteIO, Bool takeOver)
+TypeIO::TypeIO (ByteIO* byteIO, bool takeOver)
 : itsByteIO(byteIO, takeOver) 
 {}
 
@@ -57,35 +57,35 @@ ByteIO& TypeIO::byteIO() {
   return *itsByteIO;
 }
 
-Int64 TypeIO::seek (Int64 offset, ByteIO::SeekOption option)   
+int64_t TypeIO::seek (int64_t offset, ByteIO::SeekOption option)   
 {
     return itsByteIO->seek (offset, option);
 }
-Int64 TypeIO::seek (Int offset, ByteIO::SeekOption option)   
+int64_t TypeIO::seek (int32_t offset, ByteIO::SeekOption option)   
 {
     return itsByteIO->seek (offset, option);
 }
 
-Bool TypeIO::isReadable() const
+bool TypeIO::isReadable() const
 {
     return itsByteIO->isReadable();
 }
 
-Bool TypeIO::isWritable() const
+bool TypeIO::isWritable() const
 {
     return itsByteIO->isWritable();
 }
 
-Bool TypeIO::isSeekable() const
+bool TypeIO::isSeekable() const
 {
     return itsByteIO->isSeekable();
 }
 
 
-size_t TypeIO::write (size_t nvalues, const Bool* value)
+size_t TypeIO::write (size_t nvalues, const bool* value)
 {
     size_t nb = (nvalues+7) / 8;
-    uChar* buf = new uChar[nb];
+    unsigned char* buf = new unsigned char[nb];
     Conversion::boolToBit (buf, value, nvalues);
     write (nb, buf);
     delete [] buf;
@@ -126,7 +126,7 @@ size_t TypeIO::write (size_t nvalues, const String* value)
 {
     size_t n = 0;
     for (size_t i=0; i<nvalues; i++) {
-	uInt len = value[i].length();
+	uint32_t len = value[i].length();
 	n += write (1, &len);
 	n += write (len, value[i].chars());
     }
@@ -134,10 +134,10 @@ size_t TypeIO::write (size_t nvalues, const String* value)
 }
 
 
-size_t TypeIO::read (size_t nvalues, Bool* value)
+size_t TypeIO::read (size_t nvalues, bool* value)
 {
     size_t nb = (nvalues+7) / 8;
-    uChar* buf = new uChar[nb];
+    unsigned char* buf = new unsigned char[nb];
     read (nb, buf);
     Conversion::bitToBool (value, buf, nvalues);
     delete [] buf;
@@ -179,10 +179,10 @@ size_t TypeIO::read (size_t nvalues, DComplex* value)
 size_t TypeIO::read (size_t nvalues, String* str) {
     size_t n=0;
     for (size_t i=0; i<nvalues; i++) {
-      uInt len;
+      uint32_t len;
       n += read (1, &len);
       str[i].resize (len);              // resize storage which adds trailing 0
-      Char* ptr = &(str[i][0]);         // get actual string
+      char* ptr = &(str[i][0]);         // get actual string
       n += read (len, ptr);             // read string
 #ifdef USE_OLD_STRING
       ptr[len] = '\0';

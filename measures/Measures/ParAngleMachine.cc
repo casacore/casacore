@@ -82,84 +82,84 @@ ParAngleMachine::~ParAngleMachine() {
 }
 
 //# Operators
-Double ParAngleMachine::posAngle(const Quantum<Double> &ep) const {
+double ParAngleMachine::posAngle(const Quantum<double> &ep) const {
   if (!convdir_p) initConv();
   frame_p->resetEpoch(ep);
   return calcAngle(ep.getValue());
 }
 
-Vector<Double>
-ParAngleMachine::posAngle(const Quantum<Vector<Double> > &ep) const {
-  uInt nel(ep.getValue().nelements());
-  Vector<Double> res(nel);
-  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep.getValue()[i]);
+Vector<double>
+ParAngleMachine::posAngle(const Quantum<Vector<double> > &ep) const {
+  uint32_t nel(ep.getValue().nelements());
+  Vector<double> res(nel);
+  for (uint32_t i=0; i<nel; ++i) res[i] = posAngle(ep.getValue()[i]);
   return res;
 }
 
-Double ParAngleMachine::posAngle(const Double &ep) const {
+double ParAngleMachine::posAngle(const double &ep) const {
   if (!convdir_p) initConv();
   frame_p->resetEpoch(ep);
   return calcAngle(ep);
 }
 
-Vector<Double>
-ParAngleMachine::posAngle(const Vector<Double> &ep) const {
-  uInt nel(ep.nelements());
-  Vector<Double> res(nel);
-  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep[i]);
+Vector<double>
+ParAngleMachine::posAngle(const Vector<double> &ep) const {
+  uint32_t nel(ep.nelements());
+  Vector<double> res(nel);
+  for (uint32_t i=0; i<nel; ++i) res[i] = posAngle(ep[i]);
   return res;
 }
 
-Quantum<Double> ParAngleMachine::operator()(const Quantum<Double> &ep) const {
+Quantum<double> ParAngleMachine::operator()(const Quantum<double> &ep) const {
   static const Unit un("rad");
   return Quantity(posAngle(ep), un);
 }
 
-Quantum<Double> ParAngleMachine::operator()(const MVEpoch &ep) const {
+Quantum<double> ParAngleMachine::operator()(const MVEpoch &ep) const {
   static const Unit un("rad");
   return Quantity(posAngle(ep.get()), un);
 }
 
-Quantum<Double> ParAngleMachine::operator()(const MEpoch &ep) const {
+Quantum<double> ParAngleMachine::operator()(const MEpoch &ep) const {
   static const Unit un("rad");
   return Quantity(posAngle(ep.getValue().get()), un);
 }
 
-Quantum<Vector<Double> >
-ParAngleMachine::operator()(const Quantum<Vector<Double> > &ep) const {
+Quantum<Vector<double> >
+ParAngleMachine::operator()(const Quantum<Vector<double> > &ep) const {
   static const Unit un("rad");
-  return Quantum<Vector<Double> >(posAngle(ep), un);
+  return Quantum<Vector<double> >(posAngle(ep), un);
 }
 
-Quantum<Vector<Double> >
+Quantum<Vector<double> >
 ParAngleMachine::operator()(const Vector<MVEpoch> &ep) const {
   static const Unit un("rad");
-  uInt nel(ep.nelements());
-  Vector<Double> res(nel);
-  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep[i].get());
-  return Quantum<Vector<Double> >(res, un);
+  uint32_t nel(ep.nelements());
+  Vector<double> res(nel);
+  for (uint32_t i=0; i<nel; ++i) res[i] = posAngle(ep[i].get());
+  return Quantum<Vector<double> >(res, un);
 }
 
-Double
-ParAngleMachine::operator()(const Double &ep) const {
+double
+ParAngleMachine::operator()(const double &ep) const {
   return posAngle(ep);
 }
 
-Vector<Double>
-ParAngleMachine::operator()(const Vector<Double> &ep) const {
-  uInt nel(ep.nelements());
-  Vector<Double> res(nel);
-  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep[i]);
+Vector<double>
+ParAngleMachine::operator()(const Vector<double> &ep) const {
+  uint32_t nel(ep.nelements());
+  Vector<double> res(nel);
+  for (uint32_t i=0; i<nel; ++i) res[i] = posAngle(ep[i]);
   return res;
 }
 
-Quantum<Vector<Double> >
+Quantum<Vector<double> >
 ParAngleMachine::operator()(const Vector<MEpoch> &ep) const {
   static const Unit un("rad");
-  uInt nel(ep.nelements());
-  Vector<Double> res(nel);
-  for (uInt i=0; i<nel; ++i) res[i] = posAngle(ep[i].getValue().get());
-  return Quantum<Vector<Double> >(res, un);
+  uint32_t nel(ep.nelements());
+  Vector<double> res(nel);
+  for (uint32_t i=0; i<nel; ++i) res[i] = posAngle(ep[i].getValue().get());
+  return Quantum<Vector<double> >(res, un);
 }
 
 //# Member functions
@@ -180,7 +180,7 @@ void ParAngleMachine::set(const MeasFrame &frame) {
   init();
 }
 
-void ParAngleMachine::setInterval(const Double ttime) {
+void ParAngleMachine::setInterval(const double ttime) {
   defintvl_p = fabs(ttime);
   if (indir_p && indir_p->isModel()) defintvl_p = 0;
   intvl_p = defintvl_p;
@@ -211,11 +211,11 @@ void ParAngleMachine::initConv() const {
   clat2_p = sqrt(fabs(1.0 - square(slat2_p)));
 }
 
-Double ParAngleMachine::calcAngle(const Double ep) const {
+double ParAngleMachine::calcAngle(const double ep) const {
   if (fabs(ep-lastep_p)<intvl_p) {
     longdiff_p = longoff_p + UTfactor_p*(ep-lastep_p);
-    const Double s1(-clat2_p * sin(longdiff_p));
-    const Double c1(clat1_p*slat2_p - slat1_p*clat2_p*cos(longdiff_p));
+    const double s1(-clat2_p * sin(longdiff_p));
+    const double c1(clat1_p*slat2_p - slat1_p*clat2_p*cos(longdiff_p));
     return ((s1 != 0 || c1 != 0) ? -atan2(s1, c1): 0.0);
   } else {
     mvdir_p = (*convdir_p)().getValue();

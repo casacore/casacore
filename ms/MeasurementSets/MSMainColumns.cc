@@ -161,11 +161,11 @@ void MSMainColumns::setFlagCategories(const Vector<String>& categories) {
   const RecordFieldId key("CATEGORY");
   DebugAssert(nrow() == 0 || 
  	      categories.nelements() == 
-	      static_cast<uInt>(flagCategory().shape(0)(2)), AipsError);
+	      static_cast<uint32_t>(flagCategory().shape(0)(2)), AipsError);
   keywords.define(key, categories);
 }
 
-void MSMainColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSMainColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   timeCentroidMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

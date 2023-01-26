@@ -75,9 +75,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #define MAX(a,b) ((a)>=(b) ? (a) : (b))
 	
 template<class T> MultiTermLatticeCleaner<T>::MultiTermLatticeCleaner():
-  ntaylor_p(2),donePSF_p(False),donePSP_p(False),doneCONV_p(False)
+  ntaylor_p(2),donePSF_p(false),donePSP_p(false),doneCONV_p(false)
   {
-	  adbg=False;
+	  adbg=false;
   }
 
 template <class T> MultiTermLatticeCleaner<T>::
@@ -97,33 +97,33 @@ operator=(const MultiTermLatticeCleaner<T> & other) {
 template<class T> MultiTermLatticeCleaner<T>::
 ~MultiTermLatticeCleaner()
 {
-  manageMemory(False);
+  manageMemory(false);
 }
 
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setscales(const Vector<Float> & scales)
+bool MultiTermLatticeCleaner<T>::setscales(const Vector<float> & scales)
 {
    nscales_p = scales.nelements();
    scaleSizes_p.resize();
    scaleSizes_p = scales;
    totalScaleFlux_p.resize(nscales_p);
    totalScaleFlux_p.set(0.0);
-   return True;
+   return true;
 }
 
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setntaylorterms(const int & nterms)
+bool MultiTermLatticeCleaner<T>::setntaylorterms(const int & nterms)
 {
    ntaylor_p = nterms;
    psfntaylor_p = 2*nterms-1;
    totalTaylorFlux_p.resize(ntaylor_p);
    totalTaylorFlux_p.set(0.0);
-   return True;
+   return true;
 }
 
 // Allocate memory, based on nscales and ntaylor
 template <class T>
-Bool MultiTermLatticeCleaner<T>::initialise(Int nx, Int ny)
+bool MultiTermLatticeCleaner<T>::initialise(int32_t nx, int32_t ny)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "initialise()", WHERE));
   
@@ -141,7 +141,7 @@ Bool MultiTermLatticeCleaner<T>::initialise(Int nx, Int ny)
   
   if(adbg) os << "Start allocating mem" << LogIO::POST;
   /* Allocate memory for many many TempLattices. */
-  manageMemory(True);
+  manageMemory(true);
 
   /* Set up the default Mask image */
   setupFFTMask();
@@ -150,119 +150,119 @@ Bool MultiTermLatticeCleaner<T>::initialise(Int nx, Int ny)
   setupBlobs();
   
   if(adbg) os << "Finished initializing MultiTermLatticeCleaner" << LogIO::POST;
-  return True;
+  return true;
 }
 
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
-				   const Int niter,
-				   const Float gain,
+bool MultiTermLatticeCleaner<T>::setcontrol(CleanEnums::CleanType cleanType,
+				   const int32_t niter,
+				   const float gain,
 				   const Quantity& aThreshold,
-				   const Bool choose)
+				   const bool choose)
 {
   itsCleanType=cleanType;
   itsMaxNiter=niter;
   itsGain=gain;
   itsThreshold=aThreshold;
   totalIters_p=0;
-  return True;
+  return true;
 }
 
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setpsf(int order, Lattice<T> & psf)
+bool MultiTermLatticeCleaner<T>::setpsf(int order, Lattice<T> & psf)
 {
 	AlwaysAssert((order>=(int)0 && order<(int)vecPsf_p.nelements()), AipsError);
 	if(order==0) AlwaysAssert(validatePsf(psf), AipsError);
 	//AlwaysAssert(psf, AipsError);
-	vecPsf_p[order]->copyData(LatticeExpr<Float>(psf));
+	vecPsf_p[order]->copyData(LatticeExpr<float>(psf));
 	vecPsfFT_p[order]->copyData(LatticeExpr<Complex>(toComplex((*fftmask_p)*(*vecPsf_p[order]))));
-	LatticeFFT::cfft2d(*vecPsfFT_p[order], True);
+	LatticeFFT::cfft2d(*vecPsfFT_p[order], true);
 
-  return True;
+  return true;
 }
 
 /* Input : Dirty Images */
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setresidual(int order, Lattice<T> & dirty)
+bool MultiTermLatticeCleaner<T>::setresidual(int order, Lattice<T> & dirty)
 {
 	AlwaysAssert((order>=(int)0 && order<(int)vecDirty_p.nelements()), AipsError);
 	//AlwaysAssert(dirty, AipsError);
-	vecDirty_p[order]->copyData(LatticeExpr<Float>(dirty));
-  return True;
+	vecDirty_p[order]->copyData(LatticeExpr<float>(dirty));
+  return true;
 }
 
 /* Input : Model Component Image */
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setmodel(int order, Lattice<T> & model)
+bool MultiTermLatticeCleaner<T>::setmodel(int order, Lattice<T> & model)
 {
 	AlwaysAssert((order>=(int)0 && order<(int)vecModel_p.nelements()), AipsError);
 	//AlwaysAssert(model, AipsError);
-	vecModel_p[order]->copyData(LatticeExpr<Float>(model));
-	totalTaylorFlux_p[order] = (sum( LatticeExpr<Float>(*vecModel_p[order]) )).getFloat();
-  return True;
+	vecModel_p[order]->copyData(LatticeExpr<float>(model));
+	totalTaylorFlux_p[order] = (sum( LatticeExpr<float>(*vecModel_p[order]) )).getFloat();
+  return true;
 }
 
 /* Input : Mask */
 template <class T>
-Bool MultiTermLatticeCleaner<T>::setmask(Lattice<T> & mask)
+bool MultiTermLatticeCleaner<T>::setmask(Lattice<T> & mask)
 {
 	//AlwaysAssert(mask, AipsError);
 	if(!itsMask) itsMask = new TempLattice<T>(mask.shape(), memoryMB_p);
-	itsMask->copyData(LatticeExpr<Float>(mask));
-  return True;
+	itsMask->copyData(LatticeExpr<float>(mask));
+  return true;
 }
 
 /* Output : Model Component Image */
 template <class T>
-Bool MultiTermLatticeCleaner<T>::getmodel(int order, Lattice<T> & model)
+bool MultiTermLatticeCleaner<T>::getmodel(int order, Lattice<T> & model)
 {
 	AlwaysAssert((order>=(int)0 && order<(int)vecModel_p.nelements()), AipsError);
 	//AlwaysAssert(model, AipsError);
-	model.copyData(LatticeExpr<Float>(*vecModel_p[order]));
-  return True;
+	model.copyData(LatticeExpr<float>(*vecModel_p[order]));
+  return true;
 }
 
 /* Output Residual Image */
 template <class T>
-Bool MultiTermLatticeCleaner<T>::getresidual(int order, Lattice<T> & residual)
+bool MultiTermLatticeCleaner<T>::getresidual(int order, Lattice<T> & residual)
 {
 	AlwaysAssert((order>=(int)0 && order<(int)vecDirty_p.nelements()), AipsError);
 	//AlwaysAssert(residual, AipsError);
-	residual.copyData(LatticeExpr<Float>(*vecDirty_p[order]));
-  return True;
+	residual.copyData(LatticeExpr<float>(*vecDirty_p[order]));
+  return true;
 }
 
 /* Output Hessian matrix */
 template <class T>
-Bool MultiTermLatticeCleaner<T>::getinvhessian(Matrix<Double> & invhessian)
+bool MultiTermLatticeCleaner<T>::getinvhessian(Matrix<double> & invhessian)
 {
         invhessian.resize((*invMatA_p[0]).shape());
 	invhessian = (*invMatA_p[0]); //*(*matA_p[0])(0,0);
-  return True;
+  return true;
 }
 
 /* Do the deconvolution */
 template <class T>
-Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
+int32_t MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "mtclean()", WHERE));
   if(adbg)os << "SOLVER for Multi-Frequency Synthesis deconvolution" << LogIO::POST;
   
-  Int convergedflag = 0;
-  Bool choosespec = True;
-  //static Int totalIters=0;
+  int32_t convergedflag = 0;
+  bool choosespec = true;
+  //static int32_t totalIters=0;
   
   /* Set up the Mask image */
   setupUserMask();
    
   /* Compute the current peak residual */
-  Float zmaxval=0.0;
+  float zmaxval=0.0;
   IPosition zmaxpos;
   findMaxAbsLattice((*mask_p),(*vecDirty_p[0]),zmaxval,zmaxpos);
   os << "Initial Max Residual at iteration " << totalIters_p << " : " << zmaxval << "  at " << zmaxpos << LogIO::POST;
   if(totalIters_p==0)
   {
-    for(Int i=0;i<2*ntaylor_p-1;i++)
+    for(int32_t i=0;i<2*ntaylor_p-1;i++)
     {
       findMaxAbsLattice((*mask_p),(*vecPsf_p[i]),zmaxval,zmaxpos);
       os << "Psf " << i << " : " << zmaxval << "  at " << zmaxpos << LogIO::POST;
@@ -278,21 +278,21 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
   computeRHS();
   
   /* Compute the flux limits that determine the depth of the minor cycles. */
-  Float fluxlimit =0.0;
-  Float loopgain = itsGain;
-  Float thresh = itsThreshold.getValue("Jy");
+  float fluxlimit =0.0;
+  float loopgain = itsGain;
+  float thresh = itsThreshold.getValue("Jy");
   computeFluxLimit(fluxlimit,thresh);
   
   /* Initialize persistent variables */
   gip = IPosition(4,nx_p,ny_p,1,1);  
-  Float maxval,globalmaxval=-1e+10;
+  float maxval,globalmaxval=-1e+10;
   IPosition maxpos(4,0),globalmaxpos(4,0);
-  Int maxscaleindex=0;
-  Int niters = itsMaxNiter;
+  int32_t maxscaleindex=0;
+  int32_t niters = itsMaxNiter;
  
   /********************** START MINOR CYCLE ITERATIONS ***********************/
-  //Int numiters = MIN(40,niters-totalIters_p);
-  Int numiters = niters-totalIters_p;
+  //int32_t numiters = MIN(40,niters-totalIters_p);
+  int32_t numiters = niters-totalIters_p;
   //cout << "niters,itsMaxiter : " << niters << " ,totalIters_p : " << totalIters_p << " , numiters : " << numiters << endl;
   
   /* If no iterations */
@@ -303,12 +303,12 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
     return (convergedflag);
   }
 
-  for(Int itercount=0;itercount<numiters;itercount++)
+  for(int32_t itercount=0;itercount<numiters;itercount++)
   {
     globalmaxval=-1e+10;
     
     /* Find the best component over all scales */
-    for(Int scale=0;scale<nscales_p;scale++)
+    for(int32_t scale=0;scale<nscales_p;scale++)
     {
        /* Solve the matrix eqn for all points in the lattice */
        solveMatrixEqn(scale);
@@ -335,11 +335,11 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
     updateSolution(globalmaxpos,maxscaleindex,loopgain);
     
     /* Compute peak residuals */
-    Float maxres=0.0;
+    float maxres=0.0;
     IPosition maxrespos;
     findMaxAbsLattice((*mask_p),(*matR_p[IND2(0,0)]),maxres,maxrespos);
-    Float norma = (1.0/(*matA_p[0])(0,0));
-    Float rmaxval = maxres*norma;
+    float norma = (1.0/(*matA_p[0])(0,0));
+    float rmaxval = maxres*norma;
     
     /* Print out coefficients at each iteration */
     //if(adbg)
@@ -348,10 +348,10 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
       os << "[" << totalIters_p << "] Res: " << rmaxval;
       os << " Pos: " <<  globalmaxpos << " Scale: " << scaleSizes_p[maxscaleindex];
       os << " Coeffs: ";
-      for(Int taylor=0;taylor<ntaylor_p;taylor++)
+      for(int32_t taylor=0;taylor<ntaylor_p;taylor++)
 	      os << (*matCoeffs_p[IND2(taylor,maxscaleindex)]).getAt(globalmaxpos) << "  ";
       //os << " OrigRes: ";
-      //for(Int taylor=0;taylor<ntaylor_p;taylor++)
+      //for(int32_t taylor=0;taylor<ntaylor_p;taylor++)
       //      os << (*matR_p[IND2(taylor,maxscaleindex)]).getAt(globalmaxpos) << "  ";
       os << LogIO::POST;
     }
@@ -386,8 +386,8 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
   /* Print out flux counts so far */
   //if(adbg)
   {
-     for(Int scale=0;scale<nscales_p;scale++) os << "Scale " << scale+1 << " with " << scaleSizes_p[scale] << " pixels has total flux = " << totalScaleFlux_p[scale] << " (in this run) " << LogIO::POST;
-     for(Int taylor=0;taylor<ntaylor_p;taylor++) os << "Taylor " << taylor << " has total flux = " << totalTaylorFlux_p[taylor] << LogIO::POST;
+     for(int32_t scale=0;scale<nscales_p;scale++) os << "Scale " << scale+1 << " with " << scaleSizes_p[scale] << " pixels has total flux = " << totalScaleFlux_p[scale] << " (in this run) " << LogIO::POST;
+     for(int32_t taylor=0;taylor<ntaylor_p;taylor++) os << "Taylor " << taylor << " has total flux = " << totalTaylorFlux_p[taylor] << LogIO::POST;
   }
   
   return(convergedflag);
@@ -395,22 +395,22 @@ Int MultiTermLatticeCleaner<T>::mtclean(LatticeCleanProgress* progress)
 
 /* Indexing Wonders... */
 template <class T>
-Int MultiTermLatticeCleaner<T>::IND2(Int taylor, Int scale)
+int32_t MultiTermLatticeCleaner<T>::IND2(int32_t taylor, int32_t scale)
 {
 	return  taylor * nscales_p + scale;
 }
 template <class T>
-Int MultiTermLatticeCleaner<T>::IND4(Int taylor1, Int taylor2, Int scale1, Int scale2)
+int32_t MultiTermLatticeCleaner<T>::IND4(int32_t taylor1, int32_t taylor2, int32_t scale1, int32_t scale2)
 {
-	Int tt1=taylor1;
-	Int tt2=taylor2;
-	Int ts1=scale1;
-	Int ts2=scale2;
+	int32_t tt1=taylor1;
+	int32_t tt2=taylor2;
+	int32_t ts1=scale1;
+	int32_t ts2=scale2;
 	scale1 = MAX(ts1,ts2);
 	scale2 = MIN(ts1,ts2);
 	taylor1 = MAX(tt1,tt2);
 	taylor2 = MIN(tt1,tt2);
-	Int totscale = nscales_p*(nscales_p+1)/2;
+	int32_t totscale = nscales_p*(nscales_p+1)/2;
 	return ((taylor1*(taylor1+1)/2)+taylor2)*totscale + ((scale1*(scale1+1)/2)+scale2);
 }
 
@@ -418,9 +418,9 @@ Int MultiTermLatticeCleaner<T>::IND4(Int taylor1, Int taylor2, Int scale1, Int s
  *          Number of TempLattices 
  *************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::numberOfTempLattices(Int nscales, Int ntaylor)
+int32_t MultiTermLatticeCleaner<T>::numberOfTempLattices(int32_t nscales, int32_t ntaylor)
 {
-  Int ntotal4d = (nscales*(nscales+1)/2) * (ntaylor*(ntaylor+1)/2);
+  int32_t ntotal4d = (nscales*(nscales+1)/2) * (ntaylor*(ntaylor+1)/2);
   return ntotal4d + 6 + 2 + (2+1)*nscales + (1+1)*ntaylor + 2*nscales*ntaylor;
 }
 
@@ -428,13 +428,13 @@ Int MultiTermLatticeCleaner<T>::numberOfTempLattices(Int nscales, Int ntaylor)
  *          Allocate Memory
  *************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
+int32_t MultiTermLatticeCleaner<T>::manageMemory(bool direction)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "manageMemory()", WHERE));
 	// Define max memory usage for all TempLattices. (half of available);
-	memoryMB_p = Double(HostInfo::memoryTotal()/1024)/(2.0); // ? /(16.0) ?
-	Int ntemp = numberOfTempLattices(nscales_p,ntaylor_p);
-	Int numMB = nx_p*ny_p*4*ntemp/(1024*1024);
+	memoryMB_p = double(HostInfo::memoryTotal()/1024)/(2.0); // ? /(16.0) ?
+	int32_t ntemp = numberOfTempLattices(nscales_p,ntaylor_p);
+	int32_t numMB = nx_p*ny_p*4*ntemp/(1024*1024);
 	memoryMB_p = MIN(memoryMB_p, numMB);
 	if(direction)
 	{
@@ -449,19 +449,19 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	if(adbg && direction)os << "Allocating memory ... " ;
 	if(adbg && !direction)os << "Freeing memory ... " ;
 	
-	Int ntotal4d = (nscales_p*(nscales_p+1)/2) * (ntaylor_p*(ntaylor_p+1)/2);
+	int32_t ntotal4d = (nscales_p*(nscales_p+1)/2) * (ntaylor_p*(ntaylor_p+1)/2);
 	
 	//gip = IPosition(2,ntaylor_p,ntaylor_p);  
 	IPosition tgip(2,ntaylor_p,ntaylor_p);
 	
 	// Small A matrix to be inverted for each point..
 	matA_p.resize(nscales_p); invMatA_p.resize(nscales_p);
-	for(Int i=0;i<nscales_p;i++)
+	for(int32_t i=0;i<nscales_p;i++)
 	{
 		if(direction)
 		{ 
-			matA_p[i] = new Matrix<Double>(tgip);
-			invMatA_p[i] = new Matrix<Double>(tgip);
+			matA_p[i] = new Matrix<double>(tgip);
+			invMatA_p[i] = new Matrix<double>(tgip);
 		}
 		else
 		{
@@ -476,13 +476,13 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	// I_D and mask
 	if(direction)
 	{
-		dirty_p = new TempLattice<Float>(gip, memoryMB_p);
+		dirty_p = new TempLattice<float>(gip, memoryMB_p);
 		dirtyFT_p = new TempLattice<Complex>(gip, memoryMB_p);
-		mask_p = new TempLattice<Float>(gip, memoryMB_p);
-		fftmask_p = new TempLattice<Float>(gip, memoryMB_p);
+		mask_p = new TempLattice<float>(gip, memoryMB_p);
+		fftmask_p = new TempLattice<float>(gip, memoryMB_p);
 		// Temporary work-holder
 		cWork_p = new TempLattice<Complex>(gip,memoryMB_p);
-		tWork_p = new TempLattice<Float>(gip,memoryMB_p);
+		tWork_p = new TempLattice<float>(gip,memoryMB_p);
 	}
 	else
 	{
@@ -504,11 +504,11 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	// Scales
 	vecScales_p.resize(nscales_p);
 	vecScalesFT_p.resize(nscales_p);
-	for(Int i=0;i<nscales_p;i++) 
+	for(int32_t i=0;i<nscales_p;i++) 
 	{
 		if(direction)
 		{
-			vecScales_p[i] = new TempLattice<Float>(gip,memoryMB_p);
+			vecScales_p[i] = new TempLattice<float>(gip,memoryMB_p);
 			vecScalesFT_p[i] = new TempLattice<Complex>(gip,memoryMB_p);
 		}
 		else
@@ -521,11 +521,11 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	// Psfs and Models
 	vecPsf_p.resize(psfntaylor_p);
 	vecPsfFT_p.resize(psfntaylor_p);
-	for(Int i=0;i<psfntaylor_p;i++) 
+	for(int32_t i=0;i<psfntaylor_p;i++) 
 	{
 		if(direction)
 		{
-			vecPsf_p[i] = new TempLattice<Float>(gip,memoryMB_p);
+			vecPsf_p[i] = new TempLattice<float>(gip,memoryMB_p);
 			vecPsfFT_p[i] = new TempLattice<Complex>(gip,memoryMB_p);
 		}
 		else
@@ -539,12 +539,12 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	// Dirty/Residual Images
 	vecDirty_p.resize(ntaylor_p);
 	vecModel_p.resize(ntaylor_p);
-	for(Int i=0;i<ntaylor_p;i++) 
+	for(int32_t i=0;i<ntaylor_p;i++) 
 	{
 		if(direction)
 		{
-			vecDirty_p[i] = new TempLattice<Float>(gip,memoryMB_p);
-			vecModel_p[i] = new TempLattice<Float>(gip,memoryMB_p);
+			vecDirty_p[i] = new TempLattice<float>(gip,memoryMB_p);
+			vecModel_p[i] = new TempLattice<float>(gip,memoryMB_p);
 		}
 		else
 		{
@@ -555,7 +555,7 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	
 	// Psf * Scales
 	//  matPsfConvScales_p.resize(ntaylor_p*nscales_p);
-	//  for(Int i=0;i<nscales_p*ntaylor_p;i++) matPsfConvScales_p = new TempLattice<Float>(gip,memoryMB_p);
+	//  for(int32_t i=0;i<nscales_p*ntaylor_p;i++) matPsfConvScales_p = new TempLattice<float>(gip,memoryMB_p);
 	
 	// Set up the latticeiterators also
 	IPosition shapeOut;
@@ -575,18 +575,18 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	
 	LatticeStepper stepper(shapeOut, cursorShape, LatticeStepper::RESIZE);
 	
-	if(direction)itertWork_p = new LatticeIterator<Float>((*tWork_p), stepper);
+	if(direction)itertWork_p = new LatticeIterator<float>((*tWork_p), stepper);
 	else delete itertWork_p;
 	
 	// (Psf * Scales) * (Psf * Scales)
 	cubeA_p.resize(ntotal4d);
 	itercubeA_p.resize(ntotal4d);
-	for(Int i=0;i<ntotal4d;i++) 
+	for(int32_t i=0;i<ntotal4d;i++) 
 	{
 		if(direction) 
 		{
-			cubeA_p[i] = new TempLattice<Float>(gip,memoryMB_p);
-			itercubeA_p[i] = new LatticeIterator<Float>((*cubeA_p[i]),stepper);
+			cubeA_p[i] = new TempLattice<float>(gip,memoryMB_p);
+			itercubeA_p[i] = new LatticeIterator<float>((*cubeA_p[i]),stepper);
 		}
 		else 
 		{
@@ -602,14 +602,14 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
 	matCoeffs_p.resize(ntaylor_p*nscales_p);
 	itermatCoeffs_p.resize(ntaylor_p*nscales_p);
 	
-	for(Int i=0;i<ntaylor_p*nscales_p;i++) 
+	for(int32_t i=0;i<ntaylor_p*nscales_p;i++) 
 	{
 		if(direction)
 		{	
-			matR_p[i] = new TempLattice<Float>(gip,memoryMB_p);
-			itermatR_p[i] = new LatticeIterator<Float>((*matR_p[i]),stepper);
-			matCoeffs_p[i] = new TempLattice<Float>(gip,memoryMB_p);
-			itermatCoeffs_p[i] = new LatticeIterator<Float>((*matCoeffs_p[i]),stepper);
+			matR_p[i] = new TempLattice<float>(gip,memoryMB_p);
+			itermatR_p[i] = new LatticeIterator<float>((*matR_p[i]),stepper);
+			matCoeffs_p[i] = new TempLattice<float>(gip,memoryMB_p);
+			itermatCoeffs_p[i] = new LatticeIterator<float>((*matCoeffs_p[i]),stepper);
 		}
 		else
 		{
@@ -629,7 +629,7 @@ Int MultiTermLatticeCleaner<T>::manageMemory(Bool direction)
  *    Add two subLattices..      -- same code as in copyData.   
  *************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::addTo(Lattice<Float>& to, const Lattice<Float>& add, Float multiplier)
+int32_t MultiTermLatticeCleaner<T>::addTo(Lattice<float>& to, const Lattice<float>& add, float multiplier)
 {
 	// Check the lattice is writable.
 	// Check the shape conformance.
@@ -639,8 +639,8 @@ Int MultiTermLatticeCleaner<T>::addTo(Lattice<Float>& to, const Lattice<Float>& 
 	AlwaysAssert (shapeIn.isEqual (shapeOut), AipsError);
 	IPosition cursorShape = to.niceCursorShape();
 	LatticeStepper stepper (shapeOut, cursorShape, LatticeStepper::RESIZE);
-	LatticeIterator<Float> toIter(to, stepper);
-	RO_LatticeIterator<Float> addIter(add, stepper);
+	LatticeIterator<float> toIter(to, stepper);
+	RO_LatticeIterator<float> addIter(add, stepper);
 	for (addIter.reset(), toIter.reset(); !addIter.atEnd();addIter++, toIter++) 
 	{
 		toIter.rwCursor()+=addIter.cursor()*multiplier;
@@ -652,7 +652,7 @@ Int MultiTermLatticeCleaner<T>::addTo(Lattice<Float>& to, const Lattice<Float>& 
  *  Set up the Masks.
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::setupFFTMask()
+int32_t MultiTermLatticeCleaner<T>::setupFFTMask()
 {
    /* Set up fftmask - inner quarter */
    (*fftmask_p).set(0.0);
@@ -661,31 +661,31 @@ Int MultiTermLatticeCleaner<T>::setupFFTMask()
    IPosition minc(4, 1);
    LCBox::verify(mblc,mtrc,minc,(*fftmask_p).shape());
    LCBox regmask(mblc,mtrc,(*fftmask_p).shape());
-   SubLattice<Float> smask((*fftmask_p),regmask,True);
+   SubLattice<float> smask((*fftmask_p),regmask,true);
    smask.set(1.0);
    
    return 0;
 }/* end of setupFFTMask() */
 
 template <class T>
-Int MultiTermLatticeCleaner<T>::setupUserMask()
+int32_t MultiTermLatticeCleaner<T>::setupUserMask()
 {
    /* Copy the input mask */
    if(itsMask)
    {
-      Int pol=0;
+      int32_t pol=0;
       IPosition blc1(4,0,0,pol,0);
       IPosition trc1(4,nx_p,ny_p,pol,0);
       IPosition inc1(4, 1);
       LCBox::verify(blc1,trc1,inc1,itsMask->shape());
       LCBox singlepolmask(blc1,trc1,itsMask->shape());
-      (mask_p)->copyData(SubLattice<Float>(*itsMask,singlepolmask,True));
+      (mask_p)->copyData(SubLattice<float>(*itsMask,singlepolmask,true));
       /* Reconcile the two masks */
-      (*mask_p).copyData(LatticeExpr<Float>((*mask_p)*(*fftmask_p)));
+      (*mask_p).copyData(LatticeExpr<float>((*mask_p)*(*fftmask_p)));
    }
    else
    {
-      (*mask_p).copyData(LatticeExpr<Float>((*fftmask_p)));
+      (*mask_p).copyData(LatticeExpr<float>((*fftmask_p)));
    }
    
    return 0;
@@ -696,19 +696,19 @@ Int MultiTermLatticeCleaner<T>::setupUserMask()
  *  Set up the Blobs of various scales.
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::setupBlobs()
+int32_t MultiTermLatticeCleaner<T>::setupBlobs()
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "setupBlobs", WHERE));
 	// Set the scale sizes
 	if(scaleSizes_p.nelements()==0)
 	{
 		scaleSizes_p.resize(nscales_p);
-		Float scaleInc = 2.0;
+		float scaleInc = 2.0;
 		scaleSizes_p[0] = 0.0;
 		//os << "scale 1 = " << scaleSizes_p(0) << " pixels" << LogIO::POST;
-		for (Int scale=1; scale<nscales_p;scale++) 
+		for (int32_t scale=1; scale<nscales_p;scale++) 
 		{
-			scaleSizes_p[scale] = scaleInc * pow(10.0, (Float(scale)-2.0)/2.0) ;
+			scaleSizes_p[scale] = scaleInc * pow(10.0, (float(scale)-2.0)/2.0) ;
 			//os << "scale " << scale+1 << " = " << scaleSizes_p(scale) << " pixels" << LogIO::POST;
 			
 		}  
@@ -716,16 +716,16 @@ Int MultiTermLatticeCleaner<T>::setupBlobs()
 	
 	scaleBias_p.resize(nscales_p);
 	totalScaleFlux_p.resize(nscales_p);
-	//Float prefScale=2.0;
-	//Float fac=6.0;
+	//float prefScale=2.0;
+	//float fac=6.0;
 	if(nscales_p>1)
 	{
-		for(Int scale=0;scale<nscales_p;scale++) 
+		for(int32_t scale=0;scale<nscales_p;scale++) 
 		{
 			//scaleBias_p[scale] = 1 - 0.4 * scaleSizes_p[scale]/scaleSizes_p(nscales_p-1);
 			scaleBias_p[scale] = 1.0;
-			//////scaleBias_p[scale] = pow((Float)scale/fac,prefScale)*exp(-1.0*scale/fac)/(pow(prefScale/fac,prefScale)*exp(-1.0*prefScale/fac));
-			//scaleBias_p[scale] = pow((Float)(scale+1)/fac,prefScale)*exp(-1.0*(scale+1)/fac);
+			//////scaleBias_p[scale] = pow((float)scale/fac,prefScale)*exp(-1.0*scale/fac)/(pow(prefScale/fac,prefScale)*exp(-1.0*prefScale/fac));
+			//scaleBias_p[scale] = pow((float)(scale+1)/fac,prefScale)*exp(-1.0*(scale+1)/fac);
 			os << "scale " << scale+1 << " = " << scaleSizes_p(scale) << " pixels with bias = " << scaleBias_p[scale] << LogIO::POST;
 			totalScaleFlux_p[scale]=0.0;
 		}
@@ -740,7 +740,7 @@ Int MultiTermLatticeCleaner<T>::setupBlobs()
 		// NSCALES = 1;
 		if(adbg) os << "Calculating scales and their FTs " << LogIO::POST;
 			
-		for (Int scale=0; scale<nscales_p;scale++) 
+		for (int32_t scale=0; scale<nscales_p;scale++) 
 		{
 			AlwaysAssert(vecScales_p[scale], AipsError);
 			AlwaysAssert(vecScalesFT_p[scale], AipsError);
@@ -750,17 +750,17 @@ Int MultiTermLatticeCleaner<T>::setupBlobs()
 			// Now store the XFR
 			vecScalesFT_p[scale]->copyData(LatticeExpr<Complex>(toComplex((*fftmask_p)*(*vecScales_p[scale]))));
 			// Now FFT
-			LatticeFFT::cfft2d(*vecScalesFT_p[scale], True);
+			LatticeFFT::cfft2d(*vecScalesFT_p[scale], true);
 			if(0)//(adbg)
 			{
-				String llab("blob_"+String::toString((Int)scaleSizes_p(scale))+".im");
+				String llab("blob_"+String::toString((int32_t)scaleSizes_p(scale))+".im");
 				gip = IPosition(4,nx_p,ny_p,1,1);  
-				TempLattice<Float> store(gip,memoryMB_p);
-				store.copyData(LatticeExpr<Float>(real(*vecScalesFT_p[scale])));
-				String fllab("blobft_"+String::toString((Int)scaleSizes_p(scale))+".im");
+				TempLattice<float> store(gip,memoryMB_p);
+				store.copyData(LatticeExpr<float>(real(*vecScalesFT_p[scale])));
+				String fllab("blobft_"+String::toString((int32_t)scaleSizes_p(scale))+".im");
 			}
 		}
-		donePSP_p=True;
+		donePSP_p=true;
 	}
 	
 	return 0;
@@ -772,7 +772,7 @@ Int MultiTermLatticeCleaner<T>::setupBlobs()
  *  Compute convolutions and the A matrix.
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::computeMatrixA()
+int32_t MultiTermLatticeCleaner<T>::computeMatrixA()
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "computeMatrixA", WHERE));
    gip = IPosition(4,nx_p,ny_p,1,1);  
@@ -791,23 +791,23 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
 	   
       // (PSF * scale) * (PSF * scale) -> cubeA_p [nx_p,ny_p,ntaylor,ntaylor,nscales]
       os << "Calculating PSF and Scale convolutions " << LogIO::POST;
-      for (Int taylor1=0; taylor1<ntaylor_p;taylor1++) 
-      for (Int taylor2=0; taylor2<=taylor1;taylor2++) 
-      for (Int scale1=0; scale1<nscales_p;scale1++) 
-      for (Int scale2=0; scale2<=scale1;scale2++) 
+      for (int32_t taylor1=0; taylor1<ntaylor_p;taylor1++) 
+      for (int32_t taylor2=0; taylor2<=taylor1;taylor2++) 
+      for (int32_t scale1=0; scale1<nscales_p;scale1++) 
+      for (int32_t scale2=0; scale2<=scale1;scale2++) 
       {
-	Int ttay1 = taylor1+taylor2;
+	int32_t ttay1 = taylor1+taylor2;
         if(adbg)
 	   os << "Calculating (PSF_"<< taylor1 << " * Scale_"<<scale1+1 << ") * (PSF_"<< taylor2<<" * Scale_"<<scale2+1<<")   using taylor "<< ttay1 << LogIO::POST;
 	
 	LatticeExpr<Complex> dpsExpr(((*vecPsfFT_p[ttay1]) *(*vecPsfFT_p[0]))*(*vecScalesFT_p[scale1])*(*vecScalesFT_p[scale2]));
 	cWork_p->copyData(dpsExpr);
-	LatticeFFT::cfft2d(*cWork_p, False);
+	LatticeFFT::cfft2d(*cWork_p, false);
 	AlwaysAssert(cubeA_p[IND4(taylor1,taylor2,scale1,scale2)], AipsError);
-	LatticeExpr<Float> realWork2(real(*cWork_p));
+	LatticeExpr<float> realWork2(real(*cWork_p));
 	cubeA_p[IND4(taylor1,taylor2,scale1,scale2)]->copyData(realWork2);
   
-	Float zmaxval=0.0; IPosition zmaxpos;
+	float zmaxval=0.0; IPosition zmaxpos;
 	findMaxAbsLattice((*mask_p),(*cubeA_p[IND4(taylor1,taylor2,scale1,scale2)]),zmaxval,zmaxpos);
 	//if(adbg) os << "Max (result) : " << zmaxval << "  at " << zmaxpos << LogIO::POST;
       }	  
@@ -816,16 +816,16 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
       
       IPosition wip(4,0,0,0,0);
       wip[0]=(nx_p/2); wip[1]=(ny_p/2);
-      Int stopnow=False;
-      for (Int scale=0; scale<nscales_p;scale++) 
+      int32_t stopnow=false;
+      for (int32_t scale=0; scale<nscales_p;scale++) 
       {
 	      // Fill up A
-	      for (Int taylor1=0; taylor1<ntaylor_p;taylor1++) 
-	      for (Int taylor2=0; taylor2<ntaylor_p;taylor2++) 
+	      for (int32_t taylor1=0; taylor1<ntaylor_p;taylor1++) 
+	      for (int32_t taylor2=0; taylor2<ntaylor_p;taylor2++) 
 	      {
                 (*matA_p[scale])(taylor1,taylor2) = (*cubeA_p[IND4(taylor1,taylor2,scale,scale)])(wip);
 		/* Check for exact zeros. Usually indicative of error */
-		if( fabs( (*matA_p[scale])(taylor1,taylor2) )  == 0.0 ) stopnow = True;
+		if( fabs( (*matA_p[scale])(taylor1,taylor2) )  == 0.0 ) stopnow = true;
 	      }
 	      
 	      os << "The Matrix [A] is : " << (*matA_p[scale]) << LogIO::POST;
@@ -838,17 +838,17 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
 
 	      /* If all elements are non-zero, check by brute-force if the rows/cols 
 		 are nearly linearly dependant, making the matrix nearly singular. */
-	       Vector<Float> ratios(ntaylor_p);
-	       Float tsum=0.0;
-	       for(Int taylor1=0; taylor1<ntaylor_p-1; taylor1++)
+	       Vector<float> ratios(ntaylor_p);
+	       float tsum=0.0;
+	       for(int32_t taylor1=0; taylor1<ntaylor_p-1; taylor1++)
 	       {
-	           for(Int taylor2=0; taylor2<ntaylor_p; taylor2++)
+	           for(int32_t taylor2=0; taylor2<ntaylor_p; taylor2++)
 		     ratios[taylor2] = (*matA_p[scale])(taylor1,taylor2) / (*matA_p[scale])(taylor1+1,taylor2);
                    tsum=0.0;
-		   for(Int taylor2=0; taylor2<ntaylor_p-1; taylor2++)
+		   for(int32_t taylor2=0; taylor2<ntaylor_p-1; taylor2++)
 		      tsum += fabs(ratios[taylor2] - ratios[taylor2+1]);
 		   tsum /= ntaylor_p-1;
-		   if(tsum < 1e-04) stopnow=True;
+		   if(tsum < 1e-04) stopnow=true;
 
 		   //cout << "Ratios for row " << taylor1 << " are " << ratios << endl;
 		   //cout << "tsum : " << tsum << endl;
@@ -869,7 +869,7 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
 	      //
 	      try
 	      {
-	             Double deter=0.0;
+	             double deter=0.0;
 	             //invert((*invMatA_p[scale]),deter,(*matA_p[scale]));
 	             //os << "Matrix Inverse : inv(A) : " << (*invMatA_p[scale]) << LogIO::POST;
 	      
@@ -886,7 +886,7 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
 	      
       }
       
-      doneCONV_p=True;
+      doneCONV_p=true;
    } 
    
    return 0;
@@ -898,7 +898,7 @@ Int MultiTermLatticeCleaner<T>::computeMatrixA()
  *  --> the Right-Hand-Side of the matrix equation.
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::computeRHS()
+int32_t MultiTermLatticeCleaner<T>::computeRHS()
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "computeRHS()", WHERE));
 	IPosition blc1(4,0,0,0,0);
@@ -916,20 +916,20 @@ Int MultiTermLatticeCleaner<T>::computeRHS()
 	
 	/* I_D * (PSF * scale) -> matR_p [nx_p,ny_p,ntaylor,nscales] */
 	os << "Calculating convolutions of dirty image with scales and PSFs " << LogIO::POST;
-	for (Int taylor=0; taylor<ntaylor_p;taylor++) 
+	for (int32_t taylor=0; taylor<ntaylor_p;taylor++) 
 	{
 	   /* Compute FT of dirty image */
 	   dirtyFT_p->copyData(LatticeExpr<Complex>(toComplex((*fftmask_p)*(*vecDirty_p[taylor]))));
-	   LatticeFFT::cfft2d(*dirtyFT_p, True);
+	   LatticeFFT::cfft2d(*dirtyFT_p, true);
 	   
-	   for (Int scale=0; scale<nscales_p;scale++) 
+	   for (int32_t scale=0; scale<nscales_p;scale++) 
 	   {
 		if(adbg)os << "Calculating I_D * (PSF_"<< taylor << " * Scale_" << scale+1 << ")"<< LogIO::POST;
 		LatticeExpr<Complex> dpsExpr( (*dirtyFT_p)*(*vecPsfFT_p[0])*(*vecScalesFT_p[scale]));
 		cWork_p->copyData(dpsExpr);
-		LatticeFFT::cfft2d(*cWork_p, False);
+		LatticeFFT::cfft2d(*cWork_p, false);
 		AlwaysAssert(matR_p[IND2(taylor,scale)], AipsError);
-		LatticeExpr<Float> realWork2(real(*cWork_p));
+		LatticeExpr<float> realWork2(real(*cWork_p));
 		matR_p[IND2(taylor,scale)]->copyData(realWork2);
 		//String lab("_"+String::toString(taylor)+"_"+String::toString(scale));
 	   }
@@ -942,7 +942,7 @@ Int MultiTermLatticeCleaner<T>::computeRHS()
  *  Compute  flux limit for minor cycles
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::computeFluxLimit(Float &fluxlimit, Float threshold)
+int32_t MultiTermLatticeCleaner<T>::computeFluxLimit(float &fluxlimit, float threshold)
 {
   LogIO os(LogOrigin("MultiTermLatticeCleaner", "computeFluxLimit", WHERE));
 
@@ -952,16 +952,16 @@ Int MultiTermLatticeCleaner<T>::computeFluxLimit(Float &fluxlimit, Float thresho
 	// fluxlimit = maxRes * maxExtPsf * factor;
 	
   /*
-	Float maxRes=0.0;
-	Float maxExtPsf=0.0;
-	Float tmax=0.0;
+	float maxRes=0.0;
+	float maxExtPsf=0.0;
+	float tmax=0.0;
 	IPosition tmaxpos;
-	Float ffactor=0.01;
-	Int maxscale=0;
+	float ffactor=0.01;
+	int32_t maxscale=0;
 
 
-	for(Int taylor=0;taylor<ntaylor_p;taylor++)
-	for(Int scale=0; scale<nscales_p;scale++)
+	for(int32_t taylor=0;taylor<ntaylor_p;taylor++)
+	for(int32_t scale=0; scale<nscales_p;scale++)
 	{
 		findMaxAbsLattice((*mask_p),(*matR_p[IND2(taylor,scale)]),tmax,tmaxpos);
 		if(tmax > maxRes) maxscale = scale;
@@ -969,28 +969,28 @@ Int MultiTermLatticeCleaner<T>::computeFluxLimit(Float &fluxlimit, Float thresho
 		cout << "MaxRes for taylor " << taylor << " and scale " << scale << " : " << maxRes << endl;
 	}
 
-	for (Int taylor1=0; taylor1<ntaylor_p;taylor1++) 
-	for (Int taylor2=0; taylor2<=taylor1;taylor2++) 
-	for (Int scale1=0; scale1<nscales_p;scale1++) 
-	for (Int scale2=0; scale2<=scale1;scale2++) 
+	for (int32_t taylor1=0; taylor1<ntaylor_p;taylor1++) 
+	for (int32_t taylor2=0; taylor2<=taylor1;taylor2++) 
+	for (int32_t scale1=0; scale1<nscales_p;scale1++) 
+	for (int32_t scale2=0; scale2<=scale1;scale2++) 
 	{
-		findMaxAbsLattice((*mask_p),(*cubeA_p[IND4(taylor1,taylor2,scale1,scale2)]),tmax,tmaxpos, True);
+		findMaxAbsLattice((*mask_p),(*cubeA_p[IND4(taylor1,taylor2,scale1,scale2)]),tmax,tmaxpos, true);
 		maxExtPsf = MAX(maxExtPsf,tmax);
 		cout << "MaxExtPSF for taylor " << taylor1 << "," << taylor2 << " and scale " << scale1 << "," << scale2 << " : " << maxExtPsf << endl;
 	}
         
-	Float norma1 = sqrt((1.0/(*matA_p[maxscale])(0,0)));
+	float norma1 = sqrt((1.0/(*matA_p[maxscale])(0,0)));
 	fluxlimit = max(threshold, (maxRes*norma1) * ffactor);
 	
 	os << "Max Residual : " << maxRes*norma1 << " FluxLimit : " << fluxlimit << LogIO::POST;
 	cout << "Old : Max Residual : " << maxRes*norma1 << " FluxLimit : " << fluxlimit << endl;
 */
 
-	Float maxres=0.0;
+	float maxres=0.0;
 	IPosition maxrespos;
 	findMaxAbsLattice((*mask_p),(*matR_p[IND2(0,0)]),maxres,maxrespos);
-	Float norma = (1.0/(*matA_p[0])(0,0));
-	Float rmaxval = maxres*norma;
+	float norma = (1.0/(*matA_p[0])(0,0));
+	float rmaxval = maxres*norma;
 
 	fluxlimit = max(threshold, rmaxval/10.0);
 	os << "Max Residual : " << rmaxval << " Flux Limit for this major cycle : " <<  fluxlimit  << endl;
@@ -1004,17 +1004,17 @@ Int MultiTermLatticeCleaner<T>::computeFluxLimit(Float &fluxlimit, Float thresho
  *  Solve the matrix eqn for each point in the lattice.
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::solveMatrixEqn(Int scale)
+int32_t MultiTermLatticeCleaner<T>::solveMatrixEqn(int32_t scale)
 {
 	/* Solve for the coefficients */
-	for(Int taylor1=0;taylor1<ntaylor_p;taylor1++)
+	for(int32_t taylor1=0;taylor1<ntaylor_p;taylor1++)
 	{
 		len_p = LatticeExprNode(0.0);
-		for(Int taylor2=0;taylor2<ntaylor_p;taylor2++)
+		for(int32_t taylor2=0;taylor2<ntaylor_p;taylor2++)
 		{
-			len_p = len_p + LatticeExprNode((Float)(*invMatA_p[scale])(taylor1,taylor2)*(*matR_p[IND2(taylor2,scale)]));
+			len_p = len_p + LatticeExprNode((float)(*invMatA_p[scale])(taylor1,taylor2)*(*matR_p[IND2(taylor2,scale)]));
 		}
-		(*matCoeffs_p[IND2(taylor1,scale)]).copyData(LatticeExpr<Float>(len_p));
+		(*matCoeffs_p[IND2(taylor1,scale)]).copyData(LatticeExpr<float>(len_p));
 	}
 	
 	return 0;
@@ -1024,23 +1024,23 @@ Int MultiTermLatticeCleaner<T>::solveMatrixEqn(Int scale)
  *  Compute the penalty function
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::computePenaltyFunction(Int scale, Float &loopgain, Bool choosespec)
+int32_t MultiTermLatticeCleaner<T>::computePenaltyFunction(int32_t scale, float &loopgain, bool choosespec)
 {
 	tWork_p->set(0.0);
 	
-	for(Int i=0;i<(Int)itermatCoeffs_p.nelements();i++) itermatCoeffs_p[i]->reset();
-	for(Int i=0;i<(Int)itercubeA_p.nelements();i++) itercubeA_p[i]->reset();
-	for(Int i=0;i<(Int)itermatR_p.nelements();i++) itermatR_p[i]->reset();
+	for(int32_t i=0;i<(int32_t)itermatCoeffs_p.nelements();i++) itermatCoeffs_p[i]->reset();
+	for(int32_t i=0;i<(int32_t)itercubeA_p.nelements();i++) itercubeA_p[i]->reset();
+	for(int32_t i=0;i<(int32_t)itermatR_p.nelements();i++) itermatR_p[i]->reset();
 	
 	for(itertWork_p->reset(); !(itertWork_p->atEnd()); (*itertWork_p)++)
 	{
 		if(choosespec)
 		{
-			for(Int taylor1=0;taylor1<ntaylor_p;taylor1++)
+			for(int32_t taylor1=0;taylor1<ntaylor_p;taylor1++)
 			{
-				itertWork_p->rwCursor() += (Float)2.0*((itermatCoeffs_p[IND2(taylor1,scale)])->rwCursor())*((itermatR_p[IND2(taylor1,scale)])->rwCursor());
+				itertWork_p->rwCursor() += (float)2.0*((itermatCoeffs_p[IND2(taylor1,scale)])->rwCursor())*((itermatR_p[IND2(taylor1,scale)])->rwCursor());
 				
-				for(Int taylor2=0;taylor2<ntaylor_p;taylor2++)
+				for(int32_t taylor2=0;taylor2<ntaylor_p;taylor2++)
 					itertWork_p->rwCursor() -= ((itermatCoeffs_p[IND2(taylor1,scale)])->rwCursor())*((itermatCoeffs_p[IND2(taylor2,scale)])->rwCursor())*((itercubeA_p[IND4(taylor1,taylor2,scale,scale)])->rwCursor());
 			}
 			// Constrain location too, based on the I0 flux being > thresh*5 or something..
@@ -1048,12 +1048,12 @@ Int MultiTermLatticeCleaner<T>::computePenaltyFunction(Int scale, Float &loopgai
 		else 
 		{
 			if(loopgain > 0.5) loopgain*=0.5;
-			Float norm = sqrt((1.0/(*matA_p[scale])(0,0)));
+			float norm = sqrt((1.0/(*matA_p[scale])(0,0)));
 			itertWork_p->rwCursor() += norm*((itermatR_p[IND2(0,scale)])->rwCursor());
 		}
-		for(Int i=0;i<(Int)itermatCoeffs_p.nelements();i++) (*itermatCoeffs_p[i])++;
-		for(Int i=0;i<(Int)itercubeA_p.nelements();i++) (*itercubeA_p[i])++;
-		for(Int i=0;i<(Int)itermatR_p.nelements();i++) (*itermatR_p[i])++;
+		for(int32_t i=0;i<(int32_t)itermatCoeffs_p.nelements();i++) (*itermatCoeffs_p[i])++;
+		for(int32_t i=0;i<(int32_t)itercubeA_p.nelements();i++) (*itercubeA_p[i])++;
+		for(int32_t i=0;i<(int32_t)itermatR_p.nelements();i++) (*itermatR_p[i])++;
 	}
 	
 	return 0;
@@ -1063,7 +1063,7 @@ Int MultiTermLatticeCleaner<T>::computePenaltyFunction(Int scale, Float &loopgai
  *  Update the model images and the convolved residuals
  ****************************************/
 template <class T>
-Int MultiTermLatticeCleaner<T>::updateSolution(IPosition globalmaxpos, Int maxscaleindex, Float loopgain)
+int32_t MultiTermLatticeCleaner<T>::updateSolution(IPosition globalmaxpos, int32_t maxscaleindex, float loopgain)
 {
    gip = IPosition(4,nx_p,ny_p,1,1);  
    IPosition support(4,nx_p/2,ny_p/2,0,0);
@@ -1090,27 +1090,27 @@ Int MultiTermLatticeCleaner<T>::updateSolution(IPosition globalmaxpos, Int maxsc
    LCBox subRegionPsf(blcPsf,trcPsf,gip);
    
    /* Update the model image */
-   for(Int taylor=0;taylor<ntaylor_p;taylor++)
+   for(int32_t taylor=0;taylor<ntaylor_p;taylor++)
    {
-	   SubLattice<Float> modelSub(*vecModel_p[taylor],subRegion,True);
-	   SubLattice<Float> scaleSub((*vecScales_p[maxscaleindex]),subRegionPsf,True);
+	   SubLattice<float> modelSub(*vecModel_p[taylor],subRegion,true);
+	   SubLattice<float> scaleSub((*vecScales_p[maxscaleindex]),subRegionPsf,true);
 	   addTo(modelSub,scaleSub,loopgain*(*matCoeffs_p[IND2(taylor,maxscaleindex)]).getAt(globalmaxpos));
    }
    
    /* Update the convolved residuals */
-   for(Int scale=0;scale<nscales_p;scale++)
-   for(Int taylor1=0;taylor1<ntaylor_p;taylor1++)
+   for(int32_t scale=0;scale<nscales_p;scale++)
+   for(int32_t taylor1=0;taylor1<ntaylor_p;taylor1++)
    {
-	   SubLattice<Float> residSub((*matR_p[IND2(taylor1,scale)]),subRegion,True);
-	   for(Int taylor2=0;taylor2<ntaylor_p;taylor2++)
+	   SubLattice<float> residSub((*matR_p[IND2(taylor1,scale)]),subRegion,true);
+	   for(int32_t taylor2=0;taylor2<ntaylor_p;taylor2++)
 	   {
-		   SubLattice<Float> smoothSub((*cubeA_p[IND4(taylor1,taylor2,scale,maxscaleindex)]),subRegionPsf,True);
+		   SubLattice<float> smoothSub((*cubeA_p[IND4(taylor1,taylor2,scale,maxscaleindex)]),subRegionPsf,true);
 		   addTo(residSub,smoothSub,-1*loopgain*(*matCoeffs_p[IND2(taylor2,maxscaleindex)]).getAt(globalmaxpos));
 	   }
    }
    
    /* Update flux counters */
-   for(Int taylor=0;taylor<ntaylor_p;taylor++)
+   for(int32_t taylor=0;taylor<ntaylor_p;taylor++)
    {
 	   totalTaylorFlux_p[taylor] += loopgain*(*matCoeffs_p[IND2(taylor,maxscaleindex)]).getAt(globalmaxpos);
    }
@@ -1121,24 +1121,24 @@ Int MultiTermLatticeCleaner<T>::updateSolution(IPosition globalmaxpos, Int maxsc
 
 /* ................ */
 template <class T>
-Int MultiTermLatticeCleaner<T>::checkConvergence(Bool choosespec, Float thresh, Float fluxlimit)
+int32_t MultiTermLatticeCleaner<T>::checkConvergence(bool choosespec, float thresh, float fluxlimit)
 {
     /* Calculate convergence thresholds..... */
-    Float rmaxval=0.0;
+    float rmaxval=0.0;
     
 #if 0
     /* Use the strongest I0 component, to compare against the convergence threshold */
-    Float compval = fabs((*matCoeffs_p[IND2(0,maxscaleindex)]).getAt(globalmaxpos));
-    //Float compval = fabs((*matCoeffs_p[IND2(0,maxscaleindex)]).getAt(globalmaxpos)) * (scaleSizes_p[maxscaleindex]+1);
+    float compval = fabs((*matCoeffs_p[IND2(0,maxscaleindex)]).getAt(globalmaxpos));
+    //float compval = fabs((*matCoeffs_p[IND2(0,maxscaleindex)]).getAt(globalmaxpos)) * (scaleSizes_p[maxscaleindex]+1);
     rmaxval = MAX( rmaxval , compval );
 #endif
     
 #if 1	
     /* Use the maximum residual (current), to compare against the convergence threshold */
-    Float maxres=0.0;
+    float maxres=0.0;
     IPosition maxrespos;
     findMaxAbsLattice((*mask_p),(*matR_p[IND2(0,0)]),maxres,maxrespos);
-    Float norma = (1.0/(*matA_p[0])(0,0));
+    float norma = (1.0/(*matA_p[0])(0,0));
     
     //rmaxval = MAX(rmaxval, maxres*norma/5.0);
     rmaxval = maxres*norma;
@@ -1149,7 +1149,7 @@ Int MultiTermLatticeCleaner<T>::checkConvergence(Bool choosespec, Float thresh, 
        is picked. Until then, pick components that minimize chi-sq. After switching, 
        pick components that correspond to the peak I0 residual */
 
-    Int convergedflag = 0;
+    int32_t convergedflag = 0;
     // 0 : continue
     // 1 : converged because of fluxlimit for this cycle
     // 2 : converged because of threshold
@@ -1166,13 +1166,13 @@ Int MultiTermLatticeCleaner<T>::checkConvergence(Bool choosespec, Float thresh, 
     //else
     //{
     //  if(fabs(rmaxval) < thresh*5.0 && choosespec)
-    //  {convergedflag=0; choosespec=False; if(adbg)os << "Switching stopping criterion" << LogIO::POST;}
+    //  {convergedflag=0; choosespec=false; if(adbg)os << "Switching stopping criterion" << LogIO::POST;}
     //}
 
     /* Stop, if there are negatives on the largest scale in the Io image */
     //if(nscales_p>1 && maxscaleindex == nscales_p-2)
     //	if((*matCoeffs_p[IND2(0,maxscaleindex)]).getAt(globalmaxpos) < 0.0)
-    //	{converged = False;break;}
+    //	{converged = false;break;}
  
     return convergedflag;
 
@@ -1184,12 +1184,12 @@ Int MultiTermLatticeCleaner<T>::checkConvergence(Bool choosespec, Float thresh, 
  *         - restrict this to within the inner quarter.
  *************************************/
 template <class T>
-Bool MultiTermLatticeCleaner<T>::findMaxAbsLattice(const TempLattice<Float>& masklat,const Lattice<Float>& lattice,Float& maxAbs,IPosition& posMaxAbs, Bool flip)
+bool MultiTermLatticeCleaner<T>::findMaxAbsLattice(const TempLattice<float>& masklat,const Lattice<float>& lattice,float& maxAbs,IPosition& posMaxAbs, bool flip)
 {
 
   AlwaysAssert(masklat.shape()==lattice.shape(), AipsError);
 
-  Array<Float> msk;
+  Array<float> msk;
   
   posMaxAbs = IPosition(lattice.shape().nelements(), 0);
   maxAbs=0.0;
@@ -1198,17 +1198,17 @@ Bool MultiTermLatticeCleaner<T>::findMaxAbsLattice(const TempLattice<Float>& mas
   TiledLineStepper ls(lattice.shape(), tileShape, 0);
   TiledLineStepper lsm(masklat.shape(), tileShape, 0);
   {
-    RO_LatticeIterator<Float> li(lattice, ls);
-    RO_LatticeIterator<Float> lim(masklat, lsm);
+    RO_LatticeIterator<float> li(lattice, ls);
+    RO_LatticeIterator<float> lim(masklat, lsm);
     for(li.reset(),lim.reset();!li.atEnd();li++,lim++) 
     {
       IPosition posMax=li.position();
       IPosition posMin=li.position();
-      Float maxVal=0.0;
-      Float minVal=0.0;
+      float maxVal=0.0;
+      float minVal=0.0;
       
       msk = lim.cursor();
-      if(flip) msk = (Float)1.0 - msk;
+      if(flip) msk = (float)1.0 - msk;
       
       //minMaxMasked(minVal, maxVal, posMin, posMax, li.cursor(),lim.cursor());
       minMaxMasked(minVal, maxVal, posMin, posMax, li.cursor(),msk);
@@ -1223,7 +1223,7 @@ Bool MultiTermLatticeCleaner<T>::findMaxAbsLattice(const TempLattice<Float>& mas
     }
   }
 
-  return True;
+  return true;
 }
 
 

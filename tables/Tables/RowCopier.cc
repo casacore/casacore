@@ -43,7 +43,7 @@ public:
     ColumnHolder(Table &inTab, const Table &outTab);
     ~ColumnHolder();
     void attach(const String &outCol, const String &inCol);
-    Bool copy(rownr_t toRow, rownr_t fromRow);
+    bool copy(rownr_t toRow, rownr_t fromRow);
 private:
     //# The following constructors and operator don't seem to be useful
     ColumnHolder();
@@ -68,7 +68,7 @@ ColumnHolder::ColumnHolder(Table &outTab, const Table &inTab)
 
 ColumnHolder::~ColumnHolder()
 {
-    for (uInt colNum=0; colNum < inTabCol.nelements(); colNum++) {
+    for (uint32_t colNum=0; colNum < inTabCol.nelements(); colNum++) {
 	delete inTabCol[colNum];   delete outTabCol[colNum];
 	inTabCol[colNum] = 0;      outTabCol[colNum] = 0;
     }
@@ -105,17 +105,17 @@ void ColumnHolder::attach(const String &outCol, const String &inCol)
     }
 }
 
-Bool ColumnHolder::copy(rownr_t toRow, rownr_t fromRow)
+bool ColumnHolder::copy(rownr_t toRow, rownr_t fromRow)
 {
     if (fromRow >= in.nrow() || toRow >= out.nrow()) {
-	return False;
+	return false;
     }
 
     // loop over all columns
-    for (uInt i=0; i < inTabCol.nelements(); i++) {
+    for (uint32_t i=0; i < inTabCol.nelements(); i++) {
 	outTabCol[i]->put(toRow, (*inTabCol[i]), (fromRow));
     }
-    return True;
+    return true;
 }
 
 RowCopier::RowCopier(Table &out, const Table &in)
@@ -125,7 +125,7 @@ RowCopier::RowCopier(Table &out, const Table &in)
     }
 
     columns_p = new ColumnHolder(out,in);
-    for (uInt i=0; i < out.tableDesc().ncolumn(); i++) {
+    for (uint32_t i=0; i < out.tableDesc().ncolumn(); i++) {
 	TableColumn outCol(out, i);
         String name (outCol.columnDesc().name());
 	if (in.tableDesc().isColumn(name)) {
@@ -148,12 +148,12 @@ RowCopier::RowCopier(Table &out, const Table &in,
     if (inNames.nelements() != outNames.nelements()) {
 	throw(TableError("RowCopier: Non-conformant column name vectors"));
     }
-    for (uInt i=0; i<inNames.nelements(); i++) {
+    for (uint32_t i=0; i<inNames.nelements(); i++) {
 	columns_p->attach(outNames(i), inNames(i));
     }
 }
 
-Bool RowCopier::copy(rownr_t toRow, rownr_t fromRow)
+bool RowCopier::copy(rownr_t toRow, rownr_t fromRow)
 {
     return columns_p->copy(toRow, fromRow);
 }

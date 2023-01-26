@@ -71,12 +71,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fullTEN_p(),ms_p(NULL),  antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""), taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
-    feedExpr_p(""), exprOrder_p(MAX_EXPR, Int(NO_EXPR)), antenna1IDs_p(), antenna2IDs_p(),
+    feedExpr_p(""), exprOrder_p(MAX_EXPR, int32_t(NO_EXPR)), antenna1IDs_p(), antenna2IDs_p(),
     fieldIDs_p(), spwIDs_p(), scanIDs_p(), arrayIDs_p(), ddIDs_p(), observationIDs_p(),
     feed1IDs_p(), feed2IDs_p(), baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
-    isMS_p(True), toTENCalled_p(False)
+    isMS_p(true), toTENCalled_p(false)
   {
     clear(); // Clear the internals of the MSSelection object
     clearErrorHandlers(); // Clear the static error handlers
@@ -106,11 +106,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fullTEN_p(), ms_p(&ms), antennaExpr_p(""), fieldExpr_p(""),
     spwExpr_p(""), scanExpr_p(""), arrayExpr_p(""), timeExpr_p(""), uvDistExpr_p(""),
     polnExpr_p(""),taqlExpr_p(""), stateExpr_p(""), observationExpr_p(""),
-    feedExpr_p(""), exprOrder_p(MAX_EXPR, Int(NO_EXPR)), antenna1IDs_p(), antenna2IDs_p(),
+    feedExpr_p(""), exprOrder_p(MAX_EXPR, int32_t(NO_EXPR)), antenna1IDs_p(), antenna2IDs_p(),
     fieldIDs_p(), spwIDs_p(), scanIDs_p(),ddIDs_p(),baselineIDs_p(), feedPairIDs_p(),
     selectedTimesList_p(), selectedUVRange_p(),selectedUVUnits_p(),
     maxScans_p(1000), maxObs_p(1000), maxArray_p(1000), 
-    isMS_p(True), toTENCalled_p(False)
+    isMS_p(true), toTENCalled_p(false)
   {
     //
     // Do not initialize the private string variables directly. Instead
@@ -177,7 +177,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     ms_p=msLike.asMS();
     isMS_p=msLike.isMS();
-    toTENCalled_p=False;
+    toTENCalled_p=false;
     //
     // Do not initialize the private string variables
     // directly. Instead using the setExpr* methods to do that so that
@@ -361,9 +361,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // else if (ms_p==NULL) throw(MSSelectionError("MSSelection::getTEN() called without setting the MS"));
     // else toTableExprNode(ms_p); 
 
-    if (isMS_p==False)
+    if (isMS_p==false)
       {
-	if (toTENCalled_p==True) return fullTEN_p;
+	if (toTENCalled_p==true) return fullTEN_p;
 	else 
 	  throw(MSSelectionError("MSSelection::getTEN() called before calling MSSelection::toTableExprNode()"));
       }
@@ -380,11 +380,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
   
-  String MSSelection::indexExprStr(Vector<Int> index)
+  String MSSelection::indexExprStr(Vector<int32_t> index)
   {
     String expression;
     
-    for(uInt i=0; i<index.nelements(); i++)
+    for(uint32_t i=0; i<index.nelements(); i++)
       {
 	if(i==0)
 	  expression = String::toString(index[i]);
@@ -405,7 +405,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // to be invalid now (Nov. 2006).
     //expression = "'";
     
-    for(uInt i=0; i<name.nelements(); i++)
+    for(uint32_t i=0; i<name.nelements(); i++)
       {
 	if(i==0)
 	  expression = expression + name[i];
@@ -498,7 +498,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  if (MSAntennaParse::thisMSAErrorHandler.null())
 	    {
 	      MSSelectionErrorHandler tt;
-	      setErrorHandler(ANTENNA_EXPR, &tt, True);
+	      setErrorHandler(ANTENNA_EXPR, &tt, true);
 	    }
 	  else
 	    MSAntennaParse::thisMSAErrorHandler->reset();
@@ -509,7 +509,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  if (MSFeedParse::thisMSFErrorHandler.null())
 	    {
 	      MSSelectionErrorHandler tt;
-	      setErrorHandler(FEED_EXPR, &tt, True);
+	      setErrorHandler(FEED_EXPR, &tt, true);
 	    }
 	  else
 	    MSFeedParse::thisMSFErrorHandler->reset();
@@ -520,7 +520,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  if (MSStateParse::thisMSSErrorHandler.null())
 	    {
 	      MSSelectionErrorHandler tt;
-	      setErrorHandler(STATE_EXPR, &tt, True);
+	      setErrorHandler(STATE_EXPR, &tt, true);
 	    }
 	   else
 	     MSStateParse::thisMSSErrorHandler->reset();
@@ -531,7 +531,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  if (MSSpwParse::thisMSSpwErrorHandler.null())
 	    {
 	      MSSSpwErrorHandler tt;
-	      setErrorHandler(SPW_EXPR, &tt, True /*overRide*/);
+	      setErrorHandler(SPW_EXPR, &tt, true /*overRide*/);
 	    }
 	  else
 	    MSSpwParse::thisMSSpwErrorHandler->reset();
@@ -557,11 +557,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     // Interpret all expressions and produce a consolidated TEN.  
     //
-    if (fullTEN_p.isNull()==False) return fullTEN_p;
+    if (fullTEN_p.isNull()==false) return fullTEN_p;
 
     const MeasurementSet *ms=getMS(msLike);
     resetMS(*ms);
-    toTENCalled_p=True;
+    toTENCalled_p=true;
     //    ms_p = msLike->asMS();
 
 
@@ -580,7 +580,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     try
       {
-	for(uInt i=0; i<exprOrder_p.nelements(); i++)
+	for(uint32_t i=0; i<exprOrder_p.nelements(); i++)
 	  {
 	    TableExprNode node;
 	    switch(exprOrder_p[i])
@@ -787,7 +787,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The original code using old-styled interface to the various
     // parsers is available as comments in r19937 in the SVN repos.
     //
-    if (fullTEN_p.isNull()==False) return fullTEN_p;
+    if (fullTEN_p.isNull()==false) return fullTEN_p;
     
     MSInterface msLike(*ms);
     return toTableExprNode(&msLike);
@@ -797,7 +797,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //----------------------------------------------------------------------------
   void MSSelection::setErrorHandler(const MSExprType type,
                                     MSSelectionErrorHandler* mssEH,
-				    const Bool overRide)
+				    const bool overRide)
   {
     //
     // We make a copy (clone) of the supplied error handler pointer
@@ -883,7 +883,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   //----------------------------------------------------------------------------
-  Bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, 
+  bool MSSelection::getSelectedMS(MeasurementSet& selectedMS, 
 				  const String& outMSName)
   {
     if (fullTEN_p.isNull()) fullTEN_p=toTableExprNode(ms_p);
@@ -896,11 +896,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::exprIsNull(const MSExprType type)
+  bool MSSelection::exprIsNull(const MSExprType type)
   {
-    Bool exprIsNull=False;
+    bool exprIsNull=false;
     if (type == NO_EXPR)
-      for(uInt i=0; i<exprOrder_p.nelements();  i++)
+      for(uint32_t i=0; i<exprOrder_p.nelements();  i++)
 	{
 	  exprIsNull = 
 	    (antennaExpr_p     == "") & 
@@ -945,10 +945,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   void MSSelection::clearErrorHandlers()
   {
-    setErrorHandler(STATE_EXPR,NULL,True);
-    setErrorHandler(SPW_EXPR,NULL,True);
-    setErrorHandler(ANTENNA_EXPR,NULL,True);
-    setErrorHandler(FEED_EXPR,NULL,True);
+    setErrorHandler(STATE_EXPR,NULL,true);
+    setErrorHandler(SPW_EXPR,NULL,true);
+    setErrorHandler(ANTENNA_EXPR,NULL,true);
+    setErrorHandler(FEED_EXPR,NULL,true);
   }
   //----------------------------------------------------------------------------
   void MSSelection::clear(const MSExprType type)
@@ -967,11 +967,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	polnExpr_p    = "";
 	stateExpr_p    = "";
 	observationExpr_p    = "";
-	exprOrder_p = Vector<Int>(MAX_EXPR, int(NO_EXPR));
+	exprOrder_p = Vector<int32_t>(MAX_EXPR, int(NO_EXPR));
       }
     else
       {
-	for(uInt i=0; i<exprOrder_p.nelements();  i++)
+	for(uint32_t i=0; i<exprOrder_p.nelements();  i++)
 	  if (exprOrder_p[i] == type)
 	    {
 	      exprOrder_p[i] = NO_EXPR;
@@ -998,15 +998,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setOrder(MSSelection::MSExprType type)
+  bool MSSelection::setOrder(MSSelection::MSExprType type)
   {
-    Bool ret=False;
-    for(uInt i=0; i<exprOrder_p.nelements(); i++)
+    bool ret=false;
+    for(uint32_t i=0; i<exprOrder_p.nelements(); i++)
       {
 	if(exprOrder_p[i] == NO_EXPR)
 	  {
 	    exprOrder_p[i] = type;
-	    ret=True;
+	    ret=true;
 	    break;
 	  }
       }
@@ -1015,7 +1015,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setAntennaExpr(const String& antennaExpr)
+  bool MSSelection::setAntennaExpr(const String& antennaExpr)
   {
     // Set the antenna
     // Input:
@@ -1027,15 +1027,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	antennaExpr_p = antennaExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
 
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setFeedExpr(const String& feedExpr)
+  bool MSSelection::setFeedExpr(const String& feedExpr)
   {
     // Set the feed
     // Input:
@@ -1047,15 +1047,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	feedExpr_p = feedExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
 
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setFieldExpr(const String& fieldExpr)
+  bool MSSelection::setFieldExpr(const String& fieldExpr)
   {
     // Set the field
     // Input:
@@ -1067,15 +1067,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	fieldExpr_p = fieldExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setSpwExpr(const String& spwExpr)
+  bool MSSelection::setSpwExpr(const String& spwExpr)
   {
     // Set the SPW
     // Input:
@@ -1087,15 +1087,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	spwExpr_p = spwExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setArrayExpr(const String& arrayExpr)
+  bool MSSelection::setArrayExpr(const String& arrayExpr)
   {
     // Set the array
     // Input:
@@ -1107,15 +1107,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	arrayExpr_p = arrayExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setScanExpr(const String& scanExpr)
+  bool MSSelection::setScanExpr(const String& scanExpr)
   {
     // Set the scan
     // Input:
@@ -1127,15 +1127,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	scanExpr_p = scanExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setObservationExpr(const String& observationExpr)
+  bool MSSelection::setObservationExpr(const String& observationExpr)
   {
     // Set the scan
     // Input:
@@ -1147,15 +1147,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	observationExpr_p = observationExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setTimeExpr(const String& timeExpr)
+  bool MSSelection::setTimeExpr(const String& timeExpr)
   {
     // Set the time
     // Input:
@@ -1167,15 +1167,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	timeExpr_p = timeExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setUvDistExpr(const String& uvDistExpr)
+  bool MSSelection::setUvDistExpr(const String& uvDistExpr)
   {
     // Set the UV distribution
     // Input:
@@ -1187,15 +1187,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	uvDistExpr_p = uvDistExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setStateExpr(const String& stateExpr)
+  bool MSSelection::setStateExpr(const String& stateExpr)
   {
     // Set the state table Obs_mode selection expression
     // Input:
@@ -1207,15 +1207,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	stateExpr_p = stateExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setTaQLExpr(const String& taqlExpr)
+  bool MSSelection::setTaQLExpr(const String& taqlExpr)
   {
     // Set the TaQL expression
     // Input:
@@ -1227,14 +1227,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	taqlExpr_p = taqlExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   //----------------------------------------------------------------------------
   
-  Bool MSSelection::setPolnExpr(const String& polnExpr)
+  bool MSSelection::setPolnExpr(const String& polnExpr)
   {
     // Set the Poln expression
     // Input:
@@ -1246,10 +1246,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
 	polnExpr_p = polnExpr;
 	resetTEN();
-	return True;
+	return true;
       }
     
-    return False;
+    return false;
   }
   const String MSSelection::getExpr(const MSExprType type)
   {
@@ -1278,39 +1278,39 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // associated channel selection indices in ascending order of
   // SPWIDs.
   //
-  Matrix<Int> MSSelection::getChanList(const MeasurementSet* ms, const Int defaultStep,
-				       const Bool sorted) 
+  Matrix<int32_t> MSSelection::getChanList(const MeasurementSet* ms, const int32_t defaultStep,
+				       const bool sorted) 
   {
     if (chanIDs_p.nelements() <= 0) getTEN(ms); 
-    uInt nrows=chanIDs_p.nrow(), ncols=chanIDs_p.ncolumn();
-    Matrix<Int> chanIDList;
+    uint32_t nrows=chanIDs_p.nrow(), ncols=chanIDs_p.ncolumn();
+    Matrix<int32_t> chanIDList;
     if (nrows > 0)
       {
 	if (sorted)
 	  {
-	    Vector<Int> spwIDList(chanIDs_p.column(0));//Extract the SPW IDs
-	    Vector<uInt> sortedNdx;
+	    Vector<int32_t> spwIDList(chanIDs_p.column(0));//Extract the SPW IDs
+	    Vector<uint32_t> sortedNdx;
 	    //
 	    // Make a list of indices which will sort the chanID_p Matrix on
 	    // SPW ID (the first column of each row).
 	    //
-	    Bool deleteit;
-	    Sort sort(spwIDList.getStorage(deleteit), sizeof(Int));
-	    sort.sortKey((uInt)0, TpInt);
+	    bool deleteit;
+	    Sort sort(spwIDList.getStorage(deleteit), sizeof(int32_t));
+	    sort.sortKey((uint32_t)0, TpInt);
 	    sort.sort(sortedNdx, nrows);
 	    //
 	    // Using the sorted indices, copy from the unsorted private
 	    // ChaIDs_p to the output (sorted) Matrix chandIDList.
 	    //
 	    chanIDList.resize(chanIDs_p.shape());
-	    for(uInt targetRow=0; targetRow<nrows; targetRow++)
-	      for (uInt j=0; j<ncols; j++)
+	    for(uint32_t targetRow=0; targetRow<nrows; targetRow++)
+	      for (uint32_t j=0; j<ncols; j++)
 		chanIDList(targetRow,j)=chanIDs_p(sortedNdx(targetRow),j);
 	  }
 	else
 	  chanIDList = chanIDs_p;
 	
-	for(uInt targetRow=0; targetRow<nrows; targetRow++)
+	for(uint32_t targetRow=0; targetRow<nrows; targetRow++)
 	  {
 	    if (chanIDList(targetRow,ncols-1) == 0)
 	      chanIDList(targetRow,ncols-1)=defaultStep;
@@ -1327,32 +1327,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // associated channel selection indices in ascending order of
   // SPWIDs.
   //
-  Matrix<Double> MSSelection::getChanFreqList(const MeasurementSet* ms, 
-					      const Bool sorted) 
+  Matrix<double> MSSelection::getChanFreqList(const MeasurementSet* ms, 
+					      const bool sorted) 
   {
     LogIO log_l(LogOrigin("MSSelection", "getChanFreqList"));
 
     if (chanIDs_p.nelements() == 0) getTEN(ms); 
-    Matrix<Int> chanList_l = getChanList(ms, 1, sorted);
-    Matrix<Double> freqList_l;
+    Matrix<int32_t> chanList_l = getChanList(ms, 1, sorted);
+    Matrix<double> freqList_l;
     freqList_l.resize(chanList_l.shape());
     
     if (chanList_l.shape()(0) == 0) return freqList_l;
 
     const MSSpWindowColumns msSpwSubTable(ms_p->spectralWindow());
-    if (msSpwSubTable.nrow() <= (uInt)max(chanList_l.column(0)))
+    if (msSpwSubTable.nrow() <= (uint32_t)max(chanList_l.column(0)))
 	throw(MSSelectionError(String("MSS::getChanFreqList:: Internal error:  Selected list of SPW IDs > "
 				      "no. of rows in the SPECTRAL_WINDOW sub-table.")));
-    Int spwID;
-    for (uInt i=0; i < chanList_l.shape()(0); i++)
+    int32_t spwID;
+    for (uint32_t i=0; i < chanList_l.shape()(0); i++)
       {
 	spwID = chanList_l(i,0); // First column has the SPW ID
-	Array<Double> chanFreq(msSpwSubTable.chanFreq()(spwID));
-	Double avgChanWidth = chanList_l(i,3)*sum(msSpwSubTable.chanWidth()(spwID))
+	Array<double> chanFreq(msSpwSubTable.chanFreq()(spwID));
+	double avgChanWidth = chanList_l(i,3)*sum(msSpwSubTable.chanWidth()(spwID))
 	  /msSpwSubTable.chanWidth()(spwID).nelements();
 	
-	Int validStartChan, validEndChan;
-	freqList_l(i,0) = (Double)chanList_l(i,0); // The SPW ID
+	int32_t validStartChan, validEndChan;
+	freqList_l(i,0) = (double)chanList_l(i,0); // The SPW ID
 	validStartChan  = chanList_l(i,1); // chanList is already verified to be within valid limts [0,nchan-1]
 	validEndChan    = chanList_l(i,2);
 	freqList_l(i,1) = chanFreq(IPosition(1,validStartChan)); //chanFreq(IPosition(1,chanList_l(i,1))); // The the freq. of start channel in Hz
@@ -1365,25 +1365,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //----------------------------------------------------------------------------
   
   void MSSelection::getChanSlices(Vector<Vector<Slice> >& chanslices,
-				  const MeasurementSet* ms,const Int defaultChanStep) {
+				  const MeasurementSet* ms,const int32_t defaultChanStep) {
     
     // The total number of spws
-    Int nspw=ms->spectralWindow().nrow();
+    int32_t nspw=ms->spectralWindow().nrow();
     
     // Nominally empty selection for all spws
     chanslices.resize(nspw);
     chanslices.set(Vector<Slice>());
     
     // Get the chan selection matrix
-    Matrix<Int> chanmat=this->getChanList(ms,defaultChanStep);
+    Matrix<int32_t> chanmat=this->getChanList(ms,defaultChanStep);
     
-    for (uInt i=0;i<chanmat.nrow();++i) {
+    for (uint32_t i=0;i<chanmat.nrow();++i) {
       // Reference to the current spw's slice list
       Vector<Slice>& currspwsl(chanslices(chanmat(i,0)));
       
       // Add a slice element and fill it
-      Int islice=currspwsl.nelements();
-      currspwsl.resize(islice+1,True);
+      int32_t islice=currspwsl.nelements();
+      currspwsl.resize(islice+1,true);
       currspwsl(islice)=Slice(chanmat(i,1),
 			      (chanmat(i,2)-chanmat(i,1)+chanmat(i,3))/chanmat(i,3),
 			      // chanmat(i,2)-chanmat(i,1)+1,
@@ -1398,23 +1398,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				  const MeasurementSet* ms) {
     
     // The total number of polids
-    Int npol=ms->polarization().nrow();
+    int32_t npol=ms->polarization().nrow();
     
     // Nominally empty selection for all polids
     corrslices.resize(npol);
     corrslices.set(Vector<Slice>());
     
     // Get the corr indices as an ordered map
-    std::map<Int, Vector<Vector<Int> > > corrmap(this->getCorrMap(ms));
+    std::map<int32_t, Vector<Vector<int32_t> > > corrmap(this->getCorrMap(ms));
     
     // Iterate over the ordered map to fill the slices
     for (const auto& elem : corrmap) {
-      Int pol=elem.first;
-      Vector<Int> corridx=elem.second[0];
+      int32_t pol=elem.first;
+      Vector<int32_t> corridx=elem.second[0];
       
-      Int ncorr=corridx.nelements();
+      int32_t ncorr=corridx.nelements();
       corrslices(pol).resize(ncorr);
-      for (Int i=0;i<ncorr;++i)
+      for (int32_t i=0;i<ncorr;++i)
 	corrslices(pol)(i)=Slice(corridx(i),1,1);
     }
     
@@ -1433,14 +1433,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     //   cout << "MSSel::fromSI, at start, selectionItem.nfields=" << selectionItem.nfields()
     //        << endl;
-    //   for (uInt fld=0; fld<selectionItem.nfields(); fld++) {
+    //   for (uint32_t fld=0; fld<selectionItem.nfields(); fld++) {
     //     cout << "MSSel::fromGR, fld= " << fld << ", name= "
     // 	 << selectionItem.name(fld) << ", type= "
     // 	 << selectionItem.type(fld) << endl;
     //   }
     //   cout << "------------------------------------------------------" << endl;
     
-    exprOrder_p = Vector<Int>(MAX_EXPR, Int(NO_EXPR));
+    exprOrder_p = Vector<int32_t>(MAX_EXPR, int32_t(NO_EXPR));
     
     // Extract and set all expressions
     //
@@ -1504,20 +1504,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     clearErrorHandlers();
   }
   
-  Bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
+  bool MSSelection::definedAndSet(const Record& inpRec, const String& fieldName)
   {
     // Check if a record field is defined and not unset
     // Input:
     //    inpRec          const Record&     Input Record
     //    fieldName       const String&     Field name
     // Ouput:
-    //    definedAndSet   Bool              True if field defined and
+    //    definedAndSet   bool              true if field defined and
     //                                      not unset
     //
-    Bool retval = False;
+    bool retval = false;
     // Check if record field is defined
     if (inpRec.isDefined(fieldName)) {
-      retval = True;
+      retval = true;
       // Now check if unset
       //    if (inpRec.dataType(fieldName) == TpRecord) {
       //      retval = !Unset::isUnset(inpRec.subRecord(fieldName));

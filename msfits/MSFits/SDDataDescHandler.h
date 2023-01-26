@@ -99,23 +99,23 @@ public:
     SDDataDescHandler &operator=(const SDDataDescHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &) {rownr_p=-1;}
     
     // fill - a new row is added only when necessary
-    void fill(const Record &row, Int spwinId, Int polId);
+    void fill(const Record &row, int32_t spwinId, int32_t polId);
 
     // get the current dataDesc ID
-    Int dataDescId() {return rownr_p;}
+    int32_t dataDescId() {return rownr_p;}
 private:
-    RecordFieldPtr<Int> spwinIdKey_p, polIdKey_p;
+    RecordFieldPtr<int32_t> spwinIdKey_p, polIdKey_p;
     ColumnsIndex *index_p;
     MSDataDescription *msDataDesc_p;
     MSDataDescColumns *msDataDescCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
     // cleanup everything
     void clearAll();

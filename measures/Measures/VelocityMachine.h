@@ -121,7 +121,7 @@ class MeasFrame;
 // between velocities and frequencies if the input argument type (e.g. an
 // MVFrequency) can be deduced. In other cases makeFrequency() or
 // makeVelocity() should be used (e.g. if the argument type is a
-// simple Double).
+// simple double).
 // </synopsis>
 //
 // <example>
@@ -223,13 +223,13 @@ public:
   //# Operators
   // Return velocity if frequency given, or a frequency if a velocity is given
   // <group>
-  const Quantum<Double> &operator()(const MVFrequency &in);
-  const Quantum<Double> &operator()(const MVDoppler &in);
-  const Quantum<Double> &operator()(const Quantum<Double> &in);
-  const Quantum<Double> &makeVelocity(Double in);
-  const Quantum<Double> &makeFrequency(Double in);
-  const Quantum<Vector<Double> > &makeVelocity(const Vector<Double> &in);
-  const Quantum<Vector<Double> > &makeFrequency(const Vector<Double> &in);
+  const Quantum<double> &operator()(const MVFrequency &in);
+  const Quantum<double> &operator()(const MVDoppler &in);
+  const Quantum<double> &operator()(const Quantum<double> &in);
+  const Quantum<double> &makeVelocity(double in);
+  const Quantum<double> &makeFrequency(double in);
+  const Quantum<Vector<double> > &makeVelocity(const Vector<double> &in);
+  const Quantum<Vector<double> > &makeFrequency(const Vector<double> &in);
   // </group>
 
   //# Member functions
@@ -288,7 +288,7 @@ private:
   // Velocity units
   // <group>
   Unit vun_p;
-  Double vfac_p;
+  double vfac_p;
   // </group>
   // Frequency conversion forward
   MFrequency::Convert cvfv_p;
@@ -300,10 +300,10 @@ private:
   MDoppler::Convert cvov_p;
   // Result
   // <group>
-  Quantum<Double> resv_p;
-  Quantum<Double> resf_p;
-  Quantum<Vector<Double> > vresv_p;
-  Quantum<Vector<Double> > vresf_p;
+  Quantum<double> resv_p;
+  Quantum<double> resf_p;
+  Quantum<Vector<double> > vresv_p;
+  Quantum<Vector<double> > vresf_p;
   // </group>
 
   //# Private Member Functions

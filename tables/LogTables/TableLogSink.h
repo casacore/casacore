@@ -115,18 +115,18 @@ public:
   void reopenRW (const LogFilterInterface& filter);
 
   // If the message passes the filter, write it to the log table.
-  virtual Bool postLocally (const LogMessage& message);
+  virtual bool postLocally (const LogMessage& message);
 
   // Get number of messages in sink.
-  virtual uInt nelements() const;
+  virtual uint32_t nelements() const;
 
   // Get given part of the i-th message from the sink.
   // <group>
-  virtual Double getTime (uInt i) const;
-  virtual String getPriority (uInt i) const;
-  virtual String getMessage (uInt i) const;
-  virtual String getLocation (uInt i) const;
-  virtual String getObjectID (uInt i) const;
+  virtual double getTime (uint32_t i) const;
+  virtual String getPriority (uint32_t i) const;
+  virtual String getMessage (uint32_t i) const;
+  virtual String getLocation (uint32_t i) const;
+  virtual String getObjectID (uint32_t i) const;
   // </group>
 
   // Access to the actual log table and its columns.
@@ -140,8 +140,8 @@ public:
   // <group>
   const Table& table() const;
   Table& table();
-  const ScalarColumn<Double>& roTime() const;
-  ScalarColumn<Double>& time();
+  const ScalarColumn<double>& roTime() const;
+  ScalarColumn<double>& time();
   const ScalarColumn<String>& roPriority() const;
   ScalarColumn<String>& priority();
   const ScalarColumn<String>& roMessage() const;
@@ -155,7 +155,7 @@ public:
   // Defines the minimal set of columns in the table (more may exist, but
   // are ignored.
   enum Columns { 
-    // MJD in seconds, UT. (Double.)
+    // MJD in seconds, UT. (double.)
     TIME, 
     // Message importance. (String).
     PRIORITY,
@@ -180,10 +180,10 @@ public:
   static TableDesc logTableDescription();
 
   // Write out any pending output to the table.
-  virtual void flush (Bool global=True);
+  virtual void flush (bool global=true);
 
   // Write a message (usually from another logsink) into the local one.
-  virtual void writeLocally (Double time, const String& message,
+  virtual void writeLocally (double time, const String& message,
 			     const String& priority, const String& location,
 			     const String& objectID);
 
@@ -219,7 +219,7 @@ private:
 
 
   Table log_table_p;
-  ScalarColumn<Double>  time_p;
+  ScalarColumn<double>  time_p;
   ScalarColumn<String>  priority_p;
   ScalarColumn<String>  message_p;
   // Origin
@@ -232,9 +232,9 @@ private:
 inline const Table& TableLogSink::table() const {return log_table_p;}
 inline Table& TableLogSink::table() {return log_table_p;}
 
-inline const ScalarColumn<Double>& TableLogSink::roTime() const
+inline const ScalarColumn<double>& TableLogSink::roTime() const
   {return time_p;}
-inline ScalarColumn<Double>& TableLogSink::time()
+inline ScalarColumn<double>& TableLogSink::time()
   {return time_p;}
 inline const ScalarColumn<String>& TableLogSink::roPriority() const 
   {return priority_p;}

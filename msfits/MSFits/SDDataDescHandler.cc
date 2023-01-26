@@ -75,20 +75,20 @@ SDDataDescHandler &SDDataDescHandler::operator=(const SDDataDescHandler &other)
     return *this;
 }
 
-void SDDataDescHandler::attach(MeasurementSet &ms, Vector<Bool> &, const Record &)
+void SDDataDescHandler::attach(MeasurementSet &ms, Vector<bool> &, const Record &)
 {
     clearAll();
     initAll(ms);
 }
 
-void SDDataDescHandler::fill(const Record &, Int spwinId, Int polId)
+void SDDataDescHandler::fill(const Record &, int32_t spwinId, int32_t polId)
 {
     // don't bother unless there is something there
     if (msDataDesc_p) {
 	*spwinIdKey_p = spwinId;
 	*polIdKey_p = polId;
-	Bool found = False;
-	uInt foundRow = index_p->getRowNumber(found);
+	bool found = false;
+	uint32_t foundRow = index_p->getRowNumber(found);
 	if (found) {
 	    // we have a winner
 	    rownr_p = foundRow;
@@ -98,7 +98,7 @@ void SDDataDescHandler::fill(const Record &, Int spwinId, Int polId)
 	    msDataDesc_p->addRow();
 	    msDataDescCols_p->spectralWindowId().put(rownr_p, *spwinIdKey_p);
 	    msDataDescCols_p->polarizationId().put(rownr_p, *polIdKey_p);
-	    msDataDescCols_p->flagRow().put(rownr_p, False);
+	    msDataDescCols_p->flagRow().put(rownr_p, false);
 	}
     }
 }

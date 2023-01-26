@@ -38,19 +38,19 @@ FunctionParam<T>::FunctionParam()
     maskedPtr_p(0) {}
 
 template<class T>
-FunctionParam<T>::FunctionParam(const uInt n)
+FunctionParam<T>::FunctionParam(const uint32_t n)
   : npar_p(n),
-    param_p(npar_p), mask_p(npar_p, True),
+    param_p(npar_p), mask_p(npar_p, true),
     maskedPtr_p(0) {
-  for (uInt i=0; i<npar_p; ++i) param_p[i] = T(0);
+  for (uint32_t i=0; i<npar_p; ++i) param_p[i] = T(0);
 }
 
 template<class T>
 FunctionParam<T>::FunctionParam(const Vector<T> &in)
   : npar_p(in.nelements()),
-    param_p(npar_p), mask_p(npar_p, True),
+    param_p(npar_p), mask_p(npar_p, true),
     maskedPtr_p(0) {
-  for (uInt i=0; i<npar_p; ++i) param_p[i] = in[i];
+  for (uint32_t i=0; i<npar_p; ++i) param_p[i] = in[i];
 }
 
 template<class T>
@@ -58,7 +58,7 @@ FunctionParam<T>::FunctionParam(const FunctionParam<T> &other)
   : npar_p(other.param_p.nelements()),
     param_p(npar_p), mask_p(npar_p),
     maskedPtr_p(0) {
-  for (uInt i=0; i<npar_p; ++i) param_p[i] = other.param_p[i];
+  for (uint32_t i=0; i<npar_p; ++i) param_p[i] = other.param_p[i];
   mask_p = other.mask_p;
 }
 
@@ -82,42 +82,42 @@ FunctionParam<T> &FunctionParam<T>::operator=(const FunctionParam<T> &other) {
 }
 
 template<class T>
-Bool FunctionParam<T>::operator==(const FunctionParam<T> &other) const {
-  if (npar_p != other.npar_p) return False;
-  for (uInt i=0; i<npar_p; ++i) {
+bool FunctionParam<T>::operator==(const FunctionParam<T> &other) const {
+  if (npar_p != other.npar_p) return false;
+  for (uint32_t i=0; i<npar_p; ++i) {
     if (param_p[i] != other.param_p[i] ||
-	mask_p[i] != other.mask_p[i]) return False;
+	mask_p[i] != other.mask_p[i]) return false;
   }
-  return True;
+  return true;
 }
 
 template<class T>
-Bool FunctionParam<T>::operator!=(const FunctionParam<T> &other) const {
+bool FunctionParam<T>::operator!=(const FunctionParam<T> &other) const {
   return (!((*this) == other));
 }
 
 //# Member functions
 template<class T>
-Bool &FunctionParam<T>::mask(const uInt n) {
+bool &FunctionParam<T>::mask(const uint32_t n) {
   clearMaskedPtr();
   return mask_p[n];
 }
 
 template<class T>
 void FunctionParam<T>::setParameters(const Vector<T> &params) {
-  uInt n = ((params.nelements() < npar_p) ? params.nelements() : npar_p);
-  for (uInt i=0; i<n; ++i) param_p[i] = params[i];
+  uint32_t n = ((params.nelements() < npar_p) ? params.nelements() : npar_p);
+  for (uint32_t i=0; i<n; ++i) param_p[i] = params[i];
 }
 
 template<class T>
-void FunctionParam<T>::setParamMasks(const Vector<Bool> &masks) {
-  uInt n = ((masks.nelements() < npar_p) ? masks.nelements() : npar_p);
-  for (uInt i=0; i<n; ++i) mask_p[i] = masks[i];
+void FunctionParam<T>::setParamMasks(const Vector<bool> &masks) {
+  uint32_t n = ((masks.nelements() < npar_p) ? masks.nelements() : npar_p);
+  for (uint32_t i=0; i<n; ++i) mask_p[i] = masks[i];
   clearMaskedPtr();
 }
 
 template<class T>
-uInt FunctionParam<T>::nMaskedParameters() const {
+uint32_t FunctionParam<T>::nMaskedParameters() const {
   createMaskedPtr();
   return maskedPtr_p->nelements();
 }
@@ -130,7 +130,7 @@ Vector<T> &FunctionParam<T>::getMaskedParameters() const {
 
 template<class T>
 void FunctionParam<T>::setMaskedParameters(Vector<T> &in) {
-  for (uInt i(0), n(0); i<npar_p && n<in.nelements(); ++i) {
+  for (uint32_t i(0), n(0); i<npar_p && n<in.nelements(); ++i) {
     if (mask_p[i]) param_p[i] = in[n++];
   }
   clearMaskedPtr();
@@ -141,11 +141,11 @@ void FunctionParam<T>::createMaskedPtr() const {
   if (!maskedPtr_p) {
     clearMaskedPtr();
     Vector<T> tmp(npar_p);
-    uInt n(0);
-    for (uInt i(0); i<npar_p; ++i) {
+    uint32_t n(0);
+    for (uint32_t i(0); i<npar_p; ++i) {
       if (mask_p[i]) tmp[n++] = param_p[i];
     }
-    tmp.resize(n, True);
+    tmp.resize(n, true);
     maskedPtr_p = new Vector<T>(tmp);
   }
 }
@@ -159,7 +159,7 @@ void FunctionParam<T>::clearMaskedPtr() const {
 template<class T>
 ostream &FunctionParam<T>::print(ostream &os) const {
   os << "[";
-  for (uInt i=0; i<npar_p; i++) {
+  for (uint32_t i=0; i<npar_p; i++) {
     if (i!=0) os << ", ";
     os << "(" << param_p[i] << ", " <<
       ((mask_p[i]) ? "True" : "False") << ")";

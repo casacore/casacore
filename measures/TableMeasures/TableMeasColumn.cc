@@ -37,8 +37,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableMeasColumn::TableMeasColumn()
 : itsNvals      (0),
-  itsVarRefFlag (False),
-  itsVarOffFlag (False)
+  itsVarRefFlag (false),
+  itsVarOffFlag (false)
 {}
 
 TableMeasColumn::TableMeasColumn (const Table& tab,
@@ -81,7 +81,7 @@ const String& TableMeasColumn::columnName() const
   return itsDescPtr->columnName();
 }
 
-Bool TableMeasColumn::isDefined (rownr_t rownr) const
+bool TableMeasColumn::isDefined (rownr_t rownr) const
 {
   return itsTabDataCol.isDefined (rownr);
 }
@@ -98,18 +98,18 @@ Table TableMeasColumn::table() const
   return itsTabDataCol.table();
 }
 
-Bool TableMeasColumn::isScalar() const
+bool TableMeasColumn::isScalar() const
 {
   if (itsTabDataCol.columnDesc().isScalar()) {
-    return True;
+    return true;
   }
   IPosition shape = itsTabDataCol.shapeColumn();
   if (shape.nelements() == 1) {
-    if (itsNvals == 0  ||  Int(itsNvals) == shape(0)) {
-      return True;
+    if (itsNvals == 0  ||  int32_t(itsNvals) == shape(0)) {
+      return true;
     }
   }
-  return False;
+  return false;
 }
 
 } //# NAMESPACE CASACORE - END

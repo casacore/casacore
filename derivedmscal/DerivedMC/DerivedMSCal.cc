@@ -56,7 +56,7 @@ DerivedMSCal::DerivedMSCal (const DerivedMSCal&)
 
 DerivedMSCal::~DerivedMSCal()
 {
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     delete itsColumns[i];
   }
 }
@@ -152,13 +152,13 @@ void DerivedMSCal::registerClass()
   DataManager::registerCtor ("DerivedMSCal", makeObject);
 }
 
-Bool DerivedMSCal::canAddColumn() const
+bool DerivedMSCal::canAddColumn() const
 {
-  return True;
+  return true;
 }
-Bool DerivedMSCal::canRemoveColumn() const
+bool DerivedMSCal::canRemoveColumn() const
 {
-  return True;
+  return true;
 }
 
 void DerivedMSCal::addColumn (DataManagerColumn*)

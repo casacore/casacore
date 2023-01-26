@@ -69,7 +69,7 @@ int main()
 	if (!FITSDateUtil::fromFITS(timeOut, systemOut, date, timesys))
 	    throw(AipsError("unexpected failure of FITSDateUtil::fromFITS"));
 	
-	if (!near(Double(timeOut),Double(timeIn))) {
+	if (!near(double(timeOut),double(timeIn))) {
 	    throw(AipsError("FITSDateUtil::fromFITS failed to convert back to original time"));
 	}
 	if (!(systemOut == systemIn)) {

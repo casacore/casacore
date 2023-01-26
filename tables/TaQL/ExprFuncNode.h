@@ -80,13 +80,13 @@ public:
         piFUNC,           //# 0
         eFUNC,            //# 1
         cFUNC,            //# 2
-            // for Int, or Double or Complex returning Bool
+            // for int32_t, or double or Complex returning bool
             // (2 is with default tolerance)
         near2FUNC,        //# 3
         near3FUNC,        //# 4
         nearabs2FUNC,     //# 5
         nearabs3FUNC,     //# 6
-            // for Int, Double or DComplex returning Double or Complex
+            // for int32_t, double or DComplex returning double or Complex
         sinFUNC,          //# 7
         sinhFUNC,         //# 8
         cosFUNC,          //# 9
@@ -97,30 +97,30 @@ public:
         sqrtFUNC,         //# 14
         powFUNC,          //# 15
         conjFUNC,         //# 16
-            // for Int, Double or DComplex returning Int, Double or Complex
+            // for int32_t, double or DComplex returning int32_t, double or Complex
         squareFUNC,       //# 17
         cubeFUNC,         //# 18
         minFUNC,          //# 19
         maxFUNC,          //# 20
-            // for Int, Double or DComplex returning Int or Double
+            // for int32_t, double or DComplex returning int32_t or double
         normFUNC,         //# 21
         absFUNC,          //# 22
-            // for Int, Double or DComplex returning Double
+            // for int32_t, double or DComplex returning double
         argFUNC,          //# 23
-            // for Int, Double, DComplex, Bool or String returning Double
+            // for int32_t, double, DComplex, bool or String returning double
         realFUNC,         //# 24
-            // for Double or DComplex returning Double
+            // for double or DComplex returning double
         imagFUNC,         //# 25
-            // for Int, Double, Bool or String returning Int (using floor)
+            // for int32_t, double, bool or String returning int32_t (using floor)
         intFUNC,          //# 26
-            // for Int, Double or Complex returning Double or Complex
+            // for int32_t, double or Complex returning double or Complex
         asinFUNC,         //# 27
         acosFUNC,         //# 28
         atanFUNC,         //# 29
         atan2FUNC,        //# 30
         tanFUNC,          //# 31
         tanhFUNC,         //# 32
-            // for Int or Double returning Int or Double
+            // for int32_t or double returning int32_t or double
         signFUNC,         //# 33
         roundFUNC,        //# 34
         floorFUNC,        //# 35
@@ -128,7 +128,7 @@ public:
         fmodFUNC,         //# 37
             // for DComplex or String returning DComplex
         complexFUNC,      //# 38
-            // for Int, Double or Complex array returning the same
+            // for int32_t, double or Complex array returning the same
         arrsumFUNC,       //# 39
         arrsumsFUNC,      //# 40
         runsumFUNC,       //# 41
@@ -141,7 +141,7 @@ public:
         arrsumsqrsFUNC,   //# 48
         runsumsqrFUNC,    //# 49
         boxsumsqrFUNC,    //# 50
-            // for Int or Double array returning Int or Double
+            // for int32_t or double array returning int32_t or double
         arrminFUNC,       //# 51
         arrminsFUNC,      //# 52
         runminFUNC,       //# 53
@@ -150,7 +150,7 @@ public:
         arrmaxsFUNC,      //# 56
         runmaxFUNC,       //# 57
         boxmaxFUNC,       //# 58
-            // for Int or Double array returning Double
+            // for int32_t or double array returning double
         arrmeanFUNC,      //# 59
         arrmeansFUNC,     //# 60
         runmeanFUNC,      //# 61
@@ -187,7 +187,7 @@ public:
         arrfractilesFUNC, //# 92
         runfractileFUNC,  //# 93
         boxfractileFUNC,  //# 94
-            // for Bool array returning Bool
+            // for bool array returning bool
         arranyFUNC,       //# 95
         arranysFUNC,      //# 96
         runanyFUNC,       //# 97
@@ -196,7 +196,7 @@ public:
         arrallsFUNC,      //# 100
         runallFUNC,       //# 101
         boxallFUNC,       //# 102
-            // for Bool array returning Int scalar
+            // for bool array returning int32_t scalar
         arrntrueFUNC,     //# 103
         arrntruesFUNC,    //# 104
         runntrueFUNC,     //# 105
@@ -211,22 +211,22 @@ public:
         areverseFUNC,     //# 113
         resizeFUNC,       //# 114
         diagonalFUNC,     //# 115
-            // for Int, Double or DComplex array returning Bool
+            // for int32_t, double or DComplex array returning bool
         isnanFUNC,        //# 116
         isinfFUNC,        //# 117
         isfiniteFUNC,     //# 118
-            // for any array returning Bool scalar
+            // for any array returning bool scalar
         isdefFUNC,        //# 119
         isnullFUNC,       //# 120
         iscolFUNC,        //# 121
         iskeyFUNC,        //# 122
-            // for any array returning Int scalar
+            // for any array returning int32_t scalar
         ndimFUNC,         //# 123
         nelemFUNC,        //# 124
-            // for any array returning Int array
+            // for any array returning int32_t array
         shapeFUNC,        //# 125
             // for String
-        strlengthFUNC,    //# 126          returning Int
+        strlengthFUNC,    //# 126          returning int32_t
         upcaseFUNC,       //# 127          returning String
         downcaseFUNC,     //# 128          returning String
         capitalizeFUNC,   //# 129          returning String
@@ -242,16 +242,16 @@ public:
             // for Date
         datetimeFUNC,     //# 139          returning Date
         mjdtodateFUNC,    //# 140          returning Date
-        mjdFUNC,          //# 141          returning Double
+        mjdFUNC,          //# 141          returning double
         dateFUNC,         //# 142          returning Date
-        timeFUNC,         //# 143          returning Double (in radians)
-        yearFUNC,         //# 144          returning Int
-        monthFUNC,        //# 145          returning Int
-        dayFUNC,          //# 146          returning Int
+        timeFUNC,         //# 143          returning double (in radians)
+        yearFUNC,         //# 144          returning int32_t
+        monthFUNC,        //# 145          returning int32_t
+        dayFUNC,          //# 146          returning int32_t
         cmonthFUNC,       //# 147          returning String
-        weekdayFUNC,      //# 148          returning Int
+        weekdayFUNC,      //# 148          returning int32_t
         cdowFUNC,         //# 149          returning String
-        weekFUNC,         //# 150          returning Int
+        weekFUNC,         //# 150          returning int32_t
         ctodFUNC,         //# 151          returning String
         cdateFUNC,        //# 152          returning String
         ctimeFUNC,        //# 153          returning String
@@ -263,11 +263,11 @@ public:
         dmsFUNC,          //# 156
             // return angles as hms/dms strings
         hdmsFUNC,         //# 157
-            // special function returning a random Double number
+            // special function returning a random double number
         randFUNC,         //# 158
-            // special function returning Int row number
+            // special function returning int32_t row number
         rownrFUNC,        //# 159
-            // special function returning Int row id (meant for GIVING)
+            // special function returning int32_t row id (meant for GIVING)
         rowidFUNC,        //# 160
             // special function resembling if statement
         iifFUNC,          //# 161
@@ -283,7 +283,7 @@ public:
         findcone3FUNC,    //# 169
             // normalize angle between -pi and pi
         normangleFUNC,    //# 170
-            // for Int, Double, Complex or String returning Bool
+            // for int32_t, double, Complex or String returning bool
         boolFUNC,         //# 171
             // masked array functions
         nullarrayFUNC,    //# 172
@@ -348,7 +348,7 @@ public:
     TableExprFuncNode (FunctionType, NodeDataType, ValueType,
                        const TableExprNodeSet& source,
                        const vector<TENShPtr>& nodes,
-                       const Block<Int>& dtypeOper,
+                       const Block<int32_t>& dtypeOper,
                        const TableExprInfo& = TableExprInfo());
 
     // Destructor
@@ -356,9 +356,9 @@ public:
 
     // 'get' Functions to get the desired result of a function
     // <group>
-    Bool      getBool     (const TableExprId& id);
-    Int64     getInt      (const TableExprId& id);
-    Double    getDouble   (const TableExprId& id);
+    bool      getBool     (const TableExprId& id);
+    int64_t     getInt      (const TableExprId& id);
+    double    getDouble   (const TableExprId& id);
     DComplex  getDComplex (const TableExprId& id);
     String    getString   (const TableExprId& id);
     TaqlRegex getRegex    (const TableExprId& id);
@@ -369,9 +369,9 @@ public:
     // It sets the exptected data and value types of the operands.
     // Set the value type of the function result and returns
     // the data type of the function result.
-    static NodeDataType checkOperands (Block<Int>& dtypeOper,
+    static NodeDataType checkOperands (Block<int32_t>& dtypeOper,
                                        ValueType& resVT,
-                                       Block<Int>& vtypeOper,
+                                       Block<int32_t>& vtypeOper,
                                        FunctionType,
                                        std::vector<TENShPtr>&);
 
@@ -383,10 +383,10 @@ public:
     // Link the children to the node and convert the children
     // to constants if possible.
     void fillChildNodes (const vector<TENShPtr>& nodes,
-                         const Block<Int>& dtypeOper);
+                         const Block<int32_t>& dtypeOper);
 
     // Get possible unit scale factor (needed for sqrt).
-    Double getScale() const
+    double getScale() const
         { return scale_p; }
 
     // Some functions to be used by TableExprNodeFuncArray.
@@ -402,16 +402,16 @@ public:
     // </group>
 
     // Get the possible print format, width, and/or precision.
-    static void getPrintFormat (String& fmt, Int& width, Int& prec,
+    static void getPrintFormat (String& fmt, int32_t& width, int32_t& prec,
                                 const std::vector<TENShPtr>& operands,
                                 const TableExprId& id);
 
     // Convert the date and/or time to a string.
     // <group>
-    static String stringDT (const MVTime& dt, Int prec, MVTime::formatTypes);
-    static String stringDateTime (const MVTime& dt, Int prec);
+    static String stringDT (const MVTime& dt, int32_t prec, MVTime::formatTypes);
+    static String stringDateTime (const MVTime& dt, int32_t prec);
     static String stringDate (const MVTime& dt);
-    static String stringTime (const MVTime& dt, Int prec);
+    static String stringTime (const MVTime& dt, int32_t prec);
     // </group>
 
     // Convert a value to a string.
@@ -419,26 +419,26 @@ public:
     // Otherwise the printf-like format is used.
     // If possible, a double value is converted to radians if formatted as angle.
     // <group>
-    static String stringValue (Bool val, const String& fmt, Int width);
-    static String stringValue (Int64 val, const String& fmt, Int width);
-    static String stringValue (Double val, const String& fmt,
-                               Int width, Int prec,
+    static String stringValue (bool val, const String& fmt, int32_t width);
+    static String stringValue (int64_t val, const String& fmt, int32_t width);
+    static String stringValue (double val, const String& fmt,
+                               int32_t width, int32_t prec,
                                const std::pair<int,int>& mvFormat,
                                const Unit& unit);
     static String stringValue (const DComplex& val, const String& fmt,
-                               Int width, Int prec);
+                               int32_t width, int32_t prec);
     static String stringValue (const String& val, const String& fmt,
-                               Int width);
+                               int32_t width);
     static String stringValue (const MVTime& val, const String& fmt,
-                               Int width,
+                               int32_t width,
                                const std::pair<int,int>& mvFormat);
 
     // Convert angle to a string (hms or dms).
     // <group>
-    static String stringAngle (double val, Int prec,
+    static String stringAngle (double val, int32_t prec,
                                MVAngle::formatTypes type);
-    static String stringHMS (double val, Int prec);
-    static String stringDMS (double val, Int prec);
+    static String stringHMS (double val, int32_t prec);
+    static String stringDMS (double val, int32_t prec);
     // </group>
 
     // Get the MVTime/Angle format and optional precision.
@@ -450,10 +450,10 @@ public:
       { return acos (sin(dec1)*sin(dec2) + cos(dec1)*cos(dec2)*cos(ra1-ra2)); }
 
     // Read a string as an integer, double, complex or bool.
-    static Int64 string2Int (const String&);
-    static Double string2Real (const String&);
+    static int64_t string2Int (const String&);
+    static double string2Real (const String&);
     static DComplex string2Complex (const String&);
-    static Bool string2Bool (const String&);
+    static bool string2Bool (const String&);
 
 private:
     // Try if the function gives a constant result.
@@ -463,12 +463,12 @@ private:
     // Make the units of nodes from <src>starg</src> till <src>endarg</src>
     // equal. Return the unit found.
     static const Unit& makeEqualUnits (std::vector<TENShPtr>& nodes,
-                                       uInt starg, uInt endarg);
+                                       uint32_t starg, uint32_t endarg);
 
     //# Data members.
     FunctionType funcType_p;        // which function
     NodeDataType argDataType_p;     // common argument data type
-    Double       scale_p;           // possible scaling for unit conversion
+    double       scale_p;           // possible scaling for unit conversion
                                     // (needed for sqrt)
     Table        table_p;           // table (for iscolumn and iskeyword)
 };

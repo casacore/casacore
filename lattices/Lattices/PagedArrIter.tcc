@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 PagedArrIter<T>::PagedArrIter (const PagedArray<T>& data,
 			       const LatticeNavigator& nav,
-			       Bool useRef)
+			       bool useRef)
 : LatticeIterInterface<T> (data, nav, useRef),
   itsData (data)
 {
@@ -84,8 +84,8 @@ template<class T>
 void PagedArrIter<T>::setupTileCache()
 {
   const ROTiledStManAccessor& acc = itsData.accessor();
-  uInt rownr = itsData.rowNumber();
-  uInt cacheSize = itsNavPtr->calcCacheSize (acc.hypercubeShape(rownr),
+  uint32_t rownr = itsData.rowNumber();
+  uint32_t cacheSize = itsNavPtr->calcCacheSize (acc.hypercubeShape(rownr),
                                              acc.tileShape(rownr),
                                              acc.maximumCacheSize(),
                                              acc.bucketSize(rownr));

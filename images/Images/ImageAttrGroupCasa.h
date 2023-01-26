@@ -66,17 +66,17 @@ public:
   virtual ~ImageAttrGroupCasa();
 
   // Test if it is a null object.
-  Bool isNull() const
+  bool isNull() const
     { return itsTable.table().isNull(); }
 
   // Flush the attibrutes if needed.
   void flush();
 
   // Get the number of rows in the group.
-  virtual uInt nrows() const;
+  virtual uint32_t nrows() const;
 
   // Test if an attribute exists.
-  virtual Bool hasAttr (const String& attrName) const;
+  virtual bool hasAttr (const String& attrName) const;
 
   // Get all attribute names.
   virtual Vector<String> attrNames() const;
@@ -86,10 +86,10 @@ public:
   virtual DataType dataType (const String& attrName) const;
 
   // Get the data of the given attribute.
-  virtual ValueHolder getData (const String& attrName, uInt rownr);
+  virtual ValueHolder getData (const String& attrName, uint32_t rownr);
 
   // Get the data of all attributes in a rows.
-  virtual Record getDataRow (uInt rownr);
+  virtual Record getDataRow (uint32_t rownr);
 
   // Get the possible units of the values.
   // An empty vector is returned if the attribute has no units.
@@ -104,7 +104,7 @@ public:
   // of the vector. Otherwise the vector size has to match the table size.
   // <br>If not empty, the units and MEASINFO will be put as column keywords.
   // The MEASINFO vector must be given as type,Ref.
-  virtual void putData (const String& attrName, uInt rownr,
+  virtual void putData (const String& attrName, uint32_t rownr,
                         const ValueHolder& data,
                         const Vector<String>& units = Vector<String>(),
                         const Vector<String>& measInfo = Vector<String>());
@@ -112,10 +112,10 @@ public:
 private:
   // Check if the size matches the number of rows.
   // Add rows if the table is still empty.
-  void checkRows (const String& attrName, uInt size);
+  void checkRows (const String& attrName, uint32_t size);
 
   // Add a new column for the given attribute for the data type in the value.
-  Bool addNewColumn (const String& attrName, const ValueHolder&);
+  bool addNewColumn (const String& attrName, const ValueHolder&);
 
   //# Data members.
   TableProxy itsTable;

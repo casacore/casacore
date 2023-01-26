@@ -61,31 +61,31 @@ namespace casacore { namespace python { namespace numpy {
       // Specialize for each type supported.
       // <group>
       template<typename T> T getScalar (const ValueHolder&);
-      template<> inline Bool     getScalar (const ValueHolder& vh)
+      template<> inline bool     getScalar (const ValueHolder& vh)
         { return vh.asBool(); }
-      template<> inline Char     getScalar (const ValueHolder& vh)
+      template<> inline char     getScalar (const ValueHolder& vh)
         { return vh.asShort(); }
-      template<> inline uChar    getScalar (const ValueHolder& vh)
+      template<> inline unsigned char    getScalar (const ValueHolder& vh)
         { return vh.asuChar(); }
-      template<> inline Short    getScalar (const ValueHolder& vh)
+      template<> inline int16_t    getScalar (const ValueHolder& vh)
         { return vh.asShort(); }
-      template<> inline uShort   getScalar (const ValueHolder& vh)
+      template<> inline uint16_t   getScalar (const ValueHolder& vh)
         { return vh.asuShort(); }
-      template<> inline Int      getScalar (const ValueHolder& vh)
+      template<> inline int32_t      getScalar (const ValueHolder& vh)
         { return vh.asInt(); }
-      template<> inline uInt     getScalar (const ValueHolder& vh)
+      template<> inline uint32_t     getScalar (const ValueHolder& vh)
         { return vh.asuInt(); }
-      template<> inline Long     getScalar (const ValueHolder& vh)
+      template<> inline long     getScalar (const ValueHolder& vh)
         { return vh.asInt(); }
-      template<> inline uLong    getScalar (const ValueHolder& vh)
+      template<> inline unsigned long    getScalar (const ValueHolder& vh)
         { return vh.asuInt(); }
-      template<> inline Int64    getScalar (const ValueHolder& vh)
+      template<> inline int64_t    getScalar (const ValueHolder& vh)
         { return vh.asInt(); }
-      template<> inline uInt64   getScalar (const ValueHolder& vh)
+      template<> inline uint64_t   getScalar (const ValueHolder& vh)
         { return vh.asuInt(); }
-      template<> inline Float    getScalar (const ValueHolder& vh)
+      template<> inline float    getScalar (const ValueHolder& vh)
         { return vh.asFloat(); }
-      template<> inline Double   getScalar (const ValueHolder& vh)
+      template<> inline double   getScalar (const ValueHolder& vh)
         { return vh.asDouble(); }
       template<> inline Complex  getScalar (const ValueHolder& vh)
         { return vh.asComplex(); }
@@ -94,7 +94,7 @@ namespace casacore { namespace python { namespace numpy {
       // </group>
 
       // Struct with static functions to convert a numpy array scalar to
-      // the templated type (e.g. Int).
+      // the templated type (e.g. int32_t).
       template <typename T>
       struct array_scalar_from_python
       {

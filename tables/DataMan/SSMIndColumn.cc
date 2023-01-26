@@ -39,9 +39,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
+SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uint32_t aColNr)
 : SSMColumn    (aParent, aDataType, aColNr),
-  isShapeFixed (False),
+  isShapeFixed (false),
   itsIosFile   (0),
   itsIndArray  (0)
 {
@@ -51,14 +51,14 @@ SSMIndColumn::SSMIndColumn (SSMBase* aParent, int aDataType, uInt aColNr)
 SSMIndColumn::~SSMIndColumn()
 {}
 
-void SSMIndColumn::setMaxLength (uInt)
+void SSMIndColumn::setMaxLength (uint32_t)
 {}
 
 void SSMIndColumn::doCreate (rownr_t aNrRows)
 {
     // Initialize and create new file.
     itsIosFile = itsSSMPtr->openArrayFile (ByteIO::New);
-    addRow(aNrRows,0,False);
+    addRow(aNrRows,0,false);
 }
 
 void SSMIndColumn::getFile (rownr_t)
@@ -67,7 +67,7 @@ void SSMIndColumn::getFile (rownr_t)
     itsIosFile = itsSSMPtr->openArrayFile (itsSSMPtr->fileOption());
 }
 
-void SSMIndColumn::addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit)
+void SSMIndColumn::addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit)
 {
   // init the buckets to zero of needed
   if (doInit) {
@@ -101,7 +101,7 @@ void SSMIndColumn::addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit)
 void SSMIndColumn::setShapeColumn (const IPosition& aShape)
 {
     itsFixedShape  = aShape;
-    isShapeFixed   = True;
+    isShapeFixed   = true;
 }
 
 void SSMIndColumn::setShape (rownr_t aRowNr, const IPosition& aShape)
@@ -117,14 +117,14 @@ void SSMIndColumn::setShape (rownr_t aRowNr, const IPosition& aShape)
   // put the new shape (if changed)
   // when changed put the file offset
   if (itsIndArray.setShape (*itsIosFile, dataType(), aShape)) {
-    Int64 anOffset = itsIndArray.fileOffset();
+    int64_t anOffset = itsIndArray.fileOffset();
     putValue (aRowNr, &anOffset);
   }
 }
 
 StIndArray* SSMIndColumn::getArrayPtr (rownr_t aRowNr)
 {
-  Int64   anOffset;
+  int64_t   anOffset;
   rownr_t aStartRow;
   rownr_t anEndRow;
   char*   aValue;
@@ -158,17 +158,17 @@ StIndArray* SSMIndColumn::getShape (rownr_t aRowNr)
     return aPtr;
 }
 
-Bool SSMIndColumn::isShapeDefined (rownr_t aRowNr)
-    { return (getArrayPtr(aRowNr) == 0  ?  False : True); }
+bool SSMIndColumn::isShapeDefined (rownr_t aRowNr)
+    { return (getArrayPtr(aRowNr) == 0  ?  false : true); }
 
-uInt SSMIndColumn::ndim (rownr_t aRowNr)
+uint32_t SSMIndColumn::ndim (rownr_t aRowNr)
     { return getShape(aRowNr)->shape().nelements(); }
 
 IPosition SSMIndColumn::shape (rownr_t aRowNr)
     { return getShape(aRowNr)->shape(); }
 
-Bool SSMIndColumn::canChangeShape() const
-    { return (isShapeFixed  ?  False : True); }
+bool SSMIndColumn::canChangeShape() const
+    { return (isShapeFixed  ?  false : true); }
 
 
 void SSMIndColumn::deleteRow(rownr_t aRowNr)
@@ -213,18 +213,18 @@ void SSMIndColumn::init()
   DebugAssert (itsNrElem==1, AipsError);
   if (itsSSMPtr->asBigEndian()) {
     itsReadFunc =
-            CanonicalConversion::getToLocal(static_cast<Int64*>(0));
+            CanonicalConversion::getToLocal(static_cast<int64_t*>(0));
     itsWriteFunc =
-            CanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+            CanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
     itsExternalSizeBytes =
-            CanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+            CanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
   }else{
     itsReadFunc =
-            LECanonicalConversion::getToLocal(static_cast<Int64*>(0));
+            LECanonicalConversion::getToLocal(static_cast<int64_t*>(0));
     itsWriteFunc =
-            LECanonicalConversion::getFromLocal(static_cast<Int64*>(0));
+            LECanonicalConversion::getFromLocal(static_cast<int64_t*>(0));
     itsExternalSizeBytes =
-            LECanonicalConversion::canonicalSize(static_cast<Int64*>(0));
+            LECanonicalConversion::canonicalSize(static_cast<int64_t*>(0));
   }
   itsNrCopy = 1;
   itsExternalSizeBits = 8*itsExternalSizeBytes;

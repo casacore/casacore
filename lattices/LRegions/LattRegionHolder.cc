@@ -40,7 +40,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-LattRegionHolder::LattRegionHolder (uInt ndim)
+LattRegionHolder::LattRegionHolder (uint32_t ndim)
 : itsLC     (0),
   itsSlicer (0),
   itsNdim   (ndim)
@@ -106,14 +106,14 @@ LattRegionHolder* LattRegionHolder::clone() const
     return new LattRegionHolder (*this);
 }
 
-Bool LattRegionHolder::operator== (const LattRegionHolder& other) const
+bool LattRegionHolder::operator== (const LattRegionHolder& other) const
 {
     if (isWCRegion()   != other.isWCRegion()
     ||  isLCRegion()   != other.isLCRegion()
     ||  isLCSlicer()   != other.isLCSlicer()) {
-	return False;
+	return false;
     }
-    Bool match = True;
+    bool match = true;
     if (isLCRegion()) {
 	match = (*itsLC == *other.asLCRegionPtr());
     } else if (isLCSlicer()) {
@@ -122,9 +122,9 @@ Bool LattRegionHolder::operator== (const LattRegionHolder& other) const
     return match;
 }
 
-Bool LattRegionHolder::isWCRegion() const
+bool LattRegionHolder::isWCRegion() const
 {
-    return False;
+    return false;
 }
 
 const LCRegion* LattRegionHolder::asLCRegionPtr() const
@@ -164,7 +164,7 @@ LatticeRegion LattRegionHolder::toLatticeRegion (const IPosition& shape) const
 	throw (AipsError ("LattRegionHolder::toLatticeRegion - "
 			  "cannot convert a relative LCSlicer"));
     }
-    Vector<Float> refpix(shape.nelements());
+    Vector<float> refpix(shape.nelements());
     refpix = 0;
     return LatticeRegion (itsSlicer->toSlicer (refpix, shape), shape);
 }

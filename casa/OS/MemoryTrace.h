@@ -84,11 +84,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     static void close();
 
     // Is tracing on?
-    static Bool isOn()
+    static bool isOn()
       { return theirDoTrace; }
 
     // Is the tracing file opened?
-    static Bool isOpen()
+    static bool isOpen()
       { return theirFile.is_open(); }
 
     // Write a block line in the output file.
@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     static std::string makeString (const char*);
 
   private:
-    static Bool          theirDoTrace;
+    static bool          theirDoTrace;
     static std::ofstream theirFile;
     static Timer         theirTimer;
     //# Variables to save original hooks.

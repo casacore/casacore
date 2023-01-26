@@ -44,34 +44,34 @@ FileLocker::FileLocker()
   itsError       (0),
   itsStart       (0),
   itsLength      (0),
-  itsMsgShown    (False),
-  itsReadLocked  (False),
-  itsWriteLocked (False)
+  itsMsgShown    (false),
+  itsReadLocked  (false),
+  itsWriteLocked (false)
 {}
 
-FileLocker::FileLocker (int fd, uInt start, uInt length)
+FileLocker::FileLocker (int fd, uint32_t start, uint32_t length)
 : itsFD          (fd),
   itsError       (0),
   itsStart       (start),
   itsLength      (length),
-  itsMsgShown    (False),
-  itsReadLocked  (False),
-  itsWriteLocked (False)
+  itsMsgShown    (false),
+  itsReadLocked  (false),
+  itsWriteLocked (false)
 {}
 
 FileLocker::~FileLocker()
 {}
 
-Bool FileLocker::acquire (LockType type, uInt nattempts)
+bool FileLocker::acquire (LockType type, uint32_t nattempts)
 {
     itsError = 0;
     // Always success if locking is not supported.
 #if defined(AIPS_NOFILELOCK)
-    itsReadLocked = True;
+    itsReadLocked = true;
     if (!itsWriteLocked  &&  type == Write) {
-        itsWriteLocked = True;
+        itsWriteLocked = true;
     }
-    return True;
+    return true;
 #else
     struct flock ls;
     ls.l_whence = SEEK_SET;
@@ -86,36 +86,36 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
   	    if (fcntl (itsFD, F_SETLK, &ls) != -1) {
 ///	    cout << "kept " << itsReadLocked << ' ' <<itsWriteLocked <<
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
-	        return True;
+	        return true;
 	    }
-	    itsWriteLocked = False;
+	    itsWriteLocked = false;
 	}
 	ls.l_type = F_RDLCK;
     }
     if (nattempts == 0) {
 	// Wait until lock succeeds.
 	if (fcntl (itsFD, F_SETLKW, &ls) != -1) {
-	    itsReadLocked = True;
+	    itsReadLocked = true;
 	    if (type == Write) {
-		itsWriteLocked = True;
+		itsWriteLocked = true;
 	    }
 ///	    cout << "acquired " << itsReadLocked << ' ' <<itsWriteLocked <<
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
-	    return True;
+	    return true;
 	}
 	itsError = errno;
     }
     // Do finite number of attempts. Wait 1 second between each attempt.
-    for (uInt i=0; i<nattempts; i++) {
+    for (uint32_t i=0; i<nattempts; i++) {
 	if (fcntl (itsFD, F_SETLK, &ls) != -1) {
 	    itsError = 0;
-	    itsReadLocked = True;
+	    itsReadLocked = true;
 	    if (type == Write) {
-		itsWriteLocked = True;
+		itsWriteLocked = true;
 	    }
 ///	    cout << "acquired " << itsReadLocked << ' ' <<itsWriteLocked <<
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
-	    return True;
+	    return true;
 	}
 	// If locking fails, there is usually something wrong with locking
         // over NFS because the statd or lockd deamons are not running.
@@ -124,17 +124,17 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 #if defined(AIPS_LINUX) || defined(AIPS_DARWIN)
 	if (errno == ENOLCK) {
 	    itsError = 0;
-	    itsReadLocked = True;
+	    itsReadLocked = true;
 	    if (type == Write) {
-		itsWriteLocked = True;
+		itsWriteLocked = true;
 	    }
 	    if (!itsMsgShown) {
-	      itsMsgShown = True;
+	      itsMsgShown = true;
 	      cerr << "*** The ENOLCK error was returned by the kernel." << endl;
               cerr << "*** It usually means that a lock for an NFS file could not be" << endl;
               cerr << "*** obtained, maybe because the statd or lockd daemon is not running." << endl;
 	    }
-	    return True;
+	    return true;
 	}
 #endif
 	itsError = errno;
@@ -145,7 +145,7 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
 	    sleep (1);
 	}
     }
-    itsWriteLocked = False;
+    itsWriteLocked = false;
     // Note that the system keeps a lock per file and not per fd.
     // So if the same file is opened in the same process and unlocked
     // at the same place, the read lock for this fd is also released.
@@ -154,30 +154,30 @@ Bool FileLocker::acquire (LockType type, uInt nattempts)
     // If asked for a write lock, we might still hold it.
     // One attempt is enough to see if we indeed can get a read lock.
     if (itsReadLocked) {
-        itsReadLocked = False;
+        itsReadLocked = false;
 	if (type == Write) {
 	    ls.l_type = F_RDLCK;
 	    if (fcntl (itsFD, F_SETLK, &ls) != -1) {
-	        itsReadLocked = True;
+	        itsReadLocked = true;
 	    }
 	}
     }
 ///    cout << "failed " << itsReadLocked << ' ' <<itsWriteLocked<<' '<<type<<
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
-    return False;
+    return false;
 #endif
 }
 
 // Release a lock.
-Bool FileLocker::release()
+bool FileLocker::release()
 {
 ///    cout << "released " << itsReadLocked << ' ' <<itsWriteLocked<<
 ///	      ' '<<itsStart<<' '<<itsLength<<endl;
-    itsReadLocked  = False;
-    itsWriteLocked = False;
+    itsReadLocked  = false;
+    itsWriteLocked = false;
     itsError = 0;
 #if defined(AIPS_NOFILELOCK)
-    return True;
+    return true;
 #else
     struct flock ls;
     ls.l_type   = F_UNLCK;
@@ -185,32 +185,32 @@ Bool FileLocker::release()
     ls.l_start  = itsStart;
     ls.l_len    = itsLength;
     if (fcntl (itsFD, F_SETLK, &ls) != -1) {
-	return True;
+	return true;
     }
 #if defined(AIPS_LINUX) || defined(AIPS_DARWIN)
     if (errno == ENOLCK) {
-      return True;
+      return true;
     }
 #endif
     itsError = errno;
-    return False;
+    return false;
 #endif
 }
 
-Bool FileLocker::canLock (LockType type)
+bool FileLocker::canLock (LockType type)
 {
 #if defined(AIPS_NOFILELOCK)
-    return True;
+    return true;
 #else
-    uInt pid;
+    uint32_t pid;
     return canLock (pid, type);
 #endif
 }
 
-Bool FileLocker::canLock (uInt& pid, LockType type)
+bool FileLocker::canLock (uint32_t& pid, LockType type)
 {
 #if defined(AIPS_NOFILELOCK)
-    return True;
+    return true;
 #else
     pid = 0;
     itsError = 0;
@@ -228,7 +228,7 @@ Bool FileLocker::canLock (uInt& pid, LockType type)
 	return  (ls.l_type == F_UNLCK);
     }
     itsError = errno;
-    return False;
+    return false;
 #endif
 }
 

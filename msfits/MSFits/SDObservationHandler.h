@@ -91,7 +91,7 @@ public:
 
     // attach this to a MS, mark the appropriate columns as handled given
     // the indicated row
-    SDObservationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDObservationHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDObservationHandler(const SDObservationHandler &other);
@@ -102,37 +102,37 @@ public:
     SDObservationHandler &operator=(const SDObservationHandler &other);
 
     // attach to a MS, mark the appropriate columns as handled given the row
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS 
     void resetRow(const Record &row);
     
     // fill - a new row is added only when necessary
-    void fill(const Record &row, const String &telescopeName, const Vector<Double> &timeRange);
+    void fill(const Record &row, const String &telescopeName, const Vector<double> &timeRange);
 
     // get the current observation ID
-    Int observationId() {return rownr_p;}
+    int32_t observationId() {return rownr_p;}
 
     // update the time range
-    void updateTimeRange(const Vector<Double> &timeRange);
+    void updateTimeRange(const Vector<double> &timeRange);
 private:
     ColumnsIndex *index_p;
     RecordFieldPtr<String> telescopeKey_p, observerKey_p, projectKey_p, ns_obsidKey_p;
-    RecordFieldPtr<Double> releaseDateKey_p;
-    RecordFieldPtr<Bool> flagRowKey_p;
+    RecordFieldPtr<double> releaseDateKey_p;
+    RecordFieldPtr<bool> flagRowKey_p;
 
     MSObservation *msObs_p;
     MSObservationColumns *msObsCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
     ScalarColumn<String> nsObsIdCol_p;
 
     // pointers to fields in record, only used if attached
     RORecordFieldPtr<String> observer_p, projid_p, obsid_p;
-    RORecordFieldPtr<Double> releaseDate_p;
-    RORecordFieldPtr<Bool> flagRow_p;
-    RORecordFieldPtr<Array<Double> > timeRange_p;
+    RORecordFieldPtr<double> releaseDate_p;
+    RORecordFieldPtr<bool> flagRow_p;
+    RORecordFieldPtr<Array<double> > timeRange_p;
 
     // cleanup everything
     void clearAll();
@@ -141,10 +141,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // initialize the things which depend on the row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 
     // initialize the index
     void makeIndex();

@@ -41,14 +41,14 @@ void b()
     Table tab ("tLatticeLocker_tmp.data",
 	       TableLock(TableLock::UserLocking),
 	       Table::Update);
-    PagedArray<Int> pa(tab);
+    PagedArray<int32_t> pa(tab);
     LatticeLocker* latlock[10];
-    uInt nrll = 0;
-    Array<Int> arr(IPosition(2,4,4));
+    uint32_t nrll = 0;
+    Array<int32_t> arr(IPosition(2,4,4));
     arr = 0;
-    Int val;
-    Int opt;
-    while (True) {
+    int32_t val;
+    int32_t opt;
+    while (true) {
 	cout << "0=quit, 1=rdlock, 2=wrlock, 3=get, 4=put, 5=unlock, 6=hasrl, "
 	        "7=haswl: ";
 	cin >> opt;
@@ -104,7 +104,7 @@ void b()
 	    break;
 	}
     }
-    for (uInt i=0; i<nrll; i++) {
+    for (uint32_t i=0; i<nrll; i++) {
 	delete latlock[i];
     }
 }
@@ -120,7 +120,7 @@ int main (int argc, const char* argv[])
     }else{
 	try {
 	    if (*(argv[1]) == '1') {
-		PagedArray<Int> pa(IPosition(2,4,4), "tLatticeLocker_tmp.data");
+		PagedArray<int32_t> pa(IPosition(2,4,4), "tLatticeLocker_tmp.data");
 	    }
 	    b();
 	} catch (std::exception& x) {

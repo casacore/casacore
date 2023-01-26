@@ -77,9 +77,9 @@ int main()
   try {
     {
       TableDesc td;
-      ArrayColumnDesc<Double> cdMDir("PHASE_CENTER", "Variable Ref MDIR test",
+      ArrayColumnDesc<double> cdMDir("PHASE_CENTER", "Variable Ref MDIR test",
 				     IPosition(1,2), ColumnDesc::Direct);
-      ScalarColumnDesc<Int> cdMDirRef("PhaseCenter_Ref");
+      ScalarColumnDesc<int32_t> cdMDirRef("PhaseCenter_Ref");
       td.addColumn(cdMDir);
       td.addColumn(cdMDirRef);
       TableMeasRefDesc tmrd(td, "PhaseCenter_Ref");
@@ -102,7 +102,7 @@ int main()
       //get the values now
       Table tab("dVarRefMdirCol_tmp.tab");
       MDirection::ScalarColumn tmpCol(tab, "PHASE_CENTER");
-      for(uInt k =0 ; k < 4; ++k){
+      for(uint32_t k =0 ; k < 4; ++k){
 	String Ref = tmpCol(k).getRefString();
 	MVAngle mvRA=tmpCol(k).getAngle().getValue()(0);
 	MVAngle mvDEC=tmpCol(k).getAngle().getValue()(1);

@@ -32,7 +32,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# constants
 
 // IAU definition of light time (s) unit distance to calculate IAU units
-static const Double IAU_tauA=499.0047837;	
+static const double IAU_tauA=499.0047837;	
 
 // Initialise the maps
 void UnitMap::initUMSI2 (UMaps& maps) {

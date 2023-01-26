@@ -113,7 +113,7 @@ class String;
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
     // Use the function isDefined to test if the cell contains an array.
-    uInt ndim (rownr_t rownr) const
+    uint32_t ndim (rownr_t rownr) const
       { TABLECOLUMNCHECKROW(rownr); return baseColPtr_p->ndim (rownr); }
 
     // Get the shape of an array in a particular cell.
@@ -136,7 +136,7 @@ class String;
 
     // Get the array value in a particular cell (i.e. table row).
     // The row numbers count from 0 until #rows-1.
-    void acbGet (rownr_t rownr, ArrayBase& array, Bool resize) const;
+    void acbGet (rownr_t rownr, ArrayBase& array, bool resize) const;
 
     // Get a slice of an N-dimensional array in a particular cell
     // (i.e. table row).
@@ -145,7 +145,7 @@ class String;
     // of the table array and the slice definition should not exceed
     // the shape of the table array.
     void acbGetSlice (rownr_t rownr, const Slicer& arraySection, ArrayBase& array,
-                      Bool resize) const;
+                      bool resize) const;
 
     // Get an irregular slice of an N-dimensional array in a particular cell
     // (i.e. table row)  as given by the vectors of Slice objects.
@@ -168,13 +168,13 @@ class String;
     // The arrays in the column must have the same shape in all cells.
     void acbGetSlice (rownr_t rownr,
                       const Vector<Vector<Slice> >& arraySlices,
-                      ArrayBase& arr, Bool resize) const;
+                      ArrayBase& arr, bool resize) const;
 
     // Get the array of all values in a column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim
     // with the last dimension representing the number of rows.
     // The arrays in the column must have the same shape in all cells.
-    void acbGetColumn (ArrayBase& array, Bool resize) const;
+    void acbGetColumn (ArrayBase& array, bool resize) const;
 
     // Get regular slices from all arrays in the column.
     // If the column contains n-dim arrays, the resulting array is (n+1)-dim.
@@ -182,7 +182,7 @@ class String;
     // other dimensions representing the shape of the slice.
     // The arrays in the column must have the same shape in all cells.
     void acbGetColumn (const Slicer& arraySection, ArrayBase& array,
-                       Bool resize) const;
+                       bool resize) const;
 
     // Get irregular slices from all arrays in the column as given by the
     // vectors of Slice objects. The outer vector represents the array axes.
@@ -204,7 +204,7 @@ class String;
     // The arrays in the column must have the same shape in all cells.
     void acbGetColumn (const Vector<Vector<Slice> >& arraySection,
                        ArrayBase& array,
-                       Bool resize) const;
+                       bool resize) const;
 
     // Get the array of some values in a column.
     // The Slicer object can be used to specify start, end (or length),
@@ -213,9 +213,9 @@ class String;
     // with the last dimension representing the number of rows in the slicer.
     // The arrays in the column must have the same shape in all those cells.
     void acbGetColumnRange (const Slicer& rowRange, ArrayBase& arr,
-                            Bool resize) const;
+                            bool resize) const;
     void acbGetColumnCells (const RefRows& rownrs, ArrayBase& arr,
-                            Bool resize) const;
+                            bool resize) const;
 
     // Get slices from some arrays in a column.
     // The first Slicer object can be used to specify start, end (or length),
@@ -227,17 +227,17 @@ class String;
     // <group>
     void acbGetColumnRange (const Slicer& rowRange,
                             const Slicer& arraySection, ArrayBase& arr,
-                            Bool resize) const;
+                            bool resize) const;
     void acbGetColumnCells (const RefRows& rownrs,
                             const Slicer& arraySection, ArrayBase& arr,
-                            Bool resize) const;
+                            bool resize) const;
     // </group>
 
     // Get various slices from the given rows.
     void acbGetColumnCells (const RefRows& rows,
                             const ColumnSlicer& columnSlicer,
                             ArrayBase& destination,
-                            Bool resize) const;
+                            bool resize) const;
 
     // Set the shape of the array in the given row.
     // Setting the shape is needed if the array is put in slices,
@@ -337,19 +337,19 @@ class String;
     void acbPutColumn (const ArrayColumnBase& that);
 
     // Adapt the shape of the array if possible. If the array is empty or
-    // if <src>resize=True</src>, the array is resized if needed.
+    // if <src>resize=true</src>, the array is resized if needed.
     // Otherwise checkShape is used to throw an exception if not conforming.
     void adaptShape (const IPosition& shp,
-                     ArrayBase& arr, Bool resize,
-                     Int64 rownr, const String& where) const;
+                     ArrayBase& arr, bool resize,
+                     int64_t rownr, const String& where) const;
 
     // Throw an exception if the array does not have the expected shape.
-    // However, False is returned if noSlicing and canChangeShape_p are True
+    // However, false is returned if noSlicing and canChangeShape_p are true
     // (meaning no slices are put and the shape of a full row can change).
     // The column name is made part of the error message, as well as the rownr
     // if it is not negative (meaning a put of a column).
-    Bool checkShape (const IPosition& expShape, const IPosition& arrShape,
-                     Bool noSlicing, Int64 rownr, const String& where) const;
+    bool checkShape (const IPosition& expShape, const IPosition& arrShape,
+                     bool noSlicing, int64_t rownr, const String& where) const;
 
     // A common function used by all functions that can get or put irregular
     // array slices. The functor performs the get or put operation.

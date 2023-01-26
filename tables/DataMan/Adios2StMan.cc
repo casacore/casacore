@@ -132,7 +132,7 @@ rownr_t Adios2StMan::resync64(rownr_t aRowNr)
     return pimpl->resync64(aRowNr);
 }
 
-Bool Adios2StMan::flush(AipsIO &ios, Bool doFsync)
+bool Adios2StMan::flush(AipsIO &ios, bool doFsync)
 {
     return pimpl->flush(ios, doFsync);
 }
@@ -315,7 +315,7 @@ Adios2StMan::impl::~impl()
         itsAdiosEngine->EndStep();
         itsAdiosEngine->Close();
     }
-    for (uInt i = 0; i < ncolumn(); ++i)
+    for (uint32_t i = 0; i < ncolumn(); ++i)
     {
         delete itsColumnPtrBlk[i];
     }
@@ -324,7 +324,7 @@ Adios2StMan::impl::~impl()
 static adios2::Params to_adios2_params(const Record &record)
 {
     adios2::Params params;
-    for (Int i = 0; i != Int(record.size()); i++)
+    for (int32_t i = 0; i != int32_t(record.size()); i++)
     {
         params[record.name(i)] = record.asString(i);
     }
@@ -360,7 +360,7 @@ DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
     }
     if (spec.isDefined(SPEC_FIELD_TRANSPORT_PARAMS)) {
         auto &record = spec.asRecord(SPEC_FIELD_TRANSPORT_PARAMS);
-        for (Int i = 0; i != Int(record.size()); i++) {
+        for (int32_t i = 0; i != int32_t(record.size()); i++) {
             auto name = record.name(i);
             auto params = to_adios2_params(record.asRecord(i));
             params["Name"] = name;
@@ -369,7 +369,7 @@ DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
     }
     if (spec.isDefined(SPEC_FIELD_OPERATOR_PARAMS)) {
         auto &record = spec.asRecord(SPEC_FIELD_OPERATOR_PARAMS);
-        for (Int i = 0; i != Int(record.size()); i++) {
+        for (int32_t i = 0; i != int32_t(record.size()); i++) {
             auto variable = record.name(i);
             auto params = to_adios2_params(record.asRecord(i));
             params["Variable"] = variable;
@@ -454,7 +454,7 @@ void Adios2StMan::impl::create64(rownr_t  aNrRows)
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Write));
-    for (uInt i = 0; i < ncolumn(); ++i)
+    for (uint32_t i = 0; i < ncolumn(); ++i)
     {
         itsColumnPtrBlk[i]->create(itsAdiosEngine, 'w');
     }
@@ -466,7 +466,7 @@ rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Read));
-    for (uInt i = 0; i < ncolumn(); ++i)
+    for (uint32_t i = 0; i < ncolumn(); ++i)
     {
         itsColumnPtrBlk[i]->create(itsAdiosEngine, 'r');
     }
@@ -548,7 +548,7 @@ DataManagerColumn *Adios2StMan::impl::makeColumnCommon(const String &name,
             break;
         case TpInt64:
         case TpArrayInt64:
-            aColumn = new Adios2StManColumnT<Int64>(this, aDataType, name, itsAdiosIO);
+            aColumn = new Adios2StManColumnT<int64_t>(this, aDataType, name, itsAdiosIO);
             break;
         case TpFloat:
         case TpArrayFloat:
@@ -581,7 +581,7 @@ rownr_t Adios2StMan::impl::getNrRows() { return itsRows; }
 
 rownr_t Adios2StMan::impl::resync64(rownr_t /*aNrRows*/) { return itsRows; }
 
-Bool Adios2StMan::impl::flush(AipsIO &ios, Bool /*doFsync*/)
+bool Adios2StMan::impl::flush(AipsIO &ios, bool /*doFsync*/)
 {
     ios.putstart(DATA_MANAGER_TYPE, 2);
     ios << itsDataManName;

@@ -61,16 +61,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     // Associate the table and the shorthand.
     // The full name and the table number (from $i) can also be given.
-    TableParsePair (const Table& table, Int tabnr,
+    TableParsePair (const Table& table, int32_t tabnr,
                     const String& name, const String& shorthand,
-                    Int joinIndex=-1);
+                    int32_t joinIndex=-1);
 
     // Test if shorthand matches. If also matches if the given shorthand is empty.
-    Bool test (const String& str) const
+    bool test (const String& str) const
       { return (str.empty()  ||  shorthand_p == str); }
 
     // Get the given table number (of $i tables in TempTables)
-    Int tabnr() const
+    int32_t tabnr() const
       { return tabnr_p; }
 
     // Get the given table name.
@@ -92,7 +92,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
     // Get the index of the table in the list of join objects.
     // <0 means that it is no join table.
-    Int joinIndex() const
+    int32_t joinIndex() const
       { return joinIndex_p; }
 
     // Replace the Table object.
@@ -100,8 +100,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { table_p = table; }
 
   private:
-    Int     tabnr_p = -1;
-    Int     joinIndex_p = -1;
+    int32_t     tabnr_p = -1;
+    int32_t     joinIndex_p = -1;
     String  name_p;
     String  shorthand_p;
     Table   table_p;
@@ -130,7 +130,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     // Is the FROM table list empty?
-    Bool empty() const
+    bool empty() const
       { return itsFromTables.empty(); }
 
     // Get the FROM tables.
@@ -156,13 +156,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <br>- As a temporary table (from a nested query) given in ttab.
     // <br>- As the shorthand name of another table which will be looked up in
     //       the stack of query objects.
-    Table addTable (Int tabnr, const String& name,
+    Table addTable (int32_t tabnr, const String& name,
                     const Table& ttab,
                     const String& shorthand,
-                    Bool addToFromList,
+                    bool addToFromList,
                     const std::vector<const Table*>& tempTables,
                     const std::vector<TableParseQuery*>& stack,
-                    Int joinsIndex = -1);
+                    int32_t joinsIndex = -1);
 
 
     // Replace the first Table object in the FROM list with the given one.
@@ -172,21 +172,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Optionally the WITH tables are searched as well.
     // If no shorthand is given, the first FROM table is returned (if there).
     // If not found, a TableParsePair with a null Table object is returned.
-    static TableParsePair findTable (const String& shorthand, Bool doWith,
+    static TableParsePair findTable (const String& shorthand, bool doWith,
                                      const std::vector<TableParseQuery*>& stack);
 
     // Try to find the Table for the given shorthand in the table list.
-    TableParsePair findTable (const String& shorthand, Bool doWith) const;
+    TableParsePair findTable (const String& shorthand, bool doWith) const;
 
     // Find the keyword given in the <src>name</src> parameter which is
     // split into its shorthand, column and/or keyword parts.
     // It fills parameter <src>keyName</src> with the last keyword part
     // and returns the TableRecord containing that keyword.
     // It is a helper function for handleSetKey, etc.
-    // If update=True, rwKeywordSet() is used to ensure the table is updated.
+    // If update=true, rwKeywordSet() is used to ensure the table is updated.
     // An exception is thrown in case a name is not found.
     TableRecord& findKeyword (const String& name, String& keyName,
-                              Bool update=True);
+                              bool update=true);
 
   private:
     //# Data members

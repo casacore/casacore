@@ -43,15 +43,15 @@ static void defaultValue(String &val)
 int main()
 {
   try {
-    Int foo0;
+    int32_t foo0;
     defaultValue(foo0);
     AlwaysAssert(foo0 == 0, AipsError);
 
-    Float foo1;
+    float foo1;
     defaultValue(foo1);
     AlwaysAssert(foo1 == 0.0f, AipsError);
 
-    Double foo2;
+    double foo2;
     defaultValue(foo2);
     AlwaysAssert(foo2 == 0.0f, AipsError);
 

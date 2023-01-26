@@ -159,7 +159,7 @@ void ImageExpr<T>::save (const String& fileName) const
   // Create the directory if not existing already.
   Directory dir(fileName);
   if (! dir.exists()) {
-    dir.create (False);
+    dir.create (false);
   }
   // Create the Json file.
   JsonOut jout(fileName + "/imageexpr.json");
@@ -175,13 +175,13 @@ void ImageExpr<T>::save (const String& fileName) const
 }
 
 template<class T> 
-Bool ImageExpr<T>::setMiscInfo (const RecordInterface& newInfo)
+bool ImageExpr<T>::setMiscInfo (const RecordInterface& newInfo)
 {
   this->setMiscInfoMember (newInfo);
   if (isPersistent()) {
     save (fileName_p);
   }
-  return True;
+  return true;
 }
 
 template<class T>
@@ -191,7 +191,7 @@ String ImageExpr<T>::imageType() const
 }
 
 template <class T>
-Bool ImageExpr<T>::isMasked() const
+bool ImageExpr<T>::isMasked() const
 {
   return latticeExpr_p.isMasked();
 }
@@ -215,7 +215,7 @@ void ImageExpr<T>::resize(const TiledShape&)
 }
 
 template <class T>
-Bool ImageExpr<T>::doGetSlice (Array<T>& buffer,
+bool ImageExpr<T>::doGetSlice (Array<T>& buffer,
 			       const Slicer& section)
 {
   return latticeExpr_p.doGetSlice(buffer, section);
@@ -231,7 +231,7 @@ void ImageExpr<T>::doPutSlice (const Array<T>&, const IPosition&,
 }
 
 template <class T> 
-String ImageExpr<T>::name (Bool stripPath) const
+String ImageExpr<T>::name (bool stripPath) const
 {
   if (fileName_p.empty()) {
     if (exprString_p.empty()) {
@@ -247,49 +247,49 @@ String ImageExpr<T>::name (Bool stripPath) const
 }
 
 template <class T>
-Bool ImageExpr<T>::isPersistent() const
+bool ImageExpr<T>::isPersistent() const
 {  
   return ! fileName_p.empty();
 }
 
 template <class T>
-Bool ImageExpr<T>::isWritable() const
+bool ImageExpr<T>::isWritable() const
 {  
-  return False;
+  return false;
 }
 
 template <class T>
-IPosition ImageExpr<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition ImageExpr<T>::doNiceCursorShape (uint32_t maxPixels) const
 { 
   return latticeExpr_p.niceCursorShape(maxPixels);
 } 
 
 
 template <class T>
-Bool ImageExpr<T>::ok() const
+bool ImageExpr<T>::ok() const
 {
-  return True;
+  return true;
 }  
 
 
 template <class T>
 LatticeIterInterface<T>* ImageExpr<T>::makeIter
                                    (const LatticeNavigator &navigator,
-				    Bool useRef) const
+				    bool useRef) const
 {
   return latticeExpr_p.makeIter(navigator, useRef);
 }
 
 
 template <class T>
-Bool ImageExpr<T>::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+bool ImageExpr<T>::doGetMaskSlice (Array<bool>& buffer, const Slicer& section)
 {
   return latticeExpr_p.doGetMaskSlice (buffer, section);
 }
 
 
 template <class T>
-Bool ImageExpr<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool ImageExpr<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return latticeExpr_p.lock (type, nattempts);
 }
@@ -299,7 +299,7 @@ void ImageExpr<T>::unlock()
   latticeExpr_p.unlock();
 }
 template<class T>
-Bool ImageExpr<T>::hasLock (FileLocker::LockType type) const
+bool ImageExpr<T>::hasLock (FileLocker::LockType type) const
 {
   return latticeExpr_p.hasLock (type);
 }

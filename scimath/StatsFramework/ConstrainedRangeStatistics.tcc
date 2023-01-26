@@ -63,9 +63,9 @@ ConstrainedRangeStatistics<CASA_STATP>::operator=(
 
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt nBins
+    CountedPtr<uint64_t> knownNpts, CountedPtr<AccumType> knownMin,
+    CountedPtr<AccumType> knownMax, uint32_t binningThreshholdSizeBytes,
+    bool persistSortedArray, uint32_t nBins
 ) {
     if (! this->_getStatsData().median) {
         _setRange();
@@ -83,9 +83,9 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(
 
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
-    Bool persistSortedArray, uInt nBins
+    CountedPtr<uint64_t> knownNpts, CountedPtr<AccumType> knownMin,
+    CountedPtr<AccumType> knownMax, uint32_t binningThreshholdSizeBytes,
+    bool persistSortedArray, uint32_t nBins
 ) {
     _setRange();
     return ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
@@ -96,10 +96,10 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
 
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAndQuantiles(
-    std::map<Double, AccumType>& quantileToValue,
-    const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
+    std::map<double, AccumType>& quantileToValue,
+    const std::set<double>& quantiles, CountedPtr<uint64_t> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
+    uint32_t binningThreshholdSizeBytes, bool persistSortedArray, uint32_t nBins
 ) {
     _setRange();
     return ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
@@ -117,17 +117,17 @@ void ConstrainedRangeStatistics<CASA_STATP>::getMinMax(
 }
 
 CASA_STATD
-uInt64 ConstrainedRangeStatistics<CASA_STATP>::getNPts() {
+uint64_t ConstrainedRangeStatistics<CASA_STATP>::getNPts() {
     _setRange();
     return ClassicalStatistics<CASA_STATP>::getNPts();
 }
 
 CASA_STATD
-std::map<Double, AccumType>
+std::map<double, AccumType>
 ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
+    const std::set<double>& quantiles, CountedPtr<uint64_t> knownNpts,
     CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
-    uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
+    uint32_t binningThreshholdSizeBytes, bool persistSortedArray, uint32_t nBins
 ) {
     _setRange();
     return ClassicalStatistics<CASA_STATP>::getQuantiles(
@@ -152,10 +152,10 @@ void ConstrainedRangeStatistics<CASA_STATP>::reset() {
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+    uint64_t& npts, const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
 ) const {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*datum >= _range->first && *datum <= _range->second) {
             ++npts;
@@ -166,11 +166,11 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t& npts, const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -188,12 +188,12 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    uint64_t& npts, const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *datum >= _range->first && *datum <= _range->second) {
             ++npts;
@@ -206,13 +206,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude
+    uint64_t& npts, const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride, const DataRanges& ranges,
+    bool isInclude
 ) const {
         auto datum = dataBegin;
         auto mask = maskBegin;
-        uInt64 count = 0;
+        uint64_t count = 0;
         auto beginRange = ranges.cbegin();
         auto endRange = ranges.cend();
         while (count < nr) {
@@ -232,12 +232,12 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+    uint64_t& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
 ) const {
         auto datum = dataBegin;
         auto weight = weightsBegin;
-        uInt64 count = 0;
+        uint64_t count = 0;
         while (count < nr) {
             if (
                 *datum >= _range->first && *datum <= _range->second
@@ -253,13 +253,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -280,15 +280,15 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude
+    uint64_t& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride, const DataRanges& ranges,
+    bool isInclude
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -309,14 +309,14 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
-    uInt64& npts, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    uint64_t& npts, const DataIterator& dataBegin,
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (
             *mask && *datum >= _range->first && *datum <= _range->second
@@ -366,10 +366,10 @@ StatsData<AccumType> ConstrainedRangeStatistics<CASA_STATP>::_getStatistics() {
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
 ) const {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _minMaxCodeCR
         StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
@@ -379,11 +379,11 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -401,12 +401,12 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _minMaxCodeCR
@@ -420,13 +420,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride, const DataRanges& ranges,
+    bool isInclude
 ) const {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -447,11 +447,11 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride
+    uint64_t nr, uint32_t dataStride
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _minMaxCodeCR
@@ -466,11 +466,11 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -492,13 +492,13 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -520,12 +520,12 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
     CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _minMaxCodeCR
@@ -543,11 +543,11 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
 ) const {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _minMaxNptsCodeCR
         StatisticsIncrementer<CASA_STATQ>::increment(
@@ -558,12 +558,12 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -582,13 +582,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _minMaxNptsCodeCR
@@ -601,14 +601,14 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride, const DataRanges& ranges,
+    bool isInclude
 ) const {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -627,13 +627,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride
+    uint64_t nr, uint32_t dataStride
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _minMaxNptsCodeCR
@@ -646,13 +646,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -672,15 +672,15 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -700,14 +700,14 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uint64_t& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _minMaxNptsCodeCR
@@ -726,11 +726,11 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
 ) {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _unweightedStatsCodeCR
         StatisticsIncrementer<CASA_STATQ>::increment(datum, count, dataStride);
@@ -740,12 +740,12 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -763,13 +763,13 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _unweightedStatsCodeCR
@@ -783,14 +783,14 @@ void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_unweightedStats(
-    StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-    const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+    const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -819,11 +819,11 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride
+    uint64_t nr, uint32_t dataStride
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _weightedStatsCodeCR
@@ -839,11 +839,11 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -866,13 +866,13 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     auto beginRange = ranges.cbegin();
     auto endRange = ranges.cend();
     while (count < nr) {
@@ -895,12 +895,12 @@ CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_weightedStats(
     StatsData<AccumType>& stats, LocationType& location,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
 ) {
     auto datum = dataBegin;
     auto weight = weightsBegin;
     auto mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _weightedStatsCodeCR

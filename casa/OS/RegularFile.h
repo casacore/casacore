@@ -70,7 +70,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    RegularFile rFile ("isFile");
 //
 //    // Create file; if the file exists it will be overwritten
-//    rFile.create (True);
+//    rFile.create (true);
 //    rFile.copy (newPath);
 //  
 //    cout << rFile.size() << endl;     // Get the size of the file
@@ -122,7 +122,7 @@ public:
     // exception is thrown. Otherwise if overwrite is true the regular file
     // will be overwritten. If overwrite is false then nothing will be done.
     // If the file does not exist, it is created.
-    void create (Bool overwrite = True);
+    void create (bool overwrite = true);
 
     // Remove the file.
     // If it does not exist, an exception will be thrown.
@@ -136,20 +136,20 @@ public:
     // The target path can be a directory or a file (as in cp).
     // An exception is thrown if:
     // <br>- the target directory is not writable
-    // <br>- or the target file already exists and overwrite==False
+    // <br>- or the target file already exists and overwrite==false
     // <br>- or the target file already exists and is not writable
     // <note role=caution>
     // When a readonly file is copied, the resulting
     // file is also readonly. Therefore <src>chmod</src> is used to
     // set user write permission after the copy.
-    // The flag <src>setUserWritePermission</src> can be set to False
+    // The flag <src>setUserWritePermission</src> can be set to false
     // when that should not be done.
     // </note>
     // <group>
-    void copy (const Path& target, Bool overwrite = True,
-	       Bool setUserWritePermission = True) const;
-    void copy (const String& target, Bool overwrite = True,
-	       Bool setUserWritePermission = True) const;
+    void copy (const Path& target, bool overwrite = true,
+	       bool setUserWritePermission = true) const;
+    void copy (const String& target, bool overwrite = true,
+	       bool setUserWritePermission = true) const;
     // </group>
 
     // Copy the file manually in case the cp command cannot be used.
@@ -162,19 +162,19 @@ public:
     // The target path can be a directory or a file (as in mv).
     // An exception is thrown if:
     // <br>- the target directory is not writable
-    // <br>- or the target file already exists and overwrite==False
+    // <br>- or the target file already exists and overwrite==false
     // <br>- or the target file already exists and is not writable
     // <note role=tip> The system command mv is used instead of the
     // library function rename to be able to move across file systems.
     // </note>
     // <group>
-    void move (const Path& target, Bool overwrite = True);
-    void move (const String& target, Bool overwrite = True);
+    void move (const Path& target, bool overwrite = true);
+    void move (const String& target, bool overwrite = true);
     // </group>
 
     // Return the size of the file. If the file
     // does not exist, an exception will be thrown.
-    virtual Int64 size() const;
+    virtual int64_t size() const;
 
 private:
     // Check if the path of the file is valid.
@@ -186,12 +186,12 @@ private:
 };
 
 
-inline void RegularFile::copy (const String& target, Bool overwrite,
-			       Bool setUserWritePermission) const
+inline void RegularFile::copy (const String& target, bool overwrite,
+			       bool setUserWritePermission) const
 {
     copy (Path(target), overwrite, setUserWritePermission);
 }
-inline void RegularFile::move (const String& target, Bool overwrite)
+inline void RegularFile::move (const String& target, bool overwrite)
 {
     move (Path(target), overwrite);
 }

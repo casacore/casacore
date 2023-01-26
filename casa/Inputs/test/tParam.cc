@@ -79,7 +79,7 @@ int main()
     int i;
     for (i=0;i<3;i++) AlwaysAssertExit(5.0 == deflt.getDoubleArray()[i]);
     
-    // get an Block<Int> parameter value; prompt if switch is TRUE
+    // get an Block<int32_t> parameter value; prompt if switch is TRUE
     for (i=0;i<3;i++) AlwaysAssertExit(5 == deflt.getIntArray()[i]);
     
 // this function doesn't work
@@ -113,7 +113,7 @@ int main()
     AlwaysAssertExit(String("unit")==deflt.getUnit());
     
     // set a parameter as a system parameter
-    deflt.setSystem(True);
+    deflt.setSystem(true);
     
     // check if a parameter is a system parameter
     AlwaysAssertExit(deflt.isSystem());

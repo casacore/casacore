@@ -58,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // This LEL letter class is derived from LELInterface. It is used to
 // construct LEL objects that calculate the sepectral index from 2 other
 // LEL expression (usually images).
-// It operates on real types (Float,Double) 
+// It operates on real types (float,double) 
 // </synopsis> 
 
 // <motivation>
@@ -89,23 +89,23 @@ public:
    virtual LELScalar<T> getScalar() const;
 
   // Do further preparations (e.g. optimization) on the expression.
-  // Returns False.
-   virtual Bool prepareScalarExpr();
+  // Returns false.
+   virtual bool prepareScalarExpr();
 
   // Get class name
   virtual String className() const;
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
 private:
-  Int itsFreqAxis;
-  Block<Double> itsLogFreq;       //# log(f0/f1)
+  int32_t itsFreqAxis;
+  Block<double> itsLogFreq;       //# log(f0/f1)
   LatticeExprNode arg0_p;
   LatticeExprNode arg1_p;
 };

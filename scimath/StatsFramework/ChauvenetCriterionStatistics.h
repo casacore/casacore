@@ -49,7 +49,7 @@ namespace casacore {
 // QuantileComputer classes.
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool*,
+    class AccumType, class DataIterator, class MaskIterator=const bool*,
     class WeightsIterator=DataIterator
 >
 class ChauvenetCriterionStatistics
@@ -65,7 +65,7 @@ public:
     // <src>maxIterations</src> is the maximum number of iterations to use
     // before stopping. If negative, continue iterating until the set zscore or
     // Chauvenet's criterion is met (ie that there are no remaining outliers).
-    ChauvenetCriterionStatistics(Double zscore=-1, Int maxIterations=0);
+    ChauvenetCriterionStatistics(double zscore=-1, int32_t maxIterations=0);
 
     ChauvenetCriterionStatistics(
         const ChauvenetCriterionStatistics<CASA_STATP>& other
@@ -92,18 +92,18 @@ public:
     virtual void reset();
 
     // This class does not allow statistics to be calculated as datasets are
-    // added, so an exception will be thrown if <src>c</src> is True.
-    void setCalculateAsAdded(Bool c);
+    // added, so an exception will be thrown if <src>c</src> is true.
+    void setCalculateAsAdded(bool c);
 
     // get the number of iterations
-    uInt getNiter() const { return _niter; }
+    uint32_t getNiter() const { return _niter; }
 
 private:
 
-    Double _zscore{-1};
-    Int _maxIterations{0};
-    Bool _rangeIsSet{False};
-    uInt _niter{0};
+    double _zscore{-1};
+    int32_t _maxIterations{0};
+    bool _rangeIsSet{false};
+    uint32_t _niter{0};
 
     void _setRange();
 };

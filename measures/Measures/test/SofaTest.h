@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // SofaTest dpsi;	// Create an histogram class
 // // Loop over the following two statements to fill histogram
-// // Calculate a Double dpsival
+// // Calculate a double dpsival
 // dpsi.put(dpsival);
 // // Show the result
 // cout.precision(4);
@@ -150,7 +150,7 @@ class SofaTest {
   void clear();
   
   // Accumulate statistics
-  void put(const Double in);
+  void put(const double in);
 
   // Show statistics
   void show(ostream &os);
@@ -158,26 +158,26 @@ class SofaTest {
 
  private:
   // Histogram resolution
-  static const uInt HISTO_WIDTH = 500;
+  static const uint32_t HISTO_WIDTH = 500;
   // Data
   // Count
-  uInt n_p;
+  uint32_t n_p;
   // Sum values
-  Double sum_p;
+  double sum_p;
   // Sum squared
-  Double sq_p;
+  double sq_p;
   // Max found
-  Double max_p;
+  double max_p;
   // Min found
-  Double min_p;
+  double min_p;
   // Step in histogram
-  Double hstep_p;
+  double hstep_p;
   // Histogram size (really (n-1)/2)
-  uInt hsize_p;
+  uint32_t hsize_p;
   // Histogram width
-  uInt hwidth_p;
+  uint32_t hwidth_p;
   // Histogram
-  Int *histo_p;
+  int32_t *histo_p;
 
   // Methods
   // Copy object
@@ -199,92 +199,92 @@ class SofaTest {
 #define IAUR(x) iau_##x##
 #endif
 extern "C" void 
-IAUR(cal2jd)(const Int &iy, const Int &im, const Int &id,
-	     Double &djm0, Double &djm, Int &j);
+IAUR(cal2jd)(const int32_t &iy, const int32_t &im, const int32_t &id,
+	     double &djm0, double &djm, int32_t &j);
 extern "C" void 
-IAUR(epj2jd)(const Double &epj, Double &djm0, Double &djm);
+IAUR(epj2jd)(const double &epj, double &djm0, double &djm);
 extern "C" void 
-IAUR(prec76)(const Double &ep01, const Double &ep02,
-	     const Double &ep11, const Double &ep12,
-	     Double &zeta, Double &z,
-	     Double &theta);
+IAUR(prec76)(const double &ep01, const double &ep02,
+	     const double &ep11, const double &ep12,
+	     double &zeta, double &z,
+	     double &theta);
 extern "C" void 
-IAUR(pmat76)(const Double &epoch1, const Double &epoch2,
-	     Double *rmatp);
+IAUR(pmat76)(const double &epoch1, const double &epoch2,
+	     double *rmatp);
 extern "C" void 
-IAUR(nut80)(const Double &epoch1, const Double &epoch2,
-	    Double &dpsi, Double &deps);
+IAUR(nut80)(const double &epoch1, const double &epoch2,
+	    double &dpsi, double &deps);
 extern "C" void 
-IAUR(nutm80)(const Double &epoch1, const Double &epoch2,
-	     Double *rmatn);
-extern "C" Double 
-IAUR(obl80)(const Double &epoch1, const Double &epoch2);
+IAUR(nutm80)(const double &epoch1, const double &epoch2,
+	     double *rmatn);
+extern "C" double 
+IAUR(obl80)(const double &epoch1, const double &epoch2);
 extern "C" void 
-IAUR(pr00)(const Double &epoch1, const Double &epoch2,
-	   Double &dpsi, Double &deps);
+IAUR(pr00)(const double &epoch1, const double &epoch2,
+	   double &dpsi, double &deps);
 extern "C" void 
-IAUR(bi00)(Double &dpsi, Double &deps, Double &dra);
+IAUR(bi00)(double &dpsi, double &deps, double &dra);
 extern "C" void 
-IAUR(bp00)(const Double &epoch1, const Double &epoch2,
-	   Double *rb, Double *rp, Double *rbp);
+IAUR(bp00)(const double &epoch1, const double &epoch2,
+	   double *rb, double *rp, double *rbp);
 extern "C" void 
-IAUR(pnm80)(const Double &epoch1, const Double &epoch2,
-	    Double *rmatpn);
+IAUR(pnm80)(const double &epoch1, const double &epoch2,
+	    double *rmatpn);
 extern "C" void 
-IAUR(pn00a)(const Double &epoch1, const Double &epoch2,
-	    Double &dpsi, Double &deps, Double &epsa,
-	    Double *rb, Double *rp, Double *rbp,
-	    Double *rn, Double *rnpn);
+IAUR(pn00a)(const double &epoch1, const double &epoch2,
+	    double &dpsi, double &deps, double &epsa,
+	    double *rb, double *rp, double *rbp,
+	    double *rn, double *rnpn);
 extern "C" void 
-IAUR(pn00b)(const Double &epoch1, const Double &epoch2,
-	    Double &dpsi, Double &deps, Double &epsa,
-	    Double *rb, Double *rp, Double *rbp,
-	    Double *rn, Double *rnpn);
+IAUR(pn00b)(const double &epoch1, const double &epoch2,
+	    double &dpsi, double &deps, double &epsa,
+	    double *rb, double *rp, double *rbp,
+	    double *rn, double *rnpn);
 extern "C" void 
-IAUR(pr00)(const Double &ep01, const Double &ep02,
-	   Double &dpsipr, Double &depspr);
+IAUR(pr00)(const double &ep01, const double &ep02,
+	   double &dpsipr, double &depspr);
 extern "C" void 
-IAUR(nut00b)(const Double &epoch1, const Double &epoch2,
-	     Double &dpsi, Double &deps);
+IAUR(nut00b)(const double &epoch1, const double &epoch2,
+	     double &dpsi, double &deps);
 extern "C" void 
-IAUR(nut00a)(const Double &epoch1, const Double &epoch2,
-	     Double &dpsi, Double &deps);
+IAUR(nut00a)(const double &epoch1, const double &epoch2,
+	     double &dpsi, double &deps);
 extern "C" void 
-IAUR(num00a)(const Double &epoch1, const Double &epoch2,
-	     Double *rn);
+IAUR(num00a)(const double &epoch1, const double &epoch2,
+	     double *rn);
 extern "C" void 
-IAUR(num00b)(const Double &epoch1, const Double &epoch2,
-	     Double *rn);
+IAUR(num00b)(const double &epoch1, const double &epoch2,
+	     double *rn);
 extern "C" void 
-IAUR(c2t00a)(const Double &tta, const Double &ttb, const Double &uta,
-	     const Double &utb, const Double &xp, const Double &yp,
-	     Double *rc2t);
-extern "C" Double 
-IAUR(sp00)(const Double &date1, const Double &date2);
+IAUR(c2t00a)(const double &tta, const double &ttb, const double &uta,
+	     const double &utb, const double &xp, const double &yp,
+	     double *rc2t);
+extern "C" double 
+IAUR(sp00)(const double &date1, const double &date2);
 extern "C" void 
-IAUR(pom00)(const Double &xp, const Double &yp, const Double &sp,
-	    Double *rpom);
-extern "C" Double 
-IAUR(gmst00)(const Double &uta, const Double &utb,
-	     const Double &tta, const Double &ttb);
-extern "C" Double 
-IAUR(era00)(const Double &uta, const Double &utb);
-extern "C" Double 
-IAUR(gmst82)(const Double &dj1, const Double &dj2);
-extern "C" Double 
-IAUR(ee00a)(const Double &date1, const Double &date2);
-extern "C" Double 
-IAUR(eect00)(const Double &date1, const Double &date2);
-extern "C" Double 
-IAUR(eqeq94)(const Double &date1, const Double &date2);
+IAUR(pom00)(const double &xp, const double &yp, const double &sp,
+	    double *rpom);
+extern "C" double 
+IAUR(gmst00)(const double &uta, const double &utb,
+	     const double &tta, const double &ttb);
+extern "C" double 
+IAUR(era00)(const double &uta, const double &utb);
+extern "C" double 
+IAUR(gmst82)(const double &dj1, const double &dj2);
+extern "C" double 
+IAUR(ee00a)(const double &date1, const double &date2);
+extern "C" double 
+IAUR(eect00)(const double &date1, const double &date2);
+extern "C" double 
+IAUR(eqeq94)(const double &date1, const double &date2);
 extern "C" void 
-IAUR(pnm00a)(const Double &date1, const Double &date2, Double *rbpn);
+IAUR(pnm00a)(const double &date1, const double &date2, double *rbpn);
 extern "C" void 
-IAUR(c2teqx)(Double *rbpn, const Double &gst, Double *rpom, Double *rc2t);
+IAUR(c2teqx)(double *rbpn, const double &gst, double *rpom, double *rc2t);
 extern "C" void 
-IAUR(rz)(const Double &psi, Double *r);
+IAUR(rz)(const double &psi, double *r);
 extern "C" void 
-IAUR(cr)(Double *r, Double *c);
+IAUR(cr)(double *r, double *c);
 
 // </group>
 

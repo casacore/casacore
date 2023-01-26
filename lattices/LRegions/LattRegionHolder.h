@@ -112,15 +112,15 @@ public:
 
     // Comparison
     // <group>
-    virtual Bool operator==(const LattRegionHolder& other) const;
-    Bool operator!=(const LattRegionHolder& other) const;
+    virtual bool operator==(const LattRegionHolder& other) const;
+    bool operator!=(const LattRegionHolder& other) const;
     // </group>
 
     // Test if the underlying region is an LCRegion, etc.
     // <group>
-    Bool isLCRegion() const;
-    Bool isLCSlicer() const;
-    virtual Bool isWCRegion() const;
+    bool isLCRegion() const;
+    bool isLCSlicer() const;
+    virtual bool isWCRegion() const;
     // </group>
 
     // Get the region as a pointer to a LCRegion, LCSlicer, or WCRegion.
@@ -133,7 +133,7 @@ public:
     // </group>
 
     // Get the dimensionality.
-    uInt ndim() const;
+    uint32_t ndim() const;
 
     // Convert to a LatticeRegion using the given shape.
     LatticeRegion toLatticeRegion (const IPosition& shape) const;
@@ -156,28 +156,28 @@ public:
 
 protected:
     // Construct for the given dimensionality (for derived classes).
-    explicit LattRegionHolder (uInt ndim);
+    explicit LattRegionHolder (uint32_t ndim);
 
 private:
     LCRegion*   itsLC;
     LCSlicer*   itsSlicer;
-    uInt        itsNdim;
+    uint32_t        itsNdim;
 };
 
 
-inline Bool LattRegionHolder::isLCRegion() const
+inline bool LattRegionHolder::isLCRegion() const
 {
     return  (itsLC != 0);
 }
-inline Bool LattRegionHolder::isLCSlicer() const
+inline bool LattRegionHolder::isLCSlicer() const
 {
     return  (itsSlicer != 0);
 }
-inline Bool LattRegionHolder::operator!= (const LattRegionHolder& other) const
+inline bool LattRegionHolder::operator!= (const LattRegionHolder& other) const
 {
     return  (! operator== (other));
 }
-inline uInt LattRegionHolder::ndim() const
+inline uint32_t LattRegionHolder::ndim() const
 {
     return itsNdim;
 }

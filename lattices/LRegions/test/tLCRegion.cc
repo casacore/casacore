@@ -35,8 +35,8 @@
 
 #include <casacore/casa/namespace.h>
 void doIt (const IPosition& latticeShape,
-	   const Vector<Float>& center,
-	   const Vector<Float>& radii)
+	   const Vector<float>& center,
+	   const Vector<float>& radii)
 {
     LCEllipsoid cir (center, radii, latticeShape);
     cout << cir.hasMask() << ' ' << cir.maskArray() << endl;
@@ -49,7 +49,7 @@ void doIt (const IPosition& latticeShape,
 	   const IPosition& start,
 	   const IPosition& end,
 	   const IPosition& center,
-	   Float radius)
+	   float radius)
 {
     LCBox box (start, end, latticeShape);
     box.setComment ("com1");
@@ -156,7 +156,7 @@ int main()
 	doIt (IPosition (2,10,20),
 	      IPosition (2,3,4), IPosition (2,7,8),
 	      IPosition (2,4,16), 5.);
-	Vector<Float> center(2), radii(2);
+	Vector<float> center(2), radii(2);
 	radii(0) = radii(1) = 5.01;
 	center(0) = 5;
 	center(1) = 10.5;

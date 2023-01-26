@@ -51,20 +51,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 MeasureHolder::MeasureHolder() 
-  : hold_p(), mvhold_p(0), convertmv_p(False) {
+  : hold_p(), mvhold_p(0), convertmv_p(false) {
   createMV(0);
 }
 
 MeasureHolder::MeasureHolder(const Measure &in) 
-  : hold_p(in.clone()), mvhold_p(0), convertmv_p(False) {}
+  : hold_p(in.clone()), mvhold_p(0), convertmv_p(false) {}
 
 MeasureHolder::MeasureHolder(const MeasureHolder &other) 
   : RecordTransformable(),
-    hold_p(), mvhold_p(0), convertmv_p(False)
+    hold_p(), mvhold_p(0), convertmv_p(false)
 {
   if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
   createMV(other.mvhold_p.nelements());
-  for (uInt i=0; i<mvhold_p.nelements(); i++) {
+  for (uint32_t i=0; i<mvhold_p.nelements(); i++) {
     mvhold_p[i] = other.mvhold_p[i]->clone();
   }
 }
@@ -83,7 +83,7 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
       hold_p.clear();
     }
     createMV(other.mvhold_p.nelements());
-    for (uInt i=0; i<mvhold_p.nelements(); i++) {
+    for (uint32_t i=0; i<mvhold_p.nelements(); i++) {
       mvhold_p[i] = other.mvhold_p[i]->clone();
     }
   }
@@ -91,47 +91,47 @@ MeasureHolder &MeasureHolder::operator=(const MeasureHolder &other) {
 }
 
 //# Member Functions
-Bool MeasureHolder::isEmpty() const {
+bool MeasureHolder::isEmpty() const {
   return (!hold_p.ptr());
 }
 
-Bool MeasureHolder::isMeasure() const {
+bool MeasureHolder::isMeasure() const {
   return (hold_p.ptr());
 }
 
-Bool MeasureHolder::isMDirection() const {
+bool MeasureHolder::isMDirection() const {
   return (hold_p.ptr() && dynamic_cast<const MDirection*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMDoppler() const {
+bool MeasureHolder::isMDoppler() const {
   return (hold_p.ptr() && dynamic_cast<const MDoppler*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMEpoch() const {
+bool MeasureHolder::isMEpoch() const {
   return (hold_p.ptr() && dynamic_cast<const MEpoch*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMFrequency() const {
+bool MeasureHolder::isMFrequency() const {
   return (hold_p.ptr() && dynamic_cast<const MFrequency*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMPosition() const {
+bool MeasureHolder::isMPosition() const {
   return (hold_p.ptr() && dynamic_cast<const MPosition*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMRadialVelocity() const {
+bool MeasureHolder::isMRadialVelocity() const {
   return (hold_p.ptr() && dynamic_cast<const MRadialVelocity*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMBaseline() const {
+bool MeasureHolder::isMBaseline() const {
   return (hold_p.ptr() && dynamic_cast<const MBaseline*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMuvw() const {
+bool MeasureHolder::isMuvw() const {
   return (hold_p.ptr() && dynamic_cast<const Muvw*>(hold_p.ptr()));
 }
 
-Bool MeasureHolder::isMEarthMagnetic() const {
+bool MeasureHolder::isMEarthMagnetic() const {
   return (hold_p.ptr() && dynamic_cast<const MEarthMagnetic*>(hold_p.ptr()));
 }
 
@@ -205,7 +205,7 @@ const Muvw &MeasureHolder::asMuvw() const {
   return dynamic_cast<const Muvw &>(*hold_p.ptr());
 }
 
-Bool MeasureHolder::fromRecord(String &error,
+bool MeasureHolder::fromRecord(String &error,
 			       const RecordInterface &in) {
   if (in.isDefined(String("type")) &&
       in.isDefined(String("refer")) &&
@@ -213,7 +213,7 @@ Bool MeasureHolder::fromRecord(String &error,
       in.type(in.idToNumber(RecordFieldId("refer"))) == TpString) {
     if (!getType(error, in)) {
       error += String("Unknown Measure record in MeasureHolder::fromRecord\n");
-      return False;
+      return false;
     }
     String rf;
     in.get(RecordFieldId("refer"), rf);
@@ -234,31 +234,31 @@ Bool MeasureHolder::fromRecord(String &error,
 	in.type(in.idToNumber(RecordFieldId("offset"))) == TpRecord) {
       MeasureHolder x;
       if (!x.fromRecord(error, in.asRecord(RecordFieldId("offset")))) {
-	return False;
+	return false;
       }
       if (!hold_p.ptr()->setOffset(x.asMeasure())) {
 	error += String("Unmatched offset type in MeasureHolder::fromRecord\n");
-	return False;
+	return false;
       }
     }
     QuantumHolder q0, q1, q2;
-    uInt n(0);
+    uint32_t n(0);
     if (in.isDefined(String("m0")) &&
 	in.type(in.idToNumber(RecordFieldId("m0"))) == TpRecord) {
       if (!q0.fromRecord(error, in.asRecord(RecordFieldId("m0")))) {
-	return False;
+	return false;
       }
       n = 1;
       if (in.isDefined(String("m1")) &&
 	  in.type(in.idToNumber(RecordFieldId("m1"))) == TpRecord) {
 	if (!q1.fromRecord(error, in.asRecord(RecordFieldId("m1")))) {
-	  return False;
+	  return false;
 	}
 	n = 2;
 	if (in.isDefined(String("m2")) &&
 	    in.type(in.idToNumber(RecordFieldId("m2"))) == TpRecord) {
 	  if (!q2.fromRecord(error, in.asRecord(RecordFieldId("m2")))) {
-	    return False;
+	    return false;
 	  }
 	  n = 3;
 	}
@@ -273,21 +273,21 @@ Bool MeasureHolder::fromRecord(String &error,
 				q2.asQuantumVectorDouble().getFullUnit());
     if (!hold_p.ptr()->putValue(vq)) {
       error += String("Illegal quantity in MeasureHolder::fromRecord\n");
-      return False;
+      return false;
     }
-    uInt nel(0);
+    uint32_t nel(0);
     if (n>0) nel = q0.asQuantumVectorDouble().getValue().nelements();
     if (n>1 && nel != q1.asQuantumVectorDouble().getValue().nelements()) {
       error += String("Illegal number of values in MeasureHolder m1\n");
-      return False;
+      return false;
     }
     if (n>2 && nel != q2.asQuantumVectorDouble().getValue().nelements()) {
       error += String("Illegal number of values in MeasureHolder m2\n");
-      return False;
+      return false;
     }
     if (nel>1) {
       makeMV(nel);
-      for (uInt i=nel-1; i<nel; i--) {
+      for (uint32_t i=nel-1; i<nel; i--) {
 	if (n > 0) vq(0) = Quantity(q0.asQuantumVectorDouble().getValue()(i),
 				    q0.asQuantumVectorDouble().getFullUnit());
 	if (n > 1) vq(1) = Quantity(q1.asQuantumVectorDouble().getValue()(i),
@@ -296,66 +296,66 @@ Bool MeasureHolder::fromRecord(String &error,
 				    q2.asQuantumVectorDouble().getFullUnit());
 	if (!hold_p.ptr()->putValue(vq)) {
 	  error += String("Illegal quantity in MeasureHolder value\n");
-	  return False;
+	  return false;
 	}
 	if (!setMV(i, *hold_p.ptr()->getData())) {
 	  error += String("Illegal MeasValue in MeasureHolder value\n");
-	  return False;
+	  return false;
 	}
       }
     }
-    convertmv_p = False;
-    return True;
+    convertmv_p = false;
+    return true;
   }
   error += String("Illegal Measure record in MeasureHolder::fromRecord\n");
-  return False;
+  return false;
 }
 
-Bool MeasureHolder::fromString(String &error,
+bool MeasureHolder::fromString(String &error,
 			       const String &in) {
   if (!getType(error, in)) {
     error += String("Unknown Measure type in MeasureHolder::fromString\n");
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
+bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
   if (hold_p.ptr() && putType(error, out)) {
     out.define(RecordFieldId("refer"), hold_p.ptr()->getRefString());
     const Measure *off = hold_p.ptr()->getRefPtr()->offset();
     if (off) {
       Record offs;
-      if (!MeasureHolder(*off).toRecord(error, offs)) return False;
+      if (!MeasureHolder(*off).toRecord(error, offs)) return false;
       out.defineRecord(RecordFieldId("offset"), offs);
     }
     // Make sure units available
-    Vector<Quantum<Double> > res = hold_p.ptr()->getData()->getRecordValue();
-    uInt n(res.nelements());
-    uInt nel(nelements());
+    Vector<Quantum<double> > res = hold_p.ptr()->getData()->getRecordValue();
+    uint32_t n(res.nelements());
+    uint32_t nel(nelements());
     Record val;
     // Single value only
     if (!convertmv_p || nel==0) {
       if (n > 2) {
-	if (!QuantumHolder(res(2)).toRecord(error, val)) return False;
+	if (!QuantumHolder(res(2)).toRecord(error, val)) return false;
 	out.defineRecord(RecordFieldId("m2"), val);
       }
       if (n > 1) {
-	if (!QuantumHolder(res(1)).toRecord(error, val)) return False;
+	if (!QuantumHolder(res(1)).toRecord(error, val)) return false;
 	out.defineRecord(RecordFieldId("m1"), val);
       }
       if (n > 0) {
-	if (!QuantumHolder(res(0)).toRecord(error, val)) return False;
+	if (!QuantumHolder(res(0)).toRecord(error, val)) return false;
 	out.defineRecord(RecordFieldId("m0"), val);
       }
     } else {			// multiple values
-      Vector<Double> m2(nel);
-      Vector<Double> m1(nel);
-      Vector<Double> m0(nel);
-      for (uInt i=0; i<nelements(); i++) {
+      Vector<double> m2(nel);
+      Vector<double> m1(nel);
+      Vector<double> m0(nel);
+      for (uint32_t i=0; i<nelements(); i++) {
 	if (!mvhold_p[i]) {
 	  error += String("No value specified in MeasureHolder::toRecord\n");
-	  return False;
+	  return false;
 	}
 	res = mvhold_p[i]->getRecordValue();
 	if (n>2) m2(i) = res(2).getValue();
@@ -363,28 +363,28 @@ Bool MeasureHolder::toRecord(String &error, RecordInterface &out) const {
 	if (n>0) m0(i) = res(0).getValue();
       }
       if (n > 2) {
-	if (!QuantumHolder(Quantum<Vector<Double> >(m2,
+	if (!QuantumHolder(Quantum<Vector<double> >(m2,
 						    res(2).getFullUnit())).
-	    toRecord(error, val)) return False;
+	    toRecord(error, val)) return false;
 	out.defineRecord(RecordFieldId("m2"), val);
       }
       if (n > 1) {
-	if (!QuantumHolder(Quantum<Vector<Double> >(m1,
+	if (!QuantumHolder(Quantum<Vector<double> >(m1,
 						    res(1).getFullUnit())).
-	    toRecord(error, val)) return False;
+	    toRecord(error, val)) return false;
 	out.defineRecord(RecordFieldId("m1"), val);
       }
       if (n > 0) {
-	if (!QuantumHolder(Quantum<Vector<Double> >(m0,
+	if (!QuantumHolder(Quantum<Vector<double> >(m0,
 						    res(0).getFullUnit())).
-	    toRecord(error, val)) return False;
+	    toRecord(error, val)) return false;
 	out.defineRecord(RecordFieldId("m0"), val);
       }
     }
-    return True;
+    return true;
   }
   error += String("No Measure specified in MeasureHolder::toRecord\n");
-  return False;
+  return false;
 }
 
 void MeasureHolder::toRecord(RecordInterface& out) const {
@@ -396,23 +396,23 @@ void MeasureHolder::toRecord(RecordInterface& out) const {
 
 
 
-Bool MeasureHolder::toType(String &error, RecordInterface &out) const {
-  if (hold_p.ptr() && putType(error, out)) return True;
+bool MeasureHolder::toType(String &error, RecordInterface &out) const {
+  if (hold_p.ptr() && putType(error, out)) return true;
   error += String("No Measure specified in MeasureHolder::toType\n");
-  return False;    
+  return false;    
 }
 
-Bool MeasureHolder::fromType(String &error, const RecordInterface &in) {
+bool MeasureHolder::fromType(String &error, const RecordInterface &in) {
   if (in.isDefined(String("type")) &&
       in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
     if (!getType(error, in)) {
       error += String("Unknown Measure record in MeasureHolder::fromType\n");
-      return False;
+      return false;
     }
-    return True;
+    return true;
   }
   error += String("Illegal Measure record in MeasureHolder::fromType\n");
-  return False;
+  return false;
 }
 
 const String &MeasureHolder::ident() const {
@@ -420,31 +420,31 @@ const String &MeasureHolder::ident() const {
   return myid;
 }
 
-Bool MeasureHolder::setMV(uInt pos, const MeasValue &in) {
+bool MeasureHolder::setMV(uint32_t pos, const MeasValue &in) {
   if (mvhold_p.nelements() > pos) mvhold_p[pos] = in.clone();
-  else return False;
-  convertmv_p = True;
-  return True;
+  else return false;
+  convertmv_p = true;
+  return true;
 }
 
-MeasValue *MeasureHolder::getMV(uInt pos) const {
+MeasValue *MeasureHolder::getMV(uint32_t pos) const {
   if (mvhold_p.nelements() > pos)  return mvhold_p[pos];
   else return static_cast<MeasValue *>(0);
 }
 
-Bool MeasureHolder::putType(String &, RecordInterface &out) const {
+bool MeasureHolder::putType(String &, RecordInterface &out) const {
   out.define(RecordFieldId("type"),
 	     downcase(String(hold_p.ptr()->tellMe())));
-  return True;
+  return true;
 }
 
-Bool MeasureHolder::getType(String &error, const RecordInterface &in) {
+bool MeasureHolder::getType(String &error, const RecordInterface &in) {
   String tp;
   in.get(RecordFieldId("type"), tp);
   return getType(error, tp);
 }
 
-Bool MeasureHolder::getType(String &error, const String &in) {
+bool MeasureHolder::getType(String &error, const String &in) {
   String tp(in);
   tp.downcase();
   hold_p.clear();
@@ -468,17 +468,17 @@ Bool MeasureHolder::getType(String &error, const String &in) {
     hold_p.set(new MEarthMagnetic());
   } else {
     error = in + " is an unknown measure type";
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-void MeasureHolder::createMV(uInt n) {
-  for (uInt i=0; i<mvhold_p.nelements(); i++) {
+void MeasureHolder::createMV(uint32_t n) {
+  for (uint32_t i=0; i<mvhold_p.nelements(); i++) {
     delete mvhold_p[i]; mvhold_p[i] = 0;
   }
   mvhold_p.resize(n);
-  for (uInt i=0; i<mvhold_p.nelements(); i++) mvhold_p[i] = 0;
+  for (uint32_t i=0; i<mvhold_p.nelements(); i++) mvhold_p[i] = 0;
 }
 
 

@@ -77,11 +77,11 @@ template<class T> class Block;
 class ObjectID
 {
 public:
-    // If <src>makeNull</src> is True, make the null ObjectID, otherwise create
+    // If <src>makeNull</src> is true, make the null ObjectID, otherwise create
     // a unique ObjectID.
-    ObjectID(Bool makeNull = False);
+    ObjectID(bool makeNull = false);
     // Create explicitly from the provided constituents.
-    ObjectID(Int sequence, Int pid, Int time, const String &hostname);
+    ObjectID(int32_t sequence, int32_t pid, int32_t time, const String &hostname);
 
     // Copy <src>other</src>. Note that if the ObjectID is embedded inside an
     // object, the enclosing object probably does not want to copy the ObjectID
@@ -93,12 +93,12 @@ public:
     // </group>
     
     // Is this ObjectID set?
-    Bool isNull() const;
+    bool isNull() const;
 
     // Compare two ObjectID's for (in)equality.
     // <group>
-    Bool operator==(const ObjectID &other) const;
-    Bool operator!=(const ObjectID &other) const;
+    bool operator==(const ObjectID &other) const;
+    bool operator!=(const ObjectID &other) const;
     // </group>
 
     // It is useful to interconvert between strings and ObjecID's, e.g. when
@@ -112,7 +112,7 @@ public:
     // <group>
     // If this fails, an error message is set and the ObjectID is the null
     // ObjectID.
-    Bool fromString(String &error, const String &in);
+    bool fromString(String &error, const String &in);
     // Note that <src>out</src> is zero'd before it is set.
     void toString(String &out) const;
     // </group>
@@ -120,9 +120,9 @@ public:
     // Ordinarily the user does not need to get at the exact state of the,
     // ObjectID, however it is available for those times when it is necessary.
     // <group>
-    Int sequence() const;
-    Int pid() const;
-    Int creationTime() const;
+    int32_t sequence() const;
+    int32_t pid() const;
+    int32_t creationTime() const;
     const String &hostName() const;
     // </group>
 
@@ -134,32 +134,32 @@ public:
 			      const String& command);
 
 private:
-    Int sequence_number_p;
-    Int process_id_p;
-    Int creation_time_p;
+    int32_t sequence_number_p;
+    int32_t process_id_p;
+    int32_t creation_time_p;
     String hostname_p;
 
     // Make a unique sequence number, returns 0 on first call, 1 on next, ...
-    static Int sequence_number();
+    static int32_t sequence_number();
 };
 
-uInt hashFunc(const ObjectID &);
+uint32_t hashFunc(const ObjectID &);
 
 ostream &operator<<(ostream &os, const ObjectID &id);
 
 //# Inlines
 
-inline Int ObjectID::sequence() const 
+inline int32_t ObjectID::sequence() const 
 {
     return sequence_number_p;
 }
 
-inline Int ObjectID::pid() const 
+inline int32_t ObjectID::pid() const 
 {
     return process_id_p;
 }
 
-inline Int ObjectID::creationTime() const
+inline int32_t ObjectID::creationTime() const
 {
     return creation_time_p;
 }

@@ -70,14 +70,14 @@ int main (int argc, char* argv[])
     String in (inputs.getString("in"));
     String out (inputs.getString("out"));
     String hdrfile (inputs.getString("headerfile"));
-    Bool autohdr (inputs.getBool("autoheader"));
+    bool autohdr (inputs.getBool("autoheader"));
     String autoshp (inputs.getString("autoshape"));
     String colnm (inputs.getString("columnnames"));
     String dtype (inputs.getString("datatypes"));
     String sep (inputs.getString("sep"));
     String comm (inputs.getString("commentmarker"));
-    Int first (inputs.getInt("firstline"));
-    Int last  (inputs.getInt("lastline"));
+    int32_t first (inputs.getInt("firstline"));
+    int32_t last  (inputs.getInt("lastline"));
     if (in.empty()) {
       throw AipsError(" an input file name must be given");
     }
@@ -91,9 +91,9 @@ int main (int argc, char* argv[])
     Vector<String> cols (stringToVector(colnm));
     Vector<String> typs (stringToVector(dtype));
     // Get the auto-shape (if given).
-    Vector<Int> vec;
+    Vector<int32_t> vec;
     std::istringstream is(autoshp);
-    if (! read(is, vec, 0, False)) {
+    if (! read(is, vec, 0, false)) {
       throw AipsError (" '" + autoshp +
                        "' is an invalid autoshape (maybe enclose in [])");
     }

@@ -96,7 +96,7 @@ int main() {
   myobj * doNotDelete = new myobj ("Don't delete me!");
 
   {
-      CountedPtr<myobj> p1 (doNotDelete, False);
+      CountedPtr<myobj> p1 (doNotDelete, false);
       CountedPtr<myobj> p2 (p1);
       CountedPtr<myobj> p3;
 

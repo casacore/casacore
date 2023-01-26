@@ -44,7 +44,7 @@ using namespace casacore;
 using namespace std;
 
 void check (MSDerivedValues& mdv,
-            uInt rownr,
+            uint32_t rownr,
             ScalarColumn<double>& ha,
             ScalarColumn<double>& last,
             ArrayColumn<double>& azel)
@@ -64,7 +64,7 @@ void check (MSDerivedValues& mdv,
 }
 
 void check (MSDerivedValues& mdv,
-            uInt rownr,
+            uint32_t rownr,
             ScalarColumn<double>& ha,
             ScalarColumn<double>& last,
             ArrayColumn<double>& azel,
@@ -79,7 +79,7 @@ void check (MSDerivedValues& mdv,
 }
 
 void check (MSDerivedValues& mdv,
-            uInt rownr,
+            uint32_t rownr,
             ScalarColumn<double>& ha,
             ScalarColumn<double>& last,
             ScalarColumn<double>& pa,
@@ -91,9 +91,9 @@ void check (MSDerivedValues& mdv,
   AlwaysAssertExit (near(mpa, tpa, 1e-10));
 }
 
-void check (uInt rownr,
-            ArrayColumn<Double>& uvw,
-            ArrayColumn<Double>& uvwJ2000)
+void check (uint32_t rownr,
+            ArrayColumn<double>& uvw,
+            ArrayColumn<double>& uvwJ2000)
 {
   if (uvw.isNull()) {
     AlwaysAssertExit (allEQ (uvwJ2000(rownr), 0.));
@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
       cout << "Run as:   tDerivedMSCal msname/caltablename [checkuvw]" << endl;
       return 3;
     }
-    Bool checkUVW = (argc > 2);
+    bool checkUVW = (argc > 2);
     // Copy the input table.
     // Also determine the name of the MS containing ANTENNA, etc.
     String msName ("tDerivedMSCal_tmp.tab");
@@ -168,15 +168,15 @@ int main(int argc, char* argv[])
     ArrayColumn<double> itrf(tab, "ITRF");
     ArrayColumn<double> uvwJ2000(tab, "UVW_J2000");
     ScalarMeasColumn<MEpoch> time(tab, "TIME");
-    ScalarColumn<Int> fld(tab, "FIELD_ID");
-    ScalarColumn<Int> ant1(tab, "ANTENNA1");
-    ScalarColumn<Int> ant2;
+    ScalarColumn<int32_t> fld(tab, "FIELD_ID");
+    ScalarColumn<int32_t> ant1(tab, "ANTENNA1");
+    ScalarColumn<int32_t> ant2;
     if (tab.tableDesc().isColumn("ANTENNA2")) {
       ant2.attach (tab, "ANTENNA2");
     } else {
       ant2.attach (tab, "ANTENNA1");
     }
-    ArrayColumn<Double> uvw;
+    ArrayColumn<double> uvw;
     if (tab.tableDesc().isColumn("UVW")) {
       uvw.attach (tab, "UVW");
     }
@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
     // Take care that the same array center is used.
     // Find observatory position.
     // If not found, set it to the position of the middle antenna.
-    Bool fndObs = False;
+    bool fndObs = false;
     MPosition arrayPos;
     Table obstab (ms.keywordSet().asTable("OBSERVATION"));
     if (obstab.nrow() > 0) {
@@ -200,9 +200,9 @@ int main(int argc, char* argv[])
     // Now loop through quite some rows and compare result of DerivedMSCal
     // with MSDerivedValues.
     rownr_t nr = std::max(tab.nrow(), rownr_t(1000));
-    Int lastFldId = -1;
+    int32_t lastFldId = -1;
     for (rownr_t i=0; i<nr; ++i) {
-      Int fldId = fld(i);
+      int32_t fldId = fld(i);
       if (fldId != lastFldId) {
         mdv.setFieldCenter (fldId);
         lastFldId = fldId;
@@ -221,13 +221,13 @@ int main(int argc, char* argv[])
     // Now time getting the hourangle using DataMan and MSDerivedValues.
     double totha = 0;
     Timer timer;
-    for (uInt i=0; i<tab.nrow(); ++i) {
+    for (uint32_t i=0; i<tab.nrow(); ++i) {
       totha += ha(i);
     }
     timer.show ("DataMan  ha");
     totha = 0;
     timer.mark();
-    for (uInt i=0; i<tab.nrow(); ++i) {
+    for (uint32_t i=0; i<tab.nrow(); ++i) {
       // Note: setFieldCenter is very expensive; takes 95% of the time.
       // Therefore it is omitted in this loop.
       if (i == 0) {
@@ -239,13 +239,13 @@ int main(int argc, char* argv[])
     }
     timer.show ("Values   ha");
     timer.mark();
-    for (uInt i=0; i<tab.nrow(); ++i) {
+    for (uint32_t i=0; i<tab.nrow(); ++i) {
       uvwJ2000(i);
     }
     timer.show ("DataMan uvw");
     if (! uvw.isNull()) {
       timer.mark();
-      for (uInt i=0; i<tab.nrow(); ++i) {
+      for (uint32_t i=0; i<tab.nrow(); ++i) {
         uvw(i);
       }
       timer.show ("Table   uvw");

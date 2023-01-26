@@ -71,15 +71,15 @@ class String;
 //   diagonal PC matrix and convert from pixel to world
 //
 // <srcblock>
-//    Vector<Double> crpix(2), cdelt(2);
+//    Vector<double> crpix(2), cdelt(2);
 //    crpix(0) = 10.0; crpix(1) = 20.0;
 //    cdelt(0) = 1.0; cdelt(1) = -1.0;
 //    LinearXform lxf(crpix, cdelt);
 //
 //    String errMsg;
-//    Vector<Double> world, pixel(2);
+//    Vector<double> world, pixel(2);
 //    pixel = 10.0;
-//    Bool ok = lxf.reverse(world, pixel, errMsg);
+//    bool ok = lxf.reverse(world, pixel, errMsg);
 //    if (ok) {
 //       cerr << "pixel, world = " << pixel << world << endl;
 //    } else {
@@ -109,20 +109,20 @@ public:
     // Construct with specified number of axes.  The reference pixel is
     // assumed to be 0, and the increment is assumed to be unity, and the
     // PC matrix is assumed to be diagonal.
-    LinearXform(uInt naxis=1);
+    LinearXform(uint32_t naxis=1);
 
     // Construct the linear transformation from the supplied reference pixel
     // and increment. The PC matrix is the unit matrix.
     // <src>crpix</src> and <src>cdelt</src> must have the same number
     // of elements.
-    LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt);
+    LinearXform(const Vector<double> &crpix, const Vector<double> &cdelt);
 
     // Construct a linear transformation, supplying all of the reference pixel,
     // increment and PC matrix.
     // The vectors must be of the same length ("n") and the number of rows and
     // columns in the matrix must also be n.
-    LinearXform(const Vector<Double> &crpix, const Vector<Double> &cdelt,
-                const Matrix<Double> &pc);
+    LinearXform(const Vector<double> &crpix, const Vector<double> &cdelt,
+                const Matrix<double> &pc);
 
     // Copy constructor (copy sematics)
     LinearXform(const LinearXform &other);
@@ -135,24 +135,24 @@ public:
 
     // Returns the number of world axes, which for this class is also the
     // number of pixel axes.
-    uInt nWorldAxes() const;
+    uint32_t nWorldAxes() const;
 
     // Convert world coordinates to pixel coordinates (forward), or pixel
-    // coordinates to world (reverse). If the conversion works True is returned,
-    // otherwise False is returned and errorMsg is set.  The output vectors
+    // coordinates to world (reverse). If the conversion works true is returned,
+    // otherwise false is returned and errorMsg is set.  The output vectors
     // are resized appropriately.
     // <group>
-    Bool forward(Vector<Double> &pixel, const Vector<Double> &world,
+    bool forward(Vector<double> &pixel, const Vector<double> &world,
                         String &errorMsg) const;
-    Bool reverse(Vector<Double> &world, const Vector<Double> &pixel,
+    bool reverse(Vector<double> &world, const Vector<double> &pixel,
                         String &errorMsg) const;
     // </group>
 
     // Retrieve the value of crpix, cdelt, and pc.
     // <group>
-    Vector<Double> crpix() const;
-    Vector<Double> cdelt() const;
-    Matrix<Double> pc() const;
+    Vector<double> crpix() const;
+    Vector<double> cdelt() const;
+    Matrix<double> pc() const;
     // </group>
 
     // Set the value of crpix, cdelt, and pc. Note that since you can only
@@ -160,34 +160,34 @@ public:
     // using these functions. Instead use assignment on a temporary, i.e.:
     // <src> linxform = LinearXform (crpix,crval,pc); </src>
     // <group>
-    void crpix(const Vector<Double> &newvals);
-    void cdelt(const Vector<Double> &newvals);
-    void pc(const Matrix<Double> &newvals);
+    void crpix(const Vector<double> &newvals);
+    void cdelt(const Vector<double> &newvals);
+    void pc(const Matrix<double> &newvals);
     // </group>
 
     // Invert the LinearXform ready for use in a Fourier Transformed Coordinate.
     // It is the callers responsibility to delete the pointer. If it fails
     // the pointer is 0 and an error message is provided
-    LinearXform* fourierInvert (String& errMsg, const Vector<Bool>& axes,
-                               const Vector<Double>& crpix,
-                               const Vector<Double>& scale) const;
+    LinearXform* fourierInvert (String& errMsg, const Vector<bool>& axes,
+                               const Vector<double>& crpix,
+                               const Vector<double>& scale) const;
 
-    // Comparison function. Any private Double data members are compared
+    // Comparison function. Any private double data members are compared
     // with the specified fractional tolerance.  You can specify axes to
     // exclude from the comparison if you wish.
     // <group>
-    Bool near(const LinearXform& other,
-              Double tol=1e-6) const;
-    Bool near(const LinearXform& other,
-              const Vector<Int>& excludeAxes,
-              Double tol=1e-6) const;
+    bool near(const LinearXform& other,
+              double tol=1e-6) const;
+    bool near(const LinearXform& other,
+              const Vector<int32_t>& excludeAxes,
+              double tol=1e-6) const;
     // </group>
 
 private:
     // A WCSLIB C-structure.
     mutable linprm linprm_p;
 
-    Bool isPCDiagonal_p;
+    bool isPCDiagonal_p;
     void set_linprm();
 };
 

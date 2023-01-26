@@ -33,63 +33,63 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
-const Double MeasData::MJD2000 =   51544.5;
-const Double MeasData::MJDB1950 =  33281.92345905;
-const Double MeasData::MJDB1900 =  15019.5;
-const Double MeasData::MJDB1850 = -3242.29642;
-const Double MeasData::TROPCEN =   36524.2198782;
-const Double MeasData::JDCEN =     36525.0;
-const Double MeasData::SECinDAY =  (3600.*24.);
+const double MeasData::MJD2000 =   51544.5;
+const double MeasData::MJDB1950 =  33281.92345905;
+const double MeasData::MJDB1900 =  15019.5;
+const double MeasData::MJDB1850 = -3242.29642;
+const double MeasData::TROPCEN =   36524.2198782;
+const double MeasData::JDCEN =     36525.0;
+const double MeasData::SECinDAY =  (3600.*24.);
 
 //# Member functions
 
 // Galactic coordinates
 const RotMatrix &MeasData::GALtoB1950() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
-  static const Double data[3][3] = {
+  static const double data[3][3] = {
     { -0.0669887394,	+0.4927284661,	-0.8676008112},
     { -0.8727557659,	-0.4503469580,	-0.1883746017},
     { -0.4835389146,	+0.7445846333,	+0.4601997848}
   };
   if (needInit) {
     // Multiple threads could execute this, but that is harmless.
-    Int i,j;
+    int32_t i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[i][j];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 const RotMatrix &MeasData::B1950toGAL() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
-  static const Double data[3][3] = {
+  static const double data[3][3] = {
     { -0.0669887394,	+0.4927284661,	-0.8676008112},
     { -0.8727557659,	-0.4503469580,	-0.1883746017},
     { -0.4835389146,	+0.7445846333,	+0.4601997848}
   };
   if (needInit) {
     // Multiple threads could execute this, but that is harmless.
-    Int i,j;
+    int32_t i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[j][i];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 const RotMatrix &MeasData::GALtoJ2000() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
-  static const Double data[3][3] = {
+  static const double data[3][3] = {
     ///    { -0.0548755397,	+0.4941094533,	-0.8676661359},
     ///    { -0.8734371080,	-0.4448295894,	-0.1980763861},
     ///    { -0.483834985,	+0.7469822518,	+0.4559837957}
@@ -99,21 +99,21 @@ const RotMatrix &MeasData::GALtoJ2000() {
   };
   if (needInit) {
     // Multiple threads could execute this, but that is harmless.
-    Int i,j;
+    int32_t i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[i][j];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 const RotMatrix &MeasData::J2000toGAL() {
-  static Bool needInit = True;
+  static bool needInit = true;
   static RotMatrix rot;
-  static const Double data[3][3] = {
+  static const double data[3][3] = {
     ///    { -0.0548755397,	+0.4941094533,	-0.8676661359},
     ///    { -0.8734371080,	-0.4448295894,	-0.1980763861},
     ///    { -0.483834985,	+0.7469822518,	+0.4559837957}
@@ -123,22 +123,22 @@ const RotMatrix &MeasData::J2000toGAL() {
   };
   if (needInit) {
     // Multiple threads could execute this, but that is harmless.
-    Int i,j;
+    int32_t i,j;
     for (i=0; i<3; i++) {
       for (j=0; j<3; j++) {
 	rot(i,j) = data[j][i];
       }
     }
-    needInit = False;
+    needInit = false;
   }
   return rot;
 }
 
 // B1950-J2000 conversions
-const RotMatrix &MeasData::MToB1950(uInt which) {
-  static Bool needInit = True;
+const RotMatrix &MeasData::MToB1950(uint32_t which) {
+  static bool needInit = true;
   static RotMatrix rot[5];
-  static const Double data[5][3][3] = {
+  static const double data[5][3][3] = {
     {
       {+0.9999256795,	+0.0111814828,	+0.0048590039},
       {-0.0111814828,	+0.9999374849,	-0.0000271771},
@@ -162,7 +162,7 @@ const RotMatrix &MeasData::MToB1950(uInt which) {
   };
   if (needInit) {
     // Multiple threads could execute this, but that is harmless.
-    Int i,j,k;
+    int32_t i,j,k;
     for (i=0; i<5; i++) {
       for (j=0; j<3; j++) {
 	for (k=0; k<3; k++) {
@@ -170,16 +170,16 @@ const RotMatrix &MeasData::MToB1950(uInt which) {
 	}
       }
     }
-    needInit = False;
+    needInit = false;
   }
   DebugAssert(which < 5, AipsError);
   return rot[which];
 }
 
-const RotMatrix &MeasData::MToJ2000(uInt which) {
-  static Bool needInit = True;
+const RotMatrix &MeasData::MToJ2000(uint32_t which) {
+  static bool needInit = true;
   static RotMatrix rot[4];
-  static const Double data[4][3][3] = {
+  static const double data[4][3][3] = {
     {
       {+0.9999256782,	-0.0111820611,	-0.0048579477},
       {+0.0111820610,	+0.9999374784,	-0.0000271765},
@@ -199,7 +199,7 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
   };
   if (needInit) {
     // Multiple threads could execute this, but that is harmless.
-    Int i,j,k;
+    int32_t i,j,k;
     for (i=0; i<4; i++) {
       for (j=0; j<3; j++) {
 	for (k=0; k<3; k++) {
@@ -207,7 +207,7 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
 	}
       }
     }
-    needInit = False;
+    needInit = false;
   }
   
   DebugAssert(which < 4, AipsError);
@@ -215,14 +215,14 @@ const RotMatrix &MeasData::MToJ2000(uInt which) {
 }
 
 // Solar semi diameter
-Double MeasData::SunSemiDiameter() {
-    static const Double data = .004652472638;
+double MeasData::SunSemiDiameter() {
+    static const double data = .004652472638;
     return data;
 }
 
 // J2000 obliquity
-Double MeasData::eps0J2000() {
-  static const Double data = 84381.448*C::arcsec;
+double MeasData::eps0J2000() {
+  static const double data = 84381.448*C::arcsec;
   return data;
 }
 

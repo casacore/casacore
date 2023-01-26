@@ -103,12 +103,12 @@ public:
     TSMCubeBuff (TiledStMan* stman, TSMFile* file,
                  const IPosition& cubeShape,
                  const IPosition& tileShape,
-                 const Record& values, Int64 fileOffset, uInt bufferSize);
+                 const Record& values, int64_t fileOffset, uint32_t bufferSize);
 
     // Reconstruct the hypercube by reading its data from the AipsIO stream.
     // It will link itself to the correct TSMFile. The TSMFile objects
     // must have been reconstructed in advance.
-    TSMCubeBuff (TiledStMan* stman, AipsIO& ios, uInt bufferSize);
+    TSMCubeBuff (TiledStMan* stman, AipsIO& ios, uint32_t bufferSize);
 
     virtual ~TSMCubeBuff();
 
@@ -125,39 +125,39 @@ public:
 
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
-    virtual void extend (uInt64 nr, const Record& coordValues,
+    virtual void extend (uint64_t nr, const Record& coordValues,
                          const TSMColumn* lastCoordColumn);
 
     // Read or write a section in the cube.
     // It is assumed that the section buffer is long enough.
     virtual void accessSection (const IPosition& start, const IPosition& end,
-                                char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize,
-                                Bool writeFlag);
+                                char* section, uint32_t colnr,
+                                uint32_t localPixelSize, uint32_t externalPixelSize,
+                                bool writeFlag);
 
     // Read or write a section in a strided way.
     // It is assumed that the section buffer is long enough.
     virtual void accessStrided (const IPosition& start, const IPosition& end,
                                 const IPosition& stride,
-                                char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize,
-                                Bool writeFlag);
+                                char* section, uint32_t colnr,
+                                uint32_t localPixelSize, uint32_t externalPixelSize,
+                                bool writeFlag);
 
     // Set the cache size for the given slice and access path.
     virtual void setCacheSize (const IPosition& sliceShape,
                                const IPosition& windowStart,
                                const IPosition& windowLength,
                                const IPosition& axisPath,
-                               Bool forceSmaller, Bool userSet);
+                               bool forceSmaller, bool userSet);
 
     // Resize the cache object.
-    // If forceSmaller is False, the cache will only be resized when it grows.
+    // If forceSmaller is false, the cache will only be resized when it grows.
     // If the given size exceeds the maximum size with more
     // than 10%, the maximum size will be used.
     // The cacheSize has to be given in buckets.
     // <br>The flag <src>userSet</src> inidicates if the cache size is set by
     // the user (by an Accessor object) or automatically (by TSMDataColumn).
-    virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
+    virtual void setCacheSize (uint32_t cacheSize, bool forceSmaller, bool userSet);
 
 private:
     // Forbid copy constructor.
@@ -183,7 +183,7 @@ private:
     // The bucket cache.
     BucketBuffered* cache_p;
     // The buffer size to use.
-    uInt bufferSize_p;
+    uint32_t bufferSize_p;
 };
 
 

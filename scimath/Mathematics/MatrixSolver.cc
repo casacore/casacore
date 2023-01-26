@@ -35,7 +35,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(False),
+MatrixSolver::MatrixSolver():SolTolerance(0.0), MaxIterations(0), solved(false),
    gain(1.0){}
 
 MatrixSolver::MatrixSolver(const MatrixSolver & other) {    
@@ -53,7 +53,7 @@ MatrixSolver::MatrixSolver(const MatrixSolver & other) {
 
 MatrixSolver::MatrixSolver(const Matrix<FType> & amatrix,
 		     const Vector<FType> & bvector) 
-:  SolTolerance(0.0), MaxIterations(0), solved(False), gain(1.0) {
+:  SolTolerance(0.0), MaxIterations(0), solved(false), gain(1.0) {
     AMatrix.reference((Matrix<FType> &)amatrix);
     BVector.reference((Vector<FType> &)bvector);
     XVector.resize(AMatrix.shape()(1));
@@ -97,7 +97,7 @@ MatrixSolver & MatrixSolver::operator=(const MatrixSolver & other) {
 MatrixSolver::~MatrixSolver() {}
 
 // Virtual solve method
-Bool MatrixSolver::solve() {return False;}
+bool MatrixSolver::solve() {return false;}
 
 // Returning the residual vector is a general operation.
 const Vector<FType> & MatrixSolver::getResidual() {
@@ -116,7 +116,7 @@ const Vector<FType> & MatrixSolver::getSolution() {
 }
 
 // Determine if the solution has small enough residual vector.
-Bool MatrixSolver::accurateSolution() {
+bool MatrixSolver::accurateSolution() {
 
   LogMessage message(LogOrigin("MatrixSolver", "accurateSolution"));
 
@@ -131,10 +131,10 @@ Bool MatrixSolver::accurateSolution() {
   message.message(o);
   logSink().post(message);
   if (RNorm<(SolTolerance*BNorm)) {
-    setSolved(True);
+    setSolved(true);
   }
   else {
-    setSolved(False);
+    setSolved(false);
   }
   return Solved();
 }

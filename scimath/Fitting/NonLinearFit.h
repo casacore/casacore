@@ -116,8 +116,8 @@ namespace casacore { //# begin namesapce casa
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// <li> Float
-// <li> Double
+// <li> float
+// <li> double
 // <li> Complex
 // <li> DComplex   
 // </templating>
@@ -153,16 +153,16 @@ template<class T> class NonLinearFit : public GenericL2Fit<T>
 public: 
   //# Constants
   // Default maximum number of iterations (30)
-  static const uInt MAXITER = 30;
+  static const uint32_t MAXITER = 30;
   // Default convergence criterium (0.001)
-  static const Double CRITERIUM;
+  static const double CRITERIUM;
 
   //# Constructors
   // Create a fitter: the normal way to generate a fitter object. Necessary
   // data will be deduced from the Functional provided with
   // <src>setFunction()</src>.
   // Create optionally a fitter with SVD behaviour specified.
-  explicit NonLinearFit(Bool svd=False);
+  explicit NonLinearFit(bool svd=false);
   // Copy constructor (deep copy)
   NonLinearFit(const NonLinearFit &other);
   // Assignment (deep copy)
@@ -173,44 +173,44 @@ public:
 
   // setMaxIter() sets the maximum number of iterations to do before stopping.
   // Default value is 30.
-  void setMaxIter(uInt maxIter=MAXITER);
+  void setMaxIter(uint32_t maxIter=MAXITER);
 
   // getMaxIter() queries what the maximum number of iterations currently is
-  uInt getMaxIter() const { return maxiter_p; };
+  uint32_t getMaxIter() const { return maxiter_p; };
 
   // currentIteration() queries what the current iteration is
-  uInt currentIteration() const { return maxiter_p - curiter_p; };
+  uint32_t currentIteration() const { return maxiter_p - curiter_p; };
 
   // setCriteria() sets the convergence criteria. The actual value and
   // its interpretation depends on the derived class used to do the
   // actual iteration. Default value is 0.001.
-  void setCriteria(const Double criteria=CRITERIUM) {criterium_p = criteria; };
+  void setCriteria(const double criteria=CRITERIUM) {criterium_p = criteria; };
 
   // getCriteria() queries the current criteria
-  Double getCriteria() const { return criterium_p; };
+  double getCriteria() const { return criterium_p; };
 
   // Check to see if the fit has converged
-  Bool converged() const { return converge_p; };
+  bool converged() const { return converge_p; };
 
 protected:
   //#Data
   // Maximum number of iterations
-  uInt maxiter_p;
+  uint32_t maxiter_p;
   // Current iteration number
-  uInt curiter_p;
+  uint32_t curiter_p;
   // Convergence criteria
-  Double criterium_p;
+  double criterium_p;
   // Has fit converged
-  Bool converge_p;
+  bool converge_p;
 
   //# Member functions
   // Generalised fitter
-  virtual Bool fitIt
+  virtual bool fitIt
     (Vector<typename FunctionTraits<T>::BaseType> &sol, 
      const Array<typename FunctionTraits<T>::BaseType> &x, 
      const Vector<typename FunctionTraits<T>::BaseType> &y,
      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-     const Vector<Bool> *const mask=0) = 0;
+     const Vector<bool> *const mask=0) = 0;
   
 private: 
   //# Data

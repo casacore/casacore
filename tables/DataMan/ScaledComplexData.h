@@ -55,7 +55,7 @@ template<class T> class ScalarColumn;
 // <synopsis> 
 // ScaledComplexData is a virtual column engine which scales an array
 // of a complex type to 2 values of another type (to save disk storage).
-// For example, <src>ScaledComplexData<Complex,Short></src> resembles the
+// For example, <src>ScaledComplexData<Complex,int16_t></src> resembles the
 // classic AIPS compress method which scales the data from float to short.
 // The (complex) scale factor and offset value can be given in two ways:
 // <ul>
@@ -104,26 +104,26 @@ template<class T> class ScalarColumn;
 // <example>
 // <srcblock>
 // // Create the table description and 2 columns with indirect arrays in it.
-// // The Int column will be stored, while the double will be
+// // The int32_t column will be stored, while the double will be
 // // used as virtual.
 // TableDesc tableDesc ("", TableDesc::Scratch);
-// tableDesc.addColumn (ArrayColumnDesc<Short> ("storedArray"));
+// tableDesc.addColumn (ArrayColumnDesc<int16_t> ("storedArray"));
 // tableDesc.addColumn (ArrayColumnDesc<Complex> ("virtualArray"));
 //
 // // Create a new table using the table description.
 // SetupNewTable newtab (tableDesc, "tab.data", Table::New);
 //
-// // Create the array scaling engine to scale from double to Int
+// // Create the array scaling engine to scale from double to int32_t
 // // and bind it to the double column.
 // // Create the table.
-// ScaledComplexData<Complex,Short> scalingEngine("virtualArray",
+// ScaledComplexData<Complex,int16_t> scalingEngine("virtualArray",
 //                                                "storedArray", 10);
 // newtab.bindColumn ("virtualArray", scalingEngine);
 // Table table (newtab);
 //
 // // Store a 2-D array (with dim. 3,4) into each row of the column.
 // // The shape of each array in the column is implicitly set by the put
-// // function. This will also set the shape of the underlying Int array
+// // function. This will also set the shape of the underlying int32_t array
 // // (as a 3-D array with shape 2,3,4).
 // ArrayColumn data (table, "virtualArray");
 // Array<DComplex> someArray(IPosition(2,3,4));
@@ -205,7 +205,7 @@ public:
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     // The automatically invoked registration function in DataManReg.cc
-    // contains ScaledComplexData<double,Int>.
+    // contains ScaledComplexData<double,int32_t>.
     // Any other instantiation of this class must be registered "manually"
     // (or added to DataManReg.cc).
     static void registerClass();
@@ -254,7 +254,7 @@ private:
     virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Get the dimensionality of the array in the given row.
-    virtual uInt ndim (rownr_t rownr);
+    virtual uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // This is done by stripping the first dimension from the shape
@@ -375,8 +375,8 @@ private:
     String         offsetName_p;         //# name of offset column
     VirtualType    scale_p;              //# scale factor
     VirtualType    offset_p;             //# offset value
-    Bool           fixedScale_p;         //# scale is a fixed column
-    Bool           fixedOffset_p;        //# offset is a fixed column
+    bool           fixedScale_p;         //# scale is a fixed column
+    bool           fixedOffset_p;        //# offset is a fixed column
     ScalarColumn<VirtualType>* scaleColumn_p;  //# column with scale value
     ScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
 

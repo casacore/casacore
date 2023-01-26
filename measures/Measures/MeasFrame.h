@@ -142,10 +142,10 @@ class MeasFrame {
   // Machinery
   // <group>
   friend class MCFrame;
-  friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
-  friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
-  friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
-  friend Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
+  friend bool MCFrameGetdbl(void *dmf, uint32_t tp, double &result);
+  friend bool MCFrameGetmvdir(void *dmf, uint32_t tp, MVDirection &result);
+  friend bool MCFrameGetmvpos(void *dmf, uint32_t tp, MVPosition &result);
+  friend bool MCFrameGetuint(void *dmf, uint32_t tp, uint32_t &result);
   // </group>
 
   //# Enumerations
@@ -183,13 +183,13 @@ class MeasFrame {
   //# Operators
   // Comparisons
   // <group>
-  Bool operator==(const MeasFrame &other) const;
-  Bool operator!=(const MeasFrame &other) const;
+  bool operator==(const MeasFrame &other) const;
+  bool operator!=(const MeasFrame &other) const;
   // </group>
   
   //# General member functions
   // Test if empty (i.e. no measure filled in)
-  Bool empty() const;
+  bool empty() const;
   
   // Set frame elements
   // <thrown>
@@ -208,22 +208,22 @@ class MeasFrame {
   //   <li> AipsError if the specific Measure not yet present in frame
   // </thrown>
   // <group>
-  void resetEpoch(Double val);
-  void resetEpoch(const Vector<Double> &val);
-  void resetEpoch(const Quantum<Double> &val);
-  void resetEpoch(const Quantum<Vector<Double> > &val);
+  void resetEpoch(double val);
+  void resetEpoch(const Vector<double> &val);
+  void resetEpoch(const Quantum<double> &val);
+  void resetEpoch(const Quantum<Vector<double> > &val);
   void resetEpoch(const MVEpoch &val);
   void resetEpoch(const Measure &val);
-  void resetPosition(const Vector<Double> &val);
-  void resetPosition(const Quantum<Vector<Double> > &val);
+  void resetPosition(const Vector<double> &val);
+  void resetPosition(const Quantum<Vector<double> > &val);
   void resetPosition(const MVPosition &val);
   void resetPosition(const Measure &val);
-  void resetDirection(const Vector<Double> &val);
-  void resetDirection(const Quantum<Vector<Double> > &val);
+  void resetDirection(const Vector<double> &val);
+  void resetDirection(const Quantum<Vector<double> > &val);
   void resetDirection(const MVDirection &val);
   void resetDirection(const Measure &val);
-  void resetRadialVelocity(const Vector<Double> &val);
-  void resetRadialVelocity(const Quantum<Vector<Double> > &val);
+  void resetRadialVelocity(const Vector<double> &val);
+  void resetRadialVelocity(const Quantum<Vector<double> > &val);
   void resetRadialVelocity(const MVRadialVelocity &val);
   void resetRadialVelocity(const Measure &val);
   void resetComet(const MeasComet &val);
@@ -243,49 +243,49 @@ class MeasFrame {
   // and the frame is in a calculating state.
   // <group>
   // Get TDB in days
-  Bool getTDB(Double &tdb) const;
+  bool getTDB(double &tdb) const;
   // Get UT1 in days
-  Bool getUT1(Double &tdb) const;
+  bool getUT1(double &tdb) const;
   // Get TT in days
-  Bool getTT(Double &tdb) const;
+  bool getTT(double &tdb) const;
   // Get the ITRF longitude (in rad)
-  Bool getLong(Double &tdb) const;
+  bool getLong(double &tdb) const;
   // Get the ITRF latitude (in rad)
-  Bool getLat(Double &tdb) const;
+  bool getLat(double &tdb) const;
   // Get the position
-  Bool getITRF(MVPosition &tdb) const;
+  bool getITRF(MVPosition &tdb) const;
   // Get the geocentric position (in m)
-  Bool getRadius(Double &tdb) const;
+  bool getRadius(double &tdb) const;
   // Get the geodetic latitude
-  Bool getLatGeo(Double &tdb) const;
+  bool getLatGeo(double &tdb) const;
   // Get the LAST (in days)
-  Bool getLAST(Double &tdb) const;
+  bool getLAST(double &tdb) const;
   // Get the LAST (in rad)
-  Bool getLASTr(Double &tdb) const;
+  bool getLASTr(double &tdb) const;
   // Get J2000 coordinates (direction cosines) and its longitude/latitude (rad)
   // <group>
-  Bool getJ2000(MVDirection &tdb) const;
-  Bool getJ2000Long(Double &tdb) const;
-  Bool getJ2000Lat(Double &tdb) const;
+  bool getJ2000(MVDirection &tdb) const;
+  bool getJ2000Long(double &tdb) const;
+  bool getJ2000Lat(double &tdb) const;
   // </group>
   // Get B1950 coordinates (direction cosines)
   // <group>
-  Bool getB1950(MVDirection &tdb) const;
-  Bool getB1950Long(Double &tdb) const;
-  Bool getB1950Lat(Double &tdb) const;
+  bool getB1950(MVDirection &tdb) const;
+  bool getB1950Long(double &tdb) const;
+  bool getB1950Lat(double &tdb) const;
   // </group>
   // Get apparent coordinates (direction cosines)
   // <group>
-  Bool getApp(MVDirection &tdb) const;
-  Bool getAppLong(Double &tdb) const;
-  Bool getAppLat(Double &tdb) const;
+  bool getApp(MVDirection &tdb) const;
+  bool getAppLong(double &tdb) const;
+  bool getAppLat(double &tdb) const;
   // </group>
   // Get LSR radial velocity (m/s)
-  Bool getLSR(Double &tdb) const;
+  bool getLSR(double &tdb) const;
   // Get the comet table reference type
-  Bool getCometType(uInt &tdb) const;
+  bool getCometType(uint32_t &tdb) const;
   // Get the comet coordinates
-  Bool getComet(MVPosition &tdb) const;
+  bool getComet(MVPosition &tdb) const;
   // </group>
   
 private:
@@ -315,9 +315,9 @@ private:
   // Throw reset error
   void errorReset(const String &txt);
   // Lock the frame to make sure deletion occurs when needed
-  void lock(uInt &locker);
+  void lock(uint32_t &locker);
   // Unlock the frame
-  void unlock(const uInt locker);
+  void unlock(const uint32_t locker);
 };
 
 //# Global functions

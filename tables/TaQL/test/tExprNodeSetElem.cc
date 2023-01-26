@@ -37,97 +37,97 @@
 // </summary>
 
 
-void checkMatchBool (const TableExprNodeSetElem& tset, Bool val, Bool result)
+void checkMatchBool (const TableExprNodeSetElem& tset, bool val, bool result)
 {
   cout << "checkMatchBool " << val << ' ' << result << endl;
-  Bool res = False;
+  bool res = false;
   tset.getElem()->matchBool (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
   // Evaluate the element and test if result still matches.
   TENSEBShPtr newElem (tset.getElem()->evaluate (TableExprId(0)));
-  res = False;
+  res = false;
   newElem->matchBool (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
 }
 
-void checkMatchInt (const TableExprNodeSetElem& tset, Int64 val, Bool result)
+void checkMatchInt (const TableExprNodeSetElem& tset, int64_t val, bool result)
 {
   cout << "checkMatchInt " << val << ' ' << result << endl;
-  Bool res = False;
+  bool res = false;
   tset.getElem()->matchInt (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
   // Evaluate the element and test if result still matches.
   TENSEBShPtr newElem (tset.getElem()->evaluate (TableExprId(0)));
-  res = False;
+  res = false;
   newElem->matchInt (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
 }
 
-void checkMatchDouble (const TableExprNodeSetElem& tset, Double val, Bool result)
+void checkMatchDouble (const TableExprNodeSetElem& tset, double val, bool result)
 {
   cout << "checkMatchDouble " << val << ' ' << result << endl;
-  Bool res = False;
+  bool res = false;
   tset.getElem()->matchDouble (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
   // Evaluate the element and test if result still matches.
   TENSEBShPtr newElem (tset.getElem()->evaluate (TableExprId(0)));
-  res = False;
+  res = false;
   newElem->matchDouble (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
 }
 
 void checkMatchDComplex (const TableExprNodeSetElem& tset, const DComplex& val,
-                         Bool result)
+                         bool result)
 {
   cout << "checkMatchDComplex " << val << ' ' << result << endl;
-  Bool res = False;
+  bool res = false;
   tset.getElem()->matchDComplex (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
   // Evaluate the element and test if result still matches.
   TENSEBShPtr newElem (tset.getElem()->evaluate (TableExprId(0)));
-  res = False;
+  res = false;
   newElem->matchDComplex (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
 }
 
 void checkMatchString (const TableExprNodeSetElem& tset, const String& val,
-                       Bool result)
+                       bool result)
 {
   cout << "checkMatchString " << val << ' ' << result << endl;
-  Bool res = False;
+  bool res = false;
   tset.getElem()->matchString (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
   // Evaluate the element and test if result still matches.
   TENSEBShPtr newElem (tset.getElem()->evaluate (TableExprId(0)));
-  res = False;
+  res = false;
   newElem->matchString (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
 }
 
-void checkMatchDate (const TableExprNodeSetElem& tset, MVTime val, Bool result)
+void checkMatchDate (const TableExprNodeSetElem& tset, MVTime val, bool result)
 {
-  cout << "checkMatchDate " << Double(val) << ' ' << result << endl;
-  Bool res = False;
+  cout << "checkMatchDate " << double(val) << ' ' << result << endl;
+  bool res = false;
   tset.getElem()->matchDate (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
   // Evaluate the element and test if result still matches.
   TENSEBShPtr newElem (tset.getElem()->evaluate (TableExprId(0)));
-  res = False;
+  res = false;
   newElem->matchDate (&res, &val, 1, 0);
   AlwaysAssertExit (res == result);
 }
 
-Bool testAttr (const TableExprNodeSetElem& elem,
+bool testAttr (const TableExprNodeSetElem& elem,
                TableExprNodeRep::NodeDataType dt,
-               Bool hasStart, Bool hasEnd, Bool hasIncrement,
-               Bool isDiscrete, Bool isSingle, const String& unit=String(),
-               Bool isLeftClosed=False, Bool isRightClosed=False,
-               Bool isMidWidth=False)
+               bool hasStart, bool hasEnd, bool hasIncrement,
+               bool isDiscrete, bool isSingle, const String& unit=String(),
+               bool isLeftClosed=false, bool isRightClosed=false,
+               bool isMidWidth=false)
 {
-  Bool res = (elem.getElem()->dataType() == dt  &&
-              Bool(elem.getElem()->start()) == hasStart  &&
-              Bool(elem.getElem()->end()) == hasEnd  &&
-              Bool(elem.getElem()->increment()) == hasIncrement  &&
+  bool res = (elem.getElem()->dataType() == dt  &&
+              bool(elem.getElem()->start()) == hasStart  &&
+              bool(elem.getElem()->end()) == hasEnd  &&
+              bool(elem.getElem()->increment()) == hasIncrement  &&
               elem.getElem()->isDiscrete() == isDiscrete  &&
               elem.getElem()->isSingle() == isSingle  &&
               elem.getElem()->unit() == unit  &&
@@ -138,43 +138,43 @@ Bool testAttr (const TableExprNodeSetElem& elem,
   // Evaluate the element and test if attributes still match.
   // Note that mid-width is evaluated as a normal interval.
   TENSEBShPtr newElem(elem.getElem()->evaluate (TableExprId(0)));
-  Bool res1 = (newElem->dataType() == dt  &&
-               Bool(newElem->start()) == hasStart  &&
-               Bool(newElem->end()) == hasEnd  &&
-               Bool(newElem->increment()) == hasIncrement  &&
+  bool res1 = (newElem->dataType() == dt  &&
+               bool(newElem->start()) == hasStart  &&
+               bool(newElem->end()) == hasEnd  &&
+               bool(newElem->increment()) == hasIncrement  &&
                newElem->isDiscrete() == isDiscrete  &&
                newElem->isSingle() == isSingle  &&
                newElem->unit()== unit  &&
                newElem->isLeftClosed() == isLeftClosed  &&
                newElem->isRightClosed() == isRightClosed  &&
-               newElem->isMidWidth() == False  &&
+               newElem->isMidWidth() == false  &&
                newElem->isConstant());
   return res && res1;
 }
 
 void doDiscreteBool()
 {
-  TableExprNode st(True);
-  bool failed= False;
+  TableExprNode st(true);
+  bool failed= false;
   try {
-    TableExprNodeSetElem tset(&st, 0, 0, False);
+    TableExprNodeSetElem tset(&st, 0, 0, false);
   } catch (std::exception& x) {
     cout <<"Expected: " << x.what() << endl;
-    failed = True;
+    failed = true;
   }
   AlwaysAssertExit (failed);
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTBool,
-                                True, False, False,
-                                True, True));
-    Vector<Bool> vec;
-    Int64 cnt=0;
+                                true, false, false,
+                                true, true));
+    Vector<bool> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Bool>(1,True), vec));
-    checkMatchBool (tset, True, True);
-    checkMatchBool (tset, False, False);
+    vec.resize (cnt, true);
+    AlwaysAssertExit (allEQ(Vector<bool>(1,true), vec));
+    checkMatchBool (tset, true, true);
+    checkMatchBool (tset, false, false);
   }
 }
 
@@ -187,122 +187,122 @@ void doDiscreteInt()
   TableExprNode endn(-99);
   TableExprNode incrn(-2);
   {
-    TableExprNodeSetElem tset(&st, &end, &incr, False);
+    TableExprNodeSetElem tset(&st, &end, &incr, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, True, True,
-                                True, False));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                true, true, true,
+                                true, false));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(50);
-    indgen (exp, Int64(1), Int64(2));
+    vec.resize (cnt, true);
+    Vector<int64_t> exp(50);
+    indgen (exp, int64_t(1), int64_t(2));
     AlwaysAssertExit (allEQ(exp, vec));
-    checkMatchInt (tset, 1, True);
-    checkMatchInt (tset, 2, False);
+    checkMatchInt (tset, 1, true);
+    checkMatchInt (tset, 2, false);
   }
   {
-    TableExprNodeSetElem tset(&stn, &endn, &incrn, False);
+    TableExprNodeSetElem tset(&stn, &endn, &incrn, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, True, True,
-                                True, False));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                true, true, true,
+                                true, false));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(50);
-    indgen (exp, Int64(-1), Int64(-2));
+    vec.resize (cnt, true);
+    Vector<int64_t> exp(50);
+    indgen (exp, int64_t(-1), int64_t(-2));
     AlwaysAssertExit (allEQ(exp, vec));
-    checkMatchInt (tset, -7, True);
-    checkMatchInt (tset, -10, False);
+    checkMatchInt (tset, -7, true);
+    checkMatchInt (tset, -10, false);
   }
   {
-    TableExprNodeSetElem tset(&stn, 0, &incrn, False);
+    TableExprNodeSetElem tset(&stn, 0, &incrn, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, False, True,
-                                True, False));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                true, false, true,
+                                true, false));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
     AlwaysAssertExit (cnt == 1  &&  vec[0] == -1);
-    checkMatchInt (tset, -1, True);
-    checkMatchInt (tset, -2, False);
+    checkMatchInt (tset, -1, true);
+    checkMatchInt (tset, -2, false);
   }
   {
-    TableExprNodeSetElem tset(&st, &end, &incr, True);
+    TableExprNodeSetElem tset(&st, &end, &incr, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, True, True,
-                                True, False));
-    Vector<Int64> vec(51);
+                                true, true, true,
+                                true, false));
+    Vector<int64_t> vec(51);
     vec[0] = -3;
     vec[1] = -1;
-    Int64 cnt=2;
+    int64_t cnt=2;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(51);
-    indgen (exp, Int64(-3), Int64(2));
+    vec.resize (cnt, true);
+    Vector<int64_t> exp(51);
+    indgen (exp, int64_t(-3), int64_t(2));
     AlwaysAssertExit (allEQ(exp, vec));
   }
   {
-    TableExprNodeSetElem tset(&st, &end, 0, True);
+    TableExprNodeSetElem tset(&st, &end, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, True, False,
-                                True, False));
-    Vector<Int64> vec(98);
-    Int64 cnt=0;
+                                true, true, false,
+                                true, false));
+    Vector<int64_t> vec(98);
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(98);
-    indgen (exp, Int64(1));
+    vec.resize (cnt, true);
+    Vector<int64_t> exp(98);
+    indgen (exp, int64_t(1));
     AlwaysAssertExit (allEQ(exp, vec));
   }
   {
-    TableExprNodeSetElem tset(&st, 0, 0, True);
+    TableExprNodeSetElem tset(&st, 0, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, False, False,
-                                True, False));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                true, false, false,
+                                true, false));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(), vec));
+    vec.resize (cnt, true);
+    AlwaysAssertExit (allEQ(Vector<int64_t>(), vec));
   }
   {
-    TableExprNodeSetElem tset(0, &end, 0, False);
+    TableExprNodeSetElem tset(0, &end, 0, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                False, True, False,
-                                True, False));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                false, true, false,
+                                true, false));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Int64> exp(100);
+    vec.resize (cnt, true);
+    Vector<int64_t> exp(100);
     indgen (exp);
     AlwaysAssertExit (allEQ(exp, vec));
   }
   {
-    TableExprNodeSetElem tset(0, 0, 0, True);
+    TableExprNodeSetElem tset(0, 0, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                False, False, False,
-                                True, False));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                false, false, false,
+                                true, false));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(), vec));
+    vec.resize (cnt, true);
+    AlwaysAssertExit (allEQ(Vector<int64_t>(), vec));
   }
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTInt,
-                                True, False, False,
-                                True, True));
-    Vector<Int64> vec;
-    Int64 cnt=0;
+                                true, false, false,
+                                true, true));
+    Vector<int64_t> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allEQ(Vector<Int64>(1,1), vec));
-    checkMatchInt (tset, 1, True);
-    checkMatchInt (tset, 2, False);
+    vec.resize (cnt, true);
+    AlwaysAssertExit (allEQ(Vector<int64_t>(1,1), vec));
+    checkMatchInt (tset, 1, true);
+    checkMatchInt (tset, 2, false);
   }
 }
 
@@ -318,155 +318,155 @@ void doDiscreteDouble()
   TableExprNode endn(10.);
   TableExprNode incrn(-2.5);
   {
-    TableExprNodeSetElem tset(&st, &end, &incr, False);
+    TableExprNodeSetElem tset(&st, &end, &incr, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, True,
-                                True, False, "dm"));
-    Vector<Double> vec;
-    Int64 cnt=0;
+                                true, true, true,
+                                true, false, "dm"));
+    Vector<double> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(46);
+    vec.resize (cnt, true);
+    Vector<double> exp(46);
     indgen (exp, 1., 0.2);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
-    checkMatchDouble (tset, 3., True);
-    checkMatchDouble (tset, 3.1, False);
+    checkMatchDouble (tset, 3., true);
+    checkMatchDouble (tset, 3.1, false);
   }
   {
-    TableExprNodeSetElem tset(&stn, &endn, &incrn, True);
+    TableExprNodeSetElem tset(&stn, &endn, &incrn, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, True,
-                                True, False));
-    Vector<Double> vec;
-    Int64 cnt=0;
+                                true, true, true,
+                                true, false));
+    Vector<double> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(36);
+    vec.resize (cnt, true);
+    Vector<double> exp(36);
     indgen (exp, 100., -2.5);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
-    checkMatchDouble (tset, 100., True);
-    checkMatchDouble (tset, 12.51, False);
-    checkMatchDouble (tset, 12.5, True);
-    checkMatchDouble (tset, 10., False);
+    checkMatchDouble (tset, 100., true);
+    checkMatchDouble (tset, 12.51, false);
+    checkMatchDouble (tset, 12.5, true);
+    checkMatchDouble (tset, 10., false);
   }
   {
-    TableExprNodeSetElem tset(&stn, 0, &incrn, True);
+    TableExprNodeSetElem tset(&stn, 0, &incrn, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, False, True,
-                                True, False));
-    Vector<Double> vec;
-    Int64 cnt=0;
+                                true, false, true,
+                                true, false));
+    Vector<double> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
     AlwaysAssertExit (cnt == 0);
-    checkMatchDouble (tset, 100., True);
-    checkMatchDouble (tset, -100., True);
-    checkMatchDouble (tset, -102., False);
-    checkMatchDouble (tset, 102.5, False);
+    checkMatchDouble (tset, 100., true);
+    checkMatchDouble (tset, -100., true);
+    checkMatchDouble (tset, -102., false);
+    checkMatchDouble (tset, 102.5, false);
   }
   {
-    TableExprNodeSetElem tset(&st, &end, &incr, True);
+    TableExprNodeSetElem tset(&st, &end, &incr, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, True,
-                                True, False, "dm"));
-    Vector<Double> vec(25);
+                                true, true, true,
+                                true, false, "dm"));
+    Vector<double> vec(25);
     vec[0] = 0.6;
     vec[1] = 0.8;
-    Int64 cnt=2;
+    int64_t cnt=2;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(48);
+    vec.resize (cnt, true);
+    Vector<double> exp(48);
     indgen (exp, 0.6, 0.2);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, &end, 0, True);
+    TableExprNodeSetElem tset(&st, &end, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, False,
-                                True, False, "dm"));
-    Vector<Double> vec;
-    Int64 cnt=0;
+                                true, true, false,
+                                true, false, "dm"));
+    Vector<double> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    Vector<Double> exp(10);
+    vec.resize (cnt, true);
+    Vector<double> exp(10);
     indgen (exp, 1., 1.);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, 0, 0, True);
+    TableExprNodeSetElem tset(&st, 0, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, False, False,
-                                True, False, "dm"));
-    Vector<Double> vec;
-    Int64 cnt=0;
+                                true, false, false,
+                                true, false, "dm"));
+    Vector<double> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allNear(Vector<Double>(), vec, 1e-13));
+    vec.resize (cnt, true);
+    AlwaysAssertExit (allNear(Vector<double>(), vec, 1e-13));
   }
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, False, False,
-                                True, True, "dm"));
-    Vector<Double> vec;
-    Int64 cnt=0;
+                                true, false, false,
+                                true, true, "dm"));
+    Vector<double> vec;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
-    AlwaysAssertExit (allNear(Vector<Double>(1, 1.), vec, 1e-13));
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, -2., False);
+    vec.resize (cnt, true);
+    AlwaysAssertExit (allNear(Vector<double>(1, 1.), vec, 1e-13));
+    checkMatchDouble (tset, 1., true);
+    checkMatchDouble (tset, -2., false);
   }
 }
 
 void doDiscreteDComplex()
 {
   TableExprNode st(DComplex(1,2));
-  bool failed= False;
+  bool failed= false;
   try {
-    TableExprNodeSetElem tset(&st, 0, 0, False);
+    TableExprNodeSetElem tset(&st, 0, 0, false);
   } catch (std::exception& x) {
     cout <<"Expected: " << x.what() << endl;
-    failed = True;
+    failed = true;
   }
   AlwaysAssertExit (failed);
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTComplex,
-                                True, False, False,
-                                True, True));
+                                true, false, false,
+                                true, true));
     Vector<DComplex> vec;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
+    vec.resize (cnt, true);
     AlwaysAssertExit (allEQ(Vector<DComplex>(1,DComplex(1,2)), vec));
-    checkMatchDComplex (tset, DComplex(1,2), True);
-    checkMatchDComplex (tset, DComplex(1,2.1), False);
+    checkMatchDComplex (tset, DComplex(1,2), true);
+    checkMatchDComplex (tset, DComplex(1,2.1), false);
   }
 }
 
 void doDiscreteString()
 {
   TableExprNode st("abcd");
-  bool failed= False;
+  bool failed= false;
   try {
-    TableExprNodeSetElem tset(&st, 0, 0, False);
+    TableExprNodeSetElem tset(&st, 0, 0, false);
   } catch (std::exception& x) {
     cout <<"Expected: " << x.what() << endl;
-    failed = True;
+    failed = true;
   }
   AlwaysAssertExit (failed);
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTString,
-                                True, False, False,
-                                True, True));
+                                true, false, false,
+                                true, true));
     Vector<String> vec;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vec, cnt, 0);
-    vec.resize (cnt, True);
+    vec.resize (cnt, true);
     AlwaysAssertExit (allEQ(Vector<String>(1,"abcd"), vec));
-    checkMatchString (tset, "abcd", True);
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcde", False);
+    checkMatchString (tset, "abcd", true);
+    checkMatchString (tset, "abc", false);
+    checkMatchString (tset, "abcde", false);
   }
 }
 
@@ -476,92 +476,92 @@ void doDiscreteDate()
   TableExprNode end(datetime("7May09/12:"));
   TableExprNode incr(7);
   {
-    TableExprNodeSetElem tset(&st, &end, &incr, False);
+    TableExprNodeSetElem tset(&st, &end, &incr, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, True, True,
-                                True, False));
+                                true, true, true,
+                                true, false));
     Vector<MVTime> vect;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
+    vect.resize (cnt, true);
+    Vector<double> vec(vect.size());
     convertArray (vec, vect);
-    Vector<Double> exp(5);
+    Vector<double> exp(5);
     indgen (exp, 54926.5, 7.);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 3.1, False);
+    checkMatchDate (tset, 54926.5, true);
+    checkMatchDate (tset, 3.1, false);
   }
   {
-    TableExprNodeSetElem tset(&st, &end, &incr, True);
+    TableExprNodeSetElem tset(&st, &end, &incr, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, True, True,
-                                True, False));
+                                true, true, true,
+                                true, false));
     Vector<MVTime> vect;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
+    vect.resize (cnt, true);
+    Vector<double> vec(vect.size());
     convertArray (vec, vect);
-    Vector<Double> exp(5);
+    Vector<double> exp(5);
     indgen (exp, 54926.5, 7.);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, &end, 0, True);
+    TableExprNodeSetElem tset(&st, &end, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, True, False,
-                                True, False));
+                                true, true, false,
+                                true, false));
     Vector<MVTime> vect;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
+    vect.resize (cnt, true);
+    Vector<double> vec(vect.size());
     convertArray (vec, vect);
-    Vector<Double> exp(32);
+    Vector<double> exp(32);
     indgen (exp, 54926.5);
     AlwaysAssertExit (allNear(exp, vec, 1e-13));
   }
   {
-    TableExprNodeSetElem tset(&st, 0, 0, True);
+    TableExprNodeSetElem tset(&st, 0, 0, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, False, False,
-                                True, False));
+                                true, false, false,
+                                true, false));
     Vector<MVTime> vect;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
+    vect.resize (cnt, true);
+    Vector<double> vec(vect.size());
     convertArray (vec, vect);
-    AlwaysAssertExit (allNear(Vector<Double>(), vec, 1e-13));
+    AlwaysAssertExit (allNear(Vector<double>(), vec, 1e-13));
   }
   {
     TableExprNodeSetElem tset(st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, False, False,
-                                True, True));
+                                true, false, false,
+                                true, true));
     Vector<MVTime> vect;
-    Int64 cnt=0;
+    int64_t cnt=0;
     tset.getElem()->fillVector (vect, cnt, 0);
-    vect.resize (cnt, True);
-    Vector<Double> vec(vect.size());
+    vect.resize (cnt, true);
+    Vector<double> vec(vect.size());
     convertArray (vec, vect);
-    AlwaysAssertExit (allNear(Vector<Double>(1, 54926.5), vec, 1e-13));
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54926.6, False);
+    AlwaysAssertExit (allNear(Vector<double>(1, 54926.5), vec, 1e-13));
+    checkMatchDate (tset, 54926.5, true);
+    checkMatchDate (tset, 54926.6, false);
   }
 }
 
 void doIntervalBool()
 {
-  TableExprNode st(True);
-  TableExprNode end(False);
-  bool failed= False;
+  TableExprNode st(true);
+  TableExprNode end(false);
+  bool failed= false;
   try {
-    TableExprNodeSetElem tset(False, st, end, False);
+    TableExprNodeSetElem tset(false, st, end, false);
   } catch (std::exception& x) {
     cout <<"Expected: " << x.what() << endl;
-    failed = True;
+    failed = true;
   }
   AlwaysAssertExit (failed);
 }
@@ -571,18 +571,18 @@ void doIntervalInt()
   {
     TableExprNode st(1);
     TableExprNode end(99);
-    TableExprNodeSetElem tset(False, st, end, False);
+    TableExprNodeSetElem tset(false, st, end, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, False,
-                                False, False, "", False, False));
+                                true, true, false,
+                                false, false, "", false, false));
   }
   {
     TableExprNode st(1);
     TableExprNode end(99.);
-    TableExprNodeSetElem tset(False, st, end, True);
+    TableExprNodeSetElem tset(false, st, end, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, False,
-                                False, False, "", False, True));
+                                true, true, false,
+                                false, false, "", false, true));
   }
 }
 
@@ -593,48 +593,48 @@ void doIntervalDouble()
   TableExprNode end(989.5);
   end.useUnit ("cm");
   {
-    TableExprNodeSetElem tset(False, st, end, False);
+    TableExprNodeSetElem tset(false, st, end, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, False,
-                                False, False, "m", False, False));
-    checkMatchDouble (tset, -1., False);
-    checkMatchDouble (tset, 1., False);
-    checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, False);   // unit is m
-    checkMatchDouble (tset, 10., False);
+                                true, true, false,
+                                false, false, "m", false, false));
+    checkMatchDouble (tset, -1., false);
+    checkMatchDouble (tset, 1., false);
+    checkMatchDouble (tset, 9., true);
+    checkMatchDouble (tset, 9.9, false);   // unit is m
+    checkMatchDouble (tset, 10., false);
   }
   {
-    TableExprNodeSetElem tset(True, st, end, True);
+    TableExprNodeSetElem tset(true, st, end, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, False,
-                                False, False, "m", True, True));
-    checkMatchDouble (tset, -1., False);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, False);
-    checkMatchDouble (tset, 10., False);
+                                true, true, false,
+                                false, false, "m", true, true));
+    checkMatchDouble (tset, -1., false);
+    checkMatchDouble (tset, 1., true);
+    checkMatchDouble (tset, 9., true);
+    checkMatchDouble (tset, 9.9, false);
+    checkMatchDouble (tset, 10., false);
   }
   {
-    TableExprNodeSetElem tset(True, st);
+    TableExprNodeSetElem tset(true, st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, False, False,
-                                False, False, "m", True, False));
-    checkMatchDouble (tset, -1., False);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 9., True);
-    checkMatchDouble (tset, 9.9, True);
-    checkMatchDouble (tset, 10., True);
+                                true, false, false,
+                                false, false, "m", true, false));
+    checkMatchDouble (tset, -1., false);
+    checkMatchDouble (tset, 1., true);
+    checkMatchDouble (tset, 9., true);
+    checkMatchDouble (tset, 9.9, true);
+    checkMatchDouble (tset, 10., true);
   }
   {
-    TableExprNodeSetElem tset(end, True);
+    TableExprNodeSetElem tset(end, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                False, True, False,
-                                False, False, "cm", False, True));
-    checkMatchDouble (tset, -1., True);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 989., True);
-    checkMatchDouble (tset, 990, False);     // unit is cm
-    checkMatchDouble (tset, 1000., False);
+                                false, true, false,
+                                false, false, "cm", false, true));
+    checkMatchDouble (tset, -1., true);
+    checkMatchDouble (tset, 1., true);
+    checkMatchDouble (tset, 989., true);
+    checkMatchDouble (tset, 990, false);     // unit is cm
+    checkMatchDouble (tset, 1000., false);
   }
 }
 
@@ -642,12 +642,12 @@ void doIntervalDComplex()
 {
   TableExprNode st(1);
   TableExprNode end(DComplex(1,0));
-  bool failed= False;
+  bool failed= false;
   try {
-    TableExprNodeSetElem tset(False, st, end, False);
+    TableExprNodeSetElem tset(false, st, end, false);
   } catch (std::exception& x) {
     cout <<"Expected: " << x.what() << endl;
-    failed = True;
+    failed = true;
   }
   AlwaysAssertExit (failed);
 }
@@ -657,48 +657,48 @@ void doIntervalString()
   TableExprNode st("abcd");
   TableExprNode end("cde");
   {
-    TableExprNodeSetElem tset(False, st, end, False);
+    TableExprNodeSetElem tset(false, st, end, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTString,
-                                True, True, False,
-                                False, False, "", False, False));
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcd", False);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", False);
-    checkMatchString (tset, "cdef", False);
+                                true, true, false,
+                                false, false, "", false, false));
+    checkMatchString (tset, "abc", false);
+    checkMatchString (tset, "abcd", false);
+    checkMatchString (tset, "abcde", true);
+    checkMatchString (tset, "cde", false);
+    checkMatchString (tset, "cdef", false);
   }
   {
-    TableExprNodeSetElem tset(True, st, end, True);
+    TableExprNodeSetElem tset(true, st, end, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTString,
-                                True, True, False,
-                                False, False, "", True, True));
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcd", True);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", True);
-    checkMatchString (tset, "cdef", False);
+                                true, true, false,
+                                false, false, "", true, true));
+    checkMatchString (tset, "abc", false);
+    checkMatchString (tset, "abcd", true);
+    checkMatchString (tset, "abcde", true);
+    checkMatchString (tset, "cde", true);
+    checkMatchString (tset, "cdef", false);
   }
   {
-    TableExprNodeSetElem tset(False, st);
+    TableExprNodeSetElem tset(false, st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTString,
-                                True, False, False,
-                                False, False, "", False, False));
-    checkMatchString (tset, "abc", False);
-    checkMatchString (tset, "abcd", False);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", True);
-    checkMatchString (tset, "cdef", True);
+                                true, false, false,
+                                false, false, "", false, false));
+    checkMatchString (tset, "abc", false);
+    checkMatchString (tset, "abcd", false);
+    checkMatchString (tset, "abcde", true);
+    checkMatchString (tset, "cde", true);
+    checkMatchString (tset, "cdef", true);
   }
   {
-    TableExprNodeSetElem tset(end, False);
+    TableExprNodeSetElem tset(end, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTString,
-                                False, True, False,
-                                False, False, "", False, False));
-    checkMatchString (tset, "abc", True);
-    checkMatchString (tset, "abcd", True);
-    checkMatchString (tset, "abcde", True);
-    checkMatchString (tset, "cde", False);
-    checkMatchString (tset, "cdef", False);
+                                false, true, false,
+                                false, false, "", false, false));
+    checkMatchString (tset, "abc", true);
+    checkMatchString (tset, "abcd", true);
+    checkMatchString (tset, "abcde", true);
+    checkMatchString (tset, "cde", false);
+    checkMatchString (tset, "cdef", false);
   }
 }
 
@@ -707,48 +707,48 @@ void doIntervalDate()
   TableExprNode st(datetime("5Apr09/12:"));
   TableExprNode end(datetime("7May09/12:"));
   {
-    TableExprNodeSetElem tset(False, st, end, False);
+    TableExprNodeSetElem tset(false, st, end, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, True, False,
-                                False, False, "", False, False));
-    checkMatchDate (tset, 54926.0, False);
-    checkMatchDate (tset, 54926.5, False);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, False);
-    checkMatchDate (tset, 54959.0, False);
+                                true, true, false,
+                                false, false, "", false, false));
+    checkMatchDate (tset, 54926.0, false);
+    checkMatchDate (tset, 54926.5, false);
+    checkMatchDate (tset, 54940.0, true);
+    checkMatchDate (tset, 54958.5, false);
+    checkMatchDate (tset, 54959.0, false);
   }
   {
-    TableExprNodeSetElem tset(True, st, end, True);
+    TableExprNodeSetElem tset(true, st, end, true);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, True, False,
-                                False, False, "", True, True));
-    checkMatchDate (tset, 54926.0, False);
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, True);
-    checkMatchDate (tset, 54959.0, False);
+                                true, true, false,
+                                false, false, "", true, true));
+    checkMatchDate (tset, 54926.0, false);
+    checkMatchDate (tset, 54926.5, true);
+    checkMatchDate (tset, 54940.0, true);
+    checkMatchDate (tset, 54958.5, true);
+    checkMatchDate (tset, 54959.0, false);
   }
   {
-    TableExprNodeSetElem tset(False, st);
+    TableExprNodeSetElem tset(false, st);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, False, False,
-                                False, False, "", False, False));
-    checkMatchDate (tset, 54926.0, False);
-    checkMatchDate (tset, 54926.5, False);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, True);
-    checkMatchDate (tset, 54959.0, True);
+                                true, false, false,
+                                false, false, "", false, false));
+    checkMatchDate (tset, 54926.0, false);
+    checkMatchDate (tset, 54926.5, false);
+    checkMatchDate (tset, 54940.0, true);
+    checkMatchDate (tset, 54958.5, true);
+    checkMatchDate (tset, 54959.0, true);
   }
   {
-    TableExprNodeSetElem tset(end, False);
+    TableExprNodeSetElem tset(end, false);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                False, True, False,
-                                False, False, "", False, False));
-    checkMatchDate (tset, 54926.0, True);
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54940.0, True);
-    checkMatchDate (tset, 54958.5, False);
-    checkMatchDate (tset, 54959.0, False);
+                                false, true, false,
+                                false, false, "", false, false));
+    checkMatchDate (tset, 54926.0, true);
+    checkMatchDate (tset, 54926.5, true);
+    checkMatchDate (tset, 54940.0, true);
+    checkMatchDate (tset, 54958.5, false);
+    checkMatchDate (tset, 54959.0, false);
   }
 }
 
@@ -761,13 +761,13 @@ void doMidWidthDouble()
   {
     TableExprNodeSetElem tset(mid, width);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDouble,
-                                True, True, False,
-                                False, False, "m", True, True, True));
-    checkMatchDouble (tset, -0.005, False);
-    checkMatchDouble (tset, 0., True);
-    checkMatchDouble (tset, 1., True);
-    checkMatchDouble (tset, 2., True);   // unit is m
-    checkMatchDouble (tset, 2.005, False);
+                                true, true, false,
+                                false, false, "m", true, true, true));
+    checkMatchDouble (tset, -0.005, false);
+    checkMatchDouble (tset, 0., true);
+    checkMatchDouble (tset, 1., true);
+    checkMatchDouble (tset, 2., true);   // unit is m
+    checkMatchDouble (tset, 2.005, false);
   }
 }
 
@@ -779,23 +779,23 @@ void doMidWidthDate()
   {
     TableExprNodeSetElem tset(mid, width);
     AlwaysAssertExit (testAttr (tset, TableExprNodeRep::NTDate,
-                                True, True, False,
-                                False, False, "", True, True, True));
-    checkMatchDate (tset, 54926.24, False);
-    checkMatchDate (tset, 54926.25, True);
-    checkMatchDate (tset, 54926.5, True);
-    checkMatchDate (tset, 54926.75, True);
-    checkMatchDate (tset, 54926.76, False);
+                                true, true, false,
+                                false, false, "", true, true, true));
+    checkMatchDate (tset, 54926.24, false);
+    checkMatchDate (tset, 54926.25, true);
+    checkMatchDate (tset, 54926.5, true);
+    checkMatchDate (tset, 54926.75, true);
+    checkMatchDate (tset, 54926.76, false);
   }
 }
 
 
 #define tryError(CMD) \
   { \
-    Bool ok = True;                            \
+    bool ok = true;                            \
     try { \
       CMD; \
-      ok = False; \
+      ok = false; \
     } catch (const std::exception& x) { \
       cout << "Expected: " << x.what() << endl; \
     } \
@@ -805,9 +805,9 @@ void doMidWidthDate()
 void doErrors()
 {
   cout << "Trying erroneous commands ..." << endl;
-  Vector<Int> vec({1,2});
+  Vector<int32_t> vec({1,2});
   TableExprNode nullNode;
-  TableExprNode boolNode(True);
+  TableExprNode boolNode(true);
   TableExprNode arrNode(vec);
   TableExprNode intNode(3);
   intNode.useUnit("m");
@@ -825,13 +825,13 @@ void doErrors()
   tryError (TableExprNodeSetElemDiscrete(intNode, timeNode, nullNode));
   tryError (TableExprNodeSetElemDiscrete(nullNode, nullNode, timeNode));
   tryError (TableExprNodeSetElemDiscrete(intNode, dblNode, nullNode));
-  tryError (TableExprNodeSetElemCont(True, arrNode));
-  tryError (TableExprNodeSetElemCont(arrNode, True));
-  tryError (TableExprNodeSetElemCont(True, intNode, arrNode, True));
-  tryError (TableExprNodeSetElemCont(True, boolNode));
-  tryError (TableExprNodeSetElemCont(cmplNode, True));
-  tryError (TableExprNodeSetElemCont(True, intNode, timeNode, True));
-  tryError (TableExprNodeSetElemCont(True, intNode, dblNode, True));
+  tryError (TableExprNodeSetElemCont(true, arrNode));
+  tryError (TableExprNodeSetElemCont(arrNode, true));
+  tryError (TableExprNodeSetElemCont(true, intNode, arrNode, true));
+  tryError (TableExprNodeSetElemCont(true, boolNode));
+  tryError (TableExprNodeSetElemCont(cmplNode, true));
+  tryError (TableExprNodeSetElemCont(true, intNode, timeNode, true));
+  tryError (TableExprNodeSetElemCont(true, intNode, dblNode, true));
   tryError (TableExprNodeSetElemMidWidth(intNode, strNode));
   tryError (TableExprNodeSetElemMidWidth(strNode, intNode));
   tryError (TableExprNodeSetElemMidWidth(intNode, nullNode));

@@ -59,13 +59,13 @@ int main()
 
 	// Create the initial keyword list
 	/*FitsKeywordList st;
-	st.mk(FITS::SIMPLE,True,"Standard FITS format");
+	st.mk(FITS::SIMPLE,true,"Standard FITS format");
 	st.mk(FITS::BITPIX,32,"Integer data");
 	st.mk(FITS::NAXIS,2,"This is a primary array");
 	st.mk(1,FITS::NAXIS,row);
 	st.mk(2,FITS::NAXIS,col);
-	st.mk(FITS::EXTEND,True,"Extension exists");
-	//st.mk(FITS::EXTEND,False,"Extension exists");
+	st.mk(FITS::EXTEND,true,"Extension exists");
+	//st.mk(FITS::EXTEND,false,"Extension exists");
 	st.spaces();
 	st.comment("This is test tfits_priArr.");
 	st.spaces();
@@ -85,7 +85,7 @@ int main()
 	naxes[0] = row;
 	naxes[1] = col;
 	
-	if( !hdu1.write_priArr_hdr(fout,True, bitpix, naxis, naxes, True ) ){
+	if( !hdu1.write_priArr_hdr(fout,true, bitpix, naxis, naxes, true ) ){
 	    cout << "Primary Header wrote ok!"<<endl;
 	}else{
 	    cout<< "Prinary Header wrote error!" << endl;

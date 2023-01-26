@@ -131,31 +131,31 @@ String HDF5Image<T>::imageType() const
 }
 
 template<class T>
-Bool HDF5Image<T>::isPersistent() const
+bool HDF5Image<T>::isPersistent() const
 {
-  return True;
+  return true;
 }
 
 template<class T>
-Bool HDF5Image<T>::isPaged() const
+bool HDF5Image<T>::isPaged() const
 {
-  return True;
+  return true;
 }
 
 template <class T> 
-Bool HDF5Image<T>::isWritable() const
+bool HDF5Image<T>::isWritable() const
 {
   return map_p.isWritable();
 }
 
 template<class T>
-Bool HDF5Image<T>::hasPixelMask() const
+bool HDF5Image<T>::hasPixelMask() const
 {
   return (regionPtr_p != 0  &&  regionPtr_p->hasMask());
 }
 
 template<class T>
-const Lattice<Bool>& HDF5Image<T>::pixelMask() const
+const Lattice<bool>& HDF5Image<T>::pixelMask() const
 {
   if (regionPtr_p == 0) {
     throw (AipsError ("HDF5Image::pixelMask - no pixelmask used"));
@@ -163,7 +163,7 @@ const Lattice<Bool>& HDF5Image<T>::pixelMask() const
   return *regionPtr_p;
 }
 template<class T>
-Lattice<Bool>& HDF5Image<T>::pixelMask()
+Lattice<bool>& HDF5Image<T>::pixelMask()
 {
   if (regionPtr_p == 0) {
     throw (AipsError ("HDF5Image::pixelMask - no pixelmask used"));
@@ -235,7 +235,7 @@ void HDF5Image<T>::applyMask (const String& maskName)
 
 
 template <class T> 
-String HDF5Image<T>::name (Bool stripPath) const 
+String HDF5Image<T>::name (bool stripPath) const 
 {
   return map_p.name (stripPath);
 }
@@ -253,7 +253,7 @@ void HDF5Image<T>::resize (const TiledShape&)
 }
 
 template <class T> 
-Bool HDF5Image<T>::doGetSlice(Array<T>& buffer, const Slicer& theSlice)
+bool HDF5Image<T>::doGetSlice(Array<T>& buffer, const Slicer& theSlice)
 {
   return map_p.doGetSlice(buffer, theSlice);
 }
@@ -267,15 +267,15 @@ void HDF5Image<T>::doPutSlice(const Array<T>& sourceBuffer,
   map_p.putSlice(sourceBuffer,where,stride);
     //  } else if (mask_p) {
     //    Array<T> map;
-    //Array<Bool> mask;
+    //Array<bool> mask;
     //IPosition shape(sourceBuffer.shape());
-    //mask_p->getSlice(mask, where, shape, stride, True);
-    //map_p.getSlice(map, where, shape, stride, True);
+    //mask_p->getSlice(mask, where, shape, stride, true);
+    //map_p.getSlice(map, where, shape, stride, true);
     // use maskedarrays to do all the work.
-    //map(mask==False) = sourceBuffer;
+    //map(mask==false) = sourceBuffer;
     //map_p.putSlice(map,where,stride);
     //  } else {
-    //    throw(AipsError("HDF5Image<T>::putSlice - throughmask==False but no "
+    //    throw(AipsError("HDF5Image<T>::putSlice - throughmask==false but no "
     //		    "mask exists."));
     //  }
 }
@@ -316,13 +316,13 @@ void HDF5Image<T>::putAt(const T& value, const IPosition& where) {
 template <class T> 
 LatticeIterInterface<T>* HDF5Image<T>::makeIter
                                    (const LatticeNavigator& navigator,
-				    Bool useRef) const
+				    bool useRef) const
 {
   return map_p.makeIter (navigator, useRef);
 }
 
 template <class T> 
-Bool HDF5Image<T>::ok() const
+bool HDF5Image<T>::ok() const
 {
   return (map_p.ndim() == coordinates().nPixelAxes());
 }
@@ -380,9 +380,9 @@ void HDF5Image<T>::restoreAll()
 }
 
 template <class T> 
-Bool HDF5Image<T>::setCoordinateInfo (const CoordinateSystem& coords)
+bool HDF5Image<T>::setCoordinateInfo (const CoordinateSystem& coords)
 {
-  Bool ok = ImageInterface<T>::setCoordinateInfo(coords);
+  bool ok = ImageInterface<T>::setCoordinateInfo(coords);
   if (ok) {
     Record rec;
     AlwaysAssert (coordinates().save(rec, "coords"), AipsError);
@@ -398,21 +398,21 @@ void HDF5Image<T>::restoreMiscInfo (const RecordInterface& rec)
 }
 
 template<class T> 
-Bool HDF5Image<T>::setMiscInfo (const RecordInterface& newInfo)
+bool HDF5Image<T>::setMiscInfo (const RecordInterface& newInfo)
 {
   setMiscInfoMember (newInfo);
   HDF5Record::writeRecord (*map_p.group(), "miscinfo", newInfo);
-  return True;
+  return true;
 }
 
 template<class T> 
-Bool HDF5Image<T>::setUnits(const Unit& newUnits) 
+bool HDF5Image<T>::setUnits(const Unit& newUnits) 
 {
   setUnitMember (newUnits);
   Record rec;
   rec.define("units", newUnits.getName());
   HDF5Record::writeRecord (*map_p.group(), "unitinfo", rec);
-  return True;
+  return true;
 }
 
 template<class T> 
@@ -456,9 +456,9 @@ void HDF5Image<T>::restoreUnits (const RecordInterface& rec)
 
 
 template<class T>
-Bool HDF5Image<T>::setImageInfo (const ImageInfo& info) 
+bool HDF5Image<T>::setImageInfo (const ImageInfo& info) 
 {
-  Bool ok = ImageInterface<T>::setImageInfo(info);
+  bool ok = ImageInterface<T>::setImageInfo(info);
   if (ok) {
     // Update the ImageInfo
     Record rec;
@@ -469,7 +469,7 @@ Bool HDF5Image<T>::setImageInfo (const ImageInfo& info)
       LogIO os;
       os << LogIO::SEVERE << "Error saving ImageInfo in record because " 
          << error << LogIO::POST;
-      ok = False;
+      ok = false;
     }
   }
   return ok;
@@ -480,7 +480,7 @@ void HDF5Image<T>::restoreImageInfo (const RecordInterface& rec)
 {
   String error;
   ImageInfo info;
-  Bool ok = info.fromRecord (error, rec);
+  bool ok = info.fromRecord (error, rec);
   if (!ok) {
     LogIO os;
     os << LogIO::WARN << "Failed to restore the ImageInfo because " 
@@ -493,7 +493,7 @@ void HDF5Image<T>::restoreImageInfo (const RecordInterface& rec)
 template<class T> 
 void HDF5Image<T>::removeRegion (const String& name,
 				 RegionHandler::GroupType type,
-				 Bool throwIfUnknown)
+				 bool throwIfUnknown)
 {
   // Remove the default mask if it is the region to be removed.
   if (name == getDefaultMask()) {
@@ -512,13 +512,13 @@ void HDF5Image<T>::check_conformance(const Lattice<T>& other)
 }
 
 template<class T> 
-uInt HDF5Image<T>::advisedMaxPixels() const
+uint32_t HDF5Image<T>::advisedMaxPixels() const
 {
   return map_p.advisedMaxPixels();
 }
 
 template<class T> 
-IPosition HDF5Image<T>::doNiceCursorShape(uInt maxPixels) const
+IPosition HDF5Image<T>::doNiceCursorShape(uint32_t maxPixels) const
 {
   return map_p.niceCursorShape(maxPixels);
 }
@@ -537,7 +537,7 @@ void HDF5Image<T>::flush()
 }
 
 template<class T>
-ImageAttrHandler& HDF5Image<T>::attrHandler (Bool createHandler)
+ImageAttrHandler& HDF5Image<T>::attrHandler (bool createHandler)
 {
   return itsAttrHandler.attachHid (*map_p.group(), createHandler,
                                    map_p.isWritable());

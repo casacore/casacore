@@ -55,7 +55,7 @@ class Regex;
 // <synopsis>
 // This base class provides an <src>enum</src> defining allowed statistics types 
 // and a helper function to convert between a <src>String</src> and a
-// <src>Vector<Int></src> describing the desired statistics to plot.  The reason for
+// <src>Vector<int32_t></src> describing the desired statistics to plot.  The reason for
 // having it as a base class rather than just part of LatticeStatistics is that
 // the latter is templated, and it doesn't make much sense to invoke the static function
 // <src>setStatisticTypes</src> function with a templated type.
@@ -63,7 +63,7 @@ class Regex;
 //
 // <example>
 // <srcblock>
-//    Vector<Int> statsToPlot = LatticeStatsBase::toStatisticTypes("mean,rms,sigma");
+//    Vector<int32_t> statsToPlot = LatticeStatsBase::toStatisticTypes("mean,rms,sigma");
 // </srcblock>
 // </example>
 //
@@ -138,31 +138,31 @@ enum StatisticsTypes {
 };
 
 // Helper function to convert a String containing a list of desired statistics to
-// the correct Vector<Int> required for the LatticeStatistics<T>::setPlotting
+// the correct Vector<int32_t> required for the LatticeStatistics<T>::setPlotting
 // function.  This may be usful if your user interface involves strings rather than integers.
 // A new value is added to the output vector (which is resized appropriately) if any of the
 // substrings "npts", "min", "max", "sum", "sumsq", "mean", "sigma", "rms", 
 // and "flux" is present.  An empty vector results if there are no matches
 // <group>
-   static Vector<Int> toStatisticTypes (const String& statistics, 
+   static Vector<int32_t> toStatisticTypes (const String& statistics, 
                                         const std::regex& delimiter);
-   static Vector<Int> toStatisticTypes (const Vector<String>& statistics);
+   static Vector<int32_t> toStatisticTypes (const Vector<String>& statistics);
 // </group>
 
 // Convert type to string.
 // <group>
    static String toStatisticName (StatisticsTypes type);
-   static String toStatisticName (Int type);
+   static String toStatisticName (int32_t type);
 // </group>
 
 // Returns -1 if the statistic string is not valid
-   static Int toStatisticType (const String& statistic);
+   static int32_t toStatisticType (const String& statistic);
 
-// Check and fill in defaults for a <src>Vector<Int></src> containing the 
-// number of subplots in x and y to be put on a plot.  The <src>Vector<Int></src> 
-// is resized to 2 before assignment.  A return value of <src>False</src> indicates 
+// Check and fill in defaults for a <src>Vector<int32_t></src> containing the 
+// number of subplots in x and y to be put on a plot.  The <src>Vector<int32_t></src> 
+// is resized to 2 before assignment.  A return value of <src>false</src> indicates 
 // invalid arguments.
-   static Bool setNxy (Vector<Int>& nxy,
+   static bool setNxy (Vector<int32_t>& nxy,
                        ostream& os);
 
 // A storage image is used to accumulate information as a function of the display
@@ -170,15 +170,15 @@ enum StatisticsTypes {
 // to that appropriate to the shape of the display axes and the desired size of the first
 // or last dimension.  
    static void setStorageImageShape (IPosition& storeImageShape,
-                                     const Bool& last,
-                                     const Int& axisSize,
-                                     const Vector<Int>& displayAxes,
+                                     const bool& last,
+                                     const int32_t& axisSize,
+                                     const Vector<int32_t>& displayAxes,
                                      const IPosition& shape);
 
 // Stretch a range by 10%
-   static void stretchMinMax (Float& min, Float& max);
+   static void stretchMinMax (float& min, float& max);
 
-   static std::set<Double> quartileFracs();
+   static std::set<double> quartileFracs();
 };
 
 

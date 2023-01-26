@@ -109,16 +109,16 @@ public:
 
   // Is the lattice masked?
   // It is if its parent lattice is masked.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // An ExtendLattice is not persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // Is the ExtendLattice paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // An ExtendLattice is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Handle locking of the ExtendLattice which is delegated to its parent.
   // <br>It is strongly recommended to use class
@@ -126,9 +126,9 @@ public:
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -150,13 +150,13 @@ public:
   virtual void reopen();
 
   // Does the ExtendLattice have a pixelmask?
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.
   // An exception is thrown if the ExtendLattice does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get the region used (always returns 0).
@@ -166,17 +166,17 @@ public:
   virtual IPosition shape() const;
   
   // Return the name of the parent lattice.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Putting data is not possible.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -184,10 +184,10 @@ public:
 			   const IPosition& stride);
   
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
 private:
   // Set the various pointer needed to construct the object.
@@ -196,12 +196,12 @@ private:
   void setPtr (Lattice<T>* latticePtr, MaskedLattice<T>* maskLatPtr);
 
   // Get mask data from mask.
-  Bool getMaskDataSlice (Array<Bool>& buffer, const Slicer& section);
+  bool getMaskDataSlice (Array<bool>& buffer, const Slicer& section);
 
   Lattice<T>*          itsLatticePtr;
   MaskedLattice<T>*    itsMaskLatPtr;
-  Bool                 itsHasPixelMask;
-  ExtendLattice<Bool>* itsPixelMask;
+  bool                 itsHasPixelMask;
+  ExtendLattice<bool>* itsPixelMask;
   ExtendSpecifier      itsExtendSpec;
 };
 

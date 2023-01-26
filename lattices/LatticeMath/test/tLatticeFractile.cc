@@ -50,8 +50,8 @@ int main (int argc, const char* argv[])
     inp.readArguments(argc, argv);
     cout << "<<<" << endl;
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
 
 //
 // Test various sized arrays.
@@ -60,97 +60,97 @@ int main (int argc, const char* argv[])
     {
       // Test lattice with all equal values.
       IPosition shape(2, nx, ny);
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       arr = 1.;
-      ArrayLattice<Float> aF(arr);
+      ArrayLattice<float> aF(arr);
 
       cout << "Fractiles (left 50%, right 50%) test" << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
 	   << endl;
       LatticeExprNode afExpr(aF);
-      LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
+      LatticeExpr<float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<float>::maskedFractile(expr, 0.5) << endl;
       cout << "Fractiles (left 40%, right 45%) test" << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.40, 0.55, 2)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.40, 0.55, 2)
 	   << endl;
-      cout << LatticeFractile<Float>::maskedFractiles(expr, 0.4, 0.45) << endl;
-      cout << LatticeFractile<Float>::maskedFractiles(expr, 0.4, 0.45, 2)
+      cout << LatticeFractile<float>::maskedFractiles(expr, 0.4, 0.45) << endl;
+      cout << LatticeFractile<float>::maskedFractiles(expr, 0.4, 0.45, 2)
 	   << endl;
     }
 
     {
       IPosition shape(2, nx, ny);
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       indgen (arr);
-      ArrayLattice<Float> aF(arr);
+      ArrayLattice<float> aF(arr);
 
       cout << "Fractiles (left 50%, right 50%) test: ";
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
 	   << endl;
       LatticeExprNode afExpr(aF);
-      LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractile(expr, 0.5) << endl;
+      LatticeExpr<float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<float>::maskedFractile(expr, 0.5) << endl;
       cout << "Fractiles (left 40%, right 45%) test" << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.40, 0.55, 2)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.40, 0.55, 2)
 	   << endl;
-      cout << LatticeFractile<Float>::maskedFractiles(expr, 0.40, 0.55) << endl;
-      cout << LatticeFractile<Float>::maskedFractiles(expr, 0.40, 0.55, 2)
+      cout << LatticeFractile<float>::maskedFractiles(expr, 0.40, 0.55) << endl;
+      cout << LatticeFractile<float>::maskedFractiles(expr, 0.40, 0.55, 2)
 	   << endl;
     }
 
     {
       IPosition shape(2, 10*nx, 10*ny);
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       indgen (arr);
-      ArrayLattice<Float> aF(arr);
+      ArrayLattice<float> aF(arr);
 
       cout << "Fractiles (left 50%, right 50%) test: ";
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
 	   << endl;
       LatticeExprNode afExpr(aF);
-      LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractiles (expr, 0.5, 0.5) << endl;
-      cout << LatticeFractile<Float>::maskedFractiles (expr, 0.5, 0.5, 2)
+      LatticeExpr<float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<float>::maskedFractiles (expr, 0.5, 0.5) << endl;
+      cout << LatticeFractile<float>::maskedFractiles (expr, 0.5, 0.5, 2)
 	   << endl;
     }
 
     {
       IPosition shape(2, 32*nx, 32*ny);
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       indgen (arr);
-      ArrayLattice<Float> aF(arr);
+      ArrayLattice<float> aF(arr);
 
       cout << "Fractiles (left 50%, right 50%) test: ";
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 16)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 4)
 	   << endl;
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.5, 0.5, 2)
 	   << endl;
       LatticeExprNode afExpr(aF);
-      LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractiles (expr, 0.5, 0.5) << endl;
-      cout << LatticeFractile<Float>::maskedFractiles (expr, 0.5, 0.5, 2)
+      LatticeExpr<float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<float>::maskedFractiles (expr, 0.5, 0.5) << endl;
+      cout << LatticeFractile<float>::maskedFractiles (expr, 0.5, 0.5, 2)
 	   << endl;
     }
 
@@ -159,61 +159,61 @@ int main (int argc, const char* argv[])
     cout << ">>>" << endl;
     {
       IPosition shape(2, 100*nx, 100*ny);
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       indgen (arr, float(0), float(0.01));
-      ArrayLattice<Float> aF(arr);
+      ArrayLattice<float> aF(arr);
 
       cout << "Last value = " << arr(shape-1) << endl;
       Timer timer;
       timer.mark();
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.2, 0.8, 512*512)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.2, 0.8, 512*512)
 	   << endl;
       timer.show ("ArrayLattice  20% fractiles");
       timer.mark();
-      cout << LatticeFractile<Float>::unmaskedFractiles (aF, 0.2, 0.8, 1280)
+      cout << LatticeFractile<float>::unmaskedFractiles (aF, 0.2, 0.8, 1280)
 	   << endl;
       timer.show ("ArrayLat 1280 20% fractiles");
       timer.mark();
       LatticeExprNode afExpr(aF);
-      LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractiles (expr, 0.2, 0.8) << endl;
+      LatticeExpr<float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<float>::maskedFractiles (expr, 0.2, 0.8) << endl;
       timer.show ("MaskedLattice 20% fractiles");
     }
 
     {
       IPosition shape(2, 100*nx, 100*ny);
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       indgen (arr, float(0), float(0.01));
-      TempLattice<Float> aF(shape);
+      TempLattice<float> aF(shape);
       aF.put (arr);
       Timer timer;
 
-      cout << LatticeFractile<Float>::unmaskedFractiles(aF, 0.2, 0.8) << endl;
+      cout << LatticeFractile<float>::unmaskedFractiles(aF, 0.2, 0.8) << endl;
       timer.show ("PagedArray    20% fractiles");
       timer.mark();
-      cout << LatticeFractile<Float>::unmaskedFractiles(aF, 0.2, 0.8, 4)
+      cout << LatticeFractile<float>::unmaskedFractiles(aF, 0.2, 0.8, 4)
 	   << endl;
       timer.show ("PagedArr 4    20% fractiles");
       timer.mark();
-      cout << LatticeFractile<Float>::unmaskedFractiles(aF, 0.2, 0.8, 1280)
+      cout << LatticeFractile<float>::unmaskedFractiles(aF, 0.2, 0.8, 1280)
 	   << endl;
       timer.show ("PagedArr 1280 20% fractiles");
       timer.mark();
       LatticeExprNode afExpr(aF);
-      LatticeExpr<Float> expr(afExpr[aF>4]);
-      cout << LatticeFractile<Float>::maskedFractiles (expr, 0.2, 0.8) << endl;
+      LatticeExpr<float> expr(afExpr[aF>4]);
+      cout << LatticeFractile<float>::maskedFractiles (expr, 0.2, 0.8) << endl;
       timer.show ("MaskedLattice 20% fractiles");
     }
 
     {
       IPosition fshape(2, 500*nx, 500*ny);
-      TempLattice<Float> aF(fshape);
+      TempLattice<float> aF(fshape);
       IPosition shape = aF.niceCursorShape();
       cout << "tileshape = " << shape << endl;
-      Array<Float> arr(shape);
+      Array<float> arr(shape);
       indgen (arr, float(0), float(0.01));
       Timer timer;
-      LatticeIterator<Float> iter(aF, shape);
+      LatticeIterator<float> iter(aF, shape);
       while (! iter.atEnd()) {
 	iter.woCursor() = arr;
 	iter++;
@@ -221,10 +221,10 @@ int main (int argc, const char* argv[])
       timer.show ("Fill PagedArr");
       timer.mark();
 
-      cout << LatticeFractile<Float>::unmaskedFractiles(aF, 0.5, 0.5) << endl;
+      cout << LatticeFractile<float>::unmaskedFractiles(aF, 0.5, 0.5) << endl;
       timer.show ("BigPagedArray");
       timer.mark();
-      cout << LatticeFractile<Float>::unmaskedFractiles(aF, 0.5, 0.5, 1280*25)
+      cout << LatticeFractile<float>::unmaskedFractiles(aF, 0.5, 0.5, 1280*25)
 	   << endl;
       timer.show ("PagedArr 1280");
     }

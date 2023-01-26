@@ -62,36 +62,36 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // bucketSize*nrOfBuckets bytes.
     // If the file is smaller, the remainder is indicated as an extension
     // similarly to the behaviour of function extend.
-    BucketBase (BucketFile* file, Int64 startOffset, uInt bucketSize,
-                uInt nrOfBuckets);
+    BucketBase (BucketFile* file, int64_t startOffset, uint32_t bucketSize,
+                uint32_t nrOfBuckets);
 
     // Detach the file. The BucketFile is not closed.
     virtual ~BucketBase();
 
     // Flush the cached buckets.
     // Possibly remaining uninitialized buckets will be initialized first.
-    // A True status is returned if buckets had to be written.
+    // A true status is returned if buckets had to be written.
     // The actual flushing is done using <src>doFlush</src> in the derived
     // class.
-    Bool flush();
+    bool flush();
 
     // Resynchronize the object (after another process updated the file).
     // It remaps the file if the nr of buckets has changed.
     // the new sizes.
-    virtual void resync (uInt nrBucket);
+    virtual void resync (uint32_t nrBucket);
 
     // Get the current nr of buckets in the file.
-    uInt nBucket() const
+    uint32_t nBucket() const
       { return itsCurNrOfBuckets; }
 
     // Extend the file with the given number of buckets.
     // The buckets get initialized when they are acquired
     // (using getBucket) for the first time.
-    void extend (uInt nrBucket);
+    void extend (uint32_t nrBucket);
 
     // Set that data has been written.
     void setWritten()
-      { itsHasWritten = True; }
+      { itsHasWritten = true; }
 
 protected:
     // Copy constructor is not possible.
@@ -108,25 +108,25 @@ protected:
 
     // Do the actual extension of the file.
     // Note that itsNewNrOfBuckets has been increased before doExtend is called.
-    virtual void doExtend (uInt nrBucket) = 0;
+    virtual void doExtend (uint32_t nrBucket) = 0;
 
     // Initialize the bucket buffer.
     // The uninitialized buckets before this bucket are also initialized.
-    virtual void initializeBuckets (uInt bucketNr) = 0;
+    virtual void initializeBuckets (uint32_t bucketNr) = 0;
 
 
     // The file used.
     BucketFile* itsFile;
     // The starting offsets of the buckets in the file.
-    Int64   itsStartOffset;
+    int64_t   itsStartOffset;
     // The bucket size.
-    uInt    itsBucketSize;
+    uint32_t    itsBucketSize;
     // The current nr of buckets in the file.
-    uInt    itsCurNrOfBuckets;
+    uint32_t    itsCurNrOfBuckets;
     // The new nr of buckets in the file (after extension).
-    uInt    itsNewNrOfBuckets;
+    uint32_t    itsNewNrOfBuckets;
     // Have data been written?
-    Bool    itsHasWritten;
+    bool    itsHasWritten;
 };
 
 

@@ -142,8 +142,8 @@ public:
     const ObjectID &objectID() const;
     LogOrigin &objectID(const ObjectID &id);
 
-    uInt line() const;
-    LogOrigin &line(uInt which);
+    uint32_t line() const;
+    LogOrigin &line(uint32_t which);
 
     const String &fileName() const;
     LogOrigin &fileName(const String &fileName);
@@ -165,14 +165,14 @@ public:
     String location() const;
 
     // Return true if the line number and file name are not set.
-    Bool isUnset() const;
+    bool isUnset() const;
 
 private:
     String task_p;
     String function_p;
     String class_p;
     ObjectID id_p;
-    uInt line_p;
+    uint32_t line_p;
     String file_p;
     String node_p;
 
@@ -201,8 +201,8 @@ ostream &operator<<(ostream &os, const LogOrigin &origin);
 struct SourceLocation
 {
     const char *fileName;
-    Int lineNumber;
-    static const SourceLocation *canonicalize(const char *file, Int line);
+    int32_t lineNumber;
+    static const SourceLocation *canonicalize(const char *file, int32_t line);
 };
 
 #define WHERE casacore::SourceLocation::canonicalize(__FILE__, __LINE__)

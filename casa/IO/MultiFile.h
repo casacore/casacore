@@ -119,12 +119,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //    // Use it (for example) as the sink of AipsIO.
   //    AipsIO stream (&mf1);
   //    // Write values.
-  //    stream << (Int)10;
-  //    stream << True;
+  //    stream << (int32_t)10;
+  //    stream << true;
   //    // Seek to beginning of file and read data in.
   //    stream.setpos (0);
-  //    Int vali;
-  //    Bool valb;
+  //    int32_t vali;
+  //    bool valb;
   //    stream >> vali >> valb;
   // </srcblock>
   // </example>
@@ -149,13 +149,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a MultiFile with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    // <br>If useODirect=True, the O_DIRECT flag is used (if supported).
+    // <br>If useODirect=true, the O_DIRECT flag is used (if supported).
     // It tells the kernel to bypass its file cache to have more predictable
     // I/O behaviour.
-    // <br>If useCRC=True, 32-bit CRC values are calculated and stored for
+    // <br>If useCRC=true, 32-bit CRC values are calculated and stored for
     // each data block. Note that useCRC is only used for new files.
-    explicit MultiFile (const String& name, ByteIO::OpenOption, Int blockSize=0,
-                        Bool useODirect=False, Bool useCRC=False);
+    explicit MultiFile (const String& name, ByteIO::OpenOption, int32_t blockSize=0,
+                        bool useODirect=false, bool useCRC=false);
 
     // Open or create a MultiFile with the given name which is nested in the
     // given parent. Thus data are read/written in the parent file.
@@ -163,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // of the parent.
     explicit MultiFile (const String& name,
                         const std::shared_ptr<MultiFileBase>& parent,
-                        ByteIO::OpenOption, Int blockSize=0);
+                        ByteIO::OpenOption, int32_t blockSize=0);
 
     // The destructor flushes and closes the file.
     ~MultiFile() override;
@@ -175,7 +175,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Make a nested MultiFile.
     std::shared_ptr<MultiFileBase> makeNested
     (const std::shared_ptr<MultiFileBase>& parent, const String& name,
-     ByteIO::OpenOption, Int blockSize) const override;
+     ByteIO::OpenOption, int32_t blockSize) const override;
 
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the file is writable already.
@@ -190,31 +190,31 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void show (std::ostream&) const;
 
     // Compress a block index by looking for subsequent block numbers.
-    static std::vector<Int64> packIndex (const std::vector<Int64>& blockNrs);
+    static std::vector<int64_t> packIndex (const std::vector<int64_t>& blockNrs);
 
     // Decompress a block index by inserting subsequent block numbers.
-    static std::vector<Int64> unpackIndex (const std::vector<Int64>& blockNrs);
+    static std::vector<int64_t> unpackIndex (const std::vector<int64_t>& blockNrs);
 
   private:
     // Initialize the MultiFile object.
     void init (ByteIO::OpenOption option);
     // Read the file info for the new version 2.
-    void getInfoVersion2 (Int64 contBlockNr, CanonicalIO& aio);
-    // Write a vector of Int64.
-    void writeVector (CanonicalIO& cio, const std::vector<Int64>& index);
-    void writeVector (CanonicalIO& cio, const std::vector<uInt>& index);
-    // Read a vector of Int64.
-    void readVector (CanonicalIO& cio, std::vector<Int64>& index);
-    void readVector (CanonicalIO& cio, std::vector<uInt>& index);
+    void getInfoVersion2 (int64_t contBlockNr, CanonicalIO& aio);
+    // Write a vector of int64_t.
+    void writeVector (CanonicalIO& cio, const std::vector<int64_t>& index);
+    void writeVector (CanonicalIO& cio, const std::vector<uint32_t>& index);
+    // Read a vector of int64_t.
+    void readVector (CanonicalIO& cio, std::vector<int64_t>& index);
+    void readVector (CanonicalIO& cio, std::vector<uint32_t>& index);
     // Write the remainder of the header (in case exceeding 1 block).
     // <src>iobuf</src> should be large enough
     void writeRemainder (MemoryIO& mio, CanonicalIO&, MultiFileBuffer& mfbuf);
     // Read the remainder of the header into the buffer.
-    void readRemainder (Int64 headerSize, Int64 blockNr, std::vector<char>& buf);
+    void readRemainder (int64_t headerSize, int64_t blockNr, std::vector<char>& buf);
     // Truncate the file if blocks are freed at the end.
     void truncateIfNeeded();
     // Header writing hooks (meant for derived test classes).
-    virtual void writeHeaderShow (Int64 ncont, Int64 todo) const;
+    virtual void writeHeaderShow (int64_t ncont, int64_t todo) const;
     virtual void writeHeaderTest();
     // </group>
     
@@ -227,47 +227,47 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Do the class-specific actions on deleting a file.
     void doDeleteFile (MultiFileInfo&) override;
     // Truncate the file to <src>nrblk</src> blocks.
-    void doTruncateFile (MultiFileInfo& info, uInt64 nrblk) override;
+    void doTruncateFile (MultiFileInfo& info, uint64_t nrblk) override;
     // Flush the file itself.
     void doFlushFile() override;
     // Flush and close the file.
     void close() override;
     // Write the header info.
     void writeHeader() override;
-    // Read the header info. If always==False, the info is only read if the
+    // Read the header info. If always==false, the info is only read if the
     // header counter has changed.
-    void readHeader (Bool always=True) override;
+    void readHeader (bool always=true) override;
     // Extend the virtual file to fit lastblk.
-    void extend (MultiFileInfo& info, Int64 lastblk) override;
+    void extend (MultiFileInfo& info, int64_t lastblk) override;
 
   protected:
     // Store the CRC of a data block in the index.
-    void storeCRC (const void* buffer, Int64 blknr);
+    void storeCRC (const void* buffer, int64_t blknr);
     // Check the CRC of a data block read.
-    void checkCRC (const void* buffer, Int64 blknr) const;
+    void checkCRC (const void* buffer, int64_t blknr) const;
     // Calculate the CRC of a data block.
-    uInt calcCRC (const void* buffer, Int64 size) const;
+    uint32_t calcCRC (const void* buffer, int64_t size) const;
     // Extend the virtual file to fit lastblk.
     // Optionally the free blocks are not used.
-    virtual void extendVF (MultiFileInfo& info, Int64 lastblk, Bool useFreeBlocks);
+    virtual void extendVF (MultiFileInfo& info, int64_t lastblk, bool useFreeBlocks);
     // Write a data block.
-    void writeBlock (MultiFileInfo& info, Int64 blknr,
+    void writeBlock (MultiFileInfo& info, int64_t blknr,
                      const void* buffer) override;
     // Read a data block.
-    void readBlock (MultiFileInfo& info, Int64 blknr,
+    void readBlock (MultiFileInfo& info, int64_t blknr,
                     void* buffer) override;
     // Read the version 1 header.
-    void readHeaderVersion1 (Int64 headerSize, std::vector<char>& buf);
+    void readHeaderVersion1 (int64_t headerSize, std::vector<char>& buf);
     // Read the version 2 and higher header.
     void readHeaderVersion2 (std::vector<char>& buf);
 
     //# Data members
     // Define two continuation sets where the header overflow can be stored
     MultiFileInfo itsHdrCont[2];
-    uInt  itsNrContUsed[2];     // nr of cont.blocks actually used
-    uInt  itsHdrContInx;        // Continuation set last used (0 or 1)
-    Bool  itsUseCRC;
-    std::vector<uInt> itsCRC;   // CRC value per block (empty if useCRC=False)
+    uint32_t  itsNrContUsed[2];     // nr of cont.blocks actually used
+    uint32_t  itsHdrContInx;        // Continuation set last used (0 or 1)
+    bool  itsUseCRC;
+    std::vector<uint32_t> itsCRC;   // CRC value per block (empty if useCRC=false)
     std::unique_ptr<ByteIO> itsIO;   // A regular file or nested MFFileIO
   };
 

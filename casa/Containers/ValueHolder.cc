@@ -34,31 +34,31 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
-ValueHolder::ValueHolder (Bool value)
+ValueHolder::ValueHolder (bool value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (uChar value)
+ValueHolder::ValueHolder (unsigned char value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (Short value)
+ValueHolder::ValueHolder (int16_t value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (uShort value)
+ValueHolder::ValueHolder (uint16_t value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (Int value)
+ValueHolder::ValueHolder (int32_t value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (uInt value)
+ValueHolder::ValueHolder (uint32_t value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (Int64 value)
+ValueHolder::ValueHolder (int64_t value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (Float value)
+ValueHolder::ValueHolder (float value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (Double value)
+ValueHolder::ValueHolder (double value)
   : itsRep (new ValueHolderRep(value))
 {}
 ValueHolder::ValueHolder (const Complex& value)
@@ -67,37 +67,37 @@ ValueHolder::ValueHolder (const Complex& value)
 ValueHolder::ValueHolder (const DComplex& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Char* value)
+ValueHolder::ValueHolder (const char* value)
   : itsRep (new ValueHolderRep(String(value)))
 {}
 ValueHolder::ValueHolder (const String& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<Bool>& value)
+ValueHolder::ValueHolder (const Array<bool>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<uChar>& value)
+ValueHolder::ValueHolder (const Array<unsigned char>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<Short>& value)
+ValueHolder::ValueHolder (const Array<int16_t>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<uShort>& value)
+ValueHolder::ValueHolder (const Array<uint16_t>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<Int>& value)
+ValueHolder::ValueHolder (const Array<int32_t>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<uInt>& value)
+ValueHolder::ValueHolder (const Array<uint32_t>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<Int64>& value)
+ValueHolder::ValueHolder (const Array<int64_t>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<Float>& value)
+ValueHolder::ValueHolder (const Array<float>& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (const Array<Double>& value)
+ValueHolder::ValueHolder (const Array<double>& value)
   : itsRep (new ValueHolderRep(value))
 {}
 ValueHolder::ValueHolder (const Array<Complex>& value)
@@ -112,7 +112,7 @@ ValueHolder::ValueHolder (const Array<String>& value)
 ValueHolder::ValueHolder (const Record& value)
   : itsRep (new ValueHolderRep(value))
 {}
-ValueHolder::ValueHolder (uInt ndim, Bool dummy)
+ValueHolder::ValueHolder (uint32_t ndim, bool dummy)
   : itsRep (new ValueHolderRep(ndim, dummy))
 {}
 

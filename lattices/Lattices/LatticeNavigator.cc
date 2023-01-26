@@ -53,8 +53,8 @@ IPosition LatticeNavigator::subLatticeShape() const
 IPosition LatticeNavigator::hangOverBlc() const
 {
   IPosition blc(relativePosition());
-  const uInt ndim = blc.nelements();
-  for (uInt n = 0; n < ndim; n++)
+  const uint32_t ndim = blc.nelements();
+  for (uint32_t n = 0; n < ndim; n++)
     if (blc(n) < 0)
       blc(n) = 0;
   return blc;
@@ -64,9 +64,9 @@ IPosition LatticeNavigator::hangOverTrc() const
 {
   IPosition trc(relativeEndPosition());
   const IPosition latticeShape(subLatticeShape());
-  const uInt ndim = trc.nelements();
+  const uint32_t ndim = trc.nelements();
   DebugAssert(latticeShape.nelements() == ndim, AipsError);
-  for (uInt n = 0; n < ndim; n++)
+  for (uint32_t n = 0; n < ndim; n++)
     if (trc(n) >= latticeShape(n))
       trc(n) = latticeShape(n) - 1;
   return trc;
@@ -101,9 +101,9 @@ IPosition LatticeNavigator::increment() const
   return IPosition(latticeShape().nelements(), 1);
 }
 
-Bool LatticeNavigator::ok() const
+bool LatticeNavigator::ok() const
 {
-  return True;
+  return true;
 }
 
 } //# NAMESPACE CASACORE - END

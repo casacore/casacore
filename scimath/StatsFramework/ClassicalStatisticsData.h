@@ -39,9 +39,9 @@ public:
 
     ClassicalStatisticsData(const ClassicalStatisticsData&) = delete;
 
-    static const uInt CACHE_PADDING;
+    static const uint32_t CACHE_PADDING;
 
-    static const uInt BLOCK_SIZE;
+    static const uint32_t BLOCK_SIZE;
 
     ~ClassicalStatisticsData() {}
 

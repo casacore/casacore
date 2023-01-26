@@ -174,19 +174,19 @@ public:
     // Check if pathname is valid. This function checks for: double slashes, 
     // non-printable characters, pathname length and filename lengths, this 
     // function is more OS-specific.
-    Bool isValid() const;
+    bool isValid() const;
 
     // Check if pathname is valid according the POSIX standard.
     // This function checks for
     // double slashes, non-printable characters,pathname length and filename 
     // lenghts, all according to the POSIX-standard.
-    Bool isStrictlyPosix() const;
+    bool isStrictlyPosix() const;
 
     // Return length of path name
-    uInt length() const;
+    uint32_t length() const;
 
     // Return the maximum length a path name can have.
-    uInt maxLength() const;
+    uint32_t maxLength() const;
 
     // Return the basename of the path; this is only the name of the file.
     // It takes it from the expanded path name.
@@ -236,10 +236,10 @@ private:
 
     // Define the maximum number of bytes in a pathname
     // This definition does not use Posix values.
-    static uInt getMaxPathNameSize ();
+    static uint32_t getMaxPathNameSize ();
     // Define the maximum number of bytes in a filename
     // This definition does not use Posix values.
-    static uInt getMaxNameSize ();
+    static uint32_t getMaxNameSize ();
 
 
     // This function is used by expandedName to replace the tilde and to
@@ -256,7 +256,7 @@ private:
 
     // This function is used by expandName and absoluteName. It sets the 
     // integer "count" on the next slash or on the end of a string
-    void getNextName (const String& inString, uInt& count) const;
+    void getNextName (const String& inString, uint32_t& count) const;
 };
 
 

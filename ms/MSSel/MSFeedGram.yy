@@ -34,7 +34,7 @@
 %union {
   const TableExprNode* node;
   char* str;
-  Vector<Int>* iv;
+  Vector<int32_t>* iv;
   std::vector<String>* sv;
 }
 
@@ -60,7 +60,7 @@
 #include <casacore/ms/MSSel/MSSelectionTools.h>
 
   int MSFeedGramlex (YYSTYPE*);
-  Bool MSFeedGramNegate=False;
+  bool MSFeedGramNegate=false;
 %}
 
 %%
@@ -75,14 +75,14 @@ indexcombexpr: gfeedpairs                         {$$=$1;}
 		  $$ = $1;
                 }
 
-gfeedpairs: NOT {MSFeedGramNegate=True;}  feedpairs {$$=$3;}
-         |     {MSFeedGramNegate=False;} feedpairs {$$=$2;}
+gfeedpairs: NOT {MSFeedGramNegate=true;}  feedpairs {$$=$3;}
+         |     {MSFeedGramNegate=false;} feedpairs {$$=$2;}
 
 feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' operator
            {
 	     MSFeedIndex myMSFI(MSFeedParse::thisMSFParser->subTable());
-	     Vector<Int> f1 = myMSFI.matchFeedId(*($1)); 
-	     Vector<Int> f2 = myMSFI.matchFeedId(*($3)); 
+	     Vector<int32_t> f1 = myMSFI.matchFeedId(*($1)); 
+	     Vector<int32_t> f2 = myMSFI.matchFeedId(*($3)); 
 	     $$ = MSFeedParse::thisMSFParser->selectFeedIds
 	       (f1,f2, MSFeedParse::CrossOnly, MSFeedGramNegate); 
 	     delete $1;
@@ -91,7 +91,7 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
         | feedlist AMPERSAND  // Implicit same list on the RHS of '&' operator
            {
 		 MSFeedIndex myMSFI(MSFeedParse::thisMSFParser->subTable());
-		 Vector<Int> f1 = myMSFI.matchFeedId(*($1)); 
+		 Vector<int32_t> f1 = myMSFI.matchFeedId(*($1)); 
 		 $$ = MSFeedParse::thisMSFParser->selectFeedIds
 		   (f1,f1, MSFeedParse::CrossOnly, MSFeedGramNegate); 
 	     delete $1;
@@ -99,7 +99,7 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
         | feedlist           //Match FEEDLIST & ALLFEEDS (implicit "&*")
            {
 	     MSFeedIndex myMSFI(MSFeedParse::thisMSFParser->subTable());
-	     Vector<Int> f1 = myMSFI.matchFeedId(*($1)); 
+	     Vector<int32_t> f1 = myMSFI.matchFeedId(*($1)); 
 	     $$ = MSFeedParse::thisMSFParser->selectFeedIds
 	       (f1, MSFeedParse::CrossOnly, MSFeedGramNegate); 
 	     delete $1;
@@ -107,8 +107,8 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
         | feedlist AMPERSAND AMPERSAND feedlist //Include self-correlations
            {
 	     MSFeedIndex myMSFI(MSFeedParse::thisMSFParser->subTable());
-	     Vector<Int> f1 = myMSFI.matchFeedId(*($1)); 
-	     Vector<Int> f2 = myMSFI.matchFeedId(*($4)); 
+	     Vector<int32_t> f1 = myMSFI.matchFeedId(*($1)); 
+	     Vector<int32_t> f2 = myMSFI.matchFeedId(*($4)); 
 	     $$ = MSFeedParse::thisMSFParser->selectFeedIds
 	       (f1, f2, MSFeedParse::AutoCorrAlso, MSFeedGramNegate); 
 	     delete $1;
@@ -117,7 +117,7 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
         | feedlist AMPERSAND AMPERSAND // Include self-correlations 
            {
 	     MSFeedIndex myMSFI(MSFeedParse::thisMSFParser->subTable());
-	     Vector<Int> f1 = myMSFI.matchFeedId(*($1)); 
+	     Vector<int32_t> f1 = myMSFI.matchFeedId(*($1)); 
 	     $$ = MSFeedParse::thisMSFParser->selectFeedIds
 	       (f1, f1, MSFeedParse::AutoCorrAlso, MSFeedGramNegate); 
 	     delete $1;
@@ -125,7 +125,7 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
         | feedlist AMPERSAND AMPERSAND AMPERSAND // Only self-correlations
            {
 	     MSFeedIndex myMSFI(MSFeedParse::thisMSFParser->subTable());
-	     Vector<Int> f1 = myMSFI.matchFeedId(*($1)); 
+	     Vector<int32_t> f1 = myMSFI.matchFeedId(*($1)); 
 	     $$ = MSFeedParse::thisMSFParser->selectFeedIds
 	       (f1, MSFeedParse::AutoCorrOnly, MSFeedGramNegate); 
 	     delete $1;
@@ -134,35 +134,35 @@ feedpairs: feedlist AMPERSAND feedlist  // Two non-identical lists for the '&' o
 
 feedlist: feedids  // single feed or range
           {
-	    $$ = new Vector<Int>(*$1);
+	    $$ = new Vector<int32_t>(*$1);
 	    delete $1;
 	  }
        | feedlist COMMA feedids  // feedID, feedID,...
           {
             $$ = $1;
-	    Int N0=(*($1)).nelements(), N1 = (*($3)).nelements();
-	    (*($$)).resize(N0+N1,True);  // Resize the existing list
-	    for(Int i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
+	    int32_t N0=(*($1)).nelements(), N1 = (*($3)).nelements();
+	    (*($$)).resize(N0+N1,true);  // Resize the existing list
+	    for(int32_t i=N0;i<N0+N1;i++) (*($$))(i) = (*($3))(i-N0);
 	    delete $3;
 	  }
 
 feedids: INT // A single feed index
              {
-	       $$ = new Vector<Int>(1);
+	       $$ = new Vector<int32_t>(1);
 	       (*($$))(0) = atoi($1);
 	       free($1);
 	     }
            | INT DASH INT // A range of integer feed indices feedID~feedID
               {
-		Int start = atoi($1);
-		Int end   = atoi($3);
-		Int len = end - start + 1;
-		Vector<Int> feedids(len);
-		for(Int i = 0; i < len; i++) feedids[i] = start + i;
+		int32_t start = atoi($1);
+		int32_t end   = atoi($3);
+		int32_t len = end - start + 1;
+		Vector<int32_t> feedids(len);
+		for(int32_t i = 0; i < len; i++) feedids[i] = start + i;
 
-		$$ = new Vector<Int>(len);
+		$$ = new Vector<int32_t>(len);
 
-		for (Int i=0; i<len; i++) 
+		for (int32_t i=0; i<len; i++) 
 		  {
 		    ((*$$))[i] = feedids[i];
 		  }

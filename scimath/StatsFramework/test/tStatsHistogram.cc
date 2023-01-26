@@ -33,7 +33,7 @@
 int main() {
     try {
         // CAS-11828 for very small binwidth
-    	StatsHistogram<Double> sh(
+    	StatsHistogram<double> sh(
     	    -0.0014156261459125514795, -0.0014156261458961459827, 1937361
     	);
     	auto idx = sh.getIndex(-0.0014156261458992958069);

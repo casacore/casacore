@@ -68,11 +68,11 @@ public:
   // <group>
   SubString &operator=(const SubString &str);
   SubString &operator=(const String &str);
-  SubString &operator=(const Char *s);
-  SubString &operator=(const Char c);
+  SubString &operator=(const char *s);
+  SubString &operator=(const char c);
   // </group>
   // Get as (const) C array
-  const Char *chars() const;
+  const char *chars() const;
   // Obtain length
   string::size_type length() const { return len_p; }
 
@@ -119,15 +119,15 @@ private:
 // The String class may be instantiated in many ways:
 // <ol>
 // <li> A single character - <src>String myChar('C');</src>
-// <li> A Char* argument - <src>String myWord("Yowza");</src>
+// <li> A char* argument - <src>String myWord("Yowza");</src>
 // <li> The first n chararcters of a pre-existing string - 
 // <src>String myFoo("fooey", 3);</src>
 // </ol> As well as the copy and default constructors and iterator based ones.
 //
 // A String may be concatinated with another object (String, or 
 // char*) with either prepending or postpending.  A search for the position
-// of a character within a String may return its position, a Bool that it
-// is contained within or a Bool confirming your guess at the character's 
+// of a character within a String may return its position, a bool that it
+// is contained within or a bool confirming your guess at the character's 
 // position is correct.  A check of the frequency of occurance of a string
 // within a String will return the number of occurances.  
 // 
@@ -143,37 +143,37 @@ private:
 //
 // The standard string class provides the following functionality:
 // <ol>
-// <li> Construction from (part of) String, (part of) Char*,
-//		(repeating) Char, iterator pair.
-// <li> Assignment from String, Char*, Char
+// <li> Construction from (part of) String, (part of) char*,
+//		(repeating) char, iterator pair.
+// <li> Assignment from String, char*, char
 // <li> Iterators: begin() and end(); rbegin() and rend() (Note: gcc reverse
 //		iterators still weak)
 // <li> Capacity: size, length, max_size, resize, capacity, reserve, clear,
 //		empty
 // <li> Special size: String::size_type, with indicator: String::npos
 // <li> Element access: [pos] and at(pos) (both const and non-const)
-// <li> Modifiers: += of String, Char*, Char; append of (part of) String,
-//		Char*, Char and iterator defined; assign() of (part of)
-//		String, Char* and (repeating) Char and iterator;
+// <li> Modifiers: += of String, char*, char; append of (part of) String,
+//		char*, char and iterator defined; assign() of (part of)
+//		String, char* and (repeating) char and iterator;
 //		insertion of same; replacing of same; erase of part of
 //		String; a copy and a swap.
-// <li> C-string: get Char* with c_str() or data() and get the relevant
+// <li> C-string: get char* with c_str() or data() and get the relevant
 //		Allocator used (Note: not fully supported in gcc)
 // <li> Operations: find, rfind, find_first_of, find_last_of, find_first_not_of,
 //		find_last_not_of; substr (Note only readable substring);
-//		compare with (part of) String, Char*
-// <li> Globals: Addition operators for String, Char*, Char; all comparison
-//		operators for String and Char*; getline; input and output
+//		compare with (part of) String, char*
+// <li> Globals: Addition operators for String, char*, char; all comparison
+//		operators for String and char*; getline; input and output
 //		stream operators
 // <li> Typedef: All relevant typedefs for standard containers and iterator
 // 		handling
 // </ol>
 // The Casacore additions are:
 // <ol>
-// <li> To standard: some Char function arguments where appropriate; Regex
+// <li> To standard: some char function arguments where appropriate; Regex
 //		arguments in search like methods.
 // <li> Substring additions: at, before, after, from, through functions taking
-//		search String, Char* as arguments can give (hidden) substrings
+//		search String, char* as arguments can give (hidden) substrings
 //		which can be assigned (as in <src> at(1,2) = ";"</src>)
 // <li> Methods: prepend (in addition to standard append); del (as erase);
 //		global substitution of String and patterns;
@@ -202,11 +202,11 @@ private:
 // // find the spot where we put something earlier
 // String::size_type position = allKeys.index(finishIt);
 // // find if the word is in the String...
-// Bool query = myString.contains("good men");
+// bool query = myString.contains("good men");
 // // ask if the position we think is true is correct...
-// Bool answer = allKeys.matches(finishIt, position);
+// bool answer = allKeys.matches(finishIt, position);
 // // How many spaces are in our phrase?
-// Int spacesCount = allKeys.freq(" ");
+// int32_t spacesCount = allKeys.freq(" ");
 // </srcblock>
 // </example>
 //
@@ -257,22 +257,22 @@ class String : public string {
   // <thrown>
   // <li> length_error if n == npos
   // </thrown>
-  String(const Char* s, size_type n) : string(s, n) {}
+  String(const char* s, size_type n) : string(s, n) {}
   // Construct from char array
-  String(const Char* s) : string(s) {}
+  String(const char* s) : string(s) {}
   // Construct from a single char (repeated n times)
   // <thrown>
   // <li> length_error if n == npos
   // </thrown>
-  String(size_type n, Char c) : string(n, c) {}
+  String(size_type n, char c) : string(n, c) {}
   // Construct from iterator
   template<class InputIterator>
     String(InputIterator begin, InputIterator end) : string(begin, end) {}
   // From single char (** Casacore addition).
-  // <note role=warning> Note that there is no automatic Char-to-String
+  // <note role=warning> Note that there is no automatic char-to-String
   // conversion available. This stops inadvertent conversions of
   // integer to string. </note>
-  explicit String(Char c) : string(1, c) {}
+  explicit String(char c) : string(1, c) {}
   // Construct from a SubString
   String(const SubString &str) : string(str.ref_p, str.pos_p, str.len_p) {}
   // Construct from a stream.
@@ -289,9 +289,9 @@ class String : public string {
     return static_cast<String&>(string::operator=(str)); }
   String& operator=(const SubString &str) {
     return (*this = String(str)); }
-  String& operator=(const Char* s) {
+  String& operator=(const char* s) {
     return static_cast<String&>(string::operator=(s)); }
-  String& operator=(Char c) {
+  String& operator=(char c) {
     return static_cast<String&>(string::operator=(c)); }
   // </group>
   // ** Casacore addition: synonym for at(pos, len)
@@ -300,9 +300,9 @@ class String : public string {
   // <group>
   String& operator+=(const string& str) {
     return static_cast<String&>(string::operator+=(str)); }
-  String& operator+=(const Char* s) {
+  String& operator+=(const char* s) {
     return static_cast<String&>(string::operator+=(s)); }
-  String& operator+=(Char c) {
+  String& operator+=(char c) {
     return static_cast<String&>(string::operator+=(c)); }
   // </group>
 
@@ -319,8 +319,8 @@ class String : public string {
   // <group>
   const_reference elem(size_type pos) const {
     return string::at(pos); }
-  Char firstchar() const { return at(static_cast<size_type>(0)); }
-  Char lastchar() const { return at(length()-1); }
+  char firstchar() const { return at(static_cast<size_type>(0)); }
+  char lastchar() const { return at(length()-1); }
   // </group>
   // </group>
 
@@ -343,12 +343,12 @@ class String : public string {
   size_type length() const { return string::length(); }
   size_type max_size() const { return string::max_size(); }
   size_type capacity() const { return string::capacity(); }
-  // ** Casacore addition -- works as a capacity(n) -- Note Int
-  Int allocation() const { return string::capacity(); } 
+  // ** Casacore addition -- works as a capacity(n) -- Note int32_t
+  int32_t allocation() const { return string::capacity(); } 
   // </group>
 
   // Resize by truncating or extending with copies of <src>c</src> (default 
-  // Char())
+  // char())
   // <thrown>
   // <li> length_error if n > max_size()
   // <li> length_error if res_arg > max_size()
@@ -358,7 +358,7 @@ class String : public string {
   // implementation </note>
   String& resize(size_type n) {
     string::resize(n); return *this; }
-  String& resize(size_type n, Char c) {
+  String& resize(size_type n, char c) {
     string::resize(n, c); return *this; }
   String& reserve(size_type res_arg = 0) {
     string::reserve(res_arg); return *this; }
@@ -372,7 +372,7 @@ class String : public string {
   void clear() { string::erase(begin(), end()); }
 
   // Test for empty
-  Bool empty() const { return string::empty(); }
+  bool empty() const { return string::empty(); }
 
   // Addressing
   // <thrown>
@@ -389,7 +389,7 @@ class String : public string {
   // <li> length_error if new size() >= npos
   // </thrown>
   // <note role=warning> The standard has a 
-  // <src>void push_back(const Char) </src> which is completely undefined. It
+  // <src>void push_back(const char) </src> which is completely undefined. It
   // probably is a remnant of the full list of container functions pop/push
   // back/front. </note>
   // <group>
@@ -397,17 +397,17 @@ class String : public string {
     return static_cast<String&>(string::append(str)); }
   String& append(const string& str, size_type pos, size_type n) {
     return static_cast<String&>(string::append(str, pos, n)); }
-  String& append(const Char* s, size_type n) {
+  String& append(const char* s, size_type n) {
     return static_cast<String&>(string::append(s, n)); }
-  String& append(const Char* s) {
+  String& append(const char* s) {
     return static_cast<String&>(string::append(s)); }
-  String& append(size_type n, Char c) {
+  String& append(size_type n, char c) {
     return static_cast<String&>(string::append(n, c)); }
   template<class InputIterator>
     String& append(InputIterator first, InputIterator last) {
     return static_cast<String&>(string::append(first, last)); }
   // ** Casacore addition
-  String& append(Char c) {
+  String& append(char c) {
     return static_cast<String&>(string::append(1, c)); }
   // </group>
 
@@ -420,17 +420,17 @@ class String : public string {
     return static_cast<String&>(string::assign(str)); }
   String& assign(const string& str, size_type pos, size_type n) {
     return static_cast<String&>(string::assign(str, pos, n)); }
-  String& assign(const Char* s, size_type n) {
+  String& assign(const char* s, size_type n) {
     return static_cast<String&>(string::assign(s, n)); }
-  String& assign(const Char* s) {
+  String& assign(const char* s) {
     return static_cast<String&>(string::assign(s)); }
-  String& assign(size_type n, Char c) {
+  String& assign(size_type n, char c) {
     return static_cast<String&>(string::assign(n, c)); }
   template<class InputIterator>
     String& assign(InputIterator first, InputIterator last) {
     return static_cast<String&>(string::assign(first, last)); }
   // ** Casacore addition
-  String& assign(Char c)  {
+  String& assign(char c)  {
     return static_cast<String&>(string::assign(1, c)); }
   // </group>
 
@@ -445,19 +445,19 @@ class String : public string {
   String& insert(size_type pos1, const string& str,
 		 size_type pos2, size_type n) {
     return static_cast<String&>(string::insert(pos1, str, pos2, n)); }
-  String& insert(size_type pos, const Char* s, size_type n) {
+  String& insert(size_type pos, const char* s, size_type n) {
     return static_cast<String&>(string::insert(pos, s, n)); }
-  String& insert(size_type pos, const Char* s) {
+  String& insert(size_type pos, const char* s) {
     return static_cast<String&>(string::insert(pos, s)); }
-  String& insert(size_type pos, size_type n, Char c) {
+  String& insert(size_type pos, size_type n, char c) {
     return static_cast<String&>(string::insert(pos, n, c)); }
   // ** Casacore addition
-  String& insert(size_type pos, Char c) {
+  String& insert(size_type pos, char c) {
     return static_cast<String&>(string::insert(pos, 1, c)); }
 
-  iterator insert(iterator p, Char c) {
+  iterator insert(iterator p, char c) {
     return string::insert(p, c); }
-  void insert(iterator p, size_type n, Char c) {
+  void insert(iterator p, size_type n, char c) {
     string::insert(p, n, c); }
   template<class InputIterator>
     void insert(iterator p, InputIterator first, InputIterator last) {
@@ -466,9 +466,9 @@ class String : public string {
   // <group>
   String& insert(iterator p, const string& str) {
     return static_cast<String&>(string::insert(p-begin(), str)); }
-  String& insert(iterator p, const Char* s, size_type n) {
+  String& insert(iterator p, const char* s, size_type n) {
     return static_cast<String&>(string::insert(p-begin(), s, n)); }
-  String& insert(iterator p, const Char* s) {
+  String& insert(iterator p, const char* s) {
     return static_cast<String&>(string::insert(p-begin(), s)); }
   // </group>
   // </group>
@@ -478,16 +478,16 @@ class String : public string {
   // <note role=warning> The gcc compiler does not have the proper standard
   // compare functions. Hence they are locally implemented. </note>
   // <group>
-  Int compare(const string& str) const {	
+  int32_t compare(const string& str) const {	
     return string::compare(str); }
-  Int compare(size_type pos1, size_type n1, const string& str) const {
+  int32_t compare(size_type pos1, size_type n1, const string& str) const {
     return String(*this, pos1, n1).compare(str); }
-  Int compare(size_type pos1, size_type n1, const string& str,
+  int32_t compare(size_type pos1, size_type n1, const string& str,
 	      size_type pos2, size_type n2) const {
     return String(*this, pos1, n1).compare(String(str, pos2, n2)); }
-  Int compare(const Char* s) const {
+  int32_t compare(const char* s) const {
     return string::compare(s); }
-  Int compare(size_type pos1, size_type n1, const Char* s,
+  int32_t compare(size_type pos1, size_type n1, const char* s,
 	      size_type n2=npos) const {
     return String(*this, pos1, n1).compare(String(s, n2)); }
   // </group>
@@ -513,25 +513,25 @@ class String : public string {
   String& replace(size_type pos1, size_type n1, const string& str,
 		  size_type pos2, size_type n2) {
     return static_cast<String&>(string::replace(pos1, n1, str, pos2, n2)); }
-  String& replace(size_type pos, size_type n1, const Char* s, size_type n2) {
+  String& replace(size_type pos, size_type n1, const char* s, size_type n2) {
     return static_cast<String&>(string::replace(pos, n1, s, n2)); }
-  String& replace(size_type pos, size_type n1, const Char* s) {
+  String& replace(size_type pos, size_type n1, const char* s) {
     return static_cast<String&>(string::replace(pos, n1, s)); }
-  String& replace(size_type pos, size_type n1, size_type n2, Char c) {
+  String& replace(size_type pos, size_type n1, size_type n2, char c) {
     return static_cast<String&>(string::replace(pos, n1, n2, c)); }
   // ** Casacore addition
-  String& replace(size_type pos, size_type n1, Char c) {
+  String& replace(size_type pos, size_type n1, char c) {
     return static_cast<String&>(string::replace(pos, n1, 1, c)); }
   String& replace(iterator i1, iterator i2, const string& str) {
     return static_cast<String&>(string::replace(i1, i2, str)); }
-  String& replace(iterator i1, iterator i2, const Char* s, size_type n) {
+  String& replace(iterator i1, iterator i2, const char* s, size_type n) {
     return static_cast<String&>(string::replace(i1, i2, s, n)); }
-  String& replace(iterator i1, iterator i2, const Char* s) {
+  String& replace(iterator i1, iterator i2, const char* s) {
     return static_cast<String&>(string::replace(i1, i2, s)); }
-  String& replace(iterator i1, iterator i2, size_type n, Char c) {
+  String& replace(iterator i1, iterator i2, size_type n, char c) {
     return static_cast<String&>(string::replace(i1, i2, n, c)); }
   // ** Casacore addition
-  String& replace(iterator i1, iterator i2, Char c) {
+  String& replace(iterator i1, iterator i2, char c) {
     return static_cast<String&>(string::replace(i1, i2, 1, c)); }
   template<class InputIterator>
     String& replace(iterator i1, iterator i2, InputIterator j1, 
@@ -543,7 +543,7 @@ class String : public string {
   // <thrown>
   // <li> out_of_range if pos > size()
   // </thrown>
-  size_type copy(Char* s, size_type n, size_type pos = 0) const {
+  size_type copy(char* s, size_type n, size_type pos = 0) const {
     return string::copy(s, n, pos); }
 
   // Swap
@@ -552,11 +552,11 @@ class String : public string {
   // Get char array
   // <group>
   // As a proper null terminated C-string
-  const Char *c_str() const { return string::c_str(); }
+  const char *c_str() const { return string::c_str(); }
   // As pointer to char array 
-  const Char *data() const { return string::data(); }
+  const char *data() const { return string::data(); }
   // ** Casacore synonym
-  const Char *chars() const { return string::c_str(); }
+  const char *chars() const { return string::c_str(); }
   // </group>
 
   // Get allocator used
@@ -577,18 +577,18 @@ class String : public string {
   // It uses a shift from an ostringstream, so that operator must exist
   // for the data type used.
   // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
-  // Otherwise it returns False and <src>value</src> contains the value read
+  // Otherwise it returns false and <src>value</src> contains the value read
   // so far.
   // <group>
-  template<typename T> inline Bool fromString (T& value, Bool chk=True) const
+  template<typename T> inline bool fromString (T& value, bool chk=true) const
   {
     std::istringstream os(*this);
     os >> value;
     if (os.fail()  ||  !os.eof()) {
       if (chk) throwFromStringError();
-      return False;
+      return false;
     }
-    return True;
+    return true;
   }
   template<typename T> inline T fromString() const
   {
@@ -598,13 +598,13 @@ class String : public string {
   }
   // </group>
 
-  // Convert a string to an Int, Float or Double.
+  // Convert a string to an int32_t, float or double.
   // <br>In case of an error, an exception is thrown if <src>chk</src> is set.
   // Otherwise the value read so far is returned (0 if nothing read).
   // <group>
-  static Int toInt (const String& s, Bool chk=False);
-  static Float toFloat (const String& s, Bool chk=False);
-  static Double toDouble (const String& s, Bool chk=False);
+  static int32_t toInt (const String& s, bool chk=false);
+  static float toFloat (const String& s, bool chk=false);
+  static double toDouble (const String& s, bool chk=false);
   // </group>
 
   // Convert a value to a String.
@@ -622,7 +622,7 @@ class String : public string {
   void trim();
 
   // Remove specified chars from beginning and end of string.
-  void trim(char c[], uInt n);
+  void trim(char c[], uint32_t n);
 
   // Remove specified character from beginning of string.
   // If the character is repeated more than once on the left, all instances
@@ -635,7 +635,7 @@ class String : public string {
   void rtrim(char c);
 
   // Does the string start with the specified string?
-  Bool startsWith(const string& beginString) const
+  bool startsWith(const string& beginString) const
     { return find(beginString) == 0; }
 
   // Search functions. Returns either npos (if not found); else position.
@@ -643,113 +643,113 @@ class String : public string {
   // <group>
   size_type find(const string &str, size_type pos=0) const {
     return string::find(str, pos); }
-  size_type find(const Char *s, size_type pos=0) const {
+  size_type find(const char *s, size_type pos=0) const {
     return string::find(s, pos); }
-  size_type find(const Char *s, size_type pos, size_type n) const {
+  size_type find(const char *s, size_type pos, size_type n) const {
     return string::find(s, pos, n); }
-  size_type find(Char c, size_type pos=0) const {
+  size_type find(char c, size_type pos=0) const {
     return string::find(c, pos); }
   size_type find(const Regex &r, size_type pos=0) const;
   size_type rfind(const string &str, size_type pos=npos) const {
     return string::rfind(str, pos); }
-  size_type rfind(const Char *s, size_type pos=npos) const {
+  size_type rfind(const char *s, size_type pos=npos) const {
     return string::rfind(s, pos); }
-  size_type rfind(const Char *s, size_type pos, size_type n) const {
+  size_type rfind(const char *s, size_type pos, size_type n) const {
     return string::rfind(s, pos, n); }
-  size_type rfind(Char c, size_type pos=npos) const {
+  size_type rfind(char c, size_type pos=npos) const {
     return string::rfind(c, pos); }
   size_type find_first_of(const string &str, size_type pos=0) const {
     return string::find_first_of(str, pos); }
-  size_type find_first_of(const Char *s, size_type pos=0) const {
+  size_type find_first_of(const char *s, size_type pos=0) const {
     return string::find_first_of(s, pos); }
-  size_type find_first_of(const Char *s, size_type pos, size_type n) const {
+  size_type find_first_of(const char *s, size_type pos, size_type n) const {
     return string::find_first_of(s, pos, n); }
-  size_type find_first_of(Char c, size_type pos=0) const {
+  size_type find_first_of(char c, size_type pos=0) const {
     return string::find_first_of(c, pos); }
   size_type find_last_of(const string &str, size_type pos=npos) const {
     return string::find_last_of(str, pos); }
-  size_type find_last_of(const Char *s, size_type pos=npos) const {
+  size_type find_last_of(const char *s, size_type pos=npos) const {
     return string::find_last_of(s, pos); }
-  size_type find_last_of(const Char *s, size_type pos, size_type n) const {
+  size_type find_last_of(const char *s, size_type pos, size_type n) const {
     return string::find_last_of(s, pos, n); }
-  size_type find_last_of(Char c, size_type pos=npos) const {
+  size_type find_last_of(char c, size_type pos=npos) const {
     return string::find_last_of(c, pos); }
   size_type find_first_not_of(const string &str, size_type pos=0) const {
     return string::find_first_not_of(str, pos); }
-  size_type find_first_not_of(const Char *s, size_type pos=0) const {
+  size_type find_first_not_of(const char *s, size_type pos=0) const {
     return string::find_first_not_of(s, pos); }
-  size_type find_first_not_of(const Char *s, size_type pos, size_type n) const {
+  size_type find_first_not_of(const char *s, size_type pos, size_type n) const {
     return string::find_first_not_of(s, pos, n); }
-  size_type find_first_not_of(Char c, size_type pos=0) const {
+  size_type find_first_not_of(char c, size_type pos=0) const {
     return string::find_first_not_of(c, pos); }
   size_type find_last_not_of(const string &str, size_type pos=npos) const {
     return string::find_last_not_of(str, pos); }
-  size_type find_last_not_of(const Char *s, size_type pos=npos) const {
+  size_type find_last_not_of(const char *s, size_type pos=npos) const {
     return string::find_last_not_of(s, pos); }
-  size_type find_last_not_of(const Char *s, size_type pos, size_type n) const {
+  size_type find_last_not_of(const char *s, size_type pos, size_type n) const {
     return string::find_last_not_of(s, pos, n); }
-  size_type find_last_not_of(Char c, size_type pos=npos) const {
+  size_type find_last_not_of(char c, size_type pos=npos) const {
     return string::find_last_not_of(c, pos); }
   // </group>
   
   // Containment. ** Casacore addition
   // <group name=contains>
-  Bool contains(Char c) const {
+  bool contains(char c) const {
     return (find(c) != npos); }
-  Bool contains(const string &str) const {
+  bool contains(const string &str) const {
     return (find(str) != npos); }
-  Bool contains(const Char *s) const {
+  bool contains(const char *s) const {
     return (find(s) != npos); }
-  Bool contains(const Regex &r) const;
+  bool contains(const Regex &r) const;
   // </group>
   // Does the string starting at the given position contain the given substring?
   // If the position is negative, it is counted from the end.
   // ** Casacore addition
   // <group name=contains_pos>
-  Bool contains(Char c, Int pos) const;
-  Bool contains(const string &str, Int pos) const;
-  Bool contains(const Char *s, Int pos) const;
-  Bool contains(const Regex &r, Int pos) const;
+  bool contains(char c, int32_t pos) const;
+  bool contains(const string &str, int32_t pos) const;
+  bool contains(const char *s, int32_t pos) const;
+  bool contains(const Regex &r, int32_t pos) const;
   // </group>
 
   // Matches entire string from pos
   // (or till pos if negative pos). ** Casacore addition
   // <group name=matches>
-  Bool matches(const string &str, Int pos = 0) const;
-  Bool matches(Char c, Int pos = 0) const {
+  bool matches(const string &str, int32_t pos = 0) const;
+  bool matches(char c, int32_t pos = 0) const {
     return matches(String(c), pos); };
-  Bool matches(const Char *s, Int pos = 0) const {
+  bool matches(const char *s, int32_t pos = 0) const {
     return matches(String(s), pos); };
-  Bool matches(const Regex &r, Int pos = 0) const;
+  bool matches(const Regex &r, int32_t pos = 0) const;
   // </group>
 
   // Concatenate by prepending the argument onto String. ** Casacore addition
   // <group name=concatenation_method>
   void prepend(const string &str); 
-  void prepend(const Char *s);
-  void prepend(Char c);
+  void prepend(const char *s);
+  void prepend(char c);
   // </group> 
 
   // Return the position of the target in the string or npos for failure.
   // ** Casacore addition
   // <group name=index>
-  size_type index(Char c, Int startpos = 0) const {
+  size_type index(char c, int32_t startpos = 0) const {
     return ((startpos >= 0) ? find(c, startpos) :
 	    rfind(c, length() + startpos - 1)); }
-  size_type index(const string &str, Int startpos = 0) const { 
+  size_type index(const string &str, int32_t startpos = 0) const { 
     return ((startpos >= 0) ? find(str, startpos) :
 	    rfind(str, length() + startpos - str.length())); }
-  size_type index(const Char *s, Int startpos = 0) const {
+  size_type index(const char *s, int32_t startpos = 0) const {
     return ((startpos >= 0) ? find(s, startpos) :
 	    rfind(s, length() + startpos - traits_type::length(s))); }
-  size_type index(const Regex &r, Int startpos = 0) const;
+  size_type index(const Regex &r, int32_t startpos = 0) const;
   // </group>
 
   //  Return the number of occurences of target in String. ** Casacore addition
   // <group name=freq>
-  Int freq(Char c) const; 
-  Int freq(const string &str) const;
-  Int freq(const Char *s) const;
+  int32_t freq(char c) const; 
+  int32_t freq(const string &str) const;
+  int32_t freq(const char *s) const;
   // </group>
 
   // Extract the string "at" the argument's position. ** Casacore addition
@@ -757,28 +757,28 @@ class String : public string {
   SubString at(size_type pos, size_type len);
   String at(size_type pos, size_type len) const {
     return String(*this, pos, len); }
-  SubString at(const string &str, Int startpos = 0);
-  String at(const string &str, Int startpos = 0) const;
-  SubString at(const Char *s, Int startpos = 0);
-  String at(const Char *s, Int startpos = 0) const;
-  SubString at(Char c, Int startpos = 0);
-  String at(Char c, Int startpos = 0) const;
-  SubString at(const Regex &r, Int startpos = 0); 
-  String at(const Regex &r, Int startpos = 0) const; 
+  SubString at(const string &str, int32_t startpos = 0);
+  String at(const string &str, int32_t startpos = 0) const;
+  SubString at(const char *s, int32_t startpos = 0);
+  String at(const char *s, int32_t startpos = 0) const;
+  SubString at(char c, int32_t startpos = 0);
+  String at(char c, int32_t startpos = 0) const;
+  SubString at(const Regex &r, int32_t startpos = 0); 
+  String at(const Regex &r, int32_t startpos = 0) const; 
   // Next ones for overloading reasons. 
   // <note role=tip> It is better to use the <src>substr()</src> method
   // in stead. </note>
   // <group>
-  SubString at(Int pos, Int len) {
+  SubString at(int32_t pos, int32_t len) {
     return at(static_cast<size_type>(pos), static_cast<size_type>(len));
   };
-  String at(Int pos, Int len) const {
+  String at(int32_t pos, int32_t len) const {
     return at(static_cast<size_type>(pos), static_cast<size_type>(len));
   };
-  SubString at(Int pos, size_type len) {
+  SubString at(int32_t pos, size_type len) {
     return at(static_cast<size_type>(pos), len);
   };
-  String at(Int pos, size_type len) const {
+  String at(int32_t pos, size_type len) const {
     return at(static_cast<size_type>(pos), len);
   };
   // </group>
@@ -789,11 +789,11 @@ class String : public string {
   // <group name=before>
   SubString before(size_type pos) const;
   SubString before(const string &str, size_type startpos = 0) const;
-  SubString before(const Char *s, size_type startpos = 0) const;
-  SubString before(Char c, size_type startpos = 0) const;
+  SubString before(const char *s, size_type startpos = 0) const;
+  SubString before(char c, size_type startpos = 0) const;
   SubString before(const Regex &r, size_type startpos = 0) const;
   // Next one for overloading reasons
-  SubString before(Int pos) const {
+  SubString before(int32_t pos) const {
     return before(static_cast<size_type>(pos)); };    
   // </group>
 
@@ -802,11 +802,11 @@ class String : public string {
   // <group name=through>
   SubString through(size_type pos);
   SubString through(const string &str, size_type startpos = 0);
-  SubString through(const Char *s, size_type startpos = 0);
-  SubString through(Char c, size_type startpos = 0);
+  SubString through(const char *s, size_type startpos = 0);
+  SubString through(char c, size_type startpos = 0);
   SubString through(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString through(Int pos) {
+  SubString through(int32_t pos) {
     return through(static_cast<size_type>(pos)); }
   // </group>
 
@@ -815,11 +815,11 @@ class String : public string {
   // <group name=from>
   SubString from(size_type pos);
   SubString from(const string &str, size_type startpos = 0);
-  SubString from(const Char *s, size_type startpos = 0);
-  SubString from(Char c, size_type startpos = 0);
+  SubString from(const char *s, size_type startpos = 0);
+  SubString from(char c, size_type startpos = 0);
   SubString from(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString from(Int pos) {
+  SubString from(int32_t pos) {
     return from(static_cast<size_type>(pos));
   };
   // </group>
@@ -829,11 +829,11 @@ class String : public string {
   // <group name=after>
   SubString after(size_type pos);
   SubString after(const string &str, size_type startpos = 0);
-  SubString after(const Char *s, size_type startpos = 0);
-  SubString after(Char c, size_type startpos = 0);
+  SubString after(const char *s, size_type startpos = 0);
+  SubString after(char c, size_type startpos = 0);
   SubString after(const Regex &r, size_type startpos = 0);
   // Next one for overloading reasons
-  SubString after(Int pos) {
+  SubString after(int32_t pos) {
     return after(static_cast<size_type>(pos));
   };
   // </group>
@@ -856,11 +856,11 @@ class String : public string {
   // Delete the first occurrence of target after startpos. ** Casacore addition
   //<group name=del_after>
   void del(const string &str, size_type startpos = 0);
-  void del(const Char *s, size_type startpos = 0);
-  void del(Char c, size_type startpos = 0);
+  void del(const char *s, size_type startpos = 0);
+  void del(char c, size_type startpos = 0);
   void del(const Regex &r, size_type startpos = 0);
   // Overload problem
-  void del(Int pos, Int len) {
+  void del(int32_t pos, int32_t len) {
     del(static_cast<size_type>(pos), static_cast<size_type>(len)); }
   //</group> 
 
@@ -868,10 +868,10 @@ class String : public string {
   // return the number of replacements.
   // ** Casacore addition
   //<group name=gsub>
-  Int gsub(const string &pat, const string &repl);
-  Int gsub(const Char *pat, const string &repl);
-  Int gsub(const Char *pat, const Char *repl);
-  Int gsub(const Regex &pat, const string &repl);
+  int32_t gsub(const string &pat, const string &repl);
+  int32_t gsub(const char *pat, const string &repl);
+  int32_t gsub(const char *pat, const char *repl);
+  int32_t gsub(const Regex &pat, const string &repl);
   //</group>
 
 private:
@@ -893,13 +893,13 @@ private:
 // <group name=concatenator>
 inline String operator+(const String &lhs, const String &rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(const Char *lhs, const String &rhs) {
+inline String operator+(const char *lhs, const String &rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(Char lhs, const String &rhs) {
+inline String operator+(char lhs, const String &rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(const String &lhs, const Char *rhs) {
+inline String operator+(const String &lhs, const char *rhs) {
   String str(lhs); str.append(rhs); return str; }
-inline String operator+(const String &lhs, Char rhs) {
+inline String operator+(const String &lhs, char rhs) {
   String str(lhs); str.append(rhs); return str; }
 // </group>
 
@@ -909,54 +909,54 @@ inline String operator+(const String &lhs, Char rhs) {
 
 // The global comparison operators
 // <group name=comparitor>
-inline Bool operator==(const String &x, const String &y) {
+inline bool operator==(const String &x, const String &y) {
   return x.compare(y) == 0; }
-inline Bool operator!=(const String &x, const String &y) {
+inline bool operator!=(const String &x, const String &y) {
   return x.compare(y) != 0; }
-inline Bool operator>(const String &x, const String &y) {
+inline bool operator>(const String &x, const String &y) {
   return x.compare(y) > 0; }
-inline Bool operator>=(const String &x, const String &y) {
+inline bool operator>=(const String &x, const String &y) {
   return x.compare(y) >= 0; }
-inline Bool operator<(const String &x, const String &y) {
+inline bool operator<(const String &x, const String &y) {
   return x.compare(y) < 0; }
-inline Bool operator<=(const String &x, const String &y) {
+inline bool operator<=(const String &x, const String &y) {
   return x.compare(y) <= 0; }
-inline Bool operator==(const String &x, const Char *t) {
+inline bool operator==(const String &x, const char *t) {
   return x.compare(t) == 0; }
-inline Bool operator!=(const String &x, const Char *t) {
+inline bool operator!=(const String &x, const char *t) {
   return x.compare(t) != 0; }
-inline Bool operator>(const String &x, const Char *t) {
+inline bool operator>(const String &x, const char *t) {
   return x.compare(t) > 0; }
-inline Bool operator>=(const String &x, const Char *t) {
+inline bool operator>=(const String &x, const char *t) {
   return x.compare(t) >= 0; }
-inline Bool operator<(const String &x, const Char *t) {
+inline bool operator<(const String &x, const char *t) {
   return x.compare(t) < 0; }
-inline Bool operator<=(const String &x, const Char *t) {
+inline bool operator<=(const String &x, const char *t) {
   return x.compare(t) <= 0; }
-inline Bool operator==(const String &x, const Char t) {
+inline bool operator==(const String &x, const char t) {
   return x.compare(String(t)) == 0; }
-inline Bool operator!=(const String &x, const Char t) {
+inline bool operator!=(const String &x, const char t) {
   return x.compare(String(t)) != 0; }
-inline Bool operator>(const String &x, const Char t) {
+inline bool operator>(const String &x, const char t) {
   return x.compare(String(t)) > 0; }
-inline Bool operator>=(const String &x, const Char t) {
+inline bool operator>=(const String &x, const char t) {
   return x.compare(String(t)) >= 0; }
-inline Bool operator<(const String &x, const Char t) {
+inline bool operator<(const String &x, const char t) {
   return x.compare(String(t)) < 0; }
-inline Bool operator<=(const String &x, const Char t) {
+inline bool operator<=(const String &x, const char t) {
   return x.compare(String(t)) <= 0; }
 // ** Casacore additions of global compares. Returns 0 if equal; lt or gt 0 if
 // strings unequal or of unequal lengths.
 // <group>
-inline Int compare(const string &x, const string &y) {
+inline int32_t compare(const string &x, const string &y) {
   return x.compare(y); }
-inline Int compare(const string &x, const Char *y) {
+inline int32_t compare(const string &x, const char *y) {
   return x.compare(y); }
-inline Int compare(const string &x, const Char y) {
+inline int32_t compare(const string &x, const char y) {
   return x.compare(String(y)); }
 // this version ignores case. ** Casacore addition. Result is 0 if equal
 // strings of equal lengths; else lt or gt 0 to indicate differences.
-Int fcompare(const String& x, const String& y);
+int32_t fcompare(const String& x, const String& y);
 // </group>
 // </group>
 
@@ -964,11 +964,11 @@ Int fcompare(const String& x, const String& y);
 // Global function which splits the String into string array res at separator
 // and returns the number of elements.  ** Casacore addition
 // <group name=split>
-Int split(const string &str, string res[], Int maxn,
+int32_t split(const string &str, string res[], int32_t maxn,
 	  const string &sep);
-Int split(const string &str, string res[], Int maxn,
-	  const Char sep);
-Int split(const string &str, string res[], Int maxn,
+int32_t split(const string &str, string res[], int32_t maxn,
+	  const char sep);
+int32_t split(const string &str, string res[], int32_t maxn,
 	  const Regex &sep);
 //</group> 
 
@@ -976,12 +976,12 @@ Int split(const string &str, string res[], Int maxn,
 // Functions to find special patterns, join and replicate
 // <group name=common>
 String common_prefix(const string &x, const string &y, 
-		     Int startpos = 0);
+		     int32_t startpos = 0);
 String common_suffix(const string &x, const string &y, 
-		     Int startpos = -1);
-String replicate(Char c, String::size_type n);
+		     int32_t startpos = -1);
+String replicate(char c, String::size_type n);
 String replicate(const string &str, String::size_type n);
-String join(string src[], Int n, const string &sep);
+String join(string src[], int32_t n, const string &sep);
 // </group>
 
 // <summary> Casing and related functions </summary>
@@ -1015,16 +1015,16 @@ inline SubString::SubString(const string &str, string::size_type pos,
 
 inline SubString String::operator()(size_type pos, size_type len) {
   return at(pos, len); }
-inline  const Char *SubString::chars() const {
+inline  const char *SubString::chars() const {
   return String(*this).c_str(); }
 
-inline Bool String::contains(Char c, Int pos) const {
+inline bool String::contains(char c, int32_t pos) const {
   return (index(c, pos) != npos); }
-inline Bool String::contains(const string &str, Int pos) const {
+inline bool String::contains(const string &str, int32_t pos) const {
   return (index(str, pos) != npos); }
-inline Bool String::contains(const Char *s, Int pos) const {
+inline bool String::contains(const char *s, int32_t pos) const {
   return (index(s, pos) != npos); }
-inline Bool String::contains(const Regex &r, Int pos) const {
+inline bool String::contains(const Regex &r, int32_t pos) const {
   return (index(r, pos) != npos); }
 
 inline ostream &operator<<(ostream &s, const String &x) {

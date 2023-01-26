@@ -59,33 +59,33 @@ class MVBaseline;
 //   <li> MVuvw() creates point at origin (0,0,0)
 //   <li> MVuvw(MVuvw) creates a copy
 //   <li> MVuvw(MVPosition) creates (x,y,z) from the given position
-//   <li> MVuvw(Double, Double, Double) creates (x,y,z) with
+//   <li> MVuvw(double, double, double) creates (x,y,z) with
 //		specified values (assuming meters)
-//   <li> MVuvw(Quantity length,Double, Double) creates a MVuvw assuming
+//   <li> MVuvw(Quantity length,double, double) creates a MVuvw assuming
 //		that the two values are (in radians) angle along 'equator' 
 //		and towards 'pole'.
 //   <li> MVuvw(Quantity length, Quantity, Quantity) creates a MVuvw 
 //		assuming angles as in previous, or uvws
-//   <li> <src>MVuvw(Quantity, Quantum<Vector<Double> >)</src> creates a 
+//   <li> <src>MVuvw(Quantity, Quantum<Vector<double> >)</src> creates a 
 //		MVuvw from angle vector, using first two angles, and 
 //		assuming second as zero if not present.
-//   <li> <src>MVuvw(Quantum<Vector<Double> ></src> creates from
+//   <li> <src>MVuvw(Quantum<Vector<double> ></src> creates from
 //		angles or uvws, depending on the units in the
 //		quantum vector. In the angle case,
 //		the data derived can be scaled with the readjust() function. If
 //		the unit of the quantum vector is length, uvw is
 //		assumed.
-//    <li> <src>MVuvw(Vector<Double></src> creates from angles (less than
+//    <li> <src>MVuvw(Vector<double></src> creates from angles (less than
 //		or equal to two elements) or x,y,z (3 elements).
 //    <li> <src>MVuvw(Vector<Quantity></src> creates from length+angles,
 //		angles, or x,y,z, depending on units.
 //    <li> <src>MVuvw(MVBaseline, MVDirection)</src> creates a uvw
 //		in the specified reference direction (in same reference frame)
 // </ul>
-// A void adjust(Double) function normalises the vector to a length of 1;
+// A void adjust(double) function normalises the vector to a length of 1;
 // a get() returns as a
-// Double 3-vector the length and angles of the uvw vector;
-// a getAngle() returns a Quantum 2-vector, (uInt) returns the indicated 
+// double 3-vector the length and angles of the uvw vector;
+// a getAngle() returns a Quantum 2-vector, (uint32_t) returns the indicated 
 // element, and getValue returns the vector.<br>
 // uvws can be added and subtracted.<br>
 // The multiplication of two uvws produces the in-product.<br>
@@ -118,14 +118,14 @@ public:
   // Creates from an MVPosition
   MVuvw(const MVPosition &other);
   // Creates a specified vector
-  MVuvw(Double in0, Double in1, Double in2);
+  MVuvw(double in0, double in1, double in2);
   // Creates a vector with specified length towards pole
   // <group>
-  explicit MVuvw(Double in0);
+  explicit MVuvw(double in0);
   MVuvw(const Quantity &l);
   // </group>
   // Creates the uvw from specified (azimuth,elevation) angles and length
-  MVuvw(const Quantity &l, Double angle0, Double angle1);
+  MVuvw(const Quantity &l, double angle0, double angle1);
   // Creates the uvw from specified angles and length. or uvws
   // <thrown>
   //    <li> AipsError if quantities not in angle format
@@ -134,32 +134,32 @@ public:
   MVuvw(const Quantity &l, const Quantity &angle0, 
 	     const Quantity &angle1);
   // If not enough angles: pole assumed (if none), or elevation =0 (if 1)
-  MVuvw(const Quantum<Vector<Double> > &angle);
-  MVuvw(const Quantity &l, const Quantum<Vector<Double> > &angle);
+  MVuvw(const Quantum<Vector<double> > &angle);
+  MVuvw(const Quantity &l, const Quantum<Vector<double> > &angle);
   // </group>
   // Create from specified length and/or angles and/or uvw
   // <group>
-  MVuvw(const Vector<Double> &other);
+  MVuvw(const Vector<double> &other);
   MVuvw(const Vector<Quantity> &other);
   // </group>
   // uvw from a baseline and a reference direction (in same frame)
   // <group>
-  MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew=False);
+  MVuvw(const MVBaseline &pos, const MVDirection &dr, bool ew=false);
   // </group>
   
   //# Operators
   // Multiplication defined as in-product
   // <group>
-  Double operator*(const MVuvw &other) const;
+  double operator*(const MVuvw &other) const;
   // </group>
   
   // Equality comparisons
   // <group>
-  Bool operator== (const MVuvw &other) const;
-  Bool operator!= (const MVuvw &other) const;
-  Bool near(const MVuvw &other, Double tol=1e-13) const;
-  Bool near(const MVuvw &other, Quantity tol) const;
-  Bool nearAbs(const MVuvw &other, Double tol=1e-13) const;
+  bool operator== (const MVuvw &other) const;
+  bool operator!= (const MVuvw &other) const;
+  bool near(const MVuvw &other, double tol=1e-13) const;
+  bool near(const MVuvw &other, Quantity tol) const;
+  bool nearAbs(const MVuvw &other, double tol=1e-13) const;
   // </group>
   
   // Addition and subtraction
@@ -181,19 +181,19 @@ public:
   // Normalise direction aspects by adjusting the length to 1
   // <group>
   virtual void adjust();
-  virtual void adjust(Double &res);
-  virtual void readjust(Double res);
+  virtual void adjust(double &res);
+  virtual void readjust(double res);
   // </group>
   // Get radius(i.e. length of vector, in m) of uvw
-  virtual Double radius();
+  virtual double radius();
   // Generate a 3-vector of coordinates (length(m), angles(rad))
-  Vector<Double> get() const;
+  Vector<double> get() const;
   // Generate a 3-vector of x,y,z in m
-  const Vector<Double> &getValue() const;
+  const Vector<double> &getValue() const;
   // Generate angle 2-vector (in rad)
-  Quantum<Vector<Double> > getAngle() const;
+  Quantum<Vector<double> > getAngle() const;
   // and with specified units
-  Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+  Quantum<Vector<double> > getAngle(const Unit &unit) const;
   // Generate the length
   Quantity getLength() const;
   // and generate it with the specified units
@@ -201,13 +201,13 @@ public:
   // Get the uvw angle between the directions. I.e. the angle between
   // the direction from one to the pole, and from one to the other.
   // <group>
-  Double uvwAngle(const MVuvw &other) const;
+  double uvwAngle(const MVuvw &other) const;
   Quantity uvwAngle(const MVuvw &other, 
 			 const Unit &unit) const;
   // </group>
   // Get the angular separation between two directions.
   // <group>
-  Double separation(const MVuvw &other) const;
+  double separation(const MVuvw &other) const;
   Quantity separation(const MVuvw &other, 
 		      const Unit &unit) const;
   // </group>
@@ -220,20 +220,20 @@ public:
   virtual MeasValue *clone() const;
 
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
   // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
-  virtual Vector<Quantum<Double> > getXRecordValue() const;
-  virtual Vector<Quantum<Double> > getTMRecordValue() const {
+  virtual Vector<Quantum<double> > getRecordValue() const;
+  virtual Vector<Quantum<double> > getXRecordValue() const;
+  virtual Vector<Quantum<double> > getTMRecordValue() const {
     return getXRecordValue(); } ;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
   
 };
 
@@ -242,12 +242,12 @@ public:
 // <group>
 MVuvw operator*(const RotMatrix &left, const MVuvw &right);
 MVuvw operator*(const MVuvw &left, const RotMatrix &right);
-MVuvw operator*(Double left, const MVuvw &right);
-MVuvw operator*(const MVuvw &left, Double right);
-Double operator*(const Vector<Double> &left, const MVuvw &right);
-Double operator*(const MVuvw &left, const Vector<Double> &right);
-Double operator*(const MVPosition &left, const MVuvw &right);
-Double operator*(const MVuvw &left, const MVPosition &right);
+MVuvw operator*(double left, const MVuvw &right);
+MVuvw operator*(const MVuvw &left, double right);
+double operator*(const Vector<double> &left, const MVuvw &right);
+double operator*(const MVuvw &left, const Vector<double> &right);
+double operator*(const MVPosition &left, const MVuvw &right);
+double operator*(const MVuvw &left, const MVPosition &right);
 // </group>
 
 

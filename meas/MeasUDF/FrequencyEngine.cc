@@ -46,7 +46,7 @@ namespace casacore {
   {}
 
   void FrequencyEngine::handleFrequency (vector<TENShPtr>& args,
-                                         uInt& argnr)
+                                         uint32_t& argnr)
   {
     // Initialize type to unknown.
     itsRefType = MFrequency::N_Types;
@@ -55,11 +55,11 @@ namespace casacore {
       throw AipsError ("Invalid frequency given in a MEAS function");
     }
     // Values can be given as [t1,t2,...],reftype
-    uInt nargnr = argnr+1;
+    uint32_t nargnr = argnr+1;
     // See if there is a reference type.
     if (args.size() > nargnr  &&
         args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      if (handleMeasType (args[nargnr], False)) {
+      if (handleMeasType (args[nargnr], false)) {
         nargnr++;
       }
     }
@@ -76,7 +76,7 @@ namespace casacore {
                                       const TableExprId& id,
                                       Array<MFrequency>& frequencies)
   {
-    Array<Double> values = operand.getDoubleAS(id).array();
+    Array<double> values = operand.getDoubleAS(id).array();
     const IPosition& shape = values.shape();
     frequencies.resize (shape);
     Unit unit = operand.unit();
@@ -84,10 +84,10 @@ namespace casacore {
       unit = "Hz";
     }
     Quantity q(0, unit);
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    bool delIt;
+    const double* valVec = values.getStorage (delIt);
     MFrequency* freqVec = frequencies.data();
-    for (uInt i=0; i<frequencies.size(); ++i) {
+    for (uint32_t i=0; i<frequencies.size(); ++i) {
       q.setValue (valVec[i]);
       freqVec[i] = MFrequency (q, itsRefType);
     }
@@ -98,14 +98,14 @@ namespace casacore {
   {
     AlwaysAssert (itsDopplerEngine == 0, AipsError);
     itsDopplerEngine = &engine;
-    extendBase (engine, False);
+    extendBase (engine, false);
   }
 
   void FrequencyEngine::setRadVelEngine (RadialVelocityEngine& engine)
   {
     AlwaysAssert (itsRadVelEngine == 0, AipsError);
     itsRadVelEngine = &engine;
-    extendBase (engine, False);
+    extendBase (engine, false);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MRadialVelocity());
   }
@@ -114,7 +114,7 @@ namespace casacore {
   {
     AlwaysAssert (itsDirectionEngine == 0, AipsError);
     itsDirectionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MDirection());
     itsRVFrame.set (MDirection());
@@ -124,7 +124,7 @@ namespace casacore {
   {
     AlwaysAssert (itsEpochEngine == 0, AipsError);
     itsEpochEngine = &engine;
-    extendBase (engine, False);
+    extendBase (engine, false);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MEpoch());
     itsRVFrame.set (MEpoch());
@@ -134,7 +134,7 @@ namespace casacore {
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
     itsRVFrame.set (MPosition());
@@ -161,7 +161,7 @@ namespace casacore {
     return freqs;
   }
 
-  Array<Double> FrequencyEngine::getArrayDouble (const TableExprId& id, int type)
+  Array<double> FrequencyEngine::getArrayDouble (const TableExprId& id, int type)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MFrequency> res (getFrequencies(id));
@@ -186,7 +186,7 @@ namespace casacore {
     if (itsDopplerEngine) {
       dop.reference (itsDopplerEngine->getDopplers (id));
     }
-    Array<Double> out;
+    Array<double> out;
     if (! (res.empty()  ||  dir.empty()  ||  eps.empty()  ||
            pos.empty()  ||  rv.empty()   ||  dop.empty())) {
       IPosition shape;
@@ -243,7 +243,7 @@ namespace casacore {
                      resIter != res.cend(); ++resIter) {
                   itsConverter.setModel (*resIter);
                   if (itsDopplerEngine) {
-                    Vector<Double> freqs(1, resIter->getValue().getValue());
+                    Vector<double> freqs(1, resIter->getValue().getValue());
                     if (type == FrequencyUDF::SHIFT) {
                       // Shift has to use a BETA Doppler, so convert.
                       // Note that it does the same as MFrequency::fromDoppler.

@@ -34,9 +34,9 @@ void writeTestString(const String& test) {
     cout << "\n" << "*** " << test << " ***" << endl;
 }
 
-Vector<Double> recToVec(const Record& rec) {
-	uInt nfields = rec.nfields();
-	Vector<Double> vec(nfields);
+Vector<double> recToVec(const Record& rec) {
+	uint32_t nfields = rec.nfields();
+	Vector<double> vec(nfields);
 	vec[0] = rec.asRecord("*1").asDouble("value");
 	vec[1] = rec.asRecord("*2").asDouble("value");
 	if (nfields >= 3) {
@@ -48,38 +48,38 @@ Vector<Double> recToVec(const Record& rec) {
 	return vec;
 }
 
-void compVecs(Vector<Double>& got, Vector<Double>& exp) {
-	Double epsilon = 1e-8;
-	for (uInt i=0; i<got.size(); i++) {
-		Double fracDiff = fabs((got[i]-exp[i])/exp[i]);
+void compVecs(Vector<double>& got, Vector<double>& exp) {
+	double epsilon = 1e-8;
+	for (uint32_t i=0; i<got.size(); i++) {
+		double fracDiff = fabs((got[i]-exp[i])/exp[i]);
 		AlwaysAssert(fracDiff < epsilon, AipsError);
 	}
 }
 
 int main() {
-	  const ImageInterface<Float> *myImage = new FITSImage("imregion.fits");
-	  const ImageInterface<Float> *myImageNoSpec = new FITSImage("imregion_nospec.fits");
-	  const ImageInterface<Float> *myImageDirOnly = new FITSImage("imregion_dironly.fits");
+	  const ImageInterface<float> *myImage = new FITSImage("imregion.fits");
+	  const ImageInterface<float> *myImageNoSpec = new FITSImage("imregion_nospec.fits");
+	  const ImageInterface<float> *myImageDirOnly = new FITSImage("imregion_dironly.fits");
 
 	  String test, diagnostics, stokes, chans, box;
-	  uInt nSelectedChannels;
-	  Vector<uInt> chanEndPoints, polEndPoints;
+	  uint32_t nSelectedChannels;
+	  Vector<uint32_t> chanEndPoints, polEndPoints;
 	  RegionManager::StokesControl stokesControl;
 	  Record regRec;
 	  RegionManager rm(myImage->coordinates());
 	  IPosition imShape = myImage->shape();
-	  Double box1 = 1.24795026;
-	  Double box2 = 0.782552901;
-	  Double box3 = 1.24794616;
-	  Double box4 = 0.782555814;
-	  Double box5 = 1.24794206;
-	  Double box6 = 0.782558727;
-	  Double box7 = 1.24793797;
-	  Double box8 = 0.782561641;
-	  Double chan0 = 4.73510000e+09;
-	  Double chan4 = 6.33510000e+09;
-	  Double chan15 = 1.07351000e+10;
-	  Double chan19 = 1.23351000e+10;
+	  double box1 = 1.24795026;
+	  double box2 = 0.782552901;
+	  double box3 = 1.24794616;
+	  double box4 = 0.782555814;
+	  double box5 = 1.24794206;
+	  double box6 = 0.782558727;
+	  double box7 = 1.24793797;
+	  double box8 = 0.782561641;
+	  double chan0 = 4.73510000e+09;
+	  double chan4 = 6.33510000e+09;
+	  double chan15 = 1.07351000e+10;
+	  double chan19 = 1.23351000e+10;
 	  try {
 		  {
 			  diagnostics = "";
@@ -95,15 +95,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -125,15 +125,15 @@ int main() {
 				  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 2.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -155,15 +155,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 2.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -185,15 +185,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 1, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 6.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -215,15 +215,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 6, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 6.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -245,15 +245,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24794411;
 			  expblc[1] = 0.782557271;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24793592;
 			  exptrc[1] = 0.782563097;
@@ -275,15 +275,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -305,15 +305,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24793387;
 			  expblc[1] = 0.782564554;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24792978;
 			  exptrc[1] = 0.782567467;
@@ -353,15 +353,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 20, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("trc"));
+			  Vector<double> exptrc(4);
 
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
@@ -396,15 +396,15 @@ int main() {
 					  imShape
 			  );
 			  AlwaysAssert(nSelectedChannels == 10, AipsError);
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = 1.24795230;
 			  expblc[1] = 0.782549990;
 			  expblc[2] = 4.73510000e+09;
 			  expblc[3] = 1.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*1").asRecord("trc"));
+			  Vector<double> exptrc(4);
 			  exptrc[0] = 1.24791339;
 			  exptrc[1] = 0.782577665;
 			  exptrc[2] = 6.33510000e+09;
@@ -439,15 +439,15 @@ int main() {
 			  );
 			  AlwaysAssert(nSelectedChannels == 10, AipsError);
 			  // box="5,6,7,8", chans="15~19", stokes="V"
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
-			  Vector<Double> expblc(4);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
+			  Vector<double> expblc(4);
 			  expblc[0] = box5;
 			  expblc[1] = box6;
 			  expblc[2] = chan15;
 			  expblc[3] = 4.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
-			  Vector<Double> exptrc(4);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
+			  Vector<double> exptrc(4);
 			  exptrc[0] = box7;
 			  exptrc[1] = box8;
 			  exptrc[2] = chan19;
@@ -624,14 +624,14 @@ int main() {
 			  AlwaysAssert(nSelectedChannels == 0, AipsError);
 
 			  // box="5,6,7,8", stokes="V"
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
-			  Vector<Double> expblc(3);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
+			  Vector<double> expblc(3);
 			  expblc[0] = box5;
 			  expblc[1] = box6;
 			  expblc[2] = 4.0;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
-			  Vector<Double> exptrc(3);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
+			  Vector<double> exptrc(3);
 			  exptrc[0] = box7;
 			  exptrc[1] = box8;
 			  exptrc[2] = 4.0;
@@ -701,13 +701,13 @@ int main() {
 			  );
 			  AlwaysAssert(nSelectedChannels == 0, AipsError);
 			  // box="5,6,7,8"
-			  Vector<Double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
-			  Vector<Double> expblc(2);
+			  Vector<double> gotblc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("blc"));
+			  Vector<double> expblc(2);
 			  expblc[0] = box5;
 			  expblc[1] = box6;
 			  compVecs(gotblc, expblc);
-			  Vector<Double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
-			  Vector<Double> exptrc(2);
+			  Vector<double> gottrc = recToVec(regRec.asRecord("regions").asRecord("*2").asRecord("trc"));
+			  Vector<double> exptrc(2);
 			  exptrc[0] = box7;
 			  exptrc[1] = box8;
 			  compVecs(gottrc, exptrc);

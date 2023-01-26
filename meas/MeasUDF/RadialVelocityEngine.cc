@@ -40,7 +40,7 @@ namespace casacore {
   {}
 
   void RadialVelocityEngine::handleRadialVelocity (vector<TENShPtr>& args,
-                                                   uInt& argnr)
+                                                   uint32_t& argnr)
   {
     // Initialize type to unknown.
     itsFrame.set (MRadialVelocity());
@@ -50,11 +50,11 @@ namespace casacore {
       throw AipsError ("Invalid radial velocity given in a MEAS function");
     }
     // Values can be given as [t1,t2,...],reftype
-    uInt nargnr = argnr+1;
+    uint32_t nargnr = argnr+1;
     // See if there is a reference type.
     if (args.size() > nargnr  &&
         args[nargnr]->dataType() == TableExprNodeRep::NTString) {
-      if (handleMeasType (args[nargnr], False)) {
+      if (handleMeasType (args[nargnr], false)) {
         nargnr++;
       }
     }
@@ -80,7 +80,7 @@ namespace casacore {
       radVels.resize (dopplers.shape());
       Array<MDoppler>::const_iterator dopIter = dopplers.begin();
       MRadialVelocity* rvVec = radVels.data();
-      for (uInt i=0; i<dopplers.size(); ++i, ++dopIter) {
+      for (uint32_t i=0; i<dopplers.size(); ++i, ++dopIter) {
         rvVec[i] = MRadialVelocity::fromDoppler (*dopIter, itsRefType);
       }
       return;
@@ -93,10 +93,10 @@ namespace casacore {
     }
     radVels.resize (values.shape());
     Quantity q(0, unit);
-    Bool delIt;
-    const Double* valVec = values.getStorage (delIt);
+    bool delIt;
+    const double* valVec = values.getStorage (delIt);
     MRadialVelocity* rvVec = radVels.data();
-    for (uInt i=0; i<radVels.size(); ++i) {
+    for (uint32_t i=0; i<radVels.size(); ++i) {
       q.setValue (valVec[i]);
       rvVec[i] = MRadialVelocity(q, MRadialVelocity::Ref(itsRefType, itsFrame));
     }
@@ -121,7 +121,7 @@ namespace casacore {
   {
     AlwaysAssert (itsDirectionEngine == 0, AipsError);
     itsDirectionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MDirection());
   }
@@ -130,7 +130,7 @@ namespace casacore {
   {
     AlwaysAssert (itsEpochEngine == 0, AipsError);
     itsEpochEngine = &engine;
-    extendBase (engine, False);
+    extendBase (engine, false);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MEpoch());
   }
@@ -139,7 +139,7 @@ namespace casacore {
   {
     AlwaysAssert (itsPositionEngine == 0, AipsError);
     itsPositionEngine = &engine;
-    extendBase (engine, True);
+    extendBase (engine, true);
     // Define the frame part, so it can be reset later.
     itsFrame.set (MPosition());
   }
@@ -165,7 +165,7 @@ namespace casacore {
     return radVels;
   }
 
-  Array<Double> RadialVelocityEngine::getArrayDouble (const TableExprId& id)
+  Array<double> RadialVelocityEngine::getArrayDouble (const TableExprId& id)
   {
     DebugAssert (id.byRow(), AipsError);
     Array<MRadialVelocity> res (getRadialVelocities(id));
@@ -183,7 +183,7 @@ namespace casacore {
       pos.reference (itsPositionEngine->getPositions (id));
     }
     // Convert the radial velocity to the given type for all dir,epoch,pos.
-    Array<Double> out;
+    Array<double> out;
     if (res.size() > 0  &&  dir.size() > 0  &&  eps.size() > 0  &&  pos.size() > 0) {
       IPosition shape = res.shape();
       // Only add the other axes if one of them has multiple values.

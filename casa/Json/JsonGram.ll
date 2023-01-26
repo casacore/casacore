@@ -86,7 +86,7 @@ COMMENT   {COMMENT1}|{COMMENT2}|{COMMENT3}
 	  }
 {INT}     {
             JsonParser::position() += yyleng;
-            Int64 ival = atol(JsonGramtext);
+            int64_t ival = atol(JsonGramtext);
             double dval = atof(JsonGramtext);
             /* Handle integers exceeding integer precision as doubles */
             if (ival < dval-0.1  ||  ival > dval+0.1) {
@@ -98,12 +98,12 @@ COMMENT   {COMMENT1}|{COMMENT2}|{COMMENT3}
 	  }
 {TRUE}    {
             JsonParser::position() += yyleng;
-            lvalp->val = new JsonValue (True);
+            lvalp->val = new JsonValue (true);
 	    return LITERAL;
 	  }
 {FALSE}   {
             JsonParser::position() += yyleng;
-            lvalp->val = new JsonValue (False);
+            lvalp->val = new JsonValue (false);
 	    return LITERAL;
 	  }
 {NULL}   {

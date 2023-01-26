@@ -34,23 +34,23 @@ using namespace casacore;
 int main()
 {
   try {
-    std::set<Float> a;
-    std::set<Float> b;
+    std::set<float> a;
+    std::set<float> b;
 
-    Float a1[] = {0.1, 5.2, 6.3};
-    Float b1[] = {0.5};
+    float a1[] = {0.1, 5.2, 6.3};
+    float b1[] = {0.5};
 
     a.insert(a1, a1+3);
     b.insert(b1, b1+1);
     AlwaysAssert(! allNearAbs(a, b, 0.1), AipsError);
 
     b.clear();
-    Float b2[] = {0.2, 5.1, 6.4};
+    float b2[] = {0.2, 5.1, 6.4};
     b.insert(b2, b2+3);
     AlwaysAssert(! allNearAbs(a, b, 0.05), AipsError);
     AlwaysAssert(allNearAbs(a, b, 0.11), AipsError);
 
-    AlwaysAssert(compareAll(a.begin(), a.end(), a1, NearAbs<Float>(0.1)),
+    AlwaysAssert(compareAll(a.begin(), a.end(), a1, NearAbs<float>(0.1)),
                  AipsError);
 
     cout << "OK" << endl;

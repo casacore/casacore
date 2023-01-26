@@ -65,19 +65,19 @@ int main ()
 // First build a description.
 void a() {
     // First register the virtual column engine.
-    ScaledArrayEngine<double,Int>::registerClass();
-    ScaledArrayEngine<float,uChar>::registerClass();
+    ScaledArrayEngine<double,int32_t>::registerClass();
+    ScaledArrayEngine<float,unsigned char>::registerClass();
 
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class TableDesc";
-    td.addColumn (ArrayColumnDesc<Int> ("target1"));
+    td.addColumn (ArrayColumnDesc<int32_t> ("target1"));
     td.addColumn (ArrayColumnDesc<double> ("source1"));
-    td.addColumn (ArrayColumnDesc<uChar> ("target2"));
+    td.addColumn (ArrayColumnDesc<unsigned char> ("target2"));
     td.addColumn (ArrayColumnDesc<float> ("source2","",
 					  IPosition(3,2,3,4),
 					  ColumnDesc::Direct));
-    td.addColumn (ArrayColumnDesc<Int> ("target3", "",
+    td.addColumn (ArrayColumnDesc<int32_t> ("target3", "",
 					IPosition(3,2,3,4),
 					ColumnDesc::Direct));
     td.addColumn (ArrayColumnDesc<double> ("source3", "",
@@ -89,9 +89,9 @@ void a() {
     SetupNewTable newtab("tScaledArrayEngine_tmp.data", td, Table::New);
     // Create the virtual column engine with the scale factors
     // and bind the columns to them.
-    ScaledArrayEngine<double,Int> engine1("source1", "target1", 2.0, 4.0);
-    ScaledArrayEngine<float,uChar> engine2("source2", "target2", 6.0, 2.0);
-    ScaledArrayEngine<double,Int> engine3("source3", "target3", "scale3");
+    ScaledArrayEngine<double,int32_t> engine1("source1", "target1", 2.0, 4.0);
+    ScaledArrayEngine<float,unsigned char> engine2("source2", "target2", 6.0, 2.0);
+    ScaledArrayEngine<double,int32_t> engine3("source3", "target3", "scale3");
     newtab.bindColumn ("source1", engine1);
     newtab.bindColumn ("source2", engine2);
     newtab.bindColumn ("source3", engine3);
@@ -105,11 +105,11 @@ void a() {
 
     Cube<double> arrd(IPosition(3,2,3,4));
     Cube<float> arrf(IPosition(3,2,3,4));
-    uInt i;
+    uint32_t i;
     i=2;
-    for (uInt i2=0; i2<4; i2++)
-	for (uInt i1=0; i1<3; i1++)
-	    for (uInt i0=0; i0<2; i0++) {
+    for (uint32_t i2=0; i2<4; i2++)
+	for (uint32_t i1=0; i1<3; i1++)
+	    for (uint32_t i0=0; i0<2; i0++) {
 		arrd(i0,i1,i2) = i;
 		arrf(i0,i1,i2) = i;
 		i += 6;
@@ -140,14 +140,14 @@ void b()
     ArrayColumn<double> source1 (tab, "source1");
     ArrayColumn<float> source2 (tab, "source2");
     ArrayColumn<double> source3 (tab, "source3");
-    ArrayColumn<Int> target1 (tab, "target1");
-    ArrayColumn<uChar> target2 (tab, "target2");
-    ArrayColumn<Int> target3 (tab, "target3");
-    Cube<Int> arri1(IPosition(3,2,3,4));
-    Cube<Int> arri3(IPosition(3,2,3,4));
-    Cube<Int> arrvali(IPosition(3,2,3,4));
-    Cube<uChar> arrc2(IPosition(3,2,3,4));
-    Cube<uChar> arrvalc(IPosition(3,2,3,4));
+    ArrayColumn<int32_t> target1 (tab, "target1");
+    ArrayColumn<unsigned char> target2 (tab, "target2");
+    ArrayColumn<int32_t> target3 (tab, "target3");
+    Cube<int32_t> arri1(IPosition(3,2,3,4));
+    Cube<int32_t> arri3(IPosition(3,2,3,4));
+    Cube<int32_t> arrvali(IPosition(3,2,3,4));
+    Cube<unsigned char> arrc2(IPosition(3,2,3,4));
+    Cube<unsigned char> arrvalc(IPosition(3,2,3,4));
     Cube<double> arrd1(IPosition(3,2,3,4));
     Cube<double> arrd3(IPosition(3,2,3,4));
     Cube<double> arrvald(IPosition(3,2,3,4));
@@ -158,10 +158,10 @@ void b()
     Slicer nslice (tmp, tmp, tmp,  Slicer::endIsLength);
     Slicer nslice2(Slice(0,1), Slice(0,1,2), Slice(0,2,2),
 		   Slicer::endIsLength);
-    uInt i=0;
-    for (uInt i2=0; i2<4; i2++)
-	for (uInt i1=0; i1<3; i1++)
-	    for (uInt i0=0; i0<2; i0++) {
+    uint32_t i=0;
+    for (uint32_t i2=0; i2<4; i2++)
+	for (uint32_t i1=0; i1<3; i1++)
+	    for (uint32_t i0=0; i0<2; i0++) {
 		arrd1(i0,i1,i2) = 2 + 6*i;
 		arrf2(i0,i1,i2) = 2 + 6*i;
 		arrd3(i0,i1,i2) = 6 + 6*i;
@@ -193,7 +193,7 @@ void b()
 	    cout << "error in source3 in row " << i << endl;
 	}
 	target3.get (i, arrvali);
-	if (!allEQ (arrvali, arri3/(Int)(1+i%3))) {
+	if (!allEQ (arrvali, arri3/(int32_t)(1+i%3))) {
 	    cout << "error in target3 in row " << i << endl;
 	}
 	source1.getSlice (i, nslice, arrvald);
@@ -207,8 +207,8 @@ void b()
 	arrd1 += (double)(6*arrd1.nelements());
 	arrf2 += (float)(6*arrf2.nelements());
 	arrd3 += (double)(6*arrd3.nelements());
-	arri1 += (Int)(3*arri1.nelements());
-	arrc2 += (uChar)(arrc2.nelements());
-	arri3 += (Int)(6*arri3.nelements());
+	arri1 += (int32_t)(3*arri1.nelements());
+	arrc2 += (unsigned char)(arrc2.nelements());
+	arri3 += (int32_t)(6*arri3.nelements());
     }
 }

@@ -44,7 +44,7 @@
 // This can be used to check if no memory leaks occur in normal operation.
 
 
-void doIt (Bool doExcp)
+void doIt (bool doExcp)
 {
     // Test constructors.
     // The existing files have been created in tFile.exec.
@@ -118,14 +118,14 @@ void doIt (Bool doExcp)
     // Test when a symbolic link is involved.
     File test4("tFile_tmp/isLink");
     File test5("tFile_tmp/isLink2");
-    AlwaysAssertExit (test4.isDirectory(True));
-    AlwaysAssertExit (!test4.isRegular(True));
-    AlwaysAssertExit (!test4.isDirectory(False));
-    AlwaysAssertExit (!test4.isRegular(False));
-    AlwaysAssertExit (!test5.isDirectory(True));
-    AlwaysAssertExit (test5.isRegular(True));
-    AlwaysAssertExit (!test5.isDirectory(False));
-    AlwaysAssertExit (!test5.isRegular(False));
+    AlwaysAssertExit (test4.isDirectory(true));
+    AlwaysAssertExit (!test4.isRegular(true));
+    AlwaysAssertExit (!test4.isDirectory(false));
+    AlwaysAssertExit (!test4.isRegular(false));
+    AlwaysAssertExit (!test5.isDirectory(true));
+    AlwaysAssertExit (test5.isRegular(true));
+    AlwaysAssertExit (!test5.isDirectory(false));
+    AlwaysAssertExit (!test5.isRegular(false));
 
     // Test if a file can be created.
     AlwaysAssertExit (exist2.canCreate());

@@ -33,12 +33,12 @@
 #include <casacore/casa/namespace.h>
 // This program should not have any memory leaks.
 
-void do_nothing(Int *dummy)
+void do_nothing(int32_t *dummy)
 {
     AlwaysAssertExit(dummy == 0);
 }
 
-void do_nothing2(const Int *dummy)
+void do_nothing2(const int32_t *dummy)
 {
     AlwaysAssertExit(dummy == 0);
 }
@@ -46,10 +46,10 @@ void do_nothing2(const Int *dummy)
 void tSPtr()
 {
     {
-	Int *ip = new Int;
-	SPtrHolder<Int> ph(ip);            // PtrHolder(T *, Bool=False)
+	int32_t *ip = new int32_t;
+	SPtrHolder<int32_t> ph(ip);            // PtrHolder(T *, bool=false)
 	AlwaysAssertExit(ph.ptr() == ip);
-	Int *ip2 = ph.transfer();
+	int32_t *ip2 = ph.transfer();
 	AlwaysAssertExit(ip2 == ip);
 	AlwaysAssertExit(ph.ptr() == 0);
 	do_nothing (ph.ptr());
@@ -58,13 +58,13 @@ void tSPtr()
     }
     {
 	// Throw an exception to make sure nothing is leaked
-	Bool isCaught = False;
+	bool isCaught = false;
 	try {
-	    Int *ip = new Int;
-	    SPtrHolder<Int> ph(ip);
+	    int32_t *ip = new int32_t;
+	    SPtrHolder<int32_t> ph(ip);
 	    throw(AipsError("testing..."));
 	} catch (std::exception& x) {
-	    isCaught = True;
+	    isCaught = true;
 	} 
 	AlwaysAssertExit(isCaught);
     }
@@ -73,7 +73,7 @@ void tSPtr()
 int main()
 {
     {
-	PtrHolder<Int> ph;               // PtrHolder()
+	PtrHolder<int32_t> ph;               // PtrHolder()
 	AlwaysAssertExit(ph.ptr() == 0);           // ptr()
 	do_nothing(ph);                  // operator T*()
 	// Check that the conversion operator will also match const T*
@@ -83,38 +83,38 @@ int main()
 	do_nothing2(ph);
     }
     {
-	Int *ip = new Int[1000];
-	PtrHolder<Int> ph(ip, True);      // PtrHolder(T *, Bool=True)
-	AlwaysAssertExit(ph.isCArray() == True);    // isCarray()
+	int32_t *ip = new int32_t[1000];
+	PtrHolder<int32_t> ph(ip, true);      // PtrHolder(T *, bool=true)
+	AlwaysAssertExit(ph.isCArray() == true);    // isCarray()
 	AlwaysAssertExit(ph.ptr() == ip);
     }
     {
-	Int *ip = new Int;
-	PtrHolder<Int> ph(ip);            // PtrHolder(T *, Bool=False)
-	AlwaysAssertExit(ph.isCArray() == False);
+	int32_t *ip = new int32_t;
+	PtrHolder<int32_t> ph(ip);            // PtrHolder(T *, bool=false)
+	AlwaysAssertExit(ph.isCArray() == false);
 	AlwaysAssertExit(ph.ptr() == ip);
     }
     {
-	Int *ip = new Int[1000];
-	PtrHolder<Int> ph(ip, True);
-	Int *ip2 = new Int[1000];
-	ph.set(ip2, True);           // set(T*,Bool,Bool=True)
+	int32_t *ip = new int32_t[1000];
+	PtrHolder<int32_t> ph(ip, true);
+	int32_t *ip2 = new int32_t[1000];
+	ph.set(ip2, true);           // set(T*,bool,bool=true)
 	delete [] ip2;
-	Int *ip3 = new Int[1000];
+	int32_t *ip3 = new int32_t[1000];
 	// Shouldn't set off a double deletion
-	ph.set(ip3, True, False);    // set(T*,Bool,Bool=False)
-	ph.clear();                  // clear(Bool=True);
+	ph.set(ip3, true, false);    // set(T*,bool,bool=false)
+	ph.clear();                  // clear(bool=true);
 	AlwaysAssertExit(ph.ptr() == 0);
     }
     {
 	// Throw an exception to make sure nothing is leaked
-	Bool isCaught = False;
+	bool isCaught = false;
 	try {
-	    Int *ip = new Int[1000];
-	    PtrHolder<Int> ph(ip, True);
+	    int32_t *ip = new int32_t[1000];
+	    PtrHolder<int32_t> ph(ip, true);
 	    throw(AipsError("testing..."));
 	} catch (std::exception& x) {
-	    isCaught = True;
+	    isCaught = true;
 	} 
 	AlwaysAssertExit(isCaught);
     }

@@ -104,7 +104,7 @@ public:
   virtual void setObjectPtr (void* objectPtr);
 
   // This class can define and handle regions.
-  virtual Bool canDefineRegion() const;
+  virtual bool canDefineRegion() const;
 
   // Set the default mask to the mask with the given name.
   // It constructs a ImageRegion object for the new default mask.
@@ -119,17 +119,17 @@ public:
 
   // Define a region belonging to the table.
   // The group type determines if it stored as a region or mask.
-  // If overwrite=False, an exception will be thrown if the region
+  // If overwrite=false, an exception will be thrown if the region
   // already exists in the "regions" or "masks" keyword.
   // Otherwise the region will be removed first.
-  // <br>A False status is returned if the table is not writable
-  virtual Bool defineRegion (const String& name,
+  // <br>A false status is returned if the table is not writable
+  virtual bool defineRegion (const String& name,
 			     const ImageRegion& region,
 			     RegionHandler::GroupType,
-			     Bool overwrite = False);
+			     bool overwrite = false);
 
   // Does the table have a region with the given name?
-  virtual Bool hasRegion (const String& name,
+  virtual bool hasRegion (const String& name,
 			  RegionHandler::GroupType = RegionHandler::Any) const;
   
   // Get a region belonging to the table.
@@ -138,24 +138,24 @@ public:
   // <br>No exception is thrown if the region does not exist.
   virtual ImageRegion* getRegion (const String& name,
 				  RegionHandler::GroupType = Any,
-				  Bool throwIfUnknown = True) const;
+				  bool throwIfUnknown = true) const;
 
   // Rename a region.
   // If a region with the new name already exists, it is deleted or
   // an exception is thrown (depending on <src>overwrite</src>).
   // The region name is looked up in the given group(s).
   // <br>An exception is thrown if the old region name does not exist.
-  virtual Bool renameRegion (const String& newName,
+  virtual bool renameRegion (const String& newName,
 			     const String& oldName,
 			     RegionHandler::GroupType = Any,
-			     Bool overwrite = False);
+			     bool overwrite = false);
 
   // Remove a region belonging to the table.
   // <br>Optionally an exception is thrown if the region does not exist.
-  // <br>A False status is returned if the table is not writable
-  virtual Bool removeRegion (const String& name,
+  // <br>A false status is returned if the table is not writable
+  virtual bool removeRegion (const String& name,
 			     RegionHandler::GroupType = Any,
-			     Bool throwIfUnknown = True);
+			     bool throwIfUnknown = true);
 
   // Get the names of all regions/masks.
   virtual Vector<String> regionNames (RegionHandler::GroupType = Any) const;
@@ -167,7 +167,7 @@ public:
 
   // Save the record containing the masking info in the HDF5 file.
   // It is only saved if changed or if always is true.
-  void save (Bool always=False);
+  void save (bool always=false);
 
   // Restore the record containing the masking info from the HDF5 file.
   void restore();
@@ -181,13 +181,13 @@ private:
   // (i.e. the field number of the "regions" or "masks" field).
   // <0 is returned if the region does not exist.
   // <br>Optionally an exception is thrown if the region does not exist.
-  virtual Int findRegionGroup (const String& regionName,
+  virtual int32_t findRegionGroup (const String& regionName,
 			       RegionHandler::GroupType = Any,
-			       Bool throwIfUnknown = True) const;
+			       bool throwIfUnknown = true) const;
 
 
   TableRecord  itsRecord;
-  Bool         itsChanged;        //# Has the record changed?
+  bool         itsChanged;        //# Has the record changed?
   GetCallback* itsCallback;
   void*        itsObjectPtr;
 };

@@ -79,7 +79,7 @@ FuncExpression &FuncExpression::operator=(const FuncExpression &other) {
 
 
 //# Member functions
-Bool FuncExpression::create(const String &prog) {
+bool FuncExpression::create(const String &prog) {
   // Initialise program
   error_p = "";
   code_p.resize(0);
@@ -96,18 +96,18 @@ Bool FuncExpression::create(const String &prog) {
       code_p.resize(0);
       error_p += " at: \n'" + prg.get(0, prg.getPtr()) + "''" +
 	prg.get() + "'";
-      return False;
+      return false;
     }
   }
   return (setOp(exd.special()["FINISH"]));
 }
 
-Bool FuncExpression::compStmt(MUString &prg) {
+bool FuncExpression::compStmt(MUString &prg) {
   /// Only expressions now
   return (compExpr(prg));
 }
 
-Bool FuncExpression::compExpr(MUString &prg) {
+bool FuncExpression::compExpr(MUString &prg) {
   prg.skipBlank();
   String t;
   // Check unary
@@ -115,22 +115,22 @@ Bool FuncExpression::compExpr(MUString &prg) {
   while (exd.unary1().find(t.at(0,1)) != exd.unary1().end() ||
 	 exd.unary2().find(t) != exd.unary2().end()) {
     if (exd.unary2().find(t) != exd.unary2().end()) {
-      if (!setOp(exd.unary2().find(t)->second)) return False;
+      if (!setOp(exd.unary2().find(t)->second)) return false;
       prg.skipChar();
     } else {
-      if (!setOp(exd.unary1().find(t.at(0,1))->second)) return False;
+      if (!setOp(exd.unary1().find(t.at(0,1))->second)) return false;
     }
     prg.skipChar();
     prg.skipBlank();
     t = prg.get().at(0,2);
   }
-  if (!compTerm(prg)) return False;
+  if (!compTerm(prg)) return false;
   // Get binary 
   prg.skipBlank();
   if (prg.testChar(':')) {
     prg.skipChar();
-    if (!setOp(exd.special()[":"])) return False;
-    if (!compExpr(prg)) return False;
+    if (!setOp(exd.special()[":"])) return false;
+    if (!compExpr(prg)) return false;
     prg.skipBlank();
   }    
   t = prg.get().at(0,2);
@@ -138,34 +138,34 @@ Bool FuncExpression::compExpr(MUString &prg) {
 	 (exd.binary1().find(t.at(0,1)) != exd.binary1().end() ||
 	  exd.binary2().find(t) != exd.binary2().end())) {
     if (exd.binary2().find(t) != exd.binary2().end()) {
-      if (!setOp(exd.binary2().find(t)->second)) return False;
+      if (!setOp(exd.binary2().find(t)->second)) return false;
       prg.skipChar();
     } else {
-      if (!setOp(exd.binary1().find(t.at(0,1))->second)) return False;
+      if (!setOp(exd.binary1().find(t.at(0,1))->second)) return false;
     }
     prg.skipChar();
-    if (!compExpr(prg)) return False;
+    if (!compExpr(prg)) return false;
     prg.skipBlank();
     t = prg.get().at(0,2);
   }
-  return True;
+  return true;
 }
 
-Bool FuncExpression::compTerm(MUString &prg) {
+bool FuncExpression::compTerm(MUString &prg) {
   prg.skipBlank();
   // Get a value
   if (prg.testChar('(')) {
     prg.skipChar();
-    if (!setOp(exd.special()["("])) return False;
+    if (!setOp(exd.special()["("])) return false;
     prg.skipBlank();
-    if (!compExpr(prg)) return False;
+    if (!compExpr(prg)) return false;
     prg.skipBlank();
     if (!prg.testChar(')')) {
       error_p = "Missing closing right parenthesis";
-      return False;
+      return false;
     }
     prg.skipChar();
-    if (!setOp(exd.special()[")"])) return False;
+    if (!setOp(exd.special()[")"])) return false;
   } else if (prg.testAlpha()) {
     Regex parrx("p[0-9]*$");
     Regex argrx("x[0-9]*$");
@@ -173,36 +173,36 @@ Bool FuncExpression::compTerm(MUString &prg) {
     t.downcase();
     MUString tmu(t);
     if (exd.function().find(t) != exd.function().end()) {
-      if (!setOp(exd.function().find(t)->second)) return False;
+      if (!setOp(exd.function().find(t)->second)) return false;
       prg.skipBlank();
       if (prg.testChar('(')) {
 	prg.skipChar();
-	if (!compExpr(prg)) return False;
+	if (!compExpr(prg)) return false;
 	prg.skipBlank();
 	if (!prg.testChar(')')) {
 	  error_p = "No closing function paranethesis";
-	  return False;
+	  return false;
 	}
 	prg.skipChar();
       }
-      if (!setOp(exd.special()[")"])) return False;
+      if (!setOp(exd.special()[")"])) return false;
     } else if (t.matches(parrx) || t.matches(argrx)) {
       tmu.skipChar();
-      uInt n = tmu.getuInt();
+      uint32_t n = tmu.getuInt();
       prg.skipBlank();
       if (prg.testChar('[')) {
 	prg.skipChar();
 	prg.skipBlank();
-	uInt m = prg.getuInt();
+	uint32_t m = prg.getuInt();
 	if (m == 0) {
 	  error_p = "Illegal index for argument or parameter";
-	  return False;
+	  return false;
 	}
 	n += m-1;
 	prg.skipBlank();
 	if (!prg.testChar(']')) {
 	  error_p = "Missing closing bracket";
-	  return False;
+	  return false;
 	}
 	prg.skipChar();
       }
@@ -215,43 +215,43 @@ Bool FuncExpression::compTerm(MUString &prg) {
 	if (n >= ndim_p) ndim_p = n+1;
       }
       oper.info = n;
-      if (!setOp(oper)) return False;
+      if (!setOp(oper)) return false;
     } else {
       error_p = String("Unknown function name ") + t;
-      return False;
+      return false;
     }
   } else if (prg.testDouble()) {
-    Double d = prg.getDouble();
+    double d = prg.getDouble();
     FuncExprData::ExprOperator oper;
     oper = exd.special()["CONST"];
     oper.info = const_p.size();
-    if (!setVal(d)) return False;
-    if (!setCode(oper)) return False;
+    if (!setVal(d)) return false;
+    if (!setCode(oper)) return false;
     if (prg.testChar('i')) {
       prg.skipChar();
       oper = exd.special()["TOIMAG"];
-      if (!setCode(oper)) return False;
+      if (!setCode(oper)) return false;
     }
   } else {
     error_p = "Missing value";
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
+bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
   // Check the work stack for priorities
   while (rps_p.size() > state_p.rpslow) {
     // High new priority or equal and left-to-right: roll up stack
     if (oper.priority < rps_p.back().priority ||
 	(oper.priority == rps_p.back().priority &&
 	 oper.priority < FuncExprData::RTLPRI)) {
-      if (!setCode(rps_p.back())) return False;
+      if (!setCode(rps_p.back())) return false;
       // Are there enough values to operate upon?
       if (state_p.nval < rps_p.back().narg) {
 	error_p = "Not enough operands for operator '";
 	error_p += rps_p.back().name + "'";
-	return False;
+	return false;
       }
       state_p.nval -= rps_p.back().nresult;
       rps_p.pop_back();
@@ -267,9 +267,9 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
     state_p.argcnt = 0;
     rps_p.push_back(oper);
     if (oper.code == FuncExprData::CONDEX) {
-      if (!setCode(exd.special()["GOTOF"])) return False;
+      if (!setCode(exd.special()["GOTOF"])) return false;
       code_p.back().state = state_p;
-      state_p.pcptr = static_cast<uInt>(code_p.end()-code_p.begin());
+      state_p.pcptr = static_cast<uint32_t>(code_p.end()-code_p.begin());
     }
   }
   break;
@@ -278,32 +278,32 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
     case FuncExprData::CONDEX2: {
       if (rps_p.size() != state_p.rpslow || state_p.rpslow < 1) {
 	error_p = "':' not expected";
-	return False;
+	return false;
       }
       if (rps_p[state_p.rpslow-1].code !=  FuncExprData::CONDEX) {
 	error_p = "No '?' belonging to a ':' found";
-	return False;
+	return false;
       }
       if (state_p.nval != 1) {
 	error_p = "No value between '?' and ':'";
-	return False;
+	return false;
       }
       state_p.rpslow = rps_p[state_p.rpslow-1].state.rpslow;
       rps_p.pop_back();
       code_p[state_p.pcptr-1].info =
-	static_cast<uInt>(code_p.end()-code_p.begin())+1;
-      if (!setCode(exd.special()["GOTO"])) return False;
+	static_cast<uint32_t>(code_p.end()-code_p.begin())+1;
+      if (!setCode(exd.special()["GOTO"])) return false;
       code_p.back().state = state_p;
       code_p.back().state.pcptr = code_p[state_p.pcptr-1].state.pcptr;
-      state_p.pcptr = static_cast<uInt>(code_p.end()-code_p.begin());
-      if (!setOp(exd.binary1()["CONDEX3"])) return False;
+      state_p.pcptr = static_cast<uint32_t>(code_p.end()-code_p.begin());
+      if (!setOp(exd.binary1()["CONDEX3"])) return false;
     }
     break;
     case FuncExprData::COMMA: {
       if (rps_p.size() != state_p.rpslow || state_p.rpslow < 1 ||
 	  rps_p[state_p.rpslow-1].category != FuncExprData::FUNC) {
 	error_p = "Parameter comma separator not expected";
-	return False;
+	return false;
       }
       rps_p[state_p.rpslow-1].state.argcnt += state_p.nval;
       state_p.nval = 0;
@@ -313,19 +313,19 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
       if (rps_p.size() != state_p.rpslow ||
 	  state_p.rpslow != 0 || state_p.nval != 1) {
 	error_p = "Unexpected EOS";
-	return False;
+	return false;
       }
     }
     break;
     case FuncExprData::RPAREN: {
       if (rps_p.size() != state_p.rpslow || state_p.rpslow < 1) {
 	error_p = "Right parenthesis not expected";
-	return False;
+	return false;
       }
       if (rps_p[state_p.rpslow-1].code ==  FuncExprData::LPAREN) {
 	if (state_p.nval != 1) {
 	  error_p = "No value between ()";
-	  return False;
+	  return false;
 	}
 	state_p.nval += rps_p[state_p.rpslow-1].state.nval;
 	state_p.rpslow = rps_p[state_p.rpslow-1].state.rpslow;
@@ -333,7 +333,7 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
       } else if (rps_p[state_p.rpslow-1].category == FuncExprData::FUNC) {
 	if (state_p.nval > 1) {
 	  error_p = "Incorrect value stack for function evaluation";
-	  return False;
+	  return false;
 	}
 	rps_p[state_p.rpslow-1].state.argcnt += state_p.nval;
 	if (rps_p[state_p.rpslow-1].state.argcnt <
@@ -341,22 +341,22 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
 	    rps_p[state_p.rpslow-1].state.argcnt >
 	    rps_p[state_p.rpslow-1].nmaxarg) {
 	  error_p = "Incorrect number of arguments in function";
-	  return False;
+	  return false;
 	}
-	if (!setCode(rps_p[state_p.rpslow-1])) return False;
+	if (!setCode(rps_p[state_p.rpslow-1])) return false;
 	state_p.nval = rps_p.back().state.nval + rps_p.back().nresult;
 	state_p.rpslow = rps_p.back().state.rpslow;
 	state_p.argcnt = 0;
 	rps_p.pop_back();
       } else {
 	error_p = "Right parenthesis not expected";
-	return False;
+	return false;
       }
     }
     break;
     default :
       error_p = "Unexpected final code";
-      return False;
+      return false;
     }
   }
   break;
@@ -364,27 +364,27 @@ Bool FuncExpression::setOp(FuncExprData::ExprOperator &oper) {
     rps_p.push_back(oper);
     break;
   }
-  return True;
+  return true;
 }
 
-Bool FuncExpression::setVal(const Double &val) {
+bool FuncExpression::setVal(const double &val) {
   const_p.push_back(val);
   ++state_p.nval;
-  return True;
+  return true;
 }
 
-Bool FuncExpression::setCode(const FuncExprData::ExprOperator &oper) {
+bool FuncExpression::setCode(const FuncExprData::ExprOperator &oper) {
   code_p.push_back(oper);
     if (oper.code == FuncExprData::CONDEX3) {
       code_p[state_p.pcptr-1].info =
-	static_cast<uInt>(code_p.end()-code_p.begin())-1;
+	static_cast<uint32_t>(code_p.end()-code_p.begin())-1;
       state_p.pcptr = code_p[state_p.pcptr-1].state.pcptr;
     }
   if (code_p.back().special == FuncExprData::GOTOPC) {
     code_p.back().state.pcptr = state_p.pcptr;
     state_p.pcptr = code_p.size()-1;
   }
-  return True;
+  return true;
 }
 
 void FuncExpression::initState() {
@@ -400,11 +400,11 @@ const vector<FuncExprData::ExprOperator> &FuncExpression::getCode() const{
   return code_p;
 }
 
-Bool FuncExpression::exec(Double &res) const {
+bool FuncExpression::exec(double &res) const {
   error_p = "";
-  res = Double(0);
+  res = double(0);
   exec_p.resize(0);
-  vector<Double>::const_iterator constp = const_p.begin();
+  vector<double>::const_iterator constp = const_p.begin();
   for (vector<FuncExprData::ExprOperator>::const_iterator pos=code_p.begin();
        pos != code_p.end(); pos++) {
     switch (pos->category) {
@@ -425,7 +425,7 @@ Bool FuncExpression::exec(Double &res) const {
 
     case FuncExprData::BIN1:
     case FuncExprData::BIN2: {
-      Double t(0);
+      double t(0);
       if (pos->narg == 2) {
 	t = exec_p.back();
 	exec_p.pop_back();
@@ -435,23 +435,23 @@ Bool FuncExpression::exec(Double &res) const {
 	exec_p.back() = pow(exec_p.back(), t);
 	break;
       case FuncExprData::GTE:
-	exec_p.back() = exec_p.back() >= t ? Double(1) : Double(0);
+	exec_p.back() = exec_p.back() >= t ? double(1) : double(0);
 	break;
       case FuncExprData::LTE:
-	exec_p.back() = exec_p.back() <= t ? Double(1) : Double(0);
+	exec_p.back() = exec_p.back() <= t ? double(1) : double(0);
 	break;
       case FuncExprData::EQ:
-	exec_p.back() = exec_p.back() == t ? Double(1) : Double(0);
+	exec_p.back() = exec_p.back() == t ? double(1) : double(0);
 	break;
       case FuncExprData::NEQ:
-	exec_p.back() = exec_p.back() != t ? Double(1) : Double(0);
+	exec_p.back() = exec_p.back() != t ? double(1) : double(0);
 	break;
       case FuncExprData::OR:
-	exec_p.back() = (exec_p.back() != Double(0)
-			 || t != Double(0)) ? Double(1) : Double(0);
+	exec_p.back() = (exec_p.back() != double(0)
+			 || t != double(0)) ? double(1) : double(0);
 	break;
       case FuncExprData::AND:
-	exec_p.back() = (t*exec_p.back() != Double(0)) ? Double(1) : Double(0);
+	exec_p.back() = (t*exec_p.back() != double(0)) ? double(1) : double(0);
 	break;
       case FuncExprData::ADD:
 	exec_p.back() += t;
@@ -486,16 +486,16 @@ Bool FuncExpression::exec(Double &res) const {
       case FuncExprData::NOP:
 	break;
       case FuncExprData::GOTO:
-	pos += pos->info - (static_cast<uInt>(pos-code_p.begin())+1);
+	pos += pos->info - (static_cast<uint32_t>(pos-code_p.begin())+1);
 	break;
       case FuncExprData::GOTOF:
 	if (!exec_p.back()) {
-	  pos += pos->info - (static_cast<uInt>(pos-code_p.begin())+1);
+	  pos += pos->info - (static_cast<uint32_t>(pos-code_p.begin())+1);
 	}
 	break;
       case FuncExprData::GOTOT:
 	if (exec_p.back()) {
-	  pos += pos->info - (static_cast<uInt>(pos-code_p.begin())+1);
+	  pos += pos->info - (static_cast<uint32_t>(pos-code_p.begin())+1);
 	}
 	break;
       default:
@@ -521,7 +521,7 @@ Bool FuncExpression::exec(Double &res) const {
 	}
 	CASACORE_FALLTHROUGH;
       case FuncExprData::ATAN2: {
-	Double t(exec_p.back());
+	double t(exec_p.back());
 	exec_p.pop_back();
 	exec_p.back() = atan2(exec_p.back(), t);
 	break; }
@@ -573,7 +573,7 @@ Bool FuncExpression::exec(Double &res) const {
 	exec_p.back() = ceil(exec_p.back());
 	break;
       case FuncExprData::ROUND:
-	exec_p.back() = floor(exec_p.back()+Double(0.5));
+	exec_p.back() = floor(exec_p.back()+double(0.5));
 	break;
       case FuncExprData::INT:
 	if (exec_p.back() < 0) exec_p.back() = floor(exec_p.back());
@@ -589,12 +589,12 @@ Bool FuncExpression::exec(Double &res) const {
       case FuncExprData::REAL:
 	break;
       case FuncExprData::IMAG:
-	exec_p.back() = Double(0);
+	exec_p.back() = double(0);
 	break;
       case FuncExprData::AMPL:
 	break;
       case FuncExprData::PHASE:
-	exec_p.back() = Double(0);
+	exec_p.back() = double(0);
 	break;
       default:
 	error_p = String("Unknown execution code '") +
@@ -614,9 +614,9 @@ Bool FuncExpression::exec(Double &res) const {
   if (exec_p.size() != 1 && error_p.empty()) error_p = "No value returned";
   if (error_p.empty()) {
     res = exec_p.back();
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 void FuncExpression::print(ostream &os) const {

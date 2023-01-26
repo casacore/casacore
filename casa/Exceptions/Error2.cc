@@ -48,7 +48,7 @@ AipsError::AipsError (Category c)
 }
 
 
-AipsError::AipsError(const Char *str,Category c)
+AipsError::AipsError(const char *str,Category c)
   : message(str), category(c)
 {
     AddStackTrace();
@@ -61,7 +61,7 @@ AipsError::AipsError(const String &str,Category c)
 }
 
 AipsError::AipsError (const String &msg, const String& filename,
-                      uInt lineNumber, Category c)
+                      uint32_t lineNumber, Category c)
   : category(c)
 {
   ostringstream os;
@@ -127,8 +127,8 @@ AipsError::~AipsError() noexcept
     // See if the default is to tack on the stack trace on the exception
     // message.  N.B.: Turning this on will break some of the low-level tests
     // which simply compare expected to actual output.
-    Bool enabled;
-    AipsrcValue<Bool>::find (enabled, "AipsError.enableStackTrace", False);
+    bool enabled;
+    AipsrcValue<bool>::find (enabled, "AipsError.enableStackTrace", false);
     if (enabled) {
       // If permitted, append to the error message.
       message += stackTrace;
@@ -144,7 +144,7 @@ AipsError::~AipsError() noexcept
 
 
 void AipsError::throwIf (bool condition, const String& message,
-                         const char* file, Int line, const char* func)
+                         const char* file, int32_t line, const char* func)
 {
   // If the condition is met then throw an AipsError
   if (condition) {
@@ -156,7 +156,7 @@ void AipsError::throwIf (bool condition, const String& message,
 }
 
 void AipsError::throwIfError (int errorCode, const String& prefix,
-                              const char* file, Int line, const char* func)
+                              const char* file, int32_t line, const char* func)
 {
   // If the provided error code is not equal to success (0) then
   // throw an AipsError using the provided prefix and then details
@@ -173,7 +173,7 @@ void AipsError::throwIfError (int errorCode, const String& prefix,
 AipsError AipsError::repackageAipsError (AipsError& error,
                                          const String& message,
                                          const char* file,
-                                         Int line, const char* func)
+                                         int32_t line, const char* func)
 {
   ostringstream os;
   AipsError tmp (message, file, line);
@@ -203,7 +203,7 @@ SystemCallError::SystemCallError(const String& funcName, int error, Category c)
 {}
 SystemCallError::SystemCallError (int error, const String &msg,
                                   const String &filename,
-                                  uInt lineNumber, Category c)
+                                  uint32_t lineNumber, Category c)
   : AipsError (msg + String::format (": errno=%d: %s", error,
 				     errorMessage (error).c_str()),
                filename, lineNumber, c),
@@ -228,7 +228,7 @@ String SystemCallError::errorMessage(int error)
 
 
 // Exception which causes an abort instead of continuing
-AbortError::AbortError(const Char *str,Category c)
+AbortError::AbortError(const char *str,Category c)
 : AipsError(str,c)
 {
     cerr << "An unrecoverable error occurred: " << endl;

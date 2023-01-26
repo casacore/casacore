@@ -40,9 +40,9 @@ void ByteIO::reopenRW()
     }
 }
 
-void ByteIO::pwrite (Int64 size, Int64 offset, const void* buf)
+void ByteIO::pwrite (int64_t size, int64_t offset, const void* buf)
 {
-    Int64 cur = doSeek(0, ByteIO::Current);
+    int64_t cur = doSeek(0, ByteIO::Current);
     doSeek(offset, ByteIO::Begin);
     try {
         write(size, buf);
@@ -54,11 +54,11 @@ void ByteIO::pwrite (Int64 size, Int64 offset, const void* buf)
     doSeek(cur, ByteIO::Begin);
 }
 
-Int64 ByteIO::pread (Int64 size, Int64 offset, void* buf,
-                     Bool throwException)
+int64_t ByteIO::pread (int64_t size, int64_t offset, void* buf,
+                     bool throwException)
 {
-    Int64 r = -1;
-    Int64 cur = doSeek(0, ByteIO::Current);
+    int64_t r = -1;
+    int64_t cur = doSeek(0, ByteIO::Current);
     doSeek(offset, ByteIO::Begin);
     try {
         r = read(size, buf, throwException);
@@ -80,7 +80,7 @@ void ByteIO::fsync()
 void ByteIO::resync()
 {}
 
-void ByteIO::truncate (Int64)
+void ByteIO::truncate (int64_t)
 {}
 
 String ByteIO::fileName() const

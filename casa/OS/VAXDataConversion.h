@@ -80,8 +80,8 @@ public:
     size_t toLocal (unsigned short& to, const void* from) const override;
     size_t toLocal (int&            to, const void* from) const override;
     size_t toLocal (unsigned int&   to, const void* from) const override;
-    size_t toLocal (Int64&          to, const void* from) const override;
-    size_t toLocal (uInt64&         to, const void* from) const override;
+    size_t toLocal (int64_t&          to, const void* from) const override;
+    size_t toLocal (uint64_t&         to, const void* from) const override;
     size_t toLocal (float&          to, const void* from) const override;
     size_t toLocal (double&         to, const void* from) const override;
     // </group>
@@ -101,9 +101,9 @@ public:
                     size_t nr) const override;
     size_t toLocal (unsigned int*   to, const void* from,
                     size_t nr) const override;
-    size_t toLocal (Int64*          to, const void* from,
+    size_t toLocal (int64_t*          to, const void* from,
                     size_t nr) const override;
-    size_t toLocal (uInt64*         to, const void* from,
+    size_t toLocal (uint64_t*         to, const void* from,
                     size_t nr) const override;
     size_t toLocal (float*          to, const void* from,
                     size_t nr) const override;
@@ -120,8 +120,8 @@ public:
     size_t fromLocal (void* to, unsigned short from) const override;
     size_t fromLocal (void* to, int            from) const override;
     size_t fromLocal (void* to, unsigned int   from) const override;
-    size_t fromLocal (void* to, Int64          from) const override;
-    size_t fromLocal (void* to, uInt64         from) const override;
+    size_t fromLocal (void* to, int64_t          from) const override;
+    size_t fromLocal (void* to, uint64_t         from) const override;
     size_t fromLocal (void* to, float          from) const override;
     size_t fromLocal (void* to, double         from) const override;
     // </group>
@@ -141,9 +141,9 @@ public:
                       size_t nr) const override;
     size_t fromLocal (void* to, const unsigned int*   from,
                       size_t nr) const override;
-    size_t fromLocal (void* to, const Int64*          from,
+    size_t fromLocal (void* to, const int64_t*          from,
                       size_t nr) const override;
-    size_t fromLocal (void* to, const uInt64*         from,
+    size_t fromLocal (void* to, const uint64_t*         from,
                       size_t nr) const override;
     size_t fromLocal (void* to, const float*          from,
                       size_t nr) const override;
@@ -154,16 +154,16 @@ public:
     // Determine if the data for a data type can be simply copied, thus
     // if no conversion is needed.
     // <group>
-    Bool canCopy (const char*) const override;
-    Bool canCopy (const unsigned char*) const override;
-    Bool canCopy (const short*) const override;
-    Bool canCopy (const unsigned short*) const override;
-    Bool canCopy (const int*) const override;
-    Bool canCopy (const unsigned int*) const override;
-    Bool canCopy (const Int64*) const override;
-    Bool canCopy (const uInt64*) const override;
-    Bool canCopy (const float*) const override;
-    Bool canCopy (const double*) const override;
+    bool canCopy (const char*) const override;
+    bool canCopy (const unsigned char*) const override;
+    bool canCopy (const short*) const override;
+    bool canCopy (const unsigned short*) const override;
+    bool canCopy (const int*) const override;
+    bool canCopy (const unsigned int*) const override;
+    bool canCopy (const int64_t*) const override;
+    bool canCopy (const uint64_t*) const override;
+    bool canCopy (const float*) const override;
+    bool canCopy (const double*) const override;
     // </group>
 
     // Get the external size of the data type.
@@ -174,8 +174,8 @@ public:
     unsigned int externalSize (const unsigned short*) const override;
     unsigned int externalSize (const int*) const override;
     unsigned int externalSize (const unsigned int*) const override;
-    unsigned int externalSize (const Int64*) const override;
-    unsigned int externalSize (const uInt64*) const override;
+    unsigned int externalSize (const int64_t*) const override;
+    unsigned int externalSize (const uint64_t*) const override;
     unsigned int externalSize (const float*) const override;
     unsigned int externalSize (const double*) const override;
     // </group>

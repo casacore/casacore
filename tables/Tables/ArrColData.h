@@ -106,14 +106,14 @@ public:
     ~ArrayColumnData();
 
     // Ask the data manager if the shape of an existing array can be changed.
-    virtual Bool canChangeShape() const;
+    virtual bool canChangeShape() const;
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
     void initialize (rownr_t startRownr, rownr_t endRownr);
 
     // Get the global #dimensions of an array (ie. for all rows).
-    uInt ndimColumn() const;
+    uint32_t ndimColumn() const;
 
     // Get the global shape of an array (ie. for all rows).
     IPosition shapeColumn() const;
@@ -124,7 +124,7 @@ public:
 
     // Get the #dimensions of an array in a particular cell.
     // If the cell does not contain an array, 0 is returned.
-    uInt ndim (rownr_t rownr) const;
+    uint32_t ndim (rownr_t rownr) const;
 
     // Get the shape of an array in a particular cell.
     // If the cell does not contain an array, an empty IPosition is returned.
@@ -143,7 +143,7 @@ public:
     // </group>
 
     // Test if the given cell contains an array.
-    Bool isDefined (rownr_t rownr) const;
+    bool isDefined (rownr_t rownr) const;
 
     // Get the array from a particular cell.
     // The length of the array given by ArrayBase must match
@@ -231,11 +231,11 @@ private:
     // Pointer to column description.
     const ArrayColumnDescBase* arrDescPtr_p;
     // Is the shape for all arrays in the columns defined.
-    Bool shapeColDef_p;
+    bool shapeColDef_p;
     // Shape for all arrays in the column.
     IPosition shapeCol_p;
     // Does the length of a string has to be checked?
-    Bool checkValueLength_p;
+    bool checkValueLength_p;
     
 
     // Copy constructor cannot be used.

@@ -39,13 +39,13 @@ namespace casacore {
       throw AipsError ("No arguments given in a MEAS.DOPPLER function");
     }
     // Get the 'to' reference type.
-    itsEngine.handleMeasType (operands()[0], True);
+    itsEngine.handleMeasType (operands()[0], true);
     itsRefType = itsEngine.refType();
-    uInt argnr = 1;
+    uint32_t argnr = 1;
     if (operands().size() <= argnr) {
       throw AipsError ("No values given in a MEAS.DOPPLER function");
     }
-    itsEngine.handleDoppler (operands(), argnr, True, True);
+    itsEngine.handleDoppler (operands(), argnr, true, true);
     if (operands().size() > argnr) {
       throw AipsError ("Too many arguments given in a MEAS.DOPPLER function");
     }
@@ -66,14 +66,14 @@ namespace casacore {
     setAttributes (itsEngine.makeAttributes (itsRefType));
   }
 
-  Double DopplerUDF::getDouble (const TableExprId& id)
+  double DopplerUDF::getDouble (const TableExprId& id)
   {
     return getArrayDouble(id).array().data()[0];
   }
 
-  MArray<Double> DopplerUDF::getArrayDouble (const TableExprId& id)
+  MArray<double> DopplerUDF::getArrayDouble (const TableExprId& id)
   {
-    return MArray<Double>(itsEngine.getArrayDouble (id));
+    return MArray<double>(itsEngine.getArrayDouble (id));
   }
 
 } //end namespace

@@ -38,9 +38,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
-//# Data types Bool, Int64, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
-//# Float to Double, and Complex to DComplex.
+//# Data types bool, int64_t, double, DComplex and String are used.
+//# char, unsigned char, int16_t, uint16_t, int32_t, and uint32_t are converted to int64_t,
+//# float to double, and Complex to DComplex.
 //# Binary operators +, -, *, /, and % are recognized.
 //# Also unary + and - are recognized.
 
@@ -74,7 +74,7 @@ public:
 
 
 // <summary>
-// Int Array addition in table select expression tree
+// int32_t Array addition in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -92,7 +92,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayPlusInt : public TableExprNodeArrayPlus
@@ -100,12 +100,12 @@ class TableExprNodeArrayPlusInt : public TableExprNodeArrayPlus
 public:
     TableExprNodeArrayPlusInt (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
 // <summary>
-// Double Array addition in table select expression tree
+// double Array addition in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -123,7 +123,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayPlusDouble : public TableExprNodeArrayPlus
@@ -131,7 +131,7 @@ class TableExprNodeArrayPlusDouble : public TableExprNodeArrayPlus
 public:
     TableExprNodeArrayPlusDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDouble();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -154,7 +154,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayPlusDComplex : public TableExprNodeArrayPlus
@@ -185,7 +185,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayPlusString : public TableExprNodeArrayPlus
@@ -216,7 +216,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayPlusDate : public TableExprNodeArrayPlus
@@ -225,7 +225,7 @@ public:
     TableExprNodeArrayPlusDate (const TableExprNodeRep&);
     ~TableExprNodeArrayPlusDate();
     virtual void handleUnits();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
     MArray<MVTime> getArrayDate   (const TableExprId& id);
 };
 
@@ -259,7 +259,7 @@ public:
 
 
 // <summary>
-// Int Array subtraction in table select expression tree
+// int32_t Array subtraction in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -276,7 +276,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayMinusInt : public TableExprNodeArrayMinus
@@ -284,12 +284,12 @@ class TableExprNodeArrayMinusInt : public TableExprNodeArrayMinus
 public:
     TableExprNodeArrayMinusInt (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
 // <summary>
-// Double Array subtraction in table select expression tree
+// double Array subtraction in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -306,7 +306,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayMinusDouble : public TableExprNodeArrayMinus
@@ -314,7 +314,7 @@ class TableExprNodeArrayMinusDouble : public TableExprNodeArrayMinus
 public:
     TableExprNodeArrayMinusDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDouble();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -336,7 +336,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayMinusDComplex : public TableExprNodeArrayMinus
@@ -366,7 +366,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayMinusDate : public TableExprNodeArrayMinus
@@ -375,7 +375,7 @@ public:
     TableExprNodeArrayMinusDate (const TableExprNodeRep&);
     ~TableExprNodeArrayMinusDate();
     virtual void handleUnits();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
     MArray<MVTime> getArrayDate   (const TableExprId& id);
 };
 
@@ -410,7 +410,7 @@ public:
 
 
 // <summary>
-// Int Array multiplication in table select expression tree
+// int32_t Array multiplication in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -427,7 +427,7 @@ public:
 // <synopsis> 
 // This class represents a multiplication in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a multiplication of Int and Complex is possible.
+// a multiplication of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayTimesInt : public TableExprNodeArrayTimes
@@ -435,12 +435,12 @@ class TableExprNodeArrayTimesInt : public TableExprNodeArrayTimes
 public:
     TableExprNodeArrayTimesInt (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
 // <summary>
-// Double Array multiplication in table select expression tree
+// double Array multiplication in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -457,7 +457,7 @@ public:
 // <synopsis> 
 // This class represents a multiplication in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a multiplication of Int and Complex is possible.
+// a multiplication of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayTimesDouble : public TableExprNodeArrayTimes
@@ -465,7 +465,7 @@ class TableExprNodeArrayTimesDouble : public TableExprNodeArrayTimes
 public:
     TableExprNodeArrayTimesDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayTimesDouble();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -487,7 +487,7 @@ public:
 // <synopsis> 
 // This class represents a multiplication in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a multiplication of Int and Complex is possible.
+// a multiplication of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayTimesDComplex : public TableExprNodeArrayTimes
@@ -529,7 +529,7 @@ public:
 
 
 // <summary>
-// Double Array division in table select expression tree
+// double Array division in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -546,7 +546,7 @@ public:
 // <synopsis> 
 // This class represents a division in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a division of Int and Complex is possible.
+// a division of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayDivideDouble : public TableExprNodeArrayDivide
@@ -554,7 +554,7 @@ class TableExprNodeArrayDivideDouble : public TableExprNodeArrayDivide
 public:
     TableExprNodeArrayDivideDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayDivideDouble();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
 };
 
 
@@ -576,7 +576,7 @@ public:
 // <synopsis> 
 // This class represents a division in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a division of Int and Complex is possible.
+// a division of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeArrayDivideDComplex : public TableExprNodeArrayDivide
@@ -618,7 +618,7 @@ public:
 
 
 // <summary>
-// Int Array modulo in table select expression tree
+// int32_t Array modulo in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -634,7 +634,7 @@ public:
 
 // <synopsis> 
 // This class represents a modulo operation in a table select expression tree.
-// It is only possible for datatype Int.
+// It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeArrayModuloInt : public TableExprNodeArrayModulo
@@ -642,12 +642,12 @@ class TableExprNodeArrayModuloInt : public TableExprNodeArrayModulo
 public:
     TableExprNodeArrayModuloInt (const TableExprNodeRep&);
     ~TableExprNodeArrayModuloInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
 // <summary>
-// Double Array modulo in table select expression tree
+// double Array modulo in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -663,7 +663,7 @@ public:
 
 // <synopsis> 
 // This class represents a modulo operation in a table select expression tree.
-// It is only possible for datatype Double.
+// It is only possible for datatype double.
 // </synopsis> 
 
 class TableExprNodeArrayModuloDouble : public TableExprNodeArrayModulo
@@ -671,13 +671,13 @@ class TableExprNodeArrayModuloDouble : public TableExprNodeArrayModulo
 public:
     TableExprNodeArrayModuloDouble (const TableExprNodeRep&);
     ~TableExprNodeArrayModuloDouble();
-    MArray<Double> getArrayDouble (const TableExprId& id);
+    MArray<double> getArrayDouble (const TableExprId& id);
 };
 
 
 
 // <summary>
-// Int Array bitwise and in table select expression tree
+// int32_t Array bitwise and in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -693,7 +693,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise and  operation in a table select expression
-// tree. It is only possible for datatype Int.
+// tree. It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeArrayBitAndInt : public TableExprNodeArray
@@ -701,12 +701,12 @@ class TableExprNodeArrayBitAndInt : public TableExprNodeArray
 public:
     TableExprNodeArrayBitAndInt (const TableExprNodeRep&);
     ~TableExprNodeArrayBitAndInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
 // <summary>
-// Int Array bitwise or in table select expression tree
+// int32_t Array bitwise or in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -722,7 +722,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise or  operation in a table select expression
-// tree. It is only possible for datatype Int.
+// tree. It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeArrayBitOrInt : public TableExprNodeArray
@@ -730,12 +730,12 @@ class TableExprNodeArrayBitOrInt : public TableExprNodeArray
 public:
     TableExprNodeArrayBitOrInt (const TableExprNodeRep&);
     ~TableExprNodeArrayBitOrInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
 // <summary>
-// Int Array bitwise xor in table select expression tree
+// int32_t Array bitwise xor in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -751,7 +751,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise xor  operation in a table select expression
-// tree. It is only possible for datatype Int.
+// tree. It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeArrayBitXorInt : public TableExprNodeArray
@@ -759,7 +759,7 @@ class TableExprNodeArrayBitXorInt : public TableExprNodeArray
 public:
     TableExprNodeArrayBitXorInt (const TableExprNodeRep&);
     ~TableExprNodeArrayBitXorInt();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 
@@ -788,8 +788,8 @@ class TableExprNodeArrayMIN : public TableExprNodeArray
 public:
     TableExprNodeArrayMIN (const TableExprNodeRep&);
     ~TableExprNodeArrayMIN();
-    MArray<Int64>    getArrayInt      (const TableExprId& id);
-    MArray<Double>   getArrayDouble   (const TableExprId& id);
+    MArray<int64_t>    getArrayInt      (const TableExprId& id);
+    MArray<double>   getArrayDouble   (const TableExprId& id);
     MArray<DComplex> getArrayDComplex (const TableExprId& id);
 };
 
@@ -810,7 +810,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise negate in a table select expression tree.
-// This is defined for Int data types only.
+// This is defined for int32_t data types only.
 // </synopsis> 
 
 class TableExprNodeArrayBitNegate : public TableExprNodeArray
@@ -818,7 +818,7 @@ class TableExprNodeArrayBitNegate : public TableExprNodeArray
 public:
     TableExprNodeArrayBitNegate (const TableExprNodeRep&);
     ~TableExprNodeArrayBitNegate();
-    MArray<Int64> getArrayInt (const TableExprId& id);
+    MArray<int64_t> getArrayInt (const TableExprId& id);
 };
 
 

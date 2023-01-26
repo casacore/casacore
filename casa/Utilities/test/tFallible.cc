@@ -33,7 +33,7 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void Foo(Int x)
+void Foo(int32_t x)
 {
     AlwaysAssertExit(x == 5);
 }
@@ -41,32 +41,32 @@ void Foo(Int x)
 int main()
 {
     // None of the following should cause an exception
-    Fallible<Int> fi(5);
+    Fallible<int32_t> fi(5);
     Foo(fi);
     AlwaysAssertExit(fi.value() == 5);
-    Fallible<Int> fi2(10);
+    Fallible<int32_t> fi2(10);
     fi = fi2;
     AlwaysAssertExit(fi.value() == 10);
-    Fallible<Int> fi3(fi2);
+    Fallible<int32_t> fi3(fi2);
     AlwaysAssertExit(fi3.value() == 10);
-    AlwaysAssertExit(fi3.isValid() == True);
-    Fallible<Int> fi4;
-    AlwaysAssertExit(fi4.isValid() == False);
-    Fallible<Int> fi5(fi4);
+    AlwaysAssertExit(fi3.isValid() == true);
+    Fallible<int32_t> fi4;
+    AlwaysAssertExit(fi4.isValid() == false);
+    Fallible<int32_t> fi5(fi4);
 
     // All of the following should cause an exception
-    Bool caught = False;
+    bool caught = false;
     try {
 	Foo(fi4);
     } catch (std::exception& x) {
-	caught = True;
+	caught = true;
     } 
     AlwaysAssertExit(caught);
-    caught = False;
+    caught = false;
     try {
         fi5.value();
     } catch (std::exception& x) {
-	caught = True;
+	caught = true;
     } 
     AlwaysAssertExit(caught);
 	

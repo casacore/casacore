@@ -43,16 +43,16 @@ void test0 ();
 void test0Complex ();
 void test1 (Random::Types type);
 void test1Complex (Random::Types type);
-void checkStats (Float av0, const Lattice<Float>& data,
+void checkStats (float av0, const Lattice<float>& data,
                  Random::Types type);
-void checkStatsComplex (Float av0, const Lattice<Complex>& data,
+void checkStatsComplex (float av0, const Lattice<Complex>& data,
                         Random::Types type);
 
 int main ()
 {
   try {
 
-// Float
+// float
 
       cerr << "Float" << endl;
       cerr << "Test 0" << endl;
@@ -61,8 +61,8 @@ int main ()
 // Bug in Geometric distribution (defected) so left out for now
 
       cerr << "Test 1" << endl;
-      const uInt n = Random::NUMBER_TYPES;
-      for (uInt i=0; i<n; i++) {
+      const uint32_t n = Random::NUMBER_TYPES;
+      for (uint32_t i=0; i<n; i++) {
          Random::Types type = static_cast<Random::Types>(i);
          cerr << "Type = " << Random::asString(type) << endl;
          if (type!=Random::GEOMETRIC &&
@@ -76,7 +76,7 @@ int main ()
       test0Complex();
 //
       cerr << "Test 1" << endl;
-      for (uInt i=0; i<n; i++) {
+      for (uint32_t i=0; i<n; i++) {
          Random::Types type = static_cast<Random::Types>(i);
          cerr << "Type = " << Random::asString(type) << endl;
          if (type!=Random::GEOMETRIC &&
@@ -96,12 +96,12 @@ int main ()
 void test0 ()
 {
    IPosition shape(2, 1024, 1024);
-   ArrayLattice<Float> lat(shape);
+   ArrayLattice<float> lat(shape);
    lat.set(0.0);
 
 // Constructor 
 
-   Vector<Double> pars(2);
+   Vector<double> pars(2);
    pars(0) = 0.5;
    pars(1) = 1.0;
    LatticeAddNoise lan(Random::NORMAL, pars);
@@ -133,7 +133,7 @@ void test0Complex ()
 
 // Constructor 
 
-   Vector<Double> pars(2);
+   Vector<double> pars(2);
    pars(0) = 0.5;
    pars(1) = 1.0;
    LatticeAddNoise lan(Random::NORMAL, pars);
@@ -159,17 +159,17 @@ void test0Complex ()
 
 void test1 (Random::Types type)
 {
-   Vector<Double> pars;
+   Vector<double> pars;
    pars = Random::defaultParameters(type);
 cerr << "pars = " << pars << endl;
    LatticeAddNoise lan(type, pars);
 //
    IPosition shape(2, 1024, 1024);
-   ArrayLattice<Float> lat(shape);
+   ArrayLattice<float> lat(shape);
    lat.set(0.0);
    lan.add(lat);
 //
-   Float av = pars(0);
+   float av = pars(0);
    if (type==Random::DISCRETEUNIFORM ||
        type==Random::UNIFORM) {
       av = (pars(0) + pars(1)) / 2.0;
@@ -182,7 +182,7 @@ cerr << "pars = " << pars << endl;
 
 void test1Complex (Random::Types type)
 {
-   Vector<Double> pars;
+   Vector<double> pars;
    pars = Random::defaultParameters(type);
    LatticeAddNoise lan(type, pars);
 //
@@ -191,7 +191,7 @@ void test1Complex (Random::Types type)
    lat.set(Complex(0.0, 0.0));
    lan.add(lat);
 //
-   Float av = pars(0);
+   float av = pars(0);
    if (type==Random::DISCRETEUNIFORM ||
        type==Random::UNIFORM) {
       av = (pars(0) + pars(1)) / 2.0;
@@ -204,13 +204,13 @@ void test1Complex (Random::Types type)
 
 
 
-void checkStats (Float av0,  const Lattice<Float>& data,
+void checkStats (float av0,  const Lattice<float>& data,
                  Random::Types type)
 {
-   Double n = data.shape().product();
-   Float av = mean(data.get());
-   Float var = variance(data.get());
-   Float sig = sqrt(var);
+   double n = data.shape().product();
+   float av = mean(data.get());
+   float var = variance(data.get());
+   float sig = sqrt(var);
    LogIO os(LogOrigin("tLatticeAddNoise", "checkStats", WHERE));
 //
    if (av0 > -1e30) {
@@ -224,11 +224,11 @@ void checkStats (Float av0,  const Lattice<Float>& data,
 
 
 
-void checkStatsComplex (Float av0,  const Lattice<Complex>& data,
+void checkStatsComplex (float av0,  const Lattice<Complex>& data,
                         Random::Types type)
 {
-   ArrayLattice<Float> realLattice(real(data.get()));
-   ArrayLattice<Float> imagLattice(imag(data.get()));
+   ArrayLattice<float> realLattice(real(data.get()));
+   ArrayLattice<float> imagLattice(imag(data.get()));
 //
    checkStats(av0, realLattice, type);
    checkStats(av0, imagLattice, type);

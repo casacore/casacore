@@ -103,7 +103,7 @@ int main()
     msd1.setVelocityReference(MDoppler::RADIO);
     msd1.setFrequencyReference(MFrequency::LSRK);
     //locate restFrequency for field 0 and spwid 0
-    Bool hasRestFreq=msd1.setRestFrequency(0,0);
+    bool hasRestFreq=msd1.setRestFrequency(0,0);
     if(!hasRestFreq){
       cout << "Ou la la .....has no restfrequency in this ms" << endl;
     }

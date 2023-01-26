@@ -44,7 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // This is quite complex, because a table name can be given in many ways:
     // 1. an ordinary name such as 'my.tab'
     // 2. a wildcarded name (for table concatenation) such as 'my*.tab'. Note that for
-    //    such a case the alwaysOpen=False, so no Table object is created.
+    //    such a case the alwaysOpen=false, so no Table object is created.
     // 3. a table number in the temporary table list such as $1
     // 4. a shorthand referring to another table at this or a higher query level
     // 5. :: or . indicating the first available table at this or a higher query level
@@ -62,11 +62,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //      keywords in column col. But this example is very esoteric.
     // In practice column keywords and nested keywords will hardly ever be used,
     // so usually something like my.ms::ANTENNA is the only 'complicated' spec used.
-    Table getTable (Int tabnr, const String& name,
+    Table getTable (int32_t tabnr, const String& name,
                     const Table& ftab,
                     const std::vector<const Table*>& tempTables,
                     const std::vector<TableParseQuery*>& stack,
-                    Bool alwaysOpen)
+                    bool alwaysOpen)
     {
       // A table from a nested query.
       if (! ftab.isNull()) {
@@ -74,8 +74,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // Split the name into its subtable parts using :: as separator.
       Table table;
-      uInt stSub  = 0;
-      uInt stPart = 0;
+      uint32_t stSub  = 0;
+      uint32_t stPart = 0;
       Vector<String> subs = stringToVector(name, std::regex("::"));
       // No part, except first one, can be empty (unless :: is given).
       if (name != "::") {
@@ -90,7 +90,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       stPart = 1;          // indicate first part is handled.
       Vector<String> parts = stringToVector(subs[0], '.');
       if (parts.size() == 0  ||  parts[0].empty()) {
-        table = TableParseTableList::findTable (String(), True, stack).table();
+        table = TableParseTableList::findTable (String(), true, stack).table();
         if (table.isNull()) {
           throw TableInvExpr(":: or . is invalid in table name " + name +
                              ": no previous table available");
@@ -98,17 +98,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       } else {
         if (tabnr >= 0) {
           // Temporary table number (1-based) given.
-          if (tabnr < 1  ||  tabnr > Int(tempTables.size())
+          if (tabnr < 1  ||  tabnr > int32_t(tempTables.size())
               ||  tempTables[tabnr-1] == 0) {
             throw (TableInvExpr ("Invalid temporary table number given in " + name));
           }
           table = *(tempTables[tabnr-1]);
         } else {
           // See if the first part is a shorthand.
-          table = TableParseTableList::findTable (parts[0], True, stack).table();
+          table = TableParseTableList::findTable (parts[0], true, stack).table();
           if (table.isNull()) {
             // It was not something like shorthand.column, thus try as a full name.
-            // However, do not open if alwaysOpen=False.
+            // However, do not open if alwaysOpen=false.
             // In that case the table is opened when needed
             // (because the name can contain a wildcard as well).
             if (!alwaysOpen) {
@@ -128,9 +128,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Now process all parts in all subtable names, where the first name or
       // first part might need to be skipped because already processed.
       const TableRecord* keywords = &(table.keywordSet());
-      for (uInt k=stSub; k<subs.size(); ++k) {
+      for (uint32_t k=stSub; k<subs.size(); ++k) {
         Vector<String> parts = stringToVector(subs[k], '.');
-        for (uInt p=stPart; p<parts.size(); ++p) {
+        for (uint32_t p=stPart; p<parts.size(); ++p) {
           // See if the first part is a column name. If so, it must be the last part
           // in this name, but not be the last name.
           if (k<subs.size()-1  &&  stPart==parts.size()-1  &&
@@ -139,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           } else if (subs[k] != ".") {
             // . indicates first available table.
             // The last keyword must be a Table; the others nested TableRecords.
-            Int fieldNr = keywords->fieldNumber(parts[p]);
+            int32_t fieldNr = keywords->fieldNumber(parts[p]);
             if (fieldNr < 0) {
               throw TableInvExpr(parts[p] + " is an unknown keyword/subtable" +
                                  (p==1 && k<subs.size()-1 ? " (or column)" : "") +
@@ -178,12 +178,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // For columns one can go a bit further by accepting something like:
     //  col.subtable[select expression resulting in scalar]
     // which is something for the far away future.
-    Bool splitName (String& shorthand, String& columnName,
+    bool splitName (String& shorthand, String& columnName,
                     Vector<String>& fieldNames,
                     const String& name,
-                    Bool checkError,
-                    Bool isKeyword,
-                    Bool allowNoKey)
+                    bool checkError,
+                    bool isKeyword,
+                    bool allowNoKey)
     {
       //# Make a copy, because some String functions are non-const.
       //# Usually the name consists of a columnName only, so use that.
@@ -191,13 +191,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       shorthand = "";
       columnName = name;
       String restName;
-      Bool isKey = isKeyword;
+      bool isKey = isKeyword;
       int j = columnName.index("::");
       Vector<String> fldNam;
-      uInt stfld = 0;
+      uint32_t stfld = 0;
       if (j >= 0) {
         // The name contains ::, thus represents a keyword name.
-        isKey = True;
+        isKey = true;
       } else if (isKey) {
         // It is a keyword, but no ::.
         j = -2;
@@ -212,7 +212,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           if (checkError) {
             throw (TableInvExpr ("No keyword given in name " + name));
           }
-          return False;
+          return false;
         }
         fldNam = stringToVector (restName, '.');
         // The part before the :: can be empty, an optional shorthand,
@@ -234,7 +234,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               throw TableInvExpr ("Name " + name + " is invalid: More"
                                   " than 2 name parts given before ::");
             }
-            return False;
+            return false;
           }
         }
       } else {
@@ -261,17 +261,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           if (checkError) {
             throw (TableInvExpr ("No column given in name " + name));
           }
-          return False;
+          return false;
         }
       }
       fieldNames.resize (fldNam.size() - stfld);
-      for (uInt i=stfld; i<fldNam.size(); i++) {
+      for (uint32_t i=stfld; i<fldNam.size(); i++) {
         if (fldNam(i).empty()) {
           if (checkError) {
             throw (TableInvExpr ("Name " + name +
                                  " has empty field names"));
           }
-          return False;
+          return false;
         }
         fieldNames(i-stfld) = fldNam(i);
       }
@@ -287,7 +287,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       String tableName (fullName.substr(0,
                                         fullName.size() - subTableName.size() - 2));
       // Open the parent table.
-      Table parent = getTable (-1, tableName, Table(), tempTables, stack, True);
+      Table parent = getTable (-1, tableName, Table(), tempTables, stack, true);
       // Create the subtable and define the keyword in the parent referring it.
       String parentName = parent.tableName();
       if (parentName.empty()) {
@@ -425,10 +425,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {
       Block<String> names;
       const TableDesc& tdesc = tab.tableDesc();
-      for (uInt i=0; i<tdesc.ncolumn(); i++) {
+      for (uint32_t i=0; i<tdesc.ncolumn(); i++) {
         const String& colnm = tdesc[i].name();
         if (tab.isColumnStored(colnm)) {
-          uInt inx = names.size();
+          uint32_t inx = names.size();
           names.resize (inx + 1);
           names[inx] = colnm;
         }
@@ -450,39 +450,39 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         switch (colDesc.dataType()) {
         case TpBool:
           tsnptr = new TableExprNodeArrayConstBool
-            (ScalarColumn<Bool>(tabcol).getColumn());
+            (ScalarColumn<bool>(tabcol).getColumn());
           break;
         case TpUChar:
           tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<uChar>(tabcol).getColumn());
+            (ScalarColumn<unsigned char>(tabcol).getColumn());
           break;
         case TpShort:
           tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<Short>(tabcol).getColumn());
+            (ScalarColumn<int16_t>(tabcol).getColumn());
           break;
         case TpUShort:
           tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<uShort>(tabcol).getColumn());
+            (ScalarColumn<uint16_t>(tabcol).getColumn());
           break;
         case TpInt:
           tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<Int>(tabcol).getColumn());
+            (ScalarColumn<int32_t>(tabcol).getColumn());
           break;
         case TpUInt:
           tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<uInt>(tabcol).getColumn());
+            (ScalarColumn<uint32_t>(tabcol).getColumn());
           break;
         case TpInt64:
           tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<Int64>(tabcol).getColumn());
+            (ScalarColumn<int64_t>(tabcol).getColumn());
           break;
         case TpFloat:
           tsnptr = new TableExprNodeArrayConstDouble
-            (ScalarColumn<Float>(tabcol).getColumn());
+            (ScalarColumn<float>(tabcol).getColumn());
           break;
         case TpDouble:
           tsnptr = new TableExprNodeArrayConstDouble
-            (ScalarColumn<Double>(tabcol).getColumn());
+            (ScalarColumn<double>(tabcol).getColumn());
           break;
         case TpComplex:
           tsnptr = new TableExprNodeArrayConstDComplex
@@ -504,39 +504,39 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         switch (colDesc.dataType()) {
         case TpBool:
           tsnptr = new TableExprNodeArrayConstBool
-            (ArrayColumn<Bool>(tabcol).getColumn());
+            (ArrayColumn<bool>(tabcol).getColumn());
           break;
         case TpUChar:
           tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<uChar>(tabcol).getColumn());
+            (ArrayColumn<unsigned char>(tabcol).getColumn());
           break;
         case TpShort:
           tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<Short>(tabcol).getColumn());
+            (ArrayColumn<int16_t>(tabcol).getColumn());
           break;
         case TpUShort:
           tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<uShort>(tabcol).getColumn());
+            (ArrayColumn<uint16_t>(tabcol).getColumn());
           break;
         case TpInt:
           tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<Int>(tabcol).getColumn());
+            (ArrayColumn<int32_t>(tabcol).getColumn());
           break;
         case TpUInt:
           tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<uInt>(tabcol).getColumn());
+            (ArrayColumn<uint32_t>(tabcol).getColumn());
           break;
         case TpInt64:
           tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<Int64>(tabcol).getColumn());
+            (ArrayColumn<int64_t>(tabcol).getColumn());
           break;
         case TpFloat:
           tsnptr = new TableExprNodeArrayConstDouble
-            (ArrayColumn<Float>(tabcol).getColumn());
+            (ArrayColumn<float>(tabcol).getColumn());
           break;
         case TpDouble:
           tsnptr = new TableExprNodeArrayConstDouble
-            (ArrayColumn<Double>(tabcol).getColumn());
+            (ArrayColumn<double>(tabcol).getColumn());
           break;
         case TpComplex:
           tsnptr = new TableExprNodeArrayConstDComplex

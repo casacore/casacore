@@ -39,14 +39,14 @@ namespace casacore { //#Begin namespace casacore
     std::copy (rows.begin(), rows.end(), this->cbegin());
   }
 
-  RowNumbers::RowNumbers (const Vector<uInt>& rows)
+  RowNumbers::RowNumbers (const Vector<uint32_t>& rows)
   {
     // Resize the Vector in the parent class and convert to it.
     resize (rows.size());
     convertArray (*this, rows);
   }
 
-  RowNumbers::RowNumbers (const std::vector<uInt>& rows)
+  RowNumbers::RowNumbers (const std::vector<uint32_t>& rows)
   {
     // Resize the Vector in the parent class and convert to it.
     resize (rows.size());
@@ -59,10 +59,10 @@ namespace casacore { //#Begin namespace casacore
     return *this;
   }
 
-  Vector<uInt> RowNumbers::convertRownrVector (const Vector<rownr_t>& rows64)
+  Vector<uint32_t> RowNumbers::convertRownrVector (const Vector<rownr_t>& rows64)
   {
-    AlwaysAssert (allLE (rows64, rownr_t(std::numeric_limits<uInt>::max())), AipsError);
-    Vector<uInt> rows(rows64.size());
+    AlwaysAssert (allLE (rows64, rownr_t(std::numeric_limits<uint32_t>::max())), AipsError);
+    Vector<uint32_t> rows(rows64.size());
     convertArray (rows, rows64);
     return rows;
   }

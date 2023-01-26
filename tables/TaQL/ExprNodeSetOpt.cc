@@ -37,59 +37,59 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const TableExprNodeRep& orig)
     : TableExprNodeRep (orig)
   {}
-  Bool TableExprNodeSetOptBase::contains (const TableExprId&, Int64 value)
+  bool TableExprNodeSetOptBase::contains (const TableExprId&, int64_t value)
     { return (find(value) >= 0); }
-  Bool TableExprNodeSetOptBase::contains (const TableExprId&, Double value)
+  bool TableExprNodeSetOptBase::contains (const TableExprId&, double value)
     { return (find(value) >= 0); }
-  Bool TableExprNodeSetOptBase::contains (const TableExprId&, String value)
+  bool TableExprNodeSetOptBase::contains (const TableExprId&, String value)
     { return (find(value) >= 0); }
-  MArray<Bool> TableExprNodeSetOptBase::contains (const TableExprId&,
-                                                  const MArray<Int64>& value)
+  MArray<bool> TableExprNodeSetOptBase::contains (const TableExprId&,
+                                                  const MArray<int64_t>& value)
   {
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const Int64* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    Array<bool> result(value.shape());
+    bool deleteIn, deleteOut;
+    const int64_t* in = value.array().getStorage (deleteIn);
+    bool* out = result.getStorage (deleteOut);
     for (size_t i=0; i<value.size(); ++i) {
       out[i] = (find(in[i]) >= 0);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
   }
-  MArray<Bool> TableExprNodeSetOptBase::contains (const TableExprId&,
-                                                  const MArray<Double>& value)
+  MArray<bool> TableExprNodeSetOptBase::contains (const TableExprId&,
+                                                  const MArray<double>& value)
   {
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
-    const Double* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    Array<bool> result(value.shape());
+    bool deleteIn, deleteOut;
+    const double* in = value.array().getStorage (deleteIn);
+    bool* out = result.getStorage (deleteOut);
     for (size_t i=0; i<value.size(); ++i) {
       out[i] = (find(in[i]) >= 0);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
   }
-  MArray<Bool> TableExprNodeSetOptBase::contains (const TableExprId&,
+  MArray<bool> TableExprNodeSetOptBase::contains (const TableExprId&,
                                                   const MArray<String>& value)
   {
-    Array<Bool> result(value.shape());
-    Bool deleteIn, deleteOut;
+    Array<bool> result(value.shape());
+    bool deleteIn, deleteOut;
     const String* in = value.array().getStorage (deleteIn);
-    Bool* out = result.getStorage (deleteOut);
+    bool* out = result.getStorage (deleteOut);
     for (size_t i=0; i<value.size(); ++i) {
       out[i] = (find(in[i]) >= 0);
     }
     value.array().freeStorage (in, deleteIn);
     result.putStorage (out, deleteOut);
-    return MArray<Bool> (result, value.mask());
+    return MArray<bool> (result, value.mask());
   }
-  Int64 TableExprNodeSetOptBase::find (Int64) const
+  int64_t TableExprNodeSetOptBase::find (int64_t) const
     { return -1; }
-  Int64 TableExprNodeSetOptBase::find (Double) const
+  int64_t TableExprNodeSetOptBase::find (double) const
     { return -1; }
-  Int64 TableExprNodeSetOptBase::find (String) const
+  int64_t TableExprNodeSetOptBase::find (String) const
     { return -1; }
 
 
@@ -108,14 +108,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  void TableExprNodeSetOptUSet<T>::show (ostream& os, uInt indent) const
+  void TableExprNodeSetOptUSet<T>::show (ostream& os, uint32_t indent) const
   {
     TableExprNodeRep::show (os, indent);
     os << "Int set as std::unordered_map<T>" << endl;
   }
   
   template<typename T>
-  Int64 TableExprNodeSetOptUSet<T>::find (T value) const
+  int64_t TableExprNodeSetOptUSet<T>::find (T value) const
   {
     auto iter = itsMap.find(value);
     if (iter == itsMap.end()) {
@@ -139,7 +139,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  void TableExprNodeSetOptContSetBase<T>::show (ostream& os, uInt indent) const
+  void TableExprNodeSetOptContSetBase<T>::show (ostream& os, uint32_t indent) const
   {
     TableExprNodeRep::show (os, indent);
     os << "  TableExprNodeSetOptContSet with " << itsStarts.size()
@@ -150,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   template<typename T>
   TENShPtr TableExprNodeSetOptContSetBase<T>::transform (const TableExprNodeSet& set,
-                                                         Bool combine)
+                                                         bool combine)
   {
     DebugAssert (set.size() > 0, AipsError);
     // Get all start values and sort them (indirectly) in ascending order.
@@ -170,15 +170,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     // Sort the start values indirectly.
-    Vector<Int64> index;
-    GenSortIndirect<T,Int64>::sort (index, stvals, stvals.size());
+    Vector<int64_t> index;
+    GenSortIndirect<T,int64_t>::sort (index, stvals, stvals.size());
     std::vector<T> newStart;
     std::vector<T> newEnd;
-    std::vector<Bool> newLeftC;
-    std::vector<Bool> newRightC;
+    std::vector<bool> newLeftC;
+    std::vector<bool> newRightC;
     if (!combine) {
       for (size_t i=0; i<index.size(); ++i) {
-        Int64 inx = index[i];
+        int64_t inx = index[i];
         newStart.push_back (stvals[inx]);
         newEnd.push_back (endvals[inx]);
         newLeftC.push_back (set[inx]->isLeftClosed());
@@ -188,11 +188,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Get the start and end value of first interval in sorted list.
       T stval  = stvals[index[0]];
       T endval = endvals[index[0]];
-      Bool leftC  = set[index[0]]->isLeftClosed();
-      Bool rightC = set[index[0]]->isRightClosed();
+      bool leftC  = set[index[0]]->isLeftClosed();
+      bool rightC = set[index[0]]->isRightClosed();
       // Loop through the next intervals and combine if possible.
       for (size_t i=1; i<index.size(); i++) {
-        Int64 inx = index[i];
+        int64_t inx = index[i];
         T st2 = stvals[inx];
         T end2 = endvals[inx];
         // Combine intervals if they overlap.
@@ -232,17 +232,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TENShPtr TableExprNodeSetOptContSetBase<T>::createOptSet
   (const TableExprNodeSet& set,
    const std::vector<T>& start, const std::vector<T>& end, 
-   const std::vector<Bool>& leftC, const std::vector<Bool>& rightC)
+   const std::vector<bool>& leftC, const std::vector<bool>& rightC)
    {
      AlwaysAssert (start.size() == end.size(), AipsError);
      AlwaysAssert (leftC.size() == rightC.size(), AipsError);
     // See if all intervals have the same left and right closedness.
     // If so, a better version can be used that does not need to test on it
     // for each compare.
-    Bool same = True;
+    bool same = true;
     for (size_t i=1; i<leftC.size(); ++i) {
       if (leftC[i] != leftC[0]  ||  rightC[i] != rightC[0]) {
-        same = False;
+        same = false;
         break;
       }
     }
@@ -283,8 +283,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const TableExprNodeSet& orig,
    const std::vector<T>& starts,
    const std::vector<T>& ends,
-   const std::vector<Bool>& leftC,
-   const std::vector<Bool>& rightC)
+   const std::vector<bool>& leftC,
+   const std::vector<bool>& rightC)
     : TableExprNodeSetOptContSetBase<T> (orig, starts, ends),
       itsLeftC  (leftC),
       itsRightC (rightC)
@@ -294,7 +294,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   template<typename T>
-  void TableExprNodeSetOptContSetMixOC<T>::show (ostream& os, uInt indent) const
+  void TableExprNodeSetOptContSetMixOC<T>::show (ostream& os, uint32_t indent) const
   {
     TableExprNodeSetOptContSetBase<T>::show (os, indent);
     os << "    leftC = " << itsLeftC << endl
@@ -302,7 +302,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   template<typename T>
-  Int64 TableExprNodeSetOptContSetMixOC<T>::find (T value) const
+  int64_t TableExprNodeSetOptContSetMixOC<T>::find (T value) const
   {
     for (size_t i=0; i<this->itsStarts.size(); ++i) {
       if ((value > this->itsStarts[i]  &&  value < this->itsEnds[i])  ||
@@ -330,14 +330,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <typename T, typename LeftComp, typename RightComp>
   void TableExprNodeSetOptContSet<T,LeftComp,RightComp>::show
-  (ostream& os, uInt indent) const
+  (ostream& os, uint32_t indent) const
   {
     TableExprNodeSetOptContSetBase<T>::show (os, indent);
     os << "   as TableExprNodeSetOptContSet" << itsCmpType << endl;
   }
 
   template <typename T, typename LeftComp, typename RightComp>
-  Int64 TableExprNodeSetOptContSet<T,LeftComp,RightComp>::find (T value) const
+  int64_t TableExprNodeSetOptContSet<T,LeftComp,RightComp>::find (T value) const
   {
     auto iter = std::upper_bound (this->itsEnds.begin(), this->itsEnds.end(),
                                   value, itsRightCmp);
@@ -351,21 +351,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
-  // Instantiate as needed for Int64, Double and String.
+  // Instantiate as needed for int64_t, double and String.
   // Only the instantiated types are used in the TaQL code for the
-  // IN and join operator. Datetime is handled as Double.
-  // Bool, DComplex and Regex are not used in these operators.
+  // IN and join operator. Datetime is handled as double.
+  // bool, DComplex and Regex are not used in these operators.
   // std::less is for an open interval side, std::less_equal for a closed side.
-  template class TableExprNodeSetOptUSet<Int64>;
+  template class TableExprNodeSetOptUSet<int64_t>;
   template class TableExprNodeSetOptUSet<String>;
-  template class TableExprNodeSetOptContSetBase<Double>;
+  template class TableExprNodeSetOptContSetBase<double>;
   template class TableExprNodeSetOptContSetBase<String>;
-  template class TableExprNodeSetOptContSetMixOC<Double>;
+  template class TableExprNodeSetOptContSetMixOC<double>;
   template class TableExprNodeSetOptContSetMixOC<String>;
-  template class TableExprNodeSetOptContSet<Double,std::less_equal<Double>,std::less_equal<Double>>;
-  template class TableExprNodeSetOptContSet<Double,std::less_equal<Double>,std::less<Double>>;
-  template class TableExprNodeSetOptContSet<Double,std::less<Double>,std::less_equal<Double>>;
-  template class TableExprNodeSetOptContSet<Double,std::less<Double>,std::less<Double>>;
+  template class TableExprNodeSetOptContSet<double,std::less_equal<double>,std::less_equal<double>>;
+  template class TableExprNodeSetOptContSet<double,std::less_equal<double>,std::less<double>>;
+  template class TableExprNodeSetOptContSet<double,std::less<double>,std::less_equal<double>>;
+  template class TableExprNodeSetOptContSet<double,std::less<double>,std::less<double>>;
   template class TableExprNodeSetOptContSet<String,std::less_equal<String>,std::less_equal<String>>;
   template class TableExprNodeSetOptContSet<String,std::less_equal<String>,std::less<String>>;
   template class TableExprNodeSetOptContSet<String,std::less<String>,std::less_equal<String>>;

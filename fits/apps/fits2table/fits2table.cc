@@ -70,16 +70,16 @@ int main(int argc, const char* argv[])
 	String inputFilename = inputs.getString("input");
 	String outputFilename = inputs.getString("output");
 	String storageManagerType = inputs.getString("storage");
-	Int whichHDU = inputs.getInt("which_hdu");
-	Bool sdfits = inputs.getBool("sdfits");
+	int32_t whichHDU = inputs.getInt("which_hdu");
+	bool sdfits = inputs.getBool("sdfits");
 
 	storageManagerType.downcase();
 
-	Bool useIncrSM;
+	bool useIncrSM;
 	if (storageManagerType == "incremental") {
-	    useIncrSM = True;
+	    useIncrSM = true;
 	} else 	if (storageManagerType == "standard") {
-	    useIncrSM = False;
+	    useIncrSM = false;
 	} else {
 	    cerr << storageManagerType << " is not a valid storage manager" << 
 	        endl;
@@ -117,7 +117,7 @@ int main(int argc, const char* argv[])
 	
 	if (sdfits) {
 	    Vector<String> cols(td.columnNames());
-	    for (uInt i=0;i<cols.nelements();i++) {
+	    for (uint32_t i=0;i<cols.nelements();i++) {
 		if (cols(i).matches(Regex("^TDIM.*"))) {
 		    td.removeColumn(cols(i));
 		}
@@ -131,7 +131,7 @@ int main(int argc, const char* argv[])
 	}
 	Table tab(newtab, TableLock::PermanentLocking, infits->nrow());
 	TableRow row(tab);
-	uInt rownr = 0;
+	uint32_t rownr = 0;
 
 	while (rownr < tab.nrow()) {
 	    row.putMatchingFields(rownr, TableRecord(infits->currentRow()));

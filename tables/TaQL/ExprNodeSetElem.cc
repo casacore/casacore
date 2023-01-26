@@ -44,20 +44,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : TableExprNodeRep (dt, VTSetElem, OtUndef, Constant)
   {}
 
-  Bool TableExprNodeSetElemBase::isDiscrete() const
-    { return False; }
+  bool TableExprNodeSetElemBase::isDiscrete() const
+    { return false; }
 
-  Bool TableExprNodeSetElemBase::isSingle() const
-    { return False; }
+  bool TableExprNodeSetElemBase::isSingle() const
+    { return false; }
 
-  Bool TableExprNodeSetElemBase::isLeftClosed() const
-    { return False; }
+  bool TableExprNodeSetElemBase::isLeftClosed() const
+    { return false; }
 
-  Bool TableExprNodeSetElemBase::isRightClosed() const
-    { return False; }
+  bool TableExprNodeSetElemBase::isRightClosed() const
+    { return false; }
 
-  Bool TableExprNodeSetElemBase::isMidWidth() const
-    { return False; }
+  bool TableExprNodeSetElemBase::isMidWidth() const
+    { return false; }
   
   void TableExprNodeSetElemBase::adaptSetUnits (const Unit& unit)
   {
@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void TableExprNodeSetElemBase::show (ostream& os, uInt indent) const
+  void TableExprNodeSetElemBase::show (ostream& os, uint32_t indent) const
   {
     TableExprNodeRep::show (os, indent);
     if (itsStart) {
@@ -100,41 +100,41 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
   
-  void TableExprNodeSetElemBase::fillVector (Vector<Bool>&, Int64&,
+  void TableExprNodeSetElemBase::fillVector (Vector<bool>&, int64_t&,
                                              const TableExprId&) const
-     { throw TableInvExpr ("TableExprNodeSetElem::fillVector<Bool>"); }
-  void TableExprNodeSetElemBase::fillVector (Vector<Int64>&, Int64&,
+     { throw TableInvExpr ("TableExprNodeSetElem::fillVector<bool>"); }
+  void TableExprNodeSetElemBase::fillVector (Vector<int64_t>&, int64_t&,
                                              const TableExprId&) const
-     { throw TableInvExpr ("TableExprNodeSetElem::fillVector<Int64>"); }
-  void TableExprNodeSetElemBase::fillVector (Vector<Double>&, Int64&,
+     { throw TableInvExpr ("TableExprNodeSetElem::fillVector<int64_t>"); }
+  void TableExprNodeSetElemBase::fillVector (Vector<double>&, int64_t&,
                                              const TableExprId&) const
-     { throw TableInvExpr ("TableExprNodeSetElem::fillVector<Double>"); }
-  void TableExprNodeSetElemBase::fillVector (Vector<DComplex>&, Int64&,
+     { throw TableInvExpr ("TableExprNodeSetElem::fillVector<double>"); }
+  void TableExprNodeSetElemBase::fillVector (Vector<DComplex>&, int64_t&,
                                              const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::fillVector<DComplex>"); }
-  void TableExprNodeSetElemBase::fillVector (Vector<String>&, Int64&,
+  void TableExprNodeSetElemBase::fillVector (Vector<String>&, int64_t&,
                                              const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::fillVector<String>"); }
-  void TableExprNodeSetElemBase::fillVector (Vector<MVTime>&, Int64&,
+  void TableExprNodeSetElemBase::fillVector (Vector<MVTime>&, int64_t&,
                                              const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::fillVector<MVTime>"); }
 
-  void TableExprNodeSetElemBase::matchBool     (Bool*, const Bool*, size_t,
+  void TableExprNodeSetElemBase::matchBool     (bool*, const bool*, size_t,
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchBool"); }
-  void TableExprNodeSetElemBase::matchInt      (Bool*, const Int64*, size_t,
+  void TableExprNodeSetElemBase::matchInt      (bool*, const int64_t*, size_t,
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchInt"); }
-  void TableExprNodeSetElemBase::matchDouble   (Bool*, const Double*, size_t,
+  void TableExprNodeSetElemBase::matchDouble   (bool*, const double*, size_t,
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchDouble"); }
-  void TableExprNodeSetElemBase::matchDComplex (Bool*, const DComplex*, size_t,
+  void TableExprNodeSetElemBase::matchDComplex (bool*, const DComplex*, size_t,
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchDComplex"); }
-  void TableExprNodeSetElemBase::matchString   (Bool*, const String*, size_t,
+  void TableExprNodeSetElemBase::matchString   (bool*, const String*, size_t,
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchString"); }
-  void TableExprNodeSetElemBase::matchDate     (Bool*, const MVTime*, size_t,
+  void TableExprNodeSetElemBase::matchDate     (bool*, const MVTime*, size_t,
                                                 const TableExprId&) const
      { throw TableInvExpr ("TableExprNodeSetElem::matchDate"); }
 
@@ -184,7 +184,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return res;
   }
 
-  void TableExprNodeSetElemBase::getStart (const TableExprId& id, Double& v) const
+  void TableExprNodeSetElemBase::getStart (const TableExprId& id, double& v) const
   {
     if (itsStart->dataType() == NTDate) {
       v = itsStart->getDate (id);   // gets converted to days
@@ -193,7 +193,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void TableExprNodeSetElemBase::getEnd (const TableExprId& id, Double& v) const
+  void TableExprNodeSetElemBase::getEnd (const TableExprId& id, double& v) const
   {
     if (itsEnd->dataType() == NTDate) {
       v = itsEnd->getDate (id);   // gets converted to days
@@ -240,152 +240,152 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                        (*this, evalExpr(itsStart, id)));
   }
 
-  Bool TableExprNodeSetElemSingle::isDiscrete() const
-    { return True; }
+  bool TableExprNodeSetElemSingle::isDiscrete() const
+    { return true; }
 
-  Bool TableExprNodeSetElemSingle::isSingle() const
-    { return True; }
+  bool TableExprNodeSetElemSingle::isSingle() const
+    { return true; }
 
-  void TableExprNodeSetElemSingle::fillVector (Vector<Bool>& vec, Int64& cnt,
+  void TableExprNodeSetElemSingle::fillVector (Vector<bool>& vec, int64_t& cnt,
                                                const TableExprId& id) const
   {
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+1) {
-      vec.resize (cnt+64, True);
+      vec.resize (cnt+64, true);
     }
     vec(cnt++) = itsStart->getBool (id);
   }
-  void TableExprNodeSetElemSingle::fillVector (Vector<Int64>& vec, Int64& cnt,
+  void TableExprNodeSetElemSingle::fillVector (Vector<int64_t>& vec, int64_t& cnt,
                                                const TableExprId& id) const
   {
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+1) {
-      vec.resize (cnt+64, True);
+      vec.resize (cnt+64, true);
     }
     vec(cnt++) = itsStart->getInt (id);
   }
-  void TableExprNodeSetElemSingle::fillVector (Vector<Double>& vec, Int64& cnt,
+  void TableExprNodeSetElemSingle::fillVector (Vector<double>& vec, int64_t& cnt,
                                                const TableExprId& id) const
   {
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+1) {
-      vec.resize (cnt+64, True);
+      vec.resize (cnt+64, true);
     }
     vec(cnt++) = itsStart->getDouble (id);
   }
-  void TableExprNodeSetElemSingle::fillVector (Vector<DComplex>& vec, Int64& cnt,
+  void TableExprNodeSetElemSingle::fillVector (Vector<DComplex>& vec, int64_t& cnt,
                                                const TableExprId& id) const
   {
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+1) {
-      vec.resize (cnt+64, True);
+      vec.resize (cnt+64, true);
     }
     vec(cnt++) = itsStart->getDComplex (id);
   }
-  void TableExprNodeSetElemSingle::fillVector (Vector<String>& vec, Int64& cnt,
+  void TableExprNodeSetElemSingle::fillVector (Vector<String>& vec, int64_t& cnt,
                                                const TableExprId& id) const
   {
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+1) {
-      vec.resize (cnt+64, True);
+      vec.resize (cnt+64, true);
     }
     vec(cnt++) = itsStart->getString (id);
   }
-  void TableExprNodeSetElemSingle::fillVector (Vector<MVTime>& vec, Int64& cnt,
+  void TableExprNodeSetElemSingle::fillVector (Vector<MVTime>& vec, int64_t& cnt,
                                                const TableExprId& id) const
   {
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+1) {
-      vec.resize (cnt+64, True);
+      vec.resize (cnt+64, true);
     }
     vec(cnt++) = itsStart->getDate (id);
   }
 
-  void TableExprNodeSetElemSingle::matchBool (Bool* match, const Bool* value,
+  void TableExprNodeSetElemSingle::matchBool (bool* match, const bool* value,
                                               size_t nval,
                                               const TableExprId& id) const
   {
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     if (itsStart->valueType() == VTArray) {
       TableExprNodeArrayConstBool start (itsStart->getArrayBool(id));
       while (match < lastVal) {
         if (start.contains (id, *value)) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     } else {
-      Bool start = itsStart->getBool (id);
+      bool start = itsStart->getBool (id);
       while (match < lastVal) {
         if (*value == start) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     }
   }
-  void TableExprNodeSetElemSingle::matchInt (Bool* match, const Int64* value,
+  void TableExprNodeSetElemSingle::matchInt (bool* match, const int64_t* value,
                                              size_t nval,
                                              const TableExprId& id) const
   {
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     if (itsStart->valueType() == VTArray) {
       TableExprNodeArrayConstInt start (itsStart->getArrayInt(id));
       while (match < lastVal) {
         if (start.contains (id, *value)) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     } else {
-      Int64 start = itsStart->getInt (id);
+      int64_t start = itsStart->getInt (id);
       while (match < lastVal) {
         if (*value == start) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     }
   }
-  void TableExprNodeSetElemSingle::matchDouble (Bool* match, const Double* value,
+  void TableExprNodeSetElemSingle::matchDouble (bool* match, const double* value,
                                                 size_t nval,
                                                 const TableExprId& id) const
   {
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     if (itsStart->valueType() == VTArray) {
       TableExprNodeArrayConstDouble start (itsStart->getArrayDouble(id));
       while (match < lastVal) {
         if (start.contains (id, *value)) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     } else {
-      Double start = itsStart->getDouble (id);
+      double start = itsStart->getDouble (id);
       while (match < lastVal) {
         if (*value == start) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     }
   }
-  void TableExprNodeSetElemSingle::matchDComplex (Bool* match, const DComplex* value,
+  void TableExprNodeSetElemSingle::matchDComplex (bool* match, const DComplex* value,
                                                   size_t nval,
                                                   const TableExprId& id) const
   {
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     if (itsStart->valueType() == VTArray) {
       TableExprNodeArrayConstDComplex start (itsStart->getArrayDComplex(id));
       while (match < lastVal) {
         if (start.contains (id, *value)) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
@@ -394,23 +394,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       DComplex start = itsStart->getDComplex (id);
       while (match < lastVal) {
         if (*value == start) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     }
   }
-  void TableExprNodeSetElemSingle::matchString (Bool* match, const String* value,
+  void TableExprNodeSetElemSingle::matchString (bool* match, const String* value,
                                                 size_t nval,
                                                 const TableExprId& id) const
   {
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     if (itsStart->valueType() == VTArray) {
       TableExprNodeArrayConstString start (itsStart->getArrayString(id));
       while (match < lastVal) {
         if (start.contains (id, *value)) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
@@ -419,23 +419,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       String start = itsStart->getString (id);
       while (match < lastVal) {
         if (*value == start) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
       }
     }
   }
-  void TableExprNodeSetElemSingle::matchDate (Bool* match, const MVTime* value,
+  void TableExprNodeSetElemSingle::matchDate (bool* match, const MVTime* value,
                                               size_t nval,
                                               const TableExprId& id) const
   {
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     if (itsStart->valueType() == VTArray) {
       TableExprNodeArrayConstDate start (itsStart->getArrayDate(id));
       while (match < lastVal) {
         if (start.contains (id, *value)) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
@@ -444,7 +444,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       MVTime start = itsStart->getDate (id);
       while (match < lastVal) {
         if (*value == start) {
-          *match = True;
+          *match = true;
         }
         value++;
         match++;
@@ -458,13 +458,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const TableExprNode& start,
    const TableExprNode& end,
    const TableExprNode& incr,
-   Bool isEndExcl)
+   bool isEndExcl)
     : TableExprNodeSetElemBase(),
       itsEndExcl (isEndExcl)
   {
     // Start, end and increment are all optional.
     // Get the overall data type and test if they are scalar.
-    Bool isScalar = True;
+    bool isScalar = true;
     NodeDataType dts = NTInt;
     if (! start.isNull()) {
       itsStart = start.getRep();
@@ -490,8 +490,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (dte == NTInt  &&  (dts == NTDouble || dti == NTDouble)) dte = NTDouble;
     if ((dts != NTInt  &&  dts != NTDouble  &&  dts != NTDate)
         ||  dte != dts  ||  (dti != NTInt  &&  dti != NTDouble)) {
-      throw TableInvExpr("start:end should have equal data types (Int, Double"
-                         " or Date) and incr should have Int or Double");
+      throw TableInvExpr("start:end should have equal data types (int32_t, double"
+                         " or Date) and incr should have int32_t or double");
     }
     // Find unit and adapt units if needed.
     setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
@@ -519,112 +519,112 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                         evalExpr(itsEnd, id), evalExpr(itsIncr, id)));
   }
 
-  Bool TableExprNodeSetElemDiscrete::isDiscrete() const
-    { return True; }
+  bool TableExprNodeSetElemDiscrete::isDiscrete() const
+    { return true; }
 
-  void TableExprNodeSetElemDiscrete::fillVector (Vector<Int64>& vec, Int64& cnt,
+  void TableExprNodeSetElemDiscrete::fillVector (Vector<int64_t>& vec, int64_t& cnt,
                                                  const TableExprId& id) const
   {
-    Int64 start = !itsStart  ?  0 : itsStart->getInt (id);
-    Int64 end   = !itsEnd  ?  start : itsEnd->getInt (id);
-    Int64 incr  = !itsIncr  ?  1 : itsIncr->getInt (id);
+    int64_t start = !itsStart  ?  0 : itsStart->getInt (id);
+    int64_t end   = !itsEnd  ?  start : itsEnd->getInt (id);
+    int64_t incr  = !itsIncr  ?  1 : itsIncr->getInt (id);
     if (incr == 0) {
       throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Int64 nval = std::max(Int64(0), 1 + (end - start) / incr);
+    int64_t nval = std::max(int64_t(0), 1 + (end - start) / incr);
     if (itsEndExcl  &&  nval > 0) {
-      Int64 rngend = start + (nval-1)*incr;
+      int64_t rngend = start + (nval-1)*incr;
       if (rngend == end) {
         nval -= 1;
       }
     }
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+nval) {
-      vec.resize (cnt+max(64,nval), True);
+      vec.resize (cnt+max(64,nval), true);
     }
-    for (Int64 i=0; i<nval; i++) {
+    for (int64_t i=0; i<nval; i++) {
       vec(cnt++) = start;
       start += incr;
     }
   }
-  void TableExprNodeSetElemDiscrete::fillVector (Vector<Double>& vec, Int64& cnt,
+  void TableExprNodeSetElemDiscrete::fillVector (Vector<double>& vec, int64_t& cnt,
                                                  const TableExprId& id) const
   {
-    Double start = !itsStart  ?  0 : itsStart->getDouble (id);
-    Double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
-    Double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
+    double start = !itsStart  ?  0 : itsStart->getDouble (id);
+    double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
+    double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
     if (incr == 0) {
       throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
+    int64_t nval = std::max(int64_t(0), int64_t(1 + (end - start) / incr + 1e-10));
     if (itsEndExcl  &&  nval > 0) {
-      Double rngend = start + (nval-1)*incr;
+      double rngend = start + (nval-1)*incr;
       if (near(rngend, end)  ||  (end == 0  &&  nearAbs(rngend, end))) {
         nval -= 1;
       }
     }
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+nval) {
-      vec.resize (cnt+max(64,nval), True);
+      vec.resize (cnt+max(64,nval), true);
     }
-    for (Int64 i=0; i<nval; i++) {
+    for (int64_t i=0; i<nval; i++) {
       vec(cnt++) = start;
       start += incr;
     }
   }
-  void TableExprNodeSetElemDiscrete::fillVector (Vector<MVTime>& vec, Int64& cnt,
+  void TableExprNodeSetElemDiscrete::fillVector (Vector<MVTime>& vec, int64_t& cnt,
                                                  const TableExprId& id) const
   {
-    Double start = !itsStart  ?  0 : Double(itsStart->getDate (id));
-    Double end   = !itsEnd  ?  start : Double(itsEnd->getDate (id));
-    Double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
+    double start = !itsStart  ?  0 : double(itsStart->getDate (id));
+    double end   = !itsEnd  ?  start : double(itsEnd->getDate (id));
+    double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
     if (incr == 0) {
       throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Int64 nval = std::max(Int64(0), Int64(1 + (end - start) / incr + 1e-10));
+    int64_t nval = std::max(int64_t(0), int64_t(1 + (end - start) / incr + 1e-10));
     if (itsEndExcl  &&  nval > 0) {
-      Double rngend = start + (nval-1)*incr;
+      double rngend = start + (nval-1)*incr;
       if (near(rngend, end)  ||  (end == 0  &&  nearAbs(rngend, end))) {
         nval -= 1;
       }
     }
-    Int64 n = vec.size();
+    int64_t n = vec.size();
     if (n < cnt+nval) {
-      vec.resize (cnt+max(64,nval), True);
+      vec.resize (cnt+max(64,nval), true);
     }
-    for (Int64 i=0; i<nval; i++) {
+    for (int64_t i=0; i<nval; i++) {
       vec(cnt++) = start;
       start += incr;
     }
   }
 
-  void TableExprNodeSetElemDiscrete::matchInt (Bool* match, const Int64* value,
+  void TableExprNodeSetElemDiscrete::matchInt (bool* match, const int64_t* value,
                                                size_t nval,
                                                const TableExprId& id) const
   {
-    Int64 start = !itsStart  ?  0 : itsStart->getInt (id);
-    Int64 end   = !itsEnd  ?  start : itsEnd->getInt (id);
-    Int64 incr  = !itsIncr  ?  1 : itsIncr->getInt (id);
+    int64_t start = !itsStart  ?  0 : itsStart->getInt (id);
+    int64_t end   = !itsEnd  ?  start : itsEnd->getInt (id);
+    int64_t incr  = !itsIncr  ?  1 : itsIncr->getInt (id);
     if (incr == 0) {
       throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     end -= start;
     if (itsEndExcl) {
       end -= 1;
     }
     while (match < lastVal) {
-      Int64 tmp = *value - start;
+      int64_t tmp = *value - start;
       if (incr > 0) {
         if (tmp >= 0  &&  (!itsEnd  ||  tmp <= end)) {
           if (tmp%incr == 0) {
-            *match = True;
+            *match = true;
           }
         }
       } else {
         if (tmp <= 0  &&  (!itsEnd  ||  tmp >= end)) {
           if (tmp%incr == 0) {
-            *match = True;
+            *match = true;
           }
         }
       }
@@ -632,32 +632,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       match++;
     }
   }
-  void TableExprNodeSetElemDiscrete::matchDouble (Bool* match, const Double* value,
+  void TableExprNodeSetElemDiscrete::matchDouble (bool* match, const double* value,
                                                   size_t nval,
                                                   const TableExprId& id) const
   {
-    Double start = !itsStart  ?  0 : itsStart->getDouble (id);
-    Double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
-    Double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
+    double start = !itsStart  ?  0 : itsStart->getDouble (id);
+    double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
+    double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
     if (incr == 0) {
       throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     end -= start;
     while (match < lastVal) {
-      Double tmp = *value - start;
+      double tmp = *value - start;
       if (incr > 0) {
         if (tmp >= 0  &&  (!itsEnd  ||  tmp < end  ||
                            (!itsEndExcl && tmp==end))) {
-          if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
-            *match = True;
+          if (near(tmp, incr*int64_t(tmp/incr + 0.5))) {
+            *match = true;
           }
         }
       } else {
         if (tmp <= 0  &&  (!itsEnd  ||  tmp > end  ||
                            (!itsEndExcl && tmp==end))) {
-          if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
-            *match = True;
+          if (near(tmp, incr*int64_t(tmp/incr + 0.5))) {
+            *match = true;
           }
         }
       }
@@ -665,32 +665,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       match++;
     }
   }
-  void TableExprNodeSetElemDiscrete::matchDate (Bool* match, const MVTime* value,
+  void TableExprNodeSetElemDiscrete::matchDate (bool* match, const MVTime* value,
                                                 size_t nval,
                                                 const TableExprId& id) const
   {
-    Double start = !itsStart  ?  0 : Double(itsStart->getDate (id));
-    Double end   = !itsEnd  ?  start : Double(itsEnd->getDate (id));
-    Double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
+    double start = !itsStart  ?  0 : double(itsStart->getDate (id));
+    double end   = !itsEnd  ?  start : double(itsEnd->getDate (id));
+    double incr  = !itsIncr  ?  1 : itsIncr->getDouble (id);
     if (incr == 0) {
       throw TableInvExpr("Increment in a range must be non-zero");
     }
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     end -= start;
     while (match < lastVal) {
-      Double tmp = Double(*value) - start;
+      double tmp = double(*value) - start;
       if (incr > 0) {
         if (tmp >= 0  &&  (!itsEnd  ||  tmp < end  ||
                            (!itsEndExcl && tmp==end))) {
-          if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
-            *match = True;
+          if (near(tmp, incr*int64_t(tmp/incr + 0.5))) {
+            *match = true;
           }
         }
       } else {
         if (tmp <= 0  &&  (!itsEnd  ||  tmp > end  ||
                            (!itsEndExcl && tmp==end))) {
-          if (near(tmp, incr*Int64(tmp/incr + 0.5))) {
-            *match = True;
+          if (near(tmp, incr*int64_t(tmp/incr + 0.5))) {
+            *match = true;
           }
         }
       }
@@ -701,25 +701,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 
-  TableExprNodeSetElemCont::TableExprNodeSetElemCont (Bool isLeftClosed,
+  TableExprNodeSetElemCont::TableExprNodeSetElemCont (bool isLeftClosed,
                                                       const TableExprNode& start,
                                                       const TableExprNode& end,
-                                                      Bool isRightClosed)
+                                                      bool isRightClosed)
   {
     setup (isLeftClosed, &start, &end, isRightClosed);
   }
 
-  TableExprNodeSetElemCont::TableExprNodeSetElemCont (Bool isLeftClosed,
+  TableExprNodeSetElemCont::TableExprNodeSetElemCont (bool isLeftClosed,
                                                       const TableExprNode& start)
   {
-    setup (isLeftClosed, &start, 0, False);
+    setup (isLeftClosed, &start, 0, false);
   }
 
   TableExprNodeSetElemCont::TableExprNodeSetElemCont (const TableExprNode& end,
-                                                      Bool isRightClosed)
+                                                      bool isRightClosed)
     : TableExprNodeSetElemBase()
   {
-    setup (False, 0, &end, isRightClosed);
+    setup (false, 0, &end, isRightClosed);
   }
 
   TableExprNodeSetElemCont::TableExprNodeSetElemCont (const TableExprNode& mid,
@@ -730,8 +730,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     AlwaysAssert (!width.isNull(), AipsError);
     itsStart = mid.getRep();
     itsEnd   = width.getRep();
-    itsLeftClosed  = True;
-    itsRightClosed = True;
+    itsLeftClosed  = true;
+    itsRightClosed = true;
   }
   
   TableExprNodeSetElemCont::TableExprNodeSetElemCont
@@ -746,22 +746,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     setUnit (that.unit());
   }
 
-  void TableExprNodeSetElemCont::setup (Bool isLeftClosed,
+  void TableExprNodeSetElemCont::setup (bool isLeftClosed,
                                         const TableExprNode* start,
                                         const TableExprNode* end,
-                                        Bool isRightClosed)
+                                        bool isRightClosed)
   {
     // Setup for a continuous interval given as start,end.
     // Start or end are optional.
     itsLeftClosed  = isLeftClosed;
     itsRightClosed = isRightClosed;
-    Bool isScalar  = True;
+    bool isScalar  = true;
     if (start) {
       itsStart = start->getRep();
       isScalar = isScalar && start->isScalar();
       // Get data type.
       dtype_p = itsStart->dataType();
-      // Integer is handled as Double.
+      // Integer is handled as double.
       if (dtype_p == NTInt) {
         dtype_p = NTDouble;
       }
@@ -784,7 +784,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     NodeDataType dt = dataType();
     if (dt != NTDouble  &&  dt != NTString  &&  dt != NTDate) {
       throw TableInvExpr ("start=:=end only valid for "
-                          "Int, Double, String or Date");
+                          "Int, double, String or Date");
     }
     // Find unit and adapt units if needed.
     setUnit (TableExprNodeUnit::adaptUnits (itsStart, itsEnd, itsIncr));
@@ -799,33 +799,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                         evalExpr(itsEnd, id)));
   }
 
-  Bool TableExprNodeSetElemCont::isLeftClosed() const
+  bool TableExprNodeSetElemCont::isLeftClosed() const
     { return itsLeftClosed; }
 
-  Bool TableExprNodeSetElemCont::isRightClosed() const
+  bool TableExprNodeSetElemCont::isRightClosed() const
     { return itsRightClosed; }
 
-  void TableExprNodeSetElemCont::matchDouble (Bool* match, const Double* value,
+  void TableExprNodeSetElemCont::matchDouble (bool* match, const double* value,
                                               size_t nval,
                                               const TableExprId& id) const
   {
-    Double start = !itsStart  ?  0 : itsStart->getDouble (id);
-    Double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
-    Bool* lastVal = match + nval;
+    double start = !itsStart  ?  0 : itsStart->getDouble (id);
+    double end   = !itsEnd  ?  start : itsEnd->getDouble (id);
+    bool* lastVal = match + nval;
     while (match < lastVal) {
-      Double tmp = *value;
+      double tmp = *value;
       if ((!itsStart
            ||  tmp > start  ||  (itsLeftClosed  &&  tmp == start))
           &&  (!itsEnd
                ||  tmp < end  ||  (itsRightClosed  &&  tmp == end))) {
-        *match = True;
+        *match = true;
       }
       value++;
       match++;
     }
   }
 
-  void TableExprNodeSetElemCont::matchString (Bool* match, const String* value,
+  void TableExprNodeSetElemCont::matchString (bool* match, const String* value,
                                               size_t nval,
                                               const TableExprId& id) const
   {
@@ -837,33 +837,33 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (itsEnd) {
       end = itsEnd->getString (id);
     }
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     while (match < lastVal) {
       if ((!itsStart
            ||  *value > start  ||  (itsLeftClosed  &&  *value == start))
           &&  (!itsEnd
                ||  *value < end  ||  (itsRightClosed  &&  *value == end))) {
-        *match = True;
+        *match = true;
       }
       value++;
       match++;
     }
   }
 
-  void TableExprNodeSetElemCont::matchDate (Bool* match, const MVTime* value,
+  void TableExprNodeSetElemCont::matchDate (bool* match, const MVTime* value,
                                             size_t nval,
                                             const TableExprId& id) const
   {
-    Double start = !itsStart  ?  0 : Double(itsStart->getDate (id));
-    Double end   = !itsEnd  ?  start : Double(itsEnd->getDate (id));
-    Bool* lastVal = match + nval;
+    double start = !itsStart  ?  0 : double(itsStart->getDate (id));
+    double end   = !itsEnd  ?  start : double(itsEnd->getDate (id));
+    bool* lastVal = match + nval;
     while (match < lastVal) {
-      Double tmp = *value;
+      double tmp = *value;
       if ((!itsStart
            ||  tmp > start  ||  (itsLeftClosed  &&  tmp == start))
           &&  (!itsEnd
                ||  tmp < end  ||  (itsRightClosed  &&  tmp == end))) {
-        *match = True;
+        *match = true;
       }
       value++;
       match++;
@@ -876,18 +876,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                                               const TableExprNode& width)
     : TableExprNodeSetElemCont (mid, width)
   {
-    Bool isScalar = mid.isScalar() && width.isScalar();
+    bool isScalar = mid.isScalar() && width.isScalar();
     // Get data type.
     dtype_p = itsStart->dataType();
-    // Integer is handled as Double.
+    // Integer is handled as double.
     if (dtype_p == NTInt) {
       dtype_p = NTDouble;
     }
     if (dtype_p != NTDouble  &&  dtype_p != NTDate) {
-      throw TableInvExpr ("mid<:>width must have an Int, Double or Datetime mid value");
+      throw TableInvExpr ("mid<:>width must have an int32_t, double or Datetime mid value");
     }
     if (itsEnd->dataType() != NTInt  &&  itsEnd->dataType() != NTDouble) {
-      throw TableInvExpr ("mid<:>width must have an Int or Double width value");
+      throw TableInvExpr ("mid<:>width must have an int32_t or double width value");
     }
     if (!isScalar) {
       throw TableInvExpr("Scalar values must be used in mid<:>width");
@@ -899,7 +899,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (dt == NTDate) {
       TableExprNodeUnit::adaptUnit (itsEnd, "d");
     } else {
-      throw TableInvExpr ("mid<:>width only valid for Int, Double or Date");
+      throw TableInvExpr ("mid<:>width only valid for int32_t, double or Date");
     }
     setExprType();
   }
@@ -907,11 +907,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TENSEBShPtr TableExprNodeSetElemMidWidth::evaluate
   (const TableExprId& id) const
   {
-    Double start, end, mid, width;
+    double start, end, mid, width;
     getEnd(id, width);
     if (width == 0) {
-      start = std::numeric_limits<Double>::lowest();
-      end   = std::numeric_limits<Double>::max();
+      start = std::numeric_limits<double>::lowest();
+      end   = std::numeric_limits<double>::max();
     } else {
       getStart(id, mid);
       start = mid - width*0.5;
@@ -930,47 +930,47 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return TENSEBShPtr(new TableExprNodeSetElemCont (*this, startp, endp));
   }
 
-  Bool TableExprNodeSetElemMidWidth::isMidWidth() const
-    { return True; }
+  bool TableExprNodeSetElemMidWidth::isMidWidth() const
+    { return true; }
 
-  void TableExprNodeSetElemMidWidth::matchDouble (Bool* match, const Double* value,
+  void TableExprNodeSetElemMidWidth::matchDouble (bool* match, const double* value,
                                                   size_t nval,
                                                   const TableExprId& id) const
   {
-    Double width = itsEnd->getDouble (id);
-    Double start, end;
+    double width = itsEnd->getDouble (id);
+    double start, end;
     if (width == 0) {
-      start = std::numeric_limits<Double>::lowest();
-      end   = std::numeric_limits<Double>::max();
+      start = std::numeric_limits<double>::lowest();
+      end   = std::numeric_limits<double>::max();
     } else {
-      Double mid   = itsStart->getDouble (id);
+      double mid   = itsStart->getDouble (id);
       start = mid - width*0.5;
       end   = mid + width*0.5;
     }
-    Bool* lastVal = match + nval;
+    bool* lastVal = match + nval;
     while (match < lastVal) {
-      Double tmp = *value;
+      double tmp = *value;
       if (tmp >= start  &&  tmp <= end) {
-        *match = True;
+        *match = true;
       }
       value++;
       match++;
     }
   }
 
-  void TableExprNodeSetElemMidWidth::matchDate (Bool* match, const MVTime* value,
+  void TableExprNodeSetElemMidWidth::matchDate (bool* match, const MVTime* value,
                                                 size_t nval,
                                                 const TableExprId& id) const
   {
-    Double mid   = Double(itsStart->getDate (id));
-    Double width = Double(itsEnd->getDouble (id));
-    Double start = mid - width*0.5;
-    Double end   = mid + width*0.5;
-    Bool* lastVal = match + nval;
+    double mid   = double(itsStart->getDate (id));
+    double width = double(itsEnd->getDouble (id));
+    double start = mid - width*0.5;
+    double end   = mid + width*0.5;
+    bool* lastVal = match + nval;
     while (match < lastVal) {
-      Double tmp = *value;
+      double tmp = *value;
       if (tmp >= start  &&  tmp <= end) {
-        *match = True;
+        *match = true;
       }
       value++;
       match++;
@@ -986,7 +986,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
                                               const TableExprNode* end,
                                               const TableExprNode* incr,
-                                              Bool isEndExcl)
+                                              bool isEndExcl)
   {
     TableExprNode s (start ? *start : TableExprNode());
     TableExprNode e (end ? *end : TableExprNode());
@@ -994,22 +994,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsElem.reset (new TableExprNodeSetElemDiscrete (s, e, i, isEndExcl));
   }
 
-  TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
+  TableExprNodeSetElem::TableExprNodeSetElem (bool isLeftClosed,
                                               const TableExprNode& start,
                                               const TableExprNode& end,
-                                              Bool isRightClosed)
+                                              bool isRightClosed)
     : itsElem (new TableExprNodeSetElemCont (isLeftClosed, start,
                                              end, isRightClosed))
   {}
   
-  TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
+  TableExprNodeSetElem::TableExprNodeSetElem (bool isLeftClosed,
                                               const TableExprNode& start)
     : itsElem (new TableExprNodeSetElemCont (isLeftClosed, start))
   {}
 
 
   TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& end,
-                                              Bool isRightClosed)
+                                              bool isRightClosed)
     : itsElem (new TableExprNodeSetElemCont (end, isRightClosed))
   {}
 

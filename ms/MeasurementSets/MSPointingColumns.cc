@@ -112,14 +112,14 @@ void MSPointingColumns::attachOptionalCols(const MSPointing& msPointing)
 }
 
 MDirection MSPointingColumns::directionMeas(rownr_t row, 
-						 Double interTime) const
+						 double interTime) const
 {
   return MSFieldColumns::interpolateDirMeas(directionMeasCol()(row),
 					       numPoly()(row),
 					       interTime, time()(row)); 
 }
 
-MDirection MSPointingColumns::targetMeas(rownr_t row, Double interTime) const
+MDirection MSPointingColumns::targetMeas(rownr_t row, double interTime) const
 {
   return MSFieldColumns::interpolateDirMeas(targetMeasCol()(row),
 					       numPoly()(row),
@@ -127,7 +127,7 @@ MDirection MSPointingColumns::targetMeas(rownr_t row, Double interTime) const
 }
 
 MDirection MSPointingColumns::pointingOffsetMeas(rownr_t row, 
-						      Double interTime) const
+						      double interTime) const
 {
   if (pointingOffsetMeasCol().isNull()) return MDirection();
   return MSFieldColumns::interpolateDirMeas(pointingOffsetMeasCol()(row),
@@ -136,7 +136,7 @@ MDirection MSPointingColumns::pointingOffsetMeas(rownr_t row,
 }
 
 MDirection MSPointingColumns::sourceOffsetMeas(rownr_t row,
-						    Double interTime) const
+						    double interTime) const
 {
   if (sourceOffsetMeasCol().isNull()) return MDirection();
   return MSFieldColumns::interpolateDirMeas(sourceOffsetMeasCol()(row),
@@ -145,30 +145,30 @@ MDirection MSPointingColumns::sourceOffsetMeas(rownr_t row,
 }
 
 
-Int64 MSPointingColumns::pointingIndex(Int antenna, Double ptime, Int64 guessRow) const
+int64_t MSPointingColumns::pointingIndex(int32_t antenna, double ptime, int64_t guessRow) const
 {
   if((this->nrow()) < 1)
     return -1;
   // return the first row matching the requirements
-  const Int64 nrow = antennaId().nrow();
+  const int64_t nrow = antennaId().nrow();
   //take up from where we left last time
   //hopefully time is monotonic
   //otherwise it will go through the table each time
   if(guessRow <0)
     guessRow=0;
-  for (Int k=0; k< 2; ++k){
-    Int64 start=guessRow;
-    Int64 end=nrow;
+  for (int32_t k=0; k< 2; ++k){
+    int64_t start=guessRow;
+    int64_t end=nrow;
     if(k==1){
       start=0;
       end=guessRow;
     }
-    for (Int64 i=start; i<end; i++) {
+    for (int64_t i=start; i<end; i++) {
       if (antennaId()(i)==antenna) {
-	Double halfInt=0.0;  
+	double halfInt=0.0;  
 	if(interval()(i)==0.0){
-	  Int64 counter=0;
-	  Int64 adder=1;
+	  int64_t counter=0;
+	  int64_t adder=1;
 	  
 	  while(!( (time()(i+counter)!=time()(i))&& (antennaId()(i+counter) == antenna))){
 	    counter=counter+adder;
@@ -201,7 +201,7 @@ Int64 MSPointingColumns::pointingIndex(Int antenna, Double ptime, Int64 guessRow
 }
 
 void MSPointingColumns::
-setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   timeOriginMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

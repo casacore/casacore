@@ -49,14 +49,14 @@ class String;        // Forward declarations
 // FITS.h and fits.h. 
 //</motivation>
 //<synopsis>
-// Read FITS from a file into a Casacore Array. Sets "ok" to False if there 
+// Read FITS from a file into a Casacore Array. Sets "ok" to false if there 
 // is any problem. We only deal with data in the primary data array.
 // If ReadFITS fails, the state of array is undefined. Trailing
 // degenerate (length==1) axes are NOT removed. If desired, you may do
 // this yourself with the nonDegenerate array member function.
 // If ok is false, ErrorMessage will contain an information error message.
 // If necessary, the data is converted from whatever type it is stored as 
-// to Float. BSCALE and BZERO are applied. Blanks are not handled.
+// to float. BSCALE and BZERO are applied. Blanks are not handled.
 //
 // If unitName is non-null, the string it points to is filled with the FITS
 // BUNIT keyword. If axisNames is name of the axes (CTYPEn).
@@ -83,13 +83,13 @@ class String;        // Forward declarations
 
 //<group name=ReadFITS>
 // blabla
-Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
+Array<float> ReadFITS(const char *FileName, bool &ok, String &ErrorMessage,
 		      String *unitName = 0,
 		      Vector<String> *axisNames = 0,
-		      Vector<Float> *refPixel = 0,
-		      Vector<Float> *refLocation = 0,
-		      Vector<Float> *delta = 0,
-		      std::map<String, Double> *keywords = 0,
+		      Vector<float> *refPixel = 0,
+		      Vector<float> *refLocation = 0,
+		      Vector<float> *delta = 0,
+		      std::map<String, double> *keywords = 0,
                       String *objectName = 0);
 //</group>
 
@@ -100,7 +100,7 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 // <here>WriteFITS</here> Casacore interface routines.
 //</linkfrom>
 //<synopsis>
-// Write a FITS file from a Casacore Array. Returns False if there is any
+// Write a FITS file from a Casacore Array. Returns false if there is any
 // proglem. The data is written into the primary data array, and the data
 // is written in floating point (BITPIX=-32). If the operation fails, 
 // ErrorMessage will contain an informative error. At the moment this
@@ -128,17 +128,17 @@ Array<Float> ReadFITS(const char *FileName, Bool &ok, String &ErrorMessage,
 
 //<group name=WriteFITS>
 // blabla
-Bool WriteFITS(const char *FileName, const Array<Float> &array,
+bool WriteFITS(const char *FileName, const Array<float> &array,
 	       String &ErrorMessage,
 	       const char *unitName = 0,
 	       const Vector<String> *axisNames = 0,
-	       const Vector<Float> *refPixel = 0,
-	       const Vector<Float> *refLocation = 0,
-	       const Vector<Float> *delta = 0,
-	       const std::map<String, Double> *keywords = 0,
+	       const Vector<float> *refPixel = 0,
+	       const Vector<float> *refLocation = 0,
+	       const Vector<float> *delta = 0,
+	       const std::map<String, double> *keywords = 0,
 	       const char *objectName = 0,
-	       Int BITPIX=-32,
-	       Float minPix = 1.0, Float maxPix = -1.0);
+	       int32_t BITPIX=-32,
+	       float minPix = 1.0, float maxPix = -1.0);
 //</group>
 
 } //# NAMESPACE CASACORE - END

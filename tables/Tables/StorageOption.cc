@@ -28,8 +28,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  StorageOption::StorageOption (StorageOption::Option option, Int blockSize,
-                                Int useODirect)
+  StorageOption::StorageOption (StorageOption::Option option, int32_t blockSize,
+                                int32_t useODirect)
     : itsOption     (option),
       itsBlockSize  (blockSize),
       itsUseODirect (useODirect>0),
@@ -55,14 +55,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Default block size is 4MB.
     if (itsBlockSize <= -2) {
-      AipsrcValue<Int>::find (itsBlockSize, "table.storage.blocksize", 0);
+      AipsrcValue<int32_t>::find (itsBlockSize, "table.storage.blocksize", 0);
     }
     if (itsBlockSize <= 0) {
       itsBlockSize = 4*1024*1024;
     }
-    // Default O_DIRECT support is False.
+    // Default O_DIRECT support is false.
     if (itsUseAipsrcODirect) {
-      AipsrcValue<Bool>::find (itsUseODirect, "table.storage.odirect", False);
+      AipsrcValue<bool>::find (itsUseODirect, "table.storage.odirect", false);
     }
     // Default is to use separate files.
     if (itsOption == StorageOption::Default) {
@@ -70,10 +70,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void StorageOption::setUseODirect (Bool useODirect)
+  void StorageOption::setUseODirect (bool useODirect)
   {
     itsUseODirect = useODirect;
-    itsUseAipsrcODirect = False;
+    itsUseAipsrcODirect = false;
   }
 
 } //# NAMESPACE CASACORE - END

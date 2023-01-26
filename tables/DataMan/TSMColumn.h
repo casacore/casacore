@@ -120,7 +120,7 @@ public:
     TSMDataColumn* makeDataColumn();
 
     // Make a TSM coordinate column object.
-    TSMCoordColumn* makeCoordColumn (uInt axesNumber);
+    TSMCoordColumn* makeCoordColumn (uint32_t axesNumber);
 
     // Make a TSM id column object.
     TSMIdColumn* makeIdColumn();

@@ -174,12 +174,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // {
 // public:
 //   DataClass(const IPosition &shape, const LogSink &sink);  // 1
-//   void set(Int toWhat);                                    // 2
+//   void set(int32_t toWhat);                                    // 2
 //   LogIO   &sink() return os_p;}                            // 3
-//   Array<Int> &data() {return data_p;}                      // 4
-//   const Array<Int> &data() const {return data_p;}          // 5
+//   Array<int32_t> &data() {return data_p;}                      // 4
+//   const Array<int32_t> &data() const {return data_p;}          // 5
 // private:                                                   // 6
-//   Vector<Int> data_p;                                      // 7
+//   Vector<int32_t> data_p;                                      // 7
 //   LogSink log_sink_p;                                      // 8
 //   LogIO os_p;                                              // 9
 // };
@@ -289,12 +289,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </dl>
 //
 // <srcblock>
-// void DataClass::set(Int toWhat)
+// void DataClass::set(int32_t toWhat)
 // {
-//   os_p << LogIO::NORMAL << LogOrigin("DataClass", "set(Int toWhat)");      // 1
+//   os_p << LogIO::NORMAL << LogOrigin("DataClass", "set(int32_t toWhat)");      // 1
 //   os_p << "Setting data values to " << toWhat << WHERE << LogIO::POST;     // 2
-//   uInt n = data_p.nelements();                                             // 3
-//   for (uInt i=0; i < n; i++) {                                             // 4
+//   uint32_t n = data_p.nelements();                                             // 3
+//   for (uint32_t i=0; i < n; i++) {                                             // 4
 // #ifdef AIPS_DEBUG                                                          // 5
 //     os_p << LogIO::DEBUGGING << WHERE <<                                   // 6
 //       "Setting element  " << i << " to " << toWhat << LogIO::POST;         // 7
@@ -372,7 +372,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //                                                                    // 6
 //     square(dc);                                                    // 7
 //                                                                    // 8
-//     Float total = sum(dc);                                         // 9
+//     float total = sum(dc);                                         // 9
 //                                                                    // 10
 //     return 0;                                                      // 11
 // }

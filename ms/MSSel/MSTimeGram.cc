@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSTimeGram = 0;
-  static Int                   posMSTimeGram = 0;
+  static int32_t                   posMSTimeGram = 0;
   extern MSTimeParse *thisMSTParser;
   
   //# Parse the command.
@@ -84,9 +84,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //----------------------------------------------------------------------------
 
   int baseMSTimeGramParseCommand (MSTimeParse* parser, const String& command, 
-				  Matrix<Double>& selectedTimeList)
+				  Matrix<double>& selectedTimeList)
   {
-    Int ret;
+    int32_t ret;
     try
       {
 	MSTimeGramrestart (MSTimeGramin);
@@ -113,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			      const TableExprNode& colAsTEN,
 			      MSSelectableMainColumn& msMainColInterface,
 			      const TableExprNode& otherTens,
-			      Matrix<Double>& selectedTimeList)
+			      Matrix<double>& selectedTimeList)
   {
     MSTimeParse *thisParser = new MSTimeParse(ms,colAsTEN,msMainColInterface, otherTens);
     int ret;
@@ -132,7 +132,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, 
 			      const TableExprNode& otherTens,
-			      Matrix<Double>& selectedTimeList)
+			      Matrix<double>& selectedTimeList)
   {
     MSTimeParse *thisParser = new MSTimeParse(ms,otherTens);
     int ret;
@@ -147,7 +147,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     delete thisParser;
     return ret;
-    // Int ret;
+    // int32_t ret;
     // try
     //   {
     // 	MSTimeGramrestart (MSTimeGramin);
@@ -171,8 +171,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   int msTimeGramParseCommand (const MeasurementSet* ms, const String& command, const TableExprNode& otherTens) 
   {
-    Matrix<Double> timeList;
-    Int ret;
+    Matrix<double> timeList;
+    int32_t ret;
     try
       {
 	MSTimeGramrestart (MSTimeGramin);
@@ -207,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Give the string position.
   //----------------------------------------------------------------------------
-  Int& msTimeGramPosition()
+  int32_t& msTimeGramPosition()
   {
     return posMSTimeGram;
   }
@@ -270,8 +270,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
   void msTimeGramSetTimeFields (struct TimeFields& tf, 
-				Int year, Int month, Int day,
-				Int hour, Int minute, Int sec, Int fsec)
+				int32_t year, int32_t month, int32_t day,
+				int32_t hour, int32_t minute, int32_t sec, int32_t fsec)
   {
     tf.year = year;
     tf.month = month;

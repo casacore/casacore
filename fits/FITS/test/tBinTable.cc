@@ -63,15 +63,15 @@ int main(int argc, const char* argv[])
 	String inputFilename = inputs.getString("inputFile");
 	String baseName = inputs.getString("baseName");
 	String storageManagerType = inputs.getString("storageManager");
-	Bool sdfits = inputs.getBool("sdfits");
+	bool sdfits = inputs.getBool("sdfits");
 
 	storageManagerType.downcase();
 
-	Bool useMiriadSM;
+	bool useMiriadSM;
 	if (storageManagerType == "miriad") {
-	    useMiriadSM = True;
+	    useMiriadSM = true;
 	} else 	if (storageManagerType == "aipsio") {
-	    useMiriadSM = False;
+	    useMiriadSM = false;
 	} else {
 	    cout << storageManagerType << " is not a valid storage manager" << 
 	        endl;
@@ -84,7 +84,7 @@ int main(int argc, const char* argv[])
 	    return 1;
 	}
 
-	Int tabCount = 0;
+	int32_t tabCount = 0;
 	// This allows for constructed names of the form baseName.table.xx
 	char *tabName = new char[baseName.length() + 10];
 	// construct the FITS input
@@ -120,7 +120,7 @@ int main(int argc, const char* argv[])
 	    break;
 	    default:
 		cout << "Unable to do anything but skip this hdutype : " << 
-		    Int(infits.hdutype()) << endl;
+		    int32_t(infits.hdutype()) << endl;
 		infits.skip_hdu();
 		if (infits.err() != FitsIO::OK) {
 		    cout << "Problem in infits while skipping the hdu" <<

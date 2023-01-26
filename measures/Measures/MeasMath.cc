@@ -37,7 +37,7 @@
 #include <casacore/measures/Measures/SolarPos.h>
 
 namespace {
-  inline void updatePosition(casacore::Double const angle0, casacore::Double const angle1,
+  inline void updatePosition(double const angle0, double const angle1,
                              casacore::MVPosition &pos) {
       if (angle1 == 0) {
         pos(0) = std::cos(angle0);
@@ -57,18 +57,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Static data
 // Note: this static is not mutexed, because it does not harm if accidently
 // two threads fill it at the same time.
-uInt MeasMath::b1950_reg_p = 0;
+uint32_t MeasMath::b1950_reg_p = 0;
 
 //# Constructors
 MeasMath::MeasMath() :
-  inOK_p(False), outOK_p(False),
+  inOK_p(false), outOK_p(false),
   inFrame_p(0), outFrame_p(0),
   SOLPOSIAU(0),
   ABERIAU(0), ABERB1950(0),
   NUTATIAU(0), NUTATB1950(0),
   PRECESIAU(0), PRECESB1950(0) {
-  for (uInt i=0; i<N_FrameType; i++) {
-    frameOK_p[i] = False;
+  for (uint32_t i=0; i<N_FrameType; i++) {
+    frameOK_p[i] = false;
     applyFrame_p[i] = 0;
     deapplyFrame_p[i] = 0;
   }
@@ -92,20 +92,20 @@ MeasMath::~MeasMath() {
 void MeasMath::initFrame(MRBase &outref, MRBase &inref) {
   // Make sure frames are attached
   // Reset all calculations
-  for (uInt i=0; i<N_FrameInfo; i++) infoOK_p[i] = False;
+  for (uint32_t i=0; i<N_FrameInfo; i++) infoOK_p[i] = false;
   // Get correct frame
-  inOK_p = True;
+  inOK_p = true;
   if (!inref.empty()) {
     inFrame_p = &(inref.getFrame());
   } else if (!outref.empty()) {
     inFrame_p = &(outref.getFrame());
-  } else inOK_p = False;
-  outOK_p = True;
+  } else inOK_p = false;
+  outOK_p = true;
   if (!outref.empty()) {
     outFrame_p = &(outref.getFrame());
   } else if (!inref.empty()) {
     outFrame_p = &(inref.getFrame());
-  } else outOK_p = False;
+  } else outOK_p = false;
 }
 
 void MeasMath::getFrame(FrameType i) {
@@ -118,13 +118,13 @@ void MeasMath::getFrame(FrameType i) {
 
   // Get correct frame
   if (!frameOK_p[i]) {
-    frameOK_p[i] = True;
+    frameOK_p[i] = true;
     if (inOK_p && (inFrame_p->*frameInfo[i])()) {
       applyFrame_p[i] = inFrame_p;
     } else if (outOK_p && (outFrame_p->*frameInfo[i])()) {
       applyFrame_p[i] = outFrame_p;
     } else {
-      frameOK_p[i] = False;
+      frameOK_p[i] = false;
     }
     if (frameOK_p[i]) {
       if (outOK_p && (outFrame_p->*frameInfo[i])()) {
@@ -267,14 +267,14 @@ void MeasMath::createPrecNutatB1950() {
   if (!NUTATB1950) NUTATB1950 = new Nutation(Nutation::B1950);
 }
 
-void MeasMath::applyPrecNutatB1950(MVPosition &in, Bool doin) {
+void MeasMath::applyPrecNutatB1950(MVPosition &in, bool doin) {
   getInfo(TDB);
   applyETerms(in, doin);
   in *= (RotMatrix((*PRECESB1950)(info_p[TDB])) *
 	 RotMatrix((*NUTATB1950)(info_p[TDB])));
 }
 
-void MeasMath::deapplyPrecNutatB1950(MVPosition &in, Bool doin) {
+void MeasMath::deapplyPrecNutatB1950(MVPosition &in, bool doin) {
   getInfo(TDB);
   in = (RotMatrix((*PRECESB1950)(info_p[TDB])) *
 	RotMatrix((*NUTATB1950)(info_p[TDB]))) * in;
@@ -286,7 +286,7 @@ void MeasMath::createAberration() {
   if (!ABERIAU) ABERIAU = new Aberration(Aberration::STANDARD);
 }
 
-void MeasMath::applyAberration(MVPosition &in, Bool doin) {
+void MeasMath::applyAberration(MVPosition &in, bool doin) {
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERIAU)(info_p[TDB]);
@@ -306,7 +306,7 @@ void MeasMath::applyAberration(MVPosition &in, Bool doin) {
   rotateShift(in, MVPOS2, J2000LONG, J2000LAT, doin);
 }
 
-void MeasMath::deapplyAberration(MVPosition &in, Bool doin) {
+void MeasMath::deapplyAberration(MVPosition &in, bool doin) {
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERIAU)(info_p[TDB]);
@@ -327,7 +327,7 @@ void MeasMath::deapplyAberration(MVPosition &in, Bool doin) {
     MVPOS3 = ((g1 * MVPOS2 +
 		(1+g2/(1+g1)) * MVPOS1)*(1.0/(1.0+g2)));
     MVPOS3.adjust();
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       g3 = MVPOS1(j);
       MVPOS2(j) -=
 	(MVPOS3(j) - MVPOS4(j))/
@@ -344,7 +344,7 @@ void MeasMath::createAberrationB1950() {
   if (!ABERB1950) ABERB1950 = new Aberration(Aberration::B1950);
 }
 
-void MeasMath::applyAberrationB1950(MVPosition &in, Bool doin) {
+void MeasMath::applyAberrationB1950(MVPosition &in, bool doin) {
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERB1950)(info_p[TDB]);
@@ -352,7 +352,7 @@ void MeasMath::applyAberrationB1950(MVPosition &in, Bool doin) {
   rotateShift(in, MVPOS1, APPLONG, APPLAT, doin);
 }
 
-void MeasMath::deapplyAberrationB1950(MVPosition &in, Bool doin) {
+void MeasMath::deapplyAberrationB1950(MVPosition &in, bool doin) {
   getInfo(TDB);
   // Aberration
   MVPOS1 = (*ABERB1950)(info_p[TDB]);
@@ -365,7 +365,7 @@ void MeasMath::createSolarPos() {
   if (!SOLPOSIAU) SOLPOSIAU = new SolarPos(SolarPos::STANDARD);
 }
 
-void MeasMath::applySolarPos(MVPosition &in, Bool doin) {
+void MeasMath::applySolarPos(MVPosition &in, bool doin) {
   getInfo(TDB);
   // Solar position in rectangular coordinates
   MVPOS1 = (*SOLPOSIAU)(info_p[TDB]);
@@ -387,7 +387,7 @@ void MeasMath::applySolarPos(MVPosition &in, Bool doin) {
   }
 }
 
-void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
+void MeasMath::deapplySolarPos(MVPosition &in, bool doin) {
   getInfo(TDB);
   // Solar position in rectangular coordinates
   MVPOS1 = (*SOLPOSIAU)(info_p[TDB]);
@@ -408,7 +408,7 @@ void MeasMath::deapplySolarPos(MVPosition &in, Bool doin) {
     do {
       MVPOS3 = (MVPOS1 - g2 * MVPOS2) * (g1/(1.0 - g2));
       MVPOS3.adjust();
-      for (Int j=0; j<3; j++) {
+      for (int32_t j=0; j<3; j++) {
 	g3 = MVPOS1(j);
 	MVPOS2(j) -=
 	  (MVPOS3(j) +
@@ -460,25 +460,25 @@ void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
   in = RotMatrix(Euler(C::pi_2 - info_p[LATGEO] , 2u, C::pi, 3u)) * in;
 }
 
-void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
+void MeasMath::applyJ2000toB1950(MVPosition &in, bool doin) {
   if (!MeasMath::b1950_reg_p) {
     b1950_reg_p =
-      AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
+      AipsrcValue<double>::registerRC(String("measures.b1950.d_epoch"),
 				      Unit("a"), Unit("a"), 2000.0);
   }
-  Double epo;
-  if (getInfo(UT1, True)) {
+  double epo;
+  if (getInfo(UT1, true)) {
     epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
-  } else epo = (AipsrcValue<Double>::get(MeasMath::b1950_reg_p)-2000.0)/100.0;
+  } else epo = (AipsrcValue<double>::get(MeasMath::b1950_reg_p)-2000.0)/100.0;
   applyJ2000toB1950(in, epo, doin);
 }
 
-void MeasMath::applyJ2000toB1950_VLA(MVPosition &in, Bool doin) {
-  Double epo = 19.799-20.0;
+void MeasMath::applyJ2000toB1950_VLA(MVPosition &in, bool doin) {
+  double epo = 19.799-20.0;
   applyJ2000toB1950(in, epo, doin);
 }
 
-void MeasMath::applyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
+void MeasMath::applyJ2000toB1950(MVPosition &in, double epo, bool doin) {
   MVPosition VPOS3;
   VPOS3 = in;
   // Frame rotation
@@ -495,25 +495,25 @@ void MeasMath::applyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
   } while (VPOS4.radius() > 1e-12);
 }
 
-void MeasMath::deapplyJ2000toB1950(MVPosition &in, Bool doin) {
+void MeasMath::deapplyJ2000toB1950(MVPosition &in, bool doin) {
   if (!MeasMath::b1950_reg_p) {
     b1950_reg_p =
-      AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
+      AipsrcValue<double>::registerRC(String("measures.b1950.d_epoch"),
 				      Unit("a"), Unit("a"), 2000.0);
   }
-  Double epo;
-  if (getInfo(UT1, True)) {
+  double epo;
+  if (getInfo(UT1, true)) {
     epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
-  } else epo = (AipsrcValue<Double>::get(MeasMath::b1950_reg_p)-2000.0)/100.0;
+  } else epo = (AipsrcValue<double>::get(MeasMath::b1950_reg_p)-2000.0)/100.0;
   deapplyJ2000toB1950(in, epo, doin);
 }
 
-void MeasMath::deapplyJ2000toB1950_VLA(MVPosition &in, Bool doin) {
-  Double epo = 19.799-20.0;
+void MeasMath::deapplyJ2000toB1950_VLA(MVPosition &in, bool doin) {
+  double epo = 19.799-20.0;
   deapplyJ2000toB1950(in, epo, doin);
 }
 
-void MeasMath::deapplyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
+void MeasMath::deapplyJ2000toB1950(MVPosition &in, double epo, bool doin) {
   applyETerms(in, doin, epo);
   // Frame rotation
   MVPOS1 = in*MeasData::MToJ2000(2);
@@ -522,7 +522,7 @@ void MeasMath::deapplyJ2000toB1950(MVPosition &in, Double epo, Bool doin) {
   in.adjust();
 }
 
-void MeasMath::applyETerms(MVPosition &in, Bool doin, Double epo) {
+void MeasMath::applyETerms(MVPosition &in, bool doin, double epo) {
   // E-terms
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
   epo += 0.5;
@@ -537,7 +537,7 @@ void MeasMath::applyETerms(MVPosition &in, Bool doin, Double epo) {
   rotateShift(in, MVPOS1, B1950LONG, B1950LAT, doin);
 }
 
-void MeasMath::deapplyETerms(MVPosition &in, Bool doin, Double epo) {
+void MeasMath::deapplyETerms(MVPosition &in, bool doin, double epo) {
   // E-terms
   // Iterate
   MVPOS1 = MVPosition(MeasTable::AberETerm(0));
@@ -592,7 +592,7 @@ void MeasMath::deapplyICRStoJ2000(MVPosition &in) {
   in *= MeasTable::ICRSToJ2000();
 }
 
-void MeasMath::applyTOPOtoHADEC(MVPosition &in, Bool doin) {
+void MeasMath::applyTOPOtoHADEC(MVPosition &in, bool doin) {
   getInfo(LASTR);
   getInfo(TDB);
   getInfo(RADIUS);
@@ -606,7 +606,7 @@ void MeasMath::applyTOPOtoHADEC(MVPosition &in, Bool doin) {
   deapplyPolarMotion(in);
 }
 
-void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, Bool doin) {
+void MeasMath::deapplyTOPOtoHADEC(MVPosition &in, bool doin) {
   getInfo(LASTR);
   getInfo(TDB);
   getInfo(RADIUS);
@@ -677,8 +677,8 @@ void MeasMath::deapplyTECLIPtoJTRUE(MVPosition &in) {
 			1, 0, 0));
 }
 
-void MeasMath::applyAPPtoTOPO(MVPosition &in, const Double len,
-			      Bool doin) {
+void MeasMath::applyAPPtoTOPO(MVPosition &in, const double len,
+			      bool doin) {
   if (len != 0) {
     getInfo(LASTR);
     getInfo(LONG);
@@ -693,8 +693,8 @@ void MeasMath::applyAPPtoTOPO(MVPosition &in, const Double len,
   }
 }
 
-void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
-				Bool doin) {
+void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const double len,
+				bool doin) {
   if (len != 0) {
     getInfo(LASTR);
     getInfo(LONG);
@@ -710,7 +710,7 @@ void MeasMath::deapplyAPPtoTOPO(MVPosition &in, const Double len,
 }
 
 // General support
-Bool MeasMath::getInfo(FrameInfo i, Bool ret) {
+bool MeasMath::getInfo(FrameInfo i, bool ret) {
   // Frame information groups
   static FrameType InfoType[N_FrameInfo] = {
     EPOCH, EPOCH, EPOCH, EPOCH, POSITION, POSITION, POSITION, POSITION,
@@ -749,18 +749,18 @@ Bool MeasMath::getInfo(FrameInfo i, Bool ret) {
 	  (infomvd_p[i-N_FrameDInfo]);
       }
     } else {
-      if (ret) return False;
+      if (ret) return false;
       throw(AipsError(String("Missing information in Frame ") +
 		      "specified for conversion"));
     }
-    infoOK_p[i] = True;
+    infoOK_p[i] = true;
   }
-  return True;
+  return true;
 }
 
 void MeasMath::rotateShift(MVPosition &in, const MVPosition &shft,
 			   const FrameInfo lng, const FrameInfo lat,
-			   Bool doin) {
+			   bool doin) {
   if (doin) {
     in += shft;
     in.adjust();

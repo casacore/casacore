@@ -81,30 +81,30 @@ public:
 
   // Access to required columns
   // <group>
-  ScalarColumn<Bool>& applied() {return applied_p;}
+  ScalarColumn<bool>& applied() {return applied_p;}
   ScalarColumn<String>& command() {return command_p;}
-  ScalarColumn<Double>& interval() {return interval_p;}
-  ScalarQuantColumn<Double>& intervalQuant() {return intervalQuant_p;}
-  ScalarColumn<Int>& level() {return level_p;}
+  ScalarColumn<double>& interval() {return interval_p;}
+  ScalarQuantColumn<double>& intervalQuant() {return intervalQuant_p;}
+  ScalarColumn<int32_t>& level() {return level_p;}
   ScalarColumn<String>& reason() {return reason_p;}
-  ScalarColumn<Int>& severity() {return severity_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarQuantColumn<Double>& timeQuant() {return timeQuant_p;}
+  ScalarColumn<int32_t>& severity() {return severity_p;}
+  ScalarColumn<double>& time() {return time_p;}
+  ScalarQuantColumn<double>& timeQuant() {return timeQuant_p;}
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   ScalarColumn<String>& type() {return type_p;}
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Bool>& applied() const {return applied_p;}
+  const ScalarColumn<bool>& applied() const {return applied_p;}
   const ScalarColumn<String>& command() const {return command_p;}
-  const ScalarColumn<Double>& interval() const {return interval_p;}
-  const ScalarQuantColumn<Double>& intervalQuant() const {return intervalQuant_p;}
-  const ScalarColumn<Int>& level() const {return level_p;}
+  const ScalarColumn<double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<double>& intervalQuant() const {return intervalQuant_p;}
+  const ScalarColumn<int32_t>& level() const {return level_p;}
   const ScalarColumn<String>& reason() const {return reason_p;}
-  const ScalarColumn<Int>& severity() const {return severity_p;}
-  const ScalarColumn<Double>& time() const {return time_p;}
-  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarColumn<int32_t>& severity() const {return severity_p;}
+  const ScalarColumn<double>& time() const {return time_p;}
+  const ScalarQuantColumn<double>& timeQuant() const {return timeQuant_p;}
   const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   const ScalarColumn<String>& type() const {return type_p;}
   // </group>
@@ -118,10 +118,10 @@ public:
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty=true);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -138,21 +138,21 @@ private:
   MSFlagCmdColumns& operator=(const MSFlagCmdColumns&);
 
   //# required columns
-  ScalarColumn<Bool> applied_p;
+  ScalarColumn<bool> applied_p;
   ScalarColumn<String> command_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Int> level_p;
+  ScalarColumn<double> interval_p;
+  ScalarColumn<int32_t> level_p;
   ScalarColumn<String> reason_p;
-  ScalarColumn<Int> severity_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<int32_t> severity_p;
+  ScalarColumn<double> time_p;
   ScalarColumn<String> type_p;
 
   //# Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   //# Access to Quantum columns
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
 };
 
 //# Define the RO version for backward compatibility.

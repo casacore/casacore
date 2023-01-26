@@ -33,7 +33,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 LatticeProgress::~LatticeProgress()
 {}
 
-void LatticeProgress::init (uInt expectedNsteps)
+void LatticeProgress::init (uint32_t expectedNsteps)
 {
     itsExpectedNsteps = expectedNsteps;
     initDerived();
@@ -42,7 +42,7 @@ void LatticeProgress::init (uInt expectedNsteps)
 void LatticeProgress::initDerived()
 {}
 
-void LatticeProgress::nstepsDone (uInt)
+void LatticeProgress::nstepsDone (uint32_t)
 {}
 
 void LatticeProgress::done()

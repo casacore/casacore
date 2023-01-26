@@ -68,13 +68,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSArrayGram = 0;
-static Int                   posMSArrayGram = 0;
+static int32_t                   posMSArrayGram = 0;
 
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   TableExprNode msArrayGramParseCommand (const MeasurementSet* ms, const String& command, 
-					 Vector<Int>& selectedIDs, Int maxArrays) 
+					 Vector<int32_t>& selectedIDs, int32_t maxArrays) 
 {
   try
     {
@@ -111,7 +111,7 @@ static Int                   posMSArrayGram = 0;
 // }
 
 //# Give the string position.
-Int& msArrayGramPosition()
+int32_t& msArrayGramPosition()
 {
     return posMSArrayGram;
 }

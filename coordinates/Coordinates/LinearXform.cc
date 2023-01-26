@@ -41,8 +41,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-LinearXform::LinearXform(uInt naxis)
-  : isPCDiagonal_p(True)
+LinearXform::LinearXform(uint32_t naxis)
+  : isPCDiagonal_p(true)
 {
     linprm_p.flag = -1;
     linini(1, naxis, &linprm_p);
@@ -50,18 +50,18 @@ LinearXform::LinearXform(uInt naxis)
 }
 
 
-LinearXform::LinearXform(const Vector<Double> &crpixIn,
-                         const Vector<Double> &cdeltIn)
-  : isPCDiagonal_p(True)
+LinearXform::LinearXform(const Vector<double> &crpixIn,
+                         const Vector<double> &cdeltIn)
+  : isPCDiagonal_p(true)
 {
-    const uInt naxis = crpixIn.nelements();
+    const uint32_t naxis = crpixIn.nelements();
     AlwaysAssert(cdeltIn.nelements() == naxis, AipsError);
 //
     int n = naxis;
     linprm_p.flag = -1;
     linini(1, n, &linprm_p);
 //
-    for (uInt i = 0; i < naxis; i++) {
+    for (uint32_t i = 0; i < naxis; i++) {
         linprm_p.crpix[i] = crpixIn[i];
         linprm_p.cdelt[i] = cdeltIn[i];
     }
@@ -69,11 +69,11 @@ LinearXform::LinearXform(const Vector<Double> &crpixIn,
 }
 
 
-LinearXform::LinearXform(const Vector<Double>& crpixIn,
-                         const Vector<Double>& cdeltIn,
-                         const Matrix<Double>& pcIn)
+LinearXform::LinearXform(const Vector<double>& crpixIn,
+                         const Vector<double>& cdeltIn,
+                         const Matrix<double>& pcIn)
 {
-    const uInt naxis = crpixIn.nelements();
+    const uint32_t naxis = crpixIn.nelements();
     AlwaysAssert(cdeltIn.nelements() == naxis && pcIn.nrow() == naxis &&
                  pcIn.ncolumn() == naxis, AipsError);
 //
@@ -81,22 +81,22 @@ LinearXform::LinearXform(const Vector<Double>& crpixIn,
     linprm_p.flag = -1;
     linini(1, n, &linprm_p);
 //
-    Double zero = 0.0;
-    Double tol = 1e-12;
-    isPCDiagonal_p = True;
+    double zero = 0.0;
+    double tol = 1e-12;
+    isPCDiagonal_p = true;
 //
-    uInt ij = 0;
-    for (uInt i = 0; i < naxis; i++) {
+    uint32_t ij = 0;
+    for (uint32_t i = 0; i < naxis; i++) {
         linprm_p.crpix[i] = crpixIn[i];
         linprm_p.cdelt[i] = cdeltIn[i];
 //
-        for (uInt j = 0; j < naxis; j++) {
+        for (uint32_t j = 0; j < naxis; j++) {
 
 // Is pc is diagonal?  Done purely for use in the Fourier
 // inversion stuff.  Urk.
 
             if (i != j && !casacore::near(pcIn(j,i),zero,tol)) {
-                isPCDiagonal_p = False;
+                isPCDiagonal_p = false;
             }
             linprm_p.pc[ij++] = pcIn(j,i);
         }
@@ -132,20 +132,20 @@ LinearXform::~LinearXform()
 }
 
 
-uInt LinearXform::nWorldAxes() const
+uint32_t LinearXform::nWorldAxes() const
 {
     return linprm_p.naxis;
 }
 
 
-Bool LinearXform::forward(Vector<Double>& pixel,
-                          const Vector<Double>& world,
+bool LinearXform::forward(Vector<double>& pixel,
+                          const Vector<double>& world,
                           String& errorMsg) const
 {
-    uInt naxis = world.nelements();
+    uint32_t naxis = world.nelements();
     pixel.resize(naxis);
 //
-    Bool delPixel, delWorld;
+    bool delPixel, delWorld;
     double* pixelStor = pixel.getStorage(delPixel);
     const double* worldStor = world.getStorage(delWorld);
 //
@@ -153,23 +153,23 @@ Bool LinearXform::forward(Vector<Double>& pixel,
     if (int err = linx2p(&linprm_p, 1, n, worldStor, pixelStor)) {
         errorMsg = "wcs linx2p error: ";
         errorMsg += linx2p_errmsg[err];
-        return False;
+        return false;
     }
 //
     pixel.putStorage(pixelStor, delPixel);
     world.freeStorage(worldStor, delWorld);
 //
-    return True;
+    return true;
 }
 
-Bool LinearXform::reverse(Vector<Double> &world,
-                          const Vector<Double> &pixel,
+bool LinearXform::reverse(Vector<double> &world,
+                          const Vector<double> &pixel,
                           String &errorMsg) const
 {
-    uInt naxis = pixel.nelements();
+    uint32_t naxis = pixel.nelements();
     world.resize(naxis);
 //
-    Bool delPixel, delWorld;
+    bool delPixel, delWorld;
     const double* pixelStor = pixel.getStorage(delPixel);
     double* worldStor = world.getStorage(delWorld);
 //
@@ -177,50 +177,50 @@ Bool LinearXform::reverse(Vector<Double> &world,
     if (int err = linp2x(&linprm_p, 1, n, pixelStor, worldStor)) {
         errorMsg = "wcs linp2x error: ";
         errorMsg += linp2x_errmsg[err];
-        return False;
+        return false;
     }
 //
     pixel.freeStorage(pixelStor, delPixel);
     world.putStorage(worldStor, delWorld);
 //
-    return True;
+    return true;
 }
 
 
-Vector<Double> LinearXform::crpix() const
+Vector<double> LinearXform::crpix() const
 {
-    uInt naxis = linprm_p.naxis;
-    Vector<Double> tmp(naxis);
+    uint32_t naxis = linprm_p.naxis;
+    Vector<double> tmp(naxis);
 //
     const double* dp = linprm_p.crpix;
-    for (uInt i = 0; i < naxis; i++) {
+    for (uint32_t i = 0; i < naxis; i++) {
         tmp[i] = *(dp++);
     }
     return tmp;
 }
 
 
-Vector<Double> LinearXform::cdelt() const
+Vector<double> LinearXform::cdelt() const
 {
-    uInt naxis = linprm_p.naxis;
-    Vector<Double> tmp(naxis);
+    uint32_t naxis = linprm_p.naxis;
+    Vector<double> tmp(naxis);
 //
     const double* dp = linprm_p.cdelt;
-    for (uInt i = 0; i < naxis; i++) {
+    for (uint32_t i = 0; i < naxis; i++) {
         tmp[i] = *(dp++);
     }
     return tmp;
 }
 
 
-Matrix<Double> LinearXform::pc() const
+Matrix<double> LinearXform::pc() const
 {
-    uInt naxis = linprm_p.naxis;
-    Matrix<Double> tmp(naxis,naxis);
+    uint32_t naxis = linprm_p.naxis;
+    Matrix<double> tmp(naxis,naxis);
 //
     const double* dp = linprm_p.pc;
-    for (uInt i = 0; i < naxis; i++) {
-        for (uInt j = 0; j < naxis; j++) {
+    for (uint32_t i = 0; i < naxis; i++) {
+        for (uint32_t j = 0; j < naxis; j++) {
           tmp(j,i) = *(dp++);
         }
     }
@@ -228,109 +228,109 @@ Matrix<Double> LinearXform::pc() const
     return tmp;
 }
 
-void LinearXform::crpix(const Vector<Double> &newvals)
+void LinearXform::crpix(const Vector<double> &newvals)
 {
     AlwaysAssert(newvals.nelements() == nWorldAxes(), AipsError);
 //
-    const Vector<Double>& cdlt = this->cdelt();
-    const Matrix<Double>& pcm = this->pc();
+    const Vector<double>& cdlt = this->cdelt();
+    const Matrix<double>& pcm = this->pc();
 //
     *this = LinearXform(newvals, cdlt, pcm);
 }
 
-void LinearXform::cdelt(const Vector<Double> &newvals)
+void LinearXform::cdelt(const Vector<double> &newvals)
 {
     AlwaysAssert(newvals.nelements() == nWorldAxes(), AipsError);
 //
-    const Vector<Double>& crp = this->crpix();
-    const Matrix<Double>& pcm = this->pc();
+    const Vector<double>& crp = this->crpix();
+    const Matrix<double>& pcm = this->pc();
 //
     *this = LinearXform(crp, newvals, pcm);
 }
 
 
-void LinearXform::pc(const Matrix<Double>& newvals)
+void LinearXform::pc(const Matrix<double>& newvals)
 {
     AlwaysAssert(newvals.nrow()    == nWorldAxes() &&
                  newvals.ncolumn() == nWorldAxes(), AipsError);
 //
-    const Vector<Double>& crp = this->crpix();
-    const Vector<Double>& cdlt = this->cdelt();
+    const Vector<double>& crp = this->crpix();
+    const Vector<double>& cdlt = this->cdelt();
 
     *this = LinearXform(crp, cdlt, newvals);
 }
 
 
-Bool LinearXform::near(const LinearXform& other,
-                       Double tol) const
+bool LinearXform::near(const LinearXform& other,
+                       double tol) const
 {
-   Vector<Int> excludeAxes;
+   Vector<int32_t> excludeAxes;
    return near(other, excludeAxes, tol);
 }
 
 
 
-Bool LinearXform::near(const LinearXform& other,
-                       const Vector<Int>& excludeAxes,
-                       Double tol) const
+bool LinearXform::near(const LinearXform& other,
+                       const Vector<int32_t>& excludeAxes,
+                       double tol) const
 {
 // Number of pixel and world axes is the same for a LinearXform.
 
-    uInt naxes = excludeAxes.nelements();
-    Vector<Bool> exclude(linprm_p.naxis);
-    Bool found;
-    for (uInt i = 0; i < nWorldAxes(); i++) {
-        exclude[i] = (linearSearch(found, excludeAxes, Int(i), naxes) >= 0);
+    uint32_t naxes = excludeAxes.nelements();
+    Vector<bool> exclude(linprm_p.naxis);
+    bool found;
+    for (uint32_t i = 0; i < nWorldAxes(); i++) {
+        exclude[i] = (linearSearch(found, excludeAxes, int32_t(i), naxes) >= 0);
     }
 
 // Compare reference pixels and increments.
 
     {
-       const Vector<Double>& d1 = this->crpix();
-       const Vector<Double>& d2 = other.crpix();
-       if (d1.nelements() != d2.nelements()) return False;
-       for (uInt i = 0; i < d1.nelements(); i++) {
+       const Vector<double>& d1 = this->crpix();
+       const Vector<double>& d2 = other.crpix();
+       if (d1.nelements() != d2.nelements()) return false;
+       for (uint32_t i = 0; i < d1.nelements(); i++) {
            if (!exclude[i]) {
-               if (!casacore::near(d1(i),d2(i),tol)) return False;
+               if (!casacore::near(d1(i),d2(i),tol)) return false;
            }
        }
     }
 
     {
-       const Vector<Double>& d1 = this->cdelt();
-       const Vector<Double>& d2 = other.cdelt();
-       if (d1.nelements() != d2.nelements()) return False;
-       for (uInt i = 0; i < d1.nelements(); i++) {
+       const Vector<double>& d1 = this->cdelt();
+       const Vector<double>& d2 = other.cdelt();
+       if (d1.nelements() != d2.nelements()) return false;
+       for (uint32_t i = 0; i < d1.nelements(); i++) {
            if (!exclude(i)) {
-               if (!casacore::near(d1[i],d2[i],tol)) return False;
+               if (!casacore::near(d1[i],d2[i],tol)) return false;
            }
        }
     }
 
 // Check the matrix.
 
-    Matrix<Double> pc1 = this->pc();
-    Matrix<Double> pc2 = other.pc();
-    if (pc1.nrow()    != pc2.nrow())    return False;
-    if (pc1.ncolumn() != pc2.ncolumn()) return False;
+    Matrix<double> pc1 = this->pc();
+    Matrix<double> pc2 = other.pc();
+    if (pc1.nrow()    != pc2.nrow())    return false;
+    if (pc1.ncolumn() != pc2.ncolumn()) return false;
 
 // Compare row by row.  An axis will turn up in the PC matrix in any row
 // or column with that number.  E.g., values pertaining to axis "i" will
 // be found in all entries of row "i" and all entries of column "i".
 
-    for (uInt j = 0; j < pc1.nrow(); j++) {
-        Vector<Double> row1 = pc1.row(j);
-        Vector<Double> row2 = pc2.row(j);
+    for (uint32_t j = 0; j < pc1.nrow(); j++) {
+        Vector<double> row1 = pc1.row(j);
+        Vector<double> row2 = pc2.row(j);
         if (!exclude(j)) {
-            for (uInt i = 0; i < row1.nelements(); i++) {
+            for (uint32_t i = 0; i < row1.nelements(); i++) {
                 if (!exclude(i)) {
-                    if (!casacore::near(row1(i),row2(i),tol)) return False;
+                    if (!casacore::near(row1(i),row2(i),tol)) return false;
                 }
             }
         }
     }
 
-    return True;
+    return true;
 }
 
 

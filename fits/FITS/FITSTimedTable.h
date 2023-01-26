@@ -70,65 +70,65 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class FITSTimedTable :  public FITSTabular
 {
 public:
-    // This is not connected to any data, isValid always returns True,
+    // This is not connected to any data, isValid always returns true,
     // keywords and description return the default versions
-    // hasChanged returns False, name returns an empty string
-    // pastEnd returns False and next does nothing.
+    // hasChanged returns false, name returns an empty string
+    // pastEnd returns false and next does nothing.
     // setTime does nothing, currentRow returns an empty record
     // and currentTime returns 0.0
-    // and ok returns True and nextTime returns 0.0
+    // and ok returns true and nextTime returns 0.0
     FITSTimedTable();
     // Note, originalTable cannot be destructed, reopened, ...,during the
     // lifetime of this object.
-    FITSTimedTable(FITSTabular *originalTable, uInt whichColumnIsTime=0);
+    FITSTimedTable(FITSTabular *originalTable, uint32_t whichColumnIsTime=0);
     ~FITSTimedTable();
 
-    virtual Bool isValid() const;
+    virtual bool isValid() const;
     virtual const TableRecord &keywords() const;
     virtual const RecordDesc &description() const;
     virtual const Record &units() const;
     virtual const Record &displayFormats() const;
     virtual const Record &nulls() const;
 
-    virtual Bool hasChanged() const { return hasChanged_p;}
-    virtual void resetChangedFlag() { hasChanged_p = False; }
+    virtual bool hasChanged() const { return hasChanged_p;}
+    virtual void resetChangedFlag() { hasChanged_p = false; }
     virtual const String &name() const { return table_p->name(); }
-    virtual Bool pastEnd() const;
-    virtual Bool pastEnd();
+    virtual bool pastEnd() const;
+    virtual bool pastEnd();
     virtual void next();
     // interpolate to the desired time which must be >= the currentTime()
     // This uses a linear interpolation between adjacent floating point values.
     // Non-floating point values are NOT interpolated but have the value of the
     // most recent actual row.  On the last row of the table, not interpolation
     // is done.
-    virtual void setTime(Double time);
+    virtual void setTime(double time);
     virtual const Record &currentRow() const;
     virtual Record &currentRow();
 
     // What is the time of the current row?
-    Double currentTime() const;
+    double currentTime() const;
 
-    // this is True if the last setTime() finished as expected
-    // It is False only if the requested time is before the current time
+    // this is true if the last setTime() finished as expected
+    // It is false only if the requested time is before the current time
     // and the timed table as just been opened
-    Bool ok() const { return ok_p;}
+    bool ok() const { return ok_p;}
 
     // What will the time of the next row be? Returns a very large number if
     // it is past the end of the table.
-    Double nextTime();
+    double nextTime();
 private:
-    Bool atStart_p;
-    Bool ok_p;
-    Bool hasChanged_p;
-    Bool changePending_p;
+    bool atStart_p;
+    bool ok_p;
+    bool hasChanged_p;
+    bool changePending_p;
     FITSTabular *table_p;
     Record *row_now_p;
     Record *row_next_p;
-    RORecordFieldPtr<Double> time_now_p;
-    RORecordFieldPtr<Double> time_next_p;
+    RORecordFieldPtr<double> time_now_p;
+    RORecordFieldPtr<double> time_next_p;
     RecordDesc rowDesc_p;
-    Int how_past_end_p;
-    uInt timeColumn_p;
+    int32_t how_past_end_p;
+    uint32_t timeColumn_p;
     TableRecord dummyKeywords;
     Record dummyUnits;
     Record dummyDisps;

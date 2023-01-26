@@ -76,75 +76,75 @@ void MSSourceIndex::attachIds()
     spwId_p.attachToRecord(accessKey(), "SPECTRAL_WINDOW_ID");
 }
 
-Vector<Int> MSSourceIndex::matchSourceName(const String& name)
+Vector<int32_t> MSSourceIndex::matchSourceName(const String& name)
 {
 // Match a source name to a set of source id's
 // Input:
 //    name             const String&            Source name to match
 // Output:
-//    matchSourceName  Vector<Int>              Matching source id's
+//    matchSourceName  Vector<int32_t>              Matching source id's
 //
-  Vector<Int> retval;
+  Vector<int32_t> retval;
   if (!msSourceCols_p->isNull() && msSourceCols_p->nrow() > 0) {
     LogicalArray maskArray = (msSourceCols_p->name().getColumn()==name);
-    MaskedArray<Int> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
+    MaskedArray<int32_t> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
 				  maskArray);
     retval = maskSourceId.getCompressedArray();
   }
   return retval;
 } 
 
-Vector<Int> MSSourceIndex::matchSourceCode(const String& code)
+Vector<int32_t> MSSourceIndex::matchSourceCode(const String& code)
 {
 // Match a source code to a set of source id's
 // Input:
 //    code             const String&            Source code to match
 // Output:
-//    matchSourceCode  Vector<Int>              Matching source id's
+//    matchSourceCode  Vector<int32_t>              Matching source id's
 //
-  Vector<Int> retval;
+  Vector<int32_t> retval;
   if (!msSourceCols_p->isNull() && msSourceCols_p->nrow() > 0) {
     LogicalArray maskArray = (msSourceCols_p->code().getColumn()==code);
-    MaskedArray<Int> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
+    MaskedArray<int32_t> maskSourceId(msSourceCols_p->sourceId().getColumn(), 
 				  maskArray);
     retval = maskSourceId.getCompressedArray();
   }
   return retval;
 } 
-RowNumbers MSSourceIndex::getRowNumbersOfSourceID(const Int sid){
+RowNumbers MSSourceIndex::getRowNumbersOfSourceID(const int32_t sid){
 
   ColumnsIndex sidIndx(table(), MSSource::columnName(MSSource::SOURCE_ID));
-  RecordFieldPtr<Int> sourceId (sidIndx.accessKey(), MSSource::columnName(MSSource::SOURCE_ID));
+  RecordFieldPtr<int32_t> sourceId (sidIndx.accessKey(), MSSource::columnName(MSSource::SOURCE_ID));
   *sourceId=sid;
   return sidIndx.getRowNumbers(); 
 
 }
-Vector<Int> MSSourceIndex::matchSourceName(const Vector<String>& names)
+Vector<int32_t> MSSourceIndex::matchSourceName(const Vector<String>& names)
 {
 // Match a set of source names to a set of source id's
 // Input:
 //    names            const Vector<String>&    Source names to match
 // Output:
-//    matchSourceNames Vector<Int>              Matching source id's
+//    matchSourceNames Vector<int32_t>              Matching source id's
 //
-  Vector<Int> matchedSourceIds;
+  Vector<int32_t> matchedSourceIds;
   // Match each source name individually
-  for (uInt fld=0; fld<names.nelements(); fld++) {
+  for (uint32_t fld=0; fld<names.nelements(); fld++) {
     // Add to list of source id's
-    Vector<Int> currentMatch = matchSourceName(names(fld));
+    Vector<int32_t> currentMatch = matchSourceName(names(fld));
     if (currentMatch.nelements() > 0) {
-      Vector<Int> temp(matchedSourceIds);
+      Vector<int32_t> temp(matchedSourceIds);
       matchedSourceIds.resize(matchedSourceIds.nelements() +
-			     currentMatch.nelements(), True);
+			     currentMatch.nelements(), true);
       matchedSourceIds = concatenateArray(temp, currentMatch);
     }
   }
   return matchedSourceIds;
 }
 
-Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
+int32_t MSSourceIndex::compare (const Block<void*>& fieldPtrs,
                             const Block<void*>& dataPtrs,
-                            const Block<Int>& dataTypes,
+                            const Block<int32_t>& dataTypes,
                             rownr_t index)
 {
   // this implementation has been adapted from the default compare function in 
@@ -155,11 +155,11 @@ Int MSSourceIndex::compare (const Block<void*>& fieldPtrs,
   // supports a -1 value for all IDs, rather than just for SPECTRAL_WINDOW_ID;
   // since MS2 only allows a -1 value for SPECTRAL_WINDOW_ID, this should not
   // cause problems for users with valid MS2 datasets.
-  uInt nfield = fieldPtrs.nelements();
-  for (uInt i=0; i<nfield; i++) {
+  uint32_t nfield = fieldPtrs.nelements();
+  for (uint32_t i=0; i<nfield; i++) {
     if (dataTypes[i] == TpInt) {
-      const Int left = *(*(RecordFieldPtr<Int>*)(fieldPtrs[i]));
-      const Int right = ((const Int*)(dataPtrs[i]))[index];
+      const int32_t left = *(*(RecordFieldPtr<int32_t>*)(fieldPtrs[i]));
+      const int32_t right = ((const int32_t*)(dataPtrs[i]))[index];
       if (right != -1) {        // consider -1 equal to any requested id
           if (left < right) {
               return -1;

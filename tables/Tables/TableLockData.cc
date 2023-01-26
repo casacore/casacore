@@ -47,20 +47,20 @@ TableLockData::~TableLockData()
 }
 
 
-void TableLockData::makeLock (const String& name, Bool create,
-			      FileLocker::LockType type, uInt locknr)
+void TableLockData::makeLock (const String& name, bool create,
+			      FileLocker::LockType type, uint32_t locknr)
 {
     //# Create lock file object only when not created yet.
     //# It is acceptable that no lock file exists for a readonly table
     //# (to be able to read older tables).
     if (itsLock == 0) {
 	itsLock = new LockFile (name + "/table.lock", interval(), create,
-				True, False, locknr, isPermanent(),
+				true, false, locknr, isPermanent(),
                                 option() == NoLocking);
     }
     //# Acquire a lock when permanent locking is in use.
     if (isPermanent()) {
-	uInt nattempts = 1;
+	uint32_t nattempts = 1;
 	if (option() == PermanentLockingWait) {
 	    nattempts = 0;                          // wait
 	}
@@ -72,24 +72,24 @@ void TableLockData::makeLock (const String& name, Bool create,
     }
 }
 
-Bool TableLockData::acquire (MemoryIO* info,
-			     FileLocker::LockType type, uInt nattempts)
+bool TableLockData::acquire (MemoryIO* info,
+			     FileLocker::LockType type, uint32_t nattempts)
 {
     //# Try to acquire a lock.
     //# Show a message when we have to wait for a long time.
     //# Start with n attempts, show a message and continue thereafter.
-    uInt n = 30;
+    uint32_t n = 30;
     if (nattempts > 0  &&  nattempts < n) {
 	n = nattempts;
     }
-    Bool status = itsLock->acquire (info, type, n);
+    bool status = itsLock->acquire (info, type, n);
     if (!status  &&  n != nattempts) {
 	String s = "read";
 	if (type == FileLocker::Write) {
 	    s = "write";
 	}
 	LogIO os;
-	os << "Process " << uInt(getpid()) << ": waiting for "
+	os << "Process " << uint32_t(getpid()) << ": waiting for "
 	   << s << "-lock on file " << itsLock->name();
 	os.post();
 	if (nattempts > 0) {
@@ -97,12 +97,12 @@ Bool TableLockData::acquire (MemoryIO* info,
 	}
 	status = itsLock->acquire (info, type, nattempts);
 	if (status) {
-	    os << "Process " << uInt(getpid()) << ": acquired "
+	    os << "Process " << uint32_t(getpid()) << ": acquired "
 	       << s << "-lock on file " << itsLock->name();
 	    os.post();
 	}else{
 	    if (nattempts > 0) {
-		os << "Process " << uInt(getpid()) << ": gave up acquiring "
+		os << "Process " << uint32_t(getpid()) << ": gave up acquiring "
 		   << s << "-lock on file " << itsLock->name()
 		   << " after " << nattempts << " seconds";
 		os.post();
@@ -119,7 +119,7 @@ Bool TableLockData::acquire (MemoryIO* info,
     return status;
 }
 
-void TableLockData::release (Bool always)
+void TableLockData::release (bool always)
 {
     //# Only release if not permanently locked.
     if (always  ||  !isPermanent()) {

@@ -61,7 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply numerical binary
 // operators to Lattice expressions.  They operate on numerical
-// Lattice (Float,Double,Complex,DComplex) expressions and return the 
+// Lattice (float,double,Complex,DComplex) expressions and return the 
 // same numerical type. The available C++ operators  
 // are  <src>+,-,*,/</src> with  equivalents in the enum 
 // of ADD, SUBTRACT, MULTIPLY, and DIVIDE.
@@ -79,9 +79,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Float> y(shape); y.set(2.0);
-// ArrayLattice<Float> z(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<float> y(shape); y.set(2.0);
+// ArrayLattice<float> z(shape); 
 // z.copyData(x+y);                 // z = x + y;
 // z.copyData(x-y);                 // z = x - y;
 // z.copyData(x*y);                 // z = x * y;
@@ -121,16 +121,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -167,8 +167,8 @@ private:
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply relational numerical 
 // binary operators to Lattice expressions.  They operate on numerical
-// (Float,Double,Complex,DComplex) Lattice expressions and result 
-// in a Bool.  The available C++ operators are  
+// (float,double,Complex,DComplex) Lattice expressions and result 
+// in a bool.  The available C++ operators are  
 // <src>==,!=>,>=,<,<=,</src> with equivalents in the enum of 
 // EQ, NE, GT, GE, LT, and LE
 //
@@ -185,9 +185,9 @@ private:
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Float> y(shape); y.set(2.0);
-// ArrayLattice<Bool> z(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<float> y(shape); y.set(2.0);
+// ArrayLattice<bool> z(shape); 
 // z.copyData(x==y);                // z = x == y;
 // z.copyData(x!=y);                // z = x != y;
 // z.copyData(x>y);                 // z = x > y;
@@ -205,7 +205,7 @@ private:
 // </todo>
  
 
-template<class T> class LELBinaryCmp : public LELInterface<Bool>
+template<class T> class LELBinaryCmp : public LELInterface<bool>
 {
 public: 
    
@@ -219,23 +219,23 @@ public:
   ~LELBinaryCmp();
 
 // Recursively evaluate the expression 
-   virtual void eval (LELArray<Bool>& result,
+   virtual void eval (LELArray<bool>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual LELScalar<Bool> getScalar() const;
+   virtual LELScalar<bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
@@ -271,7 +271,7 @@ private:
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that apply logical 
 // binary operators to Lattice expressions.  They apply only
-// to Bool Lattice expressions and result in a Bool.  The 
+// to bool Lattice expressions and result in a bool.  The 
 // available C++ operators are  <src>&&,||,==,!=</src> with 
 // equivalents in the enum of  AND, OR, EQ, and NE
 //
@@ -288,9 +288,9 @@ private:
 // would indirectly use this class (through the envelope) are:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Bool> x(shape); x.set(False);
-// ArrayLattice<Bool> y(shape); y.set(True);
-// ArrayLattice<Bool> z(shape); z.set(False);
+// ArrayLattice<bool> x(shape); x.set(false);
+// ArrayLattice<bool> y(shape); y.set(true);
+// ArrayLattice<bool> z(shape); z.set(false);
 // z.copyData(x&&y);                // z = x && y;
 // z.copyData(x||y);                // z = x || y;
 // z.copyData(x==y);                // z = x == y;
@@ -306,44 +306,44 @@ private:
 // </todo>
  
 
-class LELBinaryBool : public LELInterface<Bool>
+class LELBinaryBool : public LELInterface<bool>
 {
 public: 
    
 // Constructor takes operation and left and right expressions
 // to be operated upon.
    LELBinaryBool(const LELBinaryEnums::Operation op, 
-		 const CountedPtr<LELInterface<Bool> >& pLeftExpr,
-		 const CountedPtr<LELInterface<Bool> >& pRightExpr);
+		 const CountedPtr<LELInterface<bool> >& pLeftExpr,
+		 const CountedPtr<LELInterface<bool> >& pRightExpr);
 
 // Destructor 
   ~LELBinaryBool();
 
 // Recursively evaluate the expression 
-   virtual void eval (LELArray<Bool>& result,
+   virtual void eval (LELArray<bool>& result,
                       const Slicer& section) const;
 
 // Recursively evaluate the scalar expression 
-   virtual LELScalar<Bool> getScalar() const;
+   virtual LELScalar<bool> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 
 private:
    LELBinaryEnums::Operation op_p;
-   CountedPtr<LELInterface<Bool> > pLeftExpr_p;
-   CountedPtr<LELInterface<Bool> > pRightExpr_p;
+   CountedPtr<LELInterface<bool> > pLeftExpr_p;
+   CountedPtr<LELInterface<bool> > pRightExpr_p;
 };
 
 

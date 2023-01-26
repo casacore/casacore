@@ -97,10 +97,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~ConcatColumn();
 
     // Test if the column is writable in the parent table.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Test if the column is stored (otherwise it is virtual).
-    virtual Bool isStored() const;
+    virtual bool isStored() const;
 
     // Get access to the column keyword set.
     // The initial keyword set is a copy of the keyword set of the first table.
@@ -113,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual rownr_t nrow() const;
 
     // Test if a value in a particular cell has been defined.
-    virtual Bool isDefined (rownr_t rownr) const;
+    virtual bool isDefined (rownr_t rownr) const;
 
     // Set the shape of the array in the given row.
     virtual void setShape (rownr_t rownr, const IPosition& shape);
@@ -123,13 +123,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			   const IPosition& tileShape);
 
     // Get the global #dimensions of an array (i.e. for all rows).
-    virtual uInt ndimColumn() const;
+    virtual uint32_t ndimColumn() const;
 
     // Get the global shape of an array (i.e. for all rows).
     virtual IPosition shapeColumn() const;
 
     // Get the #dimensions of an array in a particular cell.
-    virtual uInt ndim (rownr_t rownr) const;
+    virtual uint32_t ndim (rownr_t rownr) const;
 
     // Get the shape of an array in a particular cell.
     virtual IPosition shape (rownr_t rownr) const;
@@ -138,7 +138,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual IPosition tileShape (rownr_t rownr) const;
 
     // It can change shape if the underlying column can.
-    virtual Bool canChangeShape() const;
+    virtual bool canChangeShape() const;
 
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description (if defined).
@@ -210,7 +210,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual ColumnCache& columnCache();
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
-    virtual void setMaximumCacheSize (uInt nbytes);
+    virtual void setMaximumCacheSize (uint32_t nbytes);
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison function if undefined.
@@ -263,7 +263,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   protected:
     // Set the column cache to the cache of the given table.
     // The row numbers will be adjusted as needed.
-    void setColumnCache (uInt tableNr, const ColumnCache&) const;
+    void setColumnCache (uint32_t tableNr, const ColumnCache&) const;
 
     //# Data members
     ConcatTable*        refTabPtr_p;

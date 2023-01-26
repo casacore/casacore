@@ -50,21 +50,21 @@ RecordRep::RecordRep (const RecordDesc& description)
 : desc_p  (description),
   nused_p (0)
 {
-    restructure (desc_p, True);
+    restructure (desc_p, true);
 }
 
 RecordRep::RecordRep (const RecordRep& other)
 : desc_p  (other.desc_p),
   nused_p (0)
 {
-    restructure (desc_p, False);
+    restructure (desc_p, false);
     copy_other (other);
 }
 
 RecordRep& RecordRep::operator= (const RecordRep& other)
 {
     if (this != &other) {
-	restructure (other.desc_p, False);
+	restructure (other.desc_p, false);
 	copy_other (other);
     }
     return *this;
@@ -75,7 +75,7 @@ RecordRep::~RecordRep()
     delete_myself (desc_p.nfields());
 }
 
-void RecordRep::restructure (const RecordDesc& newDescription, Bool recursive)
+void RecordRep::restructure (const RecordDesc& newDescription, bool recursive)
 {
     delete_myself (desc_p.nfields());
     desc_p  = newDescription;
@@ -83,7 +83,7 @@ void RecordRep::restructure (const RecordDesc& newDescription, Bool recursive)
     datavec_p.resize (nused_p);
     datavec_p = static_cast<void*>(0);
     data_p.resize (nused_p);
-    for (uInt i=0; i<nused_p; i++) {
+    for (uint32_t i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    if (recursive) {
 	        data_p[i] = new Record (this, desc_p.subRecord(i));
@@ -96,7 +96,7 @@ void RecordRep::restructure (const RecordDesc& newDescription, Bool recursive)
     }
 }
 
-Int RecordRep::fieldNumber (const String& name) const
+int32_t RecordRep::fieldNumber (const String& name) const
 {
     return desc_p.fieldNumber (name);
 }
@@ -111,10 +111,10 @@ void RecordRep::addDataPtr (void* ptr)
     data_p[nused_p++] = ptr;
 }
 
-void RecordRep::removeDataPtr (Int index)
+void RecordRep::removeDataPtr (int32_t index)
 {
     nused_p--;
-    if (index < Int(nused_p)) {
+    if (index < int32_t(nused_p)) {
 	memmove (&datavec_p[index], &datavec_p[index+1],
 		 (nused_p-index) * sizeof(void*));
 	memmove (&data_p[index], &data_p[index+1],
@@ -122,7 +122,7 @@ void RecordRep::removeDataPtr (Int index)
     }
 }
 
-void RecordRep::removeData (Int whichField, void* ptr, void* vecptr)
+void RecordRep::removeData (int32_t whichField, void* ptr, void* vecptr)
 {
     DataType type = desc_p.type(whichField);
     if (type == TpRecord) {
@@ -132,7 +132,7 @@ void RecordRep::removeData (Int whichField, void* ptr, void* vecptr)
     }
 }
 
-void RecordRep::removeField (Int whichField)
+void RecordRep::removeField (int32_t whichField)
 {
     removeData (whichField, data_p[whichField], datavec_p[whichField]);
     removeDataPtr (whichField);
@@ -140,7 +140,7 @@ void RecordRep::removeField (Int whichField)
 }
 
 void RecordRep::addFieldToDesc (const String& name, DataType type,
-				const IPosition& shape, Bool fixedShape)
+				const IPosition& shape, bool fixedShape)
 {
     if (fixedShape) {
 	desc_p.addField (name, type, shape);
@@ -149,13 +149,13 @@ void RecordRep::addFieldToDesc (const String& name, DataType type,
     }
 }
 
-void RecordRep::removeFieldFromDesc (Int whichField)
+void RecordRep::removeFieldFromDesc (int32_t whichField)
 {
     desc_p.removeField (whichField);
 }
 
 void RecordRep::addDataField (const String& name, DataType type,
-			      const IPosition& shape, Bool fixedShape,
+			      const IPosition& shape, bool fixedShape,
 			      const void* data)
 {
     AlwaysAssert (type == TpBool      ||  type == TpArrayBool
@@ -202,22 +202,22 @@ void RecordRep::checkShape (DataType type, const IPosition& shape,
     IPosition arrShape;
     switch (type) {
     case TpArrayBool:
-	arrShape = static_cast<const Array<Bool>*>(value)->shape();
+	arrShape = static_cast<const Array<bool>*>(value)->shape();
 	break;
     case TpArrayUChar:
-	arrShape = static_cast<const Array<uChar>*>(value)->shape();
+	arrShape = static_cast<const Array<unsigned char>*>(value)->shape();
 	break;
     case TpArrayShort:
-	arrShape = static_cast<const Array<Short>*>(value)->shape();
+	arrShape = static_cast<const Array<int16_t>*>(value)->shape();
 	break;
     case TpArrayInt:
-	arrShape = static_cast<const Array<Int>*>(value)->shape();
+	arrShape = static_cast<const Array<int32_t>*>(value)->shape();
 	break;
     case TpArrayUInt:
-	arrShape = static_cast<const Array<uInt>*>(value)->shape();
+	arrShape = static_cast<const Array<uint32_t>*>(value)->shape();
 	break;
     case TpArrayInt64:
-	arrShape = static_cast<const Array<Int64>*>(value)->shape();
+	arrShape = static_cast<const Array<int64_t>*>(value)->shape();
 	break;
     case TpArrayFloat:
 	arrShape = static_cast<const Array<float>*>(value)->shape();
@@ -244,10 +244,10 @@ void RecordRep::checkShape (DataType type, const IPosition& shape,
     }
 }
 
-void RecordRep::defineDataField (Int whichField, DataType type,
+void RecordRep::defineDataField (int32_t whichField, DataType type,
 				 const void* value)
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p), AipsError);
+    AlwaysAssert (whichField >= 0  &&  whichField < int32_t(nused_p), AipsError);
     DataType descDtype = desc_p.type(whichField);
     if (type == descDtype) {
         if (type == TpRecord) {
@@ -285,37 +285,37 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     switch (type) {
     case TpBool:
 	{
-	    Bool* ptr = new Bool;
-	    *ptr = False;
+	    bool* ptr = new bool;
+	    *ptr = false;
 	    return ptr;
 	}
     case TpUChar:
 	{
-	    uChar* ptr = new uChar;
+	    unsigned char* ptr = new unsigned char;
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpShort:
 	{
-	    Short* ptr = new Short;
+	    int16_t* ptr = new int16_t;
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpInt:
 	{
-	    Int* ptr = new Int;
+	    int32_t* ptr = new int32_t;
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpUInt:
 	{
-	    uInt* ptr = new uInt;
+	    uint32_t* ptr = new uint32_t;
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpInt64:
 	{
-	    Int64* ptr = new Int64;
+	    int64_t* ptr = new int64_t;
 	    *ptr = 0;
 	    return ptr;
 	}
@@ -339,37 +339,37 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
 	return new String;
     case TpArrayBool:
 	{
-	    Array<Bool>* ptr = new Array<Bool> (arrayShape);
-	    *ptr = False;
+	    Array<bool>* ptr = new Array<bool> (arrayShape);
+	    *ptr = false;
 	    return ptr;
 	}
     case TpArrayUChar:
 	{
-	    Array<uChar>* ptr = new Array<uChar> (arrayShape);
+	    Array<unsigned char>* ptr = new Array<unsigned char> (arrayShape);
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpArrayShort:
 	{
-	    Array<Short>* ptr = new Array<Short> (arrayShape);
+	    Array<int16_t>* ptr = new Array<int16_t> (arrayShape);
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpArrayInt:
 	{
-	    Array<Int>* ptr = new Array<Int> (arrayShape);
+	    Array<int32_t>* ptr = new Array<int32_t> (arrayShape);
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpArrayUInt:
 	{
-	    Array<uInt>* ptr = new Array<uInt> (arrayShape);
+	    Array<uint32_t>* ptr = new Array<uint32_t> (arrayShape);
 	    *ptr = 0;
 	    return ptr;
 	}
     case TpArrayInt64:
 	{
-	    Array<Int64>* ptr = new Array<Int64> (arrayShape);
+	    Array<int64_t>* ptr = new Array<int64_t> (arrayShape);
 	    *ptr = 0;
 	    return ptr;
 	}
@@ -397,33 +397,33 @@ void* RecordRep::createDataField (DataType type, const IPosition& shape)
     }
 }
 
-void RecordRep::makeDataVec (Int whichField, DataType type)
+void RecordRep::makeDataVec (int32_t whichField, DataType type)
 {
     IPosition shape(1,1);
     switch (type) {
     case TpBool:
-        datavec_p[whichField] = new Array<Bool>
-	  (shape, static_cast<Bool*>(data_p[whichField]), SHARE);
+        datavec_p[whichField] = new Array<bool>
+	  (shape, static_cast<bool*>(data_p[whichField]), SHARE);
 	break;
     case TpUChar:
-        datavec_p[whichField] = new Array<uChar>
-	  (shape, static_cast<uChar*>(data_p[whichField]), SHARE);
+        datavec_p[whichField] = new Array<unsigned char>
+	  (shape, static_cast<unsigned char*>(data_p[whichField]), SHARE);
 	break;
     case TpShort:
-        datavec_p[whichField] = new Array<Short>
-	  (shape, static_cast<Short*>(data_p[whichField]), SHARE);
+        datavec_p[whichField] = new Array<int16_t>
+	  (shape, static_cast<int16_t*>(data_p[whichField]), SHARE);
 	break;
     case TpInt:
-        datavec_p[whichField] = new Array<Int>
-	  (shape, static_cast<Int*>(data_p[whichField]), SHARE);
+        datavec_p[whichField] = new Array<int32_t>
+	  (shape, static_cast<int32_t*>(data_p[whichField]), SHARE);
 	break;
     case TpUInt:
-        datavec_p[whichField] = new Array<uInt>
-	  (shape, static_cast<uInt*>(data_p[whichField]), SHARE);
+        datavec_p[whichField] = new Array<uint32_t>
+	  (shape, static_cast<uint32_t*>(data_p[whichField]), SHARE);
 	break;
     case TpInt64:
-        datavec_p[whichField] = new Array<Int64>
-	  (shape, static_cast<Int64*>(data_p[whichField]), SHARE);
+        datavec_p[whichField] = new Array<int64_t>
+	  (shape, static_cast<int64_t*>(data_p[whichField]), SHARE);
 	break;
     case TpFloat:
         datavec_p[whichField] = new Array<float>
@@ -450,12 +450,12 @@ void RecordRep::makeDataVec (Int whichField, DataType type)
     }
 }
 
-void RecordRep::delete_myself (uInt nfields)
+void RecordRep::delete_myself (uint32_t nfields)
 {
     if (nfields > nused_p) {
 	nfields = nused_p;
     }
-    for (uInt i=0; i<nfields; i++) {
+    for (uint32_t i=0; i<nfields; i++) {
 	removeData (i, data_p[i], datavec_p[i]);
 	data_p[i] = 0;
 	datavec_p[i] = 0;
@@ -466,28 +466,28 @@ void RecordRep::deleteDataField (DataType type, void* ptr, void* vecptr)
 {
     switch (type) {
     case TpBool:
-	delete static_cast<Bool*>(ptr);
-	delete static_cast<Array<Bool>*>(vecptr);
+	delete static_cast<bool*>(ptr);
+	delete static_cast<Array<bool>*>(vecptr);
 	break;
     case TpUChar:
-	delete static_cast<uChar*>(ptr);
-	delete static_cast<Array<uChar>*>(vecptr);
+	delete static_cast<unsigned char*>(ptr);
+	delete static_cast<Array<unsigned char>*>(vecptr);
 	break;
     case TpShort:
-	delete static_cast<Short*>(ptr);
-	delete static_cast<Array<Short>*>(vecptr);
+	delete static_cast<int16_t*>(ptr);
+	delete static_cast<Array<int16_t>*>(vecptr);
 	break;
     case TpInt:
-	delete static_cast<Int*>(ptr);
-	delete static_cast<Array<Int>*>(vecptr);
+	delete static_cast<int32_t*>(ptr);
+	delete static_cast<Array<int32_t>*>(vecptr);
 	break;
     case TpUInt:
-	delete static_cast<uInt*>(ptr);
-	delete static_cast<Array<uInt>*>(vecptr);
+	delete static_cast<uint32_t*>(ptr);
+	delete static_cast<Array<uint32_t>*>(vecptr);
 	break;
     case TpInt64:
-	delete static_cast<Int64*>(ptr);
-	delete static_cast<Array<Int64>*>(vecptr);
+	delete static_cast<int64_t*>(ptr);
+	delete static_cast<Array<int64_t>*>(vecptr);
 	break;
     case TpFloat:
 	delete static_cast<float*>(ptr);
@@ -510,22 +510,22 @@ void RecordRep::deleteDataField (DataType type, void* ptr, void* vecptr)
 	delete static_cast<Array<String>*>(vecptr);
 	break;
     case TpArrayBool:
-	delete static_cast<Array<Bool>*>(ptr);
+	delete static_cast<Array<bool>*>(ptr);
 	break;
     case TpArrayUChar:
-	delete static_cast<Array<uChar>*>(ptr);
+	delete static_cast<Array<unsigned char>*>(ptr);
 	break;
     case TpArrayShort:
-	delete static_cast<Array<Short>*>(ptr);
+	delete static_cast<Array<int16_t>*>(ptr);
 	break;
     case TpArrayInt:
-	delete static_cast<Array<Int>*>(ptr);
+	delete static_cast<Array<int32_t>*>(ptr);
 	break;
     case TpArrayUInt:
-	delete static_cast<Array<uInt>*>(ptr);
+	delete static_cast<Array<uint32_t>*>(ptr);
 	break;
     case TpArrayInt64:
-	delete static_cast<Array<Int64>*>(ptr);
+	delete static_cast<Array<int64_t>*>(ptr);
 	break;
     case TpArrayFloat:
 	delete static_cast<Array<float>*>(ptr);
@@ -547,26 +547,26 @@ void RecordRep::deleteDataField (DataType type, void* ptr, void* vecptr)
     }
 }
 
-Bool RecordRep::conform (const RecordRep& other) const
+bool RecordRep::conform (const RecordRep& other) const
 {
     // First check (non-recursively) if the descriptions conform.
     if (! desc_p.conform (other.desc_p)) {
-	return False;
+	return false;
     }
     // Now check for each fixed sub-record if it conforms.
-    for (uInt i=0; i<nused_p; i++) {
+    for (uint32_t i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const Record& thisRecord = *static_cast<Record*>(const_cast<void*>(data_p[i]));
 	    if (thisRecord.isFixed()) {
 		const Record& thatRecord =
 		  *static_cast<Record*>(const_cast<void*>(other.data_p[i]));
 		if (! thisRecord.conform (thatRecord)) {
-		    return False;
+		    return false;
 		}
 	    }
 	}
     }
-    return True;
+    return true;
 }
 
 void RecordRep::copyData (const RecordRep& other)
@@ -578,7 +578,7 @@ void RecordRep::copyData (const RecordRep& other)
 
 void RecordRep::copy_other (const RecordRep& other)
 {
-    for (uInt i=0; i<nused_p; i++) {
+    for (uint32_t i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    *static_cast<Record*>(data_p[i]) =
 	      *static_cast<Record*>(const_cast<void*>(other.data_p[i]));
@@ -588,7 +588,7 @@ void RecordRep::copy_other (const RecordRep& other)
     }
 }
 
-void RecordRep::copyDataField (DataType type, Int whichField,
+void RecordRep::copyDataField (DataType type, int32_t whichField,
                                const void* that) const
 {
     copyDataField (type, data_p[whichField], that);
@@ -599,22 +599,22 @@ void RecordRep::copyDataField (DataType type, void* ptr,
 {
     switch (type) {
     case TpBool:
-	*static_cast<Bool*>(ptr) = *static_cast<const Bool*>(that);
+	*static_cast<bool*>(ptr) = *static_cast<const bool*>(that);
 	break;
     case TpUChar:
-        *static_cast<uChar*>(ptr) = *static_cast<const uChar*>(that);
+        *static_cast<unsigned char*>(ptr) = *static_cast<const unsigned char*>(that);
 	break;
     case TpShort:
-	*static_cast<Short*>(ptr) = *static_cast<const Short*>(that);
+	*static_cast<int16_t*>(ptr) = *static_cast<const int16_t*>(that);
 	break;
     case TpInt:
-	*static_cast<Int*>(ptr) = *static_cast<const Int*>(that);
+	*static_cast<int32_t*>(ptr) = *static_cast<const int32_t*>(that);
 	break;
     case TpUInt:
-	*static_cast<uInt*>(ptr) = *static_cast<const uInt*>(that);
+	*static_cast<uint32_t*>(ptr) = *static_cast<const uint32_t*>(that);
 	break;
     case TpInt64:
-	*static_cast<Int64*>(ptr) = *static_cast<const Int64*>(that);
+	*static_cast<int64_t*>(ptr) = *static_cast<const int64_t*>(that);
 	break;
     case TpFloat:
 	*static_cast<float*>(ptr) = *static_cast<const float*>(that);
@@ -632,40 +632,40 @@ void RecordRep::copyDataField (DataType type, void* ptr,
 	*static_cast<String*>(ptr) = *static_cast<const String*>(that);
 	break;
     case TpArrayBool:
-        static_cast<Array<Bool>*>(ptr)->resize
-	  (static_cast<const Array<Bool>*>(that)->shape());
-	*static_cast<Array<Bool>*>(ptr) =
-	  *static_cast<const Array<Bool>*>(that);
+        static_cast<Array<bool>*>(ptr)->resize
+	  (static_cast<const Array<bool>*>(that)->shape());
+	*static_cast<Array<bool>*>(ptr) =
+	  *static_cast<const Array<bool>*>(that);
 	break;
     case TpArrayUChar:
-	static_cast<Array<uChar>*>(ptr)->resize
-	  (static_cast<const Array<uChar>*>(that)->shape());
-	*static_cast<Array<uChar>*>(ptr) =
-	  *static_cast<const Array<uChar>*>(that);
+	static_cast<Array<unsigned char>*>(ptr)->resize
+	  (static_cast<const Array<unsigned char>*>(that)->shape());
+	*static_cast<Array<unsigned char>*>(ptr) =
+	  *static_cast<const Array<unsigned char>*>(that);
 	break;
     case TpArrayShort:
-	static_cast<Array<Short>*>(ptr)->resize
-	  (static_cast<const Array<Short>*>(that)->shape());
-	*static_cast<Array<Short>*>(ptr) =
-	  *static_cast<const Array<Short>*>(that);
+	static_cast<Array<int16_t>*>(ptr)->resize
+	  (static_cast<const Array<int16_t>*>(that)->shape());
+	*static_cast<Array<int16_t>*>(ptr) =
+	  *static_cast<const Array<int16_t>*>(that);
 	break;
     case TpArrayInt:
-	static_cast<Array<Int>*>(ptr)->resize
-	  (static_cast<const Array<Int>*>(that)->shape());
-	*static_cast<Array<Int>*>(ptr) =
-	  *static_cast<const Array<Int>*>(that);
+	static_cast<Array<int32_t>*>(ptr)->resize
+	  (static_cast<const Array<int32_t>*>(that)->shape());
+	*static_cast<Array<int32_t>*>(ptr) =
+	  *static_cast<const Array<int32_t>*>(that);
 	break;
     case TpArrayUInt:
-	static_cast<Array<uInt>*>(ptr)->resize
-	  (static_cast<const Array<uInt>*>(that)->shape());
-	*static_cast<Array<uInt>*>(ptr) =
-	  *static_cast<const Array<uInt>*>(that);
+	static_cast<Array<uint32_t>*>(ptr)->resize
+	  (static_cast<const Array<uint32_t>*>(that)->shape());
+	*static_cast<Array<uint32_t>*>(ptr) =
+	  *static_cast<const Array<uint32_t>*>(that);
 	break;
     case TpArrayInt64:
-	static_cast<Array<Int64>*>(ptr)->resize
-	  (static_cast<const Array<Int64>*>(that)->shape());
-	*static_cast<Array<Int64>*>(ptr) 
-	  = *static_cast<const Array<Int64>*>(that);
+	static_cast<Array<int64_t>*>(ptr)->resize
+	  (static_cast<const Array<int64_t>*>(that)->shape());
+	*static_cast<Array<int64_t>*>(ptr) 
+	  = *static_cast<const Array<int64_t>*>(that);
 	break;
     case TpArrayFloat:
 	static_cast<Array<float>*>(ptr)->resize
@@ -703,15 +703,15 @@ void RecordRep::copyDataField (DataType type, void* ptr,
 }
 
 
-void* RecordRep::get_pointer (Int whichField, DataType type,
+void* RecordRep::get_pointer (int32_t whichField, DataType type,
 			      const String& recordType) const
 {
     AlwaysAssert (recordType == "Record", AipsError);
     return get_pointer (whichField, type);
 }
-void* RecordRep::get_pointer (Int whichField, DataType type) const
+void* RecordRep::get_pointer (int32_t whichField, DataType type) const
 {
-    AlwaysAssert (whichField >= 0  &&  whichField < Int(nused_p), AipsError);
+    AlwaysAssert (whichField >= 0  &&  whichField < int32_t(nused_p), AipsError);
     DataType descDtype = desc_p.type(whichField);
     if (type == descDtype) {
         return data_p[whichField];
@@ -731,20 +731,20 @@ void* RecordRep::get_pointer (Int whichField, DataType type) const
 
 
 
-void RecordRep::mergeField (const RecordRep& other, Int whichFieldFromOther,
+void RecordRep::mergeField (const RecordRep& other, int32_t whichFieldFromOther,
 			    RecordInterface::DuplicatesFlag flag)
 {
     // If the field exists and if flag tells to overwrite,
     // the field is removed first.
     if (flag == RecordInterface::OverwriteDuplicates) {
-	Int fld = desc_p.fieldNumber (other.desc_p.name(whichFieldFromOther));
+	int32_t fld = desc_p.fieldNumber (other.desc_p.name(whichFieldFromOther));
 	if (fld >= 0) {
 	    removeField (fld);
 	}
     }
     // Try to add the field to the description.
-    Int nr = desc_p.nfields();
-    Int nrnew = desc_p.mergeField (other.desc_p, whichFieldFromOther, flag);
+    int32_t nr = desc_p.nfields();
+    int32_t nrnew = desc_p.mergeField (other.desc_p, whichFieldFromOther, flag);
     // It succeeded if nfields increased.
     // Then the value can be defined.
     if (nrnew > nr) {
@@ -764,35 +764,35 @@ void RecordRep::mergeField (const RecordRep& other, Int whichFieldFromOther,
 void RecordRep::merge (const RecordRep& other,
 		       RecordInterface::DuplicatesFlag flag)
 {
-    Int n = other.desc_p.nfields();
-    for (Int i=0; i<n; i++) {
+    int32_t n = other.desc_p.nfields();
+    for (int32_t i=0; i<n; i++) {
 	mergeField (other, i, flag);
     }
 }
 
     
 void RecordRep::printDataField (std::ostream& os, DataType type,
-				const String& indent, Int maxNrValues,
+				const String& indent, int32_t maxNrValues,
 				const void* ptr) const
 {
     switch (type) {
     case TpBool:
-        os << "Bool " << *static_cast<const Bool*>(ptr);
+        os << "Bool " << *static_cast<const bool*>(ptr);
 	break;
     case TpUChar:
-        os << "uChar " << Int(*static_cast<const uChar*>(ptr));
+        os << "uChar " << int32_t(*static_cast<const unsigned char*>(ptr));
 	break;
     case TpShort:
-	os << "Short " << *static_cast<const Short*>(ptr);
+	os << "Short " << *static_cast<const int16_t*>(ptr);
 	break;
     case TpInt:
-	os << "Int " << *static_cast<const Int*>(ptr);
+	os << "Int " << *static_cast<const int32_t*>(ptr);
 	break;
     case TpUInt:
-	os << "uInt " << *static_cast<const uInt*>(ptr);
+	os << "uInt " << *static_cast<const uint32_t*>(ptr);
 	break;
     case TpInt64:
-	os << "Int64 " << *static_cast<const Int64*>(ptr);
+	os << "Int64 " << *static_cast<const int64_t*>(ptr);
 	break;
     case TpFloat:
 	os << "Float " << *static_cast<const float*>(ptr);
@@ -811,14 +811,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayBool:
         os << "Bool array with shape "
-	   << static_cast<const Array<Bool>*>(ptr)->shape();
+	   << static_cast<const Array<bool>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<Bool>& arr = *static_cast<const Array<Bool>*>(ptr);
+	  const Array<bool>& arr = *static_cast<const Array<bool>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<Bool> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<bool> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -830,14 +830,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayUChar:
         os << "uChar array with shape "
-	   << static_cast<const Array<uChar>*>(ptr)->shape();
+	   << static_cast<const Array<unsigned char>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<uChar>& arr = *static_cast<const Array<uChar>*>(ptr);
+	  const Array<unsigned char>& arr = *static_cast<const Array<unsigned char>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<uChar> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<unsigned char> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -849,14 +849,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayShort:
         os << "Short array with shape "
-	   << static_cast<const Array<Short>*>(ptr)->shape();
+	   << static_cast<const Array<int16_t>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<Short>& arr = *static_cast<const Array<Short>*>(ptr);
+	  const Array<int16_t>& arr = *static_cast<const Array<int16_t>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<Short> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<int16_t> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -868,14 +868,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayInt:
         os << "Int array with shape "
-	   << static_cast<const Array<Int>*>(ptr)->shape();
+	   << static_cast<const Array<int32_t>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<Int>& arr = *static_cast<const Array<Int>*>(ptr);
+	  const Array<int32_t>& arr = *static_cast<const Array<int32_t>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<Int> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<int32_t> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -887,14 +887,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayUInt:
         os << "uInt array with shape "
-	   << static_cast<const Array<uInt>*>(ptr)->shape();
+	   << static_cast<const Array<uint32_t>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<uInt>& arr = *static_cast<const Array<uInt>*>(ptr);
+	  const Array<uint32_t>& arr = *static_cast<const Array<uint32_t>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<uInt> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<uint32_t> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -906,14 +906,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayInt64:
         os << "Int64 array with shape "
-	   << static_cast<const Array<Int64>*>(ptr)->shape();
+	   << static_cast<const Array<int64_t>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<Int64>& arr = *static_cast<const Array<Int64>*>(ptr);
+	  const Array<int64_t>& arr = *static_cast<const Array<int64_t>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<Int64> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<int64_t> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -925,14 +925,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayFloat:
         os << "Float array with shape "
-	   << static_cast<const Array<Float>*>(ptr)->shape();
+	   << static_cast<const Array<float>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<Float>& arr = *static_cast<const Array<Float>*>(ptr);
+	  const Array<float>& arr = *static_cast<const Array<float>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<Float> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<float> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -944,14 +944,14 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	break;
     case TpArrayDouble:
         os << "Double array with shape "
-	   << static_cast<const Array<Double>*>(ptr)->shape();
+	   << static_cast<const Array<double>*>(ptr)->shape();
 	if (maxNrValues != 0) {
-	  const Array<Double>& arr = *static_cast<const Array<Double>*>(ptr);
+	  const Array<double>& arr = *static_cast<const Array<double>*>(ptr);
 	  if (maxNrValues < 0) {
 	    os << endl << arr;
 	  } else {
-	    Vector<Double> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    Vector<double> vec = arr.reform (IPosition(1, arr.nelements()));
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -970,7 +970,7 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	    os << endl << arr;
 	  } else {
 	    Vector<Complex> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -989,7 +989,7 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	    os << endl << arr;
 	  } else {
 	    Vector<DComplex> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -1008,7 +1008,7 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 	    os << endl << arr;
 	  } else {
 	    Vector<String> vec = arr.reform (IPosition(1, arr.nelements()));
-	    if (uInt(maxNrValues+1) >= vec.nelements()) {
+	    if (uint32_t(maxNrValues+1) >= vec.nelements()) {
 	      os << endl << indent << "  " << vec;
 	    } else {
 	      os << ", first values:"
@@ -1024,9 +1024,9 @@ void RecordRep::printDataField (std::ostream& os, DataType type,
 }
 
 void RecordRep::print (std::ostream& os,
-		       Int maxNrValues, const String& indent) const
+		       int32_t maxNrValues, const String& indent) const
 {
-    for (uInt i=0; i<nused_p; i++) {
+    for (uint32_t i=0; i<nused_p; i++) {
         os << indent << desc_p.name(i) << ": ";
 	if (desc_p.type(i) == TpRecord) {
 	    os << '{' << endl;
@@ -1046,22 +1046,22 @@ void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
 {
     switch (type) {
     case TpBool:
-	os << *static_cast<const Bool*>(ptr);
+	os << *static_cast<const bool*>(ptr);
 	break;
     case TpUChar:
-	os << *static_cast<const uChar*>(ptr);
+	os << *static_cast<const unsigned char*>(ptr);
 	break;
     case TpShort:
-	os << *static_cast<const Short*>(ptr);
+	os << *static_cast<const int16_t*>(ptr);
 	break;
     case TpInt:
-	os << *static_cast<const Int*>(ptr);
+	os << *static_cast<const int32_t*>(ptr);
 	break;
     case TpUInt:
-	os << *static_cast<const uInt*>(ptr);
+	os << *static_cast<const uint32_t*>(ptr);
 	break;
     case TpInt64:
-	os << *static_cast<const Int64*>(ptr);
+	os << *static_cast<const int64_t*>(ptr);
 	break;
     case TpFloat:
 	os << *static_cast<const float*>(ptr);
@@ -1079,23 +1079,23 @@ void RecordRep::putDataField (AipsIO& os, DataType type, const void* ptr) const
 	os << *static_cast<const String*>(ptr);
 	break;
     case TpArrayBool:
-	putArray (os, *static_cast<const Array<Bool>*>(ptr), "Array<void>");
+	putArray (os, *static_cast<const Array<bool>*>(ptr), "Array<void>");
 	break;
     case TpArrayUChar:
-	putArray (os, *static_cast<const Array<uChar>*>(ptr), "Array<uChar>");
+	putArray (os, *static_cast<const Array<unsigned char>*>(ptr), "Array<unsigned char>");
 	break;
     case TpArrayShort:
-	putArray (os, *static_cast<const Array<Short>*>(ptr), "Array<short>");
+	putArray (os, *static_cast<const Array<int16_t>*>(ptr), "Array<short>");
 	break;
     case TpArrayInt:
-	putArray (os, *static_cast<const Array<Int>*>(ptr), "Array<Int>");
+	putArray (os, *static_cast<const Array<int32_t>*>(ptr), "Array<int32_t>");
 	break;
     case TpArrayUInt:
-	putArray (os, *static_cast<const Array<uInt>*>(ptr), "Array<uInt>");
+	putArray (os, *static_cast<const Array<uint32_t>*>(ptr), "Array<uint32_t>");
 	break;
     case TpArrayInt64:
-	putArray (os, *static_cast<const Array<Int64>*>(ptr),
-		  "Array<Int64>");
+	putArray (os, *static_cast<const Array<int64_t>*>(ptr),
+		  "Array<int64_t>");
 	break;
     case TpArrayFloat:
 	putArray (os, *static_cast<const Array<float>*>(ptr),
@@ -1126,22 +1126,22 @@ void RecordRep::getDataField (AipsIO& os, DataType type, void* ptr)
 {
     switch (type) {
     case TpBool:
-	os >> *static_cast<Bool*>(ptr);
+	os >> *static_cast<bool*>(ptr);
 	break;
     case TpUChar:
-	os >> *static_cast<uChar*>(ptr);
+	os >> *static_cast<unsigned char*>(ptr);
 	break;
     case TpShort:
-	os >> *static_cast<Short*>(ptr);
+	os >> *static_cast<int16_t*>(ptr);
 	break;
     case TpInt:
-	os >> *static_cast<Int*>(ptr);
+	os >> *static_cast<int32_t*>(ptr);
 	break;
     case TpUInt:
-	os >> *static_cast<uInt*>(ptr);
+	os >> *static_cast<uint32_t*>(ptr);
 	break;
     case TpInt64:
-	os >> *static_cast<Int64*>(ptr);
+	os >> *static_cast<int64_t*>(ptr);
 	break;
     case TpFloat:
 	os >> *static_cast<float*>(ptr);
@@ -1159,22 +1159,22 @@ void RecordRep::getDataField (AipsIO& os, DataType type, void* ptr)
 	os >> *static_cast<String*>(ptr);
 	break;
     case TpArrayBool:
-	os >> *static_cast<Array<Bool>*>(ptr);
+	os >> *static_cast<Array<bool>*>(ptr);
 	break;
     case TpArrayUChar:
-	os >> *static_cast<Array<uChar>*>(ptr);
+	os >> *static_cast<Array<unsigned char>*>(ptr);
 	break;
     case TpArrayShort:
-	os >> *static_cast<Array<Short>*>(ptr);
+	os >> *static_cast<Array<int16_t>*>(ptr);
 	break;
     case TpArrayInt:
-	os >> *static_cast<Array<Int>*>(ptr);
+	os >> *static_cast<Array<int32_t>*>(ptr);
 	break;
     case TpArrayUInt:
-	os >> *static_cast<Array<uInt>*>(ptr);
+	os >> *static_cast<Array<uint32_t>*>(ptr);
 	break;
     case TpArrayInt64:
-	os >> *static_cast<Array<Int64>*>(ptr);
+	os >> *static_cast<Array<int64_t>*>(ptr);
 	break;
     case TpArrayFloat:
 	os >> *static_cast<Array<float>*>(ptr);
@@ -1207,7 +1207,7 @@ void RecordRep::putRecord (AipsIO& os, int recordType) const
 
 void RecordRep::putData (AipsIO& os) const
 {
-    for (uInt i=0; i<nused_p; i++) {
+    for (uint32_t i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
@@ -1221,13 +1221,13 @@ void RecordRep::putData (AipsIO& os) const
     }
 }
 
-void RecordRep::getRecord (AipsIO& os, Int& recordType)
+void RecordRep::getRecord (AipsIO& os, int32_t& recordType)
 {
     // Support reading scalar and array keyword sets as records.
     // They are the very old way of storing keywords, since long replaced
     // by Record. The code does not exist anymore, but theoretically such data
     // can exist in a very old table. Therefore it is still supported here.
-    uInt version;
+    uint32_t version;
     String type = os.getNextType();
     if (type == "ScalarKeywordSet") {
 	version = os.getstart ("ScalarKeywordSet");
@@ -1236,21 +1236,21 @@ void RecordRep::getRecord (AipsIO& os, Int& recordType)
 	version = os.getstart ("ArrayKeywordSet");
 	getKeySet (os, version, 1);
     }else{
-	uInt version = os.getstart ("Record");
+	uint32_t version = os.getstart ("Record");
 	// Get the description and restructure the record.
 	RecordDesc desc;
 	os >> desc;
 	os >> recordType;
-	restructure (desc, True);
+	restructure (desc, true);
 	// Read the data.
 	getData (os, version);
     }
     os.getend();
 }
 
-void RecordRep::getData (AipsIO& os, uInt version)
+void RecordRep::getData (AipsIO& os, uint32_t version)
 {
-    for (uInt i=0; i<nused_p; i++) {
+    for (uint32_t i=0; i<nused_p; i++) {
 	if (desc_p.type(i) == TpRecord) {
 	    const RecordDesc& desc = desc_p.subRecord(i);
 	    if (desc.nfields() == 0) {
@@ -1264,7 +1264,7 @@ void RecordRep::getData (AipsIO& os, uInt version)
     }
 }
 
-void RecordRep::getKeySet (AipsIO& os, uInt version, uInt type)
+void RecordRep::getKeySet (AipsIO& os, uint32_t version, uint32_t type)
 {
     // First build the description from the map of keyword names and
     // attributes.
@@ -1272,7 +1272,7 @@ void RecordRep::getKeySet (AipsIO& os, uInt version, uInt type)
     getKeyDesc (os, desc);
     // Define the record from the description.
     // Read the keyword values and define the corresponding record value.
-    restructure (desc, True);
+    restructure (desc, true);
     getScalarKeys (os);
     if (type == 1) {
 	getArrayKeys (os);
@@ -1280,7 +1280,7 @@ void RecordRep::getKeySet (AipsIO& os, uInt version, uInt type)
     // Newer keyword sets may contain nested keyword sets.
     // We do not support reading those, so throw an exception when they exist.
     if (version > 1) {
-	uInt n;
+	uint32_t n;
 	os >> n;
 	AlwaysAssert (n==0, AipsError);
     }
@@ -1293,7 +1293,7 @@ void RecordRep::getKeyDesc (AipsIO& os, RecordDesc& desc)
     int dt;
     String name, comment;
     // Get #names and the default attribute (datatype + comment).
-    uInt i, n;
+    uint32_t i, n;
     os >> n;
     os >> dt;
     os >> comment;
@@ -1317,7 +1317,7 @@ void RecordRep::getKeyDesc (AipsIO& os, RecordDesc& desc)
 
 void RecordRep::getScalarKeys (AipsIO& os)
 {
-    uInt i, n;
+    uint32_t i, n;
     String name;
     // Read the values per type.
     os >> n;
@@ -1364,7 +1364,7 @@ void RecordRep::getScalarKeys (AipsIO& os)
 
 void RecordRep::getArrayKeys (AipsIO& os)
 {
-    uInt i, n;
+    uint32_t i, n;
     String name;
     // Read the values per type.
     os >> n;

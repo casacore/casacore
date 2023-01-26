@@ -78,21 +78,21 @@ public:
     virtual ~LattStatsProgress();
 
     // increment the current step (postfix version)
-    void operator++(Int);
+    void operator++(int32_t);
 
     // Initialize this object.  Here we create the ProgressMeter
     // This function is called by the <src>init</src> in LatticeProgress
     virtual void initDerived();
 
     // Tell the number of steps done so far.
-    virtual void nstepsDone (uInt nsteps);
+    virtual void nstepsDone (uint32_t nsteps);
 
     // The process has ended so clean things up.
     virtual void done();
 
 private:
     CountedPtr<ProgressMeter> _meter;
-    uInt _currentStep;
+    uint32_t _currentStep;
 };
 
 

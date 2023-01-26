@@ -53,7 +53,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
 		  exp(-1 * lambdaVal ) / Combinatorics::factorial( xVal ));
   // get derivatives (assuming either all or none)
   if (tmp.nDerivatives()>0) {
-    for (uInt j=0; j<tmp.nDerivatives(); j++){
+    for (uint32_t j=0; j<tmp.nDerivatives(); j++){
     	tmp.deriv(j) = 0.0;
     }
     if (param_p.mask(LAMBDA)){

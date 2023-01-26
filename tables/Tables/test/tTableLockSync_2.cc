@@ -64,7 +64,7 @@
 //        get_put              0=get 1=put
 //        nrrow                #rows to put
 
-void tlock (Table& tab, Bool write, Bool show)
+void tlock (Table& tab, bool write, bool show)
 {
     if (show) {
 	Time time;
@@ -80,7 +80,7 @@ void tlock (Table& tab, Bool write, Bool show)
 	cout << "Lock acquired" << endl;
     }
 }
-void tunlock (Table& tab, Bool show)
+void tunlock (Table& tab, bool show)
 {
     if (show) {
 	Time time;
@@ -107,9 +107,9 @@ void a()
     }
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
-    td.addColumn (ScalarColumnDesc<uInt>("seq"));
-    td.addColumn (ScalarColumnDesc<Int>("col1"));
-    td.addColumn (ScalarColumnDesc<Int>("col2"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("seq"));
+    td.addColumn (ScalarColumnDesc<int32_t>("col1"));
+    td.addColumn (ScalarColumnDesc<int32_t>("col2"));
     td.addColumn (ArrayColumnDesc<float> ("Pol", IPosition(1,16),
 					  ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float> ("Freq", 1, ColumnDesc::FixedShape));
@@ -120,7 +120,7 @@ void a()
 			  stringToVector ("Data"),
 //			  stringToVector ("Pol,Freq"));
 			  stringToVector ("Pol,Freq,seq"));
-    td.rwKeywordSet().define ("seqnr", uInt(0));
+    td.rwKeywordSet().define ("seqnr", uint32_t(0));
 
     // Now create a new table from the description.
     SetupNewTable newtab("tTableLockSync_2_tmp.tab", td, Table::New);
@@ -139,22 +139,22 @@ void a()
     Table tab(newtab);
 }
 
-void b (const TableLock& lockMode, uInt wait, uInt nrrow, Bool show)
+void b (const TableLock& lockMode, uint32_t wait, uint32_t nrrow, bool show)
 {
     // Check if user locking.
-    Bool userLocking =  (lockMode.option() == TableLock::UserLocking);
+    bool userLocking =  (lockMode.option() == TableLock::UserLocking);
     // Open the table for update.
     Table tab ("tTableLockSync_2_tmp.tab", lockMode, Table::Update);
-    ScalarColumn<uInt> seq (tab, "seq");
-    ScalarColumn<Int> col1 (tab, "col1");
-    ScalarColumn<Int> col2 (tab, "col2");
+    ScalarColumn<uint32_t> seq (tab, "seq");
+    ScalarColumn<int32_t> col1 (tab, "col1");
+    ScalarColumn<int32_t> col2 (tab, "col2");
     ArrayColumn<float> freq (tab, "Freq");
     ArrayColumn<float> pol (tab, "Pol");
     ArrayColumn<float> data (tab, "Data");
     // Get and update the sequencenumber.
-    if (userLocking) tlock(tab, True, show);
+    if (userLocking) tlock(tab, true, show);
     TableRecord& keyset = tab.rwKeywordSet();
-    uInt seqnr = keyset.asuInt ("seqnr");
+    uint32_t seqnr = keyset.asuInt ("seqnr");
     seqnr++;
     keyset.define ("seqnr", seqnr);
     if (userLocking) tunlock (tab, show);
@@ -162,9 +162,9 @@ void b (const TableLock& lockMode, uInt wait, uInt nrrow, Bool show)
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
     Matrix<float> dataValues(IPosition(2,16,25));
-    Int rownr, val;
-    for (uInt i=0; i<nrrow; i++) {
-	if (userLocking) tlock (tab, True, show);
+    int32_t rownr, val;
+    for (uint32_t i=0; i<nrrow; i++) {
+	if (userLocking) tlock (tab, true, show);
 	if (show) {
 	    Time time;
 	    double sec = time.modifiedJulianDay() * 86400;
@@ -193,31 +193,31 @@ void b (const TableLock& lockMode, uInt wait, uInt nrrow, Bool show)
     }
 }
 
-void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
+void c (const TableLock& lockMode, uint32_t wait, uint32_t lastWait, bool show)
 {
     // Check if user locking.
-    Bool userLocking =  (lockMode.option() == TableLock::UserLocking);
+    bool userLocking =  (lockMode.option() == TableLock::UserLocking);
     // Open the table for read.
     Table tab ("tTableLockSync_2_tmp.tab", lockMode);
-    ScalarColumn<uInt> seq (tab, "seq");
-    ScalarColumn<Int> col1 (tab, "col1");
-    ScalarColumn<Int> col2 (tab, "col2");
+    ScalarColumn<uint32_t> seq (tab, "seq");
+    ScalarColumn<int32_t> col1 (tab, "col1");
+    ScalarColumn<int32_t> col2 (tab, "col2");
     ArrayColumn<float> freq (tab, "Freq");
     ArrayColumn<float> pol (tab, "Pol");
     ArrayColumn<float> data (tab, "Data");
-    Block<uInt> count;
+    Block<uint32_t> count;
     Time* lastTime = 0;
 
     Vector<float> freqValues;
     Vector<float> polValues;
     Matrix<float> dataValues;
-    Int val;
-    uInt oldNrrow = 0;
-    uInt nrrow = 0;
-    while (True) {
-	if (userLocking) tlock (tab, False, show);
+    int32_t val;
+    uint32_t oldNrrow = 0;
+    uint32_t nrrow = 0;
+    while (true) {
+	if (userLocking) tlock (tab, false, show);
 	nrrow = tab.nrow();
-	for (uInt rownr=oldNrrow; rownr<nrrow; rownr++) {
+	for (uint32_t rownr=oldNrrow; rownr<nrrow; rownr++) {
 	    if (show) {
 		Time time;
 		double sec = time.modifiedJulianDay() * 86400;
@@ -225,7 +225,7 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
 		cout << "Reading row " << rownr << endl;
 	    }
 	    val = rownr + 10;
-	    Int result;
+	    int32_t result;
 	    result = col1(rownr);
 	    if (result != val) {
 		cout << "col1 in row " << rownr << " has value " << result
@@ -258,10 +258,10 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
 		     << dataValues (IPosition(2,15,24)) << endl;
 	    }
 	    result = seq(rownr);
-	    uInt nr = count.nelements();
-	    if (result >= Int(nr)) {
+	    uint32_t nr = count.nelements();
+	    if (result >= int32_t(nr)) {
 		count.resize (result+1);
-		for (Int i=nr; i<=result; i++) {
+		for (int32_t i=nr; i<=result; i++) {
 		    count[i] = 0;
 		}
 	    }
@@ -288,8 +288,8 @@ void c (const TableLock& lockMode, uInt wait, uInt lastWait, Bool show)
     }
     delete lastTime;
     cout << "seqnr\t#rows" << endl;
-    uInt nrread = 0;
-    for (uInt i=0; i<count.nelements(); i++) {
+    uint32_t nrread = 0;
+    for (uint32_t i=0; i<count.nelements(); i++) {
 	if (count[i] > 0) {
 	    cout << i << '\t' << count[i] << endl;
 	    nrread += count[i];
@@ -317,10 +317,10 @@ int main (int argc, const char* argv[])
 	        " to stop" << endl;
 	return 0;
     }
-    Bool show =  (argc > 6);
+    bool show =  (argc > 6);
 	
-    uInt var[5];
-    for (uInt i=0; i<5; i++) {
+    uint32_t var[5];
+    for (uint32_t i=0; i<5; i++) {
 	istringstream str(argv[i+1]);
 	str >> var[i];
     }
@@ -334,7 +334,7 @@ int main (int argc, const char* argv[])
     } else if (var[0] == 3) {
 	lockMode = TableLock(TableLock::AutoLocking, var[1]);
     }
-    Bool getsw = (var[3] == 0);
+    bool getsw = (var[3] == 0);
     try {
 	if (!getsw) {
 	    a();

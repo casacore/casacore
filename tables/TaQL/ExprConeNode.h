@@ -70,35 +70,35 @@ public:
   TableExprConeNode (FunctionType, NodeDataType,
                      const TableExprNodeSet& source,
                      const vector<TENShPtr>& nodes,
-                     const Block<Int>& dtypeOper,
-                     uInt origin);
+                     const Block<int32_t>& dtypeOper,
+                     uint32_t origin);
 
   // Destructor
   ~TableExprConeNode();
 
   // 'get' Functions to get the desired result of a function.
   // <group>
-  Bool  getBool (const TableExprId& id);
-  Int64 getInt  (const TableExprId& id);
+  bool  getBool (const TableExprId& id);
+  int64_t getInt  (const TableExprId& id);
   // </group>
 
   // Check the data and value types of the operands.
   // It sets the exptected data and value types of the operands.
   // Set the value type of the function result and returns
   // the data type of the function result.
-  static NodeDataType checkOperands (Block<Int>& dtypeOper,
+  static NodeDataType checkOperands (Block<int32_t>& dtypeOper,
                                      ValueType& resVT,
-                                     Block<Int>& vtypeOper,
+                                     Block<int32_t>& vtypeOper,
                                      FunctionType,
                                      const std::vector<TENShPtr>&);
 
 private:
   // Find the number of elements in an argument.
   // It returns -1 if unknown.
-  static Int findNelem (const TENShPtr& node);
+  static int32_t findNelem (const TENShPtr& node);
 
 
-  uInt origin_p;
+  uint32_t origin_p;
 };
 
 
@@ -111,20 +111,20 @@ public:
   TableExprConeNodeArray (TableExprFuncNode::FunctionType, NodeDataType,
                           const TableExprNodeSet& source,
                           const vector<TENShPtr>& nodes,
-                          const Block<Int>& dtypeOper,
-                          uInt origin);
+                          const Block<int32_t>& dtypeOper,
+                          uint32_t origin);
 
   // Destructor
   ~TableExprConeNodeArray();
 
   // 'get' Functions to get the desired result of a function.
   // <group>
-  MArray<Bool>  getArrayBool (const TableExprId& id);
-  MArray<Int64> getArrayInt  (const TableExprId& id);
+  MArray<bool>  getArrayBool (const TableExprId& id);
+  MArray<int64_t> getArrayInt  (const TableExprId& id);
   // </group>
 
 private:
-  uInt origin_p;
+  uint32_t origin_p;
 };
 
 

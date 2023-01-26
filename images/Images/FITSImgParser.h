@@ -69,8 +69,8 @@ class HeaderDataUnit;
 // <example>
 // <srcblock>
 //    FITSImgParser fitsImg("in.fits");
-//    uInt numHDU    = fitsImg.get_numhdu();                // get the total number of HDU's
-//    uInt firstdata = fitsImg.get_firstdata_index();       // get the first HDU with data
+//    uint32_t numHDU    = fitsImg.get_numhdu();                // get the total number of HDU's
+//    uint32_t firstdata = fitsImg.get_firstdata_index();       // get the first HDU with data
 //    String allExts = fitsImg.get_extlist_string(String("\n"));  // get a string representation of all extensions
 //    String hasQual = fitsImg.has_qualityimg();            // check whether some of the extensions form quality image
 // </srcblock>
@@ -99,44 +99,44 @@ public:
   FITSImgParser& operator=(const FITSImgParser& other);
 
   // Returns the name of the disk file.
-  String fitsname (Bool stripPath=False) const;
+  String fitsname (bool stripPath=false) const;
 
   // Identify the index of an extension.
-  Int get_index(const FITSExtInfo &extinfo);
+  int32_t get_index(const FITSExtInfo &extinfo);
 
   // Find an extension; return -1 if not found.
-  Int find_extension(const String &extname, const Int &extversion=-1);
+  int32_t find_extension(const String &extname, const int32_t &extversion=-1);
 
   // Get the index of the first extension with data.
-  uInt get_firstdata_index(void);
+  uint32_t get_firstdata_index(void);
 
   // Get the number of extensions.
-  uInt get_numhdu(void) { return numhdu_p;};
+  uint32_t get_numhdu(void) { return numhdu_p;};
 
   // Get a string representation of the extension list.
   String get_extlist_string(const String &delimiter, const String &qualmarker="",
-		  const String &fitsmarker="", const Bool &listall=True);
+		  const String &fitsmarker="", const bool &listall=true);
 
   // Get the flag indicating at least one quality image.
-  Bool has_qualityimg(void) {return qualimglist_p.size() > 0 ? True : False;};
+  bool has_qualityimg(void) {return qualimglist_p.size() > 0 ? true : false;};
 
   // Check whether the extensions named in the extension expression
   // can be loaded as a quality image.
-  Bool is_qualityimg(const String &extexpr);
+  bool is_qualityimg(const String &extexpr);
 
   // Find all necessary access information for the extensions to be loaded
   // as a quality image.
-  Bool get_quality_data(const String &extexpr, Int &data_HDU, Int &error_HDU,
-        String &error_type, Int &mask_HDU, String &mask_type, Int &mask_value);
+  bool get_quality_data(const String &extexpr, int32_t &data_HDU, int32_t &error_HDU,
+        String &error_type, int32_t &mask_HDU, String &mask_type, int32_t &mask_value);
 
 private:  
   String         name_p;
-  uInt           numhdu_p;
+  uint32_t           numhdu_p;
 
   FITSExtInfo   *extensions_p;
   Vector<String>  qualimglist_p;
 
-  Bool           hasmeasurement_p;
+  bool           hasmeasurement_p;
 
   static const char *storeKwords_p[];
   static const int   nKwords_p;
@@ -145,30 +145,30 @@ private:
   void setup(void);
 
   // Get the information on an extension.
-  void process_extension(HeaderDataUnit *h, const uInt &extindex);
+  void process_extension(HeaderDataUnit *h, const uint32_t &extindex);
 
   // Extract the list of extensions from the extension expression.
-  Bool get_extlist(const String &extexpr, Vector<String> &extlist);
+  bool get_extlist(const String &extexpr, Vector<String> &extlist);
 
   // Get the first extension with HDU type "data" from the
   // list of indices. Returns "-1" if there is none.
-  Int get_dataindex(const Vector<Int> &extindex);
+  int32_t get_dataindex(const Vector<int32_t> &extindex);
 
   // Get the error extension name for the given data extension.
-  String get_errorext(const Int &ext_index);
+  String get_errorext(const int32_t &ext_index);
 
   // Get the mask extension name for the given data extension.
-  String get_maskext(const Int &ext_index);
+  String get_maskext(const int32_t &ext_index);
 
   // Check the keywords with fixed values
-  Bool confirm_fix_keywords(const Int &ext_index);
+  bool confirm_fix_keywords(const int32_t &ext_index);
 
   // Check whether the extension has a certain HDU type.
-  Bool index_is_HDUtype(const Int &ext_index, const String &hdutype);
+  bool index_is_HDUtype(const int32_t &ext_index, const String &hdutype);
 
   // Find and store all set of extensions
   // that can be loaded as a quality image.
-  Bool find_qualimgs(void);
+  bool find_qualimgs(void);
 };
 
 
@@ -200,8 +200,8 @@ private:
 // <example>
 // <srcblock>
 //    FITSImgParser fitsImg("in.fits");
-//    FITSExtInfo extinfo("in.fits", 0, "SCI", 1, True);
-//    Int index = fitsImg.get_index(extinfo);              // get the index of extension "[SCI, 1]"
+//    FITSExtInfo extinfo("in.fits", 0, "SCI", 1, true);
+//    int32_t index = fitsImg.get_index(extinfo);              // get the index of extension "[SCI, 1]"
 // </srcblock>
 // </example>
 //
@@ -215,13 +215,13 @@ class FITSExtInfo
 {
 public:
 	// Construct the object
-	FITSExtInfo(const String &name, const uInt &extindex, const String &extname,
-			const Int &extversion, const Bool &hasdata);
+	FITSExtInfo(const String &name, const uint32_t &extindex, const String &extname,
+			const int32_t &extversion, const bool &hasdata);
 
 	// Construct the object
 	FITSExtInfo()
 	{
-		FITSExtInfo("", 0, "", 0, False);
+		FITSExtInfo("", 0, "", 0, false);
 	};
 
 	// Copy constructor (reference semantics)
@@ -234,7 +234,7 @@ public:
 	FITSExtInfo& operator=(const FITSExtInfo& other);
 
 	// Relational operator.
-	Bool operator==(const FITSExtInfo &extinfo);
+	bool operator==(const FITSExtInfo &extinfo);
 
 	// All extension information as a string.
 	String get_extexpr(void);
@@ -243,10 +243,10 @@ public:
 	String get_extname(void){return extname_p;};
 
 	// Return the extension version.
-	Int get_extversion(void){return extversion_p;};
+	int32_t get_extversion(void){return extversion_p;};
 
 	// Return whether there is data.
-	Bool has_data(void){return hasdata_p;};
+	bool has_data(void){return hasdata_p;};
 
 	// Add a list of keywords.
 	void add_kwlist(FitsKeywordList &kwlist);
@@ -256,10 +256,10 @@ public:
 
 private:
 	String name_p;
-	uInt   extindex_p;
+	uint32_t   extindex_p;
 	String extname_p;
-	Int    extversion_p;
-	Bool   hasdata_p;
+	int32_t    extversion_p;
+	bool   hasdata_p;
 	FitsKeywordList kwlist_p;
 };
 

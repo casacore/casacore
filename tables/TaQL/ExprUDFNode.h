@@ -83,7 +83,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~TableExprUDFNode() override = default;
 
     // Is the UDF an aggregate function?
-    Bool isAggregate() const override
+    bool isAggregate() const override
       { return itsUDF->isAggregate(); }
 
     // Get the table info.
@@ -105,9 +105,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Functions to get the desired result of a function
     // <group>
-    Bool      getBool     (const TableExprId& id) override;
-    Int64     getInt      (const TableExprId& id) override;
-    Double    getDouble   (const TableExprId& id) override;
+    bool      getBool     (const TableExprId& id) override;
+    int64_t     getInt      (const TableExprId& id) override;
+    double    getDouble   (const TableExprId& id) override;
     DComplex  getDComplex (const TableExprId& id) override;
     String    getString   (const TableExprId& id) override;
     TaqlRegex getRegex    (const TableExprId& id) override;

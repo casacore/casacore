@@ -29,10 +29,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 MSSelectionError::MSSelectionError (Category c)
-  : AipsError("MSSelection Error",c), hasMessage(False)
+  : AipsError("MSSelection Error",c), hasMessage(false)
 {}
 MSSelectionError::MSSelectionError (const String& str,Category c)
-  : AipsError(str,c), hasMessage(False)
+  : AipsError(str,c), hasMessage(false)
 {}
 MSSelectionError::~MSSelectionError () noexcept
 {}
@@ -40,7 +40,7 @@ MSSelectionError::~MSSelectionError () noexcept
 void MSSelectionError::addMessage(String& mesg)
 {
   message = message+mesg;
-  hasMessage = True;
+  hasMessage = true;
 }
 
 void MSSelectionError::changeMessage(String& mesg)
@@ -50,7 +50,7 @@ void MSSelectionError::changeMessage(String& mesg)
 //
 //-----------------------------------------------------------------------------------
 //
-String constructMessage(const Int pos, const String& command)
+String constructMessage(const int32_t pos, const String& command)
 {
   ostringstream newMesg;
   newMesg << endl << "(near char. " << pos << " in string \"" << command << "\")";
@@ -58,7 +58,7 @@ String constructMessage(const Int pos, const String& command)
   // Make a few guess about user errors and help them out 
   // (did someone say I don't do user support? ;-))
   //
-  if ((pos > 0) && (pos < (Int)command.length()) && (command[pos-1] == '-'))
+  if ((pos > 0) && (pos < (int32_t)command.length()) && (command[pos-1] == '-'))
     newMesg << endl << "[TIP: Did you know we use \"~\" as the range operator (for a good reason)?]";
   return String(newMesg.str().c_str());
 }

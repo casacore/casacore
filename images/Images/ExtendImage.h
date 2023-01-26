@@ -103,56 +103,56 @@ public:
 
   // Is the ExtendImage masked?
   // It is if its parent image is masked.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the image object have a pixelmask?
   // It does if its parent has a pixelmask.
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask in use (thus to the pixelmask of the parent).
   // An exception is thrown if the parent does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get the region used (always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
   // A ExtendImage is not persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // Is the ExtendImage paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // An ExtendImage is not writable
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the shape of the ExtendImage
   virtual IPosition shape() const;
   
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Function which changes the shape of the ExtendImage.
   // Throws an exception as resizing an ExtendImage is not possible.
   virtual void resize(const TiledShape& newShape);
 
   // Return the name of the parent ImageInterface object. 
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
   
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Get access to the attribute handler (of the parent image).
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler (bool createHandler=false);
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Putting data is not possible.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -160,23 +160,23 @@ public:
 			   const IPosition& stride);
   
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
   virtual LatticeIterInterface<T>* makeIter
                             (const LatticeNavigator& navigator,
-			     Bool useRef) const;
+			     bool useRef) const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   virtual void flush();
   virtual void tempClose();

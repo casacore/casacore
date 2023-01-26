@@ -50,29 +50,29 @@ template <typename T>
 void FITSImage::crackHeader (CoordinateSystem& cSys,
                              IPosition& shape, ImageInfo& imageInfo,
                              Unit& brightnessUnit, RecordInterface& miscInfo,
-                             Float& scale, Float& offset, 
-			     uChar& magicUChar, Short& magicShort, 
-                             Int& magicInt, Bool& hasBlanks, 
-                             LogIO& os, FitsInput& infile, uInt whichRep)
+                             float& scale, float& offset, 
+			     unsigned char& magicUChar, int16_t& magicShort, 
+                             int32_t& magicInt, bool& hasBlanks, 
+                             LogIO& os, FitsInput& infile, uint32_t whichRep)
 {
    
 // Shape
    PrimaryArray<T> fitsImage(infile);
-   Int ndim = fitsImage.dims();
+   int32_t ndim = fitsImage.dims();
 
    shape.resize(ndim);
-   for (Int i=0; i<ndim; i++) {
+   for (int32_t i=0; i<ndim; i++) {
        shape(i) = fitsImage.dim(i);
    }
 
 // Get header as Vector of strings
-   Vector<String> header = fitsImage.kwlist_str(True);
+   Vector<String> header = fitsImage.kwlist_str(true);
    
 // Get Coordinate System.  Return un-used FITS cards in a Record for further use.
 
     Record headerRec;
-    Bool dropStokes = True;
-    Int stokesFITSValue = 1;
+    bool dropStokes = true;
+    int32_t stokesFITSValue = 1;
     cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header,
                                                    os, whichRep, shape, dropStokes);
     ndim = shape.nelements();
@@ -84,7 +84,7 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
 
     DataType dataType = whatType<T>();
 //
-    Int bitpix;   
+    int32_t bitpix;   
     Record subRec = headerRec.asRecord("bitpix");
     subRec.get("value", bitpix);
     headerRec.removeField("bitpix");   
@@ -109,13 +109,13 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
           throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 8"));
        }  
     } else {
-       throw (AipsError("Unsupported Template type; Float & Double only are supported"));
+       throw (AipsError("Unsupported Template type; float & double only are supported"));
     }
 
-// Scale and blank (will only be present for Int and Short)
+// Scale and blank (will only be present for int32_t and int16_t)
 
-    Double s = 1.0;
-    Double o = 0.0;
+    double s = 1.0;
+    double o = 0.0;
     if (headerRec.isDefined("bscale")) {
        subRec = headerRec.asRecord("bscale");
        subRec.get("value", s);
@@ -129,12 +129,12 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
     scale = s; 
     offset = o;
 
-// Will only be present for Int and Short and uChar
+// Will only be present for int32_t and int16_t and unsigned char
 
-    hasBlanks = False;
+    hasBlanks = false;
     if (headerRec.isDefined("blank")) {
        subRec = headerRec.asRecord("blank");
-       Int m;
+       int32_t m;
        subRec.get("value", m);
        headerRec.removeField("blank");
        if (dataType==TpUChar) {
@@ -148,7 +148,7 @@ void FITSImage::crackHeader (CoordinateSystem& cSys,
           magicShort = m;
           magicInt = m;
        }
-       hasBlanks = True;
+       hasBlanks = true;
     }
 
 // Brightness Unit
@@ -212,31 +212,31 @@ template <typename T>
 void FITSImage::crackExtHeader (CoordinateSystem& cSys,
 				IPosition& shape, ImageInfo& imageInfo,
 				Unit& brightnessUnit, RecordInterface& miscInfo,
-				Float& scale, Float& offset, uChar& magicUChar,
-				Short& magicShort,
-				Int& magicInt, Bool& hasBlanks,
-				LogIO& os, FitsInput& infile, uInt whichRep)
+				float& scale, float& offset, unsigned char& magicUChar,
+				int16_t& magicShort,
+				int32_t& magicInt, bool& hasBlanks,
+				LogIO& os, FitsInput& infile, uint32_t whichRep)
 {
 
 // Shape
 
 	ImageExtension<T> fitsImage(infile);
-    Int ndim = fitsImage.dims();
+    int32_t ndim = fitsImage.dims();
 
     shape.resize(ndim);
-    for (Int i=0; i<ndim; i++) {
+    for (int32_t i=0; i<ndim; i++) {
        shape(i) = fitsImage.dim(i);
     }
 
 // Get header as Vector of strings
 
-   Vector<String> header = fitsImage.kwlist_str(True);
+   Vector<String> header = fitsImage.kwlist_str(true);
 
 // Get Coordinate System.  Return un-used FITS cards in a Record for further use.
 
     Record headerRec;
-    Bool dropStokes = True;
-    Int stokesFITSValue = 1;
+    bool dropStokes = true;
+    int32_t stokesFITSValue = 1;
     cSys = ImageFITSConverter::getCoordinateSystem(stokesFITSValue, headerRec, header,
                                                    os, whichRep, shape, dropStokes);
     ndim = shape.nelements();
@@ -247,7 +247,7 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
 
     DataType dataType = whatType<T>();
 //
-    Int bitpix;
+    int32_t bitpix;
     Record subRec = headerRec.asRecord("bitpix");
     subRec.get("value", bitpix);
     headerRec.removeField("bitpix");
@@ -272,13 +272,13 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
           throw (AipsError("bitpix card inconsistent with data type: expected bitpix = 16"));
        }
     } else {
-       throw (AipsError("Unsupported Template type; Float & Double only are supported"));
+       throw (AipsError("Unsupported Template type; float & double only are supported"));
     }
 
-// Scale and blank (will only be present for Int and Short)
+// Scale and blank (will only be present for int32_t and int16_t)
 
-    Double s = 1.0;
-    Double o = 0.0;
+    double s = 1.0;
+    double o = 0.0;
     if (headerRec.isDefined("bscale")) {
        subRec = headerRec.asRecord("bscale");
        subRec.get("value", s);
@@ -292,12 +292,12 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
     scale = s;
     offset = o;
 
-// Will only be present for Int and Short
+// Will only be present for int32_t and int16_t
 
-    hasBlanks = False;
+    hasBlanks = false;
     if (headerRec.isDefined("blank")) {
        subRec = headerRec.asRecord("blank");
-       Int m;
+       int32_t m;
        subRec.get("value", m);
        headerRec.removeField("blank");
        if (dataType==TpUChar) {
@@ -311,7 +311,7 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
           magicShort = m;
           magicInt = m;
        }
-       hasBlanks = True;
+       hasBlanks = true;
     }
 
 // Brightness Unit
@@ -374,10 +374,10 @@ void FITSImage::crackExtHeader (CoordinateSystem& cSys,
 }
 
 /*
-template void FITSImage::crackHeader<Double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-template void FITSImage::crackHeader<Float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-template void FITSImage::crackHeader<Int> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
-template void FITSImage::crackHeader<Short> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, Float &, Float &, Short &, Int &, Bool &, LogIO &, FitsInput &, uInt);
+template void FITSImage::crackHeader<double> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, float &, float &, int16_t &, int32_t &, bool &, LogIO &, FitsInput &, uint32_t);
+template void FITSImage::crackHeader<float> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, float &, float &, int16_t &, int32_t &, bool &, LogIO &, FitsInput &, uint32_t);
+template void FITSImage::crackHeader<int32_t> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, float &, float &, int16_t &, int32_t &, bool &, LogIO &, FitsInput &, uint32_t);
+template void FITSImage::crackHeader<int16_t> (CoordinateSystem &, IPosition &, ImageInfo &, Unit &, RecordInterface &, float &, float &, int16_t &, int32_t &, bool &, LogIO &, FitsInput &, uint32_t);
 */
 
 } //# NAMESPACE CASACORE - END

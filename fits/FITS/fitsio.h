@@ -86,11 +86,11 @@ class FitsIO {
 	// is it a valid fits file (SIMPLE==T). If not, the only
 	// safest operation is to skip the data portion of the
 	// current HeaderDataUnit
-	Bool isafits() const 			{ return m_valid_fits; }
+	bool isafits() const 			{ return m_valid_fits; }
 	// see if there may be FITS extensions present (EXTENT==T)
-	Bool isextend() const 			{ return m_extend; }
+	bool isextend() const 			{ return m_extend; }
 	// test if end of file has been reached
-	Bool eof() const 	 { return Bool(m_rec_type == FITS::EndOfFile); }
+	bool eof() const 	 { return bool(m_rec_type == FITS::EndOfFile); }
 	// the FITS record type
 	FITS::FitsRecType rectype() const 	{ return m_rec_type;  }
 	// Header Data Unit type (e.g. 
@@ -100,7 +100,7 @@ class FitsIO {
 	// the trailing end of the blocked data portion.
 	OFF_T datasize() const 			{ return m_data_size; }
 	// data characteristics
-	Int itemsize() const 			{ return m_item_size; }
+	int32_t itemsize() const 			{ return m_item_size; }
 	// for input, size of remaining data
 	// for output, size of data written
 	OFF_T currsize() const 			{ return m_curr_size; }
@@ -118,10 +118,10 @@ class FitsIO {
 
 	fitsfile *m_fptr;
 	const int m_recsize;
-	Bool m_valid_fits;		// True if SIMPLE == T
-	Bool m_extend;			   // True if EXTEND == T
-	Bool m_isaprimary;		// True if there is a primary HDU
-   Bool m_header_done;		// True if header has been processed
+	bool m_valid_fits;		// true if SIMPLE == T
+	bool m_extend;			   // true if EXTEND == T
+	bool m_isaprimary;		// true if there is a primary HDU
+   bool m_header_done;		// true if header has been processed
 	FITS::FitsRecType m_rec_type; 	// always set
 	FITS::HDUType m_hdu_type;		// always set
 
@@ -132,13 +132,13 @@ class FitsIO {
 
 	char *m_curr;			// pointer to current record
 	int m_bytepos;			// current byte position within record
-	Int m_item_size;			// data characteristics
+	int32_t m_item_size;			// data characteristics
 	FITS::ValueType m_data_type;
-	//uInt m_data_size;
+	//uint32_t m_data_size;
 	OFF_T m_data_size;		
 	// for input, size of remaining data
 	// for output, size of data written
-	//uInt m_curr_size;
+	//uint32_t m_curr_size;
 	OFF_T m_curr_size;			
 
 	// for size of the last HDU skipped
@@ -154,8 +154,8 @@ class FitsIO {
 class FitsInput : public FitsIO {
 	friend int HeaderDataUnit::get_hdr(FITS::HDUType, FitsKeywordList &);
 	friend OFF_T HeaderDataUnit::read_all_data(char *);
-	friend int HeaderDataUnit::read_data(char *, Int);
-	friend int HeaderDataUnit::skip(uInt);
+	friend int HeaderDataUnit::read_data(char *, int32_t);
+	friend int HeaderDataUnit::skip(uint32_t);
 	friend int HeaderDataUnit::skip();
 
     public:
@@ -178,7 +178,7 @@ class FitsInput : public FitsIO {
    // get hdu header image cards as strings. By default the strings will be of
    // variable length. You can optionally ask for them to be length 80 (padded
    // with spaces).
-	Vector<String> kwlist_str(Bool length80=False);
+	Vector<String> kwlist_str(bool length80=false);
 
    //  number of physical blocks read/written
    int blockno() const {return m_fin.blockno();}
@@ -196,7 +196,7 @@ class FitsInput : public FitsIO {
 			       FITSErrorHandler errhandler = FITSError::defaultHandler);
 
 	// flag used for read control in errors
-	Bool m_got_rec;
+	bool m_got_rec;
 	// total number of hdu in this fits file
 	int m_thdunum;		
 
@@ -226,7 +226,7 @@ class FitsInput : public FitsIO {
 class FitsOutput : public FitsIO {
 	friend int HeaderDataUnit::write_hdr(FitsOutput &);
 	friend int HeaderDataUnit::write_all_data(FitsOutput &, char *);
-	friend int HeaderDataUnit::write_data(FitsOutput &, char *, Int);
+	friend int HeaderDataUnit::write_data(FitsOutput &, char *, int32_t);
 
     public:
 	//<group>
@@ -236,7 +236,7 @@ class FitsOutput : public FitsIO {
 	~FitsOutput();
 	//</group>
    // used by PrimaryArray, BinaryTabelExtention etc to work with the constructor without keyword list.
-	void set_data_info( FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, Int is);
+	void set_data_info( FitsKeywordList &kwl, FITS::HDUType t, FITS::ValueType dt, OFF_T ds, int32_t is);
 	// write a special record. For this the record type must also
 	// be to set to FITS::SpecialRecord
 	int write_sp(char *rec);
@@ -246,11 +246,11 @@ class FitsOutput : public FitsIO {
    }
    BlockOutput & getfout(){ return m_fout; }
 	void setfptr( fitsfile* ffp ); 
-	Bool required_keys_only(){ return m_required_keys_only; }
+	bool required_keys_only(){ return m_required_keys_only; }
 
     private:
 	BlockOutput &m_fout;
-	Bool m_required_keys_only;
+	bool m_required_keys_only;
 	BlockOutput &make_output(const char *, const FITS::FitsDevice &, int, 
 				 FITSErrorHandler errhandler = FITSError::defaultHandler);
 
@@ -262,11 +262,11 @@ class FitsOutput : public FitsIO {
 
 	// Special interface to class HeaderDataUnit
 	//<group>
-	int write_hdr(FitsKeywordList &, FITS::HDUType, FITS::ValueType, OFF_T, Int);
+	int write_hdr(FitsKeywordList &, FITS::HDUType, FITS::ValueType, OFF_T, int32_t);
 	// write all data from address
 	int write_all(FITS::HDUType, char *, char);
 	// write N bytes from address
-	int write(FITS::HDUType, char *, Int, char); 
+	int write(FITS::HDUType, char *, int32_t, char); 
 	//</group>
 };
 

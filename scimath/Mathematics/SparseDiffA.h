@@ -74,7 +74,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //	  T b_p;
   //	};
   //	// The specialized function
-  //	template <> class f<SparseDiffA<Double> > {
+  //	template <> class f<SparseDiffA<double> > {
   //	public:
   //	  T operator()(const T& x) { return a_p*a_p*a_p*b_p*b_p*x; }
   //	  void set(const T& a, const T& b) { a_p = a; b_p = b; }
@@ -83,11 +83,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //	  T b_p;
   //	};
   //	// Call it with different template arguments:
-  //	  SparseDiff<Double> a1(2,0), b1(3,1), x1(7);
-  //	  f<SparseDiff<Double> > f1; f1.set(a1, b1);
+  //	  SparseDiff<double> a1(2,0), b1(3,1), x1(7);
+  //	  f<SparseDiff<double> > f1; f1.set(a1, b1);
   //	  cout << "Diff a,b:   " << f1(x1) << endl;
   //	
-  //	  f<SparseDiffA<Double> > f12; f12.set(a1, b1);
+  //	  f<SparseDiffA<double> > f12; f12.set(a1, b1);
   //	  cout << "Same....:   " << f12(x1) << endl;
   //
   //    // Result will be:
@@ -95,7 +95,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //    // Same....:  (504, [756, 336])
   //
   //    // It needed the template instantiations definitions:
-  //	template class f<SparseDiff<Double> >;
+  //	template class f<SparseDiff<double> >;
   // </srcblock>
   // </example>
   //
@@ -124,12 +124,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // A function f(x0,x1,...,xn,...) with a value of v.
     // The nth derivative is one, and all others are zero. 
-    SparseDiffA(const T &v, const uInt n) :
+    SparseDiffA(const T &v, const uint32_t n) :
       SparseDiff<T>(v, n) {} 
 
     // A function f(x0,x1,...,xn,...) with a value of v.  The 
     // nth derivative is der, and all other derivatives are zero. 
-    SparseDiffA(const T &v, const uInt n, const T &der) :
+    SparseDiffA(const T &v, const uint32_t n, const T &der) :
       SparseDiff<T>(v, n, der) {} 
 
     // Construct one from another
@@ -145,13 +145,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
     // Assignment operator.  Add a gradient to variable.
-    SparseDiffA<T> &operator=(const pair<uInt, T> &der) {
+    SparseDiffA<T> &operator=(const pair<uint32_t, T> &der) {
       SparseDiff<T>::operator=(der);
       return *this;
     }
 
     // Assignment operator.  Assign gradients to variable.
-    SparseDiffA<T> &operator=(const vector<pair<uInt, T> > &der) {
+    SparseDiffA<T> &operator=(const vector<pair<uint32_t, T> > &der) {
       SparseDiff<T>::operator=(der);
       return *this;
     }

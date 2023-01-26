@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    SincFunction<Double> sf(5.0, 25.0, 7);
+//    SincFunction<double> sf(5.0, 25.0, 7);
 //    sf(25);            // = 5.0
 // </srcblock>
 // </example>
@@ -114,7 +114,7 @@ public:
   virtual ~SincParam();
 
   //# Operators    
-  virtual uInt ndim() const { return 1; }
+  virtual uint32_t ndim() const { return 1; }
 
   //# Member functions
   // Give name of function

@@ -43,12 +43,12 @@ class DataClass
 {
 public:
   DataClass(const IPosition &shape, const LogSink &sink);  // 1
-  void set(Int toWhat);                                    // 2
+  void set(int32_t toWhat);                                    // 2
   LogSink &sink() {return log_sink_p;}                     // 3
-  Array<Int> &data() {return data_p;}                      // 4
-  const Array<Int> &data() const {return data_p;}          // 5
+  Array<int32_t> &data() {return data_p;}                      // 4
+  const Array<int32_t> &data() const {return data_p;}          // 5
 private:                                                   // 6
-  Vector<Int> data_p;                                      // 7
+  Vector<int32_t> data_p;                                      // 7
   LogSink log_sink_p;                                      // 8
 };
 
@@ -77,16 +77,16 @@ DataClass::DataClass(const IPosition &shape, const LogSink &sink)
 }
 
 
-void DataClass::set(Int toWhat)
+void DataClass::set(int32_t toWhat)
 {
-  LogOrigin  where("DataClass", "set(Int toWhat)", WHERE);                // 1
+  LogOrigin  where("DataClass", "set(int32_t toWhat)", WHERE);                // 1
   LogMessage logMessage(where);                                           // 2
   ostringstream buffer;                                                   // 3
   buffer << "Setting data values to " << toWhat;                          // 4
   log_sink_p.post(logMessage.priority(LogMessage::NORMAL).line(__LINE__). // 5
 		  message(buffer));                                       // 6
-  uInt n = data_p.nelements();                                            // 7
-  for (uInt i=0; i < n; i++) {                                            // 8
+  uint32_t n = data_p.nelements();                                            // 7
+  for (uint32_t i=0; i < n; i++) {                                            // 8
 #ifdef AIPS_DEBUG                                                         // 9
     ostringstream buffer;                                                 // 10
     buffer << "Setting element  " << i << " to " << toWhat;               // 11
@@ -128,7 +128,7 @@ int main()
 			                                           // 6
     square(dc);                                                    // 7
                                                                    // 8
-    Float total = sum(dc);                                         // 9
+    float total = sum(dc);                                         // 9
     if (total != 40) {                                             // 10
       cout << "sum is incorrect" << endl;                          // 11
       return 1;                                                    // 12

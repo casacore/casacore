@@ -50,7 +50,7 @@ TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
                                       ValueType vtype,
                                       const TableExprNodeSet& source,
                                       const vector<TENShPtr>& nodes,
-                                      const Block<Int>& dtypeOper,
+                                      const Block<int32_t>& dtypeOper,
                                       const TableExprInfo& tabInfo)
 : TableExprNodeMulti (dtype, vtype, OtFunc, source),
   funcType_p         (ftype),
@@ -262,7 +262,7 @@ void TableExprFuncNode::fillUnits()
     case anycone3FUNC:
     case findconeFUNC:
     case findcone3FUNC:
-      for (uInt i=0; i<operands_p.size(); ++i) {
+      for (uint32_t i=0; i<operands_p.size(); ++i) {
         TableExprNodeUnit::adaptUnit (operands_p[i], "rad");
       }
       break;
@@ -274,19 +274,19 @@ void TableExprFuncNode::fillUnits()
 }
 
 const Unit& TableExprFuncNode::makeEqualUnits (vector<TENShPtr>& nodes,
-                                               uInt starg, uInt endarg)
+                                               uint32_t starg, uint32_t endarg)
 {
   // These functions have multiple children, which must have the same unit.
   // The first real unit is chosen as the result unit.
   const Unit* unit = &(nodes[starg]->unit());
-  for (uInt i=starg; i<endarg; ++i) {
+  for (uint32_t i=starg; i<endarg; ++i) {
     if (! nodes[i]->unit().empty()) {
       unit = &(nodes[i]->unit());
       break;
     }
   }
   if (! unit->empty()) {
-    for (uInt i=starg; i<endarg; ++i) {
+    for (uint32_t i=starg; i<endarg; ++i) {
       TableExprNodeUnit::adaptUnit (nodes[i], *unit);
     }
   }
@@ -295,14 +295,14 @@ const Unit& TableExprFuncNode::makeEqualUnits (vector<TENShPtr>& nodes,
 
 // Fill the children pointers of a node.
 void TableExprFuncNode::fillChildNodes (const vector<TENShPtr>& nodes,
-                                        const Block<Int>& dtypeOper)
+                                        const Block<int32_t>& dtypeOper)
 {
   // Copy block of children.
-  // Determine if common argument type is Int, Double or Complex.
+  // Determine if common argument type is int32_t, double or Complex.
   // (this is used by some functions like near and norm).
   operands_p.resize (nodes.size());
   argDataType_p = NTInt;
-  for (uInt i=0; i<nodes.size(); i++) {
+  for (uint32_t i=0; i<nodes.size(); i++) {
     operands_p[i] = nodes[i];
     if (nodes[i]->dataType() == NTDouble
         &&  argDataType_p != NTComplex) {
@@ -312,7 +312,7 @@ void TableExprFuncNode::fillChildNodes (const vector<TENShPtr>& nodes,
     }
   }
   // Convert String to Date if needed
-  for (uInt i=0; i<nodes.size(); i++) {
+  for (uint32_t i=0; i<nodes.size(); i++) {
     if (i < dtypeOper.size()  &&  dtypeOper[i] == NTDate) {
       if (nodes[i]->dataType() == NTString) {
         TableExprNode dNode = datetime (operands_p[i]);
@@ -351,7 +351,7 @@ void TableExprFuncNode::tryToConst()
   }
 }
 
-Bool TableExprFuncNode::getBool (const TableExprId& id)
+bool TableExprFuncNode::getBool (const TableExprId& id)
 {
     switch (funcType_p) {
     case boolFUNC:
@@ -414,7 +414,7 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
                                 "unknown datatype in isNull function");
           }
         }
-        return False;
+        return false;
     case iscolFUNC:
         return table_p.tableDesc().isColumn (operands_p[0]->getString (id));
     case iskeyFUNC:
@@ -423,9 +423,9 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
         String shand, columnName;
         Vector<String> fieldNames;
         TableParseUtil::splitName (shand, columnName, fieldNames,
-                                   name, True, True, False);
+                                   name, true, true, false);
         if (! shand.empty()) {
-          return False;
+          return false;
         }
         const TableRecord* rec;
         String fullName;
@@ -440,7 +440,7 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
                                                  fieldNames, fullName);
           }
         } catch (const std::exception&) {
-          return False;
+          return false;
         }
         String keyName = fieldNames[fieldNames.size() -1 ];
         return rec->isDefined (keyName);
@@ -489,26 +489,26 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
                              "unknown function " +
                              String::toString(funcType_p)));
     }
-    return True;
+    return true;
 }
 
-Int64 TableExprFuncNode::getInt (const TableExprId& id)
+int64_t TableExprFuncNode::getInt (const TableExprId& id)
 {
     switch(funcType_p) {
     case powFUNC:
       {
-        Double val = pow (operands_p[0]->getDouble(id),
+        double val = pow (operands_p[0]->getDouble(id),
                           operands_p[1]->getDouble(id));
-        return Int64(val<0 ? ceil(val-0.5) : floor(val+0.5));
+        return int64_t(val<0 ? ceil(val-0.5) : floor(val+0.5));
       }
     case squareFUNC:
       {
-        Int64 val = operands_p[0]->getInt(id);
+        int64_t val = operands_p[0]->getInt(id);
         return val * val;
       }
     case cubeFUNC:
       {
-        Int64 val = operands_p[0]->getInt(id);
+        int64_t val = operands_p[0]->getInt(id);
         return val * val * val;
       }
     case minFUNC:
@@ -519,7 +519,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
                          operands_p[1]->getInt(id));
     case normFUNC:
         {
-            Int64 val = operands_p[0]->getInt(id);
+            int64_t val = operands_p[0]->getInt(id);
             return val * val;
         }
     case absFUNC:
@@ -530,12 +530,12 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
         } else if (operands_p[0]->dataType() == NTBool) {
             return operands_p[0]->getBool(id) ? 1:0;
         } else if (argDataType_p == NTDouble) {
-            return Int64 (operands_p[0]->getDouble(id));
+            return int64_t (operands_p[0]->getDouble(id));
         }
         return operands_p[0]->getInt(id);
     case signFUNC:
       {
-        Int64 val = operands_p[0]->getInt(id);
+        int64_t val = operands_p[0]->getInt(id);
         if (val > 0) {
             return 1;
         }
@@ -566,13 +566,13 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
         return operands_p[0]->getDate(id).yearweek();
     case arrminFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-          MArray<Int64> tmp = operands_p[0]->getArrayInt (id);
+          MArray<int64_t> tmp = operands_p[0]->getArrayInt (id);
           return min(tmp);
         }
         return operands_p[0]->getInt (id);
     case arrmaxFUNC:
         if (operands_p[0]->valueType() == VTArray) {
-          MArray<Int64> tmp = operands_p[0]->getArrayInt (id);
+          MArray<int64_t> tmp = operands_p[0]->getArrayInt (id);
           return max(tmp);
         }
         return operands_p[0]->getInt (id);
@@ -590,7 +590,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
         if (operands_p[0]->valueType() == VTArray) {
             return sumsqr (operands_p[0]->getArrayInt (id));
         } else {
-            Int64 val = operands_p[0]->getInt(id);
+            int64_t val = operands_p[0]->getInt(id);
             return val * val;
         }
     case arrntrueFUNC:
@@ -606,7 +606,7 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
     case ndimFUNC:
       {
         // Return fixed dimensionality if available.
-        Int64 nrdim = operands_p[0]->ndim();
+        int64_t nrdim = operands_p[0]->ndim();
         return (nrdim >= 0  ?  nrdim : operands_p[0]->shape(id).size());
       }
     case nelemFUNC:
@@ -623,13 +623,13 @@ Int64 TableExprFuncNode::getInt (const TableExprId& id)
     return 0;
 }
 
-Double TableExprFuncNode::getDouble (const TableExprId& id)
+double TableExprFuncNode::getDouble (const TableExprId& id)
 {
     if (dataType() == NTInt) {
         return TableExprFuncNode::getInt (id);
     }
     // Delta degrees of freedom for variance/stddev.
-    uInt ddof = 1;
+    uint32_t ddof = 1;
     switch(funcType_p) {
     case piFUNC:
         return C::pi;
@@ -656,12 +656,12 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
                          operands_p[1]->getDouble(id));
     case squareFUNC:
       {
-        Double val = operands_p[0]->getDouble(id);
+        double val = operands_p[0]->getDouble(id);
         return val * val;
       }
     case cubeFUNC:
       {
-        Double val = operands_p[0]->getDouble(id);
+        double val = operands_p[0]->getDouble(id);
         return val * val * val;
       }
     case sqrtFUNC:
@@ -676,7 +676,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
                     operands_p[1]->getDouble(id));
     case normFUNC:
         if (argDataType_p == NTDouble) {
-            Double val = operands_p[0]->getDouble(id);
+            double val = operands_p[0]->getDouble(id);
             return val * val;
         }
         return norm (operands_p[0]->getDComplex(id));
@@ -690,7 +690,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
             if (operands_p[0]->getDouble(id) >= 0) {
                 return 0;
             }
-            return atan2 (Double(0), Double(-1));  // results in pi
+            return atan2 (double(0), double(-1));  // results in pi
         }
         return arg (operands_p[0]->getDComplex(id));
     case realFUNC:
@@ -724,7 +724,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
                          operands_p[1]->getDouble(id));
     case signFUNC:
       {
-        Double val = operands_p[0]->getDouble(id);
+        double val = operands_p[0]->getDouble(id);
         if (val > 0) {
             return 1;
         }
@@ -735,7 +735,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
       }
     case roundFUNC:
       {
-        Double val = operands_p[0]->getDouble(id);
+        double val = operands_p[0]->getDouble(id);
         if (val < 0) {
             return ceil (val - 0.5);
         }
@@ -751,7 +751,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case mjdFUNC:
         return operands_p[0]->getDate(id).day();
     case timeFUNC:                                       //# return in radians
-        return fmod (Double(operands_p[0]->getDate(id)), 1.) * C::_2pi;
+        return fmod (double(operands_p[0]->getDate(id)), 1.) * C::_2pi;
     case arrminFUNC:
         if (operands_p[0]->valueType() == VTArray) {
             return min (operands_p[0]->getArrayDouble (id));
@@ -776,7 +776,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
         if (operands_p[0]->valueType() == VTArray) {
             return sumsqr (operands_p[0]->getArrayDouble (id));
         } else {
-            Double val = operands_p[0]->getDouble(id);
+            double val = operands_p[0]->getDouble(id);
             return val * val;
         }
     case arrmeanFUNC:
@@ -856,7 +856,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case dateFUNC:
       return getDate(id);    // automatic conversion of MVTime to double
     default:
-        // Functions like YEAR are implemented as Int.
+        // Functions like YEAR are implemented as int32_t.
         return getInt(id);
     }
     return 0;
@@ -1017,13 +1017,13 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case substrFUNC:
       {
         String str = operands_p[0]->getString (id);
-        Int64 st = operands_p[1]->getInt (id);
+        int64_t st = operands_p[1]->getInt (id);
         if (st < 0) st += str.size();
         if (st < 0) st = 0;
-        if (st > Int64(str.size())) st = str.size();
-        Int64 sz = String::npos;
+        if (st > int64_t(str.size())) st = str.size();
+        int64_t sz = String::npos;
         if (operands_p.size() > 2) {
-          sz = std::max (Int64(0), operands_p[2]->getInt (id));
+          sz = std::max (int64_t(0), operands_p[2]->getInt (id));
         }
         return str.substr (st, sz);
       }
@@ -1054,7 +1054,7 @@ String TableExprFuncNode::getString (const TableExprId& id)
     case stringFUNC:
       {
         String fmt;
-        Int width, prec;
+        int32_t width, prec;
         getPrintFormat (fmt, width, prec, operands_p, id);
         if (operands_p[0]->dataType() == NTBool) {
           return stringValue (operands_p[0]->getBool(id), fmt, width);
@@ -1090,13 +1090,13 @@ TaqlRegex TableExprFuncNode::getRegex (const TableExprId& id)
 {
     switch (funcType_p) {
     case regexFUNC:
-      return TaqlRegex(Regex(operands_p[0]->getString (id), True));
+      return TaqlRegex(Regex(operands_p[0]->getString (id), true));
     case patternFUNC:
       return TaqlRegex(Regex(Regex::fromPattern(operands_p[0]->getString (id)),
-                             True));
+                             true));
     case sqlpatternFUNC:
       return TaqlRegex(Regex(Regex::fromSQLPattern(operands_p[0]->getString (id)),
-                             True));
+                             true));
     case iifFUNC:
       return operands_p[0]->getBool(id)  ?
         operands_p[1]->getRegex(id) : operands_p[2]->getRegex(id);
@@ -1123,7 +1123,7 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
     case mjdtodateFUNC:
         return MVTime (operands_p[0]->getDouble(id));
     case dateFUNC:
-        return MVTime (floor (Double (operands_p[0]->getDate(id))));
+        return MVTime (floor (double (operands_p[0]->getDate(id))));
     case iifFUNC:
         return operands_p[0]->getBool(id)  ?
                operands_p[1]->getDate(id) : operands_p[2]->getDate(id);
@@ -1135,7 +1135,7 @@ MVTime TableExprFuncNode::getDate (const TableExprId& id)
     return MVTime();
 }
 
-void TableExprFuncNode::getPrintFormat (String& fmt, Int& width, Int& prec,
+void TableExprFuncNode::getPrintFormat (String& fmt, int32_t& width, int32_t& prec,
                                         const vector<TENShPtr>& operands,
                                         const TableExprId& id)
 {
@@ -1170,8 +1170,8 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
       separator = '|';
     }
     Vector<String> fmts = stringToVector(fmt, separator);
-    Bool ok = True;
-    for (uInt i=0; i<fmts.size(); ++i) {
+    bool ok = true;
+    for (uint32_t i=0; i<fmts.size(); ++i) {
       fmts[i].trim();
       fmts[i].upcase();
       // Alas giveMe returns 0 for an invalid value, but that is also
@@ -1182,12 +1182,12 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
           mvFormat |= f;
         } else {
           // Unknown format. See if it is an integer (giving the precision).
-          Int p;
-          if (fmts[i].fromString (p, False)) {
+          int32_t p;
+          if (fmts[i].fromString (p, false)) {
             prec = p;
           } else {
             // No integer, so it must be a printf format.
-            ok = False;
+            ok = false;
           }
         }
       }
@@ -1198,7 +1198,7 @@ std::pair<int,int> TableExprFuncNode::getMVFormat (const String& fmt)
   }
   return std::make_pair(mvFormat, prec);
 }
-String TableExprFuncNode::stringDT (const MVTime& dt, Int prec,
+String TableExprFuncNode::stringDT (const MVTime& dt, int32_t prec,
                                     MVTime::formatTypes type)
 {
   MVTime::setFormat (type, prec);
@@ -1206,7 +1206,7 @@ String TableExprFuncNode::stringDT (const MVTime& dt, Int prec,
   ostr << dt;
   return ostr.str();
 }
-String TableExprFuncNode::stringAngle (double val, Int prec,
+String TableExprFuncNode::stringAngle (double val, int32_t prec,
                                        MVAngle::formatTypes type)
 {
   MVAngle::setFormat (type, prec);
@@ -1214,7 +1214,7 @@ String TableExprFuncNode::stringAngle (double val, Int prec,
   ostr << MVAngle(val);
   return ostr.str();
 }
-String TableExprFuncNode::stringDateTime (const MVTime& dt, Int prec)
+String TableExprFuncNode::stringDateTime (const MVTime& dt, int32_t prec)
 {
   return stringDT (dt, prec, MVTime::YMD);
 }
@@ -1222,18 +1222,18 @@ String TableExprFuncNode::stringDate (const MVTime& dt)
 {
   return stringDT (dt, 0, MVTime::formatTypes(MVTime::DMY+MVTime::NO_TIME));
 }
-String TableExprFuncNode::stringTime (const MVTime& dt, Int prec)
+String TableExprFuncNode::stringTime (const MVTime& dt, int32_t prec)
 {
   return stringDT (dt, prec, MVTime::TIME);
 }
-String TableExprFuncNode::stringValue (Bool val, const String& fmt, Int width)
+String TableExprFuncNode::stringValue (bool val, const String& fmt, int32_t width)
 {
   if (fmt.empty()) {
     return stringValue (String(val ? "True ":"False"), fmt, width);
   }
   return String::format (fmt.c_str(), val);
 }
-String TableExprFuncNode::stringValue (Int64 val, const String& fmt, Int width)
+String TableExprFuncNode::stringValue (int64_t val, const String& fmt, int32_t width)
 {
   if (fmt.empty()) {
     ostringstream os;
@@ -1243,8 +1243,8 @@ String TableExprFuncNode::stringValue (Int64 val, const String& fmt, Int width)
   }
   return String::format (fmt.c_str(), val);
 }
-String TableExprFuncNode::stringValue (Double val, const String& fmt,
-                                       Int width, Int prec,
+String TableExprFuncNode::stringValue (double val, const String& fmt,
+                                       int32_t width, int32_t prec,
                                        const std::pair<int,int>& mvFormat,
                                        const Unit& unit)
 {
@@ -1266,7 +1266,7 @@ String TableExprFuncNode::stringValue (Double val, const String& fmt,
   return String::format (fmt.c_str(), val);
 }
 String TableExprFuncNode::stringValue (const DComplex& val, const String& fmt,
-                                       Int width, Int prec)
+                                       int32_t width, int32_t prec)
 {
   if (fmt.empty()) {
     ostringstream os;
@@ -1286,7 +1286,7 @@ String TableExprFuncNode::stringValue (const DComplex& val, const String& fmt,
   return String::format (fmt.c_str(), val.real(), val.imag());
 }
 String TableExprFuncNode::stringValue (const String& val, const String& fmt,
-                                       Int width)
+                                       int32_t width)
 {
   if (fmt.empty()) {
     if (width <= 0) return val;
@@ -1298,7 +1298,7 @@ String TableExprFuncNode::stringValue (const String& val, const String& fmt,
   return String::format (fmt.c_str(), val.c_str());
 }
 String TableExprFuncNode::stringValue (const MVTime& val, const String& fmt,
-                                       Int width,
+                                       int32_t width,
                                        const std::pair<int,int>& mvFormat)
 {
   if (fmt.empty()) {
@@ -1311,12 +1311,12 @@ String TableExprFuncNode::stringValue (const MVTime& val, const String& fmt,
   }
   return String::format (fmt.c_str(), val.day());
 }
-String TableExprFuncNode::stringHMS (double val, Int prec)
+String TableExprFuncNode::stringHMS (double val, int32_t prec)
 {
   // Replace : by h and m.
   String s = stringAngle (val, prec, MVAngle::TIME);
   char r = 'h';
-  for (uInt i=0; i<s.size(); ++i) {
+  for (uint32_t i=0; i<s.size(); ++i) {
     if (s[i] == ':') {
       s[i] = r;
       r    = 'm';
@@ -1324,11 +1324,11 @@ String TableExprFuncNode::stringHMS (double val, Int prec)
   }
   return s;
 }
-String TableExprFuncNode::stringDMS (double val, Int prec)
+String TableExprFuncNode::stringDMS (double val, int32_t prec)
 {
   String s = stringAngle (val, prec, MVAngle::ANGLE);
   char r = 'd';
-  for (uInt i=0; i<s.size(); ++i) {
+  for (uint32_t i=0; i<s.size(); ++i) {
     if (s[i] == '.') {
       s[i] = r;
       if (r == 'm') {
@@ -1342,8 +1342,8 @@ String TableExprFuncNode::stringDMS (double val, Int prec)
 
 
 TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
-                                 (Block<Int>& dtypeOper,
-                                  ValueType& resVT, Block<Int>&,
+                                 (Block<int32_t>& dtypeOper,
+                                  ValueType& resVT, Block<int32_t>&,
                                   FunctionType fType,
                                   vector<TENShPtr>& nodes)
 {
@@ -1518,11 +1518,11 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     case resizeFUNC:
     case diagonalFUNC:
       {
-        // Most functions can have Int or Double in and result in Double.
+        // Most functions can have int32_t or double in and result in double.
         dtin = NTReal;
         dtout = NTDouble;
-        uInt axarg = 1;
-        uInt optarg = 0;
+        uint32_t axarg = 1;
+        uint32_t optarg = 0;
         switch (fType) {
         case arrsumsFUNC:
         case arrproductsFUNC:
@@ -1617,12 +1617,12 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         // Check if first argument has correct type.
         vector<TENShPtr> nodeTmp(1);
         nodeTmp[0] = nodes[0];
-        Block<Int> dtypeTmp;    // Gets filled in by checkDT
+        Block<int32_t> dtypeTmp;    // Gets filled in by checkDT
         dtout = checkDT (dtypeTmp, dtin, dtout, nodeTmp);
         dtypeOper[0] = dtypeTmp[0];
         // If more arguments are needed, they have to be Real scalars.
         if (axarg > 1) {
-          for (uInt i=1; i<axarg; i++) {
+          for (uint32_t i=1; i<axarg; i++) {
             if (nodes[i]->valueType() != VTScalar  ||
                 (nodes[i]->dataType() != NTInt  &&
                  nodes[i]->dataType() != NTDouble)) {
@@ -1639,7 +1639,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         }
         // The last argument forms the axes as an array object.
         AlwaysAssert (nodes[axarg]->valueType() == VTArray, AipsError);
-        // Check if an optional arg (voor expand) is an Int.
+        // Check if an optional arg (voor expand) is an int32_t.
         if (nodes.size() == axarg+optarg+1) {
           if (nodes[axarg+optarg]->dataType() != NTInt) {
             throw TableInvExpr ("3rd argument of function RESIZE"
@@ -1654,7 +1654,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     // The following functions accept scalars and arrays.
     // They return an array if one of the input arguments is an array.
     // If a function has no arguments, it results in a scalar.
-    for (uInt i=0; i< nodes.size(); i++) {
+    for (uint32_t i=0; i< nodes.size(); i++) {
         ValueType vt = nodes[i]->valueType();
         if (vt == VTArray) {
             resVT = vt;
@@ -1682,7 +1682,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
           throw TableInvExpr ("1st argument of function SUBSTR "
                               "has to be a string");
         }
-        for (uInt i=1; i<nodes.size(); i++) {
+        for (uint32_t i=1; i<nodes.size(); i++) {
           if (nodes[i]->valueType() != VTScalar
               ||  nodes[i]->dataType() != NTInt) {
             throw TableInvExpr ("2nd and optional 3rd argument of function "
@@ -1897,12 +1897,12 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         vector<TENShPtr> nodeArg(2);
         nodeArg[0] = nodes[1];
         nodeArg[1] = nodes[2];
-        Block<Int> dtypeTmp;
+        Block<int32_t> dtypeTmp;
         checkDT (dtypeTmp, NTBool, NTBool, nodeCond);
         dtypeOper.resize(3);
         dtypeOper[0] = dtypeTmp[0];
         // Do not allow automatic conversion to date/time.
-        NodeDataType dt = checkDT (dtypeTmp, NTAny, NTAny, nodeArg, False);
+        NodeDataType dt = checkDT (dtypeTmp, NTAny, NTAny, nodeArg, false);
         dtypeOper[1] = dtypeTmp[0];
         dtypeOper[2] = dtypeTmp[1];
         return dt;
@@ -1911,7 +1911,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         break;
     }
     // The following functions accept scalars only (or no arguments).
-    for (uInt i=0; i< nodes.size(); i++) {
+    for (uint32_t i=0; i< nodes.size(); i++) {
         if (nodes[i]->valueType() != VTScalar) {
             throw TableInvExpr ("Function nr " + String::toString(fType) +
                                 " has to have a scalar argument");
@@ -1941,19 +1941,19 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
     return NTNumeric;
 }
 
-Int64 TableExprFuncNode::string2Int (const String& str)
+int64_t TableExprFuncNode::string2Int (const String& str)
 {
   istringstream istr(str);
   // Initialize to 0 to make sure an empty string is handled correctly.
-  Int64 v=0;
+  int64_t v=0;
   istr >> v;
   return v;
 }
 
-Double TableExprFuncNode::string2Real (const String& str)
+double TableExprFuncNode::string2Real (const String& str)
 {
   istringstream istr(str);
-  Double v=0;
+  double v=0;
   istr >> v;
   return v;
 }
@@ -1961,7 +1961,7 @@ Double TableExprFuncNode::string2Real (const String& str)
 DComplex TableExprFuncNode::string2Complex (const String& str)
 {
   istringstream istr(str);
-  Double r=0, i=0;
+  double r=0, i=0;
   char c=' ';
   istr >> c;
   if (c == '(') {
@@ -1976,16 +1976,16 @@ DComplex TableExprFuncNode::string2Complex (const String& str)
   return DComplex(r,i);
 }
 
-Bool TableExprFuncNode::string2Bool (const String& str)
+bool TableExprFuncNode::string2Bool (const String& str)
 {
   String s(str);
   s.trim();
   s.downcase();
   if (s.empty()  ||  s == "f"  ||  s == "false"  ||  s == "0"  ||
       s == "-"   ||  s == "n"  ||  s == "no") {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 

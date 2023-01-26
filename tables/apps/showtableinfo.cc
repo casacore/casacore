@@ -66,15 +66,15 @@ int main (int argc, char* argv[])
     if (in.empty()) {
       throw AipsError(" an input table name must be given");
     }
-    Bool showdm     = inputs.getBool("dm");
-    Bool showcol    = inputs.getBool("col");
-    Bool showtabkey = inputs.getBool("tabkey");
-    Bool showcolkey = inputs.getBool("colkey");
-    Int  maxval     = inputs.getInt ("maxval");
-    Bool showsub    = inputs.getBool("sub");
-    Bool sortcol    = inputs.getBool("sort");
-    Bool cOrder     = inputs.getBool ("corder");
-    Bool browse     = inputs.getBool("browse");
+    bool showdm     = inputs.getBool("dm");
+    bool showcol    = inputs.getBool("col");
+    bool showtabkey = inputs.getBool("tabkey");
+    bool showcolkey = inputs.getBool("colkey");
+    int32_t  maxval     = inputs.getInt ("maxval");
+    bool showsub    = inputs.getBool("sub");
+    bool sortcol    = inputs.getBool("sort");
+    bool cOrder     = inputs.getBool ("corder");
+    bool browse     = inputs.getBool("browse");
     String selcol  (inputs.getString("selcol"));
     String selrow  (inputs.getString("selrow"));
     String selsort (inputs.getString("selsort"));

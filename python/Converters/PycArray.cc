@@ -36,12 +36,12 @@ using namespace boost::python;
 
 namespace casacore { namespace python {
 
-  Bool PycArrayCheck (PyObject* obj_ptr)
+  bool PycArrayCheck (PyObject* obj_ptr)
   {
     return numpy::PycArrayCheck(obj_ptr);
   }
 
-  Bool PycArrayScalarCheck (PyObject* obj_ptr)
+  bool PycArrayScalarCheck (PyObject* obj_ptr)
   {
     int type;
     return numpy::PycArrayScalarCheck(obj_ptr, type);
@@ -53,7 +53,7 @@ namespace casacore { namespace python {
   }
 
   ValueHolder casa_array_from_python::makeArray (PyObject* obj_ptr,
-						 Bool copyData)
+						 bool copyData)
   {
     if (! numpy::PycArrayCheck(obj_ptr)) {
       throw AipsError ("PycArray: python object is not a numpy array");
@@ -78,7 +78,7 @@ namespace casacore { namespace python {
     dict d = extract<dict>(obj_ptr)();
     IPosition shp = extract<IPosition>(d.get("shape").ptr())();
     Array<String> arr = extract<Vector<String> >(d.get("array").ptr())();
-    if (Int(arr.size()) != shp.product()) {
+    if (int32_t(arr.size()) != shp.product()) {
       throw AipsError("PycArray: array size mismatches the shape");
     }
     return ValueHolder(arr.reform (shp));
@@ -101,23 +101,23 @@ namespace casacore { namespace python {
 
   // Instantiate the templates.
   template boost::python::object makePyArrayObject
-    (casacore::Array<Bool> const& arr);
+    (casacore::Array<bool> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<uChar> const& arr);
+    (casacore::Array<unsigned char> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<Short> const& arr);
+    (casacore::Array<int16_t> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<uShort> const& arr);
+    (casacore::Array<uint16_t> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<Int> const& arr);
+    (casacore::Array<int32_t> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<uInt> const& arr);
+    (casacore::Array<uint32_t> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<Int64> const& arr);
+    (casacore::Array<int64_t> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<Float> const& arr);
+    (casacore::Array<float> const& arr);
   template boost::python::object makePyArrayObject
-    (casacore::Array<Double> const& arr);
+    (casacore::Array<double> const& arr);
   template boost::python::object makePyArrayObject
     (casacore::Array<Complex> const& arr);
   template boost::python::object makePyArrayObject

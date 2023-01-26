@@ -49,11 +49,11 @@ template <class T> class CountedPtr;
 #define DataRanges std::vector<std::pair<AccumType, AccumType>>
 #define IncludeLimits std::vector<std::pair<AccumType, AccumType>>
 
-using BinCountArray = std::vector<uInt64>;
-using LocationType = std::pair<Int64, Int64>;
+using BinCountArray = std::vector<uint64_t>;
+using LocationType = std::pair<int64_t, int64_t>;
 
 template <class AccumType> struct StatsData {
-	Bool masked;
+	bool masked;
 	CountedPtr<AccumType> max;
 	LocationType maxpos;
 	AccumType mean;
@@ -61,7 +61,7 @@ template <class AccumType> struct StatsData {
 	CountedPtr<AccumType> medAbsDevMed;
 	CountedPtr<AccumType> min;
 	LocationType minpos;
-	Double npts;
+	double npts;
 	AccumType nvariance;
 	AccumType rms;
 	AccumType stddev;
@@ -69,7 +69,7 @@ template <class AccumType> struct StatsData {
 	AccumType sumsq;
 	AccumType sumweights;
 	AccumType variance;
-	Bool weighted;
+	bool weighted;
 };
 
 template <class AccumType>

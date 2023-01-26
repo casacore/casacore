@@ -80,28 +80,28 @@ public:
   FittingProxy();
   virtual ~FittingProxy();
 
-  Int getid();
-  Record getstate(Int id);
-  Bool init(Int id, Int n, Int tp, Double colfac, Double lmfac);
-  Bool done(Int id);
-  Bool reset(Int id);
-  Bool set(Int id, Int nin, Int tpin, Double colfac, Double lmfac);
-  Record functional(Int id, const Record& fnc, 
-		    const Vector<Double>& xval,
-		    const Vector<Double>& yval, 
-		    const Vector<Double>& wt,
-		    Int mxit, const Record& constraint);
-  Record linear(Int id, const Record& fnc, 
-		const Vector<Double>& xval,
-		const Vector<Double>& yval, 
-		const Vector<Double>& wt,
+  int32_t getid();
+  Record getstate(int32_t id);
+  bool init(int32_t id, int32_t n, int32_t tp, double colfac, double lmfac);
+  bool done(int32_t id);
+  bool reset(int32_t id);
+  bool set(int32_t id, int32_t nin, int32_t tpin, double colfac, double lmfac);
+  Record functional(int32_t id, const Record& fnc, 
+		    const Vector<double>& xval,
+		    const Vector<double>& yval, 
+		    const Vector<double>& wt,
+		    int32_t mxit, const Record& constraint);
+  Record linear(int32_t id, const Record& fnc, 
+		const Vector<double>& xval,
+		const Vector<double>& yval, 
+		const Vector<double>& wt,
 		const Record& constraint);
-  Record cxfunctional(Int id, const Record& fnc, 
+  Record cxfunctional(int32_t id, const Record& fnc, 
 		      const Vector<DComplex>& xval,
 		      const Vector<DComplex>& yval, 
 		      const Vector<DComplex>& wt,
-		      Int mxit, const Record& constraint);
-  Record cxlinear(Int id, const Record& fnc, 
+		      int32_t mxit, const Record& constraint);
+  Record cxlinear(int32_t id, const Record& fnc, 
 		  const Vector<DComplex>& xval,
 		  const Vector<DComplex>& yval, 
 		  const Vector<DComplex>& wt,
@@ -119,32 +119,32 @@ private:
     //# Method
     // Set a fitter pointer (real or complex)
     // <group>
-    void setFitter   (GenericL2Fit<Double> *ptr);
+    void setFitter   (GenericL2Fit<double> *ptr);
     void setFitterCX (GenericL2Fit<DComplex> *ptr);
     // </group>
     // Get a fitter pointer (real or complex)
     // <group>
-    GenericL2Fit<Double>   *const &getFitter() const;
+    GenericL2Fit<double>   *const &getFitter() const;
     GenericL2Fit<DComplex> *const &getFitterCX() const;
     // </group>
     // Set the status
-    void setStatus(Int n, Int typ, Double colfac, Double lmfac);
+    void setStatus(int32_t n, int32_t typ, double colfac, double lmfac);
     // Get the number of terms in condition equation
-    Int getNceq() const { return nceq_p;} ;
+    int32_t getNceq() const { return nceq_p;} ;
     // Get the number of unknowns
-    Int getN() const { return n_p;} ;
+    int32_t getN() const { return n_p;} ;
     // Get the number of real unknowns
-    Int getNreal() const { return nreal_p;} ;
+    int32_t getNreal() const { return nreal_p;} ;
     // Get the type
-    Int getType() const { return typ_p;} ;
+    int32_t getType() const { return typ_p;} ;
     // Get the collinearity factor
-    Double getColfac() const { return colfac_p;} ;
+    double getColfac() const { return colfac_p;} ;
     // Get the Levenberg-Marquardt factor
-    Double getLMfac() const { return lmfac_p;} ;
+    double getLMfac() const { return lmfac_p;} ;
     // Set solution done or not
-    void setSolved(Bool solved);
+    void setSolved(bool solved);
     // Solution done?
-    Bool getSolved() const { return soldone_p;} ;
+    bool getSolved() const { return soldone_p;} ;
   private:
     // Copy constructor: not implemented
     FitType(const FitType &other); 
@@ -153,30 +153,30 @@ private:
     //# Data
     // Pointer to a Fitting Machine: real or complex
     // <group>
-    casacore::GenericL2Fit<Double> *fitter_p;
+    casacore::GenericL2Fit<double> *fitter_p;
     casacore::GenericL2Fit<DComplex> *fitterCX_p;
     // </group>
     // Number of unknowns
-    Int n_p;
+    int32_t n_p;
     // Number of terms in condition equation
-    Int nceq_p;
+    int32_t nceq_p;
     // Number of real unknowns
-    Int nreal_p;
+    int32_t nreal_p;
     // Type
-    Int typ_p;
+    int32_t typ_p;
     // Collinearity factor
-    Double colfac_p;
+    double colfac_p;
     // Levenberg-Marquardt factor
-    Double lmfac_p;
+    double lmfac_p;
     // Solution done?
-    Bool soldone_p;
+    bool soldone_p;
     // System's rank deficiency
-    uInt nr_p;
+    uint32_t nr_p;
   };
   //# Member functions
   //# Data
   // Number of FitType obkects present
-  uInt nFitter_p;
+  uint32_t nFitter_p;
   // List of FitTypes
   FitType **list_p;
 };

@@ -62,18 +62,18 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Flag for this row <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // polarization id, pointer to polarization table <BR>
-    // Int.
+    // int32_t.
     POLARIZATION_ID,
     // Spectral window id, pointer to spectral window table <BR>
-    // Int.
+    // int32_t.
     SPECTRAL_WINDOW_ID,
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=SPECTRAL_WINDOW_ID,
     // Lag Id - points to LAG subtable which describes lag correlation functions <BR>
-    // Int
+    // int32_t
     LAG_ID,
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=LAG_ID

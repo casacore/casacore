@@ -67,7 +67,7 @@ UnitName &UnitName::operator=(const UnitName &other) {
 
 ostream& operator<< (ostream &os, const UnitName &name) {
     static String FillString("                                ");
-    Int i=os.precision();
+    int32_t i=os.precision();
     os << name.basicTag <<
 	(FillString)(0,10 - name.basicTag.length()) <<
 	    "(" <<

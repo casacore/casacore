@@ -1,4 +1,4 @@
-//# ImageFITSConverter.cc: this defines templated conversion from FITS to a Casacore Float image
+//# ImageFITSConverter.cc: this defines templated conversion from FITS to a Casacore float image
 //# Copyright (C) 1996,1997,1998,1999,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -62,11 +62,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // into template independent code.
 template<class HDUType>
 void ImageFITSConverterImpl<HDUType>::FITSToImage(
-	ImageInterface<Float>*& pNewImage, String &error,
+	ImageInterface<float>*& pNewImage, String &error,
 	const String &newImageName,
-	const uInt whichRep, HDUType &fitsImage,
+	const uint32_t whichRep, HDUType &fitsImage,
 	const String& fitsFilename, const DataType dataType,
-	const uInt memoryInMB, const Bool zeroBlanks
+	const uint32_t memoryInMB, const bool zeroBlanks
 ) {
 	LogIO os(LogOrigin("ImageFITSConverterImpl", __FUNCTION__, WHERE));
 	// Crack the header and get what we need out of it.  DOn't get tricked
@@ -75,24 +75,24 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 	// ndim
 
-	uInt ndim = fitsImage.dims();
+	uint32_t ndim = fitsImage.dims();
 
 	// shape
 
 	IPosition shape(ndim);
-	for (Int i=0; i<Int(ndim); i++) {
+	for (int32_t i=0; i<int32_t(ndim); i++) {
 		shape(i) = fitsImage.dim(i);
 	}
 
 	// Get header as Vector of strings
 
-	Vector<String> header = fitsImage.kwlist_str(True);
+	Vector<String> header = fitsImage.kwlist_str(true);
 
 	// Get Coordinate System.  Return un-used FITS cards in a Record for further use.
 
 	Record headerRec;
-	Bool dropStokes = True;
-	Int stokesFITSValue = 1;
+	bool dropStokes = true;
+	int32_t stokesFITSValue = 1;
 	CoordinateSystem coords =  ImageFITSConverter::getCoordinateSystem(
 			stokesFITSValue, headerRec,  header,
 			os, whichRep, shape, dropStokes
@@ -102,10 +102,10 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 	try {
 		if (newImageName.empty()) {
-			pNewImage = new TempImage<Float>(shape, coords);
+			pNewImage = new TempImage<float>(shape, coords);
 			os << LogIO::NORMAL << "Created (temp)image of shape " << shape << LogIO::POST;
 		} else {
-			pNewImage = new PagedImage<Float>(shape, coords, newImageName);
+			pNewImage = new PagedImage<float>(shape, coords, newImageName);
 			os << LogIO::NORMAL << "Created image of shape " << shape << LogIO::POST;
 		}
 	}
@@ -130,7 +130,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 
 	// BITPIX
 
-	Int bitpix;
+	int32_t bitpix;
 	Record subRec = headerRec.asRecord("bitpix");
 	subRec.get("value", bitpix);
 	headerRec.removeField("bitpix");
@@ -141,8 +141,8 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 	// Other packages may write it out, so a bit of code below
 	// to handle it.
 
-	Bool isBlanked = fitsImage.isablank();
-	Int blankVal = fitsImage.blank();
+	bool isBlanked = fitsImage.isablank();
+	int32_t blankVal = fitsImage.blank();
 	if (bitpix < 0 && isBlanked) {
 		if (blankVal != -1) {
 			// Warn that we only deal with NaN blanked FP image HDU's.
@@ -185,45 +185,45 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 	IPosition cursorShape(ndim), cursorOrder(ndim);
 	String report;
 	cursorShape =
-			ImageFITSConverter::copyCursorShape(report, shape, sizeof(Float),
+			ImageFITSConverter::copyCursorShape(report, shape, sizeof(float),
 					sizeof(typename HDUType::ElementType),
 					memoryInMB);
 
 	os << LogIO::NORMAL << "Copy FITS file to '" << pNewImage->name() << "' " <<
 			report << LogIO::POST;
 	LatticeStepper imStepper(shape, cursorShape, IPosition::makeAxisPath(ndim));
-	LatticeIterator<Float> imIter(*pNewImage, imStepper);
-	Int nIter = max(1,pNewImage->shape().product()/cursorShape.product());
-	Int iUpdate = max(1,nIter/20);
-	ProgressMeter meter(0.0, Double(pNewImage->shape().product()),
-			"FITS to Image", "Pixels copied", "", "",  True, 
+	LatticeIterator<float> imIter(*pNewImage, imStepper);
+	int32_t nIter = max(1,pNewImage->shape().product()/cursorShape.product());
+	int32_t iUpdate = max(1,nIter/20);
+	ProgressMeter meter(0.0, double(pNewImage->shape().product()),
+			"FITS to Image", "Pixels copied", "", "",  true, 
 			iUpdate);
-	Double nPixPerIter = cursorShape.product();
-	Double meterValue;
+	double nPixPerIter = cursorShape.product();
+	double meterValue;
 
 	// With floating point, we don't know ahead of time if there
 	// are blanks or not.   SO we have to make the mask, and then
 	// delete it if its not needed.
 
 	ImageRegion maskReg;
-	LatticeIterator<Bool>* pMaskIter = 0;
-	Bool madeMask = False;
+	LatticeIterator<bool>* pMaskIter = 0;
+	bool madeMask = false;
 	if (bitpix<0 || isBlanked) {
-		maskReg = pNewImage->makeMask ("mask0", False, False);
+		maskReg = pNewImage->makeMask ("mask0", false, false);
 		LCRegion& mask = maskReg.asMask();
 		LatticeStepper pMaskStepper (shape, cursorShape,
 				IPosition::makeAxisPath(ndim));
-		pMaskIter = new LatticeIterator<Bool>(mask, pMaskStepper);
+		pMaskIter = new LatticeIterator<bool>(mask, pMaskStepper);
 		pMaskIter->reset();
-		madeMask = True;
+		madeMask = true;
 	}
 
 	// Do the work. Iterate through in chunks.
-	Bool hasBlanks = False;
+	bool hasBlanks = false;
 	try {
-		Int bufferSize = cursorShape.product();
+		int32_t bufferSize = cursorShape.product();
 		for (imIter.reset(),meterValue=0.0; !imIter.atEnd(); imIter++) {
-			Array<Float>& cursor = imIter.woCursor();
+			Array<float>& cursor = imIter.woCursor();
 			fitsImage.read(bufferSize);                  // Read from FITS
 			meterValue += nPixPerIter*1.0/2.0;
 			meter.update(meterValue);
@@ -235,35 +235,35 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 				return;
 			}
 
-			Bool deletePtr;
-			Float *ptr = cursor.getStorage(deletePtr);   // Get Image ptr
+			bool deletePtr;
+			float *ptr = cursor.getStorage(deletePtr);   // Get Image ptr
 			fitsImage.copy(ptr, bufferSize);             // Copy from fits
 
 			// Deal with mask if necessary
 			if (madeMask) {
-				Array<Bool>& maskCursor = pMaskIter->woCursor();
-				Bool deleteMaskPtr;
-				Bool* mPtr = maskCursor.getStorage(deleteMaskPtr);
+				Array<bool>& maskCursor = pMaskIter->woCursor();
+				bool deleteMaskPtr;
+				bool* mPtr = maskCursor.getStorage(deleteMaskPtr);
 				if (zeroBlanks) {
 					for (size_t i=0; i<maskCursor.nelements(); i++) {
 						if (isNaN(ptr[i])) {
-							mPtr[i] = False;
-							hasBlanks = True;
+							mPtr[i] = false;
+							hasBlanks = true;
 							ptr[i] = 0.0;
 						}
 						else {
-							mPtr[i] = True;
+							mPtr[i] = true;
 						}
 					}
 				}
 				else {
 					for (size_t i=0; i<maskCursor.nelements(); i++) {
 						if (isNaN(ptr[i])) {
-							mPtr[i] = False;
-							hasBlanks = True;
+							mPtr[i] = false;
+							hasBlanks = true;
 						}
 						else {
-							mPtr[i] = True;
+							mPtr[i] = true;
 						}
 					}
 				}
@@ -274,7 +274,7 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 				if (zeroBlanks) {
 					for (size_t i=0; i<cursor.nelements(); i++) {
 						if (isNaN(ptr[i])) {
-							hasBlanks = True;
+							hasBlanks = true;
 							ptr[i] = 0.0;
 						}
 					}

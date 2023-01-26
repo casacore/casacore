@@ -137,7 +137,7 @@ void checkFlags (int& error)
 
     // Check for (unsigned) int64
 #if !defined(AIPS_LITTLE_ENDIAN)
-    flag = sizeof(Int64) != SIZE_CAN_INT64;
+    flag = sizeof(int64_t) != SIZE_CAN_INT64;
 #endif
     if ((flag^CONVERT_CAN_INT64) != 0) {
 	cout << "invalid CONVERT_CAN_INT64 definition"
@@ -145,19 +145,19 @@ void checkFlags (int& error)
 	error = 1;
     }
 #if !defined(AIPS_LITTLE_ENDIAN)
-    flag = sizeof(uInt64) != SIZE_CAN_UINT64;
+    flag = sizeof(uint64_t) != SIZE_CAN_UINT64;
 #endif
     if ((flag^CONVERT_CAN_UINT64) != 0) {
 	cout << "invalid CONVERT_CAN_UINT64 definition"
 	     << endl;
 	error = 1;
     }
-    if (sizeof(Int64) < 8) {
-	cout << "sizeof(Int64) must be >=8" << endl;
+    if (sizeof(int64_t) < 8) {
+	cout << "sizeof(int64_t) must be >=8" << endl;
 	error = 1;
     }
-    if (sizeof(uInt64) < 8) {
-	cout << "sizeof(uInt64) must >=8" << endl;
+    if (sizeof(uint64_t) < 8) {
+	cout << "sizeof(uint64_t) must >=8" << endl;
 	error = 1;
     }
 
@@ -320,11 +320,11 @@ void checkConversion (int& error)
 	val[6] = 54;
 	val[7] = 78;
 	val[8] = 145-256;
-	Int64 result;
+	int64_t result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 2*256*256*256 + 54*256*256 + 78*256 + 145
-	              + 6*(Int64)(256)*256*256*256) {
-	    cout << "invalid Int64 to conversion 1 " << result << endl;
+	              + 6*(int64_t)(256)*256*256*256) {
+	    cout << "invalid int64_t to conversion 1 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -332,7 +332,7 @@ void checkConversion (int& error)
 	||  out[3] != val[3]  ||  out[4] != val[4]
 	||  out[5] != val[5]  ||  out[6] != val[6]
 	||  out[7] != val[7]  ||  out[8] != val[8]) {
-	    cout << "invalid Int64 from conversion 1" << endl;
+	    cout << "invalid int64_t from conversion 1" << endl;
 	    error = 1;
 	}
 	val[1] = -1;
@@ -340,10 +340,10 @@ void checkConversion (int& error)
 	val[3] = -1;
 	val[4] = -2;
 	CanonicalConversion::toLocal (&result, val+1, 1);
-	if (result != -((Int64)(256)*256*256*256
-			+ (Int64)(253)*256*256*256
+	if (result != -((int64_t)(256)*256*256*256
+			+ (int64_t)(253)*256*256*256
 			+ 201*256*256 + 177*256 + 111)) {
-	    cout << "invalid Int64 to conversion 2 " << result << endl;
+	    cout << "invalid int64_t to conversion 2 " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -351,7 +351,7 @@ void checkConversion (int& error)
 	||  out[3] != val[3]  ||  out[4] != val[4]
 	||  out[5] != val[5]  ||  out[6] != val[6]
 	||  out[7] != val[7]  ||  out[8] != val[8]) {
-	    cout << "invalid Int64 from conversion 2" << endl;
+	    cout << "invalid int64_t from conversion 2" << endl;
 	    error = 1;
 	}
     }
@@ -364,11 +364,11 @@ void checkConversion (int& error)
 	val[6] = 54;
 	val[7] = 78;
 	val[8] = 100;
-	uInt64 result;
+	uint64_t result;
 	CanonicalConversion::toLocal (&result, val+1, 1);
 	if (result != 128U*256U*256U*256U + 54U*256U*256U + 78U*256U + 100U
-	              + 5U*(uInt64)(256)*256U*256U*256U) {
-	    cout << "invalid uInt64 to conversion " << result << endl;
+	              + 5U*(uint64_t)(256)*256U*256U*256U) {
+	    cout << "invalid uint64_t to conversion " << result << endl;
 	    error = 1;
 	}
 	CanonicalConversion::fromLocal (out+1, &result, 1);
@@ -376,7 +376,7 @@ void checkConversion (int& error)
 	||  out[3] != val[3]  ||  out[4] != val[4]
 	||  out[5] != val[5]  ||  out[6] != val[6]
 	||  out[7] != val[7]  ||  out[8] != val[8]) {
-	    cout << "invalid uInt64 from conversion" << endl;
+	    cout << "invalid uint64_t from conversion" << endl;
 	    error = 1;
 	}
     }

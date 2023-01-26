@@ -71,28 +71,28 @@ public:
 
   // Create the object for the given value.
   // <group>
-  explicit ValueHolder (Bool value);
-  explicit ValueHolder (uChar value);
-  explicit ValueHolder (Short value);
-  explicit ValueHolder (uShort value);
-  explicit ValueHolder (Int value);
-  explicit ValueHolder (uInt value);
-  explicit ValueHolder (Int64 value);
-  explicit ValueHolder (Float value);
-  explicit ValueHolder (Double value);
+  explicit ValueHolder (bool value);
+  explicit ValueHolder (unsigned char value);
+  explicit ValueHolder (int16_t value);
+  explicit ValueHolder (uint16_t value);
+  explicit ValueHolder (int32_t value);
+  explicit ValueHolder (uint32_t value);
+  explicit ValueHolder (int64_t value);
+  explicit ValueHolder (float value);
+  explicit ValueHolder (double value);
   explicit ValueHolder (const Complex& value);
   explicit ValueHolder (const DComplex& value);
-  explicit ValueHolder (const Char* value);
+  explicit ValueHolder (const char* value);
   explicit ValueHolder (const String& value);
-  explicit ValueHolder (const Array<Bool>& value);
-  explicit ValueHolder (const Array<uChar>& value);
-  explicit ValueHolder (const Array<Short>& value);
-  explicit ValueHolder (const Array<uShort>& value);
-  explicit ValueHolder (const Array<Int>& value);
-  explicit ValueHolder (const Array<uInt>& value);
-  explicit ValueHolder (const Array<Int64>& value);
-  explicit ValueHolder (const Array<Float>& value);
-  explicit ValueHolder (const Array<Double>& value);
+  explicit ValueHolder (const Array<bool>& value);
+  explicit ValueHolder (const Array<unsigned char>& value);
+  explicit ValueHolder (const Array<int16_t>& value);
+  explicit ValueHolder (const Array<uint16_t>& value);
+  explicit ValueHolder (const Array<int32_t>& value);
+  explicit ValueHolder (const Array<uint32_t>& value);
+  explicit ValueHolder (const Array<int64_t>& value);
+  explicit ValueHolder (const Array<float>& value);
+  explicit ValueHolder (const Array<double>& value);
   explicit ValueHolder (const Array<Complex>& value);
   explicit ValueHolder (const Array<DComplex>& value);
   explicit ValueHolder (const Array<String>& value);
@@ -100,7 +100,7 @@ public:
   // </group>
 
   // Create an empty N-dim array (gets type TpOther).
-  ValueHolder (uInt ndim, Bool dummy);
+  ValueHolder (uint32_t ndim, bool dummy);
 
   // Create a ValueHolder from a ValueHolderRep.
   // It takes over the pointer and deletes it in the destructor.
@@ -119,7 +119,7 @@ public:
   ValueHolder& operator= (const ValueHolder&);
 
   // Is this a null object?
-  Bool isNull() const
+  bool isNull() const
     { return itsRep.null(); }
 
   // Get the data type (as defined in DataType.h).
@@ -129,27 +129,27 @@ public:
   // Get the value.
   // If possible, it converts the data as needed.
   // <group>
-  Bool                  asBool    () const;
-  uChar                 asuChar   () const;
-  Short                 asShort   () const;
-  uShort                asuShort  () const;
-  Int                   asInt     () const;
-  uInt                  asuInt    () const;
-  Int64                 asInt64   () const;
-  Float                 asFloat   () const;
-  Double                asDouble  () const;
+  bool                  asBool    () const;
+  unsigned char                 asuChar   () const;
+  int16_t                 asShort   () const;
+  uint16_t                asuShort  () const;
+  int32_t                   asInt     () const;
+  uint32_t                  asuInt    () const;
+  int64_t                 asInt64   () const;
+  float                 asFloat   () const;
+  double                asDouble  () const;
   Complex               asComplex () const;
   DComplex              asDComplex() const;
   const String&         asString  () const;
-  const Array<Bool>     asArrayBool    () const;
-  const Array<uChar>    asArrayuChar   () const;
-  const Array<Short>    asArrayShort   () const;
-  const Array<uShort>   asArrayuShort  () const;
-  const Array<Int>      asArrayInt     () const;
-  const Array<uInt>     asArrayuInt    () const;
-  const Array<Int64>    asArrayInt64   () const;
-  const Array<Float>    asArrayFloat   () const;
-  const Array<Double>   asArrayDouble  () const;
+  const Array<bool>     asArrayBool    () const;
+  const Array<unsigned char>    asArrayuChar   () const;
+  const Array<int16_t>    asArrayShort   () const;
+  const Array<uint16_t>   asArrayuShort  () const;
+  const Array<int32_t>      asArrayInt     () const;
+  const Array<uint32_t>     asArrayuInt    () const;
+  const Array<int64_t>    asArrayInt64   () const;
+  const Array<float>    asArrayFloat   () const;
+  const Array<double>   asArrayDouble  () const;
   const Array<Complex>  asArrayComplex () const; 
   const Array<DComplex> asArrayDComplex() const;
   const Array<String>   asArrayString  () const;
@@ -159,35 +159,35 @@ public:
   // Get the data in a way useful for templates.
   // If possible, it converts the the data as needed.
   // <group>
-  void getValue (Bool& value) const            { value = asBool(); }
-  void getValue (uChar& value) const           { value = asuChar(); }
-  void getValue (Short& value) const           { value = asShort(); }
-  void getValue (uShort& value) const          { value = asuShort(); }
-  void getValue (Int& value) const             { value = asInt(); }
-  void getValue (uInt& value) const            { value = asuInt(); }
-  void getValue (Int64& value) const           { value = asInt64(); }
-  void getValue (Float& value) const           { value = asFloat(); }
-  void getValue (Double& value) const          { value = asDouble(); }
+  void getValue (bool& value) const            { value = asBool(); }
+  void getValue (unsigned char& value) const           { value = asuChar(); }
+  void getValue (int16_t& value) const           { value = asShort(); }
+  void getValue (uint16_t& value) const          { value = asuShort(); }
+  void getValue (int32_t& value) const             { value = asInt(); }
+  void getValue (uint32_t& value) const            { value = asuInt(); }
+  void getValue (int64_t& value) const           { value = asInt64(); }
+  void getValue (float& value) const           { value = asFloat(); }
+  void getValue (double& value) const          { value = asDouble(); }
   void getValue (Complex& value) const         { value = asComplex(); }
   void getValue (DComplex& value) const        { value = asDComplex(); }
   void getValue (String& value) const          { value = asString(); }
-  void getValue (Array<Bool>& value) const
+  void getValue (Array<bool>& value) const
     { value.reference(asArrayBool()); }
-  void getValue (Array<uChar>& value) const
+  void getValue (Array<unsigned char>& value) const
     { value.reference(asArrayuChar()); }
-  void getValue (Array<Short>& value) const
+  void getValue (Array<int16_t>& value) const
     { value.reference(asArrayShort()); }
-  void getValue (Array<uShort>& value) const
+  void getValue (Array<uint16_t>& value) const
     { value.reference(asArrayuShort()); }
-  void getValue (Array<Int>& value) const
+  void getValue (Array<int32_t>& value) const
     { value.reference(asArrayInt()); }
-  void getValue (Array<uInt>& value) const
+  void getValue (Array<uint32_t>& value) const
     { value.reference(asArrayuInt()); }
-  void getValue (Array<Int64>& value) const
+  void getValue (Array<int64_t>& value) const
     { value.reference(asArrayInt64()); }
-  void getValue (Array<Float>& value) const
+  void getValue (Array<float>& value) const
     { value.reference(asArrayFloat()); }
-  void getValue (Array<Double>& value) const
+  void getValue (Array<double>& value) const
     { value.reference(asArrayDouble()); }
   void getValue (Array<Complex>& value) const
     { value.reference(asArrayComplex()); }
@@ -226,23 +226,23 @@ inline void ValueHolder::toRecord (Record& rec, const RecordFieldId& id) const
 inline ValueHolder ValueHolder::fromRecord (const Record& rec,
 					    const RecordFieldId& id)
   { return ValueHolder (ValueHolderRep::fromRecord (rec, id)); }
-inline Bool ValueHolder::asBool() const
+inline bool ValueHolder::asBool() const
   { return itsRep->asBool(); }
-inline uChar ValueHolder::asuChar() const
+inline unsigned char ValueHolder::asuChar() const
   { return itsRep->asuChar(); }
-inline Short ValueHolder::asShort() const
+inline int16_t ValueHolder::asShort() const
   { return itsRep->asShort(); }
-inline uShort ValueHolder::asuShort() const
+inline uint16_t ValueHolder::asuShort() const
   { return itsRep->asuShort(); }
-inline Int ValueHolder::asInt() const
+inline int32_t ValueHolder::asInt() const
   { return itsRep->asInt(); }
-inline uInt ValueHolder::asuInt() const
+inline uint32_t ValueHolder::asuInt() const
   { return itsRep->asuInt(); }
-inline Int64 ValueHolder::asInt64() const
+inline int64_t ValueHolder::asInt64() const
   { return itsRep->asInt64(); }
-inline Float ValueHolder::asFloat() const
+inline float ValueHolder::asFloat() const
   { return itsRep->asFloat(); }
-inline Double ValueHolder::asDouble() const
+inline double ValueHolder::asDouble() const
   { return itsRep->asDouble(); }
 inline Complex ValueHolder::asComplex() const
   { return itsRep->asComplex(); }
@@ -250,23 +250,23 @@ inline DComplex ValueHolder::asDComplex() const
   { return itsRep->asDComplex(); }
 inline const String& ValueHolder::asString() const
   { return itsRep->asString(); }
-inline const Array<Bool> ValueHolder::asArrayBool() const
+inline const Array<bool> ValueHolder::asArrayBool() const
   { return itsRep->asArrayBool(); }
-inline const Array<uChar> ValueHolder::asArrayuChar() const
+inline const Array<unsigned char> ValueHolder::asArrayuChar() const
   { return itsRep->asArrayuChar(); }
-inline const Array<Short> ValueHolder::asArrayShort() const
+inline const Array<int16_t> ValueHolder::asArrayShort() const
   { return itsRep->asArrayShort(); }
-inline const Array<uShort> ValueHolder::asArrayuShort() const
+inline const Array<uint16_t> ValueHolder::asArrayuShort() const
   { return itsRep->asArrayuShort(); }
-inline const Array<Int> ValueHolder::asArrayInt() const
+inline const Array<int32_t> ValueHolder::asArrayInt() const
   { return itsRep->asArrayInt(); }
-inline const Array<uInt> ValueHolder::asArrayuInt() const
+inline const Array<uint32_t> ValueHolder::asArrayuInt() const
   { return itsRep->asArrayuInt(); }
-inline const Array<Int64> ValueHolder::asArrayInt64() const
+inline const Array<int64_t> ValueHolder::asArrayInt64() const
   { return itsRep->asArrayInt64(); }
-inline const Array<Float> ValueHolder::asArrayFloat() const
+inline const Array<float> ValueHolder::asArrayFloat() const
   { return itsRep->asArrayFloat(); }
-inline const Array<Double> ValueHolder::asArrayDouble() const
+inline const Array<double> ValueHolder::asArrayDouble() const
   { return itsRep->asArrayDouble(); }
 inline const Array<Complex> ValueHolder::asArrayComplex() const
   { return itsRep->asArrayComplex(); }

@@ -51,7 +51,7 @@ RO_LatticeIterator<T>::RO_LatticeIterator()
 
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
-					   Bool useRef)
+					   bool useRef)
 : itsIterPtr (lattice.makeIter (TileStepper (lattice.shape(),
 					     lattice.niceCursorShape()),
 				useRef))
@@ -62,7 +62,7 @@ RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
 					   const LatticeNavigator& method,
-					   Bool useRef)
+					   bool useRef)
 : itsIterPtr (lattice.makeIter (method, useRef))
 {
   DebugAssert(ok(), AipsError);
@@ -71,7 +71,7 @@ RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
 template <class T>
 RO_LatticeIterator<T>::RO_LatticeIterator (const Lattice<T>& lattice,
 					   const IPosition& cursorShape,
-					   Bool useRef)
+					   bool useRef)
 : itsIterPtr (lattice.makeIter (LatticeStepper(lattice.shape(), cursorShape),
 				useRef))
 {
@@ -113,25 +113,25 @@ RO_LatticeIterator<T> RO_LatticeIterator<T>::copy() const
 }
 
 template <class T>
-Bool RO_LatticeIterator<T>::operator++(int)
+bool RO_LatticeIterator<T>::operator++(int)
 {
   return itsIterPtr->operator++(0);
 }
  
 template <class T>
-Bool RO_LatticeIterator<T>::operator++()
+bool RO_LatticeIterator<T>::operator++()
 {
   return itsIterPtr->operator++();
 }
  
 template <class T>
-Bool RO_LatticeIterator<T>::operator--(int)
+bool RO_LatticeIterator<T>::operator--(int)
 {
   return itsIterPtr->operator--(0);
 }
 
 template <class T>
-Bool RO_LatticeIterator<T>::operator--()
+bool RO_LatticeIterator<T>::operator--()
 {
   return itsIterPtr->operator--();
 } 
@@ -143,19 +143,19 @@ void RO_LatticeIterator<T>::reset()
 }
 
 template <class T>
-Bool RO_LatticeIterator<T>::atStart() const
+bool RO_LatticeIterator<T>::atStart() const
 {
   return itsIterPtr->atStart();
 }
 
 template <class T>
-Bool RO_LatticeIterator<T>::atEnd() const
+bool RO_LatticeIterator<T>::atEnd() const
 {
   return itsIterPtr->atEnd();
 }
 
 template <class T>
-uInt RO_LatticeIterator<T>::nsteps() const
+uint32_t RO_LatticeIterator<T>::nsteps() const
 {
   return itsIterPtr->nsteps();
 }
@@ -187,38 +187,38 @@ IPosition RO_LatticeIterator<T>::cursorShape() const
 template <class T>
 const Vector<T>& RO_LatticeIterator<T>::vectorCursor() const
 {
-  return itsIterPtr->vectorCursor (True, False);
+  return itsIterPtr->vectorCursor (true, false);
 }
 
 template <class T>
 const Matrix<T>& RO_LatticeIterator<T>::matrixCursor() const
 {
-  return itsIterPtr->matrixCursor (True, False);
+  return itsIterPtr->matrixCursor (true, false);
 }
 
 template <class T>
 const Cube<T>& RO_LatticeIterator<T>::cubeCursor() const
 {
-  return itsIterPtr->cubeCursor (True, False);
+  return itsIterPtr->cubeCursor (true, false);
 }
 
 template <class T>
 const Array<T>& RO_LatticeIterator<T>::cursor() const
 {
-  return itsIterPtr->cursor (True, False);
+  return itsIterPtr->cursor (true, false);
 }
 
 
 template <class T>
-Bool RO_LatticeIterator<T>::ok() const
+bool RO_LatticeIterator<T>::ok() const
 {
   if (!isNull()) {
     if (! itsIterPtr->ok()) {
       throw AipsError ("The actual Lattice Iterator class is inconsistent");
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 
@@ -228,7 +228,7 @@ LatticeIterator<T>::LatticeIterator()
 {}
 
 template <class T>
-LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice, Bool useRef)
+LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice, bool useRef)
 : RO_LatticeIterator<T> (lattice, useRef)
 {
   if (! lattice.isWritable()) {
@@ -240,7 +240,7 @@ LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice, Bool useRef)
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
 				     const LatticeNavigator& method,
-				     Bool useRef)   
+				     bool useRef)   
 : RO_LatticeIterator<T> (lattice, method, useRef)
 {
   if (! lattice.isWritable()) {
@@ -252,7 +252,7 @@ LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
 template <class T>
 LatticeIterator<T>::LatticeIterator (Lattice<T>& lattice,
 				     const IPosition& cursorShape,
-				     Bool useRef)
+				     bool useRef)
  
 : RO_LatticeIterator<T> (lattice, cursorShape, useRef)
 {
@@ -292,49 +292,49 @@ LatticeIterator<T> LatticeIterator<T>::copy() const
 template <class T>
 Vector<T>& LatticeIterator<T>::rwVectorCursor()
 {
-  return itsIterPtr->vectorCursor (True, True);
+  return itsIterPtr->vectorCursor (true, true);
 }
 
 template <class T>
 Matrix<T>& LatticeIterator<T>::rwMatrixCursor()
 {
-  return itsIterPtr->matrixCursor (True, True);
+  return itsIterPtr->matrixCursor (true, true);
 }
 
 template <class T>
 Cube<T>& LatticeIterator<T>::rwCubeCursor()
 {
-  return itsIterPtr->cubeCursor (True, True);
+  return itsIterPtr->cubeCursor (true, true);
 }
 
 template <class T>
 Array<T>& LatticeIterator<T>::rwCursor()
 {
-  return itsIterPtr->cursor (True, True);
+  return itsIterPtr->cursor (true, true);
 }
 
 template <class T>
 Vector<T>& LatticeIterator<T>::woVectorCursor()
 {
-  return itsIterPtr->vectorCursor (False, True);
+  return itsIterPtr->vectorCursor (false, true);
 }
 
 template <class T>
 Matrix<T>& LatticeIterator<T>::woMatrixCursor()
 {
-  return itsIterPtr->matrixCursor (False, True);
+  return itsIterPtr->matrixCursor (false, true);
 }
 
 template <class T>
 Cube<T>& LatticeIterator<T>::woCubeCursor()
 {
-  return itsIterPtr->cubeCursor (False, True);
+  return itsIterPtr->cubeCursor (false, true);
 }
 
 template <class T>
 Array<T>& LatticeIterator<T>::woCursor()
 {
-  return itsIterPtr->cursor (False, True);
+  return itsIterPtr->cursor (false, true);
 }
 
 } //# NAMESPACE CASACORE - END

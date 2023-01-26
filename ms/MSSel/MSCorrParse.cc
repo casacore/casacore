@@ -68,7 +68,7 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
 
   IPosition rowShape;
   Slicer slicer;
-  Bool corrTypeExist = False;
+  bool corrTypeExist = false;
 
   ArrayColumn<Complex> data(selms, MS::columnName(MS::DATA));
   TableDesc tdSel;
@@ -84,22 +84,22 @@ const TableExprNode *MSCorrParse::selectCorrType(const String& corrType)
   ArrayColumn<Complex> selData(selms, "SELECTED_DATA");
   
   MSPolarizationColumns polc(selms.polarization());
-  Array<Int> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
+  Array<int32_t> corrtypeArray = polc.corrType().getColumn().nonDegenerate();
   IPosition ip = corrtypeArray.shape();
 
-  Vector<Int> nCorr(corrtypeArray);
+  Vector<int32_t> nCorr(corrtypeArray);
 
-  for (uInt row=0; row < selms.nrow(); row++) {
+  for (uint32_t row=0; row < selms.nrow(); row++) {
     rowShape=data.shape(row);
     selData.setShape(row,IPosition(2, 1, rowShape(1)) );
   }
 
-  Vector<Int> corrtype(nCorr);
+  Vector<int32_t> corrtype(nCorr);
   if(nCorr.nelements() != 0) {
-    for (uInt i = 0; i < nCorr.nelements(); i ++) {
+    for (uint32_t i = 0; i < nCorr.nelements(); i ++) {
       if(nCorr(i) == Stokes::type(corrType)){
 	slicer = Slicer(IPosition(2, i, 0), IPosition(2, i, rowShape(1)-1 ), IPosition(2, 1, 1), Slicer::endIsLast);   
-	corrTypeExist = True;
+	corrTypeExist = true;
       }
     }
   }

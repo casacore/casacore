@@ -33,7 +33,7 @@
 #include <casacore/casa/Exceptions.h>
 
 #include <casacore/casa/namespace.h>
-const Int nrOfTests = 1;
+const int32_t nrOfTests = 1;
 
 int main ()
 {
@@ -54,19 +54,19 @@ int main ()
 	ByteSinkSource sinkSource2(&(sinkSource.typeIO()));
     }
     {
-	Bool     testBool = True;
-	Short    testShort = -30;
-	uShort   testuShort = 10;
-	Int      testInt = -20;
-	uInt     testuInt = 80;
-	Int64    testInt64 = -100000;
-	uInt64   testuInt64 = 100000;
-	Float    testFloat = 18.45;
-	Double   testDouble = 23.987; 
+	bool     testBool = true;
+	int16_t    testShort = -30;
+	uint16_t   testuShort = 10;
+	int32_t      testInt = -20;
+	uint32_t     testuInt = 80;
+	int64_t    testInt64 = -100000;
+	uint64_t   testuInt64 = 100000;
+	float    testFloat = 18.45;
+	double   testDouble = 23.987; 
 	Complex  testComplex(2,3);
 	DComplex testDComplex(2.5,3.8);
-	Char     testChar = 'A';
-	uChar    testuChar = 'B';
+	char     testChar = 'A';
+	unsigned char    testuChar = 'B';
 	String   testString("This is a teststring");
 
 	RegularFileIO regularFileIO (Path("tByteSinkSource_tmp.dat1"),

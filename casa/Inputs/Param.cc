@@ -46,8 +46,8 @@ Param::Param (const String& a_key, const String& a_value, const String& a_help,
   type     (a_type),
   range    (a_range),
   unit     (a_unit),
-  hasvalue ((value.length() > 0) ? True : False),
-  system   (False),
+  hasvalue ((value.length() > 0) ? true : false),
+  system   (false),
   index    (0)
 {
 #if defined(DEBUG)
@@ -108,19 +108,19 @@ Param& Param::operator= (const Param& other)          // assignment
     return *this;
 }
 
-Bool						// comparison, don't allow
+bool						// comparison, don't allow
 Param::operator== (const Param&) const
 {
-    return False;
+    return false;
 }
 
 
-Double 
-Param::getDouble (Bool prompt) const		// Double value
+double 
+Param::getDouble (bool prompt) const		// double value
 {
 #if defined(EVAL)
-    Double d;
-    Int n = eval_double((const char *)value, &d, 1, &iret);
+    double d;
+    int32_t n = eval_double((const char *)value, &d, 1, &iret);
     if (n==1) {
       return d;
     } else {
@@ -134,15 +134,15 @@ Param::getDouble (Bool prompt) const		// Double value
 #endif
 }
 
-Block<Double>
-Param::getDoubleArray (Bool prompt) const	// Double value
+Block<double>
+Param::getDoubleArray (bool prompt) const	// double value
 {
-    Int i;
-    Int idx=0;
-    Int n = value.freq(",")+1;
+    int32_t i;
+    int32_t idx=0;
+    int32_t n = value.freq(",")+1;
     String z;
     String val(value);            // need a non-const String
-    Block<Double> x(n);
+    Block<double> x(n);
 
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -160,8 +160,8 @@ Param::getDoubleArray (Bool prompt) const	// Double value
     return x;
 }
 
-Int 
-Param::getInt (Bool prompt) const		// Int value
+int32_t 
+Param::getInt (bool prompt) const		// int32_t value
 {
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -169,15 +169,15 @@ Param::getInt (Bool prompt) const		// Int value
     return atoi(value.chars());
 }
 
-Block<Int>
-Param::getIntArray (Bool prompt) const
+Block<int32_t>
+Param::getIntArray (bool prompt) const
 {
-    Int i;
-    Int idx=0;
-    Int n = value.freq(",")+1;
+    int32_t i;
+    int32_t idx=0;
+    int32_t n = value.freq(",")+1;
     String z;
     String val(value);            // need a non-const String
-    Block<Int> x(n);
+    Block<int32_t> x(n);
 
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -196,7 +196,7 @@ Param::getIntArray (Bool prompt) const
 }
 
 const String&
-Param::getString (Bool prompt) const		// string value
+Param::getString (bool prompt) const		// string value
 {
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -205,11 +205,11 @@ Param::getString (Bool prompt) const		// string value
 }
 
 Block<String>
-Param::getStringArray (Bool prompt) const
+Param::getStringArray (bool prompt) const
 {
-    Int i;
-    Int idx=0;
-    Int n = value.freq(",")+1;
+    int32_t i;
+    int32_t idx=0;
+    int32_t n = value.freq(",")+1;
     String z;
     String val(value);            // need a non-const String
     Block<String> x(n);
@@ -230,8 +230,8 @@ Param::getStringArray (Bool prompt) const
     return x;
 }
 
-Bool
-Param::getBool(Bool prompt) const		// Bool value
+bool
+Param::getBool(bool prompt) const		// bool value
 {
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -240,14 +240,14 @@ Param::getBool(Bool prompt) const		// Bool value
 }
 
 #if 0
-Block<Bool>
-Param::getBoolArray(Bool prompt) const
+Block<bool>
+Param::getBoolArray(bool prompt) const
 {
-    Int i;
-    Int idx;
-    Int n = value.freq(",")+1;
+    int32_t i;
+    int32_t idx;
+    int32_t n = value.freq(",")+1;
     String z;
-    Block<Bool> x(n);
+    Block<bool> x(n);
 
     if (prompt) {
       cerr << "No prompting implemented yet" << endl;
@@ -269,14 +269,14 @@ Param::getBoolArray(Bool prompt) const
 
 // modify and other misc function
 
-Bool
+bool
 Param::put (const String& other)			// set new value
 { 
 // value checking will be done here too?
 //        cout << "Param::Put> " << key << "=" << value << "\n";
     value = other;
 //        cout << "Param::Put> " << key << "=" << value << "\n";
-    return True;
+    return true;
 }
 
 

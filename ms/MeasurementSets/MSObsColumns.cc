@@ -71,7 +71,7 @@ void MSObservationColumns::attach(const MSObservation& msObservation)
 }
 
 void MSObservationColumns::
-setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeRangeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
   releaseDateMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }

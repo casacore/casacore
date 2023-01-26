@@ -57,12 +57,12 @@ int main(int argc, const char* argv[])
     inp.create("tz", "0", "Number of pixels along the z-axis tile", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
-    const uInt tx=inp.getInt("tx");
-    const uInt ty=inp.getInt("ty");
-    const uInt tz=inp.getInt("tz");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const uint32_t nz=inp.getInt("nz");
+    const uint32_t tx=inp.getInt("tx");
+    const uint32_t ty=inp.getInt("ty");
+    const uint32_t tz=inp.getInt("tz");
     const IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
@@ -202,7 +202,7 @@ int main(int argc, const char* argv[])
       PagedArray<Complex> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
       LCPagedMask mask (lat.shape(), lat.tableName() + "/mask");
-      mask.set (True);
+      mask.set (true);
       timer.show ("filling mask    ");
       SubLattice<Complex> sublat (lat, mask);
       timer.mark();
@@ -283,11 +283,11 @@ int main(int argc, const char* argv[])
     }
     {
       // Force TempLattice on disk.
-      TempLattice<Float> pa1(latticeShape, 0);
-      TempLattice<Float> pa2(latticeShape, 0);
+      TempLattice<float> pa1(latticeShape, 0);
+      TempLattice<float> pa2(latticeShape, 0);
       pa1.set (1);
       pa2.set (2);
-      LatticeExpr<Float> expr(2*pa2);
+      LatticeExpr<float> expr(2*pa2);
       Timer timer;
       pa1 += expr;
       timer.show ("+= disk   ");
@@ -295,11 +295,11 @@ int main(int argc, const char* argv[])
     }
     {
       // Force TempLattice in memory.
-      TempLattice<Float> pa1(latticeShape, 100);
-      TempLattice<Float> pa2(latticeShape, 100);
+      TempLattice<float> pa1(latticeShape, 100);
+      TempLattice<float> pa2(latticeShape, 100);
       pa1.set (1);
       pa2.set (2);
-      LatticeExpr<Float> expr(2*pa2);
+      LatticeExpr<float> expr(2*pa2);
       Timer timer;
       pa1 += expr;
       timer.show ("+= memory ");
@@ -307,11 +307,11 @@ int main(int argc, const char* argv[])
     }
     {
       // Force TempLattice on disk.
-      TempLattice<Float> pa1(latticeShape, 0);
-      TempLattice<Float> pa2(latticeShape, 0);
+      TempLattice<float> pa1(latticeShape, 0);
+      TempLattice<float> pa2(latticeShape, 0);
       pa1.set (1);
       pa2.set (2);
-      LatticeExpr<Float> expr(pa1+2*pa2);
+      LatticeExpr<float> expr(pa1+2*pa2);
       Timer timer;
       pa1.copyData (expr);
       timer.show (" = disk   ");
@@ -319,11 +319,11 @@ int main(int argc, const char* argv[])
     }
     {
       // Force TempLattice in memory.
-      TempLattice<Float> pa1(latticeShape, 100);
-      TempLattice<Float> pa2(latticeShape, 100);
+      TempLattice<float> pa1(latticeShape, 100);
+      TempLattice<float> pa2(latticeShape, 100);
       pa1.set (1);
       pa2.set (2);
-      LatticeExpr<Float> expr(pa1+2*pa2);
+      LatticeExpr<float> expr(pa1+2*pa2);
       Timer timer;
       pa1.copyData (expr);
       timer.show (" = memory ");
@@ -331,9 +331,9 @@ int main(int argc, const char* argv[])
     }
     {
       // Add a scalar to the lattice.
-      TempLattice<Float> pa1(latticeShape, 100);
+      TempLattice<float> pa1(latticeShape, 100);
       pa1.set (3);
-      LatticeExpr<Float> expr(4);
+      LatticeExpr<float> expr(4);
       Timer timer;
       pa1 *= expr;
       timer.show ("+= sca mem");

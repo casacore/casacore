@@ -32,12 +32,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSSysCalColumns::MSSysCalColumns():
-  isNull_p(True)
+  isNull_p(true)
 {
 }
 
 MSSysCalColumns::MSSysCalColumns(const MSSysCal& msSysCal):
-  isNull_p(True)
+  isNull_p(true)
 {
   attach(msSysCal);
 }
@@ -151,7 +151,7 @@ void MSSysCalColumns::attach(const MSSysCal& msSysCal)
   }
 }
 
-void MSSysCalColumns::setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+void MSSysCalColumns::setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 

@@ -42,7 +42,7 @@ LCMask::LCMask (const IPosition& lattShape)
   itsMask (0)
 {
   setBoundingBox (itsBox.boundingBox());
-  itsMask = new TempLattice<Bool> (lattShape);
+  itsMask = new TempLattice<bool> (lattShape);
   setMaskPtr (*itsMask);
 }
 
@@ -57,11 +57,11 @@ LCMask::LCMask (const IPosition& maskShape, const LCBox& box)
 		      "shape of mask and box differ"));
   }
   setBoundingBox (itsBox.boundingBox());
-  itsMask = new TempLattice<Bool> (maskShape);
+  itsMask = new TempLattice<bool> (maskShape);
   setMaskPtr (*itsMask);
 }
 
-LCMask::LCMask (Lattice<Bool>& mask)
+LCMask::LCMask (Lattice<bool>& mask)
 : LCRegionSingle (mask.shape()),
   itsBox  (IPosition(mask.shape().nelements(), 0),
 	   mask.shape()-1, mask.shape()),
@@ -72,7 +72,7 @@ LCMask::LCMask (Lattice<Bool>& mask)
   setMaskPtr (*itsMask);
 }
 
-LCMask::LCMask (Lattice<Bool>& mask, const LCBox& box)
+LCMask::LCMask (Lattice<bool>& mask, const LCBox& box)
 : LCRegionSingle (box.latticeShape()),
   itsBox (box)
 {
@@ -113,12 +113,12 @@ LCMask& LCMask::operator= (const LCMask& that)
   return *this;
 }
 
-Bool LCMask::operator== (const LCRegion& other) const
+bool LCMask::operator== (const LCRegion& other) const
 {
   // Check if parent class matches.
   // If so, we can safely cast.
   if (! LCRegionSingle::operator== (other)) {
-    return False;
+    return false;
   }
   const LCMask& that = (const LCMask&)other;
   // Check the box and mask.
@@ -132,22 +132,22 @@ LCRegion* LCMask::cloneRegion() const
 }
 
 
-uInt LCMask::advisedMaxPixels() const
+uint32_t LCMask::advisedMaxPixels() const
 {
   return itsMask->advisedMaxPixels();
 }
 
-IPosition LCMask::doNiceCursorShape (uInt maxPixels) const
+IPosition LCMask::doNiceCursorShape (uint32_t maxPixels) const
 {
   return itsMask->niceCursorShape (maxPixels);
 }
 
-uInt LCMask::maximumCacheSize() const
+uint32_t LCMask::maximumCacheSize() const
 {
   return itsMask->maximumCacheSize();
 }
 
-void LCMask::setMaximumCacheSize (uInt howManyPixels)
+void LCMask::setMaximumCacheSize (uint32_t howManyPixels)
 {
   itsMask->setMaximumCacheSize (howManyPixels);
 }
@@ -161,7 +161,7 @@ void LCMask::setCacheSizeFromPath (const IPosition& sliceShape,
 				 axisPath);
 }
 
-void LCMask::setCacheSizeInTiles (uInt howManyTiles)
+void LCMask::setCacheSizeInTiles (uint32_t howManyTiles)
 {
   itsMask->setCacheSizeInTiles (howManyTiles);
 }
@@ -176,15 +176,15 @@ void LCMask::showCacheStatistics (ostream& os) const
   itsMask->showCacheStatistics (os);
 }
 
-LatticeIterInterface<Bool>* LCMask::makeIter
+LatticeIterInterface<bool>* LCMask::makeIter
                                    (const LatticeNavigator& navigator,
-				    Bool useRef) const
+				    bool useRef) const
 {
   return itsMask->makeIter (navigator, useRef);
 }
 
 
-Bool LCMask::lock (FileLocker::LockType type, uInt nattempts)
+bool LCMask::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   // Lock the PagedArray containing the mask.
   return itsMask->lock (type, nattempts);
@@ -194,7 +194,7 @@ void LCMask::unlock()
   // Unlock the PagedArray containing the mask.
   itsMask->unlock();
 }
-Bool LCMask::hasLock (FileLocker::LockType type) const
+bool LCMask::hasLock (FileLocker::LockType type) const
 {
   return itsMask->hasLock (type);
 }
@@ -219,7 +219,7 @@ void LCMask::reopen()
 }
 
 
-LCRegion* LCMask::doTranslate (const Vector<Float>&,
+LCRegion* LCMask::doTranslate (const Vector<float>&,
 			       const IPosition&) const
 {
   // An LCMask cannot be translated.
@@ -243,7 +243,7 @@ TableRecord LCMask::toRecord (const String&) const
   return TableRecord();;
 }
 
-Bool LCMask::isWritable() const
+bool LCMask::isWritable() const
 {
   return itsMask->isWritable();
 }

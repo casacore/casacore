@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    SincFunction<Double> sf(5.0, 25.0, 7);
+//    SincFunction<double> sf(5.0, 25.0, 7);
 //    sf(25);            // = 5.0
 // </srcblock>
 // </example>

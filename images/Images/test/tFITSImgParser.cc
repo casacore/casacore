@@ -38,7 +38,7 @@ int main (int argc, const char* argv[])
 
 	   LogIO os(LogOrigin("tFITSImgParser", "main()", WHERE));
 
-	   Bool isdefaultinput;
+	   bool isdefaultinput;
 
 	   // Get inputs
 	   Input inputs(1);
@@ -50,10 +50,10 @@ int main (int argc, const char* argv[])
 	   if (in1.empty()) {
 		 in1 = "mexinputtest.fits";
 		 in2 = "qualityimage.fits";
-		 isdefaultinput=True;
+		 isdefaultinput=true;
 	   }
 	   else {
-	   	isdefaultinput = False;
+	   	isdefaultinput = false;
 	   }
 
 	   // create the parser
@@ -63,7 +63,7 @@ int main (int argc, const char* argv[])
 	   if (isdefaultinput){
 
 		   // check the name information
-		   AlwaysAssert(fitsImg.fitsname(True) == String("mexinputtest.fits"), AipsError);
+		   AlwaysAssert(fitsImg.fitsname(true) == String("mexinputtest.fits"), AipsError);
 
 		   // check the number of extensions
 		   AlwaysAssert(fitsImg.get_numhdu() == 7, AipsError);
@@ -72,28 +72,28 @@ int main (int argc, const char* argv[])
 		   AlwaysAssert(fitsImg.get_firstdata_index() == 1, AipsError);
 
 		   // check the index of "mexinputtest.fits[sci, 1]"
-		   FITSExtInfo extinfo("mexinputtest.fits", 0, "SCI", 1, True);
+		   FITSExtInfo extinfo("mexinputtest.fits", 0, "SCI", 1, true);
 		   AlwaysAssert(fitsImg.get_index(extinfo) == 1, AipsError);
 		   AlwaysAssert(fitsImg.find_extension("SCI", 1) == 1, AipsError);
 
 		   // check the index of "mexinputtest.fits[DQ]"
-		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "DQ", -1, True);
+		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "DQ", -1, true);
 		   AlwaysAssert(fitsImg.get_index(extinfo) == 3, AipsError);
 		   AlwaysAssert(fitsImg.find_extension("DQ") == 3, AipsError);
 
 		   // check the index of "mexinputtest.fits[dq]"
 		   // capitalization should not matter
-		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "dq", -1, True);
+		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "dq", -1, true);
 		   AlwaysAssert(fitsImg.get_index(extinfo) == 3, AipsError);
 		   AlwaysAssert(fitsImg.find_extension("dq") == 3, AipsError);
 
 		   // check the non-existing index of "mexinputtest.fits[dq, 3]"
-		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "dq", 3, True);
+		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "dq", 3, true);
 		   AlwaysAssert(fitsImg.get_index(extinfo) == -1, AipsError);
 		   AlwaysAssert(fitsImg.find_extension("DQ", 3) == -1, AipsError);
 
 		   // check the non-existing index of "mexinputtest.fits[dq, 3]"
-		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "dq", 3, True);
+		   extinfo = FITSExtInfo("mexinputtest.fits", 0, "dq", 3, true);
 		   AlwaysAssert(fitsImg.get_index(extinfo) == -1, AipsError);
 		   AlwaysAssert(fitsImg.find_extension("dq", 3) == -1, AipsError);
 
@@ -101,7 +101,7 @@ int main (int argc, const char* argv[])
 		   FITSImgParser fitsImg2(in2);
 
 		   // check the name information
-		   AlwaysAssert(fitsImg2.fitsname(True) == in2, AipsError);
+		   AlwaysAssert(fitsImg2.fitsname(true) == in2, AipsError);
 
 		   // check the number of extensions
 		   AlwaysAssert(fitsImg2.get_numhdu() == 9, AipsError);
@@ -159,12 +159,12 @@ int main (int argc, const char* argv[])
 		   AlwaysAssert(fitsImg2.is_qualityimg("[IFU1.ERR, IFU1.SCI]"), AipsError)
 
 		   // make sure the two string representations are NOT equal
-		   AlwaysAssert(fitsImg2.get_extlist_string(String("<A>"), "", "", False) != fitsImg2.get_extlist_string(String("<A>"), "", "", True), AipsError);
+		   AlwaysAssert(fitsImg2.get_extlist_string(String("<A>"), "", "", false) != fitsImg2.get_extlist_string(String("<A>"), "", "", true), AipsError);
 
 		   /*
 		   // this is the full call including a mask image
 		   // retrieve all information on an extension expression
-		   Int data_HDU, error_HDU, mask_HDU, mask_value;
+		   int32_t data_HDU, error_HDU, mask_HDU, mask_value;
 		   String error_type, mask_type;
 		   fitsImg2.get_quality_data("[IFU3.SCI, IFU3.DQ]", data_HDU, error_HDU, error_type, mask_HDU, mask_type, mask_value);
 
@@ -178,7 +178,7 @@ int main (int argc, const char* argv[])
 			*/
 
 		   // retrieve all information on an extension expression
-		   Int data_HDU, error_HDU, mask_HDU, mask_value;
+		   int32_t data_HDU, error_HDU, mask_HDU, mask_value;
 		   String error_type, mask_type;
 		   fitsImg2.get_quality_data("[IFU2.SCI, IFU2.ERR]", data_HDU, error_HDU, error_type, mask_HDU, mask_type, mask_value);
 
@@ -287,7 +287,7 @@ int main (int argc, const char* argv[])
 
 	   }
 	   else {
-		   cerr << "Fits file: " << fitsImg.fitsname(True) << "\n";
+		   cerr << "Fits file: " << fitsImg.fitsname(true) << "\n";
 		   cerr << "Number of extensions:  " << fitsImg.get_numhdu() << "\n";
 		   cerr << "First index with data: " << fitsImg.get_firstdata_index() << "\n";
 		   cerr << "File contains quality image: " << fitsImg.has_qualityimg() << "\n";

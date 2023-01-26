@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    UnaryFunction<Double> sf(5.0, 25.0, 7);
+//    UnaryFunction<double> sf(5.0, 25.0, 7);
 //    sf(25);            // = 5.0
 // </srcblock>
 // </example>

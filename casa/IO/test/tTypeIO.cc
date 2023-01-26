@@ -44,25 +44,25 @@
 void doIt (TypeIO* io)
 {
     // Save current file position.
-    Int64 position = io->seek (0, ByteIO::Current);
+    int64_t position = io->seek (0, ByteIO::Current);
 
     AlwaysAssertExit (io->isReadable());
     AlwaysAssertExit (io->isWritable());
     AlwaysAssertExit (io->isSeekable());
 
-    Bool     testBool = True;
-    Short    testShort = -30;
-    uShort   testuShort = 10;
-    Int      testInt = -20;
-    uInt     testuInt = 80;
-    Int64    testInt64 = -100000;
-    uInt64   testuInt64 = 100000;
-    Float    testFloat = 18.5;
-    Double   testDouble = 23.5; 
+    bool     testBool = true;
+    int16_t    testShort = -30;
+    uint16_t   testuShort = 10;
+    int32_t      testInt = -20;
+    uint32_t     testuInt = 80;
+    int64_t    testInt64 = -100000;
+    uint64_t   testuInt64 = 100000;
+    float    testFloat = 18.5;
+    double   testDouble = 23.5; 
     Complex  testComplex(2,3);
     DComplex testDComplex(2.5,3.8);
-    Char     testChar = 'A';
-    uChar    testuChar = 'B';
+    char     testChar = 'A';
+    unsigned char    testuChar = 'B';
     String   testString("This is a teststring");
 
     io->write (1, &testBool);
@@ -82,19 +82,19 @@ void doIt (TypeIO* io)
 
     io->seek (position);
 
-    Bool     tBool;
-    Short    tShort;
-    uShort   tuShort;
-    Int      tInt;
-    uInt     tuInt;
-    Int64    tInt64;
-    uInt64   tuInt64;
-    Float    tFloat;
-    Double   tDouble; 
+    bool     tBool;
+    int16_t    tShort;
+    uint16_t   tuShort;
+    int32_t      tInt;
+    uint32_t     tuInt;
+    int64_t    tInt64;
+    uint64_t   tuInt64;
+    float    tFloat;
+    double   tDouble; 
     Complex  tComplex;
     DComplex tDComplex;
-    Char     tChar;
-    uChar    tuChar;
+    char     tChar;
+    unsigned char    tuChar;
     String   tString;
     
     io->read (1, &tBool);

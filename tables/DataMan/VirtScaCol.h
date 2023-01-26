@@ -63,7 +63,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   It implements the dataType function, so it is not needed to implement
 //   that in derived classes.
 //  <li>
-//   It has a default implementation of False for function isWritable.
+//   It has a default implementation of false for function isWritable.
 //   Thus by default virtual scalar columns are not writable, which will
 //   often be the case. Only if a virtual scalar column can be writable,
 //   it has to be implemented in the derived class.
@@ -74,8 +74,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   This allows for the default implementation of get/putBlock and
 //   makes life easier for the implementor of a derived class.
 //   However, the disadvantage of this is an extra virtual function call.
-//   (E.g. for a Bool value the first one is getBoolV and the second
-//    one get(T&), where T is Bool). If efficiency is really necessary,
+//   (E.g. for a bool value the first one is getBoolV and the second
+//    one get(T&), where T is bool). If efficiency is really necessary,
 //    getBoolV, etc. should also be implemented in the derived class.
 //  <li>
 //   In DataManagerColumn the functions get/putBlockV and get/putColumnV
@@ -127,7 +127,7 @@ public:
     virtual ~VirtualScalarColumnBase();
 
     // By default no data can be put in a virtual column.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
 protected:
     // The array access functions throw an exception.
@@ -183,13 +183,13 @@ private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Get the scalar value in the given row.
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getBool     (rownr_t rownr, bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+    virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+    virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+    virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
     virtual void getfloat    (rownr_t rownr, float* dataPtr);
     virtual void getdouble   (rownr_t rownr, double* dataPtr);
     virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -202,13 +202,13 @@ private:
     // Implement the virtual functions defined in DataManagerColumn.
     // Put the scalar value into the given row.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putBool     (rownr_t rownr, const bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const unsigned char* dataPtr);
+    virtual void putShort    (rownr_t rownr, const int16_t* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uint16_t* dataPtr);
+    virtual void putInt      (rownr_t rownr, const int32_t* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uint32_t* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const int64_t* dataPtr);
     virtual void putfloat    (rownr_t rownr, const float* dataPtr);
     virtual void putdouble   (rownr_t rownr, const double* dataPtr);
     virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
@@ -254,18 +254,18 @@ private:
 // <group name=get_putVirtualScalar>
 template<class T>
 inline void getVirtualScalar (VirtualScalarColumn<T>* col,
-                              uInt rownr, T* dataPtr)
+                              uint32_t rownr, T* dataPtr)
     { col->get (rownr, *dataPtr); }
 inline void getVirtualScalar (DataManagerColumn* col,
-                              uInt, void*)
+                              uint32_t, void*)
     { col->throwGet(); }
 
 template<class T>
 inline void putVirtualScalar (VirtualScalarColumn<T>* col,
-                              uInt rownr, const T* dataPtr)
+                              uint32_t rownr, const T* dataPtr)
     { col->put (rownr, *dataPtr); }
 inline void putVirtualScalar (DataManagerColumn* col,
-                              uInt, const void*)
+                              uint32_t, const void*)
     { col->throwPut(); }
 // </group>
 

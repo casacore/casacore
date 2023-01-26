@@ -126,7 +126,7 @@ public:
   typedef void (*CLOSEFUN) ();
 
   //# Constants
-  static const Double INTV;
+  static const double INTV;
   
   //# Enumerations
   // Types of known data
@@ -174,10 +174,10 @@ public:
   //# General Member Functions
   // Get the value from an IERS table, interpolated for date(in MJD).
   // The file can be PREDICTED or MEASURED, the type as given in enum.
-  static Bool get(Double &returnValue,
+  static bool get(double &returnValue,
 		  MeasIERS::Files file, 
 		  MeasIERS::Types type,
-		  Double date);
+		  double date);
 
   // Find and open table tab, using the rc variable, the dir and the name.
   // An rfn list gives the N row field names to be used
@@ -188,10 +188,10 @@ public:
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, columns, or they type is not IERS.
   // </thrown>
-  static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-		       RORecordFieldPtr<Double> rfp[],
-		       String &vs, Double &dt,
-		       Int N, const String rfn[],
+  static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
+		       RORecordFieldPtr<double> rfp[],
+		       String &vs, double &dt,
+		       int32_t N, const String rfn[],
 		       const String &name,
 		       const String &rc, const String &dir,
 		       const Table *tabin = 0);
@@ -208,9 +208,9 @@ public:
   // <thrown>
   //  <li> AipsError if missing VS_ keywords, required columns, or the type is not IERS.
   // </thrown>
-  static Bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
-  		       Vector<RORecordFieldPtr<Double> >& rfp,
-  		       String &vs, Double &dt,
+  static bool getTable(Table &table, TableRecord &kws, ROTableRow &row,
+  		       Vector<RORecordFieldPtr<double> >& rfp,
+  		       String &vs, double &dt,
   		       const Vector<String>& reqcols,
   		       Vector<String>& optcols,
   		       const String &name,
@@ -222,7 +222,7 @@ public:
   // mold.
   // Finds a Table for tab, by looking in tabin, rc, dir, and name.
   // Returns whether or not it was successful.
-  static Bool findTab(Table& tab, const Table *tabin, const String &rc,
+  static bool findTab(Table& tab, const Table *tabin, const String &rc,
 		      const String &dir, const String &name);
 
   // Notify that a table has successfully been opened with getTable()
@@ -258,30 +258,30 @@ private:
   //  ks has VS_DATE, VS_VERSION, VS_CREATE, and VS_TYPE,
   //  and that tab's type is IERS in its info.
   // Returns whether or not it was successful.
-  static Bool handle_keywords(Double &dt, String &vs,
+  static bool handle_keywords(double &dt, String &vs,
 			      const TableRecord& ks, const Table& tab);
 
   //# Data members
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirCallOnceFlag;
   // Current date
-  static Double dateNow;
+  static double dateNow;
   // Read data (meas - predict)
-  static Vector<Double> ldat[N_Files][N_Types];
+  static Vector<double> ldat[N_Files][N_Types];
   // File names
   static const String tp[N_Files];
   // Check prediction interval
-  static uInt predicttime_reg;
+  static uint32_t predicttime_reg;
   // Use no table
-  static uInt notable_reg;
+  static uint32_t notable_reg;
   // Force prediction
-  static uInt forcepredict_reg;
+  static uint32_t forcepredict_reg;
   // Size of close notification list
-  static uInt sizeNote;
+  static uint32_t sizeNote;
   // Tables notifying that they should be closed
   static CLOSEFUN *toclose;
   // Number of close notifications
-  static uInt nNote;
+  static uint32_t nNote;
 };
 
 //# Inline Implementations

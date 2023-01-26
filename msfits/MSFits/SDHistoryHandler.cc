@@ -45,7 +45,7 @@ SDHistoryHandler::SDHistoryHandler()
     : msHis_p(0), msHisCols_p(0)
 {;}
 
-SDHistoryHandler::SDHistoryHandler(MeasurementSet &ms, const Vector<Bool> &handledCols,
+SDHistoryHandler::SDHistoryHandler(MeasurementSet &ms, const Vector<bool> &handledCols,
 				   const Record &row) 
     : msHis_p(0), msHisCols_p(0)
 {
@@ -71,20 +71,20 @@ SDHistoryHandler &SDHistoryHandler::operator=(const SDHistoryHandler &other)
     return *this;
 }
 
-void SDHistoryHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, 
+void SDHistoryHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, 
 			      const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
 }
 
-void SDHistoryHandler::fill(const Record &, Int observationId,
+void SDHistoryHandler::fill(const Record &, int32_t observationId,
 			    const String &message, const String &priority)
 {
     // this always just fills as is
     // don't bother unless there is something there
     if (msHis_p) {
-	uInt rownr = msHis_p->nrow();
+	uint32_t rownr = msHis_p->nrow();
 	msHis_p->addRow();
 	// get the current time
 	Quantity now;
@@ -125,7 +125,7 @@ void SDHistoryHandler::clearRow()
     timesys_p.detach();
 }
 
-void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<Bool> &handledCols,
+void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<bool> &handledCols,
 			       const Record &row)
 {
     msHis_p = new MSHistory(ms.history());
@@ -137,7 +137,7 @@ void SDHistoryHandler::initAll(MeasurementSet &ms, const Vector<Bool> &handledCo
     initRow(handledCols, row);
 }
 
-void SDHistoryHandler::initRow(const Vector<Bool> &, const Record &row)
+void SDHistoryHandler::initRow(const Vector<bool> &, const Record &row)
 {
     // look for a TIMESYS field in row
     if (row.fieldNumber("TIMESYS") >= 0) {

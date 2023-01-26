@@ -246,13 +246,13 @@ TableDesc tTableMeasures_tmp   version 1   (Directory ./)
 The following should report no such column  for TableMeasRefDesc.
 TableMeasRefDesc::checkColumn; No such column: SillyColumnName
 The following should report that the column's type is no good.
-TableMeasRefDesc::checkColumn; Reference column's type must be Int or String: Time4ScaOffset
+TableMeasRefDesc::checkColumn; Reference column's type must be int32_t or String: Time4ScaOffset
 The following should report no such column for TableMeasValueDesc.
 TableMeasValueDesc::checkColumn; No such column: SillyColumnName
 The following should report that the column is not array for TabelMeasValueDesc.
-TableMeasValueDesc::checkColumn; Column's type must be Double: Time4StrRef
+TableMeasValueDesc::checkColumn; Column's type must be double: Time4StrRef
 The following should report that the column's type should be double for the TableMeasValueDesc.
-TableMeasValueDesc::checkColumn; Column's type must be Double: Time2ArrRef
+TableMeasValueDesc::checkColumn; Column's type must be double: Time2ArrRef
 The following should report that the column's unit vector is too long.
 TableMeasDescBase::setMeasUnits; Unit vector for column Time2Arr is too long
 The following should report that the column has an invalid unit.

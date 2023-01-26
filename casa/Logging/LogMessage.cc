@@ -81,31 +81,31 @@ const String &LogMessage::message() const
     return message_p;
 }
 
-LogMessage &LogMessage::message(const String &message, Bool keepLastTime)
+LogMessage &LogMessage::message(const String &message, bool keepLastTime)
 {
     message_p = message;
     if (! keepLastTime) {
         time_p.now();
     }
 	//Remove everything after the final newline
-    Int n = message_p.length();
+    int32_t n = message_p.length();
     while (--n >= 0 && message_p[n] == '\n') {
 	; // Nothing
     }
-    if (n+1 < Int(message_p.length())) {
+    if (n+1 < int32_t(message_p.length())) {
 	message_p = message_p.before(n+1);
     }
 
     return *this;
 }
 
-uInt LogMessage::line() const
+uint32_t LogMessage::line() const
 {
     return origin_p.line();
 }
 
 
-LogMessage &LogMessage::line(uInt which)
+LogMessage &LogMessage::line(uint32_t which)
 {
     origin_p.line(which);
     return *this;

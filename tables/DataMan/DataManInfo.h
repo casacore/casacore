@@ -97,7 +97,7 @@ public:
   // This is needed for special storage managers like LofarStMan.
   // If replaceMSM is set, MemoryStMan is also replaced.
   static Record adjustStMan (const Record& dminfo, const String& dmType,
-                             Bool replaceMSM = True);
+                             bool replaceMSM = true);
 
   // Ensure all data manager names in <src>dminfo</src> are unique by
   // adding a unique suffix as needed (using function <src>uniqueName</src>).
@@ -109,7 +109,7 @@ public:
   // If so, a suffix _i is added where i makes the name unique.
   // The excludeDM-th dm is excluded, so comparing to itself can be avoided.
   static String uniqueName (const Record& dminfo, const String& name,
-                            Int excludeDM=-1);
+                            int32_t excludeDM=-1);
 
   // Merge the second DataManagerInfo record into the first one.
   // If the same column occurs in both records, the second one is used.
@@ -165,7 +165,7 @@ private:
   //  <li>Columns in the dmindex-th dminfo record are merged into newdm,
   //      so mergeInfo can redefine that dm in the overall dminfo.
   // </ul>
-  static void mergeColumns (Record& dminfo, uInt dmindex, Record& newdm);
+  static void mergeColumns (Record& dminfo, uint32_t dmindex, Record& newdm);
 };
 
 

@@ -50,24 +50,24 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Do a reverse lookup since the FITS classes need it.
-static Bool findReservedName(FITS::ReservedName &name, const String &basename)
+static bool findReservedName(FITS::ReservedName &name, const String &basename)
 {
-    const uInt n = FITS::ResWord.no();
+    const uint32_t n = FITS::ResWord.no();
 
-    for (uInt i=0; i<n; i++) {
+    for (uint32_t i=0; i<n; i++) {
 	if (basename == FITS::ResWord[i].aname()) {
 	    name = FITS::ResWord[i].name();
-	    return True;
+	    return true;
 	}
     }
-    return False;
+    return false;
 }
 
-static void splitKW1D(String &name, Int &num, String &fullName)
+static void splitKW1D(String &name, int32_t &num, String &fullName)
 {
     name = "";
 
-    Int where = fullName.length(); // Where to split the number and base name
+    int32_t where = fullName.length(); // Where to split the number and base name
     while (--where >= 0 && isdigit(fullName[where])) {
 	; // Nothing
     }
@@ -79,12 +79,12 @@ static void splitKW1D(String &name, Int &num, String &fullName)
     num = atol(snum.chars());
 }
 
-static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
+static bool splitKW2D(String &name, int32_t &nrow, int32_t &ncol, String &fullName)
 {
     name = "";
 
     if(fullName.contains("_")){ // assume new matrix syntax  ii_jj or i_j
-      uInt where = 0;// Where the frst number starts
+      uint32_t where = 0;// Where the frst number starts
       while (where++ < fullName.length() && !isdigit(fullName[where])) {
 	; // Nothing
       }
@@ -92,10 +92,10 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
       // found first non-digit
       String::size_type where2 = fullName.find('_');
       if (where2 == String::npos || where2 == fullName.length()-1){
-	return False;
+	return false;
       }
       String snum1 = fullName(where, where2-where);
-      Int nc = 2; // don't use the last digit if there are three
+      int32_t nc = 2; // don't use the last digit if there are three
       if(fullName.length()-where2<2){ 
 	nc = 1;
       }
@@ -106,7 +106,7 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
     else { // old matrix syntax
       // We assume that 1/2 the characters belong to each of the two
       // numbers.
-      Int where = fullName.length();// Where to split the number and base name
+      int32_t where = fullName.length();// Where to split the number and base name
       while (--where >= 0 && isdigit(fullName[where])) {
 	; // Nothing
       }
@@ -114,10 +114,10 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
       // where now points to the start of the numerical part - its
       // also the length of the number of characters before that
       name = fullName(0, where);
-      Int numlen = fullName.length() - where;
+      int32_t numlen = fullName.length() - where;
       if (numlen != 6) {
 	// 2D arrays must be xxxyyy and so there must be 6 digits
-	return False;
+	return false;
       }
       String snum1 = fullName(where, 3);
       String snum2 = fullName(where+3, 3);
@@ -125,14 +125,14 @@ static Bool splitKW2D(String &name, Int &nrow, Int &ncol, String &fullName)
       ncol = atol(snum2.chars());
     }
 
-    return True;
+    return true;
 }
 
-FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage)
+FitsKeywordList FITSKeywordUtil::makeKeywordList(bool primHead, bool binImage)
 {
     FitsKeywordList retval;
     if (primHead)
-   	 retval.mk(FITS::SIMPLE, True, "Standard FITS");
+   	 retval.mk(FITS::SIMPLE, true, "Standard FITS");
     else
    	 if (binImage)
    		 retval.mk(FITS::XTENSION,"IMAGE   ","IMAGE extension");
@@ -141,18 +141,18 @@ FitsKeywordList FITSKeywordUtil::makeKeywordList(Bool primHead, Bool binImage)
     return retval;
 }
 
-Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, 
+bool FITSKeywordUtil::addKeywords(FitsKeywordList &out, 
 				  const RecordInterface &in)
 {
     LogIO os(LogOrigin("FITSKeywordUtil", "addKeywords", WHERE));
 
-    Bool ok = True;
+    bool ok = true;
 
-    const uInt n = in.nfields();
+    const uint32_t n = in.nfields();
     static Regex commentName("^COMMENT");
     static Regex historyName("^HISTORY");
 
-    uInt i = 0;
+    uint32_t i = 0;
     while (i < n) {
 	DataType type = in.type(i);
 	if (isScalar(type)) {
@@ -174,42 +174,42 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    switch(type) {
 	    case TpBool:
 		{
-		    Bool val;
+		    bool val;
 		    in.get(i, val);
 		    out.mk(name.chars(), val, comment.chars());
 		}
 		break;
 	    case TpInt:
 		{
-		    Int val;
+		    int32_t val;
 		    in.get(i, val);
 		    out.mk(name.chars(), val, comment.chars());
 		}
 	    break;
 	    case TpShort:
 		{
-		    Short val;
+		    int16_t val;
 		    in.get(i, val);
 		    out.mk(name.chars(), val, comment.chars());
 		}
 	    break;
 	    case TpUInt:
 		{
-		    uInt val;
+		    uint32_t val;
 		    in.get(i, val);
 		    out.mk(name.chars(), int(val), comment.chars());
 		}
 	    break;
 	    case TpFloat:
 		{
-		    Float val;
+		    float val;
 		    in.get(i, val);
 		    out.mk(name.chars(), val, comment.chars());
 		}
 	    break;
 	    case TpDouble:
 		{
-		    Double val;
+		    double val;
 		    in.get(i, val);
 		    out.mk(name.chars(), val, comment.chars());
 		}
@@ -231,7 +231,7 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 			    os << LogIO::SEVERE 
 			       << "Value of keyword " << name.chars() 
 			       << " will be truncated at 68 characters." << LogIO::POST;
-			    ok = False;
+			    ok = false;
 			    val = val.before(68);
 			}
 			out.mk(name.chars(), val.chars(), comment.chars());
@@ -240,18 +240,18 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    break;
 	    default:
 		os << LogIO::SEVERE << 
-		    "Illegal FITS type " << Int(in.type(i)) << " for field '" <<
+		    "Illegal FITS type " << int32_t(in.type(i)) << " for field '" <<
 		    name << "': ignoring this field." << LogIO::POST;
 		// Note that we carry on anyway
-		ok = False;
+		ok = false;
 	    }
 	} else if (isArray(type)) {
 	    // Find out how many like-shaped array columns there are in a row
 	    // and interleave them, i.e. so we have crval1 crpix1 cdelt1,
 	    // crval2 crpix2 cdelt2, ..
-	    Int start = i;
-	    const Int length = in.shape(i).product();
-	    uInt ndim = in.shape(i).nelements();
+	    int32_t start = i;
+	    const int32_t length = in.shape(i).product();
+	    uint32_t ndim = in.shape(i).nelements();
 
 	    // SPECIAL: NAXIS is both an array AND a scalar!
 	    if (upcase(in.name(i)) == "NAXIS") {
@@ -263,10 +263,10 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    if (ndim > 2) {
 		os << LogIO::SEVERE << ndim << " dimensional array found. "
 		    " Flattening to 1 dimension" << LogIO::POST;
-		ok = False;
+		ok = false;
 		ndim = 1;
 	    }
-	    uInt end = i+1;
+	    uint32_t end = i+1;
 	    while (end < n) {
 		// If it's not an array
 		if (!isArray(in.type(end))) {
@@ -290,53 +290,53 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
 	    // name length check.  Keyword names must be <= 8 characters.
 	    // also do number of elements check 
 	    // Note that we emit a SEVERE error but go on any way.
-	    for (uInt j=start; j<end; j++) {
+	    for (uint32_t j=start; j<end; j++) {
 		if (ndim == 2) {
 		    // need ii_jja for this one, only 2 characters left for name
 		    if (in.name(j).length() > 2) {
 			os << LogIO::SEVERE 
 			   << "Name is too long for array field " << in.name(j) 
 			   << " - name will be truncated to first 2 characters." << LogIO::POST;
-			ok = False;
+			ok = false;
 		    }
 		    // at most, 99 elements per dimension
 		    if (in.shape(i)(0) > 99 || in.shape(i)(1) > 99) {
 			os << LogIO::SEVERE 
 			   << "Too many rows or columns for array field " << in.name(j) 
 			   << " - the first 99 rows and the first 99 columns will be used." << LogIO::POST;
-			ok = False;		    }
+			ok = false;		    }
 		} else {
 		    // at most 999 elements
 		    if (length > 999) {
 			os << LogIO::SEVERE 
 			   << "Too many elements for field " << in.name(j) 
 			   << " - the first 999 elements will be used." << LogIO::POST;
-			ok = False;
+			ok = false;
 		    }
 		    String slen = String::toString(length);
 		    if (in.name(j).length() + slen.length() > 8) {
 			os << LogIO::SEVERE 
 			   << "Name is too long for array field " << in.name(j) 
 			   << " - name will be truncated to first "
-			   << (8-uInt(slen.length())) << " characters." << LogIO::POST;
-			ok = False;
+			   << (8-uint32_t(slen.length())) << " characters." << LogIO::POST;
+			ok = false;
 		    }
 		}
 	    }
 		    
 	    // This is inefficient because we are getting the arrays many
 	    // times. We could optimize this if this is ever a problem.
- 	    for (Int k=0; k<length; k++) {
- 		for (uInt j=start; j<end; j++) {
+ 	    for (int32_t k=0; k<length; k++) {
+ 		for (uint32_t j=start; j<end; j++) {
  		    DataType type = in.type(j);
  		    String name = upcase(in.name(j));
 		    String num;
  		    if (ndim == 2) {
 			if (name.length() > 2) name = name.before(2);
  			// Form i_j name
-			Int nrow = in.shape(i)(0);
- 			Int ii = k % nrow + 1;
- 			Int jj = k / nrow + 1;
+			int32_t nrow = in.shape(i)(0);
+ 			int32_t ii = k % nrow + 1;
+ 			int32_t jj = k / nrow + 1;
 			ostringstream ostr;
 			if(nrow>9){ // i.e. the indices have more than one digit
 			  ostr << setfill('0') << setw(2) << ii
@@ -356,10 +356,10 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  		    switch(type) {
  		    case TpArrayBool:
  			{
- 			    Array<Bool> val;
+ 			    Array<bool> val;
  			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Bool *storage = val.getStorage(deleteIt);
+ 			    bool deleteIt;
+ 			    bool *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
 				out.mk(name.chars(), storage[k]);
 			    } else {
@@ -375,10 +375,10 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  		    break;
  		    case TpArrayInt:
  			{
- 			    Array<Int> val;
+ 			    Array<int32_t> val;
  			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Int *storage = val.getStorage(deleteIt);
+ 			    bool deleteIt;
+ 			    int32_t *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
 				out.mk(name.chars(), storage[k]);
 			    } else {
@@ -394,10 +394,10 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  		    break;
  		    case TpArrayFloat:
  			{
- 			    Array<Float> val;
+ 			    Array<float> val;
  			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Float *storage = val.getStorage(deleteIt);
+ 			    bool deleteIt;
+ 			    float *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
 				out.mk(name.chars(), storage[k]);
 			    } else {
@@ -413,10 +413,10 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  		    break;
  		    case TpArrayDouble:
  			{
- 			    Array<Double> val;
+ 			    Array<double> val;
  			    in.get(j, val);
- 			    Bool deleteIt;
- 			    Double *storage = val.getStorage(deleteIt);
+ 			    bool deleteIt;
+ 			    double *storage = val.getStorage(deleteIt);
 			    if (ndim == 2) {
 				out.mk(name.chars(), storage[k]);
 			    } else {
@@ -434,14 +434,14 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  			{
  			    Array<String> val;
  			    in.get(j, val);
- 			    Bool deleteIt;
+ 			    bool deleteIt;
  			    String *storage = val.getStorage(deleteIt);
 			    String thisVal = storage[k];
 			    if (thisVal.length() > 68) {
 				os << LogIO::SEVERE 
 				   << "Value of keyword " << name.chars() 
 				   << " will be truncated at 68 characters." << LogIO::POST;
-				ok = False;
+				ok = false;
 				thisVal = thisVal.before(68);
 			    }
 			    if (ndim == 2) {
@@ -459,19 +459,19 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
  		    break;
  		    default:
 			os << LogIO::SEVERE << 
-			    "Illegal FITS type " << Int(type) << " for field '" <<
+			    "Illegal FITS type " << int32_t(type) << " for field '" <<
 			    name << "': ignoring this field." << LogIO::POST;
 			// Note that we carry on anyway
-			ok = False;
+			ok = false;
  		    }
  		}
  	    }
 	} else {
 	    os << LogIO::SEVERE << 
-		"Illegal FITS type " << Int(in.type(i)) << " for field '" <<
+		"Illegal FITS type " << int32_t(in.type(i)) << " for field '" <<
 		in.name(i) << ". 'Must be scalar or array." << LogIO::POST;
 	    // Note that we carry on anyway
-	    ok = False;
+	    ok = false;
 	}
 	i++;
     }
@@ -479,12 +479,12 @@ Bool FITSKeywordUtil::addKeywords(FitsKeywordList &out,
     return ok;
 }
 
-Bool FITSKeywordUtil::getKeywords(RecordInterface &out, 
+bool FITSKeywordUtil::getKeywords(RecordInterface &out, 
 				  ConstFitsKeywordList &in, 
 				  const Vector<String> &ignore,
-				  Bool ignoreHistory)
+				  bool ignoreHistory)
 {
-    Bool ok = True;
+    bool ok = true;
 
     LogIO os(LogOrigin("FITSKeywordUtil", "getKeywords", WHERE));
 
@@ -521,16 +521,16 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
     // by the CoordinateSystem methods according to rules coded there.
 
     
-    std::map<String, Int> min1D, max1D, min2Drow, min2Dcol, max2Drow, max2Dcol;
+    std::map<String, int32_t> min1D, max1D, min2Drow, min2Dcol, max2Drow, max2Dcol;
 
     // this may be a bug in fits that it isn't in.curr()
     const FitsKeyword *key = in.next();
 //
-    Bool foundCROTA = False;
+    bool foundCROTA = false;
     String baseCROTA;
 
-    Int naxis = -1;
-    Int maxis = -1;
+    int32_t naxis = -1;
+    int32_t maxis = -1;
 
     while(key) {
 	String name = downcase(key->name());
@@ -546,7 +546,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
         }
 //
         if (name.contains(crota)) {
-	    foundCROTA = True;
+	    foundCROTA = true;
 	    baseCROTA = name;
         }
 //
@@ -554,7 +554,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 
 	if ((name.contains(kw2Dstandard) || name.contains(kw2D) || name.contains(kw2Dmodern)) 
             && !name.contains(cd)) {
-	    Int nrow, ncol;
+	    int32_t nrow, ncol;
 	    String base;
 	    if (!splitKW2D(base, nrow, ncol, name)) {
 		os << LogIO::SEVERE << "Illegal matrix keyword " << name << 
@@ -569,7 +569,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
         } 
 	else if ((key->isindexed() || name.contains(kw1D)) && !name.contains(cd)) {
 	    String base;
-	    Int num;
+	    int32_t num;
 	    if (key->isindexed()) {
 		base = name;
 		num = key->index();
@@ -615,14 +615,14 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	// OK, it's a keyword we have to process
 	if ((fullName.contains(kw2Dstandard) || fullName.contains(kw2D) ||
 	     fullName.contains(kw2Dmodern)) && !fullName.contains(cd)) {
-	    Int thisRow, thisCol;
+	    int32_t thisRow, thisCol;
 	    String base;
 	    splitKW2D(base, thisRow, thisCol, fullName);
 	    thisRow -= min2Drow[base];
 	    thisCol -= min2Dcol[base];
-	    Int fnum = out.fieldNumber(base);
-	    Int nrow = max2Drow[base]-min2Drow[base]+1;
-	    Int ncol = max2Dcol[base]-min2Dcol[base]+1;
+	    int32_t fnum = out.fieldNumber(base);
+	    int32_t nrow = max2Drow[base]-min2Drow[base]+1;
+	    int32_t ncol = max2Dcol[base]-min2Dcol[base]+1;
 	    switch (key->type()) {
 	    case FITS::LOGICAL:
 		{
@@ -632,10 +632,10 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 			    " field " << base << ". Continuing." << LogIO::POST;
 			break;
 		    }
-		    Matrix<Bool> mat;
+		    Matrix<bool> mat;
 		    if (! out.isDefined(base)) {
 			mat.resize(nrow,ncol);
-			mat = False;
+			mat = false;
 		    } else {
 			out.get(base, mat);
 		    }
@@ -676,7 +676,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 			    " field " << base << ". Continuing." << LogIO::POST;
 			break;
 		    }
-		    Matrix<Double> mat;
+		    Matrix<double> mat;
 		    if (! out.isDefined(base)) {
 			mat.resize(nrow,ncol);
 			mat = 0.0;
@@ -695,7 +695,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 			    " field " << base << ". Continuing." << LogIO::POST;
 			break;
 		    }
-		    Matrix<Double> mat;
+		    Matrix<double> mat;
 		    if (! out.isDefined(base)) {
 			mat.resize(nrow,ncol);
 			mat = 0.0;
@@ -714,7 +714,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 			    " field " << base << ". Continuing." << LogIO::POST;
 			break;
 		    }
-		    Matrix<Int> mat;
+		    Matrix<int32_t> mat;
 		    if (! out.isDefined(base)) {
 			mat.resize(nrow,ncol);
 			mat = 0;
@@ -769,7 +769,7 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 	    }
 	} else if (key->isindexed() || (fullName.contains(kw1D) && !fullName.contains(cd))){
             String base;
-	    Int num;
+	    int32_t num;
 	    if (key->isindexed()) {
 		base = fullName;
 		num = key->index();
@@ -777,9 +777,9 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		splitKW1D(base, num, fullName);
 	    }
 	    
-	    Int offset = num - min1D[base];
-	    Int nelm = 0;
-	    Int fnum = out.fieldNumber(base);
+	    int32_t offset = num - min1D[base];
+	    int32_t nelm = 0;
+	    int32_t fnum = out.fieldNumber(base);
 	    switch (key->type()) {
 	    case FITS::LOGICAL:
 		if (fnum >= 0 && out.type(fnum) != TpArrayBool) {
@@ -789,12 +789,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Bool> vec(max1D[base] - min1D[base] + 1);
-		    vec = False;
+		    Vector<bool> vec(max1D[base] - min1D[base] + 1);
+		    vec = false;
 		    vec(offset) = key->asBool();
  		    out.define(base, vec);
 		} else {
-		    Vector<Bool> vec;
+		    Vector<bool> vec;
 		    out.get(base, vec);
 		    nelm = vec.size();
 		    if(offset<nelm){
@@ -851,12 +851,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Double> vec(max1D[base] - min1D[base] + 1);
+		    Vector<double> vec(max1D[base] - min1D[base] + 1);
 		    vec = 0.0;
 		    vec(offset) = key->asFloat();
 		    out.define(base, vec);
 		} else {
-		    Vector<Double> vec;
+		    Vector<double> vec;
 		    out.get(base, vec);
 		    nelm = vec.size();
 		    if(offset<nelm){
@@ -878,12 +878,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Double> vec(max1D[base] - min1D[base] + 1);
+		    Vector<double> vec(max1D[base] - min1D[base] + 1);
 		    vec = 0.0;
 		    vec(offset) = key->asDouble();
 		    out.define(base, vec);
 		} else {
-		    Vector<Double> vec;
+		    Vector<double> vec;
 		    out.get(base, vec);
 		    nelm = vec.size();
 		    if(offset<nelm){
@@ -905,12 +905,12 @@ Bool FITSKeywordUtil::getKeywords(RecordInterface &out,
 		    break;
 		}
 		if (! out.isDefined(base)) {
-		    Vector<Int> vec(max1D[base] - min1D[base] + 1);
+		    Vector<int32_t> vec(max1D[base] - min1D[base] + 1);
 		    vec = 0;
 		    vec(offset) = key->asInt();
 		    out.define(base, vec);
 		} else {
-		    Vector<Int> vec;
+		    Vector<int32_t> vec;
 		    out.get(base, vec);
 		    nelm = vec.size();
 		    if(offset<nelm){
@@ -1049,21 +1049,21 @@ void FITSKeywordUtil::removeKeywords(RecordInterface &out,
 {
     LogIO os(LogOrigin("FITSKeywordUtil", "removeKeywords", WHERE));
 
-    const Int nregex = ignore.nelements();
+    const int32_t nregex = ignore.nelements();
     Regex *regexlist = new Regex[nregex];
     AlwaysAssert(regexlist, AipsError);
-    Int i;
+    int32_t i;
     for (i=0; i < nregex; i++) {
         regexlist[i] = Regex(ignore(i));
     }
 
-    const Int nfields = out.nfields();
+    const int32_t nfields = out.nfields();
     // Go backwards because removing a field causes the previous fields to
     // be renumbered.
     String nametmp;
     for (i=nfields - 1; i>= 0; i--) {
 	nametmp = out.name(i);
-	for (Int j=0; j<nregex; j++) {
+	for (int32_t j=0; j<nregex; j++) {
 	    if (nametmp.contains(regexlist[j])) {
 		out.removeField(i);
 		break;
@@ -1074,9 +1074,9 @@ void FITSKeywordUtil::removeKeywords(RecordInterface &out,
     delete [] regexlist;
 }
 
-Bool FITSKeywordUtil::fromTDIM(IPosition& shape, const String& tdim)
+bool FITSKeywordUtil::fromTDIM(IPosition& shape, const String& tdim)
 {
-    Bool ok = True;
+    bool ok = true;
     // verify that it has the right form
     // whitespace ( anything ) whitespace
     if (tdim.matches(Regex("[:space:]*[(].*[)][:space:]*"))) {
@@ -1084,37 +1084,37 @@ Bool FITSKeywordUtil::fromTDIM(IPosition& shape, const String& tdim)
 	String fields(tdim);
 	fields = fields.after('(');
 	fields = fields.before(')');
-	Int nelem = fields.freq(',') + 1;
+	int32_t nelem = fields.freq(',') + 1;
 	String * carrst = new String [nelem];
        	if (split(fields, carrst, nelem, ',') != nelem) {
-	    ok = False;
+	    ok = false;
 	} else {
 	    shape.resize(nelem);
-	    for (Int i=0;i<nelem;i++) {
+	    for (int32_t i=0;i<nelem;i++) {
 		shape(i) = atoi(carrst[i].chars());
 	    }
 	}
 	delete [] carrst;
     } else {
-	ok = False;
+	ok = false;
     }
     return ok;
 }
 
-Bool FITSKeywordUtil::toTDIM(String& tdim, const IPosition& shape)
+bool FITSKeywordUtil::toTDIM(String& tdim, const IPosition& shape)
 {
-    Bool ok = True;
+    bool ok = true;
 
     ostringstream ostr;
     ostr << "(";
     if (shape.nelements()>0) ostr << shape(0);
-    for (uInt i=1;i<shape.nelements();i++) {
+    for (uint32_t i=1;i<shape.nelements();i++) {
 	ostr << "," << shape(i);
     }
     ostr << ")";
     tdim = String(ostr);
     if (tdim.length() > 71) {
-	ok = False;
+	ok = false;
     }
     return ok;
 }
@@ -1123,10 +1123,10 @@ static void addText(RecordInterface &header, const String &comment,
 		    const char *leader)
 {
     static MLCG random;
-    static Bool init = False;
+    static bool init = false;
     if (!init) {
 	Time now;
-	init = True;
+	init = true;
 	random.seed1(long(now.modifiedJulianDay()*86400.0));
     }
 
@@ -1134,8 +1134,8 @@ static void addText(RecordInterface &header, const String &comment,
     // Use a random number to prevent a CUBIC behaviour:
     //   (N cards * N passes through the following loop * N for isDefined)
     String keyname;
-    for (uInt i=0; i<lines.nelements(); i++) {
-        Int offset = static_cast<Int>(random.asuInt());
+    for (uint32_t i=0; i<lines.nelements(); i++) {
+        int32_t offset = static_cast<int32_t>(random.asuInt());
 	do {
 	    ostringstream os;
 	    os << offset;

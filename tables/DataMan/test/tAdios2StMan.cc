@@ -35,20 +35,20 @@
 
 
 template<class T>
-void GenData(Array<T> &arr, uInt row){
+void GenData(Array<T> &arr, uint32_t row){
     indgen(arr, static_cast<T>(row));
 }
 
 template<class T>
-void GenData(T &sca, uInt row){
+void GenData(T &sca, uint32_t row){
     sca = row + 1;
 }
 
-void GenData(String &str, uInt row){
+void GenData(String &str, uint32_t row){
     str = "string for Row " + std::to_string(row);
 }
 
-void GenData(Array<String> &str, uInt row){
+void GenData(Array<String> &str, uint32_t row){
     size_t s=0;
     for(auto &i : str){
         i = "string for Row " + std::to_string(row) + " Element " + std::to_string(s);
@@ -57,10 +57,10 @@ void GenData(Array<String> &str, uInt row){
 }
 
 template<class T>
-void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition array_pos)
+void VerifyArrayColumn(Table &table, std::string column, uint32_t rows, IPosition array_pos)
 {
     ArrayColumn<T> array_column(table, column);
-    for(uInt i=0; i<rows; ++i)
+    for(uint32_t i=0; i<rows; ++i)
     {
         Array<T> arr_read = array_column.get(i);
         Array<T> arr_gen(array_pos);
@@ -77,10 +77,10 @@ void VerifyArrayColumn(Table &table, std::string column, uInt rows, IPosition ar
 }
 
 template<class T>
-void VerifyScalarColumn(Table &table, std::string column, uInt rows)
+void VerifyScalarColumn(Table &table, std::string column, uint32_t rows)
 {
     ScalarColumn<T> scalar_column(table, column);
-    for(uInt i=0; i<rows; ++i)
+    for(uint32_t i=0; i<rows; ++i)
     {
         T scalar_read = scalar_column.get(i);
         T scalar_gen;
@@ -92,29 +92,29 @@ void VerifyScalarColumn(Table &table, std::string column, uInt rows)
     }
 }
 
-void doWriteDefault(std::string filename, uInt rows, IPosition array_pos)
+void doWriteDefault(std::string filename, uint32_t rows, IPosition array_pos)
 {
     TableDesc td("", "1", TableDesc::Scratch);
-    td.addColumn (ScalarColumnDesc<Bool>("scalar_Bool"));
-    td.addColumn (ScalarColumnDesc<uChar>("scalar_uChar"));
-    td.addColumn (ScalarColumnDesc<Short>("scalar_Short"));
-    td.addColumn (ScalarColumnDesc<uShort>("scalar_uShort"));
-    td.addColumn (ScalarColumnDesc<Int>("scalar_Int"));
-    td.addColumn (ScalarColumnDesc<uInt>("scalar_uInt"));
-    td.addColumn (ScalarColumnDesc<Float>("scalar_Float"));
-    td.addColumn (ScalarColumnDesc<Double>("scalar_Double"));
+    td.addColumn (ScalarColumnDesc<bool>("scalar_Bool"));
+    td.addColumn (ScalarColumnDesc<unsigned char>("scalar_uChar"));
+    td.addColumn (ScalarColumnDesc<int16_t>("scalar_Short"));
+    td.addColumn (ScalarColumnDesc<uint16_t>("scalar_uShort"));
+    td.addColumn (ScalarColumnDesc<int32_t>("scalar_Int"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("scalar_uInt"));
+    td.addColumn (ScalarColumnDesc<float>("scalar_Float"));
+    td.addColumn (ScalarColumnDesc<double>("scalar_Double"));
     td.addColumn (ScalarColumnDesc<Complex>("scalar_Complex"));
     td.addColumn (ScalarColumnDesc<DComplex>("scalar_DComplex"));
     td.addColumn (ScalarColumnDesc<String>("scalar_String"));
 
-    td.addColumn (ArrayColumnDesc<Bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<uChar>("array_uChar", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Short>("array_Short", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<uShort>("array_uShort", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Int>("array_Int", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<uInt>("array_uInt", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Float>("array_Float", array_pos, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Double>("array_Double", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<bool>("array_Bool", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<unsigned char>("array_uChar", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<int16_t>("array_Short", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<uint16_t>("array_uShort", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<int32_t>("array_Int", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<uint32_t>("array_uInt", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<float>("array_Float", array_pos, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<double>("array_Double", array_pos, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<Complex>("array_Complex", array_pos, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<DComplex>("array_DComplex", array_pos, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<String>("array_String", array_pos, ColumnDesc::FixedShape));
@@ -130,56 +130,56 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos)
     Table tab(newtab, rows);
 #endif // HAVE_MPI
 
-    ScalarColumn<Bool> scalar_Bool (tab, "scalar_Bool");
-    ScalarColumn<uChar> scalar_uChar (tab, "scalar_uChar");
-    ScalarColumn<Short> scalar_Short (tab, "scalar_Short");
-    ScalarColumn<uShort> scalar_uShort (tab, "scalar_uShort");
-    ScalarColumn<Int> scalar_Int (tab, "scalar_Int");
-    ScalarColumn<uInt> scalar_uInt (tab, "scalar_uInt");
-    ScalarColumn<Float> scalar_Float (tab, "scalar_Float");
-    ScalarColumn<Double> scalar_Double (tab, "scalar_Double");
+    ScalarColumn<bool> scalar_Bool (tab, "scalar_Bool");
+    ScalarColumn<unsigned char> scalar_uChar (tab, "scalar_uChar");
+    ScalarColumn<int16_t> scalar_Short (tab, "scalar_Short");
+    ScalarColumn<uint16_t> scalar_uShort (tab, "scalar_uShort");
+    ScalarColumn<int32_t> scalar_Int (tab, "scalar_Int");
+    ScalarColumn<uint32_t> scalar_uInt (tab, "scalar_uInt");
+    ScalarColumn<float> scalar_Float (tab, "scalar_Float");
+    ScalarColumn<double> scalar_Double (tab, "scalar_Double");
     ScalarColumn<Complex> scalar_Complex (tab, "scalar_Complex");
     ScalarColumn<DComplex> scalar_DComplex (tab, "scalar_DComplex");
     ScalarColumn<String> scalar_String (tab, "scalar_String");
 
-    ArrayColumn<Bool> array_Bool (tab, "array_Bool");
-    ArrayColumn<uChar> array_uChar (tab, "array_uChar");
-    ArrayColumn<Short> array_Short (tab, "array_Short");
-    ArrayColumn<uShort> array_uShort (tab, "array_uShort");
-    ArrayColumn<Int> array_Int (tab, "array_Int");
-    ArrayColumn<uInt> array_uInt (tab, "array_uInt");
-    ArrayColumn<Float> array_Float (tab, "array_Float");
-    ArrayColumn<Double> array_Double (tab, "array_Double");
+    ArrayColumn<bool> array_Bool (tab, "array_Bool");
+    ArrayColumn<unsigned char> array_uChar (tab, "array_uChar");
+    ArrayColumn<int16_t> array_Short (tab, "array_Short");
+    ArrayColumn<uint16_t> array_uShort (tab, "array_uShort");
+    ArrayColumn<int32_t> array_Int (tab, "array_Int");
+    ArrayColumn<uint32_t> array_uInt (tab, "array_uInt");
+    ArrayColumn<float> array_Float (tab, "array_Float");
+    ArrayColumn<double> array_Double (tab, "array_Double");
     ArrayColumn<Complex> array_Complex (tab, "array_Complex");
     ArrayColumn<DComplex> array_DComplex (tab, "array_DComplex");
     ArrayColumn<String> array_String (tab, "array_String");
 
-    Array<Bool> arr_Bool(array_pos);
-    Array<Char> arr_Char(array_pos);
-    Array<uChar> arr_uChar(array_pos);
-    Array<Short> arr_Short(array_pos);
-    Array<uShort> arr_uShort(array_pos);
-    Array<Int> arr_Int(array_pos);
-    Array<uInt> arr_uInt(array_pos);
-    Array<Float> arr_Float(array_pos);
-    Array<Double> arr_Double(array_pos);
+    Array<bool> arr_Bool(array_pos);
+    Array<char> arr_Char(array_pos);
+    Array<unsigned char> arr_uChar(array_pos);
+    Array<int16_t> arr_Short(array_pos);
+    Array<uint16_t> arr_uShort(array_pos);
+    Array<int32_t> arr_Int(array_pos);
+    Array<uint32_t> arr_uInt(array_pos);
+    Array<float> arr_Float(array_pos);
+    Array<double> arr_Double(array_pos);
     Array<Complex> arr_Complex(array_pos);
     Array<DComplex> arr_DComplex(array_pos);
     Array<String> arr_String(array_pos);
 
-    Bool sca_Bool;
-    uChar sca_uChar;
-    Short sca_Short;
-    uShort sca_uShort;
-    Int sca_Int;
-    uInt sca_uInt;
-    Float sca_Float;
-    Double sca_Double;
+    bool sca_Bool;
+    unsigned char sca_uChar;
+    int16_t sca_Short;
+    uint16_t sca_uShort;
+    int32_t sca_Int;
+    uint32_t sca_uInt;
+    float sca_Float;
+    double sca_Double;
     Complex sca_Complex;
     DComplex sca_DComplex;
     String sca_String;
 
-    for(uInt i=0; i<rows; ++i)
+    for(uint32_t i=0; i<rows; ++i)
     {
         GenData(sca_Bool, i);
         GenData(sca_uChar, i);
@@ -231,31 +231,31 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos)
     }
 }
 
-void doReadScalar(std::string filename, uInt rows){
+void doReadScalar(std::string filename, uint32_t rows){
     Table casa_table(filename);
-    VerifyScalarColumn<Bool>(casa_table, "scalar_Bool", rows);
-    VerifyScalarColumn<uChar>(casa_table, "scalar_uChar", rows);
-    VerifyScalarColumn<Short>(casa_table, "scalar_Short", rows);
-    VerifyScalarColumn<uShort>(casa_table, "scalar_uShort", rows);
-    VerifyScalarColumn<Int>(casa_table, "scalar_Int", rows);
-    VerifyScalarColumn<uInt>(casa_table, "scalar_uInt", rows);
-    VerifyScalarColumn<Float>(casa_table, "scalar_Float", rows);
-    VerifyScalarColumn<Double>(casa_table, "scalar_Double", rows);
+    VerifyScalarColumn<bool>(casa_table, "scalar_Bool", rows);
+    VerifyScalarColumn<unsigned char>(casa_table, "scalar_uChar", rows);
+    VerifyScalarColumn<int16_t>(casa_table, "scalar_Short", rows);
+    VerifyScalarColumn<uint16_t>(casa_table, "scalar_uShort", rows);
+    VerifyScalarColumn<int32_t>(casa_table, "scalar_Int", rows);
+    VerifyScalarColumn<uint32_t>(casa_table, "scalar_uInt", rows);
+    VerifyScalarColumn<float>(casa_table, "scalar_Float", rows);
+    VerifyScalarColumn<double>(casa_table, "scalar_Double", rows);
     VerifyScalarColumn<Complex>(casa_table, "scalar_Complex", rows);
     VerifyScalarColumn<DComplex>(casa_table, "scalar_DComplex", rows);
     VerifyScalarColumn<String>(casa_table, "scalar_String", rows);
 }
 
-void doReadArray(std::string filename, uInt rows, IPosition array_pos){
+void doReadArray(std::string filename, uint32_t rows, IPosition array_pos){
     Table casa_table(filename);
-    VerifyArrayColumn<Bool>(casa_table, "array_Bool", rows, array_pos);
-    VerifyArrayColumn<uChar>(casa_table, "array_uChar", rows, array_pos);
-    VerifyArrayColumn<Short>(casa_table, "array_Short", rows, array_pos);
-    VerifyArrayColumn<uShort>(casa_table, "array_uShort", rows, array_pos);
-    VerifyArrayColumn<Int>(casa_table, "array_Int", rows, array_pos);
-    VerifyArrayColumn<uInt>(casa_table, "array_uInt", rows, array_pos);
-    VerifyArrayColumn<Float>(casa_table, "array_Float", rows, array_pos);
-    VerifyArrayColumn<Double>(casa_table, "array_Double", rows, array_pos);
+    VerifyArrayColumn<bool>(casa_table, "array_Bool", rows, array_pos);
+    VerifyArrayColumn<unsigned char>(casa_table, "array_uChar", rows, array_pos);
+    VerifyArrayColumn<int16_t>(casa_table, "array_Short", rows, array_pos);
+    VerifyArrayColumn<uint16_t>(casa_table, "array_uShort", rows, array_pos);
+    VerifyArrayColumn<int32_t>(casa_table, "array_Int", rows, array_pos);
+    VerifyArrayColumn<uint32_t>(casa_table, "array_uInt", rows, array_pos);
+    VerifyArrayColumn<float>(casa_table, "array_Float", rows, array_pos);
+    VerifyArrayColumn<double>(casa_table, "array_Double", rows, array_pos);
     VerifyArrayColumn<Complex>(casa_table, "array_Complex", rows, array_pos);
     VerifyArrayColumn<DComplex>(casa_table, "array_DComplex", rows, array_pos);
     VerifyArrayColumn<String>(casa_table, "array_String", rows, array_pos);
@@ -273,7 +273,7 @@ void doCopyTable(std::string inTable, std::string outTable, std::string column)
     TableCopy::copyColumnData(tab, column, duptab, column, false);
 }
 
-void doReadCopiedTable(std::string filename, std::string column, uInt rows, IPosition array_pos)
+void doReadCopiedTable(std::string filename, std::string column, uint32_t rows, IPosition array_pos)
 {
     Table tab(filename);
     VerifyArrayColumn<Complex>(tab, column, rows, array_pos);
@@ -285,7 +285,7 @@ int main(int argc, char **argv){
     MPI_Init(&argc,&argv);
 #endif
 
-    uInt rows = 100;
+    uint32_t rows = 100;
     IPosition array_pos = IPosition(2,5,6);
 
     doWriteDefault("default.table", rows, array_pos);

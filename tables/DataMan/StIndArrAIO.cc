@@ -46,10 +46,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManColumnIndArrayAipsIO::StManColumnIndArrayAipsIO (StManAipsIO* smptr,
 						      int dataType)
-: StManColumnAipsIO (smptr, dataType, True),
+: StManColumnAipsIO (smptr, dataType, true),
   staioPtr_p    (smptr),
   seqnr_p       (smptr->uniqueNr()),
-  shapeIsFixed_p(False),
+  shapeIsFixed_p(false),
   version_p     (2),
   iosfile_p     (0)
 {}
@@ -106,7 +106,7 @@ void StManColumnIndArrayAipsIO::reopenRW()
 void StManColumnIndArrayAipsIO::setShapeColumn (const IPosition& shape)
 {
     fixedShape_p   = shape;
-    shapeIsFixed_p = True;
+    shapeIsFixed_p = true;
 }
 
 
@@ -150,17 +150,17 @@ StIndArray* StManColumnIndArrayAipsIO::getShape (rownr_t rownr)
     return ptr;
 }
 
-Bool StManColumnIndArrayAipsIO::isShapeDefined (rownr_t rownr)
-    { return (STMANINDGETBLOCK(rownr) == 0  ?  False : True); }
+bool StManColumnIndArrayAipsIO::isShapeDefined (rownr_t rownr)
+    { return (STMANINDGETBLOCK(rownr) == 0  ?  false : true); }
 
-uInt StManColumnIndArrayAipsIO::ndim (rownr_t rownr)
+uint32_t StManColumnIndArrayAipsIO::ndim (rownr_t rownr)
     { return getShape(rownr)->shape().nelements(); }
 
 IPosition StManColumnIndArrayAipsIO::shape (rownr_t rownr)
     { return getShape(rownr)->shape(); }
 
-Bool StManColumnIndArrayAipsIO::canChangeShape() const
-    { return (shapeIsFixed_p  ?  False : True); }
+bool StManColumnIndArrayAipsIO::canChangeShape() const
+    { return (shapeIsFixed_p  ?  false : true); }
 
 
 void StManColumnIndArrayAipsIO::getArrayV (rownr_t rownr, ArrayBase& arr)
@@ -200,7 +200,7 @@ void StManColumnIndArrayAipsIO::putSliceV (rownr_t rownr, const Slicer& ns,
 }
 
 
-Bool StManColumnIndArrayAipsIO::ok() const
+bool StManColumnIndArrayAipsIO::ok() const
 {
     return StManColumnAipsIO::ok();
 }
@@ -220,19 +220,19 @@ void StManColumnIndArrayAipsIO::putFile (rownr_t nrval, AipsIO& ios)
     ios << seqnr_p;
     StManColumnAipsIO::putFile (nrval, ios);
     ios.putend();
-    iosfile_p->flush (False);
+    iosfile_p->flush (false);
 }
 
-void StManColumnIndArrayAipsIO::putData (void* dp, uInt nrval, AipsIO& ios)
+void StManColumnIndArrayAipsIO::putData (void* dp, uint32_t nrval, AipsIO& ios)
 {
     StIndArray** dpa = (StIndArray**)dp;
     while (nrval--) {
 	if (*dpa == 0) {
-	    ios << (uInt)0;
+	    ios << (uint32_t)0;
 	}else{
-	    Int64 off = (*dpa)->fileOffset();
+	    int64_t off = (*dpa)->fileOffset();
 	    if (off <= 2u*1024u*1024u*1024u) {
-	        ios << uInt(off);
+	        ios << uint32_t(off);
 	    }else{
 	        ios << 2u*1024u*1024u*1024u + 1u;
 		ios << off;
@@ -255,11 +255,11 @@ void StManColumnIndArrayAipsIO::getFile (rownr_t nrval, AipsIO& ios)
     ios.getend();
 }
 
-void StManColumnIndArrayAipsIO::getData (void* dp, uInt inx, uInt nrval,
-					 AipsIO& ios, uInt)
+void StManColumnIndArrayAipsIO::getData (void* dp, uint32_t inx, uint32_t nrval,
+					 AipsIO& ios, uint32_t)
 {
-    Int64 offset;
-    uInt off;
+    int64_t offset;
+    uint32_t off;
     StIndArray** dpa = (StIndArray**)dp;
     dpa += inx;
     while (nrval--) {

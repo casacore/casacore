@@ -78,7 +78,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     ~HDF5File();
 
     // Test if the file with the given name is an HDF5 file.
-    static Bool isHDF5 (const String& name);
+    static bool isHDF5 (const String& name);
 
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the stream is writable already.
@@ -87,15 +87,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void reopenRW();
 
     // Is the file writable?
-    Bool isWritable() const
+    bool isWritable() const
       { return itsOption == ByteIO::Update; }
 
     // Is the file opened for delete?
-    Bool isOpenedForDelete() const
+    bool isOpenedForDelete() const
       { return itsDelete; }
 
     // Is the file temporarily closed?
-    Bool isClosed() const
+    bool isClosed() const
       { return getHid()<0; }
 
     // Close the file (temporarily).
@@ -123,7 +123,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members
     ByteIO::OpenOption itsOption;
     String             itsName;
-    Bool               itsDelete;
+    bool               itsDelete;
 
   private:
     // Copy constructor cannot be used.

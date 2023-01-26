@@ -71,7 +71,7 @@ public:
   explicit TaQLResult (const TableExprNode&);
 
   // Is the result a Table?
-  Bool isTable() const
+  bool isTable() const
     { return itsNode.isNull(); }
 
   // Return the result as a TableExprInfo.

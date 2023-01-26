@@ -90,12 +90,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MSFieldParse (const MSField& fieldSubTable, const TableExprNode& columnAsTEN);
     ~MSFieldParse() {columnAsTEN_p=TableExprNode();}
 
-    const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
+    const TableExprNode *selectFieldIds(const Vector<int32_t>& fieldIds);
     
     // Get table expression node object.
     static const TableExprNode* node();
     static MSFieldParse* thisMSFParser;
-    static Vector<Int> selectedIDs() {return idList;}
+    static Vector<int32_t> selectedIDs() {return idList;}
     static void reset();
     static void cleanup() 
     {if (node_p) delete node_p;node_p=0x0;}
@@ -103,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   private:
     static TableExprNode* node_p;
     const String colName;
-    static  Vector<Int> idList;
+    static  Vector<int32_t> idList;
     MSField msFieldSubTable_p;
     static TableExprNode columnAsTEN_p;
   };
@@ -185,19 +185,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     MSFieldParse (MSSelectableTable* msLike);
 //     //~MSFieldParse() {if (node_p) delete node_p;node_p=0x0;}
     
-//     const TableExprNode *selectFieldIds(const Vector<Int>& fieldIds);
+//     const TableExprNode *selectFieldIds(const Vector<int32_t>& fieldIds);
 //     //    const TableExprNode *selectFieldOrSource(const String& fieldName);
     
 //     // Get table expression node object.
 //     static const TableExprNode* node();
 //     static MSFieldParse* thisMSFParser;
-//     static Vector<Int> selectedIDs() {return idList;}
+//     static Vector<int32_t> selectedIDs() {return idList;}
 //     static void reset();//{idList.resize(0);}
 //     static void cleanup() {if (node_p) delete node_p;node_p=0x0;}
 //   private:
 //     static TableExprNode* node_p;
 //     const String colName;
-//     static  Vector<Int> idList;
+//     static  Vector<int32_t> idList;
     
 //   };
   

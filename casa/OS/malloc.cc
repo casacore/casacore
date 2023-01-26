@@ -343,7 +343,7 @@ MALLOC_FAILURE_ACTION     default: sets errno to ENOMEM, or no-op on win32
   return memory because there is none available.
 
 HAVE_MORECORE             default: 1 (true) unless win32 or ONLY_MSPACES
-  True if this system supports sbrk or an emulation of it.
+  true if this system supports sbrk or an emulation of it.
 
 MORECORE                  default: sbrk
   The name of the sbrk-style system routine to call to obtain more
@@ -365,7 +365,7 @@ MORECORE_CONTIGUOUS       default: 1 (true) if HAVE_MORECORE
   and possibly wasted space it would take to discover this though.
 
 MORECORE_CANNOT_TRIM      default: NOT defined
-  True if MORECORE cannot release space back to the system when given
+  true if MORECORE cannot release space back to the system when given
   negative arguments. This is generally necessary only if you are
   using a hand-crafted MORECORE function that cannot handle negative
   arguments.
@@ -377,7 +377,7 @@ NO_SEGMENT_TRAVERSAL       default: 0
   releasing them to the OS if unused, but bounds execution times.
 
 HAVE_MMAP                 default: 1 (true)
-  True if this system supports mmap or an emulation of it.  If so, and
+  true if this system supports mmap or an emulation of it.  If so, and
   HAVE_MORECORE is not true, MMAP is used for all system
   allocation. If set and HAVE_MORECORE is true as well, MMAP is
   primarily used to directly allocate very large blocks. It is also
@@ -391,7 +391,7 @@ HAVE_MREMAP               default: 1 on linux, else 0
   extend or shrink allocation spaces.
 
 MMAP_CLEARS               default: 1 except on WINCE.
-  True if mmap clears memory so calloc doesn't need to. This is true
+  true if mmap clears memory so calloc doesn't need to. This is true
   for standard unix mmap using /dev/zero and on WIN32 except for WINCE.
 
 USE_BUILTIN_FFS            default: 0 (i.e., not used)
@@ -1483,7 +1483,7 @@ unsigned char _BitScanReverse(unsigned long *index, unsigned long mask);
 /* The bit mask value corresponding to MALLOC_ALIGNMENT */
 #define CHUNK_ALIGN_MASK    (MALLOC_ALIGNMENT - SIZE_T_ONE)
 
-/* True if address a has acceptable alignment */
+/* true if address a has acceptable alignment */
 #define is_aligned(A)       (((size_t)((A)) & (CHUNK_ALIGN_MASK)) == 0)
 
 /* the number of bytes to offset an address to align it */
@@ -2576,7 +2576,7 @@ static struct malloc_state _gm_;
 #define is_granularity_aligned(S)\
    (((size_t)(S) & (mparams.granularity - SIZE_T_ONE)) == 0)
 
-/*  True if segment S holds address A */
+/*  true if segment S holds address A */
 #define segment_holds(S, A)\
   ((char*)(A) >= S->base && (char*)(A) < S->base + S->size)
 

@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // to/from Python using the Boost.Python package.
 // Converters for the following Casacore classes exist:
 // <ul>
-//  <li> Scalars of basic data types like Bool, Int, Float, Complex.
+//  <li> Scalars of basic data types like bool, int32_t, float, Complex.
 //  <li> casacore::String and std::string.
 //  <li> casacore::Vector and std::vector of any type which can be converted
 //       from a Python scalar, list, tuple, or 1-dim array. They are converted

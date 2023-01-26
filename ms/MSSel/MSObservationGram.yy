@@ -37,10 +37,10 @@
   Block<TableExprNode>* exprb;
   TableExprNodeSetElem* elem;
   TableExprNodeSet* settp;
-  Int ival[2];
+  int32_t ival[2];
   char * str;
-  Double dval;
-  std::vector<Int>* iv; // std::vectors have push_back, insert, etc.
+  double dval;
+  std::vector<int32_t>* iv; // std::vectors have push_back, insert, etc.
   Vector<String>* is;
 }
 
@@ -96,38 +96,38 @@ compoundexpr: scanids                           {/*$$ = &MSObservationParse::thi
 
 scanidbounds: LT INT // <ID
                 {
-		  const Vector<Int> idv(1,atoi($2));
+		  const Vector<int32_t> idv(1,atoi($2));
 		  $$ = MSObservationParse::thisMSObsParser->selectObservationIdsLT(idv);
 		  free($2);
 		}
             | GT INT // >ID
                 {
-		  const Vector<Int> idv(1,atoi($2));
+		  const Vector<int32_t> idv(1,atoi($2));
 		  $$ = MSObservationParse::thisMSObsParser->selectObservationIdsGT(idv);
 		  free($2);
 		}
             | LE INT // <=ID
                 {
-		  const Vector<Int> idv(1,atoi($2));
+		  const Vector<int32_t> idv(1,atoi($2));
 		  $$ = MSObservationParse::thisMSObsParser->selectObservationIdsLTEQ(idv);
 		  free($2);
 		}
             | GE INT // >=ID
                 {
-		  const Vector<Int> idv(1,atoi($2));
+		  const Vector<int32_t> idv(1,atoi($2));
 		  $$ = MSObservationParse::thisMSObsParser->selectObservationIdsGTEQ(idv);
 		  free($2);
 		}
             | GE INT AMPERSAND LE INT // >=ID & <=ID
                 {
-		  Int n0=atoi($2), n1=atoi($5);
+		  int32_t n0=atoi($2), n1=atoi($5);
 		  $$ = MSObservationParse::thisMSObsParser->selectRangeGEAndLE(n0,n1);
 
 		  free($2); free($5);
 		}
             | GT INT AMPERSAND LT INT // >ID & <ID
                 {
-		  Int n0=atoi($2), n1=atoi($5);
+		  int32_t n0=atoi($2), n1=atoi($5);
 		  $$ = MSObservationParse::thisMSObsParser->selectRangeGTAndLT(n0,n1);
 
 		  free($2); free($5);

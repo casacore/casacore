@@ -40,17 +40,17 @@ int main()
 	// LogSink to use in testing here - use a memory log sink
 	LogMessage message(LogOrigin("testFITSHistoryUtil()",WHERE));
 	message.message("this is a test").line(__LINE__);
-	LoggerHolder logger(False);
+	LoggerHolder logger(false);
 	logger.sink().post(message);
 	message.message("This is another LogMessage stored in the sink to be transfered to FITS");
 	logger.sink().post(message);
 	
 	std::vector<String> history;
-	Bool aipsppFormat = True;
-	uInt nstrings, nread;
+	bool aipsppFormat = true;
+	uint32_t nstrings, nread;
 	nstrings = nread = 0;
 	nread = FITSHistoryUtil::toHISTORY(history, aipsppFormat, nstrings,
-					   uInt(0), logger);
+					   uint32_t(0), logger);
 	// there are 2 things inserted here, so nread should be 2
 	AlwaysAssertExit(nread == 2);
 	
@@ -83,15 +83,15 @@ int main()
 	// now retrieve stuff from kwl
 	Vector<String> stringsOut;
 	String groupType;
-	uInt n;
+	uint32_t n;
 	ConstFitsKeywordList ckwl(kwl);
 	ckwl.first();
 	while ((n = FITSHistoryUtil::getHistoryGroup(stringsOut, groupType, 
 						     ckwl)) != 0) {
-	    LoggerHolder logOut(False);
+	    LoggerHolder logOut(false);
 	    if (groupType == "LOGTABLE") {
-		FITSHistoryUtil::fromHISTORY(logOut, stringsOut, n, True);
-		Int iterCount = 0;
+		FITSHistoryUtil::fromHISTORY(logOut, stringsOut, n, true);
+		int32_t iterCount = 0;
 		LoggerHolder::const_iterator origIter = logger.begin();
 		for (LoggerHolder::const_iterator iter = logOut.begin();
 		     iter != logOut.end();
@@ -115,12 +115,12 @@ int main()
 		AlwaysAssertExit(n==4);
 	    } else if (groupType == "OTHER") {
 		AlwaysAssertExit(n==otherHistory.size());
-		for (uInt i=0;i<otherHistory.size();i++) {
+		for (uint32_t i=0;i<otherHistory.size();i++) {
 		    AlwaysAssertExit(otherHistory[i] == stringsOut(i));
 		}
 	    } else {
 		AlwaysAssertExit(n==moreHistory.size());
-		for (uInt i=0;i<moreHistory.size();i++) {
+		for (uint32_t i=0;i<moreHistory.size();i++) {
 		    AlwaysAssertExit(moreHistory[i] == stringsOut(i));
 		}
 	    }

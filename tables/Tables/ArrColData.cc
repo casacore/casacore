@@ -42,7 +42,7 @@ ArrayColumnData::ArrayColumnData (const ArrayColumnDescBase* cd,
                                   ColumnSet* csp)
 : PlainColumn  (cd, csp),
   arrDescPtr_p (cd),
-  shapeColDef_p(False),
+  shapeColDef_p(false),
   shapeCol_p   ()
 {
     if (cd->shape().nelements() > 0) {
@@ -94,9 +94,9 @@ void ArrayColumnData::createDataManagerColumn()
 void ArrayColumnData::initialize (rownr_t, rownr_t)
 {}
 
-uInt ArrayColumnData::ndimColumn() const
+uint32_t ArrayColumnData::ndimColumn() const
 {
-    Int ndim = columnDesc().ndim();
+    int32_t ndim = columnDesc().ndim();
     return (ndim > 0  ?  ndim : shapeCol_p.nelements());
 }
 IPosition ArrayColumnData::shapeColumn() const
@@ -112,21 +112,21 @@ void ArrayColumnData::setShapeColumn (const IPosition& shp)
 	}
     }
     if (columnDesc().ndim() > 0) {
-	if (Int(shp.nelements()) != columnDesc().ndim()) {
+	if (int32_t(shp.nelements()) != columnDesc().ndim()) {
 	    throw (TableInvOper
 	       ("ArrayColumnData: mismatch in #dim of FixedShape array shape"
                 " of column " + colDescPtr_p->name()));
 	}
     }
     shapeCol_p    = shp;
-    shapeColDef_p = True;
+    shapeColDef_p = true;
 }
 
-Bool ArrayColumnData::isDefined (rownr_t rownr) const
+bool ArrayColumnData::isDefined (rownr_t rownr) const
 {
     return dataColPtr_p->isShapeDefined(rownr);
 }
-uInt ArrayColumnData::ndim (rownr_t rownr) const
+uint32_t ArrayColumnData::ndim (rownr_t rownr) const
 {
     return dataColPtr_p->ndim(rownr);
 }
@@ -143,7 +143,7 @@ IPosition ArrayColumnData::tileShape (rownr_t rownr) const
 void ArrayColumnData::setShape (rownr_t rownr, const IPosition& shp)
 {
     checkShape (shp);
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->setShape (rownr, shp);
     autoReleaseLock();
 }
@@ -151,12 +151,12 @@ void ArrayColumnData::setShape (rownr_t rownr, const IPosition& shp,
                                 const IPosition& tileShp)
 {
     checkShape (shp);
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->setShapeTiled (rownr, shp, tileShp);
     autoReleaseLock();
 }
 
-Bool ArrayColumnData::canChangeShape() const
+bool ArrayColumnData::canChangeShape() const
 {
     return dataColPtr_p->canChangeShape();
 }
@@ -168,7 +168,7 @@ void ArrayColumnData::getArray (rownr_t rownr, ArrayBase& array) const
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownr,
                          array.shape());
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getArrayV (rownr, array);
     autoReleaseLock();
 }
@@ -181,7 +181,7 @@ void ArrayColumnData::getSlice (rownr_t rownr, const Slicer& ns,
                          array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getSliceV (rownr, ns, array);
     autoReleaseLock();
 }
@@ -196,7 +196,7 @@ void ArrayColumnData::putArray (rownr_t rownr, const ArrayBase& array)
     if (checkValueLength_p) {
       checkValueLength (static_cast<const Array<String>*>(&array));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putArrayV (rownr, array);
     autoReleaseLock();
 }
@@ -212,7 +212,7 @@ void ArrayColumnData::putSlice (rownr_t rownr, const Slicer& ns,
     if (checkValueLength_p) {
       checkValueLength (static_cast<const Array<String>*>(&array));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putSliceV (rownr, ns, array);
     autoReleaseLock();
 }
@@ -228,7 +228,7 @@ void ArrayColumnData::getArrayColumn (ArrayBase& array) const
       TableTrace::trace (traceId(), columnDesc().name(), 'r',
                          array.shape());
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getArrayColumnV (array);
     autoReleaseLock();
 }
@@ -241,7 +241,7 @@ void ArrayColumnData::getArrayColumnCells (const RefRows& rownrs,
       TableTrace::trace (traceId(), columnDesc().name(), 'r', rownrs,
                          array.shape());
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getArrayColumnCellsV (rownrs, array);
     autoReleaseLock();
 }
@@ -254,7 +254,7 @@ void ArrayColumnData::getColumnSlice (const Slicer& ns,
                          array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getColumnSliceV (ns, array);
     autoReleaseLock();
 }
@@ -268,7 +268,7 @@ void ArrayColumnData::getColumnSliceCells (const RefRows& rownrs,
                          array.shape(),
                          ns.start(), ns.end(), ns.stride());
     }
-    checkReadLock (True);
+    checkReadLock (true);
     dataColPtr_p->getColumnSliceCellsV (rownrs, ns, array);
     autoReleaseLock();
 }
@@ -282,7 +282,7 @@ void ArrayColumnData::putArrayColumn (const ArrayBase& array)
     if (checkValueLength_p) {
       checkValueLength (static_cast<const Array<String>*>(&array));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putArrayColumnV (array);
     autoReleaseLock();
 }
@@ -297,7 +297,7 @@ void ArrayColumnData::putArrayColumnCells (const RefRows& rownrs,
     if (checkValueLength_p) {
       checkValueLength (static_cast<const Array<String>*>(&array));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putArrayColumnCellsV (rownrs, array);
     autoReleaseLock();
 }
@@ -313,7 +313,7 @@ void ArrayColumnData::putColumnSlice (const Slicer& ns,
     if (checkValueLength_p) {
       checkValueLength (static_cast<const Array<String>*>(&array));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putColumnSliceV (ns, array);
     autoReleaseLock();
 }
@@ -330,7 +330,7 @@ void ArrayColumnData::putColumnSliceCells (const RefRows& rownrs,
     if (checkValueLength_p) {
       checkValueLength (static_cast<const Array<String>*>(&array));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     dataColPtr_p->putColumnSliceCellsV (rownrs, ns, array);
     autoReleaseLock();
 }
@@ -344,7 +344,7 @@ void ArrayColumnData::checkShape (const IPosition& shape) const
     if ((columnDesc().options() & ColumnDesc::FixedShape)
 	                               != ColumnDesc::FixedShape) {
       if (columnDesc().ndim() > 0) {
-	if (Int(shape.nelements()) != columnDesc().ndim()) {
+	if (int32_t(shape.nelements()) != columnDesc().ndim()) {
 	    throw (TableInvOper
 		   ("ArrayColumn::setShape: mismatch in #dim of array"
                     " of column " + colDescPtr_p->name()));
@@ -358,7 +358,7 @@ void ArrayColumnData::checkShape (const IPosition& shape) const
 //# the version is put "manually".
 void ArrayColumnData::putFileDerived (AipsIO& ios)
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
     ios << dataManPtr_p->sequenceNr();
     ios << shapeColDef_p;
     if (shapeColDef_p) {
@@ -369,9 +369,9 @@ void ArrayColumnData::putFileDerived (AipsIO& ios)
 void ArrayColumnData::getFileDerived (AipsIO& ios,
                                       const ColumnSet& colset)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
-    uInt seqnr;
+    uint32_t seqnr;
     ios >> seqnr;
     ios >> shapeColDef_p;
     if (shapeColDef_p) {

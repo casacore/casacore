@@ -28,14 +28,14 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  TSMOption::TSMOption (TSMOption::Option option, Int bufferSize,
-                        Int maxCacheSizeMB)
+  TSMOption::TSMOption (TSMOption::Option option, int32_t bufferSize,
+                        int32_t maxCacheSizeMB)
     : itsOption       (option),
       itsBufferSize   (bufferSize),
       itsMaxCacheSize (maxCacheSizeMB)
   {}
 
-  void TSMOption::fillOption (Bool newTable)
+  void TSMOption::fillOption (bool newTable)
   {
     // Get variables from aipsrc if needed.
     if (itsOption == TSMOption::Aipsrc) {
@@ -56,14 +56,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Default buffer size is 4096.
     if (itsBufferSize <= -2) {
-      AipsrcValue<Int>::find (itsBufferSize, "table.tsm.buffersize", 0);
+      AipsrcValue<int32_t>::find (itsBufferSize, "table.tsm.buffersize", 0);
     }
     if (itsBufferSize <= 0) {
       itsBufferSize = 4096;
     }
     // Default is -1.
     if (itsMaxCacheSize <= -2) {
-      AipsrcValue<Int>::find (itsMaxCacheSize, "table.tsm.maxcachesizemb", -1);
+      AipsrcValue<int32_t>::find (itsMaxCacheSize, "table.tsm.maxcachesizemb", -1);
     }
     // Default is to use the old caching behaviour
     // Abandoned default to use mmap for existing files on 64 bit systems.

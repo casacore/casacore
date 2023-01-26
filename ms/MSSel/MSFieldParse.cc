@@ -34,7 +34,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSFieldParse* MSFieldParse::thisMSFParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSFieldParse::node_p = 0x0;
   TableExprNode MSFieldParse::columnAsTEN_p;
-  Vector<Int> MSFieldParse::idList;
+  Vector<int32_t> MSFieldParse::idList;
 
   //# Constructor
   MSFieldParse::MSFieldParse ()
@@ -65,10 +65,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //    setMS(ms);
   }
 
-  const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
+  const TableExprNode *MSFieldParse::selectFieldIds(const Vector<int32_t>& fieldIds)
   {
     {
-      Vector<Int> tmp(set_union(fieldIds,idList));
+      Vector<int32_t> tmp(set_union(fieldIds,idList));
       idList.resize(tmp.nelements());
       idList = tmp;
     }
@@ -107,7 +107,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
 //   MSFieldParse* MSFieldParse::thisMSFParser = 0x0; // Global pointer to the parser object
 //   TableExprNode* MSFieldParse::node_p = 0x0;
-//   Vector<Int> MSFieldParse::idList;
+//   Vector<int32_t> MSFieldParse::idList;
 
 //   //# Constructor
 //   MSFieldParse::MSFieldParse ()
@@ -126,10 +126,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //     idList.resize(0);
 //     //    setMS(ms);
 //   }
-//   const TableExprNode *MSFieldParse::selectFieldIds(const Vector<Int>& fieldIds)
+//   const TableExprNode *MSFieldParse::selectFieldIds(const Vector<int32_t>& fieldIds)
 //   {
 //     {
-//       Vector<Int> tmp(set_union(fieldIds,idList));
+//       Vector<int32_t> tmp(set_union(fieldIds,idList));
 //       idList.resize(tmp.nelements());
 //       idList = tmp;
 //     }
@@ -154,17 +154,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const TableExprNode *MSFieldParse::selectFieldOrSource(const String& fieldName)
     {
     LogIO os(LogOrigin("MSFieldParse", "selectFieldOrSource", WHERE));
-    Vector<Int> SourceIdsFromSN ;
-    Vector<Int> SourceIdsFromSC ;
-    Vector<Int> FieldIdsFromFN ;
-    Vector<Int> FieldIdsFromFC ;
+    Vector<int32_t> SourceIdsFromSN ;
+    Vector<int32_t> SourceIdsFromSC ;
+    Vector<int32_t> FieldIdsFromFN ;
+    Vector<int32_t> FieldIdsFromFC ;
     
     MSFieldColumns msFC(ms()->field());
     MSFieldIndex msFI(ms()->field());
     String colName = MS::columnName(MS::FIELD_ID);
     TableExprNode condition = 0;
     
-    Bool searchField = False;
+    bool searchField = false;
     
     
     if( !ms()->source().isNull()) {
@@ -181,7 +181,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     (msFI.matchSourceId(SourceIdsFromSC)));
     } else {
     os << " No Souce name(code) matched, search for field  " << LogIO::POST;
-    searchField = True;
+    searchField = true;
     }
     } 
     

@@ -33,20 +33,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSScanParse* MSScanParse::thisMSSParser = 0x0; // Global pointer to the parser object
   TableExprNode MSScanParse::columnAsTEN_p;
   // TableExprNode* MSScanParse::node_p = 0x0;
-  // Vector<Int> MSScanParse::idList;
-  //  std::vector<Int> MSScanParse::parsedIDList_p;
+  // Vector<int32_t> MSScanParse::idList;
+  //  std::vector<int32_t> MSScanParse::parsedIDList_p;
   
   //# Constructor
   MSScanParse::MSScanParse ()
     : MSParse(), colName(MS::columnName(MS::SCAN_NUMBER)),
-      //      maxScans_p(std::numeric_limits<Int>::max())
+      //      maxScans_p(std::numeric_limits<int32_t>::max())
       maxScans_p(1000)
   {
   }
   
-  std::vector<Int>& MSScanParse::accumulateIDs(const Int id0, const Int id1)
+  std::vector<int32_t>& MSScanParse::accumulateIDs(const int32_t id0, const int32_t id1)
   {
-    Vector<Int> theIDs;
+    Vector<int32_t> theIDs;
     if (id1 < 0) 
       {
 	parsedIDList_p.push_back(id0);theIDs.resize(1);theIDs[0]=id0;
@@ -68,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Constructor with given ms name.
   MSScanParse::MSScanParse (const MeasurementSet* ms)
     : MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER)),
-      //      maxScans_p(std::numeric_limits<Int>::max())
+      //      maxScans_p(std::numeric_limits<int32_t>::max())
       maxScans_p(1000)
   {
     idList.resize(0);
@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# both MS and CalTables.
   MSScanParse::MSScanParse (const MeasurementSet* ms, const TableExprNode& colAsTEN)
     : MSParse(ms, "Scan"), colName(MS::columnName(MS::SCAN_NUMBER)),
-      //      maxScans_p(std::numeric_limits<Int>::max())
+      //      maxScans_p(std::numeric_limits<int32_t>::max())
       maxScans_p(1000)
   {
     idList.resize(0);
@@ -88,17 +88,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     columnAsTEN_p = colAsTEN;
   }
   
-  void MSScanParse::appendToIDList(const Vector<Int>& v)
+  void MSScanParse::appendToIDList(const Vector<int32_t>& v)
   {
-    Int currentSize = idList.nelements();
-    Int n = v.nelements() + currentSize;
-    Int j=0;
+    int32_t currentSize = idList.nelements();
+    int32_t n = v.nelements() + currentSize;
+    int32_t j=0;
 
-    idList.resize(n, True);
-    for(Int i=currentSize;i<n;i++) idList[i] = v[j++];
+    idList.resize(n, true);
+    for(int32_t i=currentSize;i<n;i++) idList[i] = v[j++];
   }
 
-  const TableExprNode* MSScanParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
+  const TableExprNode* MSScanParse::selectRangeGTAndLT(const int32_t& n0,const int32_t& n1)
   {
     // TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
     // 					     (ms()->col(colName) < n1));
@@ -110,9 +110,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	os << "Scan Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
 	throw(MSSelectionScanParseError(os.str()));
       }
-    Vector<Int> tmp(n1-n0-1);
-    Int j=n0+1;
-    for(uInt i=0;i<tmp.nelements();i++) tmp[i]=j++;
+    Vector<int32_t> tmp(n1-n0-1);
+    int32_t j=n0+1;
+    for(uint32_t i=0;i<tmp.nelements();i++) tmp[i]=j++;
     appendToIDList(tmp);
 
     addCondition(node_p,condition);
@@ -120,7 +120,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode* MSScanParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
+  const TableExprNode* MSScanParse::selectRangeGEAndLE(const int32_t& n0,const int32_t& n1)
   {
     TableExprNode condition = TableExprNode( (columnAsTEN_p >= n0) &&
 					     (columnAsTEN_p <= n1));
@@ -130,9 +130,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	os << "Scan Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
 	throw(MSSelectionScanParseError(os.str()));
       }
-    Vector<Int> tmp(n1-n0+1);
-    Int j=n0;
-    for(uInt i=0;i<tmp.nelements();i++) tmp[i]=j++;
+    Vector<int32_t> tmp(n1-n0+1);
+    int32_t j=n0;
+    for(uint32_t i=0;i<tmp.nelements();i++) tmp[i]=j++;
     appendToIDList(tmp);
 
     addCondition(node_p,condition);
@@ -140,7 +140,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode* MSScanParse::selectScanIds(const Vector<Int>& scanids)
+  const TableExprNode* MSScanParse::selectScanIds(const Vector<int32_t>& scanids)
   {
     if (scanids.size() > 0)
       {
@@ -152,54 +152,54 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode* MSScanParse::selectScanIdsGT(const Vector<Int>& scanids)
+  const TableExprNode* MSScanParse::selectScanIdsGT(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p > scanids[0]);
     
-    Int n=maxScans_p-scanids[0]+1,j;
-    Vector<Int> tmp(n);
+    int32_t n=maxScans_p-scanids[0]+1,j;
+    Vector<int32_t> tmp(n);
     j=scanids[0]+1;
-    for(Int i=0;i<n;i++) tmp[i]=j++;
+    for(int32_t i=0;i<n;i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
   
-  const TableExprNode* MSScanParse::selectScanIdsLT(const Vector<Int>& scanids)
+  const TableExprNode* MSScanParse::selectScanIdsLT(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p < scanids[0]);
-    Vector<Int> tmp(scanids[0]);
-    for(Int i=0;i<scanids[0];i++) tmp[i] = i;
+    Vector<int32_t> tmp(scanids[0]);
+    for(int32_t i=0;i<scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
 
-  const TableExprNode* MSScanParse::selectScanIdsGTEQ(const Vector<Int>& scanids)
+  const TableExprNode* MSScanParse::selectScanIdsGTEQ(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p >= scanids[0]);
     
-    Int n=maxScans_p-scanids[0]+1,j;
-    Vector<Int> tmp(n);
+    int32_t n=maxScans_p-scanids[0]+1,j;
+    Vector<int32_t> tmp(n);
     j=scanids[0];
-    for(Int i=0;i<n;i++) tmp[i]=j++;
+    for(int32_t i=0;i<n;i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
   
-  const TableExprNode* MSScanParse::selectScanIdsLTEQ(const Vector<Int>& scanids)
+  const TableExprNode* MSScanParse::selectScanIdsLTEQ(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p <= scanids[0]);
-    Vector<Int> tmp(scanids[0]+1);
-    for(Int i=0;i<=scanids[0];i++) tmp[i] = i;
+    Vector<int32_t> tmp(scanids[0]+1);
+    for(int32_t i=0;i<=scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     

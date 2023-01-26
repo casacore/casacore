@@ -42,9 +42,9 @@ void PGPlotterInterface::message(const String &text)
     }
 }
 
-Bool PGPlotterInterface::isAttached() const
+bool PGPlotterInterface::isAttached() const
 {
-    return True;
+    return true;
 }
 
 } //# NAMESPACE CASACORE - END

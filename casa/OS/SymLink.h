@@ -72,10 +72,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    SymLink symLinkA("A");
 //    SymLink symLinkB("B");
 //
-//    symLink1.create("~", True);    // Create a symbolic link to the home
+//    symLink1.create("~", true);    // Create a symbolic link to the home
 //                                   // directory. When it exists it will be
 //                                   // overwritten.
-//    symLink2.create("isLink", False); // Create a symbolic link to 
+//    symLink2.create("isLink", false); // Create a symbolic link to 
 //                                      // isLink. When it exists it will not
 //                                      // be overwritten.
 //    symLinkA.create(Path("B"));    // Create a recursive link
@@ -122,32 +122,32 @@ public:
     // Make a symbolic link to a file given by target.
     // An exception will be thrown if:
     // <br>-target already exists and is no symlink
-    // <br>-or target already exists and overwrite==False
+    // <br>-or target already exists and overwrite==false
     // <group>
-    void create (const Path& target, Bool overwrite = True);
-    void create (const String& target, Bool overwrite = True);
+    void create (const Path& target, bool overwrite = true);
+    void create (const String& target, bool overwrite = true);
     // </group>
 
     // Copy the symlink to the target path using the system command cp.
     // The target path can be a directory or a file (as in cp).
     // An exception is thrown if:
     // <br>- the target directory is not writable
-    // <br>- or the target file already exists and overwrite==False
+    // <br>- or the target file already exists and overwrite==false
     // <br>- or the target file already exists and is not writable
     // <group>
-    void copy (const Path& target, Bool overwrite = True) const;
-    void copy (const String& target, Bool overwrite = True) const;
+    void copy (const Path& target, bool overwrite = true) const;
+    void copy (const String& target, bool overwrite = true) const;
     // </group>
 
     // Move the symlink to the target path using the system command mv.
     // The target path can be a directory or a file (as in mv).
     // An exception is thrown if:
     // <br>- the target directory is not writable
-    // <br>- or the target file already exists and overwrite==False
+    // <br>- or the target file already exists and overwrite==false
     // <br>- or the target file already exists and is not writable
     // <group>
-    void move (const Path& target, Bool overwrite = True);
-    void move (const String& target, Bool overwrite = True);
+    void move (const Path& target, bool overwrite = true);
+    void move (const String& target, bool overwrite = true);
     // </group>
 
     // Remove a symbolic link.
@@ -183,15 +183,15 @@ private:
 };
 
 
-inline void SymLink::create (const String& target, Bool overwrite)
+inline void SymLink::create (const String& target, bool overwrite)
 {
     create (Path(target), overwrite);
 }
-inline void SymLink::copy (const String& target, Bool overwrite) const
+inline void SymLink::copy (const String& target, bool overwrite) const
 {
     copy (Path(target), overwrite);
 }
-inline void SymLink::move (const String& target, Bool overwrite)
+inline void SymLink::move (const String& target, bool overwrite)
 {
     move (Path(target), overwrite);
 }

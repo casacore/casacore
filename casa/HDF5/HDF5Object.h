@@ -37,7 +37,7 @@
 # include <hdf5.h>
 #else 
   typedef int64_t hid_t;
-  typedef casacore::uInt64 hsize_t;
+  typedef uint32_t64 hsize_t;
 #endif
 
 
@@ -77,7 +77,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual ~HDF5Object();
 
     // Check if there is HDF5 support compiled in.
-    static Bool hasHDF5Support();
+    static bool hasHDF5Support();
 
     // Close the hid if valid.
     virtual void close() = 0;

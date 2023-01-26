@@ -39,7 +39,7 @@
 
 #include <casacore/casa/namespace.h>
 int main() {
-  PoissonFunction<Double> null;
+  PoissonFunction<double> null;
   AlwaysAssertExit(null.lambda() == 1.0 && null.height() == 1.0);
 
   const float ERROR_TOL = .00001;
@@ -48,31 +48,31 @@ int main() {
   cout << "Name of function: " << null.name() << endl; 
   AlwaysAssertExit(null.name() == "poisson");
 
-  PoissonFunction<Double> poisson1(4.0, 2.0);
+  PoissonFunction<double> poisson1(4.0, 2.0);
   AlwaysAssertExit(poisson1.lambda() == 4.0 && poisson1.height()==2.0);
-  const PoissonFunction<Double> &cpoisson1 = poisson1;
+  const PoissonFunction<double> &cpoisson1 = poisson1;
   AlwaysAssertExit(cpoisson1.lambda() == 4.0 && cpoisson1.height()==2.0 );
   poisson1.setLambda(2.0);
   poisson1.setHeight(3.0);
-  AlwaysAssertExit(poisson1[PoissonFunction<Double>::LAMBDA] == 2.0 );
-  AlwaysAssertExit(poisson1[PoissonFunction<Double>::HEIGHT] == 3.0 );
-  poisson1[PoissonFunction<Double>::LAMBDA] = 3.0;
-  poisson1[PoissonFunction<Double>::HEIGHT] = 2.0;
+  AlwaysAssertExit(poisson1[PoissonFunction<double>::LAMBDA] == 2.0 );
+  AlwaysAssertExit(poisson1[PoissonFunction<double>::HEIGHT] == 3.0 );
+  poisson1[PoissonFunction<double>::LAMBDA] = 3.0;
+  poisson1[PoissonFunction<double>::HEIGHT] = 2.0;
   // <<
   cout << "Function Parameters: " << poisson1 << endl;
 
   AlwaysAssertExit(near(poisson1(3.0),0.4480836, ERROR_TOL ));
-  Vector<Double> xvec(1);
+  Vector<double> xvec(1);
   xvec = 5.0;
   cout << "Value at 5:      " << poisson1(xvec(0)) << endl;
 
   ///
   // Copy constructor
-  PoissonFunction<Double> pc(poisson1);
+  PoissonFunction<double> pc(poisson1);
   cout << "Copy: " << pc << "; "
 		  <<"f(5) = " << pc(xvec(0)) << endl;
 
-  PoissonFunction<Double> pcb(pc);
+  PoissonFunction<double> pcb(pc);
   cout << "Copy back: " << pcb << endl <<"f(5) = " << pcb(xvec(0)) << endl;
   AlwaysAssertExit(near(poisson1(xvec(0)), .2016376, ERROR_TOL));
   AlwaysAssertExit(near(pc(xvec(0)), .2016376, ERROR_TOL));
@@ -82,12 +82,12 @@ int main() {
   
 
   //Available parameters
-  PoissonFunction<Double> poisson2(poisson1);
-  PoissonFunction<Double> poisson3;
+  PoissonFunction<double> poisson2(poisson1);
+  PoissonFunction<double> poisson3;
   poisson3 = poisson2;
   cout << "NParameters="<<poisson1.nparameters()<<endl;
   AlwaysAssertExit(poisson1.nparameters() == 2);
-  Vector<Double> parms = poisson1.parameters().getParameters();
+  Vector<double> parms = poisson1.parameters().getParameters();
   AlwaysAssertExit(parms(0) == 3.0);
   AlwaysAssertExit(parms(1) == 2.0);
   AlwaysAssertExit(allEQ(parms, poisson2.parameters().getParameters()) &&
@@ -107,7 +107,7 @@ int main() {
   // clone();
   cout << "Original value f(1):     " << poisson1(1.0) << endl;
   AlwaysAssertExit(nearAbs(poisson1(1.0), 0.0003674374, 1e-5))
-  Function<Double> *poisson4ptr = poisson1.clone();
+  Function<double> *poisson4ptr = poisson1.clone();
   cout << "f.clone(1):              " << (*poisson4ptr)(1.0) << endl;
   AlwaysAssertExit(near(poisson1(1.0), (*poisson4ptr)(1.0)))
 

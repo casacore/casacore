@@ -88,10 +88,10 @@ void SymLink::checkPath() const
     }
 }
 
-void SymLink::create (const Path& target, Bool overwrite)
+void SymLink::create (const Path& target, bool overwrite)
 {
     
-    // If overwrite is False the file will not be overwritten.
+    // If overwrite is false the file will not be overwritten.
     if (exists()) {
 	if (!isSymLink()) {
 	    throw (AipsError ("SymLink::create: " +
@@ -118,7 +118,7 @@ void SymLink::remove()
     unlink (path().expandedName().chars());
 }
 
-void SymLink::copy (const Path& target, Bool overwrite) const
+void SymLink::copy (const Path& target, bool overwrite) const
 {
     Path targetName(target);
     checkTarget (targetName, overwrite);
@@ -126,19 +126,19 @@ void SymLink::copy (const Path& target, Bool overwrite) const
     // that copies the file the symlink is pointing to and
     // refuses to copy when it points to a directory.
     File targetFile(targetName);
-    if (targetFile.isRegular (False)) {
+    if (targetFile.isRegular (false)) {
 	RegularFile(targetFile).remove();
     }
     SymLink newLink(targetFile);
     newLink.create (getSymLink());
 }
 
-void SymLink::move (const Path& target, Bool overwrite)
+void SymLink::move (const Path& target, bool overwrite)
 {
     Path targetName(target);
     checkTarget (targetName, overwrite);
     File targetFile(targetName);
-    if (targetFile.isRegular (False)) {
+    if (targetFile.isRegular (false)) {
 	RegularFile(targetFile).remove();
     }
     SymLink newLink(targetFile);
@@ -176,7 +176,7 @@ Path SymLink::followSymLink() const
     // Do it max. 25 times to avoid endless loops.
     Path result;
     File file(*this);
-    Int count = 0;
+    int32_t count = 0;
     do {
 	if (++count > 25) {
 	    throw (AipsError ("SymLink: resolving " + path().expandedName() +

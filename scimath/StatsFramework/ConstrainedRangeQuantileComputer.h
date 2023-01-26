@@ -39,7 +39,7 @@ namespace casacore {
 // QuantileComputer classes.
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool*,
+    class AccumType, class DataIterator, class MaskIterator=const bool*,
     class WeightsIterator=DataIterator
 >
 class ConstrainedRangeQuantileComputer
@@ -68,14 +68,14 @@ public:
     // Caller is responsible for passing correct values of mynpts, mymin, and
     // mymax; no checking is done for correctness in this method.
     virtual AccumType getMedian(
-        uInt64 mynpts, AccumType mymin, AccumType mymax,
-        uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
+        uint64_t mynpts, AccumType mymin, AccumType mymax,
+        uint32_t binningThreshholdSizeBytes, bool persistSortedArray, uint32_t nBins
     );
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
-        uInt64 mynpts, AccumType mymin, AccumType mymax,
-        uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
+        uint64_t mynpts, AccumType mymin, AccumType mymax,
+        uint32_t binningThreshholdSizeBytes, bool persistSortedArray, uint32_t nBins
     );
 
     void setRange(const std::pair<AccumType, AccumType>& r) {
@@ -87,75 +87,75 @@ protected:
     // <group>
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
         const std::vector<StatsHistogram<AccumType> >& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride,
+        uint64_t nr, uint32_t dataStride,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const ;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
         const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude,
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude,
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude,
         const std::vector<StatsHistogram<AccumType> >& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const std::vector<StatsHistogram<AccumType> >& binDesc,
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const std::vector<StatsHistogram<AccumType> >& binDesc,
         const std::vector<AccumType>& maxLimit
     ) const;
     // </group>
@@ -171,182 +171,182 @@ protected:
 
     // no weights, no mask, no ranges
     virtual void _populateArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride
     ) const;
 
     // ranges
     virtual void _populateArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const DataRanges& ranges, Bool isInclude
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _populateArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
 
     // mask and ranges
     virtual void _populateArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     // weights
     virtual void _populateArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     // weights and ranges
     virtual void _populateArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     // weights and mask
     virtual void _populateArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
 
     // weights, mask, ranges
     virtual void _populateArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     // no weights, no mask, no ranges
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const IncludeLimits& includeLimits, uInt64 maxCount
+        std::vector<DataArray>& arys, uint64_t& currentCount,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
 
     // ranges
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude,
-        const IncludeLimits& includeLimits, uInt64 maxCount
+        std::vector<DataArray>& arys, uint64_t& currentCount,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude,
+        const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
 
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const IncludeLimits& includeLimits, uInt64 maxCount
+        std::vector<DataArray>& arys, uint64_t& currentCount,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
 
     // mask and ranges
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude,
-        const IncludeLimits& includeLimits, uInt64 maxCount
+        std::vector<DataArray>& arys, uint64_t& currentCount,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude,
+        const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
 
     // weights
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
+        std::vector<DataArray>& arys, uint64_t& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const IncludeLimits& includeLimits,
-        uInt64 maxCount
+        uint64_t nr, uint32_t dataStride, const IncludeLimits& includeLimits,
+        uint64_t maxCount
     ) const;
 
     // weights and ranges
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
+        std::vector<DataArray>& arys, uint64_t& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-        const IncludeLimits& includeLimits, uInt64 maxCount
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude,
+        const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
 
     // weights and mask
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
+        std::vector<DataArray>& arys, uint64_t& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const IncludeLimits& includeLimits, uInt64 maxCount
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
 
     // weights, mask, ranges
     virtual void _populateArrays(
-        std::vector<DataArray>& arys, uInt64& currentCount,
+        std::vector<DataArray>& arys, uint64_t& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude,
-        const IncludeLimits& includeLimits, uInt64 maxCount
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude,
+        const IncludeLimits& includeLimits, uint64_t maxCount
     ) const;
     // </group>
 
     // <group>
     // no weights, no mask, no ranges
-    virtual Bool _populateTestArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, uInt maxElements
+    virtual bool _populateTestArray(
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, uint32_t maxElements
     ) const;
 
     // ranges
-    virtual Bool _populateTestArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const DataRanges& ranges, Bool isInclude,
-        uInt maxElements
+    virtual bool _populateTestArray(
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const DataRanges& ranges, bool isInclude,
+        uint32_t maxElements
     ) const;
 
     // mask
-    virtual Bool _populateTestArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        uInt maxElements
+    virtual bool _populateTestArray(
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+        uint32_t maxElements
     ) const;
 
     // mask and ranges
-    virtual Bool _populateTestArray(
-        DataArray& ary, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude, uInt maxElements
+    virtual bool _populateTestArray(
+        DataArray& ary, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude, uint32_t maxElements
     ) const;
 
     // weights
-    virtual Bool _populateTestArray(
+    virtual bool _populateTestArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        uInt maxElements
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        uint32_t maxElements
     ) const;
 
     // weights and ranges
-    virtual Bool _populateTestArray(
+    virtual bool _populateTestArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude, uInt maxElements
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude, uint32_t maxElements
     ) const;
 
     // weights and mask
-    virtual Bool _populateTestArray(
+    virtual bool _populateTestArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride, uInt maxElements
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride, uint32_t maxElements
     ) const;
 
     // weights, mask, ranges
-    virtual Bool _populateTestArray(
+    virtual bool _populateTestArray(
         DataArray& ary, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude, uInt maxElements
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude, uint32_t maxElements
     ) const;
     // </group>
 
 private:
 
-    Bool _doMedAbsDevMed{False};
+    bool _doMedAbsDevMed{false};
     // for use in macros of often repeatedly run methods
     AccumType _myMedian{0};
     std::pair<AccumType, AccumType> _range{};

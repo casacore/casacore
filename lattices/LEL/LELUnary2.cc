@@ -34,7 +34,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELUnaryBool::LELUnaryBool(const LELUnaryEnums::Operation op,
-			   const CountedPtr<LELInterface<Bool> >& pExpr)
+			   const CountedPtr<LELInterface<bool> >& pExpr)
 : op_p(op), pExpr_p(pExpr)
 {
    setAttr(pExpr_p->getAttribute());
@@ -52,7 +52,7 @@ LELUnaryBool::~LELUnaryBool()
 }
 
 
-void LELUnaryBool::eval(LELArray<Bool>& result,
+void LELUnaryBool::eval(LELArray<bool>& result,
 			const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -64,7 +64,7 @@ void LELUnaryBool::eval(LELArray<Bool>& result,
    switch(op_p) {
    case LELUnaryEnums::NOT :
    {
-      Array<Bool> tmp(!result.value());
+      Array<bool> tmp(!result.value());
       result.value().reference(tmp);
       break;
    }
@@ -73,13 +73,13 @@ void LELUnaryBool::eval(LELArray<Bool>& result,
    }
 }
 
-LELScalar<Bool> LELUnaryBool::getScalar() const
+LELScalar<bool> LELUnaryBool::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnaryBool::getScalar" << endl;
 #endif
 
-   LELScalar<Bool> temp (pExpr_p->getScalar());
+   LELScalar<bool> temp (pExpr_p->getScalar());
    switch(op_p) {
    case LELUnaryEnums::NOT :
       temp.value() =  (!(temp.value()));
@@ -90,13 +90,13 @@ LELScalar<Bool> LELUnaryBool::getScalar() const
    return temp;
 }
 
-Bool LELUnaryBool::prepareScalarExpr()
+bool LELUnaryBool::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELUnaryBool::prepare" << endl;
 #endif
 
-   return LELInterface<Bool>::replaceScalarExpr (pExpr_p);
+   return LELInterface<bool>::replaceScalarExpr (pExpr_p);
 }
 
 String LELUnaryBool::className() const
@@ -105,7 +105,7 @@ String LELUnaryBool::className() const
 }
 
 
-Bool LELUnaryBool::lock (FileLocker::LockType type, uInt nattempts)
+bool LELUnaryBool::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return pExpr_p->lock (type, nattempts);
 }
@@ -113,7 +113,7 @@ void LELUnaryBool::unlock()
 {
     pExpr_p->unlock();
 }
-Bool LELUnaryBool::hasLock (FileLocker::LockType type) const
+bool LELUnaryBool::hasLock (FileLocker::LockType type) const
 {
     return pExpr_p->hasLock (type);
 }

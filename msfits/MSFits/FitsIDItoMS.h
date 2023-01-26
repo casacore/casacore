@@ -128,8 +128,8 @@ public:
   //
 
   FITSIDItoMS1(FitsInput& in, const String& correlat,
-	       const Int& obsType=0, const Bool& initFirstMain=True,
-	       const Float& vanVleck=0.0, const Int& zeroPad=0);
+	       const int32_t& obsType=0, const bool& initFirstMain=true,
+	       const float& vanVleck=0.0, const int32_t& zeroPad=0);
 
   ~FITSIDItoMS1();
   
@@ -153,32 +153,32 @@ public:
   void fillFeedTable();
   
   //fill the Field table
-  //void fillFieldTable(Int nField);
+  //void fillFieldTable(int32_t nField);
   void fillFieldTable();
   
   //fill the Spectral Window table with the content of FREQUENCY
   void fillSpectralWindowTable();
   
   //fill the optional Correlator Model table with the content of INTERFEROMETER_MODEL
-  Bool fillCorrelatorModelTable();
+  bool fillCorrelatorModelTable();
 
   //fill the optional SysCal table with the content of SYSTEM_TEMPERATURE
-  Bool fillSysCalTable();
+  bool fillSysCalTable();
 
   //fill the optional FlagCmd table with the content of FLAG
-  Bool fillFlagCmdTable();
+  bool fillFlagCmdTable();
 
   //fill the optional Weather table with the content of WEATHER
-  Bool fillWeatherTable();
+  bool fillWeatherTable();
 
   //store the information from the GAIN_CURVE table in a calibration table
-  Bool handleGainCurve();
+  bool handleGainCurve();
 
   //store the information from the PHASE-CAL table in a calibration table
-  Bool handlePhaseCal();
+  bool handlePhaseCal();
 
   //store the information from the MODEL_COMPS table 
-  Bool handleModelComps();
+  bool handleModelComps();
 
   // fix up the EPOCH MEASURE_REFERENCE keywords
   void fixEpochReferences();
@@ -216,31 +216,31 @@ public:
   const Table &nextRow();
   
   // Get the version of the archived MS. 
-  Float msVersion() const
+  float msVersion() const
   { return itsVersion; }
   
   // Read all the data from the FITS file and create the MeasurementSet. Throws
   // an exception when it has severe trouble interpreting the FITS file.
-  // Returns False if it encounters an unsupported extension.
-  Bool readFitsFile(const String& msFile);
+  // Returns false if it encounters an unsupported extension.
+  bool readFitsFile(const String& msFile);
   
   //is this the first UV_DATA extension
-  Bool isfirstMain(){return firstMain;}
+  bool isfirstMain(){return firstMain;}
   
 protected:
   // Read the axis info, throws an exception if required axes are missing.
   void getAxisInfo();
   
   // Set up the MeasurementSet, including StorageManagers and fixed columns.
-  // If useTSM is True, the Tiled Storage Manager will be used to store
+  // If useTSM is true, the Tiled Storage Manager will be used to store
   // DATA, FLAG and WEIGHT_SPECTRUM
-  void setupMeasurementSet(const String& MSFileName, Bool useTSM=True, 
-			   Bool mainTbl=False, Bool addCorrMod=False,
-			   Bool addSyscal=False, Bool addWeather=False,
-			   Bool addGainCurve=False, Bool addPhaseCal=False);
+  void setupMeasurementSet(const String& MSFileName, bool useTSM=true, 
+			   bool mainTbl=false, bool addCorrMod=false,
+			   bool addSyscal=false, bool addWeather=false,
+			   bool addGainCurve=false, bool addPhaseCal=false);
   
   // Fill the main table from the Primary group data
-  void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
+  void fillMSMainTable(const String& MSFileName, int32_t& nField, int32_t& nSpW);
   
  private:
   //
@@ -252,10 +252,10 @@ protected:
   
   // The number of elements for each column of the
   // BinaryTableExtension
-  Vector<Int> itsNelem;
+  Vector<int32_t> itsNelem;
   
   // For each column: is it an array?
-  Vector<Bool> itsIsArray; 
+  Vector<bool> itsIsArray; 
   
   // Table keyword set
   TableRecord itsKwSet;
@@ -267,58 +267,58 @@ protected:
   TableInfo itsTableInfo;
   
   // The MS version.
-  Float itsVersion;
+  float itsVersion;
   
   //
   // Buffer for storing the MSK's, MS-specific FITS keywords.
   //
-  uInt itsNrMSKs;
+  uint32_t itsNrMSKs;
   Vector<String> itsMSKC;
   Vector<String> itsMSKN;
   Vector<String> itsMSKV;
-  Vector<Bool>   itsgotMSK;
+  Vector<bool>   itsgotMSK;
   
   
   //# FitsInput &infile_p;
   String msFile_p;
-  Vector<Int> nPixel_p,corrType_p;
-  Block<Int> corrIndex_p, corrSwapIndex_p;
-  Matrix<Int> corrProduct_p;
+  Vector<int32_t> nPixel_p,corrType_p;
+  Block<int32_t> corrIndex_p, corrSwapIndex_p;
+  Matrix<int32_t> corrProduct_p;
   Vector<String> coordType_p;
-  Vector<Double> refVal_p, refPix_p, delta_p; 
+  Vector<double> refVal_p, refPix_p, delta_p; 
   static String array_p;
   String object_p,timsys_p;
-  Double epoch_p;
-  static Double rdate;
-  Int nAnt_p;
-  Vector<Double> receptorAngle_p;
+  double epoch_p;
+  static double rdate;
+  int32_t nAnt_p;
+  Vector<double> receptorAngle_p;
   MFrequency::Types freqsys_p;
-  Double restfreq_p;
+  double restfreq_p;
   LogIO* itsLog;
-  //# Int nIF_p;
-  Double startTime_p;
-  Double lastTime_p;
-  Int itsObsType;
+  //# int32_t nIF_p;
+  double startTime_p;
+  double lastTime_p;
+  int32_t itsObsType;
   String itsCorrelat;
-  Float itsVanVleck;
-  Int itsZeroPad;
+  float itsVanVleck;
+  int32_t itsZeroPad;
   MeasurementSet ms_p;
   MSColumns* msc_p;
-  static Bool firstMain;
-  static Bool firstSyscal;
-  static Bool firstWeather;
-  static Bool firstGainCurve;
-  static Bool firstPhaseCal;
-  Bool weather_hasWater_p;
-  Bool weather_hasElectron_p;
-  Bool uv_data_hasWeights_p;
-  Bool weightypKwPresent_p;
+  static bool firstMain;
+  static bool firstSyscal;
+  static bool firstWeather;
+  static bool firstGainCurve;
+  static bool firstPhaseCal;
+  bool weather_hasWater_p;
+  bool weather_hasElectron_p;
+  bool uv_data_hasWeights_p;
+  bool weightypKwPresent_p;
   String weightyp_p;
-  Int nStokes_p;
-  Int nBand_p;
-  static std::map<Int,Int> antIdFromNo;
-  static std::map<Int,Int> digiLevels;
-  static Vector<Double> effChBw;
+  int32_t nStokes_p;
+  int32_t nBand_p;
+  static std::map<int32_t,int32_t> antIdFromNo;
+  static std::map<int32_t,int32_t> digiLevels;
+  static Vector<double> effChBw;
 
   //
   //# Member Functions

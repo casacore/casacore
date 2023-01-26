@@ -32,7 +32,7 @@
 
 int main ()
 {
-    const Int ntests = 32;
+    const int32_t ntests = 32;
     String p[ntests];
     p[0]  = "^().+|$";
     p[1]  = "\\,";

@@ -37,14 +37,14 @@ using namespace std;
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void TableParseGroupby::handleGroupby
-  (const std::vector<TableExprNode>& nodes, Bool rollup)
+  (const std::vector<TableExprNode>& nodes, bool rollup)
   {
     itsGroupbyNodes  = nodes;
     itsGroupbyRollup = rollup;
     if (rollup) {
       throw TableInvExpr ("ROLLUP is not supported yet in the GROUPBY");
     }
-    for (uInt i=0; i<nodes.size(); ++i) {
+    for (uint32_t i=0; i<nodes.size(); ++i) {
       checkAggrFuncs (nodes[i]);
       if (! nodes[i].isScalar()) {
         throw TableInvExpr("GROUPBY column/expression must result in a scalar value");
@@ -61,7 +61,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void TableParseGroupby::findGroupAggr
-  (const Block<TableExprNode>& columnNodes, Bool isSelect)
+  (const Block<TableExprNode>& columnNodes, bool isSelect)
   {
     itsGroupAggrUsed = 0;
     // Make sure main (where) node does not have aggregate functions.
@@ -69,10 +69,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     std::vector<TableExprNodeRep*> aggr;
     // Get possible aggregate functions used in column nodes and HAVING.
     // Note that column nodes are also used by UPDATE and INSERT commands.
-    for (uInt i=0; i<columnNodes.size(); ++i) {
+    for (uint32_t i=0; i<columnNodes.size(); ++i) {
       getAggrNodes (columnNodes[i], aggr);
     }
-    uInt nselAggr = aggr.size();
+    uint32_t nselAggr = aggr.size();
     if (! itsHavingNode.isNull()) {
       getAggrNodes (itsHavingNode, aggr);
     }
@@ -103,14 +103,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsAggrNodes = aggr;
   }
 
-  uInt TableParseGroupby::disableApplySelection()
+  uint32_t TableParseGroupby::disableApplySelection()
   {
     // Column nodes used in aggregate functions should not adhere applySelection.
-    uInt ndis = 0;
-    for (uInt i=0; i<itsAggrNodes.size(); ++i) {
+    uint32_t ndis = 0;
+    for (uint32_t i=0; i<itsAggrNodes.size(); ++i) {
       std::vector<TableExprNodeRep*> colNodes =
         TableExprNodeUtil::getColumnNodes (itsAggrNodes[i]);
-      for (uInt j=0; j<colNodes.size(); ++j) {
+      for (uint32_t j=0; j<colNodes.size(); ++j) {
         colNodes[j]->disableApplySelection();
         ndis++;
       }
@@ -145,11 +145,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return aggregate (rownrs);
   }
 
-  Bool TableParseGroupby::execHaving
+  bool TableParseGroupby::execHaving
   (Vector<rownr_t>& rownrs, const CountedPtr<TableExprGroupResult>& groups)
   {
     if (itsHavingNode.isNull()) {
-      return False;
+      return false;
     }
     // Find the rows matching the HAVING expression.
     Vector<rownr_t> resRownrs(rownrs.size());
@@ -162,9 +162,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     // Use the found rows from now on.
-    resRownrs.resize (nr, True);
+    resRownrs.resize (nr, true);
     rownrs.reference (resRownrs);
-    return True;
+    return true;
   }
 
   CountedPtr<TableExprGroupResult> TableParseGroupby::aggregate
@@ -173,7 +173,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the aggregate functions to be evaluated lazily.
     std::vector<TableExprNodeRep*> immediateNodes;
     std::vector<TableExprNodeRep*> lazyNodes;
-    for (uInt i=0; i<itsAggrNodes.size(); ++i) {
+    for (uint32_t i=0; i<itsAggrNodes.size(); ++i) {
       itsAggrNodes[i]->makeGroupAggrFunc();
       if (itsAggrNodes[i]->isLazyAggregate()) {
         lazyNodes.push_back (itsAggrNodes[i]);
@@ -181,7 +181,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         immediateNodes.push_back (itsAggrNodes[i]);
       }
     }
-    uInt nimmediate = immediateNodes.size();
+    uint32_t nimmediate = immediateNodes.size();
     // For lazy nodes a vector of TableExprId-s needs to be filled per group.
     // So add a node collecting the ids.
     // Note that this node must be alive after the if, so define outside if.
@@ -190,7 +190,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                  TableExprNodeRep::VTArray,
                                  TableExprNodeSet(),
                                  std::vector<TENShPtr>(),
-                                 Block<Int>());
+                                 Block<int32_t>());
     if (! lazyNodes.empty()) {
       immediateNodes.push_back (&expridNode);
     }
@@ -198,10 +198,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Use a faster way for a single groupby key.
     if (itsGroupbyNodes.size() == 1  &&
         itsGroupbyNodes[0].dataType() == TpDouble) {
-      funcSets = singleKey<Double> (immediateNodes, rownrs);
+      funcSets = singleKey<double> (immediateNodes, rownrs);
     } else if (itsGroupbyNodes.size() == 1  &&
                itsGroupbyNodes[0].dataType() == TpInt) {
-      funcSets = singleKey<Int64> (immediateNodes, rownrs);
+      funcSets = singleKey<int64_t> (immediateNodes, rownrs);
     } else {
       funcSets = multiKey (immediateNodes, rownrs);
     }
@@ -212,10 +212,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     std::vector<CountedPtr<std::vector<TableExprId> > > ids;
     ids.reserve (funcSets.size());
     rownr_t n=0;
-    for (uInt i=0; i<funcSets.size(); ++i) {
+    for (uint32_t i=0; i<funcSets.size(); ++i) {
       const std::vector<CountedPtr<TableExprGroupFuncBase> >& funcs
         = funcSets[i]->getFuncs();
-      for (uInt j=0; j<funcs.size(); ++j) {
+      for (uint32_t j=0; j<funcs.size(); ++j) {
         funcs[j]->finish();
       }
       resRownrs[n++] = funcSets[i]->getId().rownr();
@@ -263,7 +263,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // A map<key,int> is used to keep track of the results where the int
     // is the index in a vector of a set of aggregate function objects.
     std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
-    std::map<TableExprGroupKeySet, Int> keyFuncMap;
+    std::map<TableExprGroupKeySet, int32_t> keyFuncMap;
     // Create the set of groupby key objects.
     TableExprGroupKeySet keySet(itsGroupbyNodes);
     // Loop through all rows.
@@ -272,8 +272,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (rownr_t i=0; i<rownrs.size(); ++i) {
       rowid.setRownr (rownrs[i]);
       keySet.fill (itsGroupbyNodes, rowid);
-      Int groupnr = funcSets.size();
-      std::map<TableExprGroupKeySet, Int>::iterator iter=keyFuncMap.find (keySet);
+      int32_t groupnr = funcSets.size();
+      std::map<TableExprGroupKeySet, int32_t>::iterator iter=keyFuncMap.find (keySet);
       if (iter == keyFuncMap.end()) {
         keyFuncMap[keySet] = groupnr;
         funcSets.push_back (new TableExprGroupFuncSet (nodes));

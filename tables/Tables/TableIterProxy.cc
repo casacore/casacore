@@ -33,17 +33,17 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableIterProxy::TableIterProxy()
-: firstTime_p (True)
+: firstTime_p (true)
 {}
 
 TableIterProxy::TableIterProxy (const TableProxy& tab,
 				const Vector<String>& columns,
 				const String& order, const String& sortType,
-                                const Vector<Double>& iterSteps)
-: firstTime_p (True)
+                                const Vector<double>& iterSteps)
+: firstTime_p (true)
 {
   Block<String> names(columns.nelements());
-  for (uInt i=0; i<names.nelements(); i++) {
+  for (uint32_t i=0; i<names.nelements(); i++) {
     names[i] = columns(i);
   }
   String corder(order);
@@ -79,15 +79,15 @@ TableIterProxy::TableIterProxy (const TableProxy& tab,
 
 void TableIterProxy::makeStepIter (const Table& tab,
                                    const Block<String>& columns,
-                                   const Vector<Double>& iterSteps,
+                                   const Vector<double>& iterSteps,
                                    TableIterator::Order order,
                                    TableIterator::Option option)
 {
   // First determine if all columns are scalar and have a valid data type.
   // Also find out if a case-insenstive string comparison is needed.
   Block<CountedPtr<BaseCompare> > comps(columns.size());
-  Block<Int> orders (columns.size(), order);
-  for (uInt i=0; i<iterSteps.size(); ++i) {
+  Block<int32_t> orders (columns.size(), order);
+  for (uint32_t i=0; i<iterSteps.size(); ++i) {
     if (i < columns.size()  &&  iterSteps[i] > 0) {
       const ColumnDesc& colDesc = tab.tableDesc()[columns[i]];
       if (! colDesc.isScalar()) {
@@ -121,56 +121,56 @@ void TableIterProxy::makeStepIter (const Table& tab,
     Table sortab = tab.sort (columns, comps, orders, option);
   }
   // Now see if an interval comparison has to be done when iterating.
-  for (uInt i=0; i<iterSteps.size(); ++i) {
+  for (uint32_t i=0; i<iterSteps.size(); ++i) {
     if (i < columns.size()  &&  iterSteps[i] > 0) {
       DataType dtype = sortab.tableDesc()[columns[i]].dataType();
       switch (dtype) {
       case TpUChar:
         {
-          uChar start = ScalarColumn<uChar>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<uChar>(iterSteps[i], start);
+          unsigned char start = ScalarColumn<unsigned char>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<unsigned char>(iterSteps[i], start);
         }
         break;
       case TpShort:
         {
-          Short start = ScalarColumn<Short>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<Short>(iterSteps[i], start);
+          int16_t start = ScalarColumn<int16_t>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<int16_t>(iterSteps[i], start);
         }
         break;
       case TpUShort:
         {
-          uShort start = ScalarColumn<uShort>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<uShort>(iterSteps[i], start);
+          uint16_t start = ScalarColumn<uint16_t>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<uint16_t>(iterSteps[i], start);
         }
         break;
       case TpInt:
         {
-          Int start = ScalarColumn<Int>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<Int>(iterSteps[i], start);
+          int32_t start = ScalarColumn<int32_t>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<int32_t>(iterSteps[i], start);
         }
         break;
       case TpUInt:
         {
-          uInt start = ScalarColumn<uInt>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<uInt>(iterSteps[i], start);
+          uint32_t start = ScalarColumn<uint32_t>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<uint32_t>(iterSteps[i], start);
         }
         break;
       case TpInt64:
         {
-          Int64 start = ScalarColumn<Int64>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<Int64>(iterSteps[i], start);
+          int64_t start = ScalarColumn<int64_t>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalInt<int64_t>(iterSteps[i], start);
         }
         break;
       case TpFloat:
         {
-          Float start = ScalarColumn<Float>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalReal<Float>(iterSteps[i], start);
+          float start = ScalarColumn<float>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalReal<float>(iterSteps[i], start);
         }
         break;
       case TpDouble:
         {
-          Double start = ScalarColumn<Double>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalReal<Double>(iterSteps[i], start);
+          double start = ScalarColumn<double>(sortab, columns[i])(0);
+          comps[i] = new CompareIntervalReal<double>(iterSteps[i], start);
         }
         break;
       default:
@@ -200,26 +200,26 @@ TableIterProxy& TableIterProxy::operator= (const TableIterProxy& that)
   return *this;
 }
 
-Bool TableIterProxy::nextPart (TableProxy& table)
+bool TableIterProxy::nextPart (TableProxy& table)
 {
   // The first iteration is already done by the TableIterator constructor.
   if (firstTime_p) {
-    firstTime_p = False;
+    firstTime_p = false;
   } else {
     iter_p.next();
   }
   // Exit when no more subtables.
   if (iter_p.pastEnd()) {
-    return False;
+    return false;
   }
   table = TableProxy (iter_p.table());
-  return True;
+  return true;
 }
 
 TableProxy TableIterProxy::next()
 {
   TableProxy tp;
-  Bool ok = nextPart (tp);
+  bool ok = nextPart (tp);
   if (ok) {
     return tp;
   }
@@ -229,7 +229,7 @@ TableProxy TableIterProxy::next()
 void TableIterProxy::reset()
 {
   iter_p.reset();
-  firstTime_p = True;
+  firstTime_p = true;
 }
 
 

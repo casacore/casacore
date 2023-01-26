@@ -62,7 +62,7 @@ void writeFixed (const TSMOption& tsmOpt)
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1, ColumnDesc::FixedShape));
     td.addColumn (ScalarColumnDesc<float> ("Time"));
     td.addColumn (ArrayColumnDesc<Complex>("Data", 2, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", 2, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<bool>   ("Flag", 2, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,25),
 					   ColumnDesc::FixedShape));
     td.defineHypercolumn ("TSMExample",
@@ -79,7 +79,7 @@ void writeFixed (const TSMOption& tsmOpt)
     newtab.setShapeColumn ("Data", IPosition(2,16,25));
     newtab.setShapeColumn ("Flag", IPosition(2,16,25));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -90,19 +90,19 @@ void writeFixed (const TSMOption& tsmOpt)
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<Complex> data (table, "Data");
-    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<bool> flag (table, "Flag");
     ArrayColumn<float> weight (table, "Weight");
     ScalarColumn<float> time (table, "Time");
     Matrix<Complex> darray(IPosition(2,16,25));
-    Matrix<Bool> farray(IPosition(2,16,25));
+    Matrix<bool> farray(IPosition(2,16,25));
     Matrix<float> warray(IPosition(2,16,25));
     Matrix<Complex> dresult(IPosition(2,16,25));
-    Matrix<Bool> fresult(IPosition(2,16,25));
+    Matrix<bool> fresult(IPosition(2,16,25));
     Matrix<float> wresult(IPosition(2,16,25));
     indgen (darray);
     indgen (warray);
-    for (uInt i=0; i<101; i++) {
-        for (uInt j=0; j<farray.nelements(); ++j) {
+    for (uint32_t i=0; i<101; i++) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	table.addRow();
@@ -121,8 +121,8 @@ void writeFixed (const TSMOption& tsmOpt)
     indgen (freqValues, float(200));
     indgen (polValues, float(300));
     timeValue = 34;
-    for (uInt i=0; i<table.nrow(); i++) {
-        for (uInt j=0; j<farray.nelements(); ++j) {
+    for (uint32_t i=0; i<table.nrow(); i++) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	data.get (i, dresult);
@@ -196,23 +196,23 @@ void readTable (const IPosition& dwShape, const TSMOption& tsmOpt)
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<Complex> data (table, "Data");
-    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<bool> flag (table, "Flag");
     ArrayColumn<float> weight (table, "Weight");
     ScalarColumn<float> time (table, "Time");
     float timeValue;
     timeValue = 34;
-    for (uInt i=0; i<table.nrow(); i++) {
+    for (uint32_t i=0; i<table.nrow(); i++) {
 	Array<Complex> dresult(dwShape);
-	Array<Bool> fresult(dwShape);
+	Array<bool> fresult(dwShape);
 	Array<float> wresult(dwShape);
 	data.get (i, dresult);
 	flag.get (i, fresult);
 	weight.get (i, wresult);
 	Array<Complex> darray(dresult.shape());
-	Array<Bool> farray(fresult.shape());
+	Array<bool> farray(fresult.shape());
 	Array<float> warray(wresult.shape());
 	indgen (darray, float(i)*Complex(100,10));
-        for (uInt j=0; j<farray.nelements(); ++j) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	indgen (warray, i*float(200));
@@ -255,7 +255,7 @@ void writeVar(const TSMOption& tsmOpt)
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1));
     td.addColumn (ScalarColumnDesc<float> ("Time"));
     td.addColumn (ArrayColumnDesc<Complex>("Data", 2));
-    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", 2));
+    td.addColumn (ArrayColumnDesc<bool>   ("Flag", 2));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", 2));
     td.defineHypercolumn ("TSMExample",
 			  3,
@@ -268,7 +268,7 @@ void writeVar(const TSMOption& tsmOpt)
     // Let the tile shape fit integrally in the cube shape.
     TiledShapeStMan sm1 ("TSMExample", IPosition(2,4,5));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::BigEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -277,17 +277,17 @@ void writeVar(const TSMOption& tsmOpt)
     float timeValue;
     timeValue = 34;
     ArrayColumn<Complex> data (table, "Data");
-    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<bool> flag (table, "Flag");
     ArrayColumn<float> weight (table, "Weight");
     ScalarColumn<float> time (table, "Time");
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     Matrix<Complex> darray(IPosition(2,16,25));
-    Matrix<Bool> farray(IPosition(2,16,25));
+    Matrix<bool> farray(IPosition(2,16,25));
     Matrix<float> warray(IPosition(2,16,25));
     indgen (darray);
     indgen (warray);
-    for (uInt i=0; i<5; i++) {
+    for (uint32_t i=0; i<5; i++) {
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
 	pol.setShape (i, IPosition(1,16), IPosition(1,1));
@@ -298,7 +298,7 @@ void writeVar(const TSMOption& tsmOpt)
 	cout << "freq.isDefined=" << freq.isDefined(i) << endl;
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
-        for (uInt j=0; j<farray.nelements(); ++j) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	data.put (i, darray);
@@ -322,7 +322,7 @@ void writeFixVar(const TSMOption& tsmOpt)
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1));
     td.addColumn (ScalarColumnDesc<float> ("Time"));
     td.addColumn (ArrayColumnDesc<Complex>("Data", 2));
-    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", IPosition(2,16,25),
+    td.addColumn (ArrayColumnDesc<bool>   ("Flag", IPosition(2,16,25),
                                            ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,25),
 					   ColumnDesc::FixedShape));
@@ -337,7 +337,7 @@ void writeFixVar(const TSMOption& tsmOpt)
     // Let the tile shape match the cube shape.
     TiledShapeStMan sm1 ("TSMExample", IPosition(2,16,25));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LocalEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -346,17 +346,17 @@ void writeFixVar(const TSMOption& tsmOpt)
     float timeValue;
     timeValue = 34;
     ArrayColumn<Complex> data (table, "Data");
-    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<bool> flag (table, "Flag");
     ArrayColumn<float> weight (table, "Weight");
     ScalarColumn<float> time (table, "Time");
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     Matrix<Complex> darray(IPosition(2,16,25));
-    Matrix<Bool> farray(IPosition(2,16,25));
+    Matrix<bool> farray(IPosition(2,16,25));
     Matrix<float> warray(IPosition(2,16,25));
     indgen (darray);
     indgen (warray);
-    for (uInt i=0; i<5; i++) {
+    for (uint32_t i=0; i<5; i++) {
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
 	pol.setShape (i, IPosition(1,16), IPosition(1,1));
@@ -367,7 +367,7 @@ void writeFixVar(const TSMOption& tsmOpt)
 	cout << "freq.isDefined=" << freq.isDefined(i) << endl;
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
-        for (uInt j=0; j<farray.nelements(); ++j) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	data.put (i, darray);
@@ -391,7 +391,7 @@ void writeVarShaped(const TSMOption& tsmOpt)
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1));
     td.addColumn (ScalarColumnDesc<float> ("Time"));
     td.addColumn (ArrayColumnDesc<Complex>("Data", 2));
-    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", 2));
+    td.addColumn (ArrayColumnDesc<bool>   ("Flag", 2));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", 2));
     td.defineHypercolumn ("TSMExample",
 			  3,
@@ -403,20 +403,20 @@ void writeVarShaped(const TSMOption& tsmOpt)
     // Create a storage manager for it.
     TiledShapeStMan sm1 ("TSMExample", IPosition(2,5,6));
     newtab.bindAll (sm1);
-    Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::LittleEndian, tsmOpt);
 
     Vector<float> polValues(16);
     indgen (polValues, float(300));
     float timeValue;
     timeValue = 34;
     ArrayColumn<Complex> data (table, "Data");
-    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<bool> flag (table, "Flag");
     ArrayColumn<float> weight (table, "Weight");
     ScalarColumn<float> time (table, "Time");
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
-    for (uInt i=0; i<10; i++) {
-        uInt n2 = 10 + i%3;
+    for (uint32_t i=0; i<10; i++) {
+        uint32_t n2 = 10 + i%3;
 	table.addRow();
 	cout << " pol.isDefined=" << pol.isDefined(i) << endl;
 	pol.setShape (i, IPosition(1,16), IPosition(1,1));
@@ -428,10 +428,10 @@ void writeVarShaped(const TSMOption& tsmOpt)
 	cout << pol.shape(i) << freq.shape(i) << data.shape(i)
 	     << weight.shape(i) << endl;
 	Matrix<Complex> darray(IPosition(2,16,n2));
-	Matrix<Bool> farray(IPosition(2,16,n2));
+	Matrix<bool> farray(IPosition(2,16,n2));
 	Matrix<float> warray(IPosition(2,16,n2));
 	indgen (darray, float(i)*Complex(100, 10));
-        for (uInt j=0; j<farray.nelements(); ++j) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	indgen (warray, i*float(200));
@@ -457,7 +457,7 @@ void writeNoHyper(const TSMOption& tsmOpt)
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1, ColumnDesc::FixedShape));
     td.addColumn (ScalarColumnDesc<float> ("Time"));
     td.addColumn (ArrayColumnDesc<Complex>("Data", 2, ColumnDesc::FixedShape));
-    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", 2, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<bool>   ("Flag", 2, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,25),
 					   ColumnDesc::FixedShape));
     
@@ -471,7 +471,7 @@ void writeNoHyper(const TSMOption& tsmOpt)
     newtab.bindColumn ("Data", sm1);
     newtab.bindColumn ("Flag", sm1);
     newtab.bindColumn ("Weight", sm1);
-    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::BigEndian, tsmOpt);
 
     Vector<float> freqValues(25);
     Vector<float> polValues(16);
@@ -480,21 +480,21 @@ void writeNoHyper(const TSMOption& tsmOpt)
     float timeValue;
     timeValue = 34;
     ArrayColumn<Complex> data (table, "Data");
-    ArrayColumn<Bool> flag (table, "Flag");
+    ArrayColumn<bool> flag (table, "Flag");
     ArrayColumn<float> weight (table, "Weight");
     ScalarColumn<float> time (table, "Time");
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     Matrix<Complex> darray(IPosition(2,16,25));
-    Matrix<Bool> farray(IPosition(2,16,25));
+    Matrix<bool> farray(IPosition(2,16,25));
     Matrix<float> warray(IPosition(2,16,25));
     Matrix<Complex> dresult(IPosition(2,16,25));
-    Matrix<Bool> fresult(IPosition(2,16,25));
+    Matrix<bool> fresult(IPosition(2,16,25));
     Matrix<float> wresult(IPosition(2,16,25));
     indgen (darray);
     indgen (warray);
-    for (uInt i=0; i<101; i++) {
-        for (uInt j=0; j<farray.nelements(); ++j) {
+    for (uint32_t i=0; i<101; i++) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	table.addRow();
@@ -513,8 +513,8 @@ void writeNoHyper(const TSMOption& tsmOpt)
     indgen (freqValues, float(200));
     indgen (polValues, float(300));
     timeValue = 34;
-    for (uInt i=0; i<table.nrow(); i++) {
-        for (uInt j=0; j<farray.nelements(); ++j) {
+    for (uint32_t i=0; i<table.nrow(); i++) {
+        for (uint32_t j=0; j<farray.nelements(); ++j) {
             farray.data()[j] = ((i+j)%(i+2) == 0);
         }
 	data.get (i, dresult);
@@ -552,7 +552,7 @@ void writeFlags()
 
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
-    td.addColumn (ArrayColumnDesc<Bool>   ("Flag", 2, ColumnDesc::FixedShape));
+    td.addColumn (ArrayColumnDesc<bool>   ("Flag", 2, ColumnDesc::FixedShape));
     
     // Now create a new table from the description.
     SetupNewTable newtab("tTiledShapeStMan_tmp.data", td, Table::New);
@@ -561,19 +561,19 @@ void writeFlags()
     TiledShapeStMan sm1 ("TSMExample", IPosition(3,1,7,2));
     newtab.setShapeColumn ("Flag", IPosition(2,16,25));
     newtab.bindColumn ("Flag", sm1);
-    Table table(newtab, 0, False, Table::BigEndian, tsmOpt);
+    Table table(newtab, 0, false, Table::BigEndian, tsmOpt);
 
-    ArrayColumn<Bool> flag (table, "Flag");
-    Matrix<Bool> ones(IPosition(2,16,25));
-    Matrix<Bool> zeros(IPosition(2,16,25));
-    Matrix<Bool> fresult(IPosition(2,16,25));
+    ArrayColumn<bool> flag (table, "Flag");
+    Matrix<bool> ones(IPosition(2,16,25));
+    Matrix<bool> zeros(IPosition(2,16,25));
+    Matrix<bool> fresult(IPosition(2,16,25));
 
     table.addRow();
     table.addRow();
     table.addRow();
     table.addRow();
 
-    for (uInt j=0; j < fresult.nelements(); ++j) {
+    for (uint32_t j=0; j < fresult.nelements(); ++j) {
         zeros.data()[j] = 0;
         ones.data()[j] = 1;
     }

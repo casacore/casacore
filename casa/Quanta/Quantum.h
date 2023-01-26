@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <class T> class Quantum;
 
 //# Typedefs
-typedef Quantum<Double> Quantity;
+typedef Quantum<double> Quantity;
 
 // <summary>
 // Quantities (i.e. dimensioned values)
@@ -52,8 +52,8 @@ typedef Quantum<Double> Quantity;
 // </prerequisite>
 //
 // <etymology>
-// A Quantity is defined as a single Double value with attached units.
-// From this definition the templated Quantum class arose, to have non-Double,
+// A Quantity is defined as a single double value with attached units.
+// From this definition the templated Quantum class arose, to have non-double,
 // non-scalar quantities.  
 // </etymology>
 //
@@ -61,7 +61,7 @@ typedef Quantum<Double> Quantity;
 // Quantities are values with a unit. Their basic specification can be one of
 // two forms:
 // <srcblock>
-// Quantity( Double value, String unit);	// or: Unit unit
+// Quantity( double value, String unit);	// or: Unit unit
 // Quantum<Type> ( Type value, String unit)	// or: Unit unit
 // </srcblock>
 //
@@ -79,12 +79,12 @@ typedef Quantum<Double> Quantity;
 // if Unit specified (with exception if error) 
 // </note>
 // <note role=tip>
-// <src>'Quantum<Type>'</src> can, if Type equals Double, be replaced
+// <src>'Quantum<Type>'</src> can, if Type equals double, be replaced
 //		with 'Quantity'
 //
 // 'Type' can be any simple or non-simple arithmetic type.
 //
-// E.g. <src><Double>, <Complex>, <Vector<Double> ></src>
+// E.g. <src><double>, <Complex>, <Vector<double> ></src>
 // </note>
 // <ul>
 //   <li> <src>Quantum<Type>()			value 0 generated</src>
@@ -120,7 +120,7 @@ typedef Quantum<Double> Quantity;
 // <li> <src>< >	compare unit dimensions. Exception if no match,</src>
 //		else compare the values
 // <li> <src><= >=	ibid</src>
-// <li> pow(Int) raise to an (integer) power
+// <li> pow(int32_t) raise to an (integer) power
 // </ul>
 // 
 //
@@ -149,7 +149,7 @@ typedef Quantum<Double> Quantity;
 //
 // Quanta can be checked for having the correct unit dimensions (e.g. before
 // addition or comparing) by the following two member functions, which will
-// return a Bool value:
+// return a bool value:
 // <ul>
 //   <li> isConform(Unit unit)
 //   <li> <src>isConform(Quantum<Type> quant)</src>
@@ -225,7 +225,7 @@ typedef Quantum<Double> Quantity;
 // <linkto class=QC">QC</linkto> class for quantity constants):
 // <srcblock>
 //	#include <casacore/casa/Quanta.h>
-//	Double myval;			// keV photon energy
+//	double myval;			// keV photon energy
 //	Quantity quant(myval,"keV");	// make quantity
 //	cout << "A photon with energy " << quant << endl
 //		<< " has a frequency of "
@@ -255,9 +255,9 @@ typedef Quantum<Double> Quantity;
 //   <li> ceil 
 //   <li> floor
 //   <li> <note role=caution>
-//	It is assumed that all these functions return either Bool or
+//	It is assumed that all these functions return either bool or
 //	the same data type as inputted (i.e. QType). Special functions are
-//	provided in this module to convert Int and LogicalArray to Bool;
+//	provided in this module to convert int32_t and LogicalArray to bool;
 //	and to convert were necessary to Complex (e.g. abs(Complex)).
 //   </note>
 // </templating>
@@ -337,19 +337,19 @@ template <class Qtype> class Quantum : public QBase{
 
   // Get value in specified units.
   // If the <src>other</src> units do not conform to the units of this
-  // object and requireConform is True, an exception is thrown,
+  // object and requireConform is true, an exception is thrown,
   // with the following exceptions:
   // <br>- angle to/from time conversions are implicitly supported
   // <br>- frequency to/from/ wavelength conversions are implicitly supported
-  //# <br>Note, I added requireConform and made the default value False for
+  //# <br>Note, I added requireConform and made the default value false for
   //# backward compatibility. However, I think that ultimately requireConform
   //# should be removed and an exception should be thrown if the units do
   //# not conform. It's not clear to me why this was not in the original
   //# implementation; it's much too easy for non-conformation bugs to
   //# slip by unnoticed. - dmehring 09feb2015
   //# It should be left in since conversion from time to angle makes sense.
-  //# Maybe the default could be changed to True. - gvandiepen09feb2016
-  Qtype getValue(const Unit &other, Bool requireConform=False) const;
+  //# Maybe the default could be changed to true. - gvandiepen09feb2016
+  Qtype getValue(const Unit &other, bool requireConform=false) const;
 
   // Get the unit (as Unit) that is attached to the Quantum. (use getUnit() if
   // interested in the String part only, e.g. for output)
@@ -367,13 +367,13 @@ template <class Qtype> class Quantum : public QBase{
   // it could easily be changed. In addition recognition of date/time/angle
   // still has to be added </note>
   // <group>
-  static Bool read(Quantity &res, const String &in);
-  static Bool read(Quantity &res, MUString &in);
+  static bool read(Quantity &res, const String &in);
+  static bool read(Quantity &res, MUString &in);
   // </group>
   // </group>
   
   // Check if of specified type
-  Bool check(const UnitVal &uv) const;
+  bool check(const UnitVal &uv) const;
   
   // Assert correct kind
   // <thrown>
@@ -414,8 +414,8 @@ template <class Qtype> class Quantum : public QBase{
   virtual void print(ostream &os) const;
   // Get the type (using QuantumType) of derived Quantum (faster than Strings)
   // <group>
-  virtual uInt type() const;
-  static uInt myType();
+  virtual uint32_t type() const;
+  static uint32_t myType();
   // </group>
   
 private:
@@ -431,12 +431,12 @@ private:
 // <group name=output>
 // only Quantity is supported on input
 istream& operator>> (istream &is, Quantity &ku);
-Bool readQuantity(Quantity &res, MUString &in);
-Bool readQuantity(Quantity &res, const String &in);
+bool readQuantity(Quantity &res, MUString &in);
+bool readQuantity(Quantity &res, const String &in);
 // </group>
 
 //# Declare extern templates for often used types.
-  extern template class Quantum<Double>;
+  extern template class Quantum<double>;
 
 
 } //# NAMESPACE CASACORE - END

@@ -90,44 +90,44 @@ void doit()
     // We do the tests in another function to make it easier to check for
     // memory leaks, i.e. everything should be destructed at the end of this
     // block.
-    uInt i;
+    uint32_t i;
 
-    Block<Int> bi1;                        // Block::Block()
+    Block<int32_t> bi1;                        // Block::Block()
     AlwaysAssertExit(bi1.nelements() == 0);// Block::nelements()
     AlwaysAssertExit(bi1.size() == 0);
     AlwaysAssertExit(bi1.empty());
     for (i = 0; i < 200; i++) {
-      Block<Int> bi(AllocSpec<AlignedAllocator<Int, 32> >::value);
+      Block<int32_t> bi(AllocSpec<AlignedAllocator<int32_t, 32> >::value);
       AlwaysAssertExit(0 == bi.storage());
       bi.resize(3);
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
     }
-    Block<Int> bi2(100);                   // Block::Block(uInt)
+    Block<int32_t> bi2(100);                   // Block::Block(uint32_t)
     AlwaysAssertExit(bi2.nelements() == 100);
     AlwaysAssertExit(bi2.size() == 100);
     AlwaysAssertExit(!bi2.empty());
     for (i = 0; i < 200; i++) {
-      Block<Int> bi(100UL, AllocSpec<AlignedAllocator<Int, 32> >::value);
+      Block<int32_t> bi(100UL, AllocSpec<AlignedAllocator<int32_t, 32> >::value);
       AlwaysAssertExit(bi.nelements() == 100);
       AlwaysAssertExit(bi.size() == 100);
       AlwaysAssertExit(bi.capacity() == 100);
       AlwaysAssertExit(!bi.empty());
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
-      Int *p = bi.storage();
+      int32_t *p = bi.storage();
       bi.resize(100UL);
       AlwaysAssertExit(p == bi.storage());
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
-      bi.resize(95UL, True);
+      bi.resize(95UL, true);
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
       bi[44] = 9876;
-      bi.resize(91UL, True, True);
+      bi.resize(91UL, true, true);
       AlwaysAssertExit(9876 == bi[44]);
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
-      bi.resize(89UL, True, False, ArrayInitPolicies::INIT);
+      bi.resize(89UL, true, false, ArrayInitPolicies::INIT);
       AlwaysAssertExit(0 == bi[0] && 0 == bi[30]);
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
       p = bi.storage();
-      bi.resize(87UL, False, True, ArrayInitPolicies::NO_INIT);
+      bi.resize(87UL, false, true, ArrayInitPolicies::NO_INIT);
       AlwaysAssertExit(p == bi.storage());
       AlwaysAssertExit(0 == ((intptr_t)bi.storage()) % 32);
       bi.resize(105UL);
@@ -146,7 +146,7 @@ void doit()
       LifecycleChecker::ctor_error_trigger = 10;
       try {
         Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
-        AlwaysAssertExit(False);
+        AlwaysAssertExit(false);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
       }
@@ -156,8 +156,8 @@ void doit()
       LifecycleChecker::ctor_error_trigger = 20 + 5;
       try {
         Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
-        b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
-        AlwaysAssertExit(False);
+        b.resize(15, true, true, ArrayInitPolicies::NO_INIT);
+        AlwaysAssertExit(false);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
       }
@@ -167,8 +167,8 @@ void doit()
       LifecycleChecker::ctor_error_trigger = 20 + 5;
       try {
         Block<LifecycleChecker> b(20, ArrayInitPolicies::INIT);
-        b.resize(15, True, True, ArrayInitPolicies::INIT);
-        AlwaysAssertExit(False);
+        b.resize(15, true, true, ArrayInitPolicies::INIT);
+        AlwaysAssertExit(false);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
       }
@@ -178,8 +178,8 @@ void doit()
       LifecycleChecker::ctor_error_trigger = 10 + 5;
       try {
         Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
-        b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
-        AlwaysAssertExit(False);
+        b.resize(15, true, true, ArrayInitPolicies::NO_INIT);
+        AlwaysAssertExit(false);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
       }
@@ -189,9 +189,9 @@ void doit()
       LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
       try {
         Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
-        b.resize(15, True, True, ArrayInitPolicies::NO_INIT);
+        b.resize(15, true, true, ArrayInitPolicies::NO_INIT);
       } catch (...) {
-        AlwaysAssertExit(False);
+        AlwaysAssertExit(false);
       }
       AlwaysAssertExit(LifecycleChecker::ctor_count + 5 == LifecycleChecker::dtor_count);
     }
@@ -200,8 +200,8 @@ void doit()
       LifecycleChecker::ctor_error_trigger = 10 + 10 + 3;
       try {
         Block<LifecycleChecker> b(10, ArrayInitPolicies::INIT);
-        b.resize(15, True, True, ArrayInitPolicies::INIT);
-        AlwaysAssertExit(False);
+        b.resize(15, true, true, ArrayInitPolicies::INIT);
+        AlwaysAssertExit(false);
       } catch (...) {
         AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
       }
@@ -242,68 +242,68 @@ void doit()
       AlwaysAssertExit(LifecycleChecker::ctor_count == LifecycleChecker::dtor_count);
     }
     {
-      Block<Int> ba(10);
+      Block<int32_t> ba(10);
       ba = 10;
-      Block<Int> bb(ba);
+      Block<int32_t> bb(ba);
       AlwaysAssertExit(10 == bb[0] && 10 == bb[9]);
 
-      Int *p = new Int[20];
+      int32_t *p = new int32_t[20];
       ba.prohibitChangingAllocator();
       try {
-        ba.replaceStorage(20, p, True);
-        AlwaysAssertExit(False);
+        ba.replaceStorage(20, p, true);
+        AlwaysAssertExit(false);
       } catch (std::exception const &) {
       }
       try {
-        ba.replaceStorage(20, p, False);
-        AlwaysAssertExit(False);
+        ba.replaceStorage(20, p, false);
+        AlwaysAssertExit(false);
       } catch (std::exception const &) {
       }
       ba.permitChangingAllocator();
       try {
-        ba.replaceStorage(20, p, True);
+        ba.replaceStorage(20, p, true);
       } catch (std::exception const &) {
-        AlwaysAssertExit(False);
+        AlwaysAssertExit(false);
       }
       AlwaysAssertExit(0 == p);
 
       bb.prohibitChangingAllocator();
-      p = DefaultAllocator<Int>::type().allocate(20);
+      p = DefaultAllocator<int32_t>::type().allocate(20);
       try {
-        ba.replaceStorage(20, p, True, AllocSpec<DefaultAllocator<Int> >::value);
+        ba.replaceStorage(20, p, true, AllocSpec<DefaultAllocator<int32_t> >::value);
       } catch (std::exception const &) {
-        AlwaysAssertExit(False);
+        AlwaysAssertExit(false);
       }
       AlwaysAssertExit(0 == p);
     }
-    Block<Int> bi7(0);
+    Block<int32_t> bi7(0);
     AlwaysAssertExit(bi7.nelements() == 0);
-    Block<Int> bi3(200,5);                 // Block::Block(uInt, T)
+    Block<int32_t> bi3(200,5);                 // Block::Block(uint32_t, T)
     AlwaysAssertExit(bi3.nelements() == 200);
-    Block<Int> bi6(0, 5);
+    Block<int32_t> bi6(0, 5);
     AlwaysAssertExit(bi6.nelements() == 0);
     for (i=0; i<200; i++) {
-	AlwaysAssertExit(5 == bi3[i]);     // Block::operator[](uInt)
+	AlwaysAssertExit(5 == bi3[i]);     // Block::operator[](uint32_t)
     }
-    Block<Int> bi4(bi3);                   // Block::Block(const Block<T> &)
+    Block<int32_t> bi4(bi3);                   // Block::Block(const Block<T> &)
     AlwaysAssertExit(bi4.nelements() == 200);
     for (i=0; i<200; i++) {
 	AlwaysAssertExit(5 == bi4[i]);
     }
-    Block<Int> bi5(bi1);
+    Block<int32_t> bi5(bi1);
     AlwaysAssertExit(bi5.nelements() == 0);
     bi2 = bi3;                             // Block::operator=(const Block<T> &)
     AlwaysAssertExit(bi2.nelements() == 200);
     for(i=0; i < 200; i++) {
 	AlwaysAssertExit(bi2[i] == 5);
     }
-    const Block<Int>& bi2ref(bi2);         // Use ref in self-assigment
+    const Block<int32_t>& bi2ref(bi2);         // Use ref in self-assigment
     bi2 = bi2ref;                          // to avoid compiler warning
     AlwaysAssertExit(bi2.nelements() == 200);
     for(i=0; i < 200; i++) {
 	AlwaysAssertExit(bi2[i] == 5);
     }
-    bi1.resize(150);                       // Block::resize(uInt);
+    bi1.resize(150);                       // Block::resize(uint32_t);
     bi1.set(10);                           // Block::set(T);
     AlwaysAssertExit(bi1.nelements() == 150);
     for(i=0; i<150; i++) {
@@ -314,23 +314,23 @@ void doit()
     for(i=0; i<150; i++) {
 	AlwaysAssertExit(bi1[i] == 10);
     }
-    bi1.resize(100, False);                // Block::resize(uInt, Bool)
+    bi1.resize(100, false);                // Block::resize(uint32_t, bool)
     AlwaysAssertExit(bi1.nelements() == 150);
     for(i=0; i<150; i++) {
 	AlwaysAssertExit(bi1[i] == 10);
     }
-    bi1.resize(100, True);
+    bi1.resize(100, true);
     AlwaysAssertExit(bi1.nelements() == 100);
     for(i=0; i<100; i++) {
 	AlwaysAssertExit(bi1[i] == 10);
     }
-    bi1.resize(150, True, True);           // Block::resize(uInt, Bool, Bool)
+    bi1.resize(150, true, true);           // Block::resize(uint32_t, bool, bool)
     AlwaysAssertExit(bi1.nelements() == 150);
     for(i=0; i<100; i++) {
 	AlwaysAssertExit(bi1[i] == 10);
     }
-    {                                      // Block::remove(uInt)
-	Block<Int> bi(6);
+    {                                      // Block::remove(uint32_t)
+	Block<int32_t> bi(6);
 	bi[0] = 0; bi[1] = 1; bi[2] = 2; bi[3] = 3; bi[4] = 4; bi[5] = 5;
 	bi.remove(0);
 	AlwaysAssertExit(bi[0] == 1 && bi[4] == 5);
@@ -340,9 +340,9 @@ void doit()
 	AlwaysAssertExit(bi[0] == 1 && bi[1] == 2 && bi[2] == 4);
     }
     // There's no portable way to test for CopyElFalse
-    const Block<Int> &bi1ref = bi1;
+    const Block<int32_t> &bi1ref = bi1;
     for(i=0; i<100; i++) {
-	AlwaysAssertExit(bi1ref[i] == 10);      // Block::operator[](uInt) const
+	AlwaysAssertExit(bi1ref[i] == 10);      // Block::operator[](uint32_t) const
     }
     AlwaysAssertExit(&bi1[0] == bi1.storage()); // Block::storage()
     AlwaysAssertExit(bi1.storage() ==
@@ -350,13 +350,13 @@ void doit()
 
 
     {
-	Int *in1 = new int[100];
-	Int *inkeep = in1;
-	Block<Int> bip(100, in1);
+	int32_t *in1 = new int[100];
+	int32_t *inkeep = in1;
+	Block<int32_t> bip(100, in1);
 	AlwaysAssertExit(in1 == 0);
 	AlwaysAssertExit(&bip[0] == inkeep && bip.nelements() == 100);
-	Int *in2 = new int[50];
-	Int *inkeep2 = in2;
+	int32_t *in2 = new int[50];
+	int32_t *inkeep2 = in2;
 	bip.replaceStorage(50, in2);
 	AlwaysAssertExit(in2 == 0);
 	AlwaysAssertExit(&bip[0] == inkeep2 && bip.nelements() == 50);
@@ -364,37 +364,37 @@ void doit()
     }
 
     {
-	Int *stored = new Int[10];
-	Block<Int> aliased(10, stored, False);
+	int32_t *stored = new int32_t[10];
+	Block<int32_t> aliased(10, stored, false);
 	AlwaysAssertExit(stored != 0);
 	stored[3] = 454;
 	AlwaysAssertExit(aliased[3] == 454);
-	Int *stored2 = new Int[10];
-	aliased.replaceStorage(10, stored2, False);
+	int32_t *stored2 = new int32_t[10];
+	aliased.replaceStorage(10, stored2, false);
 	stored2[3] = 999;
 	AlwaysAssertExit(aliased[3] == 999);
 	delete [] stored;
 	delete [] stored2;
     }
     {                                 // Block::iterator
-	Block<Int> bi(6);
+	Block<int32_t> bi(6);
 	bi[0] = 0; bi[1] = 1; bi[2] = 2; bi[3] = 3; bi[4] = 4; bi[5] = 5;
-	Int nrit = 0;
-	for (Block<Int>::const_iterator iter=bi.begin();
+	int32_t nrit = 0;
+	for (Block<int32_t>::const_iterator iter=bi.begin();
 	     iter!=bi.end();
 	     iter++) {
 	  AlwaysAssertExit(*iter == bi[nrit++]);
 	}
 	AlwaysAssertExit(nrit == 6);
     
-	std::vector<Int> vec(bi.begin(), bi.end());
+	std::vector<int32_t> vec(bi.begin(), bi.end());
 	AlwaysAssertExit(vec.size() == 6);
 	AlwaysAssertExit(vec[0] == 0 && vec[1] == 1 && vec[2] == 2 &&
 	       vec[3] == 3 && vec[4] == 4 && vec[5] == 5);
     }
     {
         // Check that this no longer leaks (regression test)
-        Block<Int> leaker(0);
+        Block<int32_t> leaker(0);
     }
 
                                       // Block::~Block called at end of fn
@@ -402,8 +402,8 @@ void doit()
 
 void testIO()
 {
-  Block<Int> bl(10000);
-  for (uInt i=0; i<bl.size(); ++i) {
+  Block<int32_t> bl(10000);
+  for (uint32_t i=0; i<bl.size(); ++i) {
     bl[i] = i+1;
   }
   {
@@ -414,11 +414,11 @@ void testIO()
   {
     // Read back block and check it.
     AipsIO aio("tBlock_tmp.dat");
-    Block<Int> bl2;
+    Block<int32_t> bl2;
     aio >> bl2;
     AlwaysAssertExit (bl2.size() == bl.size());
-    for (uInt i=0; i<bl2.size(); ++i) {
-      AlwaysAssertExit (bl[i] == Int(i+1));
+    for (uint32_t i=0; i<bl2.size(); ++i) {
+      AlwaysAssertExit (bl[i] == int32_t(i+1));
     }
   }
 }

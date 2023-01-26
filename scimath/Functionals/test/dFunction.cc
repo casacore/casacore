@@ -42,17 +42,17 @@
 // 3 flavours of calculating a Gaussian
 // The inputs are the parameters and the x value
 
-Double a0(const Vector<Double> &par, const Double x0) {
+double a0(const Vector<double> &par, const double x0) {
   return par(0)*exp(-(x0-par(1))*(x0-par(1))/par(2)/par(2));
 }
 
-Double a1(const Vector<Double> &par, const Double x0) {
-  Double g = (x0-par(1))/par(2);
+double a1(const Vector<double> &par, const double x0) {
+  double g = (x0-par(1))/par(2);
   return par(0)*exp(-g*g);
 }
 
-Double a2(const Vector<Double> &par, const Double x0) {
-  Double y(x0);
+double a2(const Vector<double> &par, const double x0) {
+  double y(x0);
   y -= par(1);
   y /= par(2);
   y *= y;
@@ -62,17 +62,17 @@ Double a2(const Vector<Double> &par, const Double x0) {
   return y;
 }
 
-AutoDiff<Double> a0(const Vector<AutoDiff<Double> > &par, const Double x0) {
+AutoDiff<double> a0(const Vector<AutoDiff<double> > &par, const double x0) {
   return par(0)*exp(-(x0-par(1))*(x0-par(1))/par(2)/par(2));
 }
 
-AutoDiff<Double> a1(const Vector<AutoDiff<Double> > &par, const Double x0) {
-  AutoDiff<Double> g = (x0-par(1))/par(2);
+AutoDiff<double> a1(const Vector<AutoDiff<double> > &par, const double x0) {
+  AutoDiff<double> g = (x0-par(1))/par(2);
   return par(0)*exp(-g*g);
 }
 
-AutoDiff<Double> a2(const Vector<AutoDiff<Double> > &par, const Double x0) {
-  AutoDiff<Double> y(x0);
+AutoDiff<double> a2(const Vector<AutoDiff<double> > &par, const double x0) {
+  AutoDiff<double> y(x0);
   y -= par(1);
   y /= par(2);
   y *= y;
@@ -82,20 +82,20 @@ AutoDiff<Double> a2(const Vector<AutoDiff<Double> > &par, const Double x0) {
   return y;
 }
 
-AutoDiff<Double> a0(const Vector<AutoDiff<Double> > &par,
-		    const AutoDiff<Double> x0) {
+AutoDiff<double> a0(const Vector<AutoDiff<double> > &par,
+		    const AutoDiff<double> x0) {
   return par(0)*exp(-(x0-par(1))*(x0-par(1))/par(2)/par(2));
 }
 
-AutoDiff<Double> a1(const Vector<AutoDiff<Double> > &par,
-		    const AutoDiff<Double> x0) {
-  AutoDiff<Double> g = (x0-par(1))/par(2);
+AutoDiff<double> a1(const Vector<AutoDiff<double> > &par,
+		    const AutoDiff<double> x0) {
+  AutoDiff<double> g = (x0-par(1))/par(2);
   return par(0)*exp(-g*g);
 }
 
-AutoDiff<Double> a2(const Vector<AutoDiff<Double> > &par,
-		    const AutoDiff<Double> x0) {
-  AutoDiff<Double> y(x0);
+AutoDiff<double> a2(const Vector<AutoDiff<double> > &par,
+		    const AutoDiff<double> x0) {
+  AutoDiff<double> y(x0);
   y -= par(1);
   y /= par(2);
   y *= y;
@@ -107,11 +107,11 @@ AutoDiff<Double> a2(const Vector<AutoDiff<Double> > &par,
 
 // Manual derivatives
 
-Double mv(Vector<Double> &res, const Vector<Double> &par, const Double x) {
+double mv(Vector<double> &res, const Vector<double> &par, const double x) {
   res.resize(par.nelements());
-  Double nm = (x-par(1))/par(2);
-  Double e = exp(-nm*nm);
-  Double val = par(0)*e;
+  double nm = (x-par(1))/par(2);
+  double e = exp(-nm*nm);
+  double val = par(0)*e;
   res(0) = e;
   res(1) = 2.0*val*nm/par(2);
   res(2) = res(1)*nm;
@@ -126,23 +126,23 @@ int main(int argc, const char* argv[])
   inputs.version("$Id$");
   inputs.create("n", "100000", "n"); 
   inputs.readArguments(argc, argv);
-  Int N = inputs.getInt("n"); 
+  int32_t N = inputs.getInt("n"); 
   cout << "<<<" << endl;
 
   cout << "N = " << N << endl;
 
   // Parameters
-  Vector<Double> par(3);
+  Vector<double> par(3);
   par(0) = 1000;
   par(1) = 2;
   par(2) = 3;
-  Double x = 4;
-  AutoDiff<Double> xa(4, 3);
-  Vector<AutoDiff<Double> > para(3);
-  para(0) = AutoDiff<Double>(1000, 3, 0);
-  para(1) = AutoDiff<Double>(2, 3, 1);
-  para(2) = AutoDiff<Double>(3, 3, 2);
-  Vector<Double> va(3);
+  double x = 4;
+  AutoDiff<double> xa(4, 3);
+  Vector<AutoDiff<double> > para(3);
+  para(0) = AutoDiff<double>(1000, 3, 0);
+  para(1) = AutoDiff<double>(2, 3, 1);
+  para(2) = AutoDiff<double>(3, 3, 2);
+  Vector<double> va(3);
 
   // Check results
   cout << "Values (g0: 1 line; g1: 2 lines; g2: RPN type):" << endl;
@@ -152,9 +152,9 @@ int main(int argc, const char* argv[])
   cout << "Manual (mv): " << mv(va, par, x);
   cout << " " << va << endl;
 
-  Gaussian1D<Double> g1d((Double(par(0))),
-			   (Double(par(1))),
-			   (Double(par(2))/(1.0/sqrt(log(16.0)))));
+  Gaussian1D<double> g1d((double(par(0))),
+			   (double(par(1))),
+			   (double(par(2))/(1.0/sqrt(log(16.0)))));
 
   // Autoderivatives
   cout << "AutoDiff (a0): " << a0(para, x) << endl;
@@ -211,92 +211,92 @@ int main(int argc, const char* argv[])
   Timer tim;
 
   tim.mark();
-  for (Int i=0; i<N; i++) {
-    Double res = a0(par, x);
+  for (int32_t i=0; i<N; i++) {
+    double res = a0(par, x);
     res *= 1.0;
   }
   cout << "g0: ";
   tim.show();
 
   tim.mark();
-  for (Int i=0; i<N; i++) {
-    Double res = a1(par, x);
+  for (int32_t i=0; i<N; i++) {
+    double res = a1(par, x);
     res *= 1.0;
   }
   cout << "g1: ";
   tim.show();
 
   tim.mark();
-  for (Int i=0; i<N; i++) {
-    Double res = a2(par, x);
+  for (int32_t i=0; i<N; i++) {
+    double res = a2(par, x);
     res *= 1.0;
   }
   cout << "g2: ";
   tim.show();
 
   tim.mark();
-  for (Int i=0; i<N; i++) {
-    Double res = mv(va, par, x);
+  for (int32_t i=0; i<N; i++) {
+    double res = mv(va, par, x);
     res *= 1.0;
   }
   cout << "mv: ";
   tim.show();
 
   tim.mark();
-  for (Int i=0; i<N; i++) {
+  for (int32_t i=0; i<N; i++) {
     g1d(x);
   }
   cout << "ao: ";
   tim.show();
 
   ///  N /= 10;
-  AutoDiff<Double> resa;
+  AutoDiff<double> resa;
 
-  for (uInt j=0; j<4; j++) {
-    ///  for (uInt j=3; j<4; j++) {
+  for (uint32_t j=0; j<4; j++) {
+    ///  for (uint32_t j=3; j<4; j++) {
     cout << endl << "--------- " << j << " derivatives: ";
-    Vector<AutoDiff<Double> > para(3);
+    Vector<AutoDiff<double> > para(3);
     if (j == 0) {
-      para(0) = AutoDiff<Double>(1000);
-      para(1) = AutoDiff<Double>(2);
-      para(2) = AutoDiff<Double>(3);
+      para(0) = AutoDiff<double>(1000);
+      para(1) = AutoDiff<double>(2);
+      para(2) = AutoDiff<double>(3);
     } else if (j==1) {
-      para(0) = AutoDiff<Double>(1000, j, 0);
-      para(1) = AutoDiff<Double>(2, j);
-      para(2) = AutoDiff<Double>(3, j);
+      para(0) = AutoDiff<double>(1000, j, 0);
+      para(1) = AutoDiff<double>(2, j);
+      para(2) = AutoDiff<double>(3, j);
     } else if (j==2) {
-      para(0) = AutoDiff<Double>(1000, j, 0);
-      para(1) = AutoDiff<Double>(2, j, 1);
-      para(2) = AutoDiff<Double>(3, j);
+      para(0) = AutoDiff<double>(1000, j, 0);
+      para(1) = AutoDiff<double>(2, j, 1);
+      para(2) = AutoDiff<double>(3, j);
     } else {
-      para(0) = AutoDiff<Double>(1000, 3, 0);
-      para(1) = AutoDiff<Double>(2, 3, 1);
-      para(2) = AutoDiff<Double>(3, 3, 2);
+      para(0) = AutoDiff<double>(1000, 3, 0);
+      para(1) = AutoDiff<double>(2, 3, 1);
+      para(2) = AutoDiff<double>(3, 3, 2);
     }
-    cout << "N = " << N << " (at x=Double)" << endl;
+    cout << "N = " << N << " (at x=double)" << endl;
 
     tim.mark();
-    for (Int i=0; i<N; i++) resa = a0(para, x);
+    for (int32_t i=0; i<N; i++) resa = a0(para, x);
     cout << "a0: "; tim.show();
     tim.mark();
-    for (Int i=0; i<N; i++) resa = a1(para, x);
+    for (int32_t i=0; i<N; i++) resa = a1(para, x);
     cout << "a1: "; tim.show();
     tim.mark();
-    for (Int i=0; i<N; i++) resa = a2(para, x);
+    for (int32_t i=0; i<N; i++) resa = a2(para, x);
     cout << "a2: "; tim.show();
 
     if (j == 3) { ///
       cout << "N = " << N << " (at x=AutoDiff)" << endl;
-      AutoDiff<Double> xa(4, j);
+      AutoDiff<double> xa(4, j);
       
       tim.mark();
-      for (Int i=0; i<N; i++) resa = a0(para, xa);
+      for (int32_t i=0; i<N; i++) resa = a0(para, xa);
       cout << "a0: "; tim.show();
       tim.mark();
-      for (Int i=0; i<N; i++) resa = a1(para, xa);
+      for (int32_t i=0; i<N; i++) resa = a1(para, xa);
       cout << "a1: "; tim.show();
       tim.mark();
-      for (Int i=0; i<N; i++) resa = a2(para, xa);
+      for (int32_t i=0; i<N; i++) resa = a2(para, xa);
       cout << "a2: "; tim.show();
     } ///
   }

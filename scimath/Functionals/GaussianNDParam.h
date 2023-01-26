@@ -136,12 +136,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Construct a two dimensional Gaussian with mean=(0,1), variance=(.1,7) and
 // height = 1;
 // <srcblock>
-// uInt ndim = 2;
-// Float height = 1;
-// Vector<Float> mean(ndim); mean(0) = 0, mean(1) = 1;
-// Vector<Float> variance(ndim); variance(0) = .1, variance(1) = 7;
-// GaussianND<Float> g(ndim, height, mean, variance); 
-// Vector<Float> x(ndim); x = 0;
+// uint32_t ndim = 2;
+// float height = 1;
+// Vector<float> mean(ndim); mean(0) = 0, mean(1) = 1;
+// Vector<float> variance(ndim); variance(0) = .1, variance(1) = 7;
+// GaussianND<float> g(ndim, height, mean, variance); 
+// Vector<float> x(ndim); x = 0;
 // cout << "g("<< x <<") = " << g(x) <<endl; // g([0,0])=1*exp(-1/2*1/7);
 // x(1)++;
 // cout << "g("<< x <<") = " <<g(x) <<endl;  // g([0,1])= 1
@@ -193,12 +193,12 @@ public:
   // covariance defaults to 0.0, 
   // <group>
   GaussianNDParam();
-  explicit GaussianNDParam(uInt ndim);
-  GaussianNDParam(uInt ndim, const T &height);
-  GaussianNDParam(uInt ndim, const T &height, const Vector<T> &mean);
-  GaussianNDParam(uInt ndim, const T &height, const Vector<T> &mean,
+  explicit GaussianNDParam(uint32_t ndim);
+  GaussianNDParam(uint32_t ndim, const T &height);
+  GaussianNDParam(uint32_t ndim, const T &height, const Vector<T> &mean);
+  GaussianNDParam(uint32_t ndim, const T &height, const Vector<T> &mean,
 		  const Vector<T> &variance);
-  GaussianNDParam(uInt ndim, const T &height, const Vector<T> &mean,
+  GaussianNDParam(uint32_t ndim, const T &height, const Vector<T> &mean,
 		  const Matrix<T> &covar);
   // </group>
 
@@ -225,7 +225,7 @@ public:
   return x; }
 
    // Variable dimensionality
-  virtual uInt ndim() const { return itsDim; }
+  virtual uint32_t ndim() const { return itsDim; }
 
   // Get or set the peak height of the Gaussian
   // <group>
@@ -262,7 +262,7 @@ public:
 protected:
   //# Data
   // dimensionality
-  uInt itsDim;
+  uint32_t itsDim;
   // factor to convert from flux to height 
   T itsFlux2Hgt;
 

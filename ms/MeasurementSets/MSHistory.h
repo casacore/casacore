@@ -91,7 +91,7 @@ public:
     MSHistory (const String &tableName, TableOption = Table::Old);
     MSHistory (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
-    MSHistory (SetupNewTable &newTab, rownr_t nrrow = 0, Bool initialize = False);
+    MSHistory (SetupNewTable &newTab, rownr_t nrrow = 0, bool initialize = false);
     MSHistory (const Table &table);
     MSHistory (const MSHistory &other);
     // </group>
@@ -125,7 +125,7 @@ public:
 private:
 
     // required by the need to throw an exception in the destructor
-    Bool hasBeenDestroyed_p;
+    bool hasBeenDestroyed_p;
 };
 
 

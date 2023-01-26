@@ -74,7 +74,7 @@ TSMDataColumn* TSMColumn::makeDataColumn()
     colPtr_p = colPtr;
     return colPtr;
 }
-TSMCoordColumn* TSMColumn::makeCoordColumn (uInt axesNumber)
+TSMCoordColumn* TSMColumn::makeCoordColumn (uint32_t axesNumber)
 {
     TSMCoordColumn* colPtr = new TSMCoordColumn (*this, axesNumber);
     colPtr_p = colPtr;

@@ -68,7 +68,7 @@ int main()
 	naxes[0] = row;
 	naxes[1] = col;
 	
-	if( !hdu1.write_priArr_hdr(fout,True, bitpix, naxis, naxes, True ) ){
+	if( !hdu1.write_priArr_hdr(fout,true, bitpix, naxis, naxes, true ) ){
 	    cout << "Primary Header wrote ok!"<<endl;
 	}else{
 	    cout<< "Prinary Header wrote error!" << endl;

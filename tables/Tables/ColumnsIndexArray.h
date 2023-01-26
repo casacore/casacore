@@ -66,7 +66,7 @@ class TableColumn;
 // When constructing a <src>ColumnsIndexArray</src> object, one has to define
 // which column forms the key for this index on the given
 // <src>table</src> object. 
-// Not every data type is supported; only uChar, Short, Int, uInt, Int64 and
+// Not every data type is supported; only unsigned char, int16_t, int32_t, uint32_t, int64_t and
 // String array columns are supported.
 // The column can contain arrays of any shape and it can also contain
 // empty cells. The class will probably mostly be used for vectors, as
@@ -120,7 +120,7 @@ class TableColumn;
 // // Its data type has to match the data type of the column.
 // RecordFieldPtr<String> nameFld(colInx.accessKey(), "NAME");
 // // Find the row for a given name.
-// Bool found;
+// bool found;
 // // Fill the key field and get the row number.
 // // NAME is a unique key, so only one row number matches.
 // // Otherwise function getRowNumbers had to be used.
@@ -134,7 +134,7 @@ class TableColumn;
 // RecordFieldPtr<String> nameUpp(colInx.accessUpperKey(), "NAME");
 // *nameFld = "LOWER";
 // *nameUpp = "UPPER";
-// RowNumbers rownrs = colInx.getRowNumbers (True, True, True);
+// RowNumbers rownrs = colInx.getRowNumbers (true, true, true);
 // </srcblock>
 
 // <motivation>
@@ -147,7 +147,7 @@ class ColumnsIndexArray
 public:
   // Create an index on the given table for the given column.
   // The column can be a scalar or an array column.
-  // If <src>noSort==True</src>, the table is already in order of that
+  // If <src>noSort==true</src>, the table is already in order of that
   // column and the sort step will not be done.
   // It only supports String and integer columns.
   ColumnsIndexArray (const Table&, const String& columnName);
@@ -161,7 +161,7 @@ public:
   ColumnsIndexArray& operator= (const ColumnsIndexArray& that);
 
   // Are all keys in the index unique?
-  Bool isUnique() const;
+  bool isUnique() const;
 
   // Return the names of the columns forming the index.
   const String& columnName() const;
@@ -195,14 +195,14 @@ public:
 
   // Find the row number matching the key. All keys have to be unique,
   // otherwise an exception is thrown.
-  // If no match is found, <src>found</src> is set to False.
+  // If no match is found, <src>found</src> is set to false.
   // The 2nd version makes it possible to pass in your own Record
   // instead of using the internal record via the <src>accessKey</src>
   // functions. Note that the given Record will be copied to the internal
   // record, thus overwrites it.
   // <group>
-  rownr_t getRowNumber (Bool& found);
-  rownr_t getRowNumber (Bool& found, const Record& key);
+  rownr_t getRowNumber (bool& found);
+  rownr_t getRowNumber (bool& found, const Record& key);
   // </group>
 
   // Find the row numbers matching the key. It should be used instead
@@ -213,12 +213,12 @@ public:
   // record, thus overwrites it.
   // <br>A row can contain multiple equal values. In such a case the
   // same row number can occur multiple times in the output vector,
-  // unless <src>unique</src> is set to True. Note that making the row
+  // unless <src>unique</src> is set to true. Note that making the row
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  RowNumbers getRowNumbers (Bool unique=False);
-  RowNumbers getRowNumbers (const Record& key, Bool unique=False);
+  RowNumbers getRowNumbers (bool unique=false);
+  RowNumbers getRowNumbers (const Record& key, bool unique=false);
   // </group>
 
   // Find the row numbers matching the key range. The boolean arguments
@@ -230,15 +230,15 @@ public:
   // records, thus overwrite them.
   // <br>A row can contain multiple matching values. In such a case the
   // same row number can occur multiple times in the output vector,
-  // unless <src>unique</src> is set to True. Note that making the row
+  // unless <src>unique</src> is set to true. Note that making the row
   // numbers unique implies a sort, so it can also be used to get the
   // row numbers in ascending order.
   // <group>
-  RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive,
-                            Bool unique=False);
+  RowNumbers getRowNumbers (bool lowerInclusive, bool upperInclusive,
+                            bool unique=false);
   RowNumbers getRowNumbers (const Record& lower, const Record& upper,
-                            Bool lowerInclusive, Bool upperInclusive,
-                            Bool unique=False);
+                            bool lowerInclusive, bool upperInclusive,
+                            bool unique=false);
   // </group>
 
 protected:
@@ -249,7 +249,7 @@ protected:
   void deleteObjects();
 
   // Add a column to the record description for the keys.
-  // If the switch <src>arrayPossible</src> is True, the column can
+  // If the switch <src>arrayPossible</src> is true, the column can
   // be an array. Otherwise it has to be a scalar.
   void addColumnToDesc (RecordDesc& description,
 			const TableColumn& column);
@@ -263,32 +263,32 @@ protected:
 
   // Do a binary search on <src>itsUniqueIndexArray</src> for the key in
   // <src>fieldPtrs</src>.
-  // If the key is found, <src>found</src> is set to True and the index
+  // If the key is found, <src>found</src> is set to true and the index
   // in <src>itsUniqueIndexArray</src> is returned.
-  // If not found, <src>found</src> is set to False and the index
+  // If not found, <src>found</src> is set to false and the index
   // of the next higher key is returned.
-  rownr_t bsearch (Bool& found, void* fieldPtr) const;
+  rownr_t bsearch (bool& found, void* fieldPtr) const;
 
   // Compare the key in <src>fieldPtr</src> with the given index entry.
   // -1 is returned when less, 0 when equal, 1 when greater.
-  static Int compare (void* fieldPtr,
+  static int32_t compare (void* fieldPtr,
 		      void* dataPtr,
-		      Int dataType,
+		      int32_t dataType,
 		      rownr_t index);
 
   // Fill the row numbers vector for the given start till end in the
   // <src>itsUniqueIndexArray</src> vector (end is not inclusive).
-  // If <src>unique</src> is True, the row numbers will be made unique.
+  // If <src>unique</src> is true, the row numbers will be made unique.
   void fillRowNumbers (Vector<rownr_t>& rows, rownr_t start, rownr_t end,
-		       Bool unique) const;
+		       bool unique) const;
 
   // Get the data if the column is an array.
   // <group>
-  void getArray (Vector<uChar>& result, const String& name);
-  void getArray (Vector<Short>& result, const String& name);
-  void getArray (Vector<Int>& result, const String& name);
-  void getArray (Vector<uInt>& result, const String& name);
-  void getArray (Vector<Int64>& result, const String& name);
+  void getArray (Vector<unsigned char>& result, const String& name);
+  void getArray (Vector<int16_t>& result, const String& name);
+  void getArray (Vector<int32_t>& result, const String& name);
+  void getArray (Vector<uint32_t>& result, const String& name);
+  void getArray (Vector<int64_t>& result, const String& name);
   void getArray (Vector<String>& result, const String& name);
   // </group>
 
@@ -300,14 +300,14 @@ private:
   rownr_t itsNrrow;
   Record* itsLowerKeyPtr;
   Record* itsUpperKeyPtr;
-  Int     itsDataType;
+  int32_t     itsDataType;
   void*   itsDataVector;
   void*   itsData;              //# pointer to data in itsDataVector
   //# The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
   //# They are used for fast access to the records.
   void*   itsLowerField;
   void*   itsUpperField;
-  Bool            itsChanged;
+  bool            itsChanged;
   Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
   //# Indices in itsDataIndex for each unique key
   Vector<rownr_t> itsUniqueIndex;
@@ -317,7 +317,7 @@ private:
 };
 
 
-inline Bool ColumnsIndexArray::isUnique() const
+inline bool ColumnsIndexArray::isUnique() const
 {
     return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
 }

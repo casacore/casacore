@@ -68,14 +68,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSObservationGram = 0;
-static Int                   posMSObservationGram = 0;
+static int32_t                   posMSObservationGram = 0;
 
   
   //# Parse the command.
   //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   TableExprNode baseMSObservationGramParseCommand (MSObservationParse* parser, 
 						   const String& command, 
-						   Vector<Int>& selectedIDs)
+						   Vector<int32_t>& selectedIDs)
   {
     try
       {
@@ -103,7 +103,7 @@ static Int                   posMSObservationGram = 0;
   TableExprNode msObservationGramParseCommand (const MeasurementSet* ms, const MSObservation& obsSubTable,
 					       const TableExprNode& colAsTEN,
 					       const String& command, 
-					       Vector<Int>& selectedIDs)
+					       Vector<int32_t>& selectedIDs)
   {
     TableExprNode ret;
     MSObservationParse *thisParser = new MSObservationParse(ms, obsSubTable, colAsTEN);
@@ -122,7 +122,7 @@ static Int                   posMSObservationGram = 0;
 
   // TableExprNode msObservationGramParseCommand (const MeasurementSet* ms, const MSObservation& obsSubTable,
   // 					       const String& command, 
-  // 					       Vector<Int>& selectedIDs, Int maxObsIDs) 
+  // 					       Vector<int32_t>& selectedIDs, int32_t maxObsIDs) 
   // {
   //   try
   //     {
@@ -161,7 +161,7 @@ static Int                   posMSObservationGram = 0;
   }
   
   //# Give the string position.
-  Int& msObservationGramPosition()
+  int32_t& msObservationGramPosition()
   {
     return posMSObservationGram;
   }

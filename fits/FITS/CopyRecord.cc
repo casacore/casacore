@@ -36,17 +36,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 CopyRecordToTable::CopyRecordToTable(Table &outputTable,
                                      const RecordInterface &inputBuffer,
-                                     const Vector<Int> inputMap)
+                                     const Vector<int32_t> inputMap)
 {
-    Block<Int> counts(TpNumberOfTypes);
+    Block<int32_t> counts(TpNumberOfTypes);
     counts.set(0);
     // Count how many fields of each type exist
-    uInt n = inputBuffer.nfields();
-    uInt i;
+    uint32_t n = inputBuffer.nfields();
+    uint32_t i;
     for (i=0; i < n; i++) {
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
-    uInt total = 0;
+    uint32_t total = 0;
     table_bool.resize(counts[TpBool]); record_bool.resize(counts[TpBool]);
     total += counts[TpBool];
  
@@ -115,46 +115,46 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
     total += counts[TpArrayString];
  
     // Keeps track of what index we're writing into for each block.
-    Block<uInt> where(TpNumberOfTypes);
+    Block<uint32_t> where(TpNumberOfTypes);
     Vector<String> colnames(outputTable.tableDesc().columnNames());
     where.set(0);
     for (i=0; i < inputMap.nelements(); i++) {
 	if (inputMap(i) != -1) {
-	    uInt which = where[inputBuffer.description().type(i)];
+	    uint32_t which = where[inputBuffer.description().type(i)];
 	    switch(inputBuffer.description().type(i)) {
 	    case TpBool:
 		record_bool[which].attachToRecord(inputBuffer, i);
-		table_bool[which] = new ScalarColumn<Bool>(outputTable,
+		table_bool[which] = new ScalarColumn<bool>(outputTable,
 							   colnames(inputMap(i)));
 		AlwaysAssert(table_bool[which] != 0, AipsError);
 		break;
 	    case TpUChar:
 		record_char[which].attachToRecord(inputBuffer, i);
-		table_char[which] = new ScalarColumn<uChar>(outputTable,
+		table_char[which] = new ScalarColumn<unsigned char>(outputTable,
 							    colnames(inputMap(i)));
 		AlwaysAssert(table_char[which] != 0, AipsError);
 		break;
 	    case TpShort:
 		record_short[which].attachToRecord(inputBuffer, i);
-		table_short[which] = new ScalarColumn<Short>(outputTable,
+		table_short[which] = new ScalarColumn<int16_t>(outputTable,
 							     colnames(inputMap(i)));
 		AlwaysAssert(table_short[which] != 0, AipsError);
 		break;
 	    case TpInt:
 		record_int[which].attachToRecord(inputBuffer, i);
-		table_int[which] = new ScalarColumn<Int>(outputTable,
+		table_int[which] = new ScalarColumn<int32_t>(outputTable,
 							 colnames(inputMap(i)));
 		AlwaysAssert(table_int[which] != 0, AipsError);
 		break;
 	    case TpFloat:
 		record_float[which].attachToRecord(inputBuffer, i);
-		table_float[which] = new ScalarColumn<Float>(outputTable,
+		table_float[which] = new ScalarColumn<float>(outputTable,
 							     colnames(inputMap(i)));
 		AlwaysAssert(table_float[which] != 0, AipsError);
 		break;
 	    case TpDouble:
 		record_double[which].attachToRecord(inputBuffer, i);
-		table_double[which] = new ScalarColumn<Double>(outputTable,
+		table_double[which] = new ScalarColumn<double>(outputTable,
 							       colnames(inputMap(i)));
 		AlwaysAssert(table_double[which] != 0, AipsError);
 		break;
@@ -178,37 +178,37 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
 		break;
 	    case TpArrayBool:
 		record_array_bool[which].attachToRecord(inputBuffer, i);
-		table_array_bool[which] = new ArrayColumn<Bool>(outputTable,
+		table_array_bool[which] = new ArrayColumn<bool>(outputTable,
 								colnames(inputMap(i)));
 		AlwaysAssert(table_array_bool[which] != 0, AipsError);
 		break;
 	    case TpArrayUChar:
 		record_array_char[which].attachToRecord(inputBuffer, i);
-		table_array_char[which] = new ArrayColumn<uChar>(outputTable,
+		table_array_char[which] = new ArrayColumn<unsigned char>(outputTable,
 								 colnames(inputMap(i)));
 		AlwaysAssert(table_array_char[which] != 0, AipsError);
 		break;
 	    case TpArrayShort:
 		record_array_short[which].attachToRecord(inputBuffer, i);
-		table_array_short[which] = new ArrayColumn<Short>(outputTable,
+		table_array_short[which] = new ArrayColumn<int16_t>(outputTable,
 								  colnames(inputMap(i)));
 		AlwaysAssert(table_array_short[which] != 0, AipsError);
 		break;
 	    case TpArrayInt:
 		record_array_int[which].attachToRecord(inputBuffer, i);
-		table_array_int[which] = new ArrayColumn<Int>(outputTable,
+		table_array_int[which] = new ArrayColumn<int32_t>(outputTable,
 							      colnames(inputMap(i)));
 		AlwaysAssert(table_array_int[which] != 0, AipsError);
 		break;
 	    case TpArrayFloat:
 		record_array_float[which].attachToRecord(inputBuffer, i);
-		table_array_float[which] = new ArrayColumn<Float>(outputTable,
+		table_array_float[which] = new ArrayColumn<float>(outputTable,
 								  colnames(inputMap(i)));
 		AlwaysAssert(table_array_float[which] != 0, AipsError);
 		break;
 	    case TpArrayDouble:
 		record_array_double[which].attachToRecord(inputBuffer, i);
-		table_array_double[which] = new ArrayColumn<Double>(outputTable,
+		table_array_double[which] = new ArrayColumn<double>(outputTable,
 								    colnames(inputMap(i)));
 		AlwaysAssert(table_array_double[which] != 0, AipsError);
 		break;
@@ -253,128 +253,128 @@ CopyRecordToTable &CopyRecordToTable::operator=(const CopyRecordToTable &other)
 {
     if (this != &other) {
 	clearAll();
-	table_bool.resize(other.table_bool.nelements(), True);
-	record_bool.resize(other.record_bool.nelements(), True);
-	for (uInt i=0;i<table_bool.nelements();i++) {
-	    table_bool[i] = new ScalarColumn<Bool>(*(other.table_bool[i]));
+	table_bool.resize(other.table_bool.nelements(), true);
+	record_bool.resize(other.record_bool.nelements(), true);
+	for (uint32_t i=0;i<table_bool.nelements();i++) {
+	    table_bool[i] = new ScalarColumn<bool>(*(other.table_bool[i]));
 	    record_bool[i] = other.record_bool[i];
 	    AlwaysAssert(table_bool[i], AipsError);
 	}
-	table_char.resize(other.table_char.nelements(), True);
-	record_char.resize(other.record_char.nelements(), True);
-	for (uInt i=0;i<table_char.nelements();i++) {
-	    table_char[i] = new ScalarColumn<uChar>(*(other.table_char[i]));
+	table_char.resize(other.table_char.nelements(), true);
+	record_char.resize(other.record_char.nelements(), true);
+	for (uint32_t i=0;i<table_char.nelements();i++) {
+	    table_char[i] = new ScalarColumn<unsigned char>(*(other.table_char[i]));
 	    record_char[i] = other.record_char[i];
 	    AlwaysAssert(table_char[i], AipsError);
 	}
-	table_short.resize(other.table_short.nelements(), True);
-	record_short.resize(other.record_short.nelements(), True);
-	for (uInt i=0;i<table_short.nelements();i++) {
-	    table_short[i] = new ScalarColumn<Short>(*(other.table_short[i]));
+	table_short.resize(other.table_short.nelements(), true);
+	record_short.resize(other.record_short.nelements(), true);
+	for (uint32_t i=0;i<table_short.nelements();i++) {
+	    table_short[i] = new ScalarColumn<int16_t>(*(other.table_short[i]));
 	    record_short[i] = other.record_short[i];
 	    AlwaysAssert(table_short[i], AipsError);
 	}
-	table_int.resize(other.table_int.nelements(), True);
-	record_int.resize(other.record_int.nelements(), True);
-	for (uInt i=0;i<table_int.nelements();i++) {
-	    table_int[i] = new ScalarColumn<Int>(*(other.table_int[i]));
+	table_int.resize(other.table_int.nelements(), true);
+	record_int.resize(other.record_int.nelements(), true);
+	for (uint32_t i=0;i<table_int.nelements();i++) {
+	    table_int[i] = new ScalarColumn<int32_t>(*(other.table_int[i]));
 	    record_int[i] = other.record_int[i];
 	    AlwaysAssert(table_int[i], AipsError);
 	}
-	table_float.resize(other.table_float.nelements(), True);
-	record_float.resize(other.record_float.nelements(), True);
-	for (uInt i=0;i<table_float.nelements();i++) {
-	    table_float[i] = new ScalarColumn<Float>(*(other.table_float[i]));
+	table_float.resize(other.table_float.nelements(), true);
+	record_float.resize(other.record_float.nelements(), true);
+	for (uint32_t i=0;i<table_float.nelements();i++) {
+	    table_float[i] = new ScalarColumn<float>(*(other.table_float[i]));
 	    record_float[i] = other.record_float[i];
 	    AlwaysAssert(table_float[i], AipsError);
 	}
-	table_double.resize(other.table_double.nelements(), True);
-	record_double.resize(other.record_double.nelements(), True);
-	for (uInt i=0;i<table_double.nelements();i++) {
-	    table_double[i] = new ScalarColumn<Double>(*(other.table_double[i]));
+	table_double.resize(other.table_double.nelements(), true);
+	record_double.resize(other.record_double.nelements(), true);
+	for (uint32_t i=0;i<table_double.nelements();i++) {
+	    table_double[i] = new ScalarColumn<double>(*(other.table_double[i]));
 	    record_double[i] = other.record_double[i];
 	    AlwaysAssert(table_double[i], AipsError);
 	}
-	table_complex.resize(other.table_complex.nelements(), True);
-	record_complex.resize(other.record_complex.nelements(), True);
-	for (uInt i=0;i<table_complex.nelements();i++) {
+	table_complex.resize(other.table_complex.nelements(), true);
+	record_complex.resize(other.record_complex.nelements(), true);
+	for (uint32_t i=0;i<table_complex.nelements();i++) {
 	    table_complex[i] = new ScalarColumn<Complex>(*(other.table_complex[i]));
 	    record_complex[i] = other.record_complex[i];
 	    AlwaysAssert(table_complex[i], AipsError);
 	}
-	table_dcomplex.resize(other.table_dcomplex.nelements(), True);
-	record_dcomplex.resize(other.record_dcomplex.nelements(), True);
-	for (uInt i=0;i<table_dcomplex.nelements();i++) {
+	table_dcomplex.resize(other.table_dcomplex.nelements(), true);
+	record_dcomplex.resize(other.record_dcomplex.nelements(), true);
+	for (uint32_t i=0;i<table_dcomplex.nelements();i++) {
 	    table_dcomplex[i] = new ScalarColumn<DComplex>(*(other.table_dcomplex[i]));
 	    record_dcomplex[i] = other.record_dcomplex[i];
 	    AlwaysAssert(table_dcomplex[i], AipsError);
 	}
-	table_string.resize(other.table_string.nelements(), True);
-	record_string.resize(other.record_string.nelements(), True);
-	for (uInt i=0;i<table_string.nelements();i++) {
+	table_string.resize(other.table_string.nelements(), true);
+	record_string.resize(other.record_string.nelements(), true);
+	for (uint32_t i=0;i<table_string.nelements();i++) {
 	    table_string[i] = new ScalarColumn<String>(*(other.table_string[i]));
 	    record_string[i] = other.record_string[i];
 	    AlwaysAssert(table_string[i], AipsError);
 	}
-	table_array_bool.resize(other.table_array_bool.nelements(), True);
-	record_array_bool.resize(other.record_array_bool.nelements(), True);
-	for (uInt i=0;i<table_array_bool.nelements();i++) {
-	    table_array_bool[i] = new ArrayColumn<Bool>(*(other.table_array_bool[i]));
+	table_array_bool.resize(other.table_array_bool.nelements(), true);
+	record_array_bool.resize(other.record_array_bool.nelements(), true);
+	for (uint32_t i=0;i<table_array_bool.nelements();i++) {
+	    table_array_bool[i] = new ArrayColumn<bool>(*(other.table_array_bool[i]));
 	    record_array_bool[i] = other.record_array_bool[i];
 	    AlwaysAssert(table_array_bool[i], AipsError);
 	}
-	table_array_char.resize(other.table_array_char.nelements(), True);
-	record_array_char.resize(other.record_array_char.nelements(), True);
-	for (uInt i=0;i<table_array_char.nelements();i++) {
-	    table_array_char[i] = new ArrayColumn<uChar>(*(other.table_array_char[i]));
+	table_array_char.resize(other.table_array_char.nelements(), true);
+	record_array_char.resize(other.record_array_char.nelements(), true);
+	for (uint32_t i=0;i<table_array_char.nelements();i++) {
+	    table_array_char[i] = new ArrayColumn<unsigned char>(*(other.table_array_char[i]));
 	    record_array_char[i] = other.record_array_char[i];
 	    AlwaysAssert(table_array_char[i], AipsError);
 	}
-	table_array_short.resize(other.table_array_short.nelements(), True);
-	record_array_short.resize(other.record_array_short.nelements(), True);
-	for (uInt i=0;i<table_array_short.nelements();i++) {
-	    table_array_short[i] = new ArrayColumn<Short>(*(other.table_array_short[i]));
+	table_array_short.resize(other.table_array_short.nelements(), true);
+	record_array_short.resize(other.record_array_short.nelements(), true);
+	for (uint32_t i=0;i<table_array_short.nelements();i++) {
+	    table_array_short[i] = new ArrayColumn<int16_t>(*(other.table_array_short[i]));
 	    record_array_short[i] = other.record_array_short[i];
 	    AlwaysAssert(table_array_short[i], AipsError);
 	}
-	table_array_int.resize(other.table_array_int.nelements(), True);
-	record_array_int.resize(other.record_array_int.nelements(), True);
-	for (uInt i=0;i<table_array_int.nelements();i++) {
-	    table_array_int[i] = new ArrayColumn<Int>(*(other.table_array_int[i]));
+	table_array_int.resize(other.table_array_int.nelements(), true);
+	record_array_int.resize(other.record_array_int.nelements(), true);
+	for (uint32_t i=0;i<table_array_int.nelements();i++) {
+	    table_array_int[i] = new ArrayColumn<int32_t>(*(other.table_array_int[i]));
 	    record_array_int[i] = other.record_array_int[i];
 	    AlwaysAssert(table_array_int[i], AipsError);
 	}
-	table_array_float.resize(other.table_array_float.nelements(), True);
-	record_array_float.resize(other.record_array_float.nelements(), True);
-	for (uInt i=0;i<table_array_float.nelements();i++) {
-	    table_array_float[i] = new ArrayColumn<Float>(*(other.table_array_float[i]));
+	table_array_float.resize(other.table_array_float.nelements(), true);
+	record_array_float.resize(other.record_array_float.nelements(), true);
+	for (uint32_t i=0;i<table_array_float.nelements();i++) {
+	    table_array_float[i] = new ArrayColumn<float>(*(other.table_array_float[i]));
 	    record_array_float[i] = other.record_array_float[i];
 	    AlwaysAssert(table_array_float[i], AipsError);
 	}
-	table_array_double.resize(other.table_array_double.nelements(), True);
-	record_array_double.resize(other.record_array_double.nelements(), True);
-	for (uInt i=0;i<table_array_double.nelements();i++) {
-	    table_array_double[i] = new ArrayColumn<Double>(*(other.table_array_double[i]));
+	table_array_double.resize(other.table_array_double.nelements(), true);
+	record_array_double.resize(other.record_array_double.nelements(), true);
+	for (uint32_t i=0;i<table_array_double.nelements();i++) {
+	    table_array_double[i] = new ArrayColumn<double>(*(other.table_array_double[i]));
 	    record_array_double[i] = other.record_array_double[i];
 	    AlwaysAssert(table_array_double[i], AipsError);
 	}
-	table_array_complex.resize(other.table_array_complex.nelements(), True);
-	record_array_complex.resize(other.record_array_complex.nelements(), True);
-	for (uInt i=0;i<table_array_complex.nelements();i++) {
+	table_array_complex.resize(other.table_array_complex.nelements(), true);
+	record_array_complex.resize(other.record_array_complex.nelements(), true);
+	for (uint32_t i=0;i<table_array_complex.nelements();i++) {
 	    table_array_complex[i] = new ArrayColumn<Complex>(*(other.table_array_complex[i]));
 	    record_array_complex[i] = other.record_array_complex[i];
 	    AlwaysAssert(table_array_complex[i], AipsError);
 	}
-	table_array_dcomplex.resize(other.table_array_dcomplex.nelements(), True);
-	record_array_dcomplex.resize(other.record_array_dcomplex.nelements(), True);
-	for (uInt i=0;i<table_array_dcomplex.nelements();i++) {
+	table_array_dcomplex.resize(other.table_array_dcomplex.nelements(), true);
+	record_array_dcomplex.resize(other.record_array_dcomplex.nelements(), true);
+	for (uint32_t i=0;i<table_array_dcomplex.nelements();i++) {
 	    table_array_dcomplex[i] = new ArrayColumn<DComplex>(*(other.table_array_dcomplex[i]));
 	    record_array_dcomplex[i] = other.record_array_dcomplex[i];
 	    AlwaysAssert(table_array_dcomplex[i], AipsError);
 	}
-	table_array_string.resize(other.table_array_string.nelements(), True);
-	record_array_string.resize(other.record_array_string.nelements(), True);
-	for (uInt i=0;i<table_array_string.nelements();i++) {
+	table_array_string.resize(other.table_array_string.nelements(), true);
+	record_array_string.resize(other.record_array_string.nelements(), true);
+	for (uint32_t i=0;i<table_array_string.nelements();i++) {
 	    table_array_string[i] = new ArrayColumn<String>(*(other.table_array_string[i]));
 	    record_array_string[i] = other.record_array_string[i];
 	    AlwaysAssert(table_array_string[i], AipsError);
@@ -383,9 +383,9 @@ CopyRecordToTable &CopyRecordToTable::operator=(const CopyRecordToTable &other)
     return *this;
 }
 
-void CopyRecordToTable::copy(uInt rownr)
+void CopyRecordToTable::copy(uint32_t rownr)
 {
-    uInt i;
+    uint32_t i;
 
     for (i=0; i < table_bool.nelements(); i++) {
         table_bool[i]->put(rownr, *(record_bool[i]));
@@ -463,37 +463,37 @@ void CopyRecordToTable::copy(uInt rownr)
 
 void CopyRecordToTable::clearAll()
 {
-    uInt i;
+    uint32_t i;
  
     for (i=0; i < table_bool.nelements(); i++) {
         delete table_bool[i];
     }
-    table_bool.set(static_cast<ScalarColumn<Bool>*>(0));
+    table_bool.set(static_cast<ScalarColumn<bool>*>(0));
  
     for (i=0; i < table_char.nelements(); i++) {
         delete table_char[i];
     }
-    table_char.set(static_cast<ScalarColumn<uChar>*>(0));
+    table_char.set(static_cast<ScalarColumn<unsigned char>*>(0));
  
     for (i=0; i < table_short.nelements(); i++) {
         delete table_short[i];
     }
-    table_short.set(static_cast<ScalarColumn<Short>*>(0));
+    table_short.set(static_cast<ScalarColumn<int16_t>*>(0));
  
     for (i=0; i < table_int.nelements(); i++) {
         delete table_int[i];
     }
-    table_int.set(static_cast<ScalarColumn<Int>*>(0));
+    table_int.set(static_cast<ScalarColumn<int32_t>*>(0));
  
     for (i=0; i < table_float.nelements(); i++) {
         delete table_float[i];
     }
-    table_float.set(static_cast<ScalarColumn<Float>*>(0));
+    table_float.set(static_cast<ScalarColumn<float>*>(0));
  
     for (i=0; i < table_double.nelements(); i++) {
         delete table_double[i];
     }
-    table_double.set(static_cast<ScalarColumn<Double>*>(0));
+    table_double.set(static_cast<ScalarColumn<double>*>(0));
  
     for (i=0; i < table_complex.nelements(); i++) {
         delete table_complex[i];
@@ -513,32 +513,32 @@ void CopyRecordToTable::clearAll()
     for (i=0; i < table_array_bool.nelements(); i++) {
         delete table_array_bool[i];
     }
-    table_array_bool.set(static_cast<ArrayColumn<Bool>*>(0));
+    table_array_bool.set(static_cast<ArrayColumn<bool>*>(0));
  
     for (i=0; i < table_array_char.nelements(); i++) {
         delete table_array_char[i];
     }
-    table_array_char.set(static_cast<ArrayColumn<uChar>*>(0));
+    table_array_char.set(static_cast<ArrayColumn<unsigned char>*>(0));
  
     for (i=0; i < table_array_short.nelements(); i++) {
         delete table_array_short[i];
     }
-    table_array_short.set(static_cast<ArrayColumn<Short>*>(0));
+    table_array_short.set(static_cast<ArrayColumn<int16_t>*>(0));
  
     for (i=0; i < table_array_int.nelements(); i++) {
         delete table_array_int[i];
     }
-    table_array_int.set(static_cast<ArrayColumn<Int>*>(0));
+    table_array_int.set(static_cast<ArrayColumn<int32_t>*>(0));
  
     for (i=0; i < table_array_float.nelements(); i++) {
         delete table_array_float[i];
     }
-    table_array_float.set(static_cast<ArrayColumn<Float>*>(0));
+    table_array_float.set(static_cast<ArrayColumn<float>*>(0));
  
     for (i=0; i < table_array_double.nelements(); i++) {
         delete table_array_double[i];
     }
-    table_array_double.set(static_cast<ArrayColumn<Double>*>(0));
+    table_array_double.set(static_cast<ArrayColumn<double>*>(0));
  
     for (i=0; i < table_array_complex.nelements(); i++) {
         delete table_array_complex[i];
@@ -560,7 +560,7 @@ void addRecordDesc(TableDesc &tableDescription,
                           const RecordDesc &recDesc,
                           const String &prefix)
 {
-    uInt n = recDesc.nfields();
+    uint32_t n = recDesc.nfields();
     String fullPrefix = prefix;
     if (! prefix.empty()) {
 	fullPrefix = prefix + "_";
@@ -568,27 +568,27 @@ void addRecordDesc(TableDesc &tableDescription,
     // variable length arrays will likely be identified by a neg. shape
     // but for now, we fake it out with an IPosition involving zeros
 //    IPosition varShape(1,-1);
-    for (uInt i=0; i < n; i++) {
+    for (uint32_t i=0; i < n; i++) {
         String colname = fullPrefix + recDesc.name(i);
         if (recDesc.isScalar(i)) {
             switch(recDesc.type(i)) {
             case TpBool:
-                tableDescription.addColumn(ScalarColumnDesc<Bool>(colname));
+                tableDescription.addColumn(ScalarColumnDesc<bool>(colname));
                 break;
             case TpUChar:
-                tableDescription.addColumn(ScalarColumnDesc<uChar>(colname));
+                tableDescription.addColumn(ScalarColumnDesc<unsigned char>(colname));
                 break;
             case TpShort:
-                tableDescription.addColumn(ScalarColumnDesc<Short>(colname));
+                tableDescription.addColumn(ScalarColumnDesc<int16_t>(colname));
                 break;
             case TpInt:
-                tableDescription.addColumn(ScalarColumnDesc<Int>(colname));
+                tableDescription.addColumn(ScalarColumnDesc<int32_t>(colname));
                 break;
             case TpFloat:
-                tableDescription.addColumn(ScalarColumnDesc<Float>(colname));
+                tableDescription.addColumn(ScalarColumnDesc<float>(colname));
                 break;
             case TpDouble:
-                tableDescription.addColumn(ScalarColumnDesc<Double>(colname));
+                tableDescription.addColumn(ScalarColumnDesc<double>(colname));
                 break;
             case TpComplex:
                 tableDescription.addColumn(ScalarColumnDesc<Complex>(colname));
@@ -609,55 +609,55 @@ void addRecordDesc(TableDesc &tableDescription,
             switch(recDesc.type(i)) {
             case TpArrayBool:
 		if (options != 0) {
-		    tableDescription.addColumn(ArrayColumnDesc<Bool>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<bool>(colname,
                              recDesc.shape(i), options));
 		} else {
-		    tableDescription.addColumn(ArrayColumnDesc<Bool>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<bool>(colname,
                              options));
 		}
                 break;
             case TpArrayUChar:
 		if (options != 0) {
-		    tableDescription.addColumn(ArrayColumnDesc<uChar>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<unsigned char>(colname,
                              recDesc.shape(i), options));
 		} else {
-		    tableDescription.addColumn(ArrayColumnDesc<uChar>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<unsigned char>(colname,
                              options));
 		}
                 break;
             case TpArrayShort:
 		if (options != 0) {
-		    tableDescription.addColumn(ArrayColumnDesc<Short>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<int16_t>(colname,
                              recDesc.shape(i), options));
 		} else {
-		    tableDescription.addColumn(ArrayColumnDesc<Short>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<int16_t>(colname,
                              options));
 		}
                 break;
             case TpArrayInt:
 		if (options != 0) {
-		    tableDescription.addColumn(ArrayColumnDesc<Int>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<int32_t>(colname,
                              recDesc.shape(i), options));
 		} else {
-		    tableDescription.addColumn(ArrayColumnDesc<Int>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<int32_t>(colname,
                              options));
 		}
                 break;
             case TpArrayFloat:
 		if (options != 0) {
-		    tableDescription.addColumn(ArrayColumnDesc<Float>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<float>(colname,
                              recDesc.shape(i), options));
 		} else {
-		    tableDescription.addColumn(ArrayColumnDesc<Float>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<float>(colname,
                              options));
 		}
                 break;
             case TpArrayDouble:
 		if (options != 0) {
-		    tableDescription.addColumn(ArrayColumnDesc<Double>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<double>(colname,
                              recDesc.shape(i), options));
 		} else {
-		    tableDescription.addColumn(ArrayColumnDesc<Double>(colname,
+		    tableDescription.addColumn(ArrayColumnDesc<double>(colname,
                              options));
 		}
                 break;
@@ -699,17 +699,17 @@ void addRecordDesc(TableDesc &tableDescription,
 
 CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
 				       const RecordInterface &inputBuffer,
-				       const Vector<Int> inputMap)
+				       const Vector<int32_t> inputMap)
 {
-    Block<Int> counts(TpNumberOfTypes);
+    Block<int32_t> counts(TpNumberOfTypes);
     counts.set(0);
     // Count how many fields of each type exist
-    uInt n = inputBuffer.nfields();
-    uInt i;
+    uint32_t n = inputBuffer.nfields();
+    uint32_t i;
     for (i=0; i < n; i++) {
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
-    uInt total = 0;
+    uint32_t total = 0;
     out_record_bool.resize(counts[TpBool]); in_record_bool.resize(counts[TpBool]);
     total += counts[TpBool];
  
@@ -778,11 +778,11 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
     total += counts[TpArrayString];
   
     // Keeps track of what index we're writing into for each block.
-    Block<uInt> where(TpNumberOfTypes);
+    Block<uint32_t> where(TpNumberOfTypes);
     where.set(0);
     for (i=0; i < inputMap.nelements(); i++) {
         if (inputMap(i) != -1) {
-	    uInt which = where[inputBuffer.description().type(i)];
+	    uint32_t which = where[inputBuffer.description().type(i)];
 	    switch(inputBuffer.description().type(i)) {
 	    case TpBool:
 		in_record_bool[which].attachToRecord(inputBuffer, i);
@@ -890,7 +890,7 @@ CopyRecordToRecord::~CopyRecordToRecord()
  
 void CopyRecordToRecord::copy()
 {
-    uInt i;
+    uint32_t i;
 
     for (i=0; i < out_record_bool.nelements(); i++) {
         *(out_record_bool[i]) = *(in_record_bool[i]);

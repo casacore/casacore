@@ -38,9 +38,9 @@ template<class T, class U>
 U Function<T,U>::operator()(const Vector<ArgType> &x) const {
   DebugAssert(ndim()<=x.nelements(), AipsError);
   if (x.contiguousStorage() || ndim()<2) return this->eval(&(x[0]));
-  uInt j=ndim();
+  uint32_t j=ndim();
   arg_p.resize(j);
-  for (uInt i=0; i<j; ++i) arg_p[i] = x[i];
+  for (uint32_t i=0; i<j; ++i) arg_p[i] = x[i];
   return this->eval(&(arg_p[0]));
 }
 
@@ -74,7 +74,7 @@ template<class T, class U>
 void Function<T,U>::getMode(RecordInterface&) const { }
 
 template<class T, class U>
-Bool Function<T,U>::hasMode() const { return False; }
+bool Function<T,U>::hasMode() const { return false; }
 
 template<class T, class U>
 Function<typename FunctionTraits<T>::DiffType> *

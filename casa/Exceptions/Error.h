@@ -52,10 +52,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #ifdef NDEBUG
 #define AssertCc(c) ((void)0)
 #else
-#define AssertCc(c) { if (AIPS_UNLIKELY(! (c))) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#define AssertCc(c) { if (AIPS_UNLIKELY(! (c))) {casacore::AipsError::throwIf (true, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 #endif
 
-#define AssertAlways(c) { if (AIPS_UNLIKELY(! (c))) {casacore::AipsError::throwIf (casacore::True, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
+#define AssertAlways(c) { if (AIPS_UNLIKELY(! (c))) {casacore::AipsError::throwIf (true, "Assertion failed: " #c, __FILE__, __LINE__, __PRETTY_FUNCTION__); }}
 
 #define WarnCc(m)\
 {\
@@ -84,11 +84,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
 
 // Throw an AipsError exception if the condition is true.
-#define ThrowIf(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIf (casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIf(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIf (true, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Throw an AipsError exception if the system error code is not 0.
 // It adds the message for that error code to the exception text.
-#define ThrowIfError(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIfError (casacore::True, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
+#define ThrowIfError(c,m) {if (AIPS_UNLIKELY(c)) {casacore::AipsError::throwIfError (true, (m), __FILE__, __LINE__, __PRETTY_FUNCTION__);}}
 
 // Repackage and rethrow an AipsError exception.
 #define Rethrow(e,m) {throw casacore::AipsError::repackageAipsError ((e),(m),__FILE__,__LINE__, __PRETTY_FUNCTION__);}
@@ -157,9 +157,9 @@ public:
   // Creates an AipsError and initializes the error message from
   // the parameter.
   // <group>
-  AipsError (const Char *str, Category c = GENERAL);
+  AipsError (const char *str, Category c = GENERAL);
   AipsError (const String &str, Category c = GENERAL);
-  AipsError (const String &msg, const String &filename, uInt lineNumber,
+  AipsError (const String &msg, const String &filename, uint32_t lineNumber,
              Category c = GENERAL);
   AipsError (Category c = GENERAL);
   // </group>
@@ -181,17 +181,17 @@ public:
   static AipsError repackageAipsError (AipsError& error, 
                                        const String& message,
                                        const char* file,
-                                       Int line,
+                                       int32_t line,
                                        const char* func);
 
   // Throw if the condition is true.
-  static void throwIf (Bool condition, const String& message,
-                       const char* file, Int line,
+  static void throwIf (bool condition, const String& message,
+                       const char* file, int32_t line,
                        const char* func = "");
 
   // Throw if the system error code is not 0.
-  static void throwIfError (Int errorCode, const String& prefix,
-                            const char* file, Int line,
+  static void throwIfError (int32_t errorCode, const String& prefix,
+                            const char* file, int32_t line,
                             const char* func = "");
 
 protected:
@@ -236,8 +236,8 @@ public:
   // allocation size.
   //
   // <group>
-  AllocError(const Char *str, uInt sze) : AipsError(str,SYSTEM), Size(sze) {}
-  AllocError(const String &str, uInt sze) : AipsError(str,SYSTEM), Size(sze)  {}
+  AllocError(const char *str, uint32_t sze) : AipsError(str,SYSTEM), Size(sze) {}
+  AllocError(const String &str, uint32_t sze) : AipsError(str,SYSTEM), Size(sze)  {}
   // </group>
 
   //
@@ -281,7 +281,7 @@ public:
   // Creates an GeneralIndexError and initializes the error message from
   // the parameter
   // <group>
-  IndexError(const Char *str,Category c=BOUNDARY) : AipsError(str,c) {}
+  IndexError(const char *str,Category c=BOUNDARY) : AipsError(str,c) {}
   IndexError(const String &str,Category c=BOUNDARY) : AipsError(str,c) {}
   IndexError(Category c=BOUNDARY) : AipsError(c) {}
   // </group>
@@ -323,7 +323,7 @@ public:
   // which cause the error to occur.
   //
   // <group>
-  indexError(t oI, const Char *str, Category c=BOUNDARY);
+  indexError(t oI, const char *str, Category c=BOUNDARY);
   indexError(t oI, const String &str, Category c=BOUNDARY);
   indexError(t oI, Category c=BOUNDARY) : IndexError(c), oIndex(oI) {};
   // </group>
@@ -364,7 +364,7 @@ public:
   // the parameter
   // <group>
   DuplError(Category c=BOUNDARY) : AipsError(c) {}
-  DuplError(const Char *str,Category c=BOUNDARY) : AipsError(str,c) {}
+  DuplError(const char *str,Category c=BOUNDARY) : AipsError(str,c) {}
   DuplError(const String &str,Category c=BOUNDARY) : AipsError(str,c) {}
   // </group>
 
@@ -406,7 +406,7 @@ public:
   // optional character string.
   //
   // <group>
-  duplError(t oI, const Char *str,Category c=BOUNDARY);
+  duplError(t oI, const char *str,Category c=BOUNDARY);
   duplError(t oI, const String &str,Category c=BOUNDARY);
   duplError(t oI,Category c=BOUNDARY) : DuplError(c), oKey(oI) {};
   // </group>
@@ -437,7 +437,7 @@ public:
   SystemCallError(const String &funcName, int error, Category c=GENERAL);
 
   SystemCallError (int error, const String &msg, const String &filename,
-                   uInt lineNumber, Category c=GENERAL);
+                   uint32_t lineNumber, Category c=GENERAL);
 
   // Destructor which does nothing.
   ~SystemCallError() noexcept;
@@ -480,7 +480,7 @@ public:
   // This constructs a "AbortError" from the error message.
   //
   // <group>
-  AbortError(const Char *str,Category c=GENERAL);
+  AbortError(const char *str,Category c=GENERAL);
   AbortError(const String &str,Category c=GENERAL);
   // </group>
 

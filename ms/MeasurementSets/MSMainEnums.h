@@ -66,95 +66,95 @@ public:
     //
     // ID of first antenna in antenna-pair. This is a key into the
     // ANTENNA table. Ranges from 0 to NUM_ANT-1.<BR>
-    // Int
+    // int32_t
     ANTENNA1,    
     //
     // ID of second antenna in antenna-pair. For SD ANTENNA1==ANTENNA2<BR>
-    // Int
+    // int32_t
     ANTENNA2,  
     //
     // ARRAY id.<BR>
-    // Int.
+    // int32_t.
     ARRAY_ID,
     //
     // Data description id <BR>
-    // Int.
+    // int32_t.
     DATA_DESC_ID,
     //
     // Effective integration time (i.e.<=INTERVAL)<BR>
-    // Double - s.
+    // double - s.
     EXPOSURE,    
     //
     // Feed id on ANTENNA1.<BR>
-    // Int.
+    // int32_t.
     FEED1,
     //
     // Feed id on ANTENNA2.<BR>
-    // Int.
+    // int32_t.
     FEED2,
     //
     // Unique id for this pointing (or drift scan)<BR>
-    // Int
+    // int32_t
     FIELD_ID,    
     //
     // The data flags, array of bools with same shape as data.
-    // Data is flagged bad if FLAG is True.<BR>
-    // Bool(Nc, Nf)
+    // Data is flagged bad if FLAG is true.<BR>
+    // bool(Nc, Nf)
     FLAG,
     //
     // Flag category, allows for multiple categories of flagging, which can
     // selectively be reset. The cumulative effect is reflected in FLAG. 
     // This column should have an attached keyword CATEGORY which is a 
     // String (Ncat) of categories (e.g, ONLINE, FLAG_CMD, INTERACTIVE) <BR>
-    // Bool (Nc, Nf, Ncat)
+    // bool (Nc, Nf, Ncat)
     FLAG_CATEGORY,
     //
-    // Flag all data in this row if True.<BR>
-    // Bool
+    // Flag all data in this row if true.<BR>
+    // bool
     FLAG_ROW,
     //
     // The extent of this sample, sampling interval.<BR>
-    // Double - s.
+    // double - s.
     INTERVAL, 
     //
     // Index into OBSERVATION table. <BR>
-    // Int.
+    // int32_t.
     OBSERVATION_ID,
     //
     // Processor Id, points to PROCESSOR table with information on the 
     // correlator or backend setup. <BR>
-    // Int
+    // int32_t
     PROCESSOR_ID,
     //
     // Scan number.
-    // Int.
+    // int32_t.
     SCAN_NUMBER,
     //
     // Estimated rms noise for channel with unity bandpass response.<BR>
-    // Float(Nc) - Same units as the DATA column.
+    // float(Nc) - Same units as the DATA column.
     SIGMA,
     //
     // State Id, points to STATE table with info on current observing mode,
     // calibration and reference signals etc. (Mainly single dish) <BR>
-    // Int
+    // int32_t
     STATE_ID,
     //
     // Modified Julian Day number (JD-2400000.5) for midpoint of integration.
     // For high precision timing, add the value from TIME_EXTRA_PREC.<BR>
-    // Double - s - EPOCH.
+    // double - s - EPOCH.
     TIME,
     //
     // Modified Julian Day number (JD-2400000.5) for centroid of integration.
-    // Double - s - EPOCH.
+    // double - s - EPOCH.
     TIME_CENTROID,
     //
     // UVW coordinates.<BR>
-    // Double(3) - m - UVW.
+    // double(3) - m - UVW.
     UVW,         
     //
     // Weight of spectrum. This is the weight assigned by the correlator and
     // does NOT get overwritten by e.g. imaging tasks that do weighting.<BR>
-    // Float(Nc).
+    // float(Nc).
     WEIGHT,
     //
     // Not a column, but just an enum specifying the number of required columns.
@@ -162,11 +162,11 @@ public:
     NUMBER_REQUIRED_COLUMNS=WEIGHT,
     //
     // Antenna3 - for triple correlations products. <BR>
-    // Int
+    // int32_t
     ANTENNA3,
     //
-    // Reference antenna for this baseline, True for ANTENNA1 <BR>
-    // Bool
+    // Reference antenna for this baseline, true for ANTENNA1 <BR>
+    // bool
     BASELINE_REF,
     //
     // The Corrected complex visibility data (optional). <BR>
@@ -180,16 +180,16 @@ public:
     DATA,
     //
     // Feed id on ANTENNA3 <BR>
-    // Int
+    // int32_t
     FEED3,
     //
     // Floating point data column. For simple single dish work this can be used
     // instead of the complex DATA column. <BR>
-    // Float(Nc, Nf)
+    // float(Nc, Nf)
     FLOAT_DATA,
     //
     // The imaging weights (optional). <BR>
-    // Float(Nf)
+    // float(Nf)
     IMAGING_WEIGHT,
     //
     // Complex correlation function or lag spectrum for each correlation 
@@ -202,32 +202,32 @@ public:
     MODEL_DATA,
     //
     // Switching phase Id <BR>
-    // Int
+    // int32_t
     PHASE_ID,
     //
     // For a pulsar the correlations are assumed to be measured for a
     // limited number of pulse phase bins. This is the particular bin for
     // which this data was measured. (optional) <BR>
-    // Int.
+    // int32_t.
     PULSAR_BIN,
     //
     // Unique id for this pulsar gate. Index into PULSAR_GATE table.
     // (optional) <BR>
-    // Int.
+    // int32_t.
     PULSAR_GATE_ID,
     //
     // Estimated rms noise for each data point. To be used instead of
     // SIGMA if present. <BR>
-    // Float(Nc,Nf) - Same units as the DATA column.
+    // float(Nc,Nf) - Same units as the DATA column.
     SIGMA_SPECTRUM,
     //
     // Additional precision for TIME if required. Add this to TIME to obtain
     // the exact EPOCH.<BR>
-    // Double - s.
+    // double - s.
     TIME_EXTRA_PREC, 
     //
     // UVW for second pair of triple correlation product. <BR>
-    // Double(3) - m
+    // double(3) - m
     UVW2,
     //
     // Zero frequency point - needed for transform back to lag domain <BR>
@@ -235,10 +235,10 @@ public:
     VIDEO_POINT,
     //
     // Weight for each channel. To be used instead of WEIGHT if present.<BR>
-    // Float(Nf).
+    // float(Nf).
     WEIGHT_SPECTRUM,
     // Corrected Weight for each channel.  If present can be used with corrected_data<BR>
-    // Float(Nf).
+    // float(Nf).
     CORRECTED_WEIGHT_SPECTRUM,
     //
     // Not a column, but just a final enum specifying the number of enums.
@@ -264,7 +264,7 @@ public:
     // History information subtable.
     HISTORY,
     // MS Version number. <BR>
-    // Float.
+    // float.
     MS_VERSION,
     // Observation subtable. Project, observer, schedule.
     OBSERVATION,

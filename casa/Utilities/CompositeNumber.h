@@ -45,9 +45,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 // CompositeNumber cn(1000);
-// Int n = cn.nextLarger(319);
-// Int m = cn.nextSmaller(462);
-// Int l = cn.nearest(462);
+// int32_t n = cn.nextLarger(319);
+// int32_t m = cn.nextSmaller(462);
+// int32_t l = cn.nearest(462);
 // </srcblock>
 // </example>
 
@@ -58,38 +58,38 @@ public:
   // constructor:
   // Note: if you later make a call with value > maxval, we
   // will recalculate the list of composite numbers
-  CompositeNumber (const uInt maxval = 8192);
+  CompositeNumber (const uint32_t maxval = 8192);
 
   // destructor
   ~CompositeNumber();
 
   // return the next larger composite number
-  uInt nextLarger(const uInt value);
+  uint32_t nextLarger(const uint32_t value);
 
   // return the next smaller composite number
-  uInt nextSmaller(const uInt value);
+  uint32_t nextSmaller(const uint32_t value);
 
   // return the nearest composite number
-  uInt nearest(const uInt value);
+  uint32_t nearest(const uint32_t value);
 
   // return the next larger even composite number
-  uInt nextLargerEven(const uInt value);
+  uint32_t nextLargerEven(const uint32_t value);
 
   // return the next smaller even composite number
-  uInt nextSmallerEven(const uInt value);
+  uint32_t nextSmallerEven(const uint32_t value);
 
   // return the closest even composite number
-  uInt nearestEven(const uInt value);
+  uint32_t nearestEven(const uint32_t value);
 
-  // returns True is value is composite
-  Bool isComposite(const uInt value);
+  // returns true is value is composite
+  bool isComposite(const uint32_t value);
 
  private:
 
-  Block<uInt> itsNumbers;
-  uInt         itsMaxComplete;
+  Block<uint32_t> itsNumbers;
+  uint32_t         itsMaxComplete;
 
-  void generate(const uInt maxval);
+  void generate(const uint32_t maxval);
 
 };
 

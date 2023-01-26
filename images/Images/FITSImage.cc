@@ -60,8 +60,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
-: ImageInterface<Float>(),
+FITSImage::FITSImage (const String& name, uint32_t whichRep, uint32_t whichHDU)
+: ImageInterface<float>(),
   name_p      (name),
   fullname_p  (name),
   pPixelMask_p(0),
@@ -70,20 +70,20 @@ FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
   shortMagic_p (0),
   uCharMagic_p (0),
   longMagic_p (0),
-  hasBlanks_p (False),
+  hasBlanks_p (false),
   dataType_p  (TpOther),
   fileOffset_p(0),
-  isClosed_p  (True),
-  filterZeroMask_p(False),
+  isClosed_p  (true),
+  filterZeroMask_p(false),
   whichRep_p(whichRep),
   whichHDU_p(whichHDU),
-  _hasBeamsTable(False)
+  _hasBeamsTable(false)
 {
    setup();
 }
 
-FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt whichRep, uInt whichHDU)
-: ImageInterface<Float>(),
+FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uint32_t whichRep, uint32_t whichHDU)
+: ImageInterface<float>(),
   name_p      (name),
   fullname_p  (name),
   maskSpec_p  (maskSpec),
@@ -93,20 +93,20 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
   shortMagic_p (0),
   uCharMagic_p (0),
   longMagic_p (0),
-  hasBlanks_p (False),
+  hasBlanks_p (false),
   dataType_p  (TpOther),
   fileOffset_p(0),
-  isClosed_p  (True),
-  filterZeroMask_p(False),
+  isClosed_p  (true),
+  filterZeroMask_p(false),
   whichRep_p(whichRep),
   whichHDU_p(whichHDU),
-  _hasBeamsTable(False)
+  _hasBeamsTable(false)
 {
    setup();
 }
 
 FITSImage::FITSImage (const FITSImage& other)
-: ImageInterface<Float>(other),
+: ImageInterface<float>(other),
   name_p      (other.name_p),
   fullname_p  (other.fullname_p),
   maskSpec_p  (other.maskSpec_p),
@@ -139,7 +139,7 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
 //
 {
    if (this != &other) {
-      ImageInterface<Float>::operator= (other);
+      ImageInterface<float>::operator= (other);
 //
       pTiledFile_p = other.pTiledFile_p;             // Counted pointer
 //
@@ -193,7 +193,7 @@ String FITSImage::get_fitsname(const String &fullname)
 {
 	String fullname_l;
 	String fitsname;
-	Int close_bracepos, open_bracepos, fullname_length;
+	int32_t close_bracepos, open_bracepos, fullname_length;
 
 	fullname_l = fullname;
 	fullname_l.trim();
@@ -237,19 +237,19 @@ String FITSImage::get_fitsname(const String &fullname)
 }
 
 //
-uInt FITSImage::get_hdunum(const String &fullname)
+uint32_t FITSImage::get_hdunum(const String &fullname)
 {
 	String extname=String("");
 
 	String fullname_l;
 	String fitsname;
 	String extstring;
-	Int fullname_length, comma_pos;
+	int32_t fullname_length, comma_pos;
 
-	Int  extver=-1;
-	Int  extindex=-1;
-	Int fitsindex=-1;
-	uInt hduindex=0;
+	int32_t  extver=-1;
+	int32_t  extindex=-1;
+	int32_t fitsindex=-1;
+	uint32_t hduindex=0;
 
 	fullname_l = fullname;
 	fullname_l.trim();
@@ -312,10 +312,10 @@ uInt FITSImage::get_hdunum(const String &fullname)
 	FITSImgParser fip = FITSImgParser(fitsname);
 
 	if (extname.length() > 0 || extindex > -1) {
-		FITSExtInfo   fei = FITSExtInfo(fip.fitsname(True), extindex, extname, extver, True);
+		FITSExtInfo   fei = FITSExtInfo(fip.fitsname(true), extindex, extname, extver, true);
 		fitsindex = fip.get_index(fei);
 		if (fitsindex > -1)
-			hduindex = (uInt)fitsindex;
+			hduindex = (uint32_t)fitsindex;
 		else
 			throw (AipsError("Extension " + extstring + " does not exist in " + fitsname));
 	}
@@ -329,7 +329,7 @@ uInt FITSImage::get_hdunum(const String &fullname)
 	return hduindex;
 }
 
-ImageInterface<Float>* FITSImage::cloneII() const
+ImageInterface<float>* FITSImage::cloneII() const
 {
    return new FITSImage (*this);
 }
@@ -346,7 +346,7 @@ String FITSImage::className()
     return x;
 }
 
-Bool FITSImage::isMasked() const
+bool FITSImage::isMasked() const
 {
    return hasBlanks_p;
 }
@@ -361,12 +361,12 @@ IPosition FITSImage::shape() const
    return shape_p.shape();
 }
 
-uInt FITSImage::advisedMaxPixels() const
+uint32_t FITSImage::advisedMaxPixels() const
 {
    return shape_p.tileShape().product();
 }
 
-IPosition FITSImage::doNiceCursorShape (uInt) const  
+IPosition FITSImage::doNiceCursorShape (uint32_t) const  
 {
    return shape_p.tileShape();
 }
@@ -376,14 +376,14 @@ void FITSImage::resize(const TiledShape&)
    throw (AipsError ("FITSImage::resize - a FITSImage is not writable"));
 }
 
-Bool FITSImage::doGetSlice(Array<Float>& buffer,
+bool FITSImage::doGetSlice(Array<float>& buffer,
                            const Slicer& section)
 {
    reopenIfNeeded();
    if (pTiledFile_p->dataType() == TpFloat) {
       pTiledFile_p->get (buffer, section);
    } else if (pTiledFile_p->dataType() == TpDouble) {
-      Array<Double> tmp;
+      Array<double> tmp;
       pTiledFile_p->get (tmp, section);
       buffer.resize(tmp.shape());
       convertArray(buffer, tmp);
@@ -397,11 +397,11 @@ Bool FITSImage::doGetSlice(Array<Float>& buffer,
       pTiledFile_p->get (buffer, section, scale_p, offset_p,
 			uCharMagic_p, hasBlanks_p);
    }
-   return False;                            // Not a reference
+   return false;                            // Not a reference
 } 
    
 
-void FITSImage::doPutSlice (const Array<Float>&, const IPosition&,
+void FITSImage::doPutSlice (const Array<float>&, const IPosition&,
                             const IPosition&)
 {
    throw (AipsError ("FITSImage::putSlice - "
@@ -409,7 +409,7 @@ void FITSImage::doPutSlice (const Array<Float>&, const IPosition&,
 }
 
 
-String FITSImage::name (Bool stripPath) const
+String FITSImage::name (bool stripPath) const
 {
    Path path(name_p);
    if (stripPath) {
@@ -420,29 +420,29 @@ String FITSImage::name (Bool stripPath) const
 }
 
 
-Bool FITSImage::isPersistent() const
+bool FITSImage::isPersistent() const
 {
-  return True;
+  return true;
 }
 
-Bool FITSImage::isPaged() const
+bool FITSImage::isPaged() const
 {
-  return True;
+  return true;
 }
 
-Bool FITSImage::isWritable() const
+bool FITSImage::isWritable() const
 {  
 // Its too hard to implement putMaskSlice becuase
 // magic blanking is used. It measn we lose
 // the data values if the mask is put somewhere
 
-   return False;
+   return false;
 }
 
 
-Bool FITSImage::ok() const
+bool FITSImage::ok() const
 {
-   return True;
+   return true;
 }  
 
 DataType FITSImage::dataType() const
@@ -450,12 +450,12 @@ DataType FITSImage::dataType() const
    return TpFloat;
 }
 
-Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+bool FITSImage::doGetMaskSlice (Array<bool>& buffer, const Slicer& section)
 {
    if (!hasBlanks_p) {
       buffer.resize (section.length());
-      buffer = True;
-      return False;
+      buffer = true;
+      return false;
    }
 //
    reopenIfNeeded();
@@ -463,12 +463,12 @@ Bool FITSImage::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
 }
 
 
-Bool FITSImage::hasPixelMask() const
+bool FITSImage::hasPixelMask() const
 {
    return hasBlanks_p;
 }  
 
-const Lattice<Bool>& FITSImage::pixelMask() const
+const Lattice<bool>& FITSImage::pixelMask() const
 {
    if (!hasBlanks_p) {
       throw (AipsError ("FITSImage::pixelMask - no pixelmask used"));
@@ -476,7 +476,7 @@ const Lattice<Bool>& FITSImage::pixelMask() const
    return *pPixelMask_p;
 }
 
-Lattice<Bool>& FITSImage::pixelMask()
+Lattice<bool>& FITSImage::pixelMask()
 {
    if (!hasBlanks_p) {
       throw (AipsError ("FITSImage::pixelMask - no pixelmask used"));
@@ -491,7 +491,7 @@ void FITSImage::tempClose()
       pPixelMask_p = 0;
 //
       pTiledFile_p = 0;
-      isClosed_p = True;
+      isClosed_p = true;
    }
 }
 
@@ -502,16 +502,16 @@ void FITSImage::reopen()
    }
 }
 
-uInt FITSImage::maximumCacheSize() const
+uint32_t FITSImage::maximumCacheSize() const
 {
    reopenIfNeeded();
    return pTiledFile_p->maximumCacheSize() / ValType::getTypeSize(dataType_p);
 }
 
-void FITSImage::setMaximumCacheSize (uInt howManyPixels)
+void FITSImage::setMaximumCacheSize (uint32_t howManyPixels)
 {
    reopenIfNeeded();
-   const uInt sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
+   const uint32_t sizeInBytes = howManyPixels * ValType::getTypeSize(dataType_p);
    pTiledFile_p->setMaximumCacheSize (sizeInBytes);
 }
 
@@ -525,7 +525,7 @@ void FITSImage::setCacheSizeFromPath (const IPosition& sliceShape,
 			       windowLength, axisPath);
 }
 
-void FITSImage::setCacheSizeInTiles (uInt howManyTiles)  
+void FITSImage::setCacheSizeInTiles (uint32_t howManyTiles)  
 {  
    reopenIfNeeded();
    pTiledFile_p->setCacheSize (howManyTiles);
@@ -556,7 +556,7 @@ void FITSImage::setup()
    name_p = get_fitsname(fullname_p);
 
 // Determine the HDU index from the extension specification
-   uInt HDUnum = get_hdunum(fullname_p);
+   uint32_t HDUnum = get_hdunum(fullname_p);
 
 
 // Compare the HDU index given directly and
@@ -595,8 +595,8 @@ void FITSImage::setup()
    IPosition shape;
    ImageInfo imageInfo;
    Unit brightnessUnit;
-   Int recno;
-   Int recsize;          // Should be 2880 bytes (unless blocking used)
+   int32_t recno;
+   int32_t recsize;          // Should be 2880 bytes (unless blocking used)
    FITS::ValueType dataType;
    Record miscInfo;
 
@@ -649,12 +649,12 @@ void FITSImage::setup()
 // the magic value has been set (suggests there are masked pixels) and 
 // hasBlanks_p was set to T or F by getImageAttributes
 
-      if (dataType_p==TpFloat || dataType_p== TpDouble) hasBlanks_p = True;
+      if (dataType_p==TpFloat || dataType_p== TpDouble) hasBlanks_p = true;
    } else {
 
 // We don't want to use the mask
 
-      hasBlanks_p = False;
+      hasBlanks_p = false;
    }
 
 // Open the image.
@@ -670,8 +670,8 @@ void FITSImage::setup()
 
 void FITSImage::open()
 {
-   Bool writable = False;
-   Bool canonical = True;    
+   bool writable = false;
+   bool canonical = true;    
 
 // The tile shape must not be a subchunk in all dimensions
 
@@ -706,7 +706,7 @@ void FITSImage::open()
 
 // Ok, it is open now.
 
-   isClosed_p = False;
+   isClosed_p = false;
 }
 
 
@@ -714,12 +714,12 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
                                     IPosition& shape, ImageInfo& imageInfo,
                                     Unit& brightnessUnit,
                                     RecordInterface& miscInfo,
-                                    Int& recordsize, Int& recordnumber, 
+                                    int32_t& recordsize, int32_t& recordnumber, 
                                     FITS::ValueType& dataType, 
-                                    Float& scale, Float& offset, 
-				    uChar& uCharMagic, Short& shortMagic,
-                                    Int& longMagic, Bool& hasBlanks, const String& name,
-                                    uInt whichRep, uInt whichHDU)
+                                    float& scale, float& offset, 
+				    unsigned char& uCharMagic, int16_t& shortMagic,
+                                    int32_t& longMagic, bool& hasBlanks, const String& name,
+                                    uint32_t whichRep, uint32_t whichHDU)
 {
     LogIO os(LogOrigin("FITSImage", "getImageAttributes", WHERE));
     File fitsfile(name);
@@ -743,7 +743,7 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 //
 // Advance to the right HDU
 //
-    for (uInt i=0; i<whichHDU; i++) {
+    for (uint32_t i=0; i<whichHDU; i++) {
         infile.skip_hdu();
         if (infile.err()) {
             throw(AipsError("Error advancing to image in file " + name));
@@ -790,20 +790,20 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     if (!whichHDU_p)
     {
     	if (dataType==FITS::FLOAT) {
-    		crackHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
+    		crackHeader<float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
     				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::DOUBLE) {
-    		crackHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    		crackHeader<double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
     				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::LONG) {
-    		crackHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    		crackHeader<int32_t>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
     				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::SHORT) {
-	  crackHeader<Short>(cSys, shape, imageInfo, brightnessUnit, 
+	  crackHeader<int16_t>(cSys, shape, imageInfo, brightnessUnit, 
 			     miscInfo, scale, offset, uCharMagic, shortMagic, 
 			     longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::BYTE) {
-	  crackHeader<uChar>(cSys, shape, imageInfo, brightnessUnit, 
+	  crackHeader<unsigned char>(cSys, shape, imageInfo, brightnessUnit, 
 			     miscInfo, scale, offset, uCharMagic, shortMagic, 
 			     longMagic, hasBlanks, os, infile, whichRep);
     	}
@@ -811,20 +811,20 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     else
     {
     	if (dataType==FITS::FLOAT) {
-    		crackExtHeader<Float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
+    		crackExtHeader<float>(cSys, shape, imageInfo, brightnessUnit, miscInfo,  scale,
     				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::DOUBLE) {
-    		crackExtHeader<Double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    		crackExtHeader<double>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
     				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::LONG) {
-    		crackExtHeader<Int>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
+    		crackExtHeader<int32_t>(cSys, shape, imageInfo, brightnessUnit, miscInfo, scale,
     				offset, uCharMagic, shortMagic, longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::SHORT) {
-	  crackExtHeader<Short>(cSys, shape, imageInfo, brightnessUnit, 
+	  crackExtHeader<int16_t>(cSys, shape, imageInfo, brightnessUnit, 
 				miscInfo, scale, offset, uCharMagic, shortMagic, 
 				longMagic, hasBlanks, os, infile, whichRep);
     	} else if (dataType==FITS::BYTE) {
-	  crackExtHeader<uChar>(cSys, shape, imageInfo, brightnessUnit, 
+	  crackExtHeader<unsigned char>(cSys, shape, imageInfo, brightnessUnit, 
 				miscInfo, scale, offset, uCharMagic, shortMagic, 
 				longMagic, hasBlanks, os, infile, whichRep);
     	}
@@ -836,12 +836,12 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
     recordnumber = infile.recno();
 }
 
-void FITSImage::setMaskZero(Bool filterZero)
+void FITSImage::setMaskZero(bool filterZero)
 {
 	// set the zero masking on the
 	// current mask
 	if (pPixelMask_p)
-		dynamic_cast<FITSMask *>(pPixelMask_p)->setFilterZero(True);
+		dynamic_cast<FITSMask *>(pPixelMask_p)->setFilterZero(true);
 
 	// set the flag, such that an later
 	// mask created in 'open()' will be OK

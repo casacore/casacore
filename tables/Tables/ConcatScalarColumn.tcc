@@ -50,7 +50,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     Vector<T>& vec = static_cast<Vector<T>&>(arr);
     rownr_t st = 0;
-    for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<refColPtr_p.nelements(); ++i) {
       rownr_t nr = refColPtr_p[i]->nrow();
       Vector<T> part = vec(Slice(st, nr));
       refColPtr_p[i]->getScalarColumn (part);
@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     GenSortIndirect<rownr_t,rownr_t>::sort (inx, rows);
     const ConcatRows& ccRows = refTabPtr_p->rows();
     rownr_t tabRownr;
-    uInt    tableNr=0;
+    uint32_t    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
     for (rownr_t i=0; i<inx.nelements(); ++i) {
@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     Vector<T> vec (static_cast<const Vector<T>&>(arr));
     rownr_t st = 0;
-    for (uInt i=0; i<refColPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<refColPtr_p.nelements(); ++i) {
       rownr_t nr = refColPtr_p[i]->nrow();
       Vector<T> part = vec(Slice(st, nr));
       refColPtr_p[i]->putScalarColumn (part);
@@ -111,7 +111,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     GenSortIndirect<rownr_t,rownr_t>::sort (inx, rows);
     const ConcatRows& ccRows = refTabPtr_p->rows();
     rownr_t tabRownr;
-    uInt    tableNr=0;
+    uint32_t    tableNr=0;
     // Map each row to rownr and tablenr.
     // Note this is pretty fast because it is done in row order.
     for (rownr_t i=0; i<inx.nelements(); ++i) {
@@ -127,7 +127,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<class T>
   void ConcatScalarColumn<T>::makeSortKey (Sort& sortobj,
                                            CountedPtr<BaseCompare>& cmpObj,
-					   Int order,
+					   int32_t order,
 					   CountedPtr<ArrayBase>& dataSave)
   {
     //# Get the data as a column.
@@ -140,7 +140,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<class T>
   void ConcatScalarColumn<T>::makeRefSortKey (Sort& sortobj,
                                               CountedPtr<BaseCompare>& cmpObj,
-					      Int order,
+					      int32_t order,
 					      const Vector<rownr_t>& rownrs,
 					      CountedPtr<ArrayBase>& dataSave)
   {
@@ -155,13 +155,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatScalarColumn<T>::fillSortKey (const Vector<T>* vecPtr,
 					   Sort& sortobj,
                                            CountedPtr<BaseCompare>& cmpObj,
-					   Int order)
+					   int32_t order)
   {
     //# Pass the real vector storage as the sort data.
     //# Use the compare object if given, otherwise pass data type.
     //# Throw an exception if no compare function is given for
     //# an unknown data type.
-    Bool deleteIt;
+    bool deleteIt;
     const T* datap = vecPtr->getStorage (deleteIt);
     if (cmpObj.null()) {
       cmpObj = new ObjCompare<T>();

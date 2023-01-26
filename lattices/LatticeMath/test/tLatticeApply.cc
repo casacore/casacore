@@ -50,60 +50,60 @@
 
 
 #include <casacore/casa/namespace.h>
-class MyLineCollapser : public LineCollapser<Int>
+class MyLineCollapser : public LineCollapser<int32_t>
 {
 public:
     MyLineCollapser() {}
-    virtual void init (uInt nOutPixelsPerCollapse);
-    virtual Bool canHandleNullMask() const;
-    virtual void process (Int& result, Bool& resultMask,
-			  const Vector<Int>& vector,
-			  const Vector<Bool>& arrayMask,
+    virtual void init (uint32_t nOutPixelsPerCollapse);
+    virtual bool canHandleNullMask() const;
+    virtual void process (int32_t& result, bool& resultMask,
+			  const Vector<int32_t>& vector,
+			  const Vector<bool>& arrayMask,
 			  const IPosition& pos);
-    virtual void multiProcess (Vector<Int>& result, Vector<Bool>& resultMask,
-			  const Vector<Int>& vector,
-			  const Vector<Bool>& arrayMask,
+    virtual void multiProcess (Vector<int32_t>& result, Vector<bool>& resultMask,
+			  const Vector<int32_t>& vector,
+			  const Vector<bool>& arrayMask,
 			  const IPosition& pos);
 };
-void MyLineCollapser::init (uInt nOutPixelsPerCollapse)
+void MyLineCollapser::init (uint32_t nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 1, AipsError);
 }
-Bool MyLineCollapser::canHandleNullMask() const
+bool MyLineCollapser::canHandleNullMask() const
 {
-    return False;
+    return false;
 }
-void MyLineCollapser::process (Int& result, Bool& resultMask,
-			       const Vector<Int>& vector,
-			       const Vector<Bool>& mask,
+void MyLineCollapser::process (int32_t& result, bool& resultMask,
+			       const Vector<int32_t>& vector,
+			       const Vector<bool>& mask,
 			       const IPosition&)
 {
     DebugAssert (vector.nelements() == mask.nelements(), AipsError);
-    Int sum = 0;
-    Bool fnd = False;
-    uInt n = vector.nelements();
-    for (uInt i=0; i<n; i++) {
+    int32_t sum = 0;
+    bool fnd = false;
+    uint32_t n = vector.nelements();
+    for (uint32_t i=0; i<n; i++) {
 	if (mask(i)) {
-	    fnd = True;
+	    fnd = true;
 	    sum += vector(i);
 	}
     }
     result = sum;
     resultMask = fnd;
 }
-void MyLineCollapser::multiProcess (Vector<Int>& result,
-				    Vector<Bool>& resultMask,
-				    const Vector<Int>& vector,
-				    const Vector<Bool>& mask,
+void MyLineCollapser::multiProcess (Vector<int32_t>& result,
+				    Vector<bool>& resultMask,
+				    const Vector<int32_t>& vector,
+				    const Vector<bool>& mask,
 				    const IPosition&)
 {
     DebugAssert (vector.nelements() == mask.nelements(), AipsError);
-    Int sum = 0;
-    Bool fnd = False;
-    uInt n = vector.nelements();
-    for (uInt i=0; i<n; i++) {
+    int32_t sum = 0;
+    bool fnd = false;
+    uint32_t n = vector.nelements();
+    for (uint32_t i=0; i<n; i++) {
 	if (mask(i)) {
-	    fnd = True;
+	    fnd = true;
 	    sum += vector(i);
 	}
     }
@@ -115,27 +115,27 @@ void MyLineCollapser::multiProcess (Vector<Int>& result,
 }
 
 
-class MyTiledCollapser : public TiledCollapser<Int>
+class MyTiledCollapser : public TiledCollapser<int32_t>
 {
 public:
     MyTiledCollapser() : itsSum1(0),itsSum2(0),itsNpts(0) {}
     virtual ~MyTiledCollapser();
-    virtual void init (uInt nOutPixelsPerCollapse);
-    virtual Bool canHandleNullMask() const;
-    virtual void initAccumulator (uInt64 n1, uInt64 n3);
-    virtual void process (uInt index1, uInt index3,
-			  const Int* inData, const Bool* inMask,
-			  uInt inDataIncr, uInt inMaskIncr, uInt nrval,
+    virtual void init (uint32_t nOutPixelsPerCollapse);
+    virtual bool canHandleNullMask() const;
+    virtual void initAccumulator (uint64_t n1, uint64_t n3);
+    virtual void process (uint32_t index1, uint32_t index3,
+			  const int32_t* inData, const bool* inMask,
+			  uint32_t inDataIncr, uint32_t inMaskIncr, uint32_t nrval,
 			  const IPosition& pos, const IPosition& shape);
-    virtual void endAccumulator (Array<Int>& result,
-				 Array<Bool>& resultMask,
+    virtual void endAccumulator (Array<int32_t>& result,
+				 Array<bool>& resultMask,
 				 const IPosition& shape);
 private:
-    Matrix<uInt>* itsSum1;
-    Block<Int>*   itsSum2;
-    Matrix<uInt>* itsNpts;
-    uInt64        itsn1;
-    uInt64        itsn3;
+    Matrix<uint32_t>* itsSum1;
+    Block<int32_t>*   itsSum2;
+    Matrix<uint32_t>* itsNpts;
+    uint64_t        itsn1;
+    uint64_t        itsn3;
 };
 MyTiledCollapser::~MyTiledCollapser()
 {
@@ -143,34 +143,34 @@ MyTiledCollapser::~MyTiledCollapser()
     delete itsSum2;
     delete itsNpts;
 }
-void MyTiledCollapser::init (uInt nOutPixelsPerCollapse)
+void MyTiledCollapser::init (uint32_t nOutPixelsPerCollapse)
 {
     AlwaysAssert (nOutPixelsPerCollapse == 2, AipsError);
 }
-void MyTiledCollapser::initAccumulator (uInt64 n1, uInt64 n3)
+void MyTiledCollapser::initAccumulator (uint64_t n1, uint64_t n3)
 {
-    itsSum1 = new Matrix<uInt> (n1, n3);
-    itsSum2 = new Block<Int> (n1*n3);
-    itsNpts = new Matrix<uInt> (n1, n3);
+    itsSum1 = new Matrix<uint32_t> (n1, n3);
+    itsSum2 = new Block<int32_t> (n1*n3);
+    itsNpts = new Matrix<uint32_t> (n1, n3);
     itsSum1->set (0);
     itsSum2->set (0);
     itsNpts->set (0);
     itsn1 = n1;
     itsn3 = n3;
 }
-Bool MyTiledCollapser::canHandleNullMask() const
+bool MyTiledCollapser::canHandleNullMask() const
 {
-    return False;
+    return false;
 }
-void MyTiledCollapser::process (uInt index1, uInt index3,
-				const Int* inData, const Bool* inMask,
-				uInt inDataIncr, uInt inMaskIncr, uInt nrval,
+void MyTiledCollapser::process (uint32_t index1, uint32_t index3,
+				const int32_t* inData, const bool* inMask,
+				uint32_t inDataIncr, uint32_t inMaskIncr, uint32_t nrval,
 				const IPosition&, const IPosition&)
 {
-    uInt& sum1 = (*itsSum1)(index1, index3);
-    Int& sum2 = (*itsSum2)[index1 + index3*itsn1];
-    uInt& npts = (*itsNpts)(index1, index3);
-    for (uInt i=0; i<nrval; i++) {
+    uint32_t& sum1 = (*itsSum1)(index1, index3);
+    int32_t& sum2 = (*itsSum2)[index1 + index3*itsn1];
+    uint32_t& npts = (*itsNpts)(index1, index3);
+    for (uint32_t i=0; i<nrval; i++) {
 	if (*inMask) {
 	    sum1 += *inData;
 	    sum2 -= *inData;
@@ -180,27 +180,27 @@ void MyTiledCollapser::process (uInt index1, uInt index3,
 	inData += inDataIncr;
     }
 }
-void MyTiledCollapser::endAccumulator (Array<Int>& result,
-				       Array<Bool>& resultMask,
+void MyTiledCollapser::endAccumulator (Array<int32_t>& result,
+				       Array<bool>& resultMask,
 				       const IPosition& shape)
 {
     result.resize (shape);
     resultMask.resize (shape);
-    Bool deleteRes, deleteSum1;
-    Bool deleteMask, deleteNpts;
-    Int* res = result.getStorage (deleteRes);
-    Int* resptr = res;
-    Bool* mask = resultMask.getStorage (deleteMask);
-    Bool* maskptr = mask;
-    const uInt* sum1 = itsSum1->getStorage (deleteSum1);
-    const uInt* sum1ptr = sum1;
-    const Int* sum2ptr = itsSum2->storage();
-    const uInt* npts = itsNpts->getStorage (deleteNpts);
-    const uInt* nptsptr = npts;
-    for (uInt i=0; i<itsn3; i++) {
-	Bool* maskptr2 = maskptr;
-        for (uInt j=0; j<itsn1; j++) {
-	    *resptr++ = Int(*sum1ptr++);
+    bool deleteRes, deleteSum1;
+    bool deleteMask, deleteNpts;
+    int32_t* res = result.getStorage (deleteRes);
+    int32_t* resptr = res;
+    bool* mask = resultMask.getStorage (deleteMask);
+    bool* maskptr = mask;
+    const uint32_t* sum1 = itsSum1->getStorage (deleteSum1);
+    const uint32_t* sum1ptr = sum1;
+    const int32_t* sum2ptr = itsSum2->storage();
+    const uint32_t* npts = itsNpts->getStorage (deleteNpts);
+    const uint32_t* nptsptr = npts;
+    for (uint32_t i=0; i<itsn3; i++) {
+	bool* maskptr2 = maskptr;
+        for (uint32_t j=0; j<itsn1; j++) {
+	    *resptr++ = int32_t(*sum1ptr++);
 	    *maskptr++ = (*nptsptr++ != 0);
 	}
 	objcopy (resptr, sum2ptr, itsn1);
@@ -228,7 +228,7 @@ public:
     MyLatticeProgress() : itsMeter(0) {}
     virtual ~MyLatticeProgress();
     virtual void initDerived();
-    virtual void nstepsDone (uInt nsteps);
+    virtual void nstepsDone (uint32_t nsteps);
     virtual void done();
 private:
     ProgressMeter* itsMeter;
@@ -242,9 +242,9 @@ void MyLatticeProgress::initDerived()
     delete itsMeter;
     itsMeter = new ProgressMeter(0.0, expectedNsteps(), "tLatticeApply",
 				 "Vectors extracted", "", "",
-				 True, max(1,Int(expectedNsteps()/100)));
+				 true, max(1,int32_t(expectedNsteps()/100)));
 }
-void MyLatticeProgress::nstepsDone (uInt nsteps)
+void MyLatticeProgress::nstepsDone (uint32_t nsteps)
 {
     itsMeter->update (nsteps);
 }
@@ -267,18 +267,18 @@ void doIt (int argc, const char* argv[])
     inp.create("tz", "0", "Number of pixels along the z-axis tile", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
-    const uInt tx=inp.getInt("tx");
-    const uInt ty=inp.getInt("ty");
-    const uInt tz=inp.getInt("tz");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const uint32_t nz=inp.getInt("nz");
+    const uint32_t tx=inp.getInt("tx");
+    const uint32_t ty=inp.getInt("ty");
+    const uint32_t tz=inp.getInt("tz");
     IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
 	tileShape = TiledShape(latticeShape).tileShape();
     }
-    cout << "Data Type: Int";
+    cout << "Data Type: int32_t";
     cout << "  Lattice shape:" << latticeShape;
     cout << "  Tile shape:" << tileShape << endl;
 
@@ -287,13 +287,13 @@ void doIt (int argc, const char* argv[])
 	SetupNewTable paSetup("tLatticeApply_tmp.array",
 			      TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> lat(TiledShape(latticeShape, tileShape), paTable);    
-	Array<Int> arr(IPosition(3,nx,ny,1));
+	PagedArray<int32_t> lat(TiledShape(latticeShape, tileShape), paTable);    
+	Array<int32_t> arr(IPosition(3,nx,ny,1));
 	indgen(arr);
-	LatticeIterator<Int> iter(lat, LatticeStepper(latticeShape,
+	LatticeIterator<int32_t> iter(lat, LatticeStepper(latticeShape,
 						      IPosition(3,nx,ny,1)));
 	Timer tim;
-	for (iter.reset(); !iter.atEnd(); iter++, arr += Int(nx*ny)) {
+	for (iter.reset(); !iter.atEnd(); iter++, arr += int32_t(nx*ny)) {
 	    iter.woCursor() = arr;
 	}
 	tim.show("fill       ");
@@ -304,29 +304,29 @@ void doIt (int argc, const char* argv[])
     t1Shape(2) = 1;
     {
 	Table t("tLatticeApply_tmp.array");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	SetupNewTable paSetup("tLatticeApply_tmp.array1",
 			       TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> arrout(TiledShape(l1Shape,t1Shape), paTable);
-	SubLattice<Int> latout(arrout, True);
+	PagedArray<int32_t> arrout(TiledShape(l1Shape,t1Shape), paTable);
+	SubLattice<int32_t> latout(arrout, true);
 	MyLineCollapser collapser;
 	Timer tim;
-	LatticeApply<Int>::lineApply (latout, SubLattice<Int>(lat),
+	LatticeApply<int32_t>::lineApply (latout, SubLattice<int32_t>(lat),
 				      collapser, 2, &showProgress);
 	tim.show("line 2     ");
     }
     {
 	Table t("tLatticeApply_tmp.array1");
-	PagedArray<Int> lat(t);
-	Int sum = (nz-1)*nz/2*nx*ny;
+	PagedArray<int32_t> lat(t);
+	int32_t sum = (nz-1)*nz/2*nx*ny;
 	IPosition pos(3,0);
 	Timer tim;
-	for (Int i=0; i<l1Shape(1); i++) {
+	for (int32_t i=0; i<l1Shape(1); i++) {
 	    pos(1) = i;
-	    for (Int j=0; j<l1Shape(0); j++) {
+	    for (int32_t j=0; j<l1Shape(0); j++) {
 		pos(0) = j;
-		Int value = lat.getAt (pos);
+		int32_t value = lat.getAt (pos);
 		if (value != sum) {
 		    cout << "Value=" << value << ", expected " << sum
 			 << "   at position " << pos << endl;
@@ -342,37 +342,37 @@ void doIt (int argc, const char* argv[])
     t2Shape(0) = 1;
     {
 	Table t("tLatticeApply_tmp.array");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	SetupNewTable paSetup0("tLatticeApply_tmp.array2a",
 			       TableDesc(), Table::New);
 	Table paTable0(paSetup0);
-	PagedArray<Int> arrout0(TiledShape(l2Shape, t2Shape), paTable0);
-	SubLattice<Int> latout0(arrout0, True);
+	PagedArray<int32_t> arrout0(TiledShape(l2Shape, t2Shape), paTable0);
+	SubLattice<int32_t> latout0(arrout0, true);
 	SetupNewTable paSetup1("tLatticeApply_tmp.array2b",
 			       TableDesc(), Table::New);
 	Table paTable1(paSetup1);
-	PagedArray<Int> arrout1(TiledShape(l2Shape, t2Shape), paTable1);
-	SubLattice<Int> latout1(arrout1, True);
-	PtrBlock<MaskedLattice<Int>*> blat(2);
+	PagedArray<int32_t> arrout1(TiledShape(l2Shape, t2Shape), paTable1);
+	SubLattice<int32_t> latout1(arrout1, true);
+	PtrBlock<MaskedLattice<int32_t>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
 	MyLineCollapser collapser;
 	Timer tim;
-	LatticeApply<Int>::lineMultiApply (blat, SubLattice<Int>(lat),
+	LatticeApply<int32_t>::lineMultiApply (blat, SubLattice<int32_t>(lat),
 					   collapser, 0);
 	tim.show("multiline 0");
     }
     {
 	Table t("tLatticeApply_tmp.array2b");
-	PagedArray<Int> lat(t);
-	Int sum = (nx-1)*nx/2;
+	PagedArray<int32_t> lat(t);
+	int32_t sum = (nx-1)*nx/2;
 	IPosition pos(3,0);
 	Timer tim;
-	for (Int i=0; i<l2Shape(2); i++) {
+	for (int32_t i=0; i<l2Shape(2); i++) {
 	    pos(2) = i;
-	    for (Int j=0; j<l2Shape(1); j++) {
+	    for (int32_t j=0; j<l2Shape(1); j++) {
 		pos(1) = j;
-		Int value = lat.getAt (pos);
+		int32_t value = lat.getAt (pos);
 		if (value != -sum) {
 		    cout << "Value=" << value << ", expected " << -sum
 			 << "   at position " << pos << endl;
@@ -386,32 +386,32 @@ void doIt (int argc, const char* argv[])
     t2Shape(0) = 2;
     {
 	Table t("tLatticeApply_tmp.array");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	SetupNewTable paSetup("tLatticeApply_tmp.array2t",
 			       TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> arrout(TiledShape(l2Shape,t2Shape), paTable);
-	SubLattice<Int> latout(arrout, True);
+	PagedArray<int32_t> arrout(TiledShape(l2Shape,t2Shape), paTable);
+	SubLattice<int32_t> latout(arrout, true);
 	MyTiledCollapser collapser;
 	Timer tim;
-	LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+	LatticeApply<int32_t>::tiledApply (latout, SubLattice<int32_t>(lat),
 				       collapser, IPosition(1,0));
 	tim.show("tiled 0    ");
     }
     {
 	Table t("tLatticeApply_tmp.array2t");
-	PagedArray<Int> lat(t);
-	Int sum = (nx-1)*nx/2;
+	PagedArray<int32_t> lat(t);
+	int32_t sum = (nx-1)*nx/2;
 	IPosition pos(3,0);
 	Timer tim;
-	for (Int i=0; i<l2Shape(2); i++) {
+	for (int32_t i=0; i<l2Shape(2); i++) {
 	    pos(2) = i;
-	    for (Int j=0; j<l2Shape(1); j++) {
+	    for (int32_t j=0; j<l2Shape(1); j++) {
 		pos(1) = j;
 		pos(0) = 0;
-		Int value = lat.getAt (pos);
+		int32_t value = lat.getAt (pos);
 		pos(0) = 1;
-		Int value1 = lat.getAt (pos);
+		int32_t value1 = lat.getAt (pos);
 		if (value != sum  ||  value1 != -sum) {
 		    cout << "Value=" << value << ',' << value1
 			 << ", expected +-" << sum
@@ -427,37 +427,37 @@ void doIt (int argc, const char* argv[])
     l2Shape(0) = 2;
     //# Do the tests below only when the lattice is small enough.
     //# Otherwise we get overflow errors (due to the summation).
-    Double s1 = nx*nz;
-    Double s2 = s1/2 * (nx-1);
-    Double s3 = s1/2 * nx*ny*(nz-1);
-    Double s4 = s1*s1;
-    if (s2+s3+s4 < Double(32768)*65536) {
+    double s1 = nx*nz;
+    double s2 = s1/2 * (nx-1);
+    double s3 = s1/2 * nx*ny*(nz-1);
+    double s4 = s1*s1;
+    if (s2+s3+s4 < double(32768)*65536) {
 	{
 	    Table t("tLatticeApply_tmp.array");
-	    PagedArray<Int> lat(t);
+	    PagedArray<int32_t> lat(t);
 	    SetupNewTable paSetup("tLatticeApply_tmp.array2tb",
 				  TableDesc(), Table::New);
 	    Table paTable(paSetup);
-	    PagedArray<Int> arrout(l2Shape, paTable);
-	    SubLattice<Int> latout(arrout, True);
+	    PagedArray<int32_t> arrout(l2Shape, paTable);
+	    SubLattice<int32_t> latout(arrout, true);
 	    MyTiledCollapser collapser;
 	    Timer tim;
-	    LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+	    LatticeApply<int32_t>::tiledApply (latout, SubLattice<int32_t>(lat),
 					   collapser, IPosition(2,0,2));
 	    tim.show("tiled 0,2  ");
 	}
 	{
 	    Table t("tLatticeApply_tmp.array2tb");
-	    PagedArray<Int> lat(t);
-	    Int sum = nz*(nx-1)*nx/2 + nx*nx*ny*(nz-1)*nz/2;
+	    PagedArray<int32_t> lat(t);
+	    int32_t sum = nz*(nx-1)*nx/2 + nx*nx*ny*(nz-1)*nz/2;
 	    IPosition pos(3,0);
 	    Timer tim;
-	    for (Int j=0; j<l2Shape(2); j++) {
+	    for (int32_t j=0; j<l2Shape(2); j++) {
 		pos(2) = j;
 		pos(0) = 0;
-		Int value = lat.getAt (pos);
+		int32_t value = lat.getAt (pos);
 		pos(0) = 1;
-		Int value1 = lat.getAt (pos);
+		int32_t value1 = lat.getAt (pos);
 		if (value != sum  ||  value1 != -sum) {
 		    cout << "Value=" << value << ',' << value1
 			 << ", expected +-" << sum
@@ -472,30 +472,30 @@ void doIt (int argc, const char* argv[])
     if (nx*ny*nz <= 65536) {
 	{
 	    Table t("tLatticeApply_tmp.array");
-	    PagedArray<Int> lat(t);
+	    PagedArray<int32_t> lat(t);
 	    SetupNewTable paSetup("tLatticeApply_tmp.array2tc",
 				  TableDesc(), Table::New);
 	    Table paTable(paSetup);
-	    PagedArray<Int> arrout(l2Shape, paTable);
-	    SubLattice<Int> latout(arrout, True);
+	    PagedArray<int32_t> arrout(l2Shape, paTable);
+	    SubLattice<int32_t> latout(arrout, true);
 	    MyTiledCollapser collapser;
 	    Timer tim;
-	    LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+	    LatticeApply<int32_t>::tiledApply (latout, SubLattice<int32_t>(lat),
 					   collapser, IPosition(3,0,1,2));
 	    tim.show("tiled 0,1,2");
 	}
 	{
 	    Table t("tLatticeApply_tmp.array2tc");
-	    PagedArray<Int> lat(t);
-	    //# Use uInt to avoid possible overflow.
-	    uInt s = nx*ny*nz;
+	    PagedArray<int32_t> lat(t);
+	    //# Use uint32_t to avoid possible overflow.
+	    uint32_t s = nx*ny*nz;
 	    s = s * (s-1) / 2;
-	    Int sum = s;
+	    int32_t sum = s;
 	    IPosition pos(3,0);
 	    Timer tim;
-	    Int value = lat.getAt (pos);
+	    int32_t value = lat.getAt (pos);
 	    pos(0) = 1;
-	    Int value1 = lat.getAt (pos);
+	    int32_t value1 = lat.getAt (pos);
 	    if (value != sum  ||  value1 != -sum) {
 		cout << "Value=" << value << ',' << value1
 		     << ", expected +-" << sum
@@ -513,39 +513,39 @@ void doIt (int argc, const char* argv[])
     l3Shape(1) = slicer3.length()(2);
     {
 	Table t("tLatticeApply_tmp.array");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	SetupNewTable paSetup("tLatticeApply_tmp.array3",
 			      TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> arrout(l3Shape, paTable);
-	SubLattice<Int> latout(arrout, True);
+	PagedArray<int32_t> arrout(l3Shape, paTable);
+	SubLattice<int32_t> latout(arrout, true);
 	MyLineCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
-	LatticeApply<Int>::lineApply (latout, SubLattice<Int>(lat),
+	LatticeApply<int32_t>::lineApply (latout, SubLattice<int32_t>(lat),
 				      region, collapser, 1);
 	tim.show("lsliced 1  ");
     }
     {
 	Table t("tLatticeApply_tmp.array");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	SetupNewTable paSetup0("tLatticeApply_tmp.array4a",
 			       TableDesc(), Table::New);
 	Table paTable0(paSetup0);
-	PagedArray<Int> arrout0(l3Shape, paTable0);
-	SubLattice<Int> latout0(arrout0, True);
+	PagedArray<int32_t> arrout0(l3Shape, paTable0);
+	SubLattice<int32_t> latout0(arrout0, true);
 	SetupNewTable paSetup1("tLatticeApply_tmp.array4b",
 			       TableDesc(), Table::New);
 	Table paTable1(paSetup1);
-	PagedArray<Int> arrout1(l3Shape, paTable1);
-	SubLattice<Int> latout1(arrout1, True);
-	PtrBlock<MaskedLattice<Int>*> blat(2);
+	PagedArray<int32_t> arrout1(l3Shape, paTable1);
+	SubLattice<int32_t> latout1(arrout1, true);
+	PtrBlock<MaskedLattice<int32_t>*> blat(2);
 	blat[0] = &latout0;
 	blat[1] = &latout1;
 	MyLineCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
-	LatticeApply<Int>::lineMultiApply (blat, SubLattice<Int>(lat),
+	LatticeApply<int32_t>::lineMultiApply (blat, SubLattice<int32_t>(lat),
 					   region, collapser, 1);
 	tim.show("msliced 1  ");
     }
@@ -555,52 +555,52 @@ void doIt (int argc, const char* argv[])
     l5Shape(4) = slicer3.length()(2);
     {
 	Table t("tLatticeApply_tmp.array");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	SetupNewTable paSetup("tLatticeApply_tmp.array5t",
 			      TableDesc(), Table::New);
 	Table paTable(paSetup);
-	PagedArray<Int> arrout(l5Shape, paTable);
-	SubLattice<Int> latout(arrout, True);
+	PagedArray<int32_t> arrout(l5Shape, paTable);
+	SubLattice<int32_t> latout(arrout, true);
 	MyTiledCollapser collapser;
 	LatticeRegion region (slicer3, lat.shape());
 	Timer tim;
-	LatticeApply<Int>::tiledApply (latout, SubLattice<Int>(lat),
+	LatticeApply<int32_t>::tiledApply (latout, SubLattice<int32_t>(lat),
 				       region, collapser, IPosition(1,1));
 	tim.show("tsliced 1  ");
     }
     {
 	Table t("tLatticeApply_tmp.array3");
-	PagedArray<Int> lat(t);
+	PagedArray<int32_t> lat(t);
 	Table t1("tLatticeApply_tmp.array4a");
-	PagedArray<Int> lat1(t1);
+	PagedArray<int32_t> lat1(t1);
 	Table t2("tLatticeApply_tmp.array5t");
-	PagedArray<Int> lat2(t2);
-	Int sx = slicer3.start()(0);
-	Int sy = slicer3.start()(1);
-	Int sz = slicer3.start()(2);
-	Int mx = slicer3.length()(0);
-	Int my = slicer3.length()(1);
-	Int mz = slicer3.length()(2);
-	Int ix = slicer3.stride()(0);
-	Int iy = slicer3.stride()(1);
-	Int iz = slicer3.stride()(2);
-	Int iniSum = (my-1) * iy * my / 2 * nx + (sy*nx + sx) * my;
+	PagedArray<int32_t> lat2(t2);
+	int32_t sx = slicer3.start()(0);
+	int32_t sy = slicer3.start()(1);
+	int32_t sz = slicer3.start()(2);
+	int32_t mx = slicer3.length()(0);
+	int32_t my = slicer3.length()(1);
+	int32_t mz = slicer3.length()(2);
+	int32_t ix = slicer3.stride()(0);
+	int32_t iy = slicer3.stride()(1);
+	int32_t iz = slicer3.stride()(2);
+	int32_t iniSum = (my-1) * iy * my / 2 * nx + (sy*nx + sx) * my;
 	IPosition pos(2,0);
 	IPosition pos2(5,0);
 	Timer tim;
-	for (Int i=0; i<mz; i++) {
-	    Int sum = (sz+i*iz)*nx*ny*my + iniSum;
+	for (int32_t i=0; i<mz; i++) {
+	    int32_t sum = (sz+i*iz)*nx*ny*my + iniSum;
 	    pos(1) = i;
 	    pos2(4) = i;
-	    for (Int j=0; j<mx; j++) {
+	    for (int32_t j=0; j<mx; j++) {
 		pos(0) = j;
 		pos2(0) = j;
-		Int value = lat.getAt (pos);
-		Int value1 = lat1.getAt (pos);
+		int32_t value = lat.getAt (pos);
+		int32_t value1 = lat1.getAt (pos);
 		pos2(2) = 0;
-		Int value2p = lat2.getAt (pos2);
+		int32_t value2p = lat2.getAt (pos2);
 		pos2(2) = 1;
-		Int value2m = lat2.getAt (pos2);
+		int32_t value2m = lat2.getAt (pos2);
 		if (value != sum  ||  value1 != sum  ||  value2p != sum
 		||  value2m != -sum) {
 		    cout << "Value=" << value << ',' << value1

@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> <linkto class=assert_>Assertion</linkto>
 //    lets you throw an error when a condition in not fullfilled.
 //   <li> <linkto class=BitVector>Bit vectors</linkto>
-//    are an efficient method to keep True/False information on a set of
+//    are an efficient method to keep true/false information on a set of
 //    items or conditions.
 //  </ul> 
 //  <li> Pointer utilities

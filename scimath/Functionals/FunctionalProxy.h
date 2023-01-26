@@ -38,28 +38,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class FunctionalProxy {
 public:
   FunctionalProxy() {;}
-  // type 0==Double, other == DComplex
-  FunctionalProxy(const Record& rec, Int type=0);
+  // type 0==double, other == DComplex
+  FunctionalProxy(const Record& rec, int32_t type=0);
   virtual ~FunctionalProxy();
-  Vector<Double> f(const Vector<Double>& val);
-  Vector<Double> fdf(const Vector<Double>& val);
+  Vector<double> f(const Vector<double>& val);
+  Vector<double> fdf(const Vector<double>& val);
   void add(const FunctionalProxy& func);
   Vector<DComplex> fc(const Vector<DComplex>& val);
-  Vector<DComplex> fdfc(const Vector<Double>& val);
+  Vector<DComplex> fdfc(const Vector<double>& val);
   void addc(const FunctionalProxy& func);
   Record asrecord();
-  Int npar() const;
-  uInt ndim() const;
-  void setparameters(const Vector<Double>& val);
+  int32_t npar() const;
+  uint32_t ndim() const;
+  void setparameters(const Vector<double>& val);
   void setparametersc(const Vector<DComplex>& val);
-  void setmasks(const Vector<Bool>& val);
+  void setmasks(const Vector<bool>& val);
 
-  void setmask(Int i, Bool val);
-  void setpar(Int i, Double val);
-  void setparc(Int i, DComplex val);
+  void setmask(int32_t i, bool val);
+  void setpar(int32_t i, double val);
+  void setparc(int32_t i, DComplex val);
 
-  Vector<Bool> masks() const;
-  Vector<Double> parameters() const;
+  Vector<bool> masks() const;
+  Vector<double> parameters() const;
   Vector<DComplex> parametersc() const;
 
 private:
@@ -67,8 +67,8 @@ private:
   Record fhdc2rec();
   void rec2fhdc(const Record& rec);
   void rec2fhd(const Record& rec);
-  Int type_;
-  FunctionHolder<Double> fhd_;
+  int32_t type_;
+  FunctionHolder<double> fhd_;
   FunctionHolder<DComplex> fhdc_;
 
 

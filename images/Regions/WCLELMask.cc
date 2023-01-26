@@ -61,25 +61,25 @@ WCLELMask::WCLELMask (const char* command)
   processCommand();
 }
 
-WCLELMask::WCLELMask (const ImageExpr<Bool>& expr)
+WCLELMask::WCLELMask (const ImageExpr<bool>& expr)
 : itsImageExpr (0),
   itsLattExpr  (0),
   itsLattNode  (0)
 {
-  itsImageExpr = new ImageExpr<Bool> (expr);
+  itsImageExpr = new ImageExpr<bool> (expr);
   const CoordinateSystem& cSys = itsImageExpr->coordinates();
-  uInt naxes = itsImageExpr->ndim();
-  for (uInt i=0; i<naxes; i++) {
+  uint32_t naxes = itsImageExpr->ndim();
+  for (uint32_t i=0; i<naxes; i++) {
     addAxisDesc (makeAxisDesc (cSys, i));
   }
 }
 
-WCLELMask::WCLELMask (const LatticeExpr<Bool>& expr)
+WCLELMask::WCLELMask (const LatticeExpr<bool>& expr)
 : itsImageExpr (0),
   itsLattExpr  (0),
   itsLattNode  (0)
 {
-  itsLattExpr = new LatticeExpr<Bool> (expr);
+  itsLattExpr = new LatticeExpr<bool> (expr);
 }
 
 WCLELMask::WCLELMask (const LatticeExprNode& expr)
@@ -129,14 +129,14 @@ void WCLELMask::init (const LatticeExprNode& expr)
       itsLattNode = new LatticeExprNode(expr);
     } else {
       // Turn it into a proper lattice type.
-      itsLattExpr = new LatticeExpr<Bool>(expr);
+      itsLattExpr = new LatticeExpr<bool>(expr);
     }
   } else {
     // Coordinates are known, so make it a proper Image type.
-    itsImageExpr = new ImageExpr<Bool> (expr, itsCommand);
+    itsImageExpr = new ImageExpr<bool> (expr, itsCommand);
     const CoordinateSystem& cSys = itsImageExpr->coordinates();
-    uInt naxes = itsImageExpr->ndim();
-    for (uInt i=0; i<naxes; i++) {
+    uint32_t naxes = itsImageExpr->ndim();
+    for (uint32_t i=0; i<naxes; i++) {
       addAxisDesc (makeAxisDesc (cSys, i));
     }
   }
@@ -154,10 +154,10 @@ WCLELMask& WCLELMask::operator= (const WCLELMask& that)
     itsLattNode = 0;
     itsCommand = that.itsCommand;
     if (that.itsImageExpr != 0) {
-      itsImageExpr = new ImageExpr<Bool> (*that.itsImageExpr);
+      itsImageExpr = new ImageExpr<bool> (*that.itsImageExpr);
     }
     if (that.itsLattExpr != 0) {
-      itsLattExpr = new LatticeExpr<Bool> (*that.itsLattExpr);
+      itsLattExpr = new LatticeExpr<bool> (*that.itsLattExpr);
     }
     if (that.itsLattNode != 0) {
       itsLattNode = new LatticeExprNode (*that.itsLattNode);
@@ -166,22 +166,22 @@ WCLELMask& WCLELMask::operator= (const WCLELMask& that)
   return *this;
 }
 
-Bool WCLELMask::operator== (const WCRegion& that) const
+bool WCLELMask::operator== (const WCRegion& that) const
 {
   // Type check
-  if (type() != that.type()) return False;
+  if (type() != that.type()) return false;
   // Base class
-  if (!WCRegion::operator== (that)) return False;
+  if (!WCRegion::operator== (that)) return false;
   // Cast
   const WCLELMask& That = dynamic_cast<const WCLELMask&>(that);
   // Check private data
-  if (itsCommand != That.itsCommand) return False;
+  if (itsCommand != That.itsCommand) return false;
   if (itsCommand.empty()) {
-    if (itsImageExpr != That.itsImageExpr) return False;
-    if (itsLattExpr != That.itsLattExpr) return False;
-    if (itsLattNode != That.itsLattNode) return False;
+    if (itsImageExpr != That.itsImageExpr) return false;
+    if (itsLattExpr != That.itsLattExpr) return false;
+    if (itsLattNode != That.itsLattNode) return false;
   }
-  return True;
+  return true;
 }
 
 
@@ -191,7 +191,7 @@ WCRegion* WCLELMask::cloneRegion() const
 }
 
 
-uInt WCLELMask::ndim() const
+uint32_t WCLELMask::ndim() const
 {
   if (itsLattExpr != 0) {
     return itsLattExpr->ndim();
@@ -221,9 +221,9 @@ WCLELMask* WCLELMask::fromRecord (const TableRecord& rec,
 }
 
 
-Bool WCLELMask::canExtend() const
+bool WCLELMask::canExtend() const
 {
-    return False;
+    return false;
 }
 
 
@@ -234,7 +234,7 @@ LCRegion* WCLELMask::toLCRegion (const CoordinateSystem& cSys,
     return WCRegion::toLCRegion (cSys, latticeShape);
   }
   if (itsLattNode != 0) {
-    return new LCLELMask (LatticeExpr<Bool>(*itsLattNode, latticeShape));
+    return new LCLELMask (LatticeExpr<bool>(*itsLattNode, latticeShape));
   }
   if (! latticeShape.isEqual (itsLattExpr->shape())) {
     throw AipsError ("WCLELMask::toLCRegion - "
@@ -249,17 +249,17 @@ LCRegion* WCLELMask::doToLCRegion (const CoordinateSystem&,
 				   const IPosition& outOrder) const
 {
   AlwaysAssert (itsImageExpr != 0, AipsError);
-  const uInt naxes = pixelAxesMap.nelements();
+  const uint32_t naxes = pixelAxesMap.nelements();
   const IPosition& shape = itsImageExpr->shape();
   AlwaysAssert (naxes == shape.nelements(), AipsError);
-  for (uInt i=1; i<naxes; i++) {
+  for (uint32_t i=1; i<naxes; i++) {
     if (outOrder(i) <= outOrder(i-1)
     ||  pixelAxesMap(i) <= pixelAxesMap(i-1)) {
       throw AipsError ("WCLELMask::toLCRegion - "
 		       "the order of the mask axes cannot be changed");
     }
   }
-  for (uInt i=0; i<naxes; i++) {
+  for (uint32_t i=0; i<naxes; i++) {
     if (shape(i) != latticeShape(pixelAxesMap(i))) {
       throw AipsError ("WCLELMask::toLCRegion - "
 		       "axes lengths of mask expression and image mismatch");

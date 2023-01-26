@@ -55,47 +55,47 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const String LSQFit::nceq      = String("nceq");
   const String LSQFit::nar       = String("nar");
 
-  Bool LSQFit::toRecord(String &error, RecordInterface &out) const {
+  bool LSQFit::toRecord(String &error, RecordInterface &out) const {
     out.define(RecordFieldId(recid),     ident());
-    out.define(RecordFieldId(state),     static_cast<Int>(state_p));
-    out.define(RecordFieldId(nun),       static_cast<Int>(nun_p));
-    out.define(RecordFieldId(ncon),      static_cast<Int>(ncon_p));
+    out.define(RecordFieldId(state),     static_cast<int32_t>(state_p));
+    out.define(RecordFieldId(nun),       static_cast<int32_t>(nun_p));
+    out.define(RecordFieldId(ncon),      static_cast<int32_t>(ncon_p));
     out.define(RecordFieldId(prec),      prec_p);
     out.define(RecordFieldId(startnon),  startnon_p);
     out.define(RecordFieldId(nonlin),    nonlin_p);
-    out.define(RecordFieldId(rank),      static_cast<Int>(r_p));
-    out.define(RecordFieldId(nnc),       static_cast<Int>(nnc_p));
-    if (!norm_p->toRecord(error, out)) return False;
+    out.define(RecordFieldId(rank),      static_cast<int32_t>(r_p));
+    out.define(RecordFieldId(nnc),       static_cast<int32_t>(nnc_p));
+    if (!norm_p->toRecord(error, out)) return false;
     if (piv_p    && !LSQMatrix::putCArray(error, out, piv, n_p,
-					  piv_p)) return False;
+					  piv_p)) return false;
     if (constr_p && !LSQMatrix::putCArray(error, out, constr, n_p*ncon_p,
-					  constr_p)) return False; 
+					  constr_p)) return false; 
     if (known_p  && !LSQMatrix::putCArray(error, out, known, n_p,
-					  known_p)) return False;
+					  known_p)) return false;
     if (error_p  && !LSQMatrix::putCArray(error, out, errors, N_ErrorField,
-					  error_p)) return False; 
+					  error_p)) return false; 
     if (sol_p    && !LSQMatrix::putCArray(error, out, sol, n_p,
-					  sol_p)) return False; 
+					  sol_p)) return false; 
     if (lar_p    && !LSQMatrix::putCArray(error, out, lar, n_p*n_p,
-					  lar_p)) return False; 
+					  lar_p)) return false; 
     if (wsol_p   && !LSQMatrix::putCArray(error, out, wsol, n_p,
-					  wsol_p)) return False; 
+					  wsol_p)) return false; 
     if (wcov_p   && !LSQMatrix::putCArray(error, out, wcov, n_p*n_p,
-					  wcov_p)) return False;
+					  wcov_p)) return false;
     if (nceq_p) {
       Record rnceq;
-      if (!nceq_p->toRecord(error, rnceq)) return False;
+      if (!nceq_p->toRecord(error, rnceq)) return false;
       out.defineRecord(RecordFieldId(nceq), rnceq);
     }
     if (nar_p) {
       Record rnar;
-      if (!nar_p->toRecord(error, rnar)) return False;
+      if (!nar_p->toRecord(error, rnar)) return false;
       out.defineRecord(RecordFieldId(nar), rnar);
     }
-    return True;
+    return true;
   }
   
-  Bool LSQFit::fromRecord(String &error, const RecordInterface &in) {
+  bool LSQFit::fromRecord(String &error, const RecordInterface &in) {
     if (in.isDefined(recid) &&
 	in.type(in.idToNumber(RecordFieldId(recid))) == TpString &&
 	in.isDefined(state) &&
@@ -119,63 +119,63 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (rrecid != ident()) {
 	error += String("Unknown record identity ") + rrecid +
 	  " for fitting record";
-	return False;
+	return false;
       }
-      Int rnun;
-      Int rncon;
+      int32_t rnun;
+      int32_t rncon;
       in.get(RecordFieldId(nun), rnun);
       in.get(RecordFieldId(ncon), rncon);
-      set(uInt(rnun), uInt(rncon));
+      set(uint32_t(rnun), uint32_t(rncon));
       in.get(RecordFieldId(prec), prec_p);
       in.get(RecordFieldId(startnon), startnon_p);
       in.get(RecordFieldId(nonlin), nonlin_p);
-      Int tmp;
+      int32_t tmp;
       in.get(RecordFieldId(rank), tmp);
       r_p = tmp;
       in.get(RecordFieldId(state), tmp); 
       state_p = tmp;
       in.get(RecordFieldId(nnc), tmp); 
       state_p = tmp;
-      if (!norm_p->fromRecord(error, in)) return False;
+      if (!norm_p->fromRecord(error, in)) return false;
       if (in.isDefined(piv) &&
-	  !LSQMatrix::getCArray(error, in, piv, n_p, piv_p)) return False;
+	  !LSQMatrix::getCArray(error, in, piv, n_p, piv_p)) return false;
       if (in.isDefined(constr) &&
 	  !LSQMatrix::getCArray(error, in, constr, 0,
-				constr_p)) return False;
+				constr_p)) return false;
       if (in.isDefined(known) &&
 	  !LSQMatrix::getCArray(error, in, known, n_p,
-				known_p)) return False;
+				known_p)) return false;
       if (in.isDefined(errors) &&
 	  !LSQMatrix::getCArray(error, in, errors, N_ErrorField,
-				error_p)) return False;
+				error_p)) return false;
       if (in.isDefined(sol) &&
-	  !LSQMatrix::getCArray(error, in, sol, n_p, sol_p)) return False;
+	  !LSQMatrix::getCArray(error, in, sol, n_p, sol_p)) return false;
       if (in.isDefined(lar) &&
 	  !LSQMatrix::getCArray(error, in, lar, 0,
-				lar_p)) return False;
+				lar_p)) return false;
       if (in.isDefined(wsol) &&
-	  !LSQMatrix::getCArray(error, in, wsol, n_p, wsol_p)) return False;
+	  !LSQMatrix::getCArray(error, in, wsol, n_p, wsol_p)) return false;
       if (in.isDefined(wcov) &&
 	  !LSQMatrix::getCArray(error, in, wcov, 0,
-				wcov_p)) return False;
+				wcov_p)) return false;
       if (in.isDefined(nceq)) {
 	if (!nceq_p) nceq_p = new LSQMatrix;
 	if (!nceq_p->fromRecord(error, in.asRecord(RecordFieldId(nceq)))) {
-	  return False;
+	  return false;
 	}
       }
       if (in.isDefined(nar)) {
 	if (!nar_p) nar_p = new LSQFit;
 	if (!nar_p->fromRecord(error, in.asRecord(RecordFieldId(nar)))) {
-	  return False;
+	  return false;
 	}
       }
     } else {
       error += String("Incorrect fields for fitting record");
-      return False;
+      return false;
    }
 
-    return True;
+    return true;
   }
   
   const String &LSQFit::ident() const {
@@ -190,10 +190,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     out << state_p << nun_p << ncon_p;
     out << prec_p << startnon_p	<< nonlin_p << r_p << nnc_p;
     if (norm_p) {
-      out << True;
+      out << true;
       norm_p->toAipsIO (out);
     } else {
-      out << False;
+      out << false;
     }
     LSQMatrix::putCArray (out, n_p, piv_p);
     LSQMatrix::putCArray (out, n_p*ncon_p, constr_p);
@@ -205,16 +205,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     LSQMatrix::putCArray (out, n_p*n_p, wcov_p);
     LSQMatrix::putCArray (out, n_p, piv_p);
     if (nceq_p) {
-      out << True;
+      out << true;
       nceq_p->toAipsIO (out);
     } else {
-      out << False;
+      out << false;
     }
     if (nar_p) {
-      out << True;
+      out << true;
       nar_p->toAipsIO (out);
     } else {
-      out << False;
+      out << false;
     }
     out.putend();
   }

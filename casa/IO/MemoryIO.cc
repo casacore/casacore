@@ -33,42 +33,42 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MemoryIO::MemoryIO (uInt64 initialSize, uInt64 expandSize)
+MemoryIO::MemoryIO (uint64_t initialSize, uint64_t expandSize)
 : itsBuffer     (0),
   itsAlloc      (initialSize),
   itsExpandSize (expandSize),
   itsUsed       (0),
   itsPosition   (0),
-  itsReadable   (True),
-  itsWritable   (True),
-  itsCanDelete  (True)
+  itsReadable   (true),
+  itsWritable   (true),
+  itsCanDelete  (true)
 {
   if (itsAlloc > 0) {
-    itsBuffer = new uChar[itsAlloc];
+    itsBuffer = new unsigned char[itsAlloc];
     AlwaysAssert (itsBuffer != 0, AipsError);
   }
 }
 
-MemoryIO::MemoryIO (const void* buffer, uInt64 size)
-: itsBuffer     ((uChar*)buffer),
+MemoryIO::MemoryIO (const void* buffer, uint64_t size)
+: itsBuffer     ((unsigned char*)buffer),
   itsAlloc      (size),
   itsExpandSize (0),
   itsUsed       (size),
   itsPosition   (0),
-  itsReadable   (True),
-  itsWritable   (False),
-  itsCanDelete  (False)
+  itsReadable   (true),
+  itsWritable   (false),
+  itsCanDelete  (false)
 {}
 
-MemoryIO::MemoryIO (void* buffer, uInt64 size, ByteIO::OpenOption option,
-		    uInt64 expandSize, Bool canDelete)
-: itsBuffer     ((uChar*)buffer),
+MemoryIO::MemoryIO (void* buffer, uint64_t size, ByteIO::OpenOption option,
+		    uint64_t expandSize, bool canDelete)
+: itsBuffer     ((unsigned char*)buffer),
   itsAlloc      (size),
   itsExpandSize (expandSize),
   itsUsed       (size),
   itsPosition   (0),
-  itsReadable   (True),
-  itsWritable   (True),
+  itsReadable   (true),
+  itsWritable   (true),
   itsCanDelete  (canDelete)
 {
   // Make sure there is a buffer.
@@ -78,7 +78,7 @@ MemoryIO::MemoryIO (void* buffer, uInt64 size, ByteIO::OpenOption option,
   // Adapt position, etc. from the option.
   switch (option) {
   case ByteIO::Old:
-    itsWritable = False;
+    itsWritable = false;
     break;
   case ByteIO::Append:
     itsPosition = itsUsed;
@@ -97,14 +97,14 @@ MemoryIO::~MemoryIO()
   }
 }
 
-void MemoryIO::write (Int64 size, const void* buf)
+void MemoryIO::write (int64_t size, const void* buf)
 {
   // Throw an exception if not writable.
   if (!itsWritable) {
     throw (AipsError ("MemoryIO::write - MemoryIO object is not writable"));
   }
   // Expand the buffer when needed (and possible).
-  Int64 minSize = itsPosition + size;
+  int64_t minSize = itsPosition + size;
   if (minSize > itsAlloc) {
     if (! expand (minSize)) {
       throw (AipsError ("MemoryIO::write - buffer cannot be expanded"));
@@ -118,14 +118,14 @@ void MemoryIO::write (Int64 size, const void* buf)
   }
 }
 
-Int64 MemoryIO::read (Int64 size, void* buf, Bool throwException)
+int64_t MemoryIO::read (int64_t size, void* buf, bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw (AipsError ("MemoryIO::read - buffer is not readable"));
   }
-  const Int64 bytesLeft = itsUsed - itsPosition;
-  Int64 bytesRead = 0;
+  const int64_t bytesLeft = itsUsed - itsPosition;
+  int64_t bytesRead = 0;
   if (size <= bytesLeft) {
     memcpy (buf, itsBuffer + itsPosition, size);
     itsPosition += size;
@@ -155,11 +155,11 @@ Int64 MemoryIO::read (Int64 size, void* buf, Bool throwException)
   return bytesRead;
 }
 
-Int64 MemoryIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
+int64_t MemoryIO::doSeek (int64_t offset, ByteIO::SeekOption dir)
 {
   // Determine the new position.
   // Exit with error status if negative.
-  Int64 newPos;
+  int64_t newPos;
   switch (dir) {
   case ByteIO::Begin:
     newPos = offset;
@@ -198,23 +198,23 @@ Int64 MemoryIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
 }
 
 
-Bool MemoryIO::expand (uInt64 minSize)
+bool MemoryIO::expand (uint64_t minSize)
 {
-  Int64 minsz = minSize;
+  int64_t minsz = minSize;
   // Check if expansion is really needed.
   if (minsz <= itsAlloc) {
-    return True;
+    return true;
   }
   // Return with error status when expansion is not possible.
   if (itsExpandSize == 0) {
-    return False;
+    return false;
   }
   // Expand with at least the expansion size.
   if (minsz < itsAlloc + itsExpandSize) {
     minsz = itsAlloc + itsExpandSize;
   }
   // Allocate new buffer, copy contents and delete old buffer (if possible).
-  uChar* newBuffer = new uChar[minsz];
+  unsigned char* newBuffer = new unsigned char[minsz];
   AlwaysAssert (newBuffer != 0, AipsError);
   // Copy the old contents (if any).
   if (itsBuffer != 0) {
@@ -225,41 +225,41 @@ Bool MemoryIO::expand (uInt64 minSize)
   }
   itsBuffer    = newBuffer;
   itsAlloc     = minsz;
-  itsCanDelete = True;
-  return True;
+  itsCanDelete = true;
+  return true;
 }
 
 
-Int64 MemoryIO::length()
+int64_t MemoryIO::length()
 {
   return itsUsed;
 }
 
-Bool MemoryIO::isReadable() const
+bool MemoryIO::isReadable() const
 {
   return itsReadable;
 }
-Bool MemoryIO::isWritable() const
+bool MemoryIO::isWritable() const
 {
   return itsWritable;
 }
-Bool MemoryIO::isSeekable() const
+bool MemoryIO::isSeekable() const
 {
-  return True;
+  return true;
 }
 
-void MemoryIO::setUsed (uInt64 bytesUsed)
+void MemoryIO::setUsed (uint64_t bytesUsed)
 {
   if (!itsWritable) {
     throw (AipsError ("MemoryIO::setUsed - object is not writable"));
   }
-  if (Int64(bytesUsed) > itsAlloc) {
+  if (int64_t(bytesUsed) > itsAlloc) {
     throw(AipsError ("MemoryIO::setUsed - cannot use more than is allocated"));
   }
   itsUsed = bytesUsed;
 }
 
-uChar* MemoryIO::setBuffer (uInt64 length)
+unsigned char* MemoryIO::setBuffer (uint64_t length)
 {
   if (!itsWritable) {
     throw (AipsError ("MemoryIO::setBuffer - object is not writable"));

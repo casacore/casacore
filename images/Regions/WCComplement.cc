@@ -36,7 +36,7 @@ WCComplement::WCComplement (const ImageRegion& region)
 : WCCompound (&region)
 {}
 
-WCComplement::WCComplement (Bool takeOver,
+WCComplement::WCComplement (bool takeOver,
 			    const PtrBlock<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
@@ -56,7 +56,7 @@ WCComplement& WCComplement::operator= (const WCComplement& other)
     return *this;
 }
 
-Bool WCComplement::operator== (const WCRegion& other) const
+bool WCComplement::operator== (const WCRegion& other) const
 {
    return WCCompound::operator== (other);
 }
@@ -75,7 +75,7 @@ LCRegion* WCComplement::doToLCRegion (const CoordinateSystem& cSys,
 {
     PtrBlock<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
-    return new LCComplement (True, regions);
+    return new LCComplement (true, regions);
 }
 
 String WCComplement::className()
@@ -101,7 +101,7 @@ WCComplement* WCComplement::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new WCComplement (True, regions);
+    return new WCComplement (true, regions);
 }
 
 } //# NAMESPACE CASACORE - END

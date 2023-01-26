@@ -4,191 +4,191 @@ tLatticeExprNode: Version
 
 Constant contructors, get*, eval, shape, dataType, isScalar
 LatticeExprNode (constant T) 
-  Int 
-  Float
-  Double
+  int32_t 
+  float
+  double
   Complex
   DComplex
-  Bool
+  bool
 
 LELInterface constructors
 LatticeExprNode(CountedPtr<LELInterface<T> >&) 
-  Float
-  Double
+  float
+  double
   Complex
   DComplex
-  Bool
+  bool
 
 Copy constructor 
 Assignment 
 
 Unary operator +
-  Float Scalar
-  Double Scalar
+  float Scalar
+  double Scalar
   Complex Scalar
   DComplex Scalar
-  Float Array
-  Double Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 Unary operator -
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Unary operator !
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 
 Binary operator +
- Float Scalar
- Double Scalar
+ float Scalar
+ double Scalar
  Complex Scalar
  DComplex Scalar
- Float Array
- Double Array
+ float Array
+ double Array
  Complex Array
  DComplex Array
 Binary operator -
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator *
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator /
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Scalar
 Binary operator ==
-  Bool Scalar
-  Float Scalar
+  bool Scalar
+  float Scalar
   Complex Scalar
-  Bool Array
-  Float Array
+  bool Array
+  float Array
   Complex Array
 Binary operator !=
-  Bool Scalar
-  Float Scalar
+  bool Scalar
+  float Scalar
   Complex Scalar
-  Bool Array
-  Float Array
+  bool Array
+  float Array
   Complex Array
 Binary operator >
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator >=
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator <
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator <=
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator &&
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 Binary operator ||
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 operator []
-  Bool Array
-  Float Array
-  Double Array
+  bool Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 
 1-argument functions 
 sin
-  Float Scalar
-  Double Scalar
+  float Scalar
+  double Scalar
   Complex Scalar
   DComplex Scalar
-  Float Array
-  Double Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 sinh
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 asin
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 cos
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 cosh
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 acos
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 tan
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 tanh
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 atan
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 exp
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 log
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 log10
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 sqrt
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 ceil
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 floor
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 conj
   Complex Scalar
   Complex Array
 complex
-  Float Scalar
-  Float Array
-  Float Array,Scalar
-  Float Scalar,Array
+  float Scalar
+  float Array
+  float Array,Scalar
+  float Scalar,Array
 abs
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 arg
   Complex Scalar
@@ -200,386 +200,386 @@ imag
   Complex Scalar
   Complex Array
 min
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 max
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 sign
-  Float Scalar
-  Double Scalar
-  Float Array
-  Double Array
+  float Scalar
+  double Scalar
+  float Array
+  double Array
 round
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 median
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 fractile
-  Float Scalar
-  Double Scalar
-  Float Array
-  Double Array
+  float Scalar
+  double Scalar
+  float Array
+  double Array
 fractileRange 2
-  Float Array
-  Double Array
+  float Array
+  double Array
 fractileRange 3
-  Float Array
-  Double Array
+  float Array
+  double Array
 mean
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 variance
-  Float Array
+  float Array
 stddev
-  Float Array
+  float Array
 avdev
-  Float Array
+  float Array
 sum
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 nelements
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 ndim
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 length
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
-  Bool Array
+  bool Array
 any
-  Bool Array
+  bool Array
 all
-  Bool Array
+  bool Array
 ntrue
-  Bool Array
+  bool Array
 nfalse
-  Bool Array
+  bool Array
 isNaN
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 indexin
 
 2-argument functions 
 atan2
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 pow
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 fmod
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 min
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 max
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 amp
- Float Scalar
+ float Scalar
  Complex Scalar
- Float Array
+ float Array
  Complex Array
 pa
- Float Scalar
- Float Array
- Double Scalar
- Double Array
+ float Scalar
+ float Array
+ double Scalar
+ double Array
 mask
- Float Scalar 1
- Float Scalar 2
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar 1
+ float Scalar 2
+ float Array
+ bool Scalar
+ bool Array
 value
- Float Scalar 1
- Float Scalar 2
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar 1
+ float Scalar 2
+ float Array
+ bool Scalar
+ bool Array
 replace
- Float Scalar
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar
+ float Array
+ bool Scalar
+ bool Array
 Rebin
-  Float
-  Double
+  float
+  double
   Complex
   DComplex
 
 3-argument functions 
 iif
-  Float Scalar,Scalar,Scalar
-  Double Scalar,Array,Scalar
+  float Scalar,Scalar,Scalar
+  double Scalar,Array,Scalar
   Complex Scalar,Scalar,Array
   DComplex Scalar,Array,Array
-  Bool Scalar,Array,Array
-  Float/Double Array,Scalar,Scalar
-  Complex/Double Array,Scalar,Array
-  Double Array,Array,Scalar
-  Double Array,Array,Array
-  Bool Array,Array,Scalar
-  Bool Array,Array,Array
+  bool Scalar,Array,Array
+  float/double Array,Scalar,Scalar
+  Complex/double Array,Scalar,Array
+  double Array,Array,Scalar
+  double Array,Array,Array
+  bool Array,Array,Scalar
+  bool Array,Array,Array
 
 Conversion functions
 toFloat
-  from Float Scalar
-  from Double Scalar
-  from Float Array
-  from Double Array
+  from float Scalar
+  from double Scalar
+  from float Array
+  from double Array
 toDouble
-  from Float Scalar
-  from Double Scalar
-  from Float Array
-  from Double Scalar
+  from float Scalar
+  from double Scalar
+  from float Array
+  from double Scalar
 toComplex
-  from Float Scalar
-  from Double Scalar
+  from float Scalar
+  from double Scalar
   from Complex Scalar
   from DComplex Scalar
-  from Float Array
-  from Double Scalar
+  from float Array
+  from double Scalar
   from Complex Array
   from DComplex Array
 toDComplex
-  from Float Scalar
-  from Double Scalar
+  from float Scalar
+  from double Scalar
   from Complex Scalar
   from DComplex Scalar
-  from Float Array
-  from Double Scalar
+  from float Array
+  from double Scalar
   from DComplex Array
   from DComplex Array
 
 Casting operators
-LatticeExpr<Float>()
-  from Float
-  from Double
-LatticeExpr<Double>()
-  from Float
-  from Double
+LatticeExpr<float>()
+  from float
+  from double
+LatticeExpr<double>()
+  from float
+  from double
 LatticeExpr<Complex>()
-  from Float
-  from Double
+  from float
+  from double
   from Complex
   from DComplex
 LatticeExpr<DComplex>()
-  from Float
-  from Double
+  from float
+  from double
   from Complex
   from DComplex
-LatticeExpr<Bool>()
-  from Bool
+LatticeExpr<bool>()
+  from bool
 
 Constant contructors, get*, eval, shape, dataType, isScalar
 LatticeExprNode (constant T) 
-  Int 
-  Float
-  Double
+  int32_t 
+  float
+  double
   Complex
   DComplex
-  Bool
+  bool
 
 LELInterface constructors
 LatticeExprNode(CountedPtr<LELInterface<T> >&) 
-  Float
-  Double
+  float
+  double
   Complex
   DComplex
-  Bool
+  bool
 
 Copy constructor 
 Assignment 
 
 Unary operator +
-  Float Scalar
-  Double Scalar
+  float Scalar
+  double Scalar
   Complex Scalar
   DComplex Scalar
-  Float Array
-  Double Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 Unary operator -
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Unary operator !
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 
 Binary operator +
- Float Scalar
- Double Scalar
+ float Scalar
+ double Scalar
  Complex Scalar
  DComplex Scalar
- Float Array
- Double Array
+ float Array
+ double Array
  Complex Array
  DComplex Array
 Binary operator -
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator *
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator /
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Scalar
 Binary operator ==
-  Bool Scalar
-  Float Scalar
+  bool Scalar
+  float Scalar
   Complex Scalar
-  Bool Array
-  Float Array
+  bool Array
+  float Array
   Complex Array
 Binary operator !=
-  Bool Scalar
-  Float Scalar
+  bool Scalar
+  float Scalar
   Complex Scalar
-  Bool Array
-  Float Array
+  bool Array
+  float Array
   Complex Array
 Binary operator >
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator >=
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator <
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator <=
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator &&
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 Binary operator ||
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 operator []
-  Bool Array
-  Float Array
-  Double Array
+  bool Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 
 1-argument functions 
 sin
-  Float Scalar
-  Double Scalar
+  float Scalar
+  double Scalar
   Complex Scalar
   DComplex Scalar
-  Float Array
-  Double Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 sinh
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 asin
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 cos
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 cosh
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 acos
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 tan
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 tanh
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 atan
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 exp
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 log
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 log10
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 sqrt
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 ceil
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 floor
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 conj
   Complex Scalar
   Complex Array
 complex
-  Float Scalar
-  Float Array
-  Float Array,Scalar
-  Float Scalar,Array
+  float Scalar
+  float Array
+  float Array,Scalar
+  float Scalar,Array
 abs
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 arg
   Complex Scalar
@@ -591,386 +591,386 @@ imag
   Complex Scalar
   Complex Array
 min
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 max
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 sign
-  Float Scalar
-  Double Scalar
-  Float Array
-  Double Array
+  float Scalar
+  double Scalar
+  float Array
+  double Array
 round
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 median
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 fractile
-  Float Scalar
-  Double Scalar
-  Float Array
-  Double Array
+  float Scalar
+  double Scalar
+  float Array
+  double Array
 fractileRange 2
-  Float Array
-  Double Array
+  float Array
+  double Array
 fractileRange 3
-  Float Array
-  Double Array
+  float Array
+  double Array
 mean
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 variance
-  Float Array
+  float Array
 stddev
-  Float Array
+  float Array
 avdev
-  Float Array
+  float Array
 sum
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 nelements
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 ndim
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 length
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
-  Bool Array
+  bool Array
 any
-  Bool Array
+  bool Array
 all
-  Bool Array
+  bool Array
 ntrue
-  Bool Array
+  bool Array
 nfalse
-  Bool Array
+  bool Array
 isNaN
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 indexin
 
 2-argument functions 
 atan2
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 pow
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 fmod
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 min
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 max
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 amp
- Float Scalar
+ float Scalar
  Complex Scalar
- Float Array
+ float Array
  Complex Array
 pa
- Float Scalar
- Float Array
- Double Scalar
- Double Array
+ float Scalar
+ float Array
+ double Scalar
+ double Array
 mask
- Float Scalar 1
- Float Scalar 2
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar 1
+ float Scalar 2
+ float Array
+ bool Scalar
+ bool Array
 value
- Float Scalar 1
- Float Scalar 2
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar 1
+ float Scalar 2
+ float Array
+ bool Scalar
+ bool Array
 replace
- Float Scalar
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar
+ float Array
+ bool Scalar
+ bool Array
 Rebin
-  Float
-  Double
+  float
+  double
   Complex
   DComplex
 
 3-argument functions 
 iif
-  Float Scalar,Scalar,Scalar
-  Double Scalar,Array,Scalar
+  float Scalar,Scalar,Scalar
+  double Scalar,Array,Scalar
   Complex Scalar,Scalar,Array
   DComplex Scalar,Array,Array
-  Bool Scalar,Array,Array
-  Float/Double Array,Scalar,Scalar
-  Complex/Double Array,Scalar,Array
-  Double Array,Array,Scalar
-  Double Array,Array,Array
-  Bool Array,Array,Scalar
-  Bool Array,Array,Array
+  bool Scalar,Array,Array
+  float/double Array,Scalar,Scalar
+  Complex/double Array,Scalar,Array
+  double Array,Array,Scalar
+  double Array,Array,Array
+  bool Array,Array,Scalar
+  bool Array,Array,Array
 
 Conversion functions
 toFloat
-  from Float Scalar
-  from Double Scalar
-  from Float Array
-  from Double Array
+  from float Scalar
+  from double Scalar
+  from float Array
+  from double Array
 toDouble
-  from Float Scalar
-  from Double Scalar
-  from Float Array
-  from Double Scalar
+  from float Scalar
+  from double Scalar
+  from float Array
+  from double Scalar
 toComplex
-  from Float Scalar
-  from Double Scalar
+  from float Scalar
+  from double Scalar
   from Complex Scalar
   from DComplex Scalar
-  from Float Array
-  from Double Scalar
+  from float Array
+  from double Scalar
   from Complex Array
   from DComplex Array
 toDComplex
-  from Float Scalar
-  from Double Scalar
+  from float Scalar
+  from double Scalar
   from Complex Scalar
   from DComplex Scalar
-  from Float Array
-  from Double Scalar
+  from float Array
+  from double Scalar
   from DComplex Array
   from DComplex Array
 
 Casting operators
-LatticeExpr<Float>()
-  from Float
-  from Double
-LatticeExpr<Double>()
-  from Float
-  from Double
+LatticeExpr<float>()
+  from float
+  from double
+LatticeExpr<double>()
+  from float
+  from double
 LatticeExpr<Complex>()
-  from Float
-  from Double
+  from float
+  from double
   from Complex
   from DComplex
 LatticeExpr<DComplex>()
-  from Float
-  from Double
+  from float
+  from double
   from Complex
   from DComplex
-LatticeExpr<Bool>()
-  from Bool
+LatticeExpr<bool>()
+  from bool
 
 Constant contructors, get*, eval, shape, dataType, isScalar
 LatticeExprNode (constant T) 
-  Int 
-  Float
-  Double
+  int32_t 
+  float
+  double
   Complex
   DComplex
-  Bool
+  bool
 
 LELInterface constructors
 LatticeExprNode(CountedPtr<LELInterface<T> >&) 
-  Float
-  Double
+  float
+  double
   Complex
   DComplex
-  Bool
+  bool
 
 Copy constructor 
 Assignment 
 
 Unary operator +
-  Float Scalar
-  Double Scalar
+  float Scalar
+  double Scalar
   Complex Scalar
   DComplex Scalar
-  Float Array
-  Double Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 Unary operator -
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Unary operator !
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 
 Binary operator +
- Float Scalar
- Double Scalar
+ float Scalar
+ double Scalar
  Complex Scalar
  DComplex Scalar
- Float Array
- Double Array
+ float Array
+ double Array
  Complex Array
  DComplex Array
 Binary operator -
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator *
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator /
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Scalar
 Binary operator ==
-  Bool Scalar
-  Float Scalar
+  bool Scalar
+  float Scalar
   Complex Scalar
-  Bool Array
-  Float Array
+  bool Array
+  float Array
   Complex Array
 Binary operator !=
-  Bool Scalar
-  Float Scalar
+  bool Scalar
+  float Scalar
   Complex Scalar
-  Bool Array
-  Float Array
+  bool Array
+  float Array
   Complex Array
 Binary operator >
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator >=
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator <
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator <=
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 Binary operator &&
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 Binary operator ||
-  Bool Scalar
-  Bool Array
+  bool Scalar
+  bool Array
 operator []
-  Bool Array
-  Float Array
-  Double Array
+  bool Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 
 1-argument functions 
 sin
-  Float Scalar
-  Double Scalar
+  float Scalar
+  double Scalar
   Complex Scalar
   DComplex Scalar
-  Float Array
-  Double Array
+  float Array
+  double Array
   Complex Array
   DComplex Array
 sinh
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 asin
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 cos
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 cosh
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 acos
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 tan
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 tanh
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 atan
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 exp
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 log
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 log10
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 sqrt
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 ceil
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 floor
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 conj
   Complex Scalar
   Complex Array
 complex
-  Float Scalar
-  Float Array
-  Float Array,Scalar
-  Float Scalar,Array
+  float Scalar
+  float Array
+  float Array,Scalar
+  float Scalar,Array
 abs
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 arg
   Complex Scalar
@@ -982,197 +982,197 @@ imag
   Complex Scalar
   Complex Array
 min
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 max
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 sign
-  Float Scalar
-  Double Scalar
-  Float Array
-  Double Array
+  float Scalar
+  double Scalar
+  float Array
+  double Array
 round
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 median
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 fractile
-  Float Scalar
-  Double Scalar
-  Float Array
-  Double Array
+  float Scalar
+  double Scalar
+  float Array
+  double Array
 fractileRange 2
-  Float Array
-  Double Array
+  float Array
+  double Array
 fractileRange 3
-  Float Array
-  Double Array
+  float Array
+  double Array
 mean
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 variance
-  Float Array
+  float Array
 stddev
-  Float Array
+  float Array
 avdev
-  Float Array
+  float Array
 sum
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 nelements
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 ndim
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 length
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
-  Bool Array
+  bool Array
 any
-  Bool Array
+  bool Array
 all
-  Bool Array
+  bool Array
 ntrue
-  Bool Array
+  bool Array
 nfalse
-  Bool Array
+  bool Array
 isNaN
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 indexin
 
 2-argument functions 
 atan2
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 pow
-  Float Scalar
+  float Scalar
   Complex Scalar
-  Float Array
+  float Array
   Complex Array
 fmod
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 min
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 max
-  Float Scalar
-  Float Array
+  float Scalar
+  float Array
 amp
- Float Scalar
+ float Scalar
  Complex Scalar
- Float Array
+ float Array
  Complex Array
 pa
- Float Scalar
- Float Array
- Double Scalar
- Double Array
+ float Scalar
+ float Array
+ double Scalar
+ double Array
 mask
- Float Scalar 1
- Float Scalar 2
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar 1
+ float Scalar 2
+ float Array
+ bool Scalar
+ bool Array
 value
- Float Scalar 1
- Float Scalar 2
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar 1
+ float Scalar 2
+ float Array
+ bool Scalar
+ bool Array
 replace
- Float Scalar
- Float Array
- Bool Scalar
- Bool Array
+ float Scalar
+ float Array
+ bool Scalar
+ bool Array
 Rebin
-  Float
-  Double
+  float
+  double
   Complex
   DComplex
 
 3-argument functions 
 iif
-  Float Scalar,Scalar,Scalar
-  Double Scalar,Array,Scalar
+  float Scalar,Scalar,Scalar
+  double Scalar,Array,Scalar
   Complex Scalar,Scalar,Array
   DComplex Scalar,Array,Array
-  Bool Scalar,Array,Array
-  Float/Double Array,Scalar,Scalar
-  Complex/Double Array,Scalar,Array
-  Double Array,Array,Scalar
-  Double Array,Array,Array
-  Bool Array,Array,Scalar
-  Bool Array,Array,Array
+  bool Scalar,Array,Array
+  float/double Array,Scalar,Scalar
+  Complex/double Array,Scalar,Array
+  double Array,Array,Scalar
+  double Array,Array,Array
+  bool Array,Array,Scalar
+  bool Array,Array,Array
 
 Conversion functions
 toFloat
-  from Float Scalar
-  from Double Scalar
-  from Float Array
-  from Double Array
+  from float Scalar
+  from double Scalar
+  from float Array
+  from double Array
 toDouble
-  from Float Scalar
-  from Double Scalar
-  from Float Array
-  from Double Scalar
+  from float Scalar
+  from double Scalar
+  from float Array
+  from double Scalar
 toComplex
-  from Float Scalar
-  from Double Scalar
+  from float Scalar
+  from double Scalar
   from Complex Scalar
   from DComplex Scalar
-  from Float Array
-  from Double Scalar
+  from float Array
+  from double Scalar
   from Complex Array
   from DComplex Array
 toDComplex
-  from Float Scalar
-  from Double Scalar
+  from float Scalar
+  from double Scalar
   from Complex Scalar
   from DComplex Scalar
-  from Float Array
-  from Double Scalar
+  from float Array
+  from double Scalar
   from DComplex Array
   from DComplex Array
 
 Casting operators
-LatticeExpr<Float>()
-  from Float
-  from Double
-LatticeExpr<Double>()
-  from Float
-  from Double
+LatticeExpr<float>()
+  from float
+  from double
+LatticeExpr<double>()
+  from float
+  from double
 LatticeExpr<Complex>()
-  from Float
-  from Double
+  from float
+  from double
   from Complex
   from DComplex
 LatticeExpr<DComplex>()
-  from Float
-  from Double
+  from float
+  from double
   from Complex
   from DComplex
-LatticeExpr<Bool>()
-  from Bool
+LatticeExpr<bool>()
+  from bool
 
 ok

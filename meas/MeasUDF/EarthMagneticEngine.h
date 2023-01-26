@@ -147,17 +147,17 @@ namespace casacore {
 
     // Get the value type. It also gives the nr of output values per position.
     //  0=default, 1=length (in tesla), 2=angles (in radians)
-    Int valueType() const
+    int32_t valueType() const
       { return itsValueType; }
 
     // Get the values.
-    Array<Double> getArrayDouble (const TableExprId& id);
+    Array<double> getArrayDouble (const TableExprId& id);
 
     // Handle the argument(s) giving the input earthMagnetics or direction
     // and reference type. The earthMagnetic can be a column in a table.
     // Note that direction (or height) can only be given for reftype IGRF.
     void handleEarthMagnetic (std::vector<TENShPtr>& args,
-                              uInt& argnr);
+                              uint32_t& argnr);
 
     // Handle the heights argument.
     void handleHeight (TENShPtr& operand);
@@ -176,14 +176,14 @@ namespace casacore {
     void setDirectionEngine (DirectionEngine& engine);
 
     // Set the types of the result.
-    void set (MEarthMagnetic::Types toRefType, Int toValueType,
-              Bool asLOS, Bool asLong, Bool useModel);
+    void set (MEarthMagnetic::Types toRefType, int32_t toValueType,
+              bool asLOS, bool asLong, bool useModel);
 
   private:
     // Strip a possible suffix from the reference type.
     virtual String stripMeasType (const String& type);
-    virtual void deriveAttr (const Unit& unit, Int nval);
-    virtual void setValueType (Int valueType);
+    virtual void deriveAttr (const Unit& unit, int32_t nval);
+    virtual void setValueType (int32_t valueType);
     // Make an MEarthMagnetic from xyz or length,angles.
     MEarthMagnetic makeEarthMagnetic (const Quantity& qh,
                                       const Quantity& q1,
@@ -194,7 +194,7 @@ namespace casacore {
                                const TableExprId& id,
                                Array<MEarthMagnetic>& earthMagnetics);
     Array<MEarthMagnetic> getEarthMagnetics (const TableExprId& id);
-    Array<Double> getHeights (const TableExprId& id);
+    Array<double> getHeights (const TableExprId& id);
     void copyEM (const MVEarthMagnetic& em, double*& outPtr);
     void copyLLEM (EarthMagneticMachine& emm, double*& outPtr);
 
@@ -202,13 +202,13 @@ namespace casacore {
     MeasFrame                       itsFrame;      //# frame used by converter
     EarthMagneticMachine            itsMachine;    //# model calculations
     MEarthMagnetic::Convert         itsConverter;
-    Int                             itsValueType;
+    int32_t                             itsValueType;
                                     //# 3=xyz flux, -3=angle,flux
-    Int                             itsToValueType;
-    Bool                            itsAsLOS;      //# get as line-of-sight?
-    Bool                            itsAsLong;     //# get as longitude?
-    Bool                            itsUseModel;   //# use model calculation?
-    Bool                            itsConvertModel; //# model to non-ITRF?
+    int32_t                             itsToValueType;
+    bool                            itsAsLOS;      //# get as line-of-sight?
+    bool                            itsAsLong;     //# get as longitude?
+    bool                            itsUseModel;   //# use model calculation?
+    bool                            itsConvertModel; //# model to non-ITRF?
     EpochEngine*                    itsEpochEngine;
     PositionEngine*                 itsPositionEngine;
     DirectionEngine*                itsDirectionEngine;

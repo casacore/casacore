@@ -33,14 +33,14 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-FITSErrorImage::FITSErrorImage (const String& name, uInt whichRep, uInt whichHDU, FITSErrorImage::ErrorType errtype)
+FITSErrorImage::FITSErrorImage (const String& name, uint32_t whichRep, uint32_t whichHDU, FITSErrorImage::ErrorType errtype)
 : FITSImage(name, whichRep, whichHDU),
   errtype_p(errtype)
 {
 	setupMask();
 }
 
-FITSErrorImage::FITSErrorImage (const String& name, const MaskSpecifier& maskSpec, uInt whichRep, uInt whichHDU, FITSErrorImage::ErrorType errtype)
+FITSErrorImage::FITSErrorImage (const String& name, const MaskSpecifier& maskSpec, uint32_t whichRep, uint32_t whichHDU, FITSErrorImage::ErrorType errtype)
 : FITSImage (name, maskSpec, whichRep, whichHDU),
   errtype_p(errtype)
 {
@@ -72,7 +72,7 @@ FITSErrorImage::~FITSErrorImage()
 {
 }
 
-ImageInterface<Float>* FITSErrorImage::cloneII() const
+ImageInterface<float>* FITSErrorImage::cloneII() const
 {
    return new FITSErrorImage (*this);
 }
@@ -83,7 +83,7 @@ String FITSErrorImage::imageType() const
    return "FITSErrorImage";
 }
 
-Bool FITSErrorImage::doGetSlice(Array<Float>& buffer,
+bool FITSErrorImage::doGetSlice(Array<float>& buffer,
                            const Slicer& section)
 {
 	// set up the arrays
@@ -95,32 +95,32 @@ Bool FITSErrorImage::doGetSlice(Array<Float>& buffer,
 	FITSImage::doGetSlice(buffer_p, section);
 
 	//
-	Bool deletePtrD;
-	const Float* pData = buffer_p.getStorage(deletePtrD);
-	Bool deletePtrM;
-	Float* pBuffer = buffer.getStorage(deletePtrM);
+	bool deletePtrD;
+	const float* pData = buffer_p.getStorage(deletePtrD);
+	bool deletePtrM;
+	float* pBuffer = buffer.getStorage(deletePtrM);
 
 	// depending on the error type,
 	// fill the resulting array with variance values
 	switch (errtype_p)
 	{
 	case MSE:
-		for (uInt i=0; i<buffer.nelements(); i++)
+		for (uint32_t i=0; i<buffer.nelements(); i++)
 			pBuffer[i] = pData[i];
 		break;
 	case RMSE:
-		for (uInt i=0; i<buffer.nelements(); i++)
+		for (uint32_t i=0; i<buffer.nelements(); i++)
 			pBuffer[i] = pData[i]*pData[i];
 		break;
 	case INVMSE:
-		for (uInt i=0; i<buffer.nelements(); i++)
+		for (uint32_t i=0; i<buffer.nelements(); i++)
 			if (pData[i])
 				pBuffer[i] = 1.0/pData[i];
 			else
 				pBuffer[i] = NAN;
 		break;
 	case INVRMSE:
-		for (uInt i=0; i<buffer.nelements(); i++)
+		for (uint32_t i=0; i<buffer.nelements(); i++)
 			if (pData[i])
 				pBuffer[i] = 1.0/(pData[i]*pData[i]);
 			else
@@ -137,10 +137,10 @@ Bool FITSErrorImage::doGetSlice(Array<Float>& buffer,
 	buffer_p.freeStorage(pData, deletePtrD);
 	buffer.putStorage(pBuffer, deletePtrM);
 
-	return False;                            // Not a reference
+	return false;                            // Not a reference
 }
 
-void FITSErrorImage::doPutSlice (const Array<Float>&, const IPosition&,
+void FITSErrorImage::doPutSlice (const Array<float>&, const IPosition&,
                             const IPosition&)
 {
 	// the image is read-only
@@ -185,7 +185,7 @@ void FITSErrorImage::setupMask()
 	// for the inverse error types, switch on
 	// the masking of values 0.0 (in the FITS file)
 	if (errtype_p == INVMSE || errtype_p == INVRMSE){
-		setMaskZero(True);
+		setMaskZero(true);
 	}
 	// throw an error for type "UNKNOWN", since
 	// it is now known what to do.

@@ -33,7 +33,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Define extern templates for often used types.
-  template class Quantum<Double>;
+  template class Quantum<double>;
 
 
 istream &operator>> (istream &is, Quantity &ku)
@@ -50,9 +50,9 @@ istream &operator>> (istream &is, Quantity &ku)
   return is;
 }
 
-Bool readQuantity(Quantity &res, MUString &in)
+bool readQuantity(Quantity &res, MUString &in)
 {
-  Double val0 = 0.0;
+  double val0 = 0.0;
   String unit = "";
   res = Quantity();
   UnitVal uv;
@@ -66,7 +66,7 @@ Bool readQuantity(Quantity &res, MUString &in)
       unit = in.get();
       // Check if valid unit specified
       if (!UnitVal::check(unit, uv)) {
-	in.pop(); return False;
+	in.pop(); return false;
       }
     }
   }
@@ -76,10 +76,10 @@ Bool readQuantity(Quantity &res, MUString &in)
   res.setValue(val0);
   res.setUnit(unit);
   in.unpush();
-  return True; 
+  return true; 
 }
 
-Bool readQuantity(Quantity &res, const String &in)
+bool readQuantity(Quantity &res, const String &in)
 {
   static const Regex ex("^[[:space:][:punct:]]*[[:digit:]]");
   static const Regex ex2("[tT][oO][dD][aA][yY]");

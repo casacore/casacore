@@ -31,17 +31,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Define the extra non-standard types used by Casacore
 // (like proposed uSize, Size)
 
-// A guaranteed 64-bit long integer (for a.o. large file systems).
-// An implementation must support the + and - operators.
-typedef long long Int64;
-typedef unsigned long long uInt64;
-
 // All FITS code seems to assume longs are 4 bytes. Currently
 // this corresponds to an "int" on all useful platforms.
 typedef int FitsLong;
 
 // Define the type of a row number in a table.
-typedef uInt64 rownr_t;
+typedef uint64_t rownr_t;
 
   
 } //# NAMESPACE CASACORE - END

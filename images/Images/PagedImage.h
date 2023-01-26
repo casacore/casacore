@@ -84,12 +84,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // make it known to the image.
 // <srcblock>
 //   // Open the image (as readonly for the moment).
-//   PagedImage<Float> myimage ("image.name");
+//   PagedImage<float> myimage ("image.name");
 //   // Create a mask for the image.
 //   // The mask will be stored in a subtable of the image.
 //   LCPagedMask mask (RegionHandler::makeMask (myimage, "mask.name"));
-//   // Fill the mask with whatever values (e.g. all True).
-//   mask.set (True);
+//   // Fill the mask with whatever values (e.g. all true).
+//   mask.set (true);
 //   // Make the mask known to the image (with name mask1).
 //   myimage.defineRegion ("mask1", mask, RegionHandler::Masks);
 //   // Make the mask the default mask for this image.
@@ -138,14 +138,14 @@ public:
   PagedImage (const TiledShape& mapShape,
 	      const CoordinateSystem& coordinateInfo,
 	      Table& table,
-	      uInt rowNumber = 0);
+	      uint32_t rowNumber = 0);
   
   // Construct a new Image from shape and coordinate information. Table
   // will be stored in the named file.
   PagedImage (const TiledShape& mapShape,
 	      const CoordinateSystem& coordinateInfo,
 	      const String& nameOfNewFile,
-	      uInt rowNumber = 0);
+	      uint32_t rowNumber = 0);
   
   // Construct a new Image from shape and coordinate information. Table
   // will be stored in the named file.
@@ -155,31 +155,31 @@ public:
 	      const CoordinateSystem& coordinateInfo,
 	      const String& nameOfNewFile,
 	      TableLock::LockOption,
-	      uInt rowNumber = 0);
+	      uint32_t rowNumber = 0);
   PagedImage (const TiledShape& mapShape,
 	      const CoordinateSystem& coordinateInfo,
 	      const String& nameOfNewFile,
 	      const TableLock& lockOptions,
-	      uInt rowNumber = 0);
+	      uint32_t rowNumber = 0);
   // </group>
   
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
   explicit PagedImage (Table& table, MaskSpecifier = MaskSpecifier(),
-		       uInt rowNumber = 0);
+		       uint32_t rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file.
   // By default the default pixelmask (if available) is used.
   explicit PagedImage (const String& filename, MaskSpecifier = MaskSpecifier(),
-		       uInt rowNumber = 0);
+		       uint32_t rowNumber = 0);
   
   // Reconstruct an image from a pre-existing file with Locking.
   // By default the default pixelmask (if available) is used.
   // <group>
   PagedImage (const String& filename, TableLock::LockOption,
-	      MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
+	      MaskSpecifier = MaskSpecifier(), uint32_t rowNumber = 0);
   PagedImage (const String& filename, const TableLock& lockOptions,
-	      MaskSpecifier = MaskSpecifier(), uInt rowNumber = 0);
+	      MaskSpecifier = MaskSpecifier(), uint32_t rowNumber = 0);
   // </group>
   
   // Copy constructor (reference semantics).
@@ -201,22 +201,22 @@ public:
   virtual String imageType() const;
 
   // A PagedImage is always persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // A PagedImage is always paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Is the PagedImage writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Does the image object use a pixelmask?
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask used.
   // An exception is thrown if the image does not use a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get a pointer the default pixelmask object used with this image.
@@ -242,10 +242,10 @@ public:
 
   // Return the current Table name. By default this includes the full path. 
   // the path preceding the file name can be stripped off on request.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
 
   // Return the current TableColumn row number.
-  uInt rowNumber() const;
+  uint32_t rowNumber() const;
 
   // Return the shape of the image.
   virtual IPosition shape() const;
@@ -254,7 +254,7 @@ public:
   virtual void resize (const TiledShape& newShape);
 
   // Function which extracts an array from the map.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
   
   // Function to replace the values in the map with soureBuffer.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -282,19 +282,19 @@ public:
 
   // Function which sets the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
-  // False if it cannot set the unit for some reason (e.g. the underlying
+  // false if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
-  virtual Bool setUnits (const Unit& newUnits);
+  virtual bool setUnits (const Unit& newUnits);
 
   // Return the table holding the data.
   Table& table()
     { return map_p.table(); }
 
   // Flushes the new coordinate system to disk if the table is writable.
-  virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
+  virtual bool setCoordinateInfo (const CoordinateSystem& coords);
 
   // Check for symmetry in data members.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // These are the true implementations of the paran operator.
   // <note> Not for public use </note>
@@ -305,20 +305,20 @@ public:
 
   // Replace the miscinfo in the PagedImage.
   // It can fail if, e.g., the underlying table is not writable.
-  virtual Bool setMiscInfo (const RecordInterface& newInfo);
+  virtual bool setMiscInfo (const RecordInterface& newInfo);
 
   // The ImageInfo object contains some miscellaneous information about the
   // image, which unlike that stored in MiscInfo, has a standard list of
   // things, such as the restoring beam.
   // Note that setImageInfo REPLACES the information with the new information.
   // It can fail if, e.g., the underlying table is not writable.
-  virtual Bool setImageInfo(const ImageInfo& info);
+  virtual bool setImageInfo(const ImageInfo& info);
 
   // Get access to the attribute handler.
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler (bool createHandler=false);
 
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
@@ -326,26 +326,26 @@ public:
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool throwIfUnknown = True);
+			     bool throwIfUnknown = true);
 
   // This is the implementation of the letter for the envelope Iterator
   // class. <note> Not for public use </note>.
   virtual LatticeIterInterface<T>* makeIter
                                  (const LatticeNavigator& navigator,
-				  Bool useRef) const;
+				  bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -358,7 +358,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -371,9 +371,9 @@ public:
   // Unlocking also unlocks the logtable and a possible mask table.
   // Locking only locks the image itself.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the PagedImage object with the table contents.
@@ -399,7 +399,7 @@ public:
 
 private:
   // Function to return the internal Table object to the RegionHandler.
-  static Table& getTable (void* imagePtr, Bool writable);
+  static Table& getTable (void* imagePtr, bool writable);
 
   // This must be called in every constructor and place where the image
   // is attached to a new image.
@@ -419,9 +419,9 @@ private:
 		       const CoordinateSystem& coordinateInfo,
 		       const String& nameOfNewFile,
 		       const TableLock& lockOptions,
-		       uInt rowNumber);
+		       uint32_t rowNumber);
   void makePagedImage (const String& filename, const TableLock& lockOptions,
-		       const MaskSpecifier&, uInt rowNumber);
+		       const MaskSpecifier&, uint32_t rowNumber);
 
   const Table& table() const
     { return const_cast<PagedImage<T>*>(this)->table(); }
@@ -460,7 +460,7 @@ protected:
 
 
 //# Declare extern templates for often used types.
-  extern template class PagedImage<Float>;
+  extern template class PagedImage<float>;
   extern template class PagedImage<Complex>;
 
   

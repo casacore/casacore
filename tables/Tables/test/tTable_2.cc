@@ -75,22 +75,22 @@ void doIt (const String& tableName)
     cout << "<<<" << endl;
     Table tab(tableName);
     cout << "end reading Table" << endl;
-    ScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<Int> ac (tab,"ac");
-    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<int32_t> ab2(tab,"ab");
+    ScalarColumn<int32_t> ac (tab,"ac");
+    ScalarColumn<uint32_t> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
-    uInt i;
+    uint32_t i;
     Vector<String> names = tab.tableDesc().columnNames();
     for (i=0; i<names.nelements(); i++) {
 	cout << names(i) << endl;
     }
-    Int abval, acval;
-    uInt adval;
+    int32_t abval, acval;
+    uint32_t adval;
     float aeval;
     String afval;
     DComplex agval;
@@ -112,7 +112,7 @@ void doIt (const String& tableName)
 	af.get (i, afval);
 	ag.get (i, agval);
 	sprintf (str, "V%i", i);
-	if (abval != Int(i)  ||  acval != Int(i+1)  ||  adval != i+2
+	if (abval != int32_t(i)  ||  acval != int32_t(i+1)  ||  adval != i+2
         ||  aeval != i+3  ||  afval != str  ||  agval != DComplex(i+2)) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << acval << ", " << adval
@@ -142,10 +142,10 @@ void doIt (const String& tableName)
 	}
 	arrf += (float)(arrf.nelements());
     }
-    Vector<Int> abvec = ab2.getColumn();
+    Vector<int32_t> abvec = ab2.getColumn();
     cout << tab.nrow() << " " << abvec.nelements() << endl;
     for (i=0; i<10; i++) {
-	if (abvec(i) != Int(i)) {
+	if (abvec(i) != int32_t(i)) {
 	    cout << "error in getColumn " << i << ": " << abvec(i) << endl;
 	}
     }
@@ -154,7 +154,7 @@ void doIt (const String& tableName)
 	cout << "arr1a not 4-dim" << endl;
     }
     i=0;
-    uInt j0,j1,j2,j3;
+    uint32_t j0,j1,j2,j3;
     for (j3=0; j3<10; j3++)
 	for (j2=0; j2<4; j2++)
 	    for (j1=0; j1<3; j1++)
@@ -192,7 +192,7 @@ void doIt (const String& tableName)
     if (sortab2.nrow() != 10) {
 	cout << "sortab2 does not contain 10 rows" << endl;
     }
-    ScalarColumn<uInt> sorad(sortab2, "ad");
+    ScalarColumn<uint32_t> sorad(sortab2, "ad");
     cout << sorad.getColumn() << endl;
     cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
 
@@ -206,7 +206,7 @@ void doIt (const String& tableName)
     if (seltab1.nrow() != 4) {
 	cout << "seltab1 does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> sel1ab(seltab1, "ab");
+    ScalarColumn<int32_t> sel1ab(seltab1, "ab");
     cout << sel1ab.getColumn() << endl;
     cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
@@ -219,19 +219,19 @@ void doIt (const String& tableName)
     if (seltab2.nrow() != 4) {
 	cout << "seltab2 does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> sel2ab(seltab2, "ab");
+    ScalarColumn<int32_t> sel2ab(seltab2, "ab");
     cout << sel2ab.getColumn() << endl;
     cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
     // Get a subset via a mask.
-    Block<Bool> mask(4,True);
-    mask[0] = False;
-    mask[3] = False;
+    Block<bool> mask(4,true);
+    mask[0] = false;
+    mask[3] = false;
     Table seltab3 = seltab2(mask);
     if (seltab3.nrow() != 2) {
 	cout << "seltab3 does not contain 2 rows" << endl;
     }
-    ScalarColumn<Int> sel3ab(seltab3, "ab");
+    ScalarColumn<int32_t> sel3ab(seltab3, "ab");
     cout << sel3ab.getColumn() << endl;
     cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
     cout << seltab3.tableDesc().columnNames() << endl;
@@ -240,7 +240,7 @@ void doIt (const String& tableName)
     if (xortab.nrow() != 6) {
 	cout << "xortab does not contain 6 rows" << endl;
     }
-    ScalarColumn<Int> xorab(xortab, "ab");
+    ScalarColumn<int32_t> xorab(xortab, "ab");
     cout << xorab.getColumn() << endl;
     cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
@@ -248,7 +248,7 @@ void doIt (const String& tableName)
     if (or1tab.nrow() != 8) {
 	cout << "or1tab does not contain 8 rows" << endl;
     }
-    ScalarColumn<Int> or1ab(or1tab, "ab");
+    ScalarColumn<int32_t> or1ab(or1tab, "ab");
     cout << or1ab.getColumn() << endl;
     cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
@@ -256,7 +256,7 @@ void doIt (const String& tableName)
     if (or2tab.nrow() != 8) {
 	cout << "or2tab does not contain 8 rows" << endl;
     }
-    ScalarColumn<Int> or2ab(or2tab, "ab");
+    ScalarColumn<int32_t> or2ab(or2tab, "ab");
     cout << or2ab.getColumn() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
@@ -264,7 +264,7 @@ void doIt (const String& tableName)
     if (exprtab.nrow() != 5) {
 	cout << "exprtab does not contain 5 rows" << endl;
     }
-    ScalarColumn<Int> exprab(exprtab, "ab");
+    ScalarColumn<int32_t> exprab(exprtab, "ab");
     cout << exprab.getColumn() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
@@ -272,6 +272,6 @@ void doIt (const String& tableName)
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> expr2ab(expr2tab, "ab");
+    ScalarColumn<int32_t> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
 }

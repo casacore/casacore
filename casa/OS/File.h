@@ -134,42 +134,42 @@ public:
     const Path& path() const;
 
     // Check if the file is a regular file. If the boolean followSymLink is
-    // False a symbolic link will not be followed.
-    Bool isRegular (Bool followSymLink = True) const;
+    // false a symbolic link will not be followed.
+    bool isRegular (bool followSymLink = true) const;
 
     // Check if the file is a directory. If the boolean followSymLink is
-    // False a symbolic link will not be followed.
-    Bool isDirectory (Bool followSymLink = True) const;
+    // false a symbolic link will not be followed.
+    bool isDirectory (bool followSymLink = true) const;
 
     // Check if the file is a symbolic link.
-    Bool isSymLink() const;
+    bool isSymLink() const;
 
     // Check if the file is a pipe.
-    Bool isPipe() const;
+    bool isPipe() const;
 
     // Check if the file is a character special file.
-    Bool isCharacterSpecial() const;
+    bool isCharacterSpecial() const;
 
     // Check if the file is a block special file.
-    Bool isBlockSpecial() const;
+    bool isBlockSpecial() const;
 
     // Check if the file is a socket.
-    Bool isSocket() const;
+    bool isSocket() const;
 
     // Check if the file exists.
-    Bool exists() const;
+    bool exists() const;
 
     // Check if the file is readable.
-    Bool isReadable() const;
+    bool isReadable() const;
 
     // Check if the file is writable.
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Check if the file is executable.
-    Bool isExecutable() const;
+    bool isExecutable() const;
 
     // Check if a file can be created.
-    Bool canCreate() const;
+    bool canCreate() const;
     
     // Return the userID of the file.
     long userID() const; 
@@ -179,16 +179,16 @@ public:
     
     // Return the size of the file. If the file
     // does not exist, an exception will be thrown.
-    virtual Int64 size() const;
+    virtual int64_t size() const;
 
     // Return the permissions as a decimal value.
-    uInt readPermissions() const;
+    uint32_t readPermissions() const;
 
     // Set permission with perm. Perm is an octal value.
-    void setPermissions (uInt permissions);
+    void setPermissions (uint32_t permissions);
 
     // Update access time and modification time of a file.
-    void touch (uInt time);
+    void touch (uint32_t time);
 
     // Update access time and modification time of a file. This function
     // updates the file with the current time.
@@ -197,7 +197,7 @@ public:
     // Time related fucnctions:
     // Return the time when the file was last accessed in seconds since
     // 00:00:00 GMT Jan 1, 1970.
-    uInt accessTime() const;
+    uint32_t accessTime() const;
 
     // Return the time when the file was last accessed
     // as a 26-characters String of the form:
@@ -206,7 +206,7 @@ public:
 
     // Return the time when the file was last modified in seconds since
     // 00:00:00 GMT Jan 1, 1970.
-    uInt modifyTime() const;
+    uint32_t modifyTime() const;
 
     // Return the time when the file was last modified
     // as a 26-characters String of the form:
@@ -217,7 +217,7 @@ public:
     // 00:00:00 GMT Jan 1, 1970.
     // It is set both by writing and changing the file status information,
     // such as changes of owner, group, link count, or mode.
-    uInt statusChangeTime() const;
+    uint32_t statusChangeTime() const;
 
     // return the time when the file status was last changed
     // as a 26-characters String of the form:
@@ -266,16 +266,16 @@ protected:
     // Check if the new path for a copy or move is valid.
     // An exception is thrown if:
     // <br>- the target directory is not writable
-    // <br>- or the target file already exists and overwrite==False
+    // <br>- or the target file already exists and overwrite==false
     // <br>- or the target file already exists and is not writable
     // <br>When the targetName represents a directory, the basename
     // of the file is appended to it. This is done to cover the
     // case where the source is a symlink to a file. In that case
     // the target will get the basename of the symlink and not the
     // the basename of the file pointed to. This is not done when
-    // forDirectory==True (which is used by class Directory).
-    void checkTarget (Path& targetName, Bool overwrite,
-		      Bool forDirectory = False) const;
+    // forDirectory==true (which is used by class Directory).
+    void checkTarget (Path& targetName, bool overwrite,
+		      bool forDirectory = false) const;
 
 private:
     // Define a function for lstat.
@@ -301,7 +301,7 @@ private:
     // Full pathname of the file.
     Path itsPath;
     // A sequence number to generate unique file names.
-    static std::atomic<uInt> uniqueSeqnr_p;
+    static std::atomic<uint32_t> uniqueSeqnr_p;
 };
 
 

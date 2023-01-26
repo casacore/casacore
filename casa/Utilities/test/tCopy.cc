@@ -41,25 +41,25 @@
 //
 // The tests are mainly done for a builtin data type, for which the
 // straightforward copy/move operations are inlined as memcpy/memmove.
-// To complete the tests, they are also done for data types Block<uInt>
+// To complete the tests, they are also done for data types Block<uint32_t>
 // and void*.
 
 int main()
 {
-    Int size=100;             // should be a multiple of 4
-    Int* ia = new int[size];
+    int32_t size=100;             // should be a multiple of 4
+    int32_t* ia = new int[size];
 
     objset(ia, 99, size);
 
     // Test setting values.
-    Int i;
+    int32_t i;
     for (i=0; i<size; i++)
 	AlwaysAssertExit(ia[i] == 99);
     objset(ia+1,66, size/2, 2);
     for (i=0; i<size; i += 2)
 	AlwaysAssertExit(ia[i] == 99 && ia[i+1] == 66);
 
-    Int* ia2 = new int[size];
+    int32_t* ia2 = new int[size];
 
     // Test objcopy.
     // Without strides.

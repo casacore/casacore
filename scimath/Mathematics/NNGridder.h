@@ -44,18 +44,18 @@ public:
 
   virtual ~NNGridder() {}
 
-  virtual Bool grid(Array<Range>& gridded,
+  virtual bool grid(Array<Range>& gridded,
 		    const Vector<Domain>& position,
 		    const Range& value);
 
-  virtual Bool degrid(const Array<Range>& gridded,
+  virtual bool degrid(const Array<Range>& gridded,
 		      const Vector<Domain>& position,
 		      Range& value);
 
 protected:
-  virtual Range correctionFactor1D(Int loc, Int len);
+  virtual Range correctionFactor1D(int32_t loc, int32_t len);
 
-  Vector<Int> loc;
+  Vector<int32_t> loc;
 
 protected:
   //# Make members of parent classes known.

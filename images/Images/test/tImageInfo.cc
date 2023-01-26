@@ -65,16 +65,16 @@ try {
     AlwaysAssert(mii.defaultRestoringBeam() == beam,  AipsError);
 //
     beam = GaussianBeam(
-    	Quantum<Double>(45.0, "arcsec"),
-    	Quantum<Double>(45.0, "arcsec"),
-    	Quantum<Double>(-45.0, "deg")
+    	Quantum<double>(45.0, "arcsec"),
+    	Quantum<double>(45.0, "arcsec"),
+    	Quantum<double>(-45.0, "deg")
     );
     mii.setRestoringBeam(beam);
     AlwaysAssert(mii.restoringBeam() == beam, AipsError);
     mii.setRestoringBeam(beam);
 
     AlwaysAssert(mii.restoringBeam() == beam, AipsError);
-    beam.setMajorMinor(Quantum<Double>(1.0, "deg"), beam.getMinor());
+    beam.setMajorMinor(Quantum<double>(1.0, "deg"), beam.getMinor());
     mii.setRestoringBeam(beam);
     AlwaysAssert(mii.restoringBeam() == beam, AipsError);
     mii.removeRestoringBeam();
@@ -82,7 +82,7 @@ try {
 //
 // ImageType
 //
-    for (uInt i=0; i<ImageInfo::nTypes; i++) {
+    for (uint32_t i=0; i<ImageInfo::nTypes; i++) {
        ImageInfo::ImageTypes type = static_cast<ImageInfo::ImageTypes>(i);
        {
           mii.setImageType(type);
@@ -112,9 +112,9 @@ try {
     equal(mii2, mii);
 //
     GaussianBeam beam2(
-    	Quantum<Double>(7.2, "arcsec"),
-    	Quantum<Double>(3.6, "arcsec"),
-    	Quantum<Double>(-90.0, "deg")
+    	Quantum<double>(7.2, "arcsec"),
+    	Quantum<double>(3.6, "arcsec"),
+    	Quantum<double>(-90.0, "deg")
     );
     mii2.setRestoringBeam(beam2);
     mii2.setImageType(ImageInfo::Intensity);
@@ -128,7 +128,7 @@ try {
     String error;
     AlwaysAssertExit(mii.toRecord(error, rec));
     ImageInfo mii3;
-    Bool ok = mii3.fromRecord(error, rec);
+    bool ok = mii3.fromRecord(error, rec);
     if (!ok) cout << "Error = " << error << endl;
     equal(mii3, mii);
 //
@@ -149,9 +149,9 @@ try {
     Record rbmin(keywordNumRec);
     Record rbpa(keywordNumRec);
     Record robject(keywordStrRec);
-    RecordFieldPtr<Double> bmajval(rbmaj, 0);
-    RecordFieldPtr<Double> bminval(rbmin, 0);
-    RecordFieldPtr<Double> bpaval(rbpa, 0);
+    RecordFieldPtr<double> bmajval(rbmaj, 0);
+    RecordFieldPtr<double> bminval(rbmin, 0);
+    RecordFieldPtr<double> bpaval(rbpa, 0);
     RecordFieldPtr<String> objectval(robject, 0);
     bmajval.define(0.002);
     bminval.define(0.001);
@@ -176,11 +176,11 @@ try {
     	Quantity majAx(5, "arcsec");
     	Quantity minAx(3, "arcsec");
     	Quantity pa(60, "deg");
-    	Bool ok = True;
+    	bool ok = true;
     	try {
     		// no hyper plane beam shape throws exception
     		myinfo.setBeam(1, 1, majAx, minAx, pa);
-    		ok = False;
+    		ok = false;
     	}
     	catch (const std::exception& x) {
     		cout << x.what() << endl;
@@ -191,7 +191,7 @@ try {
     	try {
     		// inconsistent plane throws exception
     		myinfo.setBeam(2, 1, majAx, minAx, pa);
-    		ok = False;
+    		ok = false;
     	}
     	catch (std::exception& x) {
     		cout << "Exception thrown as expected: "
@@ -203,7 +203,7 @@ try {
     	try {
     		// incorrect beam spec throws error
     		myinfo.setBeam(0, 0, minAx, majAx, pa);
-    		ok = False;
+    		ok = false;
     	}
     	catch (std::exception& x) {
     		cout << "Exception thrown as expected: "
@@ -261,10 +261,10 @@ try {
     	myinfo.setBeams(bset);
     	DirectionCoordinate dc;
     	dc.setWorldAxisUnits(Vector<String>(2, "arcsec"));
-    	dc.setIncrement(Vector<Double>(2, 0.7));
-    	for (uInt i=0; i<10; i++) {
-    		for (uInt j=0; j<4; j++) {
-    			Double expec = (i == 2 && j == 2)
+    	dc.setIncrement(Vector<double>(2, 0.7));
+    	for (uint32_t i=0; i<10; i++) {
+    		for (uint32_t j=0; j<4; j++) {
+    			double expec = (i == 2 && j == 2)
     				? 34.686429656840772 : 18.499429150315081;
     	    	AlwaysAssert(
     	    		near(myinfo.getBeamAreaInPixels(i, j, dc), expec),

@@ -36,21 +36,21 @@ template <class T> class MSSelUtil2
   public:
   // reorder data from 3d (corr,chan,row) to 4d (corr,chan,ifr,time)
   static void reorderData(Array<T>& data,
-                          const Vector<Int>& ifrSlot,
-                          Int nIfr, 
-                          const Vector<Int>& timeSlot, 
-                          Int nTime,
+                          const Vector<int32_t>& ifrSlot,
+                          int32_t nIfr, 
+                          const Vector<int32_t>& timeSlot, 
+                          int32_t nTime,
                           const T& defvalue);
 
   // reorder data from 4d (corr,chan,ifr,time) to 3d (corr,chan,row) 
   static void reorderData(Array<T>& data, 
-                          const Matrix<Int64>& rowIndex,
-                          Int64 nRow);
+                          const Matrix<int64_t>& rowIndex,
+                          int64_t nRow);
 
   // average data (with flags & weights applied) over it's last axis (time or
   // row), return in data (overwritten), dataFlag gives new flags.
-  static void timeAverage(Array<Bool>& dataFlag, Array<T>& data, 
-                          const Array<Bool>& flag, const Array<Float>& weight);
+  static void timeAverage(Array<bool>& dataFlag, Array<T>& data, 
+                          const Array<bool>& flag, const Array<float>& weight);
 
 };
 } //# NAMESPACE CASACORE - END

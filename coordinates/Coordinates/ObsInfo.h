@@ -118,7 +118,7 @@ public:
     // <group>
     String telescope() const;
     ObsInfo& setTelescope(const String &telescope);
-    Bool isTelescopePositionSet() const
+    bool isTelescopePositionSet() const
       { return isTelPositionSet_p; }
     const MPosition& telescopePosition() const
       { return telPosition_p; }
@@ -146,7 +146,7 @@ public:
     // This means it is you, the callers responsibility, to know what its reference
     // type is in order to turn it into an MDirection.
     // The default is (0,0) (or [1,0,0]).  After you have called setPointingCenter,
-    // the function isPointingCenterInitial will return False.
+    // the function isPointingCenterInitial will return false.
     // <group>
     MVDirection pointingCenter() const;
     ObsInfo& setPointingCenter (const MVDirection& direction);
@@ -155,8 +155,8 @@ public:
     // Because the default pointing center is a valid value (0,0), this
     // function is available to tell you whether the pointing center has
     // been set (with setPointingCenter) to some value other than its
-    // initial (return False)
-    Bool isPointingCenterInitial () const {return isPointingCenterInitial_p;};
+    // initial (return false)
+    bool isPointingCenterInitial () const {return isPointingCenterInitial_p;};
 
 
     // Functions to interconvert between an ObsInfo and a record. These 
@@ -168,8 +168,8 @@ public:
     // The field names are "observer", "telescope", "obsdate", and
     // "pointingcenter"
     // <group>
-    virtual Bool toRecord(String & error, RecordInterface & outRecord) const;
-    virtual Bool fromRecord(String & error, const RecordInterface & inRecord);
+    virtual bool toRecord(String & error, RecordInterface & outRecord) const;
+    virtual bool fromRecord(String & error, const RecordInterface & inRecord);
     // </group>
 
     // Functions to interconvert between an ObsInfo and FITS keywords
@@ -178,16 +178,16 @@ public:
     // should probably not be regarded as fatal as the default ObsInfo
     // values are viable.  For each item contained
     // in the ObsInfo, an attempt to decode it from FITS is made.
-    // If any of them fail, False is returned, but it attempts to decode
+    // If any of them fail, false is returned, but it attempts to decode
     // them all.  For those that fail
     // an error message is held in <src>error</src> 
     // in the order telescope (error(0)), observer (error(1)), date
     // (error(2)), pointing center (error(3)).  <src>error</src> will
-    // be returned of length 0 if the return value is True, else
+    // be returned of length 0 if the return value is true, else
     // it will be length 4.
     // <group>
-    Bool toFITS(String & error, RecordInterface & outRecord) const;
-    Bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
+    bool toFITS(String & error, RecordInterface & outRecord) const;
+    bool fromFITS(Vector<String>& error, const RecordInterface & inRecord);
 
     // In some circumstances it might be useful to know what the defaults for
     // the various values are so you can check if they have been set.
@@ -208,10 +208,10 @@ private:
     String observer_p;
     MEpoch obsdate_p;
     MPosition telPosition_p;
-    Bool isTelPositionSet_p;
+    bool isTelPositionSet_p;
     MVDirection pointingCenter_p;
-    Bool isPointingCenterInitial_p;    // True when ObsInfo contructed. 
-                                       // False after setPointingCenter called
+    bool isPointingCenterInitial_p;    // true when ObsInfo contructed. 
+                                       // false after setPointingCenter called
 
 // Common copy ctor/assignment operator code.
 

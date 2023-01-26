@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	      latticeShape.shape()-1, latticeShape.shape())
   {
     setBoundingBox (itsBox.boundingBox());
-    itsMask = HDF5Lattice<Bool> (latticeShape, file, maskName, "masks");
+    itsMask = HDF5Lattice<bool> (latticeShape, file, maskName, "masks");
     setMaskPtr (itsMask);
   }
 
@@ -59,11 +59,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			"shape of mask and box differ"));
     }
     setBoundingBox (itsBox.boundingBox());
-    itsMask = HDF5Lattice<Bool> (box.latticeShape(), file, maskName, "masks");
+    itsMask = HDF5Lattice<bool> (box.latticeShape(), file, maskName, "masks");
     setMaskPtr (itsMask);
   }
 
-  LCHDF5Mask::LCHDF5Mask (HDF5Lattice<Bool>& mask,
+  LCHDF5Mask::LCHDF5Mask (HDF5Lattice<bool>& mask,
 			  const LCBox& box)
   : LCRegionSingle (box.latticeShape()),
     itsBox (box)
@@ -100,12 +100,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return *this;
   }
 
-  Bool LCHDF5Mask::operator== (const LCRegion& other) const
+  bool LCHDF5Mask::operator== (const LCRegion& other) const
   {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionSingle::operator== (other)) {
-      return False;
+      return false;
     }
     const LCHDF5Mask& that = (const LCHDF5Mask&)other;
     // Check the box and mask.
@@ -119,19 +119,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
-  uInt LCHDF5Mask::advisedMaxPixels() const
+  uint32_t LCHDF5Mask::advisedMaxPixels() const
   {
     return itsMask.advisedMaxPixels();
   }
 
-  IPosition LCHDF5Mask::doNiceCursorShape (uInt maxPixels) const
+  IPosition LCHDF5Mask::doNiceCursorShape (uint32_t maxPixels) const
   {
     return itsMask.niceCursorShape (maxPixels);
   }
 
-  LatticeIterInterface<Bool>* LCHDF5Mask::makeIter
+  LatticeIterInterface<bool>* LCHDF5Mask::makeIter
                                  (const LatticeNavigator& navigator,
-				  Bool useRef) const
+				  bool useRef) const
   {
     return itsMask.makeIter (navigator, useRef);
   }
@@ -142,7 +142,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
-  LCRegion* LCHDF5Mask::doTranslate (const Vector<Float>&,
+  LCRegion* LCHDF5Mask::doTranslate (const Vector<float>&,
 				     const IPosition&) const
   {
     // An LCHDF5Mask cannot be translated.
@@ -173,7 +173,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   LCHDF5Mask* LCHDF5Mask::fromRecord (const TableRecord& rec,
 				      const String& tableName)
   {
-    HDF5Lattice<Bool> mask(rec.asString("filename"), rec.asString("maskname"),
+    HDF5Lattice<bool> mask(rec.asString("filename"), rec.asString("maskname"),
 			   "masks");
     LCBox* boxPtr = (LCBox*)(LCRegion::fromRecord (rec.asRecord("box"),
 						   tableName));
@@ -182,7 +182,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return regPtr;
   }
 
-  Bool LCHDF5Mask::isWritable() const
+  bool LCHDF5Mask::isWritable() const
   {
     return itsMask.isWritable();
   }

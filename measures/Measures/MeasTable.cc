@@ -86,31 +86,31 @@ std::once_flag MeasTable::theirSrcInitOnceFlag;
 Vector<String> MeasTable::srcNams;
 Vector<MDirection> MeasTable::srcPos;
 std::once_flag MeasTable::theirIGRFInitOnceFlag;
-Double MeasTable::dtimeIGRF = 0;
-Double MeasTable::firstIGRF = 0;
-std::vector<Vector<Double> > MeasTable::coefIGRF;
-std::vector<Vector<Double> > MeasTable::dIGRF;
+double MeasTable::dtimeIGRF = 0;
+double MeasTable::firstIGRF = 0;
+std::vector<Vector<double> > MeasTable::coefIGRF;
+std::vector<Vector<double> > MeasTable::dIGRF;
   ///#if !defined(USE_THREADS) || defined(__APPLE__)
   ///std::mutex MeasTable::theirdUT1Mutex;
   ///#endif
 
 //# Member functions
-Bool MeasTable::useIAU2000() {
+bool MeasTable::useIAU2000() {
   // Aipsrc registration (for speed) of use of iau2000 and if so the 2000a version.
-  static const uInt iau2000_reg =
-    AipsrcValue<Bool>::registerRC("measures.iau2000.b_use", False);
-  return AipsrcValue<Bool>::get(iau2000_reg);
+  static const uint32_t iau2000_reg =
+    AipsrcValue<bool>::registerRC("measures.iau2000.b_use", false);
+  return AipsrcValue<bool>::get(iau2000_reg);
 }
 
-Bool MeasTable::useIAU2000A() {
+bool MeasTable::useIAU2000A() {
   // comment as above in useIAU2000()
-  static const uInt iau2000a_reg =
-    AipsrcValue<Bool>::registerRC("measures.iau2000.b_use2000a", False);
-  return AipsrcValue<Bool>::get(iau2000a_reg);
+  static const uint32_t iau2000a_reg =
+    AipsrcValue<bool>::registerRC("measures.iau2000.b_use2000a", false);
+  return AipsrcValue<bool>::get(iau2000a_reg);
 }
 
-Double MeasTable::precRate00(const uInt which) {
-  static const Double preoblcor[3] = { -0.29965*C::arcsec,
+double MeasTable::precRate00(const uint32_t which) {
+  static const double preoblcor[3] = { -0.29965*C::arcsec,
 				       -0.02524*C::arcsec,
 				       0*C::arcsec };
   DebugAssert(which < 3, AipsError);
@@ -118,7 +118,7 @@ Double MeasTable::precRate00(const uInt which) {
 }
 
 RotMatrix MeasTable::frameBias00() {
-  static const Double bias[3] = { -0.041775*C::arcsec,
+  static const double bias[3] = { -0.041775*C::arcsec,
 				  -0.0068192*C::arcsec,
 				  -0.0146*C::arcsec};
   static const RotMatrix rbias (Euler(bias[2], 3,
@@ -127,8 +127,8 @@ RotMatrix MeasTable::frameBias00() {
   return rbias;
 }
 
-void MeasTable::precessionCoef(Double T, Polynomial<Double> result[3]) {
-  static const Double PCOEF[3][6] = {
+void MeasTable::precessionCoef(double T, Polynomial<double> result[3]) {
+  static const double PCOEF[3][6] = {
     {+2306.2181,+1.39656,-0.000139,+0.30188,-0.000344,+0.017998},
     {+2004.3109,-0.85330,-0.000217,-0.42665,-0.000217,-0.041833},
     {+2306.2181,+1.39656,-0.000139,+1.09468,-0.000066,+0.018203}
@@ -136,8 +136,8 @@ void MeasTable::precessionCoef(Double T, Polynomial<Double> result[3]) {
   calcPrecesCoef(T, result, &PCOEF[0]);
 }
 
-void MeasTable::precessionCoef2000(Polynomial<Double> result[3]) {
-  static const Double PCOEF[3][6] = {
+void MeasTable::precessionCoef2000(Polynomial<double> result[3]) {
+  static const double PCOEF[3][6] = {
     { 2.5976176,2306.0809506, 0.3019015, 0.0179663,-0.0000327,-0.0000002},
     { 0.0,      2004.1917476,-0.4269353,-0.0418251,-0.0000601,-0.0000001},
     {-2.5976176,2306.0803226, 1.0947790, 0.0182273,-0.0000470,-0.0000003}
@@ -145,8 +145,8 @@ void MeasTable::precessionCoef2000(Polynomial<Double> result[3]) {
   calcPrecesCoef2000(result, &PCOEF[0]);
 }
 
-void MeasTable::precessionCoef1950(Double T, Polynomial<Double> result[3]) {
-  static const Double PCOEF[3][6] = {
+void MeasTable::precessionCoef1950(double T, Polynomial<double> result[3]) {
+  static const double PCOEF[3][6] = {
     {2303.5545,+1.39720,0.000060,+0.30240,-0.000270,+0.017995},
     {2005.1120,-0.85290,-0.00037,-0.42650,-0.000370,-0.041800},
     {2303.5545,+1.39720,0.000060,+1.09480,+0.000390,+0.018325}
@@ -154,15 +154,15 @@ void MeasTable::precessionCoef1950(Double T, Polynomial<Double> result[3]) {
   calcPrecesCoef(T, result, &PCOEF[0]);
 }
 
-void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
-			       const Double coef[3][6]) {
-  Int l; Int m=1;
-  for (uInt i=0; i<3; i++) {
+void MeasTable::calcPrecesCoef(double T, Polynomial<double> result[3],
+			       const double coef[3][6]) {
+  int32_t l; int32_t m=1;
+  for (uint32_t i=0; i<3; i++) {
     m = -m;
     l = 0;
-    for (uInt j=0; j<3; j++) {
-      Polynomial<Double> poly(2-j);
-      for (uInt k=0; k<3-j; k++, l++) {
+    for (uint32_t j=0; j<3; j++) {
+      Polynomial<double> poly(2-j);
+      for (uint32_t k=0; k<3-j; k++, l++) {
 	poly.setCoefficient(k,coef[i][l]);
       }
       result[i].setCoefficient(j+1,m*poly(T) * C::arcsec);
@@ -170,19 +170,19 @@ void MeasTable::calcPrecesCoef(Double T, Polynomial<Double> result[3],
   }
 }
 
-void MeasTable::calcPrecesCoef2000(Polynomial<Double> result[3],
-				   const Double coef[3][6]) {
-  Int m=1;
-  for (uInt i=0; i<3; i++) {
+void MeasTable::calcPrecesCoef2000(Polynomial<double> result[3],
+				   const double coef[3][6]) {
+  int32_t m=1;
+  for (uint32_t i=0; i<3; i++) {
     m = -m;
-    for (uInt j=0; j<6; j++) {
+    for (uint32_t j=0; j<6; j++) {
       result[i].setCoefficient(j, m*coef[i][j] * C::arcsec);
     }
   }
 }
 
-const Polynomial<Double> &MeasTable::fundArg(uInt which) {
-  static const Double FUND[6][4] = {
+const Polynomial<double> &MeasTable::fundArg(uint32_t which) {
+  static const double FUND[6][4] = {
     {  84381.448,        -46.8150,-0.0059, 0.001813}, 
     { 485866.733, 1717915922.633, 31.310,  0.064}, 
     {1287099.804,  129596581.224, -0.577, -0.012}, 
@@ -190,13 +190,13 @@ const Polynomial<Double> &MeasTable::fundArg(uInt which) {
     {1072261.307, 1602961601.328, -6.891,  0.019}, 
     { 450160.280,   -6962890.539,  7.455,  0.008}
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcFundArg(&FUND[0]));
+  static const std::vector<Polynomial<double> > polyArray(calcFundArg(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
 
-const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
-  static const Double FUND[6][4] = {
+const Polynomial<double> &MeasTable::fundArg1950(uint32_t which) {
+  static const double FUND[6][4] = {
     {  84428.26,        -46.846,-0.0059, 0.00181},
     {1065976.59, 1717915856.79, 33.09,   0.0518},
     { 1290513.0,  129596579.1,  -0.54,  -0.0120},
@@ -204,13 +204,13 @@ const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
     { 1262654.95,1602961611.18, -5.17,   0.0068},
     {  933059.79,  -6962911.23,  7.48,   0.0080}
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcFundArg(&FUND[0]));
+  static const std::vector<Polynomial<double> > polyArray(calcFundArg(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
 
-const Polynomial<Double> &MeasTable::fundArg2000(uInt which) {
-  static const Double FUND[6][5] = {
+const Polynomial<double> &MeasTable::fundArg2000(uint32_t which) {
+  static const double FUND[6][5] = {
     {  84381.448,    -46.8150-0.02524, -0.0059,  0.001813,  0.0},
     { 485868.249036, 1717915923.2178,  31.8792,  0.051635, -0.00024470},
     {1287104.79305,   129596581.0481,  -0.5532,  0.000136, -0.00001149},
@@ -218,13 +218,13 @@ const Polynomial<Double> &MeasTable::fundArg2000(uInt which) {
     {1072260.70369,  1602961601.2090, - 6.3706,  0.006593, -0.00003169},
     { 450160.398036,   -6962890.5431,   7.4722,  0.007702, -0.00005939}
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcFundArg00(&FUND[0]));
+  static const std::vector<Polynomial<double> > polyArray(calcFundArg00(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
 
-const Polynomial<Double> &MeasTable::planetaryArg2000(uInt which) {
-  static const Double FUND[8][2] = {
+const Polynomial<double> &MeasTable::planetaryArg2000(uint32_t which) {
+  static const double FUND[8][2] = {
     { 4.402608842, 2608.7903141574 },
     { 3.176146697, 1021.3285546211 },
     { 1.753470314,  628.3075849991 },
@@ -234,16 +234,16 @@ const Polynomial<Double> &MeasTable::planetaryArg2000(uInt which) {
     { 5.481293871,    7.4781598567 },
     { 5.321159000,    3.8127774000 }
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcPlanArg00(&FUND[0]));
+  static const std::vector<Polynomial<double> > polyArray(calcPlanArg00(&FUND[0]));
   DebugAssert(which < 14, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcFundArg(const Double coeff[6][4]) {
-  std::vector<Polynomial<Double> > result(6);
-  Int i,j;
+std::vector<Polynomial<double> > MeasTable::calcFundArg(const double coeff[6][4]) {
+  std::vector<Polynomial<double> > result(6);
+  int32_t i,j;
   for (i=0; i<6; i++) {
-    result[i] = Polynomial<Double>(3);
+    result[i] = Polynomial<double>(3);
     for (j=0; j<4; j++) {
       result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
     }
@@ -251,11 +251,11 @@ std::vector<Polynomial<Double> > MeasTable::calcFundArg(const Double coeff[6][4]
   return result;
 }    
 
-std::vector<Polynomial<Double> > MeasTable::calcFundArg00(const Double coeff[6][5]) {
-  std::vector<Polynomial<Double> > result(6);
-  Int i,j;
+std::vector<Polynomial<double> > MeasTable::calcFundArg00(const double coeff[6][5]) {
+  std::vector<Polynomial<double> > result(6);
+  int32_t i,j;
   for (i=0; i<6; i++) {
-    result[i] = Polynomial<Double>(4);
+    result[i] = Polynomial<double>(4);
     for (j=0; j<5; j++) {
       result[i].setCoefficient(j, coeff[i][j]*C::arcsec);
     }
@@ -263,27 +263,27 @@ std::vector<Polynomial<Double> > MeasTable::calcFundArg00(const Double coeff[6][
   return result;
 }    
 
-std::vector<Polynomial<Double> > MeasTable::calcPlanArg00(const Double coeff[8][2]) {
-  static const Double APA[3] = { 0.0, 0.02438175, 0.00000538691 };
-  std::vector<Polynomial<Double> > result(14);
-  for (uInt i=0; i<5; i++) {
+std::vector<Polynomial<double> > MeasTable::calcPlanArg00(const double coeff[8][2]) {
+  static const double APA[3] = { 0.0, 0.02438175, 0.00000538691 };
+  std::vector<Polynomial<double> > result(14);
+  for (uint32_t i=0; i<5; i++) {
     result[i] = fundArg2000(i+1);
   }
-  for (uInt i=5; i<13; i++) {
-    result[i] = Polynomial<Double>(1);
-    for (uInt j=0; j<2; j++) {
+  for (uint32_t i=5; i<13; i++) {
+    result[i] = Polynomial<double>(1);
+    for (uint32_t j=0; j<2; j++) {
       result[i].setCoefficient(j, coeff[i-5][j]);
     }
   }
-  result[13] = Polynomial<Double>(2);
-  for (uInt j=0; j<3; j++) {
+  result[13] = Polynomial<double>(2);
+  for (uint32_t j=0; j<3; j++) {
     result[13].setCoefficient(j, APA[j]);
   }
   return result;
 }    
 
-const Double* MeasTable::mulArg(uInt which) {
-  static const Double ARG[106][5] = {
+const double* MeasTable::mulArg(uint32_t which) {
+  static const double ARG[106][5] = {
     {0	,0	,0	,0	,1	},
     {0	,0	,0	,0	,2	},
     {-2	,0	,2	,0	,1	},
@@ -416,8 +416,8 @@ const Double* MeasTable::mulArg(uInt which) {
   return &(ARG[which][0]);
 }
 
-const Double* MeasTable::mulArg2000A(uInt which) {
-  static const Double ARG[678][5] = {
+const double* MeasTable::mulArg2000A(uint32_t which) {
+  static const double ARG[678][5] = {
   //         Multiple of        
   //    L     L'    F     D   Omega  
      {  0,    0,    0,    0,    1},   //    1
@@ -1103,8 +1103,8 @@ const Double* MeasTable::mulArg2000A(uInt which) {
   return &(ARG[which][0]);
 }
 
-const Double* MeasTable::mulPlanArg2000A(uInt which) {
-  static const Double ARG[687][14] = {
+const double* MeasTable::mulPlanArg2000A(uint32_t which) {
+  static const double ARG[687][14] = {
   // L   L'  F   D   Om  Me  Ve  E  Ma  Ju  Sa  Ur  Ne  pre
   {  0,  0,  0,  0,  0,  0,  0,  8,-16,  4,  5,  0,  0,  0},   //    1
   {  0,  0,  0,  0,  0,  0,  0, -8, 16, -4, -5,  0,  0,  2},   //    2
@@ -1798,8 +1798,8 @@ const Double* MeasTable::mulPlanArg2000A(uInt which) {
   return &(ARG[which][0]);
 }
 
-const Double* MeasTable::mulArg2000B(uInt which) {
-  static const Double ARG[77][5] = {
+const double* MeasTable::mulArg2000B(uint32_t which) {
+  static const double ARG[77][5] = {
   //         Multiple of        
   //      L     L'    F     D   Omega  
        {  0,    0,    0,    0,    1},                 //   1
@@ -1884,8 +1884,8 @@ const Double* MeasTable::mulArg2000B(uInt which) {
   return &(ARG[which][0]);
 }
 
-const Double* MeasTable::mulArgEqEqCT2000(uInt which) {
-  static const Double ARG[34][14] = {
+const double* MeasTable::mulArgEqEqCT2000(uint32_t which) {
+  static const double ARG[34][14] = {
   // L   L'  F   D   Om  Me  Ve  E  Ma  Ju  Sa  Ur  Ne  pre
    { 0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  1
    { 0,  0,  0,  0,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0 },   //  2
@@ -1926,8 +1926,8 @@ const Double* MeasTable::mulArgEqEqCT2000(uInt which) {
   return &(ARG[which][0]);
 }
 
-const Double* MeasTable::mulArg1950(uInt which) {
-  static const Double ARG[69][5] = {
+const double* MeasTable::mulArg1950(uint32_t which) {
+  static const double ARG[69][5] = {
     {0	,0	,0	,0	,1	},
     {0	,0	,0	,0	,2	},
     {-2	,0	,2	,0	,1	},
@@ -2015,24 +2015,24 @@ const Double* MeasTable::mulArg1950(uInt which) {
   return &(ARG[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulSC(double time, double epsilon)
 {
   return theirMulSC.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC2000A(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulSC2000A(double time, double epsilon)
 {
   return theirMulSC2000A.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC2000B(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulSC2000B(double time, double epsilon)
 {
   return theirMulSC2000B.getArray (time, epsilon);
 }
 
-const Double* MeasTable::mulPlanSC2000A(uInt which) {
+const double* MeasTable::mulPlanSC2000A(uint32_t which) {
   // Luni-Solar nutation coefficients, unit 1e-7 arcsec
-  static const Double MULSC[687][4] = {
+  static const double MULSC[687][4] = {
   //        Longitude               Obliquity
   //    sin          cos         sin         cos
      {  1440,          0,          0,          0},   //    1
@@ -2727,9 +2727,9 @@ const Double* MeasTable::mulPlanSC2000A(uInt which) {
   return &(MULSC[which][0]);
 }
 
-const Double* MeasTable::mulSCEqEqCT2000(uInt which) {
+const double* MeasTable::mulSCEqEqCT2000(uint32_t which) {
   // Equation of Equinox complementary terms
-  static const Double MULSC[34][2] = {
+  static const double MULSC[34][2] = {
   //        sin                 cos
      {  +2640.96e-6,          -0.39e-6 },     //  1
      {    +63.52e-6,          -0.02e-6 },     //  2
@@ -2770,28 +2770,28 @@ const Double* MeasTable::mulSCEqEqCT2000(uInt which) {
   return &(MULSC[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC1950(Double time, Double epsilon) {
+CountedPtr<Matrix<double> > MeasTable::mulSC1950(double time, double epsilon) {
   return theirMulSC1950.getArray (time, epsilon);
 }
 
 
-Double MeasTable::dPsiEps(uInt which, Double T) {
+double MeasTable::dPsiEps(uint32_t which, double T) {
 #if defined(USE_THREADS)
-  static std::atomic<Bool> msgDone;
+  static std::atomic<bool> msgDone;
 #else
-  static Bool msgDone;
+  static bool msgDone;
 #endif
   DebugAssert(which < 2, AipsError);
-  Double r = 0;
+  double r = 0;
   MeasIERS::Types type = (which==1  ?  MeasIERS::dEps : MeasIERS::dPsi);
   if (!MeasIERS::get(r, MeasIERS::MEASURED, type, T)) {
     // It is harmless if the message accidentally appears multiple times.
     if (!msgDone) {
-      LogIO os(LogOrigin("MeasTable", "dPsiEps(uInt, Double)", WHERE));
+      LogIO os(LogOrigin("MeasTable", "dPsiEps(uint32_t, double)", WHERE));
       os << LogIO::NORMAL3
          << "High precision nutation information not available."
          << LogIO::POST;
-      msgDone = True;
+      msgDone = true;
     }
   }
   ///  cout << "psieps " << r << endl;
@@ -2799,17 +2799,17 @@ Double MeasTable::dPsiEps(uInt which, Double T) {
 }
 
 // Planetary data
-Vector<Double> MeasTable::Planetary(MeasTable::Types which, Double T) {
+Vector<double> MeasTable::Planetary(MeasTable::Types which, double T) {
   static MeasJPL::Files fil(MeasJPL::DE200);
   std::call_once(theirPlanetaryInitOnceFlag, calcPlanetary, &fil);
 
-  Vector<Double> res(6);
+  Vector<double> res(6);
   if (!MeasJPL::get(res, fil, (MeasJPL::Types)which, MVEpoch(T))) {
     const String tnam[2] = {"DE200", "DE405"};
     LogIO os(LogOrigin("MeasTable",
-                       "Planetary(MeasTable::Types, Double)", WHERE));
+                       "Planetary(MeasTable::Types, double)", WHERE));
     os << "Cannot find the planetary data for MeasJPL object number "
-       << (Int) which << " at UT day " << T << " in table " << tnam[fil]
+       << (int32_t) which << " at UT day " << T << " in table " << tnam[fil]
        << LogIO::WARN;
     res = 0.;
   }
@@ -2818,25 +2818,25 @@ Vector<Double> MeasTable::Planetary(MeasTable::Types which, Double T) {
 
 void MeasTable::calcPlanetary(MeasJPL::Files *fil) {
   const String tnam[2] = {"DE200", "DE405"};
-  uInt t;
+  uint32_t t;
   Aipsrc::find(t, "measures.jpl.ephemeris", 2, tnam, "DE200");
   *fil = (MeasJPL::Files)t;
 }
 
 // Planetary constants
-Double MeasTable::Planetary(MeasTable::JPLconst what) {
-  static Double cn[MeasTable::N_JPLconst];
+double MeasTable::Planetary(MeasTable::JPLconst what) {
+  static double cn[MeasTable::N_JPLconst];
   std::call_once(theirPlanetaryConstantsInitOnceFlag, calcPlanetaryConstants, cn);
   return cn[what];
 }
 
-void MeasTable::calcPlanetaryConstants(Double cn[MeasTable::N_JPLconst]) {
+void MeasTable::calcPlanetaryConstants(double cn[MeasTable::N_JPLconst]) {
   const String tnam[2] = {"DE200", "DE405"};
-  uInt t;
+  uint32_t t;
   Aipsrc::find(t, "measures.jpl.ephemeris", 2, tnam, "DE200");
   MeasJPL::Files fil = (MeasJPL::Files)t;
 
-  for (uInt i=0; i<MeasTable::N_JPLconst; i++) {
+  for (uint32_t i=0; i<MeasTable::N_JPLconst; i++) {
     if (!MeasJPL::getConst(cn[i], fil, (MeasJPL::Codes) i)) {
       LogIO os(LogOrigin("MeasTable",
                          "Planetary(MeasTable::JPLconst)", WHERE));
@@ -2857,15 +2857,15 @@ void MeasTable::doInitObservatories()
   ROTableRow row;
   TableRecord kws;
   String rfn[3] = {"Long", "Lat", "Height"};
-  RORecordFieldPtr<Double> rfp[3];
-  Double dt;
+  RORecordFieldPtr<double> rfp[3];
+  double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 3, rfn, "Observatories",
                           "measures.observatory.directory", "geodetic")) {
     LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
     os << "Cannot read table of Observatories" << LogIO::EXCEPTION;
   }
-  Int N = t.nrow();
+  int32_t N = t.nrow();
   if (N<1) {
     LogIO os(LogOrigin("MeasTable", "doInitObservatories()", WHERE));
     os << "No entries in table of Observatories" << LogIO::EXCEPTION;
@@ -2873,14 +2873,14 @@ void MeasTable::doInitObservatories()
   obsNams.resize(N);
   obsPos.resize(N);
   antResponsesPath.resize(N);
-  Bool hasAntResp = False;
+  bool hasAntResp = false;
   if(row.record().isDefined("AntennaResponses")){
-    hasAntResp = True;
+    hasAntResp = true;
   }
 
   MPosition::Ref mr;
   MPosition tmp;
-  for (Int i=0; i<N; i++) {
+  for (int32_t i=0; i<N; i++) {
     row.get(i);
     obsNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
     if(hasAntResp){
@@ -2901,34 +2901,34 @@ const Vector<String> &MeasTable::Observatories() {
   return MeasTable::obsNams;
 }
 
-Bool MeasTable::Observatory(MPosition &obs, const String &nam) {
+bool MeasTable::Observatory(MPosition &obs, const String &nam) {
   std::call_once(theirObsInitOnceFlag, doInitObservatories);
-  uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
+  uint32_t i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     obs = MeasTable::obsPos[i];
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
-Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
+bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
   std::call_once(theirObsInitOnceFlag, doInitObservatories);
-  uInt i=MUString::minimaxNC(nam, MeasTable::obsNams);
+  uint32_t i=MUString::minimaxNC(nam, MeasTable::obsNams);
   if (i < MeasTable::obsNams.nelements()) {
     antRespPath = MeasTable::antResponsesPath(i);
     if(antRespPath.empty()){ // i.e. there is no table for this observatory
-      return False; 
+      return false; 
     }
     else if(antRespPath[0] == '/'){ // path is absolute
       Path lPath(antRespPath);
       if(!Table::isReadable(lPath.absoluteName())){
-	return False;
+	return false;
       }
     }
     else{ // path is relative
       // find and prepend the path to the data repository
       String absPathName;
-      Bool isValid = False;
+      bool isValid = false;
       {
 	String mdir;
 	Aipsrc::find(mdir, "measures.directory");
@@ -2946,13 +2946,13 @@ Bool MeasTable::AntennaResponsesPath(String &antRespPath, const String &nam) {
         isValid = Table::isReadable(absPathName);
       }
       if(!isValid){
-	return False; // table not found
+	return false; // table not found
       }
       antRespPath = absPathName;
     }
-    return True;
+    return true;
   }
-  return False; // observatory not found
+  return false; // observatory not found
 }
 
 // Line data
@@ -2966,15 +2966,15 @@ void MeasTable::doInitLines()
   ROTableRow row;
   TableRecord kws;
   String rfn[1] = {"Freq"};
-  RORecordFieldPtr<Double> rfp[1];
-  Double dt;
+  RORecordFieldPtr<double> rfp[1];
+  double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "Lines",
                           "measures.line.directory", "ephemerides")) {
     LogIO os(LogOrigin("MeasTable", "doInitLines()", WHERE));
     os << "Cannot read table of spectral Lines" << LogIO::EXCEPTION;
   }
-  Int N = t.nrow();
+  int32_t N = t.nrow();
   if (N<1) {
     LogIO os(LogOrigin("MeasTable", "doInitLines()", WHERE));
     os << "No entries in table of spectral Lines" << LogIO::EXCEPTION;
@@ -2983,7 +2983,7 @@ void MeasTable::doInitLines()
   linePos.resize(N);
   MFrequency::Ref mr(MFrequency::REST);
   MFrequency tmp;
-  for (Int i=0; i<N; i++) {
+  for (int32_t i=0; i<N; i++) {
     row.get(i);
     lineNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
     linePos(i) = MFrequency(MVFrequency(Quantity(*(rfp[0]), "GHz")), mr);
@@ -2996,14 +2996,14 @@ const Vector<String> &MeasTable::Lines() {
   return MeasTable::lineNams;
 }
 
-Bool MeasTable::Line(MFrequency &obs, const String &nam) {
+bool MeasTable::Line(MFrequency &obs, const String &nam) {
   std::call_once(theirLinesInitOnceFlag, doInitLines);
-  uInt i=MUString::minimaxNC(nam, MeasTable::lineNams);
+  uint32_t i=MUString::minimaxNC(nam, MeasTable::lineNams);
   if (i < MeasTable::lineNams.nelements()) {
     obs = MeasTable::linePos(i);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 // Source data
@@ -3017,15 +3017,15 @@ void MeasTable::doInitSources()
   ROTableRow row;
   TableRecord kws;
   String rfn[2] = {"Long", "Lat"};
-  RORecordFieldPtr<Double> rfp[2];
-  Double dt;
+  RORecordFieldPtr<double> rfp[2];
+  double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 2, rfn, "Sources",
                           "measures.sources.directory", "ephemerides")) {
     LogIO os(LogOrigin("MeasTable", "doInitSources()", WHERE));
     os << "Cannot read table of Sources" << LogIO::EXCEPTION;
   }
-  Int N = t.nrow();
+  int32_t N = t.nrow();
   if (N<1) {
     LogIO os(LogOrigin("MeasTable", "doInitSources()", WHERE));
     os << "No entries in table of Sources" << LogIO::EXCEPTION;
@@ -3034,7 +3034,7 @@ void MeasTable::doInitSources()
   srcPos.resize(N);
   MDirection::Ref mr;
   MDirection tmp;
-  for (Int i=0; i<N; i++) {
+  for (int32_t i=0; i<N; i++) {
     row.get(i);
     srcNams(i) = *RORecordFieldPtr<String>(row.record(), "Name");
     if (!tmp.giveMe(mr, *RORecordFieldPtr<String>(row.record(), "Type"))) {
@@ -3051,22 +3051,22 @@ const Vector<String> &MeasTable::Sources() {
   return MeasTable::srcNams;
 }
 
-Bool MeasTable::Source(MDirection &obs, const String &nam) {
+bool MeasTable::Source(MDirection &obs, const String &nam) {
   std::call_once(theirSrcInitOnceFlag, doInitSources);
-  uInt i=MUString::minimaxNC(nam, MeasTable::srcNams);
+  uint32_t i=MUString::minimaxNC(nam, MeasTable::srcNams);
   if (i < MeasTable::srcNams.nelements()) {
     obs = MeasTable::srcPos(i);
-    return True;
+    return true;
   }
-  return False;
+  return false;
 }
 
 // Magnetic field (IGRF) function
-Vector<Double> MeasTable::IGRF(Double tm) {
+Vector<double> MeasTable::IGRF(double tm) {
   std::call_once(theirIGRFInitOnceFlag, doInitIGRF);
   // Look up closest MJD interval. Note that each interval has same width.
-  Int indx = Int((tm-firstIGRF) / dtimeIGRF) - 1;
-  if (indx >= Int(coefIGRF.size())) {
+  int32_t indx = int32_t((tm-firstIGRF) / dtimeIGRF) - 1;
+  if (indx >= int32_t(coefIGRF.size())) {
     indx = coefIGRF.size() - 1;
   } else if (indx < 0) {
     indx = 0;
@@ -3087,15 +3087,15 @@ void MeasTable::doInitIGRF()
   TableRecord kws;
   ROTableRow row;
   const String rfn[1] = {"MJD"};
-  RORecordFieldPtr<Double> rfp[1];
-  Double dt;
+  RORecordFieldPtr<double> rfp[1];
+  double dt;
   String vs;	
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 1, rfn, "IGRF",
                           "measures.igrf.directory", "geodetic")) {
     LogIO os(LogOrigin("MeasTable", "doInitIGRF()", WHERE));
     os << "Cannot read table of IGRF models" << LogIO::EXCEPTION;
   }
-  Int N = t.nrow();
+  int32_t N = t.nrow();
   if (N<10 || !kws.isDefined("MJD0") || kws.asDouble("MJD0") < 10000 ||
       !kws.isDefined("dMJD") || kws.asDouble("dMJD") < 300) {
     LogIO os(LogOrigin("MeasTable", "doInitIGRF()", WHERE));
@@ -3105,10 +3105,10 @@ void MeasTable::doInitIGRF()
   dtimeIGRF = kws.asDouble("dMJD");
   coefIGRF.reserve (N);
   dIGRF.reserve (N);
-  ScalarColumn<Double> accmjd(t, "MJD");
-  ArrayColumn<Double> acc(t, "COEF");
-  ArrayColumn<Double> accd(t, "dCOEF");
-  for (Int i=0; i<N; ++i) {
+  ScalarColumn<double> accmjd(t, "MJD");
+  ArrayColumn<double> acc(t, "COEF");
+  ArrayColumn<double> accd(t, "dCOEF");
+  for (int32_t i=0; i<N; ++i) {
     double igrfmjd = accmjd(i);
     if (! near(igrfmjd, firstIGRF+(i+1)*dtimeIGRF)) {
       LogIO os(LogOrigin("MeasTable", "doInitIGRF()", WHERE));
@@ -3121,14 +3121,14 @@ void MeasTable::doInitIGRF()
 }
 
 // Aberration function
-const Polynomial<Double> &MeasTable::aberArg(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAberArg());
+const Polynomial<double> &MeasTable::aberArg(uint32_t which) {
+  static const std::vector<Polynomial<double> > polyArray(calcAberArg());
   DebugAssert(which < 13, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
-  static const Double ABERFUND[13][2] = {
+std::vector<Polynomial<double> > MeasTable::calcAberArg() {
+  static const double ABERFUND[13][2] = {
     {4.4026088,	2608.7903142},
     {3.1761467,	1021.3285546},
     {1.7534703,	 628.3075849},
@@ -3143,10 +3143,10 @@ std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
     {6.2400601,	 628.3019553},
     {1.6279052,	8433.4661601}
   };
-  std::vector<Polynomial<Double> > polyArray(13);
-  Int i,j;
+  std::vector<Polynomial<double> > polyArray(13);
+  int32_t i,j;
   for (i=0; i<13; i++) {
-    polyArray[i] = Polynomial<Double>(1);
+    polyArray[i] = Polynomial<double>(1);
     for (j=0; j<2; j++) {
       polyArray[i].setCoefficient(j, ABERFUND[i][j]);
     }
@@ -3155,29 +3155,29 @@ std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
 }
 
 // Derivative aber
-const Polynomial<Double> &MeasTable::aberArgDeriv(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAberArgDeriv());
+const Polynomial<double> &MeasTable::aberArgDeriv(uint32_t which) {
+  static const std::vector<Polynomial<double> > polyArray(calcAberArgDeriv());
   DebugAssert(which < 13, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAberArgDeriv() {
-  std::vector<Polynomial<Double> > polyArray(13);
+std::vector<Polynomial<double> > MeasTable::calcAberArgDeriv() {
+  std::vector<Polynomial<double> > polyArray(13);
   for (int i=0; i<13; i++) {
-    const Polynomial<Double> *polyPtr = &aberArg(i);
+    const Polynomial<double> *polyPtr = &aberArg(i);
     polyArray[i] = polyPtr->derivative();
   }
   return polyArray;
 }
 
-const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAber1950Arg());
+const Polynomial<double> &MeasTable::aber1950Arg(uint32_t which) {
+  static const std::vector<Polynomial<double> > polyArray(calcAber1950Arg());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
-  static const Double ABERFUND[12][4] = {
+std::vector<Polynomial<double> > MeasTable::calcAber1950Arg() {
+  static const double ABERFUND[12][4] = {
     {1065976.59, 1717915856.79, 33.09,   0.0518},
     {1290513.0,  129596579.1,   -0.54,   -0.0120},
     {40503.2,    1739527290.54, -11.56,  -0.0012},
@@ -3191,10 +3191,10 @@ std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
     {260701.20,	1542164.400,	0,	0},
     {135831.60,	786459.600,	0,	0}
   };
-  std::vector<Polynomial<Double> > polyArray(12);
-  Int i,j;
+  std::vector<Polynomial<double> > polyArray(12);
+  int32_t i,j;
   for (i=0; i<12; i++) {
-    polyArray[i] = Polynomial<Double>(3);
+    polyArray[i] = Polynomial<double>(3);
     for (j=0; j<4; j++) {
       polyArray[i].setCoefficient(j, ABERFUND[i][j]*C::arcsec);
     }
@@ -3203,23 +3203,23 @@ std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
 }
 
 // Derivative aber1950
-const Polynomial<Double> &MeasTable::aber1950ArgDeriv(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAber1950ArgDeriv());
+const Polynomial<double> &MeasTable::aber1950ArgDeriv(uint32_t which) {
+  static const std::vector<Polynomial<double> > polyArray(calcAber1950ArgDeriv());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAber1950ArgDeriv() {
-  std::vector<Polynomial<Double> > polyArray(12);
+std::vector<Polynomial<double> > MeasTable::calcAber1950ArgDeriv() {
+  std::vector<Polynomial<double> > polyArray(12);
   for (int i=0; i<12; i++) {
-    const Polynomial<Double> *polyPtr = &aber1950Arg(i);
+    const Polynomial<double> *polyPtr = &aber1950Arg(i);
     polyArray[i] = polyPtr->derivative();
   }
   return polyArray;
 }
 
-const Double* MeasTable::mulAberArg(uInt which) {
-  static const Double ABERARG[80][6] = {
+const double* MeasTable::mulAberArg(uint32_t which) {
+  static const double ABERARG[80][6] = {
     {	0,	0,	1,	0,	0,	0},
     {	0,	0,	2,	0,	0,	0},
     {	0,	0,	3,	0,	0,	0},
@@ -3305,8 +3305,8 @@ const Double* MeasTable::mulAberArg(uInt which) {
   return &(ABERARG[which][0]);
 }
 
-const Double* MeasTable::mulAber1950Arg(uInt which) {
-  static const Double ABERARG[132][12] = {
+const double* MeasTable::mulAber1950Arg(uint32_t which) {
+  static const double ABERARG[132][12] = {
     { 0, 0, 1,-1, 1, 0, 0, 0, 0, 0, 0, 0},
     { 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
     { 0, 2, 1,-1, 1, 0, 0, 0, 0, 0, 0, 0},
@@ -3445,8 +3445,8 @@ const Double* MeasTable::mulAber1950Arg(uInt which) {
   return &(ABERARG[which][0]);
 }
 
-const Double* MeasTable::mulAberSunArg(uInt which) {
-  static const Double ABERSUNARG[17][7] = {
+const double* MeasTable::mulAberSunArg(uint32_t which) {
+  static const double ABERSUNARG[17][7] = {
     {	0,	0,	0,	1,	0,	0,	0},
     {	0,	0,	0,	0,	1,	0,	0},
     {	0,	0,	0,	2,	0,	0,	0},
@@ -3469,8 +3469,8 @@ const Double* MeasTable::mulAberSunArg(uInt which) {
   return &(ABERSUNARG[which][0]);
 }
 
-const Double* MeasTable::mulAberEarthArg(uInt which) {
-  static const Double ABEREARTHARG[17][5] = {
+const double* MeasTable::mulAberEarthArg(uint32_t which) {
+  static const double ABEREARTHARG[17][5] = {
     {	1,	0,	0,	0,	0},
     {	0,	0,	0,	0,	1},
     {	1,	0,	1,	0,	0},
@@ -3493,22 +3493,22 @@ const Double* MeasTable::mulAberEarthArg(uInt which) {
   return &(ABEREARTHARG[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulAber(Double time, Double epsilon) {
+CountedPtr<Matrix<double> > MeasTable::mulAber(double time, double epsilon) {
   return theirMulAber.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulAber1950(Double time, Double epsilon) {
+CountedPtr<Matrix<double> > MeasTable::mulAber1950(double time, double epsilon) {
   return theirMulAber1950.getArray (time, epsilon);
 }
 
-const Vector<Double> &MeasTable::mulSunAber(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcMulSunAber());
+const Vector<double> &MeasTable::mulSunAber(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcMulSunAber());
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
-  static const Short MSUNABER[17][6] = {
+std::vector<Vector<double> > MeasTable::calcMulSunAber() {
+  static const int16_t MSUNABER[17][6] = {
     {	719,	0,	6,	-660,	-15,	-283},
     {	159,	0,	2,	-147,	-6,	-61},
     {	34,	-9,	-8,	-31,	-4,	-13},
@@ -3527,10 +3527,10 @@ std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
     {	-1,	0,	0,	1,	0,	0},
     {	1,	0,	0,	0,	0,	0}
   };
-  std::vector<Vector<Double> > argArray(17);
+  std::vector<Vector<double> > argArray(17);
   UnitVal AUperDay(1e-8,"AU/d");
-  Double factor = AUperDay.getFac();
-  Int i,j;
+  double factor = AUperDay.getFac();
+  int32_t i,j;
   for (i=0; i<17; i++) {
     argArray[i].resize(6);
     for (j=0; j<6; j++) {
@@ -3540,14 +3540,14 @@ std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
   return argArray;
 }
 
-const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcMulEarthAber());
+const Vector<double> &MeasTable::mulEarthAber(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcMulEarthAber());
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
-  static const Short MEARTHABER[17][3] = {
+std::vector<Vector<double> > MeasTable::calcMulEarthAber() {
+  static const int16_t MEARTHABER[17][3] = {
     {	715,	-656,	-285},
     {	0,	26,	-59},
     {	39,	-36,	-16},
@@ -3566,10 +3566,10 @@ std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
     {	1,	0,	0},
     {	0,	0,	-1}
   };
-  std::vector<Vector<Double> > argArray(17);
+  std::vector<Vector<double> > argArray(17);
   UnitVal AUperDay(1e-8,"AU/d");
-  Double factor = AUperDay.getFac();
-  Int i,j;
+  double factor = AUperDay.getFac();
+  int32_t i,j;
   for (i=0; i<17; i++) {
     argArray[i].resize(3);
     for (j=0; j<3; j++) {
@@ -3579,19 +3579,19 @@ std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
   return argArray;
 }
 
-const Vector<Double> &MeasTable::AberETerm(uInt which) {
-  static const std::vector<Vector<Double> > termArray(calcAberETerm());
+const Vector<double> &MeasTable::AberETerm(uint32_t which) {
+  static const std::vector<Vector<double> > termArray(calcAberETerm());
   DebugAssert(which < 2, AipsError);
   return termArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcAberETerm() {
-  static const Double TERM[2][3] = {
+std::vector<Vector<double> > MeasTable::calcAberETerm() {
+  static const double TERM[2][3] = {
     {-1.62557,  -0.31919, -0.13843},
     {+1.245,    -1.580,   -0.659}
   };
-  std::vector<Vector<Double> > termArray(2);
-  Int i;
+  std::vector<Vector<double> > termArray(2);
+  int32_t i;
   for (i=0; i<2; i++) {
     termArray[i].resize(3);
   }
@@ -3603,8 +3603,8 @@ std::vector<Vector<Double> > MeasTable::calcAberETerm() {
 }
 
 // Diurnal Aberration factor
-Double MeasTable::diurnalAber(Double radius, Double T) {
-  ///  static Double res;
+double MeasTable::diurnalAber(double radius, double T) {
+  ///  static double res;
   ///  res = C::_2pi * radius / MeasData::SECinDAY *
   ///    MeasTable::UTtoST(T)/C::c;
   ///  return res;
@@ -3613,22 +3613,22 @@ Double MeasTable::diurnalAber(Double radius, Double T) {
 }
 
 // LSR velocity (kinematical)
-const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLSRK());
+const Vector<double> &MeasTable::velocityLSRK(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcVelocityLSRK());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLSRK() {
-  static const Double LSR[2][3] = {
+std::vector<Vector<double> > MeasTable::calcVelocityLSRK() {
+  static const double LSR[2][3] = {
     {0.0145021,  -0.865863, 0.500071},
     {0.00724658, -0.865985, 0.500018}
   };
-  std::vector<Vector<Double> > argArray(2);
-  Double v = 20.0*1000.;
-  for (Int i=0; i<2; i++) {
+  std::vector<Vector<double> > argArray(2);
+  double v = 20.0*1000.;
+  for (int32_t i=0; i<2; i++) {
     argArray[i].resize(3);
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       argArray[i](j) = v * LSR[i][j];
     }
   }
@@ -3636,22 +3636,22 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLSRK() {
 }
 
 // LSR velocity (dynamical)
-const Vector<Double> &MeasTable::velocityLSR(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLSR());
+const Vector<double> &MeasTable::velocityLSR(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcVelocityLSR());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLSR() {
-  static const Double LSR[2][3] = {
+std::vector<Vector<double> > MeasTable::calcVelocityLSR() {
+  static const double LSR[2][3] = {
     {-0.0385568, -0.881138, 0.471285},
     {-0.0461164, -0.880664, 0.471491}
   };
-  std::vector<Vector<Double> > argArray(2);
-  Double v = sqrt(81.+144.+49.)*1000.;
-  for (Int i=0; i<2; i++) {
+  std::vector<Vector<double> > argArray(2);
+  double v = sqrt(81.+144.+49.)*1000.;
+  for (int32_t i=0; i<2; i++) {
     argArray[i].resize(3);
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       argArray[i](j) = v * LSR[i][j];
     }
   }
@@ -3659,22 +3659,22 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLSR() {
 }
 
 // LSR velocity wrt galactic centre
-const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLSRGal());
+const Vector<double> &MeasTable::velocityLSRGal(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcVelocityLSRGal());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLSRGal() {
-  static const Double LSR[2][3] = {
+std::vector<Vector<double> > MeasTable::calcVelocityLSRGal() {
+  static const double LSR[2][3] = {
     {0.494109, -0.44483 , 0.746982},
     {0.492728, -0.450347, 0.744585}
   };
-  std::vector<Vector<Double> > argArray(2);
-  Double v = 220.*1000.;
-  for (Int i=0; i<2; i++) {
+  std::vector<Vector<double> > argArray(2);
+  double v = 220.*1000.;
+  for (int32_t i=0; i<2; i++) {
     argArray[i].resize(3);
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       argArray[i](j) = v * LSR[i][j];
     }
   }
@@ -3682,22 +3682,22 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLSRGal() {
 }
 
 // LGROUP velocity wrt bary center
-const Vector<Double> &MeasTable::velocityLGROUP(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLGROUP());
+const Vector<double> &MeasTable::velocityLGROUP(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcVelocityLGROUP());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLGROUP() {
-  static const Double LGROUP[2][3] = {
+std::vector<Vector<double> > MeasTable::calcVelocityLGROUP() {
+  static const double LGROUP[2][3] = {
     {0.593553979227, -0.177954636914, 0.784873124106},
     {0.5953342407,   -0.184600136022, 0.781984610866} 
   };
-  std::vector<Vector<Double> > argArray(2);
-  Double v = 308.*1000.;
-  for (Int i=0; i<2; i++) {
+  std::vector<Vector<double> > argArray(2);
+  double v = 308.*1000.;
+  for (int32_t i=0; i<2; i++) {
     argArray[i].resize(3);
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       argArray[i](j) = v * LGROUP[i][j];
     }
   }
@@ -3705,22 +3705,22 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLGROUP() {
 }
 
 // CMB velocity wrt bary center
-const Vector<Double> &MeasTable::velocityCMB(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityCMB());
+const Vector<double> &MeasTable::velocityCMB(uint32_t which) {
+  static const std::vector<Vector<double> > argArray(calcVelocityCMB());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityCMB() {
-  static const Double CMB[2][3] = {
+std::vector<Vector<double> > MeasTable::calcVelocityCMB() {
+  static const double CMB[2][3] = {
     {-0.97176985257,  0.202393953108, -0.121243727187},
     {-0.970024232022, 0.213247954272, -0.11652595972}
   };
-  std::vector<Vector<Double> > argArray(2);
-  Double v = 369.5*1000.;
-  for (Int i=0; i<2; i++) {
+  std::vector<Vector<double> > argArray(2);
+  double v = 369.5*1000.;
+  for (int32_t i=0; i<2; i++) {
     argArray[i].resize(3);
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       argArray[i](j) = v * CMB[i][j];
     }
   }
@@ -3728,14 +3728,14 @@ std::vector<Vector<Double> > MeasTable::calcVelocityCMB() {
 }
 
 // Earth and Sun position
-const Polynomial<Double> &MeasTable::posArg(uInt which) { 
-  static const std::vector<Polynomial<Double> > polyArray(calcPosArg());
+const Polynomial<double> &MeasTable::posArg(uint32_t which) { 
+  static const std::vector<Polynomial<double> > polyArray(calcPosArg());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
-  static const Double POSFUND[12][2] = {
+std::vector<Polynomial<double> > MeasTable::calcPosArg() {
+  static const double POSFUND[12][2] = {
     {252.25,       149472.67},      // Q
     {181.9798,     58517.8157},     // V
     {100.46644851, 35999.37285186}, // E
@@ -3749,10 +3749,10 @@ std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
     { 93.27210,    483202.01753},   // F
     {134.9634,     477198.8676}     // l
   };
-  std::vector<Polynomial<Double> > polyArray(12);
-  Int i,j;
+  std::vector<Polynomial<double> > polyArray(12);
+  int32_t i,j;
   for (i=0; i<12; i++) {
-    polyArray[i] = Polynomial<Double>(1);
+    polyArray[i] = Polynomial<double>(1);
     for (j=0; j<2; j++) {
       polyArray[i].setCoefficient(j, POSFUND[i][j]*C::degree);
     }
@@ -3761,23 +3761,23 @@ std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
 }
 
 // Derivative of Earth and Sun position polynomial
-const Polynomial<Double> &MeasTable::posArgDeriv(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcPosArgDeriv());
+const Polynomial<double> &MeasTable::posArgDeriv(uint32_t which) {
+  static const std::vector<Polynomial<double> > polyArray(calcPosArgDeriv());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcPosArgDeriv() {
-  std::vector<Polynomial<Double> > polyArray(12);
+std::vector<Polynomial<double> > MeasTable::calcPosArgDeriv() {
+  std::vector<Polynomial<double> > polyArray(12);
   for (int i=0; i<12; i++) {
-    const Polynomial<Double> *polyPtr = &posArg(i);
+    const Polynomial<double> *polyPtr = &posArg(i);
     polyArray[i] = polyPtr->derivative();
   }
   return polyArray;
 }
 
-const Double* MeasTable::mulPosEarthXYArg(uInt which) {
-  static const Double POSXYARG[189][12] = {
+const double* MeasTable::mulPosEarthXYArg(uint32_t which) {
+  static const double POSXYARG[189][12] = {
     //X,Y(ecliptic) factors
     {0,  0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0},
     {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
@@ -3973,8 +3973,8 @@ const Double* MeasTable::mulPosEarthXYArg(uInt which) {
   return &(POSXYARG[which][0]);
 }
 
-const Double* MeasTable::mulPosEarthZArg(uInt which) {
-  static const Double POSZARG[32][12] = {
+const double* MeasTable::mulPosEarthZArg(uint32_t which) {
+  static const double POSZARG[32][12] = {
     //Z(ecliptic) factors
     {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  0},
     {0,  3, -4,  0,  0,  0,  0,  0,  0,  0,  0,  0},
@@ -4013,8 +4013,8 @@ const Double* MeasTable::mulPosEarthZArg(uInt which) {
   return &(POSZARG[which][0]);
 }
 
-const Double* MeasTable::mulPosSunXYArg(uInt which) {
-  static const Double POSXYARG[98][12] = {
+const double* MeasTable::mulPosSunXYArg(uint32_t which) {
+  static const double POSXYARG[98][12] = {
     //X,Y(ecliptic) factors
     {0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0},
     {0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0},
@@ -4119,8 +4119,8 @@ const Double* MeasTable::mulPosSunXYArg(uInt which) {
   return &(POSXYARG[which][0]);
 }
 
-const Double* MeasTable::mulPosSunZArg(uInt which) {
-  static const Double POSZARG[29][12] = {
+const double* MeasTable::mulPosSunZArg(uint32_t which) {
+  static const double POSZARG[29][12] = {
     //Z(ecliptic) factors
     {0,  0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0},
     {0,  0,  0,  0,  1,  0,  0,  0,  0,  0,  0,  0},
@@ -4156,22 +4156,22 @@ const Double* MeasTable::mulPosSunZArg(uInt which) {
   return &(POSZARG[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosEarthXY(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulPosEarthXY(double time, double epsilon)
 {
   return theirMulPosEarthXY.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosEarthZ(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulPosEarthZ(double time, double epsilon)
 {
   return theirMulPosEarthZ.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosSunXY(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulPosSunXY(double time, double epsilon)
 {
   return theirMulPosSunXY.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosSunZ(Double time, Double epsilon)
+CountedPtr<Matrix<double> > MeasTable::mulPosSunZ(double time, double epsilon)
 {
   return theirMulPosSunZ.getArray (time, epsilon);
 }
@@ -4211,30 +4211,30 @@ RotMatrix MeasTable::calcICRSToJ2000() {
 }
 
 // Position related routines
-Double MeasTable::WGS84(uInt which) {
-  static const Double data[2] = { 6378137, 298.257223563};
+double MeasTable::WGS84(uint32_t which) {
+  static const double data[2] = { 6378137, 298.257223563};
 
   DebugAssert(which < 2, AipsError);
   return data[which];
 }
 
 // Polar motion related routines
-Euler MeasTable::polarMotion(Double ut) {
+Euler MeasTable::polarMotion(double ut) {
 #if defined(USE_THREADS)
-    static std::atomic<Bool> msgDone;
+    static std::atomic<bool> msgDone;
 #else
-    static Bool msgDone;
+    static bool msgDone;
 #endif
   Euler res(0.0, 2, 0.0, 1, 0.0, 3);
   if (!MeasIERS::get(res(0), MeasIERS::MEASURED, MeasIERS::X, ut) ||
       !MeasIERS::get(res(1), MeasIERS::MEASURED, MeasIERS::Y, ut)) {
     // It is harmless if the message accidentally appears multiple times.
     if (!msgDone) {
-      LogIO os(LogOrigin("MeasTable", "PolarMotion(Double)", WHERE));
+      LogIO os(LogOrigin("MeasTable", "PolarMotion(double)", WHERE));
       os << LogIO::NORMAL3
          << "High precision polar motion information not available."
          << LogIO::POST;
-      msgDone = True;
+      msgDone = true;
     }
   }
   ///    cout << "polarmotion " << res(0) << ' ' << res(1) << endl;
@@ -4244,16 +4244,16 @@ Euler MeasTable::polarMotion(Double ut) {
 }
 
 // Time functions
-Double MeasTable::dUTC(Double utc) {
+double MeasTable::dUTC(double utc) {
   static const Statics_dUTC st(calc_dUTC());
-  Double (* const &LEAP)[4] = st.LEAP; // alias to avoid more clutter below
+  double (* const &LEAP)[4] = st.LEAP; // alias to avoid more clutter below
   const int &N = st.N;                // idem
 
-  Double val(0);
+  double val(0);
   if (utc < LEAP[0][0]) {
     val = LEAP[0][1] + (utc - LEAP[0][2])*LEAP[0][3];
   } else {
-    for (Int i = N-1; i >= 0; i--) {
+    for (int32_t i = N-1; i >= 0; i--) {
       if (utc >= LEAP[i][0]) {
 	val = LEAP[i][1];
 	if (LEAP[i][3] != 0) {
@@ -4273,31 +4273,31 @@ MeasTable::Statics_dUTC MeasTable::calc_dUTC() {
   ROTableRow row;
   TableRecord kws;
   const String rfn[4] = {"MJD", "dUTC", "Offset", "Multiplier"};
-  RORecordFieldPtr<Double> rfp[4];
-  Double dt;
+  RORecordFieldPtr<double> rfp[4];
+  double dt;
   String vs;
   if (!MeasIERS::getTable(t, kws, row, rfp, vs, dt, 4, rfn, "TAI_UTC",
                           "measures.tai_utc.directory", "geodetic")) {
-    LogIO os(LogOrigin("MeasTable", "dUTC(Double)", WHERE));
+    LogIO os(LogOrigin("MeasTable", "dUTC(double)", WHERE));
     os << "Cannot read leap second table TAI_UTC" << LogIO::EXCEPTION;
   }
   rv.N = t.nrow();
   if (rv.N < 35) {
-    LogIO os(LogOrigin("MeasTable", "dUTC(Double)", WHERE));
+    LogIO os(LogOrigin("MeasTable", "dUTC(double)", WHERE));
     os << "Leap second table TAI_UTC corrupted" << LogIO::EXCEPTION;
   }
   if (Time().modifiedJulianDay() - dt > 180) {
-    LogIO os(LogOrigin("MeasTable", "dUTC(Double)", WHERE));
+    LogIO os(LogOrigin("MeasTable", "dUTC(double)", WHERE));
     os << LogIO::SEVERE
        << "Leap second table TAI_UTC seems out-of-date.\n"
           "Until the table is updated (see the CASA documentation or your system admin),\n"
           "times and coordinates derived from UTC could be wrong by 1s or more."
        << LogIO::POST;
   }
-  rv.LEAP = (Double (*)[4])(new Double[4*rv.N]);
-  for (Int i=0; i < rv.N; i++) {
+  rv.LEAP = (double (*)[4])(new double[4*rv.N]);
+  for (int32_t i=0; i < rv.N; i++) {
     row.get(i);
-    for (Int j=0; j < 4; j++) {
+    for (int32_t j=0; j < 4; j++) {
       rv.LEAP[i][j] = *(rfp[j]);
     }
   }
@@ -4305,30 +4305,30 @@ MeasTable::Statics_dUTC MeasTable::calc_dUTC() {
   return rv;
 }
 
-Double MeasTable::dTAI(Double) {
+double MeasTable::dTAI(double) {
   return (32.184);
 }
 
-Double MeasTable::dTDT(Double ut1) {
-  Double g = (357.53 + 0.9856003*(ut1-MeasData::MJD2000))*C::degree;
+double MeasTable::dTDT(double ut1) {
+  double g = (357.53 + 0.9856003*(ut1-MeasData::MJD2000))*C::degree;
   return (0.001658*sin(g) + 0.000014*sin(2*g));
 }
 
-Double MeasTable::dTDB(Double tai) {
+double MeasTable::dTDB(double tai) {
   return(1.550505e-8*86400*(tai-43144.0));
 }
 
-Double MeasTable::dTCG(Double tai) {
+double MeasTable::dTCG(double tai) {
   return(6.969291e-10*86400*(tai-43144.0));
 }
 
-Double MeasTable::GMST0(Double ut1) {
-  static Polynomial<Double> stPoly(calcGMST0());
+double MeasTable::GMST0(double ut1) {
+  static Polynomial<double> stPoly(calcGMST0());
   return (stPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
 }
 
-Polynomial<Double> MeasTable::calcGMST0() {
-  Polynomial<Double> stPoly(3);
+Polynomial<double> MeasTable::calcGMST0() {
+  Polynomial<double> stPoly(3);
   stPoly.setCoefficient(0, 24110.54841);
   stPoly.setCoefficient(1, 8640184.812866);
   stPoly.setCoefficient(2, 0.093104);
@@ -4336,14 +4336,14 @@ Polynomial<Double> MeasTable::calcGMST0() {
   return stPoly;
 }
 
-Double MeasTable::GMST00(Double ut1, Double tt) {
-  static Polynomial<Double> stPoly(calcGMST00());
+double MeasTable::GMST00(double ut1, double tt) {
+  static Polynomial<double> stPoly(calcGMST00());
   return (stPoly((tt-MeasData::MJD2000)/MeasData::JDCEN) +
 	  MeasTable::ERA00(ut1));
 }
 
-Polynomial<Double> MeasTable::calcGMST00() {
-  Polynomial<Double> stPoly(4);
+Polynomial<double> MeasTable::calcGMST00() {
+  Polynomial<double> stPoly(4);
   stPoly.setCoefficient(0, 0.014506*C::arcsec);
   stPoly.setCoefficient(1, 4612.15739966*C::arcsec+630.73514045148926);
   stPoly.setCoefficient(2, + 1.39667721*C::arcsec);
@@ -4352,30 +4352,30 @@ Polynomial<Double> MeasTable::calcGMST00() {
   return stPoly;
 }
 
-Double MeasTable::ERA00(Double ut1) {
-  static Polynomial<Double> stPoly(calcERA00());
+double MeasTable::ERA00(double ut1) {
+  static Polynomial<double> stPoly(calcERA00());
   ut1 -= MeasData::MJD2000;
   return MVAngle(stPoly(ut1)+ C::_2pi*fmod(ut1, 1.0))(0.0).radian();
 }
 
-Polynomial<Double> MeasTable::calcERA00() {
-  Polynomial<Double> stPoly(1);
+Polynomial<double> MeasTable::calcERA00() {
+  Polynomial<double> stPoly(1);
   stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);
   stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
   return stPoly;
 }
 
-Double MeasTable::sprime00(Double tt) {
+double MeasTable::sprime00(double tt) {
   return ((tt-MeasData::MJD2000)/MeasData::JDCEN * -47e-6 * C::arcsec);
 }
 
-Double MeasTable::GMUT0(Double gmst1) {
-  static Polynomial<Double> stPoly(calcGMUT0());
+double MeasTable::GMUT0(double gmst1) {
+  static Polynomial<double> stPoly(calcGMUT0());
   return (stPoly((gmst1-MeasData::MJD2000-6713.)/MeasData::JDCEN));
 }
 
-Polynomial<Double> MeasTable::calcGMUT0() {
-  Polynomial<Double> stPoly(3);
+Polynomial<double> MeasTable::calcGMUT0() {
+  Polynomial<double> stPoly(3);
   stPoly.setCoefficient(0, -0.65830845056254866847);
   stPoly.setCoefficient(1, -235.90946916710752);
   stPoly.setCoefficient(2, -0.00000252822553597972);
@@ -4383,44 +4383,44 @@ Polynomial<Double> MeasTable::calcGMUT0() {
   return stPoly;
 }
 
-Double MeasTable::UTtoST(Double ut1) {
-  static Polynomial<Double> UTSTPoly(calcUTtoST());
+double MeasTable::UTtoST(double ut1) {
+  static Polynomial<double> UTSTPoly(calcUTtoST());
   return(UTSTPoly((ut1-MeasData::MJD2000)/MeasData::JDCEN));
 }
 
-Polynomial<Double> MeasTable::calcUTtoST() {
-  Polynomial<Double> UTSTPoly(2);
+Polynomial<double> MeasTable::calcUTtoST() {
+  Polynomial<double> UTSTPoly(2);
   UTSTPoly.setCoefficient(0, 1.002737909350795);
   UTSTPoly.setCoefficient(1, +5.9006e-11);
   UTSTPoly.setCoefficient(2, -5.9e-15);
   return UTSTPoly;
 }
 
-Double MeasTable::dUT1(Double utc) {
+double MeasTable::dUT1(double utc) {
 #if defined(USE_THREADS)
-  static std::atomic<Bool> msgDone;
+  static std::atomic<bool> msgDone;
 #else
-  static Bool msgDone;
+  static bool msgDone;
 #endif
 
   ///#if defined(USE_THREADS) && !defined(__APPLE__)
-  static thread_local Double res = 0.0;
-  static thread_local Double checkT = -1e6;
+  static thread_local double res = 0.0;
+  static thread_local double checkT = -1e6;
   ///#else // !USE_THREADS (empty Mutex impl) or __APPLE__
   ///  std::lock_guard<std::mutex> lock(theirdUT1Mutex); // Pity. Try to narrow blunt __APPLE__ cond.
-  ///  static Double res = 0.0;
-  ///  static Double checkT = -1e6;
+  ///  static double res = 0.0;
+  ///  static double checkT = -1e6;
   ///#endif
   if ( !nearAbs(utc, checkT, 0.04)) {
     checkT = utc;
     if (!MeasIERS::get(res, MeasIERS::MEASURED, MeasIERS::dUT1, utc)) {
       // It is harmless if the message accidentally appears multiple times.
       if (!msgDone) {
-	LogIO os(LogOrigin("MeasTable", "dUT1(Double)", WHERE));
+	LogIO os(LogOrigin("MeasTable", "dUT1(double)", WHERE));
 	os << LogIO::NORMAL3
 	   << "High precision dUT1 information not available."
 	   << LogIO::POST;
-	msgDone = True;
+	msgDone = true;
       }
     }
   }

@@ -35,12 +35,12 @@
 %union {
   const TableExprNode* node;
   char * str;
-  Vector<Int>* iv;
+  Vector<int32_t>* iv;
   // Block<TableExprNode>* exprb;
   // TableExprNodeSetElem* elem;
   // TableExprNodeSet* settp;
-  // Int ival[2];
-  // Double dval;
+  // int32_t ival[2];
+  // double dval;
   // Vector<String>* is;
 }
 
@@ -78,7 +78,7 @@
 %{
 #include <casacore/ms/MSSel/MSSelectionTools.h>
   int MSStateGramlex (YYSTYPE*);
-  void checkStateError(Vector<Int>& list, ostringstream& msg, Bool force=False, char* = NULL)
+  void checkStateError(Vector<int32_t>& list, ostringstream& msg, bool force=false, char* = NULL)
   {
     if ((list.nelements() == 0) || force)
       {
@@ -109,12 +109,12 @@ indexcombexpr  : indexlist
                  {
 		   ostringstream m;
 	           MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		   Vector<Int> selectedIDs(myMSSI.maskStateIDs(*($1)));
+		   Vector<int32_t> selectedIDs(myMSSI.maskStateIDs(*($1)));
 		   if (selectedIDs.nelements() != set_intersection(selectedIDs,(*($1))).nelements())
 		     {
 		       m << "Possible out of range index in the list " << *($1)
-			 << " [TIP: Double-quoted strings forces name matching]";
-		       checkStateError(selectedIDs, m , True);
+			 << " [TIP: double-quoted strings forces name matching]";
+		       checkStateError(selectedIDs, m , true);
 		     }
                    $$ = MSStateParse().selectStateIds(selectedIDs);
 		   m << "Partial or no match for State ID list " << (*($1));
@@ -129,11 +129,11 @@ indexcombexpr  : indexlist
 //
 logicallist: stateid AMPERSAND stateid
           {
-	    $$ = new Vector<Int>(set_intersection(*$1,*$3));
+	    $$ = new Vector<int32_t>(set_intersection(*$1,*$3));
 	  };
         | logicallist AMPERSAND stateid
 	  {
-	    $$ = new Vector<Int>(set_intersection(*$1,*$3));
+	    $$ = new Vector<int32_t>(set_intersection(*$1,*$3));
 	  };
 //
 // A single state name (this could be a regex and
@@ -148,8 +148,8 @@ stateid: IDENTIFIER
 	    // Convert name to index
 	    //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$=new Vector<Int>(myMSSI.matchStateObsMode($1));
-	  //$$=new Vector<Int>(myMSAI.matchStateRegexOrPattern($1));
+	  $$=new Vector<int32_t>(myMSSI.matchStateObsMode($1));
+	  //$$=new Vector<int32_t>(myMSAI.matchStateRegexOrPattern($1));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -166,7 +166,7 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1));
+	  $$ = new Vector<int32_t>(myMSSI.matchStateRegexOrPattern($1));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -182,7 +182,7 @@ stateid: IDENTIFIER
 	  // Convert name to index
 	  //
 	  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-	  $$ = new Vector<Int>(myMSSI.matchStateRegexOrPattern($1,True));
+	  $$ = new Vector<int32_t>(myMSSI.matchStateRegexOrPattern($1,true));
 
 	  ostringstream m; m << "No match found for \"" << $1 << "\"";
 	  checkStateError(*($$), m);
@@ -193,20 +193,20 @@ stateid: IDENTIFIER
 
 stateidrange: INT // A single state index
             {
-	      $$ = new Vector<Int>(1);
+	      $$ = new Vector<int32_t>(1);
 	      (*($$))(0) = atoi($1);
 	      free($1);
 	    }
            | INT DASH INT // A range of integer state indices
             {
-              Int start = atoi($1);
-              Int end   = atoi($3);
-              Int len = end - start + 1;
-              Vector<Int> stateids(len);
-              for(Int i = 0; i < len; i++) {
+              int32_t start = atoi($1);
+              int32_t end   = atoi($3);
+              int32_t len = end - start + 1;
+              Vector<int32_t> stateids(len);
+              for(int32_t i = 0; i < len; i++) {
                 stateids[i] = start + i;
               }
-              $$ = new Vector<Int>(stateids);	   
+              $$ = new Vector<int32_t>(stateids);	   
 	      free($1); free($3);
             }
           ;
@@ -214,8 +214,8 @@ stateidrange: INT // A single state index
 stateidbounds: LT INT // <ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  Int n=atoi($2);
-		  $$ = new Vector<Int>(myMSSI.matchStateIDLT(n));
+		  int32_t n=atoi($2);
+		  $$ = new Vector<int32_t>(myMSSI.matchStateIDLT(n));
 
 		  ostringstream m; m << "No state ID found <" << n;
 		  checkStateError(*($$), m);
@@ -226,8 +226,8 @@ stateidbounds: LT INT // <ID
               | GT INT // >ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  Int n=atoi($2);
-		  $$ = new Vector<Int>(myMSSI.matchStateIDGT(n));
+		  int32_t n=atoi($2);
+		  $$ = new Vector<int32_t>(myMSSI.matchStateIDGT(n));
 
 		  ostringstream m; m << "No state ID found >" << n;
 		  checkStateError(*($$), m);
@@ -237,8 +237,8 @@ stateidbounds: LT INT // <ID
               | GT INT AMPERSAND LT INT // >ID & <ID
                 {
 		  MSStateIndex myMSSI(MSStateParse::thisMSSIParser->ms()->state());
-		  Int n0=atoi($2), n1=atoi($5);
-		  $$ = new Vector<Int>(myMSSI.matchStateIDGTAndLT(n0,n1));
+		  int32_t n0=atoi($2), n1=atoi($5);
+		  $$ = new Vector<int32_t>(myMSSI.matchStateIDGTAndLT(n0,n1));
 
 		  ostringstream m; 
 		  m << "No state found in the range [" << n0 << "," << n1 << "]";
@@ -266,16 +266,16 @@ stateidlist: stateid // A singe state ID
           ;
 indexlist : stateidlist
             {
-	      $$ = new Vector<Int>(*$1);
+	      $$ = new Vector<int32_t>(*$1);
 	      delete $1;
 	    }
           | indexlist COMMA stateidlist  
             {
               $$ = $1;
-	      Int N0=(*($1)).nelements(), 
+	      int32_t N0=(*($1)).nelements(), 
 		N1 = (*($3)).nelements();
-	      (*($$)).resize(N0+N1,True);  // Resize the existing list
-	      for(Int i=N0;i<N0+N1;i++)
+	      (*($$)).resize(N0+N1,true);  // Resize the existing list
+	      for(int32_t i=N0;i<N0+N1;i++)
 		(*($$))(i) = (*($3))(i-N0);
 	      delete $3;
             }

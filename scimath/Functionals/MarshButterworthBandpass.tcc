@@ -42,13 +42,13 @@ template<class T>
 void MarshButterworthBandpass<T>::store(Record& out) const {
     loadFuncType(out);
 
-    Vector<Double> bpass(3);
+    Vector<double> bpass(3);
     bpass(0) = this->getMinCutoff();
     bpass(1) = this->getCenter();
     bpass(2) = this->getMaxCutoff();
     out.define(FUNCFIELDS[BPASS], bpass);
 
-    Vector<Double> order(2);
+    Vector<double> order(2);
     order(0) = this->getMinOrder();
     order(1) = this->getMaxOrder();
     out.define(FUNCFIELDS[ORDER], order);

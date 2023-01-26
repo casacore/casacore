@@ -44,7 +44,7 @@ TableMeasType::TableMeasType (const Measure& meas)
   itsTyps  (0),
   itsMeasHolder(meas)
 {
-  Int nextras;
+  int32_t nextras;
   itsStypes = itsMeasHolder.asMeasure().allTypes (itsNtypes, nextras, 
 						  itsTyps);
 }
@@ -78,9 +78,9 @@ const String& TableMeasType::type() const
   return itsMeasHolder.asMeasure().tellMe();
 }
 
-uInt TableMeasType::refCode (const String& refString) const 
+uint32_t TableMeasType::refCode (const String& refString) const 
 {
-  Int i;
+  int32_t i;
   for (i=0; i<itsNtypes; i++) {
     if (itsStypes[i] == refString) {
       break;
@@ -93,9 +93,9 @@ uInt TableMeasType::refCode (const String& refString) const
   return itsTyps[i];
 }
 
-const String& TableMeasType::refType (uInt refCode) const 
+const String& TableMeasType::refType (uint32_t refCode) const 
 { 
-  Int i;
+  int32_t i;
   for (i=0; i<itsNtypes; i++) {
     if (itsTyps[i] == refCode) {
       break;

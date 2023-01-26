@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*  strpTableGram = 0;
-static Int          posTableGram = 0;
+static int32_t          posTableGram = 0;
 
 
 // Define a class to delete the yy_buffer in case of an exception.
@@ -101,7 +101,7 @@ int tableGramParseCommand (const String& command)
     // Save current state for re-entrancy.
     int sav_yy_start = yy_start;
     const char* savStrpTableGram = strpTableGram;
-    Int savPosTableGram= posTableGram;
+    int32_t savPosTableGram= posTableGram;
     YY_BUFFER_STATE sav_state = YY_CURRENT_BUFFER;
     // Create a new state buffer for new expression.
     TableGramState next (TableGram_create_buffer (TableGramin, YY_BUF_SIZE));
@@ -121,7 +121,7 @@ int tableGramParseCommand (const String& command)
 }
 
 //# Give the string position.
-Int& tableGramPosition()
+int32_t& tableGramPosition()
 {
     return posTableGram;
 }
@@ -201,7 +201,7 @@ String tableGramRemoveQuotes (const String& in)
     return out;
 }
 
-Double tableGramParseTime (const String& in)
+double tableGramParseTime (const String& in)
 {
     Quantity res;
     //# Skip a possible leading / which acts as an escape character.

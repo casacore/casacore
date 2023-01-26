@@ -38,7 +38,7 @@ template<class T>
 T CompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   if (parset_p) fromParam_p();
   T tmp(0);
-  for (uInt i = 0; i<nFunctions(); ++i) tmp += function(i)(x);
+  for (uint32_t i = 0; i<nFunctions(); ++i) tmp += function(i)(x);
   return tmp;
 }
 
@@ -46,8 +46,8 @@ T CompoundFunction<T>::eval(typename Function<T>::FunctionArg x) const {
 template <class T>
 void CompoundFunction<T>::fromParam_p() const {
   if (parset_p) {
-    parset_p = False;
-    for (uInt i=0; i<nparameters(); ++i) {
+    parset_p = false;
+    for (uint32_t i=0; i<nparameters(); ++i) {
       (*functionPtr_p[funpar_p[i]])[locpar_p[i]] = param_p[i];
       functionPtr_p[funpar_p[i]]->mask(locpar_p[i]) = param_p.mask(i);
     }
@@ -56,7 +56,7 @@ void CompoundFunction<T>::fromParam_p() const {
 
 template <class T>
 void CompoundFunction<T>::toParam_p() {
-  for (uInt i=0; i<nparameters(); ++i) {
+  for (uint32_t i=0; i<nparameters(); ++i) {
     param_p[i] = (*functionPtr_p[funpar_p[i]])[locpar_p[i]];
     param_p.mask(i) = functionPtr_p[funpar_p[i]]->mask(locpar_p[i]);
   }

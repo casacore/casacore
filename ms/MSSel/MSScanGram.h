@@ -71,13 +71,13 @@ class TableExprNode;
 
 // Declare the bison parser (is implemented by bison command).
   TableExprNode baseMSScanGramParseCommand (MSScanParse* parser, const String& command, 
-					    Vector<Int>& idList, Int maxScans=1000);
+					    Vector<int32_t>& idList, int32_t maxScans=1000);
   TableExprNode msScanGramParseCommand (const MeasurementSet *ms, const String& command, 
-					Vector<Int>& idList, Int maxScans=1000);
+					Vector<int32_t>& idList, int32_t maxScans=1000);
   TableExprNode msScanGramParseCommand (const MeasurementSet* ms,
 					const TableExprNode& colAsTEN,
 					const String& command, 
-					Vector<Int>& selectedIDs, Int maxScans) ;
+					Vector<int32_t>& selectedIDs, int32_t maxScans) ;
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -89,7 +89,7 @@ void msScanGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msScanGramPosition();
+int32_t& msScanGramPosition();
 
 // Declare the input routine for flex/bison.
 int msScanGramInput (char* buf, int max_size);

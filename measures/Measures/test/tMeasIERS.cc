@@ -52,7 +52,7 @@ int main()
     // Get a value for various epochs.
 
     cout << setprecision(9);
-    Vector<Double> val(6);
+    Vector<double> val(6);
 
     double date= 51116;
     for (int i=0; i<3; ++i) {
@@ -68,15 +68,15 @@ int main()
 
     // Test for handling of leap seconds (CAS-7984)
 
-    Double startMJD = 57202; // 2015-06-29T00:00:00
-    Double oneHour = 1.0/24.;
-    for (Int i = 0; i < 72; i++) {
-      const Double mjd = startMJD + i * oneHour;
+    double startMJD = 57202; // 2015-06-29T00:00:00
+    double oneHour = 1.0/24.;
+    for (int32_t i = 0; i < 72; i++) {
+      const double mjd = startMJD + i * oneHour;
       const MVTime now(mjd);
-      Double dUT;
-      Bool rval = MeasIERS::get(dUT, MeasIERS::PREDICTED, MeasIERS::dUT1, mjd);
+      double dUT;
+      bool rval = MeasIERS::get(dUT, MeasIERS::PREDICTED, MeasIERS::dUT1, mjd);
       if(!rval){
-	cout << "MeasIERS::get returned False for PREDICTED, dUT1, mjd " << mjd << endl;
+	cout << "MeasIERS::get returned false for PREDICTED, dUT1, mjd " << mjd << endl;
 	return 2;
       }
       cout << now.string(casacore::MVTime::YMD) 

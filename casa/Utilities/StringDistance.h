@@ -73,50 +73,50 @@ public:
   // Construct from the source string and maximum distance.
   // If the maximum distance is negative, it defaults to 1+strlength/3.
   // Note that maximum distance 0 means that the strings must match exactly.
-  explicit StringDistance (const String& source, Int maxDistance=-1,
-                           Bool countSwaps=True, Bool ignoreBlanks=True,
-                           Bool caseInsensitive=False);
+  explicit StringDistance (const String& source, int32_t maxDistance=-1,
+                           bool countSwaps=true, bool ignoreBlanks=true,
+                           bool caseInsensitive=false);
 
   // Get data members.
   // <group>
   const string& source() const
     { return itsSource; }
-  Int maxDistance() const
+  int32_t maxDistance() const
     { return itsMaxDistance; }
-  const Matrix<Int>& matrix() const
+  const Matrix<int32_t>& matrix() const
     { return itsMatrix; }
   // </group>
   
   // Test if the given target string is within the maximum distance.
-  Bool match (const String& target) const;
+  bool match (const String& target) const;
 
   // Calculate the distance from the string to the string given in the constructor.
   // If the length of target exceeds source length + maxDistance,
   // the difference in lengths is returned.
-  Int distance (const String& target) const;
+  int32_t distance (const String& target) const;
 
   // Calculate the distance between the two strings.
   // This is slower than the <src>distance</src> member function, because
   // it has to allocate the underlying Matrix for each invocation.
-  static Int distance (const String& source, const String& target,
-                       Bool countSwaps=True);
+  static int32_t distance (const String& source, const String& target,
+                       bool countSwaps=true);
 
   // Remove blanks from the given string.
   static String removeBlanks (const String& source);
 
 private:
   // Calculate the distance.
-  static Int doDistance (const String& source, const String& target,
-                         Bool countSwaps, Matrix<Int>& matrix);
+  static int32_t doDistance (const String& source, const String& target,
+                         bool countSwaps, Matrix<int32_t>& matrix);
 
 
 private:
   String              itsSource;
-  mutable Matrix<Int> itsMatrix;
-  Int                 itsMaxDistance;
-  Bool                itsCountSwaps;
-  Bool                itsIgnoreBlanks;
-  Bool                itsCaseInsensitive;
+  mutable Matrix<int32_t> itsMatrix;
+  int32_t                 itsMaxDistance;
+  bool                itsCountSwaps;
+  bool                itsIgnoreBlanks;
+  bool                itsCaseInsensitive;
 };
 
 } //# end namespace

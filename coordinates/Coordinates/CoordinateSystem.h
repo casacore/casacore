@@ -236,14 +236,14 @@ public:
     // newPixelOrder works similarly. Normally you will give the
     // same transformation vector for both the world and pixel transformations,
     // however this is not required.
-    void transpose(const Vector<Int> &newWorldOrder,
-                   const Vector<Int> &newPixelOrder);
+    void transpose(const Vector<int32_t> &newWorldOrder,
+                   const Vector<int32_t> &newPixelOrder);
 
     // Find the world and pixel axis mappings to the supplied CoordinateSystem
-    // from the current coordinate system. <src>False</src> is 
+    // from the current coordinate system. <src>false</src> is 
     // returned if either the supplied or current coordinate system, 
     // has no world axes (and a message recoverable with function
-    // errorMessage indicating why).  Otherwise <src>True</src> is returned.
+    // errorMessage indicating why).  Otherwise <src>true</src> is returned.
     // worldAxisMap(i) is the location of world axis <src>i</src> (from the
     // supplied CoordinateSystem, cSys, in the current CoordinateSystem.
     // worldAxisTranspose(i) is the location of world axis 
@@ -255,16 +255,16 @@ public:
     // if the types are the same, is there a reference type change
     // (e.g. TOPO versus LSR for the SpectralCoordinate, 
     // or J2000 versus GALACTIC for DirectionCoordinate). Thus
-    // if refChange(i) is True, it means world axis i in the
+    // if refChange(i) is true, it means world axis i in the
     // current CoordinateSystem was matched, but has a different
     // reference type to that of the supplied CoordinateSystem.
     // <group>
-    Bool worldMap (Vector<Int>& worldAxisMap,
-		   Vector<Int>& worldAxisTranspose,
-		   Vector<Bool>& refChange,
+    bool worldMap (Vector<int32_t>& worldAxisMap,
+		   Vector<int32_t>& worldAxisTranspose,
+		   Vector<bool>& refChange,
 		   const CoordinateSystem& cSys) const;
-    Bool pixelMap (Vector<Int>& pixelAxisMap,
-		   Vector<Int>& pixelAxisTranspose,
+    bool pixelMap (Vector<int32_t>& pixelAxisMap,
+		   Vector<int32_t>& pixelAxisTranspose,
 		   const CoordinateSystem& cSys) const;
     // </group>
 
@@ -282,11 +282,11 @@ public:
     // See also the functions in  <linkto class=CoordinateUtil>CoordinateUtil</linkto>
     // for removing lists of pixel/world axes (tricky because they shift down)
     //
-    // False is returned (an error in <src>errorMessage()</src> will be set)
-    // if the axis is illegal, else returns True.
+    // false is returned (an error in <src>errorMessage()</src> will be set)
+    // if the axis is illegal, else returns true.
     // <group>
-    Bool removeWorldAxis(uInt axis, Double replacement);
-    Bool removePixelAxis(uInt axis, Double replacement);
+    bool removeWorldAxis(uint32_t axis, double replacement);
+    bool removePixelAxis(uint32_t axis, double replacement);
     // </group>
 
     // Return a CoordinateSystem appropriate for a shift of origin
@@ -301,15 +301,15 @@ public:
     // the new Stokes axis length is equal to that specified after
     // appliction of the shift and increment and excess values 
     // discarded.    In addition, for any StokesCoordinate, the
-    // shift and factor must be integer.  So <src>Int(value+0.5)</src>
+    // shift and factor must be integer.  So <src>int32_t(value+0.5)</src>
     // is taken before they are used.
     // <group>
-    CoordinateSystem subImage(const Vector<Float> &originShift,
-			      const Vector<Float> &incrFac,
-                              const Vector<Int>& newShape) const;
-    void subImageInSitu (const Vector<Float> &originShift,
-                         const Vector<Float> &incrFac,
-                         const Vector<Int>& newShape);
+    CoordinateSystem subImage(const Vector<float> &originShift,
+			      const Vector<float> &incrFac,
+                              const Vector<int32_t>& newShape) const;
+    void subImageInSitu (const Vector<float> &originShift,
+                         const Vector<float> &incrFac,
+                         const Vector<int32_t>& newShape);
     // </group>
 
     // Untranspose and undelete all axes. Does not undo the effects of
@@ -319,7 +319,7 @@ public:
     // Returns the number of Coordinates that this CoordinateSystem contains.
     // The order might be unrelated to the axis order through the results of
     // transposing and removing axes.
-    uInt nCoordinates() const;
+    uint32_t nCoordinates() const;
 
     // For a given Coordinate say where its world and pixel axes are in
     // this CoordinateSystem. The position in the returned Vector is its
@@ -327,19 +327,19 @@ public:
     // number in the CoordinateSystem. If the value is less than zero the axis
     // has been removed from this CoordinateSystem.
     //  <group>
-    Vector<Int> worldAxes(uInt whichCoord) const;
-    Vector<Int> pixelAxes(uInt whichCoord) const;
+    Vector<int32_t> worldAxes(uint32_t whichCoord) const;
+    Vector<int32_t> pixelAxes(uint32_t whichCoord) const;
     // </group> 
 
     // Return the type of the given Coordinate.
-    Coordinate::Type type(uInt whichCoordinate) const;
+    Coordinate::Type type(uint32_t whichCoordinate) const;
 
     // Returns the type of the given Coordinate as a string.
-    String showType(uInt whichCoordinate) const;
+    String showType(uint32_t whichCoordinate) const;
 
     // Return the given Coordinate as a reference to the base
     // class object.
-    const Coordinate& coordinate(uInt which) const;
+    const Coordinate& coordinate(uint32_t which) const;
 
     // Return the given Coordinate.
     // Throws an exception if retrieved as the wrong type.
@@ -347,17 +347,17 @@ public:
     // first (or in most cases only) coordinate of the requested type.
     // If no such coordinate exists, an exception is thrown.
     // <group>
-    const LinearCoordinate    &linearCoordinate(uInt which) const;
+    const LinearCoordinate    &linearCoordinate(uint32_t which) const;
     const DirectionCoordinate &directionCoordinate() const;
-    const DirectionCoordinate &directionCoordinate(uInt which) const;
+    const DirectionCoordinate &directionCoordinate(uint32_t which) const;
 
-    const SpectralCoordinate &spectralCoordinate(uInt which) const;
+    const SpectralCoordinate &spectralCoordinate(uint32_t which) const;
     const SpectralCoordinate &spectralCoordinate() const;
     const StokesCoordinate  &stokesCoordinate() const;
 
-    const StokesCoordinate  &stokesCoordinate(uInt which) const;
-    const QualityCoordinate &qualityCoordinate(uInt which) const;
-    const TabularCoordinate &tabularCoordinate(uInt which) const;
+    const StokesCoordinate  &stokesCoordinate(uint32_t which) const;
+    const QualityCoordinate &qualityCoordinate(uint32_t which) const;
+    const TabularCoordinate &tabularCoordinate(uint32_t which) const;
     // </group>
 
     // Replace one Coordinate with another. The mapping of the coordinate axes
@@ -370,38 +370,38 @@ public:
     // units and applies it to the replacement values.  If it can't find
     // a scale factor (non-conformant units) then the reference value is
     // used for any world replacement values.  If the latter occurs,
-    // it returns False, else True is returned.
-    Bool replaceCoordinate(const Coordinate &newCoordinate, uInt whichCoordinate);
+    // it returns false, else true is returned.
+    bool replaceCoordinate(const Coordinate &newCoordinate, uint32_t whichCoordinate);
 
     // Find the Coordinate number that corresponds to the given type.
     // Since there might be more than one Coordinate of a given type you
     // can call this multiple times setting <src>afterCoord</src> to
     // the last value found. Returns -1 if a Coordinate of the desired
     // type is not found.
-    Int findCoordinate(Coordinate::Type type, Int afterCoord = -1) const;
+    int32_t findCoordinate(Coordinate::Type type, int32_t afterCoord = -1) const;
 
     // Given an axis number (pixel or world) in the CoordinateSystem,
     // find the corresponding coordinate number and axis in that Coordinate. 
     // The returned values are set to -1 if the axis does not exist.
     // <group>
-    void findWorldAxis(Int &coordinate, Int &axisInCoordinate, 
-		       uInt axisInCoordinateSystem) const;
-    void findPixelAxis(Int &coordinate, Int &axisInCoordinate, 
-		       uInt axisInCoordinateSystem) const;
+    void findWorldAxis(int32_t &coordinate, int32_t &axisInCoordinate, 
+		       uint32_t axisInCoordinateSystem) const;
+    void findPixelAxis(int32_t &coordinate, int32_t &axisInCoordinate, 
+		       uint32_t axisInCoordinateSystem) const;
     // </group>
 
     // Find the world axis for the given pixel axis in a CoordinateSystem.
     // Returns -1 if the world axis is unavailable (e.g. if it has been
     // removed).  
-    Int pixelAxisToWorldAxis(uInt pixelAxis) const;
+    int32_t pixelAxisToWorldAxis(uint32_t pixelAxis) const;
 
     // Find the pixel axis for the given world axis in a CoordinateSystem.
     // Returns -1 if the pixel axis is unavailable (e.g. if it has been
     // removed). 
-    Int worldAxisToPixelAxis(uInt worldAxis) const;
+    int32_t worldAxisToPixelAxis(uint32_t worldAxis) const;
 
     // Return the name of the record field in which the coordinate is stored.
-    String coordRecordName(uInt which) const;
+    String coordRecordName(uint32_t which) const;
 
     // Returns <src>Coordinate::COORDSYS</src>
     virtual Coordinate::Type type() const;
@@ -412,13 +412,13 @@ public:
     // Sums the number of axes in the Coordinates that the CoordinateSystem
     // contains, allowing for removed axes.
     // <group>
-    virtual uInt nPixelAxes() const;
-    virtual uInt nWorldAxes() const;
+    virtual uint32_t nPixelAxes() const;
+    virtual uint32_t nWorldAxes() const;
     // </group>
 
 
-    // Convert a pixel position to a world position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns <src>False</src> and
+    // Convert a pixel position to a world position or vice versa. Returns true
+    // if the conversion succeeds, otherwise it returns <src>false</src> and
     // <src>errorMessage()</src> contains an error message. 
     // The input vector must be of length <src>nPixelAxes</src> or
     // <src>nWorldAxes</src>.  The output vector  is resized appropriately.
@@ -426,50 +426,50 @@ public:
     // (such as can be present in spectral and direction coordinates), it
     // is used. Else, the native frame is used for the conversion.
     // <group>
-    virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel, Bool useConversionFrame=True) const;
-    // This one throws an exception rather than returning False. After all, that's
+    virtual bool toWorld(Vector<double> &world, 
+			 const Vector<double> &pixel, bool useConversionFrame=true) const;
+    // This one throws an exception rather than returning false. After all, that's
     // what exceptions are for.
-    virtual Vector<Double> toWorld(const Vector<Double> &pixel) const;
-    virtual Bool toPixel(Vector<Double> &pixel, 
-			 const Vector<Double> &world) const;
-    // This one throws an exception rather than returning False.
-    virtual Vector<Double> toPixel(const Vector<Double> &world) const;
+    virtual Vector<double> toWorld(const Vector<double> &pixel) const;
+    virtual bool toPixel(Vector<double> &pixel, 
+			 const Vector<double> &world) const;
+    // This one throws an exception rather than returning false.
+    virtual Vector<double> toPixel(const Vector<double> &world) const;
     // </group>
 
     // convert a pixel "length" to a world "length"
     virtual Quantity toWorldLength(
-    	const Double nPixels,
-    	const uInt pixelAxis
+    	const double nPixels,
+    	const uint32_t pixelAxis
     ) const;
 
     // This is provided as a convenience since it is a very commonly desired
     // operation through CoordinateSystem.  The output vector is resized.   
-    Bool toWorld(Vector<Double> &world, const IPosition &pixel) const;
-    Vector<Double> toWorld(const IPosition& pixel) const;
+    bool toWorld(Vector<double> &world, const IPosition &pixel) const;
+    Vector<double> toWorld(const IPosition& pixel) const;
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
-    // of the matrices contain the coordinates. Returns False if any conversion
+    // of the matrices contain the coordinates. Returns false if any conversion
     // failed  and  <src>errorMessage()</src> will hold a message.
-    // The <src>failures</src> array (True for fail, False for success)
+    // The <src>failures</src> array (true for fail, false for success)
     // is the length of the number of conversions and
     // holds an error status for each conversion.  
     // <group>
-    virtual Bool toWorldMany(Matrix<Double>& world,
-                             const Matrix<Double>& pixel,
-                             Vector<Bool>& failures) const;
-    virtual Bool toPixelMany(Matrix<Double>& pixel,
-                             const Matrix<Double>& world,
-                             Vector<Bool>& failures) const;
+    virtual bool toWorldMany(Matrix<double>& world,
+                             const Matrix<double>& pixel,
+                             Vector<bool>& failures) const;
+    virtual bool toPixelMany(Matrix<double>& pixel,
+                             const Matrix<double>& world,
+                             Vector<bool>& failures) const;
     // </group>
 
 
     // Mixed pixel/world coordinate conversion.
     // <src>worldIn</src> and <src>worldAxes</src> are of length n<src>worldAxes</src>.
     // <src>pixelIn</src> and <src>pixelAxes</src> are of length nPixelAxes.
-    // <src>worldAxes(i)=True</src> specifies you have given a world
+    // <src>worldAxes(i)=true</src> specifies you have given a world
     // value in <src>worldIn(i)</src> to convert to pixel.
-    // <src>pixelAxes(i)=True</src> specifies you have given a pixel 
+    // <src>pixelAxes(i)=true</src> specifies you have given a pixel 
     // value in <src>pixelIn(i)</src> to convert to world.
     // You cannot specify the same axis via <src>worldAxes</src>
     // and pixelAxes.
@@ -493,23 +493,23 @@ public:
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
     // value).
-    // Returns True if the conversion succeeds, otherwise it returns <src>False</src> and
+    // Returns true if the conversion succeeds, otherwise it returns <src>false</src> and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
-    virtual Bool toMix(Vector<Double>& worldOut,
-                       Vector<Double>& pixelOut,
-                       const Vector<Double>& worldIn,
-                       const Vector<Double>& pixelIn,
-                       const Vector<Bool>& worldAxes,                
-                       const Vector<Bool>& pixelAxes,
-                       const Vector<Double>& worldMin,
-                       const Vector<Double>& worldMax) const; 
+    virtual bool toMix(Vector<double>& worldOut,
+                       Vector<double>& pixelOut,
+                       const Vector<double>& worldIn,
+                       const Vector<double>& pixelIn,
+                       const Vector<bool>& worldAxes,                
+                       const Vector<bool>& pixelAxes,
+                       const Vector<double>& worldMin,
+                       const Vector<double>& worldMax) const; 
 
     // Compute and recover the world min and max ranges, for use in function <src>toMix</src>,
     // for  a lattice of the given shape (must be of length <src>nPixelAxes()</src>). 
     // Removed pixel axes (with remaining world axes are handled).  With
     // the retrieval functions, the output vectors are resized.  They return 
-    // False if they fail (and then <src>setDefaultWorldMixRanges</src> generates the ranges)
+    // false if they fail (and then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.
     // The <src>setDefaultWorldMixRanges</src> function
     // gives you  a useful default range if you don't know the shape.
@@ -518,20 +518,20 @@ public:
     // the rest the functionality is provided but never used
     // by toMix.
     //<group>
-    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual bool setWorldMixRanges (const IPosition& shape);
     virtual void setDefaultWorldMixRanges ();
-    virtual Vector<Double> worldMixMin () const;
-    virtual Vector<Double> worldMixMax () const;
+    virtual Vector<double> worldMixMin () const;
+    virtual Vector<double> worldMixMax () const;
     //</group>
 
     // Make absolute coordinates relative and vice-versa (relative
     // to the reference pixel/value).  The vectors must be of length
     // <src>nPixelAxes()</src> or <src>nWorldAxes()</src>
     //<group>
-    virtual void makePixelRelative (Vector<Double>& pixel) const;
-    virtual void makePixelAbsolute (Vector<Double>& pixel) const;
-    virtual void makeWorldRelative (Vector<Double>& world) const;
-    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    virtual void makePixelRelative (Vector<double>& pixel) const;
+    virtual void makePixelAbsolute (Vector<double>& pixel) const;
+    virtual void makeWorldRelative (Vector<double>& world) const;
+    virtual void makeWorldAbsolute (Vector<double>& world) const;
     //</group>
 
     // Make absolute coordinates relative and vice versa with respect
@@ -539,18 +539,18 @@ public:
     // as needed.    The vectors must be of length
     // <src>nPixelAxes()</src> or <src>nWorldAxes()</src>
     //<group>
-    virtual void makeWorldAbsoluteRef (Vector<Double>& world,
-                                       const Vector<Double>& refVal) const;
+    virtual void makeWorldAbsoluteRef (Vector<double>& world,
+                                       const Vector<double>& refVal) const;
     //</group>
 
     // Batch up a lot of absolute/relative transformations. 
     // Parameters as above  for 
     // <src>toWorldMany</src> and <src>toPixelMany</src>
     // <group>
-    virtual void makePixelRelativeMany (Matrix<Double>& pixel) const;
-    virtual void makePixelAbsoluteMany (Matrix<Double>& pixel) const;
-    virtual void makeWorldRelativeMany (Matrix<Double>& world) const;
-    virtual void makeWorldAbsoluteMany (Matrix<Double>& world) const;
+    virtual void makePixelRelativeMany (Matrix<double>& pixel) const;
+    virtual void makePixelAbsoluteMany (Matrix<double>& pixel) const;
+    virtual void makeWorldRelativeMany (Matrix<double>& world) const;
+    virtual void makeWorldAbsoluteMany (Matrix<double>& world) const;
     // </group>
 
 
@@ -576,76 +576,76 @@ public:
     // so make sure you call <src>setWorldMixRanges</src>
     // first to set up the world ranges. 
     // <group>
-    Bool convert (Vector<Double>& coordOut, 
-                  const Vector<Double>& coordin,
-                  const Vector<Bool>& absIn,
+    bool convert (Vector<double>& coordOut, 
+                  const Vector<double>& coordin,
+                  const Vector<bool>& absIn,
                   const Vector<String>& unitsIn,
                   MDoppler::Types dopplerIn,
-                  const Vector<Bool>& absOut,
+                  const Vector<bool>& absOut,
                   const Vector<String>& unitsOut,
                   MDoppler::Types dopplerOut,
-                  Double pixInOffset = 0.0,
-                  Double pixOutOffset = 0.0);
-    Bool convert (Matrix<Double>& coordOut, 
-                  const Matrix<Double>& coordIn,
-                  const Vector<Bool>& absIn,
+                  double pixInOffset = 0.0,
+                  double pixOutOffset = 0.0);
+    bool convert (Matrix<double>& coordOut, 
+                  const Matrix<double>& coordIn,
+                  const Vector<bool>& absIn,
                   const Vector<String>& unitsIn,
                   MDoppler::Types dopplerIn,
-                  const Vector<Bool>& absOut,
+                  const Vector<bool>& absOut,
                   const Vector<String>& unitsOut,
                   MDoppler::Types dopplerOut,
-                  Double pixInOffset = 0.0,
-                  Double pixOutOffset = 0.0);
+                  double pixInOffset = 0.0,
+                  double pixOutOffset = 0.0);
     // </group>
 
     // Return the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
-    virtual Vector<Double> referencePixel() const;
-    virtual Matrix<Double> linearTransform() const;
-    virtual Vector<Double> increment() const;
-    virtual Vector<Double> referenceValue() const;
+    virtual Vector<double> referencePixel() const;
+    virtual Matrix<double> linearTransform() const;
+    virtual Vector<double> increment() const;
+    virtual Vector<double> referenceValue() const;
     // </group>
 
     // Set the requested attribute.  Note that these just
     // change the internal values, they do not cause any recomputation.
     // <group>
-    virtual Bool setWorldAxisNames(const Vector<String> &names);
-    virtual Bool setReferencePixel(const Vector<Double> &refPix);
-    virtual Bool setLinearTransform(const Matrix<Double> &xform);
-    virtual Bool setIncrement(const Vector<Double> &inc);
-    virtual Bool setReferenceValue(const Vector<Double> &refval);
+    virtual bool setWorldAxisNames(const Vector<String> &names);
+    virtual bool setReferencePixel(const Vector<double> &refPix);
+    virtual bool setLinearTransform(const Matrix<double> &xform);
+    virtual bool setIncrement(const Vector<double> &inc);
+    virtual bool setReferenceValue(const Vector<double> &refval);
     // </group>
 
     // Set/get the units. Adjust the increment and
     // reference value by the ratio of the old and new units. This implies that
     // the units must be known <linkto class=Unit>Unit</linkto> strings, and
     // that they must be compatible, e.g. they can't change from time to
-    // length. If <src>throwException=True</src>, throw an exception rather than
-    // returning False on failure.
+    // length. If <src>throwException=true</src>, throw an exception rather than
+    // returning false on failure.
     // <group>
-    virtual Bool setWorldAxisUnits(const Vector<String> &units);
-    Bool setWorldAxisUnits(const Vector<String> &units,
-                           Bool throwException);
+    virtual bool setWorldAxisUnits(const Vector<String> &units);
+    bool setWorldAxisUnits(const Vector<String> &units,
+                           bool throwException);
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
-    // Comparison function. Any private Double data members are compared
+    // Comparison function. Any private double data members are compared
     // with the specified fractional tolerance.  Don't compare on the specified 
     // pixel axes in the CoordinateSystem.  If the comparison returns
-    // <src>False</src>, errorMessage() contains a message about why.
+    // <src>false</src>, errorMessage() contains a message about why.
     // <group>
-    virtual Bool near(const Coordinate& other, Double tol=1e-6) const;
-    virtual Bool near(const Coordinate& other, 
-                      const Vector<Int>& excludePixelAxes,
-                      Double tol=1e-6) const;
+    virtual bool near(const Coordinate& other, double tol=1e-6) const;
+    virtual bool near(const Coordinate& other, 
+                      const Vector<int32_t>& excludePixelAxes,
+                      double tol=1e-6) const;
     // </group>
 
     // This function compares this and the other coordinate system,
     // but ONLY for the non-removed pixel axes.   It is less strict
     // than near, which, for example, insists the number of coordinates
     // is the same in each CS
-    Bool nearPixel (const CoordinateSystem& other, Double tol=1e-6) const;
+    bool nearPixel (const CoordinateSystem& other, double tol=1e-6) const;
 
 
     // Format a world value nicely through the
@@ -664,11 +664,11 @@ public:
     virtual String format(
     	String& units,
     	Coordinate::formatType format,
-    	Double worldValue,
-    	uInt worldAxis,
-    	Bool isAbsolute=True,
-    	Bool showAsAbsolute=True,
-    	Int precision=-1, Bool usePrecForMixed=False
+    	double worldValue,
+    	uint32_t worldAxis,
+    	bool isAbsolute=true,
+    	bool showAsAbsolute=true,
+    	int32_t precision=-1, bool usePrecForMixed=false
     ) const;
 
     // Miscellaneous information related to an observation, for example the
@@ -684,15 +684,15 @@ public:
     // System you wish to transform.   Shape specifies the shape of the image
     // associated with all the axes of the CoordinateSystem.  Currently you have
     // no control over the reference pixel, it is always shape/2.
-    virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
-                                               const Vector<Int>& shape) const;
+    virtual Coordinate* makeFourierCoordinate (const Vector<bool>& axes,
+                                               const Vector<int32_t>& shape) const;
 
 
     // Save the CoordinateSystem into the supplied record using the supplied field name.
-    // The field must not exist, otherwise <src>False</src> is returned.
-    // If the CoordinateSystem is empty  <src>False</src> is also returned.
-    // If <src>False</src> is returned, errorMessage() contains a message about why.   
-    virtual Bool save(RecordInterface &container,
+    // The field must not exist, otherwise <src>false</src> is returned.
+    // If the CoordinateSystem is empty  <src>false</src> is also returned.
+    // If <src>false</src> is returned, errorMessage() contains a message about why.   
+    virtual bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
     // Restore the CoordinateSystem from a record.  The <src>fieldName</src>
@@ -709,12 +709,12 @@ public:
 
     // Convert a CoordinateSystem to FITS, i.e. fill in ctype etc. In the record
     // the keywords are vectors, it is expected that the actual FITS code will
-    // split them into scalars and upcase the names. Returns False if one of the
+    // split them into scalars and upcase the names. Returns false if one of the
     // keywords is already taken.
     // 
-    // If writeWCS is True, attempt to write the WCS convention (Greisen and
+    // If writeWCS is true, attempt to write the WCS convention (Greisen and
     // Calabretta "Representation of celestial coordinates in FITS"). 
-    // Use <src>oneRelative=True</src> to convert zero-relative pixel coordinates to
+    // Use <src>oneRelative=true</src> to convert zero-relative pixel coordinates to
     // one-relative FITS coordinates.
     //
     // prefix gives the prefix for the FITS keywords. E.g.,
@@ -722,18 +722,18 @@ public:
     // if prefix="d" then drval, ddelt etc. 
     //# Much of the work in to/from fits should be moved to the individual
     //# classes.
-    Bool toFITSHeader(RecordInterface &header, 
+    bool toFITSHeader(RecordInterface &header, 
 		      IPosition &shape,
-		      Bool oneRelative, 
-		      Char prefix = 'c', Bool writeWCS=True,
-		      Bool preferVelocity=True, 
-		      Bool opticalVelocity=True,
-		      Bool preferWavelength=False,
-		      Bool airWavelength=False) const;
+		      bool oneRelative, 
+		      char prefix = 'c', bool writeWCS=true,
+		      bool preferVelocity=true, 
+		      bool opticalVelocity=true,
+		      bool preferWavelength=false,
+		      bool airWavelength=false) const;
 
-    // Probably even if we return False we should set up the best linear
+    // Probably even if we return false we should set up the best linear
     // coordinate that we can.
-    // Use oneRelative=True to convert one-relative FITS pixel coordinates to
+    // Use oneRelative=true to convert one-relative FITS pixel coordinates to
     // zero-relative Casacore coordinates.
     // On output, <src>stokesFITSValue</src>
     // holds the FITS value of any unofficial Stokes (beam, optical depth,
@@ -746,12 +746,12 @@ public:
     // is issued if any unofficial values are encountered.
     // Otherwise no warning is issued.
     //# cf comment in toFITS.
-    static Bool fromFITSHeader(Int& stokesFITSValue, 
+    static bool fromFITSHeader(int32_t& stokesFITSValue, 
                                CoordinateSystem &coordsys, 
                                RecordInterface& recHeader,
                                const Vector<String>& header,
                                const IPosition& shape,
-                               uInt which=0);
+                               uint32_t which=0);
 
 // List all header information.  By default, the reference
 // values and pixel increments are converted to a "nice" unit before 
@@ -762,111 +762,111 @@ public:
 // (perhaps an image from which the CoordinateSystem came)
 // If you give (both of) these, they are included in the listing.  If you pass
 // in zero length <src>IPositions</src> then they are not included in
-// the listing.   If <src>postlocally=True</src> the formatted summary lines 
+// the listing.   If <src>postlocally=true</src> the formatted summary lines 
 // are written locally only to the sink, and then returned by the return value 
 // vector.
    Vector<String> list(LogIO& os, MDoppler::Types doppler,
                        const IPosition& latticeShape,
-                       const IPosition& tileShape, Bool postLocally=False) const;
+                       const IPosition& tileShape, bool postLocally=false) const;
 
    // Does this coordinate system have a spectral axis?
-   Bool hasSpectralAxis() const;
+   bool hasSpectralAxis() const;
 
    // What number is the spectral axis?
-   // If doWorld=True, the world axis number is returned.
+   // If doWorld=true, the world axis number is returned.
    // Otherwise, the pixel axis number is returned.
    // Returns -1 if the spectral axis (world c.q. pixel) does not exist.
-   Int spectralAxisNumber(Bool doWorld=False) const;
+   int32_t spectralAxisNumber(bool doWorld=false) const;
 
    // what number is the spectral coordinate?
     // Returns -1 if no spectral coordinate exists.
-   Int spectralCoordinateNumber() const;
+   int32_t spectralCoordinateNumber() const;
 
 
    // does this coordinate system have a polarizaion/stokes coordinate?
-   Bool hasPolarizationCoordinate() const;
-   Bool hasPolarizationAxis() const
+   bool hasPolarizationCoordinate() const;
+   bool hasPolarizationAxis() const
      { return hasPolarizationCoordinate(); }
 
    // Given a stokes or polarization parameter, find the pixel location.
    // Note the client is responsible for any boundedness checks
    // (eg finite number of stokes in an image).
-   Int stokesPixelNumber(const String& stokesString) const;
+   int32_t stokesPixelNumber(const String& stokesString) const;
 
    // what is the number of the polarization/stokes coordinate?
    // Returns -1 if no stokes coordinate exists.
-   Int polarizationCoordinateNumber() const;
+   int32_t polarizationCoordinateNumber() const;
 
    // What is the number of the polarization/stokes axis?
-   // If doWorld=True, the world axis number is returned.
+   // If doWorld=true, the world axis number is returned.
    // Otherwise, the pixel axis number is returned.
    // Returns -1 if the stokes axis (world c.q. pixel) does not exist.
-   Int polarizationAxisNumber(Bool doWorld=False) const;
+   int32_t polarizationAxisNumber(bool doWorld=false) const;
 
    // Does this coordinate system have a quality axis?
-   Bool hasQualityAxis() const;
+   bool hasQualityAxis() const;
 
    // what number is the quality axis? Returns -1 if no quality axis exists.
-   Int qualityAxisNumber() const;
+   int32_t qualityAxisNumber() const;
 
    // what is the number of the quality coordinate?
    // Returns -1 if no quality coordinate exists.
-   Int qualityCoordinateNumber() const;
+   int32_t qualityCoordinateNumber() const;
 
    // Given a quality parameter, find the pixel location.
    // Note the client is responsible for any boundedness checks
    // (eg finite number of quality in an image).
-   Int qualityPixelNumber(const String& qualityString) const;
+   int32_t qualityPixelNumber(const String& qualityString) const;
 
-   String qualityAtPixel(const uInt pixel) const;
+   String qualityAtPixel(const uint32_t pixel) const;
 
-   Int directionCoordinateNumber() const;
+   int32_t directionCoordinateNumber() const;
 
-   Bool hasDirectionCoordinate() const;
+   bool hasDirectionCoordinate() const;
 
    // Get the pixel axis numbers of the direction coordinate in this object.
    // The order of the returned axis numbers is always longitude axis first,
    // latitude axis second.
-   Vector<Int> directionAxesNumbers() const;
+   Vector<int32_t> directionAxesNumbers() const;
 
-   String stokesAtPixel(const uInt pixel) const;
+   String stokesAtPixel(const uint32_t pixel) const;
 
-   Int linearCoordinateNumber() const;
+   int32_t linearCoordinateNumber() const;
 
-   Bool hasLinearCoordinate() const;
+   bool hasLinearCoordinate() const;
 
-   Vector<Int> linearAxesNumbers() const;
+   Vector<int32_t> linearAxesNumbers() const;
 
    // Get the 0 based order of the minimal match strings specified in <src>order</src>.
-   // If <src>requireAll</src> is True, checks are done to ensure that all axes in
+   // If <src>requireAll</src> is true, checks are done to ensure that all axes in
    // the coordinate system are uniquely specified in <src>order</src>.
-   // If <src>allowFriendlyNames</src> is True, the following (fully specified) strings
+   // If <src>allowFriendlyNames</src> is true, the following (fully specified) strings
    // will match the specified axes:
    // "spectral" matches both "frequency" and "velocity".
    // "ra" matches "right ascension".
-   Vector<Int> getWorldAxesOrder(Vector<String>& myNames, Bool requireAll,
-                                 Bool allowFriendlyNames=False) const;
+   Vector<int32_t> getWorldAxesOrder(Vector<String>& myNames, bool requireAll,
+                                 bool allowFriendlyNames=false) const;
 
    // Is the abscissa in the DirectionCoordinate the longitude axis?
    // Throws exception if there is no DirectionCoordinate or if either of
    // the direction pixel axes have been removed.
-   // For a normal direction coordinate, this will return True.
-   Bool isDirectionAbscissaLongitude() const;
+   // For a normal direction coordinate, this will return true.
+   bool isDirectionAbscissaLongitude() const;
 
     // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
     // so that pixel<->world go to the specified frequency system (a valid
-    // MFrequency::Types string).  Returns False if frequency system invalid
+    // MFrequency::Types string).  Returns false if frequency system invalid
     // or if no DirectionCoordinate or if cant get Date/Epoch.
     // <group>
-    Bool setSpectralConversion (String& errorMsg, const String frequencySystem);
-    // This version throws an exception rather than returning False.
+    bool setSpectralConversion (String& errorMsg, const String frequencySystem);
+    // This version throws an exception rather than returning false.
     void setSpectralConversion (const String frequencySystem);
     //</group>
  
     // Set rest frequency of SpectralCoordinate in CoordinateSystem.
     // Unit must be consistent with Hz or m.
-    // Returns False if invalid inputs (and CS not changed) and an error message.
-    Bool setRestFrequency (String& errorMsg, const Quantity& freq);
+    // Returns false if invalid inputs (and CS not changed) and an error message.
+    bool setRestFrequency (String& errorMsg, const Quantity& freq);
 
 private:
     // Where we store copies of the coordinates we are created with.
@@ -878,22 +878,22 @@ private:
     //                        <0 means that the axis has been removed
     //    world_tmp_p[i] a temporary vector length coord[i]->nworldAxes()
     //    replacement_values_p[i][j] value to use for this axis if removed
-    PtrBlock<Block<Int> *>     world_maps_p;
-    PtrBlock<Vector<Double> *> world_tmps_p;
-    PtrBlock<Vector<Double> *> world_replacement_values_p;
+    PtrBlock<Block<int32_t> *>     world_maps_p;
+    PtrBlock<Vector<double> *> world_tmps_p;
+    PtrBlock<Vector<double> *> world_replacement_values_p;
 
     // Same meanings as for the world*'s above.
-    PtrBlock<Block<Int> *>     pixel_maps_p;
-    PtrBlock<Vector<Double> *> pixel_tmps_p;
-    PtrBlock<Vector<Double> *> pixel_replacement_values_p;
+    PtrBlock<Block<int32_t> *>     pixel_maps_p;
+    PtrBlock<Vector<double> *> pixel_tmps_p;
+    PtrBlock<Vector<double> *> pixel_replacement_values_p;
 
     // These temporaries all needed for the toMix function
-    PtrBlock<Vector<Bool> *> worldAxes_tmps_p;
-    PtrBlock<Vector<Bool> *> pixelAxes_tmps_p;
-    PtrBlock<Vector<Double> *> worldOut_tmps_p;
-    PtrBlock<Vector<Double> *> pixelOut_tmps_p;
-    PtrBlock<Vector<Double> *> worldMin_tmps_p;
-    PtrBlock<Vector<Double> *> worldMax_tmps_p;
+    PtrBlock<Vector<bool> *> worldAxes_tmps_p;
+    PtrBlock<Vector<bool> *> pixelAxes_tmps_p;
+    PtrBlock<Vector<double> *> worldOut_tmps_p;
+    PtrBlock<Vector<double> *> pixelOut_tmps_p;
+    PtrBlock<Vector<double> *> worldMin_tmps_p;
+    PtrBlock<Vector<double> *> worldMax_tmps_p;
 
     // Miscellaneous information about the observation associated with this
     // Coordinate System.
@@ -906,37 +906,37 @@ private:
     static void _initFriendlyAxisMap();
 
     // Helper functions to group common code.
-    Bool mapOne(Vector<Int>& worldAxisMap, 
-                Vector<Int>& worldAxisTranspose, 
-                Vector<Bool>& refChange,
+    bool mapOne(Vector<int32_t>& worldAxisMap, 
+                Vector<int32_t>& worldAxisTranspose, 
+                Vector<bool>& refChange,
                 const CoordinateSystem& cSys,
                 const CoordinateSystem& cSys2,
-                const uInt coord, const uInt coord2) const;
+                const uint32_t coord, const uint32_t coord2) const;
 
     void copy(const CoordinateSystem &other);
     void clear();
-    Bool checkAxesInThisCoordinate(const Vector<Bool>& axes, uInt which) const;
+    bool checkAxesInThisCoordinate(const Vector<bool>& axes, uint32_t which) const;
 
    // Delete some pointer blocks
    void cleanUpSpecCoord (PtrBlock<SpectralCoordinate*>&  in,
                           PtrBlock<SpectralCoordinate*>&  out);
 
    // Delete temporary maps
-   void deleteTemps (const uInt which);
+   void deleteTemps (const uint32_t which);
 
     // Many abs/rel conversions
     // <group>
-    void makeWorldAbsRelMany (Matrix<Double>& value, Bool toAbs) const;
-    void makePixelAbsRelMany (Matrix<Double>& value, Bool toAbs) const;
+    void makeWorldAbsRelMany (Matrix<double>& value, bool toAbs) const;
+    void makePixelAbsRelMany (Matrix<double>& value, bool toAbs) const;
     // </group>
 
     // Do subImage for Stokes
-    StokesCoordinate stokesSubImage(const StokesCoordinate& sc, Int originShift, Int pixincFac,
-                                    Int newShape) const;
+    StokesCoordinate stokesSubImage(const StokesCoordinate& sc, int32_t originShift, int32_t pixincFac,
+                                    int32_t newShape) const;
 
     // Do subImage for Quality
-    QualityCoordinate qualitySubImage(const QualityCoordinate& qc, Int originShift, Int pixincFac,
-    		                        Int newShape) const;
+    QualityCoordinate qualitySubImage(const QualityCoordinate& qc, int32_t originShift, int32_t pixincFac,
+    		                        int32_t newShape) const;
 
     // Strip out coordinates with all world and pixel axes removed
     CoordinateSystem stripRemovedAxes (const CoordinateSystem& cSys) const;
@@ -946,14 +946,14 @@ private:
     void listDirectionSystem(LogIO& os) const; 
     void listFrequencySystem(LogIO& os, MDoppler::Types velocityType) const;
     void listPointingCenter (LogIO& os) const;
-    void getFieldWidths (LogIO& os, uInt& widthAxis, uInt& widthCoordType, 
-                         uInt& widthCoordNumber, uInt& widthName,
-                         uInt& widthProj, uInt& widthShape,
-                         uInt& widthTile, uInt& widthRefValue,
-                         uInt& widthRefPixel, uInt& widthInc,
-                         uInt& widthUnits, Int& precRefValSci,
-                         Int& precRefValFloat,  Int& precRefValRADEC,
-                         Int& precRefPixFloat, Int& precIncSci, String& nameAxis,
+    void getFieldWidths (LogIO& os, uint32_t& widthAxis, uint32_t& widthCoordType, 
+                         uint32_t& widthCoordNumber, uint32_t& widthName,
+                         uint32_t& widthProj, uint32_t& widthShape,
+                         uint32_t& widthTile, uint32_t& widthRefValue,
+                         uint32_t& widthRefPixel, uint32_t& widthInc,
+                         uint32_t& widthUnits, int32_t& precRefValSci,
+                         int32_t& precRefValFloat,  int32_t& precRefValRADEC,
+                         int32_t& precRefPixFloat, int32_t& precIncSci, String& nameAxis,
                          String& nameCoordType, String& nameCoordNumber, String& nameName, String& nameProj,
                          String& nameShape, String& nameTile,
                          String& nameRefValue, String& nameRefPixel,
@@ -961,28 +961,28 @@ private:
                          MDoppler::Types velocityType,
                          const IPosition& latticeShape, const IPosition& tileShape) const;
 
-    void listHeader (LogIO& os, Coordinate* pc, uInt& widthAxis, uInt& widthCoordType,  uInt& widthCoordNumber,
-                     uInt& widthName, uInt& widthProj,
-                     uInt& widthShape, uInt& widthTile, uInt& widthRefValue,
-                     uInt& widthRefPixel, uInt& widthInc, uInt& widthUnits,     
-                     Bool findWidths, Int coordinate, Int axisInCoordinate, Int pixelAxis, 
-                     Int precRefValSci, Int precRefValFloat, Int precRefValRADEC, Int precRefPixFloat,
-                     Int precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
-    void listVelocity (LogIO& os,  Coordinate* pc, uInt widthAxis, 
-                       uInt widthCoordType, uInt widthCoordNumber,
-                       uInt& widthName, uInt widthProj,
-                       uInt widthShape, uInt widthTile, uInt& widthRefValue,
-                       uInt widthRefPixel, uInt& widthInc,  uInt& widthUnits,
-                       Bool findWidths, Int axisInCoordinate, Int pixelAxis, 
-                       MDoppler::Types velocityType, Int precRefValSci, Int precRefValFloat,
-                       Int precRefValRADEC, Int precRefPixFloat, Int precIncSci) const;
+    void listHeader (LogIO& os, Coordinate* pc, uint32_t& widthAxis, uint32_t& widthCoordType,  uint32_t& widthCoordNumber,
+                     uint32_t& widthName, uint32_t& widthProj,
+                     uint32_t& widthShape, uint32_t& widthTile, uint32_t& widthRefValue,
+                     uint32_t& widthRefPixel, uint32_t& widthInc, uint32_t& widthUnits,     
+                     bool findWidths, int32_t coordinate, int32_t axisInCoordinate, int32_t pixelAxis, 
+                     int32_t precRefValSci, int32_t precRefValFloat, int32_t precRefValRADEC, int32_t precRefPixFloat,
+                     int32_t precIncSci, const IPosition& latticeShape, const IPosition& tileShape) const;
+    void listVelocity (LogIO& os,  Coordinate* pc, uint32_t widthAxis, 
+                       uint32_t widthCoordType, uint32_t widthCoordNumber,
+                       uint32_t& widthName, uint32_t widthProj,
+                       uint32_t widthShape, uint32_t widthTile, uint32_t& widthRefValue,
+                       uint32_t widthRefPixel, uint32_t& widthInc,  uint32_t& widthUnits,
+                       bool findWidths, int32_t axisInCoordinate, int32_t pixelAxis, 
+                       MDoppler::Types velocityType, int32_t precRefValSci, int32_t precRefValFloat,
+                       int32_t precRefValRADEC, int32_t precRefPixFloat, int32_t precIncSci) const;
     void clearFlags (LogIO& os) const;
-    Bool velocityIncrement(Double& velocityInc,  SpectralCoordinate& sc,
+    bool velocityIncrement(double& velocityInc,  SpectralCoordinate& sc,
                            MDoppler::Types velocityType, const String& velUnits) const;
     // </group>
 
     void _downcase(Vector<String>& vec) const
-      { for (uInt i=0; i<vec.size(); ++i) vec[i].downcase(); }
+      { for (uint32_t i=0; i<vec.size(); ++i) vec[i].downcase(); }
 
 };
 

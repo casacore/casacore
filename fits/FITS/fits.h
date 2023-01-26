@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# All FITS code seems to assume longs are 4 bytes. Currently
 //# this corresponds to an "int" on all useful platforms.
-    typedef Int FitsLong;
+    typedef int32_t FitsLong;
 //# recovered by GYL
 
 //# Forward declarations
@@ -75,11 +75,11 @@ class NoConvert {
 // Here is an example of the FitsLogical class. 
 //<srcblock>
 //	FitsLogical x;
-//	FitsLogical y(True);
+//	FitsLogical y(true);
 //	FitsLogical z = x;
 //	...
-//	x = y; y = False; x.undefine();
-//	Bool b;
+//	x = y; y = false; x.undefine();
+//	bool b;
 //	if (x.isdefined())
 //		b = x;
 //	b = y;  If y is undefined, b will be false.
@@ -89,14 +89,14 @@ class FitsLogical {
 	friend ostream & operator << (ostream &o, const FitsLogical &);
     public:
 	FitsLogical() : v('\0') { }
-	FitsLogical(Bool x) : v(x == True ? 'T' : 'F') { }
-	FitsLogical & operator = (Bool x) { 
-		v = (x == True ? 'T' : 'F'); return *this; }
+	FitsLogical(bool x) : v(x == true ? 'T' : 'F') { }
+	FitsLogical & operator = (bool x) { 
+		v = (x == true ? 'T' : 'F'); return *this; }
   ///ARO 2021-02-20:
   ///Removed the following function, because it seems incorrectly implemented and isn't used
-	///Bool isdefined() const { return v == '\0' ? True : False; }
+	///bool isdefined() const { return v == '\0' ? true : false; }
 	void undefine() { v = '\0'; }
-	operator Bool() const { return v == 'T'; }
+	operator bool() const { return v == 'T'; }
     protected:
 	char v;
 };
@@ -180,7 +180,7 @@ class FITS {
 		x=0; return FITS::BYTE; }
 	static  FITS::ValueType getfitstype(NoConvert<short> x) {
 		x=0; return FITS::SHORT; }
-	static  FITS::ValueType getfitstype(NoConvert<Int> x) {
+	static  FITS::ValueType getfitstype(NoConvert<int32_t> x) {
 		x=0; return FITS::LONG; }
 	static  FITS::ValueType getfitstype(NoConvert<long> x) {
 		x=0; return FITS::LONG; }
@@ -211,8 +211,8 @@ class FITS {
 	static void l2f(void *,unsigned char *,int);
 	static void f2l(short *,void *,int);
 	static void l2f(void *,short *,int);
-	static void f2l(Int *,void *,int);
-	static void l2f(void *,Int *,int);
+	static void f2l(int32_t *,void *,int);
+	static void l2f(void *,int32_t *,int);
 	static void f2l(long *,void *,int);
 	static void l2f(void *,long *,int);
 	static void f2l(float *,void *,int);
@@ -269,10 +269,10 @@ class FITS {
 
 	static ReservedFitsKeywordCollection &ResWord;
 	static void valstr(ostream &o, const ValueType &ty, const void *val);
-	static Bool isa_digit(char c);
+	static bool isa_digit(char c);
 	static int digit2bin(char c);
-	static Bool isa_text(char c);
-	static Bool isa_letter(char);
+	static bool isa_text(char c);
+	static bool isa_letter(char);
 	static int letter2bin(char);
 	static void fstr2str(char *, const char *, int);
 	static int str2fstr(char *, const char *, int);
@@ -292,8 +292,8 @@ class FITS {
     // maxelem will be -1.
         static void parse_vatform(const char *s, FITS::ValueType &valType,
 				  int &maxelem);
-	static const Int minInt;
-	static const Int maxInt;
+	static const int32_t minInt;
+	static const int32_t maxInt;
 	static const float minfloat;
 	static const float maxfloat;
 	static const double mindouble;
@@ -310,26 +310,26 @@ class FITS {
 	static const int maxsigdigits;
 	static const int maxdigl; // max digits in a long
 	static const int maxexpdig; // max digits in an exponent
-	static double tenD(Int, int);
-	static float tenF(Int, int);
-	static int ckaccum(double &, Int, int);
-	static int ckaccum(float &, Int, int);
+	static double tenD(int32_t, int);
+	static float tenF(int32_t, int);
+	static int ckaccum(double &, int32_t, int);
+	static int ckaccum(float &, int32_t, int);
 };
 
 inline FITS::FITS() { } // just a dummy function to prevent instantiation
-inline Bool FITS::isa_digit(char c) { return isdigit(c) ? True : False; }
+inline bool FITS::isa_digit(char c) { return isdigit(c) ? true : false; }
 inline int FITS::digit2bin(char c) { return c - '0'; }
-inline Bool FITS::isa_text(char c) { return isprint(c) ? True : False; }
-inline Bool FITS::isa_letter(char c) { return isupper(c) ? True : False; }
+inline bool FITS::isa_text(char c) { return isprint(c) ? true : false; }
+inline bool FITS::isa_letter(char c) { return isupper(c) ? true : false; }
 inline int FITS::letter2bin(char c) { return c - 'A'; }
 
 ostream & operator << (ostream &, const FITS::ValueType &);
 
-inline double FITS::tenD(Int numb, int pow) {
+inline double FITS::tenD(int32_t numb, int pow) {
 	return (pow > 0) ? (((double)numb) * tenpowerD[pow]) :
 	    ((pow < 0) ? (((double)numb) / tenpowerD[-pow]) : ((double)numb));
 }
-inline float FITS::tenF(Int numb, int pow) {
+inline float FITS::tenF(int32_t numb, int pow) {
 	return (pow > 0) ? (((float)numb) * tenpowerF[pow]) :
 	    ((pow < 0) ? (((float)numb) / tenpowerF[-pow]) : ((float)numb));
 }
@@ -344,8 +344,8 @@ class ReservedFitsKeyword {
 	FITS::ReservedName name() const;
 	int namesize() const;
 	FITS::ValueType type() const;
-	Bool isindexed() const;
-	Bool isessential() const;
+	bool isindexed() const;
+	bool isessential() const;
 # if defined(TURBOCPP)
 	// It is best for the following to be private, but 
 	// C-Front won't allow an initializer list if they are private.
@@ -357,15 +357,15 @@ class ReservedFitsKeyword {
 	const char *aname_;
 	int namesize_;
 	FITS::ValueType type_;
-	Bool isindexed_; // 0 = NOT INDEXED, 1 = INDEXED
-	Bool isessential_; // 0 = NO, 1 = YES
+	bool isindexed_; // 0 = NOT INDEXED, 1 = INDEXED
+	bool isessential_; // 0 = NO, 1 = YES
 };
 
 inline const char *ReservedFitsKeyword::aname() const { return aname_; }
 inline int ReservedFitsKeyword::namesize() const { return namesize_; }
 inline FITS::ValueType ReservedFitsKeyword::type() const { return type_; }
-inline Bool ReservedFitsKeyword::isindexed() const { return isindexed_; }
-inline Bool ReservedFitsKeyword::isessential() const { 
+inline bool ReservedFitsKeyword::isindexed() const { return isindexed_; }
+inline bool ReservedFitsKeyword::isessential() const { 
 	return isessential_; }
 
 //<summary> collection of reserved FITS keywords </summary>
@@ -376,24 +376,24 @@ class ReservedFitsKeywordCollection {
     public:
 	const ReservedFitsKeyword & operator [] (int i) const;
 	int no() const;
-	const ReservedFitsKeyword &get(FITS::ReservedName, Bool, FITS::ValueType,
+	const ReservedFitsKeyword &get(FITS::ReservedName, bool, FITS::ValueType,
 		const void *, int, const char *&) const;
-	const ReservedFitsKeyword &get(const char *, int, Bool, FITS::ValueType,
+	const ReservedFitsKeyword &get(const char *, int, bool, FITS::ValueType,
 		const void *, int, const char *&) const;
 	const char *aname(FITS::ReservedName) const;
 	int essential_name(const char *, int) const;
-	const ReservedFitsKeyword &get_essential(int, Bool, FITS::ValueType,
+	const ReservedFitsKeyword &get_essential(int, bool, FITS::ValueType,
 		const void *, int, const char *&) const;
 	int isreserved(const char *, int) const;
-	Bool isunique(int) const;
-	Bool requires_value(int) const;
+	bool isunique(int) const;
+	bool requires_value(int) const;
 	const ReservedFitsKeyword &userdef_item() const;
 	const ReservedFitsKeyword &err_item() const;
 	const ReservedFitsKeyword &end_item() const;
 	const ReservedFitsKeyword &spaces() const;
 	const ReservedFitsKeyword &comment() const;
 	const ReservedFitsKeyword &history() const;
-	int rules(const ReservedFitsKeyword &, const char *, int, Bool,
+	int rules(const ReservedFitsKeyword &, const char *, int, bool,
 		FITS::ValueType, const void *, int, const char *&) const;
     private:
 	static const int no_items; // number of entries in the table
@@ -405,7 +405,7 @@ class ReservedFitsKeywordCollection {
 	static const ReservedFitsKeyword &history_item;
 	static const ReservedFitsKeyword resword[]; // table of reserved words
 	static const int resalpha[26]; // alphabetic index to table
-	const ReservedFitsKeyword &match(int, const char *, int, Bool,
+	const ReservedFitsKeyword &match(int, const char *, int, bool,
 		FITS::ValueType, const void *, int, const char *&) const;
 
 };
@@ -413,8 +413,8 @@ class ReservedFitsKeywordCollection {
 inline const ReservedFitsKeyword & ReservedFitsKeywordCollection::
 	operator [] (int i) const { return resword[i]; }
 inline int ReservedFitsKeywordCollection::no() const { return no_items; }
-inline Bool ReservedFitsKeywordCollection::isunique(int i) const {
-	return (Bool)(resword[i + 1].name() != resword[i].name()); }
+inline bool ReservedFitsKeywordCollection::isunique(int i) const {
+	return (bool)(resword[i + 1].name() != resword[i].name()); }
 inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::userdef_item()
 	const { return user_def_item; }
 inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::err_item() 
@@ -437,10 +437,10 @@ inline const ReservedFitsKeyword &ReservedFitsKeywordCollection::history()
 
 class FitsNameResult {
     public:
-	Bool isaname;	// 1 if there is a name present, otherwise 0
+	bool isaname;	// 1 if there is a name present, otherwise 0
 	int begpos;	// beginning position of name
 	int endpos;	// ending position of name
-	Bool isaindex;	// whether an index is present or not
+	bool isaindex;	// whether an index is present or not
 	int index;	// index if present
 	int len;	// length of name without index
 	enum ErrMsg { OK = 0, NO_0_NDX };
@@ -458,9 +458,9 @@ class FitsValueResult {
     public:
     	FITS::ValueType type;
 	union {
-    	    Bool b;
+    	    bool b;
 	    int s[2];	// for strings, s[0] is offset, s[1] length
-    	    Int l;
+    	    int32_t l;
     	    float f;
     	    double d;
 	};
@@ -469,7 +469,7 @@ class FitsValueResult {
     	DComplex dc;
     	int begpos;		// beginning position of value
 	int endpos;		// ending position of value
-	Bool isa_point;		// 1 if a point, otherwise 0
+	bool isa_point;		// 1 if a point, otherwise 0
 	int pointpos;		// position of point, if any
     	int no_sig;		// number of significant digits
     	const char *errmsg;	// error message, if any
@@ -527,8 +527,8 @@ class FitsKeyword {
 	// get info about the name
 	const char *name() const;
 	int namelen() const;
-	Bool isreserved() const;
-	Bool isindexed() const;
+	bool isreserved() const;
+	bool isindexed() const;
 	const ReservedFitsKeyword &kw() const;
 	int index() const;
 	//</group>
@@ -547,10 +547,10 @@ class FitsKeyword {
 
 	// access the value of the keyword
 	//<group>
-	Bool asBool() const;
+	bool asBool() const;
         const char *asString() const;
 	int valStrlen() const;
-	Int asInt() const;
+	int32_t asInt() const;
 	float asFloat() const;
 	double asDouble() const;
 	IComplex asIComplex() const;
@@ -561,9 +561,9 @@ class FitsKeyword {
 
 	// change the value of the keyword
 	//<group>
-	FitsKeyword & operator = (Bool);
+	FitsKeyword & operator = (bool);
 	FitsKeyword & operator = (const char *);
-	FitsKeyword & operator = (Int);
+	FitsKeyword & operator = (int32_t);
 	FitsKeyword & operator = (float);
 	FitsKeyword & operator = (double);
 	FitsKeyword & operator = (IComplex);
@@ -603,8 +603,8 @@ class FitsKeyword {
 	// the keyword value
 	FITS::ValueType type_;
 	union {
-	    Bool bval;
-	    Int ival;
+	    bool bval;
+	    int32_t ival;
 	    float fval;
 	    double dval;
 	};
@@ -649,13 +649,13 @@ inline FitsKeyword::~FitsKeyword() {
 }
 
 inline const ReservedFitsKeyword &FitsKeyword::kw() const { return *kw_; }
-inline Bool FitsKeyword::isreserved() const { return 
+inline bool FitsKeyword::isreserved() const { return 
 	(kw().name() != FITS::ERRWORD && kw().name() != FITS::USER_DEF)
-		 ? True : False; }
+		 ? true : false; }
 inline const char *FitsKeyword::name() const {
     	return isreserved() ? kw().aname() : (namelen_ ? name_ : ""); }
 inline int FitsKeyword::namelen() const { return namelen_; }
-inline Bool FitsKeyword::isindexed() const {return ndx > 0 ? True : False;}
+inline bool FitsKeyword::isindexed() const {return ndx > 0 ? true : false;}
 inline int FitsKeyword::index() const { return ndx; }
 
 inline const char *FitsKeyword::comm() const {
@@ -664,11 +664,11 @@ inline int FitsKeyword::commlen() const { return commlen_; }
 inline int FitsKeyword::err() const { return (kw().name() == FITS::ERRWORD); }
 inline FITS::ValueType FitsKeyword::type() const { return type_; }
 
-inline Bool FitsKeyword::asBool() const { return bval; }
+inline bool FitsKeyword::asBool() const { return bval; }
 inline const char *FitsKeyword::asString() const {
 	return vallen ? (const char *)val : ""; }
 inline int FitsKeyword::valStrlen() const { return vallen; }
-inline Int FitsKeyword::asInt() const { 
+inline int32_t FitsKeyword::asInt() const { 
 	if( type() != FITS::LONG ) {
 		cerr << "Unexpected keyword type in FitsKeyword::asInt()\n";
 		exit(1);
@@ -708,9 +708,9 @@ inline Complex FitsKeyword::asComplex() const {
 inline DComplex FitsKeyword::asDComplex() const {
 	return *((DComplex *)val); }
 
-inline FitsKeyword & FitsKeyword::operator = (Bool x) {
+inline FitsKeyword & FitsKeyword::operator = (bool x) {
 	bval = x; type_ = FITS::LOGICAL; return *this; }
-inline FitsKeyword & FitsKeyword::operator = (Int x) {
+inline FitsKeyword & FitsKeyword::operator = (int32_t x) {
 	ival = x; type_ = FITS::LONG; return *this; }
 inline FitsKeyword & FitsKeyword::operator = (float x) {
 	fval = x; type_ = FITS::FLOAT; return *this; }
@@ -751,9 +751,9 @@ class FitsKeywordList {
         // String values must be less than 69 characters.  String values longer than
         // that will result in an ERROR keyword instead of the desired keyword.
 	// <group>
-	void mk(FITS::ReservedName k, Bool v, const char *c = 0);
+	void mk(FITS::ReservedName k, bool v, const char *c = 0);
 	void mk(FITS::ReservedName k, const char *v = 0, const char *c = 0);
-	void mk(FITS::ReservedName k, Int v, const char *c = 0);
+	void mk(FITS::ReservedName k, int32_t v, const char *c = 0);
 	void mk(FITS::ReservedName k, long v, const char *c = 0);
 	void mk(FITS::ReservedName k, double v, const char *c = 0);
         // </group>
@@ -763,9 +763,9 @@ class FitsKeywordList {
         // String values must be less than 69 characters.  String values longer than
         // that will result in an ERROR keyword instead of the desired keyword.
         // <group>
-	void mk(int n, FITS::ReservedName k, Bool v, const char *c = 0);
+	void mk(int n, FITS::ReservedName k, bool v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, const char *v, const char *c = 0);
-	void mk(int n, FITS::ReservedName k, Int v, const char *c = 0);
+	void mk(int n, FITS::ReservedName k, int32_t v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, long v, const char *c = 0);
 	void mk(int n, FITS::ReservedName k, double v, const char *c = 0);
         // </group>
@@ -777,13 +777,13 @@ class FitsKeywordList {
         // String values must no longer than 69 characters.  String values longer than
         // that will result in an ERROR keyword instead of the desired keyword.
         // <group>
-	void mk(const char *n, Bool v, const char *c = 0);
+	void mk(const char *n, bool v, const char *c = 0);
 	void mk(const char *n, const char *v = 0, const char *c = 0);
-	void mk(const char *n, Int v, const char *c = 0);
+	void mk(const char *n, int32_t v, const char *c = 0);
 	void mk(const char *n, long v, const char *c = 0);
 	void mk(const char *n, float v, const char *c = 0);
 	void mk(const char *n, double v, const char *c = 0);
-	void mk(const char *n, Int r, Int i, const char *c = 0);
+	void mk(const char *n, int32_t r, int32_t i, const char *c = 0);
 	void mk(const char *n, float r, float i, const char *c = 0);
 	void mk(const char *n, double r, double i, const char *c = 0);
         // </group>
@@ -816,7 +816,7 @@ class FitsKeywordList {
 	//</group>
 
 	//<group>
-	Bool isempty() const;
+	bool isempty() const;
 	void     first();
 	void     last();
 	FitsKeyword *next();
@@ -829,7 +829,7 @@ class FitsKeywordList {
 	int rules(FitsKeyword &, 
 		  FITSErrorHandler errhandler = FITSError::defaultHandler);
 	int rules(FITSErrorHandler errhandler = FITSError::defaultHandler);
-	Bool basic_rules();
+	bool basic_rules();
 	//</group>
 
 	//<group>
@@ -868,7 +868,7 @@ ostream & operator << (ostream &o, FitsKeywordList &); // print the entire list
 inline FitsKeywordList::FitsKeywordList() : beg_(0), end_(0), pos(0), 
 	total(0), cursor(0) { }
 inline FitsKeywordList::~FitsKeywordList() { delete_all(); }
-inline Bool FitsKeywordList::isempty() const { return total == 0 ? True : False; }
+inline bool FitsKeywordList::isempty() const { return total == 0 ? true : false; }
 inline void FitsKeywordList::first() { cursor = 0; pos = beg_; }
 inline void FitsKeywordList::last() { cursor = total; pos = end_; }
 inline FitsKeyword *FitsKeywordList::curr() { return pos; }
@@ -885,34 +885,34 @@ inline const char *FitsKeywordList::parse_err(int n) const {
 	return card.err(n); }
 
 // FitsKeyword constructors for non-indexed Reserved keywords
-inline void FitsKeywordList::mk(FITS::ReservedName k, Bool v, const char *c) {
+inline void FitsKeywordList::mk(FITS::ReservedName k, bool v, const char *c) {
 	insert(make(k,FITS::LOGICAL,&v,c)); }
 inline void FitsKeywordList::mk(FITS::ReservedName k, const char *v, 
 	const char *c) { insert(make(k,FITS::STRING,v,c)); }
-inline void FitsKeywordList::mk(FITS::ReservedName k, Int v, const char *c) {
+inline void FitsKeywordList::mk(FITS::ReservedName k, int32_t v, const char *c) {
 	insert(make(k,FITS::LONG,&v,c)); }
 inline void FitsKeywordList::mk(FITS::ReservedName k, long v, const char *c) {
 	insert(make(k,FITS::LONG,&v,c)); }
 inline void FitsKeywordList::mk(FITS::ReservedName k, double v, const char *c) {
 	insert(make(k,FITS::DOUBLE,&v,c)); }
 // FitsKeyword constructors for indexed Reserved keywords
-inline void FitsKeywordList::mk(int n, FITS::ReservedName k, Bool v, 
+inline void FitsKeywordList::mk(int n, FITS::ReservedName k, bool v, 
 	const char *c) { 
-	Bool tmp; tmp = v; insert(make(n,k,FITS::LOGICAL,&tmp,c)); }
+	bool tmp; tmp = v; insert(make(n,k,FITS::LOGICAL,&tmp,c)); }
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, const char *v, 
 	const char *c) { insert(make(n,k,FITS::STRING,v,c)); }
-inline void FitsKeywordList::mk(int n, FITS::ReservedName k, Int v, 
+inline void FitsKeywordList::mk(int n, FITS::ReservedName k, int32_t v, 
 	const char *c) { insert(make(n,k,FITS::LONG,&v,c)); }
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, long v, 
 	const char *c) { insert(make(n,k,FITS::LONG,&v,c)); }
 inline void FitsKeywordList::mk(int n, FITS::ReservedName k, double v, 
 	const char *c) { insert(make(n,k,FITS::DOUBLE,&v,c)); }
 // FitsKeyword constructors for User-Defined keywords
-inline void FitsKeywordList::mk(const char *n, Bool v, const char *c) {
-	Bool tmp; tmp = v; insert(make(n,FITS::LOGICAL,&tmp,c)); }
+inline void FitsKeywordList::mk(const char *n, bool v, const char *c) {
+	bool tmp; tmp = v; insert(make(n,FITS::LOGICAL,&tmp,c)); }
 inline void FitsKeywordList::mk(const char *n, const char *v, const char *c) {
 	insert(make(n,FITS::STRING,v,c)); }
-inline void FitsKeywordList::mk(const char *n, Int v, const char *c) {
+inline void FitsKeywordList::mk(const char *n, int32_t v, const char *c) {
 	insert(make(n,FITS::LONG,&v,c)); }
 inline void FitsKeywordList::mk(const char *n, long v, const char *c) {
 	insert(make(n,FITS::LONG,&v,c)); }
@@ -920,7 +920,7 @@ inline void FitsKeywordList::mk(const char *n, float v, const char *c) {
 	insert(make(n,FITS::FLOAT,&v,c)); }
 inline void FitsKeywordList::mk(const char *n, double v, const char *c) {
 	insert(make(n,FITS::DOUBLE,&v,c)); }
-inline void FitsKeywordList::mk(const char *n, Int r, Int i, const char *c) {
+inline void FitsKeywordList::mk(const char *n, int32_t r, int32_t i, const char *c) {
 	IComplex v(r,i);
 	insert(make(n,FITS::ICOMPLEX,&v,c)); }
 inline void FitsKeywordList::mk(const char *n, float r, float i, const char *c)
@@ -962,7 +962,7 @@ class ConstFitsKeywordList {
 	const FitsKeyword * operator () (const char *x) { return kw(x); }
 	const FitsKeyword * next(const char *x) { return kw.next(x); }
 
-	Bool isempty() const 		{ return kw.isempty(); }
+	bool isempty() const 		{ return kw.isempty(); }
 	void     first() 		{ kw.first(); }
 	void     last() 		{ kw.last(); }
 	const FitsKeyword *next() 	{ return kw.next(); }
@@ -985,7 +985,7 @@ class FitsKeyCardTranslator {
 	FitsKeyCardTranslator(int = 100);
 	~FitsKeyCardTranslator();
 	FitsKeywordList & parse(const char *, 
-		FitsKeywordList &, int, FITSErrorHandler, Bool);
+		FitsKeywordList &, int, FITSErrorHandler, bool);
 	int build(char *, FitsKeywordList &);
 	int no_errs() const;
 	const char *err(int) const;
@@ -1020,9 +1020,9 @@ public:
     // This is useful in a templated function, where the processing can vary
     // depending on whether the type is FP or not (e.g. blank handling).
     // <group>
-    static Bool isFP(const float *);
-    static Bool isFP(const double *);
-    static Bool isFP(const void *);
+    static bool isFP(const float *);
+    static bool isFP(const double *);
+    static bool isFP(const void *);
     // </group>
 
     // For blanking purposes, we need to be able to get a NaN. The NaN we set

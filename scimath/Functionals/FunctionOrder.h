@@ -69,7 +69,7 @@ class RecordInterface;
 // <templating arg=T>
 //  <li> <src>T</src> must have a default constructor, assignment operator,
 //	 and copy constructor (for the Vector interface). 
-//  <li> Complex/DComplex or Float/Double supported
+//  <li> Complex/DComplex or float/double supported
 // </templating>
 //
 // <todo asof="2002/05/28">
@@ -94,31 +94,31 @@ template<class T> class FunctionOrder : public RecordTransformable {
   // Get and set the various parameters (no check for index range).
   // Automatic extension for write.
   // <group>
-  Int &getInt(const uInt n);
-  const Int &getInt(const uInt n) const;
-  T &getPar(const uInt n);
-  const T &getPar(const uInt n) const;
+  int32_t &getInt(const uint32_t n);
+  const int32_t &getInt(const uint32_t n) const;
+  T &getPar(const uint32_t n);
+  const T &getPar(const uint32_t n) const;
   String &getString();
   const String &getString() const;
-  T &getScale(const uInt n);
-  const T &getScale(const uInt n) const;
-  T &getCenter(const uInt n);
-  const T &getCenter(const uInt n) const;
-  T &getWidth(const uInt n);
-  const T &getWidth(const uInt n) const;
-  const Function<T> &getFunction(const uInt n) const;
-  void setFunction(const uInt n, Function<T> &other);
+  T &getScale(const uint32_t n);
+  const T &getScale(const uint32_t n) const;
+  T &getCenter(const uint32_t n);
+  const T &getCenter(const uint32_t n) const;
+  T &getWidth(const uint32_t n);
+  const T &getWidth(const uint32_t n) const;
+  const Function<T> &getFunction(const uint32_t n) const;
+  void setFunction(const uint32_t n, Function<T> &other);
   // </group>
 
   // Create a FunctionOrder from a record
   // Error messages are postfixed to error.
   // <group>
-  virtual Bool fromRecord(String &error, const RecordInterface &in);
-  virtual Bool fromString(String &error, const String &in);
+  virtual bool fromRecord(String &error, const RecordInterface &in);
+  virtual bool fromString(String &error, const String &in);
   // </group>
   // Create a record from a FunctionOrder.
   // Error messages are postfixed to error.
-  virtual Bool toRecord(String &error, RecordInterface &out) const;
+  virtual bool toRecord(String &error, RecordInterface &out) const;
   // Get identification of record
   virtual const String &ident() const;
 
@@ -130,8 +130,8 @@ template<class T> class FunctionOrder : public RecordTransformable {
   // All data vectors can be empty
   // <group>
   // Integer details (order etc)
-  Vector<Int> int_p;
-  // Double parameters
+  Vector<int32_t> int_p;
+  // double parameters
   Vector<T> double_p;
   // String parameters
   String string_p;

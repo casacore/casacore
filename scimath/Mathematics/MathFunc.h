@@ -51,7 +51,7 @@ class MathFuncError : public AipsError
 {
 public:
     MathFuncError() : AipsError("MathFuncError") {}
-    MathFuncError(const Char *m)   : AipsError(m) {}
+    MathFuncError(const char *m)   : AipsError(m) {}
     MathFuncError(const String &m) : AipsError(m) {}
 
     virtual ~MathFuncError() noexcept {}
@@ -69,11 +69,11 @@ public:
 
 // Fred Schwab function to calculate spheriodal functions, in C.
 extern "C" { 
-   Int sphfn(Int *, Int *, Int *, float *, float *, Int *);
+   int32_t sphfn(int32_t *, int32_t *, int32_t *, float *, float *, int32_t *);
 }
 
 // C++ wrapper to Fred Schwab function to calculate spheriodal functions.
-float sphfn(Int ialf, Int im, float eta);
+float sphfn(int32_t ialf, int32_t im, float eta);
 
 // </group>
 

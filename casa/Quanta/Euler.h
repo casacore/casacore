@@ -70,17 +70,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ul>
 //   <li> Euler() creates a zero filled vector of length 3. Axes: (1,2,3)
 //   <li> Euler(Euler) creates a copy
-//   <li> Euler(Double, uInt, Double=0, uInt=0, Double=0, uInt=0) creates an 
+//   <li> Euler(double, uint32_t, double=0, uint32_t=0, double=0, uint32_t=0) creates an 
 //		Euler with specified values
-//   <li> Euler(Double, Double=0, Double=0) creates an Euler with (1,2,3)
-//   <li> Euler(Quantity, uInt, Quantity=0, uInt=0, Quantity=0, uInt=0) creates
+//   <li> Euler(double, double=0, double=0) creates an Euler with (1,2,3)
+//   <li> Euler(Quantity, uint32_t, Quantity=0, uint32_t=0, Quantity=0, uint32_t=0) creates
 //		 an Euler with specified values
 //   <li> Euler(Quantity, Quantity=0, Quantity=0) creates an Euler with
 //		interpretation of angle units in the Quantities
-//   <li> Euler(<src>Quantum<Vector<Double> ></src>) creates a zero expanded
+//   <li> Euler(<src>Quantum<Vector<double> ></src>) creates a zero expanded
 //		Euler from at most the first three elements of Quantity
 //		vector; with (1,2,3) 
-//   <li> Euler(<src>Quantum<Vector<Double> >, Vector<uInt></src>) creates a 
+//   <li> Euler(<src>Quantum<Vector<double> >, Vector<uint32_t></src>) creates a 
 //		zero expanded Euler with given values
 // </ul>
 // It has a unary minus operator, which reverses the sign and order of the
@@ -119,7 +119,7 @@ class Euler
     friend ostream &operator<<(ostream &os, const Euler &eul);
 
 //# Constructors
-// Default constructor generates zero filled Double vector of length 3, with
+// Default constructor generates zero filled double vector of length 3, with
 // (1,2,3) axes
     Euler();
 // Copy constructor
@@ -127,10 +127,10 @@ class Euler
 // Copy assignment
     Euler &operator=(const Euler &other);
 // Constructs an Euler with specified angles and (1,2,3) axes
-    Euler(Double in0, Double in1 = 0, Double in2 = 0);
+    Euler(double in0, double in1 = 0, double in2 = 0);
 // Constructs an Euler with specified angles and axes
-    Euler(Double in0, uInt ax0, Double in1 = 0, uInt ax1=0, Double in2 = 0,
-	  uInt ax2=0);
+    Euler(double in0, uint32_t ax0, double in1 = 0, uint32_t ax1=0, double in2 = 0,
+	  uint32_t ax2=0);
 // <thrown>
 //    <li> AipsError if non-angle units used
 // </thrown>
@@ -140,14 +140,14 @@ class Euler
     Euler(const Quantity &in0, const Quantity &in1);
     Euler(const Quantity &in0, const Quantity &in1, 
 	  const Quantity &in2);
-    Euler(const Quantity &in0, uInt ax0);
-    Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1=0);
-    Euler(const Quantity &in0, uInt ax0, const Quantity &in1, uInt ax1,
-	  const Quantity &in2, uInt ax2=0);
+    Euler(const Quantity &in0, uint32_t ax0);
+    Euler(const Quantity &in0, uint32_t ax0, const Quantity &in1, uint32_t ax1=0);
+    Euler(const Quantity &in0, uint32_t ax0, const Quantity &in1, uint32_t ax1,
+	  const Quantity &in2, uint32_t ax2=0);
 // Constructs an Euler (zero filled) from elements of Quantity vector
 // <group>
-    Euler(const Quantum<Vector<Double> > &in);
-    Euler(const Quantum<Vector<Double> > &in, const Vector<uInt> &ax);
+    Euler(const Quantum<Vector<double> > &in);
+    Euler(const Quantum<Vector<double> > &in, const Vector<uint32_t> &ax);
 // </group>
 // </group>
 
@@ -166,38 +166,38 @@ class Euler
 // </group>
 // Return the which' angle
 // <group>
-    Double &operator()(uInt which);
-    const Double &operator()(uInt which) const;
+    double &operator()(uint32_t which);
+    const double &operator()(uint32_t which) const;
 // </group>
 
 //# General Member Functions
 // with the optional conversion units.
 // <group>
-    Quantum<Vector<Double> > getAngle() const;
-    Quantum<Vector<Double> > getAngle(const Unit &unit) const;
+    Quantum<Vector<double> > getAngle() const;
+    Quantum<Vector<double> > getAngle(const Unit &unit) const;
 // </group>
 
 // Set an axis
-    void set(uInt which, uInt ax);
+    void set(uint32_t which, uint32_t ax);
 
 // Set all axes
-    void set(uInt ax0, uInt ax1, uInt ax2);
+    void set(uint32_t ax0, uint32_t ax1, uint32_t ax2);
 
 // Get an axis
-    Int get(uInt which) const;
+    int32_t get(uint32_t which) const;
 
 private:
 //# Data
 // vector with 3 Euler angles (data.first)
-    Vector<Double> euler;
+    Vector<double> euler;
 // Axes (data.second)
-    Vector<Int> axes;
+    Vector<int32_t> axes;
 
 //# Private Member Functions
 // The makeRad functions check and convert the input Quantities to radians
 // <group>
-    static Double makeRad(const Quantity &in);
-    static Vector<Double> makeRad(const Quantum<Vector<Double> > &in);
+    static double makeRad(const Quantity &in);
+    static Vector<double> makeRad(const Quantum<Vector<double> > &in);
 // </group>
 };
 

@@ -39,8 +39,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsArrays.resize (0);
   }
 
-  CountedPtr<Matrix<Double> > MeasTableMul::getArray
-  (Double time, Double epsilon)
+  CountedPtr<Matrix<double> > MeasTableMul::getArray
+  (double time, double epsilon)
   {
     {   // cache lookup must be thread-safe
       std::lock_guard<std::mutex> locker(itsMutex);
@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Let a derived class calculate the coefficient matrix for this epoch.
     // Note: multiple threads can execute this part (which is fine).
-    CountedPtr<Matrix<Double> > arr(new Matrix<Double>(itsDefArray.shape()));
+    CountedPtr<Matrix<double> > arr(new Matrix<double>(itsDefArray.shape()));
     *arr = itsDefArray;
     calc (*arr, time);
     {   // cache insertion must also be thread-safe
@@ -98,32 +98,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MeasTableMulSCBase::MeasTableMulSCBase()
   {}
-  void MeasTableMulSCBase::doInit(Matrix<Double>& result,
-                                  Polynomial<Double> poly[],
-                                  Int nrowTD, const Long coeffTD[][5],
-                                  Int nrowSC, const Short coeffSC[][2])
+  void MeasTableMulSCBase::doInit(Matrix<double>& result,
+                                  Polynomial<double> poly[],
+                                  int32_t nrowTD, const long coeffTD[][5],
+                                  int32_t nrowSC, const int16_t coeffSC[][2])
   {
-    for (Int i=0; i<nrowTD; ++i) {
-      for (Int j=0; j<2; ++j) {
-        poly[2*i+j] = Polynomial<Double>(2);
+    for (int32_t i=0; i<nrowTD; ++i) {
+      for (int32_t j=0; j<2; ++j) {
+        poly[2*i+j] = Polynomial<double>(2);
         poly[2*i+j].setCoefficient(0, coeffTD[i][1+2*j] * C::arcsec*1e-4);
         poly[2*i+j].setCoefficient(1, coeffTD[i][2+2*j] * C::arcsec*1e-5);
       }
     }
     result.resize (4, nrowSC);
     result = 0.;
-    for (Int i=0; i<nrowSC; ++i) {
-      for (Int j=0; j<2; j++) {
+    for (int32_t i=0; i<nrowSC; ++i) {
+      for (int32_t j=0; j<2; j++) {
         result(j,i) = coeffSC[i][j] * C::arcsec*1e-4;
       }
     }
   }
-  void MeasTableMulSCBase::doCalc(Matrix<Double>& result, Double time,
-                                  const Polynomial<Double> poly[],
-                                  Int nrowTD, const Long coeffTD[][5])
+  void MeasTableMulSCBase::doCalc(Matrix<double>& result, double time,
+                                  const Polynomial<double> poly[],
+                                  int32_t nrowTD, const long coeffTD[][5])
   {
-    for (Int i=0; i<nrowTD; ++i) { // get fundamental argument coefficients
-      Long j = coeffTD[i][0];
+    for (int32_t i=0; i<nrowTD; ++i) { // get fundamental argument coefficients
+      long j = coeffTD[i][0];
       result(0,j) = poly[2*i+0](time);
       result(1,j) = poly[2*i+1](time);
       result(2,j) = (poly[2*i+0].derivative())(time);
@@ -138,7 +138,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     doInit (itsDefArray, itsPoly, 15, theirMULTD, 106, theirMULSC);
   }
-  void MeasTableMulSC::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulSC::calc(Matrix<double>& result, double time)
   {
     doCalc (result, time, itsPoly, 15, theirMULTD);
   }
@@ -150,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     doInit (itsDefArray, itsPoly, 13, theirMULTD, 69, theirMULSC);
   }
-  void MeasTableMulSC1950::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulSC1950::calc(Matrix<double>& result, double time)
   {
     doCalc (result, time, itsPoly, 13, theirMULTD);
   }
@@ -158,15 +158,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   MeasTableMulSC2000Base::MeasTableMulSC2000Base()
   {}
-  void MeasTableMulSC2000Base::doInit(Matrix<Double>& result,
-                                      Polynomial<Double> poly[],
-                                      Int nrowSC, const Long coeffSC[][6])
+  void MeasTableMulSC2000Base::doInit(Matrix<double>& result,
+                                      Polynomial<double> poly[],
+                                      int32_t nrowSC, const long coeffSC[][6])
   {
     result.resize (6, nrowSC);
     result = 0.;
-    for (Int i=0; i<nrowSC; ++i) {
-      for (Int j=0; j<2; ++j) {
-        poly[2*i+j] = Polynomial<Double>(2);
+    for (int32_t i=0; i<nrowSC; ++i) {
+      for (int32_t j=0; j<2; ++j) {
+        poly[2*i+j] = Polynomial<double>(2);
         poly[2*i+j].setCoefficient(0, coeffSC[i][0+3*j]*C::arcsec*1e-7);
         poly[2*i+j].setCoefficient(1, coeffSC[i][1+3*j]*C::arcsec*1e-7);
       }
@@ -176,11 +176,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       result(5,i) = coeffSC[i][5]*C::arcsec*1e-7;
     }
   }
-  void MeasTableMulSC2000Base::doCalc(Matrix<Double>& result, Double time,
-                                      const Polynomial<Double> poly[],
-                                      Int nrowSC)
+  void MeasTableMulSC2000Base::doCalc(Matrix<double>& result, double time,
+                                      const Polynomial<double> poly[],
+                                      int32_t nrowSC)
   {
-    for (Int i=0; i<nrowSC; ++i) {
+    for (int32_t i=0; i<nrowSC; ++i) {
       result(0,i) = poly[2*i+0](time);
       result(1,i) = poly[2*i+1](time);
     }
@@ -192,7 +192,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     doInit (itsDefArray, itsPoly, 678, theirMULSC);
   }
-  void MeasTableMulSC2000A::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulSC2000A::calc(Matrix<double>& result, double time)
   {
     doCalc (result, time, itsPoly, 678);
   }
@@ -203,7 +203,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     doInit (itsDefArray, itsPoly, 77, theirMULSC);
   }
-  void MeasTableMulSC2000B::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulSC2000B::calc(Matrix<double>& result, double time)
   {
     doCalc (result, time, itsPoly, 77);
   }
@@ -215,26 +215,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     UnitVal AUperDay(1e-8,"AU/d");
     double factor = AUperDay.getFac();
-    for (Int i=0; i<3; ++i) {
-      for (Int j=0; j<6; ++j) {
-        itsPoly[6*i+j] = Polynomial<Double>(2);
-        for (Int k=0; k<3; ++k) {
+    for (int32_t i=0; i<3; ++i) {
+      for (int32_t j=0; j<6; ++j) {
+        itsPoly[6*i+j] = Polynomial<double>(2);
+        for (int32_t k=0; k<3; ++k) {
           itsPoly[6*i+j].setCoefficient(k, theirMABERTD[i][k+3*j]*factor);
         }
       }
     }
     itsDefArray.resize (12, 80);
     itsDefArray = 0.;
-    for (Int i=0; i<80; ++i) {
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<80; ++i) {
+      for (int32_t j=0; j<6; ++j) {
         itsDefArray(j,i) = theirMABER[i][j] * factor;
       }
     }
   }
-  void MeasTableMulAber::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulAber::calc(Matrix<double>& result, double time)
   {
-    for (Int i=0; i<3; ++i) {	// get fundamental argument coefficients
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<3; ++i) {	// get fundamental argument coefficients
+      for (int32_t j=0; j<6; ++j) {
 	result(j,i)   = itsPoly[6*i+j](time);
 	result(j+6,i) = (itsPoly[6*i+j].derivative())(time);
       }
@@ -249,36 +249,36 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsFactor = AUperDay.getFac();
     itsDefArray.resize (12,132);
     itsDefArray = 0.;
-    for (Int i=0; i<130; ++i) {
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<130; ++i) {
+      for (int32_t j=0; j<6; ++j) {
         itsDefArray(j,i) = theirMABER[i][j] * itsFactor;
       }
     }
-    for (Int i=0; i<2; ++i) {
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<2; ++i) {
+      for (int32_t j=0; j<6; ++j) {
         itsDefArray(j,130+i) = theirABERSPEC[i][j] * itsFactor;
       }
     }
   }
-  void MeasTableMulAber1950::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulAber1950::calc(Matrix<double>& result, double time)
   {
-    for (Int i=0; i<10; ++i) {	// get fundamental argument coefficients
-      Int k = theirABERT1T[i];
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<10; ++i) {	// get fundamental argument coefficients
+      int32_t k = theirABERT1T[i];
+      for (int32_t j=0; j<6; ++j) {
 	result(j,k) = theirMABER[k][j] * itsFactor * time;
 	result(j+6,k) = theirMABER[k][j] * itsFactor;        // d/dT
       }
     }
-    for (Int i=0; i<2; ++i) {	// get fundamental argument coefficients
-      Int k = theirABERT2T[i];
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<2; ++i) {	// get fundamental argument coefficients
+      int32_t k = theirABERT2T[i];
+      for (int32_t j=0; j<6; ++j) {
 	result(j,k) *= time;        // Already multiplied by T in ABERT1T
 	result(j+6,k) *= 2*time;    // d/dT
       }
     }
-    for (Int i=0; i<1; ++i) {	// get fundamental argument coefficients
-      Int k = theirABERT3T[i];
-      for (Int j=0; j<6; ++j) {
+    for (int32_t i=0; i<1; ++i) {	// get fundamental argument coefficients
+      int32_t k = theirABERT3T[i];
+      for (int32_t j=0; j<6; ++j) {
 	result(j,k) *= time;        // Already multiplied by T**2 in ABERT2T
 	result(j+6,k) *= 1.5*time;  // d/dT: 1.5 * T * 2 * T = 3 * T**2
       }
@@ -292,16 +292,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsDefArray.resize(8,98);
     itsDefArray = 0.;
-    for (Int i=0; i<98; ++i) {
+    for (int32_t i=0; i<98; ++i) {
       itsDefArray(0,i) = theirMPOSXY[i][0] * C::degree;
       itsDefArray(1,i) = theirMPOSXY[i][1] * 1e-10;
       itsDefArray(2,i) = theirMPOSXY[i][2] * C::degree;
       itsDefArray(3,i) = theirMPOSXY[i][3] * 1e-10;
     }
   }
-  void MeasTableMulPosSunXY::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulPosSunXY::calc(Matrix<double>& result, double time)
   {
-    for (Int i=84; i<98; ++i) { // get fundamental argument coefficients
+    for (int32_t i=84; i<98; ++i) { // get fundamental argument coefficients
       result(1,i) = theirMPOSXY[i][1] * 1e-10 * time;
       result(3,i) = theirMPOSXY[i][3] * 1e-10 * time;
       result(5,i) = theirMPOSXY[i][1] * 1e-10;
@@ -315,14 +315,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsDefArray.resize(4,29);
     itsDefArray = 0.;
-    for (Int i=0; i<29; ++i) {
+    for (int32_t i=0; i<29; ++i) {
       itsDefArray(0,i) = theirMPOSZ[i][0] * C::degree;
       itsDefArray(1,i) = theirMPOSZ[i][1] * 1e-10;
     }
   }
-  void MeasTableMulPosSunZ::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulPosSunZ::calc(Matrix<double>& result, double time)
   {
-    for (Int i=26; i<29; ++i) { // get fundamental argument coefficients
+    for (int32_t i=26; i<29; ++i) { // get fundamental argument coefficients
       result(1,i) = theirMPOSZ[i][1] * 1e-10 * time;
       result(3,i) = theirMPOSZ[i][1] * 1e-10;
     }
@@ -335,22 +335,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsDefArray.resize(8,189);
     itsDefArray = 0.;
-    for (Int i=0; i<189; ++i) {
+    for (int32_t i=0; i<189; ++i) {
       itsDefArray(0,i) = theirMPOSXY[i][0] * C::degree;
       itsDefArray(1,i) = theirMPOSXY[i][1] * 1e-10;
       itsDefArray(2,i) = theirMPOSXY[i][2] * C::degree;
       itsDefArray(3,i) = theirMPOSXY[i][3] * 1e-10;
     }
   }
-  void MeasTableMulPosEarthXY::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulPosEarthXY::calc(Matrix<double>& result, double time)
   {
-    for (Int i=174; i<189; ++i) { // get fundamental argument coefficients
+    for (int32_t i=174; i<189; ++i) { // get fundamental argument coefficients
       result(1,i) = theirMPOSXY[i][1] * 1e-10 * time;
       result(3,i) = theirMPOSXY[i][3] * 1e-10 * time;
       result(5,i) = theirMPOSXY[i][1] * 1e-10;
       result(7,i) = theirMPOSXY[i][3] * 1e-10;
     }
-    for (Int i=186; i<189; ++i) { // get fundamental argument coefficients
+    for (int32_t i=186; i<189; ++i) { // get fundamental argument coefficients
       result(1,i) *= time;
       result(3,i) *= time;
       result(5,i) *= 2*time;
@@ -364,18 +364,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsDefArray.resize(4,32);
     itsDefArray = 0.;
-    for (Int i=0; i<32; ++i) {
+    for (int32_t i=0; i<32; ++i) {
       itsDefArray(0,i) = theirMPOSZ[i][0] * C::degree;
       itsDefArray(1,i) = theirMPOSZ[i][1] * 1e-10;
     }
   }
-  void MeasTableMulPosEarthZ::calc(Matrix<Double>& result, Double time)
+  void MeasTableMulPosEarthZ::calc(Matrix<double>& result, double time)
   {
-    for (Int i=28; i<32; ++i) { // get fundamental argument coefficients
+    for (int32_t i=28; i<32; ++i) { // get fundamental argument coefficients
       result(1,i) = theirMPOSZ[i][1] * 1e-10 * time;
       result(3,i) = theirMPOSZ[i][1] * 1e-10;
     }
-    for (Int i=31; i<32; ++i) { // get fundamental argument coefficients
+    for (int32_t i=31; i<32; ++i) { // get fundamental argument coefficients
       result(1,i) *= time;
       result(3,i) *= 2*time;
     }
@@ -384,7 +384,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // Define the various constants.
-  const Long MeasTableMulSC::theirMULTD[15][5] = {
+  const long MeasTableMulSC::theirMULTD[15][5] = {
     {0  ,-171996 ,-1742 ,92025 ,89},
     {1  ,2062    ,2     ,-895  ,5},
     {8  ,-13187  ,-16   ,5736  ,-31},
@@ -401,7 +401,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {37 ,63      ,1     ,-33   ,0},
     {38 ,-58     ,-1    ,32    ,0}
   };
-  const Short MeasTableMulSC::theirMULSC[106][2] = {
+  const int16_t MeasTableMulSC::theirMULSC[106][2] = {
     {0	,0	},
     {0	,0	},
     {46	,-24	},
@@ -532,7 +532,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
 
-  const Long MeasTableMulSC1950::theirMULTD[13][5] = {
+  const long MeasTableMulSC1950::theirMULTD[13][5] = {
     {0  ,-172327 ,-1737 ,92100 ,91},
     {1  ,2088    ,2     ,-904  ,4},
     {7  ,-12729  ,-13   ,5522  ,-29},
@@ -547,7 +547,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {25 ,-342    ,-4    ,183   ,0},
     {26 ,-261    ,0     ,113   ,-1}
   };
-  const Short MeasTableMulSC1950::theirMULSC[69][2] = {
+  const int16_t MeasTableMulSC1950::theirMULSC[69][2] = {
     {0	,0	},
     {0	,0	},
     {45	,-24	},
@@ -634,7 +634,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // Luni-Solar nutation coefficients, unit 1e-7 arcsec
-  const Long MeasTableMulSC2000A::theirMULSC[678][6] = {
+  const long MeasTableMulSC2000A::theirMULSC[678][6] = {
   //           Longitude                Obliquity
   //    sin     t.sin     cos      cos    t.cos   sin
   {-172064161, -174666,  33386, 92052331,  9086, 15377},   //    1
@@ -1318,7 +1318,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
 
-  const Long MeasTableMulSC2000B::theirMULSC[77][6] = {
+  const long MeasTableMulSC2000B::theirMULSC[77][6] = {
   //          Longitude                Obliquity
   //  sin       t.sin     cos     cos     t.cos   sin
   {-172064161, -174666,  33386, 92052331,  9086, 15377},   //   1
@@ -1401,7 +1401,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
 
-  const Long MeasTableMulAber::theirMABERTD[3][18] = {
+  const long MeasTableMulAber::theirMABERTD[3][18] = {
     { -1719919,	-2,	0,	-25,	0,	0,
       25,	-13,	-1, 1578094,	156,	0,
       10,	32,	1,   684187,	-358,	0},
@@ -1412,7 +1412,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	-216,	-4,	0,	-446,	5,	0,
 	-94,	-2,	0,	-193,	2,	0}
   };
-  const Short MeasTableMulAber::theirMABER[80][6] = {
+  const int16_t MeasTableMulAber::theirMABER[80][6] = {
     {	0,	0,	0,	0,	0,	0},
     {	0,	0,	0,	0,	0,	0},
     {	0,	0,	0,	0,	0,	0},
@@ -1497,7 +1497,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // Wim Brouw's old table
-  const Short MeasTableMulAber1950::theirMABER[130][6] = {
+  const int16_t MeasTableMulAber1950::theirMABER[130][6] = {
     // Order: sin(x), cos(x), sin(y), cos(y), sin(z), cos(z)
     {	1,	0,	0,	-157,	0,	358},
     {	715,	0,	0,	-656,	0,	-285},
@@ -1633,7 +1633,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
   /*
   // new Rob Reid's table (some slight differences)
-  const Short MeasTableMulAber::theirMABER[130][6] = {
+  const int16_t MeasTableMulAber::theirMABER[130][6] = {
     // Order:
     //  Delta xdot       Delta ydot     Delta zdot
     // sin,    cos,    sin,     cos,   sin,     cos
@@ -1772,24 +1772,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
   */
 
-  const Short MeasTableMulAber1950::theirABERT1T[10] = {
+  const int16_t MeasTableMulAber1950::theirABERT1T[10] = {
     // Includes ABERT2T and ABERT3T, which will end up as T**2 and
     // T**3 respectively.
     0,3,44,54,55,113,119,120,128,129
   };                                 
-  const Short MeasTableMulAber1950::theirABERT2T[2] = {
+  const int16_t MeasTableMulAber1950::theirABERT2T[2] = {
     44, 55
   };
-  const Short MeasTableMulAber1950::theirABERT3T[1] = {
+  const int16_t MeasTableMulAber1950::theirABERT3T[1] = {
     55
   };
-  const Double MeasTableMulAber1950::theirABERSPEC[2][6] = {
+  const double MeasTableMulAber1950::theirABERSPEC[2][6] = {
     {1719971.0,	0,	0,	-1577888.0,	0,	-684523.0},
     {28809.0,	0,	0,	-26429.0,	0,	-11466.0}
   };
 
 
-  const Double MeasTableMulPosSunXY::theirMPOSXY[98][4] = {
+  const double MeasTableMulPosSunXY::theirMPOSXY[98][4] = {
     // XY, Sun(eclip)  
     { 89.996243,	49567508,	  0.007122,	49553856},
     { 90.023036,	27184119,	359.978260,	27222470},
@@ -1891,7 +1891,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {291.2,	 	321,	165.5,	 446}
   };
 
-  const Double MeasTableMulPosSunZ::theirMPOSZ[29][2] = {
+  const double MeasTableMulPosSunZ::theirMPOSZ[29][2] = {
     // Z Sun(eclip)
     {246.32367,	1181234},
     {259.53511,	1127775},
@@ -1925,7 +1925,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   };
 
 
-  const Double MeasTableMulPosEarthXY::theirMPOSXY[189][4] = {
+  const double MeasTableMulPosEarthXY::theirMPOSXY[189][4] = {
     // X,Y Heliocentric Earth, ecliptic
     { 90.00087234,	.9998292882e10,	359.99912749,	.9998921102e10},
     { 90.00000000,	  56114420,	270.0000000,	 244269903},
@@ -2118,7 +2118,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {  1.41,	 996,	255.23,	1021}
   };
 
-  const Double MeasTableMulPosEarthZ::theirMPOSZ[32][2] = {
+  const double MeasTableMulPosEarthZ::theirMPOSZ[32][2] = {
     //Z factors(ecliptic, helio Earth)
     {180.000,	27962},
     {256.611,	10164},

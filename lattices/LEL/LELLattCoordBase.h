@@ -82,7 +82,7 @@ public:
     virtual ~LELLattCoordBase();
 
     // Does the class have true coordinates?
-    virtual Bool hasCoordinates() const = 0;
+    virtual bool hasCoordinates() const = 0;
 
     // The name of the class.
     virtual String classname() const = 0;
@@ -91,16 +91,16 @@ public:
     // It returns the pixel axis number of the spectral coordinates.
     // -1 indicates that there is no pixel spectral axis.
     // An exception is thrown if there are no world spectral coordinates.
-    virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,
+    virtual uint32_t getSpectralInfo (Vector<double>& worldCoordinates,
 				  const IPosition& shape) const = 0;
 
     // Check how the coordinates of this and that compare.
-    virtual Int compare (const LELLattCoordBase& other) const = 0;
+    virtual int32_t compare (const LELLattCoordBase& other) const = 0;
 
     // Check how the coordinates of this and that image compare.
     // This function is used by <src>conform</src> to make a
     // double virtual dispatch possible.
-    virtual Int doCompare (const LELImageCoord& other) const = 0;
+    virtual int32_t doCompare (const LELImageCoord& other) const = 0;
 };
 
 

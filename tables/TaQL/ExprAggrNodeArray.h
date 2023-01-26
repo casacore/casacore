@@ -65,11 +65,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             NodeDataType, ValueType,
                             const TableExprNodeSet& source,
                             const vector<TENShPtr>& nodes,
-                            const Block<Int>& dtypeOper,
+                            const Block<int32_t>& dtypeOper,
                             const TaQLStyle& style);
 
     // This node does aggregation.
-    virtual Bool isAggregate() const;
+    virtual bool isAggregate() const;
     
     // Get the operand node.
     TENShPtr operand()
@@ -79,13 +79,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Is the array aggregate function lazy?
-    virtual Bool isLazyAggregate() const;
+    virtual bool isLazyAggregate() const;
 
     // Functions to get the result of an aggregate function.
     // <group>
-    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
-    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
-    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<int64_t>    getArrayInt      (const TableExprId& id);
+    virtual MArray<double>   getArrayDouble   (const TableExprId& id);
     virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
     virtual MArray<String>   getArrayString   (const TableExprId& id);
     virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);

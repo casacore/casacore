@@ -61,15 +61,15 @@ MDirection::MDirection(const Quantity &dt, const Quantity &dt1,
 		       MDirection::Types rf) : 
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt,dt1),rf) {}
 
-MDirection::MDirection(const Quantum<Vector<Double> > &dt) :
+MDirection::MDirection(const Quantum<Vector<double> > &dt) :
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),
 					 MDirection::DEFAULT) {}
 
-MDirection::MDirection(const Quantum<Vector<Double> > &dt,
+MDirection::MDirection(const Quantum<Vector<double> > &dt,
 		       const MDirection::Ref &rf) : 
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),rf) {}
 
-MDirection::MDirection(const Quantum<Vector<Double> > &dt,
+MDirection::MDirection(const Quantum<Vector<double> > &dt,
 		       MDirection::Types rf) : 
   MeasBase<MVDirection, MDirection::Ref>(MVDirection(dt),rf) {}
 
@@ -101,7 +101,7 @@ MDirection MDirection::makeMDirection (const String& sourceName)
     }
     // Now see if it is a known standard source.
     MVDirection mvdir;
-    Bool fnd = True;
+    bool fnd = true;
     // Make it case-insensitive.
     String name(sourceName);
     name.upcase();
@@ -122,7 +122,7 @@ MDirection MDirection::makeMDirection (const String& sourceName)
     } else if (name == "PERA") {
       mvdir = MVDirection (0.87180363,         0.72451580);
     } else {
-      fnd = False;
+      fnd = false;
     }
     if (fnd) {
       return MDirection (mvdir, MDirection::J2000);
@@ -157,7 +157,7 @@ void MDirection::assure(const Measure &in) {
   }
 }
 
-MDirection::Types MDirection::castType(uInt tp) {
+MDirection::Types MDirection::castType(uint32_t tp) {
   MDirection::checkMyTypes();
   if ((tp & MDirection::EXTRA) == 0) {
     AlwaysAssert(tp < MDirection::N_Types, AipsError);
@@ -210,14 +210,14 @@ const String &MDirection::showType(MDirection::Types tp) {
   return pname[tp & ~MDirection::EXTRA];
 }
 
-const String &MDirection::showType(uInt tp) {
+const String &MDirection::showType(uint32_t tp) {
   return MDirection::showType(MDirection::castType(tp));
 }
 
-const String* MDirection::allMyTypes(Int &nall, Int &nextra,
-                                     const uInt *&typ) {
-  static const Int N_name  = 35;
-  static const Int N_extra = 11;
+const String* MDirection::allMyTypes(int32_t &nall, int32_t &nextra,
+                                     const uint32_t *&typ) {
+  static const int32_t N_name  = 35;
+  static const int32_t N_extra = 11;
   static const String tname[N_name] = {
     "J2000",
     "JMEAN",
@@ -255,7 +255,7 @@ const String* MDirection::allMyTypes(Int &nall, Int &nextra,
     "MOON",
     "COMET" };
   
-  static const uInt oname[N_name] = {
+  static const uint32_t oname[N_name] = {
     MDirection::J2000,
     MDirection::JMEAN,
     MDirection::JTRUE,
@@ -299,8 +299,8 @@ const String* MDirection::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String* MDirection::allTypes(Int &nall, Int &nextra,
-                                   const uInt *&typ) const {
+const String* MDirection::allTypes(int32_t &nall, int32_t &nextra,
+                                   const uint32_t *&typ) const {
   return MDirection::allMyTypes(nall, nextra, typ);
 }
 
@@ -310,53 +310,53 @@ void MDirection::checkTypes() const {
 
 void MDirection::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
-    Int nall, nex;
-    const uInt *typ;
+    first = false;
+    int32_t nall, nex;
+    const uint32_t *typ;
     const String *const tps = MDirection::allMyTypes(nall,nex, typ);
     MDirection::Types tp;
-    for (Int i=0; i<nall; i++) {
+    for (int32_t i=0; i<nall; i++) {
       AlwaysAssert(MDirection::getType(tp, MDirection::showType(typ[i])) &&
-		   tp == Int(typ[i]) &&
+		   tp == int32_t(typ[i]) &&
 		   MDirection::getType(tp, tps[i]) &&
-		   tp == Int(typ[i]), AipsError);
+		   tp == int32_t(typ[i]), AipsError);
     }
-    for (Int i=0; i<N_Types; i++) {
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(MDirection::getType(tp, MDirection::showType(i)) &&
 		   tp == i, AipsError);
     }
-    for (Int i=MERCURY; i<N_Planets; i++) {
+    for (int32_t i=MERCURY; i<N_Planets; i++) {
       AlwaysAssert(MDirection::getType(tp, MDirection::showType(i)) &&
 		   tp == i, AipsError);
     }
   }
 }
 
-Bool MDirection::getType(MDirection::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+bool MDirection::getType(MDirection::Types &tp, const String &in) {
+  const uint32_t *oname;
+  int32_t nall, nex;
   const String *tname = MDirection::allMyTypes(nall, nex, oname);
   
-  Int i = Measure::giveMe(in, nall, tname);
+  int32_t i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) return False;
+  if (i>=nall) return false;
   else tp = static_cast<MDirection::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
+bool MDirection::giveMe(MDirection::Ref &mr, const String &in) {
   MDirection::Types tp;
   if (MDirection::getType(tp, in)) mr = MDirection::Ref(tp);
   else {
     mr = MDirection::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-MDirection::GlobalTypes MDirection::globalType(uInt tp) {
+MDirection::GlobalTypes MDirection::globalType(uint32_t tp) {
 
     static const MDirection::GlobalTypes oname[MDirection::N_Types] = {
 	MDirection::GRADEC,
@@ -386,20 +386,20 @@ MDirection::GlobalTypes MDirection::globalType(uInt tp) {
     return oname[tp];
 }
 
-Bool MDirection::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MDirection*>(&in)) return False;
+bool MDirection::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MDirection*>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MDirection::setRefString(const String &in) {
+bool MDirection::setRefString(const String &in) {
   MDirection::Types tp;
   if (MDirection::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MDirection::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MDirection::getDefaultType() const {
@@ -410,53 +410,53 @@ String MDirection::getRefString() const {
   return MDirection::showType(ref.getType());
 }
 
-Bool MDirection::isModel() const {
+bool MDirection::isModel() const {
   return ((ref.getType() & MDirection::EXTRA) != 0);
 }
 
-Quantum<Vector<Double> > MDirection::getAngle() const {
+Quantum<Vector<double> > MDirection::getAngle() const {
     return (data.getAngle());
 }
 
-Quantum<Vector<Double> > MDirection::getAngle(const Unit &inunit) const {
+Quantum<Vector<double> > MDirection::getAngle(const Unit &inunit) const {
     return (data.getAngle(inunit));
 }
 
-void MDirection::shift(const Quantum<Double> &lng,
-			const Quantum<Double> &lat, Bool trueAngle) {
+void MDirection::shift(const Quantum<double> &lng,
+			const Quantum<double> &lat, bool trueAngle) {
   data.shift(lng, lat, trueAngle);
 }
 
-void MDirection::shift(Double lng, Double lat, Bool trueAngle) {
+void MDirection::shift(double lng, double lat, bool trueAngle) {
   data.shift(lng, lat, trueAngle);
 }
 
-void MDirection::shiftLongitude(const Quantum<Double> &lng, Bool trueAngle) {
+void MDirection::shiftLongitude(const Quantum<double> &lng, bool trueAngle) {
   data.shiftLongitude(lng, trueAngle);
 }
 
-void MDirection::shiftLongitude(Double lng, Bool trueAngle) {
+void MDirection::shiftLongitude(double lng, bool trueAngle) {
   data.shiftLongitude(lng, trueAngle);
 }
 
-void MDirection::shiftLatitude(const Quantum<Double> &lat, Bool trueAngle) {
+void MDirection::shiftLatitude(const Quantum<double> &lat, bool trueAngle) {
   data.shiftLatitude(lat, trueAngle);
 }
 
-void MDirection::shiftLatitude(Double lat, Bool trueAngle) {
+void MDirection::shiftLatitude(double lat, bool trueAngle) {
   data.shiftLatitude(lat, trueAngle);
 }
 
-void MDirection::shift(const MVDirection &shft, Bool trueAngle) {
+void MDirection::shift(const MVDirection &shft, bool trueAngle) {
   data.shift(shft, trueAngle);
 }
 
-void MDirection::shiftAngle(const Quantum<Double> &off,
-			    const Quantum<Double> &pa) {
+void MDirection::shiftAngle(const Quantum<double> &off,
+			    const Quantum<double> &pa) {
   data.shiftAngle(off, pa);
 }
 
-void MDirection::shiftAngle(Double off, Double pa) {
+void MDirection::shiftAngle(double off, double pa) {
   data.shiftAngle(off, pa);
 }
 

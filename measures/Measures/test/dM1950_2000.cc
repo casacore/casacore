@@ -42,30 +42,30 @@
 #include <casacore/casa/namespace.h>
 
 namespace casacore {
-  void fk45(Double R1950, Double D1950, Double BEPOCH, Double &R2000,
-	    Double &D2000, Double X2000[], Vector<Double> V2000[]);
+  void fk45(double R1950, double D1950, double BEPOCH, double &R2000,
+	    double &D2000, double X2000[], Vector<double> V2000[]);
 
   void conB1950(const MVDirection &b1950, const MVDirection &j2000,
-		Double epo=2000.0,
+		double epo=2000.0,
 		MeasFrame *frame=0);
 
-  void fk45(Double R1950, Double D1950, Double BEPOCH, Double &R2000,
-	    Double &D2000, Double X2000[3], Vector<Double> V2000[]) {
-    Double W;
+  void fk45(double R1950, double D1950, double BEPOCH, double &R2000,
+	    double &D2000, double X2000[3], Vector<double> V2000[]) {
+    double W;
     //  Position and position+velocity vectors
-    Vector<Double> R0(3),A1(3),V1(3),V2(6),V3(3);
+    Vector<double> R0(3),A1(3),V1(3),V2(6),V3(3);
 
     //  Radians per year to arcsec per century
-    const Double PMF=100e0*60e0*60e0*360e0/C::_2pi;
+    const double PMF=100e0*60e0*60e0*360e0/C::_2pi;
 
     //  Functions
-    //  Double sla_EPJ,sla_EPB2D,sla_DRANRM
+    //  double sla_EPJ,sla_EPB2D,sla_DRANRM
 
     //  Vectors A and Adot, and matrix M (only half of which is needed here)
-    Double A[3] = { -1.62557e-6,  -0.31919e-6, -0.13843e-6};
-    Double AD[3] = { +1.245e-3,    -1.580e-3,   -0.659e-3};
+    double A[3] = { -1.62557e-6,  -0.31919e-6, -0.13843e-6};
+    double AD[3] = { +1.245e-3,    -1.580e-3,   -0.659e-3};
 
-    Double EM[3][6] = 
+    double EM[3][6] = 
       { { +0.9999256782,   +0.0111820610, +0.0048579479,
 	  -0.000551, +0.238514, -0.435623 },
 	{ -0.0111820611,
@@ -89,36 +89,36 @@ namespace casacore {
 
     //  Adjust vector A to give zero proper motion in FK5
     W=(BEPOCH-1950)/PMF;
-    for (uInt I=0; I<3; ++I) A1[I]=A[I]+W*AD[I];
+    for (uint32_t I=0; I<3; ++I) A1[I]=A[I]+W*AD[I];
     V2000[1] = A1; //v
 
     //  Remove e-terms
     W=R0[1]*A1[1]+R0[2]*A1[2]+R0[0]*A1[0];
-    for (uInt I=0; I<3; ++I) V1[I]=R0[I]-A1[I]+W*R0[I];
+    for (uint32_t I=0; I<3; ++I) V1[I]=R0[I]-A1[I]+W*R0[I];
     V2000[2] = V1; //v
 
     //  Convert position vector to Fricke system
-    for (uInt I=0; I<6; ++I) {
+    for (uint32_t I=0; I<6; ++I) {
       W=0;
-      for (uInt J=0; J<3; ++J) W=W+EM[J][I]*V1[J];
+      for (uint32_t J=0; J<3; ++J) W=W+EM[J][I]*V1[J];
       V2[I]=W;
     };
-    for (uInt i=0; i<3; ++i) V2000[3][i] = V2[i]; //v
-    for (uInt i=0; i<3; ++i) V2000[4][i] = V2[i+3]; //v
+    for (uint32_t i=0; i<3; ++i) V2000[3][i] = V2[i]; //v
+    for (uint32_t i=0; i<3; ++i) V2000[4][i] = V2[i+3]; //v
 
     //  Allow for fictitious proper motion in FK4
     W=(BEPOCH-2000)/PMF; /// needs b->D
-    for (uInt I=0; I<3; ++I) V3[I]=V2[I]+W*V2[I+3];
+    for (uint32_t I=0; I<3; ++I) V3[I]=V2[I]+W*V2[I+3];
     V2000[5] = V3;
 
     //  Revert to spherical coordinates
-    for (uInt i=0; i<3;++i) X2000[i] = V3[i];
+    for (uint32_t i=0; i<3;++i) X2000[i] = V3[i];
     R2000 = MVPosition(V3).getLong(); 
     D2000 = MVPosition(V3).getLat(); 
   }
 
   void conB1950(const MVDirection &b1950, const MVDirection &j2000,
-		Double epo,
+		double epo,
 		MeasFrame *frame) { 	
     // References
     MDirection::Ref j2000ref(MDirection::J2000);
@@ -166,12 +166,12 @@ namespace casacore {
     cout << "             " << newcoord.getValue().getValue()
       -b1950m.getValue().getValue() << endl;
     // fk45
-    Vector<Double> xyz(3);
-    Double R2000, D2000, X2000[3];
-    Vector<Double> V2000[20];
-    for (uInt i=0; i<20; ++i) V2000[i].resize(3, 0.0);
+    Vector<double> xyz(3);
+    double R2000, D2000, X2000[3];
+    Vector<double> V2000[20];
+    for (uint32_t i=0; i<20; ++i) V2000[i].resize(3, 0.0);
     fk45(b1950.getLong(), b1950.getLat(), epo , R2000, D2000, X2000, V2000);
-    for (uInt i=0; i<3; ++i) xyz[i] = X2000[i];
+    for (uint32_t i=0; i<3; ++i) xyz[i] = X2000[i];
     cout << "fk45out:     " << MVDirection(R2000, D2000).getAngle("deg") <<
       endl;
     cout << "             " << 

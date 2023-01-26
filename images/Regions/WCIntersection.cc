@@ -55,7 +55,7 @@ WCIntersection::WCIntersection (const PtrBlock<const ImageRegion*>& regions)
 : WCCompound (regions)
 {}
 
-WCIntersection::WCIntersection (Bool takeOver,
+WCIntersection::WCIntersection (bool takeOver,
 				const PtrBlock<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
@@ -75,7 +75,7 @@ WCIntersection& WCIntersection::operator= (const WCIntersection& other)
     return *this;
 }
 
-Bool WCIntersection::operator== (const WCRegion& other) const
+bool WCIntersection::operator== (const WCRegion& other) const
 {
    return WCCompound::operator== (other);
 }
@@ -92,7 +92,7 @@ LCRegion* WCIntersection::doToLCRegion (const CoordinateSystem& cSys,
 {
     PtrBlock<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
-    return new LCIntersection (True, regions);
+    return new LCIntersection (true, regions);
 }
 
 String WCIntersection::className()
@@ -118,7 +118,7 @@ WCIntersection* WCIntersection::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new WCIntersection (True, regions);
+    return new WCIntersection (true, regions);
 }
 
 } //# NAMESPACE CASACORE - END

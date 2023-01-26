@@ -67,32 +67,32 @@ LogSinkInterface::~LogSinkInterface()
   delete filter_p;
 }
 
-uInt LogSinkInterface::nelements() const
+uint32_t LogSinkInterface::nelements() const
 {
   return 0;
 }
 
-Double LogSinkInterface::getTime (uInt) const
+double LogSinkInterface::getTime (uint32_t) const
 {
   throw AipsError ("LogSinkInterface::getTime - no such message");
   return 0;
 }
-String LogSinkInterface::getPriority (uInt) const
+String LogSinkInterface::getPriority (uint32_t) const
 {
   throw AipsError ("LogSinkInterface::getPriority - no such message");
   return "";
 }
-String LogSinkInterface::getMessage (uInt) const
+String LogSinkInterface::getMessage (uint32_t) const
 {
   throw AipsError ("LogSinkInterface::getMessage - no such message");
   return "";
 }
-String LogSinkInterface::getLocation (uInt) const
+String LogSinkInterface::getLocation (uint32_t) const
 {
   throw AipsError ("LogSinkInterface::getLocation - no such message");
   return "";
 }
-String LogSinkInterface::getObjectID (uInt) const
+String LogSinkInterface::getObjectID (uint32_t) const
 {
   throw AipsError ("LogSinkInterface::getObjectID - no such message");
   return "";
@@ -110,17 +110,17 @@ LogSinkInterface &LogSinkInterface::filter(const LogFilterInterface &filter)
     return *this;
 }
 
-void LogSinkInterface::flush(Bool)
+void LogSinkInterface::flush(bool)
 {
     // Defult implementation is to do nothing.
 }
 
-void LogSinkInterface::cerrToo(Bool)
+void LogSinkInterface::cerrToo(bool)
 {
     // Defult implementation is to do nothing.
 }
 
-void LogSinkInterface::writeLocally (Double,
+void LogSinkInterface::writeLocally (double,
 				     const String&,
 				     const String&,
 				     const String&,

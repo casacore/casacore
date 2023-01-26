@@ -80,8 +80,8 @@ class String;
 //    CanonicalIO canio (&memio);
 //    ByteSink sink (&canio);
 //    // Write data.
-//    Int vali;
-//    sink << vali << True;
+//    int32_t vali;
+//    sink << vali << true;
 // </srcblock>
 // </example>
 
@@ -101,7 +101,7 @@ public:
     // object, but only keeps a pointer to it. If takeOver is true the this
     // class will delete the supplied pointer. Otherwise the caller is
     // responsible for this.
-    ByteSink (TypeIO* typeIO, Bool takeOver=False);
+    ByteSink (TypeIO* typeIO, bool takeOver=false);
  
     // The copy constructor uses reference semantics
     ByteSink (const ByteSink& sink);
@@ -115,37 +115,37 @@ public:
     // These functions write one value of the given type.
     // If this function does not succeed, an exception will be thrown.
     // <group>
-    ByteSink& operator<< (Bool value);
-    ByteSink& operator<< (Char value);
-    ByteSink& operator<< (uChar value);
-    ByteSink& operator<< (Short value);
-    ByteSink& operator<< (uShort value);
-    ByteSink& operator<< (Int value);
-    ByteSink& operator<< (uInt value);
-    ByteSink& operator<< (Int64 value);
-    ByteSink& operator<< (uInt64 value);
-    ByteSink& operator<< (Float value);
-    ByteSink& operator<< (Double value);
+    ByteSink& operator<< (bool value);
+    ByteSink& operator<< (char value);
+    ByteSink& operator<< (unsigned char value);
+    ByteSink& operator<< (int16_t value);
+    ByteSink& operator<< (uint16_t value);
+    ByteSink& operator<< (int32_t value);
+    ByteSink& operator<< (uint32_t value);
+    ByteSink& operator<< (int64_t value);
+    ByteSink& operator<< (uint64_t value);
+    ByteSink& operator<< (float value);
+    ByteSink& operator<< (double value);
     ByteSink& operator<< (const Complex& value);
     ByteSink& operator<< (const DComplex& value);
     ByteSink& operator<< (const String& value);
-    ByteSink& operator<< (const Char* value);
+    ByteSink& operator<< (const char* value);
     // </group>
 
     // These functions write multiple values of the given type.
     // If this function does not succeed, an exception will be thrown.
     // <group>
-    void write (size_t nvalues, const Bool* value);
-    void write (size_t nvalues, const Char* value);
-    void write (size_t nvalues, const uChar* value);
-    void write (size_t nvalues, const Short* value);
-    void write (size_t nvalues, const uShort* value);
-    void write (size_t nvalues, const Int* value);
-    void write (size_t nvalues, const uInt* value);
-    void write (size_t nvalues, const Int64* value);
-    void write (size_t nvalues, const uInt64* value);
-    void write (size_t nvalues, const Float* value);
-    void write (size_t nvalues, const Double* value);
+    void write (size_t nvalues, const bool* value);
+    void write (size_t nvalues, const char* value);
+    void write (size_t nvalues, const unsigned char* value);
+    void write (size_t nvalues, const int16_t* value);
+    void write (size_t nvalues, const uint16_t* value);
+    void write (size_t nvalues, const int32_t* value);
+    void write (size_t nvalues, const uint32_t* value);
+    void write (size_t nvalues, const int64_t* value);
+    void write (size_t nvalues, const uint64_t* value);
+    void write (size_t nvalues, const float* value);
+    void write (size_t nvalues, const double* value);
     void write (size_t nvalues, const Complex* value);
     void write (size_t nvalues, const DComplex* value);
     void write (size_t nvalues, const String* value);

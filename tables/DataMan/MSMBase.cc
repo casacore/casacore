@@ -38,7 +38,7 @@ MSMBase::MSMBase()
   nrrow_p       (0),
   nrrowCreate_p (0),
   colSet_p      (0),
-  hasPut_p      (False)
+  hasPut_p      (false)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName)
@@ -47,7 +47,7 @@ MSMBase::MSMBase (const String& storageManagerName)
   nrrow_p       (0),
   nrrowCreate_p (0),
   colSet_p      (0),
-  hasPut_p      (False)
+  hasPut_p      (false)
 {}
 
 MSMBase::MSMBase (const String& storageManagerName, const Record&)
@@ -56,12 +56,12 @@ MSMBase::MSMBase (const String& storageManagerName, const Record&)
   nrrow_p       (0),
   nrrowCreate_p (0),
   colSet_p      (0),
-  hasPut_p      (False)
+  hasPut_p      (false)
 {}
 
 MSMBase::~MSMBase()
 {
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     delete colSet_p[i];
   }
 }
@@ -90,27 +90,27 @@ String MSMBase::dataManagerName() const
 }
 
 //# Does the storage manager allow to add rows? (yes)
-Bool MSMBase::canAddRow() const
+bool MSMBase::canAddRow() const
 {
-  return True;
+  return true;
 }
 
 //# Does the storage manager allow to delete rows? (yes)
-Bool MSMBase::canRemoveRow() const
+bool MSMBase::canRemoveRow() const
 {
-  return True;
+  return true;
 }
 
 //# Does the storage manager allow to add columns? (yes)
-Bool MSMBase::canAddColumn() const
+bool MSMBase::canAddColumn() const
 {
-  return True;
+  return true;
 }
 
 //# Does the storage manager allow to delete columns? (yes)
-Bool MSMBase::canRemoveColumn() const
+bool MSMBase::canRemoveColumn() const
 {
-  return True;
+  return true;
 }
 
 
@@ -123,7 +123,7 @@ DataManagerColumn* MSMBase::makeScalarColumn (const String& columnName,
   if (ncolumn() >= colSet_p.nelements()) {
     colSet_p.resize (colSet_p.nelements() + 32);
   }
-  MSMColumn* colp = new MSMColumn (this, dataType, False);
+  MSMColumn* colp = new MSMColumn (this, dataType, false);
   colSet_p[ncolumn()] = colp;
   return colp;
 }
@@ -154,15 +154,15 @@ DataManagerColumn* MSMBase::makeIndArrColumn (const String& columnName,
   return colp;
 }
 
-Bool MSMBase::canReallocateColumns() const
+bool MSMBase::canReallocateColumns() const
 {
-  return True;
+  return true;
 }
 
 DataManagerColumn* MSMBase::reallocateColumn (DataManagerColumn* column)
 {
   // Replace an indirect column by a direct one if its shape is fixed.
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     if (column == colSet_p[i]) {
       MSMColumn* ptr = colSet_p[i];
       if (ptr->isFixedShape()) {
@@ -196,7 +196,7 @@ void MSMBase::prepare()
 // This function is merely for initializing the added column.
 void MSMBase::addColumn (DataManagerColumn* colp)
 {
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     if (colp == colSet_p[i]) {
       colSet_p[i]->doCreate (nrrow_p);
       setHasPut();
@@ -209,11 +209,11 @@ void MSMBase::addColumn (DataManagerColumn* colp)
 
 void MSMBase::removeColumn (DataManagerColumn* colp)
 {
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     if (colSet_p[i] == colp) {
       delete colSet_p[i];
       decrementNcolumn();
-      for (uInt j=i; j<ncolumn(); j++) {
+      for (uint32_t j=i; j<ncolumn(); j++) {
 	colSet_p[j] = colSet_p[j+1];
       }
       setHasPut();
@@ -228,7 +228,7 @@ void MSMBase::removeColumn (DataManagerColumn* colp)
 void MSMBase::addRow64 (rownr_t nr)
 {
   //# Add the number of rows to each column.
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     colSet_p[i]->addRow (nrrow_p+nr, nrrow_p);
   }
   nrrow_p += nr;
@@ -238,7 +238,7 @@ void MSMBase::addRow64 (rownr_t nr)
 
 void MSMBase::removeRow64 (rownr_t rownr)
 {
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     colSet_p[i]->remove (rownr);
   }
   nrrow_p--;
@@ -246,9 +246,9 @@ void MSMBase::removeRow64 (rownr_t rownr)
 }
 
 
-Bool MSMBase::flush (AipsIO&, Bool)
+bool MSMBase::flush (AipsIO&, bool)
 {
-  return False;
+  return false;
 }
 
 void MSMBase::create64 (rownr_t nrrow)
@@ -264,7 +264,7 @@ rownr_t MSMBase::open64 (rownr_t tabNrrow, AipsIO&)
 {
   nrrow_p = tabNrrow;
   //# Create the required nr of rows and initialize them.
-  for (uInt i=0; i<ncolumn(); i++) {
+  for (uint32_t i=0; i<ncolumn(); i++) {
     colSet_p[i]->doCreate (tabNrrow);
   }
   return nrrow_p;

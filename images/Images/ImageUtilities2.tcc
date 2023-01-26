@@ -53,9 +53,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <typename T> void ImageUtilities::addDegenerateAxes(
 	LogIO& os, PtrHolder<ImageInterface<T> >& outImage,
 	const ImageInterface<T>& inImage, const String& outFile,
-	Bool direction, Bool spectral, const String& stokes,
-	Bool linear, Bool tabular, Bool overwrite,
-	Bool silent
+	bool direction, bool spectral, const String& stokes,
+	bool linear, bool tabular, bool overwrite,
+	bool silent
 ) {
 	// Verify output file
 	if (!overwrite && !outFile.empty()) {
@@ -69,15 +69,15 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 	CoordinateSystem cSys = inImage.coordinates();
 	IPosition keepAxes = IPosition::makeAxisPath(shape.nelements());
 
-	uInt nExtra = CoordinateUtil::addAxes (
+	uint32_t nExtra = CoordinateUtil::addAxes (
 		cSys, direction, spectral, stokes,
 		linear, tabular, silent
 	);
 
 	if (nExtra > 0) {
-		uInt n = shape.nelements();
-		shape.resize(n+nExtra,True);
-		for (uInt i=0; i<nExtra; i++) {
+		uint32_t n = shape.nelements();
+		shape.resize(n+nExtra,true);
+		for (uint32_t i=0; i<nExtra; i++) {
 			shape(n+i) = 1;
 		}
 	}
@@ -97,10 +97,10 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 	// Generate output masks
 
 	Vector<String> maskNames = inImage.regionNames(RegionHandler::Masks);
-	const uInt nMasks = maskNames.nelements();
+	const uint32_t nMasks = maskNames.nelements();
 	if (nMasks > 0) {
-		for (uInt i=0; i<nMasks; i++) {
-			pOutImage->makeMask(maskNames(i), True, False, True);
+		for (uint32_t i=0; i<nMasks; i++) {
+			pOutImage->makeMask(maskNames(i), true, false, true);
 		}
 	}
 	pOutImage->setDefaultMask(inImage.getDefaultMask());
@@ -108,11 +108,11 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 	// Generate SubImage to copy the data into
 
 	AxesSpecifier axesSpecifier(keepAxes);
-	SubImage<T> subImage(*pOutImage, True, axesSpecifier);
+	SubImage<T> subImage(*pOutImage, true, axesSpecifier);
 
 	// Copy masks (directly, can't do via SubImage)
 	if (nMasks > 0) {
-		for (uInt i=0; i<nMasks; i++) {
+		for (uint32_t i=0; i<nMasks; i++) {
 			ImageUtilities::copyMask(*pOutImage, inImage, maskNames(i), maskNames(i),
 					axesSpecifier);
 		}
@@ -125,7 +125,7 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 template <typename T, typename U> 
 void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
                                         const ImageInterface<U>& in,
-                                        Bool copyImageInfo)
+                                        bool copyImageInfo)
 {
     out.setMiscInfo(in.miscInfo());
     if (copyImageInfo) {
@@ -140,14 +140,14 @@ void ImageUtilities::copyMiscellaneous (ImageInterface<T>& out,
         log << LogIO::WARN << "Error copying image history: "
             << x.getMesg() << LogIO::POST;
     }
-    copyAttributes (out.attrHandler(True), in.roAttrHandler());
+    copyAttributes (out.attrHandler(true), in.roAttrHandler());
 }
 
 
 template <typename T> 
 void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
                           const MaskedArray<T>& in, const Coordinate& coordIn,
-                          uInt axis, uInt bin)
+                          uint32_t axis, uint32_t bin)
 {
 
 // Check
@@ -161,14 +161,14 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
                 type==Coordinate::TABULAR, AipsError);
 //  
    const IPosition shapeIn = in.shape();
-   const uInt nDim = shapeIn.nelements();
+   const uint32_t nDim = shapeIn.nelements();
    AlwaysAssert(axis<nDim, AipsError);
 
 // Create CS
 
    CoordinateSystem cSysIn;
    LinearCoordinate linCoord;
-   for (uInt i=0; i<nDim; i++) {
+   for (uint32_t i=0; i<nDim; i++) {
 
       if (i==axis) {
          cSysIn.addCoordinate(coordIn);
@@ -185,7 +185,7 @@ void ImageUtilities::bin (MaskedArray<T>& out, Coordinate& coordOut,
 // Set data
 
    im.put(in.getArray());
-   TempLattice<Bool> pixelMask(shapeIn);
+   TempLattice<bool> pixelMask(shapeIn);
    pixelMask.put(in.getMask());
    im.attachMask(pixelMask);
 
@@ -237,11 +237,11 @@ template <typename T, typename U> void ImageUtilities::copyMask (
 
    ImageRegion iROut = out.getRegion(maskOut, RegionHandler::Masks);
    LCRegion& regionOut = iROut.asMask();
-   SubLattice<Bool> subRegionOut(regionOut, True, outSpec);
+   SubLattice<bool> subRegionOut(regionOut, true, outSpec);
 
 // Copy
 
-   LatticeIterator<Bool> maskIter(subRegionOut);
+   LatticeIterator<bool> maskIter(subRegionOut);
    for (maskIter.reset(); !maskIter.atEnd(); maskIter++) {
       subRegionOut.putSlice(regionIn.getSlice(maskIter.position(),
                             maskIter.cursorShape()),  maskIter.position());
@@ -280,7 +280,7 @@ template <typename T> void ImageUtilities::openImage(
         delete lattPtr;
         ThrowCc(
             "Unrecognized image data type, "
-            "presently only Float and Complex images are supported"
+            "presently only float and Complex images are supported"
         );
     }
 }

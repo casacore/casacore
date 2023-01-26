@@ -64,12 +64,12 @@ size_t LECanonicalDataConversion::toLocal (unsigned int& to,
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-size_t LECanonicalDataConversion::toLocal (Int64& to,
+size_t LECanonicalDataConversion::toLocal (int64_t& to,
                                            const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
 }
-size_t LECanonicalDataConversion::toLocal (uInt64& to,
+size_t LECanonicalDataConversion::toLocal (uint64_t& to,
                                            const void* from) const
 {
     return LECanonicalConversion::toLocal (to, from);
@@ -121,13 +121,13 @@ size_t LECanonicalDataConversion::toLocal (unsigned int* to,
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-size_t LECanonicalDataConversion::toLocal (Int64* to,
+size_t LECanonicalDataConversion::toLocal (int64_t* to,
                                            const void* from,
                                            size_t nr) const
 {
     return LECanonicalConversion::toLocal (to, from, nr);
 }
-size_t LECanonicalDataConversion::toLocal (uInt64* to,
+size_t LECanonicalDataConversion::toLocal (uint64_t* to,
                                            const void* from,
                                            size_t nr) const
 {
@@ -177,12 +177,12 @@ size_t LECanonicalDataConversion::fromLocal (void* to,
     return LECanonicalConversion::fromLocal (to, from);
 }
 size_t LECanonicalDataConversion::fromLocal (void* to,
-                                             Int64 from) const
+                                             int64_t from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
 size_t LECanonicalDataConversion::fromLocal (void* to,
-                                             uInt64 from) const
+                                             uint64_t from) const
 {
     return LECanonicalConversion::fromLocal (to, from);
 }
@@ -234,13 +234,13 @@ size_t LECanonicalDataConversion::fromLocal (void* to,
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
 size_t LECanonicalDataConversion::fromLocal (void* to,
-                                             const Int64* from,
+                                             const int64_t* from,
                                              size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
 }
 size_t LECanonicalDataConversion::fromLocal (void* to,
-                                             const uInt64* from,
+                                             const uint64_t* from,
                                              size_t nr) const
 {
     return LECanonicalConversion::fromLocal (to, from, nr);
@@ -259,43 +259,43 @@ size_t LECanonicalDataConversion::fromLocal (void* to,
 }
 
 
-Bool LECanonicalDataConversion::canCopy (const char*) const
+bool LECanonicalDataConversion::canCopy (const char*) const
 {
     return (CONVERT_LECAN_CHAR == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const unsigned char*) const
+bool LECanonicalDataConversion::canCopy (const unsigned char*) const
 {
     return (CONVERT_LECAN_UCHAR == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const short*) const
+bool LECanonicalDataConversion::canCopy (const short*) const
 {
     return (CONVERT_LECAN_SHORT == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const unsigned short*) const
+bool LECanonicalDataConversion::canCopy (const unsigned short*) const
 {
     return (CONVERT_LECAN_USHORT == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const int*) const
+bool LECanonicalDataConversion::canCopy (const int*) const
 {
     return (CONVERT_LECAN_INT == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const unsigned int*) const
+bool LECanonicalDataConversion::canCopy (const unsigned int*) const
 {
     return (CONVERT_LECAN_UINT == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const Int64*) const
+bool LECanonicalDataConversion::canCopy (const int64_t*) const
 {
     return (CONVERT_LECAN_INT64 == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const uInt64*) const
+bool LECanonicalDataConversion::canCopy (const uint64_t*) const
 {
     return (CONVERT_LECAN_UINT64 == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const float*) const
+bool LECanonicalDataConversion::canCopy (const float*) const
 {
     return (CONVERT_LECAN_FLOAT == 0);
 }
-Bool LECanonicalDataConversion::canCopy (const double*) const
+bool LECanonicalDataConversion::canCopy (const double*) const
 {
     return (CONVERT_LECAN_DOUBLE == 0);
 }
@@ -325,11 +325,11 @@ unsigned int LECanonicalDataConversion::externalSize (const unsigned int*) const
 {
     return SIZE_LECAN_UINT;
 }
-unsigned int LECanonicalDataConversion::externalSize (const Int64*) const
+unsigned int LECanonicalDataConversion::externalSize (const int64_t*) const
 {
     return SIZE_LECAN_INT64;
 }
-unsigned int LECanonicalDataConversion::externalSize (const uInt64*) const
+unsigned int LECanonicalDataConversion::externalSize (const uint64_t*) const
 {
     return SIZE_LECAN_UINT64;
 }

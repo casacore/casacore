@@ -47,7 +47,7 @@ TableExprNodeArrayPlusInt::TableExprNodeArrayPlusInt
 {}
 TableExprNodeArrayPlusInt::~TableExprNodeArrayPlusInt()
 {}
-MArray<Int64> TableExprNodeArrayPlusInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayPlusInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -67,7 +67,7 @@ TableExprNodeArrayPlusDouble::TableExprNodeArrayPlusDouble
 {}
 TableExprNodeArrayPlusDouble::~TableExprNodeArrayPlusDouble()
 {}
-MArray<Double> TableExprNodeArrayPlusDouble::getArrayDouble
+MArray<double> TableExprNodeArrayPlusDouble::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -135,7 +135,7 @@ void TableExprNodeArrayPlusDate::handleUnits()
         TableExprNodeUnit::adaptUnit (rnode_p, "d");
     }
 }
-MArray<Double> TableExprNodeArrayPlusDate::getArrayDouble
+MArray<double> TableExprNodeArrayPlusDate::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -151,7 +151,7 @@ MArray<Double> TableExprNodeArrayPlusDate::getArrayDouble
 MArray<MVTime> TableExprNodeArrayPlusDate::getArrayDate
                                             (const TableExprId& id)
 {
-    MArray<Double> tmp(getArrayDouble(id));
+    MArray<double> tmp(getArrayDouble(id));
     Array<MVTime> res(tmp.shape());
     convertArray (res, tmp.array());
     return MArray<MVTime> (res, tmp.mask());
@@ -171,7 +171,7 @@ TableExprNodeArrayMinusInt::TableExprNodeArrayMinusInt
 {}
 TableExprNodeArrayMinusInt::~TableExprNodeArrayMinusInt()
 {}
-MArray<Int64> TableExprNodeArrayMinusInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayMinusInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -191,7 +191,7 @@ TableExprNodeArrayMinusDouble::TableExprNodeArrayMinusDouble
 {}
 TableExprNodeArrayMinusDouble::~TableExprNodeArrayMinusDouble()
 {}
-MArray<Double> TableExprNodeArrayMinusDouble::getArrayDouble
+MArray<double> TableExprNodeArrayMinusDouble::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -236,7 +236,7 @@ void TableExprNodeArrayMinusDate::handleUnits()
     // Right hand side must be in days.
     TableExprNodeUnit::adaptUnit (rnode_p, "d");
 }
-MArray<Double> TableExprNodeArrayMinusDate::getArrayDouble
+MArray<double> TableExprNodeArrayMinusDate::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -252,7 +252,7 @@ MArray<Double> TableExprNodeArrayMinusDate::getArrayDouble
 MArray<MVTime> TableExprNodeArrayMinusDate::getArrayDate
                                             (const TableExprId& id)
 {
-    MArray<Double> tmp(getArrayDouble(id));
+    MArray<double> tmp(getArrayDouble(id));
     Array<MVTime> res(tmp.shape());
     convertArray (res, tmp.array());
     return MArray<MVTime> (res, tmp.mask());
@@ -284,7 +284,7 @@ TableExprNodeArrayTimesInt::TableExprNodeArrayTimesInt
 {}
 TableExprNodeArrayTimesInt::~TableExprNodeArrayTimesInt()
 {}
-MArray<Int64> TableExprNodeArrayTimesInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayTimesInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -304,7 +304,7 @@ TableExprNodeArrayTimesDouble::TableExprNodeArrayTimesDouble
 {}
 TableExprNodeArrayTimesDouble::~TableExprNodeArrayTimesDouble()
 {}
-MArray<Double> TableExprNodeArrayTimesDouble::getArrayDouble
+MArray<double> TableExprNodeArrayTimesDouble::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -369,7 +369,7 @@ TableExprNodeArrayDivideDouble::TableExprNodeArrayDivideDouble
 {}
 TableExprNodeArrayDivideDouble::~TableExprNodeArrayDivideDouble()
 {}
-MArray<Double> TableExprNodeArrayDivideDouble::getArrayDouble
+MArray<double> TableExprNodeArrayDivideDouble::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -421,7 +421,7 @@ TableExprNodeArrayModuloInt::TableExprNodeArrayModuloInt
 {}
 TableExprNodeArrayModuloInt::~TableExprNodeArrayModuloInt()
 {}
-MArray<Int64> TableExprNodeArrayModuloInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayModuloInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -442,7 +442,7 @@ TableExprNodeArrayModuloDouble::TableExprNodeArrayModuloDouble
 {}
 TableExprNodeArrayModuloDouble::~TableExprNodeArrayModuloDouble()
 {}
-MArray<Double> TableExprNodeArrayModuloDouble::getArrayDouble
+MArray<double> TableExprNodeArrayModuloDouble::getArrayDouble
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -463,7 +463,7 @@ TableExprNodeArrayBitAndInt::TableExprNodeArrayBitAndInt
 {}
 TableExprNodeArrayBitAndInt::~TableExprNodeArrayBitAndInt()
 {}
-MArray<Int64> TableExprNodeArrayBitAndInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayBitAndInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -484,7 +484,7 @@ TableExprNodeArrayBitOrInt::TableExprNodeArrayBitOrInt
 {}
 TableExprNodeArrayBitOrInt::~TableExprNodeArrayBitOrInt()
 {}
-MArray<Int64> TableExprNodeArrayBitOrInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayBitOrInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -505,7 +505,7 @@ TableExprNodeArrayBitXorInt::TableExprNodeArrayBitXorInt
 {}
 TableExprNodeArrayBitXorInt::~TableExprNodeArrayBitXorInt()
 {}
-MArray<Int64> TableExprNodeArrayBitXorInt::getArrayInt
+MArray<int64_t> TableExprNodeArrayBitXorInt::getArrayInt
                                             (const TableExprId& id)
 {
     switch (argtype_p) {
@@ -525,9 +525,9 @@ TableExprNodeArrayMIN::TableExprNodeArrayMIN (const TableExprNodeRep& node)
 {}
 TableExprNodeArrayMIN::~TableExprNodeArrayMIN()
 {}
-MArray<Int64> TableExprNodeArrayMIN::getArrayInt (const TableExprId& id)
+MArray<int64_t> TableExprNodeArrayMIN::getArrayInt (const TableExprId& id)
     { return -(lnode_p->getArrayInt(id)); }
-MArray<Double> TableExprNodeArrayMIN::getArrayDouble (const TableExprId& id)
+MArray<double> TableExprNodeArrayMIN::getArrayDouble (const TableExprId& id)
     { return -(lnode_p->getArrayDouble(id)); }
 MArray<DComplex> TableExprNodeArrayMIN::getArrayDComplex (const TableExprId& id)
     { return -(lnode_p->getArrayDComplex(id)); }
@@ -539,7 +539,7 @@ TableExprNodeArrayBitNegate::TableExprNodeArrayBitNegate
 {}
 TableExprNodeArrayBitNegate::~TableExprNodeArrayBitNegate()
 {}
-MArray<Int64> TableExprNodeArrayBitNegate::getArrayInt (const TableExprId& id)
+MArray<int64_t> TableExprNodeArrayBitNegate::getArrayInt (const TableExprId& id)
     { return ~(lnode_p->getArrayInt(id)); }
 
 

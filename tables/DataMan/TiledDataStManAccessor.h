@@ -142,7 +142,7 @@ public:
     // the last dimension.
     // The record should contain the id values (to get the correct
     // hypercube) and coordinate values for the elements added.
-    void extendHypercube (uInt incrInLastDim, const Record& values);
+    void extendHypercube (uint32_t incrInLastDim, const Record& values);
 
 
 private:

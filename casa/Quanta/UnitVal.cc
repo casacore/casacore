@@ -50,12 +50,12 @@ UnitVal UnitVal::MOLAR(		1., UnitDim::Dmol);
 UnitVal UnitVal::ANGLE(		1., UnitDim::Drad);
 UnitVal UnitVal::SOLIDANGLE(	1., UnitDim::Dsr);
 
-void UnitVal::init(Double factor) {
+void UnitVal::init(double factor) {
   kindFactor = factor;
   kindDim.init();
 }
 
-void UnitVal::init(Double factor, Int pos) {
+void UnitVal::init(double factor, int32_t pos) {
   kindFactor = factor;
   kindDim.init(pos);
 }
@@ -68,7 +68,7 @@ UnitVal::UnitVal(const UnitVal &other) :
   kindFactor(other.kindFactor),
   kindDim(other.kindDim) {}
 
-UnitVal::UnitVal(Double factor, const String& s, UMaps* maps) :
+UnitVal::UnitVal(double factor, const String& s, UMaps* maps) :
   kindFactor(1.),
   kindDim() {
   if (UnitMap::getCache(s,*this)) {
@@ -116,11 +116,11 @@ UnitVal operator/(const UnitVal &in, const UnitVal &other) {
   return result;
 }
 
-Bool UnitVal::operator==(const UnitVal &other) const {
+bool UnitVal::operator==(const UnitVal &other) const {
   return kindDim == other.kindDim;
 }
 
-Bool UnitVal::operator!=(const UnitVal &other) const {
+bool UnitVal::operator!=(const UnitVal &other) const {
   return kindDim != other.kindDim;
 }
 
@@ -129,22 +129,22 @@ ostream& operator<< (ostream &os, const UnitVal &ku) {
   return os;
 }
 
-UnitVal UnitVal::pow(Int p) {
+UnitVal UnitVal::pow(int32_t p) {
   UnitVal loc;
-  loc.kindFactor = ::pow(kindFactor,Double(p));
+  loc.kindFactor = ::pow(kindFactor,double(p));
   loc.kindDim = kindDim.pow(p);
   return(loc);
 }
 
-UnitVal UnitVal::root(Int p) const {
+UnitVal UnitVal::root(int32_t p) const {
   if (p==0) throw (AipsError("UnitVal::UnitVal Illegal root zero taken"));
   UnitVal loc;
   loc.kindDim = kindDim;
-  for (Int i=0; i<UnitDim::Dnumber; i++) {
+  for (int32_t i=0; i<UnitDim::Dnumber; i++) {
     if (kindDim.unitDim[i] % p == 0) loc.kindDim.unitDim[i] /= p;
     else throw (AipsError("UnitVal::UnitVal Illegal unit dimensions for root"));
   }
-  loc.kindFactor = ::pow(kindFactor, 1.0/Double(p));
+  loc.kindFactor = ::pow(kindFactor, 1.0/double(p));
   return(loc);
 }
 
@@ -156,54 +156,54 @@ const UnitDim &UnitVal::getDim() const {
   return kindDim;
 }
 
-Double UnitVal::getFac() const {
+double UnitVal::getFac() const {
   return kindFactor;
 }
 
-Bool UnitVal::check(const String &s) {
+bool UnitVal::check(const String &s) {
   UnitVal loc;
   if (UnitMap::getCache(s,loc)) ;
   else if (UnitVal::create(s,loc)) UnitMap::putCache(s,loc);
-  else return False;
-  return True;
+  else return false;
+  return true;
 }
 
-Bool UnitVal::check(const String &s, UnitVal &loc) {
+bool UnitVal::check(const String &s, UnitVal &loc) {
   if (UnitMap::getCache(s,loc)) {
   } else if (UnitVal::create(s,loc)) {
     UnitMap::putCache(s,loc);
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool UnitVal::create(const String &s, UnitVal &res, UMaps* maps) {
+bool UnitVal::create(const String &s, UnitVal &res, UMaps* maps) {
   MUString str(s);			// non-const copy
   return create(str, res, maps);
 }
 
-Bool UnitVal::create(MUString &str, UnitVal &res, UMaps* maps) {
+bool UnitVal::create(MUString &str, UnitVal &res, UMaps* maps) {
   UnitVal kind;
-  Int ptr = str.getPtr();
-  if (str.eos()) return True;
-  Int ps = UnitVal::psign(str);	 	// power sign
-  if (str.eos()) return True;
+  int32_t ptr = str.getPtr();
+  if (str.eos()) return true;
+  int32_t ps = UnitVal::psign(str);	 	// power sign
+  if (str.eos()) return true;
   if (str.testChar('(')) {
-    if (!str.matchPair(')')) return False;
-    if (!UnitVal::create(str.lastGet(), kind, maps)) return False;
+    if (!str.matchPair(')')) return false;
+    if (!UnitVal::create(str.lastGet(), kind, maps)) return false;
   } else {
-    if (!UnitVal::field(str, kind, maps)) return False;
+    if (!UnitVal::field(str, kind, maps)) return false;
   }
   ps *= UnitVal::power(str);			// full power
-  if (str.getPtr() == ptr) return False;	// must have been error
+  if (str.getPtr() == ptr) return false;	// must have been error
   res *= kind.pow(ps);
   return UnitVal::create(str, res, maps);       // add next part
 }
 
-Int UnitVal::psign(MUString& str) {
+int32_t UnitVal::psign(MUString& str) {
   static const Regex sep("[ \\*\\./]");
-  Int lc = 1;
+  int32_t lc = 1;
   while (str.testChar(sep)) {
     if (str.testChar('/')) lc = -lc;
     str.skipChar();
@@ -211,40 +211,40 @@ Int UnitVal::psign(MUString& str) {
   return lc;
 }
 
-Int UnitVal::power(MUString &str) {
+int32_t UnitVal::power(MUString &str) {
   if (str.testString("**")) str.skipString("**");
   if (str.testChar('^')) str.skipChar('^');
-  Int lc = (Int) str.getSign();
-  Int lp = str.getuInt();
+  int32_t lc = (int32_t) str.getSign();
+  int32_t lp = str.getuInt();
   return (lp == 0 ? lc : lc * lp);
 }
 
-Bool UnitVal::field(MUString &str, UnitVal &res, UMaps* maps) {
+bool UnitVal::field(MUString &str, UnitVal &res, UMaps* maps) {
   static const Regex un1("[a-zA-Z_\"'$:%]");
   static const Regex un2("[a-zA-Z_0\"'$:%]");
   UnitName loc;
-  uInt wh(str.getPtr());
+  uint32_t wh(str.getPtr());
   res = UnitVal(); 		// Initial 1 value
   if (str.testChar(un1)) {
-    Char prev = str.getChar();
+    char prev = str.getChar();
     while (str.testChar(un2) || (str.testNum() && prev == '_'))
       prev = str.getChar();
   }
   String key = str.get(wh, str.getPtr());
-  if (key.length() == 0) { res = loc.getVal(); return True;}
-  if (UnitMap::getCache(key,res)) return True;
-  if (UnitMap::getUnit(key,loc,maps)) { res = loc.getVal(); return True;}
+  if (key.length() == 0) { res = loc.getVal(); return true;}
+  if (UnitMap::getCache(key,res)) return true;
+  if (UnitMap::getUnit(key,loc,maps)) { res = loc.getVal(); return true;}
   if (key.length() > 1 && UnitMap::getPref(key(0,1), loc, maps)) {
     UnitName loc1 = UnitName();
     if (UnitMap::getUnit(key.from(1), loc1, maps)) {
-      res = (loc.getVal() * loc1.getVal()); return True;
+      res = (loc.getVal() * loc1.getVal()); return true;
     } else if ( key.length() > 2 && UnitMap::getPref(key(0,2),loc)) {
       if (UnitMap::getUnit(key.from(2), loc1, maps)) {
-	res = (loc.getVal() * loc1.getVal()); return True;
+	res = (loc.getVal() * loc1.getVal()); return true;
       }
     }
   }
-  return False;
+  return false;
 }
 
 } //# NAMESPACE CASACORE - END

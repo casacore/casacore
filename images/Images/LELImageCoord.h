@@ -110,14 +110,14 @@ public:
                                     (const LatticeExprNode& expr,
 				     const IPosition& binning) const;
 
-  // The class has true coordinates (thus returns True).
-  virtual Bool hasCoordinates() const;
+  // The class has true coordinates (thus returns true).
+  virtual bool hasCoordinates() const;
 
   // Get the coordinates of the spectral axis for the given shape.
   // It returns the pixel axis number of the spectral coordinates.
   // -1 indicates that there is no pixel spectral axis.
   // An exception is thrown if there are no world spectral coordinates.
-  virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,
+  virtual uint32_t getSpectralInfo (Vector<double>& worldCoordinates,
 				const IPosition& shape) const;
 
   // The name of the class.
@@ -129,12 +129,12 @@ public:
   // <br>0: equal 
   // <br>1: this is superset
   // <br>9: invalid (mismatch)
-  virtual Int compare (const LELLattCoordBase& other) const;
+  virtual int32_t compare (const LELLattCoordBase& other) const;
 
   // Check how the coordinates of this and that image compare.
   // This function is used by <src>conform</src> to make a
   // double virtual dispatch possible.
-  virtual Int doCompare (const LELImageCoord& other) const;
+  virtual int32_t doCompare (const LELImageCoord& other) const;
 
 private:
   CountedPtr<CoordinateSystem> coords_p;

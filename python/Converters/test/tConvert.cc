@@ -41,17 +41,17 @@ namespace casacore { namespace python {
   struct TConvert
   {
     TConvert() {}
-    Bool  testbool (Bool in)
+    bool  testbool (bool in)
       {cout << "bool " << in << endl; return in;}
-    Int testint (Int in)
+    int32_t testint (int32_t in)
       {cout << "Int " << in << endl; return in;}
-    Int64 testint64 (Int64 in)
+    int64_t testint64 (int64_t in)
       {cout << "Int64 " << in << endl; return in;}
-    Int testssize (::ssize_t in)
+    int32_t testssize (::ssize_t in)
       {cout << "ssize " << in << endl; return in;}
-    Float testfloat (Float in)
+    float testfloat (float in)
       {cout << "Float " << in << endl; return in;}
-    Double testdouble (Double in)
+    double testdouble (double in)
       {cout << "Double " << in << endl; return in;}
     Complex testcomplex (const Complex& in)
       {cout << "Complex " << in << endl; return in;}
@@ -65,9 +65,9 @@ namespace casacore { namespace python {
       {cout << "Record "; in.print(cout); cout << endl; return in;}
     ValueHolder testvh (const ValueHolder& in)
       {cout << "VH " << in.dataType() << endl; return in;}
-    Vector<Bool> testvecbool (const Vector<Bool>& in)
+    Vector<bool> testvecbool (const Vector<bool>& in)
       {cout << "VecBool " << in << endl; return in;}
-    Vector<Int> testvecint (const Vector<int>& in)
+    Vector<int32_t> testvecint (const Vector<int>& in)
       {cout << "VecInt " << in << endl; return in;}
     Vector<DComplex> testveccomplex (const Vector<DComplex>& in)
       {cout << "VecComplex " << in << endl; return in;}
@@ -75,10 +75,10 @@ namespace casacore { namespace python {
       {cout << "VecStr " << in << endl; return in;}
     std::vector<bool> teststdvecbool (const std::vector<bool>& in)
       {cout << "vecbool " << in << endl; return in;}
-    std::vector<uInt> teststdvecuint (const std::vector<uInt>& in)
+    std::vector<uint32_t> teststdvecuint (const std::vector<uint32_t>& in)
       {cout << "vecuInt " << in << endl; return in;}
-    std::vector<std::vector<uInt> > teststdvecvecuint
-    (const std::vector<std::vector<uInt> >& in)
+    std::vector<std::vector<uint32_t> > teststdvecvecuint
+    (const std::vector<std::vector<uint32_t> >& in)
       {cout << "vecvecuInt " << in << endl; return in;}
     std::vector<ValueHolder> teststdvecvh (const std::vector<ValueHolder>& in)
       {cout << "vecvh " << in.size() << endl; return in;}
@@ -128,8 +128,8 @@ BOOST_PYTHON_MODULE(_tConvert)
   casacore::python::register_convert_casa_valueholder();
   casacore::python::register_convert_casa_record();
   casacore::python::register_convert_std_vector<bool>();
-  casacore::python::register_convert_std_vector<casacore::uInt>();
-  casacore::python::register_convert_std_vector<std::vector<casacore::uInt> >();
+  casacore::python::register_convert_std_vector<uint32_t>();
+  casacore::python::register_convert_std_vector<std::vector<uint32_t> >();
   casacore::python::register_convert_std_vector<casacore::ValueHolder>();
 
   // Execute the test.

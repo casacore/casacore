@@ -60,9 +60,9 @@ namespace casacore {
   // a JsonKVMap object, or a vector of JsonValue objects. In this way
   // JSON values can be nested in any way.
   // 
-  // Internally scalar values are kept as Bool, Int64, Double, DComplex or
+  // Internally scalar values are kept as bool, int64_t, double, DComplex or
   // String values. The functions to obtain the value convert if possible.
-  // Note that conversion from Int64 to Bool is supported.
+  // Note that conversion from int64_t to bool is supported.
   // The value can also be obtained as a ValueHolder object making it easier
   // to use in other Casacore code.
   // Null is also a valid JsonValue. A null value can be obtained as a
@@ -94,9 +94,9 @@ namespace casacore {
 
     // Construct value with given type.
     // <group>
-    JsonValue (Bool);
+    JsonValue (bool);
     JsonValue (int);
-    JsonValue (Int64);
+    JsonValue (int64_t);
     JsonValue (double);
     JsonValue (const DComplex&);
     JsonValue (const char*);
@@ -114,15 +114,15 @@ namespace casacore {
     ~JsonValue();
 
     // Is the value a null value?
-    Bool isNull() const
+    bool isNull() const
       { return itsValuePtr == 0; }
 
     // Is the value a vector?
-    Bool isVector() const
+    bool isVector() const
       { return itsDataType == TpOther; }
       
     // Is the value a value map?
-    Bool isValueMap() const
+    bool isValueMap() const
       { return itsDataType == TpRecord; }
       
     // Return the size of a value vector or map (1 is returned for a scalar).
@@ -159,12 +159,12 @@ namespace casacore {
 
     // Get the value in the given data type.
     // Numeric data type promotion can be done as well as conversion of
-    // integer to bool (0=False, other=True). An exception is thrown if
+    // integer to bool (0=false, other=true). An exception is thrown if
     // a mismatching data type is used.
     // Note that a null value can only be obtained as double (giving NaN).
     // <group>
-    Bool getBool() const;
-    Int64 getInt() const;
+    bool getBool() const;
+    int64_t getInt() const;
     double getDouble() const;
     DComplex getDComplex() const;
     const String& getString() const;
@@ -173,8 +173,8 @@ namespace casacore {
     // As above, but get the value as a vector.
     // If the value is a scalar, a vector with length 1 is returned.
     // <group>
-    std::vector<Bool> getVecBool() const;
-    std::vector<Int64> getVecInt() const;
+    std::vector<bool> getVecBool() const;
+    std::vector<int64_t> getVecInt() const;
     std::vector<double> getVecDouble() const;
     std::vector<DComplex> getVecDComplex() const;
     std::vector<String> getVecString() const;
@@ -187,8 +187,8 @@ namespace casacore {
     // Get the value as an Array. The value must be a scalar or a
     // regularly nested vector.
     // <group>
-    Array<Bool> getArrayBool() const;
-    Array<Int64> getArrayInt() const;
+    Array<bool> getArrayBool() const;
+    Array<int64_t> getArrayInt() const;
     Array<double> getArrayDouble() const;
     Array<DComplex> getArrayDComplex() const;
     Array<String> getArrayString() const;
@@ -196,9 +196,9 @@ namespace casacore {
 
     // Get functions for templated purposes
     // <group>
-    void get (Bool& value) const
+    void get (bool& value) const
       { value = getBool(); }
-    void get (Int64& value) const
+    void get (int64_t& value) const
       { value = getInt(); }
     void get (double& value) const
       { value = getDouble(); }
@@ -206,9 +206,9 @@ namespace casacore {
       { value = getDComplex(); }
     void get (String& value) const
       { value = getString(); }
-    void get (std::vector<Bool>& value) const
+    void get (std::vector<bool>& value) const
       { value = getVecBool(); }
-    void get (std::vector<Int64>& value) const
+    void get (std::vector<int64_t>& value) const
       { value = getVecInt(); }
     void get (std::vector<double>& value) const
       { value = getVecDouble(); }

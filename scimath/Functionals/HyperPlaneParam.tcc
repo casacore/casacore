@@ -32,7 +32,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
-HyperPlaneParam<T>::HyperPlaneParam(uInt m) :
+HyperPlaneParam<T>::HyperPlaneParam(uint32_t m) :
   Function<T>(m) {}
 
 template<class T>

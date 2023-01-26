@@ -55,13 +55,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-// Float func(const Vector<Float>& x) {return x(0)*x(1);}        // x*y
+// float func(const Vector<float>& x) {return x(0)*x(1);}        // x*y
 // // Convert C++ functions to Functionals
-// FunctionWrapper<Float> Func(func, 2);
+// FunctionWrapper<float> Func(func, 2);
 // </srcblock>
 //
 
-template <class T, class U, class V, Bool hasX, Bool hasParam>
+template <class T, class U, class V, bool hasX, bool hasParam>
 class WrapperData : public WrapperBase<T>
 {
 public:
@@ -97,14 +97,14 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_TT<T,T,T,True,True> : public WrapperBase<T>
+class WrapperData_TT<T,T,T,true,true> : public WrapperBase<T>
 {
-  typedef WrapperData_TT<T,T,T,True,True> myData;
+  typedef WrapperData_TT<T,T,T,true,true> myData;
 
 public:
   //# Constructors
   // Standard constructor
-  explicit WrapperData_TT(T(*f)(const T&, const T&), uInt dim=1) :
+  explicit WrapperData_TT(T(*f)(const T&, const T&), uint32_t dim=1) :
     WrapperBase<T>(dim), pf_p(f) {}
 
   // Destructor
@@ -154,18 +154,18 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_VT<T,Vector<T>,T,True,True> : public WrapperBase<T>
+class WrapperData_VT<T,Vector<T>,T,true,true> : public WrapperBase<T>
 {
-  typedef WrapperData_VT<T,Vector<T>,T,True,True> myData;
+  typedef WrapperData_VT<T,Vector<T>,T,true,true> myData;
 
 public:
-  explicit WrapperData_VT(T(*f)(const Vector<T>&, const T&), uInt dim=1) :
+  explicit WrapperData_VT(T(*f)(const Vector<T>&, const T&), uint32_t dim=1) :
     WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_VT() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
-      for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
+      for (uint32_t i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p, par[0]); }
     return T(0); }
 
@@ -195,12 +195,12 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_TV<T,T,Vector<T>,True,True> : public WrapperBase<T>
+class WrapperData_TV<T,T,Vector<T>,true,true> : public WrapperBase<T>
 {
-  typedef WrapperData_TV<T,T,Vector<T>,True,True> myData;
+  typedef WrapperData_TV<T,T,Vector<T>,true,true> myData;
 
 public:
-  explicit WrapperData_TV(T(*f)(const T&, const Vector<T>&), uInt dim=1) :
+  explicit WrapperData_TV(T(*f)(const T&, const Vector<T>&), uint32_t dim=1) :
     WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_TV() {}
   virtual T eval(typename Function<T>::FunctionArg x,
@@ -237,20 +237,20 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_VV<T,Vector<T>,Vector<T>,True,True> :
+class WrapperData_VV<T,Vector<T>,Vector<T>,true,true> :
 public WrapperBase<T>
 {
-  typedef WrapperData_VV<T,Vector<T>,Vector<T>,True,True> myData;
+  typedef WrapperData_VV<T,Vector<T>,Vector<T>,true,true> myData;
 
 public:
   explicit WrapperData_VV(T(*f)(const Vector<T>&, const Vector<T>&),
-			    uInt dim=1) :
+			    uint32_t dim=1) :
     WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_VV() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &par) const {
     if (pf_p) {
-      for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
+      for (uint32_t i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p, par); }
     return T(0); }
 
@@ -280,9 +280,9 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_FT<T,T,T,False,True> : public WrapperBase<T>
+class WrapperData_FT<T,T,T,false,true> : public WrapperBase<T>
 {
-  typedef WrapperData_FT<T,T,T,False,True> myData;
+  typedef WrapperData_FT<T,T,T,false,true> myData;
 
 public:
   explicit WrapperData_FT(T(*f)(const T&)) :
@@ -319,9 +319,9 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_FV<T,T,Vector<T>,False,True> : public WrapperBase<T>
+class WrapperData_FV<T,T,Vector<T>,false,true> : public WrapperBase<T>
 {
-  typedef WrapperData_FV<T,T,Vector<T>,False,True> myData;
+  typedef WrapperData_FV<T,T,Vector<T>,false,true> myData;
 
 public:
   explicit WrapperData_FV(T(*f)(const Vector<T>&)) :
@@ -358,12 +358,12 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_TF<T,T,T,True,False> : public WrapperBase<T>
+class WrapperData_TF<T,T,T,true,false> : public WrapperBase<T>
 {
-  typedef WrapperData_TF<T,T,T,True,False> myData;
+  typedef WrapperData_TF<T,T,T,true,false> myData;
 
 public:
-  explicit WrapperData_TF(T(*f)(const T&), uInt dim=1) :
+  explicit WrapperData_TF(T(*f)(const T&), uint32_t dim=1) :
     WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_TF() {}
   virtual T eval(typename Function<T>::FunctionArg x, 
@@ -399,18 +399,18 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_VF<T,Vector<T>,T,True,False> : public WrapperBase<T>
+class WrapperData_VF<T,Vector<T>,T,true,false> : public WrapperBase<T>
 {
-  typedef WrapperData_VF<T,Vector<T>,T,True,False> myData;
+  typedef WrapperData_VF<T,Vector<T>,T,true,false> myData;
 
 public:
-  explicit WrapperData_VF(T(*f)(const Vector<T>&), uInt dim=1) :
+  explicit WrapperData_VF(T(*f)(const Vector<T>&), uint32_t dim=1) :
     WrapperBase<T>(dim), pf_p(f) {}
   virtual ~WrapperData_VF() {}
   virtual T eval(typename Function<T>::FunctionArg x,
 		 const Vector<T> &) const {
     if (pf_p) {
-      for (uInt i=0; i<ndim_p; ++i) arg_p[i] = x[i];
+      for (uint32_t i=0; i<ndim_p; ++i) arg_p[i] = x[i];
       return pf_p(arg_p); }
     return T(0); }
 
@@ -440,9 +440,9 @@ protected:
 // </synopsis>
 
 template <class T>
-class WrapperData_FF<T,T,T,False,False> : public WrapperBase<T>
+class WrapperData_FF<T,T,T,false,false> : public WrapperBase<T>
 {
-  typedef WrapperData_FF<T,T,T,True,False> myData;
+  typedef WrapperData_FF<T,T,T,true,false> myData;
 
 public:
   explicit WrapperData_FF(T(*f)()) :

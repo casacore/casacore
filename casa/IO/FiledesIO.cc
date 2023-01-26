@@ -37,9 +37,9 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FiledesIO::FiledesIO()
-: itsSeekable (False),
-  itsReadable (False),
-  itsWritable (False),
+: itsSeekable (false),
+  itsReadable (false),
+  itsWritable (false),
   itsFile     (-1)
 {}
 
@@ -71,16 +71,16 @@ void FiledesIO::detach()
 
 void FiledesIO::fillRWFlags (int fd)
 {
-    itsReadable = False;
-    itsWritable = False;
+    itsReadable = false;
+    itsWritable = false;
     int flags = fcntl (fd, F_GETFL);
     if ((flags & O_RDWR)  ==  O_RDWR) {
-	itsReadable = True;
-	itsWritable = True;
+	itsReadable = true;
+	itsWritable = true;
     } else if ((flags & O_WRONLY)  ==  O_WRONLY) {
-	itsWritable = True;
+	itsWritable = true;
     } else {
-	itsReadable = True;
+	itsReadable = true;
     }
 }
 
@@ -90,14 +90,14 @@ void FiledesIO::fillSeekable()
 }
 
 
-void FiledesIO::write (Int64 size, const void* buf)
+void FiledesIO::write (int64_t size, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
 	throw AipsError ("FiledesIO::write - " + itsFileName
                          + " is not writable");
     }
-    if (::traceWRITE(itsFile, (Char *)buf, size) != size) {
+    if (::traceWRITE(itsFile, (char *)buf, size) != size) {
         int error = errno;
 	throw AipsError ("FiledesIO::write - write error in "
                          + itsFileName + ": " + strerror(error));
@@ -105,34 +105,34 @@ void FiledesIO::write (Int64 size, const void* buf)
 }
 
 
-void FiledesIO::pwrite (Int64 size, Int64 offset, const void* buf)
+void FiledesIO::pwrite (int64_t size, int64_t offset, const void* buf)
 {
     // Throw an exception if not writable.
     if (!itsWritable) {
 	throw AipsError ("FiledesIO::pwrite - " + itsFileName
                          + " is not writable");
     }
-    if (::tracePWRITE(itsFile, (Char *)buf, size, offset) != size) {
+    if (::tracePWRITE(itsFile, (char *)buf, size, offset) != size) {
         int error = errno;
 	throw AipsError ("FiledesIO::pwrite - write error in "
                          + itsFileName + ": " + strerror(error));
     }
 }
 
-Int64 FiledesIO::read (Int64 size, void* buf, Bool throwException)
+int64_t FiledesIO::read (int64_t size, void* buf, bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError ("FiledesIO::read " + itsFileName
                      + " - is not readable");
   }
-  Int64 bytesRead = ::traceREAD (itsFile, (Char *)buf, size);
+  int64_t bytesRead = ::traceREAD (itsFile, (char *)buf, size);
   int error = errno;
   if (bytesRead > size) { // Should never be executed
     throw AipsError ("FiledesIO::read " + itsFileName
                      + " - read returned a bad value");
   }
-  if (bytesRead != size  &&  throwException == True) {
+  if (bytesRead != size  &&  throwException == true) {
     if (bytesRead < 0) {
       throw AipsError ("FiledesIO::read " + itsFileName +
                        " - error returned by system call: " + 
@@ -147,20 +147,20 @@ Int64 FiledesIO::read (Int64 size, void* buf, Bool throwException)
   return bytesRead;
 }
 
-Int64 FiledesIO::pread (Int64 size, Int64 offset, void* buf, Bool throwException)
+int64_t FiledesIO::pread (int64_t size, int64_t offset, void* buf, bool throwException)
 {
   // Throw an exception if not readable.
   if (!itsReadable) {
     throw AipsError ("FiledesIO::pread " + itsFileName
                      + " - is not readable");
   }
-  Int64 bytesRead = ::tracePREAD (itsFile, (Char *)buf, size, offset);
+  int64_t bytesRead = ::tracePREAD (itsFile, (char *)buf, size, offset);
   int error = errno;
   if (bytesRead > size) { // Should never be executed
     throw AipsError ("FiledesIO::pread " + itsFileName
                      + " - read returned a bad value");
   }
-  if (bytesRead != size  &&  throwException == True) {
+  if (bytesRead != size  &&  throwException == true) {
     if (bytesRead < 0) {
       throw AipsError ("FiledesIO::pread " + itsFileName +
                        " - error returned by system call: " + 
@@ -175,7 +175,7 @@ Int64 FiledesIO::pread (Int64 size, Int64 offset, void* buf, Bool throwException
   return bytesRead;
 }
 
-Int64 FiledesIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
+int64_t FiledesIO::doSeek (int64_t offset, ByteIO::SeekOption dir)
 {
     switch (dir) {
     case ByteIO::Begin:
@@ -188,13 +188,13 @@ Int64 FiledesIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
     return ::traceLSEEK (itsFile, offset, SEEK_CUR);
 }
 
-Int64 FiledesIO::length()
+int64_t FiledesIO::length()
 {
     // Get current position to be able to reposition.
-    Int64 pos = seek (0, ByteIO::Current);
+    int64_t pos = seek (0, ByteIO::Current);
     // Seek to the end of the stream.
     // If it fails, we cannot seek and the current position is the length.
-    Int64 len = seek (0, ByteIO::End);
+    int64_t len = seek (0, ByteIO::End);
     if (len < 0) {
 	return pos;
     }
@@ -204,17 +204,17 @@ Int64 FiledesIO::length()
 }
 
    
-Bool FiledesIO::isReadable() const
+bool FiledesIO::isReadable() const
 {
     return itsReadable;
 }
 
-Bool FiledesIO::isWritable() const
+bool FiledesIO::isWritable() const
 {
     return itsWritable;
 }
 
-Bool FiledesIO::isSeekable() const
+bool FiledesIO::isSeekable() const
 {
     return itsSeekable;
 }
@@ -230,14 +230,14 @@ void FiledesIO::fsync()
     ::fsync (itsFile);
 }
 
-void FiledesIO::truncate (Int64 size)
+void FiledesIO::truncate (int64_t size)
 {
     ::ftruncate (itsFile, size);
 }
   
-int FiledesIO::create (const Char* name, int mode)
+int FiledesIO::create (const char* name, int mode)
 {
-    int fd = ::trace3OPEN ((Char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
+    int fd = ::trace3OPEN ((char *)name, O_RDWR | O_CREAT | O_TRUNC, mode);
     int error = errno;
     if (fd == -1) {
       throw AipsError ("FiledesIO: file " + String(name) +
@@ -246,13 +246,13 @@ int FiledesIO::create (const Char* name, int mode)
     return fd;
 }
 
-int FiledesIO::open (const Char* name, Bool writable, Bool throwExcp)
+int FiledesIO::open (const char* name, bool writable, bool throwExcp)
 {
     int fd;
     if (writable) {
-	fd = ::trace2OPEN ((Char *)name, O_RDWR);
+	fd = ::trace2OPEN ((char *)name, O_RDWR);
     }else{
-	fd = ::trace2OPEN ((Char *)name, O_RDONLY);
+	fd = ::trace2OPEN ((char *)name, O_RDONLY);
     }
     int error = errno;
     if (throwExcp  &&  fd == -1) {

@@ -54,62 +54,62 @@ const ReservedFitsKeyword ReservedFitsKeywordCollection::resword[56] = {
 //         |               |           |  type           | isessential   in|NOST
 //        \|/             \|/         \|/\|/            \|/     \|/      \|/
 //         ------          ------      -  -------        -----  -----    ------------
-/*  0 */ { FITS::USER_DEF, "",         0, FITS::NOVALUE, False, False },
-/*  1 */ { FITS::AUTHOR,   "AUTHOR",   6, FITS::STRING,  False, False }, // 5.2.2.3
-/*  2 */ { FITS::BITPIX,   "BITPIX",   6, FITS::LONG,    False, True },  // 5.2.1.1
-/*  3 */ { FITS::BLANK,    "BLANK",    5, FITS::LONG,    False, False }, // 5.2.2.5
-/*  4 */ { FITS::BLOCKED,  "BLOCKED",  7, FITS::LOGICAL, False, False }, // 5.2.2.1
-/*  5 */ { FITS::BSCALE,   "BSCALE",   6, FITS::REAL,    False, False }, // 5.2.2.5
-/*  6 */ { FITS::BUNIT,    "BUNIT",    5, FITS::STRING,  False, False }, // 5.2.2.5
-/*  7 */ { FITS::BZERO,    "BZERO",    5, FITS::REAL,    False, False }, // 5.2.2.5
-/*  8 */ { FITS::CDELT,    "CDELT",    5, FITS::REAL,    True, False },  // 5.2.2.5
-/*  9 */ { FITS::COMMENT,  "COMMENT",  7, FITS::NOVALUE, False, False }, // 5.2.2.4
-/* 10 */ { FITS::CROTA,    "CROTA",    5, FITS::REAL,    True, False },  // 5.2.2.5
-/* 11 */ { FITS::CRPIX,    "CRPIX",    5, FITS::REAL,    True, False },  // 5.2.2.5
-/* 12 */ { FITS::CRVAL,    "CRVAL",    5, FITS::REAL,    True, False },  // 5.2.2.5
-/* 13 */ { FITS::CTYPE,    "CTYPE",    5, FITS::STRING,  True, False },  // 5.2.2.5
-/* 14 */ { FITS::DATAMAX,  "DATAMAX",  7, FITS::REAL,    False, False }, // 5.2.2.5
-/* 15 */ { FITS::DATAMIN,  "DATAMIN",  7, FITS::REAL,    False, False }, // 5.2.2.5
-/* 16 */ { FITS::DATE,     "DATE",     4, FITS::STRING,  False, False }, // 5.2.2.1
-/* 17 */ { FITS::DATE_OBS, "DATE-OBS", 8, FITS::STRING,  False, False }, // 5.2.2.2
-/* 18 */ { FITS::END,      "END",      3, FITS::NOVALUE, False, True },  // 5.2.1.1
-/* 19 */ { FITS::EPOCH,    "EPOCH",    5, FITS::REAL,    False, False }, // 5.2.2.2
-/* 20 */ { FITS::EQUINOX,  "EQUINOX",  7, FITS::REAL,    False, False }, // 5.2.2.2
-/* 21 */ { FITS::EXTEND,   "EXTEND",   6, FITS::LOGICAL, False, True },  // 5.2.1.2
-/* 22 */ { FITS::EXTLEVEL, "EXTLEVEL", 8, FITS::LONG,    False, False }, // 5.2.2.6
-/* 23 */ { FITS::EXTNAME,  "EXTNAME",  7, FITS::STRING,  False, False }, // 5.2.2.6
-/* 24 */ { FITS::EXTVER,   "EXTVER",   6, FITS::LONG,    False, False }, // 5.2.2.6
-/* 25 */ { FITS::GCOUNT,   "GCOUNT",   6, FITS::LONG,    False, True },  // 5.2.1.2
-/* 26 */ { FITS::GROUPS,   "GROUPS",   6, FITS::LOGICAL, False, True },  // 7.1.1.6
-/* 27 */ { FITS::HISTORY,  "HISTORY",  7, FITS::NOVALUE, False, False }, // 5.2.2.4
-/* 28 */ { FITS::INSTRUME, "INSTRUME", 8, FITS::STRING,  False, False }, // 5.2.2.2
-/* 29 */ { FITS::NAXIS,    "NAXIS",    5, FITS::LONG,    False, True },  // 5.2.1.1
-/* 30 */ { FITS::NAXIS,    "NAXIS",    5, FITS::LONG,    True, True },   // 5.2.1.1
-/* 31 */ { FITS::OBJECT,   "OBJECT",   6, FITS::STRING,  False, False }, // 5.2.2.2
-/* 32 */ { FITS::OBSERVER, "OBSERVER", 8, FITS::STRING,  False, False }, // 5.2.2.2
-/* 33 */ { FITS::ORIGIN,   "ORIGIN",   6, FITS::STRING,  False, False }, // 5.2.2.1
-/* 34 */ { FITS::PCOUNT,   "PCOUNT",   6, FITS::LONG,    False, True },  // 5.2.1.2
-/* 35 */ { FITS::PSCAL,    "PSCAL",    5, FITS::REAL,    True, False },  // 7.1.2.2
-/* 36 */ { FITS::PTYPE,    "PTYPE",    5, FITS::STRING,  True, False },  // 7.1.2.1
-/* 37 */ { FITS::PZERO_FITS,    "PZERO",    5, FITS::REAL,    True, False },  // 7.1.2.3
-/* 38 */ { FITS::REFERENC, "REFERENC", 8, FITS::STRING,  False, False }, // 5.2.2.3
-/* 39 */ { FITS::SIMPLE,   "SIMPLE",   6, FITS::LOGICAL, False, True },  // 5.2.1.1
-/* 40 */ { FITS::SPACES,   "        ", 8, FITS::NOVALUE, False, False }, // 5.2.2.4
-/* 41 */ { FITS::TBCOL,    "TBCOL",    5, FITS::LONG,    True, False },  // 8.1.1
-/* 42 */ { FITS::TDIM,     "TDIM",     4, FITS::STRING,  True, False },  // A.4, A.9.1
-/* 43 */ { FITS::TDISP,    "TDISP",    5, FITS::STRING,  True, False },  // A.4
-/* 44 */ { FITS::TELESCOP, "TELESCOP", 8, FITS::STRING,  False, False }, // 5.2.2.2
-/* 45 */ { FITS::TFIELDS,  "TFIELDS",  7, FITS::LONG,    False, False }, // 8.1.1
-/* 46 */ { FITS::TFORM,    "TFORM",    5, FITS::STRING,  True, False },  // 8.1.1
-/* 47 */ { FITS::THEAP,    "THEAP",    5, FITS::LONG,    False, False }, // A.4, A.9.2
-/* 48 */ { FITS::TNULL,    "TNULL",    5, FITS::STRING,  True, False },  // 8.1.2
-/* 49 */ { FITS::TNULL,    "TNULL",    5, FITS::LONG  ,  True, False },  // A.4
-/* 50 */ { FITS::TSCAL,    "TSCAL",    5, FITS::REAL,    True, False },  // 8.1.2
-/* 51 */ { FITS::TTYPE,    "TTYPE",    5, FITS::STRING,  True, False },  // 8.1.2
-/* 52 */ { FITS::TUNIT,    "TUNIT",    5, FITS::STRING,  True, False },  // 8.1.2
-/* 53 */ { FITS::TZERO,    "TZERO",    5, FITS::REAL,    True, False },  // 8.1.2
-/* 54 */ { FITS::XTENSION, "XTENSION", 8, FITS::STRING,  False, True },  // 5.2.1.2
-/* 55 */ { FITS::ERRWORD,  "",         0, FITS::NOVALUE, False, False }  // last
+/*  0 */ { FITS::USER_DEF, "",         0, FITS::NOVALUE, false, false },
+/*  1 */ { FITS::AUTHOR,   "AUTHOR",   6, FITS::STRING,  false, false }, // 5.2.2.3
+/*  2 */ { FITS::BITPIX,   "BITPIX",   6, FITS::LONG,    false, true },  // 5.2.1.1
+/*  3 */ { FITS::BLANK,    "BLANK",    5, FITS::LONG,    false, false }, // 5.2.2.5
+/*  4 */ { FITS::BLOCKED,  "BLOCKED",  7, FITS::LOGICAL, false, false }, // 5.2.2.1
+/*  5 */ { FITS::BSCALE,   "BSCALE",   6, FITS::REAL,    false, false }, // 5.2.2.5
+/*  6 */ { FITS::BUNIT,    "BUNIT",    5, FITS::STRING,  false, false }, // 5.2.2.5
+/*  7 */ { FITS::BZERO,    "BZERO",    5, FITS::REAL,    false, false }, // 5.2.2.5
+/*  8 */ { FITS::CDELT,    "CDELT",    5, FITS::REAL,    true, false },  // 5.2.2.5
+/*  9 */ { FITS::COMMENT,  "COMMENT",  7, FITS::NOVALUE, false, false }, // 5.2.2.4
+/* 10 */ { FITS::CROTA,    "CROTA",    5, FITS::REAL,    true, false },  // 5.2.2.5
+/* 11 */ { FITS::CRPIX,    "CRPIX",    5, FITS::REAL,    true, false },  // 5.2.2.5
+/* 12 */ { FITS::CRVAL,    "CRVAL",    5, FITS::REAL,    true, false },  // 5.2.2.5
+/* 13 */ { FITS::CTYPE,    "CTYPE",    5, FITS::STRING,  true, false },  // 5.2.2.5
+/* 14 */ { FITS::DATAMAX,  "DATAMAX",  7, FITS::REAL,    false, false }, // 5.2.2.5
+/* 15 */ { FITS::DATAMIN,  "DATAMIN",  7, FITS::REAL,    false, false }, // 5.2.2.5
+/* 16 */ { FITS::DATE,     "DATE",     4, FITS::STRING,  false, false }, // 5.2.2.1
+/* 17 */ { FITS::DATE_OBS, "DATE-OBS", 8, FITS::STRING,  false, false }, // 5.2.2.2
+/* 18 */ { FITS::END,      "END",      3, FITS::NOVALUE, false, true },  // 5.2.1.1
+/* 19 */ { FITS::EPOCH,    "EPOCH",    5, FITS::REAL,    false, false }, // 5.2.2.2
+/* 20 */ { FITS::EQUINOX,  "EQUINOX",  7, FITS::REAL,    false, false }, // 5.2.2.2
+/* 21 */ { FITS::EXTEND,   "EXTEND",   6, FITS::LOGICAL, false, true },  // 5.2.1.2
+/* 22 */ { FITS::EXTLEVEL, "EXTLEVEL", 8, FITS::LONG,    false, false }, // 5.2.2.6
+/* 23 */ { FITS::EXTNAME,  "EXTNAME",  7, FITS::STRING,  false, false }, // 5.2.2.6
+/* 24 */ { FITS::EXTVER,   "EXTVER",   6, FITS::LONG,    false, false }, // 5.2.2.6
+/* 25 */ { FITS::GCOUNT,   "GCOUNT",   6, FITS::LONG,    false, true },  // 5.2.1.2
+/* 26 */ { FITS::GROUPS,   "GROUPS",   6, FITS::LOGICAL, false, true },  // 7.1.1.6
+/* 27 */ { FITS::HISTORY,  "HISTORY",  7, FITS::NOVALUE, false, false }, // 5.2.2.4
+/* 28 */ { FITS::INSTRUME, "INSTRUME", 8, FITS::STRING,  false, false }, // 5.2.2.2
+/* 29 */ { FITS::NAXIS,    "NAXIS",    5, FITS::LONG,    false, true },  // 5.2.1.1
+/* 30 */ { FITS::NAXIS,    "NAXIS",    5, FITS::LONG,    true, true },   // 5.2.1.1
+/* 31 */ { FITS::OBJECT,   "OBJECT",   6, FITS::STRING,  false, false }, // 5.2.2.2
+/* 32 */ { FITS::OBSERVER, "OBSERVER", 8, FITS::STRING,  false, false }, // 5.2.2.2
+/* 33 */ { FITS::ORIGIN,   "ORIGIN",   6, FITS::STRING,  false, false }, // 5.2.2.1
+/* 34 */ { FITS::PCOUNT,   "PCOUNT",   6, FITS::LONG,    false, true },  // 5.2.1.2
+/* 35 */ { FITS::PSCAL,    "PSCAL",    5, FITS::REAL,    true, false },  // 7.1.2.2
+/* 36 */ { FITS::PTYPE,    "PTYPE",    5, FITS::STRING,  true, false },  // 7.1.2.1
+/* 37 */ { FITS::PZERO_FITS,    "PZERO",    5, FITS::REAL,    true, false },  // 7.1.2.3
+/* 38 */ { FITS::REFERENC, "REFERENC", 8, FITS::STRING,  false, false }, // 5.2.2.3
+/* 39 */ { FITS::SIMPLE,   "SIMPLE",   6, FITS::LOGICAL, false, true },  // 5.2.1.1
+/* 40 */ { FITS::SPACES,   "        ", 8, FITS::NOVALUE, false, false }, // 5.2.2.4
+/* 41 */ { FITS::TBCOL,    "TBCOL",    5, FITS::LONG,    true, false },  // 8.1.1
+/* 42 */ { FITS::TDIM,     "TDIM",     4, FITS::STRING,  true, false },  // A.4, A.9.1
+/* 43 */ { FITS::TDISP,    "TDISP",    5, FITS::STRING,  true, false },  // A.4
+/* 44 */ { FITS::TELESCOP, "TELESCOP", 8, FITS::STRING,  false, false }, // 5.2.2.2
+/* 45 */ { FITS::TFIELDS,  "TFIELDS",  7, FITS::LONG,    false, false }, // 8.1.1
+/* 46 */ { FITS::TFORM,    "TFORM",    5, FITS::STRING,  true, false },  // 8.1.1
+/* 47 */ { FITS::THEAP,    "THEAP",    5, FITS::LONG,    false, false }, // A.4, A.9.2
+/* 48 */ { FITS::TNULL,    "TNULL",    5, FITS::STRING,  true, false },  // 8.1.2
+/* 49 */ { FITS::TNULL,    "TNULL",    5, FITS::LONG  ,  true, false },  // A.4
+/* 50 */ { FITS::TSCAL,    "TSCAL",    5, FITS::REAL,    true, false },  // 8.1.2
+/* 51 */ { FITS::TTYPE,    "TTYPE",    5, FITS::STRING,  true, false },  // 8.1.2
+/* 52 */ { FITS::TUNIT,    "TUNIT",    5, FITS::STRING,  true, false },  // 8.1.2
+/* 53 */ { FITS::TZERO,    "TZERO",    5, FITS::REAL,    true, false },  // 8.1.2
+/* 54 */ { FITS::XTENSION, "XTENSION", 8, FITS::STRING,  false, true },  // 5.2.1.2
+/* 55 */ { FITS::ERRWORD,  "",         0, FITS::NOVALUE, false, false }  // last
 };
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::user_def_item = 
 	resword[0];
@@ -184,8 +184,8 @@ const int FITS::maxdblexp = 308;
 const int FITS::maxsigdigits = 17;
 const int FITS::maxdigl = 9; // max digits in a long
 const int FITS::maxexpdig = 3; // max digits in an exponent
-const Int FITS::minInt = INT_MIN;
-const Int FITS::maxInt = INT_MAX;
+const int32_t FITS::minInt = INT_MIN;
+const int32_t FITS::maxInt = INT_MAX;
 #   if defined(GNU)
 const float FITS::minfloat = C::minfloat;
 const float FITS::maxfloat = C::maxfloat;
@@ -222,7 +222,7 @@ int FITS::localsize(FITS::ValueType t) {
 		sizeof(FitsLogical), 	// 1
 		sizeof(FitsBit), 	// 2
 		sizeof(char), 		// 3
-		sizeof(uChar),   	// 4
+		sizeof(unsigned char),   	// 4
 		sizeof(short), 		// 5
 		sizeof(FitsLong),	// 6
 		sizeof(float), 		// 7
@@ -246,12 +246,12 @@ void FITS::f2l(FitsBit *local_addr, void *fits_addr, int number) {
 	int n = number / 8;
 	if (number % 8 != 0)
 	    ++n;
-	memcpy(local_addr,fits_addr,(n * sizeof(uChar))); }
+	memcpy(local_addr,fits_addr,(n * sizeof(unsigned char))); }
 void FITS::l2f(void *fits_addr, FitsBit *local_addr, int number) {
 	int n = number / 8;
 	if (number % 8 != 0)
 	    ++n;
-	memcpy(fits_addr,local_addr,(n * sizeof(uChar))); }
+	memcpy(fits_addr,local_addr,(n * sizeof(unsigned char))); }
 
 // Data conversion:  char
 void FITS::f2l(char *local_addr, void *fits_addr, int number) {
@@ -259,11 +259,11 @@ void FITS::f2l(char *local_addr, void *fits_addr, int number) {
 void FITS::l2f(void *fits_addr, char *local_addr, int number) {
 	memcpy(fits_addr,local_addr,(number * sizeof(char))); }
 
-// Data conversion:  uChar
-void FITS::f2l(uChar *local_addr, void *fits_addr, int number) {
-	memcpy(local_addr,fits_addr,(number * sizeof(uChar))); }
-void FITS::l2f(void *fits_addr, uChar *local_addr, int number) {
-	memcpy(fits_addr,local_addr,(number * sizeof(uChar))); }
+// Data conversion:  unsigned char
+void FITS::f2l(unsigned char *local_addr, void *fits_addr, int number) {
+	memcpy(local_addr,fits_addr,(number * sizeof(unsigned char))); }
+void FITS::l2f(void *fits_addr, unsigned char *local_addr, int number) {
+	memcpy(fits_addr,local_addr,(number * sizeof(unsigned char))); }
 
 // Data conversion:  short
 void FITS::f2l(short *local_addr, void *fits_addr, int number) {
@@ -296,19 +296,19 @@ void FITS::l2f(void *fits_addr, long *local_addr, int number) {
 	FITS::f2l( (long *)fits_addr, local_addr, number );
 }
 
-// Data conversion:  Int
-void FITS::f2l(Int *local_addr, void *fits_addr, int number) {
+// Data conversion:  int32_t
+void FITS::f2l(int32_t *local_addr, void *fits_addr, int number) {
 # if defined(AIPS_LITTLE_ENDIAN)
-        switch(sizeof(Int)) {
+        switch(sizeof(int32_t)) {
           case 2: FITS::swap2(local_addr, fits_addr, number); break;
           case 4: FITS::swap4(local_addr, fits_addr, number); break;
         }
 # else
-	memcpy(local_addr,fits_addr,(number * sizeof(Int)));
+	memcpy(local_addr,fits_addr,(number * sizeof(int32_t)));
 # endif
 }
-void FITS::l2f(void *fits_addr, Int *local_addr, int number) {
-	FITS::f2l((Int *) fits_addr, local_addr, number);
+void FITS::l2f(void *fits_addr, int32_t *local_addr, int number) {
+	FITS::f2l((int32_t *) fits_addr, local_addr, number);
 }
 
 // Data conversion:  float
@@ -362,14 +362,14 @@ void FITS::l2f(void *fits_addr, Complex *local_addr, int number) {
 // Data conversion:  IComplex
 void FITS::f2l(IComplex *local_addr, void *fits_addr, int number) {
 # if defined(AIPS_LITTLE_ENDIAN)
-	FITS::f2l( (Int *)local_addr, fits_addr, 2*number );
+	FITS::f2l( (int32_t *)local_addr, fits_addr, 2*number );
 # else
 	memcpy(local_addr,fits_addr,(number * sizeof(IComplex)));
 # endif
 }
 void FITS::l2f(void *fits_addr, IComplex *local_addr, int number) {
 # if defined(AIPS_LITTLE_ENDIAN)
-	FITS::f2l( (Int *)fits_addr, local_addr, 2*number );
+	FITS::f2l( (int32_t *)fits_addr, local_addr, 2*number );
 # else
 	memcpy(fits_addr,local_addr,(number * sizeof(IComplex)));
 # endif
@@ -394,14 +394,14 @@ void FITS::l2f(void *fits_addr, DComplex *local_addr, int number) {
 // Data conversion:  FitsVADesc
 void FITS::f2l(FitsVADesc *local_addr, void *fits_addr, int number) {
 # if defined(AIPS_LITTLE_ENDIAN)
-	FITS::f2l( (Int *)local_addr, fits_addr, 2*number );
+	FITS::f2l( (int32_t *)local_addr, fits_addr, 2*number );
 # else
 	memcpy(local_addr,fits_addr,(number * sizeof(FitsVADesc)));
 # endif
 }
 void FITS::l2f(void *fits_addr, FitsVADesc *local_addr, int number) {
 # if defined(AIPS_LITTLE_ENDIAN)
-	FITS::f2l( (Int *)fits_addr, local_addr, 2*number );
+	FITS::f2l( (int32_t *)fits_addr, local_addr, 2*number );
 # else
 	memcpy(fits_addr,local_addr,(number * sizeof(FitsVADesc)));
 # endif
@@ -409,11 +409,11 @@ void FITS::l2f(void *fits_addr, FitsVADesc *local_addr, int number) {
 
 // Swap routines for 2, 4 and 8 byte items
 void FITS::swap2(void *dest, void *src, int number) {
-  uChar *t = (uChar *)dest;
-  uChar *s = (uChar *)src;
+  unsigned char *t = (unsigned char *)dest;
+  unsigned char *s = (unsigned char *)src;
   if( t == s )
     for (int i = 0; i < number; ++i, t += 2) {
-      uChar tmp;
+      unsigned char tmp;
       tmp = *t; *t = t[1]; t[1] = tmp;
     }
   else
@@ -422,11 +422,11 @@ void FITS::swap2(void *dest, void *src, int number) {
 }
 
 void FITS::swap4(void *dest, void *src, int number) {
-  uChar *t = (uChar *)dest;
-  uChar *s = (uChar *)src;
+  unsigned char *t = (unsigned char *)dest;
+  unsigned char *s = (unsigned char *)src;
   if( t == s ) {
     for (int i = 0; i < number; ++i, t += 4) {
-      uChar tmp;
+      unsigned char tmp;
       tmp = *t;     *t = t[3]; t[3] = tmp;
       tmp = t[1]; t[1] = t[2]; t[2] = tmp;
     }
@@ -437,11 +437,11 @@ void FITS::swap4(void *dest, void *src, int number) {
 }
 
 void FITS::swap8(void *dest, void *src, int number) {
-  uChar *t = (uChar *)dest;
-  uChar *s = (uChar *)src;
+  unsigned char *t = (unsigned char *)dest;
+  unsigned char *s = (unsigned char *)src;
   if( t == s ) {
     for (int i = 0; i < number; ++i, t += 8) {
-      uChar tmp;
+      unsigned char tmp;
       tmp = *t;     *t = t[7]; t[7] = tmp;
       tmp = t[1]; t[1] = t[6]; t[6] = tmp;
       tmp = t[2]; t[2] = t[5]; t[5] = tmp;
@@ -464,10 +464,10 @@ void FITS::valstr(ostream &o, const ValueType &ty, const void *val) {
 	switch (ty) {
 	    case FITS::NOVALUE: break;
 	    case FITS::LOGICAL: 
-		o << ((*((Bool *)val) == True) ? "True" : "False"); break;
+		o << ((*((bool *)val) == true) ? "True" : "False"); break;
 	    case FITS::BIT: o << "*****"; break;
 	    case FITS::CHAR: o << *((char *)val); break;
-	    case FITS::BYTE: n = *((uChar *)val); o << n; break;
+	    case FITS::BYTE: n = *((unsigned char *)val); o << n; break;
 	    case FITS::SHORT: o << *((short *)val); break;
 	    case FITS::LONG: o << *((FitsLong *)val); break;
 	    case FITS::STRING: o << "\'" << (char *)val << "\'"; break;
@@ -506,7 +506,7 @@ ostream & operator << (ostream &o, const FITS::ValueType &ty) {
 }
 
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i, 
-	const char *s, int s_len, Bool n, FITS::ValueType t, const void *v,
+	const char *s, int s_len, bool n, FITS::ValueType t, const void *v,
 	int v_len, const char *&msg) const {
 
 	if (t == FITS::FLOAT || t == FITS::DOUBLE)
@@ -548,7 +548,7 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::match(int i,
 }
 
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::get(
-	FITS::ReservedName nm, Bool n, FITS::ValueType t, const void *v,
+	FITS::ReservedName nm, bool n, FITS::ValueType t, const void *v,
 	int v_len, const char *&msg) const {
 	int i;
 	msg = 0;
@@ -559,7 +559,7 @@ const ReservedFitsKeyword & ReservedFitsKeywordCollection::get(
 }
 
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::get(const char *s,
-	int s_len, Bool n, FITS::ValueType t, const void *v, int v_len,
+	int s_len, bool n, FITS::ValueType t, const void *v, int v_len,
 	const char *&msg) const {
 	msg = 0;
 	int i; // The index into the table.
@@ -596,19 +596,19 @@ int ReservedFitsKeywordCollection::isreserved(const char *s, int s_len) const {
 	return i;
 }
 
-Bool ReservedFitsKeywordCollection::requires_value(int n) const {
+bool ReservedFitsKeywordCollection::requires_value(int n) const {
 	if (resword[n].type() == FITS::NOVALUE)
-	    return False;
+	    return false;
 	while (resword[n].name() == resword[n + 1].name()) {
 	    ++n;
 	    if (resword[n].type() == FITS::NOVALUE)
-	        return False;
+	        return false;
 	}
-	return True;
+	return true;
 }
 
 int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
-	const char *s, 	int s_len, Bool n, FITS::ValueType, const void *v,
+	const char *s, 	int s_len, bool n, FITS::ValueType, const void *v,
 	int v_len, const char *&msg) const {
 	// Return: 0 = no errors, 1 = minor errors, -1 = major errors
 	static int month[13] = {0,31,28,31,30,31,30,31,31,30,31,30,31};
@@ -627,10 +627,10 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 	}
 
 	// The name, isindexed, and type match an entry in the table.
-	const Int *l;
+	const int32_t *l;
 	switch (res.name()) {
 	    case FITS::BITPIX:
-		l = (const Int *)v;
+		l = (const int32_t *)v;
 		if (!(*l ==   8 || *l ==  16 || *l == 32 ||
 		      *l == -32 || *l == -64)) {
 		    msg = "Illegal value for keyword BITPIX.";
@@ -638,8 +638,8 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 		}
 		break;
 	    case FITS::NAXIS:
-		if (n == False) {
-		    l = (const Int *)v;
+		if (n == false) {
+		    l = (const int32_t *)v;
 		    if (*l < 0 || *l > 999) {
 			msg = "Illegal value for keyword NAXIS.";
 			return -1;
@@ -647,7 +647,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 		}
 		break;
 	    case FITS::TFIELDS:
-		l = (const Int *)v;
+		l = (const int32_t *)v;
 		if (*l < 0 || *l > 999) {
 		    msg = "Illegal value for keyword TFIELDS.";
 		    return -1;
@@ -708,7 +708,7 @@ int ReservedFitsKeywordCollection::rules(const ReservedFitsKeyword &res,
 				return 1;
 			    }
 			    // digits required after decimal
-			    for (Int curr = 20;curr <= (v_len-1); curr++) {
+			    for (int32_t curr = 20;curr <= (v_len-1); curr++) {
 				if (!FITS::isa_digit(p[curr])) {
 				    msg = "Illegal date format.";
 				    return 1;
@@ -790,7 +790,7 @@ int ReservedFitsKeywordCollection::essential_name(const char *s, int s_len)
 }
 
 const ReservedFitsKeyword & ReservedFitsKeywordCollection::get_essential(int i,
-	Bool n, FITS::ValueType t, const void *v, int v_len,
+	bool n, FITS::ValueType t, const void *v, int v_len,
 	const char *&msg) const {
 	// This index i must be to an essential name in the table.
 	msg = 0;
@@ -848,21 +848,21 @@ void FITS::get_name(const char *s, int len, FitsNameResult &result) {
 	result.err = FitsNameResult::OK;
 	for (i = 0; *s == ' ' && (i < len); ++i, ++s) ; // skip spaces
 	if (i == len || (!FITS::isa_text(*s)) || *s == '=') {
-	    result.isaname = False; // If there is no name, only
+	    result.isaname = false; // If there is no name, only
 	    result.begpos = i;	// begpos has meaning.
 	    return;
 	}
-	result.isaname = True;
+	result.isaname = true;
 	result.begpos = i;
 	for(; *s != ' ' && *s != '=' && (i < len) && FITS::isa_text(*s); 
 		++i, ++s) ;
 	result.endpos = i - 1;
 	result.len = i - result.begpos;
 	--s;
-	result.isaindex = False;
+	result.isaindex = false;
 	result.index = 0;
 	if (FITS::isa_digit(*s)) { // get any index
-	    result.isaindex = True;
+	    result.isaindex = true;
 	    result.index = FITS::digit2bin(*s--);
 	    --result.len;
 	    if (FITS::isa_digit(*s)) {
@@ -928,7 +928,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
 	result.s[1] = 0;
 	result.begpos = 0;
 	result.endpos = 0;
-	result.isa_point = False;
+	result.isa_point = false;
 	result.pointpos = 0;
 	result.no_sig = 0;
 	result.errmsg = 0;
@@ -937,13 +937,13 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
 	    return;
 	switch (*s) { // the first non-blank
 	    case 'T':	// logical
-		result.b = True;
+		result.b = true;
 		result.type = FITS::LOGICAL;
 		result.begpos = i;
 		result.endpos = i;
 		return;
 	    case 'F':	// logical
-		result.b = False;
+		result.b = false;
 		result.type = FITS::LOGICAL;
 		result.begpos = i;
 		result.endpos = i;
@@ -1003,7 +1003,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
 	    default:
 		if (*s == '.' && (i < (len - 1))) {
 		    if (s[i + 1] == 'T') { // F77 list-directed logical
-			result.b = True;
+			result.b = true;
 			result.type = FITS::LOGICAL;
 			result.begpos = i;
 			i += 2;
@@ -1014,7 +1014,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
 			result.endpos = i;
 			return;
 		    } else if (s[i + 1] == 'F') { // F77 logical
-			result.b = False;
+			result.b = false;
 			result.type = FITS::LOGICAL;
 			result.begpos = i;
 			i += 2;
@@ -1040,7 +1040,7 @@ void FITS::get_value(const char *s, int len, FitsValueResult &result) {
 	}
 }
 
-int FITS::ckaccum(double &d, Int numb, int pow) {
+int FITS::ckaccum(double &d, int32_t numb, int pow) {
 	// compute d += numb * 10**pow checking for over/underflow
 	double tmp = (double)numb;
 	if (pow > 0) {
@@ -1065,7 +1065,7 @@ int FITS::ckaccum(double &d, Int numb, int pow) {
 	return 0;
 }
 
-int FITS::ckaccum(float &f, Int numb, int pow) {
+int FITS::ckaccum(float &f, int32_t numb, int pow) {
 	// compute f += numb * 10**pow checking for over/underflow
 	float tmp = (float)numb;
 	if (pow > 0) {
@@ -1100,7 +1100,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
 	result.l = 0; // It may not be nessary to init the rest of these.
 	result.begpos = 0;
 	result.endpos = 0;
-	result.isa_point = False;
+	result.isa_point = false;
 	result.pointpos = 0;
 	result.no_sig = 0;
 
@@ -1125,15 +1125,15 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
 	    result.type = LONG;
 	    result.l = 0;
 	    result.endpos = n - 1;
-	    result.isa_point = False;
+	    result.isa_point = false;
 	    result.pointpos = 0;
 	    result.no_sig = 1;
 	    return;
 	}
 	// 5. Get integer part of number.  Get digits, store in Ints,
 	//	and count significant digits
-	Int intpart1 = 0;	// part 1 of digits of integer part
-	Int intpart2 = 0;	// part 2 of digits of integer part
+	int32_t intpart1 = 0;	// part 1 of digits of integer part
+	int32_t intpart2 = 0;	// part 2 of digits of integer part
 	int  sigint   = 0;	// number of significant digits
 	if (isa_digit(*s)) {
 	    intpart1 = digit2bin(*s);
@@ -1165,7 +1165,7 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
 	}
 	if (n == len || (!(*s == '.' || *s == 'E' || *s == 'D'))) {
 	    result.endpos = n - 1;
-	    result.isa_point = False;
+	    result.isa_point = false;
 	    result.pointpos = 0;
 	    if (sigint < 10) {
 		result.type = LONG;
@@ -1203,15 +1203,15 @@ void FITS::get_numeric(const char *s, int len, FitsValueResult &result) {
 	}
 	// 6. If valid, the number is float or double.  Get the fraction
 	//	part, if any.
-	Int fracpart1 = 0;	// part 1 of digits of fraction part
-	Int fracpart2 = 0;	// part 2 of digits of fraction part
+	int32_t fracpart1 = 0;	// part 1 of digits of fraction part
+	int32_t fracpart2 = 0;	// part 2 of digits of fraction part
 	int  sigfrac   = 0;	// number of significant digits in fraction
 	int  fracpos   = 0;	// position of first digit relative to point
 	int  exp       = 0;	// exponent
 	int  sigexp    = 0;	// number of significant digits in exponent
 	char exp_type  = ' ';	// the exponent letter
 	if (*s == '.') {
-	    result.isa_point = True;
+	    result.isa_point = true;
 	    result.pointpos = n;
 	    // 7. Get the fraction part
 	    ++s;
@@ -1863,8 +1863,8 @@ void FitsKeyword::setval(const FITS::ValueType &ty, const void *v, int vlen) {
 	    val = 0;
 	    vallen = 0;
 	    switch(type_) {
-		case FITS::LOGICAL: bval = *((Bool *)v); break;
-		case FITS::LONG: ival = *((Int *)v); break;
+		case FITS::LOGICAL: bval = *((bool *)v); break;
+		case FITS::LONG: ival = *((int32_t *)v); break;
 		case FITS::FLOAT: fval = *((float *)v); break;
 		case FITS::DOUBLE: dval = *((double *)v); break;
 		case FITS::ICOMPLEX:
@@ -2025,7 +2025,7 @@ FitsKeyword &FitsKeywordList::make(const char *nm,
     }
     int valsize = (vallen < 8) ? 8 : vallen;
     const char *errmsg = 0;
-    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,nmlen, False,
+    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,nmlen, false,
 						       ty,val,valsize,errmsg);
     if (errmsg)
 	FitsKeyword::err(nm,ty,val,errmsg);
@@ -2056,7 +2056,7 @@ FitsKeyword &FitsKeywordList::make(FITS::ReservedName nm,
     }
     int valsize = (vallen < 8) ? 8 : vallen;
     const char *errmsg = 0;
-    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,False,
+    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,false,
 						       ty,val,valsize,errmsg);
     if (errmsg)
 	FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,errmsg);
@@ -2089,7 +2089,7 @@ FitsKeyword &FitsKeywordList::make(int ind, FITS::ReservedName nm,
     }
     int valsize = (vallen < 8) ? 8 : vallen;
     const char *errmsg = 0;
-    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,True,
+    const ReservedFitsKeyword *rw = &FITS::ResWord.get(nm,true,
 						       ty,val,valsize,errmsg);
     if (errmsg)
 	FitsKeyword::err(FITS::ResWord.aname(nm),ty,val,errmsg);
@@ -2389,16 +2389,16 @@ int FitsKeywordList::rules(FITSErrorHandler errhandler) {
 	return rtn;
 }
 
-Bool FitsKeywordList::basic_rules() {
+bool FitsKeywordList::basic_rules() {
 	int rtn = 0;
 	const char *msg = 0;
 	for (FitsKeyword *x = beg_; x != 0; x = x->next_) {
 	   rtn = FITS::ResWord.rules(x->kw(),x->name(),x->namelen(),
 		 x->isindexed(),x->type(),x->value(),x->valStrlen(),msg);
 	   if (rtn != 0 || msg != 0)
-		return False;
+		return false;
 	}
-	return True;
+	return true;
 }
 
 FitsKeyCardTranslator::FitsKeyCardTranslator(int max) : cardno(0),
@@ -2416,7 +2416,7 @@ FitsKeywordList &FitsKeyCardTranslator::parse(const char *buff,
 					      FitsKeywordList &kwlist, 
 					      int count, 
 					      FITSErrorHandler errhandler, 
-					      Bool show_err) {
+					      bool show_err) {
         char msgstring[180]; // storage for composing error messages
 	int i, j;
 	cardno = 0;
@@ -2517,7 +2517,7 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 	    card[8] = '=';
 	    switch (k.type()) {
 		case FITS::LOGICAL:
-		    card[29] = (k.asBool() == True ? 'T' : 'F');
+		    card[29] = (k.asBool() == true ? 'T' : 'F');
 		    break;
 		case FITS::LONG:
 		    sprintf(&card[18],"%12d",k.asInt());
@@ -2579,9 +2579,9 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 // For some amazing reason the following wouldn't inline
 FITS::ReservedName ReservedFitsKeyword::name() const {  return name_; }
 
-Bool FitsFPUtil::isFP(const float *) {return True;}
-Bool FitsFPUtil::isFP(const double *) {return True;}
-Bool FitsFPUtil::isFP(const void *) {return False;}
+bool FitsFPUtil::isFP(const float *) {return true;}
+bool FitsFPUtil::isFP(const double *) {return true;}
+bool FitsFPUtil::isFP(const void *) {return false;}
 
 void FitsFPUtil::setNaN(double &val)
 {

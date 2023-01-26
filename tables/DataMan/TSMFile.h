@@ -81,19 +81,19 @@ class TSMFile
 public:
     // Create a TSMFile object (with corresponding file).
     // The sequence number gets part of the file name.
-    TSMFile (const TiledStMan* stMan, uInt fileSequenceNr,
+    TSMFile (const TiledStMan* stMan, uint32_t fileSequenceNr,
              const TSMOption&,
              const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Create a TSMFile object for the given existing file.
-    TSMFile (const String& fileName, Bool writable, const TSMOption&,
+    TSMFile (const String& fileName, bool writable, const TSMOption&,
              const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Read the object back.
     // The file is not opened until the first access,
     // thus until the file descriptor is asked for the first time.
     // It checks if the sequence number matches the expected one.
-    TSMFile (const TiledStMan* stMan, AipsIO& ios, uInt seqnr,
+    TSMFile (const TiledStMan* stMan, AipsIO& ios, uint32_t seqnr,
              const TSMOption&,
              const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
@@ -113,22 +113,22 @@ public:
     BucketFile* bucketFile();
 
     // Return the logical file length.
-    Int64 length() const;
+    int64_t length() const;
 
     // Return the file sequence number.
-    uInt sequenceNumber() const;
+    uint32_t sequenceNumber() const;
 
     // Increment the logical file length.
-    void extend (Int64 increment);
+    void extend (int64_t increment);
 
 
 private:
     // The file sequence number.
-    uInt fileSeqnr_p;
+    uint32_t fileSeqnr_p;
     // The file object.
     BucketFile* file_p;
     // The (logical) length of the file.
-    Int64 length_p;
+    int64_t length_p;
 	    
 
     // Forbid copy constructor.
@@ -139,13 +139,13 @@ private:
 };
 
 
-inline Int64 TSMFile::length() const
+inline int64_t TSMFile::length() const
     { return length_p; }
 
-inline uInt TSMFile::sequenceNumber() const
+inline uint32_t TSMFile::sequenceNumber() const
     { return fileSeqnr_p; }
 
-inline void TSMFile::extend (Int64 increment)
+inline void TSMFile::extend (int64_t increment)
     { length_p += increment; }
 
 inline BucketFile* TSMFile::bucketFile()

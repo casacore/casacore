@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LattStatsProgress::~LattStatsProgress() {}
 
-void LattStatsProgress::operator++(Int) {
+void LattStatsProgress::operator++(int32_t) {
 	++_currentStep;
 	_meter->update (_currentStep);
 }
@@ -51,12 +51,12 @@ void LattStatsProgress::initDerived()
 // calls this initDerived function
 // 
 
-    _meter = new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
+    _meter = new ProgressMeter(0.0, double(expectedNsteps()), String("Generate Storage Image"),
                                  String("Accumulation Iterations"), String(""), String(""),
-                                 True, max(1,Int(expectedNsteps()/20)));
+                                 true, max(1,int32_t(expectedNsteps()/20)));
 }
 
-void LattStatsProgress::nstepsDone (uInt nsteps)
+void LattStatsProgress::nstepsDone (uint32_t nsteps)
 {
 	_currentStep = nsteps;
     _meter->update (_currentStep);

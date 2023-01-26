@@ -208,8 +208,8 @@ public:
    // Construct from two vectors of world coordinates 
    // defining the polygon vertices.  
    // <group>
-   WCPolygon(const Quantum<Vector<Double> >& x,
-             const Quantum<Vector<Double> >& y,
+   WCPolygon(const Quantum<Vector<double> >& x,
+             const Quantum<Vector<double> >& y,
              const IPosition& pixelAxes,
              const CoordinateSystem& cSys,
              const RegionType::AbsRelType absRel=RegionType::Abs);
@@ -230,13 +230,13 @@ public:
    WCPolygon& operator= (const WCPolygon& other);
 
    // Comparison
-   virtual Bool operator==(const WCRegion& other) const;
+   virtual bool operator==(const WCRegion& other) const;
 
    // Clone a WCPolygon object.
    virtual WCRegion* cloneRegion() const;
 
    // WCPolygon cannot extend a region.
-   virtual Bool canExtend() const;   
+   virtual bool canExtend() const;   
 
    // Convert to an LCRegion using the given coordinate system.
    virtual LCRegion* doToLCRegion (const CoordinateSystem& cSys,
@@ -262,12 +262,12 @@ public:
 
 
 protected:
-   Quantum<Vector<Double> > itsX;
-   Quantum<Vector<Double> > itsY;
+   Quantum<Vector<double> > itsX;
+   Quantum<Vector<double> > itsY;
    IPosition itsPixelAxes;   
    CoordinateSystem itsCSys;
    RegionType::AbsRelType itsAbsRel;
-   Bool itsNull;
+   bool itsNull;
 
 };
 

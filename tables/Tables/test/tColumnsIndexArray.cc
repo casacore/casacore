@@ -53,30 +53,30 @@ void a()
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   td.comment() = "A test of class Table";
-  td.addColumn (ArrayColumnDesc<Int>("aint"));
-  td.addColumn (ArrayColumnDesc<uInt>("auint"));
+  td.addColumn (ArrayColumnDesc<int32_t>("aint"));
+  td.addColumn (ArrayColumnDesc<uint32_t>("auint"));
   td.addColumn (ArrayColumnDesc<String>("astring"));
 
   // Now create a new table from the description.
-  const Int nrrow = 10;
+  const int32_t nrrow = 10;
   SetupNewTable newtab("tColumnsIndexArray_tmp.data", td, Table::New);
   Table tab(newtab, nrrow);
-  ArrayColumn<Int> aint(tab, "aint");
-  ArrayColumn<uInt> auint(tab, "auint");
+  ArrayColumn<int32_t> aint(tab, "aint");
+  ArrayColumn<uint32_t> auint(tab, "auint");
   ArrayColumn<String> astring(tab, "astring");
-  Array<Int> arri(IPosition(1,3));
+  Array<int32_t> arri(IPosition(1,3));
   indgen(arri);
-  Array<uInt> arrui(IPosition(1,3));
+  Array<uint32_t> arrui(IPosition(1,3));
   indgen(arrui);
   Array<String> arrstr(IPosition(1,3));
   arrstr = "aa";
-  for (Int i=0; i<nrrow; i++) {
+  for (int32_t i=0; i<nrrow; i++) {
     if (i%2 == 0) {
       aint.put (i, arri);
       auint.put (i, arrui);
       astring.put (i, arrstr);
       arri += 2;
-      arrui += uInt(arrui.nelements());
+      arrui += uint32_t(arrui.nelements());
     }
   }
 }
@@ -90,13 +90,13 @@ void b()
   AlwaysAssertExit (!colInx3.isUnique());
   AlwaysAssertExit (colInx4.isUnique());
   AlwaysAssertExit (!colInx9.isUnique());
-  RecordFieldPtr<Int> aint (colInx3.accessKey(), "aint");
-  RecordFieldPtr<uInt> auint (colInx4.accessKey(), "auint");
+  RecordFieldPtr<int32_t> aint (colInx3.accessKey(), "aint");
+  RecordFieldPtr<uint32_t> auint (colInx4.accessKey(), "auint");
   RecordFieldPtr<String> astring (colInx9.accessKey(), "astring");
   Record rec;
-  Bool found;
+  bool found;
   // Find the 15 values.
-  for (uInt i=0; i<15; i++) {
+  for (uint32_t i=0; i<15; i++) {
     rec.define ("auint", i);
     AlwaysAssertExit ( (colInx4.getRowNumber(found, rec) == 2*(i/3)
 			&& found));
@@ -107,16 +107,16 @@ void b()
   AlwaysAssertExit (!found);
 
   // Find the values in the other index. They are not unique.
-  for (Int i=0; i<12; i++) {
+  for (int32_t i=0; i<12; i++) {
     *aint = i;
     cout << colInx3.getRowNumbers() << endl;
   }
   *astring = "a";
   cout << colInx9.getRowNumbers() << endl;
-  cout << colInx9.getRowNumbers(True) << endl;
+  cout << colInx9.getRowNumbers(true) << endl;
   *astring = "aa";
   cout << colInx9.getRowNumbers() << endl;
-  cout << colInx9.getRowNumbers(True) << endl;
+  cout << colInx9.getRowNumbers(true) << endl;
   // Test a not unique index in an erroneous way.
   try {
     colInx9.getRowNumber(found);
@@ -125,21 +125,21 @@ void b()
   } 
   // Test a range.
   Record lower, upper;
-  lower.define ("auint", uInt(2));
-  upper.define ("auint", uInt(6));
-  cout << colInx4.getRowNumbers (lower, upper, False, False) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, True, False) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, False, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, True, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, False, False, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, True, False, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, False, True, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, True, True, True) << endl;
-  upper.define ("auint", uInt(3));
-  cout << colInx4.getRowNumbers (lower, upper, True, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, False, False) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, True, True, True) << endl;
-  cout << colInx4.getRowNumbers (lower, upper, False, False, True) << endl;
+  lower.define ("auint", uint32_t(2));
+  upper.define ("auint", uint32_t(6));
+  cout << colInx4.getRowNumbers (lower, upper, false, false) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, true, false) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, false, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, true, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, false, false, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, true, false, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, false, true, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, true, true, true) << endl;
+  upper.define ("auint", uint32_t(3));
+  cout << colInx4.getRowNumbers (lower, upper, true, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, false, false) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, true, true, true) << endl;
+  cout << colInx4.getRowNumbers (lower, upper, false, false, true) << endl;
 }
 
 void c()
@@ -147,14 +147,14 @@ void c()
   Table tab("tColumnsIndexArray_tmp.data", Table::Update);
   // Create the index with the special compare function.
   ColumnsIndexArray colInx0 (tab, "aint");
-  RecordFieldPtr<Int> keyint (colInx0.accessKey(), "aint");
-  ArrayColumn<Int> aint(tab, "aint");
-  ArrayColumn<uInt> auint(tab, "auint");
+  RecordFieldPtr<int32_t> keyint (colInx0.accessKey(), "aint");
+  ArrayColumn<int32_t> aint(tab, "aint");
+  ArrayColumn<uint32_t> auint(tab, "auint");
   // Change the values of a few columns.
-  Array<Int> arri(IPosition(2,2,4));
-  Array<uInt> arrui(IPosition(3,2,3,3));
+  Array<int32_t> arri(IPosition(2,2,4));
+  Array<uint32_t> arrui(IPosition(3,2,3,3));
   indgen(arri);
-  indgen(arrui, uInt(15));
+  indgen(arrui, uint32_t(15));
   aint.put (3, arri);
   auint.put (7, arrui);
   // Tell the index that some columns have changed.

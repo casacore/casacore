@@ -35,9 +35,9 @@ const String SerialHelper::gtype[] = {
     "Double", "Complex", "DComplex", "String"
 };
 
-Bool SerialHelper::getFuncType(String& ftype) const 
+bool SerialHelper::getFuncType(String& ftype) const 
 {
-    if (! gr.isDefined(FUNCTYPE)) return False;
+    if (! gr.isDefined(FUNCTYPE)) return false;
 
     try {
        ftype = gr.asString(RecordFieldId(FUNCTYPE));
@@ -47,7 +47,7 @@ Bool SerialHelper::getFuncType(String& ftype) const
     } catch (std::exception& x) {
 	throw InvalidSerializationError("Wrong type for functype field");
     }
-    return True;
+    return true;
 }
 
 void SerialHelper::checkFuncType(const String& ftype) const 
@@ -60,8 +60,8 @@ void SerialHelper::checkFuncType(const String& ftype) const
 					     ftype + ", found " + thistype);
 }
 
-template <> void getArrayVal<Bool>(Bool& val,     Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<bool>(bool& val,     int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -71,7 +71,7 @@ template <> void getArrayVal<Bool>(Bool& val,     Int, const Record& gr,
            break;
         case TpArrayBool :
            {
-           Array<Bool> tmp = gr.asArrayBool(RecordFieldId(name));
+           Array<bool> tmp = gr.asArrayBool(RecordFieldId(name));
            val = tmp(IPosition(tmp.nelements(), index));
            }
            break;
@@ -82,8 +82,8 @@ template <> void getArrayVal<Bool>(Bool& val,     Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Short>(Short& val,    Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<int16_t>(int16_t& val,    int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -93,7 +93,7 @@ template <> void getArrayVal<Short>(Short& val,    Int, const Record& gr,
            break;
         case TpArrayShort :
            {
-           Array<Short> tmp = gr.asArrayShort(RecordFieldId(name));
+           Array<int16_t> tmp = gr.asArrayShort(RecordFieldId(name));
            val = tmp(IPosition(tmp.nelements(), index));
            }
            break;
@@ -104,8 +104,8 @@ template <> void getArrayVal<Short>(Short& val,    Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Int>(Int& val,      Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<int32_t>(int32_t& val,      int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -115,7 +115,7 @@ template <> void getArrayVal<Int>(Int& val,      Int, const Record& gr,
            break;
         case TpArrayInt :
            {
-           Array<Int> tmp = gr.asArrayInt(RecordFieldId(name));
+           Array<int32_t> tmp = gr.asArrayInt(RecordFieldId(name));
            val = tmp(IPosition(tmp.nelements(), index));
            }
            break;
@@ -126,8 +126,8 @@ template <> void getArrayVal<Int>(Int& val,      Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Float>(Float& val,    Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<float>(float& val,    int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -137,7 +137,7 @@ template <> void getArrayVal<Float>(Float& val,    Int, const Record& gr,
            break;
         case TpArrayFloat :
            {
-           Array<Float> tmp = gr.asArrayFloat(RecordFieldId(name));
+           Array<float> tmp = gr.asArrayFloat(RecordFieldId(name));
            val = tmp(IPosition(tmp.nelements(), index));
            }
            break;
@@ -148,8 +148,8 @@ template <> void getArrayVal<Float>(Float& val,    Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Double>(Double& val,   Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<double>(double& val,   int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -159,7 +159,7 @@ template <> void getArrayVal<Double>(Double& val,   Int, const Record& gr,
            break;
         case TpArrayDouble :
            {
-           Array<Double> tmp = gr.asArrayDouble(RecordFieldId(name));
+           Array<double> tmp = gr.asArrayDouble(RecordFieldId(name));
            val = tmp(IPosition(tmp.nelements(), index));
            }
            break;
@@ -170,8 +170,8 @@ template <> void getArrayVal<Double>(Double& val,   Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<Complex>(Complex& val,  Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<Complex>(Complex& val,  int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -192,8 +192,8 @@ template <> void getArrayVal<Complex>(Complex& val,  Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<DComplex>(DComplex& val, Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<DComplex>(DComplex& val, int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -214,8 +214,8 @@ template <> void getArrayVal<DComplex>(DComplex& val, Int, const Record& gr,
            break;
     }
 }
-template <> void getArrayVal<String>(String& val,   Int, const Record& gr, 
-			                  const String& name, uInt index)
+template <> void getArrayVal<String>(String& val,   int32_t, const Record& gr, 
+			                  const String& name, uint32_t index)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     //std::cerr << name << " "<< gr.dataType(RecordFieldId(name)) << endl;
@@ -237,7 +237,7 @@ template <> void getArrayVal<String>(String& val,   Int, const Record& gr,
     }
 }
 
-template <> void getArray<Bool>(Array<Bool>& val,     Int, const Record& gr, 
+template <> void getArray<bool>(Array<bool>& val,     int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -248,7 +248,7 @@ template <> void getArray<Bool>(Array<Bool>& val,     Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayBool(RecordFieldId(name));
 }
-template <> void getArray<Short>(Array<Short>& val,    Int, const Record& gr, 
+template <> void getArray<int16_t>(Array<int16_t>& val,    int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -259,7 +259,7 @@ template <> void getArray<Short>(Array<Short>& val,    Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayShort(RecordFieldId(name));
 }
-template <> void getArray<Int>(Array<Int>& val,      Int, const Record& gr, 
+template <> void getArray<int32_t>(Array<int32_t>& val,      int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -270,7 +270,7 @@ template <> void getArray<Int>(Array<Int>& val,      Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayInt(RecordFieldId(name));
 }
-template <> void getArray<Float>(Array<Float>& val,    Int, const Record& gr, 
+template <> void getArray<float>(Array<float>& val,    int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -281,7 +281,7 @@ template <> void getArray<Float>(Array<Float>& val,    Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayFloat(RecordFieldId(name));
 }
-template <> void getArray<Double>(Array<Double>& val,   Int, const Record& gr, 
+template <> void getArray<double>(Array<double>& val,   int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -292,7 +292,7 @@ template <> void getArray<Double>(Array<Double>& val,   Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayDouble(RecordFieldId(name));
 }
-template <> void getArray<Complex>(Array<Complex>& val,  Int, const Record& gr, 
+template <> void getArray<Complex>(Array<Complex>& val,  int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -303,7 +303,7 @@ template <> void getArray<Complex>(Array<Complex>& val,  Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayComplex(RecordFieldId(name));
 }
-template <> void getArray<DComplex>(Array<DComplex>& val, Int, const Record& gr, 
+template <> void getArray<DComplex>(Array<DComplex>& val, int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -314,7 +314,7 @@ template <> void getArray<DComplex>(Array<DComplex>& val, Int, const Record& gr,
 					     " found record)");
     val = gr.asArrayDComplex(RecordFieldId(name));
 }
-template <> void getArray<String>(Array<String>& val,   Int, const Record& gr, 
+template <> void getArray<String>(Array<String>& val,   int32_t, const Record& gr, 
 			                      const String& name)
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
@@ -327,72 +327,72 @@ template <> void getArray<String>(Array<String>& val,   Int, const Record& gr,
 }
 
 
-void SerialHelper::get(Bool &val, const String& name, uInt index) const
+void SerialHelper::get(bool &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtBOOL, gr, name, index);
 }
 
-void SerialHelper::get(String &val, const String& name, uInt index) const
+void SerialHelper::get(String &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtSTRING, gr, name, index);
 }
 
-//  void SerialHelper::get(Byte &val, const String& name, uInt index) const
+//  void SerialHelper::get(Byte &val, const String& name, uint32_t index) const
 //  {
 //      getArrayVal(val, Array::BYTE, gr, name, index);
 //  }
 
-void SerialHelper::get(Short &val, const String& name, uInt index) const
+void SerialHelper::get(int16_t &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtSHORT, gr, name, index);
 }
 
-void SerialHelper::get(Int &val, const String& name, uInt index) const
+void SerialHelper::get(int32_t &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtINT, gr, name, index);
 }
 
-void SerialHelper::get(Float &val, const String& name, uInt index) const
+void SerialHelper::get(float &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtFLOAT, gr, name, index);
 }
 
-void SerialHelper::get(Double &val, const String& name, uInt index) const
+void SerialHelper::get(double &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtDOUBLE, gr, name, index);
 }
 
-void SerialHelper::get(Complex &val, const String& name, uInt index) const
+void SerialHelper::get(Complex &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtCOMPLEX, gr, name, index);
 }
 
-void SerialHelper::get(DComplex &val, const String& name, uInt index) const
+void SerialHelper::get(DComplex &val, const String& name, uint32_t index) const
 {
     getArrayVal(val, SerialHelper::shtDCOMPLEX, gr, name, index);
 }
 
-void SerialHelper::get(Array<Bool> &val, const String& name) const
+void SerialHelper::get(Array<bool> &val, const String& name) const
 {
     getArray(val, SerialHelper::shtBOOL, gr, name);
 }
 
-void SerialHelper::get(Array<Short> &val, const String& name) const
+void SerialHelper::get(Array<int16_t> &val, const String& name) const
 {
     getArray(val, SerialHelper::shtSHORT, gr, name);
 }
 
-void SerialHelper::get(Array<Int> &val, const String& name) const
+void SerialHelper::get(Array<int32_t> &val, const String& name) const
 {
     getArray(val, SerialHelper::shtINT, gr, name);
 }
 
-void SerialHelper::get(Array<Float> &val, const String& name) const
+void SerialHelper::get(Array<float> &val, const String& name) const
 {
     getArray(val, SerialHelper::shtFLOAT, gr, name);
 }
 
-void SerialHelper::get(Array<Double> &val, const String& name) const
+void SerialHelper::get(Array<double> &val, const String& name) const
 {
     getArray(val, SerialHelper::shtDOUBLE, gr, name);
 }
@@ -425,8 +425,8 @@ void SerialHelper::get(Record &val, const String& name) const
 /*
 
 template <class V>
-void getArrayVal(V &val, Int gtype, const Record& gr, 
-		      const String& name, uInt index) 
+void getArrayVal(V &val, int32_t gtype, const Record& gr, 
+		      const String& name, uint32_t index) 
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);
     if (gr.dataType(RecordFieldId(name)) != TpArray) 
@@ -445,7 +445,7 @@ void getArrayVal(V &val, Int gtype, const Record& gr,
 
 /*
 template <class V>
-void getArray(Array<V> &val, Int gtype, const Record& gr,
+void getArray(Array<V> &val, int32_t gtype, const Record& gr,
 		   const String& name) 
 {
     if (! gr.isDefined(name)) throw FieldNotFoundError(name);

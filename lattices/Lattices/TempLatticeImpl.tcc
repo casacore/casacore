@@ -42,23 +42,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 TempLatticeImpl<T>::TempLatticeImpl() 
 : itsTablePtr (0),
-  itsIsClosed (False)
+  itsIsClosed (false)
 {
   itsLatticePtr = new ArrayLattice<T>;
 }
 
 template<class T>
-TempLatticeImpl<T>::TempLatticeImpl (const TiledShape& shape, Int maxMemoryInMB)
+TempLatticeImpl<T>::TempLatticeImpl (const TiledShape& shape, int32_t maxMemoryInMB)
 : itsTablePtr (0),
-  itsIsClosed (False)
+  itsIsClosed (false)
 {
-  init (shape, Double(maxMemoryInMB));
+  init (shape, double(maxMemoryInMB));
 }
 
 template<class T>
-TempLatticeImpl<T>::TempLatticeImpl (const TiledShape& shape, Double maxMemoryInMB)
+TempLatticeImpl<T>::TempLatticeImpl (const TiledShape& shape, double maxMemoryInMB)
 : itsTablePtr (0),
-  itsIsClosed (False)
+  itsIsClosed (false)
 {
   init(shape, maxMemoryInMB);
 }
@@ -72,20 +72,20 @@ TempLatticeImpl<T>::~TempLatticeImpl()
 }
 
 template<class T>
-void TempLatticeImpl<T>::init (const TiledShape& shape, Double maxMemoryInMB) 
+void TempLatticeImpl<T>::init (const TiledShape& shape, double maxMemoryInMB) 
 {
-  Double memoryReq = Double(shape.shape().product()*sizeof(T))/(1024.0*1024.0);
-  Double memoryAvail;
+  double memoryReq = double(shape.shape().product()*sizeof(T))/(1024.0*1024.0);
+  double memoryAvail;
   // maxMemoryInMb = 0.0 forces disk.
   if (maxMemoryInMB < 0.0) {
-    memoryAvail = Double(HostInfo::memoryFree()/1024) / 2.0;
+    memoryAvail = double(HostInfo::memoryFree()/1024) / 2.0;
   } else {
     memoryAvail = maxMemoryInMB;
   }
   if (memoryReq > memoryAvail) {
     // Create a table with a unique name in a work directory.
     // We can use exclusive locking, since nobody else should use the table.
-    itsTableName = AppInfo::workFileName (Int(memoryReq), "TempLattice");
+    itsTableName = AppInfo::workFileName (int32_t(memoryReq), "TempLattice");
     SetupNewTable newtab (itsTableName, TableDesc(), Table::Scratch);
     itsTablePtr = new Table (newtab, TableLock::PermanentLockingWait);
     itsLatticePtr = new PagedArray<T> (shape, *itsTablePtr);
@@ -103,7 +103,7 @@ void TempLatticeImpl<T>::tempClose()
     delete itsTablePtr;
     itsTablePtr = 0;
     itsLatticePtr = 0;           // CountedPtr does delete of pointer
-    itsIsClosed = True;
+    itsIsClosed = true;
   }
 }
 
@@ -115,7 +115,7 @@ void TempLatticeImpl<T>::tempReopen() const
 			     TableLock(TableLock::PermanentLockingWait),
 			     Table::Update);
     itsLatticePtr = new PagedArray<T> (*itsTablePtr);
-    itsIsClosed = False;
+    itsIsClosed = false;
   }
   if (itsTablePtr != 0) {
     itsTablePtr->markForDelete();

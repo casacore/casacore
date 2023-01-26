@@ -88,12 +88,12 @@ int main()
      try {
        String in = "12.5pm";
        String bb;
-       Int ptr = 0;
-       Int l = in.length();
-       Double res = 0.0;
+       int32_t ptr = 0;
+       int32_t l = in.length();
+       double res = 0.0;
        if (ptr < l) {
 	 String loc0 = in;		// non-const string
-	 Int p = in.index(Regex("[ 	]"),ptr);
+	 int32_t p = in.index(Regex("[ 	]"),ptr);
 	 p = (p<0) ? l : p;
 	 String loc = loc0.at(ptr,p-ptr);
 	 ptr = p;

@@ -70,8 +70,8 @@ class Path;
 //    FiledesIO fio (fd);
 //    AipsIO stream (&fio);
 //    // Read the data.
-//    Int vali;
-//    Bool valb;
+//    int32_t vali;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -100,7 +100,7 @@ public:
   // exception if the device could not be opened correctly. When constructed
   // this way the class will close the Tape device when this class is destroyed
   // or the TapeIO object is attached to a new file descriptor.
-  TapeIO(const Path& device, Bool writable = False);
+  TapeIO(const Path& device, bool writable = false);
 
   // The destructor will only close the file if the appropriate constructor, or
   // attach function, was used.
@@ -112,42 +112,42 @@ public:
 
   // Attach to the given tape device. The tape will be closed when this class
   // is destroyed or the TapeIO object is attached to a new descriptor.
-  void attach(const Path& device, Bool writable = False);
+  void attach(const Path& device, bool writable = false);
 
   // Write the specified number of bytes.
-  virtual void write(Int64 size, const void* buf);
+  virtual void write(int64_t size, const void* buf);
 
   // Read <src>size</src> bytes from the tape. Returns the number of bytes
   // actually read or a negative number if an error occured. Will throw an
   // exception (AipsError) if the requested number of bytes could not be read,
-  // or an error occured, unless throwException is set to False. Will always
+  // or an error occured, unless throwException is set to false. Will always
   // throw an exception if the tape is not readable or the system call returns
   // an undocumented value. Returns zero if the tape is at the end of the
-  // current file (and size is non-zero and throwException is False).
-  virtual Int64 read(Int64 size, void* buf, Bool throwException=True);    
+  // current file (and size is non-zero and throwException is false).
+  virtual int64_t read(int64_t size, void* buf, bool throwException=true);    
 
   // Rewind the tape device to the beginning.
   virtual void rewind();
   
   // skip the specified number of files (ie tape marks) on the tape. Throws an
   // exception if you try to skip past the last filemark.
-  virtual void skip(uInt howMany=1);
+  virtual void skip(uint32_t howMany=1);
   
   // write the specified number of filemarks.
-  virtual void mark(uInt howMany=1);
+  virtual void mark(uint32_t howMany=1);
   
-  // returns True if the tape device is configured to use a fixed block size
-  Bool fixedBlocks() const;
+  // returns true if the tape device is configured to use a fixed block size
+  bool fixedBlocks() const;
 
   // returns the block size in bytes. Returns zero if the device is configured
   // to use variable length blocks.
-  uInt fixedBlockSize() const;
+  uint32_t fixedBlockSize() const;
 
   // Configure the tape device to use fixed length blocks of the specified
   // size. The size must be bigger than zero (dugh!). Values bigger than 64k
   // may cause problems on some systems. Currently this function only does
   // anything under Solaris and Linux systems.
-  void setFixedBlockSize(uInt sizeInBytes);
+  void setFixedBlockSize(uint32_t sizeInBytes);
 
   // Configure the tape device to use variable length blocks. Currently this
   // function only does anything under Solaris and Linux systems.
@@ -155,16 +155,16 @@ public:
 
   // Get the length of the tape device.  Not a meaningful function for this
   // class and this function always returns -1.
-  virtual Int64 length();
+  virtual int64_t length();
   
   // Is the tape device readable?
-  virtual Bool isReadable() const;
+  virtual bool isReadable() const;
   
   // Is the tape device writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
   
   // Is the tape device seekable?
-  virtual Bool isSeekable() const;
+  virtual bool isSeekable() const;
   
   // Get the name of the attached device or return a zero length string if it
   // cannot be determined.
@@ -174,7 +174,7 @@ public:
   // closing. The open function returns a file descriptor and the close
   // function requires a file descriptor as an argument.
   // <group>
-  static int open(const Path& device, Bool writable = False);
+  static int open(const Path& device, bool writable = false);
   static void close(int fd);
   // </group>
 
@@ -192,7 +192,7 @@ protected:
   // position. May not work on all Tape devices use the isSeekable(0 member
   // function to see if this function is usuable. Otherwise an Exception
   // (AipsError) is thrown. 
-  virtual Int64 doSeek(Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek(int64_t offset, ByteIO::SeekOption);
   
 private:
   // The following functions are made private so that the compiler does not
@@ -200,14 +200,14 @@ private:
   TapeIO (const TapeIO& that);
   TapeIO& operator= (const TapeIO& that);
 
-  void setBlockSize(uInt sizeInBytes);
-  uInt getBlockSize() const;
+  void setBlockSize(uint32_t sizeInBytes);
+  uint32_t getBlockSize() const;
 
   int         itsDevice;
-  Bool        itsOwner;
-  Bool        itsReadable;
-  Bool        itsWritable;
-  Bool        itsSeekable;
+  bool        itsOwner;
+  bool        itsReadable;
+  bool        itsWritable;
+  bool        itsSeekable;
   String      itsDeviceName;
 };
 

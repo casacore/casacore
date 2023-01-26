@@ -132,12 +132,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Construct a two dimensional Gaussian with mean=(0,1), variance=(.1,7) and
 // height = 1;
 // <srcblock>
-// uInt ndim = 2;
-// Float height = 1;
-// Vector<Float> mean(ndim); mean(0) = 0, mean(1) = 1;
-// Vector<Float> variance(ndim); variance(0) = .1, variance(1) = 7;
-// GaussianND<Float> g(ndim, height, mean, variance); 
-// Vector<Float> x(ndim); x = 0;
+// uint32_t ndim = 2;
+// float height = 1;
+// Vector<float> mean(ndim); mean(0) = 0, mean(1) = 1;
+// Vector<float> variance(ndim); variance(0) = .1, variance(1) = 7;
+// GaussianND<float> g(ndim, height, mean, variance); 
+// Vector<float> x(ndim); x = 0;
 // cout << "g("<< x <<") = " << g(x) <<endl; // g([0,0])=1*exp(-1/2*1/7);
 // x(1)++;
 // cout << "g("<< x <<") = " <<g(x) <<endl;  // g([0,1])= 1
@@ -186,16 +186,16 @@ public:
   // covariance defaults to 0.0, 
   // <group>
   GaussianND() : GaussianNDParam<T>() {}
-  explicit GaussianND(uInt ndim) :
+  explicit GaussianND(uint32_t ndim) :
     GaussianNDParam<T>(ndim) {}
-  GaussianND(uInt ndim, const T &height) :
+  GaussianND(uint32_t ndim, const T &height) :
     GaussianNDParam<T>(ndim, height) {}
-  GaussianND(uInt ndim, const T &height, const Vector<T> &mean) :
+  GaussianND(uint32_t ndim, const T &height, const Vector<T> &mean) :
     GaussianNDParam<T>(ndim, height, mean) {}
-  GaussianND(uInt ndim, const T &height, const Vector<T> &mean,
+  GaussianND(uint32_t ndim, const T &height, const Vector<T> &mean,
 	     const Vector<T> &variance) :
     GaussianNDParam<T>(ndim, height, mean, variance) {}
-  GaussianND(uInt ndim, const T &height, const Vector<T> &mean,
+  GaussianND(uint32_t ndim, const T &height, const Vector<T> &mean,
 	     const Matrix<T> &covar) :
     GaussianNDParam<T>(ndim, height, mean, covar) {}
   // </group>

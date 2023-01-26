@@ -37,23 +37,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // reorder from 3d to 4d (adding ifr axis)
 template <class T>
 void MSSelUtil2<T>::reorderData(Array<T>& data,
-				const Vector<Int>& ifrSlot,
-				Int nIfr, const Vector<Int>& timeSlot, 
-				Int nTime, const T& defvalue)
+				const Vector<int32_t>& ifrSlot,
+				int32_t nIfr, const Vector<int32_t>& timeSlot, 
+				int32_t nTime, const T& defvalue)
 {
-  Int nPol=data.shape()(0);
-  Int nChan=data.shape()(1);
-  Int64 nRow=data.shape()(2);
+  int32_t nPol=data.shape()(0);
+  int32_t nChan=data.shape()(1);
+  int64_t nRow=data.shape()(2);
   Array<T> data2(IPosition(4,nPol,nChan,nIfr,nTime));
   data2.set(defvalue);
   
-  Bool deleteData,deleteData2;
+  bool deleteData,deleteData2;
   const T* pdata=data.getStorage(deleteData);
   T* pdata2=data2.getStorage(deleteData2);
-  Int n=nPol*nChan;
-  for (Int64 i=0; i<nRow; i++) {
-    Int64 start1=i*n, start2=(ifrSlot(i)+timeSlot(i)*nIfr)*n;
-    for (Int j=0; j<n; j++) pdata2[start2+j]=pdata[start1+j];
+  int32_t n=nPol*nChan;
+  for (int64_t i=0; i<nRow; i++) {
+    int64_t start1=i*n, start2=(ifrSlot(i)+timeSlot(i)*nIfr)*n;
+    for (int32_t j=0; j<n; j++) pdata2[start2+j]=pdata[start1+j];
   }
   data.freeStorage(pdata,deleteData);
   data2.putStorage(pdata2,deleteData2);
@@ -63,10 +63,10 @@ void MSSelUtil2<T>::reorderData(Array<T>& data,
 
 // reorder from 4d to 3d (removing ifr axis)
 template <class T>
-void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex,
-			        Int64 nRow)
+void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<int64_t>& rowIndex,
+			        int64_t nRow)
 {
-  Int nPol=data.shape()(0),nChan=data.shape()(1),nIfr=data.shape()(2),
+  int32_t nPol=data.shape()(0),nChan=data.shape()(1),nIfr=data.shape()(2),
     nTime=data.shape()(3);
   if (nIfr!=rowIndex.shape()(0) || nTime!=rowIndex.shape()(1)) {
     //    os<< LogIO::SEVERE << "Data array shape does not match current selection"
@@ -75,16 +75,16 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex,
   }
   Array<T> data2(IPosition(3,nPol,nChan,nRow)); 
   
-  Bool deleteData,deleteData2;
+  bool deleteData,deleteData2;
   const T* pData=data.getStorage(deleteData);
   T* pData2=data2.getStorage(deleteData2);
-  Int n=nPol*nChan;
-  for (Int i=0; i<nTime; i++) {
-    for (Int j=0; j<nIfr; j++) {
-      Int64 k=rowIndex(j,i);
+  int32_t n=nPol*nChan;
+  for (int32_t i=0; i<nTime; i++) {
+    for (int32_t j=0; j<nIfr; j++) {
+      int64_t k=rowIndex(j,i);
       if (k>=0) {
-	Int64 start2=k*n, start1=(j+i*nIfr)*n;
-	for (Int l=0; l<n; l++) pData2[start2+l]=pData[start1+l];
+	int64_t start2=k*n, start1=(j+i*nIfr)*n;
+	for (int32_t l=0; l<n; l++) pData2[start2+l]=pData[start1+l];
       }
     }
   }
@@ -96,16 +96,16 @@ void MSSelUtil2<T>::reorderData(Array<T>& data, const Matrix<Int64>& rowIndex,
 // average data (with flags & weights applied) over its last axis (time or
 // row), return in data (overwritten), dataFlag gives new flags.
 template <class T>
-void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data, 
-				const Array<Bool>& flag, 
-				const Array<Float>& weight)
+void MSSelUtil2<T>::timeAverage(Array<bool>& dataFlag, Array<T>& data, 
+				const Array<bool>& flag, 
+				const Array<float>& weight)
 {
-  Bool delData,delFlag,delWeight;
+  bool delData,delFlag,delWeight;
   const T* pdata=data.getStorage(delData);
-  const Bool* pflag=flag.getStorage(delFlag);
-  const Float* pweight=weight.getStorage(delWeight);
-  Int nPol=data.shape()(0),nChan=data.shape()(1);
-  Int nIfr=1, nTime=data.shape()(2);
+  const bool* pflag=flag.getStorage(delFlag);
+  const float* pweight=weight.getStorage(delWeight);
+  int32_t nPol=data.shape()(0),nChan=data.shape()(1);
+  int32_t nIfr=1, nTime=data.shape()(2);
   Array<T> out;
   if (data.ndim()==4) {
     nIfr=nTime;
@@ -114,25 +114,25 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data,
   } else {
     out.resize(IPosition(2,nPol,nChan));
   }
-  Array<Float> wt(IPosition(3,nPol,nChan,nIfr));
+  Array<float> wt(IPosition(3,nPol,nChan,nIfr));
   dataFlag.resize(IPosition(3,nPol,nChan,nIfr));
-  dataFlag.set(True);
-  Bool delDataflag, delWt, delOut;
-  Float* pwt=wt.getStorage(delWt);
+  dataFlag.set(true);
+  bool delDataflag, delWt, delOut;
+  float* pwt=wt.getStorage(delWt);
   T* pout=out.getStorage(delOut);
-  Bool* pdflags=dataFlag.getStorage(delDataflag);
+  bool* pdflags=dataFlag.getStorage(delDataflag);
   out=0;
   wt=0;
-  Int offset=0,off1=0,offw=0;
-  for (Int l=0; l<nTime; l++) {
+  int32_t offset=0,off1=0,offw=0;
+  for (int32_t l=0; l<nTime; l++) {
     off1=0;
-    for (Int k=0; k<nIfr; k++) {
-      for (Int j=0; j<nChan; j++) {
-	for (Int i=0; i<nPol; i++) {
+    for (int32_t k=0; k<nIfr; k++) {
+      for (int32_t j=0; j<nChan; j++) {
+	for (int32_t i=0; i<nPol; i++) {
 	  //	  if (!flag(i,j,k,l)) {
 	  if (!pflag[offset]) {
 	    //	    out(i,j,k)+=weight(k,l)*data(i,j,k,l);
-	    pdflags[off1]=False;
+	    pdflags[off1]=false;
 	    pout[off1]+=pweight[offw]*pdata[offset];
 	    //	    wt(i,j,k)+=weight(k,l);
 	    pwt[off1]+=pweight[offw];
@@ -143,7 +143,7 @@ void MSSelUtil2<T>::timeAverage(Array<Bool>& dataFlag, Array<T>& data,
       offw++;
     }
   }
-  for (Int k=0; k<nIfr*nChan*nPol; k++) {
+  for (int32_t k=0; k<nIfr*nChan*nPol; k++) {
     if (pwt[k]>0) pout[k]/=pwt[k];
   }
   data.freeStorage(pdata,delData);

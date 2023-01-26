@@ -83,8 +83,8 @@ template <class T> class LELArray;
 //
 // <example>
 // <srcblock>
-//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
-//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f2(IPosition (2,nx,ny));
 //  f2.set(2.0);
 //  f1.copyData(2*f2+f2);
 // </srcblock>
@@ -105,21 +105,21 @@ template <class T> class LELArray;
 //
 // <example>
 // <srcblock>
-//  ArrayLattice<Float>   f1(IPosition (2,nx,ny));
-//  ArrayLattice<Float>   f2(IPosition (2,nx,ny));
-//  ArrayLattice<Double>  d(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f1(IPosition (2,nx,ny));
+//  ArrayLattice<float>   f2(IPosition (2,nx,ny));
+//  ArrayLattice<double>  d(IPosition (2,nx,ny));
 //  ArrayLattice<Complex> c(IPosition (2,nx,ny));
-//  ArrayLattice<Bool>    b(IPosition (2,nx,ny));
+//  ArrayLattice<bool>    b(IPosition (2,nx,ny));
 //
-//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(True);
+//  f2.set(1.0); d.set(2.0); c.set(Complex(2.0,3.0)); b.set(true);
 //  f1.copyData( (3.5*f2) + (cos(d)) - (10/min(d,f2)*(-abs(c))*ntrue(b)) - (C::pi) );
 // </srcblock>
 //  
 //  In this rather silly example, we fill Lattice "f1" with the result of the
 //  expression.  The expression shows the use of constants, unary operations, 
 //  binary operations, 1D and 2D functions.  It also shows how mixed types can 
-//  be handled.  The output Lattice is a Float, whereas  mixed into the 
-//  expression are subexpressions involving Float, Double, Complex and Bool
+//  be handled.  The output Lattice is a float, whereas  mixed into the 
+//  expression are subexpressions involving float, double, Complex and bool
 //  Lattices.
 //
 // </example>
@@ -166,24 +166,24 @@ public:
    virtual MaskedLattice<T>* cloneML() const;
 
   // Has the object really a mask?
-   virtual Bool isMasked() const;
+   virtual bool isMasked() const;
 
   // Get the region used (always returns 0).
    virtual const LatticeRegion* getRegionPtr() const;
 
-  // Returns False, as the LatticeExpr lattice is not writable.
-   virtual Bool isWritable() const;
+  // Returns false, as the LatticeExpr lattice is not writable.
+   virtual bool isWritable() const;
 
   // Handle locking of the LatticeExpr which is delegated to all of its parts.
-  // <br>hasLock() is True if all parts of the expression return True.
+  // <br>hasLock() is true if all parts of the expression return true.
   // <br>It is strongly recommended to use class
   // <linkto class=LatticeLocker>LatticeLocker</linkto> to
   // handle lattice locking. It also contains a more detailed
   // explanation of the locking process.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the Lattice object with the lattice file.
@@ -199,20 +199,20 @@ public:
    virtual IPosition shape() const;
 
   // Return the best cursor shape.  
-   virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+   virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Returns the coordinates of the lattice expression.
    virtual LELCoordinates lelCoordinates() const;
 
   // Do the actual get of the data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.
-   virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+   virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Do the actual get of the mask data.
-  // The return value is always False, thus the buffer does not reference
+  // The return value is always false, thus the buffer does not reference
   // another array.
-   virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+   virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // An expression is not writable so this functions throws an exception.
    virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -224,7 +224,7 @@ public:
 
   // Handle the Math operators (+=, -=, *=, /=).
   // They work similarly to copyData(To).
-  // However, they are not defined for Bool types, thus specialized below.
+  // However, they are not defined for bool types, thus specialized below.
    virtual void handleMathTo (Lattice<T>& to, int oper) const;
 
 private:
@@ -240,7 +240,7 @@ private:
 
 
 template<> inline
-void LatticeExpr<Bool>::handleMathTo (Lattice<Bool>&, int) const
+void LatticeExpr<bool>::handleMathTo (Lattice<bool>&, int) const
   { throwBoolMath(); }
 
 

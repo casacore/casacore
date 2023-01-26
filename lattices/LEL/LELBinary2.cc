@@ -35,14 +35,14 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
-			     const CountedPtr<LELInterface<Bool> >& pLeftExpr,
-			     const CountedPtr<LELInterface<Bool> >& pRightExpr)
+			     const CountedPtr<LELInterface<bool> >& pLeftExpr,
+			     const CountedPtr<LELInterface<bool> >& pRightExpr)
 : op_p(op)
 {
    if (op == LELBinaryEnums::EQ  ||  op == LELBinaryEnums::NE) {
        if (pLeftExpr->isScalar() != pRightExpr->isScalar()) {
 	   throw (AipsError ("LELBinaryBool::constructor - "
-			     "comparison between Bool scalar and "
+			     "comparison between bool scalar and "
 			     "array not possible; use function ANY or ALL"));
        }
    }
@@ -68,7 +68,7 @@ LELBinaryBool::~LELBinaryBool()
 }
 
 
-void LELBinaryBool::eval(LELArray<Bool>& result,
+void LELBinaryBool::eval(LELArray<bool>& result,
 			 const Slicer& section) const
 {
 #if defined(AIPS_TRACE)
@@ -78,101 +78,101 @@ void LELBinaryBool::eval(LELArray<Bool>& result,
    switch(op_p) {
    case LELBinaryEnums::EQ :
        {
-          LELArrayRef<Bool> templ(result.shape());
-	  LELArrayRef<Bool> tempr(result.shape());
+          LELArrayRef<bool> templ(result.shape());
+	  LELArrayRef<bool> tempr(result.shape());
 	  pLeftExpr_p->evalRef (templ, section);
 	  pRightExpr_p->evalRef(tempr, section);
-	  Array<Bool> res(templ.value() == tempr.value());
+	  Array<bool> res(templ.value() == tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
        }
        break;
    case LELBinaryEnums::NE :
        {
-          LELArrayRef<Bool> templ(result.shape());
-	  LELArrayRef<Bool> tempr(result.shape());
+          LELArrayRef<bool> templ(result.shape());
+	  LELArrayRef<bool> tempr(result.shape());
 	  pLeftExpr_p->evalRef (templ, section);
 	  pRightExpr_p->evalRef(tempr, section);
-	  Array<Bool> res(templ.value() != tempr.value());
+	  Array<bool> res(templ.value() != tempr.value());
 	  result.value().reference (res);
 	  result.setMask (templ, tempr);
        }
        break;
    case LELBinaryEnums::OR :
        if (pLeftExpr_p->isScalar()) {
-	  LELScalar<Bool> temp = pLeftExpr_p->getScalar();
-	  // Note that having a False mask is in fact an Unknown value.
-	  // If True scalar value, result is all True.
+	  LELScalar<bool> temp = pLeftExpr_p->getScalar();
+	  // Note that having a false mask is in fact an Unknown value.
+	  // If true scalar value, result is all true.
 	  if (temp.value()  &&  temp.mask()) {
-	     result.value() = True;
+	     result.value() = true;
 	     result.removeMask();
           } else {
 	     pRightExpr_p->eval(result, section);
-	     // If False scalar value, result array is same as original.
-	     // If Unknown scalar, result is Unknown where not True.
+	     // If false scalar value, result array is same as original.
+	     // If Unknown scalar, result is Unknown where not true.
 	     if (! temp.mask()) {
-		result.combineOrAnd (True, result.value());
+		result.combineOrAnd (true, result.value());
 	     }
 	  }
        } else if (pRightExpr_p->isScalar()) {
-	  LELScalar<Bool> temp = pRightExpr_p->getScalar();
+	  LELScalar<bool> temp = pRightExpr_p->getScalar();
 	  if (temp.value()  &&  temp.mask()) {
-	     result.value() = True;
+	     result.value() = true;
 	     result.removeMask();
           } else {
 	     pLeftExpr_p->eval(result, section);
 	     if (! temp.mask()) {
-		result.combineOrAnd (True, result.value());
+		result.combineOrAnd (true, result.value());
 	     }
 	  }
        } else {
-          LELArrayRef<Bool> temp(result.shape());
+          LELArrayRef<bool> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
 	  pRightExpr_p->evalRef(temp, section);
 	  if (temp.isMasked()) {
-	     result.combineOrAnd (True, result.value(), temp.value(),
+	     result.combineOrAnd (true, result.value(), temp.value(),
 				  temp.mask());
 	  } else {
-	     result.combineOrAnd (True, result.value(), temp.value());
+	     result.combineOrAnd (true, result.value(), temp.value());
 	  }
        }
        break;
    case LELBinaryEnums::AND :
        if (pLeftExpr_p->isScalar()) {
-	  LELScalar<Bool> temp = pLeftExpr_p->getScalar();
-	  // Note that having a False mask is in fact an Unknown value.
-	  // If False scalar value, result is all False.
+	  LELScalar<bool> temp = pLeftExpr_p->getScalar();
+	  // Note that having a false mask is in fact an Unknown value.
+	  // If false scalar value, result is all false.
 	  if (!temp.value()  &&  temp.mask()) {
-	     result.value() = False;
+	     result.value() = false;
 	     result.removeMask();
           } else {
 	     pRightExpr_p->eval(result, section);
-	     // If True scalar value, result array is same as original.
-	     // If Unknown scalar, result is Unknown where not False.
+	     // If true scalar value, result array is same as original.
+	     // If Unknown scalar, result is Unknown where not false.
 	     if (! temp.mask()) {
-		result.combineOrAnd (False, result.value());
+		result.combineOrAnd (false, result.value());
 	     }
 	  }
        } else if (pRightExpr_p->isScalar()) {
-	  LELScalar<Bool> temp = pRightExpr_p->getScalar();
+	  LELScalar<bool> temp = pRightExpr_p->getScalar();
 	  if (!temp.value()  &&  temp.mask()) {
-	     result.value() = False;
+	     result.value() = false;
 	     result.removeMask();
           } else {
 	     pLeftExpr_p->eval(result, section);
 	     if (! temp.mask()) {
-		result.combineOrAnd (False, result.value());
+		result.combineOrAnd (false, result.value());
 	     }
 	  }
        } else {
-          LELArrayRef<Bool> temp(result.shape());
+          LELArrayRef<bool> temp(result.shape());
 	  pLeftExpr_p->eval(result, section);
 	  pRightExpr_p->evalRef(temp, section);
 	  if (temp.isMasked()) {
-	     result.combineOrAnd (False, result.value(), temp.value(),
+	     result.combineOrAnd (false, result.value(), temp.value(),
 				  temp.mask());
 	  } else {
-	     result.combineOrAnd (False, result.value(), temp.value());
+	     result.combineOrAnd (false, result.value(), temp.value());
 	  }
        }
        break;
@@ -183,7 +183,7 @@ void LELBinaryBool::eval(LELArray<Bool>& result,
 }
 
 
-LELScalar<Bool> LELBinaryBool::getScalar() const
+LELScalar<bool> LELBinaryBool::getScalar() const
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinaryBool: getScalar " << endl;
@@ -198,38 +198,38 @@ LELScalar<Bool> LELBinaryBool::getScalar() const
 		     pRightExpr_p->getScalar().value());
    case LELBinaryEnums::OR :
    {
-      LELScalar<Bool> templ = pLeftExpr_p->getScalar();
+      LELScalar<bool> templ = pLeftExpr_p->getScalar();
       if (templ.value()  &&  templ.mask()) {
-	 return True;
+	 return true;
       }
-      LELScalar<Bool> tempr = pRightExpr_p->getScalar();
+      LELScalar<bool> tempr = pRightExpr_p->getScalar();
       if (tempr.value()  &&  tempr.mask()) {
-	 return True;
+	 return true;
       }
-      return LELScalar<Bool> ( (templ.value() || tempr.value()),
+      return LELScalar<bool> ( (templ.value() || tempr.value()),
 			       (templ.mask() && tempr.mask()));
    }
    case LELBinaryEnums::AND :
    {
-      LELScalar<Bool> templ = pLeftExpr_p->getScalar();
+      LELScalar<bool> templ = pLeftExpr_p->getScalar();
       if (!templ.value()  &&  templ.mask()) {
-	 return False;
+	 return false;
       }
-      LELScalar<Bool> tempr = pRightExpr_p->getScalar();
+      LELScalar<bool> tempr = pRightExpr_p->getScalar();
       if (!tempr.value()  &&  tempr.mask()) {
-	 return False;
+	 return false;
       }
-      return LELScalar<Bool> ( (templ.value() && tempr.value()),
+      return LELScalar<bool> ( (templ.value() && tempr.value()),
 			       (templ.mask() && tempr.mask()));
    }
    default:
        throw(AipsError("LELBinaryBool::eval - unknown operation"));
    }
-   return False;
+   return false;
 }
 
 
-Bool LELBinaryBool::prepareScalarExpr()
+bool LELBinaryBool::prepareScalarExpr()
 {
 #if defined(AIPS_TRACE)
    cout << "LELBinaryBool::prepare" << endl;
@@ -237,17 +237,17 @@ Bool LELBinaryBool::prepareScalarExpr()
 
 // In case of OR and AND, the result is invalid if both operands are invalid.
 // In case of EQ and NE, the result is invalid if one operand is invalid.
-   uInt nrinv = 0;
-   if (LELInterface<Bool>::replaceScalarExpr (pLeftExpr_p)) {
+   uint32_t nrinv = 0;
+   if (LELInterface<bool>::replaceScalarExpr (pLeftExpr_p)) {
       nrinv++;
       if (op_p != LELBinaryEnums::OR  &&  op_p != LELBinaryEnums::AND) {
-	 return True;
+	 return true;
       }
    }
-   if (LELInterface<Bool>::replaceScalarExpr (pRightExpr_p)) {
+   if (LELInterface<bool>::replaceScalarExpr (pRightExpr_p)) {
       nrinv++;
       if (op_p != LELBinaryEnums::OR  &&  op_p != LELBinaryEnums::AND) {
-	 return True;
+	 return true;
       }
    }
    return  (nrinv==2);
@@ -260,10 +260,10 @@ String LELBinaryBool::className() const
 }
 
 
-Bool LELBinaryBool::lock (FileLocker::LockType type, uInt nattempts)
+bool LELBinaryBool::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   if (! pLeftExpr_p->lock (type, nattempts)) {
-    return False;
+    return false;
   }
   return pRightExpr_p->lock (type, nattempts);
 }
@@ -272,7 +272,7 @@ void LELBinaryBool::unlock()
     pLeftExpr_p->unlock();
     pRightExpr_p->unlock();
 }
-Bool LELBinaryBool::hasLock (FileLocker::LockType type) const
+bool LELBinaryBool::hasLock (FileLocker::LockType type) const
 {
     return pLeftExpr_p->hasLock (type)  &&   pRightExpr_p->hasLock (type);
 }

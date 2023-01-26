@@ -40,20 +40,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Static members
 MVAngle::Format MVAngle::defaultFormat = MVAngle::Format();
 MVAngle::Format MVAngle::interimFormat = MVAngle::Format();
-Bool MVAngle::interimSet = False;
+bool MVAngle::interimSet = false;
 
 //# Constructors
 MVAngle::MVAngle() : 
 val(0){}
 
-MVAngle::MVAngle(Double d) : 
+MVAngle::MVAngle(double d) : 
 val(d){}
 
 MVAngle::MVAngle(const MVAngle &other) :
 val(other.val) {}
 
 MVAngle::MVAngle(const Quantity &other) {
-    static const Double factor = C::circle/C::day;
+    static const double factor = C::circle/C::day;
     val = other.getBaseValue();
     if (other.check(UnitVal::ANGLE)) {
     } else {
@@ -73,7 +73,7 @@ MVAngle &MVAngle::operator=(const MVAngle &other) {
 MVAngle::~MVAngle() {}
 
 // Operators
-MVAngle::operator Double() const {
+MVAngle::operator double() const {
     return val;
 }
 
@@ -81,12 +81,12 @@ const MVAngle &MVAngle::operator()() {
     return (operator()(-0.5));
 }
 
-const MVAngle &MVAngle::operator()(Double norm) {
-    Double t = val/C::_2pi - norm;
+const MVAngle &MVAngle::operator()(double norm) {
+    double t = val/C::_2pi - norm;
     if (t < 0 || t >=1) {
       // Next statement necessary for Linux gnu; val -= expr; gives incorrect
       // result of order 2e-11
-      Double df = std::floor(t)*C::_2pi;
+      double df = std::floor(t)*C::_2pi;
       val -= df;  /// val - = std::floor(t)*C::_2pi;
     }
     return *this;
@@ -102,15 +102,15 @@ MVAngle MVAngle::coAngle() const {
   return (t());
 }
 
-Double MVAngle::radian() const {
+double MVAngle::radian() const {
     return val;
 }
 
-Double MVAngle::degree() const {
+double MVAngle::degree() const {
     return val/C::degree;
 }
 
-Double MVAngle::circle() const {
+double MVAngle::circle() const {
     return val/C::circle;
 }
 
@@ -126,26 +126,26 @@ Quantity MVAngle::get(const Unit &inunit) const {
 }
 
 MVAngle::Format MVAngle::setFormat(MVAngle::formatTypes intyp, 
-			  uInt inprec) {
+			  uint32_t inprec) {
     Format tmp = MVAngle::defaultFormat;
     MVAngle::defaultFormat.typ = intyp;
     MVAngle::defaultFormat.prec = inprec;
-    MVAngle::interimSet = False;
+    MVAngle::interimSet = false;
     return tmp;
 }
 
-MVAngle::Format MVAngle::setFormat(uInt intyp, uInt inprec) {
+MVAngle::Format MVAngle::setFormat(uint32_t intyp, uint32_t inprec) {
     return setFormat((MVAngle::formatTypes)intyp, inprec);
 }
 
-MVAngle::Format MVAngle::setFormat(uInt inprec) {
+MVAngle::Format MVAngle::setFormat(uint32_t inprec) {
     return setFormat(MVAngle::ANGLE, inprec);
 }
 
 MVAngle::Format MVAngle::setFormat(const MVAngle::Format &form) {
     Format tmp = MVAngle::defaultFormat;
     MVAngle::defaultFormat = form;
-    MVAngle::interimSet = False;
+    MVAngle::interimSet = false;
     return tmp;
 }
 
@@ -154,7 +154,7 @@ MVAngle::Format MVAngle::getFormat() {
 }
 
 MVAngle::formatTypes MVAngle::giveMe(const String &in) {
-  const Int N_name = 6;
+  const int32_t N_name = 6;
   static const String tab[N_name] = {
     "ANGLE",
     "TIME",
@@ -171,28 +171,28 @@ MVAngle::formatTypes MVAngle::giveMe(const String &in) {
     MVAngle::NO_DM,
     MVAngle::DIG2
   };
-  Int t = MUString::minimaxNC(in, N_name, tab);
+  int32_t t = MUString::minimaxNC(in, N_name, tab);
   return (t<N_name ? nam[t] : (MVAngle::formatTypes) 0);
 }
 
 String MVAngle::string() const {
     if (MVAngle::interimSet) {
-	MVAngle::interimSet = False;
+	MVAngle::interimSet = false;
 	return string(MVAngle::interimFormat);
     }
     return string(MVAngle::defaultFormat);
 }
    
-String MVAngle::string(uInt inprec) const {
+String MVAngle::string(uint32_t inprec) const {
     return string(MVAngle::Format(inprec));
 }
 
 String MVAngle::string(MVAngle::formatTypes intyp, 
-		       uInt inprec) const {
+		       uint32_t inprec) const {
     return string(MVAngle::Format(intyp, inprec));
 }
 
-String MVAngle::string(uInt intyp, uInt inprec) const {
+String MVAngle::string(uint32_t intyp, uint32_t inprec) const {
     return string(MVAngle::Format(intyp, inprec));
 }
 
@@ -202,22 +202,22 @@ String MVAngle::string(const MVAngle::Format &form) const {
     return oss;
 }
 
-Double MVAngle::timeZone() {
+double MVAngle::timeZone() {
   return AppInfo::timeZone();
 }
 
 void MVAngle::print(ostream &oss,
 		    const MVAngle::Format &form) const {
-  print(oss, form, False);
+  print(oss, form, false);
 }
 
 void MVAngle::print(ostream &oss,
-		    const MVAngle::Format &form, Bool loc) const {
-    uInt inprec = form.prec;
-    uInt intyp = form.typ;
-    uInt i1 = intyp & ~MVAngle::MOD_MASK;
-    Double t, t1;
-    Char sep1, sep2='m';
+		    const MVAngle::Format &form, bool loc) const {
+    uint32_t inprec = form.prec;
+    uint32_t intyp = form.typ;
+    uint32_t i1 = intyp & ~MVAngle::MOD_MASK;
+    double t, t1;
+    char sep1, sep2='m';
     if (i1 == MVAngle::ANGLE) {
       t = val/C::degree;
       if ((intyp & MVAngle::ALPHA) == MVAngle::ALPHA) {
@@ -244,12 +244,12 @@ void MVAngle::print(ostream &oss,
       }
     }
     if (inprec == 0) inprec = oss.precision();
-    Char sfill = oss.fill();
+    char sfill = oss.fill();
     t1 = 1.0;
     if (inprec > 2) t1 /= 60.;
     if (inprec > 4) t1 /= 60.;
-    // The next (Double)s necessary for wrong choice of pow
-    if (inprec > 6) t1 /= std::pow(Double(10), Double(inprec-6));
+    // The next (double)s necessary for wrong choice of pow
+    if (inprec > 6) t1 /= std::pow(double(10), double(inprec-6));
     if (i1 == MVAngle::ANGLE || ((intyp & MVAngle::DIG2) == MVAngle::DIG2)) {
 	if (t < 0) {
 	  oss << '-';
@@ -262,7 +262,7 @@ void MVAngle::print(ostream &oss,
     }
     // The next 0.1 necessary for some rounding errors
     t = std::abs((std::floor(std::abs(t)/t1+0.5)+0.1)*t1);
-    Int h = ifloor(t);
+    int32_t h = ifloor(t);
     if ((intyp & MVAngle::NO_D) != MVAngle::NO_D) {
 	if (i1 == MVAngle::ANGLE) {
 	  if ((intyp & MVAngle::DIG2) != MVAngle::DIG2) {
@@ -318,7 +318,7 @@ void MVAngle::print(ostream &oss,
       t = std::abs((std::fmod(t, 1.0) - 6.0*t1)*60.);
       // The following was necessary since abs(0) becomes -0 (Solaris at least)
       if (t <= 0.0) t = 0;
-      Int oprec = oss.precision();
+      int32_t oprec = oss.precision();
       ios::fmtflags oldb = oss.setf(ios::fixed,ios::floatfield);
       oss << setfill('0') << setprecision(inprec-6) << setw(inprec-3) << t <<
 	setprecision(oprec);
@@ -328,50 +328,50 @@ void MVAngle::print(ostream &oss,
       if ((intyp & MVAngle::LOCAL) == MVAngle::LOCAL) {
 	MVAngle my = MVAngle::timeZone() * C::circle;
 	my.print(oss, MVAngle::Format(MVAngle::TIME_CLEAN | MVAngle::DIG2, 4),
-		 True);
+		 true);
       }
     }
     oss.fill(sfill);
 }
 
-const MVAngle &MVAngle::binorm(Double norm) {
-    Double t = val/C::pi - norm;
+const MVAngle &MVAngle::binorm(double norm) {
+    double t = val/C::pi - norm;
     if (t < 0 || t >=1) {
-      Double df = std::floor(t)*C::pi;
+      double df = std::floor(t)*C::pi;
       val -= df;
     }
     return *this;
 }
 
-Bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
+bool MVAngle::unitString(UnitVal &uv, String &us, MUString &in) {
   in.skipBlank();
   us = in.get();
   return UnitVal::check(in.get(),uv);
 }
 
-Bool MVAngle::handleReadError(MUString& in, Bool throwExcp) {
+bool MVAngle::handleReadError(MUString& in, bool throwExcp) {
   if (throwExcp) {
     throw AipsError("Invalid date/time '" + in.get(0) +
                     "', invalid char about pos " + String::toString(in.getPtr()));
   }
   in.pop();
-  return False;
+  return false;
 }
 
-Bool MVAngle::read(Quantity &res, MUString &in, Bool chk) {
-  return read (res, in, chk, False);
+bool MVAngle::read(Quantity &res, MUString &in, bool chk) {
+  return read (res, in, chk, false);
 }
-Bool MVAngle::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
+bool MVAngle::read(Quantity &res, MUString &in, bool chk, bool throwExcp) {
   LogIO os(LogOrigin("MVAngle", "read()", WHERE));
   res = Quantity(0.0, "rad");
   in.skipBlank();
   in.push();			// Save position
-  Double s = in.getSign();
-  Double r = in.getuInt();
-  Int tp = 0;
+  double s = in.getSign();
+  double r = in.getuInt();
+  int32_t tp = 0;
   if (in.testChar('.')) {
     in.skipChar();
-    Double r1 = in.getuInt();
+    double r1 = in.getuInt();
     if (in.testChar('.')) {
       in.skipChar();
       r += r1/60.0 + in.getDouble()/3600.0;
@@ -393,10 +393,10 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
     if (in.testCharNC('m') || in.testCharNC(':')) {
       tp = 0;
     } else {
-      Char tc = 'm';
+      char tc = 'm';
       if (tp == 3) tc = ':';
       in.push();
-      Double r1 = in.getuInt();
+      double r1 = in.getuInt();
       // Test if : or m is given.
       // If not, something like 11:23 was given which cannot be followed by
       // a dot (otherwise decimal minutes would be given).
@@ -454,17 +454,17 @@ Bool MVAngle::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
 
   }
   in.unpush();
-  return True;
+  return true;
 
 }
 
-Bool MVAngle::read(Quantity &res, const String &in, Bool chk) {
-  return read (res, in, chk, False);
+bool MVAngle::read(Quantity &res, const String &in, bool chk) {
+  return read (res, in, chk, false);
 }
-Bool MVAngle::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
+bool MVAngle::read(Quantity &res, const String &in, bool chk, bool throwExcp) {
   MUString tmp(in);		// Pointed non-const String
   if (!MVAngle::read(res, tmp, chk, throwExcp)) {
-    Double r = tmp.getDouble();
+    double r = tmp.getDouble();
     UnitVal u; String us;
     if (!MVAngle::unitString(u,us,tmp)) {
       return handleReadError(tmp, throwExcp);
@@ -479,12 +479,12 @@ Bool MVAngle::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
       return handleReadError (tmp, throwExcp);
     }
   }
-  return True;
+  return true;
 }
 
 ostream &operator<<(ostream &os, const MVAngle &meas) {
     if (MVAngle::interimSet) {
-	MVAngle::interimSet = False;
+	MVAngle::interimSet = false;
 	meas.print(os, MVAngle::interimFormat);
     } else {
 	meas.print(os, MVAngle::defaultFormat);
@@ -507,7 +507,7 @@ istream &operator>>(istream &is, MVAngle &meas) {
 
 ostream &operator<<(ostream &os, const MVAngle::Format &form) {
     MVAngle::interimFormat = form;
-    MVAngle::interimSet = True;
+    MVAngle::interimSet = true;
     return os;
 }
 

@@ -1,4 +1,4 @@
-//# AipsrcVBool.cc: Specialisation for AipsrcVector<Bool>
+//# AipsrcVBool.cc: Specialisation for AipsrcVector<bool>
 //# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -34,29 +34,29 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Data
-AipsrcVector<Bool> AipsrcVector<Bool>::myp_p;
-std::mutex AipsrcVector<Bool>::theirMutex;
+AipsrcVector<bool> AipsrcVector<bool>::myp_p;
+std::mutex AipsrcVector<bool>::theirMutex;
 
 //# Constructor
-AipsrcVector<Bool>::AipsrcVector() : 
+AipsrcVector<bool>::AipsrcVector() : 
   tlst(0), ntlst(0) {}
 
 //# Destructor
-AipsrcVector<Bool>::~AipsrcVector() {}
+AipsrcVector<bool>::~AipsrcVector() {}
 
-Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
+bool AipsrcVector<bool>::find(Vector<bool> &value,
 			      const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     const Regex ws("[ 	]+");
     const Regex tTrue("^([tT]|[yY]|[1-9])");
     res.gsub(ws, " ");
-    Int m = res.freq(" ") +1;
+    int32_t m = res.freq(" ") +1;
     String *nres = new String[m];
     m = split(res, nres, m, " ");
-    value = Vector<Bool>(m);
-    for (Int i=0; i<m; i++) {
+    value = Vector<bool>(m);
+    for (int32_t i=0; i<m; i++) {
       value(i) = ((nres[i]).contains(tTrue));;
     }
     delete [] nres;
@@ -64,41 +64,41 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
   return x;
 }
 
-Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
+bool AipsrcVector<bool>::find(Vector<bool> &value,
 			      const String &keyword, 
-			      const Vector<Bool> &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+			      const Vector<bool> &deflt) {
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcVector<Bool>::registerRC(const String &keyword,
-				    const Vector<Bool> &deflt) {
+uint32_t AipsrcVector<bool>::registerRC(const String &keyword,
+				    const Vector<bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
-const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
+const Vector<bool> &AipsrcVector<bool>::get(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
-void AipsrcVector<Bool>::set(uInt keyword,
-			     const Vector<Bool> &deflt) {
+void AipsrcVector<bool>::set(uint32_t keyword,
+			     const Vector<bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   (myp_p.tlst)[keyword-1].resize(deflt.nelements());
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
-void AipsrcVector<Bool>::save(uInt keyword) {
+void AipsrcVector<bool>::save(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostringstream oss;
-  Int n = ((myp_p.tlst)[keyword-1]).nelements();
-  for (Int i=0; i<n; i++) {
+  int32_t n = ((myp_p.tlst)[keyword-1]).nelements();
+  for (int32_t i=0; i<n; i++) {
     if (((myp_p.tlst)[keyword-1])(i)) {
       oss << " true";
     } else {

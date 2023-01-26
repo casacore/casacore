@@ -40,19 +40,19 @@
 int main() {
 
 //     PowerLogarithmicPolynomial();
-	PowerLogarithmicPolynomial<Float> null;
-//     PowerLogarithmicPolynomial(uInt order);
-//     void setCoefficient(uInt which, T value);
-//     virtual void setAdjustParameter(uInt which, const T &val);
-    PowerLogarithmicPolynomial<Float> linear(2);
-    Vector<Float> coeff(2, 1);
+	PowerLogarithmicPolynomial<float> null;
+//     PowerLogarithmicPolynomial(uint32_t order);
+//     void setCoefficient(uint32_t which, T value);
+//     virtual void setAdjustParameter(uint32_t which, const T &val);
+    PowerLogarithmicPolynomial<float> linear(2);
+    Vector<float> coeff(2, 1);
     linear.setCoefficients(coeff);
-    PowerLogarithmicPolynomial<Float> square(2);
+    PowerLogarithmicPolynomial<float> square(2);
     square.setCoefficient(0, 1);
     square.setCoefficient(1, 2);
 //     virtual T operator()(const T &x) const;
     AlwaysAssertExit(linear(3.0) == 3.0f && square(3.0f) == 9.0f);
-    PowerLogarithmicPolynomial<Float> curve(4);
+    PowerLogarithmicPolynomial<float> curve(4);
     curve.setCoefficient(0, 1);
     curve.setCoefficient(1, 0.5);
     curve.setCoefficient(2, 1);
@@ -60,17 +60,17 @@ int main() {
     cout << "curve " << curve(3.0) << endl;
     AlwaysAssertExit(near(curve(3.0), 82.1209389f));
 
-//     virtual uInt nAdjustParameters() const;
-//     uInt order() const {return coefficients_p.nelements() - 1;}
-//     virtual T getAdjustParameter(uInt which) const;
-//     T coefficient(uInt which) const {return coefficients_p[which];}
+//     virtual uint32_t nAdjustParameters() const;
+//     uint32_t order() const {return coefficients_p.nelements() - 1;}
+//     virtual T getAdjustParameter(uint32_t which) const;
+//     T coefficient(uint32_t which) const {return coefficients_p[which];}
 //     Vector<T> coefficients() const;
 //     virtual Vector<T> getAdjustParameters() const;
 
     AlwaysAssertExit(linear.nparameters() == 2 &&
 		     square.nparameters() == 2 && curve.nparameters() == 4);
 
-    Vector<Float> curveCoeff1, curveCoeff2;
+    Vector<float> curveCoeff1, curveCoeff2;
     curveCoeff1 = curve.coefficients();
     curveCoeff2 = curve.parameters().getParameters();
     AlwaysAssertExit(allEQ(curveCoeff1, curveCoeff2));
@@ -83,16 +83,16 @@ int main() {
 
 //     PowerLogarithmicPolynomial(const PowerLogarithmicPolynomial &other);
 //     PowerLogarithmicPolynomial<T> &operator=(const PowerLogarithmicPolynomial<T> &other);
-    PowerLogarithmicPolynomial<Float> curveCopy1(curve);
-    PowerLogarithmicPolynomial<Float> curveCopy2;
+    PowerLogarithmicPolynomial<float> curveCopy1(curve);
+    PowerLogarithmicPolynomial<float> curveCopy2;
     curveCopy2 = curve;
 
     AlwaysAssertExit(curve == curveCopy1 && curve == curveCopy2);
 
 //     void setCoefficients(const Vector<T> &coefficients);
 //     virtual void setAdjustParameters(const Vector<T> &val);
-    PowerLogarithmicPolynomial<Float> tmp1(4), tmp2(4);
-    Vector<Float> coefficients(4); 
+    PowerLogarithmicPolynomial<float> tmp1(4), tmp2(4);
+    Vector<float> coefficients(4); 
     indgen(coefficients);
     tmp1.setCoefficients(coefficients);
     tmp2.parameters().setParameters(coefficients);
@@ -101,14 +101,14 @@ int main() {
 		     allEQ(coefficients, tmp1.parameters().getParameters()));
 
 
-//     Bool operator==(const PowerLogarithmicPolynomial<T> &other) const;
-//     Bool operator!=(const PowerLogarithmicPolynomial<T> &other) const;
+//     bool operator==(const PowerLogarithmicPolynomial<T> &other) const;
+//     bool operator!=(const PowerLogarithmicPolynomial<T> &other) const;
     AlwaysAssertExit(null == linear && null != square && square != linear &&
     		     null == null && linear == linear && square == square);
 
     //	clone()
     //     ~PowerLogarithmicPolynomial();
-    Function<Float> *tmp3ptr = tmp2.clone();
+    Function<float> *tmp3ptr = tmp2.clone();
     AlwaysAssertExit(tmp3ptr->nparameters() == 4 &&
 		     (*tmp3ptr)[0] == 0.0f &&
 		     (*tmp3ptr)[1] == 1.0f &&
@@ -117,27 +117,27 @@ int main() {
     delete tmp3ptr;
   
     // Test Auto differentiation // 0.5 * x**(2 + 3ln(x) + 4ln(x)**2)
-    PowerLogarithmicPolynomial<AutoDiffA<Double> > curve2(4);
-    curve2[0] = AutoDiffA<Double>(0.5,4,0);
-    curve2[1] = AutoDiffA<Double>(2.0,4,1);
-    curve2[2] = AutoDiffA<Double>(3.0,4,2);
-    curve2[3] = AutoDiffA<Double>(4.0,4,3);
-    cout << "Generic(3):  " << curve2(AutoDiffA<Double>(3.0)) << endl;
+    PowerLogarithmicPolynomial<AutoDiffA<double> > curve2(4);
+    curve2[0] = AutoDiffA<double>(0.5,4,0);
+    curve2[1] = AutoDiffA<double>(2.0,4,1);
+    curve2[2] = AutoDiffA<double>(3.0,4,2);
+    curve2[3] = AutoDiffA<double>(4.0,4,3);
+    cout << "Generic(3):  " << curve2(AutoDiffA<double>(3.0)) << endl;
   
     // Test manual differentiation // 0.5 * x**(2 + 3ln(x) + 4ln(x)**2)
-    PowerLogarithmicPolynomial<AutoDiff<Double> > curve3(4);
-    curve3[0] = AutoDiff<Double>(0.5,4,0);
-    curve3[1] = AutoDiff<Double>(2.0,4,1);
-    curve3[2] = AutoDiff<Double>(3.0,4,2);
-    curve3[3] = AutoDiff<Double>(4.0,4,3);
+    PowerLogarithmicPolynomial<AutoDiff<double> > curve3(4);
+    curve3[0] = AutoDiff<double>(0.5,4,0);
+    curve3[1] = AutoDiff<double>(2.0,4,1);
+    curve3[2] = AutoDiff<double>(3.0,4,2);
+    curve3[3] = AutoDiff<double>(4.0,4,3);
     cout << "Specific(3): " << curve3(3.0) << endl;
     AlwaysAssertExit(
     	near(
-    		curve2(AutoDiffA<Double>(3.0)).value(),
+    		curve2(AutoDiffA<double>(3.0)).value(),
     		curve3(3.0).value()
     	)
     	&& allNear(
-    		curve2(AutoDiffA<Double>(3.0)).derivatives(),
+    		curve2(AutoDiffA<double>(3.0)).derivatives(),
     		curve3(3.0).derivatives(), 1e-13
     	)
     );

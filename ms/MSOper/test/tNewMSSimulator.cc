@@ -140,7 +140,7 @@ void test_NewMSSimulator_RandomAntenna()
   int nAntMax = 10;
   for(int nAnt = 2 ; nAnt <= nAntMax; ++nAnt)
   {
-    casacore::Vector<casacore::Double> x(nAnt), y(nAnt), z(nAnt), diam(nAnt), offset(nAnt);
+    casacore::Vector<double> x(nAnt), y(nAnt), z(nAnt), diam(nAnt), offset(nAnt);
     casacore::Vector<casacore::String> mount(nAnt), name(nAnt), pad(nAnt);
 
     std::uniform_real_distribution<> dist(0., 100.);

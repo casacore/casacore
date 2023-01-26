@@ -30,11 +30,11 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-void doIt (Bool tempClose)
+void doIt (bool tempClose)
 {
-  LoggerHolder sublogger (False);
-  LoggerHolder sublogger1 (False);
-  LoggerHolder logger (False);
+  LoggerHolder sublogger (false);
+  LoggerHolder sublogger1 (false);
+  LoggerHolder logger (false);
   logger.addParent (sublogger);
   logger.addParent (sublogger1);
   sublogger.logio() << "subtest1" << LogIO::POST;
@@ -46,7 +46,7 @@ void doIt (Bool tempClose)
   }
   // Create with a TableLogSink.
   // Test copy ctor and assignment.
-  LoggerHolder logger2a ("tLoggerHolder_tmp.log", True);
+  LoggerHolder logger2a ("tLoggerHolder_tmp.log", true);
   logger2a.addParent (logger);
   LoggerHolder logger2 (logger);
   logger2 = logger2a;
@@ -68,7 +68,7 @@ void doIt (Bool tempClose)
     AlwaysAssertExit (tab.nrow() == 1);
   }
 
-  uInt nmsg=0;
+  uint32_t nmsg=0;
   for (LoggerHolder::const_iterator iter = logger2.begin();
        iter != logger2.end();
        iter++) {
@@ -98,8 +98,8 @@ void doIt (Bool tempClose)
 int main()
 {
   try {
-    doIt (False);
-    doIt (True);
+    doIt (false);
+    doIt (true);
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;

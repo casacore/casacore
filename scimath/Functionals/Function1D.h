@@ -79,7 +79,7 @@ template<class T, class U=T> class Function1D : public Function<T,U> {
   // Constructors
   // <group>
   Function1D() : Function<T,U>() {}
-  explicit Function1D(const uInt n) : Function<T,U>(n) {}
+  explicit Function1D(const uint32_t n) : Function<T,U>(n) {}
   explicit Function1D(const Vector<T> &in) : Function<T,U>(in) {}
   Function1D(const FunctionParam<T> &other) : Function<T,U>(other) {}
   template <class W, class X>
@@ -90,7 +90,7 @@ template<class T, class U=T> class Function1D : public Function<T,U> {
   virtual ~Function1D() {}
   
   // Returns the number of dimensions of function
-  virtual uInt ndim() const { return 1; }
+  virtual uint32_t ndim() const { return 1; }
 
   //# Make members of parent classes known.
 protected:

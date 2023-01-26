@@ -37,17 +37,17 @@ class VACExample
 {
 public:
     VACExample(): x_p(0), y_p(0) {}
-    VACExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
+    VACExample(int32_t x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
     static String dataTypeId()
 	{ return "VACExample"; }
-    Int x() const
+    int32_t x() const
 	{ return x_p; }
     float y() const
 	{ return y_p; }
   
     const String& z() const
 	{ return z_p; }
-    Int& x()
+    int32_t& x()
 	{ return x_p; }
     float& y()
 	{ return y_p; }
@@ -59,7 +59,7 @@ public:
 	{ return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p) ||
             (x_p==that.x_p && y_p==that.y_p && z_p<that.z_p); }
 private:
-    Int    x_p;
+    int32_t    x_p;
     float  y_p;
     String z_p;
 };
@@ -126,7 +126,7 @@ public:
     virtual void prepare();
 
     virtual void setShape (rownr_t rownr, const IPosition& shape);
-    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual bool isShapeDefined (rownr_t rownr);
     virtual IPosition shape (rownr_t rownr);
 
     // Get the data from a row.
@@ -154,7 +154,7 @@ private:
     String yTargetName_p;
     String zTargetName_p;
     // Objects for the target columns.
-    ArrayColumn<Int>    colx;
+    ArrayColumn<int32_t>    colx;
     ArrayColumn<float>  coly;
     ArrayColumn<String> colz;
 

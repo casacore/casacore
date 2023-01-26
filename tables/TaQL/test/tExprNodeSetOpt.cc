@@ -40,7 +40,7 @@
 // Execute the test for all values in the test vector.
 template<typename T>
 void doTest (TableExprNodeSetOptBase& set,
-             const Vector<T>& testVec, const Vector<Int64>& expFind)
+             const Vector<T>& testVec, const Vector<int64_t>& expFind)
 {
   TableExprId id(0);
   for (size_t i=0; i<testVec.size(); ++i) {
@@ -49,7 +49,7 @@ void doTest (TableExprNodeSetOptBase& set,
   }
   // Do the test for the full array.
   MArray<bool> res = set.contains (id, MArray<T>(testVec));
-  AlwaysAssertExit (allEQ(res.array(), expFind>=Int64(0)));
+  AlwaysAssertExit (allEQ(res.array(), expFind>=int64_t(0)));
 }
 
 // Original and transformed set should give the same results.
@@ -70,52 +70,52 @@ void doDoubleContSet()
     // Test closed-closed intervals
     std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
     std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
-    TableExprNodeSetOptContSet<Double,std::less_equal<Double>,std::less_equal<Double>>
+    TableExprNodeSetOptContSet<double,std::less_equal<double>,std::less_equal<double>>
       set (TableExprNodeSet(), st, end,
-           std::less_equal<Double>(), std::less_equal<Double>(), "CC");
+           std::less_equal<double>(), std::less_equal<double>(), "CC");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
-    Vector<Int64>  exp({-1,   0, 0,   0, -1,  6,  6,    6,  -1,   10, 10,   10, -1});
+    Vector<int64_t>  exp({-1,   0, 0,   0, -1,  6,  6,    6,  -1,   10, 10,   10, -1});
     doTest (set, vec, exp);
   }
   {
     // Test open-closed intervals
     std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
     std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
-    TableExprNodeSetOptContSet<Double,std::less<Double>,std::less_equal<Double>>
+    TableExprNodeSetOptContSet<double,std::less<double>,std::less_equal<double>>
       set (TableExprNodeSet(), st, end,
-           std::less<Double>(), std::less_equal<Double>(), "OC");
+           std::less<double>(), std::less_equal<double>(), "OC");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
-    Vector<Int64>  exp({-1,  -1, 0,   0, -1,  -1, 6,    6,  -1,   -1, 10,   10, -1});
+    Vector<int64_t>  exp({-1,  -1, 0,   0, -1,  -1, 6,    6,  -1,   -1, 10,   10, -1});
     doTest (set, vec, exp);
   }
   {
     // Test closed-open intervals
     std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
     std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
-    TableExprNodeSetOptContSet<Double,std::less_equal<Double>,std::less<Double>>
+    TableExprNodeSetOptContSet<double,std::less_equal<double>,std::less<double>>
       set (TableExprNodeSet(), st, end,
-           std::less_equal<Double>(), std::less<Double>(), "CO");
+           std::less_equal<double>(), std::less<double>(), "CO");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
-    Vector<Int64>  exp({-1,   0, 0,  -1, -1,  6,  6,    -1, -1,   10, 10,   -1, -1});
+    Vector<int64_t>  exp({-1,   0, 0,  -1, -1,  6,  6,    -1, -1,   10, 10,   -1, -1});
     doTest (set, vec, exp);
   }
   {
     // Test open-open intervals
     std::vector<double> st ({1,3,5,7,9,11,13,15,17,19,21});
     std::vector<double> end({2,4,6,8,10,12,14,16,18,20,22});
-    TableExprNodeSetOptContSet<Double,std::less<Double>,std::less<Double>>
+    TableExprNodeSetOptContSet<double,std::less<double>,std::less<double>>
       set (TableExprNodeSet(), st, end,
-           std::less<Double>(), std::less<Double>(), "OO");
+           std::less<double>(), std::less<double>(), "OO");
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 13, 13.5, 14, 14.5, 21, 21.5, 22, 22.5});
-    Vector<Int64>  exp({-1,  -1, 0,  -1, -1,  -1, 6,    -1, -1,   -1, 10,   -1, -1});
+    Vector<int64_t>  exp({-1,  -1, 0,  -1, -1,  -1, 6,    -1, -1,   -1, 10,   -1, -1});
     doTest (set, vec, exp);
   }
   {
@@ -124,13 +124,13 @@ void doDoubleContSet()
     std::vector<double> end ({2,    20,   5,   22});
     std::vector<bool> leftC ({false,false,true,true});
     std::vector<bool> rightC({false,true,true,false});
-    TableExprNodeSetOptContSetMixOC<Double> set (TableExprNodeSet(), st, end,
+    TableExprNodeSetOptContSetMixOC<double> set (TableExprNodeSet(), st, end,
                                                  leftC, rightC);
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<double> vec({-0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 5.5,
                         19, 19.5, 20, 20.5, 21, 21.5, 22, 22.5});
-    Vector<Int64> exp ({-1,  -1,  0, -1, -1,  2, 2, 2, -1,
+    Vector<int64_t> exp ({-1,  -1,  0, -1, -1,  2, 2, 2, -1,
                         -1,  1,   1,  -1,   3,  3,    -1, -1});
     doTest (set, vec, exp);
   }
@@ -148,7 +148,7 @@ void doStringContSet()
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
-    Vector<Int64>  exp({ -1,   0,    0,    0,    -1});
+    Vector<int64_t>  exp({ -1,   0,    0,    0,    -1});
     doTest (set, vec, exp);
   }
   {
@@ -159,7 +159,7 @@ void doStringContSet()
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
-    Vector<Int64>  exp({ -1,   0,    0,    -1,   -1});
+    Vector<int64_t>  exp({ -1,   0,    0,    -1,   -1});
     doTest (set, vec, exp);
   }
   {
@@ -170,7 +170,7 @@ void doStringContSet()
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
-    Vector<Int64>  exp({ -1,   -1,   0,    0,    -1});
+    Vector<int64_t>  exp({ -1,   -1,   0,    0,    -1});
     doTest (set, vec, exp);
   }
   {
@@ -181,19 +181,19 @@ void doStringContSet()
     set.show(cout, 2);
     // Vectors of test values and expected index.
     Vector<String> vec({"a0", "a1", "a3", "a5", "a6"});
-    Vector<Int64>  exp({ -1,   -1,   0,    -1,   -1});
+    Vector<int64_t>  exp({ -1,   -1,   0,    -1,   -1});
     doTest (set, vec, exp);
   }
 }
 
 void doIntSet()
 {
-  Vector<Int64> vecset({1,3,8,10,5});
-  TableExprNodeSetOptUSet<Int64> set(TableExprNodeSet(), vecset);
+  Vector<int64_t> vecset({1,3,8,10,5});
+  TableExprNodeSetOptUSet<int64_t> set(TableExprNodeSet(), vecset);
   set.show(cout, 2);
   // Vectors of test values and expected index.
-  Vector<Int64> vec({1, 3, 5, 8, 10,  0, 2, 11});
-  Vector<Int64> exp({0, 1, 4, 2,  3, -1,-1, -1});
+  Vector<int64_t> vec({1, 3, 5, 8, 10,  0, 2, 11});
+  Vector<int64_t> exp({0, 1, 4, 2,  3, -1,-1, -1});
   doTest (set, vec, exp);
 }
 
@@ -204,7 +204,7 @@ void doStringSet()
   set.show(cout, 2);
   // Vectors of test values and expected index.
   Vector<String> vec({"aa", "a", "b", "d", "bd", "e"});
-  Vector<Int64>  exp({ -1,   0,   2,   1,   -1,  -1});
+  Vector<int64_t>  exp({ -1,   0,   2,   1,   -1,  -1});
   doTest (set, vec, exp);
 }
 
@@ -217,29 +217,29 @@ void doDoubleTransform()
   // but not 4th with 5th (because end4 and st5 are open).
   {
     TableExprNodeSet set;
-    set.add (TableExprNodeSetElem(False, st1, end1, False));
-    set.add (TableExprNodeSetElem(True, st3, end3, True));
-    set.add (TableExprNodeSetElem(False, st2, end2, True));
-    set.add (TableExprNodeSetElem(True, st1+1, end2+1, False));
-    set.add (TableExprNodeSetElem(False, st4, end4, False));
-    set.add (TableExprNodeSetElem(False, st5, end5, True));
+    set.add (TableExprNodeSetElem(false, st1, end1, false));
+    set.add (TableExprNodeSetElem(true, st3, end3, true));
+    set.add (TableExprNodeSetElem(false, st2, end2, true));
+    set.add (TableExprNodeSetElem(true, st1+1, end2+1, false));
+    set.add (TableExprNodeSetElem(false, st4, end4, false));
+    set.add (TableExprNodeSetElem(false, st5, end5, true));
     // Vectors of test values and expected index.
     Vector<double> vec({ 0, 1, 2, 6, 19, 21, 23, 25, 26, 31, 33, 33.5, 34, 34.1});
-    Vector<Int64>  exp({-1,-1, 0, 0,  0, -1, -1,  1,  1,  1, -1,  2,    2, -1});
+    Vector<int64_t>  exp({-1,-1, 0, 0,  0, -1, -1,  1,  1,  1, -1,  2,    2, -1});
     {
       // No combine, thus 6 intervals with different leftC/rightC.
-      TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set, False);
-      TableExprNodeSetOptContSetMixOC<Double>* p =
-        dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
+      TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform (set, false);
+      TableExprNodeSetOptContSetMixOC<double>* p =
+        dynamic_cast<TableExprNodeSetOptContSetMixOC<double>*>(trSet.get());
       AlwaysAssertExit (p);
       AlwaysAssertExit (p->size() == 6);
       trSet->show (cout, 0);
       doTestOrig (set, *p, vec);
     }
     // Should result in (1,21) [25,33) (33,34]
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
-    TableExprNodeSetOptContSetMixOC<Double>* p =
-      dynamic_cast<TableExprNodeSetOptContSetMixOC<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform (set);
+    TableExprNodeSetOptContSetMixOC<double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetMixOC<double>*>(trSet.get());
     AlwaysAssertExit (p);
     AlwaysAssertExit (p->size() == 3);
     trSet->show (cout, 0);
@@ -254,22 +254,22 @@ void doDoubleTransform()
     set.add (TableExprNodeSetElem(i/2==0, st2, end2, i%2==0));
     set.add (TableExprNodeSetElem(i/2==0, st4, end4, i%2==0));
     set.add (TableExprNodeSetElem(i/2==0, st5, end5, i%2==0));
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
-    TableExprNodeSetOptContSetBase<Double>* p =
-      dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform (set);
+    TableExprNodeSetOptContSetBase<double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetBase<double>*>(trSet.get());
     // Results in 2 elements, but 4 when left and right side are open.
     trSet->show (cout, 0);
     AlwaysAssertExit (p->size() == (i==3 ? 4:2));
     // Vectors of test values and expected index (depending on open/closed).
-    Int64 i3 = (i==3 ? 2 : 1);
-    Int64 i4 = (i==3 ? 3 : 1);
-    Int64 l1 = (i/2==0 ? 0 : -1);
-    Int64 l2 = (i/2==0 ? 1 : -1);
-    Int64 r1 = (i%2==0 ? 0 : -1);
-    Int64 r2 = (i!=3   ? 1 : -1);
-    Int64 r3 = (i%2==0 ? i3 : -1);
+    int64_t i3 = (i==3 ? 2 : 1);
+    int64_t i4 = (i==3 ? 3 : 1);
+    int64_t l1 = (i/2==0 ? 0 : -1);
+    int64_t l2 = (i/2==0 ? 1 : -1);
+    int64_t r1 = (i%2==0 ? 0 : -1);
+    int64_t r2 = (i!=3   ? 1 : -1);
+    int64_t r3 = (i%2==0 ? i3 : -1);
     Vector<double> vec({ 0, 1, 2, 6, 19, 20, 23, 25, 26, 30, 31, 33, 33.5, 34, 34.1});
-    Vector<Int64>  exp({-1,l1, 0, 0,  0, r1, -1, l2,  1, r2, i3, r2, i4,   r3, -1});
+    Vector<int64_t>  exp({-1,l1, 0, 0,  0, r1, -1, l2,  1, r2, i3, r2, i4,   r3, -1});
     doTest (*p, vec, exp);
     doTestOrig (set, *p, vec);
   }
@@ -282,29 +282,29 @@ void doDateTransform()
   TableExprNode width(4);                      // 4 days
   {
     TableExprNodeSet set;
-    set.add (TableExprNodeSetElem(False, st, end, False));
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
-    TableExprNodeSetOptContSetBase<Double>* p =
-      dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    set.add (TableExprNodeSetElem(false, st, end, false));
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform (set);
+    TableExprNodeSetOptContSetBase<double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetBase<double>*>(trSet.get());
     AlwaysAssertExit (p);
     AlwaysAssertExit (p->size() == 1);
     trSet->show (cout, 0);
     Vector<double> vec({54926.5, 54926.51, 54934, 54958.49,54958.5});
-    Vector<Int64>  exp({   -1,       0,        0,     0,      -1});
+    Vector<int64_t>  exp({   -1,       0,        0,     0,      -1});
     doTest (*p, vec, exp);
     doTestOrig (set, *p, vec);
   }
   {
     TableExprNodeSet set;
     set.add (TableExprNodeSetElem(st, width));
-    TENShPtr trSet = TableExprNodeSetOptContSetBase<Double>::transform (set);
-    TableExprNodeSetOptContSetBase<Double>* p =
-      dynamic_cast<TableExprNodeSetOptContSetBase<Double>*>(trSet.get());
+    TENShPtr trSet = TableExprNodeSetOptContSetBase<double>::transform (set);
+    TableExprNodeSetOptContSetBase<double>* p =
+      dynamic_cast<TableExprNodeSetOptContSetBase<double>*>(trSet.get());
     AlwaysAssertExit (p);
     AlwaysAssertExit (p->size() == 1);
     trSet->show (cout, 0);
     Vector<double> vec({54924.49, 54924.5, 54926, 54928.5, 54928.51});
-    Vector<Int64>  exp({   -1,        0,       0,     0,      -1});
+    Vector<int64_t>  exp({   -1,        0,       0,     0,      -1});
     doTest (*p, vec, exp);
     doTestOrig (set, *p, vec);
   }

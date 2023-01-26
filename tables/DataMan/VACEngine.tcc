@@ -60,8 +60,8 @@ String VACEngine<T>::dataManagerType() const
 
 // The column is in principle writable.
 template<class T>
-Bool VACEngine<T>::isWritable() const
-    { return True; }
+bool VACEngine<T>::isWritable() const
+    { return true; }
 
 template<class T>
 DataManagerColumn* VACEngine<T>::makeDirArrColumn (const String& columnName,

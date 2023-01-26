@@ -41,7 +41,7 @@ WCDifference::WCDifference (const PtrBlock<const ImageRegion*>& regions)
 : WCCompound (regions)
 {}
 
-WCDifference::WCDifference (Bool takeOver, const PtrBlock<const WCRegion*>& regions)
+WCDifference::WCDifference (bool takeOver, const PtrBlock<const WCRegion*>& regions)
 : WCCompound (takeOver, regions)
 {}
 
@@ -60,7 +60,7 @@ WCDifference& WCDifference::operator= (const WCDifference& other)
     return *this;
 }
 
-Bool WCDifference::operator== (const WCRegion& other) const
+bool WCDifference::operator== (const WCRegion& other) const
 {
    return WCCompound::operator== (other);
 }
@@ -77,7 +77,7 @@ LCRegion* WCDifference::doToLCRegion (const CoordinateSystem& cSys,
 {
     PtrBlock<const LCRegion*> regions;
     multiToLCRegion (regions, cSys, shape, pixelAxesMap, outOrder);
-    return new LCDifference (True, regions);
+    return new LCDifference (true, regions);
 }
 
 String WCDifference::className()
@@ -103,7 +103,7 @@ WCDifference* WCDifference::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const WCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new WCDifference (True, regions);
+    return new WCDifference (true, regions);
 }
 
 } //# NAMESPACE CASACORE - END

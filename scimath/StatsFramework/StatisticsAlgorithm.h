@@ -56,9 +56,9 @@ namespace casacore {
 // issues, especially for large datasets. For this reason, it is highly
 // recommended that the data type one uses as the AccumType be of higher
 // precision, if possible, than the data type pointed to by input iterator. So
-// for example, if one has a data set of Float values (to which the
-// InputIterator type points to), then one should use type Double for the
-// AccumType. In this case, the Float data values will be converted to Doubles
+// for example, if one has a data set of float values (to which the
+// InputIterator type points to), then one should use type double for the
+// AccumType. In this case, the float data values will be converted to Doubles
 // before they are accumulated.
 //
 // METHODS OF PROVIDING DATA
@@ -131,7 +131,7 @@ namespace casacore {
 // which uses the StatsFramework API.
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class AccumType, class DataIterator, class MaskIterator=const bool *,
     class WeightsIterator=DataIterator
 >
 class StatisticsAlgorithm {
@@ -147,7 +147,7 @@ public:
     // Add a dataset to an existing set of datasets on which statistics are to
     // be calculated. nr is the number of points to be considered. If
     // <src>dataStride</src> is greater than 1, when
-    // <src>nrAccountsForStride</src>=True indicates that the stride has been
+    // <src>nrAccountsForStride</src>=true indicates that the stride has been
     // taken into account in the value of <src>nr</src>. Otherwise, it has not
     // so that the actual number of points to include is nr/dataStride if
     // nr % dataStride == 0 or (int)(nr/dataStride) + 1 otherwise. if one calls
@@ -155,56 +155,56 @@ public:
     // thrown. In this case, one should call setData(), rather than addData(),
     // to indicate that the underlying data provider should be removed.
     // <src>dataRanges</src> provide the ranges of data to include if
-    // <src>isInclude</src> is True, or ranges of data to exclude if
-    // <src>isInclude</src> is False. If a datum equals the end point of a data
-    // range, it is considered good (included) if <src>isInclude</src> is True,
-    // and it is considered bad (excluded) if <src>isInclude</src> is False.
+    // <src>isInclude</src> is true, or ranges of data to exclude if
+    // <src>isInclude</src> is false. If a datum equals the end point of a data
+    // range, it is considered good (included) if <src>isInclude</src> is true,
+    // and it is considered bad (excluded) if <src>isInclude</src> is false.
 
     void addData(
-        const DataIterator& first, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False
+        const DataIterator& first, uint32_t nr, uint32_t dataStride=1,
+        bool nrAccountsForStride=false
     );
 
     void addData(
-        const DataIterator& first, uInt nr,
-        const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
-        Bool nrAccountsForStride=False
-    );
-
-    void addData(
-        const DataIterator& first, const MaskIterator& maskFirst,
-        uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False,
-        uInt maskStride=1
+        const DataIterator& first, uint32_t nr,
+        const DataRanges& dataRanges, bool isInclude=true, uint32_t dataStride=1,
+        bool nrAccountsForStride=false
     );
 
     void addData(
         const DataIterator& first, const MaskIterator& maskFirst,
-        uInt nr, const DataRanges& dataRanges, Bool isInclude=True,
-        uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
+        uint32_t nr, uint32_t dataStride=1, bool nrAccountsForStride=false,
+        uint32_t maskStride=1
+    );
+
+    void addData(
+        const DataIterator& first, const MaskIterator& maskFirst,
+        uint32_t nr, const DataRanges& dataRanges, bool isInclude=true,
+        uint32_t dataStride=1, bool nrAccountsForStride=false, uint32_t maskStride=1
     );
 
     void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
-        uInt nr, uInt dataStride=1, Bool nrAccountsForStride=False
+        uint32_t nr, uint32_t dataStride=1, bool nrAccountsForStride=false
     );
 
     void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
-        uInt nr, const DataRanges& dataRanges, Bool isInclude=True,
-        uInt dataStride=1, Bool nrAccountsForStride=False
+        uint32_t nr, const DataRanges& dataRanges, bool isInclude=true,
+        uint32_t dataStride=1, bool nrAccountsForStride=false
     );
 
     void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False, uInt maskStride=1
+        const MaskIterator& maskFirst, uint32_t nr, uint32_t dataStride=1,
+        bool nrAccountsForStride=false, uint32_t maskStride=1
     );
 
     void addData(
         const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-        Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
-        uInt maskStride=1
+        const MaskIterator& maskFirst, uint32_t nr, const DataRanges& dataRanges,
+        bool isInclude=true, uint32_t dataStride=1, bool nrAccountsForStride=false,
+        uint32_t maskStride=1
     );
     // </group>
 
@@ -212,49 +212,49 @@ public:
     virtual StatisticsData::ALGORITHM algorithm() const = 0;
 
     virtual AccumType getMedian(
-        CountedPtr<uInt64> knownNpts=nullptr,
+        CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     ) = 0;
 
     // The return value is the median; the quantiles are returned in the
     // <src>quantileToValue</src> map.
     virtual AccumType getMedianAndQuantiles(
-        std::map<Double, AccumType>& quantileToValue,
-        const std::set<Double>& quantiles,
-        CountedPtr<uInt64> knownNpts=nullptr,
+        std::map<double, AccumType>& quantileToValue,
+        const std::set<double>& quantiles,
+        CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     ) = 0;
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
-        CountedPtr<uInt64> knownNpts=nullptr,
+        CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     ) = 0;
 
     // Purposefully not virtual. Derived classes should not implement.
     AccumType getQuantile(
-        Double quantile, CountedPtr<uInt64> knownNpts=nullptr,
+        double quantile, CountedPtr<uint64_t> knownNpts=nullptr,
         CountedPtr<AccumType> knownMin=nullptr,
         CountedPtr<AccumType> knownMax=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     );
 
     // get a map of quantiles to values.
-    virtual std::map<Double, AccumType> getQuantiles(
-        const std::set<Double>& quantiles, CountedPtr<uInt64> npts=nullptr,
+    virtual std::map<double, AccumType> getQuantiles(
+        const std::set<double>& quantiles, CountedPtr<uint64_t> npts=nullptr,
         CountedPtr<AccumType> min=nullptr, CountedPtr<AccumType> max=nullptr,
-        uInt binningThreshholdSizeBytes=4096*4096,
-        Bool persistSortedArray=False, uInt nBins=10000
+        uint32_t binningThreshholdSizeBytes=4096*4096,
+        bool persistSortedArray=false, uint32_t nBins=10000
     ) = 0;
 
     // get the value of the specified statistic. Purposefully not virtual.
@@ -283,48 +283,48 @@ public:
     // parameter meanings. These methods are purposefully not virtual. Derived
     // classes should not implement.
     void setData(
-        const DataIterator& first, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False
+        const DataIterator& first, uint32_t nr, uint32_t dataStride=1,
+        bool nrAccountsForStride=false
     );
 
     void setData(
-        const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-        Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False
+        const DataIterator& first, uint32_t nr, const DataRanges& dataRanges,
+        bool isInclude=true, uint32_t dataStride=1, bool nrAccountsForStride=false
     );
 
     void setData(
-        const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-        uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
+        const DataIterator& first, const MaskIterator& maskFirst, uint32_t nr,
+        uint32_t dataStride=1, bool nrAccountsForStride=false, uint32_t maskStride=1
     );
 
     void setData(
         const DataIterator& first, const MaskIterator& maskFirst,
-        uInt nr, const DataRanges& dataRanges, Bool isInclude=True,
-        uInt dataStride=1, Bool nrAccountsForStride=False, uInt maskStride=1
+        uint32_t nr, const DataRanges& dataRanges, bool isInclude=true,
+        uint32_t dataStride=1, bool nrAccountsForStride=false, uint32_t maskStride=1
     );
 
     void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-        uInt dataStride=1, Bool nrAccountsForStride=False
+        const DataIterator& first, const WeightsIterator& weightFirst, uint32_t nr,
+        uint32_t dataStride=1, bool nrAccountsForStride=false
     );
 
     void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-        const DataRanges& dataRanges, Bool isInclude=True, uInt dataStride=1,
-        Bool nrAccountsForStride=False
-    );
-
-    void setData(
-        const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, uInt dataStride=1,
-        Bool nrAccountsForStride=False, uInt maskStride=1
+        const DataIterator& first, const WeightsIterator& weightFirst, uint32_t nr,
+        const DataRanges& dataRanges, bool isInclude=true, uint32_t dataStride=1,
+        bool nrAccountsForStride=false
     );
 
     void setData(
         const DataIterator& first, const WeightsIterator& weightFirst,
-        const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-        Bool isInclude=True, uInt dataStride=1, Bool nrAccountsForStride=False,
-        uInt maskStride=1
+        const MaskIterator& maskFirst, uint32_t nr, uint32_t dataStride=1,
+        bool nrAccountsForStride=false, uint32_t maskStride=1
+    );
+
+    void setData(
+        const DataIterator& first, const WeightsIterator& weightFirst,
+        const MaskIterator& maskFirst, uint32_t nr, const DataRanges& dataRanges,
+        bool isInclude=true, uint32_t dataStride=1, bool nrAccountsForStride=false,
+        uint32_t maskStride=1
     );
     // </group>
 
@@ -388,7 +388,7 @@ protected:
 private:
     std::set<StatisticsData::STATS> _statsToCalculate{}, _unsupportedStats{};
     StatisticsDataset<CASA_STATP> _dataset{};
-    Bool _resetDataset{True};
+    bool _resetDataset{true};
 
     void _resetExceptDataset();
 

@@ -70,7 +70,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//  Polynomial<Float> pf(3);  // Third order polynomial - coeffs 0 by default
+//  Polynomial<float> pf(3);  // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(1, 1.0);
 //  pf[2] = 2.0;
 //  pf.setCoefficient(3, 3.0);  // 3x^3 + 2x^2 + x
@@ -101,7 +101,7 @@ public:
   
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit PolynomialParam(uInt order);
+  explicit PolynomialParam(uint32_t order);
   
   // Make this a copy of other (deep copy).
   // <group>
@@ -119,9 +119,9 @@ public:
   // Comparisons.  
   // Polynomials are equal if they are the same order
   // <group>
-  Bool operator==(const PolynomialParam<T> &other) const {
+  bool operator==(const PolynomialParam<T> &other) const {
     return (param_p == other.param_p); }
-  Bool operator!=(const PolynomialParam<T> &other) const {
+  bool operator!=(const PolynomialParam<T> &other) const {
     return (param_p != other.param_p); }
   // </group>
 
@@ -131,18 +131,18 @@ public:
     return x; }
 
   // What is the order of the polynomial, i.e. maximum exponent of "x".
-  uInt order() const { return param_p.nelements() - 1; }
+  uint32_t order() const { return param_p.nelements() - 1; }
   
   // What is the <em>which</em>'th coefficient of the polynomial. For an nth
   // degree polynomial, <em>which</em> varies between zero and n.
-  T coefficient(uInt which) const {
+  T coefficient(uint32_t which) const {
     DebugAssert(which<=order(), AipsError); return param_p[which]; }
   
   // Return all the coefficients as a vector.
   const Vector<T> &coefficients() const;
 
   // Set the <em>which</em>'th coefficient to <em>value</em>. 
-  void setCoefficient(uInt which, const T value) {
+  void setCoefficient(uint32_t which, const T value) {
     DebugAssert(which<=order(), AipsError); param_p[which] = value; }
   
   // Set all the coefficients at once, throw away all existing coefficients.

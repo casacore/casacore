@@ -72,11 +72,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Declare the bison parser (is implemented by bison command).
   int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& otherTens);
   int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& otherTens,
-			      Matrix<Double>& timeList);
+			      Matrix<double>& timeList);
   int msTimeGramParseCommand (const MeasurementSet *ms, const String& command, const TableExprNode& colAsTEN, 
-			      MSSelectableMainColumn& msMainColInterface, const TableExprNode& otherTens, Matrix<Double>& timeList);
+			      MSSelectableMainColumn& msMainColInterface, const TableExprNode& otherTens, Matrix<double>& timeList);
   int baseMSTimeGramParseCommand (MSTimeParse* parser, const String& command, 
-				  Matrix<Double>& selectedTimeList);
+				  Matrix<double>& selectedTimeList);
     
   // The yyerror function for the parser.
   // It throws an exception with the current token.
@@ -88,7 +88,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   // Give the current position in the string.
   // This can be used when parse errors occur.
-  Int& msTimeGramPosition();
+  int32_t& msTimeGramPosition();
   
   // Declare the input routine for flex/bison.
   int msTimeGramInput (char* buf, int max_size);
@@ -101,8 +101,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   // A function to set the fields of the TimeFields structure
   void msTimeGramSetTimeFields (struct TimeFields& tf, 
-				Int year, Int month, Int day,
-				Int hour, Int minute, Int sec, Int fsec);
+				int32_t year, int32_t month, int32_t day,
+				int32_t hour, int32_t minute, int32_t sec, int32_t fsec);
   // </group>
   
 } //# NAMESPACE CASACORE - END

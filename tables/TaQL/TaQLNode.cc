@@ -69,7 +69,7 @@ TaQLNode TaQLNode::parse (const String& command)
 
 void TaQLNode::clearNodesCreated()
 {
-  for (uInt i=0; i<theirNodesCreated.size(); ++i) {
+  for (uint32_t i=0; i<theirNodesCreated.size(); ++i) {
     delete theirNodesCreated[i];
   }
   theirNodesCreated.resize (0);
@@ -230,12 +230,12 @@ const String& TaQLRegexNode::getString() const
   return itsNRep->itsValue;
 }
 
-Bool TaQLRegexNode::caseInsensitive() const
+bool TaQLRegexNode::caseInsensitive() const
 {
   return itsNRep->itsCaseInsensitive;
 }
 
-Bool TaQLRegexNode::negate() const
+bool TaQLRegexNode::negate() const
 {
   return itsNRep->itsNegate;
 }
@@ -246,7 +246,7 @@ TaQLMultiNode::TaQLMultiNode()
     itsNRep (0)
 {}
 
-TaQLMultiNode::TaQLMultiNode (Bool isSetOrArray)
+TaQLMultiNode::TaQLMultiNode (bool isSetOrArray)
   : TaQLNode(new TaQLMultiNodeRep(isSetOrArray))
 {
   itsNRep = (TaQLMultiNodeRep*)(TaQLNode::itsRep.get());
@@ -281,7 +281,7 @@ void TaQLMultiNode::setSeparator (const String& sep)
 {
   itsNRep->setSeparator (sep);
 }
-void TaQLMultiNode::setSeparator (uInt incr, const String& sep)
+void TaQLMultiNode::setSeparator (uint32_t incr, const String& sep)
 {
   itsNRep->setSeparator (incr, sep);
 }

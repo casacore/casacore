@@ -66,11 +66,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   CountedPtr<TableExprGroupFuncBase> TableExprUDFNodeArray::makeGroupAggrFunc()
     { return new TableExprGroupNull(this); }
 
-  MArray<Bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)
+  MArray<bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)
     { return itsUDF->getArrayBool (id); }
-  MArray<Int64>    TableExprUDFNodeArray::getArrayInt     (const TableExprId& id)
+  MArray<int64_t>    TableExprUDFNodeArray::getArrayInt     (const TableExprId& id)
     { return itsUDF->getArrayInt (id); }
-  MArray<Double>   TableExprUDFNodeArray::getArrayDouble  (const TableExprId& id)
+  MArray<double>   TableExprUDFNodeArray::getArrayDouble  (const TableExprId& id)
     { return itsUDF->getArrayDouble (id); }
   MArray<DComplex> TableExprUDFNodeArray::getArrayDComplex(const TableExprId& id)
     { return itsUDF->getArrayDComplex (id); }

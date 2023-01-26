@@ -80,26 +80,26 @@ public:
 
   // Access to required columns
   // <group>
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-  ScalarColumn<Int>& polarizationId() {return polarizationId_p;}
-  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
+  ScalarColumn<bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<int32_t>& polarizationId() {return polarizationId_p;}
+  ScalarColumn<int32_t>& spectralWindowId() {return spectralWindowId_p;}
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ScalarColumn<Int>& polarizationId() const {return polarizationId_p;}
-  const ScalarColumn<Int>& spectralWindowId() const {return spectralWindowId_p;}
+  const ScalarColumn<bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<int32_t>& polarizationId() const {return polarizationId_p;}
+  const ScalarColumn<int32_t>& spectralWindowId() const {return spectralWindowId_p;}
   // </group>
 
   // Access to optional columns
   // <group>
-  ScalarColumn<Int>& lagId() {return lagId_p;}
+  ScalarColumn<int32_t>& lagId() {return lagId_p;}
   // </group>
 
   // Const access to optional columns
   // <group>
-  const ScalarColumn<Int>& lagId() const {return lagId_p;}
+  const ScalarColumn<int32_t>& lagId() const {return lagId_p;}
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -111,7 +111,7 @@ public:
   // that row is tested to see if it matches before any others are
   // tested. Setting tryRow to a positive value greater than the table length
   // will throw an exception (AipsError).
-  Int64 match(uInt spwId, uInt polId, Int64 tryRow=-1);
+  int64_t match(uint32_t spwId, uint32_t polId, int64_t tryRow=-1);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -131,11 +131,11 @@ private:
   void attachOptionalCols(const MSDataDescription& msDataDesc);
 
   //# required columns
-  ScalarColumn<Bool> flagRow_p;
-  ScalarColumn<Int> polarizationId_p;
-  ScalarColumn<Int> spectralWindowId_p;
+  ScalarColumn<bool> flagRow_p;
+  ScalarColumn<int32_t> polarizationId_p;
+  ScalarColumn<int32_t> spectralWindowId_p;
   //# optional columns
-  ScalarColumn<Int> lagId_p;
+  ScalarColumn<int32_t> lagId_p;
 };
 
 //# Define the RO version for backward compatibility.

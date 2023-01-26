@@ -63,12 +63,12 @@ String removeDir (const String& msg)
   return s;
 }
 
-Float const_arg_func(const Float& val)
+float const_arg_func(const float& val)
 {
   return 3.0*val;
 }
 
-Float func(Float val)
+float func(float val)
 {
   return 2.0*val*val;
 }
@@ -89,24 +89,24 @@ int main()
 
     // Test constructors
     {
-      HDF5Image<Float> pIm(tiledShape, cSys, "tHDF5Image_tmp.img1");
+      HDF5Image<float> pIm(tiledShape, cSys, "tHDF5Image_tmp.img1");
     }
     AlwaysAssertExit (isHDF5Image("tHDF5Image_tmp.img1"));
     AlwaysAssertExit (hdf5imagePixelType("tHDF5Image_tmp.img1") == TpFloat);
     {
-      HDF5Image<Float> pIm2("tHDF5Image_tmp.img1");
+      HDF5Image<float> pIm2("tHDF5Image_tmp.img1");
     }
 
     // Test copy constructor.  This is by reference so test that
     // this is so
     {
-      HDF5Image<Float> pIm(String("tHDF5Image_tmp.img1"));
-      HDF5Image<Float> pIm2(pIm);
-      pIm.putAt(Float(1.0), IPosition(2,0,0));
-      AlwaysAssert( (pIm(IPosition(2,0,0))==Float(1.0)), AipsError);
-      pIm2.putAt(Float(10.0), IPosition(2,0,0));
-      AlwaysAssert((pIm2(IPosition(2,0,0))==Float(10.0)), AipsError);
-      AlwaysAssert((pIm(IPosition(2,0,0))==Float(10.0)), AipsError);
+      HDF5Image<float> pIm(String("tHDF5Image_tmp.img1"));
+      HDF5Image<float> pIm2(pIm);
+      pIm.putAt(float(1.0), IPosition(2,0,0));
+      AlwaysAssert( (pIm(IPosition(2,0,0))==float(1.0)), AipsError);
+      pIm2.putAt(float(10.0), IPosition(2,0,0));
+      AlwaysAssert((pIm2(IPosition(2,0,0))==float(10.0)), AipsError);
+      AlwaysAssert((pIm(IPosition(2,0,0))==float(10.0)), AipsError);
       AlwaysAssert(pIm(IPosition(2,0,0))==pIm.getAt(IPosition(2,0,0)),
 		   AipsError);
     }
@@ -114,14 +114,14 @@ int main()
     // Test assignment.  This is by reference so test that
     // this is so
     {
-      HDF5Image<Float> pIm(String("tHDF5Image_tmp.img1"));
-      HDF5Image<Float> pIm2(pIm);
+      HDF5Image<float> pIm(String("tHDF5Image_tmp.img1"));
+      HDF5Image<float> pIm2(pIm);
       pIm2 = pIm;
-      pIm.putAt(Float(1.0), IPosition(2,0,0));
-      AlwaysAssert( (pIm(IPosition(2,0,0))==Float(1.0)), AipsError);
-      pIm2.putAt(Float(10.0), IPosition(2,0,0));
-      AlwaysAssert((pIm2.getAt(IPosition(2,0,0))==Float(10.0)), AipsError);
-      AlwaysAssert((pIm.getAt(IPosition(2,0,0))==Float(10.0)), AipsError);
+      pIm.putAt(float(1.0), IPosition(2,0,0));
+      AlwaysAssert( (pIm(IPosition(2,0,0))==float(1.0)), AipsError);
+      pIm2.putAt(float(10.0), IPosition(2,0,0));
+      AlwaysAssert((pIm2.getAt(IPosition(2,0,0))==float(10.0)), AipsError);
+      AlwaysAssert((pIm.getAt(IPosition(2,0,0))==float(10.0)), AipsError);
       AlwaysAssert(pIm(IPosition(2,0,0))==pIm.getAt(IPosition(2,0,0)),
 		   AipsError);
     }
@@ -129,36 +129,36 @@ int main()
     // Test clones.  There is not much we can do to make sure they are ok !
     // They are by reference too.
     {
-      HDF5Image<Float> pIm(String("tHDF5Image_tmp.img1"));
-      pIm.putAt(Float(1.0), IPosition(2,0,0));
-      AlwaysAssert( (pIm(IPosition(2,0,0))==Float(1.0)), AipsError);
-      Lattice<Float>* lat = pIm.clone();
+      HDF5Image<float> pIm(String("tHDF5Image_tmp.img1"));
+      pIm.putAt(float(1.0), IPosition(2,0,0));
+      AlwaysAssert( (pIm(IPosition(2,0,0))==float(1.0)), AipsError);
+      Lattice<float>* lat = pIm.clone();
       AlwaysAssert(pIm.shape()==lat->shape(), AipsError);
-      lat->putAt(Float(10.0), IPosition(2,0,0));
-      AlwaysAssert(((*lat).getAt(IPosition(2,0,0))==Float(10.0)), AipsError);
-      AlwaysAssert((pIm.getAt(IPosition(2,0,0))==Float(10.0)), AipsError);
+      lat->putAt(float(10.0), IPosition(2,0,0));
+      AlwaysAssert(((*lat).getAt(IPosition(2,0,0))==float(10.0)), AipsError);
+      AlwaysAssert((pIm.getAt(IPosition(2,0,0))==float(10.0)), AipsError);
       delete lat;
     }
     {
-      HDF5Image<Float> pIm(String("tHDF5Image_tmp.img1"));
-      pIm.putAt(Float(1.0), IPosition(2,0,0));
-      AlwaysAssert( (pIm.getAt(IPosition(2,0,0))==Float(1.0)), AipsError);
-      Lattice<Float>* ii = pIm.cloneII();
+      HDF5Image<float> pIm(String("tHDF5Image_tmp.img1"));
+      pIm.putAt(float(1.0), IPosition(2,0,0));
+      AlwaysAssert( (pIm.getAt(IPosition(2,0,0))==float(1.0)), AipsError);
+      Lattice<float>* ii = pIm.cloneII();
       AlwaysAssert(pIm.shape()==ii->shape(), AipsError);
-      ii->putAt(Float(10.0), IPosition(2,0,0));
-      AlwaysAssert(((*ii).getAt(IPosition(2,0,0))==Float(10.0)), AipsError);
-      AlwaysAssert((pIm.getAt(IPosition(2,0,0))==Float(10.0)), AipsError);
+      ii->putAt(float(10.0), IPosition(2,0,0));
+      AlwaysAssert(((*ii).getAt(IPosition(2,0,0))==float(10.0)), AipsError);
+      AlwaysAssert((pIm.getAt(IPosition(2,0,0))==float(10.0)), AipsError);
       delete ii;
     }
 
     // Test some miscellaneous little things
     {
-      HDF5Image<Float> pIm(String("tHDF5Image_tmp.img1"));
+      HDF5Image<float> pIm(String("tHDF5Image_tmp.img1"));
       AlwaysAssert(hdf5imagePixelType(String("tHDF5Image_tmp.img1"))==TpFloat,
 		   AipsError);
-      AlwaysAssert(pIm.name(True)==String("tHDF5Image_tmp.img1"),
+      AlwaysAssert(pIm.name(true)==String("tHDF5Image_tmp.img1"),
 		   AipsError);
-      cout << "Absolute name = " << pIm.name(False) << endl;
+      cout << "Absolute name = " << pIm.name(false) << endl;
       AlwaysAssert(pIm.isPaged(), AipsError);
       AlwaysAssert(pIm.isWritable(), AipsError);
       AlwaysAssert(pIm.ok(), AipsError);
@@ -171,8 +171,8 @@ int main()
       AlwaysAssert(pIm.units().getName()=="Jy", AipsError);
 
       Record rec;
-      rec.define("x", Double(1.0));
-      rec.define("y", Double(2.0));
+      rec.define("x", double(1.0));
+      rec.define("y", double(2.0));
       pIm.setMiscInfo(rec);
       TableRecord rec2 = pIm.miscInfo();
       AlwaysAssert(rec2.nfields()==2, AipsError);
@@ -180,8 +180,8 @@ int main()
       AlwaysAssert(rec2.isDefined("y"), AipsError);
       AlwaysAssert(rec2.dataType("x")==TpDouble, AipsError);
       AlwaysAssert(rec2.dataType("y")==TpDouble, AipsError);
-      AlwaysAssert(rec2.asDouble("x")==Double(1.0), AipsError);
-      AlwaysAssert(rec2.asDouble("y")==Double(2.0), AipsError);
+      AlwaysAssert(rec2.asDouble("x")==double(1.0), AipsError);
+      AlwaysAssert(rec2.asDouble("y")==double(2.0), AipsError);
 
       CoordinateSystem cSys2 = pIm.coordinates();
       Vector<String> axisUnits = cSys2.worldAxisUnits();
@@ -209,52 +209,52 @@ int main()
       IPosition shape2(2,5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      HDF5Image<Float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img7");
+      HDF5Image<float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img7");
 
       // Fill (in slow way, so use small image)
       IPosition pos(2);
-      for (Int i=0; i<shape2(0); i++) {
-	for (Int j=0; j<shape2(1); j++) {
+      for (int32_t i=0; i<shape2(0); i++) {
+	for (int32_t j=0; j<shape2(1); j++) {
 	  pos(0) = i;
 	  pos(1) = j;
-	  pIm.putAt(Float(i*j), pos);
+	  pIm.putAt(float(i*j), pos);
 	}  
       }
 
       Slicer slice(IPosition(2,0,0), shape2, IPosition(2,1,1));
-      Array<Float> data;
+      Array<float> data;
       pIm.doGetSlice(data, slice);
       AlwaysAssert(data.shape()==shape2, AipsError);
 
-      for (Int i=0; i<shape2(0); i++) {
-	for (Int j=0; j<shape2(1); j++) {
+      for (int32_t i=0; i<shape2(0); i++) {
+	for (int32_t j=0; j<shape2(1); j++) {
 	  pos(0) = i;
 	  pos(1) = j;
 	  AlwaysAssert(data(pos)==pIm.getAt(pos), AipsError);
 	}  
       }
 
-      data*Float(20.0);
+      data*float(20.0);
       pIm.doPutSlice(data, IPosition(2,0,0), IPosition(2,1,1));
-      for (Int i=0; i<shape2(0); i++) {
-	for (Int j=0; j<shape2(1); j++) {
+      for (int32_t i=0; i<shape2(0); i++) {
+	for (int32_t j=0; j<shape2(1); j++) {
 	  pos(0) = i;
 	  pos(1) = j;
 	  AlwaysAssert(data(pos)==pIm.getAt(pos), AipsError);
 	}  
       }
 
-      Array<Float> data2(data.copy());
+      Array<float> data2(data.copy());
       data.resize(IPosition(2,2,2));
       data.set(0.0);
       pIm.doPutSlice(data, IPosition(2,0,0), IPosition(2,1,1));
       pos(0) = 0; pos(1) = 0;
-      AlwaysAssert(pIm(IPosition(2,0,0))==Float(0.0), AipsError);
-      AlwaysAssert(pIm(IPosition(2,0,1))==Float(0.0), AipsError);
-      AlwaysAssert(pIm(IPosition(2,1,0))==Float(0.0), AipsError);
-      AlwaysAssert(pIm(IPosition(2,1,1))==Float(0.0), AipsError);
-      for (Int i=2; i<shape2(0); i++) {
-	for (Int j=2; j<shape2(1); j++) {
+      AlwaysAssert(pIm(IPosition(2,0,0))==float(0.0), AipsError);
+      AlwaysAssert(pIm(IPosition(2,0,1))==float(0.0), AipsError);
+      AlwaysAssert(pIm(IPosition(2,1,0))==float(0.0), AipsError);
+      AlwaysAssert(pIm(IPosition(2,1,1))==float(0.0), AipsError);
+      for (int32_t i=2; i<shape2(0); i++) {
+	for (int32_t j=2; j<shape2(1); j++) {
 	  pos(0) = i;
 	  pos(1) = j;
 	  AlwaysAssert(data2(pos)==pIm.getAt(pos), AipsError);
@@ -267,27 +267,27 @@ int main()
       IPosition shape2(2,5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      HDF5Image<Float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img8");
+      HDF5Image<float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img8");
 
       IPosition pos(2);
-      Array<Float> data(shape2);
-      for (Int i=0; i<shape2(0); i++) {
-	for (Int j=0; j<shape2(1); j++) {
+      Array<float> data(shape2);
+      for (int32_t i=0; i<shape2(0); i++) {
+	for (int32_t j=0; j<shape2(1); j++) {
 	  pos(0) = i;
 	  pos(1) = j;
-	  data(pos) = Float(i*j);
+	  data(pos) = float(i*j);
 	}  
       }
       pIm.doPutSlice(data, IPosition(2,0,0), IPosition(2,1,1));
 
-      ArrayLattice<Float> lat(shape2);
-      lat.set(Float(10.0));
+      ArrayLattice<float> lat(shape2);
+      lat.set(float(10.0));
       pIm += lat;
-      Array<Float> data2(data.copy());
-      data2 += Float(10.0);
+      Array<float> data2(data.copy());
+      data2 += float(10.0);
 
       Slicer slice(IPosition(2,0,0), shape2, IPosition(2,1,1));
-      Array<Float> data3;
+      Array<float> data3;
       pIm.doGetSlice(data3, slice);
       AlwaysAssert(allNear(data3, data2, 1e-6), AipsError);
     }
@@ -297,27 +297,27 @@ int main()
       IPosition shape2(2,5, 10);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      HDF5Image<Float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img9");
+      HDF5Image<float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img9");
       pIm.set(3.0);
-      AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
+      AlwaysAssert(allEQ(pIm.get(), float(3.0)), AipsError);
       // 2 * x * x
       pIm.apply(&func);
-      AlwaysAssert(allNear(pIm.get(), Float(18.0), Double(1e-6)), AipsError);
+      AlwaysAssert(allNear(pIm.get(), float(18.0), double(1e-6)), AipsError);
       // 3 * x (const arg)
       pIm.set(3.0);
-      AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
+      AlwaysAssert(allEQ(pIm.get(), float(3.0)), AipsError);
       pIm.apply(&const_arg_func);
-      AlwaysAssert(allNear(pIm.get(), Float(9.0), Double(1e-6)), AipsError);
+      AlwaysAssert(allNear(pIm.get(), float(9.0), double(1e-6)), AipsError);
       // Polynomial 1 + 2x + 3x**2
       pIm.set(3.0);
-      AlwaysAssert(allEQ(pIm.get(), Float(3.0)), AipsError);
+      AlwaysAssert(allEQ(pIm.get(), float(3.0)), AipsError);
 
-      Polynomial<Float> poly(3);
+      Polynomial<float> poly(3);
       poly.setCoefficient(1, 1.0);
       poly.setCoefficient(2, 2.0);
       poly.setCoefficient(3, 3.0);
       pIm.apply(poly);
-      AlwaysAssert(allNear(pIm.get(), poly(3.0), Double(1e-6)), AipsError);
+      AlwaysAssert(allNear(pIm.get(), poly(3.0), double(1e-6)), AipsError);
     }
 
     // Do some iterating to test the makeIter function (indirectly)
@@ -325,11 +325,11 @@ int main()
       IPosition shape2(2, 128, 256);
       TiledShape tiledShape2(shape2);
       CoordinateSystem cSys2 = CoordinateUtil::defaultCoords2D();
-      HDF5Image<Float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img10");
+      HDF5Image<float> pIm(tiledShape2, cSys2, "tHDF5Image_tmp.img10");
       pIm.set(1.0);
-      LatticeIterator<Float> it(pIm);
+      LatticeIterator<float> it(pIm);
       while (!it.atEnd()) {
-	AlwaysAssert(allEQ(it.cursor(), Float(1.0)), AipsError);
+	AlwaysAssert(allEQ(it.cursor(), float(1.0)), AipsError);
 	it++;
       }
     }

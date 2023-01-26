@@ -88,84 +88,84 @@ public:
 
   // Access to required columns
   // <group>
-  ArrayColumn<Double>& chanFreq() {return chanFreq_p;}
+  ArrayColumn<double>& chanFreq() {return chanFreq_p;}
   ArrayMeasColumn<MFrequency>& chanFreqMeas() {return chanFreqMeas_p;}
-  ArrayQuantColumn<Double>& chanFreqQuant() {return chanFreqQuant_p;}
-  ArrayColumn<Double>& chanWidth() {return chanWidth_p;}
-  ArrayQuantColumn<Double>& chanWidthQuant() { return chanWidthQuant_p;}
-  ArrayColumn<Double>& effectiveBW() {return effectiveBW_p;}
-  ArrayQuantColumn<Double>& effectiveBWQuant() { return effectiveBWQuant_p;}
-  ScalarColumn<Bool>& flagRow() {return flagRow_p;}
-  ScalarColumn<Int>& freqGroup() {return freqGroup_p;}
+  ArrayQuantColumn<double>& chanFreqQuant() {return chanFreqQuant_p;}
+  ArrayColumn<double>& chanWidth() {return chanWidth_p;}
+  ArrayQuantColumn<double>& chanWidthQuant() { return chanWidthQuant_p;}
+  ArrayColumn<double>& effectiveBW() {return effectiveBW_p;}
+  ArrayQuantColumn<double>& effectiveBWQuant() { return effectiveBWQuant_p;}
+  ScalarColumn<bool>& flagRow() {return flagRow_p;}
+  ScalarColumn<int32_t>& freqGroup() {return freqGroup_p;}
   ScalarColumn<String>& freqGroupName() {return freqGroupName_p;}
-  ScalarColumn<Int>& ifConvChain() {return ifConvChain_p;}
-  ScalarColumn<Int>& measFreqRef() {return measFreqRef_p;}
+  ScalarColumn<int32_t>& ifConvChain() {return ifConvChain_p;}
+  ScalarColumn<int32_t>& measFreqRef() {return measFreqRef_p;}
   ScalarColumn<String>& name() {return name_p;}
-  ScalarColumn<Int>& netSideband() {return netSideband_p;}
-  ScalarColumn<Int>& numChan() {return numChan_p;}
-  ScalarColumn<Double>& refFrequency() {return refFrequency_p;}
-  ScalarQuantColumn<Double>& refFrequencyQuant() {return refFrequencyQuant_p;}
+  ScalarColumn<int32_t>& netSideband() {return netSideband_p;}
+  ScalarColumn<int32_t>& numChan() {return numChan_p;}
+  ScalarColumn<double>& refFrequency() {return refFrequency_p;}
+  ScalarQuantColumn<double>& refFrequencyQuant() {return refFrequencyQuant_p;}
   ScalarMeasColumn<MFrequency>& refFrequencyMeas() {return refFrequencyMeas_p;}
-  ArrayColumn<Double>& resolution() {return resolution_p;}
-  ArrayQuantColumn<Double>& resolutionQuant() { return resolutionQuant_p;}
-  ScalarColumn<Double>& totalBandwidth() {return totalBandwidth_p;}
-  ScalarQuantColumn<Double>& totalBandwidthQuant() {
+  ArrayColumn<double>& resolution() {return resolution_p;}
+  ArrayQuantColumn<double>& resolutionQuant() { return resolutionQuant_p;}
+  ScalarColumn<double>& totalBandwidth() {return totalBandwidth_p;}
+  ScalarQuantColumn<double>& totalBandwidthQuant() {
     return totalBandwidthQuant_p;}
   // </group>
 
   // Access to optional columns
   // <group>
   ArrayColumn<String>& assocNature() {return assocNature_p;}
-  ArrayColumn<Int>& assocSpwId() {return assocSpwId_p;}
-  ScalarColumn<Int>& bbcNo() {return bbcNo_p;}
-  ScalarColumn<Int>& bbcSideband() {return bbcSideband_p;}
-  ScalarColumn<Int>& dopplerId() {return dopplerId_p;}
-  ScalarColumn<Int>& receiverId() {return receiverId_p;}
+  ArrayColumn<int32_t>& assocSpwId() {return assocSpwId_p;}
+  ScalarColumn<int32_t>& bbcNo() {return bbcNo_p;}
+  ScalarColumn<int32_t>& bbcSideband() {return bbcSideband_p;}
+  ScalarColumn<int32_t>& dopplerId() {return dopplerId_p;}
+  ScalarColumn<int32_t>& receiverId() {return receiverId_p;}
   // </group>
 
   // Const access to columns
   // <group>
-  const ArrayColumn<Double>& chanFreq() const {return chanFreq_p;}
-  const ArrayQuantColumn<Double>& chanFreqQuant() const {
+  const ArrayColumn<double>& chanFreq() const {return chanFreq_p;}
+  const ArrayQuantColumn<double>& chanFreqQuant() const {
     return chanFreqQuant_p;}
   const ArrayMeasColumn<MFrequency>& chanFreqMeas() const {
     return chanFreqMeas_p;}
-  const ArrayColumn<Double>& chanWidth() const {return chanWidth_p;}
-  const ArrayQuantColumn<Double>& chanWidthQuant() const {
+  const ArrayColumn<double>& chanWidth() const {return chanWidth_p;}
+  const ArrayQuantColumn<double>& chanWidthQuant() const {
     return chanWidthQuant_p;}
-  const ArrayColumn<Double>& effectiveBW() const {return effectiveBW_p;}
-  const ArrayQuantColumn<Double>& effectiveBWQuant() const {
+  const ArrayColumn<double>& effectiveBW() const {return effectiveBW_p;}
+  const ArrayQuantColumn<double>& effectiveBWQuant() const {
     return effectiveBWQuant_p;}
-  const ScalarColumn<Int>& freqGroup() const {return freqGroup_p;}
+  const ScalarColumn<int32_t>& freqGroup() const {return freqGroup_p;}
   const ScalarColumn<String>& freqGroupName() const {return freqGroupName_p;}
-  const ScalarColumn<Int>& ifConvChain() const {return ifConvChain_p;}
-  const ScalarColumn<Bool>& flagRow() const {return flagRow_p;}
-  const ScalarColumn<Int>& measFreqRef() const {return measFreqRef_p;}
+  const ScalarColumn<int32_t>& ifConvChain() const {return ifConvChain_p;}
+  const ScalarColumn<bool>& flagRow() const {return flagRow_p;}
+  const ScalarColumn<int32_t>& measFreqRef() const {return measFreqRef_p;}
   const ScalarColumn<String>& name() const {return name_p;}
-  const ScalarColumn<Int>& netSideband() const {return netSideband_p;}
-  const ScalarColumn<Int>& numChan() const {return numChan_p;}
-  const ScalarColumn<Double>& refFrequency() const {return refFrequency_p;}
-  const ScalarQuantColumn<Double>& refFrequencyQuant() const {
+  const ScalarColumn<int32_t>& netSideband() const {return netSideband_p;}
+  const ScalarColumn<int32_t>& numChan() const {return numChan_p;}
+  const ScalarColumn<double>& refFrequency() const {return refFrequency_p;}
+  const ScalarQuantColumn<double>& refFrequencyQuant() const {
     return refFrequencyQuant_p;}
   const ScalarMeasColumn<MFrequency>& refFrequencyMeas() const {
     return refFrequencyMeas_p;}
-  const ArrayColumn<Double>& resolution() const {return resolution_p;}
-  const ArrayQuantColumn<Double>& resolutionQuant() const {
+  const ArrayColumn<double>& resolution() const {return resolution_p;}
+  const ArrayQuantColumn<double>& resolutionQuant() const {
     return resolutionQuant_p;}
-  const ScalarColumn<Double>& totalBandwidth() const {
+  const ScalarColumn<double>& totalBandwidth() const {
     return totalBandwidth_p;}
-  const ScalarQuantColumn<Double>& totalBandwidthQuant() const {
+  const ScalarQuantColumn<double>& totalBandwidthQuant() const {
     return totalBandwidthQuant_p;}
   // </group>
 
   // Const access to optional columns
   // <group>
   const ArrayColumn<String>& assocNature() const {return assocNature_p;}
-  const ArrayColumn<Int>& assocSpwId() const {return assocSpwId_p;}
-  const ScalarColumn<Int>& bbcNo() const {return bbcNo_p;}
-  const ScalarColumn<Int>& bbcSideband() const {return bbcSideband_p;}
-  const ScalarColumn<Int>& dopplerId() const {return dopplerId_p;}
-  const ScalarColumn<Int>& receiverId() const {return receiverId_p;}
+  const ArrayColumn<int32_t>& assocSpwId() const {return assocSpwId_p;}
+  const ScalarColumn<int32_t>& bbcNo() const {return bbcNo_p;}
+  const ScalarColumn<int32_t>& bbcSideband() const {return bbcSideband_p;}
+  const ScalarColumn<int32_t>& dopplerId() const {return dopplerId_p;}
+  const ScalarColumn<int32_t>& receiverId() const {return receiverId_p;}
   // </group>
 
   // Convenience function that returns the number of rows in any of the columns
@@ -183,31 +183,31 @@ public:
   // set to a non-negative value then that row is checked first to see if it
   // matches. An AIpsError exception is thrown if tryRow is bigger than the
   // number of rows in the Table. Returns -1 if no match could be found.
-  Int64 matchSpw(const MFrequency& refFreq, uInt nChan, 
-                 const Quantum<Double>& bandwidth, Int ifChain,
-                 const Quantum<Double>& tolerance, Int64 tryRow=-1) const;
+  int64_t matchSpw(const MFrequency& refFreq, uint32_t nChan, 
+                 const Quantum<double>& bandwidth, int32_t ifChain,
+                 const Quantum<double>& tolerance, int64_t tryRow=-1) const;
   // Similar to above, but also pass in the frame info.			 
-  Int64 matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1,
+  int64_t matchSpw(const MFrequency& refFreq, const MFrequency& chanFreq1,
                  const MeasFrame& measFrm,
-                 const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uInt nChan, 
-                 const Quantum<Double>& bandwidth, Int ifChain,
-                 const Quantum<Double>& tolerance, Int64 tryRow=-1) const; 
+                 const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc, uint32_t nChan, 
+                 const Quantum<double>& bandwidth, int32_t ifChain,
+                 const Quantum<double>& tolerance, int64_t tryRow=-1) const; 
   // This is to check that the channels are matched individually
   // and also if the spw is matched in reverse; 
 
   //Same as the above but returns all the possible match that it could find
   // in the spectral window table. 
-  RowNumbers allMatchedSpw(const MFrequency& refFreq, uInt nChan, 
-                           const Quantum<Double>& bandwidth, Int ifChain,
-                           const Quantum<Double>& tolerance) const;
+  RowNumbers allMatchedSpw(const MFrequency& refFreq, uint32_t nChan, 
+                           const Quantum<double>& bandwidth, int32_t ifChain,
+                           const Quantum<double>& tolerance) const;
 
   //This version does a channel to channel match too and also return
   // the reversed if it matches but the channels are in inverse order
   // like an upper or lower side band having same characteristics
-  Int64 matchSpw(const MFrequency& refFreq, uInt nChan, 
-                 const Quantum<Double>& bandwidth, Int ifChain,
-                 const Quantum<Double>& tolerance, Vector<Double>& otherFreqs, 
-                 Bool& reversed) const;
+  int64_t matchSpw(const MFrequency& refFreq, uint32_t nChan, 
+                 const Quantum<double>& bandwidth, int32_t ifChain,
+                 const Quantum<double>& tolerance, Vector<double>& otherFreqs, 
+                 bool& reversed) const;
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -229,54 +229,54 @@ private:
   //# functions to match the supplied arguments against the values in the
   //# specified row.
   //<group>
-  Bool matchRefFrequency(rownr_t row, MFrequency::Types refType, 
-			 Double refFreqInHz, Double tolInHz) const;
-  Bool matchRefFreqCnvtrd(rownr_t row, MFrequency refOrChanFreq, const Bool isRefFreq,
+  bool matchRefFrequency(rownr_t row, MFrequency::Types refType, 
+			 double refFreqInHz, double tolInHz) const;
+  bool matchRefFreqCnvtrd(rownr_t row, MFrequency refOrChanFreq, const bool isRefFreq,
                           const MeasFrame& measFrm,
                           const MSDopplerColumns& msdopc, const MSSourceColumns& mssrcc,
-                          Double tolInHz) const;
-  Bool matchChanFreq(rownr_t row, const Vector<Double>& chanFreqInHz,
-		     Double tolInHz) const;
-  Bool matchIfConvChain(rownr_t row, Int ifChain) const;
-  Bool matchTotalBandwidth(rownr_t row, Double bandwidthInHz,
-			   Double tolInHz) const;
-  Bool matchNumChan(rownr_t row, Int nChan) const;
+                          double tolInHz) const;
+  bool matchChanFreq(rownr_t row, const Vector<double>& chanFreqInHz,
+		     double tolInHz) const;
+  bool matchIfConvChain(rownr_t row, int32_t ifChain) const;
+  bool matchTotalBandwidth(rownr_t row, double bandwidthInHz,
+			   double tolInHz) const;
+  bool matchNumChan(rownr_t row, int32_t nChan) const;
   //</group>
 
   //# required columns
-  ArrayColumn<Double> chanFreq_p;
-  ArrayColumn<Double> chanWidth_p;
-  ArrayColumn<Double> effectiveBW_p;
-  ScalarColumn<Bool> flagRow_p;
-  ScalarColumn<Int> freqGroup_p;
+  ArrayColumn<double> chanFreq_p;
+  ArrayColumn<double> chanWidth_p;
+  ArrayColumn<double> effectiveBW_p;
+  ScalarColumn<bool> flagRow_p;
+  ScalarColumn<int32_t> freqGroup_p;
   ScalarColumn<String> freqGroupName_p;
-  ScalarColumn<Int> ifConvChain_p;
-  ScalarColumn<Int> measFreqRef_p;
+  ScalarColumn<int32_t> ifConvChain_p;
+  ScalarColumn<int32_t> measFreqRef_p;
   ScalarColumn<String> name_p;
-  ScalarColumn<Int> netSideband_p;
-  ScalarColumn<Int> numChan_p;
-  ScalarColumn<Double> refFrequency_p;
-  ArrayColumn<Double> resolution_p;
-  ScalarColumn<Double> totalBandwidth_p;
+  ScalarColumn<int32_t> netSideband_p;
+  ScalarColumn<int32_t> numChan_p;
+  ScalarColumn<double> refFrequency_p;
+  ArrayColumn<double> resolution_p;
+  ScalarColumn<double> totalBandwidth_p;
   //# optional columns
   ArrayColumn<String> assocNature_p;
-  ArrayColumn<Int> assocSpwId_p;
-  ScalarColumn<Int> bbcNo_p;
-  ScalarColumn<Int> bbcSideband_p;
-  ScalarColumn<Int> dopplerId_p;
-  ScalarColumn<Int> receiverId_p;
+  ArrayColumn<int32_t> assocSpwId_p;
+  ScalarColumn<int32_t> bbcNo_p;
+  ScalarColumn<int32_t> bbcSideband_p;
+  ScalarColumn<int32_t> dopplerId_p;
+  ScalarColumn<int32_t> receiverId_p;
 
   //# Access to Measure columns
   ArrayMeasColumn<MFrequency> chanFreqMeas_p;
   ScalarMeasColumn<MFrequency> refFrequencyMeas_p;
 
   //# Access to Quantum columns
-  ArrayQuantColumn<Double> chanFreqQuant_p;
-  ArrayQuantColumn<Double> chanWidthQuant_p;
-  ArrayQuantColumn<Double> effectiveBWQuant_p;
-  ScalarQuantColumn<Double> refFrequencyQuant_p;
-  ArrayQuantColumn<Double> resolutionQuant_p;
-  ScalarQuantColumn<Double> totalBandwidthQuant_p;
+  ArrayQuantColumn<double> chanFreqQuant_p;
+  ArrayQuantColumn<double> chanWidthQuant_p;
+  ArrayQuantColumn<double> effectiveBWQuant_p;
+  ScalarQuantColumn<double> refFrequencyQuant_p;
+  ArrayQuantColumn<double> resolutionQuant_p;
+  ScalarQuantColumn<double> totalBandwidthQuant_p;
 };
 
 //# Define the RO version for backward compatibility.

@@ -40,38 +40,38 @@ class LatticeProgress;
 // Abstract base class of data providers which allows stats framework to iterate through a lattice.
 
 template <class T> class LatticeStatsDataProviderBase
-	: public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const Bool*> {
+	: public StatsDataProvider<typename NumericTraits<T>::PrecisionType, const T*, const bool*> {
 
 public:
 
 	virtual ~LatticeStatsDataProviderBase();
 
 	// estimated number of steps to iterate through the the lattice
-	virtual uInt estimatedSteps() const = 0;
+	virtual uint32_t estimatedSteps() const = 0;
 
 	virtual void finalize();
 
-	// Get the stride for the current mask (only called if hasMask() returns True).
-	uInt getMaskStride();
+	// Get the stride for the current mask (only called if hasMask() returns true).
+	uint32_t getMaskStride();
 
-	// Get the associated range(s) of the current dataset. Only called if hasRanges() returns True;
+	// Get the associated range(s) of the current dataset. Only called if hasRanges() returns true;
 	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > getRanges();
 
 	// Get the stride for the current data set.
-	uInt getStride();
+	uint32_t getStride();
 
 	// Returns NULL; lattices do not have associated weights.
 	const T* getWeights();
 
 	// Does the current data set have associated range(s)?
-	Bool hasRanges() const;
+	bool hasRanges() const;
 
-	// returns False; lattices do not have associated weights.
-	Bool hasWeights() const;
+	// returns false; lattices do not have associated weights.
+	bool hasWeights() const;
 
-	// If the associated data set has ranges, are these include (return True) or
-	// exclude (return False) ranges?
-	Bool isInclude() const;
+	// If the associated data set has ranges, are these include (return true) or
+	// exclude (return false) ranges?
+	bool isInclude() const;
 
 	// get the positions of the min and max
 	void minMaxPos(IPosition& minpos, IPosition& maxpos) const;
@@ -83,7 +83,7 @@ public:
 	// set the data ranges
 	void setRanges(
 		const std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> >& ranges,
-		Bool isInclude
+		bool isInclude
 	);
 
 protected:
@@ -96,7 +96,7 @@ protected:
 	void _updateProgress();
 
 private:
-	Bool _hasRanges, _isInclude;
+	bool _hasRanges, _isInclude;
 	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > _ranges;
 	CountedPtr<LattStatsProgress> _progressMeter;
 	IPosition _minPos, _maxPos;

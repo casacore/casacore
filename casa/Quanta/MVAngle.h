@@ -58,17 +58,17 @@ class MUString;
 // </etymology>
 //
 // <synopsis>
-// An MVAngle is a simple Double, to be used for angle conversions and I/O.
-// It can be constructed from a Double (in which case radians are assumed),
-// or from a Quantity (<src>Quantum<Double></src>). Quantities must be in
+// An MVAngle is a simple double, to be used for angle conversions and I/O.
+// It can be constructed from a double (in which case radians are assumed),
+// or from a Quantity (<src>Quantum<double></src>). Quantities must be in
 // either angle or time units.<br>
-// It has an automatic conversion to Double, so all standard mathematical
+// It has an automatic conversion to double, so all standard mathematical
 // operations can operate on it.<br>
 // The class has a number of special member operations:
 // <ul>
 //  <li> <src>MVAngle operator()</src> will normalise the angle between
 //	-180 and +180(inclusive) degrees and return the value 
-//  <li> <src>MVAngle operator(Double)</src> will normalise the angle 
+//  <li> <src>MVAngle operator(double)</src> will normalise the angle 
 //	using the value specified (and return the value)
 //	in fractions of a circle (this was chosen rather than radians to make
 // 	for easier and more precise programming) as a lower bound. I.e.
@@ -79,16 +79,16 @@ class MUString;
 //	return the normalised value) to within 180 degrees of the
 //	argument value. This is useful for making a range of angles
 //	contiguous.
-//   <li> <src>MVAngle binorm(Double)</src> will normalise the angle in
+//   <li> <src>MVAngle binorm(double)</src> will normalise the angle in
 //	steps of 180 degrees. 
 //	using the value specified (and return the value)
 //	in fractions of 180 degrees (this was chosen rather than radians to make
 // 	for easier and more precise programming) as a lower bound. I.e.
 //	(-0.5) will normalise between -90 and +90 degrees, (0.) between
 //	0 and 180 degrees, (10.) between 1800 and 1980 dgrees.
-//   <li> <src>Double radian()</src> will return value in radians
-//   <li> <src>Double degree()</src> will return value in degrees
-//   <li> <src>Double circle()</src> will return value in fraction of circles
+//   <li> <src>double radian()</src> will return value in radians
+//   <li> <src>double degree()</src> will return value in degrees
+//   <li> <src>double circle()</src> will return value in fraction of circles
 //   <li> <src>MVAngle coAngle()</src> will return 90-angle (or rather 
 //		pi/2 - angle), with (0) normalisation.
 //   <li> <src>Quantity get()</src> will return radians
@@ -186,7 +186,7 @@ class MUString;
 // a <src>print</src> or <src>string</src> that accepts a Format object.
 //
 // Strings and input can be converted to an MVAngle (or Quantity) by
-// <src>Bool read(Quantity &out, const String &in)</src> and
+// <src>bool read(Quantity &out, const String &in)</src> and
 // <src> istream >> MVAngle &</src>. In the latter case the actual
 // reading is done by the String read, which reads between white-spaces.<br>
 // The following input formats (note no blanks allowed) are supported
@@ -277,16 +277,16 @@ class MVAngle {
   public:
     friend class MVAngle;
     Format(MVAngle::formatTypes intyp = MVAngle::ANGLE,
-	   uInt inprec = 0) :
+	   uint32_t inprec = 0) :
       typ(intyp), prec(inprec) {;};
-    Format(uInt inprec) :
+    Format(uint32_t inprec) :
       typ(MVAngle::ANGLE), prec(inprec) {;};
     // Construct from type and precision (present due to overlaoding problems)
-    Format(uInt intyp, uInt inprec) :
+    Format(uint32_t intyp, uint32_t inprec) :
       typ((MVAngle::formatTypes) intyp), prec(inprec) {;};
   private:
     MVAngle::formatTypes typ;
-    uInt prec;
+    uint32_t prec;
   };
   
   //# Friends
@@ -304,8 +304,8 @@ class MVAngle {
   MVAngle(const MVAngle &other);
   // Copy assignment
   MVAngle &operator=(const MVAngle &other);
-  // Constructor from Double
-  MVAngle(Double d);
+  // Constructor from double
+  MVAngle(double d);
   // Constructor from Quantum : value can be an angle or time
   // <thrown>
   //   <li> AipsError if not a time or angle
@@ -317,41 +317,41 @@ class MVAngle {
   
   //# Operators
   // Conversion operator
-  operator Double() const;
+  operator double() const;
   // Normalisation between -180 and +180 degrees (-pi and +pi)
   const MVAngle &operator()();
   // Normalisation between 2pi*norm and 2pi*norm + 2pi
-  const MVAngle &operator()(Double norm);
+  const MVAngle &operator()(double norm);
   // Normalisation between norm-pi and norm+pi
   const MVAngle &operator()(const MVAngle &norm);
   
   //# General member functions
   // Normalisation between pi*norm and pi*norm + pi
-  const MVAngle &binorm(Double norm);
+  const MVAngle &binorm(double norm);
   // Check if String unit
-  static Bool unitString(UnitVal &uv, String &us, MUString &in);
+  static bool unitString(UnitVal &uv, String &us, MUString &in);
 
   // Make res angle Quantity from string in angle/time-like format. In the
   // case of String input, also quantities are recognised.
-  // chk=True means that the entire string should be consumed.
-  // throwExcp=True means that an exception is thrown in case of an error.
+  // chk=true means that the entire string should be consumed.
+  // throwExcp=true means that an exception is thrown in case of an error.
   // <group>
-  static Bool read(Quantity &res, const String &in, Bool chk=True);
-  static Bool read(Quantity &res, MUString &in, Bool chk=True);
-  static Bool read(Quantity &res, const String &in, Bool chk, Bool throwExcp);
-  static Bool read(Quantity &res, MUString &in, Bool chk, Bool throwExcp);
+  static bool read(Quantity &res, const String &in, bool chk=true);
+  static bool read(Quantity &res, MUString &in, bool chk=true);
+  static bool read(Quantity &res, const String &in, bool chk, bool throwExcp);
+  static bool read(Quantity &res, MUString &in, bool chk, bool throwExcp);
   // </group>
   // Handle a read error. An exception is thrown if indicated so.
-  // Otherwise in.pop() is called and False is returned.
-  static Bool handleReadError(MUString& in, Bool throwExcp);
+  // Otherwise in.pop() is called and false is returned.
+  static bool handleReadError(MUString& in, bool throwExcp);
 
   // Make co-angle (e.g. zenith distance from elevation)
   MVAngle coAngle() const;
   // Get value in given unit
   // <group>
-  Double radian() const;
-  Double degree() const;
-  Double circle() const;
+  double radian() const;
+  double degree() const;
+  double circle() const;
   Quantity get() const;
   Quantity get(const Unit &inunit) const;
   // </group>
@@ -363,12 +363,12 @@ class MVAngle {
   // </note>
   // <group>
   String string() const;
-  String string(MVAngle::formatTypes intyp, uInt inprec = 0) const;
-  String string(uInt intyp, uInt inprec) const;
-  String string(uInt inprec) const;
+  String string(MVAngle::formatTypes intyp, uint32_t inprec = 0) const;
+  String string(uint32_t intyp, uint32_t inprec) const;
+  String string(uint32_t inprec) const;
   String string(const MVAngle::Format &form) const;
   void print(ostream &oss, const MVAngle::Format &form) const;
-  void print(ostream &oss, const MVAngle::Format &form, Bool loc) const;
+  void print(ostream &oss, const MVAngle::Format &form, bool loc) const;
   // </group>
   // Set default format
   // <note role=warning>
@@ -378,9 +378,9 @@ class MVAngle {
   // </note>
   // <group>
   static Format setFormat(MVAngle::formatTypes intyp, 
-			  uInt inprec = 0);
-  static Format setFormat(uInt intyp, uInt inprec);
-  static Format setFormat(uInt inprec = 0);
+			  uint32_t inprec = 0);
+  static Format setFormat(uint32_t intyp, uint32_t inprec);
+  static Format setFormat(uint32_t inprec = 0);
   static Format setFormat(const Format &form);
   // </group>
   // Get default format
@@ -388,18 +388,18 @@ class MVAngle {
   // Get code belonging to string. 0 if not known
   static MVAngle::formatTypes  giveMe(const String &in);
   // Get time zone offset (in days)
-  static Double timeZone();
+  static double timeZone();
   
  private:
   //# Data
   // Value
-  Double val;
+  double val;
   // Default format
   static MVAngle::Format defaultFormat;
   // Temporary format
   // <group>
   static MVAngle::Format interimFormat;
-  static Bool interimSet;
+  static bool interimSet;
   // </group>
   
   //# Member functions

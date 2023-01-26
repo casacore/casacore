@@ -50,20 +50,20 @@ public:
   // From one or two ints (note for gnu use)
   // <group>
   IComplex() : re(0), im(0) {;};
-  IComplex(Int r) : re(r), im(0) {;};
-  IComplex(Int r, Int i) : re(r), im(i) {;};
+  IComplex(int32_t r) : re(r), im(0) {;};
+  IComplex(int32_t r, int32_t i) : re(r), im(i) {;};
   // </group>
 
   //# Member functions
   // For use in FITS classes only
   // <group>
-  Int real() const { return re; };
-  Int imag() const { return im; };
+  int32_t real() const { return re; };
+  int32_t imag() const { return im; };
   // </group>
 
 private:
-  Int re;
-  Int im;
+  int32_t re;
+  int32_t im;
 };
 
 

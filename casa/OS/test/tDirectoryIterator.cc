@@ -44,9 +44,9 @@
 // This can be used to check if no memory leaks occur in normal operation.
 
 
-uInt countFiles (DirectoryIterator& iter)
+uint32_t countFiles (DirectoryIterator& iter)
 {
-    uInt n=0;
+    uint32_t n=0;
     while (! iter.pastEnd()) {
 	n++;
 	iter++;
@@ -54,15 +54,15 @@ uInt countFiles (DirectoryIterator& iter)
     return n;
 }
 
-void doIt (Bool doExcp)
+void doIt (bool doExcp)
 {
     // Define the possible names and if found.
     // This is needed, because in Linux2.4 the order of readdir is not
     // alphabetical (but hash order).
-    std::map<String,Bool> usedNames;
-    usedNames["a"] = False;
-    usedNames["ca"] = False;
-    usedNames["ca.cc"] = False;
+    std::map<String,bool> usedNames;
+    usedNames["a"] = false;
+    usedNames["ca"] = false;
+    usedNames["ca.cc"] = false;
     String firstName;
     Directory dir("tDirectoryIterator_tmp");
     DirectoryIterator iter(dir, Regex(".*a.*"));
@@ -72,10 +72,10 @@ void doIt (Bool doExcp)
       if (i == 0) {
 	firstName = nm;
       }
-      std::map<String,Bool>::iterator uniter = usedNames.find(nm);
+      std::map<String,bool>::iterator uniter = usedNames.find(nm);
       AlwaysAssertExit (uniter != usedNames.end());
-      AlwaysAssertExit (uniter->second == False);
-      uniter->second = True;
+      AlwaysAssertExit (uniter->second == false);
+      uniter->second = true;
       AlwaysAssertExit (iter.file().path().originalName() ==
 		                            "tDirectoryIterator_tmp/" + nm);
       iter++;

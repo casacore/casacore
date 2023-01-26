@@ -104,7 +104,7 @@ public:
    template <typename T, typename U>
    static void copyMiscellaneous (ImageInterface<T>& out,
                                   const ImageInterface<U>& in,
-                                  Bool copyImageInfo = True);
+                                  bool copyImageInfo = true);
 
 // Copy a mask from one image to another
    template <typename T, typename U>
@@ -125,10 +125,10 @@ public:
 		   LogIO& os,
 		   PtrHolder<ImageInterface<T> >& outImage,
 		   const ImageInterface<T>& inImage,
-		   const String& outFile, Bool direction,
-		   Bool spectral, const String& stokes,
-		   Bool linear, Bool tabular, Bool overwrite,
-                   Bool silent=False
+		   const String& outFile, bool direction,
+		   bool spectral, const String& stokes,
+		   bool linear, bool tabular, bool overwrite,
+                   bool silent=false
    );
 
 // Function to bin up (average data) one axis of an N-D MaskedArray. The interface
@@ -142,7 +142,7 @@ public:
    template <typename T>
    static void bin (MaskedArray<T>& out, Coordinate& coordOut,
                     const MaskedArray<T>& in, const Coordinate& coordIn,
-                    uInt axis, uInt bin);
+                    uint32_t axis, uint32_t bin);
 
 // This function converts pixel coordinates to world coordinates. You
 // specify a vector of pixel coordinates (<src>pixels</src>) for only one 
@@ -153,19 +153,19 @@ public:
 // (<src>(blc(i)+trc(i))/2)</src>), otherwise it is set to the reference pixel.   
 // The vector of world coordinates for <src>pixelAxis</src> is returned as formatted 
 // Strings.  If for some reason it can't make the conversion, the element
-// element is returned as "?"    Returns <src>False</src> if the lengths of
+// element is returned as "?"    Returns <src>false</src> if the lengths of
 // <<src>blc</src> and <src>trc</src> are not equal to the number of pixel axes
 // in the coordinate system.
-   static Bool pixToWorld (
+   static bool pixToWorld (
 		   Vector<String>& sWorld,
 		   const CoordinateSystem& cSys,
-		   const Int& pixelAxis,
-		   const Vector<Int>& cursorAxes,
+		   const int32_t& pixelAxis,
+		   const Vector<int32_t>& cursorAxes,
 		   const IPosition& blc,
 		   const IPosition& trc,
-		   const Vector<Double>& pixels,
-		   const Int& prec,
-		   const Bool usePrecForMixed=False
+		   const Vector<double>& pixels,
+		   const int32_t& prec,
+		   const bool usePrecForMixed=false
    );
 
 // Convert long axis names "Right Ascension", "Declination", "Frequency" and
@@ -180,18 +180,18 @@ public:
    		const TiledShape& mapShape,
    		const CoordinateSystem& coordinateInfo,
    		const String& imageName,
-   		const Array<Float>& pixels, LogIO& log,
-   		const Array<Bool>& pixelMask = Array<Bool>()
+   		const Array<float>& pixels, LogIO& log,
+   		const Array<bool>& pixelMask = Array<bool>()
    );
 
    static GaussianBeam makeFakeBeam(
 		   LogIO& logIO, const CoordinateSystem& csys,
-		   Bool suppressWarnings = False
+		   bool suppressWarnings = false
    );
 
    static void getUnitAndDoppler(
 	   String& xUnit, String& doppler,
-	   const uInt axis, const CoordinateSystem& csys
+	   const uint32_t axis, const CoordinateSystem& csys
    );
 };
 

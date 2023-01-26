@@ -91,20 +91,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     {}
 
     // Create an HDF5 datatype object for the given fixed length type.
-    // It uses the corresponding native HDF5 data type. Only for Bool it
+    // It uses the corresponding native HDF5 data type. Only for bool it
     // uses a uchar, because the HDF5 bool type is a uint.
     // For the complex types it makes a compound HDF5 data type.
     // The String type is meant for an array of strings.
     // <group>
-    explicit HDF5DataType (const Bool*);
-    explicit HDF5DataType (const uChar*);
-    explicit HDF5DataType (const Short*);
-    explicit HDF5DataType (const uShort*);
-    explicit HDF5DataType (const Int*);
-    explicit HDF5DataType (const uInt*);
-    explicit HDF5DataType (const Int64*);
-    explicit HDF5DataType (const Float*);
-    explicit HDF5DataType (const Double*);
+    explicit HDF5DataType (const bool*);
+    explicit HDF5DataType (const unsigned char*);
+    explicit HDF5DataType (const int16_t*);
+    explicit HDF5DataType (const uint16_t*);
+    explicit HDF5DataType (const int32_t*);
+    explicit HDF5DataType (const uint32_t*);
+    explicit HDF5DataType (const int64_t*);
+    explicit HDF5DataType (const float*);
+    explicit HDF5DataType (const double*);
     explicit HDF5DataType (const Complex*);
     explicit HDF5DataType (const DComplex*);
     explicit HDF5DataType (const String*);
@@ -118,7 +118,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Both arguments are dummy (needed to distinguish the constructor).
     // An empty array as represented as a compound data type with integer
     // field names emptyarray, rank and casatype.
-    HDF5DataType (Int, Int);
+    HDF5DataType (int32_t, int32_t);
 
     // Define a compound data type consisting of the given fields and types.
     // An exception is thrown if the vectors are empty or have mismatching
@@ -153,14 +153,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get the size in bytes of the data type (in memory).
     // Note that the size of a string is variable, thus 0.
-    uInt size() const
+    uint32_t size() const
       { return itsSize; }
 
     // Test if the data type is Complex or DComplex.
-    static Bool isComplex (hid_t dtid);
+    static bool isComplex (hid_t dtid);
 
     // Test if the data type is an empty array.
-    static Bool isEmptyArray (hid_t dtid);
+    static bool isEmptyArray (hid_t dtid);
 
     // Get the shape of an array data type.
     // It returns an empty IPosition for non-arrays.
@@ -177,13 +177,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Add a field to a compound data type.
     // It does it for the memory and file data type.
     void addToCompound (const char* name,
-                        uInt offset,
+                        uint32_t offset,
                         const HDF5DataType& dtype);
 
     //# Data members
     HDF5HidDataType itsHidMem;
     HDF5HidDataType itsHidFile;
-    uInt            itsSize;
+    uint32_t            itsSize;
   };
 
 }

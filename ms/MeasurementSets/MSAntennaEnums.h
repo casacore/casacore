@@ -66,10 +66,10 @@ public:
     // String
     TYPE,
     // Physical diameter of dish (if appropriate)<BR>
-    // Double - m
+    // double - m
     DISH_DIAMETER,
     // Flag for this row <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // Mount type: choose from "AZ-EL", "HA-DEC", "X-Y", "orbiting"
     // or "bizarre" (following VLBA FITS).<BR>
@@ -79,13 +79,13 @@ public:
     // String.
     NAME,
     // Axes offset of mount to FEED REFERENCE point. <BR>
-    // Double(3) - m - POSITION
+    // double(3) - m - POSITION
     OFFSET,
     // Antenna X,Y,Z phase reference positions in the IERS Terrestrial 
     // Reference Frame (ITRF);
     // right-handed, X towards the intersection of the ITRF equator and 
     // the Greenwich meridian, Z towards the adopted mean position of the pole.<BR>
-    // Double(3) - m - POSITION
+    // double(3) - m - POSITION
     POSITION,
     // Station (antenna pad) name.<BR>
     // String
@@ -93,13 +93,13 @@ public:
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=STATION,
     // Mean Keplerian orbit elements <BR>
-    // Double(6)
+    // double(6)
     MEAN_ORBIT,
     // Index into optional ORBIT table.<BR>
-    // Int.
+    // int32_t.
     ORBIT_ID,
     // Index into optional PHASED_ARRAY table.<BR>
-    // Int.
+    // int32_t.
     PHASED_ARRAY_ID,
     //
     // Not a column, but just a final enum specifying the number of enums.

@@ -33,8 +33,8 @@
 namespace casacore {
 
   // Arbitrary compare operation on two STL-style containers.
-  // It returns True if containers have equal size and
-  // all elements compare True.
+  // It returns true if containers have equal size and
+  // all elements compare true.
   template<typename C1, typename C2, typename CompareOperator>
   bool compareAll (const C1& l, const C2& r, CompareOperator op)
   {

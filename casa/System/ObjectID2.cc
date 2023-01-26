@@ -31,14 +31,14 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt hashFunc(const ObjectID &key)
+uint32_t hashFunc(const ObjectID &key)
 {
     // We should check to see if this hash is any good
-    uInt result = 0;
+    uint32_t result = 0;
     result |= key.sequence() & 0xff;
     result |= (key.pid() & 0xff) << 8;
     result |= (key.creationTime() & 0xff) << 16;
-    result |= uInt(key.hostName()[0]) << 24;
+    result |= uint32_t(key.hostName()[0]) << 24;
     return result;
 }
 
@@ -46,24 +46,24 @@ uInt hashFunc(const ObjectID &key)
 String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
 			     const String& command)
 {
-    objectIDs.resize (0, True, True);
+    objectIDs.resize (0, true, true);
     String error;
     String result;
     String str = command;
     // Extract object-id from the command, convert it to an
     // ObjectID in the block, and put its index into the command.
-    Int index = str.index ("'ObjectID=[");
+    int32_t index = str.index ("'ObjectID=[");
     while (index >= 0) {
         result += str.before(index);
 	index += 11;
-	Int pos = str.index ("]'", index);
+	int32_t pos = str.index ("]'", index);
 	ObjectID oid;
 	// Convert to ObjectID.
 	// If not succesfull, put original back.
 	if (! oid.fromString (error, str(index, pos-index))) {
 	    result += str(index-11, pos-index+13);
 	} else {
-	    uInt n = objectIDs.nelements() + 1;
+	    uint32_t n = objectIDs.nelements() + 1;
 	    objectIDs.resize (n);
 	    objectIDs[n-1] = oid;
 	    char buf[16];

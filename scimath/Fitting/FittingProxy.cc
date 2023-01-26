@@ -52,7 +52,7 @@ FittingProxy::FitType::FitType() :
   fitter_p(0), fitterCX_p(0),
   n_p(0), nceq_p(0), nreal_p(0), typ_p(0),
   colfac_p(1e-8), lmfac_p(1e-3), 
-  soldone_p(False), nr_p(0) {}
+  soldone_p(false), nr_p(0) {}
 
 FittingProxy::FitType::~FitType() {
   delete fitter_p; fitter_p = 0;
@@ -60,7 +60,7 @@ FittingProxy::FitType::~FitType() {
 }
 
 // Methods
-void FittingProxy::FitType::setFitter(GenericL2Fit<Double> *ptr) {
+void FittingProxy::FitType::setFitter(GenericL2Fit<double> *ptr) {
   delete fitter_p; fitter_p = 0;
   delete fitterCX_p; fitterCX_p = 0;
   fitter_p = ptr;
@@ -72,7 +72,7 @@ void FittingProxy::FitType::setFitterCX(GenericL2Fit<DComplex> *ptr) {
   fitterCX_p = ptr;
 }
 
-GenericL2Fit<Double> *const& FittingProxy::FitType::getFitter() const {
+GenericL2Fit<double> *const& FittingProxy::FitType::getFitter() const {
   return fitter_p;
 }
 
@@ -80,8 +80,8 @@ GenericL2Fit<DComplex> *const& FittingProxy::FitType::getFitterCX() const {
   return fitterCX_p;
 }
 
-void FittingProxy::FitType::setStatus(Int n, Int typ,
-				 Double colfac, Double lmfac) {
+void FittingProxy::FitType::setStatus(int32_t n, int32_t typ,
+				 double colfac, double lmfac) {
   n_p = n;
   typ_p = typ;
   nceq_p = (typ == 3 || typ == 11) ? 2*n_p : n_p;
@@ -90,7 +90,7 @@ void FittingProxy::FitType::setStatus(Int n, Int typ,
   lmfac_p = lmfac;
 }
 
-void FittingProxy::FitType::setSolved(Bool solved) {
+void FittingProxy::FitType::setSolved(bool solved) {
   soldone_p = solved;
 }
 
@@ -101,7 +101,7 @@ FittingProxy::FittingProxy() :
 
 // Destructor
 FittingProxy::~FittingProxy() {
-  for (uInt i=0; i<nFitter_p; i++) {
+  for (uint32_t i=0; i<nFitter_p; i++) {
     delete list_p[i]; list_p[i] = 0;
   }
   delete [] list_p;
@@ -109,11 +109,11 @@ FittingProxy::~FittingProxy() {
 
 // Methods
 
-Int FittingProxy::getid()
+int32_t FittingProxy::getid()
 {
-  Int id = -1;
+  int32_t id = -1;
   while (id<0) {
-    for (uInt i=0; i<nFitter_p; i++) {
+    for (uint32_t i=0; i<nFitter_p; i++) {
       if (!list_p[i]) {
 	id = i;
 	break;
@@ -121,12 +121,12 @@ Int FittingProxy::getid()
     }
     // Make some more
     if (id<0) {
-      uInt n = nFitter_p;
+      uint32_t n = nFitter_p;
       nFitter_p++;
       nFitter_p *= 2;
       FitType **list = list_p;
       list_p = new FitType *[nFitter_p];
-      for (uInt i=0; i<nFitter_p; i++) {
+      for (uint32_t i=0; i<nFitter_p; i++) {
 	list_p[i] = 0;
 	if (i<n) list_p[i] = list[i];
       }
@@ -137,7 +137,7 @@ Int FittingProxy::getid()
   return id;
 }
 
-Record FittingProxy::getstate(Int id)
+Record FittingProxy::getstate(int32_t id)
 {
   Record res;
   if (list_p[id]->getFitter()) {
@@ -150,12 +150,12 @@ Record FittingProxy::getstate(Int id)
 }
 
 
-Bool FittingProxy::init(Int id, Int n, Int tp, Double colfac, Double lmfac)
+bool FittingProxy::init(int32_t id, int32_t n, int32_t tp, double colfac, double lmfac)
 {
   // init: init a fitter
   if (tp == 0) {
     if (!list_p[id]->getFitter()) {
-      list_p[id]->setFitter(new LinearFitSVD<Double>);
+      list_p[id]->setFitter(new LinearFitSVD<double>);
     }
     list_p[id]->getFitter()->set(n);
     list_p[id]->getFitter()->set(abs(colfac), abs(lmfac));
@@ -168,39 +168,39 @@ Bool FittingProxy::init(Int id, Int n, Int tp, Double colfac, Double lmfac)
   }
   list_p[id]->setStatus(n, tp,
 			  abs(colfac), abs(lmfac));
-  list_p[id]->setSolved(False);
-  return True;
+  list_p[id]->setSolved(false);
+  return true;
 }
 
-Bool FittingProxy::done(Int id)
+bool FittingProxy::done(int32_t id)
 {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to undo a non-existing fitter"));
   }
   list_p[id]->setFitter(0);
-  return True;
+  return true;
 }
 
-Bool FittingProxy::reset(Int id)
+bool FittingProxy::reset(int32_t id)
 {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to reset a non-existing fitter"));
   }
   if (list_p[id]->getFitter()) list_p[id]->getFitter()->reset();
   else list_p[id]->getFitterCX()->reset();
-  list_p[id]->setSolved(False);
-  return True;
+  list_p[id]->setSolved(false);
+  return true;
 }
 
-Bool FittingProxy::set(Int id, Int nin, Int tpin, Double colfac, Double lmfac)
+bool FittingProxy::set(int32_t id, int32_t nin, int32_t tpin, double colfac, double lmfac)
 {
   if (!list_p[id]->getFitter() && !list_p[id]->getFitterCX()) {
     throw(AipsError("Trying to set properties of non-existing fitter"));
   }
-  Int n = nin;
-  Int tp = tpin;
-  Double cf = colfac;
-  Double lmf = lmfac;
+  int32_t n = nin;
+  int32_t tp = tpin;
+  double cf = colfac;
+  double lmf = lmfac;
   if (n == -1)  n  = list_p[id]->getN();
   if (tp== -1)  tp = list_p[id]->getType();
   if (cf < 0)   cf = list_p[id]->getColfac();
@@ -213,34 +213,34 @@ Bool FittingProxy::set(Int id, Int nin, Int tpin, Double colfac, Double lmfac)
     list_p[id]->getFitter()->set(cf, lmf);
   }
   list_p[id]->setStatus(n, tp, cf, lmf);
-  list_p[id]->setSolved(False);
-  return True;
+  list_p[id]->setSolved(false);
+  return true;
 }
 
-Record FittingProxy::functional(Int id, const Record& fnc, 
-				const Vector<Double>& xval,
-				const Vector<Double>& yval, 
-				const Vector<Double>& wt,
-				Int mxit, const Record& constraint)
+Record FittingProxy::functional(int32_t id, const Record& fnc, 
+				const Vector<double>& xval,
+				const Vector<double>& yval, 
+				const Vector<double>& wt,
+				int32_t mxit, const Record& constraint)
 {
   
-  Int rank, deficiency;
-  Double sd, mu, chi2;
-  Vector<Double> constr, err, returnval;
-  Array<Double> covar;
+  int32_t rank, deficiency;
+  double sd, mu, chi2;
+  Vector<double> constr, err, returnval;
+  Array<double> covar;
   String errmsg;
-  NonLinearFitLM<Double> fitter;
+  NonLinearFitLM<double> fitter;
   fitter.setMaxIter(mxit);
-  fitter.asWeight(True);
-  FunctionHolder<Double> fnh;
-  Function<AutoDiff<Double> > *fn(0);
+  fitter.asWeight(true);
+  FunctionHolder<double> fnh;
+  Function<AutoDiff<double> > *fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Functional fitter x and y lengths disagree"));
   }
 
-  for (uInt i=0; i<constraint.nfields(); ++i) {
+  for (uint32_t i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
@@ -251,11 +251,11 @@ Record FittingProxy::functional(Int id, const Record& fnc,
 	con.type(con.idToNumber(RecordFieldId("fnct"))) == TpRecord &&
 	con.type(con.idToNumber(RecordFieldId("x"))) == TpArrayDouble &&
 	con.type(con.idToNumber(RecordFieldId("y"))) == TpDouble) {
-      Vector<Double> x;
+      Vector<double> x;
       con.get(RecordFieldId("x"), x);
-      Double y;
+      double y;
       con.get(RecordFieldId("y"), y);
-      HyperPlane<AutoDiff<Double> > constrFun(x.nelements());
+      HyperPlane<AutoDiff<double> > constrFun(x.nelements());
       fitter.addConstraint(constrFun, x, y);
     } else {
       throw(AipsError("Illegal definition of a constraint in addconstraint"));
@@ -263,10 +263,10 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   }
   IPosition ip2(2, xval.nelements(), fn->ndim());
   if (fn->ndim() > 1) ip2[0] /= fn->ndim();
-  Matrix<Double> mval(ip2);
-  Array<Double>::const_iterator cit = xval.begin();
-  for (ArrayAccessor<Double, Axis<0> > i(mval); i!=i.end(); ++i) {
-    for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
+  Matrix<double> mval(ip2);
+  Array<double>::const_iterator cit = xval.begin();
+  for (ArrayAccessor<double, Axis<0> > i(mval); i!=i.end(); ++i) {
+    for (uint32_t j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
   }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
@@ -280,17 +280,17 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   mu = fitter.getWeightedSD();
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
-  Double *conit = constr.data();
-  casacore::Vector<Double> ctmp(returnval.nelements());
-  Double *ctit = ctmp.data();
-  for (uInt i=0; i<fitter.getDeficiency(); ++i) {
+  double *conit = constr.data();
+  casacore::Vector<double> ctmp(returnval.nelements());
+  double *ctit = ctmp.data();
+  for (uint32_t i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
-    for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
+    for (uint32_t j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
   }
   covar = fitter.compuCovariance();
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);
@@ -304,28 +304,28 @@ Record FittingProxy::functional(Int id, const Record& fnc,
   return out;
 }
 
-Record FittingProxy::linear(Int id, const Record& fnc, 
-			    const Vector<Double>& xval,
-			    const Vector<Double>& yval, 
-			    const Vector<Double>& wt,
+Record FittingProxy::linear(int32_t id, const Record& fnc, 
+			    const Vector<double>& xval,
+			    const Vector<double>& yval, 
+			    const Vector<double>& wt,
 			    const Record& constraint)
 {
   
-  Int rank, deficiency;
-  Double sd, mu, chi2;
-  Vector<Double> constr, err, returnval;
-  Array<Double> covar;
+  int32_t rank, deficiency;
+  double sd, mu, chi2;
+  Vector<double> constr, err, returnval;
+  Array<double> covar;
   String errmsg;
-  LinearFitSVD<Double> fitter;
-  fitter.asWeight(True);
-  FunctionHolder<Double> fnh;
-  Function<AutoDiff<Double> > *fn(0);
+  LinearFitSVD<double> fitter;
+  fitter.asWeight(true);
+  FunctionHolder<double> fnh;
+  Function<AutoDiff<double> > *fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
   fitter.setFunction(*fn);
   if (xval.nelements() != fn->ndim()*yval.nelements()) {
     throw(AipsError("Linear fitter x and y lengths disagree"));
   }
-  for (uInt i=0; i<constraint.nfields(); ++i) {
+  for (uint32_t i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
@@ -336,11 +336,11 @@ Record FittingProxy::linear(Int id, const Record& fnc,
 	con.type(con.idToNumber(RecordFieldId("fnct"))) == TpRecord &&
 	con.type(con.idToNumber(RecordFieldId("x"))) == TpArrayDouble &&
 	con.type(con.idToNumber(RecordFieldId("y"))) == TpDouble) {
-      Vector<Double> x;
+      Vector<double> x;
       con.get(RecordFieldId("x"), x);
-      Double y;
+      double y;
       con.get(RecordFieldId("y"), y);
-      HyperPlane<AutoDiff<Double> > constrFun(x.nelements());
+      HyperPlane<AutoDiff<double> > constrFun(x.nelements());
       fitter.addConstraint(constrFun, x, y);
     } else {
       throw(AipsError("Illegal definition of a constraint in addconstraint"));
@@ -348,10 +348,10 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   }
   IPosition ip2(2, xval.nelements(), fn->ndim());
   if (fn->ndim() > 1) ip2[0] /= fn->ndim();
-  Matrix<Double> mval(ip2);
-  Array<Double>::const_iterator cit = xval.begin();
-  for (ArrayAccessor<Double, Axis<0> > i(mval); i!=i.end(); ++i) {
-    for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
+  Matrix<double> mval(ip2);
+  Array<double>::const_iterator cit = xval.begin();
+  for (ArrayAccessor<double, Axis<0> > i(mval); i!=i.end(); ++i) {
+    for (uint32_t j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
   }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
@@ -365,17 +365,17 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   mu = fitter.getWeightedSD();
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
-  Double *conit = constr.data();
-  casacore::Vector<Double> ctmp(returnval.nelements());
-  for (uInt i=0; i<fitter.getDeficiency(); ++i) {
+  double *conit = constr.data();
+  casacore::Vector<double> ctmp(returnval.nelements());
+  for (uint32_t i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
-    Double *ctit = ctmp.data();
-    for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
+    double *ctit = ctmp.data();
+    for (uint32_t j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
   }
   covar = fitter.compuCovariance();
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);
@@ -389,22 +389,22 @@ Record FittingProxy::linear(Int id, const Record& fnc,
   return out;
 }
 
-Record FittingProxy::cxfunctional(Int id, const Record& fnc, 
+Record FittingProxy::cxfunctional(int32_t id, const Record& fnc, 
 				  const Vector<DComplex>& xval,
 				  const Vector<DComplex>& yval, 
 				  const Vector<DComplex>& wt,
-				  Int mxit, const Record& constraint)
+				  int32_t mxit, const Record& constraint)
 {
   
-  Int rank, deficiency;
-  Double sd, mu, chi2;
+  int32_t rank, deficiency;
+  double sd, mu, chi2;
   Vector<DComplex> err, returnval;
-  Vector<Double> constr;
+  Vector<double> constr;
   Array<DComplex> covar;
   String errmsg;
   NonLinearFitLM<DComplex> fitter;
   fitter.setMaxIter(mxit);
-  fitter.asWeight(True);
+  fitter.asWeight(true);
   FunctionHolder<DComplex> fnh;
   Function<AutoDiff<DComplex> > *fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
@@ -413,7 +413,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
     throw(AipsError("Functional fitter x and y lengths disagree"));
   }
 
-  for (uInt i=0; i<constraint.nfields(); ++i) {
+  for (uint32_t i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
@@ -439,7 +439,7 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   Matrix<DComplex> mval(ip2);
   Array<DComplex>::const_iterator cit = xval.begin();
   for (ArrayAccessor<DComplex, Axis<0> > i(mval); i!=i.end(); ++i) {
-    for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
+    for (uint32_t j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
   }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
@@ -453,17 +453,17 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   mu = fitter.getWeightedSD();
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
-  Double *conit = constr.data();
-  casacore::Vector<Double> ctmp(returnval.nelements());
-  Double *ctit = ctmp.data();
-  for (uInt i=0; i<fitter.getDeficiency(); ++i) {
+  double *conit = constr.data();
+  casacore::Vector<double> ctmp(returnval.nelements());
+  double *ctit = ctmp.data();
+  for (uint32_t i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
-    for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
+    for (uint32_t j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
   }
   fitter.getCovariance(covar);
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);
@@ -477,21 +477,21 @@ Record FittingProxy::cxfunctional(Int id, const Record& fnc,
   return out;
 }
 
-Record FittingProxy::cxlinear(Int id, const Record& fnc, 
+Record FittingProxy::cxlinear(int32_t id, const Record& fnc, 
 			      const Vector<DComplex>& xval,
 			      const Vector<DComplex>& yval, 
 			      const Vector<DComplex>& wt,
 			      const Record& constraint)
 {
   
-  Int rank, deficiency;
-  Double sd, mu, chi2;
+  int32_t rank, deficiency;
+  double sd, mu, chi2;
   Vector<DComplex> err, returnval;
-  Vector<Double> constr;
+  Vector<double> constr;
   Array<DComplex> covar;
   String errmsg;
   LinearFitSVD<DComplex> fitter;
-  fitter.asWeight(True);
+  fitter.asWeight(true);
   FunctionHolder<DComplex> fnh;
   Function<AutoDiff<DComplex> > *fn(0);
   if (!fnh.getRecord(errmsg, fn, fnc)) throw(AipsError(errmsg));
@@ -500,7 +500,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
     throw(AipsError("Linear fitter x and y lengths disagree"));
   }
 
-  for (uInt i=0; i<constraint.nfields(); ++i) {
+  for (uint32_t i=0; i<constraint.nfields(); ++i) {
     RecordFieldId fid = i;
     if (constraint.type(i) != TpRecord) {
       throw(AipsError("Illegal definition of constraint in addconstraint"));
@@ -526,7 +526,7 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   Matrix<DComplex> mval(ip2);
   Array<DComplex>::const_iterator cit = xval.begin();
   for (ArrayAccessor<DComplex, Axis<0> > i(mval); i!=i.end(); ++i) {
-    for (uInt j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
+    for (uint32_t j=0; j<fn->ndim(); ++cit, ++j) i.index<Axis<1> >(j) = *cit;
   }
   if (wt.nelements() == 0 ||
       (wt.nelements() == 1 && yval.nelements() != 1)) {
@@ -540,18 +540,18 @@ Record FittingProxy::cxlinear(Int id, const Record& fnc,
   mu = fitter.getWeightedSD();
   chi2 = fitter.getChi2();
   constr.resize(returnval.nelements()*fitter.getDeficiency());
-  Double *conit = constr.data();
-  casacore::Vector<Double> ctmp(returnval.nelements());
-  for (uInt i=0; i<fitter.getDeficiency(); ++i) {
+  double *conit = constr.data();
+  casacore::Vector<double> ctmp(returnval.nelements());
+  for (uint32_t i=0; i<fitter.getDeficiency(); ++i) {
     ctmp = fitter.getSVDConstraint(i);
-    Double *ctit = ctmp.data();
-    for (uInt j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
+    double *ctit = ctmp.data();
+    for (uint32_t j=0; j<returnval.nelements(); ++j) *conit++ = ctit[j];
   }
 
   fitter.getCovariance(covar);  
   err.resize();
   fitter.getErrors(err);
-  list_p[id]->setSolved(True);
+  list_p[id]->setSolved(true);
   Record out;
   out.define("rank", rank);
   out.define("sd", sd);

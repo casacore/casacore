@@ -34,18 +34,18 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ObjectID::ObjectID(Bool makeNull)
+ObjectID::ObjectID(bool makeNull)
   : sequence_number_p(0), process_id_p(0), creation_time_p(0), hostname_p("")
 {
     if (! makeNull) {
         sequence_number_p = sequence_number();
 	process_id_p = HostInfo::processID();
-	creation_time_p = Int(HostInfo::secondsFrom1970() + 0.499);
+	creation_time_p = int32_t(HostInfo::secondsFrom1970() + 0.499);
 	hostname_p = HostInfo::hostName();
     }
 }
 
-ObjectID::ObjectID(Int sequence, Int pid, Int time, const String &hostname)
+ObjectID::ObjectID(int32_t sequence, int32_t pid, int32_t time, const String &hostname)
   : sequence_number_p(sequence), process_id_p(pid), creation_time_p(time),
     hostname_p(hostname)
 {
@@ -71,7 +71,7 @@ ObjectID &ObjectID::operator=(const ObjectID &other)
     return *this;
 }
 
-Bool ObjectID::isNull() const 
+bool ObjectID::isNull() const 
 {
     return (sequence_number_p == 0 &&
 		  process_id_p == 0 &&
@@ -79,7 +79,7 @@ Bool ObjectID::isNull() const
 		  hostname_p == "");
 }
 
-Bool ObjectID::operator==(const ObjectID &other) const
+bool ObjectID::operator==(const ObjectID &other) const
 {
     return (sequence_number_p == other.sequence_number_p &&
 		  process_id_p == other.process_id_p &&
@@ -87,12 +87,12 @@ Bool ObjectID::operator==(const ObjectID &other) const
 		  hostname_p == other.hostname_p);
 }
 
-Bool ObjectID::operator!=(const ObjectID &other) const
+bool ObjectID::operator!=(const ObjectID &other) const
 {
     return (! (*this == other));
 }
 
-Int ObjectID::sequence_number()
+int32_t ObjectID::sequence_number()
 {
     static int seqno = -1;
     seqno++;
@@ -112,87 +112,87 @@ void ObjectID::toString(String &out) const
     out = os.str();
 }
 
-static Bool toInt(Int &val, String &error, const String &in)
+static bool toInt(int32_t &val, String &error, const String &in)
 {
     error = "";
     val = 0;
-    Int len = in.length();
+    int32_t len = in.length();
     if (len == 0) {
 	error = "No digits in number.";
-	return False;
+	return false;
     }
-    for (Int i=0; i<len; i++) {
+    for (int32_t i=0; i<len; i++) {
 	char digit = in[i];
-	Int diff = digit - '0';
+	int32_t diff = digit - '0';
 	if (diff < 0 || diff > 9) {
 	    error = String("Illegal character (") + digit + ") in number";
-	    return False;
+	    return false;
 	}
 	val = 10*val + diff;
     }
-    return True;
+    return true;
 }
 
-Bool ObjectID::fromString(String &error, const String &in)
+bool ObjectID::fromString(String &error, const String &in)
 {
     error = "";
-    *this = ObjectID(True);
+    *this = ObjectID(true);
     if (in == "") {
-	return True; // Null string is the null object!
+	return true; // Null string is the null object!
     }
 
     // Allow for extra fields.
     String parsed[8]; // keyword=value for each String
-    Int found = split(in, parsed, sizeof(parsed)/sizeof(String),
+    int32_t found = split(in, parsed, sizeof(parsed)/sizeof(String),
 		      Regex("[ \t,]+"));
     if (found <= 0) {
 	error = String("Could not parse string: ") + in;
-	return False;
+	return false;
     }
 
-    Bool foundSeq = False, foundHost = False, foundPid = False, 
-	foundTime = False;
+    bool foundSeq = false, foundHost = false, foundPid = false, 
+	foundTime = false;
     String host;
-    Int seq, pid, time;
-    Bool ok = True;
+    int32_t seq, pid, time;
+    bool ok = true;
 
     
     String splitup[2];
     
     String &key = splitup[0];
     String &val = splitup[1];
-    for (Int i=0; ok && i<found; i++) {
+    for (int32_t i=0; ok && i<found; i++) {
 	key = ""; val = "";
 	split(parsed[i], splitup, 2, "=");
 	val.gsub(" ", "");
 	if (key == "sequence") {
 	    if (foundSeq || !toInt(seq, error, val)) {
-		ok = False;
+		ok = false;
 		error = String("Error parsing 'sequence': ") + error;
 	    } else {
-		foundSeq = True;
+		foundSeq = true;
 	    }
 	} else if (key == "host") {
 	    if (!foundHost && val != "") {
 		host = val;
-		foundHost = True;
+		foundHost = true;
 	    } else {
-		ok = False;
+		ok = false;
 		error = String("Illegal host field in: ") + in;
 	    }
 	} else if (key == "pid") {
 	    if (foundPid || !toInt(pid, error, val)) {
-		ok = False;
+		ok = false;
 		error = String("Error parsing 'pid': ") + error;
 	    } else {
-		foundPid = True;
+		foundPid = true;
 	    }
 	} else if (key == "time") {
 	    if (foundTime || !toInt(time, error, val)) {
-		ok = False;
+		ok = false;
 		error = String("Error parsing 'time': ") + error;
 	    } else {
-		foundTime = True;
+		foundTime = true;
 	    }
 	}
     }
@@ -201,7 +201,7 @@ Bool ObjectID::fromString(String &error, const String &in)
 	if (foundSeq && foundPid && foundHost && foundTime) {
 	    *this = ObjectID(seq, pid, time, host);
 	} else {
-	    ok = False;
+	    ok = false;
 	    error = "Could not find all of sequence, host, pid, and time";
 	}
     }

@@ -98,7 +98,7 @@ template<class T> class Quantum;
 // Let's make a DirectionCoordinate --- used to represent a direction,
 // usually an RA/DEC, but it could also be, e.g., an AZ/EL pair.
 // <srcblock>
-//    Matrix<Double> xform(2,2);                                    // 1
+//    Matrix<double> xform(2,2);                                    // 1
 //    xform = 0.0; xform.diagonal() = 1.0;                          // 2
 //    DirectionCoordinate radec(MDirection::J2000,                  // 3 
 //                            Projection(Projection::SIN),          // 4 
@@ -143,7 +143,7 @@ template<class T> class Quantum;
 // 
 // Set up a couple of vectors to use the world and pixel coordinate values.  
 // <srcblock>
-//    Vector<Double> world(2), pixel(2);                            // 11
+//    Vector<double> world(2), pixel(2);                            // 11
 //    pixel = 138.0;                                                // 12
 // </srcblock>
 // We use 138 as an arbitrary pixel position which is near the reference pixel
@@ -151,7 +151,7 @@ template<class T> class Quantum;
 // We can actually perform a transformation like this as follows. If
 // it succeeds we print the value of the world coordinate.
 // <srcblock>
-//    Bool ok = radec.toWorld(world, pixel);                        // 13
+//    bool ok = radec.toWorld(world, pixel);                        // 13
 //    if (!ok) {                                                    // 14 
 //      cout << "Error: " << radec.errorMessage() << endl;          // 15
 //      return 1;                                                   // 16
@@ -172,12 +172,12 @@ template<class T> class Quantum;
 // We could also have made the above DirectionCoordinate using the Quantum-based
 // constructor, which is a little more elegant if you want to use degrees.
 //
-//    Matrix<Double> xform(2,2);                
+//    Matrix<double> xform(2,2);                
 //    xform = 0.0; xform.diagonal() = 1.0;                 
-//    Quantum<Double> refLon(135.0, "deg");
-//    Quantum<Double> refLat(60.0, "deg");
-//    Quantum<Double> incLon(-1.0, "deg");
-//    Quantum<Double> incLat(1.0, "deg");
+//    Quantum<double> refLon(135.0, "deg");
+//    Quantum<double> refLat(60.0, "deg");
+//    Quantum<double> incLon(-1.0, "deg");
+//    Quantum<double> incLat(1.0, "deg");
 //    DirectionCoordinate radec(MDirection::J2000,         
 //                            Projection(Projection::SIN), 
 //                            refLon, refLat,
@@ -186,7 +186,7 @@ template<class T> class Quantum;
 //                            128, 128);  
 //
 // But note that the constructor will have converted the native units
-// of the DirectionCoordinate to radians.  So the Double-based toWorld and
+// of the DirectionCoordinate to radians.  So the double-based toWorld and
 // toPixel functions will be in terms of radians.   If you want the native
 // units to be degrees, then again you can use 
 //
@@ -236,11 +236,11 @@ public:
     // the LONPOLE and LATPOLE keywords are passed along here.
     DirectionCoordinate(MDirection::Types directionType,
  			const Projection &projection,
-			Double refLong, Double refLat,
-			Double incLong, Double incLat,
-			const Matrix<Double> &xform,
- 			Double refX, Double refY,
-                        Double longPole=999.0, Double latPole=999.0);
+			double refLong, double refLat,
+			double incLong, double incLat,
+			const Matrix<double> &xform,
+ 			double refX, double refY,
+                        double longPole=999.0, double latPole=999.0);
 
     // Create DirectionCoordinate with Quantum-based interface. 
     // Parameters are the same as above.
@@ -258,21 +258,21 @@ public:
     // are irrelevant in that case)
     DirectionCoordinate(MDirection::Types directionType,
                         const Projection &projection,
-                        const Quantum<Double>& refLong, 
-                        const Quantum<Double>& refLat,
-                        const Quantum<Double>& incLong, 
-                        const Quantum<Double>& incLat,
-                        const Matrix<Double> &xform,
-                        Double refX, Double refY,
-                        const Quantum<Double>& longPole=Quantum<Double>(999.0,Unit("rad")),
-                        const Quantum<Double>& latPole=Quantum<Double>(999.0,Unit("rad")));
+                        const Quantum<double>& refLong, 
+                        const Quantum<double>& refLat,
+                        const Quantum<double>& incLong, 
+                        const Quantum<double>& incLat,
+                        const Matrix<double> &xform,
+                        double refX, double refY,
+                        const Quantum<double>& longPole=Quantum<double>(999.0,Unit("rad")),
+                        const Quantum<double>& latPole=Quantum<double>(999.0,Unit("rad")));
 
     // Constructor from WCS structure; must hold ONLY a celestial wcs structure
     // Specify whether the absolute pixel coordinates in the wcs structure
     // are 0- or 1-relative.  The coordinate is always constructed with 0-relative
     // pixel coordinates
     DirectionCoordinate(MDirection::Types directionType,
-                        const ::wcsprm& wcs, Bool oneRel=True);
+                        const ::wcsprm& wcs, bool oneRel=true);
 
     // Copy constructor (copy semantics)
     DirectionCoordinate(const DirectionCoordinate &other);
@@ -291,8 +291,8 @@ public:
 
     // Always returns 2.
     // <group>
-    virtual uInt nPixelAxes() const;
-    virtual uInt nWorldAxes() const;
+    virtual uint32_t nPixelAxes() const;
+    virtual uint32_t nWorldAxes() const;
     // </group>
 
 
@@ -319,30 +319,30 @@ public:
        {type=conversionType_p;};
     // </group>
 
-    // Convert a pixel position to a world position or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and method
+    // Convert a pixel position to a world position or vice versa. Returns true
+    // if the conversion succeeds, otherwise it returns false and method
     // errorMessage returns its error message.
     // The output vectors are appropriately resized.
     // if <src>useConversionFrame</src>, if the coordinate has a conversion
     // layer frame, it is used. Else, the native frame is used for the conversion.
     // <group>
-    virtual Bool toWorld(Vector<Double> &world, 
-			 const Vector<Double> &pixel, Bool useConversionFrame=True) const;
+    virtual bool toWorld(Vector<double> &world, 
+			 const Vector<double> &pixel, bool useConversionFrame=true) const;
 
     // <src>world</src> values must have units equivalent to the world axis
     // units. If the coordinate has a conversion layer, the world coordinates
     // must be supplied in the conversion frame.
-    virtual Bool toPixel(Vector<Double> &pixel, 
-			 const Vector<Double> &world) const;
+    virtual bool toPixel(Vector<double> &pixel, 
+			 const Vector<double> &world) const;
     // </group>
 
     // Mixed pixel/world coordinate conversion.
     // <src>worldIn</src> and <src>worldAxes</src> are of length 
     // nWorldAxes. 
     // <src>pixelIn</src> and <src>pixelAxes</src> are of length nPixelAxes.
-    // <src>worldAxes(i)=True</src> specifies you have given a world
+    // <src>worldAxes(i)=true</src> specifies you have given a world
     // value in <src>worldIn(i)</src> to convert to pixel.
-    // <src>pixelAxes(i)=True</src> specifies you have given a pixel 
+    // <src>pixelAxes(i)=true</src> specifies you have given a pixel 
     // value in <src>pixelIn(i)</src> to convert to world.
     // You cannot specify the same axis via <src>worldAxes</src>
     // and <src>pixelAxes</src>.
@@ -366,7 +366,7 @@ public:
     // axis with remaining corresponding world axis will
     // correctly be converted to world using the replacement
     // value).
-    // Returns True if the conversion succeeds, otherwise it returns False and
+    // Returns true if the conversion succeeds, otherwise it returns false and
     // <src>errorMessage()</src> contains an error message. The output vectors
     // are resized.
     //
@@ -378,14 +378,14 @@ public:
     // the extra conversion layer is not activated (because of the nature of mixed
     // conversions).  This situation may change in the future
     // with a partial implementation added.
-    virtual Bool toMix(Vector<Double>& worldOut,
-                       Vector<Double>& pixelOut,
-                       const Vector<Double>& worldIn,
-                       const Vector<Double>& pixelIn,
-                       const Vector<Bool>& worldAxes,
-                       const Vector<Bool>& pixelAxes,
-                       const Vector<Double>& worldMin,
-                       const Vector<Double>& worldMax) const; 
+    virtual bool toMix(Vector<double>& worldOut,
+                       Vector<double>& pixelOut,
+                       const Vector<double>& worldIn,
+                       const Vector<double>& pixelIn,
+                       const Vector<bool>& worldAxes,
+                       const Vector<bool>& pixelAxes,
+                       const Vector<double>& worldMin,
+                       const Vector<double>& worldMax) const; 
 
     // Compute and retrieve the world min and max ranges, for use in function <src>toMix</src>, 
     // for  a lattice of the given shape (for this coordinate).   Using these
@@ -394,50 +394,50 @@ public:
     // for that axis.  The default range is used for that axis.  This situation
     // arises in a CoordinateSystem for which a pixel, but not a world axis
     // has been removed.
-    // The output vectors are resized.  Returns False if fails (and
+    // The output vectors are resized.  Returns false if fails (and
     // then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.
     // The <src>setDefaultWorldMixRanges</src> function
     // just gives you [-90->90], [-180,180] (in appropriate units) 
     // <group>
-    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual bool setWorldMixRanges (const IPosition& shape);
     virtual void setDefaultWorldMixRanges ();
     // </group>
 
     // Non-virtual function.  When <src>which</src> is T, use the 
     // world value as the center for the mix world range.
-    void setWorldMixRanges (const Vector<Bool>& which,
-                            const Vector<Double>& world);
+    void setWorldMixRanges (const Vector<bool>& which,
+                            const Vector<double>& world);
 
     // A convenient way to turn the world vector into an MDirection or MVDirection 
     // for further processing in the Measures system.  
     // <br>We could improve the performance of this if it would be useful. However it is
     // expected that normally one would just call this once to get a template
     // MDirection, and then call the vector versions.
-    // <br>In case of a failure, the versions with a Bool return value will return
-    // False. The other versions will throw an exception.
+    // <br>In case of a failure, the versions with a bool return value will return
+    // false. The other versions will throw an exception.
     // <group>
-    Bool toWorld(MDirection &world, const Vector<Double> &pixel) const;
-    Bool toPixel(Vector<Double> &pixel, const MDirection &world) const;
-    Bool toWorld(MVDirection &world, const Vector<Double> &pixel) const;
-    Bool toPixel(Vector<Double> &pixel, const MVDirection &world) const;
-    MVDirection    toWorld(const Vector<Double> &pixel) const;
-    Vector<Double> toPixel(const MVDirection &world) const;
-    Vector<Double> toPixel(const MDirection &world) const;
+    bool toWorld(MDirection &world, const Vector<double> &pixel) const;
+    bool toPixel(Vector<double> &pixel, const MDirection &world) const;
+    bool toWorld(MVDirection &world, const Vector<double> &pixel) const;
+    bool toPixel(Vector<double> &pixel, const MVDirection &world) const;
+    MVDirection    toWorld(const Vector<double> &pixel) const;
+    Vector<double> toPixel(const MVDirection &world) const;
+    Vector<double> toPixel(const MDirection &world) const;
      //</group>
 
     // Batch up a lot of transformations. The first (most rapidly varying) axis
-    // of the matrices contain the coordinates. Returns False if any conversion
+    // of the matrices contain the coordinates. Returns false if any conversion
     // failed  and  <src>errorMessage()</src> will hold a message.
     // The <src>failures</src> array is the length of the number of conversions
-    // (True for failure, False for success)
+    // (true for failure, false for success)
     // <group>
-    virtual Bool toWorldMany(Matrix<Double> &world,
-                             const Matrix<Double> &pixel,
-                             Vector<Bool> &failures) const;
-    virtual Bool toPixelMany(Matrix<Double> &pixel,
-                             const Matrix<Double> &world,
-                             Vector<Bool> &failures) const;
+    virtual bool toWorldMany(Matrix<double> &world,
+                             const Matrix<double> &pixel,
+                             Vector<bool> &failures) const;
+    virtual bool toPixelMany(Matrix<double> &pixel,
+                             const Matrix<double> &world,
+                             Vector<bool> &failures) const;
     // </group>
   
 
@@ -447,9 +447,9 @@ public:
     // <src>setReferenceConversion</src>).  The vectors must be
     // of length <src>nWorldAxes</src> or memory access errors will occur
     //<group>
-    virtual void makeWorldRelative (Vector<Double>& world) const;
+    virtual void makeWorldRelative (Vector<double>& world) const;
     virtual void makeWorldRelative (MDirection& world) const;
-    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    virtual void makeWorldAbsolute (Vector<double>& world) const;
     virtual void makeWorldAbsolute (MDirection& world) const;
     //</group>
 
@@ -457,55 +457,55 @@ public:
     // to the given reference value.  Add the other functions in this grouping
     // as needed.
     //<group>
-    virtual void makeWorldAbsoluteRef (Vector<Double>& world,
-                                       const Vector<Double>& refVal) const;
+    virtual void makeWorldAbsoluteRef (Vector<double>& world,
+                                       const Vector<double>& refVal) const;
     //</group>
 
     // Recover the requested attribute.
     // <group>
-    MDirection::Types directionType(Bool showConversion=False) const;    
+    MDirection::Types directionType(bool showConversion=false) const;    
     Projection projection() const;
     virtual Vector<String> worldAxisNames() const;
     virtual Vector<String> worldAxisUnits() const;
-    virtual Vector<Double> referenceValue() const;
-    virtual Vector<Double> increment() const;
-    virtual Matrix<Double> linearTransform() const;
-    virtual Vector<Double> referencePixel() const;
+    virtual Vector<double> referenceValue() const;
+    virtual Vector<double> increment() const;
+    virtual Matrix<double> linearTransform() const;
+    virtual Vector<double> referencePixel() const;
     // </group>
 
     // Set the value of the requested attribute.  Note that these just
     // change the internal values, they do not cause any recomputation.
     // <group>
-    virtual Bool setWorldAxisNames(const Vector<String> &names);
-    virtual Bool setReferencePixel(const Vector<Double> &refPix);
-    virtual Bool setLinearTransform(const Matrix<Double> &xform);
-    virtual Bool setIncrement(const Vector<Double> &inc);
-    virtual Bool setReferenceValue(const Vector<Double> &refval);
+    virtual bool setWorldAxisNames(const Vector<String> &names);
+    virtual bool setReferencePixel(const Vector<double> &refPix);
+    virtual bool setLinearTransform(const Matrix<double> &xform);
+    virtual bool setIncrement(const Vector<double> &inc);
+    virtual bool setReferenceValue(const Vector<double> &refval);
     // </group>
 
     // Change the world axis units.  Adjust the increment and
     // reference value by the ratio of the old and new units. 
     // The units must be compatible with
     // angle. The units are initially "rad" (radians).
-    virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual bool setWorldAxisUnits(const Vector<String> &units);
 
     // Return canonical axis names for the given MDirection type,
     // giving FITS names if desired.
     // BEG think this should be in the MDirection class, but WNB
     // disagrees. Leave it here for now.
     static Vector<String> axisNames(MDirection::Types type, 
-				    Bool FITSName = False);
+				    bool FITSName = false);
 
-    // Comparison function. Any private Double data members are compared    
+    // Comparison function. Any private double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False,  method
+    // axes in the Coordinate.  If the comparison returns false,  method
     // errorMessage returns a message about why.
      // <group>
-    virtual Bool near(const Coordinate& other, 
-                      Double tol=1e-6) const;
-    virtual Bool near(const Coordinate& other, 
-                      const Vector<Int>& excludeAxes,
-                      Double tol=1e-6) const;
+    virtual bool near(const Coordinate& other, 
+                      double tol=1e-6) const;
+    virtual bool near(const Coordinate& other, 
+                      const Vector<int32_t>& excludeAxes,
+                      double tol=1e-6) const;
     // </group>
 
 
@@ -528,27 +528,27 @@ public:
     //
     // If you leave <src>units</src> empty, then it makes up a nice unit for you.
     //<group>
-    virtual void getPrecision (Int& precision, 
+    virtual void getPrecision (int32_t& precision, 
                                Coordinate::formatType& format,
-                               Bool showAsAbsolute, 
-                               Int defPrecScientific,
-                               Int defPrecFixed,
-                               Int defPrecTime) const;
+                               bool showAsAbsolute, 
+                               int32_t defPrecScientific,
+                               int32_t defPrecFixed,
+                               int32_t defPrecTime) const;
     virtual String format(String& units,
                           Coordinate::formatType format, 
-                          Double worldValue, 
-                          uInt axis, 
-                          Bool isAbsolute,
-                          Bool showAsAbsolute,
-                          Int precision=-1, Bool usePrecForMixed=False) const;
+                          double worldValue, 
+                          uint32_t axis, 
+                          bool isAbsolute,
+                          bool showAsAbsolute,
+                          int32_t precision=-1, bool usePrecForMixed=false) const;
     //</group>
 
     // Fix cylindrical coordinates to put the longitude in [-180,180] range.
-    // If False returned, it failed an an error is in <src>errorMessage</src>
+    // If false returned, it failed an an error is in <src>errorMessage</src>
     // This fix is not done automatically internally because of the dependence
     // on the image shape.  It should be called for any foreign image
     // (such as FITS) that is imported
-    Bool cylindricalFix (Int shapeLong, Int shapeLat);
+    bool cylindricalFix (int32_t shapeLong, int32_t shapeLat);
 
     // Find the Coordinate for when we Fourier Transform ourselves.  This pointer
     // must be deleted by the caller. Axes specifies which axes of the Coordinate
@@ -556,12 +556,12 @@ public:
     // associated with all the axes of the Coordinate.   Currently the
     // output reference pixel is always shape/2. If the pointer returned is 0, 
     // it failed with a message in <src>errorMessage</src>
-    virtual Coordinate* makeFourierCoordinate (const Vector<Bool>& axes,
-                                               const Vector<Int>& shape) const;
+    virtual Coordinate* makeFourierCoordinate (const Vector<bool>& axes,
+                                               const Vector<int32_t>& shape) const;
 
     // Save the DirectionCoordinate into the supplied record using the supplied field name.
-    // The field must not exist, otherwise <src>False</src> is returned.
-    virtual Bool save(RecordInterface &container,
+    // The field must not exist, otherwise <src>false</src> is returned.
+    virtual bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
     // Recover the DirectionCoordinate from a record.
@@ -575,7 +575,7 @@ public:
 
     // Fish out the ref and non-native poles (refLong, refLat, longPole, latPole)
     // Not for general use.  Units are degrees.
-    Vector<Double> longLatPoles() const;
+    Vector<double> longLatPoles() const;
 
     // get the pixel area.
     Quantity getPixelArea() const;
@@ -605,10 +605,10 @@ public:
     void setReferenceFrame(const MDirection::Types rf);
 
     // Are the pixels square?
-    Bool hasSquarePixels() const;
+    bool hasSquarePixels() const;
 
     // Is the projection equivalent to NCP?
-    Bool isNCP() const;
+    bool isNCP() const;
 
 private:
     // Direction type
@@ -625,8 +625,8 @@ private:
 
     // WCS computes in degrees - use this to convert back and forth between
     // current DirectionCoordinate units and degrees or radians
-    Vector<Double> to_degrees_p;           // From current units to degrees
-    Vector<Double> to_radians_p;           // From current units to radians
+    Vector<double> to_degrees_p;           // From current units to degrees
+    Vector<double> to_radians_p;           // From current units to radians
 
     // Axis names.
     Vector<String> names_p;
@@ -645,33 +645,33 @@ private:
 
     // Interconvert between the current units and wcs units (degrees)
     // <group>
-    void toCurrent(Vector<Double>& degrees) const;
-    void fromCurrent(Vector<Double>& current) const;
+    void toCurrent(Vector<double>& degrees) const;
+    void fromCurrent(Vector<double>& current) const;
     // </group>
 
     // Check formatting types.
     void checkFormat(Coordinate::formatType& format,
-                     Bool absolute) const;
+                     bool absolute) const;
 
     // Format a latitude.
     String formatLatitude (String& units, MVAngle& mVA,
-			   Bool absolute, 
+			   bool absolute, 
 			   Coordinate::formatType form,
-			   Int prec) const;
+			   int32_t prec) const;
     // Format a longitude.
     String formatLongitude (String& units, MVAngle& mVA,
                             MDirection::GlobalTypes gtype,
-                            Bool absolute, 
+                            bool absolute, 
                             Coordinate::formatType form,
-                            Int prec) const;
+                            int32_t prec) const;
 
     // Mixed pixel/world coordinate conversion.  Vector in must
     // be length nWorldAxes (2).  Specify whether longitude
     // (in(0)) or latitude (in(1)) is the world coordinate . It is
     // assumed that the other value is the pixel coordinate.
-    Bool toMix2(Vector<Double>& out, const Vector<Double>& in,
-                const Vector<Double>& minWorld, const Vector<Double>& maxWorld,
-                Bool longIsWorld) const;
+    bool toMix2(Vector<double>& out, const Vector<double>& in,
+                const Vector<double>& minWorld, const Vector<double>& maxWorld,
+                bool longIsWorld) const;
 
     // Initialize unit conversion vectors and units
     void initializeFactors ();
@@ -679,18 +679,18 @@ private:
     // Helper functions interfacing to WCS.
     // <group>
     void makeDirectionCoordinate(MDirection::Types directionType,
-                                 const Projection& proj, Double refLong, Double refLat,
-                                 Double incLong, Double incLat,
-                                 const Matrix<Double> &xform,
-                                 Double refX, Double refY, 
-                                 Double longPole, Double latPole);
+                                 const Projection& proj, double refLong, double refLat,
+                                 double incLong, double incLat,
+                                 const Matrix<double> &xform,
+                                 double refX, double refY, 
+                                 double longPole, double latPole);
 //
-    void makeWCS(::wcsprm& wcs,  const Matrix<Double>& xform,
+    void makeWCS(::wcsprm& wcs,  const Matrix<double>& xform,
                  const Projection& proj, MDirection::Types directionType,
-                 Double refPixLong, Double refPixLat,
-                 Double refLong, Double refLat,
-                 Double incLong, Double incLat,
-                 Double longPole, Double latPole);
+                 double refPixLong, double refPixLat,
+                 double refLong, double refLat,
+                 double incLong, double incLat,
+                 double longPole, double latPole);
     // </group>
 
     // Normalize each row of the PC matrix such that increment() will return the actual
@@ -700,15 +700,15 @@ private:
     // See Greisen & Calabretta, A&A 395, 1061-1075 (2002), equation (4) 
     void normalizePCMatrix();
 
-    Double putLongInPiRange (Double lon, const String& unit) const;
+    double putLongInPiRange (double lon, const String& unit) const;
 
     // Set up conversion machine
     void makeConversionMachines();
 
     // Convert from type_p -> conversionType_p
     // <group>
-    virtual void convertTo (Vector<Double>& world) const;
-    virtual void convertFrom (Vector<Double>& world) const;
+    virtual void convertTo (Vector<double>& world) const;
+    virtual void convertFrom (Vector<double>& world) const;
     // </group>
 
     // Copy private data
@@ -718,11 +718,11 @@ private:
     // of long and lat are current world units
     // <group>
     void setRotationMatrix ();
-    void setRotationMatrix (RotMatrix& rot, Double lon, Double lat) const;
+    void setRotationMatrix (RotMatrix& rot, double lon, double lat) const;
     // </group>
     
     // Return unit conversion vector for converting to current units
-    const Vector<Double> toCurrentFactors () const;
+    const Vector<double> toCurrentFactors () const;
 
 };
 

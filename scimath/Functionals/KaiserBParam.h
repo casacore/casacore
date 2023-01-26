@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    KaiserBFunction<Double> sf;
+//    KaiserBFunction<double> sf;
 //    sf(0);            // = 1.0
 // </srcblock>
 // </example>
@@ -105,7 +105,7 @@ public:
   virtual ~KaiserBParam();
 
   //# Operators    
-  virtual uInt ndim() const { return 1; }
+  virtual uint32_t ndim() const { return 1; }
 
   //# Member functions
   // Give name of function

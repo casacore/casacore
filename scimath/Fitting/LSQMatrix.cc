@@ -35,7 +35,7 @@ LSQMatrix::LSQMatrix()
     len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0),
     trian_p(0) {}
 
-LSQMatrix::LSQMatrix(uInt n)
+LSQMatrix::LSQMatrix(uint32_t n)
   : n_p(n),
     len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0),
     trian_p(0) {
@@ -43,7 +43,7 @@ LSQMatrix::LSQMatrix(uInt n)
   clear();
 }
 
-LSQMatrix::LSQMatrix(uInt n, Bool)
+LSQMatrix::LSQMatrix(uint32_t n, bool)
   : n_p(2*n),
     len_p(0), nm1_p(0), n2m1_p(0), n2p1_p(0),
     trian_p(0) {
@@ -81,7 +81,7 @@ void LSQMatrix::init() {
     nm1_p    = n_p-1;
     n2m1_p   = 2*n_p-1;
     n2p1_p   = 2*n_p+1;
-    trian_p  = new Double[len_p];
+    trian_p  = new double[len_p];
   } else {
     len_p    = 0;
     nm1_p    = 0;
@@ -99,14 +99,14 @@ void LSQMatrix::deinit() {
   delete [] trian_p;	trian_p=0;
 }
 
-void LSQMatrix::set(uInt n) {
+void LSQMatrix::set(uint32_t n) {
   deinit();
   n_p = n;
   init();
   clear();
 }
 
-void LSQMatrix::set(uInt n, Bool) {
+void LSQMatrix::set(uint32_t n, bool) {
   deinit();
   n_p = 2*n;
   init();
@@ -114,31 +114,31 @@ void LSQMatrix::set(uInt n, Bool) {
 }
 
 void LSQMatrix::copy(const LSQMatrix &other) {
-  if (!trian_p && len_p) trian_p = new Double[len_p];
+  if (!trian_p && len_p) trian_p = new double[len_p];
   std::copy(other.trian_p, other.trian_p+len_p, trian_p);
 }
 
 //# Member functions
 
-void LSQMatrix::doDiagonal(uInt n) {
-  for (uInt i=0; i<n; ++i) {
-    Double *j = diag(i);
+void LSQMatrix::doDiagonal(uint32_t n) {
+  for (uint32_t i=0; i<n; ++i) {
+    double *j = diag(i);
     if (*j == 0.0) *j = 1.0;
   }
 }
   
-void LSQMatrix::mulDiagonal(uInt n, Double fac) {
+void LSQMatrix::mulDiagonal(uint32_t n, double fac) {
   fac += 1.0;
-  for (uInt i=0; i<n; ++i) *diag(i) *= fac;
+  for (uint32_t i=0; i<n; ++i) *diag(i) *= fac;
 }
 
-  void LSQMatrix::addDiagonal(uInt n, Double fac) {
-    for (uInt i=0; i<n; ++i) *diag(i) += fac;
+  void LSQMatrix::addDiagonal(uint32_t n, double fac) {
+    for (uint32_t i=0; i<n; ++i) *diag(i) += fac;
   }
 
-  Double LSQMatrix::maxDiagonal(uInt n) {
-    Double x=0;
-    for (uInt i=0; i<n; ++i) x = std::max(x, std::abs(*diag(i)));
+  double LSQMatrix::maxDiagonal(uint32_t n) {
+    double x=0;
+    for (uint32_t i=0; i<n; ++i) x = std::max(x, std::abs(*diag(i)));
     return x;
   }
 

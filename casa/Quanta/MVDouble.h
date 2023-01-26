@@ -1,4 +1,4 @@
-//# MVDouble.h: class to distinguish between internal and external Double
+//# MVDouble.h: class to distinguish between internal and external double
 //# Copyright (C) 1996,1997,1998,1999,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants (SUN compiler does not accept non-simple default arguments)
 
-// <summary> Class to distinguish external and Measure internal Double </summary>
+// <summary> Class to distinguish external and Measure internal double </summary>
 
 // <use visibility=export>
 
@@ -52,15 +52,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </prerequisite>
 //
 // <etymology>
-// From Measure, Value and Double
+// From Measure, Value and double
 // </etymology>
 //
 // <synopsis>
-// An MVDouble is a simple Double, to be used in simple, single value
+// An MVDouble is a simple double, to be used in simple, single value
 // Measures. Requirements can be found in the 
 // <linkto class=MeasValue>MeasValue</linkto> base class.<br>
 // The only reasonable constructor is (but all MeasValue constructors are present)
-// <src>MVDouble(Double)</src>; and an <src>operator Double</src> takes
+// <src>MVDouble(double)</src>; and an <src>operator double</src> takes
 // care of all other possibilities. Its external use is for
 //  <linkto class=MeasConvert>MeasConvert</linkto>, to distinguish between
 // input in internal Measure units, and values which have to have
@@ -89,12 +89,12 @@ public:
   MVDouble(const MVDouble &other);
   // Copy assignment
   MVDouble &operator=(const MVDouble &other);
-  // Constructor from Double
-  MVDouble(Double d);
+  // Constructor from double
+  MVDouble(double d);
   // Constructor from Quantum : value taken will be the canonical value
   // <group>
   MVDouble(const Quantity &other);
-  MVDouble(const Quantum<Vector<Double> > &other);
+  MVDouble(const Quantum<Vector<double> > &other);
   // </group>
   // Constructor from Vector. A zero value will be taken for an empty vector,
   // the canonical value for a quantum vector.
@@ -102,7 +102,7 @@ public:
   //  <li> AipsError if vector length > 1
   // </thrown>
   // <group>
-  MVDouble(const Vector<Double> &other);
+  MVDouble(const Vector<double> &other);
   MVDouble(const Vector<Quantity> &other);
   // </group>
   
@@ -111,7 +111,7 @@ public:
   
   //# Operators
   // Conversion operator
-  operator Double() const;
+  operator double() const;
   
   // Addition
   // <group>
@@ -120,10 +120,10 @@ public:
   // </group>
   // Comparisons
   // <group>
-  Bool operator==(const MVDouble &other) const;
-  Bool operator!=(const MVDouble &other) const;
-  Bool near(const MVDouble &other, Double tol = 1e-13) const;
-  Bool nearAbs(const MVDouble &other, Double tol = 1e-13) const;
+  bool operator==(const MVDouble &other) const;
+  bool operator!=(const MVDouble &other) const;
+  bool near(const MVDouble &other, double tol = 1e-13) const;
+  bool nearAbs(const MVDouble &other, double tol = 1e-13) const;
   // </group>
   
   //# General member functions
@@ -137,22 +137,22 @@ public:
   virtual MeasValue *clone() const;
   // Adjust value: taken from base class, a NOP.
   // Get the value in internal units
-  virtual Vector<Double> getVector() const;
+  virtual Vector<double> getVector() const;
   // Set the value from internal units (set 0 for empty vector)
-  virtual void putVector(const Vector<Double> &in);
+  virtual void putVector(const Vector<double> &in);
    // Get the internal value as a <src>Vector<Quantity></src>. Usable in
   // records. The getXRecordValue() gets additional information for records.
   // Note that the Vectors could be empty.
   // <group>
-  virtual Vector<Quantum<Double> > getRecordValue() const;
+  virtual Vector<Quantum<double> > getRecordValue() const;
   // </group>
   // Set the internal value if correct values and dimensions
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
  
 private:
   //# Data
   // Value
-  Double val;
+  double val;
 };
 
 

@@ -32,19 +32,19 @@
 int main()
 {
     {
-	// Make sure that uChar is unsigned.
-	uChar cc = 0;
+	// Make sure that unsigned char is unsigned.
+	unsigned char cc = 0;
 	cc--;
-	Int C = cc;
+	int32_t C = cc;
 	AlwaysAssertExit(C == 255);
     }
     {
 	// Make sure the sizes are OK.
-      AlwaysAssertExit(sizeof(Int) == 4 && sizeof(uInt) == 4 &&
-                       sizeof(Short) == 2 && sizeof(uShort) == 2 &&
-                       sizeof(Int64) == 8 && sizeof(uInt64) == 8 &&
-                       sizeof(Float) == 4 && sizeof(Double) == 8 &&
-                       sizeof(lDouble) >= sizeof(Double));
+      AlwaysAssertExit(sizeof(int32_t) == 4 && sizeof(uint32_t) == 4 &&
+                       sizeof(int16_t) == 2 && sizeof(uint16_t) == 2 &&
+                       sizeof(int64_t) == 8 && sizeof(uint64_t) == 8 &&
+                       sizeof(float) == 4 && sizeof(double) == 8 &&
+                       sizeof(long double) >= sizeof(double));
     }
 
     return 0;

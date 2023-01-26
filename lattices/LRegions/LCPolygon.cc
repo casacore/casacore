@@ -38,7 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 LCPolygon::LCPolygon()
 {}
 
-LCPolygon::LCPolygon (const Vector<Float>& x, const Vector<Float>& y,
+LCPolygon::LCPolygon (const Vector<float>& x, const Vector<float>& y,
 		      const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsX (x.copy()),
@@ -48,13 +48,13 @@ LCPolygon::LCPolygon (const Vector<Float>& x, const Vector<Float>& y,
     defineMask();
 }
 
-LCPolygon::LCPolygon (const Vector<Double>& x, const Vector<Double>& y,
+LCPolygon::LCPolygon (const Vector<double>& x, const Vector<double>& y,
 		      const IPosition& latticeShape)
 : LCRegionFixed (latticeShape),
   itsX (x.nelements()),
   itsY (y.nelements())
 {
-    for (uInt i=0; i<x.nelements(); i++) {
+    for (uint32_t i=0; i<x.nelements(); i++) {
 	itsX[i] = x[i];
 	if (i < y.nelements()) {
            // define box will catch unequal lengths x and y
@@ -88,30 +88,30 @@ LCPolygon& LCPolygon::operator= (const LCPolygon& other)
 }
 
 
-Bool LCPolygon::operator== (const LCRegion& other) const
+bool LCPolygon::operator== (const LCRegion& other) const
 {
     // Check if parent class matches.
     // If so, we can safely cast.
     if (! LCRegionFixed::operator== (other)) {
-	return False;
+	return false;
     }
     const LCPolygon& that = (const LCPolygon&)other;
     // Compare private data.
     if (itsX.nelements() != that.itsX.nelements()
     ||  itsY.nelements() != that.itsY.nelements()) {
-	return False;
+	return false;
     }
-    Bool deleteX1, deleteY1;
-    Bool deleteX2, deleteY2;
-    const Float* pX1 = itsX.getStorage (deleteX1);
-    const Float* pY1 = itsY.getStorage (deleteY1);
-    const Float* pX2 = that.itsX.getStorage (deleteX2);
-    const Float* pY2 = that.itsY.getStorage (deleteY2);
-    Bool result = True;
-    for (uInt i=0; i<itsX.nelements(); i++) {
+    bool deleteX1, deleteY1;
+    bool deleteX2, deleteY2;
+    const float* pX1 = itsX.getStorage (deleteX1);
+    const float* pY1 = itsY.getStorage (deleteY1);
+    const float* pX2 = that.itsX.getStorage (deleteX2);
+    const float* pY2 = that.itsY.getStorage (deleteY2);
+    bool result = true;
+    for (uint32_t i=0; i<itsX.nelements(); i++) {
 	if (!_isNear (pX1[i], pX2[i])
 	||  !_isNear (pY1[i], pY2[i])) {
-	    result = False;
+	    result = false;
 	    break;
 	}
     }
@@ -128,14 +128,14 @@ LCRegion* LCPolygon::cloneRegion() const
     return new LCPolygon(*this);
 }
 
-LCRegion* LCPolygon::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCPolygon::doTranslate (const Vector<float>& translateVector,
 				  const IPosition& newLatticeShape) const
 {
-    Vector<Float> x, y;
+    Vector<float> x, y;
     x = itsX;
     y = itsY;
-    uInt n = x.nelements();
-    for (uInt i=0; i<n; i++) {
+    uint32_t n = x.nelements();
+    for (uint32_t i=0; i<n; i++) {
         x[i] += translateVector[0];
         y[i] += translateVector[1];
     }
@@ -158,9 +158,9 @@ TableRecord LCPolygon::toRecord (const String&) const
     TableRecord rec;
     defineRecordFields (rec, className());
     // Write 1-relative.
-    rec.define ("oneRel", True);
-    rec.define ("x", itsX + Float(1));
-    rec.define ("y", itsY + Float(1));
+    rec.define ("oneRel", true);
+    rec.define ("x", itsX + float(1));
+    rec.define ("y", itsY + float(1));
     rec.define ("shape", latticeShape().asVector());
     return rec;
 }
@@ -169,41 +169,41 @@ LCPolygon* LCPolygon::fromRecord (const TableRecord& rec,
 				  const String&)
 {
     // If 1-relative, subtract 1 from x and y.
-    Bool oneRel = rec.asBool ("oneRel");
-    Float off = (oneRel ? 1:0);
-    Array<Float> x (rec.toArrayFloat ("x"));
-    Array<Float> y (rec.toArrayFloat ("y"));
+    bool oneRel = rec.asBool ("oneRel");
+    float off = (oneRel ? 1:0);
+    Array<float> x (rec.toArrayFloat ("x"));
+    Array<float> y (rec.toArrayFloat ("y"));
     return new LCPolygon (x-off, y-off,
-                          Vector<Int>(rec.toArrayInt ("shape")));
+                          Vector<int32_t>(rec.toArrayInt ("shape")));
 }
 
 // Truncate start such that edge is taken if very close to a pixel point.
-// Take care of fact that Float is not always exact.
-Int LCPolygon::truncateStart (Float v)
+// Take care of fact that float is not always exact.
+int32_t LCPolygon::truncateStart (float v)
 {
-  Int res;
-  Float vt = floor(v+0.1);
+  int32_t res;
+  float vt = floor(v+0.1);
   if (_isNear(vt, v))  {
-    res = static_cast<Int>(v+0.1);
+    res = static_cast<int32_t>(v+0.1);
   } else {
-    res = static_cast<Int>(v+1);
+    res = static_cast<int32_t>(v+1);
   }
   return std::max (res, 0);
 }
 
-Bool LCPolygon::_isNear(Float val1, Float val2) {
+bool LCPolygon::_isNear(float val1, float val2) {
     return val1 == 0 || val2 == 0 ? nearAbs(val1, val2) : near(val1, val2);
 }
 
 // Truncate end such that edge is taken if very close to a pixel point.
-Int LCPolygon::truncateEnd (Float v, Int maxEnd)
+int32_t LCPolygon::truncateEnd (float v, int32_t maxEnd)
 {
-  Int res;
-  Float vt = floor(v+0.1);
+  int32_t res;
+  float vt = floor(v+0.1);
   if (_isNear(vt, v))  {
-    res = static_cast<Int>(v+0.1);
+    res = static_cast<int32_t>(v+0.1);
   } else {
-    res = static_cast<Int>(v);
+    res = static_cast<int32_t>(v);
   }
   return std::min (res, maxEnd);
 }
@@ -211,8 +211,8 @@ Int LCPolygon::truncateEnd (Float v, Int maxEnd)
 void LCPolygon::defineBox()
 {
     const IPosition& shape = latticeShape();
-    uInt i;
-    uInt nrp = itsX.nelements();
+    uint32_t i;
+    uint32_t nrp = itsX.nelements();
     // First make sure basic things are right.
     if (itsY.nelements() != nrp) {
 	throw AipsError ("LCPolygon - x and y vectors must have equal length");
@@ -222,8 +222,8 @@ void LCPolygon::defineBox()
     }
     // If the last point is not equal to the first one, add it.
     if (!_isNear (itsX[nrp-1], itsX[0])  ||  !_isNear(itsY[nrp-1], itsY[0])) {
-	itsX.resize (nrp+1, True);
-	itsY.resize (nrp+1, True);
+	itsX.resize (nrp+1, true);
+	itsY.resize (nrp+1, true);
 	nrp++;
     }
     itsX[nrp-1] = itsX[0];        // Make sure they are always equal.
@@ -235,10 +235,10 @@ void LCPolygon::defineBox()
     // Determine the maximum and minimum x,y.
     // They form the bounding box.
     // Check if at least one point is inside lattice.
-    Float minx = itsX[0];
-    Float maxx = itsX[0];
-    Float miny = itsY[0];
-    Float maxy = itsY[0];
+    float minx = itsX[0];
+    float maxx = itsX[0];
+    float miny = itsY[0];
+    float maxy = itsY[0];
     for (i=1; i<nrp; i++) {
 	if (itsX[i] < minx) minx = itsX[i];
 	if (itsX[i] > maxx) maxx = itsX[i];
@@ -263,13 +263,13 @@ void LCPolygon::defineMask()
     // Create and initialize the mask.
     IPosition blc = boundingBox().start();
     const IPosition& shape = boundingBox().length();
-    Matrix<Bool> mask(shape);
-    mask = False;
-    uInt nrline = itsX.nelements() - 1;
-    Bool delX, delY, delM;
-    const Float* ptrX = itsX.getStorage (delX);
-    const Float* ptrY = itsY.getStorage (delY);
-    Bool* ptrM = mask.getStorage (delM);
+    Matrix<bool> mask(shape);
+    mask = false;
+    uint32_t nrline = itsX.nelements() - 1;
+    bool delX, delY, delM;
+    const float* ptrX = itsX.getStorage (delX);
+    const float* ptrY = itsY.getStorage (delY);
+    bool* ptrM = mask.getStorage (delM);
     // Fill the mask.
     // Note that fillMask is now called such that the outer loop is over y.
     // This is usually most efficient; however if ny>>nx it might be
@@ -279,21 +279,21 @@ void LCPolygon::defineMask()
     itsX.freeStorage (ptrX, delX);
     itsY.freeStorage (ptrY, delY);
     mask.putStorage (ptrM, delM);
-    // Test if rows/columns at the edges are all False.
+    // Test if rows/columns at the edges are all false.
     // If so, remove them and adjust the bounding box.
-    Int stx = 0;
-    Int sty = 0;
-    Int endx = shape[0];
-    Int endy = shape[1];
-    for (; stx<endx && allEQ(mask.row(stx), False); ++stx) {}
-    for (; endx-1>stx && allEQ(mask.row(endx-1), False); --endx) {}
-    for (; sty<endy && allEQ(mask.column(sty), False); ++sty) {}
-    for (; endy-1>sty && allEQ(mask.column(endy-1), False); --endy) {}
+    int32_t stx = 0;
+    int32_t sty = 0;
+    int32_t endx = shape[0];
+    int32_t endy = shape[1];
+    for (; stx<endx && allEQ(mask.row(stx), false); ++stx) {}
+    for (; endx-1>stx && allEQ(mask.row(endx-1), false); --endx) {}
+    for (; sty<endy && allEQ(mask.column(sty), false); ++sty) {}
+    for (; endy-1>sty && allEQ(mask.column(endy-1), false); --endy) {}
     if (stx>0 || sty>0 || endx<shape[0] || endy<shape[1]) {
       if (stx >= endx  ||  sty >= endy) {
         throw AipsError ("LCPolygon - polygon does not contain any pixel");
       }
-      Matrix<Bool> mask2;
+      Matrix<bool> mask2;
       mask2 = mask(Slice(stx,endx-stx), Slice(sty,endy-sty));
       mask.reference (mask2);
       blc[0] += stx;
@@ -303,25 +303,25 @@ void LCPolygon::defineMask()
     setMask (mask);
 }
 
-void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
-			  Int blcy, Int blcx,
-			  const Float* ptrY, const Float* ptrX, uInt nrline)
+void LCPolygon::fillMask (bool* mask, int32_t ny, int32_t nx,
+			  int32_t blcy, int32_t blcx,
+			  const float* ptrY, const float* ptrX, uint32_t nrline)
 {
-  uInt i;
-  Block<Float> a(nrline);
-  Block<Float> b(nrline);
-  Block<Int> dir(nrline, -1);     // -1=same dir, 0=vertical, 1=change dir
+  uint32_t i;
+  Block<float> a(nrline);
+  Block<float> b(nrline);
+  Block<int32_t> dir(nrline, -1);     // -1=same dir, 0=vertical, 1=change dir
   // Fill the mask for all vertical lines.
   // Also determine the index of the last non-vertical line, which
   // is used in the slope-calculation loop.
-  Int prev = -1;
+  int32_t prev = -1;
   for (i=0; i<nrline; i++) {
     if (_isNear (ptrY[i], ptrY[i+1])) {
       dir[i] = 0;                         // vertical line
       // Fill vertical line if on pixel.
-      Int y = static_cast<Int>(ptrY[i]);
-      if (y >= blcy  &&  y < ny+blcy  &&  _isNear(Float(y), ptrY[i])) {
-        Int xs, xe;
+      int32_t y = static_cast<int32_t>(ptrY[i]);
+      if (y >= blcy  &&  y < ny+blcy  &&  _isNear(float(y), ptrY[i])) {
+        int32_t xs, xe;
         if (ptrX[i] < ptrX[i+1]) {
           xs = truncateStart (ptrX[i] - blcx);
           xe = truncateEnd (ptrX[i+1] - blcx, nx-1);
@@ -329,9 +329,9 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
           xs = truncateStart (ptrX[i+1] - blcx);
           xe = truncateEnd (ptrX[i] - blcx, nx-1);
         }
-	Bool* maskPtr = mask + (y-blcy)*nx;
+	bool* maskPtr = mask + (y-blcy)*nx;
 	while (xs <= xe) {
-	    maskPtr[xs++] = True;
+	    maskPtr[xs++] = true;
 	}
       }
     } else {
@@ -356,21 +356,21 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
   // Loop through all y-es and mask the x-points inside or on the polygon.
   // This is done by determining the crossing point of all the y-lines
   // with all line segments (the in/out algorithm).
-  Block<Float> cross(nrline);
-  Bool* maskPtr = mask;
-  for (Int y=0; y<ny; y++) {
-    uInt nrcross = 0;
-    Float yf = y + blcy;
+  Block<float> cross(nrline);
+  bool* maskPtr = mask;
+  for (int32_t y=0; y<ny; y++) {
+    uint32_t nrcross = 0;
+    float yf = y + blcy;
     for (i=0; i<nrline; i++) {
       // Ignore vertical lines.
       if (dir[i] != 0) {
-        Bool take = False;
+        bool take = false;
         // Calculate the crossing point if yf is inside the line segment.
         if ((yf > ptrY[i]  &&  yf < ptrY[i+1])
         ||  (yf < ptrY[i]  &&  yf > ptrY[i+1])
         ||  _isNear(yf, ptrY[i])  ||  _isNear(yf, ptrY[i+1])) {
-          Float cr = a[i] * yf + b[i] - blcx;
-          take = True;
+          float cr = a[i] * yf + b[i] - blcx;
+          take = true;
           // If a polygon point is a pixel point (in y), always
           // count the ending point of the line segment.
           // Do not count the starting point if the direction has
@@ -378,7 +378,7 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
           // line segment.
           if (_isNear (yf, ptrY[i])) {
             if (dir[i] != 1) {
-              take = False;
+              take = false;
             }
           }
           if (take) {
@@ -389,12 +389,12 @@ void LCPolygon::fillMask (Bool* mask, Int ny, Int nx,
     }
     DebugAssert (nrcross >= 2, AipsError);
     DebugAssert (nrcross%2 == 0, AipsError);
-    GenSort<Float>::sort (cross, nrcross);
+    GenSort<float>::sort (cross, nrcross);
     for (i=0; i<nrcross; i+=2) {
-      Int xs = truncateStart (cross[i]);
-      Int xe = truncateEnd (cross[i+1], nx-1);
+      int32_t xs = truncateStart (cross[i]);
+      int32_t xe = truncateEnd (cross[i+1], nx-1);
       while (xs <= xe) {
-        maskPtr[xs++] = True;
+        maskPtr[xs++] = true;
       }
     }
     maskPtr += nx;

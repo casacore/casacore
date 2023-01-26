@@ -48,14 +48,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // mask, or another mask should be used when opening an existing PagedImage
 // object.
 // <p>
-// Because the constructors automatically converts from a Bool or
+// Because the constructors automatically converts from a bool or
 // a String, the user does not need to be aware of MaskSpecifier.
 // </synopsis> 
 
 // <motivation>
 // The number of constructors in PagedImage would be many more
-// without this class. It would need one taking a Bool and a String.
-// Because C++ converts a const char* to Bool instead of String,
+// without this class. It would need one taking a bool and a String.
+// Because C++ converts a const char* to bool instead of String,
 // a const char* would also be needed multiple times.
 // </motivation>
 
@@ -69,23 +69,23 @@ class MaskSpecifier
 public:
     // Default constructor.
     // It tells if the default mask should or no mask be used.
-    MaskSpecifier (Bool useDefaultMask = True)
+    MaskSpecifier (bool useDefaultMask = true)
       : itsFlag(useDefaultMask) {}
 
     // Construct from a string.
     // It tells to use an alternative mask. An empty name means no mask.
-    //# Note the const Char* constructor is needed, otherwise "name"
-    //# is converted to a Bool by the compiler.
+    //# Note the const char* constructor is needed, otherwise "name"
+    //# is converted to a bool by the compiler.
     // <group>
-    MaskSpecifier (const Char* maskName)
-      : itsFlag(False), itsName(maskName) {}
+    MaskSpecifier (const char* maskName)
+      : itsFlag(false), itsName(maskName) {}
     MaskSpecifier (const String& maskName)
-      : itsFlag(False), itsName(maskName) {}
+      : itsFlag(false), itsName(maskName) {}
     // </group>
 
     // Give the flag or name.
     // <group>
-    Bool useDefault() const
+    bool useDefault() const
       { return itsFlag; }
     const String& name() const
       { return itsName; }
@@ -93,7 +93,7 @@ public:
   
 
 private:
-    Bool   itsFlag;
+    bool   itsFlag;
     String itsName;
 };
 

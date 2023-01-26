@@ -50,19 +50,19 @@
 #include <casacore/casa/iostream.h>
 
 SpectralCoordinate makeLinearCoordinate(MFrequency::Types type,
-                                        Double& crval,
-                                        Double& cdelt,
-                                        Double& crpix,
-                                        Double& restFreq, const String& unit);
+                                        double& crval,
+                                        double& cdelt,
+                                        double& crpix,
+                                        double& restFreq, const String& unit);
 
 
 int main()
 {
    try {
 
-      Double f0, finc, refchan, restFreq;
-      Vector<Double> freqs;
-      Matrix<Double> xform(1,1); xform(0,0) = 1.0;
+      double f0, finc, refchan, restFreq;
+      Vector<double> freqs;
+      Matrix<double> xform(1,1); xform(0,0) = 1.0;
       String unit("GHz");
 
 // Make SC
@@ -75,28 +75,28 @@ int main()
 
 // Make aligner
 
-      const uInt nPix = 16;
-      Quantum<Double> t(50237.29, Unit(String("d")));  
+      const uint32_t nPix = 16;
+      Quantum<double> t(50237.29, Unit(String("d")));  
       MVEpoch t2(t);
       MEpoch refEpoch(t2);
 //
       MPosition pos;
       MeasTable::Observatory(pos, String("ATCA"));
 //
-      Quantum<Double> lon(0.0,Unit(String("rad")));
-      Quantum<Double> lat(-35.0,Unit(String("deg")));
+      Quantum<double> lon(0.0,Unit(String("rad")));
+      Quantum<double> lat(-35.0,Unit(String("deg")));
       MDirection dir(lon, lat, MDirection::J2000);
-      FrequencyAligner<Float> fa(lc, nPix, refEpoch, dir, pos, sysOut);
-      InterpolateArray1D<Double,Float>::InterpolationMethod method=InterpolateArray1D<Double,Float>::linear;
-      Bool extrapolate=False;
-      Bool useCachedX = False;
+      FrequencyAligner<float> fa(lc, nPix, refEpoch, dir, pos, sysOut);
+      InterpolateArray1D<double,float>::InterpolationMethod method=InterpolateArray1D<double,float>::linear;
+      bool extrapolate=false;
+      bool useCachedX = false;
 
 // Generate some data
 
-      Vector<Bool> maskIn(nPix,True), maskOut(nPix);
-      Vector<Float> yOut(nPix), yIn(nPix), yOut2(nPix);
-      Float val = 0.0;
-      for (uInt i=0; i<nPix; i++) {
+      Vector<bool> maskIn(nPix,true), maskOut(nPix);
+      Vector<float> yOut(nPix), yIn(nPix), yOut2(nPix);
+      float val = 0.0;
+      for (uint32_t i=0; i<nPix; i++) {
          if (i<nPix/2) {
            val += 1.0;
          } else {
@@ -124,7 +124,7 @@ int main()
       {
          fa.setTolerance (1.0);
 //
-         Quantum<Double> tt(50237.50, Unit(String("d")));  
+         Quantum<double> tt(50237.50, Unit(String("d")));  
          MVEpoch t3(tt);
          MEpoch epoch(t3);
          cerr << "No Interpolation" << endl;
@@ -144,7 +144,7 @@ int main()
 // Align with new abcissa computed
 
       {
-         Quantum<Double> tt(50237.50, Unit(String("d")));  
+         Quantum<double> tt(50237.50, Unit(String("d")));  
          MVEpoch t3(tt);
          MEpoch epoch(t3);
          cerr << "Interpolation" << endl;
@@ -158,7 +158,7 @@ int main()
 
 // Align with new abcissa taken from cached vector
 
-         useCachedX = True;
+         useCachedX = true;
          AlwaysAssert(fa.align (yOut2, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError);
          AlwaysAssert (allNear(yOut2, yOut, 1e-6), AipsError);
@@ -167,7 +167,7 @@ int main()
 // Get Abcissas for fun
 
       {
-         Vector<Double> xRefOut, xOut;
+         Vector<double> xRefOut, xOut;
          fa.getReferenceAbcissa (xRefOut);
          fa.getAbcissa (xOut);
 /*
@@ -181,37 +181,37 @@ int main()
 
       {
          cerr << "Align many" << endl;
-         const uInt nx = yIn.nelements();
-         const uInt ny = 5;
+         const uint32_t nx = yIn.nelements();
+         const uint32_t ny = 5;
          IPosition shp(2,nx,ny);
-         Array<Float> yInMany(shp);
-         Array<Bool> maskInMany(shp);
-         Array<Float> yOutMany;
-         Array<Bool> maskOutMany;
+         Array<float> yInMany(shp);
+         Array<bool> maskInMany(shp);
+         Array<float> yOutMany;
+         Array<bool> maskOutMany;
 //
          IPosition pp(2,0);
-         for (uInt j=0; j<ny; j++) {
+         for (uint32_t j=0; j<ny; j++) {
             pp(1) = j;
-            for (uInt i=0; i<nx; i++) {
+            for (uint32_t i=0; i<nx; i++) {
               pp(0) = i;
               yInMany(pp) = yIn(i);
               maskInMany(pp) = maskIn(i);
             }
          }            
 //
-         Quantum<Double> tt(50237.50, Unit(String("d")));  
+         Quantum<double> tt(50237.50, Unit(String("d")));  
          MVEpoch t3(tt);
          MEpoch epoch(t3);
 //
-         uInt axis = 0;
+         uint32_t axis = 0;
 //
-         Bool ok = fa.alignMany (yOutMany, maskOutMany, yInMany, maskInMany,
+         bool ok = fa.alignMany (yOutMany, maskOutMany, yInMany, maskInMany,
                                  axis, epoch, method, extrapolate);
          AlwaysAssert(ok, AipsError);
-         ReadOnlyVectorIterator<Float> it(yOutMany,axis);
-         Vector<Float> data1;
-         Vector<Bool> mask1;
-         uInt cnt = 0;
+         ReadOnlyVectorIterator<float> it(yOutMany,axis);
+         Vector<float> data1;
+         Vector<bool> mask1;
+         uint32_t cnt = 0;
          while (!it.pastEnd()) {
            if (cnt==0) {
               data1 = it.vector();
@@ -225,19 +225,19 @@ int main()
 
 // Copy constructor and test results the same
 
-      FrequencyAligner<Float> va2(fa);
+      FrequencyAligner<float> va2(fa);
       {
          cerr << "Copy Constructor" << endl;
-         Quantum<Double> tt(50237.50, Unit(String("d")));  
+         Quantum<double> tt(50237.50, Unit(String("d")));  
          MVEpoch t3(tt);
          MEpoch epoch(t3);
-         Vector<Float> yOut3;
-         useCachedX = True;
+         Vector<float> yOut3;
+         useCachedX = true;
          AlwaysAssert(fa.align (yOut3, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError); // Use cached
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
 //
-         useCachedX = False;
+         useCachedX = false;
          AlwaysAssert(fa.align (yOut2, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError); // Recompute
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
@@ -245,20 +245,20 @@ int main()
 
 // Assignment and test results the same
 
-      FrequencyAligner<Float> va3;
+      FrequencyAligner<float> va3;
       va3 = fa;
       {
          cerr << "Assignment operator" << endl;
-         Quantum<Double> tt(50237.50, Unit(String("d")));  
+         Quantum<double> tt(50237.50, Unit(String("d")));  
          MVEpoch t3(tt);
          MEpoch epoch(t3);
-         Vector<Float> yOut3;
-         useCachedX = True;
+         Vector<float> yOut3;
+         useCachedX = true;
          AlwaysAssert(fa.align (yOut3, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError);  // Use cached
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
 //
-         useCachedX = False;
+         useCachedX = false;
          AlwaysAssert(fa.align (yOut2, maskOut, yIn, maskIn, epoch, 
                                 useCachedX, method, extrapolate),AipsError); // Recompute
          AlwaysAssert (allNear(yOut3, yOut, 1e-6), AipsError);
@@ -273,10 +273,10 @@ int main()
 }
 
 SpectralCoordinate makeLinearCoordinate (MFrequency::Types type,
-                                         Double& f0,
-                                         Double& finc,
-                                         Double& refchan,
-                                         Double& restFreq,
+                                         double& f0,
+                                         double& finc,
+                                         double& refchan,
+                                         double& restFreq,
                                          const String& unit)
 {
    refchan = 10.5;

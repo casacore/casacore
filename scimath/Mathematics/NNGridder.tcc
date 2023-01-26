@@ -46,7 +46,7 @@ NNGridder<Domain, Range>::NNGridder(const IPosition& shape,
 
 // Grid a value by moving to nearest neighbour
 template <class Domain, class Range>
-Bool NNGridder<Domain, Range>::grid(Array<Range> &gridded,
+bool NNGridder<Domain, Range>::grid(Array<Range> &gridded,
 				    const Vector<Domain>& position,
 				    const Range& value)
 {
@@ -54,16 +54,16 @@ Bool NNGridder<Domain, Range>::grid(Array<Range> &gridded,
   loc-=offsetVec;
   if(onGrid(loc)) {
     gridded(loc)+=value;
-    return True;
+    return true;
   }
   else {
-    return False;
+    return false;
   }
 }
 
 // Degrid a value by taking value of nearest neighbour
 template <class Domain, class Range>
-Bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded,
+bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded,
 				      const Vector<Domain>& position,
 				      Range& value)
 {
@@ -71,21 +71,21 @@ Bool NNGridder<Domain, Range>::degrid(const Array<Range>& gridded,
   loc-=offsetVec;
   if(onGrid(loc)) {
     value=gridded(loc);
-    return True;
+    return true;
   }
   else {
-    return False;
+    return false;
   }
 }
 
 // Correction factor for 1 dimension. This is the value that
 // must be divided to get a correct flux.
 template <class Domain, class Range>
-Range NNGridder<Domain, Range>::correctionFactor1D(Int loc, Int len) 
+Range NNGridder<Domain, Range>::correctionFactor1D(int32_t loc, int32_t len) 
 {
-  Int offset=loc-len/2;
+  int32_t offset=loc-len/2;
   if(offset!=0) {
-    Double arg=C::pi*Double(offset)/Double(len);
+    double arg=C::pi*double(offset)/double(len);
     return sin(arg)/arg;
   }
   else {

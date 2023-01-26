@@ -36,7 +36,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
-NonLinearFitLM<T>::NonLinearFitLM(Bool svd) :
+NonLinearFitLM<T>::NonLinearFitLM(bool svd) :
   NonLinearFit<T>(svd),
   lamda_p(0.001) {}
 
@@ -58,18 +58,18 @@ template<class T>
 NonLinearFitLM<T>::~NonLinearFitLM() {}
 
 template<class T>
-Bool NonLinearFitLM<T>::
+bool NonLinearFitLM<T>::
 fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol, 
       const Array<typename FunctionTraits<T>::BaseType> &x, 
       const Vector<typename FunctionTraits<T>::BaseType> &y,
       const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-      const Vector<Bool> *const mask) {
+      const Vector<bool> *const mask) {
   // Initialise loops
   curiter_p = maxiter_p;
-  converge_p = False;
+  converge_p = false;
   // Initialise fitter
   sol.resize(pCount_p);
-  for (uInt i=0, k=0; i<pCount_p; ++i) {
+  for (uint32_t i=0, k=0; i<pCount_p; ++i) {
     sol[i] = (*ptr_derive_p)[i].value();
     if (ptr_derive_p->mask(i)) sol_p[k++] = sol[i];
   }
@@ -88,18 +88,18 @@ fitIt(Vector<typename FunctionTraits<T>::BaseType> &sol,
     curiter_p--;
   }
   converge_p = curiter_p;
-  solved_p = True;
+  solved_p = true;
   
   // Solve last time
   setMaskedParameterValues(sol_p);
   this->buildMatrix(x, y, sigma, mask);
   buildConstraint();
-  this->invert(nr_p, True);
+  this->invert(nr_p, true);
   this->solve(condEq_p);
   sol_p += condEq_p;
   this->getErrors(err_p);
-  errors_p = True;
-  for (uInt i=0, k=0; i<pCount_p; i++) {
+  errors_p = true;
+  for (uint32_t i=0, k=0; i<pCount_p; i++) {
     if (ptr_derive_p->mask(i)) sol[i] = sol_p[k++];
     (*ptr_derive_p)[i].value() = sol[i];
   }	

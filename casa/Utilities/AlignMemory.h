@@ -61,12 +61,12 @@ namespace casacore { //#Begin casa namespace
 
   public:
     // Default alignment is none.
-    explicit AlignMemory (uInt alignment=0)
+    explicit AlignMemory (uint32_t alignment=0)
       : itsAlign(alignment)
     {}
 
     // Get the alignment.
-    uInt alignment() const
+    uint32_t alignment() const
       { return itsAlign; }
 
     // Allocate the given amount of memory with the correct alignment.
@@ -76,7 +76,7 @@ namespace casacore { //#Begin casa namespace
     void* alloc (size_t size) const;
 
   private:
-    uInt itsAlign;
+    uint32_t itsAlign;
   };
 
 } //#End casa namespace

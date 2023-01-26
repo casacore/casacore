@@ -45,25 +45,25 @@ int main()
 	// Create a Record that will contain the value to be put into FITS keywords
 	Record myKeywords;
 	myKeywords.define("hello", 6.5);
-	myKeywords.define("world", True);
+	myKeywords.define("world", true);
 	// long keywords are truncated to 8 characters
-	myKeywords.define("alongname", Short(-1));
+	myKeywords.define("alongname", int16_t(-1));
 	// other scalar types to round out the testing of the code
-	myKeywords.define("a", uInt(10));
-	myKeywords.define("b", Int(-10));
-	myKeywords.define("c", Float(10.0));
+	myKeywords.define("a", uint32_t(10));
+	myKeywords.define("b", int32_t(-10));
+	myKeywords.define("c", float(10.0));
 	myKeywords.define("d","I like dogs");
 	// Array types for testing
-	Vector<Bool> flags(2); flags(0) = False; flags(1) = True;
+	Vector<bool> flags(2); flags(0) = false; flags(1) = true;
 	myKeywords.define("flags", flags);
 	// NAXIS generates the NAXIS keyword as well as NAXIS1 .. NAXISn
-	Vector<Int> naxis(5); naxis(0) = 128; naxis(1) = 64; naxis(2) = 32; 
+	Vector<int32_t> naxis(5); naxis(0) = 128; naxis(1) = 64; naxis(2) = 32; 
 	naxis(3) = 16; naxis(4) = 8;
 	myKeywords.define("naxis", naxis);
-	Vector<Float> tarray(3); tarray(0) = 1; tarray(1) = 2; tarray(2) = 3;
+	Vector<float> tarray(3); tarray(0) = 1; tarray(1) = 2; tarray(2) = 3;
 	myKeywords.define("tarray", tarray);
 	// make one a Matrix
-	Matrix<Double> mat(3,3);
+	Matrix<double> mat(3,3);
 	mat(0,0) = 1;
 	mat(1,0) = 2;
 	mat(2,0) = 3;
@@ -126,11 +126,11 @@ int main()
 	//   history* fields
 	//   And alongname will have been truncated to alongnam
 	// also check comments of each field
-	for (uInt i=0;i<myKeywords.nfields();i++) {
+	for (uint32_t i=0;i<myKeywords.nfields();i++) {
 	    String inName = myKeywords.name(i);
 	    String outName = inName;
 	    if (inName == "alongname") outName = "alongnam";
-	    Int outField = myNewKeywords.fieldNumber(outName);
+	    int32_t outField = myNewKeywords.fieldNumber(outName);
 	    AlwaysAssertExit(outField>=0 || inName == "world" || 
 			     inName.contains(Regex("^comment")) ||
 			     inName.contains(Regex("^history")));
@@ -138,8 +138,8 @@ int main()
 	    
 	    if (outField >= 0) {
 		// short -> int
-		// uInt -> int
-		// Array<Float> -> Array<Double>
+		// uint32_t -> int
+		// Array<float> -> Array<double>
 		DataType inType = myKeywords.dataType(i);
 		DataType outType = myNewKeywords.dataType(outField);
 		AlwaysAssertExit(inType == outType ||
@@ -158,7 +158,7 @@ int main()
 				     myNewKeywords.asBool(outField));
 		    break;
 		case TpUInt:
-		    AlwaysAssertExit(Int(myKeywords.asuInt(i)) == 
+		    AlwaysAssertExit(int32_t(myKeywords.asuInt(i)) == 
 				     myNewKeywords.asInt(outField));
 		    break;
 		case TpInt:
@@ -166,7 +166,7 @@ int main()
 				     myNewKeywords.asInt(outField));
 		    break;
 		case TpShort:
-		    AlwaysAssertExit(Int(myKeywords.asShort(i)) == 
+		    AlwaysAssertExit(int32_t(myKeywords.asShort(i)) == 
 				     myNewKeywords.asInt(outField));
 		    break;
 		case TpFloat:
@@ -191,7 +191,7 @@ int main()
 		    break;
 		case TpArrayFloat:
 		    {
-			Array<Double> inArr(myKeywords.shape(i));
+			Array<double> inArr(myKeywords.shape(i));
 			convertArray(inArr, myKeywords.asArrayFloat(i));
 			AlwaysAssertExit(allEQ(inArr,
 					       myNewKeywords.asArrayDouble(outField)));
@@ -219,7 +219,7 @@ int main()
 	FITSKeywordUtil::removeKeywords(myNewKeywords, ignore);
 	// verify that myNewKeywords doesn't contain any tarray keywords
 	Regex rx("tarray.*");
-	for (uInt i=0;i<myNewKeywords.nfields();i++) {
+	for (uint32_t i=0;i<myNewKeywords.nfields();i++) {
 	    AlwaysAssertExit(!myNewKeywords.name(i).contains(rx));
 	}
 	
@@ -258,7 +258,7 @@ int main()
 	AlwaysAssertExit(myNewKeywords.fieldNumber("cplxkey")<0);
 	
 	// too many dimensions
-	Cube<Int> c(1,2,3); c = 1;
+	Cube<int32_t> c(1,2,3); c = 1;
 	myKeywords = myNewKeywords = empty;
 	nativeList = FITSKeywordUtil::makeKeywordList();
 	myKeywords.define("c", c);
@@ -275,7 +275,7 @@ int main()
 	AlwaysAssertExit(FITSKeywordUtil::getKeywords(myNewKeywords, nativeListRO, 
 						      ignore));
 	// all fields should not contain "mat" but should contain "ma"
-	for (uInt i=0;i<myNewKeywords.nfields();i++) {
+	for (uint32_t i=0;i<myNewKeywords.nfields();i++) {
 	    String name = myNewKeywords.name(i);
 	    AlwaysAssertExit(!name.contains(Regex("^mat")) && 
 			     name.contains(Regex("^ma")));

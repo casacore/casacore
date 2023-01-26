@@ -37,7 +37,7 @@ namespace casacore {
 // allow for a trivial means of doing so (eg, in the case of a Lattice).
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class AccumType, class DataIterator, class MaskIterator=const bool *,
     class WeightsIterator=DataIterator
 >
 class StatsDataProvider {
@@ -50,28 +50,28 @@ public:
 	virtual void operator++() = 0;
 
 	// Are there any data sets left to provide?
-	virtual Bool atEnd() const = 0;
+	virtual bool atEnd() const = 0;
 
 	// Take any actions necessary to finalize the provider. This will be called
-	// when atEnd() returns True.
+	// when atEnd() returns true.
 	virtual void finalize() = 0;
 
 	// get the count of elements in the current data set. When implementing this
 	// method, be certain to take stride into account; ie for a data set with
 	// nominally 100 elements that is to have a stride of two, this method
 	// should return 50.
-	virtual uInt64 getCount() = 0;
+	virtual uint64_t getCount() = 0;
 
 	// get an iterator to the first element of the current dataset
 	virtual DataIterator getData() = 0;
 
 	// Get an iterator to the first element of the mask for the current dataset.
-	// Only called if hasMask() returns True;
+	// Only called if hasMask() returns true;
 	virtual MaskIterator getMask() = 0;
 
 	// Get the stride for the current mask.
-	// Only called if hasMask() returns True.
-	virtual uInt getMaskStride() = 0;
+	// Only called if hasMask() returns true.
+	virtual uint32_t getMaskStride() = 0;
 
 	// If OpenMP is enabled and statistics methods are being called in a
 	// multi-threaded context, get maximum number of threads that should be
@@ -80,31 +80,31 @@ public:
 	// decrease overhead used by statistics methods when the maximum number of
 	// threads available to openmp are unnecessary. The base class
 	// implmentation returns 0.
-	virtual uInt getNMaxThreads() const;
+	virtual uint32_t getNMaxThreads() const;
 
 	// Get the associated range(s) of the current dataset. Only called if
-	// hasRanges() returns True;
+	// hasRanges() returns true;
 	virtual DataRanges getRanges() = 0;
 
 	// Get the stride for the current data set.
-	virtual uInt getStride() = 0;
+	virtual uint32_t getStride() = 0;
 
 	// Get an iterator to the first weights element of the current dataset.
-	// Only called if hasWeights() returns True;
+	// Only called if hasWeights() returns true;
 	virtual WeightsIterator getWeights() = 0;
 
 	// Does the current data set have an associated mask?
-	virtual Bool hasMask() const = 0;
+	virtual bool hasMask() const = 0;
 
 	// Does the current data set have associated range(s)?
-	virtual Bool hasRanges() const = 0;
+	virtual bool hasRanges() const = 0;
 
 	// Does the current data set have associated weights?
-	virtual Bool hasWeights() const = 0;
+	virtual bool hasWeights() const = 0;
 
-	// If the associated data set has ranges, are these include (return True) or
-	// exclude (return False) ranges?
-	virtual Bool isInclude() const = 0;
+	// If the associated data set has ranges, are these include (return true) or
+	// exclude (return false) ranges?
+	virtual bool isInclude() const = 0;
 
 	// reset the provider to point to the beginning of the first data set it
 	// manages.

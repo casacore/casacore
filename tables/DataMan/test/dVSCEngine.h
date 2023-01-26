@@ -37,16 +37,16 @@ class VSCExample
 {
 public:
     VSCExample(): x_p(0), y_p(0) {}
-    VSCExample(Int x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
+    VSCExample(int32_t x, float y, const String& z) : x_p(x), y_p(y), z_p(z) {}
     static String dataTypeId()
 	{ return "VSCExample"; }
-    Int x() const
+    int32_t x() const
 	{ return x_p; }
     float y() const
 	{ return y_p; }
     const String& z() const
 	{ return z_p; }
-    Int& x()
+    int32_t& x()
 	{ return x_p; }
     float& y()
 	{ return y_p; }
@@ -58,7 +58,7 @@ public:
 	{ return x_p<that.x_p || (x_p==that.x_p && y_p<that.y_p) ||
             (x_p==that.x_p && y_p==that.y_p && z_p<that.z_p); }
 private:
-    Int    x_p;
+    int32_t    x_p;
     float  y_p;
     String z_p;
 };
@@ -149,7 +149,7 @@ private:
     String yTargetName_p;
     String zTargetName_p;
     // Objects for the target columns.
-    ScalarColumn<Int>    colx;
+    ScalarColumn<int32_t>    colx;
     ScalarColumn<float>  coly;
     ScalarColumn<String> colz;
 

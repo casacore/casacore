@@ -65,7 +65,7 @@ ImageBeamSet::ImageBeamSet(const GaussianBeam& beam) :
     _maxBeamPos (2, 0) {}
 
 ImageBeamSet::ImageBeamSet(
-    uInt nchan, uInt nstokes, const GaussianBeam& beam
+    uint32_t nchan, uint32_t nstokes, const GaussianBeam& beam
 ) :
     _beams(max(1u, nchan), max(1u, nstokes), beam),
     _areas      (_beams.shape(), beam.getArea(_DEFAULT_AREA_UNIT)),
@@ -99,7 +99,7 @@ ImageBeamSet& ImageBeamSet::operator=(const ImageBeamSet& other) {
     return *this;
 }
 
-const GaussianBeam& ImageBeamSet::getBeam(Int chan, Int stokes) const {
+const GaussianBeam& ImageBeamSet::getBeam(int32_t chan, int32_t stokes) const {
     if (nchan() <= 1) {
         chan = 0;
     }
@@ -108,13 +108,13 @@ const GaussianBeam& ImageBeamSet::getBeam(Int chan, Int stokes) const {
     }
     // Note that chan=-1 can only be given if nchan()==1.
     AlwaysAssert(
-        chan >=0 && chan < Int(nchan()) && stokes >= 0 && stokes < Int(nstokes()),
+        chan >=0 && chan < int32_t(nchan()) && stokes >= 0 && stokes < int32_t(nstokes()),
         AipsError
     );
     return _beams(chan, stokes);
 }
 
-Bool ImageBeamSet::operator==(const ImageBeamSet& other) const {
+bool ImageBeamSet::operator==(const ImageBeamSet& other) const {
     return (
         this == &other
         || (
@@ -124,7 +124,7 @@ Bool ImageBeamSet::operator==(const ImageBeamSet& other) const {
     );
 }
 
-Bool ImageBeamSet::operator!=(const ImageBeamSet& other) const {
+bool ImageBeamSet::operator!=(const ImageBeamSet& other) const {
     return !(*this == other);
 }
 
@@ -150,7 +150,7 @@ const String& ImageBeamSet::className() {
     return c;
 }
 
-void ImageBeamSet::resize(uInt nchan, uInt nstokes) {
+void ImageBeamSet::resize(uint32_t nchan, uint32_t nstokes) {
     _beams.resize(max(1u, nchan), max(1u, nstokes));
     _calculateAreas();
 }
@@ -158,13 +158,13 @@ void ImageBeamSet::resize(uInt nchan, uInt nstokes) {
 void ImageBeamSet::setBeams(const Matrix<GaussianBeam>& beams) {
     // Resize the beams if needed.
     // A beam axis can be extended if its length is 0 or 1.
-    Int nch = nchan();
-    Int beamNchan = beams.shape()[0];
+    int32_t nch = nchan();
+    int32_t beamNchan = beams.shape()[0];
     if (nch <= 1) {
         nch = beamNchan;
     }
-    Int nst = nstokes();
-    Int beamNstokes = beams.shape()[1];
+    int32_t nst = nstokes();
+    int32_t beamNstokes = beams.shape()[1];
     if (nst <= 1) {
         nst = beams.shape()[1];
     }
@@ -174,14 +174,14 @@ void ImageBeamSet::setBeams(const Matrix<GaussianBeam>& beams) {
         AipsError
     );
     // Determine the step size in the given beams.
-    Int incrChan = (beamNchan == 1 ? 0 : 1);
-    Int incrStokes = (beamNstokes == 1 ? 0 : 1);
+    int32_t incrChan = (beamNchan == 1 ? 0 : 1);
+    int32_t incrStokes = (beamNstokes == 1 ? 0 : 1);
     // Set the beam set to the given beams.
     _beams.resize(nch, nst);
-    Int js = 0;
-    for (Int is = 0; is < nst; ++is, js += incrStokes) {
-        Int jc = 0;
-        for (Int ic = 0; ic < nch; ++ic, jc += incrChan) {
+    int32_t js = 0;
+    for (int32_t is = 0; is < nst; ++is, js += incrStokes) {
+        int32_t jc = 0;
+        for (int32_t ic = 0; ic < nch; ++ic, jc += incrChan) {
             _beams(ic, is) = beams(jc, js);
         }
     }
@@ -197,9 +197,9 @@ void ImageBeamSet::set(const GaussianBeam& beam) {
     _maxBeamPos = 0;
 }
 
-void ImageBeamSet::setBeam(Int chan, Int stokes, const GaussianBeam& beam) {
+void ImageBeamSet::setBeam(int32_t chan, int32_t stokes, const GaussianBeam& beam) {
     AlwaysAssert(
-        Int(chan) < _beams.shape()[0] && Int(stokes) < _beams.shape()[1],
+        int32_t(chan) < _beams.shape()[0] && int32_t(stokes) < _beams.shape()[1],
         AipsError
     );
     if (chan < 0 && stokes < 0) {
@@ -230,7 +230,7 @@ void ImageBeamSet::setBeam(Int chan, Int stokes, const GaussianBeam& beam) {
 
 void ImageBeamSet::_replaceBeam(
     const GaussianBeam& beam, const IPosition& location1,
-    const IPosition& location2, Bool overwriteMaxMin
+    const IPosition& location2, bool overwriteMaxMin
 ) {
     _beams(location1, location2) = beam;
     if (overwriteMaxMin) {
@@ -253,7 +253,7 @@ void ImageBeamSet::_replaceBeam(
 }
 
 const GaussianBeam& ImageBeamSet::getMaxAreaBeamForPol(IPosition& pos,
-        uInt stokes) const {
+        uint32_t stokes) const {
     pos.resize(2);
     // If single Stokes, use the maximum itself.
     if (nstokes() <= 1) {
@@ -262,7 +262,7 @@ const GaussianBeam& ImageBeamSet::getMaxAreaBeamForPol(IPosition& pos,
     }
     AlwaysAssert(stokes < nstokes(), AipsError);
     // Determine location of maximum area for given Stokes.
-    Double mina, maxa;
+    double mina, maxa;
     IPosition minPos;
     minMax(
         mina, maxa, minPos, pos,
@@ -273,7 +273,7 @@ const GaussianBeam& ImageBeamSet::getMaxAreaBeamForPol(IPosition& pos,
 }
 
 const GaussianBeam& ImageBeamSet::getMinAreaBeamForPol(IPosition& pos,
-        uInt stokes) const {
+        uint32_t stokes) const {
     pos.resize(2);
     // If single Stokes, use the minimum itself.
     if (nstokes() <= 1) {
@@ -282,7 +282,7 @@ const GaussianBeam& ImageBeamSet::getMinAreaBeamForPol(IPosition& pos,
     }
     AlwaysAssert(stokes < nstokes(), AipsError);
     // Determine location of minimum area for given Stokes.
-    Double mina, maxa;
+    double mina, maxa;
     IPosition maxPos;
     minMax(mina, maxa, pos, maxPos,
             _areas(IPosition(2, 0, stokes), IPosition(2, nchan() - 1, stokes)));
@@ -291,7 +291,7 @@ const GaussianBeam& ImageBeamSet::getMinAreaBeamForPol(IPosition& pos,
 }
 
 const GaussianBeam& ImageBeamSet::getMedianAreaBeamForPol(
-    IPosition& pos, uInt stokes
+    IPosition& pos, uint32_t stokes
 ) const {
     pos.resize(2);
     pos = _beams.shape() - 1;
@@ -303,22 +303,22 @@ const GaussianBeam& ImageBeamSet::getMedianAreaBeamForPol(
         return _beams(0, pos[1]);
     }
     // Do an indirect sort to find the location of the median.
-    Vector<uInt> indices;
-    GenSortIndirect<Double,uInt>::sort(indices,
+    Vector<uint32_t> indices;
+    GenSortIndirect<double,uint32_t>::sort(indices,
             _areas(IPosition(2, 0, pos[1]), IPosition(2, nchan() - 1, pos[1])));
     pos[0] = indices[indices.size() / 2];
     return _beams(pos[0], pos[1]);
 }
 
 GaussianBeam ImageBeamSet::getMedianAreaBeam() const {
-    Vector<uInt> indices;
+    Vector<uint32_t> indices;
     IPosition shape = _beams.shape();
     if (shape[0] > 1 && shape[1] > 1) {
-      GenSortIndirect<Double,uInt>::sort(indices, Vector<Double>(_areas.tovector()));
+      GenSortIndirect<double,uint32_t>::sort(indices, Vector<double>(_areas.tovector()));
         return _beams.tovector()[indices[indices.size()/2]];
     }
     else {
-      GenSortIndirect<Double,uInt>::sort(indices, _areas);
+      GenSortIndirect<double,uint32_t>::sort(indices, _areas);
         GaussianBeam medbeam = shape[0] > 1
             ? _beams(indices[indices.size()/2], 0)
             : _beams(0, indices[indices.size()/2]);
@@ -328,7 +328,7 @@ GaussianBeam ImageBeamSet::getMedianAreaBeam() const {
 
 const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
     BeamIter ibend = _beams.end();
-    Bool found = False;
+    bool found = false;
     Quantity minAxis;
     GaussianBeam res = *(_beams.begin());
     for (
@@ -351,7 +351,7 @@ const GaussianBeam ImageBeamSet::getSmallestMinorAxisBeam() const {
         else if (! ibeam->isNull()) {
             minAxis = ibeam->getMinor();
             res = *ibeam;
-            found = True;
+            found = true;
         }
     }
     return res;
@@ -363,7 +363,7 @@ void ImageBeamSet::_calculateAreas() {
         _areaUnit = _beams.begin()->getMajor().getUnit();
         _areaUnit =
                 (Quantity(Quantity(1, _areaUnit) * Quantity(1, _areaUnit)).getUnit());
-        Array<Double>::iterator iareas = _areas.begin();
+        Array<double>::iterator iareas = _areas.begin();
         BeamIter ibend = _beams.end();
         for (
             BeamIter ibeam = _beams.begin();
@@ -371,7 +371,7 @@ void ImageBeamSet::_calculateAreas() {
         ) {
             *iareas = ibeam->getArea(_areaUnit);
         }
-        Double minArea, maxArea;
+        double minArea, maxArea;
         minMax(minArea, maxArea, _minBeamPos, _maxBeamPos, _areas);
         _minBeam = _beams(_minBeamPos);
         _maxBeam = _beams(_maxBeamPos);
@@ -390,7 +390,7 @@ ImageBeamSet ImageBeamSet::subset(const Slicer& slicer,
         return *this;
     }
     // Determine the relevant axis numbers in the coordinate system.
-    Int axes[2];
+    int32_t axes[2];
     axes[0] = csys.spectralAxisNumber();
     axes[1] = csys.polarizationAxisNumber();
     IPosition ss(slicer.start());
@@ -398,7 +398,7 @@ ImageBeamSet ImageBeamSet::subset(const Slicer& slicer,
     IPosition si(slicer.stride());
     // If the beamset has no or a single freq or stokes, adjust the slicer.
     IPosition beamss(2, 0), beamse(2, 0), beamsi(2, 1);
-    for (Int i = 0; i < 2; ++i) {
+    for (int32_t i = 0; i < 2; ++i) {
         if (axes[i] >= 0 && _beams.shape()[i] > 1) {
             AlwaysAssert(_beams.shape()[i] > se[axes[i]], AipsError);
             beamss[i] = ss[axes[i]];
@@ -409,36 +409,36 @@ ImageBeamSet ImageBeamSet::subset(const Slicer& slicer,
     return ImageBeamSet(_beams(beamss, beamse, beamsi));
 }
 
-Bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
+bool ImageBeamSet::equivalent(const ImageBeamSet& that) const {
     if (empty() || that.empty()) {
         return empty() == that.empty();
     }
-    uInt nc1 = nchan();
-    uInt np1 = nstokes();
-    uInt nc2 = that.nchan();
-    uInt np2 = that.nstokes();
+    uint32_t nc1 = nchan();
+    uint32_t np1 = nstokes();
+    uint32_t nc2 = that.nchan();
+    uint32_t np2 = that.nstokes();
     if (!(nc1 == nc2 || nc1 == 1 || nc2 == 1)
             || !(np1 == np2 || np1 == 1 || np2 == 1)) {
-        return False;      // shapes mismatch
+        return false;      // shapes mismatch
     }
-    uInt nc = max(nc1, nc2);
-    uInt np = max(np1, np2);
-    uInt incrc1 = (nc1 == 1 ? 0 : 1);
-    uInt incrp1 = (np1 == 1 ? 0 : 1);
-    uInt incrc2 = (nc2 == 1 ? 0 : 1);
-    uInt incrp2 = (np2 == 1 ? 0 : 1);
-    uInt c1 = 0, p1 = 0, c2 = 0, p2 = 0;
-    for (uInt p = 0; p < np; ++p) {
-        for (uInt c = 0; c < nc; ++c, c1 += incrc1, c2 += incrc2) {
+    uint32_t nc = max(nc1, nc2);
+    uint32_t np = max(np1, np2);
+    uint32_t incrc1 = (nc1 == 1 ? 0 : 1);
+    uint32_t incrp1 = (np1 == 1 ? 0 : 1);
+    uint32_t incrc2 = (nc2 == 1 ? 0 : 1);
+    uint32_t incrp2 = (np2 == 1 ? 0 : 1);
+    uint32_t c1 = 0, p1 = 0, c2 = 0, p2 = 0;
+    for (uint32_t p = 0; p < np; ++p) {
+        for (uint32_t c = 0; c < nc; ++c, c1 += incrc1, c2 += incrc2) {
             if (_beams(c1, p1) != that._beams(c2, p2)) {
-                return False;  // mismatch in a beam
+                return false;  // mismatch in a beam
             }
         }
         c1 = c2 = 0;
         p1 += incrp1;
         p2 += incrp2;
     }
-    return True;
+    return true;
 }
 
 ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
@@ -460,9 +460,9 @@ ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
         // provide backward compatibility for records written with 0 stokes
         nstokes = 1;
     }
-    uInt count = 0;
-    uInt chan = 0;
-    uInt stokes = 0;
+    uint32_t count = 0;
+    uint32_t chan = 0;
+    uint32_t stokes = 0;
     Matrix<GaussianBeam> beams(nchan, nstokes);
     auto iterend = beams.end();
     for (
@@ -487,7 +487,7 @@ Record ImageBeamSet::toRecord() const {
     perPlaneBeams.define("nChannels", nchan());
     perPlaneBeams.define("nStokes", nstokes());
     Record rec;
-    uInt count = 0;
+    uint32_t count = 0;
     const Array<GaussianBeam>& beams = getBeams();
     for (const auto& beam: beams) {
         ThrowIf(
@@ -501,7 +501,7 @@ Record ImageBeamSet::toRecord() const {
     return perPlaneBeams;
 }
 
-void ImageBeamSet::rotate(const Quantity& angle, Bool unwrap) {
+void ImageBeamSet::rotate(const Quantity& angle, bool unwrap) {
     ThrowIf(
         ! angle.isConform("rad"),
         "Quantity is not an angle"
@@ -509,7 +509,7 @@ void ImageBeamSet::rotate(const Quantity& angle, Bool unwrap) {
     Matrix<GaussianBeam>::iterator iter = _beams.begin();
     Matrix<GaussianBeam>::iterator end = _beams.end();
     while(iter != end) {
-        iter->setPA(iter->getPA(True) + angle, unwrap);
+        iter->setPA(iter->getPA(true) + angle, unwrap);
         ++iter;
     }
     _minBeam.setPA(_minBeam.getPA() + angle, unwrap);
@@ -517,7 +517,7 @@ void ImageBeamSet::rotate(const Quantity& angle, Bool unwrap) {
 }
 
 void ImageBeamSet::summarize(
-    LogIO& log, Bool verbose, const CoordinateSystem& csys
+    LogIO& log, bool verbose, const CoordinateSystem& csys
 ) const {
     ostream& os = log.output();
     Unit u("deg");
@@ -539,44 +539,44 @@ void ImageBeamSet::summarize(
             u = Unit("arcsec");
         }
     }
-    Bool hasSpectral = csys.hasSpectralAxis();
-    Bool hasStokes = csys.hasPolarizationCoordinate();
+    bool hasSpectral = csys.hasSpectralAxis();
+    bool hasStokes = csys.hasPolarizationCoordinate();
     log.output() << "Restoring Beams " << endl;
     const SpectralCoordinate *spCoord = 0;
     IPosition beamsShape = _beams.shape();
-    uInt chanWidth = 0;
-    uInt freqWidth = 0;
-    uInt freqPrec = 0;
-    uInt velPrec = 0;
-    uInt velWidth = 0;
-    uInt polWidth = 3;
-    uInt typeWidth = 6;
-    Bool myverbose = verbose || ! hasSpectral || (hasSpectral && beamsShape[0] <= 3);
+    uint32_t chanWidth = 0;
+    uint32_t freqWidth = 0;
+    uint32_t freqPrec = 0;
+    uint32_t velPrec = 0;
+    uint32_t velWidth = 0;
+    uint32_t polWidth = 3;
+    uint32_t typeWidth = 6;
+    bool myverbose = verbose || ! hasSpectral || (hasSpectral && beamsShape[0] <= 3);
     const StokesCoordinate *polCoord = hasStokes
         ? &csys.stokesCoordinate()
         : 0;
     if (hasSpectral) {
         spCoord = &csys.spectralCoordinate();
-        chanWidth = max(4, Int(log10(beamsShape[0])) + 1);
+        chanWidth = max(4, int32_t(log10(beamsShape[0])) + 1);
         // yes these really should be separated because width applies only to the first.
         ostringstream x;
-        Double freq;
+        double freq;
         spCoord->toWorld(freq, 0);
         if (spCoord->pixelValues().size() > 0) {
             freqPrec = 6;
             velPrec = 3;
         }
         else {
-            Double inc = spCoord->increment()[0];
-            freqPrec = Int(abs(log10(inc/freq))) + 1;
-            Double vel0, vel1;
+            double inc = spCoord->increment()[0];
+            freqPrec = int32_t(abs(log10(inc/freq))) + 1;
+            double vel0, vel1;
             spCoord->pixelToVelocity(vel0, 0);
             spCoord->pixelToVelocity(vel1, 1);
             if (abs(vel0-vel1) > 10) {
                 velPrec = 0;
             }
             else {
-                velPrec = Int(abs(log10(abs(vel0-vel1)))) + 2;
+                velPrec = int32_t(abs(log10(abs(vel0-vel1)))) + 2;
             }
         }
         x << scientific << std::setprecision(freqPrec) << freq;
@@ -607,14 +607,14 @@ void ImageBeamSet::summarize(
             os << std::setw(polWidth) << "Pol";
         }
         os << endl;
-        Int stokesPos = hasStokes
+        int32_t stokesPos = hasStokes
             ? hasSpectral
                 ? 1 : 0
                 : -1;
         IPosition axisPath = hasSpectral && hasStokes
                 ? IPosition(2, 1, 0)
                         : IPosition(1, 0);
-        ArrayPositionIterator iter(beamsShape, axisPath, False);
+        ArrayPositionIterator iter(beamsShape, axisPath, false);
         while (! iter.pastEnd()) {
             const IPosition pos = iter.pos();
             if (hasSpectral) {
@@ -635,15 +635,15 @@ void ImageBeamSet::summarize(
         }
     }
     else {
-        uInt mymax = hasStokes ? nstokes() : 1;
-        for (uInt i=0; i<mymax; i++) {
+        uint32_t mymax = hasStokes ? nstokes() : 1;
+        for (uint32_t i=0; i<mymax; i++) {
             String stokesString;
             if (hasStokes) {
                 Stokes::StokesTypes stokes;
                 polCoord->toWorld(stokes, i);
                 stokesString = Stokes::name(stokes);
             }
-            for (uInt j=0; j<3; j++) {
+            for (uint32_t j=0; j<3; j++) {
                 String aggType;
                 GaussianBeam beam;
                 IPosition pos;
@@ -684,8 +684,8 @@ void ImageBeamSet::summarize(
     }
 }
 
-const Quantum<Matrix<Double>> ImageBeamSet::getAreas() const {
-    return Quantum<Matrix<Double>>(_areas, _areaUnit);
+const Quantum<Matrix<double>> ImageBeamSet::getAreas() const {
+    return Quantum<Matrix<double>>(_areas, _areaUnit);
 }
 
 const std::map<String, Quantum<Matrix<double>>> ImageBeamSet::paramMatrices(
@@ -720,16 +720,16 @@ const std::map<String, Quantum<Matrix<double>>> ImageBeamSet::paramMatrices(
 
 void ImageBeamSet::_chanInfoToStream(
     ostream& os, const SpectralCoordinate *spCoord,
-    const uInt chan, const uInt chanWidth, const uInt freqPrec,
-    const uInt velWidth, const uInt velPrec
+    const uint32_t chan, const uint32_t chanWidth, const uint32_t freqPrec,
+    const uint32_t velWidth, const uint32_t velPrec
 ) {
     os << std::fixed << std::setw(chanWidth)
         << chan << " ";
-    Double freq;
+    double freq;
     spCoord->toWorld(freq, chan);
     os << scientific << std::setprecision(freqPrec)
         << freq << " ";
-    Double vel;
+    double vel;
     spCoord->pixelToVelocity(vel, chan);
     os << std::setw(velWidth) << fixed
         << std::setprecision(velPrec) << vel << " ";
@@ -743,7 +743,7 @@ void ImageBeamSet::_beamToStream(
     majAx.convert(unit);
     Quantity minAx = beam.getMinor();
     minAx.convert(unit);
-    Quantity pa = beam.getPA(True);
+    Quantity pa = beam.getPA(true);
     pa.convert("deg");
     os << fixed << std::setprecision(4) << std::setw(9) <<  majAx
         << " x " << std::setw(9) << minAx << " pa=" << std::setw(8) << pa;

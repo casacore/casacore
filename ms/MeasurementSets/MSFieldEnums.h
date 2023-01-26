@@ -68,34 +68,34 @@ public:
     // String.
     CODE,  
     // Direction of delay center (e.g. RA, DEC) as polynomial in time.<BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION.
+    // double(2,NUM_POLY+1) - rad - DIRECTION.
     DELAY_DIR,  
     // Flag for this row <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // Field Name. <BR>
     // String
     NAME,
     // Polynomial order for *_DIR columns <BR>
-    // Int
+    // int32_t
     NUM_POLY,
     // Direction of phase center (e.g. RA, DEC) as polynomial in time<BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION.
+    // double(2,NUM_POLY+1) - rad - DIRECTION.
     PHASE_DIR,  
     // Direction of reference center (e.g. RA, DEC).<BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION.
+    // double(2,NUM_POLY+1) - rad - DIRECTION.
     REFERENCE_DIR,  
     // Source id (index in SOURCE table) <BR>
-    // Int 
+    // int32_t 
     SOURCE_ID,
     // Time origin for the directions and rates. <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=TIME,
     // Ephemeris id, pointer to EPHEMERIS table (for moving objects, with 
     // possible ephemeris updates) <BR>
-    // Int
+    // int32_t
     EPHEMERIS_ID,
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=EPHEMERIS_ID

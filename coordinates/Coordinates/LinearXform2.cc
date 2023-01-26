@@ -33,9 +33,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<Bool>& axes, 
-                                         const Vector<Double>& crpix, 
-                                         const Vector<Double>& scale) const
+LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<bool>& axes, 
+                                         const Vector<double>& crpix, 
+                                         const Vector<double>& scale) const
 {
    if (axes.nelements() != nWorldAxes()) {
       errMsg = "axes length is invalid";
@@ -50,19 +50,19 @@ LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<Bool>& axe
       return 0;
    }
 //
-   Matrix<Double> pc0;
+   Matrix<double> pc0;
    if (isPCDiagonal_p) {
 
-// Short cut which enables us to separate out axes
+// int16_t cut which enables us to separate out axes
 
       pc0 = pc();
-      Vector<Double> d(pc0.diagonal().copy());
-      for (uInt i=0; i<nWorldAxes(); i++) {
+      Vector<double> d(pc0.diagonal().copy());
+      for (uint32_t i=0; i<nWorldAxes(); i++) {
          if (axes[i]) d[i] = 1.0 / d[i];
       }
       pc0.diagonal() = d;
    } else {
-      if (!allEQ(axes, True)) {
+      if (!allEQ(axes, true)) {
          errMsg = "Cannot invert non-diagonal PC matrix (probably a rotated CoordinateSystem) when some axes not being transformed";
          return 0;
       }
@@ -70,9 +70,9 @@ LinearXform* LinearXform::fourierInvert (String& errMsg, const Vector<Bool>& axe
       pc0 = invert(pc());
    }
 //
-   Vector<Double> cdelt0(cdelt().copy());
-   Vector<Double> crpix0(LinearXform::crpix().copy());
-   for (uInt i=0; i<nWorldAxes(); i++) {
+   Vector<double> cdelt0(cdelt().copy());
+   Vector<double> crpix0(LinearXform::crpix().copy());
+   for (uint32_t i=0; i<nWorldAxes(); i++) {
       if (axes[i]) {
          cdelt0[i] = scale[i] / cdelt0[i];
          crpix0[i] = crpix[i];

@@ -38,14 +38,14 @@ class String;
 // and field ID. Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct SubScanKey {
-    Int obsID;
-    Int arrayID;
-    Int scan;
-    Int fieldID;
+    int32_t obsID;
+    int32_t arrayID;
+    int32_t scan;
+    int32_t fieldID;
 };
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const SubScanKey& lhs, const SubScanKey& rhs);
+bool operator<(const SubScanKey& lhs, const SubScanKey& rhs);
 
 String toString(const SubScanKey& subScanKey);
 
@@ -55,9 +55,9 @@ std::ostream& operator<<(std::ostream& os, const SubScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ScanKey {
-    Int obsID;
-    Int arrayID;
-    Int scan;
+    int32_t obsID;
+    int32_t arrayID;
+    int32_t scan;
 };
 
 // create a ScanKey from a SubScanKey, just omits the SubScanKey's fieldID
@@ -72,12 +72,12 @@ inline ScanKey scanKey(const SubScanKey& subScanKey) {
 String toString(const ScanKey& scanKey);
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const ScanKey& lhs, const ScanKey& rhs);
+bool operator<(const ScanKey& lhs, const ScanKey& rhs);
 
-Bool operator==(const ScanKey& lhs, const ScanKey& rhs);
+bool operator==(const ScanKey& lhs, const ScanKey& rhs);
 
 // extract all the unique scan numbers from the specified scans
-std::set<Int> scanNumbers(const std::set<ScanKey>& scanKeys);
+std::set<int32_t> scanNumbers(const std::set<ScanKey>& scanKeys);
 
 std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey);
 
@@ -85,33 +85,33 @@ std::ostream& operator<<(std::ostream& os, const ScanKey& scanKey);
 // Negative values are allowed to indicate all values of the particular
 // ID are desired.
 struct ArrayKey {
-    Int obsID;
-    Int arrayID;
+    int32_t obsID;
+    int32_t arrayID;
 };
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
+bool operator<(const ArrayKey& lhs, const ArrayKey& rhs);
 
-inline Bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
+inline bool operator==(const ArrayKey& lhs, const ArrayKey& rhs) {
     return lhs.arrayID == rhs.arrayID && lhs.obsID == rhs.obsID;
 }
 
-inline Bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) {
+inline bool operator!=(const ArrayKey& lhs, const ArrayKey& rhs) {
     return ! (lhs == rhs);
 }
 
 // construct scan keys given a set of scan numbers and an ArrayKey
-std::set<ScanKey> scanKeys(const std::set<Int>& scans, const ArrayKey& arrayKey);
+std::set<ScanKey> scanKeys(const std::set<int32_t>& scans, const ArrayKey& arrayKey);
 
 // represents primary key in the SOURCE table
 struct SourceKey {
     // SOURCE_ID column
-    uInt id;
-    uInt spw;
+    uint32_t id;
+    uint32_t spw;
 };
 
 // define operator<() so it can be used as a key in std::map
-Bool operator<(const SourceKey& lhs, const SourceKey& rhs);
+bool operator<(const SourceKey& lhs, const SourceKey& rhs);
 
 // get a set of unique ArrayKeys from a set of ScanKeys
 std::set<ArrayKey> uniqueArrayKeys(const std::set<ScanKey>& scanKeys);

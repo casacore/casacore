@@ -110,24 +110,24 @@ class BinaryTable : public BinaryTableExtension
 public: 
 
     //   The only constructor is from a FitsInput, you can also optionally
-    //   provide a FITS error handler.  If useMiriadSM is True, use
+    //   provide a FITS error handler.  If useMiriadSM is true, use
     //   the Miriad storage manager for all columns, otherwise AipsIO.
-    //   If sdfits is True, all non-reserved and some reserved keyword
+    //   If sdfits is true, all non-reserved and some reserved keyword
     //   are treated as if they were columns with constant values
     //   "virtual columns" in the sdfits convention.
     BinaryTable(FitsInput &,
 		FITSErrorHandler errhandler = FITSError::defaultHandler, 
-		Bool useMiriadSM = False, Bool sdfits = False);
+		bool useMiriadSM = false, bool sdfits = false);
 
     ~BinaryTable();
 
     // Get the full table, using the supplied arguments to construct the table.
     // The table will contain all data from the current row to the end of the
-    // BinarTableExtension.If useMiriadSM is True, use the Miriad storage
+    // BinarTableExtension.If useMiriadSM is true, use the Miriad storage
     // manager for all columns, otherwise AipsIO.
     Table fullTable(const String& tabName, 
 		    const Table::TableOption = Table::NewNoReplace,
-		    Bool useMiriadSM = False);
+		    bool useMiriadSM = false);
 
     // This version  of the fullTable return a Memory based table
     // Its recommended if its being used as a temporary
@@ -161,9 +161,9 @@ private:
     // This is the Scratch table containing the current row
     Table* currRowTab;
     // The number of elements for each column of the BinaryTableExtension
-    Int *nelem;
+    int32_t *nelem;
     // This is a map from column number to column name
-    std::map<Int, String> *colNames;
+    std::map<int32_t, String> *colNames;
 
     TableRecord kwSet;
 

@@ -120,7 +120,7 @@ public:
 
   // Tests if a row contains a Measure (i.e., if the row has a defined
   // value).
-  Bool isDefined (rownr_t rownr) const;
+  bool isDefined (rownr_t rownr) const;
 
   // Get access to the TableMeasDescBase describing the column.
   // <group>
@@ -131,7 +131,7 @@ public:
   // </group>
 
   // Test if the object is null.
-  Bool isNull() const
+  bool isNull() const
     { return itsDescPtr.null(); }
 
   // Throw an exception if the object is null.
@@ -153,18 +153,18 @@ public:
   // this function will see it as an array measure column. However,
   // it might be accessible as a scalar measure column.
   // </note>
-  Bool isScalar() const;
+  bool isScalar() const;
 
 protected:
   //# The measure's value is represented by this many data components.
-  uInt itsNvals;
+  uint32_t itsNvals;
   //# The Measure Column description.
   CountedPtr<TableMeasDescBase> itsDescPtr;
   //# The data column.
   TableColumn itsTabDataCol;
   //# Does the measure column have a variable reference or offset?
-  Bool itsVarRefFlag;
-  Bool itsVarOffFlag;
+  bool itsVarRefFlag;
+  bool itsVarOffFlag;
 
 private:
   // Assignment makes no sense in a readonly class.

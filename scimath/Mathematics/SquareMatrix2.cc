@@ -33,7 +33,7 @@ directProduct(SquareMatrix<Complex,4>& result,
 	      const SquareMatrix<Complex,2>& left,
 	      const SquareMatrix<Complex,2>& right)
 {
-    const Int n=2; // Instantiation for n==2
+    const int32_t n=2; // Instantiation for n==2
     switch (left.type_p) {
     case SquareMatrix<Complex,2>::ScalarId: 
 	switch (right.type_p) {
@@ -44,15 +44,15 @@ directProduct(SquareMatrix<Complex,4>& result,
 	    }
 	    case SquareMatrix<Complex,2>::Diagonal: {
 		Complex tmp=left.a_p[0][0];
-		for (Int i=0; i<n*n; i++) 
+		for (int32_t i=0; i<n*n; i++) 
 		    result.a_p[i][i]=tmp*right.a_p[i%n][i%n];
 		result.type_p=SquareMatrix<Complex,2>::Diagonal;
 		return result;
 	    }
             case SquareMatrix<Complex,2>::General: {
 		Complex tmp=left.a_p[0][0];
-		for (Int i=0; i<n*n; i++) 
-		    for (Int j=0; j<n*n; j++) {
+		for (int32_t i=0; i<n*n; i++) 
+		    for (int32_t j=0; j<n*n; j++) {
 			if (i/n == j/n) 
 			    result.a_p[i][j]=tmp*right.a_p[i%n][j%n];
 			else result.a_p[i][j]=Complex();
@@ -66,20 +66,20 @@ directProduct(SquareMatrix<Complex,4>& result,
 	switch (right.type_p) {
 	    case SquareMatrix<Complex,2>::ScalarId: {
 		Complex tmp=right.a_p[0][0];
-		for (Int i=0; i<n*n; i++) 
+		for (int32_t i=0; i<n*n; i++) 
 		    result.a_p[i][i]=left.a_p[i/n][i/n]*tmp;
 		result.type_p=SquareMatrix<Complex,2>::Diagonal;
 		return result;
 	    }
             case SquareMatrix<Complex,2>::Diagonal: {
-		for (Int i=0; i<n*n; i++) 
+		for (int32_t i=0; i<n*n; i++) 
 		    result.a_p[i][i]=left.a_p[i/n][i/n]*right.a_p[i%n][i%n];
 		result.type_p=SquareMatrix<Complex,2>::Diagonal;
 		return result;
 	    }
 	    case SquareMatrix<Complex,2>::General: {
-		for (Int i=0; i<n*n; i++) {
-		    for (Int j=0; j<n*n; j++) {
+		for (int32_t i=0; i<n*n; i++) {
+		    for (int32_t j=0; j<n*n; j++) {
 			if (i/n == j/n) 
 			    result.a_p[i][j]=left.a_p[i/n][i/n]*right.a_p[i%n][j%n];
 			else result.a_p[i][j]=Complex();
@@ -94,8 +94,8 @@ directProduct(SquareMatrix<Complex,4>& result,
 	switch (right.type_p) {
 	    case SquareMatrix<Complex,2>::ScalarId: {
 		Complex tmp=right.a_p[0][0];
-		for (Int i=0; i<n*n; i++) 
-		    for (Int j=0; j<n*n; j++) {
+		for (int32_t i=0; i<n*n; i++) 
+		    for (int32_t j=0; j<n*n; j++) {
 			if (i%n == j%n) 
 			    result.a_p[i][j]=left.a_p[i/n][j/n]*tmp;
 			else result.a_p[i][j]=Complex();
@@ -104,8 +104,8 @@ directProduct(SquareMatrix<Complex,4>& result,
 		return result;
 	    }		
             case SquareMatrix<Complex,2>::Diagonal: {
-		for (Int i=0; i<n*n; i++) 
-		    for (Int j=0; j<n*n; j++) {
+		for (int32_t i=0; i<n*n; i++) 
+		    for (int32_t j=0; j<n*n; j++) {
 			if (i%n == j%n) 
 			    result.a_p[i][j]=left.a_p[i/n][j/n]*right.a_p[i%n][j%n];
 			else result.a_p[i][j]=Complex();
@@ -114,8 +114,8 @@ directProduct(SquareMatrix<Complex,4>& result,
 		return result;
 	    }
 	    case SquareMatrix<Complex,2>::General: {
-		for (Int i=0; i<n*n; i++) 
-		    for (Int j=0; j<n*n; j++) 
+		for (int32_t i=0; i<n*n; i++) 
+		    for (int32_t j=0; j<n*n; j++) 
 			result.a_p[i][j]=left.a_p[i/n][j/n]*right.a_p[i%n][j%n];
 		result.type_p=SquareMatrix<Complex,2>::General;
 		return result;

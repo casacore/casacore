@@ -65,11 +65,11 @@ attachOptionalCols(const MSDataDescription& msDataDesc)
 }
 
 
-Int64 MSDataDescColumns::match(uInt spwId, uInt polId, Int64 tryRow) {
+int64_t MSDataDescColumns::match(uint32_t spwId, uint32_t polId, int64_t tryRow) {
   rownr_t r = nrow();
   if (r == 0) return -1;
-  const Int spw = spwId;
-  const Int pol = polId;
+  const int32_t spw = spwId;
+  const int32_t pol = polId;
   // Main matching loop
   if (tryRow >= 0) {
     const rownr_t tr = tryRow;

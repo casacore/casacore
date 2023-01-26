@@ -45,30 +45,30 @@
 
 
 #include <casacore/casa/namespace.h>
-Bool checkFloat (const LatticeExprNode& expr, 
-		 const SubLattice<Float>& lat,
+bool checkFloat (const LatticeExprNode& expr, 
+		 const SubLattice<float>& lat,
 		 const LCRegion& region)
 {
-    SubLattice<Float> sublat (lat, region);
-    Array<Float> result;
+    SubLattice<float> sublat (lat, region);
+    Array<float> result;
     result = sublat.get();
-    Array<Bool> mask;
+    Array<bool> mask;
     if (sublat.isMasked()) {
       mask = sublat.getMask();
     }
     // Test if result is no scalar.
     if (expr.isScalar()) {
         cout << "   result should be an array" << endl;
-	return False;
+	return false;
     }
     // Test if the shape matches.
     IPosition shape = result.shape();
     if (expr.shape() != shape) {
 	cout << "   mismatch in result shape" << endl;
-	return False;
+	return false;
     }
     // Get the result (value and optional mask).
-    LELArray<Float> arr(shape);
+    LELArray<float> arr(shape);
     IPosition origin(shape);
     origin = 0;
     Slicer slice(origin, shape);
@@ -77,12 +77,12 @@ Bool checkFloat (const LatticeExprNode& expr,
     if (! allEQ (arr.value(), result)) {
 	cout << "   expected value " << result << endl;
 	cout << "        got array  " << arr.value() << endl;
-	return False;
+	return false;
     }
     // Check if there is a mask if it should be.
     if (sublat.isMasked() != arr.isMasked()) {
 	cout << "   mismatch in arr.isMasked" << endl;
-	return False;
+	return false;
     }
     // If masked, test if matches.
     // If entire mask is false, the values can be anything (thus not checked).
@@ -90,27 +90,27 @@ Bool checkFloat (const LatticeExprNode& expr,
         if (! allEQ (arr.mask(), mask)) {
 	    cout << "   expected mask " << mask << endl;
 	    cout << "             got " << arr.mask() << endl;
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
 
-Bool doIt (const SubLattice<Float>& aF, const LCRegion& region1,
+bool doIt (const SubLattice<float>& aF, const LCRegion& region1,
 	   const LCRegion& region2)
 {
-    Bool ok = True;
+    bool ok = true;
     LatticeExprNode node(aF);
-    if (!checkFloat (node[region1], aF, region1)) ok = False;
-    if (!checkFloat (node[region2], aF, region2)) ok = False;
+    if (!checkFloat (node[region1], aF, region1)) ok = false;
+    if (!checkFloat (node[region2], aF, region2)) ok = false;
     if (!checkFloat (node[region1 && region2], aF,
-		     LCIntersection(region1,region2))) ok = False;
+		     LCIntersection(region1,region2))) ok = false;
     if (!checkFloat (node[region1 || region2], aF,
-		     LCUnion(region1,region2))) ok = False;
+		     LCUnion(region1,region2))) ok = false;
     if (!checkFloat (node[region1 - region2], aF,
-		     LCDifference(region1,region2))) ok = False;
-    if (!checkFloat (node[!region1], aF, LCComplement(region1))) ok = False;
+		     LCDifference(region1,region2))) ok = false;
+    if (!checkFloat (node[!region1], aF, LCComplement(region1))) ok = false;
 
     return ok;
 }
@@ -118,43 +118,43 @@ Bool doIt (const SubLattice<Float>& aF, const LCRegion& region1,
 
 int main()
 {
-    Bool ok = True;
+    bool ok = true;
     try {
 	IPosition shape(2,5,5);
-	Array<Float> arra(shape);
-	indgen (arra, Float(1), Float(1));
-	ArrayLattice<Float> aF(arra);
+	Array<float> arra(shape);
+	indgen (arra, float(1), float(1));
+	ArrayLattice<float> aF(arra);
 	LCBox box1(shape);
 	LCBox box2(IPosition(2,0,0), shape-2, shape);
 	LCEllipsoid cir1(IPosition(2,2,2),3,shape);
 	LCEllipsoid cir2(IPosition(2,1,3),3,shape);
-	if (!doIt(SubLattice<Float>(aF), box1, box2)) {
-	    ok = False;
+	if (!doIt(SubLattice<float>(aF), box1, box2)) {
+	    ok = false;
 	}
-	if (!doIt(SubLattice<Float>(aF), cir1, box1)) {
-	    ok = False;
+	if (!doIt(SubLattice<float>(aF), cir1, box1)) {
+	    ok = false;
 	}
-	if (!doIt(SubLattice<Float>(aF), box2, cir2)) {
-	    ok = False;
+	if (!doIt(SubLattice<float>(aF), box2, cir2)) {
+	    ok = false;
 	}
 
-	Array<Bool> mat1(shape);
-	mat1 = True;
-	mat1(IPosition(2,1,0)) = False;
+	Array<bool> mat1(shape);
+	mat1 = true;
+	mat1(IPosition(2,1,0)) = false;
 	LCPixelSet mask1 (mat1, LCBox(shape));
-	SubLattice<Float> sublat (aF, mask1);
+	SubLattice<float> sublat (aF, mask1);
 	if (!doIt(sublat, box1, box2)) {
-	    ok = False;
+	    ok = false;
 	}
 	if (!doIt(sublat, cir1, box1)) {
-	    ok = False;
+	    ok = false;
 	}
 	if (!doIt(sublat, box2, cir2)) {
-	    ok = False;
+	    ok = false;
 	}
     } catch (std::exception& x) {
 	cout << "Caught exception: " << x.what() << endl;
-	ok = False;
+	ok = false;
     } 
     if (ok) {
 	cout << "OK" << endl;

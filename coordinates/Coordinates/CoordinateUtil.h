@@ -97,7 +97,7 @@ class Unit;
 // constructed using these functions. The coordinate systems always have
 // RA/Dec axes. Three dimensional Systems add a spectral axis and
 // four-dimensional systems add an IQUV  polarization axis. An exception
-// (AipsError) is thrown if <src>defaultCoords(uInt)</src> is called with a
+// (AipsError) is thrown if <src>defaultCoords(uint32_t)</src> is called with a
 // parameter that is not 2, 3, or 4. 
 //
 // The <src>defaultCoordsXX</src> functions return the coordinate system by
@@ -153,7 +153,7 @@ class Unit;
 // of a PagedImage object.
 //     
 // <srcblock>
-//   const Int spectralAxis = CoordinateUtil::findSpectralAxis(image.coordinates());
+//   const int32_t spectralAxis = CoordinateUtil::findSpectralAxis(image.coordinates());
 //   cout << "The spectral axis is of shape " << image.shape()(spectralAxis) << endl;
 // </srcblock>
 // </example>
@@ -165,10 +165,10 @@ class Unit;
 //     
 // <srcblock>
 //   CoordinateSystem cSys = CoordinateUtil::defaultCoords3D();
-//   Vector<Int> worldAxes(2);
+//   Vector<int32_t> worldAxes(2);
 //   worldAxes(0) = 0; worldAxes(1) = cSys.nWorldAxes()-1;
-//   Vector<Double> worldRep;
-//   Bool ok = CoordinateUtil::removeAxes(cSys, worldRep, worldAxes, True);
+//   Vector<double> worldRep;
+//   bool ok = CoordinateUtil::removeAxes(cSys, worldRep, worldAxes, true);
 //   cout << "For world axes used " << worldRep << " for replacement" << endl;
 // </srcblock>
 // </example>
@@ -213,9 +213,9 @@ static void addIQUVAxis(CoordinateSystem& coords);
 static void addIAxis(CoordinateSystem& coords);
 
 // Add a Stokes axis of length 1 to 4 selected from I,Q,U,V
-// E.g. if shape=2 you get IQ.   Returns False if shape
+// E.g. if shape=2 you get IQ.   Returns false if shape
 // is not in the range 1 to 4
-static Bool addStokesAxis(CoordinateSystem& coords, uInt shape);
+static bool addStokesAxis(CoordinateSystem& coords, uint32_t shape);
 
 // Add Linear axes.  The LinearCoordinate can have > 1 axes (like
 // the DirectionCoordinate has 2).  The number of axes is given
@@ -234,16 +234,16 @@ static void addFreqAxis(CoordinateSystem& coords);
 
 // Add one axis for each of the specified coordinate types.
 // Returns the number of axes added.
-// If silent==True, existing axes are silently ignored.
+// If silent==true, existing axes are silently ignored.
 // This should really be a method of CoordinateSystem, but the
 // code was moved from ImageUtilities which makes heavy use
 // of CoordUtil methods (which aren't available to CoordinateSystem)
-static uInt addAxes (
+static uint32_t addAxes (
 	CoordinateSystem& csys,
-	Bool direction,
-	Bool spectral, const String& stokes,
-	Bool linear, Bool tabular,
-	Bool silent=False
+	bool direction,
+	bool spectral, const String& stokes,
+	bool linear, bool tabular,
+	bool silent=false
 );
 
 // Return a 2-dimensional coordinate system with RA/DEC axes only. 
@@ -258,29 +258,29 @@ static CoordinateSystem defaultCoords4D();
 
 // Calls one of the above three functions depending of the arguement. An
 // AipsError is thrown if dims is not 2, 3, or 4.
-static CoordinateSystem defaultCoords(uInt dims);
+static CoordinateSystem defaultCoords(uint32_t dims);
 
-// If doLinear=False, Tries to make a standard RA/DEC/Stokes/Frequency CoordinateSystem
+// If doLinear=false, Tries to make a standard RA/DEC/Stokes/Frequency CoordinateSystem
 // depending upon the shape.   The shape for the Stokes axis
 // must be <= 4.   If axis 2 can't be Stokes it will be a Spectral
 // axis instead.  AFter the standard types, the rest (if any)
 // of the CoordinateSystem consists of LinearCoordinates.
-// If doLinear=True, then you just get a linear coordinate system
+// If doLinear=true, then you just get a linear coordinate system
 static CoordinateSystem makeCoordinateSystem(const IPosition& shape,
-                                             Bool doLinear=False);
+                                             bool doLinear=false);
 
 //
 // Find which pixel axis in the CoordinateSystem corresponds to the
 // SpectralCoordinate. If there is no SpectralCoordinate in the coordinate
 // system then return -1.
-static Int findSpectralAxis(const CoordinateSystem & coords);
+static int32_t findSpectralAxis(const CoordinateSystem & coords);
 
 // Find the SpectralCoordinate in the CoordinateSystem, and then
 // return the most general description of where it is.  
 // If there is no SpectralCoordinate in the CoordinateSystem then return 
 // -1 for coordinate.  If the world or pixel axis has been removed,
 // return -1 for that value. 
-static void findSpectralAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
+static void findSpectralAxis(int32_t& pixelAxis, int32_t& worldAxis, int32_t& coordinate,
                              const CoordinateSystem & coords);
 
 // Find which pixel axes correspond to the DirectionCoordinate in the 
@@ -289,14 +289,14 @@ static void findSpectralAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
 // length. Normally the returned Vector will have a length of two.  
 // However, if the pixel axis has been removed, then the resultant
 // vector will take the value -1 for that axis.
-static Vector<Int> findDirectionAxes(const CoordinateSystem & coords);
+static Vector<int32_t> findDirectionAxes(const CoordinateSystem & coords);
 
 // Find which pixel axes correspond to the DirectionCoordinate in the supplied coordinate
 // system and return the most general description of where it is. If there is 
 // no DirectionCoordinate then coordinate is returned with value -1.
 // Values of -1 in the returned vectors indicate an axis has been removed.
-static void findDirectionAxes(Vector<Int>& pixelAxes, Vector<Int>& worldAxes,
-                              Int& coordinate, const CoordinateSystem & coords);
+static void findDirectionAxes(Vector<int32_t>& pixelAxes, Vector<int32_t>& worldAxes,
+                              int32_t& coordinate, const CoordinateSystem & coords);
 
 // Find which pixel axis is the polarisation axis in the supplied
 // CoordinateSystem and return this. If there is no StokesCoordinate in the
@@ -306,7 +306,7 @@ static void findDirectionAxes(Vector<Int>& pixelAxes, Vector<Int>& worldAxes,
 // is the same as the length of the polarisation axis. If there is no
 // polarisation axis the whichPols returns a unit length Vector containing
 // Stokes::I
-static Int findStokesAxis(Vector<Stokes::StokesTypes>& whichPols, 
+static int32_t findStokesAxis(Vector<Stokes::StokesTypes>& whichPols, 
 			  const CoordinateSystem& coords);
 
 // Find the StokesCoordinate in the CoordinateSystem, and then
@@ -314,20 +314,20 @@ static Int findStokesAxis(Vector<Stokes::StokesTypes>& whichPols,
 // If there is no StokesCoordinate in the CoordinateSystem then return 
 // -1 for coordinate.  If the world or pixel axis has been removed,
 // return -1 for that value. 
-static void findStokesAxis(Int& pixelAxis, Int& worldAxis, Int& coordinate,
+static void findStokesAxis(int32_t& pixelAxis, int32_t& worldAxis, int32_t& coordinate,
                            const CoordinateSystem & coords);
 
 // Find Coordinate type for this pixel or world axis
 // <group>
-static Coordinate::Type findPixelAxis (const CoordinateSystem& cSys, Int axis);
-static Coordinate::Type findWorldAxis (const CoordinateSystem& cSys, Int axis);
+static Coordinate::Type findPixelAxis (const CoordinateSystem& cSys, int32_t axis);
+static Coordinate::Type findWorldAxis (const CoordinateSystem& cSys, int32_t axis);
 // </group>
 
 // Remove a list of world axes and their associated
 // pixel axes from a <src>CoordinateSystem</src>. The list of world
 // axes to be removed is derived from a list giving either axes to remove, 
 // or axes to keep (controlled by whether <src>remove</src> 
-// is <src>True</src> or <src>False</src>.  The replacement values (see functions 
+// is <src>true</src> or <src>false</src>.  The replacement values (see functions 
 // <src>CoordinateSystem::removeWorldAxis</src>) for the world axes
 // can be given.  For the associated pixel axes, the pixel replacement
 // coordinate is found by converting the world coordinate 
@@ -335,61 +335,61 @@ static Coordinate::Type findWorldAxis (const CoordinateSystem& cSys, Int axis);
 // vector is not the number of world axes to be removed then
 // the reference values will be used (e.g. use zero length
 // vectors).
-static Bool removeAxes(CoordinateSystem& cSys,
-                       Vector<Double>& worldReplacement,
-                       const Vector<Int>& worldAxes,
-                       const Bool remove);
+static bool removeAxes(CoordinateSystem& cSys,
+                       Vector<double>& worldReplacement,
+                       const Vector<int32_t>& worldAxes,
+                       const bool remove);
 
 // Remove a list of pixel axes but not their associated
 // world axes from a <src>CoordinateSystem</src>. 
 // The list of pixel axes to be removed is derived from a 
 // list giving either axes to remove, 
 // or axes to keep (controlled by whether <src>remove</src> 
-// is <src>True</src> or <src>False</src>.  The replacement values (see functions 
+// is <src>true</src> or <src>false</src>.  The replacement values (see functions 
 // <src>CoordinateSystem::removePixelAxis</src>) for the pixel axes
 // can be given.  If the length of the replacement value 
 // vector is not the number of pixel axes to be removed then
 // the reference pixel will be used (e.g. use zero length
 // vectors).
-static Bool removePixelAxes(CoordinateSystem& cSys,
-                            Vector<Double>& pixelReplacement,
-                            const Vector<Int>& pixelAxes,
-                            const Bool remove);
+static bool removePixelAxes(CoordinateSystem& cSys,
+                            Vector<double>& pixelReplacement,
+                            const Vector<int32_t>& pixelAxes,
+                            const bool remove);
 
 // Physically (nont just virtually) drop coordinates from the CoordinateSystem
 // if all axes are fully removed. For coordinates with axes partially removed
 // (world/pixel) preserve that removal state in the output CS.  No effort
 // is made to deal in any way with transposed systems, unless perserveAxesOrder
-// is True, and then the ordering of the axes of the output coordinate system
+// is true, and then the ordering of the axes of the output coordinate system
 // will be the same as the input cSysIn (sans dropped axes of course).
-static Bool dropRemovedAxes (
+static bool dropRemovedAxes (
 	CoordinateSystem& cSysOut, const CoordinateSystem& cSysIn,
-	Bool preserveAxesOrder=False
+	bool preserveAxesOrder=false
 );
 
 // Setup Measures conversion machine for MDirections.
-// Returns True if the machine was needed and set.  Returns False
+// Returns true if the machine was needed and set.  Returns false
 // if the machine was not needed and not set.  
-  static Bool makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
+  static bool makeDirectionMachine(LogIO& os, MDirection::Convert& machine,
                                    const DirectionCoordinate& dirCoordTo,
                                    const DirectionCoordinate& dirCoordFrom,
                                    const ObsInfo& obsTo,
                                    const ObsInfo& obsFrom);
 
 // Setup Measures conversion machines for MFrequencies. 
-// Returns False if a trial conversion failed, else returns True.
+// Returns false if a trial conversion failed, else returns true.
 // There must be both a Direction and a Spectral
 // Coordinate in the CoordinateSystem when making the Frequency machine,
 // else an exception occurs.
-   static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
-                                    Int coordinateTo, Int coordinateFrom, 
+   static bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine, 
+                                    int32_t coordinateTo, int32_t coordinateFrom, 
                                     const CoordinateSystem& coordsTo, 
 				    const CoordinateSystem& coordsFrom,
                                     const Unit& unit=Unit(String("Hz")));
 
 // Setup Measures conversion machines for MFrequencies.
-// Returns False if a trial conversion failed, else returns True.
-   static Bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
+// Returns false if a trial conversion failed, else returns true.
+   static bool makeFrequencyMachine(LogIO& os, MFrequency::Convert& machine,
                                     MFrequency::Types typeTo, MFrequency::Types typeFrom,
                                     const MDirection& dirTo, const MDirection& dirFrom,
                                     const MEpoch& epochTo, const MEpoch& epochFrom,
@@ -399,99 +399,99 @@ static Bool dropRemovedAxes (
 // Find the Sky in the CoordinateSystem. Assumes only one DirectionCoordinate.
 // <src>pixelAxes</src> and <src>worldAxes</src>  say where
 // in the CS the DirectionCoordinate axes are (long then lat).
-// Returns False and an error message if it can't find the sky.
-   static Bool findSky(String& errorMessage, Int& dirCoord, Vector<Int>& pixelAxes,
-                       Vector<Int>& worldAxes, const CoordinateSystem& cSys);
+// Returns false and an error message if it can't find the sky.
+   static bool findSky(String& errorMessage, int32_t& dirCoord, Vector<int32_t>& pixelAxes,
+                       Vector<int32_t>& worldAxes, const CoordinateSystem& cSys);
 
-// Do the specified axes hold the sky ?  Returns False if no DirectionCoordinate
+// Do the specified axes hold the sky ?  Returns false if no DirectionCoordinate
 // or if only one axis of the DirectionCoordinate is held or the specified
 // pixel axes don't pertain to the DirectionCoordinate.  
-   static Bool holdsSky (Bool& holdsOneSkyAxis, const CoordinateSystem& cSys, 
-                         Vector<Int> pixelAxes);
+   static bool holdsSky (bool& holdsOneSkyAxis, const CoordinateSystem& cSys, 
+                         Vector<int32_t> pixelAxes);
 
 
 // Find the Stokes for the specified pixel. If there is no Stokes in the
 // CoordinateSystem, returns Stokes::I
    static Stokes::StokesTypes findSingleStokes (LogIO& os, const CoordinateSystem& cSys,
-                                                uInt pixel=0);
+                                                uint32_t pixel=0);
 
 // Set the world axis units in the CS to 'deg' for Direction. For Spectral
 // set the velocity handling to use 'km/s' units.  Other coordinates
 // are not touched.
    static void setNiceAxisLabelUnits(CoordinateSystem& cSys);
 
-// Set world axis units for specific Coordinate.  Returnd False if fails to set units
+// Set world axis units for specific Coordinate.  Returnd false if fails to set units
 // with error in cSys.errorMessage().  
-   static Bool setCoordinateUnits (CoordinateSystem& cSys, const Vector<String>& units,
-                                   uInt which);
+   static bool setCoordinateUnits (CoordinateSystem& cSys, const Vector<String>& units,
+                                   uint32_t which);
 
 // Set a unit for all unremoved world axes in the DirectionCoordinate in the
-// CS.  Returns False if fails to set unit with error in cSys.  If no DC
-// returns True
-   static Bool setDirectionUnit (CoordinateSystem& cSys, const String& unit, Int which=-1);
+// CS.  Returns false if fails to set unit with error in cSys.  If no DC
+// returns true
+   static bool setDirectionUnit (CoordinateSystem& cSys, const String& unit, int32_t which=-1);
 
 // Set Direction conversion layer of DirectionCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified direction system (a valid
-// MDirection::Types string).  Returns False with error if direction
-// system invalid.  If no DirectionCoordinate returns True
-   static Bool setDirectionConversion (String& errorMsg, CoordinateSystem& cSys,
+// MDirection::Types string).  Returns false with error if direction
+// system invalid.  If no DirectionCoordinate returns true
+   static bool setDirectionConversion (String& errorMsg, CoordinateSystem& cSys,
                                       const String directionSystem);
 
 // Set spectral state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent with Hz or m/s and the doppler a valid MDoppler string.
 // For no change, leave either String empty.
-// Returns False if invalid inputs (and CS not changed) and an error message. 
-   static Bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
+// Returns false if invalid inputs (and CS not changed) and an error message. 
+   static bool setSpectralState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& spcquant);
 
 // Set velocity state of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent m/s and the doppler a valid MDoppler string.
 // For no change, leave either String empty.
-// Returns False if invalid inputs (and CS not changed) and an error message. 
-   static Bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
+// Returns false if invalid inputs (and CS not changed) and an error message. 
+   static bool setVelocityState (String& errorMsg, CoordinateSystem& cSys, 
                                  const String& unit, const String& spcquant);
 
   //#/// Kept setRestFrequency for CASA-4.2
 // Does the CoordinateSystem hold just the sky?
-// Returns True if CS pixel axis 0 is the longitude and 1 latitude  
-// else returns False
-   static Bool isSky (LogIO& os, const CoordinateSystem& cSys);
+// Returns true if CS pixel axis 0 is the longitude and 1 latitude  
+// else returns false
+   static bool isSky (LogIO& os, const CoordinateSystem& cSys);
 
   //#/// Kept setRestFrequency for CASA-4.2
 // Set rest frequency of SpectralCoordinate in CoordinateSystem.
 // Unit must be consistent with Hz or m.
-// Returns False if invalid inputs (and CS not changed) and an error message.
-   static Bool setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
+// Returns false if invalid inputs (and CS not changed) and an error message.
+   static bool setRestFrequency (String& errorMsg, CoordinateSystem& cSys,
                                  const String& unit,
-                                 const Double& value);
+                                 const double& value);
 
   //#/// Kept setSpectralConversion for old casarest
 // Set Spectral conversion layer of SpectralCoordinate in CoordinateSystem
 // so that pixel<->world go to the specified frequency system (a valid
-// MFrequency::Types string).  Returns False if frequency system invalid
+// MFrequency::Types string).  Returns false if frequency system invalid
 // or if no DirectionCoordinate or if cant get Date/Epoch
-   static Bool setSpectralConversion (String& errorMsg, CoordinateSystem& cSys,
+   static bool setSpectralConversion (String& errorMsg, CoordinateSystem& cSys,
                                       const String frequencySystem);
 
 // Set default format unit and doppler velocity state of SpectralCoordinate in CoordinateSystem.
 // Unit can be consistent with Hz or m/s
-// Returns False if invalid inputs (and CS not changed) and an error message. 
-   static Bool setSpectralFormatting (String& errorMsg, CoordinateSystem& cSys, 
+// Returns false if invalid inputs (and CS not changed) and an error message. 
+   static bool setSpectralFormatting (String& errorMsg, CoordinateSystem& cSys, 
                                       const String& unit, const String& spcquant);
 
 // Convert an absolute pixel coordinate to world and format with 
 // default Coordinate formatting
 // <group>
-   static String formatCoordinate(const IPosition& pixel, const CoordinateSystem& cSys, Int precision = -1);
-   static String formatCoordinate(const Vector<Double>& pixel, const CoordinateSystem& cSys, Int precision = -1);
+   static String formatCoordinate(const IPosition& pixel, const CoordinateSystem& cSys, int32_t precision = -1);
+   static String formatCoordinate(const Vector<double>& pixel, const CoordinateSystem& cSys, int32_t precision = -1);
 // </group>
 
 // Generate axis label String from coordinate. Specify coordinate axis,
 // whether world or pixel labels required, whether absolute or
 // relative.   For spectral coordinates, doVel says if you want to 
 // use the velocity information contained in it to generate the label
-   static String axisLabel (const Coordinate& coord, uInt axisInCoordinate=0,
-                            Bool doWorld=True, Bool doAbs=True, Bool doVel=False);
+   static String axisLabel (const Coordinate& coord, uint32_t axisInCoordinate=0,
+                            bool doWorld=true, bool doAbs=true, bool doVel=false);
 
   // <group name=Coordinate comparison>
   // Check how the coordinates of this and that compare.
@@ -500,20 +500,20 @@ static Bool dropRemovedAxes (
   // <br>0: equal 
   // <br>1: left is superset
   // <br>9: invalid (mismatch)
-  static Int compareCoordinates (const CoordinateSystem& thisCsys,
+  static int32_t compareCoordinates (const CoordinateSystem& thisCsys,
 				 const CoordinateSystem& thatCsys);
 
   // Convert the world axes map given in worldAxes to a pixel axes map.
-  static Vector<Int> toPixelAxes (const CoordinateSystem& thisCsys,
+  static Vector<int32_t> toPixelAxes (const CoordinateSystem& thisCsys,
 				  const CoordinateSystem& thatCsys,
-				  const Vector<Int>& worldAxes);
+				  const Vector<int32_t>& worldAxes);
 
   // Check if the axes in the pixel axes map are in ascending order.
-  static Bool checkOrder (const Vector<Int>& pixelAxes);
+  static bool checkOrder (const Vector<int32_t>& pixelAxes);
 
   // Find the new and stretch axes when comparing the old and new
   // coordinates and shapes (helper for ExtendImage).
-  static Bool findExtendAxes (IPosition& newAxes,
+  static bool findExtendAxes (IPosition& newAxes,
 			      IPosition& stretchAxes,
 			      const IPosition& newShape,
 			      const IPosition& oldShape,
@@ -522,16 +522,16 @@ static Bool dropRemovedAxes (
   // </group>
 
   // Fix up Cylindrical parameters in any DirectionCoordinate for when the longitude 
-  // is outside of [-180,180] range.  If it returns False, it failed and an error 
+  // is outside of [-180,180] range.  If it returns false, it failed and an error 
   // message is returned as well.  This function should be called on any
   // CS made from an imported image like FITS
-  static Bool cylindricalFix (CoordinateSystem& cSys, String& errorMessage, const IPosition& shape);
+  static bool cylindricalFix (CoordinateSystem& cSys, String& errorMessage, const IPosition& shape);
 
   // Apply the binning factors to the CS and create a new one reflecting the binning
   // You can optionally throw an exception if factors is non-unit for any Stokes axis
   static CoordinateSystem makeBinnedCoordinateSystem (const IPosition& factors,
                                                       const CoordinateSystem& cSysIn,
-                                                      Bool failOnStokes=False);
+                                                      bool failOnStokes=false);
 private:
   // Sets pos to the position found for tel in the database, or
   // raises an exception + error message.

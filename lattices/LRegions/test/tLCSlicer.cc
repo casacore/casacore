@@ -126,20 +126,20 @@ void doIt()
 	cout << sl.start() << sl.end() << sl.stride() << endl;
     }
     // Test using vectors with combination of fractional and absolute/relative.
-    Vector<Float> blc(3);
-    Vector<Float> trc(3);
-    Vector<Float> inc(3);
-    Vector<Bool> fracblc(3);
-    Vector<Bool> fractrc(3);
-    Vector<Bool> fracinc(3);
-    Vector<Int> relblc(3);
-    Vector<Int> reltrc(3);
+    Vector<float> blc(3);
+    Vector<float> trc(3);
+    Vector<float> inc(3);
+    Vector<bool> fracblc(3);
+    Vector<bool> fractrc(3);
+    Vector<bool> fracinc(3);
+    Vector<int32_t> relblc(3);
+    Vector<int32_t> reltrc(3);
     blc(0) = 0.125;  blc(1) = 8;   blc(2) = 3;
     trc(0) = 10;     trc(1) = 0.4; trc(2) = 25;
     inc(0) = 1;      inc(1) = 1;   inc(2) = 0.1;
-    fracblc = False;  fracblc(0) = True;
-    fractrc = False;  fractrc(1) = True;
-    fracinc = False;  fracinc(2) = True;
+    fracblc = false;  fracblc(0) = true;
+    fractrc = false;  fractrc(1) = true;
+    fracinc = false;  fracinc(2) = true;
     relblc  = RegionType::Abs;  relblc(0) = RegionType::RelRef;
     reltrc  = RegionType::Abs;  reltrc(0) = RegionType::RelCen;
     {
@@ -155,11 +155,11 @@ void doIt()
 	cout << sl.start() << sl.end() << sl.stride() << endl;
     }
     {
-	Vector<Double> blc(3);
-	Vector<Double> trc(2);
+	Vector<double> blc(3);
+	Vector<double> trc(2);
 	blc(0) = 0.4; blc(1) = 0.1; blc(2) = 0.3;
 	trc(0) = 0.5; trc(1) = 0.6;
-	LCSlicer sl1 (blc, trc, True);
+	LCSlicer sl1 (blc, trc, true);
 	AlwaysAssertExit (! sl1.isComplete());
 	AlwaysAssertExit (sl1.isAbsolute());
 	AlwaysAssertExit (sl1.isFractional());
@@ -172,26 +172,26 @@ void doIt()
     {
 	// Test if constructing from a record works fine.
 	// Such a record is created by the quarter function in regionmanager.g.
-	Vector<Float> vec(2);
-	Vector<Bool> flags(2);
-	flags = True;
-	Vector<Int> absrel(2);
+	Vector<float> vec(2);
+	Vector<bool> flags(2);
+	flags = true;
+	Vector<int32_t> absrel(2);
 	absrel = RegionType::Abs;
 	vec = 0.25;
 	TableRecord rec;
 	rec.define ("name", "LCSLicer");
-	rec.define ("isRegion", Int(RegionType::ArrSlicer));
+	rec.define ("isRegion", int32_t(RegionType::ArrSlicer));
 	vec = 0.25;
 	rec.define ("blc", vec);
 	vec = 0.75;
 	rec.define ("trc", vec);
-	rec.define ("inc", Vector<Float>());
+	rec.define ("inc", Vector<float>());
 	rec.define ("fracblc", flags);
 	rec.define ("fractrc", flags);
-	rec.define ("fracinc", Vector<Bool>());
+	rec.define ("fracinc", Vector<bool>());
 	rec.define ("arblc", absrel);
 	rec.define ("artrc", absrel);
-	rec.define ("oneRel", True);
+	rec.define ("oneRel", true);
 	rec.define ("comment", "");
 	LCSlicer* lc = LCSlicer::fromRecord (rec, "");
 	Slicer sl (lc->toSlicer (IPosition(3,0,0,0), IPosition(3,40,50,60)));
@@ -199,7 +199,7 @@ void doIt()
 	delete lc;
     }
     {
-        Vector<Float> blc(4, 0), trc(4,0), refPix(4, 0);
+        Vector<float> blc(4, 0), trc(4,0), refPix(4, 0);
         blc[3] = 23;
         trc[0] = 399;
         trc[1] = 399;
@@ -208,7 +208,7 @@ void doIt()
         refPix[1] = 100;
         refPix[3] = -23;
         IPosition newLatticeShape(4, 400, 400, 1, 1);
-        LCSlicer lcslicer(blc, trc, False, RegionType::RelRef);
+        LCSlicer lcslicer(blc, trc, false, RegionType::RelRef);
         Slicer sl = lcslicer.toSlicer(refPix, newLatticeShape);
         AlwaysAssert(sl.start() == IPosition(4, 100, 100, 0, 0), AipsError);
         AlwaysAssert(sl.end() == IPosition(4, 399, 399, 0, 0), AipsError);

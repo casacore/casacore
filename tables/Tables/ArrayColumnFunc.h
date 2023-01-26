@@ -70,7 +70,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       : itsCol(col)
     {}
     virtual void apply (const Slicer& slicer, ArrayBase& arr)
-      { itsCol.acbGetColumn (slicer, arr, False); }
+      { itsCol.acbGetColumn (slicer, arr, false); }
   private:
     const ArrayColumnBase& itsCol;
   };

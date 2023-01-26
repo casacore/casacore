@@ -239,7 +239,7 @@ relexpr:   arithexpr
            }
          | arithexpr BETWEEN arithexpr AND arithexpr {
  	       TableExprNodeSet set;
-	       set.add (TableExprNodeSetElem(True, *$3, *$5, True));
+	       set.add (TableExprNodeSetElem(true, *$3, *$5, true));
                $$ = new TableExprNode ($1->in (set));
                RecordGram::addToken ($$);
                RecordGram::deleteToken ($1);
@@ -248,7 +248,7 @@ relexpr:   arithexpr
            }
          | arithexpr NOT BETWEEN arithexpr AND arithexpr {
  	       TableExprNodeSet set;
-	       set.add (TableExprNodeSetElem(True, *$4, *$6, True));
+	       set.add (TableExprNodeSetElem(true, *$4, *$6, true));
                TableExprNode node ($1->in (set));
                $$ = new TableExprNode (!node);
                RecordGram::addToken ($$);
@@ -493,66 +493,66 @@ range:     colonrange {
                $$ = $1;
            }
          | LT arithexpr COMMA arithexpr GT {
-           $$ = new TableExprNodeSetElem (False, *$2, *$4, False);
+           $$ = new TableExprNodeSetElem (false, *$2, *$4, false);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LT arithexpr COMMA arithexpr RBRACE {
-           $$ = new TableExprNodeSetElem (False, *$2, *$4, True);
+           $$ = new TableExprNodeSetElem (false, *$2, *$4, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LBRACE arithexpr COMMA arithexpr GT {
-           $$ = new TableExprNodeSetElem (True, *$2, *$4, False);
+           $$ = new TableExprNodeSetElem (true, *$2, *$4, false);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LBRACE arithexpr COMMA arithexpr RBRACE {
-           $$ = new TableExprNodeSetElem (True, *$2, *$4, True);
+           $$ = new TableExprNodeSetElem (true, *$2, *$4, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
 	       RecordGram::deleteToken ($4);
            }
          | LBRACE COMMA arithexpr GT {
-               $$ = new TableExprNodeSetElem (*$3, False);
+               $$ = new TableExprNodeSetElem (*$3, false);
                RecordGram::addToken ($$);
                RecordGram::deleteToken ($3);
           }
          | LT COMMA arithexpr GT {
-               $$ = new TableExprNodeSetElem (*$3, False);
+               $$ = new TableExprNodeSetElem (*$3, false);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($3);
           }
          | LBRACE COMMA arithexpr RBRACE {
-               $$ = new TableExprNodeSetElem (*$3, True);
+               $$ = new TableExprNodeSetElem (*$3, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($3);
            }
          | LT COMMA arithexpr RBRACE {
-               $$ = new TableExprNodeSetElem (*$3, True);
+               $$ = new TableExprNodeSetElem (*$3, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($3);
            }
          | LT arithexpr COMMA RBRACE {
-               $$ = new TableExprNodeSetElem (False, *$2);
+               $$ = new TableExprNodeSetElem (false, *$2);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
          | LT arithexpr COMMA GT {
-               $$ = new TableExprNodeSetElem (False, *$2);
+               $$ = new TableExprNodeSetElem (false, *$2);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
          | LBRACE arithexpr COMMA RBRACE {
-               $$ = new TableExprNodeSetElem (True, *$2);
+               $$ = new TableExprNodeSetElem (true, *$2);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
          | LBRACE arithexpr COMMA GT {
-               $$ = new TableExprNodeSetElem (True, *$2);
+               $$ = new TableExprNodeSetElem (true, *$2);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
@@ -563,46 +563,46 @@ range:     colonrange {
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr OPENOPEN arithexpr {
-           $$ = new TableExprNodeSetElem (False, *$1, *$3, False);
+           $$ = new TableExprNodeSetElem (false, *$1, *$3, false);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr OPENCLOSED arithexpr {
-           $$ = new TableExprNodeSetElem (False, *$1, *$3, True);
+           $$ = new TableExprNodeSetElem (false, *$1, *$3, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr CLOSEDOPEN arithexpr {
-           $$ = new TableExprNodeSetElem (True, *$1, *$3, False);
+           $$ = new TableExprNodeSetElem (true, *$1, *$3, false);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
          | arithexpr CLOSEDCLOSED arithexpr {
-           $$ = new TableExprNodeSetElem (True, *$1, *$3, True);
+           $$ = new TableExprNodeSetElem (true, *$1, *$3, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
 	       RecordGram::deleteToken ($3);
            }
 	 | EMPTYOPEN arithexpr {
-               $$ = new TableExprNodeSetElem (*$2, False);
+               $$ = new TableExprNodeSetElem (*$2, false);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
 	 | EMPTYCLOSED arithexpr {
-               $$ = new TableExprNodeSetElem (*$2, True);
+               $$ = new TableExprNodeSetElem (*$2, true);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($2);
            }
 	 | arithexpr OPENEMPTY {
-               $$ = new TableExprNodeSetElem (False, *$1);
+               $$ = new TableExprNodeSetElem (false, *$1);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
            }
 	 | arithexpr CLOSEDEMPTY {
-               $$ = new TableExprNodeSetElem (True, *$1);
+               $$ = new TableExprNodeSetElem (true, *$1);
                RecordGram::addToken ($$);
 	       RecordGram::deleteToken ($1);
            }

@@ -40,9 +40,9 @@ int main(int argc, char* argv[2])
            << endl;
       return 1;
     }
-    Bool countSwap       = (argc > 3  &&  *argv[3] == '1');
-    Bool ignoreBlanks    = (argc > 4  &&  *argv[4] == '1');
-    Bool caseInsensitive = (argc > 5  &&  *argv[5] == '1');
+    bool countSwap       = (argc > 3  &&  *argv[3] == '1');
+    bool ignoreBlanks    = (argc > 4  &&  *argv[4] == '1');
+    bool caseInsensitive = (argc > 5  &&  *argv[5] == '1');
     StringDistance dist(argv[1], -1, countSwap, ignoreBlanks, caseInsensitive);
     cout << dist.source() << ' ' << dist.maxDistance() << ": match="
          << dist.match(argv[2]) << " dist=" << dist.distance(argv[2])

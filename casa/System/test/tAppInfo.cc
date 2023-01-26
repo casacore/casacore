@@ -36,7 +36,7 @@
 #include <casacore/casa/namespace.h>
 int main()
 {
-    Double tz   = AppInfo::timeZone();
+    double tz   = AppInfo::timeZone();
     cout << "Timezone offset (hours) : " << tz*24.0 << endl;
     AlwaysAssertExit(tz == AppInfo::timeZone() && tz >= -1.0 && tz <= 1.0);
 
@@ -50,7 +50,7 @@ int main()
 
 	Vector<String> dirs(3);
 	dirs(0) = "."; dirs(1) = "/tmp"; dirs(2) = "/doesnotexist";
-	uInt index = AipsrcVector<String>::registerRC(
+	uint32_t index = AipsrcVector<String>::registerRC(
 				      "user.directories.work", dirs);
 	AipsrcVector<String>::set(index, dirs);
 	cerr << "\n\n=====Expect a single WARN level log message\n" << endl;
@@ -84,12 +84,12 @@ int main()
 	AlwaysAssertExit(file.contains(dir1) || file.contains(dir2));
 	AlwaysAssertExit(file.contains(Regex("/foo_")));
 
-	///Bool caught = False;
+	///bool caught = false;
 	try {
 	    cerr << "=====Expect a single SEVERE level message\n";
 	    file = AppInfo::workFileName(1000000);
 	} catch (std::exception& x) {
-            ///caught = True;
+            ///caught = true;
 	} 
         // Do not check if it failed or succeeded, because that is
         // system dependent (same reason as workDirectories test).

@@ -36,12 +36,12 @@
 #define PYC_USE_PYARRAY "numpy"
 namespace casacore { namespace python { namespace numpy {
 
-  Bool importArray()
+  bool importArray()
   {
     // numpy has diferent versions of import_array (from version 1.0.1 on).
     // Therefore import_array1 is used.
-    import_array1(True);
-    return True;
+    import_array1(true);
+    return true;
   }
 
   Array<String> ArrayCopyStr_toArray (const IPosition& shape,
@@ -99,18 +99,18 @@ namespace casacore { namespace python { namespace numpy {
   //# by taking an element from a numpy array).
 
   // Check if the object is an array scalar and return its type.
-  Bool PycArrayScalarCheck (PyObject* obj_ptr, int& type)
+  bool PycArrayScalarCheck (PyObject* obj_ptr, int& type)
   {
     if (!PyArray_API) {
-      if (!isImported()) return False;
+      if (!isImported()) return false;
       loadAPI();
     }
     // No scalar if array scalar nor 0-dim array.
     if (! PyArray_CheckScalar(obj_ptr)) {
-      return False;
+      return false;
     }
     // See if the object is a 0-dim array.
-    Bool is0dim = PyArray_Check(obj_ptr);
+    bool is0dim = PyArray_Check(obj_ptr);
     const int ntypes = 13;
     // Define them in order of expected usage.
      int types[ntypes] = {
@@ -131,16 +131,16 @@ namespace casacore { namespace python { namespace numpy {
       if (is0dim) {
         if (types[i] == PyArray_TYPE((const PyArrayObject *)obj_ptr)) {
           type = types[i];
-          return True;
+          return true;
         }
       } else {
         if (obj_ptr->ob_type == (PyTypeObject*)PyArray_TypeObjectFromType(types[i])) {
           type = types[i];
-          return True;
+          return true;
         }
       }
     }
-    return False;
+    return false;
   }
 
   DataType PycArrayScalarType (PyObject* obj_ptr)
@@ -193,9 +193,9 @@ namespace casacore { namespace python { namespace numpy {
       case NPY_UINT32:
         return ValueHolder(uint(*(::npy_uint32*)(PyArray_DATA(obj))));
       case NPY_INT64:
-        return ValueHolder(Int64(*(::npy_int64*)(PyArray_DATA(obj))));
+        return ValueHolder(int64_t(*(::npy_int64*)(PyArray_DATA(obj))));
       case NPY_UINT64:
-        return ValueHolder(Int64(*(::npy_uint64*)(PyArray_DATA(obj))));
+        return ValueHolder(int64_t(*(::npy_uint64*)(PyArray_DATA(obj))));
       case NPY_FLOAT32:
         return ValueHolder(float(*(::npy_float32*)(PyArray_DATA(obj))));
       case NPY_FLOAT64:
@@ -219,42 +219,42 @@ namespace casacore { namespace python { namespace numpy {
       case NPY_INT8:
         {
           ::npy_int8* ptr = (::npy_int8*)buffer;
-          return ValueHolder(Short(*ptr));
+          return ValueHolder(int16_t(*ptr));
         }
       case NPY_UINT8:
         {
           ::npy_uint8* ptr = (::npy_uint8*)buffer;
-          return ValueHolder(uShort(*ptr));
+          return ValueHolder(uint16_t(*ptr));
         }
       case NPY_INT16:
         {
           ::npy_int16* ptr = (::npy_int16*)buffer;
-          return ValueHolder(Short(*ptr));
+          return ValueHolder(int16_t(*ptr));
         }
       case NPY_UINT16:
         {
           ::npy_uint16* ptr = (::npy_uint16*)buffer;
-          return ValueHolder(uShort(*ptr));
+          return ValueHolder(uint16_t(*ptr));
         }
       case NPY_INT32:
         {
           ::npy_int32* ptr = (::npy_int32*)buffer;
-          return ValueHolder(Int(*ptr));
+          return ValueHolder(int32_t(*ptr));
         }
       case NPY_UINT32:
         {
           ::npy_uint32* ptr = (::npy_uint32*)buffer;
-          return ValueHolder(uInt(*ptr));
+          return ValueHolder(uint32_t(*ptr));
         }
       case NPY_INT64:
         {
           ::npy_int64* ptr = (::npy_int64*)buffer;
-          return ValueHolder(Int64(*ptr));
+          return ValueHolder(int64_t(*ptr));
         }
       case NPY_UINT64:
         {
           ::npy_uint64* ptr = (::npy_uint64*)buffer;
-          return ValueHolder(Int64(*ptr));
+          return ValueHolder(int64_t(*ptr));
         }
       case NPY_FLOAT32:
         {
@@ -287,20 +287,20 @@ namespace casacore { namespace python { namespace numpy {
   void register_convert_arrayscalars()
   {
     // Register as casa types.
-    // A type like ssize_t maps to Int or Long (depending on machine).
-    array_scalar_from_python<Bool>();
-    array_scalar_from_python<Char>();
-    array_scalar_from_python<uChar>();
-    array_scalar_from_python<Short>();
-    array_scalar_from_python<uShort>();
-    array_scalar_from_python<Int>();
-    array_scalar_from_python<uInt>();
-    array_scalar_from_python<Long>();
-    array_scalar_from_python<uLong>();
-    array_scalar_from_python<Int64>();
-    array_scalar_from_python<uInt64>();
-    array_scalar_from_python<Float>();
-    array_scalar_from_python<Double>();
+    // A type like ssize_t maps to int32_t or long (depending on machine).
+    array_scalar_from_python<bool>();
+    array_scalar_from_python<char>();
+    array_scalar_from_python<unsigned char>();
+    array_scalar_from_python<int16_t>();
+    array_scalar_from_python<uint16_t>();
+    array_scalar_from_python<int32_t>();
+    array_scalar_from_python<uint32_t>();
+    array_scalar_from_python<long>();
+    array_scalar_from_python<unsigned long>();
+    array_scalar_from_python<int64_t>();
+    array_scalar_from_python<uint64_t>();
+    array_scalar_from_python<float>();
+    array_scalar_from_python<double>();
     array_scalar_from_python<Complex>();
     array_scalar_from_python<DComplex>();
   }
@@ -335,7 +335,7 @@ namespace casacore { namespace python { namespace numpy {
       (PyArray_SimpleNew(nd, &(newshp[0]), TypeConvTraits<T>::pyType()));
     // Copy the data to numarray.
     if (arr.size() > 0) {
-      casacore::Bool deleteIt;
+      bool deleteIt;
       const T* src = arr.getStorage(deleteIt);
       ArrayCopy<T>::toPy (PyArray_DATA(po), src, arr.size());
       arr.freeStorage(src, deleteIt);

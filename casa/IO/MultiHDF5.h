@@ -87,12 +87,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //    // Use it (for example) as the sink of AipsIO.
   //    AipsIO stream (&mf1);
   //    // Write values.
-  //    stream << (Int)10;
-  //    stream << True;
+  //    stream << (int32_t)10;
+  //    stream << true;
   //    // Seek to beginning of file and read data in.
   //    stream.setpos (0);
-  //    Int vali;
-  //    Bool valb;
+  //    int32_t vali;
+  //    bool valb;
   //    stream >> vali >> valb;
   // </srcblock>
   // </example>
@@ -103,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Open or create a MultiHDF5 with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    explicit MultiHDF5 (const String& name, ByteIO::OpenOption, Int blockSize=0);
+    explicit MultiHDF5 (const String& name, ByteIO::OpenOption, int32_t blockSize=0);
 
 
     // Open or create a MultiHDF5 which is nested in the given parent.
@@ -112,7 +112,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // of the parent.
     explicit MultiHDF5 (const String& name,
                         const std::shared_ptr<MultiFileBase>& parent,
-                        ByteIO::OpenOption, Int blockSize=0);
+                        ByteIO::OpenOption, int32_t blockSize=0);
 
     // The destructor flushes and closes the file.
     ~MultiHDF5() override;
@@ -125,7 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // It creates a new group under which the virtual files are created.
     std::shared_ptr<MultiFileBase> makeNested
     (const std::shared_ptr<MultiFileBase>& parent, const String& name,
-     ByteIO::OpenOption, Int blockSize) const override;
+     ByteIO::OpenOption, int32_t blockSize) const override;
                                                   
     // Open the given logical file and return its file id.
     // If the name is unknown, an exception is thrown.
@@ -157,23 +157,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Do the class-specific actions on deleting a file.
     void doDeleteFile (MultiFileInfo&) override;
     // Truncate the file to <src>nrblk</src> blocks (does nothing).
-    void doTruncateFile (MultiFileInfo& info, uInt64 nrblk) override;
+    void doTruncateFile (MultiFileInfo& info, uint64_t nrblk) override;
     // Flush the file itself.
     void doFlushFile() override;
     // Flush and close the file.
     void close() override;
     // Write the header info.
     void writeHeader() override;
-    // Read the header info. If always==False, the info is only read if the
+    // Read the header info. If always==false, the info is only read if the
     // header counter has changed.
-    void readHeader (Bool always=True) override;
+    void readHeader (bool always=true) override;
     // Extend the virtual file to fit lastblk.
-    void extend (MultiFileInfo& info, Int64 lastblk) override;
+    void extend (MultiFileInfo& info, int64_t lastblk) override;
     // Read a data block.
-    void readBlock (MultiFileInfo& info, Int64 blknr,
+    void readBlock (MultiFileInfo& info, int64_t blknr,
                     void* buffer) override;
     // Write a data block.
-    void writeBlock (MultiFileInfo& info, Int64 blknr,
+    void writeBlock (MultiFileInfo& info, int64_t blknr,
                      const void* buffer) override;
 
     //# Data members

@@ -75,8 +75,8 @@ int main()
 	    from = MDirection::Convert(newcoord, appref);
 	};
 
-	Double ra, dec;
-	while (True) {
+	double ra, dec;
+	while (true) {
 	    cout << "Specify RA in degrees:  ";
 	    cout.flush();
 	    if (cin.peek() == '\n') {
@@ -89,8 +89,8 @@ int main()
 	    cin.get();
 	    coord = MVDirection(Quantity(ra,"deg"), Quantity(dec,"deg"));
 	    
-	    Double mytim;
-	    while (True) {
+	    double mytim;
+	    while (true) {
 		cout << "Specify time in MJD: ";
 		cout.flush();
 		if (cin.peek() == '\n') {

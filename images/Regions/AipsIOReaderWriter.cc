@@ -58,11 +58,11 @@ bool AipsIOReaderWriter::read(Record& region){
 	delete leImgReg;
     } catch(...) {
 	setError( String( "An error has occurred while reading file " )
-		  + *pFilename_p, True );
-	return False;
+		  + *pFilename_p, true );
+	return false;
     }    
 
-    return True;
+    return true;
 }
 
 
@@ -95,15 +95,15 @@ bool AipsIOReaderWriter::read(ImageRegion*& region){
 	//delete leTblRec;
     } catch(...) {
 	setError( String( "An error has occurred while reading file " )
-		  + *pFilename_p, True );
-	return False;
+		  + *pFilename_p, true );
+	return false;
     }    
 
-    return True;
+    return true;
 }
 
 
-Bool AipsIOReaderWriter::write(const Record& region ) const {
+bool AipsIOReaderWriter::write(const Record& region ) const {
 
     // open the file
     try {
@@ -111,15 +111,15 @@ Bool AipsIOReaderWriter::write(const Record& region ) const {
 	os << region;
     } catch(...) {
 	setError( String( "An error has occurred while writing file " )
-		  + *pFilename_p, True );
-	return False;
+		  + *pFilename_p, true );
+	return false;
     }
     
-    return True;
+    return true;
 }
 
 
-Bool AipsIOReaderWriter::write(const ImageRegion& region ) const {
+bool AipsIOReaderWriter::write(const ImageRegion& region ) const {
 
     // Convert the ImageRegion to a record and call tour
     // other write method that uses records.   
@@ -129,17 +129,17 @@ Bool AipsIOReaderWriter::write(const ImageRegion& region ) const {
 	write( *leRecord );
     } catch(...) {
 	setError( String( "An error has occurred while writing file " )
-		  + *pFilename_p, True );
-	return False;
+		  + *pFilename_p, true );
+	return false;
     }
     
-    return True;
+    return true;
 }
 
 
 void AipsIOReaderWriter::setOptions(const Record*) 
 {
-    setError( String( "AipsIO region files do not contain any display options, no options to set." ), False );
+    setError( String( "AipsIO region files do not contain any display options, no options to set." ), false );
     
     return;
 }

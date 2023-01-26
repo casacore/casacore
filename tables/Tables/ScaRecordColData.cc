@@ -64,15 +64,15 @@ void ScalarRecordColumnData::createDataManagerColumn()
 void ScalarRecordColumnData::initialize (rownr_t, rownr_t)
 {}	
 
-Bool ScalarRecordColumnData::isDefined (rownr_t) const
+bool ScalarRecordColumnData::isDefined (rownr_t) const
 {
-    return True;
+    return true;
 }
 
 
 void ScalarRecordColumnData::get (rownr_t rownr, void* val) const
 {
-    checkReadLock (True);
+    checkReadLock (true);
     getRecord (rownr, *(TableRecord*)val);
     autoReleaseLock();
 }
@@ -85,7 +85,7 @@ void ScalarRecordColumnData::getScalarColumn (ArrayBase& val) const
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::getScalarColumn"));
     }
-    checkReadLock (True);
+    checkReadLock (true);
     for (rownr_t i=0; i<nr; i++) {
 	getRecord (i, vec(i));
     }
@@ -100,7 +100,7 @@ void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::getColumnCells"));
     }
-    checkReadLock (True);
+    checkReadLock (true);
     RefRowsSliceIter iter(rownrs);
     rownr_t i=0;
     while (! iter.pastEnd()) {
@@ -119,7 +119,7 @@ void ScalarRecordColumnData::getScalarColumnCells (const RefRows& rownrs,
 
 void ScalarRecordColumnData::put (rownr_t rownr, const void* val)
 {
-    checkWriteLock (True);
+    checkWriteLock (true);
     putRecord (rownr, *(const TableRecord*)val);
     autoReleaseLock();
 }
@@ -132,7 +132,7 @@ void ScalarRecordColumnData::putScalarColumn (const ArrayBase& val)
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::putScalarColumn"));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     for (rownr_t i=0; i<nr; i++) {
 	putRecord (i, vec(i));
     }
@@ -147,7 +147,7 @@ void ScalarRecordColumnData::putScalarColumnCells (const RefRows& rownrs,
 	throw (TableArrayConformanceError
                                  ("ScalarRecordColumnData::putColumnCells"));
     }
-    checkWriteLock (True);
+    checkWriteLock (true);
     RefRowsSliceIter iter(rownrs);
     rownr_t i=0;
     while (! iter.pastEnd()) {
@@ -171,10 +171,10 @@ void ScalarRecordColumnData::getRecord (rownr_t rownr, TableRecord& rec) const
     } else {
 	IPosition shape = dataColPtr_p->shape (rownr);
 	AlwaysAssert (shape.nelements() == 1, AipsError);
-	Array<uChar> data(shape);
+	Array<unsigned char> data(shape);
 	dataColPtr_p->getArrayV (rownr, data);
-	Bool deleteIt;
-	const uChar* buf = data.getStorage (deleteIt);
+	bool deleteIt;
+	const unsigned char* buf = data.getStorage (deleteIt);
 	MemoryIO memio (buf, shape(0));
 	AipsIO aio(&memio);
 	rec.getRecord (aio, TableAttr(dataManager()->table()));
@@ -187,8 +187,8 @@ void ScalarRecordColumnData::putRecord (rownr_t rownr, const TableRecord& rec)
     MemoryIO memio;
     AipsIO aio(&memio);
     rec.putRecord (aio, TableAttr(dataManager()->table().tableName()));
-    IPosition shape (1, Int(memio.length()));
-    Vector<uChar> data(shape, (uChar*)(memio.getBuffer()), SHARE);
+    IPosition shape (1, int32_t(memio.length()));
+    Vector<unsigned char> data(shape, (unsigned char*)(memio.getBuffer()), SHARE);
     dataColPtr_p->setShape (rownr, shape);
     dataColPtr_p->putArrayV (rownr, data);
 }
@@ -196,7 +196,7 @@ void ScalarRecordColumnData::putRecord (rownr_t rownr, const TableRecord& rec)
 
 void ScalarRecordColumnData::makeSortKey (Sort&,
 					  CountedPtr<BaseCompare>&,
-					  Int,
+					  int32_t,
 					  CountedPtr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
@@ -205,7 +205,7 @@ void ScalarRecordColumnData::makeSortKey (Sort&,
 
 void ScalarRecordColumnData::makeRefSortKey (Sort&,
                                              CountedPtr<BaseCompare>&,
-					     Int,
+					     int32_t,
 					     const Vector<rownr_t>&,
 					     CountedPtr<ArrayBase>&)
 {
@@ -231,16 +231,16 @@ void ScalarRecordColumnData::freeIterBuf (void*& lastVal, void*& curVal)
 //# the version is put "manually".
 void ScalarRecordColumnData::putFileDerived (AipsIO& ios)
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
     ios << dataManPtr_p->sequenceNr();
 }
 
 void ScalarRecordColumnData::getFileDerived (AipsIO& ios,
 					     const ColumnSet& colset)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
-    uInt seqnr;
+    uint32_t seqnr;
     ios >> seqnr;
     dataManPtr_p = colset.getDataManager (seqnr);
     createDataManagerColumn();

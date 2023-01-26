@@ -74,24 +74,24 @@ public:
   LCMask();
 
   // Construct an LCMask object for a full lattice with the given shape.
-  // It creates a TempLattice<Bool> to hold the mask.
+  // It creates a TempLattice<bool> to hold the mask.
   explicit LCMask (const IPosition& latticeShape);
 
   // Construct an LCMask object for a full lattice with the shape of the mask.
   // It clones the mask object.
-  explicit LCMask (Lattice<Bool>& mask);
+  explicit LCMask (Lattice<bool>& mask);
 
   // Construct an LCMask object for the part of a lattice given by the box.
   // The box defines the position of the mask in the lattice.
   // The box shape and given mask shape should be equal.
-  // It creates a TempImage<Bool> to hold the mask.
+  // It creates a TempImage<bool> to hold the mask.
   LCMask (const IPosition& maskShape, const LCBox& box);
 
   // Construct an LCMask object for the part of a lattice given by the box.
   // The box defines the position of the mask in the lattice.
   // The box shape and given mask shape should be equal.
   // It clones the mask object.
-  LCMask (Lattice<Bool>& mask, const LCBox& box);
+  LCMask (Lattice<bool>& mask, const LCBox& box);
 
   // Copy constructor (copy semantics).
   LCMask (const LCMask& other);
@@ -103,7 +103,7 @@ public:
   LCMask& operator= (const LCMask& other);
 
   // Comparison
-  virtual Bool operator==(const LCRegion& other) const;
+  virtual bool operator==(const LCRegion& other) const;
 
   // Make a copy of the derived object.
   virtual LCRegion* cloneRegion() const;
@@ -111,22 +111,22 @@ public:
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
-  virtual LatticeIterInterface<Bool>* makeIter
+  virtual LatticeIterInterface<bool>* makeIter
                                    (const LatticeNavigator& navigator,
-				    Bool useRef) const;
+				    bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile. 
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -139,7 +139,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -150,9 +150,9 @@ public:
 
   // Handle the (un)locking.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   // </group>
 
   // Resynchronize the object with the contenta tof the possible file.
@@ -183,18 +183,18 @@ public:
   virtual TableRecord toRecord (const String& tableName) const;
 
   // An LCMask is writable if the underlying Lattice is.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
 protected:
   // Construct another LCMask (for e.g. another lattice) by moving
   // this one. It recalculates the bounding mask.
   // A positive translation value indicates "to right".
-  virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+  virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				 const IPosition& newLatticeShape) const;
 
 private:
   LCBox          itsBox;
-  Lattice<Bool>* itsMask;
+  Lattice<bool>* itsMask;
 };
 
 

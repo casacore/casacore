@@ -67,7 +67,7 @@ TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column,
   itsUnitsName(u.nelements())
 {
   checkColumn(td);
-  for (uInt i=0; i<u.nelements(); i++) {
+  for (uint32_t i=0; i<u.nelements(); i++) {
     itsUnitsName(i) = u(i).getName();
   }
 }
@@ -82,7 +82,7 @@ TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column,
 }
 
 TableQuantumDesc::TableQuantumDesc (const TableDesc& td, const String& column, 
-				    const Char* unitsCol)
+				    const char* unitsCol)
 : itsColName(column),
   itsUnitsColName(unitsCol)
 {
@@ -116,7 +116,7 @@ TableQuantumDesc* TableQuantumDesc::reconstruct (const TableDesc& td,
   TableQuantumDesc* p = 0;
   const TableRecord& columnKeyset = td[columnName].keywordSet();
   String refString;
-  Int fnr = columnKeyset.fieldNumber("VariableUnits");
+  int32_t fnr = columnKeyset.fieldNumber("VariableUnits");
   if (fnr >= 0) {
     String unitColName = columnKeyset.asString(fnr);
     p = new TableQuantumDesc(td, columnName, unitColName);
@@ -173,7 +173,7 @@ void TableQuantumDesc::checkUnitsColumn (const TableDesc& td) const
   }
 }
 
-Bool TableQuantumDesc::hasQuanta (const TableColumn& column)
+bool TableQuantumDesc::hasQuanta (const TableColumn& column)
 {
   return ( column.keywordSet().isDefined ("QuantumUnits")  ||
 	   column.keywordSet().isDefined ("VariableUnits"));

@@ -88,7 +88,7 @@ public:
     SDFeedHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDFeedHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDFeedHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDFeedHandler(const SDFeedHandler &other);
@@ -99,36 +99,36 @@ public:
     SDFeedHandler &operator=(const SDFeedHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
     
     // fill - a new row is added only when necessary
-    void fill(const Record &row, Int antennaId, Int spwinId, const Vector<Int> &stokes);
+    void fill(const Record &row, int32_t antennaId, int32_t spwinId, const Vector<int32_t> &stokes);
 
     // get the current feed ID
-    Int feedId() {return feedId_p;}
+    int32_t feedId() {return feedId_p;}
 
     // the current NUM_RECEPTORS value
-    Int numReceptors() {return nrecpt_p;}
+    int32_t numReceptors() {return nrecpt_p;}
 private:
-    RecordFieldPtr<Int> numRecpKey_p;
+    RecordFieldPtr<int32_t> numRecpKey_p;
     ColumnsIndex *index_p;
     MSFeed *msFeed_p;
     MSFeedColumns *msFeedCols_p;
 
-    Int feedId_p, nextFeedId_p, nrecpt_p;
+    int32_t feedId_p, nextFeedId_p, nrecpt_p;
 
     // fields which might be the result of saving via ms2sdfits
-    RORecordFieldPtr<Int> feed1Field_p, feed2Field_p, beamIdField_p, phasedFeedIdField_p, numReceptorsField_p;
-    RORecordFieldPtr<Double> intervalField_p, timeField_p, scaReceptorAngleField_p; 
-    RORecordFieldPtr<Array<Double> > beamOffsetField_p, positionField_p, receptorAngleField_p;
+    RORecordFieldPtr<int32_t> feed1Field_p, feed2Field_p, beamIdField_p, phasedFeedIdField_p, numReceptorsField_p;
+    RORecordFieldPtr<double> intervalField_p, timeField_p, scaReceptorAngleField_p; 
+    RORecordFieldPtr<Array<double> > beamOffsetField_p, positionField_p, receptorAngleField_p;
     RORecordFieldPtr<Array<Complex> > polResponseField_p;
     RORecordFieldPtr<String> polarizationTypeField_p;
 
     // get the polarization type from the stokes vector
-    void stokesToPolType(const Vector<Int> &stokes, Vector<String> &polType);
+    void stokesToPolType(const Vector<int32_t> &stokes, Vector<String> &polType);
 
     // cleanup everything
     void clearAll();
@@ -136,10 +136,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // initialize things which depend on row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

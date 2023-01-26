@@ -106,7 +106,7 @@ public:
 
     // Create an ImageBeamSet of the specified shape with all
     // GaussianBeams initialized to <src>beam</src>.
-    ImageBeamSet(uInt nchan, uInt nstokes, const GaussianBeam& beam=GaussianBeam::NULL_BEAM);
+    ImageBeamSet(uint32_t nchan, uint32_t nstokes, const GaussianBeam& beam=GaussianBeam::NULL_BEAM);
 
     // The copy constructor (reference semantics).
     ImageBeamSet(const ImageBeamSet& other);
@@ -117,32 +117,32 @@ public:
     ImageBeamSet& operator=(const ImageBeamSet& other);
 
     // Beam sets are equal if the shapes and all corresponding beams are equal.
-    Bool operator== (const ImageBeamSet& other) const;
-    Bool operator!= (const ImageBeamSet& other) const;
+    bool operator== (const ImageBeamSet& other) const;
+    bool operator!= (const ImageBeamSet& other) const;
 
     // Beam sets are equivalent if both have no beams or if the
     // expanded sets are equal. Expanded means that an axis can have
     // length 0 or 1 and is (virtually) expanded to the length of the matching
     // axis in the other beam set.
-    Bool equivalent (const ImageBeamSet& that) const;
+    bool equivalent (const ImageBeamSet& that) const;
 
     // Get the number of elements in the beam array.
     // <group>
-    uInt nelements() const
+    uint32_t nelements() const
       { return _beams.size(); }
-    uInt size() const
+    uint32_t size() const
       { return _beams.size(); }
     // </group>
 
-    Bool hasSingleBeam() const
+    bool hasSingleBeam() const
       { return _beams.size() == 1; }
 
     // Does this beam set contain multiple beams?
-    Bool hasMultiBeam() const
+    bool hasMultiBeam() const
       { return _beams.size() > 1; }
 
     // Is the beam set empty?
-    Bool empty() const
+    bool empty() const
       { return _beams.empty(); }
 
     // Get the shape of the beam array. The minimum value for
@@ -152,12 +152,12 @@ public:
 
     // Get the number of channels in the beam array. Note that this will
     // always return a minimum of 1, even if nchan was specified as 0 on construction.
-    uInt nchan() const
+    uint32_t nchan() const
       { return _beams.shape()[0]; }
 
     // Get the number of stokes in the beam array. Note that this will always
     // return a minimum of 1, even if nstokes was specified as 0 on construction.
-    uInt nstokes() const
+    uint32_t nstokes() const
       { return _beams.shape()[1]; }
 
     // Get the single global beam. If there are multiple beams,
@@ -168,8 +168,8 @@ public:
     // Note that a single channel or stokes in the beam set is valid for
     // all channels cq. stokes.
     // <group>
-    const GaussianBeam& getBeam(Int chan, Int stokes) const;
-    const GaussianBeam &operator()(Int chan, Int stokes) const
+    const GaussianBeam& getBeam(int32_t chan, int32_t stokes) const;
+    const GaussianBeam &operator()(int32_t chan, int32_t stokes) const
       { return getBeam (chan, stokes); }
     // </group>
 
@@ -183,11 +183,11 @@ public:
     // If <src>chan</src> or <src>stokes</src> is negative, then the beam applies
     // to all channels or stokes, respectively. If both are negative, the specified
     // beam becomes the global beam and the beam set is resized to (1, 1).
-    void setBeam(Int chan, Int stokes, const GaussianBeam& beam);
+    void setBeam(int32_t chan, int32_t stokes, const GaussianBeam& beam);
 
     // Resize the beam array. <src>nchan</src>=0 or <src>nstokes</src>=0
     // is silently changed to 1.
-    void resize(uInt nchan, uInt nstokes);
+    void resize(uint32_t nchan, uint32_t nstokes);
 
     // Return a subset of the beam array.
     // The slicer is usually the slicer used for a subimage.
@@ -239,13 +239,13 @@ public:
     // is thrown.
     // <group>
     const GaussianBeam& getMinAreaBeamForPol(IPosition& pos,
-                                             uInt stokes) const;
+                                             uint32_t stokes) const;
 
     const GaussianBeam& getMaxAreaBeamForPol(IPosition& pos,
-                                             uInt stokes) const;
+                                             uint32_t stokes) const;
 
     const GaussianBeam& getMedianAreaBeamForPol(IPosition& pos,
-                                                uInt stokes) const;
+                                                uint32_t stokes) const;
     // </group>
 
     static const String& className();
@@ -262,12 +262,12 @@ public:
     //</group>
 
     // If verbose, log all beams, if not just summarize beam stats.
-    void summarize(LogIO& log, Bool verbose, const CoordinateSystem& csys) const;
+    void summarize(LogIO& log, bool verbose, const CoordinateSystem& csys) const;
 
     // Modify the beam set by rotating all beams counterclockwise through the
-    // specified angle. If unwrap=True, unwrap the new position angle(s) so that
+    // specified angle. If unwrap=true, unwrap the new position angle(s) so that
     // it falls in the range -90 to 90 degrees before setting it.
-    void rotate(const Quantity& angle, Bool unwrap=False);
+    void rotate(const Quantity& angle, bool unwrap=false);
 
     // get all the beam areas in a single quantum matrix.
     const Quantum<Matrix<double>> getAreas() const;
@@ -283,7 +283,7 @@ private:
     static const String _DEFAULT_AREA_UNIT;
 
     Matrix<GaussianBeam> _beams;
-    Matrix<Double> _areas;
+    Matrix<double> _areas;
     String _areaUnit;
     GaussianBeam _minBeam, _maxBeam;
     IPosition _minBeamPos, _maxBeamPos;
@@ -293,14 +293,14 @@ private:
     // common code for replacing a beam in a multi-beam set
     void _replaceBeam(
         const GaussianBeam& beam, const IPosition& location1,
-        const IPosition& location2, Bool overwriteMaxMin
+        const IPosition& location2, bool overwriteMaxMin
     );
     
     // Show the spectral info.
     static void _chanInfoToStream(
         ostream& os, const SpectralCoordinate *spCoord,
-        const uInt chan, const uInt chanWidth, const uInt freqPrec,
-        const uInt velWidth, const uInt velPrec
+        const uint32_t chan, const uint32_t chanWidth, const uint32_t freqPrec,
+        const uint32_t velWidth, const uint32_t velPrec
     );
 
     // Show the beam info.

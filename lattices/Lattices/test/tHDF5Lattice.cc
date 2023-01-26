@@ -51,25 +51,25 @@ int main()
   }
   try {
     {
-      HDF5Lattice<Float> pa(IPosition(2,12), "tHDF5Lattice_tmp.dat");
+      HDF5Lattice<float> pa(IPosition(2,12), "tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa.arrayName()=="array", AipsError);
       pa.set(10.0);
-      Array<Float> arr;
+      Array<float> arr;
       pa.getSlice(arr, IPosition(2,0), IPosition(2,12), IPosition(2,1));
       AlwaysAssert(allNear(arr, 10.0f, 1E-5), AipsError);
       indgen(arr);
-      Array<Float> arr1(arr(IPosition(2,0), IPosition(2,0,11), 
+      Array<float> arr1(arr(IPosition(2,0), IPosition(2,0,11), 
 			    IPosition(2,1,2)));
       pa.putSlice(arr1, IPosition(2,0), IPosition(2,1,2));
-      Vector<Float> vec(10);
+      Vector<float> vec(10);
       indgen(vec);
       pa.putSlice(vec(IPosition(1,0), IPosition(1,9), IPosition(1,2)), 
 		  IPosition(2,1,1), IPosition(2,2,1));
     }
     {
-      HDF5Lattice<Float> pa("tHDF5Lattice_tmp.dat");
+      HDF5Lattice<float> pa("tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa.shape().isEqual(IPosition(2,12)), AipsError);
-      Array<Float> arr;
+      Array<float> arr;
       Slicer sl(IPosition(2,0), IPosition(2,12));
       pa.getSlice(arr, sl);
       AlwaysAssert(near(pa(IPosition(2,0)), 0.0f), AipsError);
@@ -80,38 +80,38 @@ int main()
       AlwaysAssert(near(pa(IPosition(2,3,1)), 2.0f), AipsError);
       pa.putAt (99.0, IPosition(2,11));
       pa.putAt (98.0f, IPosition(2,11,10));
-      AlwaysAssert(pa.name(True) == "tHDF5Lattice_tmp.dat", AipsError);
+      AlwaysAssert(pa.name(true) == "tHDF5Lattice_tmp.dat", AipsError);
       AlwaysAssert(pa.isPersistent(), AipsError);
       AlwaysAssert(pa.isPaged(), AipsError);
       AlwaysAssert(pa.isWritable(), AipsError);
     }
     {
-      HDF5Lattice<Int> scratch(IPosition(3,9));
-      LatticeIterator<Int> li(scratch, IPosition(3,1,1,9));
-      Int i = 0;
+      HDF5Lattice<int32_t> scratch(IPosition(3,9));
+      LatticeIterator<int32_t> li(scratch, IPosition(3,1,1,9));
+      int32_t i = 0;
       for (li.reset(); !li.atEnd(); li++, i++) {
 	li.woCursor() = i;
       }
-      COWPtr<Array<Int> > ptrM;
+      COWPtr<Array<int32_t> > ptrM;
       scratch.getSlice(ptrM, IPosition(3,0), IPosition(3,9,9,1), 
-		       IPosition(3,1), True);
+		       IPosition(3,1), true);
       AlwaysAssert(ptrM->shape().isEqual(IPosition(2,9)), AipsError);
-      Array<Int> expectedResult(IPosition(2,9));
+      Array<int32_t> expectedResult(IPosition(2,9));
       indgen(expectedResult);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
       ptrM.rwRef() = 0;
       AlwaysAssert(allEQ(*ptrM, 0), AipsError);
       Slicer sl(IPosition(3,0,0,5), IPosition(3,9,9,1), IPosition(3,1));
 
-      scratch.getSlice(ptrM, sl, True);
+      scratch.getSlice(ptrM, sl, true);
       AlwaysAssert(allEQ(*ptrM, expectedResult), AipsError);
     }
     {
       const IPosition latticeShape(4, 128, 128, 4, 32);
-      HDF5Lattice<Float> pa(latticeShape, "tHDF5Lattice_tmp_1.dat");
+      HDF5Lattice<float> pa(latticeShape, "tHDF5Lattice_tmp_1.dat");
       AlwaysAssert(pa.tileShape().isEqual(pa.niceCursorShape()),
 		   AipsError);
-      Array<Float> arr(IPosition(4,1,1,4,32));
+      Array<float> arr(IPosition(4,1,1,4,32));
       Slicer sl(IPosition(4,0), IPosition(4,1,1,4,32));
       pa.clearCache();
       pa.setCacheSizeFromPath(arr.shape(), IPosition(4,0),
@@ -120,7 +120,7 @@ int main()
       pa.getSlice(arr, sl);
       pa.showCacheStatistics(cout);
 
-      HDF5Lattice<Float> pa1(TiledShape(latticeShape,IPosition(4,16,16,4,32)),
+      HDF5Lattice<float> pa1(TiledShape(latticeShape,IPosition(4,16,16,4,32)),
 			     "tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa1.tileShape().isEqual(IPosition(4,16,16,4,32)), 
 		   AipsError);
@@ -139,45 +139,45 @@ int main()
       AlwaysAssert(allNear(arr, 9.0f, 1E-5), AipsError);
 
       IPosition lat2Shape = IPosition(4,16);
-      HDF5Lattice<Float> pa2(lat2Shape, pa1.file(), "array2");
+      HDF5Lattice<float> pa2(lat2Shape, pa1.file(), "array2");
       arr.resize(lat2Shape);
       indgen(arr);
       pa2.putSlice(arr, IPosition(4,0));
       
       IPosition lat3Shape = IPosition(2,16);
-      HDF5Lattice<Int> pa3(TiledShape(lat3Shape,lat3Shape),
+      HDF5Lattice<int32_t> pa3(TiledShape(lat3Shape,lat3Shape),
 			   pa1.file(), "IntHDF5Lattice");
-      Array<Int> iarr(lat3Shape);
+      Array<int32_t> iarr(lat3Shape);
       indgen(iarr);
       pa3.putSlice(iarr, IPosition(2,0));
     }
     {
-      HDF5Lattice<Float> pa1("tHDF5Lattice_tmp.dat");
+      HDF5Lattice<float> pa1("tHDF5Lattice_tmp.dat");
       AlwaysAssert(pa1.shape().isEqual(IPosition(4,128,128,4,32)), AipsError);
-      HDF5Lattice<Float> pa2(pa1.file(), "array2");
+      HDF5Lattice<float> pa2(pa1.file(), "array2");
       AlwaysAssert(pa2.shape().isEqual(IPosition(4,16)), AipsError);
-      HDF5Lattice<Int> pa3(pa1.file(), "IntHDF5Lattice");
+      HDF5Lattice<int32_t> pa3(pa1.file(), "IntHDF5Lattice");
       AlwaysAssert(pa3.shape().isEqual(IPosition(2,16)), AipsError);
-      Array<Int> iarr(pa3.shape()), expected(pa3.shape());
+      Array<int32_t> iarr(pa3.shape()), expected(pa3.shape());
       pa3.setMaximumCacheSize(256*256);
       indgen(expected);
       pa3.getSlice(iarr, IPosition(2,0), IPosition(2,16), IPosition(2,1));
       AlwaysAssert(allEQ(iarr, expected), AipsError);
       {
-	HDF5Lattice<Int> pa4(pa3);
+	HDF5Lattice<int32_t> pa4(pa3);
 	AlwaysAssert(pa4.shape().isEqual(IPosition(2,16)), AipsError);
 	iarr = 0;
 	pa4.getSlice(iarr, IPosition(2,0), IPosition(2,16), IPosition(2,1));
 	AlwaysAssert(allEQ(iarr, expected), AipsError);
-	AlwaysAssert(pa4.ok() == True, AipsError);
+	AlwaysAssert(pa4.ok() == true, AipsError);
       }
     }
     {
       const IPosition latticeShape(4, 4, 16, 15, 8);
-      HDF5Lattice<Float> pa(TiledShape(latticeShape, IPosition(4,2,8,8,3)),
+      HDF5Lattice<float> pa(TiledShape(latticeShape, IPosition(4,2,8,8,3)),
 			    "tHDF5Lattice_tmp_1.dat", "data", "group1");
       AlwaysAssertExit(pa.arrayName()=="data");
-      Array<Float> arr(latticeShape);
+      Array<float> arr(latticeShape);
       indgen(arr);
       pa.put (arr);
       AlwaysAssertExit (allEQ(pa.get(), arr));
@@ -185,9 +185,9 @@ int main()
       AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
     }
     {
-      HDF5Lattice<Float> pa("tHDF5Lattice_tmp_1.dat", "data", "group1");
+      HDF5Lattice<float> pa("tHDF5Lattice_tmp_1.dat", "data", "group1");
       AlwaysAssertExit(pa.arrayName()=="data");
-      Array<Float> arr(pa.shape());
+      Array<float> arr(pa.shape());
       indgen(arr);
       AlwaysAssertExit (allEQ(pa.get(), float(2)*arr));
     }

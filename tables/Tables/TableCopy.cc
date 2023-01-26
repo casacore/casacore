@@ -48,8 +48,8 @@ Table TableCopy::makeEmptyTable (const String& newName,
 				 const Table& tab,
 				 Table::TableOption option,
 				 Table::EndianFormat endianFormat,
-				 Bool replaceTSM,
-				 Bool noRows,
+				 bool replaceTSM,
+				 bool noRows,
                                  const StorageOption& stopt)
 {
   TableDesc tabDesc = tab.actualTableDesc();
@@ -68,15 +68,15 @@ Table TableCopy::makeEmptyTable (const String& newName,
   }
   // Replace non-writable storage managers by StandardStMan.
   // This is for instance needed for LofarStMan.
-  dminfo = DataManInfo::adjustStMan (dminfo, "StandardStMan", True);
+  dminfo = DataManInfo::adjustStMan (dminfo, "StandardStMan", true);
   SetupNewTable newtab (newName, tabDesc, option, stopt);
   newtab.bindCreate (dminfo);
-  return Table(newtab, (noRows ? 0 : tab.nrow()), False, endianFormat);
+  return Table(newtab, (noRows ? 0 : tab.nrow()), false, endianFormat);
 }
 
 Table TableCopy::makeEmptyMemoryTable (const String& newName,
 				       const Table& tab,
-				       Bool noRows)
+				       bool noRows)
 {
   TableDesc tabDesc = tab.actualTableDesc();
   Record dminfo = tab.dataManagerInfo();
@@ -86,7 +86,7 @@ Table TableCopy::makeEmptyMemoryTable (const String& newName,
 }
 
 void TableCopy::copyRows (Table& out, const Table& in, rownr_t startout,
-			  rownr_t startin, rownr_t nrrow, Bool flush)
+			  rownr_t startin, rownr_t nrrow, bool flush)
 {
   // Check if startin and nrrow are correct for input.
   if (startin + nrrow > in.nrow()) {
@@ -99,14 +99,14 @@ void TableCopy::copyRows (Table& out, const Table& in, rownr_t startout,
   const TableDesc& tdesc = in.tableDesc();
   // Only copy the columns that exist in the input table.
   Vector<String> cols(columns.nelements());
-  uInt nrcol = 0;
-  for (uInt i=0; i<columns.nelements(); i++) {
+  uint32_t nrcol = 0;
+  for (uint32_t i=0; i<columns.nelements(); i++) {
     if (tdesc.isColumn (columns(i))) {
       cols(nrcol++) = columns(i);
     }
   }
   if (nrcol > 0) {
-    cols.resize (nrcol, True);
+    cols.resize (nrcol, true);
     // Add rows as needed.
     if (startout + nrrow > out.nrow()) {
       out.addRow (startout + nrrow - out.nrow());
@@ -115,7 +115,7 @@ void TableCopy::copyRows (Table& out, const Table& in, rownr_t startout,
     outrow = TableRow(out, cols);
     for (rownr_t i=0; i<nrrow; i++) {
       inrow.get (startin + i);
-      outrow.put (startout + i, inrow.record(), inrow.getDefined(), False);
+      outrow.put (startout + i, inrow.record(), inrow.getDefined(), false);
     }
     if (flush) {
       out.flush();
@@ -129,14 +129,14 @@ void TableCopy::copyInfo (Table& out, const Table& in)
   out.flushTableInfo();
 }
 
-void TableCopy::copySubTables (Table& out, const Table& in, Bool noRows,
+void TableCopy::copySubTables (Table& out, const Table& in, bool noRows,
                                const Block<String>& omit)
 {
   copySubTables (out.rwKeywordSet(), in.keywordSet(), out.tableName(),
 		 out.tableType(), in, noRows, omit);
   const TableDesc& outDesc = out.tableDesc();
   const TableDesc& inDesc = in.tableDesc();
-  for (uInt i=0; i<outDesc.ncolumn(); i++) {
+  for (uint32_t i=0; i<outDesc.ncolumn(); i++) {
     // Only writable columns can have keywords defined, thus subtables.
     if (out.isColumnWritable(i)) {
       const String& name = outDesc[i].name();
@@ -156,10 +156,10 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 			       const String& outName,
 			       Table::TableType outType,
 			       const Table& in,
-			       Bool noRows,
+			       bool noRows,
                                const Block<String>& omit)
 {
-  for (uInt i=0; i<inKeys.nfields(); i++) {
+  for (uint32_t i=0; i<inKeys.nfields(); i++) {
     if (inKeys.type(i) == TpTable) {
       Table inTab = inKeys.asTable(i);
       // Skip a subtable that has to be omitted.
@@ -183,7 +183,7 @@ void TableCopy::copySubTables (TableRecord& outKeys,
 	if (outType == Table::Memory) {
 	  outTab = inTab.copyToMemoryTable (newName, noRows);
 	} else {
-	  inTab.deepCopy (newName, Table::New, False,
+	  inTab.deepCopy (newName, Table::New, false,
 			  Table::AipsrcEndian, noRows);
 	  outTab = Table(newName);
 	}
@@ -238,7 +238,7 @@ void TableCopy::doCloneColumn (const Table& fromTable, const String& fromColumn,
 
 void TableCopy::copyColumnData (const Table& tabFrom, const String& colFrom,
                                 Table& tabTo, const String& colTo,
-                                Bool preserveTileShape)
+                                bool preserveTileShape)
 {
   AlwaysAssert (tabFrom.nrow() == tabTo.nrow(), AipsError);
   TableColumn incol(tabFrom, colFrom);

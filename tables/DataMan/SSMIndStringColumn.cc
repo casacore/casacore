@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 SSMIndStringColumn::SSMIndStringColumn (SSMBase* aParent, int aDataType, 
-					uInt aColNr): 
+					uint32_t aColNr): 
 SSMDirColumn   (aParent,aDataType,aColNr)
 {
 }
@@ -47,7 +47,7 @@ SSMIndStringColumn::~SSMIndStringColumn()
 void SSMIndStringColumn::setShape (rownr_t aRowNr, const IPosition& aShape)
 {
   DebugAssert(itsShape.nelements() == 0,AipsError);
-  Int buf[3];
+  int32_t buf[3];
   // Try to find out if this value was filled before, in that case we use
   // an overwrite.
   getRowValue(buf, aRowNr);
@@ -63,7 +63,7 @@ IPosition SSMIndStringColumn::shape (rownr_t aRowNr)
   }
 
   IPosition aShape;
-  Int buf[3];
+  int32_t buf[3];
 
   getRowValue(buf, aRowNr);
   if (buf[2] > 0) {
@@ -78,24 +78,24 @@ IPosition SSMIndStringColumn::shape (rownr_t aRowNr)
   return aShape;
 }
 
-Bool SSMIndStringColumn::canChangeShape() const
+bool SSMIndStringColumn::canChangeShape() const
 {
   return itsShape.nelements() ==0;
 }
 
-Bool SSMIndStringColumn::isShapeDefined (rownr_t aRowNr)
+bool SSMIndStringColumn::isShapeDefined (rownr_t aRowNr)
 {
   if (itsShape.nelements() != 0) {
-    return True;
+    return true;
   } else {
-    Int buf[3];
+    int32_t buf[3];
     getRowValue(buf, aRowNr);
     return buf[2] != 0;
   }
 }
 
 
-uInt SSMIndStringColumn::ndim (rownr_t aRowNr)
+uint32_t SSMIndStringColumn::ndim (rownr_t aRowNr)
 {
   return shape(aRowNr).nelements();
 }
@@ -106,7 +106,7 @@ void SSMIndStringColumn::getArrayV (rownr_t aRowNr,
   if (itsShape.nelements() != 0) {
     SSMDirColumn::getArrayV (aRowNr,aDataPtr);
   } else {
-    Int buf[3];
+    int32_t buf[3];
     getRowValue(buf, aRowNr);
     if ( buf[2] == 0 ) {
       throw DataManInvOper
@@ -115,7 +115,7 @@ void SSMIndStringColumn::getArrayV (rownr_t aRowNr,
          + " of table " + itsSSMPtr->table().tableName());
     }
     itsSSMPtr->getStringHandler()->get(static_cast<Array<String>&>(aDataPtr),
-                                       buf[0], buf[1], buf[2], True);
+                                       buf[0], buf[1], buf[2], true);
   }
 }
 
@@ -125,13 +125,13 @@ void SSMIndStringColumn::putArrayV (rownr_t aRowNr,
   if (itsShape.nelements() != 0) {
     SSMDirColumn::putArrayV (aRowNr, aDataPtr);
   } else {
-    Int buf[3];
+    int32_t buf[3];
     // Try to find out if this value was filled before, in that case we use
     // an overwrite.
     getRowValue(buf, aRowNr);
     itsSSMPtr->getStringHandler()->put(buf[0], buf[1], buf[2], 
 				       static_cast<const Array<String>&>(aDataPtr),
-                                       True);
+                                       true);
     putValue(aRowNr, buf);
   }
 }

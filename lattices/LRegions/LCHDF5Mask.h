@@ -49,7 +49,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // <synopsis> 
   // The LCHDF5Mask class is a specialization of class
   // <linkto class=LCRegionSingle>LCRegionSingle</linkto>.
-  // It holds a mask for an HDF5Image in an HDF5Lattice<Bool> object.
+  // It holds a mask for an HDF5Image in an HDF5Lattice<bool> object.
   // </synopsis> 
 
   class LCHDF5Mask: public LCRegionSingle
@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		const CountedPtr<HDF5File>& file, const String& maskName);
     LCHDF5Mask (const TiledShape& maskShape, const LCBox& box,
 		const CountedPtr<HDF5File>& file, const String& maskName);
-    LCHDF5Mask (HDF5Lattice<Bool>& mask, const LCBox& box);
+    LCHDF5Mask (HDF5Lattice<bool>& mask, const LCBox& box);
     // </group>
 
     // Copy constructor (copy semantics).
@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     LCHDF5Mask& operator= (const LCHDF5Mask& other);
 
     // Comparison
-    virtual Bool operator==(const LCRegion& other) const;
+    virtual bool operator==(const LCRegion& other) const;
 
     // Make a copy of the derived object.
     virtual LCRegion* cloneRegion() const;
@@ -88,16 +88,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // This function is used by the LatticeIterator class to generate an
     // iterator of the correct type for this Lattice. Not recommended
     // for general use. 
-    virtual LatticeIterInterface<Bool>* makeIter
+    virtual LatticeIterInterface<bool>* makeIter
                                    (const LatticeNavigator& navigator,
-				    Bool useRef) const;
+				    bool useRef) const;
 
     // Returns the maximum recommended number of pixels for a cursor.
     // This is the number of pixels in a tile. 
-    virtual uInt advisedMaxPixels() const;
+    virtual uint32_t advisedMaxPixels() const;
 
     // Help the user pick a cursor for most efficient access.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
     // Flush the data (but do not unlock).
     virtual void flush();
@@ -116,24 +116,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				   const String& tablename);
 
     // An LCHDF5Mask is writable if the underlying HDF5Lattice is.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
   protected:
     // Construct another LCHDF5Mask (for e.g. another lattice) by moving
     // this one. It recalculates the bounding mask.
     // A positive translation value indicates "to right".
-    virtual LCRegion* doTranslate (const Vector<Float>& translateVector,
+    virtual LCRegion* doTranslate (const Vector<float>& translateVector,
 				   const IPosition& newLatticeShape) const;
 
   private:
     // Create the object from a record (for an existing mask).
-    LCHDF5Mask (HDF5Lattice<Bool>& mask,
+    LCHDF5Mask (HDF5Lattice<bool>& mask,
 		const IPosition& blc,
 		const IPosition& latticeShape);
 
 
     LCBox             itsBox;
-    HDF5Lattice<Bool> itsMask;
+    HDF5Lattice<bool> itsMask;
   };
 
 

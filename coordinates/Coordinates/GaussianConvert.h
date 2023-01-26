@@ -78,7 +78,7 @@ public:
     // of the coordinate system are the relevant ones for
     // your gaussian (x then y)
     GaussianConvert (const CoordinateSystem& cSys, 
-                     const Vector<uInt>& worldAxes);
+                     const Vector<uint32_t>& worldAxes);
 
     // Destructor
    ~GaussianConvert ();
@@ -93,34 +93,34 @@ public:
     void setCoordinateSystem (const CoordinateSystem& cSys);
 
     // Re(set) the world axes 
-    void setWorldAxes (const Vector<uInt>& worldAxes);
+    void setWorldAxes (const Vector<uint32_t>& worldAxes);
 
     // Convert Gaussian parameters from pixels to world.  Returns
-    // False if it fails with an error message recoverable with
+    // false if it fails with an error message recoverable with
     // function errorMessage.  If you set the units of the output
     // axis quanta they will be honoured, otherwise they will come out
     // in the axis units of the coordinate system.  For the output position angle,
     // if the output units are not set, the units of the input position angle
     // will be used.
-    Bool toWorld(Quantum<Double>& majorAxisOut, Quantum<Double>& minorAxisOut,
-                 Quantum<Double>& positionAngleOut, Double majorAxisIn,
-                 Double minorAxisIn, const Quantum<Double>& positionAngleIn);
+    bool toWorld(Quantum<double>& majorAxisOut, Quantum<double>& minorAxisOut,
+                 Quantum<double>& positionAngleOut, double majorAxisIn,
+                 double minorAxisIn, const Quantum<double>& positionAngleIn);
 
     // Convert Gaussian parameters from world to pixel.  Returns
-    // False if it fails with an error message recoverable with
+    // false if it fails with an error message recoverable with
     // function errorMessage. For the output position angle,
     // if the output units are not set, the units of the input position angle
     // will be used.
-    Bool toPixel(Double& majorAxisOut, Double& minorAxisOut,
-                 Quantum<Double>& positionAngleOut, const Quantum<Double>& majorAxisIn,
-                 const Quantum<Double>& minorAxisIn, const Quantum<Double>& positionAngleIn);
+    bool toPixel(double& majorAxisOut, double& minorAxisOut,
+                 Quantum<double>& positionAngleOut, const Quantum<double>& majorAxisIn,
+                 const Quantum<double>& minorAxisIn, const Quantum<double>& positionAngleIn);
 
     // Convert location
     // <group>
-    Bool toPixel(Vector<Double>& pixel,
-                 const Vector<Quantum<Double> >& world);
-    Bool toWorld(Vector<Quantum<Double> >& world,
-                 const Vector<Double>& pixel);
+    bool toPixel(Vector<double>& pixel,
+                 const Vector<Quantum<double> >& world);
+    bool toWorld(Vector<Quantum<double> >& world,
+                 const Vector<double>& pixel);
     // </group>
 
     // Recover error messages from the conversion functions
@@ -130,14 +130,14 @@ public:
 private:
 
    CoordinateSystem itsCSys;
-   Vector<uInt> itsWorldAxes;
+   Vector<uint32_t> itsWorldAxes;
    String itsErrorMessage;
-   Bool itsValid;
+   bool itsValid;
 
-   void convertAxes (Double& minorAxisOut, Double& majorAxisOut,
-                     Quantum<Double>& positionAngleOut,
-                     Double minorAxisIn, Double majorAxisIn,
-                     const Quantum<Double>& positionAngleIn,
+   void convertAxes (double& minorAxisOut, double& majorAxisOut,
+                     Quantum<double>& positionAngleOut,
+                     double minorAxisIn, double majorAxisIn,
+                     const Quantum<double>& positionAngleIn,
                      const CoordinateSystem& cSys,
                      String dir);
 
@@ -145,7 +145,7 @@ private:
 
    void checkWorldAxes();
 
-   Double positionAngleRange(Double pa);
+   double positionAngleRange(double pa);
 
 };
 

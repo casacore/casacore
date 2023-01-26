@@ -136,28 +136,28 @@ public:
   void setDirColName (const String& colName);
 
   // Get the hourangle for the given row.
-  double getHA (Int antnr, rownr_t rownr);
+  double getHA (int32_t antnr, rownr_t rownr);
 
   // Get the hourangle/DEC for the given row.
-  void getHaDec (Int antnr, rownr_t rownr, Array<Double>&);
+  void getHaDec (int32_t antnr, rownr_t rownr, Array<double>&);
 
   // Get the parallatic angle for the given row.
-  double getPA (Int antnr, rownr_t rownr);
+  double getPA (int32_t antnr, rownr_t rownr);
 
   // Get the local sidereal time for the given row.
-  double getLAST (Int antnr, rownr_t rownr);
+  double getLAST (int32_t antnr, rownr_t rownr);
 
   // Get the azimuth/elevation for the given row.
-  void getAzEl (Int antnr, rownr_t rownr, Array<Double>&);
+  void getAzEl (int32_t antnr, rownr_t rownr, Array<double>&);
 
   // Get the ITRF coordinates for the given row.
-  void getItrf (Int antnr, rownr_t rownr, Array<Double>&);
+  void getItrf (int32_t antnr, rownr_t rownr, Array<double>&);
 
   // Get the UVW in J2000 or APP for the given row.
-  void getNewUVW (Bool asApp, rownr_t rownr, Array<Double>&);
+  void getNewUVW (bool asApp, rownr_t rownr, Array<double>&);
 
   // Get the delay for the given row.
-  double getDelay (Int antnr, rownr_t rownr);
+  double getDelay (int32_t antnr, rownr_t rownr);
 
 private:
   // Copy constructor cannot be used.
@@ -169,7 +169,7 @@ private:
   // Set the data in the measure converter machines.
   // The antenna positions are only filled in antnr>=0 or if fillAnt is set.
   // It returns the mount of the antenna.
-  Int setData (Int antnr, rownr_t rownr, Bool fillAnt=False);
+  int32_t setData (int32_t antnr, rownr_t rownr, bool fillAnt=false);
 
   // Initialize the column objects, etc.
   void init();
@@ -179,36 +179,36 @@ private:
 
   // Fill or update the antenna positions from the ANTENNA subtable at
   // row calDescId. It is stored in the calInx-th entry of itsAntPos/itsMount.
-  void fillAntPos (Int calDescId, Int calInx);
+  void fillAntPos (int32_t calDescId, int32_t calInx);
 
   // Fill or update the field directions from the FIELD subtable at
   // row calDescId. It is stored in the calInx-th entry of itsFieldDir.
-  void fillFieldDir (Int calDescId, Int calInx);
+  void fillFieldDir (int32_t calDescId, int32_t calInx);
 
   // Get a calibration MS subtable for the given id.
-  Table getSubTable (Int calDescId, const String& subTabName,
-                     Bool mustExist=True);
+  Table getSubTable (int32_t calDescId, const String& subTabName,
+                     bool mustExist=true);
 
   //# Declare member variables.
   Table                       itsTable;        //# MS or CalTable to use
-  Int                         itsLastCalInx;   //# id of CAL_DESC last used
-  Int                         itsLastFieldId;  //# id of the field last used
-  Int                         itsLastAntId;    //# -1 is array position used
-  Double                      itsLastTime;
-  ScalarColumn<Int>           itsAntCol[2];    //# ANTENNA1 and ANTENNA2
-  ScalarColumn<Int>           itsFeedCol[2];   //# FEED1 and FEED2
-  ScalarColumn<Int>           itsFieldCol;     //# FIELD_ID
-  ScalarColumn<Double>        itsTimeCol;      //# TIME
+  int32_t                         itsLastCalInx;   //# id of CAL_DESC last used
+  int32_t                         itsLastFieldId;  //# id of the field last used
+  int32_t                         itsLastAntId;    //# -1 is array position used
+  double                      itsLastTime;
+  ScalarColumn<int32_t>           itsAntCol[2];    //# ANTENNA1 and ANTENNA2
+  ScalarColumn<int32_t>           itsFeedCol[2];   //# FEED1 and FEED2
+  ScalarColumn<int32_t>           itsFieldCol;     //# FIELD_ID
+  ScalarColumn<double>        itsTimeCol;      //# TIME
   ScalarMeasColumn<MEpoch>    itsTimeMeasCol;  //# TIME as Measure
-  ScalarColumn<Int>           itsCalCol;       //# CAL_DESC_ID
+  ScalarColumn<int32_t>           itsCalCol;       //# CAL_DESC_ID
   map<string,int>             itsCalMap;       //# map of MS name to index
-  vector<Int>                 itsCalIdMap;     //# map of calId to index
+  vector<int32_t>                 itsCalIdMap;     //# map of calId to index
   MPosition                   itsArrayPos;
   Vector<double>              itsArrayItrf;    //# ITRF array position
   vector<vector<MPosition> >  itsAntPos;       //# ITRF antenna positions
-  vector<vector<Int> >        itsMount;        //# 1=alt-az  0=else
+  vector<vector<int32_t> >        itsMount;        //# 1=alt-az  0=else
   vector<vector<MDirection> > itsFieldDir;     //# J2000 field directions
-  Bool                        itsReadFieldDir; //# False: explicit directions
+  bool                        itsReadFieldDir; //# false: explicit directions
   String                      itsDirColName;   //# FIELD DIR column to read
   vector<vector<MBaseline> >  itsAntMB;        //# J2000 MBaseline per antenna
   vector<vector<Vector<double> > > itsAntUvw;  //# J2000 UVW per antenna

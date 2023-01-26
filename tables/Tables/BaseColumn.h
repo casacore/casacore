@@ -103,10 +103,10 @@ public:
     virtual ~BaseColumn();
 
     // Test if the column is writable.
-    virtual Bool isWritable() const = 0;
+    virtual bool isWritable() const = 0;
 
     // Test if the column is stored (otherwise it is virtual).
-    virtual Bool isStored() const = 0;
+    virtual bool isStored() const = 0;
 
     // Get access to the column keyword set.
     // <group>
@@ -121,7 +121,7 @@ public:
     virtual rownr_t nrow() const = 0;
 
     // Test if the given cell contains a defined value.
-    virtual Bool isDefined (rownr_t rownr) const = 0;
+    virtual bool isDefined (rownr_t rownr) const = 0;
 
     // Set the shape of the array in the given row.
     virtual void setShape (rownr_t rownr, const IPosition& shape);
@@ -131,13 +131,13 @@ public:
 			   const IPosition& tileShape);
 
     // Get the global #dimensions of an array (ie. for all rows).
-    virtual uInt ndimColumn() const;
+    virtual uint32_t ndimColumn() const;
 
     // Get the global shape of an array (ie. for all rows).
     virtual IPosition shapeColumn() const;
 
     // Get the #dimensions of an array in a particular cell.
-    virtual uInt ndim (rownr_t rownr) const;
+    virtual uint32_t ndim (rownr_t rownr) const;
 
     // Get the shape of an array in a particular cell.
     virtual IPosition shape (rownr_t rownr) const;
@@ -147,7 +147,7 @@ public:
 
     // Ask the data manager if the shape of an existing array can be changed.
     // Default is no.
-    virtual Bool canChangeShape() const;
+    virtual bool canChangeShape() const;
 
     // Initialize the rows from startRow till endRow (inclusive)
     // with the default value defined in the column description.
@@ -232,15 +232,15 @@ public:
     // Get the value from the row and convert it to the required type.
     // This can only be used for scalar columns with a standard data type.
     // Note that an unsigned integer cannot be converted to a signed integer
-    // with the same length. So only Int64 can handle all integer values.
+    // with the same length. So only int64_t can handle all integer values.
     // <group>
-    void getScalar (rownr_t rownr, Bool& value) const;
-    void getScalar (rownr_t rownr, uChar& value) const;
-    void getScalar (rownr_t rownr, Short& value) const;
-    void getScalar (rownr_t rownr, uShort& value) const;
-    void getScalar (rownr_t rownr, Int& value) const;
-    void getScalar (rownr_t rownr, uInt& value) const;
-    void getScalar (rownr_t rownr, Int64& value) const;
+    void getScalar (rownr_t rownr, bool& value) const;
+    void getScalar (rownr_t rownr, unsigned char& value) const;
+    void getScalar (rownr_t rownr, int16_t& value) const;
+    void getScalar (rownr_t rownr, uint16_t& value) const;
+    void getScalar (rownr_t rownr, int32_t& value) const;
+    void getScalar (rownr_t rownr, uint32_t& value) const;
+    void getScalar (rownr_t rownr, int64_t& value) const;
     void getScalar (rownr_t rownr, float& value) const;
     void getScalar (rownr_t rownr, double& value) const;
     void getScalar (rownr_t rownr, Complex& value) const;
@@ -256,19 +256,19 @@ public:
     // Put the value into the row and convert it from the given type.
     // This can only be used for scalar columns with a standard data type.
     // <group>
-    void putScalar (rownr_t rownr, const Bool& value);
-    void putScalar (rownr_t rownr, const uChar& value);
-    void putScalar (rownr_t rownr, const Short& value);
-    void putScalar (rownr_t rownr, const uShort& value);
-    void putScalar (rownr_t rownr, const Int& value);
-    void putScalar (rownr_t rownr, const uInt& value);
-    void putScalar (rownr_t rownr, const Int64& value);
+    void putScalar (rownr_t rownr, const bool& value);
+    void putScalar (rownr_t rownr, const unsigned char& value);
+    void putScalar (rownr_t rownr, const int16_t& value);
+    void putScalar (rownr_t rownr, const uint16_t& value);
+    void putScalar (rownr_t rownr, const int32_t& value);
+    void putScalar (rownr_t rownr, const uint32_t& value);
+    void putScalar (rownr_t rownr, const int64_t& value);
     void putScalar (rownr_t rownr, const float& value);
     void putScalar (rownr_t rownr, const double& value);
     void putScalar (rownr_t rownr, const Complex& value);
     void putScalar (rownr_t rownr, const DComplex& value);
     void putScalar (rownr_t rownr, const String& value);
-    void putScalar (rownr_t rownr, const Char* value)
+    void putScalar (rownr_t rownr, const char* value)
         { putScalar (rownr, String(value)); }
     void putScalar (rownr_t rownr, const TableRecord& value);
     // </group>
@@ -277,7 +277,7 @@ public:
     virtual ColumnCache& columnCache() = 0;
 
     // Set the maximum cache size (in bytes) to be used by a storage manager.
-    virtual void setMaximumCacheSize (uInt nbytes) = 0;
+    virtual void setMaximumCacheSize (uint32_t nbytes) = 0;
 
     // Add this column and its data to the Sort object.
     // It may allocate some storage on the heap, which will be saved
@@ -285,10 +285,10 @@ public:
     // The function freeSortKey must be called to free this storage.
     // <group>
     virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
-			      Int order, CountedPtr<ArrayBase>& dataSave);
+			      int32_t order, CountedPtr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
     virtual void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
-				 Int order, const Vector<rownr_t>& rownrs,
+				 int32_t order, const Vector<rownr_t>& rownrs,
 				 CountedPtr<ArrayBase>& dataSave);
     // </group>
 

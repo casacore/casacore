@@ -97,14 +97,14 @@ void doIt (const String& str)
       switch (expr.dataType()) {
       case TpBool:
 	{
-	  MArray<Bool> arr;
+	  MArray<bool> arr;
 	  expr.get (i, arr);
 	  cout << arr.array();
 	  break;
 	}
       case TpDouble:
 	{
-	  MArray<Double> arr;
+	  MArray<double> arr;
 	  expr.get (i, arr);
 	  cout << arr.array();
 	  break;
@@ -134,7 +134,7 @@ void doIt (const String& str)
 void docomm()
 {
   char comm[1025];
-  while (True) {
+  while (true) {
     cout << "Table command (q=quit): ";
     cin.getline (comm, 1024);
     String str(comm);

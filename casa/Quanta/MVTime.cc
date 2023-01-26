@@ -42,13 +42,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Static members
 MVTime::Format MVTime::defaultFormat = MVTime::Format();
 MVTime::Format MVTime::interimFormat = MVTime::Format();
-Bool MVTime::interimSet = False;
+bool MVTime::interimSet = false;
 
 //# Constructors
 MVTime::MVTime() : 
 val(0){}
 
-MVTime::MVTime(Double d) : 
+MVTime::MVTime(double d) : 
 val(d){}
 
 MVTime::MVTime(const Time &other) : 
@@ -57,16 +57,16 @@ val(other.modifiedJulianDay()){}
 MVTime::MVTime(const MVEpoch &other) : 
 val(other.get()){}
 
-MVTime::MVTime(Int yy, Int mm, Double dd, Double d) {
+MVTime::MVTime(int32_t yy, int32_t mm, double dd, double d) {
     if (mm < 3) {
 	yy--;
 	mm += 12;
     }
     dd += d;
-    Int b = 0;
+    int32_t b = 0;
     if (yy>1582 || (yy==1582 && (mm>10 || (mm==10 && dd >= 15)))) { 
 	b = ifloor(yy/100.);
-	b = 2 - b + (Int)(b/4);
+	b = 2 - b + (int32_t)(b/4);
     }
     val = ifloor(365.25*yy) + ifloor(30.6001*(mm+1)) + dd - 679006.0 +b;
 }
@@ -95,24 +95,24 @@ MVTime &MVTime::operator=(const MVTime &other) {
 MVTime::~MVTime() {}
 
 // Operators
-MVTime::operator Double() const {
+MVTime::operator double() const {
     return val;
 }
 
 // Member functions
-Double MVTime::day() const {
+double MVTime::day() const {
     return val;
 }
 
-Double MVTime::hour() const {
+double MVTime::hour() const {
     return val*24.;
 }
 
-Double MVTime::minute() const {
+double MVTime::minute() const {
     return val*24.*60.;
 }
 
-Double MVTime::second() const {
+double MVTime::second() const {
     return val*24.*3600.;
 }
 
@@ -131,7 +131,7 @@ Time MVTime::getTime() const {
     return Time(val+2400000.5);
 }
 
-const String &MVTime::dayName(uInt which) {
+const String &MVTime::dayName(uint32_t which) {
   static const String weekDay[7] = {
     "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
   AlwaysAssert(which > 0 && which < 8, AipsError);
@@ -142,7 +142,7 @@ const String &MVTime::dayName() const {
   return (dayName(weekday()));
 }
 
-const String &MVTime::monthName(uInt which) {
+const String &MVTime::monthName(uint32_t which) {
   static const String mon[12] = {
     "Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -153,30 +153,30 @@ const String &MVTime::monthName() const {
   return (monthName(month()));
 }
 
-uInt MVTime::weekday() const {
+uint32_t MVTime::weekday() const {
   return ((ifloor(val+2.)%7 + 7)%7 + 1);
 }
 
-uInt MVTime::month() const {
-  Int c,e,a;
+uint32_t MVTime::month() const {
+  int32_t c,e,a;
   ymd(c,e,a);
   return e;
 }
 
-uInt MVTime::monthday() const {
-  Int c,e,a;
+uint32_t MVTime::monthday() const {
+  int32_t c,e,a;
   ymd(c,e,a);
   return a;
 }
 
-Int MVTime::year() const {
-  Int c,e,a;
+int32_t MVTime::year() const {
+  int32_t c,e,a;
   ymd(c,e,a);
   return c;
 }
 
-Int MVTime::ymd() const {
-  Int c,e,a;
+int32_t MVTime::ymd() const {
+  int32_t c,e,a;
   ymd(c,e,a);
   if (c < 0) {
     return -(abs(c)*10000 + e*100 + a);
@@ -184,8 +184,8 @@ Int MVTime::ymd() const {
   return (c*10000 + e*100 + a);
 }
 
-uInt MVTime::yearday() const {
-  Int c,e,a;
+uint32_t MVTime::yearday() const {
+  int32_t c,e,a;
   ymd(c,e,a);
   if (c%4 == 0 && (c%100 != 0 || c%400 == 0)) {
     c = (e+9)/12;
@@ -195,30 +195,30 @@ uInt MVTime::yearday() const {
   return ((275*e)/9 - c + a - 30);
 }
 
-uInt MVTime::yearweek() const {
-  Int yd(yearday()-4);
-  uInt yw((yd+7)/7);
+uint32_t MVTime::yearweek() const {
+  int32_t yd(yearday()-4);
+  uint32_t yw((yd+7)/7);
   yd %= 7;
   // Check for other week
   if (yd >= 0) {
-    if (yd >= (Int)weekday()) return yw+1;
-  } else if (yd+7 >= (Int)weekday()) return yw+1;
+    if (yd >= (int32_t)weekday()) return yw+1;
+  } else if (yd+7 >= (int32_t)weekday()) return yw+1;
   return yw;
 }
 
-void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
-	Int z = ifloor(val + 2400001.0);
+void MVTime::ymd(int32_t &yyyy, int32_t &mm, int32_t &dd) const {
+	int32_t z = ifloor(val + 2400001.0);
 	dd = z;
 	if (z >= 2299161) {
-	    Long al = ifloor(((Double) z - 1867216.25)/36524.25);
-	    dd = z + 1 + al - (Int)(al/4);
+	    long al = ifloor(((double) z - 1867216.25)/36524.25);
+	    dd = z + 1 + al - (int32_t)(al/4);
 	}
 	dd += 1524;
         // tmp introduced to circumvent optimization problem with gcc2.7.2.1
         // on the DecAlpha
-        Int tmp = ifloor((dd - 122.1)/365.25);
+        int32_t tmp = ifloor((dd - 122.1)/365.25);
         yyyy = tmp;
-        Int d = ifloor(365.25 * tmp);
+        int32_t d = ifloor(365.25 * tmp);
 	mm = tmp = ifloor((dd - d)/30.6001);
 	dd -= d + ifloor(30.6001 * tmp); // day
 	if (mm < 14) {			// month
@@ -232,26 +232,26 @@ void MVTime::ymd(Int &yyyy, Int &mm, Int &dd) const {
 
 
 MVTime::Format MVTime::setFormat(MVTime::formatTypes intyp, 
-			  uInt inprec) {
+			  uint32_t inprec) {
     Format tmp = MVTime::defaultFormat;
     MVTime::defaultFormat.typ = intyp;
     MVTime::defaultFormat.prec = inprec;
-    MVTime::interimSet = False;
+    MVTime::interimSet = false;
     return tmp;
 }
 
-MVTime::Format MVTime::setFormat(uInt intyp, uInt inprec) {
+MVTime::Format MVTime::setFormat(uint32_t intyp, uint32_t inprec) {
     return setFormat((MVTime::formatTypes) intyp, inprec);
 }
 
-MVTime::Format MVTime::setFormat(uInt inprec) {
+MVTime::Format MVTime::setFormat(uint32_t inprec) {
     return  setFormat(MVTime::TIME, inprec);
 }
 
 MVTime::Format MVTime::setFormat(const MVTime::Format &form) {
     Format tmp = MVTime::defaultFormat;
     MVTime::defaultFormat = form;
-    MVTime::interimSet = False;
+    MVTime::interimSet = false;
     return tmp;
 }
 
@@ -260,7 +260,7 @@ MVTime::Format MVTime::getFormat() {
 }
 
 MVTime::formatTypes MVTime::giveMe(const String &in) {
-  const Int N_name = 32;
+  const int32_t N_name = 32;
   static const String tab[N_name] = {
     "ANGLE",
     "TIME",
@@ -329,28 +329,28 @@ MVTime::formatTypes MVTime::giveMe(const String &in) {
     MVTime::YMD_ONLY,
     MVTime::MOD_MASK
   };
-  Int t = MUString::minimaxNC(in, N_name, tab);
+  int32_t t = MUString::minimaxNC(in, N_name, tab);
   return (t<N_name ? nam[t] : (MVTime::formatTypes) 0);
 }
 
 String MVTime::string() const {
     if (MVTime::interimSet) {
-	MVTime::interimSet = False;
+	MVTime::interimSet = false;
 	return string(MVTime::interimFormat);
     }
     return string(MVTime::defaultFormat);
 }
    
-String MVTime::string(uInt inprec) const {
+String MVTime::string(uint32_t inprec) const {
     return string(MVTime::Format(inprec));
 }
 
 String MVTime::string(MVTime::formatTypes intyp, 
-		       uInt inprec) const {
+		       uint32_t inprec) const {
     return string(MVTime::Format(intyp, inprec));
 }
 
-String MVTime::string(uInt intyp, uInt inprec) const {
+String MVTime::string(uint32_t intyp, uint32_t inprec) const {
     return string(MVTime::Format(intyp, inprec));
 }
 
@@ -360,22 +360,22 @@ String MVTime::string(const MVTime::Format &form) const {
     return oss;
 }
 
-Double MVTime::timeZone() {
+double MVTime::timeZone() {
   return MVAngle::timeZone();
 }  
 void MVTime::print(ostream &oss,
 		    const MVTime::Format &form) const {
-    uInt inprec = form.prec;
-    uInt intyp = form.typ;
-    uInt i1 = intyp & ~MVTime::MOD_MASK;
+    uint32_t inprec = form.prec;
+    uint32_t intyp = form.typ;
+    uint32_t i1 = intyp & ~MVTime::MOD_MASK;
     // Next is to try to solve the problem with the Intel's indecision
     // arithmetic
-    Double loctmp(val);
+    double loctmp(val);
     if ((intyp & MVTime::LOCAL) == MVTime::LOCAL) {
       loctmp += MVTime::timeZone();
     }
-    Int locday = ifloor(loctmp);
-    MVTime loc = Double(locday);
+    int32_t locday = ifloor(loctmp);
+    MVTime loc = double(locday);
     loctmp = (loctmp - loc.val)*C::circle;
     MVAngle atmp(loctmp);
     atmp(0.0);
@@ -393,9 +393,9 @@ void MVTime::print(ostream &oss,
       }
     }
     if (i1 == MVTime::YMD || i1 == MVTime::DMY || i1 == MVTime::FITS) {
-      Int c,e,a;
+      int32_t c,e,a;
       loc.ymd(c,e,a);			// y,m,d
-      Char sfill = oss.fill();
+      char sfill = oss.fill();
       if (i1 == MVTime::YMD) {
 	oss << setfill('0') << setw(4) << c << "/" << 
 	  setw(2) << e << "/" << 
@@ -421,7 +421,7 @@ void MVTime::print(ostream &oss,
       oss.fill(sfill);
     }
     if (i1 == MVTime::MJD) {
-      Int c = ifloor(loc);
+      int32_t c = ifloor(loc);
       oss << c;
       if ((intyp & MVTime::NO_TIME) != MVTime::NO_TIME) {
 	oss << "/";
@@ -436,24 +436,24 @@ void MVTime::print(ostream &oss,
     }
 }
 
-Bool MVTime::read(Quantity &res, MUString &in, Bool chk) {
-  return read (res, in, chk, False);
+bool MVTime::read(Quantity &res, MUString &in, bool chk) {
+  return read (res, in, chk, false);
 }
-Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
+bool MVTime::read(Quantity &res, MUString &in, bool chk, bool throwExcp) {
   static const String mon[12] = {
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"};
   res = Quantity(0.0, "d");
-  Int tp = 0;
+  int32_t tp = 0;
   in.skipBlank();
   in.push();			// Save position
-  Double s = in.getSign();
+  double s = in.getSign();
   if (in.tSkipStringNC("today") || in.tSkipStringNC("now") ||
       in.testChar('/')) {
     if (in.tSkipChar('/') || in.tSkipChar('-') || in.tSkipChar(' ')) {
       if (MVAngle::read(res, in, chk)) {
 	res = Quantity(res.get("deg").getValue()/360., "d");
-	res += Quantity(Double((Int) Time().modifiedJulianDay()),
+	res += Quantity(double((int32_t) Time().modifiedJulianDay()),
 			"d");
       } else {
 	return MVAngle::handleReadError (in, throwExcp);
@@ -462,9 +462,9 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
       res = Quantity(Time().modifiedJulianDay(), "d");
     }
   } else {
-    Int r = in.getuInt();
-    Int mm = 0;
-    Double dd = 0;
+    int32_t r = in.getuInt();
+    int32_t mm = 0;
+    double dd = 0;
     if (in.testChar('-') || in.testAlpha()) {
       if (in.testChar('-')) in.skipChar();
       if (in.testAlpha()) {
@@ -490,7 +490,7 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
         }
       }
       in.skipChar('-');
-      Int dd2 = in.getuInt();
+      int32_t dd2 = in.getuInt();
       if (r > 1000) {		// New FITS format
         dd = dd2;
       } else {
@@ -528,14 +528,14 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
         return MVAngle::handleReadError (in, throwExcp);
       }
     } else if (in.tSkipChar('T')) {	// new FITS/ISO
-      if (MVAngle::read(res, in, False)) {
+      if (MVAngle::read(res, in, false)) {
         res = Quantity(res.get("deg").getValue()/360., "d");
         // Allow possible time zone as in ISO-8601
         if (in.testChar('+') || in.testChar('-')) {
-          Double s = in.getSign();
-          Double r = in.getuInt();
+          double s = in.getSign();
+          double r = in.getuInt();
           if (in.tSkipChar(':')) {
-            r += Double(in.getuInt())/60.0;
+            r += double(in.getuInt())/60.0;
           }
           res -= Quantity(s*r/24.0,"d");	// Time zone
         } else {
@@ -559,16 +559,16 @@ Bool MVTime::read(Quantity &res, MUString &in, Bool chk, Bool throwExcp) {
     }
   }
   in.unpush();
-  return True;
+  return true;
 }
 
-Bool MVTime::read(Quantity &res, const String &in, Bool chk) {
-  return read (res, in, chk, False);
+bool MVTime::read(Quantity &res, const String &in, bool chk) {
+  return read (res, in, chk, false);
 }
-Bool MVTime::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
+bool MVTime::read(Quantity &res, const String &in, bool chk, bool throwExcp) {
   MUString tmp(in);		// Pointed non-const String
   if (!MVTime::read(res, tmp, chk, throwExcp)) {
-    Double r = tmp.getDouble();
+    double r = tmp.getDouble();
     UnitVal u; String us;
     if (!MVAngle::unitString(u,us,tmp)) {
       return MVAngle::handleReadError (tmp, throwExcp);
@@ -583,12 +583,12 @@ Bool MVTime::read(Quantity &res, const String &in, Bool chk, Bool throwExcp) {
       return MVAngle::handleReadError (tmp, throwExcp);
     }
   }
-  return True;
+  return true;
 }
 
 ostream &operator<<(ostream &os, const MVTime &meas) {
     if (MVTime::interimSet) {
-	MVTime::interimSet = False;
+	MVTime::interimSet = false;
 	meas.print(os, MVTime::interimFormat);
     } else {
 	meas.print(os, MVTime::defaultFormat);
@@ -611,7 +611,7 @@ istream &operator>>(istream &is, MVTime &meas) {
 
 ostream &operator<<(ostream &os, const MVTime::Format &form) {
     MVTime::interimFormat = form;
-    MVTime::interimSet = True;
+    MVTime::interimSet = true;
     return os;
 }
 

@@ -39,10 +39,10 @@
 
 void sortit (int opt)
 {
-    Int arr[10];
-    Int64 ar2[10];
-    Int ar3[10];
-    uInt i;
+    int32_t arr[10];
+    int64_t ar2[10];
+    int32_t ar3[10];
+    uint32_t i;
     double ard[10];
     struct Ts {
 	double ad;
@@ -64,8 +64,8 @@ void sortit (int opt)
 
     Sort sort;
     sort.sortKey (arr,TpInt);                  // sort arr
-    Vector<uInt> inxvec;
-    uInt nr = sort.sort (inxvec,10,opt,False); // get indices back in inxvec
+    Vector<uint32_t> inxvec;
+    uint32_t nr = sort.sort (inxvec,10,opt,false); // get indices back in inxvec
     for (i=0; i<nr; i++) {
 	cout << " " << arr[inxvec(i)];
     }
@@ -75,17 +75,17 @@ void sortit (int opt)
     Sort sort2;
     sort2.sortKey (arr,TpInt,0,Sort::Descending);
     sort = sort2;
-    nr = sort.sort (inxvec,10,opt,False);      // same, but now descending
+    nr = sort.sort (inxvec,10,opt,false);      // same, but now descending
     for (i=0; i<nr; i++) {
 	cout << " " << arr[inxvec(i)];
     }
     cout << endl;
 
     // Also test copy constructor.
-    Sort sort3(ar2,sizeof(Int64));
+    Sort sort3(ar2,sizeof(int64_t));
     sort3.sortKey (0,TpInt64,Sort::Ascending);
     Sort sort3a(sort3);
-    nr = sort3a.sort (inxvec,10,opt,False);    // same, but now with original
+    nr = sort3a.sort (inxvec,10,opt,false);    // same, but now with original
     for (i=0; i<nr; i++) {                     // array in descending order
 	cout << " " << ar2[inxvec(i)];
     }
@@ -93,7 +93,7 @@ void sortit (int opt)
 
     Sort sort4;
     sort4.sortKey (ar2,TpInt64,0,Sort::Descending);
-    nr = sort4.sort (inxvec,10,opt,False);
+    nr = sort4.sort (inxvec,10,opt,false);
     for (i=0; i<nr; i++) {
 	cout << " " << ar2[inxvec(i)];
     }
@@ -101,32 +101,32 @@ void sortit (int opt)
 
     Sort sort5;
     sort5.sortKey (ar3,TpInt,0,Sort::Ascending);
-    nr = sort5.sort (inxvec,10,opt,False);
+    nr = sort5.sort (inxvec,10,opt,false);
     for (i=0; i<nr; i++) {
 	cout << " " << ar3[inxvec(i)];
     }
     cout << endl;
 
-    Sort sort6(arr,sizeof(Int));
+    Sort sort6(arr,sizeof(int32_t));
     sort6.sortKey (ard,TpDouble);
     sort6.sortKey (0,TpInt,Sort::Descending);
-    nr = sort6.sort (inxvec,10,opt,False);     // sort on 2 keys
+    nr = sort6.sort (inxvec,10,opt,false);     // sort on 2 keys
     for (i=0; i<nr; i++) {
 	cout << " " << ard[inxvec(i)] << "," << arr[inxvec(i)];
     }
     cout << endl;
 
     Sort sort7(arts,sizeof(Ts));
-    uInt distad = (char*)&arts[0].ad - (char*)arts;
-    uInt distas = (char*)&arts[0].as - (char*)arts;
+    uint32_t distad = (char*)&arts[0].ad - (char*)arts;
+    uint32_t distas = (char*)&arts[0].as - (char*)arts;
     sort7.sortKey (distad, TpDouble);
     sort7.sortKey (distas, TpString,Sort::Descending);
-    nr = sort7.sort (inxvec,10,opt,False);     // sort a struct, where the data
+    nr = sort7.sort (inxvec,10,opt,false);     // sort a struct, where the data
     for (i=0; i<nr; i++) {                     // are combined in one record
 	cout << " " << arts[inxvec(i)].ad << "," << arts[inxvec(i)].as;
     }
     cout << endl;
-    nr = sort7.sort (inxvec,10,opt|Sort::NoDuplicates,False); // unique keys
+    nr = sort7.sort (inxvec,10,opt|Sort::NoDuplicates,false); // unique keys
     for (i=0; i<nr; i++) {
 	cout << " " << arts[inxvec(i)].ad << "," << arts[inxvec(i)].as;
     }
@@ -134,11 +134,11 @@ void sortit (int opt)
 }
 
 void sortdo (int options, Sort& sort, Sort::Order order,
-	     Int* data, uInt nrdata)
+	     int32_t* data, uint32_t nrdata)
 {
-    Vector<uInt> inxvec;
-    uInt nr = sort.sort (inxvec, nrdata, options);
-    uInt i;
+    Vector<uint32_t> inxvec;
+    uint32_t nr = sort.sort (inxvec, nrdata, options);
+    uint32_t i;
     for (i=1; i<nr; i++) {
 	if (order == Sort::Ascending) {
 	    if (data[inxvec(i)] < data[inxvec(i-1)]) {
@@ -169,10 +169,10 @@ void sortdo (int options, Sort& sort, Sort::Order order,
         AlwaysAssertExit (nr == nrdata);
         AlwaysAssertExit (nr == inxvec.nelements());
     } else {
-        Vector<uInt> inxvec2;
+        Vector<uint32_t> inxvec2;
 	sort.sort (inxvec2, nrdata, Sort::QuickSort);
-	Vector<uInt> uniqvec;
-	uInt nr2 = sort.unique (uniqvec, inxvec2);
+	Vector<uint32_t> uniqvec;
+	uint32_t nr2 = sort.unique (uniqvec, inxvec2);
         AlwaysAssertExit (nr2 == nr);
         AlwaysAssertExit (nr2 == uniqvec.nelements());
 	for (i=0; i<nr2; i++) {
@@ -191,40 +191,40 @@ void sortdo (int options, Sort& sort, Sort::Order order,
 // Test with 1 and 2 keys, because 1 key is short-circuited to GenSort.
 void sortall (int options, Sort::Order order)
 {
-    const uInt nrdata = 10;
-    Int data[nrdata];
-    Int data2[nrdata];
+    const uint32_t nrdata = 10;
+    int32_t data[nrdata];
+    int32_t data2[nrdata];
     Sort sort;
     sort.sortKey (data, TpInt, 0, order);
     Sort sort2;
     sort2.sortKey (data, TpInt, 0, order);
     sort2.sortKey (data2, TpInt, 0, order);
-    for (uInt i=0; i<nrdata; i++) {
+    for (uint32_t i=0; i<nrdata; i++) {
       data[i] = i;
       data2[i] = 0;
     }
     sortdo (options, sort, order, data, nrdata);
     sortdo (options, sort2, order, data, nrdata);
 
-    for (uInt i=0; i<nrdata; i++) {
+    for (uint32_t i=0; i<nrdata; i++) {
       data[i] = nrdata - i;
     }
     sortdo (options, sort, order, data, nrdata);
     sortdo (options, sort2,order,  data, nrdata);
 
-    for (uInt i=0; i<nrdata; i++) {
+    for (uint32_t i=0; i<nrdata; i++) {
       data[i] = rand();
     }
     sortdo (options, sort, order, data, nrdata);
     sortdo (options, sort2, order, data, nrdata);
 
-    for (uInt i=0; i<nrdata; i++) {
+    for (uint32_t i=0; i<nrdata; i++) {
       data[i] = 1;
     }
     sortdo (options, sort, order, data, nrdata);
     sortdo (options, sort2, order, data, nrdata);
 
-    for (uInt i=0; i<nrdata; i++) {
+    for (uint32_t i=0; i<nrdata; i++) {
       data[i] = rand()%10;
     }
     sortdo (options, sort, order, data, nrdata);
@@ -241,8 +241,8 @@ void sort_test_unique()
     const size_t nchanges = 16;
     const size_t groupitems = 2;
     const size_t nrdata = groupitems * nchanges;
-    Int data[nrdata];
-    Int data2[nrdata];
+    int32_t data[nrdata];
+    int32_t data2[nrdata];
     for (size_t i=0; i<nchanges; i++) {
       for (size_t j=0; j<groupitems; j++) {
         data[j+i*groupitems] = i%4;
@@ -254,13 +254,13 @@ void sort_test_unique()
     Sort sort;
     sort.sortKey (data,  TpInt, 0, Sort::Ascending);
     sort.sortKey (data2, TpInt, 0, Sort::Ascending);
-    Vector<uInt> inxvec;
-    uInt nr = sort.sort (inxvec, nrdata, Sort::ParSort);
+    Vector<uint32_t> inxvec;
+    uint32_t nr = sort.sort (inxvec, nrdata, Sort::ParSort);
     AlwaysAssertExit (nr == nrdata);
     // Get the group boundaries (portions of the dataset where all the sorting
     // functions are evaluated to 0, i.e., they are identical from the point of
     // view of the sorting)
-    Vector<uInt> uniqueVector;
+    Vector<uint32_t> uniqueVector;
     Vector<size_t> changeKey;
     sort.unique(uniqueVector, changeKey, inxvec);
     for (size_t i=0; i<uniqueVector.size(); i++) {

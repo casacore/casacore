@@ -33,8 +33,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 VirtualArrayColumnBase::~VirtualArrayColumnBase()
 {}
 
-Bool VirtualArrayColumnBase::isWritable() const
-    { return False; }
+bool VirtualArrayColumnBase::isWritable() const
+    { return false; }
 
 void VirtualArrayColumnBase::getScalarColumnV (ArrayBase&)
 { 
@@ -71,11 +71,11 @@ void VirtualArrayColumnBase::setShape (rownr_t, const IPosition&)
     throw DataManInvOper ("VirtualArrayColumn::setShape not possible"
                           " for column " + columnName());
 }
-Bool VirtualArrayColumnBase::isShapeDefined (rownr_t)
+bool VirtualArrayColumnBase::isShapeDefined (rownr_t)
 {
     throw DataManInvOper ("VirtualArrayColumn::isShapeDefined not possible"
                           " for column " + columnName());
-    return False;
+    return false;
 }
 IPosition VirtualArrayColumnBase::shape (rownr_t)
 {

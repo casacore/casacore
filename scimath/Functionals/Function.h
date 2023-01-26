@@ -85,7 +85,7 @@ class RecordInterface;
 // These calls are (in debug mode) tested for the correct number of arguments,
 // after which they call a <src>T eval(FunctionArg x) const = 0</src> to
 // be implemented in derived classes. The derived class should also implement 
-// an <src>uInt ndim() const = 0</src>. The derived class can access the
+// an <src>uint32_t ndim() const = 0</src>. The derived class can access the
 // nth parameter with the <src>[n]</src> operator, and the corresponding
 // mask with <src>mask(n)</src> method.
 // The variables are referenced with <src>x[i]</src>.
@@ -122,7 +122,7 @@ class RecordInterface;
 //         return *this; }
 //     virtual ~Sinusoid() {}
 //     // Dimensionality
-//     virtual uInt ndim() const { return 2; }
+//     virtual uint32_t ndim() const { return 2; }
 //     // Evaluate
 //     virtual T eval(Function<T>::FunctionArg x) const {
 //	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); }
@@ -134,8 +134,8 @@ class RecordInterface;
 // <src>A=2; f=3; x=0.1;</src>
 // <srcblock>
 //     // The function objects for value, and for value + derivative
-//     Sinusoid<Double> soid1(2.0, 3.0);
-//     typedef AutoDiff<Double> Adif;
+//     Sinusoid<double> soid1(2.0, 3.0);
+//     typedef AutoDiff<double> Adif;
 //     Sinusoid<Adif> soid2(Adif(2,2,0), Adif(3,2,1));
 //     cout << "Value: " << soid1(0.1) << endl;
 //     cout << "(val, deriv): " << soid2(Adif(0.1)) << endl;
@@ -154,7 +154,7 @@ class RecordInterface;
 //     enum { AMPL=0, FREQ };
 //     Sinusoid() : Function<T>(2){param_p[AMPL] T(1);param_p[FREQ]=T(1);}
 //     virtual ~Sinusoid() {}
-//     virtual uInt ndim() const { return 2; }
+//     virtual uint32_t ndim() const { return 2; }
 //     virtual T eval(Function<T>::FunctionArg x) const {
 //	  return param_p[AMPL]*sin(T(C::_2pi)*param_p[FREQ]*x[0]); }
 //     virtual Function<T> *clone() const { return new Sinusoid<T>param_p; }
@@ -164,10 +164,10 @@ class RecordInterface;
 // <src>A=2; f=3; x=0.1;</src>
 // <srcblock>
 //     // The function objects for value, and for value + derivative
-//     typedef AutoDiff<Double> Adif;
-//     typedef Function<Double> FD;
-//     typedef Function<AutoDiff<Double> > FAdif
-//     Sinusoid<Double> soid1;
+//     typedef AutoDiff<double> Adif;
+//     typedef Function<double> FD;
+//     typedef Function<AutoDiff<double> > FAdif
+//     Sinusoid<double> soid1;
 //     Sinusoid<Adif> soid2;
 //     soid1[FD::AMPL] = 2; soid1[FD::FREQ] = 3;
 //     soid2[FAdif::AMPL] = Adif(2,2,0);
@@ -207,25 +207,25 @@ class RecordInterface;
      //# Constructors
      // Constructors
      // <group>
-     Function() : param_p(), arg_p(0), parset_p(False), locked_p(False) {}
-     explicit Function(const uInt n) : param_p(n), arg_p(0), parset_p(False),
-     locked_p(False) {}
+     Function() : param_p(), arg_p(0), parset_p(false), locked_p(false) {}
+     explicit Function(const uint32_t n) : param_p(n), arg_p(0), parset_p(false),
+     locked_p(false) {}
      explicit Function(const Vector<T> &in) : param_p(in), arg_p(0),
-     parset_p(False), locked_p(False) {}
+     parset_p(false), locked_p(false) {}
      Function(const FunctionParam<T> &other) : param_p(other), arg_p(0),
-     parset_p(False), locked_p(False) {}
+     parset_p(false), locked_p(false) {}
      template <class W, class X>
      Function(const Function<W,X> &other) : param_p(other.parameters()),
-     arg_p(0), parset_p(other.parsetp()), locked_p(False) {}
+     arg_p(0), parset_p(other.parsetp()), locked_p(false) {}
      // </group>
      
      // Destructor
      virtual ~Function() {}
      
      // Returns the number of dimensions of function
-     virtual uInt ndim() const = 0;
+     virtual uint32_t ndim() const = 0;
      // Returns the number of parameters
-     uInt nparameters() const { return param_p.nelements(); }
+     uint32_t nparameters() const { return param_p.nelements(); }
      
      // Evaluate the function object
      virtual U eval(FunctionArg x) const = 0;
@@ -233,9 +233,9 @@ class RecordInterface;
      //# Operators
      // Manipulate the nth parameter (0-based) with no index check
      // <group>
-     T &operator[](const uInt n) { parset_p |= !locked_p;
+     T &operator[](const uint32_t n) { parset_p |= !locked_p;
      return param_p[n]; }
-     const T &operator[](const uInt n) const { return param_p[n]; }
+     const T &operator[](const uint32_t n) const { return param_p[n]; }
      // </group>
      // Evaluate this function object at <src>x</src>or at <src>x, y</src>.
      // The length of <src>x</src> must be greater than or equal to
@@ -261,20 +261,20 @@ class RecordInterface;
      // nonadjustable).
      // Note: no index check.
      // <group>
-     Bool &mask(const uInt n) { parset_p |= !locked_p;
+     bool &mask(const uint32_t n) { parset_p |= !locked_p;
      return param_p.mask(n); }
-     const Bool &mask(const uInt n) const { return param_p.mask(n); }
+     const bool &mask(const uint32_t n) const { return param_p.mask(n); }
      // </group>
      // Return the parameter interface
      // <group>
      const FunctionParam<T> &parameters() const { return param_p; }
-     FunctionParam<T> &parameters() { parset_p = True; return param_p; }
+     FunctionParam<T> &parameters() { parset_p = true; return param_p; }
      // </group>
      // Get <src>arg_p</src> and <src>parset_p</src>. Necessary for reasons
      // of protection in the copying of non-conforming Functions.
      // <group>
      const Vector<ArgType> &argp() const { return arg_p; }
-     Bool parsetp() const { return parset_p; }
+     bool parsetp() const { return parset_p; }
      // </group>
      // Compiler cannot always find the correct 'const' version of parameter
      // access. In cases where this would lead to excessive overheads in
@@ -282,8 +282,8 @@ class RecordInterface;
      // parameter changing can be set to be locked, and no changes are
      // assumed.
      // <group>
-     void lockParam()   { locked_p = True; }
-     void unlockParam() { locked_p = False; }
+     void lockParam()   { locked_p = true; }
+     void unlockParam() { locked_p = false; }
      // </group>
      
      // get/set the function mode.  These provide an interface to 
@@ -305,9 +305,9 @@ class RecordInterface;
      virtual void getMode(RecordInterface& mode) const;
      // </group>
      
-     // return True if the implementing function supports a mode.  The default
-     // implementation returns False.
-     virtual Bool hasMode() const;
+     // return true if the implementing function supports a mode.  The default
+     // implementation returns false.
+     virtual bool hasMode() const;
      
      // Print the function (i.e. the parameters)
      ostream &print(ostream &os) const { return param_p.print(os); }
@@ -331,9 +331,9 @@ protected:
   // Aid for non-contiguous argument storage
   mutable Vector<ArgType> arg_p;
   // Indicate parameter written
-  mutable Bool parset_p;
+  mutable bool parset_p;
   // Indicate that parameters are expected to be locked from changing
-  mutable Bool locked_p;
+  mutable bool locked_p;
 };
 
 //# Global functions

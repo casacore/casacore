@@ -83,10 +83,10 @@ protected:
     template <typename T>
     class Deleter {
     public:
-        Deleter (Bool deleteIt) : reallyDeleteIt_p (deleteIt) {}
+        Deleter (bool deleteIt) : reallyDeleteIt_p (deleteIt) {}
         void operator() (T * data) const { if (reallyDeleteIt_p) delete data;}
     private:
-        Bool reallyDeleteIt_p;
+        bool reallyDeleteIt_p;
     };
 
 
@@ -104,14 +104,14 @@ public:
     // This constructor sets up a reference count for the <src>val</src>
     // pointer.  By default, the data pointed to by <src>val</src>
     // will be deleted when it is no longer referenced. Passing in
-    // <src>False</src> for <src>delit</src> will prevent the data
+    // <src>false</src> for <src>delit</src> will prevent the data
     // from being deleted when the reference count reaches zero.
     //
     // <note role=warning> After the counted pointer is initialized
     // the value should no longer be manipulated by the raw pointer of
     // type <src>t*</src>.
     // </note>
-    CountedPtr(t *val, Bool delit = True)
+    CountedPtr(t *val, bool delit = true)
     : pointerRep_p (val, Deleter<t> (delit))
     {}
     
@@ -144,7 +144,7 @@ public:
 
     // Reset the pointer.
     // <group>
-    void reset (t *val, Bool delit=True)
+    void reset (t *val, bool delit=true)
       { pointerRep_p = PointerRep (val, Deleter<t>(delit)); }
     void reset()
       { pointerRep_p.reset(); }
@@ -184,21 +184,21 @@ public:
 
     // Equality operator which checks to see if two
     // <src>CountedPtr</src>s are pointing at the same thing.
-    Bool operator==(const CountedPtr<t> &other) const {
+    bool operator==(const CountedPtr<t> &other) const {
 	return (get() == other.get());
     }
     //# Note: use of const void* gives ambiguius overload error.
-    Bool operator==(int ptr) const {
+    bool operator==(int ptr) const {
         return (ptr == 0  &&  get() == 0);
     }
 
     // Non-equality operator which checks to see if two
     // <src>CountedPtr</src>s are not pointing at the same thing.
-    Bool operator!=(const CountedPtr<t> &other) const {
-	return (get() != other.get()  ? True : False);
+    bool operator!=(const CountedPtr<t> &other) const {
+	return (get() != other.get()  ? true : false);
     }
     //# Note: use of const void* gives ambiguius overload error.
-    Bool operator!=(int ptr) const {
+    bool operator!=(int ptr) const {
         return (ptr != 0  ||  get() != 0);
     }
 
@@ -227,12 +227,12 @@ public:
     // Sometimes it is useful to know if there is more than one
     // reference made. This is a way of getting that. Of course the point
     // of these classes is that this information is normally not required.
-    uInt nrefs() const
+    uint32_t nrefs() const
       { return pointerRep_p.use_count(); }
 
     // Check to see if this <src>CountedPtr</src> is
     // un-initialized, null.
-    Bool null() const
+    bool null() const
       { return get() == 0; }
 
     // Test if it contains a valid pointer.
@@ -249,8 +249,8 @@ private:
 };
 
 // A shared_ptr is used as implementation.
-inline Bool countedPtrShared()
-  { return True; }
+inline bool countedPtrShared()
+  { return true; }
 
 // Cast the CountedPtr from one pointer type to another.
 template<typename T, typename U>

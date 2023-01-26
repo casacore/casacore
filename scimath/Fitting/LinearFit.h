@@ -131,8 +131,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // latter case the solution returned will be the fixed value.
 // 
 // <templating arg=T>
-// <li> Float
-// <li> Double
+// <li> float
+// <li> double
 // <li> Complex
 // <li> DComplex   
 // </templating>
@@ -169,32 +169,32 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // all four methods to calculate a polynomial through the data is used
 // <srcblock>
 //    	// The list of coordinate x-values
-//    	Vector<Double> x(nPrimes);
-//    	indgen((Array<Double>&)x, 1.0);  // 1, 2, ...
-//    	Vector<Double> primesTable(nPrimes);
-//    	for (uInt i=1; i < nPrimes; i++) {
+//    	Vector<double> x(nPrimes);
+//    	indgen((Array<double>&)x, 1.0);  // 1, 2, ...
+//    	Vector<double> primesTable(nPrimes);
+//    	for (uint32_t i=1; i < nPrimes; i++) {
 //        primesTable(i) =
-//	   Primes::nextLargerPrimeThan(Int(primesTable(i-1)+0.01));
+//	   Primes::nextLargerPrimeThan(int32_t(primesTable(i-1)+0.01));
 //      };   
-//	Vector<Double> sigma(nPrimes);
+//	Vector<double> sigma(nPrimes);
 //	sigma = 1.0;
 //	// The fitter
-//  	LinearFit<Double> fitter;
-//	Polynomial<AutoDiff<Double> > combination(2);
+//  	LinearFit<double> fitter;
+//	Polynomial<AutoDiff<double> > combination(2);
 //	// Get the solution
 //	fitter.setFunction(combination);
-//    	Vector<Double> solution = fitter.fit(x, primesTable, sigma);
+//    	Vector<double> solution = fitter.fit(x, primesTable, sigma);
 //	// create a special function (should probably at beginning)
-//	static void myfnc(Vector<Double> &y, const Double x) {
-//  	y(0) = 1; for (uInt i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
+//	static void myfnc(Vector<double> &y, const double x) {
+//  	y(0) = 1; for (uint32_t i=1; i<y.nelements(); i++) y(i) = y(i-1)*x; };
 //    	fitter.setFunction(3, &myfnc);
 //    	solution = fitter.fit(x, primesTable, sigma);
 //	// Create the direct coefficients table
 //    	fitter.setFunction(3);
-//    	Matrix<Double> xx(nPrimes, 3);
-//    	for (uInt i=0; i<nPrimes; i++) {
+//    	Matrix<double> xx(nPrimes, 3);
+//    	for (uint32_t i=0; i<nPrimes; i++) {
 //        xx(i,0) = 1;
-//        for (uInt j=1; j<3; j++) xx(i,j) = xx(i,j-1)*Double(i+1);
+//        for (uint32_t j=1; j<3; j++) xx(i,j) = xx(i,j-1)*double(i+1);
 //      };
 //      solution = fitter.fit(xx, primesTable, sigma);
 // </srcblock>
@@ -225,12 +225,12 @@ protected:
 
   //# Member functions
   // Generalised fitter
-  virtual Bool fitIt
+  virtual bool fitIt
     (Vector<typename FunctionTraits<T>::BaseType> &sol,
      const Array<typename FunctionTraits<T>::BaseType> &x, 
      const Vector<typename FunctionTraits<T>::BaseType> &y,
      const Vector<typename FunctionTraits<T>::BaseType> *const sigma,
-     const Vector<Bool> *const mask=0);
+     const Vector<bool> *const mask=0);
 
 private:
   //# Data

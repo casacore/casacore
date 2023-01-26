@@ -57,10 +57,10 @@ int main(int argc, const char* argv[])
 
 	timer.mark();
 
-	for (uInt i=0;i<ms.nrow();i++) {
+	for (uint32_t i=0;i<ms.nrow();i++) {
 	    reader.gotoRow(i);
 	    cout << i << " : ";
-	    for (uInt j=0;j<tables.nelements();j++) {
+	    for (uint32_t j=0;j<tables.nelements();j++) {
 		if (j > 0) cout << " | ";
 		cout << reader.rowNumber(tables(j));
 	    }

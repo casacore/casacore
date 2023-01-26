@@ -100,7 +100,7 @@ public:
   // Create a SSMColumn object with the given parent.
   // It initializes the various variables.
   // It keeps the pointer to its parent (but does not own it).
-  SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr);
+  SSMColumn (SSMBase* aParent, int aDataType, uint32_t aColNr);
   
   virtual ~SSMColumn();
   
@@ -112,10 +112,10 @@ public:
   // Set the maximum length of a 'fixed length' string.
   // It is only called (right after the constructor) if the string has
   // a fixed length.
-  virtual void setMaxLength (uInt maxLength);
+  virtual void setMaxLength (uint32_t maxLength);
 
   // Get the dimensionality of the item in the given row.
-  virtual uInt ndim (rownr_t aRowNr);
+  virtual uint32_t ndim (rownr_t aRowNr);
   
   // Get the shape of the array in the given row.
   virtual IPosition shape (rownr_t aRowNr);
@@ -133,13 +133,13 @@ public:
   
   // Get the scalar value in the given row.
   // <group>
-  virtual void getBool     (rownr_t aRowNr, Bool* aDataPtr);
-  virtual void getuChar    (rownr_t aRowNr, uChar* aDataPtr);
-  virtual void getShort    (rownr_t aRowNr, Short* aDataPtr);
-  virtual void getuShort   (rownr_t aRowNr, uShort* aDataPtr);
-  virtual void getInt      (rownr_t aRowNr, Int* aDataPtr);
-  virtual void getuInt     (rownr_t aRowNr, uInt* aDataPtr);
-  virtual void getInt64    (rownr_t aRowNr, Int64* aDataPtr);
+  virtual void getBool     (rownr_t aRowNr, bool* aDataPtr);
+  virtual void getuChar    (rownr_t aRowNr, unsigned char* aDataPtr);
+  virtual void getShort    (rownr_t aRowNr, int16_t* aDataPtr);
+  virtual void getuShort   (rownr_t aRowNr, uint16_t* aDataPtr);
+  virtual void getInt      (rownr_t aRowNr, int32_t* aDataPtr);
+  virtual void getuInt     (rownr_t aRowNr, uint32_t* aDataPtr);
+  virtual void getInt64    (rownr_t aRowNr, int64_t* aDataPtr);
   virtual void getfloat    (rownr_t aRowNr, float* aDataPtr);
   virtual void getdouble   (rownr_t aRowNr, double* aDataPtr);
   virtual void getComplex  (rownr_t aRowNr, Complex* aDataPtr);
@@ -150,13 +150,13 @@ public:
   // Put the scalar value in the given row.
   // It updates the cache if the row is contained in the cache.
   // <group>
-  virtual void putBool     (rownr_t aRowNr, const Bool* aDataPtr);
-  virtual void putuChar    (rownr_t aRowNr, const uChar* aDataPtr);
-  virtual void putShort    (rownr_t aRowNr, const Short* aDataPtr);
-  virtual void putuShort   (rownr_t aRowNr, const uShort* aDataPtr);
-  virtual void putInt      (rownr_t aRowNr, const Int* aDataPtr);
-  virtual void putuInt     (rownr_t aRowNr, const uInt* aDataPtr);
-  virtual void putInt64    (rownr_t aRowNr, const Int64* aDataPtr);
+  virtual void putBool     (rownr_t aRowNr, const bool* aDataPtr);
+  virtual void putuChar    (rownr_t aRowNr, const unsigned char* aDataPtr);
+  virtual void putShort    (rownr_t aRowNr, const int16_t* aDataPtr);
+  virtual void putuShort   (rownr_t aRowNr, const uint16_t* aDataPtr);
+  virtual void putInt      (rownr_t aRowNr, const int32_t* aDataPtr);
+  virtual void putuInt     (rownr_t aRowNr, const uint32_t* aDataPtr);
+  virtual void putInt64    (rownr_t aRowNr, const int64_t* aDataPtr);
   virtual void putfloat    (rownr_t aRowNr, const float* aDataPtr);
   virtual void putdouble   (rownr_t aRowNr, const double* aDataPtr);
   virtual void putComplex  (rownr_t aRowNr, const Complex* aDataPtr);
@@ -173,23 +173,23 @@ public:
   
   // Add (NewNrRows-OldNrRows) rows to the Column and initialize
   // the new rows when needed.
-  virtual void addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, Bool doInit);
+  virtual void addRow (rownr_t aNewNrRows, rownr_t anOldNrRows, bool doInit);
 
   // Remove the given row from the data bucket and possibly string bucket.
   // If needed, it also removes it from the cache.
   virtual void deleteRow (rownr_t aRowNr);
 
   // Get the size of the dataType in bytes!!
-  uInt getExternalSizeBytes() const;
+  uint32_t getExternalSizeBytes() const;
 
   // Get the size of the dataType in bits!!
-  uInt getExternalSizeBits() const;
+  uint32_t getExternalSizeBits() const;
 
   // get the sequence number of this column.
-  uInt getColNr();
+  uint32_t getColNr();
 
   // set the sequence number of this column.
-  void setColNr (uInt aColNr);
+  void setColNr (uint32_t aColNr);
 
   // If something special has to be done before removing the Column,
   // as is the case with Strings, it can be done here.
@@ -206,7 +206,7 @@ protected:
   // <src>data</src> must have 3 Ints to hold the values.
   // It returns a pointer to the data in the bucket, which can be used
   // for the case that the data bucket contains the (short) string.
-  Char* getRowValue (Int* data, rownr_t aRowNr);
+  char* getRowValue (int32_t* data, rownr_t aRowNr);
     
   // Put the given value for the row into the correct data bucket.
   void putValue (rownr_t aRowNr, const void* aValue);
@@ -229,22 +229,22 @@ protected:
   // Pointer to the parent storage manager.
   SSMBase*          itsSSMPtr;
   // Length of column cell value in storage format (0 = variable length).
-  uInt              itsExternalSizeBytes;
-  uInt              itsExternalSizeBits;
+  uint32_t              itsExternalSizeBytes;
+  uint32_t              itsExternalSizeBits;
   // Column sequence number of this column.
-  uInt              itsColNr;
+  uint32_t              itsColNr;
   // The shape of the column.
   IPosition         itsShape;
   // The maximum length of a 'fixed length' string.
-  uInt              itsMaxLen;
+  uint32_t              itsMaxLen;
   // Number of elements in a value for this column.
-  uInt              itsNrElem;
+  uint32_t              itsNrElem;
   // Number of values to be copied.
   // Normally this is itsNrElem, but for complex types it is 2*itsNrElem.
   // When local format is used, it is the number of bytes.
-  uInt              itsNrCopy;
+  uint32_t              itsNrCopy;
   // The sizeof the datatype in local format
-  uInt              itsLocalSize;
+  uint32_t              itsLocalSize;
   // The data in local format.
   void*             itsData;
   // Pointer to a convert function for writing.
@@ -269,12 +269,12 @@ private:
 };
 
 
-inline uInt SSMColumn::getExternalSizeBytes() const
+inline uint32_t SSMColumn::getExternalSizeBytes() const
 {
   return itsExternalSizeBytes;
 }
 
-inline uInt SSMColumn::getExternalSizeBits() const
+inline uint32_t SSMColumn::getExternalSizeBits() const
 {
   return itsExternalSizeBits;
 }
@@ -287,12 +287,12 @@ inline char* SSMColumn::getDataPtr()
   return static_cast<char*>(itsData);
 }
 
-inline uInt SSMColumn::getColNr()
+inline uint32_t SSMColumn::getColNr()
 {
   return itsColNr;
 }
 
-inline void SSMColumn::setColNr (uInt aColNr)
+inline void SSMColumn::setColNr (uint32_t aColNr)
 {
   itsColNr = aColNr;
 }

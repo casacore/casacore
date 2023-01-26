@@ -75,65 +75,65 @@ public:
 // push out older values. Returns the new median value.
 // If flag is set to true, adds a "flagged" datum, one which takes
 // up space in the window but is skipped during median computations.
-  Float add      ( Float d,Bool flag=False );
+  float add      ( float d,bool flag=false );
 // Adds a flagged datum
-  Float add      ()                          { return add(0,True); }
+  float add      ()                          { return add(0,true); }
 // Adds N flagged datums
-  Float next     ( uInt n=1 );
+  float next     ( uint32_t n=1 );
 // Adds several datums at once (with corresponding flags)
-  Float add      ( const Vector<Float> &d,const Vector<Bool> &flag );
+  float add      ( const Vector<float> &d,const Vector<bool> &flag );
 // Adds several non-flagged datums at once
-  Float add      ( const Vector<Float> &d );
+  float add      ( const Vector<float> &d );
   
 // Returns the number of values currently in the window. This is less
 // than the window width initially.
-//  Int  size    ();    
+//  int32_t  size    ();    
 
 // Returns the number of non-flagged values in window
-  Int  nval    ();
+  int32_t  nval    ();
   
 // Returns the current median value  
-  Float median ();
+  float median ();
 
 // Returns a previous value (from n steps ago) from the sliding window
-  Float prevVal  ( uInt n,Bool &flag );
+  float prevVal  ( uint32_t n,bool &flag );
 
 // Returns value from midpoint (center) of window, possibly with flag
-  Float midpoint ( Bool &flag );
-  Float midpoint ()               
-          { Bool dum; return midpoint(dum); }
+  float midpoint ( bool &flag );
+  float midpoint ()               
+          { bool dum; return midpoint(dum); }
 
 // Returns the difference between the current median and the value
 // at window center. Optionally, also returns flag of median center
-  Float diff ( Bool &flag )       { return midpoint(flag) - median(); }
-  Float diff ()                   
-           { Bool dum; return diff(dum); }
+  float diff ( bool &flag )       { return midpoint(flag) - median(); }
+  float diff ()                   
+           { bool dum; return diff(dum); }
 
 // returns total memory usage (in bytes) for a given halfwin size 
   static size_t objsize ( int halfwin )
-  { return sizeof(MedianSlider)+(sizeof(Float)+sizeof(uInt)+sizeof(Bool))*(halfwin*2+1); }
+  { return sizeof(MedianSlider)+(sizeof(float)+sizeof(uint32_t)+sizeof(bool))*(halfwin*2+1); }
   
 // For testing purposes only: verifies current value of median.
 // Throws an exception if it fails.
-  Bool  assure ();
+  bool  assure ();
 
 private:
 
-  uInt   halfwin,fullwin;
-  Float *buf;
-  uInt  *index;
-  Bool  *valid;
-  uInt   ibuf,nind;
+  uint32_t   halfwin,fullwin;
+  float *buf;
+  uint32_t  *index;
+  bool  *valid;
+  uint32_t   ibuf,nind;
   
 };
 
 
-inline Int MedianSlider::nval ()
+inline int32_t MedianSlider::nval ()
 {
   return nind;
 }
 
-inline Float MedianSlider::median () 
+inline float MedianSlider::median () 
 {
   if( !nind )
     return 0;
@@ -143,7 +143,7 @@ inline Float MedianSlider::median ()
 //      : buf[ index[nind/2-1] ];
 }
 
-inline Float MedianSlider::midpoint ( Bool &flag ) 
+inline float MedianSlider::midpoint ( bool &flag ) 
 {
   return prevVal(halfwin+1,flag);
 }

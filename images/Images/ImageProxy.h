@@ -45,7 +45,7 @@ namespace casacore {
   class ImageAttrHandler;
 
   // <synopsis>
-  // ImageProxy is a proxy to an image having data type Float, Double,
+  // ImageProxy is a proxy to an image having data type float, double,
   // Complex, or DComplex. Its primary purpose is to be bind the images
   // module to Python through pyrap.images. However, it can also be used
   // directly in C++.
@@ -64,10 +64,10 @@ namespace casacore {
   //  <li> get statistics.
   //  <li> form a subimage (which is done in a virtual way).
   // </ul>
-  // Functions regrid and statistics can only be used for Float images.
+  // Functions regrid and statistics can only be used for float images.
   // They throw an exception for images with other data types.
   // Note that using a LEL expression it is possible to (virtually) convert an
-  // image with another type to a Float image.
+  // image with another type to a float image.
   // </synopsis>
 
   class ImageProxy
@@ -79,7 +79,7 @@ namespace casacore {
     // Construct from the concatenation of the images along the axis.
     // The axis must be given as a Fortran-array axis.
     // All images must be of the same data type.
-    ImageProxy (const Vector<String>& names, Int axis);
+    ImageProxy (const Vector<String>& names, int32_t axis);
 
     // Construct from a string that contains an image name or image expression.
     // It is opened using ImageOpener.
@@ -91,10 +91,10 @@ namespace casacore {
     // All images must be of the same data type.
     //# The dummy arguments are needed to let all constructors have a
     //# different number of arguments (for Boost-Python).
-    ImageProxy (const std::vector<ImageProxy>& images, Int axis,
-                Int dummy1=0, Int dummy2=0);
+    ImageProxy (const std::vector<ImageProxy>& images, int32_t axis,
+                int32_t dummy1=0, int32_t dummy2=0);
 
-    // Construct from a ValueHolder containing an Array of Float or Complex.
+    // Construct from a ValueHolder containing an Array of float or Complex.
     // If the name is empty it is created as a temporary image, otherwise
     // as a PagedImage or HDF5Image.
     // If the coordinates record is empty, default coordinates are used.
@@ -103,8 +103,8 @@ namespace casacore {
                 const ValueHolder& mask,
                 const Record& coordinates,
                 const String& imageName = String(),
-                Bool overwrite = True,
-                Bool asHDF5 = False,
+                bool overwrite = true,
+                bool asHDF5 = false,
                 const String& maskName = String(),
                 const IPosition& tileShape = IPosition());
 
@@ -117,11 +117,11 @@ namespace casacore {
                 const ValueHolder& value,
                 const Record& coordinates,
                 const String& imageName = String(),
-                Bool overwrite = True,
-                Bool asHDF5 = False,
+                bool overwrite = true,
+                bool asHDF5 = false,
                 const String& maskName = String(),
                 const IPosition& tileShape = IPosition(),
-                Int dummy=0);
+                int32_t dummy=0);
 
     // Construct from an existing image object.
     ImageProxy (const CountedPtr<LatticeBase>&);
@@ -156,19 +156,19 @@ namespace casacore {
     LatticeExprNode makeNode() const;
 
     // Is the image persistent or temporary.
-    Bool isPersistent() const;
+    bool isPersistent() const;
 
     // Get the name of the image.
-    String name (Bool stripPath=False) const;
+    String name (bool stripPath=false) const;
 
     // Get the shape of the image.
     IPosition shape() const;
 
     // Get the dimensionality of the image.
-    uInt ndim() const;
+    uint32_t ndim() const;
 
     // Get the size of the image (nr of pixels).
-    uInt size() const;
+    uint32_t size() const;
 
     // Get the data type of the image.
     String dataType() const;
@@ -195,18 +195,18 @@ namespace casacore {
 
     // Put a chunk of the mask.
     // The mask will be created if not present yet.
-    // That will not be done if the entire mask is True.
+    // That will not be done if the entire mask is true.
     void putMask (const ValueHolder& value,
                   const IPosition& blc,
                   const IPosition& inc);
 
     // Does the image have a read or write lock?
-    Bool hasLock (Bool writeLock = False);
+    bool hasLock (bool writeLock = false);
 
     // Try to acquire a read or write lock.
     // nattempts=0 means wait until acquired. Otherwise every second an
     // attempt is done.
-    void lock (Bool writeLock=False, Int nattempts=0);
+    void lock (bool writeLock=false, int32_t nattempts=0);
 
     // Release the lock acquired by lock().
     void unlock();
@@ -221,16 +221,16 @@ namespace casacore {
     Vector<String> attrNames (const String& groupName) const;
 
     // Get the number of rows in an attribute group.
-    uInt attrNrows (const String& groupName) const;
+    uint32_t attrNrows (const String& groupName) const;
 
     // Get the value of an attribute in a group row.
     ValueHolder getAttr (const String& groupName,
                          const String& attrName,
-                         uInt rownr) const;
+                         uint32_t rownr) const;
 
     // Get all attributes in a group row.
     Record getAttrRow (const String& groupName,
-                       uInt rownr) const;
+                       uint32_t rownr) const;
 
     // Get the unit(s) of an attribute in a group.
     Vector<String> getAttrUnit(const String& groupName,
@@ -242,23 +242,23 @@ namespace casacore {
 
     // Put the value, unit, and measinfo of an attribute in a group row.
     // The attribute or row is added if new.
-    void putAttr (const String& groupName, const String& attrName, uInt rownr,
+    void putAttr (const String& groupName, const String& attrName, uint32_t rownr,
                   const ValueHolder& value,
                   const Vector<String>& units,
                   const Vector<String>& measInfo);
 
     // Form a new (virtual) image being a subset of the image.
-    // It uses preserveAxesOrder=False.
+    // It uses preserveAxesOrder=false.
     ImageProxy subImage (const IPosition& blc,
                          const IPosition& trc, 
                          const IPosition& inc,
-                         Bool dropDegenerate=True);
+                         bool dropDegenerate=true);
     // Same with a new function name for backward compatibility with old pyrap.
     ImageProxy subImage2 (const IPosition& blc,
                           const IPosition& trc, 
                           const IPosition& inc,
-                          Bool dropDegenerate,
-                          Bool preserveAxesOrder);
+                          bool dropDegenerate,
+                          bool preserveAxesOrder);
 
     // Get the brightness unit.
     String unit() const;
@@ -269,16 +269,16 @@ namespace casacore {
     const CoordinateSystem& coordSysObject() const;
 
     // Convert a pixel coordinate to world coordinate.
-    // if <src>reverseAxes=True</src> the input and output vector will be
+    // if <src>reverseAxes=true</src> the input and output vector will be
     // reversed (as needed for pyrap).
-    Vector<Double> toWorld (const Vector<Double>& pixel,
-                            Bool reverseAxes);
+    Vector<double> toWorld (const Vector<double>& pixel,
+                            bool reverseAxes);
 
     // Convert a world coordinate to pixel coordinate.
-    // if <src>reverseAxes=True</src> the input and output vector will be
+    // if <src>reverseAxes=true</src> the input and output vector will be
     // reversed (as needed for pyrap).
-    Vector<Double> toPixel (const Vector<Double>& world,
-                            Bool reverseAxes);
+    Vector<double> toPixel (const Vector<double>& world,
+                            bool reverseAxes);
 
     // Get the image info.
     Record imageInfo() const;
@@ -294,15 +294,15 @@ namespace casacore {
     // Write the image in FITS format.
     // See class ImageFITSConverter for a description of the arguments.
     // Currently only a float image can be written to FITS.
-    void toFits (const String& fitsfile, Bool overwrite=True,
-                 Bool velocity=True, Bool optical=True, Int bitpix=-32,
-                 Double minpix=1, Double maxpix=-1) const;
+    void toFits (const String& fitsfile, bool overwrite=true,
+                 bool velocity=true, bool optical=true, int32_t bitpix=-32,
+                 double minpix=1, double maxpix=-1) const;
 
     // Write the image to an image file with the given name.
     // An exception is thrown if the name is the name of an already open image.
-    void saveAs (const String& fileName, Bool overwrite=True,
-                 Bool hdf5=False,
-                 Bool copyMask=True, const String& newMaskName=String(),
+    void saveAs (const String& fileName, bool overwrite=true,
+                 bool hdf5=false,
+                 bool copyMask=true, const String& newMaskName=String(),
                  const IPosition& newTileShape=IPosition()) const;
 
     // Return the statistics for the given axes.
@@ -313,27 +313,27 @@ namespace casacore {
     // and max=abs(val).
     // Robust statistics (Median, MedAbsDevMed, and Quartile) can be returned
     // too.
-    Record statistics (const Vector<Int>& axes,
+    Record statistics (const Vector<int32_t>& axes,
                        const String& mask,
                        const ValueHolder& minMaxValues,
-                       Bool exclude = False,
-                       Bool robust = False) const;
+                       bool exclude = false,
+                       bool robust = false) const;
 
     // Regrid the image on the given axes to the given coordinate system.
     // The output is stored in the given file; it no file name is given a
     // temporary image is made.
     // If the output shape is empty, the old shape is used.
-    // <src>replicate=True</src> means replication rather than regridding.
-    ImageProxy regrid (const Vector<Int>& axes = Vector<Int>(),
+    // <src>replicate=true</src> means replication rather than regridding.
+    ImageProxy regrid (const Vector<int32_t>& axes = Vector<int32_t>(),
                        const String& outfile = String(),
-                       Bool overwriteOutFile = True,
+                       bool overwriteOutFile = true,
                        const IPosition& outShape = IPosition(),
                        const Record& coordSys = Record(),
                        const String& method = "linear",
-                       Int decimate = 10,
-                       Bool replicate = False,
-                       Bool doRefChange = True,
-                       Bool forceRegrid = False);
+                       int32_t decimate = 10,
+                       bool replicate = false,
+                       bool doRefChange = true,
+                       bool forceRegrid = false);
 
     // Check and adjust blc, trc, or inc using the shape.
     // <group>
@@ -350,27 +350,27 @@ namespace casacore {
                       const Quantity& pa, Record& region, 
                       const String& mask, 
                       const String& method = "cubic", 
-                      Int decimate = 0, 
-                      Bool replicate = False, 
-                      Bool dropdeg = False,
-                      Bool overwrite = False);
+                      int32_t decimate = 0, 
+                      bool replicate = false, 
+                      bool dropdeg = false,
+                      bool overwrite = false);
 
 
-    Bool setbrightnessunit (const String& unit);
+    bool setbrightnessunit (const String& unit);
 
-    Bool setcoordsys (const Record& csys);
+    bool setcoordsys (const Record& csys);
 
-    Bool sethistory (const String& origin, const Vector<String>& history);
+    bool sethistory (const String& origin, const Vector<String>& history);
 
-    Bool setmiscinfo (const Record& info);
+    bool setmiscinfo (const Record& info);
 
     ImageProxy subimage(const String& outfile, Record& region, 
                         const String& mask, 
-                        Bool dropdeg = False, 
-                        Bool overwrite = False, 
-                        Bool list = True);
+                        bool dropdeg = false, 
+                        bool overwrite = false, 
+                        bool list = true);
 
-    Vector<Double> topixel(Record& value);
+    Vector<double> topixel(Record& value);
 
     */
 
@@ -386,19 +386,19 @@ namespace casacore {
 
     // Make an image from an array or shape.
     template<typename T>
-    void makeImage (const Array<T>& array, const Array<Bool>& mask,
+    void makeImage (const Array<T>& array, const Array<bool>& mask,
                     const IPosition& shape, const Record& coordinates,
-                    const String& fileName, Bool asHDF5,
+                    const String& fileName, bool asHDF5,
                     const String& maskName,
                     const IPosition& tileShape);
 
     // Form a concatenated image.
     // <group>
-    void concatImages         (const std::vector<ImageProxy>& images, Int axis);
-    void concatImagesFloat    (const std::vector<ImageProxy>& images, Int axis);
-    void concatImagesDouble   (const std::vector<ImageProxy>& images, Int axis);
-    void concatImagesComplex  (const std::vector<ImageProxy>& images, Int axis);
-    void concatImagesDComplex (const std::vector<ImageProxy>& images, Int axis);
+    void concatImages         (const std::vector<ImageProxy>& images, int32_t axis);
+    void concatImagesFloat    (const std::vector<ImageProxy>& images, int32_t axis);
+    void concatImagesDouble   (const std::vector<ImageProxy>& images, int32_t axis);
+    void concatImagesComplex  (const std::vector<ImageProxy>& images, int32_t axis);
+    void concatImagesDComplex (const std::vector<ImageProxy>& images, int32_t axis);
     // </group>
 
     // Setup the pointers for the various image data types.
@@ -424,7 +424,7 @@ namespace casacore {
     // If the image is masked, the mask can be copied as well.
     template <typename T>
     void saveImage (const String& fileName,
-                    Bool hdf5, Bool copyMask,
+                    bool hdf5, bool copyMask,
                     const String& newMaskName, 
                     const IPosition& newTileShape,
                     const ImageInterface<T>& image) const;
@@ -437,24 +437,24 @@ namespace casacore {
     // Calculate the statistics.
     template<typename T>
     Record makeStatistics (const ImageInterface<T>& image,
-                           const Vector<Int>& axes,
+                           const Vector<int32_t>& axes,
                            const String& mask,
                            const ValueHolder& minMaxValues,
-                           Bool exclude,
-                           Bool robust) const;
+                           bool exclude,
+                           bool robust) const;
 
     // Do the actual regridding.
     template<typename T>
     ImageProxy doRegrid (const ImageInterface<T>& image,
-                         const Vector<Int>& axes,
+                         const Vector<int32_t>& axes,
                          const String& outfile,
                          const IPosition& shape,
                          const Record& coordSys,
                          const String& method,
-                         Int decimate,
-                         Bool replicate, 
-                         Bool doRefChange,
-                         Bool force);
+                         int32_t decimate,
+                         bool replicate, 
+                         bool doRefChange,
+                         bool force);
 
     // Make a coordinate system from the Record.
     // The cylindrical fix is applied if needed.
@@ -465,8 +465,8 @@ namespace casacore {
     //# Data members.
     //# itsLattice is the real data; the pointers are for type convenience only.
     CountedPtr<LatticeBase>   itsLattice;
-    ImageInterface<Float>*    itsImageFloat;
-    ImageInterface<Double>*   itsImageDouble;
+    ImageInterface<float>*    itsImageFloat;
+    ImageInterface<double>*   itsImageDouble;
     ImageInterface<Complex>*  itsImageComplex;
     ImageInterface<DComplex>* itsImageDComplex;
     const CoordinateSystem*   itsCoordSys;

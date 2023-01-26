@@ -50,9 +50,9 @@ String LogSink::id( ) const {
     return String("LogSink");
 }
 
-LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
+LogSink::LogSink(LogMessage::Priority filter, bool nullSink)
   : LogSinkInterface(LogFilter(filter)),
-    useGlobalSink_p (True)
+    useGlobalSink_p (true)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
@@ -65,9 +65,9 @@ LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
     AlwaysAssert(! local_sink_p.null(), AipsError);
 }
 
-LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
+LogSink::LogSink(const LogFilterInterface &filter, bool nullSink)
   : LogSinkInterface(filter),
-    useGlobalSink_p (True)
+    useGlobalSink_p (true)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
@@ -81,7 +81,7 @@ LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
 }
 
 LogSink::LogSink(LogMessage::Priority filter, ostream *os,
-                 Bool useGlobalSink)
+                 bool useGlobalSink)
   : LogSinkInterface(LogFilter(filter)), 
     local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os)),
     useGlobalSink_p (useGlobalSink)
@@ -93,7 +93,7 @@ LogSink::LogSink(LogMessage::Priority filter, ostream *os,
 }
 
 LogSink::LogSink(const LogFilterInterface &filter, ostream *os,
-                 Bool useGlobalSink)
+                 bool useGlobalSink)
   : LogSinkInterface(filter), 
     local_sink_p(new StreamLogSink(LogFilter(LogMessage::DEBUGGING), os)),
     useGlobalSink_p (useGlobalSink)
@@ -108,7 +108,7 @@ LogSink::LogSink (const LogFilterInterface &filter,
 		  const CountedPtr<LogSinkInterface>& sink)
   : LogSinkInterface(filter),
     local_sink_p(sink),
-    useGlobalSink_p (True)
+    useGlobalSink_p (true)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
     local_ref_to_global_p = *LogSink::global_sink_p;
@@ -139,19 +139,19 @@ LogSink::~LogSink()
     flush();
 }
 
-Bool LogSink::post(const LogMessage &message) 
+bool LogSink::post(const LogMessage &message) 
 {
-    Bool postedLocally  =  postLocally(message);
-    Bool postedGlobally =  False;
+    bool postedLocally  =  postLocally(message);
+    bool postedGlobally =  false;
     if (useGlobalSink_p) {
       postedGlobally = postGlobally(message);
     }
     return (postedLocally || postedGlobally);
 }
 
-Bool LogSink::postGlobally(const LogMessage &message)
+bool LogSink::postGlobally(const LogMessage &message)
 {
-    Bool posted = False;
+    bool posted = false;
     AlwaysAssert(!(*global_sink_p).null(), AipsError);
     if ((**global_sink_p)->filter().pass(message)) {
         posted = globalSink().postLocally(message);
@@ -193,28 +193,28 @@ void LogSink::postGloballyThenThrow(const LogMessage &message)
     }
 }
 
-uInt LogSink::nelements() const
+uint32_t LogSink::nelements() const
 {
   return local_sink_p->nelements();
 }
 
-Double LogSink::getTime (uInt i) const
+double LogSink::getTime (uint32_t i) const
 {
   return local_sink_p->getTime(i);
 }
-String LogSink::getPriority (uInt i) const
+String LogSink::getPriority (uint32_t i) const
 {
   return local_sink_p->getPriority(i);
 }
-String LogSink::getMessage (uInt i) const
+String LogSink::getMessage (uint32_t i) const
 {
   return local_sink_p->getMessage(i);
 }
-String LogSink::getLocation (uInt i) const
+String LogSink::getLocation (uint32_t i) const
 {
   return local_sink_p->getLocation(i);
 }
-String LogSink::getObjectID (uInt i) const
+String LogSink::getObjectID (uint32_t i) const
 {
   return local_sink_p->getObjectID(i);
 }
@@ -247,9 +247,9 @@ LogSink &LogSink::localSink(LogSinkInterface *&fromNew)
     return *this;
 }
 
-Bool LogSink::nullGlobalSink( )
+bool LogSink::nullGlobalSink( )
 {
-    return ! global_sink_p ? True : (*global_sink_p).null( ) ? True : False;
+    return ! global_sink_p ? true : (*global_sink_p).null( ) ? true : false;
 }
 
 LogSinkInterface &LogSink::globalSink()
@@ -266,16 +266,16 @@ void LogSink::globalSink(LogSinkInterface *&fromNew)
     AlwaysAssert(!(*global_sink_p).null(), AipsError);
 }
 
-Bool LogSink::postLocally(const LogMessage &message) 
+bool LogSink::postLocally(const LogMessage &message) 
 {
     if (filter().pass(message)) {
         return local_sink_p->postLocally(message);
     } else {
-        return False;
+        return false;
     }
 }
 
-void LogSink::writeLocally (Double time, const String& message,
+void LogSink::writeLocally (double time, const String& message,
 			    const String& priority, const String& location,
 			    const String& objectID)
 {
@@ -287,13 +287,13 @@ void LogSink::clearLocally()
     local_sink_p->clearLocally();
 }
 
-void LogSink::flush (Bool global)
+void LogSink::flush (bool global)
 {
     if (!local_sink_p.null()) {
-        local_sink_p->flush(False);
+        local_sink_p->flush(false);
     }
     if (global  &&  !(*global_sink_p).null()) {
-        (**global_sink_p)->flush(False);
+        (**global_sink_p)->flush(false);
     }
 }
 

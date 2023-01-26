@@ -90,8 +90,8 @@ namespace casacore {
 // The first functions have data type double and unit radian (except UVW).
 // The HADEC, AZEL, and UVW functions return arrays while the others return
 // scalars.
-// <br>The STOKES function can have data type Complex, Double or Bool.
-// <br>The latter functions are selection functions and return a Bool scalar.
+// <br>The STOKES function can have data type Complex, double or bool.
+// <br>The latter functions are selection functions and return a bool scalar.
 //
 // This class is meant for a MeasurementSet, but can be used for any table
 // containing an ANTENNA and FIELD subtable and the relevant columns in the
@@ -124,13 +124,13 @@ namespace casacore {
                   FEED, ARRAY, SCAN, STATE, OBS};
 
     // Create object the given ColType and SelType.
-    UDFMSCal (ColType, Int arg);
+    UDFMSCal (ColType, int32_t arg);
 
     // Create the object for getting a value from a column in a subtable.
     // <group>
     explicit UDFMSCal (const String& funcName);
     UDFMSCal (const String& funcName, const String& subtabName,
-              const String& idColName, Int arg=0);
+              const String& idColName, int32_t arg=0);
     UDFMSCal (const String& funcName, const String& subtabName,
               const String& idColName, const String& colName);
     // </group>
@@ -190,14 +190,14 @@ namespace casacore {
     virtual void setup (const Table&, const TaQLStyle&);
 
     // Get the value.
-    virtual Bool     getBool     (const TableExprId& id);
-    virtual Int64    getInt      (const TableExprId& id);
-    virtual Double   getDouble   (const TableExprId& id);
+    virtual bool     getBool     (const TableExprId& id);
+    virtual int64_t    getInt      (const TableExprId& id);
+    virtual double   getDouble   (const TableExprId& id);
     virtual DComplex getDComplex (const TableExprId& id);
     virtual String   getString   (const TableExprId& id);
-    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
-    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
-    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<int64_t>    getArrayInt      (const TableExprId& id);
+    virtual MArray<double>   getArrayDouble   (const TableExprId& id);
     virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
     virtual MArray<String>   getArrayString   (const TableExprId& id);
 
@@ -224,23 +224,23 @@ namespace casacore {
     // Setup getting the wavelength information.
     void setupWvls (const Table& table,
                     std::vector<TENShPtr>& operands,
-                    uInt nargMax);
+                    uint32_t nargMax);
 
     // Get the rownr in the subtable for GetValue.
     // If itsArg==1 it uses indirection using itsDDIds.
-    Int64 getRowNr (const TableExprId& id);
+    int64_t getRowNr (const TableExprId& id);
 
     // Convert the UVW coordinates to wavelengths for the full spectrum.
-    Array<Double> toWvls (const TableExprId&);
+    Array<double> toWvls (const TableExprId&);
 
     //# Data members.
     MSCalEngine     itsEngine;
     StokesConverter itsStokesConv;
     TableExprNode   itsDataNode;   //# for stokes, selections and getvalues
     TableExprNode   itsIdNode;     //# node giving rowid for getvalues
-    ArrayColumn<Double> itsUvwCol;
+    ArrayColumn<double> itsUvwCol;
     ColType         itsType;
-    Int             itsArg;        //# antnr or SelType or getValueType
+    int32_t             itsArg;        //# antnr or SelType or getValueType
                                    //# -1 subtable can be empty
                                    //#  0 normal subtable
                                    //#  1 indirect subtable via DATA_DESC_ID
@@ -250,11 +250,11 @@ namespace casacore {
     String          itsSubColName;
     //# Preallocate arrays to avoid having to construct them too often.
     //# Makes it thread-unsafe though.
-    Vector<Double>  itsTmpVector;
-    Array<Double>   itsTmpUvwWvl;
-    Vector<Int>     itsDDIds;      //# spw or pol ids from DATA_DESCRIPTION
-    vector<Double>          itsWavel;
-    vector<Vector<Double> > itsWavels;
+    Vector<double>  itsTmpVector;
+    Array<double>   itsTmpUvwWvl;
+    Vector<int32_t>     itsDDIds;      //# spw or pol ids from DATA_DESCRIPTION
+    vector<double>          itsWavel;
+    vector<Vector<double> > itsWavels;
   };
 
 

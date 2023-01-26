@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Keep the groupby expressions.
     // It checks if they are all scalar expressions and do not contain
     // aggregate functions..
-    void handleGroupby (const std::vector<TableExprNode>&, Bool rollup);
+    void handleGroupby (const std::vector<TableExprNode>&, bool rollup);
 
     // Keep the having expression.
     // It checks if the node results in a bool scalar value.
@@ -78,22 +78,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Finally it checks that HAVING is only used if a column node contains
     // an aggregate function (it makes no sense otherwise).
     void findGroupAggr (const Block<TableExprNode>& columnNodes,
-                        Bool isSelect);
+                        bool isSelect);
 
     // Is GROUPBY and/or aggregation used?
-    Bool isUsed() const
+    bool isUsed() const
       { return itsGroupAggrUsed != 0; }
 
     // Is only aggregation used?
-    Bool isOnlyAggr() const
+    bool isOnlyAggr() const
       { return itsGroupAggrUsed != 0  &&  (itsGroupAggrUsed & GROUPBY) == 0; }
 
     // Get the number of aggregation ndes.
-    uInt size() const
+    uint32_t size() const
       { return itsAggrNodes.size(); }
     
     // Disable applySelection for the column nodes of aggregate functions.
-    uInt disableApplySelection();
+    uint32_t disableApplySelection();
     
     // An exception is thrown if the node uses an aggregate function.
     static void checkAggrFuncs (const TableExprNode& node);
@@ -104,8 +104,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     CountedPtr<TableExprGroupResult> execGroupAggr (Vector<rownr_t>& rownrs) const;
 
     // Execute the HAVING clause (if present).
-    // Return False in no HAVING.
-    Bool execHaving (Vector<rownr_t>& rownrs,
+    // Return false in no HAVING.
+    bool execHaving (Vector<rownr_t>& rownrs,
                      const CountedPtr<TableExprGroupResult>& groups);
 
   private:
@@ -173,12 +173,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members.
     // The possible GROUPBY expressions.
     std::vector<TableExprNode> itsGroupbyNodes;
-    Bool itsGroupbyRollup;               //# use ROLLUP in GROUPBY?
+    bool itsGroupbyRollup;               //# use ROLLUP in GROUPBY?
     // The possible HAVING expression.
     TableExprNode itsHavingNode;
     // Pointers to the aggregate function nodes.
     std::vector<TableExprNodeRep*> itsAggrNodes;
-    Int itsGroupAggrUsed;
+    int32_t itsGroupAggrUsed;
   };
 
 

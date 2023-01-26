@@ -32,9 +32,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
-			  uInt bucketSize, uInt nrOfBuckets,
-			  uInt cacheSize, void* ownerObject,
+BucketCache::BucketCache (BucketFile* file, int64_t startOffset,
+			  uint32_t bucketSize, uint32_t nrOfBuckets,
+			  uint32_t cacheSize, void* ownerObject,
 			  BucketCacheToLocal readCallBack,
 			  BucketCacheFromLocal writeCallBack,
 			  BucketCacheAddBuffer initCallBack,
@@ -53,10 +53,10 @@ BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
   its_CacheSizeUsed (0),
   its_Cache         (cacheSize, static_cast<char*>(0)),
   its_ActualSlot    (0),
-  its_SlotNr        (nrOfBuckets, Int(-1)),
-  its_BucketNr      (cacheSize, uInt(0)),
-  its_Dirty         (cacheSize, uInt(0)),
-  its_LRU           (cacheSize, uInt(0)),
+  its_SlotNr        (nrOfBuckets, int32_t(-1)),
+  its_BucketNr      (cacheSize, uint32_t(0)),
+  its_Dirty         (cacheSize, uint32_t(0)),
+  its_LRU           (cacheSize, uint32_t(0)),
   its_LRUCounter    (0),
   its_Buffer        (0),
   its_NrOfFree      (0),
@@ -74,13 +74,13 @@ BucketCache::BucketCache (BucketFile* file, Int64 startOffset,
     // Allocate a buffer (for data in external format).
     // Initialize it to prevent "uninitialized memory errors" when writing.
     its_Buffer = new char[bucketSize];
-    for (uInt i=0; i<bucketSize; i++) {
+    for (uint32_t i=0; i<bucketSize; i++) {
 	its_Buffer[i] = 0;
     }
     // Open the file if not open yet and get its physical size.
     // Use that to determine the number of buckets in the file.
     its_file->open();
-    Int64 size = its_file->fileSize();
+    int64_t size = its_file->fileSize();
     if (size > startOffset) {
 	its_CurNrOfBuckets = (size - startOffset) / bucketSize;
 	if (its_CurNrOfBuckets > its_NewNrOfBuckets) {
@@ -94,16 +94,16 @@ BucketCache::~BucketCache()
     // Clear the entire cache.
     // It is not flushed (that should have been done before).
     // In that way no needless flushes are done for a temporary table.
-    clear (0, False);
+    clear (0, false);
     delete [] its_Buffer;
 }
 
-void BucketCache::clear (uInt fromSlot, Bool doFlush)
+void BucketCache::clear (uint32_t fromSlot, bool doFlush)
 {
     if (doFlush) {
         flush (fromSlot);
     }
-    for (uInt i=fromSlot; i<its_CacheSizeUsed; i++) {
+    for (uint32_t i=fromSlot; i<its_CacheSizeUsed; i++) {
 	its_DeleteCallBack (its_Owner, its_Cache[i]);
 	its_Cache[i] = 0;
 	its_SlotNr[its_BucketNr[i]] = -1;
@@ -117,23 +117,23 @@ void BucketCache::clear (uInt fromSlot, Bool doFlush)
     }
 }
 
-Bool BucketCache::flush (uInt fromSlot)
+bool BucketCache::flush (uint32_t fromSlot)
 {
     // Initialize remaining buckets when everything has to be flushed.
     if (fromSlot == 0  &&  its_NewNrOfBuckets > 0) {
 	initializeBuckets (its_NewNrOfBuckets - 1);
     }
-    Bool hasWritten = False;
-    for (uInt i=fromSlot; i<its_CacheSizeUsed; i++) {
+    bool hasWritten = false;
+    for (uint32_t i=fromSlot; i<its_CacheSizeUsed; i++) {
 	if (its_Dirty[i]) {
 	    writeBucket (i);
-	    hasWritten = True;
+	    hasWritten = true;
 	}
     }
     return hasWritten;
 }
 
-void BucketCache::resize (uInt cacheSize)
+void BucketCache::resize (uint32_t cacheSize)
 {
     // Clear the part of the cache to be deleted.
     clear (cacheSize);
@@ -151,7 +151,7 @@ void BucketCache::resize (uInt cacheSize)
     its_LRU.resize      (cacheSize);
     its_Dirty.resize    (cacheSize);
     // Initialize the new part of the cache.
-    for (uInt i=its_CacheSize; i<cacheSize; i++) {
+    for (uint32_t i=its_CacheSize; i<cacheSize; i++) {
 	its_Cache[i]    = 0;
 	its_BucketNr[i] = 0;
 	its_LRU[i]      = 0;
@@ -165,8 +165,8 @@ void BucketCache::resize (uInt cacheSize)
 }
 
 
-void BucketCache::resync (uInt nrBucket, uInt nrOfFreeBucket,
-			  Int firstFreeBucket)
+void BucketCache::resync (uint32_t nrBucket, uint32_t nrOfFreeBucket,
+			  int32_t firstFreeBucket)
 {
     // Clear the entire cache, so data will be reread.
     // Set it to the new size.
@@ -180,7 +180,7 @@ void BucketCache::resync (uInt nrBucket, uInt nrOfFreeBucket,
 }
 
 
-uInt BucketCache::nBucket() const
+uint32_t BucketCache::nBucket() const
 {
     return its_NewNrOfBuckets;
 }
@@ -196,17 +196,17 @@ void BucketCache::setLRU()
     // When the LRU counter would wrap, clear all LRU info in the cache.
     if (its_LRUCounter == 4294967295u) {
 	its_LRUCounter = 0;
-	for (uInt i=0; i<its_CacheSizeUsed; i++) {
+	for (uint32_t i=0; i<its_CacheSizeUsed; i++) {
 	    its_LRU[i] = 0;
 	}
     }
     its_LRU[its_ActualSlot] = ++its_LRUCounter;
 }
 
-char* BucketCache::getBucket (uInt bucketNr)
+char* BucketCache::getBucket (uint32_t bucketNr)
 {
     if (bucketNr >= its_NewNrOfBuckets) {
-	throw (indexError<Int> (bucketNr));
+	throw (indexError<int32_t> (bucketNr));
     }
     naccess_p++;
     // Test if it is already in the cache.
@@ -232,31 +232,31 @@ char* BucketCache::getBucket (uInt bucketNr)
     return its_Cache[its_ActualSlot];
 }
 
-void BucketCache::extend (uInt nrBucket)
+void BucketCache::extend (uint32_t nrBucket)
 {
     its_NewNrOfBuckets += nrBucket;
-    uInt oldSize = its_SlotNr.nelements();
+    uint32_t oldSize = its_SlotNr.nelements();
     if (oldSize < its_NewNrOfBuckets) {
-        uInt newSize = oldSize*2;
+        uint32_t newSize = oldSize*2;
 	if (newSize < its_NewNrOfBuckets) {
 	    newSize = its_NewNrOfBuckets;
 	}
 	its_SlotNr.resize (newSize);
-	for (uInt i=oldSize; i<newSize; i++) {
+	for (uint32_t i=oldSize; i<newSize; i++) {
 	    its_SlotNr[i] = -1;
 	}
     }
 }
     
-uInt BucketCache::addBucket (char* data)
+uint32_t BucketCache::addBucket (char* data)
 {
-    uInt bucketNr;
+    uint32_t bucketNr;
     if (its_FirstFree >= 0) {
 	// There is a free list, so get the first bucket from it.
 	bucketNr = its_FirstFree;
-	its_file->seek (its_StartOffset + Int64(bucketNr) * its_BucketSize);
+	its_file->seek (its_StartOffset + int64_t(bucketNr) * its_BucketSize);
 	its_file->read (its_Buffer,
-		   CanonicalConversion::canonicalSize (static_cast<Int*>(0)));
+		   CanonicalConversion::canonicalSize (static_cast<int32_t*>(0)));
 	CanonicalConversion::toLocal (its_FirstFree, its_Buffer);
 	its_NrOfFree--;
     }else{
@@ -280,9 +280,9 @@ void BucketCache::removeBucket()
     // Removing a bucket means adding it to the beginning of the free list.
     // Thus store the bucket nr of the first free in this bucket
     // and make this bucket the first free.
-    uInt bucketNr = its_BucketNr[its_ActualSlot];
+    uint32_t bucketNr = its_BucketNr[its_ActualSlot];
     CanonicalConversion::fromLocal (its_Buffer, its_FirstFree);
-    its_file->seek (its_StartOffset + Int64(bucketNr) * its_BucketSize);
+    its_file->seek (its_StartOffset + int64_t(bucketNr) * its_BucketSize);
     its_file->write (its_Buffer, its_BucketSize);
     its_Dirty[its_ActualSlot] = 0;
     its_FirstFree = bucketNr;
@@ -297,36 +297,36 @@ void BucketCache::removeBucket()
 }
 
 
-void BucketCache::get (char* buf, uInt length, Int64 offset)
+void BucketCache::get (char* buf, uint32_t length, int64_t offset)
 {
     checkOffset (length, offset);
     its_file->seek (offset);
     its_file->read (buf, length);
 }
-void BucketCache::put (const char* buf, uInt length, Int64 offset)
+void BucketCache::put (const char* buf, uint32_t length, int64_t offset)
 {
     checkOffset (length, offset);
     its_file->seek (offset);
     its_file->write (buf, length);
 }
-void BucketCache::checkOffset (uInt length, Int64 offset) const
+void BucketCache::checkOffset (uint32_t length, int64_t offset) const
 {
     // Check if not before or after cached area.
     if (offset + length > its_StartOffset
-    &&  offset < its_StartOffset + Int64(its_CurNrOfBuckets)*its_BucketSize) {
-	throw (indexError<Int> (offset));
+    &&  offset < its_StartOffset + int64_t(its_CurNrOfBuckets)*its_BucketSize) {
+	throw (indexError<int32_t> (offset));
     }
 }
 
 
-void BucketCache::getSlot (uInt bucketNr)
+void BucketCache::getSlot (uint32_t bucketNr)
 {
     if (its_CacheSizeUsed < its_CacheSize) {
 	its_ActualSlot = its_CacheSizeUsed++;
     }else{
 	its_ActualSlot = 0;
-	uInt least = its_LRU[0];
-	for (uInt i=1; i<its_CacheSizeUsed; i++) {
+	uint32_t least = its_LRU[0];
+	for (uint32_t i=1; i<its_CacheSizeUsed; i++) {
 	    if (its_LRU[i] < least) {
 		least = its_LRU[i];
 		its_ActualSlot = i;
@@ -347,26 +347,26 @@ void BucketCache::getSlot (uInt bucketNr)
 }
 
 
-void BucketCache::writeBucket (uInt slotNr)
+void BucketCache::writeBucket (uint32_t slotNr)
 {
 ///    cout << "write " << its_BucketNr[slotNr] << " " << slotNr;
     its_WriteCallBack (its_Owner, its_Buffer, its_Cache[slotNr]);
     its_file->seek (its_StartOffset +
-		    Int64(its_BucketNr[slotNr]) * its_BucketSize);
+		    int64_t(its_BucketNr[slotNr]) * its_BucketSize);
     its_file->write (its_Buffer, its_BucketSize);
     its_Dirty[slotNr] = 0;
     nwrite_p++;
 }
-void BucketCache::readBucket (uInt slotNr)
+void BucketCache::readBucket (uint32_t slotNr)
 {
 ///    cout << "read " << its_BucketNr[slotNr] << " " << slotNr;
     its_file->seek (its_StartOffset +
-		    Int64(its_BucketNr[slotNr]) * its_BucketSize);
+		    int64_t(its_BucketNr[slotNr]) * its_BucketSize);
     its_file->read (its_Buffer, its_BucketSize);
     its_Cache[slotNr] = its_ReadCallBack (its_Owner, its_Buffer);
     nread_p++;
 }
-void BucketCache::initializeBuckets (uInt bucketNr)
+void BucketCache::initializeBuckets (uint32_t bucketNr)
 {
     // Initialize this bucket and all uninitialized ones before it.
     while (its_CurNrOfBuckets <= bucketNr) {

@@ -36,7 +36,7 @@ using namespace casacore;
 using namespace std;
 
 void show (const std::shared_ptr<MultiFileBase>& mfile,
-           Bool showbl, const String& mftype)
+           bool showbl, const String& mftype)
 {
   cout << endl;
   cout << mftype << " = " << mfile->fileName() << endl;
@@ -46,7 +46,7 @@ void show (const std::shared_ptr<MultiFileBase>& mfile,
   if (showbl) {
     cout << "  freeblocks = " << mfile->freeBlocks() << endl;
   }
-  for (uInt i=0; i<mfile->nfile(); ++i) {
+  for (uint32_t i=0; i<mfile->nfile(); ++i) {
     const MultiFileInfo& info = mfile->info()[i];
     cout << ' ' << info.name
          << "   size=" << info.fsize
@@ -63,10 +63,10 @@ int main (int argc, char* argv[])
 {
   try {
     vector<String> fname;
-    Bool showbl = False;
+    bool showbl = false;
     for (int argnr=1; argnr<argc; ++argnr) {
       if (String(argv[argnr]) == "-b") {
-        showbl = True;
+        showbl = true;
       } else {
         fname.push_back (argv[argnr]);
       }

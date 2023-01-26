@@ -38,52 +38,52 @@ using std::pair;
 #include <casacore/casa/namespace.h>
 int main() {
 
-  Bool ok(True);
+  bool ok(true);
   try {
     cout << "Test ObjectStack" << endl;
     cout << "---------------------------------------------------" << endl;
 
     // Some poolobjectsList of pool objects;
-    for (uInt i=0; i<10000; ++i) {
-      vector<vector<Double>*> list;
-      vector<vector<Int>*> listInt;
-      for (uInt j=0; j<10; ++j) {
+    for (uint32_t i=0; i<10000; ++i) {
+      vector<vector<double>*> list;
+      vector<vector<int32_t>*> listInt;
+      for (uint32_t j=0; j<10; ++j) {
 	// Get some objects
-	list.push_back(ObjectStack<vector<Double> >::stack().get());
-	listInt.push_back(ObjectStack<vector<Int> >::stack().get());
+	list.push_back(ObjectStack<vector<double> >::stack().get());
+	listInt.push_back(ObjectStack<vector<int32_t> >::stack().get());
 	// Test freshness
 	if (!list[j]->empty()) {
 	  cout << "List not refreshed " << endl;
-	  ok = False;
+	  ok = false;
 	}	
 	if (!listInt[j]->empty()) {
 	  cout << "ListInt not refreshed " << endl;
-	  ok = False;
+	  ok = false;
 	}	
 	// Fill objects
-	for (uInt k=0; k<7; ++k) {
+	for (uint32_t k=0; k<7; ++k) {
 	  list[j]->push_back(13.*k);
 	  listInt[j]->push_back(k);
 	}
 	// Test objects
 	if (list[j]->size() != 7) {
 	  cout << "Incorrect length list " << list[j]->size() << endl;
-	  ok = False;
+	  ok = false;
 	}	
 	if (listInt[j]->size() != 7) {
 	  cout << "Incorrect length listInt " << listInt[j]->size() << endl;
-	  ok = False;
+	  ok = false;
 	}
       }
       // Remove in different order
-      for (uInt j=0; j<10; ++j) {
-	ObjectStack<vector<Int> >::stack().put(listInt[9-j]);
-	ObjectStack<vector<Double> >::stack().put(list[9-j]);
+      for (uint32_t j=0; j<10; ++j) {
+	ObjectStack<vector<int32_t> >::stack().put(listInt[9-j]);
+	ObjectStack<vector<double> >::stack().put(list[9-j]);
       }
     }
   } catch (std::exception& x) {
     cout << x.what() << endl;
-    ok = False;
+    ok = false;
   }
   
   if (!ok) return 1;

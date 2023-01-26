@@ -97,26 +97,26 @@ public:
   // Define a straight line from (x1,y1) to (x2,y2).
   // The default number of points is the length of the line.
   explicit PixelCurve1D (double x1=0, double y1=0, double x2=1, double y2=1,
-			 uInt npoints=0);
+			 uint32_t npoints=0);
 
   // Define a curve with an arbitrary function from x1 to x2.
   // The default number of points is the length of the curve.
   // The length of the curve is determined numerically by integration
   // of sqrt(1+sqr(df/dx)).
   PixelCurve1D (const Function1D<float,float>&,
-		float x1, float x2, uInt npoints=0);
+		float x1, float x2, uint32_t npoints=0);
 
   // Define a curve from a polyline with the given points.
   // Both vectors have to be equally long and at least 2 long.
   // The argument <src>npoints</src> defines the number of points
   // (with regular steps) in which the curve is divided.
   // The default is the length of the polyline.
-  PixelCurve1D (const Vector<Int>& x, const Vector<Int>& y,
-		uInt npoints=0);
+  PixelCurve1D (const Vector<int32_t>& x, const Vector<int32_t>& y,
+		uint32_t npoints=0);
   PixelCurve1D (const Vector<float>& x, const Vector<float>& y,
-		uInt npoints=0);
+		uint32_t npoints=0);
   PixelCurve1D (const Vector<double>& x, const Vector<double>& y,
-		uInt npoints=0);
+		uint32_t npoints=0);
 
   PixelCurve1D (const PixelCurve1D& that);
 
@@ -124,19 +124,19 @@ public:
 
   PixelCurve1D& operator= (const PixelCurve1D& that);
 
-  uInt npoints() const
+  uint32_t npoints() const
     { return itsNpoints; }
 
   // Get the pixel coordinates in the original lattice for point start
   // till end with given step.
   void getPixelCoord (Vector<float>& x, Vector<float>& y,
-		      uInt start, uInt end, uInt incr=1) const;
+		      uint32_t start, uint32_t end, uint32_t incr=1) const;
 
 private:
   // Initialize the object.
-  void init (const Vector<double>& x, const Vector<double>& y, uInt npoints);
+  void init (const Vector<double>& x, const Vector<double>& y, uint32_t npoints);
 
-  uInt           itsNpoints;
+  uint32_t           itsNpoints;
   Vector<double> itsX;
   Vector<double> itsY;
 };

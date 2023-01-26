@@ -87,7 +87,7 @@ template<class T> class Block;
 //    iv0[1] = "baseline";
 //    // Create the iterator. This will prepare the first subtable.
 //    TableIterator iter(tab, iv0);
-//    Int nr = 0;
+//    int32_t nr = 0;
 //    while (!iter.pastEnd()) {
 //      // Get the first subtable.
 //      // This will contain rows with equal time and baseline.
@@ -164,7 +164,7 @@ public:
     // One should consider to do an explicitsort on value and no iteration sort.
     // </note>
     TableIterator (const Table&, const Block<String>& columnNames,
-		   const Block<Int>& orders, Option = ParSort);
+		   const Block<int32_t>& orders, Option = ParSort);
     // Give the iteration order per column.
     // Give an optional compare object per column.
     // A zero pointer means that the default compare function will be used.
@@ -177,7 +177,7 @@ public:
     // (cmpObjs) between iterations.
     TableIterator (const Table&, const Block<String>& columnNames,
                    const Block<CountedPtr<BaseCompare> >& cmpObjs,
-                   const Block<Int>& orders, Option = ParSort,
+                   const Block<int32_t>& orders, Option = ParSort,
                    bool cacheIterationBoundaries = false);
     // </group>
 
@@ -191,18 +191,18 @@ public:
 
     // Test if the object is null, i.e. does not reference a table yet.
     // This is the case if the default constructor is used.
-    Bool isNull() const
-	{ return (tabIterPtr_p == 0  ?  True : False); }
+    bool isNull() const
+	{ return (tabIterPtr_p == 0  ?  true : false); }
 
     // Throw an exception if the object is null, i.e.
-    // if function isNull() is True.
+    // if function isNull() is true.
     void throwIfNull() const;
 
     // Reset the iterator (i.e. restart iteration).
     void reset();
 
     // Test if at the end.
-    Bool pastEnd() const;
+    bool pastEnd() const;
 
     // Go to the next group.
     // <group>
@@ -227,8 +227,8 @@ protected:
 
 
 //# Iterator is at the end if the subtable is empty.
-inline Bool TableIterator::pastEnd() const
-    { return (subTable_p.nrow() == 0  ?  True : False); }
+inline bool TableIterator::pastEnd() const
+    { return (subTable_p.nrow() == 0  ?  true : false); }
 
 inline Table TableIterator::table() const
     { return subTable_p; }

@@ -33,200 +33,200 @@
 #include <casacore/casa/namespace.h>
 // This program tests the Modcomp conversion functions.
 
-void compare(Int& error, Char exp, Char res) {
+void compare(int32_t& error, char exp, char res) {
   // Compare the results. 
   if (res != exp) {
     error = 1;
-    uChar byteResult[1];
-    uChar byteExpected[1];
+    unsigned char byteResult[1];
+    unsigned char byteExpected[1];
     memcpy (byteResult, &res, 1);
     memcpy (byteExpected, &exp, 1);
     cerr << "expected " << exp;
-    cerr << setbase(16) << " (" << Int(byteExpected[0]) << ")";
+    cerr << setbase(16) << " (" << int32_t(byteExpected[0]) << ")";
     cerr << setbase(10) << " got " << res;
-    cerr << setbase(16) << " (" << Int(byteResult[0]) << ")";
+    cerr << setbase(16) << " (" << int32_t(byteResult[0]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, uChar exp, uChar res) {
+void compare(int32_t& error, unsigned char exp, unsigned char res) {
   // Compare the results. 
   if (res != exp) {
     error = 1;
-    uChar byteResult[1];
-    uChar byteExpected[1];
+    unsigned char byteResult[1];
+    unsigned char byteExpected[1];
     memcpy (byteResult, &res, 1);
     memcpy (byteExpected, &exp, 1);
     cerr << "expected " << exp;
-    cerr << setbase(16) << " (" << Int(byteExpected[0]) << ")";
+    cerr << setbase(16) << " (" << int32_t(byteExpected[0]) << ")";
     cerr << setbase(10) << " got " << res;
-    cerr << setbase(16) << " (" << Int(byteResult[0]) << ")";
+    cerr << setbase(16) << " (" << int32_t(byteResult[0]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, Short exp, Short res) {
+void compare(int32_t& error, int16_t exp, int16_t res) {
   // Compare the results. 
   if (res != exp) {
     error = 1;
-    uChar byteResult[2];
-    uChar byteExpected[2];
+    unsigned char byteResult[2];
+    unsigned char byteExpected[2];
     memcpy (byteResult, &res, 2);
     memcpy (byteExpected, &exp, 2);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 <<Int(byteExpected[0]) << ":"
-	 << Int(byteExpected[1]) << ")";
+	 <<int32_t(byteExpected[0]) << ":"
+	 << int32_t(byteExpected[1]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
-	 << Int(byteResult[0]) << ":"
-	 << Int(byteResult[1]) << ")";
+	 << int32_t(byteResult[0]) << ":"
+	 << int32_t(byteResult[1]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, uShort exp, uShort res) {
+void compare(int32_t& error, uint16_t exp, uint16_t res) {
   // Compare the results. 
   if (res != exp) {
     error = 1;
-    uChar byteResult[2];
-    uChar byteExpected[2];
+    unsigned char byteResult[2];
+    unsigned char byteExpected[2];
     memcpy (byteResult, &res, 2);
     memcpy (byteExpected, &exp, 2);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 << Int(byteExpected[0]) << ":"
-	 << Int(byteExpected[1]) << ")";
+	 << int32_t(byteExpected[0]) << ":"
+	 << int32_t(byteExpected[1]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
-	 << Int(byteResult[0]) << ":"
-	 << Int(byteResult[1]) << ")";
+	 << int32_t(byteResult[0]) << ":"
+	 << int32_t(byteResult[1]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, Int exp, Int res) {
+void compare(int32_t& error, int32_t exp, int32_t res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
-    uChar byteResult[4];
-    uChar byteExpected[4];
+    unsigned char byteResult[4];
+    unsigned char byteExpected[4];
     memcpy (byteResult, &res, 4);
     memcpy (byteExpected, &exp, 4);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 << Int(byteExpected[0]) << ":"
-	 << Int(byteExpected[1]) << ":"
-	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[3]) << ")";
+	 << int32_t(byteExpected[0]) << ":"
+	 << int32_t(byteExpected[1]) << ":"
+	 << int32_t(byteExpected[2]) << ":"
+	 << int32_t(byteExpected[3]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
-	 << Int(byteResult[0]) << ":"
-	 << Int(byteResult[1]) << ":"
-	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[3]) << ")";
+	 << int32_t(byteResult[0]) << ":"
+	 << int32_t(byteResult[1]) << ":"
+	 << int32_t(byteResult[2]) << ":"
+	 << int32_t(byteResult[3]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, uInt exp, uInt res) {
+void compare(int32_t& error, uint32_t exp, uint32_t res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
-    uChar byteResult[4];
-    uChar byteExpected[4];
+    unsigned char byteResult[4];
+    unsigned char byteExpected[4];
     memcpy (byteResult, &res, 4);
     memcpy (byteExpected, &exp, 4);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 << Int(byteExpected[0]) << ":"
-	 << Int(byteExpected[1]) << ":"
-	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[3]) << ")";
+	 << int32_t(byteExpected[0]) << ":"
+	 << int32_t(byteExpected[1]) << ":"
+	 << int32_t(byteExpected[2]) << ":"
+	 << int32_t(byteExpected[3]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
-	 << Int(byteResult[0]) << ":"
-	 << Int(byteResult[1]) << ":"
-	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[3]) << ")";
+	 << int32_t(byteResult[0]) << ":"
+	 << int32_t(byteResult[1]) << ":"
+	 << int32_t(byteResult[2]) << ":"
+	 << int32_t(byteResult[3]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, Int64 exp, Int64 res) {
+void compare(int32_t& error, int64_t exp, int64_t res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
-    uChar byteResult[8];
-    uChar byteExpected[8];
+    unsigned char byteResult[8];
+    unsigned char byteExpected[8];
     memcpy (byteResult, &res, 8);
     memcpy (byteExpected, &exp, 8);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 << Int(byteExpected[0]) << ":"
-	 << Int(byteExpected[1]) << ":"
-	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[3]) << ":"
-	 << Int(byteExpected[4]) << ":"
-	 << Int(byteExpected[5]) << ":"
-	 << Int(byteExpected[6]) << ":"
-	 << Int(byteExpected[7]) << ")";
+	 << int32_t(byteExpected[0]) << ":"
+	 << int32_t(byteExpected[1]) << ":"
+	 << int32_t(byteExpected[2]) << ":"
+	 << int32_t(byteExpected[3]) << ":"
+	 << int32_t(byteExpected[4]) << ":"
+	 << int32_t(byteExpected[5]) << ":"
+	 << int32_t(byteExpected[6]) << ":"
+	 << int32_t(byteExpected[7]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
-	 << Int(byteResult[0]) << ":"
-	 << Int(byteResult[1]) << ":"
-	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[3]) << ":"
-	 << Int(byteResult[4]) << ":"
-	 << Int(byteResult[5]) << ":"
-	 << Int(byteResult[6]) << ":"
-	 << Int(byteResult[7]) << ")";
+	 << int32_t(byteResult[0]) << ":"
+	 << int32_t(byteResult[1]) << ":"
+	 << int32_t(byteResult[2]) << ":"
+	 << int32_t(byteResult[3]) << ":"
+	 << int32_t(byteResult[4]) << ":"
+	 << int32_t(byteResult[5]) << ":"
+	 << int32_t(byteResult[6]) << ":"
+	 << int32_t(byteResult[7]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void compare(Int& error, uInt64 exp, uInt64 res) {
+void compare(int32_t& error, uint64_t exp, uint64_t res) {
   // Compare the results.
   if (res != exp) {
     error = 1;
-    uChar byteResult[8];
-    uChar byteExpected[8];
+    unsigned char byteResult[8];
+    unsigned char byteExpected[8];
     memcpy (byteResult, &res, 8);
     memcpy (byteExpected, &exp, 8);
     cerr << "expected " << exp;
     cerr << setbase(16) << " (" 
-	 << Int(byteExpected[0]) << ":"
-	 << Int(byteExpected[1]) << ":"
-	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[3]) << ":"
-	 << Int(byteExpected[4]) << ":"
-	 << Int(byteExpected[5]) << ":"
-	 << Int(byteExpected[6]) << ":"
-	 << Int(byteExpected[7]) << ")";
+	 << int32_t(byteExpected[0]) << ":"
+	 << int32_t(byteExpected[1]) << ":"
+	 << int32_t(byteExpected[2]) << ":"
+	 << int32_t(byteExpected[3]) << ":"
+	 << int32_t(byteExpected[4]) << ":"
+	 << int32_t(byteExpected[5]) << ":"
+	 << int32_t(byteExpected[6]) << ":"
+	 << int32_t(byteExpected[7]) << ")";
     cerr << setbase(10) << " got " << res;
     cerr << setbase(16) << " (" 
-	 << Int(byteResult[0]) << ":"
-	 << Int(byteResult[1]) << ":"
-	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[3]) << ":"
-	 << Int(byteResult[4]) << ":"
-	 << Int(byteResult[5]) << ":"
-	 << Int(byteResult[6]) << ":"
-	 << Int(byteResult[7]) << ")";
+	 << int32_t(byteResult[0]) << ":"
+	 << int32_t(byteResult[1]) << ":"
+	 << int32_t(byteResult[2]) << ":"
+	 << int32_t(byteResult[3]) << ":"
+	 << int32_t(byteResult[4]) << ":"
+	 << int32_t(byteResult[5]) << ":"
+	 << int32_t(byteResult[6]) << ":"
+	 << int32_t(byteResult[7]) << ")";
     cerr << setbase(10) << endl;
   }
 }
 
-void checkConversion (Int& error)
+void checkConversion (int32_t& error)
 {
   {
-    Char input[2];
+    char input[2];
     input[0] = 'A';
     input[1] = 'B';
-    Char result[2];
+    char result[2];
     result[0] = 'Z';
     result[1] = 'Z';
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 1, AipsError);
     compare(error, 'A', result[0]);
     result[0] = 'Z';
@@ -246,95 +246,95 @@ void checkConversion (Int& error)
     compare(error, 'Z', input[0]);
   }
   {
-    uChar input[2];
+    unsigned char input[2];
     input[0] = 0xa5;
     input[1] = 0xff;
-    uChar result[2];
+    unsigned char result[2];
     result[0] = 0x00;
     result[1] = 0x00;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 1, AipsError);
-    compare(error, uChar(0xa5), result[0]);
+    compare(error, static_cast<unsigned char>(0xa5), result[0]);
     result[0] = 0x00;
     nbytes = ModcompConversion::toLocal(result, input, 2);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, uChar(0xa5), result[0]);
-    compare(error, uChar(0xff), result[1]);
+    compare(error, static_cast<unsigned char>(0xa5), result[0]);
+    compare(error, static_cast<unsigned char>(0xff), result[1]);
     result[0] = 0xfe;
     result[1] = 0x5a;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, uChar(0xfe), input[0]);
-    compare(error, uChar(0x5a), input[1]);
+    compare(error, static_cast<unsigned char>(0xfe), input[0]);
+    compare(error, static_cast<unsigned char>(0x5a), input[1]);
     result[0] = 0x00;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 1, AipsError);
-    compare(error, uChar(0x00), input[0]);
+    compare(error, static_cast<unsigned char>(0x00), input[0]);
   }
   {
-    uChar input[4];
+    unsigned char input[4];
     input[0] = 0x7e;
     input[1] = 0xa5;
     input[2] = 0xff;
     input[3] = 0xef;
-    Short result[2];
+    int16_t result[2];
     result[0] = 0;
     result[1] = 0;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, Short(32421), result[0]);
+    compare(error, int16_t(32421), result[0]);
     result[0] = 0;
     nbytes = ModcompConversion::toLocal(result, input, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, Short(32421), result[0]);
-    compare(error, Short(-17), result[1]);
+    compare(error, int16_t(32421), result[0]);
+    compare(error, int16_t(-17), result[1]);
     result[0] = -2;
     result[1] = 30000;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uChar(0xff), input[0]);
-    compare(error, uChar(0xfe), input[1]);
-    compare(error, uChar(0x75), input[2]);
-    compare(error, uChar(0x30), input[3]);
+    compare(error, static_cast<unsigned char>(0xff), input[0]);
+    compare(error, static_cast<unsigned char>(0xfe), input[1]);
+    compare(error, static_cast<unsigned char>(0x75), input[2]);
+    compare(error, static_cast<unsigned char>(0x30), input[3]);
     result[0] = 1;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, uChar(0x00), input[0]);
-    compare(error, uChar(0x01), input[1]);
+    compare(error, static_cast<unsigned char>(0x00), input[0]);
+    compare(error, static_cast<unsigned char>(0x01), input[1]);
   }
   {
-    uChar input[4];
+    unsigned char input[4];
     input[0] = 0x7e;
     input[1] = 0xa5;
     input[2] = 0xff;
     input[3] = 0xef;
-    uShort result[2];
+    uint16_t result[2];
     result[0] = 0;
     result[1] = 0;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, uShort(32421), result[0]);
+    compare(error, uint16_t(32421), result[0]);
     result[0] = 0;
     nbytes = ModcompConversion::toLocal(result, input, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uShort(32421), result[0]);
-    compare(error, uShort(65519), result[1]);
+    compare(error, uint16_t(32421), result[0]);
+    compare(error, uint16_t(65519), result[1]);
     result[0] = 65534;
     result[1] = 30000;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uChar(0xff), input[0]);
-    compare(error, uChar(0xfe), input[1]);
-    compare(error, uChar(0x75), input[2]);
-    compare(error, uChar(0x30), input[3]);
+    compare(error, static_cast<unsigned char>(0xff), input[0]);
+    compare(error, static_cast<unsigned char>(0xfe), input[1]);
+    compare(error, static_cast<unsigned char>(0x75), input[2]);
+    compare(error, static_cast<unsigned char>(0x30), input[3]);
     result[0] = 1;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 2, AipsError);
-    compare(error, uChar(0x00), input[0]);
-    compare(error, uChar(0x01), input[1]);
+    compare(error, static_cast<unsigned char>(0x00), input[0]);
+    compare(error, static_cast<unsigned char>(0x01), input[1]);
   }
   {
-    uChar input[8];
+    unsigned char input[8];
     input[0] = 0x7e;
     input[1] = 0xa5;
     input[2] = 0x43;
@@ -343,10 +343,10 @@ void checkConversion (Int& error)
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    Int result[2];
+    int32_t result[2];
     result[0] = 0;
     result[1] = 0;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841, result[0]);
     result[0] = 0;
@@ -358,24 +358,24 @@ void checkConversion (Int& error)
     result[1] = 305419896;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, uChar(0xfe), input[0]);
-    compare(error, uChar(0xdc), input[1]);
-    compare(error, uChar(0xba), input[2]);
-    compare(error, uChar(0x98), input[3]);
-    compare(error, uChar(0x12), input[4]);
-    compare(error, uChar(0x34), input[5]);
-    compare(error, uChar(0x56), input[6]);
-    compare(error, uChar(0x78), input[7]);
+    compare(error, static_cast<unsigned char>(0xfe), input[0]);
+    compare(error, static_cast<unsigned char>(0xdc), input[1]);
+    compare(error, static_cast<unsigned char>(0xba), input[2]);
+    compare(error, static_cast<unsigned char>(0x98), input[3]);
+    compare(error, static_cast<unsigned char>(0x12), input[4]);
+    compare(error, static_cast<unsigned char>(0x34), input[5]);
+    compare(error, static_cast<unsigned char>(0x56), input[6]);
+    compare(error, static_cast<unsigned char>(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uChar(0x23), input[0]);
-    compare(error, uChar(0x45), input[1]);
-    compare(error, uChar(0x67), input[2]);
-    compare(error, uChar(0x89), input[3]);
+    compare(error, static_cast<unsigned char>(0x23), input[0]);
+    compare(error, static_cast<unsigned char>(0x45), input[1]);
+    compare(error, static_cast<unsigned char>(0x67), input[2]);
+    compare(error, static_cast<unsigned char>(0x89), input[3]);
   }
   {
-    uChar input[8];
+    unsigned char input[8];
     input[0] = 0x7e;
     input[1] = 0xa5;
     input[2] = 0x43;
@@ -384,10 +384,10 @@ void checkConversion (Int& error)
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    uInt result[2];
+    uint32_t result[2];
     result[0] = 0u;
     result[1] = 0u;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841u, result[0]);
     result[0] = 0;
@@ -399,24 +399,24 @@ void checkConversion (Int& error)
     result[1] = 305419896u;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, uChar(0xfe), input[0]);
-    compare(error, uChar(0xdc), input[1]);
-    compare(error, uChar(0xba), input[2]);
-    compare(error, uChar(0x98), input[3]);
-    compare(error, uChar(0x12), input[4]);
-    compare(error, uChar(0x34), input[5]);
-    compare(error, uChar(0x56), input[6]);
-    compare(error, uChar(0x78), input[7]);
+    compare(error, static_cast<unsigned char>(0xfe), input[0]);
+    compare(error, static_cast<unsigned char>(0xdc), input[1]);
+    compare(error, static_cast<unsigned char>(0xba), input[2]);
+    compare(error, static_cast<unsigned char>(0x98), input[3]);
+    compare(error, static_cast<unsigned char>(0x12), input[4]);
+    compare(error, static_cast<unsigned char>(0x34), input[5]);
+    compare(error, static_cast<unsigned char>(0x56), input[6]);
+    compare(error, static_cast<unsigned char>(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uChar(0x23), input[0]);
-    compare(error, uChar(0x45), input[1]);
-    compare(error, uChar(0x67), input[2]);
-    compare(error, uChar(0x89), input[3]);
+    compare(error, static_cast<unsigned char>(0x23), input[0]);
+    compare(error, static_cast<unsigned char>(0x45), input[1]);
+    compare(error, static_cast<unsigned char>(0x67), input[2]);
+    compare(error, static_cast<unsigned char>(0x89), input[3]);
   }
   {
-    uChar input[8];
+    unsigned char input[8];
     input[0] = 0x7e;
     input[1] = 0xa5;
     input[2] = 0x43;
@@ -425,10 +425,10 @@ void checkConversion (Int& error)
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    Int64 result[2];
+    int64_t result[2];
     result[0] = 0;
     result[1] = 0;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841L, result[0]);
     result[0] = 0;
@@ -440,24 +440,24 @@ void checkConversion (Int& error)
     result[1] = 305419896;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, uChar(0xfe), input[0]);
-    compare(error, uChar(0xdc), input[1]);
-    compare(error, uChar(0xba), input[2]);
-    compare(error, uChar(0x98), input[3]);
-    compare(error, uChar(0x12), input[4]);
-    compare(error, uChar(0x34), input[5]);
-    compare(error, uChar(0x56), input[6]);
-    compare(error, uChar(0x78), input[7]);
+    compare(error, static_cast<unsigned char>(0xfe), input[0]);
+    compare(error, static_cast<unsigned char>(0xdc), input[1]);
+    compare(error, static_cast<unsigned char>(0xba), input[2]);
+    compare(error, static_cast<unsigned char>(0x98), input[3]);
+    compare(error, static_cast<unsigned char>(0x12), input[4]);
+    compare(error, static_cast<unsigned char>(0x34), input[5]);
+    compare(error, static_cast<unsigned char>(0x56), input[6]);
+    compare(error, static_cast<unsigned char>(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uChar(0x23), input[0]);
-    compare(error, uChar(0x45), input[1]);
-    compare(error, uChar(0x67), input[2]);
-    compare(error, uChar(0x89), input[3]);
+    compare(error, static_cast<unsigned char>(0x23), input[0]);
+    compare(error, static_cast<unsigned char>(0x45), input[1]);
+    compare(error, static_cast<unsigned char>(0x67), input[2]);
+    compare(error, static_cast<unsigned char>(0x89), input[3]);
   }
   {
-    uChar input[8];
+    unsigned char input[8];
     input[0] = 0x7e;
     input[1] = 0xa5;
     input[2] = 0x43;
@@ -466,10 +466,10 @@ void checkConversion (Int& error)
     input[5] = 0xef;
     input[6] = 0xab;
     input[7] = 0xcd;
-    uInt64 result[2];
+    uint64_t result[2];
     result[0] = 0u;
     result[1] = 0u;
-    uInt nbytes = ModcompConversion::toLocal(result[0], input);
+    uint32_t nbytes = ModcompConversion::toLocal(result[0], input);
     AlwaysAssert(nbytes == 4, AipsError);
     compare(error, 2124759841uL, result[0]);
     result[0] = 0;
@@ -481,74 +481,74 @@ void checkConversion (Int& error)
     result[1] = 305419896u;
     nbytes = ModcompConversion::fromLocal(input, result, 2);
     AlwaysAssert(nbytes == 8, AipsError);
-    compare(error, uChar(0xfe), input[0]);
-    compare(error, uChar(0xdc), input[1]);
-    compare(error, uChar(0xba), input[2]);
-    compare(error, uChar(0x98), input[3]);
-    compare(error, uChar(0x12), input[4]);
-    compare(error, uChar(0x34), input[5]);
-    compare(error, uChar(0x56), input[6]);
-    compare(error, uChar(0x78), input[7]);
+    compare(error, static_cast<unsigned char>(0xfe), input[0]);
+    compare(error, static_cast<unsigned char>(0xdc), input[1]);
+    compare(error, static_cast<unsigned char>(0xba), input[2]);
+    compare(error, static_cast<unsigned char>(0x98), input[3]);
+    compare(error, static_cast<unsigned char>(0x12), input[4]);
+    compare(error, static_cast<unsigned char>(0x34), input[5]);
+    compare(error, static_cast<unsigned char>(0x56), input[6]);
+    compare(error, static_cast<unsigned char>(0x78), input[7]);
     result[0] = 591751049;
     nbytes = ModcompConversion::fromLocal(input, result[0]);
     AlwaysAssert(nbytes == 4, AipsError);
-    compare(error, uChar(0x23), input[0]);
-    compare(error, uChar(0x45), input[1]);
-    compare(error, uChar(0x67), input[2]);
-    compare(error, uChar(0x89), input[3]);
+    compare(error, static_cast<unsigned char>(0x23), input[0]);
+    compare(error, static_cast<unsigned char>(0x45), input[1]);
+    compare(error, static_cast<unsigned char>(0x67), input[2]);
+    compare(error, static_cast<unsigned char>(0x89), input[3]);
   }
 }
 
-void compare(Int& error, Float exp, Float res) {
+void compare(int32_t& error, float exp, float res) {
   // Compare the results. Allow the answers to differ in the LSB as the
-  // conversion from Double to Float rounds to the nearest floating point
+  // conversion from double to float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
   if (std::abs(res - exp) > 1.4013e-45) {    // This number is the
                                              // smallest subnormal number
     error = 1;
-    uChar byteResult[4];
-    uChar byteExpected[4];
+    unsigned char byteResult[4];
+    unsigned char byteExpected[4];
     memcpy (byteResult, &res, 4);
     memcpy (byteExpected, &exp, 4);
     cerr << "expected " << exp;
     cerr << setbase(16) << " ("
-	 << Int(byteExpected[3]) << ":"
-	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[1]) << ":"
-	 << Int(byteExpected[0]) << ")";
+	 << int32_t(byteExpected[3]) << ":"
+	 << int32_t(byteExpected[2]) << ":"
+	 << int32_t(byteExpected[1]) << ":"
+	 << int32_t(byteExpected[0]) << ")";
     cerr << " got " << res;
     cerr << setbase(16) << " ("
-	 << Int(byteResult[3]) << ":"
-	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[1]) << ":"
-	 << Int(byteResult[0]) << ")";
+	 << int32_t(byteResult[3]) << ":"
+	 << int32_t(byteResult[2]) << ":"
+	 << int32_t(byteResult[1]) << ":"
+	 << int32_t(byteResult[0]) << ")";
     cerr << endl;
   }
 }
 
-void checkFloat (Int& error)
+void checkFloat (int32_t& error)
 {
-  Float result;
-  Float expected;
+  float result;
+  float expected;
 
-  uChar data[4], cdata[4];
+  unsigned char data[4], cdata[4];
   data[2] = 0x00;
   data[3] = 0x01; // put a bit at the end to make sure it does not get lost
-  for (uShort j = 0; j < 512; j++) { // exponent is nine bits
+  for (uint16_t j = 0; j < 512; j++) { // exponent is nine bits
     data[0] = j >> 2;
-    Double exponent;
+    double exponent;
     if (j > 256) {
-      exponent = pow(2.0, Double(j - 256));
+      exponent = pow(2.0, double(j - 256));
     } else {
-      exponent = 1.0 / pow(2.0, Double(256 - j));
+      exponent = 1.0 / pow(2.0, double(256 - j));
     }
-    for (uInt k=0; k<63; k++) {// cannot cycle through all mantissa' it would
+    for (uint32_t k=0; k<63; k++) {// cannot cycle through all mantissa' it would
       // take too long. So just increment through the 5-MSB's
       // This tests both normalised and unnormailsed numbers & positive and
       // negative infinity.
       data[1] = (j & 0x0003) << 6 | k; 
-      expected = exponent * (Double(k)/64.0 + 1.0/(256*256*64));
-      uInt nbytes = ModcompConversion::toLocal(result, data);
+      expected = exponent * (double(k)/64.0 + 1.0/(256*256*64));
+      uint32_t nbytes = ModcompConversion::toLocal(result, data);
       AlwaysAssert(nbytes == 4, AipsError);
       compare(error, expected, result);
       cdata[0] = ~data[0];
@@ -563,80 +563,80 @@ void checkFloat (Int& error)
   }
   // Check that the conversion for zero works. Try all possible representations
   // of zero ie., all numbers with a zero mantissa
-  uChar data2[8];
+  unsigned char data2[8];
   data2[0] = data2[1] = data2[2] = data2[3] = 0x00;
   data2[4] = data2[5] = data2[6] = data2[7] = 0x00;
-  Float result2[2]; 
+  float result2[2]; 
   result2[1] = result2[0] = 1.0f;
-  const Float plusZero = 0.0f;
-  const Float minusZero = -0.0f;
-  for (uInt i = 0; i < 512; i++) {
+  const float plusZero = 0.0f;
+  const float minusZero = -0.0f;
+  for (uint32_t i = 0; i < 512; i++) {
     data2[0] = i >> 2;
     data2[4] = data2[0] | 0x80;
     data2[5] = data2[1] = (i & 0x03) << 6;
-    uInt nbytes = ModcompConversion::toLocal(result2, data2, 2);
+    uint32_t nbytes = ModcompConversion::toLocal(result2, data2, 2);
     AlwaysAssert(nbytes == 8, AipsError);
     compare(error, plusZero, result2[0]);
     compare(error, minusZero, result2[1]);
   }
 }
 
-void compare(Int& error, Double exp, Double res) {
+void compare(int32_t& error, double exp, double res) {
   // Compare the results. Allow the answers to differ in the LSB as the
-  // conversion from Double to Float rounds to the nearest floating point
+  // conversion from double to float rounds to the nearest floating point
   // number whereas the conversion from ModComp to IEEE rounds down.
   if (std::abs(res - exp) > 0) {
     error = 1;
-    uChar byteResult[8];
-    uChar byteExpected[8];
+    unsigned char byteResult[8];
+    unsigned char byteExpected[8];
     memcpy (byteResult, &res, 8);
     memcpy (byteExpected, &exp, 8);
     cerr << "expected " << exp;
     cerr << setbase(16) << " ("
-	 << Int(byteExpected[7]) << ":"
-	 << Int(byteExpected[6]) << ":"
-	 << Int(byteExpected[5]) << ":"
-	 << Int(byteExpected[4]) << ":"
-	 << Int(byteExpected[3]) << ":"
-	 << Int(byteExpected[2]) << ":"
-	 << Int(byteExpected[1]) << ":"
-	 << Int(byteExpected[0]) << ")";
+	 << int32_t(byteExpected[7]) << ":"
+	 << int32_t(byteExpected[6]) << ":"
+	 << int32_t(byteExpected[5]) << ":"
+	 << int32_t(byteExpected[4]) << ":"
+	 << int32_t(byteExpected[3]) << ":"
+	 << int32_t(byteExpected[2]) << ":"
+	 << int32_t(byteExpected[1]) << ":"
+	 << int32_t(byteExpected[0]) << ")";
     cerr << " got " << res;
     cerr << setbase(16) << " ("
-	 << Int(byteResult[7]) << ":"
-	 << Int(byteResult[6]) << ":"
-	 << Int(byteResult[5]) << ":"
-	 << Int(byteResult[4]) << ":"
-	 << Int(byteResult[3]) << ":"
-	 << Int(byteResult[2]) << ":"
-	 << Int(byteResult[1]) << ":"
-	 << Int(byteResult[0]) << ")";
+	 << int32_t(byteResult[7]) << ":"
+	 << int32_t(byteResult[6]) << ":"
+	 << int32_t(byteResult[5]) << ":"
+	 << int32_t(byteResult[4]) << ":"
+	 << int32_t(byteResult[3]) << ":"
+	 << int32_t(byteResult[2]) << ":"
+	 << int32_t(byteResult[1]) << ":"
+	 << int32_t(byteResult[0]) << ")";
     cerr << endl;
   }
 }
 
-void checkDouble (Int& error) {
-  Double result;
-  Double expected;
+void checkDouble (int32_t& error) {
+  double result;
+  double expected;
 
-  uChar data[8], cdata[8];
+  unsigned char data[8], cdata[8];
   data[2] = data[3] = data[4] = data[5] = data[6] = 0x00;
   data[7] = 0x02; // put a bit nearly at the end to make sure it does 
                   // not get lost. The last bit IS lost.
-  for (uShort j = 0; j < 512; j++) { // exponent is nine bits
+  for (uint16_t j = 0; j < 512; j++) { // exponent is nine bits
     data[0] = j >> 2;
-    Double exponent;
+    double exponent;
     if (j > 256) {
-      exponent = pow(2.0, Double(j - 256));
+      exponent = pow(2.0, double(j - 256));
     } else {
-      exponent = 1.0 / pow(2.0, Double(256 - j));
+      exponent = 1.0 / pow(2.0, double(256 - j));
     }
-    for (uInt k=0; k<63; k++) {// cannot cycle through all mantissa' it would
+    for (uint32_t k=0; k<63; k++) {// cannot cycle through all mantissa' it would
       // take too long. So just increment through the 5-MSB's
       // This tests both normalised and unnormalised numbers
       data[1] = (j & 0x0003) << 6 | k; 
-      expected = exponent * (Double(k)/64.0 + 1.0/65536/65536/65536/32);
-      uInt nbytes = ModcompConversion::toLocal(result, data);
+      expected = exponent * (double(k)/64.0 + 1.0/65536/65536/65536/32);
+      uint32_t nbytes = ModcompConversion::toLocal(result, data);
       AlwaysAssert(nbytes == 8, AipsError);
       compare(error, expected, result);
       cdata[0] = ~data[0];
@@ -655,20 +655,20 @@ void checkDouble (Int& error) {
   }
   // Check that the conversion for zero works. Try all possible representations
   // of zero ie., all numbers with a zero mantissa
-  uChar data2[16];
+  unsigned char data2[16];
   data2[0] = data2[1] = data2[2] = data2[3] = 0x00;
   data2[4] = data2[5] = data2[6] = data2[7] = 0x00;
   data2[8] = data2[9] = data2[10] = data2[11] = 0x00;
   data2[12] = data2[13] = data2[14] = data2[15] = 0x00;
-  Double result2[2]; 
+  double result2[2]; 
   result2[1] = result2[0] = 1.0;
-  const Double plusZero = 0.0;
-  const Double minusZero = -0.0;
-  for (uInt i = 0; i < 512; i++) {
+  const double plusZero = 0.0;
+  const double minusZero = -0.0;
+  for (uint32_t i = 0; i < 512; i++) {
     data2[0] = i >> 2;
     data2[8] = data2[0] | 0x80;
     data2[9] = data2[1] = (i & 0x03) << 6;
-    uInt nbytes = ModcompConversion::toLocal(result2, data2, 2);
+    uint32_t nbytes = ModcompConversion::toLocal(result2, data2, 2);
     AlwaysAssert(nbytes == 16, AipsError);
     compare(error, plusZero, result2[0]);
     compare(error, minusZero, result2[1]);
@@ -677,7 +677,7 @@ void checkDouble (Int& error) {
 
 int main()
 {
-  Int error = 0;
+  int32_t error = 0;
   try {
     checkConversion (error);
     checkFloat (error);

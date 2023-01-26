@@ -68,10 +68,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Aberration() default; assuming JD2000, IAU1980
 //   <li> Aberration(method) assuming the correct default epoch of
 //		JD2000 or B1950
-//   <li> Aberration(method,epoch) with epoch Double(MJD).
+//   <li> Aberration(method,epoch) with epoch double(MJD).
 // </ul>
 // Actual Aberration for a certain Epoch is calculated by the () operator
-// as Aberration(epoch), with epoch Double MJD, values returned as an
+// as Aberration(epoch), with epoch double MJD, values returned as an
 // MVPosition.<br>
 // The derivative (d<sup>-1</sup>) can be obtained as well by
 // derivative(epoch).<br>
@@ -108,7 +108,7 @@ class Aberration
 public:
 //# Constants
 // Interval to be used for linear approximation (in days)
-    static const Double INTV;
+    static const double INTV;
 
 //# Enumerations
 // Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
@@ -129,11 +129,11 @@ public:
 
 //# Operators
 // Operator () calculates the Aberration direction cosine vector
-    const MVPosition &operator()(Double epoch);
+    const MVPosition &operator()(double epoch);
 
 //# General Member Functions
 // Return derivative of Aberration (d<sup>-1</sup>) w.r.t. time
-    const MVPosition &derivative (Double epoch);
+    const MVPosition &derivative (double epoch);
 
 // Re-initialise Aberration object
 // <group>
@@ -149,21 +149,21 @@ private:
 // Method to be used
     AberrationTypes method;
 // Check epoch for linear approximation
-    Double checkEpoch;
+    double checkEpoch;
 // Cached calculated angles
-    Double aval[3];
+    double aval[3];
 // Cached derivatives
-    Double dval[3];
+    double dval[3];
 // To be able to use referenced results in simple calculations, a circular
 // result buffer is used.
 // Current buffer pointer.
-    Int lres;
+    int32_t lres;
 // Last calculation
     MVPosition result[4];
 // Interpolation interval
-    static uInt interval_reg;
+    static uint32_t interval_reg;
 // JPL use
-    static uInt usejpl_reg;
+    static uint32_t usejpl_reg;
 
 //# Member functions
 // Copy
@@ -171,7 +171,7 @@ private:
 // Fill an empty copy
     void fill();
 // Calculate Aberration angles for time t
-    void calcAber(Double t);
+    void calcAber(double t);
 };
 
 

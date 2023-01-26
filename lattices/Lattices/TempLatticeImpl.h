@@ -77,24 +77,24 @@ public:
   // (this algorithm may change). Setting maxMemoryInMB to zero will force
   // the lattice to disk.
   // <group>
-  TempLatticeImpl (const TiledShape& shape, Int maxMemoryInMB);
-  TempLatticeImpl (const TiledShape& shape, Double maxMemoryInMB);
+  TempLatticeImpl (const TiledShape& shape, int32_t maxMemoryInMB);
+  TempLatticeImpl (const TiledShape& shape, double maxMemoryInMB);
   // </group>
   
   // The destructor removes the Lattice from memory and if necessary disk.
   ~TempLatticeImpl();
 
   // Is the TempLattice paged to disk?
-  Bool isPaged() const
+  bool isPaged() const
     { return  (! itsTableName.empty()); }
 
   // Can the lattice data be referenced as an array section?
-  Bool canReferenceArray() const
+  bool canReferenceArray() const
     { return  (itsTableName.empty()); }
 
   // Is the TempLattice writable? It should be.
-  Bool isWritable() const
-    { return True; }
+  bool isWritable() const
+    { return true; }
 
   // Flush the data.
   void flush()
@@ -139,19 +139,19 @@ public:
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  uInt advisedMaxPixels() const
+  uint32_t advisedMaxPixels() const
     { doReopen(); return itsLatticePtr->advisedMaxPixels(); }
 
   // Get the best cursor shape.
-  IPosition doNiceCursorShape (uInt maxPixels) 
+  IPosition doNiceCursorShape (uint32_t maxPixels) 
     { doReopen(); return itsLatticePtr->niceCursorShape (maxPixels); }
 
   // Maximum size - not necessarily all used. In pixels.
-  uInt maximumCacheSize() const
+  uint32_t maximumCacheSize() const
     { return itsLatticePtr->maximumCacheSize(); }
 
   // Set the maximum (allowed) cache size as indicated.
-  void setMaximumCacheSize (uInt howManyPixels)
+  void setMaximumCacheSize (uint32_t howManyPixels)
     { itsLatticePtr->setMaximumCacheSize (howManyPixels); }
 
   // Set the cache size as to "fit" the indicated path.
@@ -167,7 +167,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  void setCacheSizeInTiles (uInt howManyTiles)
+  void setCacheSizeInTiles (uint32_t howManyTiles)
     { itsLatticePtr->setCacheSizeInTiles (howManyTiles); }
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
@@ -188,19 +188,19 @@ public:
     { doReopen(); itsLatticePtr->putAt (value, where); }
   // </group>
   
-  // Check class internals - used for debugging. Should always return True
-  Bool ok() const
+  // Check class internals - used for debugging. Should always return true
+  bool ok() const
     { doReopen(); return itsLatticePtr->ok(); }
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
   LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-                                     Bool useRef) const
+                                     bool useRef) const
     { doReopen(); return itsLatticePtr->makeIter (navigator, useRef); }
 
   // Do the actual getting of an array of values.
-  Bool doGetSlice (Array<T>& buffer, const Slicer& section)
+  bool doGetSlice (Array<T>& buffer, const Slicer& section)
     { doReopen(); return itsLatticePtr->doGetSlice (buffer, section); }
 
   // Do the actual getting of an array of values.
@@ -221,7 +221,7 @@ private:
   TempLatticeImpl<T>& operator= (const TempLatticeImpl<T>& other);
 
   // Initialize the object.
-  void init (const TiledShape& shape, Double maxMemoryInMB=-1);
+  void init (const TiledShape& shape, double maxMemoryInMB=-1);
 
   // Do the actual reopen of the temporarily closed table (if not open already).
   void tempReopen() const;
@@ -233,7 +233,7 @@ private:
   mutable Table*                  itsTablePtr;
   mutable CountedPtr<Lattice<T> > itsLatticePtr;
           String                  itsTableName;
-  mutable Bool                    itsIsClosed;
+  mutable bool                    itsIsClosed;
 };
 
 

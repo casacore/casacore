@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // ROIncrementalStManAccessor</linkto>.
 // <p>
 // The IncrementalStMan can hold values of any standard data type (thus
-// from Bool to String). It can handle scalars, direct and indirect
+// from bool to String). It can handle scalars, direct and indirect
 // arrays. It can support an arbitrary number of columns. The values in
 // each of them can vary at its own speed.
 // <br>
@@ -197,13 +197,13 @@ public:
     // when the size is too small to hold the values of at least 2 rows.
     // For this check it uses 0 for the length of variable length strings.
     // <group>
-    explicit IncrementalStMan (uInt bucketSize = 0,
-			       Bool checkBucketSize = True,
-			       uInt cacheSize = 1);
+    explicit IncrementalStMan (uint32_t bucketSize = 0,
+			       bool checkBucketSize = true,
+			       uint32_t cacheSize = 1);
     explicit IncrementalStMan (const String& dataManagerName,
-			       uInt bucketSize = 0,
-			       Bool checkBucketSize = True,
-			       uInt cacheSize = 1);
+			       uint32_t bucketSize = 0,
+			       bool checkBucketSize = true,
+			       uint32_t cacheSize = 1);
     // </group>
 
     ~IncrementalStMan();

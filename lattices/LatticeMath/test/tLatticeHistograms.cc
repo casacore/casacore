@@ -46,11 +46,11 @@
 
 #include <casacore/casa/namespace.h>
 void doitFloat(LogIO& os);
-void do1DFloat (const Array<Float>& inArr,
+void do1DFloat (const Array<float>& inArr,
                 LogIO& os);
-void do2DFloat (const Array<Float>& inArr, LogIO& os);
-void test1DFloat (LatticeHistograms<Float>& histo, const IPosition& shape, uInt nBin);
-void test2DFloat (LatticeHistograms<Float>& histo,  const IPosition& shape, uInt nBin);
+void do2DFloat (const Array<float>& inArr, LogIO& os);
+void test1DFloat (LatticeHistograms<float>& histo, const IPosition& shape, uint32_t nBin);
+void test2DFloat (LatticeHistograms<float>& histo,  const IPosition& shape, uint32_t nBin);
 
 
 int main() {
@@ -59,17 +59,17 @@ int main() {
         LogIO os(lor);
         doitFloat(os);
         {
-            Array<Float> arr(IPosition(2, 5, 10), 0.0f);
-            for (uInt i=0; i<10; i++ ) {
+            Array<float> arr(IPosition(2, 5, 10), 0.0f);
+            for (uint32_t i=0; i<10; i++ ) {
                 arr(IPosition(2, 4, i)) = 100*(i+1);
                 arr(IPosition(2, 0, i)) = -arr(IPosition(2, 4, i));
             }
-            ArrayLattice<Float> latt(arr);
-            SubLattice<Float> subLatt(latt);
-            LatticeHistograms<Float> lh(subLatt);
+            ArrayLattice<float> latt(arr);
+            SubLattice<float> subLatt(latt);
+            LatticeHistograms<float> lh(subLatt);
             lh.setNBins(25);
-            Array<Float> values, counts;
-            Vector<Float> range(2);
+            Array<float> values, counts;
+            Vector<float> range(2);
             range[0] = -5;
             range[1] = 5;
             lh.setIncludeRange(range);
@@ -77,22 +77,22 @@ int main() {
             AlwaysAssert(counts(IPosition(1, 12)) == 30, AipsError);
         }
         {
-            Array<Float> arr(IPosition(3, 2, 4, 6), 0.0f);
-            Float sum = 0;
-            for (uInt i=0; i<2; ++i) {
-                for (uInt j=0; j<4; ++j) {
-                    for (uInt k=0; k<6; ++k) {
+            Array<float> arr(IPosition(3, 2, 4, 6), 0.0f);
+            float sum = 0;
+            for (uint32_t i=0; i<2; ++i) {
+                for (uint32_t j=0; j<4; ++j) {
+                    for (uint32_t k=0; k<6; ++k) {
                         arr(IPosition(3, i, j, k)) = i + j + k;
                         sum += arr(IPosition(3, i, j, k));
                     }
                 }
             }
-            ArrayLattice<Float> latt(arr);
-            SubLattice<Float> subLatt(latt);
-            LatticeHistograms<Float> lh(subLatt);
+            ArrayLattice<float> latt(arr);
+            SubLattice<float> subLatt(latt);
+            LatticeHistograms<float> lh(subLatt);
             lh.setNBins(25);
-            Array<Float> values, counts;
-            Array<Vector<Float> > stats;
+            Array<float> values, counts;
+            Array<Vector<float> > stats;
             lh.getHistograms(values, counts, stats);
             AlwaysAssert(stats.shape() == IPosition(1, 1), AipsError);
             lh.getHistograms(values, counts, stats);
@@ -108,13 +108,13 @@ int main() {
                     stats(IPosition(1, 0))[LatticeStatsBase::MEAN] == sum/48,
                     AipsError
             );
-            Vector<Int> axes(2, 0);
+            Vector<int32_t> axes(2, 0);
             axes[1] = 1;
             lh.setAxes(axes);
             lh.getHistograms(values, counts, stats);
             AlwaysAssert(stats.shape() == IPosition(1, 6), AipsError);
-            for (uInt i=0; i<6; ++i) {
-                Float sum = 16 + 8*i;
+            for (uint32_t i=0; i<6; ++i) {
+                float sum = 16 + 8*i;
                 AlwaysAssert(
                         stats(IPosition(1, i))[LatticeStatsBase::SUM] == sum,
                         AipsError
@@ -133,9 +133,9 @@ int main() {
             lh.setAxes(axes);
             lh.getHistograms(values, counts, stats);
             AlwaysAssert(stats.shape() == IPosition(2, 2, 6), AipsError);
-            for (uInt i=0; i<2; ++i) {
-                for (uInt j=0; j<6; ++j) {
-                    Float sum = 4*(i+j) + 6;
+            for (uint32_t i=0; i<2; ++i) {
+                for (uint32_t j=0; j<6; ++j) {
+                    float sum = 4*(i+j) + 6;
                     AlwaysAssert(
                             stats(IPosition(2, i, j))[LatticeStatsBase::SUM] == sum,
                             AipsError
@@ -167,7 +167,7 @@ void doitFloat (LogIO& os)
 
    IPosition shape(1);
    shape = 40;
-   Array<Float> inArr(shape);
+   Array<float> inArr(shape);
    indgen(inArr);
 
 // Make 1D Lattice and test
@@ -180,16 +180,16 @@ void doitFloat (LogIO& os)
 }
 
 
-void do1DFloat (const Array<Float>& inArr, LogIO& os)
+void do1DFloat (const Array<float>& inArr, LogIO& os)
 {
    const IPosition shape = inArr.shape();
-   ArrayLattice<Float> inLat(inArr);
-   SubLattice<Float> subLat(inLat);
-   LatticeHistograms<Float> histo(subLat, os, False, False);
+   ArrayLattice<float> inLat(inArr);
+   SubLattice<float> subLat(inLat);
+   LatticeHistograms<float> histo(subLat, os, false, false);
 
 // Make a flat histogram so we can test it easily
 
-   const uInt nBin = shape(0)/4;
+   const uint32_t nBin = shape(0)/4;
    AlwaysAssert(histo.setNBins(nBin), AipsError);
 
 // Test
@@ -199,14 +199,14 @@ void do1DFloat (const Array<Float>& inArr, LogIO& os)
 // Test copy constructor - feeble test
      
    {
-      LatticeHistograms<Float> histo2(histo);
+      LatticeHistograms<float> histo2(histo);
       test1DFloat (histo2, shape, nBin);
    }
 
 // Test assignment operator - feeble test
    
    {
-      LatticeHistograms<Float> histo2(histo);
+      LatticeHistograms<float> histo2(histo);
       histo = histo2;
       test1DFloat (histo, shape, nBin);
    }
@@ -219,33 +219,33 @@ void do1DFloat (const Array<Float>& inArr, LogIO& os)
    }
 }
 
-void do2DFloat (const Array<Float>& arr, LogIO& os)
+void do2DFloat (const Array<float>& arr, LogIO& os)
 {
-   uInt nX = arr.shape()(0);
-   uInt nY = 20;
+   uint32_t nX = arr.shape()(0);
+   uint32_t nY = 20;
    IPosition shape(2,nX,nY);
 
 // Fill Lattice with replicated rows
 
-   ArrayLattice<Float> lat(shape);
+   ArrayLattice<float> lat(shape);
    Slicer slice(IPosition(2,0,0),shape,Slicer::endIsLength);
    LatticeUtilities::replicate (lat, slice, arr);
-   SubLattice<Float> subLat(lat);
+   SubLattice<float> subLat(lat);
 
 // Make LS object and set axes so that we work out histo
 // over first axis as a function of nY replicated rows
 
-   LatticeHistograms<Float> histo(subLat, os, False, False);
-   Vector<Int> axes(1);
+   LatticeHistograms<float> histo(subLat, os, false, false);
+   Vector<int32_t> axes(1);
    axes = 0;
    AlwaysAssert(histo.setAxes(axes), AipsError);
 
 // Make a flat histogram so we can test it easily
 
-   const uInt nBin = shape(0)/4;
+   const uint32_t nBin = shape(0)/4;
    AlwaysAssert(histo.setNBins(nBin), AipsError);
 //
-   const uInt n = nX/4;
+   const uint32_t n = nX/4;
    AlwaysAssert(histo.setNBins(n), AipsError);
 
 // Test
@@ -255,14 +255,14 @@ void do2DFloat (const Array<Float>& arr, LogIO& os)
 // Test copy constructor - feeble test
      
    {
-      LatticeHistograms<Float> histo2(histo);
+      LatticeHistograms<float> histo2(histo);
       test2DFloat (histo2, shape, nBin);
    }
 
 // Test assignment operator - feeble test
    
    {
-      LatticeHistograms<Float> histo2(histo);
+      LatticeHistograms<float> histo2(histo);
       histo = histo2;
       test2DFloat (histo, shape, nBin);
    }
@@ -276,20 +276,20 @@ void do2DFloat (const Array<Float>& arr, LogIO& os)
 }
 
 
-void test1DFloat (LatticeHistograms<Float>& histo, const IPosition& shape, uInt nBin)
+void test1DFloat (LatticeHistograms<float>& histo, const IPosition& shape, uint32_t nBin)
 {
    AlwaysAssert(histo.displayAxes().nelements()==0, AipsError);
 //
-   Float val = Float(shape(0) / nBin);
-   Double tol = 1.0e-6;
+   float val = float(shape(0) / nBin);
+   double tol = 1.0e-6;
    {
       IPosition pos(1,0);
-      Vector<Float> values, counts;
-      AlwaysAssert(histo.getHistogram(values, counts, pos, True), AipsError);
+      Vector<float> values, counts;
+      AlwaysAssert(histo.getHistogram(values, counts, pos, true), AipsError);
    }
 //
    {
-      Vector<Float> values, counts;
+      Vector<float> values, counts;
       AlwaysAssert(histo.getHistograms(values, counts), AipsError);
       AlwaysAssert(values.shape()==IPosition(1,nBin),AipsError);
       AlwaysAssert(counts.shape()==IPosition(1,nBin),AipsError);
@@ -298,38 +298,38 @@ void test1DFloat (LatticeHistograms<Float>& histo, const IPosition& shape, uInt 
 }
 
 
-void test2DFloat (LatticeHistograms<Float>& histo, const IPosition& shape, uInt nBin)
+void test2DFloat (LatticeHistograms<float>& histo, const IPosition& shape, uint32_t nBin)
 {
    AlwaysAssert(shape.nelements()==2,AipsError);
-   const Vector<Int> dA = histo.displayAxes();
+   const Vector<int32_t> dA = histo.displayAxes();
    AlwaysAssert(dA.nelements()==1, AipsError);
    AlwaysAssert(dA(0)==1, AipsError);
-   const uInt nY = shape(1);
+   const uint32_t nY = shape(1);
 //
-   Float val = Float(shape(0) / nBin);
-   Double tol = 1.0e-6;
+   float val = float(shape(0) / nBin);
+   double tol = 1.0e-6;
 //
    {
       IPosition pos(2,0,0);
-      Vector<Float> values, counts;
-      AlwaysAssert(histo.getHistogram(values, counts, pos, True), AipsError);
+      Vector<float> values, counts;
+      AlwaysAssert(histo.getHistogram(values, counts, pos, true), AipsError);
       AlwaysAssert(values.shape()==IPosition(1,nBin),AipsError);
    }
 
 // Check histo correct for each row 
 
    {
-      Array<Float> values, counts;
+      Array<float> values, counts;
       AlwaysAssert(histo.getHistograms(values, counts), AipsError);
       AlwaysAssert(values.shape()==IPosition(2,nBin,nY),AipsError);
       AlwaysAssert(counts.shape()==IPosition(2,nBin,nY),AipsError);
 //
       IPosition beg(2,0,0);
       IPosition end(2,nBin-1,0);
-      for (uInt j=0; j<nY; j++) {
+      for (uint32_t j=0; j<nY; j++) {
          beg(1) = j;
          end(1) = j;
-         Array<Float> h = counts(beg, end);
+         Array<float> h = counts(beg, end);
          AlwaysAssert(allNear(h,val,tol), AipsError);
       }
    }

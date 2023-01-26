@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    PoissonFunction<Double> sf(5.0);
+//    PoissonFunction<double> sf(5.0);
 //    sf(25);            // = 5.0
 // </srcblock>
 // </example>

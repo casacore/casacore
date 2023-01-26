@@ -43,8 +43,8 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
-              const Array<Float>& mir, const Array<Bool>& mirMask, Float tol=1.0e-5);
+bool allNear (const Array<float>& data, const Array<bool>& dataMask,
+              const Array<float>& mir, const Array<bool>& mirMask, float tol=1.0e-5);
 
 int main (int argc, const char* argv[])
 {
@@ -61,8 +61,8 @@ try {
 //
    inputs.readArguments(argc, argv);
    String in = inputs.getString("in");
-   const Bool print = inputs.getBool("print");
-   const Int size = inputs.getInt("size");
+   const bool print = inputs.getBool("print");
+   const int32_t size = inputs.getInt("size");
 //
    if (in.empty()) {
 #if 0
@@ -96,20 +96,20 @@ try {
    AlwaysAssert(mirImage.hasPixelMask() == mirImage.isMasked(), AipsError);
 #if 0
    if (mirImage.hasPixelMask()) {
-      Lattice<Bool>& pMask = mirImage.pixelMask();
+      Lattice<bool>& pMask = mirImage.pixelMask();
       AlwaysAssert(pMask.shape()==mirImage.shape(), AipsError);
    }
 #endif
    AlwaysAssert(mirImage.getRegionPtr()==0, AipsError);
-   AlwaysAssert(mirImage.isWritable()==False, AipsError);
-   AlwaysAssert(mirImage.name(False)==p.absoluteName(),AipsError);
+   AlwaysAssert(mirImage.isWritable()==false, AipsError);
+   AlwaysAssert(mirImage.name(false)==p.absoluteName(),AipsError);
    AlwaysAssert(mirImage.ok(), AipsError);
 //
    mirImage.tempClose();
    if (print) {
       IPosition start (mirImage.ndim(),0);
       IPosition shape(mirImage.shape());
-      for (uInt i=0; i<mirImage.ndim(); i++) {
+      for (uint32_t i=0; i<mirImage.ndim(); i++) {
          if (shape(i) > size) shape(i) = size;
       }
       cerr << "Data = " << mirImage.getSlice(start, shape) << endl;
@@ -119,7 +119,7 @@ try {
 // Convert from MIRIAD as a comparison
 
    String error;
-   ImageInterface<Float>* pTempImage = 0;
+   ImageInterface<float>* pTempImage = 0;
    String imageName;
 #if 1
    if (!ImageFITSConverter::FITSToImage(pTempImage, error, 
@@ -129,10 +129,10 @@ try {
 
    //  need to fill pTempImage ....
 
-   Array<Float> mirArray = mirImage.get();
-   Array<Float> dataArray = pTempImage->get();
-   Array<Bool> mirMask = mirImage.getMask();
-   Array<Bool> dataMask = pTempImage->getMask();
+   Array<float> mirArray = mirImage.get();
+   Array<float> dataArray = pTempImage->get();
+   Array<bool> mirMask = mirImage.getMask();
+   Array<bool> dataMask = pTempImage->getMask();
    CoordinateSystem mirCS = mirImage.coordinates();
    CoordinateSystem dataCS = pTempImage->coordinates();
    delete pTempImage;
@@ -142,9 +142,9 @@ try {
 
 // Test Clone
 
-   ImageInterface<Float>* pMirImage = mirImage.cloneII();
-   Array<Float> mirArray2 = pMirImage->get();
-   Array<Bool> mirMask2 = pMirImage->getMask();
+   ImageInterface<float>* pMirImage = mirImage.cloneII();
+   Array<float> mirArray2 = pMirImage->get();
+   Array<bool> mirMask2 = pMirImage->getMask();
    CoordinateSystem mirCS2 = pMirImage->coordinates();
    delete pMirImage;
 //
@@ -165,26 +165,26 @@ try {
   return 0;
 }
 
-Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
-              const Array<Float>& mir,  const Array<Bool>& mirMask,
-              Float tol)
+bool allNear (const Array<float>& data, const Array<bool>& dataMask,
+              const Array<float>& mir,  const Array<bool>& mirMask,
+              float tol)
 {
-   Bool deletePtrData, deletePtrDataMask, deletePtrMIRIAD, deletePtrMIRIADMask;
-   const Float* pData = data.getStorage(deletePtrData);
-   const Float* pMIRIAD = mir.getStorage(deletePtrMIRIAD);
-   const Bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
-   const Bool* pMIRIADMask = mirMask.getStorage(deletePtrMIRIADMask);
+   bool deletePtrData, deletePtrDataMask, deletePtrMIRIAD, deletePtrMIRIADMask;
+   const float* pData = data.getStorage(deletePtrData);
+   const float* pMIRIAD = mir.getStorage(deletePtrMIRIAD);
+   const bool* pDataMask = dataMask.getStorage(deletePtrDataMask);
+   const bool* pMIRIADMask = mirMask.getStorage(deletePtrMIRIADMask);
 //
-   for (uInt i=0; i<data.nelements(); i++) {
+   for (uint32_t i=0; i<data.nelements(); i++) {
       if (pDataMask[i] != pMIRIADMask[i]) {
          cerr << "masks differ" << endl;
-         return False;
+         return false;
       }
       if (pDataMask[i]) { 
          if (!near(pData[i], pMIRIAD[i], tol)) {
             cerr << "data differ, tol = " << tol << endl;
             cerr << pData[i] << ", " << pMIRIAD[i] << endl;
-            return False;
+            return false;
          }
       }
    }
@@ -193,7 +193,7 @@ Bool allNear (const Array<Float>& data, const Array<Bool>& dataMask,
    dataMask.freeStorage(pDataMask, deletePtrDataMask);
    mir.freeStorage(pMIRIAD, deletePtrMIRIAD);
    mirMask.freeStorage(pMIRIADMask, deletePtrMIRIADMask);
-   return True;
+   return true;
 }
 
 

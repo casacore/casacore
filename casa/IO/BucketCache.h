@@ -168,7 +168,7 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 //  char* bAddBuffer (void*)
 //  {
 //    char* ptr = new char[32768];
-//    for (uInt i=0; i++; i<32768) {
+//    for (uint32_t i=0; i++; i<32768) {
 //	ptr[i] = 0;
 //    }
 //    return ptr;
@@ -184,7 +184,7 @@ typedef void (*BucketCacheDeleteBuffer) (void* ownerObject, char* buffer);
 //    // Open the filebuf.
 //    BucketFile file(...);
 //    file.open();
-//    uInt i;
+//    uint32_t i;
 //    // Create a cache for the part of the file starting at offset 512
 //    // consisting of 1000 buckets. The cache consists of 10 buckets.
 //    // Each bucket is 32768 bytes.
@@ -221,8 +221,8 @@ public:
     // bucketSize*nrOfBuckets bytes.
     // When the file is smaller, the remainder is indicated as an extension
     // similarly to the behaviour of function extend.
-    BucketCache (BucketFile* file, Int64 startOffset, uInt bucketSize,
-		 uInt nrOfBuckets, uInt cacheSize,
+    BucketCache (BucketFile* file, int64_t startOffset, uint32_t bucketSize,
+		 uint32_t nrOfBuckets, uint32_t cacheSize,
 		 void* ownerObject,
 		 BucketCacheToLocal readCallBack,
 		 BucketCacheFromLocal writeCallBack,
@@ -235,8 +235,8 @@ public:
     // By default the entire cache is flushed.
     // When the entire cache is flushed, possible remaining uninitialized
     // buckets will be initialized first.
-    // A True status is returned when buckets had to be written.
-    Bool flush (uInt fromSlot = 0);
+    // A true status is returned when buckets had to be written.
+    bool flush (uint32_t fromSlot = 0);
 
     // Clear the cache from the given slot on.
     // By default the entire cache is cleared.
@@ -244,23 +244,23 @@ public:
     // If wanted and needed, the buckets are flushed to the file
     // before removing them.
     // It can be used to enforce rereading buckets from the file.
-    void clear (uInt fromSlot = 0, Bool doFlush = True);
+    void clear (uint32_t fromSlot = 0, bool doFlush = true);
 
     // Resize the cache.
     // When the cache gets smaller, the latter buckets are cached out.
     // It does not take "least recently used" into account.
-    void resize (uInt cacheSize);
+    void resize (uint32_t cacheSize);
 
     // Resynchronize the object (after another process updated the file).
     // It clears the cache (so all data will be reread) and sets
     // the new sizes.
-    void resync (uInt nrBucket, uInt nrOfFreeBucket, Int firstFreeBucket);
+    void resync (uint32_t nrBucket, uint32_t nrOfFreeBucket, int32_t firstFreeBucket);
 
     // Get the current nr of buckets in the file.
-    uInt nBucket() const;
+    uint32_t nBucket() const;
 
     // Get the current cache size (in buckets).
-    uInt cacheSize() const;
+    uint32_t cacheSize() const;
 
     // Set the dirty bit for the current bucket.
     void setDirty();
@@ -272,12 +272,12 @@ public:
     // function. When the bucket does not exist yet in the file, it
     // gets added and initialized using the AddBuffer callback function.
     // A pointer to the data in converted format is returned.
-    char* getBucket (uInt bucketNr);
+    char* getBucket (uint32_t bucketNr);
 
     // Extend the file with the given number of buckets.
     // The buckets get initialized when they are acquired
     // (using getBucket) for the first time.
-    void extend (uInt nrBucket);
+    void extend (uint32_t nrBucket);
 
     // Add a bucket to the file and make it the current one.
     // When no more cache slots are available, the one least recently
@@ -290,7 +290,7 @@ public:
     // It will be deleted later via the DeleteBuffer callback function.
     // The data is copied into the bucket. A pointer to the data in
     // local format is returned.
-    uInt addBucket (char* data);
+    uint32_t addBucket (char* data);
 
     // Remove the current bucket; i.e. add it to the beginning of the
     // free bucket list.
@@ -298,18 +298,18 @@ public:
 
     // Get a part from the file outside the cached area.
     // It is checked if that part is indeed outside the cached file area.
-    void get (char* buf, uInt length, Int64 offset);
+    void get (char* buf, uint32_t length, int64_t offset);
 
     // Put a part from the file outside the cached area.
     // It is checked if that part is indeed outside the cached file area.
-    void put (const char* buf, uInt length, Int64 offset);
+    void put (const char* buf, uint32_t length, int64_t offset);
 
     // Get the bucket number of the first free bucket.
     // -1 = no free buckets.
-    Int firstFreeBucket() const;
+    int32_t firstFreeBucket() const;
 
     // Get the number of free buckets.
-    uInt nFreeBucket() const;
+    uint32_t nFreeBucket() const;
 
     // (Re)initialize the cache statistics.
     void initStatistics();
@@ -331,42 +331,42 @@ private:
     // The delete callback function.
     BucketCacheDeleteBuffer its_DeleteCallBack;
     // The starting offsets of the buckets in the file.
-    Int64    its_StartOffset;
+    int64_t    its_StartOffset;
     // The bucket size.
-    uInt     its_BucketSize;
+    uint32_t     its_BucketSize;
     // The current nr of buckets in the file.
-    uInt     its_CurNrOfBuckets;
+    uint32_t     its_CurNrOfBuckets;
     // The new nr of buckets in the file (after extension).
-    uInt     its_NewNrOfBuckets;
+    uint32_t     its_NewNrOfBuckets;
     // The size of the cache (i.e. #buckets fitting in it).
-    uInt     its_CacheSize;
+    uint32_t     its_CacheSize;
     // The nr of slots used in the cache.
-    uInt     its_CacheSizeUsed;
+    uint32_t     its_CacheSizeUsed;
     // The cache itself.
     PtrBlock<char*> its_Cache; 
     // The cache slot actually used.
-    uInt         its_ActualSlot;
+    uint32_t         its_ActualSlot;
     // The slot numbers of the buckets in the cache (-1 = not in cache).
-    Block<Int>   its_SlotNr;
+    Block<int32_t>   its_SlotNr;
     // The buckets in the cache.
-    Block<uInt>  its_BucketNr;
+    Block<uint32_t>  its_BucketNr;
     // Determine if a block is dirty (i.e. changed) (1=dirty).
-    Block<uInt>  its_Dirty;
+    Block<uint32_t>  its_Dirty;
     // Determine when a block is used for the last time.
-    Block<uInt>  its_LRU;
+    Block<uint32_t>  its_LRU;
     // The Least Recently Used counter.
-    uInt         its_LRUCounter;
+    uint32_t         its_LRUCounter;
     // The internal buffer.
     char*        its_Buffer;
     // The number of free buckets.
-    uInt its_NrOfFree;
+    uint32_t its_NrOfFree;
     // The first free bucket (-1 = no free buckets).
-    Int  its_FirstFree;
+    int32_t  its_FirstFree;
     // The statistics.
-    uInt naccess_p;
-    uInt nread_p;
-    uInt ninit_p;
-    uInt nwrite_p;
+    uint32_t naccess_p;
+    uint32_t nread_p;
+    uint32_t ninit_p;
+    uint32_t nwrite_p;
 
 
     // Copy constructor is not possible.
@@ -379,32 +379,32 @@ private:
     void setLRU();
 
     // Get a cache slot for the bucket.
-    void getSlot (uInt bucketNr);
+    void getSlot (uint32_t bucketNr);
 
     // Write a bucket.
-    void writeBucket (uInt slotNr);
+    void writeBucket (uint32_t slotNr);
 
     // Read a bucket.
-    void readBucket (uInt slotNr);
+    void readBucket (uint32_t slotNr);
 
     // Initialize the bucket buffer.
     // The uninitialized buckets before this bucket are also initialized.
     // It returns a pointer to the buffer.
-    void initializeBuckets (uInt bucketNr);
+    void initializeBuckets (uint32_t bucketNr);
 
     // Check if the offset of a non-cached part is correct.
-    void checkOffset (uInt length, Int64 offset) const;
+    void checkOffset (uint32_t length, int64_t offset) const;
 };
 
 
 
-inline uInt BucketCache::cacheSize() const
+inline uint32_t BucketCache::cacheSize() const
     { return its_CacheSize; }
 
-inline Int BucketCache::firstFreeBucket() const
+inline int32_t BucketCache::firstFreeBucket() const
     { return its_FirstFree; }
 
-inline uInt BucketCache::nFreeBucket() const
+inline uint32_t BucketCache::nFreeBucket() const
     { return its_NrOfFree; }
 
 

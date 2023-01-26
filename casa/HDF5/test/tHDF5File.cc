@@ -81,11 +81,11 @@ int main()
     {
       // File name gets absolute, so ignore for output comparison.
       cout << ">>>" << endl;
-      Bool succ = True;
+      bool succ = true;
       try {
 	HDF5File file("tHDF5File_tmpx", ByteIO::Old);
       } catch (std::exception& x) {
-	succ = False;
+	succ = false;
 	cout << x.what() << endl;
       }
       AlwaysAssertExit (!succ);
@@ -105,11 +105,11 @@ int main()
     {
       // Create the file. Fails, because already exists.
       cout << ">>>" << endl;
-      Bool succ = True;
+      bool succ = true;
       try {
       HDF5File file("tHDF5File_tmp", ByteIO::NewNoReplace);
       } catch (std::exception& x) {
-	succ = False;
+	succ = false;
 	cout << x.what() << endl;
       }
       AlwaysAssertExit (!succ);

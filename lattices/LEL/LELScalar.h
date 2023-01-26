@@ -57,11 +57,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <class T> class LELScalar
 {
 public: 
-// Default constructor sets a False mask.
+// Default constructor sets a false mask.
    LELScalar();
 
 // Constructor takes value and optional mask.
-   LELScalar (const T& value, Bool mask=True)
+   LELScalar (const T& value, bool mask=true)
       : itsValue (value), itsMask(mask) {}
 
 // Get value.
@@ -73,12 +73,12 @@ public:
 // </group>
 
 // Get mask.
-   Bool mask() const
+   bool mask() const
       { return itsMask; }
 
 private:
    T    itsValue;
-   Bool itsMask;
+   bool itsMask;
 };
 
 

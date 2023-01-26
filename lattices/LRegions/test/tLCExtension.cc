@@ -45,14 +45,14 @@ void doIt (const LCRegion& region,
 	LCExtension prism (region, axes, LCBox(blc, trc, latticeShape));
 	AlwaysAssertExit (prism.hasMask() == region.hasMask());
 	AlwaysAssertExit (! prism.isWritable());
-	Array<Bool> regmask;
-	uInt ndimr = region.boundingBox().ndim();
-        uInt ndim = ndimr + latticeShape.nelements();
+	Array<bool> regmask;
+	uint32_t ndimr = region.boundingBox().ndim();
+        uint32_t ndim = ndimr + latticeShape.nelements();
 	((LCRegion&)region).getSlice (regmask, IPosition(ndimr,0),
 				      region.boundingBox().length(),
 				      IPosition(ndimr,1));
 	cout << regmask << endl;
-	Array<Bool> mask;
+	Array<bool> mask;
 	prism.getSlice (mask, IPosition(ndim,0), prism.boundingBox().length(),
 			IPosition(ndim,1));
 	cout << mask << endl;
@@ -73,7 +73,7 @@ void doIt (const LCRegion& region,
 			  prismcop->boundingBox().stride());
 	AlwaysAssertExit (prism.boundingBox().length() ==
 			  prismcop->boundingBox().length());
-	Array<Bool> arr;
+	Array<bool> arr;
 	prismcop->getSlice (arr, IPosition(ndim,0),
 			    prism.boundingBox().length(),
 			    IPosition(ndim,1));
@@ -92,7 +92,7 @@ void doIt (const LCRegion& region,
 			  prismcop->boundingBox().stride());
 	AlwaysAssertExit (prism.boundingBox().length() ==
 			  prismcop->boundingBox().length());
-	Array<Bool> arr;
+	Array<bool> arr;
 	prismcop->getSlice (arr, IPosition(ndim,0),
 			    prism.boundingBox().length(),
 			    IPosition(ndim,1));
@@ -121,7 +121,7 @@ int main()
 	// A simple box (having no mask).
 	LCBox box (IPosition(2,1,4), IPosition(2,5,6), IPosition(2,12,14));
 	// A cross-like figure.
-	Vector<Float> x(4), y(4);
+	Vector<float> x(4), y(4);
 	x(0)=3; y(0)=3;
 	x(1)=9; y(1)=3;
 	x(2)=3; y(2)=8;

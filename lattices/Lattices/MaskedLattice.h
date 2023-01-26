@@ -104,7 +104,7 @@ class LatticeRegion;
 //
 // <srcblock>
 // Complex latMean(const Lattice<Complex>& lat) {
-//   const uInt cursorSize = lat.advisedMaxPixels();
+//   const uint32_t cursorSize = lat.advisedMaxPixels();
 //   const IPosition cursorShape = lat.niceCursorShape(cursorSize);
 //   const IPosition latticeShape = lat.shape();
 //   Complex currentSum = 0.0f;
@@ -132,15 +132,15 @@ class LatticeRegion;
 //
 // <srcblock>
 // void FFT2DReal2Complex(Lattice<Complex>& result, 
-// 		       const Lattice<Float>& input){
+// 		       const Lattice<float>& input){
 //   AlwaysAssert(input.ndim() == 4, AipsError);
 //   const IPosition shape = input.shape();
-//   const uInt nx = shape(0);
+//   const uint32_t nx = shape(0);
 //   AlwaysAssert (nx > 1, AipsError);
-//   const uInt ny = shape(1);
+//   const uint32_t ny = shape(1);
 //   AlwaysAssert (ny > 1, AipsError);
-//   const uInt npol = shape(2);
-//   const uInt nchan = shape(3); 
+//   const uint32_t npol = shape(2);
+//   const uint32_t nchan = shape(3); 
 //   const IPosition resultShape = result.shape();
 //   AlwaysAssert(resultShape.nelements() == 4, AipsError);
 //   AlwaysAssert(resultShape(3) == nchan, AipsError);
@@ -150,17 +150,17 @@ class LatticeRegion;
 //
 //   const IPosition inputSliceShape(4,nx,ny,1,1);
 //   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
-//   COWPtr<Array<Float> > 
-//     inputArrPtr(new Array<Float>(inputSliceShape.nonDegenerate()));
+//   COWPtr<Array<float> > 
+//     inputArrPtr(new Array<float>(inputSliceShape.nonDegenerate()));
 //   Array<Complex> resultArray(resultSliceShape.nonDegenerate());
-//   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
+//   FFTServer<float, Complex> FFT2D(inputSliceShape.nonDegenerate());
 //  
 //   IPosition start(4,0);
-//   Bool isARef;
-//   for (uInt c = 0; c < nchan; c++){
-//     for (uInt p = 0; p < npol; p++){
+//   bool isARef;
+//   for (uint32_t c = 0; c < nchan; c++){
+//     for (uint32_t p = 0; p < npol; p++){
 //       isARef = input.getSlice(inputArrPtr,
-//                               Slicer(start,inputSliceShape), True);
+//                               Slicer(start,inputSliceShape), true);
 //       FFT2D.fft(resultArray, *inputArrPtr);
 //       result.putSlice(resultArray, start);
 //       start(2) += 1;
@@ -184,7 +184,7 @@ class LatticeRegion;
 // inside a function because Lattice is an interface (abstract) class.
 //
 // <srcblock>
-// void makePsf(Lattice<Float>& psf) {
+// void makePsf(Lattice<float>& psf) {
 //   const IPosition centrePos = psf.shape()/2;
 //   psf.set(0.0f);       // this sets all the elements to zero
 //                        // As it uses a LatticeIterator it is efficient
@@ -238,19 +238,19 @@ public:
   // </group>
 
   // Has the object really a mask?
-  // The default implementation returns True if the MaskedLattice has
+  // The default implementation returns true if the MaskedLattice has
   // a region with a mask.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the lattice have a pixelmask?
-  // The default implementation returns False.
-  virtual Bool hasPixelMask() const;
+  // The default implementation returns false.
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.
   // An exception is thrown if the lattice does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get the region used.
@@ -263,37 +263,37 @@ public:
   // This is the mask formed by combination of the possible pixelmask of the
   // lattice and the possible mask of the region taken from the lattice.
   // If there is no mask, it still works fine.
-  // In that case it sizes the buffer correctly and sets it to True.
+  // In that case it sizes the buffer correctly and sets it to true.
   // <group>   
-  Bool getMask (COWPtr<Array<Bool> >& buffer,
-		Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool> >& buffer, const Slicer& section,
-		     Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool> >& buffer, const IPosition& start, 
+  bool getMask (COWPtr<Array<bool> >& buffer,
+		bool removeDegenerateAxes=false) const;
+  bool getMaskSlice (COWPtr<Array<bool> >& buffer, const Slicer& section,
+		     bool removeDegenerateAxes=false) const;
+  bool getMaskSlice (COWPtr<Array<bool> >& buffer, const IPosition& start, 
 		     const IPosition& shape,
-		     Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool> >& buffer, const IPosition& start, 
+		     bool removeDegenerateAxes=false) const;
+  bool getMaskSlice (COWPtr<Array<bool> >& buffer, const IPosition& start, 
 		     const IPosition& shape, const IPosition& stride,
-		     Bool removeDegenerateAxes=False) const;
-  Bool getMask (Array<Bool>& buffer,
-		Bool removeDegenerateAxes=False);
-  Bool getMaskSlice (Array<Bool>& buffer, const Slicer& section,
-		     Bool removeDegenerateAxes=False);
-  Bool getMaskSlice (Array<Bool>& buffer, const IPosition& start,
+		     bool removeDegenerateAxes=false) const;
+  bool getMask (Array<bool>& buffer,
+		bool removeDegenerateAxes=false);
+  bool getMaskSlice (Array<bool>& buffer, const Slicer& section,
+		     bool removeDegenerateAxes=false);
+  bool getMaskSlice (Array<bool>& buffer, const IPosition& start,
 		     const IPosition& shape,
-		     Bool removeDegenerateAxes=False);
-  Bool getMaskSlice (Array<Bool>& buffer, const IPosition& start,
+		     bool removeDegenerateAxes=false);
+  bool getMaskSlice (Array<bool>& buffer, const IPosition& start,
 		     const IPosition& shape, const IPosition& stride,
-		     Bool removeDegenerateAxes=False);
-  Array<Bool> getMask (Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMaskSlice (const Slicer& section,
-			    Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMaskSlice (const IPosition& start,
+		     bool removeDegenerateAxes=false);
+  Array<bool> getMask (bool removeDegenerateAxes=false) const;
+  Array<bool> getMaskSlice (const Slicer& section,
+			    bool removeDegenerateAxes=false) const;
+  Array<bool> getMaskSlice (const IPosition& start,
 			    const IPosition& shape,
-			    Bool removeDegenerateAxes=False) const;
-  Array<Bool> getMaskSlice (const IPosition& start,
+			    bool removeDegenerateAxes=false) const;
+  Array<bool> getMaskSlice (const IPosition& start,
 			    const IPosition& shape, const IPosition& stride,
-			    Bool removeDegenerateAxes=False) const;
+			    bool removeDegenerateAxes=false) const;
   // </group>
   
   // The function (in the derived classes) doing the actual work.
@@ -304,8 +304,8 @@ public:
   // should normally use one of the getMask(Slice) functions. doGetMaskSlice
   // should be used with care and only when performance is an issue.
   // <br>The default implementation gets the mask from the region
-  // and fills the buffer with True values if there is no region.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  // and fills the buffer with true values if there is no region.
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
 protected:
   // Assignment can only be used by derived classes.

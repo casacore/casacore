@@ -34,13 +34,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableParseSortKey::TableParseSortKey()
     : order_p (Sort::Ascending),
-      given_p (False)
+      given_p (false)
   {}
 
   TableParseSortKey::TableParseSortKey (const TableExprNode& node)
     : node_p  (node),
       order_p (Sort::Ascending),
-      given_p (False)
+      given_p (false)
   {
     checkNode();
   }
@@ -49,7 +49,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                         Sort::Order order)
     : node_p  (node),
       order_p (order),
-      given_p (True)
+      given_p (true)
   {
     checkNode();
   }
@@ -72,121 +72,121 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If an order is given for this key, use it. Otherwise the main order.
     Sort::Order order = (given_p  ?  order_p : mainOrder);
     std::shared_ptr<ArrayBase> arrPtr;
-    Bool deleteIt;
+    bool deleteIt;
     switch (node_p.getColumnDataType()) {
     case TpBool:
       {
-        Array<Bool>* array = new Array<Bool>
+        Array<bool>* array = new Array<bool>
           (node_p.getColumnBool(rownrs));
         arrPtr.reset (array);
-        Bool* data = array->getStorage (deleteIt);
+        bool* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Bool> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<bool> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpBool, 0, order);
       }
       break;
     case TpUChar:
       {
-        Array<uChar>* array = new Array<uChar>
+        Array<unsigned char>* array = new Array<unsigned char>
           (node_p.getColumnuChar(rownrs));
         arrPtr.reset (array);
-        uChar* data = array->getStorage (deleteIt);
+        unsigned char* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<uChar> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<unsigned char> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpUChar, 0, order);
       }
       break;
     case TpShort:
       {
-        Array<Short>* array = new Array<Short>
+        Array<int16_t>* array = new Array<int16_t>
           (node_p.getColumnShort(rownrs));
         arrPtr.reset (array);
-        Short* data = array->getStorage (deleteIt);
+        int16_t* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Short> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<int16_t> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpShort, 0, order);
       }
       break;
     case TpUShort:
       {
-        Array<uShort>* array = new Array<uShort>
+        Array<uint16_t>* array = new Array<uint16_t>
           (node_p.getColumnuShort(rownrs));
         arrPtr.reset (array);
-        uShort* data = array->getStorage (deleteIt);
+        uint16_t* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<uShort> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<uint16_t> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpUShort, 0, order);
       }
       break;
     case TpInt:
       {
-        Array<Int>* array = new Array<Int>
+        Array<int32_t>* array = new Array<int32_t>
           (node_p.getColumnInt(rownrs));
         arrPtr.reset (array);
-        Int* data = array->getStorage (deleteIt);
+        int32_t* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Int> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<int32_t> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpInt, 0, order);
       }
       break;
     case TpUInt:
       {
-        Array<uInt>* array = new Array<uInt>
+        Array<uint32_t>* array = new Array<uint32_t>
           (node_p.getColumnuInt(rownrs));
         arrPtr.reset (array);
-        uInt* data = array->getStorage (deleteIt);
+        uint32_t* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<uInt> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<uint32_t> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpUInt, 0, order);
       }
       break;
     case TpInt64:
       {
-        Array<Int64>* array = new Array<Int64>
+        Array<int64_t>* array = new Array<int64_t>
           (node_p.getColumnInt64(rownrs));
         arrPtr.reset (array);
-        Int64* data = array->getStorage (deleteIt);
+        int64_t* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Int64> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<int64_t> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpInt64, 0, order);
       }
       break;
     case TpFloat:
       {
-        Array<Float>* array = new Array<Float>
+        Array<float>* array = new Array<float>
           (node_p.getColumnFloat(rownrs));
         arrPtr.reset (array);
-        Float* data = array->getStorage (deleteIt);
+        float* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Float> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<float> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpFloat, 0, order);
       }
       break;
     case TpDouble:
       {
-        Array<Double>* array = new Array<Double>
+        Array<double>* array = new Array<double>
           (node_p.getColumnDouble(rownrs));
         arrPtr.reset (array);
-        Double* data = array->getStorage (deleteIt);
+        double* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Double> (array->shape(), data, TAKE_OVER));
+          arrPtr.reset (new Array<double> (array->shape(), data, TAKE_OVER));
         }
         sort.sortKey (data, TpDouble, 0, order);
       }
@@ -231,7 +231,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       break;
     default:
-      AlwaysAssert (False, AipsError);
+      AlwaysAssert (false, AipsError);
     }
     return arrPtr;
   }

@@ -68,8 +68,8 @@ StatisticsDataset<CASA_STATP>::operator=(
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
-    const DataIterator& first, uInt nr, uInt dataStride,
-    Bool nrAccountsForStride
+    const DataIterator& first, uint32_t nr, uint32_t dataStride,
+    bool nrAccountsForStride
 ) {
     _throwIfDataProviderDefined();
     _data.push_back(first);
@@ -84,8 +84,8 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
-    const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-    Bool isInclude, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, uint32_t nr, const DataRanges& dataRanges,
+    bool isInclude, uint32_t dataStride, bool nrAccountsForStride
 ) {
     _throwIfDataProviderDefined();
     for_each(
@@ -103,23 +103,23 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
-    const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-    uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst, uint32_t nr,
+    uint32_t dataStride, bool nrAccountsForStride, uint32_t maskStride
 ) {
     _throwIfDataProviderDefined();
-    uInt key = _data.size();
+    uint32_t key = _data.size();
     _maskStrides[key] = maskStride;
     _masks[key] = maskFirst;
     addData(first, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
-    const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-    const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
-    Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst, uint32_t nr,
+    const DataRanges& dataRanges, bool isInclude, uint32_t dataStride,
+    bool nrAccountsForStride, uint32_t maskStride
 ) {
     _throwIfDataProviderDefined();
-    uInt key = _data.size();
+    uint32_t key = _data.size();
     _maskStrides[key] = maskStride;
     _masks[key] = maskFirst;
     addData(
@@ -129,7 +129,7 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
     const DataIterator& first, const WeightsIterator& weightFirst,
-    uInt nr, uInt dataStride, Bool nrAccountsForStride
+    uint32_t nr, uint32_t dataStride, bool nrAccountsForStride
 ) {
     _throwIfDataProviderDefined();
     _weights[_data.size()] = weightFirst;
@@ -137,9 +137,9 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
-    const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-    const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
-    Bool nrAccountsForStride
+    const DataIterator& first, const WeightsIterator& weightFirst, uint32_t nr,
+    const DataRanges& dataRanges, bool isInclude, uint32_t dataStride,
+    bool nrAccountsForStride
 ) {
     _throwIfDataProviderDefined();
     _weights[_data.size()] = weightFirst;
@@ -150,8 +150,8 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
     const DataIterator& first, const WeightsIterator& weightFirst,
-    const MaskIterator& maskFirst, uInt nr, uInt dataStride,
-    Bool nrAccountsForStride, uInt maskStride
+    const MaskIterator& maskFirst, uint32_t nr, uint32_t dataStride,
+    bool nrAccountsForStride, uint32_t maskStride
 ) {
     _throwIfDataProviderDefined();
     _weights[_data.size()] = weightFirst;
@@ -162,8 +162,8 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
     const DataIterator& first, const WeightsIterator& weightFirst,
-    const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-    Bool isInclude, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const MaskIterator& maskFirst, uint32_t nr, const DataRanges& dataRanges,
+    bool isInclude, uint32_t dataStride, bool nrAccountsForStride, uint32_t maskStride
 ) {
     _throwIfDataProviderDefined();
     _weights[_data.size()] = weightFirst;
@@ -173,12 +173,12 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::addData(
     );
 }
 
-CASA_STATD Bool StatisticsDataset<CASA_STATP>::empty() const {
+CASA_STATD bool StatisticsDataset<CASA_STATP>::empty() const {
     return ! _dataProvider && _data.empty();
 }
 
 CASA_STATD
-Bool StatisticsDataset<CASA_STATP>::increment(Bool includeIDataset) {
+bool StatisticsDataset<CASA_STATP>::increment(bool includeIDataset) {
     if (includeIDataset) {
         ++_idataset;
     }
@@ -186,25 +186,25 @@ Bool StatisticsDataset<CASA_STATP>::increment(Bool includeIDataset) {
         ++(*_dataProvider);
         if (_dataProvider->atEnd()) {
             _dataProvider->finalize();
-            return True;
+            return true;
         }
     }
     else {
         ++_diter;
         if (_diter == _dend) {
-            return True;
+            return true;
         }
         ++_citer;
         ++_dsiter;
         ++_dataCount;
     }
-    return False;
+    return false;
 }
 
 CASA_STATD
 void StatisticsDataset<CASA_STATP>::incrementThreadIters(
     DataIterator& dataIter, MaskIterator& maskIter,
-    WeightsIterator& weightsIter, uInt64& offset, uInt nthreads
+    WeightsIterator& weightsIter, uint64_t& offset, uint32_t nthreads
 ) const {
     auto increment = nthreads * ClassicalStatisticsData::BLOCK_SIZE
         * _chunk.dataStride;
@@ -252,13 +252,13 @@ StatisticsDataset<CASA_STATP>::initLoopVars() {
         _chunk.dataStride = _dataProvider->getStride();
         _chunk.ranges.set(
             _dataProvider->hasRanges()
-            ? new std::pair<DataRanges, Bool>(
+            ? new std::pair<DataRanges, bool>(
                 _dataProvider->getRanges(), _dataProvider->isInclude()
             ) : nullptr
         );
         _chunk.mask.set(
             _dataProvider->hasMask()
-            ? new std::pair<MaskIterator, uInt>(
+            ? new std::pair<MaskIterator, uint32_t>(
                 _dataProvider->getMask(), _dataProvider->getMaskStride()
             )
             : nullptr
@@ -275,14 +275,14 @@ StatisticsDataset<CASA_STATP>::initLoopVars() {
         auto rangeI = _dataRanges.find(_dataCount);
         _chunk.ranges.set(
             rangeI == _dataRanges.end() ? nullptr
-            : new std::pair<DataRanges, Bool>(
+            : new std::pair<DataRanges, bool>(
                 rangeI->second, _isIncludeRanges.find(_dataCount)->second
             )
         );
         auto maskI = _masks.find(_dataCount);
         _chunk.mask.set(
             maskI == _masks.end() ? nullptr
-            : new std::pair<MaskIterator, uInt>(
+            : new std::pair<MaskIterator, uint32_t>(
                 maskI->second, _maskStrides.find(_dataCount)->second
             )
         );
@@ -297,17 +297,17 @@ StatisticsDataset<CASA_STATP>::initLoopVars() {
 
 CASA_STATD
 void StatisticsDataset<CASA_STATP>::initThreadVars(
-    uInt& nBlocks, uInt64& extra, uInt& nthreads,
+    uint32_t& nBlocks, uint64_t& extra, uint32_t& nthreads,
     std::unique_ptr<DataIterator[]>& dataIter,  std::unique_ptr<MaskIterator[]>& maskIter,
-    std::unique_ptr<WeightsIterator[]>& weightsIter, std::unique_ptr<uInt64[]>& offset,
-    uInt nThreadsMax
+    std::unique_ptr<WeightsIterator[]>& weightsIter, std::unique_ptr<uint64_t[]>& offset,
+    uint32_t nThreadsMax
 ) const {
     ThrowIf(nThreadsMax == 0, "Logic error: nThreadsMax should never be 0");
     auto n = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
     dataIter.reset(new DataIterator[n]);
     maskIter.reset(new MaskIterator[n]);
     weightsIter.reset(new WeightsIterator[n]);
-    offset.reset(new uInt64[n]);
+    offset.reset(new uint64_t[n]);
     nBlocks = _chunk.count/ClassicalStatisticsData::BLOCK_SIZE;
     extra = _chunk.count % ClassicalStatisticsData::BLOCK_SIZE;
     if (extra > 0) {
@@ -316,10 +316,10 @@ void StatisticsDataset<CASA_STATP>::initThreadVars(
     ThrowIf(nBlocks == 0, "Logic error: nBlocks should never be 0");
     nthreads = std::min(nThreadsMax, nBlocks);
     ThrowIf(nthreads == 0, "Logic error: nthreads should never be 0");
-    for (uInt tid=0; tid<nthreads; ++tid) {
+    for (uint32_t tid=0; tid<nthreads; ++tid) {
         // advance the per-thread iterators to their correct starting
         // locations
-        uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
+        uint32_t idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
         dataIter[idx8] = _chunk.data;
         offset[idx8] = tid * ClassicalStatisticsData::BLOCK_SIZE
             * _chunk.dataStride;
@@ -349,16 +349,16 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::reset() {
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
-    const DataIterator& first, uInt nr, uInt dataStride,
-    Bool nrAccountsForStride
+    const DataIterator& first, uint32_t nr, uint32_t dataStride,
+    bool nrAccountsForStride
 ) {
     reset();
     addData(first, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
-    const DataIterator& first, uInt nr, const DataRanges& dataRanges,
-    Bool isInclude, uInt dataStride, Bool nrAccountsForStride
+    const DataIterator& first, uint32_t nr, const DataRanges& dataRanges,
+    bool isInclude, uint32_t dataStride, bool nrAccountsForStride
 ) {
     reset();
     addData(
@@ -367,8 +367,8 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
-    const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-    uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst, uint32_t nr,
+    uint32_t dataStride, bool nrAccountsForStride, uint32_t maskStride
 ) {
     reset();
     addData(
@@ -377,9 +377,9 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
-    const DataIterator& first, const MaskIterator& maskFirst, uInt nr,
-    const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
-    Bool nrAccountsForStride, uInt maskStride
+    const DataIterator& first, const MaskIterator& maskFirst, uint32_t nr,
+    const DataRanges& dataRanges, bool isInclude, uint32_t dataStride,
+    bool nrAccountsForStride, uint32_t maskStride
 ) {
     reset();
     addData(
@@ -390,16 +390,16 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
     const DataIterator& first, const WeightsIterator& weightFirst,
-    uInt nr, uInt dataStride, Bool nrAccountsForStride
+    uint32_t nr, uint32_t dataStride, bool nrAccountsForStride
 ) {
     reset();
     addData(first, weightFirst, nr, dataStride, nrAccountsForStride);
 }
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
-    const DataIterator& first, const WeightsIterator& weightFirst, uInt nr,
-    const DataRanges& dataRanges, Bool isInclude, uInt dataStride,
-    Bool nrAccountsForStride
+    const DataIterator& first, const WeightsIterator& weightFirst, uint32_t nr,
+    const DataRanges& dataRanges, bool isInclude, uint32_t dataStride,
+    bool nrAccountsForStride
 ) {
     reset();
     addData(
@@ -410,8 +410,8 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
     const DataIterator& first, const WeightsIterator& weightFirst,
-    const MaskIterator& maskFirst, uInt nr, uInt dataStride,
-    Bool nrAccountsForStride, uInt maskStride
+    const MaskIterator& maskFirst, uint32_t nr, uint32_t dataStride,
+    bool nrAccountsForStride, uint32_t maskStride
 ) {
     reset();
     addData(
@@ -422,8 +422,8 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
 
 CASA_STATD void StatisticsDataset<CASA_STATP>::setData(
     const DataIterator& first, const WeightsIterator& weightFirst,
-    const MaskIterator& maskFirst, uInt nr, const DataRanges& dataRanges,
-    Bool isInclude, uInt dataStride, Bool nrAccountsForStride, uInt maskStride
+    const MaskIterator& maskFirst, uint32_t nr, const DataRanges& dataRanges,
+    bool isInclude, uint32_t dataStride, bool nrAccountsForStride, uint32_t maskStride
 ) {
     reset();
     addData(

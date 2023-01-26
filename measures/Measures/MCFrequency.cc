@@ -32,7 +32,7 @@
 #include <casacore/measures/Measures/MeasTable.h>
 
 namespace {
-  inline void updatePosition(casacore::Double const angle0, casacore::Double const angle1,
+  inline void updatePosition(double const angle0, double const angle1,
                              casacore::MVPosition &pos) {
       if (angle1 == 0) {
         pos(0) = std::cos(angle0);
@@ -50,7 +50,7 @@ namespace {
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCFrequency::ToRef_p[N_Routes][3] = {
+uint32_t MCFrequency::ToRef_p[N_Routes][3] = {
   {MFrequency::LSRD,	MFrequency::BARY,	0},
   {MFrequency::BARY,	MFrequency::LSRD,	0},
   {MFrequency::BARY,	MFrequency::GEO,	0},
@@ -67,7 +67,7 @@ uInt MCFrequency::ToRef_p[N_Routes][3] = {
   {MFrequency::CMB,	MFrequency::BARY,	0},
   {MFrequency::REST,	MFrequency::LSRK,	3},
   {MFrequency::LSRK,	MFrequency::REST,	3} };
-uInt MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
+uint32_t MCFrequency::FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
 std::once_flag MCFrequency::theirInitOnceFlag;
 
 
@@ -90,9 +90,9 @@ void MCFrequency::getConvert(MConvertBase &mc,
 			     const MRBase &inref,
 			     const MRBase &outref) {
 
-  Int iin  = inref.getType();
-  Int iout = outref.getType();
-  Int tmp;
+  int32_t iin  = inref.getType();
+  int32_t iout = outref.getType();
+  int32_t tmp;
   while (iin != iout) {
     if(iin == MFrequency::Undefined || iout == MFrequency::Undefined)
       throw(AipsError("Transformations to/from frame \"Undefined\" are not possible."));
@@ -112,9 +112,9 @@ void MCFrequency::clearConvert() {
 }
 
 //# Conversion routines
-void MCFrequency::initConvert(uInt which, MConvertBase &mc) {
+void MCFrequency::initConvert(uint32_t which, MConvertBase &mc) {
 
-  if (False) initConvert(which, mc);	// Stop warning
+  if (false) initConvert(which, mc);	// Stop warning
 
   if (!MVPOS1) MVPOS1 = new MVPosition();
   if (!MVDIR1) MVDIR1 = new MVDirection();
@@ -178,9 +178,9 @@ void MCFrequency::doConvert(MVFrequency &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  Double g1, g2, g3, lengthE, tdbTime;
+  double g1, g2, g3, lengthE, tdbTime;
 
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
 
     switch (mc.getMethod(i)) {
 

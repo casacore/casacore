@@ -36,9 +36,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# This file defines classes derived from TableExprNode representing
 //# the data type and operator in a table expression.
 //#
-//# Data types Bool, Int64, Double, DComplex and String are used.
-//# Char, uChar, Short, uShort, Int, and uInt are converted to Int64,
-//# Float to Double, and Complex to DComplex.
+//# Data types bool, int64_t, double, DComplex and String are used.
+//# char, unsigned char, int16_t, uint16_t, int32_t, and uint32_t are converted to int64_t,
+//# float to double, and Complex to DComplex.
 //# Binary operators +, -, *, /, ==, >=, >, <, <= and != are recognized.
 //# Also &&, ||, parentheses and unary +, - and ! are recognized.
 
@@ -72,7 +72,7 @@ public:
 
 
 // <summary>
-// Int addition in table select expression tree
+// int32_t addition in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -90,7 +90,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodePlusInt : public TableExprNodePlus
@@ -98,14 +98,14 @@ class TableExprNodePlusInt : public TableExprNodePlus
 public:
     TableExprNodePlusInt (const TableExprNodeRep&);
     ~TableExprNodePlusInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
 
 // <summary>
-// Double addition in table select expression tree
+// double addition in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -123,7 +123,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodePlusDouble : public TableExprNodePlus
@@ -131,7 +131,7 @@ class TableExprNodePlusDouble : public TableExprNodePlus
 public:
     TableExprNodePlusDouble (const TableExprNodeRep&);
     ~TableExprNodePlusDouble();
-    Double   getDouble   (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -155,7 +155,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodePlusDComplex : public TableExprNodePlus
@@ -186,7 +186,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodePlusString : public TableExprNodePlus
@@ -217,7 +217,7 @@ public:
 // This class represents an addition in a table select expression tree.
 // Strings can also be added (ie. concatenated).
 // Numeric data types will be promoted if possible, so for instance
-// an addition of Int and Complex is possible.
+// an addition of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodePlusDate : public TableExprNodePlus
@@ -226,7 +226,7 @@ public:
     TableExprNodePlusDate (const TableExprNodeRep&);
     ~TableExprNodePlusDate();
     virtual void handleUnits();
-    Double getDouble (const TableExprId& id);
+    double getDouble (const TableExprId& id);
     MVTime getDate (const TableExprId& id);
 };
 
@@ -260,7 +260,7 @@ public:
 
 
 // <summary>
-// Int subtraction in table select expression tree
+// int32_t subtraction in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -277,7 +277,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeMinusInt : public TableExprNodeMinus
@@ -286,14 +286,14 @@ public:
     TableExprNodeMinusInt (const TableExprNodeRep&);
     ~TableExprNodeMinusInt();
     virtual void handleUnits();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
 
 // <summary>
-// Double subtraction in table select expression tree
+// double subtraction in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -310,7 +310,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeMinusDouble : public TableExprNodeMinus
@@ -319,7 +319,7 @@ public:
     TableExprNodeMinusDouble (const TableExprNodeRep&);
     ~TableExprNodeMinusDouble();
     virtual void handleUnits();
-    Double   getDouble   (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -342,7 +342,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeMinusDComplex : public TableExprNodeMinus
@@ -372,7 +372,7 @@ public:
 // <synopsis> 
 // This class represents a subtraction in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a subtraction of Int and Complex is possible.
+// a subtraction of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeMinusDate : public TableExprNodeMinus
@@ -382,7 +382,7 @@ public:
     ~TableExprNodeMinusDate();
     virtual void handleUnits();
     MVTime getDate   (const TableExprId& id);
-    Double getDouble (const TableExprId& id);
+    double getDouble (const TableExprId& id);
 };
 
 
@@ -416,7 +416,7 @@ public:
 
 
 // <summary>
-// Int multiplication in table select expression tree
+// int32_t multiplication in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -433,7 +433,7 @@ public:
 // <synopsis> 
 // This class represents a multiplication in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a multiplication of Int and Complex is possible.
+// a multiplication of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeTimesInt : public TableExprNodeTimes
@@ -441,14 +441,14 @@ class TableExprNodeTimesInt : public TableExprNodeTimes
 public:
     TableExprNodeTimesInt (const TableExprNodeRep&);
     ~TableExprNodeTimesInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
 
 // <summary>
-// Double multiplication in table select expression tree
+// double multiplication in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -465,7 +465,7 @@ public:
 // <synopsis> 
 // This class represents a multiplication in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a multiplication of Int and Complex is possible.
+// a multiplication of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeTimesDouble : public TableExprNodeTimes
@@ -473,7 +473,7 @@ class TableExprNodeTimesDouble : public TableExprNodeTimes
 public:
     TableExprNodeTimesDouble (const TableExprNodeRep&);
     ~TableExprNodeTimesDouble();
-    Double   getDouble   (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -496,7 +496,7 @@ public:
 // <synopsis> 
 // This class represents a multiplication in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a multiplication of Int and Complex is possible.
+// a multiplication of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeTimesDComplex : public TableExprNodeTimes
@@ -538,7 +538,7 @@ public:
 
 
 // <summary>
-// Double division in table select expression tree
+// double division in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -555,7 +555,7 @@ public:
 // <synopsis> 
 // This class represents a division in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a division of Int and Complex is possible.
+// a division of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeDivideDouble : public TableExprNodeDivide
@@ -563,7 +563,7 @@ class TableExprNodeDivideDouble : public TableExprNodeDivide
 public:
     TableExprNodeDivideDouble (const TableExprNodeRep&);
     ~TableExprNodeDivideDouble();
-    Double   getDouble   (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -586,7 +586,7 @@ public:
 // <synopsis> 
 // This class represents a division in a table select expression tree.
 // Numeric data types will be promoted if possible, so for instance
-// a division of Int and Complex is possible.
+// a division of int32_t and Complex is possible.
 // </synopsis> 
 
 class TableExprNodeDivideDComplex : public TableExprNodeDivide
@@ -627,7 +627,7 @@ public:
 
 
 // <summary>
-// Int modulo in table select expression tree
+// int32_t modulo in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -643,7 +643,7 @@ public:
 
 // <synopsis> 
 // This class represents a modulo operation in a table select expression tree.
-// It is only possible for datatype Int.
+// It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeModuloInt : public TableExprNodeModulo
@@ -651,14 +651,14 @@ class TableExprNodeModuloInt : public TableExprNodeModulo
 public:
     TableExprNodeModuloInt (const TableExprNodeRep&);
     ~TableExprNodeModuloInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
 
 // <summary>
-// Double modulo in table select expression tree
+// double modulo in table select expression tree
 // </summary>
 
 // <use visibility=local>
@@ -674,7 +674,7 @@ public:
 
 // <synopsis> 
 // This class represents a modulo operation in a table select expression tree.
-// It is only possible for datatype Double.
+// It is only possible for datatype double.
 // </synopsis> 
 
 class TableExprNodeModuloDouble : public TableExprNodeModulo
@@ -682,7 +682,7 @@ class TableExprNodeModuloDouble : public TableExprNodeModulo
 public:
     TableExprNodeModuloDouble (const TableExprNodeRep&);
     ~TableExprNodeModuloDouble();
-    Double   getDouble   (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -704,7 +704,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise and operation in a table select expression
-// tree. It is only possible for datatype Int.
+// tree. It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeBitAndInt : public TableExprNodeBinary
@@ -712,8 +712,8 @@ class TableExprNodeBitAndInt : public TableExprNodeBinary
 public:
     TableExprNodeBitAndInt (const TableExprNodeRep&);
     ~TableExprNodeBitAndInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -735,7 +735,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise or operation in a table select expression
-// tree. It is only possible for datatype Int.
+// tree. It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeBitOrInt : public TableExprNodeBinary
@@ -743,8 +743,8 @@ class TableExprNodeBitOrInt : public TableExprNodeBinary
 public:
     TableExprNodeBitOrInt (const TableExprNodeRep&);
     ~TableExprNodeBitOrInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -766,7 +766,7 @@ public:
 
 // <synopsis> 
 // This class represents a bitwise xor operation in a table select expression
-// tree. It is only possible for datatype Int.
+// tree. It is only possible for datatype int32_t.
 // </synopsis> 
 
 class TableExprNodeBitXorInt : public TableExprNodeBinary
@@ -774,8 +774,8 @@ class TableExprNodeBitXorInt : public TableExprNodeBinary
 public:
     TableExprNodeBitXorInt (const TableExprNodeRep&);
     ~TableExprNodeBitXorInt();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -805,8 +805,8 @@ class TableExprNodeMIN : public TableExprNodeBinary
 public:
     TableExprNodeMIN (const TableExprNodeRep&);
     ~TableExprNodeMIN();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 
@@ -835,8 +835,8 @@ class TableExprNodeBitNegate : public TableExprNodeBinary
 public:
     TableExprNodeBitNegate (const TableExprNodeRep&);
     ~TableExprNodeBitNegate();
-    Int64    getInt      (const TableExprId& id);
-    Double   getDouble   (const TableExprId& id);
+    int64_t    getInt      (const TableExprId& id);
+    double   getDouble   (const TableExprId& id);
     DComplex getDComplex (const TableExprId& id);
 };
 

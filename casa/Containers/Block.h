@@ -80,13 +80,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </note>
 //
 // If index checking is turned on, an out-of-bounds index will
-// generate an <src>indexError<uInt></src> exception.
+// generate an <src>indexError<uint32_t></src> exception.
 // </synopsis>
 //
 // <example> 
 // <srcblock>
-// Block<Int> a(100,0);  // 100 ints initialized to 0
-// Block<Int> b;         // 0-length Block
+// Block<int32_t> a(100,0);  // 100 ints initialized to 0
+// Block<int32_t> b;         // 0-length Block
 // // ...
 // b = a;                // resize b and copy a into it
 // for (size_t i=0; i < a.nelements(); i++) {
@@ -98,7 +98,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //                            // elements are copied over, although this can
 //                            // be defeated.
 // some_c_function(b.storage());  // Use a fn that takes an
-//                                // <src>Int *</src> pointer
+//                                // <src>int32_t *</src> pointer
 // </srcblock> 
 // </example>
 //
@@ -172,13 +172,13 @@ class Block_internal_IsPointer {
 // </note>
 //
 // If index checking is turned on, an out-of-bounds index will
-// generate an <src>indexError<uInt></src> exception.
+// generate an <src>indexError<uint32_t></src> exception.
 // </synopsis>
 //
 // <example> 
 // <srcblock>
-// Block<Int> a(100,0);  // 100 ints initialized to 0
-// Block<Int> b;         // 0-length Block
+// Block<int32_t> a(100,0);  // 100 ints initialized to 0
+// Block<int32_t> b;         // 0-length Block
 // // ...
 // b = a;                // resize b and copy a into it
 // for (size_t i=0; i < a.nelements(); i++) {
@@ -190,7 +190,7 @@ class Block_internal_IsPointer {
 //                            // elements are copied over, although this can
 //                            // be defeated.
 // some_c_function(b.storage());  // Use a fn that takes an
-//                                // <src>Int *</src> pointer
+//                                // <src>int32_t *</src> pointer
 // </srcblock> 
 // </example>
 //
@@ -202,14 +202,14 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   Block() :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), capacity_p(
-          0), used_p(0), array(0), destroyPointer(True), keep_allocator_p(False) {
+          0), used_p(0), array(0), destroyPointer(true), keep_allocator_p(false) {
   }
   // Create a zero-length Block. Note that any index into this Block
   // is an error.
   template<typename Allocator>
   explicit Block(AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), capacity_p(0), used_p(
-          0), array(0), destroyPointer(True), keep_allocator_p(False) {
+          0), array(0), destroyPointer(true), keep_allocator_p(false) {
   }
 
   // Create a Block with the given number of points. The values in Block
@@ -217,7 +217,7 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   explicit Block(size_t n) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
-          n), destroyPointer(True), keep_allocator_p(False) {
+          n), destroyPointer(true), keep_allocator_p(false) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
@@ -226,7 +226,7 @@ public:
   template<typename Allocator>
   Block(size_t n, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          true), keep_allocator_p(false) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
 
@@ -235,7 +235,7 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   Block(size_t n, ArrayInitPolicy initPolicy) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
-          n), destroyPointer(True), keep_allocator_p(False) {
+          n), destroyPointer(true), keep_allocator_p(false) {
     init(initPolicy);
   }
 
@@ -245,7 +245,7 @@ public:
   Block(size_t n, ArrayInitPolicy initPolicy,
       AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          true), keep_allocator_p(false) {
     init(initPolicy);
   }
 
@@ -254,7 +254,7 @@ public:
   // DefaultAllocator<T> is used as an allocator.
   Block(size_t n, T const &val) :
       allocator_p(get_allocator<typename DefaultAllocator<T>::type>()), used_p(
-          n), destroyPointer(True), keep_allocator_p(False) {
+          n), destroyPointer(true), keep_allocator_p(false) {
     init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
@@ -269,7 +269,7 @@ public:
   template<typename Allocator>
   Block(size_t n, T const &val, AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          true), keep_allocator_p(false) {
     init(ArrayInitPolicies::NO_INIT);
     try {
       allocator_p->construct(array, get_size(), val);
@@ -280,33 +280,33 @@ public:
   }
 
   // Create a <src>Block</src> from a C-array (i.e. pointer). If 
-  // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
+  // <src>takeOverStorage</src> is <src>true</src>, The Block assumes that
   // it owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
   // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
-  // whenever <src>takeOverStorage</src> == True
+  // whenever <src>takeOverStorage</src> == true
   // to let <src>Block</src> to know how to release the <src>storagePointer</src>.
   // The default allocator set by this constructor will be changed from <src>NewDelAllocator<T>::value</src>
   // to <src>DefaultAllocator<T>::value</src> in future.
-  Block(size_t n, T *&storagePointer, Bool takeOverStorage = True) :
+  Block(size_t n, T *&storagePointer, bool takeOverStorage = true) :
       allocator_p(get_allocator<typename NewDelAllocator<T>::type>()), capacity_p(
           n), used_p(n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
-          False) {
+          false) {
     if (destroyPointer)
       storagePointer = 0;
   }
   // Create a <src>Block</src> from a C-array (i.e. pointer). If
-  // <src>takeOverStorage</src> is <src>True</src>, The Block assumes that
+  // <src>takeOverStorage</src> is <src>true</src>, The Block assumes that
   // it owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when
   // the Block is destructed, otherwise the actual storage is not destroyed.
   // If true, <src>storagePointer</src> is set to <src>0</src>.
   template<typename Allocator>
-  Block(size_t n, T *&storagePointer, Bool takeOverStorage,
+  Block(size_t n, T *&storagePointer, bool takeOverStorage,
       AllocSpec<Allocator> const &) :
       allocator_p(get_allocator<typename Allocator::type>()), capacity_p(n), used_p(
           n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
-          False) {
+          false) {
     if (destroyPointer)
       storagePointer = 0;
   }
@@ -314,7 +314,7 @@ public:
   // Copy the other block into this one. Uses copy, not reference, semantics.
   Block(const Block<T> &other) :
       allocator_p(other.allocator_p), used_p(other.size()), destroyPointer(
-          True), keep_allocator_p(False) {
+          true), keep_allocator_p(false) {
     init(ArrayInitPolicies::NO_INIT);
 
     try {
@@ -332,7 +332,7 @@ public:
   Block<T> &operator=(const Block<T> &other) {
     if (&other != this) {
       T *old = array;
-      this->resize(other.size(), True, False, ArrayInitPolicies::NO_INIT);
+      this->resize(other.size(), true, false, ArrayInitPolicies::NO_INIT);
       if (array == old) {
         objcopy(array, other.array, get_size());
       } else {
@@ -358,13 +358,13 @@ public:
   // <srcblock>
   // Block<float> bf(100, 0.0);
   // bf.resize(10);        // bf.nelements() == 100
-  // bf.resize(10, True)   // bf.nelements() == 10
+  // bf.resize(10, true)   // bf.nelements() == 10
   // bf.resize(200)        // bf.nelements() == 200
   // </srcblock>
   // Normally the old elements are copied over (although if the
   // Block is lengthened the trailing elements will have undefined
   // values), however this can be turned off by setting copyElements to
-  // False.
+  // false.
   //
   // This is written as three functions because default parameters do
   // not always work properly with templates.
@@ -372,16 +372,16 @@ public:
   // <src>initPolicy</src> makes sense to determine whether extended elements
   // should be initialized or not when you enlarge Block.
   // <group>
-  void resize(size_t n, Bool forceSmaller = False, Bool copyElements = True) {
+  void resize(size_t n, bool forceSmaller = false, bool copyElements = true) {
     resize(n, forceSmaller, copyElements,
         init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
-  void resize(size_t n, Bool forceSmaller, Bool copyElements,
+  void resize(size_t n, bool forceSmaller, bool copyElements,
       ArrayInitPolicy initPolicy) {
     if (n == get_size()) {
       return;
     }
-    if (n < get_size() && forceSmaller == False) {
+    if (n < get_size() && forceSmaller == false) {
       if (false) { // to keep get_size() == get_capacity()
         allocator_p->destroy(&array[n], get_size() - n);
         set_size(n);
@@ -422,38 +422,38 @@ public:
       }
     }
     deinit();
-    destroyPointer = True;
+    destroyPointer = true;
     array = tp;                       // ... and update pointer
     set_capacity(n);
     set_size(n);
   }
   // </group>
 
-  // Remove a single element from the Block. If forceSmaller is True this
+  // Remove a single element from the Block. If forceSmaller is true this
   // will resize the Block and hence involve new memory allocations. This is
-  // relatively expensive so setting forceSmaller to False is preferred. When
-  // forceSmaller is False the Block is not resized but the elements with an
+  // relatively expensive so setting forceSmaller to false is preferred. When
+  // forceSmaller is false the Block is not resized but the elements with an
   // index above the removed element are shuffled down by one. For backward
-  // compatibility forceSmaller is True by default.
+  // compatibility forceSmaller is true by default.
   //
   // <src>initPolicy</src> makes sense to determine whether new storage
-  // should be initialized or not before copying when <src>forceSmaller</src> is True.
+  // should be initialized or not before copying when <src>forceSmaller</src> is true.
   // <group>
-  void remove(size_t whichOne, Bool forceSmaller = True) {
+  void remove(size_t whichOne, bool forceSmaller = true) {
     remove(whichOne, forceSmaller,
         init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
-  void remove(size_t whichOne, Bool forceSmaller, ArrayInitPolicy initPolicy) {
+  void remove(size_t whichOne, bool forceSmaller, ArrayInitPolicy initPolicy) {
     if (whichOne >= get_size()) {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
-      throw(indexError<uInt>(whichOne, "Block::remove() - "
+      throw(indexError<uint32_t>(whichOne, "Block::remove() - "
 			     "index out of range"));
 #else
       return;
 #endif
     }
     size_t n = get_size() - 1;
-    if (forceSmaller == True) {
+    if (forceSmaller == true) {
       T *tp = n > 0 ? allocator_p->allocate(n) : 0;
       traceAlloc(array, n);
       if (initPolicy == ArrayInitPolicies::INIT && n > 0) {
@@ -489,7 +489,7 @@ public:
       set_capacity(n);
       set_size(n);
       array = tp;
-      destroyPointer = True;
+      destroyPointer = true;
     } else {
       objmove(&array[whichOne], &array[whichOne + 1], get_size() - whichOne - 1);
       if (false) { // to keep get_size() == get_capacity()
@@ -503,32 +503,32 @@ public:
   // Prohibit changing allocator for this instance.
   // <group>
   void prohibitChangingAllocator() {
-    keep_allocator_p = True;
+    keep_allocator_p = true;
   }
   // Permit changing allocator for this instance.
   void permitChangingAllocator() {
-    keep_allocator_p = False;
+    keep_allocator_p = false;
   }
   // </group>
 
   // Replace the internal storage with a C-array (i.e. pointer).
-  // If <src>takeOverStorage</src> is True, The Block assumes that it
+  // If <src>takeOverStorage</src> is true, The Block assumes that it
   // owns the pointer, i.e. that it is safe to release it via <src>allocator</src> when the
   // <src>Block</src>is destructed, otherwise the actual storage is not destroyed.
   // If true, storagePointer is set to <src>NULL</src>.
   // It is strongly recommended to supply an appropriate <src>allocator</src> argument explicitly
-  // whenever <src>takeOverStorage</src> == True
+  // whenever <src>takeOverStorage</src> == true
   // to let <src>Block</src> to know how to release the <src>storagePointer</src>.
   // The default parameter of allocator will be changed from <src>AllocSpec<NewDelAllocator<T> >::value</src>
   // to <src>AllocSpec<DefaultAllocator<T> >::value</src> in future.
   // AipsError is thrown if allocator is incompatible with the current allocator of the instance and changing allocator is prohibited,
-  // even if takeOverStorage == False.
+  // even if takeOverStorage == false.
   // <group>
-  void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage=True) {
+  void replaceStorage(size_t n, T *&storagePointer, bool takeOverStorage=true) {
     replaceStorage(n, storagePointer, takeOverStorage, AllocSpec<NewDelAllocator<T> >::value);
 	}
   template<typename Allocator>
-  void replaceStorage(size_t n, T *&storagePointer, Bool takeOverStorage, AllocSpec<Allocator> const &) {
+  void replaceStorage(size_t n, T *&storagePointer, bool takeOverStorage, AllocSpec<Allocator> const &) {
     if (keep_allocator_p && ! isCompatibleAllocator<Allocator>()) {
       throw AipsError("Block::replaceStorage - Attemption to change allocator of Block");
     }
@@ -550,7 +550,7 @@ public:
 
   // Index into the block (0-based). If the preprocessor symbol
   // <src>AIPS_ARRAY_INDEX_CHECK</src> is defined, index checking will be done
-  // and an out-of-bounds index will cause an <src>indexError<uInt></src> to be
+  // and an out-of-bounds index will cause an <src>indexError<uint32_t></src> to be
   // thrown. Note that valid indices range between 0 and <src>nelements()-1</src>.
   // <thrown>
   //    <li> indexError
@@ -561,7 +561,7 @@ public:
     // Write it this way to avoid casts; remember index and get_size() are
     // unsigned.
     if ((get_size() == 0) || (index > get_size() - 1)) {
-      throw(indexError<uInt>(index, "Block::operator[] - "
+      throw(indexError<uint32_t>(index, "Block::operator[] - "
 			     "index out of range"));
     };
 #endif
@@ -570,7 +570,7 @@ public:
   const T &operator[](size_t index) const {
 #if defined(AIPS_ARRAY_INDEX_CHECK)
     if ((get_size() == 0) || (index > get_size() - 1)) {
-      throw(indexError<uInt>(index, "Block::operator[] const - "
+      throw(indexError<uint32_t>(index, "Block::operator[] const - "
 			     "index out of range"));
     };
 #endif
@@ -592,11 +592,11 @@ public:
   // It is best to only use this if you completely control the extent and
   // lifetime of the <src>Block</src>.
   // <h3> Examples of misuse </h3> <srcblock>
-  // Block<Int> *bp = new Block<Int>(100);
-  // Int *ip = bp->storage();
-  // DefaultAllocator<Int>::value.deallocate(bp, bp->capacity());   // Oops, ip is now dangling
-  // Block<Int> a(100),b(100);
-  // Int *ip = a.storage();
+  // Block<int32_t> *bp = new Block<int32_t>(100);
+  // int32_t *ip = bp->storage();
+  // DefaultAllocator<int32_t>::value.deallocate(bp, bp->capacity());   // Oops, ip is now dangling
+  // Block<int32_t> a(100),b(100);
+  // int32_t *ip = a.storage();
   // a = b;          // Likewise
   // </srcblock>
   // <group>
@@ -615,13 +615,13 @@ public:
   size_t capacity() const {return get_capacity();}
 
   // Is the block empty (i.e. no elements)?
-  Bool empty() const {return size() == 0;}
+  bool empty() const {return size() == 0;}
 
   // Define the STL-style iterators.
   // It makes it possible to iterate through all data elements.
   // <srcblock>
-  //  Block<Int> bl(100,0);
-  //  for (Block<Int>::iterator iter=bl.begin(); iter!=bl.end(); iter++) {
+  //  Block<int32_t> bl(100,0);
+  //  for (Block<int32_t>::iterator iter=bl.begin(); iter!=bl.end(); iter++) {
   //    *iter += 1;
   //  }
   // </srcblock>
@@ -670,19 +670,19 @@ public:
   Block(size_t n, ArrayInitPolicy initPolicy,
           Allocator_private::BulkAllocator<T> *allocator) :
       allocator_p(allocator), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          true), keep_allocator_p(false) {
     init(initPolicy);
   }
   Block(size_t n, Allocator_private::AllocSpec<T> allocator) :
       allocator_p(allocator.allocator), used_p(n), destroyPointer(
-          True), keep_allocator_p(False) {
+          true), keep_allocator_p(false) {
     init(init_anyway() ? ArrayInitPolicies::INIT : ArrayInitPolicies::NO_INIT);
   }
-  Block(size_t n, T *&storagePointer, Bool takeOverStorage,
+  Block(size_t n, T *&storagePointer, bool takeOverStorage,
           Allocator_private::BulkAllocator<T> *allocator) :
       allocator_p(allocator), capacity_p(n), used_p(
           n), array(storagePointer), destroyPointer(takeOverStorage), keep_allocator_p(
-          False) {
+          false) {
     if (destroyPointer)
       storagePointer = 0;
   }
@@ -750,7 +750,7 @@ public:
   }
 
   template<typename Allocator>
-  Bool isCompatibleAllocator() {
+  bool isCompatibleAllocator() {
     typename Allocator_private::BulkAllocator<
         typename Allocator::type::value_type> *other_allocator =
                 Allocator_private::get_allocator<typename Allocator::type>();
@@ -781,9 +781,9 @@ public:
   // The actual storage
   T *array;
   // Can we delete the storage upon destruction?
-  Bool destroyPointer;
+  bool destroyPointer;
   // Can we change allocator or not?
-  Bool keep_allocator_p;
+  bool keep_allocator_p;
 };
 
 
@@ -814,21 +814,21 @@ public:
    PtrBlock() : block_p() {}
    explicit PtrBlock(size_t n) : block_p(n) {}
    PtrBlock(size_t n, T val) : block_p(n, (void *)val) {}
-   PtrBlock(size_t n, T *&storagePointer, Bool takeOverStorage = True)
+   PtrBlock(size_t n, T *&storagePointer, bool takeOverStorage = true)
      : block_p(n, (void **&)storagePointer, takeOverStorage) {}
    PtrBlock(const PtrBlock<T> &other) : block_p(other.block_p) {}
    PtrBlock<T> &operator=(const PtrBlock<T> &other)
      { block_p = other.block_p; return *this;}
    ~PtrBlock() {}
-   void resize(size_t n, Bool forceSmaller, Bool copyElements)
+   void resize(size_t n, bool forceSmaller, bool copyElements)
      { block_p.resize(n,forceSmaller, copyElements); }
    void resize(size_t n) {block_p.resize(n);}
-   void resize(size_t n, Bool forceSmaller) {block_p.resize(n, forceSmaller);}
-   void remove(size_t whichOne, Bool forceSmaller) {
+   void resize(size_t n, bool forceSmaller) {block_p.resize(n, forceSmaller);}
+   void remove(size_t whichOne, bool forceSmaller) {
      block_p.remove(whichOne, forceSmaller);}
    void remove(size_t whichOne) {block_p.remove(whichOne);}
    void replaceStorage(size_t n, T *&storagePointer, 
-		       Bool takeOverStorage=True)
+		       bool takeOverStorage=true)
      {block_p.replaceStorage(n, (void **&)storagePointer, takeOverStorage);}
    T &operator[](size_t index) {return (T &)block_p[index];}
    const T &operator[](size_t index) const {return (const T &)block_p[index];}
@@ -838,22 +838,22 @@ public:
    const T *storage() const {return (const T *)block_p.storage();}
    size_t nelements() const {return block_p.nelements();}
    size_t size() const {return block_p.size();}
-   Bool empty() const {return block_p.empty();}
+   bool empty() const {return block_p.empty();}
  private:
    Block<void*> block_p;
  };
 
 
 //# Instantiate extern templates for often used types.
-  extern template class Block<Bool>;
-  extern template class Block<Char>;
-  extern template class Block<Short>;
-  extern template class Block<uShort>;
-  extern template class Block<Int>;
-  extern template class Block<uInt>;
-  extern template class Block<Int64>;
-  extern template class Block<Float>;
-  extern template class Block<Double>;
+  extern template class Block<bool>;
+  extern template class Block<char>;
+  extern template class Block<int16_t>;
+  extern template class Block<uint16_t>;
+  extern template class Block<int32_t>;
+  extern template class Block<uint32_t>;
+  extern template class Block<int64_t>;
+  extern template class Block<float>;
+  extern template class Block<double>;
   extern template class Block<Complex>;
   extern template class Block<DComplex>;
   extern template class Block<String>;

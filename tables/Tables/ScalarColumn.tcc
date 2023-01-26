@@ -118,7 +118,7 @@ Vector<T> ScalarColumn<T>::getColumn() const
 }
 
 template<class T>
-void ScalarColumn<T>::getColumn (Vector<T>& vec, Bool resize) const
+void ScalarColumn<T>::getColumn (Vector<T>& vec, bool resize) const
 {
     rownr_t nrrow = nrow();
     //# Resize the vector if empty; otherwise check its length.
@@ -144,13 +144,13 @@ Vector<T> ScalarColumn<T>::getColumnRange (const Slicer& rowRange) const
 
 template<class T>
 void ScalarColumn<T>::getColumnRange (const Slicer& rowRange,
-                                      Vector<T>& vec, Bool resize) const
+                                      Vector<T>& vec, bool resize) const
 {
     rownr_t nrrow = nrow();
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
+    if (blc(0) == 0  &&  shp(0) == int32_t(nrrow)  &&  inc(0) == 1) {
 	getColumn (vec, resize);
     } else {
 	getColumnCells (RefRows(blc(0), trc(0), inc(0)), vec, resize);
@@ -167,7 +167,7 @@ Vector<T> ScalarColumn<T>::getColumnCells (const RefRows& rownrs) const
 
 template<class T>
 void ScalarColumn<T>::getColumnCells (const RefRows& rownrs,
-                                      Vector<T>& vec, Bool resize) const
+                                      Vector<T>& vec, bool resize) const
 {
     //# Resize the vector if needed; otherwise check its length.
     rownr_t nrrow = rownrs.nrow();
@@ -191,7 +191,7 @@ void ScalarColumn<T>::put (rownr_t thisRownr, const ScalarColumn<T>& that,
 
 template<class T>
 void ScalarColumn<T>::put (rownr_t thisRownr, const TableColumn& that,
-			   rownr_t thatRownr, Bool)
+			   rownr_t thatRownr, bool)
 {
     T value;
     that.getScalarValue (thatRownr, &value, columnDesc().dataTypeId());
@@ -219,7 +219,7 @@ void ScalarColumn<T>::putColumnRange (const Slicer& rowRange,
     IPosition shp, blc, trc, inc;
     shp = rowRange.inferShapeFromSource (IPosition(1,nrrow), blc, trc, inc);
     //# When the entire column is accessed, use that function.
-    if (blc(0) == 0  &&  shp(0) == Int(nrrow)  &&  inc(0) == 1) {
+    if (blc(0) == 0  &&  shp(0) == int32_t(nrrow)  &&  inc(0) == 1) {
 	putColumn (vec);
     } else {
 	putColumnCells (RefRows(blc(0), trc(0), inc(0)), vec);

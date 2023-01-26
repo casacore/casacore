@@ -31,7 +31,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 FITSTimedTable::FITSTimedTable()
-    : atStart_p(True), hasChanged_p(False), changePending_p(False), 
+    : atStart_p(true), hasChanged_p(false), changePending_p(false), 
       table_p(0), row_now_p(0), row_next_p(0), how_past_end_p(0),
       timeColumn_p(0)
 {
@@ -40,19 +40,19 @@ FITSTimedTable::FITSTimedTable()
     row_next_p = new Record(rowDesc_p);
     AlwaysAssert(row_now_p && row_next_p, AipsError);
 
-    RecordFieldPtr<Double> time_now(*row_now_p,"Time");
+    RecordFieldPtr<double> time_now(*row_now_p,"Time");
     *time_now = 0.0;
-    RecordFieldPtr<Double> time_next(*row_next_p,"Time");
+    RecordFieldPtr<double> time_next(*row_next_p,"Time");
     *time_next = 0.0;
 
     time_now_p.attachToRecord(*row_now_p, 0);
     time_next_p.attachToRecord(*row_next_p, 0);
-    ok_p = True;
+    ok_p = true;
 }
 
 FITSTimedTable::FITSTimedTable(FITSTabular *originalTable, 
-			       uInt whichColumnIsTime)
-    : atStart_p(True), hasChanged_p(False), changePending_p(False), 
+			       uint32_t whichColumnIsTime)
+    : atStart_p(true), hasChanged_p(false), changePending_p(false), 
       table_p(originalTable), row_now_p(0), row_next_p(0), 
       rowDesc_p(table_p->description()), how_past_end_p(0), 
       timeColumn_p(whichColumnIsTime)
@@ -68,13 +68,13 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable,
       row_now_p = new Record(rowDesc_p);
       row_next_p = new Record(rowDesc_p);
       AlwaysAssert(row_now_p && row_next_p, AipsError);
-      RecordFieldPtr<Double> time_now(*row_now_p,"Time");
+      RecordFieldPtr<double> time_now(*row_now_p,"Time");
       *time_now = 0.0;
-      RecordFieldPtr<Double> time_next(*row_next_p,"Time");
+      RecordFieldPtr<double> time_next(*row_next_p,"Time");
       *time_next = 0.0;
       time_now_p.attachToRecord(*row_now_p, 0);
       time_next_p.attachToRecord(*row_next_p, 0);
-      ok_p = True;
+      ok_p = true;
       timeColumn_p = 0;
     } else {
       initNowRecord(rowDesc_p);
@@ -82,7 +82,7 @@ FITSTimedTable::FITSTimedTable(FITSTabular *originalTable,
 
       table_p->next();
       if (table_p->hasChanged()) {
-	changePending_p = True;
+	changePending_p = true;
 	table_p->resetChangedFlag();
       }
       initNextRecord(table_p->description());
@@ -98,9 +98,9 @@ FITSTimedTable::~FITSTimedTable()
     row_next_p = 0;
 }
 
-Bool FITSTimedTable::isValid() const
+bool FITSTimedTable::isValid() const
 {
-    if (!table_p) return True;
+    if (!table_p) return true;
     return table_p->isValid();
 }
 
@@ -133,17 +133,17 @@ const RecordDesc &FITSTimedTable::description() const
     return rowDesc_p;
 }
 
-Bool FITSTimedTable::pastEnd() const
+bool FITSTimedTable::pastEnd() const
 {
   // the constant version can not try and resync with underlying table
     return (!table_p || table_p->pastEnd());
 }
 
-Bool FITSTimedTable::pastEnd()
+bool FITSTimedTable::pastEnd()
 {
     // if how_past_end_p indicates we've been past the end
-    // but table_p->pastEnd() is False, resyncronize with table
-    if (!table_p) return True;
+    // but table_p->pastEnd() is false, resyncronize with table
+    if (!table_p) return true;
     if (how_past_end_p && !table_p->pastEnd()) {
 	how_past_end_p = 0;
 	*row_now_p = table_p->currentRow();
@@ -153,8 +153,8 @@ Bool FITSTimedTable::pastEnd()
 	    initNowRecord(rowDesc_p);
 	    initNextRecord(rowDesc_p);
 	    *row_now_p = table_p->currentRow();
-	    hasChanged_p = True;
-	    changePending_p = False;
+	    hasChanged_p = true;
+	    changePending_p = false;
 	    table_p->resetChangedFlag();
 	}
 	*row_next_p = table_p->currentRow();
@@ -170,27 +170,27 @@ void FITSTimedTable::next()
     if (changePending_p) {
 	rowDesc_p = table_p->description();
 	initNowRecord(rowDesc_p);
-	changePending_p = False;
-	hasChanged_p = True;
+	changePending_p = false;
+	hasChanged_p = true;
     }
     *row_now_p = table_p->currentRow();
     //    String curName = name();
     table_p->next();
     if (table_p->hasChanged()) {
 	initNextRecord(table_p->description());
-	changePending_p = True;
+	changePending_p = true;
 	table_p->resetChangedFlag();
     }
     *row_next_p = table_p->currentRow();
 
     // if nextTime() < currentTime() advance until that isn't true or
     // end of file is reached
-    //    Int count = 0;
+    //    int32_t count = 0;
     while (!table_p->pastEnd() && (nextTime() < currentTime())) {
 	table_p->next();
 	if (table_p->hasChanged()) {
 	    initNextRecord(table_p->description());
-	    changePending_p = True;
+	    changePending_p = true;
 	    table_p->resetChangedFlag();
 	}
 	*row_next_p = table_p->currentRow();
@@ -212,8 +212,8 @@ void FITSTimedTable::next()
 	how_past_end_p++;
     }
 
-    atStart_p = False;
-    ok_p = True;
+    atStart_p = false;
+    ok_p = true;
 }
 
 const Record &FITSTimedTable::currentRow() const
@@ -226,12 +226,12 @@ Record &FITSTimedTable::currentRow()
     return *row_now_p;
 }
 
-Double FITSTimedTable::currentTime() const
+double FITSTimedTable::currentTime() const
 {
     return *time_now_p;
 }
 
-Double FITSTimedTable::nextTime()
+double FITSTimedTable::nextTime()
 {
     if (pastEnd() || how_past_end_p > 0) {
 	return 1.0e+30;
@@ -239,7 +239,7 @@ Double FITSTimedTable::nextTime()
     return *time_next_p;
 }
 
-void FITSTimedTable::setTime(Double time)
+void FITSTimedTable::setTime(double time)
 {
     if (!table_p) return;
     // time MUST be >= currentTime() unless this is the first row
@@ -248,7 +248,7 @@ void FITSTimedTable::setTime(Double time)
     
     if (time < currentTime()) {
 	if (atStart_p) {
-	    ok_p = False;
+	    ok_p = false;
 	    return;
 	} else {
 	    // just write out error message to cerr for now
@@ -256,14 +256,14 @@ void FITSTimedTable::setTime(Double time)
 	    cerr << "File : " << name() << endl;
 	    cerr << "requested time " << time << endl;
 	    cerr << "currentTime() " << currentTime() << endl;
-	    throw(AipsError("FITSTimedTable::setTime(Double time) - time is "
+	    throw(AipsError("FITSTimedTable::setTime(double time) - time is "
 			"< currentTime() - can not currently back up in time."
 			    "File : " + name()));
 	}
     }
 
-    ok_p = True;
-    atStart_p = False;
+    ok_p = true;
+    atStart_p = false;
 
     // step through file until end is reached or
     // time is >= currentTime and < nextTime
@@ -272,15 +272,15 @@ void FITSTimedTable::setTime(Double time)
     // simply return if pastEnd() or time == currentTime()
     if (pastEnd() || time == currentTime()) return;
 
-    Double fraction = (time - currentTime()) / (nextTime() - currentTime());
+    double fraction = (time - currentTime()) / (nextTime() - currentTime());
 
     // for now, we just interpolate TpFloat, TpDouble and TpArrayFloat and TpArrayDouble fields
     // But only when fraction is greater than 0.001
     // This clearly needs a better solution
     // watch for columns in row_now that are missing in row_next
-    uInt nextNr;
+    uint32_t nextNr;
     if (fraction > 0.001) {
-	for (uInt i=0;i<rowDesc_p.nfields();i++) {
+	for (uint32_t i=0;i<rowDesc_p.nfields();i++) {
 	    if (changePending_p) {
 		nextNr = row_next_p->fieldNumber(rowDesc_p.name(i));
 	    } else {
@@ -289,30 +289,30 @@ void FITSTimedTable::setTime(Double time)
 	    switch (rowDesc_p.type(i)) {
 	    case TpFloat:
 	    {
-		RecordFieldPtr<Float> currField(*row_now_p, i);
-		RecordFieldPtr<Float> nextField(*row_next_p, nextNr);
+		RecordFieldPtr<float> currField(*row_now_p, i);
+		RecordFieldPtr<float> nextField(*row_next_p, nextNr);
 		*currField = (*nextField-*currField) * fraction + *currField;
 	    }
 	    break;
 	    case TpDouble:
 	    {    
-		RecordFieldPtr<Double> currField(*row_now_p, i);
-		RecordFieldPtr<Double> nextField(*row_next_p, nextNr);
+		RecordFieldPtr<double> currField(*row_now_p, i);
+		RecordFieldPtr<double> nextField(*row_next_p, nextNr);
 		*currField = (*nextField-*currField) * fraction + *currField;
 	    }
 	    break;
 	    case TpArrayFloat:
 	    {    
-		RecordFieldPtr<Array<Float> > currField(*row_now_p, i);
-		RecordFieldPtr<Array<Float> > nextField(*row_next_p, nextNr);
-		*currField = (*nextField-*currField) * Float(fraction) 
+		RecordFieldPtr<Array<float> > currField(*row_now_p, i);
+		RecordFieldPtr<Array<float> > nextField(*row_next_p, nextNr);
+		*currField = (*nextField-*currField) * float(fraction) 
 		    + *currField;
 	    }
 	    break;
 	    case TpArrayDouble:
 	    {    
-		RecordFieldPtr<Array<Double> > currField(*row_now_p, i);
-		RecordFieldPtr<Array<Double> > nextField(*row_next_p, nextNr);
+		RecordFieldPtr<Array<double> > currField(*row_now_p, i);
+		RecordFieldPtr<Array<double> > nextField(*row_next_p, nextNr);
 		*currField = (*nextField-*currField) * fraction + *currField;
 	    }
 	    break;

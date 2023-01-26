@@ -29,7 +29,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Stokes::StokesTypes Stokes::type(Int stokesNumber) 
+Stokes::StokesTypes Stokes::type(int32_t stokesNumber) 
 {
    StokesTypes val = Undefined;
    if (stokesNumber > Undefined && stokesNumber < NumberOfTypes) {
@@ -119,11 +119,11 @@ String Stokes::name(StokesTypes stokesType)
    return stokesName;
 }
 
-Vector<String> Stokes::allNames(Bool includeUndefined) {
-	uInt size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
+Vector<String> Stokes::allNames(bool includeUndefined) {
+	uint32_t size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
 	Vector<String> names(size);
-	uInt idx = 0;
-	for (uInt i=0; i<NumberOfTypes; i++) {
+	uint32_t idx = 0;
+	for (uint32_t i=0; i<NumberOfTypes; i++) {
 		if (includeUndefined || (StokesTypes)i != Undefined) {
 			names[idx] = name((StokesTypes)i);
 			idx++;
@@ -133,27 +133,27 @@ Vector<String> Stokes::allNames(Bool includeUndefined) {
 }
 
 
-Fallible<Int> Stokes::receptor1(StokesTypes stokesType)
+Fallible<int32_t> Stokes::receptor1(StokesTypes stokesType)
 {
-    Int rec1 = (stokesType-1)%4; 
+    int32_t rec1 = (stokesType-1)%4; 
     if (rec1<2) rec1=0; else rec1=1;
     if (stokesType>Stokes::V && stokesType<Stokes::RCircular) 
-	return Fallible<Int>(rec1);
-    else return Fallible<Int>();
+	return Fallible<int32_t>(rec1);
+    else return Fallible<int32_t>();
 }
 
-Fallible<Int> Stokes::receptor2(StokesTypes stokesType)
+Fallible<int32_t> Stokes::receptor2(StokesTypes stokesType)
 {
-    Int rec2 = (stokesType-1)%4; 
+    int32_t rec2 = (stokesType-1)%4; 
     if (rec2==0 || rec2==2) rec2=0; else rec2=1;
     if (stokesType>Stokes::V && stokesType<Stokes::RCircular) 
-	return Fallible<Int>(rec2);
-    else return Fallible<Int>();
+	return Fallible<int32_t>(rec2);
+    else return Fallible<int32_t>();
 }
 
-Int Stokes::FITSValue(StokesTypes which)
+int32_t Stokes::FITSValue(StokesTypes which)
 {
-   Int retval;
+   int32_t retval;
 
    switch (which) {
    case I: retval = 1; break;
@@ -170,12 +170,12 @@ Int Stokes::FITSValue(StokesTypes which)
    case YX: retval = -8; break;
    case PFlinear: retval = 6; break;
    case Pangle: retval = 7; break;
-   default: retval = 100 + Int(which);
+   default: retval = 100 + int32_t(which);
    }
    return retval;
 }
 
-Stokes::StokesTypes Stokes::fromFITSValue(Int which)
+Stokes::StokesTypes Stokes::fromFITSValue(int32_t which)
 {
    StokesTypes retval;
 

@@ -46,7 +46,7 @@ StManColumnBase::~StManColumnBase()
 int StManColumnBase::dataType() const
     { return dtype_p; }
 
-Bool StManColumnBase::isNativeDataType (int dtype)
+bool StManColumnBase::isNativeDataType (int dtype)
 {
     switch (dtype) {
     case TpBool:
@@ -73,9 +73,9 @@ Bool StManColumnBase::isNativeDataType (int dtype)
     case TpArrayComplex:
     case TpArrayDComplex:
     case TpArrayString:
-	return True;
+	return true;
     }
-    return False;
+    return false;
 }
 
 

@@ -44,16 +44,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return retval;
   }
 
-  Bool isHDF5Image (const String& fileName)
+  bool isHDF5Image (const String& fileName)
   {
     // It is an image if it is an HDF5 file with group /coordinfo.
-    Bool retval = False;
+    bool retval = false;
     if (HDF5File::isHDF5(fileName)) {
       try {
 	HDF5File file(fileName);
 	HDF5Group gid1(file, "/", true);
 	HDF5Group gid2(gid1, "coordinfo", true);
-	retval = True;
+	retval = true;
       } catch (std::exception& x) {
 	// Nothing
       } 

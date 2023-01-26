@@ -80,7 +80,7 @@ public:
     virtual void initDerived();
   
 // Tell the number of steps done so far.
-    virtual void nstepsDone (uInt nsteps);
+    virtual void nstepsDone (uint32_t nsteps);
  
 // The process has ended so clean things up.
     virtual void done();

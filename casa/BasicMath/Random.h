@@ -129,13 +129,13 @@ public:
   virtual void reset() = 0;
 
   // Return the 32-random bits as an unsigned integer
-  virtual uInt asuInt() = 0;
+  virtual uint32_t asuInt() = 0;
 
-  // Return random bits converted to either a Float or a Double. The returned
+  // Return random bits converted to either a float or a double. The returned
   // value x is in the range 1.0 > x >= 0.0 
   // <group>
-  Float asFloat();
-  Double asDouble();
+  float asFloat();
+  double asDouble();
   // </group>
 };
 
@@ -225,7 +225,7 @@ public:
   // The constructor allows you to specify seeds. The seed should be a big
   // random number and size must be between 7 and 98. See the synopsis for more
   // details.
-  explicit ACG(uInt seed = 0, Int size = 55);
+  explicit ACG(uint32_t seed = 0, int32_t size = 55);
 
   // The destructor cleans up memory allocated by this class
   virtual ~ACG();
@@ -236,19 +236,19 @@ public:
   virtual void reset();
 
   // Return the 32-random bits as an unsigned integer
-  virtual uInt asuInt();
+  virtual uint32_t asuInt();
 
 private:
-  uInt itsInitSeed;     //# used to reset the generator
-  Int itsInitTblEntry;
+  uint32_t itsInitSeed;     //# used to reset the generator
+  int32_t itsInitTblEntry;
   
-  uInt* itsStatePtr;
-  uInt* itsAuxStatePtr;
-  Short itsStateSize;
-  Short itsAuxSize;
-  uInt lcgRecurr;
-  Short itsJ;
-  Short itsK;
+  uint32_t* itsStatePtr;
+  uint32_t* itsAuxStatePtr;
+  int16_t itsStateSize;
+  int16_t itsAuxSize;
+  uint32_t lcgRecurr;
+  int16_t itsJ;
+  int16_t itsK;
 };
 
 // <summary> Multiplicative linear congruential generator </summary>
@@ -304,13 +304,13 @@ private:
 class MLCG : public RNG {
 public:
   // The constructor allows you to specify seeds.
-  explicit MLCG(Int seed1 = 0, Int seed2 = 1);
+  explicit MLCG(int32_t seed1 = 0, int32_t seed2 = 1);
   
   // The destructor is trivial 
   virtual ~MLCG();
 
   // Return the 32-random bits as an unsigned integer
-  virtual uInt asuInt();
+  virtual uint32_t asuInt();
   
   // Resets the random number generator. After calling this function the random
   // numbers generated will be the same as if the object had just been
@@ -322,43 +322,43 @@ public:
   // after some deterministic modification to produce a more uniform bit
   // distribution.
   // <group>
-  Int seed1() const;
-  void seed1(Int s);
-  Int seed2() const;
-  void seed2(Int s);
-  void reseed(Int s1, Int s2);
+  int32_t seed1() const;
+  void seed1(int32_t s);
+  int32_t seed2() const;
+  void seed2(int32_t s);
+  void reseed(int32_t s1, int32_t s2);
   // </group>
   
 private:
-  Int itsInitSeedOne;
-  Int itsInitSeedTwo;
-  Int itsSeedOne;
-  Int itsSeedTwo;
+  int32_t itsInitSeedOne;
+  int32_t itsInitSeedTwo;
+  int32_t itsSeedOne;
+  int32_t itsSeedTwo;
 };
 
-inline Int MLCG::seed1() const
+inline int32_t MLCG::seed1() const
 {
   return itsSeedOne;
 }
 
-inline void MLCG::seed1(Int s)
+inline void MLCG::seed1(int32_t s)
 {
   itsInitSeedOne = s;
   reset();
 }
 
-inline Int MLCG::seed2() const
+inline int32_t MLCG::seed2() const
 {
   return itsSeedTwo;
 }
 
-inline void MLCG::seed2(Int s)
+inline void MLCG::seed2(int32_t s)
 {
   itsInitSeedTwo = s;
   reset();
 }
 
-inline void MLCG::reseed(Int s1, Int s2)
+inline void MLCG::reseed(int32_t s1, int32_t s2)
 {
   itsInitSeedOne = s1;
   itsInitSeedTwo = s2;
@@ -391,7 +391,7 @@ inline void MLCG::reseed(Int s1, Int s2)
 // <src>Random</src> does not implement <src>operator()</src>.  This is
 // performed by each of the derived classes. Thus, given the above declaration
 // of <src>rnd</src>, new random values may be obtained via, for example,
-// <src>Double nextExpRand = rnd();</src>
+// <src>double nextExpRand = rnd();</src>
 //
 // Currently, the following subclasses are provided:
 //
@@ -486,7 +486,7 @@ public:
   virtual ~Random();
 
   // This function returns a random number from the appropriate distribution.
-  virtual Double operator()() = 0;
+  virtual double operator()() = 0;
   
   // Functions that allow you to access and change the class that generates the
   // random bits.
@@ -513,17 +513,17 @@ public:
   // These function allow you to manipulate the parameters (mean variance etc.)
   // of random number distribution. The parameters() function returns the
   // current value, the setParameters function allows you to change the
-  // parameters and the checkParameters function will return False if the
+  // parameters and the checkParameters function will return false if the
   // supplied parameters are not appropriate for the distribution.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms) = 0;
-  virtual Vector<Double> parameters() const = 0;
-  virtual Bool checkParameters(const Vector<Double>& parms) const = 0;
+  virtual void setParameters(const Vector<double>& parms) = 0;
+  virtual Vector<double> parameters() const = 0;
+  virtual bool checkParameters(const Vector<double>& parms) const = 0;
   // </group>
   
   // returns the default parameters for the specified distribution. Returns an
   // empty Vector if a non-predifined distribution is used.
-  static Vector<Double> defaultParameters (Random::Types type);
+  static Vector<double> defaultParameters (Random::Types type);
   
 protected:
   //# This class contains pure virtual functions hence the constructor can only
@@ -584,7 +584,7 @@ public:
   // over by this class and the user is responsible for deleting it. The second
   // and third arguments are the parameters are the Binomial distribution as
   // described in the synopsis.
-  Binomial(RNG* gen, uInt n=1, Double p=0.5);
+  Binomial(RNG* gen, uint32_t n=1, double p=0.5);
 
   // The destructor is trivial
   virtual ~Binomial();
@@ -593,38 +593,38 @@ public:
   // non-negative integer and using the asInt function bypasses the conversion
   // to a floating point number.  
   // <group>
-  virtual Double operator()();
-  uInt asInt();
+  virtual double operator()();
+  uint32_t asInt();
   // </group>
   
   // Functions that allow you to query and change the parameters of the
   // binomial distribution.
   // <group>
-  uInt n() const;
-  void n(uInt newN);
-  void n(Double newN);
-  Double p() const;
-  void p(Double newP);
+  uint32_t n() const;
+  void n(uint32_t newN);
+  void n(double newN);
+  double p() const;
+  void p(double newP);
   // </group>
   
   // These function allow you to manipulate the parameters (n & p) described
   // above through the base class. The Vectors must always be of length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  uInt itsN;
-  Double itsP;
+  uint32_t itsN;
+  double itsP;
 };
 
-inline uInt Binomial::n() const {
+inline uint32_t Binomial::n() const {
   return itsN;
 }
 
-inline Double Binomial::p() const {
+inline double Binomial::p() const {
   return itsP;
 }
 
@@ -665,7 +665,7 @@ public:
   // responsible for deleting it. The second and third arguments define the
   // range of possible return values for this distribution as described in the
   // synopsis.
-  DiscreteUniform(RNG* gen, Int low=-1, Int high=1);
+  DiscreteUniform(RNG* gen, int32_t low=-1, int32_t high=1);
   
   // The destructor is trivial
   virtual ~DiscreteUniform();
@@ -674,41 +674,41 @@ public:
   // value is a integer and using the asInt function bypasses the conversion to
   // a floating point number.  
   // <group>
-  virtual Double operator()();
-  Int asInt();
+  virtual double operator()();
+  int32_t asInt();
   // </group>
   
   // Functions that allow you to query and change the parameters of the
   // discrete uniform distribution.  
   // <group>
-  Int low() const;
-  void low(Int x);
-  Int high() const;
-  void high(Int x);
-  void range(Int low, Int high);
+  int32_t low() const;
+  void low(int32_t x);
+  int32_t high() const;
+  void high(int32_t x);
+  void range(int32_t low, int32_t high);
   // </group>
   
   // These function allow you to manipulate the parameters (low & high)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  static Double calcDelta(Int low, Int high);
-  Int itsLow;
-  Int itsHigh;
-  Double itsDelta;
+  static double calcDelta(int32_t low, int32_t high);
+  int32_t itsLow;
+  int32_t itsHigh;
+  double itsDelta;
 };
 
-inline Int DiscreteUniform::low() const {
+inline int32_t DiscreteUniform::low() const {
   return itsLow; 
 }
 
-inline Int DiscreteUniform::high() const {
+inline int32_t DiscreteUniform::high() const {
   return itsHigh;
 }
 
@@ -742,41 +742,41 @@ public:
   // over by this class and the user is responsible for deleting it. The second
   // and third arguments define the parameters for this distribution as
   // described in the synopsis.
-  Erlang(RNG* gen, Double mean=1.0, Double variance=1.0);
+  Erlang(RNG* gen, double mean=1.0, double variance=1.0);
   
   // The destructor is trivial
   virtual ~Erlang();
 
   // Returns a value from the Erlang distribution.
-  virtual Double operator()();
+  virtual double operator()();
   
   // Functions that allow you to query and change the parameters of the
   // discrete uniform distribution.
   // <group>
-  Double mean() const;
-  void mean(Double x);
-  Double variance() const;
-  void variance(Double x);
+  double mean() const;
+  void mean(double x);
+  double variance() const;
+  void variance(double x);
   // </group>
 
   // These function allow you to manipulate the parameters (mean & variance)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
   void setState();
-  Double itsMean;
-  Double itsVariance;
-  Int itsK;
-  Double itsA;
+  double itsMean;
+  double itsVariance;
+  int32_t itsK;
+  double itsA;
 };
 
-inline Erlang::Erlang(RNG* gen, Double mean, Double variance) 
+inline Erlang::Erlang(RNG* gen, double mean, double variance) 
   :Random(gen),
    itsMean(mean),
    itsVariance(variance)
@@ -784,20 +784,20 @@ inline Erlang::Erlang(RNG* gen, Double mean, Double variance)
   setState();
 }
 
-inline Double Erlang::mean() const {
+inline double Erlang::mean() const {
   return itsMean;
 }
 
-inline void Erlang::mean(Double x) {
+inline void Erlang::mean(double x) {
   itsMean = x;
   setState(); 
 }
 
-inline Double Erlang::variance() const {
+inline double Erlang::variance() const {
   return itsVariance;
 }
 
-inline void Erlang::variance(Double x) {
+inline void Erlang::variance(double x) {
   itsVariance = x;
   setState();
 }
@@ -837,7 +837,7 @@ public:
   // bits. This pointer is NOT taken over by this class and the user is
   // responsible for deleting it. The second argument defines the range of
   // possible return values for this distribution as described in the synopsis.
-  Geometric(RNG* gen, Double probability=0.5);
+  Geometric(RNG* gen, double probability=0.5);
   
   // The destructor is trivial
   virtual ~Geometric();
@@ -846,31 +846,31 @@ public:
   // value is a non-negative integer and using the asInt function bypasses the
   // conversion to a floating point number.  
   // <group>
-  virtual Double operator()();
-  uInt asInt();
+  virtual double operator()();
+  uint32_t asInt();
   // </group>
   
   // Functions that allow you to query and change the parameters of the
   // geometric uniform distribution.  
   // <group>
-  Double probability() const;
-  void probability(Double x);
+  double probability() const;
+  void probability(double x);
   // </group>
   
   // These function allow you to manipulate the parameter (probability)
   // described above through the base class. The Vectors must always be of
   // length one.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  Double itsProbability;
+  double itsProbability;
 };
 
-inline Double Geometric::probability() const {
+inline double Geometric::probability() const {
   return itsProbability;
 }
 
@@ -907,41 +907,41 @@ public:
   // bits. This pointer is NOT taken over by this class and the user is
   // responsible for deleting it. The second and third arguments define the
   // parameters for this distribution as described in the synopsis.
-  HyperGeometric(RNG* gen, Double mean=0.5, Double variance=1.0);
+  HyperGeometric(RNG* gen, double mean=0.5, double variance=1.0);
   
   // The destructor is trivial
   virtual ~HyperGeometric();
 
   // Returns a value from the hypergeometric distribution.
-  virtual Double operator()();
+  virtual double operator()();
   
   // Functions that allow you to query and change the parameters of the
   // hypergeometric distribution.
   // <group>
-  Double mean() const;
-  void mean(Double x);
-  Double variance() const;
-  void variance(Double x);
+  double mean() const;
+  void mean(double x);
+  double variance() const;
+  void variance(double x);
   // </group>
   
   // These function allow you to manipulate the parameters (mean & variance)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
   void setState();
-  Double itsMean;
-  Double itsVariance;
-  Double itsP;
+  double itsMean;
+  double itsVariance;
+  double itsP;
 };
 
 
-inline HyperGeometric::HyperGeometric(RNG* gen, Double mean, Double variance)
+inline HyperGeometric::HyperGeometric(RNG* gen, double mean, double variance)
   :Random(gen),
    itsMean(mean),
    itsVariance(variance)
@@ -949,20 +949,20 @@ inline HyperGeometric::HyperGeometric(RNG* gen, Double mean, Double variance)
   setState();
 }
 
-inline Double HyperGeometric::mean() const {
+inline double HyperGeometric::mean() const {
   return itsMean; 
 }
 
-inline void HyperGeometric::mean(Double x) {
+inline void HyperGeometric::mean(double x) {
   itsMean = x;
   setState();
 }
 
-inline Double HyperGeometric::variance() const {
+inline double HyperGeometric::variance() const {
   return itsVariance; 
 }
 
-inline void HyperGeometric::variance(Double x) {
+inline void HyperGeometric::variance(double x) {
   itsVariance = x;
   setState(); 
 }
@@ -1000,45 +1000,45 @@ public:
   // over by this class and the user is responsible for deleting it. The second
   // and third arguments define the parameters for this distribution as
   // described in the synopsis.
-  Normal(RNG* gen, Double mean=0.0, Double variance=1.0);
+  Normal(RNG* gen, double mean=0.0, double variance=1.0);
 
   // The destructor is trivial
   virtual ~Normal();
 
   // Returns a value from the normal distribution.
-  virtual Double operator()();
+  virtual double operator()();
   
   // Functions that allow you to query and change the parameters of the
   // normal distribution.
   // <group>
-  virtual Double mean() const;
-  virtual void mean(Double x);
-  virtual Double variance() const;
-  virtual void variance(Double x);
+  virtual double mean() const;
+  virtual void mean(double x);
+  virtual double variance() const;
+  virtual void variance(double x);
   // </group>
   
   // These function allow you to manipulate the parameters (mean & variance)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  Double itsMean;
-  Double itsVariance;
-  Double itsStdDev;
-  Bool itsCached;
-  Double itsCachedValue;
+  double itsMean;
+  double itsVariance;
+  double itsStdDev;
+  bool itsCached;
+  double itsCachedValue;
 };
 
-inline Double Normal::mean() const {
+inline double Normal::mean() const {
   return itsMean;
 }
 
-inline Double Normal::variance() const {
+inline double Normal::variance() const {
   return itsVariance;
 }
 
@@ -1074,43 +1074,43 @@ public:
   // taken over by this class and the user is responsible for deleting it. The
   // second and third arguments define the parameters for this distribution as
   // described in the synopsis.
-  LogNormal(RNG* gen, Double mean=1.0, Double variance=1.0);
+  LogNormal(RNG* gen, double mean=1.0, double variance=1.0);
 
   // The destructor is trivial
   virtual ~LogNormal();
 
   // Returns a value from the log-normal distribution.
-  virtual Double operator()();
+  virtual double operator()();
 
   // Functions that allow you to query and change the parameters of the
   // log-normal distribution.
   // <group>
-  virtual Double mean() const;
-  virtual void mean(Double x);
-  virtual Double variance() const;
-  virtual void variance(Double x);
+  virtual double mean() const;
+  virtual void mean(double x);
+  virtual double variance() const;
+  virtual void variance(double x);
   // </group>
 
   // These function allow you to manipulate the parameters (mean & variance)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
   void setState();
-  Double itsLogMean;
-  Double itsLogVar;
+  double itsLogMean;
+  double itsLogVar;
 };
 
-inline Double LogNormal::mean() const {
+inline double LogNormal::mean() const {
   return itsLogMean;
 }
 
-inline Double LogNormal::variance() const {
+inline double LogNormal::variance() const {
   return itsLogVar;
 }
 
@@ -1142,35 +1142,35 @@ public:
   // bits. This pointer is NOT taken over by this class and the user is
   // responsible for deleting it. The second argument defines the parameters
   // for this distribution as described in the synopsis.
-  NegativeExpntl(RNG* gen, Double mean=1.0);
+  NegativeExpntl(RNG* gen, double mean=1.0);
 
   // The destructor is trivial
   virtual ~NegativeExpntl();
 
   // Returns a value from the negative exponential distribution.
-  virtual Double operator()();
+  virtual double operator()();
 
   // Functions that allow you to query and change the parameters of the
   // negative exponential distribution.
   // <group>
-  Double mean() const;
-  void mean(Double x);
+  double mean() const;
+  void mean(double x);
   // </group>
   
   // These function allow you to manipulate the parameters (mean)
   // described above through the base class. The Vectors must always be of
   // length one.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  Double itsMean;
+  double itsMean;
 };
 
-inline Double NegativeExpntl::mean() const {
+inline double NegativeExpntl::mean() const {
   return itsMean; 
 }
 
@@ -1204,7 +1204,7 @@ public:
   // over by this class and the user is responsible for deleting it. The second
   // argument defines the parameters for this distribution as described in the
   // synopsis.
-  Poisson(RNG* gen, Double mean=0.0);
+  Poisson(RNG* gen, double mean=0.0);
   
   // The destructor is trivial
   virtual ~Poisson();
@@ -1213,31 +1213,31 @@ public:
   // non-negative integer and using the asInt function bypasses the conversion
   // to a floating point number.
   // <group>
-  virtual Double operator()();
-  uInt asInt();
+  virtual double operator()();
+  uint32_t asInt();
   // </group>
   
   // Functions that allow you to query and change the parameters of the
   // Poisson distribution.
   // <group>
-  Double mean() const;
-  void mean(Double x);
+  double mean() const;
+  void mean(double x);
   // </group>
   
   // These function allow you to manipulate the parameters (mean)
   // described above through the base class. The Vectors must always be of
   // length one.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  Double itsMean;
+  double itsMean;
 };
 
-inline Double Poisson::mean() const { 
+inline double Poisson::mean() const { 
   return itsMean;
 }
 
@@ -1275,45 +1275,45 @@ public:
   // over by this class and the user is responsible for deleting it. The
   // remaining arguments define the parameters for this distribution as
   // described in the synopsis.
-  Uniform(RNG* gen, Double low=-1.0, Double high=1.0);
+  Uniform(RNG* gen, double low=-1.0, double high=1.0);
 
   // The destructor is trivial
   virtual ~Uniform();
 
   // Returns a value from the uniform distribution. 
-  virtual Double operator()();
+  virtual double operator()();
   
   // Functions that allow you to query and change the parameters of the
   // uniform distribution.  
   // <group>
-  Double low() const;
-  void low(Double x);
-  Double high() const;
-  void high(Double x);
-  void range(Double low, Double high);
+  double low() const;
+  void low(double x);
+  double high() const;
+  void high(double x);
+  void range(double low, double high);
   // </group>
 
   // These function allow you to manipulate the parameters (low & high)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
-  static Double calcDelta(Double low, Double high);
-  Double itsLow;
-  Double itsHigh;
-  Double itsDelta;
+  static double calcDelta(double low, double high);
+  double itsLow;
+  double itsHigh;
+  double itsDelta;
 };
 
-inline Double Uniform::low() const {
+inline double Uniform::low() const {
   return itsLow;
 }
 
-inline Double Uniform::high() const {
+inline double Uniform::high() const {
   return itsHigh;
 }
 
@@ -1348,44 +1348,44 @@ public:
   // over by this class and the user is responsible for deleting it. The
   // remaining arguments define the parameters for this distribution as
   // described in the synopsis.
-  Weibull(RNG* gen, Double alpha=1.0, Double beta=1.0);
+  Weibull(RNG* gen, double alpha=1.0, double beta=1.0);
   
   // The destructor is trivial
   virtual ~Weibull();
 
   // Returns a value from the Weiball distribution. 
-  virtual Double operator()();
+  virtual double operator()();
   
   // Functions that allow you to query and change the parameters of the
   // Weiball distribution.  
   // <group>
-  Double alpha() const;
-  void alpha(Double x);
-  Double beta() const;
-  void beta(Double x);
+  double alpha() const;
+  void alpha(double x);
+  double beta() const;
+  void beta(double x);
   // </group>
 
   // These function allow you to manipulate the parameters (alpha & beta)
   // described above through the base class. The Vectors must always be of
   // length two.
   // <group>
-  virtual void setParameters(const Vector<Double>& parms);
-  virtual Vector<Double> parameters() const;
-  virtual Bool checkParameters(const Vector<Double>& parms) const;
+  virtual void setParameters(const Vector<double>& parms);
+  virtual Vector<double> parameters() const;
+  virtual bool checkParameters(const Vector<double>& parms) const;
   // </group>
 
 private:
   void setState();
-  Double itsAlpha;
-  Double itsBeta;
-  Double itsInvAlpha;
+  double itsAlpha;
+  double itsBeta;
+  double itsInvAlpha;
 };
 
-inline Double Weibull::alpha() const {
+inline double Weibull::alpha() const {
   return itsAlpha;
 }
 
-inline Double Weibull::beta() const {
+inline double Weibull::beta() const {
   return itsBeta; 
 }
 

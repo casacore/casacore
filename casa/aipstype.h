@@ -26,6 +26,8 @@
 #ifndef CASA_AIPSTYPE_H
 #define CASA_AIPSTYPE_H
 
+#warning aipstype.h is deprecated; the Casacore data types are not used anymore
+
 // For temporary backward namespace compatibility, use casa as alias for casacore.
 //# Note: namespace casa = casacore; does not work for forward declarations.
 
@@ -52,6 +54,11 @@ typedef unsigned long uLong;
 typedef float Float;
 typedef double Double;
 typedef long double lDouble;
+
+// A guaranteed 64-bit long integer (for a.o. large file systems).
+// An implementation must support the + and - operators.
+typedef long long Int64;
+typedef unsigned long long uInt64;
 
 } //# NAMESPACE CASACORE - END
 

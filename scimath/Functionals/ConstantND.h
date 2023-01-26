@@ -69,10 +69,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 // // form the constant function in 4-D space
-//  Constant<Double> constant(4); // 4-dim hyperplane
+//  Constant<double> constant(4); // 4-dim hyperplane
 //  constant.parameters()[0] = 22;
 //  // Evaluate at x0=5, x3=7
-//  Vector<Double> x(4);
+//  Vector<double> x(4);
 //  x=0; x[0]=5; x[3]=7;
 //  cout << "constant value: " << constant(x) << endl;
 //  constant value: 22
@@ -108,7 +108,7 @@ public:
   //# Constructors
   // Construct a constant in an a space of dimensionality <src>m</src>.  By
   // default, the constant value is initialised to zero, and <src>m=0</src>
-  explicit ConstantND(const uInt m=0) : ConstantNDParam<T>(m) {;};
+  explicit ConstantND(const uint32_t m=0) : ConstantNDParam<T>(m) {;};
   // Copy constructor/assignment (deep copy)
   // <group>
   ConstantND(const ConstantND<T> &other) : ConstantNDParam<T>(other) {};
@@ -161,7 +161,7 @@ public:
   //# Construct
   // Constructors a constant in a space of dimensionality <src>m</src>.  By
   // default, the coefficients are initialized to zero, and <src>m=0</src>
-  explicit ConstantND_PS(const uInt m=0) :
+  explicit ConstantND_PS(const uint32_t m=0) :
     ConstantNDParam<AutoDiff<T> >(m) {};
   // Copy constructor/assignment (deep copy)
   // <group>

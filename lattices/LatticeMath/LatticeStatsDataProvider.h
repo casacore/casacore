@@ -55,7 +55,7 @@ public:
 	// to create a single object before the loop and use setLattice() to update
 	// its lattice).
 	LatticeStatsDataProvider(
-		const Lattice<T>& lattice, uInt iteratorLimitBytes=4096*4096
+		const Lattice<T>& lattice, uint32_t iteratorLimitBytes=4096*4096
 	);
 
 	~LatticeStatsDataProvider();
@@ -63,31 +63,31 @@ public:
 	void operator++();
 
 	// estimated number of steps to iterate through the the lattice
-	uInt estimatedSteps() const;
+	uint32_t estimatedSteps() const;
 
 	// Are there any data sets left to provide?
-	Bool atEnd() const;
+	bool atEnd() const;
 
 	// Take any actions necessary to finalize the provider. This will be called when
-	// atEnd() returns True.
+	// atEnd() returns true.
 	void finalize();
 
 	// get the count of elements in the current data set. When implementing this method, be
 	// certain to take stride into account; ie for a data set with nominally 100 elements that
 	// is to have a stride of two, this method should return 50.
-	uInt64 getCount();
+	uint64_t getCount();
 
 	// get the current data set
 	const T* getData();
 
-	// Get the associated mask of the current dataset. Only called if hasMask() returns True;
-	const Bool* getMask();
+	// Get the associated mask of the current dataset. Only called if hasMask() returns true;
+	const bool* getMask();
 
 	// returns something reasonable based on the lattice size.
-	uInt getNMaxThreads() const;
+	uint32_t getNMaxThreads() const;
 
 	// Does the current data set have an associated mask?
-	Bool hasMask() const;
+	bool hasMask() const;
 
 	// reset the provider to point to the first data set it manages.
 	void reset();
@@ -105,22 +105,22 @@ public:
 	// to create a single object before the loop and use setLattice() to update
 	// its lattice).
 	void setLattice(
-		const Lattice<T>& lattice, uInt iteratorLimitBytes=4096*4096
+		const Lattice<T>& lattice, uint32_t iteratorLimitBytes=4096*4096
 	);
 
 	// <group>
 	// see base class documentation.
-	void updateMaxPos(const std::pair<Int64, Int64>& maxpos);
+	void updateMaxPos(const std::pair<int64_t, int64_t>& maxpos);
 
-	void updateMinPos(const std::pair<Int64, Int64>& minpos);
+	void updateMinPos(const std::pair<int64_t, int64_t>& minpos);
 	// </group>
 
 private:
 	CountedPtr<RO_LatticeIterator<T> > _iter;
 	Array<T> _currentSlice;
 	const T* _currentPtr;
-	Bool _delData, _atEnd;
-	uInt _nMaxThreads;
+	bool _delData, _atEnd;
+	uint32_t _nMaxThreads;
 
 	void _freeStorage();
 

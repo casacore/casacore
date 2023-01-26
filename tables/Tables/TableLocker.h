@@ -109,14 +109,14 @@ public:
     // An exception is thrown when the lock cannot be acquired.
     explicit TableLocker (Table& table,
 			  FileLocker::LockType = FileLocker::Write,
-			  uInt nattempts = 0);
+			  uint32_t nattempts = 0);
 
     // If locked, the destructor releases the lock and flushes the data.
     ~TableLocker();
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
+    bool hasLock (FileLocker::LockType = FileLocker::Write) const;
 
 private:
     // The copy constructor and assignment are not possible.
@@ -137,7 +137,7 @@ private:
 };
 
 
-inline Bool TableLocker::hasLock (FileLocker::LockType type) const
+inline bool TableLocker::hasLock (FileLocker::LockType type) const
 {
     return itsTable.hasLock (type);
 }

@@ -67,14 +67,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSAntennaGram = 0;
-  static Int                   posMSAntennaGram = 0;
+  static int32_t                   posMSAntennaGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   TableExprNode baseMSAntennaGramParseCommand(MSAntennaParse* parser, const String& command,
-					      Vector<Int>& selectedAnts1,
-					      Vector<Int>& selectedAnts2,
-					      Matrix<Int>& selectedBaselines)
+					      Vector<int32_t>& selectedAnts1,
+					      Vector<int32_t>& selectedAnts2,
+					      Matrix<int32_t>& selectedBaselines)
   {
     try 
       {
@@ -102,9 +102,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprNode msAntennaGramParseCommand (MSSelectableTable& msLike,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) 
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) 
   {
     TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
       col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
@@ -132,9 +132,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 					   TableExprNode& col1TEN,
 					   TableExprNode& col2TEN,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) 
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) 
   {
     // TableExprNode col1TEN = msLike.col(msLike.columnName(MS::ANTENNA1)),
     //   col2TEN = msLike.col(msLike.columnName(MS::ANTENNA2));
@@ -160,9 +160,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprNode msAntennaGramParseCommand (MSAntennaParse* thisParser,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) 
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) 
   {
     TableExprNode antennaTEN;
     try
@@ -182,9 +182,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprNode msAntennaGramParseCommand (const MeasurementSet* ms,
                                            const String& command, 
-                                           Vector<Int>& selectedAnts1,
-                                           Vector<Int>& selectedAnts2,
-                                           Matrix<Int>& selectedBaselines) 
+                                           Vector<int32_t>& selectedAnts1,
+                                           Vector<int32_t>& selectedAnts2,
+                                           Matrix<int32_t>& selectedBaselines) 
   {
     TableExprNode antennaTEN;
     TableExprNode col1AsTEN = ms->col(ms->columnName(MS::ANTENNA1)),
@@ -232,7 +232,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //# Give the string position.
-  Int& msAntennaGramPosition()
+  int32_t& msAntennaGramPosition()
   {
     return posMSAntennaGram;
   }

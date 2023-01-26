@@ -42,8 +42,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </synopsis>
 
   // Determine precision for two related value,error pairs (such as RA-Dec)
-  uInt precisionForValueErrorPairs (const Vector<Double>& pair1,
-                                    const Vector<Double>& pair2);
+  uint32_t precisionForValueErrorPairs (const Vector<double>& pair1,
+                                    const Vector<double>& pair2);
 
 } //# NAMESPACE CASACORE - END
 

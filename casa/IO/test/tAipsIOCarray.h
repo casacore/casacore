@@ -57,15 +57,15 @@ class AipsIOCarrayEx1
 {
 public:
     AipsIOCarrayEx1() : a_p(0), b_p(0) {;}
-    AipsIOCarrayEx1 (Int a, double b) : a_p(a), b_p(b) {;}
+    AipsIOCarrayEx1 (int32_t a, double b) : a_p(a), b_p(b) {;}
     friend AipsIO& operator<< (AipsIO& ios, const AipsIOCarrayEx1& a)
 	{ return ios << a.a_p << a.b_p; }
     friend AipsIO& operator>> (AipsIO& ios, AipsIOCarrayEx1& a)
 	{ return ios >> a.a_p >> a.b_p; }
-    Int a() const {return a_p;}
+    int32_t a() const {return a_p;}
     double b() const {return b_p;}
 private:
-    Int a_p;
+    int32_t a_p;
     double b_p;
 };
 

@@ -43,30 +43,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MVBaseline::MVBaseline() :
   MVPosition() {}
 
-MVBaseline::MVBaseline(Double in) :
+MVBaseline::MVBaseline(double in) :
   MVPosition(in) {}
 
 MVBaseline::MVBaseline(const Quantity &l) :
   MVPosition(l) {}
 
-MVBaseline::MVBaseline(Double in0, Double in1, Double in2) : 
+MVBaseline::MVBaseline(double in0, double in1, double in2) : 
   MVPosition(in0, in1, in2) {}
 
-MVBaseline::MVBaseline(const Quantity &l, Double angle0, Double angle1) : 
+MVBaseline::MVBaseline(const Quantity &l, double angle0, double angle1) : 
   MVPosition(l, angle0, angle1) {}
 
 MVBaseline::MVBaseline(const Quantity &l, const Quantity &angle0, 
 		       const Quantity &angle1) : 
   MVPosition(l, angle0, angle1) {}
 
-MVBaseline::MVBaseline(const Quantum<Vector<Double> > &angle) :
+MVBaseline::MVBaseline(const Quantum<Vector<double> > &angle) :
   MVPosition(angle) {}
 
 MVBaseline::MVBaseline(const Quantity &l, 
-		       const Quantum<Vector<Double> > &angle) :
+		       const Quantum<Vector<double> > &angle) :
   MVPosition(l, angle) {}
 
-MVBaseline::MVBaseline(const Vector<Double> &other) :
+MVBaseline::MVBaseline(const Vector<double> &other) :
   MVPosition(other) {}
 
 MVBaseline::MVBaseline(const Vector<Quantity> &other) :
@@ -85,35 +85,35 @@ MVBaseline::MVBaseline(const MVPosition &other) :
   MVPosition(other) {}
 
 //# Operators
-Bool MVBaseline::
+bool MVBaseline::
 operator==(const MVBaseline &other) const {
   return (allEQ(xyz, other.xyz));
 }
 
-Bool MVBaseline::
+bool MVBaseline::
 operator!=(const MVBaseline &other) const {
   return (!(*this == other));
 }
 
-Bool MVBaseline::
-near(const MVBaseline &other, Double tol) const {
+bool MVBaseline::
+near(const MVBaseline &other, double tol) const {
   return (allNear(xyz, other.xyz, tol));
 }
 
-Bool MVBaseline::
+bool MVBaseline::
 near(const MVBaseline &other, Quantity tol) const {
   return (separation(other,"rad") <= tol);
 }
 
-Bool MVBaseline::
-nearAbs(const MVBaseline &other, Double tol) const {
+bool MVBaseline::
+nearAbs(const MVBaseline &other, double tol) const {
   return (allNearAbs(xyz, other.xyz, tol));
 }
 
-Double MVBaseline::
+double MVBaseline::
 operator*(const MVBaseline &other) const {
-  Double tmp = 0.0;
-  for (Int i=0; i<3; i++) {
+  double tmp = 0.0;
+  for (int32_t i=0; i<3; i++) {
     tmp += xyz(i) * other.xyz(i);
   }
   return tmp;
@@ -157,14 +157,14 @@ void MVBaseline::assure(const MeasValue &in) {
 
 void MVBaseline::adjust() {}
 
-void MVBaseline::adjust(Double &res) {
+void MVBaseline::adjust(double &res) {
   res = std::sqrt(operator*(*this));
   if (res != 0.0 && res != 1.0) {
     xyz /= res;
   }
 }
 
-void MVBaseline::readjust(Double res) {
+void MVBaseline::readjust(double res) {
   if (res == 0.0) {
     xyz *= 1e-12;
   } else {
@@ -172,15 +172,15 @@ void MVBaseline::readjust(Double res) {
   }
 }
 
-Double MVBaseline::radius() {
+double MVBaseline::radius() {
   return (std::sqrt(operator*(*this)));
 }
 
-Vector<Double> MVBaseline::get() const{
-  Vector<Double> tmp(3);
+Vector<double> MVBaseline::get() const{
+  Vector<double> tmp(3);
   tmp(0) = std::sqrt(operator*(*this));
-  Double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
-  Double loc = xyz(0)/ln;
+  double ln = (tmp(0) == 0.0 ? 1.0 : tmp(0));
+  double loc = xyz(0)/ln;
   if (loc == 0) {
     tmp(1) = std::asin(xyz(1)/ln);
   } else {
@@ -190,24 +190,24 @@ Vector<Double> MVBaseline::get() const{
   return tmp;
 }
 
-const Vector<Double> &MVBaseline::getValue() const {
+const Vector<double> &MVBaseline::getValue() const {
   return xyz;
 }
 
-Quantum<Vector<Double> > MVBaseline::getAngle() const{
-  Vector<Double> tp(3), tmp(2);
+Quantum<Vector<double> > MVBaseline::getAngle() const{
+  Vector<double> tp(3), tmp(2);
   tp = get();
   tmp(0) = tp(1);
   tmp(1) = tp(2);
-  return Quantum<Vector<Double> >(tmp,"rad");
+  return Quantum<Vector<double> >(tmp,"rad");
 }
 
-Quantum<Vector<Double> > MVBaseline::getAngle(const Unit &unit) const{
+Quantum<Vector<double> > MVBaseline::getAngle(const Unit &unit) const{
   return getAngle().get(unit);
 }
 
 Quantity MVBaseline::getLength() const{
-  Double tmp = std::sqrt(operator*(*this));
+  double tmp = std::sqrt(operator*(*this));
   return Quantity(tmp,"m");
 }
 
@@ -215,19 +215,19 @@ Quantity MVBaseline::getLength(const Unit &unit) const {
   return getLength().get(unit);
 }
 
-Double MVBaseline::BaselineAngle(const MVBaseline &other) const {
-  Vector<Double> t1(3);
-  Vector<Double> t2(3);
+double MVBaseline::BaselineAngle(const MVBaseline &other) const {
+  Vector<double> t1(3);
+  Vector<double> t2(3);
   t1 = get();
   t2 = other.get();
-  Double s1,c1;
+  double s1,c1;
   c1 = std::cos(t1(2)) * std::sin(t2(2)) -
     std::sin(t1(2)) * std::cos(t2(2)) * std::cos(t1(1) - t2(1));
   s1 = -std::cos(t2(2)) * std::sin(t1(1) - t2(1));
   if (s1 != 0 || c1 != 0) {
     return std::atan2(s1, c1);
   } else {
-    return Double(0.0);
+    return double(0.0);
   }
 }
 
@@ -236,12 +236,12 @@ Quantity MVBaseline::BaselineAngle(const MVBaseline &other,
   return Quantity(BaselineAngle(other), "rad").get(unit);
 }
 
-Double MVBaseline::separation(const MVBaseline &other) const {
+double MVBaseline::separation(const MVBaseline &other) const {
   MVBaseline t1(*this);
   MVBaseline t2(other);
   t1.adjust(); t2.adjust();
   t1 -= t2;
-  Double d1 = t1.radius()/2.0;
+  double d1 = t1.radius()/2.0;
   d1 = (d1 < 1.0 ? d1 : 1.0);
   return (2*std::asin(d1));
 }
@@ -267,87 +267,87 @@ MeasValue *MVBaseline::clone() const {
   return (new MVBaseline(*this));
 }
 
-Vector<Double> MVBaseline::getVector() const {
+Vector<double> MVBaseline::getVector() const {
   return xyz;
 }
 
-void MVBaseline::putVector(const Vector<Double> &in) {
+void MVBaseline::putVector(const Vector<double> &in) {
   if (in.nelements() == 3) {
     xyz = in;
   } else {
     xyz = 0.0;
-    for (uInt i=0; i<in.nelements();i++) xyz(i) = in(i);
+    for (uint32_t i=0; i<in.nelements();i++) xyz(i) = in(i);
   }
 }
 
-Vector<Quantum<Double> > MVBaseline::getRecordValue() const {
-  Vector<Double> t(3);
+Vector<Quantum<double> > MVBaseline::getRecordValue() const {
+  Vector<double> t(3);
   t = get();
-  Vector<Quantum<Double> > tmp(3);
+  Vector<Quantum<double> > tmp(3);
   tmp(2) = Quantity(t(0), "m");
   tmp(0) = Quantity(t(1), "rad"); 
   tmp(1) = Quantity(t(2), "rad"); 
   return tmp;
 }
 
-Vector<Quantum<Double> > MVBaseline::getXRecordValue() const {
-  Vector<Quantum<Double> > tmp(3);
+Vector<Quantum<double> > MVBaseline::getXRecordValue() const {
+  Vector<Quantum<double> > tmp(3);
   tmp(0) = Quantity(xyz(0), "m");
   tmp(1) = Quantity(xyz(1), "m");
   tmp(2) = Quantity(xyz(2), "m");
   return tmp;
 }
 
-Bool MVBaseline::putValue(const Vector<Quantum<Double> > &in) {
-  uInt i = in.nelements();
-  if (i != 3 ) return False;
+bool MVBaseline::putValue(const Vector<Quantum<double> > &in) {
+  uint32_t i = in.nelements();
+  if (i != 3 ) return false;
   if (in(0).check(UnitVal::LENGTH)) {
     if (in(1).check(UnitVal::LENGTH) &&
 	in(2).check(UnitVal::LENGTH)) {
-      for (uInt j = 0; j<i; j++) {
+      for (uint32_t j = 0; j<i; j++) {
 	xyz(j) = in(j).getBaseValue();
       }
     } else if (in(1).check(UnitVal::ANGLE) &&
 	       in(2).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      for (uInt j=1; j < i; j++) {
+      Vector<double> tsin(2), tcos(2);
+      for (uint32_t j=1; j < i; j++) {
 	tsin(j-1) = (sin(in(j))).getValue(); 
 	tcos(j-1) = (cos(in(j))).getValue(); 
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
       readjust(in(0).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   } else if (in(2).check(UnitVal::LENGTH)) {
     if (in(0).check(UnitVal::ANGLE) &&
 	in(1).check(UnitVal::ANGLE)) {
-      Vector<Double> tsin(2), tcos(2);
-      Int j;
+      Vector<double> tsin(2), tcos(2);
+      int32_t j;
       for (j=0; j < 2; j++) {
 	tsin(j) = (sin(in(j))).getValue(); 
 	tcos(j) = (cos(in(j))).getValue(); 
       }
-      xyz = Double(0.0);
+      xyz = double(0.0);
       xyz(0) = tcos(0) * tcos(1);
       xyz(1) = tsin(0) * tcos(1);
       xyz(2) = tsin(1);
       readjust(in(2).getBaseValue());
     } else {
-      return False;
+      return false;
     }
   }
-  return True;
+  return true;
 }
 
 MVBaseline operator*(const RotMatrix &left, const MVBaseline &right) {
   MVBaseline result;
-  for (Int i=0; i<3; i++) {
+  for (int32_t i=0; i<3; i++) {
     result(i) = 0;
-    for (Int j=0; j<3; j++) {
+    for (int32_t j=0; j<3; j++) {
       result(i) += left(i,j) * right(j);
     }
   }
@@ -360,34 +360,34 @@ MVBaseline operator*(const MVBaseline &left, const RotMatrix &right) {
   return result;
 }
 
-MVBaseline operator*(Double left, const MVBaseline &right) {
+MVBaseline operator*(double left, const MVBaseline &right) {
   MVBaseline result(right);
   result *= left;
   return result;
 }
 
-MVBaseline operator*(const MVBaseline &left, Double right) {
+MVBaseline operator*(const MVBaseline &left, double right) {
   MVBaseline result(left);
   result *= right;
   return result;
 }
 
-Double operator*(const Vector<Double> &left, const MVBaseline &right) {
+double operator*(const Vector<double> &left, const MVBaseline &right) {
   MVBaseline tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVBaseline &left, const Vector<Double> &right) {
+double operator*(const MVBaseline &left, const Vector<double> &right) {
   MVBaseline tmp(right);
   return (tmp * left);
 }
 
-Double operator*(const MVPosition &left, const MVBaseline &right) {
+double operator*(const MVPosition &left, const MVBaseline &right) {
   MVBaseline tmp(left);
   return (tmp * right);
 }
 
-Double operator*(const MVBaseline &left, const MVPosition &right) {
+double operator*(const MVBaseline &left, const MVPosition &right) {
   MVBaseline tmp(right);
   return (tmp * left);
 }

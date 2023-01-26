@@ -155,13 +155,13 @@ namespace casacore {
 	    } else {
 		strftime( buf, 512, "# added %F %T\n", localtime(&tv.tv_sec) );
 	    }
-            Int lng = strlen(buf);
+            int32_t lng = strlen(buf);
 	    AlwaysAssert (write(fd, buf, lng) == lng, AipsError);
 	    AlwaysAssert (write(fd, keyword.c_str(), keyword.length()) ==
-                          Int(keyword.length()), AipsError);
+                          int32_t(keyword.length()), AipsError);
 	    AlwaysAssert (write(fd, ": ", 2) == 2, AipsError);
 	    AlwaysAssert (write(fd, value.c_str(), value.length()) ==
-                          Int(value.length()), AipsError);
+                          int32_t(value.length()), AipsError);
             AlwaysAssert (write(fd, "\n", 1) == 1, AipsError);
 	    unlock( fd );
 	} else {

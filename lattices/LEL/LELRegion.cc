@@ -51,21 +51,21 @@ LELRegion::~LELRegion()
     delete region_p;
 }
 
-void LELRegion::eval(LELArray<Bool>&, 
+void LELRegion::eval(LELArray<bool>&, 
 		     const Slicer&) const
 {
     throw (AipsError ("LELRegion:eval - cannot be used"));
 }
 
-LELScalar<Bool> LELRegion::getScalar() const
+LELScalar<bool> LELRegion::getScalar() const
 {
    throw (AipsError ("LELRegion::getScalar - cannot be used"));
-   return False;
+   return false;
 }
 
-Bool LELRegion::prepareScalarExpr()
+bool LELRegion::prepareScalarExpr()
 {
-    return False;
+    return false;
 }
 
 String LELRegion::className() const
@@ -74,8 +74,8 @@ String LELRegion::className() const
 }
 
 
-LELRegion* LELRegion::makeUnion (const LELInterface<Bool>& left,
-				 const LELInterface<Bool>& right)
+LELRegion* LELRegion::makeUnion (const LELInterface<bool>& left,
+				 const LELInterface<bool>& right)
 {
     const LattRegionHolder& r1 = LELRegion::region (left);
     const LattRegionHolder& r2 = LELRegion::region (right);
@@ -85,8 +85,8 @@ LELRegion* LELRegion::makeUnion (const LELInterface<Bool>& left,
     return new LELRegion (r1.makeUnion (r2));
 }
 
-LELRegion* LELRegion::makeIntersection (const LELInterface<Bool>& left,
-					const LELInterface<Bool>& right)
+LELRegion* LELRegion::makeIntersection (const LELInterface<bool>& left,
+					const LELInterface<bool>& right)
 {
     const LattRegionHolder& r1 = LELRegion::region (left);
     const LattRegionHolder& r2 = LELRegion::region (right);
@@ -96,8 +96,8 @@ LELRegion* LELRegion::makeIntersection (const LELInterface<Bool>& left,
     return new LELRegion (r1.makeIntersection (r2));
 }
 
-LELRegion* LELRegion::makeDifference (const LELInterface<Bool>& left,
-				      const LELInterface<Bool>& right)
+LELRegion* LELRegion::makeDifference (const LELInterface<bool>& left,
+				      const LELInterface<bool>& right)
 {
     const LattRegionHolder& r1 = LELRegion::region (left);
     const LattRegionHolder& r2 = LELRegion::region (right);
@@ -107,7 +107,7 @@ LELRegion* LELRegion::makeDifference (const LELInterface<Bool>& left,
     return new LELRegion (r1.makeDifference (r2));
 }
 
-LELRegion* LELRegion::makeComplement (const LELInterface<Bool>& expr)
+LELRegion* LELRegion::makeComplement (const LELInterface<bool>& expr)
 {
     const LattRegionHolder& r1 = LELRegion::region (expr);
     // Assure that both types are the same and that no LCSlicer is used.
@@ -117,7 +117,7 @@ LELRegion* LELRegion::makeComplement (const LELInterface<Bool>& expr)
 }
 
 
-const LattRegionHolder& LELRegion::region (const LELInterface<Bool>& expr)
+const LattRegionHolder& LELRegion::region (const LELInterface<bool>& expr)
 {
     AlwaysAssert (expr.className() == "LELRegion", AipsError);
     return ((const LELRegion&)expr).region();
@@ -152,7 +152,7 @@ LELRegionAsBool::LELRegionAsBool (const LELRegion& region)
 			"a region in world coordinates"));
    }
    region_p = LatticeRegion (*(reg.asLCRegionPtr()));
-   setAttr(LELAttribute(False, 
+   setAttr(LELAttribute(false, 
 			region_p.shape(), region_p.niceCursorShape(),
 			region_p.lelCoordinates()));
 }
@@ -160,22 +160,22 @@ LELRegionAsBool::LELRegionAsBool (const LELRegion& region)
 LELRegionAsBool::~LELRegionAsBool()
 {}
 
-void LELRegionAsBool::eval(LELArray<Bool>& result, 
+void LELRegionAsBool::eval(LELArray<bool>& result, 
 			   const Slicer& section) const
 {
-   Array<Bool> tmp = region_p.getSlice (section);
+   Array<bool> tmp = region_p.getSlice (section);
    result.value().reference(tmp);
 }
 
-LELScalar<Bool> LELRegionAsBool::getScalar() const
+LELScalar<bool> LELRegionAsBool::getScalar() const
 {
    throw (AipsError ("LELRegionAsBool::getScalar - cannot be used"));
-   return False;
+   return false;
 }
 
-Bool LELRegionAsBool::prepareScalarExpr()
+bool LELRegionAsBool::prepareScalarExpr()
 {
-    return False;
+    return false;
 }
 
 String LELRegionAsBool::className() const

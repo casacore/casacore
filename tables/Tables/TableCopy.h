@@ -86,23 +86,23 @@ public:
   // replaced by StandardStMan.
   // <br>By default, the TiledDataStMan will be replaced by the TiledShapeStMan.
   // <br>By default, the new table has the same nr of rows as the input table.
-  // If <src>noRows=True</src> is given, it does not contain any row.
+  // If <src>noRows=true</src> is given, it does not contain any row.
   static Table makeEmptyTable (const String& newName,
 			       const Record& dataManagerInfo,
 			       const Table& tab,
 			       Table::TableOption option,
 			       Table::EndianFormat endianFormat,
-			       Bool replaceTSM = True,
-			       Bool noRows = False,
+			       bool replaceTSM = true,
+			       bool noRows = false,
                                const StorageOption& = StorageOption());
 
   // Make an (empty) memory table with the same layout as the input one.
   // It has the same keywords and columns as the input one.
   // By default, the new table has the same nr of rows as the input table.
-  // If <src>noRows=True</src> is given, it does not contain any row.
+  // If <src>noRows=true</src> is given, it does not contain any row.
   static Table makeEmptyMemoryTable (const String& newName,
 				     const Table& tab,
-				     Bool noRows = False);
+				     bool noRows = false);
 
   // Copy rows from the input to the output.
   // By default all rows will be copied starting at row 0 of the output.
@@ -113,11 +113,11 @@ public:
   // stored columns will be filled; however if the output table has only
   // one column, it can also be a virtual one.
   // <group>
-  static void copyRows (Table& out, const Table& in, Bool flush=True)
+  static void copyRows (Table& out, const Table& in, bool flush=true)
     { copyRows (out, in, 0, 0, in.nrow(), flush); }
   static void copyRows (Table& out, const Table& in,
 			rownr_t startout, rownr_t startin, rownr_t nrrow,
-                        Bool flush=True);
+                        bool flush=true);
   // </group>
 
   // Copy the table info block from input to output table.
@@ -127,7 +127,7 @@ public:
   // output table.
   // Subtables of which the keyword name matches an omit value are skipped.
   // Optionally the row contents are not copied.
-  static void copySubTables (Table& out, const Table& in, Bool noRows=False,
+  static void copySubTables (Table& out, const Table& in, bool noRows=false,
 			     const Block<String>& omit=Block<String>());
 
   // Copy the subtables in the given keywordset to the output keywordset
@@ -139,7 +139,7 @@ public:
 			     const String& outName,
 			     Table::TableType outType,
 			     const Table& in,
-			     Bool noRows=False,
+			     bool noRows=false,
 			     const Block<String>& omit=Block<String>());
 
   // Clone a column in the from table to a new column in the to table.
@@ -167,7 +167,7 @@ public:
   // Note that the data types of the column do not need to match; data type
   // promotion is done if needed.
   // <br>The <src>preserveTileShape</src> argument tells if the original
-  // tile shape is kept if a tiled data manager is used. If False, the
+  // tile shape is kept if a tiled data manager is used. If false, the
   // default tile shape of the data manager is used.
   // <note role=tip>
   // Note that a TaQL command can be used to fill a column in any way.
@@ -186,7 +186,7 @@ public:
                               const String& fromColumn,
                               Table& toTable,
                               const String& toColumn,
-                              Bool preserveTileShape=True);
+                              bool preserveTileShape=true);
 
   // Fill the table column with the given array.
   // The template type must match the column data type.
@@ -214,12 +214,12 @@ public:
   static void fillColumnData (Table& table, const String& column,
                               const T& value,
                               const Table& fromTable, const String& fromColumn,
-                              Bool preserveTileShape=True);
+                              bool preserveTileShape=true);
   // Specialization to handle a C-string correctly.
   static void fillColumnData (Table& table, const String& column,
                               const char* value,
                               const Table& fromTable, const String& fromColumn,
-                              Bool preserveTileShape=True)
+                              bool preserveTileShape=true)
     { fillColumnData (table, column, String(value), fromTable, fromColumn,
                       preserveTileShape); }
 

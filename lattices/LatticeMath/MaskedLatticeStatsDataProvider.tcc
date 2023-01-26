@@ -33,15 +33,15 @@ template <class T>
 MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider()
     : LatticeStatsDataProviderBase<T>(),
     _iter(), /* _ary(), _mask(), */ _currentSlice(), _currentMaskSlice(),
-    _currentPtr(0), _currentMaskPtr(0), _delData(False), _delMask(False),
-    _atEnd(False), _nMaxThreads(0) {}
+    _currentPtr(0), _currentMaskPtr(0), _delData(false), _delMask(false),
+    _atEnd(false), _nMaxThreads(0) {}
 
 template <class T>
 MaskedLatticeStatsDataProvider<T>::MaskedLatticeStatsDataProvider(
-    MaskedLattice<T>& lattice, uInt
+    MaskedLattice<T>& lattice, uint32_t
 ) : LatticeStatsDataProviderBase<T>(),
     _iter(), _currentSlice(), _currentMaskSlice(),
-    _currentPtr(0), _currentMaskPtr(0), _delData(False), _delMask(False) {
+    _currentPtr(0), _currentMaskPtr(0), _delData(false), _delMask(false) {
     setLattice(lattice);
 }
 
@@ -52,7 +52,7 @@ template <class T>
 void MaskedLatticeStatsDataProvider<T>::operator++() {
     _freeStorage();
     if (_iter.null()) {
-        _atEnd = True;
+        _atEnd = true;
     }
     else {
         ++(*_iter);
@@ -61,16 +61,16 @@ void MaskedLatticeStatsDataProvider<T>::operator++() {
 }
 
 template <class T>
-uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
+uint32_t MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
     if (_iter.null()) {
         return 1;
     }
     IPosition lattShape = _iter->latticeShape();
     IPosition cursShape = _iter->cursor().shape();
-    uInt ndim = lattShape.size();
-    uInt count = 1;
-    for (uInt i=0; i<ndim; i++) {
-        uInt nsteps = lattShape[i]/cursShape[i];
+    uint32_t ndim = lattShape.size();
+    uint32_t count = 1;
+    for (uint32_t i=0; i<ndim; i++) {
+        uint32_t nsteps = lattShape[i]/cursShape[i];
         if (lattShape[i] % cursShape[i] != 0) {
             ++nsteps;
         }
@@ -80,7 +80,7 @@ uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
 }
 
 template <class T>
-Bool MaskedLatticeStatsDataProvider<T>::atEnd() const {
+bool MaskedLatticeStatsDataProvider<T>::atEnd() const {
     if (_iter.null()) {
         return _atEnd;
 
@@ -97,7 +97,7 @@ void MaskedLatticeStatsDataProvider<T>::finalize() {
 }
 
 template <class T>
-uInt64 MaskedLatticeStatsDataProvider<T>::getCount() {
+uint64_t MaskedLatticeStatsDataProvider<T>::getCount() {
     if (_iter.null()) {
         return _currentSlice.size();
     }
@@ -116,7 +116,7 @@ const T* MaskedLatticeStatsDataProvider<T>::getData() {
 }
 
 template <class T>
-const Bool* MaskedLatticeStatsDataProvider<T>::getMask() {
+const bool* MaskedLatticeStatsDataProvider<T>::getMask() {
     if (! _iter.null()) {
         _currentMaskSlice.assign(_iter->getMask());
     }
@@ -125,7 +125,7 @@ const Bool* MaskedLatticeStatsDataProvider<T>::getMask() {
 }
 
 template <class T>
-uInt MaskedLatticeStatsDataProvider<T>::getNMaxThreads() const {
+uint32_t MaskedLatticeStatsDataProvider<T>::getNMaxThreads() const {
 #ifdef _OPENMP
     return _nMaxThreads;
 #else
@@ -134,8 +134,8 @@ uInt MaskedLatticeStatsDataProvider<T>::getNMaxThreads() const {
 }
 
 template <class T>
-Bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
-    return True;
+bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
+    return true;
 }
 
 template <class T>
@@ -148,7 +148,7 @@ void MaskedLatticeStatsDataProvider<T>::reset() {
 
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::setLattice(
-    const MaskedLattice<T>& lattice, uInt iteratorLimitBytes
+    const MaskedLattice<T>& lattice, uint32_t iteratorLimitBytes
 ) {
     finalize();
     if (lattice.size() > iteratorLimitBytes/sizeof(T)) {
@@ -163,12 +163,12 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(
         _iter = NULL;
         _currentSlice.assign(lattice.get());
         _currentMaskSlice.assign(lattice.getMask());
-        _atEnd = False;
+        _atEnd = false;
     }
 #ifdef _OPENMP
     _nMaxThreads = min(
         omp_get_max_threads(),
-        (Int)ceil((Float)lattice.size()/ClassicalStatisticsData::BLOCK_SIZE)
+        (int32_t)ceil((float)lattice.size()/ClassicalStatisticsData::BLOCK_SIZE)
     );
 #endif
 }
@@ -176,7 +176,7 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(
 
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::updateMaxPos(
-    const std::pair<Int64, Int64>& maxpos
+    const std::pair<int64_t, int64_t>& maxpos
 ) {
     IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
     if (! _iter.null()) {
@@ -187,7 +187,7 @@ void MaskedLatticeStatsDataProvider<T>::updateMaxPos(
 
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::updateMinPos(
-    const std::pair<Int64, Int64>& minpos
+    const std::pair<int64_t, int64_t>& minpos
 ) {
     IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
     if (! _iter.null()) {
@@ -199,9 +199,9 @@ void MaskedLatticeStatsDataProvider<T>::updateMinPos(
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::_freeStorage() {
     _currentSlice.freeStorage (_currentPtr, _delData);
-    _delData = False;
+    _delData = false;
     _currentMaskSlice.freeStorage(_currentMaskPtr, _delMask);
-    _delMask = False;
+    _delMask = false;
 }
 
 }

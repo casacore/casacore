@@ -88,7 +88,7 @@ class TableRecord;
 // A fixed reference code is trivially stored as part of the column
 // keywords in the Measure column but a variable reference code requires
 // its own column.  A Scalar or Array column can be used dependent on your
-// needs but its type must always be either Int or String. Note that it is
+// needs but its type must always be either int32_t or String. Note that it is
 // legal to specify a Scalar
 // reference column for use with an ArrayMeasColumn. In such cases a single
 // reference code will be stored per array (row) of Measures.  However,
@@ -122,10 +122,10 @@ class TableRecord;
 //    // measure reference column
 //    TableMeasRefDesc reference(MEpoch::LAST);
 // </srcblock>
-// <li>A variable reference code requires its own Int column.
+// <li>A variable reference code requires its own int32_t column.
 // <srcblock>
 //    // An int column for the variable references.
-//    ScalarColumnDesc<Int> cdRefCol("refCol", "Measure reference column");
+//    ScalarColumnDesc<int32_t> cdRefCol("refCol", "Measure reference column");
 //    td.addColumn(cdRefCol);
 //    ...
 //    // create the Measure reference descriptor
@@ -153,7 +153,7 @@ class TableRecord;
 //
 // <thrown>
 //    <li>AipsError if the specified column doesn't exist or its type is
-//	  not Int or String.
+//	  not int32_t or String.
 // </thrown>
 //
 
@@ -169,14 +169,14 @@ public:
   // Optionally a Measure offset can be specified.
   // The reference code and offset should not need a reference frame.
   // <group>
-  explicit TableMeasRefDesc (uInt refCode = 0);
-  TableMeasRefDesc (uInt refCode, const TableMeasOffsetDesc&);
+  explicit TableMeasRefDesc (uint32_t refCode = 0);
+  TableMeasRefDesc (uint32_t refCode, const TableMeasOffsetDesc&);
   // </group>
 
   // Define a variable reference by supplying the name of the column
-  // in which the reference is to be stored.  Either an <src>Int</src> or
+  // in which the reference is to be stored.  Either an <src>int32_t</src> or
   // <src>String</src> column can be specified.  This determines how
-  // references are stored.  <src>Int</src> columns are likely to be
+  // references are stored.  <src>int32_t</src> columns are likely to be
   // faster but storing
   // references as <src>Strings</src> may be useful if there is a need to
   // browse tables manually.  Optionally supply a Measure offset.
@@ -203,11 +203,11 @@ public:
   TableMeasRefDesc& operator= (const TableMeasRefDesc& that);
 
   // Return the reference code.
-  uInt getRefCode() const
+  uint32_t getRefCode() const
     { return itsRefCode; }
 
   // Is the reference variable?
-  Bool isRefCodeVariable() const
+  bool isRefCodeVariable() const
     { return (! itsColumn.empty()); }
 
   // Return the name of its variable reference code column.
@@ -215,25 +215,25 @@ public:
     { return itsColumn; }
 
   // Is the reference code variable and stored in an integer column?
-  Bool isRefCodeColumnInt() const
+  bool isRefCodeColumnInt() const
     { return itsRefCodeColInt; }
 
   // Do the keywords contain the reference codes and types.
   // For old tables this might not be the case.
-  Bool hasRefTab() const
+  bool hasRefTab() const
     { return itsHasRefTab; }
 
-  // Returns True if the reference has an offset.
-  Bool hasOffset() const
+  // Returns true if the reference has an offset.
+  bool hasOffset() const
     { return (itsOffset != 0); }
 
-  // Returns True if the offset is variable.
-  Bool isOffsetVariable() const
-    { return (itsOffset != 0  ?  itsOffset->isVariable() : False); }
+  // Returns true if the offset is variable.
+  bool isOffsetVariable() const
+    { return (itsOffset != 0  ?  itsOffset->isVariable() : false); }
 
-  // Returns True is the offset is variable and it is an ArrayMeasColumn.
-  Bool isOffsetArray() const
-    { return (itsOffset != 0  ?  itsOffset->isArray() : False); }
+  // Returns true is the offset is variable and it is an ArrayMeasColumn.
+  bool isOffsetArray() const
+    { return (itsOffset != 0  ?  itsOffset->isArray() : false); }
 
   // Return the fixed Measure offset.
   // It does not test if the offset is defined; hasOffset() should be used
@@ -250,7 +250,7 @@ public:
   // It overwrites the value used when defining the TableMeasDesc.
   // It is only possible if it was defined as fixed for the entire column.
   // <group>
-  void resetRefCode (uInt refCode);
+  void resetRefCode (uint32_t refCode);
   void resetOffset (const Measure& offset);
   // </group>
 
@@ -271,8 +271,8 @@ public:
   // never-changing string representations.
   // These functions convert current refcode to and from table refcode.
   // <group>
-  uInt tab2cur (uInt tabRefCode) const;
-  uInt cur2tab (uInt curRefCode) const;
+  uint32_t tab2cur (uint32_t tabRefCode) const;
+  uint32_t cur2tab (uint32_t curRefCode) const;
   // </group>
 
   // Set the function used to get all reference codes for a MeasureHolder.
@@ -281,44 +281,44 @@ public:
   // <br> The default function simply calls MeasureHolder.asMeasure.allTypes.
   // <group>
   typedef void TypesFunc (Vector<String>& types,
-			  Vector<uInt>& codes, const MeasureHolder&);
+			  Vector<uint32_t>& codes, const MeasureHolder&);
   static void setTypesFunc (TypesFunc* func)
     { theirTypesFunc = func; }
   static void defaultTypesFunc (Vector<String>& types,
-				Vector<uInt>& codes, const MeasureHolder&);
+				Vector<uint32_t>& codes, const MeasureHolder&);
   static TypesFunc* theirTypesFunc;
   // </group>
 
 private:
-  uInt itsRefCode;
+  uint32_t itsRefCode;
   // The name of column containing its variable references.
   String itsColumn;
   // Is the reference code column a string column?
-  Bool   itsRefCodeColInt;
+  bool   itsRefCodeColInt;
   // Do the keywords contain the reference codes and types?
-  Bool   itsHasRefTab;
+  bool   itsHasRefTab;
   //# Its reference offset.
   TableMeasOffsetDesc* itsOffset; 	
   //# Define the vectors holding the measref codes and types.
   //# These are the codes as used in the table, which might be different
   //# from the current values.
   Vector<String> itsTabRefTypes;
-  Vector<uInt>   itsTabRefCodes;
+  Vector<uint32_t>   itsTabRefCodes;
   //# Define the mappings of table measref codes to current ones and back.
   //# There are only filled in and used if a variable reference code is used.
-  Block<Int> itsTab2Cur;
-  Block<Int> itsCur2Tab;
+  Block<int32_t> itsTab2Cur;
+  Block<int32_t> itsCur2Tab;
 
   // Fill the reference code mappings for table<->current.
   // <group>
   void initTabRefMap();
   void fillTabRefMap (const MeasureHolder& measHolder);
-  uInt fillMap (Block<Int>& f2t,
-		const Vector<uInt>& codesf,
+  uint32_t fillMap (Block<int32_t>& f2t,
+		const Vector<uint32_t>& codesf,
 		const Vector<String>& typesf,
-		Vector<uInt>& codest,
+		Vector<uint32_t>& codest,
 		Vector<String>& typest,
-		Int maxnr);
+		int32_t maxnr);
   // </group>
 
   // Write the actual keywords.

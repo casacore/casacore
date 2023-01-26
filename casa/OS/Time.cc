@@ -71,7 +71,7 @@ Time::Time(double jdn) {
   }
 }
 
-Time::Time(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
+Time::Time(uint32_t year, uint32_t month, uint32_t day, uint32_t hour, uint32_t min, double sec) {
 
   setDate (year, month, day, hour, min, sec);
 }
@@ -136,45 +136,45 @@ Time Time::operator+(const double plus) {
   return result;
 }
 
-Bool Time::operator==(const Time &other) const {
+bool Time::operator==(const Time &other) const {
 
   if( mJulianDay == other.mJulianDay ) {
     return mJulianDayfrac == other.mJulianDayfrac;
   }
-  return False;
+  return false;
 }
 
-Bool Time::operator!=(const Time &other) const {
+bool Time::operator!=(const Time &other) const {
 
   if( mJulianDay == other.mJulianDay ) {
     return mJulianDayfrac != other.mJulianDayfrac;
   }
-  return True;
+  return true;
 }
 
-Bool Time::operator>(const Time &other) const {
+bool Time::operator>(const Time &other) const {
 
   if( mJulianDay > other.mJulianDay ) {
-    return True;
+    return true;
   } else if (mJulianDay == other.mJulianDay ) {
     return mJulianDayfrac > other.mJulianDayfrac;
   }
-  return False;
+  return false;
 }
 
-Bool Time::operator<(const Time &other) const {
+bool Time::operator<(const Time &other) const {
 
   if( mJulianDay < other.mJulianDay ) {
-    return True;
+    return true;
   } else if(mJulianDay == other.mJulianDay ) {
     return mJulianDayfrac < other.mJulianDayfrac;
   }
-  return False;
+  return false;
 }
 
-String Time::toString(const Bool iso) const
+String Time::toString(const bool iso) const
 {
-  // if iso is True, then use ISO 8601 format
+  // if iso is true, then use ISO 8601 format
   // otherwise,
   // Produce the string of the form
   // Tue Mar 22 16:40:24 1994
@@ -304,7 +304,7 @@ istream& operator>>(istream& in, Time& other) {
   // month/day/year,hour:min:sec
   // Is importan this format
 
-  uInt year=0, month=0, day=0, hour=0, min=0, sec=0;
+  uint32_t year=0, month=0, day=0, hour=0, min=0, sec=0;
   char ch=0;
 
   in>>ch;
@@ -341,7 +341,7 @@ void Time::now() {
   mJulianDayfrac= d - (int)d;
 }
 
-void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double sec) {
+void Time::setDate(uint32_t year, uint32_t month, uint32_t day, uint32_t hour, uint32_t min, double sec) {
 
 // Converting between Julian calendar date and Julian date number
 // Valid for all values of year>=-4712 ( for all dates with Julian 
@@ -366,7 +366,7 @@ void Time::setDate(uInt year, uInt month, uInt day, uInt hour, uInt min, double 
   }
 
   double jd;  // the fraction of the day
-  uInt md;    // Modify Julian day number
+  uint32_t md;    // Modify Julian day number
   int y=year,m=month,d=day;
 
   md =(1461*(y+4800+(m-14)/12))/4+(367*(m-2-12*((m-14)/12)))/12-(3*((y+4900+(m-14)/12)/100))/4+d-32075;
@@ -395,10 +395,10 @@ double Time::age() {
   }
 }
 
-uInt Time::seconds() {
+uint32_t Time::seconds() {
   // return integral seconds after the minute [0,59]
   // accuracy of Time seconds is about 2e-5, so add a bit.
-  return (uInt)(dseconds() + 2e-5);
+  return (uint32_t)(dseconds() + 2e-5);
 }
 
 double Time::dseconds() {
@@ -408,24 +408,24 @@ double Time::dseconds() {
   return sec;
 }
 
-uInt Time::minutes() {
+uint32_t Time::minutes() {
   // return minutes after the hour [0,59]
   double hour = mJulianDayfrac*24.0;
   double min  = (hour - hours()) * 60.0;
   // accuracy of Time second is about 2e-5, so add a bit.
-  return uInt(min + 2e-5/60.);
+  return uint32_t(min + 2e-5/60.);
 }
 
-uInt Time::hours() {
+uint32_t Time::hours() {
   // return hours after the day [0,23]
   // accuracy of Time second is 2e-5, so add a bit.
-  return uInt(mJulianDayfrac*24.0 + 2e-5/3600.);
+  return uint32_t(mJulianDayfrac*24.0 + 2e-5/3600.);
 }
 
-uInt Time::dayOfMonth() {
+uint32_t Time::dayOfMonth() {
    // Return day of the month [1,31] with local time
 
-  uInt jd,j,l,n,i;
+  uint32_t jd,j,l,n,i;
 
 //  Julian day
   jd= mJulianDay + 2400001;
@@ -440,10 +440,10 @@ uInt Time::dayOfMonth() {
   return l-(2447*j)/80;
 }
 
-uInt Time::month() {
+uint32_t Time::month() {
   // Return month of the year [1,12] with local time
 
-  uInt jd,j,l,n,i;
+  uint32_t jd,j,l,n,i;
 
 //  Julian day
   jd= mJulianDay + 2400001;
@@ -459,10 +459,10 @@ uInt Time::month() {
   return j+2-12*l;
 }
 
-uInt Time::year() {
+uint32_t Time::year() {
   // Return year
 
-  uInt jd,j,l,n,i;
+  uint32_t jd,j,l,n,i;
 
 //  Julian day
   jd= mJulianDay + 2400001;
@@ -478,18 +478,18 @@ uInt Time::year() {
   return 100*(n-49)+i+l;
 }
 
-uInt Time::dayOfWeek() {
+uint32_t Time::dayOfWeek() {
   // Return day of the week for the Julian day number.
   // Where day runs from 1 though 7, with 1 being Sunday
 
-  uInt jd;
+  uint32_t jd;
 //  Julian day
   jd= mJulianDay + 2400001;
 
   return jd-7*((jd+1)/7)+2;
 }
 
-uInt Time::dayOfYear() {
+uint32_t Time::dayOfYear() {
   // Return day of the year for the Julian day number.
   // Where day runs from 1 though 366.
 
@@ -539,7 +539,7 @@ uInt Time::dayOfYear() {
   return day;
 }
 
-uInt Time::howManyDaysInMonth(uInt month, uInt year) {
+uint32_t Time::howManyDaysInMonth(uint32_t month, uint32_t year) {
   // Return how many days are in a month
   // Note: for february, always return 28
 
@@ -557,18 +557,18 @@ uInt Time::howManyDaysInMonth(uInt month, uInt year) {
 }
 
 
-uInt Time::howManyDaysInMonth() {
+uint32_t Time::howManyDaysInMonth() {
   // Return how many days are in a months
   Time time;
   return howManyDaysInMonth (time.month(), time.year());
 }
 
-Bool Time::isLeapYear() {
+bool Time::isLeapYear() {
 
   return isLeapYear (Time().year());
 }
 
-Bool Time::isLeapYear(uInt lyear) {
+bool Time::isLeapYear(uint32_t lyear) {
 
   if( lyear%100 == 0) {
     return lyear%400 == 0;
@@ -577,8 +577,8 @@ Bool Time::isLeapYear(uInt lyear) {
 }
 
 // Used internally here to determine if Daylight Savings Time (Summer
-// Time) is currently active.  1 is True, 0 False.
-static Int isDST () {
+// Time) is currently active.  1 is true, 0 false.
+static int32_t isDST () {
   time_t tim = time (NULL);
   struct tm *tm_info = localtime (&tim);
   return tm_info->tm_isdst;
@@ -587,29 +587,29 @@ static Int isDST () {
 // Returns the difference, in seconds, between UTC and local time.
 // Negative values are west of GMT, positive are east.
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
-Int Time::timeZoneSeconds () {
+int32_t Time::timeZoneSeconds () {
   return isDST () ? -altzone : -timezone;
 }
 #elif defined(AIPS_OSF) || defined(AIPS_DARWIN) || defined(AIPS_BSD)
-Int Time::timeZoneSeconds () {
+int32_t Time::timeZoneSeconds () {
   time_t tim = time (NULL);
   struct tm *tm_info = localtime (&tim);
   return tm_info->tm_gmtoff;
 }
 #else
-Int Time::timeZoneSeconds () {
+int32_t Time::timeZoneSeconds () {
   // This will not be accurate unless the DST correction is +1 hour.
   // HP/UX and AIX do not have an altzone variable--at least not that I
   // can find--and this is also generic enough that it should work for
   // most other "reasonable" UNIX-like OS's.  Note: Linux *had* an
   // altzone varialbe before the release of libc6 (glibc), but it's gone
   // now.
-  Int dst = isDST ();
-  return Int (-timezone + (C::hour * dst));
+  int32_t dst = isDST ();
+  return int32_t (-timezone + (C::hour * dst));
 }
 #endif
 
-Double Time::timeZoneDays () {
+double Time::timeZoneDays () {
 // Same as timeZoneSeconds(), but returns fractional days rather than
 // seconds.
   return (double)timeZoneSeconds () / C::day; // Turn seconds into days.

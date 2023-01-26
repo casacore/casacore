@@ -75,7 +75,7 @@ public:
   // Tell if the data is stored in big or little endian canonical format.
   TiledFileHelper (const String& fileName, const IPosition& shape,
 		   DataType dtype, const TSMOption&,
-		   Bool writable, Bool bigEndian);
+		   bool writable, bool bigEndian);
 
   ~TiledFileHelper();
 
@@ -91,11 +91,11 @@ public:
   // They throw an exception.
   // <group>
   virtual DataManager* clone() const;
-  virtual Bool flush (AipsIO&, Bool);
+  virtual bool flush (AipsIO&, bool);
   virtual void create64 (rownr_t);
   virtual TSMCube* getHypercube (rownr_t);
   virtual TSMCube* getHypercube (rownr_t, IPosition&);
-  virtual void readHeader (rownr_t, Bool);
+  virtual void readHeader (rownr_t, bool);
   // </group>
 
 private:

@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Operators
 template<class T>
 T HyperPlane<T>::eval(typename Function<T>::FunctionArg x) const {
-  Int i= nparameters();
+  int32_t i= nparameters();
   T accum = T(0);
   while (--i >= 0) accum += param_p[i]*x[i];
   return accum;

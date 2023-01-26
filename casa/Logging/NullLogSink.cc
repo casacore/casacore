@@ -73,7 +73,7 @@ NullLogSink::~NullLogSink()
     // Nothing
 }
 
-Bool NullLogSink::postLocally(const LogMessage &message) 
+bool NullLogSink::postLocally(const LogMessage &message) 
 {
     return filter().pass(message);
 }

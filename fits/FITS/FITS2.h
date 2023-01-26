@@ -47,15 +47,15 @@ class String;        // Forward declaration
 //<group name=ReadFITSin>
 template<class StorageType>
 void ReadFITSin(PrimaryArray<StorageType> &fitsdata,
-	      Array<Float> &data,
-	      Bool &ok, 
+	      Array<float> &data,
+	      bool &ok, 
 	      String &ErrorMessage,
 	      String *unitName,
 	      Vector<String> *axisNames,
-	      Vector<Float> *refPixel,
-	      Vector<Float> *refLocation,
-	      Vector<Float> *delta,
-              std::map<String, Double> *keywords,
+	      Vector<float> *refPixel,
+	      Vector<float> *refLocation,
+	      Vector<float> *delta,
+              std::map<String, double> *keywords,
               String *objectName);
 //</group>
 

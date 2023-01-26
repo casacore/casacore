@@ -75,8 +75,8 @@ class String;
 //    CanonicalIO canio (&filio);
 //    ByteSource source (&canio);
 //    // Read data.
-//    Int vali;
-//    Bool flag;
+//    int32_t vali;
+//    bool flag;
 //    source >> vali >> flag;
 // </srcblock>
 // </example>
@@ -97,7 +97,7 @@ public:
     // object, but only keeps a pointer to it. If takeOver is true the this
     // class will delete the supplied pointer. Otherwise the caller is
     // responsible for this.
-    ByteSource (TypeIO* typeIO, Bool takeOver=False);
+    ByteSource (TypeIO* typeIO, bool takeOver=false);
 
     // The copy constructor uses reference semantics
     ByteSource (const ByteSource& source);
@@ -111,17 +111,17 @@ public:
     // These functions read one value of the given type.
     // If this function does not succeed, an exception will be thrown.
     // <group>
-    ByteSource& operator>> (Bool& value);
-    ByteSource& operator>> (Char& value);
-    ByteSource& operator>> (uChar& value);
-    ByteSource& operator>> (Short& value);
-    ByteSource& operator>> (uShort& value);
-    ByteSource& operator>> (Int& value);
-    ByteSource& operator>> (uInt& value);
-    ByteSource& operator>> (Int64& value);
-    ByteSource& operator>> (uInt64& value);
-    ByteSource& operator>> (Float& value);
-    ByteSource& operator>> (Double& value);
+    ByteSource& operator>> (bool& value);
+    ByteSource& operator>> (char& value);
+    ByteSource& operator>> (unsigned char& value);
+    ByteSource& operator>> (int16_t& value);
+    ByteSource& operator>> (uint16_t& value);
+    ByteSource& operator>> (int32_t& value);
+    ByteSource& operator>> (uint32_t& value);
+    ByteSource& operator>> (int64_t& value);
+    ByteSource& operator>> (uint64_t& value);
+    ByteSource& operator>> (float& value);
+    ByteSource& operator>> (double& value);
     ByteSource& operator>> (Complex& value);
     ByteSource& operator>> (DComplex& value);
     ByteSource& operator>> (String& value);
@@ -130,17 +130,17 @@ public:
     // These functions read multiple values of the given type.
     // If this function does not succeed, an exception will be thrown.
     // <group>
-    void read (size_t nvalues, Bool* value);
-    void read (size_t nvalues, Char* value);
-    void read (size_t nvalues, uChar* value);
-    void read (size_t nvalues, Short* value);
-    void read (size_t nvalues, uShort* value);
-    void read (size_t nvalues, Int* value);
-    void read (size_t nvalues, uInt* value);
-    void read (size_t nvalues, Int64* value);
-    void read (size_t nvalues, uInt64* value);
-    void read (size_t nvalues, Float* value);
-    void read (size_t nvalues, Double* value);
+    void read (size_t nvalues, bool* value);
+    void read (size_t nvalues, char* value);
+    void read (size_t nvalues, unsigned char* value);
+    void read (size_t nvalues, int16_t* value);
+    void read (size_t nvalues, uint16_t* value);
+    void read (size_t nvalues, int32_t* value);
+    void read (size_t nvalues, uint32_t* value);
+    void read (size_t nvalues, int64_t* value);
+    void read (size_t nvalues, uint64_t* value);
+    void read (size_t nvalues, float* value);
+    void read (size_t nvalues, double* value);
     void read (size_t nvalues, Complex* value);
     void read (size_t nvalues, DComplex* value);
     void read (size_t nvalues, String* value);

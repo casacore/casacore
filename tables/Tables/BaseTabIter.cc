@@ -44,7 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 BaseTableIterator::BaseTableIterator (const std::shared_ptr<BaseTable>& btp,
                                       const Block<String>& keys,
                                       const Block<CountedPtr<BaseCompare> >& cmp,
-                                      const Block<Int>& order,
+                                      const Block<int32_t>& order,
                                       int option,
                                       bool cacheIterationBoundaries)
   : lastRow_p (0),
@@ -71,8 +71,8 @@ BaseTableIterator::BaseTableIterator (const std::shared_ptr<BaseTable>& btp,
         } else if (option == TableIterator::InsSort) {
             sortopt = Sort::InsSort;
         }
-        Block<Int> ord(nrkeys_p, Sort::Ascending);
-        for (uInt i=0; i<nrkeys_p; i++) {
+        Block<int32_t> ord(nrkeys_p, Sort::Ascending);
+        for (uint32_t i=0; i<nrkeys_p; i++) {
             if (order[i] == TableIterator::Descending) {
                 ord[i] = Sort::Descending;
             }
@@ -87,14 +87,14 @@ BaseTableIterator::BaseTableIterator (const std::shared_ptr<BaseTable>& btp,
     }
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
-    for (uInt i=0; i<nrkeys_p; i++) {
+    for (uint32_t i=0; i<nrkeys_p; i++) {
         colPtr_p[i] = sortTab_p->getColumn (keys[i]);
         colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
     if (cacheIterationBoundaries) {
         sortIterBoundariesIt_p   = sortIterBoundaries_p->begin();
         sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
-        aBaseTable_p = sortTab_p->makeRefTable (False, 0);
+        aBaseTable_p = sortTab_p->makeRefTable (false, 0);
         aRefTable_p = dynamic_cast<RefTable*>(aBaseTable_p.get());
         DebugAssert (aRefTable_p, AipsError);
     }
@@ -121,7 +121,7 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
 {
     // Get the pointers to the BaseColumn object.
     // Get a buffer to hold the current and last value per column.
-    for (uInt i=0; i<nrkeys_p; i++) {
+    for (uint32_t i=0; i<nrkeys_p; i++) {
         colPtr_p[i]->allocIterBuf (lastVal_p[i], curVal_p[i], cmpObj_p[i]);
     }
     sortTab_p = that.sortTab_p;
@@ -132,7 +132,7 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
         sortIterKeyIdxChangeIt_p = sortIterKeyIdxChange_p->begin();
     }
     if (sortIterBoundaries_p && sortIterKeyIdxChange_p) {
-        aBaseTable_p = sortTab_p->makeRefTable (False, 0);
+        aBaseTable_p = sortTab_p->makeRefTable (false, 0);
         aRefTable_p = dynamic_cast<RefTable*>(aBaseTable_p.get());
         DebugAssert (aRefTable_p, AipsError);
     }
@@ -141,7 +141,7 @@ BaseTableIterator::BaseTableIterator (const BaseTableIterator& that)
 BaseTableIterator::~BaseTableIterator()
 {
     // Delete the value buffers.
-    for (uInt i=0; i<nrkeys_p; i++) {
+    for (uint32_t i=0; i<nrkeys_p; i++) {
         colPtr_p[i]->freeIterBuf (lastVal_p[i], curVal_p[i]);
     }
 }
@@ -198,7 +198,7 @@ std::shared_ptr<BaseTable> BaseTableIterator::next()
 
     //# Adjust rownrs in case source table is already a RefTable.
     Vector<rownr_t>& rownrs = aRefTable_p->rowStorage();
-    sortTab_p->adjustRownrs (aRefTable_p->nrow(), rownrs, False);
+    sortTab_p->adjustRownrs (aRefTable_p->nrow(), rownrs, false);
     return aBaseTable_p;
 }
 
@@ -208,7 +208,7 @@ std::shared_ptr<BaseTable> BaseTableIterator::noCachedIterBoundariesNext()
     // the sorting function for each individual row.
 
     // Allocate a RefTable to represent the rows in the iteration group.
-    std::shared_ptr<BaseTable> baseTabPtr = sortTab_p->makeRefTable (False, 0);
+    std::shared_ptr<BaseTable> baseTabPtr = sortTab_p->makeRefTable (false, 0);
     RefTable* itp = dynamic_cast<RefTable*>(baseTabPtr.get());
     DebugAssert (itp, AipsError);
     if (lastRow_p >= sortTab_p->nrow()) {
@@ -216,17 +216,17 @@ std::shared_ptr<BaseTable> BaseTableIterator::noCachedIterBoundariesNext()
     }
     // Add the last found rownr to this iteration group.
     itp->addRownr (lastRow_p);
-    for (uInt i=0; i<nrkeys_p; i++) {
+    for (uint32_t i=0; i<nrkeys_p; i++) {
 	colPtr_p[i]->get (lastRow_p, lastVal_p[i]);
     }
-    Bool match;
+    bool match;
     rownr_t nr = sortTab_p->nrow();
     while (++lastRow_p < nr) {
-	match = True;
-	for (uInt i=0; i<nrkeys_p; i++) {
+	match = true;
+	for (uint32_t i=0; i<nrkeys_p; i++) {
 	    colPtr_p[i]->get (lastRow_p, curVal_p[i]);
 	    if (cmpObj_p[i]->comp (curVal_p[i], lastVal_p[i])  != 0) {
-		match = False;
+		match = false;
 		// update so users can see which key changed
 		keyChangeAtLastNext_p=colPtr_p[i]->columnDesc().name();   
 		break;
@@ -244,7 +244,7 @@ std::shared_ptr<BaseTable> BaseTableIterator::noCachedIterBoundariesNext()
     }
     //# Adjust rownrs in case source table is already a RefTable.
     Vector<rownr_t>& rownrs = itp->rowStorage();
-    sortTab_p->adjustRownrs (itp->nrow(), rownrs, False);
+    sortTab_p->adjustRownrs (itp->nrow(), rownrs, false);
     return baseTabPtr;
 }
 

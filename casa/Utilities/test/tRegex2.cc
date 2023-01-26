@@ -56,7 +56,7 @@ int main () {
 
 // Make sure the return value for a non-match is the same
 // for 32 and 64 bit machines.
-String::size_type doMatch (const Regex& exp, const char* str, uInt pos)
+String::size_type doMatch (const Regex& exp, const char* str, uint32_t pos)
 {
   String::size_type k = exp.match (str, pos);
   if (k == String::npos) {

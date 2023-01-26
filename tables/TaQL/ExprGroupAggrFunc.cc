@@ -73,25 +73,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   TableExprGroupAny::TableExprGroupAny (TableExprNodeRep* node)
-    : TableExprGroupFuncBool (node, False)
+    : TableExprGroupFuncBool (node, false)
   {}
   TableExprGroupAny::~TableExprGroupAny()
   {}
   void TableExprGroupAny::apply (const TableExprId& id)
   {
-    Bool v = itsOperand->getBool(id);
-    if (v) itsValue = True;
+    bool v = itsOperand->getBool(id);
+    if (v) itsValue = true;
   }
 
   TableExprGroupAll::TableExprGroupAll (TableExprNodeRep* node)
-    : TableExprGroupFuncBool (node, True)
+    : TableExprGroupFuncBool (node, true)
   {}
   TableExprGroupAll::~TableExprGroupAll()
   {}
   void TableExprGroupAll::apply (const TableExprId& id)
   {
-    Bool v = itsOperand->getBool(id);
-    if (!v) itsValue = False;
+    bool v = itsOperand->getBool(id);
+    if (!v) itsValue = false;
   }
 
   TableExprGroupNTrue::TableExprGroupNTrue (TableExprNodeRep* node)
@@ -101,7 +101,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupNTrue::apply (const TableExprId& id)
   {
-    Bool v = itsOperand->getBool(id);
+    bool v = itsOperand->getBool(id);
     if (v) itsValue++;
   }
 
@@ -112,29 +112,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupNFalse::apply (const TableExprId& id)
   {
-    Bool v = itsOperand->getBool(id);
+    bool v = itsOperand->getBool(id);
     if (!v) itsValue++;
   }
 
   TableExprGroupMinInt::TableExprGroupMinInt (TableExprNodeRep* node)
-    : TableExprGroupFuncInt (node, std::numeric_limits<Int64>::max())
+    : TableExprGroupFuncInt (node, std::numeric_limits<int64_t>::max())
   {}
   TableExprGroupMinInt::~TableExprGroupMinInt()
   {}
   void TableExprGroupMinInt::apply (const TableExprId& id)
   {
-    Int64 v = itsOperand->getInt(id);
+    int64_t v = itsOperand->getInt(id);
     if (v<itsValue) itsValue = v;
   }
 
   TableExprGroupMaxInt::TableExprGroupMaxInt (TableExprNodeRep* node)
-    : TableExprGroupFuncInt (node, std::numeric_limits<Int64>::min())
+    : TableExprGroupFuncInt (node, std::numeric_limits<int64_t>::min())
   {}
   TableExprGroupMaxInt::~TableExprGroupMaxInt()
   {}
   void TableExprGroupMaxInt::apply (const TableExprId& id)
   {
-    Int64 v = itsOperand->getInt(id);
+    int64_t v = itsOperand->getInt(id);
     if (v>itsValue) itsValue = v;
   }
 
@@ -165,30 +165,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrInt::apply (const TableExprId& id)
   {
-    Int64 v = itsOperand->getInt(id);
+    int64_t v = itsOperand->getInt(id);
     itsValue += v*v;
   }
 
 
   TableExprGroupMinDouble::TableExprGroupMinDouble(TableExprNodeRep* node)
-    : TableExprGroupFuncDouble (node, std::numeric_limits<Double>::max())
+    : TableExprGroupFuncDouble (node, std::numeric_limits<double>::max())
   {}
   TableExprGroupMinDouble::~TableExprGroupMinDouble()
   {}
   void TableExprGroupMinDouble::apply (const TableExprId& id)
   {
-    Double v = itsOperand->getDouble(id);
+    double v = itsOperand->getDouble(id);
     if (v<itsValue) itsValue = v;
   }
 
   TableExprGroupMaxDouble::TableExprGroupMaxDouble(TableExprNodeRep* node)
-    : TableExprGroupFuncDouble (node, std::numeric_limits<Double>::min())
+    : TableExprGroupFuncDouble (node, std::numeric_limits<double>::min())
   {}
   TableExprGroupMaxDouble::~TableExprGroupMaxDouble()
   {}
   void TableExprGroupMaxDouble::apply (const TableExprId& id)
   {
-    Double v = itsOperand->getDouble(id);
+    double v = itsOperand->getDouble(id);
     if (v>itsValue) itsValue = v;
   }
 
@@ -219,7 +219,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupSumSqrDouble::apply (const TableExprId& id)
   {
-    Double v = itsOperand->getDouble(id);
+    double v = itsOperand->getDouble(id);
     itsValue += v*v;
   }
 
@@ -241,7 +241,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node, uInt ddof)
+  TableExprGroupVarianceDouble::TableExprGroupVarianceDouble(TableExprNodeRep* node, uint32_t ddof)
     : TableExprGroupFuncDouble (node),
       itsDdof    (ddof),
       itsNr      (0),
@@ -255,8 +255,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // numerically stable algorithm
     // See en.wikipedia.org/wiki/Algorithms_for_calculating_variance
     itsNr++;
-    Double v = itsOperand->getDouble(id);
-    Double delta = v - itsCurMean;
+    double v = itsOperand->getDouble(id);
+    double delta = v - itsCurMean;
     itsCurMean += delta/itsNr;
     itsValue   += delta*(v-itsCurMean);   // itsValue contains the M2 value
   }
@@ -269,7 +269,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupStdDevDouble::TableExprGroupStdDevDouble(TableExprNodeRep* node, uInt ddof)
+  TableExprGroupStdDevDouble::TableExprGroupStdDevDouble(TableExprNodeRep* node, uint32_t ddof)
     : TableExprGroupVarianceDouble (node, ddof)
   {}
   TableExprGroupStdDevDouble::~TableExprGroupStdDevDouble()
@@ -288,7 +288,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
   void TableExprGroupRmsDouble::apply (const TableExprId& id)
   {
-    Double v = itsOperand->getDouble(id);
+    double v = itsOperand->getDouble(id);
     itsValue += v*v;
     itsNr++;
   }
@@ -300,29 +300,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   TableExprGroupFractileDouble::TableExprGroupFractileDouble(TableExprNodeRep* node,
-                                                             Double fraction)
+                                                             double fraction)
     : TableExprGroupFuncDouble (node),
       itsFrac (fraction)
   {}
   TableExprGroupFractileDouble::~TableExprGroupFractileDouble()
   {}
-  Bool TableExprGroupFractileDouble::isLazy() const
+  bool TableExprGroupFractileDouble::isLazy() const
   {
-    return True;
+    return true;
   }
   void TableExprGroupFractileDouble::apply (const TableExprId&)
   {}
-  Double TableExprGroupFractileDouble::getDouble (const vector<TableExprId>& ids)
+  double TableExprGroupFractileDouble::getDouble (const vector<TableExprId>& ids)
   {
-    vector<Double> values;
+    vector<double> values;
     values.reserve (ids.size());
     for (size_t i=0; i<ids.size(); ++i) {
       values.push_back (itsOperand->getDouble (ids[i]));
     }
     if (! values.empty()) {
-      return GenSort<Double>::kthLargest
+      return GenSort<double>::kthLargest
         (&(values[0]), values.size(),
-         static_cast<Int>((values.size() - 1.)*itsFrac + 0.001));
+         static_cast<int32_t>((values.size() - 1.)*itsFrac + 0.001));
     }
     return 0;
   }
@@ -377,7 +377,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node, uInt ddof)
+  TableExprGroupVarianceDComplex::TableExprGroupVarianceDComplex(TableExprNodeRep* node, uint32_t ddof)
     : TableExprGroupFuncDouble (node),
       itsDdof (ddof),
       itsNr   (0)
@@ -392,7 +392,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsNr++;
     DComplex v = itsOperand->getDComplex(id);
     DComplex delta = v - itsCurMean;
-    itsCurMean += delta / Double(itsNr);
+    itsCurMean += delta / double(itsNr);
     DComplex d = v - itsCurMean;
     itsValue += real(delta)*real(d) + imag(delta)*imag(d);
   }
@@ -405,7 +405,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node, uInt ddof)
+  TableExprGroupStdDevDComplex::TableExprGroupStdDevDComplex(TableExprNodeRep* node, uint32_t ddof)
     : TableExprGroupVarianceDComplex (node, ddof)
   {}
   TableExprGroupStdDevDComplex::~TableExprGroupStdDevDComplex()

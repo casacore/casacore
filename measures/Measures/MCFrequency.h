@@ -146,9 +146,9 @@ private:
 
   //# State machine data
   // Transition list
-  static uInt ToRef_p[N_Routes][3];
+  static uint32_t ToRef_p[N_Routes][3];
   // Transition matrix
-  static uInt FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
+  static uint32_t FromTo_p[MFrequency::N_Types][MFrequency::N_Types];
   // Object to ensure safe multi-threaded lazy single initialization
   static std::once_flag theirInitOnceFlag;
 
@@ -165,7 +165,7 @@ private:
 			  const MRBase &outref);
   
   // Create help structures for Measure conversion routines
-  virtual void initConvert(uInt which, MConvertBase &mc);
+  virtual void initConvert(uint32_t which, MConvertBase &mc);
   
   // Delete the pointers used in the MeasConvert help structure cache
   virtual void clearConvert();

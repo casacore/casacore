@@ -110,7 +110,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			   const String& name, RecordInterface& rec);
 
     // Read a scalar string from an attribute and add it to the record.
-    static void readScaString (hid_t attrId, Int sz,
+    static void readScaString (hid_t attrId, int32_t sz,
 			       const String& name, RecordInterface& rec);
 
     // Read a array of strings from an atrribute and add it to the record.
@@ -172,12 +172,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Write a field containing an empty array.
     static void writeEmptyArray (hid_t groupHid, const String& name,
-				 Int rank, DataType dtype);
+				 int32_t rank, DataType dtype);
 
     // Write a field containing a fixed length scalar value.
     template<typename T>
     static void writeSca (hid_t parentHid, const String& name,
-			  const RecordInterface& rec, Int i)
+			  const RecordInterface& rec, int32_t i)
     {
       T value;
       rec.get (i, value);
@@ -188,7 +188,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Write a field containing an array of fixed length elements.
     template<typename T>
     static void writeArr (hid_t parentHid, const String& name,
-			  const RecordInterface& rec, Int i)
+			  const RecordInterface& rec, int32_t i)
     {
       Array<T> value;
       rec.get (i, value);

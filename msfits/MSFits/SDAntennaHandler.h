@@ -91,7 +91,7 @@ public:
 
     // attach this to a MS, mark the appropriate columns as handled given
     // the indicated row
-    SDAntennaHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDAntennaHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDAntennaHandler(const SDAntennaHandler &other);
@@ -102,7 +102,7 @@ public:
     SDAntennaHandler &operator=(const SDAntennaHandler &other);
 
     // attach to a MS, mark the appropriate columns as handled given the
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS 
     void resetRow(const Record &row);
@@ -111,7 +111,7 @@ public:
     void fill(const Record &row);
 
     // get the current antenna ID
-    Int antennaId() {return rownr_p;}
+    int32_t antennaId() {return rownr_p;}
 
     // get the telescope name
     String telescopeName() {return name_p;}
@@ -121,30 +121,30 @@ public:
 private:
     ColumnsIndex *index_p;
     RecordFieldPtr<String> nameKey_p, stationKey_p, mountKey_p;
-    RecordFieldPtr<Double> dishDiameterKey_p;
-    RecordFieldPtr<Int> orbitIdKey_p, phasedIdKey_p;
-    RecordFieldPtr<Bool> flagRowKey_p;
+    RecordFieldPtr<double> dishDiameterKey_p;
+    RecordFieldPtr<int32_t> orbitIdKey_p, phasedIdKey_p;
+    RecordFieldPtr<bool> flagRowKey_p;
     MSAntenna *msAnt_p;
     MSAntennaColumns *msAntCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
     // pointers to fields in record, only used if attached
     RORecordFieldPtr<String> telescopField_p;
 
     // telescope position might be a double or float,
     // just remember its location
-    Int siteLongFldNum_p, siteLatFldNum_p, siteElevFldNum_p;
+    int32_t siteLongFldNum_p, siteLatFldNum_p, siteElevFldNum_p;
 
     String name_p;
     MPosition position_p;
 
     // fields which might exist if this SDFITS was converted from an MS using ms2sdfits
     RORecordFieldPtr<String> mountField_p, msNameField_p, stationField_p;
-    RORecordFieldPtr<Int> orbitIdField_p, phasedArrayIdField_p;
-    RORecordFieldPtr<Double> dishDiameterField_p;
-    RORecordFieldPtr<Array<Double> > offsetField_p, positionField_p;
-    RORecordFieldPtr<Bool> flagRowField_p;
+    RORecordFieldPtr<int32_t> orbitIdField_p, phasedArrayIdField_p;
+    RORecordFieldPtr<double> dishDiameterField_p;
+    RORecordFieldPtr<Array<double> > offsetField_p, positionField_p;
+    RORecordFieldPtr<bool> flagRowField_p;
 
     // I expect these will never be used, nevertheless, put them here just in case I'm wrong
     void addPhasedArrayIdColumn();
@@ -157,10 +157,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // initialize the things which depend on the row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

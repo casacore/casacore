@@ -45,27 +45,27 @@
 
 
 // First build a description.
-void createTable(const String& name, Int stval, Int nrrow)
+void createTable(const String& name, int32_t stval, int32_t nrrow)
 {
   // Build the table description.
   TableDesc td;
-  td.addColumn (ScalarColumnDesc<Int>("aint"));
-  td.addColumn (ScalarColumnDesc<Float>("afloat"));
+  td.addColumn (ScalarColumnDesc<int32_t>("aint"));
+  td.addColumn (ScalarColumnDesc<float>("afloat"));
   // Now create a new table from the description.
   SetupNewTable newtab(name, td, Table::New);
   Table tab(newtab, nrrow);
   // Fill the table.
-  ScalarColumn<Int>   icol(tab, "aint");
-  ScalarColumn<Float> fcol(tab, "afloat");
-  for (Int i=0; i<nrrow; ++i) {
+  ScalarColumn<int32_t>   icol(tab, "aint");
+  ScalarColumn<float> fcol(tab, "afloat");
+  for (int32_t i=0; i<nrrow; ++i) {
     icol.put (i, i+stval);
     fcol.put (i, i+stval+1.);
   }
 }
 
-void checkTable (Int stval, uInt nrow)
-///void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
-///		 Bool reorder=True, uInt nrow=10)
+void checkTable (int32_t stval, uint32_t nrow)
+///void checkTable (const Table& tab, uint32_t nkey, uint32_t nsubrow, int32_t stval,
+///		 bool reorder=true, uint32_t nrow=10)
 {
   Table tab("tConcatTable3_tmp.conctab");
   AlwaysAssertExit (tab.nrow() == nrow);
@@ -77,9 +77,9 @@ void checkTable (Int stval, uInt nrow)
     AlwaysAssertExit (tab.keywordSet().asTable("keysub").nrow() == nsubrow);
   }
   */
-  ScalarColumn<Int> aint(tab, "aint");
-  ScalarColumn<Float> afloat(tab,  "afloat");
-  for (uInt i=0; i<tab.nrow(); i++) {
+  ScalarColumn<int32_t> aint(tab, "aint");
+  ScalarColumn<float> afloat(tab,  "afloat");
+  for (uint32_t i=0; i<tab.nrow(); i++) {
     AlwaysAssertExit (aint(i) == stval);
     AlwaysAssertExit (afloat(i) == stval+1.);
     ++stval;

@@ -36,7 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 ROTiledStManAccessor::ROTiledStManAccessor (const Table& table,
 					    const String& name,
-                                            Bool byColumn)
+                                            bool byColumn)
   : RODataManAccessor (table, name, byColumn),
     dataManPtr_p (0)
 {
@@ -77,16 +77,16 @@ DataManager* ROTiledStManAccessor::getDataManager() const
     return dataManPtr_p;
 }
 
-void ROTiledStManAccessor::setMaximumCacheSize (uInt size)
+void ROTiledStManAccessor::setMaximumCacheSize (uint32_t size)
 {
     dataManPtr_p->setMaximumCacheSize (size);
 }
-uInt ROTiledStManAccessor::maximumCacheSize() const
+uint32_t ROTiledStManAccessor::maximumCacheSize() const
 {
     return dataManPtr_p->maximumCacheSize();
 }
 
-uInt ROTiledStManAccessor::cacheSize (rownr_t rownr) const
+uint32_t ROTiledStManAccessor::cacheSize (rownr_t rownr) const
 {
     return dataManPtr_p->cacheSize (rownr);
 }
@@ -101,7 +101,7 @@ const IPosition& ROTiledStManAccessor::tileShape (rownr_t rownr) const
     return dataManPtr_p->tileShape (rownr);
 }
 
-uInt ROTiledStManAccessor::bucketSize (rownr_t rownr) const
+uint32_t ROTiledStManAccessor::bucketSize (rownr_t rownr) const
 {
     return dataManPtr_p->bucketSize (rownr);
 }
@@ -111,44 +111,44 @@ const Record& ROTiledStManAccessor::valueRecord (rownr_t rownr) const
     return dataManPtr_p->getHypercube(rownr)->valueRecord();
 }
 
-uInt ROTiledStManAccessor::nhypercubes() const
+uint32_t ROTiledStManAccessor::nhypercubes() const
 {
     return dataManPtr_p->nhypercubes();
 }
 
-uInt ROTiledStManAccessor::getCacheSize (uInt hypercube) const
+uint32_t ROTiledStManAccessor::getCacheSize (uint32_t hypercube) const
 {
     return dataManPtr_p->getTSMCube(hypercube)->cacheSize();
 }
 
-const IPosition& ROTiledStManAccessor::getHypercubeShape (uInt hypercube) const
+const IPosition& ROTiledStManAccessor::getHypercubeShape (uint32_t hypercube) const
 {
     return dataManPtr_p->getTSMCube(hypercube)->cubeShape();
 }
 
-const IPosition& ROTiledStManAccessor::getTileShape (uInt hypercube) const
+const IPosition& ROTiledStManAccessor::getTileShape (uint32_t hypercube) const
 {
     return dataManPtr_p->getTSMCube(hypercube)->tileShape();
 }
 
-uInt ROTiledStManAccessor::getBucketSize (uInt hypercube) const
+uint32_t ROTiledStManAccessor::getBucketSize (uint32_t hypercube) const
 {
     return dataManPtr_p->getTSMCube(hypercube)->bucketSize();
 }
 
-const Record& ROTiledStManAccessor::getValueRecord (uInt hypercube) const
+const Record& ROTiledStManAccessor::getValueRecord (uint32_t hypercube) const
 {
     return dataManPtr_p->getTSMCube(hypercube)->valueRecord();
 }
 
-uInt ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
+uint32_t ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
 					  const IPosition& sliceShape,
 					  const IPosition& axisPath) const
 {
     return dataManPtr_p->calcCacheSize (rownr, sliceShape, IPosition(),
 					IPosition(), axisPath);
 }
-uInt ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
+uint32_t ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
 					  const IPosition& sliceShape,
 					  const IPosition& windowStart,
 					  const IPosition& windowLength,
@@ -161,7 +161,7 @@ uInt ROTiledStManAccessor::calcCacheSize (rownr_t rownr,
 void ROTiledStManAccessor::setCacheSize (rownr_t rownr,
 					 const IPosition& sliceShape,
 					 const IPosition& axisPath,
-					 Bool forceSmaller)
+					 bool forceSmaller)
 {
     dataManPtr_p->setCacheSize (rownr, sliceShape, IPosition(),
 				IPosition(), axisPath,
@@ -172,21 +172,21 @@ void ROTiledStManAccessor::setCacheSize (rownr_t rownr,
 					 const IPosition& windowStart,
 					 const IPosition& windowLength,
 					 const IPosition& axisPath,
-					 Bool forceSmaller)
+					 bool forceSmaller)
 {
     dataManPtr_p->setCacheSize (rownr, sliceShape, windowStart,
 				windowLength, axisPath,
 				forceSmaller);
 }
 
-void ROTiledStManAccessor::setCacheSize (rownr_t rownr, uInt nbuckets,
-					 Bool forceSmaller)
+void ROTiledStManAccessor::setCacheSize (rownr_t rownr, uint32_t nbuckets,
+					 bool forceSmaller)
 {
     dataManPtr_p->setCacheSize (rownr, nbuckets, forceSmaller);
 }
 
-void ROTiledStManAccessor::setHypercubeCacheSize (uInt hypercube, uInt nbuckets,
-                                                  Bool forceSmaller)
+void ROTiledStManAccessor::setHypercubeCacheSize (uint32_t hypercube, uint32_t nbuckets,
+                                                  bool forceSmaller)
 {
     // Allow the cache to be sized only if the hypercube is not empty.
 

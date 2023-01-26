@@ -81,8 +81,8 @@ class FitsInput;
 // <srcblock>
 //    MIRIADImage im("cube1"); 
 //    LogIO logger(or);
-//    ImageStatistics<Float> stats(im, logger);
-//    Bool ok = stats.display();                              // Display statistics
+//    ImageStatistics<float> stats(im, logger);
+//    bool ok = stats.display();                              // Display statistics
 // </srcblock>
 // </example>
 
@@ -94,7 +94,7 @@ class FitsInput;
 //# </todo>
 
 
-class MIRIADImage: public ImageInterface<Float>
+class MIRIADImage: public ImageInterface<float>
 {
 public: 
   // Construct a MIRIADImage from the disk MIRIAD dataset name and apply mask.
@@ -122,7 +122,7 @@ public:
   //# ImageInterface virtual functions
   
   // Make a copy of the object with new (reference semantics).
-  virtual ImageInterface<Float>* cloneII() const;
+  virtual ImageInterface<float>* cloneII() const;
 
   // Get the image type (returns MIRIADImage).
   virtual String imageType() const;
@@ -138,7 +138,7 @@ public:
   // in the MIRIAD disk file.
   // <group>   
 #if 0
-  virtual Bool setUnits(const Unit& newUnits);
+  virtual bool setUnits(const Unit& newUnits);
   virtual Unit units() const;
 #endif
   // </group>
@@ -148,28 +148,28 @@ public:
   // MiscInfo record, but it will not be stored with the MIRIAD file
   // <group>
   virtual const RecordInterface &miscInfo() const;
-  virtual Bool setMiscInfo(const RecordInterface &newInfo);
+  virtual bool setMiscInfo(const RecordInterface &newInfo);
   // </group>
 
   //# MaskedLattice virtual functions
 
   // Has the object really a mask?  The MIRIADImage always
   // has a pixel mask and never has a region mask so this
-  // should always return True
-  virtual Bool isMasked() const;
+  // should always return true
+  virtual bool isMasked() const;
 
-  // MIRIADimage always has a pixel mask so should return True
-  virtual Bool hasPixelMask() const;
+  // MIRIADimage always has a pixel mask so should return true
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask.  MIRIADImage always has a pixel mask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Do the actual get of the mask data.   The return value is always 
-  // False, thus the buffer does not reference another array.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  // false, thus the buffer does not reference another array.
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // Get the region used.  There is no region. 
   // Always returns 0.
@@ -179,39 +179,39 @@ public:
   //# Lattice virtual functions
 
   // Do the actual get of the data.
-  // Returns False as the data do not reference another Array
-  virtual Bool doGetSlice (Array<Float>& buffer, const Slicer& theSlice);
+  // Returns false as the data do not reference another Array
+  virtual bool doGetSlice (Array<float>& buffer, const Slicer& theSlice);
 
   // The MIRIADImage is not writable, so this throws an exception.
-  virtual void doPutSlice (const Array<Float>& sourceBuffer,
+  virtual void doPutSlice (const Array<float>& sourceBuffer,
 			   const IPosition& where,
 			   const IPosition& stride);
 
   //# LatticeBase virtual functions
 
   // The lattice is paged to disk.
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // The lattice is persistent.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // The MIRIADImage is not writable.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Returns the name of the disk file.
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
   
   // return the shape of the MIRIADImage
   virtual IPosition shape() const;
 
   // Returns the maximum recommended number of pixels for a cursor. This is
   // the number of pixels in a tile. 
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access if they only want
   // pixel values and don't care about the order or dimension of the
   // cursor. 
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Temporarily close the image.
   virtual void tempClose();
@@ -220,17 +220,17 @@ public:
   virtual void reopen();
 
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Return the (internal) data type (TpFloat or TpShort).
   DataType dataType () const
     { return dataType_p; }
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -243,7 +243,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -254,20 +254,20 @@ public:
 
 private:  
   String         name_p;                          // filename, as given
-  Int            tno_p;                           // miriad file handle
+  int32_t            tno_p;                           // miriad file handle
   MaskSpecifier  maskSpec_p;
   Unit           unit_p;
   Record         rec_p;
   CountedPtr<TiledFileAccess> pTiledFile_p;
-  Lattice<Bool>* pPixelMask_p;
-  //  Float          scale_p;
-  //  Float          offset_p;
-  //  Short          magic_p;
+  Lattice<bool>* pPixelMask_p;
+  //  float          scale_p;
+  //  float          offset_p;
+  //  int16_t          magic_p;
   TiledShape     shape_p;
-  Bool           hasBlanks_p;
+  bool           hasBlanks_p;
   DataType       dataType_p;                      // always float's for miriad
-  Int64          fileOffset_p;                    // always 4 for direct (tiled) access
-  Bool           isClosed_p;
+  int64_t          fileOffset_p;                    // always 4 for direct (tiled) access
+  bool           isClosed_p;
 
 // Reopen the image if needed.
    void reopenIfNeeded() const
@@ -283,7 +283,7 @@ private:
    void getImageAttributes (CoordinateSystem& cSys,
                             IPosition& shape, ImageInfo& info,
                             Unit& brightnessUnit, Record& miscInfo, 
-                            Bool& hasBlanks, const String& name);
+                            bool& hasBlanks, const String& name);
 
 // <group>
    void crackHeader (CoordinateSystem& cSys,

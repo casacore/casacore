@@ -125,8 +125,8 @@ class TableMeasValueDesc;
 //    td.comment() = "A test of TableMeasures class.";
 //
 //    // Define a column and add it to the table
-//    // The main measure column is always an Array column of type Double
-//    ArrayColumnDesc<Double> cdTime("Time", "An MEpoch column");
+//    // The main measure column is always an Array column of type double
+//    ArrayColumnDesc<double> cdTime("Time", "An MEpoch column");
 //    td.addColumn(cdtime);
 //
 //    // Create the Measure column for an MEpoch.  The MEpoch in
@@ -149,8 +149,8 @@ class TableMeasValueDesc;
 //    td.comment() = "A test of TableMeasures class.";
 //
 //    // Define a column and add it to the table
-//    // The main measure column is always an Array column of type Double
-//    ArrayColumnDesc<Double> cdTime("Time", "An MEpoch column");
+//    // The main measure column is always an Array column of type double
+//    ArrayColumnDesc<double> cdTime("Time", "An MEpoch column");
 //    td.addColumn(cdtime);
 //
 //    // create the table with 5 rows
@@ -171,15 +171,15 @@ class TableMeasValueDesc;
 //    // The following three columns will be used to set up a Scalar MEpoch
 //    // column with variable references and offsets.  3 columns are needed.
 //    // The "main" column where the MEpoch will be stored
-//    ArrayColumnDesc<Double> cdTime("Time", "An MEpoch column");
+//    ArrayColumnDesc<double> cdTime("Time", "An MEpoch column");
 
 //    // Variable (i.e., per row) reference code storage needs a column.
-//    // The column type is either Int or String (Int is faster but String
+//    // The column type is either int32_t or String (int32_t is faster but String
 //    // may be useful when browsing the table).  Either a Scalar column or
 //    // Array column can be used here dependent on whether a Scalar or
 //    // Array Measure column is used and whether in case of an Array Measure
 //    // column the reference code has to be variable per array element.
-//    ScalarColumnDesc<Int> cdRef("TimeRef", "Reference column for Time");
+//    ScalarColumnDesc<int32_t> cdRef("TimeRef", "Reference column for Time");
 //
 //    // add the columns to the Table decriptor
 //    td.addColumn(cdTime);
@@ -204,13 +204,13 @@ class TableMeasValueDesc;
 // <srcblock>
 //    // Variable (per row storage of) offsets needs its own column. Measure
 //    // offsets are Measures therefore a Measure column is needed.
-//    ArrayColumnDesc<Double> cdOffset("OffsetCol", "Variable Offset col");
+//    ArrayColumnDesc<double> cdOffset("OffsetCol", "Variable Offset col");
 //
 //    // A column for the variable reference code
 //    ScalarColumnDesc<String> cdRef("RefCol", "Variable reference column");
 //
 //    // The main (value) column for the Measure column
-//    ArrayColumnDesc<Double> cdTime("Time", "MEpoch column");
+//    ArrayColumnDesc<double> cdTime("Time", "MEpoch column");
 //
 //    // add the column descriptors to the table
 //    td.addColumn(cdOffset);

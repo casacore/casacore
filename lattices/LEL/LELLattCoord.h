@@ -85,7 +85,7 @@ public:
   virtual ~LELLattCoord();
 
   // The class does not have true coordinates.
-  virtual Bool hasCoordinates() const;
+  virtual bool hasCoordinates() const;
 
   // Create a SubLattice for an expression node.
   virtual LatticeExprNode makeSubLattice
@@ -105,19 +105,19 @@ public:
 
   // Get the coordinates of the spectral axis for the given shape.
   // This function throws an exception as a Lattice has no coordinates.
-  virtual uInt getSpectralInfo (Vector<Double>& worldCoordinates,
+  virtual uint32_t getSpectralInfo (Vector<double>& worldCoordinates,
 				const IPosition& shape) const;
 
   // The name of the class.
   virtual String classname() const;
 
   // Check how the coordinates of this and that compare.
-  virtual Int compare (const LELLattCoordBase& other) const;
+  virtual int32_t compare (const LELLattCoordBase& other) const;
 
   // Check how the coordinates of this and that image compare.
   // This function is used by <src>conform</src> to make a
   // double virtual dispatch possible.
-  virtual Int doCompare (const LELImageCoord& other) const;
+  virtual int32_t doCompare (const LELImageCoord& other) const;
 };
 
 

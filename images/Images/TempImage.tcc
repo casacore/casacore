@@ -51,7 +51,7 @@ TempImage<T>::TempImage()
 template <class T>
 TempImage<T>::TempImage (const TiledShape& mapShape,
 			 const CoordinateSystem& coordinateInfo,
-			 Double maxMemoryInMb)
+			 double maxMemoryInMb)
 : ImageInterface<T> (RegionHandlerMemory()),
   mapPtr_p          (new TempLattice<T> (mapShape, maxMemoryInMb)),
   maskPtr_p         (0)
@@ -62,7 +62,7 @@ TempImage<T>::TempImage (const TiledShape& mapShape,
 template <class T>
 TempImage<T>::TempImage (const TiledShape& mapShape,
 			 const CoordinateSystem& coordinateInfo,
-			 Int maxMemoryInMb)
+			 int32_t maxMemoryInMb)
 : ImageInterface<T> (RegionHandlerMemory()),
   mapPtr_p          (new TempLattice<T> (mapShape, maxMemoryInMb)),
   maskPtr_p         (0)
@@ -120,19 +120,19 @@ String TempImage<T>::imageType() const
 }
 
 template<class T>
-Bool TempImage<T>::isPaged() const
+bool TempImage<T>::isPaged() const
 {
   return mapPtr_p->isPaged();
 }
 
 template<class T>
-Bool TempImage<T>::canReferenceArray() const
+bool TempImage<T>::canReferenceArray() const
 {
   return mapPtr_p->canReferenceArray();
 }
 
 template <class T>
-Bool TempImage<T>::isWritable() const
+bool TempImage<T>::isWritable() const
 {  
   return mapPtr_p->isWritable();
 }
@@ -214,7 +214,7 @@ void TempImage<T>::applyMask (const String& maskName)
 }
 
 template<class T>
-void TempImage<T>::attachMask (const Lattice<Bool>& mask)
+void TempImage<T>::attachMask (const Lattice<bool>& mask)
 {
   if (! shape().isEqual (mask.shape())) {
     throw (AipsError ("TempImage::attachMask - "
@@ -230,7 +230,7 @@ void TempImage<T>::attachMask (const Lattice<Bool>& mask)
 template<class T> 
 void TempImage<T>::removeRegion (const String& name,
 				 RegionHandler::GroupType type,
-				 Bool throwIfUnknown)
+				 bool throwIfUnknown)
 {
   // Remove the default mask if it is the region to be removed.
   if (name == getDefaultMask()) {
@@ -240,19 +240,19 @@ void TempImage<T>::removeRegion (const String& name,
 }
 
 template<class T>
-Bool TempImage<T>::isMasked() const
+bool TempImage<T>::isMasked() const
 {
   return (maskPtr_p != 0);
 }
 
 template<class T>
-Bool TempImage<T>::hasPixelMask() const
+bool TempImage<T>::hasPixelMask() const
 {
   return (maskPtr_p != 0);
 }
 
 template<class T>
-const Lattice<Bool>& TempImage<T>::pixelMask() const
+const Lattice<bool>& TempImage<T>::pixelMask() const
 {
   if (maskPtr_p == 0) {
     throw (AipsError ("TempImage::pixelMask - no mask attached"));
@@ -261,7 +261,7 @@ const Lattice<Bool>& TempImage<T>::pixelMask() const
 }
 
 template<class T>
-Lattice<Bool>& TempImage<T>::pixelMask()
+Lattice<bool>& TempImage<T>::pixelMask()
 {
   if (maskPtr_p == 0) {
     throw (AipsError ("TempImage::pixelMask - no mask attached"));
@@ -271,9 +271,9 @@ Lattice<Bool>& TempImage<T>::pixelMask()
 
 
 template<class T>
-Bool TempImage<T>::doGetMaskSlice (Array<Bool>& buffer, const Slicer& section)
+bool TempImage<T>::doGetMaskSlice (Array<bool>& buffer, const Slicer& section)
 {
-  // If no mask, base implementation returns a True mask.
+  // If no mask, base implementation returns a true mask.
   if (maskPtr_p == 0) {
     return MaskedLattice<T>::doGetMaskSlice (buffer, section);
   }
@@ -301,7 +301,7 @@ void TempImage<T>::resize (const TiledShape& newShape)
 }
 
 template <class T>
-Bool TempImage<T>::doGetSlice (Array<T>& buffer,
+bool TempImage<T>::doGetSlice (Array<T>& buffer,
 			       const Slicer& section)
 {
   return mapPtr_p->doGetSlice (buffer, section);
@@ -318,7 +318,7 @@ void TempImage<T>::doPutSlice (const Array<T>& buffer,
 
 
 template <class T> 
-String TempImage<T>::name (Bool) const
+String TempImage<T>::name (bool) const
 {
   return String ("Temporary_Image");
 }
@@ -349,25 +349,25 @@ void TempImage<T>::apply (const Functional<T,T>& function)
 }
 
 template<class T>
-uInt TempImage<T>::advisedMaxPixels() const
+uint32_t TempImage<T>::advisedMaxPixels() const
 {
   return mapPtr_p->advisedMaxPixels();
 }
 
 template<class T>
-IPosition TempImage<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition TempImage<T>::doNiceCursorShape (uint32_t maxPixels) const
 {
   return mapPtr_p->niceCursorShape (maxPixels);
 }
 
 template<class T>
-uInt TempImage<T>::maximumCacheSize() const
+uint32_t TempImage<T>::maximumCacheSize() const
 {
   return mapPtr_p->maximumCacheSize();
 }
 
 template<class T>
-void TempImage<T>::setMaximumCacheSize (uInt howManyPixels)
+void TempImage<T>::setMaximumCacheSize (uint32_t howManyPixels)
 {
   mapPtr_p->setMaximumCacheSize (howManyPixels);
 }
@@ -383,7 +383,7 @@ void TempImage<T>::setCacheSizeFromPath (const IPosition& sliceShape,
 }
 
 template<class T>
-void TempImage<T>::setCacheSizeInTiles (uInt howManyTiles)
+void TempImage<T>::setCacheSizeInTiles (uint32_t howManyTiles)
 {
   mapPtr_p->setCacheSizeInTiles (howManyTiles);
 }
@@ -415,7 +415,7 @@ void TempImage<T>::putAt (const T& value, const IPosition& where)
 
 
 template <class T>
-Bool TempImage<T>::ok() const
+bool TempImage<T>::ok() const
 {
   return mapPtr_p->ok();
 }  
@@ -424,7 +424,7 @@ Bool TempImage<T>::ok() const
 template <class T>
 LatticeIterInterface<T>* TempImage<T>::makeIter
                                 (const LatticeNavigator& navigator,
-				 Bool useRef) const
+				 bool useRef) const
 {
   return mapPtr_p->makeIter (navigator, useRef);
 }

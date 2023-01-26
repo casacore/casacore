@@ -38,11 +38,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSFlagCmd::MSFlagCmd():hasBeenDestroyed_p(True) { }
+MSFlagCmd::MSFlagCmd():hasBeenDestroyed_p(true) { }
 
 MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option) 
   : MSTable<MSFlagCmdEnums>(tableName, option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -53,7 +53,7 @@ MSFlagCmd::MSFlagCmd(const String &tableName, TableOption option)
 MSFlagCmd::MSFlagCmd(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSFlagCmdEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -62,18 +62,18 @@ MSFlagCmd::MSFlagCmd(const String& tableName, const String &tableDescName,
 }
 
 MSFlagCmd::MSFlagCmd(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSFlagCmdEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSFlagCmd(SetupNewTable &, uInt, Bool) - "
+	throw (AipsError("MSFlagCmd(SetupNewTable &, uint32_t, bool) - "
 			 "table is not a valid MSFlagCmd"));
 }
 
 MSFlagCmd::MSFlagCmd(const Table &table)
-    : MSTable<MSFlagCmdEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSFlagCmdEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -83,7 +83,7 @@ MSFlagCmd::MSFlagCmd(const Table &table)
 
 MSFlagCmd::MSFlagCmd(const MSFlagCmd &other)
     : MSTable<MSFlagCmdEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -103,7 +103,7 @@ MSFlagCmd::~MSFlagCmd()
            << "~MSFlagCmd() - Table written is not a valid MSFlagCmd"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -150,7 +150,7 @@ MSTableMaps MSFlagCmd::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

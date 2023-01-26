@@ -33,7 +33,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSink::ByteSink()
 {}
 
-ByteSink::ByteSink (TypeIO* typeIO, Bool takeOver)
+ByteSink::ByteSink (TypeIO* typeIO, bool takeOver)
 : BaseSinkSource (typeIO, takeOver)
 {
     if (!isWritable()) {
@@ -55,67 +55,67 @@ ByteSink::~ByteSink()
 {}
 
 
-ByteSink& ByteSink::operator<< (Bool value)
+ByteSink& ByteSink::operator<< (bool value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Char value)
+ByteSink& ByteSink::operator<< (char value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (uChar value)
+ByteSink& ByteSink::operator<< (unsigned char value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Short value)
+ByteSink& ByteSink::operator<< (int16_t value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (uShort value)
+ByteSink& ByteSink::operator<< (uint16_t value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Int value)
+ByteSink& ByteSink::operator<< (int32_t value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (uInt value)
+ByteSink& ByteSink::operator<< (uint32_t value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Int64 value)
+ByteSink& ByteSink::operator<< (int64_t value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (uInt64 value)
+ByteSink& ByteSink::operator<< (uint64_t value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Float value)
+ByteSink& ByteSink::operator<< (float value)
 {
     itsTypeIO->write (1, &value);
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (Double value)
+ByteSink& ByteSink::operator<< (double value)
 {
     itsTypeIO->write (1, &value);
     return *this;
@@ -139,7 +139,7 @@ ByteSink& ByteSink::operator<< (const String& value)
     return *this;
 }
 
-ByteSink& ByteSink::operator<< (const Char* value)
+ByteSink& ByteSink::operator<< (const char* value)
 {
     String str(value);
     itsTypeIO->write (1, &str);
@@ -147,57 +147,57 @@ ByteSink& ByteSink::operator<< (const Char* value)
 }
 
 
-void ByteSink::write (size_t nvalues, const Bool* value)
+void ByteSink::write (size_t nvalues, const bool* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const Char* value)
+void ByteSink::write (size_t nvalues, const char* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const uChar* value)
+void ByteSink::write (size_t nvalues, const unsigned char* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const Short* value)
+void ByteSink::write (size_t nvalues, const int16_t* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const uShort* value)
+void ByteSink::write (size_t nvalues, const uint16_t* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const Int* value)
+void ByteSink::write (size_t nvalues, const int32_t* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const uInt* value)
+void ByteSink::write (size_t nvalues, const uint32_t* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const Int64* value)
+void ByteSink::write (size_t nvalues, const int64_t* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const uInt64* value)
+void ByteSink::write (size_t nvalues, const uint64_t* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const Float* value)
+void ByteSink::write (size_t nvalues, const float* value)
 {
     itsTypeIO->write (nvalues, value);
 }
 
-void ByteSink::write (size_t nvalues, const Double* value)
+void ByteSink::write (size_t nvalues, const double* value)
 {
     itsTypeIO->write (nvalues, value);
 }

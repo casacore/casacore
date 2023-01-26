@@ -39,7 +39,7 @@ int main()
     JsonOut os("tJsonOut_tmp.txt");
     os.start("#");
     for (int ndim=0; ndim<4; ++ndim) {
-      Array<Int> a(IPosition(ndim,3));
+      Array<int32_t> a(IPosition(ndim,3));
       indgen(a);
       os.write ("arr", a);
     }
@@ -69,7 +69,7 @@ int main()
     os.write ("null1", ValueHolder());     // null value
     os.write ("null2", floatNaN());        // null value
     os.write ("null3", doubleNaN());       // null value
-    Array<Float> arr(IPosition(2,5,3));
+    Array<float> arr(IPosition(2,5,3));
     indgen(arr);
     os.write ("arrf", ValueHolder(arr));
     Record rec;

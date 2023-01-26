@@ -76,33 +76,33 @@ class TableExprNode;
 					   const TableExprNode& col1TEN,
 					   const TableExprNode& col2TEN,
                                            const String& command, 
-                                           Vector<Int>& selectedFeeds1,
-                                           Vector<Int>& selectedFeeds2,
-                                           Matrix<Int>& selectedFeedPairs) ;
+                                           Vector<int32_t>& selectedFeeds1,
+                                           Vector<int32_t>& selectedFeeds2,
+                                           Matrix<int32_t>& selectedFeedPairs) ;
   TableExprNode msFeedGramParseCommand (Table& subTable,
 					   TableExprNode& col1TEN,
 					   TableExprNode& col2TEN,
                                            const String& command, 
-                                           Vector<Int>& selectedFeeds1,
-                                           Vector<Int>& selectedFeeds2,
-                                           Matrix<Int>& selectedFeedPairs) ;
+                                           Vector<int32_t>& selectedFeeds1,
+                                           Vector<int32_t>& selectedFeeds2,
+                                           Matrix<int32_t>& selectedFeedPairs) ;
   TableExprNode msFeedGramParseCommand (const MeasurementSet *ms,
 					   const String& command,
-					   Vector<Int>& selectedFeeds1,
-					   Vector<Int>& selectedFeeds2,
-					   Matrix<Int>& selectedFeedPairs);
+					   Vector<int32_t>& selectedFeeds1,
+					   Vector<int32_t>& selectedFeeds2,
+					   Matrix<int32_t>& selectedFeedPairs);
   
   TableExprNode baseMSFeedGramParseCommand(MSFeedParse* parser, const String& command,
-					      Vector<Int>& selectedFeeds1,
-					      Vector<Int>& selectedFeeds2,
-					      Matrix<Int>& selectedFeedPairs);
+					      Vector<int32_t>& selectedFeeds1,
+					      Vector<int32_t>& selectedFeeds2,
+					      Matrix<int32_t>& selectedFeedPairs);
   // The yyerror function for the parser.
   // It throws an exception with the current token.
     void MSFeedGramerror (const char*);
   
   // Give the current position in the string.
   // This can be used when parse errors occur.
-  Int& msFeedGramPosition();
+  int32_t& msFeedGramPosition();
   
   // Declare the input routine for flex/bison.
   int msFeedGramInput (char* buf, int max_size);

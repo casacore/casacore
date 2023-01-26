@@ -70,14 +70,14 @@ int main (int argc, const char* argv[])
     }
 
     // First try to open as a normal image.
-    ImageInterface<Float>* img = 0;
+    ImageInterface<float>* img = 0;
     String error;
-    Bool res = True;
+    bool res = true;
     LatticeBase* lattice = ImageOpener::openImage (imgin);
     if (lattice) {
       // Succeeded to open as an image.
       if (lattice->dataType() == TpFloat) {
-        img = dynamic_cast<ImageInterface<Float>*>(lattice);
+        img = dynamic_cast<ImageInterface<float>*>(lattice);
       } else {
         // If no datatype float, convert to it using LEL.
         // Enclose the name in quotes.
@@ -87,8 +87,8 @@ int main (int argc, const char* argv[])
     }
     if (img == 0) {
       // Try to interpret it as a LEL expression.
-      LatticeExpr<Float> lat (ImageExprParse::command(imgin));
-      img = new ImageExpr<Float> (lat, imgin);
+      LatticeExpr<float> lat (ImageExprParse::command(imgin));
+      img = new ImageExpr<float> (lat, imgin);
     }
     // Now write the fits file.
     res = ImageFITSConverter::ImageToFITS (error, *img, ffout);

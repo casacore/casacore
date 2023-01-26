@@ -172,7 +172,7 @@ int main()
       AlwaysAssertExit (step3.cursorAxes() == IPosition(2,1,2));
     }
 
-    uInt count = 0;
+    uint32_t count = 0;
     // Try the simplest thing moving forward with a one-dimensional congruent
     // cursor
     LatticeStepper huh(latticeShape, IPosition(1,10));
@@ -241,18 +241,18 @@ int main()
     AlwaysAssert(s1.position().isEqual(IPosition(4,4,0,0,0)), AipsError);
     AlwaysAssert(s2.position().isEqual(IPosition(4,8,0,0,0)), AipsError);
     // Check the hangover function
-    AlwaysAssert(s0.hangOver() == False, AipsError);
-    AlwaysAssert(s1.hangOver() == False, AipsError);
-    AlwaysAssert(s2.hangOver() == True, AipsError);
+    AlwaysAssert(s0.hangOver() == false, AipsError);
+    AlwaysAssert(s1.hangOver() == false, AipsError);
+    AlwaysAssert(s2.hangOver() == true, AipsError);
     // Check that things work with the RESIZE cursor
     LatticeStepper s3(latticeShape, stepperShape, LatticeStepper::RESIZE);
-    AlwaysAssert(s3.hangOver() == False, AipsError);
+    AlwaysAssert(s3.hangOver() == false, AipsError);
     AlwaysAssert(s3.position() == IPosition(4,0), AipsError);
     AlwaysAssert(s3.endPosition() == IPosition(4,3,0,0,0), AipsError);
     AlwaysAssert(s3.cursorShape() == IPosition(4,4,1,1,1), AipsError);
     s3++; 
     s3++;
-    AlwaysAssert(s3.hangOver() == True, AipsError);
+    AlwaysAssert(s3.hangOver() == true, AipsError);
     AlwaysAssert(s3.position() == IPosition(4,8,0,0,0), AipsError);
     AlwaysAssert(s3.endPosition() == IPosition(4,9,0,0,0), AipsError);
     AlwaysAssert(s3.cursorShape() == IPosition(4,2,1,1,1), AipsError);
@@ -261,14 +261,14 @@ int main()
 		      LatticeStepper::RESIZE);
     s4.subSection(IPosition(4,1,0,0,0), IPosition(4,9,0,0,0), 
 		  IPosition(4,2,1,1,1));
-    AlwaysAssert(s4.hangOver() == False, AipsError);
+    AlwaysAssert(s4.hangOver() == false, AipsError);
     AlwaysAssert(s4.relativePosition() == IPosition(4,0), AipsError);
     AlwaysAssert(s4.position() == IPosition(4,1,0,0,0), AipsError);
     AlwaysAssert(s4.relativeEndPosition() == IPosition(4,3,0,0,0), AipsError);
     AlwaysAssert(s4.endPosition() == IPosition(4,7,0,0,0), AipsError);
     AlwaysAssert(s4.cursorShape() == IPosition(4,4,1,1,1), AipsError);
     s4++; 
-    AlwaysAssert(s4.hangOver() == True, AipsError);
+    AlwaysAssert(s4.hangOver() == true, AipsError);
     AlwaysAssert(s4.relativePosition() == IPosition(4,4,0,0,0), AipsError);
     AlwaysAssert(s4.position() == IPosition(4,9,0,0,0), AipsError);
     AlwaysAssert(s4.relativeEndPosition() == IPosition(4,4,0,0,0), AipsError);
@@ -284,7 +284,7 @@ int main()
     LatticeNavigator* clonePtr = method.clone();
     AlwaysAssert(clonePtr != 0, AipsError);
 
-    AlwaysAssert(clonePtr->ok() == True, AipsError);
+    AlwaysAssert(clonePtr->ok() == true, AipsError);
     AlwaysAssert(clonePtr->latticeShape() == method.latticeShape(), AipsError);
     AlwaysAssert(clonePtr->cursorShape() == method.cursorShape(),
 		 AipsError);

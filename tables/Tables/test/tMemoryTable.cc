@@ -55,10 +55,10 @@
 // (re) open and write a few rows
 // aMode == 0  open new
 // aMode == 1  use existing
-void init (uInt aMode, Table&);
+void init (uint32_t aMode, Table&);
 
 // reopen table, and throw away a row
-void deleteRow(const uInt aRow, Table&);
+void deleteRow(const uint32_t aRow, Table&);
 
 // reopen table, and throw away a few rows
 void deleteRows(const Vector<rownr_t>& aNrRows, Table&);
@@ -117,7 +117,7 @@ int main ()
 	putColumnTest(tab);
 	// delete middle Column
        	deleteColumn    ("Col-2", tab);
-	// add a Bool Column Should fit in freed space
+	// add a bool Column Should fit in freed space
 	addColumn       (TpBool, tab);
 	// add a DComplex Column Should use new index && space
 	addColumn       (TpDComplex, tab);
@@ -151,7 +151,7 @@ int main ()
 	addIndStringArray(tab);
 	addIndArray     (tab);
         Vector<rownr_t> aNrRows(3);
-	for (uInt i=0; i< 3; i++) {
+	for (uint32_t i=0; i< 3; i++) {
 	  aNrRows(i) = i+3;
 	}
 	deleteRows      (aNrRows, tab);
@@ -159,7 +159,7 @@ int main ()
        	addColumn       (TpString, tab);
 	// remove all remaining rows to check freebucket performance
         Vector<rownr_t> aNewNrRows(15);
-	for (uInt i=0; i< 15; i++) {
+	for (uint32_t i=0; i< 15; i++) {
 	  aNewNrRows(i) = i;
 	}
 	deleteRows      (aNewNrRows, tab);
@@ -172,21 +172,21 @@ int main ()
     return 0;                           // exit with success status
 }
 
-void initArrays (Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
+void initArrays (Cube<float>& arrf, Vector<DComplex>& arrdc, Cube<bool>& arrb)
 {
       // The static_cast is a workaround for an SGI compiler bug
-    indgen (static_cast< Cube<Float> &>(arrf));
+    indgen (static_cast< Cube<float> &>(arrf));
     arrdc(0) = DComplex(1.2, 3.4);
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
-    uInt n = 0;
-    for (Int i=0; i<shape(2); i++) {
-	for (Int j=0; j<shape(1); j++) {
-	    for (Int k=0; k<shape(0); k++) {
+    uint32_t n = 0;
+    for (int32_t i=0; i<shape(2); i++) {
+	for (int32_t j=0; j<shape(1); j++) {
+	    for (int32_t k=0; k<shape(0); k++) {
 		if (n++%3 == 2) {
-		    arrb(k,j,i) = True;
+		    arrb(k,j,i) = true;
 		}else{
-		    arrb(k,j,i) = False;
+		    arrb(k,j,i) = false;
 		}
 	    }
 	}
@@ -197,26 +197,26 @@ void info (const Table& aTable)
 {
   cout << "TableType = " << aTable.tableType() << endl;
   TableDesc tdesc = aTable.tableDesc();
-  for (uInt i=0; i<tdesc.ncolumn(); i++) {
+  for (uint32_t i=0; i<tdesc.ncolumn(); i++) {
     const ColumnDesc& cdesc = tdesc.columnDesc(i);
     cout << cdesc.name() << ": " 
 	 << cdesc.dataType() << endl;
     switch (cdesc.dataType()) {
     case TpInt:
       if (cdesc.isArray()) {
-	ArrayColumn<Int> ad(aTable,cdesc.name());
+	ArrayColumn<int32_t> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ScalarColumn<Int> aa(aTable,cdesc.name());
+	ScalarColumn<int32_t> aa(aTable,cdesc.name());
 	cout << aa.getColumn() << endl;
       }
       break;
     case TpBool:
       if (cdesc.isArray()) {
-	ArrayColumn<Bool> ad(aTable,cdesc.name());
+	ArrayColumn<bool> ad(aTable,cdesc.name());
 	cout << ad.getColumn() << endl;
       } else {
-	ScalarColumn<Bool> ab(aTable,cdesc.name());
+	ScalarColumn<bool> ab(aTable,cdesc.name());
 	cout << ab.getColumn() << endl;
       }
       break;
@@ -261,7 +261,7 @@ void info (const Table& aTable)
     }
   }
   const TableRecord& rec = aTable.keywordSet();
-  for (uInt i=0; i<rec.nfields(); i++) {
+  for (uint32_t i=0; i<rec.nfields(); i++) {
     cout << rec.name(i) << '=';
     switch (rec.type(i)) {
     case TpTable:
@@ -284,7 +284,7 @@ void info (const Table& aTable)
       break;
     default:
       {
-	Double val;
+	double val;
 	rec.get (i, val);
 	cout << val << endl;
       }
@@ -293,16 +293,16 @@ void info (const Table& aTable)
 }
 
 // First build a description.
-void init (uInt aMode, Table& aTable)
+void init (uint32_t aMode, Table& aTable)
 {
   if (aMode == 0) {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class TableDesc";
     td.addColumn (ScalarColumnDesc<DComplex>("Col-1"));
-    td.addColumn (ScalarColumnDesc<Int>("Col-2"));
-    td.addColumn (ScalarColumnDesc<Bool>("Col-3"));
-    td.addColumn (ScalarColumnDesc<Int>("Colvirt"));
+    td.addColumn (ScalarColumnDesc<int32_t>("Col-2"));
+    td.addColumn (ScalarColumnDesc<bool>("Col-3"));
+    td.addColumn (ScalarColumnDesc<int32_t>("Colvirt"));
     
     // Now create a new table from the description.
     SetupNewTable aNewTab("tmtest", td, Table::New);
@@ -316,12 +316,12 @@ void init (uInt aMode, Table& aTable)
   }
   
   ScalarColumn<DComplex> aa(aTable,"Col-1");
-  ScalarColumn<Int>      ab(aTable,"Col-2");
-  ScalarColumn<Bool>     ac(aTable,"Col-3");
+  ScalarColumn<int32_t>      ab(aTable,"Col-2");
+  ScalarColumn<bool>     ac(aTable,"Col-3");
   
   // fill columns with data
-  uInt i;
-  uInt j = 0;
+  uint32_t i;
+  uint32_t j = 0;
   for (i=0; i<10; i++) {
     if (aMode == 1) {
       aTable.addRow();
@@ -330,11 +330,11 @@ void init (uInt aMode, Table& aTable)
     DComplex a(i+j,(i+j)*2);
     aa.put(i+j,a);
     ab.put(i+j,i+j);
-    Bool b;
+    bool b;
     if ((i+j)%2 == 0) {
-      b=True;
+      b=true;
     } else {
-      b=False;
+      b=false;
     }
     ac.put(i+j,b);
   }
@@ -349,7 +349,7 @@ void init (uInt aMode, Table& aTable)
   info(aTable);
 }
 
-void deleteRow(const uInt aRow, Table& aTable)
+void deleteRow(const uint32_t aRow, Table& aTable)
 {
   ScalarColumn<DComplex> aa(aTable,"Col-1");
 
@@ -421,7 +421,7 @@ void deleteAndRestore (Table& aTable)
 
 void addColumn(DataType aDataType, Table& aTable)
 {
-  ScalarColumn<Bool>      ad;
+  ScalarColumn<bool>      ad;
   ScalarColumn<DComplex>  ae;
   ScalarColumn<String>    aj;
   
@@ -431,20 +431,20 @@ void addColumn(DataType aDataType, Table& aTable)
     cout << "Try to add Column: Col-4 and fill it. "<< endl <<
       "It Should be using space just freed up"  << endl;
     
-    aTable.addColumn(ScalarColumnDesc<Bool>("Col-4"));
+    aTable.addColumn(ScalarColumnDesc<bool>("Col-4"));
     
     if (aTable.tableDesc().isColumn("Col-4")) {
       ad.attach(aTable,"Col-4");
     }
     
     // fill new column with data
-    uInt i;
-    Bool b;
+    uint32_t i;
+    bool b;
     for (i=0; i<aTable.nrow(); i++) {
       if (i < 10) {
-	b=True;
+	b=true;
       } else {
-	b=False;
+	b=false;
       }
       ad.put(i,b);
     }
@@ -460,7 +460,7 @@ void addColumn(DataType aDataType, Table& aTable)
     }
     
     // fill new column with data
-    for (uInt i=0; i<aTable.nrow(); i++) {
+    for (uint32_t i=0; i<aTable.nrow(); i++) {
       DComplex a(aTable.nrow()-i,i);
       ae.put(i,a);
     }
@@ -478,7 +478,7 @@ void addColumn(DataType aDataType, Table& aTable)
       String aString("String-1");
       
       // fill new column with data
-      for (uInt i=0; i<aTable.nrow(); i++) {
+      for (uint32_t i=0; i<aTable.nrow(); i++) {
 	aj.put(i,aString);
 	aString += " "+String::toString(i);
       }
@@ -496,7 +496,7 @@ void addDirectArrays (Table& aTable)
 {
   ArrayColumn<float>      af;
   ArrayColumn<DComplex>   ag;
-  ArrayColumn<Bool>       ah;
+  ArrayColumn<bool>       ah;
   
 
   cout << "Trying to add a few  Direct Array Columns." << endl;
@@ -507,13 +507,13 @@ void addDirectArrays (Table& aTable)
   aTable.addColumn(ArrayColumnDesc<DComplex>("Col-7", IPosition(1,2),
 					     ColumnDesc::Direct));
     
-  aTable.addColumn(ArrayColumnDesc<Bool>("Col-8", IPosition(3,5,7,1),
+  aTable.addColumn(ArrayColumnDesc<bool>("Col-8", IPosition(3,5,7,1),
 					 ColumnDesc::Direct));
     
 
   Cube<float> arrf(IPosition(3,2,3,1));
   Vector<DComplex> arrdc(2);
-  Cube<Bool> arrb(IPosition(3,5,7,1));
+  Cube<bool> arrb(IPosition(3,5,7,1));
   initArrays (arrf, arrdc, arrb);
 
   if (aTable.tableDesc().isColumn("Col-6")) {
@@ -526,7 +526,7 @@ void addDirectArrays (Table& aTable)
     ah.attach(aTable,"Col-8");
   }
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     af.put(i,arrf);
     ag.put(i,arrdc);
     ah.put(i,arrb);
@@ -556,9 +556,9 @@ void addIndStringArray (Table& aTable)
     ai.attach(aTable,"Col-9");
   }
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     ai.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrs(j) += " "+String::toString(i);
     }
   }
@@ -568,13 +568,13 @@ void addIndStringArray (Table& aTable)
 
 void addIndArray (Table& aTable)
 {
-  ArrayColumn<Int>       ak;
+  ArrayColumn<int32_t>       ak;
 
   cout << "Trying to add an  indirect Array Column." << endl;
 
-  aTable.addColumn(ArrayColumnDesc<Int>("Col-11"));
+  aTable.addColumn(ArrayColumnDesc<int32_t>("Col-11"));
     
-  Vector<Int> arrs(5);
+  Vector<int32_t> arrs(5);
   arrs(0)=1;
   arrs(1)=2;
   arrs(2)=3;
@@ -585,9 +585,9 @@ void addIndArray (Table& aTable)
     ak.attach(aTable,"Col-11");
   }
 
-  for (uInt i=0; i<aTable.nrow(); i++) {
+  for (uint32_t i=0; i<aTable.nrow(); i++) {
     ak.put(i,arrs);
-    for (uInt j=0; j< 5;j++) {
+    for (uint32_t j=0; j< 5;j++) {
       arrs(j) += i;
     }
   }
@@ -612,7 +612,7 @@ void addKeys(Table& tab)
 
 void putColumnTest (Table& aTable)
 {
-  ScalarColumn<Int> ab(aTable,"Col-2");
+  ScalarColumn<int32_t> ab(aTable,"Col-2");
 
   // put value 3 in rownr 5
   ab.put(5,3);

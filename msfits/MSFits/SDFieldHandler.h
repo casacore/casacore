@@ -89,7 +89,7 @@ public:
     SDFieldHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDFieldHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDFieldHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDFieldHandler(const SDFieldHandler &other);
@@ -100,7 +100,7 @@ public:
     SDFieldHandler &operator=(const SDFieldHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &row);
@@ -108,30 +108,30 @@ public:
     // fill - a new row is added at each call unless the data is from a previous MS fill
     // in which case an existing MAIN_FIELD_ID is used to see if that existing row might
     // be reused
-    void fill(const Record &row, const String &name, Int directionRefType,
-	      const Matrix<Double> &directionPoly, Double time, Int sourceId);
+    void fill(const Record &row, const String &name, int32_t directionRefType,
+	      const Matrix<double> &directionPoly, double time, int32_t sourceId);
 
     // get the current field ID
-    Int fieldId() {return rownr_p;}
+    int32_t fieldId() {return rownr_p;}
 private:
     MSField *msField_p;
     MSFieldColumns *msFieldCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
     // fields which might be present if the data is originally from a MS
-    RORecordFieldPtr<Int> fieldIdField_p;
+    RORecordFieldPtr<int32_t> fieldIdField_p;
     RORecordFieldPtr<String> codeField_p, nameField_p;
-    RORecordFieldPtr<Double> timeField_p;
-    RORecordFieldPtr<Array<Double> > delayDirField_p, delayDirRateField_p, 
+    RORecordFieldPtr<double> timeField_p;
+    RORecordFieldPtr<Array<double> > delayDirField_p, delayDirRateField_p, 
 	phaseDirField_p, phaseDirRateField_p, referenceDirField_p,
 	referenceDirRateField_p;
-    RORecordFieldPtr<Bool> flagRowField_p;
+    RORecordFieldPtr<bool> flagRowField_p;
 
     ColumnsIndex *index_p;
     RecordFieldPtr<String> nameKey_p;
-    RecordFieldPtr<Int> sourceIdKey_p;
-    RecordFieldPtr<Double> timeKey_p;
+    RecordFieldPtr<int32_t> sourceIdKey_p;
+    RecordFieldPtr<double> timeKey_p;
 
     // cleanup everything
     void clearAll();
@@ -139,10 +139,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // initialize things which depend on the row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

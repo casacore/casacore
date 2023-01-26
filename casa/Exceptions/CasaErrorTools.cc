@@ -59,7 +59,7 @@ namespace casacore {
 
 namespace {
 
-  std::map<casacore::String, casacore::uInt64> sharedObjectMap;
+  std::map<casacore::String, uint32_t64> sharedObjectMap;
 
   extern "C"
   int callback (struct dl_phdr_info *info, size_t, void *)
@@ -128,12 +128,12 @@ namespace casacore {
         // Find the shared object name.
 
         if (line [0] != '/'){
-          throw True;
+          throw true;
         }
 
         size_t openParenthesis = line.find ("(");
         if (openParenthesis == String::npos){
-          throw True;
+          throw true;
         }
 
         String objectName = line.substr (0, openParenthesis);
@@ -147,7 +147,7 @@ namespace casacore {
 
         if (leftSquare == String::npos || rightSquare == String::npos ||
             rightSquare <= leftSquare){
-          throw True;
+          throw true;
         }
 
         // Extract the address and subtract the base of the shared object's
@@ -156,11 +156,11 @@ namespace casacore {
         String addressText = line.substr (leftSquare + 1,
                                           rightSquare - leftSquare - 1);
 
-        uInt64 address = strtoll (addressText.c_str(), NULL, 16);
+        uint64_t address = strtoll (addressText.c_str(), NULL, 16);
 
-        uInt64 objectBase = sharedObjectMap [objectName];
+        uint64_t objectBase = sharedObjectMap [objectName];
 
-        uInt64 offset = address - objectBase;
+        uint64_t offset = address - objectBase;
 
         // Now rebuild the line replacing the original address ([0xHHHH...])
         // with the offset (format [+0xHHHH...]
@@ -171,7 +171,7 @@ namespace casacore {
 
         cleanedLine = line.substr (0, leftSquare) + "[+" + offsetInHex + "]";
       }
-      catch (Bool){
+      catch (bool){
 
         // The line was not parseable so just copy it to the result.
 

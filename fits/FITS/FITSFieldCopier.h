@@ -183,11 +183,11 @@ class StringFITSFieldCopier : public FITSFieldCopier
   // output FitsField
      virtual void copyToFITS()
        {
- 	  Int fitslength = fits_p->nelements();
- 	  Int reclength = (*(*rec_p)).length();
- 	  Int minlength = fitslength < reclength ? fitslength : reclength;
+ 	  int32_t fitslength = fits_p->nelements();
+ 	  int32_t reclength = (*(*rec_p)).length();
+ 	  int32_t minlength = fitslength < reclength ? fitslength : reclength;
  	  const char *chars = (**rec_p).chars();
-	  Int i;
+	  int32_t i;
  	  for (i=0; i<minlength; i++) {
  	      (*fits_p)(i) = chars[i];
  	  }
@@ -251,16 +251,16 @@ public:
   // Copy the current contents of the input RORecordFieldPtr to the 
   // output FitsField
     virtual void copyToFITS() {
-        uInt nfits = fits_p->nelements();
-	uInt narray = (**rec_p).nelements();
-	uInt nmin = narray < nfits ? narray : nfits;
-	Bool deleteIt;
+        uint32_t nfits = fits_p->nelements();
+	uint32_t narray = (**rec_p).nelements();
+	uint32_t nmin = narray < nfits ? narray : nfits;
+	bool deleteIt;
 	const recordType *rptr = (**rec_p).getStorage(deleteIt);
-	for (uInt i=0; i<nmin; i++) {
+	for (uint32_t i=0; i<nmin; i++) {
 	    (*fits_p)(i) = rptr[i];
 	}
 	// pad with nulls
-	for (uInt i=nmin;i<nfits;i++) {
+	for (uint32_t i=nmin;i<nfits;i++) {
 	    (*fits_p)(i) = recordType(0);
 	}
 	(**rec_p).freeStorage(rptr, deleteIt);
@@ -287,15 +287,15 @@ public:
   // Copy the current contents of the input RORecordFieldPtr to the 
   // output FitsField
     virtual void copyToFITS() {
-        uInt nfits = fits_p->nelements();
-	uInt narray = (**rec_p).nelements();
-	uInt nmin = narray < nfits ? narray : nfits;
-	Bool deleteIt;
+        uint32_t nfits = fits_p->nelements();
+	uint32_t narray = (**rec_p).nelements();
+	uint32_t nmin = narray < nfits ? narray : nfits;
+	bool deleteIt;
 	const recordType *rptr = (**rec_p).getStorage(deleteIt);
-	for (uInt i=0; i<nmin; i++) {
+	for (uint32_t i=0; i<nmin; i++) {
 	    (*fits_p)(i) = rptr[i];
 	}
-	for (uInt i=nmin;i<nfits;i++) {
+	for (uint32_t i=nmin;i<nfits;i++) {
 	    (*fits_p)(i) = recordType(0);
 	}
 	(**rec_p).freeStorage(rptr, deleteIt);
@@ -303,15 +303,15 @@ public:
 	String thisTDIR;
 	FITSKeywordUtil::toTDIM(thisTDIR, (**rec_p).shape());
 	// and store it in the tdir_p FitsField
-	Int fitslength = tdir_p->nelements();
-	Int reclength = thisTDIR.length();
-	Int minlength = fitslength < reclength ? fitslength : reclength;
+	int32_t fitslength = tdir_p->nelements();
+	int32_t reclength = thisTDIR.length();
+	int32_t minlength = fitslength < reclength ? fitslength : reclength;
 	const char *chars = thisTDIR.chars();
-	Int i;
+	int32_t i;
 	for (i=0; i<minlength; i++) {
 	    (*tdir_p)(i) = chars[i];
 	}
-	for (Int i=minlength; i<fitslength; i++) {
+	for (int32_t i=minlength; i<fitslength; i++) {
 	    (*tdir_p)(i) = '\0'; // null terminate if possible
 	}
     }

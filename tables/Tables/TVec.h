@@ -115,25 +115,25 @@ public:
     virtual ~TabVecRep();
 
     // Get nr of dimensions.
-    inline uInt ndim() const;
+    inline uint32_t ndim() const;
 
     // Get nr of elements (ie. vector length).
     inline rownr_t nelements() const;
 
     // Test if vector shape conforms another table vector.
-    inline Bool conform(const TabVecRep<T>&) const;
+    inline bool conform(const TabVecRep<T>&) const;
 
     // Test if vector shape conforms another vector.
-    inline Bool conform(const Vector<T>&) const;
+    inline bool conform(const Vector<T>&) const;
 
     // Check internal consistency.
-    Bool ok() const;
+    bool ok() const;
 
     // Increments the reference count.
     inline TabVecRep<T>* link();
 
     // Decrements the reference count and returns the resulting count.
-    inline uInt unlink();
+    inline uint32_t unlink();
 
     // Get the tag (the type of vector).
     inline TabVecTag getTag() const;
@@ -154,9 +154,9 @@ public:
     virtual void assign (const TabVecRep<T>&);
 
 protected:
-    uInt      count_p;               //# reference count
+    uint32_t      count_p;               //# reference count
     TabVecTag tag_p;
-    Int64     nrel_p;                //# #elements (<0 = ask derived class)
+    int64_t     nrel_p;                //# #elements (<0 = ask derived class)
 
     // Get nr of elements.
     virtual rownr_t nelem() const;
@@ -175,7 +175,7 @@ public:
 
 
 template<class T>
-inline uInt TabVecRep<T>::ndim() const
+inline uint32_t TabVecRep<T>::ndim() const
     { return 1; }
 
 template<class T>
@@ -184,11 +184,11 @@ inline rownr_t TabVecRep<T>::nelements() const
 
 //# Check if 2 table vectors are conformant.
 template<class T>
-inline Bool TabVecRep<T>::conform (const TabVecRep<T>& vec) const
-    { return (nelements() == vec.nelements()  ?  True : False); }
+inline bool TabVecRep<T>::conform (const TabVecRep<T>& vec) const
+    { return (nelements() == vec.nelements()  ?  true : false); }
 template<class T>
-inline Bool TabVecRep<T>::conform (const Vector<T>& vec) const
-    { return (nelements() == vec.nelements()  ?  True : False); }
+inline bool TabVecRep<T>::conform (const Vector<T>& vec) const
+    { return (nelements() == vec.nelements()  ?  true : false); }
 
 //# Maintain reference count.
 template<class T>
@@ -198,7 +198,7 @@ inline TabVecRep<T>* TabVecRep<T>::link()
     return this;
 }
 template<class T>
-inline uInt TabVecRep<T>::unlink()
+inline uint32_t TabVecRep<T>::unlink()
     { return --count_p; }
 
 //# Return the tag.

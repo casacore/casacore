@@ -42,10 +42,10 @@ template<class VirtualType, class StoredType>
 BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine ()
 : virtualName_p  (""),
   storedName_p   (""),
-  isWritable_p   (True),
-  tempWritable_p (False),
+  isWritable_p   (true),
+  tempWritable_p (false),
   initialNrrow_p (0),
-  arrayIsFixed_p (False),
+  arrayIsFixed_p (false),
   column_p       (0)
 {}
 
@@ -55,10 +55,10 @@ BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine
 					 const String& storedColumnName)
 : virtualName_p  (virtualColumnName),
   storedName_p   (storedColumnName), 
-  isWritable_p   (True),
-  tempWritable_p (False),
+  isWritable_p   (true),
+  tempWritable_p (false),
   initialNrrow_p (0),
-  arrayIsFixed_p (False),
+  arrayIsFixed_p (false),
   column_p       (0)
 {}
 
@@ -70,9 +70,9 @@ BaseMappedArrayEngine<VirtualType, StoredType>::BaseMappedArrayEngine
   virtualName_p  (that.virtualName_p),
   storedName_p   (that.storedName_p),
   isWritable_p   (that.isWritable_p),
-  tempWritable_p (False),
+  tempWritable_p (false),
   initialNrrow_p (0),
-  arrayIsFixed_p (False),
+  arrayIsFixed_p (false),
   column_p       (0)
 {}
 
@@ -93,10 +93,10 @@ BaseMappedArrayEngine<VirtualType, StoredType>::~BaseMappedArrayEngine()
 // This all means that isWritable must take care of the case
 // where the writable_p flag is not set yet.
 template<class VirtualType, class StoredType>
-Bool BaseMappedArrayEngine<VirtualType, StoredType>::isWritable() const
+bool BaseMappedArrayEngine<VirtualType, StoredType>::isWritable() const
 {
     if (tempWritable_p) {
-	return True;
+	return true;
     }
     return isWritable_p  &&  table().isColumnWritable (storedName_p);
 }
@@ -127,9 +127,9 @@ template<class VirtualType, class StoredType>
 TableColumn BaseMappedArrayEngine<VirtualType, StoredType>::makeTableColumn
                                                 (const String& columnName)
 {
-    tempWritable_p = True;
+    tempWritable_p = true;
     TableColumn thisCol (table(), columnName);
-    tempWritable_p = False;
+    tempWritable_p = false;
     return thisCol;
 }
 
@@ -156,7 +156,7 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::prepare1()
 {
     //# Get the name of the stored column from the keywords in the
     //# virtual column.
-    tempWritable_p = True;
+    tempWritable_p = true;
     TableColumn thisCol (table(), virtualName_p);
     storedName_p = thisCol.keywordSet().asString
 	                                    ("_BaseMappedArrayEngine_Name");
@@ -164,7 +164,7 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::prepare1()
     //# Allocate an object to get from the stored column.
     //# Allocate one to put if the column is writable.
     column_p = new ArrayColumn<StoredType> (table(), storedName_p);
-    tempWritable_p = False;
+    tempWritable_p = false;
     //# It is not permitted to have a FixedShape stored and non-FixedShape
     //# virtual column.
     if ((! arrayIsFixed_p)  &&
@@ -214,7 +214,7 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::setShapeColumn
                                                    (const IPosition& shape)
 {
     shapeFixed_p   = shape;
-    arrayIsFixed_p = True;
+    arrayIsFixed_p = true;
 }
 
 template<class VirtualType, class StoredType>
@@ -225,13 +225,13 @@ void BaseMappedArrayEngine<VirtualType, StoredType>::setShape
 }
 
 template<class VirtualType, class StoredType>
-Bool BaseMappedArrayEngine<VirtualType, StoredType>::isShapeDefined (rownr_t rownr)
+bool BaseMappedArrayEngine<VirtualType, StoredType>::isShapeDefined (rownr_t rownr)
 {
     return column_p->isDefined (rownr);
 }
 
 template<class VirtualType, class StoredType>
-uInt BaseMappedArrayEngine<VirtualType, StoredType>::ndim (rownr_t rownr)
+uint32_t BaseMappedArrayEngine<VirtualType, StoredType>::ndim (rownr_t rownr)
 {
     return column_p->ndim (rownr);
 }
@@ -243,9 +243,9 @@ IPosition BaseMappedArrayEngine<VirtualType, StoredType>::shape (rownr_t rownr)
 }
 
 template<class VirtualType, class StoredType>
-Bool BaseMappedArrayEngine<VirtualType, StoredType>::canChangeShape() const
+bool BaseMappedArrayEngine<VirtualType, StoredType>::canChangeShape() const
 {
-    return (column_p == 0  ?  False : column_p->canChangeShape());
+    return (column_p == 0  ?  false : column_p->canChangeShape());
 }
 
 

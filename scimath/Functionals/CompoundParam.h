@@ -62,17 +62,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Suppose for some reason we wanted the sum of <src>x^2</src> plus a gaussian.
 // We could form it as follows:
 // <srcblock>
-//    Polynomial<Float> x2(2);
+//    Polynomial<float> x2(2);
 //    x[2] = 1.0; 					 // x^2
-//    Gaussian1D<Float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
-//    CompoundParam<Float> sum;                        // sum == 0.0
+//    Gaussian1D<float> gauss(1.0, 0.0, 1.0);          // e^{-x^2}
+//    CompoundParam<float> sum;                        // sum == 0.0
 //    sum.addFunction(x2);                               // sum == x^2
 //    sum.addFunction(gauss);                            // sum == x^2+e^{-x^2}
 //    sum(2.0);                                          // == 4 + e^-4
 //    CompoundParam[0] = 2.0;                          // sum ==2x^2+e^{-x^2}
 //    sum(2.0);                                          // == 8 + e^-4
 //    // Set the height of the gaussian
-//    sum[parameterOffset[1] + Gaussian1D<Float>::HEIGHT] = 2.5;
+//    sum[parameterOffset[1] + Gaussian1D<float>::HEIGHT] = 2.5;
 // </srcblock>
 // </example>
 
@@ -105,17 +105,17 @@ public:
   // Make this object a (deep) copy of other.
   // <group>
   CompoundParam(const CompoundParam<T> &other);
-  CompoundParam(const CompoundParam<T> &other, Bool) :
+  CompoundParam(const CompoundParam<T> &other, bool) :
     Function<T>(other), ndim_p(other.ndim_p),
     functionPtr_p(other.functionPtr_p.nelements()),
     paroff_p(other.paroff_p.nelements()),
     funpar_p(other.funpar_p.nelements()), 
     locpar_p(other.locpar_p.nelements()) { 
-    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.functionPtr_p[i]->clone();
       paroff_p[i] = other.paroff_p[i];
     }
-    for (uInt i=0; i<funpar_p.nelements(); ++i) {
+    for (uint32_t i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.funpar_p[i];
       locpar_p[i] = other.locpar_p[i];
     }
@@ -127,27 +127,27 @@ public:
     paroff_p(other.nFunctions()),
     funpar_p(other.nparameters()), 
     locpar_p(other.nparameters()) { 
-    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.function(i).cloneAD();
       paroff_p[i] = other.parameterOffset(i);
     }
-    for (uInt i=0; i<funpar_p.nelements(); ++i) {
+    for (uint32_t i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.parameterFunction(i);
       locpar_p[i] = other.parameterLocation(i);
     }
   }
   template <class W>
-    CompoundParam(const CompoundParam<W> &other, Bool) :
+    CompoundParam(const CompoundParam<W> &other, bool) :
     Function<T>(other), ndim_p(other.ndim()),
     functionPtr_p(other.nFunctions()),
     paroff_p(other.nFunctions()),
     funpar_p(other.nparameters()), 
     locpar_p(other.nparameters()) { 
-    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();
       paroff_p[i] = other.parameterOffset(i);
     }
-    for (uInt i=0; i<funpar_p.nelements(); ++i) {
+    for (uint32_t i=0; i<funpar_p.nelements(); ++i) {
       funpar_p[i] = other.parameterFunction(i);
       locpar_p[i] = other.parameterLocation(i);
     }
@@ -167,48 +167,48 @@ public:
   // Add a function to the sum. All functions must have the same 
   // <src>ndim()</src> as the first one. Returns the (zero relative) number 
   // of the function just added.
-  uInt addFunction(const Function<T> &newFunction);
+  uint32_t addFunction(const Function<T> &newFunction);
   
   // Return the number of functions in the sum.
-  uInt nFunctions() const { return functionPtr_p.nelements(); }
+  uint32_t nFunctions() const { return functionPtr_p.nelements(); }
   
   // Return a reference to a specific Function.
   // <group>
-  const Function<T> &function(uInt which) const {
+  const Function<T> &function(uint32_t which) const {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]); }
   // </group>
   // Get the offset in function parameterlist for function which
-  uInt parameterOffset(uInt which) const {
+  uint32_t parameterOffset(uint32_t which) const {
     DebugAssert(nFunctions() > which, AipsError); return paroff_p[which]; }
   // Get the function number belonging to parameter list element which
-  uInt parameterFunction(uInt which) const {
+  uint32_t parameterFunction(uint32_t which) const {
     DebugAssert(nparameters() > which, AipsError);
     return funpar_p[which];
   }
   // Return locpar
-  uInt parameterLocation(uInt which) const {
+  uint32_t parameterLocation(uint32_t which) const {
     DebugAssert(nparameters() > which, AipsError);
     return locpar_p[which];
   }
   // Returns the dimension of functions in the linear combination
-  virtual uInt ndim() const { return ndim_p; }
+  virtual uint32_t ndim() const { return ndim_p; }
 
 private:
   //# Data
   // Number of dimensions of underlying functions
-  uInt ndim_p;
+  uint32_t ndim_p;
 
 protected:
   //# Data
   // Pointer to each added function
   PtrBlock<Function<T> *> functionPtr_p;
   // Index of offset for each function to its parameters in general list
-  Block<uInt> paroff_p;
+  Block<uint32_t> paroff_p;
   // Index of function belonging to parameter
-  Block<uInt> funpar_p;
+  Block<uint32_t> funpar_p;
   // Index of local parameter
-  Block<uInt> locpar_p;
+  Block<uint32_t> locpar_p;
 
   //# Make members of parent classes known.
 protected:

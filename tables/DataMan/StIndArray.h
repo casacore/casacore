@@ -104,17 +104,17 @@ class ArrayBase;
 // StIndArray is an internal class and should not be used by a casual user.
 // The example may however give a bit of insight.
 // <srcblock>
-// Array<Float> array(...);
+// Array<float> array(...);
 // // Create an StManArrayFile object to hold the arrays.
 // StManArrayFile stmanFile ("some.name", ByteIO::New);
 // // Create a still empty StIndArray object for an array.
 // StIndArray arrayRef(0);
-// // Define the shape and allocate a Float array.
+// // Define the shape and allocate a float array.
 // // Put the array data.
 // arrayRef.setShape (stmanFile, TpFloat, array.shape());
 // arrayRef.putArrayfloatV (stmanFile, &array);
 // // Get the file offset of the array (for later use).
-// Int64 offset = arrayRef.fileOffset();
+// int64_t offset = arrayRef.fileOffset();
 // // Create an StIndArray object to read the array back.
 // // Of course, the same object could have been used for that purpose,
 // // but this shows how to create one for an existing file.
@@ -142,7 +142,7 @@ public:
     // Construct the object with the given file offset.
     // A zero file offset means that no array has been defined yet.
     // That may be filled in later by setShape.
-    StIndArray (Int64 fileOffset);
+    StIndArray (int64_t fileOffset);
 
     // Copy constructor.
     StIndArray (const StIndArray&);
@@ -157,21 +157,21 @@ public:
 	{return shape_p;}
 
     // Get the file offset.
-    Int64 fileOffset() const
+    int64_t fileOffset() const
 	{return fileOffset_p;}
 
     // Set the shape and allocate the array in the file.
     // This will define the array and fill in the file offset.
     // If the shape is already defined and does not change,
-    // nothing is done and a False value is returned.
+    // nothing is done and a false value is returned.
     // If the shape changes, the old file space is lost.
-    Bool setShape (StManArrayFile&, int dataType, const IPosition& shape);
+    bool setShape (StManArrayFile&, int dataType, const IPosition& shape);
 
     // Read the shape if not read yet.
     void getShape (StManArrayFile& ios);
 
     // Get the reference count.
-    uInt refCount (StManArrayFile& ios);
+    uint32_t refCount (StManArrayFile& ios);
 
     // Increment the reference count.
     void incrementRefCount (StManArrayFile& ios);
@@ -210,8 +210,8 @@ public:
                     const ArrayBase& dataPtr, DataType dtype);
 
 private:
-    Int64     fileOffset_p;      //# offset of shape in StManArrayFile
-    uInt      arrOffset_p;       //# extra offset to the array
+    int64_t     fileOffset_p;      //# offset of shape in StManArrayFile
+    uint32_t      arrOffset_p;       //# extra offset to the array
     //#                              0 = arrOffset and shape not known yet
     IPosition shape_p;           //# shape of the array
 
@@ -224,60 +224,60 @@ private:
     void getSliceData (StManArrayFile&, const Slicer& ns, void* value,
 		       const IPosition& userArrayShape,
 		       void (*getVec) (StManArrayFile&,
-				       Int64, uInt64, uInt64, uInt64, uInt64,
+				       int64_t, uint64_t, uint64_t, uint64_t, uint64_t,
 				       void* dataPtr));
 
     // Get a (type-dependent) vector part of a slice.
     // This function is called for each chunk by putSliceData.
     // <group>
     static void getVecBoolV     (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecuCharV    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecShortV    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecuShortV   (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecIntV      (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecuIntV     (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecInt64V    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecfloatV    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecdoubleV   (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecComplexV  (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecDComplexV (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     static void getVecStringV   (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, void* value);
     // </group>
 
     // Put sliced data, i.e. put a section of an array.
@@ -289,60 +289,60 @@ private:
     void putSliceData (StManArrayFile&, const Slicer& ns, const void* value,
 		       const IPosition& userArrayShape,
 		       void (*putVec) (StManArrayFile&,
-				       Int64, uInt64, uInt64, uInt64, uInt64,
+				       int64_t, uint64_t, uint64_t, uint64_t, uint64_t,
 				       const void* dataPtr));
 
     // Put a (type-dependent) vector part of a slice.
     // This function is called for each chunk by putSliceData.
     // <group>
     static void putVecBoolV     (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecuCharV    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecShortV    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecuShortV   (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecIntV      (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecuIntV     (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecInt64V    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecfloatV    (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecdoubleV   (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecComplexV  (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecDComplexV (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     static void putVecStringV   (StManArrayFile&,
-				 Int64 fileOffset, uInt64 arrayStart,
-				 uInt64 length, uInt64 increment,
-				 uInt64 valueIndex, const void* value);
+				 int64_t fileOffset, uint64_t arrayStart,
+				 uint64_t length, uint64_t increment,
+				 uint64_t valueIndex, const void* value);
     // </group>
 	
     // Throw an exception if the shape of the given array and the table

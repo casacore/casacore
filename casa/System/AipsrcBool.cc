@@ -1,4 +1,4 @@
-//# AipsrcBool.cc: Specialisation for AipsrcValue<Bool>
+//# AipsrcBool.cc: Specialisation for AipsrcValue<bool>
 //# Copyright (C) 1995,1996,1997,1998,2000,2001,2002,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -32,51 +32,51 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Data
-AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;
-std::mutex AipsrcValue<Bool>::theirMutex;
+AipsrcValue<bool> AipsrcValue<bool>::myp_p;
+std::mutex AipsrcValue<bool>::theirMutex;
 
 //# Constructor
-AipsrcValue<Bool>::AipsrcValue() :
+AipsrcValue<bool>::AipsrcValue() :
   tlst(0), ntlst(0) {}
 
 //# Destructor
-AipsrcValue<Bool>::~AipsrcValue() {}
+AipsrcValue<bool>::~AipsrcValue() {}
 
-Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword) {
+bool AipsrcValue<bool>::find(bool &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) value = (res.size() > 0  &&  (res[0]=='t' || res[0]=='T' || res[0]=='y' ||
 				       res[0]=='Y' || (res[0]>='1' && res[0]<='9')));
   return x;
 }
 
-Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword, 
-			     const Bool &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+bool AipsrcValue<bool>::find(bool &value, const String &keyword, 
+			     const bool &deflt) {
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
-uInt AipsrcValue<Bool>::registerRC(const String &keyword,
-				   const Bool &deflt) {
+uint32_t AipsrcValue<bool>::registerRC(const String &keyword,
+				   const bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
-const Bool &AipsrcValue<Bool>::get(uInt keyword) {
+const bool &AipsrcValue<bool>::get(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
-void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
+void AipsrcValue<bool>::set(uint32_t keyword, const bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
-void AipsrcValue<Bool>::save(uInt keyword) {
+void AipsrcValue<bool>::save(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   ostringstream oss;

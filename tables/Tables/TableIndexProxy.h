@@ -70,7 +70,7 @@ class TableIndexProxy
 public:
   // Construct for the given columns in the table.
   TableIndexProxy (const TableProxy& table,
-		   const Vector<String>& columnNames, Bool noSort);
+		   const Vector<String>& columnNames, bool noSort);
 
   // Copy constructor.
   TableIndexProxy (const TableIndexProxy&);
@@ -78,7 +78,7 @@ public:
   ~TableIndexProxy();
 
   // Are all keys in the index unique?
-  Bool isUnique() const;
+  bool isUnique() const;
 
   // Return the names of the columns forming the index.
   Vector<String> columnNames() const;
@@ -91,16 +91,16 @@ public:
   // Find the row number matching the key. All keys have to be unique,
   // otherwise an exception is thrown.
   // If no match is found, -1 is returned.
-  Int64 getRowNumber (const Record& key);
+  int64_t getRowNumber (const Record& key);
 
   // Find the row numbers matching the key. It should be used instead
   // of <src>getRowNumber</src> if the same key can exist multiple times.
-  Vector<Int64> getRowNumbers (const Record& key);
+  Vector<int64_t> getRowNumbers (const Record& key);
   
   // Find the row numbers matching the key range. The boolean arguments
   // tell if the lower and upper key are part of the range.
-  Vector<Int64> getRowNumbersRange (const Record& lower, const Record& upper,
-                                    Bool lowerInclusive, Bool upperInclusive);
+  Vector<int64_t> getRowNumbersRange (const Record& lower, const Record& upper,
+                                    bool lowerInclusive, bool upperInclusive);
 
 private:
   // Assignment is forbidden.

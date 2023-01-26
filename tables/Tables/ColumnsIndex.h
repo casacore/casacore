@@ -118,10 +118,10 @@ template<typename T> class RecordFieldPtr;
 // ColumnsIndex colInx(tab, "ANTENNA");
 // // Make a RecordFieldPtr for the ANTENNA field in the index key record.
 // // Its data type has to match the data type of the column.
-// RecordFieldPtr<Int> antFld(colInx.accessKey(), "ANTENNA");
+// RecordFieldPtr<int32_t> antFld(colInx.accessKey(), "ANTENNA");
 // // Now loop in some way and find the row for the antenna
 // // involved in that loop.
-// Bool found;
+// bool found;
 // while (...) {
 //     // Fill the key field and get the row number.
 //     // ANTENNA is a unique key, so only one row number matches.
@@ -146,10 +146,10 @@ template<typename T> class RecordFieldPtr;
 // // way to convert a String to a Vector<String>.
 // ColumnsIndex colInx(tab, stringToVector("TIME,ANTENNA"));
 // // Make a RecordFieldPtr for the fields in lower and upper key records.
-// RecordFieldPtr<Double> timeLow(colInx.accessLowerKey(), "TIME");
-// RecordFieldPtr<Int> antLow(colInx.accessLowerKey(), "ANTENNA");
-// RecordFieldPtr<Double> timeUpp(colInx.accessUpperKey(), "TIME");
-// RecordFieldPtr<Int> antUpp(colInx.accessUpperKey(), "ANTENNA");
+// RecordFieldPtr<double> timeLow(colInx.accessLowerKey(), "TIME");
+// RecordFieldPtr<int32_t> antLow(colInx.accessLowerKey(), "ANTENNA");
+// RecordFieldPtr<double> timeUpp(colInx.accessUpperKey(), "TIME");
+// RecordFieldPtr<int32_t> antUpp(colInx.accessUpperKey(), "ANTENNA");
 // while (...) {
 //     // Fill the key fields.
 //     *timeLow = ...;
@@ -157,7 +157,7 @@ template<typename T> class RecordFieldPtr;
 //     *timeUpp = ...;
 //     *antUpp = ...;
 //     // Find the row numbers for keys between low and upp (inclusive).
-//     RowNumbers rows = colInx.getRowNumbers (True, True);
+//     RowNumbers rows = colInx.getRowNumbers (true, true);
 // }
 // </srcblock>
 //
@@ -171,9 +171,9 @@ template<typename T> class RecordFieldPtr;
 // This means that the compare function has to test whether the key
 // is part of the interval.
 // <srcblock>
-// Int myCompare (const Block<void*>& fieldPtrs,
+// int32_t myCompare (const Block<void*>& fieldPtrs,
 //                const Block<void*>& dataPtrs,
-//                const Block<Int>& dataTypes,
+//                const Block<int32_t>& dataTypes,
 //                rownr_t index)
 // {
 //   // Assert (for performance only in debug mode) that the correct
@@ -183,12 +183,12 @@ template<typename T> class RecordFieldPtr;
 //                AipsError);
 //   // Now get the key to be looked up
 //   // (an awfully looking cast has to be used).
-//   const Double key = *(*(const RecordFieldPtr<Double>*)(fieldPtrs[0]));
+//   const double key = *(*(const RecordFieldPtr<double>*)(fieldPtrs[0]));
 //   // Get the time and width of the entry to be compared.
-//   const Double time = ((const Double*)(dataPtrs[0]))[index];
-//   const Double width = ((const Double*)(dataPtrs[1]))[index];
-//   const Double start = time - width/2;
-//   const Double end = time + width/2;
+//   const double time = ((const double*)(dataPtrs[0]))[index];
+//   const double width = ((const double*)(dataPtrs[1]))[index];
+//   const double start = time - width/2;
+//   const double end = time + width/2;
 //   // Test if the key is before, after, or in the interval
 //   // (representing less, greater, equal).
 //   if (key < start) {
@@ -205,8 +205,8 @@ template<typename T> class RecordFieldPtr;
 // // Make a RecordFieldPtr for the TIME field in the key record.
 // // Note that although the WIDTH is part of the index, it is
 // // not an actual key. So it does not need to be filled in.
-// RecordFieldPtr<Double> time(colInx.accessLowerKey(), "TIME");
-// Bool found;
+// RecordFieldPtr<double> time(colInx.accessLowerKey(), "TIME");
+// bool found;
 // while (...) {
 //     // Fill the key field.
 //     *time = ...;
@@ -234,29 +234,29 @@ public:
     // The function should return -1 if key is less than data,
     // 0 if equal, 1 if greater.
     // <br>An example above shows how a compare function can be used.
-    typedef Int Compare (const Block<void*>& fieldPtrs,
+    typedef int32_t Compare (const Block<void*>& fieldPtrs,
 			 const Block<void*>& dataPtrs,
-			 const Block<Int>& dataTypes,
+			 const Block<int32_t>& dataTypes,
 			 rownr_t index);
 
     // Create an index on the given table for the given column.
     // The column has to be a scalar column.
-    // If <src>noSort==True</src>, the table is already in order of that
+    // If <src>noSort==true</src>, the table is already in order of that
     // column and the sort step will not be done.
     // The default compare function is provided by this class. It simply
     // compares each field in the key.
     ColumnsIndex (const Table&, const String& columnName,
-		  Compare* compareFunction = 0, Bool noSort = False);
+		  Compare* compareFunction = 0, bool noSort = false);
 
     // Create an index on the given table for the given columns, thus
     // the key is formed by multiple columns.
     // The columns have to be scalar columns.
-    // If <src>noSort==True</src>, the table is already in order of those
+    // If <src>noSort==true</src>, the table is already in order of those
     // columns and the sort step will not be done.
     // The default compare function is provided by this class. It simply
     // compares each field in the key.
     ColumnsIndex (const Table&, const Vector<String>& columnNames,
-		  Compare* compareFunction = 0, Bool noSort = False);
+		  Compare* compareFunction = 0, bool noSort = false);
 
     // Copy constructor (copy semantics).
     ColumnsIndex (const ColumnsIndex& that);
@@ -267,7 +267,7 @@ public:
     ColumnsIndex& operator= (const ColumnsIndex& that);
 
     // Are all keys in the index unique?
-    Bool isUnique() const;
+    bool isUnique() const;
 
     // Return the names of the columns forming the index.
     Vector<String> columnNames() const;
@@ -299,14 +299,14 @@ public:
 
     // Find the row number matching the key. All keys have to be unique,
     // otherwise an exception is thrown.
-    // If no match is found, <src>found</src> is set to False.
+    // If no match is found, <src>found</src> is set to false.
     // The 2nd version makes it possible to pass in your own Record
     // instead of using the internal record via the <src>accessKey</src>
     // functions. Note that the given Record will be copied to the internal
     // record, thus overwrites it.
     // <group>
-    rownr_t getRowNumber (Bool& found);
-    rownr_t getRowNumber (Bool& found, const Record& key);
+    rownr_t getRowNumber (bool& found);
+    rownr_t getRowNumber (bool& found, const Record& key);
     // </group>
 
     // Find the row numbers matching the key. It should be used instead
@@ -328,9 +328,9 @@ public:
     // Note that the given Records will be copied to the internal
     // records, thus overwrite them.
     // <group>
-    RowNumbers getRowNumbers (Bool lowerInclusive, Bool upperInclusive);
+    RowNumbers getRowNumbers (bool lowerInclusive, bool upperInclusive);
     RowNumbers getRowNumbers (const Record& lower, const Record& upper,
-                              Bool lowerInclusive, Bool upperInclusive);
+                              bool lowerInclusive, bool upperInclusive);
     // </group>
 
     // Fill the internal key field from the corresponding external key.
@@ -350,7 +350,7 @@ protected:
 
     // Create the various members in the object.
     void create (const Table& table, const Vector<String>& columnNames,
-		 Compare* compareFunction, Bool noSort);
+		 Compare* compareFunction, bool noSort);
 
     // Make the various internal <src>RecordFieldPtr</src> objects.
     void makeObjects (const RecordDesc& description);
@@ -361,17 +361,17 @@ protected:
 
     // Do a binary search on <src>itsUniqueIndex</src> for the key in
     // <src>fieldPtrs</src>.
-    // If the key is found, <src>found</src> is set to True and the index
+    // If the key is found, <src>found</src> is set to true and the index
     // in <src>itsUniqueIndex</src> is returned.
-    // If not found, <src>found</src> is set to False and the index
+    // If not found, <src>found</src> is set to false and the index
     // of the next higher key is returned.
-    rownr_t bsearch (Bool& found, const Block<void*>& fieldPtrs) const;
+    rownr_t bsearch (bool& found, const Block<void*>& fieldPtrs) const;
 
     // Compare the key in <src>fieldPtrs</src> with the given index entry.
     // -1 is returned when less, 0 when equal, 1 when greater.
-    static Int compare (const Block<void*>& fieldPtrs,
+    static int32_t compare (const Block<void*>& fieldPtrs,
 			const Block<void*>& dataPtrs,
-			const Block<Int>& dataTypes,
+			const Block<int32_t>& dataTypes,
 			rownr_t index);
 
     // Fill the row numbers vector for the given start till end in the
@@ -394,16 +394,16 @@ private:
     rownr_t itsNrrow;
     Record* itsLowerKeyPtr;
     Record* itsUpperKeyPtr;
-    Block<Int>      itsDataTypes;
+    Block<int32_t>      itsDataTypes;
     Block<void*>    itsDataVectors;
     Block<void*>    itsData;              //# pointer to data in itsDataVectors
     //# The following 2 blocks are actually blocks of RecordFieldPtr<T>*.
     //# They are used for fast access to the records.
     Block<void*>    itsLowerFields;
     Block<void*>    itsUpperFields;
-    Block<Bool>     itsColumnChanged;
-    Bool            itsChanged;
-    Bool            itsNoSort;            //# True = sort is not needed
+    Block<bool>     itsColumnChanged;
+    bool            itsChanged;
+    bool            itsNoSort;            //# true = sort is not needed
     Compare*        itsCompare;           //# Compare function
     Vector<rownr_t> itsDataIndex;         //# Row numbers of all keys
     //# Indices in itsDataIndex for each unique key
@@ -413,7 +413,7 @@ private:
 };
 
 
-inline Bool ColumnsIndex::isUnique() const
+inline bool ColumnsIndex::isUnique() const
 {
     return (itsDataIndex.nelements() == itsUniqueIndex.nelements());
 }

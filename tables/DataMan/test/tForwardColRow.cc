@@ -55,7 +55,7 @@
 TableDesc makeDesc();
 void a (const TableDesc&);
 void c (const TableDesc&);
-void check(const String& tableName, Int abOffset, Int acOffset);
+void check(const String& tableName, int32_t abOffset, int32_t acOffset);
 
 int main ()
 {
@@ -85,10 +85,10 @@ TableDesc makeDesc() {
     // Build the table description.
     TableDesc td("tTableDesc", "1", TableDesc::Scratch);
     td.comment() = "A test of class ForwardColumn";
-    td.addColumn (ScalarColumnDesc<uInt>("row"));
-    td.addColumn (ScalarColumnDesc<Int>("ab","Comment for column ab"));
-    td.addColumn (ScalarColumnDesc<Int>("ac"));
-    td.addColumn (ScalarColumnDesc<uInt>("ad","comment for ad"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("row"));
+    td.addColumn (ScalarColumnDesc<int32_t>("ab","Comment for column ab"));
+    td.addColumn (ScalarColumnDesc<int32_t>("ac"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("ad","comment for ad"));
     td.addColumn (ScalarColumnDesc<float>("ae"));
     td.addColumn (ScalarColumnDesc<String>("af"));
     td.addColumn (ScalarColumnDesc<DComplex>("ag"));
@@ -106,10 +106,10 @@ void a (const TableDesc& td)
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
     Table tab(newtab, 10);
 
-    ScalarColumn<Int> ab1(tab,"ab");
-    ScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<Int> ac (tab,"ac");
-    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<int32_t> ab1(tab,"ab");
+    ScalarColumn<int32_t> ab2(tab,"ab");
+    ScalarColumn<int32_t> ac (tab,"ac");
+    ScalarColumn<uint32_t> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     TableColumn ag1(tab,"ag");
@@ -118,7 +118,7 @@ void a (const TableDesc& td)
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
     Cube<float> arrf(IPosition(3,2,3,4));
-    uInt i;
+    uint32_t i;
     char str[8];
     indgen (arrf);
     for (i=0; i<10; i++) {
@@ -163,12 +163,12 @@ void c (const TableDesc& tdin)
     cout << " canAddRow=" << forwTab.canAddRow();
     cout << " canRemoveRow=" << forwTab.canRemoveRow();
     cout << endl;
-    ScalarColumn<uInt> rowCol (forwTab, "row");
-    uInt i;
+    ScalarColumn<uint32_t> rowCol (forwTab, "row");
+    uint32_t i;
     for (i=0; i<20; i++) {
 	rowCol.put (i, i%10);
     }
-    forwTab.addColumn (ScalarColumnDesc<Int>("ac"), "ForwardEngineRow1", True);
+    forwTab.addColumn (ScalarColumnDesc<int32_t>("ac"), "ForwardEngineRow1", true);
 
     // Now use the description to make a table, which will use the
     // forwarding engine again.
@@ -180,31 +180,31 @@ void c (const TableDesc& tdin)
     IncrementalStMan sm2;
     newtab2.bindColumn("row", sm2);
     Table forwTab2(newtab2);
-    ScalarColumn<uInt> rowCol2 (forwTab2, "row");
+    ScalarColumn<uint32_t> rowCol2 (forwTab2, "row");
     for (i=0; i<40; i++) {
 	forwTab2.addRow();
 	rowCol2.put (i, i%20);
     }
 }
 
-void check(const String& tableName, Int abOffset, Int acOffset)
+void check(const String& tableName, int32_t abOffset, int32_t acOffset)
 {
     cout << "Checking table " << tableName << endl;
     // Read back the table and check the data.
     Table tab(tableName);
-    uInt ntimes = tab.nrow() / 10;
-    ScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<Int> ac (tab,"ac");
-    ScalarColumn<uInt> ad(tab,"ad");
+    uint32_t ntimes = tab.nrow() / 10;
+    ScalarColumn<int32_t> ab2(tab,"ab");
+    ScalarColumn<int32_t> ac (tab,"ac");
+    ScalarColumn<uint32_t> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
-    uInt i, j;
-    Int abval, acval;
-    uInt adval;
+    uint32_t i, j;
+    int32_t abval, acval;
+    uint32_t adval;
     float aeval;
     String afval;
     DComplex agval;
@@ -218,7 +218,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 		   Slicer::endIsLength);
     for (j=0; j<ntimes; j++) {
 	indgen (arrf);
-	uInt vali = 0;
+	uint32_t vali = 0;
 	for (i=j*10; i<(j+1)*10; i++) {
 	    cout << "get scalar row " << i;
 	    cout << " defined=" << ab2.isDefined(i) << ac.isDefined(i)
@@ -232,7 +232,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 	    af.get (i, afval);
 	    ag.get (i, agval);
 	    sprintf (str, "V%i", vali);
-	    if (abval != Int(vali)+abOffset  ||  acval != Int(vali)+1+acOffset
+	    if (abval != int32_t(vali)+abOffset  ||  acval != int32_t(vali)+1+acOffset
 		||  adval != vali+2  ||  aeval != vali+3
 		||  afval != str  ||  agval != DComplex(vali+2)) {
 		cout << "error in row " << i << ": " << abval

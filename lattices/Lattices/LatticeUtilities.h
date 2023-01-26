@@ -66,12 +66,12 @@ class LatticeUtilities
    public:
 
 // Copy data and mask from input to output.  If the input has no mask,
-// that means all True (good), and these values will be transferred
+// that means all true (good), and these values will be transferred
 // to the output.   Mask transfer only  occurs if the output has
 // a writeable mask.
    template <class T>
    static void copyDataAndMask (LogIO& os, MaskedLattice<T>& out,
-                                const MaskedLattice<T>& in, Bool zeroMasked=False);
+                                const MaskedLattice<T>& in, bool zeroMasked=false);
 
 // Replicate array through lattice in the specified region.
 // The shape of <src>pixels</src> has to fit exactly into the shape of
@@ -88,14 +88,14 @@ class LatticeUtilities
 
 // Bin up one axis of MaskedArray (uses Lattices in implementation)
    template <class T>
-   static void bin (MaskedArray<T>& out, const MaskedArray<T>& in, uInt axis, uInt bin);
+   static void bin (MaskedArray<T>& out, const MaskedArray<T>& in, uint32_t axis, uint32_t bin);
 
 // Add degenerate axes to the lattice if needed (nDim is the desired number of dimensions
 // for the output lattice).  If the shapes are the same, the returned
 // pointer holds a SubLattice.  If a reshape was necessary, the pointer
 // holds an ExtendLattice.  The pointer is the callers responsibility to delete.
    template <class T>
-   static void addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T>& latIn, uInt nDim);
+   static void addDegenerateAxes (Lattice<T>*& pLatOut, const Lattice<T>& latIn, uint32_t nDim);
 };
 
 

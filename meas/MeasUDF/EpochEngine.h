@@ -93,11 +93,11 @@ namespace casacore {
     virtual ~EpochEngine();
 
     // Tell if the fraction has to be used for sidereal times.
-    Bool sidFrac() const
+    bool sidFrac() const
       { return itsSidFrac; }
 
     // Get the values.
-    Array<Double> getArrayDouble (const TableExprId& id);
+    Array<double> getArrayDouble (const TableExprId& id);
 
     // Get the epochs.
     Array<MEpoch> getEpochs (const TableExprId& id);
@@ -105,10 +105,10 @@ namespace casacore {
     // Handle the argument(s) giving the input epochs and reference type.
     // The epoch can be a column in a table.
     void handleEpoch (std::vector<TENShPtr>& args,
-                      uInt& argnr);
+                      uint32_t& argnr);
 
     // Set the MeasConvert object.
-    void setConverter (MEpoch::Types toType, Bool sidFrac);
+    void setConverter (MEpoch::Types toType, bool sidFrac);
 
     // Set the possible position engine.
     // It can be done only once.
@@ -122,7 +122,7 @@ namespace casacore {
                                Array<MEpoch>& epochs);
 
   //# Data members.
-    Bool                        itsSidFrac;    //# T = fraction for sidereal 
+    bool                        itsSidFrac;    //# T = fraction for sidereal 
     MeasFrame                   itsFrame;      //# frame used by converter
     MEpoch::Convert             itsConverter;
     PositionEngine*             itsPositionEngine;

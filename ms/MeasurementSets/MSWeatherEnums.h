@@ -63,64 +63,64 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Antenna number<BR>
-    // Int
+    // int32_t
     ANTENNA_ID,
     // Interval over which data is relevant <BR>
-    // Double - s
+    // double - s
     INTERVAL,
     // An MEpoch specifying the midpoint of the time for which data is
     // relevant <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     // The number of required columns <BR>
     NUMBER_REQUIRED_COLUMNS=TIME,
     // Dew point <BR>
-    // Float - K
+    // float - K
     DEW_POINT,
     // Flag for dew point <BR>
-    // Bool
+    // bool
     DEW_POINT_FLAG,
     // Average column density of water-vapor <BR>
-    // Float - m
+    // float - m
     H2O,
     // Flag for H2O <BR>
-    // Bool
+    // bool
     H2O_FLAG,
     // Average column density of electrons <BR>
-    // Float - m^-2
+    // float - m^-2
     IONOS_ELECTRON,
     // Flag for IONOS_ELECTRON <BR>
-    // Bool
+    // bool
     IONOS_ELECTRON_FLAG,
     // Ambient atmospheric pressure <BR>
-    // Float - Pa
+    // float - Pa
     PRESSURE,
     // Flag for pressure <BR>
-    // Bool
+    // bool
     PRESSURE_FLAG,
     // Ambient relative humidity <BR>
-    // Float - \%
+    // float - \%
     REL_HUMIDITY, 
     // Flag for rel humidity <BR>
-    // Bool
+    // bool
     REL_HUMIDITY_FLAG,
     // Ambient Air Temperature for an antenna <BR>
-    // Float - K
+    // float - K
     TEMPERATURE,
     // Flag for temperature <BR>
-    // Bool
+    // bool
     TEMPERATURE_FLAG,
     // Average wind direction <BR>
-    // Float - rad 
+    // float - rad 
     WIND_DIRECTION,
     // Flag for wind direction <BR>
-    // Bool 
+    // bool 
     WIND_DIRECTION_FLAG,
     // Average wind speed <BR>
-    // Float - m/s
+    // float - m/s
     WIND_SPEED,
     // Flag for  wind speed <BR>
-    // Bool
+    // bool
     WIND_SPEED_FLAG,
     //
     // Not a column, but just a final enum specifying the number of enums.

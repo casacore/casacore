@@ -296,7 +296,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
-    Int64 itsNr;
+    int64_t itsNr;
   };
 
   // <summary>
@@ -313,14 +313,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupVarianceArrayDouble: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupVarianceArrayDouble (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupVarianceArrayDouble (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupVarianceArrayDouble();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
-    uInt   itsDdof;
-    Int64  itsNr;
-    Double itsCurMean;
+    uint32_t   itsDdof;
+    int64_t  itsNr;
+    double itsCurMean;
   };
 
   // <summary>
@@ -338,7 +338,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevArrayDouble: public TableExprGroupVarianceArrayDouble
   {
   public:
-    TableExprGroupStdDevArrayDouble (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupStdDevArrayDouble (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupStdDevArrayDouble();
     virtual void finish();
   };
@@ -360,7 +360,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
-    Int64 itsNr;
+    int64_t itsNr;
   };
 
   // <summary>
@@ -379,13 +379,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     explicit TableExprGroupFractileArrayDouble (TableExprNodeRep* node,
-                                                Double fractile);
+                                                double fractile);
     virtual ~TableExprGroupFractileArrayDouble();
-    virtual Bool isLazy() const;
+    virtual bool isLazy() const;
     virtual void apply (const TableExprId& id);
-    virtual Double getDouble (const vector<TableExprId>& ids);
+    virtual double getDouble (const vector<TableExprId>& ids);
   private:
-    Double itsFrac;
+    double itsFrac;
   };
 
 
@@ -459,7 +459,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
-    Int64 itsNr;
+    int64_t itsNr;
   };
 
   // <summary>
@@ -472,18 +472,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Aggregate class determining the variance of array values in a group.
   // It uses a running algorithm
   // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
-  // Note that the result is a Double value (not DComplex).
+  // Note that the result is a double value (not DComplex).
   // </synopsis>
   class TableExprGroupVarianceArrayDComplex: public TableExprGroupFuncDouble
   {
   public:
-    TableExprGroupVarianceArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupVarianceArrayDComplex (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupVarianceArrayDComplex();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
-    uInt     itsDdof;
-    Int64    itsNr;
+    uint32_t     itsDdof;
+    int64_t    itsNr;
     DComplex itsCurMean;
   };
 
@@ -502,7 +502,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevArrayDComplex: public TableExprGroupVarianceArrayDComplex
   {
   public:
-    TableExprGroupStdDevArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupStdDevArrayDComplex (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupStdDevArrayDComplex();
     virtual void finish();
   };
@@ -772,7 +772,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
-    Array<Int64> itsNr;
+    Array<int64_t> itsNr;
   };
 
   // <summary>
@@ -789,14 +789,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupVariancesArrayDouble: public TableExprGroupFuncArrayDouble
   {
   public:
-    TableExprGroupVariancesArrayDouble (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupVariancesArrayDouble (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupVariancesArrayDouble();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
-    uInt          itsDdof;
-    Array<Int64>  itsNr;
-    Array<Double> itsCurMean;
+    uint32_t          itsDdof;
+    Array<int64_t>  itsNr;
+    Array<double> itsCurMean;
   };
 
   // <summary>
@@ -814,7 +814,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevsArrayDouble: public TableExprGroupVariancesArrayDouble
   {
   public:
-    TableExprGroupStdDevsArrayDouble (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupStdDevsArrayDouble (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupStdDevsArrayDouble();
     virtual void finish();
   };
@@ -836,7 +836,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
-    Array<Int64> itsNr;
+    Array<int64_t> itsNr;
   };
 
 
@@ -911,7 +911,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void apply (const TableExprId& id);
     virtual void finish();
   private:
-    Array<Int64> itsNr;
+    Array<int64_t> itsNr;
   };
 
   // <summary>
@@ -924,18 +924,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Aggregate class determining the variance of array values in a group.
   // It uses a running algorithm
   // (see en.wikipedia.org/wiki/Algorithms_for_calculating_variance)
-  // Note that result is a Double value (npot DComplex).
+  // Note that result is a double value (npot DComplex).
   // </synopsis>
   class TableExprGroupVariancesArrayDComplex: public TableExprGroupFuncArrayDouble
   {
   public:
-    TableExprGroupVariancesArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupVariancesArrayDComplex (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupVariancesArrayDComplex();
     virtual void apply (const TableExprId& id);
     virtual void finish();
   protected:
-    uInt            itsDdof;
-    Array<Int64>    itsNr;
+    uint32_t            itsDdof;
+    Array<int64_t>    itsNr;
     Array<DComplex> itsCurMean;
   };
 
@@ -954,7 +954,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   class TableExprGroupStdDevsArrayDComplex: public TableExprGroupVariancesArrayDComplex
   {
   public:
-    TableExprGroupStdDevsArrayDComplex (TableExprNodeRep* node, uInt ddof);
+    TableExprGroupStdDevsArrayDComplex (TableExprNodeRep* node, uint32_t ddof);
     virtual ~TableExprGroupStdDevsArrayDComplex();
     virtual void finish();
   };
@@ -973,16 +973,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     explicit TableExprGroupHistBase (TableExprNodeRep* node,
-                                     Int64 nbin, Double start, Double end);
+                                     int64_t nbin, double start, double end);
     virtual ~TableExprGroupHistBase();
-    virtual MArray<Int64> getArrayInt (const vector<TableExprId>&);
+    virtual MArray<int64_t> getArrayInt (const vector<TableExprId>&);
   protected:
     // Add the value to the histogram.
-    void add (Double value);
+    void add (double value);
   private:
-    Vector<Int64> itsHist;
-    Double itsStart;
-    Double itsWidth;
+    Vector<int64_t> itsHist;
+    double itsStart;
+    double itsWidth;
   };
 
   // <summary>
@@ -998,7 +998,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     explicit TableExprGroupHistScalar (TableExprNodeRep* node,
-                                       Int64 nbin, Double start, Double end);
+                                       int64_t nbin, double start, double end);
     virtual ~TableExprGroupHistScalar();
     virtual void apply (const TableExprId& id);
   };
@@ -1016,7 +1016,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     explicit TableExprGroupHistInt (TableExprNodeRep* node,
-                                    Int64 nbin, Double start, Double end);
+                                    int64_t nbin, double start, double end);
     virtual ~TableExprGroupHistInt();
     virtual void apply (const TableExprId& id);
   };
@@ -1034,7 +1034,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     explicit TableExprGroupHistDouble (TableExprNodeRep* node,
-                                       Int64 nbin, Double start, Double end);
+                                       int64_t nbin, double start, double end);
     virtual ~TableExprGroupHistDouble();
     virtual void apply (const TableExprId& id);
   };

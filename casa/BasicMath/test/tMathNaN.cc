@@ -37,14 +37,14 @@
 
 
 #include <casacore/casa/namespace.h>
-#define	isnanfmacro(x)	(((*(Int *)(x) & 0x7f800000) == 0x7f800000) && \
-			    ((*(Int *)(x) & 0x007fffff) != 0x00000000))
+#define	isnanfmacro(x)	(((*(int32_t *)(x) & 0x7f800000) == 0x7f800000) && \
+			    ((*(int32_t *)(x) & 0x007fffff) != 0x00000000))
 
-inline Bool isNaN_isnan(Float val) {
-  return (std::isnan(Double(val)));
+inline bool isNaN_isnan(float val) {
+  return (std::isnan(double(val)));
 }
 
-inline Bool isNaN_isnanf(const Float& val) {
+inline bool isNaN_isnanf(const float& val) {
 #if defined(AIPS_SOLARIS) || defined(AIPS_IRIX)
   return (isnanf(val));
 #else
@@ -52,40 +52,40 @@ inline Bool isNaN_isnanf(const Float& val) {
 #endif
 }
 
-inline Bool isNaN_ref(const Float &x)
+inline bool isNaN_ref(const float &x)
 {
-  return (((*(Int *)&(x) & 0x7f800000) == 0x7f800000) && \
-		((*(Int *)&(x) & 0x007fffff) != 0x00000000));
+  return (((*(int32_t *)&(x) & 0x7f800000) == 0x7f800000) && \
+		((*(int32_t *)&(x) & 0x007fffff) != 0x00000000));
 }
 
-inline Bool isNaN_val(Float x)
+inline bool isNaN_val(float x)
 {
-  Float* xp=&x;
-  return (((*(Int *)xp & 0x7f800000) == 0x7f800000) && \
-		((*(Int *)xp & 0x007fffff) != 0x00000000));
+  float* xp=&x;
+  return (((*(int32_t *)xp & 0x7f800000) == 0x7f800000) && \
+		((*(int32_t *)xp & 0x007fffff) != 0x00000000));
 }
 
 
-Bool doIt (Int n, Float x, Bool nan)
+bool doIt (int32_t n, float x, bool nan)
 {
-   Bool ok = True;
-   const Int narr = 100000;
+   bool ok = true;
+   const int32_t narr = 100000;
    // Determine the expected nr of NaN's.
-   uInt nrnan = 0;
+   uint32_t nrnan = 0;
    if (nan) {
      nrnan = n*narr;
    }
    // Initialize the array.
-   Float arr[narr];
-   for (Int i=0; i<narr; i++) {
+   float arr[narr];
+   for (int32_t i=0; i<narr; i++) {
      arr[i] = x;
    }
 //
    Timer t; 
-   uInt nf = 0;
+   uint32_t nf = 0;
    t.mark();
-   for (Int i=0; i<n; i++) {
-     for (Int j=0; j<narr; j++) {
+   for (int32_t i=0; i<n; i++) {
+     for (int32_t j=0; j<narr; j++) {
        if ((arr[j] != arr[j])) {
 	 nf++;
        }
@@ -101,8 +101,8 @@ Bool doIt (Int n, Float x, Bool nan)
 //
    nf = 0;
    t.mark();
-   for (Int i=0; i<n; i++) {
-     for (Int j=0; j<narr; j++) {
+   for (int32_t i=0; i<n; i++) {
+     for (int32_t j=0; j<narr; j++) {
        if (isNaN_isnan(arr[j])) {
         nf++;
        }
@@ -110,15 +110,15 @@ Bool doIt (Int n, Float x, Bool nan)
    }
    if (nf != nrnan) {
      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-     ok = False;
+     ok = false;
    }
    cout << "nf=" << nf << "    isnan ";
    t.show();
 //
    nf = 0;
    t.mark();
-   for (Int i=0; i<n; i++) {
-     for (Int j=0; j<narr; j++) {
+   for (int32_t i=0; i<n; i++) {
+     for (int32_t j=0; j<narr; j++) {
        if (isNaN_isnanf(arr[j])) {
 	 nf++;
        }
@@ -126,15 +126,15 @@ Bool doIt (Int n, Float x, Bool nan)
    }
    if (nf != nrnan) {
      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-     ok = False;
+     ok = false;
    }
    cout << "nf=" << nf << "   isnanf ";
    t.show();
 //
    nf = 0;
    t.mark();
-   for (Int i=0; i<n; i++) {
-     for (Int j=0; j<narr; j++) {
+   for (int32_t i=0; i<n; i++) {
+     for (int32_t j=0; j<narr; j++) {
        if (isNaN_ref(arr[j])) {
 	 nf++;
        }
@@ -142,7 +142,7 @@ Bool doIt (Int n, Float x, Bool nan)
    }
    if (nf != nrnan) {
      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-     ok = False;
+     ok = false;
    }
    cout << "nf=" << nf << "   by ref ";
    t.show();
@@ -150,8 +150,8 @@ Bool doIt (Int n, Float x, Bool nan)
 // The test does not work properly for gcc-4 if passed by value.
 //    nf = 0;
 //    t.mark();
-//    for (Int i=0; i<n; i++) {
-//      for (Int j=0; j<narr; j++) {
+//    for (int32_t i=0; i<n; i++) {
+//      for (int32_t j=0; j<narr; j++) {
 //        if (isNaN_val(arr[j])) {
 // 	 nf++;
 //        }
@@ -159,15 +159,15 @@ Bool doIt (Int n, Float x, Bool nan)
 //    }
 //    if (nf != nrnan) {
 //      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-//      ok = False;
+//      ok = false;
 //    }
 //    cout << "nf=" << nf << "   by val ";
 //    t.show();
 //
    nf = 0;
    t.mark();
-   for (Int i=0; i<n; i++) {
-     for (Int j=0; j<narr; j++) {
+   for (int32_t i=0; i<n; i++) {
+     for (int32_t j=0; j<narr; j++) {
        if (isNaN(arr[j])) {
 	 nf++;
        }
@@ -175,15 +175,15 @@ Bool doIt (Int n, Float x, Bool nan)
    }
    if (nf != nrnan) {
      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-     ok = False;
+     ok = false;
    }
    cout << "nf=" << nf << "    isNaN ";
    t.show();
 //
    nf = 0;
    t.mark();
-   for (Int i=0; i<n; i++) {
-     for (Int j=0; j<narr; j++) {
+   for (int32_t i=0; i<n; i++) {
+     for (int32_t j=0; j<narr; j++) {
        if (isnanfmacro(arr+j)) {
 	 nf++;
        }
@@ -191,7 +191,7 @@ Bool doIt (Int n, Float x, Bool nan)
    }
    if (nf != nrnan) {
      cout << "!= found " << nf << " NaN's; expected " << nrnan << endl;
-     ok = False;
+     ok = false;
    }
    cout << "nf=" << nf << "    macro ";
    t.show();
@@ -210,23 +210,23 @@ int main (int argc, const char* argv[])
    inputs.create("n", "100", "Number of tries");
  
    inputs.readArguments(argc, argv);
-   const Int n = inputs.getInt("n");
+   const int32_t n = inputs.getInt("n");
    cout << "n = " << n << endl;
 //
-   Bool ok = True;
-   Float x = 0;
-   if (! doIt (n, x, False)) {
-     ok = False;
+   bool ok = true;
+   float x = 0;
+   if (! doIt (n, x, false)) {
+     ok = false;
    }
    setNaN (x);
-   if (! doIt (n, x, True)) {
-     ok = False;
+   if (! doIt (n, x, true)) {
+     ok = false;
    }
    // Let the machine generate a NaN.
    // I don't know if this is really portable.
    x = sqrt(double(-1));
-   if (! doIt (n, x, True)) {
-     ok = False;
+   if (! doIt (n, x, true)) {
+     ok = false;
    }
 
    if (ok) {

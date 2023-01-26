@@ -33,12 +33,12 @@
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class LatticeIterInterface<Float>;
-  template class LatticeStatistics<Float>;
-  template class Lattice<Float>;
+  template class LatticeIterInterface<float>;
+  template class LatticeStatistics<float>;
+  template class Lattice<float>;
   template class Lattice<Complex>;
-  template class PagedArray<Float>;
+  template class PagedArray<float>;
   template class PagedArray<Complex>;
-  template class SubLattice<Bool>;
-  template class SubLattice<Float>;
+  template class SubLattice<bool>;
+  template class SubLattice<float>;
 }

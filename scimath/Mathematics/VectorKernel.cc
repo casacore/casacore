@@ -41,40 +41,40 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width, 
-                                  uInt shape, Bool useShapeExactly, Bool peakIsUnity)
+Vector<double> VectorKernel::make(KernelTypes kernelType, double width, 
+                                  uint32_t shape, bool useShapeExactly, bool peakIsUnity)
 {
-   LogIO os(LogOrigin("VectorKernel", "make(Double)"));
+   LogIO os(LogOrigin("VectorKernel", "make(double)"));
    if (shape <=1) {
       os << "Shape must be > 1" << LogIO::EXCEPTION;
    }
 //
-   Vector<Double> kernel;
-   uInt nPixels = 0;
+   Vector<double> kernel;
+   uint32_t nPixels = 0;
    if (kernelType == GAUSSIAN) { 
 
 // Gaussian. The volume error is less than 6e-5% for +/- 5 sigma limits
 // width is FWHM
 
-      const Double sigma = width / sqrt(Double(8.0) * C::ln2);
+      const double sigma = width / sqrt(double(8.0) * C::ln2);
       if (useShapeExactly) {
          nPixels = shape;
       } else {
-         nPixels = max(shape,(uInt(5*sigma + 0.5) + 1) * 2);
+         nPixels = max(shape,(uint32_t(5*sigma + 0.5) + 1) * 2);
       }
       kernel.resize(nPixels);
 //
-      const Double refPix = Double(nPixels)/2;
-      Double norm;
+      const double refPix = double(nPixels)/2;
+      double norm;
       if (peakIsUnity)  {
          norm = 1.0;
       } else {
          norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
       }
-      const Gaussian1D<Double> gauss(norm, refPix, Double(width));
-      for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));
+      const Gaussian1D<double> gauss(norm, refPix, double(width));
+      for (uint32_t j=0; j<nPixels; j++) kernel(j) = gauss(double(j));
    } else if (kernelType == BOXCAR) {
-      uInt iWidth = uInt(width+0.5);
+      uint32_t iWidth = uint32_t(width+0.5);
       if (useShapeExactly) {
          nPixels =  shape;
       } else {
@@ -84,18 +84,18 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 
 // Try and center kernel
 
-      uInt startPix = max(0u,(nPixels - iWidth)/2);
-      uInt endPix = min(nPixels,startPix+iWidth-1);
+      uint32_t startPix = max(0u,(nPixels - iWidth)/2);
+      uint32_t endPix = min(nPixels,startPix+iWidth-1);
 //
-      Double norm;
+      double norm;
       if (peakIsUnity)  {
          norm = 1.0;
       } else {
-         norm = Double(iWidth);
+         norm = double(iWidth);
       }
 //
       kernel = 0.0;
-      for (uInt i=startPix; i<=endPix; i++) {
+      for (uint32_t i=startPix; i<=endPix; i++) {
          kernel(i) = 1.0 / norm;
       }
    } else if (kernelType == HANNING) {
@@ -116,7 +116,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 	   nPixels = shape;
 	   kernel.resize( nPixels );
 	   int nextIndex = shape + 1;
-	   Double normalizer = 1.0 / ( nextIndex );
+	   double normalizer = 1.0 / ( nextIndex );
 	   if ( peakIsUnity ){
 		   normalizer = 0.5;
 	   }
@@ -125,8 +125,8 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 	   int middle = (shape-1)/2;
 	   int endIndex = nextIndex / 2;
 	   for ( int i = 0; i < endIndex; i++ ){
-		   Double xValue = endIndex - i;
-		   Double angleValue = ( 2 * piValue * xValue) / nextIndex;
+		   double xValue = endIndex - i;
+		   double angleValue = ( 2 * piValue * xValue) / nextIndex;
 		   double value = 1-cos( angleValue);
 		   value = value * normalizer;
 		   kernel[middle - i] = value;
@@ -139,19 +139,19 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 
 
 
-Vector<Float> VectorKernel::make(KernelTypes kernelType, Float width, 
-                                 uInt shape, Bool useShapeExactly, Bool peakIsUnity)
+Vector<float> VectorKernel::make(KernelTypes kernelType, float width, 
+                                 uint32_t shape, bool useShapeExactly, bool peakIsUnity)
 {
-   Double tw = width;
-   Vector<Double> tmp = make(kernelType, tw, shape, useShapeExactly, peakIsUnity);
-   Vector<Float> kernel(tmp.nelements());
-   for (uInt i=0; i<tmp.nelements(); i++) kernel(i) = Float(tmp(i));
+   double tw = width;
+   Vector<double> tmp = make(kernelType, tw, shape, useShapeExactly, peakIsUnity);
+   Vector<float> kernel(tmp.nelements());
+   for (uint32_t i=0; i<tmp.nelements(); i++) kernel(i) = float(tmp(i));
    return kernel;
 }
 
 
 
-Vector<Int> VectorKernel::toKernelTypes (const String& kernels,
+Vector<int32_t> VectorKernel::toKernelTypes (const String& kernels,
                                          const std::regex& delimiter)
 {
    const Vector<String> kernelStrings = stringToVector(kernels, delimiter);
@@ -159,11 +159,11 @@ Vector<Int> VectorKernel::toKernelTypes (const String& kernels,
 }
  
 
-Vector<Int> VectorKernel::toKernelTypes (const Vector<String>& kernels)
+Vector<int32_t> VectorKernel::toKernelTypes (const Vector<String>& kernels)
 {
-   const uInt n = kernels.nelements();
-   Vector<Int> kernelTypes(n);
-   for (uInt i=0; i<n; i++) {
+   const uint32_t n = kernels.nelements();
+   Vector<int32_t> kernelTypes(n);
+   for (uint32_t i=0; i<n; i++) {
       kernelTypes(i) = VectorKernel::toKernelType(kernels(i));
    }
    return kernelTypes;
@@ -183,7 +183,7 @@ VectorKernel::KernelTypes VectorKernel::toKernelType (const String& kernel)
    } else if (kernel3==String("H")) {
       return VectorKernel::HANNING;
    } else {
-     ThrowIf (True, "Illegal kernel type " + kernel);
+     ThrowIf (true, "Illegal kernel type " + kernel);
    }
    return VectorKernel::BOXCAR;    //# to satisfy compiler
 }

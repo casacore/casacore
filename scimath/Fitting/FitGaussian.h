@@ -75,13 +75,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-// FitGaussian<Double> fitgauss(1,1);
-// Matrix<Double> x(5,1); x(0,0) = 0; x(1,0) = 1; x(2,0) = 2; x(3,0) = 3; x(4,0) = 4;
-// Vector<Double> y(5); y(0) = 0; y(1) = 1; y(2) = 4; y(3) = 1; y(4) = 1;
-// Matrix<Double> estimate(1,3);
+// FitGaussian<double> fitgauss(1,1);
+// Matrix<double> x(5,1); x(0,0) = 0; x(1,0) = 1; x(2,0) = 2; x(3,0) = 3; x(4,0) = 4;
+// Vector<double> y(5); y(0) = 0; y(1) = 1; y(2) = 4; y(3) = 1; y(4) = 1;
+// Matrix<double> estimate(1,3);
 // estimate(0,0) = 1; estimate(0,1) = 1; estimate(0,2) = 1;
 // fitgauss.setFirstEstimate(estimate);
-// Matrix<Double> solution;
+// Matrix<double> solution;
 // solution = fitgauss.fit(x,y);
 // cout << solution;
 // </srcblock>
@@ -97,8 +97,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </motivation>
 
 // <templating arg=T>
-//  <li> T must be a real data type compatible with NonLinearFitLM - Float or
-//  Double.
+//  <li> T must be a real data type compatible with NonLinearFitLM - float or
+//  double.
 // </templating>
 
 // <thrown>
@@ -127,25 +127,25 @@ class FitGaussian
   // can be modified later if necessary.
   // <group>
   FitGaussian();
-  FitGaussian(uInt dimension);
-  FitGaussian(uInt dimension, uInt numgaussians);
+  FitGaussian(uint32_t dimension);
+  FitGaussian(uint32_t dimension, uint32_t numgaussians);
   // </group>
 
   // Adjust the number of dimensions
-  void setDimensions(uInt dimensions);
+  void setDimensions(uint32_t dimensions);
 
   // Adjust the number of gaussians to fit
-  void setNumGaussians(uInt numgaussians);
+  void setNumGaussians(uint32_t numgaussians);
 
   // Set the initial estimate (the starting point of the first fit.)
   void setFirstEstimate(const Matrix<T>& estimate);
 
   // Set the maximum number of retries.
-  void setMaxRetries(uInt nretries) {itsMaxRetries = nretries;};
+  void setMaxRetries(uint32_t nretries) {itsMaxRetries = nretries;};
 
   // Set the maximum amount of time to spend (in seconds).  If time runs out
   // during a fit the process will still complete that fit.
-  void setMaxTime(Double maxtime) {itsMaxTime = maxtime;};
+  void setMaxTime(double maxtime) {itsMaxTime = maxtime;};
 
   // Set the retry factors, the values that are added/multiplied with the
   // first estimate on subsequent attempts if the first attempt fails.
@@ -156,22 +156,22 @@ class FitGaussian
   // </group>
 
   // Return the number of retry options available
-  uInt nRetryFactors() {return itsRetryFctr.nrow();};
+  uint32_t nRetryFactors() {return itsRetryFctr.nrow();};
 
   // Mask out some parameters so that they are not modified during fitting
-  Bool &mask(uInt gaussian, uInt parameter);
-  const Bool &mask(uInt gaussian, uInt parameter) const;
+  bool &mask(uint32_t gaussian, uint32_t parameter);
+  const bool &mask(uint32_t gaussian, uint32_t parameter) const;
 
   // Run the fit, using the data provided in the arguments pos and f.
   // The fit will retry from different initial estimates until it converges
   // to a value with an RMS error less than maximumRMS.  If this cannot be
   // accomplished it will simply take the result that generated the best RMS.
   Matrix<T> fit(const Matrix<T>& pos, const Vector<T>& f,
-                T maximumRMS = 1.0, uInt maxiter = 1024, 
+                T maximumRMS = 1.0, uint32_t maxiter = 1024, 
                 T convcriteria = 0.0001);
   Matrix<T> fit(const Matrix<T>& pos,const Vector<T>& f,
                 const Vector<T>& sigma,
-                T maximumRMS = 1.0, uInt maxiter = 1024, 
+                T maximumRMS = 1.0, uint32_t maxiter = 1024, 
                 T convcriteria = 0.0001);
 
   // Allow access to the fit parameters from this class
@@ -188,23 +188,23 @@ class FitGaussian
   // Return the RMS of the fit
   T RMS();
 
-  // Returns True if the fit (eventually) converged to a value.
-  Bool converged();
+  // Returns true if the fit (eventually) converged to a value.
+  bool converged();
 
 
   private:
-  uInt itsDimension;           // how many dimensions (1, 2, or 3)
-  uInt itsNGaussians;          // number of gaussians to fit
-  uInt itsMaxRetries;          // maximum number of retries to attempt
-  Double itsMaxTime;           // maximum time to spend fitting in secs
+  uint32_t itsDimension;           // how many dimensions (1, 2, or 3)
+  uint32_t itsNGaussians;          // number of gaussians to fit
+  uint32_t itsMaxRetries;          // maximum number of retries to attempt
+  double itsMaxTime;           // maximum time to spend fitting in secs
   T itsChisquare;              // chisquare of fit
   T itsRMS;                    // RMS of fit (sqrt[chisquare / N])
-  Bool itsSuccess;             // flags success or failure
+  bool itsSuccess;             // flags success or failure
   LogIO os;
 
   Matrix<T> itsFirstEstimate;  // user's estimate.
   Matrix<T> itsRetryFctr;      // source of retry information
-  Matrix<Bool> itsMask;        // masks parameters not to change in fitting
+  Matrix<bool> itsMask;        // masks parameters not to change in fitting
 
   
   // Sets the retry matrix to a default value.  This is done automatically if
@@ -212,10 +212,10 @@ class FitGaussian
   Matrix<T> defaultRetryMatrix();
 
   //Add one or more rows to the retry matrix.
-  void expandRetryMatrix(uInt rowstoadd);
+  void expandRetryMatrix(uint32_t rowstoadd);
 
   //Find the number of unmasked parameters to be fit
-  uInt countFreeParameters();
+  uint32_t countFreeParameters();
 
   // The solutions to the fit
   Matrix<T> itsSolutionParameters;

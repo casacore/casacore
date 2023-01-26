@@ -90,21 +90,21 @@ public:
     // This function sets the position on the given offset.
     // The seek option defines from which position the seek is done.
     // <group>
-    Int64 seek (Int64 offset, ByteIO::SeekOption = ByteIO::Begin);
-    Int64 seek (Int offset, ByteIO::SeekOption = ByteIO::Begin);
+    int64_t seek (int64_t offset, ByteIO::SeekOption = ByteIO::Begin);
+    int64_t seek (int32_t offset, ByteIO::SeekOption = ByteIO::Begin);
     // </group>
 
     // Is the SinkSource readable?
-    Bool isReadable() const;
+    bool isReadable() const;
 
     // Is the SinkSource writable?
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Is the SinkSource seekable?
-    Bool isSeekable() const;
+    bool isSeekable() const;
 
     // Is the BaseSinkSource unusable? 
-    Bool isNull() const;
+    bool isNull() const;
 
 protected:
     BaseSinkSource();
@@ -112,7 +112,7 @@ protected:
     // Construct using the given TypeIO. If takeOver is true the this class
     // will delete the supplied pointer. Otherwise the caller is responsible
     // for this.
-    BaseSinkSource (TypeIO* typeIO, Bool takeOver=False);
+    BaseSinkSource (TypeIO* typeIO, bool takeOver=false);
 
     // The copy constructor uses reference semantics
     BaseSinkSource (const BaseSinkSource& BaseSinkSource);

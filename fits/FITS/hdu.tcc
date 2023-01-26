@@ -107,7 +107,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	bscale_x = 1.0;		       	// first, initialize everything
 	bzero_x = 0.0;
 	bunit_x = 0;
-	isablank_x = False;
+	isablank_x = false;
 	blank_x = FITS::minInt;
 	ctype_x = 0;
 	crpix_x = 0;
@@ -136,7 +136,7 @@ void PrimaryArray<TYPE>::pa_assign() {  // assign values from keyword list
 	    blank_x = Int_null;
 	else {
 	    blank_x = kwlist_.curr()->asInt();
-	    isablank_x = True;
+	    isablank_x = true;
 	}
 
 	datamax_x = asgdbl(FITS::DATAMAX,double_null);
@@ -411,8 +411,8 @@ int PrimaryArray<TYPE>::store(const TYPE *source, int npixels) {
 //=========================================================================================
 template <class TYPE>
 int PrimaryArray<TYPE>::store(const TYPE *source, FITS::FitsArrayOption opt) {
-   uInt count;
-	Int offset, i, *sub;
+   uint32_t count;
+	int32_t offset, i, *sub;
 	if (set_next(nelements()) == -1) { // allocate nelements array elements
 	    return -1;
 	}
@@ -471,12 +471,12 @@ void PrimaryArray<TYPE>::copy(double *target, int npixels) const
 //============================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
-	uInt count;
-	Int offset, *sub, *C_factor;
+	uint32_t count;
+	int32_t offset, *sub, *C_factor;
 	double fscale = (double)bscale();
 	double fzero = (double)bzero();
 
-	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
+	bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? true:false;
 	TYPE blankval = TYPE(0);
 	if (blanked) {
 	    blankval = blank();
@@ -488,10 +488,10 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
-	    Int i;
+	    int32_t i;
 	    for (i = 0; i < (dims() - 1); ++i) {
 		C_factor[i] = 1;
-		for (Int j = i + 1; j < dims(); ++j)
+		for (int32_t j = i + 1; j < dims(); ++j)
 		    C_factor[i] *= dim(j);
 	    }
 	    C_factor[i] = 1;
@@ -514,12 +514,12 @@ void PrimaryArray<TYPE>::copy(double *target, FITS::FitsArrayOption opt) const {
 		}
 	    }
 	} else {
-	    uInt nmax = nelements();
+	    uint32_t nmax = nelements();
 	    if (!blanked) {
-		for (uInt n = 0; n < nmax; ++n)
+		for (uint32_t n = 0; n < nmax; ++n)
 		    target[n] = (double)(fscale * array[n] + fzero);
 	    } else {
-		for (uInt n = 0; n < nmax; ++n) {
+		for (uint32_t n = 0; n < nmax; ++n) {
 		    target[n] = array[n] != blankval ?
 			(double)(fscale * array[n] + fzero) : nan;
 		}
@@ -555,12 +555,12 @@ void PrimaryArray<TYPE>::copy(float *target, int npixels) const
 //====================================================================================
 template <class TYPE>
 void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
-	uInt count;
-	Int offset, *sub, *C_factor;
+	uint32_t count;
+	int32_t offset, *sub, *C_factor;
 	float fscale = (float)bscale();
 	float fzero = (float)bzero();
 
-	Bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? True:False;
+	bool blanked = isablank() && !FitsFPUtil::isFP((TYPE *)0) ? true:false;
 	TYPE blankval = TYPE(0);
 	if (blanked) {
 	    blankval = blank();
@@ -572,10 +572,10 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
-	    Int i;
+	    int32_t i;
 	    for (i = 0; i < (dims() - 1); ++i) {
 		C_factor[i] = 1;
-		for (Int j = i + 1; j < dims(); ++j)
+		for (int32_t j = i + 1; j < dims(); ++j)
 		    C_factor[i] *= dim(j);
 	    }
 	    C_factor[i] = 1;
@@ -598,12 +598,12 @@ void PrimaryArray<TYPE>::copy(float *target, FITS::FitsArrayOption opt) const {
 		}
 	    }
 	} else {
-	    uInt nmax = nelements();
+	    uint32_t nmax = nelements();
 	    if (!blanked) {
-		for (uInt n = 0; n < nmax; ++n)
+		for (uint32_t n = 0; n < nmax; ++n)
 		    target[n] = (float)(fscale * array[n] + fzero);
 	    } else {
-		for (uInt n = 0; n < nmax; ++n) {
+		for (uint32_t n = 0; n < nmax; ++n) {
 		    target[n] = array[n] != blankval ?
 			(float)(fscale * array[n] + fzero) : nan;
 		}
@@ -624,31 +624,31 @@ void PrimaryArray<TYPE>::move(TYPE *target, int npixels) const
 
 template <class TYPE>
 void PrimaryArray<TYPE>::move(TYPE *target, FITS::FitsArrayOption opt) const {
-	uInt count, offset;
-	Int *sub, *C_factor;
+	uint32_t count, offset;
+	int32_t *sub, *C_factor;
 
 	if (opt == FITS::FtoC) {
 	    sub = &factor[dims()];
 	    C_factor = &sub[dims()];
 	    // compute the C_factors
-	    Int i;
-	    for (i = 0; i < uInt(dims() - 1); ++i) {
+	    int32_t i;
+	    for (i = 0; i < uint32_t(dims() - 1); ++i) {
 		C_factor[i] = 1;
-		for (Int j = i + 1; j < uInt(dims()); ++j)
+		for (int32_t j = i + 1; j < uint32_t(dims()); ++j)
 		    C_factor[i] *= dim(j);
 	    }
 	    C_factor[i] = 1;
 	    // algorithm for converting F-order to C-order
 	    count = 0;
-	    for (i = 0; i < uInt(dims()); ++i) 
+	    for (i = 0; i < uint32_t(dims()); ++i) 
 		sub[i] = 0;
 	    for(;;) {
-		for (i = 0, offset = 0; i < uInt(dims()); ++i)
+		for (i = 0, offset = 0; i < uint32_t(dims()); ++i)
 		    offset += sub[i] * C_factor[i];
 		target[offset] = array[count++];
-		if (count == uInt(nelements())) 
+		if (count == uint32_t(nelements())) 
 		    break;
-		for (i = 0; i < uInt(dims()); ++i) {
+		for (i = 0; i < uint32_t(dims()); ++i) {
 		    ++sub[i];
 		    if (sub[i] == dim(i))
 			sub[i] = 0;
@@ -727,7 +727,7 @@ int PrimaryArray<TYPE>::write_priArr_hdr( FitsOutput &fout, // I - FITS output o
 	// ffgbyt() sometimes does not move bytepos to the new position. So we do it.
 	(fout.getfptr()->Fptr)->bytepos = l_datastart;
    // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,true);
 	// init the info for the data unit
 	init_data_unit( FITS::PrimaryArrayHDU );
 	// assign the binary table. This is done in constructor for the case when user
@@ -869,7 +869,7 @@ int ImageExtension<TYPE>::write_imgExt_hdr( FitsOutput &fout, // I - FITS output
 	fout.getfout().setfptr( l_newfptr ); 
 
    // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,true);
 	// init the info for the data unit
 	init_data_unit( FITS::ImageExtensionHDU );
 	// Call the parent pa_assign() method to assign the binary table. This is done in the 
@@ -987,7 +987,7 @@ int PrimaryGroup<TYPE>::write_priGrp_hdr( FitsOutput &fout, // I - FITS output o
 	(fout.getfptr()->Fptr)->bytepos = l_datastart;
 
    // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,true);
 	// init the info for the data unit
 	init_data_unit( FITS::PrimaryGroupHDU );
 	
@@ -1086,13 +1086,13 @@ void PrimaryGroup<TYPE>::storeparm(const TYPE *source) {
 //====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::copyparm(double *target) const {
-	for (Int i = 0; i < pcount(); ++i)
+	for (int32_t i = 0; i < pcount(); ++i)
 	    target[i] = pscal(i) * group_parm[i] + pzero(i);
 }
 //====================================================================================
 template <class TYPE>
 void PrimaryGroup<TYPE>::copyparm(float *target) const {
-	for (Int i = 0; i < pcount(); ++i)
+	for (int32_t i = 0; i < pcount(); ++i)
 	    target[i] = (float)(pscal(i) * group_parm[i] + pzero(i));
 }
 //====================================================================================
@@ -1104,7 +1104,7 @@ void PrimaryGroup<TYPE>::moveparm(TYPE *target) const {
 template <class TYPE>
 int PrimaryGroup<TYPE>::read() {
 	// read the data
-	Int nb = fitsitemsize() * (pcount() + nelements());
+	int32_t nb = fitsitemsize() * (pcount() + nelements());
 	if (read_data((char *)group_parm,nb) != nb) {
 	    //error message
 	    return -1;
@@ -1113,7 +1113,7 @@ int PrimaryGroup<TYPE>::read() {
 	// do the FITS to local conversion, including worrying about
 	// the fact that array and FITS size may not be the same
 	// ...
-	uInt ne = nb / fitsitemsize(); // the actual number of elements read
+	uint32_t ne = nb / fitsitemsize(); // the actual number of elements read
 	FITS::f2l( (TYPE *)group_parm, group_parm, ne );
 
 	++current_group;
@@ -1277,7 +1277,7 @@ int PrimaryTable<TYPE>::write_priTable_hdr( FitsOutput &fout, // I - FITS output
 	fout.getfout().setfptr( l_newfptr ); 
 
         // now parse the headerbytes into kwlist_. init_data_unit will use kwlist_.
-	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,True);
+	fout.getkc().parse( l_headerbytes, kwlist_ ,0, errfn,true);
 	// init the info for the data unit
 	init_data_unit( FITS::PrimaryTableHDU );
 	// Call the parent pa_assign() method to assign the binary table. This is done in the 

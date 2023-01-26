@@ -53,8 +53,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // 
 // Each parameter can be masked. The mask can, e.g., be used to indicate to a
 // generic least-squares fitting routine to only adjust parameters with
-// a <em>True</em> mask (the default). For that reason methods that only
-// handle <em>True</em> data items have names with <em>Adjust</em> in
+// a <em>true</em> mask (the default). For that reason methods that only
+// handle <em>true</em> data items have names with <em>Adjust</em> in
 // the names. In general the user should not be concerned with these
 // methods, but should only manipulate the parameter <src>flags</src> and
 // <src>values</src>.
@@ -88,10 +88,10 @@ template<class T> class FunctionParam {
   // Construct a default FunctionParam with 0 parameters
   FunctionParam();
   // Construct a FunctionParam with <src>n</src> parameters with zero value and
-  // all masks <em>True</em>
-  explicit FunctionParam(const uInt n);
+  // all masks <em>true</em>
+  explicit FunctionParam(const uint32_t n);
   // Construct a FunctionParam from the given vector, with all masks 
-  // <em>True</em>
+  // <em>true</em>
   explicit FunctionParam(const Vector<T> &in);
   // Copy constructor (deep copy)
   FunctionParam(const FunctionParam<T> &other);
@@ -101,7 +101,7 @@ template<class T> class FunctionParam {
     : npar_p(other.getParameters().nelements()),
     param_p(npar_p), mask_p(npar_p),
     maskedPtr_p(0) {
-    for (uInt i=0; i<npar_p; ++i) {
+    for (uint32_t i=0; i<npar_p; ++i) {
       FunctionTraits<T>::
 	setValue(param_p[i],
 		 FunctionTraits<W>::getValue(other.getParameters()[i]),
@@ -118,30 +118,30 @@ template<class T> class FunctionParam {
   FunctionParam &operator=(const FunctionParam<T> &other);
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &operator[](const uInt n) { return param_p[n]; }
-  const T &operator[](const uInt n) const { return param_p[n]; }
+  T &operator[](const uint32_t n) { return param_p[n]; }
+  const T &operator[](const uint32_t n) const { return param_p[n]; }
   // </group>
   // Compare two parameter sets for equal size, values and masks.
   // <group>
-  Bool operator==(const FunctionParam<T> &other) const;
-  Bool operator!=(const FunctionParam<T> &other) const;
+  bool operator==(const FunctionParam<T> &other) const;
+  bool operator!=(const FunctionParam<T> &other) const;
   // </group>
 
   //# Member functions
   // Return the number of parameters
-  uInt nelements() const { return param_p.nelements(); }
+  uint32_t nelements() const { return param_p.nelements(); }
   // Manipulate the nth parameter (0-based) with no index check
   // <group>
-  T &parameter(const uInt n) { return param_p[n]; }
-  const T &parameter(const uInt n) const{ return param_p[n]; }
+  T &parameter(const uint32_t n) { return param_p[n]; }
+  const T &parameter(const uint32_t n) const{ return param_p[n]; }
   // </group>
 
   // Manipulate the mask associated with the nth parameter
   // (e.g. to indicate whether the parameter is adjustable or nonadjustable).
   // Note no index check.
   // <group>
-  Bool &mask(const uInt n);
-  const Bool &mask(const uInt n) const { return mask_p[n]; }
+  bool &mask(const uint32_t n);
+  const bool &mask(const uint32_t n) const { return mask_p[n]; }
   // </group>
 
   // Get all parameters at once.  Returns zero length
@@ -154,17 +154,17 @@ template<class T> class FunctionParam {
 
   // Get all parameter masks at once.  Returns zero length
   // Vector if there are no parameters.
-  const Vector<Bool> &getParamMasks() const { return mask_p; }
+  const Vector<bool> &getParamMasks() const { return mask_p; }
     
   // Set all parameter masks at once. Only the minimum of the input number and
   // the object number of parameters will be set.
-  void setParamMasks(const Vector<Bool> &masks);
+  void setParamMasks(const Vector<bool> &masks);
 
   // Operations on the masked parameters only. For possible re-use the
   // results are cached.
   // <group>
-  // Number of masked (<src>=True</src>) parameters
-  uInt nMaskedParameters() const;
+  // Number of masked (<src>=true</src>) parameters
+  uint32_t nMaskedParameters() const;
   // All masked parameters only
   // <group>
   Vector<T> &getMaskedParameters() const;
@@ -178,11 +178,11 @@ template<class T> class FunctionParam {
  private:
   //# Data
   // Number of parameters
-  uInt npar_p;
+  uint32_t npar_p;
   // Parameters
   Vector<T> param_p;
   // Masks
-  Vector<Bool> mask_p;
+  Vector<bool> mask_p;
   // Cached masked data
   mutable Vector<T> *maskedPtr_p;
 

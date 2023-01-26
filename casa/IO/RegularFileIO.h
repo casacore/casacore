@@ -65,12 +65,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Use that as the sink of AipsIO.
 //    AipsIO stream (&regio);
 //    // Write values.
-//    stream << (Int)10;
-//    stream << True;
+//    stream << (int32_t)10;
+//    stream << true;
 //    // Seek to beginning of file and read data in.
 //    stream.setpos (0);
-//    Int vali;
-//    Bool valb;
+//    int32_t vali;
+//    bool valb;
 //    stream >> vali >> valb;
 // </srcblock>
 // </example>
@@ -88,7 +88,7 @@ public:
     // FilebufIO</linkto> object. A zero length uses an appropriate default.
     explicit RegularFileIO (const RegularFile& regularFile,
                             ByteIO::OpenOption = ByteIO::Old,
-                            uInt filebufSize=0);
+                            uint32_t filebufSize=0);
 
     ~RegularFileIO();
     
@@ -103,13 +103,13 @@ public:
 
     // Convenience function to open or create a file.
     // Optionally it is checked if the file does not exist yet.
-    // If useODirect=True and if supported by the OS, the file will be opened
+    // If useODirect=true and if supported by the OS, the file will be opened
     // with O_DIRECT which bypasses the kernel's file cache for more predictable
     // I/O behaviour. It requires the size and the alignment of the data to be
     // read/written to be a multiple of the the disk's logical block size.
     // It returns the file descriptor.
     static int openCreate (const RegularFile& file, ByteIO::OpenOption,
-                           Bool useODirect=False);
+                           bool useODirect=false);
 
 private:
     OpenOption  itsOption;

@@ -38,7 +38,7 @@
 // A script compares this output with a reference output file.
 
 //# Forward declaration.
-void doit (Bool doExcp);
+void doit (bool doExcp);
 
 
 int main (int argc, const char*[])
@@ -53,30 +53,30 @@ int main (int argc, const char*[])
     return 0;                       // successfully executed
 }
 
-void doit (Bool)
+void doit (bool)
 {
     {
 	Complex cp[1000];
-	Int ip[1000];
+	int32_t ip[1000];
 	AipsIOCarrayEx1 ap[1000];
-	for (uInt i=0; i<1000; i++) {
+	for (uint32_t i=0; i<1000; i++) {
 	    cp[i] = Complex (float(i), float(i+4));
 	    ip[i] = i*2;
 	    ap[i] = AipsIOCarrayEx1 (i+10, i+20);
 	}
 	AipsIO io ("tAipsIOCarray_tmp.data", ByteIO::New);
 	io.putstart ("tAipsIOCarray",1);
-	putAipsIO (io, uInt(1000), cp);
-	putAipsIO (io, uInt(1000), ap);
-	putAipsIO (io, uInt(1000), ip);
+	putAipsIO (io, uint32_t(1000), cp);
+	putAipsIO (io, uint32_t(1000), ap);
+	putAipsIO (io, uint32_t(1000), ip);
 	io.putend();
     }
     {
-	Int i;
+	int32_t i;
 	Complex cpi[1000];
-	Int ipi[1000];
+	int32_t ipi[1000];
 	AipsIOCarrayEx1 api[1000];
-	uInt n;
+	uint32_t n;
 	AipsIO io ("tAipsIOCarray_tmp.data");
 	io.getstart ("tAipsIOCarray");
 	io >> n;
@@ -103,11 +103,11 @@ void doit (Bool)
 	io.getend();
     }
     {
-	Int i;
+	int32_t i;
 	Complex* cpi;
-	Int* ipi;
+	int32_t* ipi;
 	AipsIOCarrayEx1* api;
-	uInt n;
+	uint32_t n;
 	AipsIO io ("tAipsIOCarray_tmp.data");
 	io.getstart ("tAipsIOCarray");
 	getnewAipsIO (io, n, &cpi);

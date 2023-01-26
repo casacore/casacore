@@ -39,23 +39,23 @@ MCBase::~MCBase() {}
 //# Operators
 
 //# Member functions
-void MCBase::makeState(uInt *state,
-		       const uInt ntyp, const uInt nrout,
-		       const uInt list[][3]) {
+void MCBase::makeState(uint32_t *state,
+		       const uint32_t ntyp, const uint32_t nrout,
+		       const uint32_t list[][3]) {
   // Make trees
-  uInt *tcnt = new uInt[ntyp];
-  uInt *tree = new uInt[ntyp*ntyp];
-  Bool *visit= new Bool[ntyp];
-  uInt *mcnt = new uInt[ntyp*ntyp];
-  for (uInt j=0; j<ntyp; j++) {
+  uint32_t *tcnt = new uint32_t[ntyp];
+  uint32_t *tree = new uint32_t[ntyp*ntyp];
+  bool *visit= new bool[ntyp];
+  uint32_t *mcnt = new uint32_t[ntyp*ntyp];
+  for (uint32_t j=0; j<ntyp; j++) {
     tcnt[j] = 0;
-    visit[j] = False;
-    for (uInt i=0; i<ntyp; i++) {
+    visit[j] = false;
+    for (uint32_t i=0; i<ntyp; i++) {
       mcnt[i*ntyp + j]  = 100*nrout;
       state[i*ntyp + j] = nrout;
     }
   }
-  for (uInt i=0; i<nrout; i++) {
+  for (uint32_t i=0; i<nrout; i++) {
     tree[list[i][0]*ntyp + tcnt[list[i][0]]] = i;
     tcnt[list[i][0]]++;
     // Fill one-step transitions
@@ -63,11 +63,11 @@ void MCBase::makeState(uInt *state,
     state[list[i][0]*ntyp + list[i][1]] = i;
   }
   // Find shortest route
-  for (uInt i=0; i<ntyp; i++) {
-    for (uInt j=0; j<ntyp; j++) {
+  for (uint32_t i=0; i<ntyp; i++) {
+    for (uint32_t j=0; j<ntyp; j++) {
       if (i != j) {
-	uInt len = 0;
-	Bool okall = True;
+	uint32_t len = 0;
+	bool okall = true;
 	findState(len, state, mcnt, okall,
 		  visit, tcnt, tree,
 		  i, j, ntyp, nrout, list);
@@ -81,24 +81,24 @@ void MCBase::makeState(uInt *state,
   delete [] mcnt;
 }
 
-Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
-		       Bool *visit, const uInt *tcnt, const uInt *tree,
-		       const uInt &in, const uInt &out,
-		       const uInt ntyp, const uInt nrout,
-		       const uInt list[][3]) {
+bool MCBase::findState(uint32_t &len, uint32_t *state, uint32_t *mcnt, bool &okall,
+		       bool *visit, const uint32_t *tcnt, const uint32_t *tree,
+		       const uint32_t &in, const uint32_t &out,
+		       const uint32_t ntyp, const uint32_t nrout,
+		       const uint32_t list[][3]) {
   // Check loop
-  if (visit[in]) return False;
-  uInt minlen = 100*nrout;
-  uInt res = nrout;
+  if (visit[in]) return false;
+  uint32_t minlen = 100*nrout;
+  uint32_t res = nrout;
   // Check if path already known
   if (mcnt[in*ntyp + out] != 100*nrout) {
     minlen = mcnt[in*ntyp + out];
     res = state[in*ntyp + out];
   } else {
-    for (uInt i=0; i<tcnt[in]; i++) {
-      uInt loclen = 1+list[tree[in*ntyp+i]][2];
-      visit[in] = True;
-      uInt nin = list[tree[in*ntyp+i]][1];
+    for (uint32_t i=0; i<tcnt[in]; i++) {
+      uint32_t loclen = 1+list[tree[in*ntyp+i]][2];
+      visit[in] = true;
+      uint32_t nin = list[tree[in*ntyp+i]][1];
       if (findState(loclen, state, mcnt, okall,
 		    visit, tcnt, tree,
 		    nin, out, ntyp, nrout, list)) {
@@ -106,31 +106,31 @@ Bool MCBase::findState(uInt &len, uInt *state, uInt *mcnt, Bool &okall,
 	  minlen = loclen;
 	  res = tree[in*ntyp+i];
 	}
-      } else okall = False;
+      } else okall = false;
     }
-    visit[in] = False;
+    visit[in] = false;
   }
-  if (minlen == 100*nrout) return False;
+  if (minlen == 100*nrout) return false;
   if (len == 0 || okall) {
     mcnt[in*ntyp + out] = minlen;
     state[in*ntyp + out]= res;
   }
   len += minlen;
-  return True;
+  return true;
 }
 
-String MCBase::showState(uInt *state,
-			 const uInt ntyp, const uInt,
-			 const uInt list[][3]) {
+String MCBase::showState(uint32_t *state,
+			 const uint32_t ntyp, const uint32_t,
+			 const uint32_t list[][3]) {
   ostringstream oss;
   oss << "   |";
-  for (uInt i=0; i<ntyp; i++) oss << setw(3) << i;
+  for (uint32_t i=0; i<ntyp; i++) oss << setw(3) << i;
   oss << "\n";
-  for (uInt j=0; j<3*ntyp+4; j++) oss << '-'; 
+  for (uint32_t j=0; j<3*ntyp+4; j++) oss << '-'; 
   oss << "\n";
-  for (uInt i=0; i<ntyp; i++) {
+  for (uint32_t i=0; i<ntyp; i++) {
     oss << setw(3) << i << '|';
-    for (uInt j=0; j<ntyp; j++) {
+    for (uint32_t j=0; j<ntyp; j++) {
       if (i == j) {
         oss << " --"; 
       } else {
@@ -139,7 +139,7 @@ String MCBase::showState(uInt *state,
     }
     oss << "\n";
     oss << "   |";
-    for (uInt k=0; k<ntyp; k++) {
+    for (uint32_t k=0; k<ntyp; k++) {
       if (i == k) {
         oss << "   ";
       } else {

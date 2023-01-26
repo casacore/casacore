@@ -213,7 +213,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  Matrix<float> array(IPosition(2,12,20));
 //  indgen (array);
 //  // Write some data into the data columns.
-//  for (uInt i=0; i<30*42; i++) {
+//  for (uint32_t i=0; i<30*42; i++) {
 //	data.put (i, array);
 //	weight.put (i, array+float(100));
 //	array += float(200);
@@ -307,12 +307,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  // Each hypercube requires 30 rows to be added (i.e. nr of baselines).
 //  // The last dimension of each hypercube is extended with 1.
 //  rownr_t rownr = 0;
-//  for (uInt i=0; i<42; i++) {
+//  for (uint32_t i=0; i<42; i++) {
 //      if (i%2 == 0) {
 //          table.addRow (30);
 //          accessor.extendHypercube (1, hyperDefLine);
 //          time.put (rownr, float(i));
-//          for (uInt j=0; j<30; j++) {
+//          for (uint32_t j=0; j<30; j++) {
 //              data.put (rownr, arrayLine);
 //              weight.put (rownr, arrayLine);
 //              rownr++;
@@ -324,7 +324,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //          hyperDefCont.define ("Time", timeValue);
 //          accessor.extendHypercube (1, hyperDefCont);
 //          time.put (rownr, float(i));
-//          for (uInt j=0; j<30; j++) {
+//          for (uint32_t j=0; j<30; j++) {
 //              data.put (rownr, arrayCont);
 //              weight.put (rownr, arrayCont);
 //              rownr++;
@@ -360,7 +360,7 @@ public:
     // default value is used.
     // <group>
     TiledDataStMan (const String& hypercolumnName,
-		    uInt64 maximumCacheSize = 0);
+		    uint64_t maximumCacheSize = 0);
     TiledDataStMan (const String& hypercolumnName,
 		    const Record& spec);
     // </group>
@@ -413,7 +413,7 @@ private:
     // the last dimension.
     // The record should contain the id values (to get the correct
     // hypercube) and optionally coordinate values for the elements added.
-    void extendHypercube (uInt64 incrInLastDim, const Record& values);
+    void extendHypercube (uint64_t incrInLastDim, const Record& values);
 
     // Get the hypercube in which the given row is stored.
     virtual TSMCube* getHypercube (rownr_t rownr);
@@ -423,30 +423,30 @@ private:
     virtual TSMCube* getHypercube (rownr_t rownr, IPosition& position);
 
     // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    virtual bool flush (AipsIO&, bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
     virtual void create64 (rownr_t nrrow);
 
     // Read the header info.
-    virtual void readHeader (rownr_t nrrow, Bool firstTime);
+    virtual void readHeader (rownr_t nrrow, bool firstTime);
 
     // Update the map of row numbers to cube number plus offset.
-    void updateRowMap (uInt cubeNr, uInt64 incrInLastDim);
+    void updateRowMap (uint32_t cubeNr, uint64_t incrInLastDim);
 
     // Check if the table is large enough to hold this
     // hypercube extension.
     void checkNrrow (const IPosition& cubeShape,
-		     uInt64 incrInLastDim) const;
+		     uint64_t incrInLastDim) const;
 
 
     //# Declare the data members.
     // The map of row number to cube and position in cube.
     std::vector<rownr_t> rowMap_p;
-    std::vector<uInt> cubeMap_p;
-    std::vector<uInt> posMap_p;
+    std::vector<uint32_t> cubeMap_p;
+    std::vector<uint32_t> posMap_p;
     // The row number since the last hypercube extension.
     rownr_t nrrowLast_p;
 };

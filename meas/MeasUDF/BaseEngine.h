@@ -90,7 +90,7 @@ namespace casacore {
   {
   public:
     BaseEngine()
-      : itsIsConst (False),
+      : itsIsConst (false),
         itsNDim    (-1)
     {}
 
@@ -103,18 +103,18 @@ namespace casacore {
     // If nvalues=1, the first axis is removed from the shape.
     // Note that the shape might have been set to the column's shape if a
     // measure column is used.
-    void adaptForConstant (const IPosition& shapeConstant, uInt nvalues=0);
+    void adaptForConstant (const IPosition& shapeConstant, uint32_t nvalues=0);
 
     // Extend the shape (if not empty) with the engine's shape.
     // If the engine is not const, itsIsConst is cleared.
-    void extendBase (const BaseEngine&, Bool removeFirstAxis=False);
+    void extendBase (const BaseEngine&, bool removeFirstAxis=false);
 
     // Get the output shape.
     const IPosition& shape() const
       { return itsShape; }
 
     // Get the output dimensionality.
-    Int ndim() const
+    int32_t ndim() const
       { return itsNDim; }
 
     // Get the unit of the function's result.
@@ -126,17 +126,17 @@ namespace casacore {
       { return itsInUnit; }
     
     // Tell if the expression is constant.
-    Bool isConstant() const
+    bool isConstant() const
       { return itsIsConst; }
 
   protected:
     // Let a derived class derive its attributes.
     // The default implementation does nothing.
-    virtual void deriveAttr (const Unit& unit, Int nval);
+    virtual void deriveAttr (const Unit& unit, int32_t nval);
 
     // Let a derived class set its value type.
     // By default is does nothing.
-    virtual void setValueType (Int valueType);
+    virtual void setValueType (int32_t valueType);
     
     // Let a derived class strip part of the reference type.
     // The default implementation returns the full type string.
@@ -144,9 +144,9 @@ namespace casacore {
 
     
     //# Data members.
-    Bool          itsIsConst;
+    bool          itsIsConst;
     IPosition     itsShape;
-    Int           itsNDim;    // <0 unknown shape, 0 scalar, >0 known shape
+    int32_t           itsNDim;    // <0 unknown shape, 0 scalar, >0 known shape
     Unit          itsInUnit;
     Unit          itsOutUnit;
     TableExprNode itsExprNode;

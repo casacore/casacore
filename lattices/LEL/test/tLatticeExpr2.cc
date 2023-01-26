@@ -56,167 +56,167 @@ int main(int argc, const char* argv[])
     inp.create("tz", "0", "Number of pixels along the z-axis tile", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
-    const uInt tx=inp.getInt("tx");
-    const uInt ty=inp.getInt("ty");
-    const uInt tz=inp.getInt("tz");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const uint32_t nz=inp.getInt("nz");
+    const uint32_t tx=inp.getInt("tx");
+    const uint32_t ty=inp.getInt("ty");
+    const uint32_t tz=inp.getInt("tz");
     const IPosition latticeShape(3, nx, ny, nz);
     IPosition tileShape(3, tx, ty, tz);
     if (tileShape.product() == 0) {
       tileShape = TiledShape(latticeShape).tileShape();
     }
-    cout << "Data Type: Float";
+    cout << "Data Type: float";
     cout << "  Lattice shape:" << latticeShape;
     cout << "  Tile shape:" << tileShape << endl;
 
     {
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> lat(TiledShape(latticeShape, tileShape), paTable);
-      Array<Float> arr(tileShape);
+      PagedArray<float> lat(TiledShape(latticeShape, tileShape), paTable);
+      Array<float> arr(tileShape);
       indgen(arr);
-      LatticeIterator<Float> iter(lat, tileShape);
+      LatticeIterator<float> iter(lat, tileShape);
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
  	iter.woCursor() = arr;
-	arr += Float(tileShape.product());
+	arr += float(tileShape.product());
       }
       timer.show ("filling         ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(2*lat);
+      LatticeExpr<float> expr(2*lat);
       latout.copyData (expr);
       timer.show ("2*lat           ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr((mean(lat)-lat.shape().product()/3)*lat);
+      LatticeExpr<float> expr((mean(lat)-lat.shape().product()/3)*lat);
       latout.copyData (expr);
       timer.show ("mean(lat)*lat   ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(amp(lat,lat));
+      LatticeExpr<float> expr(amp(lat,lat));
       latout.copyData (expr);
       timer.show ("amp(lat,lat)    ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(lat+lat);
+      LatticeExpr<float> expr(lat+lat);
       latout.copyData (expr);
       timer.show ("lat+lat         ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(2*min(lat)*2*lat);
+      LatticeExpr<float> expr(2*min(lat)*2*lat);
       latout.copyData (expr);
       timer.show ("2*min(lat)*2*lat");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(lat*2*min(lat)*2);
+      LatticeExpr<float> expr(lat*2*min(lat)*2);
       latout.copyData (expr);
       timer.show ("lat*2*min(lat)*2");
     }
     {
       Table t1("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat1(t1);
+      PagedArray<float> lat1(t1);
       Table t2("tLatticeExpr2_tmp.tab2");
-      PagedArray<Float> lat2(t2);
+      PagedArray<float> lat2(t2);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab3", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
-      LatticeExpr<Float> expr(2*lat1 + 3*lat2);
+      LatticeExpr<float> expr(2*lat1 + 3*lat2);
       latout.copyData (expr);
       timer.show ("2*lat1 + 3*lat2 ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab3");
-      PagedArray<Float> lat(t);
-      Array<Float> arr(tileShape);
+      PagedArray<float> lat(t);
+      Array<float> arr(tileShape);
       indgen(arr);
-      RO_LatticeIterator<Float> iter(lat, tileShape);
+      RO_LatticeIterator<float> iter(lat, tileShape);
       Timer timer;
       for (iter.reset(); !iter.atEnd(); iter++) {
 	if (! allEQ (iter.cursor(), float(8)*arr)) {
 	  cout << "result mismatches" << endl;
 	  return 1;
 	}
-	arr += Float(tileShape.product());
+	arr += float(tileShape.product());
       }
       timer.show ("checking        ");
     }
     {
       Table t("tLatticeExpr2_tmp.tab");
-      PagedArray<Float> lat(t);
+      PagedArray<float> lat(t);
       SetupNewTable paSetup("tLatticeExpr2_tmp.tab2", TableDesc(), Table::New);
       Table paTable(paSetup);
-      PagedArray<Float> latout(TiledShape(latticeShape, tileShape), paTable);
+      PagedArray<float> latout(TiledShape(latticeShape, tileShape), paTable);
       Timer timer;
       LCPagedMask mask (lat.shape(), lat.tableName() + "/mask");
-      mask.set (True);
+      mask.set (true);
       timer.show ("filling mask    ");
-      SubLattice<Float> sublat (lat, mask);
+      SubLattice<float> sublat (lat, mask);
       timer.mark();
-      LatticeExpr<Float> expr(sublat+sublat);
+      LatticeExpr<float> expr(sublat+sublat);
       latout.copyData (expr);
       timer.show ("sublat+sublat   ");
       timer.mark();
-      LatticeExpr<Float> expr2((mean(sublat)-lat.shape().product()/3)*lat);
+      LatticeExpr<float> expr2((mean(sublat)-lat.shape().product()/3)*lat);
       latout.copyData (expr2);
       timer.show ("mean(sublat)*lat");
       timer.mark();
-      LatticeExpr<Float> expr3(amp(sublat,lat));
+      LatticeExpr<float> expr3(amp(sublat,lat));
       latout.copyData (expr3);
       timer.show ("amp(sublat,lat) ");
     }
     if (latticeShape.product() <= 1024*1024) {
-      Array<Float> arr1(latticeShape);
-      Array<Float> arr5(latticeShape);
+      Array<float> arr1(latticeShape);
+      Array<float> arr5(latticeShape);
       indgen(arr1);
-      ArrayLattice<Float> al1(arr1);
-      ArrayLattice<Float> al5(latticeShape);
+      ArrayLattice<float> al1(arr1);
+      ArrayLattice<float> al5(latticeShape);
 
       cout << "arr1+arr1" << endl;
       Timer timer;
       arr5 = arr1 + arr1;
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1));
+      al5.copyData (LatticeExpr<float>(al1+al1));
       timer.show ("as lattice");
 
       cout << "arr1+arr1+arr1" << endl;
@@ -224,7 +224,7 @@ int main(int argc, const char* argv[])
       arr5 = arr1 + arr1 + arr1;
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1));
+      al5.copyData (LatticeExpr<float>(al1+al1+al1));
       timer.show ("as lattice");
 
       cout << "arr1+arr1+arr1+arr1" << endl;
@@ -232,7 +232,7 @@ int main(int argc, const char* argv[])
       arr5 = arr1 + arr1 + arr1 + arr1;
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1));
+      al5.copyData (LatticeExpr<float>(al1+al1+al1+al1));
       timer.show ("as lattice");
 
       cout << "arr1+arr1+arr1+arr1+arr1" << endl;
@@ -240,7 +240,7 @@ int main(int argc, const char* argv[])
       arr5 = arr1 + arr1 + arr1 + arr1 + arr1;
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1+al1));
+      al5.copyData (LatticeExpr<float>(al1+al1+al1+al1+al1));
       timer.show ("as lattice");
 
       cout << "((((arr1+arr1)+arr1)+arr1)+arr1)+arr1" << endl;
@@ -248,7 +248,7 @@ int main(int argc, const char* argv[])
       arr5 = ((((arr1 + arr1) + arr1) + arr1) + arr1) + arr1;
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(((((al1+al1)+al1)+al1)+al1)+al1));
+      al5.copyData (LatticeExpr<float>(((((al1+al1)+al1)+al1)+al1)+al1));
       timer.show ("as lattice");
 
       cout << "arr1+(arr1+(arr1+(arr1+(arr1+arr1))))" << endl;
@@ -256,7 +256,7 @@ int main(int argc, const char* argv[])
       arr5 = arr1 + (arr1 + (arr1 + (arr1 + (arr1 + arr1))));
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+(al1+(al1+(al1+(al1+al1))))));
+      al5.copyData (LatticeExpr<float>(al1+(al1+(al1+(al1+(al1+al1))))));
       timer.show ("as lattice");
 
       cout << "arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1" << endl;
@@ -264,7 +264,7 @@ int main(int argc, const char* argv[])
       arr5 = arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1+arr1;
       timer.show ("as array  ");
       timer.mark();
-      al5.copyData (LatticeExpr<Float>(al1+al1+al1+al1+al1+al1+al1+al1+al1+al1));
+      al5.copyData (LatticeExpr<float>(al1+al1+al1+al1+al1+al1+al1+al1+al1+al1));
       timer.show ("as lattice");
     }
 

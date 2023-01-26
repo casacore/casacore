@@ -39,14 +39,14 @@ MedianSlider::MedianSlider ( int hw )
 {
   halfwin = hw;
   fullwin = hw*2+1;
-  index = new uInt[fullwin];
-  buf   = new Float[fullwin];
-  valid = new Bool[fullwin];
+  index = new uint32_t[fullwin];
+  buf   = new float[fullwin];
+  valid = new bool[fullwin];
 // buffer initially all-null and totally invalid
-  for( uInt i=0; i<fullwin; i++ ) 
+  for( uint32_t i=0; i<fullwin; i++ ) 
   {
     buf[i] = 0;
-    valid[i] = False;
+    valid[i] = false;
   }
   ibuf=nind=0;
 }
@@ -62,12 +62,12 @@ MedianSlider & MedianSlider::operator = ( const MedianSlider &other )
   cleanup();
   halfwin = other.halfwin;
   fullwin = other.fullwin;
-  index = new uInt[fullwin];
-  buf   = new Float[fullwin];
-  valid = new Bool[fullwin];
-  memcpy(index,other.index,fullwin*sizeof(uInt));
-  memcpy(buf,other.buf,fullwin*sizeof(Float));
-  memcpy(valid,other.valid,fullwin*sizeof(Bool));
+  index = new uint32_t[fullwin];
+  buf   = new float[fullwin];
+  valid = new bool[fullwin];
+  memcpy(index,other.index,fullwin*sizeof(uint32_t));
+  memcpy(buf,other.buf,fullwin*sizeof(float));
+  memcpy(valid,other.valid,fullwin*sizeof(bool));
   ibuf=other.ibuf;
   nind=other.nind;
   return *this;
@@ -86,7 +86,7 @@ MedianSlider::~MedianSlider ()
   cleanup();
 }
 
-Float MedianSlider::prevVal( uInt n,Bool &flag )
+float MedianSlider::prevVal( uint32_t n,bool &flag )
 {
   int i = (int)ibuf - (int)n;
   if( i<0 )
@@ -95,35 +95,35 @@ Float MedianSlider::prevVal( uInt n,Bool &flag )
   return buf[i];
 }
 
-Float MedianSlider::next( uInt n )
+float MedianSlider::next( uint32_t n )
 {
-  Float med=0;
-  for( uInt i=0; i<n; i++ )
+  float med=0;
+  for( uint32_t i=0; i<n; i++ )
     med = add();
   return med;
 }
 
-Float MedianSlider::add ( const Vector<Float> &d,const Vector<Bool> &flag )
+float MedianSlider::add ( const Vector<float> &d,const Vector<bool> &flag )
 {
-  Float med=0;
-  for( uInt i=0; i<d.nelements(); i++ )
+  float med=0;
+  for( uint32_t i=0; i<d.nelements(); i++ )
     med = add( d(i),flag(i) );
   return med;
 }
 
-Float MedianSlider::add ( const Vector<Float> &d )
+float MedianSlider::add ( const Vector<float> &d )
 {
-  Float med=0;
-  for( uInt i=0; i<d.nelements(); i++ )
+  float med=0;
+  for( uint32_t i=0; i<d.nelements(); i++ )
     med = add( d(i) );
   return med;
 }
 
-Float MedianSlider::add ( Float din,Bool flag )
+float MedianSlider::add ( float din,bool flag )
 {
-  uInt ibuf0 = ibuf;
-  Float dout = buf[ibuf0];   // outgoing datum
-  Bool  val_in=!flag,
+  uint32_t ibuf0 = ibuf;
+  float dout = buf[ibuf0];   // outgoing datum
+  bool  val_in=!flag,
        val_out = valid[ibuf0]; // outgoing flag
   
 // insert new value into buffer
@@ -138,7 +138,7 @@ Float MedianSlider::add ( Float din,Bool flag )
     {
       if( dout<din )  // inserting larger value
       {
-        uInt j=0;
+        uint32_t j=0;
         // skip indices up to outgoing value
         for( ; j<nind && index[j]!=ibuf0; j++ ) {}
 //        Assure(j<nind);
@@ -153,7 +153,7 @@ Float MedianSlider::add ( Float din,Bool flag )
       } 
       else if( dout>din )  // inserting smaller value
       {   
-        uInt j=0;
+        uint32_t j=0;
         // skip indices up to incoming value
         for( ; j<nind && buf[index[j]]<din; j++ ) {}
         int j0 = j;
@@ -170,7 +170,7 @@ Float MedianSlider::add ( Float din,Bool flag )
     }
     else // A.2) replaced by an invalid datum
     {
-      uInt j=0;
+      uint32_t j=0;
       // skip indices up to outgoing datum
       for( ; j<nind && index[j]!=ibuf0; j++ ) {}
 //      Assure(j<nind);
@@ -184,7 +184,7 @@ Float MedianSlider::add ( Float din,Bool flag )
   {
     if( val_in ) // B.1) ...replaced by valid datum
     {
-      uInt j=0;
+      uint32_t j=0;
       // skip indices up to incoming value
       for( ; j<nind && buf[index[j]]<din; j++ ) {}
       // move down the remaining indices to make space
@@ -200,11 +200,11 @@ Float MedianSlider::add ( Float din,Bool flag )
 
 
 // verify the MedianSlider values
-Bool MedianSlider::assure ()
+bool MedianSlider::assure ()
 {
-  Float m = median();
+  float m = median();
   int c1=0,c2=0;
-  for( uInt i=0; i<fullwin; i++ ) 
+  for( uint32_t i=0; i<fullwin; i++ ) 
     if( valid[i] ) 
     {
       if( buf[i] <= m ) c1++;
@@ -213,9 +213,9 @@ Bool MedianSlider::assure ()
   if( std::abs(c1-c2) > 1  )
   {
     throw(AipsError("MedianSlider::assure() failed"));
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 } //# NAMESPACE CASACORE - END

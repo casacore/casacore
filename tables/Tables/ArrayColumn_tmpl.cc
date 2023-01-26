@@ -28,15 +28,15 @@
 
 //# Instantiate extern templates for often used types.
 namespace casacore {
-  template class ArrayColumn<Bool>;
-  template class ArrayColumn<Char>;
-  template class ArrayColumn<Short>;
-  template class ArrayColumn<uShort>;
-  template class ArrayColumn<Int>;
-  template class ArrayColumn<uInt>;
-  template class ArrayColumn<Int64>;
-  template class ArrayColumn<Float>;
-  template class ArrayColumn<Double>;
+  template class ArrayColumn<bool>;
+  template class ArrayColumn<char>;
+  template class ArrayColumn<int16_t>;
+  template class ArrayColumn<uint16_t>;
+  template class ArrayColumn<int32_t>;
+  template class ArrayColumn<uint32_t>;
+  template class ArrayColumn<int64_t>;
+  template class ArrayColumn<float>;
+  template class ArrayColumn<double>;
   template class ArrayColumn<Complex>;
   template class ArrayColumn<DComplex>;
   template class ArrayColumn<String>;

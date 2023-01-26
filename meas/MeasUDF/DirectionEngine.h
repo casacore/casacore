@@ -144,10 +144,10 @@ namespace casacore {
     virtual ~DirectionEngine();
 
     // Get the values.
-    // The first Bool tells if rise/set times have to be calculated.
-    // The second Bool tells if direction cosines have to be calculated.
-    Array<Double> getArrayDouble (const TableExprId& id, Bool riseSet,
-                                  Bool asDirCos);
+    // The first bool tells if rise/set times have to be calculated.
+    // The second bool tells if direction cosines have to be calculated.
+    Array<double> getArrayDouble (const TableExprId& id, bool riseSet,
+                                  bool asDirCos);
 
     // Get the directions.
     Array<MDirection> getDirections (const TableExprId& id);
@@ -155,7 +155,7 @@ namespace casacore {
     // Handle the argument(s) giving the input directions and reference type.
     // The direction can be a column in a table.
     void handleDirection (const std::vector<TENShPtr>& args,
-                          uInt& argnr, Bool riseSet, Bool asDirCos);
+                          uint32_t& argnr, bool riseSet, bool asDirCos);
 
     // Set the MeasConvert object.
     void setConverter (MDirection::Types toType);
@@ -193,7 +193,7 @@ namespace casacore {
     //# Data members.
     MeasFrame                       itsFrame;       //# frame used by converter
     MDirection::Convert             itsConverter;
-    Vector<Double>                  itsH;           //# diff for sun or moon
+    Vector<double>                  itsH;           //# diff for sun or moon
     EpochEngine*                    itsEpochEngine;
     PositionEngine*                 itsPositionEngine;
   };

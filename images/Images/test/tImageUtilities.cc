@@ -61,25 +61,25 @@ void doOpens()
 //
    {
       String name1("tImageUtilities_tmp/app.img");
-      PagedImage<Float> img (IPosition(2,10,10),
+      PagedImage<float> img (IPosition(2,10,10),
    			      CoordinateUtil::defaultCoords2D(), 
                               name1);
       String error;
       String name2("tImageUtilities_tmp/fits.img");
       ImageFITSConverter::ImageToFITS(error, img, name2,
-				      64, True, True, -32, 1, -1,
-				      True);
+				      64, true, true, -32, 1, -1,
+				      true);
 
       {
-         PtrHolder<ImageInterface<Float> > im;
+         PtrHolder<ImageInterface<float> > im;
          ImageUtilities::openImage(im, name1);
       }
       {
-         CountedPtr<ImageInterface<Float> > im;
-         im = ImageUtilities::openImage<Float>(name1);
+         CountedPtr<ImageInterface<float> > im;
+         im = ImageUtilities::openImage<float>(name1);
       }
       {
-         PtrHolder<ImageInterface<Float> > im;
+         PtrHolder<ImageInterface<float> > im;
          ImageUtilities::openImage(im, name2);
       }
    }
@@ -96,14 +96,14 @@ void doTypes()
    Directory dir("tImageUtilities_tmp");
    dir.create();
   {
-    PagedImage<Float> img (IPosition(2,10,10),
+    PagedImage<float> img (IPosition(2,10,10),
 			   CoordinateUtil::defaultCoords2D(),
 			   "tImageUtilities_tmp/app.img");
   }
   AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/app.img")
 		    == ImageOpener::AIPSPP);
   {
-    PagedArray<Float> arr (IPosition(2,10,10),
+    PagedArray<float> arr (IPosition(2,10,10),
 			   "tImageUtilities_tmp/app.img");
   }
   AlwaysAssertExit (ImageOpener::imageType ("tImageUtilities_tmp/app.img")
@@ -155,7 +155,7 @@ void doTypes()
   dir.removeRecursive();
 }
 
-void listWorld (const Vector<Quantum<Double> >& wPars)
+void listWorld (const Vector<Quantum<double> >& wPars)
 {
    cerr << "World" << endl;
    if (wPars.nelements()==3){ 
@@ -177,7 +177,7 @@ void listWorld (const GaussianBeam& wPars)
    }
 }
    
-void listPixel(const Vector<Double>& pPars)
+void listPixel(const Vector<double>& pPars)
 {
    cerr << "Pixel" << endl;
    if (pPars.nelements()==3) {
@@ -202,8 +202,8 @@ void doConversions()
       IPosition pixelAxes(2, 0, 1);
       IPosition worldAxes(2, 0, 1);
 //
-      Vector<Double> world;
-      Vector<Double> pixel = cSys.referencePixel().copy();
+      Vector<double> world;
+      Vector<double> pixel = cSys.referencePixel().copy();
       pixel += 10.0;
       cSys.toWorld(world, pixel);
    }
@@ -215,26 +215,26 @@ void doBin()
    LogIO os(lor);
    os << "Binning Tests" << LogIO::POST;
 //
-   uInt n = 32;
+   uint32_t n = 32;
    IPosition shape(1,n);
    SpectralCoordinate cIn, cOut;
-   Array<Float> data(shape);
-   Array<Bool> mask(shape);
+   Array<float> data(shape);
+   Array<bool> mask(shape);
    indgen(data);
-   mask = True;
-   MaskedArray<Float> maIn(data,mask);
-   MaskedArray<Float> maOut;
-   uInt bin = 2;
-   uInt axis = 0;
+   mask = true;
+   MaskedArray<float> maIn(data,mask);
+   MaskedArray<float> maOut;
+   uint32_t bin = 2;
+   uint32_t axis = 0;
 //
    ImageUtilities::bin(maOut, cOut, maIn, cIn, axis, bin);
    AlwaysAssert(maOut.nelements()==n/bin, AipsError);
-   Array<Float> pOut(maOut.shape());
+   Array<float> pOut(maOut.shape());
    indgen(pOut);
-   pOut *= Float(bin);
-   pOut += Float(0.5);
+   pOut *= float(bin);
+   pOut += float(0.5);
    AlwaysAssert(allNear(pOut,maOut.getArray(),1e-6), AipsError);
-   AlwaysAssert(allEQ(maOut.getMask(),True), AipsError);
+   AlwaysAssert(allEQ(maOut.getMask(),true), AipsError);
 }
 
 int main()

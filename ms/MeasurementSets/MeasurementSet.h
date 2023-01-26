@@ -64,7 +64,7 @@ public:
 
     // Returns true if the specified subtable is in the set of subtables
     // eligible for memory residency.
-    Bool isEligible (SubtableId subtableId) const;
+    bool isEligible (SubtableId subtableId) const;
 
     // Factory methods to create MrsEligibility sets.  The two variable argument methods
     // require that the list be terminated by using the id MSMainEnums::UNDEFINED_KEYWORD.
@@ -83,7 +83,7 @@ private:
 
     static const MrsEligibility allSubtables_p;
 
-    static Bool isSubtable (SubtableId subtableId);
+    static bool isSubtable (SubtableId subtableId);
 };
 
 // Creates a new MrsEligibilitySet by adding or removing the specified subtable or
@@ -194,10 +194,10 @@ typedef MeasurementSet MS;
 //      // set the values in that row, e.g. the feed column
 //      feed.putScalar(rownr,1);
 //      // Access a subtable
-//      ArrayColumn<Double> antpos(simpleMS.antenna(),
+//      ArrayColumn<double> antpos(simpleMS.antenna(),
 //                                 MSAntenna::columnName(MSAntenna::POSITION));
 //      simpleMS.antenna().addRow();
-//      Array<Double> position(3); 
+//      Array<double> position(3); 
 //      position(0)=1.; position(1)=2.; position(2)=3.;
 //      antpos.put(0,position);
 //      // etc.
@@ -267,16 +267,16 @@ public:
   MeasurementSet (const String &tableName, const String &tableDescName,
 		  const TableLock& lockOptions, TableOption = Table::Old);
   MeasurementSet (SetupNewTable &newTab, rownr_t nrrow = 0,
-		  Bool initialize = False);
+		  bool initialize = false);
   MeasurementSet (SetupNewTable &newTab, const TableLock& lockOptions,
-		  rownr_t nrrow = 0, Bool initialize = False);
+		  rownr_t nrrow = 0, bool initialize = false);
   MeasurementSet (const Table &table, const MeasurementSet * otherMs = NULL);
 
 #ifdef HAVE_MPI
   MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, rownr_t nrrow = 0,
-		  Bool initialize = False);
+		  bool initialize = false);
   MeasurementSet (MPI_Comm comm, SetupNewTable &newTab, const TableLock& lockOptions,
-		  rownr_t nrrow = 0, Bool initialize = False);
+		  rownr_t nrrow = 0, bool initialize = false);
 #endif // HAVE_MPI
 
   MeasurementSet (const MeasurementSet &other);
@@ -374,8 +374,8 @@ public:
   // Initialize the references to the subtables. You need to call
   // this only if you assign new subtables to the table keywords.
   // This also checks for validity of the table and its subtables.
-  // Set clear to True to clear the subtable references (used in assignment)
-  void initRefs(Bool clear=False);
+  // Set clear to true to clear the subtable references (used in assignment)
+  void initRefs(bool clear=false);
 
   // Create default subtables: fills the required subtable keywords with
   // tables of the correct type, mainly for testing and as an example of
@@ -393,18 +393,18 @@ public:
   static MSTableMaps initMaps();
 
   // Create DATA column from existing FLOAT_DATA column. Noop if DATA already
-  // exists or neither exists (returns False in that case).
-  Bool makeComplexData();
+  // exists or neither exists (returns false in that case).
+  bool makeComplexData();
 
   // Validate Measure references - check that all Measure columns have their
   // reference value set, report the ones that don't.
-  Bool validateMeasureRefs();
+  bool validateMeasureRefs();
 
   // Flush all the tables and subtables associated with this
   // MeasurementSet. This function calls the Table::flush() function on the
   // main table and all the standard subtables including optional
   // subtables. See the Table class for a description of the sync argument.
-  void flush(Bool sync=False);
+  void flush(bool sync=false);
 
   // Return a record of the indices that the msselection selection selected
   Record msseltoindex(const String& spw="", const String& field="", 
@@ -428,7 +428,7 @@ protected:
   void copySubtables (const MeasurementSet & other);
 
   // Returns true if the named subtable is eligible for memory residency.
-  Bool isEligibleForMemoryResidency (const String & subtableName) const;
+  bool isEligibleForMemoryResidency (const String & subtableName) const;
 
   // Opens all of the eligible subtables in memory resident form
   void openMrSubtables ();
@@ -462,7 +462,7 @@ private:
   // Opens a single subtable if not present in MS object but defined in on-disk MS
   template <typename Subtable>
   void
-  openSubtable (Subtable & subtable, const String & subtableName, Bool useLock);
+  openSubtable (Subtable & subtable, const String & subtableName, bool useLock);
 
   // keep references to the subtables
   MSAntenna antenna_p;
@@ -485,9 +485,9 @@ private:
 
   bool doNotLockSubtables_p; // used to prevent subtable locking to allow parallel interprocess sharing
   int mrsDebugLevel_p; // logging level currently enabled
-  Bool hasBeenDestroyed_p; // required by the need to throw an exception in the destructor
+  bool hasBeenDestroyed_p; // required by the need to throw an exception in the destructor
   TableLock mainLock_p;
-  Bool memoryResidentSubtables_p;   // true if memory resident subtables are enabled
+  bool memoryResidentSubtables_p;   // true if memory resident subtables are enabled
   MrsEligibility mrsEligibility_p;  // subtables which can be made memory resident
 
 };

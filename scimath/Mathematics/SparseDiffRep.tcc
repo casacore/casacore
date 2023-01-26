@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <class T>
   SparseDiffRep<T> &SparseDiffRep<T>::
-  operator=(const vector<pair<uInt, T> > &grad) {
+  operator=(const vector<pair<uint32_t, T> > &grad) {
     grad_p = grad;
     return *this;
   }
@@ -61,13 +61,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template <class T>
   void SparseDiffRep<T>::operator*=(const T other) {
-    for (typename vector<pair<uInt, T> >::iterator i=grad_p.begin();
+    for (typename vector<pair<uint32_t, T> >::iterator i=grad_p.begin();
 	 i!=grad_p.end(); ++i) i->second *= other;
   }
 
   template <class T>
   void SparseDiffRep<T>::operator/=(const T other) {
-    for (typename vector<pair<uInt, T> >::iterator i=grad_p.begin();
+    for (typename vector<pair<uint32_t, T> >::iterator i=grad_p.begin();
 	 i!=grad_p.end(); ++i) i->second /= other;
   }
 

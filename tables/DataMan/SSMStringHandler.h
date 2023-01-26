@@ -64,7 +64,7 @@ class SSMBase;
 // so-called string buckets.
 // A string bucket has the following layout:
 // <ul>
-//  <li> The first Int is reserved to be used for the free bucket list.
+//  <li> The first int32_t is reserved to be used for the free bucket list.
 //  <li> <src>itsUsedLength</src> tells how many bytes have been used.
 //       Thus it tells the next free byte in the string part.
 //       In principle it always increases. Only if data are removed
@@ -126,8 +126,8 @@ public:
   // Set or get last string bucketnr.
   // Setting is needed when an existing table is opened.
   // <group>
-  void setLastStringBucket (Int lastStringBucket);
-  Int lastStringBucket() const;
+  void setLastStringBucket (int32_t lastStringBucket);
+  int32_t lastStringBucket() const;
   // </group>
 
   // Put a single string or an array of strings into a bucket.
@@ -138,13 +138,13 @@ public:
   // length occupied in the buckets.
   // An array of strings is flattened first (a la SSMColumn::writeString).
   // <br>
-  // If <src>handleShape</src> is True (for variable shaped arrays), the
+  // If <src>handleShape</src> is true (for variable shaped arrays), the
   // shape will be put first.
   // <group>
-  void put (Int& bucketNr, Int& offset, Int& length, 
+  void put (int32_t& bucketNr, int32_t& offset, int32_t& length, 
 	    const String& string);
-  void put (Int& bucketNr, Int& offset, Int& length, 
-	    const Array<String>& string, Bool handleShape);
+  void put (int32_t& bucketNr, int32_t& offset, int32_t& length, 
+	    const Array<String>& string, bool handleShape);
   // </group>
 
   // Put a single string or an array of strings into a bucket.
@@ -153,27 +153,27 @@ public:
   // Otherwise it adds the data to the last string bucket.
   // It fills the offset and bucketnr where stored and the
   // length occupied in the buckets.
-  void putShape (Int& bucketNr, Int& offset, Int& length, 
+  void putShape (int32_t& bucketNr, int32_t& offset, int32_t& length, 
 		 const IPosition& aShape);
 
   // Get the shape in the given bucket and offset.
   // It sets the offset to the data right after the shape.
   // The IPosition object is resized as needed.
-  void getShape (IPosition& aShape, Int bucket, Int& offset, Int length);
+  void getShape (IPosition& aShape, int32_t bucket, int32_t& offset, int32_t length);
 
   // Remove data with the given length from a bucket.
   // If the data are continued in next bucket(s), they will be
   // removed there as well.
-  void remove (Int bucketNr, Int offset, Int length);
+  void remove (int32_t bucketNr, int32_t offset, int32_t length);
 
   // Get a string or an array of strings.
   // The array must have the correct shape.
-  // <src>handleShape</src> will be True for variable shaped arrays
+  // <src>handleShape</src> will be true for variable shaped arrays
   // indicating that the data are preceeded by the shape.
   // <group>
-  void get (String& string, Int bucket, Int offset, Int length);
-  void get (Array<String>& string, Int bucket, Int offset, 
-	    Int length, Bool handleShape);
+  void get (String& string, int32_t bucket, int32_t offset, int32_t length);
+  void get (Array<String>& string, int32_t bucket, int32_t offset, 
+	    int32_t length, bool handleShape);
   // </group>
 
   // Flush the currently used string bucket.
@@ -197,61 +197,61 @@ private:
   // Get the given bucket and make it current.
   // It first writes the current bucket if it has changed.
   // <br>
-  // If <src>isNew</src> is True the bucket is new,
+  // If <src>isNew</src> is true the bucket is new,
   // so the Ints at its beginning do not have to be interpreted.
-  void getBucket (uInt bucketNr, Bool isNew=False);
+  void getBucket (uint32_t bucketNr, bool isNew=false);
 
   // Get a new bucket and make it current.
-  // If <src>doConcat</src> is True, the new bucket is a continuation,
+  // If <src>doConcat</src> is true, the new bucket is a continuation,
   // so <src>itsNextBucket</src> in the currently used bucket is filled
   // with the new bucket number.
-  void getNewBucket (Bool doConcat);
+  void getNewBucket (bool doConcat);
 
   // Put the data with the given length at the end of the current bucket.
   // If they do not fit, they are continued in a new bucket.
-  void putData (Int length, const Char* data);
+  void putData (int32_t length, const char* data);
 
   // Get the data with the given length from the curent bucket at the
   // given offset. If sets the offset to the byte after the data read.
   // Continuation buckets are followed (and made current).
-  void getData (Int length, Char* data, Int& offset);
+  void getData (int32_t length, char* data, int32_t& offset);
 
   // Replace the current data with the new data.
   // It is used by <src>put</src> after having assured that the
   // new length does not exceed the current one.
   // It follows continuation buckets as needed.
   // <group>
-  void replace (Int bucketNr, Int offset, Int length, 
+  void replace (int32_t bucketNr, int32_t offset, int32_t length, 
 		const String& string);
-  void replace (Int bucketNr, Int offset, Int length, Int totalLength, 
+  void replace (int32_t bucketNr, int32_t offset, int32_t length, int32_t totalLength, 
 		const IPosition& aShape);
-  void replace (Int bucketNr, Int offset, Int length, Int totalLength,
-		const Array<String>& string, Bool handleShape);
-  void replaceData (Int& offset,Int length, const Char* data);
+  void replace (int32_t bucketNr, int32_t offset, int32_t length, int32_t totalLength,
+		const Array<String>& string, bool handleShape);
+  void replaceData (int32_t& offset,int32_t length, const char* data);
   // </group>
 
 
   SSMBase* itsSSMPtr;      // Pointer to SSMBase stucture
-  Int   itsCurrentBucket;  // bucketnr of current string bucket (-1 is none)
-  Int   itsLength;         // length of bucket in use (only the string part)
-  Int   itsNDeleted;       // #bytes deleted from the string part of the bucket
-  Int   itsUsedLength;     // #bytes used from the string part of the bucket
-  Int   itsNextBucket;     // next bucket for long strings
+  int32_t   itsCurrentBucket;  // bucketnr of current string bucket (-1 is none)
+  int32_t   itsLength;         // length of bucket in use (only the string part)
+  int32_t   itsNDeleted;       // #bytes deleted from the string part of the bucket
+  int32_t   itsUsedLength;     // #bytes used from the string part of the bucket
+  int32_t   itsNextBucket;     // next bucket for long strings
   char* itsData;           // bucket string data
   char* itsIntBuf;         // buffer for initialisation params
-  Bool  isChanged;         // has current bucket been changed?
-  uInt  itsIntSize;        // size of integers in this system
-  Int   itsLastBucket;     // last string bucket used
-  uInt  itsStart;          // Start position of actual data in bucket
+  bool  isChanged;         // has current bucket been changed?
+  uint32_t  itsIntSize;        // size of integers in this system
+  int32_t   itsLastBucket;     // last string bucket used
+  uint32_t  itsStart;          // Start position of actual data in bucket
 };
 
 
-inline void SSMStringHandler::setLastStringBucket (Int lastStringBucket)
+inline void SSMStringHandler::setLastStringBucket (int32_t lastStringBucket)
 { 
   itsLastBucket = lastStringBucket;
 }  
 
-inline Int SSMStringHandler::lastStringBucket() const
+inline int32_t SSMStringHandler::lastStringBucket() const
 { 
   return itsLastBucket; 
 }  

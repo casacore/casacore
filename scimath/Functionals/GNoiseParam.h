@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    GNoiseFunction<Double> sf;
+//    GNoiseFunction<double> sf;
 //    sf();            // = 0.12
 // </srcblock>
 // </example>
@@ -85,7 +85,7 @@ public:
   // mean=0, var=1.0
   // <group>
   GNoiseParam();
-  GNoiseParam(const Double &mean, const Double &var);
+  GNoiseParam(const double &mean, const double &var);
   // </group>
 
   // Copy constructor (deep copy)
@@ -100,7 +100,7 @@ public:
   virtual ~GNoiseParam();
 
   //# Operators    
-  virtual uInt ndim() const { return 0; }
+  virtual uint32_t ndim() const { return 0; }
 
   //# Member functions
   // Give name of function

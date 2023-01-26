@@ -117,63 +117,63 @@ public:
   // Convert one value from Modcomp format to local format.
   // The from and to buffer should not overlap.
   // <group>
-  static size_t toLocal(Char&   to, const void* from);
-  static size_t toLocal(uChar&  to, const void* from);
-  static size_t toLocal(Short&  to, const void* from);
-  static size_t toLocal(uShort& to, const void* from);
-  static size_t toLocal(Int&    to, const void* from);
-  static size_t toLocal(uInt&   to, const void* from);
-  static size_t toLocal(Int64&  to, const void* from);
-  static size_t toLocal(uInt64& to, const void* from);
-  static size_t toLocal(Float&  to, const void* from);
-  static size_t toLocal(Double& to, const void* from);
+  static size_t toLocal(char&   to, const void* from);
+  static size_t toLocal(unsigned char&  to, const void* from);
+  static size_t toLocal(int16_t&  to, const void* from);
+  static size_t toLocal(uint16_t& to, const void* from);
+  static size_t toLocal(int32_t&    to, const void* from);
+  static size_t toLocal(uint32_t&   to, const void* from);
+  static size_t toLocal(int64_t&  to, const void* from);
+  static size_t toLocal(uint64_t& to, const void* from);
+  static size_t toLocal(float&  to, const void* from);
+  static size_t toLocal(double& to, const void* from);
   // </group>
     
   // Convert nr values from Modcomp format to local format.
   // The from and to buffer should not overlap.
   // <group>
-  static size_t toLocal(Char*   to, const void* from, size_t nr);
-  static size_t toLocal(uChar*  to, const void* from, size_t nr);
-  static size_t toLocal(Short*  to, const void* from, size_t nr);
-  static size_t toLocal(uShort* to, const void* from, size_t nr);
-  static size_t toLocal(Int*    to, const void* from, size_t nr);
-  static size_t toLocal(uInt*   to, const void* from, size_t nr);
-  static size_t toLocal(Int64*  to, const void* from, size_t nr);
-  static size_t toLocal(uInt64* to, const void* from, size_t nr);
-  static size_t toLocal(Float*  to, const void* from, size_t nr);
-  static size_t toLocal(Double* to, const void* from, size_t nr);
+  static size_t toLocal(char*   to, const void* from, size_t nr);
+  static size_t toLocal(unsigned char*  to, const void* from, size_t nr);
+  static size_t toLocal(int16_t*  to, const void* from, size_t nr);
+  static size_t toLocal(uint16_t* to, const void* from, size_t nr);
+  static size_t toLocal(int32_t*    to, const void* from, size_t nr);
+  static size_t toLocal(uint32_t*   to, const void* from, size_t nr);
+  static size_t toLocal(int64_t*  to, const void* from, size_t nr);
+  static size_t toLocal(uint64_t* to, const void* from, size_t nr);
+  static size_t toLocal(float*  to, const void* from, size_t nr);
+  static size_t toLocal(double* to, const void* from, size_t nr);
   // </group>
 
   // Convert one value from local format to Modcomp format.  The from and to
   // buffer should not overlap. The floating point functions will throw
   // exceptions as they are not implemented yet.
   // <group>
-  static size_t fromLocal(void* to, Char   from);
-  static size_t fromLocal(void* to, uChar  from);
-  static size_t fromLocal(void* to, Short  from);
-  static size_t fromLocal(void* to, uShort from);
-  static size_t fromLocal(void* to, Int    from);
-  static size_t fromLocal(void* to, uInt   from);
-  static size_t fromLocal(void* to, Int64  from);
-  static size_t fromLocal(void* to, uInt64 from);
-  static size_t fromLocal(void* to, Float  from);
-  static size_t fromLocal(void* to, Double from);
+  static size_t fromLocal(void* to, char   from);
+  static size_t fromLocal(void* to, unsigned char  from);
+  static size_t fromLocal(void* to, int16_t  from);
+  static size_t fromLocal(void* to, uint16_t from);
+  static size_t fromLocal(void* to, int32_t    from);
+  static size_t fromLocal(void* to, uint32_t   from);
+  static size_t fromLocal(void* to, int64_t  from);
+  static size_t fromLocal(void* to, uint64_t from);
+  static size_t fromLocal(void* to, float  from);
+  static size_t fromLocal(void* to, double from);
   // </group>
     
   // Convert nr values from local format to Modcomp format.  The from and to
   // buffer should not overlap. The floating point functions will throw
   // exceptions as they are not implemented yet.  
   // <group>
-  static size_t fromLocal(void* to, const Char*   from, size_t nr);
-  static size_t fromLocal(void* to, const uChar*  from, size_t nr);
-  static size_t fromLocal(void* to, const Short*  from, size_t nr);
-  static size_t fromLocal(void* to, const uShort* from, size_t nr);
-  static size_t fromLocal(void* to, const Int*    from, size_t nr);
-  static size_t fromLocal(void* to, const uInt*   from, size_t nr);
-  static size_t fromLocal(void* to, const Int64*  from, size_t nr);
-  static size_t fromLocal(void* to, const uInt64* from, size_t nr);
-  static size_t fromLocal(void* to, const Float*  from, size_t nr);
-  static size_t fromLocal(void* to, const Double* from, size_t nr);
+  static size_t fromLocal(void* to, const char*   from, size_t nr);
+  static size_t fromLocal(void* to, const unsigned char*  from, size_t nr);
+  static size_t fromLocal(void* to, const int16_t*  from, size_t nr);
+  static size_t fromLocal(void* to, const uint16_t* from, size_t nr);
+  static size_t fromLocal(void* to, const int32_t*    from, size_t nr);
+  static size_t fromLocal(void* to, const uint32_t*   from, size_t nr);
+  static size_t fromLocal(void* to, const int64_t*  from, size_t nr);
+  static size_t fromLocal(void* to, const uint64_t* from, size_t nr);
+  static size_t fromLocal(void* to, const float*  from, size_t nr);
+  static size_t fromLocal(void* to, const double* from, size_t nr);
   // </group>
     
 private:
@@ -182,137 +182,137 @@ private:
   ModcompConversion();
 };
 
-inline size_t ModcompConversion::toLocal(Char& to, const void* from) {
+inline size_t ModcompConversion::toLocal(char& to, const void* from) {
   return CanonicalConversion::toLocal(to, from);
 }
 
-inline size_t ModcompConversion::toLocal(uChar& to, const void* from) {
+inline size_t ModcompConversion::toLocal(unsigned char& to, const void* from) {
   return CanonicalConversion::toLocal(to, from);
 }
 
-inline size_t ModcompConversion::toLocal(Short& to, const void* from) {
+inline size_t ModcompConversion::toLocal(int16_t& to, const void* from) {
   return CanonicalConversion::toLocal(to, from);
 }
 
-inline size_t ModcompConversion::toLocal(uShort& to, const void* from) {
+inline size_t ModcompConversion::toLocal(uint16_t& to, const void* from) {
   return CanonicalConversion::toLocal(to, from);
 }
 
-inline size_t ModcompConversion::toLocal(Int& to, const void* from) {
+inline size_t ModcompConversion::toLocal(int32_t& to, const void* from) {
   return CanonicalConversion::toLocal(to, from);
 }
 
-inline size_t ModcompConversion::toLocal(uInt& to, const void* from) {
+inline size_t ModcompConversion::toLocal(uint32_t& to, const void* from) {
   return CanonicalConversion::toLocal(to, from);
 }
 
-inline size_t ModcompConversion::toLocal(Int64& to, const void* from) {
-    Int tmp;
+inline size_t ModcompConversion::toLocal(int64_t& to, const void* from) {
+    int32_t tmp;
     size_t res = toLocal (tmp, from);
     to = tmp;
     return res;
 }
 
-inline size_t ModcompConversion::toLocal(uInt64& to, const void* from) {
-    uInt tmp;
+inline size_t ModcompConversion::toLocal(uint64_t& to, const void* from) {
+    uint32_t tmp;
     size_t res = toLocal (tmp, from);
     to = tmp;
     return res;
 }
 
-inline size_t ModcompConversion::toLocal(Float& to, const void* from) {
+inline size_t ModcompConversion::toLocal(float& to, const void* from) {
   return ModcompConversion::toLocal(&to, from, 1u);
 }
 
-inline size_t ModcompConversion::toLocal(Double& to, const void* from) {
+inline size_t ModcompConversion::toLocal(double& to, const void* from) {
   return ModcompConversion::toLocal(&to, from, 1u);
 }
 
-inline size_t ModcompConversion::toLocal(Char* to, const void* from, size_t nr) {
+inline size_t ModcompConversion::toLocal(char* to, const void* from, size_t nr) {
   return CanonicalConversion::toLocalChar(to, from, nr);
 }
 
-inline size_t ModcompConversion::toLocal(uChar* to, const void* from, size_t nr) {
+inline size_t ModcompConversion::toLocal(unsigned char* to, const void* from, size_t nr) {
   return CanonicalConversion::toLocalUChar(to, from, nr);
 }
 
-inline size_t ModcompConversion::toLocal(Short* to, const void* from, size_t nr) {
+inline size_t ModcompConversion::toLocal(int16_t* to, const void* from, size_t nr) {
   return CanonicalConversion::toLocalShort(to, from, nr);
 }
 
-inline size_t ModcompConversion::toLocal(uShort* to, const void* from, size_t nr) {
+inline size_t ModcompConversion::toLocal(uint16_t* to, const void* from, size_t nr) {
   return CanonicalConversion::toLocalUShort(to, from, nr);
 }
 
-inline size_t ModcompConversion::toLocal(Int* to, const void* from, size_t nr) {
+inline size_t ModcompConversion::toLocal(int32_t* to, const void* from, size_t nr) {
   return CanonicalConversion::toLocalInt(to, from, nr);
 }
 
-inline size_t ModcompConversion::toLocal(uInt* to, const void* from, size_t nr) {
+inline size_t ModcompConversion::toLocal(uint32_t* to, const void* from, size_t nr) {
   return CanonicalConversion::toLocalUInt(to, from, nr);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, Char from) {
+inline size_t ModcompConversion::fromLocal(void* to, char from) {
   return CanonicalConversion::fromLocal(to, from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, uChar from) {
+inline size_t ModcompConversion::fromLocal(void* to, unsigned char from) {
   return CanonicalConversion::fromLocal(to, from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, Short from) {
+inline size_t ModcompConversion::fromLocal(void* to, int16_t from) {
   return CanonicalConversion::fromLocal (to, from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, uShort from) {
+inline size_t ModcompConversion::fromLocal(void* to, uint16_t from) {
   return CanonicalConversion::fromLocal(to, from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, Int from) {
+inline size_t ModcompConversion::fromLocal(void* to, int32_t from) {
   return CanonicalConversion::fromLocal (to, from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, uInt from) {
+inline size_t ModcompConversion::fromLocal(void* to, uint32_t from) {
   return CanonicalConversion::fromLocal (to, from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, Int64 from) {
-  return CanonicalConversion::fromLocal (to, (Int) from);
+inline size_t ModcompConversion::fromLocal(void* to, int64_t from) {
+  return CanonicalConversion::fromLocal (to, (int32_t) from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, uInt64 from) {
-  return CanonicalConversion::fromLocal (to, (uInt) from);
+inline size_t ModcompConversion::fromLocal(void* to, uint64_t from) {
+  return CanonicalConversion::fromLocal (to, (uint32_t) from);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, Float from) {
+inline size_t ModcompConversion::fromLocal(void* to, float from) {
   return ModcompConversion::fromLocal(to, &from, 1u);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, Double from) {
+inline size_t ModcompConversion::fromLocal(void* to, double from) {
   return ModcompConversion::fromLocal(to, &from, 1u);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, const Char* from, size_t nr) {
+inline size_t ModcompConversion::fromLocal(void* to, const char* from, size_t nr) {
   return CanonicalConversion::fromLocalChar(to, from, nr);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, const uChar* from, size_t nr){
+inline size_t ModcompConversion::fromLocal(void* to, const unsigned char* from, size_t nr){
   return CanonicalConversion::fromLocalUChar(to, from, nr);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, const Short* from, size_t nr){
+inline size_t ModcompConversion::fromLocal(void* to, const int16_t* from, size_t nr){
   return CanonicalConversion::fromLocalShort(to, from, nr);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, const uShort* from,size_t nr){
+inline size_t ModcompConversion::fromLocal(void* to, const uint16_t* from,size_t nr){
   return CanonicalConversion::fromLocalUShort(to, from, nr);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, const Int* from, size_t nr) {
+inline size_t ModcompConversion::fromLocal(void* to, const int32_t* from, size_t nr) {
   return CanonicalConversion::fromLocalInt(to, from, nr);
 }
 
-inline size_t ModcompConversion::fromLocal(void* to, const uInt* from, size_t nr) {
+inline size_t ModcompConversion::fromLocal(void* to, const uint32_t* from, size_t nr) {
   return CanonicalConversion::fromLocalUInt(to, from, nr);
 }
 

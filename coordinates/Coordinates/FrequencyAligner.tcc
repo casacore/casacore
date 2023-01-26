@@ -59,7 +59,7 @@ FrequencyAligner<T>::FrequencyAligner()
 
 template<class T>
 FrequencyAligner<T>::FrequencyAligner(const SpectralCoordinate& specCoord,
-                                    uInt nPixels,
+                                    uint32_t nPixels,
                                     const MEpoch& refEpoch,
                                     const MDirection& dir,
                                     const MPosition& pos,
@@ -87,7 +87,7 @@ FrequencyAligner<T>::FrequencyAligner(const SpectralCoordinate& specCoord,
 // spectrum is of the MFrequency::Types of the SC. 
 
    itsRefFreqX.resize(nPixels);
-   makeAbcissa (itsRefFreqX, False);
+   makeAbcissa (itsRefFreqX, false);
 //
    itsFreqX.resize(nPixels);
    itsFreqX = 0.0;
@@ -121,13 +121,13 @@ FrequencyAligner<T>::~FrequencyAligner()
 
 
 template<class T>
-Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
-                                const Vector<T>& yIn, const Vector<Bool>& maskIn,
-                                const MEpoch& epoch, Bool useCachedAbcissa,
-                                typename InterpolateArray1D<Double,T>::InterpolationMethod method,
-                                Bool extrapolate)
+bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<bool>& maskOut,
+                                const Vector<T>& yIn, const Vector<bool>& maskIn,
+                                const MEpoch& epoch, bool useCachedAbcissa,
+                                typename InterpolateArray1D<double,T>::InterpolationMethod method,
+                                bool extrapolate)
 {
-   const uInt nPixels = itsRefFreqX.nelements();
+   const uint32_t nPixels = itsRefFreqX.nelements();
    AlwaysAssert(nPixels>1, AipsError);
    AlwaysAssert(yIn.nelements()==nPixels,AipsError);
    AlwaysAssert(maskIn.nelements()==nPixels,AipsError);
@@ -139,30 +139,30 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
 
 // Generate abcissa at this epoch
 
-   Double maxDiff = -1;
+   double maxDiff = -1;
    if (useCachedAbcissa) {
       maxDiff = abs(itsFreqX[0]-itsRefFreqX[0]);
    } else {   
-      maxDiff = makeAbcissa (itsFreqX, True);
+      maxDiff = makeAbcissa (itsFreqX, true);
    }
    maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
 
 // Regrid to reference frequency abcissa. 
 
-   Bool ok = regrid (yOut, maskOut, itsRefFreqX, itsFreqX, yIn, maskIn,
+   bool ok = regrid (yOut, maskOut, itsRefFreqX, itsFreqX, yIn, maskIn,
                      method, extrapolate, maxDiff);
    return ok;
 }
 
 
 template<class T>
-Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
-                                 const Vector<Double>& xIn, const Vector<T>& yIn, const Vector<Bool>& maskIn,
-                                 const MEpoch& epoch, Bool useCachedAbcissa,
-                                 typename InterpolateArray1D<Double,T>::InterpolationMethod method,
-                                 Bool extrapolate)
+bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<bool>& maskOut,
+                                 const Vector<double>& xIn, const Vector<T>& yIn, const Vector<bool>& maskIn,
+                                 const MEpoch& epoch, bool useCachedAbcissa,
+                                 typename InterpolateArray1D<double,T>::InterpolationMethod method,
+                                 bool extrapolate)
 {
-   const uInt nPixels = itsRefFreqX.nelements();
+   const uint32_t nPixels = itsRefFreqX.nelements();
    AlwaysAssert(nPixels>1, AipsError);
    AlwaysAssert(xIn.nelements()==nPixels,AipsError);
    AlwaysAssert(yIn.nelements()==nPixels,AipsError);
@@ -176,11 +176,11 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
 // The user provided abcissa is in the input Frame. Convert it to the output 
 // Frame at the specfied Epoch
 
-   Double maxDiff = -1;
+   double maxDiff = -1;
    if (useCachedAbcissa) {
       maxDiff = abs(itsFreqX[0]-itsRefFreqX[0]);
    } else {
-      for (uInt i=0; i<nPixels; i++) {
+      for (uint32_t i=0; i<nPixels; i++) {
          itsFreqX[i] = itsMachine(xIn[i]).getValue().getValue();
          maxDiff = casacore::max(casacore::abs(itsFreqX[i]-itsRefFreqX[i]),maxDiff);
       }
@@ -189,7 +189,7 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
 
 // Regrid to reference frequency abcissa. 
 
-   Bool ok = regrid (yOut, maskOut, itsRefFreqX, itsFreqX, yIn, maskIn,
+   bool ok = regrid (yOut, maskOut, itsRefFreqX, itsFreqX, yIn, maskIn,
                      method, extrapolate, maxDiff);
    return ok;
 }
@@ -197,18 +197,18 @@ Bool FrequencyAligner<T>::align (Vector<T>& yOut, Vector<Bool>& maskOut,
 
 
 template<class T>
-Bool FrequencyAligner<T>::alignMany (Array<T>& yOut, Array<Bool>& maskOut,
-                                    const Array<T>& yIn, const Array<Bool>& maskIn,
-                                    uInt axis, const MEpoch& epoch, 
-                                    typename InterpolateArray1D<Double,T>::InterpolationMethod method,
-                                    Bool extrapolate)
+bool FrequencyAligner<T>::alignMany (Array<T>& yOut, Array<bool>& maskOut,
+                                    const Array<T>& yIn, const Array<bool>& maskIn,
+                                    uint32_t axis, const MEpoch& epoch, 
+                                    typename InterpolateArray1D<double,T>::InterpolationMethod method,
+                                    bool extrapolate)
 {
 
 // Checks
 
    const IPosition shp = yIn.shape();
    AlwaysAssert(shp.isEqual(maskIn.shape()), AipsError);
-   const Int n = itsRefFreqX.nelements();
+   const int32_t n = itsRefFreqX.nelements();
    AlwaysAssert(n>1, AipsError);
    AlwaysAssert(axis<shp.nelements(),AipsError);
    AlwaysAssert(shp(axis)==n,AipsError);
@@ -223,27 +223,27 @@ Bool FrequencyAligner<T>::alignMany (Array<T>& yOut, Array<Bool>& maskOut,
 
 // Generate abcissa at this epoch
 
-   Double maxDiff = makeAbcissa (itsFreqX, True);
+   double maxDiff = makeAbcissa (itsFreqX, true);
    maxDiff /= abs(itsRefFreqX[1]-itsRefFreqX[0]);      // Max diff as a fraction of a channel
 
 // Make iterators
 
    ReadOnlyVectorIterator<T> yItIn(yIn, axis);
-   ReadOnlyVectorIterator<Bool> mItIn(maskIn, axis);
+   ReadOnlyVectorIterator<bool> mItIn(maskIn, axis);
    VectorIterator<T> yItOut(yOut, axis);
-   VectorIterator<Bool> mItOut(maskOut, axis);
+   VectorIterator<bool> mItOut(maskOut, axis);
 
 // Iterate through Array and align each vector with the same grid
 
-   Bool ok = True;
+   bool ok = true;
    while (!yItIn.pastEnd()) {
 
 // Align
 
-      Bool ok2 = regrid (yItOut.vector(), mItOut.vector(), itsRefFreqX, itsFreqX,
+      bool ok2 = regrid (yItOut.vector(), mItOut.vector(), itsRefFreqX, itsFreqX,
                          yItIn.vector(), mItIn.vector(),
                          method, extrapolate, maxDiff);
-      if (!ok2) ok = False;
+      if (!ok2) ok = false;
 
 // Next vector
 
@@ -259,14 +259,14 @@ Bool FrequencyAligner<T>::alignMany (Array<T>& yOut, Array<Bool>& maskOut,
 
 
 template<class T>
-void FrequencyAligner<T>::getReferenceAbcissa(Vector<Double>& xOut) const
+void FrequencyAligner<T>::getReferenceAbcissa(Vector<double>& xOut) const
 {
    xOut.resize(itsRefFreqX.nelements());
    xOut = itsRefFreqX;
 }
 
 template<class T>
-void FrequencyAligner<T>::getAbcissa(Vector<Double>& xOut) const
+void FrequencyAligner<T>::getAbcissa(Vector<double>& xOut) const
 {
    xOut.resize(itsFreqX.nelements());
    xOut = itsFreqX;
@@ -278,25 +278,25 @@ void FrequencyAligner<T>::getAbcissa(Vector<Double>& xOut) const
 
 
 template<class T>
-Bool FrequencyAligner<T>::regrid (Vector<T>& yOut, Vector<Bool>& maskOut,
-                                 const Vector<Double>& xOut, 
-                                 const Vector<Double>& xIn,
-                                 const Vector<T>& yIn, const Vector<Bool>& maskIn,
-                                 typename InterpolateArray1D<Double,T>::InterpolationMethod method,
-                                 Bool extrapolate, Double maxDiff) const
+bool FrequencyAligner<T>::regrid (Vector<T>& yOut, Vector<bool>& maskOut,
+                                 const Vector<double>& xOut, 
+                                 const Vector<double>& xIn,
+                                 const Vector<T>& yIn, const Vector<bool>& maskIn,
+                                 typename InterpolateArray1D<double,T>::InterpolationMethod method,
+                                 bool extrapolate, double maxDiff) const
 {
-   Bool ok = False;
+   bool ok = false;
    if (maxDiff > itsDiffTol) {
-      Int methodInt = static_cast<Int>(method);
-      InterpolateArray1D<Double,T>::interpolate (yOut, maskOut, xOut, xIn, yIn, maskIn,
-                                                 methodInt, True, extrapolate);
-      ok = True;
+      int32_t methodInt = static_cast<int32_t>(method);
+      InterpolateArray1D<double,T>::interpolate (yOut, maskOut, xOut, xIn, yIn, maskIn,
+                                                 methodInt, true, extrapolate);
+      ok = true;
    } else {
       yOut.resize(yIn.nelements());
       yOut = yIn;
       maskOut.resize(maskIn.nelements());
       maskOut = maskIn;
-      ok = False;
+      ok = false;
    }
 //
    return ok;
@@ -331,20 +331,20 @@ void FrequencyAligner<T>::makeMachine (const MEpoch& refEpoch,
 }
 
 template<class T>
-Double FrequencyAligner<T>::makeAbcissa (Vector<Double>& freq, Bool doDiff)
+double FrequencyAligner<T>::makeAbcissa (Vector<double>& freq, bool doDiff)
 {
-   const uInt n = freq.nelements();
-   Double world;
-   Double maxDiff = -1;
+   const uint32_t n = freq.nelements();
+   double world;
+   double maxDiff = -1;
    if (doDiff) {
-      for (uInt i=0; i<n; i++) {
+      for (uint32_t i=0; i<n; i++) {
          itsSpecCoord.toWorld(world,i); 
          freq[i] = itsMachine(world).getValue().getValue();
 //
          maxDiff = casacore::max(casacore::abs(freq[i]-itsRefFreqX[i]),maxDiff);
       }
    } else {
-      for (uInt i=0; i<n; i++) {
+      for (uint32_t i=0; i<n; i++) {
          itsSpecCoord.toWorld(world,i); 
          freq[i] = itsMachine(world).getValue().getValue();
       }
@@ -372,28 +372,28 @@ void FrequencyAligner<T>::copyOther(const FrequencyAligner<T>& other)
 
 
 template<class T> 
-SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear) const
+SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (bool doLinear) const
 {
-   const uInt n = itsRefFreqX.nelements();
+   const uint32_t n = itsRefFreqX.nelements();
    AlwaysAssert(n>0,AipsError);
 
 // Get SpectralCoordinate 
 
    const Vector<String>& units = itsSpecCoord.worldAxisUnits();
    Unit unit(units(0));
-   Quantum<Double> restFreq(itsSpecCoord.restFrequency(), unit);
+   Quantum<double> restFreq(itsSpecCoord.restFrequency(), unit);
 
 // Create SC. Units will be Hz
 
    SpectralCoordinate sC;
    if (doLinear) {
-      Double crpix = 0.0;
-      Quantum<Double> crval(itsRefFreqX[0], unit);
-      Quantum<Double> cdelt((itsRefFreqX[n-1]-itsRefFreqX[0])/Double(n-1), unit);
+      double crpix = 0.0;
+      Quantum<double> crval(itsRefFreqX[0], unit);
+      Quantum<double> cdelt((itsRefFreqX[n-1]-itsRefFreqX[0])/double(n-1), unit);
 //
       sC = SpectralCoordinate(itsFreqSystem, crval, cdelt, crpix, restFreq);
    } else {
-      Quantum<Vector<Double> > freqs(itsRefFreqX, unit);
+      Quantum<Vector<double> > freqs(itsRefFreqX, unit);
       sC = SpectralCoordinate(itsFreqSystem, freqs, restFreq);
    }
 
@@ -403,7 +403,7 @@ SpectralCoordinate FrequencyAligner<T>::alignedSpectralCoordinate (Bool doLinear
 
 // Set rest freq state
 
-   sC.setRestFrequencies(itsSpecCoord.restFrequencies(), False);
+   sC.setRestFrequencies(itsSpecCoord.restFrequencies(), false);
    sC.selectRestFrequency(restFreq.getValue());
 
 // We don't want to set the frame conversion state (although possibly

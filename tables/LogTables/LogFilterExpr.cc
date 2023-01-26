@@ -73,17 +73,17 @@ LogFilterExpr& LogFilterExpr::operator= (const LogFilterExpr& that)
   return *this;
 }
 
-Bool LogFilterExpr::matches (const LogMessage& message)
+bool LogFilterExpr::matches (const LogMessage& message)
 {
   // Evaluate the expression for this message.
   itsMessage = &message;
-  Bool valb;
+  bool valb;
   // This class contains the functions to get the values.
   itsExpr->get (*this, valb);
   return valb;
 }
 
-Double LogFilterExpr::getDouble (const Block<Int>& fieldNrs) const
+double LogFilterExpr::getDouble (const Block<int32_t>& fieldNrs) const
 {
   switch (fieldNrs[0]) {
   case 0:
@@ -93,7 +93,7 @@ Double LogFilterExpr::getDouble (const Block<Int>& fieldNrs) const
   }
 }
 
-String LogFilterExpr::getString (const Block<Int>& fieldNrs) const
+String LogFilterExpr::getString (const Block<int32_t>& fieldNrs) const
 {
   switch (fieldNrs[0]) {
   case 1:
@@ -113,7 +113,7 @@ String LogFilterExpr::getString (const Block<Int>& fieldNrs) const
   }
 }
 
-DataType LogFilterExpr::dataType (const Block<Int>& fieldNrs) const
+DataType LogFilterExpr::dataType (const Block<int32_t>& fieldNrs) const
 {
   switch (fieldNrs[0]) {
   case 0:

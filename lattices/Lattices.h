@@ -103,18 +103,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // // Make an Array of shape 3x4x5
 // 
-// Array<Float> simpleArray(IPosition(3,3,4,5));
+// Array<float> simpleArray(IPosition(3,3,4,5));
 //
 // // fill it with a gradient
 //
-// for (Int k=0; k<5; k++)
-//   for (Int j=0; j<4; j++)
-//     for (Int i=0; i<3; i++) 
+// for (int32_t k=0; k<5; k++)
+//   for (int32_t j=0; j<4; j++)
+//     for (int32_t i=0; i<3; i++) 
 //       simpleArray(IPosition(3,i,j,k)) = i+j+k;
 //
 // // use the array to create an ArrayLattice.
 //
-// ArrayLattice<Float> lattice(simpleArray);
+// ArrayLattice<float> lattice(simpleArray);
 // </srcblock>
 //
 //   <li>The <linkto class="PagedArray">PagedArray</linkto> class stores its
@@ -144,17 +144,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 // // Create a PagedArray from a Table already existing on disk.  
 //
-// PagedArray<Float> lattice(fileName);
+// PagedArray<float> lattice(fileName);
 //
 // // Create a LatticeIterator to access the Lattice in optimal tile
 // // shaped chunks.
 //
-// LatticeIterator<Float> iter(lattice);
+// LatticeIterator<float> iter(lattice);
 //
 // // Iterate through and do something simple; here we just 
 // // sum up all the values in the Lattice
 //
-// Float dSum = 0;
+// float dSum = 0;
 // for(iter.reset(); !iter.atEnd(); iter++) {
 //   dSum += sum(iter.cursor());
 // }
@@ -201,7 +201,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // lattice.
 //
 // IPosition cursorShape(2, lattice.shape()(0), lattice.shape()(1));
-// LatticeIterator<Float> iter(lattice, cursorShape);
+// LatticeIterator<float> iter(lattice, cursorShape);
 // for (iter.reset(); !iter.atEnd(); iter++) {
 //   minMax(iter.cursor(), min, max);
 // }
@@ -222,8 +222,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // make an empty PagedArray and fill it.   The Table that stores the 
 // // PagedArray is deleted when the PagedArray goes out of scope
 //
-// PagedArray<Float> lattice(IPosition(4,100,200,300,50));
-// LatticeIterator<Float> iter(lattice, IPosition(2, 100, 200));
+// PagedArray<float> lattice(IPosition(4,100,200,300,50));
+// LatticeIterator<float> iter(lattice, IPosition(2, 100, 200));
 //
 // // fill each plane with the "distance" of the iterator from the origin
 //
@@ -274,7 +274,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // IPosition order(4,0,2,1,3);
 // LatticeStepper nav(latticeShape, cursorShape, order);
-// LatticeIterator<Float> iter(image, nav);
+// LatticeIterator<float> iter(image, nav);
 // </srcblock>
 //
 // <li> 

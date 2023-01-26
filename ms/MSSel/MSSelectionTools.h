@@ -34,11 +34,11 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // Get the intersection or union of IDs (such as FieldId).
-  Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2);
-  Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2);
+  Vector<int32_t> set_intersection(const Vector<int32_t>& v1, const Vector<int32_t>& v2);
+  Vector<int32_t> set_union(const Vector<int32_t>& v1, const Vector<int32_t>& v2);
 
   // Collective selection returning a selected MS.
-  Bool mssSetData(const MeasurementSet& ms, 
+  bool mssSetData(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  const String& outMSName="",
 		  const String& timeExpr="",
@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  );
 
   // Added feedExpr
-  Bool mssSetData2(const MeasurementSet& ms, 
+  bool mssSetData2(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  const String& outMSName="",
 		  const String& timeExpr="",
@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   // Collective selection also returning in-row (corr/chan) slices
-  Bool mssSetData(const MeasurementSet& ms, 
+  bool mssSetData(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  Vector<Vector<Slice> >& chanSlices,
 		  Vector<Vector<Slice> >& corrSlices,
@@ -92,12 +92,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  const String& arrayExpr="",
 		  const String& stateExpr="",
 		  const String& obsExpr="",
-		  const Int defaultChanStep=1,
+		  const int32_t defaultChanStep=1,
 		  MSSelection *mss=NULL
 		  );
 
   // Added feedExpr
-  Bool mssSetData2(const MeasurementSet& ms, 
+  bool mssSetData2(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  Vector<Vector<Slice> >& chanSlices,
 		  Vector<Vector<Slice> >& corrSlices,
@@ -114,17 +114,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  const String& stateExpr="",
 		  const String& obsExpr="",
 		  const String& feedExpr="",
-		  const Int defaultChanStep=1,
+		  const int32_t defaultChanStep=1,
 		  MSSelection *mss=NULL
 		  );
 
-  Bool getSelectedTable(Table& selectedTab,     const Table& baseTab,
+  bool getSelectedTable(Table& selectedTab,     const Table& baseTab,
 			TableExprNode& fullTEN,	const String& outName);
 
   Record mssSelectedIndices(MSSelection& mss, const MeasurementSet *ms);
 
-  String stripWhite(const String& str, Bool onlyends=True);
-  int tokenize(const String& str, const String& sep, Vector<String>& tokens,Bool upCase=False);
+  String stripWhite(const String& str, bool onlyends=true);
+  int tokenize(const String& str, const String& sep, Vector<String>& tokens,bool upCase=false);
   Vector<String> &split(const String &s, char delim, Vector<String> &elems);
 }
 

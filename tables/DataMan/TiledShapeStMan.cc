@@ -54,7 +54,7 @@ TiledShapeStMan::TiledShapeStMan()
 
 TiledShapeStMan::TiledShapeStMan (const String& hypercolumnName,
 				  const IPosition& defaultTileShape,
-				  uInt64 maximumCacheSize)
+				  uint64_t maximumCacheSize)
 : TiledStMan         (hypercolumnName, maximumCacheSize),
   defaultTileShape_p (defaultTileShape),
   nrUsedRowMap_p     (0),
@@ -109,7 +109,7 @@ IPosition TiledShapeStMan::defaultTileShape() const
     return defaultTileShape_p;
 }
 
-Bool TiledShapeStMan::canAccessColumn() const
+bool TiledShapeStMan::canAccessColumn() const
 {
     // The entire column can be accessed if all rows are in the same hypercube,
     // thus if there is 1 row map entry and the last value is #rows.
@@ -132,11 +132,11 @@ void TiledShapeStMan::setShape (rownr_t rownr, TSMCube*,
 				const IPosition& tileShape)
 {
     IPosition cubeShape = shape;
-    uInt64 n = shape.nelements();
+    uint64_t n = shape.nelements();
     cubeShape.resize (n+1);
     cubeShape(n) = 0;                   // hypercube is extensible
     // Find a hypercube with given shape.
-    Int index = findHypercube (cubeShape);
+    int32_t index = findHypercube (cubeShape);
     // Extend hypercube when found.
     // Otherwise create a new one.
     if (index >= 0) {
@@ -149,12 +149,12 @@ void TiledShapeStMan::setShape (rownr_t rownr, TSMCube*,
     cubeSet_p[0]->rwValueRecord() = emptyRecord;
 }
 
-Int TiledShapeStMan::findHypercube (const IPosition& shape)
+int32_t TiledShapeStMan::findHypercube (const IPosition& shape)
 {
     // A hypercube matches when its shape matches.
     // Its last axis is excluded, because it represents the rows.
-    uInt64 n = cubeSet_p.nelements();
-    for (uInt64 i=1; i<n; i++) {
+    uint64_t n = cubeSet_p.nelements();
+    for (uint64_t i=1; i<n; i++) {
 	if (shape.isEqual (cubeSet_p[i]->cubeShape(), size_t(nrdim_p-1))) {
 	    return i;
 	}
@@ -168,8 +168,8 @@ void TiledShapeStMan::setupCheck (const TableDesc& tableDesc,
     // The data columns may only contain arrays with the correct
     // dimensionality, which should be one less than the hypercube
     // dimensionality.
-    Int ndim = nrdim_p - 1;
-    for (uInt i=0; i<dataNames.nelements(); i++) {
+    int32_t ndim = nrdim_p - 1;
+    for (uint32_t i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
 	if (! columnDesc.isArray()) {
 	    throw (TSMError ("TiledShapeStMan cannot handle scalar column " +
@@ -201,12 +201,12 @@ void TiledShapeStMan::create64 (rownr_t nrrow)
 }
 	    
 
-Bool TiledShapeStMan::flush (AipsIO&, Bool fsync)
+bool TiledShapeStMan::flush (AipsIO&, bool fsync)
 {
     // Flush the caches.
     // Exit if nothing has changed.
     if (! flushCaches (fsync)) {
-	return False;
+	return false;
     }
     // Create the header file and write data in it.
     AipsIO* headerFile = headerFileCreate();
@@ -216,15 +216,15 @@ Bool TiledShapeStMan::flush (AipsIO&, Bool fsync)
     // Write the data from this object.
     *headerFile << defaultTileShape_p;
     *headerFile << nrUsedRowMap_p;
-    putBlock (*headerFile, rowMap_p, Int(nrUsedRowMap_p));
-    putBlock (*headerFile, cubeMap_p, Int(nrUsedRowMap_p));
-    putBlock (*headerFile, posMap_p,  Int(nrUsedRowMap_p));
+    putBlock (*headerFile, rowMap_p, int32_t(nrUsedRowMap_p));
+    putBlock (*headerFile, cubeMap_p, int32_t(nrUsedRowMap_p));
+    putBlock (*headerFile, posMap_p,  int32_t(nrUsedRowMap_p));
     headerFile->putend();
     headerFileClose (headerFile);
-    return True;
+    return true;
 }
 
-void TiledShapeStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
+void TiledShapeStMan::readHeader (rownr_t tabNrrow, bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
@@ -266,24 +266,24 @@ void TiledShapeStMan::addHypercube (rownr_t rownr,
     checkCubeShape (zeroCube, cubeShape);
     TSMCube* hypercube = makeHypercube (cubeShape, tileShape,
 					zeroCube->valueRecord());
-    uInt ncube = cubeSet_p.nelements();
+    uint32_t ncube = cubeSet_p.nelements();
     cubeSet_p.resize (ncube + 1);
     cubeSet_p[ncube] = hypercube;
     // Extend the hypercube.
     extendHypercube (rownr, ncube);
 }
 
-void TiledShapeStMan::extendHypercube (rownr_t rownr, uInt cubeNr)
+void TiledShapeStMan::extendHypercube (rownr_t rownr, uint32_t cubeNr)
 {
     TSMCube* hypercube = cubeSet_p[cubeNr];
-    uInt64 pos = hypercube->cubeShape()(nrdim_p-1);
+    uint64_t pos = hypercube->cubeShape()(nrdim_p-1);
     hypercube->extend (1, emptyRecord, coordColSet_p[nrdim_p - 1]);
     updateRowMap (cubeNr, pos, rownr);
     setDataChanged();
 }
 
 
-void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
+void TiledShapeStMan::updateRowMap (uint32_t cubeNr, uint32_t pos, rownr_t rownr)
 {
     // Check if the row number is correct.
     if (rownr >= nrrow_p) {
@@ -305,13 +305,13 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
 	}
 	// If the maps need to be extended, an extra entry is needed
 	// if intermediate rows are needed.
-	uInt nrext = 2;
+	uint32_t nrext = 2;
 	if (rownr == nextRow) {
 	    nrext = 1;
 	    // If this row is consecutive to the previous one,
 	    // only the maps need to be updated.
 	    if (nrUsedRowMap_p > 0) {
-	        uInt i = nrUsedRowMap_p-1;
+	        uint32_t i = nrUsedRowMap_p-1;
 	        if (cubeNr == cubeMap_p[i]  &&  pos == 1+posMap_p[i]) {
 		    rowMap_p[i]++;
 		    posMap_p[i]++;
@@ -322,7 +322,7 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
 	// A new entry has to be inserted.
         // Extend the maps when needed.
         if (nrUsedRowMap_p + nrext > rowMap_p.nelements()) {
-	    uInt nrnew = rowMap_p.nelements() + 64;
+	    uint32_t nrnew = rowMap_p.nelements() + 64;
 	    rowMap_p.resize (nrnew);
 	    cubeMap_p.resize (nrnew);
 	    posMap_p.resize (nrnew);
@@ -356,8 +356,8 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
     // The row is not past the end.
     // Find the closest row number in the map
     // (returns index of entry equal or less to given one).
-    Bool found;
-    uInt index = binarySearchBrackets (found, rowMap_p, rownr, nrUsedRowMap_p);
+    bool found;
+    uint32_t index = binarySearchBrackets (found, rowMap_p, rownr, nrUsedRowMap_p);
     // Exit immediately if the cube and pos did not change.
     rownr_t diffRow = rowMap_p[index] - rownr;
     if (cubeNr == cubeMap_p[index]  &&  pos == posMap_p[index] - diffRow) {
@@ -367,12 +367,12 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
     // If so, determine if it matches previous or next entry.
     // To match, the cube has to be the same and the position has to
     // be consecutive.
-    Bool atB = (rownr == 0  ||  (index > 0  &&  rownr-1 == rowMap_p[index-1]));
-    Bool atE = found;
-    Bool eqP = False;
-    Bool eqN = False;
+    bool atB = (rownr == 0  ||  (index > 0  &&  rownr-1 == rowMap_p[index-1]));
+    bool atE = found;
+    bool eqP = false;
+    bool eqN = false;
     if (atE  &&  index+1 < nrUsedRowMap_p) {
-        uInt fpos = posMap_p[index+1] - (rowMap_p[index+1] - rowMap_p[index]);
+        uint32_t fpos = posMap_p[index+1] - (rowMap_p[index+1] - rowMap_p[index]);
 	eqN = (cubeNr == cubeMap_p[index+1]  &&  pos == fpos);
     }
     if (atB  &&  index > 0) {
@@ -384,7 +384,7 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
 	posMap_p[index] = pos;
         // If it equals previous and/or next, combine maps by moving
         // the entries to the left.
-        uInt nm = 0;
+        uint32_t nm = 0;
 	if (eqN) {
 	    nm += 1;
 	}
@@ -393,7 +393,7 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
 	    index -= 1;
 	}
 	if (nm > 0) {
-	    uInt nr = nrUsedRowMap_p - (index+nm);
+	    uint32_t nr = nrUsedRowMap_p - (index+nm);
 	    if (nr > 0) {
 	        objmove (&(rowMap_p[index]),  &(rowMap_p[index+nm]),  nr);
 		objmove (&(cubeMap_p[index]), &(cubeMap_p[index+nm]), nr);
@@ -418,14 +418,14 @@ void TiledShapeStMan::updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr)
     // It is getting more and more complicated.
     // A new entry has to be inserted (or 2 if in the middle).
     // So shift to the right (after extending the maps when needed).
-    uInt nm = (atB || atE  ?  1 : 2);
+    uint32_t nm = (atB || atE  ?  1 : 2);
     if (nrUsedRowMap_p + nm > rowMap_p.nelements()) {
-        uInt nrnew = rowMap_p.nelements() + 64;
+        uint32_t nrnew = rowMap_p.nelements() + 64;
 	rowMap_p.resize (nrnew);
 	cubeMap_p.resize (nrnew);
 	posMap_p.resize (nrnew);
     }
-    uInt nr = nrUsedRowMap_p - index;
+    uint32_t nr = nrUsedRowMap_p - index;
     if (nr > 0) {
         objmove (&(rowMap_p[index+nm]),  &(rowMap_p[index]),  nr);
 	objmove (&(cubeMap_p[index+nm]), &(cubeMap_p[index]), nr);
@@ -461,7 +461,7 @@ TSMCube* TiledShapeStMan::getHypercube (rownr_t rownr)
     // how intervals are defined.
     if (lastHC_p < 0  ||  rownr > rowMap_p[lastHC_p]
     ||  (lastHC_p > 0  &&  rownr <= rowMap_p[lastHC_p-1])) {
-        Bool found;
+        bool found;
 	lastHC_p = binarySearchBrackets (found, rowMap_p, rownr,
 					 nrUsedRowMap_p);
     }
@@ -488,7 +488,7 @@ TSMCube* TiledShapeStMan::getHypercube (rownr_t rownr, IPosition& position)
     // how intervals are defined.
     if (lastHC_p < 0  ||  rownr > rowMap_p[lastHC_p]
     ||  (lastHC_p > 0  &&  rownr <= rowMap_p[lastHC_p-1])) {
-        Bool found;
+        bool found;
 	lastHC_p = binarySearchBrackets (found, rowMap_p, rownr,
 					 nrUsedRowMap_p);
     }

@@ -116,18 +116,18 @@ struct HDF5MetaData
   double uvw[3];
   float weight[4];
   float sigma[4];
-  Int antenna1;
-  Int antenna2;
-  Int arrayId;
-  Int fieldId;
-  Int dataDescId;
-  Int stateId;
-  Int flagRow;
-  Int feed1;
-  Int feed2;
-  Int processorId;
-  Int scanNumber;
-  Int observationId;
+  int32_t antenna1;
+  int32_t antenna2;
+  int32_t arrayId;
+  int32_t fieldId;
+  int32_t dataDescId;
+  int32_t stateId;
+  int32_t flagRow;
+  int32_t feed1;
+  int32_t feed2;
+  int32_t processorId;
+  int32_t scanNumber;
+  int32_t observationId;
 
   HDF5MetaData()
     : time(0),
@@ -143,7 +143,7 @@ struct HDF5MetaData
       fieldId(0),
       dataDescId(0),
       stateId(0),
-      flagRow(False),
+      flagRow(false),
       feed1(0),
       feed2(0),
       processorId(0),
@@ -254,16 +254,16 @@ public:
 
   // Write all rows for a single time step.
   // It sets the shape of the data array.
-  // All flags are set to False.
+  // All flags are set to false.
   void writeTimeStep (int ntimeField, bool perRow);
 
   // Write a spectral window row by row.
   virtual void writeTimeStepRows (int band, int field,
-                                  const vector<Vector<Double> >& antuvw) = 0;
+                                  const vector<Vector<double> >& antuvw) = 0;
 
   // Write a spectral window as a block.
   virtual void writeTimeStepSpw (int band, int field,
-                                 const vector<Vector<Double> >& antuvw) = 0;
+                                 const vector<Vector<double> >& antuvw) = 0;
 
   // Extend the MS with the given nr of rows.
   virtual void addRows (int nbasel, int nfield) = 0;
@@ -272,7 +272,7 @@ public:
   virtual void flush() = 0;
 
   // Return the nr of rows in the MS.
-  virtual Int64 nrow() const = 0;
+  virtual int64_t nrow() const = 0;
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const = 0;
@@ -313,7 +313,7 @@ protected:
   bool itsWriteAutoCorr;          //# write autocorrelations?
   bool itsWriteFloatData;         //# write floatdata and only autocorr?
   bool itsWriteWeightSpectrum;
-  Vector<Int> itsNFreq;           //# nr of freq channels for each band
+  Vector<int32_t> itsNFreq;           //# nr of freq channels for each band
   Vector<int> itsNPol;            //# nr of polarizations for each band
   Vector<double> itsStartFreq;
   Vector<double> itsStepFreq;
@@ -323,7 +323,7 @@ protected:
   double itsStepTime;             //# duration of each exposure (sec)
   String itsMsName;
   IPosition itsDataTileShape;
-  vector<Int> itsPolnr;           //# rownr in POL subtable for each band
+  vector<int32_t> itsPolnr;           //# rownr in POL subtable for each band
   Block<MBaseline> itsAntBL;      //# Baseline vector for each antenna
   MPosition       itsArrayPos;    //# Position of array center
   MeasFrame       itsFrame;       //# Frame to convert to apparent coordinates
@@ -342,21 +342,21 @@ public:
 
   // Write a spectral window row by row.
   virtual void writeTimeStepRows (int band, int field,
-                                  const vector<Vector<Double> >& antuvw);
+                                  const vector<Vector<double> >& antuvw);
 
   // Write a spectral window as a block.
   virtual void writeTimeStepSpw (int band, int field,
-                                 const vector<Vector<Double> >& antuvw);
+                                 const vector<Vector<double> >& antuvw);
 
   // Extend the MS with the given nr of rows.
   virtual void addRows (int nbasel, int nfield);
 
   // Flush and fsync the MS.
   virtual void flush()
-    { itsMS.flush(True); }
+    { itsMS.flush(true); }
 
   // Return the nr of rows in the MS.
-  virtual Int64 nrow() const
+  virtual int64_t nrow() const
     { return itsMS.nrow(); }
 
   // Show the cache statistics.
@@ -414,7 +414,7 @@ private:
   // </group>
 
   //# Define the data.
-  Int64           itsNrRow;
+  int64_t           itsNrRow;
   MeasurementSet  itsMS;
   MSMainColumns*  itsMSCol;
 };
@@ -431,11 +431,11 @@ public:
 
   // Write a spectral window row by row.
   virtual void writeTimeStepRows (int band, int field,
-                                  const vector<Vector<Double> >& antuvw);
+                                  const vector<Vector<double> >& antuvw);
 
   // Write a spectral window as a block.
   virtual void writeTimeStepSpw (int band, int field,
-                                 const vector<Vector<Double> >& antuvw);
+                                 const vector<Vector<double> >& antuvw);
 
   // Extend the MS with the given nr of rows.
   virtual void addRows (int nbasel, int nfield);
@@ -444,7 +444,7 @@ public:
   virtual void flush();
 
   // Return the nr of rows in the MS.
-  virtual Int64 nrow() const;
+  virtual int64_t nrow() const;
 
   // Show the cache statistics.
   virtual void showCacheStatistics() const;
@@ -489,7 +489,7 @@ private:
   void makeMetaType();
 
   //# Define the data.
-  Int64                itsNrRow;
+  int64_t                itsNrRow;
   HDF5DataType         itsMetaType;
   CountedPtr<HDF5File> itsFile;
   vector<HDF5Spw>      itsSpws;
@@ -553,7 +553,7 @@ void MSCreate::init (const vector<double>& ra,
   AlwaysAssert (itsStepFreq.size() == itsNFreq.size(), AipsError);
   // Keep the antenna positions in ITRF coordinates.
   Block<MPosition> antMPos(itsNrAnt);
-  for (Int i=0; i<itsNrAnt; i++) {
+  for (int32_t i=0; i<itsNrAnt; i++) {
     antMPos[i] = MPosition (MVPosition(antPos(0,i), antPos(1,i), antPos(2,i)),
                             MPosition::ITRF);
   }
@@ -562,7 +562,7 @@ void MSCreate::init (const vector<double>& ra,
   itsArrayPos = antMPos[0];
   itsFrame = MeasFrame(itsArrayPos);
   itsPhaseDir.resize (itsRa.size());
-  for (uInt i=0; i<itsRa.size(); ++i) {
+  for (uint32_t i=0; i<itsRa.size(); ++i) {
     MVDirection radec (Quantity(itsRa[i],"rad"), Quantity(itsDec[i],"rad"));
     itsPhaseDir[i] = MDirection(radec, MDirection::J2000);
   }
@@ -606,13 +606,13 @@ void MSCreate::writeTimeStep (int ntimeField, bool rowWise)
   // Write each field.
   // Calculate the UVW for all stations.
   // First store time in frame.
-  Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
+  double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
   Quantity qtime(time, "s");
   itsFrame.set (MEpoch(qtime, MEpoch::UTC));
   for (int field=0; field<nrfield; ++field) {
     if (ntimeField <= 0  ||  field == (itsNrTimes/ntimeField)%nrfield) {
       itsFrame.set (itsPhaseDir[field]);
-      vector<Vector<Double> > antuvw(itsNrAnt);
+      vector<Vector<double> > antuvw(itsNrAnt);
       if (itsCalcUVW) {
         for (int j=0; j<itsNrAnt; ++j) {
           MBaseline& mbl = itsAntBL[j];
@@ -638,9 +638,9 @@ void MSCreate::writeTimeStep (int ntimeField, bool rowWise)
 
 void MSCreate::fillBaseLines (const Matrix<double>& antPos)
 {
-  uInt nr = antPos.ncolumn();
+  uint32_t nr = antPos.ncolumn();
   itsAntBL.resize (nr);
-  for (uInt j=0; j<nr; j++) {
+  for (uint32_t j=0; j<nr; j++) {
     MVPosition blpos(antPos(0,j), antPos(1,j), antPos(2,j));
     itsAntBL[j] = MBaseline (MVBaseline(blpos), MBaseline::ITRF);
   }
@@ -695,11 +695,11 @@ void MSCreateCasa::createMS (const String& msName, int ntimeField,
   }
   if (nflagBits > 1) {
     if (nflagBits == 8) {
-      td.addColumn(ArrayColumnDesc<uChar>(flagColumn, 2));
+      td.addColumn(ArrayColumnDesc<unsigned char>(flagColumn, 2));
     } else if (nflagBits == 16) {
-      td.addColumn(ArrayColumnDesc<Short>(flagColumn, 2));
+      td.addColumn(ArrayColumnDesc<int16_t>(flagColumn, 2));
     } else {
-      td.addColumn(ArrayColumnDesc<Int>(flagColumn, 2));
+      td.addColumn(ArrayColumnDesc<int32_t>(flagColumn, 2));
     }
     if (itsNSpw == 1) {
       td.rwColumnDesc(flagColumn).setShape (dataShape);
@@ -795,13 +795,13 @@ void MSCreateCasa::createMS (const String& msName, int ntimeField,
       if (nflagBits > 1) {
         // Map the flag bits column to the FLAG column.
         if (nflagBits == 8) {
-          BitFlagsEngine<uChar> fbe(MS::columnName(MS::FLAG), flagColumn);
+          BitFlagsEngine<unsigned char> fbe(MS::columnName(MS::FLAG), flagColumn);
           newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
         } else if (nflagBits == 16) {
-          BitFlagsEngine<Short> fbe(MS::columnName(MS::FLAG), flagColumn);
+          BitFlagsEngine<int16_t> fbe(MS::columnName(MS::FLAG), flagColumn);
           newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
         } else {
-          BitFlagsEngine<Int> fbe(MS::columnName(MS::FLAG), flagColumn);
+          BitFlagsEngine<int32_t> fbe(MS::columnName(MS::FLAG), flagColumn);
           newTab.bindColumn(MS::columnName(MS::FLAG), fbe);
         }
       }
@@ -876,49 +876,49 @@ void MSCreateCasa::fillAntenna (const Block<MPosition>& antMPos,
   }
   MSAntenna msant = itsMS.antenna();
   msant.addRow (itsNrAnt);
-  Vector<Double> antOffset(3);
+  Vector<double> antOffset(3);
   antOffset = 0;
   MSAntennaColumns msantCol(msant);
   // First copy the possible input columns.
   TableCopy::copyRows (msant, antTab);
   // Write default values if there was no such input column.
   if (! antTab.tableDesc().isColumn("NAME")) {
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       msantCol.name().put (i, "ST_" + String::toString(i));
     }
   }
   if (! antTab.tableDesc().isColumn("STATION")) {
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       msantCol.station().put (i, "LOFAR");
     }
   }
   if (! antTab.tableDesc().isColumn("TYPE")) {
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       msantCol.type().put (i, "GROUND-BASED");
     }
   }
   if (! antTab.tableDesc().isColumn("MOUNT")) {
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       msantCol.mount().put (i, "ALT-AZ");
     }
   }
   if (! antTab.tableDesc().isColumn("OFFSET")) {
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       msantCol.offset().put (i, antOffset);
     }
   }
   if (! antTab.tableDesc().isColumn("DISH_DIAMETER")) {
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       msantCol.dishDiameter().put (i, 150);
     }
   }
   if (! antTab.tableDesc().isColumn("FLAG_ROW")) {
-    for (Int i=0; i<itsNrAnt; i++) {
-      msantCol.flagRow().put (i, False);
+    for (int32_t i=0; i<itsNrAnt; i++) {
+      msantCol.flagRow().put (i, false);
     }
   }
   // Always write the position.
-  for (Int i=0; i<itsNrAnt; i++) {
+  for (int32_t i=0; i<itsNrAnt; i++) {
     msantCol.positionMeas().put (i, antMPos[i]);
   }
   msant.flush();
@@ -926,7 +926,7 @@ void MSCreateCasa::fillAntenna (const Block<MPosition>& antMPos,
 
 void MSCreateCasa::fillSpwPol()
 {
-  for (uInt i=0; i<itsNFreq.size(); ++i) {
+  for (uint32_t i=0; i<itsNFreq.size(); ++i) {
     addBand (i, itsNPol[i], itsNFreq[i],
              itsStartFreq[i], itsStepFreq[i]);
   }
@@ -944,7 +944,7 @@ void MSCreateCasa::addBand (int band, int npolarizations, int nchannels,
   chanWidths = chanWidth;
   indgen (chanFreqs, startFreq + chanWidth/2., chanWidth);
   // Find out if this nr of polarizations has already been given.
-  Int polnr = -1;
+  int32_t polnr = -1;
   for (int i=0; i<band; i++) {
     if (npolarizations == itsNPol[i]) {
       polnr = itsPolnr[i];
@@ -958,11 +958,11 @@ void MSCreateCasa::addBand (int band, int npolarizations, int nchannels,
   // Add a row to the DATA_DESCRIPTION subtable.
   MSDataDescription msdd = itsMS.dataDescription();
   MSDataDescColumns msddCol(msdd);
-  uInt rownr = msdd.nrow();
+  uint32_t rownr = msdd.nrow();
   msdd.addRow();
   msddCol.spectralWindowId().put (rownr, rownr);
   msddCol.polarizationId().put (rownr, polnr);
-  msddCol.flagRow().put (rownr, False);
+  msddCol.flagRow().put (rownr, false);
   // Add a row to the SPECTRAL_WINDOW subtable.
   // Find the total bandwidth from the minimum and maximum.
   Vector<double> stFreqs = chanFreqs - chanWidths/2.;
@@ -984,7 +984,7 @@ void MSCreateCasa::addBand (int band, int npolarizations, int nchannels,
   msspwCol.ifConvChain().put (rownr, 0);
   msspwCol.freqGroup().put (rownr, 0);
   msspwCol.freqGroupName().put (rownr, "");
-  msspwCol.flagRow().put (rownr, False);
+  msspwCol.flagRow().put (rownr, false);
   // Now add the band to the internal blocks.
   itsPolnr.push_back (polnr);
 }
@@ -993,8 +993,8 @@ int MSCreateCasa::addPolarization (int npolarizations)
 {
   MSPolarization mspol = itsMS.polarization();
   MSPolarizationColumns mspolCol(mspol);
-  uInt rownr = mspol.nrow();
-  Vector<Int> corrType(npolarizations);
+  uint32_t rownr = mspol.nrow();
+  Vector<int32_t> corrType(npolarizations);
   corrType(0) = Stokes::XX;
   if (npolarizations == 2) {
     corrType(1) = Stokes::YY;
@@ -1003,8 +1003,8 @@ int MSCreateCasa::addPolarization (int npolarizations)
     corrType(2) = Stokes::YX;
     corrType(3) = Stokes::YY;
   }
-  Matrix<Int> corrProduct(2, npolarizations);
-  for (Int i=0; i<npolarizations; i++) {
+  Matrix<int32_t> corrProduct(2, npolarizations);
+  for (int32_t i=0; i<npolarizations; i++) {
     corrProduct(0,i) = Stokes::receptor1(Stokes::type(corrType(i)));
     corrProduct(1,i) = Stokes::receptor2(Stokes::type(corrType(i)));
   }
@@ -1013,14 +1013,14 @@ int MSCreateCasa::addPolarization (int npolarizations)
   mspolCol.numCorr().put (rownr, npolarizations);
   mspolCol.corrType().put (rownr, corrType);
   mspolCol.corrProduct().put (rownr, corrProduct);
-  mspolCol.flagRow().put (rownr, False);
+  mspolCol.flagRow().put (rownr, false);
   mspol.flush();
   return rownr;
 }
 
 void MSCreateCasa::fillField()
 {
-  for (uInt i=0; i<itsRa.size(); ++i) {
+  for (uint32_t i=0; i<itsRa.size(); ++i) {
     addField (i);
   }
 }
@@ -1033,7 +1033,7 @@ void MSCreateCasa::addField (int field)
   {
     MSField msfield = itsMS.field();
     MSFieldColumns msfieldCol(msfield);
-    uInt rownr = msfield.nrow();
+    uint32_t rownr = msfield.nrow();
     msfield.addRow();
     msfieldCol.name().put (rownr, "BEAM_" + String::toString(rownr));
     msfieldCol.code().put (rownr, "");
@@ -1043,15 +1043,15 @@ void MSCreateCasa::addField (int field)
     msfieldCol.phaseDirMeasCol().put (rownr, outdir);
     msfieldCol.referenceDirMeasCol().put (rownr, outdir);
     msfieldCol.sourceId().put (rownr, -1);
-    msfieldCol.flagRow().put (rownr, False);
+    msfieldCol.flagRow().put (rownr, false);
   }
   // Put the direction for each antenna into the POINTING subtable.
   {
     MSPointing mspointing = itsMS.pointing();
     MSPointingColumns mspointingCol(mspointing);
-    uInt rownr = mspointing.nrow();
+    uint32_t rownr = mspointing.nrow();
     mspointing.addRow(itsNrAnt);
-    for (Int i=0; i<itsNrAnt; i++) {
+    for (int32_t i=0; i<itsNrAnt; i++) {
       mspointingCol.antennaId().put (rownr, i);
       mspointingCol.time().put (rownr, itsStartTime); // actually midpoint (as in updateTimes()), but interval is still 0.0 (unknown) at creation
       mspointingCol.interval().put (rownr, 0.);
@@ -1060,7 +1060,7 @@ void MSCreateCasa::addField (int field)
       mspointingCol.timeOrigin().put (rownr, itsStartTime);
       mspointingCol.directionMeasCol().put (rownr, outdir);
       mspointingCol.targetMeasCol().put (rownr, outdir);
-      mspointingCol.tracking().put (rownr, False);
+      mspointingCol.tracking().put (rownr, false);
       rownr++;
     }
   }
@@ -1069,26 +1069,26 @@ void MSCreateCasa::addField (int field)
 void MSCreateCasa::fillFeed()
 {
   // Determine constants for the FEED subtable.
-  Int nRec = 2;
-  Matrix<Double> feedOffset(2,nRec);
+  int32_t nRec = 2;
+  Matrix<double> feedOffset(2,nRec);
   feedOffset = 0;
   Matrix<Complex> feedResponse(nRec,nRec);
   feedResponse = Complex(0.0,0.0);
-  for (Int rec=0; rec<nRec; rec++) {
+  for (int32_t rec=0; rec<nRec; rec++) {
     feedResponse(rec,rec) = Complex(1.0,0.0);
   }
   Vector<String> feedType(nRec);
   feedType(0) = "X";
   feedType(1) = "Y";
-  Vector<Double> feedPos(3);
+  Vector<double> feedPos(3);
   feedPos = 0.0;
-  Vector<Double> feedAngle(nRec);
+  Vector<double> feedAngle(nRec);
   feedAngle = -C::pi_4;                      // 0 for parallel dipoles
   // Fill the FEED subtable.
   MSFeed msfeed = itsMS.feed();
   MSFeedColumns msfeedCol(msfeed);
   msfeed.addRow (itsNrAnt);
-  for (Int i=0; i<itsNrAnt; i++) {
+  for (int32_t i=0; i<itsNrAnt; i++) {
     msfeedCol.antennaId().put (i, i);
     msfeedCol.feedId().put (i, 0);
     msfeedCol.spectralWindowId().put (i, -1);
@@ -1111,11 +1111,11 @@ void MSCreateCasa::fillObservation()
   MSObservationColumns msobsCol(msobs);
   Vector<String> corrSchedule(1);
   corrSchedule = "corrSchedule";
-  Vector<Double> timeRange(2);
+  Vector<double> timeRange(2);
   timeRange(0) = itsStartTime;
   timeRange(1) = itsStartTime + itsNrTimes*itsStepTime;
   // Data is public one year after end of observation.
-  Double releaseDate = timeRange(1) + 365.25*24*60*60;
+  double releaseDate = timeRange(1) + 365.25*24*60*60;
   // Fill the columns
   msobs.addRow();
   msobsCol.telescopeName().put (0, "LOFAR");
@@ -1125,7 +1125,7 @@ void MSCreateCasa::fillObservation()
   msobsCol.schedule().put (0, corrSchedule);
   msobsCol.project().put (0, "MSCreate");
   msobsCol.releaseDate().put (0, releaseDate);
-  msobsCol.flagRow().put (0, False);
+  msobsCol.flagRow().put (0, false);
   msobs.flush();
 }
 
@@ -1139,7 +1139,7 @@ void MSCreateCasa::fillProcessor()
   msprocCol.subType().put (0, "");
   msprocCol.typeId().put (0, -1);
   msprocCol.modeId().put (0, -1);
-  msprocCol.flagRow().put (0, False);
+  msprocCol.flagRow().put (0, false);
   msproc.flush();
 }
 
@@ -1149,27 +1149,27 @@ void MSCreateCasa::fillState()
   MSStateColumns msstateCol(msstate);
   // Fill the columns
   msstate.addRow();
-  msstateCol.sig().put (0, True);
-  msstateCol.ref().put (0, False);
+  msstateCol.sig().put (0, true);
+  msstateCol.ref().put (0, false);
   msstateCol.cal().put (0, 0.);
   msstateCol.load().put (0, 0.);
   msstateCol.subScan().put (0, 0);
   msstateCol.obsMode().put (0, "");
-  msstateCol.flagRow().put (0, False);
+  msstateCol.flagRow().put (0, false);
   msstate.flush();
 }
 
 void MSCreateCasa::updateTimes()
 {
   // Calculate the interval, end, and central time.
-  Double interval = itsNrTimes*itsStepTime;
-  Double endTime = itsStartTime + interval;
-  Double midTime = (itsStartTime + endTime) / 2;
+  double interval = itsNrTimes*itsStepTime;
+  double endTime = itsStartTime + interval;
+  double midTime = (itsStartTime + endTime) / 2;
   // Update all rows in FEED subtable.
   {
     MSFeed mssub (itsMS.keywordSet().asTable("FEED"));
     MSFeedColumns mssubCol(mssub);
-    Vector<Double> val(mssub.nrow());
+    Vector<double> val(mssub.nrow());
     val = midTime;
     mssubCol.time().putColumn (val);
     val = interval;
@@ -1179,7 +1179,7 @@ void MSCreateCasa::updateTimes()
   {
     MSPointing mssub (itsMS.keywordSet().asTable("POINTING"));
     MSPointingColumns mssubCol(mssub);
-    Vector<Double> val(mssub.nrow());
+    Vector<double> val(mssub.nrow());
     val = midTime;
     mssubCol.time().putColumn (val);
     val = interval;
@@ -1189,7 +1189,7 @@ void MSCreateCasa::updateTimes()
   {
     MSObservation msobs (itsMS.keywordSet().asTable("OBSERVATION"));
     MSObservationColumns msobsCol(msobs);
-    Vector<Double> timeRange(2);
+    Vector<double> timeRange(2);
     timeRange(0) = itsStartTime;
     timeRange(1) = itsStartTime + itsNrTimes*itsStepTime;
     for (rownr_t i=0; i<msobs.nrow(); i++) {
@@ -1216,21 +1216,21 @@ void MSCreateCasa::writeSimpleMainColumns()
   itsMSCol->stateId().put(0, 0);
   itsMSCol->interval().put(0, itsStepTime);
   itsMSCol->exposure().put(0, itsStepTime);
-  itsMSCol->flagRow().put(0, False);
+  itsMSCol->flagRow().put(0, false);
   Vector<float> ones(4, 1.0f);
   itsMSCol->weight().put(0, ones);
   itsMSCol->sigma().put(0, ones);
 }
 
 void MSCreateCasa::writeTimeStepRows (int band, int field,
-                                      const vector<Vector<Double> >& antuvw)
+                                      const vector<Vector<double> >& antuvw)
 {
   if (itsNrRow == 0) {
     writeSimpleMainColumns();
   }
   // Find the shape of the data array in each table row.
   IPosition shape(2, itsNPol[band], itsNFreq[band]);
-  Array<Bool> defFlags(shape, False);
+  Array<bool> defFlags(shape, false);
   Array<Complex> defData;
   Array<float> defFloatData;
   if (itsWriteFloatData) {
@@ -1241,16 +1241,16 @@ void MSCreateCasa::writeTimeStepRows (int band, int field,
     defData.resize (shape);
     indgen (defData, Complex(), Complex(0.01, 0.02));
   }
-  Array<Float> sigma(IPosition(1, shape(0)));
+  Array<float> sigma(IPosition(1, shape(0)));
   sigma = 1;
-  Array<Float> weight(IPosition(1, shape(0)));
+  Array<float> weight(IPosition(1, shape(0)));
   weight = 1;
   Array<float> weightSpectrum;
   if (itsWriteWeightSpectrum) {
     weightSpectrum.resize (shape);
     weightSpectrum = 1;
   }
-  Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
+  double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
   Vector<double> myuvw(3, 0);
   for (int j=0; j<itsNrAnt; ++j) {
     int st = (itsWriteAutoCorr ? j : j+1);
@@ -1281,7 +1281,7 @@ void MSCreateCasa::writeTimeStepRows (int band, int field,
 }
 
 void MSCreateCasa::writeTimeStepSpw (int band, int field,
-                                     const vector<Vector<Double> >& antuvw)
+                                     const vector<Vector<double> >& antuvw)
 {
   if (itsNrRow == 0) {
     writeSimpleMainColumns();
@@ -1289,7 +1289,7 @@ void MSCreateCasa::writeTimeStepSpw (int band, int field,
   int nrbasel = nbaselines();
   // Find the shape of the data array in each table row.
   IPosition shape(3, itsNPol[band], itsNFreq[band], nrbasel);
-  Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
+  double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
   Vector<double> times(nrbasel, time);
   Vector<int> vecint(nrbasel);
   Vector<int> vecint2(nrbasel);
@@ -1319,7 +1319,7 @@ void MSCreateCasa::writeTimeStepSpw (int band, int field,
     indgen (arr, Complex(), Complex(0.01, 0.02));
     itsMSCol->data().putColumnCells(rows, Array<Complex>(shape));
   }
-  itsMSCol->flag().putColumnCells(rows, Array<Bool>(shape, False));
+  itsMSCol->flag().putColumnCells(rows, Array<bool>(shape, false));
   if (itsWriteWeightSpectrum) {
     itsMSCol->weightSpectrum().putColumnCells(rows, Array<float>(shape, 1));
   }
@@ -1370,7 +1370,7 @@ void MSCreateCasa::addImagerColumns()
         MSSpectralWindow(itsMS.keywordSet().asTable("SPECTRAL_WINDOW"));
     }
     MSSpWindowColumns msSpW(itsMS.spectralWindow());
-    Matrix<Int> selection(2, msSpW.nrow());
+    Matrix<int32_t> selection(2, msSpW.nrow());
     // Fill in default selection (all bands and channels).
     selection.row(0) = 0;    //start
     selection.row(1) = msSpW.numChan().getColumn();
@@ -1382,9 +1382,9 @@ void MSCreateCasa::addImagerColumns()
 void MSCreateCasa::showCacheStatistics() const
 {
   cout << (itsWriteFloatData ? "FLOAT_DATA: " : "DATA: ");
-  RODataManAccessor(itsMS, "TiledData", False).showCacheStatistics (cout);
-  RODataManAccessor(itsMS, "SSMData", False).showCacheStatistics (cout);
-  RODataManAccessor(itsMS, "ISMData", False).showCacheStatistics (cout);
+  RODataManAccessor(itsMS, "TiledData", false).showCacheStatistics (cout);
+  RODataManAccessor(itsMS, "SSMData", false).showCacheStatistics (cout);
+  RODataManAccessor(itsMS, "ISMData", false).showCacheStatistics (cout);
 }
 
 
@@ -1425,8 +1425,8 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
     IPosition shape(3, itsNPol[band], itsNFreq[band], 0);
     IPosition shape1(1, 0);
     IPosition tileShape1(1, nrbasel);
-    uInt freqPerTile = itsDataTileShape[1];
-    uInt cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
+    uint32_t freqPerTile = itsDataTileShape[1];
+    uint32_t cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
     cout << "HDF5 cacheSize = " << cacheSize << endl;
     if (itsWriteFloatData) {
       spw.floatData = new HDF5DataSet (*spw.spw, "FLOAT_DATA", shape,
@@ -1440,7 +1440,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
     IPosition tileShape(itsDataTileShape);
     tileShape[2] *= 8;
     spw.flag = new HDF5DataSet (*spw.spw, "FLAG", shape, tileShape,
-                                (Bool*)0);
+                                (bool*)0);
     spw.flag->setCacheSize (cacheSize);
     if (itsWriteWeightSpectrum) {
       spw.weightSpectrum = new HDF5DataSet (*spw.spw, "WEIGHT_SPECTRUM", shape,
@@ -1479,29 +1479,29 @@ void MSCreateHDF5::makeMetaType()
   names.push_back ("weight");
   types.push_back (HDF5DataType (HDF5DataType((float*)0), IPosition(1,4)));
   names.push_back ("sigma");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("antenna1");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("antenna2");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("arrayId");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("fieldId");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("dataDescId");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("stateId");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("flagRow");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("feed1");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("feed2");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("processorId");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("scanNumber");
-  types.push_back (HDF5DataType((Int*)0));
+  types.push_back (HDF5DataType((int32_t*)0));
   names.push_back ("observationId");
   itsMetaType = HDF5DataType (names, types);
 }
@@ -1524,11 +1524,11 @@ void MSCreateHDF5::addRows (int nbasel, int nfield)
 }
 
 void MSCreateHDF5::writeTimeStepSpw (int band, int field,
-                                     const vector<Vector<Double> >& antuvw)
+                                     const vector<Vector<double> >& antuvw)
 {
   int nrbasel = nbaselines();
   // Get the time.
-  Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
+  double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
   // Fill meta data.
   Vector<HDF5MetaData> meta(nrbasel);
   RefRows rows (itsNrRow, itsNrRow+nrbasel-1);
@@ -1568,7 +1568,7 @@ void MSCreateHDF5::writeTimeStepSpw (int band, int field,
     indgen (arr, Complex(), Complex(0.01, 0.02));
     itsSpws[band].data->put (slicer3, arr);
   }
-  itsSpws[band].flag->put (slicer3, Array<Bool>(shape3, False));
+  itsSpws[band].flag->put (slicer3, Array<bool>(shape3, false));
   if (itsWriteWeightSpectrum) {
     itsSpws[band].weightSpectrum->put (slicer3, Array<float>(shape3, 1));
   }
@@ -1578,14 +1578,14 @@ void MSCreateHDF5::writeTimeStepSpw (int band, int field,
 }
 
 void MSCreateHDF5::writeTimeStepRows (int band, int field,
-                                      const vector<Vector<Double> >& antuvw)
+                                      const vector<Vector<double> >& antuvw)
 {
   // Find the shape of the data array in each table row.
   IPosition shape3(3, itsNPol[band], itsNFreq[band], 1);
   IPosition shape2(2, itsNPol[band], 1);
   IPosition shapeu(2, 3, 1);
   IPosition shape1(1, 1);
-  Array<Bool> defFlags(shape3, False);
+  Array<bool> defFlags(shape3, false);
   Array<Complex> defData;
   Array<float> defFloatData;
   if (itsWriteFloatData) {
@@ -1596,13 +1596,13 @@ void MSCreateHDF5::writeTimeStepRows (int band, int field,
     defData.resize (shape3);
     indgen (defData, Complex(), Complex(0.01, 0.02));
   }
-  Matrix<Float> weightsigma(shape3[0], 1, 1.);
+  Matrix<float> weightsigma(shape3[0], 1, 1.);
   Array<float> weightSpectrum;
   if (itsWriteWeightSpectrum) {
     weightSpectrum.resize (shape3);
     weightSpectrum = 1;
   }
-  Double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
+  double time = itsStartTime + itsNrTimes*itsStepTime + itsStepTime/2;
   // Fill meta data.
   Vector<HDF5MetaData> meta(1);
   for (int i=0; i<4; ++i) meta[0].weight[i] = 1;
@@ -1665,7 +1665,7 @@ void MSCreateHDF5::flush()
 {
   itsFile->flush();
 }
-Int64 MSCreateHDF5::nrow() const
+int64_t MSCreateHDF5::nrow() const
 {
   return itsNrRow;
 }
@@ -1710,12 +1710,12 @@ void showHelp()
   cout << "Use   writems -h   to see the possible parameters." << endl;
 }
 
-Int64 parmInt (Input& params, const String& name, const Record& vars=Record())
+int64_t parmInt (Input& params, const String& name, const Record& vars=Record())
 {
   return RecordGram::expr2Int (params.getString(name), vars);
 }
 
-Array<Int64> parmArrayInt (Input& params, const String& name)
+Array<int64_t> parmArrayInt (Input& params, const String& name)
 {
   return RecordGram::expr2ArrayInt (params.getString(name));
 }
@@ -1881,9 +1881,9 @@ bool readParms (int argc, char* argv[])
   myTotalNBand = parmInt (params, "totalspw", vars);
   AlwaysAssertExit (myTotalNBand >= myNBand);
   Block<int> nchanBlock = params.getIntArray ("nchan");
-  myNChan = Vector<Int> (nchanBlock.begin(), nchanBlock.end());
+  myNChan = Vector<int32_t> (nchanBlock.begin(), nchanBlock.end());
   Block<int> npolBlock = params.getIntArray ("npol");
-  myNPol  = Vector<Int> (npolBlock.begin(), npolBlock.end());
+  myNPol  = Vector<int32_t> (npolBlock.begin(), npolBlock.end());
   myNTime = params.getInt ("ntime");
   myNTimeField = params.getInt ("ntimefield");
   // Determine possible tile size. Default is no tiling.
@@ -1891,31 +1891,31 @@ bool readParms (int argc, char* argv[])
   myTileSizeFreq = parmInt (params, "tilesizefreq");
   myTileSize = parmInt (params, "tilesize");
   AlwaysAssertExit (myNPol.size() == 1  ||
-                    myNPol.size() == uInt(myTotalNBand));
-  if (myNPol.size() != uInt(myTotalNBand)) {
+                    myNPol.size() == uint32_t(myTotalNBand));
+  if (myNPol.size() != uint32_t(myTotalNBand)) {
     int np = myNPol[0];
-    myNPol.resize (myTotalNBand, True);
+    myNPol.resize (myTotalNBand, true);
     myNPol = np;
   }
   AlwaysAssertExit (myNChan.size() == 1  ||
-                    myNChan.size() == uInt(myTotalNBand));
-  if (myNChan.size() != uInt(myTotalNBand)) {
+                    myNChan.size() == uint32_t(myTotalNBand));
+  if (myNChan.size() != uint32_t(myTotalNBand)) {
     int nf = myNChan[0];
     myNChan.resize (myTotalNBand);
     myNChan = nf;
   }
   // Determine start and step frequency per band.
   AlwaysAssertExit (myStepFreq.size() == 1  ||
-                    myStepFreq.size() == uInt(myTotalNBand));
-  if (myStepFreq.size() != uInt(myTotalNBand)) {
+                    myStepFreq.size() == uint32_t(myTotalNBand));
+  if (myStepFreq.size() != uint32_t(myTotalNBand)) {
     double f = myStepFreq[0];
-    myStepFreq.resize (myTotalNBand, True);
+    myStepFreq.resize (myTotalNBand, true);
     myStepFreq = f;
   }
   AlwaysAssertExit (myStartFreq.size() == 1  ||
-                    myStartFreq.size() == uInt(myTotalNBand));
-  if (myStartFreq.size() != uInt(myTotalNBand)) {
-    myStartFreq.resize (myTotalNBand, True);
+                    myStartFreq.size() == uint32_t(myTotalNBand));
+  if (myStartFreq.size() != uint32_t(myTotalNBand)) {
+    myStartFreq.resize (myTotalNBand, true);
     for (int i=1; i<myTotalNBand; ++i) {
       myStartFreq[i] = (myStartFreq[i-1] + myNChan[i-1] * myStepFreq[i-1] +
                          0.5 * (myStepFreq[i] - myStepFreq[i-1]));
@@ -1930,7 +1930,7 @@ bool readParms (int argc, char* argv[])
   myWriteAutoCorr       = params.getBool   ("autocorr");
   myWriteFloatData      = params.getBool   ("floatdata");
   if (myWriteFloatData) {
-    myWriteAutoCorr = True;
+    myWriteAutoCorr = true;
   }
 
   myCalcUVW             = params.getBool   ("calcuvw");
@@ -1951,7 +1951,7 @@ bool readParms (int argc, char* argv[])
   myFlagColumn          = params.getString ("flagcolumn");
   myNFlagBits           = params.getInt    ("nflagbits");
   // Get the station info from the given antenna table.
-  uInt nant = params.getInt ("nant");
+  uint32_t nant = params.getInt ("nant");
   myAntennaTableName = params.getString ("anttab");
   if (myAntennaTableName.empty()) {
     myAntPos.resize (3, nant);

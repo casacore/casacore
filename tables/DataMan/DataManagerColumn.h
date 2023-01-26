@@ -95,7 +95,7 @@ class ArrayBase;
 //      This function can be implemented by a derived storage manager or
 //      virtual column engine class.
 //  <li>Storage managers derive from StManColumn. Its getArrayV function calls
-//      the appropriate getArrayXXV function where XX is the data type (e.g. Int).
+//      the appropriate getArrayXXV function where XX is the data type (e.g. int32_t).
 //      These getArrayXXV functions are implemented in the storage managers.
 //  <li>Virtual column engines derive from the templated VirtArrCol class which
 //      implements getArrayV by calling a templated virtual getArray function.
@@ -151,18 +151,18 @@ public:
 
     // Create a column.
     DataManagerColumn()
-	: isFixedShape_p(False)
+	: isFixedShape_p(false)
     {}
 
     // Frees up the storage.
     virtual ~DataManagerColumn();
 
     // Set the isFixedShape flag.
-    void setIsFixedShape (Bool isFixedShape)
+    void setIsFixedShape (bool isFixedShape)
         { isFixedShape_p = isFixedShape; }
 
     // Is this a fixed shape column?
-    Bool isFixedShape() const
+    bool isFixedShape() const
         { return isFixedShape_p; }
 
     // Get the data type of the column as defined in DataType.h.
@@ -178,18 +178,18 @@ public:
     // This does not test if the data file is writable, only if
     // it is in principle allowed to store data into the column.
     // (It may not be allowed for virtual columns).
-    // The default is True.
-    virtual Bool isWritable() const;
+    // The default is true.
+    virtual bool isWritable() const;
 
     // Set the maximum length of the value (can be used for strings).
     // By default the maximum length is ignored.
-    virtual void setMaxLength (uInt maxLength);
+    virtual void setMaxLength (uint32_t maxLength);
 
     // Set the shape of all (fixed-shaped) arrays in the column.
     // Effectively it is the same as setShapeColumn, but it also sets
     // the isFixedShape_p flag.
     void setFixedShapeColumn (const IPosition& shape)
-        { setShapeColumn (shape); isFixedShape_p = True; }
+        { setShapeColumn (shape); isFixedShape_p = true; }
 
     // Set the shape of an (variable-shaped) array in the given row.
     // By default it throws a "not possible" exception.
@@ -202,12 +202,12 @@ public:
 				const IPosition& tileShape);
 
     // Is the value shape defined in the given row?
-    // By default it returns True.
-    virtual Bool isShapeDefined (rownr_t rownr);
+    // By default it returns true.
+    virtual bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
     // By default it returns shape(rownr).nelements().
-    virtual uInt ndim (rownr_t rownr);
+    virtual uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     // By default it returns a zero-length IPosition (for a scalar value).
@@ -219,7 +219,7 @@ public:
 
     // Can the data manager handle chaging the shape of an existing array?
     // Default is no.
-    virtual Bool canChangeShape() const;
+    virtual bool canChangeShape() const;
 
     // Get access to the ColumnCache object.
     // <group>
@@ -237,19 +237,19 @@ public:
     // The compiler complains about hiding virtual functions if you do not
     // declare all virtual functions with the same name in a derived class.
     // <group>
-    void get (rownr_t rownr, Bool* dataPtr)
+    void get (rownr_t rownr, bool* dataPtr)
 	{ getBool (rownr, dataPtr); }
-    void get (rownr_t rownr, uChar* dataPtr)
+    void get (rownr_t rownr, unsigned char* dataPtr)
 	{ getuChar (rownr, dataPtr); }
-    void get (rownr_t rownr, Short* dataPtr)
+    void get (rownr_t rownr, int16_t* dataPtr)
 	{ getShort (rownr, dataPtr); }
-    void get (rownr_t rownr, uShort* dataPtr)
+    void get (rownr_t rownr, uint16_t* dataPtr)
 	{ getuShort (rownr, dataPtr); }
-    void get (rownr_t rownr, Int* dataPtr)
+    void get (rownr_t rownr, int32_t* dataPtr)
 	{ getInt (rownr, dataPtr); }
-    void get (rownr_t rownr, uInt* dataPtr)
+    void get (rownr_t rownr, uint32_t* dataPtr)
 	{ getuInt (rownr, dataPtr); }
-    void get (rownr_t rownr, Int64* dataPtr)
+    void get (rownr_t rownr, int64_t* dataPtr)
 	{ getInt64 (rownr, dataPtr); }
     void get (rownr_t rownr, float* dataPtr)
 	{ getfloat (rownr, dataPtr); } 
@@ -274,19 +274,19 @@ public:
     // The compiler complains about hiding virtual functions if you do not
     // declare all virtual functions with the same name in a derived class.
     // <group>
-    void put (rownr_t rownr, const Bool* dataPtr)
+    void put (rownr_t rownr, const bool* dataPtr)
 	{ putBool (rownr, dataPtr); }
-    void put (rownr_t rownr, const uChar* dataPtr)
+    void put (rownr_t rownr, const unsigned char* dataPtr)
 	{ putuChar (rownr, dataPtr); }
-    void put (rownr_t rownr, const Short* dataPtr)
+    void put (rownr_t rownr, const int16_t* dataPtr)
 	{ putShort (rownr, dataPtr); }
-    void put (rownr_t rownr, const uShort* dataPtr)
+    void put (rownr_t rownr, const uint16_t* dataPtr)
 	{ putuShort (rownr, dataPtr); }
-    void put (rownr_t rownr, const Int* dataPtr)
+    void put (rownr_t rownr, const int32_t* dataPtr)
 	{ putInt (rownr, dataPtr); }
-    void put (rownr_t rownr, const uInt* dataPtr)
+    void put (rownr_t rownr, const uint32_t* dataPtr)
 	{ putuInt (rownr, dataPtr); }
-    void put (rownr_t rownr, const Int64* dataPtr)
+    void put (rownr_t rownr, const int64_t* dataPtr)
 	{ putInt64 (rownr, dataPtr); }
     void put (rownr_t rownr, const float* dataPtr)
 	{ putfloat (rownr, dataPtr); }
@@ -427,13 +427,13 @@ protected:
     // Get the scalar value in the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getBool     (rownr_t rownr, bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+    virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+    virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+    virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
     virtual void getfloat    (rownr_t rownr, float* dataPtr);
     virtual void getdouble   (rownr_t rownr, double* dataPtr);
     virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -446,13 +446,13 @@ protected:
     // Put the scalar value into the given row.
     // The default implementation throws an "invalid operation" exception.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putBool     (rownr_t rownr, const bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const unsigned char* dataPtr);
+    virtual void putShort    (rownr_t rownr, const int16_t* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uint16_t* dataPtr);
+    virtual void putInt      (rownr_t rownr, const int32_t* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uint32_t* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const int64_t* dataPtr);
     virtual void putfloat    (rownr_t rownr, const float* dataPtr);
     virtual void putdouble   (rownr_t rownr, const double* dataPtr);
     virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
@@ -509,7 +509,7 @@ private:
                       const ArrayBase& arr);
 
     //# Data members
-    Bool        isFixedShape_p;
+    bool        isFixedShape_p;
     String      colName_p;
     ColumnCache colCache_p;
 };

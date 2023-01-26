@@ -63,17 +63,17 @@ int main(){
   // test the "find with default"
   {
     String result;
-    AlwaysAssertExit(Aipsrc::find(result, "foobar", "default") == False &&
+    AlwaysAssertExit(Aipsrc::find(result, "foobar", "default") == false &&
 		 result == "default");
-    AlwaysAssertExit(Aipsrc::findNoHome(result, "foobar", "default") == False &&
+    AlwaysAssertExit(Aipsrc::findNoHome(result, "foobar", "default") == false &&
 		 result == "default");
     
   }
 
   // test the register
   {
-    uInt n = Aipsrc::registerRC("foobar", "invalid");
-    uInt n1= Aipsrc::registerRC("printer.ps1.paper", "B4");
+    uint32_t n = Aipsrc::registerRC("foobar", "invalid");
+    uint32_t n1= Aipsrc::registerRC("printer.ps1.paper", "B4");
     cout << "Registrations: " << n << ", " << n1 << endl;
     cout << "Values: " << Aipsrc::get(n) << ", " << Aipsrc::get(n1) << endl;
     n = Aipsrc::registerRC("foobar", "invalid");

@@ -44,7 +44,7 @@ WCConcatenation::WCConcatenation (const PtrBlock<const ImageRegion*>& regions,
     fill();
 }
 
-WCConcatenation::WCConcatenation (Bool takeOver,
+WCConcatenation::WCConcatenation (bool takeOver,
 				  const PtrBlock<const WCRegion*>& regions,
 				  const WCBox& extendBox)
 : WCCompound   (takeOver, regions),
@@ -70,10 +70,10 @@ WCConcatenation& WCConcatenation::operator= (const WCConcatenation& other)
     return *this;
 }
 
-Bool WCConcatenation::operator== (const WCRegion& other) const
+bool WCConcatenation::operator== (const WCRegion& other) const
 {
     if (! WCCompound::operator== (other)) {
-        return False;
+        return false;
     }
     const WCConcatenation& that = (const WCConcatenation&)other;
     return (itsExtendBox == that.itsExtendBox);
@@ -88,8 +88,8 @@ void WCConcatenation::fill()
 {
     // Check if all regions have the same axes which is true if they
     // have the same dimensionality as the compound.
-    uInt nr = regions().nelements();
-    for (uInt i=0; i<nr; i++) {
+    uint32_t nr = regions().nelements();
+    for (uint32_t i=0; i<nr; i++) {
         if (regions()[i]->ndim() != ndim()) {
 	    throw (AipsError ("WCConcatenation::WCConcatenation - "
 			      "all its regions should have the same axes"));
@@ -116,11 +116,11 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
 					 const IPosition& pixelAxesMap,
 					 const IPosition& outOrder) const
 {
-    uInt i;
+    uint32_t i;
     // Split the pixelAxesMap and outOrder into the parts for the
     // region and the box (which can be more than the box itself
     // because it might be extended).
-    uInt ndreg = ndim() - 1;
+    uint32_t ndreg = ndim() - 1;
     DebugAssert (outOrder.nelements() == ndim(), AipsError);
     IPosition regPixMap(ndreg);
     IPosition regOutOrd(ndreg);
@@ -136,9 +136,9 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     // where n is the length.
     // We use the same trick as in WCRegion by sorting them and using
     // the resulting index vector.
-    Vector<uInt> reginx(ndreg);
-    std::vector<Int> tmp(regOutOrd.begin(), regOutOrd.end());
-    GenSortIndirect<Int,uInt>::sort (reginx, &(tmp[0]), ndreg);
+    Vector<uint32_t> reginx(ndreg);
+    std::vector<int32_t> tmp(regOutOrd.begin(), regOutOrd.end());
+    GenSortIndirect<int32_t,uint32_t>::sort (reginx, &(tmp[0]), ndreg);
     for (i=0; i<ndreg; i++) {
 	regOutOrd(reginx(i)) = i;
     }
@@ -150,7 +150,7 @@ LCRegion* WCConcatenation::doToLCRegion (const CoordinateSystem& cSys,
     LCRegion* boxptr = itsExtendBox.toLCRegionAxes (cSys, shape, boxPixMap,
 						    boxOutOrd);
     DebugAssert (boxptr->type() == LCBox::className(), AipsError);
-    LCConcatenation* extptr = new LCConcatenation (True, regions,
+    LCConcatenation* extptr = new LCConcatenation (true, regions,
 						   outOrder(ndreg),
 						   *(LCBox*)boxptr);
     delete boxptr;
@@ -183,7 +183,7 @@ WCConcatenation* WCConcatenation::fromRecord (const TableRecord& rec,
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
     WCRegion* boxptr = WCRegion::fromRecord (rec.asRecord("box"), tableName);
     DebugAssert (boxptr->type() == WCBox::className(), AipsError);
-    return new WCConcatenation (True, regions, *(const WCBox*)boxptr);
+    return new WCConcatenation (true, regions, *(const WCBox*)boxptr);
 }
 
 } //# NAMESPACE CASACORE - END

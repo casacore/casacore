@@ -53,7 +53,7 @@ TiledColumnStMan::TiledColumnStMan ()
 
 TiledColumnStMan::TiledColumnStMan (const String& hypercolumnName,
 				    const IPosition& tileShape,
-				    uInt64 maximumCacheSize)
+				    uint64_t maximumCacheSize)
 : TiledStMan  (hypercolumnName, maximumCacheSize),
   tileShape_p (tileShape)
 {}
@@ -93,9 +93,9 @@ String TiledColumnStMan::dataManagerType() const
     return "TiledColumnStMan";
 }
 
-Bool TiledColumnStMan::canAccessColumn () const
+bool TiledColumnStMan::canAccessColumn () const
 {
-    return True;
+    return true;
 }
 
 
@@ -123,12 +123,12 @@ void TiledColumnStMan::create64 (rownr_t nrrow)
 }
 	    
 
-Bool TiledColumnStMan::flush (AipsIO&, Bool fsync)
+bool TiledColumnStMan::flush (AipsIO&, bool fsync)
 {
     // Flush the caches.
     // Exit if nothing has changed.
     if (! flushCaches (fsync)) {
-	return False;
+	return false;
     }
     // Create the header file and write data in it.
     AipsIO* headerFile = headerFileCreate();
@@ -138,10 +138,10 @@ Bool TiledColumnStMan::flush (AipsIO&, Bool fsync)
     headerFilePut (*headerFile, 1);
     headerFile->putend();
     headerFileClose (headerFile);
-    return True;
+    return true;
 }
 
-void TiledColumnStMan::readHeader (rownr_t tabNrrow, Bool firstTime)
+void TiledColumnStMan::readHeader (rownr_t tabNrrow, bool firstTime)
 {
     // Open the header file and read data from it.
     AipsIO* headerFile = headerFileOpen();
@@ -160,8 +160,8 @@ void TiledColumnStMan::setupCheck (const TableDesc& tableDesc,
     // The data columns may only contain arrays with the correct
     // dimensionality, which should be one less than the hypercube
     // dimensionality.
-    Int ndim = nrdim_p - 1;
-    for (uInt i=0; i<dataNames.nelements(); i++) {
+    int32_t ndim = nrdim_p - 1;
+    for (uint32_t i=0; i<dataNames.nelements(); i++) {
 	const ColumnDesc& columnDesc = tableDesc.columnDesc (dataNames(i));
 	if (columnDesc.isScalar()) {
 	    if (ndim != 0) {

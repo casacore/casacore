@@ -36,7 +36,7 @@ using namespace casacore;
 int main()
 {
   // Test with various delimiters.
-  Vector<Int> vec2(3);
+  Vector<int32_t> vec2(3);
   indgen(vec2, 1);
   {
     ostringstream oss;
@@ -55,7 +55,7 @@ int main()
   }
 
   // Test a map (and pair).
-  map<Int,String> map1;
+  map<int32_t,String> map1;
   map1[-1] = "str-1";
   map1[3] = "str3";
   {
@@ -82,7 +82,7 @@ int main()
   }
 
   // Test a map of integers to list of ints
-  std::map<Int, std::list<Int>> map2;
+  std::map<int32_t, std::list<int32_t>> map2;
   map2[0] = {1, 2};
   map2[3] = {-1, -2};
   {

@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//    KaiserBFunction<Double> sf;
+//    KaiserBFunction<double> sf;
 //    sf(0);            // = 1.0
 // </srcblock>
 // </example>

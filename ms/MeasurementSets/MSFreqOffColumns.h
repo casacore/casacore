@@ -80,35 +80,35 @@ public:
   ~MSFreqOffsetColumns();
   
   // Is this object defined? (MSFreqOffset table is optional)
-  Bool isNull() const {return isNull_p;}
+  bool isNull() const {return isNull_p;}
   
   // Access to required columns
   // <group>
-  ScalarColumn<Int>& antenna1() {return antenna1_p;}
-  ScalarColumn<Int>& antenna2() {return antenna2_p;}
-  ScalarColumn<Int>& feedId() {return feedId_p;}
-  ScalarColumn<Double>& interval() {return interval_p;}
-  ScalarQuantColumn<Double>& intervalQuant() {return intervalQuant_p;}
-  ScalarColumn<Double>& offset() {return offset_p;}
-  ScalarQuantColumn<Double>& offsetQuant() {return offsetQuant_p;}
-  ScalarColumn<Int>& spectralWindowId() {return spectralWindowId_p;}
-  ScalarColumn<Double>& time() {return time_p;}
-  ScalarQuantColumn<Double>& timeQuant() {return timeQuant_p;}
+  ScalarColumn<int32_t>& antenna1() {return antenna1_p;}
+  ScalarColumn<int32_t>& antenna2() {return antenna2_p;}
+  ScalarColumn<int32_t>& feedId() {return feedId_p;}
+  ScalarColumn<double>& interval() {return interval_p;}
+  ScalarQuantColumn<double>& intervalQuant() {return intervalQuant_p;}
+  ScalarColumn<double>& offset() {return offset_p;}
+  ScalarQuantColumn<double>& offsetQuant() {return offsetQuant_p;}
+  ScalarColumn<int32_t>& spectralWindowId() {return spectralWindowId_p;}
+  ScalarColumn<double>& time() {return time_p;}
+  ScalarQuantColumn<double>& timeQuant() {return timeQuant_p;}
   ScalarMeasColumn<MEpoch>& timeMeas() {return timeMeas_p;}
   // </group>
 
   // Const access to required columns
   // <group>
-  const ScalarColumn<Int>& antenna1() const {return antenna1_p;}
-  const ScalarColumn<Int>& antenna2() const {return antenna2_p;}
-  const ScalarColumn<Int>& feedId() const {return feedId_p;}
-  const ScalarColumn<Double>& interval() const {return interval_p;}
-  const ScalarQuantColumn<Double>& intervalQuant() const {return intervalQuant_p;}
-  const ScalarColumn<Double>& offset() const {return offset_p;}
-  const ScalarQuantColumn<Double>& offsetQuant() const {return offsetQuant_p;}
-  const ScalarColumn<Int>& spectralWindowId() const {return spectralWindowId_p;}
-  const ScalarColumn<Double>& time() const {return time_p;}
-  const ScalarQuantColumn<Double>& timeQuant() const {return timeQuant_p;}
+  const ScalarColumn<int32_t>& antenna1() const {return antenna1_p;}
+  const ScalarColumn<int32_t>& antenna2() const {return antenna2_p;}
+  const ScalarColumn<int32_t>& feedId() const {return feedId_p;}
+  const ScalarColumn<double>& interval() const {return interval_p;}
+  const ScalarQuantColumn<double>& intervalQuant() const {return intervalQuant_p;}
+  const ScalarColumn<double>& offset() const {return offset_p;}
+  const ScalarQuantColumn<double>& offsetQuant() const {return offsetQuant_p;}
+  const ScalarColumn<int32_t>& spectralWindowId() const {return spectralWindowId_p;}
+  const ScalarColumn<double>& time() const {return time_p;}
+  const ScalarQuantColumn<double>& timeQuant() const {return timeQuant_p;}
   const ScalarMeasColumn<MEpoch>& timeMeas() const {return timeMeas_p;}
   // </group>
 
@@ -122,10 +122,10 @@ public:
   // otherwise already written values may thereafter have an incorrect
   // reference, offset, or unit.  However, it is possible that part of the
   // table gets written before these values are known.  In that case the
-  // reference, offset, or units can be set by using a False
+  // reference, offset, or units can be set by using a false
   // <src>tableMustBeEmpty</src> argument.
   // </note>
-  void setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty=True);
+  void setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty=true);
 
 protected:
   //# default constructor creates a object that is not usable. Use the attach
@@ -142,24 +142,24 @@ private:
   MSFreqOffsetColumns& operator=(const MSFreqOffsetColumns&);
 
   //# Is the object not attached to a Table.
-  Bool isNull_p;
+  bool isNull_p;
 
   //# required columns
-  ScalarColumn<Int> antenna1_p;
-  ScalarColumn<Int> antenna2_p;
-  ScalarColumn<Int> feedId_p;
-  ScalarColumn<Double> interval_p;
-  ScalarColumn<Double> offset_p;
-  ScalarColumn<Int> spectralWindowId_p;
-  ScalarColumn<Double> time_p;
+  ScalarColumn<int32_t> antenna1_p;
+  ScalarColumn<int32_t> antenna2_p;
+  ScalarColumn<int32_t> feedId_p;
+  ScalarColumn<double> interval_p;
+  ScalarColumn<double> offset_p;
+  ScalarColumn<int32_t> spectralWindowId_p;
+  ScalarColumn<double> time_p;
 
   //# Access to Measure columns
   ScalarMeasColumn<MEpoch> timeMeas_p;
 
   //# Access to Quantum columns
-  ScalarQuantColumn<Double> intervalQuant_p;
-  ScalarQuantColumn<Double> offsetQuant_p;
-  ScalarQuantColumn<Double> timeQuant_p;
+  ScalarQuantColumn<double> intervalQuant_p;
+  ScalarQuantColumn<double> offsetQuant_p;
+  ScalarQuantColumn<double> timeQuant_p;
 };
 
 //# Define the RO version for backward compatibility.

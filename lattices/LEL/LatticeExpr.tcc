@@ -102,7 +102,7 @@ void LatticeExpr<T>::init (const LatticeExprNode& expr)
 	    break;
 	default:
 	    throw (AipsError ("LatticeExpr::constructor - "
-			      "A numeric type cannot be converted to Bool"));
+			      "A numeric type cannot be converted to bool"));
 	}
     }
 }
@@ -142,7 +142,7 @@ MaskedLattice<T>* LatticeExpr<T>::cloneML() const
 }
 
 template <class T>
-Bool LatticeExpr<T>::isMasked() const
+bool LatticeExpr<T>::isMasked() const
 {
    return expr_p.isMasked();
 }
@@ -154,13 +154,13 @@ const LatticeRegion* LatticeExpr<T>::getRegionPtr() const
 }
 
 template <class T>
-Bool LatticeExpr<T>::isWritable() const
+bool LatticeExpr<T>::isWritable() const
 {
-   return False;
+   return false;
 }
 
 template<class T>
-Bool LatticeExpr<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool LatticeExpr<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return expr_p.lock (type, nattempts);
 }
@@ -170,7 +170,7 @@ void LatticeExpr<T>::unlock()
   expr_p.unlock();
 }
 template<class T>
-Bool LatticeExpr<T>::hasLock (FileLocker::LockType type) const
+bool LatticeExpr<T>::hasLock (FileLocker::LockType type) const
 {
   return expr_p.hasLock (type);
 }
@@ -187,7 +187,7 @@ IPosition LatticeExpr<T>::shape() const
 }
   
 template <class T>
-IPosition LatticeExpr<T>::doNiceCursorShape (uInt) const
+IPosition LatticeExpr<T>::doNiceCursorShape (uint32_t) const
 {
    return expr_p.getAttribute().tileShape();
 }
@@ -199,7 +199,7 @@ LELCoordinates LatticeExpr<T>::lelCoordinates() const
 }
   
 template <class T>
-Bool LatticeExpr<T>::doGetSlice (Array<T>& buffer,
+bool LatticeExpr<T>::doGetSlice (Array<T>& buffer,
 				 const Slicer& section)
 {
 // Evaluate the expression if not accessing the same section again.
@@ -210,11 +210,11 @@ Bool LatticeExpr<T>::doGetSlice (Array<T>& buffer,
       expr_p.eval (*lastChunkPtr_p, section);
    }
    buffer.reference (lastChunkPtr_p->value());
-   return True;
+   return true;
 }
 
 template <class T>
-Bool LatticeExpr<T>::doGetMaskSlice (Array<Bool>& buffer,
+bool LatticeExpr<T>::doGetMaskSlice (Array<bool>& buffer,
 				     const Slicer& section)
 {
 // Evaluate if masked and if different section.
@@ -227,13 +227,13 @@ Bool LatticeExpr<T>::doGetMaskSlice (Array<Bool>& buffer,
       }
       if (lastChunkPtr_p->isMasked()) {
 	 buffer.reference (lastChunkPtr_p->mask());
-	 return True;
+	 return true;
       }
    }
-// Not masked, so we can simply fill the buffer with True values.
+// Not masked, so we can simply fill the buffer with true values.
    buffer.resize (section.length());
-   buffer = True;
-   return False;
+   buffer = true;
+   return false;
 }
 
 template <class T>
@@ -271,7 +271,7 @@ void LatticeExpr<T>::handleMathTo (Lattice<T>& to, int oper) const
     AlwaysAssert (to.isWritable(), AipsError);
     // Create an iterator for the output.
     // If possible, use reference semantics in the iterator.
-    LatticeIterator<T> iter(to, True);
+    LatticeIterator<T> iter(to, true);
     switch (oper) {
     case 0:
       for (iter.reset(); !iter.atEnd(); iter++) {

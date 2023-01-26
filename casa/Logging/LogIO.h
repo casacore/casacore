@@ -284,16 +284,16 @@ LogIO &operator<<(LogIO &os, const LogOrigin &OR);
 // <group name=output>
 LogIO &operator<<(LogIO &os, const String &item);
 LogIO &operator<<(LogIO &os, const char *item);
-LogIO &operator<<(LogIO &os, Double item);
+LogIO &operator<<(LogIO &os, double item);
 LogIO &operator<<(LogIO &os, Complex item);
 LogIO &operator<<(LogIO &os, DComplex item);
-LogIO &operator<<(LogIO &os, Int item);
-LogIO &operator<<(LogIO &os, uInt item);
-LogIO &operator<<(LogIO &os, Int64 item);
-LogIO &operator<<(LogIO &os, uInt64 item);
-LogIO &operator<<(LogIO &os, uLong item);
-LogIO &operator<<(LogIO &os, Long item);
-LogIO &operator<<(LogIO &os, Bool item);
+LogIO &operator<<(LogIO &os, int32_t item);
+LogIO &operator<<(LogIO &os, uint32_t item);
+LogIO &operator<<(LogIO &os, int64_t item);
+LogIO &operator<<(LogIO &os, uint64_t item);
+LogIO &operator<<(LogIO &os, unsigned long item);
+LogIO &operator<<(LogIO &os, long item);
+LogIO &operator<<(LogIO &os, bool item);
 LogIO &operator<<(LogIO &os, ostream &(*item)(ostream &));
 // </group>
 

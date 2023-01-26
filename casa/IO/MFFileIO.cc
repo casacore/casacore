@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     : itsFile      (file),
       itsPosition  (0),
       itsName      (name),
-      itsIsWritable(True)
+      itsIsWritable(true)
   {
     if (opt == ByteIO::New  ||  opt == ByteIO::NewNoReplace) {
       itsId = itsFile->createFile (name, opt);
@@ -56,9 +56,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsId = -1;
   }
 
-  Int64 MFFileIO::read (Int64 size, void* buffer, Bool throwException)
+  int64_t MFFileIO::read (int64_t size, void* buffer, bool throwException)
   {
-    Int64 n = itsFile->read (itsId, buffer, size, itsPosition);
+    int64_t n = itsFile->read (itsId, buffer, size, itsPosition);
     itsPosition += n;
     if (throwException  &&  n < size) {
       throw AipsError ("MFFileIO::read - incorrect number of bytes ("
@@ -69,13 +69,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return n;
   }
 
-  void MFFileIO::write (Int64 size, const void* buffer)
+  void MFFileIO::write (int64_t size, const void* buffer)
   {
     if (!itsIsWritable) {
       throw AipsError ("Logical file " + itsName + " is not writable " +
                        "in MultiFileBase " + itsFile->fileName());
     }
-    Int64 n = itsFile->write (itsId, buffer, size, itsPosition);
+    int64_t n = itsFile->write (itsId, buffer, size, itsPosition);
     itsPosition += n;
     if (n != size) {
       throw AipsError ("MFFileIO: write error in logical file " + itsName +
@@ -86,7 +86,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MFFileIO::reopenRW()
   {
     itsFile->reopenRW();
-    itsIsWritable = True;
+    itsIsWritable = true;
   }
 
   void MFFileIO::flush()
@@ -97,7 +97,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MFFileIO::fsync()
   {}
 
-  void MFFileIO::truncate (Int64 size)
+  void MFFileIO::truncate (int64_t size)
   {
     itsFile->truncate (itsId, size);
   }
@@ -107,31 +107,31 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return itsName;
   }
 
-  Int64 MFFileIO::length()
+  int64_t MFFileIO::length()
   {
     return itsFile->fileSize (itsId);
   }
        
-  Bool MFFileIO::isReadable() const
+  bool MFFileIO::isReadable() const
   {
-    return True;
+    return true;
   }
 
-  Bool MFFileIO::isWritable() const
+  bool MFFileIO::isWritable() const
   {
     return itsIsWritable && itsFile->isWritable();
   }
 
-  Bool MFFileIO::isSeekable() const
+  bool MFFileIO::isSeekable() const
   {
-    return True;
+    return true;
   }
 
-  Int64 MFFileIO::doSeek (Int64 offset, ByteIO::SeekOption dir)
+  int64_t MFFileIO::doSeek (int64_t offset, ByteIO::SeekOption dir)
   {
     // Determine the new position.
     // Exit with error status if negative.
-    Int64 newPos;
+    int64_t newPos;
     switch (dir) {
     case ByteIO::Begin:
       newPos = offset;

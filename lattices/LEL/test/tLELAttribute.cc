@@ -41,7 +41,7 @@ void doIt()
   }
   {
     // Test array
-    LELAttribute attr1(True, IPosition(1,3), IPosition(1,4), LELCoordinates());
+    LELAttribute attr1(true, IPosition(1,3), IPosition(1,4), LELCoordinates());
     AlwaysAssertExit (attr1.isMasked());
     AlwaysAssertExit (!attr1.isScalar());
     AlwaysAssertExit (!attr1.isReduced());
@@ -62,7 +62,7 @@ void doIt()
   {
     // Combine scalar and array
     LELAttribute attr1;
-    LELAttribute attr2(True, IPosition(1,3), IPosition(1,4), LELCoordinates());
+    LELAttribute attr2(true, IPosition(1,3), IPosition(1,4), LELCoordinates());
     {
       LELAttribute attr3 (attr1, attr2);
       AlwaysAssertExit (attr3.isMasked());
@@ -107,11 +107,11 @@ void doIt()
   }
   {
     // Combine arrays with different shapes
-    LELAttribute attr1(False, IPosition(2,3,5), IPosition(2,4,6),
-		       LELCoordinates(), True);
-    LELAttribute attr2(True, IPosition(1,3), IPosition(1,4), LELCoordinates());
+    LELAttribute attr1(false, IPosition(2,3,5), IPosition(2,4,6),
+		       LELCoordinates(), true);
+    LELAttribute attr2(true, IPosition(1,3), IPosition(1,4), LELCoordinates());
     {
-      LELAttribute attr3 (attr1, attr2, False);
+      LELAttribute attr3 (attr1, attr2, false);
       AlwaysAssertExit (attr3.isMasked());
       AlwaysAssertExit (!attr3.isScalar());
       AlwaysAssertExit (attr3.isReduced());
@@ -120,7 +120,7 @@ void doIt()
       AlwaysAssertExit (attr3.tileShape() == IPosition(2,4,6));
     }
     {
-      LELAttribute attr3 (attr2, attr1, False);
+      LELAttribute attr3 (attr2, attr1, false);
       AlwaysAssertExit (attr3.isMasked());
       AlwaysAssertExit (!attr3.isScalar());
       AlwaysAssertExit (attr3.isReduced());
@@ -128,21 +128,21 @@ void doIt()
       AlwaysAssertExit (attr3.shape() == IPosition(2,3,5));
       AlwaysAssertExit (attr3.tileShape() == IPosition(2,4,6));
     }
-    Bool caught = False;
+    bool caught = false;
     try {
       LELAttribute attr3 (attr2, attr1);
     } catch (std::exception& x) {
-      caught = True;              // mismatching axes
+      caught = true;              // mismatching axes
     }
     AlwaysAssertExit (caught);
   }
   {
     // Combine array with an array with unknown shape.
-    LELAttribute attr1(False, IPosition(2,3,5), IPosition(2,4,6),
-		       LELCoordinates(), True);
-    LELAttribute attr2(True, IPosition(), IPosition(), LELCoordinates());
+    LELAttribute attr1(false, IPosition(2,3,5), IPosition(2,4,6),
+		       LELCoordinates(), true);
+    LELAttribute attr2(true, IPosition(), IPosition(), LELCoordinates());
     {
-      LELAttribute attr3 (attr1, attr2, True);
+      LELAttribute attr3 (attr1, attr2, true);
       AlwaysAssertExit (attr3.isMasked());
       AlwaysAssertExit (!attr3.isScalar());
       AlwaysAssertExit (attr3.isReduced());
@@ -151,7 +151,7 @@ void doIt()
       AlwaysAssertExit (attr3.tileShape() == IPosition(2,4,6));
     }
     {
-      LELAttribute attr3 (attr2, attr1, False);
+      LELAttribute attr3 (attr2, attr1, false);
       AlwaysAssertExit (attr3.isMasked());
       AlwaysAssertExit (!attr3.isScalar());
       AlwaysAssertExit (attr3.isReduced());

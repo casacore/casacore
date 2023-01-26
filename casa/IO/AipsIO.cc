@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Define the magic value used to check if the get of objects
 // is in synchronization with the file objetcs.
-const uInt AipsIO::magicval_p = 0xbebebebe;
+const uint32_t AipsIO::magicval_p = 0xbebebebe;
 
 AipsIO::AipsIO()
 : opened_p (0),
@@ -52,11 +52,11 @@ AipsIO::AipsIO()
   objlen_p (10),
   objtln_p (10),
   objptr_p (10),
-  hasCachedType_p(False)
+  hasCachedType_p(false)
 {}
 
 AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
-		uInt filebufSize, const std::shared_ptr<MultiFileBase>& mfile)
+		uint32_t filebufSize, const std::shared_ptr<MultiFileBase>& mfile)
 : opened_p (0),
   maxlev_p (10),
   objlen_p (10),
@@ -97,7 +97,7 @@ AipsIO::~AipsIO()
 
 
 void AipsIO::open (const String& fileName, ByteIO::OpenOption fop,
-		   uInt filebufSize,
+		   uint32_t filebufSize,
                    const std::shared_ptr<MultiFileBase>& mfile)
 {
     // Initialize everything for the open.
@@ -108,7 +108,7 @@ void AipsIO::open (const String& fileName, ByteIO::OpenOption fop,
       file_p = new RegularFileIO (fileName, fopt_p, filebufSize);
     }
     io_p = new CanonicalIO (file_p);
-    seekable_p = True;
+    seekable_p = true;
     opened_p   = 1;
 }
 
@@ -152,12 +152,12 @@ void AipsIO::openInit (ByteIO::OpenOption fop)
     if (opened_p != 0) {
 	throw (AipsError ("AipsIO: already open"));
     }
-    hasCachedType_p = False;
+    hasCachedType_p = false;
     fopt_p  = fop;
     swget_p = 0;
     swput_p = 0;
     level_p = 0;
-    objtln_p[0] = 0xffffffff;                  // highest possible uInt value
+    objtln_p[0] = 0xffffffff;                  // highest possible uint32_t value
     // Determine if put is possible.
     if (fopt_p == ByteIO::Old) {
 	swput_p = -1;                          // put not possible
@@ -177,7 +177,7 @@ void AipsIO::close()
     opened_p = 0;
     swput_p  = -1;
     swget_p  = -1;
-    hasCachedType_p = False;
+    hasCachedType_p = false;
 }
 
 
@@ -187,12 +187,12 @@ void AipsIO::close()
 // Note that these functions only return a valid result if a disk file
 // is used (it will not work for IPC).
 
-Int64 AipsIO::getpos()
+int64_t AipsIO::getpos()
 {
     return io_p->seek (0, ByteIO::Current);
 }
 
-Int64 AipsIO::setpos (Int64 pos)
+int64_t AipsIO::setpos (int64_t pos)
 {
     if (level_p != 0) {
         throw (AipsError("AipsIO::setpos cannot be done while "
@@ -208,21 +208,21 @@ Int64 AipsIO::setpos (Int64 pos)
 // The vector FromLocal functions are used to avoid align problems,
 // because the destination (the output buffer) can be non-aligned.
 
-AipsIO& AipsIO::operator<< (const Bool& var)
+AipsIO& AipsIO::operator<< (const bool& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
     return (*this);
 }
     
-AipsIO& AipsIO::operator<< (const Char& var)
+AipsIO& AipsIO::operator<< (const char& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
     return (*this);
 }
     
-AipsIO& AipsIO::operator<< (const uChar& var)
+AipsIO& AipsIO::operator<< (const unsigned char& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
@@ -257,14 +257,14 @@ AipsIO& AipsIO::operator<< (const unsigned int& var)
     return (*this);
 }
 
-AipsIO& AipsIO::operator<< (const Int64& var)
+AipsIO& AipsIO::operator<< (const int64_t& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
     return (*this);
 }
 
-AipsIO& AipsIO::operator<< (const uInt64& var)
+AipsIO& AipsIO::operator<< (const uint64_t& var)
 {
     testput();
     objlen_p[level_p] += io_p->write (1, &var);
@@ -306,7 +306,7 @@ AipsIO& AipsIO::operator<< (const String& var)
     return (*this);
 }
 
-AipsIO& AipsIO::operator<< (const Char* var)
+AipsIO& AipsIO::operator<< (const char* var)
 {
     testput();
     String str(var);
@@ -319,7 +319,7 @@ AipsIO& AipsIO::operator<< (const Char* var)
 // They test if a put is allowed.
 // The data is stored in canonical format in an intermediate buffer
 
-AipsIO& AipsIO::put (uInt nrv, const Bool* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const bool* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -329,7 +329,7 @@ AipsIO& AipsIO::put (uInt nrv, const Bool* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const Char* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const char* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -339,7 +339,7 @@ AipsIO& AipsIO::put (uInt nrv, const Char* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const uChar* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const unsigned char* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -349,7 +349,7 @@ AipsIO& AipsIO::put (uInt nrv, const uChar* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const short* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const short* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -359,7 +359,7 @@ AipsIO& AipsIO::put (uInt nrv, const short* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const unsigned short* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const unsigned short* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -369,7 +369,7 @@ AipsIO& AipsIO::put (uInt nrv, const unsigned short* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const int* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const int* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -379,7 +379,7 @@ AipsIO& AipsIO::put (uInt nrv, const int* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const unsigned int* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const unsigned int* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -389,7 +389,7 @@ AipsIO& AipsIO::put (uInt nrv, const unsigned int* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const Int64* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const int64_t* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -399,7 +399,7 @@ AipsIO& AipsIO::put (uInt nrv, const Int64* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const uInt64* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const uint64_t* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -409,7 +409,7 @@ AipsIO& AipsIO::put (uInt nrv, const uInt64* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const float* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const float* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -419,7 +419,7 @@ AipsIO& AipsIO::put (uInt nrv, const float* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const double* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const double* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -429,7 +429,7 @@ AipsIO& AipsIO::put (uInt nrv, const double* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const Complex* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const Complex* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -439,7 +439,7 @@ AipsIO& AipsIO::put (uInt nrv, const Complex* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const DComplex* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const DComplex* var, bool putNR)
 {
     testput();
     if (putNR) {
@@ -449,25 +449,25 @@ AipsIO& AipsIO::put (uInt nrv, const DComplex* var, Bool putNR)
     return (*this);
 }
 
-AipsIO& AipsIO::put (uInt nrv, const String* var, Bool putNR)
+AipsIO& AipsIO::put (uint32_t nrv, const String* var, bool putNR)
 {
     testput();
     if (putNR) {
 	operator<< (nrv);                        // store #values
     }
-    for (uInt i=0; i<nrv; i++) {
+    for (uint32_t i=0; i<nrv; i++) {
 	operator<< (var[i]);
     }
     return (*this);
 }
 
 
-AipsIO& AipsIO::put (const vector<Bool>& vec)
+AipsIO& AipsIO::put (const vector<bool>& vec)
 {
     // std::vector<bool> uses bits instead of bytes. So copy first.
-    Block<Bool> var(vec.size());
+    Block<bool> var(vec.size());
     std::copy (vec.begin(), vec.end(), var.begin());
-    put (var.size(), var.storage(), True);
+    put (var.size(), var.storage(), true);
     return *this;
 }
 
@@ -479,12 +479,12 @@ AipsIO& AipsIO::put (const vector<Bool>& vec)
 // It puts the object type and version and reserves space for the length.
 // It increases the level for each object to hold the length.
 
-uInt AipsIO::putstart (const Char* type, uInt vers)
+uint32_t AipsIO::putstart (const char* type, uint32_t vers)
 {
     return (putstart (String(type), vers));
 }
 
-uInt AipsIO::putstart (const String& type, uInt vers)
+uint32_t AipsIO::putstart (const String& type, uint32_t vers)
 {
     if (opened_p == 0  ||  swput_p < 0  ||  swget_p > 0) {
 	throw (AipsError ("AipsIO::putstart: not open or not writable"));
@@ -512,14 +512,14 @@ uInt AipsIO::putstart (const String& type, uInt vers)
 
 // putend ends putting an object. It decreases the level and writes
 // the object length if the file is seekable.
-uInt AipsIO::putend()
+uint32_t AipsIO::putend()
 {
     if (level_p == 0) {
 	testputerr();                        // no corresponding putstart
     }
-    uInt len = objlen_p[level_p];            // object length
+    uint32_t len = objlen_p[level_p];            // object length
     if (seekable_p) {
-	Int64 pos = getpos();
+	int64_t pos = getpos();
 	io_p->seek (objptr_p[level_p]);
 	operator<< (objlen_p[level_p]);
 	io_p->seek (pos);
@@ -540,7 +540,7 @@ uInt AipsIO::putend()
 // Note that the variables in the >> functions are always aligned, so
 // we can use the scalar ToLocal function which is doing a simple assign.
 
-AipsIO& AipsIO::operator>> (Bool& var)
+AipsIO& AipsIO::operator>> (bool& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -548,7 +548,7 @@ AipsIO& AipsIO::operator>> (Bool& var)
     return (*this);
 }
     
-AipsIO& AipsIO::operator>> (Char& var)
+AipsIO& AipsIO::operator>> (char& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -556,7 +556,7 @@ AipsIO& AipsIO::operator>> (Char& var)
     return (*this);
 }
     
-AipsIO& AipsIO::operator>> (uChar& var)
+AipsIO& AipsIO::operator>> (unsigned char& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -596,7 +596,7 @@ AipsIO& AipsIO::operator>> (unsigned int& var)
     return (*this);
 }
     
-AipsIO& AipsIO::operator>> (Int64& var)
+AipsIO& AipsIO::operator>> (int64_t& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -604,7 +604,7 @@ AipsIO& AipsIO::operator>> (Int64& var)
     return (*this);
 }
     
-AipsIO& AipsIO::operator>> (uInt64& var)
+AipsIO& AipsIO::operator>> (uint64_t& var)
 {
     testget();
     objlen_p[level_p] += io_p->read (1, &var);
@@ -660,7 +660,7 @@ AipsIO& AipsIO::operator>> (String& var)
 // They also test if a get is allowed.
 // The user has to supply the buffer and the given nr of values is read.
 
-AipsIO& AipsIO::get (uInt nrv, Bool* var)
+AipsIO& AipsIO::get (uint32_t nrv, bool* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -668,7 +668,7 @@ AipsIO& AipsIO::get (uInt nrv, Bool* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, Char* var)
+AipsIO& AipsIO::get (uint32_t nrv, char* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -676,7 +676,7 @@ AipsIO& AipsIO::get (uInt nrv, Char* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, uChar* var)
+AipsIO& AipsIO::get (uint32_t nrv, unsigned char* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -684,7 +684,7 @@ AipsIO& AipsIO::get (uInt nrv, uChar* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, short* var)
+AipsIO& AipsIO::get (uint32_t nrv, short* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -692,7 +692,7 @@ AipsIO& AipsIO::get (uInt nrv, short* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, unsigned short* var)
+AipsIO& AipsIO::get (uint32_t nrv, unsigned short* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -700,7 +700,7 @@ AipsIO& AipsIO::get (uInt nrv, unsigned short* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, int* var)
+AipsIO& AipsIO::get (uint32_t nrv, int* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -708,7 +708,7 @@ AipsIO& AipsIO::get (uInt nrv, int* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, unsigned int* var)
+AipsIO& AipsIO::get (uint32_t nrv, unsigned int* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -716,7 +716,7 @@ AipsIO& AipsIO::get (uInt nrv, unsigned int* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, Int64* var)
+AipsIO& AipsIO::get (uint32_t nrv, int64_t* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -724,7 +724,7 @@ AipsIO& AipsIO::get (uInt nrv, Int64* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, uInt64* var)
+AipsIO& AipsIO::get (uint32_t nrv, uint64_t* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -732,7 +732,7 @@ AipsIO& AipsIO::get (uInt nrv, uInt64* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, float* var)
+AipsIO& AipsIO::get (uint32_t nrv, float* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -740,7 +740,7 @@ AipsIO& AipsIO::get (uInt nrv, float* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, double* var)
+AipsIO& AipsIO::get (uint32_t nrv, double* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -748,7 +748,7 @@ AipsIO& AipsIO::get (uInt nrv, double* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, Complex* var)
+AipsIO& AipsIO::get (uint32_t nrv, Complex* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -756,7 +756,7 @@ AipsIO& AipsIO::get (uInt nrv, Complex* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, DComplex* var)
+AipsIO& AipsIO::get (uint32_t nrv, DComplex* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -764,7 +764,7 @@ AipsIO& AipsIO::get (uInt nrv, DComplex* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (uInt nrv, String* var)
+AipsIO& AipsIO::get (uint32_t nrv, String* var)
 {
     testget();
     objlen_p[level_p] += io_p->read (nrv, var);
@@ -772,10 +772,10 @@ AipsIO& AipsIO::get (uInt nrv, String* var)
     return (*this);
 }
 
-AipsIO& AipsIO::get (vector<Bool>& vec)
+AipsIO& AipsIO::get (vector<bool>& vec)
 {
-    uInt nrv;
-    Bool* var;
+    uint32_t nrv;
+    bool* var;
     getnew (nrv, var);
     vec.resize (nrv);
     std::copy (var, var+nrv, vec.begin());
@@ -788,31 +788,31 @@ AipsIO& AipsIO::get (vector<Bool>& vec)
 // The routine will allocate a buffer of the appropriate size.
 // It returns a pointer to that buffer and the nr of values read.
 
-AipsIO& AipsIO::getnew (uInt& nrv, Bool*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, bool*& var)
 {
     operator>> (nrv);
-    var = new Bool[nrv];
+    var = new bool[nrv];
     get (nrv, var);
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, Char*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, char*& var)
 {
     operator>> (nrv);
-    var = new Char[nrv];
+    var = new char[nrv];
     get (nrv, var);
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, uChar*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, unsigned char*& var)
 {
     operator>> (nrv);
-    var = new uChar[nrv];
+    var = new unsigned char[nrv];
     get (nrv, var);
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, short*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, short*& var)
 {
     operator>> (nrv);
     var = new short[nrv];
@@ -820,7 +820,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, short*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, unsigned short*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, unsigned short*& var)
 {
     operator>> (nrv);
     var = new unsigned short[nrv];
@@ -828,7 +828,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, unsigned short*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, int*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, int*& var)
 {
     operator>> (nrv);
     var = new int[nrv];
@@ -836,7 +836,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, int*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, unsigned int*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, unsigned int*& var)
 {
     operator>> (nrv);
     var = new unsigned int[nrv];
@@ -844,23 +844,23 @@ AipsIO& AipsIO::getnew (uInt& nrv, unsigned int*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, Int64*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, int64_t*& var)
 {
     operator>> (nrv);
-    var = new Int64[nrv];
+    var = new int64_t[nrv];
     get (nrv, var);
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, uInt64*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, uint64_t*& var)
 {
     operator>> (nrv);
-    var = new uInt64[nrv];
+    var = new uint64_t[nrv];
     get (nrv, var);
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, float*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, float*& var)
 {
     operator>> (nrv);
     var = new float[nrv];
@@ -868,7 +868,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, float*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, double*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, double*& var)
 {
     operator>> (nrv);
     var = new double[nrv];
@@ -876,7 +876,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, double*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, Complex*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, Complex*& var)
 {
     operator>> (nrv);
     var = new Complex[nrv];
@@ -884,7 +884,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, Complex*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, DComplex*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, DComplex*& var)
 {
     operator>> (nrv);
     var = new DComplex[nrv];
@@ -892,7 +892,7 @@ AipsIO& AipsIO::getnew (uInt& nrv, DComplex*& var)
     return (*this);
 }
 
-AipsIO& AipsIO::getnew (uInt& nrv, String*& var)
+AipsIO& AipsIO::getnew (uint32_t& nrv, String*& var)
 {
     operator>> (nrv);
     var = new String[nrv];
@@ -917,8 +917,8 @@ const String& AipsIO::getNextType()
     if (hasCachedType_p) {
 	return objectType_p;
     }
-    uInt swgetOld = swget_p;
-    uInt mval;
+    uint32_t swgetOld = swget_p;
+    uint32_t mval;
     if (level_p == 0) {
         swget_p = 1;                       // getting is possible (temporarily)
 	objlen_p[0] = 0;                   // length already read
@@ -943,7 +943,7 @@ const String& AipsIO::getNextType()
     operator>> (objectType_p);             // object type
     // Getting may not be possible till getstart has been done.
     swget_p = swgetOld;
-    hasCachedType_p = True;
+    hasCachedType_p = true;
     return objectType_p;
 }
 
@@ -953,28 +953,28 @@ const String& AipsIO::getNextType()
 // possible DynBuffer buffers (although they should not be present).
 // It checks if the entire object has been read.
 
-uInt AipsIO::getstart (const String& type)
+uint32_t AipsIO::getstart (const String& type)
 {
     return (getstart (type.chars()));
 }
 
-uInt AipsIO::getstart (const Char* type)
+uint32_t AipsIO::getstart (const char* type)
 {
-    uInt vers;
+    uint32_t vers;
     if (strcmp (type, getNextType().chars()) != 0) {
 	throw (AipsError ("AipsIO::getstart: found object type " +
 			  getNextType() + ", expected " + type));
     }
     swget_p = 1;                           // getting is possible now
-    hasCachedType_p = False;               // type is not cached anymore
+    hasCachedType_p = false;               // type is not cached anymore
     operator>> (vers);                     // read object version
     return vers;
 }
 
-uInt AipsIO::getend()
+uint32_t AipsIO::getend()
 {
     if (level_p > 0) {
-	uInt len = objlen_p[level_p];      // length of object read
+	uint32_t len = objlen_p[level_p];      // length of object read
 	if (len != objtln_p[level_p]  &&  objtln_p[level_p] != magicval_p) {
 	    throw (AipsError ("AipsIO::getend: part of object not read"));
 	}

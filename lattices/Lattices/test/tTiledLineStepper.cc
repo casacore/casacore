@@ -51,21 +51,21 @@ int main (int argc, const char* argv[])
     inp.create("incz", "1", "Inc along the z-axis", "int");
     inp.readArguments(argc, argv);
 
-    const uInt nx=inp.getInt("nx");
-    const uInt ny=inp.getInt("ny");
-    const uInt nz=inp.getInt("nz");
-    const uInt tx=inp.getInt("tx");
-    const uInt ty=inp.getInt("ty");
-    const uInt tz=inp.getInt("tz");
-    const uInt blcx=inp.getInt("blcx");
-    const uInt blcy=inp.getInt("blcy");
-    const uInt blcz=inp.getInt("blcz");
-    const uInt trcx=inp.getInt("trcx");
-    const uInt trcy=inp.getInt("trcy");
-    const uInt trcz=inp.getInt("trcz");
-    const uInt incx=inp.getInt("incx");
-    const uInt incy=inp.getInt("incy");
-    const uInt incz=inp.getInt("incz");
+    const uint32_t nx=inp.getInt("nx");
+    const uint32_t ny=inp.getInt("ny");
+    const uint32_t nz=inp.getInt("nz");
+    const uint32_t tx=inp.getInt("tx");
+    const uint32_t ty=inp.getInt("ty");
+    const uint32_t tz=inp.getInt("tz");
+    const uint32_t blcx=inp.getInt("blcx");
+    const uint32_t blcy=inp.getInt("blcy");
+    const uint32_t blcz=inp.getInt("blcz");
+    const uint32_t trcx=inp.getInt("trcx");
+    const uint32_t trcy=inp.getInt("trcy");
+    const uint32_t trcz=inp.getInt("trcz");
+    const uint32_t incx=inp.getInt("incx");
+    const uint32_t incy=inp.getInt("incy");
+    const uint32_t incz=inp.getInt("incz");
 
     // Check/adapt the values.
     IPosition shape(3, nx, ny, nz);
@@ -73,7 +73,7 @@ int main (int argc, const char* argv[])
     IPosition blc (3, blcx, blcy, blcz);
     IPosition trc (3, trcx, trcy, trcz);
     IPosition inc (3, incx, incy, incz);
-    for (uInt i=0; i<3; i++) {
+    for (uint32_t i=0; i<3; i++) {
 	AlwaysAssertExit (shape(i) > 0);
 	AlwaysAssertExit (tileShape(i) > 0);
 	AlwaysAssertExit (blc(i) >= 0);

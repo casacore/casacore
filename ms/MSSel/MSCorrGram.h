@@ -81,7 +81,7 @@ void msCorrGramParseDeleteNode();
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msCorrGramPosition();
+int32_t& msCorrGramPosition();
 
 // Declare the input routine for flex/bison.
 int msCorrGramInput (char* buf, int max_size);

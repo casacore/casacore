@@ -103,8 +103,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	  	return a*b*x; }
 // 	};
 //      // Instantiate the following versions:
-//	template class f<Double>;
-//	template class f<AutoDiff<Double> >;
+//	template class f<double>;
+//	template class f<AutoDiff<double> >;
 // </srcblock>
 // A call with values will produce the function value:
 // <srcblock>
@@ -112,14 +112,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	// will produce the value at x=7 for a=2; b=3:
 //	42
 //	// But a call indicating that we want derivatives to a and b:
-//	cout << f(AutoDiff<Double>(7.0), AutoDiff<Double>(2.0, 2, 0),
-//		  AutoDiff<Double>(3.0, 2, 1)) << endl;
+//	cout << f(AutoDiff<double>(7.0), AutoDiff<double>(2.0, 2, 0),
+//		  AutoDiff<double>(3.0, 2, 1)) << endl;
 //	// will produce the value at x=7 for a=2; b=3:
 //	// and the partial derivatives wrt a and b at x=7:
 //	(42, [21, 14])
 //	// The following will calculate the derivate wrt x:
-//	cout << f(AutoDiff<Double>(7.0, 1, 0), AutoDiff<Double>(2.0),
-//		  AutoDiff<Double>(3.0)) << endl;
+//	cout << f(AutoDiff<double>(7.0, 1, 0), AutoDiff<double>(2.0),
+//		  AutoDiff<double>(3.0)) << endl;
 //	(42,[6])
 // </srcblock>
 // In actual practice, there are a few rules to obey for the structure of
@@ -172,11 +172,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // value of the function for x=10; y=20; z=30; and for
 // // the derivatives at those point.
 // // Specify the values; and indicate 3 derivatives:
-// 	AutoDiff<Double> x(10.0, 3, 0); 
-// 	AutoDiff<Double> y(20.0, 3, 1); 
-// 	AutoDiff<Double> z(30.0, 3, 2);
+// 	AutoDiff<double> x(10.0, 3, 0); 
+// 	AutoDiff<double> y(20.0, 3, 1); 
+// 	AutoDiff<double> z(30.0, 3, 2);
 // // The result will be:
-// 	AutoDiff<Double> result = x*y + sin(z);
+// 	AutoDiff<double> result = x*y + sin(z);
 // 	cout << result.value() << endl;
 // // 199.012
 // 	cout << result.derivatives() << endl;
@@ -186,7 +186,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // See for an extensive example the demo program dAutoDiff. It is
 // based on the example given above, and shows also the use of second
-// derivatives (which is just using <src>AutoDiff<AutoDiff<Double> ></src>
+// derivatives (which is just using <src>AutoDiff<AutoDiff<double> ></src>
 // as template argument). 
 // <srcblock>
 // 	// The function, with fixed parameters a,b:
@@ -199,27 +199,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	  T b_p;
 //	};
 //	// Call it with different template arguments:
-//	  Double a0(2), b0(3), x0(7);
-//	  f<Double> f0; f0.set(a0, b0);
+//	  double a0(2), b0(3), x0(7);
+//	  f<double> f0; f0.set(a0, b0);
 //	  cout << "Value:     " << f0(x0) << endl;
 //	
-//	  AutoDiff<Double> a1(2,2,0), b1(3,2,1), x1(7);
-//	  f<AutoDiff<Double> > f1; f1.set(a1, b1);
+//	  AutoDiff<double> a1(2,2,0), b1(3,2,1), x1(7);
+//	  f<AutoDiff<double> > f1; f1.set(a1, b1);
 //	  cout << "Diff a,b:   " << f1(x1) << endl;
 //	
-//	  AutoDiff<Double> a2(2), b2(3), x2(7,1,0);
-//	  f<AutoDiff<Double> > f2; f2.set(a2, b2);
+//	  AutoDiff<double> a2(2), b2(3), x2(7,1,0);
+//	  f<AutoDiff<double> > f2; f2.set(a2, b2);
 //	  cout << "Diff x:     " << f2(x2) << endl;
 //	
-//	  AutoDiff<AutoDiff<Double> > a3(AutoDiff<Double>(2,2,0),2,0),
-//	    b3(AutoDiff<Double>(3,2,1),2,1), x3(AutoDiff<Double>(7),2);
-//	  f<AutoDiff<AutoDiff<Double> > > f3; f3.set(a3, b3);
+//	  AutoDiff<AutoDiff<double> > a3(AutoDiff<double>(2,2,0),2,0),
+//	    b3(AutoDiff<double>(3,2,1),2,1), x3(AutoDiff<double>(7),2);
+//	  f<AutoDiff<AutoDiff<double> > > f3; f3.set(a3, b3);
 //	  cout << "Diff2 a,b:  " << f3(x3) << endl;
 //	
-//	  AutoDiff<AutoDiff<Double> > a4(AutoDiff<Double>(2),1),
-//	    b4(AutoDiff<Double>(3),1),
-//	    x4(AutoDiff<Double>(7,1,0),1,0);
-//	  f<AutoDiff<AutoDiff<Double> > > f4; f4.set(a4, b4);
+//	  AutoDiff<AutoDiff<double> > a4(AutoDiff<double>(2),1),
+//	    b4(AutoDiff<double>(3),1),
+//	    x4(AutoDiff<double>(7,1,0),1,0);
+//	  f<AutoDiff<AutoDiff<double> > > f4; f4.set(a4, b4);
 //	  cout << "Diff2 x:    " << f4(x4) << endl;
 //
 //    // Result will be:
@@ -230,9 +230,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Diff2 x:   ((504, [72]), [(72, [0])])
 //
 //    // It needed the template instantiations definitions:
-//	template class f<Double>;
-//	template class f<AutoDiff<Double> >;
-//	template class f<AutoDiff<AutoDiff<Double> > >;
+//	template class f<double>;
+//	template class f<AutoDiff<double> >;
+//	template class f<AutoDiff<AutoDiff<double> > >;
 // </srcblock>
 // </example>
 //
@@ -270,12 +270,12 @@ template <class T> class AutoDiff {
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs, the nth derivative is one, and all 
   // others are zero. 
-  AutoDiff(const T &v, const uInt ndiffs, const uInt n); 
+  AutoDiff(const T &v, const uint32_t ndiffs, const uint32_t n); 
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs.
   // All derivatives are zero. 
-  AutoDiff(const T &v, const uInt ndiffs); 
+  AutoDiff(const T &v, const uint32_t ndiffs); 
 
   // Construct one from another
   AutoDiff(const AutoDiff<T> &other);
@@ -321,24 +321,24 @@ template <class T> class AutoDiff {
   // Returns a specific derivative. The second set does not check for
   // a valid which; the first set does through Vector addressing.
   // <group>
-  T &derivative(uInt which) { return grad_p(which); }
-  const T &derivative(uInt which) const { return grad_p(which); }
-  T &deriv(uInt which) { return grad_p[which]; }
-  const T &deriv(uInt which) const { return grad_p[which]; }
+  T &derivative(uint32_t which) { return grad_p(which); }
+  const T &derivative(uint32_t which) const { return grad_p(which); }
+  T &deriv(uint32_t which) { return grad_p[which]; }
+  const T &deriv(uint32_t which) const { return grad_p[which]; }
   // </group>
   
   // Return total number of derivatives
-  uInt nDerivatives() const { return nd_p; }
+  uint32_t nDerivatives() const { return nd_p; }
   
   // Is it a constant, i.e., with zero derivatives?
-  Bool isConstant() const { return nd_p == 0; }
+  bool isConstant() const { return nd_p == 0; }
 
  private:
   //# Data
   // The function value
   T val_p;
   // The number of derivatives
-  uInt nd_p;
+  uint32_t nd_p;
   // The derivatives
   Vector<T> grad_p;
 };

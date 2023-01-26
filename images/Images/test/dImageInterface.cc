@@ -34,15 +34,15 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
-Float sumPixels(const ImageInterface<Float>& image){
-  uInt rowLength = image.shape()(0);
+float sumPixels(const ImageInterface<float>& image){
+  uint32_t rowLength = image.shape()(0);
   IPosition rowShape(image.ndim());
   rowShape = 1; rowShape(0) = rowLength;
-  Float sumPix = 0;
-  RO_LatticeIterator<Float> iter(image, rowShape);
+  float sumPix = 0;
+  RO_LatticeIterator<float> iter(image, rowShape);
   while(!iter.atEnd()){
      // static_cast is a workaround for a SGI compiler bug
-    sumPix += sum(static_cast<Vector<Float> >(iter.vectorCursor()));
+    sumPix += sum(static_cast<Vector<float> >(iter.vectorCursor()));
     iter++;
   }
   return sumPix;
@@ -50,7 +50,7 @@ Float sumPixels(const ImageInterface<Float>& image){
 
 
 int main(){
-  PagedImage<Float> demo(IPosition(2, 10), CoordinateUtil::defaultCoords2D(), 
+  PagedImage<float> demo(IPosition(2, 10), CoordinateUtil::defaultCoords2D(), 
 			 "dImageInterface_tmp.image");
   demo.set(1.0f);
   cout << "Sum of all pixels is: " << sumPixels(demo) << endl;

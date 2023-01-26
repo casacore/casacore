@@ -40,10 +40,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uInt colnr)
+ISMIndColumn::ISMIndColumn (ISMBase* smptr, int dataType, uint32_t colnr)
 : ISMColumn     (smptr, dataType, colnr),
   seqnr_p       (smptr->uniqueNr()),
-  shapeIsFixed_p(False),
+  shapeIsFixed_p(false),
   iosfile_p     (0),
   indArray_p    (0)
 {}
@@ -55,7 +55,7 @@ ISMIndColumn::~ISMIndColumn()
 
 void ISMIndColumn::clear()
 {
-    delete (Int64*)lastValue_p;
+    delete (int64_t*)lastValue_p;
     lastValue_p = 0;
     if (stmanPtr_p->version() < 3) {
         delete iosfile_p;
@@ -73,9 +73,9 @@ void ISMIndColumn::doCreate (ISMBucket* bucket)
     init (ByteIO::New);
     // Insert a dummy zero offset as the first value.
     lastRowPut_p = 0;
-    *(Int64*)lastValue_p = 0;
+    *(int64_t*)lastValue_p = 0;
     char* buffer = stmanPtr_p->tempBuffer();
-    uInt leng = writeFunc_p (buffer, lastValue_p, 1);
+    uint32_t leng = writeFunc_p (buffer, lastValue_p, 1);
     bucket->addData (colnr_p, 0, 0, buffer, leng);
 }
 void ISMIndColumn::getFile (rownr_t nrrow)
@@ -84,7 +84,7 @@ void ISMIndColumn::getFile (rownr_t nrrow)
     init (stmanPtr_p->fileOption());
     lastRowPut_p = nrrow;
 }
-Bool ISMIndColumn::flush (rownr_t, Bool fsync)
+bool ISMIndColumn::flush (rownr_t, bool fsync)
 {
     return iosfile_p->flush (fsync);
 }
@@ -114,7 +114,7 @@ void ISMIndColumn::addRow (rownr_t, rownr_t oldNrrow)
 void ISMIndColumn::setShapeColumn (const IPosition& shape)
 {
     fixedShape_p   = shape;
-    shapeIsFixed_p = True;
+    shapeIsFixed_p = true;
 }
 
 void ISMIndColumn::setShape (rownr_t rownr, const IPosition& shape)
@@ -133,13 +133,13 @@ void ISMIndColumn::setShape (rownr_t rownr, const IPosition& shape)
 StIndArray* ISMIndColumn::getArrayPtr (rownr_t rownr)
 {
     if (isLastValueInvalid (rownr)) {
-	getValue (rownr, lastValue_p, False);
-	Int64 offset = *(Int64*)lastValue_p;
+	getValue (rownr, lastValue_p, false);
+	int64_t offset = *(int64_t*)lastValue_p;
 	if (offset != 0) {
 	    indArray_p = StIndArray (offset);
-	    foundArray_p = True;
+	    foundArray_p = true;
 	}else{
-	    foundArray_p = False;
+	    foundArray_p = false;
 	}
     }
     if (foundArray_p) {
@@ -168,8 +168,8 @@ StIndArray* ISMIndColumn::putShape (rownr_t rownr, const IPosition& shape)
 {
     //# Insert an entry for this row and set its shape.
     //# Nothing will be done if it is already defined.
-    return putArrayPtr (rownr, shape, False);
-//    StIndArray* ptr = putArrayPtr (rownr, shape, False);
+    return putArrayPtr (rownr, shape, false);
+//    StIndArray* ptr = putArrayPtr (rownr, shape, false);
 //    ptr->setShape (*iosfile_p, dataType(), shape);
 //    return ptr;
 }
@@ -183,24 +183,24 @@ StIndArray* ISMIndColumn::putShapeSliced (rownr_t rownr)
     //# row 10-20, while the put is only for row 15. In that case row 15
     //# has to be inserted.
     StIndArray* ptr = getShape (rownr);
-    return putArrayPtr (rownr, ptr->shape(), True);
+    return putArrayPtr (rownr, ptr->shape(), true);
 }
 
-Bool ISMIndColumn::isShapeDefined (rownr_t rownr)
-    { return (getArrayPtr(rownr) == 0  ?  False : True); }
+bool ISMIndColumn::isShapeDefined (rownr_t rownr)
+    { return (getArrayPtr(rownr) == 0  ?  false : true); }
 
-uInt ISMIndColumn::ndim (rownr_t rownr)
+uint32_t ISMIndColumn::ndim (rownr_t rownr)
     { return getShape(rownr)->shape().nelements(); }
 
 IPosition ISMIndColumn::shape (rownr_t rownr)
     { return getShape(rownr)->shape(); }
 
-Bool ISMIndColumn::canChangeShape() const
-    { return (shapeIsFixed_p  ?  False : True); }
+bool ISMIndColumn::canChangeShape() const
+    { return (shapeIsFixed_p  ?  false : true); }
 
 
 StIndArray* ISMIndColumn::putArrayPtr (rownr_t rownr, const IPosition& shape,
-				       Bool copyData)
+				       bool copyData)
 {
     // Start with getting the array pointer. This gives the range
     // for which this array is valid.
@@ -221,7 +221,7 @@ StIndArray* ISMIndColumn::putArrayPtr (rownr_t rownr, const IPosition& shape,
 	if (ptr->refCount (*iosfile_p) <= 1) {
 	    // The value is not shared, so we can replace it.
 	    ptr->setShape (*iosfile_p, dataType(), shape);
-	    Int64 offset = ptr->fileOffset();
+	    int64_t offset = ptr->fileOffset();
 	    putValue (rownr, &offset);
 	    return ptr;
 	}
@@ -233,7 +233,7 @@ StIndArray* ISMIndColumn::putArrayPtr (rownr_t rownr, const IPosition& shape,
 	tmp.copyData (*iosfile_p, dataType(), *ptr);
     }
     indArray_p = tmp;
-    Int64 offset = indArray_p.fileOffset();
+    int64_t offset = indArray_p.fileOffset();
     putValue (rownr, &offset);
     return &indArray_p;
 }
@@ -254,28 +254,28 @@ void ISMIndColumn::putSliceV (rownr_t rownr, const Slicer& ns,
     { putShapeSliced(rownr)->putSliceV (*iosfile_p, ns, arr, dtype()); }
     
 
-Bool ISMIndColumn::compareValue (const void*, const void*) const
+bool ISMIndColumn::compareValue (const void*, const void*) const
 {
-    return False;
+    return false;
 }
 
 void ISMIndColumn::init (ByteIO::OpenOption fileOption)
 {
     clear();
     DebugAssert (nrelem_p==1, AipsError);
-    Bool asBigEndian = stmanPtr_p->asBigEndian();
+    bool asBigEndian = stmanPtr_p->asBigEndian();
     if (asBigEndian) {
-	readFunc_p    = CanonicalConversion::getToLocal (static_cast<Int64*>(0));
-	writeFunc_p   = CanonicalConversion::getFromLocal (static_cast<Int64*>(0));
-	fixedLength_p = CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
+	readFunc_p    = CanonicalConversion::getToLocal (static_cast<int64_t*>(0));
+	writeFunc_p   = CanonicalConversion::getFromLocal (static_cast<int64_t*>(0));
+	fixedLength_p = CanonicalConversion::canonicalSize (static_cast<int64_t*>(0));
 	nrcopy_p      = 1;
     }else{
-	readFunc_p    = LECanonicalConversion::getToLocal (static_cast<Int64*>(0));
-	writeFunc_p   = LECanonicalConversion::getFromLocal (static_cast<Int64*>(0));
-	fixedLength_p = LECanonicalConversion::canonicalSize (static_cast<Int64*>(0));
+	readFunc_p    = LECanonicalConversion::getToLocal (static_cast<int64_t*>(0));
+	writeFunc_p   = LECanonicalConversion::getFromLocal (static_cast<int64_t*>(0));
+	fixedLength_p = LECanonicalConversion::canonicalSize (static_cast<int64_t*>(0));
 	nrcopy_p      = 1;
     }
-    lastValue_p = new Int64;
+    lastValue_p = new int64_t;
     //# Open or create the type 1 file to hold the arrays in the column.
     //# For newer versions one file is maintained by the parent
     //# for all indirect columns.
@@ -292,7 +292,7 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
 
 void ISMIndColumn::handleCopy (rownr_t, const char* value)
 {
-    Int64 offset;
+    int64_t offset;
     readFunc_p (&offset, value, nrcopy_p);
     if (offset != 0) {
 	StIndArray tmp (offset);
@@ -302,7 +302,7 @@ void ISMIndColumn::handleCopy (rownr_t, const char* value)
 
 void ISMIndColumn::handleRemove (rownr_t, const char* value)
 {
-    Int64 offset;
+    int64_t offset;
     readFunc_p (&offset, value, nrcopy_p);
     if (offset != 0) {
 	StIndArray tmp (offset);

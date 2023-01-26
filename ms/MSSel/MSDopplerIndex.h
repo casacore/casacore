@@ -85,13 +85,13 @@ public:
 
   void attach(const MSDoppler &doppler);
 
-  // access to the doppler ID key, throws an exception if isNull() is False
-  Int &dopplerId() {return *dopplerId_p;}
+  // access to the doppler ID key, throws an exception if isNull() is false
+  int32_t &dopplerId() {return *dopplerId_p;}
 
-  // access to the source ID key, throws an exception if isNull() is False
-  Int &sourceId() {return *sourceId_p;}
+  // access to the source ID key, throws an exception if isNull() is false
+  int32_t &sourceId() {return *sourceId_p;}
 private:
-  RecordFieldPtr<Int> dopplerId_p, sourceId_p;
+  RecordFieldPtr<int32_t> dopplerId_p, sourceId_p;
 
   void attachIds();
 };

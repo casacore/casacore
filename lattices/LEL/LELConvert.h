@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <synopsis>
 // This LEL letter class is derived from LELInterface.  It
 // is used to construct LEL objects that know how to convert
-// between numerical types, such as Double to Float.  They 
+// between numerical types, such as double to float.  They 
 // operate on numerical Lattices and return a numerical Lattice. 
 // The LELConvert object is embedded in the tree, and the conversion
 // actually happens at tree evaluation time.
@@ -74,12 +74,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // would indirectly use this class (through the envelope) is:
 // <srcblock>
 // IPosition shape(2,5,10);
-// ArrayLattice<Float> x(shape); x.set(1.0);
-// ArrayLattice<Double> y(shape); 
+// ArrayLattice<float> x(shape); x.set(1.0);
+// ArrayLattice<double> y(shape); 
 // y.copyData(x);                 // y = x;
 // </srcblock>
 // The LELConvert class is embedded in the tree at construction time
-// so as to handle the conversion from Float to Double at evaluation time
+// so as to handle the conversion from float to double at evaluation time
 // </example>
 
 // <motivation>
@@ -109,16 +109,16 @@ public:
    virtual LELScalar<T> getScalar() const;
 
 // Do further preparations (e.g. optimization) on the expression.
-   virtual Bool prepareScalarExpr();
+   virtual bool prepareScalarExpr();
 
 // Get class name
    virtual String className() const;    
 
   // Handle locking/syncing of a lattice in a lattice expression.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   // </group>
 

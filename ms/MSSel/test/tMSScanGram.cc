@@ -69,7 +69,7 @@ int main(int argc, const char* argv[])
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    Vector<Int> selectedIds;
+    Vector<int32_t> selectedIds;
     const TableExprNode node = msScanGramParseCommand(&ms, "1", selectedIds);
     if (!node.isNull()) {
       cout << "TableExprNode has rows = " << node.nrow() << endl;

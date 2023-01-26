@@ -38,17 +38,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T> 
 T GaussianND<T>::eval(typename Function<T>::FunctionArg x) const {
   Vector<T> norm(itsDim);
-  for (uInt i=0; i<itsDim; i++) norm[i] = x[i] - param_p[CENTER+i];
+  for (uint32_t i=0; i<itsDim; i++) norm[i] = x[i] - param_p[CENTER+i];
 
   T exponent(0);
-  for (uInt i=0, k=0; i<itsDim; i++) {
-    for (uInt j=i+1; j<itsDim; j++) {
+  for (uint32_t i=0, k=0; i<itsDim; i++) {
+    for (uint32_t j=i+1; j<itsDim; j++) {
       exponent += norm[i]*norm[j]*param_p[CENTER+itsDim+itsDim+k++];
     }
   }
   exponent *= 2;
 
-  for (uInt i=0; i<itsDim; i++) {
+  for (uint32_t i=0; i<itsDim; i++) {
     exponent += norm[i]*norm[i]*param_p[CENTER+itsDim+i];
   }
   return param_p[HEIGHT] * exp(-exponent/T(2));

@@ -193,30 +193,30 @@ void simpleTests()
     // Now check the whatType() functions
     class Goofy;
     AlwaysAssertExit( whatType<Goofy>() == TpOther );
-    AlwaysAssertExit( whatType<Bool>() == TpBool );
-    AlwaysAssertExit( whatType<Char>() == TpChar );
-    AlwaysAssertExit( whatType<uChar>() == TpUChar );
-    AlwaysAssertExit( whatType<Short>() == TpShort );
-    AlwaysAssertExit( whatType<uShort>() == TpUShort );
-    AlwaysAssertExit( whatType<Int>() == TpInt );
-    AlwaysAssertExit( whatType<uInt>() == TpUInt );
-    AlwaysAssertExit( whatType<Int64>() == TpInt64 );
-    AlwaysAssertExit( whatType<Float>() == TpFloat );
-    AlwaysAssertExit( whatType<Double>() == TpDouble );
+    AlwaysAssertExit( whatType<bool>() == TpBool );
+    AlwaysAssertExit( whatType<char>() == TpChar );
+    AlwaysAssertExit( whatType<unsigned char>() == TpUChar );
+    AlwaysAssertExit( whatType<int16_t>() == TpShort );
+    AlwaysAssertExit( whatType<uint16_t>() == TpUShort );
+    AlwaysAssertExit( whatType<int32_t>() == TpInt );
+    AlwaysAssertExit( whatType<uint32_t>() == TpUInt );
+    AlwaysAssertExit( whatType<int64_t>() == TpInt64 );
+    AlwaysAssertExit( whatType<float>() == TpFloat );
+    AlwaysAssertExit( whatType<double>() == TpDouble );
     AlwaysAssertExit( whatType<Complex>() == TpComplex );
     AlwaysAssertExit( whatType<DComplex>() == TpDComplex );
     AlwaysAssertExit( whatType<String>() == TpString );
     AlwaysAssertExit( whatType<Table>() == TpTable );
-    AlwaysAssertExit( whatType<Array<Bool>>() == TpArrayBool );
-    AlwaysAssertExit( whatType<Array<Char>>() == TpArrayChar );
-    AlwaysAssertExit( whatType<Array<uChar>>() == TpArrayUChar );
-    AlwaysAssertExit( whatType<Array<Short>>() == TpArrayShort );
-    AlwaysAssertExit( whatType<Array<uShort>>() == TpArrayUShort );
-    AlwaysAssertExit( whatType<Array<Int>>() == TpArrayInt );
-    AlwaysAssertExit( whatType<Array<uInt>>() == TpArrayUInt );
-    AlwaysAssertExit( whatType<Array<Int64>>() == TpArrayInt64 );
-    AlwaysAssertExit( whatType<Array<Float>>() == TpArrayFloat );
-    AlwaysAssertExit( whatType<Array<Double>>() == TpArrayDouble );
+    AlwaysAssertExit( whatType<Array<bool>>() == TpArrayBool );
+    AlwaysAssertExit( whatType<Array<char>>() == TpArrayChar );
+    AlwaysAssertExit( whatType<Array<unsigned char>>() == TpArrayUChar );
+    AlwaysAssertExit( whatType<Array<int16_t>>() == TpArrayShort );
+    AlwaysAssertExit( whatType<Array<uint16_t>>() == TpArrayUShort );
+    AlwaysAssertExit( whatType<Array<int32_t>>() == TpArrayInt );
+    AlwaysAssertExit( whatType<Array<uint32_t>>() == TpArrayUInt );
+    AlwaysAssertExit( whatType<Array<int64_t>>() == TpArrayInt64 );
+    AlwaysAssertExit( whatType<Array<float>>() == TpArrayFloat );
+    AlwaysAssertExit( whatType<Array<double>>() == TpArrayDouble );
     AlwaysAssertExit( whatType<Array<Complex>>() == TpArrayComplex );
     AlwaysAssertExit( whatType<Array<DComplex>>() == TpArrayDComplex );
     AlwaysAssertExit( whatType<Array<String>>() == TpArrayString );
@@ -312,22 +312,22 @@ void simpleTests()
 // to be called using types for which an exception from asScalar is expected
 void excpAsScalar(DataType type)
 {
-    Bool hadExcp = False;
+    bool hadExcp = false;
     try {
 	asScalar(type);
     } catch (std::exception& x) {
-	hadExcp = True;
+	hadExcp = true;
     } 
     AlwaysAssert(hadExcp, AipsError);
 }
 
 void excpAsArray(DataType type)
 {
-    Bool hadExcp = False;
+    bool hadExcp = false;
     try {
 	asArray(type);
     } catch (std::exception& x) {
-	hadExcp = True;
+	hadExcp = true;
     } 
     AlwaysAssert(hadExcp, AipsError);
 }

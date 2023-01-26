@@ -40,13 +40,13 @@ void doIt (const IPosition& cubeShape, const IPosition tileShape)
   {
     // Create the image without explicitly writing it.
     // The destructor should create it all (with arbitrary data).
-    PagedImage<Float> newImage(TiledShape(cubeShape, tileShape),
+    PagedImage<float> newImage(TiledShape(cubeShape, tileShape),
                                CoordinateUtil::defaultCoords2D(),
                                "tImageEmpty_tmp.img");
   }
   {
     // Check the shapes and if data can be read.
-    PagedImage<Float> image ("tImageEmpty_tmp.img");
+    PagedImage<float> image ("tImageEmpty_tmp.img");
     AlwaysAssertExit (image.shape() == cubeShape);
     AlwaysAssertExit (image.niceCursorShape() == tileShape);
     image.get();

@@ -47,42 +47,42 @@
 #include <casacore/casa/namespace.h>
 Complex latMean(const Lattice<Complex> & lat) {
   Complex currentSum = 0.0f;
-  uInt nPixels = 0u;
+  uint32_t nPixels = 0u;
   RO_LatticeIterator<Complex> iter(lat);
   for (iter.reset(); !iter.atEnd(); iter++){
     currentSum += sum(iter.cursor());    // 
     nPixels += iter.cursor().nelements();
   }
-  return currentSum/Float(nPixels);
+  return currentSum/float(nPixels);
 }
 
 void FFT2DReal2Complex(Lattice<Complex> & result, 
-		       const Lattice<Float> & input){
+		       const Lattice<float> & input){
   AlwaysAssert(input.ndim() == 4, AipsError);
   const IPosition shape = input.shape();
-  const uInt nx = shape(0);
+  const uint32_t nx = shape(0);
   AlwaysAssert (nx > 1, AipsError);
-  const uInt ny = shape(1);
+  const uint32_t ny = shape(1);
   AlwaysAssert (ny > 1, AipsError);
-  const uInt npol = shape(2);
-  const uInt nchan = shape(3); const IPosition resultShape = result.shape();
+  const uint32_t npol = shape(2);
+  const uint32_t nchan = shape(3); const IPosition resultShape = result.shape();
   AlwaysAssert(resultShape.nelements() == 4, AipsError);
-  AlwaysAssert(resultShape(3) == Int(nchan), AipsError);
-  AlwaysAssert(resultShape(2) == Int(npol), AipsError);
-  AlwaysAssert(resultShape(1) == Int(ny), AipsError);
-  AlwaysAssert(resultShape(0) == Int(nx/2 + 1), AipsError);
+  AlwaysAssert(resultShape(3) == int32_t(nchan), AipsError);
+  AlwaysAssert(resultShape(2) == int32_t(npol), AipsError);
+  AlwaysAssert(resultShape(1) == int32_t(ny), AipsError);
+  AlwaysAssert(resultShape(0) == int32_t(nx/2 + 1), AipsError);
 
   const IPosition inputSliceShape(4,nx,ny,1,1);
   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
-  COWPtr<Array<Float> > 
-    inputArrPtr(new Array<Float>(inputSliceShape.nonDegenerate()));
+  COWPtr<Array<float> > 
+    inputArrPtr(new Array<float>(inputSliceShape.nonDegenerate()));
   Array<Complex> resultArray(resultSliceShape.nonDegenerate());
-  FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
+  FFTServer<float, Complex> FFT2D(inputSliceShape.nonDegenerate());
   
   IPosition start(4,0);
-  for (uInt c = 0; c < nchan; c++){
-    for (uInt p = 0; p < npol; p++){
-      input.getSlice(inputArrPtr, Slicer(start,inputSliceShape), True);
+  for (uint32_t c = 0; c < nchan; c++){
+    for (uint32_t p = 0; p < npol; p++){
+      input.getSlice(inputArrPtr, Slicer(start,inputSliceShape), true);
       FFT2D.fft(resultArray, *inputArrPtr);
       result.putSlice(resultArray, start);
       start(2) += 1;
@@ -92,7 +92,7 @@ void FFT2DReal2Complex(Lattice<Complex> & result,
   }
 }
 
-void makePsf(Lattice<Float> & psf) {
+void makePsf(Lattice<float> & psf) {
   const IPosition centrePos = psf.shape()/2;
   psf.set(0.0f);       // this sets all the elements to zero
                        // As it uses a LatticeIterator it is efficient
@@ -104,7 +104,7 @@ void makePsf(Lattice<Float> & psf) {
 int main() {
   try {
     const IPosition psfShape(4,4,4,2,3);
-    ArrayLattice<Float> psf(psfShape) ;
+    ArrayLattice<float> psf(psfShape) ;
     makePsf(psf);
     IPosition xfrShape(psfShape);
     xfrShape(0) = psfShape(0)/2 + 1;
@@ -114,7 +114,7 @@ int main() {
     PagedArray<Complex> xfr(xfrShape, xfrTable);
     FFT2DReal2Complex(xfr, psf);
     AlwaysAssert(near(latMean(xfr), 
-		      Complex(1.0)/Float(psfShape(2)*psfShape(3)), 1E-6), 
+		      Complex(1.0)/float(psfShape(2)*psfShape(3)), 1E-6), 
 		 AipsError);
   } catch (std::exception& x) {
     cout << x.what() << endl << "FAIL" << endl;		

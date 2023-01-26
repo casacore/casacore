@@ -81,9 +81,9 @@ class UMaps;
 // UnitVal has the following constructors:
 // <ul>
 //   <li> UnitVal()		creates an (non-dimensioned) value 1.
-//   <li> UnitVal(Double f)	creates an (non-dimensioned) value f.
-//   <li> UnitVal(Double f, String s) creates value f with unit s
-//   <li> UnitVal(Double f, Int i) (private) creates value f with unit
+//   <li> UnitVal(double f)	creates an (non-dimensioned) value f.
+//   <li> UnitVal(double f, String s) creates value f with unit s
+//   <li> UnitVal(double f, int32_t i) (private) creates value f with unit
 //				at position i in dimension vector
 // </ul>
 // 
@@ -93,10 +93,10 @@ class UMaps;
 // The UnitVal can be manipulated by the following operators and functions:
 // <ul>
 //   <li> *, /	generates combined UnitVal (e.g. 1 yd * 1 m = 0.9 m2)
-//   <li> pow(Int)	UnitVal(2,"km")->pow(2) = 4000000 m2
-//   <li> root(Int)	UnitVal(4000000,"m2")->root(2) = 2 km
-//   <li> ==, !=	compares dimensions only: 1 yd == 5 ly: True
-//   <li> getFac()	will return the factor (Double)
+//   <li> pow(int32_t)	UnitVal(2,"km")->pow(2) = 4000000 m2
+//   <li> root(int32_t)	UnitVal(4000000,"m2")->root(2) = 2 km
+//   <li> ==, !=	compares dimensions only: 1 yd == 5 ly: true
+//   <li> getFac()	will return the factor (double)
 //   <li> getDim()	will return the dimensions (as UnitDim)
 //   <li> <<		will output formatted unit (factor and dimension)
 // </ul>
@@ -125,7 +125,7 @@ class UMaps;
 // The validity of a unit string can be checked by:
 // <srcblock>
 // // Check if the given String is a valid unit representation. The String
-// // will be cached in the unit maps for later reference if True
+// // will be cached in the unit maps for later reference if true
 // if ( UnitVal::check( "km/s/Mpc") ) {...}
 // </srcblock>
 //
@@ -181,16 +181,16 @@ class UnitVal {
   UnitVal(const UnitVal &other);
   
   // Construct an non-dimensioned value
-  UnitVal(Double factor) { init(factor); }
+  UnitVal(double factor) { init(factor); }
   
   // Construct a fully dimensioned value
   // <thrown>
   //   <li> AipsError
   // </thrown>
-  UnitVal(Double factor, const String &s, UMaps* = 0);
+  UnitVal(double factor, const String &s, UMaps* = 0);
   
   // Construct a value with a single unit at position specified
-  UnitVal(Double factor, Int pos) { init(factor, pos); }
+  UnitVal(double factor, int32_t pos) { init(factor, pos); }
   
   // Destructor
   ~UnitVal();
@@ -208,14 +208,14 @@ class UnitVal {
   UnitVal &operator/=(const UnitVal &other);
   
   // Compare the dimensionality of different units
-  Bool operator==(const UnitVal &other) const;
-  Bool operator!=(const UnitVal &other) const;
+  bool operator==(const UnitVal &other) const;
+  bool operator!=(const UnitVal &other) const;
   // </group>
   
   //# General member functions
   
   // Raise a unit to an integer power
-  UnitVal pow(Int p);
+  UnitVal pow(int32_t p);
 
   // Take integer root
   // <thrown>
@@ -223,7 +223,7 @@ class UnitVal {
   // <li> AipsError if unit dimensions not multiple of power
   // </thrown>
   // <group>
-  UnitVal root(Int p) const;
+  UnitVal root(int32_t p) const;
   UnitVal sqrt() const;
   // </group>
   
@@ -233,17 +233,17 @@ class UnitVal {
   const UnitDim &getDim() const;
   
   // Get the factor of the unit (as compared to pure SI units)
-  Double getFac() const;
+  double getFac() const;
   // </group>
   
   //# Helper functions
   // Convert a unit string to a proper unit value and cache the result. The
-  // function will return False if invalid string specified
-  static Bool check(const String &s);
+  // function will return false if invalid string specified
+  static bool check(const String &s);
   
   // Convert a unit string to a proper unit value, cache the result and compare
-  // the dimension with the specified unit value. False if any of the steps fails
-  static Bool check(const String &s, UnitVal &loc);
+  // the dimension with the specified unit value. false if any of the steps fails
+  static bool check(const String &s, UnitVal &loc);
   
   
   //# Data members
@@ -264,31 +264,31 @@ class UnitVal {
 
  protected:
   // alternate initialization
-  void init(Double factor);
-  void init(Double factor, Int pos);
+  void init(double factor);
+  void init(double factor, int32_t pos);
 
  private:
   //# Data members
   // The factor necessary to express the specified unit in the defining SI units
-  Double kindFactor;
+  double kindFactor;
   
   // The dimensions of the unit in the defining SI units
   UnitDim kindDim;
   
   // Convert (and check) a unit string to an SI value representation
   // <group>
-  static Bool create(const String &s, UnitVal &res, UMaps* = 0);
-  static Bool create(MUString &str, UnitVal &res, UMaps* = 0);
+  static bool create(const String &s, UnitVal &res, UMaps* = 0);
+  static bool create(MUString &str, UnitVal &res, UMaps* = 0);
   // </group>
   
   // Determine sign of unit power (i.e. if '.' or '/')
-  static Int psign(MUString &str);
+  static int32_t psign(MUString &str);
   
   // Determine exponent of unit symbol
-  static Int power(MUString &str);
+  static int32_t power(MUString &str);
   
   // Determine symbol name in unit string
-  static Bool field(MUString &str, UnitVal &res, UMaps*);
+  static bool field(MUString &str, UnitVal &res, UMaps*);
   
 };
 

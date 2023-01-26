@@ -49,23 +49,23 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Bool isSDFitsColumn(FITS::ReservedName name) {
+bool isSDFitsColumn(FITS::ReservedName name) {
     if (name == FITS::AUTHOR || name == FITS::CDELT || name == FITS::CROTA ||
 	name == FITS::CRPIX || name == FITS::CRVAL || name == FITS::CTYPE ||
 	name == FITS::DATE || name == FITS::DATE_OBS || name == FITS::EPOCH ||
 	name == FITS::EQUINOX || name == FITS::INSTRUME || 
 	name == FITS::OBJECT || name == FITS::OBSERVER ||
 	name == FITS::ORIGIN || name == FITS::TELESCOP) 
-	return True;
+	return true;
     else
-	return False;
+	return false;
 }
 	
 	
 //   The constructor
 
 BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler, 
-			 Bool useIncrSM, Bool sdfits) :
+			 bool useIncrSM, bool sdfits) :
     BinaryTableExtension(fitsin, errhandler), currRowTab(0), nelem(0), 
     colNames(0), vatypes_p(0), vaptr_p(0), va_p(0), theheap_p(0)
 {
@@ -78,24 +78,24 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	// we can have access to the heap as we step through the table
 	read(nrows());
 	if (notnull(theap())) {
-	    uInt heapOffset = theap() - rowsize()*nrows();
+	    uint32_t heapOffset = theap() - rowsize()*nrows();
 	    // Skip to the start of the heap
 	    // I don't see any way except to read these bogus bytes
-	    Block<Char> junk(heapOffset);
+	    Block<char> junk(heapOffset);
 	    ExtensionHeaderDataUnit::read(junk.storage(), heapOffset);
 	}
 	theheap_p = new char [pcount()];
 	AlwaysAssert(theheap_p, AipsError);
 	ExtensionHeaderDataUnit::read(theheap_p, pcount());
 	// and do some initial decoding of the VADesc related stuff
-	uInt ncol = ncols();
+	uint32_t ncol = ncols();
 	vatypes_p = new FITS::ValueType [ncol];
 	AlwaysAssert(vatypes_p, AipsError);
 	vaptr_p = new void * [ncol];
 	AlwaysAssert(vaptr_p, AipsError);
 	va_p = new VADescFitsField [ncol];
 	AlwaysAssert(va_p, AipsError);
-	for (uInt i=0;i<ncol;++i) {
+	for (uint32_t i=0;i<ncol;++i) {
 	    vaptr_p[i] = 0;
 	    if (field(i).fieldtype() == FITS::VADESC) {
 		int maxsize;
@@ -112,18 +112,18 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 			break;
 		    case FITS::BIT: 
 			{
-			    Int nbytes = maxsize / 8;
+			    int32_t nbytes = maxsize / 8;
 			    if (maxsize % 8) nbytes++;
 			    maxsize = nbytes;
 			}
 			// fall throught to BYTE for the actual allocation
 			CASACORE_FALLTHROUGH;
 		    case FITS::BYTE: 
-			vaptr_p[i] = (void *)(new uChar[maxsize]);
+			vaptr_p[i] = (void *)(new unsigned char[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);
 			break;
 		    case FITS::SHORT: 
-			vaptr_p[i] = (void *)(new Short[maxsize]);
+			vaptr_p[i] = (void *)(new int16_t[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);
 			break;
 		    case FITS::LONG: 
@@ -131,15 +131,15 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 			AlwaysAssert(vaptr_p[i], AipsError);
 			break;
 		    case FITS::CHAR: 
-			vaptr_p[i] = (void *)(new Char[maxsize]);
+			vaptr_p[i] = (void *)(new char[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);
 			break;
 		    case FITS::FLOAT: 
-			vaptr_p[i] = (void *)(new Float[maxsize]);
+			vaptr_p[i] = (void *)(new float[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);
 			break;
 		    case FITS::DOUBLE:
-			vaptr_p[i] = (void *)(new Double[maxsize]);
+			vaptr_p[i] = (void *)(new double[maxsize]);
 			AlwaysAssert(vaptr_p[i], AipsError);
 			break;
 		    case FITS::COMPLEX:
@@ -222,13 +222,13 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
    }			// end of loop over kw list
 
    //		get some things to remember
-   Int nfield = (Int ) tfields();
-   nelem = new Int[nfield];
-   colNames = new std::map<Int, String>();
+   int32_t nfield = (int32_t ) tfields();
+   nelem = new int32_t[nfield];
+   colNames = new std::map<int32_t, String>();
 
    AlwaysAssert(nelem, AipsError);
    //		loop over the number of fields in the FITS table
-   for (Int i=0; i < nfield; i++) {
+   for (int32_t i=0; i < nfield; i++) {
        nelem[i] = field(i).nelements();
        //		check if the column name exists
        String colname(ttype(i));
@@ -252,11 +252,11 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        }
        //		enter the name in the colNames map
        colNames->insert(std::make_pair(i, colname));
-       //		get a shorthand Bool for array versus scalar
+       //		get a shorthand bool for array versus scalar
        //               NOTE: VADESC are always assumed to be array columns
        //               but that fact is ignored by isArray - but thats ok,
        //               it is not used in that case.
-       Bool isArray = (nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR
+       bool isArray = (nelem[i] > 1 && field(i).fieldtype() != FITS::CHAR
 			     && field(i).fieldtype() != FITS::STRING);
        //		switch on the type of column
        switch (field(i).fieldtype()) {
@@ -264,39 +264,39 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        case FITS::BIT:
        case FITS::LOGICAL:
 	   if (isArray) {
-               td.addColumn(ArrayColumnDesc<Bool>(colname,"",
+               td.addColumn(ArrayColumnDesc<bool>(colname,"",
 						  IPosition(1,nelem[i]),
 						  ColumnDesc::Direct));
 	   } else {
-               td.addColumn(ScalarColumnDesc<Bool>(colname,""));
+               td.addColumn(ScalarColumnDesc<bool>(colname,""));
 	   }
 	   break;
-	   //		BYTE stored as uChar
+	   //		BYTE stored as unsigned char
        case FITS::BYTE:
 	   if (isArray) {
-               td.addColumn(ArrayColumnDesc<uChar>(colname,"",
+               td.addColumn(ArrayColumnDesc<unsigned char>(colname,"",
 						   IPosition(1,nelem[i]),
 						   ColumnDesc::Direct));
 	   } else {
-               td.addColumn(ScalarColumnDesc<uChar>(colname,""));
+               td.addColumn(ScalarColumnDesc<unsigned char>(colname,""));
 	   }
 	   break;
        case FITS::SHORT:
 	   if (isArray) {
-	       td.addColumn(ArrayColumnDesc<Short>(colname,"",
+	       td.addColumn(ArrayColumnDesc<int16_t>(colname,"",
 						   IPosition(1,nelem[i]),
 						   ColumnDesc::Direct));
 	   } else {
-	       td.addColumn(ScalarColumnDesc<Short>(colname,""));
+	       td.addColumn(ScalarColumnDesc<int16_t>(colname,""));
 	   }
 	   break;
        case FITS::LONG:
 	   if (isArray) {
-               td.addColumn(ArrayColumnDesc<Int>(colname,"",
+               td.addColumn(ArrayColumnDesc<int32_t>(colname,"",
 						 IPosition(1,nelem[i]),
 						 ColumnDesc::Direct));
 	   } else {
-               td.addColumn(ScalarColumnDesc<Int>(colname,""));
+               td.addColumn(ScalarColumnDesc<int32_t>(colname,""));
 	   }
 	   break;
        case FITS::CHAR: 
@@ -306,20 +306,20 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	   break;
        case FITS::FLOAT:
 	   if (isArray) {
-               td.addColumn(ArrayColumnDesc<Float>(colname,"",
+               td.addColumn(ArrayColumnDesc<float>(colname,"",
 						   IPosition(1,nelem[i]),
 						   ColumnDesc::Direct));
 	   } else {
-               td.addColumn(ScalarColumnDesc<Float>(colname,""));
+               td.addColumn(ScalarColumnDesc<float>(colname,""));
 	   }
 	   break;
        case FITS::DOUBLE:
 	   if (isArray) {
-               td.addColumn(ArrayColumnDesc<Double>(colname,"",
+               td.addColumn(ArrayColumnDesc<double>(colname,"",
 						    IPosition(1,nelem[i]),
 						    ColumnDesc::Direct));
 	   } else {
-               td.addColumn(ScalarColumnDesc<Double>(colname,""));
+               td.addColumn(ScalarColumnDesc<double>(colname,""));
 	   }
 	   break;
        case FITS::COMPLEX:
@@ -349,20 +349,20 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	       switch (vatypes_p[i]) {
 	       case FITS::BIT:
 	       case FITS::LOGICAL: 
-		   td.addColumn(ArrayColumnDesc<Bool>(colname,"")); break;
+		   td.addColumn(ArrayColumnDesc<bool>(colname,"")); break;
 	       case FITS::BYTE: 
-		   td.addColumn(ArrayColumnDesc<uChar>(colname,"")); break;
+		   td.addColumn(ArrayColumnDesc<unsigned char>(colname,"")); break;
 	       // shorts are promoted to LONGs
 	       case FITS::SHORT: 
 	       case FITS::LONG:
-		   td.addColumn(ArrayColumnDesc<Int>(colname,"")); break;
+		   td.addColumn(ArrayColumnDesc<int32_t>(colname,"")); break;
 	       // an array of chars is just a scalar String
 	       case FITS::CHAR: 
 		   td.addColumn(ScalarColumnDesc<String>(colname,"")); break;
 	       case FITS::FLOAT: 
-		   td.addColumn(ArrayColumnDesc<Float>(colname,"")); break;
+		   td.addColumn(ArrayColumnDesc<float>(colname,"")); break;
 	       case FITS::DOUBLE:
-		   td.addColumn(ArrayColumnDesc<Double>(colname,"")); break;
+		   td.addColumn(ArrayColumnDesc<double>(colname,"")); break;
 	       case FITS::COMPLEX: 
 		   td.addColumn(ArrayColumnDesc<Complex>(colname,"")); break;
 	       case FITS::DCOMPLEX:
@@ -385,8 +385,8 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        //		set the comment string if appropriate
        if (kwl(FITS::TTYPE, i)) 
 	   td.rwColumnDesc(colname).comment() = kwl(FITS::TTYPE,i)->comm();
-       //		for 0 element fields, set ZEROELEM keyword, Bool=True
-       if (nelem[i]==0) td.rwColumnDesc(colname).rwKeywordSet().define("ZEROELEM", True);
+       //		for 0 element fields, set ZEROELEM keyword, bool=true
+       if (nelem[i]==0) td.rwColumnDesc(colname).rwKeywordSet().define("ZEROELEM", true);
        //		attach associated information
        //		Units
        td.rwColumnDesc(colname).rwKeywordSet().define("TUNIT", tunit(i));
@@ -407,8 +407,8 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
    if (sdfits) {
        // first, remove duplicates - true columns take precedence
        Vector<String> duplicates(kwSet.nfields());
-       uInt count = 0;
-       uInt field;
+       uint32_t count = 0;
+       uint32_t field;
        for (field=0;field<kwSet.nfields();field++) {
 	   if (td.isColumn(kwSet.name(field))) {
 	       duplicates(count) = kwSet.name(field);
@@ -421,25 +421,25 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
        for (field=0;field<kwSet.nfields();field++) {	   
 	   switch (kwSet.type(field)) {
 	   case TpBool:
-	       td.addColumn(ScalarColumnDesc<Bool>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<bool>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpUChar:
-	       td.addColumn(ScalarColumnDesc<uChar>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<unsigned char>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpShort:
-	       td.addColumn(ScalarColumnDesc<Short>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<int16_t>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpInt:
-	       td.addColumn(ScalarColumnDesc<Int>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<int32_t>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpUInt:
-	       td.addColumn(ScalarColumnDesc<uInt>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<uint32_t>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpFloat:
-	       td.addColumn(ScalarColumnDesc<Float>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<float>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpDouble:
-	       td.addColumn(ScalarColumnDesc<Double>(kwSet.name(field),kwSet.comment(field)));
+	       td.addColumn(ScalarColumnDesc<double>(kwSet.name(field),kwSet.comment(field)));
 	       break;
 	   case TpComplex:
 	       td.addColumn(ScalarColumnDesc<Complex>(kwSet.name(field),kwSet.comment(field)));
@@ -483,7 +483,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 void BinaryTable::fillRow()
 {
     //		loop over each field
-    for (Int j=0;j<tfields(); j++) {
+    for (int32_t j=0;j<tfields(); j++) {
 	//		and switch on the FITS type
 	TableColumn tabcol(*currRowTab, (*colNames)[j]);
 	switch (field(j).fieldtype()) {
@@ -491,12 +491,12 @@ void BinaryTable::fillRow()
             {
 		FitsField<FitsLogical> thisfield = 
 		    *(FitsField<FitsLogical> *)&field(j);
-		Vector<Bool> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		Vector<bool> vec(nelem[j]);
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		if (nelem[j] > 1) {
-		    ArrayColumn<Bool> arrcol(tabcol);
+		    ArrayColumn<bool> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -507,12 +507,12 @@ void BinaryTable::fillRow()
             {
 		FitsField<FitsBit> thisfield =
 		    *(FitsField<FitsBit> *)&field(j);
-		Vector<Bool> vec(nelem[j]);
-		for (uInt k=0;k<field(j).nelements();k++) {
+		Vector<bool> vec(nelem[j]);
+		for (uint32_t k=0;k<field(j).nelements();k++) {
 		    vec(k) = (int(thisfield(k)));
 		}
 		if (nelem[j] > 1) {
-		    ArrayColumn<Bool> arrcol(tabcol);
+		    ArrayColumn<bool> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -523,12 +523,12 @@ void BinaryTable::fillRow()
             {
 		FitsField<unsigned char> thisfield = 
 		    *(FitsField<unsigned char> *)&field(j);
-		Vector<uChar> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		Vector<unsigned char> vec(nelem[j]);
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		if (nelem[j] > 1) {
-		    ArrayColumn<uChar> arrcol(tabcol);
+		    ArrayColumn<unsigned char> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -542,7 +542,7 @@ void BinaryTable::fillRow()
 		    *(FitsField<char> *)&field(j);
 		// look for the true end of the string
 		char * cptr = (char *)thisfield.data();
-		uInt length = thisfield.nelements();
+		uint32_t length = thisfield.nelements();
 		while (length > 0 && 
 		       (cptr[length-1] == '\0' || cptr[length-1] == ' ')) {
 		  length--;
@@ -554,13 +554,13 @@ void BinaryTable::fillRow()
             {
 		FitsField<short> thisfield = 
 		    *(FitsField<short> *)&field(j);
-		Vector<Short> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		Vector<int16_t> vec(nelem[j]);
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		//			any scaling should happen here
 		if (nelem[j] > 1) {
-		    ArrayColumn<Short> arrcol(tabcol);
+		    ArrayColumn<int16_t> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -571,13 +571,13 @@ void BinaryTable::fillRow()
             {
 		FitsField<FitsLong> thisfield = 
 		    *(FitsField<FitsLong> *)&field(j);
-		Vector<Int> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
-		    vec(k) = (Int )thisfield(k);
+		Vector<int32_t> vec(nelem[j]);
+		for (int32_t k=0;k<nelem[j];k++) {
+		    vec(k) = (int32_t )thisfield(k);
 		}
 		//			any scaling should happen here
 		if (nelem[j] > 1) {
-		    ArrayColumn<Int> arrcol(tabcol);
+		    ArrayColumn<int32_t> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -588,22 +588,22 @@ void BinaryTable::fillRow()
             {
 		FitsField<float> thisfield = 
 		    *(FitsField<float> *)&field(j);
-		Vector<Float> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		Vector<float> vec(nelem[j]);
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		//			Scale as appropriate
 		if (tscal(j) != 1) {
-		    Vector<Double> dvec(nelem[j]);
+		    Vector<double> dvec(nelem[j]);
 		    convertArray(dvec, vec);
 		    dvec *= tscal(j); 
 		    dvec += tzero(j);
 		    convertArray(vec, dvec);
 		} else if (tzero(j) != 0) {
-		    vec += (Float )tzero(j);
+		    vec += (float )tzero(j);
 		}
 		if (nelem[j] > 1) {
-		    ArrayColumn<Float> arrcol(tabcol);
+		    ArrayColumn<float> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -614,8 +614,8 @@ void BinaryTable::fillRow()
             {
 		FitsField<double> thisfield = 
 		    *(FitsField<double> *)&field(j);
-		Vector<Double> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		Vector<double> vec(nelem[j]);
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		//			Scale as appropriate
@@ -623,10 +623,10 @@ void BinaryTable::fillRow()
 		    vec *= tscal(j); 
 		    vec += tzero(j);
 		} else if (tzero(j) != 0) {
-		    vec += (Double )tzero(j);
+		    vec += (double )tzero(j);
 		}
 		if (nelem[j] > 1) {
-		    ArrayColumn<Double> arrcol(tabcol);
+		    ArrayColumn<double> arrcol(tabcol);
 		    arrcol.put(0,vec);
 		} else if (nelem[j] == 1) {
 		    tabcol.putScalar(0,vec(0));
@@ -638,7 +638,7 @@ void BinaryTable::fillRow()
 		FitsField<Complex> thisfield = 
 		    *(FitsField<Complex> *)&field(j);
 		Vector<Complex> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		//			Scale as appropriate
@@ -661,7 +661,7 @@ void BinaryTable::fillRow()
 		FitsField<DComplex> thisfield = 
 		    *(FitsField<DComplex> *)&field(j);
 		Vector<DComplex> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		for (int32_t k=0;k<nelem[j];k++) {
 		    vec(k) = thisfield(k);
 		}
 		//			Scale as appropriate
@@ -684,7 +684,7 @@ void BinaryTable::fillRow()
 		FitsField<IComplex> thisfield = 
 		    *(FitsField<IComplex> *)&field(j);
 		Vector<DComplex> vec(nelem[j]);
-		for (Int k=0;k<nelem[j];k++) {
+		for (int32_t k=0;k<nelem[j];k++) {
 		  const IComplex& icm = thisfield(k);
 		    vec(k) = DComplex (icm.real(), icm.imag());
 		}
@@ -717,47 +717,47 @@ void BinaryTable::fillRow()
 			FitsLogical *vptr = (FitsLogical *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			Vector<Bool> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			Vector<bool> vec(thisva.num());
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
-			ArrayColumn<Bool> arrcol(tabcol);
+			ArrayColumn<bool> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
 		case FITS::BIT:
 		    {
-			uChar *vptr = (uChar *)(vaptr_p[j]);
+			unsigned char *vptr = (unsigned char *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			// assumes 8 bits per uChar
-			Int whichByte = -1;
-			Vector<Bool> vec(thisva.num());
-			uChar mask = 0200;
-			for (Int k=0;k<thisva.num();k++) {
+			// assumes 8 bits per unsigned char
+			int32_t whichByte = -1;
+			Vector<bool> vec(thisva.num());
+			unsigned char mask = 0200;
+			for (int32_t k=0;k<thisva.num();k++) {
 			    if (k%8 == 0) whichByte++;
 			    vec(k) = (vptr[whichByte] & (mask >> k%8));
 			}
-			ArrayColumn<Bool> arrcol(tabcol);
+			ArrayColumn<bool> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
 		case FITS::BYTE:
 		    {
-			uChar *vptr = (uChar *)(vaptr_p[j]);
+			unsigned char *vptr = (unsigned char *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			Vector<uChar> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			Vector<unsigned char> vec(thisva.num());
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
-			ArrayColumn<uChar> arrcol(tabcol);
+			ArrayColumn<unsigned char> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
 		case FITS::CHAR:
 		    {
-			Char *vptr = (Char *)(vaptr_p[j]);
+			char *vptr = (char *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
 			tabcol.putScalar(0,String(vptr, thisva.num()));
@@ -765,15 +765,15 @@ void BinaryTable::fillRow()
 		    break;
 		case FITS::SHORT:
 		    {
-			Short *vptr = (Short *)(vaptr_p[j]);
+			int16_t *vptr = (int16_t *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			Vector<Int> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			Vector<int32_t> vec(thisva.num());
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
 			// any scaling should happen here
-			ArrayColumn<Int> arrcol(tabcol);
+			ArrayColumn<int32_t> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
@@ -782,45 +782,45 @@ void BinaryTable::fillRow()
 			FitsLong *vptr = (FitsLong *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			Vector<Int> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			Vector<int32_t> vec(thisva.num());
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
 			// any scaling should happen here
-			ArrayColumn<Int> arrcol(tabcol);
+			ArrayColumn<int32_t> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
 		case FITS::FLOAT:
 		    {
-			Float *vptr = (Float *)(vaptr_p[j]);
+			float *vptr = (float *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			Vector<Float> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			Vector<float> vec(thisva.num());
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
 			// scale as appropriate
 			if (tscal(j) != 1) {
-			    Vector<Double> dvec(thisva.num());
+			    Vector<double> dvec(thisva.num());
 			    convertArray(dvec, vec);
 			    dvec *= tscal(j);
 			    dvec += tzero(j);
 			    convertArray(vec, dvec);
 			} else if (tzero(j) != 0) {
-			    vec += (Float )tzero(j);
+			    vec += (float )tzero(j);
 			}
-			ArrayColumn<Float> arrcol(tabcol);
+			ArrayColumn<float> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
 		case FITS::DOUBLE:
 		    {
-			Double *vptr = (Double *)(vaptr_p[j]);
+			double *vptr = (double *)(vaptr_p[j]);
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
-			Vector<Double> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			Vector<double> vec(thisva.num());
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
 			// scale as appropriate
@@ -828,9 +828,9 @@ void BinaryTable::fillRow()
 			    vec *= tscal(j);
 			    vec += tzero(j);
 			} else if (tzero(j) != 0) {
-			    vec += (Double )tzero(j);
+			    vec += (double )tzero(j);
 			}
-			ArrayColumn<Double> arrcol(tabcol);
+			ArrayColumn<double> arrcol(tabcol);
 			arrcol.put(0,vec);
 		    }
 		    break;
@@ -840,7 +840,7 @@ void BinaryTable::fillRow()
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
 			Vector<Complex> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
 			// scale as appropriate
@@ -860,7 +860,7 @@ void BinaryTable::fillRow()
 			FITS::f2l(vptr, (void *)(theheap_p + thisva.offset()),
 				  thisva.num());
 			Vector<DComplex> vec(thisva.num());
-			for (Int k=0;k<thisva.num();k++) {
+			for (int32_t k=0;k<thisva.num();k++) {
 			    vec(k) = vptr[k];
 			}
 			// scale as appropriate
@@ -892,7 +892,7 @@ void BinaryTable::fillRow()
 
     // loop over all virtual columns if necessary
     if (kwSet.nfields() > 0) {
-	for (uInt field=0;field<kwSet.nfields();field++) {
+	for (uint32_t field=0;field<kwSet.nfields();field++) {
 	    TableColumn tabcol(*currRowTab, kwSet.name(field));
 	    switch (kwSet.type(field)) {
 	    case TpBool:
@@ -938,17 +938,17 @@ void BinaryTable::fillRow()
 BinaryTable::~BinaryTable()
 {
     if (vaptr_p) {
-	for (Int i=0;i<ncols();++i) {
+	for (int32_t i=0;i<ncols();++i) {
 	    if (vaptr_p[i]) {
 		switch (vatypes_p[i]) {
 		case FITS::LOGICAL: delete [] (FitsLogical *)vaptr_p[i]; break;
-		case FITS::BIT: delete [] (uChar *)vaptr_p[i]; break;
-		case FITS::BYTE: delete [] (uChar *)vaptr_p[i]; break;
-		case FITS::SHORT: delete [] (Short *)vaptr_p[i]; break;
+		case FITS::BIT: delete [] (unsigned char *)vaptr_p[i]; break;
+		case FITS::BYTE: delete [] (unsigned char *)vaptr_p[i]; break;
+		case FITS::SHORT: delete [] (int16_t *)vaptr_p[i]; break;
 		case FITS::LONG: delete [] (FitsLong *)vaptr_p[i]; break;
-		case FITS::CHAR: delete [] (Char *)vaptr_p[i]; break;
-		case FITS::FLOAT: delete [] (Float *)vaptr_p[i]; break;
-		case FITS::DOUBLE: delete [] (Double *)vaptr_p[i]; break;
+		case FITS::CHAR: delete [] (char *)vaptr_p[i]; break;
+		case FITS::FLOAT: delete [] (float *)vaptr_p[i]; break;
+		case FITS::DOUBLE: delete [] (double *)vaptr_p[i]; break;
 		case FITS::COMPLEX: delete [] (Complex *)vaptr_p[i]; break;
 		case FITS::DCOMPLEX: delete [] (DComplex *)vaptr_p[i]; break;
 		  // nothing else should happen, should probably throw an exception
@@ -972,7 +972,7 @@ BinaryTable::~BinaryTable()
 
 Table BinaryTable::fullTable(const String& tabname, 
 			     const Table::TableOption taboptn,
-			     Bool useIncrSM)
+			     bool useIncrSM)
 {
    SetupNewTable newtab(tabname, getDescriptor(), taboptn);
    if (useIncrSM) {
@@ -984,7 +984,7 @@ Table BinaryTable::fullTable(const String& tabname,
     Table full(newtab,nrows());
     RowCopier rowcop(full, *currRowTab);
     //			loop over all rows remaining
-    for (Int outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
+    for (int32_t outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
 	 outrow++, infitsrow++) {
 	rowcop.copy(outrow, 0);
 	//		don't read past the end of the table
@@ -1006,7 +1006,7 @@ Table BinaryTable::fullTable()
     Table full = Table(newtab,Table::Memory, nrows());
     RowCopier rowcop(full, *currRowTab);
     //			loop over all rows remaining
-    for (Int outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
+    for (int32_t outrow = 0, infitsrow = currrow(); infitsrow < nrows(); 
 	 outrow++, infitsrow++) {
 	rowcop.copy(outrow, 0);
 	//		don't read past the end of the table

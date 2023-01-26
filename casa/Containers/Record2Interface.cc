@@ -35,15 +35,15 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
+Array<bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
 {
-  Array<Bool> arr;
-  Int whichField = idToNumber (id);
+  Array<bool> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpInt:
   case TpArrayInt:
     {
-      Array<Int> tmp = asArrayInt (id);
+      Array<int32_t> tmp = asArrayInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -54,20 +54,20 @@ Array<Bool> RecordInterface::toArrayBool (const RecordFieldId& id) const
   return arr;
 }
 
-Array<uChar> RecordInterface::toArrayuChar (const RecordFieldId& id) const
+Array<unsigned char> RecordInterface::toArrayuChar (const RecordFieldId& id) const
 {
   return asArrayuChar(id).copy();
 }
 
-Array<Short> RecordInterface::toArrayShort (const RecordFieldId& id) const
+Array<int16_t> RecordInterface::toArrayShort (const RecordFieldId& id) const
 {
-  Array<Short> arr;
-  Int whichField = idToNumber (id);
+  Array<int16_t> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
     {
-      Array<uChar> tmp = asArrayuChar (id);
+      Array<unsigned char> tmp = asArrayuChar (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -78,15 +78,15 @@ Array<Short> RecordInterface::toArrayShort (const RecordFieldId& id) const
   return arr;
 }
 
-Array<Int> RecordInterface::toArrayInt (const RecordFieldId& id) const
+Array<int32_t> RecordInterface::toArrayInt (const RecordFieldId& id) const
 {
-  Array<Int> arr;
-  Int whichField = idToNumber (id);
+  Array<int32_t> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
     {
-      Array<uChar> tmp = asArrayuChar (id);
+      Array<unsigned char> tmp = asArrayuChar (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -94,7 +94,7 @@ Array<Int> RecordInterface::toArrayInt (const RecordFieldId& id) const
   case TpShort:
   case TpArrayShort:
     {
-      Array<Short> tmp = asArrayShort (id);
+      Array<int16_t> tmp = asArrayShort (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -102,7 +102,7 @@ Array<Int> RecordInterface::toArrayInt (const RecordFieldId& id) const
   case TpUInt:
   case TpArrayUInt:
     {
-      Array<uInt> tmp = asArrayuInt (id);
+      Array<uint32_t> tmp = asArrayuInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -110,7 +110,7 @@ Array<Int> RecordInterface::toArrayInt (const RecordFieldId& id) const
   case TpInt64:
   case TpArrayInt64:
     {
-      Array<Int64> tmp = asArrayInt64 (id);
+      Array<int64_t> tmp = asArrayInt64 (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -121,15 +121,15 @@ Array<Int> RecordInterface::toArrayInt (const RecordFieldId& id) const
   return arr;
 }
 
-Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
+Array<uint32_t> RecordInterface::toArrayuInt (const RecordFieldId& id) const
 {
-  Array<uInt> arr;
-  Int whichField = idToNumber (id);
+  Array<uint32_t> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
     {
-      Array<uChar> tmp = asArrayuChar (id);
+      Array<unsigned char> tmp = asArrayuChar (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -137,7 +137,7 @@ Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
   case TpShort:
   case TpArrayShort:
     {
-      Array<Short> tmp = asArrayShort (id);
+      Array<int16_t> tmp = asArrayShort (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -145,7 +145,7 @@ Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
   case TpInt:
   case TpArrayInt:
     {
-      Array<Int> tmp = asArrayInt (id);
+      Array<int32_t> tmp = asArrayInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -153,7 +153,7 @@ Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
   case TpInt64:
   case TpArrayInt64:
     {
-      Array<Int64> tmp = asArrayInt64 (id);
+      Array<int64_t> tmp = asArrayInt64 (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -164,15 +164,15 @@ Array<uInt> RecordInterface::toArrayuInt (const RecordFieldId& id) const
   return arr;
 }
 
-Array<Int64> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
+Array<int64_t> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
 {
-  Array<Int64> arr;
-  Int whichField = idToNumber (id);
+  Array<int64_t> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
     {
-      Array<uChar> tmp = asArrayuChar (id);
+      Array<unsigned char> tmp = asArrayuChar (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -180,7 +180,7 @@ Array<Int64> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
   case TpShort:
   case TpArrayShort:
     {
-      Array<Short> tmp = asArrayShort (id);
+      Array<int16_t> tmp = asArrayShort (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -188,7 +188,7 @@ Array<Int64> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
   case TpInt:
   case TpArrayInt:
     {
-      Array<Int> tmp = asArrayInt (id);
+      Array<int32_t> tmp = asArrayInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -196,7 +196,7 @@ Array<Int64> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
   case TpUInt:
   case TpArrayUInt:
     {
-      Array<uInt> tmp = asArrayuInt (id);
+      Array<uint32_t> tmp = asArrayuInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -207,15 +207,15 @@ Array<Int64> RecordInterface::toArrayInt64 (const RecordFieldId& id) const
   return arr;
 }
 
-Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
+Array<float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
 {
-  Array<Float> arr;
-  Int whichField = idToNumber (id);
+  Array<float> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
     {
-      Array<uChar> tmp = asArrayuChar (id);
+      Array<unsigned char> tmp = asArrayuChar (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -223,7 +223,7 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   case TpShort:
   case TpArrayShort:
     {
-      Array<Short> tmp = asArrayShort (id);
+      Array<int16_t> tmp = asArrayShort (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -231,7 +231,7 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   case TpInt:
   case TpArrayInt:
     {
-      Array<Int> tmp = asArrayInt (id);
+      Array<int32_t> tmp = asArrayInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -239,7 +239,7 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   case TpUInt:
   case TpArrayUInt:
     {
-      Array<uInt> tmp = asArrayuInt (id);
+      Array<uint32_t> tmp = asArrayuInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -247,7 +247,7 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   case TpInt64:
   case TpArrayInt64:
     {
-      Array<Int64> tmp = asArrayInt64 (id);
+      Array<int64_t> tmp = asArrayInt64 (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -255,7 +255,7 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   case TpDouble:
   case TpArrayDouble:
     {
-      Array<Double> tmp = asArrayDouble (id);
+      Array<double> tmp = asArrayDouble (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -266,15 +266,15 @@ Array<Float> RecordInterface::toArrayFloat (const RecordFieldId& id) const
   return arr;
 }
 
-Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
+Array<double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
 {
-  Array<Double> arr;
-  Int whichField = idToNumber (id);
+  Array<double> arr;
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
     {
-      Array<uChar> tmp = asArrayuChar (id);
+      Array<unsigned char> tmp = asArrayuChar (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -282,7 +282,7 @@ Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
   case TpShort:
   case TpArrayShort:
     {
-      Array<Short> tmp = asArrayShort (id);
+      Array<int16_t> tmp = asArrayShort (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -290,7 +290,7 @@ Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
   case TpInt:
   case TpArrayInt:
     {
-      Array<Int> tmp = asArrayInt (id);
+      Array<int32_t> tmp = asArrayInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -298,7 +298,7 @@ Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
   case TpUInt:
   case TpArrayUInt:
     {
-      Array<uInt> tmp = asArrayuInt (id);
+      Array<uint32_t> tmp = asArrayuInt (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -306,7 +306,7 @@ Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
   case TpInt64:
   case TpArrayInt64:
     {
-      Array<Int64> tmp = asArrayInt64 (id);
+      Array<int64_t> tmp = asArrayInt64 (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -314,7 +314,7 @@ Array<Double> RecordInterface::toArrayDouble (const RecordFieldId& id) const
   case TpFloat:
   case TpArrayFloat:
     {
-      Array<Float> tmp = asArrayFloat (id);
+      Array<float> tmp = asArrayFloat (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -329,7 +329,7 @@ Array<DComplex> RecordInterface::toArrayDComplex
                                           (const RecordFieldId& id) const
 {
   Array<DComplex> arr;
-  Int whichField = idToNumber (id);
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
@@ -344,7 +344,7 @@ Array<DComplex> RecordInterface::toArrayDComplex
   case TpFloat:
   case TpArrayFloat:
     {
-      Array<Double> tmp = toArrayDouble (id);
+      Array<double> tmp = toArrayDouble (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -352,7 +352,7 @@ Array<DComplex> RecordInterface::toArrayDComplex
   case TpDouble:
   case TpArrayDouble:
     {
-      Array<Double> tmp = asArrayDouble (id);
+      Array<double> tmp = asArrayDouble (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -375,7 +375,7 @@ Array<Complex> RecordInterface::toArrayComplex
                                           (const RecordFieldId& id) const
 {
   Array<Complex> arr;
-  Int whichField = idToNumber (id);
+  int32_t whichField = idToNumber (id);
   switch (type(whichField)) {
   case TpUChar:
   case TpArrayUChar:
@@ -390,7 +390,7 @@ Array<Complex> RecordInterface::toArrayComplex
   case TpDouble:
   case TpArrayDouble:
     {
-      Array<Float> tmp = toArrayFloat (id);
+      Array<float> tmp = toArrayFloat (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -398,7 +398,7 @@ Array<Complex> RecordInterface::toArrayComplex
   case TpFloat:
   case TpArrayFloat:
     {
-      Array<Float> tmp = asArrayFloat (id);
+      Array<float> tmp = asArrayFloat (id);
       arr.resize (tmp.shape());
       convertArray (arr, tmp);
       break;
@@ -549,7 +549,7 @@ void RecordInterface::defineFromValueHolder (const RecordFieldId& id,
     define (id, value.asArrayString());
     break;
   case TpOther:
-    // An untyped array is handled as an Int array.
+    // An untyped array is handled as an int32_t array.
     define (id, value.asArrayInt());
     break;
   default:

@@ -167,17 +167,17 @@ class UVWMachine {
   // system to the out coordinate system (output absolute direction 
   // remains the same)
   UVWMachine(const MDirection::Ref &out, const MDirection &in,
-	     Bool EW=False, Bool project=False);
+	     bool EW=false, bool project=false);
   // Construct a UVW conversion machine from the in coordinate and its
   // system to the out coordinate and its system
   UVWMachine(const MDirection &out, const MDirection &in,
-	     Bool EW=False, Bool project=False);
+	     bool EW=false, bool project=false);
   // Construct UVW conversion machine with an explicitly given frame
   // <group>
   UVWMachine(const MDirection::Ref &out, const MDirection &in,
-	     const MeasFrame &frame, Bool EW=False, Bool project=False);
+	     const MeasFrame &frame, bool EW=false, bool project=false);
   UVWMachine(const MDirection &out, const MDirection &in, 
-	     const MeasFrame &frame, Bool EW=False, Bool project=False);
+	     const MeasFrame &frame, bool EW=false, bool project=false);
   // </group>
   // </group>
   // Copy constructor
@@ -191,8 +191,8 @@ class UVWMachine {
   //# Operators
   // Return converted UVW coordinates
   // <group>
-  Vector<Double> operator()(const Vector<Double> &uv) const;
-  Vector<Vector<Double> > operator()(const Vector<Vector<Double> > &uv) const;
+  Vector<double> operator()(const Vector<double> &uv) const;
+  Vector<Vector<double> > operator()(const Vector<Vector<double> > &uv) const;
   MVPosition operator()(const MVPosition &uv) const;
   Vector<MVPosition > operator()(const Vector<MVPosition > &uv) const;
   // </group>
@@ -201,7 +201,7 @@ class UVWMachine {
   // Return the new phase center coordinates
   const MDirection &phaseCenter() const;
   // Return if the engine is an effective NOP
-  Bool isNOP() { return nop_p; }
+  bool isNOP() { return nop_p; }
   // Return a rotation matrix that can be used to convert UVW coordinates:
   // UVW(new) = UVW(old) * rotationUVW()
   const RotMatrix &rotationUVW() const;
@@ -210,24 +210,24 @@ class UVWMachine {
   const MVPosition &rotationPhase() const;
   // replace UVW with converted values
   // <group>
-  void convertUVW(Vector<Double> &uv) const;
-  void convertUVW(Vector<Vector<Double> > &uv) const;
+  void convertUVW(Vector<double> &uv) const;
+  void convertUVW(Vector<Vector<double> > &uv) const;
   void convertUVW(MVPosition &uv) const;
   void convertUVW(Vector<MVPosition > &uv) const;
   // </group>
   // Get phase shift (in implied units of UVW), and change input uvw as well
   // <group>
-  Double getPhase(Vector<Double> &uv) const;
-  Vector<Double> getPhase(Vector<Vector<Double> > &uv) const;
-  Double getPhase(MVPosition &uv) const;
-  Vector<Double> getPhase(Vector<MVPosition > &uv) const;
+  double getPhase(Vector<double> &uv) const;
+  Vector<double> getPhase(Vector<Vector<double> > &uv) const;
+  double getPhase(MVPosition &uv) const;
+  Vector<double> getPhase(Vector<MVPosition > &uv) const;
   // </group>
   // Replace UVW with converted, and return phase
   // <group>
-  void convertUVW(Double &phase, Vector<Double> &uv) const;
-  void convertUVW(Vector<Double> &phase, Vector<Vector<Double> > &uv) const;
-  void convertUVW(Double &phase, MVPosition &uv) const;
-  void convertUVW(Vector<Double> &phase, Vector<MVPosition> &uv) const;
+  void convertUVW(double &phase, Vector<double> &uv) const;
+  void convertUVW(Vector<double> &phase, Vector<Vector<double> > &uv) const;
+  void convertUVW(double &phase, MVPosition &uv) const;
+  void convertUVW(Vector<double> &phase, Vector<MVPosition> &uv) const;
   // </group>
 
   // Recalculate the parameters for the machine after e.g. a frame change
@@ -237,13 +237,13 @@ class UVWMachine {
 
   //# Data
   // EW flag
-  Bool ew_p;
+  bool ew_p;
   // Projection flag
-  Bool proj_p;
+  bool proj_p;
   // Zero phase flag (for speed)
-  Bool zp_p;
+  bool zp_p;
   // No conversion necessary flag
-  Bool nop_p;
+  bool nop_p;
   // Old phase center
   MDirection in_p;
   // New coordinate reference

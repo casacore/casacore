@@ -101,26 +101,26 @@ template<class T> class ScalarColumn;
 // <example>
 // <srcblock>
 // // Create the table description and 2 columns with indirect arrays in it.
-// // The Int column will be stored, while the double will be
+// // The int32_t column will be stored, while the double will be
 // // used as virtual.
 // TableDesc tableDesc ("", TableDesc::Scratch);
-// tableDesc.addColumn (ArrayColumnDesc<Int> ("storedArray"));
+// tableDesc.addColumn (ArrayColumnDesc<int32_t> ("storedArray"));
 // tableDesc.addColumn (ArrayColumnDesc<double> ("virtualArray"));
 //
 // // Create a new table using the table description.
 // SetupNewTable newtab (tableDesc, "tab.data", Table::New);
 //
-// // Create the array scaling engine to scale from double to Int
+// // Create the array scaling engine to scale from double to int32_t
 // // and bind it to the double column.
 // // Create the table.
-// ScaledArrayEngine<double,Int> scalingEngine("virtualArray",
+// ScaledArrayEngine<double,int32_t> scalingEngine("virtualArray",
 //                                             "storedArray", 10);
 // newtab.bindColumn ("virtualArray", scalingEngine);
 // Table table (newtab);
 //
 // // Store a 3-D array (with dim. 2,3,4) into each row of the column.
 // // The shape of each array in the column is implicitly set by the put
-// // function. This will also set the shape of the underlying Int array.
+// // function. This will also set the shape of the underlying int32_t array.
 // ArrayColumn data (table, "virtualArray");
 // Array<double> someArray(IPosition(4,2,3,4));
 // someArray = 0;
@@ -203,7 +203,7 @@ public:
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     // The automatically invoked registration function in DataManReg.cc
-    // contains ScaledArrayEngine<double,Int>.
+    // contains ScaledArrayEngine<double,int32_t>.
     // Any other instantiation of this class must be registered "manually"
     // (or added to DataManReg.cc).
     static void registerClass();
@@ -297,8 +297,8 @@ private:
     String         offsetName_p;         //# name of offset column
     VirtualType    scale_p;              //# scale factor
     VirtualType    offset_p;             //# offset value
-    Bool           fixedScale_p;         //# scale is a fixed column
-    Bool           fixedOffset_p;        //# scale is a fixed column
+    bool           fixedScale_p;         //# scale is a fixed column
+    bool           fixedOffset_p;        //# scale is a fixed column
     ScalarColumn<VirtualType>* scaleColumn_p;  //# column with scale value
     ScalarColumn<VirtualType>* offsetColumn_p; //# column with offset value
 

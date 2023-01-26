@@ -69,7 +69,7 @@ TableMeasDescBase* TableMeasDescBase::clone() const
 TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab, 
 						   const String& columnName)
 {
-  Int fnr;
+  int32_t fnr;
   TableRecord mtype;
   TableRecord measInfo;
   const TableRecord& columnKeyset = tab.tableDesc()[columnName].keywordSet();
@@ -95,7 +95,7 @@ TableMeasDescBase* TableMeasDescBase::reconstruct (const Table& tab,
 							    columnName);
   Vector<String> names(tqdesc->getUnits());
   Vector<Unit> units(names.nelements());
-  for (uInt i=0; i<names.nelements(); i++) {
+  for (uint32_t i=0; i<names.nelements(); i++) {
     units(i) = names(i);
   }
   delete tqdesc;
@@ -168,7 +168,7 @@ void TableMeasDescBase::initTabRef (const MeasureHolder& measHolder)
 }
 
 void TableMeasDescBase::setMeasUnits (const Measure& meas,
-				      const Vector<Quantum<Double> >& val,
+				      const Vector<Quantum<double> >& val,
 				      const Vector<Unit>& units) 
 { 
   itsMeasType = TableMeasType(meas);
@@ -179,7 +179,7 @@ void TableMeasDescBase::setMeasUnits (const Measure& meas,
   }
   // An empty or non-given unit gets the default Quantum one.
   itsUnits.resize (val.nelements());
-  for (uInt i=0; i<val.nelements(); i++) {
+  for (uint32_t i=0; i<val.nelements(); i++) {
     if (i >= units.nelements()  ||  units(i).empty()) {
       itsUnits(i) = val(i).getUnit();
     } else {
@@ -200,7 +200,7 @@ void TableMeasDescBase::resetUnits (const Vector<Unit>& units)
 		      " for column " + columnName() + " is too long"));
   }
   // An empty or non-given unit does not change.
-  for (uInt i=0; i<units.nelements(); i++) {
+  for (uint32_t i=0; i<units.nelements(); i++) {
     if (! units(i).empty()) {
       if (! (units(i) == itsUnits(i))) {
 	throw (AipsError ("TableMeasDescBase::resetUnits; invalid unit "
@@ -212,7 +212,7 @@ void TableMeasDescBase::resetUnits (const Vector<Unit>& units)
   }
 }
 
-Bool TableMeasDescBase::hasMeasures (const TableColumn& column)
+bool TableMeasDescBase::hasMeasures (const TableColumn& column)
 {
   return column.keywordSet().isDefined ("MEASINFO");
 }

@@ -92,7 +92,7 @@ public:
     MSWeather (const String &tableName, const String &tableDescName,
 		    TableOption = Table::Old);
     MSWeather (SetupNewTable &newTab, rownr_t nrrow = 0,
-		    Bool initialize = False);
+		    bool initialize = false);
     MSWeather (const Table &table);
     MSWeather (const MSWeather &other);
     // </group>
@@ -126,7 +126,7 @@ public:
 private:
 
     // required by the need to throw an exception in the destructor
-    Bool hasBeenDestroyed_p;
+    bool hasBeenDestroyed_p;
 };
 
 

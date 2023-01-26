@@ -69,16 +69,16 @@ const LELLattCoordBase& LELCoordinates::coordinates() const
 }
 
 // Does it have coordinates ?
-Bool LELCoordinates::hasCoordinates() const
+bool LELCoordinates::hasCoordinates() const
 {
     if (coords_p.null()) {
-        return False;
+        return false;
     }
     return coords_p->hasCoordinates();
 }
 
 // Check if the coordinates of this and that conform.
-Int LELCoordinates::compare (const LELCoordinates& that) const
+int32_t LELCoordinates::compare (const LELCoordinates& that) const
 {
     if (coords_p.null()  ||  that.coords_p.null()) {
         return 9;

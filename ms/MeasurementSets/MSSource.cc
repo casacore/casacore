@@ -38,11 +38,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSSource::MSSource():hasBeenDestroyed_p(True) { }
+MSSource::MSSource():hasBeenDestroyed_p(true) { }
 
 MSSource::MSSource(const String &tableName, TableOption option) 
   : MSTable<MSSourceEnums>(tableName, option),
-    hasBeenDestroyed_p(False)
+    hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -53,7 +53,7 @@ MSSource::MSSource(const String &tableName, TableOption option)
 MSSource::MSSource(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSSourceEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -62,18 +62,18 @@ MSSource::MSSource(const String& tableName, const String &tableDescName,
 }
 
 MSSource::MSSource(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSSourceEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSSource(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSSource(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSSource"));
 }
 
 MSSource::MSSource(const Table &table)
-    : MSTable<MSSourceEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSSourceEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -83,7 +83,7 @@ MSSource::MSSource(const Table &table)
 
 MSSource::MSSource(const MSSource &other)
     : MSTable<MSSourceEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -103,7 +103,7 @@ MSSource::~MSSource()
            << "~MSSource() - Table written is not a valid MSSource"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -176,7 +176,7 @@ MSTableMaps MSSource::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

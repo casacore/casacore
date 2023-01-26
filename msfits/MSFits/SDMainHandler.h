@@ -88,7 +88,7 @@ public:
     SDMainHandler();
 
     // attach this to a MS - mark fields in row as handled
-    SDMainHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDMainHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDMainHandler(const SDMainHandler &other);
@@ -99,24 +99,24 @@ public:
     SDMainHandler &operator=(const SDMainHandler &other);
 
     // attach to a MS, mark fields in row as handled
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS
     void resetRow(const Record &row);
     
     // fill - a new row is always added
-    void fill(const Record &row, const MEpoch &time, Int antennaId, Int feedId,
-	      Int dataDescId, Int fieldId, const MVTime &exposure, 
-	      Int observationId, const Matrix<Float> &floatData);
+    void fill(const Record &row, const MEpoch &time, int32_t antennaId, int32_t feedId,
+	      int32_t dataDescId, int32_t fieldId, const MVTime &exposure, 
+	      int32_t observationId, const Matrix<float> &floatData);
 private:
     MeasurementSet *ms_p;
     MSMainColumns *msCols_p;
 
-    Int scanNumberId_p;
+    int32_t scanNumberId_p;
     DataType scanNumberType_p;
 
     // fields from sdfits2ms, independent of MS version number so far
-    Int arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p,
+    int32_t arrayIdId_p, sigmaId_p, flagRowId_p, intervalId_p, weightId_p, flagId_p,
 		timeCentroidId_p;
 
     // cleanup everything
@@ -126,10 +126,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

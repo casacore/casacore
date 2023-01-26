@@ -92,14 +92,14 @@ public:
   // The file will be extended and remapped if writing beyond end-of-file.
   // In that case possible pointers obtained using <src>getXXPointer</src>
   // are not valid anymore.
-  virtual void write (Int64 size, const void* buf);
+  virtual void write (int64_t size, const void* buf);
 
   // Read <src>size</src> bytes from the File. Returns the number of bytes
   // actually read. Will throw an exception (AipsError) if the requested
   // number of bytes could not be read unless throwException is set to
-  // False. Will always throw an exception if the file is not readable or
+  // false. Will always throw an exception if the file is not readable or
   // the system call returns an undocumented value.
-  virtual Int64 read (Int64 size, void* buf, Bool throwException=True);
+  virtual int64_t read (int64_t size, void* buf, bool throwException=true);
 
   // Get a read or write pointer to the given position in the mapped file.
   // An exception is thrown if beyond end-of-file or it not writable.
@@ -109,18 +109,18 @@ public:
   // not to extend it. The <src>seek</src> and <src>write</src> functions
   // should be used to extend a file.
   // <group>
-  const void* getReadPointer (Int64 offset) const;
-  void* getWritePointer (Int64 offset);
+  const void* getReadPointer (int64_t offset) const;
+  void* getWritePointer (int64_t offset);
   // </group>
 
   // Get the file size.
-  Int64 getFileSize() const
+  int64_t getFileSize() const
     { return itsFileSize; }
 
 protected:
   // Reset the position pointer to the given value. It returns the
   // new position.
-  virtual Int64 doSeek (Int64 offset, ByteIO::SeekOption);
+  virtual int64_t doSeek (int64_t offset, ByteIO::SeekOption);
 
   // Unmap the file.
   void unmapFile();
@@ -132,10 +132,10 @@ private:
   MMapfdIO& operator= (const MMapfdIO&);
   // </group>
 
-  Int64  itsFileSize;       //# File size
-  Int64  itsPosition;       //# Current seek position
+  int64_t  itsFileSize;       //# File size
+  int64_t  itsPosition;       //# Current seek position
   char*  itsPtr;            //# Pointer to memory map
-  Bool   itsIsWritable;
+  bool   itsIsWritable;
 };
 
 } // end namespace

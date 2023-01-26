@@ -39,14 +39,14 @@ ValType::ValType ()
 {}
 
 
-const Bool           ValType::undefbool     = False;
-const Char           ValType::undefchar     = (Char)-128;
-const uChar          ValType::undefuchar    = 0;
-const Short          ValType::undefshort    = -32768;
-const uShort         ValType::undefushort   = 0;
-const Int            ValType::undefint      = -2*Int(32768*32768);
-const uInt           ValType::undefuint     = 0;
-const Int64          ValType::undefint64    = -2*Int64(32768*32768)*Int64(32768*32768);
+const bool           ValType::undefbool     = false;
+const char           ValType::undefchar     = (char)-128;
+const unsigned char          ValType::undefuchar    = 0;
+const int16_t          ValType::undefshort    = -32768;
+const uint16_t         ValType::undefushort   = 0;
+const int32_t            ValType::undefint      = -2*int32_t(32768*32768);
+const uint32_t           ValType::undefuint     = 0;
+const int64_t          ValType::undefint64    = -2*int64_t(32768*32768)*int64_t(32768*32768);
 const float          ValType::undeffloat    = -C::minfloat;
 const Complex        ValType::undefcomplex   (-C::minfloat,  -C::minfloat);
 const double         ValType::undefdouble   = -C::mindouble;
@@ -103,13 +103,13 @@ int ValType::getTypeSize (DataType dt)
     switch (dt) {
     case TpBool:
     case TpArrayBool:
-	return sizeof(Bool);
+	return sizeof(bool);
     case TpChar:
     case TpArrayChar:
-	return sizeof(Char);
+	return sizeof(char);
     case TpUChar:
     case TpArrayUChar:
-	return sizeof(uChar);
+	return sizeof(unsigned char);
     case TpShort:
     case TpArrayShort:
 	return sizeof(short);
@@ -118,13 +118,13 @@ int ValType::getTypeSize (DataType dt)
 	return sizeof(unsigned short);
     case TpInt:
     case TpArrayInt:
-	return sizeof(Int);
+	return sizeof(int32_t);
     case TpUInt:
     case TpArrayUInt:
-	return sizeof(uInt);
+	return sizeof(uint32_t);
     case TpInt64:
     case TpArrayInt64:
-	return sizeof(Int64);
+	return sizeof(int64_t);
     case TpFloat:
     case TpArrayFloat:
 	return sizeof(float);
@@ -147,31 +147,31 @@ int ValType::getTypeSize (DataType dt)
 }
 
 //# Get the canonical size of the data type.
-int ValType::getCanonicalSize (DataType dt, Bool BECanonical)
+int ValType::getCanonicalSize (DataType dt, bool BECanonical)
 {
   if (BECanonical) {
     switch (dt) {
     case TpChar:
     case TpArrayChar:
-      return CanonicalConversion::canonicalSize (static_cast<Char*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<char*>(0));
     case TpUChar:
     case TpArrayUChar:
-      return CanonicalConversion::canonicalSize (static_cast<uChar*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<unsigned char*>(0));
     case TpShort:
     case TpArrayShort:
-      return CanonicalConversion::canonicalSize (static_cast<Short*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<int16_t*>(0));
     case TpUShort:
     case TpArrayUShort:
-      return CanonicalConversion::canonicalSize (static_cast<uShort*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<uint16_t*>(0));
     case TpInt:
     case TpArrayInt:
-      return CanonicalConversion::canonicalSize (static_cast<Int*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<int32_t*>(0));
     case TpUInt:
     case TpArrayUInt:
-      return CanonicalConversion::canonicalSize (static_cast<uInt*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<uint32_t*>(0));
     case TpInt64:
     case TpArrayInt64:
-      return CanonicalConversion::canonicalSize (static_cast<Int64*>(0));
+      return CanonicalConversion::canonicalSize (static_cast<int64_t*>(0));
     case TpFloat:
     case TpArrayFloat:
       return CanonicalConversion::canonicalSize (static_cast<float*>(0));
@@ -191,25 +191,25 @@ int ValType::getCanonicalSize (DataType dt, Bool BECanonical)
     switch (dt) {
     case TpChar:
     case TpArrayChar:
-      return LECanonicalConversion::canonicalSize (static_cast<Char*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<char*>(0));
     case TpUChar:
     case TpArrayUChar:
-      return LECanonicalConversion::canonicalSize (static_cast<uChar*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<unsigned char*>(0));
     case TpShort:
     case TpArrayShort:
-      return LECanonicalConversion::canonicalSize (static_cast<Short*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<int16_t*>(0));
     case TpUShort:
     case TpArrayUShort:
-      return LECanonicalConversion::canonicalSize (static_cast<uShort*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<uint16_t*>(0));
     case TpInt:
     case TpArrayInt:
-      return LECanonicalConversion::canonicalSize (static_cast<Int*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<int32_t*>(0));
     case TpUInt:
     case TpArrayUInt:
-      return LECanonicalConversion::canonicalSize (static_cast<uInt*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<uint32_t*>(0));
     case TpInt64:
     case TpArrayInt64:
-      return LECanonicalConversion::canonicalSize (static_cast<Int64*>(0));
+      return LECanonicalConversion::canonicalSize (static_cast<int64_t*>(0));
     case TpFloat:
     case TpArrayFloat:
       return LECanonicalConversion::canonicalSize (static_cast<float*>(0));
@@ -233,8 +233,8 @@ int ValType::getCanonicalSize (DataType dt, Bool BECanonical)
 void ValType::getCanonicalFunc (DataType dt,
 				Conversion::ValueFunction*& readFunc,
 				Conversion::ValueFunction*& writeFunc,
-				uInt& nrElementsPerValue,
-				Bool BECanonical)
+				uint32_t& nrElementsPerValue,
+				bool BECanonical)
 {
   nrElementsPerValue = 1;
   if (BECanonical) {
@@ -246,38 +246,38 @@ void ValType::getCanonicalFunc (DataType dt,
       break;
     case TpChar:
     case TpArrayChar:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uChar*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<unsigned char*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<unsigned char*>(0));
       break;
     case TpUChar:
     case TpArrayUChar:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uChar*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<unsigned char*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<unsigned char*>(0));
       break;
     case TpShort:
     case TpArrayShort:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<Short*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<Short*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<int16_t*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<int16_t*>(0));
       break;
     case TpUShort:
     case TpArrayUShort:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uShort*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uShort*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<uint16_t*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<uint16_t*>(0));
       break;
     case TpInt:
     case TpArrayInt:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<Int*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<Int*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<int32_t*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<int32_t*>(0));
       break;
     case TpUInt:
     case TpArrayUInt:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<uInt*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<uInt*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<uint32_t*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<uint32_t*>(0));
       break;
     case TpInt64:
     case TpArrayInt64:
-      readFunc  = CanonicalConversion::getToLocal (static_cast<Int64*>(0));
-      writeFunc = CanonicalConversion::getFromLocal (static_cast<Int64*>(0));
+      readFunc  = CanonicalConversion::getToLocal (static_cast<int64_t*>(0));
+      writeFunc = CanonicalConversion::getFromLocal (static_cast<int64_t*>(0));
       break;
     case TpComplex:
     case TpArrayComplex:
@@ -310,38 +310,38 @@ void ValType::getCanonicalFunc (DataType dt,
       break;
     case TpChar:
     case TpArrayChar:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uChar*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<unsigned char*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<unsigned char*>(0));
       break;
     case TpUChar:
     case TpArrayUChar:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uChar*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uChar*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<unsigned char*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<unsigned char*>(0));
       break;
     case TpShort:
     case TpArrayShort:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<Short*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Short*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<int16_t*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<int16_t*>(0));
       break;
     case TpUShort:
     case TpArrayUShort:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uShort*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uShort*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<uint16_t*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uint16_t*>(0));
       break;
     case TpInt:
     case TpArrayInt:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<Int*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Int*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<int32_t*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<int32_t*>(0));
       break;
     case TpUInt:
     case TpArrayUInt:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<uInt*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uInt*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<uint32_t*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<uint32_t*>(0));
       break;
     case TpInt64:
     case TpArrayInt64:
-      readFunc  = LECanonicalConversion::getToLocal (static_cast<Int64*>(0));
-      writeFunc = LECanonicalConversion::getFromLocal (static_cast<Int64*>(0));
+      readFunc  = LECanonicalConversion::getToLocal (static_cast<int64_t*>(0));
+      writeFunc = LECanonicalConversion::getFromLocal (static_cast<int64_t*>(0));
       break;
     case TpComplex:
     case TpArrayComplex:
@@ -370,56 +370,56 @@ void ValType::getCanonicalFunc (DataType dt,
 
 //# Test if a data type can be promoted to another.
 //# Note that the cases fall through.
-Bool ValType::isPromotable (DataType from, DataType to)
+bool ValType::isPromotable (DataType from, DataType to)
 {
     if (from == TpOther)
-	return False;
+	return false;
     if (from == to)
-	return True;
+	return true;
     switch (from) {
     case TpChar:
 	if (to == TpShort)
-	    return True;
+	    return true;
 	CASACORE_FALLTHROUGH;
     case TpShort:
 	if (to == TpInt)
-	    return True;
+	    return true;
 	CASACORE_FALLTHROUGH;
     case TpInt:
 	if (to == TpInt64)
-	    return True;
+	    return true;
 	CASACORE_FALLTHROUGH;
     case TpInt64:
     case TpFloat:
     case TpDouble:
 	if (to == TpFloat  ||  to == TpDouble)
-	    return True;
+	    return true;
 	CASACORE_FALLTHROUGH;
     case TpComplex:
     case TpDComplex:
 	if (to == TpComplex  ||  to == TpDComplex)
-	    return True;
-	return False;
+	    return true;
+	return false;
     case TpUChar:
 	if (to == TpUShort)
-	    return True;
+	    return true;
 	CASACORE_FALLTHROUGH;
     case TpUShort:
 	if (to == TpUInt)
-	    return True;
+	    return true;
 	CASACORE_FALLTHROUGH;
     case TpUInt:
         if (to == TpInt64)
-            return True;
+            return true;
 	if (to == TpFloat  ||  to == TpDouble)
-	    return True;
+	    return true;
 	if (to == TpComplex  ||  to == TpDComplex)
-	    return True;
-	return False;
+	    return true;
+	return false;
     default:
 	break;
     }
-    return False;
+    return false;
 }
 
 
@@ -428,21 +428,21 @@ ObjCompareFunc* ValType::getCmpFunc (DataType dt)
 {
     switch (dt) {
     case TpBool:
-	return &ObjCompare<Bool>::compare;
+	return &ObjCompare<bool>::compare;
     case TpChar:
-	return &ObjCompare<Char>::compare;
+	return &ObjCompare<char>::compare;
     case TpUChar:
-	return &ObjCompare<uChar>::compare;
+	return &ObjCompare<unsigned char>::compare;
     case TpShort:
-	return &ObjCompare<Short>::compare;
+	return &ObjCompare<int16_t>::compare;
     case TpUShort:
-	return &ObjCompare<uShort>::compare;
+	return &ObjCompare<uint16_t>::compare;
     case TpInt:
-	return &ObjCompare<Int>::compare;
+	return &ObjCompare<int32_t>::compare;
     case TpUInt:
-	return &ObjCompare<uInt>::compare;
+	return &ObjCompare<uint32_t>::compare;
     case TpInt64:
-	return &ObjCompare<Int64>::compare;
+	return &ObjCompare<int64_t>::compare;
     case TpFloat:
 	return &ObjCompare<float>::compare;
     case TpDouble:
@@ -464,21 +464,21 @@ CountedPtr<BaseCompare> ValType::getCmpObj (DataType dt)
 {
     switch (dt) {
     case TpBool:
-        return new ObjCompare<Bool>();
+        return new ObjCompare<bool>();
     case TpChar:
-        return new ObjCompare<Char>();
+        return new ObjCompare<char>();
     case TpUChar:
-        return new ObjCompare<uChar>();
+        return new ObjCompare<unsigned char>();
     case TpShort:
-        return new ObjCompare<Short>();
+        return new ObjCompare<int16_t>();
     case TpUShort:
-        return new ObjCompare<uShort>();
+        return new ObjCompare<uint16_t>();
     case TpInt:
-        return new ObjCompare<Int>();
+        return new ObjCompare<int32_t>();
     case TpUInt:
-        return new ObjCompare<uInt>();
+        return new ObjCompare<uint32_t>();
     case TpInt64:
-        return new ObjCompare<Int64>();
+        return new ObjCompare<int64_t>();
     case TpFloat:
         return new ObjCompare<float>();
     case TpDouble:

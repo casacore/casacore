@@ -71,7 +71,7 @@ namespace casacore {
   //        arguments. The possible data types are defined in class
   //        TableExprNodeRep.
   //        Note that a UDF can support multiple data types. For example, a
-  //        function like <src>min</src> can be used for Int, Double, or a mix.
+  //        function like <src>min</src> can be used for int32_t, double, or a mix.
   //        Function 'checkDT' in class TableExprNodeMulti can be used to
   //        check the data types of the operands and determine the result
   //        data type.
@@ -154,7 +154,7 @@ namespace casacore {
   //
   // <example>
   // The following examples show a normal UDF function.
-  // <br>It returns True if the function argument matches 1.
+  // <br>It returns true if the function argument matches 1.
   // It can be seen that it checks if the argument is an integer scalar.
   // <srcblock>
   // class TestUDF: public UDFBase
@@ -179,7 +179,7 @@ namespace casacore {
   //   }
   //   // Get the value for the given id.
   //   // It gets the value of the operand and checks if it is 1.
-  //   Bool getBool (const TableExprId& id)
+  //   bool getBool (const TableExprId& id)
   //     { return operands()[0]->getInt(id) == 1; }
   // };
   // </srcblock>
@@ -205,21 +205,21 @@ namespace casacore {
   //     AlwaysAssert (operands()[0]->valueType() == TableExprNodeRep::VTScalar, AipsError);
   //     setDataType (TableExprNodeRep::NTInt);
   //     setNDim (0);           // scalar
-  //     setAggregate (True);   // aggregate function
+  //     setAggregate (true);   // aggregate function
   //   }
   //   // Get the value of a group.
   //   // It aggregates the values of multiple rows.
-  //   Int64 getInt (const TableExprId& id)
+  //   int64_t getInt (const TableExprId& id)
   //   {
   //     // Cast the id to a TableExprIdAggr object.
   //     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
   //     // Get the vector of ids for this group.
   //     const vector<TableExprId>& ids = aid.result().ids(id.rownr());
   //     // Get the values for all ids and accumulate them.
-  //     Int64 sum3 = 0;
+  //     int64_t sum3 = 0;
   //     for (vector<TableExprId>::const_iterator it=ids.begin();
   //          it!=ids.end(); ++it){
-  //       Int64 v = operands()[0]->getInt(*it);
+  //       int64_t v = operands()[0]->getInt(*it);
   //         sum3 += v*v*v;
   //     }
   //     return sum3;
@@ -246,16 +246,16 @@ namespace casacore {
     // Evaluate the function and return the result.
     // Their default implementations throw a "not implemented" exception.
     // <group>
-    virtual Bool      getBool     (const TableExprId& id);
-    virtual Int64     getInt      (const TableExprId& id);
-    virtual Double    getDouble   (const TableExprId& id);
+    virtual bool      getBool     (const TableExprId& id);
+    virtual int64_t     getInt      (const TableExprId& id);
+    virtual double    getDouble   (const TableExprId& id);
     virtual DComplex  getDComplex (const TableExprId& id);
     virtual String    getString   (const TableExprId& id);
     virtual TaqlRegex getRegex    (const TableExprId& id);
     virtual MVTime    getDate     (const TableExprId& id);
-    virtual MArray<Bool>     getArrayBool     (const TableExprId& id);
-    virtual MArray<Int64>    getArrayInt      (const TableExprId& id);
-    virtual MArray<Double>   getArrayDouble   (const TableExprId& id);
+    virtual MArray<bool>     getArrayBool     (const TableExprId& id);
+    virtual MArray<int64_t>    getArrayInt      (const TableExprId& id);
+    virtual MArray<double>   getArrayDouble   (const TableExprId& id);
     virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
     virtual MArray<String>   getArrayString   (const TableExprId& id);
     virtual MArray<MVTime>   getArrayDate     (const TableExprId& id);
@@ -291,7 +291,7 @@ namespace casacore {
     // <br> -1 means that the results are arrays with unknown dimensionality.
     // <br> >0 means that the results are arrays with that dimensionality.
     // This function must be called by the setup function of the derived class.
-    void setNDim (Int ndim);
+    void setNDim (int32_t ndim);
 
     // Set the shape of the results if it is fixed and known.
     void setShape (const IPosition& shape);
@@ -309,10 +309,10 @@ namespace casacore {
     // Define if the result is constant (e.g. if all arguments are constant).
     // If this function is not called by the setup function of the derived
     // class, the result is not constant.
-    void setConstant (Bool isConstant);
+    void setConstant (bool isConstant);
 
     // Define if the UDF is an aggregate function (usually used in GROUPBY).
-    void setAggregate (Bool isAggregate);
+    void setAggregate (bool isAggregate);
 
     // Let a derived class recreate its column objects in case a selection
     // has to be applied.
@@ -335,7 +335,7 @@ namespace casacore {
 
     // Get the dimensionality of the results.
     // (0=scalar, -1=array with variable ndim, >0=array with fixed ndim
-    Int ndim() const
+    int32_t ndim() const
       { return itsNDim; }
 
     // Get the result shape if the same for all results.
@@ -343,16 +343,16 @@ namespace casacore {
       { return itsShape; }
 
     // Tell if the UDF gives a constant result.
-    Bool isConstant() const
+    bool isConstant() const
       { return itsIsConstant; }
 
     // Tell if the UDF is an aggregate function.
-    Bool isAggregate() const
+    bool isAggregate() const
       { return itsIsAggregate; }
 
     // Do not apply the selection.
     void disableApplySelection()
-      { itsApplySelection = False; }
+      { itsApplySelection = false; }
 
     // If needed, let the UDF re-create column objects for a selection of rows.
     // It calls the function recreateColumnObjects.
@@ -367,13 +367,13 @@ namespace casacore {
     //# Data members.
     std::vector<TENShPtr>          itsOperands;
     TableExprNodeRep::NodeDataType itsDataType;
-    Int                            itsNDim;
+    int32_t                            itsNDim;
     IPosition                      itsShape;
     String                         itsUnit;
     Record                         itsAttributes;
-    Bool                           itsIsConstant;
-    Bool                           itsIsAggregate;
-    Bool                           itsApplySelection;
+    bool                           itsIsConstant;
+    bool                           itsIsAggregate;
+    bool                           itsApplySelection;
     //# The registry is used for two purposes:
     //# 1. It is a map of known function names (lib.func) to funcptr.
     //#    Function name * means that the library can contain any function,

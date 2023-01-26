@@ -47,12 +47,12 @@ void createTables()
     dir.create();
     // Create a main table.
     TableDesc td("", "", TableDesc::Scratch);
-    td.addColumn (ScalarColumnDesc<Int>("RowNr"));
+    td.addColumn (ScalarColumnDesc<int32_t>("RowNr"));
     SetupNewTable newtab("tTableKeywords_tmp/maindata", td, Table::New);
     Table tab(newtab, 1);
     // Create 3 subtables (in different directories).
     TableDesc std("", "", TableDesc::Scratch);
-    std.addColumn (ScalarColumnDesc<Int>("SourceNr"));
+    std.addColumn (ScalarColumnDesc<int32_t>("SourceNr"));
     SetupNewTable newtab2("tTableKeywords_tmp/submdata", std, Table::New);
     Table subtab2(newtab2, 2);
     SetupNewTable newtab3("tTableKeywords_tmp/maindata/subdata", std,
@@ -61,7 +61,7 @@ void createTables()
     // Store one subtable as a keyword in the main table, the
     // other as a column keyword.
     tab.rwKeywordSet().defineTable ("SubTab2", subtab2);
-    ScalarColumn<Int> col(tab, "RowNr");
+    ScalarColumn<int32_t> col(tab, "RowNr");
     col.rwKeywordSet().defineTable ("SubTab3", subtab3);
     // Store another subtable as a keyword in SubTab3.
     SetupNewTable newtab4("tTableKeywords_tmp/maindata/subdata/sub4", std,
@@ -70,7 +70,7 @@ void createTables()
     subtab3.rwKeywordSet().defineTable ("SubTab4", subtab4);
 }
 
-void readTables (const String& name, Bool swap)
+void readTables (const String& name, bool swap)
 {
     // Reconstruct the main table.
     // Get the sub table from the keyword .
@@ -81,7 +81,7 @@ void readTables (const String& name, Bool swap)
 
     Table subtab2 = tab.keywordSet().asTable ("SubTab2");
     AlwaysAssertExit (subtab2.nrow() == 2);
-    ScalarColumn<Int> col(tab, "RowNr");
+    ScalarColumn<int32_t> col(tab, "RowNr");
     Table subtab3 = col.keywordSet().asTable ("SubTab3");
     AlwaysAssertExit (subtab3.nrow() == 3);
     Table subtab4 = subtab3.keywordSet().asTable ("SubTab4");
@@ -100,11 +100,11 @@ void renameTables (const String& newName, const String& oldName)
     tab.rename (newName, Table::New);
     tab.flush();
     // Try to open the table with the old name (should fail).
-    Bool excp = False;
+    bool excp = false;
     try {
 	Table tab1(oldName);
     } catch (std::exception& x) {
-	excp = True;
+	excp = true;
     } 
     AlwaysAssertExit (excp);
     // Try to open the table with new name (should succeed).
@@ -132,7 +132,7 @@ void readFromOtherDir()
     AlwaysAssertExit (tab.keywordSet().isDefined ("SubTab2"));
     Table subtab3 = tab.keywordSet().asTable ("SubTab2");
     AlwaysAssertExit (subtab3.nrow() == 3);
-    ScalarColumn<Int> col(tab, "RowNr");
+    ScalarColumn<int32_t> col(tab, "RowNr");
     Table subtab2 = col.keywordSet().asTable ("SubTab3");
     AlwaysAssertExit (subtab2.nrow() == 2);
     Table subtab4 = subtab3.keywordSet().asTable ("SubTab4");
@@ -145,22 +145,22 @@ int main()
 {
     try {
 	createTables();
-	readTables ("tTableKeywords_tmp/maindata", False);
+	readTables ("tTableKeywords_tmp/maindata", false);
 	renameTables ("tTableKeywords_tmp/main2data", 
 		      "tTableKeywords_tmp/maindata");
-	readTables ("tTableKeywords_tmp/main2data", False);
+	readTables ("tTableKeywords_tmp/main2data", false);
 	copyTables ("tTableKeywords_tmp/main3data",
 		    "tTableKeywords_tmp/main2data");
-	readTables ("tTableKeywords_tmp/main3data", False);
-	readTables ("tTableKeywords_tmp/main2data", False);
+	readTables ("tTableKeywords_tmp/main3data", false);
+	readTables ("tTableKeywords_tmp/main2data", false);
 	// Go to the subdirectory to test if renaming and
 	// reading back from there succeeds.
 	AlwaysAssertExit (chdir ("tTableKeywords_tmp") == 0);
-	readTables ("main2data", False);
+	readTables ("main2data", false);
 	renameTables ("main4data", 
 		      "main2data");
-	readTables ("main3data", True);
-	readTables ("main4data", False);
+	readTables ("main3data", true);
+	readTables ("main4data", false);
 	readFromOtherDir();
     } catch (std::exception& x) {
         cout << "Caught an exception : " << x.what() << endl;

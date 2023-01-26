@@ -87,8 +87,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Functions to be ignored can be given (as function type values).
     // If the function name is unknown, NRFUNC is returned.
     static TableExprFuncNode::FunctionType findFunc (const String& name,
-                                                     uInt narguments,
-                                                     const Vector<Int>& ignoreFuncs);
+                                                     uint32_t narguments,
+                                                     const Vector<int32_t>& ignoreFuncs);
   };
 
 

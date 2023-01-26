@@ -39,7 +39,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCDirection::ToRef_p[N_Routes][3] = {
+uint32_t MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::GALACTIC,	MDirection::J2000,	0},
   {MDirection::GALACTIC,	MDirection::B1950,	2},
   {MDirection::J2000,		MDirection::GALACTIC,	0},
@@ -88,7 +88,7 @@ uInt MCDirection::ToRef_p[N_Routes][3] = {
   {MDirection::TOPO,		MDirection::APP,	0},
   {MDirection::ICRS,		MDirection::J2000,	0},
   {MDirection::J2000,		MDirection::ICRS,	0} };
-uInt MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
+uint32_t MCDirection::FromTo_p[MDirection::N_Types][MDirection::N_Types];
 std::once_flag MCDirection::theirInitOnceFlag;
 
 //# Constructors
@@ -111,11 +111,11 @@ void MCDirection::getConvert(MConvertBase &mc,
 			     const MRBase &inref, 
 			     const MRBase &outref) {
 
-    uInt iin  = inref.getType();
-    uInt iout = outref.getType();
+    uint32_t iin  = inref.getType();
+    uint32_t iout = outref.getType();
     if (iin != iout) {
-      Bool iplan = (iin & MDirection::EXTRA);
-      Bool oplan = (iout & MDirection::EXTRA);
+      bool iplan = (iin & MDirection::EXTRA);
+      bool oplan = (iout & MDirection::EXTRA);
       if (iplan) {
 	if (iin != MDirection::COMET) {
 	  mc.addMethod(MCDirection::R_PLANET0);
@@ -148,7 +148,7 @@ void MCDirection::getConvert(MConvertBase &mc,
 	}
       }
       if (oplan) iout = MDirection::J2000;
-      Int tmp;
+      int32_t tmp;
       while (iin != iout) {
 	tmp = FromTo_p[iin][iout];
 	iin = ToRef_p[tmp][1];
@@ -168,15 +168,15 @@ void MCDirection::clearConvert() {
 }
 
 //# Conversion routines
-void MCDirection::initConvert(uInt which, MConvertBase &mc) {
+void MCDirection::initConvert(uint32_t which, MConvertBase &mc) {
 
-  if (False) initConvert(which, mc);	// Stop warning
+  if (false) initConvert(which, mc);	// Stop warning
   if (!MVPOS1)  MVPOS1 = new MVPosition();
   if (!MVPOS2)  MVPOS2 = new MVPosition();
   if (!MVPOS3)  MVPOS3 = new MVPosition();
-  if (!VEC61)   VEC61 = new Vector<Double>(6);
-  if (!VEC62)   VEC62 = new Vector<Double>(6);
-  if (!VEC63)   VEC63 = new Vector<Double>(6);
+  if (!VEC61)   VEC61 = new Vector<double>(6);
+  if (!VEC62)   VEC62 = new Vector<double>(6);
+  if (!VEC63)   VEC63 = new Vector<double>(6);
   
   switch (which) {
     
@@ -293,14 +293,14 @@ void MCDirection::doConvert(MVDirection &in,
 			    MRBase &inref,
 			    MRBase &outref,
 			    const MConvertBase &mc) {
-  Double g1, g2, g3, lengthE, tdbTime;
+  double g1, g2, g3, lengthE, tdbTime;
   // Planetary aberration factor
-  Double lengthP = 0;
+  double lengthP = 0;
   MeasTable::Types planID = MeasTable::MERCURY; // to stop warning
-  uInt comID = static_cast<uInt>(MDirection::APP);
+  uint32_t comID = static_cast<uint32_t>(MDirection::APP);
   measMath.initFrame(inref, outref);
   
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
     switch (mc.getMethod(i)) {
  
     case HADEC_ITRF:
@@ -500,7 +500,7 @@ void MCDirection::doConvert(MVDirection &in,
 	getTDB(tdbTime);
       *VEC62 = MeasTable::Planetary(MeasTable::EARTH, tdbTime); // Eb
       *VEC63 = MeasTable::Planetary(MeasTable::SUN, tdbTime);   // Sb
-      for (Int j=0; j<3; j++)
+      for (int32_t j=0; j<3; j++)
 	(*MVPOS3)(j) = (*VEC62)(j) - (*VEC63)(j);		// E
     }
     break;
@@ -513,7 +513,7 @@ void MCDirection::doConvert(MVDirection &in,
 	g3 = lengthE;
 	*VEC61 = MeasTable::Planetary(planID, tdbTime - g3);
 	*VEC63 = MeasTable::Planetary(MeasTable::SUN, tdbTime - g3); // Sb
-	for (Int j=0; j<3; j++) {
+	for (int32_t j=0; j<3; j++) {
 	  (*MVPOS1)(j) = (*VEC61)(j) - (*VEC62)(j);		// P
 	  (*MVPOS2)(j) = (*VEC61)(j) - (*VEC63)(j);		// Q
 	}

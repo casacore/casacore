@@ -83,7 +83,7 @@ void MDoppler::assure(const Measure &in) {
   }
 }
 
-MDoppler::Types MDoppler::castType(uInt tp) {
+MDoppler::Types MDoppler::castType(uint32_t tp) {
   MDoppler::checkMyTypes();
   AlwaysAssert(tp < MDoppler::N_Types, AipsError);
   return static_cast<MDoppler::Types>(tp);
@@ -101,14 +101,14 @@ const String &MDoppler::showType(MDoppler::Types tp) {
   return tname[tp];
 }
 
-const String &MDoppler::showType(uInt tp) {
+const String &MDoppler::showType(uint32_t tp) {
   return MDoppler::showType(MDoppler::castType(tp));
 }
 
-const String* MDoppler::allMyTypes(Int &nall, Int &nextra,
-                                   const uInt *&typ) {
-  static const Int N_name  = 8;
-  static const Int N_extra = 0;
+const String* MDoppler::allMyTypes(int32_t &nall, int32_t &nextra,
+                                   const uint32_t *&typ) {
+  static const int32_t N_name  = 8;
+  static const int32_t N_extra = 0;
   static const String tname[N_name] = {
     "RADIO", 
     "Z",
@@ -119,7 +119,7 @@ const String* MDoppler::allMyTypes(Int &nall, Int &nextra,
     "TRUE",
     "RELATIVISTIC" };
   
-  static const uInt oname[N_name] = {
+  static const uint32_t oname[N_name] = {
     MDoppler::RADIO, 
     MDoppler::Z,
     MDoppler::RATIO,
@@ -136,8 +136,8 @@ const String* MDoppler::allMyTypes(Int &nall, Int &nextra,
   return tname;
 }
 
-const String* MDoppler::allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const {
+const String* MDoppler::allTypes(int32_t &nall, int32_t &nextra,
+                                 const uint32_t *&typ) const {
   return MDoppler::allMyTypes(nall, nextra, typ);
 }
 
@@ -147,62 +147,62 @@ void MDoppler::checkTypes() const {
 
 void MDoppler::checkMyTypes() {
   // Multiple threads could execute this, but that is harmless.
-  static Bool first(True);
+  static bool first(true);
   if (first) {
-    first = False;
-    Int nall, nex;
-    const uInt *typ;
+    first = false;
+    int32_t nall, nex;
+    const uint32_t *typ;
     const String *const tps = MDoppler::allMyTypes(nall,nex, typ);
     MDoppler::Types tp;
-    for (Int i=0; i<nall; i++) {
+    for (int32_t i=0; i<nall; i++) {
       AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(typ[i])) &&
-		   tp == Int(typ[i]) &&
+		   tp == int32_t(typ[i]) &&
 		   MDoppler::getType(tp, tps[i]) &&
-		   tp == Int(typ[i]), AipsError);
+		   tp == int32_t(typ[i]), AipsError);
     }
-    for (Int i=0; i<N_Types; i++) {
+    for (int32_t i=0; i<N_Types; i++) {
       AlwaysAssert(MDoppler::getType(tp, MDoppler::showType(i)) &&
 		   tp == i, AipsError);
     }
   }
 }
 
-Bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
-  const uInt *oname;
-  Int nall, nex;
+bool MDoppler::getType(MDoppler::Types &tp, const String &in) {
+  const uint32_t *oname;
+  int32_t nall, nex;
   const String *tname = MDoppler::allMyTypes(nall, nex, oname);
   
-  Int i = Measure::giveMe(in, nall, tname);
+  int32_t i = Measure::giveMe(in, nall, tname);
   
-  if (i>=nall) return False;
+  if (i>=nall) return false;
   else tp = static_cast<MDoppler::Types>(oname[i]);
-  return True;
+  return true;
 }
 
-Bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
+bool MDoppler::giveMe(MDoppler::Ref &mr, const String &in) {
   MDoppler::Types tp;
   if (MDoppler::getType(tp, in)) mr = MDoppler::Ref(tp);
   else {
     mr = MDoppler::Ref();
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Bool MDoppler::setOffset(const Measure &in) {
-  if (!dynamic_cast<const MDoppler*>(&in)) return False;
+bool MDoppler::setOffset(const Measure &in) {
+  if (!dynamic_cast<const MDoppler*>(&in)) return false;
   ref.set(in);
-  return True;
+  return true;
 }
 
-Bool MDoppler::setRefString(const String &in) {
+bool MDoppler::setRefString(const String &in) {
   MDoppler::Types tp;
   if (MDoppler::getType(tp, in)) {
     ref.setType(tp);
-    return True;
+    return true;
   }
   ref.setType(MDoppler::DEFAULT);
-  return False;
+  return false;
 }
 
 const String &MDoppler::getDefaultType() const {
@@ -221,26 +221,26 @@ Measure *MDoppler::clone() const {
   return (new MDoppler(*this));
 }
 
-Vector<Double> MDoppler::shiftFrequency(const Vector<Double> &freq) const {
-  Vector<Double> tmp(freq.nelements());
-  Double factor = sqrt((1-data.getValue())/(1+data.getValue()));
-  for (uInt i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
+Vector<double> MDoppler::shiftFrequency(const Vector<double> &freq) const {
+  Vector<double> tmp(freq.nelements());
+  double factor = sqrt((1-data.getValue())/(1+data.getValue()));
+  for (uint32_t i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
   return tmp;
 }
 
-Quantum<Vector<Double> >
-MDoppler::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
-  Vector<Double> tmp(freq.getValue().nelements());
+Quantum<Vector<double> >
+MDoppler::shiftFrequency(const Quantum<Vector<double> > &freq) const {
+  Vector<double> tmp(freq.getValue().nelements());
   tmp = freq.getValue();
-  Double factor = sqrt((1-data.getValue())/(1+data.getValue()));
-  for (uInt i=0; i<tmp.nelements(); ++i) {
+  double factor = sqrt((1-data.getValue())/(1+data.getValue()));
+  for (uint32_t i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
 			 factor;
   }
-  for (uInt i=0; i<tmp.nelements(); ++i) {
+  for (uint32_t i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
   }
-  return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
+  return Quantum<Vector<double> >(tmp, freq.getFullUnit());
 }
 
 } //# NAMESPACE CASACORE - END

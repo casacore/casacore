@@ -36,12 +36,12 @@ LCComplement::LCComplement()
 {}
 
 LCComplement::LCComplement (const LCRegion& region)
-: LCRegionMulti (False, &region)
+: LCRegionMulti (false, &region)
 {
     defineBox();
 }
 
-LCComplement::LCComplement (Bool takeOver,
+LCComplement::LCComplement (bool takeOver,
 			    const PtrBlock<const LCRegion*>& regions)
 : LCRegionMulti (takeOver, regions)
 {
@@ -63,7 +63,7 @@ LCComplement& LCComplement::operator= (const LCComplement& other)
     return *this;
 }
 
-Bool LCComplement::operator== (const LCRegion& other) const
+bool LCComplement::operator== (const LCRegion& other) const
 {
     return LCRegionMulti::operator== (other);
 }
@@ -74,12 +74,12 @@ LCRegion* LCComplement::cloneRegion() const
     return new LCComplement (*this);
 }
 
-LCRegion* LCComplement::doTranslate (const Vector<Float>& translateVector,
+LCRegion* LCComplement::doTranslate (const Vector<float>& translateVector,
 				     const IPosition& newLatticeShape) const
 {
     PtrBlock<const LCRegion*> regions;
     multiTranslate (regions, translateVector, newLatticeShape);
-    return new LCComplement (True, regions);
+    return new LCComplement (true, regions);
 }
 
 String LCComplement::className()
@@ -106,7 +106,7 @@ LCComplement* LCComplement::fromRecord (const TableRecord& rec,
 {
     PtrBlock<const LCRegion*> regions;
     unmakeRecord (regions, rec.asRecord("regions"), tableName);
-    return new LCComplement (True, regions);
+    return new LCComplement (true, regions);
 }
 
 void LCComplement::defineBox()
@@ -117,23 +117,23 @@ void LCComplement::defineBox()
 }
 
 
-void LCComplement::multiGetSlice (Array<Bool>& buffer,
+void LCComplement::multiGetSlice (Array<bool>& buffer,
 				  const Slicer& section)
 {
     buffer.resize (section.length());
     // Initialize to all true.
-    buffer = True;
+    buffer = true;
     // Determine which part to get from the region (which is region 0).
     // Get and store negation in buffer when anything found.
     const IPosition& shape = buffer.shape();
-    uInt nrdim = shape.nelements();
+    uint32_t nrdim = shape.nelements();
     IPosition stbuf(nrdim);
     IPosition endbuf(nrdim);
     IPosition streg(nrdim);
     IPosition endreg(nrdim);
     const IPosition& inc = section.stride();
     if (findAreas (stbuf, endbuf, streg, endreg, section, 0)) {
-        Array<Bool> tmpbuf;
+        Array<bool> tmpbuf;
 	((LCRegion*)(regions()[0]))->doGetSlice
                        (tmpbuf, Slicer(streg, endreg, inc, Slicer::endIsLast));
 	buffer(stbuf,endbuf) = !tmpbuf;

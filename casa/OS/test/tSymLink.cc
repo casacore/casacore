@@ -46,7 +46,7 @@
 // This can be used to check if no memory leaks occur in normal operation.
 
 
-void doIt (Bool doExcp)
+void doIt (bool doExcp)
 {
     SymLink linkA ("tSymLink_tmp/A");
     SymLink linkI ("tSymLink_tmp/I");
@@ -175,7 +175,7 @@ void doIt (Bool doExcp)
 		                                       "tSymLink_tmp/isDir/B");
     if (doExcp) {
 	try {
-	    test6.create ("a", False);
+	    test6.create ("a", false);
 	} catch (std::exception& x) {
 	    cout << x.what() << endl;               // already existing
 	} 
@@ -192,7 +192,7 @@ void doIt (Bool doExcp)
     }
     rfile.remove();
     SymLink test8(test7);
-    test8.create ("a", False);
+    test8.create ("a", false);
     AlwaysAssertExit (test7.readSymLink().originalName() ==
 		                                       "tSymLink_tmp/a");
 }

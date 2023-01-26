@@ -98,7 +98,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 //  // Create a temporary lattice and initialize to 0.
-//  TempLattice<Float> myLat (IPosition(2,1024,1024));
+//  TempLattice<float> myLat (IPosition(2,1024,1024));
 //  myLat.set (0.);
 //  // Temporarily close the lattice.
 //  myLat.tempClose();
@@ -141,9 +141,9 @@ public:
   // (this algorithm may change). Setting maxMemoryInMB to zero will force
   // the lattice to disk.
   // <group>
-  explicit TempLattice (const TiledShape& shape, Int maxMemoryInMB=-1)
+  explicit TempLattice (const TiledShape& shape, int32_t maxMemoryInMB=-1)
     : itsImpl (new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
-  TempLattice (const TiledShape& shape, Double maxMemoryInMB)
+  TempLattice (const TiledShape& shape, double maxMemoryInMB)
     : itsImpl (new TempLatticeImpl<T>(shape, maxMemoryInMB)) {}
   // </group>
   
@@ -166,13 +166,13 @@ public:
   virtual Lattice<T>* clone() const;
 
   // Is the TempLattice paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the TempLattice writable? It should be.
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Flush the data.
   virtual void flush();
@@ -211,16 +211,16 @@ public:
 
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -233,7 +233,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -249,17 +249,17 @@ public:
   virtual void putAt (const T& value, const IPosition& where);
   // </group>
   
-  // Check class internals - used for debugging. Should always return True
-  virtual Bool ok() const;
+  // Check class internals - used for debugging. Should always return true
+  virtual bool ok() const;
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
   virtual LatticeIterInterface<T>* makeIter (const LatticeNavigator& navigator,
-					     Bool useRef) const;
+					     bool useRef) const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice (const Array<T>& sourceBuffer,

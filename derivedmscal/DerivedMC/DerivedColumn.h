@@ -38,115 +38,115 @@ namespace casacore {
 
   // <summary>Hourangle derived from TIME, etc.</summary>
   // <use visibility=local>
-  class HourangleColumn : public VirtualScalarColumn<Double>
+  class HourangleColumn : public VirtualScalarColumn<double>
   {
   public:
-    explicit HourangleColumn (MSCalEngine* engine, Int antnr)
+    explicit HourangleColumn (MSCalEngine* engine, int32_t antnr)
       : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~HourangleColumn();
-    virtual void get (rownr_t rowNr, Double& data);
+    virtual void get (rownr_t rowNr, double& data);
   private:
     MSCalEngine* itsEngine;
-    Int          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
+    int32_t          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
   };
 
 
   // <summary>Local sidereal time derived from TIME, etc.</summary>
   // <use visibility=local>
-  class LASTColumn : public VirtualScalarColumn<Double>
+  class LASTColumn : public VirtualScalarColumn<double>
   {
   public:
-    explicit LASTColumn (MSCalEngine* engine, Int antnr)
+    explicit LASTColumn (MSCalEngine* engine, int32_t antnr)
       : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~LASTColumn();
-    virtual void get (rownr_t rowNr, Double& data);
+    virtual void get (rownr_t rowNr, double& data);
   private:
     MSCalEngine* itsEngine;
-    Int          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
+    int32_t          itsAntNr;    //# -1=array 0=antenna1 1=antenna2
   };
 
 
   // <summary>Parallactic angle derived from TIME, etc.</summary>
   // <use visibility=local>
-  class ParAngleColumn : public VirtualScalarColumn<Double>
+  class ParAngleColumn : public VirtualScalarColumn<double>
   {
   public:
-    explicit ParAngleColumn (MSCalEngine* engine, Int antnr)
+    explicit ParAngleColumn (MSCalEngine* engine, int32_t antnr)
       : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~ParAngleColumn();
-    virtual void get (rownr_t rowNr, Double& data);
+    virtual void get (rownr_t rowNr, double& data);
   private:
     MSCalEngine* itsEngine;
-    Int          itsAntNr;    //# 0=antenna1 1=antenna2
+    int32_t          itsAntNr;    //# 0=antenna1 1=antenna2
   };
 
 
   // <summary>Hourangle/declination derived from TIME, etc.</summary>
   // <use visibility=local>
-  class HaDecColumn : public VirtualArrayColumn<Double>
+  class HaDecColumn : public VirtualArrayColumn<double>
   {
   public:
-    explicit HaDecColumn (MSCalEngine* engine, Int antnr)
+    explicit HaDecColumn (MSCalEngine* engine, int32_t antnr)
       : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~HaDecColumn();
     virtual IPosition shape (rownr_t rownr);
-    virtual Bool isShapeDefined (rownr_t rownr);
-    virtual void getArray (rownr_t rowNr, Array<Double>& data);
+    virtual bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<double>& data);
   private:
     MSCalEngine* itsEngine;
-    Int          itsAntNr;    //# 0=antenna1 1=antenna2
+    int32_t          itsAntNr;    //# 0=antenna1 1=antenna2
   };
 
 
   // <summary>Azimuth/elevation derived from TIME, etc.</summary>
   // <use visibility=local>
-  class AzElColumn : public VirtualArrayColumn<Double>
+  class AzElColumn : public VirtualArrayColumn<double>
   {
   public:
-    explicit AzElColumn (MSCalEngine* engine, Int antnr)
+    explicit AzElColumn (MSCalEngine* engine, int32_t antnr)
       : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~AzElColumn();
     virtual IPosition shape (rownr_t rownr);
-    virtual Bool isShapeDefined (rownr_t rownr);
-    virtual void getArray (rownr_t rowNr, Array<Double>& data);
+    virtual bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<double>& data);
   private:
     MSCalEngine* itsEngine;
-    Int          itsAntNr;    //# 0=antenna1 1=antenna2
+    int32_t          itsAntNr;    //# 0=antenna1 1=antenna2
   };
 
 
   // <summary>Pointing ITRF coordinate derived from TIME, etc.</summary>
   // <use visibility=local>
-  class ItrfColumn : public VirtualArrayColumn<Double>
+  class ItrfColumn : public VirtualArrayColumn<double>
   {
   public:
-    explicit ItrfColumn (MSCalEngine* engine, Int antnr)
+    explicit ItrfColumn (MSCalEngine* engine, int32_t antnr)
       : itsEngine (engine),
         itsAntNr  (antnr)
     {}
     virtual ~ItrfColumn();
     virtual IPosition shape (rownr_t rownr);
-    virtual Bool isShapeDefined (rownr_t rownr);
-    virtual void getArray (rownr_t rowNr, Array<Double>& data);
+    virtual bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<double>& data);
   private:
     MSCalEngine* itsEngine;
-    Int          itsAntNr;    //# 0=antenna1 1=antenna2
+    int32_t          itsAntNr;    //# 0=antenna1 1=antenna2
   };
 
 
   // <summary>UVW J2000 derived from TIME, etc.</summary>
   // <use visibility=local>
-  class UVWJ2000Column : public VirtualArrayColumn<Double>
+  class UVWJ2000Column : public VirtualArrayColumn<double>
   {
   public:
     explicit UVWJ2000Column (MSCalEngine* engine)
@@ -154,8 +154,8 @@ namespace casacore {
     {}
     virtual ~UVWJ2000Column();
     virtual IPosition shape (rownr_t rownr);
-    virtual Bool isShapeDefined (rownr_t rownr);
-    virtual void getArray (rownr_t rowNr, Array<Double>& data);
+    virtual bool isShapeDefined (rownr_t rownr);
+    virtual void getArray (rownr_t rowNr, Array<double>& data);
   private:
     MSCalEngine* itsEngine;
   };

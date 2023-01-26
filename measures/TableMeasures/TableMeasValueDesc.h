@@ -63,7 +63,7 @@ class TableRecord;
 // either an <linkto class="ArrayMeasColumn">ArrayMeasColumn</linkto>
 // or <linkto class="ScalarMeasColumn">ScalarMeasColumn</linkto> object.
 //
-// The column used as the Measure column is always an ArrayColumn<Double>
+// The column used as the Measure column is always an ArrayColumn<double>
 // irrespective of whether it is to store scalars or arrays of Measures and
 // irrespective of the type of Measure.
 // </synopsis>
@@ -73,8 +73,8 @@ class TableRecord;
 // <li>
 // <srcblock>
 //    // Add a column to the table.  This column is to be used to store
-//    // MPositions.  Measure columns are alway ArrayColumn<Double>
-//    ArrayColumnDesc<Double> cdPosCol("MPosColumn", "MPosition column");
+//    // MPositions.  Measure columns are alway ArrayColumn<double>
+//    ArrayColumnDesc<double> cdPosCol("MPosColumn", "MPosition column");
 //    td.addColumn(cdPosCol);
 //    ...
 //    // create the TableMeasValueDesc object
@@ -94,7 +94,7 @@ class TableRecord;
 //
 // <thrown>
 //    <li>AipsError if the specified column doesn't exist or it isn't
-// 	an ArrayColumn or its type is not Double.
+// 	an ArrayColumn or its type is not double.
 // </thrown>
 //
 //# <todo asof="$DATE:$">
@@ -109,7 +109,7 @@ public:
   TableMeasValueDesc();
 
   // Construct the MeasValue column descriptor for the given column.
-  // The column must be a column of type Double and should exist in
+  // The column must be a column of type double and should exist in
   // the TableDesc.
   TableMeasValueDesc (const TableDesc&, const String& columnName);
 
@@ -118,7 +118,7 @@ public:
   // <group>
   TableMeasValueDesc (const String& columnName)
     : itsColumn (columnName) {}
-  TableMeasValueDesc (const Char* columnName)
+  TableMeasValueDesc (const char* columnName)
     : itsColumn (columnName) {}
   // </group>
 

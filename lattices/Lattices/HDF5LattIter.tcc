@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T>
 HDF5LattIter<T>::HDF5LattIter (const HDF5Lattice<T>& data,
 			       const LatticeNavigator& nav,
-			       Bool useRef)
+			       bool useRef)
 : LatticeIterInterface<T> (data, nav, useRef),
   itsData (data)
 {
@@ -84,7 +84,7 @@ template<class T>
 void HDF5LattIter<T>::setupTileCache()
 {
   const IPosition& tileShape = itsData.niceCursorShape();
-  uInt cacheSize = itsNavPtr->calcCacheSize (itsData.shape(),
+  uint32_t cacheSize = itsNavPtr->calcCacheSize (itsData.shape(),
                                              tileShape,
                                              0,
                                              tileShape.product());

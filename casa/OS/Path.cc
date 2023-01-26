@@ -46,39 +46,39 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The maximum number of bytes in a pathname is 255 (_POSIX_PATH_MAX)
 // Definition for POSIX systems
 #if defined (_POSIX_PATH_MAX)
-const uInt pathmax_posix = _POSIX_PATH_MAX;
+const uint32_t pathmax_posix = _POSIX_PATH_MAX;
 #else
-const uInt pathmax_posix = 255;
+const uint32_t pathmax_posix = 255;
 #endif
 
 
 // The maximum number of bytes in a pathname is PATH_MAX 
 #if defined (PATH_MAX)
-static uInt pathMax = PATH_MAX;
+static uint32_t pathMax = PATH_MAX;
 #else
-static uInt pathMax = 0;
+static uint32_t pathMax = 0;
 #endif
 
-const uInt PATH_MAX_GUESS = 1024; // if PATH_MAX is indeterminate
+const uint32_t PATH_MAX_GUESS = 1024; // if PATH_MAX is indeterminate
                                   // we're not guaranteed this is adequate. 
 
 // The maximum number of bytes in a filename is 14 (_POSIX_NAME_MAX)
 // Definition for POSIX systems
 #if defined (_POSIX_NAME_MAX)
-const uInt namemax_posix = _POSIX_NAME_MAX;
+const uint32_t namemax_posix = _POSIX_NAME_MAX;
 #else
-const uInt namemax_posix = 14;
+const uint32_t namemax_posix = 14;
 #endif
 
 
 // The maximum number of bytes in a filename is NAME_MAX
 #if defined (NAME_MAX)
-static uInt nameMax = NAME_MAX;
+static uint32_t nameMax = NAME_MAX;
 #else
-static uInt nameMax = 0;
+static uint32_t nameMax = 0;
 #endif
 
-const uInt NAME_MAX_GUESS = 255;  // if NAME_MAX is indeterminate
+const uint32_t NAME_MAX_GUESS = 255;  // if NAME_MAX is indeterminate
                                   // we're not guaranteed this is adequate. '
 
 
@@ -151,78 +151,78 @@ String Path::resolvedName() const
     return String(name);
 }
 
-Bool Path::isValid() const
+bool Path::isValid() const
 {
     // Check if the length of the pathname is not too long
     if (itsOriginalPathName.length() > getMaxPathNameSize()) {
-	return False;
+	return false;
     }
     // Check if pathname contains double slashes
     if (itsOriginalPathName.contains ("//")) {
-	return False;
+	return false;
     }
     // Check if pathname contains non-printables
-    uInt i;
+    uint32_t i;
     for (i=0; i<itsOriginalPathName.length(); i++) {
 	if (isprint (itsOriginalPathName[i]) == 0 ) {
-	    return False;
+	    return false;
 	}
     }
 
     // Check if the length of the pathname is not too long
     if (itsOriginalPathName.length() > getMaxPathNameSize()) {
-	return False;
+	return false;
     }
 
     // Check if filenames are not too long
     String subPathname[30];
     String sep = "/";
-    uInt nw = split (itsOriginalPathName, subPathname, 15, sep);
-    uInt nameSize = getMaxNameSize();
+    uint32_t nw = split (itsOriginalPathName, subPathname, 15, sep);
+    uint32_t nameSize = getMaxNameSize();
     for (i=0; i<nw; i++) {
 	if (subPathname[i].length() > nameSize ) {
-	    return False;
+	    return false;
 	}
     }
-    return True;
+    return true;
 }
 
-Bool Path::isStrictlyPosix() const
+bool Path::isStrictlyPosix() const
 {
     // Check if the length of the pathname is not too long, according POSIX 
     // standard
     if(itsOriginalPathName.length() > pathmax_posix ) {
-	return False;
+	return false;
     }
     // Check if pathname contains double slashes
     if (itsOriginalPathName.contains ("//")) {
-	return False;
+	return false;
     }
     // Check if pathname contains non-printables
-    uInt i;
+    uint32_t i;
     for (i=0; i<itsOriginalPathName.length(); i++) {
 	if (!isprint (itsOriginalPathName[i])) {
-	    return False;
+	    return false;
 	}
     }
 
     // Check if filenames are not too long, according POSIX standard
     String subPathname[30];
     String sep = "/";
-    uInt nw = split(itsOriginalPathName, subPathname, 15, sep);
+    uint32_t nw = split(itsOriginalPathName, subPathname, 15, sep);
     for (i=0; i<nw; ++i) {
 	if (subPathname[i].length() > namemax_posix )
-	    return False;
+	    return false;
     }
-    return True;
+    return true;
 }
 
-uInt Path::length() const
+uint32_t Path::length() const
 {
     return itsOriginalPathName.length();
 }
 
-uInt Path::maxLength() const
+uint32_t Path::maxLength() const
 {
     return getMaxPathNameSize();
 }
@@ -233,11 +233,11 @@ String Path::baseName() const
     String name = expandedName();
     // Search last slash.
     // Get rid of trailing slash.
-    Int len=name.length();
+    int32_t len=name.length();
     if (len > 0  &&  name[len-1] == '/') {
 	len--;
     }
-    Int i=len;
+    int32_t i=len;
     while (--i >= 0  &&  name[i] != '/') {}
     // The base name is the part from the slash till the end.
     return name(i+1, len-i-1);
@@ -248,7 +248,7 @@ String Path::dirName() const
     String name = expandedName();
     // Search last slash.
     // Get rid of trailing slash (except if name consists of a slash only).
-    Int i=name.length();
+    int32_t i=name.length();
     if (i > 1  &&  name[i-1] == '/') {
 	i--;
     }
@@ -265,7 +265,7 @@ String Path::dirName() const
 }
 
 
-uInt Path::getMaxPathNameSize()
+uint32_t Path::getMaxPathNameSize()
 {
     // pathMax is not defined(<0) then pathconf sets pathMax, 
     // if this doesn't work pathMax will get the value of PATH_MAX_GUESS
@@ -279,7 +279,7 @@ uInt Path::getMaxPathNameSize()
     return pathMax;
 }
 
-uInt Path::getMaxNameSize()
+uint32_t Path::getMaxNameSize()
 {
     // nameMax is not defined (<0) then pathconf sets nameMax, 
     // if this doesn't work nameMax will get the value of PATH_MAX_GUESS
@@ -297,17 +297,17 @@ uInt Path::getMaxNameSize()
 String Path::expandName (const String& inString) const
 {
     String tempString (inString);
-    uInt cursor = 0;
-    uInt i = 0;
-    Bool flag = True;
-    uInt count = 0;
-    // Flag is set True if an environment variable is detected. When this 
+    uint32_t cursor = 0;
+    uint32_t i = 0;
+    bool flag = true;
+    uint32_t count = 0;
+    // Flag is set true if an environment variable is detected. When this 
     // happens more then 25 times, there is probably a recursive variable set.
     // In that case an exception will be thrown.
     while (flag && count<25) {  
-	// flag is False, if there is not an environment variable
+	// flag is false, if there is not an environment variable
 	// the name will not be checked again
-	flag = False;     
+	flag = false;     
 	count++;          // count is increased when the string is 
 	cursor = 0;       // walked through 
 	// Replace tilde with the name of the home directory
@@ -322,7 +322,7 @@ String Path::expandName (const String& inString) const
 	    } else {
 		tempString.del ("~",0);
 		getNextName (tempString, cursor);
-		String temp (tempString.before(Int(cursor)));
+		String temp (tempString.before(int32_t(cursor)));
 		// The password file is used to get the home directory 
 		// of "~name"
 		// This cannot be done on the CRAY XT3 CATAMOUNT as it
@@ -332,7 +332,7 @@ String Path::expandName (const String& inString) const
 #else
 		passwd* passWd = getpwnam(temp.chars());
 		if (passWd != 0) {
-		    tempString.del (tempString.before (Int(cursor)));
+		    tempString.del (tempString.before (int32_t(cursor)));
 		    tempString.prepend (passWd->pw_dir);
 		    cursor = 0;
 		}else{
@@ -352,7 +352,7 @@ String Path::expandName (const String& inString) const
             String::size_type dpos = tempString.find ('$', cursor);
             if (dpos != String::npos) {
                 String::size_type last = i;
-		String dName (tempString.at (Int(dpos+1), Int((i-dpos)-1)));
+		String dName (tempString.at (int32_t(dpos+1), int32_t((i-dpos)-1)));
                 if (dName[0] == '{') {
                     String::size_type bracePos = dName.find ('}');
                     if (bracePos != std::string::npos) {
@@ -366,14 +366,14 @@ String Path::expandName (const String& inString) const
                     String name (EnvironmentVariable::get(dName));
                     if (! name.empty()) {
 		        String res (name);
-                        res.prepend (tempString.before(Int(dpos)));
-                        res += tempString.after (Int(last-1));
+                        res.prepend (tempString.before(int32_t(dpos)));
+                        res += tempString.after (int32_t(last-1));
                         // Update the index for the changed part.
-                        i = last + Int(res.size()) - Int(tempString.size());
+                        i = last + int32_t(res.size()) - int32_t(tempString.size());
                         tempString = res;
-                        // flag is set True, so the name will be checked again
+                        // flag is set true, so the name will be checked again
                         // for environment variables
-                        flag = True;
+                        flag = true;
                     }
 		}
 	    }	
@@ -422,11 +422,11 @@ String Path::removeDots (const String& inString) const
 {
     // Split the name at the slashes.
     Vector<string> parts (strToVector (inString, '/'));
-    Vector<uInt> validParts (parts.nelements());
+    Vector<uint32_t> validParts (parts.nelements());
     string dot(".");
     string dotdot("..");
-    uInt nvalid = 0;
-    uInt i;
+    uint32_t nvalid = 0;
+    uint32_t i;
     // Count the number of valid parts and keep their index.
     // Ignore blanks and . parts.
     // A .. part removes an entry from the valid list (if possible).
@@ -444,21 +444,21 @@ String Path::removeDots (const String& inString) const
     // Combine the parts into the output string.
     // Start it with a slash if the input started with a slash.
     String outString;
-    Bool doSlash = (parts(0).empty());
+    bool doSlash = (parts(0).empty());
     for (i=0; i<nvalid; i++) {
         if (doSlash) {
 	    outString += '/';
 	}
 	outString += parts(validParts(i));
-	doSlash = True;
+	doSlash = true;
     }
     return outString;
 }
 
-void Path::getNextName (const String& inString, uInt& count) const
+void Path::getNextName (const String& inString, uint32_t& count) const
 {
     // Sets count on the next slash or on the end of the string
-    Int inx = inString.index ("/", count);
+    int32_t inx = inString.index ("/", count);
     if (inx < 0) {
 	count = inString.length();
     } else {
@@ -474,13 +474,13 @@ String Path::stripDirectory (const String& name, const String& otherName)
     if (dir.lastchar() != '/') {
 	dir += '/';
     }
-    Int leng = dir.length();
+    int32_t leng = dir.length();
     // Convert name to an absolute path name.
     String aName (Path(name).absoluteName());
     // If directory is contained in this name, return name without it.
     // Prepend by ././ indicating full name is removed.
     if (leng > 0) {
-        Int aleng = aName.length();
+        int32_t aleng = aName.length();
 	if (aleng > leng  &&  aName.before(leng) == dir) {
 	    return "././" + aName.from (leng);
 	} else {
@@ -496,7 +496,7 @@ String Path::stripDirectory (const String& name, const String& otherName)
 	    }
 	    leng = dir.length();
 	    if (leng > 0) {
-		if (aName.length() > uInt(leng)  && aName.before(leng) == dir) {
+		if (aName.length() > uint32_t(leng)  && aName.before(leng) == dir) {
 		    // The leading ./ indicates that directory is removed.
 		    return "./" + aName.from (leng);
 		}
@@ -542,11 +542,11 @@ String Path::addDirectory (const String& name, const String& otherName)
     } else {
         // If name ends in /. and if it matches the end of otherName,
         // we have to return the remainder of otherName.
-        Int leng = tName.length();
+        int32_t leng = tName.length();
         if (leng >= 3  &&  tName[leng-2] == '/'  &&  tName[leng-1] == '.') {
 	    leng -= 2;
 	    String oName(otherName);
-	    Int oleng = oName.length();
+	    int32_t oleng = oName.length();
 	    if (oleng >= leng+2
             &&  '/'+tName.before(leng) == oName.from(oleng-leng-1)) {
 	        return oName.before(oleng-leng-1);

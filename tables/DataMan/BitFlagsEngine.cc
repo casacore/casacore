@@ -35,12 +35,12 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  BFEngineMask::BFEngineMask (uInt mask)
+  BFEngineMask::BFEngineMask (uint32_t mask)
     : itsMask (mask)
   {}
 
   BFEngineMask::BFEngineMask (const Array<String>& keys,
-                              uInt defaultMask)
+                              uint32_t defaultMask)
     : itsMaskKeys (keys),
       itsMask     (defaultMask)
   {}
@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (! itsMaskKeys.empty()) {
       if (column.keywordSet().isDefined("FLAGSETS")) {
         const RecordInterface& rec = column.keywordSet().asRecord("FLAGSETS");
-        uInt mask = 0;
+        uint32_t mask = 0;
         Array<String>::const_iterator iterEnd = itsMaskKeys.end();
         for (Array<String>::const_iterator iter=itsMaskKeys.begin();
              iter!=iterEnd; ++iter) {

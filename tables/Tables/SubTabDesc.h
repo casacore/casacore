@@ -204,14 +204,14 @@ protected:
 private:
     TableDesc*  tabDescPtr_p;               //# pointer to Table Description
     String      tabDescTyp_p;               //# type of table description
-    Bool        byName_p;                   //# True = TableDesc name is given
-    Bool        allocSelf_p;                //# True = allocated tdptr itself
-    Bool        shallowCopy_p;              //# True = make shallow copy
+    bool        byName_p;                   //# true = TableDesc name is given
+    bool        allocSelf_p;                //# true = allocated tdptr itself
+    bool        shallowCopy_p;              //# true = make shallow copy
     //#                                         (is only set when !allocSelf)
 
     // Read table description (if passed by name).
-    // If the table description is not found, a False value is returned.
-    Bool readTableDesc();
+    // If the table description is not found, a false value is returned.
+    bool readTableDesc();
 
     // Handle the addition of the subtable description (clear the flag).
     void handleAdd (ColumnDescSet&);

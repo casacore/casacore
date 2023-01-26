@@ -66,7 +66,7 @@ class RecordInterface;
 // Create the object for an epoch measure.
 // TableMeasType mtype (MEpoch());
 // // Get the code for the given string.
-// uInt code = mtype.refCode ("UTC");
+// uint32_t code = mtype.refCode ("UTC");
 // </example>
 
 // <motivation>
@@ -100,19 +100,19 @@ public:
   const String& type() const;
 
   // Translates the refCode for the descriptors measure type.
-  const String& refType (uInt refCode) const;
+  const String& refType (uint32_t refCode) const;
 
   // Returns the reference code for this object given a string.  Throws
   // an exception if the refString is invalid for this object.
-  uInt refCode (const String& refString) const;
+  uint32_t refCode (const String& refString) const;
 
   // Creates a record from the MeasureHolder.
   void toRecord (RecordInterface& rec);
 
 private:
-  Int itsNtypes;			//# number of refcodes/strings
+  int32_t itsNtypes;			//# number of refcodes/strings
   const String* itsStypes;		//# refcode strings
-  const uInt*   itsTyps;		//# refcodes
+  const uint32_t*   itsTyps;		//# refcodes
   MeasureHolder itsMeasHolder;	        //# Holds the measure
 };
 

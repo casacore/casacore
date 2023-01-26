@@ -123,7 +123,7 @@ template <class M> class ScalarMeasColumn;
 //    // create a vector of MEpochs
 //    MEpoch last(Quantity(13.45, "h"), MEpoch::Ref(MEpoch::TAI));
 //    Vector<MEpoch> ev(10);
-//    for (uInt i=0; i<10; i++) {
+//    for (uint32_t i=0; i<10; i++) {
 //        last.set(Quantity(13.45 + i, "h"));
 //        ev(i) = last;
 //    }
@@ -145,9 +145,9 @@ template <class M> class ScalarMeasColumn;
 //    // need a vector to put the MEpochs into
 //    Vector<MEpoch> ew;
 //
-//    // setting the resize parameter to True automatically sets ew to the
+//    // setting the resize parameter to true automatically sets ew to the
 //    // same shape as the array contained in the row
-//    arrayCol.get(0, ew, True);
+//    arrayCol.get(0, ew, true);
 // </srcblock>
 // </example>
 
@@ -192,9 +192,9 @@ public:
   void attach (const Table& tab, const String& columnName);
 
   // Get the Measure array in the specified row.  For get() the supplied
-  // array's shape should match the shape in the row unless resize is True.
+  // array's shape should match the shape in the row unless resize is true.
   // <group name=get>
-  void get (rownr_t rownr, Array<M>& meas, Bool resize = False) const;
+  void get (rownr_t rownr, Array<M>& meas, bool resize = false) const;
   Array<M> operator() (rownr_t rownr) const;
   // </group>
 
@@ -207,7 +207,7 @@ public:
   // it to the given reference.
   // <group>
   Array<M> convert (rownr_t rownr, const MeasRef<M>& measRef) const;
-  Array<M> convert (rownr_t rownr, uInt refCode) const;
+  Array<M> convert (rownr_t rownr, uint32_t refCode) const;
   // </group>
 
   // Get the column's reference.
@@ -225,12 +225,12 @@ public:
   // However, it is possible that part of the table is already
   // written and that the entire measure column is filled in later.
   // In that case the reference, offset, or units can be set by using
-  // a False <src>tableMustBeEmpty</src> argument.
+  // a false <src>tableMustBeEmpty</src> argument.
   // </note>
   // <group>
-  void setDescRefCode (uInt refCode, Bool tableMustBeEmpty=True);
-  void setDescOffset (const Measure& offset, Bool tableMustBeEmpty=True);
-  void setDescUnits (const Vector<Unit>& units, Bool tableMustBeEmpty=True);
+  void setDescRefCode (uint32_t refCode, bool tableMustBeEmpty=true);
+  void setDescOffset (const Measure& offset, bool tableMustBeEmpty=true);
+  void setDescUnits (const Vector<Unit>& units, bool tableMustBeEmpty=true);
   // </group>
 
   // Add a Measure array to the specified row.
@@ -244,10 +244,10 @@ protected:
 
 private:
   //# Column which contains the Measure's actual data.
-  ArrayColumn<Double>* itsDataCol;
+  ArrayColumn<double>* itsDataCol;
   //# Its MeasRef code column when references are variable.
-  ScalarColumn<Int>* itsRefIntCol;
-  ArrayColumn<Int>* itsArrRefIntCol;
+  ScalarColumn<int32_t>* itsRefIntCol;
+  ArrayColumn<int32_t>* itsArrRefIntCol;
   //# Its MeasRef column when references are variable and stored as Strings.
   ScalarColumn<String>* itsRefStrCol;
   ArrayColumn<String>* itsArrRefStrCol;

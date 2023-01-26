@@ -50,7 +50,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Vector<String> parts = stringToVector (name, '.');
     if (sel  &&  parts.size() == 2) {
       // See if xx is a shorthand. If so, use that table.
-      TableParsePair tabPair = sel->tableList().findTable (parts[0], False);
+      TableParsePair tabPair = sel->tableList().findTable (parts[0], false);
       if (! tabPair.table().isNull()) {
         tabInfo = tabPair.getTableInfo();
         name = parts[1];
@@ -67,7 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     try {
       // The axes of reduction functions such as SUMS can be given as a set or as
       // individual values. Turn it into an Array object.
-      uInt axarg = 1;
+      uint32_t axarg = 1;
       switch (ftype) {
       case TableExprFuncNode::arrfractilesFUNC:
       case TableExprFuncNode::runfractileFUNC:
@@ -131,20 +131,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         if (arguments.size() >= axarg) {
           TableExprNodeSet parms;
           // Add first argument(s) to the parms.
-          for (uInt i=0; i<axarg; i++) {
+          for (uint32_t i=0; i<axarg; i++) {
             parms.add (arguments[i]);
           }
           // Now handle the axes arguments.
           // They can be given as a set or as individual scalar values.
-          Bool axesIsArray = False;
+          bool axesIsArray = false;
           if (arguments.size() == axarg) {
             // No axes given. Add default one for transpose, etc..
-            axesIsArray = True;
+            axesIsArray = true;
             if (ftype == TableExprFuncNode::transposeFUNC  ||
                 ftype == TableExprFuncNode::areverseFUNC   ||
                 ftype == TableExprFuncNode::diagonalFUNC) {
               // Add an empty vector if no arguments given.
-              TableExprNodeSetElem arg((TableExprNode(Vector<Int>())));
+              TableExprNodeSetElem arg((TableExprNode(Vector<int32_t>())));
               parms.add (arg);
             }
           } else if (arguments.size() == axarg+1
@@ -153,13 +153,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             const TableExprNodeSetElem& arg = arguments[axarg];
             if (arg.start()->valueType() == TableExprNodeRep::VTArray) {
               parms.add (arg);
-              axesIsArray = True;
+              axesIsArray = true;
             }
           }
           if (!axesIsArray) {
             // Combine all axes in a single set and add to parms.
             TableExprNodeSet axes;
-            for (uInt i=axarg; i<arguments.size(); i++) {
+            for (uint32_t i=axarg; i<arguments.size(); i++) {
               const TableExprNodeSetElem& arg = arguments[i];
               const TENShPtr& rep = arg.start();
               if (rep == 0  ||  !arg.isSingle()
@@ -215,7 +215,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (sel) {
       if (parts.size() > 2) {
         // At least 3 parts; see if the first part is a table shorthand.
-        TableParsePair tabPair = sel->tableList().findTable (parts[0], False);
+        TableParsePair tabPair = sel->tableList().findTable (parts[0], false);
         if (! tabPair.table().isNull()) {
           udf = TableExprNode::newUDFNode (name.substr(parts[0].size() + 1),
                                            arguments, tabPair.getTableInfo(),
@@ -237,8 +237,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprFuncNode::FunctionType TableParseFunc::findFunc
   (const String& name,
-   uInt narguments,
-   const Vector<Int>& ignoreFuncs)
+   uint32_t narguments,
+   const Vector<int32_t>& ignoreFuncs)
   {
     //# Determine the function type.
     //# Use the function name in lower case.
@@ -700,8 +700,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       ftype = TableExprFuncNode::NRFUNC;
     }
     // Functions to be ignored are incorrect.
-    Bool found;
-    linearSearch (found, ignoreFuncs, Int(ftype), ignoreFuncs.size());
+    bool found;
+    linearSearch (found, ignoreFuncs, int32_t(ftype), ignoreFuncs.size());
     if (found  ||  (!ignoreFuncs.empty()  &&
                     ftype >= TableExprFuncNode::FirstAggrFunc)) {
       throw (TableInvExpr ("Function '" + funcName +

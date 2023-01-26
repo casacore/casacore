@@ -37,8 +37,8 @@ class StatisticsAlgorithmFactoryData {
 public:
 
     struct BiweightData {
-        Int maxIter;
-        Double c;
+        int32_t maxIter;
+        double c;
     };
 
     StatisticsAlgorithmFactoryData() = delete;
@@ -52,8 +52,8 @@ public:
     };
 
     struct ChauvenetData {
-        Double zScore;
-        Int maxIter;
+        double zScore;
+        int32_t maxIter;
     };
 
     ~StatisticsAlgorithmFactoryData() {};

@@ -73,8 +73,8 @@ public:
 
     // get the zero-based indices of the specified fractions in a CDF with npts
     // number of good points. The returned map maps fractions to indices.
-    static std::map<Double, uInt64> indicesFromFractions(
-        uInt64 npts, const std::set<Double>& fractions
+    static std::map<double, uint64_t> indicesFromFractions(
+        uint64_t npts, const std::set<double>& fractions
     );
 
     static String toString(STATS stat);

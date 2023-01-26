@@ -42,7 +42,7 @@ CASA_STATD const AccumType BiweightStatistics<CASA_STATP>::FOUR = 4;
 CASA_STATD const AccumType BiweightStatistics<CASA_STATP>::FIVE = 5;
 
 CASA_STATD
-BiweightStatistics<CASA_STATP>::BiweightStatistics(Int maxNiter, Double c)
+BiweightStatistics<CASA_STATP>::BiweightStatistics(int32_t maxNiter, double c)
     : ClassicalStatistics<CASA_STATP>(),
     _c(c), _maxNiter(maxNiter) {
     this->_setUnsupportedStatistics(
@@ -91,8 +91,8 @@ StatisticsAlgorithm<CASA_STATP>* BiweightStatistics<CASA_STATP>::clone() const {
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt
+    CountedPtr<uint64_t>, CountedPtr<AccumType>,
+    CountedPtr<AccumType>, uint32_t, bool, uint32_t
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation of the median"
@@ -101,8 +101,8 @@ AccumType BiweightStatistics<CASA_STATP>::getMedian(
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
-    std::map<Double, AccumType>&, const std::set<Double>&, CountedPtr<uInt64>,
-    CountedPtr<AccumType>, CountedPtr<AccumType>, uInt, Bool, uInt
+    std::map<double, AccumType>&, const std::set<double>&, CountedPtr<uint64_t>,
+    CountedPtr<AccumType>, CountedPtr<AccumType>, uint32_t, bool, uint32_t
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation "
@@ -112,8 +112,8 @@ AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64>, CountedPtr<AccumType>, CountedPtr<AccumType>,
-    uInt, Bool, uInt
+    CountedPtr<uint64_t>, CountedPtr<AccumType>, CountedPtr<AccumType>,
+    uint32_t, bool, uint32_t
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation "
@@ -122,15 +122,15 @@ AccumType BiweightStatistics<CASA_STATP>::getMedianAbsDevMed(
 }
 
 CASA_STATD
-Int BiweightStatistics<CASA_STATP>::getNiter() const {
+int32_t BiweightStatistics<CASA_STATP>::getNiter() const {
     return _niter;
 }
 
 
 CASA_STATD
-std::map<Double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>&, CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt
+std::map<double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(
+    const std::set<double>&, CountedPtr<uint64_t>, CountedPtr<AccumType>,
+    CountedPtr<AccumType>, uint32_t, bool, uint32_t
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation of quantile values"
@@ -138,7 +138,7 @@ std::map<Double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(
 }
 
 CASA_STATD
-std::pair<Int64, Int64> BiweightStatistics<CASA_STATP>::getStatisticIndex(
+std::pair<int64_t, int64_t> BiweightStatistics<CASA_STATP>::getStatisticIndex(
     StatisticsData::STATS
 ) {
     ThrowCc(
@@ -148,7 +148,7 @@ std::pair<Int64, Int64> BiweightStatistics<CASA_STATP>::getStatisticIndex(
 }
 
 CASA_STATD
-void BiweightStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void BiweightStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
     ThrowIf(
         c, "BiweightStatistics does not support calculating "
         "statistics incrementally as data sets are added"
@@ -178,13 +178,13 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4, AccumType& ww_4u2,
     DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
-    uInt64 dataCount,
+    uint64_t dataCount,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
 ) {
     if (chunk.weights) {
-        this->_getStatsData().weighted = True;
+        this->_getStatsData().weighted = true;
         if (chunk.mask) {
-            this->_getStatsData().masked = True;
+            this->_getStatsData().masked = true;
             if (chunk.ranges) {
                 _locationAndScaleSums(
                     sxw2, sw2, sx_M2w4, ww_4u2, dataIter, weightsIter,
@@ -214,7 +214,7 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
         }
     }
     else if (chunk.mask) {
-        this->_getStatsData().masked = True;
+        this->_getStatsData().masked = true;
         // this data set has no weights, but does have a mask
         if (chunk.ranges) {
             _locationAndScaleSums(
@@ -251,15 +251,15 @@ void BiweightStatistics<CASA_STATP>::_computeLocationAndScaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_computeLocationSums(
     AccumType& sxw2, AccumType& sw2, DataIterator dataIter,
-    MaskIterator maskIter, WeightsIterator weightsIter, uInt64 dataCount,
+    MaskIterator maskIter, WeightsIterator weightsIter, uint64_t dataCount,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
 ) {
     if (chunk.weights) {
         // no need to put these in atomic or critical blocks because
-        // they always get set to True here
-        this->_getStatsData().weighted = True;
+        // they always get set to true here
+        this->_getStatsData().weighted = true;
         if (chunk.mask) {
-            this->_getStatsData().masked = True;
+            this->_getStatsData().masked = true;
             if (chunk.ranges) {
                 _locationSums(
                     sxw2, sw2, dataIter, weightsIter, dataCount,
@@ -288,7 +288,7 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
         }
     }
     else if (chunk.mask) {
-        this->_getStatsData().masked = True;
+        this->_getStatsData().masked = true;
         // this data set has no weights, but does have a mask
         if (chunk.ranges) {
             _locationSums(
@@ -324,7 +324,7 @@ void BiweightStatistics<CASA_STATP>::_computeLocationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_computeScaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, DataIterator dataIter,
-    MaskIterator maskIter, WeightsIterator weightsIter, uInt64 dataCount,
+    MaskIterator maskIter, WeightsIterator weightsIter, uint64_t dataCount,
     const typename StatisticsDataset<CASA_STATP>::ChunkData& chunk
 ) const {
     if (chunk.weights) {
@@ -451,27 +451,27 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_doLocation() {
     StatisticsDataset<CASA_STATP>& ds = this->_getDataset();
     ds.initIterators();
-    const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
+    const uint32_t nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsxw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsw2(new AccumType[dim], True);
+    const uint32_t dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
+    PtrHolder<AccumType> tsxw2(new AccumType[dim], true);
+    PtrHolder<AccumType> tsw2(new AccumType[dim], true);
     // initialize the thread-based sums to 0
-    for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+    for (uint32_t i=0; i<nThreadsMax; ++i) {
+        uint32_t idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         tsxw2[idx8] = 0;
         tsw2[idx8] = 0;
     }
-    const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
-    while (True) {
+    const uint32_t& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
+    while (true) {
         const auto& chunk = ds.initLoopVars();
-        uInt nBlocks, nthreads;
-        uInt64 extra;
+        uint32_t nBlocks, nthreads;
+        uint64_t extra;
         std::unique_ptr<DataIterator[]> dataIter;
         std::unique_ptr<MaskIterator[]> maskIter;
         std::unique_ptr<WeightsIterator[]> weightsIter;
-        std::unique_ptr<uInt64[]> offset;
+        std::unique_ptr<uint64_t[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -479,9 +479,9 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nthreads)
 #endif
-        for (uInt i=0; i<nBlocks; ++i) {
-            uInt idx8 = StatisticsUtilities<AccumType>::threadIdx();
-            uInt64 dataCount = chunk.count - offset[idx8] < blockSize
+        for (uint32_t i=0; i<nBlocks; ++i) {
+            uint32_t idx8 = StatisticsUtilities<AccumType>::threadIdx();
+            uint64_t dataCount = chunk.count - offset[idx8] < blockSize
                 ? extra : blockSize;
             _computeLocationSums(
                 tsxw2[idx8], tsw2[idx8], dataIter[idx8], maskIter[idx8],
@@ -492,14 +492,14 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
                 offset[idx8], nthreads
             );
         }
-        if (ds.increment(False)) {
+        if (ds.increment(false)) {
             break;
         }
     }
     AccumType psxw2 = 0;
     AccumType psw2 = 0;
-    for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+    for (uint32_t i=0; i<nThreadsMax; ++i) {
+        uint32_t idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         psxw2 += tsxw2[idx8];
         psw2 += tsw2[idx8];
     }
@@ -510,27 +510,27 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_doScale() {
     StatisticsDataset<CASA_STATP>& ds = this->_getDataset();
     ds.initIterators();
-    const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
+    const uint32_t nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], True);
-    PtrHolder<AccumType> tww_4u2(new AccumType[dim], True);
+    const uint32_t dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
+    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], true);
+    PtrHolder<AccumType> tww_4u2(new AccumType[dim], true);
     // initialize the thread-based sums to 0
-    for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+    for (uint32_t i=0; i<nThreadsMax; ++i) {
+        uint32_t idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         tsx_M2w4[idx8] = 0;
         tww_4u2[idx8] = 0;
     }
-    const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
-    while (True) {
+    const uint32_t& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
+    while (true) {
         const auto& chunk = ds.initLoopVars();
-        uInt nBlocks, nthreads;
-        uInt64 extra;
+        uint32_t nBlocks, nthreads;
+        uint64_t extra;
         std::unique_ptr<DataIterator[]> dataIter;
         std::unique_ptr<MaskIterator[]> maskIter;
         std::unique_ptr<WeightsIterator[]> weightsIter;
-        std::unique_ptr<uInt64[]> offset;
+        std::unique_ptr<uint64_t[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -538,9 +538,9 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nthreads)
 #endif
-        for (uInt i=0; i<nBlocks; ++i) {
-            uInt idx8 = StatisticsUtilities<AccumType>::threadIdx();
-            uInt64 dataCount = chunk.count - offset[idx8] < blockSize
+        for (uint32_t i=0; i<nBlocks; ++i) {
+            uint32_t idx8 = StatisticsUtilities<AccumType>::threadIdx();
+            uint64_t dataCount = chunk.count - offset[idx8] < blockSize
                 ? extra : blockSize;
             _computeScaleSums(
                 tsx_M2w4[idx8], tww_4u2[idx8], dataIter[idx8], maskIter[idx8],
@@ -551,51 +551,51 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
                 offset[idx8], nthreads
             );
         }
-        if (ds.increment(False)) {
+        if (ds.increment(false)) {
             break;
         }
     }
     AccumType psx_M2w4 = 0;
     AccumType pww_4u2 = 0;
-    for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+    for (uint32_t i=0; i<nThreadsMax; ++i) {
+        uint32_t idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         psx_M2w4 += tsx_M2w4[idx8];
         pww_4u2 += tww_4u2[idx8];
     }
     AccumType p = abs(pww_4u2);
     AccumType denomFactor2 = max(AccumType(1), p - 1);
-    _scale = sqrt((Double)_npts * psx_M2w4/(p * denomFactor2));
+    _scale = sqrt((double)_npts * psx_M2w4/(p * denomFactor2));
 }
 
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
     StatisticsDataset<CASA_STATP>& ds = this->_getDataset();
     ds.initIterators();
-    const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
+    const uint32_t nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsxw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], True);
-    PtrHolder<AccumType> tww_4u2(new AccumType[dim], True);
+    const uint32_t dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
+    PtrHolder<AccumType> tsxw2(new AccumType[dim], true);
+    PtrHolder<AccumType> tsw2(new AccumType[dim], true);
+    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], true);
+    PtrHolder<AccumType> tww_4u2(new AccumType[dim], true);
     // initialize the thread-based sums to 0
-    for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+    for (uint32_t i=0; i<nThreadsMax; ++i) {
+        uint32_t idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         tsxw2[idx8] = 0;
         tsw2[idx8] = 0;
         tsx_M2w4[idx8] = 0;
         tww_4u2[idx8] = 0;
     }
-    const uInt& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
-    while (True) {
+    const uint32_t& blockSize = ClassicalStatisticsData::BLOCK_SIZE;
+    while (true) {
         const auto& chunk = ds.initLoopVars();
-        uInt nBlocks, nthreads;
-        uInt64 extra;
+        uint32_t nBlocks, nthreads;
+        uint64_t extra;
         std::unique_ptr<DataIterator[]> dataIter;
         std::unique_ptr<MaskIterator[]> maskIter;
         std::unique_ptr<WeightsIterator[]> weightsIter;
-        std::unique_ptr<uInt64[]> offset;
+        std::unique_ptr<uint64_t[]> offset;
         ds.initThreadVars(
             nBlocks, extra, nthreads, dataIter,
             maskIter, weightsIter, offset, nThreadsMax
@@ -603,9 +603,9 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nthreads)
 #endif
-        for (uInt i=0; i<nBlocks; ++i) {
-            uInt idx8 = StatisticsUtilities<AccumType>::threadIdx();
-            uInt64 dataCount = chunk.count - offset[idx8] < blockSize
+        for (uint32_t i=0; i<nBlocks; ++i) {
+            uint32_t idx8 = StatisticsUtilities<AccumType>::threadIdx();
+            uint64_t dataCount = chunk.count - offset[idx8] < blockSize
                 ? extra : blockSize;
             _computeLocationAndScaleSums(
                 tsxw2[idx8], tsw2[idx8], tsx_M2w4[idx8], tww_4u2[idx8],
@@ -617,7 +617,7 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
                 offset[idx8], nthreads
             );
         }
-        if (ds.increment(False)) {
+        if (ds.increment(false)) {
             break;
         }
     }
@@ -625,8 +625,8 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
     AccumType psw2 = 0;
     AccumType psx_M2w4 = 0;
     AccumType pww_4u2 = 0;
-    for (uInt i=0; i<nThreadsMax; ++i) {
-        uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
+    for (uint32_t i=0; i<nThreadsMax; ++i) {
+        uint32_t idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         psxw2 += tsxw2[idx8];
         psw2 += tsw2[idx8];
         psx_M2w4 += tsx_M2w4[idx8];
@@ -635,7 +635,7 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
     _location = psxw2/psw2;
     AccumType f = abs(pww_4u2);
     AccumType denomFactor2 = max(1.0, (f - 1));
-    _scale = sqrt(((Double)_npts * psx_M2w4)/(f * denomFactor2));
+    _scale = sqrt(((double)_npts * psx_M2w4)/(f * denomFactor2));
 }
 
 CASA_STATD
@@ -669,11 +669,11 @@ StatsData<AccumType> BiweightStatistics<CASA_STATP>::_getStatistics() {
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
-    AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride
+    AccumType& ww_4u2, const DataIterator& dataBegin, uint64_t nr,
+    uint32_t dataStride
 ) const {
     DataIterator datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _locationAndScaleSumsCodeBW
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -685,11 +685,11 @@ void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
-    AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude
+    AccumType& ww_4u2, const DataIterator& dataBegin, uint64_t nr,
+    uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -709,12 +709,12 @@ void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
-    AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    AccumType& ww_4u2, const DataIterator& dataBegin, uint64_t nr,
+    uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _locationAndScaleSumsCodeBW
@@ -728,13 +728,13 @@ void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
-    AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    AccumType& ww_4u2, const DataIterator& dataBegin, uint64_t nr,
+    uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -755,11 +755,11 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
     AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _locationAndScaleSumsCodeBW
@@ -774,12 +774,12 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
     AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -801,14 +801,14 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
     AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -830,13 +830,13 @@ CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
     AccumType& sxw2, AccumType& sw2, AccumType& sx_M2w4,
     AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _locationAndScaleSumsCodeBW
@@ -863,10 +863,10 @@ void BiweightStatistics<CASA_STATP>::_locationAndScaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    uInt64 nr, uInt dataStride
+    uint64_t nr, uint32_t dataStride
 ) const {
     DataIterator datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _locationSumsCodeBW
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -878,10 +878,10 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -900,12 +900,12 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
-    AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+    AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin, uint64_t nr,
+    uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _locationSumsCodeBW
@@ -919,12 +919,12 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+    uint32_t maskStride, const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -944,11 +944,11 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _locationSumsCodeBW
@@ -962,12 +962,12 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -988,14 +988,14 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1016,13 +1016,13 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_locationSums(
     AccumType& sxw2, AccumType& sw2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _locationSumsCodeBW
@@ -1051,10 +1051,10 @@ void BiweightStatistics<CASA_STATP>::_locationSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    uInt64 nr, uInt dataStride
+    uint64_t nr, uint32_t dataStride
 ) const {
     DataIterator datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         _scaleSumsCodeBW
         StatisticsIncrementer<DataIterator, MaskIterator, WeightsIterator>::increment(
@@ -1065,11 +1065,11 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
-    AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uInt64 nr,
-    uInt dataStride, const DataRanges& ranges, Bool isInclude
+    AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin, uint64_t nr,
+    uint32_t dataStride, const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1089,12 +1089,12 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+    uint32_t maskStride
 ) const {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask) {
             _scaleSumsCodeBW
@@ -1108,12 +1108,12 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-    uInt maskStride, const DataRanges& ranges, Bool isInclude
+    uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+    uint32_t maskStride, const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1133,11 +1133,11 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*weight > 0) {
             _scaleSumsCodeBW
@@ -1151,12 +1151,12 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const DataRanges& ranges, Bool isInclude
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1177,14 +1177,14 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride,
-    const DataRanges& ranges, Bool isInclude
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride,
+    const DataRanges& ranges, bool isInclude
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     typename DataRanges::const_iterator beginRange = ranges.begin();
     typename DataRanges::const_iterator endRange = ranges.end();
     while (count < nr) {
@@ -1205,13 +1205,13 @@ void BiweightStatistics<CASA_STATP>::_scaleSums(
 CASA_STATD
 void BiweightStatistics<CASA_STATP>::_scaleSums(
     AccumType& sx_M2w4, AccumType& ww_4u2, const DataIterator& dataBegin,
-    const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-    const MaskIterator& maskBegin, uInt maskStride
+    const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+    const MaskIterator& maskBegin, uint32_t maskStride
 ) const {
     DataIterator datum = dataBegin;
     WeightsIterator weight = weightsBegin;
     MaskIterator mask = maskBegin;
-    uInt64 count = 0;
+    uint64_t count = 0;
     while (count < nr) {
         if (*mask && *weight > 0) {
             _scaleSumsCodeBW

@@ -72,12 +72,12 @@ void makeMS()
   }
 }
 
-void doSel (const MeasurementSet& ms, const String& command, bool showBL=False)
+void doSel (const MeasurementSet& ms, const String& command, bool showBL=false)
 {
   cout << command << endl;
-  Vector<Int> selectedAnts1;
-  Vector<Int> selectedAnts2;
-  Matrix<Int> selectedBaselines;
+  Vector<int32_t> selectedAnts1;
+  Vector<int32_t> selectedAnts2;
+  Matrix<int32_t> selectedBaselines;
   msAntennaGramParseCommand (&ms, command,
                              selectedAnts1, selectedAnts2, selectedBaselines);
   cout << "  " << selectedAnts1 << ' ' << selectedAnts2 << endl;
@@ -101,20 +101,20 @@ void selMS()
   doSel (ms, "RT1&A1.*");
   doSel (ms, "1:4& 1:5");
   doSel (ms, "'1:4'&'1:5'");
-  doSel (ms, "1,2 & 3,4; 5,6 & 7", True);
+  doSel (ms, "1,2 & 3,4; 5,6 & 7", true);
   doSel (ms, "\\RT1 & RT0");
-  doSel (ms, "/A.*/&", True);
-  doSel (ms, "/A.*/&&", True);
-  doSel (ms, "^A*&&", True);
-  doSel (ms, "^/A.*/&&", True);
-  doSel (ms, "!/A.*/&&", True);
-  doSel (ms, "<3", True);
+  doSel (ms, "/A.*/&", true);
+  doSel (ms, "/A.*/&&", true);
+  doSel (ms, "^A*&&", true);
+  doSel (ms, "^/A.*/&&", true);
+  doSel (ms, "!/A.*/&&", true);
+  doSel (ms, "<3", true);
   doSel (ms, "1~5");
-  doSel (ms, "1m~5m", True);
-  doSel (ms, "1.~5.", True);
-  doSel (ms, "/(.*)R1&\\1R2/", True);
-  doSel (ms, "/(.*).R1&\\1.R2/, /(.:)4&\\15/", True);
-  doSel (ms, "^/(.*).R1&\\1.R2/", True);
+  doSel (ms, "1m~5m", true);
+  doSel (ms, "1.~5.", true);
+  doSel (ms, "/(.*)R1&\\1R2/", true);
+  doSel (ms, "/(.*).R1&\\1.R2/, /(.:)4&\\15/", true);
+  doSel (ms, "^/(.*).R1&\\1.R2/", true);
 }
 
 int main()

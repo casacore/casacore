@@ -115,8 +115,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //	  	return a*b*x; }
   // 	};
   //      // Instantiate the following versions:
-  //	template class f<Double>;
-  //	template class f<SparseDiff<Double> >;
+  //	template class f<double>;
+  //	template class f<SparseDiff<double> >;
   // </srcblock>
   // A call with values will produce the function value:
   // <srcblock>
@@ -124,17 +124,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //	// will produce the value at x=7 for a=2; b=3:
   //	42
   //	// But a call indicating that we want derivatives to a and b:
-  //	cout << f(SparseDiff<Double>(7.0), SparseDiff<Double>(2.0, 0),
-  //		  SparseDiff<Double>(3.0, 1)) << endl;
+  //	cout << f(SparseDiff<double>(7.0), SparseDiff<double>(2.0, 0),
+  //		  SparseDiff<double>(3.0, 1)) << endl;
   //	// will produce the value at x=7 for a=2; b=3:
   //	// and the partial derivatives wrt a and b at x=7:
   //	(42, [21, 14])
   //	// The following will calculate the derivate wrt x:
-  //	cout << f(SparseDiff<Double>(7.0, 0), SparseDiff<Double>(2.0),
-  //		  SparseDiff<Double>(3.0)) << endl;
+  //	cout << f(SparseDiff<double>(7.0, 0), SparseDiff<double>(2.0),
+  //		  SparseDiff<double>(3.0)) << endl;
   //	(42,[6])
   // </srcblock>
-  // Note that in practice constants may be given as Double constants.
+  // Note that in practice constants may be given as double constants.
   // In actual practice, there are a few rules to obey for the structure of
   // the function object if you want to use the function object and its
   // derivatives in least squares fitting procedures in the Fitting
@@ -191,11 +191,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // // value of the function for x=10; y=20; z=30; and for
   // // the derivatives at those points.
   // // Specify the values; and indicate the parameter dependence:
-  // 	SparseDiff<Double> x(10.0, 0); 
-  // 	SparseDiff<Double> y(20.0, 1); 
-  // 	SparseDiff<Double> z(30.0, 2);
+  // 	SparseDiff<double> x(10.0, 0); 
+  // 	SparseDiff<double> y(20.0, 1); 
+  // 	SparseDiff<double> z(30.0, 2);
   // // The result will be:
-  // 	SparseDiff<Double> result = x*y + sin(z);
+  // 	SparseDiff<double> result = x*y + sin(z);
   // 	cout << result.value() << endl;
   // // 199.012
   // 	cout << result.derivatives() << endl;
@@ -205,7 +205,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   // See for an extensive example the demo program dSparseDiff. It is
   // based on the example given above, and shows also the use of second
-  // derivatives (which is just using <src>SparseDiff<SparseDiff<Double> ></src>
+  // derivatives (which is just using <src>SparseDiff<SparseDiff<double> ></src>
   // as template argument). 
   // <srcblock>
   // 	// The function, with fixed parameters a,b:
@@ -218,27 +218,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //	  T b_p;
   //	};
   //	// Call it with different template arguments:
-  //	  Double a0(2), b0(3), x0(7);
-  //	  f<Double> f0; f0.set(a0, b0);
+  //	  double a0(2), b0(3), x0(7);
+  //	  f<double> f0; f0.set(a0, b0);
   //	  cout << "Value:     " << f0(x0) << endl;
   //	
-  //	  SparseDiff<Double> a1(2,0), b1(3,1), x1(7);
-  //	  f<SparseDiff<Double> > f1; f1.set(a1, b1);
+  //	  SparseDiff<double> a1(2,0), b1(3,1), x1(7);
+  //	  f<SparseDiff<double> > f1; f1.set(a1, b1);
   //	  cout << "Diff a,b:   " << f1(x1) << endl;
   //	
-  //	  SparseDiff<Double> a2(2), b2(3), x2(7,0);
-  //	  f<SparseDiff<Double> > f2; f2.set(a2, b2);
+  //	  SparseDiff<double> a2(2), b2(3), x2(7,0);
+  //	  f<SparseDiff<double> > f2; f2.set(a2, b2);
   //	  cout << "Diff x:     " << f2(x2) << endl;
   //	
-  //	  SparseDiff<SparseDiff<Double> > a3(SparseDiff<Double>(2,0),0),
-  //	    b3(SparseDiff<Double>(3,1),1), x3(SparseDiff<Double>(7));
-  //	  f<SparseDiff<SparseDiff<Double> > > f3; f3.set(a3, b3);
+  //	  SparseDiff<SparseDiff<double> > a3(SparseDiff<double>(2,0),0),
+  //	    b3(SparseDiff<double>(3,1),1), x3(SparseDiff<double>(7));
+  //	  f<SparseDiff<SparseDiff<double> > > f3; f3.set(a3, b3);
   //	  cout << "Diff2 a,b:  " << f3(x3) << endl;
   //	
-  //	  SparseDiff<SparseDiff<Double> > a4(SparseDiff<Double>(2)),
-  //	    b4(SparseDiff<Double>(3)),
-  //	    x4(SparseDiff<Double>(7,0),0);
-  //	  f<SparseDiff<SparseDiff<Double> > > f4; f4.set(a4, b4);
+  //	  SparseDiff<SparseDiff<double> > a4(SparseDiff<double>(2)),
+  //	    b4(SparseDiff<double>(3)),
+  //	    x4(SparseDiff<double>(7,0),0);
+  //	  f<SparseDiff<SparseDiff<double> > > f4; f4.set(a4, b4);
   //	  cout << "Diff2 x:    " << f4(x4) << endl;
   //
   //    // Result will be:
@@ -249,9 +249,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //    // Diff2 x:   ((504, [72]), [(72, [0])])
   //
   //    // It needed the template instantiations definitions:
-  //	template class f<Double>;
-  //	template class f<SparseDiff<Double> >;
-  //	template class f<SparseDiff<SparseDiff<Double> > >;
+  //	template class f<double>;
+  //	template class f<SparseDiff<double> >;
+  //	template class f<SparseDiff<SparseDiff<double> > >;
   // </srcblock>
   // </example>
   //
@@ -291,11 +291,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // A function f(x0,x1,...,xn,...) with a value of v.  The 
     // nth derivative is one, and all other derivatives are zero. 
-    SparseDiff(const T &v, const uInt n); 
+    SparseDiff(const T &v, const uint32_t n); 
 
     // A function f(x0,x1,...,xn,...) with a value of v.  The 
     // nth derivative is der, and all other derivatives are zero. 
-    SparseDiff(const T &v, const uInt n, const T &der); 
+    SparseDiff(const T &v, const uint32_t n, const T &der); 
 
     // Construct from an AutoDiff
     SparseDiff(const AutoDiff<T> &other);
@@ -310,10 +310,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     SparseDiff<T> &operator=(const T &v);
 
     // Assignment operator.  Add a gradient to variable.
-    SparseDiff<T> &operator=(const pair<uInt, T> &der);
+    SparseDiff<T> &operator=(const pair<uint32_t, T> &der);
 
     // Assignment operator.  Assign gradients to variable.
-    SparseDiff<T> &operator=(const vector<pair<uInt, T> > &der);
+    SparseDiff<T> &operator=(const vector<pair<uint32_t, T> > &der);
 
     // Assign from an Autodiff
     SparseDiff<T> &operator=(const AutoDiff<T> &other);
@@ -336,7 +336,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // </group>
 
     // Convert to an AutoDiff of length <em>n</em>
-    AutoDiff<T> toAutoDiff(uInt n) const;
+    AutoDiff<T> toAutoDiff(uint32_t n) const;
 
     // Returns the pointer to the structure of value and derivatives.
     // <group>
@@ -352,27 +352,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
     // Returns a vector of the derivatives of a SparseDiff
     // <group>
-    vector<pair<uInt, T> > &derivatives() const;
-    void derivatives(vector<pair<uInt, T> > &res) const;
-    const vector<pair<uInt, T> > &grad() const { return rep_p->grad_p; }
-    vector<pair<uInt, T> > &grad() { return rep_p->grad_p; }
+    vector<pair<uint32_t, T> > &derivatives() const;
+    void derivatives(vector<pair<uint32_t, T> > &res) const;
+    const vector<pair<uint32_t, T> > &grad() const { return rep_p->grad_p; }
+    vector<pair<uint32_t, T> > &grad() { return rep_p->grad_p; }
     // </group>
 
     // Returns a specific derivative. No check for a valid which.
     // <group>
-    pair<uInt, T> &derivative(uInt which) { return rep_p->grad_p[which]; }
-    const pair<uInt, T> &derivative(uInt which) const {
+    pair<uint32_t, T> &derivative(uint32_t which) { return rep_p->grad_p[which]; }
+    const pair<uint32_t, T> &derivative(uint32_t which) const {
       return rep_p->grad_p[which]; }
     // </group>
   
     // Return total number of derivatives
-    uInt nDerivatives() const { return rep_p->grad_p.size(); }
+    uint32_t nDerivatives() const { return rep_p->grad_p.size(); }
   
     // Is it a constant, i.e., with zero derivatives?
-    Bool isConstant() const { return rep_p->grad_p.empty(); }
+    bool isConstant() const { return rep_p->grad_p.empty(); }
 
     // Sort criterium
-    static Bool ltSort(pair<uInt, T> &lhs, pair<uInt, T> &rhs);
+    static bool ltSort(pair<uint32_t, T> &lhs, pair<uint32_t, T> &rhs);
 
     // Sort derivative list; cater for doubles and zeroes
     void sort();

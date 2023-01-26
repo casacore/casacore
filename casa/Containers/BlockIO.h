@@ -55,12 +55,12 @@ class AipsIO;
 // <group name='BlockIO'>
 
 //# It appears that (at least for the SUN compiler) the 3rd argument
-//# cannot be an uInt (otherwise the compiler says no match when
+//# cannot be an uint32_t (otherwise the compiler says no match when
 //# called as e.g.  putBlock(ios,blk,10);).
 //#
 //# Note that as of 29-Dec-2008 the size of Block is a size_t, so nr should
 //# also be a size_t. However, because AipsIO cannot handle sizes larger than
-//# an uInt, it makes no sense to make that change.
+//# an uint32_t, it makes no sense to make that change.
 //
 // These functions allow the user to read and write <src>Block</src>s
 // from the <src>AipsIO</src> stream. 
@@ -73,10 +73,10 @@ class AipsIO;
 // <src>AipsIO</src> stream.
 //
 // <group>
-template<class T> void putBlock (AipsIO&, const Block<T>&, Int nr);
+template<class T> void putBlock (AipsIO&, const Block<T>&, int32_t nr);
 
 template<class T> void putBlock (AipsIO& ios, const Block<T>& blk)
-    { putBlock (ios, blk, (Int)(blk.nelements())); }
+    { putBlock (ios, blk, (int32_t)(blk.nelements())); }
 
 template<class T> void getBlock (AipsIO&, Block<T>&);
 // </group>
@@ -89,10 +89,10 @@ template<class T> void getBlock (AipsIO&, Block<T>&);
 // of the <src>Block</src> will be written out.
 //
 // <group>
-template<class T> void showBlock (std::ostream&, const Block<T>&, Int nr);
+template<class T> void showBlock (std::ostream&, const Block<T>&, int32_t nr);
 
 template<class T> void showBlock (std::ostream& ios, const Block<T>& blk)
-    { showBlock (ios, blk, (Int)(blk.nelements())); }
+    { showBlock (ios, blk, (int32_t)(blk.nelements())); }
 // </group>
 
 // These are the standard shift operators for writing an entire
@@ -107,7 +107,7 @@ template<class T> void showBlock (std::ostream& ios, const Block<T>& blk)
 // <group>
 template<class T> AipsIO& operator<< (AipsIO& ios, const Block<T>& blk)
 {
-    putBlock (ios, blk, (Int)(blk.nelements()));
+    putBlock (ios, blk, (int32_t)(blk.nelements()));
     return ios;
 }
  
@@ -119,7 +119,7 @@ template<class T> AipsIO& operator>> (AipsIO& ios, Block<T>& blk)
 
 template<class T> std::ostream& operator<< (std::ostream& ios, const Block<T>& blk)
 {
-    showBlock (ios, blk, (Int)(blk.nelements()));
+    showBlock (ios, blk, (int32_t)(blk.nelements()));
     return ios;
 }
 // </group>
@@ -129,11 +129,11 @@ template<class T> std::ostream& operator<< (std::ostream& ios, const Block<T>& b
 //# Implement the specialization for the void* data type.
 //# This will not do anything at all.
 //# This specialization is needed for StColMirAIO.cc.
-inline void putBlock (AipsIO&, const Block<void*>&, Int)
+inline void putBlock (AipsIO&, const Block<void*>&, int32_t)
 {}
 inline void getBlock (AipsIO&, Block<void*>&)
 {}
-inline void showBlock (AipsIO&, const Block<void*>&, Int)
+inline void showBlock (AipsIO&, const Block<void*>&, int32_t)
 {}
 
 

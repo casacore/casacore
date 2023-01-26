@@ -83,7 +83,7 @@ public:
 
 	// Makes a power logaritmic polynomial with the specified number of coefficients, all set to
 	// zero.
-	explicit PowerLogarithmicPolynomial(uInt n) : PowerLogarithmicPolynomialParam<T>(n) {}
+	explicit PowerLogarithmicPolynomial(uint32_t n) : PowerLogarithmicPolynomialParam<T>(n) {}
 
 	// Make a function with the specified params.
 	PowerLogarithmicPolynomial(const vector<T>& parms) : PowerLogarithmicPolynomialParam<T>(parms) {}
@@ -140,7 +140,7 @@ public:
   // Constructs one dimensional Polynomials.
   // <group>
 	PowerLogarithmicPolynomial_PS() : PowerLogarithmicPolynomialParam<AutoDiff<T> >() {}
-  explicit PowerLogarithmicPolynomial_PS(uInt n) :
+  explicit PowerLogarithmicPolynomial_PS(uint32_t n) :
 		PowerLogarithmicPolynomialParam<AutoDiff<T> >(n) {}
   // </group>
 

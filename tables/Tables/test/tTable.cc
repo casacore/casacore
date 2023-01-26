@@ -62,7 +62,7 @@
 
 
 // Define the callback for handling (scratch) tables.
-void cbFunc (const String& name, Bool isScratch, const String& oldname)
+void cbFunc (const String& name, bool isScratch, const String& oldname)
 {
     String nm1 = name.empty() ? name : Path(name).baseName();
     String nm2 = oldname.empty() ? oldname : Path(oldname).baseName();
@@ -88,13 +88,13 @@ Table::EndianFormat theEndianFormat = Table::BigEndian;
 
 
 // First build a description.
-void a (const StorageOption& stopt, Bool doExcp)
+void a (const StorageOption& stopt, bool doExcp)
 {
     // Build the table description.
     TableDesc td("", "1", TableDesc::Scratch);
     td.comment() = "A test of class Table";
-    td.addColumn (ScalarColumnDesc<Int>("ab","Comment for column ab"));
-    td.addColumn (ScalarColumnDesc<uInt>("ad","comment for ad"));
+    td.addColumn (ScalarColumnDesc<int32_t>("ab","Comment for column ab"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("ad","comment for ad"));
     td.addColumn (ScalarColumnDesc<DComplex>("ag"));
     td.addColumn (ArrayColumnDesc<float>("arr1",IPosition(3,2,3,4),
 					 ColumnDesc::Direct));
@@ -120,7 +120,7 @@ void a (const StorageOption& stopt, Bool doExcp)
 	} 
     }
     newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
-    Table tab(newtabcp, 10, False, Table::LocalEndian);
+    Table tab(newtabcp, 10, false, Table::LocalEndian);
     AlwaysAssertExit (tab.endianFormat() == theEndianFormat);
     tab.tableInfo().setType ("testtype");
     tab.tableInfo().setSubType ("testsubtype");
@@ -129,16 +129,16 @@ void a (const StorageOption& stopt, Bool doExcp)
 
 
     // Determine if columns are stored.
-    uInt i;
+    uint32_t i;
     cout << "stored columns: ";
     for (i=0; i<tab.tableDesc().ncolumn(); i++) {
 	cout << tab.isColumnStored(i);
     }
     cout << endl;
 
-    ScalarColumn<Int> ab1(tab,"ab");
-    ScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<int32_t> ab1(tab,"ab");
+    ScalarColumn<int32_t> ab2(tab,"ab");
+    ScalarColumn<uint32_t> ad(tab,"ad");
     TableColumn ag1(tab,"ag");
     ScalarColumn<DComplex> ag(tab,"ag");
     ArrayColumn<float> arr1(tab,"arr1");
@@ -156,8 +156,8 @@ void a (const StorageOption& stopt, Bool doExcp)
 	arrf += (float)(arrf.nelements());
     }
     ag1.putColumn (ad);
-    Int abval;
-    uInt adval;
+    int32_t abval;
+    uint32_t adval;
     DComplex agval;
     Cube<float> arrval(IPosition(3,2,3,4));
     arrf -= (float)(arrf.nelements()*tab.nrow());
@@ -165,7 +165,7 @@ void a (const StorageOption& stopt, Bool doExcp)
 	ab2.get (i, abval);
 	ad.get (i, adval);
 	ag.get (i, agval);
-	if (abval != Int(i)  ||  adval != i+2  ||  agval != DComplex(i+2)) {
+	if (abval != int32_t(i)  ||  adval != i+2  ||  agval != DComplex(i+2)) {
 	    cout << "error in row " << i << ": " << abval
 		 << ", " << adval << ", " << agval << endl;
 	}
@@ -185,7 +185,7 @@ void a (const StorageOption& stopt, Bool doExcp)
     }
 
     // Add a column.
-    tab.addColumn (ScalarColumnDesc<Int> ("ac"));
+    tab.addColumn (ScalarColumnDesc<int32_t> ("ac"));
     // Add a few columns with a new storage manager.
     TableDesc tempTD ("", "", TableDesc::Scratch);
     tempTD.addColumn (ScalarColumnDesc<float> ("ae"));
@@ -195,7 +195,7 @@ void a (const StorageOption& stopt, Bool doExcp)
     StManAipsIO stmanAdd;
     tab.addColumn (tempTD, stmanAdd);
     tab.tableDesc().show();
-    ScalarColumn<Int> ac (tab,"ac");
+    ScalarColumn<int32_t> ac (tab,"ac");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     for (i=0; i<tab.nrow(); i++) {
@@ -222,7 +222,7 @@ void a (const StorageOption& stopt, Bool doExcp)
 }
 
 
-void b (Bool doExcp)
+void b (bool doExcp)
 {
     // Get the description and #rows of the Table.
     cout << "get layout in static way" << endl;
@@ -255,15 +255,15 @@ void b (Bool doExcp)
     cout << tab.tableInfo().readme() << endl;
     if (doExcp) {
 	try {
-	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
+	    tab.addColumn (ScalarColumnDesc<int32_t>("ab"));
 	} catch (std::exception& x) {
             // table not writable
             cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
     }
-    ScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<Int> ac (tab,"ac");
-    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<int32_t> ab2(tab,"ab");
+    ScalarColumn<int32_t> ac (tab,"ac");
+    ScalarColumn<uint32_t> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     ScalarColumn<DComplex> ag(tab,"ag");
@@ -294,9 +294,9 @@ void b (Bool doExcp)
 	 << arr2.columnDesc().trueDataType() << endl;
     cout << "datatypes arr3 = " << arr3.columnDesc().dataType() << " "
 	 << arr3.columnDesc().trueDataType() << endl;
-    uInt i;
-    Int abval, acval;
-    uInt adval;
+    uint32_t i;
+    int32_t abval, acval;
+    uint32_t adval;
     float aeval;
     String afval;
     DComplex agval;
@@ -318,7 +318,7 @@ void b (Bool doExcp)
 	af.get (i, afval);
 	ag.get (i, agval);
 	sprintf (str, "V%i", i);
-	if (abval != Int(i)  ||  acval != Int(i+1)
+	if (abval != int32_t(i)  ||  acval != int32_t(i+1)
         ||  adval != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)) {
 	    cout << "error in row " << i << ": " << abval
@@ -349,10 +349,10 @@ void b (Bool doExcp)
 	}
 	arrf += (float)(arrf.nelements());
     }
-    Vector<Int> abvec = ab2.getColumn();
+    Vector<int32_t> abvec = ab2.getColumn();
     cout << tab.nrow() << " " << abvec.nelements() << endl;
     for (i=0; i<10; i++) {
-	if (abvec(i) != Int(i)) {
+	if (abvec(i) != int32_t(i)) {
 	    cout << "error in getColumn " << i << ": " << abvec(i) << endl;
 	}
     }
@@ -361,7 +361,7 @@ void b (Bool doExcp)
 	cout << "arr1a not 4-dim" << endl;
     }
     i=0;
-    uInt j0,j1,j2,j3;
+    uint32_t j0,j1,j2,j3;
     for (j3=0; j3<10; j3++)
 	for (j2=0; j2<4; j2++)
 	    for (j1=0; j1<3; j1++)
@@ -400,7 +400,7 @@ void b (Bool doExcp)
     if (sortab2.nrow() != 10) {
 	cout << "sortab2 does not contain 10 rows" << endl;
     }
-    ScalarColumn<uInt> sorad(sortab2, "ad");
+    ScalarColumn<uint32_t> sorad(sortab2, "ad");
     cout << sorad.getColumn() << endl;
     cout << "#columns in sortab2: " << sortab2.tableDesc().ncolumn() << endl;
     cout << "sortab2 type = " << sortab2.tableInfo().type() << endl;
@@ -413,12 +413,12 @@ void b (Bool doExcp)
     sortab2 = sortab2(TableExprNode(), 5);
     AlwaysAssertExit (sortab2.nrow() == 5);
 
-    // Test using a const Bool expression.
+    // Test using a const bool expression.
     Table csortab = sortab(TableExprNode(2) + 3 == 5);
     AlwaysAssertExit (csortab.nrow() == sortab.nrow());
-    csortab = sortab(TableExprNode(False));
+    csortab = sortab(TableExprNode(false));
     AlwaysAssertExit (csortab.nrow() == 0);
-    csortab = sortab(TableExprNode(True), 5);
+    csortab = sortab(TableExprNode(true), 5);
     AlwaysAssertExit (csortab.nrow() == 5);
 
     // Select using an empty set.
@@ -473,7 +473,7 @@ void b (Bool doExcp)
     if (seltab1.nrow() != 4) {
 	cout << "seltab1 does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> sel1ab(seltab1, "ab");
+    ScalarColumn<int32_t> sel1ab(seltab1, "ab");
     cout << sel1ab.getColumn() << endl;
     cout << "#columns in seltab1: " << seltab1.tableDesc().ncolumn() << endl;
 
@@ -486,19 +486,19 @@ void b (Bool doExcp)
     if (seltab2.nrow() != 4) {
 	cout << "seltab2 does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> sel2ab(seltab2, "ab");
+    ScalarColumn<int32_t> sel2ab(seltab2, "ab");
     cout << sel2ab.getColumn() << endl;
     cout << "#columns in seltab2: " << seltab2.tableDesc().ncolumn() << endl;
 
     // Get a subset via a mask.
-    Block<Bool> mask(4,True);
-    mask[0] = False;
-    mask[3] = False;
+    Block<bool> mask(4,true);
+    mask[0] = false;
+    mask[3] = false;
     Table seltab3 = seltab2(mask);
     if (seltab3.nrow() != 2) {
 	cout << "seltab3 does not contain 2 rows" << endl;
     }
-    ScalarColumn<Int> sel3ab(seltab3, "ab");
+    ScalarColumn<int32_t> sel3ab(seltab3, "ab");
     cout << sel3ab.getColumn() << endl;
     cout << "#columns in seltab3: " << seltab3.tableDesc().ncolumn() << endl;
     seltab3.tableDesc().show();
@@ -507,7 +507,7 @@ void b (Bool doExcp)
     if (xortab.nrow() != 6) {
 	cout << "xortab does not contain 6 rows" << endl;
     }
-    ScalarColumn<Int> xorab(xortab, "ab");
+    ScalarColumn<int32_t> xorab(xortab, "ab");
     cout << xorab.getColumn() << endl;
     cout << "#columns in xortab: " << xortab.tableDesc().ncolumn() << endl;
 
@@ -515,7 +515,7 @@ void b (Bool doExcp)
     if (or1tab.nrow() != 8) {
 	cout << "or1tab does not contain 8 rows" << endl;
     }
-    ScalarColumn<Int> or1ab(or1tab, "ab");
+    ScalarColumn<int32_t> or1ab(or1tab, "ab");
     cout << or1ab.getColumn() << endl;
     cout << "#columns in or1tab: " << or1tab.tableDesc().ncolumn() << endl;
 
@@ -523,7 +523,7 @@ void b (Bool doExcp)
     if (or2tab.nrow() != 8) {
 	cout << "or2tab does not contain 8 rows" << endl;
     }
-    ScalarColumn<Int> or2ab(or2tab, "ab");
+    ScalarColumn<int32_t> or2ab(or2tab, "ab");
     cout << or2ab.getColumn() << endl;
     cout << "#columns in or2tab: " << or2tab.tableDesc().ncolumn() << endl;
 
@@ -531,7 +531,7 @@ void b (Bool doExcp)
     if (exprtab.nrow() != 5) {
 	cout << "exprtab does not contain 5 rows" << endl;
     }
-    ScalarColumn<Int> exprab(exprtab, "ab");
+    ScalarColumn<int32_t> exprab(exprtab, "ab");
     cout << exprab.getColumn() << endl;
 
     Table expr2tab = tab(tab.col("af") == "V3"  ||
@@ -539,7 +539,7 @@ void b (Bool doExcp)
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> expr2ab(expr2tab, "ab");
+    ScalarColumn<int32_t> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
 
     // Test persistency of reference tables.
@@ -550,7 +550,7 @@ void b (Bool doExcp)
 	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
 	AlwaysAssertExit (tab.tableDesc().isColumn ("ab"));
 	AlwaysAssertExit (! tab.tableDesc().isColumn ("abnew"));
-	ScalarColumn<Int> abcol(ex1tab, "abnew");
+	ScalarColumn<int32_t> abcol(ex1tab, "abnew");
 	cout << abcol.getColumn() << endl;
 	cout << ">>>" << endl;
 	ex1tab.rename ("tTable_tmp.ex1", Table::New);
@@ -559,10 +559,10 @@ void b (Bool doExcp)
     {
         Table ex1tab ("tTable_tmp.ex1");
 	AlwaysAssertExit (! ex1tab.tableDesc().isColumn ("ab"));
-	ScalarColumn<Int> abcol(ex1tab, "abnew");
+	ScalarColumn<int32_t> abcol(ex1tab, "abnew");
 	Table ex2tab = ex1tab (ex1tab.col("abnew") > 6);
 	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("ab"));
-	ScalarColumn<Int> abcol2(ex2tab, "abnew");
+	ScalarColumn<int32_t> abcol2(ex2tab, "abnew");
 	ex1tab.renameColumn ("abnew1", "abnew");
 	ex2tab.renameColumn ("abnew2", "abnew");
 	AlwaysAssertExit (ex1tab.tableDesc().isColumn ("abnew1"));
@@ -571,18 +571,18 @@ void b (Bool doExcp)
 	AlwaysAssertExit (ex2tab.tableDesc().isColumn ("abnew2"));
 	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("abnew"));
 	AlwaysAssertExit (! ex2tab.tableDesc().isColumn ("abnew1"));
-	ScalarColumn<Int> abcola(ex1tab, "abnew1");
-	ScalarColumn<Int> abcol2a(ex2tab, "abnew2");
+	ScalarColumn<int32_t> abcola(ex1tab, "abnew1");
+	ScalarColumn<int32_t> abcol2a(ex2tab, "abnew2");
     }
 }
 
 //# Test deletion of rows, array of Strings, and some more.
-void c (const StorageOption& stopt, Bool doExcp)
+void c (const StorageOption& stopt, bool doExcp)
 {
     TableDesc td("", "1", TableDesc::Scratch);
-    td.addColumn (ScalarColumnDesc<Int>("ab","Comment for column ab"));
-    td.addColumn (ScalarColumnDesc<Int>("ac"));
-    td.addColumn (ScalarColumnDesc<uInt>("ad","comment for ad"));
+    td.addColumn (ScalarColumnDesc<int32_t>("ab","Comment for column ab"));
+    td.addColumn (ScalarColumnDesc<int32_t>("ac"));
+    td.addColumn (ScalarColumnDesc<uint32_t>("ad","comment for ad"));
     td.addColumn (ScalarColumnDesc<float>("ae"));
     td.addColumn (ScalarColumnDesc<String>("af"));
     td.addColumn (ScalarColumnDesc<DComplex>("ag"));
@@ -632,7 +632,7 @@ void c (const StorageOption& stopt, Bool doExcp)
 	    cout << "Expected exception: " << removeDir(x.what()) << endl;
 	} 
 	try {
-	    tab.addColumn (ScalarColumnDesc<Int>("ab"));
+	    tab.addColumn (ScalarColumnDesc<int32_t>("ab"));
 	} catch (std::exception& x) {
             // column already exists
 	    cout << "Expected exception: " << x.what() << endl;
@@ -642,10 +642,10 @@ void c (const StorageOption& stopt, Bool doExcp)
     // Rename a column. It'll be renamed back later.
     tab.renameColumn ("acnew", "ac");
 
-    ScalarColumn<Int> ab1(tab,"ab");
-    ScalarColumn<Int> ab2(tab,"ab");
-    ScalarColumn<Int> ac (tab,"acnew");
-    ScalarColumn<uInt> ad(tab,"ad");
+    ScalarColumn<int32_t> ab1(tab,"ab");
+    ScalarColumn<int32_t> ab2(tab,"ab");
+    ScalarColumn<int32_t> ac (tab,"acnew");
+    ScalarColumn<uint32_t> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     TableColumn ag1(tab,"ag");
@@ -656,7 +656,7 @@ void c (const StorageOption& stopt, Bool doExcp)
     Cube<float> arrf(IPosition(3,2,3,4));
     Vector<String> vecstr (stringToVector ("0,1,23,4,5,6,7,8,9,100,"
 					   "1,2,34,5,6,7,8,9,0,101"));
-    uInt i;
+    uint32_t i;
     char str[8];
     indgen (arrf);
     for (i=0; i<10; i++) {
@@ -684,7 +684,7 @@ void c (const StorageOption& stopt, Bool doExcp)
     if (expr2tab.nrow() != 4) {
 	cout << "expr2tab does not contain 4 rows" << endl;
     }
-    ScalarColumn<Int> expr2ab(expr2tab, "ab");
+    ScalarColumn<int32_t> expr2ab(expr2tab, "ab");
     cout << expr2ab.getColumn() << endl;
     if (!allEQ (expr2tab.rowNumbers(), expr2tab.rowNumbers(tab))) {
         cout << "error in expr2tab.rowNumbers()" << endl;
@@ -719,15 +719,15 @@ void c (const StorageOption& stopt, Bool doExcp)
     cout << ab2.getColumn() << endl;
 
     //# Check if the values are still okay.
-    Int abval;
-    uInt adval;
+    int32_t abval;
+    uint32_t adval;
     DComplex agval;
     Cube<float> arrval(IPosition(3,2,3,4));
     for (i=0; i<tab.nrow(); i++) {
 	ab2.get (i, abval);
 	ad.get  (i, adval);
 	ag.get  (i, agval);
-	if (Int(adval) != abval+2  ||  agval != DComplex(abval+2)) {
+	if (int32_t(adval) != abval+2  ||  agval != DComplex(abval+2)) {
 	    cout << "after remove error in row " << i << ": " << abval
 		 << ", " << adval << ", " << agval << endl;
 	}
@@ -757,12 +757,12 @@ void d (const StorageOption& stopt)
     {
 	// Build the table description.
 	TableDesc td("", "1", TableDesc::Scratch);
-	td.addColumn (ScalarColumnDesc<Int>("ab","Comment for column ab"));
-	td.addColumn (ScalarColumnDesc<uInt>("ad","comment for ad"));
+	td.addColumn (ScalarColumnDesc<int32_t>("ab","Comment for column ab"));
+	td.addColumn (ScalarColumnDesc<uint32_t>("ad","comment for ad"));
 	td.addColumn (ScalarColumnDesc<Complex>("ag"));
 	td.addColumn (ArrayColumnDesc<String> ("arr1",1,ColumnDesc::Direct));
 	td.addColumn (ArrayColumnDesc<Complex>("arr2",0));
-	td.addColumn (ArrayColumnDesc<Int>    ("arr3",0,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<int32_t>    ("arr3",0,ColumnDesc::Direct));
 	
 	// Now create a new table from the description.
 	SetupNewTable newtab("tTable_tmp.data3", td, Table::New, stopt);
@@ -773,15 +773,15 @@ void d (const StorageOption& stopt)
 	newtab.setShapeColumn ("arr3",IPosition(2,2,2));
 	Table tab(newtab);
 
-	uInt i;
-	ScalarColumn<Int>  ab(tab,"ab");
-	ScalarColumn<uInt> ad(tab,"ad");
+	uint32_t i;
+	ScalarColumn<int32_t>  ab(tab,"ab");
+	ScalarColumn<uint32_t> ad(tab,"ad");
 	TableColumn ag1(tab,"ag");
 	ArrayColumn<String>   arr1(tab,"arr1");
 	ArrayColumn<Complex>  arr2(tab,"arr2");
-	ArrayColumn<Int>      arr3(tab,"arr3");
+	ArrayColumn<int32_t>      arr3(tab,"arr3");
 	Vector<Complex> arrf(IPosition(1,3));
-	Matrix<Int>     arri(IPosition(2,2,2));
+	Matrix<int32_t>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
 	indgen (arrf);
 	indgen (arri);
@@ -793,32 +793,32 @@ void d (const StorageOption& stopt)
 	    arr2.put(i,arrf);
 	    arr3.put(i,arri);
 	    arrf += (Complex)(arrf.nelements());
-	    arri += (Int)(arri.nelements());
+	    arri += (int32_t)(arri.nelements());
 	}
 	ag1.putColumn (ad);
     }
     {
 	Table tab ("tTable_tmp.data3");
-	ScalarColumn<Int>     ab(tab,"ab");
-	ScalarColumn<uInt>    ad(tab,"ad");
+	ScalarColumn<int32_t>     ab(tab,"ab");
+	ScalarColumn<uint32_t>    ad(tab,"ad");
 	ScalarColumn<Complex> ag(tab,"ag");
 	ArrayColumn<String>  arr1(tab,"arr1");
 	ArrayColumn<Complex> arr2(tab,"arr2");
-	ArrayColumn<Int>     arr3(tab,"arr3");
-	Int abval;
-	uInt adval;
+	ArrayColumn<int32_t>     arr3(tab,"arr3");
+	int32_t abval;
+	uint32_t adval;
 	Complex agval;
 	Vector<Complex> arrf(IPosition(1,3));
-	Matrix<Int>     arri(IPosition(2,2,2));
+	Matrix<int32_t>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
 	indgen (arrf);
 	indgen (arri);
-	uInt i;
+	uint32_t i;
 	for (i=0; i<10; i++) {
 	    ab.get (i, abval);
 	    ad.get (i, adval);
 	    ag.get (i, agval);
-	    if (abval != Int(i)  ||  adval != i+2  ||  agval != Complex(i+2)) {
+	    if (abval != int32_t(i)  ||  adval != i+2  ||  agval != Complex(i+2)) {
 		cout << "error in row " << i << ": " << abval
 		    << ", " << adval << ", " << agval << endl;
 	    }
@@ -832,7 +832,7 @@ void d (const StorageOption& stopt)
 		cout << "error in arr3 in row " << i << endl;
 	    }
 	    arrf += (Complex)(arrf.nelements());
-	    arri += (Int)(arri.nelements());
+	    arri += (int32_t)(arri.nelements());
 	}
 
 	// Open the same table read/write.
@@ -841,7 +841,7 @@ void d (const StorageOption& stopt)
 	for (i=0; i<rwtab.tableDesc().ncolumn(); i++) {
 	    AlwaysAssertExit (rwtab.isColumnWritable (i));
 	}
-	ScalarColumn<Int>    rwab(rwtab,"ab");
+	ScalarColumn<int32_t>    rwab(rwtab,"ab");
 	ArrayColumn<Complex> rwarr2(rwtab,"arr2");
 	rwab.put (0,1);
 	rwarr2.put (0,arrf);
@@ -855,17 +855,17 @@ void d (const StorageOption& stopt)
     }
     {
 	Table tab ("tTable_tmp.data3");
-	ScalarColumn<Int>     ab(tab,"ab");
-	ScalarColumn<uInt>    ad(tab,"ad");
+	ScalarColumn<int32_t>     ab(tab,"ab");
+	ScalarColumn<uint32_t>    ad(tab,"ad");
 	ScalarColumn<Complex> ag(tab,"ag");
 	ArrayColumn<String>  arr1(tab,"arr1");
 	ArrayColumn<Complex> arr2(tab,"arr2");
-	ArrayColumn<Int>     arr3(tab,"arr3");
-	Int abval;
-	uInt adval;
+	ArrayColumn<int32_t>     arr3(tab,"arr3");
+	int32_t abval;
+	uint32_t adval;
 	Complex agval;
 	Vector<Complex> arrf(IPosition(1,3));
-	Matrix<Int>     arri(IPosition(2,2,2));
+	Matrix<int32_t>     arri(IPosition(2,2,2));
 	Vector<String>  arrs (stringToVector ("aa,bbb"));
 	indgen (arrf);
 	indgen (arri);
@@ -877,7 +877,7 @@ void d (const StorageOption& stopt)
 	    }
 	    ad.get (i, adval);
 	    ag.get (i, agval);
-	    if (abval != Int(i)  ||  adval != i+2  ||  agval != Complex(i+2)) {
+	    if (abval != int32_t(i)  ||  adval != i+2  ||  agval != Complex(i+2)) {
 		cout << "error in row " << i << ": " << abval
 		    << ", " << adval << ", " << agval << endl;
 	    }
@@ -893,7 +893,7 @@ void d (const StorageOption& stopt)
 		cout << "error in arr3 in row " << i << endl;
 	    }
 	    arrf += (Complex)(arrf.nelements());
-	    arri += (Int)(arri.nelements());
+	    arri += (int32_t)(arri.nelements());
 	}
 	if (!allEQ( arr2(0), arrf2)) {
 	    cout << "error in rereading arr2" << endl;
@@ -918,7 +918,7 @@ int main (int argc,const char*[])
         d ( stopt);
         // Also test with MultiFile (with O_DIRECT if supported).
         cout<<endl<<endl<<"Test with MultiFile:"<<endl<<endl;
-        stopt = StorageOption (StorageOption::MultiFile, 4096, True);
+        stopt = StorageOption (StorageOption::MultiFile, 4096, true);
 	a ( stopt, (argc<2));
 	b ( (argc<2));
 	c ( stopt, (argc<2));

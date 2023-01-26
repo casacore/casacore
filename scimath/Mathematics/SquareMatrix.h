@@ -34,7 +34,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# forward declarations
-template <class T, Int n> class RigidVector;
+template <class T, int32_t n> class RigidVector;
 
 // <summary>
 // Fast Square Matrix class with fixed (templated) size
@@ -65,9 +65,9 @@ template <class T, Int n> class RigidVector;
 // <example>
 // <srcblock>
 // // create two SquareMatrices
-// SquareMatrix<Float,2> sm1(3.0); // a scalar identity matrix
-// Vector<Float> vec(2); vec(0)=2.0; vec(1)=3.0;
-// SquareMatrix<Float,2> sm2(vec); // a diagonal matrix
+// SquareMatrix<float,2> sm1(3.0); // a scalar identity matrix
+// Vector<float> vec(2); vec(0)=2.0; vec(1)=3.0;
+// SquareMatrix<float,2> sm2(vec); // a diagonal matrix
 // // multiply the matrices
 // // Note: A*=B is equivalent to A=A*B where '*' is matrix multiplication
 // sm1*=sm2; // sm1 now diagonal
@@ -101,15 +101,15 @@ template <class T, Int n> class RigidVector;
 //        implemented yet, add on as-needed basis.
 // </todo>
  
-template <class T, Int n> class SquareMatrix {
+template <class T, int32_t n> class SquareMatrix {
     // Friends currently need to be explicit (non templated) type to work.
     friend class RigidVector<T,n>;
     //# friend class SquareMatrix<Complex,n>; // for real()
     //    friend class SquareMatrix<T,n*n>;// Sun native does not accept this
     //    friend class SquareMatrix<Complex,4>; // for directProduct of 2x2
-    // Global friend function for product of Complex matrix and Float 4-vector
+    // Global friend function for product of Complex matrix and float 4-vector
     friend RigidVector<Complex,4> operator*(const SquareMatrix<Complex,4>& m,
-    const RigidVector<Float,4>& v);
+    const RigidVector<float,4>& v);
     // Global friend function to calculate direct product
     friend SquareMatrix<Complex,4>& 
 	directProduct(SquareMatrix<Complex,4>& result,
@@ -144,7 +144,7 @@ public:
 	type_p=General;
 	const T* pa=&a[0][0];
 	T* pa_p=&a_p[0][0];
-	for (Int i=0; i<n*n; i++) *pa_p++=*pa++;
+	for (int32_t i=0; i<n*n; i++) *pa_p++=*pa++;
 	return *this;
     }	
     // Assign a Matrix, creates a general matrix.
@@ -152,7 +152,7 @@ public:
     // Assign a c-style vector, creates a diagonal matrix
     SquareMatrix<T,n>& operator=(const T vec[n]) {
 	type_p=Diagonal;
-	for (Int i=0; i<n; i++) a_p[i][i]=vec[i];
+	for (int32_t i=0; i<n; i++) a_p[i][i]=vec[i];
 	return *this;
     } 
     // Assign a Vector, creates a diagonal matrix
@@ -167,10 +167,10 @@ public:
     // i.e., A*=B; is equivalent with A=A*B where '*' is matrix multiplication.
     SquareMatrix<T,n>& operator*=(const SquareMatrix<T,n>& other);
     // Scalar multiplication
-    SquareMatrix<T,n>& operator*=(Float f);
+    SquareMatrix<T,n>& operator*=(float f);
     // Indexing, only const indexing is allowed. You cannot change the
     // matrix via indexing. No bounds checking.
-    T operator()(Int i, Int j) const { 
+    T operator()(int32_t i, int32_t j) const { 
       switch (type_p) {
       case ScalarId: return (i==j) ? a_p[0][0] : T();
 	break;
@@ -181,7 +181,7 @@ public:
     }
     // Non const indexing, throws exception if you try to change an element
     // which would require a type change of the matrix
-    T& operator()(Int i, Int j) {
+    T& operator()(int32_t i, int32_t j) {
       switch (type_p) {
       case ScalarId: return (i==j) ? a_p[0][0] : throwInvAccess();
 	break;
@@ -201,11 +201,11 @@ public:
     // set the argument result to the real part of the matrix 
     // (and return result by reference to allow use in
     // expressions without creating temporary).
-    //# SquareMatrix<Float,n>& real(SquareMatrix<Float,n>& result) const;
+    //# SquareMatrix<float,n>& real(SquareMatrix<float,n>& result) const;
     // For a <src>SquareMatrix<Complex,n></src>: 
     // return the real part of the matrix.
-    //# SquareMatrix<Float,n> real() const {
-    //# SquareMatrix<Float,n> result;
+    //# SquareMatrix<float,n> real() const {
+    //# SquareMatrix<float,n> result;
     //# return real(result);
     //# }
     // Conjugate the matrix in place(!).
@@ -231,50 +231,50 @@ public:
 private:
     T& throwInvAccess();
     T a_p[n][n];
-    Int type_p;
+    int32_t type_p;
 };
 
 
 //# the following does not compile with Sun native but should...
 //# expanded by hand for types and sizes needed
-//#template<class T, Int n> 
+//#template<class T, int32_t n> 
 //#ostream& operator<<(ostream& os, const SquareMatrix<T,n>& m) {
 //#   return os<<m.matrix();
 //#}
 //#
-//#template<class T, Int n> inline SquareMatrix<T,n> operator+(const SquareMatrix<T,n>& left, 
+//#template<class T, int32_t n> inline SquareMatrix<T,n> operator+(const SquareMatrix<T,n>& left, 
 //#						   const SquareMatrix<T,n>& right) {
 //#    SquareMatrix<T,n> result(left);
 //#    return result+=right;
 //#}
-//#template<class T, Int n> inline SquareMatrix<T,n> operator*(const SquareMatrix<T,n>& left, 
+//#template<class T, int32_t n> inline SquareMatrix<T,n> operator*(const SquareMatrix<T,n>& left, 
 //#						   const SquareMatrix<T,n>& right) 
 //#{
 //#    SquareMatrix<T,n> result(left);
 //#    return result*=right;
 //#}
 //#
-//#template<class T, Int n> inline SquareMatrix<T,n*n> directProduct(const SquareMatrix<T,n>& left, 
+//#template<class T, int32_t n> inline SquareMatrix<T,n*n> directProduct(const SquareMatrix<T,n>& left, 
 //#							 const SquareMatrix<T,n>& right)
 //#{
 //#    SquareMatrix<T,n*n> result;
 //#    return left.directProduct(result,right);
 //#}
 //#
-//#template<class T, Int n> inline SquareMatrix<T,n*n>& 
+//#template<class T, int32_t n> inline SquareMatrix<T,n*n>& 
 //#directProduct(SquareMatrix<T,n*n>& result,
 //#	      const SquareMatrix<T,n>& left, 
 //#	      const SquareMatrix<T,n>& right)
 //#{
 //#    return left.directProduct(result,right);
 //#}
-//#template<class T, Int n> inline SquareMatrix<T,n> conj(
+//#template<class T, int32_t n> inline SquareMatrix<T,n> conj(
 //#    const SquareMatrix<T,n>& m) {
 //#    SquareMatrix<T,n> result(m);
 //#    return result.conj();
 //#}
 //#
-//#template<class T, Int n> inline SquareMatrix<T,n> adjoint(
+//#template<class T, int32_t n> inline SquareMatrix<T,n> adjoint(
 //#    const SquareMatrix<T,n>& m) {
 //#    SquareMatrix<T,n> result(m);
 //#    return result.adjoint();
@@ -306,8 +306,8 @@ SquareMatrix<Complex,4> adjoint(const SquareMatrix<Complex,4>& m);
 // Write SquareMatrix to output, uses Matrix to do the work.
 ostream& operator<<(ostream& os, const SquareMatrix<Complex,2>& m);
 ostream& operator<<(ostream& os, const SquareMatrix<Complex,4>& m);
-ostream& operator<<(ostream& os, const SquareMatrix<Float,2>& m);
-ostream& operator<<(ostream& os, const SquareMatrix<Float,4>& m);
+ostream& operator<<(ostream& os, const SquareMatrix<float,2>& m);
+ostream& operator<<(ostream& os, const SquareMatrix<float,4>& m);
 // </group>
 
 

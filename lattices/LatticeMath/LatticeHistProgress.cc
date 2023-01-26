@@ -51,12 +51,12 @@ void LatticeHistProgress::initDerived()
 // is set by calling LatticeProgress::init which then
 // calls this initDerived function
 // 
-    itsMeter = new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
+    itsMeter = new ProgressMeter(0.0, double(expectedNsteps()), String("Generate Storage Image"),
                                  String("Accumulation Iterations"), String(""), String(""),
-                                 True, max(1,Int(expectedNsteps()/20)));
+                                 true, max(1,int32_t(expectedNsteps()/20)));
 }
 
-void LatticeHistProgress::nstepsDone (uInt nsteps)
+void LatticeHistProgress::nstepsDone (uint32_t nsteps)
 //
 // Update the meter with the number of steps taken so far
 {

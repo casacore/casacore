@@ -33,11 +33,11 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constants
-const Double Aberration::INTV = 0.04;
+const double Aberration::INTV = 0.04;
 
 //# Static data
-uInt Aberration::interval_reg = 0;
-uInt Aberration::usejpl_reg = 0;
+uint32_t Aberration::interval_reg = 0;
+uint32_t Aberration::usejpl_reg = 0;
 
 //# Constructors
 Aberration::Aberration() : method(Aberration::STANDARD), lres(0) {
@@ -74,11 +74,11 @@ void Aberration::init(AberrationTypes type) {
 void Aberration::copy(const Aberration &other) {
     method = other.method;
     checkEpoch = other.checkEpoch;
-    for (Int i=0; i<3; i++) {
+    for (int32_t i=0; i<3; i++) {
 	aval[i] = other.aval[i];
 	dval[i] = other.dval[i];
     }
-    for (Int j=0; j<4; j++) {
+    for (int32_t j=0; j<4; j++) {
 	result[j] = other.result[j];
     }
 }
@@ -88,15 +88,15 @@ Aberration::~Aberration() {}
 
 //# Operators
 // Calculate Aberration 
-const MVPosition &Aberration::operator()(Double epoch) {
+const MVPosition &Aberration::operator()(double epoch) {
     calcAber(epoch);
-    Double dt = epoch - checkEpoch;
-    Double fac = 1;
-    if (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950) {
+    double dt = epoch - checkEpoch;
+    double fac = 1;
+    if (AipsrcValue<bool>::get(Aberration::usejpl_reg) && method != B1950) {
       fac /= MeasTable::Planetary(MeasTable::CAU);
     }
     lres++; lres %= 4;
-    for (Int i=0; i<3; i++) {
+    for (int32_t i=0; i<3; i++) {
       result[lres](i) = fac * (aval[i] + dt*dval[i]);
     }
     return result[lres];
@@ -104,14 +104,14 @@ const MVPosition &Aberration::operator()(Double epoch) {
 
 //# Member functions
 
-const MVPosition &Aberration::derivative(Double epoch) {
+const MVPosition &Aberration::derivative(double epoch) {
     calcAber(epoch);
     lres++; lres %= 4;
-    Double fac = 1;
-    if (AipsrcValue<Bool>::get(Aberration::usejpl_reg) && method != B1950) {
+    double fac = 1;
+    if (AipsrcValue<bool>::get(Aberration::usejpl_reg) && method != B1950) {
       fac /=  MeasTable::Planetary(MeasTable::CAU);
     }
-    for (Int i=0; i<3; i++) {
+    for (int32_t i=0; i<3; i++) {
       result[lres](i) = fac * dval[i];
     }
     return result[lres];
@@ -121,14 +121,14 @@ void Aberration::fill() {
   // Get the interpolation interval
   if (!Aberration::interval_reg) {
     interval_reg = 
-      AipsrcValue<Double>::registerRC(String("measures.aberration.d_interval"),
+      AipsrcValue<double>::registerRC(String("measures.aberration.d_interval"),
 				      Unit("d"), Unit("d"),
 				      Aberration::INTV);
   }
   if (!Aberration::usejpl_reg) {
     usejpl_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"),
-				    False);
+      AipsrcValue<bool>::registerRC(String("measures.aberration.b_usejpl"),
+				    false);
   }
   checkEpoch = 1e30;
 }
@@ -137,10 +137,10 @@ void Aberration::refresh() {
     checkEpoch = 1e30;
 }
 
-void Aberration::calcAber(Double t) {
+void Aberration::calcAber(double t) {
   if (!nearAbs(t, checkEpoch,
-	       AipsrcValue<Double>::get(Aberration::interval_reg)) ||
-      (AipsrcValue<Bool>::get(Aberration::usejpl_reg) &&
+	       AipsrcValue<double>::get(Aberration::interval_reg)) ||
+      (AipsrcValue<bool>::get(Aberration::usejpl_reg) &&
        method != B1950) ) {
     checkEpoch = t;
     switch (method) {
@@ -155,12 +155,12 @@ void Aberration::calcAber(Double t) {
       t = (t - MeasData::MJD2000)/MeasData::JDCEN;
       break;
     }
-    Int i,j;
-    Vector<Double> fa(13), dfa(13);
+    int32_t i,j;
+    Vector<double> fa(13), dfa(13);
     for (i=0; i<3; i++) {
-      aval[i] = dval[i] = Double(0);
+      aval[i] = dval[i] = double(0);
     }
-    Double dtmp, ddtmp, sdtmp, cdtmp;
+    double dtmp, ddtmp, sdtmp, cdtmp;
     switch (method) {
     case B1950:
       {
@@ -168,12 +168,12 @@ void Aberration::calcAber(Double t) {
           fa(i) = MeasTable::aber1950Arg(i)(t);
           dfa(i) = MeasTable::aber1950ArgDeriv(i)(t);
         }
-	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber1950(t, 1e-6);
+	CountedPtr<Matrix<double> > mul = MeasTable::mulAber1950(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
-        const Double* mulAberV = mul->data();
+        const double* mulAberV = mul->data();
 
         for (i=0; i<132; i++) {
-          const Double* mulAberArgV = MeasTable::mulAber1950Arg(i);
+          const double* mulAberArgV = MeasTable::mulAber1950Arg(i);
           dtmp = ddtmp = 0; 
           for (j=0; j<12; j++) {
             dtmp += mulAberArgV[j] * fa(j);
@@ -201,8 +201,8 @@ void Aberration::calcAber(Double t) {
       break;
       
     default:
-      if (AipsrcValue<Bool>::get(Aberration::usejpl_reg)) {
-	Vector<Double> mypl =
+      if (AipsrcValue<bool>::get(Aberration::usejpl_reg)) {
+	Vector<double> mypl =
 	  MeasTable::Planetary(MeasTable::EARTH, checkEpoch);
 	for (i=0; i<3; i++) {
 	  aval[i] = mypl[i + 3];
@@ -213,11 +213,11 @@ void Aberration::calcAber(Double t) {
 	  fa(i) = MeasTable::aberArg(i)(t);
 	  dfa(i) = MeasTable::aberArgDeriv(i)(t);
 	}
-	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber(t, 1e-6);
+	CountedPtr<Matrix<double> > mul = MeasTable::mulAber(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
-        const Double* mulAberV = mul->data();
+        const double* mulAberV = mul->data();
 	for (i=0; i<80; i++) {
-	  const Double* mulAberArgV = MeasTable::mulAberArg(i);
+	  const double* mulAberArgV = MeasTable::mulAberArg(i);
 	  dtmp = ddtmp = 0; 
 	  for (j=0; j<6; j++) {
 	    dtmp  += mulAberArgV[j] * fa[j];
@@ -238,7 +238,7 @@ void Aberration::calcAber(Double t) {
           mulAberV += 12;
 	}
 	for (i=0; i<17; i++) {
-	  const Double* mulAberArgV = MeasTable::mulAberSunArg(i);
+	  const double* mulAberArgV = MeasTable::mulAberSunArg(i);
 
 	  dtmp = ddtmp = 0;
 	  for (j=0; j<7; j++) {
@@ -249,7 +249,7 @@ void Aberration::calcAber(Double t) {
 	  sdtmp = sin(dtmp);
 	  cdtmp = cos(dtmp);
 
-	  const Vector<Double>& mulAberV = MeasTable::mulSunAber(i);
+	  const Vector<double>& mulAberV = MeasTable::mulSunAber(i);
 
 	  aval[0] += mulAberV[0] * sdtmp + mulAberV[1] * cdtmp;
 	  aval[1] += mulAberV[2] * sdtmp + mulAberV[3] * cdtmp;
@@ -259,7 +259,7 @@ void Aberration::calcAber(Double t) {
 	  dval[2] += (mulAberV[4] * cdtmp - mulAberV[5] * sdtmp) * ddtmp;
 	}
 	for (i=0; i<17; i++) {
-	  const Double* mulAberArgV = MeasTable::mulAberEarthArg(i);
+	  const double* mulAberArgV = MeasTable::mulAberEarthArg(i);
 
 	  dtmp = ddtmp = 0;
 	  for (j=0; j<5; j++) {
@@ -270,7 +270,7 @@ void Aberration::calcAber(Double t) {
 	  sdtmp = sin(dtmp);
 	  cdtmp = cos(dtmp);
 	          
-	  const Vector<Double>& mulAberV = MeasTable::mulEarthAber(i);
+	  const Vector<double>& mulAberV = MeasTable::mulEarthAber(i);
 
 	  aval[0] += mulAberV[0] * sdtmp;
 	  aval[1] += mulAberV[1] * cdtmp;

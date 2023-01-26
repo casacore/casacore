@@ -51,9 +51,9 @@ template <class T>
 AipsrcValue<T>::~AipsrcValue() {}
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword) {
+bool AipsrcValue<T>::find(T &value, const String &keyword) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
     istringstream instr(res);
     instr >> value;
@@ -62,19 +62,19 @@ Bool AipsrcValue<T>::find(T &value, const String &keyword) {
 }
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword, 
+bool AipsrcValue<T>::find(T &value, const String &keyword, 
 			  const T &deflt) {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? true : (value = deflt, false));
 }
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value,
+bool AipsrcValue<T>::find(T &value,
 			  const String &keyword,
 			  const Unit &defun, const Unit &resun) {
   String res;
-  Bool x = Aipsrc::find(res, keyword, 0);
+  bool x = Aipsrc::find(res, keyword, 0);
   if (x) {
-    Quantum<Double> qres;
+    Quantum<double> qres;
     istringstream instr(res);
     instr >> qres;
     if (qres.check(UnitVal::NODIM)) qres.setUnit(defun);
@@ -84,50 +84,50 @@ Bool AipsrcValue<T>::find(T &value,
 }
 
 template <class T>
-Bool AipsrcValue<T>::find(T &value, const String &keyword, 
+bool AipsrcValue<T>::find(T &value, const String &keyword, 
 			  const Unit &defun, const Unit &resun,
 			  const T &deflt) {
   return (find(value, keyword, defun, resun) ?
-	  True : (value = deflt, False));
+	  true : (value = deflt, false));
 }
 
 template <class T>
-uInt AipsrcValue<T>::registerRC(const String &keyword,
+uint32_t AipsrcValue<T>::registerRC(const String &keyword,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, deflt);
   return n;
 }
 
 template <class T>
-uInt AipsrcValue<T>::registerRC(const String &keyword,
+uint32_t AipsrcValue<T>::registerRC(const String &keyword,
 				const Unit &defun, const Unit &resun,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
+  uint32_t n = Aipsrc::registerRC(keyword, myp_p.ntlst);
   myp_p.tlst.resize(n);
   find ((myp_p.tlst)[n-1], keyword, defun, resun, deflt);
   return n;
 }
 
 template <class T>
-const T &AipsrcValue<T>::get(uInt keyword) {
+const T &AipsrcValue<T>::get(uint32_t keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   return (myp_p.tlst)[keyword-1];
 }
 
 template <class T>
-void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
+void AipsrcValue<T>::set(uint32_t keyword, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
   (myp_p.tlst)[keyword-1] = deflt;
 }
 
 template <class T>
-void AipsrcValue<T>::save(uInt keyword) {
+void AipsrcValue<T>::save(uint32_t keyword) {
   ostringstream oss;
   {
     std::lock_guard<std::mutex> lock(theirMutex);

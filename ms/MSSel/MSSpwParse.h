@@ -96,17 +96,17 @@ public:
 	      const TableExprNode& columnAsTEN);
   ~MSSpwParse() {columnAsTEN_p=TableExprNode();};
 
-  const TableExprNode *selectSpwIdsFromIDList(const Vector<Int>& spwIds, 
-					      const Bool addTen=True,
-					      const Bool addIDs=True);
-  const TableExprNode *selectSpwIdsFromFreqList(const Vector<Float>& spwIds,
-						const Float factor);
-  void selectChannelsFromIDList(Vector<Int>& spwIds,
-                                Vector<Int>& chanIDList,
-                                Int nFSpec);
+  const TableExprNode *selectSpwIdsFromIDList(const Vector<int32_t>& spwIds, 
+					      const bool addTen=true,
+					      const bool addIDs=true);
+  const TableExprNode *selectSpwIdsFromFreqList(const Vector<float>& spwIds,
+						const float factor);
+  void selectChannelsFromIDList(Vector<int32_t>& spwIds,
+                                Vector<int32_t>& chanIDList,
+                                int32_t nFSpec);
 
-  void selectChannelsFromDefaultList(Vector<Int>& spwIds,
-                                     Vector<Int>& chanDefaultList);
+  void selectChannelsFromDefaultList(Vector<int32_t>& spwIds,
+                                     Vector<int32_t>& chanDefaultList);
   const TableExprNode* endOfCeremony(const TableExprNode& ten);
 
   //    const TableExprNode *selectSpwOrSource(const String& fieldName);
@@ -115,9 +115,9 @@ public:
   static const TableExprNode* node();
   static MSSpwParse* thisMSSParser;
   static CountedPtr<MSSelectionErrorHandler> thisMSSpwErrorHandler;
-  static Vector<Int> selectedDDIDs() {return ddidList;}
-  static Vector<Int> selectedIDs() {return idList;}
-  static Matrix<Int> selectedChanIDs() {return chanList;}
+  static Vector<int32_t> selectedDDIDs() {return ddidList;}
+  static Vector<int32_t> selectedIDs() {return idList;}
+  static Matrix<int32_t> selectedChanIDs() {return chanList;}
   static void reset() {idList.resize(0);chanList.resize(0,0);ddidList.resize(0);};
   static void cleanupNode() {if (node_p) delete node_p;node_p=0x0;}
   static void cleanupErrorHandler() {thisMSSpwErrorHandler.reset();}
@@ -126,8 +126,8 @@ public:
   MSSpectralWindow& subTable() {return spwSubTable_p;}
 private:
   static TableExprNode* node_p;
-  static Vector<Int> idList, ddidList;
-  static Matrix<Int> chanList;
+  static Vector<int32_t> idList, ddidList;
+  static Matrix<int32_t> chanList;
   MSSpectralWindow spwSubTable_p;
   MSDataDescription ddSubTable_p;
   static TableExprNode columnAsTEN_p;

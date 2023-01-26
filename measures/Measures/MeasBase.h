@@ -81,7 +81,7 @@ public:
   // <em>MeasRef</em> can be replaced with simple <src>Measure::TYPE</src>
   // where no offsets or frames are needed in the reference. For reasons
   // of compiler limitations the formal arguments had to be specified as
-  // <em>uInt</em> rather than the Measure enums that should be used as actual 
+  // <em>uint32_t</em> rather than the Measure enums that should be used as actual 
   // arguments.</note>
   // Default constructor
   MeasBase();
@@ -92,12 +92,12 @@ public:
   // Create from data and reference
   // <group>
   MeasBase(const Mv &dt, const Mr &rf);
-  MeasBase(const Mv &dt, uInt rf);
+  MeasBase(const Mv &dt, uint32_t rf);
   MeasBase(const Quantity &dt, const Mr &rf);
-  MeasBase(const Quantity &dt, uInt rf);
+  MeasBase(const Quantity &dt, uint32_t rf);
   MeasBase(const Measure *dt);
   MeasBase(const Mr &rf);
-  MeasBase(const uInt rf);
+  MeasBase(const uint32_t rf);
   // </group>
   
   //# Destructor
@@ -107,7 +107,7 @@ public:
   
   //# General Member Functions
   // Check the type of derived entity
-  virtual Bool areYou(const String &tp) const;
+  virtual bool areYou(const String &tp) const;
   // Assert that we are the correct type
   // <thrown>
   //   <li> AipsError if wrong Measure
@@ -121,7 +121,7 @@ public:
   void set(const Mv &dt, const Mr &rf);
   void set(const Unit &inunit);
   virtual void set(const MeasValue &dt);
-  virtual Bool putValue(const Vector<Quantum<Double> > &in);
+  virtual bool putValue(const Vector<Quantum<double> > &in);
   // </group>
   
   // Get reference

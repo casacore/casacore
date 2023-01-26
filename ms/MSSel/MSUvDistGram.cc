@@ -71,17 +71,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSUvDistGram = 0;
-static Int                   posMSUvDistGram = 0;
+static int32_t                   posMSUvDistGram = 0;
 
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
 int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command,
-			      Matrix<Double>& selectedUVRange, Vector<Bool>& units) 
+			      Matrix<double>& selectedUVRange, Vector<bool>& units) 
 {
   try 
     {
-      Int ret;
+      int32_t ret;
       MSUvDistGramrestart (MSUvDistGramin);
       yy_start = 1;
       strpMSUvDistGram = command.chars();     // get pointer to command string
@@ -106,7 +106,7 @@ int msUvDistGramParseCommand (const MeasurementSet* ms, const String& command)
 {
   try 
     {
-      Int ret;
+      int32_t ret;
       MSUvDistGramrestart (MSUvDistGramin);
       yy_start = 1;
       strpMSUvDistGram = command.chars();     // get pointer to command string
@@ -136,7 +136,7 @@ void msUvDistGramParseDeleteNode()
 }
 
 //# Give the string position.
-Int& msUvDistGramPosition()
+int32_t& msUvDistGramPosition()
 {
     return posMSUvDistGram;
 }

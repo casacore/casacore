@@ -65,16 +65,16 @@ public:
     // A pair of integers for each correlation product specifying the receptors
     // from which the signal originated. E.g., (0,1) = receptor 0 on feed1 and
     // receptor 1 on feed2. This is unused for I,Q,U,V data.<BR>
-    // Int(2, NUM_CORR)
+    // int32_t(2, NUM_CORR)
     CORR_PRODUCT,
     // The polarization type for each correlation product, as a Stokes enum. <BR>
-    // Int(NUM_CORR)
+    // int32_t(NUM_CORR)
     CORR_TYPE,
     // Row flag <BR>
-    // Bool
+    // bool
     FLAG_ROW,
     // Number of correlations. <BR>
-    // Int
+    // int32_t
     NUM_CORR,
     // Number of required columns <BR>
     NUMBER_REQUIRED_COLUMNS=NUM_CORR,

@@ -66,7 +66,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
     std::vector<Table> getNodeTables (TableExprNodeRep* node,
-                                      Bool properMain)
+                                      bool properMain)
     {
       std::vector<TableExprNodeRep*> allNodes;
       node->flattenTree (allNodes);
@@ -97,11 +97,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     rownr_t getCheckNRow (const std::vector<Table>& tables)
     {
       rownr_t nrow = 0;
-      Bool first = True;
+      bool first = true;
       for (const Table& tab : tables) {
         if (first) {
           nrow = tab.nrow();
-          first = False;
+          first = false;
         } else {
           if (tab.nrow() != nrow) {
             throw TableInvExpr("Table " + tab.tableName() + " has " +

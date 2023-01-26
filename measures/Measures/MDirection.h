@@ -264,10 +264,10 @@ public:
 	       const MDirection::Ref &rf);
     MDirection(const Quantity &dt, const Quantity &dt1, 
 	       MDirection::Types rf);
-    MDirection(const Quantum<Vector<Double> > &dt);
-    MDirection(const Quantum<Vector<Double> > &dt, 
+    MDirection(const Quantum<Vector<double> > &dt);
+    MDirection(const Quantum<Vector<double> > &dt, 
 	       const MDirection::Ref &rf);
-    MDirection(const Quantum<Vector<Double> > &dt, 
+    MDirection(const Quantum<Vector<double> > &dt, 
 	       MDirection::Types rf);
     MDirection(const Measure *dt);
     MDirection(const MeasValue *dt);
@@ -294,37 +294,37 @@ public:
 // Assert you are a direction
     static void assure(const Measure &in);
 // Tell me the global type (like GRADEC) for tp (tp like MDirection::J2000)
-  static MDirection::GlobalTypes globalType(uInt tp);
-// Translate reference code tp. The uInt version has a check for valid codes
+  static MDirection::GlobalTypes globalType(uint32_t tp);
+// Translate reference code tp. The uint32_t version has a check for valid codes
   // (i.e. it is a safe cast).
   // <thrown>
-  //   <li> AipsError in the uInt interface if illegal code given
+  //   <li> AipsError in the uint32_t interface if illegal code given
   // </thrown>
   // <group>
-  static MDirection::Types castType(uInt tp);
+  static MDirection::Types castType(uint32_t tp);
   static const String &showType(MDirection::Types tp);
-  static const String &showType(uInt tp);
+  static const String &showType(uint32_t tp);
   // </group>
 // Translate string to reference code
 // <group>
-  static Bool getType(MDirection::Types &tp, const String &in);
-  Bool giveMe(MDirection::Ref &mr, const String &in);
+  static bool getType(MDirection::Types &tp, const String &in);
+  bool giveMe(MDirection::Ref &mr, const String &in);
 // </group>
-  // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in);
-  // Set the reference type to the specified String. False if illegal
+  // Set the offset in the reference (false if non-matching Measure)
+  virtual bool setOffset(const Measure &in);
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in);
+  virtual bool setRefString(const String &in);
   // Get the default reference type
   virtual const String &getDefaultType() const;
   // Get a list of all known reference codes. nall returns the number in list,
   // nextra the number of specials (like planets) that should be at 
   // end of list). typ returns the list of corresponding types.
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
-  static const String* allMyTypes(Int &nall, Int &nextra,
-                                  const uInt *&typ);
+  virtual const String* allTypes(int32_t &nall, int32_t &nextra,
+                                 const uint32_t *&typ) const;
+  static const String* allMyTypes(int32_t &nall, int32_t &nextra,
+                                  const uint32_t *&typ);
   // </group>
   // Check if all internal tables of types (both enum and String) are 
   // complete and correct. This function is called automatically if and when
@@ -339,36 +339,36 @@ public:
   // Get the reference type (for records, including codes like R_)
   virtual String getRefString() const;
   // Tell me if you are a pure model (e.g. a planet)
-  virtual Bool isModel() const;
+  virtual bool isModel() const;
 
   // Get Measure data
   // <group>
-  Quantum<Vector<Double> > getAngle() const;
-  Quantum<Vector<Double> > getAngle(const Unit &inunit) const;
+  Quantum<Vector<double> > getAngle() const;
+  Quantum<Vector<double> > getAngle(const Unit &inunit) const;
   // </group>
-  // Shift the direction in longitude (radians if Double) and/or latitude.
-  // If the trueAngle switch is True, the longitude shift will be in
+  // Shift the direction in longitude (radians if double) and/or latitude.
+  // If the trueAngle switch is true, the longitude shift will be in
   // angular units perpendicular to the direction to pole, along a great
   // circle. See <linkto class=MVDirection>MVDirection</linkto>
   // for more details.
   // <group>
-  void shift(const Quantum<Double> &lng,
-	     const Quantum<Double> &lat, Bool trueAngle=False);
-  void shift(Double lng, Double lat, Bool trueAngle=False);
-  void shiftLongitude(const Quantity &lng, Bool trueAngle=False);
-  void shiftLongitude(Double lng, Bool trueAngle=False);
-  void shiftLatitude(const Quantum<Double> &lat, Bool trueAngle=False);
-  void shiftLatitude(Double lat, Bool trueAngle=False);
-  void shift(const MVDirection &shft, Bool trueAngle=False);
+  void shift(const Quantum<double> &lng,
+	     const Quantum<double> &lat, bool trueAngle=false);
+  void shift(double lng, double lat, bool trueAngle=false);
+  void shiftLongitude(const Quantity &lng, bool trueAngle=false);
+  void shiftLongitude(double lng, bool trueAngle=false);
+  void shiftLatitude(const Quantum<double> &lat, bool trueAngle=false);
+  void shiftLatitude(double lat, bool trueAngle=false);
+  void shift(const MVDirection &shft, bool trueAngle=false);
   // </group>
   // Shift over an angle off in the direction pa. pa is measured from North,
   // in the direction of increasing longitude.
   // See <linkto class=MVDirection>MVDirection</linkto>
   // for implementation.
   // <group>
-  void shiftAngle(const Quantum<Double> &off,
-		  const Quantum<Double> &pa);
-  void shiftAngle(Double off, Double pa);
+  void shiftAngle(const Quantum<double> &off,
+		  const Quantum<double> &pa);
+  void shiftAngle(double off, double pa);
   // </group>
 
 // Make a copy

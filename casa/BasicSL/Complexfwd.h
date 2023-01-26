@@ -44,8 +44,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-typedef std::complex<Float>  Complex;
-typedef std::complex<Double> DComplex;
+typedef std::complex<float>  Complex;
+typedef std::complex<double> DComplex;
 
 class IComplex;
 // </group>

@@ -116,7 +116,7 @@ class Unit;
 // column with units "deg":
 //
 // <srcblock>
-//      ScalarColumnDesc<Double> scd("QuantumCol");
+//      ScalarColumnDesc<double> scd("QuantumCol");
 //      ...
 //      // defines QuantumCol as a Quantum column with fix Units "deg"
 //      TableQuantumDesc tqd(td, "QuantumCol", Unit("deg"));
@@ -135,7 +135,7 @@ class Unit;
 //
 // <srcblock>
 //      // the quanta values stored here
-//      ScalarColumnDesc<Double> scd("QuantumCol");
+//      ScalarColumnDesc<double> scd("QuantumCol");
 //      // a String column for the Units
 //      ScalarColumnDesc<String> scd("QuantumUnitCol");
 //      ...
@@ -157,7 +157,7 @@ class Unit;
 //
 // <srcblock>
 //      // for the Quanta values
-//      ArrayColumnDesc<Double> scd("ArrayQuantumCol");
+//      ArrayColumnDesc<double> scd("ArrayQuantumCol");
 //      // per row storage of units
 //      ScalarColumnDesc<String> scd("QuantumUnitCol");
 //      ...
@@ -168,7 +168,7 @@ class Unit;
 //
 // <srcblock>
 //      // for Quanta values
-//      ArrayColumnDesc<Double> scd("ArrayQuantumCol");
+//      ArrayColumnDesc<double> scd("ArrayQuantumCol");
 //      // per element storage of Units
 //      ArrayColumnDesc<String> scd("ArrayUnitCol");
 //      ...
@@ -197,7 +197,7 @@ class Unit;
 //     ScalarColumnDesc<Complex> tcdQCplx("Quant", "A quantum complex column");
 //
 //     // For a Quantum array column an ArrayColumnDesc is first defined
-//     ArrayColumnDesc<Double> tcdQDoub("QuantArray", "A quantum array col");
+//     ArrayColumnDesc<double> tcdQDoub("QuantArray", "A quantum array col");
 //
 //     // The QuantumArray column has variable units.  A string is needed
 //     // for these.  This could be done in two ways depending on what is
@@ -286,13 +286,13 @@ public:
   // Constructs a Quantum column descriptor with variable units stored in
   // unitCol.  Both the quantum and unit column should exist in the
   // TableDesc.
-  //# Note that the Char* constructor is needed, otherwise the compiler
+  //# Note that the char* constructor is needed, otherwise the compiler
   //# cannot choose between String and Unit.
   //<group>
   TableQuantumDesc (const TableDesc& td, const String& column,
 		    const String& unitCol);
   TableQuantumDesc (const TableDesc& td, const String& column,
-		    const Char* unitCol);
+		    const char* unitCol);
   //</group>
 
   // Copy constructor (copy semantics).
@@ -313,8 +313,8 @@ public:
   const Vector<String>& getUnits() const
     { return itsUnitsName; }
 
-  // Returns True if descriptor set for variable units (one per row)
-  Bool isUnitVariable() const
+  // Returns true if descriptor set for variable units (one per row)
+  bool isUnitVariable() const
     { return (! itsUnitsColName.empty()); }
 
   // Returns the name of the quantum column.
@@ -333,7 +333,7 @@ public:
   // </group>
 
   // Does this column contain table quanta?
-  static Bool hasQuanta (const TableColumn& column);
+  static bool hasQuanta (const TableColumn& column);
 
 private:
   // Name of column which stores the Quantum's values.

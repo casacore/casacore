@@ -50,19 +50,19 @@ int main() {
 			cout << "Cannot find image so tests cannot be run" << endl;
 			return 0;
 		}
- 		casacore::PagedImage<Float> im(imageName);
-		RO_LatticeIterator<Float> imIter(im);
+ 		casacore::PagedImage<float> im(imageName);
+		RO_LatticeIterator<float> imIter(im);
 		/*
 		{
-			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
-				= new LatticeStatsDataProvider<Double, Float>(im);
-			ClassicalStatistics<Double, const Float*> cs;
+			CountedPtr<StatsDataProvider<double, const float*, const bool* > > dataProvider
+				= new LatticeStatsDataProvider<double, float>(im);
+			ClassicalStatistics<double, const float*> cs;
 			cs.setDataProvider(dataProvider);
-			std::set<Double> quartiles;
+			std::set<double> quartiles;
 			quartiles.insert(0.25);
 			quartiles.insert(0.75);
-			std::map<Double, Double> quantileToValue;
-			Double median = cs.getMedianAndQuantiles(
+			std::map<double, double> quantileToValue;
+			double median = cs.getMedianAndQuantiles(
 				quantileToValue, quartiles
 			);
 		}
@@ -71,11 +71,11 @@ int main() {
 		{
 			cout << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(True);
-			Bool deleteIt = False;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(true);
+			bool deleteIt = false;
 			while (! imIter.atEnd()) {
-				const Float* begin = imIter.cursor().getStorage(deleteIt);
+				const float* begin = imIter.cursor().getStorage(deleteIt);
 				cs.addData(begin, imIter.cursor().size());
 				++imIter;
 			}
@@ -87,15 +87,15 @@ int main() {
 		{
 			cout << endl << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(True);
-			Bool deleteIt = False;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(true);
+			bool deleteIt = false;
 			while (! imIter.atEnd()) {
-				const Float* begin = imIter.cursor().getStorage(deleteIt);
+				const float* begin = imIter.cursor().getStorage(deleteIt);
 				cs.addData(begin, imIter.cursor().size());
 				++imIter;
 			}
-			Double mymin, mymax;
+			double mymin, mymax;
 			cs.getMinMax(mymin, mymax);
 			cout << "min " << mymin << " max " << mymax << endl;
 		}
@@ -104,16 +104,16 @@ int main() {
 			// no longer valid when getMinMax is called
 			cout << endl << "This should not produce the desired results." << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
 			while (! imIter.atEnd()) {
-				const Float* begin = imIter.cursor().copy().getStorage(deleteIt);
+				const float* begin = imIter.cursor().copy().getStorage(deleteIt);
 				cs.addData(begin, imIter.cursor().size());
 				++imIter;
 			}
 
-			Double mymin, mymax;
+			double mymin, mymax;
 			cs.getMinMax(mymin, mymax);
 			cout << "min " << mymin << " max " << mymax << endl;
 			//Record stats = cs.getStatistics();
@@ -123,18 +123,18 @@ int main() {
 			// This will work
 			cout << endl << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
-			vector<Array<Float> > chunks;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
+			vector<Array<float> > chunks;
 			while (! imIter.atEnd()) {
-				Array<Float> chunk = imIter.cursor().copy();
-				const Float* begin = chunk.getStorage(deleteIt);
+				Array<float> chunk = imIter.cursor().copy();
+				const float* begin = chunk.getStorage(deleteIt);
 				cs.addData(begin, chunk.size());
 				chunks.push_back(chunk);
 				++imIter;
 			}
-			Double mymin, mymax;
+			double mymin, mymax;
 			cs.getMinMax(mymin, mymax);
 			cout << "min " << mymin << " max " << mymax << endl;
 		}
@@ -146,19 +146,19 @@ int main() {
 			// copied, getStatistics will iterate over N copies of the same array.
 			cout << endl << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
-			vector<Array<Float> > chunks;
-			uInt count = 0;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
+			vector<Array<float> > chunks;
+			uint32_t count = 0;
 			while (! imIter.atEnd()) {
 				chunks.push_back(imIter.cursor().copy());
-				const Float* begin = chunks.back().getStorage(deleteIt);
+				const float* begin = chunks.back().getStorage(deleteIt);
 				cs.addData(begin, chunks.back().size());
 				++imIter;
 				++count;
 			}
-			Double mymin, mymax;
+			double mymin, mymax;
 			cs.getMinMax(mymin, mymax);
 			cout << "min " << mymin << " max " << mymax << endl;
 		}
@@ -167,21 +167,21 @@ int main() {
 		{
 			cout << endl << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
-			vector<Array<Float> > chunks;
-			uInt count = 0;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
+			vector<Array<float> > chunks;
+			uint32_t count = 0;
 			while (! imIter.atEnd()) {
 				chunks.push_back(imIter.cursor().copy());
-				const Float* begin = chunks.back().getStorage(deleteIt);
+				const float* begin = chunks.back().getStorage(deleteIt);
 				cs.addData(begin, chunks.back().size());
 				++imIter;
 				++count;
 			}
 			cout << "begin quantile computation" << endl;
 			cout << std::setprecision(15) << "0.5 quantile value " << cs.getQuantile(0.5) << endl;
-			vector<Double> qs;
+			vector<double> qs;
 			qs.push_back(0.9);
 			qs.push_back(0.1);
 			qs.push_back(0.5);
@@ -191,21 +191,21 @@ int main() {
 		{
 			cout << endl << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
-			vector<Array<Float> > chunks;
-			uInt count = 0;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
+			vector<Array<float> > chunks;
+			uint32_t count = 0;
 			while (! imIter.atEnd()) {
 				chunks.push_back(imIter.cursor().copy());
-				const Float* begin = chunks.back().getStorage(deleteIt);
+				const float* begin = chunks.back().getStorage(deleteIt);
 				cs.addData(begin, chunks.back().size());
 				++imIter;
 				++count;
 			}
 			cout << "begin quantile computation" << endl;
 			cout << std::setprecision(15) << "0.5 quantile value " << cs.getQuantile(0.5, 10000) << endl;
-			vector<Double> qs;
+			vector<double> qs;
 			qs.push_back(0.9);
 			qs.push_back(0.1);
 			qs.push_back(0.5);
@@ -217,14 +217,14 @@ int main() {
 		{
 			cout << endl << "This should produce the desired results" << endl;
 			imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
-			vector<Array<Float> > chunks;
-			uInt count = 0;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
+			vector<Array<float> > chunks;
+			uint32_t count = 0;
 			while (! imIter.atEnd()) {
 				chunks.push_back(imIter.cursor().copy());
-				const Float* begin = chunks.back().getStorage(deleteIt);
+				const float* begin = chunks.back().getStorage(deleteIt);
 				cs.addData(begin, chunks.back().size());
 				++imIter;
 				++count;
@@ -236,10 +236,10 @@ int main() {
 		/*
 		{
 			cout << endl << "This should produce the desired results" << endl;
-			LatticeStatsDataProvider<Float, Double> dataProvider(imIter);
-			ClassicalStatistics<Double, const Float*, const Bool*> cs;
-			StatsDataProvider<Double, const Float*, const Bool*>* dp =
-					dynamic_cast<StatsDataProvider<Double, const Float*, const Bool*>* >(
+			LatticeStatsDataProvider<float, double> dataProvider(imIter);
+			ClassicalStatistics<double, const float*, const bool*> cs;
+			StatsDataProvider<double, const float*, const bool*>* dp =
+					dynamic_cast<StatsDataProvider<double, const float*, const bool*>* >(
 						&dataProvider
 					);
 				ThrowIf(! dp, "unable to dynamic cast");
@@ -251,10 +251,10 @@ int main() {
 		/*
 		{
 			cout << endl << "This should produce the desired results" << endl;
-			LatticeStatsDataProvider<Float, Double> dataProvider(imIter);
-			ClassicalStatistics<Double, const Float*, const Bool*> cs;
-			StatsDataProvider<Double, const Float*, const Bool*>* dp =
-				dynamic_cast<StatsDataProvider<Double, const Float*, const Bool*>* >(
+			LatticeStatsDataProvider<float, double> dataProvider(imIter);
+			ClassicalStatistics<double, const float*, const bool*> cs;
+			StatsDataProvider<double, const float*, const bool*>* dp =
+				dynamic_cast<StatsDataProvider<double, const float*, const bool*>* >(
 					&dataProvider
 				);
 			ThrowIf(! dp, "unable to dynamic cast");
@@ -263,20 +263,20 @@ int main() {
 			cout << std::setprecision(15) << "median " << cs.getMedian() << endl;
 		}
 	*/
-		//im = PagedImage<Float>("stats200M.im");
-		//imIter = RO_LatticeIterator<Float> (im);
+		//im = PagedImage<float>("stats200M.im");
+		//imIter = RO_LatticeIterator<float> (im);
 		/*
 		{
 			cout << endl << "This should produce the desired results" << endl;
 		    imIter.reset();
-			ClassicalStatistics<Double, const Float*, Bool*> cs;
-			cs.setCalculateAsAdded(False);
-			Bool deleteIt = False;
-			vector<Array<Float> > chunks;
-			uInt count = 0;
+			ClassicalStatistics<double, const float*, bool*> cs;
+			cs.setCalculateAsAdded(false);
+			bool deleteIt = false;
+			vector<Array<float> > chunks;
+			uint32_t count = 0;
 			while (! imIter.atEnd()) {
 				chunks.push_back(imIter.cursor().copy());
-				const Float* begin = chunks.back().getStorage(deleteIt);
+				const float* begin = chunks.back().getStorage(deleteIt);
 				cs.addData(begin, chunks.back().size());
 				++imIter;
 				++count;
@@ -290,22 +290,22 @@ int main() {
 		/*
         {
 			cout << endl << "This should produce the desired results" << endl;
-			LatticeStatsDataProvider<Double, Float> *dataProvider
-				= new LatticeStatsDataProvider<Double, Float>(im);
-			ClassicalStatistics<Double, const Float*> cs;
-			StatsDataProvider<Double, const Float*, const Bool*> *dp =
-				dynamic_cast<StatsDataProvider<Double, const Float*, const Bool*>* >(
+			LatticeStatsDataProvider<double, float> *dataProvider
+				= new LatticeStatsDataProvider<double, float>(im);
+			ClassicalStatistics<double, const float*> cs;
+			StatsDataProvider<double, const float*, const bool*> *dp =
+				dynamic_cast<StatsDataProvider<double, const float*, const bool*>* >(
 					dataProvider
 				);
 
 
 			//  there are problems with slightly non-reproducable binning for quantiles because of
-			//  finite machine precision when the AccumType is Float
-			//LatticeStatsDataProvider<Double, Float> *dataProvider
-			//				= new LatticeStatsDataProvider<Double, Float>(im);
-			//			ClassicalStatistics<Double, const Float*> cs;
-			//			StatsDataProvider<Double, const Float*, const Bool*> *dp =
-			//				dynamic_cast<StatsDataProvider<Double, const Float*, const Bool*>* >(
+			//  finite machine precision when the AccumType is float
+			//LatticeStatsDataProvider<double, float> *dataProvider
+			//				= new LatticeStatsDataProvider<double, float>(im);
+			//			ClassicalStatistics<double, const float*> cs;
+			//			StatsDataProvider<double, const float*, const bool*> *dp =
+			//				dynamic_cast<StatsDataProvider<double, const float*, const bool*>* >(
 			//					dataProvider
 			//				);
 			ThrowIf(! dp, "unable to dynamic cast");
@@ -315,17 +315,17 @@ int main() {
 			cout << std::setprecision(15)  << stats << endl;
             AlwaysAssert(stats.asInt64("npts") == im.size(), AipsError);
             cout << "begin median computation" << endl;
-            Double median = cs.getMedian();
+            double median = cs.getMedian();
 			cout << std::setprecision(15)  << median << endl;
         }
         */
         {
-            LatticeStatistics<Float> lattStats(im);
-            Array<Double> d;
+            LatticeStatistics<float> lattStats(im);
+            Array<double> d;
             lattStats.getStatistic(d, LatticeStatsBase::SUM);
             cout << d << endl;
             /*
-            Array<Double> res;
+            Array<double> res;
             lattStats.getStatistic(res, LatticeStatsBase::MEDIAN);
             AlwaysAssert(near(*res.begin(), -0.00010517791088204831), AipsError);
             */
@@ -333,23 +333,23 @@ int main() {
 		/*
         {
 			cout << endl << "This should produce the desired results" << endl;
-		    CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
-                = new LatticeStatsDataProvider<Double, Float>(im);
-			ClassicalStatistics<Double, const Float*> cs;
+		    CountedPtr<StatsDataProvider<double, const float*, const bool* > > dataProvider
+                = new LatticeStatsDataProvider<double, float>(im);
+			ClassicalStatistics<double, const float*> cs;
             cout << im.name() << endl; 
-			// StatsDataProvider<Double, const Float*, const Bool*> *dp =
-			//	dynamic_cast<StatsDataProvider<Double, const Float*, const Bool*>* >(
+			// StatsDataProvider<double, const float*, const bool*> *dp =
+			//	dynamic_cast<StatsDataProvider<double, const float*, const bool*>* >(
 			//		dataProvider
 			//	);
 			cs.setDataProvider(dataProvider);
 			cout << "begin median computation" << endl;
-            Double median = cs.getMedian();
+            double median = cs.getMedian();
 			cout << "median " << std::setprecision(15)  << median << endl;
-            std::set<Double> quantiles;
+            std::set<double> quantiles;
             quantiles.insert(0.25);
             quantiles.insert(0.75);
             cout << "begin quartile computation" << endl;
-            std::map<Double, Double> vals = cs.getQuantiles(quantiles);
+            std::map<double, double> vals = cs.getQuantiles(quantiles);
             cout << "first and third quartiles " << vals << endl;
 
 
@@ -359,12 +359,12 @@ int main() {
 
 		{
 			cout << endl << "This should produce the desired results" << endl;
-			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
-				= new LatticeStatsDataProvider<Double, Float>(im);
-			ClassicalStatistics<Double, const Float*> cs;
+			CountedPtr<StatsDataProvider<double, const float*, const bool* > > dataProvider
+				= new LatticeStatsDataProvider<double, float>(im);
+			ClassicalStatistics<double, const float*> cs;
 			cs.setDataProvider(dataProvider);
 			cout << "begin medabsdevmed computation" << endl;
-			Double medabsdevmed = cs.getMedianAbsDevMed();
+			double medabsdevmed = cs.getMedianAbsDevMed();
 			cout << "medabsdevmed " << std::setprecision(15)  << medabsdevmed << endl;
 		}
 		*/
@@ -375,9 +375,9 @@ int main() {
         		cout << "Cannot find image " << imageName2 << " so some tests cannot be run" << endl;
         		return 0;
         	}
-        	casacore::PagedImage<Float> im2(imageName2);
-        	LatticeStatistics<Float> lattStats(im2);
-        	Array<Double> res;
+        	casacore::PagedImage<float> im2(imageName2);
+        	LatticeStatistics<float> lattStats(im2);
+        	Array<double> res;
         	lattStats.getStatistic(res, LatticeStatsBase::MEDIAN);
         	AlwaysAssert(*res.begin() == 0, AipsError);
         }
@@ -389,11 +389,11 @@ int main() {
 				cout << "Cannot find image " << imageName2 << " so some tests cannot be run" << endl;
 				return 0;
 			}
-			casacore::PagedImage<Float> im2(imageName2);
+			casacore::PagedImage<float> im2(imageName2);
 			Slicer slice(IPosition(im2.ndim(), 0), IPosition(im2.ndim(), 800));
-			SubImage<Float> x(im2, slice);
-			LatticeStatistics<Float> lattStats(x);
-			Array<Double> res;
+			SubImage<float> x(im2, slice);
+			LatticeStatistics<float> lattStats(x);
+			Array<double> res;
 			lattStats.getStatistic(res, LatticeStatsBase::MEAN);
 		}
         */

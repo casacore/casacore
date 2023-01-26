@@ -81,7 +81,7 @@ public:
     // inputMap(fieldNumber) -> columnNumber.
     CopyRecordToTable(Table &outputTable, 
                       const RecordInterface &inputBuffer,
-                      const Vector<Int> inputMap);
+                      const Vector<int32_t> inputMap);
 
     // assignment constructor, reference semantics
     CopyRecordToTable(const CopyRecordToTable &other);
@@ -93,45 +93,45 @@ public:
 
     // Copy from the record (which must still exist) to the given row number
     // of the table (which must also still exist).
-    void copy(uInt rownr);
+    void copy(uint32_t rownr);
 
 private: 
     // We could just have a TableColumn for scalars, but we'd need all of
     // the array types anyway.
-    PtrBlock<ScalarColumn<Bool> *> table_bool;
-    PtrBlock<ScalarColumn<uChar> *> table_char;
-    PtrBlock<ScalarColumn<Short> *> table_short;
-    PtrBlock<ScalarColumn<Int> *> table_int;
-    PtrBlock<ScalarColumn<Float> *> table_float;
-    PtrBlock<ScalarColumn<Double> *> table_double;
+    PtrBlock<ScalarColumn<bool> *> table_bool;
+    PtrBlock<ScalarColumn<unsigned char> *> table_char;
+    PtrBlock<ScalarColumn<int16_t> *> table_short;
+    PtrBlock<ScalarColumn<int32_t> *> table_int;
+    PtrBlock<ScalarColumn<float> *> table_float;
+    PtrBlock<ScalarColumn<double> *> table_double;
     PtrBlock<ScalarColumn<Complex> *> table_complex;
     PtrBlock<ScalarColumn<DComplex> *> table_dcomplex;
     PtrBlock<ScalarColumn<String> *> table_string;
-    PtrBlock<ArrayColumn<Bool> *> table_array_bool;
-    PtrBlock<ArrayColumn<uChar> *> table_array_char;
-    PtrBlock<ArrayColumn<Short> *> table_array_short;
-    PtrBlock<ArrayColumn<Int> *> table_array_int;
-    PtrBlock<ArrayColumn<Float> *> table_array_float;
-    PtrBlock<ArrayColumn<Double> *> table_array_double;
+    PtrBlock<ArrayColumn<bool> *> table_array_bool;
+    PtrBlock<ArrayColumn<unsigned char> *> table_array_char;
+    PtrBlock<ArrayColumn<int16_t> *> table_array_short;
+    PtrBlock<ArrayColumn<int32_t> *> table_array_int;
+    PtrBlock<ArrayColumn<float> *> table_array_float;
+    PtrBlock<ArrayColumn<double> *> table_array_double;
     PtrBlock<ArrayColumn<Complex> *> table_array_complex;
     PtrBlock<ArrayColumn<DComplex> *> table_array_dcomplex;
     PtrBlock<ArrayColumn<String> *> table_array_string;
  
-    Block<RORecordFieldPtr<Bool> > record_bool;
-    Block<RORecordFieldPtr<uChar> > record_char;
-    Block<RORecordFieldPtr<Short> > record_short;
-    Block<RORecordFieldPtr<Int> > record_int;
-    Block<RORecordFieldPtr<Float> > record_float;
-    Block<RORecordFieldPtr<Double> > record_double;
+    Block<RORecordFieldPtr<bool> > record_bool;
+    Block<RORecordFieldPtr<unsigned char> > record_char;
+    Block<RORecordFieldPtr<int16_t> > record_short;
+    Block<RORecordFieldPtr<int32_t> > record_int;
+    Block<RORecordFieldPtr<float> > record_float;
+    Block<RORecordFieldPtr<double> > record_double;
     Block<RORecordFieldPtr<Complex> > record_complex;
     Block<RORecordFieldPtr<DComplex> > record_dcomplex;
     Block<RORecordFieldPtr<String> > record_string;
-    Block<RORecordFieldPtr<Array<Bool> > > record_array_bool;
-    Block<RORecordFieldPtr<Array<uChar> > > record_array_char;
-    Block<RORecordFieldPtr<Array<Short> > > record_array_short;
-    Block<RORecordFieldPtr<Array<Int> > > record_array_int;
-    Block<RORecordFieldPtr<Array<Float> > > record_array_float;
-    Block<RORecordFieldPtr<Array<Double> > > record_array_double;
+    Block<RORecordFieldPtr<Array<bool> > > record_array_bool;
+    Block<RORecordFieldPtr<Array<unsigned char> > > record_array_char;
+    Block<RORecordFieldPtr<Array<int16_t> > > record_array_short;
+    Block<RORecordFieldPtr<Array<int32_t> > > record_array_int;
+    Block<RORecordFieldPtr<Array<float> > > record_array_float;
+    Block<RORecordFieldPtr<Array<double> > > record_array_double;
     Block<RORecordFieldPtr<Array<Complex> > > record_array_complex;
     Block<RORecordFieldPtr<Array<DComplex> > > record_array_dcomplex;
     Block<RORecordFieldPtr<Array<String> > > record_array_string;
@@ -186,7 +186,7 @@ public:
     // inputMap(fieldNumber) -> outputFieldNumber.
     CopyRecordToRecord(RecordInterface &outputBuffer, 
                       const RecordInterface &inputBuffer,
-                      const Vector<Int> inputMap);
+                      const Vector<int32_t> inputMap);
 
 
     ~CopyRecordToRecord();
@@ -202,40 +202,40 @@ private:
     CopyRecordToRecord(const CopyRecordToRecord &);
     CopyRecordToRecord &operator=(const CopyRecordToRecord &);
  
-    Block<RORecordFieldPtr<Bool> > in_record_bool;
-    Block<RORecordFieldPtr<uChar> > in_record_char;
-    Block<RORecordFieldPtr<Short> > in_record_short;
-    Block<RORecordFieldPtr<Int> > in_record_int;
-    Block<RORecordFieldPtr<Float> > in_record_float;
-    Block<RORecordFieldPtr<Double> > in_record_double;
+    Block<RORecordFieldPtr<bool> > in_record_bool;
+    Block<RORecordFieldPtr<unsigned char> > in_record_char;
+    Block<RORecordFieldPtr<int16_t> > in_record_short;
+    Block<RORecordFieldPtr<int32_t> > in_record_int;
+    Block<RORecordFieldPtr<float> > in_record_float;
+    Block<RORecordFieldPtr<double> > in_record_double;
     Block<RORecordFieldPtr<Complex> > in_record_complex;
     Block<RORecordFieldPtr<DComplex> > in_record_dcomplex;
     Block<RORecordFieldPtr<String> > in_record_string;
-    Block<RORecordFieldPtr<Array<Bool> > > in_record_array_bool;
-    Block<RORecordFieldPtr<Array<uChar> > > in_record_array_char;
-    Block<RORecordFieldPtr<Array<Short> > > in_record_array_short;
-    Block<RORecordFieldPtr<Array<Int> > > in_record_array_int;
-    Block<RORecordFieldPtr<Array<Float> > > in_record_array_float;
-    Block<RORecordFieldPtr<Array<Double> > > in_record_array_double;
+    Block<RORecordFieldPtr<Array<bool> > > in_record_array_bool;
+    Block<RORecordFieldPtr<Array<unsigned char> > > in_record_array_char;
+    Block<RORecordFieldPtr<Array<int16_t> > > in_record_array_short;
+    Block<RORecordFieldPtr<Array<int32_t> > > in_record_array_int;
+    Block<RORecordFieldPtr<Array<float> > > in_record_array_float;
+    Block<RORecordFieldPtr<Array<double> > > in_record_array_double;
     Block<RORecordFieldPtr<Array<Complex> > > in_record_array_complex;
     Block<RORecordFieldPtr<Array<DComplex> > > in_record_array_dcomplex;
     Block<RORecordFieldPtr<Array<String> > > in_record_array_string;
 
-    Block<RecordFieldPtr<Bool> > out_record_bool;
-    Block<RecordFieldPtr<uChar> > out_record_char;
-    Block<RecordFieldPtr<Short> > out_record_short;
-    Block<RecordFieldPtr<Int> > out_record_int;
-    Block<RecordFieldPtr<Float> > out_record_float;
-    Block<RecordFieldPtr<Double> > out_record_double;
+    Block<RecordFieldPtr<bool> > out_record_bool;
+    Block<RecordFieldPtr<unsigned char> > out_record_char;
+    Block<RecordFieldPtr<int16_t> > out_record_short;
+    Block<RecordFieldPtr<int32_t> > out_record_int;
+    Block<RecordFieldPtr<float> > out_record_float;
+    Block<RecordFieldPtr<double> > out_record_double;
     Block<RecordFieldPtr<Complex> > out_record_complex;
     Block<RecordFieldPtr<DComplex> > out_record_dcomplex;
     Block<RecordFieldPtr<String> > out_record_string;
-    Block<RecordFieldPtr<Array<Bool> > > out_record_array_bool;
-    Block<RecordFieldPtr<Array<uChar> > > out_record_array_char;
-    Block<RecordFieldPtr<Array<Short> > > out_record_array_short;
-    Block<RecordFieldPtr<Array<Int> > > out_record_array_int;
-    Block<RecordFieldPtr<Array<Float> > > out_record_array_float;
-    Block<RecordFieldPtr<Array<Double> > > out_record_array_double;
+    Block<RecordFieldPtr<Array<bool> > > out_record_array_bool;
+    Block<RecordFieldPtr<Array<unsigned char> > > out_record_array_char;
+    Block<RecordFieldPtr<Array<int16_t> > > out_record_array_short;
+    Block<RecordFieldPtr<Array<int32_t> > > out_record_array_int;
+    Block<RecordFieldPtr<Array<float> > > out_record_array_float;
+    Block<RecordFieldPtr<Array<double> > > out_record_array_double;
     Block<RecordFieldPtr<Array<Complex> > > out_record_array_complex;
     Block<RecordFieldPtr<Array<DComplex> > > out_record_array_dcomplex;
     Block<RecordFieldPtr<Array<String> > > out_record_array_string;

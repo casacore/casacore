@@ -161,7 +161,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  Cube<float> imageValues(IPosition(2,512,512));
 //  indgen (imageValues);
 //  // Write some data into the data columns.
-//  for (uInt i=0; i<64; i++) {
+//  for (uint32_t i=0; i<64; i++) {
 //      table.addRow();
 //      image.put (i, imageValues);
 //      ra.put (i, raValues);
@@ -194,7 +194,7 @@ public:
     // <group>
     TiledShapeStMan (const String& hypercolumnName,
 		     const IPosition& defaultTileShape,
-		     uInt64 maximumCacheSize = 0);
+		     uint64_t maximumCacheSize = 0);
     TiledShapeStMan (const String& hypercolumnName,
 		     const Record& spec);
     // </group>
@@ -213,7 +213,7 @@ public:
 
     // TiledShapeStMan can access a column if there are 2 hypercubes
     // and the first one is empty.
-    virtual Bool canAccessColumn() const;
+    virtual bool canAccessColumn() const;
 
     // Test if only one hypercube is used by this storage manager.
     // If not, throw an exception. Otherwise return the hypercube.
@@ -252,7 +252,7 @@ private:
 
     // Find the hypercube for the given shape.
     // It returns -1 when not found.
-    Int findHypercube (const IPosition& shape);
+    int32_t findHypercube (const IPosition& shape);
 
     // Add a hypercube.
     // The number of rows in the table must be large enough to
@@ -270,7 +270,7 @@ private:
     // the last dimension.
     // The record should contain the id values (to get the correct
     // hypercube) and optionally coordinate values for the elements added.
-    void extendHypercube (rownr_t rownr, uInt cubeNr);
+    void extendHypercube (rownr_t rownr, uint32_t cubeNr);
 
     // Get the hypercube in which the given row is stored.
     virtual TSMCube* getHypercube (rownr_t rownr);
@@ -284,18 +284,18 @@ private:
 			     const Vector<String>& dataNames) const;
 
     // Flush and optionally fsync the data.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    virtual Bool flush (AipsIO&, Bool fsync);
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    virtual bool flush (AipsIO&, bool fsync);
 
     // Let the storage manager create files as needed for a new table.
     // This allows a column with an indirect array to create its file.
     virtual void create64 (rownr_t nrrow);
 
     // Read the header info.
-    virtual void readHeader (rownr_t nrrow, Bool firstTime);
+    virtual void readHeader (rownr_t nrrow, bool firstTime);
 
     // Update the map of row numbers to cube number plus offset.
-    void updateRowMap (uInt cubeNr, uInt pos, rownr_t rownr);
+    void updateRowMap (uint32_t cubeNr, uint32_t pos, rownr_t rownr);
 
     // Extend the map of row numbers to cube number plus offset
     // will new empty entries.
@@ -306,13 +306,13 @@ private:
     // The default tile shape.
     IPosition defaultTileShape_p;
     // The map of row number to cube and position in cube.
-    Block<uInt> rowMap_p;
-    Block<uInt> cubeMap_p;
-    Block<uInt> posMap_p;
+    Block<uint32_t> rowMap_p;
+    Block<uint32_t> cubeMap_p;
+    Block<uint32_t> posMap_p;
     // The nr of elements used in the map blocks.
-    uInt nrUsedRowMap_p;
+    uint32_t nrUsedRowMap_p;
     // The last hypercube found.
-    Int lastHC_p;
+    int32_t lastHC_p;
 };
 
 

@@ -90,7 +90,7 @@ public:
     SDSpWindowHandler();
 
     // attach this to a MS, marking fields in row which are explicitly handled here
-    SDSpWindowHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDSpWindowHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDSpWindowHandler(const SDSpWindowHandler &other);
@@ -101,24 +101,24 @@ public:
     SDSpWindowHandler &operator=(const SDSpWindowHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &);
     
     // fill - a circular buffer of last 100 spectral windows is checked
-    void fill(const Record &row, const Vector<Double> &frequency, Double refFrequency,
-	      Double originalFreqDelt, Int freqRefType);
+    void fill(const Record &row, const Vector<double> &frequency, double refFrequency,
+	      double originalFreqDelt, int32_t freqRefType);
 
     // get the current spWindow ID
-    Int spWindowId() {return rownr_p;}
+    int32_t spWindowId() {return rownr_p;}
 private:
-    RecordFieldPtr<Int> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p,
+    RecordFieldPtr<int32_t> nchanKey_p, freqRefTypeKey_p, ifConvChainKey_p,
 	freqGroupKey_p, netSidebandKey_p;
-    Vector<Double> fNCache_p, f0Cache_p, bwCache_p;
-    Double *fNCachePtr_p, *f0CachePtr_p, *bwCachePtr_p;
-    Bool deleteItFN_p, deleteItF0_p, deleteItBw_p;
-    RecordFieldPtr<Bool> flagRowKey_p;
+    Vector<double> fNCache_p, f0Cache_p, bwCache_p;
+    double *fNCachePtr_p, *f0CachePtr_p, *bwCachePtr_p;
+    bool deleteItFN_p, deleteItF0_p, deleteItBw_p;
+    RecordFieldPtr<bool> flagRowKey_p;
     // the cache table is the one that is indexed
     ColumnsIndex *index_p;
     // temporary table to hold the fields we are indexing on, can't index on array column
@@ -132,22 +132,22 @@ private:
 	freqGroupCol_p, netSidebandCol_p, flagRowCol_p;
 
     // the next row number to use in the cached
-    uInt nextCacheRow_p;
+    uint32_t nextCacheRow_p;
 
     // the maximum number of rows in the cache - currently this is 1000
-    uInt cacheSize_p;
+    uint32_t cacheSize_p;
 
     // the current row number in the SPECTRAL_WINDOW table, i.e. the id
-    Int rownr_p;
+    int32_t rownr_p;
 
     // fields possibly mined from the SDFITS row
     // floating point fields that we can't be certain of their type
-    Int bandwidField_p, freqresField_p;
+    int32_t bandwidField_p, freqresField_p;
 
     // fields from a previous life as a MS
-    RORecordFieldPtr<Int> spWinIdField_p, ifConvChainField_p, freqGroupField_p,
+    RORecordFieldPtr<int32_t> spWinIdField_p, ifConvChainField_p, freqGroupField_p,
 	netSidebandField_p;
-    RORecordFieldPtr<Bool> flagRowField_p;
+    RORecordFieldPtr<bool> flagRowField_p;
 
     // cleanup everything
     void clearAll();
@@ -156,10 +156,10 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // initialize the stuff dependent on the row
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

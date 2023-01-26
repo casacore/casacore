@@ -101,7 +101,7 @@ public:
 
     // Calculate the offset in the cached data for the given row.
     // -1 is returned if the row is not within the cached rows.
-    Int64 offset (rownr_t rownr) const;
+    int64_t offset (rownr_t rownr) const;
 
     // Give a pointer to the data.
     // The calling function has to do a proper cast after which the
@@ -135,14 +135,14 @@ inline void ColumnCache::invalidate()
     set (1, 0, 0);
 }
 
-inline Int64 ColumnCache::offset (rownr_t rownr) const
+inline int64_t ColumnCache::offset (rownr_t rownr) const
 {
     if (rownr < itsStart || rownr > itsEnd) {
         return -1;
     }
     const rownr_t offset = (rownr - itsStart) * itsIncr;
-    assert(offset <= static_cast<rownr_t>(std::numeric_limits<Int64>::max()));
-    return Int64(offset);
+    assert(offset <= static_cast<rownr_t>(std::numeric_limits<int64_t>::max()));
+    return int64_t(offset);
 }
 
 inline const void* ColumnCache::dataPtr() const

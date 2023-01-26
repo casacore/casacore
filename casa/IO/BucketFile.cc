@@ -53,10 +53,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketFile::BucketFile (const String& fileName,
-                        uInt bufSizeFile, Bool mappedFile,
+                        uint32_t bufSizeFile, bool mappedFile,
                         const std::shared_ptr<MultiFileBase>& mfile)
 : name_p         (Path(fileName).expandedName()),
-  isWritable_p   (True),
+  isWritable_p   (true),
   isMapped_p     (mappedFile),
   bufSize_p      (bufSizeFile),
   fd_p           (-1),
@@ -68,7 +68,7 @@ BucketFile::BucketFile (const String& fileName,
     // Create the file.
     if (mfile_p) {
       file_p = new MFFileIO (mfile_p, name_p, ByteIO::New);
-      isMapped_p = False;
+      isMapped_p = false;
       bufSize_p  = 0;
     } else {
       fd_p   = FiledesIO::create (name_p.chars());
@@ -77,8 +77,8 @@ BucketFile::BucketFile (const String& fileName,
     createMapBuf();
 }
 
-BucketFile::BucketFile (const String& fileName, Bool isWritable,
-                        uInt bufSizeFile, Bool mappedFile,
+BucketFile::BucketFile (const String& fileName, bool isWritable,
+                        uint32_t bufSizeFile, bool mappedFile,
                         const std::shared_ptr<MultiFileBase>& mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (isWritable),
@@ -91,7 +91,7 @@ BucketFile::BucketFile (const String& fileName, Bool isWritable,
   mfile_p        (mfile)
 {
   if (mfile_p) {
-    isMapped_p = False;
+    isMapped_p = false;
     bufSize_p  = 0;
   }
 }
@@ -101,7 +101,7 @@ BucketFile::~BucketFile()
     close();
 }
 
-CountedPtr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
+CountedPtr<ByteIO> BucketFile::makeFilebufIO (uint32_t bufferSize)
 {
   if (mfile_p) {
     return file_p;
@@ -161,12 +161,12 @@ void BucketFile::remove()
     close();
     if (mfile_p) {
       // Remove the file from the MultiFileBase. Note it might not exist yet.
-      Int id = mfile_p->fileId (name_p, False);
+      int32_t id = mfile_p->fileId (name_p, false);
       if (id >= 0) {
         mfile_p->deleteFile (id);
       }
     } else {
-      DOos::remove (name_p, False, False);
+      DOos::remove (name_p, false, false);
     }
     file_p = CountedPtr<ByteIO>();
 }
@@ -184,7 +184,7 @@ void BucketFile::setRW()
     if (isWritable_p) {
 	return;
     }
-    isWritable_p = True;
+    isWritable_p = true;
     // Try to reopen the file as read/write.
     // Throw an exception if it fails.
     if (file_p) {
@@ -198,28 +198,28 @@ void BucketFile::setRW()
 }
 
 
-uInt BucketFile::read (void* buffer, uInt length)
+uint32_t BucketFile::read (void* buffer, uint32_t length)
 {
   return file_p->read (length, buffer);
 }
 
-uInt BucketFile::write (const void* buffer, uInt length)
+uint32_t BucketFile::write (const void* buffer, uint32_t length)
 {
   file_p->write (length, buffer);
     return length;
 }
 
-void BucketFile::seek (Int64 offset)
+void BucketFile::seek (int64_t offset)
 {
     AlwaysAssert (bufferedFile_p == 0, AipsError);
     file_p->seek (offset, ByteIO::Begin);
 }
 
-Int64 BucketFile::fileSize () const
+int64_t BucketFile::fileSize () const
 {
     // If a buffered file is used, seek in there. Otherwise its internal
     // offset is wrong.
-    Int64 size;
+    int64_t size;
     if (bufferedFile_p) {
         size = bufferedFile_p->seek (0, ByteIO::End);
     } else {

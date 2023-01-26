@@ -47,7 +47,7 @@ namespace casacore {
 // regarding QuantileComputer classes.
 
 template <
-    class AccumType, class DataIterator, class MaskIterator=const Bool *,
+    class AccumType, class DataIterator, class MaskIterator=const bool *,
     class WeightsIterator=DataIterator
 >
 class HingesFencesStatistics
@@ -56,7 +56,7 @@ public:
 
     // If <src>f</src> is negative, the full dataset is used; ie the object has
     // the same behavior as a ClassicalStatistics object
-    HingesFencesStatistics(Double f=-1.0);
+    HingesFencesStatistics(double f=-1.0);
 
     // copy semantics
     HingesFencesStatistics(const HingesFencesStatistics<CASA_STATP>& other);
@@ -83,8 +83,8 @@ public:
     virtual void reset();
 
     // This class does not allow statistics to be calculated as datasets are
-    // added, so an exception will be thrown if <src>c</src> is True.
-    void setCalculateAsAdded(Bool c);
+    // added, so an exception will be thrown if <src>c</src> is true.
+    void setCalculateAsAdded(bool c);
 
 protected:
     // <group>
@@ -93,182 +93,182 @@ protected:
     // no weights is trivial with npts = nr in this class, but is implemented
     // here so that derived classes may override it.
     virtual void _accumNpts(
-        uInt64& npts, const DataIterator& dataStart, uInt64 nr, uInt dataStride
+        uint64_t& npts, const DataIterator& dataStart, uint64_t nr, uint32_t dataStride
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts, const DataIterator& dataStart, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        uint64_t& npts, const DataIterator& dataStart, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        uint64_t& npts, const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts, const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        uint64_t& npts, const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+        uint64_t& npts, const DataIterator& dataBegin,
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts,
+        uint64_t& npts,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts,
+        uint64_t& npts,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _accumNpts(
-        uInt64& npts, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        uint64_t& npts, const DataIterator& dataBegin,
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
     // </group>
 
     // <group>
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
         const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride
+        uint64_t nr, uint32_t dataStride
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMax(
         CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride
     ) const;
 
     // <group>
     // Sometimes we want the min, max, and npts all in one scan.
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
         CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
-        uInt64 nr, uInt dataStride
+        uint64_t nr, uint32_t dataStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
+        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
+        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
+        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uint64_t nr,
+        uint32_t dataStride, const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
         CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
         CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
         CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
-        const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        const WeightsIterator& weightsBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
+        uint64_t& npts, CountedPtr<AccumType>& mymin,
         CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
-        const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        const WeightsIterator& weightBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     ) const;
     // </group>
 
     // <group>
     // no weights, no mask, no ranges
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride
+        StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride
     );
 
     // no weights, no mask
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const DataRanges& ranges, Bool isInclude
+        StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const DataRanges& ranges, bool isInclude
     );
 
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride
+        StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride
     );
 
     virtual void _unweightedStats(
-        StatsData<AccumType>& stats, uInt64& ngood, LocationType& location,
-        const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-        const MaskIterator& maskBegin, uInt maskStride,
-        const DataRanges& ranges, Bool isInclude
+        StatsData<AccumType>& stats, uint64_t& ngood, LocationType& location,
+        const DataIterator& dataBegin, uint64_t nr, uint32_t dataStride,
+        const MaskIterator& maskBegin, uint32_t maskStride,
+        const DataRanges& ranges, bool isInclude
     );
     // </group>
 
@@ -277,27 +277,27 @@ protected:
     virtual void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride
+        uint64_t nr, uint32_t dataStride
     );
 
     virtual void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
-        uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const DataRanges& ranges, bool isInclude
     );
 
     virtual void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride
     );
 
     virtual void _weightedStats(
         StatsData<AccumType>& stats, LocationType& location,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
-        uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
-        uInt maskStride, const DataRanges& ranges, Bool isInclude
+        uint64_t nr, uint32_t dataStride, const MaskIterator& maskBegin,
+        uint32_t maskStride, const DataRanges& ranges, bool isInclude
     );
     // </group>
 
@@ -305,8 +305,8 @@ private:
 
     // _f defined in inclusion range between Q1 - _f*D and Q3 + _f*D, where
     // D = Q3 - Q1 and Q1 and Q3 are the first and third quartiles, respectively
-    Double _f;
-    Bool _rangeIsSet{False}, _hasRange{False};
+    double _f;
+    bool _rangeIsSet{false}, _hasRange{false};
 
     void _setRange();
 

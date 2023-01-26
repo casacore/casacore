@@ -54,16 +54,16 @@ void invert(Matrix<T> &out, T& det, const Matrix<T> &in)
 {
   AlwaysAssert(in.nrow() == in.ncolumn(), AipsError);
   
-  Int m = in.nrow();
-  Int lda = m; Int n = m;               // m, n, lda
+  int32_t m = in.nrow();
+  int32_t lda = m; int32_t n = m;               // m, n, lda
   
   out.resize(in.shape());
   out = in;
-  Bool deleteIt;
+  bool deleteIt;
   T *a = out.getStorage(deleteIt);      // a
   
-  Block<Int> ipiv(m);                   // ipiv
-  Int info;                             // info
+  Block<int32_t> ipiv(m);                   // ipiv
+  int32_t info;                             // info
 
   getrf(&m, &n, a, &lda, ipiv.storage(), &info);
 
@@ -71,11 +71,11 @@ void invert(Matrix<T> &out, T& det, const Matrix<T> &in)
     // Calculate the determinate
     // It is just the product of the diagonal elements
     det = out(0,0);
-    for (Int i = 1; i < n; i++)
+    for (int32_t i = 1; i < n; i++)
       det *= out(i,i);
 
     // Calculate the inverse using back substitution
-    Int lwork = 32 * n; // Lazy - we should really get this from ilaenv
+    int32_t lwork = 32 * n; // Lazy - we should really get this from ilaenv
     Block<T> work(lwork);
     getri(&m, a, &lda, ipiv.storage(), work.storage(), &lwork, &info);
   }
@@ -89,7 +89,7 @@ void invert(Matrix<T> &out, T& det, const Matrix<T> &in)
 
 template<class T> Matrix<T> invertSymPosDef(const Matrix<T> &in)
 {
-  Int i, j, k, n;
+  int32_t i, j, k, n;
   n = in.nrow();
 
   Vector<T> diag(n);
@@ -129,7 +129,7 @@ template<class T> void invertSymPosDef(Matrix<T> & out, T& determinate,
   // Resize out to match in
   out.resize(in.shape());
 
-  Int i, j, k, n;
+  int32_t i, j, k, n;
   n = in.nrow();
 
   Vector<T> diag(n);
@@ -173,7 +173,7 @@ template<class T> void CholeskyDecomp(Matrix<T> &A, Vector<T> &diag)
   // Cholesky factor L.  The diagonal elements of L are returned in vector
   // diag.
 
-  Int i, j, k, n;
+  int32_t i, j, k, n;
   T sum;
   n = A.nrow();
   // Cholesky decompose A = L*trans(L)
@@ -204,7 +204,7 @@ template<class T> void CholeskySolve(Matrix<T> &A, Vector<T> &diag,
   // diagonal elements which are in vector diag.  On return x contains the
   // solution.  b and x can be the same vector to save memory space.
 
-  Int i, k, n;
+  int32_t i, k, n;
   T sum;
 
   n = A.nrow();

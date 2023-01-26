@@ -39,11 +39,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSDataDescription::MSDataDescription():hasBeenDestroyed_p(True) { }
+MSDataDescription::MSDataDescription():hasBeenDestroyed_p(true) { }
 
 MSDataDescription::MSDataDescription(const String &tableName, 
 				     TableOption option) 
-    : MSTable<MSDataDescriptionEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSDataDescriptionEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -54,7 +54,7 @@ MSDataDescription::MSDataDescription(const String &tableName,
 MSDataDescription::MSDataDescription(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSDataDescriptionEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -63,18 +63,18 @@ MSDataDescription::MSDataDescription(const String& tableName, const String &tabl
 }
 
 MSDataDescription::MSDataDescription(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSDataDescriptionEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSDataDescription(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSDataDescription(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSDataDescription"));
 }
 
 MSDataDescription::MSDataDescription(const Table &table)
-    : MSTable<MSDataDescriptionEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSDataDescriptionEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -84,7 +84,7 @@ MSDataDescription::MSDataDescription(const Table &table)
 
 MSDataDescription::MSDataDescription(const MSDataDescription &other)
     : MSTable<MSDataDescriptionEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -104,7 +104,7 @@ MSDataDescription::~MSDataDescription()
            << "~MSDataDescription() - Table written is not a valid MSDataDescription"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -137,7 +137,7 @@ MSTableMaps MSDataDescription::initMaps()
 
   // init requiredTableDesc
   // all required keywords
-  uInt i;
+  uint32_t i;
   for (i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));

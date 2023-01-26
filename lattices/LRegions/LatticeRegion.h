@@ -68,7 +68,7 @@ class LCRegion;
 //# <todo asof="yyyy/mm/dd">
 //# </todo>
 
-class LatticeRegion: public Lattice<Bool>
+class LatticeRegion: public Lattice<bool>
 {
 public:
     // The default constructor creates a LatticeRegion that is useless for just
@@ -99,19 +99,19 @@ public:
     LatticeRegion& operator= (const LatticeRegion& other);
 
     // Make a copy of the object (reference semantics).
-    virtual Lattice<Bool>* clone() const;
+    virtual Lattice<bool>* clone() const;
 
     // Is the LatticeRegion writable?
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Has the region a mask?
-    Bool hasMask() const;
+    bool hasMask() const;
 
     // Handle the (un)locking.
     // <group>
-    virtual Bool lock (FileLocker::LockType, uInt nattempts);
+    virtual bool lock (FileLocker::LockType, uint32_t nattempts);
     virtual void unlock();
-    virtual Bool hasLock (FileLocker::LockType) const;
+    virtual bool hasLock (FileLocker::LockType) const;
     // </group>
 
     // Resynchronize the PagedArray object with the lattice file.
@@ -147,33 +147,33 @@ public:
 
     // Returns the number of axes in this LatticeRegion. This includes all
     // degenerate axes.
-    virtual uInt ndim() const;
+    virtual uint32_t ndim() const;
 
     // Returns the total number of elements in this LatticeRegion.
     virtual size_t nelements() const;
 
-    // Check class internals - used for debugging. Should always return True
-    virtual Bool ok() const;
+    // Check class internals - used for debugging. Should always return true
+    virtual bool ok() const;
 
     // This function is used by the LatticeIterator class to generate an
     // iterator of the correct type for this Lattice. Not recommended
     // for general use. 
-    virtual LatticeIterInterface<Bool>*  makeIter
+    virtual LatticeIterInterface<bool>*  makeIter
                            (const LatticeNavigator& navigator,
-			    Bool useRef) const;
+			    bool useRef) const;
 
     // Returns the maximum recommended number of pixels for a cursor.
     // This is the number of pixels in a tile. 
-    virtual uInt advisedMaxPixels() const;
+    virtual uint32_t advisedMaxPixels() const;
 
     // Help the user pick a cursor for most efficient access.
-    virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+    virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
     // Maximum size - not necessarily all used. In pixels.
-    virtual uInt maximumCacheSize() const;
+    virtual uint32_t maximumCacheSize() const;
 
     // Set the maximum (allowed) cache size as indicated.
-    virtual void setMaximumCacheSize (uInt howManyPixels);
+    virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
     // Set the cache size as to "fit" the indicated path.
     virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -186,7 +186,7 @@ public:
     // in other rows and is always clipped to be less than the maximum value
     // set using the setMaximumCacheSize member function.
     // tiles. Tiles are cached using a first in first out algorithm. 
-    virtual void setCacheSizeInTiles (uInt howManyTiles);
+    virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
     // Clears and frees up the caches, but the maximum allowed cache size is 
     // unchanged from when setCacheSize was called
@@ -200,12 +200,12 @@ public:
     // They'll throw an exception is no mask is available or if
     // the mask is not writable.
     // <group>
-    virtual void set (const Bool& value);
-    virtual void apply (Bool (*function)(Bool));
-    virtual void apply (Bool (*function)(const Bool&));
-    virtual void apply (const Functional<Bool,Bool>& function);
-    virtual void putAt (const Bool& value, const IPosition& where);
-    virtual void copyData (const Lattice<Bool>& from);
+    virtual void set (const bool& value);
+    virtual void apply (bool (*function)(bool));
+    virtual void apply (bool (*function)(const bool&));
+    virtual void apply (const Functional<bool,bool>& function);
+    virtual void putAt (const bool& value, const IPosition& where);
+    virtual void copyData (const Lattice<bool>& from);
     // </group>
 
     // Convert positions to positions in the parent object.
@@ -215,10 +215,10 @@ public:
     // </group>
 
     // Do the actual getting of the mask.
-    virtual Bool doGetSlice (Array<Bool>& buffer, const Slicer& section);
+    virtual bool doGetSlice (Array<bool>& buffer, const Slicer& section);
 
     // Do the actual putting of the mask. Only possible if region is writable.
-    virtual void doPutSlice (const Array<Bool>& sourceBuffer,
+    virtual void doPutSlice (const Array<bool>& sourceBuffer,
 			     const IPosition& where,
 			     const IPosition& stride);
 
@@ -226,11 +226,11 @@ public:
 private:
     LCRegion*  itsRegion;
     Slicer     itsSlicer;
-    Bool       itsHasRegionMask;
+    bool       itsHasRegionMask;
 };
 
 
-inline Bool LatticeRegion::hasMask() const
+inline bool LatticeRegion::hasMask() const
 {
     return itsHasRegionMask;
 }

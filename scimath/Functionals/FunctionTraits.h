@@ -68,7 +68,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Function template. Bear in mind that the Function operator is defined
 // as <src>result = f<T>(x; parameters)</src>.
 // <ol>
-//  <li> Simple numeric type (Double, Complex, etc): result, parameters and
+//  <li> Simple numeric type (double, Complex, etc): result, parameters and
 // 	arguments: all the one defined templated type.
 //  <li> <src>AutoDiff<T></src> indicates the calculation (either automatic or
 //	with specialized implementations) of the result with a <src>T</src>
@@ -86,18 +86,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <dt> <src>Type</src>
 // <dd> The template argument
 // <dt> <src>BaseType</src>
-// <dd> One down in the template hierarchy if possible (e.g. <src>Double</src>
-//	for <src>AutoDiff<Double></src>)
+// <dd> One down in the template hierarchy if possible (e.g. <src>double</src>
+//	for <src>AutoDiff<double></src>)
 // <dt> <src>NumericType</src>
-// <dd> Ultimate numeric type (e.g. <src>Double</src> for
-//	<src>AutoDiff<AutoDiff<Double> ></src>
+// <dd> Ultimate numeric type (e.g. <src>double</src> for
+//	<src>AutoDiff<AutoDiff<double> ></src>
 // <dt> <src>ParamType</src>
 // <dd> Type used for parameters
 // <dt> <src>ArgType</src>
 // <dd> Type used for arguments
 // <dt> <src>DiffType</src>
-// <dd> The default differentiation type (e.g. <src>AutoDiff<Double></src>
-//		for <src>AutoDiff<Double></src>)
+// <dd> The default differentiation type (e.g. <src>AutoDiff<double></src>
+//		for <src>AutoDiff<double></src>)
 // <dt> <src>getValue()</src> 
 // <dd>		get the value of a simple numeric or of an <src>AutoDiff</src>
 // <dt> <src>setValue()</src> 
@@ -105,7 +105,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </dl>
 //
 // The specializations are done in such a way that higher order
-// derivatives (e.g. <src>AutoDiff<AutoDiff<Double> ></src>) are catered for.
+// derivatives (e.g. <src>AutoDiff<AutoDiff<double> ></src>) are catered for.
 //
 // Note that the class names in the following definitions are extended with
 // some individual id (like <src>_PA</src>): do not use them in programming,
@@ -151,8 +151,8 @@ public:
   // Get the value
   static const T &getValue(const T &in) { return in; }
   // Set a value (and possible derivative)
-  static void setValue(T &out, const T &val, const uInt,
-		       const uInt) { out = val; }
+  static void setValue(T &out, const T &val, const uint32_t,
+		       const uint32_t) { out = val; }
 };
 
 //# Following are specializations. Naming only for documentation
@@ -181,8 +181,8 @@ public:
   static const T &getValue(const Type &in) {
     return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); }
+  static void setValue(Type &out, const T &val, const uint32_t nder,
+		       const uint32_t i) { out = Type(val, nder, i); }
 };
 
 #undef FunctionTraits_P
@@ -210,8 +210,8 @@ public:
   static const T &getValue(const Type &in) {
     return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); }
+  static void setValue(Type &out, const T &val, const uint32_t nder,
+		       const uint32_t i) { out = Type(val, nder, i); }
 };
 
 #undef FunctionTraits_PA
@@ -239,8 +239,8 @@ public:
   static const T &getValue(const Type &in) {
     return FunctionTraits<T>::getValue(in.value()); }
   // Set a value (and possible derivative)
-  static void setValue(Type &out, const T &val, const uInt nder,
-		       const uInt i) { out = Type(val, nder, i); }
+  static void setValue(Type &out, const T &val, const uint32_t nder,
+		       const uint32_t i) { out = Type(val, nder, i); }
 };
 
 #undef FunctionTraits_PX

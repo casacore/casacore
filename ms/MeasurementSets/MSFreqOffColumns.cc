@@ -29,12 +29,12 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 MSFreqOffsetColumns::MSFreqOffsetColumns():
-  isNull_p(True)
+  isNull_p(true)
 {
 }
 
 MSFreqOffsetColumns::MSFreqOffsetColumns(const MSFreqOffset& msFreqOffset):
-  isNull_p(True)
+  isNull_p(true)
 {
   attach(msFreqOffset);
 }
@@ -71,7 +71,7 @@ void MSFreqOffsetColumns::attach(const MSFreqOffset& msFreqOffset)
 }
 
 void MSFreqOffsetColumns::
-setEpochRef(MEpoch::Types ref, Bool tableMustBeEmpty) {
+setEpochRef(MEpoch::Types ref, bool tableMustBeEmpty) {
   timeMeas_p.setDescRefCode(ref, tableMustBeEmpty);
 }
 

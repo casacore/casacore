@@ -61,11 +61,11 @@ class TableRecord;
 // Class <src>ValType</src> describes the data types and their
 // "undefined values".
 //
-// Supported are built-in data types, <src>Bool</src>,
+// Supported are built-in data types, <src>bool</src>,
 // <src>String</src>, <src>Complex</src> and <src>DComplex</src>.
 // As a rule, the smallest possible value of a data type is used as its
 // "undefined value"; for <src>String</src> we use the null string, and
-// for <src>Bool</src> the value <em>False</em>.
+// for <src>bool</src> the value <em>false</em>.
 //
 // The class does not contain data. It merely defines constants and
 // has overloaded functions that return in some form the "undefined
@@ -80,14 +80,14 @@ public:
     // Get the "undefined value" for this data type as the function's
     // return value.
     //<group>
-    static Bool      undefBool     ();
-    static Char      undefChar     ();
-    static uChar     undefUChar    ();
-    static Short     undefShort    ();
-    static uShort    undefUShort   ();
-    static Int       undefInt      ();
-    static uInt      undefUInt     ();
-    static Int64     undefInt64    ();
+    static bool      undefBool     ();
+    static char      undefChar     ();
+    static unsigned char     undefUChar    ();
+    static int16_t     undefShort    ();
+    static uint16_t    undefUShort   ();
+    static int32_t       undefInt      ();
+    static uint32_t      undefUInt     ();
+    static int64_t     undefInt64    ();
     static float     undefFloat    ();
     static double    undefDouble   ();
     static Complex   undefComplex  ();
@@ -99,14 +99,14 @@ public:
     // The <src>void*</src> function is not doing anything and is for 
     // TpOther types.
     //<group>
-    static void getUndef (Bool*);
-    static void getUndef (Char*);
-    static void getUndef (uChar*);
-    static void getUndef (Short*);
-    static void getUndef (uShort*);
-    static void getUndef (Int*);
-    static void getUndef (uInt*);
-    static void getUndef (Int64*);
+    static void getUndef (bool*);
+    static void getUndef (char*);
+    static void getUndef (unsigned char*);
+    static void getUndef (int16_t*);
+    static void getUndef (uint16_t*);
+    static void getUndef (int32_t*);
+    static void getUndef (uint32_t*);
+    static void getUndef (int64_t*);
     static void getUndef (float*);
     static void getUndef (double*);
     static void getUndef (Complex*);
@@ -118,14 +118,14 @@ public:
     // Get the data type code for this type as the function's
     // return value.
     //<group>
-    static DataType getType (const Bool*);
-    static DataType getType (const Char*);
-    static DataType getType (const uChar*);
-    static DataType getType (const Short*);
-    static DataType getType (const uShort*);
-    static DataType getType (const Int*);
-    static DataType getType (const uInt*);
-    static DataType getType (const Int64*);
+    static DataType getType (const bool*);
+    static DataType getType (const char*);
+    static DataType getType (const unsigned char*);
+    static DataType getType (const int16_t*);
+    static DataType getType (const uint16_t*);
+    static DataType getType (const int32_t*);
+    static DataType getType (const uint32_t*);
+    static DataType getType (const int64_t*);
     static DataType getType (const float*);
     static DataType getType (const double*);
     static DataType getType (const Complex*);
@@ -139,14 +139,14 @@ public:
     // the string "Other   ".
     //<group>
     static const String& getTypeStr (DataType);
-    static const String& getTypeStr (const Bool*);
-    static const String& getTypeStr (const Char*);
-    static const String& getTypeStr (const uChar*);
-    static const String& getTypeStr (const Short*);
-    static const String& getTypeStr (const uShort*);
-    static const String& getTypeStr (const Int*);
-    static const String& getTypeStr (const uInt*);
-    static const String& getTypeStr (const Int64*);
+    static const String& getTypeStr (const bool*);
+    static const String& getTypeStr (const char*);
+    static const String& getTypeStr (const unsigned char*);
+    static const String& getTypeStr (const int16_t*);
+    static const String& getTypeStr (const uint16_t*);
+    static const String& getTypeStr (const int32_t*);
+    static const String& getTypeStr (const uint32_t*);
+    static const String& getTypeStr (const int64_t*);
     static const String& getTypeStr (const float*);
     static const String& getTypeStr (const double*);
     static const String& getTypeStr (const Complex*);
@@ -162,7 +162,7 @@ public:
     // Get the size of data type in canonical format.
     // <br>The argument <src>BECanonical</src> determines if the big-endian
     // or little-endian canonical format is used.
-    static int getCanonicalSize (DataType, Bool BECanonical = True);
+    static int getCanonicalSize (DataType, bool BECanonical = true);
 
     // Get the functions to convert to/from canonical format.
     // These functions take the number of pixels as the length argument.
@@ -173,11 +173,11 @@ public:
     static void getCanonicalFunc (DataType dt,
 				  Conversion::ValueFunction*& readFunc,
 				  Conversion::ValueFunction*& writeFunc,
-				  uInt& nrElementsPerValue,
-				  Bool BECanonical = True);
+				  uint32_t& nrElementsPerValue,
+				  bool BECanonical = true);
 
     // Test if a data type can be promoted to another.
-    static Bool isPromotable (DataType from, DataType to);
+    static bool isPromotable (DataType from, DataType to);
 
     // Get the pointer to the routine which compares two values.
     static ObjCompareFunc* getCmpFunc (DataType);
@@ -189,14 +189,14 @@ public:
     // The <src>void*</src> function is not doing anything and is for
     // TpOther types.
     //<group>
-    static void put (AipsIO&, const Bool*);
-    static void put (AipsIO&, const Char*);
-    static void put (AipsIO&, const uChar*);
-    static void put (AipsIO&, const Short*);
-    static void put (AipsIO&, const uShort*);
-    static void put (AipsIO&, const Int*);
-    static void put (AipsIO&, const uInt*);
-    static void put (AipsIO&, const Int64*);
+    static void put (AipsIO&, const bool*);
+    static void put (AipsIO&, const char*);
+    static void put (AipsIO&, const unsigned char*);
+    static void put (AipsIO&, const int16_t*);
+    static void put (AipsIO&, const uint16_t*);
+    static void put (AipsIO&, const int32_t*);
+    static void put (AipsIO&, const uint32_t*);
+    static void put (AipsIO&, const int64_t*);
     static void put (AipsIO&, const float*);
     static void put (AipsIO&, const double*);
     static void put (AipsIO&, const Complex*);
@@ -209,14 +209,14 @@ public:
     // The <src>void*</src> function is not doing anything and is for
     // TpOther types.
     //<group>
-    static void get (AipsIO&, Bool*);
-    static void get (AipsIO&, Char*);
-    static void get (AipsIO&, uChar*);
-    static void get (AipsIO&, Short*);
-    static void get (AipsIO&, uShort*);
-    static void get (AipsIO&, Int*);
-    static void get (AipsIO&, uInt*);
-    static void get (AipsIO&, Int64*);
+    static void get (AipsIO&, bool*);
+    static void get (AipsIO&, char*);
+    static void get (AipsIO&, unsigned char*);
+    static void get (AipsIO&, int16_t*);
+    static void get (AipsIO&, uint16_t*);
+    static void get (AipsIO&, int32_t*);
+    static void get (AipsIO&, uint32_t*);
+    static void get (AipsIO&, int64_t*);
     static void get (AipsIO&, float*);
     static void get (AipsIO&, double*);
     static void get (AipsIO&, Complex*);
@@ -229,14 +229,14 @@ public:
     // The <src>void*</src> function is not doing anything and is for
     // TpOther types.
     //<group>
-    static void put (ostream&, const Bool*);
-    static void put (ostream&, const Char*);
-    static void put (ostream&, const uChar*);
-    static void put (ostream&, const Short*);
-    static void put (ostream&, const uShort*);
-    static void put (ostream&, const Int*);
-    static void put (ostream&, const uInt*);
-    static void put (ostream&, const Int64*);
+    static void put (ostream&, const bool*);
+    static void put (ostream&, const char*);
+    static void put (ostream&, const unsigned char*);
+    static void put (ostream&, const int16_t*);
+    static void put (ostream&, const uint16_t*);
+    static void put (ostream&, const int32_t*);
+    static void put (ostream&, const uint32_t*);
+    static void put (ostream&, const int64_t*);
     static void put (ostream&, const float*);
     static void put (ostream&, const double*);
     static void put (ostream&, const Complex*);
@@ -250,14 +250,14 @@ public:
     // data types) always returns the value <src>1</src>, since such
     // values cannot be undefined.
     //<group>
-    static int isDefined (const Bool* value,     const Bool* undef);
-    static int isDefined (const Char* value,     const Char* undef);
-    static int isDefined (const uChar* value,    const uChar* undef);
-    static int isDefined (const Short* value,    const Short* undef);
-    static int isDefined (const uShort* value,   const uShort* undef);
-    static int isDefined (const Int* value,      const Int* undef);
-    static int isDefined (const uInt* value,     const uInt* undef);
-    static int isDefined (const Int64* value,    const Int64* undef);
+    static int isDefined (const bool* value,     const bool* undef);
+    static int isDefined (const char* value,     const char* undef);
+    static int isDefined (const unsigned char* value,    const unsigned char* undef);
+    static int isDefined (const int16_t* value,    const int16_t* undef);
+    static int isDefined (const uint16_t* value,   const uint16_t* undef);
+    static int isDefined (const int32_t* value,      const int32_t* undef);
+    static int isDefined (const uint32_t* value,     const uint32_t* undef);
+    static int isDefined (const int64_t* value,    const int64_t* undef);
     static int isDefined (const float* value,    const float* undef);
     static int isDefined (const double* value,   const double* undef);
     static int isDefined (const Complex* value,  const Complex* undef);
@@ -267,14 +267,14 @@ public:
     //</group>
 
 private:
-    static const Bool     undefbool    ;
-    static const Char     undefchar    ;
-    static const uChar    undefuchar   ;
-    static const Short    undefshort   ;
-    static const uShort   undefushort  ;
-    static const Int      undefint     ;
-    static const uInt     undefuint    ;
-    static const Int64    undefint64   ;
+    static const bool     undefbool    ;
+    static const char     undefchar    ;
+    static const unsigned char    undefuchar   ;
+    static const int16_t    undefshort   ;
+    static const uint16_t   undefushort  ;
+    static const int32_t      undefint     ;
+    static const uint32_t     undefuint    ;
+    static const int64_t    undefint64   ;
     static const float    undeffloat   ;
     static const double   undefdouble  ;
     static const Complex  undefcomplex ;
@@ -357,21 +357,21 @@ private:
 
 
 
-inline Bool ValType::undefBool ()
+inline bool ValType::undefBool ()
     {return undefbool;}
-inline Char ValType::undefChar ()
+inline char ValType::undefChar ()
     {return undefchar;}
-inline uChar ValType::undefUChar ()
+inline unsigned char ValType::undefUChar ()
     {return undefuchar;}
-inline Short ValType::undefShort ()
+inline int16_t ValType::undefShort ()
     {return undefshort;}
-inline uShort ValType::undefUShort ()
+inline uint16_t ValType::undefUShort ()
     {return undefushort;}
-inline Int ValType::undefInt ()
+inline int32_t ValType::undefInt ()
     {return undefint;}
-inline uInt ValType::undefUInt ()
+inline uint32_t ValType::undefUInt ()
     {return undefuint;}
-inline Int64 ValType::undefInt64 ()
+inline int64_t ValType::undefInt64 ()
     {return undefint64;}
 inline float ValType::undefFloat ()
     {return undeffloat;}
@@ -385,21 +385,21 @@ inline String ValType::undefString ()
     {return undefstring;}
 
 
-inline void ValType::getUndef (Bool* val)
+inline void ValType::getUndef (bool* val)
     {*val = undefbool;}
-inline void ValType::getUndef (Char* val)
+inline void ValType::getUndef (char* val)
     {*val = undefchar;}
-inline void ValType::getUndef (uChar* val)
+inline void ValType::getUndef (unsigned char* val)
     {*val = undefuchar;}
-inline void ValType::getUndef (Short* val)
+inline void ValType::getUndef (int16_t* val)
     {*val = undefshort;}
-inline void ValType::getUndef (uShort* val)
+inline void ValType::getUndef (uint16_t* val)
     {*val = undefushort;}
-inline void ValType::getUndef (Int* val)
+inline void ValType::getUndef (int32_t* val)
     {*val = undefint;}
-inline void ValType::getUndef (uInt* val)
+inline void ValType::getUndef (uint32_t* val)
     {*val = undefuint;}
-inline void ValType::getUndef (Int64* val)
+inline void ValType::getUndef (int64_t* val)
     {*val = undefint64;}
 inline void ValType::getUndef (float* val)
     {*val = undeffloat;}
@@ -414,21 +414,21 @@ inline void ValType::getUndef (String* val)
 inline void ValType::getUndef (void*)
     {}
 
-inline DataType ValType::getType (const Bool*)
+inline DataType ValType::getType (const bool*)
     {return TpBool;}
-inline DataType ValType::getType (const Char*)
+inline DataType ValType::getType (const char*)
     {return TpChar;}
-inline DataType ValType::getType (const uChar*)
+inline DataType ValType::getType (const unsigned char*)
     {return TpUChar;}
-inline DataType ValType::getType (const Short*)
+inline DataType ValType::getType (const int16_t*)
     {return TpShort;}
-inline DataType ValType::getType (const uShort*)
+inline DataType ValType::getType (const uint16_t*)
     {return TpUShort;}
-inline DataType ValType::getType (const Int*)
+inline DataType ValType::getType (const int32_t*)
     {return TpInt;}
-inline DataType ValType::getType (const uInt*)
+inline DataType ValType::getType (const uint32_t*)
     {return TpUInt;}
-inline DataType ValType::getType (const Int64*)
+inline DataType ValType::getType (const int64_t*)
     {return TpInt64;}
 inline DataType ValType::getType (const float*)
     {return TpFloat;}
@@ -445,21 +445,21 @@ inline DataType ValType::getType (const TableRecord*)
 inline DataType ValType::getType (const void*)
     {return TpOther;}
 
-inline const String& ValType::getTypeStr (const Bool*)
+inline const String& ValType::getTypeStr (const bool*)
     {return strbool();}
-inline const String& ValType::getTypeStr (const Char*)
+inline const String& ValType::getTypeStr (const char*)
     {return strchar();}
-inline const String& ValType::getTypeStr (const uChar*)
+inline const String& ValType::getTypeStr (const unsigned char*)
     {return struchar();}
-inline const String& ValType::getTypeStr (const Short*)
+inline const String& ValType::getTypeStr (const int16_t*)
     {return strshort();}
-inline const String& ValType::getTypeStr (const uShort*)
+inline const String& ValType::getTypeStr (const uint16_t*)
     {return strushort();}
-inline const String& ValType::getTypeStr (const Int*)
+inline const String& ValType::getTypeStr (const int32_t*)
     {return strint();}
-inline const String& ValType::getTypeStr (const uInt*)
+inline const String& ValType::getTypeStr (const uint32_t*)
     {return struint();}
-inline const String& ValType::getTypeStr (const Int64*)
+inline const String& ValType::getTypeStr (const int64_t*)
     {return strint64();}
 inline const String& ValType::getTypeStr (const float*)
     {return strfloat();}
@@ -476,21 +476,21 @@ inline const String& ValType::getTypeStr (const TableRecord*)
 inline const String& ValType::getTypeStr (const void*)
     {return strother();}
 
-inline void ValType::put (AipsIO& ios, const Bool* value)
+inline void ValType::put (AipsIO& ios, const bool* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const Char* value)
+inline void ValType::put (AipsIO& ios, const char* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const uChar* value)
+inline void ValType::put (AipsIO& ios, const unsigned char* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const Short* value)
+inline void ValType::put (AipsIO& ios, const int16_t* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const uShort* value)
+inline void ValType::put (AipsIO& ios, const uint16_t* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const Int* value)
+inline void ValType::put (AipsIO& ios, const int32_t* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const uInt* value)
+inline void ValType::put (AipsIO& ios, const uint32_t* value)
     {ios << *value;}
-inline void ValType::put (AipsIO& ios, const Int64* value)
+inline void ValType::put (AipsIO& ios, const int64_t* value)
     {ios << *value;}
 inline void ValType::put (AipsIO& ios, const float* value)
     {ios << *value;}
@@ -505,21 +505,21 @@ inline void ValType::put (AipsIO& ios, const String* value)
 inline void ValType::put (AipsIO&, const void*)
     {}
 
-inline void ValType::get (AipsIO& ios, Bool* value)
+inline void ValType::get (AipsIO& ios, bool* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, Char* value)
+inline void ValType::get (AipsIO& ios, char* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, uChar* value)
+inline void ValType::get (AipsIO& ios, unsigned char* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, Short* value)
+inline void ValType::get (AipsIO& ios, int16_t* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, uShort* value)
+inline void ValType::get (AipsIO& ios, uint16_t* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, Int* value)
+inline void ValType::get (AipsIO& ios, int32_t* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, uInt* value)
+inline void ValType::get (AipsIO& ios, uint32_t* value)
     {ios >> *value;}
-inline void ValType::get (AipsIO& ios, Int64* value)
+inline void ValType::get (AipsIO& ios, int64_t* value)
     {ios >> *value;}
 inline void ValType::get (AipsIO& ios, float* value)
     {ios >> *value;}
@@ -534,21 +534,21 @@ inline void ValType::get (AipsIO& ios, String* value)
 inline void ValType::get (AipsIO&, void*)
     {}
 
-inline void ValType::put (ostream& ios, const Bool* value)
+inline void ValType::put (ostream& ios, const bool* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const Char* value)
+inline void ValType::put (ostream& ios, const char* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const uChar* value)
+inline void ValType::put (ostream& ios, const unsigned char* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const Short* value)
+inline void ValType::put (ostream& ios, const int16_t* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const uShort* value)
+inline void ValType::put (ostream& ios, const uint16_t* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const Int* value)
+inline void ValType::put (ostream& ios, const int32_t* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const uInt* value)
+inline void ValType::put (ostream& ios, const uint32_t* value)
     {ios << *value;}
-inline void ValType::put (ostream& ios, const Int64* value)
+inline void ValType::put (ostream& ios, const int64_t* value)
     {ios << *value;}
 inline void ValType::put (ostream& ios, const float* value)
     {ios << *value;}
@@ -564,21 +564,21 @@ inline void ValType::put (ostream&, const void*)
     {}
 
 
-inline int ValType::isDefined (const Bool* value,     const Bool* undef)
+inline int ValType::isDefined (const bool* value,     const bool* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const Char* value,     const Char* undef)
+inline int ValType::isDefined (const char* value,     const char* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const uChar* value,    const uChar* undef)
+inline int ValType::isDefined (const unsigned char* value,    const unsigned char* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const Short* value,    const Short* undef)
+inline int ValType::isDefined (const int16_t* value,    const int16_t* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const uShort* value,   const uShort* undef)
+inline int ValType::isDefined (const uint16_t* value,   const uint16_t* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const Int* value,      const Int* undef)
+inline int ValType::isDefined (const int32_t* value,      const int32_t* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const uInt* value,     const uInt* undef)
+inline int ValType::isDefined (const uint32_t* value,     const uint32_t* undef)
     {return *value != *undef;}
-inline int ValType::isDefined (const Int64* value,    const Int64* undef)
+inline int ValType::isDefined (const int64_t* value,    const int64_t* undef)
     {return *value != *undef;}
 inline int ValType::isDefined (const float* value,    const float* undef)
     {return *value != *undef;}

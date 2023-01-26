@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
+uint32_t MCRadialVelocity::ToRef_p[N_Routes][3] = {
   {MRadialVelocity::LSRD,	MRadialVelocity::BARY,	 	0},
   {MRadialVelocity::BARY,	MRadialVelocity::LSRD,		0},
   {MRadialVelocity::BARY,	MRadialVelocity::GEO,		0},
@@ -50,7 +50,7 @@ uInt MCRadialVelocity::ToRef_p[N_Routes][3] = {
   {MRadialVelocity::LGROUP,	MRadialVelocity::BARY,	 	0},
   {MRadialVelocity::BARY,	MRadialVelocity::CMB,		0},
   {MRadialVelocity::CMB,	MRadialVelocity::BARY,		0} };
-uInt MCRadialVelocity::
+uint32_t MCRadialVelocity::
 FromTo_p[MRadialVelocity::N_Types][MRadialVelocity::N_Types];
 std::once_flag MCRadialVelocity::theirInitOnceFlag;
 
@@ -73,9 +73,9 @@ void MCRadialVelocity::getConvert(MConvertBase &mc,
 				  const MRBase &inref, 
 				  const MRBase &outref) {
 
-  Int iin  = inref.getType();
-  Int iout = outref.getType();
-  Int tmp;
+  int32_t iin  = inref.getType();
+  int32_t iout = outref.getType();
+  int32_t tmp;
   while (iin != iout) {
     tmp = FromTo_p[iin][iout];
     iin = ToRef_p[tmp][1];
@@ -92,9 +92,9 @@ void MCRadialVelocity::clearConvert() {
 }
 
 //# Conversion routines
-void MCRadialVelocity::initConvert(uInt which, MConvertBase &mc) {
+void MCRadialVelocity::initConvert(uint32_t which, MConvertBase &mc) {
 
-  if (False) initConvert(which, mc);	// Stop warning
+  if (false) initConvert(which, mc);	// Stop warning
 
   if (!MVPOS1) MVPOS1 = new MVPosition();
   if (!MVDIR1) MVDIR1 = new MVDirection();
@@ -152,9 +152,9 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
 				 MRBase &inref,
 				 MRBase &outref,
 				 const MConvertBase &mc) {
-  Double g1, g2, g3, lengthE, tdbTime;
+  double g1, g2, g3, lengthE, tdbTime;
 
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
 
     switch (mc.getMethod(i)) {
 

@@ -62,16 +62,16 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // doppler tracking id, used in SPECTRAL_WINDOW table <BR>
-    // Int.
+    // int32_t.
     DOPPLER_ID,
     // Source id, pointer to SOURCE table <BR>
-    // Int.
+    // int32_t.
     SOURCE_ID,
     // Transition id, index into list of transitions in SOURCE table<BR>
-    // Int
+    // int32_t
     TRANSITION_ID,
     // Velocity definition for Doppler shift
-    // Double - m/s - DOPPLER
+    // double - m/s - DOPPLER
     VELDEF,
     // Number of required columns
     NUMBER_REQUIRED_COLUMNS=VELDEF,

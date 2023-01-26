@@ -39,10 +39,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableParseUpdate::TableParseUpdate (const String& columnName,
                                       const String& columnNameMask,
                                       const TableExprNode& node,
-                                      Bool checkAggr)
+                                      bool checkAggr)
     : columnName_p     (columnName),
       columnNameMask_p (columnNameMask),
-      maskFirst_p      (False),
+      maskFirst_p      (false),
       indexPtr_p       (0),
       node_p           (node)
   {
@@ -58,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                       const TaQLStyle& style)
     : columnName_p     (columnName),
       columnNameMask_p (columnNameMask),
-      maskFirst_p      (False),
+      maskFirst_p      (false),
       indexPtr_p       (0),
       node_p           (node)
   {
@@ -69,7 +69,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         throw TableInvExpr ("No mask column name can be given if the update "
                             "data column is masked");
       }
-      maskFirst_p = True;
+      maskFirst_p = true;
     }
   }
 
@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                       const TaQLStyle& style)
     : columnName_p     (columnName),
       columnNameMask_p (columnNameMask),
-      maskFirst_p      (False),
+      maskFirst_p      (false),
       indexPtr_p       (0),
       node_p           (node)
   {
@@ -187,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseUpdate::copyMaskedValue (rownr_t row, ArrayColumn<TCOL>& acol,
                                           const Slicer* slicerPtr,
                                           const TNODE* val,
-                                          size_t incr, const Array<Bool>& mask)
+                                          size_t incr, const Array<bool>& mask)
   {
     // Get the array from the table.
     Array<TCOL> res(mask.shape());
@@ -198,7 +198,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Copy values where masked.
     typename Array<TCOL>::iterator ito = res.begin();
-    Array<Bool>::const_iterator imask = mask.begin();
+    Array<bool>::const_iterator imask = mask.begin();
     size_t n = res.size();
     for (size_t i=0; i<n; ++i) {
       if (*imask) {
@@ -218,12 +218,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<typename TCOL, typename TNODE>
   void TableParseUpdate::updateValue (rownr_t row, const TableExprId& rowid,
-                                      Bool isScalarCol,
+                                      bool isScalarCol,
                                       const TableExprNode& node,
-                                      const Array<Bool>& mask,
+                                      const Array<bool>& mask,
                                       TableColumn& col,
                                       const Slicer* slicerPtr,
-                                      ArrayColumn<Bool>& maskCol)
+                                      ArrayColumn<bool>& maskCol)
   {
     if (isScalarCol) {
       updateScalar<TCOL,TNODE> (row, rowid, node, col);
@@ -242,13 +242,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           updateSlice<TCOL,TNODE> (row, rowid, node, aval.array(),
                                    *slicerPtr, acol);
           if (! maskCol.isNull()) {
-            updateSlice<Bool,Bool> (row, rowid, node, aval.mask(),
+            updateSlice<bool,bool> (row, rowid, node, aval.mask(),
                                     *slicerPtr, maskCol);
           }
         } else {
           updateArray<TCOL,TNODE> (row, rowid, node, aval.array(), acol);
           if (! maskCol.isNull()) {
-            updateArray<Bool,Bool> (row, rowid, node, aval.mask(), maskCol);
+            updateArray<bool,bool> (row, rowid, node, aval.mask(), maskCol);
           }
         }
       } else {
@@ -257,12 +257,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         if (acol.isDefined(row)) {
           IPosition shapeCol = acol.shape (row);
           // Check shapes, get possible slice from mask.
-          Array<Bool> smask(makeMaskSlice (mask, shapeCol, slicerPtr));
+          Array<bool> smask(makeMaskSlice (mask, shapeCol, slicerPtr));
           // Get the expression data (scalar or array).
           TNODE sval;
           const TNODE* ptr = &sval;
           size_t incr = 0;
-          Bool deleteIt;
+          bool deleteIt;
           if (node.isScalar()) {
             node.get (rowid, sval);
           } else {
@@ -279,7 +279,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           if (! node.isScalar()) {
             aval.array().freeStorage (ptr, deleteIt);
             if (! maskCol.isNull()) {
-              const Bool* bptr = aval.mask().getStorage (deleteIt);
+              const bool* bptr = aval.mask().getStorage (deleteIt);
               copyMaskedValue (row, maskCol, slicerPtr, bptr, 1, smask);
               aval.mask().freeStorage (bptr, deleteIt);
             }
@@ -289,7 +289,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  Array<Bool> TableParseUpdate::makeMaskSlice (const Array<Bool>& mask,
+  Array<bool> TableParseUpdate::makeMaskSlice (const Array<bool>& mask,
                                                const IPosition& shapeCol,
                                                const Slicer* slicerPtr)
   {
@@ -318,8 +318,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return mask;
   }
 
-  void TableParseUpdate::checkMaskColumn (Bool hasMask,
-                                          const ArrayColumn<Bool>& maskCol,
+  void TableParseUpdate::checkMaskColumn (bool hasMask,
+                                          const ArrayColumn<bool>& maskCol,
                                           const TableColumn& col)
   {
     // If a mask column is given, the expression must have a mask.
@@ -336,7 +336,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void TableParseUpdate::updateColumn (TableColumn& col,
-                                       ArrayColumn<Bool>& maskCol,
+                                       ArrayColumn<bool>& maskCol,
                                        rownr_t row,
                                        const TableExprId& rowid)
   {
@@ -346,7 +346,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       slicerPtr = &(indexPtr_p->getSlicer(rowid));
     }
     // Evaluate a possible mask.
-    MArray<Bool> mask;
+    MArray<bool> mask;
     if (! mask_p.isNull()) {
       mask_p.get (rowid, mask);
     }
@@ -355,12 +355,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The node data type should be convertible to the column data type.
     // The updateValue function does the actual work.
     // We simply switch on the types.
-    Bool isScalarCol = col.columnDesc().isScalar();
+    bool isScalarCol = col.columnDesc().isScalar();
     switch (node_p.getNodeRep()->dataType()) {
     case TableExprNodeRep::NTBool:
       switch (col.columnDesc().dataType()) {
       case TpBool:
-        updateValue<Bool,Bool> (row, rowid, isScalarCol, node_p,
+        updateValue<bool,bool> (row, rowid, isScalarCol, node_p,
                                 mask.array(), col, slicerPtr, maskCol);
         break;
       default:
@@ -386,43 +386,43 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case TableExprNodeRep::NTInt:
       switch (col.columnDesc().dataType()) {
       case TpUChar:
-        updateValue<uChar,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<unsigned char,int64_t> (row, rowid, isScalarCol, node_p,
                                   mask.array(), col, slicerPtr, maskCol);
         break;
       case TpShort:
-        updateValue<Short,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<int16_t,int64_t> (row, rowid, isScalarCol, node_p,
                                   mask.array(), col, slicerPtr, maskCol);
         break;
       case TpUShort:
-        updateValue<uShort,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<uint16_t,int64_t> (row, rowid, isScalarCol, node_p,
                                    mask.array(), col, slicerPtr, maskCol);
         break;
       case TpInt:
-        updateValue<Int,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<int32_t,int64_t> (row, rowid, isScalarCol, node_p,
                                 mask.array(), col, slicerPtr, maskCol);
         break;
       case TpUInt:
-        updateValue<uInt,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<uint32_t,int64_t> (row, rowid, isScalarCol, node_p,
                                  mask.array(), col, slicerPtr, maskCol);
         break;
       case TpInt64:
-        updateValue<Int64,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<int64_t,int64_t> (row, rowid, isScalarCol, node_p,
                                   mask.array(), col, slicerPtr, maskCol);
         break;
       case TpFloat:
-        updateValue<Float,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<float,int64_t> (row, rowid, isScalarCol, node_p,
                                   mask.array(), col, slicerPtr, maskCol);
         break;
       case TpDouble:
-        updateValue<Double,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<double,int64_t> (row, rowid, isScalarCol, node_p,
                                    mask.array(), col, slicerPtr, maskCol);
         break;
       case TpComplex:
-        updateValue<Complex,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<Complex,int64_t> (row, rowid, isScalarCol, node_p,
                                     mask.array(), col, slicerPtr, maskCol);
         break;
       case TpDComplex:
-        updateValue<DComplex,Int64> (row, rowid, isScalarCol, node_p,
+        updateValue<DComplex,int64_t> (row, rowid, isScalarCol, node_p,
                                      mask.array(), col, slicerPtr, maskCol);
         break;
       default:
@@ -436,43 +436,43 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case TableExprNodeRep::NTDate:
       switch (col.columnDesc().dataType()) {
       case TpUChar:
-        updateValue<uChar,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<unsigned char,double> (row, rowid, isScalarCol, node_p,
                                    mask.array(), col, slicerPtr, maskCol);
         break;
       case TpShort:
-        updateValue<Short,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<int16_t,double> (row, rowid, isScalarCol, node_p,
                                    mask.array(), col, slicerPtr, maskCol);
         break;
       case TpUShort:
-        updateValue<uShort,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<uint16_t,double> (row, rowid, isScalarCol, node_p,
                                     mask.array(), col, slicerPtr, maskCol);
         break;
       case TpInt:
-        updateValue<Int,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<int32_t,double> (row, rowid, isScalarCol, node_p,
                                  mask.array(), col, slicerPtr, maskCol);
         break;
       case TpUInt:
-        updateValue<uInt,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<uint32_t,double> (row, rowid, isScalarCol, node_p,
                                   mask.array(), col, slicerPtr, maskCol);
         break;
       case TpInt64:
-        updateValue<Int64,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<int64_t,double> (row, rowid, isScalarCol, node_p,
                                    mask.array(), col, slicerPtr, maskCol);
         break;
       case TpFloat:
-        updateValue<Float,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<float,double> (row, rowid, isScalarCol, node_p,
                                    mask.array(), col, slicerPtr, maskCol);
         break;
       case TpDouble:
-        updateValue<Double,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<double,double> (row, rowid, isScalarCol, node_p,
                                     mask.array(), col, slicerPtr, maskCol);
         break;
       case TpComplex:
-        updateValue<Complex,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<Complex,double> (row, rowid, isScalarCol, node_p,
                                      mask.array(), col, slicerPtr, maskCol);
         break;
       case TpDComplex:
-        updateValue<DComplex,Double> (row, rowid, isScalarCol, node_p,
+        updateValue<DComplex,double> (row, rowid, isScalarCol, node_p,
                                       mask.array(), col, slicerPtr, maskCol);
         break;
       default:
@@ -509,13 +509,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Check if the correct table is used in the update and index expression.
     // A constant expression can be given.
-    if (! node_p.checkTableSize (origTable, True)) {
+    if (! node_p.checkTableSize (origTable, true)) {
       throw TableInvExpr ("Table(s) with incorrect size used in the "
                           "UPDATE expr of column " + columnName_p +
                           " (mismatches first table)");
     }
     if (indexPtr_p != 0) {
-      if (! indexNode_p.checkTableSize (updTable, True)) {
+      if (! indexNode_p.checkTableSize (updTable, true)) {
         throw TableInvExpr ("Table(s) with incorrect size used in the "
                             "index expr in UPDATE of column " + columnName_p +
                             " (mismatches first table)");
@@ -536,7 +536,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                           updTable.tableName());
     }
     const ColumnDesc& coldesc = tabdesc[columnName_p];
-    Bool isScalar = coldesc.isScalar();
+    bool isScalar = coldesc.isScalar();
     if (! columnNameMask_p.empty()) {
       if (! tabdesc.isColumn (columnNameMask_p)) {
         throw TableInvExpr ("Update column " + columnNameMask_p +
@@ -555,7 +555,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       if (coldescMask.dataType() != TpBool) {
         throw TableInvExpr ("Update mask column " + columnNameMask_p +
-                            " must have data type Bool");
+                            " must have data type bool");
       }
     }
     // An index expression can only be given for an array column.
@@ -565,7 +565,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             " scalar column " + columnName_p);
       }
       if (indexPtr_p->isSingle()) {
-        isScalar = True;
+        isScalar = true;
       }
     }
     // Check if the value type matches.

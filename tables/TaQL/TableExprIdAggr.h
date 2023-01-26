@@ -94,7 +94,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return *itsResult; }
 
     // Get the magic value (to check if correct).
-    uInt getMagicValue() const
+    uint32_t getMagicValue() const
       { return itsMagicValue; }
 
     // Cast a TableExprId object to TableExprIdAggr. It checks if the cast
@@ -107,7 +107,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
   private:
-    uInt itsMagicValue;
+    uint32_t itsMagicValue;
     CountedPtr<TableExprGroupResult> itsResult;
   };
 

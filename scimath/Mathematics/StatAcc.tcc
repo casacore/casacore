@@ -76,8 +76,8 @@ void StatAcc<T>::copy (const StatAcc<T>& that)
 
 template<class T>
 void StatAcc<T>::put(const Array<T>& v) {
-    uInt ntotal = v.nelements();
-    Bool vDelete;
+    uint32_t ntotal = v.nelements();
+    bool vDelete;
     const T* vStorage = v.getStorage(vDelete);
     const T* vs = vStorage;
     while (ntotal--) {put1(*vs++,1);}
@@ -87,16 +87,16 @@ void StatAcc<T>::put(const Array<T>& v) {
 // Accumulate Array values with individual weights:
 
 template<class T>
-void StatAcc<T>::put(const Array<T>& v, const Array<Float>& w) {
-    uInt ntotal = v.nelements();
+void StatAcc<T>::put(const Array<T>& v, const Array<float>& w) {
+    uint32_t ntotal = v.nelements();
     if (ntotal != w.nelements()) {
 	throw(AipsError("StatAcc<T>::put(Array& v, Array& w): v and w have different length"));
     }
-    Bool vDelete,wDelete;
+    bool vDelete,wDelete;
     const T* vStorage = v.getStorage(vDelete);
     const T* vs = vStorage;
-    const Float* wStorage = w.getStorage(wDelete);
-    const Float* ws = wStorage;
+    const float* wStorage = w.getStorage(wDelete);
+    const float* ws = wStorage;
     while (ntotal--) {put1(*vs++,*ws++);}
     v.freeStorage(vStorage, vDelete); 
     w.freeStorage(wStorage, wDelete); 
@@ -107,7 +107,7 @@ void StatAcc<T>::put(const Array<T>& v, const Array<Float>& w) {
 
 template<class T>
 void StatAcc<T>::put(const Block<T>& v) {
-    for (uInt i=0; i<v.nelements(); i++) { 
+    for (uint32_t i=0; i<v.nelements(); i++) { 
 	put1(v[i],1);
     }
 }
@@ -115,12 +115,12 @@ void StatAcc<T>::put(const Block<T>& v) {
 // Accumulate a Block of values with indivudual weights:
 
 template<class T>
-void StatAcc<T>::put(const Block<T>& v, const Block<Float>& w) {
-    uInt ntotal = v.nelements();
+void StatAcc<T>::put(const Block<T>& v, const Block<float>& w) {
+    uint32_t ntotal = v.nelements();
     if (ntotal != w.nelements()) {
 	throw(AipsError("StatAcc<T>::put(Block& v, Block& w): v and w have different length"));
     }
-    for (uInt i=0; i<v.nelements(); i++) { 
+    for (uint32_t i=0; i<v.nelements(); i++) { 
 	put1(v[i],w[i]);
     }
 }
@@ -128,7 +128,7 @@ void StatAcc<T>::put(const Block<T>& v, const Block<Float>& w) {
 // Private helper routine: accumulate a single weighted value:
 
 template<class T>
-void StatAcc<T>::put1(const T v, const Float w)
+void StatAcc<T>::put1(const T v, const float w)
 {
     if (w != 0) {
 	if (itsWtot == 0) {                    // first time 
@@ -155,77 +155,77 @@ void StatAcc<T>::put1(const T v, const Float w)
 // Get statistics results:
 
 template<class T> 
-Double StatAcc<T>::getWtot() const              // get total weight
+double StatAcc<T>::getWtot() const              // get total weight
 {
     return itsWtot;
 }
 
 template<class T>
-uInt StatAcc<T>::getCount() const               // get number of samples
+uint32_t StatAcc<T>::getCount() const               // get number of samples
 {     
     return itsCount;
 }
 
 
 template<class T>
-Fallible<Double> StatAcc<T>::getMax() const         // get minimum value  
+Fallible<double> StatAcc<T>::getMax() const         // get minimum value  
 {     
     if (itsWtot == 0) {
-	return Fallible<Double>();      
+	return Fallible<double>();      
     }
-    return Fallible<Double>(itsMax);
+    return Fallible<double>(itsMax);
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getMin() const       // get minimum value 
+Fallible<double> StatAcc<T>::getMin() const       // get minimum value 
 {
     if (itsWtot == 0) {
-	return Fallible<Double>();      
+	return Fallible<double>();      
     }
-    return Fallible<Double>(itsMin);
+    return Fallible<double>(itsMin);
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getMean() const     // get mean value 
+Fallible<double> StatAcc<T>::getMean() const     // get mean value 
 {
     if (itsWtot == 0) {
-	return Fallible<Double>();
+	return Fallible<double>();
     }      
-    return Fallible<Double>(itsWsum/itsWtot);
+    return Fallible<double>(itsWsum/itsWtot);
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getRmsAbs() const  // get rmsAbs value 
+Fallible<double> StatAcc<T>::getRmsAbs() const  // get rmsAbs value 
 {
     if (itsWtot == 0) {
-	return Fallible<Double>();
+	return Fallible<double>();
     }      
-    return Fallible<Double>(sqrt(itsWssum/itsWtot));
+    return Fallible<double>(sqrt(itsWssum/itsWtot));
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getRms() const     // get rms w.r.t. the mean 
+Fallible<double> StatAcc<T>::getRms() const     // get rms w.r.t. the mean 
 {
     if (getVariance().isValid()) {
-	Double ms = getVariance();
+	double ms = getVariance();
 	if (ms >= 0) {
-	    return Fallible<Double>(sqrt(ms));  // valid
+	    return Fallible<double>(sqrt(ms));  // valid
 	} else {
-	    return Fallible<Double>(0);         // .....?
+	    return Fallible<double>(0);         // .....?
 	}
     } else {
-	return Fallible<Double>();              // 
+	return Fallible<double>();              // 
     }
 }
 
 template<class T> 
-Fallible<Double> StatAcc<T>::getVariance() const     // get variance
+Fallible<double> StatAcc<T>::getVariance() const     // get variance
 { 
     if (getMean().isValid()) {
-	Double mean = getMean();
-	return Fallible<Double>(itsWssum/itsWtot - mean*mean); 
+	double mean = getMean();
+	return Fallible<double>(itsWssum/itsWtot - mean*mean); 
     } else {
-	return Fallible<Double>(); 
+	return Fallible<double>(); 
     }
 }
 
@@ -278,7 +278,7 @@ template<class T>
 void StatAcc<T>::printSummaryLine (ostream& os, const String& caption) const
 { 
 	ios::fmtflags flags = os.flags();          // save current setting
-    uInt p = 4;                       // precision
+    uint32_t p = 4;                       // precision
     os.setf(ios::right,ios::adjustfield);
 
     if (itsWtot != 0) {
@@ -302,7 +302,7 @@ template<class T>
 void StatAcc<T>::printSummaryLineHeader (ostream& os, const String& caption) const
 { 
 	ios::fmtflags flags = os.flags();          // save current setting
-    uInt p = 4;                       // precision
+    uint32_t p = 4;                       // precision
 
     // print one-line header
     os.setf(ios::right,ios::adjustfield);
@@ -328,7 +328,7 @@ void StatAcc<T>::printSummaryList (ostream& os, const String& caption) const
 
     os << " " << endl;               // skip line
     os << " StatAcc summary for: " << caption << endl; 
-    uInt p = 12;                     // precision 
+    uint32_t p = 12;                     // precision 
     os << setprecision(p); 
 
     os << " Wtot=    " << setw(p+3) << getWtot() << endl; 

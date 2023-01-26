@@ -51,7 +51,7 @@ SDFeedHandler::SDFeedHandler()
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)
 {;}
 
-SDFeedHandler::SDFeedHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row) 
+SDFeedHandler::SDFeedHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row) 
     : index_p(0), msFeed_p(0), msFeedCols_p(0), feedId_p(-1), nextFeedId_p(0), nrecpt_p(0)
 {
     initAll(ms, handledCols, row);
@@ -97,7 +97,7 @@ SDFeedHandler &SDFeedHandler::operator=(const SDFeedHandler &other)
     return *this;
 }
 
-void SDFeedHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFeedHandler::attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     clearAll();
     initAll(ms, handledCols, row);
@@ -106,11 +106,11 @@ void SDFeedHandler::attach(MeasurementSet &ms, Vector<Bool> &handledCols, const 
 void SDFeedHandler::resetRow(const Record &row)
 {
     clearRow();
-    Vector<Bool> dummyCols(row.nfields());
+    Vector<bool> dummyCols(row.nfields());
     initRow(dummyCols, row);
 }
 
-void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vector<Int> &stokes)
+void SDFeedHandler::fill(const Record &, int32_t antennaId, int32_t spwinId, const Vector<int32_t> &stokes)
 {
     // don't bother unless there is something there
     if (msFeed_p) {
@@ -118,13 +118,13 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 	stokesToPolType(stokes, polType);
 	*numRecpKey_p = polType.nelements();
 	nrecpt_p = *numRecpKey_p;
-	Bool found = False;
+	bool found = false;
 	feedId_p = -1;
 	Vector<rownr_t> foundRows = index_p->getRowNumbers();
-	uInt whichOne = 0;
-	// this is True if the row has probably come from a MS AND FEED1 == FEED2
+	uint32_t whichOne = 0;
+	// this is true if the row has probably come from a MS AND FEED1 == FEED2
 	// When true, fill will try and reuse the same feed number if possible
-	Bool doMSCheck = feed1Field_p.isAttached() && feed2Field_p.isAttached() && *feed1Field_p == *feed2Field_p;
+	bool doMSCheck = feed1Field_p.isAttached() && feed2Field_p.isAttached() && *feed1Field_p == *feed2Field_p;
 	// also, ignore the MS row columns if NUM_RECEPTORS there doesn't match numRecpKey_p
 	doMSCheck = doMSCheck && numReceptorsField_p.isAttached() && *numReceptorsField_p == *numRecpKey_p;
 	// also, ignore the MS row columns if POLARIZATION_TYPE doesn't match polType
@@ -144,7 +144,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 	}
 	while (!found && whichOne<foundRows.nelements()) {
 	    // these must all have the required number of receptors
-	    uInt thisRow = foundRows(whichOne);
+	    uint32_t thisRow = foundRows(whichOne);
 	    if (allEQ(polType, msFeedCols_p->polarizationType()(thisRow))) {
 		// we can reuse this feed id, at least
 		feedId_p = msFeedCols_p->feedId()(thisRow);
@@ -152,7 +152,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 		if (msFeedCols_p->antennaId()(thisRow) == antennaId &&
 		    msFeedCols_p->spectralWindowId()(thisRow) == spwinId) {
 		    // we have a winner
-		    found = True;
+		    found = true;
 		    if (doMSCheck) {
 			// double check to see if this row matches the one in the table
 			if (found && beamIdField_p.isAttached()) { 
@@ -190,7 +190,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 	// if it was found, nothing else to do
 	if (!found) {
 	    // we need to add one
-	    Int newRow = msFeed_p->nrow();
+	    int32_t newRow = msFeed_p->nrow();
 	    if (doMSCheck) {
 		// we're reusing what is in the row from a previous MS
 		// the feed number
@@ -225,7 +225,7 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 	    if (beamOffsetField_p.isAttached()) {
 		msFeedCols_p->beamOffset().put(newRow, *beamOffsetField_p);
 	    } else {
-		msFeedCols_p->beamOffset().put(newRow, Matrix<Double>(2,*numRecpKey_p,0.0));
+		msFeedCols_p->beamOffset().put(newRow, Matrix<double>(2,*numRecpKey_p,0.0));
 	    }
 	    msFeedCols_p->polarizationType().put(newRow, polType);
 	    if (polResponseField_p.isAttached()) {
@@ -239,14 +239,14 @@ void SDFeedHandler::fill(const Record &, Int antennaId, Int spwinId, const Vecto
 	    if (positionField_p.isAttached()) {
 		msFeedCols_p->position().put(newRow, *positionField_p);
 	    } else {
-		msFeedCols_p->position().put(newRow, Vector<Double>(3,0.0));
+		msFeedCols_p->position().put(newRow, Vector<double>(3,0.0));
 	    }
 	    if (receptorAngleField_p.isAttached()) {
 		msFeedCols_p->receptorAngle().put(newRow, *receptorAngleField_p);
 	    } else if (scaReceptorAngleField_p.isAttached()) {
-		msFeedCols_p->receptorAngle().put(newRow, Vector<Double>(*numRecpKey_p, *scaReceptorAngleField_p));
+		msFeedCols_p->receptorAngle().put(newRow, Vector<double>(*numRecpKey_p, *scaReceptorAngleField_p));
 	    } else {
-		msFeedCols_p->receptorAngle().put(newRow, Vector<Double>(*numRecpKey_p, 0.0));
+		msFeedCols_p->receptorAngle().put(newRow, Vector<double>(*numRecpKey_p, 0.0));
 	    }
 	    if (phasedFeedIdField_p.isAttached()) {
 		if (msFeedCols_p->phasedFeedId().isNull() && *phasedFeedIdField_p >= 0) {
@@ -305,7 +305,7 @@ void SDFeedHandler::clearRow()
     polarizationTypeField_p.detach();
 }
 
-void SDFeedHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row)
+void SDFeedHandler::initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row)
 {
     msFeed_p = new MSFeed(ms.feed());
     AlwaysAssert(msFeed_p, AipsError);
@@ -326,70 +326,70 @@ void SDFeedHandler::initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const
     initRow(handledCols, row);
 }
 
-void SDFeedHandler::initRow(Vector<Bool> &handledCols, const Record &row)
+void SDFeedHandler::initRow(Vector<bool> &handledCols, const Record &row)
 {
     AlwaysAssert(handledCols.nelements()==row.description().nfields(), AipsError);
 
     if (row.fieldNumber("MAIN_FEED1") >= 0 && row.dataType("MAIN_FEED1") == TpInt) {
 	feed1Field_p.attachToRecord(row, "MAIN_FEED1");
-	handledCols(row.fieldNumber("MAIN_FEED1")) = True;
+	handledCols(row.fieldNumber("MAIN_FEED1")) = true;
     }
     if (row.fieldNumber("MAIN_FEED2") >= 0 && row.dataType("MAIN_FEED2") == TpInt) {
 	feed2Field_p.attachToRecord(row, "MAIN_FEED2");
-	handledCols(row.fieldNumber("MAIN_FEED2")) = True;
+	handledCols(row.fieldNumber("MAIN_FEED2")) = true;
     }
     if (row.fieldNumber("FEED_BEAM_ID") >= 0 && row.dataType("FEED_BEAM_ID") == TpInt) {
 	beamIdField_p.attachToRecord(row, "FEED_BEAM_ID");
-	handledCols(row.fieldNumber("FEED_BEAM_ID")) = True;
+	handledCols(row.fieldNumber("FEED_BEAM_ID")) = true;
     }
     if (row.fieldNumber("FEED_PHASED_FEED_ID") >= 0 && row.dataType("FEED_PHASED_FEED_ID") == TpInt) {
 	phasedFeedIdField_p.attachToRecord(row, "FEED_PHASED_FEED_ID");
-	handledCols(row.fieldNumber("FEED_PHASED_FEED_ID")) = True;
+	handledCols(row.fieldNumber("FEED_PHASED_FEED_ID")) = true;
     }
     if (row.fieldNumber("FEED_NUM_RECEPTORS") >= 0 && row.dataType("FEED_NUM_RECEPTORS") == TpInt) {
 	numReceptorsField_p.attachToRecord(row, "FEED_NUM_RECEPTORS");
-	handledCols(row.fieldNumber("FEED_NUM_RECEPTORS")) = True;
+	handledCols(row.fieldNumber("FEED_NUM_RECEPTORS")) = true;
     }
     if (row.fieldNumber("FEED_INTERVAL") >= 0 && row.dataType("FEED_INTERVAL") == TpDouble) {
 	intervalField_p.attachToRecord(row, "FEED_INTERVAL");
-	handledCols(row.fieldNumber("FEED_INTERVAL")) = True;
+	handledCols(row.fieldNumber("FEED_INTERVAL")) = true;
     }
     if (row.fieldNumber("FEED_TIME") >= 0 && row.dataType("FEED_TIME") == TpDouble ) {
 	timeField_p.attachToRecord(row, "FEED_TIME");
-	handledCols(row.fieldNumber("FEED_TIME")) = True;
+	handledCols(row.fieldNumber("FEED_TIME")) = true;
     }
     if (row.fieldNumber("FEED_BEAM_OFFSET") >= 0 && row.dataType("FEED_BEAM_OFFSET") == TpArrayDouble) {
 	beamOffsetField_p.attachToRecord(row, "FEED_BEAM_OFFSET");
-	handledCols(row.fieldNumber("FEED_BEAM_OFFSET")) = True;
+	handledCols(row.fieldNumber("FEED_BEAM_OFFSET")) = true;
     }
     if (row.fieldNumber("FEED_POSITION") >= 0 && row.dataType("FEED_POSITION") == TpArrayDouble) {
 	positionField_p.attachToRecord(row, "FEED_POSITION");
-	handledCols(row.fieldNumber("FEED_POSITION")) = True;
+	handledCols(row.fieldNumber("FEED_POSITION")) = true;
     }
     if (row.fieldNumber("FEED_RECEPTOR_ANGLE") >= 0) {
 	if (row.dataType("FEED_RECEPTOR_ANGLE") == TpArrayDouble) {
 	    receptorAngleField_p.attachToRecord(row, "FEED_RECEPTOR_ANGLE");
-	    handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = True;
+	    handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = true;
 	} else if (row.dataType("FEED_RECEPTOR_ANGLE") == TpDouble) {
 	    scaReceptorAngleField_p.attachToRecord(row, "FEED_RECEPTOR_ANGLE");
-	    handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = True;
+	    handledCols(row.fieldNumber("FEED_RECEPTOR_ANGLE")) = true;
 	}
     }
     if (row.fieldNumber("FEED_POL_RESPONSE") >= 0 && row.dataType("FEED_POL_RESPONSE") == TpArrayComplex) {
 	polResponseField_p.attachToRecord(row, "FEED_POL_RESPONSE");
-	handledCols(row.fieldNumber("FEED_POL_RESPONSE")) = True;
+	handledCols(row.fieldNumber("FEED_POL_RESPONSE")) = true;
     }
     if (row.fieldNumber("FEED_POLARIZATION_TYPE") >= 0 && row.dataType("FEED_POLARIZATION_TYPE") == TpString) {
 	polarizationTypeField_p.attachToRecord(row, "FEED_POLARIZATION_TYPE");
-	handledCols(row.fieldNumber("FEED_POLARIZATION_TYPE")) = True;
+	handledCols(row.fieldNumber("FEED_POLARIZATION_TYPE")) = true;
     }
 }
 
 
-void SDFeedHandler::stokesToPolType(const Vector<Int> &stokes, Vector<String> &polType)
+void SDFeedHandler::stokesToPolType(const Vector<int32_t> &stokes, Vector<String> &polType)
 {
-    std::map<String, Int> polTypeMap;
-    for (uInt i=0;i<stokes.nelements();i++) {
+    std::map<String, int32_t> polTypeMap;
+    for (uint32_t i=0;i<stokes.nelements();i++) {
 	String type1, type2;
 	switch (Stokes::type(stokes(i))) {
 	case Stokes::RR:

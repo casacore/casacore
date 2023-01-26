@@ -58,7 +58,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//  OddPolynomial<Float> pf(3);  // Third order polynomial - coeffs 0 by default
+//  OddPolynomial<float> pf(3);  // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(0, 1.0);
 //  pf[1] = 2.0;		// 2x^3 + 1x^1
 //  pf(2); // == 18
@@ -89,7 +89,7 @@ public:
   OddPolynomial() : OddPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero. 
-  explicit OddPolynomial(uInt order) : OddPolynomialParam<T>(order) {}
+  explicit OddPolynomial(uint32_t order) : OddPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   OddPolynomial(const OddPolynomial<T> &other) :
@@ -144,7 +144,7 @@ public:
   // Constructs one dimensional OddPolynomials.
   // <group>
   OddPolynomial_PS() : OddPolynomialParam<AutoDiff<T> >() {}
-  explicit OddPolynomial_PS(uInt order) :
+  explicit OddPolynomial_PS(uint32_t order) :
     OddPolynomialParam<AutoDiff<T> >(order) {}
   // </group>
 

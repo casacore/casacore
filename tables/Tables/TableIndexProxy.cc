@@ -31,7 +31,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 TableIndexProxy::TableIndexProxy (const TableProxy& tablep,
 				  const Vector<String>& columnNames,
-				  Bool noSort)
+				  bool noSort)
 : scaIndex_p (0),
   arrIndex_p (0)
 {
@@ -64,7 +64,7 @@ TableIndexProxy::~TableIndexProxy()
   delete arrIndex_p;
 }
 
-Bool TableIndexProxy::isUnique() const
+bool TableIndexProxy::isUnique() const
 {
   if (scaIndex_p != 0) {
     return scaIndex_p->isUnique();
@@ -91,7 +91,7 @@ void TableIndexProxy::setChanged (const Vector<String>& columnNames)
       arrIndex_p->setChanged();
     }
   } else {
-    for (uInt i=0; i<columnNames.nelements(); i++) {
+    for (uint32_t i=0; i<columnNames.nelements(); i++) {
       if (scaIndex_p != 0) {
 	scaIndex_p->setChanged (columnNames(i));
       } else {
@@ -101,10 +101,10 @@ void TableIndexProxy::setChanged (const Vector<String>& columnNames)
   }
 }
 
-Int64 TableIndexProxy::getRowNumber (const Record& key)
+int64_t TableIndexProxy::getRowNumber (const Record& key)
 {
-  Bool found;
-  Int64 rownr;
+  bool found;
+  int64_t rownr;
   if (scaIndex_p != 0) {
     rownr = scaIndex_p->getRowNumber (found, key);
   } else {
@@ -116,7 +116,7 @@ Int64 TableIndexProxy::getRowNumber (const Record& key)
   return rownr;
 }
 
-Vector<Int64> TableIndexProxy::getRowNumbers (const Record& key)
+Vector<int64_t> TableIndexProxy::getRowNumbers (const Record& key)
 {
   RowNumbers rows;
   if (scaIndex_p != 0) {
@@ -124,15 +124,15 @@ Vector<Int64> TableIndexProxy::getRowNumbers (const Record& key)
   } else {
     rows = arrIndex_p->getRowNumbers (key);
   }
-  Vector<Int64> rownrs(rows.shape());
+  Vector<int64_t> rownrs(rows.shape());
   convertArray (rownrs, rows);
   return rownrs;
 }
 
-Vector<Int64> TableIndexProxy::getRowNumbersRange (const Record& lower,
+Vector<int64_t> TableIndexProxy::getRowNumbersRange (const Record& lower,
                                                    const Record& upper,
-                                                   Bool lowerInclusive,
-                                                   Bool upperInclusive)
+                                                   bool lowerInclusive,
+                                                   bool upperInclusive)
 {
   RowNumbers rows;
   if (scaIndex_p != 0) {
@@ -142,7 +142,7 @@ Vector<Int64> TableIndexProxy::getRowNumbersRange (const Record& lower,
     rows = arrIndex_p->getRowNumbers (lower, upper, lowerInclusive,
                                       upperInclusive);
   }
-  Vector<Int64> rownrs(rows.shape());
+  Vector<int64_t> rownrs(rows.shape());
   convertArray (rownrs, rows);
   return rownrs;
 }

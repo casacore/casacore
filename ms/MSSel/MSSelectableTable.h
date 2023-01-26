@@ -103,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const Table* table()                      {return table_p;}
     TableExprNode col(const String& colName)  {return table()->col(colName);}
 
-    virtual Bool isMS()                       = 0;
+    virtual bool isMS()                       = 0;
     virtual MSSDataType dataType()            = 0;
     virtual const MSAntenna& antenna()        = 0;
     virtual const MSField& field()            = 0;
@@ -202,7 +202,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual const MSDataDescription& dataDescription() {return asMS()->dataDescription();}
     virtual const MSObservation& observation()         {return asMS()->observation();}
     virtual String columnName(MSMainEnums::PredefinedColumns nameEnum) {return MS::columnName(nameEnum);}
-    virtual Bool isMS()                                {return True;}
+    virtual bool isMS()                                {return true;}
     virtual MSSDataType dataType()                     {return MSSelectableTable::BASELINE_BASED;}
 
     virtual const MeasurementSet *asMS(){return static_cast<const MeasurementSet *>(table());}

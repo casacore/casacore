@@ -304,8 +304,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //         // The constructor extracts the mask from the record.
 //         void CopyInfo (const TableRecord& record)
 //             {
-//                 RORecordFieldRef<Array<Bool> > field (record, 0);
-//                 mask_p = new Vector<Bool>;
+//                 RORecordFieldRef<Array<bool> > field (record, 0);
+//                 mask_p = new Vector<bool>;
 //                 *mask_p = *field;
 //             }
 //         // The set function fills the StokesVector.
@@ -339,14 +339,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //                     retypedArrayEngineGet (out, in, shape, (void*)mask_p);
 //                 }
 //     private:
-//         Vector<Bool>* mask_p;
+//         Vector<bool>* mask_p;
 //     };
 //
 //     // Set values of StokesVector using the mask.
 //     // The shape is not used here.
 //     void setElem (const double* data, const IPosition&, const void* maskPtr)
 //         {
-//              const Vector<Bool>& mask = *(const Vector<Bool>*)maskPtr;
+//              const Vector<bool>& mask = *(const Vector<bool>*)maskPtr;
 //              I_p = Q_p = U_p = V_p = 0;
 //              if (mask(0)) {
 //                  I_p = *data++;
@@ -493,7 +493,7 @@ public:
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     // The automatically invoked registration function in DataManReg.cc
-    // contains RetypedArrayEngine<double,Int>.
+    // contains RetypedArrayEngine<double,int32_t>.
     // Any other instantiation of this class must be registered "manually"
     // (or added to DataManReg.cc).
     static void registerClass();
@@ -539,7 +539,7 @@ private:
     void setShape (rownr_t rownr, const IPosition& shape);
 
     // Get the dimensionality of the array in the given row.
-    uInt ndim (rownr_t rownr);
+    uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // This is done by stripping the first dimension(s) from the shape
@@ -572,7 +572,7 @@ private:
     //# Now define the data members.
     IPosition shape_p;             //# shape of a virtual element in the stored
     IPosition virtualFixedShape_p; //# The shape in case virtual has FixedShape
-    Bool      isVirtualFixedShape_p;
+    bool      isVirtualFixedShape_p;
     TableRecord  record_p;
 //#    VirtualType::CopyInfo* copyInfo_p; //# object used to set/get arrays
     void* copyInfo_p;             //# CFront compiler does not accept above

@@ -85,19 +85,19 @@ public:
 
   void attach(const MSFreqOffset &freqOffset);
 
-  // access to the antenna1 ID key, throws an exception if isNull() is False
-  Int &antenna1Id() {return *antenna1Id_p;}
+  // access to the antenna1 ID key, throws an exception if isNull() is false
+  int32_t &antenna1Id() {return *antenna1Id_p;}
 
-  // access to the antenna2 ID key, throws an exception if isNull() is False
-  Int &antenna2Id() {return *antenna2Id_p;}
+  // access to the antenna2 ID key, throws an exception if isNull() is false
+  int32_t &antenna2Id() {return *antenna2Id_p;}
 
-  // access to the feed ID key, throws an exception if isNull() is False
-  Int &feedId() {return *feedId_p;}
+  // access to the feed ID key, throws an exception if isNull() is false
+  int32_t &feedId() {return *feedId_p;}
 
-  // access to the spectral window ID key, throws an exception if isNull() is False
-  Int &spectralWindowId() {return *spwId_p;}
+  // access to the spectral window ID key, throws an exception if isNull() is false
+  int32_t &spectralWindowId() {return *spwId_p;}
 private:
-  RecordFieldPtr<Int> antenna1Id_p, antenna2Id_p, feedId_p, spwId_p;
+  RecordFieldPtr<int32_t> antenna1Id_p, antenna2Id_p, feedId_p, spwId_p;
 
   void attachIds();
 };

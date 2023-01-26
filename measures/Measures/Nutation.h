@@ -80,7 +80,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Nutation(method) 
 // </ul>
 // Actual Nutation for a certain Epoch is calculated by the () operator
-// as Nutation(epoch), with epoch Double MJD. Values are returned as an
+// as Nutation(epoch), with epoch double MJD. Values are returned as an
 // <linkto class=Euler>Euler</linkto>.
 // The derivative (d<sup>-1</sup>) can be obtained as well by 
 // derivative(epoch). <br>
@@ -103,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //		measures.jpl.ephemeris (at the moment of writing DE200
 //		 (default), or DE405)
 //  <li> measures.nutation.b_useiers: use the IERS Database nutation
-//		 corrections for IAU1980 (default False)
+//		 corrections for IAU1980 (default false)
 // </ul>
 // </synopsis>
 //
@@ -137,7 +137,7 @@ class Nutation {
  public:
   //# Constants
   // Interval to be used for linear approximation (in days)
-  static const Double INTV;
+  static const double INTV;
   
   //# Enumerations
   // Types of known Nutation calculations (at 1995/09/04 STANDARD == IAU1980,
@@ -162,11 +162,11 @@ class Nutation {
   
   //# Operators
   // Return the Nutation angles
-  const Euler &operator()(Double epoch);
+  const Euler &operator()(double epoch);
   
   //# General Member Functions
   // Return derivative of Nutation (d<sup>-1</sup>)
-  const Euler &derivative(Double epoch);
+  const Euler &derivative(double epoch);
   
   // Re-initialise Nutation object
   // <group>
@@ -179,16 +179,16 @@ class Nutation {
   
   // Get the equation of equinox
   // <group>
-  Double eqox(Double epoch) ;
-  Quantity getEqoxAngle(Double epoch);
-  Quantity getEqoxAngle(Double epoch, const Unit &unit) ;
+  double eqox(double epoch) ;
+  Quantity getEqoxAngle(double epoch);
+  Quantity getEqoxAngle(double epoch, const Unit &unit) ;
   // </group>
   // Get the derivative of the equation of equinoxes in d<sup>-1</sup>
-  Double derivativeEqox(Double epoch);
+  double derivativeEqox(double epoch);
   // Get the complimentary terms of the equation of equinoxes
-  Double eqoxCT(Double epoch);
+  double eqoxCT(double epoch);
   // Get the derivative of the complimentary terms of the equation of equinoxes
-  Double derivativeEqoxCT(Double epoch);
+  double derivativeEqoxCT(double epoch);
 
  private:
   
@@ -196,40 +196,40 @@ class Nutation {
   // Method to be used
   NutationTypes method_p;
   // Check epoch for linear approximation
-  Double checkEpoch_p;
+  double checkEpoch_p;
   // Check epoch for calculation of derivatives
-  Double checkDerEpoch_p;
+  double checkDerEpoch_p;
   // Cached calculated angles
-  Double nval_p[3];
+  double nval_p[3];
   // Cached derivatives
-  Double dval_p[3];
+  double dval_p[3];
   // Cached equation of equinoxes
-  Double eqeq_p;
+  double eqeq_p;
   // Cached derivative equation of equinoxes
-  Double deqeq_p;
+  double deqeq_p;
   // Cached complimentary terms equation of equinoxes
-  Double neval_p;
+  double neval_p;
   // Cached derivative of complimentary terms equation of equinoxes
-  Double deval_p;
+  double deval_p;
   // To be able to use references rather than copies, and also to use these
   // references in simple (up to 4 terms of Nutation results) expressions,
   // results are calculated in circulating buffer
-  Int lres_p;
+  int32_t lres_p;
   // Last calculation
   Euler result_p[4];
   // Interpolation interval
-  static uInt myInterval_reg;
+  static uint32_t myInterval_reg;
   // IERS use
-  static uInt myUseiers_reg;
+  static uint32_t myUseiers_reg;
   // JPL use
-  static uInt myUsejpl_reg;
+  static uint32_t myUsejpl_reg;
   //# Member functions
   // Make a copy
   void copy(const Nutation &other);
   // Fill an empty copy
   void fill();
-  // Calculate Nutation angles for time t; also derivatives if True given
-  void calcNut(Double t, Bool calcDer = False);
+  // Calculate Nutation angles for time t; also derivatives if true given
+  void calcNut(double t, bool calcDer = false);
 };
 
 

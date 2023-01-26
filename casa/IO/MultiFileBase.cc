@@ -59,28 +59,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the old MultiFileInfo not containing the 'nested' field.
     // The following code is a copy of STLIO.tcc.
     ios.getstart ("Block");
-    uInt nr;
+    uint32_t nr;
     ios >> nr;
     info.resize(nr);
-    for (uInt i=0; i<nr; ++i) {
+    for (uint32_t i=0; i<nr; ++i) {
       ios >> info[i].name >> info[i].blockNrs >> info[i].fsize;
     }
     ios.getend();
   }
 
 
-  MultiFileBase::MultiFileBase (const String& name, Int blockSize,
-                                Bool useODirect)
+  MultiFileBase::MultiFileBase (const String& name, int32_t blockSize,
+                                bool useODirect)
     : itsBlockSize  (blockSize),
       itsNrBlock    (0),
       itsHdrCounter (0),
       itsUseODirect (useODirect),
-      itsWritable   (False),         // usually reset by derived class
-      itsChanged    (False)
+      itsWritable   (false),         // usually reset by derived class
+      itsChanged    (false)
   {
     // Unset itsUseODirect if the OS does not support it.
 #ifndef HAVE_O_DIRECT
-    itsUseODirect = False;
+    itsUseODirect = false;
 #endif
     itsName = Path(name).expandedName();
   }
@@ -98,12 +98,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiFileBase::setNewFile()
   {
     // The container file is new.
-    itsChanged = True;
+    itsChanged = true;
     // Use file system block size, but not less than given size.
     if (itsBlockSize <= 0) {
       struct fileSTAT sfs;
       fileSTAT (itsName.c_str(), &sfs);
-      Int64 blksz = sfs.st_blksize;
+      int64_t blksz = sfs.st_blksize;
       itsBlockSize = std::max (-itsBlockSize, blksz);
     }
     AlwaysAssert (itsBlockSize > 0, AipsError);
@@ -117,9 +117,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsInfo.clear();
   }
 
-  Int MultiFileBase::openFile (const String& name)
+  int32_t MultiFileBase::openFile (const String& name)
   {
-    Int id = fileId (name, True);
+    int32_t id = fileId (name, true);
     if (itsInfo[id].buffer) {
       throw AipsError ("MFFileIO: logical file " + name +
                          " already opened in " + itsName);
@@ -129,9 +129,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return id;
   }
 
-  Int MultiFileBase::createFile (const String& name, ByteIO::OpenOption opt)
+  int32_t MultiFileBase::createFile (const String& name, ByteIO::OpenOption opt)
   {
-    Int id = fileId (name, False);
+    int32_t id = fileId (name, false);
     if (id >= 0) {
       if (opt == ByteIO::NewNoReplace) {
         throw AipsError ("MFFileIO: logical file " + name +
@@ -144,9 +144,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return id;
   }
   
-  uInt MultiFileBase::nfile() const
+  uint32_t MultiFileBase::nfile() const
   {
-    Int nf = 0;
+    int32_t nf = 0;
     for (const MultiFileInfo& info : itsInfo) {
       if (! info.name.empty()) {
         nf++;
@@ -167,14 +167,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If it does not need to be written, no further flush is needed.
     if (itsChanged) {
       writeHeader();
-      itsChanged = False;
+      itsChanged = false;
     }
     doFlushFile();
   }
 
-  void MultiFileBase::flushFile (Int fileId)
+  void MultiFileBase::flushFile (int32_t fileId)
   {
-    if (fileId >= Int(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
+    if (fileId >= int32_t(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
       throw AipsError ("MultiFileBase::write - invalid fileId given");
     }
     if (itsInfo[fileId].dirty) {
@@ -182,7 +182,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
   }
   
-  void MultiFileBase::closeFile (Int fileId)
+  void MultiFileBase::closeFile (int32_t fileId)
   {
     // Flush the file (as needed) and delete the buffer.
     flushFile (fileId);
@@ -191,25 +191,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     doCloseFile (itsInfo[fileId]);
   }
   
-  Int64 MultiFileBase::read (Int fileId, void* buf,
-                             Int64 size, Int64 offset)
+  int64_t MultiFileBase::read (int32_t fileId, void* buf,
+                             int64_t size, int64_t offset)
   {
-    if (fileId >= Int(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
+    if (fileId >= int32_t(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
       throw AipsError ("MultiFileBase::read - invalid fileId given");
     }
     char* buffer = static_cast<char*>(buf);
     MultiFileInfo& info = itsInfo[fileId];
     char* infoBuffer = info.buffer->data();
     // Determine the logical block to read and the start offset in that block.
-    Int64 nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
-    Int64 blknr = offset/itsBlockSize;
-    Int64 start = offset - blknr*itsBlockSize;
-    Int64 done  = 0;
-    Int64 szdo  = std::min(size, info.fsize - offset);  // not past EOF
+    int64_t nrblk = (info.fsize + itsBlockSize - 1) / itsBlockSize;
+    int64_t blknr = offset/itsBlockSize;
+    int64_t start = offset - blknr*itsBlockSize;
+    int64_t done  = 0;
+    int64_t szdo  = std::min(size, info.fsize - offset);  // not past EOF
     // Read until done.
     while (done < szdo) {
       AlwaysAssert (blknr < nrblk, AipsError);
-      Int64 todo = std::min(szdo-done, itsBlockSize-start);
+      int64_t todo = std::min(szdo-done, itsBlockSize-start);
       // If already in buffer, copy from there.
       if (blknr == info.curBlock) {
         memcpy (buffer, infoBuffer+start, todo);
@@ -239,10 +239,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return done;
   }
 
-  Int64 MultiFileBase::write (Int fileId, const void* buf,
-                              Int64 size, Int64 offset)
+  int64_t MultiFileBase::write (int32_t fileId, const void* buf,
+                              int64_t size, int64_t offset)
   {
-    if (fileId >= Int(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
+    if (fileId >= int32_t(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
       throw AipsError ("MultiFileBase::write - invalid fileId given");
     }
     const char* buffer = static_cast<const char*>(buf);
@@ -250,23 +250,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MultiFileInfo& info = itsInfo[fileId];
     char* infoBuffer = info.buffer->data();
     // Determine the logical block to write and the start offset in that block.
-    Int64 blknr = offset/itsBlockSize;
-    Int64 start = offset - blknr*itsBlockSize;
-    Int64 done  = 0;
+    int64_t blknr = offset/itsBlockSize;
+    int64_t start = offset - blknr*itsBlockSize;
+    int64_t done  = 0;
     // If beyond EOF, add blocks as needed.
-    Int64 lastblk = blknr + (start+size+itsBlockSize-1) / itsBlockSize;
-    Int64 curnrb = (info.fsize+itsBlockSize-1) / itsBlockSize;
+    int64_t lastblk = blknr + (start+size+itsBlockSize-1) / itsBlockSize;
+    int64_t curnrb = (info.fsize+itsBlockSize-1) / itsBlockSize;
     if (lastblk >= curnrb) {
       extend (info, lastblk);
-      itsChanged = True;
+      itsChanged = true;
     }
     // Write until all done.
     while (done < size) {
-      Int64 todo = std::min(size-done, itsBlockSize-start);
+      int64_t todo = std::min(size-done, itsBlockSize-start);
       // Favor sequential writing, thus write current buffer first.
       if (blknr == info.curBlock) {
         memcpy (infoBuffer+start, buffer, todo);
-        info.dirty = True;
+        info.dirty = true;
         if (done+todo > size) {
           writeDirty (info);
         }
@@ -289,7 +289,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         }
         info.curBlock = blknr;
         memcpy (infoBuffer+start, buffer, todo);
-        info.dirty = True;
+        info.dirty = true;
       }
       done += todo;
       buffer += todo;
@@ -302,9 +302,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return done;
   }
 
-  void MultiFileBase::truncate (Int fileId, Int64 size)
+  void MultiFileBase::truncate (int32_t fileId, int64_t size)
   {
-    if (fileId >= Int(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
+    if (fileId >= int32_t(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
       throw AipsError ("MultiFileBase::truncate - invalid fileId given");
     }
     AlwaysAssert (itsWritable, AipsError);
@@ -317,7 +317,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       for (size_t i=nrblk; i<info.blockNrs.size(); ++i) {
         if (info.curBlock == info.blockNrs[i]) {
           info.curBlock = -1;
-          info.dirty    = False;
+          info.dirty    = false;
           break;
         }
       }
@@ -340,7 +340,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     readHeader();
   }
 
-  Int MultiFileBase::addFile (const String& fname)
+  int32_t MultiFileBase::addFile (const String& fname)
   {
     if (fname.empty()) {
       throw AipsError("MultiFileBase::addFile - empty file name given");
@@ -349,8 +349,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     String bname = Path(fname).baseName();
     // Check that file name is not used yet.
     // Also determine (last) free file slot.
-    uInt inx = itsInfo.size();
-    uInt i = 0;
+    uint32_t inx = itsInfo.size();
+    uint32_t i = 0;
     for (std::vector<MultiFileInfo>::iterator iter=itsInfo.begin();
          iter!=itsInfo.end(); ++iter, ++i) {
       if (iter->name.empty()) {
@@ -366,11 +366,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     itsInfo[inx].name = bname;
     doAddFile (itsInfo[inx]);
-    itsChanged = True;
+    itsChanged = true;
     return inx;
   }
 
-  Int MultiFileBase::fileId (const String& fname, Bool throwExcp) const
+  int32_t MultiFileBase::fileId (const String& fname, bool throwExcp) const
   {
     // Only use the basename part (to avoid directory rename problems).
     String bname = Path(fname).baseName();
@@ -386,23 +386,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return -1;
   }
 
-  void MultiFileBase::deleteFile (Int fileId)
+  void MultiFileBase::deleteFile (int32_t fileId)
   {
-    if (fileId >= Int(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
+    if (fileId >= int32_t(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
       throw AipsError ("MultiFileBase::deleteFile - invalid fileId given");
     }
     MultiFileInfo& info = itsInfo[fileId];
-    info.dirty = False;     // no need to write when deleting
+    info.dirty = false;     // no need to write when deleting
     closeFile (fileId);
     doDeleteFile (info);
     // Clear this slot.
     info = MultiFileInfo();
-    itsChanged = True;
+    itsChanged = true;
   }
 
-  Int64 MultiFileBase::fileSize (Int fileId) const
+  int64_t MultiFileBase::fileSize (int32_t fileId) const
   {
-    if (fileId >= Int(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
+    if (fileId >= int32_t(itsInfo.size())  ||  itsInfo[fileId].name.empty()) {
       throw AipsError ("MultiFileBase::fileSize - invalid fileId given");
     }
     return itsInfo[fileId].fsize;
@@ -411,12 +411,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MultiFileInfo::MultiFileInfo()
     : curBlock (-1),
       fsize    (0),
-      nested   (False),
-      dirty    (False)
+      nested   (false),
+      dirty    (false)
   {}
 
   
-  MultiFileBuffer::MultiFileBuffer (size_t bufSize, Bool useODirect)
+  MultiFileBuffer::MultiFileBuffer (size_t bufSize, bool useODirect)
     : itsData (0)
   {
     const size_t align = 4096;

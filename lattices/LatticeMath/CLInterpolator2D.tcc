@@ -57,7 +57,7 @@ CLInterpolator2D<T>& CLInterpolator2D<T>::operator=
 template<class T>
 void CLInterpolator2D<T>::set (MaskedLattice<T>* lattice,
 			       const AxesMapping& axesMap,
-			       uInt axis1, uInt axis2, uInt curveAxis)
+			       uint32_t axis1, uint32_t axis2, uint32_t curveAxis)
 {
   itsLatticePtr = lattice;
   itsAxesMap    = axesMap;
@@ -68,7 +68,7 @@ void CLInterpolator2D<T>::set (MaskedLattice<T>* lattice,
     itsIsRef    = lattice->canReferenceArray();
     preset();
   } else {
-    itsIsRef    = False;
+    itsIsRef    = false;
   }
 }
 

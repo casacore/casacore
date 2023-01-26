@@ -44,12 +44,12 @@ int main() {
   try {
     // Construct an m dimensional hyper plane which has m coefficients.  By 
     // default, the coefficients are initialized to zero.
-    //HyperPlane(uInt m);
-    HyperPlane<Double> hyper(3);
+    //HyperPlane(uint32_t m);
+    HyperPlane<double> hyper(3);
     
     // Make this object a copy of other.
     //HyperPlane(const HyperPlane<Type> &other);
-    HyperPlane<Double> comb2(hyper);
+    HyperPlane<double> comb2(hyper);
     
     // Make this object a copy of other.
     //HyperPlane<Type> &operator=(const HyperPlane<Type> &other);
@@ -59,14 +59,14 @@ int main() {
     // hyper plane.
     AlwaysAssertExit(hyper.nparameters() == 3 && 
       hyper.nparameters() == comb2.nparameters());
-    Vector<Double> v(3);
+    Vector<double> v(3);
     
     // Set the value of a coefficient. 
     // Get the value of a coefficient.  
     // f(x,y,z) = 10x + 11y + 12*z
-    for (uInt i=0; i<3; i++) {
+    for (uint32_t i=0; i<3; i++) {
       hyper[i] = i+10;
-      AlwaysAssertExit(hyper[i] == Double(i+10));
+      AlwaysAssertExit(hyper[i] == double(i+10));
       v(i) = i+10;
     }
     
@@ -77,48 +77,48 @@ int main() {
     
     // Evaluate the function at <src>v</src>. 
     // f(x,y,z) = 10x + 11y + 12*z
-    AlwaysAssertExit((hyper(v) - Double(365)) < 1.e-6);
+    AlwaysAssertExit((hyper(v) - double(365)) < 1.e-6);
     // Returns the dimension of functions in the linear hyper
-    // uInt ndim() const;
+    // uint32_t ndim() const;
     AlwaysAssertExit(hyper.ndim() == 3);
     
     // Set coefficients
-    for (uInt i=0; i<hyper.nparameters()-2; i++) { 
-      hyper.mask(i) = False;
+    for (uint32_t i=0; i<hyper.nparameters()-2; i++) { 
+      hyper.mask(i) = false;
       AlwaysAssertExit(!hyper.mask(i));
     }
     
     AlwaysAssertExit(hyper.parameters().nMaskedParameters() == 2);
     
-    for (uInt i=0; i<hyper.parameters().nMaskedParameters(); i++) { 
+    for (uint32_t i=0; i<hyper.parameters().nMaskedParameters(); i++) { 
       AlwaysAssertExit(hyper.parameters().getMaskedParameters()[i] ==
-		       Double(11+i));
+		       double(11+i));
     }
   
     // test specialized AutoDiff 
     // f(x,y,z) = 10x + 11y + 12*z + 13
-    Vector<AutoDiffA<Double> > v6(3);
-    HyperPlane<AutoDiff<Double> > s5(3);
-    for (uInt i=0; i<3; i++) {
-      s5[i] = AutoDiff<Double>(i+10,3,i);
-      AlwaysAssertExit(s5[i] == Double(i+10));
+    Vector<AutoDiffA<double> > v6(3);
+    HyperPlane<AutoDiff<double> > s5(3);
+    for (uint32_t i=0; i<3; i++) {
+      s5[i] = AutoDiff<double>(i+10,3,i);
+      AlwaysAssertExit(s5[i] == double(i+10));
       v[i] = i+10;
       v6(i) = i+10;
     }
-    Double y50 = s5(v).value();
-    Vector<Double> y51;
+    double y50 = s5(v).value();
+    Vector<double> y51;
     y51 = s5(v).derivatives();
     cout << "AutoDiff:  " << s5(v) << endl;
     
     // Generic AutoDiff
-    HyperPlane<AutoDiffA<Double> > s6(3);
-    for (uInt i=0; i<3; i++) {
-      s6[i] = AutoDiffA<Double>(i+10,3,i);
-      AlwaysAssertExit(s6[i].value() == Double(i+10));
+    HyperPlane<AutoDiffA<double> > s6(3);
+    for (uint32_t i=0; i<3; i++) {
+      s6[i] = AutoDiffA<double>(i+10,3,i);
+      AlwaysAssertExit(s6[i].value() == double(i+10));
       v6(i) = i+10;
     }
-    Double y60 = s6(v6).value();
-    Vector<Double> y61;
+    double y60 = s6(v6).value();
+    Vector<double> y61;
     y61 = s6(v6).derivatives();
     cout << "AutoDiffA: " << s6(v6) << endl;
     AlwaysAssertExit(near(y60, y50) &&

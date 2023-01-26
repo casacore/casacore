@@ -59,11 +59,11 @@ int main(int argc, const char* argv[])
     if (outName.empty()) {
       outName = "/tmp/image.out";
     }
-    Bool hdf5 = inputs.getBool("hdf5");
+    bool hdf5 = inputs.getBool("hdf5");
     if (hdf5  &&  !HDF5Object::hasHDF5Support()) {
       cerr << "Support for HDF5 has not been compiled in; revert to PagedImage"
            << endl;
-      hdf5 = False;
+      hdf5 = false;
     }
 
     LatticeExprNode node(ImageExprParse::command(imgin));
@@ -82,7 +82,7 @@ int main(int argc, const char* argv[])
     } else {
       cout << "Copying '" << imgin << "' to '" << outName << "'" << endl;
       ImageProxy img(imgin, String(), vector<ImageProxy>());
-      img.saveAs (outName, True, hdf5, True);
+      img.saveAs (outName, true, hdf5, true);
     }
   } catch (std::exception& x) {
     cout << x.what() << endl;

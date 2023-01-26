@@ -180,7 +180,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // e.g. Unit("Gtag/pc") will be a valid unit string.
 // UnitMap::putUser("tag",UnitVal(5.,"mJy"),"my own unit name for 5 mJy");
 // // The following will calculate how many hp.s per eV
-// Double hpeV = (UnitVal("hp.s")/UnitVal("eV")).getFac();
+// double hpeV = (UnitVal("hp.s")/UnitVal("eV")).getFac();
 // // maybe after checking for identical dimensions
 // if ( UnitVal("hp.s") != UnitVal("eV")) { cout << "unexpected" << endl; }
 // </srcblock>
@@ -210,20 +210,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //  <anchor name="Quantum"><h3> Quantums and Quantities </h3></anchor>
 // A Quantum is a  value with a unit. Quantums are templated on their value
-// type (e.g. <src>Float</src>, <src>Vector<Double></src>). <em>Quantity</em>
+// type (e.g. <src>float</src>, <src>Vector<double></src>). <em>Quantity</em>
 // is a typedef
-// for the (probably most common) <src>Quantum<Double></src>.
+// for the (probably most common) <src>Quantum<double></src>.
 // The basic specification of a Quantum is:
 // <srcblock>
 // Quantum<Type> ( Type value, Unit unit);	// or: String unit or: "unit"
-// Quantity( Double value, Unit unit);		// or: String unit or: "unit"
+// Quantity( double value, Unit unit);		// or: String unit or: "unit"
 // </srcblock>
 //
 // E.g.
 // <ul>
 //   <li> <src>Quantity(5.,"m");</src>
-//   <li> <src>Quantum<Double> (5.,"m");   // identical to previous</src>
-//   <li> <src>Vector<Int> a(3); a(3) = 5; Quantum<Vector<Int> >(a,"Jy");</src>
+//   <li> <src>Quantum<double> (5.,"m");   // identical to previous</src>
+//   <li> <src>Vector<int32_t> a(3); a(3) = 5; Quantum<Vector<int32_t> >(a,"Jy");</src>
 // </ul>
 //
 // The following list of constructors is available.
@@ -232,7 +232,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The only difference being a check for a legitimate unit string being 
 // executed if Unit specified (with exception if error), and a much faster
 // execution of the Unit is used repeatedly.
-// <src>Quantum<Type></src> can, if Type equals Double, be replaced with 
+// <src>Quantum<Type></src> can, if Type equals double, be replaced with 
 // <src>Quantity</src>
 // </note>
 // <ul>
@@ -265,7 +265,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //			 Exception if no match,
 //	 		else compare the values
 //   <li> <src><= >=</src>	ibid
-//   <li> pow(Quantum, Int) raise to an (integer) power
+//   <li> pow(Quantum, int32_t) raise to an (integer) power
 //   <li> abs(Quant)	take absolute value
 //   <li> ceil, floor(Quant)
 //   <li> sin, cos, tan(Quant) correct units used
@@ -296,11 +296,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // Quanta can be checked for having the correct unit dimensions (e.g. before
 // addition or comparing) by the following two member functions, which will
-// return a Bool value or raise an exception:
+// return a bool value or raise an exception:
 // <ul>
-//   <li> <src>Bool isConform(Unit)</src>
-//   <li> <src>Bool isConform(Quantum<any>)</src>
-//   <li> <src>Bool check(UnitVal)</src>
+//   <li> <src>bool isConform(Unit)</src>
+//   <li> <src>bool isConform(Quantum<any>)</src>
+//   <li> <src>bool check(UnitVal)</src>
 //   <li> <src> void assure(UnitVal)</src>
 // </ul>
 //
@@ -332,24 +332,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // contains dimensioned constants.
 // On 960509 the following were defined:
 // <ul>
-//   <li>  <src>Quantum<Double> c;	// vel of light</src>
-//   <li>  <src>Quantum<Double> G;	// Gravitational constant</src>
-//   <li>  <src>Quantum<Double> h;	// Planck</src>
-//   <li>  <src>Quantum<Double> HI;	// Frequency HI line</src>
-//   <li>  <src>Quantum<Double> R;	// Gas constant</src>
-//   <li>  <src>Quantum<Double> NA;	// Avogadro</src>
-//   <li>  <src>Quantum<Double> e;	// electron charge</src>
-//   <li>  <src>Quantum<Double> mp;	// proton mass</src>
-//   <li>  <src>Quantum<Double> mp_me;	// mp/me</src>
-//   <li>  <src>Quantum<Double> mu0;	// permeability vacuum</src>
-//   <li>  <src>Quantum<Double> epsilon0; // permittivity vacuum</src>
-//   <li>  <src>Quantum<Double> k;	// Boltzmann</src>
-//   <li>  <src>Quantum<Double> F;	// Faraday</src>
-//   <li>  <src>Quantum<Double> me;	// mass electron</src>
-//   <li>  <src>Quantum<Double> re;	// radius electron</src>
-//   <li>  <src>Quantum<Double> a0;	// Bohr's radius</src>
-//   <li>  <src>Quantum<Double> R0;	// Solar radius</src>
-//   <li>  <src>Quantum<Double> k2;	// IAU Gaussian grav. const **2</src>
+//   <li>  <src>Quantum<double> c;	// vel of light</src>
+//   <li>  <src>Quantum<double> G;	// Gravitational constant</src>
+//   <li>  <src>Quantum<double> h;	// Planck</src>
+//   <li>  <src>Quantum<double> HI;	// Frequency HI line</src>
+//   <li>  <src>Quantum<double> R;	// Gas constant</src>
+//   <li>  <src>Quantum<double> NA;	// Avogadro</src>
+//   <li>  <src>Quantum<double> e;	// electron charge</src>
+//   <li>  <src>Quantum<double> mp;	// proton mass</src>
+//   <li>  <src>Quantum<double> mp_me;	// mp/me</src>
+//   <li>  <src>Quantum<double> mu0;	// permeability vacuum</src>
+//   <li>  <src>Quantum<double> epsilon0; // permittivity vacuum</src>
+//   <li>  <src>Quantum<double> k;	// Boltzmann</src>
+//   <li>  <src>Quantum<double> F;	// Faraday</src>
+//   <li>  <src>Quantum<double> me;	// mass electron</src>
+//   <li>  <src>Quantum<double> re;	// radius electron</src>
+//   <li>  <src>Quantum<double> a0;	// Bohr's radius</src>
+//   <li>  <src>Quantum<double> R0;	// Solar radius</src>
+//   <li>  <src>Quantum<double> k2;	// IAU Gaussian grav. const **2</src>
 // </ul>
 // 
 // <p>
@@ -363,15 +363,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <srcblock>
 //	MV()
 //	MV(MV)
-//	MV(Double)
-//	MV(Vector<Double>)
+//	MV(double)
+//	MV(Vector<double>)
 //	MV(Quantity)
 //	MV(Vector<Quantity>)
-//	MV(Quantum<Vector<Double> >)
+//	MV(Quantum<Vector<double> >)
 // </srcblock>
 // But most have also constructors like:
 // <srcblock>
-//	MV(Double, Double)
+//	MV(double, double)
 //	MV(Quantity, Quantity)
 // </srcblock>
 // The actual interpretation is class dependent: see the individual MV classes
@@ -399,8 +399,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // normalise to a value of 1 (e.g. MVDirection), or recalculates high
 // precision values (e.g. MVEpoch) functions.<br>
 // Information can be viewed with many <em>get</em> functions. In most cases
-// getValue() will return the internal value as either Double or 
-// Vector<Double>; get() will return the same, or converted values (e.g.
+// getValue() will return the internal value as either double or 
+// Vector<double>; get() will return the same, or converted values (e.g.
 // a vector of length, angle, angle for MVPosition; while special
 // one like getAngle() or getAngle(unit), getTime() etc will return Quantums
 // (with optional conversion to specified units).<br>
@@ -527,9 +527,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    :::       (second)                     1 s
 //    Ah        (ampere hour)                3600 s.A
 //    Angstrom  (angstrom)                   1e-10 m
-//    Btu       (British thermal unit (Int)) 1055.056 m2.kg.s-2
+//    Btu       (British thermal unit (int32_t)) 1055.056 m2.kg.s-2
 //    CM        (metric carat)               0.0002 kg
-//    Cal       (large calorie (Int))        4186.8 m2.kg.s-2
+//    Cal       (large calorie (int32_t))        4186.8 m2.kg.s-2
 //    FU        (flux unit)                  1e-26 kg.s-2
 //    G         (gauss)                      0.0001 kg.s-2.A-1
 //    Gal       (gal)                        0.01 m.s-2
@@ -555,7 +555,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    atm       (standard atmosphere)        101325 m-1.kg.s-2
 //    bar       (bar)                        100000 m-1.kg.s-2
 //    beam      (undefined beam area)        1 _
-//    cal       (calorie (Int))              4.1868 m2.kg.s-2
+//    cal       (calorie (int32_t))              4.1868 m2.kg.s-2
 //    cwt       (hundredweight)              50.80234544 kg
 //    deg_2     (square degree)              0.000304617419787 sr
 //    dyn       (dyne)                       1e-05 m.kg.s-2

@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     const std::vector<String>& getMessages() const
       { return messageList; }
-    Int nMessages() const
+    int32_t nMessages() const
       { return messageList.size(); }
 
   protected:

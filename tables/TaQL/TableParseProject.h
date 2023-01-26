@@ -88,12 +88,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return columnExpr_p; }
 
     // Are expressions used in the column projection?
-    Bool hasExpressions() const
+    bool hasExpressions() const
       { return nrSelExprUsed_p > 0; }
 
     // Return the number of projected columns used in other clauses such as HAVING
     // which need to be precalculated.
-    uInt nColumnsPreCalc() const
+    uint32_t nColumnsPreCalc() const
       { return projectExprSubset_p.size(); }
 
     // Set the column names to the ones to be updated.
@@ -107,7 +107,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void setStoredColumns();
 
     // Add a column to the list of column names.
-    void handleColumn (Int stringType,
+    void handleColumn (int32_t stringType,
                        const String& name,
                        const TableExprNode& expr,
                        const String& newName,
@@ -116,17 +116,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                        TableParseQuery&);
 
     // Handle the selection of a wildcarded column name.
-    void handleWildColumn (Int stringType, const String& name);
+    void handleWildColumn (int32_t stringType, const String& name);
 
     // Finish the additions to the block of column names
     // by removing the deleted empty names and creating Expr objects as needed.
     // An exception is thrown if there is a resultset and if columns are selected.
-    Table handleColumnFinish (Bool distinct, Bool hasResultSet, TableParseQuery&);
+    Table handleColumnFinish (bool distinct, bool hasResultSet, TableParseQuery&);
 
     // Keep the column specification in a create table command.
     void handleColSpec (const String& columnName, const String& likeColName,
                         const String& dataType,
-                        const Record& spec, Bool isCOrder);
+                        const Record& spec, bool isCOrder);
 
     // Add columns to the table of ALTER TABLE.
     // The column descriptions have already been added to tableDesc_p.
@@ -140,9 +140,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { dminfo_p = dminfo;}
 
     // Find the keyword or column name and create a TableExprNode from it.
-    // If <src>tryProj=True</src> it is first tried if the column is a coluymn
+    // If <src>tryProj=true</src> it is first tried if the column is a coluymn
     // in the projected table (i.e., result from the SELECT part).
-    TableExprNode handleKeyCol (const String& name, Bool tryProj,
+    TableExprNode handleKeyCol (const String& name, bool tryProj,
                                 TableParseQuery&);
 
     // Make the table projection using the selected columns.
@@ -150,7 +150,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Table project (const Table& tab);
 
     // Create TableParseUpdate objects for the selected column expressions.
-    void makeUpdate (Bool useSel, TableParseQuery& tpq);
+    void makeUpdate (bool useSel, TableParseQuery& tpq);
     
     // Fill projectExprSelColumn_p telling the columns to be projected
     // at the first stage.
@@ -178,8 +178,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Add the description of a column to the table description.
     // ndim < 0 means a scalar column.
     void addColumnDesc (TableDesc& td, DataType dtype,
-                        const String& colName, Int options,
-                        Int ndim, const IPosition& shape,
+                        const String& colName, int32_t options,
+                        int32_t ndim, const IPosition& shape,
                         const String& dmType, const String& dmGroup,
                         const String& comment,
                         const TableRecord& keywordSet,
@@ -212,10 +212,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# The keywords used in a column.
     Block<TableRecord> columnKeywords_p;
     //# Number of real expressions used in selected columns.
-    uInt nrSelExprUsed_p;
+    uint32_t nrSelExprUsed_p;
     //# The projected columns used in the HAVING and ORDERBY clauses.
-    Block<uInt>  projectExprSubset_p;
-    Block<Bool>  projectExprSelColumn_p;
+    Block<uint32_t>  projectExprSubset_p;
+    Block<bool>  projectExprSelColumn_p;
     //# The first table used when creating a column object.
     //# All other tables used for them should have the same size.
     Table  firstColTable_p;

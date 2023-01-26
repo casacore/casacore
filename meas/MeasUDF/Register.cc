@@ -121,7 +121,7 @@ void register_meas()
 
 namespace casacore {
 
-  void HelpMeasUDF::showFuncsEpoch (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsEpoch (ostream& os, bool showTypes)
   {
     os << "Epoch conversion functions:" << endl;
     os << "  MEAS.EPOCH (type, epoch [,position])           convert to given type" << endl;
@@ -133,7 +133,7 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsPosition (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsPosition (ostream& os, bool showTypes)
   {
     os << "Position conversion functions:" << endl;
     os << "  MEAS.POS (type, position)                      convert to given type" << endl;
@@ -153,13 +153,13 @@ namespace casacore {
       os << endl << "Known observatory positions (names are case-insenstive):" << endl;
       Vector<String> obs = MeasTable::Observatories().copy();
       genSort (obs);
-      uInt maxLen = 0;
-      for (uInt i=0; i<obs.size(); ++i) {
+      uint32_t maxLen = 0;
+      for (uint32_t i=0; i<obs.size(); ++i) {
         if (obs[i].size() > maxLen) maxLen = obs[i].size();
       }
-      uInt npl = 80 / (maxLen+1);
-      uInt n = 0;
-      for (uInt i=0; i<obs.size(); ++i) {
+      uint32_t npl = 80 / (maxLen+1);
+      uint32_t n = 0;
+      for (uint32_t i=0; i<obs.size(); ++i) {
         os << setw(maxLen+1) << obs[i];
         if (++n == npl) {
           os << endl;
@@ -172,7 +172,7 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsDirection (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsDirection (ostream& os, bool showTypes)
   {
     os << "Direction conversion functions:" << endl;
     os << "  MEAS.DIR (type, direction [,epoch, position])  convert to given type" << endl;
@@ -215,7 +215,7 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsEarthMagnetic (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsEarthMagnetic (ostream& os, bool showTypes)
   {
     os << "EarthMagnetic conversion functions:" << endl;
     os << "  MEAS.EM (type, em, epoch, position)   convert em value to given type as xyz" << endl;
@@ -238,7 +238,7 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsFrequency (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsFrequency (ostream& os, bool showTypes)
   {
     os << "Frequency conversion functions:" << endl;
     os << "  MEAS.FREQ (type, freq, radvel, direction, epoch, position)   convert to given type" << endl;
@@ -257,7 +257,7 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsRadialVelocity (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsRadialVelocity (ostream& os, bool showTypes)
   {
     os << "RadialVelocity conversion functions:" << endl;
     os << "  MEAS.RADVEL (type, radvel, direction, epoch, position)    convert to given type" << endl;
@@ -269,7 +269,7 @@ namespace casacore {
     }
   }
 
-  void HelpMeasUDF::showFuncsDoppler (ostream& os, Bool showTypes)
+  void HelpMeasUDF::showFuncsDoppler (ostream& os, bool showTypes)
   {
     os << "Doppler conversion functions:" << endl;
     os << "  MEAS.DOPPLER (type, doppler)               convert to given type" << endl;
@@ -297,7 +297,7 @@ namespace casacore {
     // Set datatype, shape, unit, etc.
     setDataType (TableExprNodeRep::NTString);
     setNDim (0);                  // scalar
-    setConstant (True);
+    setConstant (true);
   }
 
   String HelpMeasUDF::getString (const TableExprId& id)
@@ -309,33 +309,33 @@ namespace casacore {
       type.downcase();
     }
     if (type.empty()) {
-      showFuncsPosition (os, False);
+      showFuncsPosition (os, false);
       os << endl;
-      showFuncsEpoch (os, False);
+      showFuncsEpoch (os, false);
       os << endl;
-      showFuncsDirection (os, False);
+      showFuncsDirection (os, false);
       os << endl;
-      showFuncsEarthMagnetic (os, False);
+      showFuncsEarthMagnetic (os, false);
       os << endl;
-      showFuncsFrequency (os, False);
+      showFuncsFrequency (os, false);
       os << endl;
-      showFuncsRadialVelocity (os, False);
+      showFuncsRadialVelocity (os, false);
       os << endl;
-      showFuncsDoppler (os, False);
+      showFuncsDoppler (os, false);
     } else if (type == "position"  ||  type == "pos") {
-      showFuncsPosition (os, True);
+      showFuncsPosition (os, true);
     } else if (type == "epoch") {
-      showFuncsEpoch (os, True);
+      showFuncsEpoch (os, true);
     } else if (type == "direction"  ||  type == "dir") {
-      showFuncsDirection (os, True);
+      showFuncsDirection (os, true);
     } else if (type == "earthmagnetic"  ||  type == "em") {
-      showFuncsEarthMagnetic (os, True);
+      showFuncsEarthMagnetic (os, true);
     } else if (type == "frequency"  ||  type == "freq") {
-      showFuncsFrequency (os, True);
+      showFuncsFrequency (os, true);
     } else if (type == "radialvelocity"  ||  type == "radvel"  ||  type == "rv") {
-      showFuncsRadialVelocity (os, True);
+      showFuncsRadialVelocity (os, true);
     } else if (type == "doppler") {
-      showFuncsDoppler (os, True);
+      showFuncsDoppler (os, true);
     }
     if (os.str().empty()) {
       os << type

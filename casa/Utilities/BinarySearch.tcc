@@ -35,20 +35,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //#!!!!! similarly.
 
 template<class Container, class ElType>
-     Int binarySearch(Bool &found, const Container &container, 
-		      const ElType &value, uInt n, Int originalLower)
+     int32_t binarySearch(bool &found, const Container &container, 
+		      const ElType &value, uint32_t n, int32_t originalLower)
 {
-    found = False;
+    found = false;
     if (n == 0) {
 	return 0;
     }
 
-    Int lower = originalLower;
-    Int upper = lower + n - 1;
-    Int middle = 0;
+    int32_t lower = originalLower;
+    int32_t upper = lower + n - 1;
+    int32_t middle = 0;
 
-    Bool ascending = (! (container(upper) < container(lower)));
-    Bool toLeft, toRight;
+    bool ascending = (! (container(upper) < container(lower)));
+    bool toLeft, toRight;
 
     ElType midval;
 
@@ -75,7 +75,7 @@ template<class Container, class ElType>
 	        // exact match, but still we want to get to the beginning of
 	        // sequence
 	        upper = middle - 1;
-		found = True;
+		found = true;
 	    }
         }
     }
@@ -84,20 +84,20 @@ template<class Container, class ElType>
 }
 
 template<class Container, class ElType>
-     Int binarySearchBrackets(Bool &found, const Container &container, 
-			      const ElType &value, uInt n, Int originalLower)
+     int32_t binarySearchBrackets(bool &found, const Container &container, 
+			      const ElType &value, uint32_t n, int32_t originalLower)
 {
-    found = False;
+    found = false;
     if (n == 0) {
 	return 0;
     }
 
-    Int lower = originalLower;
-    Int upper = lower + n - 1;
-    Int middle = 0;
+    int32_t lower = originalLower;
+    int32_t upper = lower + n - 1;
+    int32_t middle = 0;
 
-    Bool ascending = (! (container[upper] < container[lower]));
-    Bool toLeft, toRight;
+    bool ascending = (! (container[upper] < container[lower]));
+    bool toLeft, toRight;
 
     ElType midval;
 
@@ -124,7 +124,7 @@ template<class Container, class ElType>
 	        // exact match, but still we want to get to the beginning of
 	        // sequence
 	        upper = middle - 1;
-		found = True;
+		found = true;
 	    }
         }
     }

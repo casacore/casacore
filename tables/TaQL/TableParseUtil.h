@@ -57,14 +57,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   namespace TableParseUtil
   {
     // Make a Table object for given name, seqnr or so.
-    // If <src>alwaysOpen=False</src> the table will only be looked up,
+    // If <src>alwaysOpen=false</src> the table will only be looked up,
     // but not opened if not found. This is meant for concatenated tables
     // in TaQLNodeHandler.
-    Table getTable (Int tabnr, const String& name,
+    Table getTable (int32_t tabnr, const String& name,
                     const Table& ftab,
                     const std::vector<const Table*>& tempTables,
                     const std::vector<TableParseQuery*>& stack,
-                    Bool alwaysOpen=True);
+                    bool alwaysOpen=true);
 
     // Open the parent table of a subtable.
     Table openParentTable (const String& fullName,
@@ -77,20 +77,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // <src>[shorthand][column][::key1.key2.key3...]</src> where the
     // square brackets indicate optional parts. Note that a single name given
     // before :: is interpreted as a shorthand unless preceded by a period.
-    // <br>True is returned if the name contains a keyword part.
+    // <br>true is returned if the name contains a keyword part.
     // In that case fieldNames contains the keyword name and the possible
     // subfields. The possible shorthand and the column name are
     // filled in if it is a column keyword.
     // If the name contains a column, fieldNames is filled with  the subfields
     // of the column (for the case where the column contains records).
-    // <br>If isKeyword is True, the first part of name is a keyword,
+    // <br>If isKeyword is true, the first part of name is a keyword,
     // even if no :: is given.
-    // If allowNoKey is True, a single :: is allowed, otherwise the name is invalid.
-    // If the name is invalid, exceptions are only thrown if checkError=True.
+    // If allowNoKey is true, a single :: is allowed, otherwise the name is invalid.
+    // If the name is invalid, exceptions are only thrown if checkError=true.
     // Otherwise the name is treated as a normal name without keyword.
-    Bool splitName (String& shorthand, String& columnName,
+    bool splitName (String& shorthand, String& columnName,
                     Vector<String>& fieldNames, const String& name,
-                    Bool checkError, Bool isKeyword, Bool allowNoKey);
+                    bool checkError, bool isKeyword, bool allowNoKey);
 
     // Define a field with the given data type in the Record.
     void setRecFld (RecordInterface& rec, const String& name,

@@ -54,18 +54,18 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void a (uInt bucketSize, uInt mode);
-void b (const Vector<Bool>& removedRows);
+void a (uint32_t bucketSize, uint32_t mode);
+void b (const Vector<bool>& removedRows);
 void c();
 void d();
-void e (uInt nrrow);
+void e (uint32_t nrrow);
 void f();
 void testWithLocking();
 
 int main (int argc, const char* argv[])
 {
   ///  DataManager::MAXROWNR32 = 0;
-    uInt nr = 1000;
+    uint32_t nr = 1000;
     if (argc > 1) {
 	istringstream istr(argv[1]);
 	istr >> nr;
@@ -90,22 +90,22 @@ int main (int argc, const char* argv[])
 }
 
 
-void init (Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
+void init (Cube<float>& arrf, Vector<DComplex>& arrdc, Cube<bool>& arrb)
 {
        // Hey it's a bug in the SGI compiler that's
        // why the static_cast
-    indgen (static_cast< Cube<Float> &>(arrf));
+    indgen (static_cast< Cube<float> &>(arrf));
     arrdc(0) = DComplex(1.2, 3.4);
     arrdc(1) = DComplex(-2.3, 5.6);
     IPosition shape(arrb.shape());
-    uInt n = 0;
-    for (Int i=0; i<shape(2); i++) {
-	for (Int j=0; j<shape(1); j++) {
-	    for (Int k=0; k<shape(0); k++) {
+    uint32_t n = 0;
+    for (int32_t i=0; i<shape(2); i++) {
+	for (int32_t j=0; j<shape(1); j++) {
+	    for (int32_t k=0; k<shape(0); k++) {
 		if (n++%3 == 2) {
-		    arrb(k,j,i) = True;
+		    arrb(k,j,i) = true;
 		}else{
-		    arrb(k,j,i) = False;
+		    arrb(k,j,i) = false;
 		}
 	    }
 	}
@@ -114,7 +114,7 @@ void init (Cube<Float>& arrf, Vector<DComplex>& arrdc, Cube<Bool>& arrb)
 
 
 // First build a description.
-void a (uInt bucketSize, uInt mode)
+void a (uint32_t bucketSize, uint32_t mode)
 {
     Table tab;
     if (mode == 0) {
@@ -124,7 +124,7 @@ void a (uInt bucketSize, uInt mode)
 	TableDesc td("", "1", TableDesc::Scratch);
 	td.comment() = "A test of class TableDesc";
 	td.addColumn (ScalarColumnDesc<Complex>("ac"));
-	td.addColumn (ScalarColumnDesc<Int>("ad"));
+	td.addColumn (ScalarColumnDesc<int32_t>("ad"));
 	td.addColumn (ScalarColumnDesc<float>("ae"));
 	td.addColumn (ScalarColumnDesc<String>("af"));
 	td.addColumn (ArrayColumnDesc<float>("arr1",3,ColumnDesc::Direct));
@@ -132,13 +132,13 @@ void a (uInt bucketSize, uInt mode)
 	td.addColumn (ArrayColumnDesc<float>("arr3",0,ColumnDesc::Direct));
 	td.addColumn (ArrayColumnDesc<String>("arr4",0,ColumnDesc::Direct));
 	td.addColumn (ArrayColumnDesc<DComplex>("arr5",0,ColumnDesc::Direct));
-	td.addColumn (ArrayColumnDesc<Bool>("arr6",0,ColumnDesc::Direct));
-	td.addColumn (ArrayColumnDesc<Bool>("arr7",0,ColumnDesc::FixedShape));
+	td.addColumn (ArrayColumnDesc<bool>("arr6",0,ColumnDesc::Direct));
+	td.addColumn (ArrayColumnDesc<bool>("arr7",0,ColumnDesc::FixedShape));
 	
 	// Now create a new table from the description.
 	SetupNewTable newtab("tIncrementalStMan_tmp.data", td, Table::New);
 	// Create a storage manager for it.
-	IncrementalStMan sm1 ("ISM", bucketSize, False);
+	IncrementalStMan sm1 ("ISM", bucketSize, false);
 	newtab.bindAll (sm1);
 	newtab.setShapeColumn("arr1",IPosition(3,2,3,4));
 	newtab.setShapeColumn("arr3",IPosition(3,2,3,4));
@@ -152,7 +152,7 @@ void a (uInt bucketSize, uInt mode)
     }
 
     ScalarColumn<Complex> ac(tab,"ac");
-    ScalarColumn<Int> ad(tab,"ad");
+    ScalarColumn<int32_t> ad(tab,"ad");
     ScalarColumn<float> ae(tab,"ae");
     ScalarColumn<String> af(tab,"af");
     ArrayColumn<float> arr1(tab,"arr1");
@@ -160,13 +160,13 @@ void a (uInt bucketSize, uInt mode)
     ArrayColumn<float> arr3(tab,"arr3");
     ArrayColumn<String> arr4(tab,"arr4");
     ArrayColumn<DComplex> arr5(tab, "arr5");
-    ArrayColumn<Bool> arr6(tab, "arr6");
-    ArrayColumn<Bool> arr7(tab, "arr7");
+    ArrayColumn<bool> arr6(tab, "arr6");
+    ArrayColumn<bool> arr7(tab, "arr7");
     Cube<float> arrf(IPosition(3,2,3,4));
     Vector<DComplex> arrdc(2);
-    Cube<Bool> arrb(IPosition(3,5,7,11));
+    Cube<bool> arrb(IPosition(3,5,7,11));
     init (arrf, arrdc, arrb);
-    uInt i;
+    uint32_t i;
     for (i=0; i<10; i++) {
 	if (mode < 2) {
 	    if (mode == 1) {
@@ -261,13 +261,13 @@ void a (uInt bucketSize, uInt mode)
     // All rows from 1 on get this value.
     arr4.put (2, vstr);
     cout << "arr4 = " << arr4.getColumn (Slicer(Slice(0,1))) << endl;
-    // Replace a value in the last Bool array.
-    arrb(0,0,0) = True;
+    // Replace a value in the last bool array.
+    arrb(0,0,0) = true;
     arr7.putSlice (19, Slicer(IPosition(3,0,0,0),IPosition(3,1,1,1)),
 		   arrb(IPosition(3,0,0,0),IPosition(3,0,0,0)));
 }
 
-void b (const Vector<Bool>& removedRows)
+void b (const Vector<bool>& removedRows)
 {
     //# Define the values of the scalars (for Strings the lengths).
     static float acvalues[] = {-1,2,2,4,4,6,6,8,8,10,
@@ -289,17 +289,17 @@ void b (const Vector<Bool>& removedRows)
     ROIncrementalStManAccessor accessor (tab, "ISM"); 
     accessor.setCacheSize (2);
     ScalarColumn<Complex> ac(tab, "ac");
-    ScalarColumn<Int> ad(tab, "ad");
+    ScalarColumn<int32_t> ad(tab, "ad");
     ScalarColumn<float> ae(tab, "ae");
     ScalarColumn<String> af(tab, "af");
     ArrayColumn<float> arr1(tab,"arr1");
     ArrayColumn<float> arr2(tab,"arr2");
     ArrayColumn<float> arr3(tab,"arr3");
     ArrayColumn<DComplex> arr5(tab,"arr5");
-    ArrayColumn<Bool> arr6(tab,"arr6");
-    ArrayColumn<Bool> arr7(tab,"arr7");
+    ArrayColumn<bool> arr6(tab,"arr6");
+    ArrayColumn<bool> arr7(tab,"arr7");
     cout << "#Rows " << tab.nrow() << endl;
-    uInt i;
+    uint32_t i;
     if (tab.nrow() == 20) {
 	for (i=0; i<19; i++) {
 	    cout << ac(i) << ", ";
@@ -320,10 +320,10 @@ void b (const Vector<Bool>& removedRows)
     }
     Cube<float> arrf(2,3,4);
     Vector<DComplex> arrdc(2);
-    Cube<Bool> arrb(5,7,11);
+    Cube<bool> arrb(5,7,11);
     init (arrf, arrdc, arrb);
     // Check if all values match.
-    uInt rownr = 0;
+    uint32_t rownr = 0;
     for (i=0; i<19; i++) {
 	if (!removedRows(i)) {
 	    if (i>0  &&  ac(rownr) != Complex(acvalues[i]))
@@ -335,7 +335,7 @@ void b (const Vector<Bool>& removedRows)
 	    if (ae(rownr) != aevalues[i])
 		cout << i << "," << rownr << " ae-mismatch: "
 		    << ae(rownr) << endl;
-	    if (Int(af(rownr).length()) != afvalues[i])
+	    if (int32_t(af(rownr).length()) != afvalues[i])
 		cout << i << "," << rownr << " af-mismatch: "
 		    << af(rownr) << endl;
 	    if (!allEQ (arr1(rownr), arrf + 24*arr1Start[i]))
@@ -347,7 +347,7 @@ void b (const Vector<Bool>& removedRows)
 	    if (!allEQ(arr3(rownr), arrf + 24*arr3Start[i]))
 		cout << i << "," << rownr << " arr3-mismatch: "
 		    << arr3(rownr) << endl;
-	    uInt j = min(9U,i);
+	    uint32_t j = min(9U,i);
 	    if (!allEQ(arr5(rownr), arrdc + DComplex(2*j, 3*j)))
 		cout << i << "," << rownr << " arr5-mismatch: "
 		    << arr5(rownr) << endl;
@@ -355,7 +355,7 @@ void b (const Vector<Bool>& removedRows)
 		cout << i << "," << rownr << " arr6-mismatch: "
 		    << arr6(rownr) << endl;
 	    if (i == 19) {
-		arrb(0,0,0) = True;
+		arrb(0,0,0) = true;
 	    }
 	    if (!allEQ(arr7(rownr), arrb))
 		cout << i << "," << rownr << " arr7-mismatch: "
@@ -364,16 +364,16 @@ void b (const Vector<Bool>& removedRows)
 	}
     }
 
-    arrb(0,0,0) = False;
+    arrb(0,0,0) = false;
     if (tab.nrow() == 20) {
 	cout << arr1(19) << endl;
 	cout << arr2(19) << endl;
 	cout << arr3(19) << endl;
 	IPosition bshape = arrb.shape();
-	Cube<Bool> arrb1 (bshape);
+	Cube<bool> arrb1 (bshape);
 	for (i=0; i<19; i++) {
-	    for (Int j=0; j<bshape(0); j++) {
-		Array<Bool> result (arrb1(IPosition(3,j,0,0),
+	    for (int32_t j=0; j<bshape(0); j++) {
+		Array<bool> result (arrb1(IPosition(3,j,0,0),
 				      IPosition(3,j,bshape(1)-1,bshape(2)-1)));
 		arr6.getSlice (i, Slicer(IPosition(3,j,0,0),
 				      IPosition(3,1,bshape(1),bshape(2))),
@@ -381,14 +381,14 @@ void b (const Vector<Bool>& removedRows)
 	    }
 	    if (!allEQ(arrb1, arrb))
 		cout << i << " arr6-slice-mismatch: " << arrb1 << ", ";
-	    arrb1.set (True);
+	    arrb1.set (true);
 	}
 	for (i=0; i<19; i++) {
 	    if (i == 19) {
-		arrb(0,0,0) = True;
+		arrb(0,0,0) = true;
 	    }
-	    for (Int j=0; j<bshape(0); j++) {
-		Array<Bool> result (arrb1(IPosition(3,j,0,0),
+	    for (int32_t j=0; j<bshape(0); j++) {
+		Array<bool> result (arrb1(IPosition(3,j,0,0),
 				      IPosition(3,j,bshape(1)-1,bshape(2)-1)));
 		arr7.getSlice (i, Slicer(IPosition(3,j,0,0),
 				     IPosition(3,1,bshape(1),bshape(2))),
@@ -396,7 +396,7 @@ void b (const Vector<Bool>& removedRows)
 	    }
 	    if (!allEQ(arrb1, arrb))
 		cout << i << " arr7-slice-mismatch: " << arrb1 << ", ";
-	    arrb1.set (True);
+	    arrb1.set (true);
 	}
     }
     if (tab.nrow() % 5 == 0) {
@@ -407,38 +407,38 @@ void b (const Vector<Bool>& removedRows)
 
 void c()
 {
-    uInt i;
-    Vector<Bool> removedRows(20);
-    removedRows.set (False);
+    uint32_t i;
+    Vector<bool> removedRows(20);
+    removedRows.set (false);
     b (removedRows);
     // Remove several rows.
     // Open the table as read/write for that purpose.
     Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
     rwtab.removeRow (17);
     AlwaysAssertExit (rwtab.nrow() == 19);
-    removedRows(17) = True;
+    removedRows(17) = true;
     b (removedRows);
     rwtab.removeRow (18);
     AlwaysAssertExit (rwtab.nrow() == 18);
-    removedRows(19) = True;
+    removedRows(19) = true;
     b (removedRows);
     rwtab.removeRow (10);
     AlwaysAssertExit (rwtab.nrow() == 17);
-    removedRows(10) = True;
+    removedRows(10) = true;
     b (removedRows);
     rwtab.removeRow (0);
     AlwaysAssertExit (rwtab.nrow() == 16);
-    removedRows(0) = True;
+    removedRows(0) = true;
     b (removedRows);
     rwtab.removeRow (10);
     AlwaysAssertExit (rwtab.nrow() == 15);
-    removedRows(12) = True;                    // row 10 was old row 12
+    removedRows(12) = true;                    // row 10 was old row 12
     b (removedRows);
     // Remove several rows.
     Vector<rownr_t> rows(5);
     for (i=0; i<5; i++) {
 	rows(i)=i+2;
-	removedRows(i+3) = True;
+	removedRows(i+3) = true;
     }
     rwtab.removeRow (rows);
     AlwaysAssertExit (rwtab.nrow() == 10);
@@ -447,9 +447,9 @@ void c()
     for (i=0; i<10; i++) {
 	rwtab.removeRow (0);
 	AlwaysAssertExit (rwtab.nrow() == 9-i);
-	for (uInt j=0; j<20; j++) {
+	for (uint32_t j=0; j<20; j++) {
 	    if (!removedRows(j)) {
-		removedRows(j) = True;
+		removedRows(j) = true;
 		break;
 	    }
 	}
@@ -459,7 +459,7 @@ void c()
 
 void d()
 {
-    uInt i;
+    uint32_t i;
     // Remove the last 10 rows.
     // Open the table as read/write for that purpose.
     Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
@@ -471,13 +471,13 @@ void d()
     AlwaysAssertExit (rwtab.nrow() == 10);
 }
 
-void e (uInt nrrow)
+void e (uint32_t nrrow)
 {
-    uInt i;
-    Vector<Bool> removedRows(20);
-    removedRows.set (True);
+    uint32_t i;
+    Vector<bool> removedRows(20);
+    removedRows.set (true);
     for (i=0; i<nrrow; i++) {
-	removedRows(i) = False;
+	removedRows(i) = false;
     }
     b (removedRows);
 }
@@ -488,8 +488,8 @@ void f()
     Table rwtab ("tIncrementalStMan_tmp.data", Table::Update);
     ArrayColumn<float> arr1(rwtab,"arr1");
     ArrayColumn<float> arr2(rwtab,"arr2");
-    ArrayColumn<Bool> arr7(rwtab, "arr7");
-    Vector<Bool> vecb(10);
+    ArrayColumn<bool> arr7(rwtab, "arr7");
+    Vector<bool> vecb(10);
     Vector<float> vecf(10);
     indgen (vecf);
     //# Try to change some arrays (which cannot be done).
@@ -503,8 +503,8 @@ void f()
     } catch (std::exception& x) {
 	cout << x.what() << endl;         // shape cannot change
     } 
-    Vector<Bool> removedRows(20);
-    removedRows.set (False);
+    Vector<bool> removedRows(20);
+    removedRows.set (false);
     b (removedRows);
     //# Change an array which can be changed.
     //# Check value, change it back and check all values.
@@ -525,40 +525,40 @@ void testWithLocking()
 {
   // Create a table of 10**6 rows where each 10000-th row is written.
   {
-    uInt nrow = 1000000;
-    uInt time_rows = 10000;
+    uint32_t nrow = 1000000;
+    uint32_t time_rows = 10000;
     TableDesc td;
-    td.addColumn(ScalarColumnDesc<Int>("TIME"));
+    td.addColumn(ScalarColumnDesc<int32_t>("TIME"));
     SetupNewTable newtab("tIn.tab", td, Table::New);
     IncrementalStMan ism;
     newtab.bindAll (ism);
     Table tab(newtab, nrow);
-    ScalarColumn<Int> col(tab, "TIME");
-    uInt row=0;
+    ScalarColumn<int32_t> col(tab, "TIME");
+    uint32_t row=0;
     while (row < nrow) {
-      uInt n = min(time_rows, nrow-row);
-      Vector<Int> vec(n);
-      indgen (vec, Int(row));
-      col.put (row, Int(row));
+      uint32_t n = min(time_rows, nrow-row);
+      Vector<int32_t> vec(n);
+      indgen (vec, int32_t(row));
+      col.put (row, int32_t(row));
       row += n;
     }
   }
   // Read back the table and use UserLocking to make a lock
   // which invalidates the cache.
   // Do it twice with a size less and greater than 10000.
-  for (uInt time_rows=3333; time_rows<=33333; time_rows+=30000) {
+  for (uint32_t time_rows=3333; time_rows<=33333; time_rows+=30000) {
     Table tab("tIn.tab", TableLock::UserLocking);
-    uInt nrow = tab.nrow();
-    uInt row = 0;
+    uint32_t nrow = tab.nrow();
+    uint32_t row = 0;
     while (row < nrow) {
-      uInt n = min(time_rows, nrow-row);
+      uint32_t n = min(time_rows, nrow-row);
       tab.lock();
-      ScalarColumn<Int> col(tab, "TIME");
-      Vector<Int> vec = col.getColumnRange (Slicer(IPosition(1,row),
+      ScalarColumn<int32_t> col(tab, "TIME");
+      Vector<int32_t> vec = col.getColumnRange (Slicer(IPosition(1,row),
                                                    IPosition(1,n)));
       // Check the contents.
-      for (uInt i=0; i<n; ++i) {
-        AlwaysAssertExit (vec[i] == (Int)row/10000*10000);
+      for (uint32_t i=0; i<n; ++i) {
+        AlwaysAssertExit (vec[i] == (int32_t)row/10000*10000);
         row++;
       }
       tab.unlock();

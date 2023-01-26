@@ -35,7 +35,7 @@ int main ()
   String myname = "tmp.im";
   int ret = 0;
   try {
-    PagedImage<Float> im(
+    PagedImage<float> im(
                          TiledShape(IPosition(4, 1)),
                          CoordinateUtil::defaultCoords4D(), myname
                          );
@@ -48,9 +48,9 @@ int main ()
     names.push_back("./tmp.im");
     names.push_back("$PWD/tmp.im");
     // various escaping tests for fromLatticeExpession
-    uInt lastGood = 3;
-    for (uInt i=0; i<names.size(); i++) {
-      for (uInt j=0; j<names.size(); j++) {
+    uint32_t lastGood = 3;
+    for (uint32_t i=0; i<names.size(); i++) {
+      for (uint32_t j=0; j<names.size(); j++) {
         String expr = names[i] + " == " + names[j];
         try {
           ImageRegion *z = ImageRegion::fromLatticeExpression(expr);
@@ -71,7 +71,7 @@ int main ()
   }
   Directory d(myname);
   if (d.exists()) {
-    d.removeRecursive(False);
+    d.removeRecursive(false);
   }
   return ret;
 }

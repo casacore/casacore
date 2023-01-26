@@ -59,12 +59,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // parameters are associations of String "keys" to "values".  The parameters 
 // may be used as internal values during the program's run.  The shell command 
 // <srcblock>
-// shell% myexecutable limits=1000 happy=True
+// shell% myexecutable limits=1000 happy=true
 // </srcblock> 
 // would run "myexecutable" and set the internal parameter "limits" to a value
-// of 1000 and "happy" to True.
+// of 1000 and "happy" to true.
 //
-// The Input class is instantiated by a constructor with a single Int argument
+// The Input class is instantiated by a constructor with a single int32_t argument
 // which, when non-zero, switches on the filling of the keys "debug" and 
 // "help" from environment variables.  These two keys always exist in an 
 // instance of Input.  No argument to the Input constructor defaults to "debug"
@@ -100,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // int main(int argc,const char* argv[])
 // {
 //   Input inp;
-//   // Create a parameter called "foo" which defaults to True.
+//   // Create a parameter called "foo" which defaults to true.
 //   inp.create("foo", "True");
 //   // Create a parameter called "iterbound" which defaults to 2000 and
 //   // has a help String used in cases of prompting.
@@ -125,7 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // // get a boolean
 // if(inp.getBool("foo")
 //   // get an iteration boundary
-//   for(Int i=0; i<inp.getInt("iterbound"); i++) {
+//   for(int32_t i=0; i<inp.getInt("iterbound"); i++) {
 //     // get a double
 //     chutspah /= inp.getDouble("dividend");
 //   }
@@ -135,8 +135,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <ol> <li> specifying a version <src> inp.version("$ID:");</src>
 // will print at run time the version of the program being run.
 // <li> run time checking of ranges 
-// <src> inp.makeMaskFromRanges(const String &ranges, uInt length,
-//					 Bool oneRelative=False); </src>
+// <src> inp.makeMaskFromRanges(const String &ranges, uint32_t length,
+//					 bool oneRelative=false); </src>
 // </ol>
 // </synopsis> 
 //
@@ -178,9 +178,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Here we get a String from the parameter with the key "file".
 //    Image myImage(inp.getString("file"));
 //    // Here we set the boundary of the loop.
-//    for(Int i=0;i<inp.getInt("ubound"), i++) {
+//    for(int32_t i=0;i<inp.getInt("ubound"), i++) {
 //      // Here we set a value to the number of baselines.
-//      Int baseline = inp.getInt("baseline");
+//      int32_t baseline = inp.getInt("baseline");
 //      // Here we set the gain stride.
 //      Cleaner.gain(inp.getDouble("gainstride"));
 //      // lets add a debugging block
@@ -201,12 +201,12 @@ class Input {
 public:
 
   // The default constructor enables the creation of parameters. 
-  // If the optional Int argument is non-zero, the parameters "help" and 
+  // If the optional int32_t argument is non-zero, the parameters "help" and 
   // "debug" are created from their shell environment values.
   // This puts the program in no-prompt mode unless environment variable HELP 
   // is defined with value "prompt". The output debug level is set according 
   // to the value of the environment variable DEBUG.
-  Input (Int createEnv=0);
+  Input (int32_t createEnv=0);
   
   // Destructor.
   ~Input();
@@ -238,20 +238,20 @@ public:
 
   // Get the double value of the parameter (or 0.0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Double getDouble (const String& key);
+  double getDouble (const String& key);
 
   // Get the Block<double> value of the parameter (or default Block if unknown 
   // key).
   // If the program is in prompt mode, ask the user for the value.
-  Block<Double> getDoubleArray (const String& key);
+  Block<double> getDoubleArray (const String& key);
 
   // Get the int value of the parameter (or 0 if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Int getInt (const String& key);
+  int32_t getInt (const String& key);
 
   // Get the Block<int> value of parameter (or default Block if unknown key)
   // If the program is in prompt mode, ask the user for the value.
-  Block<Int> getIntArray (const String& key);
+  Block<int32_t> getIntArray (const String& key);
 
   // Get the String value of the parameter (or "" if unknown key).
   // If the program is in prompt mode, ask the user for the value.
@@ -259,23 +259,23 @@ public:
 
   // Get the boolean value of the parameter (or FALSE if unknown key).
   // If the program is in prompt mode, ask the user for the value.
-  Bool getBool (const String& key);
+  bool getBool (const String& key);
 
   // Get the total number of parameters of this program
-  Int count() const;
+  int32_t count() const;
 
   // See if the current debug level is thresholded
-  Bool debug (Int l) const
-    { return (debug_level >= l) ? True : False; }
+  bool debug (int32_t l) const
+    { return (debug_level >= l) ? true : false; }
 
   // Set a new value for an existing named parameter
   // Returns FALSE if key is an unknown parameter name.
   // <group>
-  Bool put (const String& key, const String& value);
+  bool put (const String& key, const String& value);
 
   // The single argument is of the form `key=value', where key is a valid 
   // parameter name.
-  Bool put (const String& keyval);
+  bool put (const String& keyval);
   // </group>
 
   // Set version string for announcements
@@ -284,31 +284,31 @@ public:
   // Announce program and version.
   void announce();
 
-  // Turn a string in the form "5,7,9-11,13,2-4" into a Vector<Bool>, where
-  // each specified position or range, is set to True and every other position
-  // is set to False. While the returned vector always has a zero origin, if
-  // oneRelative is True, all the numbers in the supplied string are 
+  // Turn a string in the form "5,7,9-11,13,2-4" into a Vector<bool>, where
+  // each specified position or range, is set to true and every other position
+  // is set to false. While the returned vector always has a zero origin, if
+  // oneRelative is true, all the numbers in the supplied string are 
   // decremented before use. Spaces in ranges are ignored, but otherwise
   // ill-formed strings, or numbers that would fill in beyond the length
-  // of the Vector<Bool> results in an exception being thrown.
-  static Vector<Bool> makeMaskFromRanges(const String& ranges, uInt length,
-					 Bool oneRelative=False);
+  // of the Vector<bool> results in an exception being thrown.
+  static Vector<bool> makeMaskFromRanges(const String& ranges, uint32_t length,
+					 bool oneRelative=false);
 
 
 private:
   // Get the index of the named parameter (-1 if unknown key).
   // Anywhere from 0.. if a key is found.
-  Int getParam (const String& key) const;
+  int32_t getParam (const String& key) const;
 
   // Prompt the user for a value for the parameter.
   // If he gives a non-empty answer, set that value.
   void prompt (Param& parameter) const;
 
   // Bind an environment variable to a parameter
-  void envCreate (const Char *env, const String& key, const String& def);
+  void envCreate (const char *env, const String& key, const String& def);
 
   // The actual creation of a new (system/program) parameter
-  void createPar (Int, const String&, const String&, const String&,
+  void createPar (int32_t, const String&, const String&, const String&,
 		  const String&, const String&, const String&);
 
   // output to stdout a listing of all "key=value" pairs.
@@ -322,19 +322,19 @@ private:
   String version_id;    
 
   // parameter creation allowed?   
-  Bool is_closed;    
+  bool is_closed;    
 
   // ask user for parameter value?
-  Bool do_prompt;               
+  bool do_prompt;               
 
   // threshold value for debug output
-  Int debug_level;              
+  int32_t debug_level;              
 
   // "prompt" or "keys" indicates the various types of help.
   String help_mode;     
 
   // count of program parameters
-  Int p_count;                 
+  int32_t p_count;                 
 };
 
 

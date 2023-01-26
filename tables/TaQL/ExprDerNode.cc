@@ -44,29 +44,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Implement the constants for each data type.
 
-TableExprNodeConstBool::TableExprNodeConstBool (const Bool& val)
+TableExprNodeConstBool::TableExprNodeConstBool (const bool& val)
 : TableExprNodeBinary (NTBool, VTScalar, OtLiteral, Constant),
   value_p             (val)
 {}
-Bool TableExprNodeConstBool::getBool (const TableExprId&)
+bool TableExprNodeConstBool::getBool (const TableExprId&)
     { return value_p; }
 
-TableExprNodeConstInt::TableExprNodeConstInt (const Int64& val)
+TableExprNodeConstInt::TableExprNodeConstInt (const int64_t& val)
 : TableExprNodeBinary (NTInt, VTScalar, OtLiteral, Constant),
   value_p             (val)
 {}
-Int64 TableExprNodeConstInt::getInt (const TableExprId&)
+int64_t TableExprNodeConstInt::getInt (const TableExprId&)
     { return value_p; }
-Double TableExprNodeConstInt::getDouble (const TableExprId&)
+double TableExprNodeConstInt::getDouble (const TableExprId&)
     { return value_p; }
 DComplex TableExprNodeConstInt::getDComplex (const TableExprId&)
     { return double(value_p); }
 
-TableExprNodeConstDouble::TableExprNodeConstDouble (const Double& val)
+TableExprNodeConstDouble::TableExprNodeConstDouble (const double& val)
 : TableExprNodeBinary (NTDouble, VTScalar, OtLiteral, Constant),
   value_p             (val)
 {}
-Double TableExprNodeConstDouble::getDouble (const TableExprId&)
+double TableExprNodeConstDouble::getDouble (const TableExprId&)
     { return value_p; }
 DComplex TableExprNodeConstDouble::getDComplex (const TableExprId&)
     { return value_p; }
@@ -96,7 +96,7 @@ TableExprNodeConstDate::TableExprNodeConstDate (const MVTime& val)
 : TableExprNodeBinary (NTDate, VTScalar, OtLiteral, Constant),
   value_p             (val)
 {}
-Double TableExprNodeConstDate::getDouble (const TableExprId&)
+double TableExprNodeConstDate::getDouble (const TableExprId&)
     { return value_p; }
 MVTime TableExprNodeConstDate::getDate (const TableExprId&)
     { return value_p; }
@@ -113,7 +113,7 @@ TableExprNodeColumn::TableExprNodeColumn (const TableExprInfo& tableInfo,
   : TableExprNodeBinary (NTNumeric, VTScalar, OtColumn, Variable),
     tableInfo_p      (tableInfo),
     tabCol_p         (tableInfo.table(), name),
-    applySelection_p (True)
+    applySelection_p (true)
 {
     //# Check if the column is a scalar.
     if (! tabCol_p.columnDesc().isScalar()) {
@@ -165,7 +165,7 @@ Unit TableExprNodeColumn::getColumnUnit (const TableColumn& tabcol)
 
 void TableExprNodeColumn::disableApplySelection()
 {
-    applySelection_p = False;
+    applySelection_p = false;
 }
   
 void TableExprNodeColumn::applySelection (const Vector<rownr_t>& rownrs)
@@ -178,7 +178,7 @@ void TableExprNodeColumn::applySelection (const Vector<rownr_t>& rownrs)
         tabCol_p = TableColumn(tableInfo_p.table(), name);
         // Reset switch, because the column object can be used multiple times.
         // when a select expression is used as e.g. sort key.
-        applySelection_p = False;
+        applySelection_p = false;
     }
 }
 
@@ -186,21 +186,21 @@ void TableExprNodeColumn::applySelection (const Vector<rownr_t>& rownrs)
 const TableColumn& TableExprNodeColumn::getColumn() const
     { return tabCol_p; }
 
-Bool TableExprNodeColumn::getBool (const TableExprId& id)
+bool TableExprNodeColumn::getBool (const TableExprId& id)
 {
-    Bool val;
+    bool val;
     tabCol_p.getScalar (id.rownr(), val);
     return val;
 }
-Int64 TableExprNodeColumn::getInt (const TableExprId& id)
+int64_t TableExprNodeColumn::getInt (const TableExprId& id)
 {
-    Int64 val;
+    int64_t val;
     tabCol_p.getScalar (id.rownr(), val);
     return val;
 }
-Double TableExprNodeColumn::getDouble (const TableExprId& id)
+double TableExprNodeColumn::getDouble (const TableExprId& id)
 {
-    Double val;
+    double val;
     tabCol_p.getScalar (id.rownr(), val);
     return val;
 }
@@ -217,55 +217,55 @@ String TableExprNodeColumn::getString (const TableExprId& id)
     return val;
 }
 
-Bool TableExprNodeColumn::getColumnDataType (DataType& dt) const
+bool TableExprNodeColumn::getColumnDataType (DataType& dt) const
 {
     dt = tabCol_p.columnDesc().dataType();
-    return True;
+    return true;
 }
 
-Array<Bool>     TableExprNodeColumn::getColumnBool (const Vector<rownr_t>& rownrs)
+Array<bool>     TableExprNodeColumn::getColumnBool (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<Bool> col (tabCol_p);
+    ScalarColumn<bool> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<uChar>    TableExprNodeColumn::getColumnuChar (const Vector<rownr_t>& rownrs)
+Array<unsigned char>    TableExprNodeColumn::getColumnuChar (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<uChar> col (tabCol_p);
+    ScalarColumn<unsigned char> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Short>    TableExprNodeColumn::getColumnShort (const Vector<rownr_t>& rownrs)
+Array<int16_t>    TableExprNodeColumn::getColumnShort (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<Short> col (tabCol_p);
+    ScalarColumn<int16_t> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<uShort>   TableExprNodeColumn::getColumnuShort (const Vector<rownr_t>& rownrs)
+Array<uint16_t>   TableExprNodeColumn::getColumnuShort (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<uShort> col (tabCol_p);
+    ScalarColumn<uint16_t> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Int>      TableExprNodeColumn::getColumnInt (const Vector<rownr_t>& rownrs)
+Array<int32_t>      TableExprNodeColumn::getColumnInt (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<Int> col (tabCol_p);
+    ScalarColumn<int32_t> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<uInt>     TableExprNodeColumn::getColumnuInt (const Vector<rownr_t>& rownrs)
+Array<uint32_t>     TableExprNodeColumn::getColumnuInt (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<uInt> col (tabCol_p);
+    ScalarColumn<uint32_t> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Int64>    TableExprNodeColumn::getColumnInt64 (const Vector<rownr_t>& rownrs)
+Array<int64_t>    TableExprNodeColumn::getColumnInt64 (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<Int64> col (tabCol_p);
+    ScalarColumn<int64_t> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Float>    TableExprNodeColumn::getColumnFloat (const Vector<rownr_t>& rownrs)
+Array<float>    TableExprNodeColumn::getColumnFloat (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<Float> col (tabCol_p);
+    ScalarColumn<float> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
-Array<Double>   TableExprNodeColumn::getColumnDouble (const Vector<rownr_t>& rownrs)
+Array<double>   TableExprNodeColumn::getColumnDouble (const Vector<rownr_t>& rownrs)
 {
-    ScalarColumn<Double> col (tabCol_p);
+    ScalarColumn<double> col (tabCol_p);
     return col.getColumnCells (rownrs);
 }
 Array<Complex>  TableExprNodeColumn::getColumnComplex (const Vector<rownr_t>& rownrs)
@@ -286,7 +286,7 @@ Array<String>   TableExprNodeColumn::getColumnString (const Vector<rownr_t>& row
 
 
 
-TableExprNodeRownr::TableExprNodeRownr (const TableExprInfo& tableInfo, uInt origin)
+TableExprNodeRownr::TableExprNodeRownr (const TableExprInfo& tableInfo, uint32_t origin)
 : TableExprNodeBinary (NTInt, VTScalar, OtRownr, Variable),
   tableInfo_p         (tableInfo),
   origin_p            (origin)
@@ -295,7 +295,7 @@ TableExprInfo TableExprNodeRownr::getTableInfo() const
 {
     return tableInfo_p;
 }
-Int64 TableExprNodeRownr::getInt (const TableExprId& id)
+int64_t TableExprNodeRownr::getInt (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
     return id.rownr() + origin_p;
@@ -319,7 +319,7 @@ void TableExprNodeRowid::applySelection (const Vector<rownr_t>& rownrs)
     // Append rows for an insert.
     if (rownrs.size() == 1  &&  rownrs[0] >= rownrs_p.size()) {
         rownr_t sz = rownrs_p.size();
-        rownrs_p.resize (rownrs[0], True);
+        rownrs_p.resize (rownrs[0], true);
         for (rownr_t i=sz; i<rownrs_p.size(); ++i) {
             rownrs_p[i] = i;
         }
@@ -332,10 +332,10 @@ void TableExprNodeRowid::applySelection (const Vector<rownr_t>& rownrs)
         rownrs_p.reference (newRows);
     }
 }
-Int64 TableExprNodeRowid::getInt (const TableExprId& id)
+int64_t TableExprNodeRowid::getInt (const TableExprId& id)
 {
     AlwaysAssert (id.byRow(), AipsError);
-    if (id.rownr() < Int64(rownrs_p.size())) {
+    if (id.rownr() < int64_t(rownrs_p.size())) {
       return rownrs_p[id.rownr()];
     }
     return 0;
@@ -347,15 +347,15 @@ Int64 TableExprNodeRowid::getInt (const TableExprId& id)
 TableExprNodeRandom::TableExprNodeRandom (const TableExprInfo& tableInfo)
 : TableExprNodeBinary (NTDouble, VTScalar, OtRandom, Variable),
   tableInfo_p         (tableInfo),
-  generator_p         (Int (fmod (Time().modifiedJulianDay(), 1.) * 86400000),
-                       Int (Time().modifiedJulianDay())),
+  generator_p         (int32_t (fmod (Time().modifiedJulianDay(), 1.) * 86400000),
+                       int32_t (Time().modifiedJulianDay())),
   random_p            (&generator_p, 0, 1)
 {}
 TableExprInfo TableExprNodeRandom::getTableInfo() const
 {
     return tableInfo_p;
 }
-Double TableExprNodeRandom::getDouble (const TableExprId&)
+double TableExprNodeRandom::getDouble (const TableExprId&)
 {
     return random_p();
 }

@@ -57,11 +57,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Constructors
 template <class T>
 FunctionHolder<T>::FunctionHolder() 
-  : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) {}
+  : hold_p(), mode_p(), nam_p(N_Types), isFilled(false) {}
 
 template <class T>
 FunctionHolder<T>::FunctionHolder(const Function<T> &in) 
-  : hold_p(in.clone()), mode_p(), nam_p(N_Types), isFilled(False) 
+  : hold_p(in.clone()), mode_p(), nam_p(N_Types), isFilled(false) 
 {
     if (in.hasMode()) {
 	mode_p.set(new Record(RecordInterface::Variable));
@@ -71,7 +71,7 @@ FunctionHolder<T>::FunctionHolder(const Function<T> &in)
 
 template <class T>
 FunctionHolder<T>::FunctionHolder(const FunctionHolder<T> &other)
-  : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) 
+  : hold_p(), mode_p(), nam_p(N_Types), isFilled(false) 
 {
   if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
   if (other.mode_p.ptr()) mode_p.set(other.mode_p.ptr()->clone());
@@ -103,7 +103,7 @@ operator=(const FunctionHolder<T> &other) {
 
 //# Member Functions
 template <class T>
-Bool FunctionHolder<T>::isEmpty() const {
+bool FunctionHolder<T>::isEmpty() const {
   return (!hold_p.ptr());
 }
 
@@ -122,13 +122,13 @@ const Function<T> &FunctionHolder<T>::asFunction() const {
 }
 
 template <class T>
-Bool FunctionHolder<T>::addFunction(const Function<T> &fnc) {
+bool FunctionHolder<T>::addFunction(const Function<T> &fnc) {
   if (nf_p == COMBINE) {
     dynamic_cast<CombiFunction<T> &>(*hold_p.ptr()).addFunction(fnc);
   } else if (nf_p == COMPOUND) {
     dynamic_cast<CompoundFunction<T> &>(*hold_p.ptr()).addFunction(fnc);
-  } else return False;
-  return True;
+  } else return false;
+  return true;
 } 
 
 template <class T>
@@ -143,39 +143,39 @@ template <class T>
 void FunctionHolder<T>::init() const {
   static FuncStat fnc[N_Types] = {
     { String("gaussian1d"), GAUSSIAN1D,
-	False},
+	false},
       { String("gaussian2d"), GAUSSIAN2D,
-	  False},
+	  false},
 	{ String("gaussian3d"), GAUSSIAN3D,
-	    False},
+	    false},
 	  { String("gaussianNd"), GAUSSIANND,
-	      True},
+	      true},
 	    { String("hyperplane"), HYPERPLANE,
-		True},
+		true},
 	      { String("polynomial"), POLYNOMIAL,
-		  True},
+		  true},
 		{ String("evenpolynomial"), EVENPOLYNOMIAL,
-		    True},
+		    true},
 		  { String("oddpolynomial"), ODDPOLYNOMIAL,
-		      True},
+		      true},
 		    { String("sinusoid1d"), SINUSOID1D,
-			False},
+			false},
 		      { String("chebyshev"), CHEBYSHEV,
-			  True},
+			  true},
 		      { String("butterworth"), BUTTERWORTH,
-			  True},
+			  true},
 			{ String("combine"), COMBINE,
-			    False},
+			    false},
 			  { String("compound"), COMPOUND,
-			      False},
+			      false},
 			    { String("compiled"), COMPILED,
-				False}
+				false}
   };
   if (!isFilled) {
-    isFilled = True;
-    for (uInt i=0; i<N_Types; ++i) {
+    isFilled = true;
+    for (uint32_t i=0; i<N_Types; ++i) {
       nam_p[i] = fnc[i].nam;
-      if (i != static_cast<uInt>(fnc[i].tp)) {
+      if (i != static_cast<uint32_t>(fnc[i].tp)) {
 	throw(AipsError("Lists in FunctionHolder incorrect order"));
       }
     }
@@ -183,37 +183,37 @@ void FunctionHolder<T>::init() const {
 }
 
 template <class T>
-Bool FunctionHolder<T>::fromRecord(String &error, const RecordInterface &in) {
+bool FunctionHolder<T>::fromRecord(String &error, const RecordInterface &in) {
   hold_p.clear();
   Function<T> *fn(0);
   if (!getRecord(error, fn, in)) {
     delete fn; fn = 0;
-    return False;
+    return false;
   }
   hold_p.set(fn);
-  return True;
+  return true;
 }
 
 template <class T>
 template <class U>
-Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
+bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
 				  const RecordInterface &in) {
   try {
-    if (!getType(error, fn, in)) return False;
+    if (!getType(error, fn, in)) return false;
     if ((nf_p == COMBINE || nf_p == COMPOUND) &&
 	in.isDefined(String("nfunc")) &&
 	in.isDefined(String("funcs")) &&
 	in.type(in.idToNumber(RecordFieldId("funcs"))) == TpRecord) {
-      Int nfunc;
+      int32_t nfunc;
       in.get(RecordFieldId("nfunc"), nfunc);
       Record fnsrec = in.asRecord(RecordFieldId("funcs"));
-      for (Int i=0; i<nfunc; ++i) {
+      for (int32_t i=0; i<nfunc; ++i) {
 	Record fnr = fnsrec.asRecord(i);
 	FunctionHolder<T> fnch;
 	Function<U> *fnc(0);
 	if (!fnch.getRecord(error, fnc, fnr)) {
 	  delete fnc; fnc = 0;
-	  return False;
+	  return false;
 	}
 	if (nf_p == COMBINE) {
 	  dynamic_cast<CombiFunction<U> *>(fn)->
@@ -231,44 +231,44 @@ Bool FunctionHolder<T>::getRecord(String &error, Function<U> *&fn,
       setParameters(fn, params);
     }
     if (in.isDefined(String("masks"))) {
-      Vector<Bool> masks;
+      Vector<bool> masks;
       in.get(RecordFieldId("masks"), masks);
-      for (uInt i=0; i<fn->nparameters(); ++i) fn->mask(i) = masks[i];
+      for (uint32_t i=0; i<fn->nparameters(); ++i) fn->mask(i) = masks[i];
     }
-    return True;
+    return true;
   } catch (const AipsError& x) {
     error = x.what();
   }
   error = String("Illegal Function record in "
                  "FunctionHolder<T>::fromRecord\n" + error);
-  return False;
+  return false;
 }
 
 template <class T>
-Bool FunctionHolder<T>::fromString(String &error,
+bool FunctionHolder<T>::fromString(String &error,
 				   const String &in) {
   order_p = -1;
   text_p = "";
-  Int nf;
+  int32_t nf;
   init();
   nf = MUString::minimaxNC(in, nam_p);
   nf_p = static_cast<Types>(nf);
   Function<T> *fn(0);
   if (getType(error, fn)) {
     hold_p.set(fn);
-    return True;
+    return true;
   }
   delete fn; fn = 0;
-  return False;
+  return false;
 }
 
 template <class T>
-Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
+bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
   if (hold_p.ptr() && putType(error, out)) {
     out.define(RecordFieldId("ndim"),
-	       static_cast<Int>(hold_p.ptr()->ndim()));
+	       static_cast<int32_t>(hold_p.ptr()->ndim()));
     out.define(RecordFieldId("npar"),
-	       static_cast<Int>(hold_p.ptr()->nparameters()));
+	       static_cast<int32_t>(hold_p.ptr()->nparameters()));
     out.define(RecordFieldId("params"),
     	       hold_p.ptr()->parameters().getParameters());
     out.define(RecordFieldId("masks"),
@@ -279,7 +279,7 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
     if (mode.nfields() > 0) out.defineRecord(RecordFieldId("mode"), mode);
 
     if (nf_p == COMBINE || nf_p == COMPOUND) {
-      Int x(0);
+      int32_t x(0);
       if (nf_p == COMBINE) {
 	x = dynamic_cast<const CombiFunction<T> *>
 	  (hold_p.ptr())->nFunctions();
@@ -289,16 +289,16 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
       }
       out.define("nfunc", x);
       Record func;
-      for (Int i=0; i<x; ++i) {
+      for (int32_t i=0; i<x; ++i) {
 	Record fnc;
 	if (nf_p == COMBINE) {
 	  FunctionHolder<T> fn(dynamic_cast<const CombiFunction<T> *>
 			    (hold_p.ptr())->function(i));
-	  if (!fn.toRecord(error, fnc)) return False;
+	  if (!fn.toRecord(error, fnc)) return false;
 	} else {
 	  FunctionHolder<T> fn(dynamic_cast<const CompoundFunction<T> *>
 			    (hold_p.ptr())->function(i));
-	  if (!fn.toRecord(error, fnc)) return False;
+	  if (!fn.toRecord(error, fnc)) return false;
 	}
 	ostringstream oss;
 	oss << "__*" << i;
@@ -306,10 +306,10 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
       }
       out.defineRecord("funcs", func);
     }
-    return True;
+    return true;
   }
   error += String("No Function specified in FunctionHolder::toRecord\n");
-  return False;
+  return false;
 }
 
 template <class T>
@@ -319,7 +319,7 @@ const String &FunctionHolder<T>::ident() const {
 }
 
 template <class T>
-Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
+bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
   order_p = -1;
   text_p = "";
   if (dynamic_cast<const Gaussian1D<T> *>(hold_p.ptr())) {
@@ -330,7 +330,7 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
     nf_p = GAUSSIAN3D;
   } else if (dynamic_cast<const GaussianND<T> *>(hold_p.ptr())) {
     nf_p = GAUSSIANND;
-    order_p = Int(-3.0+sqrt(1.0+8.0*hold_p.ptr()->nparameters())+0.1)/2;
+    order_p = int32_t(-3.0+sqrt(1.0+8.0*hold_p.ptr()->nparameters())+0.1)/2;
   } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.ptr())) {
     nf_p = HYPERPLANE;
     order_p = hold_p.ptr()->nparameters();
@@ -360,17 +360,17 @@ Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
       getText();
   } else {
     error += String("Unknown functional in FunctionHolder::putType()\n");
-    return False;
+    return false;
   }
   out.define(RecordFieldId("type"), nf_p);
   out.define(RecordFieldId("order"), order_p);
   if (nf_p == COMPILED) out.define(RecordFieldId("progtext"), text_p);
-  return True;
+  return true;
 }
 
 template <class T>
 template <class U>
-Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
+bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
 				const RecordInterface &in) {
   in.get(RecordFieldId("order"), order_p);
   if (in.isDefined(String("progtext")) &&
@@ -385,7 +385,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
       mode_p.set(new Record(in.asRecord(RecordFieldId("mode"))));
   }
 
-  Int nf;
+  int32_t nf;
   if (in.type(in.idToNumber(RecordFieldId("type"))) == TpString) {
     String tp;
     in.get(RecordFieldId("type"), tp);
@@ -400,10 +400,10 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
 
 template <class T>
 template <class U>
-Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
+bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
   if (nf_p<0 || nf_p >= N_Types) {
     error += "Unknown type in FunctionHolder::getType()\n";
-    return False;
+    return false;
   }
   ///  hold_p.clear();
   switch (nf_p) {
@@ -481,28 +481,28 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
     if (!dynamic_cast<CompiledFunction<U> *>(fn)->setFunction(text_p)) {
       error += String("Illegal compiled expression:\n") +
 	dynamic_cast<CompiledFunction<U> *>(fn)->errorMessage() + "\n";
-      return False;
+      return false;
     }
     break;
     
   default:
     error += "Unknown type in FunctionHolder::getType()\n";
-    return False;
+    return false;
     break;
   }
-  return True;
+  return true;
 }
 
 template <class T>
 void FunctionHolder<T>::setParameters(Function<T> *&fn,
 				      const Vector<T> &params) {
-  for (uInt i=0; i<fn->nparameters(); ++i) (*fn)[i] = params[i];
+  for (uint32_t i=0; i<fn->nparameters(); ++i) (*fn)[i] = params[i];
 }
 
 template <class T>
 void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
 				      const Vector<T> &params) {
-  for (uInt i=0; i<fn->nparameters(); ++i) {
+  for (uint32_t i=0; i<fn->nparameters(); ++i) {
     (*fn)[i] = AutoDiff<T>(params[i], fn->nparameters(), i);
   }
 }

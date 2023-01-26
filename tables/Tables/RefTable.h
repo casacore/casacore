@@ -112,20 +112,20 @@ public:
     // the resulting RefTable will have the same projection.
     // <group>
     // Construct a RefTable with an empty row number vector.
-    // rowOrder=True indicates that the order of the rows will not
+    // rowOrder=true indicates that the order of the rows will not
     // be disturbed (as will be the case for a sort).
     // A row number vector of the given size is initially allocated.
     // Later this RefTable will be filled in by the select, etc..
-    RefTable (BaseTable*, Bool rowOrder, rownr_t initialNrrow);
+    RefTable (BaseTable*, bool rowOrder, rownr_t initialNrrow);
 
     // A RefTable with the given row numbers is constructed.
     RefTable (BaseTable*, const Vector<rownr_t>& rowNumbers);
 
     // Create a reference table object out of a mask.
     // The row number vector will consist of the rows for which the
-    // mask has a True value.
+    // mask has a true value.
     // The length of the mask must be the number of rows in the BaseTable.
-    RefTable (BaseTable*, const Vector<Bool>& rowMask);
+    RefTable (BaseTable*, const Vector<bool>& rowMask);
 
     // Create a reference table object via projection (i.e. column selection).
     // The row number vector is a copy of the given table.
@@ -155,14 +155,14 @@ public:
     virtual void reopenRW();
 
     // Is the table stored in big or little endian format?
-    virtual Bool asBigEndian() const;
+    virtual bool asBigEndian() const;
 
     // Get the storage option used for the table.
     virtual const StorageOption& storageOption() const;
 
     // Is the table in use (i.e. open) in another process?
-    // It always returns False.
-    virtual Bool isMultiUsed (Bool checkSubTable) const;
+    // It always returns false.
+    virtual bool isMultiUsed (bool checkSubTable) const;
 
     // Get the locking info.
     virtual const TableLock& lockOptions() const;
@@ -172,10 +172,10 @@ public:
 
     // Has this process the read or write lock, thus can the table
     // be read or written safely?
-    virtual Bool hasLock (FileLocker::LockType) const;
+    virtual bool hasLock (FileLocker::LockType) const;
 
     // Try to lock the table for read or write access.
-    virtual Bool lock (FileLocker::LockType, uInt nattempts);
+    virtual bool lock (FileLocker::LockType, uint32_t nattempts);
 
     // Unlock the table. This will also synchronize the table data,
     // thus force the data to be written to disk.
@@ -188,16 +188,16 @@ public:
     // files written by intermediate flushes.
     // Note that if necessary the destructor will do an implicit flush,
     // unless it is executed due to an exception.
-    virtual void flush (Bool fsync, Bool recursive);
+    virtual void flush (bool fsync, bool recursive);
 
     // Resync the Table object with the table file.
     virtual void resync();
 
     // Get the modify counter.
-    virtual uInt getModifyCounter() const;
+    virtual uint32_t getModifyCounter() const;
 
     // Test if the parent table is opened as writable.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
     // Read a reference table from a file.
     // The referenced table will also be created (if not stored in the cache).
@@ -213,8 +213,8 @@ public:
     virtual void deepCopy (const String& newName,
 			   const Record& dataManagerInfo,
                            const StorageOption&,
-			   int tableOption, Bool, int endianFormat,
-			   Bool noRows) const;
+			   int tableOption, bool, int endianFormat,
+			   bool noRows) const;
 
     // It returns the type of the parent table.
     virtual int tableType() const;
@@ -234,13 +234,13 @@ public:
     virtual TableRecord& rwKeywordSet();
 
     // Get a column object using its index.
-    virtual BaseColumn* getColumn (uInt columnIndex) const;
+    virtual BaseColumn* getColumn (uint32_t columnIndex) const;
 
     // Get a column object using its name.
     virtual BaseColumn* getColumn (const String& columnName) const;
 
     // Test if it is possible to remove a row from this table.
-    virtual Bool canRemoveRow() const;
+    virtual bool canRemoveRow() const;
 
     // Remove the given row.
     virtual void removeRow (rownr_t rownr);
@@ -252,26 +252,26 @@ public:
     // The column is added to the parent table if told so and if not existing.
     // <group>
     virtual void addColumn (const ColumnDesc& columnDesc,
-                            Bool addToParent);
+                            bool addToParent);
     virtual void addColumn (const ColumnDesc& columnDesc,
-			    const String& dataManager, Bool byName,
-                            Bool addToParent);
+			    const String& dataManager, bool byName,
+                            bool addToParent);
     virtual void addColumn (const ColumnDesc& columnDesc,
 			    const DataManager& dataManager,
-                            Bool addToParent);
+                            bool addToParent);
     virtual void addColumn (const TableDesc& tableDesc,
 			    const DataManager& dataManager,
-                            Bool addToParent);
+                            bool addToParent);
     // </group>
 
     // Test if columns can be removed (yes).
-    virtual Bool canRemoveColumn (const Vector<String>& columnNames) const;
+    virtual bool canRemoveColumn (const Vector<String>& columnNames) const;
 
     // Remove columns.
     virtual void removeColumn (const Vector<String>& columnNames);
 
     // Test if a column can be renamed (yes).
-    virtual Bool canRenameColumn (const String& columnName) const;
+    virtual bool canRenameColumn (const String& columnName) const;
 
     // Rename a column.
     virtual void renameColumn (const String& newName, const String& oldName);
@@ -282,7 +282,7 @@ public:
 
     // Find the data manager with the given name or for the given column.
     virtual DataManager* findDataManager (const String& name,
-                                          Bool byColumn) const;
+                                          bool byColumn) const;
 
     // Get a vector of row numbers.
     virtual Vector<rownr_t> rowNumbers() const;
@@ -299,7 +299,7 @@ public:
     Vector<rownr_t> rootRownr (const Vector<rownr_t>& rownrs) const;
 
     // Tell if the table is in row order.
-    virtual Bool rowOrder() const;
+    virtual bool rowOrder() const;
 
     // Get row number vector.
     // This is used by the BaseTable logic and sort routines.
@@ -317,8 +317,8 @@ void addRownrRange (rownr_t startRownr, rownr_t endRownr);
     // Adjust the row numbers to be the actual row numbers in the
     // root table. This is, for instance, used when a RefTable is sorted.
     // Optionally it also determines if the resulting rows are in row order.
-    virtual Bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
-			       Bool determineOrder) const;
+    virtual bool adjustRownrs (rownr_t nrrow, Vector<rownr_t>& rownrs,
+			       bool determineOrder) const;
 
     // And, or, subtract or xor the row numbers of 2 tables.
     void refAnd (rownr_t nr1, const rownr_t* rows1, rownr_t nr2, const rownr_t* rows2);
@@ -329,11 +329,11 @@ void addRownrRange (rownr_t startRownr, rownr_t endRownr);
 
 private:
     std::shared_ptr<BaseTable> baseTabPtr_p;//# pointer to parent table
-    Bool            rowOrd_p;               //# True = table is in row order
+    bool            rowOrd_p;               //# true = table is in row order
     Vector<rownr_t> rowStorage_p;           //# row numbers in parent table
     std::map<String,String> nameMap_p;      //# map to column name in parent
     std::map<String,RefColumn*> colMap_p;   //# map name to column
-    Bool            changed_p;              //# True = changed since last write
+    bool            changed_p;              //# true = changed since last write
 
     // Copy constructor is forbidden, because copying a table requires
     // some more knowledge (like table name of result).
@@ -346,7 +346,7 @@ private:
     RefTable& operator= (const RefTable&);
 
     // Get the names of the tables this table consists of.
-    virtual void getPartNames (Block<String>& names, Bool recursive) const;
+    virtual void getPartNames (Block<String>& names, bool recursive) const;
 
     // Show the extra table structure info (name of root table).
     void showStructureExtra (std::ostream&) const;
@@ -370,14 +370,14 @@ private:
     void makeRefCol();
 
     // Write a reference table.
-    void writeRefTable (Bool fsync);
+    void writeRefTable (bool fsync);
 
     // Copy a RefTable that is not persistent. It requires some special logic.
     void copyRefTable (const String& newName, int tableOption);
 
-    // Check if a column can be added. Return True if it can and must be
+    // Check if a column can be added. Return true if it can and must be
     // added to the parent table first.
-    Bool checkAddColumn (const String& name, Bool addToParent);
+    bool checkAddColumn (const String& name, bool addToParent);
 
     // Add a column.
     void addRefCol (const ColumnDesc& cd);

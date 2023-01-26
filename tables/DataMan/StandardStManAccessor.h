@@ -107,7 +107,7 @@ public:
     // An exception is thrown if the data manager type is not the incremental
     // storage manager.
     ROStandardStManAccessor (const Table& table, const String& name,
-                             Bool byColumn=False);
+                             bool byColumn=false);
 
     virtual ~ROStandardStManAccessor();
 
@@ -123,15 +123,15 @@ public:
     // The cache size given in this way is not persistent.
     // Only the cache size given to the constructors of the Standard
     // storage managers, is persistent.
-    // If <src>canExceedNrBuckets=True</src>, the given cache size can be
+    // If <src>canExceedNrBuckets=true</src>, the given cache size can be
     // larger than the nr of buckets in the file. In this way the cache can
     // be made large enough for a future file extension.
     // Otherwise, it is limited to the actual number of buckets. This is useful
     // if one wants the entire file to be cached.
-    void setCacheSize (uInt aSize, Bool canExceedNrBuckets=True);
+    void setCacheSize (uint32_t aSize, bool canExceedNrBuckets=true);
 
     // Get the cache size (in buckets).
-    uInt getCacheSize() const;
+    uint32_t getCacheSize() const;
 
     // Clear the cache used by this storage manager.
     // It will flush the cache as needed and remove all buckets from it

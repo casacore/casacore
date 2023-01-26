@@ -45,10 +45,10 @@ int main()
 
 	// Create the initial keyword list
 	FitsKeywordList st;
-	st.mk(FITS::SIMPLE,True,"Standard FITS format");
+	st.mk(FITS::SIMPLE,true,"Standard FITS format");
 	st.mk(FITS::BITPIX,8,"Character Information");
 	st.mk(FITS::NAXIS,0,"No image data array present");
-	st.mk(FITS::EXTEND,True,"Extension exists");
+	st.mk(FITS::EXTEND,true,"Extension exists");
 	st.mk("FILETYPE","GSC_REGION","Indicates file type");
 	st.mk(FITS::ORIGIN,"ST ScI","Space Telescope Science Institute");
 	st.mk(FITS::DATE,"01/06/89","Date of issue (dd/mm/yy)");

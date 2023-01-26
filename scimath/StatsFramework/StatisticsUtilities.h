@@ -63,10 +63,10 @@ public:
 	// in the weighted case Its basic definition is
 	// nvariance = sum((x_i - mean)**2),
 	// wnvariance = sum((weight_i*(x_i - mean)**2)
-	// npts is a Double rather than an Int64 because of compilation issues when
+	// npts is a double rather than an int64_t because of compilation issues when
 	// T is a Complex
 	inline static void accumulate (
-		Double& npts, AccumType& sum, AccumType& mean, const AccumType& datum
+		double& npts, AccumType& sum, AccumType& mean, const AccumType& datum
 	);
 
 	// in order to optimize performance, no checking is done for the
@@ -75,18 +75,18 @@ public:
 	// Expect a segfault because of division by zero if sumweights and weight
 	// are both zero.
 	inline static void waccumulate (
-		Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
+		double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
 		const AccumType& datum, const AccumType& weight
 	);
 
 	inline static void accumulate (
-		Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+		double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
 		AccumType& sumsq, const AccumType& datum
 	);
 
 	// wsumsq is the weighted sum of squares, sum(w_i*x_i*x_i)
 	inline static void waccumulate (
-		Double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
+		double& npts, AccumType& sumweights, AccumType& wsum, AccumType& wmean,
 		AccumType& wnvariance, AccumType& wsumsq, const AccumType& datum,
 		const AccumType& weight
 	);
@@ -96,7 +96,7 @@ public:
 	// The assignment operator of class LocationType should use copy, not
 	// reference, semantics.
 	template <class LocationType> inline static void accumulate (
-		Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+		double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
 		AccumType& sumsq, AccumType& datamin, AccumType& datamax,
 		LocationType& minpos, LocationType& maxpos, const AccumType& datum,
 		const LocationType& location
@@ -104,7 +104,7 @@ public:
 
 	template <class LocationType, class DataType>
 	inline static void accumulate (
-	    Double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
+	    double& npts, AccumType& sum, AccumType& mean, AccumType& nvariance,
 	    AccumType& sumsq, DataType& datamin, DataType& datamax,
 	    LocationType& minpos, LocationType& maxpos, const DataType& datum,
 	    const LocationType& location
@@ -112,7 +112,7 @@ public:
 
 	template <class LocationType>
 	inline static void waccumulate (
-		Double& npts, AccumType& sumofweights, AccumType& sum, AccumType& mean,
+		double& npts, AccumType& sumofweights, AccumType& sum, AccumType& mean,
 		AccumType& nvariance, AccumType& sumsq, AccumType& datamin,
 		AccumType& datamax, LocationType& minpos, LocationType& maxpos,
 		const AccumType& datum, const AccumType& weight,
@@ -121,16 +121,16 @@ public:
 	// </group>
 
 	// <group>
-	// return True if the max or min was updated, False otherwise.
+	// return true if the max or min was updated, false otherwise.
 	template <class LocationType>
-	inline static Bool doMax(
-		AccumType& datamax, LocationType& maxpos, Bool isFirst,
+	inline static bool doMax(
+		AccumType& datamax, LocationType& maxpos, bool isFirst,
 		const AccumType& datum, const LocationType& location
 	);
 
 	template <class LocationType>
-	inline static Bool doMin(
-		AccumType& datamin, LocationType& minpos, Bool isFirst,
+	inline static bool doMin(
+		AccumType& datamin, LocationType& minpos, bool isFirst,
 		const AccumType& datum, const LocationType& location
 	);
 	// </group>
@@ -141,13 +141,13 @@ public:
 	// symmetric about the specified center. Of course, the trivial relationship
 	// that the mean is the specified center is used to simplify things
 	inline static void accumulateSym (
-		Double& npts, AccumType& nvariance, AccumType& sumsq,
+		double& npts, AccumType& nvariance, AccumType& sumsq,
 		const AccumType& datum, const AccumType& center
 	);
 
 	// wsumsq is the weighted sum of squares, sum(w_i*x_i*x_i)
 	inline static void waccumulateSym (
-		Double& npts, AccumType& sumweights, AccumType& wnvariance,
+		double& npts, AccumType& sumweights, AccumType& wnvariance,
 		AccumType& wsumsq, const AccumType& datum, const AccumType& weight,
 		const AccumType& center
 	);
@@ -155,14 +155,14 @@ public:
 	// <src>maxpos</src> and <src>minpos</src> refer to actual, not
 	// virtually created, data only.
 	template <class LocationType> inline static void accumulateSym (
-		Double& npts, AccumType& nvariance,  AccumType& sumsq,
+		double& npts, AccumType& nvariance,  AccumType& sumsq,
 		AccumType& datamin, AccumType& datamax, LocationType& minpos,
 		LocationType& maxpos, const AccumType& datum,
 		const LocationType& location, const AccumType& center
 	);
 
 	template <class LocationType> inline static void waccumulateSym (
-		Double& npts, AccumType& sumofweights, AccumType& nvariance,
+		double& npts, AccumType& sumofweights, AccumType& nvariance,
 		AccumType& sumsq, AccumType& datamin, AccumType& datamax,
 		LocationType& minpos, LocationType& maxpos, const AccumType& datum,
 		const AccumType& weight, const LocationType& location,
@@ -176,25 +176,25 @@ public:
     );
 	// </group>
 
-	inline static Bool includeDatum(
+	inline static bool includeDatum(
 		const AccumType& datum, typename DataRanges::const_iterator beginRange,
-		typename DataRanges::const_iterator endRange, Bool isInclude
+		typename DataRanges::const_iterator endRange, bool isInclude
 	);
 
 
     // The array can be changed by partially sorting it up to the largest index.
 	// Return a map of index to value in the sorted array.
-    static std::map<uInt64, AccumType> indicesToValues(
-        std::vector<AccumType>& myArray, const std::set<uInt64>& indices
+    static std::map<uint64_t, AccumType> indicesToValues(
+        std::vector<AccumType>& myArray, const std::set<uint64_t>& indices
     );
 
     static void mergeResults(
         std::vector<BinCountArray>& bins,
         std::vector<CountedPtr<AccumType> >& sameVal,
-        std::vector<Bool>& allSame,
+        std::vector<bool>& allSame,
         const PtrHolder<std::vector<BinCountArray>>& tBins,
         const PtrHolder<std::vector<CountedPtr<AccumType>>>& tSameVal,
-        const PtrHolder<std::vector<Bool>>& tAllSame, uInt nThreadsMax
+        const PtrHolder<std::vector<bool>>& tAllSame, uint32_t nThreadsMax
     );
 
     // use two statistics sets to get the statistics set that would
@@ -208,11 +208,11 @@ public:
     );
 
     template <class DataIterator, class MaskIterator, class WeightsIterator>
-    static uInt nThreadsMax(
+    static uint32_t nThreadsMax(
         const StatsDataProvider<CASA_STATP> *const dataProvider
     );
 
-    static uInt threadIdx();
+    static uint32_t threadIdx();
 
 private:
 

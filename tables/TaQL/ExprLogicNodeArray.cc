@@ -41,7 +41,7 @@ TableExprNodeArrayEQBool::TableExprNodeArrayEQBool
 {}
 TableExprNodeArrayEQBool::~TableExprNodeArrayEQBool()
 {}
-MArray<Bool> TableExprNodeArrayEQBool::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQBool::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -60,7 +60,7 @@ TableExprNodeArrayEQInt::TableExprNodeArrayEQInt
 {}
 TableExprNodeArrayEQInt::~TableExprNodeArrayEQInt()
 {}
-MArray<Bool> TableExprNodeArrayEQInt::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQInt::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -79,7 +79,7 @@ TableExprNodeArrayEQDouble::TableExprNodeArrayEQDouble
 {}
 TableExprNodeArrayEQDouble::~TableExprNodeArrayEQDouble()
 {}
-MArray<Bool> TableExprNodeArrayEQDouble::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQDouble::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -98,7 +98,7 @@ TableExprNodeArrayEQDComplex::TableExprNodeArrayEQDComplex
 {}
 TableExprNodeArrayEQDComplex::~TableExprNodeArrayEQDComplex()
 {}
-MArray<Bool> TableExprNodeArrayEQDComplex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQDComplex::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -117,7 +117,7 @@ TableExprNodeArrayEQString::TableExprNodeArrayEQString
 {}
 TableExprNodeArrayEQString::~TableExprNodeArrayEQString()
 {}
-MArray<Bool> TableExprNodeArrayEQString::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQString::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -136,18 +136,18 @@ TableExprNodeArrayEQRegex::TableExprNodeArrayEQRegex
 {}
 TableExprNodeArrayEQRegex::~TableExprNodeArrayEQRegex()
 {}
-MArray<Bool> TableExprNodeArrayEQRegex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQRegex::getArrayBool (const TableExprId& id)
 {
     MArray<String> left = lnode_p->getArrayString(id);
-    Array<Bool> result(left.shape());
+    Array<bool> result(left.shape());
     TaqlRegex regex = rnode_p->getRegex(id);
     Array<String>::const_iterator liter = left.array().begin();
-    Array<Bool>::contiter riterend = result.cend();
-    for (Array<Bool>::contiter riter = result.cbegin();
+    Array<bool>::contiter riterend = result.cend();
+    for (Array<bool>::contiter riter = result.cbegin();
          riter != riterend; ++riter, ++liter) {
       *riter = regex.match (*liter);
     }
-    return MArray<Bool> (result, left.mask());
+    return MArray<bool> (result, left.mask());
 }
 
 TableExprNodeArrayEQDate::TableExprNodeArrayEQDate
@@ -156,7 +156,7 @@ TableExprNodeArrayEQDate::TableExprNodeArrayEQDate
 {}
 TableExprNodeArrayEQDate::~TableExprNodeArrayEQDate()
 {}
-MArray<Bool> TableExprNodeArrayEQDate::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayEQDate::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -176,7 +176,7 @@ TableExprNodeArrayNEBool::TableExprNodeArrayNEBool
 {}
 TableExprNodeArrayNEBool::~TableExprNodeArrayNEBool()
 {}
-MArray<Bool> TableExprNodeArrayNEBool::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNEBool::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -195,7 +195,7 @@ TableExprNodeArrayNEInt::TableExprNodeArrayNEInt
 {}
 TableExprNodeArrayNEInt::~TableExprNodeArrayNEInt()
 {}
-MArray<Bool> TableExprNodeArrayNEInt::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNEInt::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -214,7 +214,7 @@ TableExprNodeArrayNEDouble::TableExprNodeArrayNEDouble
 {}
 TableExprNodeArrayNEDouble::~TableExprNodeArrayNEDouble()
 {}
-MArray<Bool> TableExprNodeArrayNEDouble::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNEDouble::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -233,7 +233,7 @@ TableExprNodeArrayNEDComplex::TableExprNodeArrayNEDComplex
 {}
 TableExprNodeArrayNEDComplex::~TableExprNodeArrayNEDComplex()
 {}
-MArray<Bool> TableExprNodeArrayNEDComplex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNEDComplex::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -252,7 +252,7 @@ TableExprNodeArrayNEString::TableExprNodeArrayNEString
 {}
 TableExprNodeArrayNEString::~TableExprNodeArrayNEString()
 {}
-MArray<Bool> TableExprNodeArrayNEString::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNEString::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -271,18 +271,18 @@ TableExprNodeArrayNERegex::TableExprNodeArrayNERegex
 {}
 TableExprNodeArrayNERegex::~TableExprNodeArrayNERegex()
 {}
-MArray<Bool> TableExprNodeArrayNERegex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNERegex::getArrayBool (const TableExprId& id)
 {
     MArray<String> left = lnode_p->getArrayString(id);
-    Array<Bool> result(left.shape());
+    Array<bool> result(left.shape());
     TaqlRegex regex = rnode_p->getRegex(id);
     Array<String>::const_iterator liter = left.array().begin();
-    Array<Bool>::contiter riterend = result.cend();
-    for (Array<Bool>::contiter riter = result.cbegin();
+    Array<bool>::contiter riterend = result.cend();
+    for (Array<bool>::contiter riter = result.cbegin();
          riter != riterend; ++riter, ++liter) {
       *riter = !regex.match (*liter);
     }
-    return MArray<Bool> (result, left.mask());
+    return MArray<bool> (result, left.mask());
 }
 
 TableExprNodeArrayNEDate::TableExprNodeArrayNEDate
@@ -291,7 +291,7 @@ TableExprNodeArrayNEDate::TableExprNodeArrayNEDate
 {}
 TableExprNodeArrayNEDate::~TableExprNodeArrayNEDate()
 {}
-MArray<Bool> TableExprNodeArrayNEDate::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNEDate::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -311,7 +311,7 @@ TableExprNodeArrayGTInt::TableExprNodeArrayGTInt
 {}
 TableExprNodeArrayGTInt::~TableExprNodeArrayGTInt()
 {}
-MArray<Bool> TableExprNodeArrayGTInt::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGTInt::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -330,7 +330,7 @@ TableExprNodeArrayGTDouble::TableExprNodeArrayGTDouble
 {}
 TableExprNodeArrayGTDouble::~TableExprNodeArrayGTDouble()
 {}
-MArray<Bool> TableExprNodeArrayGTDouble::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGTDouble::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -349,7 +349,7 @@ TableExprNodeArrayGTDComplex::TableExprNodeArrayGTDComplex
 {}
 TableExprNodeArrayGTDComplex::~TableExprNodeArrayGTDComplex()
 {}
-MArray<Bool> TableExprNodeArrayGTDComplex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGTDComplex::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -368,7 +368,7 @@ TableExprNodeArrayGTString::TableExprNodeArrayGTString
 {}
 TableExprNodeArrayGTString::~TableExprNodeArrayGTString()
 {}
-MArray<Bool> TableExprNodeArrayGTString::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGTString::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -387,7 +387,7 @@ TableExprNodeArrayGTDate::TableExprNodeArrayGTDate
 {}
 TableExprNodeArrayGTDate::~TableExprNodeArrayGTDate()
 {}
-MArray<Bool> TableExprNodeArrayGTDate::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGTDate::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -407,7 +407,7 @@ TableExprNodeArrayGEInt::TableExprNodeArrayGEInt
 {}
 TableExprNodeArrayGEInt::~TableExprNodeArrayGEInt()
 {}
-MArray<Bool> TableExprNodeArrayGEInt::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGEInt::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -426,7 +426,7 @@ TableExprNodeArrayGEDouble::TableExprNodeArrayGEDouble
 {}
 TableExprNodeArrayGEDouble::~TableExprNodeArrayGEDouble()
 {}
-MArray<Bool> TableExprNodeArrayGEDouble::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGEDouble::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -445,7 +445,7 @@ TableExprNodeArrayGEDComplex::TableExprNodeArrayGEDComplex
 {}
 TableExprNodeArrayGEDComplex::~TableExprNodeArrayGEDComplex()
 {}
-MArray<Bool> TableExprNodeArrayGEDComplex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGEDComplex::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -464,7 +464,7 @@ TableExprNodeArrayGEString::TableExprNodeArrayGEString
 {}
 TableExprNodeArrayGEString::~TableExprNodeArrayGEString()
 {}
-MArray<Bool> TableExprNodeArrayGEString::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGEString::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -483,7 +483,7 @@ TableExprNodeArrayGEDate::TableExprNodeArrayGEDate
 {}
 TableExprNodeArrayGEDate::~TableExprNodeArrayGEDate()
 {}
-MArray<Bool> TableExprNodeArrayGEDate::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayGEDate::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -507,7 +507,7 @@ void TableExprNodeArrayINInt::optimize()
 {
   TableExprNodeINInt::doOptimize (rnode_p);
 }
-MArray<Bool> TableExprNodeArrayINInt::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayINInt::getArrayBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getArrayInt (id));
 }
@@ -522,7 +522,7 @@ void TableExprNodeArrayINDouble::optimize()
 {
   TableExprNodeINDouble::doOptimize (rnode_p);
 }
-MArray<Bool> TableExprNodeArrayINDouble::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayINDouble::getArrayBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getArrayDouble (id));
 }
@@ -533,7 +533,7 @@ TableExprNodeArrayINDComplex::TableExprNodeArrayINDComplex
 {}
 TableExprNodeArrayINDComplex::~TableExprNodeArrayINDComplex()
 {}
-MArray<Bool> TableExprNodeArrayINDComplex::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayINDComplex::getArrayBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getArrayDComplex (id));
 }
@@ -548,7 +548,7 @@ void TableExprNodeArrayINString::optimize()
 {
   TableExprNodeINString::doOptimize (rnode_p);
 }
-MArray<Bool> TableExprNodeArrayINString::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayINString::getArrayBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getArrayString (id));
 }
@@ -563,7 +563,7 @@ void TableExprNodeArrayINDate::optimize()
 {
   TableExprNodeINDate::doOptimize (rnode_p);
 }
-MArray<Bool> TableExprNodeArrayINDate::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayINDate::getArrayBool (const TableExprId& id)
 {
     return rnode_p->contains (id, lnode_p->getArrayDate (id));
 }
@@ -575,7 +575,7 @@ TableExprNodeArrayOR::TableExprNodeArrayOR (const TableExprNodeRep& node)
 {}
 TableExprNodeArrayOR::~TableExprNodeArrayOR()
 {}
-MArray<Bool> TableExprNodeArrayOR::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayOR::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -594,7 +594,7 @@ TableExprNodeArrayAND::TableExprNodeArrayAND (const TableExprNodeRep& node)
 {}
 TableExprNodeArrayAND::~TableExprNodeArrayAND()
 {}
-MArray<Bool> TableExprNodeArrayAND::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayAND::getArrayBool (const TableExprId& id)
 {
     switch (argtype_p) {
     case ArrSca:
@@ -613,7 +613,7 @@ TableExprNodeArrayNOT::TableExprNodeArrayNOT (const TableExprNodeRep& node)
 {}
 TableExprNodeArrayNOT::~TableExprNodeArrayNOT()
 {}
-MArray<Bool> TableExprNodeArrayNOT::getArrayBool (const TableExprId& id)
+MArray<bool> TableExprNodeArrayNOT::getArrayBool (const TableExprId& id)
 {
     return !(lnode_p->getArrayBool(id));
 }

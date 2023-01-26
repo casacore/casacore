@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
 static const char*           strpMSStateGram = 0;
-static Int                   posMSStateGram = 0;
+static int32_t                   posMSStateGram = 0;
   // MSStateGramwrap out of namespace
 
 //# Parse the command.
@@ -81,7 +81,7 @@ int msStateGramParseCommand (const MeasurementSet* ms, const String& command)
 {
   try 
     {
-      Int ret;
+      int32_t ret;
       MSStateGramrestart (MSStateGramin);
       yy_start = 1;
       strpMSStateGram = command.chars();     // get pointer to command string
@@ -102,12 +102,12 @@ int msStateGramParseCommand (const MeasurementSet* ms, const String& command)
     }
 }
 
-  int msStateGramParseCommand (const MeasurementSet* ms, const String& command, Vector<Int>& selectedIDs)
+  int msStateGramParseCommand (const MeasurementSet* ms, const String& command, Vector<int32_t>& selectedIDs)
 			       
 {
   try 
     {
-      Int ret;
+      int32_t ret;
       MSStateGramrestart (MSStateGramin);
       yy_start = 1;
       strpMSStateGram = command.chars();     // get pointer to command string
@@ -136,7 +136,7 @@ const TableExprNode* msStateGramParseNode()
 }
 void msStateGramParseDeleteNode() {MSStateParse::cleanupNode();}
 //# Give the string position.
-Int& msStateGramPosition()
+int32_t& msStateGramPosition()
 {
     return posMSStateGram;
 }

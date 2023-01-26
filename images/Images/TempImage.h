@@ -106,11 +106,11 @@ public:
   // <linkto class=TempLattice>TempLattice</linkto>.
   TempImage (const TiledShape& mapShape,
 	     const CoordinateSystem& coordinateInfo,
-	     Int maxMemoryInMB=-1);
+	     int32_t maxMemoryInMB=-1);
 
   TempImage (const TiledShape& mapShape,
 	     const CoordinateSystem& coordinateInfo,
-	     Double maxMemoryInMB);
+	     double maxMemoryInMB);
 
   // Copy constructor (reference semantics).
   TempImage (const TempImage<T>& other);
@@ -128,13 +128,13 @@ public:
   virtual String imageType() const;
 
   // Is the TempImage paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the TempImage writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Set the default pixelmask to the mask with the given name
   // (which has to exist in the "masks" group).
@@ -159,30 +159,30 @@ public:
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool throwIfUnknown = True);
+			     bool throwIfUnknown = true);
 
   // Attach a mask to the TempImage.
   // It replaces a probably already attached mask.
   // It has to have the same shape as the image.
-  virtual void attachMask (const Lattice<Bool>& mask);
+  virtual void attachMask (const Lattice<bool>& mask);
 
   // It a mask attached to the image?
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the image object use a pixelmask?
   // This is similar to <src>isMasked()</src>.
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask used.
   // An exception is thrown if the image does not use a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // Get a section of the mask.
   // It throws an exception if there is no mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // Flush the data.
   virtual void flush();
@@ -202,7 +202,7 @@ public:
   
   // Return the name of the current TempImage object.
   // It is always "Temporary_Image"
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
 
   // Return the shape of the image
   virtual IPosition shape() const;
@@ -237,20 +237,20 @@ public:
   // class <note> Not for public use </note>
   virtual LatticeIterInterface<T>* makeIter
                            (const LatticeNavigator& navigator,
-			    Bool useRef) const;
+			    bool useRef) const;
 
   // Returns the maximum recommended number of pixels for a cursor.
   // This is the number of pixels in a tile. 
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Help the user pick a cursor for most efficient access.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Maximum size - not necessarily all used. In pixels.
-  virtual uInt maximumCacheSize() const;
+  virtual uint32_t maximumCacheSize() const;
 
   // Set the maximum (allowed) cache size as indicated.
-  virtual void setMaximumCacheSize (uInt howManyPixels);
+  virtual void setMaximumCacheSize (uint32_t howManyPixels);
 
   // Set the cache size as to "fit" the indicated path.
   virtual void setCacheSizeFromPath (const IPosition& sliceShape,
@@ -263,7 +263,7 @@ public:
   // in other rows and is always clipped to be less than the maximum value
   // set using the setMaximumCacheSize member function.
   // tiles. Tiles are cached using a first in first out algorithm. 
-  virtual void setCacheSizeInTiles (uInt howManyTiles);
+  virtual void setCacheSizeInTiles (uint32_t howManyTiles);
 
   // Clears and frees up the caches, but the maximum allowed cache size is 
   // unchanged from when setCacheSize was called
@@ -273,14 +273,14 @@ public:
   virtual void showCacheStatistics (ostream& os) const;
 
   // Check for symmetry in data members.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
 protected:
   // Get the region used (it always returns 0).
   virtual const LatticeRegion* getRegionPtr() const;
 
   // Function which extracts an array from the map.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& theSlice);
   
   // Function to replace the values in the map with soureBuffer.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -293,7 +293,7 @@ private:
   void applyMask (const String& maskName);
 
   TempLattice<T>* mapPtr_p;
-  Lattice<Bool>*  maskPtr_p;
+  Lattice<bool>*  maskPtr_p;
 
   //# Make members of parent class known.
 public:
@@ -308,7 +308,7 @@ protected:
 };
 
 //# Declare extern templates for often used types.
-  extern template class TempImage<Float>;
+  extern template class TempImage<float>;
   extern template class TempImage<Complex>;
 
 } //# NAMESPACE CASACORE - END

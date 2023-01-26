@@ -31,15 +31,15 @@
 
 #include <casacore/casa/namespace.h>
 
-void showTime (MVAngle time, uInt format, uInt prec)
+void showTime (MVAngle time, uint32_t format, uint32_t prec)
 {
   cout << MVAngle::Format(format,prec) << time << endl;
 }
 
-Bool testMUS (Quantity& q, const String& str, double exp=0, Bool chk=True)
+bool testMUS (Quantity& q, const String& str, double exp=0, bool chk=true)
 {
   MUString mus(str);
-  Bool res = MVAngle::read (q, mus, chk);
+  bool res = MVAngle::read (q, mus, chk);
   if (res) {
     if (!near(q.getValue(), exp)) {
       cout << "Incorrect value for " << str << endl;
@@ -72,33 +72,33 @@ int main ()
     AlwaysAssertExit (! testMUS (q, "5h20:"));
     AlwaysAssertExit (! testMUS (q, "5:20m"));
     AlwaysAssertExit (! testMUS (q, "5:20,"));
-    AlwaysAssertExit (! testMUS (q, "5:20,", False));
+    AlwaysAssertExit (! testMUS (q, "5:20,", false));
     AlwaysAssertExit (! testMUS (q, "20:19.378"));
     AlwaysAssertExit (testMUS (q, "13:45:32.8187", 15*(13+45./60+32.8187/3600)));
     AlwaysAssertExit (! testMUS (q, "13:45:32.8187Z"));
     AlwaysAssertExit (! testMUS (q, "13:45:32.8187+1:0"));
     AlwaysAssertExit (testMUS (q, "13:45:32.8187Z",
-                               15*(13+45./60+32.8187/3600), False));
+                               15*(13+45./60+32.8187/3600), false));
     AlwaysAssertExit (testMUS (q, "13:45:32.8187+1:0",
-                               15*(13+45./60+32.8187/3600), False));
+                               15*(13+45./60+32.8187/3600), false));
     AlwaysAssertExit (! testMUS (q, "13:45Z"));
     AlwaysAssertExit (! testMUS (q, "13:45+1:0"));
-    AlwaysAssertExit (testMUS (q, "13:45Z", 15*(13+45./60), False));
-    AlwaysAssertExit (testMUS (q, "13:45+1:0", 15*(13+45./60), False));
+    AlwaysAssertExit (testMUS (q, "13:45Z", 15*(13+45./60), false));
+    AlwaysAssertExit (testMUS (q, "13:45+1:0", 15*(13+45./60), false));
     AlwaysAssertExit (testMUS (q, ".20.", 20./60));
     AlwaysAssertExit (! testMUS (q, ".20"));
     AlwaysAssertExit (testMUS (q, "..20.", 20./3600));
-    AlwaysAssertExit (! testMUS (q, "1:.", False));
-    AlwaysAssertExit (testMUS (q, "1:[", 15*1, False));
+    AlwaysAssertExit (! testMUS (q, "1:.", false));
+    AlwaysAssertExit (testMUS (q, "1:[", 15*1, false));
     AlwaysAssertExit (testMUS (q, "1d", 1));
     AlwaysAssertExit (testMUS (q, "1d0", 1));
-    AlwaysAssertExit (testMUS (q, "1d0[", 1, False));
-    AlwaysAssertExit (! testMUS (q, "1h0[", 1, False));
-    AlwaysAssertExit (! testMUS (q, "1dm", 0, False));
-    AlwaysAssertExit (! testMUS (q, "1d1", 0, False));
+    AlwaysAssertExit (testMUS (q, "1d0[", 1, false));
+    AlwaysAssertExit (! testMUS (q, "1h0[", 1, false));
+    AlwaysAssertExit (! testMUS (q, "1dm", 0, false));
+    AlwaysAssertExit (! testMUS (q, "1d1", 0, false));
     AlwaysAssertExit (! testMUS (q, "1d0m["));
-    AlwaysAssertExit (testMUS (q, "1d0m[", 1, False));
-    AlwaysAssertExit (testMUS (q, "1d1m5.7[", 1+1./60+5.7/3600, False));
+    AlwaysAssertExit (testMUS (q, "1d0m[", 1, false));
+    AlwaysAssertExit (testMUS (q, "1d1m5.7[", 1+1./60+5.7/3600, false));
   } catch (std::exception& x) {
     cout << "Unexpected exception: " << x.what() << endl;
     return 1;

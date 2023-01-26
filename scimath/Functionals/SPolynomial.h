@@ -57,7 +57,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // <example>
 // <srcblock>
-//  SPolynomial<Float> pf(3); // Third order polynomial - coeffs 0 by default
+//  SPolynomial<float> pf(3); // Third order polynomial - coeffs 0 by default
 //  pf.setCoefficient(1, 1.0);
 //  pf[5] = 2.0;
 //  pf.setCoefficient(3, 3.0);  // 3x^3 + 2x^2 + x
@@ -89,7 +89,7 @@ public:
   SPolynomial() : SPolynomialParam<T>() {}
   // Makes a polynomial of the given order, with all coeficcients set to
   // zero, and height, center, width to 1,0,1.
-  explicit SPolynomial(uInt order) : SPolynomialParam<T>(order) {}
+  explicit SPolynomial(uint32_t order) : SPolynomialParam<T>(order) {}
   // Copy constructor/assignment (deep copy)
   // <group>
   SPolynomial(const SPolynomial<T> &other) : SPolynomialParam<T>(other) {}

@@ -49,12 +49,12 @@ int main()
 
 	// Create a keyword list for a random group
 	FitsKeywordList kw;
-	kw.mk(FITS::SIMPLE,True,"Standard FITS format");
+	kw.mk(FITS::SIMPLE,true,"Standard FITS format");
 	kw.mk(FITS::BITPIX,32,"Integer data");
 	kw.mk(FITS::NAXIS,2);
 	kw.mk(1,FITS::NAXIS,0);
 	kw.mk(2,FITS::NAXIS,no_data);
-	kw.mk(FITS::GROUPS,True,"Random Group structure");
+	kw.mk(FITS::GROUPS,true,"Random Group structure");
 	kw.mk(FITS::PCOUNT,no_parms);
 	kw.mk(FITS::GCOUNT,no_groups);
 	kw.spaces();

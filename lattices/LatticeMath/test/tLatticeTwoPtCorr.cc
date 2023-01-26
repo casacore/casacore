@@ -46,19 +46,19 @@ int main ()
 
 // Make Lattice
 
-      uInt nx = 4;
-      uInt ny = 8;
-      uInt nz = 16;
+      uint32_t nx = 4;
+      uint32_t ny = 8;
+      uint32_t nz = 16;
       IPosition shape(3, nx, ny, nz);
-      Array<Float> tArr(shape);
+      Array<float> tArr(shape);
       indgen (tArr);
 //
       TiledShape tShapeIn(shape);
-      TempLattice<Float>  latIn(tShapeIn);
+      TempLattice<float>  latIn(tShapeIn);
       latIn.put(tArr);
 //
       AxesSpecifier spec;
-      SubLattice<Float> mLatIn(latIn, False, spec);
+      SubLattice<float> mLatIn(latIn, false, spec);
 
 // Make Structure Functions.  No validation of output values
 // just make sure it runs.
@@ -68,16 +68,16 @@ int main ()
       {
          cerr << "XY plane" << endl;
          IPosition axes(2, 0, 1);
-         IPosition shapeOut = LatticeTwoPtCorr<Float>::setUpShape (shape, axes);
+         IPosition shapeOut = LatticeTwoPtCorr<float>::setUpShape (shape, axes);
          cerr << "Shape in, out = " << shape << shapeOut << endl;
          TiledShape tShapeOut(shapeOut);
-         TempLattice<Float> latOut(tShapeOut);
-         SubLattice<Float> mLatOut(latOut, True, spec);
+         TempLattice<float> latOut(tShapeOut);
+         SubLattice<float> mLatOut(latOut, true, spec);
 //
-         LatticeTwoPtCorr<Float> twoPt;
+         LatticeTwoPtCorr<float> twoPt;
          twoPt.autoCorrelation (mLatOut, mLatIn, axes, 
-                                LatticeTwoPtCorr<Float>::STRUCTUREFUNCTION,
-                                False);
+                                LatticeTwoPtCorr<float>::STRUCTUREFUNCTION,
+                                false);
       }
 
 // x-z plane
@@ -85,16 +85,16 @@ int main ()
       {
          cerr << "XZ plane" << endl;
          IPosition axes(2, 0, 2);
-         IPosition shapeOut = LatticeTwoPtCorr<Float>::setUpShape (shape, axes);
+         IPosition shapeOut = LatticeTwoPtCorr<float>::setUpShape (shape, axes);
          cerr << "Shape in, out = " << shape << shapeOut << endl;
          TiledShape tShapeOut(shapeOut);
-         TempLattice<Float> latOut(tShapeOut);
-         SubLattice<Float> mLatOut(latOut, True, spec);
+         TempLattice<float> latOut(tShapeOut);
+         SubLattice<float> mLatOut(latOut, true, spec);
 //
-         LatticeTwoPtCorr<Float> twoPt;
+         LatticeTwoPtCorr<float> twoPt;
          twoPt.autoCorrelation (mLatOut, mLatIn, axes, 
-                                LatticeTwoPtCorr<Float>::STRUCTUREFUNCTION,
-                                False);
+                                LatticeTwoPtCorr<float>::STRUCTUREFUNCTION,
+                                false);
       }
 
 // y-z plane
@@ -102,30 +102,30 @@ int main ()
       {
          cerr << "YZ plane" << endl;
          IPosition axes(2, 1, 2);
-         IPosition shapeOut = LatticeTwoPtCorr<Float>::setUpShape (shape, axes);
+         IPosition shapeOut = LatticeTwoPtCorr<float>::setUpShape (shape, axes);
          cerr << "Shape in, out = " << shape << shapeOut << endl;
          TiledShape tShapeOut(shapeOut);
-         TempLattice<Float> latOut(tShapeOut);
-         SubLattice<Float> mLatOut(latOut, True, spec);
+         TempLattice<float> latOut(tShapeOut);
+         SubLattice<float> mLatOut(latOut, true, spec);
 //
-         LatticeTwoPtCorr<Float> twoPt;
+         LatticeTwoPtCorr<float> twoPt;
          twoPt.autoCorrelation (mLatOut, mLatIn, axes, 
-                                LatticeTwoPtCorr<Float>::STRUCTUREFUNCTION,
-                                False);
+                                LatticeTwoPtCorr<float>::STRUCTUREFUNCTION,
+                                false);
       }
 
 // Copy Constructor
 
       {
-        LatticeTwoPtCorr<Float> t;
-        LatticeTwoPtCorr<Float> t2(t);
+        LatticeTwoPtCorr<float> t;
+        LatticeTwoPtCorr<float> t2(t);
       }
 
 // Assignment
 
       {
-        LatticeTwoPtCorr<Float> t;
-        LatticeTwoPtCorr<Float> t2;
+        LatticeTwoPtCorr<float> t;
+        LatticeTwoPtCorr<float> t2;
         t = t2;
       }
 

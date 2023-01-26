@@ -100,7 +100,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Assignment operators
     // <group>
     SparseDiffRep<T> &operator=(const T &v);
-    SparseDiffRep<T> &operator=(const vector<pair<uInt, T> > &grad);
+    SparseDiffRep<T> &operator=(const vector<pair<uint32_t, T> > &grad);
     SparseDiffRep<T> &operator=(const SparseDiffRep<T> &other);
     void operator*=(const T other);
     void operator/=(const T other);
@@ -117,9 +117,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The function value
     T val_p;
     // The derivatives
-    vector<pair<uInt, T> > grad_p;
+    vector<pair<uint32_t, T> > grad_p;
     // Link to indicate its status (1=linked in stack; 2=used in modules)
-    uInt link_p;
+    uint32_t link_p;
   };
 
 

@@ -47,25 +47,25 @@ RefTable::RefTable (AipsIO& ios, const String& name, rownr_t nrrow, int opt,
 		    const TableLock& lockOptions, const TSMOption& tsmOption)
 : BaseTable    (name, opt, nrrow),
   rowStorage_p (0),              // initially empty vector of rownrs
-  changed_p    (False)
+  changed_p    (false)
 {
     //# Read the file in.
     // Set initially to no write in destructor.
     // At the end it is reset. In this way nothing is written if
     // an exception is thrown during initialization.
-    noWrite_p = True;
+    noWrite_p = true;
     getRef (ios, opt, lockOptions, tsmOption);
-    noWrite_p = False;
+    noWrite_p = false;
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'o');
 }
 
 
-RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
+RefTable::RefTable (BaseTable* btp, bool order, rownr_t nrall)
 : BaseTable    ("", Table::Scratch, nrall),
   baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (order),
   rowStorage_p (nrall),       // allocate vector of rownrs
-  changed_p    (True)
+  changed_p    (true)
 {
     AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     //# Copy the table description and create the columns.
@@ -78,9 +78,9 @@ RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
 RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
 : BaseTable    ("", Table::Scratch, rownrs.nelements()),
   baseTabPtr_p (btp->root()->shared_from_this()),
-  rowOrd_p     (True),
+  rowOrd_p     (true),
   rowStorage_p (0),
-  changed_p    (True)
+  changed_p    (true)
 {
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
@@ -96,16 +96,16 @@ RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
 	}
     }
     //# Adjust rownrs in case input table is a reference table.
-    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
+    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, true);
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
-RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
+RefTable::RefTable (BaseTable* btp, const Vector<bool>& mask)
 : BaseTable    ("", Table::Scratch, 0),
   baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),              // initially empty vector of rownrs
-  changed_p    (True)
+  changed_p    (true)
 {
     //# Copy the table description and create the columns.
     tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
@@ -118,7 +118,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
 	}
     }
     //# Adjust rownrs in case input table is a reference table.
-    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, True);
+    rowOrd_p = btp->adjustRownrs (nrrow_p, rowStorage_p, true);
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
 }
 
@@ -127,14 +127,14 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
   baseTabPtr_p (btp->root()->shared_from_this()),
   rowOrd_p     (btp->rowOrder()),
   rowStorage_p (0),
-  changed_p    (True)
+  changed_p    (true)
 {
     //# Create table description by copying the selected columns.
     //# Create the columns.
     const TableDesc& td = btp->tableDesc();
     //# Copy the keywords from the root tabledesc.
-    tdescPtr_p = new TableDesc (td, "", "", TableDesc::Scratch, False);
-    for (uInt i=0; i<columnNames.nelements(); i++) {
+    tdescPtr_p = new TableDesc (td, "", "", TableDesc::Scratch, false);
+    for (uint32_t i=0; i<columnNames.nelements(); i++) {
 	tdescPtr_p->addColumn (td.columnDesc (columnNames(i)));
     }
     setup (btp, columnNames);
@@ -151,7 +151,7 @@ RefTable::~RefTable()
     //# When needed, write the table files if not marked for delete
     if (!isMarkedForDelete()) {
 	if (openedForWrite()  &&  !shouldNotWrite()) {
-	    writeRefTable (True);
+	    writeRefTable (true);
 	}
     }
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'c');
@@ -162,12 +162,12 @@ RefTable::~RefTable()
 }
 
 
-void RefTable::getPartNames (Block<String>& names, Bool recursive) const
+void RefTable::getPartNames (Block<String>& names, bool recursive) const
 {
   if (recursive) {
     baseTabPtr_p->getPartNames (names, recursive);
   } else {
-    uInt inx = names.size();
+    uint32_t inx = names.size();
     names.resize (inx + 1);
     names[inx] = baseTabPtr_p->tableName();
   }
@@ -179,7 +179,7 @@ void RefTable::reopenRW()
     option_p = Table::Update;
 }
 
-Bool RefTable::asBigEndian() const
+bool RefTable::asBigEndian() const
 {
     return baseTabPtr_p->asBigEndian();
 }
@@ -189,9 +189,9 @@ const StorageOption& RefTable::storageOption() const
     return baseTabPtr_p->storageOption();
 }
 
-Bool RefTable::isMultiUsed (Bool) const
+bool RefTable::isMultiUsed (bool) const
 {
-    return False;
+    return false;
 }
 
 const TableLock& RefTable::lockOptions() const
@@ -202,11 +202,11 @@ void RefTable::mergeLock (const TableLock& lockOptions)
 {
     baseTabPtr_p->mergeLock (lockOptions);
 }
-Bool RefTable::hasLock (FileLocker::LockType type) const
+bool RefTable::hasLock (FileLocker::LockType type) const
 {
     return baseTabPtr_p->hasLock (type);
 }
-Bool RefTable::lock (FileLocker::LockType type, uInt nattempts)
+bool RefTable::lock (FileLocker::LockType type, uint32_t nattempts)
 {
     return baseTabPtr_p->lock (type, nattempts);
 }
@@ -215,7 +215,7 @@ void RefTable::unlock()
     baseTabPtr_p->unlock();
 }
 
-void RefTable::flush (Bool fsync, Bool recursive)
+void RefTable::flush (bool fsync, bool recursive)
 {
     if (!isMarkedForDelete()) {
         if (openedForWrite()) {
@@ -231,30 +231,30 @@ void RefTable::resync()
     baseTabPtr_p->resync();
 }
 
-uInt RefTable::getModifyCounter() const
+uint32_t RefTable::getModifyCounter() const
 {
     return baseTabPtr_p->getModifyCounter();
 }
 
 
 //# Adjust the input rownrs to the actual rownrs in the root table.
-Bool RefTable::adjustRownrs (rownr_t nr, Vector<rownr_t>& rowStorage,
-			     Bool determineOrder) const
+bool RefTable::adjustRownrs (rownr_t nr, Vector<rownr_t>& rowStorage,
+			     bool determineOrder) const
 {
     // Note that rowStorage can be the same as rowStorage_p.
     AlwaysAssert (nr <= rowStorage.size(), AipsError);
-    rowStorage.resize (nr, True);
+    rowStorage.resize (nr, true);
     AlwaysAssert (rowStorage.contiguousStorage(), AipsError);
     const rownr_t* rows = rowStorage_p.data();
     rownr_t* rownrs = rowStorage.data();
-    Bool rowOrder = True;
+    bool rowOrder = true;
     for (rownr_t i=0; i<nr; i++) {
 	rownrs[i] = rows[rownrs[i]];
     }
     if (determineOrder) {
 	for (rownr_t i=1; i<nr; i++) {
 	    if (rownrs[i] <= rownrs[i-1]) {
-		rowOrder = False;
+		rowOrder = false;
 		break;
 	    }
 	}
@@ -264,21 +264,21 @@ Bool RefTable::adjustRownrs (rownr_t nr, Vector<rownr_t>& rowStorage,
 
 
 //# Write a reference table into a file.
-void RefTable::writeRefTable (Bool)
+void RefTable::writeRefTable (bool)
 {
     //# Write name and type of root and write object data.
     //# Do this only when something has changed.
     if (changed_p) {
         TableTrace::traceRefTable (baseTabPtr_p->tableName(), 'w');
         // Write old version if all row numbers fit in 32 bits.
-        Int version = 3;
-        if (nrrow_p < std::numeric_limits<uInt>::max()  &&
-            baseTabPtr_p->nrow() < std::numeric_limits<uInt>::max()  &&
-            allLT (rowStorage_p, rownr_t(std::numeric_limits<uInt>::max()))) {
+        int32_t version = 3;
+        if (nrrow_p < std::numeric_limits<uint32_t>::max()  &&
+            baseTabPtr_p->nrow() < std::numeric_limits<uint32_t>::max()  &&
+            allLT (rowStorage_p, rownr_t(std::numeric_limits<uint32_t>::max()))) {
           version = 2;
         }
 	AipsIO ios;
-	writeStart (ios, True);
+	writeStart (ios, true);
 	ios << "RefTable";
 	ios.putstart ("RefTable", version);
 	// Make the name of the base table relative to this table.
@@ -287,39 +287,39 @@ void RefTable::writeRefTable (Bool)
 	ios << nameMap_p;
 	// Write the column names in order of appearance.
 	Vector<String> names(tdescPtr_p->ncolumn());
-	for (uInt i=0; i<names.nelements(); i++) {
+	for (uint32_t i=0; i<names.nelements(); i++) {
 	    names(i) = tdescPtr_p->columnDesc(i).name();
 	}
 	ios << names;
         if (version == 2) {
-          ios << uInt(baseTabPtr_p->nrow());
+          ios << uint32_t(baseTabPtr_p->nrow());
           ios << rowOrd_p;
-          ios << uInt(nrrow_p);
+          ios << uint32_t(nrrow_p);
         } else {
           ios << baseTabPtr_p->nrow();
           ios << rowOrd_p;
           ios << nrrow_p;
         }
         // Do not write more than 2**20 rownrs at once (CAS-7020).
-        Vector<uInt> rows32;
+        Vector<uint32_t> rows32;
         if (version == 2) {
           rows32.resize (nrrow_p);
           convertArray (rows32, rowStorage_p(Slice(0, nrrow_p)));
         }
-        const uInt* rows32p = rows32.data();
+        const uint32_t* rows32p = rows32.data();
         rownr_t done = 0;
         while (done < nrrow_p) {
           rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
           if (version == 2) {
-            ios.put (todo, rows32p+done, False);
+            ios.put (todo, rows32p+done, false);
           } else {
-            ios.put (todo, rowStorage_p.data()+done, False);
+            ios.put (todo, rowStorage_p.data()+done, false);
           }
           done += todo;
         }
 	ios.putend();
 	writeEnd (ios);
-	changed_p = False;
+	changed_p = false;
     }
     //# Write the TableInfo.
     flushTableInfo();
@@ -332,7 +332,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     //# Open the file, read name and type of root and read object data.
     String rootName;
     rownr_t rootNrow, nrrow;
-    Int version = ios.getstart ("RefTable");
+    int32_t version = ios.getstart ("RefTable");
     if (version > 3) {
       throw TableError ("RefTable version " + String::toString(version) +
                         " not supported by this version of Cassacore");
@@ -347,7 +347,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     if (version > 2) {
       ios >> rootNrow >> rowOrd_p >> nrrow;
     } else {
-      uInt n1, n2;
+      uint32_t n1, n2;
       ios >> n1 >> rowOrd_p >> n2;
       rootNrow = n1;
       nrrow = n2;
@@ -366,8 +366,8 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
         done += todo;
       }
     } else {
-      Vector<uInt> rows(nrrow);
-      uInt* p = rows.data();
+      Vector<uint32_t> rows(nrrow);
+      uint32_t* p = rows.data();
       while (done < nrrow) {
         rownr_t todo = std::min(nrrow_p-done, rownr_t(1048576));
         ios.get (todo, p+done);
@@ -394,7 +394,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     //# description of the root table.
     const TableDesc& rootDesc = baseTabPtr_p->tableDesc();
     //# Copy the keywords from the root tabledesc.
-    tdescPtr_p = new TableDesc (rootDesc, "", "", TableDesc::Scratch, False);
+    tdescPtr_p = new TableDesc (rootDesc, "", "", TableDesc::Scratch, false);
     makeDesc (*tdescPtr_p, rootDesc, nameMap_p, names);
     //# Create the refColumns.
     makeRefCol();
@@ -409,7 +409,7 @@ void RefTable::getLayout (TableDesc& desc, AipsIO& ios)
 {
     String rootName;
     std::map<String,String> nameMap;
-    Int version = ios.getstart ("RefTable");
+    int32_t version = ios.getstart ("RefTable");
     ios >> rootName;
     ios >> nameMap;
     Vector<String> names;
@@ -431,7 +431,7 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
     //# names from the map.
     if (names.nelements() == 0) {
         names.resize (nameMap.size());
-        uInt i = 0;
+        uint32_t i = 0;
         for (auto& x : nameMap) {
             names[i++] = x.first;
 	}
@@ -442,7 +442,7 @@ void RefTable::makeDesc (TableDesc& desc, const TableDesc& rootDesc,
     //# The nameMap maps column names in this table to the names in the
     //# root table, so a rename is needed if names are different.
     std::map<String,void*> unknownCol;
-    for (uInt i=0; i<names.nelements(); i++) {
+    for (uint32_t i=0; i<names.nelements(); i++) {
         const String& name = names(i);
 	const String mapVal = nameMap.at (name);
 	if (rootDesc.isColumn (mapVal)) {
@@ -475,13 +475,13 @@ void RefTable::setup (BaseTable* btp, const Vector<String>& columnNames)
 	  // Make the map const, so operator() throws an exception
 	  // if the key does not exist.
 	  const std::map<String,String>& nm = rtp->nameMap_p;
-	    for (uInt i=0; i<columnNames.nelements(); i++) {
+	    for (uint32_t i=0; i<columnNames.nelements(); i++) {
               nameMap_p.insert (std::make_pair(columnNames[i], nm.at(columnNames[i])));
 	    }
 	}
     } else {
         // Otherwise create it from the TableDesc.
-        for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
+        for (uint32_t i=0; i<tdescPtr_p->ncolumn(); i++) {
           nameMap_p.insert (std::make_pair(tdescPtr_p->columnDesc(i).name(),
                                            tdescPtr_p->columnDesc(i).name()));
 	}
@@ -495,7 +495,7 @@ void RefTable::setup (BaseTable* btp, const Vector<String>& columnNames)
 //# Insert it with the name in the column map.
 void RefTable::makeRefCol()
 {
-    for (uInt i=0; i<tdescPtr_p->ncolumn(); i++) {
+    for (uint32_t i=0; i<tdescPtr_p->ncolumn(); i++) {
 	const ColumnDesc& cd = tdescPtr_p->columnDesc(i);
 	colMap_p.insert (std::make_pair(cd.name(), cd.makeRefColumn
                            (this, baseTabPtr_p->getColumn(nameMap_p.at(cd.name())))));
@@ -511,11 +511,11 @@ void RefTable::addRefCol (const ColumnDesc& columnDesc)
     // BaseColumnDesc is kept which is disastrous for the temporary columnDesc.
     colMap_p.insert (std::make_pair(cd.name(), cd.makeRefColumn
                        (this, baseTabPtr_p->getColumn(nameMap_p.at(cd.name())))));
-    changed_p = True;
+    changed_p = true;
 }
 void RefTable::addRefCol (const TableDesc& tdesc)
 {
-    for (uInt i=0; i<tdesc.ncolumn(); i++) {
+    for (uint32_t i=0; i<tdesc.ncolumn(); i++) {
         addRefCol (tdesc[i]);
     }
 }
@@ -527,11 +527,11 @@ void RefTable::addRownr (rownr_t rnr)
     rownr_t nrow = rowStorage_p.nelements();
     if (nrrow_p >= nrow) {
         nrow = max ( nrow + 1024, rownr_t(1.2f * nrow));
-	rowStorage_p.resize (nrow, True);
+	rowStorage_p.resize (nrow, true);
         AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     }
     rowStorage_p[nrrow_p++] = rnr;
-    changed_p = True;
+    changed_p = true;
 }
 
 //# Add a row number range of the root table.
@@ -540,14 +540,14 @@ void RefTable::addRownrRange (rownr_t startRownr, rownr_t endRownr)
     rownr_t nrow = rowStorage_p.nelements();
     rownr_t new_nrrow_p = nrrow_p + endRownr - startRownr + 1;
     if (new_nrrow_p > nrow) {
-        rowStorage_p.resize (new_nrrow_p, True);
+        rowStorage_p.resize (new_nrrow_p, true);
         AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     }
     rownr_t* rows = rowStorage_p.data();
     // Fill with increasing rownr
     std::iota(rows + nrrow_p, rows + new_nrrow_p, startRownr);
     nrrow_p = new_nrrow_p;
-    changed_p = True;
+    changed_p = true;
 }
 
 //# Set exact number of rows.
@@ -558,12 +558,12 @@ void RefTable::setNrrow (rownr_t nrrow)
     }
     AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     nrrow_p = nrrow;
-    changed_p = True;
+    changed_p = true;
 }
 
 
 //# Test if the parent table is writable.
-Bool RefTable::isWritable() const
+bool RefTable::isWritable() const
 {
     return baseTabPtr_p->isWritable();
 }
@@ -572,17 +572,17 @@ void RefTable::copyRefTable (const String& newName, int tableOption)
 {
     prepareCopyRename (newName, tableOption);
     // Save state, write, and restore state.
-    Bool changed = changed_p;
-    Int option   = option_p;
+    bool changed = changed_p;
+    int32_t option   = option_p;
     String name  = name_p;
-    changed_p = True;
+    changed_p = true;
     option_p  = tableOption;
     name_p    = newName;
-    writeRefTable (False);
+    writeRefTable (false);
     changed_p = changed;
     option_p  = option;
     name_p    = name;
-    madeDir_p = False;
+    madeDir_p = false;
 }
 
 void RefTable::copy (const String& newName, int tableOption) const
@@ -590,7 +590,7 @@ void RefTable::copy (const String& newName, int tableOption) const
     // If a memory table, make a deep copy.
     if (tableType() == Table::Memory) {
       deepCopy (newName, Record(), StorageOption(), tableOption,
-                True, Table::AipsrcEndian, False);
+                true, Table::AipsrcEndian, false);
         // If not persistent, make the copy by writing the table.
     } else if (!madeDir_p) {
         const_cast<RefTable*>(this)->copyRefTable (newName, tableOption);
@@ -602,8 +602,8 @@ void RefTable::copy (const String& newName, int tableOption) const
 void RefTable::deepCopy (const String& newName,
 			 const Record& dataManagerInfo,
                          const StorageOption& stopt,
-			 int tableOption, Bool, int endianFormat,
-			 Bool noRows) const
+			 int tableOption, bool, int endianFormat,
+			 bool noRows) const
 {
     trueDeepCopy (newName, dataManagerInfo, stopt,
                   tableOption, endianFormat, noRows);
@@ -621,10 +621,10 @@ TableDesc RefTable::actualTableDesc() const
     // Get actual table desc of parent.
     // Create new tabledesc and copy keywords from parent.
     TableDesc rootDesc = baseTabPtr_p->actualTableDesc();
-    TableDesc actualDesc(rootDesc, "", "", TableDesc::Scratch, False);
+    TableDesc actualDesc(rootDesc, "", "", TableDesc::Scratch, false);
     // Copy the relevant columns and rename (because reftable
     // can have renamed columns).
-    for (uInt i=0; i<refDesc.ncolumn(); i++) {
+    for (uint32_t i=0; i<refDesc.ncolumn(); i++) {
 	const String& newName = refDesc.columnDesc(i).name();
 	const String& oldName = nameMap_p.at(newName);
 	ColumnDesc cdesc = rootDesc.columnDesc (oldName);
@@ -655,13 +655,13 @@ Record RefTable::dataManagerInfo() const
     // Use the new name.
     // Remove data managers without columns left.
     // Iterate in reverse order because of the remove we do.
-    for (uInt i=dmi.nfields(); i>0;) {
+    for (uint32_t i=dmi.nfields(); i>0;) {
         i--;
         Record& rec = dmi.rwSubRecord(i);
 	Vector<String> vec (rec.asArrayString ("COLUMNS"));
 	Vector<String> newVec(vec.nelements());
-	uInt nc=0;
-	for (uInt j=0; j<vec.nelements(); j++) {
+	uint32_t nc=0;
+	for (uint32_t j=0; j<vec.nelements(); j++) {
             std::map<String,String>::iterator iter = nmap.find (vec(j));
             if (iter != nmap.end()) {
 	        newVec(nc++) = iter->second;
@@ -701,7 +701,7 @@ BaseColumn* RefTable::getColumn (const String& columnName) const
 //# We cannot simply return colMap_p.getVal(columnIndex), because the order of
 //# the columns in the description is important. So first get the column
 //# name and use that as key.
-BaseColumn* RefTable::getColumn (uInt columnIndex) const
+BaseColumn* RefTable::getColumn (uint32_t columnIndex) const
 { 
     const String& name = tdescPtr_p->columnDesc(columnIndex).name();
     return colMap_p.at(name);
@@ -726,7 +726,7 @@ Vector<rownr_t> RefTable::rootRownr (const Vector<rownr_t>& rownrs) const
 
 BaseTable* RefTable::root()
     { return baseTabPtr_p.get(); }
-Bool RefTable::rowOrder() const
+bool RefTable::rowOrder() const
     { return rowOrd_p; }
 
 Vector<rownr_t> RefTable::rowNumbers() const
@@ -739,7 +739,7 @@ Vector<rownr_t> RefTable::rowNumbers() const
 }
 
 
-Bool RefTable::checkAddColumn (const String& name, Bool addToParent)
+bool RefTable::checkAddColumn (const String& name, bool addToParent)
 {
   if (! isWritable()) {
     throw TableInvOper ("Table::addColumn; table is not writable");
@@ -748,17 +748,17 @@ Bool RefTable::checkAddColumn (const String& name, Bool addToParent)
     throw TableInvOper ("Table::addColumn; column " + name + " already exists");
   }
   if (baseTabPtr_p->tableDesc().isColumn(name)) {
-    return False;
+    return false;
   }
   if (!addToParent) {
     throw TableInvOper ("RefTable::addColumn; column " + name +
                         " does not exist in parent table, but must not be added"
-                        " (addToParent=False)");
+                        " (addToParent=false)");
   }
-  return True;
+  return true;
 }
 
-void RefTable::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
+void RefTable::addColumn (const ColumnDesc& columnDesc, bool addToParent)
 {
   if (checkAddColumn (columnDesc.name(), addToParent)) {
     baseTabPtr_p->addColumn (columnDesc, addToParent);
@@ -766,8 +766,8 @@ void RefTable::addColumn (const ColumnDesc& columnDesc, Bool addToParent)
   addRefCol (columnDesc);
 }
 void RefTable::addColumn (const ColumnDesc& columnDesc,
-                          const String& dataManager, Bool byName,
-                          Bool addToParent)
+                          const String& dataManager, bool byName,
+                          bool addToParent)
 {
   if (checkAddColumn (columnDesc.name(), addToParent)) {
     baseTabPtr_p->addColumn (columnDesc, dataManager, byName, addToParent); 
@@ -776,7 +776,7 @@ void RefTable::addColumn (const ColumnDesc& columnDesc,
 }
 void RefTable::addColumn (const ColumnDesc& columnDesc,
                           const DataManager& dataManager,
-                          Bool addToParent)
+                          bool addToParent)
 {
   if (checkAddColumn (columnDesc.name(), addToParent)) {
     baseTabPtr_p->addColumn (columnDesc,dataManager, addToParent);
@@ -785,12 +785,12 @@ void RefTable::addColumn (const ColumnDesc& columnDesc,
 }
 void RefTable::addColumn (const TableDesc& tableDesc,
                           const DataManager& dataManager,
-                          Bool addToParent)
+                          bool addToParent)
 {
   // First check if all columns exist and can be added or not.
   // Collect all columns to be added to the parent.
   TableDesc addTabDesc;
-  for (uInt i=0; i<tableDesc.ncolumn(); ++i) {
+  for (uint32_t i=0; i<tableDesc.ncolumn(); ++i) {
     if (checkAddColumn (tableDesc[i].name(), addToParent)) {
       addTabDesc.addColumn (tableDesc[i]);
     }
@@ -803,13 +803,13 @@ void RefTable::addColumn (const TableDesc& tableDesc,
 }
 
 //# Rows and columns can be removed and renamed.
-Bool RefTable::canRemoveRow() const
-    { return True; }
-Bool RefTable::canRemoveColumn (const Vector<String>& columnNames) const
+bool RefTable::canRemoveRow() const
+    { return true; }
+bool RefTable::canRemoveColumn (const Vector<String>& columnNames) const
 {
-    return checkRemoveColumn (columnNames, False);
+    return checkRemoveColumn (columnNames, false);
 }
-Bool RefTable::canRenameColumn (const String& columnName) const
+bool RefTable::canRenameColumn (const String& columnName) const
     { return tdescPtr_p->isColumn (columnName); }
 
 void RefTable::removeRow (rownr_t rownr)
@@ -822,26 +822,26 @@ void RefTable::removeRow (rownr_t rownr)
 	objmove (rows+rownr, rows+rownr+1, nrrow_p-rownr-1);
     }
     nrrow_p--;
-    changed_p = True;
+    changed_p = true;
 }
 
 void RefTable::removeAllRow ()
 {
     nrrow_p=0;
-    changed_p = True;
+    changed_p = true;
 }
 
 void RefTable::removeColumn (const Vector<String>& columnNames)
 {
-    checkRemoveColumn (columnNames, True);
-    for (uInt i=0; i<columnNames.nelements(); i++) {
+    checkRemoveColumn (columnNames, true);
+    for (uint32_t i=0; i<columnNames.nelements(); i++) {
         const String& name = columnNames(i);
         tdescPtr_p->removeColumn (name);
 	nameMap_p.erase (name);
 	delete colMap_p.at(name);
 	colMap_p.erase (name);
     }
-    changed_p = True;
+    changed_p = true;
 }
  
 void RefTable::renameColumn (const String& newName, const String& oldName)
@@ -853,17 +853,17 @@ void RefTable::renameColumn (const String& newName, const String& oldName)
     const String nmval = nameMap_p.at(oldName);
     nameMap_p.erase (oldName);
     nameMap_p.insert (std::make_pair(newName, nmval));
-    changed_p = True;
+    changed_p = true;
 }
 
 void RefTable::renameHypercolumn (const String& newName, const String& oldName)
 {
     tdescPtr_p->renameHypercolumn (newName, oldName);
-    changed_p = True;
+    changed_p = true;
 }
 
 
-DataManager* RefTable::findDataManager (const String& name, Bool byColumn) const
+DataManager* RefTable::findDataManager (const String& name, bool byColumn) const
 {
     String origName(name);
     if (byColumn) {
@@ -884,7 +884,7 @@ void RefTable::refAnd (rownr_t nr1, const rownr_t* inx1,
     rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
-    while (True) {
+    while (true) {
 	if (i1 >= nr1) {
             row1 = std::numeric_limits<rownr_t>::max();   // end of inx1
 	}else{
@@ -908,7 +908,7 @@ void RefTable::refAnd (rownr_t nr1, const rownr_t* inx1,
 	    }
 	}
     }
-    changed_p = True;
+    changed_p = true;
 }
 
 // Or 2 index arrays, which are both in ascending order.
@@ -921,7 +921,7 @@ void RefTable::refOr (rownr_t nr1, const rownr_t* inx1,
     rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
-    while (True) {
+    while (true) {
 	if (i1 >= nr1) {
             row1 = std::numeric_limits<rownr_t>::max();   // end of inx1
 	}else{
@@ -947,7 +947,7 @@ void RefTable::refOr (rownr_t nr1, const rownr_t* inx1,
 	    }
 	}
     }
-    changed_p = True;
+    changed_p = true;
 }
 
 // Subtract 2 index arrays, which are both in ascending order.
@@ -960,7 +960,7 @@ void RefTable::refSub (rownr_t nr1, const rownr_t* inx1,
     rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
-    while (True) {
+    while (true) {
 	if (i1 >= nr1) {
 	    row1 = std::numeric_limits<rownr_t>::max();  // end of inx1
 	}else{
@@ -984,7 +984,7 @@ void RefTable::refSub (rownr_t nr1, const rownr_t* inx1,
 	    }
 	}
     }
-    changed_p = True;
+    changed_p = true;
 }
 
 // Xor 2 index arrays, which are both in ascending order.
@@ -997,7 +997,7 @@ void RefTable::refXor (rownr_t nr1, const rownr_t* inx1,
     rownr_t* rows = rowStorage_p.data();
     rownr_t i1, i2, row1, row2;
     i1 = i2 = 0;
-    while (True) {
+    while (true) {
 	if (i1 >= nr1) {
 	    row1 = std::numeric_limits<rownr_t>::max();  // end of inx1
 	}else{
@@ -1022,7 +1022,7 @@ void RefTable::refXor (rownr_t nr1, const rownr_t* inx1,
 	    }
 	}
     }
-    changed_p = True;
+    changed_p = true;
 }
 
 // Negate a table.
@@ -1046,7 +1046,7 @@ void RefTable::refNot (rownr_t nr, const rownr_t* inx, rownr_t nrtot)
     for (j=start; j<nrtot; j++) {             // handle last interval
 	rows[nrrow_p++] = j;
     }
-    changed_p = True;
+    changed_p = true;
 }
 
 } //# NAMESPACE CASACORE - END

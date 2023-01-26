@@ -57,12 +57,12 @@ int main()
 	// Create a keyword list for a random group
 	/*
 	FitsKeywordList kw;
-	kw.mk(FITS::SIMPLE,True,"Standard FITS format");
+	kw.mk(FITS::SIMPLE,true,"Standard FITS format");
 	kw.mk(FITS::BITPIX,32,"Integer data");
 	kw.mk(FITS::NAXIS,2);
 	kw.mk(1,FITS::NAXIS,0);
 	kw.mk(2,FITS::NAXIS,no_data);
-	kw.mk(FITS::GROUPS,True,"Random Group structure");
+	kw.mk(FITS::GROUPS,true,"Random Group structure");
 	kw.mk(FITS::PCOUNT,no_parms);
 	kw.mk(FITS::GCOUNT,no_groups);
 	kw.spaces();
@@ -74,7 +74,7 @@ int main()
 	if (pg.err())
 		exit(0);
 
-	pg.write_priGrp_hdr(fout,True, 32, naxis,naxes, no_parms, no_groups );
+	pg.write_priGrp_hdr(fout,true, 32, naxis,naxes, no_parms, no_groups );
 	cout << "PrimaryGroup constructed\n";
 	cout << "Data type   " << pg.datatype() << "\n"
 	     << "Data size   " << pg.fitsdatasize() << "\n"

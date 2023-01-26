@@ -102,13 +102,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <example>
 // <srcblock>
 // // Create the table description and 2 columns with indirect arrays in it.
-// // The Int column will be stored, while the double will be
+// // The int32_t column will be stored, while the double will be
 // // used as virtual.
 // TableDesc tableDesc ("", TableDesc::Scratch);
-// tableDesc.addColumn (ArrayColumnDesc<Short> ("storedArray"));
-// tableDesc.addColumn (ArrayColumnDesc<Float> ("virtualArray"));
-// tableDesc.addColumn (ScalarColumnDesc<Float> ("scale"));
-// tableDesc.addColumn (ScalarColumnDesc<Float> ("offset"));
+// tableDesc.addColumn (ArrayColumnDesc<int16_t> ("storedArray"));
+// tableDesc.addColumn (ArrayColumnDesc<float> ("virtualArray"));
+// tableDesc.addColumn (ScalarColumnDesc<float> ("scale"));
+// tableDesc.addColumn (ScalarColumnDesc<float> ("offset"));
 //
 // // Create a new table using the table description.
 // SetupNewTable newtab (tableDesc, "tab.data", Table::New);
@@ -123,7 +123,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 // // Store a 3-D array (with dim. 2,3,4) into each row of the column.
 // // The shape of each array in the column is implicitly set by the put
-// // function. This will also set the shape of the underlying Int array.
+// // function. This will also set the shape of the underlying int32_t array.
 // ArrayColumn data (table, "virtualArray");
 // Array<double> someArray(IPosition(4,2,3,4));
 // someArray = 0;
@@ -134,19 +134,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </srcblock>
 // </example>
 
-class CompressFloat : public BaseMappedArrayEngine<Float, Short>
+class CompressFloat : public BaseMappedArrayEngine<float, int16_t>
 {
 public:
 
   // Construct an engine to scale all arrays in a column with
   // the given offset and scale factor.
   // StoredColumnName is the name of the column where the scaled
-  // data will be put and must have data type Short.
-  // The virtual column using this engine must have data type Float.
+  // data will be put and must have data type int16_t.
+  // The virtual column using this engine must have data type float.
   CompressFloat (const String& virtualColumnName,
 		 const String& storedColumnName,
-		 Float scale,
-		 Float offset = 0);
+		 float scale,
+		 float offset = 0);
 
   // Construct an engine to scale the arrays in a column.
   // The scale and offset values are taken from a column with
@@ -156,13 +156,13 @@ public:
   // VirtualColumnName is the name of the virtual column and is used to
   // check if the engine gets bound to the correct column.
   // StoredColumnName is the name of the column where the scaled
-  // data will be put and must have data type Short.
-  // The virtual column using this engine must have data type Float.
+  // data will be put and must have data type int16_t.
+  // The virtual column using this engine must have data type float.
   CompressFloat (const String& virtualColumnName,
 		 const String& storedColumnName,
 		 const String& scaleColumnName,
 		 const String& offsetColumnName,
-		 Bool autoScale = True);
+		 bool autoScale = true);
 
   // Construct from a record specification as created by getmanagerSpec().
   CompressFloat (const Record& spec);
@@ -219,129 +219,129 @@ private:
 
   // Get an array in the given row.
   // This will scale and offset from the underlying array.
-  virtual void getArray (rownr_t rownr, Array<Float>& array);
+  virtual void getArray (rownr_t rownr, Array<float>& array);
 
   // Put an array in the given row.
   // This will scale and offset to the underlying array.
-  virtual void putArray (rownr_t rownr, const Array<Float>& array);
+  virtual void putArray (rownr_t rownr, const Array<float>& array);
 
   // Get a section of the array in the given row.
   // This will scale and offset from the underlying array.
   virtual void getSlice (rownr_t rownr, const Slicer& slicer,
-			 Array<Float>& array);
+			 Array<float>& array);
 
   // Put into a section of the array in the given row.
   // This will scale and offset to the underlying array.
   virtual void putSlice (rownr_t rownr, const Slicer& slicer,
-			 const Array<Float>& array);
+			 const Array<float>& array);
 
   // Get an entire column.
   // This will scale and offset from the underlying array.
-  virtual void getArrayColumn (Array<Float>& array);
+  virtual void getArrayColumn (Array<float>& array);
 
   // Put an entire column.
   // This will scale and offset to the underlying array.
-  virtual void putArrayColumn (const Array<Float>& array);
+  virtual void putArrayColumn (const Array<float>& array);
 
   // Get some array values in the column.
   // This will scale and offset from the underlying array.
   virtual void getArrayColumnCells (const RefRows& rownrs,
-                                    Array<Float>& data);
+                                    Array<float>& data);
 
   // Put some array values in the column.
   // This will scale and offset to the underlying array.
   virtual void putArrayColumnCells (const RefRows& rownrs,
-                                    const Array<Float>& data);
+                                    const Array<float>& data);
 
   // Get a section of all arrays in the column.
   // This will scale and offset from the underlying array.
-  virtual void getColumnSlice (const Slicer& slicer, Array<Float>& array);
+  virtual void getColumnSlice (const Slicer& slicer, Array<float>& array);
 
   // Put a section of all arrays in the column.
   // This will scale and offset to the underlying array.
   virtual void putColumnSlice (const Slicer& slicer, 
-			       const Array<Float>& array);
+			       const Array<float>& array);
 
   // Get a section of some arrays in the column.
   // This will scale and offset from the underlying array.
   virtual void getColumnSliceCells (const RefRows& rownrs,
                                     const Slicer& slicer,
-                                    Array<Float>& data);
+                                    Array<float>& data);
 
   // Put into a section of some arrays in the column.
   // This will scale and offset to the underlying array.
   virtual void putColumnSliceCells (const RefRows& rownrs,
                                     const Slicer& slicer,
-                                    const Array<Float>& data);
+                                    const Array<float>& data);
 
   // Scale and/or offset target to array.
   // This is meant when reading an array from the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  void scaleOnGet (Float scale, Float offset,
-		   Array<Float>& array,
-		   const Array<Short>& target);
+  void scaleOnGet (float scale, float offset,
+		   Array<float>& array,
+		   const Array<int16_t>& target);
 
   // Scale and/or offset array to target.
   // This is meant when writing an array into the stored column.
   // It optimizes for scale=1 and/or offset=0.
-  void scaleOnPut (Float scale, Float offset,
-		   const Array<Float>& array,
-		   Array<Short>& target);
+  void scaleOnPut (float scale, float offset,
+		   const Array<float>& array,
+		   Array<int16_t>& target);
 
   // Scale and/or offset target to array for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
   // Otherwise it iterates through the array and applies the scale
   // and offset per row.
-  void scaleColumnOnGet (Array<Float>& array,
-			 const Array<Short>& target);
+  void scaleColumnOnGet (Array<float>& array,
+			 const Array<int16_t>& target);
 
   // Scale and/or offset array to target for the entire column.
   // When the scale and offset are fixed, it will do the entire array.
   // Otherwise it iterates through the array and applies the scale
   // and offset per row.
-  void scaleColumnOnPut (const Array<Float>& array,
-			 Array<Short>& target);
+  void scaleColumnOnPut (const Array<float>& array,
+			 Array<int16_t>& target);
 
 
   //# Now define the data members.
   String         scaleName_p;          //# name of scale column
   String         offsetName_p;         //# name of offset column
-  Float          scale_p;              //# fixed scale factor
-  Float          offset_p;             //# fixed offset value
-  Bool           fixed_p;              //# scale/offset is fixed
-  Bool           autoScale_p;          //# determine scale/offset automatically
-  ScalarColumn<Float>* scaleColumn_p;  //# column with scale value
-  ScalarColumn<Float>* offsetColumn_p; //# column with offset value
-  Array<Short>   buffer_p;             //# buffer to avoid Array constructions
+  float          scale_p;              //# fixed scale factor
+  float          offset_p;             //# fixed offset value
+  bool           fixed_p;              //# scale/offset is fixed
+  bool           autoScale_p;          //# determine scale/offset automatically
+  ScalarColumn<float>* scaleColumn_p;  //# column with scale value
+  ScalarColumn<float>* offsetColumn_p; //# column with offset value
+  Array<int16_t>   buffer_p;             //# buffer to avoid Array constructions
 
   // Get the scale value for this row.
-  Float getScale (rownr_t rownr);
+  float getScale (rownr_t rownr);
 
   // Get the offset value for this row.
-  Float getOffset (rownr_t rownr);
+  float getOffset (rownr_t rownr);
 
   // Find minimum and maximum from the array data.
   // NaN and infinite values are ignored. If no values are finite,
   // minimum and maximum are set to NaN.
-  void findMinMax (Float& minVal, Float& maxVal,
-		   const Array<Float>& array) const;
+  void findMinMax (float& minVal, float& maxVal,
+		   const Array<float>& array) const;
 
   // Make scale and offset from the minimum and maximum of the array data.
   // If minVal is NaN, scale is set to 0.
-  void makeScaleOffset (Float& scale, Float& offset,
-			Float minVal, Float maxVal) const;
+  void makeScaleOffset (float& scale, float& offset,
+			float minVal, float maxVal) const;
 
   // Put a part of an array in a row using given scale/offset values.
   void putPart (rownr_t rownr, const Slicer& slicer,
-		const Array<Float>& array,
-		Float scale, Float offset);
+		const Array<float>& array,
+		float scale, float offset);
 
   // Fill the array part into the full array and put it using the
   // given min/max values.
   void putFullPart (rownr_t rownr, const Slicer& slicer,
-		    Array<Float>& fullArray,
-		    const Array<Float>& partArray,
-		    Float minVal, Float maxVal);
+		    Array<float>& fullArray,
+		    const Array<float>& partArray,
+		    float minVal, float maxVal);
 
 public:
   // Define the "constructor" to construct this engine when a
@@ -355,11 +355,11 @@ public:
 };
 
 
-inline Float CompressFloat::getScale (rownr_t rownr)
+inline float CompressFloat::getScale (rownr_t rownr)
 {
   return (fixed_p  ?  scale_p : (*scaleColumn_p)(rownr));
 }
-inline Float CompressFloat::getOffset (rownr_t rownr)
+inline float CompressFloat::getOffset (rownr_t rownr)
 {
   return (fixed_p  ?  offset_p : (*offsetColumn_p)(rownr));
 }

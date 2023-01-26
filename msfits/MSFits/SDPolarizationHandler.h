@@ -88,7 +88,7 @@ public:
     SDPolarizationHandler();
 
     // attach this to a MS - no columns are explicitly handled here
-    SDPolarizationHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDPolarizationHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDPolarizationHandler(const SDPolarizationHandler &other);
@@ -99,32 +99,32 @@ public:
     SDPolarizationHandler &operator=(const SDPolarizationHandler &other);
 
     // attach to a MS, the handledCols and row arguments are ignored here
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // reset internals given indicated row, use the same MS; just resets the id pointer
     void resetRow(const Record &row);
     
     // fill - a new row is added only when necessary
-    void fill(const Record &row, const Vector<Int> &stokes);
+    void fill(const Record &row, const Vector<int32_t> &stokes);
 
     // get the current polarization ID
-    Int polarizationId() {return rownr_p;}
+    int32_t polarizationId() {return rownr_p;}
 private:
-    RecordFieldPtr<Int> numCorrKey_p;
+    RecordFieldPtr<int32_t> numCorrKey_p;
     ColumnsIndex *index_p;
     MSPolarization *msPol_p;
     MSPolarizationColumns *msPolCols_p;
 
-    Int rownr_p;
+    int32_t rownr_p;
 
     // from a pre-existing MS
-    RORecordFieldPtr<Int> numCorrField_p;
-    RORecordFieldPtr<Array<Int> > corrTypeField_p, corrProductField_p;
-    RORecordFieldPtr<Bool> flagRowField_p;
+    RORecordFieldPtr<int32_t> numCorrField_p;
+    RORecordFieldPtr<Array<int32_t> > corrTypeField_p, corrProductField_p;
+    RORecordFieldPtr<bool> flagRowField_p;
 
     // decompose a stokes value into constituent parts for use
     // in making the CORR_PRODUCT matrix
-    void stokesKeys(Int stokesValue, Int &key1, Int &key2);
+    void stokesKeys(int32_t stokesValue, int32_t &key1, int32_t &key2);
 
     // cleanup everything
     void clearAll();
@@ -132,9 +132,9 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
-    void initRow(Vector<Bool> &handledCols, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Record &row);
 };
 
 

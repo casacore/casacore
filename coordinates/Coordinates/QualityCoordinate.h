@@ -62,7 +62,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // In this example we create a QualityCoordinate containing 'DATA'
 // and 'ERROR'
 // <srcblock>
-//   Vector<Int> newQuality(2);
+//   Vector<int32_t> newQuality(2);
 //   newQuality(0) = Quality::DATA;
 //   newQuality(1) = Quality::ERROR;
 //   qual = QualityCoordinate(newQuality);
@@ -80,7 +80,7 @@ public:
     // The length of whichQuality is the length of the axis, and the values
     // define which quality are in which axis value. Often the vector will be of
     // length 2 and will contain Quality::DATA, and ERROR.
-    explicit QualityCoordinate(const Vector<Int> &whichQuality);
+    explicit QualityCoordinate(const Vector<int32_t> &whichQuality);
 
     // Copy constructor (copy semantics)
     QualityCoordinate(const QualityCoordinate &other);
@@ -99,37 +99,37 @@ public:
 
     // Always returns 1.
     // <group>
-    virtual uInt nPixelAxes() const;
-    virtual uInt nWorldAxes() const;
+    virtual uint32_t nPixelAxes() const;
+    virtual uint32_t nWorldAxes() const;
     // </group>
 
-    // Convert a pixel to a world coordinate or vice versa. Returns True
-    // if the conversion succeeds, otherwise it returns False and method
+    // Convert a pixel to a world coordinate or vice versa. Returns true
+    // if the conversion succeeds, otherwise it returns false and method
     // <src>errorMessage</src> returns an error message.
     // The output vectors are appropriately resized before use.
-    // The Bool parameter in toWorld() is ignored as this coordinate does not
+    // The bool parameter in toWorld() is ignored as this coordinate does not
     // support a conversion layer frame.
     // <group>
-    virtual Bool toWorld(Vector<Double> &world, 
-                                const Vector<Double> &pixel, Bool=True) const;
-    virtual Bool toPixel(Vector<Double> &pixel, 
-                                const Vector<Double> &world) const;
+    virtual bool toWorld(Vector<double> &world, 
+                                const Vector<double> &pixel, bool=true) const;
+    virtual bool toPixel(Vector<double> &pixel, 
+                                const Vector<double> &world) const;
     // </group>
 
     // Interconvert between pixel and world as a Quality type.
-    // It returns False if no conversion could be done.
+    // It returns false if no conversion could be done.
     // <group>
-    Bool toPixel(Int &pixel, Quality::QualityTypes quality) const;
-    Bool toWorld(Quality::QualityTypes &quality, Int pixel) const;
+    bool toPixel(int32_t &pixel, Quality::QualityTypes quality) const;
+    bool toWorld(Quality::QualityTypes &quality, int32_t pixel) const;
     // </group>
 
-    // Interconvert between world stored as a Double and world stored as
+    // Interconvert between world stored as a double and world stored as
     // a Quality type.  Since these functions are static, any valid
     // Quality type can be used.  The second function returns
     // Quality::Undefined if world is illegal.
     // <group>
-    static Double toWorld (Quality::QualityTypes quality);
-    static Quality::QualityTypes toWorld (Double world);
+    static double toWorld (Quality::QualityTypes quality);
+    static Quality::QualityTypes toWorld (double world);
     // </group>
 
     // Make absolute coordinates relative and vice-versa. 
@@ -137,43 +137,43 @@ public:
     // same as absolute world coordinates.  Relative pixels do have meaning
     // and are implemented (rel = abs - refPix)
     // <group>
-    virtual void makePixelRelative (Vector<Double>& pixel) const;
-    virtual void makePixelAbsolute (Vector<Double>& pixel) const;
-    virtual void makeWorldRelative (Vector<Double>& world) const;
-    virtual void makeWorldAbsolute (Vector<Double>& world) const;
+    virtual void makePixelRelative (Vector<double>& pixel) const;
+    virtual void makePixelAbsolute (Vector<double>& pixel) const;
+    virtual void makeWorldRelative (Vector<double>& world) const;
+    virtual void makeWorldAbsolute (Vector<double>& world) const;
     // </group>
  
 
     // Get the Quality values (Quality::QualityType) that we constructed
     // with into a vector
-    Vector<Int> quality() const;
+    Vector<int32_t> quality() const;
 
     // Set a new vector of Quality values (a vector of Quality::QualityType)
-    void setQuality (const Vector<Int> &whichQuality);
+    void setQuality (const Vector<int32_t> &whichQuality);
    
     // Report the value of the requested attribute.
     // <group>
     virtual Vector<String> worldAxisNames() const;
-    virtual Vector<Double> referencePixel() const;
-    virtual Matrix<Double> linearTransform() const;
-    virtual Vector<Double> increment() const;
-    virtual Vector<Double> referenceValue() const;
+    virtual Vector<double> referencePixel() const;
+    virtual Matrix<double> linearTransform() const;
+    virtual Vector<double> increment() const;
+    virtual Vector<double> referenceValue() const;
     // </group>
 
     // Set the value of the requested attribute.  For the QualityCoordinate,
-    // these have no effect (always return True) except for setWorldAxisNames.
+    // these have no effect (always return true) except for setWorldAxisNames.
     // <group>
-    virtual Bool setWorldAxisNames(const Vector<String> &names);
-    virtual Bool setReferencePixel(const Vector<Double> &refPix);
-    virtual Bool setLinearTransform(const Matrix<Double> &xform);
-    virtual Bool setIncrement(const Vector<Double> &inc) ;
-    virtual Bool setReferenceValue(const Vector<Double> &refval) ;
+    virtual bool setWorldAxisNames(const Vector<String> &names);
+    virtual bool setReferencePixel(const Vector<double> &refPix);
+    virtual bool setLinearTransform(const Matrix<double> &xform);
+    virtual bool setIncrement(const Vector<double> &inc) ;
+    virtual bool setReferenceValue(const Vector<double> &refval) ;
     // </group>
 
     // The set function has no effect as the units must be empty for a QualityCoordinate
-    // Always returns True
+    // Always returns true
     // <group>
-    virtual Bool setWorldAxisUnits(const Vector<String> &units);
+    virtual bool setWorldAxisUnits(const Vector<String> &units);
     virtual Vector<String> worldAxisUnits() const;
     // </group>
 
@@ -181,13 +181,13 @@ public:
     // for  a lattice of the given shape (for this coordinate).
     // The implementation here gives world coordinates at the start 
     // and end of the Quality axis.
-    // The output vectors are resized.  Returns False if fails (and
+    // The output vectors are resized.  Returns false if fails (and
     // then <src>setDefaultWorldMixRanges</src> generates the ranges)
     // with a reason in <src>errorMessage()</src>.
     // The <src>setDefaultWorldMixRanges</src> function
     // gives you [-1e99->1e99]. 
     // <group>
-    virtual Bool setWorldMixRanges (const IPosition& shape);
+    virtual bool setWorldMixRanges (const IPosition& shape);
     virtual void setDefaultWorldMixRanges ();
     //</group>
 
@@ -203,27 +203,27 @@ public:
     // Thus, all other arguments to do with formatting and precision are ignored.
     virtual String format(String& units,
                           Coordinate::formatType format,
-                          Double worldValue,
-                          uInt worldAxis,
-                          Bool isAbsolute=True,
-                          Bool showAsAbsolute=True,
-                          Int precision = -1, Bool usePrecForMixed=False) const;
+                          double worldValue,
+                          uint32_t worldAxis,
+                          bool isAbsolute=true,
+                          bool showAsAbsolute=true,
+                          int32_t precision = -1, bool usePrecForMixed=false) const;
 
-    // Comparison function. Any private Double data members are compared    
+    // Comparison function. Any private double data members are compared    
     // with the specified fractional tolerance.  Don't compare on the specified     
-    // axes in the Coordinate.  If the comparison returns False,  method
+    // axes in the Coordinate.  If the comparison returns false,  method
     // errorMessage returns a message about why.
     // <group>
-    virtual Bool near(const Coordinate& other,  
-                      Double tol=1e-6) const;
-    virtual Bool near(const Coordinate& other,  
-                      const Vector<Int>& excludeAxes,
-                      Double tol=1e-6) const;
+    virtual bool near(const Coordinate& other,  
+                      double tol=1e-6) const;
+    virtual bool near(const Coordinate& other,  
+                      const Vector<int32_t>& excludeAxes,
+                      double tol=1e-6) const;
     // </group>
 
     // Save the QualityCoordinate into the supplied record using the supplied field name.
-    // The field must not exist, otherwise <src>False</src> is returned.
-    virtual Bool save(RecordInterface &container,
+    // The field must not exist, otherwise <src>false</src> is returned.
+    virtual bool save(RecordInterface &container,
 		    const String &fieldName) const;
 
     // Recover the QualityCoordinate from a record.
@@ -238,23 +238,23 @@ public:
 
 
     // Comparison only made for specified axes in this and other Coordinate
-    virtual Bool doNearPixel (const Coordinate& other,
-                              const Vector<Bool>&  thisAxes,
-                              const Vector<Bool>& otherAxes,
-                              Double tol=1.0e-6) const; 
+    virtual bool doNearPixel (const Coordinate& other,
+                              const Vector<bool>&  thisAxes,
+                              const Vector<bool>& otherAxes,
+                              double tol=1.0e-6) const; 
 
 private:
 
-    Bool toWorld(Double& world,  const Double pixel) const;
-    Bool toPixel(Double& pixel,  const Double world) const;
+    bool toWorld(double& world,  const double pixel) const;
+    bool toPixel(double& pixel,  const double world) const;
 //
-    Block<Int> values_p;
+    Block<int32_t> values_p;
 
     // Keep these for subimaging purposes.
-    Double crval_p, crpix_p, matrix_p, cdelt_p;
+    double crval_p, crpix_p, matrix_p, cdelt_p;
     String name_p;
     String unit_p;
-    Int nValues_p;
+    int32_t nValues_p;
 
     // Undefined and inaccessible
     QualityCoordinate();

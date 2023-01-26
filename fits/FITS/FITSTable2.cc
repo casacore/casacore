@@ -41,13 +41,13 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-uInt sizeofStringField(const RecordDesc &description, const Record &sizes,
-		       uInt whichField)
+uint32_t sizeofStringField(const RecordDesc &description, const Record &sizes,
+		       uint32_t whichField)
 {
-    Int size = FITSTableWriter::DefaultMaxStringSize;
+    int32_t size = FITSTableWriter::DefaultMaxStringSize;
     AlwaysAssert(description.type(whichField) == TpString, AipsError);
     String name = description.name(whichField);
-    Int which = sizes.fieldNumber(name);
+    int32_t which = sizes.fieldNumber(name);
     if (which >= 0) {
         sizes.get(which, size);
     }
@@ -58,31 +58,31 @@ uInt sizeofStringField(const RecordDesc &description, const Record &sizes,
 FITSTableWriter::FITSTableWriter(FitsOutput *file, 
 				 const RecordDesc &description,
 				 const Record &maxLengths,
-				 uInt nrows,
+				 uint32_t nrows,
 				 const Record &extraKeywords,
 				 const Record &units,
-				 Bool freeOutput,
+				 bool freeOutput,
 				 const Record &variableShapes)
   : delete_writer_p(freeOutput), writer_p(file), nrows_written_p(0), bintable_p(0),
     row_p(description), copiers_p(0)
 {
-    uInt nfields = description.nfields();
-    Int sizeInBytes = 0;
+    uint32_t nfields = description.nfields();
+    int32_t sizeInBytes = 0;
     FitsKeywordList columns;
-    uInt i;
-    uInt thisColumn = 1;
-    Block<Int> fieldMap(nfields,-1);
-    Block<Int> tdimMap(nfields,-1);
-    Block<Int> fieldSizes(nfields,0);
+    uint32_t i;
+    uint32_t thisColumn = 1;
+    Block<int32_t> fieldMap(nfields,-1);
+    Block<int32_t> tdimMap(nfields,-1);
+    Block<int32_t> fieldSizes(nfields,0);
     for (i=0; i < nfields; i++) {
       const char *comment = 0;
       if (description.comment(i) != "") {
 	  comment = description.comment(i).chars();
       }
-      Bool hasVariableShape = 
+      bool hasVariableShape = 
 	  (variableShapes.fieldNumber(description.name(i)) >= 0) &&
 	  (maxLengths.fieldNumber(description.name(i)) >= 0);
-      Int size = 1;
+      int32_t size = 1;
       String repeat = "1"; // Always write, even for scalars
       String code = "X";
       switch (description.type(i)) {
@@ -224,7 +224,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 
       case TpString:
 	  {
-	      uInt stringlen = sizeofStringField(description, maxLengths, i);
+	      uint32_t stringlen = sizeofStringField(description, maxLengths, i);
 	      sizeInBytes += stringlen;
 	      ostringstream buffer;
 	      buffer << stringlen;
@@ -246,7 +246,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
       if (shape.nelements() > 1 && !hasVariableShape) {
 	  ostringstream buffer;
 	  buffer << "(";
-	  for (uInt j=0; j<shape.nelements(); j++) {
+	  for (uint32_t j=0; j<shape.nelements(); j++) {
 	      buffer << shape(j);
 	      if (j != shape.nelements()-1) {buffer << ",";}
 	  }
@@ -292,10 +292,10 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
     kw.mk(FITS::BITPIX,8,"Character Information");
     kw.mk(FITS::NAXIS,2,"Two-dimensional table");
     kw.mk(1,FITS::NAXIS,sizeInBytes,"Number of bytes per row");
-    kw.mk(2,FITS::NAXIS,Int(nrows),"Number of rows");
+    kw.mk(2,FITS::NAXIS,int32_t(nrows),"Number of rows");
     kw.mk(FITS::PCOUNT,0,"No random parameters");
     kw.mk(FITS::GCOUNT,1,"Only one group");
-    kw.mk(FITS::TFIELDS,Int(thisColumn-1),"Number of columns");
+    kw.mk(FITS::TFIELDS,int32_t(thisColumn-1),"Number of columns");
     kw.spaces();
     // The following are too specific.
     //    kw.mk(FITS::EXTNAME,"SINGLE DISH","Single Dish FITS convention");
@@ -303,7 +303,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
     kw.spaces();
 
     // Write the users keywords next
-    uInt nkeys = extraKeywords.nfields();
+    uint32_t nkeys = extraKeywords.nfields();
     for (i=0; i<nkeys; i++) {
         String name = extraKeywords.name(i);
 	const char *comment = 0;
@@ -313,28 +313,28 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	switch (extraKeywords.type(i)) {
 	case TpBool:
 	    {
-	        Bool val;
+	        bool val;
 		extraKeywords.get(i, val);
 		kw.mk(name.chars(), val, comment);
 	  }
 	  break;
 	case TpInt:
 	    {
-	        Int val;
+	        int32_t val;
 		extraKeywords.get(i, val);
 		kw.mk(name.chars(), val, comment);
 	  }
 	  break;
 	case TpFloat:
 	    {
-	        Float val;
+	        float val;
 		extraKeywords.get(i, val);
 		kw.mk(name.chars(), val, comment);
 	  }
 	  break;
 	case TpDouble:
 	    {
-	        Double val;
+	        double val;
 		extraKeywords.get(i, val);
 		kw.mk(name.chars(), val, comment);
 	  }
@@ -386,55 +386,55 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
     // for this to avoid replicating code.
     copiers_p.resize(nfields);
     for (i=0; i<nfields; i++) {
-	Int whichField = fieldMap[i];
-	Int whichTdim = tdimMap[i];
+	int32_t whichField = fieldMap[i];
+	int32_t whichTdim = tdimMap[i];
         switch (description.type(i)) {
 	case TpBool:
 	  {
-	    RORecordFieldPtr<Bool> *rptr = new RORecordFieldPtr<Bool>(row_p, i);
+	    RORecordFieldPtr<bool> *rptr = new RORecordFieldPtr<bool>(row_p, i);
 	    FitsField<FitsLogical> *fptr = new FitsField<FitsLogical>;
 	    bintable_p->bind(whichField, *fptr);
-	    copiers_p[i] = new ScalarFITSFieldCopier<Bool,FitsLogical>(rptr, fptr);
+	    copiers_p[i] = new ScalarFITSFieldCopier<bool,FitsLogical>(rptr, fptr);
 	  }
 	    break;
 	case TpUChar:
 	  {
-	    RORecordFieldPtr<uChar> *rptr = new RORecordFieldPtr<uChar>(row_p, i);
-	    FitsField<uChar> *fptr = new FitsField<uChar>;
+	    RORecordFieldPtr<unsigned char> *rptr = new RORecordFieldPtr<unsigned char>(row_p, i);
+	    FitsField<unsigned char> *fptr = new FitsField<unsigned char>;
 	    bintable_p->bind(whichField, *fptr);
-	    copiers_p[i] = new ScalarFITSFieldCopier<uChar,uChar>(rptr, fptr);
+	    copiers_p[i] = new ScalarFITSFieldCopier<unsigned char,unsigned char>(rptr, fptr);
 	  }
 	    break;
 	case TpShort:
 	  {
-	    RORecordFieldPtr<Short> *rptr = new RORecordFieldPtr<Short>(row_p, i);
-	    FitsField<Short> *fptr = new FitsField<Short>;
+	    RORecordFieldPtr<int16_t> *rptr = new RORecordFieldPtr<int16_t>(row_p, i);
+	    FitsField<int16_t> *fptr = new FitsField<int16_t>;
 	    bintable_p->bind(whichField, *fptr);
-	    copiers_p[i] = new ScalarFITSFieldCopier<Short,Short>(rptr, fptr);
+	    copiers_p[i] = new ScalarFITSFieldCopier<int16_t,int16_t>(rptr, fptr);
 	  }
 	    break;
 	case TpInt:
 	  {
-	    RORecordFieldPtr<Int> *rptr = new RORecordFieldPtr<Int>(row_p, i);
+	    RORecordFieldPtr<int32_t> *rptr = new RORecordFieldPtr<int32_t>(row_p, i);
 	    FitsField<FitsLong> *fptr = new FitsField<FitsLong>;
 	    bintable_p->bind(whichField, *fptr);
-	    copiers_p[i] = new ScalarFITSFieldCopier<Int,FitsLong>(rptr, fptr);
+	    copiers_p[i] = new ScalarFITSFieldCopier<int32_t,FitsLong>(rptr, fptr);
 	  }
 	    break;
 	case TpFloat:
 	  {
-	    RORecordFieldPtr<Float> *rptr = new RORecordFieldPtr<Float>(row_p, i);
+	    RORecordFieldPtr<float> *rptr = new RORecordFieldPtr<float>(row_p, i);
 	    FitsField<float> *fptr = new FitsField<float>;
 	    bintable_p->bind(whichField, *fptr);
-	    copiers_p[i] = new ScalarFITSFieldCopier<Float,float>(rptr, fptr);
+	    copiers_p[i] = new ScalarFITSFieldCopier<float,float>(rptr, fptr);
 	  }
 	    break;
 	case TpDouble:
 	  {
-	    RORecordFieldPtr<Double> *rptr = new RORecordFieldPtr<Double>(row_p, i);
+	    RORecordFieldPtr<double> *rptr = new RORecordFieldPtr<double>(row_p, i);
 	    FitsField<double> *fptr = new FitsField<double>;
 	    bintable_p->bind(whichField, *fptr);
-	    copiers_p[i] = new ScalarFITSFieldCopier<Double,double>(rptr, fptr);
+	    copiers_p[i] = new ScalarFITSFieldCopier<double,double>(rptr, fptr);
 	  }
 	    break;
 	case TpComplex:
@@ -465,7 +465,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	    break;
 	case TpArrayBool:
 	  {
-	    RORecordFieldPtr<Array<Bool> > *rptr = new RORecordFieldPtr<Array<Bool> >(row_p, i);
+	    RORecordFieldPtr<Array<bool> > *rptr = new RORecordFieldPtr<Array<bool> >(row_p, i);
 	    FitsField<FitsLogical> *fptr = 
 	      new FitsField<FitsLogical>(fieldSizes[i]);
 	    bintable_p->bind(whichField, *fptr);
@@ -473,47 +473,47 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 		FitsField<char> *tdirptr =
 		    new FitsField<char>(variableShapes.asString(description.name(i)).length());
 		bintable_p->bind(whichTdim, *tdirptr);
-		copiers_p[i] = new VariableArrayFITSFieldCopier<Bool,FitsLogical> (rptr, fptr, tdirptr);
+		copiers_p[i] = new VariableArrayFITSFieldCopier<bool,FitsLogical> (rptr, fptr, tdirptr);
 	    } else {
-		copiers_p[i] = new ArrayFITSFieldCopier<Bool,FitsLogical> (rptr, fptr);
+		copiers_p[i] = new ArrayFITSFieldCopier<bool,FitsLogical> (rptr, fptr);
 	    }
 	  }
 	    break;
 	case TpArrayUChar:
 	  {
-	    RORecordFieldPtr<Array<uChar> > *rptr = new RORecordFieldPtr<Array<uChar> >(row_p, i);
-	    FitsField<uChar> *fptr = 
-	      new FitsField<uChar>(fieldSizes[i]);
+	    RORecordFieldPtr<Array<unsigned char> > *rptr = new RORecordFieldPtr<Array<unsigned char> >(row_p, i);
+	    FitsField<unsigned char> *fptr = 
+	      new FitsField<unsigned char>(fieldSizes[i]);
 	    bintable_p->bind(whichField, *fptr);
 	    if (whichTdim >= 0) {
 		FitsField<char> *tdirptr =
 		    new FitsField<char>(variableShapes.asString(description.name(i)).length());
 		bintable_p->bind(whichTdim, *tdirptr);
-		copiers_p[i] = new VariableArrayFITSFieldCopier<uChar,uChar> (rptr, fptr, tdirptr);
+		copiers_p[i] = new VariableArrayFITSFieldCopier<unsigned char,unsigned char> (rptr, fptr, tdirptr);
 	    } else {
-		copiers_p[i] = new ArrayFITSFieldCopier<uChar,uChar> (rptr, fptr);
+		copiers_p[i] = new ArrayFITSFieldCopier<unsigned char,unsigned char> (rptr, fptr);
 	    }
 	  }
 	    break;
 	case TpArrayShort:
 	  {
-	    RORecordFieldPtr<Array<Short> > *rptr = new RORecordFieldPtr<Array<Short> >(row_p, i);
-	    FitsField<Short> *fptr = 
-	      new FitsField<Short>(fieldSizes[i]);
+	    RORecordFieldPtr<Array<int16_t> > *rptr = new RORecordFieldPtr<Array<int16_t> >(row_p, i);
+	    FitsField<int16_t> *fptr = 
+	      new FitsField<int16_t>(fieldSizes[i]);
 	    bintable_p->bind(whichField, *fptr);
 	    if (whichTdim >= 0) {
 		FitsField<char> *tdirptr =
 		    new FitsField<char>(variableShapes.asString(description.name(i)).length());
 		bintable_p->bind(whichTdim, *tdirptr);
-		copiers_p[i] = new VariableArrayFITSFieldCopier<Short,Short> (rptr, fptr, tdirptr);
+		copiers_p[i] = new VariableArrayFITSFieldCopier<int16_t,int16_t> (rptr, fptr, tdirptr);
 	    } else {
-		copiers_p[i] = new ArrayFITSFieldCopier<Short,Short> (rptr, fptr);
+		copiers_p[i] = new ArrayFITSFieldCopier<int16_t,int16_t> (rptr, fptr);
 	    }
 	  }
 	    break;
 	case TpArrayInt:
 	  {
-	    RORecordFieldPtr<Array<Int> > *rptr = new RORecordFieldPtr<Array<Int> >(row_p, i);
+	    RORecordFieldPtr<Array<int32_t> > *rptr = new RORecordFieldPtr<Array<int32_t> >(row_p, i);
 	    FitsField<FitsLong> *fptr = 
 	      new FitsField<FitsLong>(fieldSizes[i]);
 	    bintable_p->bind(whichField, *fptr);
@@ -521,41 +521,41 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 		FitsField<char> *tdirptr =
 		    new FitsField<char>(variableShapes.asString(description.name(i)).length());
 		bintable_p->bind(whichTdim, *tdirptr);
-		copiers_p[i] = new VariableArrayFITSFieldCopier<Int,FitsLong> (rptr, fptr, tdirptr);
+		copiers_p[i] = new VariableArrayFITSFieldCopier<int32_t,FitsLong> (rptr, fptr, tdirptr);
 	    } else {
-		copiers_p[i] = new ArrayFITSFieldCopier<Int,FitsLong> (rptr, fptr);
+		copiers_p[i] = new ArrayFITSFieldCopier<int32_t,FitsLong> (rptr, fptr);
 	    }
 	  }
 	    break;
 	case TpArrayFloat:
 	  {
-	    RORecordFieldPtr<Array<Float> > *rptr = new RORecordFieldPtr<Array<Float> >(row_p, i);
-	    FitsField<Float> *fptr = 
-	      new FitsField<Float>(fieldSizes[i]);
+	    RORecordFieldPtr<Array<float> > *rptr = new RORecordFieldPtr<Array<float> >(row_p, i);
+	    FitsField<float> *fptr = 
+	      new FitsField<float>(fieldSizes[i]);
 	    bintable_p->bind(whichField, *fptr);
 	    if (whichTdim >= 0) {
 		FitsField<char> *tdirptr =
 		    new FitsField<char>(variableShapes.asString(description.name(i)).length());
 		bintable_p->bind(whichTdim, *tdirptr);
-		copiers_p[i] = new VariableArrayFITSFieldCopier<Float,Float> (rptr, fptr, tdirptr);
+		copiers_p[i] = new VariableArrayFITSFieldCopier<float,float> (rptr, fptr, tdirptr);
 	    } else {
-		copiers_p[i] = new ArrayFITSFieldCopier<Float,Float> (rptr, fptr);
+		copiers_p[i] = new ArrayFITSFieldCopier<float,float> (rptr, fptr);
 	    }
 	  }
 	    break;
 	case TpArrayDouble:
 	  {
-	    RORecordFieldPtr<Array<Double> > *rptr = new RORecordFieldPtr<Array<Double> >(row_p, i);
-	    FitsField<Double> *fptr = 
-	      new FitsField<Double>(fieldSizes[i]);
+	    RORecordFieldPtr<Array<double> > *rptr = new RORecordFieldPtr<Array<double> >(row_p, i);
+	    FitsField<double> *fptr = 
+	      new FitsField<double>(fieldSizes[i]);
 	    bintable_p->bind(whichField, *fptr);
 	    if (whichTdim >= 0) {
 		FitsField<char> *tdirptr =
 		    new FitsField<char>(variableShapes.asString(description.name(i)).length());
 		bintable_p->bind(whichTdim, *tdirptr);
-		copiers_p[i] = new VariableArrayFITSFieldCopier<Double,Double> (rptr, fptr, tdirptr);
+		copiers_p[i] = new VariableArrayFITSFieldCopier<double,double> (rptr, fptr, tdirptr);
 	    } else {
-		copiers_p[i] = new ArrayFITSFieldCopier<Double,Double> (rptr, fptr);
+		copiers_p[i] = new ArrayFITSFieldCopier<double,double> (rptr, fptr);
 	    }
 	  }
 	    break;
@@ -603,8 +603,8 @@ FITSTableWriter::~FITSTableWriter()
     if (delete_writer_p) {
         delete writer_p;
     }
-    uInt nfields = row_p.description().nfields();
-    for (uInt i=0; i<nfields; i++) {
+    uint32_t nfields = row_p.description().nfields();
+    for (uint32_t i=0; i<nfields; i++) {
         delete copiers_p[i];
     }
     copiers_p.resize(0);
@@ -613,9 +613,9 @@ FITSTableWriter::~FITSTableWriter()
 
 void FITSTableWriter::write()
 {
-    uInt nfields = row_p.description().nfields();
+    uint32_t nfields = row_p.description().nfields();
     bintable_p->set_next(1);
-    for (uInt i=0; i<nfields; i++) {
+    for (uint32_t i=0; i<nfields; i++) {
         copiers_p[i]->copyToFITS();
     }
     bintable_p->write(*writer_p);
@@ -627,10 +627,10 @@ FitsOutput *FITSTableWriter::makeWriter(const String &fileName)
     FitsOutput *file = new FitsOutput(name, FITS::Disk);
     FitsKeywordList st;
 
-    st.mk(FITS::SIMPLE,True,"Standard FITS format");
+    st.mk(FITS::SIMPLE,true,"Standard FITS format");
     st.mk(FITS::BITPIX,8,"Character Information");
     st.mk(FITS::NAXIS,0,"No image data array present");
-    st.mk(FITS::EXTEND,True,"Extension exists");
+    st.mk(FITS::EXTEND,true,"Extension exists");
     st.spaces();
     st.comment("The first data is in the HDU following this one");
     st.spaces();

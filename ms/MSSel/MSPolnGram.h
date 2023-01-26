@@ -71,9 +71,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // The top level interface to the parser.
   int msPolnGramParseCommand (const MeasurementSet *ms, const String& command,
 			      TableExprNode& node,
-			      Vector<Int>& selectedDDIDs, 
-			      std::map<Int, Vector<Int> >& selectedPolnMap,
-			      std::map<Int, Vector<Vector<Int> > >& selectedSetupMap
+			      Vector<int32_t>& selectedDDIDs, 
+			      std::map<int32_t, Vector<int32_t> >& selectedPolnMap,
+			      std::map<int32_t, Vector<Vector<int32_t> > >& selectedSetupMap
 			      );
   
   // The error handler.

@@ -67,14 +67,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSFeedGram = 0;
-  static Int                   posMSFeedGram = 0;
+  static int32_t                   posMSFeedGram = 0;
 
 //# Parse the command.
 //# Do a yyrestart(yyin) first to make the flex scanner reentrant.
   TableExprNode baseMSFeedGramParseCommand(MSFeedParse* parser, const String& command,
-					      Vector<Int>& selectedFeeds1,
-					      Vector<Int>& selectedFeeds2,
-					      Matrix<Int>& selectedFeedPairs)
+					      Vector<int32_t>& selectedFeeds1,
+					      Vector<int32_t>& selectedFeeds2,
+					      Matrix<int32_t>& selectedFeedPairs)
   {
     try 
       {
@@ -104,9 +104,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 					   TableExprNode& col1TEN,
 					   TableExprNode& col2TEN,
                        const String& command, 
-                       Vector<Int>& selectedFeeds1,
-                       Vector<Int>& selectedFeeds2,
-                       Matrix<Int>& selectedFeedPairs) 
+                       Vector<int32_t>& selectedFeeds1,
+                       Vector<int32_t>& selectedFeeds2,
+                       Matrix<int32_t>& selectedFeedPairs) 
   {
 
     TableExprNode feedTEN;
@@ -127,9 +127,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprNode msFeedGramParseCommand (MSFeedParse* thisParser,
                                            const String& command, 
-                                           Vector<Int>& selectedFeeds1,
-                                           Vector<Int>& selectedFeeds2,
-                                           Matrix<Int>& selectedFeedPairs) 
+                                           Vector<int32_t>& selectedFeeds1,
+                                           Vector<int32_t>& selectedFeeds2,
+                                           Matrix<int32_t>& selectedFeedPairs) 
   {
     TableExprNode feedTEN;
     try
@@ -149,9 +149,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TableExprNode msFeedGramParseCommand (const MeasurementSet* ms,
                                            const String& command, 
-                                           Vector<Int>& selectedFeeds1,
-                                           Vector<Int>& selectedFeeds2,
-                                           Matrix<Int>& selectedFeedPairs) 
+                                           Vector<int32_t>& selectedFeeds1,
+                                           Vector<int32_t>& selectedFeeds2,
+                                           Matrix<int32_t>& selectedFeedPairs) 
   {
     TableExprNode feedTEN;
     TableExprNode col1AsTEN = ms->col(ms->columnName(MS::FEED1)),
@@ -173,7 +173,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //# Give the string position.
-  Int& msFeedGramPosition()
+  int32_t& msFeedGramPosition()
   {
     return posMSFeedGram;
   }

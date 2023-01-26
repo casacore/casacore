@@ -49,7 +49,7 @@ template<class T>
 CurvedLattice2D<T>::CurvedLattice2D (const MaskedLattice<T>& lattice,
 				     const CLInterpolator2D<T>& interp,
 				     const PixelCurve1D& curve,
-				     uInt axis1, uInt axis2, Int curveAxis)
+				     uint32_t axis1, uint32_t axis2, int32_t curveAxis)
 : itsLatticePtr   (lattice.cloneML()),
   itsInterpolator (interp.clone()),
   itsCurve        (curve)
@@ -104,9 +104,9 @@ MaskedLattice<T>* CurvedLattice2D<T>::cloneML() const
 }
 
 template<class T>
-void CurvedLattice2D<T>::makeMapping (uInt axis1, uInt axis2, Int curveAxis)
+void CurvedLattice2D<T>::makeMapping (uint32_t axis1, uint32_t axis2, int32_t curveAxis)
 {
-  uInt ndim = itsLatticePtr->ndim();
+  uint32_t ndim = itsLatticePtr->ndim();
   if (axis1 >= ndim  ||  axis2 >= ndim  ||  axis1 == axis2) {
     throw AipsError ("CurvedLattice2D - invalid axis1 or axis2 given");
   }
@@ -121,8 +121,8 @@ void CurvedLattice2D<T>::makeMapping (uInt axis1, uInt axis2, Int curveAxis)
     throw AipsError ("CurvedLattice2D - invalid curveAxis given");
   }
   IPosition old2new(ndim, -1);
-  uInt nr=0;
-  for (uInt i=0; i<ndim; i++) {
+  uint32_t nr=0;
+  for (uint32_t i=0; i<ndim; i++) {
     if (nr == itsCurveAxis) nr++;
     if (i != axis1  &&  i != axis2) {
       old2new[i] = nr++;
@@ -134,25 +134,25 @@ void CurvedLattice2D<T>::makeMapping (uInt axis1, uInt axis2, Int curveAxis)
 }
 
 template<class T>
-Bool CurvedLattice2D<T>::isMasked() const
+bool CurvedLattice2D<T>::isMasked() const
 {
   return itsLatticePtr->isMasked();
 }
 
 template<class T>
-Bool CurvedLattice2D<T>::isPaged() const
+bool CurvedLattice2D<T>::isPaged() const
 {
   return itsLatticePtr->isPaged();
 }
 
 template<class T>
-Bool CurvedLattice2D<T>::isWritable() const
+bool CurvedLattice2D<T>::isWritable() const
 {
-  return False;
+  return false;
 }
 
 template<class T>
-Bool CurvedLattice2D<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool CurvedLattice2D<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return itsLatticePtr->lock (type, nattempts);
 }
@@ -162,7 +162,7 @@ void CurvedLattice2D<T>::unlock()
   itsLatticePtr->unlock();
 }
 template<class T>
-Bool CurvedLattice2D<T>::hasLock (FileLocker::LockType type) const
+bool CurvedLattice2D<T>::hasLock (FileLocker::LockType type) const
 {
   return itsLatticePtr->hasLock (type);
 }
@@ -207,17 +207,17 @@ IPosition CurvedLattice2D<T>::shape() const
 }
 
 template<class T>
-String CurvedLattice2D<T>::name (Bool stripPath) const
+String CurvedLattice2D<T>::name (bool stripPath) const
 {
   return itsLatticePtr->name(stripPath);
 }
 
 template<class T>
-Bool CurvedLattice2D<T>::doGetSlice (Array<T>& buffer,
+bool CurvedLattice2D<T>::doGetSlice (Array<T>& buffer,
 				     const Slicer& section)
 {
   // Convert the curve pixel numbers to lattice pixel numbers.
-  Vector<Float> x,y;
+  Vector<float> x,y;
   itsCurve.getPixelCoord (x, y,
 			  section.start()[itsCurveAxis],
 			  section.end()[itsCurveAxis],
@@ -225,7 +225,7 @@ Bool CurvedLattice2D<T>::doGetSlice (Array<T>& buffer,
   // Let the interpolator get all pixels for the given section.
   buffer.resize (section.length());
   itsInterpolator->getData (buffer, x, y, section);
-  return False;
+  return false;
 }
 
 template<class T>
@@ -238,13 +238,13 @@ void CurvedLattice2D<T>::doPutSlice (const Array<T>&,
 
 
 template<class T>
-uInt CurvedLattice2D<T>::advisedMaxPixels() const
+uint32_t CurvedLattice2D<T>::advisedMaxPixels() const
 {
   return itsLatticePtr->advisedMaxPixels();
 }
 
 template<class T>
-IPosition CurvedLattice2D<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition CurvedLattice2D<T>::doNiceCursorShape (uint32_t maxPixels) const
 {
   IPosition cursorShape (itsLatticePtr->niceCursorShape (maxPixels));
   cursorShape[itsAxis1] = 1;
@@ -253,14 +253,14 @@ IPosition CurvedLattice2D<T>::doNiceCursorShape (uInt maxPixels) const
 }
 
 template<class T>
-Bool CurvedLattice2D<T>::doGetMaskSlice (Array<Bool>& buffer,
+bool CurvedLattice2D<T>::doGetMaskSlice (Array<bool>& buffer,
 					 const Slicer& section)
 {
   buffer.resize (section.length());
   // Evaluate only if masked.
   if (itsLatticePtr->isMasked()) {
     // Convert the curve pixel numbers to lattice pixel numbers.
-    Vector<Float> x,y;
+    Vector<float> x,y;
     itsCurve.getPixelCoord (x, y,
 			    section.start()[itsCurveAxis],
 			    section.end()[itsCurveAxis],
@@ -268,15 +268,15 @@ Bool CurvedLattice2D<T>::doGetMaskSlice (Array<Bool>& buffer,
     // Let the interpolator get all mask pixels for the given section.
     itsInterpolator->getMask (buffer, x, y, section);
   } else {
-    // Not masked, so we can simply fill the buffer with True values.
-    buffer = True;
+    // Not masked, so we can simply fill the buffer with true values.
+    buffer = true;
   }
-  return False;
+  return false;
 }
 
 
 template <class T>
-Bool CurvedLattice2D<T>::ok() const
+bool CurvedLattice2D<T>::ok() const
 {
   return itsLatticePtr->ok();
 }

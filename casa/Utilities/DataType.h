@@ -49,7 +49,7 @@ class Record;
 // used in the <linkto module="Tables:description">table</linkto> system, some
 // use of it is made elsewhere. Besides the enum
 // itself, <src>operator<<</src> is defined for DataType; it prints a DataType
-// in the form <src>DataType=Bool</src>.
+// in the form <src>DataType=bool</src>.
 //
 // Also, global functions are written which take a "const pointer to type" and
 // return its DataType (TpOther if unknown). These functions can occasionally
@@ -69,7 +69,7 @@ class Record;
 //
 // <note role=tip>
 // Data types <src>long</src> and <src>unsigned long</src> are not
-// possible.  The types <src>Int</src> and <src>uInt</src> are always
+// possible.  The types <src>int32_t</src> and <src>uint32_t</src> are always
 // 4 bytes, so <src>long</src> is not needed and may only cause
 // confusion.
 // </note>
@@ -80,7 +80,7 @@ class Record;
 // The simplest uses of the DataType enumeration and functions are fairly 
 // obvious, for example:
 // <srcblock>
-//    Double d;
+//    double d;
 //    DataType type = whatType(&d);
 //    cout << type << endl;
 //    switch(type) {
@@ -95,8 +95,8 @@ class Record;
 // <srcblock>
 // class IntFloatContainer {
 // public:
-//     Int intval;
-//     Float floatval;
+//     int32_t intval;
+//     float floatval;
 //     void *ptr(DataType type) {
 //         if (type == whatType(&intval))
 //             return &intval;
@@ -156,7 +156,7 @@ enum DataType {TpBool,    TpChar,     TpUChar,
               };
 
 
-// Write a formated representation (e.g., Type=Bool) of the given data type.
+// Write a formated representation (e.g., Type=bool) of the given data type.
 ostream &operator<<(ostream &os, DataType type);
 
 // These (specialized) functions return the DataType that corresponds
@@ -170,36 +170,36 @@ inline DataType whatType() { return TpOther; }
   template<> inline DataType whatType<SPECIALIZED_TYPE>() { return RETURN_TYPE; }
   
 DEFINE_WHATTYPE(void, TpOther)
-DEFINE_WHATTYPE(Bool, TpBool)
-DEFINE_WHATTYPE(Char, TpChar)
-DEFINE_WHATTYPE(uChar, TpUChar)
-DEFINE_WHATTYPE(Short, TpShort)
-DEFINE_WHATTYPE(uShort, TpUShort)
-DEFINE_WHATTYPE(Int, TpInt)
-DEFINE_WHATTYPE(uInt, TpUInt)
-DEFINE_WHATTYPE(Int64, TpInt64)
+DEFINE_WHATTYPE(bool, TpBool)
+DEFINE_WHATTYPE(char, TpChar)
+DEFINE_WHATTYPE(unsigned char, TpUChar)
+DEFINE_WHATTYPE(int16_t, TpShort)
+DEFINE_WHATTYPE(uint16_t, TpUShort)
+DEFINE_WHATTYPE(int32_t, TpInt)
+DEFINE_WHATTYPE(uint32_t, TpUInt)
+DEFINE_WHATTYPE(int64_t, TpInt64)
 DEFINE_WHATTYPE(float, TpFloat)
 DEFINE_WHATTYPE(double, TpDouble)
 DEFINE_WHATTYPE(Complex, TpComplex)
 DEFINE_WHATTYPE(DComplex, TpDComplex)
 DEFINE_WHATTYPE(String, TpString)
 DEFINE_WHATTYPE(Table, TpTable)
-DEFINE_WHATTYPE(Array<Bool>, TpArrayBool)
-DEFINE_WHATTYPE(Array<Char>, TpArrayChar)
-DEFINE_WHATTYPE(Array<uChar>, TpArrayUChar)
-DEFINE_WHATTYPE(Array<Short>, TpArrayShort)
-DEFINE_WHATTYPE(Array<uShort>, TpArrayUShort)
-DEFINE_WHATTYPE(Array<Int>, TpArrayInt)
-DEFINE_WHATTYPE(Array<uInt>, TpArrayUInt)
-DEFINE_WHATTYPE(Array<Int64>, TpArrayInt64)
+DEFINE_WHATTYPE(Array<bool>, TpArrayBool)
+DEFINE_WHATTYPE(Array<char>, TpArrayChar)
+DEFINE_WHATTYPE(Array<unsigned char>, TpArrayUChar)
+DEFINE_WHATTYPE(Array<int16_t>, TpArrayShort)
+DEFINE_WHATTYPE(Array<uint16_t>, TpArrayUShort)
+DEFINE_WHATTYPE(Array<int32_t>, TpArrayInt)
+DEFINE_WHATTYPE(Array<uint32_t>, TpArrayUInt)
+DEFINE_WHATTYPE(Array<int64_t>, TpArrayInt64)
 DEFINE_WHATTYPE(Array<float>, TpArrayFloat)
 DEFINE_WHATTYPE(Array<double>, TpArrayDouble)
 DEFINE_WHATTYPE(Array<Complex>, TpArrayComplex)
 DEFINE_WHATTYPE(Array<DComplex>, TpArrayDComplex)
 DEFINE_WHATTYPE(Array<String>, TpArrayString)
 DEFINE_WHATTYPE(Record, TpRecord)
-DEFINE_WHATTYPE(Quantum<Double>, TpQuantity)
-DEFINE_WHATTYPE(Array<Quantum<Double>>, TpArrayQuantity)
+DEFINE_WHATTYPE(Quantum<double>, TpQuantity)
+DEFINE_WHATTYPE(Array<Quantum<double>>, TpArrayQuantity)
 
 #undef DEFINE_WHATTYPE
 
@@ -218,21 +218,21 @@ DataType asArray(DataType type);
 // an array or scalar value. Note that TpTable, TpRecord, and TpOther are neither
 // scalar nor array types.
 // <group>
-Bool isScalar(DataType type);
-Bool isArray(DataType type);
-Bool isScalarFun(DataType type); //{return isScalar(type);}
+bool isScalar(DataType type);
+bool isArray(DataType type);
+bool isScalarFun(DataType type); //{return isScalar(type);}
 // </group>
 
 // It is sometimes useful to discover if a DataType represents a real 
-// numeric value (i.e., can it be cast to a Double?) This returns True
+// numeric value (i.e., can it be cast to a double?) This returns true
 // for both real scalar and array type.
-Bool isReal(DataType type);
+bool isReal(DataType type);
 
-// Returns True for Complex or DComplex scalar or array types
-Bool isComplex(DataType type);
+// Returns true for Complex or DComplex scalar or array types
+bool isComplex(DataType type);
 
-// Returns True if the type is either Real or Complex/DComplex
-Bool isNumeric(DataType type);
+// Returns true if the type is either Real or Complex/DComplex
+bool isNumeric(DataType type);
 
 // </group>
 

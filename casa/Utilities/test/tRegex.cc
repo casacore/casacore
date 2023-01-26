@@ -135,7 +135,7 @@ void testIO()
 
 void testSearch()
 {
-  Int matchlen;
+  int32_t matchlen;
   Regex exp1("abc");
   Regex exp2("(abc)+");
   AlwaysAssertExit (exp1.search("12abc345", 8, matchlen) == 2);

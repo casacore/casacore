@@ -69,15 +69,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // In the following example a second order polynomial is built from 3 separate
 // polynomials.
 // <srcblock>
-// Polynomial<Double> constant(0); 
-// Polynomial<Double> linear(1); 
-// Polynomial<Double> square(2);
+// Polynomial<double> constant(0); 
+// Polynomial<double> linear(1); 
+// Polynomial<double> square(2);
 // 
 // constant.setCoefficient(0, 1.0);   // 1
 // linear.setCoefficient(1, 1.0);     // x
 // square[2] = 1.0;     // x^2
 // 
-// CombiParam<Double> combination;
+// CombiParam<double> combination;
 // 
 // // form function, e0 + e1*x + e2*x^2
 // combination.addFunction(constant);
@@ -115,10 +115,10 @@ public:
   // Make this object a (deep) copy of other.
   // <group>
   CombiParam(const CombiParam<T> &other);
-  CombiParam(const CombiParam<T> &other, Bool) :
+  CombiParam(const CombiParam<T> &other, bool) :
     Function<T>(other), ndim_p(other.ndim_p),
     functionPtr_p(other.functionPtr_p.nelements()) { 
-    for (uInt i=0; i<functionPtr_p.nelements(); ++i) {
+    for (uint32_t i=0; i<functionPtr_p.nelements(); ++i) {
       functionPtr_p[i] = (*(other.functionPtr_p[i])).clone();
     }
   }
@@ -126,15 +126,15 @@ public:
     CombiParam(const CombiParam<W> &other) :
     Function<T>(other), ndim_p(other.ndim()),
     functionPtr_p(other.nFunctions()) { 
-    for (uInt i=0; i<nFunctions(); ++i) {
+    for (uint32_t i=0; i<nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneAD();
     }
   }
   template <class W>
-    CombiParam(const CombiParam<W> &other, Bool) :
+    CombiParam(const CombiParam<W> &other, bool) :
     Function<T>(other), ndim_p(other.ndim()),
     functionPtr_p(other.nFunctions()) { 
-    for (uInt i=0; i<nFunctions(); ++i) {
+    for (uint32_t i=0; i<nFunctions(); ++i) {
       functionPtr_p[i] = other.function(i).cloneNonAD();
     }
   }
@@ -155,30 +155,30 @@ public:
   // as the first one.  Returns the (zero relative) number (<src>i</src>)
   // of the function just added.
   // The default initial parameter value (<src>a(i)</src>) is
-  // initialized to 1. The parameter mask is set <src>True</src>.
-  uInt addFunction(const Function<T> &newFunction);
+  // initialized to 1. The parameter mask is set <src>true</src>.
+  uint32_t addFunction(const Function<T> &newFunction);
 
   // Return the total number of functions.  The number is equal to the
   // number of functions that have been added.  
-  uInt nFunctions() const { return nparameters(); }
+  uint32_t nFunctions() const { return nparameters(); }
 
   // Return a reference to a specific Function in the combination.
   // <group>
-  const Function<T> &function(uInt which) const {
+  const Function<T> &function(uint32_t which) const {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]); }
-  const Function<T> &function(uInt which) {
+  const Function<T> &function(uint32_t which) {
     DebugAssert(nFunctions() > which, AipsError);
     return *(functionPtr_p[which]); }
   // </group>
 
   // Returns the dimension of functions in the linear combination
-  virtual uInt ndim() const { return ndim_p; }
+  virtual uint32_t ndim() const { return ndim_p; }
 
 protected:
   //# Data
   // Number of dimensions of underlying functions
-  uInt ndim_p;
+  uint32_t ndim_p;
   
   // Pointer to each added function
   PtrBlock<Function<T> *> functionPtr_p;

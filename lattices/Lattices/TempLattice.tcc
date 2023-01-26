@@ -60,19 +60,19 @@ void TempLattice<T>::reopen()
 }
 
 template<class T>
-Bool TempLattice<T>::isPaged() const
+bool TempLattice<T>::isPaged() const
 {
   return itsImpl->isPaged();
 }
 
 template <class T>
-Bool TempLattice<T>::canReferenceArray() const
+bool TempLattice<T>::canReferenceArray() const
 {
   return itsImpl->canReferenceArray();
 }
 
 template<class T>
-Bool TempLattice<T>::isWritable() const
+bool TempLattice<T>::isWritable() const
 {
   return itsImpl->isWritable();
 }
@@ -84,7 +84,7 @@ IPosition TempLattice<T>::shape() const
 }
 
 template<class T>
-Bool TempLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
+bool TempLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
   return itsImpl->doGetSlice (buffer, section);
 }
@@ -122,26 +122,26 @@ void TempLattice<T>::apply (const Functional<T,T>& function)
 }
 
 template<class T>
-uInt TempLattice<T>::advisedMaxPixels() const
+uint32_t TempLattice<T>::advisedMaxPixels() const
 {
   return itsImpl->advisedMaxPixels();
 }
 
 template<class T>
-IPosition TempLattice<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition TempLattice<T>::doNiceCursorShape (uint32_t maxPixels) const
 {
   return itsImpl->doNiceCursorShape (maxPixels);
 }
 
 
 template<class T>
-uInt TempLattice<T>::maximumCacheSize() const
+uint32_t TempLattice<T>::maximumCacheSize() const
 {
   return itsImpl->maximumCacheSize();
 }
 
 template<class T>
-void TempLattice<T>::setMaximumCacheSize (uInt howManyPixels)
+void TempLattice<T>::setMaximumCacheSize (uint32_t howManyPixels)
 {
   itsImpl->setMaximumCacheSize (howManyPixels);
 }
@@ -157,7 +157,7 @@ void TempLattice<T>::setCacheSizeFromPath (const IPosition& sliceShape,
 }
 
 template<class T>
-void TempLattice<T>::setCacheSizeInTiles (uInt howManyTiles)
+void TempLattice<T>::setCacheSizeInTiles (uint32_t howManyTiles)
 {
   itsImpl->setCacheSizeInTiles (howManyTiles);
 }
@@ -188,14 +188,14 @@ void TempLattice<T>::putAt (const T& value, const IPosition& where)
 }
 
 template<class T>
-Bool TempLattice<T>::ok() const
+bool TempLattice<T>::ok() const
 {
   return itsImpl->ok();
 }
 
 template<class T>
 LatticeIterInterface<T>* TempLattice<T>::makeIter (const LatticeNavigator& nav,
-						   Bool useRef) const
+						   bool useRef) const
 {
   return itsImpl->makeIter (nav, useRef);
 }

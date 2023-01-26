@@ -66,7 +66,7 @@ public:
                          const String& dataManagerType,
                          const String& dataManagerGroup,
                          DataType, const String& dataTypeId,
-                         Int options, uInt ndim, const IPosition& shape);
+                         int32_t options, uint32_t ndim, const IPosition& shape);
 
     // Copy constructor (copy semantics);
     ArrayColumnDescBase (const ArrayColumnDescBase&);
@@ -123,7 +123,7 @@ protected:
 // a storage manager to store the values in a file or it can be
 // a virtual column engine to calculate them on-the-fly.
 // Only the basic data types are allowed when storing in a file. These are:
-//  Bool, uChar, Short, uShort, Int, uInt, Int64, float, double,
+//  bool, unsigned char, int16_t, uint16_t, int32_t, uint32_t, int64_t, float, double,
 //  Complex, DComplex and String.
 //
 // At table creation time (when a table gets created from a table
@@ -136,7 +136,7 @@ protected:
 //  <li> Name, which has to be unique and must also be different
 //         from possible table keyword names.
 //  <li> Data type, which is determined by the template parameter
-//         (e.g. ArrayColumnDesc<Int>).
+//         (e.g. ArrayColumnDesc<int32_t>).
 //  <li> A data type id, which tells the unique name of non-standard
 //         data types (i.e. for data type == TpOther).
 //  <li> Comment, which defaults to the empty string.
@@ -200,11 +200,11 @@ protected:
 //     tabDesc.addColumn (arr1Column);
 //
 //     // This one is indirect and has 3-dim arrays.
-//     tabDesc.addColumn (ArrayColumnDesc<Int>("Arr2",
+//     tabDesc.addColumn (ArrayColumnDesc<int32_t>("Arr2",
 //                                             "comment for Arr2",
 //                                             3));
 //     // This one is direct and has 2-dim arrays with axis lengths 4 and 7.
-//     tabDesc.addColumn (ArrayColumnDesc<uInt>("Arr3",
+//     tabDesc.addColumn (ArrayColumnDesc<uint32_t>("Arr3",
 //                                              "comment for Arr1",
 //        				        IPosition(2,4,7),
 // 					        ColumnDesc::Direct));
@@ -243,7 +243,7 @@ public:
     // be defined when creating the table (rows). Ndim>0 means that
     // the arrays in this column must have the given dimensionality.
     // The possible options are defined in ColumnDesc.h.
-    explicit ArrayColumnDesc (const String& name, Int ndim = -1,
+    explicit ArrayColumnDesc (const String& name, int32_t ndim = -1,
 			      int options = 0);
 
     // Construct the column with the given name, dimensionality, and comment.
@@ -254,7 +254,7 @@ public:
     // the arrays in this column must have the given dimensionality.
     // The possible options are defined in ColumnDesc.h.
     ArrayColumnDesc (const String& name, const String& comment,
-		     Int ndim = -1, int options = 0);
+		     int32_t ndim = -1, int options = 0);
 
     // Construct the column with the given name, dimensionality, comment,
     // and default data manager type and group.
@@ -265,7 +265,7 @@ public:
     // The possible options are defined in ColumnDesc.h.
     ArrayColumnDesc (const String& name, const String& comment,
 		     const String& dataManName, const String& dataManGroup,
-		     Int ndim = -1, int options = 0);
+		     int32_t ndim = -1, int options = 0);
 
     // Construct the column with the given name and shape.
     // The data manager type defaults to the StandardStman storage manager.
@@ -317,15 +317,15 @@ public:
 
 
 //# Explicitly instantiate these templates in ArrColDesc_tmpl.cc
-  extern template class ArrayColumnDesc<Bool>;
-  extern template class ArrayColumnDesc<Char>;
-  extern template class ArrayColumnDesc<Short>;
-  extern template class ArrayColumnDesc<uShort>;
-  extern template class ArrayColumnDesc<Int>;
-  extern template class ArrayColumnDesc<uInt>;
-  extern template class ArrayColumnDesc<Int64>;
-  extern template class ArrayColumnDesc<Float>;
-  extern template class ArrayColumnDesc<Double>;
+  extern template class ArrayColumnDesc<bool>;
+  extern template class ArrayColumnDesc<char>;
+  extern template class ArrayColumnDesc<int16_t>;
+  extern template class ArrayColumnDesc<uint16_t>;
+  extern template class ArrayColumnDesc<int32_t>;
+  extern template class ArrayColumnDesc<uint32_t>;
+  extern template class ArrayColumnDesc<int64_t>;
+  extern template class ArrayColumnDesc<float>;
+  extern template class ArrayColumnDesc<double>;
   extern template class ArrayColumnDesc<Complex>;
   extern template class ArrayColumnDesc<DComplex>;
   extern template class ArrayColumnDesc<String>;

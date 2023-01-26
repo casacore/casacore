@@ -67,7 +67,7 @@ class Slicer;
 //   It implements the dataType function, so it is not needed to implement
 //   that in derived classes.
 //  <li>
-//   It has a default implementation of False for function isWritable.
+//   It has a default implementation of false for function isWritable.
 //   Thus by default virtual scalar columns are not writable, which will
 //   often be the case. Only if a virtual scalar column can be writable,
 //   it has to be implemented in the derived class.
@@ -140,7 +140,7 @@ public:
     virtual ~VirtualArrayColumnBase();
 
     // By default no data can be put in a virtual column.
-    virtual Bool isWritable() const;
+    virtual bool isWritable() const;
 
 protected:
     // Set the shape of all arrays in the column.
@@ -155,7 +155,7 @@ protected:
 
     // Is the value shape defined in the given row?
     // By default it throws a "not possible" exception.
-    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual bool isShapeDefined (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     // By default it throws a "not possible" exception.

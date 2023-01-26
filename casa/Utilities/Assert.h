@@ -94,7 +94,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // of your class don't have to manually).
 //
 // In your class, write an <src>ok()</src> member function that
-// returns a <src>Bool</src>.  Allow for inheritance and make it a
+// returns a <src>bool</src>.  Allow for inheritance and make it a
 // virtual function (in fact, the derived class's <src>ok()</src> would
 // probably call the <src>ok()</src> from its parent, as well as doing
 // specific stuff for the derived class).
@@ -132,8 +132,8 @@ public:
     assert_(const void *ptr, const char *msg) {
 	if (! ptr) throw(t(msg));
     }
-    assert_(int expr, const char *msg, const char* file, Int line);
-    assert_(const void *ptr, const char *msg, const char* file, Int line);
+    assert_(int expr, const char *msg, const char* file, int32_t line);
+    assert_(const void *ptr, const char *msg, const char* file, int32_t line);
     // </group>
 
     // A no-op, but it keeps g++ from complaining about "variable not used"
@@ -153,9 +153,9 @@ public:
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {casacore::assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null(); }
+    {casacore::assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(int32_t)__LINE__); dummy_.null(); }
 #define AlwaysAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(int32_t)__LINE__); dummy_.null();}
 
 #if defined(AIPS_DEBUG)
 
@@ -169,14 +169,14 @@ public:
 //     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr))
 
 // #define DebugAssert(expr, exception) 
-//     (assert_<exception > (expr, "Failed Assertion: " #expr,__FILE__,(Int)__LINE__))
+//     (assert_<exception > (expr, "Failed Assertion: " #expr,__FILE__,(int32_t)__LINE__))
 // #define Assert(expr) 
-//     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
+//     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(int32_t)__LINE__))
 
 #define DebugAssert(expr, exception) \
-    {casacore::assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(int32_t)__LINE__); dummy_.null();}
 #define DebugAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(int32_t)__LINE__); dummy_.null();}
 
 #else
 

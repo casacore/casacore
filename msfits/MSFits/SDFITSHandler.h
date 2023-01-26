@@ -90,7 +90,7 @@ public:
 
     // attach this to a MS - any unhandled fields in row are handled here.
     // This handler must be attached last.
-    SDFITSHandler(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    SDFITSHandler(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // copy ctor
     SDFITSHandler(const SDFITSHandler &other);
@@ -102,10 +102,10 @@ public:
 
     // attach to a MS - any unhandled fields in row are handled here.
     // This handler must be attached last.
-    void attach(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void attach(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // fill - a new row is always added
-    void fill(const Record &row, const MEpoch &time, const Double &interval);
+    void fill(const Record &row, const MEpoch &time, const double &interval);
 private:
     // the output table
     Table *tab_p;
@@ -114,7 +114,7 @@ private:
     ScalarMeasColumn<MEpoch> timeMeas_p;
 
     // the INTERVAL column
-    ScalarQuantColumn<Double> intervalQuant_p;
+    ScalarQuantColumn<double> intervalQuant_p;
 
     // this copies everything from the row to the table
     CopyRecordToTable *copier_p;
@@ -126,13 +126,13 @@ private:
     void clearRow();
 
     // initialize everything
-    void initAll(MeasurementSet &ms, Vector<Bool> &handledCols, const Record &row);
+    void initAll(MeasurementSet &ms, Vector<bool> &handledCols, const Record &row);
 
     // intialize the row related stuff
-    void initRow(Vector<Bool> &handledCols, const Vector<String> &colNames, const Record &row);
+    void initRow(Vector<bool> &handledCols, const Vector<String> &colNames, const Record &row);
 
     // get the required table desc given the unhandled columns and the row
-    TableDesc requiredTableDesc(Vector<Bool> &handledCols, Vector<String> &colNames, const Record &row);
+    TableDesc requiredTableDesc(Vector<bool> &handledCols, Vector<String> &colNames, const Record &row);
 };
 
 

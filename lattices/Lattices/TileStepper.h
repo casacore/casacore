@@ -160,12 +160,12 @@ public:
   TileStepper& operator= (const TileStepper& other);
 
   // Increment operator (postfix or prefix version) - move the cursor
-  // forward one step. Returns True if the cursor was moved.
-  virtual Bool operator++(int);
+  // forward one step. Returns true if the cursor was moved.
+  virtual bool operator++(int);
 
   // Decrement operator (postfix or prefix version) - move the cursor
-  // backwards one step. Returns True if the cursor was moved.
-  virtual Bool operator--(int);
+  // backwards one step. Returns true if the cursor was moved.
+  virtual bool operator--(int);
 
   // Function to move the cursor to the beginning of the Lattice. Also
   // resets the number of steps (<src>nsteps</src> function) to zero. 
@@ -173,18 +173,18 @@ public:
 
   // Function which returns "True" if the cursor is at the beginning of the
   // Lattice, otherwise, returns "False"
-  virtual Bool atStart() const;
+  virtual bool atStart() const;
 
   // Function which returns "True" if an attempt has been made to increment
   // the cursor beyond the end of the Lattice.
-  virtual Bool atEnd() const;
+  virtual bool atEnd() const;
 
   // Function to return the number of steps (increments & decrements) taken
   // since construction (or since last reset).  This is a running count of
   // all cursor movement (operator++ or operator--), even though
   // N-increments followed by N-decrements will always leave the cursor in
   // the original position.
-  virtual uInt nsteps() const;
+  virtual uint32_t nsteps() const;
 
   // Function which returns the current position of the beginning of the
   // cursor. The <src>position</src> function is relative to the origin
@@ -218,8 +218,8 @@ public:
 
   // Function which returns "True" if the increment/decrement operators have
   // moved the cursor position such that part of the cursor beginning or end
-  // is hanging over the edge of the Lattice. This always returns False.
-  virtual Bool hangOver() const;
+  // is hanging over the edge of the Lattice. This always returns false.
+  virtual bool hangOver() const;
 
   // Functions to specify a "section" of the Lattice to step over. A section
   // is defined in terms of the Bottom Left Corner (blc), Top Right Corner
@@ -252,14 +252,14 @@ public:
 
   // Function which checks the internal data of this class for correct
   // dimensionality and consistant values. 
-  // Returns True if everything is fine otherwise returns False
-  virtual Bool ok() const;
+  // Returns true if everything is fine otherwise returns false
+  virtual bool ok() const;
 
   // Calculate the cache size (in tiles) for this type of access to a lattice
   // in the given row of the tiled hypercube.
-  virtual uInt calcCacheSize (const IPosition& cubeShape,
+  virtual uint32_t calcCacheSize (const IPosition& cubeShape,
                               const IPosition& tileShape,
-                              uInt maxCacheSize, uInt bucketSize) const;
+                              uint32_t maxCacheSize, uint32_t bucketSize) const;
 
 private:
   // Prevent the default constructor from being used.
@@ -276,9 +276,9 @@ private:
   IPosition itsAxisPath;         //# Path for traversing
   IPosition itsCurBlc;           //# Blc of the current position.
   IPosition itsCurTrc;           //# Trc of the current position.
-  uInt itsNsteps;                //# The number of iterator steps taken so far
-  Bool itsEnd;                   //# Is the cursor beyond the end?
-  Bool itsStart;                 //# Is the cursor at the beginning?
+  uint32_t itsNsteps;                //# The number of iterator steps taken so far
+  bool itsEnd;                   //# Is the cursor beyond the end?
+  bool itsStart;                 //# Is the cursor at the beginning?
 };
 
 

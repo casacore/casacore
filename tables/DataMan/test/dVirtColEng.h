@@ -56,7 +56,7 @@ template<class T> class ArrayColumn;
 // <synopsis> 
 // DummyVirtualScalar is an example of how to implement a virtual
 // column class handling a scalar.
-// This class scales the data in table column "DATA1" from Int to
+// This class scales the data in table column "DATA1" from int32_t to
 // double and back using a scale factor given at construction time.
 // This class is used by DummyVirtualEngine which is the engine for
 // handling this scalar column and another column.
@@ -103,7 +103,7 @@ private:
 
     // The column may be writable, so we must override the default
     // implementation in the base class VirtualScalarColumn.
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Get a value.
     //+grp
@@ -131,10 +131,10 @@ private:
     //# Now define the data members.
     DummyVirtualEngine* enginePtr_p;    // pointer to engine object
     double scale_p;                     // scale factor
-    Int    writable_p;                  // 1 = column is writable
+    int32_t    writable_p;                  // 1 = column is writable
     //                                    -1 = column is not writable
     //                                     0 = not known yet
-    ScalarColumn<Int>*   column_p;      // the unscaled table column
+    ScalarColumn<int32_t>*   column_p;      // the unscaled table column
 };
 
 
@@ -155,7 +155,7 @@ private:
 // <synopsis> 
 // DummyVirtualArray is an example of how to implement a virtual
 // column class handling a array.
-// This class scales the data in table column "DATA1" from Int to
+// This class scales the data in table column "DATA1" from int32_t to
 // double and back using a scale factor given at construction time.
 // This class is used by DummyVirtualEngine which is the engine for
 // handling this array column and another column.
@@ -201,17 +201,17 @@ private:
 
     // The column is writable, so we must override the default
     // implementation in the base class VirtualColumn.
-    Bool isWritable() const;
+    bool isWritable() const;
 
     // Define the shape of the array.
-    // This will define the shape of the underlying Int array.
+    // This will define the shape of the underlying int32_t array.
     void setShape (rownr_t rownr, const IPosition& shape);
 
     // Test if the (underlying) array is defined.
-    Bool isShapeDefined (rownr_t rownr);
+    bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the (underlying) array.
-    uInt ndim (rownr_t rownr);
+    uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the (underlying) array.
     IPosition shape (rownr_t rownr);
@@ -229,10 +229,10 @@ private:
     //# Now define the data members.
     DummyVirtualEngine* enginePtr_p;   // pointer to engine object
     double scale_p;                    // scale factor
-    Int    writable_p;                 // 1 = column is writable
+    int32_t    writable_p;                 // 1 = column is writable
     //                                   -1 = column is not writable
     //                                    0 = not known yet
-    ArrayColumn<Int>*   column_p;      // the unscaled table column (for put)
+    ArrayColumn<int32_t>*   column_p;      // the unscaled table column (for put)
 };
 
 
@@ -254,7 +254,7 @@ private:
 // DummyVirtualEngine is an example of how a virtual column engine
 // can be implemented.
 // This class scales the data in table column "DATA1" and "DATA2" from
-// Int to double and back using scale factors given at construction time.
+// int32_t to double and back using scale factors given at construction time.
 // It uses the classes DummyScalarColumn and DummyArrayColumn to handle
 // the specific columns.
 //
@@ -330,7 +330,7 @@ private:
 
     // Flush the engine.
     // It will write a few things into the AipsIO object.
-    Bool flush (AipsIO& ios, Bool fsync);
+    bool flush (AipsIO& ios, bool fsync);
 
     // Initialize the object for a new table.
     // Intially the table has the given number of rows.

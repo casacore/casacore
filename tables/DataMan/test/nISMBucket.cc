@@ -57,8 +57,8 @@ int main (int argc, const char* argv[])
 	cout << "tIncrementalStMan heuristics" << endl;
 	return 0;
     }
-    uInt i, bucketSize, nrow, nrent, n, totNrcol;
-    Block<uInt> nrcol, leng, same;
+    uint32_t i, bucketSize, nrow, nrent, n, totNrcol;
+    Block<uint32_t> nrcol, leng, same;
     istringstream istr1(argv[1]);
     istr1 >> bucketSize;
     if (argc < 3) {
@@ -74,7 +74,7 @@ int main (int argc, const char* argv[])
     cerr <<"by giving #columns, value length, and #rows with same value"<<endl;
     cerr <<"one or more times. For simplicity the lowest #rows has to" << endl;
     cerr <<"divide the other ones" << endl;
-    while (True) {
+    while (true) {
 	cerr << "#columns (0=end): ";
 	cin >> n;
 	if (n == 0) {
@@ -100,14 +100,14 @@ int main (int argc, const char* argv[])
 	return 1;
     }
     // Sort the "same" array in ascending order.
-    Vector<uInt> index;
+    Vector<uint32_t> index;
     genSort (index, same);
-    uInt lowest = same[index(0)];
+    uint32_t lowest = same[index(0)];
 
     // Calculate the bucket size if not specified.
     // This piece of code is similar to that in ISMBase.cc.
-    uInt headerSize = 4 * (totNrcol + 1);     // needed per column
-    uInt fixedSize = 0;
+    uint32_t headerSize = 4 * (totNrcol + 1);     // needed per column
+    uint32_t fixedSize = 0;
     for (i=0; i<nrent; i++) {
 	fixedSize += nrcol[i] * (2 * 4 + leng[i]);
     }
@@ -150,11 +150,11 @@ int main (int argc, const char* argv[])
     // First determine initial length (i.e. values of all columns).
     // The column index takes 4 initial bytes and 4 bytes per column.
     // Per value the index takes 8 bytes.
-    uInt initleng = 0;
-    uInt colindex = 4;
-    uInt normalleng = 0;
-    Block<uInt> sameleng (nrent, 0u);
-    Block<uInt> times (nrent);
+    uint32_t initleng = 0;
+    uint32_t colindex = 4;
+    uint32_t normalleng = 0;
+    Block<uint32_t> sameleng (nrent, 0u);
+    Block<uint32_t> times (nrent);
     for (i=0; i<nrent; i++) {
 	if (same[i] % lowest != 0) {
 	    cerr << "Lowest #rows value " << lowest << " does not divide "
@@ -166,7 +166,7 @@ int main (int argc, const char* argv[])
 	sameleng[i] = nrcol[i] * (leng[i] + 8);
 	normalleng += nrcol[i] * leng[i] * nrow;
     }
-    Int spare = bucketSize - colindex - initleng;
+    int32_t spare = bucketSize - colindex - initleng;
     if (spare < 0) {
 	cerr << "Bucketsize too small; should be at least "
 	     << colindex + initleng << " bytes" << endl;
@@ -174,10 +174,10 @@ int main (int argc, const char* argv[])
     }
 
     // Iterate until a bucket is filled.
-    uInt used = 0;
-    uInt lastused = 0;
+    uint32_t used = 0;
+    uint32_t lastused = 0;
     n = 1;
-    while (Int(used) <= spare) {
+    while (int32_t(used) <= spare) {
 	lastused = used;
 	if (n > nrow/lowest) {
 	    break;
@@ -191,8 +191,8 @@ int main (int argc, const char* argv[])
     }
     n--;
     n *= lowest;
-    uInt nbucket = 1 + (nrow - 1) / n;
-    uInt totalleng = nbucket * (bucketSize + 8);   // add 8 for bucketindex
+    uint32_t nbucket = 1 + (nrow - 1) / n;
+    uint32_t totalleng = nbucket * (bucketSize + 8);   // add 8 for bucketindex
 
     // Okay, n is the number of rows fitting in a bucket.
     // Display the values.

@@ -39,19 +39,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ArrayLattice<T>::ArrayLattice()
-: itsWritable (False)
+: itsWritable (false)
 {
 }
 
 template<class T>
 ArrayLattice<T>::ArrayLattice (const IPosition& shape) 
 : itsData     (shape),
-  itsWritable (True)
+  itsWritable (true)
 {
 }
 
 template<class T>
-ArrayLattice<T>::ArrayLattice (Array<T>& array, Bool isWritable) 
+ArrayLattice<T>::ArrayLattice (Array<T>& array, bool isWritable) 
 : itsData     (array),
   itsWritable (isWritable)
 {
@@ -60,7 +60,7 @@ ArrayLattice<T>::ArrayLattice (Array<T>& array, Bool isWritable)
 template<class T>
 ArrayLattice<T>::ArrayLattice (const Array<T>& array) 
 : itsData     (array),
-  itsWritable (False)
+  itsWritable (false)
 {
 }
 
@@ -93,13 +93,13 @@ Lattice<T>* ArrayLattice<T>::clone() const
 }
 
 template <class T>
-Bool ArrayLattice<T>::canReferenceArray() const
+bool ArrayLattice<T>::canReferenceArray() const
 {
-  return True;
+  return true;
 }
 
 template <class T>
-Bool ArrayLattice<T>::isWritable() const
+bool ArrayLattice<T>::isWritable() const
 {
   return itsWritable;
 }
@@ -111,11 +111,11 @@ IPosition ArrayLattice<T>::shape() const
 } 
 
 template<class T>
-Bool ArrayLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
+bool ArrayLattice<T>::doGetSlice (Array<T>& buffer, const Slicer& section)
 {
   Array<T> tmp = itsData(section.start(), section.end(), section.stride());
   buffer.reference (tmp);
-  return True;
+  return true;
 }
 
 template<class T>
@@ -126,8 +126,8 @@ void ArrayLattice<T>::doPutSlice (const Array<T>& sourceBuffer,
   if (!itsWritable) {
       throw (AipsError ("ArrayLattice::putSlice - non-writable lattice"));
   }
-  const uInt sdim = sourceBuffer.ndim();
-  const uInt ldim = ndim();
+  const uint32_t sdim = sourceBuffer.ndim();
+  const uint32_t ldim = ndim();
   DebugAssert(ldim == where.nelements(), AipsError);
   DebugAssert(ldim == stride.nelements(), AipsError);
   if (sdim == ldim) {
@@ -177,7 +177,7 @@ void ArrayLattice<T>::putAt (const T& value, const IPosition& where)
 }
 
 template<class T>
-uInt ArrayLattice<T>::advisedMaxPixels() const
+uint32_t ArrayLattice<T>::advisedMaxPixels() const
 {
   return itsData.nelements();
 }
@@ -199,7 +199,7 @@ const Array<T>& ArrayLattice<T>::asArray() const
 
 // Check class invariants. 
 template<class T>
-Bool ArrayLattice<T>::ok() const
+bool ArrayLattice<T>::ok() const
 {
   return itsData.ok();
 }

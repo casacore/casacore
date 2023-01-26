@@ -1,0 +1,147 @@
+#!/bin/sh
+
+# Replace old casacore types by modern counterparts.
+#   Char -> char
+#   uChar -> unsigned char
+#   Short -> int16_t
+#   uShort -> uint16_t
+#   Int -> int32_t
+#   uInt -> uint32_t
+#   Long -> long
+#   uLong -> unsigned long
+#   Int64 -> int64_t
+#   uInt64 -> uint64_t
+#   Float -> float
+#   Double -> double
+#   Bool -> bool
+#   True -> true
+#   False -> false
+# All these types can be preceded by and followed by a non-alphanumeric character.
+# They can also be at the beginning of a line or preceded by casacore:: which has to be
+# the first replacement.
+# Note that the types replaced by intxx_t must have that length for IO purposes.
+#
+# Note the replacement of types in the middle of a line are done twice to ensure that
+# in e.g. Double,Double the 2nd Double is replaced as well.
+# Unfortunately the OS-X sed does not support \b (word boundary).
+#
+# Some manual file changes are necessary. They can be saved in a .chg file which
+# replaces the file after all sed commands are done.
+# The original file must be saved in a .orig file. Before the sed commands are
+# executed, it is compared with the checked-out file to ensure they are the same
+# and that no update was done to the file.
+
+
+# The checked out file must be the same as the original one for all .chg files.
+for FIL in `find . -name "*.chg"`
+do
+    NM=`echo $FIL | sed -e 's/.chg$//'`
+    diff $NM $NM.orig || exit 1
+done
+
+# Apply the sed commands to all files.
+for TP in h cc tcc hcc ll yy
+do
+    for FIL in `find . -name "*.$TP"`
+    do
+        sed \
+            -e 's/casacore::uChar/unsigned char/g' \
+            -e 's/casacore::Char/char/g' \
+            -e 's/casacore::uShort/uint16_t/g' \
+            -e 's/casacore::Short/int16_t/g' \
+            -e 's/casacore::uInt/uint32_t/g' \
+            -e 's/casacore::Int/int32_t/g' \
+            -e 's/casacore::uInt64/uint64_t/g' \
+            -e 's/casacore::Int64/int64_t/g' \
+            -e 's/casacore::Float/float/g' \
+            -e 's/casacore::Double/double/g' \
+            -e 's/casacore::Bool/bool/g' \
+            -e 's/casacore::True/true/g' \
+            -e 's/casacore::False/false/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uChar\([^a-zA-Z0-9_]\)/\1unsigned char\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Char\([^a-zA-Z0-9_]\)/\1char\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uShort\([^a-zA-Z0-9_]\)/\1uint16_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Short\([^a-zA-Z0-9_]\)/\1int16_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uInt\([^a-zA-Z0-9_]\)/\1uint32_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Int\([^a-zA-Z0-9_]\)/\1int32_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uInt64\([^a-zA-Z0-9_]\)/\1uint64_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Int64\([^a-zA-Z0-9_]\)/\1int64_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uLong\([^a-zA-Z0-9_]\)/\1unsigned long\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Long\([^a-zA-Z0-9_]\)/\1long\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Float\([^a-zA-Z0-9_]\)/\1float\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Double\([^a-zA-Z0-9_]\)/\1double\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Bool\([^a-zA-Z0-9_]\)/\1bool\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)True\([^a-zA-Z0-9_]\)/\1true\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)False\([^a-zA-Z0-9_]\)/\1false\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uChar\([^a-zA-Z0-9_]\)/\1unsigned char\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Char\([^a-zA-Z0-9_]\)/\1char\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uShort\([^a-zA-Z0-9_]\)/\1uint16_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Short\([^a-zA-Z0-9_]\)/\1int16_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uInt\([^a-zA-Z0-9_]\)/\1uint32_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Int\([^a-zA-Z0-9_]\)/\1int32_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uInt64\([^a-zA-Z0-9_]\)/\1uint64_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Int64\([^a-zA-Z0-9_]\)/\1int64_t\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uLong\([^a-zA-Z0-9_]\)/\1unsigned long\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Long\([^a-zA-Z0-9_]\)/\1long\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Float\([^a-zA-Z0-9_]\)/\1float\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Double\([^a-zA-Z0-9_]\)/\1double\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Bool\([^a-zA-Z0-9_]\)/\1bool\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)True\([^a-zA-Z0-9_]\)/\1true\2/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)False\([^a-zA-Z0-9_]\)/\1false\2/g' \
+            -e 's/^uChar\([^a-zA-Z0-9_]\)/unsigned char\1/g' \
+            -e 's/^Char\([^a-zA-Z0-9_]\)/char\1/g' \
+            -e 's/^uShort\([^a-zA-Z0-9_]\)/uint16_t\1/g' \
+            -e 's/^Short\([^a-zA-Z0-9_]\)/int16_t\1/g' \
+            -e 's/^uInt\([^a-zA-Z0-9_]\)/uint32_t\1/g' \
+            -e 's/^Int\([^a-zA-Z0-9_]\)/int32_t\1/g' \
+            -e 's/^uInt64\([^a-zA-Z0-9_]\)/uint64_t\1/g' \
+            -e 's/^Int64\([^a-zA-Z0-9_]\)/int64_t\1/g' \
+            -e 's/^Float\([^a-zA-Z0-9_]\)/float\1/g' \
+            -e 's/^Double\([^a-zA-Z0-9_]\)/double\1/g' \
+            -e 's/^Bool\([^a-zA-Z0-9_]\)/bool\1/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uChar$/\1unsigned char/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Char$/\1char/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uShort$/\1uint16_t/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Short$/\1int16_t/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uInt$/\1uint32_t/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Int$/\1int32_t/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)uInt64$/\1uint64_t/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Int64$/\1int64_t/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Float$/\1float/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Double$/\1double/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)Bool$/\1bool/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)True$/\1true/g' \
+            -e 's/\([^a-zA-Z0-9_"]\)False$/\1false/g' \
+            -e 's/^uChar$/unsigned char/g' \
+            -e 's/^Char$/char/g' \
+            -e 's/^uShort$/uint16_t/g' \
+            -e 's/^Short$/int16_t/g' \
+            -e 's/^uInt$/uint32_t/g' \
+            -e 's/^Int$/int32_t/g' \
+            -e 's/^uInt64$/uint64_t/g' \
+            -e 's/^Int64$/int64_t/g' \
+            -e 's/^Float$/float/g' \
+            -e 's/^Double$/double/g' \
+            -e 's/^Bool$/bool/g' \
+            -e 's/^True$/true/g' \
+            -e 's/^False$/false/g' \
+            -e 's/unsigned char(/static_cast<unsigned char>(/g' \
+            $FIL > $FIL.new
+        mv $FIL.new $FIL
+    done
+done
+
+# Use the new files not covered by the sed command
+for FIL in `find . -name "*.chg"`
+do
+    NM=`echo $FIL | sed -e 's/.chg$//'`
+    cp $FIL $NM
+done
+
+
+#AIPS_DEBUG problems
+# MSIter.cc
+# ConcatRows.cc
+# MultiFile.cc
+# MultiHDF5.cc   remove its .chg file
+

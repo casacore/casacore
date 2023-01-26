@@ -34,8 +34,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSObservationParse* MSObservationParse::thisMSObsParser = 0x0; // Global pointer to the parser object
   TableExprNode MSObservationParse::columnAsTEN_p;
   // TableExprNode* MSObservationParse::node_p = 0x0;
-  // Vector<Int> MSObservationParse::idList;
-  //  std::vector<Int> MSObservationParse::parsedIDList_p;
+  // Vector<int32_t> MSObservationParse::idList;
+  //  std::vector<int32_t> MSObservationParse::parsedIDList_p;
   
   //# Constructor
   MSObservationParse::MSObservationParse ()
@@ -53,16 +53,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     idList.resize(0);
     parsedIDList_p.resize(0);
-    Int nrows = obsSubTable.nrow();
+    int32_t nrows = obsSubTable.nrow();
     obsIDList_p.resize(nrows);
     indgen(obsIDList_p);
     columnAsTEN_p=colAsTEN;
     maxObs_p=nrows;
   }
 
-  std::vector<Int>& MSObservationParse::accumulateIDs(const Int id0, const Int id1)
+  std::vector<int32_t>& MSObservationParse::accumulateIDs(const int32_t id0, const int32_t id1)
   {
-    Vector<Int> theIDs;
+    Vector<int32_t> theIDs;
     if (id1 < 0) 
       {
   	parsedIDList_p.push_back(id0);theIDs.resize(1);theIDs[0]=id0;
@@ -81,17 +81,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return parsedIDList_p;
   }
 
-  void MSObservationParse::appendToIDList(const Vector<Int>& v)
+  void MSObservationParse::appendToIDList(const Vector<int32_t>& v)
   {
-    Int currentSize = idList.nelements();
-    Int n = v.nelements() + currentSize;
-    Int j=0;
+    int32_t currentSize = idList.nelements();
+    int32_t n = v.nelements() + currentSize;
+    int32_t j=0;
 
-    idList.resize(n, True);
-    for(Int i=currentSize;i<n;i++) idList[i] = v[j++];
+    idList.resize(n, true);
+    for(int32_t i=currentSize;i<n;i++) idList[i] = v[j++];
   }
 
-  const TableExprNode* MSObservationParse::selectRangeGTAndLT(const Int& n0,const Int& n1)
+  const TableExprNode* MSObservationParse::selectRangeGTAndLT(const int32_t& n0,const int32_t& n1)
   {
     // TableExprNode condition = TableExprNode( (ms()->col(colName) > n0) &&
     // 					     (ms()->col(colName) < n1));
@@ -103,9 +103,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	os << "ObservationID Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
 	throw(MSSelectionObservationParseError(os.str()));
       }
-    Vector<Int> tmp(n1-n0-1);
-    Int j=n0+1;
-    for(uInt i=0;i<tmp.nelements();i++) tmp[i]=j++;
+    Vector<int32_t> tmp(n1-n0-1);
+    int32_t j=n0+1;
+    for(uint32_t i=0;i<tmp.nelements();i++) tmp[i]=j++;
     appendToIDList(tmp);
 
     addCondition(node_p,condition);
@@ -113,7 +113,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode* MSObservationParse::selectRangeGEAndLE(const Int& n0,const Int& n1)
+  const TableExprNode* MSObservationParse::selectRangeGEAndLE(const int32_t& n0,const int32_t& n1)
   {
     // TableExprNode condition = TableExprNode( (ms()->col(colName) >= n0) &&
     // 					     (ms()->col(colName) <= n1));
@@ -125,9 +125,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	os << "ObservationID Expression: Malformed range bounds " << n0 << " (lower bound) and " << n1 << " (upper bound)";
 	throw(MSSelectionObservationParseError(os.str()));
       }
-    Vector<Int> tmp(n1-n0+1);
-    Int j=n0;
-    for(uInt i=0;i<tmp.nelements();i++) tmp[i]=j++;
+    Vector<int32_t> tmp(n1-n0+1);
+    int32_t j=n0;
+    for(uint32_t i=0;i<tmp.nelements();i++) tmp[i]=j++;
     appendToIDList(tmp);
 
     addCondition(node_p,condition);
@@ -135,7 +135,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode* MSObservationParse::selectObservationIds(const Vector<Int>& scanids)
+  const TableExprNode* MSObservationParse::selectObservationIds(const Vector<int32_t>& scanids)
   {
     if (scanids.size() > 0)
       {
@@ -148,61 +148,61 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return &node_p;
   }
   
-  const TableExprNode* MSObservationParse::selectObservationIdsGT(const Vector<Int>& scanids)
+  const TableExprNode* MSObservationParse::selectObservationIdsGT(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) > scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p > scanids[0]);
     
-    Int n=maxObs_p-scanids[0]+1,j;
-    Vector<Int> tmp(n);
+    int32_t n=maxObs_p-scanids[0]+1,j;
+    Vector<int32_t> tmp(n);
     j=scanids[0]+1;
-    for(Int i=0;i<n;i++) tmp[i]=j++;
+    for(int32_t i=0;i<n;i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
   
-  const TableExprNode* MSObservationParse::selectObservationIdsLT(const Vector<Int>& scanids)
+  const TableExprNode* MSObservationParse::selectObservationIdsLT(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) < scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p < scanids[0]);
-    Vector<Int> tmp(scanids[0]);
-    for(Int i=0;i<scanids[0];i++) tmp[i] = i;
+    Vector<int32_t> tmp(scanids[0]);
+    for(int32_t i=0;i<scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
 
-  const TableExprNode* MSObservationParse::selectObservationIdsGTEQ(const Vector<Int>& scanids)
+  const TableExprNode* MSObservationParse::selectObservationIdsGTEQ(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) >= scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p >= scanids[0]);
     
-    Int n=maxObs_p-scanids[0]+1,j;
-    Vector<Int> tmp(n);
+    int32_t n=maxObs_p-scanids[0]+1,j;
+    Vector<int32_t> tmp(n);
     j=scanids[0];
-    for(Int i=0;i<n;i++) tmp[i]=j++;
+    for(int32_t i=0;i<n;i++) tmp[i]=j++;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
   
-  const TableExprNode* MSObservationParse::selectObservationIdsLTEQ(const Vector<Int>& scanids)
+  const TableExprNode* MSObservationParse::selectObservationIdsLTEQ(const Vector<int32_t>& scanids)
   {
     //TableExprNode condition = TableExprNode(ms()->col(colName) <= scanids[0]);
     TableExprNode condition = TableExprNode(columnAsTEN_p <= scanids[0]);
-    Vector<Int> tmp(scanids[0]+1);
-    for(Int i=0;i<=scanids[0];i++) tmp[i] = i;
+    Vector<int32_t> tmp(scanids[0]+1);
+    for(int32_t i=0;i<=scanids[0];i++) tmp[i] = i;
     appendToIDList(tmp);
     addCondition(node_p,condition);
     
     return &node_p;
   }
   
-  Vector<Int> MSObservationParse::selectedIDs() 
+  Vector<int32_t> MSObservationParse::selectedIDs() 
   {
     return set_intersection(obsIDList_p,idList);
   }

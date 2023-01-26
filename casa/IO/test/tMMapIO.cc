@@ -40,13 +40,13 @@ void check (const String& fileName, int bufSize, const char* buf)
   char* buf1 = new char[bufSize];
   
   for (int j=0; j<2000/bufSize; j++) {
-    AlwaysAssertExit (fio.read (bufSize, buf1, True) == bufSize);
+    AlwaysAssertExit (fio.read (bufSize, buf1, true) == bufSize);
     for (int i=0; i<bufSize; i++) {
       AlwaysAssertExit (buf1[i] == *buf++);
     }
   }
   int rem = 2000%bufSize;
-  AlwaysAssertExit (fio.read(bufSize, buf1, False) == rem);
+  AlwaysAssertExit (fio.read(bufSize, buf1, false) == rem);
   for (int i=0; i<rem; i++) {
     AlwaysAssertExit (buf1[i] == *buf++);
   }

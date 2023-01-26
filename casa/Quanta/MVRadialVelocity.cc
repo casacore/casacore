@@ -41,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 MVRadialVelocity::MVRadialVelocity() : 
   val(0.0){}
 
-MVRadialVelocity::MVRadialVelocity(Double d) : 
+MVRadialVelocity::MVRadialVelocity(double d) : 
   val(d){}
 
 MVRadialVelocity::MVRadialVelocity(const MVRadialVelocity &other) :
@@ -53,10 +53,10 @@ MVRadialVelocity::MVRadialVelocity(const Quantity &other) {
   val = other.getValue() * makeF(other.getFullUnit());
 }
 
-MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double> > &other) {
-  Vector<Double> tmp;
+MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<double> > &other) {
+  Vector<double> tmp;
   tmp = other.getValue();
-  uInt i = tmp.nelements();
+  uint32_t i = tmp.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -66,8 +66,8 @@ MVRadialVelocity::MVRadialVelocity(const Quantum<Vector<Double> > &other) {
   }
 }
 
-MVRadialVelocity::MVRadialVelocity(const Vector<Double> &other) {
-  uInt i = other.nelements();
+MVRadialVelocity::MVRadialVelocity(const Vector<double> &other) {
+  uint32_t i = other.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -94,7 +94,7 @@ MVRadialVelocity &MVRadialVelocity::operator=(const MVRadialVelocity &other) {
 MVRadialVelocity::~MVRadialVelocity() {}
 
 // Operators
-MVRadialVelocity::operator Double() const {
+MVRadialVelocity::operator double() const {
   return val;
 }
 
@@ -108,19 +108,19 @@ MVRadialVelocity &MVRadialVelocity::operator-=(const MVRadialVelocity &other) {
   return *this;
 }
 
-Bool MVRadialVelocity::operator==(const MVRadialVelocity &other) const {
+bool MVRadialVelocity::operator==(const MVRadialVelocity &other) const {
   return (val == other.val);
 }
 
-Bool MVRadialVelocity::operator!=(const MVRadialVelocity &other) const {
+bool MVRadialVelocity::operator!=(const MVRadialVelocity &other) const {
   return (val != other.val);
 }
 
-Bool MVRadialVelocity::near(const MVRadialVelocity &other, Double tol) const {
+bool MVRadialVelocity::near(const MVRadialVelocity &other, double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-Bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, Double tol) const {
+bool MVRadialVelocity::nearAbs(const MVRadialVelocity &other, double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -140,7 +140,7 @@ MeasValue *MVRadialVelocity::clone() const {
   return (new MVRadialVelocity(*this));
 }
 
-Double MVRadialVelocity::getValue() const {
+double MVRadialVelocity::getValue() const {
   return val;
 }
 
@@ -152,13 +152,13 @@ Quantity MVRadialVelocity::get(const Unit &unit) const {
   return Quantity(val/makeF(unit), unit);
 }
 
-Vector<Double> MVRadialVelocity::getVector() const {
-  Vector<Double> x(1);
+Vector<double> MVRadialVelocity::getVector() const {
+  Vector<double> x(1);
   x(0) = val;
   return x;
 }
 
-void MVRadialVelocity::putVector(const Vector<Double> &in) {
+void MVRadialVelocity::putVector(const Vector<double> &in) {
   if (in.nelements() < 1) {
     val = 0.0;
   } else {
@@ -166,15 +166,15 @@ void MVRadialVelocity::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double> > MVRadialVelocity::getRecordValue() const {
-  Vector<Quantum<Double> > tmp(1);
+Vector<Quantum<double> > MVRadialVelocity::getRecordValue() const {
+  Vector<Quantum<double> > tmp(1);
   tmp(0) = get();
   return tmp;
 }
 
-Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
+bool MVRadialVelocity::putValue(const Vector<Quantum<double> > &in) {
   static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
-  uInt i = in.nelements();
+  uint32_t i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -182,40 +182,40 @@ Bool MVRadialVelocity::putValue(const Vector<Quantum<Double> > &in) {
     if (dt == Velocity) {
       val = in(0).getValue() * makeF(in(0).getFullUnit());
     } else {
-      return False;
+      return false;
     }
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
-Vector<Double>
-MVRadialVelocity::shiftFrequency(const Vector<Double> &freq) const {
-  Vector<Double> tmp(freq.nelements());
-  Double factor = val/C::c;
+Vector<double>
+MVRadialVelocity::shiftFrequency(const Vector<double> &freq) const {
+  Vector<double> tmp(freq.nelements());
+  double factor = val/C::c;
   factor = sqrt((1-factor)/(1+factor));
-  for (uInt i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
+  for (uint32_t i=0; i<freq.nelements(); ++i) tmp[i] = freq[i] * factor;
   return tmp;
 }
 
-Quantum<Vector<Double> >
-MVRadialVelocity::shiftFrequency(const Quantum<Vector<Double> > &freq) const {
-  Vector<Double> tmp(freq.getValue().nelements());
+Quantum<Vector<double> >
+MVRadialVelocity::shiftFrequency(const Quantum<Vector<double> > &freq) const {
+  Vector<double> tmp(freq.getValue().nelements());
   tmp = freq.getValue();
-  Double factor = val/C::c;
+  double factor = val/C::c;
   factor = sqrt((1-factor)/(1+factor));
-  for (uInt i=0; i<tmp.nelements(); ++i) {
+  for (uint32_t i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(Quantity(tmp[i],freq.getFullUnit())).getValue() *
 			 factor;
   }
-  for (uInt i=0; i<tmp.nelements(); ++i) {
+  for (uint32_t i=0; i<tmp.nelements(); ++i) {
     tmp[i] = MVFrequency(tmp[i]).get(freq.getFullUnit()).getValue();
   }
-  return Quantum<Vector<Double> >(tmp, freq.getFullUnit());
+  return Quantum<Vector<double> >(tmp, freq.getFullUnit());
 }
 
-Double MVRadialVelocity::makeF(const Unit &dt) const{
+double MVRadialVelocity::makeF(const Unit &dt) const{
   static const UnitVal Velocity = UnitVal::LENGTH/UnitVal::TIME;
   Quantity(1.0,dt).assure(Velocity);
   return (dt.getValue().getFac());

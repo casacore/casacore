@@ -123,9 +123,9 @@ public:
 	    NumberOfTypes = 33
 	    };
 	
-//		convert Int to StokesTypes, returns Stokes::Undefined if 
+//		convert int32_t to StokesTypes, returns Stokes::Undefined if 
 //		it is an invalid type
-	static StokesTypes type(Int stokesNumber);
+	static StokesTypes type(int32_t stokesNumber);
 
 //		convert String to StokesTypes, returns Stokes::Undefined if
 //		it is an unrecognized string.  The valid strings are the
@@ -138,7 +138,7 @@ public:
 	static String name(StokesTypes stokesType);
 
 	// get all recognized stokes names in no guaranteed order.
-	static Vector<String> allNames(Bool includeUndefined = False);
+	static Vector<String> allNames(bool includeUndefined = false);
 
 //              map StokesTypes to receptor number (0 or 1) for the
 //              interferometric correlation products.
@@ -146,8 +146,8 @@ public:
 //              I,Q,U,V and the single dish types will produce invalid
 //              Fallible.
 //              <group>
-	static Fallible<Int> receptor1(StokesTypes stokesType);
-	static Fallible<Int> receptor2(StokesTypes stokesType);
+	static Fallible<int32_t> receptor1(StokesTypes stokesType);
+	static Fallible<int32_t> receptor2(StokesTypes stokesType);
 //              </group>
 
     // These two functions map stokes type to FITS type and vice versa. If you add a 
@@ -156,11 +156,11 @@ public:
     //     <li> I,Q,U,V <-> 1,2,3,4
     //     <li> RR,LL,RL,LR <-> -1,-2,-3,-4   Note! Not the same as enum order!
     //     <li> XX,YY,XY,YX <-> -5,-6,-7,-8   Note! Not the same as enum order!
-    //     <li> Otherwise, FITS type <-> 100 + Int(stokesType). This is not standard FITS.
+    //     <li> Otherwise, FITS type <-> 100 + int32_t(stokesType). This is not standard FITS.
     // </ul>
     // <group>
-        static Int    FITSValue(StokesTypes which);
-        static StokesTypes fromFITSValue(Int);
+        static int32_t    FITSValue(StokesTypes which);
+        static StokesTypes fromFITSValue(int32_t);
     // </group>
 private:
 };

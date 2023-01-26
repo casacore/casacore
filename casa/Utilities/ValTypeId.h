@@ -55,21 +55,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T> inline String valDataTypeId (const T*)
     { return T::dataTypeId(); }
-inline String valDataTypeId (const Bool* obj)
+inline String valDataTypeId (const bool* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const Char* obj)
+inline String valDataTypeId (const char* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const uChar* obj)
+inline String valDataTypeId (const unsigned char* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const Short* obj)
+inline String valDataTypeId (const int16_t* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const uShort* obj)
+inline String valDataTypeId (const uint16_t* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const Int* obj)
+inline String valDataTypeId (const int32_t* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const uInt* obj)
+inline String valDataTypeId (const uint32_t* obj)
     { return ValType::getTypeStr (obj); }
-inline String valDataTypeId (const Int64* obj)
+inline String valDataTypeId (const int64_t* obj)
     { return ValType::getTypeStr (obj); }
 inline String valDataTypeId (const float* obj)
     { return ValType::getTypeStr (obj); }

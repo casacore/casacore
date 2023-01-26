@@ -93,16 +93,16 @@ public:
   // while for the non-const version one has to specify if the SubImage
   // should be writable (if the original image is non-writable, the
   // SubImage is always set to non-writable).
-  // <br>If preserveAxesOrder is True, the axes order will be preserved. This
+  // <br>If preserveAxesOrder is true, the axes order will be preserved. This
   // is only important in cases where pixel axes are to be dropped, if not
-  // the axes order will be preserved. If False and pixel axes are dropped,
+  // the axes order will be preserved. If false and pixel axes are dropped,
   // the order of the coordinates will be preserved, but not necessarily
   // the axes.
   // <group>
   SubImage (const ImageInterface<T>& image,
-	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
-  SubImage (ImageInterface<T>& image, Bool writableIfPossible,
-	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
+	    AxesSpecifier=AxesSpecifier(), bool preserveAxesOrder=false);
+  SubImage (ImageInterface<T>& image, bool writableIfPossible,
+	    AxesSpecifier=AxesSpecifier(), bool preserveAxesOrder=false);
   // </group>
 
   // Create a SubImage from the given Image and region.
@@ -110,10 +110,10 @@ public:
   // differs from the shape of the image.
   // <group>
   SubImage (const ImageInterface<T>& image, const LattRegionHolder& region,
-	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
+	    AxesSpecifier=AxesSpecifier(), bool preserveAxesOrder=false);
   SubImage (ImageInterface<T>& image, const LattRegionHolder& region,
-	    Bool writableIfPossible,
-	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
+	    bool writableIfPossible,
+	    AxesSpecifier=AxesSpecifier(), bool preserveAxesOrder=false);
   // </group>
   
   // Create a SubImage from the given Image and slicer.
@@ -121,10 +121,10 @@ public:
   // <br>An exception is thrown if the slicer exceeds the image shape.
   // <group>
   SubImage (const ImageInterface<T>& image, const Slicer& slicer,
-	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
+	    AxesSpecifier=AxesSpecifier(), bool preserveAxesOrder=false);
   SubImage (ImageInterface<T>& image, const Slicer& slicer,
-	    Bool writableIfPossible,
-	    AxesSpecifier=AxesSpecifier(), Bool preserveAxesOrder=False);
+	    bool writableIfPossible,
+	    AxesSpecifier=AxesSpecifier(), bool preserveAxesOrder=false);
   // </group>
   
   // Copy constructor (reference semantics).
@@ -145,32 +145,32 @@ public:
 
   // Is the SubImage masked?
   // It is if its parent image or its region is masked.
-  virtual Bool isMasked() const;
+  virtual bool isMasked() const;
 
   // Does the image object have a pixelmask?
   // It does if its parent has a pixelmask.
-  virtual Bool hasPixelMask() const;
+  virtual bool hasPixelMask() const;
 
   // Get access to the pixelmask in use (thus to the pixelmask of the parent).
   // An exception is thrown if the parent does not have a pixelmask.
   // <group>
-  virtual const Lattice<Bool>& pixelMask() const;
-  virtual Lattice<Bool>& pixelMask();
+  virtual const Lattice<bool>& pixelMask() const;
+  virtual Lattice<bool>& pixelMask();
   // </group>
 
   // A SubImage is persistent if no region is applied to the parent image.
   // That is true if the region has the same shape as the parent image
   // and the region has no mask.
-  virtual Bool isPersistent() const;
+  virtual bool isPersistent() const;
 
   // Is the SubImage paged to disk?
-  virtual Bool isPaged() const;
+  virtual bool isPaged() const;
 
   // Can the lattice data be referenced as an array section?
-  virtual Bool canReferenceArray() const;
+  virtual bool canReferenceArray() const;
 
   // Is the SubImage writable?
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Get the region/mask object describing this subImage.
   virtual const LatticeRegion* getRegionPtr() const;
@@ -181,24 +181,24 @@ public:
   
   // Returns the number of axes in this SubImage. This includes all
   // degenerate axes.
-  virtual uInt ndim() const;
+  virtual uint32_t ndim() const;
   
   // Returns the total number of elements in this SubImage.
   virtual size_t nelements() const;
   
   // returns a value of "True" if this instance of Lattice and 'other' have 
   // the same shape, otherwise returns a value of "False".
-  virtual Bool conform (const Lattice<T>& other) const;
+  virtual bool conform (const Lattice<T>& other) const;
   
   // This function returns the recommended maximum number of pixels to
   // include in the cursor of an iterator.
-  virtual uInt advisedMaxPixels() const;
+  virtual uint32_t advisedMaxPixels() const;
 
   // Get access to the attribute handler (of the parent image).
   // If a handler keyword does not exist yet, it is created if
   // <src>createHandler</src> is set.
   // Otherwise the handler is empty and no groups can be created for it.
-  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler (bool createHandler=false);
 
   // Get or put a single element in the lattice.
   // <group>
@@ -211,13 +211,13 @@ public:
   virtual void resize(const TiledShape& newShape);
 
   // Return the name of the parent ImageInterface object. 
-  virtual String name (Bool stripPath=False) const;
+  virtual String name (bool stripPath=false) const;
   
   // Check class invariants.
-  virtual Bool ok() const;
+  virtual bool ok() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<T>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<T>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.
   virtual void doPutSlice (const Array<T>& sourceBuffer,
@@ -225,23 +225,23 @@ public:
 			   const IPosition& stride);
   
   // Get a section of the mask.
-  virtual Bool doGetMaskSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetMaskSlice (Array<bool>& buffer, const Slicer& section);
 
   // This function is used by the LatticeIterator class to generate an
   // iterator of the correct type for this Lattice. Not recommended
   // for general use. 
   virtual LatticeIterInterface<T>* makeIter
                                (const LatticeNavigator& navigator,
-				Bool useRef) const;
+				bool useRef) const;
 
   // Get the best cursor shape.
-  virtual IPosition doNiceCursorShape (uInt maxPixels) const;
+  virtual IPosition doNiceCursorShape (uint32_t maxPixels) const;
 
   // Handle the (un)locking and syncing, etc.
   // <group>
-  virtual Bool lock (FileLocker::LockType, uInt nattempts);
+  virtual bool lock (FileLocker::LockType, uint32_t nattempts);
   virtual void unlock();
-  virtual Bool hasLock (FileLocker::LockType) const;
+  virtual bool hasLock (FileLocker::LockType) const;
   virtual void resync();
   virtual void flush();
   virtual void tempClose();
@@ -251,9 +251,9 @@ public:
 private:
   // Set the coordinates.
   // It removes world axes if the subimage has axes removed.
-  // <br>If preserveAxesOrder is True and axes are dropped, it will preserve
+  // <br>If preserveAxesOrder is true and axes are dropped, it will preserve
   // the order of the axes as well as the order of the coordinates.
-  void setCoords (const CoordinateSystem& coords, Bool preserveAxesOrder);
+  void setCoords (const CoordinateSystem& coords, bool preserveAxesOrder);
   void setCoords (const CoordinateSystem& coords);
 
   // Set the other members to the one in itsImagePtr.
@@ -263,7 +263,7 @@ private:
   void setMembers (const Slicer& slicer);
 
   // Helper
-   void convertIPosition(Vector<Float>& x, const IPosition& pos) const;
+   void convertIPosition(Vector<float>& x, const IPosition& pos) const;
 
 
   //# itsImagePtr points to the parent image.
@@ -278,7 +278,7 @@ protected:
 };
 
 //# Declare extern templates for often used types.
-  extern template class SubImage<Float>;
+  extern template class SubImage<float>;
   extern template class SubImage<Complex>;
 
 

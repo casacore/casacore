@@ -1,4 +1,4 @@
-//# BitFlagsEngine.h: Templated virtual column engine to map bit flags to a Bool
+//# BitFlagsEngine.h: Templated virtual column engine to map bit flags to a bool
 //# Copyright (C) 2009
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -39,10 +39,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     // Form the mask as given.
-    explicit BFEngineMask (uInt mask=0xffffffff);
+    explicit BFEngineMask (uint32_t mask=0xffffffff);
 
     // Form the mask from the given keywords defining the bits.
-    BFEngineMask (const Array<String>& keys, uInt defaultMask);
+    BFEngineMask (const Array<String>& keys, uint32_t defaultMask);
 
     // Make the mask from the given keywords defining the bits.
     void makeMask (const TableColumn& column);
@@ -56,7 +56,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void toRecord (RecordInterface& spec, const String& prefix) const;
 
     // Get the mask.
-    uInt getMask() const
+    uint32_t getMask() const
       { return itsMask; }
 
     // Get the mask keywords.
@@ -65,12 +65,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     Array<String> itsMaskKeys;
-    uInt          itsMask;
+    uint32_t          itsMask;
   };
 
 
   // <summary>
-  // Templated virtual column engine to map bit flags to a Bool.
+  // Templated virtual column engine to map bit flags to a bool.
   // </summary>
 
   // <use visibility=export>
@@ -86,13 +86,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   // <synopsis>
   // BitFlagsEngine is a virtual column engine which maps an integer column
-  // containing flag bits to a Bool column. It can be used in a MeasurementSet
+  // containing flag bits to a bool column. It can be used in a MeasurementSet
   // to have multiple flag categories, yet use all existing software that
-  // deals with the Bool FLAG column.
+  // deals with the bool FLAG column.
   //
   // The engine support read as well as write access.
   // For both cases a mask can be defined telling which bits have to be taken
-  // into account. For example, when writing to the Bool FLAG column, the data
+  // into account. For example, when writing to the bool FLAG column, the data
   // in the bitflags column twill be or-ed with the bits as defined in the
   // writemask. Similary when reading FLAG, only the bits of the readmask are
   // taken into account.
@@ -118,40 +118,40 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // by changing those keywords before opening a table. However, that is
   // not recommended.
   //
-  // BitFlagsEngine is known to the table system for data types uChar, Short,
-  // and Int.
+  // BitFlagsEngine is known to the table system for data types unsigned char, int16_t,
+  // and int32_t.
   // </synopsis>
 
   // <motivation>
   // The FLAG_CATEGORY defined the Measurement does not work because adding
   // an extra flag means resizing the entire array which is slow.
   // This class makes it possible to use an integer column to store flags
-  // and map it directly to a Bool column.
+  // and map it directly to a bool column.
   // </motivation>
 
   // <example>
   // <srcblock>
   // // Create the table description and 2 columns with indirect arrays in it.
-  // // The Int column will be stored, while the Bool will be used as virtual.
+  // // The int32_t column will be stored, while the bool will be used as virtual.
   // TableDesc tableDesc ("", TableDesc::Scratch);
-  // tableDesc.addColumn (ArrayColumnDesc<Int> ("BitBlags"));
-  // tableDesc.addColumn (ArrayColumnDesc<Bool> ("FLAG"));
+  // tableDesc.addColumn (ArrayColumnDesc<int32_t> ("BitBlags"));
+  // tableDesc.addColumn (ArrayColumnDesc<bool> ("FLAG"));
   //
   // // Create a new table using the table description.
   // SetupNewTable newtab (tableDesc, "tab.data", Table::New);
   //
   // // Create the engine and bind the FLAG column to it.
-  // BitFlagsEngine<Int> flagsEngine("FLAG", "BitFlags");
+  // BitFlagsEngine<int32_t> flagsEngine("FLAG", "BitFlags");
   // newtab.bindColumn ("FLAG", flagsEngine);
   // // Create the table.
   // Table table (newtab);
   //
   // // Store a 3-D array (with dim. 2,3,4) into each row of the column.
   // // The shape of each array in the column is implicitly set by the put
-  // // function. This will also set the shape of the underlying Int array.
+  // // function. This will also set the shape of the underlying int32_t array.
   // ArrayColumn data (table, "virtualArray");
-  // Array<Bool> someArray(IPosition(4,2,3,4));
-  // someArray = True;
+  // Array<bool> someArray(IPosition(4,2,3,4));
+  // someArray = true;
   // for (rownr_t i=0, i<10; i++) {          // table will have 10 rows
   //     table.addRow();
   //     data.put (i, someArray)
@@ -165,37 +165,37 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //  <li> only suited for built-in integer data types
   // </templating>
 
-  template<typename StoredType> class BitFlagsEngine : public BaseMappedArrayEngine<Bool, StoredType>
+  template<typename StoredType> class BitFlagsEngine : public BaseMappedArrayEngine<bool, StoredType>
   {
     //# Make members of parent class known.
   public:
-    using BaseMappedArrayEngine<Bool,StoredType>::virtualName;
+    using BaseMappedArrayEngine<bool,StoredType>::virtualName;
   protected:
-    using BaseMappedArrayEngine<Bool,StoredType>::storedName;
-    using BaseMappedArrayEngine<Bool,StoredType>::table;
-    using BaseMappedArrayEngine<Bool,StoredType>::column;
-    using BaseMappedArrayEngine<Bool,StoredType>::setNames;
+    using BaseMappedArrayEngine<bool,StoredType>::storedName;
+    using BaseMappedArrayEngine<bool,StoredType>::table;
+    using BaseMappedArrayEngine<bool,StoredType>::column;
+    using BaseMappedArrayEngine<bool,StoredType>::setNames;
 
   public:
-    // Construct an engine to map integer arrays in a column to Bool arrays.
+    // Construct an engine to map integer arrays in a column to bool arrays.
     // StoredColumnName is the name of the column where the integer
     // data will be put and must have data type StoredType.
-    // The virtual column using this engine must have data type Bool.
+    // The virtual column using this engine must have data type bool.
     // <br>A mask can be given that specifies which bits to use in the mapping
-    // from StoredType to Bool. Similarly a mask can be given defining which
-    // bits to set when mapping from Bool to StoredType.
+    // from StoredType to bool. Similarly a mask can be given defining which
+    // bits to set when mapping from bool to StoredType.
     BitFlagsEngine (const String& virtualColumnName,
                     const String& storedColumnName,
                     StoredType readMask=StoredType(0xffffffff),
                     StoredType writeMask=1);
 
-    // Construct an engine to map integer arrays in a column to Bool arrays.
+    // Construct an engine to map integer arrays in a column to bool arrays.
     // StoredColumnName is the name of the column where the scaled
     // data will be put and must have data type StoredType.
-    // The virtual column using this engine must have data type Bool.
+    // The virtual column using this engine must have data type bool.
     // <br>A mask can be given that specifies which bits to use in the mapping
-    // from StoredType to Bool. Similarly a mask can be given defining which
-    // bits to set when mapping from Bool to StoredType.
+    // from StoredType to bool. Similarly a mask can be given defining which
+    // bits to set when mapping from bool to StoredType.
     // The masks are given using the values of keywords in the stored column.
     // Each keyword should be an integer defining one or more bits and can be
     // seen as a symbolic name. The keyword values are or-ed to form the mask.
@@ -239,7 +239,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Register the class name and the static makeObject "constructor".
     // This will make the engine known to the table system.
     // The automatically invoked registration function in DataManReg.cc
-    // contains BitFlagsEngine<Int>.
+    // contains BitFlagsEngine<int32_t>.
     // Any other instantiation of this class must be registered "manually"
     // (or added to DataManReg.cc).
     static void registerClass();
@@ -267,74 +267,74 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Get an array in the given row.
     // This will scale and offset from the underlying array.
-    void getArray (rownr_t rownr, Array<Bool>& array);
+    void getArray (rownr_t rownr, Array<bool>& array);
 
     // Put an array in the given row.
     // This will scale and offset to the underlying array.
-    void putArray (rownr_t rownr, const Array<Bool>& array);
+    void putArray (rownr_t rownr, const Array<bool>& array);
 
     // Get a section of the array in the given row.
     // This will scale and offset from the underlying array.
-    void getSlice (rownr_t rownr, const Slicer& slicer, Array<Bool>& array);
+    void getSlice (rownr_t rownr, const Slicer& slicer, Array<bool>& array);
 
     // Put into a section of the array in the given row.
     // This will scale and offset to the underlying array.
     void putSlice (rownr_t rownr, const Slicer& slicer,
-		   const Array<Bool>& array);
+		   const Array<bool>& array);
 
     // Get an entire column.
     // This will scale and offset from the underlying array.
-    void getArrayColumn (Array<Bool>& array);
+    void getArrayColumn (Array<bool>& array);
 
     // Put an entire column.
     // This will scale and offset to the underlying array.
-    void putArrayColumn (const Array<Bool>& array);
+    void putArrayColumn (const Array<bool>& array);
 
     // Get some array values in the column.
     // This will scale and offset from the underlying array.
     virtual void getArrayColumnCells (const RefRows& rownrs,
-				      Array<Bool>& data);
+				      Array<bool>& data);
 
     // Put some array values in the column.
     // This will scale and offset to the underlying array.
     virtual void putArrayColumnCells (const RefRows& rownrs,
-				      const Array<Bool>& data);
+				      const Array<bool>& data);
 
     // Get a section of all arrays in the column.
     // This will scale and offset from the underlying array.
-    void getColumnSlice (const Slicer& slicer, Array<Bool>& array);
+    void getColumnSlice (const Slicer& slicer, Array<bool>& array);
 
     // Put a section of all arrays in the column.
     // This will scale and offset to the underlying array.
-    void putColumnSlice (const Slicer& slicer, const Array<Bool>& array);
+    void putColumnSlice (const Slicer& slicer, const Array<bool>& array);
 
     // Get a section of some arrays in the column.
     // This will scale and offset from the underlying array.
     virtual void getColumnSliceCells (const RefRows& rownrs,
 				      const Slicer& slicer,
-				      Array<Bool>& data);
+				      Array<bool>& data);
 
     // Put into a section of some arrays in the column.
     // This will scale and offset to the underlying array.
     virtual void putColumnSliceCells (const RefRows& rownrs,
 				      const Slicer& slicer,
-				      const Array<Bool>& data);
+				      const Array<bool>& data);
 
-    // Map bit flags array to Bool array.
+    // Map bit flags array to bool array.
     // This is meant when reading an array from the stored column.
-    void mapOnGet (Array<Bool>& array,
+    void mapOnGet (Array<bool>& array,
                    const Array<StoredType>& stored);
 
-    // Map Bool array to bit flags array.
+    // Map bool array to bit flags array.
     // This is meant when writing an array into the stored column.
-    void mapOnPut (const Array<Bool>& array,
+    void mapOnPut (const Array<bool>& array,
                    Array<StoredType>& stored);
 
-    // Functor to and an array and mask and convert to Bool.
+    // Functor to and an array and mask and convert to bool.
     struct FlagsToBool
     {
       explicit FlagsToBool(StoredType readMask) : itsMask(readMask) {}
-      Bool operator() (StoredType value) const
+      bool operator() (StoredType value) const
         { return (value & itsMask) != 0; }
     private:
       StoredType itsMask;
@@ -345,7 +345,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     struct BoolToFlags
     {
       explicit BoolToFlags(StoredType writeMask) : itsMask(writeMask) {}
-      StoredType operator() (Bool flag, StoredType value) const
+      StoredType operator() (bool flag, StoredType value) const
         { return (flag ? value&itsMask : value); }
     private:
       StoredType itsMask;
@@ -366,7 +366,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     BFEngineMask itsBFEWriteMask;
     StoredType   itsReadMask;
     StoredType   itsWriteMask;
-    Bool         itsIsNew;         //# True = new table
+    bool         itsIsNew;         //# true = new table
   };
 
 

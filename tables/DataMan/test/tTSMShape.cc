@@ -37,12 +37,12 @@ void check (const IPosition& shape, const IPosition& offsetIncr,
 {
     TSMShape tsmShape (shape);
     IPosition position(4);
-    uInt checkOffset = 0;
+    uint32_t checkOffset = 0;
     for (position(3)=0; position(3)<stride(3); position(3)++) {
 	for (position(2)=0; position(2)<stride(2); position(2)++) {
 	    for (position(1)=0; position(1)<stride(1); position(1)++) {
 		for (position(0)=0; position(0)<stride(0); position(0)++) {
-		    uInt offset = tsmShape.offset (position);
+		    uint32_t offset = tsmShape.offset (position);
 		    if (offset != checkOffset) {
 			cout << message << "invalid offset: " << offset
 			     << " iso " << checkOffset << endl;
@@ -68,12 +68,12 @@ int main()
     IPosition shape (3,4,5,6);
     IPosition origin(3,2,5,3);
     TSMShape tsmShape (shape);
-    uInt checkOffset = 0;
+    uint32_t checkOffset = 0;
     IPosition position(3);
     for (position(2)=0; position(2)<shape(2); position(2)++) {
 	for (position(1)=0; position(1)<shape(1); position(1)++) {
 	    for (position(0)=0; position(0)<shape(0); position(0)++) {
-		uInt offset = tsmShape.offset (position+origin, origin);
+		uint32_t offset = tsmShape.offset (position+origin, origin);
 		if (offset != checkOffset) {
 		    cout << "invalid orig offset: " << offset << " iso "
 			 << checkOffset << endl;

@@ -87,16 +87,16 @@ public:
   virtual ~MSSpWindowIndex() {}
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency group or groups
-  Vector<Int> matchFreqGrp(const Int& freqGrp);
-  Vector<Int> matchFreqGrp(const Vector<Int>& freqGrps);
+  Vector<int32_t> matchFreqGrp(const int32_t& freqGrp);
+  Vector<int32_t> matchFreqGrp(const Vector<int32_t>& freqGrps);
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency group name
-  Vector<Int> matchFreqGrpName(const String& freqGrpName);
+  Vector<int32_t> matchFreqGrpName(const String& freqGrpName);
 
   // Look up SPECTRAL_WINDOW_ID's for a given frequency axis sampling
-  Vector<Int> matchFreq(const Vector<MFrequency>& chanFreq,
+  Vector<int32_t> matchFreq(const Vector<MFrequency>& chanFreq,
 			const Vector<MVFrequency>& chanWidth,
-			const Double& freqTol);
+			const double& freqTol);
 
 private:
   // Disallow null constructor
@@ -106,8 +106,8 @@ private:
   MSSpWindowColumns msSpWindowCols_p;
 
   // Vector cache of SpWindow id's
-  Vector<Int> spWindowIds_p;
-  Int nrows_p;
+  Vector<int32_t> spWindowIds_p;
+  int32_t nrows_p;
 };
 
 

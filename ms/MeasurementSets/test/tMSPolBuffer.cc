@@ -69,18 +69,18 @@ int main() {
 //   	AlwaysAssert(polBuffer.corrType()(0).shape() == IPosition(1, 1),
 //   		     AipsError);
 //   	AlwaysAssert(allEQ(polBuffer.corrType()(0), 
-// 			   static_cast<Int>(Stokes::Undefined)), AipsError);
+// 			   static_cast<int32_t>(Stokes::Undefined)), AipsError);
 //   	AlwaysAssert(polBuffer.corrType()(4).shape() == IPosition(1, 4),
 //   		     AipsError);
 //   	AlwaysAssert(allEQ(polBuffer.corrType()(4), 
-// 			   static_cast<Int>(Stokes::Undefined)), AipsError);
+// 			   static_cast<int32_t>(Stokes::Undefined)), AipsError);
 //   	polBuffer.corrType()
-// 	  .put(0, Vector<Int>(1, static_cast<Int>(Stokes::RR)));
-// 	Vector<Int> ct(4);
-// 	ct(0) =  static_cast<Int>(Stokes::XX);
-// 	ct(1) =  static_cast<Int>(Stokes::XY);
-// 	ct(2) =  static_cast<Int>(Stokes::YY);
-// 	ct(3) =  static_cast<Int>(Stokes::YX);
+// 	  .put(0, Vector<int32_t>(1, static_cast<int32_t>(Stokes::RR)));
+// 	Vector<int32_t> ct(4);
+// 	ct(0) =  static_cast<int32_t>(Stokes::XX);
+// 	ct(1) =  static_cast<int32_t>(Stokes::XY);
+// 	ct(2) =  static_cast<int32_t>(Stokes::YY);
+// 	ct(3) =  static_cast<int32_t>(Stokes::YX);
 //   	polBuffer.corrType().put(4, ct);
 //       }
 //       { // test the corrProduct functions.
@@ -90,15 +90,15 @@ int main() {
 //   	AlwaysAssert(polBuffer.corrProduct()(4).shape() == IPosition(2, 2, 4),
 //   		     AipsError);
 //   	AlwaysAssert(allEQ(polBuffer.corrProduct()(4), 0), AipsError);
-//    	polBuffer.corrProduct().put(0, Matrix<Int>(2, 1, 1));
-//  	Matrix<Int> pr(2, 4, 0);
+//    	polBuffer.corrProduct().put(0, Matrix<int32_t>(2, 1, 1));
+//  	Matrix<int32_t> pr(2, 4, 0);
 // 	pr(1,1) = pr(2,0) = pr(2,1) = pr(3,0) = 1;
 //    	polBuffer.corrProduct().put(4, pr);
 //       }
 //       { // test the flagRow functions.
-//  	AlwaysAssert(polBuffer.flagRow()(0) == False, AipsError);
-//  	AlwaysAssert(polBuffer.flagRow()(4) == False, AipsError);
-//  	polBuffer.flagRow().put(3, True);
+//  	AlwaysAssert(polBuffer.flagRow()(0) == false, AipsError);
+//  	AlwaysAssert(polBuffer.flagRow()(4) == false, AipsError);
+//  	polBuffer.flagRow().put(3, true);
 //       }
 //       { // Check the assignment operator & copy constructor
 //  	MSPolarizationBuffer otherBuffer(polBuffer);
@@ -109,11 +109,11 @@ int main() {
 //  	// Check the reference semantics by adding data here and seeing if it
 //  	// is mirrored into the newBuffer object.
 //   	polBuffer.corrType()
-// 	  .put(1, Vector<Int>(4, static_cast<Int>(Stokes::I)));
-//    	polBuffer.corrProduct().put(1, Matrix<Int>(2, 4, 1));
-//   	polBuffer.flagRow().put(1, True);
+// 	  .put(1, Vector<int32_t>(4, static_cast<int32_t>(Stokes::I)));
+//    	polBuffer.corrProduct().put(1, Matrix<int32_t>(2, 4, 1));
+//   	polBuffer.flagRow().put(1, true);
 //  	// Save the buffer to disk
-//  	polBuffer.save(filename, True);
+//  	polBuffer.save(filename, true);
 //       }
 //     }
 //     { // check the data has not been lost.
@@ -123,38 +123,38 @@ int main() {
 //       AlwaysAssert(newBuffer.corrType()(0).shape() == IPosition(1, 1),
 // 		   AipsError);
 //       AlwaysAssert(allEQ(newBuffer.corrType()(0), 
-// 			 static_cast<Int>(Stokes::RR)), AipsError);
+// 			 static_cast<int32_t>(Stokes::RR)), AipsError);
 //       AlwaysAssert(newBuffer.corrType()(4).shape() == IPosition(1, 4),
 // 		   AipsError);
-//       Vector<Int> ct(4);
-//       ct(0) =  static_cast<Int>(Stokes::XX);
-//       ct(1) =  static_cast<Int>(Stokes::XY);
-//       ct(2) =  static_cast<Int>(Stokes::YY);
-//       ct(3) =  static_cast<Int>(Stokes::YX);
+//       Vector<int32_t> ct(4);
+//       ct(0) =  static_cast<int32_t>(Stokes::XX);
+//       ct(1) =  static_cast<int32_t>(Stokes::XY);
+//       ct(2) =  static_cast<int32_t>(Stokes::YY);
+//       ct(3) =  static_cast<int32_t>(Stokes::YX);
 //       AlwaysAssert(allEQ(newBuffer.corrType()(4), ct), AipsError);
 //       AlwaysAssert(newBuffer.corrProduct()(0).shape() == IPosition(2, 2, 1),
 // 		   AipsError);
 //       AlwaysAssert(allEQ(newBuffer.corrProduct()(0), 1), AipsError);
 //       AlwaysAssert(newBuffer.corrProduct()(4).shape() == IPosition(2, 2, 4),
 // 		   AipsError);
-//       Matrix<Int> pr(2, 4, 0);
+//       Matrix<int32_t> pr(2, 4, 0);
 //       pr(1,1) = pr(2,0) = pr(2,1) = pr(3,0) = 1;
 //       AlwaysAssert(allEQ(newBuffer.corrProduct()(4), pr), AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(0) == False, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(3) == True, AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(4) == False, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(0) == false, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(3) == true, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(4) == false, AipsError);
 //       // check the reference semantics
 //       AlwaysAssert(allEQ(newBuffer.corrType()(1), 
-// 			 static_cast<Int>(Stokes::I)), AipsError);
+// 			 static_cast<int32_t>(Stokes::I)), AipsError);
 //       AlwaysAssert(allEQ(newBuffer.corrProduct()(1), 1), AipsError);
-//       AlwaysAssert(newBuffer.flagRow()(1) == True, AipsError);
+//       AlwaysAssert(newBuffer.flagRow()(1) == true, AipsError);
 //     }
 //     { // Check the isValid functions
-//       AlwaysAssert(newBuffer.isValid(True) == False, AipsError);
-//       AlwaysAssert(newBuffer.isValid(4u) == True, AipsError);
-//       AlwaysAssert(newBuffer.isValid(3u) == False, AipsError);
-//       AlwaysAssert(newBuffer.isValid(2u) == False, AipsError);
-//       AlwaysAssert(newBuffer.isValid() == False, AipsError);
+//       AlwaysAssert(newBuffer.isValid(true) == false, AipsError);
+//       AlwaysAssert(newBuffer.isValid(4u) == true, AipsError);
+//       AlwaysAssert(newBuffer.isValid(3u) == false, AipsError);
+//       AlwaysAssert(newBuffer.isValid(2u) == false, AipsError);
+//       AlwaysAssert(newBuffer.isValid() == false, AipsError);
 //     }
 //     { // Check the match functions
 //     }

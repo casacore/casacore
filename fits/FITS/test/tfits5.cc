@@ -248,10 +248,10 @@ int main(int argc, const char* argv[])
 
 	// Create the initial keyword list
 	FitsKeywordList st;
-	st.mk(FITS::SIMPLE,True,"Standard FITS format");
+	st.mk(FITS::SIMPLE,true,"Standard FITS format");
 	st.mk(FITS::BITPIX,8,"Character Information");
 	st.mk(FITS::NAXIS,0,"No image data array present");
-	st.mk(FITS::EXTEND,True,"Extension exists");
+	st.mk(FITS::EXTEND,true,"Extension exists");
 	st.end();
 
 	// Create and write the initial HDU

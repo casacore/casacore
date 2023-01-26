@@ -89,22 +89,22 @@ void LittleEndianConversion::toLocal (unsigned int*  to, const void* from,
     }
 }
 
-void LittleEndianConversion::toLocal (Int64* to, const void* from,
+void LittleEndianConversion::toLocal (int64_t* to, const void* from,
 				      size_t nr)
 {
     const char* data = (const char*)from;
-    Int64* last = to + nr;
+    int64_t* last = to + nr;
     while (to < last) {
 	toLocal (*to++, data);
 	data += 4;
     }
 }
 
-void LittleEndianConversion::toLocal (uInt64* to, const void* from,
+void LittleEndianConversion::toLocal (uint64_t* to, const void* from,
 				      size_t nr)
 {
     const char* data = (const char*)from;
-    uInt64* last = to + nr;
+    uint64_t* last = to + nr;
     while (to < last) {
 	toLocal (*to++, data);
 	data += 4;
@@ -192,22 +192,22 @@ void LittleEndianConversion::fromLocal (void* to, const unsigned int* from,
     }
 }
 
-void LittleEndianConversion::fromLocal (void* to, const Int64* from,
+void LittleEndianConversion::fromLocal (void* to, const int64_t* from,
 					size_t nr)
 {
     char* data = (char*)to;
-    const Int64* last = from + nr;
+    const int64_t* last = from + nr;
     while (from < last) {
 	fromLocal (data, *from++);
 	data += 4;
     }
 }
 
-void LittleEndianConversion::fromLocal (void* to, const uInt64* from,
+void LittleEndianConversion::fromLocal (void* to, const uint64_t* from,
 					size_t nr)
 {
     char* data = (char*)to;
-    const uInt64* last = from + nr;
+    const uint64_t* last = from + nr;
     while (from < last) {
 	fromLocal (data, *from++);
 	data += 4;

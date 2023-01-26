@@ -88,23 +88,23 @@ void showTableCache()
   const TableCache& cache = PlainTable::tableCache();
   Vector<String> lockedTables = cache.getTableNames();
 
-  Int n=lockedTables.nelements();
+  int32_t n=lockedTables.nelements();
   if(n > 0)
     cout << endl << "####WARNING!!!!: The Table Cache has the following " << n << " entries:"  << endl;
   
-  for (Int i=0; i<n; ++i) 
+  for (int32_t i=0; i<n; ++i) 
     cout << "    " << i << ": \"" <<  lockedTables(i) << "\"" << endl;
 }
 //
 //-------------------------------------------------------------------------
 //
-void printBaselineList(Matrix<Int> list,ostream& os)
+void printBaselineList(Matrix<int32_t> list,ostream& os)
 {
   os << "\tBaselines = ";
   IPosition shp=list.shape();
-  for(Int j=0;j<shp(1);j++)
+  for(int32_t j=0;j<shp(1);j++)
     {
-      for(Int i=0;i<shp(0);i++)
+      for(int32_t i=0;i<shp(0);i++)
 	os << list(i,j) << " ";
       os << endl << "\t            " ;
     }
@@ -113,7 +113,7 @@ void printBaselineList(Matrix<Int> list,ostream& os)
 //
 //-------------------------------------------------------------------------
 //
-void printInfo(MSSelection& msSelection, Int& nRows)
+void printInfo(MSSelection& msSelection, int32_t& nRows)
 {
   cout << "BE: Baseline Expr=" << msSelection.getExpr(MSSelection::ANTENNA_EXPR) << endl;
   cout << "\tBE: Ant1         = " << msSelection.getAntenna1List() << endl;
@@ -126,8 +126,8 @@ void printInfo(MSSelection& msSelection, Int& nRows)
 
   cout << "SE: SPW Expr=" << msSelection.getExpr(MSSelection::SPW_EXPR) << endl;
   cout << "\tSE: SPW          = " << msSelection.getSpwList()      << endl;
-  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,True)     << endl;
-  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,True)     << endl;
+  cout << "\tSE: Chan         = " << msSelection.getChanList(NULL,1,true)     << endl;
+  cout << "\tSE: Freq         = " << msSelection.getChanFreqList(NULL,true)     << endl;
 
   cout << "ScE: Scan Expr=" << msSelection.getExpr(MSSelection::SCAN_EXPR) << endl;
   cout << "\tScE: tScan         = " << msSelection.getScanList()     << endl;
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
   string MSNBuf,OutMSBuf,fieldStr,timeStr,spwStr,baselineStr,
     uvdistStr,taqlStr,scanStr,arrayStr, polnStr,stateObsModeStr,
     observationStr;
-  Bool deepCopy=0,installEH=1;
+  bool deepCopy=0,installEH=1;
 
   MSNBuf=OutMSBuf=fieldStr=timeStr=spwStr=baselineStr=
     uvdistStr=taqlStr=scanStr=arrayStr=polnStr=stateObsModeStr=observationStr="";
@@ -210,10 +210,10 @@ int main(int argc, char **argv)
 	    // the MSSelection object.
 	    //
 	    MSSelectionLogError mssLEA,mssLES, mssLESpw, mssLEF;
-	    msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,True);
-	    msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,True);
-	    msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,True);
-	    msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF,True);
+	    msSelection.setErrorHandler(MSSelection::ANTENNA_EXPR, &mssLEA,true);
+	    msSelection.setErrorHandler(MSSelection::STATE_EXPR, &mssLES,true);
+	    msSelection.setErrorHandler(MSSelection::SPW_EXPR, &mssLESpw,true);
+	    msSelection.setErrorHandler(MSSelection::FEED_EXPR, &mssLEF,true);
 	  }
 
     	// msSelection.reset(ms,MSSelection::PARSE_NOW,
@@ -227,7 +227,7 @@ int main(int argc, char **argv)
     	// TableExprNode ten=msSelection.toTableExprNode(&msInterface);
     	// cerr << "TEN rows = " << ten.nrow() << endl;
 
-	Int nRows=0;
+	int32_t nRows=0;
 	try
 	  {
 	    msSelection.getSelectedMS(selectedMS);

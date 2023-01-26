@@ -72,7 +72,7 @@ class IPosition;
 // is for the data type you are processing.  The second type is
 // for what type you want the results of the processing assigned to.
 // For example, if you are computing sums of squares for statistical
-// purposes, you might use higher precision (FLoat->Double) for this.
+// purposes, you might use higher precision (FLoat->double) for this.
 // No check is made that the template types are self-consistent.
 // </synopsis>
 
@@ -97,40 +97,40 @@ public:
 // The init function for a derived class.
 // It can be used to check if <src>nOutPixelsPerCollapse</src>
 // corresponds with the number of pixels produced per collapsed line.
-    virtual void init (uInt nOutPixelsPerCollapse) = 0;
+    virtual void init (uint32_t nOutPixelsPerCollapse) = 0;
 
 // Can the process function in the derived class handle a null mask?
 // If not, LatticeApply ensures that it'll always pass a filled mask vector,
 // even if the lattice does not have a mask (in that case that mask
-// contains all True values).
-// <br>The default implementation returns False.
+// contains all true values).
+// <br>The default implementation returns false.
 // <br>The function is there to make optimization possible when no masks
 // are involved. On the other side, it allows the casual user to ignore
 // optimization.
-    virtual Bool canHandleNullMask() const;
+    virtual bool canHandleNullMask() const;
 
 // Collapse the given line and return one value from that operation.
 // The position in the Lattice at the start of the line is input
 // as well.
-// <br>When function <src>canHandleNullMask</src> returned True,
+// <br>When function <src>canHandleNullMask</src> returned true,
 // it is possible that <src>mask</src> is an empty vector indicating
 // that the input has no mask, thus all values are valid.
 // If not empty, the mask has the same length as the line.
-    virtual void process (U& result, Bool& resultMask,
+    virtual void process (U& result, bool& resultMask,
 			  const Vector<T>& line,
-			  const Vector<Bool>& mask,
+			  const Vector<bool>& mask,
 			  const IPosition& pos) = 0;
 
 // Collapse the given line and return a line of values from that operation.
 // The position in the Lattice at the start of the line is input
 // as well.
-// <br>When function <src>canHandleNullMask</src> returned True,
+// <br>When function <src>canHandleNullMask</src> returned true,
 // it is possible that <src>mask</src> is an empty vector indicating
 // that the input has no mask, thus all values are valid.
 // If not empty, the mask has the same length as the line.
-    virtual void multiProcess (Vector<U>& result, Vector<Bool>& resultMask,
+    virtual void multiProcess (Vector<U>& result, Vector<bool>& resultMask,
 			       const Vector<T>& line,
-			       const Vector<Bool>& mask,
+			       const Vector<bool>& mask,
 			       const IPosition& pos) = 0;
 };
 

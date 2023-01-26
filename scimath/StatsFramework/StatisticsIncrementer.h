@@ -33,7 +33,7 @@ namespace casacore {
 // stats framework.
 
 template <
-    class DataIterator, class MaskIterator=const Bool *,
+    class DataIterator, class MaskIterator=const bool *,
     class WeightsIterator=DataIterator
 > class StatisticsIncrementer {
 public:
@@ -47,15 +47,15 @@ public:
 	// value of <src>dataStride</src> and <src>maskStride</src>
 
     inline static void increment(
-        DataIterator& datum, uInt64& loopCount, uInt dataStride
+        DataIterator& datum, uint64_t& loopCount, uint32_t dataStride
     ) {
         std::advance(datum, dataStride);
         ++loopCount;
     }
 
     inline static void increment(
-        DataIterator& datum, uInt64& loopCount,
-        WeightsIterator& weight, uInt dataStride
+        DataIterator& datum, uint64_t& loopCount,
+        WeightsIterator& weight, uint32_t dataStride
     ) {
         std::advance(datum, dataStride);
         std::advance(weight, dataStride);
@@ -63,8 +63,8 @@ public:
     }
 
     inline static void increment(
-        DataIterator& datum, uInt64& loopCount, MaskIterator& mask,
-        uInt dataStride, uInt maskStride
+        DataIterator& datum, uint64_t& loopCount, MaskIterator& mask,
+        uint32_t dataStride, uint32_t maskStride
     ) {
         std::advance(datum, dataStride);
         std::advance(mask, maskStride);
@@ -72,8 +72,8 @@ public:
     }
 
     inline static void increment(
-        DataIterator& datum, uInt64& loopCount, WeightsIterator& weight,
-        MaskIterator& mask, uInt dataStride, uInt maskStride
+        DataIterator& datum, uint64_t& loopCount, WeightsIterator& weight,
+        MaskIterator& mask, uint32_t dataStride, uint32_t maskStride
     ) {
         std::advance(datum, dataStride);
         std::advance(weight, dataStride);

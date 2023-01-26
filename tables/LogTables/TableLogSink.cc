@@ -176,13 +176,13 @@ void TableLogSink::reopenRW (const LogFilterInterface& aFilter)
     filter (aFilter);
 }
 
-Bool TableLogSink::postLocally (const LogMessage& message)
+bool TableLogSink::postLocally (const LogMessage& message)
 {
     if (log_table_p.isWritable()) {
         log_table_p.reopenRW();
         attachCols();
     }
-    Bool posted = False;
+    bool posted = false;
     if (filter().pass(message)) {
 	String tmp;
 	message.origin().objectID().toString(tmp);
@@ -191,37 +191,37 @@ Bool TableLogSink::postLocally (const LogMessage& message)
                       LogMessage::toString(message.priority()),
                       message.origin().location(),
                       tmp);
-        posted = True;
+        posted = true;
     }
     return posted;
 }
 
-uInt TableLogSink::nelements() const
+uint32_t TableLogSink::nelements() const
 {
   return table().nrow();
 }
 
-Double TableLogSink::getTime (uInt i) const
+double TableLogSink::getTime (uint32_t i) const
 {
   AlwaysAssert (i < table().nrow(), AipsError);
   return roTime()(i);
 }
-String TableLogSink::getPriority (uInt i) const
+String TableLogSink::getPriority (uint32_t i) const
 {
   AlwaysAssert (i < table().nrow(), AipsError);
   return roPriority()(i);
 }
-String TableLogSink::getMessage (uInt i) const
+String TableLogSink::getMessage (uint32_t i) const
 {
   AlwaysAssert (i < table().nrow(), AipsError);
   return roMessage()(i);
 }
-String TableLogSink::getLocation (uInt i) const
+String TableLogSink::getLocation (uint32_t i) const
 {
   AlwaysAssert (i < table().nrow(), AipsError);
   return roLocation()(i);
 }
-String TableLogSink::getObjectID (uInt i) const
+String TableLogSink::getObjectID (uint32_t i) const
 {
   AlwaysAssert (i < table().nrow(), AipsError);
   return roObjectID()(i);
@@ -251,7 +251,7 @@ TableDesc TableLogSink::logTableDescription()
   TableDesc desc;
   desc.comment() = "Log message table";
 
-  desc.addColumn (ScalarColumnDesc<Double>(columnName(TIME),
+  desc.addColumn (ScalarColumnDesc<double>(columnName(TIME),
 					   "MJD in seconds"));
   ScalarColumnDesc<String> pdesc (columnName(PRIORITY));
   pdesc.setMaxLength (9);   // Longest is DEBUGGING
@@ -262,18 +262,18 @@ TableDesc TableLogSink::logTableDescription()
   return desc;
 }
 
-void TableLogSink::flush(Bool)
+void TableLogSink::flush(bool)
 {
   log_table_p.flush();
 }
 
-void TableLogSink::writeLocally (Double mtime,
+void TableLogSink::writeLocally (double mtime,
 				 const String& mmessage,
 				 const String& mpriority,
 				 const String& mlocation,
 				 const String& mobjectID)
 {
-  uInt offset = table().nrow();
+  uint32_t offset = table().nrow();
   // cout << "writing " << mmessage << " at row " << offset << endl;
   table().addRow(1);
   time().put     (offset, mtime);

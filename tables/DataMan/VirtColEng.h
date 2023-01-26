@@ -127,13 +127,13 @@ private:
     VirtualColumnEngine& operator= (const VirtualColumnEngine&);
 
     // The data manager is not a storage manager?
-    virtual Bool isStorageManager() const;
+    virtual bool isStorageManager() const;
 
     // Does the data manager allow to add rows? (default no)
-    virtual Bool canAddRow() const;
+    virtual bool canAddRow() const;
 
     // Does the data manager allow to delete rows? (default no)
-    virtual Bool canRemoveRow() const;
+    virtual bool canRemoveRow() const;
 
     // Add rows to all columns.
     // The default implementation does nothing.
@@ -163,9 +163,9 @@ private:
     // is called AFTER the keywords are written. Thus, in this way the
     // information has to be stored and read back in create, open and/or
     // prepare.
-    // It returns a True status if it had to flush (i.e. if data have changed).
-    // <br>The default implementation does nothing and returns False.
-    virtual Bool flush (AipsIO&, Bool fsync);
+    // It returns a true status if it had to flush (i.e. if data have changed).
+    // <br>The default implementation does nothing and returns false.
+    virtual bool flush (AipsIO&, bool fsync);
 
     // Resync the storage manager with the new file contents.
     // This is done by clearing the cache.

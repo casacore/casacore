@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<class T>
   ostream &operator<<(ostream &os, const SparseDiff<T> &ad) {
     os << "(" << ad.value();
-    for (uInt i=0; i<ad.nDerivatives(); ++i) {
+    for (uint32_t i=0; i<ad.nDerivatives(); ++i) {
       os << ", " << ad.derivatives()[i].first << "|" << 
 	ad.derivatives()[i].second;
     }

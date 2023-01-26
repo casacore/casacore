@@ -103,7 +103,7 @@ public:
 
   // Get the dimensionality of the item in the given row.
   // 0 is returned if there is no array.
-  virtual uInt ndim (rownr_t rownr);
+  virtual uint32_t ndim (rownr_t rownr);
 
   // Get the shape of the array in the given row.
   // An zero-length IPosition is returned if there is no array.
@@ -137,24 +137,24 @@ public:
 
 private:
   // The (unique) sequence number of the column.
-  uInt seqnr_p;
+  uint32_t seqnr_p;
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.
-  uInt nrelem_p;
+  uint32_t nrelem_p;
 
   // Delete the array at the given index.
   void deleteArray (rownr_t index);
 
   // Put the data of a data block.
   // datap is an array of nrval pointers to arrays.
-  virtual void putData (void* datap, uInt nrval, AipsIO&);
+  virtual void putData (void* datap, uint32_t nrval, AipsIO&);
 
   // Get data arrays into a data block at the given index.
   // datap is an array of pointers to arrays. nrval arrays will
   // be allocated and read starting at datap[index].
-  virtual void getData (void* datap, uInt index, uInt nrval,
-                        AipsIO&, uInt version);
+  virtual void getData (void* datap, uint32_t index, uint32_t nrval,
+                        AipsIO&, uint32_t version);
 
   // Forbid copy constructor.
   StManColumnArrayAipsIO (const StManColumnArrayAipsIO&);

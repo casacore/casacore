@@ -91,8 +91,8 @@ public:
     static void toLocal (unsigned short& to, const void* from);
     static void toLocal (int&            to, const void* from);
     static void toLocal (unsigned int&   to, const void* from);
-    static void toLocal (Int64&          to, const void* from);
-    static void toLocal (uInt64&         to, const void* from);
+    static void toLocal (int64_t&          to, const void* from);
+    static void toLocal (uint64_t&         to, const void* from);
     static void toLocal (float&          to, const void* from);
     static void toLocal (double&         to, const void* from);
     // </group>
@@ -116,9 +116,9 @@ public:
 			 size_t nr);
     static void toLocal (unsigned int*   to, const void* from,
 			 size_t nr);
-    static void toLocal (Int64*          to, const void* from,
+    static void toLocal (int64_t*          to, const void* from,
 			 size_t nr);
-    static void toLocal (uInt64*         to, const void* from,
+    static void toLocal (uint64_t*         to, const void* from,
 			 size_t nr);
     static void toLocal (float*          to, const void* from,
 			 size_t nr);
@@ -139,8 +139,8 @@ public:
     static void fromLocal (void* to, unsigned short from);
     static void fromLocal (void* to, int            from);
     static void fromLocal (void* to, unsigned int   from);
-    static void fromLocal (void* to, Int64          from);
-    static void fromLocal (void* to, uInt64         from);
+    static void fromLocal (void* to, int64_t          from);
+    static void fromLocal (void* to, uint64_t         from);
     static void fromLocal (void* to, float          from);
     static void fromLocal (void* to, double         from);
     // </group>
@@ -164,9 +164,9 @@ public:
 			   size_t nr);
     static void fromLocal (void* to, const unsigned int*   from,
 			   size_t nr);
-    static void fromLocal (void* to, const Int64*          from,
+    static void fromLocal (void* to, const int64_t*          from,
 			   size_t nr);
-    static void fromLocal (void* to, const uInt64*         from,
+    static void fromLocal (void* to, const uint64_t*         from,
 			   size_t nr);
     static void fromLocal (void* to, const float*          from,
 			   size_t nr);
@@ -207,9 +207,9 @@ inline void IBMConversion::toLocal (unsigned int& to, const void* from)
     CanonicalConversion::toLocal (to, from);
 }
 
-inline void IBMConversion::toLocal (Int64& to, const void* from)
+inline void IBMConversion::toLocal (int64_t& to, const void* from)
 {
-    if (sizeof(Int64) != 4) {
+    if (sizeof(int64_t) != 4) {
 	if (((signed char*)from)[0] < 0) {
 	    to = -1;
 	}else{
@@ -219,19 +219,19 @@ inline void IBMConversion::toLocal (Int64& to, const void* from)
 #if defined(AIPS_LITTLE_ENDIAN)
     CanonicalConversion::reverse4 (&to, from);
 #else
-    CanonicalConversion::move4 (((char*)&to)+sizeof(Int64)-4, from);
+    CanonicalConversion::move4 (((char*)&to)+sizeof(int64_t)-4, from);
 #endif
 }
 
-inline void IBMConversion::toLocal (uInt64& to, const void* from)
+inline void IBMConversion::toLocal (uint64_t& to, const void* from)
 {
-    if (sizeof(uInt64) != 4) {
+    if (sizeof(uint64_t) != 4) {
 	to = 0;
     }
 #if defined(AIPS_LITTLE_ENDIAN)
     CanonicalConversion::reverse4 (&to, from);
 #else
-    CanonicalConversion::move4 (((char*)&to)+sizeof(uInt64)-4, from);
+    CanonicalConversion::move4 (((char*)&to)+sizeof(uint64_t)-4, from);
 #endif
 }
 
@@ -301,21 +301,21 @@ inline void IBMConversion::fromLocal (void* to, unsigned int from)
     CanonicalConversion::fromLocal (to, from);
 }
 
-inline void IBMConversion::fromLocal (void* to, Int64 from)
+inline void IBMConversion::fromLocal (void* to, int64_t from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     CanonicalConversion::reverse4 (to, &from);
 #else
-    CanonicalConversion::move4 (to, ((char*)&from)+sizeof(Int64)-4);
+    CanonicalConversion::move4 (to, ((char*)&from)+sizeof(int64_t)-4);
 #endif
 }
 
-inline void IBMConversion::fromLocal (void* to, uInt64 from)
+inline void IBMConversion::fromLocal (void* to, uint64_t from)
 {
 #if defined(AIPS_LITTLE_ENDIAN)
     CanonicalConversion::reverse4 (to, &from);
 #else
-    CanonicalConversion::move4 (to,((char*)&from)+sizeof(uInt64)-4);
+    CanonicalConversion::move4 (to,((char*)&from)+sizeof(uint64_t)-4);
 #endif
 }
 

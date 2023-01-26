@@ -72,9 +72,9 @@ void testClass()
     }
 }
 
-IPosition getVec (uInt nrdim, const String& prompt)
+IPosition getVec (uint32_t nrdim, const String& prompt)
 {
-    while (True) {
+    while (true) {
 	cout << prompt;
 	String str;
 	cin >> str;
@@ -85,14 +85,14 @@ IPosition getVec (uInt nrdim, const String& prompt)
 	if (vec.nelements() > nrdim) {
 	    cout << "value can contain max. " << nrdim << " values" << endl;
 	}else{
-	    Bool error = False;
+	    bool error = false;
 	    IPosition pos(vec.nelements());
-	    for (uInt i=0; i<vec.nelements(); i++) {
+	    for (uint32_t i=0; i<vec.nelements(); i++) {
 		istringstream istr(vec(i).chars());
 		istr >> pos(i);
 		if (pos(i) < 0) {
 		    cout << "Value " << pos(i) << " must be >= 0" << endl;
-		    error = True;
+		    error = true;
 		    break;
 		}
 	    }
@@ -103,10 +103,10 @@ IPosition getVec (uInt nrdim, const String& prompt)
     }
 }
 
-void testTiling (uInt tileSize)
+void testTiling (uint32_t tileSize)
 {
     // Convert the command line argument to shape.
-    while (True) {
+    while (true) {
 	IPosition shape = getVec (10, "array shape (end means stop): ");
 	if (shape.nelements() == 0) {
 	    break;
@@ -136,7 +136,7 @@ int main (int argc, const char* argv[])
     }
     try {
 	// Get the command line argument as tile size.
-	uInt tileSize;
+	uint32_t tileSize;
 	istringstream istr1(argv[1]);
 	istr1 >> tileSize;
 	testTiling (tileSize);

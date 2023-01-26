@@ -60,7 +60,7 @@ class Table;
 // A record object is an object of a class derived from
 // <linkto class=RecordInterface>RecordInterface</linkto>.
 // <src>RecordFieldPtr<T></src> objects can only be instantiated for types `T'
-// which are valid fields of a record object (e.g. Int, float, String,
+// which are valid fields of a record object (e.g. int32_t, float, String,
 // Record, TableRecord). It can, however, NOT be instantiated for
 // a Table field, because Table fields are accessed indirectly via a
 // TableKeyword object. Table fields have to be accessed directly
@@ -81,8 +81,8 @@ class Table;
 // An alternative way to get access to the values is using the
 // functions define and get. Note that in
 // <srcblock>
-//    RecordFieldPtr<Array<Int> > field (record, fieldNumber);
-//    Array<Int> value;
+//    RecordFieldPtr<Array<int32_t> > field (record, fieldNumber);
+//    Array<int32_t> value;
 //    *field = value;
 //    field.define (value);
 // </srcblock>
@@ -111,20 +111,20 @@ template<class T> class RecordFieldPtr
 {
 public:
     // This object does not point to any field, i.e. 
-    // <src>this->isAttached() == False;</src>
+    // <src>this->isAttached() == false;</src>
     RecordFieldPtr();
 
     // Attach this field pointer to the given field. If it does not exist
     // an exception is thrown.
     // <group>
-    RecordFieldPtr (RecordInterface& record, Int whichField);
+    RecordFieldPtr (RecordInterface& record, int32_t whichField);
     RecordFieldPtr (RecordInterface& record, const RecordFieldId&);
     // </group>
 
     // Change our pointer to the supplied field. If it doesn't exist an
     // exception is thrown.
     // <group>
-    void attachToRecord (RecordInterface& record, Int whichField);
+    void attachToRecord (RecordInterface& record, int32_t whichField);
     void attachToRecord (RecordInterface& record, const RecordFieldId&);
     // </group>
 
@@ -156,7 +156,7 @@ public:
     void setComment (const String& comment);
 
     // Return the fieldnumber of this field.
-    Int fieldNumber() const
+    int32_t fieldNumber() const
 	{return fieldNumber_p;}
 
     // Return the name of the field.
@@ -171,14 +171,14 @@ public:
     //     <li> Explicit call of the detach() member.
     // </ol>
     //# This inherited function is shown for documentation purposes.
-    Bool isAttached() const
+    bool isAttached() const
 	{return parent_p;}
 
 private:
-    static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
+    static const T* get_typed_ptr(RecordInterface* record, int32_t fieldNumber);
   
     RecordInterface* parent_p;
-    Int              fieldNumber_p;
+    int32_t              fieldNumber_p;
 };
 
 
@@ -209,7 +209,7 @@ template<class T> class RORecordFieldPtr
 {
 public:
     RORecordFieldPtr() {}
-    RORecordFieldPtr (const RecordInterface& record, Int whichField)
+    RORecordFieldPtr (const RecordInterface& record, int32_t whichField)
 	: fieldPtr_p((RecordInterface&)record, whichField) {}
     RORecordFieldPtr (const RecordInterface& record, const RecordFieldId& id)
 	: fieldPtr_p((RecordInterface&)record, id) {}
@@ -222,7 +222,7 @@ public:
 
     ~RORecordFieldPtr() {}
 
-    void attachToRecord (const RecordInterface& record, Int whichField)
+    void attachToRecord (const RecordInterface& record, int32_t whichField)
         { fieldPtr_p.attachToRecord ((RecordInterface&)record, whichField); }
     void attachToRecord (const RecordInterface& record, const RecordFieldId& id)
         { fieldPtr_p.attachToRecord ((RecordInterface&)record, id); }
@@ -232,11 +232,11 @@ public:
 
     const String& comment() const  {return fieldPtr_p.comment();}
 
-    Int fieldNumber() const
+    int32_t fieldNumber() const
 	{return fieldPtr_p.fieldNumber();}
 
     void detach() {fieldPtr_p.detach(); }
-    Bool isAttached() const {return fieldPtr_p.isAttached(); }
+    bool isAttached() const {return fieldPtr_p.isAttached(); }
 
 private:
     RecordFieldPtr<T> fieldPtr_p;

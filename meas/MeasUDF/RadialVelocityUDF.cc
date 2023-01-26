@@ -40,8 +40,8 @@ namespace casacore {
     }
     // Get the 'to' reference type.
     // Determine the argnr of the epoch.
-    uInt argnr = 0;
-    itsEngine.handleMeasType (operands()[0], True);
+    uint32_t argnr = 0;
+    itsEngine.handleMeasType (operands()[0], true);
     itsRefType = itsEngine.refType();
     argnr = 1;
     // Get the radialVelocities.
@@ -49,13 +49,13 @@ namespace casacore {
       throw AipsError ("No radial velocity given in a MEAS.RADVEL function");
     }
     // First try if givben as doppler values.
-    Bool asDoppler = tryDoppler (argnr);
+    bool asDoppler = tryDoppler (argnr);
     // If not, it must be radialvelocity plus possibly frame info.
     if (! asDoppler) {
       itsEngine.handleRadialVelocity (operands(), argnr);
       // Handle possible Direction arguments.
       if (operands().size() > argnr) {
-        itsDirectionEngine.handleDirection (operands(), argnr, False, False);
+        itsDirectionEngine.handleDirection (operands(), argnr, false, false);
         itsEngine.setDirectionEngine (itsDirectionEngine);
       }
       // Handle possible Epoch arguments.
@@ -90,32 +90,32 @@ namespace casacore {
     setAttributes (itsEngine.makeAttributes (itsRefType));
   }
 
-  Bool RadialVelocityUDF::tryDoppler (uInt& argnr)
+  bool RadialVelocityUDF::tryDoppler (uint32_t& argnr)
   {
     // Try if a doppler value is given.
     // It is if no unit is given and a possible type is doppler.
     if (operands().size() > argnr  &&
         operands()[argnr]->unit().empty()) {
-      uInt argnrOld = argnr;
+      uint32_t argnrOld = argnr;
       try {
-        itsDopplerEngine.handleDoppler (operands(), argnr, False, False);
+        itsDopplerEngine.handleDoppler (operands(), argnr, false, false);
         itsEngine.setDopplerEngine (itsDopplerEngine);
-        return True;
+        return true;
       } catch (const AipsError&) {
       }
       argnr = argnrOld;
     }
-    return False;
+    return false;
   }
 
-  Double RadialVelocityUDF::getDouble (const TableExprId& id)
+  double RadialVelocityUDF::getDouble (const TableExprId& id)
   {
     return getArrayDouble(id).array().data()[0];
   }
 
-  MArray<Double> RadialVelocityUDF::getArrayDouble (const TableExprId& id)
+  MArray<double> RadialVelocityUDF::getArrayDouble (const TableExprId& id)
   {
-    return MArray<Double>(itsEngine.getArrayDouble (id));
+    return MArray<double>(itsEngine.getArrayDouble (id));
   }
 
 } //end namespace

@@ -50,8 +50,8 @@ template<class T>
 CurvedImage2D<T>::CurvedImage2D (const ImageInterface<T>& image,
 				 const CLInterpolator2D<T>& interpolator,
 				 const PixelCurve1D& curve,
-				 uInt axis1, uInt axis2,
-				 Int curveAxis)
+				 uint32_t axis1, uint32_t axis2,
+				 int32_t curveAxis)
 : itsImagePtr (image.cloneII())
 {
   itsCurLatPtr = new CurvedLattice2D<T> (image, interpolator, curve,
@@ -115,48 +115,48 @@ String CurvedImage2D<T>::imageType() const
 
 
 template <class T>
-Bool CurvedImage2D<T>::ok() const
+bool CurvedImage2D<T>::ok() const
 {
   return itsCurLatPtr->ok();
 }
 
 template<class T>
-Bool CurvedImage2D<T>::isMasked() const
+bool CurvedImage2D<T>::isMasked() const
 {
   return itsCurLatPtr->isMasked();
 }
 
 template<class T>
-Bool CurvedImage2D<T>::isPersistent() const
+bool CurvedImage2D<T>::isPersistent() const
 {
   return itsCurLatPtr->isPersistent();
 }
 
 template<class T>
-Bool CurvedImage2D<T>::isPaged() const
+bool CurvedImage2D<T>::isPaged() const
 {
   return itsCurLatPtr->isPaged();
 }
 
 template<class T>
-Bool CurvedImage2D<T>::isWritable() const
+bool CurvedImage2D<T>::isWritable() const
 {
   return itsCurLatPtr->isWritable();
 }
 
 template<class T>
-Bool CurvedImage2D<T>::hasPixelMask() const
+bool CurvedImage2D<T>::hasPixelMask() const
 {
   return itsCurLatPtr->hasPixelMask();
 }
 
 template<class T>
-const Lattice<Bool>& CurvedImage2D<T>::pixelMask() const
+const Lattice<bool>& CurvedImage2D<T>::pixelMask() const
 {
   return itsCurLatPtr->pixelMask();
 }
 template<class T>
-Lattice<Bool>& CurvedImage2D<T>::pixelMask()
+Lattice<bool>& CurvedImage2D<T>::pixelMask()
 {
   return itsCurLatPtr->pixelMask();
 }
@@ -180,19 +180,19 @@ void CurvedImage2D<T>::resize (const TiledShape&)
 }
 
 template<class T>
-String CurvedImage2D<T>::name (Bool stripPath) const
+String CurvedImage2D<T>::name (bool stripPath) const
 {
   return itsImagePtr->name (stripPath);
 }
   
 template<class T>
-ImageAttrHandler& CurvedImage2D<T>::attrHandler (Bool createHandler)
+ImageAttrHandler& CurvedImage2D<T>::attrHandler (bool createHandler)
 {
   return itsImagePtr->attrHandler (createHandler);
 }
 
 template<class T>
-Bool CurvedImage2D<T>::doGetSlice (Array<T>& buffer,
+bool CurvedImage2D<T>::doGetSlice (Array<T>& buffer,
 				   const Slicer& section)
 {
   return itsCurLatPtr->doGetSlice (buffer, section);
@@ -207,20 +207,20 @@ void CurvedImage2D<T>::doPutSlice (const Array<T>& sourceBuffer,
 }
 
 template<class T>
-Bool CurvedImage2D<T>::doGetMaskSlice (Array<Bool>& buffer,
+bool CurvedImage2D<T>::doGetMaskSlice (Array<bool>& buffer,
 				       const Slicer& section)
 {
   return itsCurLatPtr->doGetMaskSlice (buffer, section);
 }
 
 template<class T>
-uInt CurvedImage2D<T>::advisedMaxPixels() const
+uint32_t CurvedImage2D<T>::advisedMaxPixels() const
 {
   return itsCurLatPtr->advisedMaxPixels();
 }
 
 template<class T>
-IPosition CurvedImage2D<T>::doNiceCursorShape (uInt maxPixels) const
+IPosition CurvedImage2D<T>::doNiceCursorShape (uint32_t maxPixels) const
 {
   return itsCurLatPtr->niceCursorShape (maxPixels);
 }
@@ -228,13 +228,13 @@ IPosition CurvedImage2D<T>::doNiceCursorShape (uInt maxPixels) const
 template<class T>
 LatticeIterInterface<T>* CurvedImage2D<T>::makeIter
                                (const LatticeNavigator& navigator,
-				Bool useRef) const
+				bool useRef) const
 {
   return itsCurLatPtr->makeIter (navigator, useRef);
 }
 
 template<class T>
-Bool CurvedImage2D<T>::lock (FileLocker::LockType type, uInt nattempts)
+bool CurvedImage2D<T>::lock (FileLocker::LockType type, uint32_t nattempts)
 {
   return itsCurLatPtr->lock (type, nattempts);
 }
@@ -245,7 +245,7 @@ void CurvedImage2D<T>::unlock()
   itsImagePtr->unlock();
 }
 template<class T>
-Bool CurvedImage2D<T>::hasLock (FileLocker::LockType type) const
+bool CurvedImage2D<T>::hasLock (FileLocker::LockType type) const
 {
   return itsCurLatPtr->hasLock (type);
 }

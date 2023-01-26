@@ -29,7 +29,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-Quality::QualityTypes Quality::type(Int qualityNumber)
+Quality::QualityTypes Quality::type(int32_t qualityNumber)
 {
 	QualityTypes val = Undefined;
    if (qualityNumber > Undefined && qualityNumber < NumberOfTypes) {
@@ -59,11 +59,11 @@ String Quality::name(QualityTypes qualityType)
    return qualityName;
 }
 
-Vector<String> Quality::allNames(Bool includeUndefined) {
-	uInt size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
+Vector<String> Quality::allNames(bool includeUndefined) {
+	uint32_t size = includeUndefined ? NumberOfTypes : NumberOfTypes - 1;
 	Vector<String> names(size);
-	uInt idx = 0;
-	for (uInt i=0; i<NumberOfTypes; i++) {
+	uint32_t idx = 0;
+	for (uint32_t i=0; i<NumberOfTypes; i++) {
 		if (includeUndefined || (QualityTypes)i != Undefined) {
 			names[idx] = name((QualityTypes)i);
 			idx++;

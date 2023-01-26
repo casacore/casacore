@@ -143,24 +143,24 @@ public:
   // <todo> os is currently not used as the primary steam for log messages.
   //   This should be corrected, or os removed completely from the class.
   // </todo>
-  Bool setNewOS (LogIO& os);
+  bool setNewOS (LogIO& os);
 
   // Change or set the MS this MSLister refers to, and reinitialise the
   // MSLister object.  Do this after setNewOS() if doing both.
-  Bool setMS (MeasurementSet& ms);
+  bool setMS (MeasurementSet& ms);
 
   // Page size for various formats, output devices (default for landscape
   // printing).
-  void setPage (const uInt width=120, const uInt height=20);
+  void setPage (const uint32_t width=120, const uint32_t height=20);
 
   // Format for output, ie data display precision.
-  void setFormat (const uInt ndec=2);
+  void setFormat (const uint32_t ndec=2);
 
   // User choices for list precision (sensible defaults):
   //   (time precision for user interface is fraction of sec)
-  void setPrecision ( const Int precTime=1, const Int precUVDist=0,
-		      const Int precAmpl=3, const int precPhase=1,
-		      const Int precWeight=0 );
+  void setPrecision ( const int32_t precTime=1, const int32_t precUVDist=0,
+		      const int32_t precAmpl=3, const int precPhase=1,
+		      const int32_t precWeight=0 );
 
   // List the visibilities, with optional data selection and output 
   // specification.
@@ -177,7 +177,7 @@ public:
              const String& observation="",
              const String& uvrange="", 
              const String& average="",
-             const bool    showflags=False,
+             const bool    showflags=false,
              const String& msSelect="",
              const long    pagerows=50,
              const String& listfile="");
@@ -190,9 +190,9 @@ public:
                  const String& baseline="",
                  const String& uvrange="",
                  const String& chanmode="none",
-                 const Int& nchan=1,
-                 const Int& start=0,
-                 const Int& step=1,
+                 const int32_t& nchan=1,
+                 const int32_t& start=0,
+                 const int32_t& step=1,
                  const MRadialVelocity& mStart=MRadialVelocity(),
                  const MRadialVelocity& mStep=MRadialVelocity(),
                  const String& correlation="",
@@ -224,7 +224,7 @@ private:
   // pols_p holds the polarization names contained in the MS
   // in the same order that the polarization data are listed in the 
   // main table.
-  void _polarizationSetup(const uInt selPolID);
+  void _polarizationSetup(const uint32_t selPolID);
 
   // Parse the correlation parameter value; fill indexPols_p to output
   // selected polarizations.  If correlation is empty, all polarizations
@@ -232,7 +232,7 @@ private:
   void polarizationParse(String correlation);
   
   // Calculate column width for a Vector<String>
-  Int columnWidth(const Vector<String> antNames);
+  int32_t columnWidth(const Vector<String> antNames);
 
   // Pointer to the MS
   MeasurementSet* pMS_p;
@@ -248,52 +248,52 @@ private:
   MSSelector mss_p;
 
   // List of channels
-  Matrix<Int> chanList_p;
-  // True if listing multiple channels.
-  Bool multiChan_p;
+  Matrix<int32_t> chanList_p;
+  // true if listing multiple channels.
+  bool multiChan_p;
 
   // Pol counters
-  uInt npols_p;
+  uint32_t npols_p;
 
   // SpW/Pol info from subtables
   Vector<String> pols_p;
-  Vector<Double> freqs_p;
+  Vector<double> freqs_p;
 
   // SpWId map from DDIs:
-  Vector<Int> spwins_p;
-  // True if listing multiple spws
-  Bool multiSpw_p;
+  Vector<int32_t> spwins_p;
+  // true if listing multiple spws
+  bool multiSpw_p;
 
   // Polarization indexing variables; for polarization (correlation) selection.
-  Vector<Int> indexPols_p;
-  uInt nIndexPols_p;
+  Vector<int32_t> indexPols_p;
+  uint32_t nIndexPols_p;
 
   // Field width variables
-  uInt wTime_p, wAnt1_p, wAnt2_p, wIntrf_p, wUVDist_p, wUVW_p;
-  uInt wFld_p, wSpW_p, wChn_p;
-  uInt wAmpl_p, wPhase_p, wWeight_p, wVis_p, wFlag_p;
-  uInt wTotal_p;
+  uint32_t wTime_p, wAnt1_p, wAnt2_p, wIntrf_p, wUVDist_p, wUVW_p;
+  uint32_t wFld_p, wSpW_p, wChn_p;
+  uint32_t wAmpl_p, wPhase_p, wWeight_p, wVis_p, wFlag_p;
+  uint32_t wTotal_p;
 
   // Order of magnitude control (digits to left of decimal, including sign)
-  uInt oTime_p, oUVDist_p, oUVW_p;
-  uInt oAmpl_p, oPhase_p;
-  uInt oWeight_p;
+  uint32_t oTime_p, oUVDist_p, oUVW_p;
+  uint32_t oAmpl_p, oPhase_p;
+  uint32_t oWeight_p;
 
   // Precision control (digits to right of decimal point)
   //   (precTime_p includes hhmmss, so 7 yields hh:mm:ss.s)
-  Int precTime_p, precUVDist_p, precUVW_p;
-  Int precAmpl_p, precPhase_p;
-  Int precWeight_p;
+  int32_t precTime_p, precUVDist_p, precUVW_p;
+  int32_t precAmpl_p, precPhase_p;
+  int32_t precWeight_p;
   
   // Page params
-  Int pageWidth_p, pageHeight_p, nDecimal_p;
+  int32_t pageWidth_p, pageHeight_p, nDecimal_p;
   String date_p, lastdate_p;
 
   // for assigning desired columns from the ms
   Vector <String> items_p;
 
   // Bools for column showing and to identify FLOAT_DATA column of single dish
-  Bool doFld_p, doSpW_p, doChn_p, is_float;
+  bool doFld_p, doSpW_p, doChn_p, is_float;
 
   // Data selections
   // data --> "amplitude", "phase"

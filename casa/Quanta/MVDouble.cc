@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // MVDouble class
 
 //# Constructors
-MVDouble::MVDouble(Double d) : 
+MVDouble::MVDouble(double d) : 
   val(d){}
 
 MVDouble::MVDouble(const MVDouble &other) :
@@ -47,10 +47,10 @@ MVDouble::MVDouble(const Quantity &other) {
   val = other.get().getValue();
 }
 
-MVDouble::MVDouble(const Quantum<Vector<Double> > &other) {
-  Vector<Double> tmp;
+MVDouble::MVDouble(const Quantum<Vector<double> > &other) {
+  Vector<double> tmp;
   tmp = other.get().getValue();
-  uInt i = tmp.nelements();
+  uint32_t i = tmp.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -60,8 +60,8 @@ MVDouble::MVDouble(const Quantum<Vector<Double> > &other) {
   }
 }
 
-MVDouble::MVDouble(const Vector<Double> &other) {
-  uInt i = other.nelements();
+MVDouble::MVDouble(const Vector<double> &other) {
+  uint32_t i = other.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
@@ -88,7 +88,7 @@ MVDouble &MVDouble::operator=(const MVDouble &other) {
 MVDouble::~MVDouble() {}
 
 // Operators
-MVDouble::operator Double() const {
+MVDouble::operator double() const {
   return val;
 }
 
@@ -102,11 +102,11 @@ MVDouble &MVDouble::operator-=(const MVDouble &other) {
   return *this;
 }
 
-Bool MVDouble::operator==(const MVDouble &other) const {
+bool MVDouble::operator==(const MVDouble &other) const {
   return (val == other.val);
 }
 
-Bool MVDouble::operator!=(const MVDouble &other) const {
+bool MVDouble::operator!=(const MVDouble &other) const {
   return (val != other.val);
 }
 
@@ -118,11 +118,11 @@ void MVDouble::assure(const MeasValue &in) {
   }
 }
 
-Bool MVDouble::near(const MVDouble &other, Double tol) const {
+bool MVDouble::near(const MVDouble &other, double tol) const {
   return ::casacore::near(val, other.val, tol);
 }
 
-Bool MVDouble::nearAbs(const MVDouble &other, Double tol) const {
+bool MVDouble::nearAbs(const MVDouble &other, double tol) const {
   return ::casacore::nearAbs(val, other.val, tol);
 }
 
@@ -135,13 +135,13 @@ MeasValue *MVDouble::clone() const {
   return (new MVDouble(*this));
 }
 
-Vector<Double> MVDouble::getVector() const {
-  Vector<Double> x(1);
+Vector<double> MVDouble::getVector() const {
+  Vector<double> x(1);
   x(0) = val;
   return x;
 }
 
-void MVDouble::putVector(const Vector<Double> &in) {
+void MVDouble::putVector(const Vector<double> &in) {
   if (in.nelements() < 1) {
     val = 0.0;
   } else {
@@ -149,22 +149,22 @@ void MVDouble::putVector(const Vector<Double> &in) {
   }
 }
 
-Vector<Quantum<Double> > MVDouble::getRecordValue() const {
-  Vector<Quantum<Double> > tmp(1);
+Vector<Quantum<double> > MVDouble::getRecordValue() const {
+  Vector<Quantum<double> > tmp(1);
   tmp(0) = Quantity(val, "");
   return tmp;
 }
 
-Bool MVDouble::putValue(const Vector<Quantum<Double> > &in) {
-  uInt i = in.nelements();
+bool MVDouble::putValue(const Vector<Quantum<double> > &in) {
+  uint32_t i = in.nelements();
   if (i == 0) {
     val = 0.0;
   } else if (i == 1) {
     val = (in(0)).get().getValue();
   } else {
-    return False;
+    return false;
   }
-  return True;
+  return true;
 }
 
 } //# NAMESPACE CASACORE - END

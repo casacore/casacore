@@ -35,7 +35,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCEpoch::ToRef_p[N_Routes][3] = {
+uint32_t MCEpoch::ToRef_p[N_Routes][3] = {
   {MEpoch::LAST,	MEpoch::GAST,	2},
   {MEpoch::GAST,	MEpoch::LAST,	2},
   {MEpoch::LMST,	MEpoch::GMST1,	2},
@@ -59,7 +59,7 @@ uInt MCEpoch::ToRef_p[N_Routes][3] = {
   {MEpoch::TDB,		MEpoch::TCB,	0},
   {MEpoch::TCB,		MEpoch::TDB,	0} };
 
-uInt MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
+uint32_t MCEpoch::FromTo_p[MEpoch::N_Types][MEpoch::N_Types];
 std::once_flag MCEpoch::theirInitOnceFlag;
 
 //# Constructors
@@ -81,12 +81,12 @@ void MCEpoch::getConvert(MConvertBase &mc,
 			 const MRBase &inref, 
 			 const MRBase &outref) {
 
-    Int iin  = inref.getType();
-    Bool iraze = (iin & MEpoch::RAZE);
+    int32_t iin  = inref.getType();
+    bool iraze = (iin & MEpoch::RAZE);
     iin &= ~MEpoch::EXTRA;
-    Int iout = outref.getType();
+    int32_t iout = outref.getType();
     iout &= ~MEpoch::EXTRA;
-    Int tmp;
+    int32_t tmp;
     while (iin != iout) {
 	tmp = FromTo_p[iin][iout];
 	iin = ToRef_p[tmp][1];
@@ -104,9 +104,9 @@ void MCEpoch::clearConvert() {
 }
 
 //# Conversion routines
-void MCEpoch::initConvert(uInt which, MConvertBase &mc) {
+void MCEpoch::initConvert(uint32_t which, MConvertBase &mc) {
 
-  if (False) initConvert(which, mc);	// Stop warning
+  if (false) initConvert(which, mc);	// Stop warning
 
   switch (which) {
 
@@ -145,9 +145,9 @@ void MCEpoch::doConvert(MVEpoch &in,
 			MRBase &outref,
 			const MConvertBase &mc) {
   static MVEpoch mve6713(6713.);
-  Double locLong, eqox, ut, tt, xx;
+  double locLong, eqox, ut, tt, xx;
   
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
     
     switch (mc.getMethod(i)) {
       
@@ -184,7 +184,7 @@ void MCEpoch::doConvert(MVEpoch &in,
       in += MeasTable::GMUT0(ut)*MeasData::JDCEN/MeasData::SECinDAY;
       in -= mve6713;
       if (MeasTable::useIAU2000()) {
-	uInt i(0);
+	uint32_t i(0);
 	do {
 	  MVEpoch xe(in);
 	  ut = xe.get();

@@ -63,8 +63,8 @@ class MSMetaData;
 //
 // <example>
 // <srcBlock>
-//     PagedMS<Float> inMS(fileName);
-//     MSSummary<Float> header(inMS);
+//     PagedMS<float> inMS(fileName);
+//     MSSummary<float> header(inMS);
 //     LogOrigin or("myClass", "myFunction(...)", WHERE);
 //     LogIO os(or);
 //     header.list(os);
@@ -97,9 +97,9 @@ public:
 // <group>
 // <src>maxCacheMB</src> is the maximum cache size in MB to use for the created
 // MSMetaData object.
-   MSSummary (const MeasurementSet& ms, Float maxCacheMB = 50.0);
-   MSSummary (const MeasurementSet* ms, Float maxCacheMB = 50.0);
-   MSSummary (const MeasurementSet* ms, const String msname, Float maxCacheMB = 50.0);
+   MSSummary (const MeasurementSet& ms, float maxCacheMB = 50.0);
+   MSSummary (const MeasurementSet* ms, float maxCacheMB = 50.0);
+   MSSummary (const MeasurementSet* ms, const String msname, float maxCacheMB = 50.0);
 
    // construct the object using an MSMetaDataObject
    MSSummary (std::shared_ptr<MSMetaData> msmd);
@@ -108,7 +108,7 @@ public:
   ~MSSummary();
 
 // Retrieve number of rows
-   Int64 nrow() const;
+   int64_t nrow() const;
  
 // Retrieve image name
    String name() const;
@@ -116,62 +116,62 @@ public:
 // Set a new MS. <src>maxCacheMB</src> is the maximum cache size of the
 // created MSMetaData tool. If negative, the cache size used when this object
 // was created is used.
-   Bool setMS (const MeasurementSet& ms, Float maxCacheMB=-1);
+   bool setMS (const MeasurementSet& ms, float maxCacheMB=-1);
 
 // List all header information.
-   void list (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
+   void list (LogIO& os, bool verbose=false, bool oneBased=true) const;
 //Return some useful info in a record too along with os
-   void list (LogIO& os, Record& outRec,  Bool verbose=False,
-              Bool fillRecord=True, Bool oneBased=True) const;
+   void list (LogIO& os, Record& outRec,  bool verbose=false,
+              bool fillRecord=true, bool oneBased=true) const;
 
 // List a title for the Summary.
    void listTitle (LogIO& os) const;
 
 // List convenient groupings of tables: list where MS obtained
 // (Observation and Array tables)
-   void listWhere (LogIO& os, Bool verbose=False) const;
+   void listWhere (LogIO& os, bool verbose=false) const;
 
 // List what was observed (Field and Main tables)
-   void listWhat (LogIO& os, Bool verbose=False) const;
-   void listWhat (LogIO& os, Record& outRec,  Bool verbose=False,
-                  Bool fillRecord=True) const;
+   void listWhat (LogIO& os, bool verbose=false) const;
+   void listWhat (LogIO& os, Record& outRec,  bool verbose=false,
+                  bool fillRecord=true) const;
 // List how data were obtained (SpectralWindow, Feed, and Antenna tables)
-   void listHow (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
+   void listHow (LogIO& os, bool verbose=false, bool oneBased=true) const;
 
 // List main table
-   void listMain (LogIO& os, Bool verbose=False) const;
+   void listMain (LogIO& os, bool verbose=false) const;
 //Return some useful info in a record too along with os
-   void listMain (LogIO& os, Record& outRec, Bool verbose=False,
-                  Bool fillRecord=True) const;
+   void listMain (LogIO& os, Record& outRec, bool verbose=false,
+                  bool fillRecord=true) const;
    // Return a Record with information derived from the main table
    void getScanSummary (Record& outRec) const;
 
 // List subtables
 // <group>
-   void listAntenna (LogIO& os, Bool verbose=False) const;
-   void listFeed (LogIO& os, Bool verbose=False, Bool oneBased=True) const;
-   void listField (LogIO& os, Bool verbose=False) const;
-   void listField (LogIO& os, Record& outRec, Bool verbose=False,
-           Bool fillRecord=True) const;
-   void listObservation (LogIO& os, Bool verbose=False) const;
+   void listAntenna (LogIO& os, bool verbose=false) const;
+   void listFeed (LogIO& os, bool verbose=false, bool oneBased=true) const;
+   void listField (LogIO& os, bool verbose=false) const;
+   void listField (LogIO& os, Record& outRec, bool verbose=false,
+           bool fillRecord=true) const;
+   void listObservation (LogIO& os, bool verbose=false) const;
    void listHistory (LogIO& os) const;
-   void listPolarization (LogIO& os, Bool verbose=False) const;
-   void listSource (LogIO& os, Bool verbose=False) const;
-   void listSpectralWindow (LogIO& os, Bool verbose=False) const;
+   void listPolarization (LogIO& os, bool verbose=false) const;
+   void listSource (LogIO& os, bool verbose=false) const;
+   void listSpectralWindow (LogIO& os, bool verbose=false) const;
    void getSpectralWindowInfo(Record& outRec) const;
-   void listSpectralAndPolInfo (LogIO& os, Bool verbose=False,
-                                Bool oneBased=True) const;
-   void listSysCal (LogIO& os, Bool verbose=False) const;
-   void listWeather (LogIO& os, Bool verbose=False) const;
+   void listSpectralAndPolInfo (LogIO& os, bool verbose=false,
+                                bool oneBased=true) const;
+   void listSysCal (LogIO& os, bool verbose=false) const;
+   void listWeather (LogIO& os, bool verbose=false) const;
 // </group>
 
 // List table size summary
-   void listTables (LogIO& os, Bool verbose=False) const;
+   void listTables (LogIO& os, bool verbose=false) const;
 
-   void setListUnflaggedRowCount(Bool v) { _listUnflaggedRowCount = v; }
+   void setListUnflaggedRowCount(bool v) { _listUnflaggedRowCount = v; }
 
    // OBSOLETE. No longer does anything, kept for compilation backward compatibility.
-   void setMetaDataCacheSizeInMB(Float) {}
+   void setMetaDataCacheSizeInMB(float) {}
 
 private:
 // Pointer to MS
@@ -185,14 +185,14 @@ private:
    void clearFlags (LogIO& os) const;
 
 // For keeping track of the number of vis per field
-   mutable Vector<Int> nVisPerField_;
+   mutable Vector<int32_t> nVisPerField_;
 
    // Name of the MS used in the constructor
    String msname_p;
 
-   Bool _listUnflaggedRowCount;
+   bool _listUnflaggedRowCount;
 
-   Float _cacheSizeMB;
+   float _cacheSizeMB;
 };
 
 

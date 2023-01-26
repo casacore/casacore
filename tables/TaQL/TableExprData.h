@@ -89,7 +89,7 @@ template<class T> class Block;
 // the selection is based on fields in those records. In such a case
 // the record passed to <src>TableExprNodeRecordField</src> should contain
 // subrecords representing those records. The field index in the various
-// functions as passed as a <src>Block<Int></src> to denote the fields
+// functions as passed as a <src>Block<int32_t></src> to denote the fields
 // in the subrecords (and possibly subsubrecords, etc..
 // However, normally records won't be used and <src>fieldNrs[0]</src>
 // gives the field index.
@@ -104,7 +104,7 @@ template<class T> class Block;
 // {
 // public:
 //   // Constructor checks if both vectors have equal length.
-//   MyTestClass (const Vector<Int>& fld1, const Vector<String>& fld2)
+//   MyTestClass (const Vector<int32_t>& fld1, const Vector<String>& fld2)
 //     : itsFld1(fld1), itsFld2(fld2), itsEntry(0)
 //     { AlwaysAssert (fld1.nelements() == fld2.nelements(), AipsError); }
 //   virtual ~MyTestClass()
@@ -112,9 +112,9 @@ template<class T> class Block;
 //   void next()
 //     { itsEntry++; }
 //   // Note that only the get functions for the possible types are needed.
-//   // Also note that all numeric types are handled by TaQL as Double.
+//   // Also note that all numeric types are handled by TaQL as double.
 //   // The exception should never be thrown unless things are screwed up.
-//   virtual Double getDouble (const Block<Int>& fieldNrs) const
+//   virtual double getDouble (const Block<int32_t>& fieldNrs) const
 //     { switch (fieldNrs[0]) {
 //       case 0:
 //         return itsFld1(itsEntry);
@@ -122,7 +122,7 @@ template<class T> class Block;
 //         throw AipsError();
 //       }
 //     }
-//   virtual String getString (const Block<Int>& fieldNrs) const
+//   virtual String getString (const Block<int32_t>& fieldNrs) const
 //     { switch (fieldNrs[0]) {
 //       case 1:
 //         return itsFld2(itsEntry);
@@ -130,7 +130,7 @@ template<class T> class Block;
 //         throw AipsError();
 //       }
 //     }
-//   virtual DataType dataType (const Block<Int>& fieldNrs) const
+//   virtual DataType dataType (const Block<int32_t>& fieldNrs) const
 //     { switch (fieldNrs[0]) {
 //       case 0:
 //         return TpInt;
@@ -150,12 +150,12 @@ template<class T> class Block;
 //       return Record(desc);
 //     }
 // private:
-//   Vector<Int>    itsFld1;
+//   Vector<int32_t>    itsFld1;
 //   Vector<String> itsFld2;
-//   uInt           itsEntry;
+//   uint32_t           itsEntry;
 // };
 //   
-// Vector<uInt> findMatches (const Vector<Int>& fld1,
+// Vector<uint32_t> findMatches (const Vector<int32_t>& fld1,
 //                           const Vector<String>& fld2)
 // {
 //   // Make some expression.
@@ -172,17 +172,17 @@ template<class T> class Block;
 //   MyTestClass subj(fld1, fld2);
 //   TableExprId eid(subj);
 //   // The matching entry numbers are stored in a vector.
-//   Vector<uInt> result(fld1.nelements());
-//   uInt nr=0;
-//   Bool valb;
-//   for (uInt i=0; i<fld1.nelements(); i++) {
+//   Vector<uint32_t> result(fld1.nelements());
+//   uint32_t nr=0;
+//   bool valb;
+//   for (uint32_t i=0; i<fld1.nelements(); i++) {
 //     expr.get (eid, valb);
 //     if (valb) {
 //       result(nr++) = i;
 //     }
 //     subj.next();         // Next time the next entry must be used
 //   }
-//   result.resize (nr, True);
+//   result.resize (nr, true);
 //   return result;
 // }
 // </srcBlock>
@@ -208,39 +208,39 @@ public:
   // Get the shape of the given field.
   // Need only be implemented if there are arrays in the data.
   // The default implementation returns an empty IPosition.
-  virtual IPosition shape (const Block<Int>& fieldNrs) const;
+  virtual IPosition shape (const Block<int32_t>& fieldNrs) const;
 
   // Get the data type of the given field.
   // Note that TpArray types have to be returned for arrays.
   // If the field is unknown, TpOther should be returned.
   // It is used for the isdefined function to check if the field
   // is really defined.
-  virtual DataType dataType (const Block<Int>& fieldNrs) const = 0;
+  virtual DataType dataType (const Block<int32_t>& fieldNrs) const = 0;
 
   // Get a scalar in the given type.
-  // This might involve converting for Double and DComplex.
+  // This might involve converting for double and DComplex.
   // Most default implementations throws an "not possible" exception.
   // The default <src>getDouble</src> invokes <src>getInt</src>.
   // The default <src>getDComplex</src> invokes <src>getDouble</src>.
   // <group>
-  virtual Bool     getBool     (const Block<Int>& fieldNrs) const;
-  virtual Int64    getInt      (const Block<Int>& fieldNrs) const;
-  virtual Double   getDouble   (const Block<Int>& fieldNrs) const;
-  virtual DComplex getDComplex (const Block<Int>& fieldNrs) const;
-  virtual String   getString   (const Block<Int>& fieldNrs) const;
+  virtual bool     getBool     (const Block<int32_t>& fieldNrs) const;
+  virtual int64_t    getInt      (const Block<int32_t>& fieldNrs) const;
+  virtual double   getDouble   (const Block<int32_t>& fieldNrs) const;
+  virtual DComplex getDComplex (const Block<int32_t>& fieldNrs) const;
+  virtual String   getString   (const Block<int32_t>& fieldNrs) const;
   // </group>
 
   // Get an array in the given type.
-  // This might involve converting for Double and DComplex.
+  // This might involve converting for double and DComplex.
   // Most default implementations throws an "not possible" exception.
   // The default <src>getArrayDComplex</src> invokes
   // <src>getArrayDouble</src>.
   // <group>
-  virtual Array<Bool>     getArrayBool     (const Block<Int>& fieldNrs) const;
-  virtual Array<Int64>    getArrayInt      (const Block<Int>& fieldNrs) const;
-  virtual Array<Double>   getArrayDouble   (const Block<Int>& fieldNrs) const;
-  virtual Array<DComplex> getArrayDComplex (const Block<Int>& fieldNrs) const;
-  virtual Array<String>   getArrayString   (const Block<Int>& fieldNrs) const;
+  virtual Array<bool>     getArrayBool     (const Block<int32_t>& fieldNrs) const;
+  virtual Array<int64_t>    getArrayInt      (const Block<int32_t>& fieldNrs) const;
+  virtual Array<double>   getArrayDouble   (const Block<int32_t>& fieldNrs) const;
+  virtual Array<DComplex> getArrayDComplex (const Block<int32_t>& fieldNrs) const;
+  virtual Array<String>   getArrayString   (const Block<int32_t>& fieldNrs) const;
   // </group>
 };
 

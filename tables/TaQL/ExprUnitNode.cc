@@ -47,11 +47,11 @@ TableExprNodeUnit::TableExprNodeUnit (const TENShPtr& child,
 TableExprNodeUnit::~TableExprNodeUnit()
 {}
 
-Double TableExprNodeUnit::set (TableExprNodeRep& parent,
+double TableExprNodeUnit::set (TableExprNodeRep& parent,
                                const TENShPtr& child,
                                const Unit& unit)
 {
-  Double factor = 1;
+  double factor = 1;
   if (unit.empty()) {
     parent.setUnit (child->unit());
   } else {
@@ -129,10 +129,10 @@ Unit TableExprNodeUnit::adaptUnits (TENShPtr& node1,
   return unit;
 }
 
-Double TableExprNodeUnit::getUnitFactor() const
+double TableExprNodeUnit::getUnitFactor() const
   { return factor_p; }
 
-Double TableExprNodeUnit::getDouble (const TableExprId& id)
+double TableExprNodeUnit::getDouble (const TableExprId& id)
   { return factor_p * lnode_p->getDouble(id); }
 
 DComplex TableExprNodeUnit::getDComplex (const TableExprId& id)
@@ -158,13 +158,13 @@ TableExprNodeArrayUnit::TableExprNodeArrayUnit (const TENShPtr& child,
 TableExprNodeArrayUnit::~TableExprNodeArrayUnit()
 {}
 
-Double TableExprNodeArrayUnit::getUnitFactor() const
+double TableExprNodeArrayUnit::getUnitFactor() const
   { return factor_p; }
 
-MArray<Double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
+MArray<double> TableExprNodeArrayUnit::getArrayDouble (const TableExprId& id)
 {
-  MArray<Double> arr = lnode_p->getArrayDouble(id);
-  return MArray<Double> (factor_p * arr.array(), arr.mask());
+  MArray<double> arr = lnode_p->getArrayDouble(id);
+  return MArray<double> (factor_p * arr.array(), arr.mask());
 }
 
 MArray<DComplex> TableExprNodeArrayUnit::getArrayDComplex(const TableExprId& id)

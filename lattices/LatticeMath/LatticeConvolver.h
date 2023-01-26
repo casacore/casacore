@@ -116,19 +116,19 @@ public:
   // Create a convolver that is initialised to do circular convolution with the
   // specified point spread function. It is assumed that the supplied model
   // will be the same shape as the point spread function.
-  LatticeConvolver(const Lattice<T> & psf, Bool doFast=False);
+  LatticeConvolver(const Lattice<T> & psf, bool doFast=false);
 
   // Create a convolver that is initialised to do linear convolution with the
   // specified point spread function. The size of the model you will convolve
   // with must be specified.
   LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape, 
-		   Bool doFast=False);
+		   bool doFast=false);
 
   // Create a convolver that is initialised to do the specified type of
   // convolution with the specified point spread function. The size of the
   // model you expect to convolve with must be specified.
   LatticeConvolver(const Lattice<T> & psf, const IPosition & modelShape,
-  		   ConvEnums::ConvType type, Bool doFast=False);
+  		   ConvEnums::ConvType type, bool doFast=false);
 
   // The copy constructor uses reference semantics
   LatticeConvolver(const LatticeConvolver<T> & other);
@@ -230,8 +230,8 @@ private:
   IPosition itsFFTShape;
   TempLattice<typename NumericTraits<T>::ConjugateType>* itsXfr;
   TempLattice<T>* itsPsf;
-  Bool itsCachedPsf;
-  Bool doFast_p;
+  bool itsCachedPsf;
+  bool doFast_p;
 };
 
 } //# NAMESPACE CASACORE - END

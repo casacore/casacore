@@ -56,7 +56,7 @@ void createMS (int nAnt, int nTime, double msinterval)
   Array<Complex> data(IPosition(2,4,8));
   indgen (data);
   MSColumns mscols(ms);
-  uInt rownr = 0;
+  uint32_t rownr = 0;
   for (int it=0; it<nTime; ++it) {
     for (int i1=0; i1<nAnt; ++i1) {
       for (int i2=i1; i2<nAnt; ++i2) {
@@ -91,13 +91,13 @@ void createMS (int nAnt, int nTime, double msinterval)
 
   ms.spectralWindow().addRow(1);
   MSSpWindowColumns spwcols(ms.spectralWindow());
-  Vector<Double>freqs(8);
+  Vector<double>freqs(8);
   indgen (freqs, 1e9, 1e6);
   spwcols.chanFreq().put (0, freqs);
 
   ms.polarization().addRow(1);
   MSPolarizationColumns polcols(ms.polarization());
-  Vector<Int> corrTypes(2, 0);
+  Vector<int32_t> corrTypes(2, 0);
   corrTypes[1] = 1;
   polcols.numCorr().put (0, 4);
   polcols.corrType().put (0, corrTypes);
@@ -121,8 +121,8 @@ void createMS (int nAnt, int nTime, double msinterval)
     feedcols.time().put (i, 60.);
     feedcols.interval().put (i, 0.);    // no time dependence
     feedcols.numReceptors().put (i, 2);
-    feedcols.beamOffset().put (i, Array<Double>(IPosition(2,2,2),0.));
-    feedcols.receptorAngle().put (i, Vector<Double>(2,0.));
+    feedcols.beamOffset().put (i, Array<double>(IPosition(2,2,2),0.));
+    feedcols.receptorAngle().put (i, Vector<double>(2,0.));
     feedcols.polResponse().put (i, Array<Complex>(IPosition(2,2,2)));
   }
 }
@@ -133,11 +133,11 @@ void iterMS (double binwidth)
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False);
+  MSIter msIter(ms, sort, binwidth, false);
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()
-         << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
-         << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<int32_t>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<int32_t>(msIter.table(), "ANTENNA2")(0)
          << " time="
          << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << " keyCh=" << msIter.keyChange()
@@ -151,11 +151,11 @@ void iterMSMemory (double binwidth)
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False, False); // Use stored table in memory
+  MSIter msIter(ms, sort, binwidth, false, false); // Use stored table in memory
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()
-         << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
-         << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<int32_t>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<int32_t>(msIter.table(), "ANTENNA2")(0)
          << " time="
          << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << endl;
@@ -169,12 +169,12 @@ void iter2MS (double binwidth)
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False);
+  MSIter msIter(ms, sort, binwidth, false);
   unsigned i = 0;
   for (msIter.origin(); msIter.more(); ++msIter) {
     cout << "nrow=" << msIter.table().nrow()
-         << " a1=" << ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0)
-         << " a2=" << ScalarColumn<Int>(msIter.table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<int32_t>(msIter.table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<int32_t>(msIter.table(), "ANTENNA2")(0)
          << " time="
          << ScalarColumn<double>(msIter.table(), "TIME").getColumn() - 1e9
          << " keyCh=" << msIter.keyChange()
@@ -184,8 +184,8 @@ void iter2MS (double binwidth)
       MSIter msIter1 = msIter;
       for (msIter1.origin(); msIter1.more(); ++msIter1) {
         cout << "nrow=" << msIter1.table().nrow()
-             << " a1=" << ScalarColumn<Int>(msIter1.table(), "ANTENNA1")(0)
-             << " a2=" << ScalarColumn<Int>(msIter1.table(), "ANTENNA2")(0)
+             << " a1=" << ScalarColumn<int32_t>(msIter1.table(), "ANTENNA1")(0)
+             << " a2=" << ScalarColumn<int32_t>(msIter1.table(), "ANTENNA2")(0)
              << " time="
              << ScalarColumn<double>(msIter1.table(), "TIME").getColumn() - 1e9
              << " keyCh=" << msIter1.keyChange()
@@ -203,14 +203,14 @@ void iter2MSMemory (double binwidth)
   Block<int> sort(2);
   sort[0] = MS::ANTENNA1;
   sort[1] = MS::ANTENNA2;
-  MSIter msIter(ms, sort, binwidth, False, False); // Use stored table in memory
-  MSIter msIter1(ms, sort, binwidth, False, False);
+  MSIter msIter(ms, sort, binwidth, false, false); // Use stored table in memory
+  MSIter msIter1(ms, sort, binwidth, false, false);
   MSIter *it = &msIter;
   unsigned i = 0;
   for (it->origin(); it->more(); ++(*it)) {
     cout << "nrow=" << it->table().nrow()
-         << " a1=" << ScalarColumn<Int>(it->table(), "ANTENNA1")(0)
-         << " a2=" << ScalarColumn<Int>(it->table(), "ANTENNA2")(0)
+         << " a1=" << ScalarColumn<int32_t>(it->table(), "ANTENNA1")(0)
+         << " a2=" << ScalarColumn<int32_t>(it->table(), "ANTENNA2")(0)
          << " time="
          << ScalarColumn<double>(it->table(), "TIME").getColumn() - 1e9
          << endl;
@@ -253,8 +253,8 @@ public:
   // and antenna 2 on a different group
   virtual int comp(const void * obj1, const void * obj2) const
   {
-    const Int& v1 = *static_cast<const Int*>(obj1);
-    const Int& v2 = *static_cast<const Int*>(obj2);
+    const int32_t& v1 = *static_cast<const int32_t*>(obj1);
+    const int32_t& v2 = *static_cast<const int32_t*>(obj2);
     double v1_c, v2_c;
     if( v1 == 0 || v1 == 1)
       v1_c = 0.5;
@@ -282,7 +282,7 @@ void iterMSGenericSortFuncAntennaGrouping ()
   size_t nAnt2 = 0;
   for (msIter.origin(); msIter.more(); msIter++) {
     cout << "nrow=" << msIter.table().nrow()<<endl;
-    Int antenna =  ScalarColumn<Int>(msIter.table(), "ANTENNA1")(0);
+    int32_t antenna =  ScalarColumn<int32_t>(msIter.table(), "ANTENNA1")(0);
     if(antenna == 0 || antenna == 1)
       nAnt01 += msIter.table().nrow();
     else
@@ -304,7 +304,7 @@ void createMSSeveralDDFeedField(int nAnt, int nTime, int nDD, int nField, double
   Array<Complex> data(IPosition(2,4,8));
   indgen (data);
   MSColumns mscols(ms);
-  uInt rownr = 0;
+  uint32_t rownr = 0;
   for (int iField=0; iField<nField; ++iField) {
     for (int it=0; it<nTime; ++it) {
       for (int ddid=0; ddid<nDD; ++ddid) {
@@ -349,7 +349,7 @@ void createMSSeveralDDFeedField(int nAnt, int nTime, int nDD, int nField, double
 
   ms.spectralWindow().addRow(nDD);
   MSSpWindowColumns spwcols(ms.spectralWindow());
-  Vector<Double>freqs(8);
+  Vector<double>freqs(8);
   indgen (freqs, 1e9, 1e6);
   for (int ddid=0; ddid<nDD; ++ddid) {
     spwcols.chanFreq().put (ddid, freqs + ddid * 1e7);
@@ -357,11 +357,11 @@ void createMSSeveralDDFeedField(int nAnt, int nTime, int nDD, int nField, double
 
   ms.polarization().addRow(2);
   MSPolarizationColumns polcols(ms.polarization());
-  Vector<Int> corrTypes1(2, 0);
+  Vector<int32_t> corrTypes1(2, 0);
   corrTypes1[1] = 1;
   polcols.numCorr().put (0, 4);
   polcols.corrType().put (0, corrTypes1);
-  Vector<Int> corrTypes2(2, 0);
+  Vector<int32_t> corrTypes2(2, 0);
   corrTypes2[0] = Stokes::XX;
   corrTypes2[1] = Stokes::YY;
   polcols.numCorr().put (1, 4);
@@ -387,8 +387,8 @@ void createMSSeveralDDFeedField(int nAnt, int nTime, int nDD, int nField, double
       feedcols.time().put (i + ddid * nAnt, 60.);
       feedcols.interval().put (i + ddid * nAnt, 0.);    // no time dependence
       feedcols.numReceptors().put (i + ddid * nAnt, 2);
-      feedcols.beamOffset().put (i + ddid * nAnt, Array<Double>(IPosition(2,2,2), i*0.01+ddid*0.1));
-      feedcols.receptorAngle().put (i + ddid * nAnt, Vector<Double>(2, i*0.01+ddid*0.1));
+      feedcols.beamOffset().put (i + ddid * nAnt, Array<double>(IPosition(2,2,2), i*0.01+ddid*0.1));
+      feedcols.receptorAngle().put (i + ddid * nAnt, Vector<double>(2, i*0.01+ddid*0.1));
       feedcols.polResponse().put (i + ddid * nAnt, Array<Complex>(IPosition(2,2,2), Complex(i*0.01+ddid*0.1, i*0.01+ddid*0.1)));
     }
   }
@@ -428,7 +428,7 @@ void iterMSCachedDDFeedInfo ()
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::DATA_DESC_ID;
-      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false)); // Use stored table in memory
     }
 
     // Set the expected DD metadata in the first iteration
@@ -436,14 +436,14 @@ void iterMSCachedDDFeedInfo ()
     int expectedSPWId = 0;
     int expectedPolId = 0;
     int expectedPolFrame = 0;
-    Vector<Double>expectedFreqs(8);
+    Vector<double>expectedFreqs(8);
     indgen (expectedFreqs, 1e9, 1e6);
 
     // Set the expected Feed metadata in the first iteration
     int nReceptors = 2;
     int nFeed = 1;
-    Cube<Double> expectedReceptorAngles;
-    Cube<RigidVector<Double,2>> expectedBeamOffsets;
+    Cube<double> expectedReceptorAngles;
+    Cube<RigidVector<double,2>> expectedBeamOffsets;
     Matrix<Complex> expectedPartialCJones(IPosition(2,2));
     expectedPartialCJones = 0;
     expectedReceptorAngles.resize(nReceptors, nAnt, nFeed);
@@ -452,8 +452,8 @@ void iterMSCachedDDFeedInfo ()
     {
       expectedReceptorAngles(0, iAnt, 0) = iAnt*0.01;
       expectedReceptorAngles(1, iAnt, 0) = iAnt*0.01;
-      expectedBeamOffsets(0, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
-      expectedBeamOffsets(1, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+      expectedBeamOffsets(0, iAnt, 0) = RigidVector<double, 2>(iAnt*0.01);
+      expectedBeamOffsets(1, iAnt, 0) = RigidVector<double, 2>(iAnt*0.01);
     }
 
     // Iterate the MS
@@ -509,7 +509,7 @@ void iterMSCachedDDFeedInfo ()
       expectedPolFrame = expectedDDId % 2;
       expectedFreqs += 1e7;
       expectedReceptorAngles += 0.1;
-      expectedBeamOffsets += RigidVector<Double,2>(0.1);
+      expectedBeamOffsets += RigidVector<double,2>(0.1);
       expectedPartialCJones += Complex(0.1, 0.1);
     }
   }
@@ -539,7 +539,7 @@ void iterMSCachedDDFeedInfo ()
       Block<int> sort(2);
       sort[0] = MS::DATA_DESC_ID;
       sort[1] = MS::ANTENNA1;
-      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false)); // Use stored table in memory
     }
 
     // Set the expected DD metadata in the first iteration
@@ -550,14 +550,14 @@ void iterMSCachedDDFeedInfo ()
     bool newSpw = true;
     bool newPol = true;
     bool newDD = true;
-    Vector<Double>expectedFreqs(8);
+    Vector<double>expectedFreqs(8);
     indgen (expectedFreqs, 1e9, 1e6);
 
     // Set the expected Feed metadata in the first iteration
     int nReceptors = 2;
     int nFeed = 1;
-    Cube<Double> expectedReceptorAngles;
-    Cube<RigidVector<Double,2>> expectedBeamOffsets;
+    Cube<double> expectedReceptorAngles;
+    Cube<RigidVector<double,2>> expectedBeamOffsets;
     Matrix<Complex> expectedPartialCJones(IPosition(2,2));
     expectedPartialCJones = 0;
     expectedReceptorAngles.resize(nReceptors, nAnt, nFeed);
@@ -566,8 +566,8 @@ void iterMSCachedDDFeedInfo ()
     {
       expectedReceptorAngles(0, iAnt, 0) = iAnt*0.01;
       expectedReceptorAngles(1, iAnt, 0) = iAnt*0.01;
-      expectedBeamOffsets(0, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
-      expectedBeamOffsets(1, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+      expectedBeamOffsets(0, iAnt, 0) = RigidVector<double, 2>(iAnt*0.01);
+      expectedBeamOffsets(1, iAnt, 0) = RigidVector<double, 2>(iAnt*0.01);
     }
 
     // Iterate the MS
@@ -630,7 +630,7 @@ void iterMSCachedDDFeedInfo ()
         expectedPolFrame = expectedDDId % 2;
         expectedFreqs += 1e7;
         expectedReceptorAngles += 0.1;
-        expectedBeamOffsets += RigidVector<Double,2>(0.1);
+        expectedBeamOffsets += RigidVector<double,2>(0.1);
         expectedPartialCJones += Complex(0.1, 0.1);
         antena1Idx = 0;
         newSpw = true;
@@ -668,18 +668,18 @@ void iterMSCachedDDFeedInfo ()
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::TIME;
-      msIter.reset(new MSIter(ms, sort, 1., False, False)); // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 1., false, false)); // Use stored table in memory
     }
 
     // Set the expected DD metadata in the first iteration
-    Vector<Double>expectedFreqs(8);
+    Vector<double>expectedFreqs(8);
     indgen (expectedFreqs, 1e9, 1e6);
 
     // Set the expected Feed metadata in the first iteration
     int nReceptors = 2;
     int nFeed = 1;
-    Cube<Double> expectedReceptorAngles;
-    Cube<RigidVector<Double,2>> expectedBeamOffsets;
+    Cube<double> expectedReceptorAngles;
+    Cube<RigidVector<double,2>> expectedBeamOffsets;
     Matrix<Complex> expectedPartialCJones(IPosition(2,2));
     expectedPartialCJones = 0;
     expectedReceptorAngles.resize(nReceptors, nAnt, nFeed);
@@ -688,8 +688,8 @@ void iterMSCachedDDFeedInfo ()
     {
       expectedReceptorAngles(0, iAnt, 0) = iAnt*0.01;
       expectedReceptorAngles(1, iAnt, 0) = iAnt*0.01;
-      expectedBeamOffsets(0, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
-      expectedBeamOffsets(1, iAnt, 0) = RigidVector<Double, 2>(iAnt*0.01);
+      expectedBeamOffsets(0, iAnt, 0) = RigidVector<double, 2>(iAnt*0.01);
+      expectedBeamOffsets(1, iAnt, 0) = RigidVector<double, 2>(iAnt*0.01);
     }
 
     // Do not read the DD information for each iteration, but skip iterSkip
@@ -798,7 +798,7 @@ void iterMSCachedFieldInfo ()
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::FIELD_ID;
-      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false)); // Use stored table in memory
     }
 
     // Set the expected Field metadata in the first iteration
@@ -849,7 +849,7 @@ void iterMSCachedFieldInfo ()
       Block<int> sort(2);
       sort[0] = MS::FIELD_ID;
       sort[1] = MS::ANTENNA1;
-      msIter.reset(new MSIter(ms, sort, 0, False, False)); // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 0, false, false)); // Use stored table in memory
     }
 
     // Set the expected Field metadata in the first iteration
@@ -910,7 +910,7 @@ void iterMSCachedFieldInfo ()
       // Use traditional constructor
       Block<int> sort(1);
       sort[0] = MS::TIME;
-      msIter.reset(new MSIter(ms, sort, 1., False, False)); // Use stored table in memory
+      msIter.reset(new MSIter(ms, sort, 1., false, false)); // Use stored table in memory
     }
 
     // Set the expected Field metadata in the first iteration

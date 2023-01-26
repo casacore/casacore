@@ -50,9 +50,9 @@ TSMDataColumn::TSMDataColumn (const TSMColumn& column)
 	readFunc_p  = &Conversion::bitToBool;
 	writeFunc_p = &Conversion::boolToBit;
 	tilePixelSize_p = 0;
-        mustConvert_p   = True;
+        mustConvert_p   = true;
     }else{
-        Bool asBigEndian = stmanPtr_p->asBigEndian();
+        bool asBigEndian = stmanPtr_p->asBigEndian();
 	ValType::getCanonicalFunc (dt, readFunc_p, writeFunc_p,
 				   convPixelSize_p, asBigEndian);
 	tilePixelSize_p = ValType::getCanonicalSize (dt, asBigEndian);
@@ -64,7 +64,7 @@ TSMDataColumn::TSMDataColumn (const TSMColumn& column)
 TSMDataColumn::~TSMDataColumn()
 {}
 
-uInt64 TSMDataColumn::dataLength (uInt64 nrPixels) const
+uint64_t TSMDataColumn::dataLength (uint64_t nrPixels) const
 {
     // For Bools a byte can hold 8 pixels.
     if (tilePixelSize_p == 0) {
@@ -74,12 +74,12 @@ uInt64 TSMDataColumn::dataLength (uInt64 nrPixels) const
 }
 
 
-Bool TSMDataColumn::canChangeShape() const
+bool TSMDataColumn::canChangeShape() const
 {
     // This storage manager can handle changing array shapes
     // for non-FixedShape columns.
     if (shapeColumn().nelements() != 0) {
-	return False;
+	return false;
     }
     return stmanPtr_p->canChangeShape();
 }
@@ -97,10 +97,10 @@ void TSMDataColumn::setShapeTiled (rownr_t rownr, const IPosition& shape,
     if (cubeShape.nelements() == 0) {
 	stmanPtr_p->setShape (rownr, hypercube, shape, tileShape);
     }else{
-        Bool eq = True;
-        for (uInt i=0; i<shape.size(); ++i) {
+        bool eq = true;
+        for (uint32_t i=0; i<shape.size(); ++i) {
           if (shape[i] != cubeShape[i]) {
-            eq = False;
+            eq = false;
           }
         }
 	if (!eq) {
@@ -116,12 +116,12 @@ void TSMDataColumn::setShapeTiled (rownr_t rownr, const IPosition& shape,
     }
 }
 
-Bool TSMDataColumn::isShapeDefined (rownr_t rownr)
+bool TSMDataColumn::isShapeDefined (rownr_t rownr)
 {
     //# The shape is defined when the shape is fixed or when
     //# a hypercube has been defined for this row.
     if (shapeColumn().nelements() != 0) {
-	return True;                             // FixedShape
+	return true;                             // FixedShape
     }
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr);
     return (hypercube->cubeShape().nelements() != 0);
@@ -143,7 +143,7 @@ IPosition TSMDataColumn::shape (rownr_t rownr)
 			       " in "+ stmanPtr_p->fileName()));
     }
     IPosition shape (stmanPtr_p->nrCoordVector());
-    for (uInt i=0; i<shape.nelements(); i++) {
+    for (uint32_t i=0; i<shape.nelements(); i++) {
 	shape(i) = cubeShape(i);
     }
     return shape;
@@ -158,14 +158,14 @@ IPosition TSMDataColumn::tileShape (rownr_t rownr)
 
 
 void TSMDataColumn::accessCell (rownr_t rownr, const void* dataPtr, 
-				Bool writeFlag)
+				bool writeFlag)
 {
     // Get the hypercube the row is in.
     // It also gives the position of the row in the hypercube.
     IPosition end;
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, end);
     IPosition start (end);
-    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+    for (uint32_t i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 	start(i) = 0;
 	end(i)--;
     }
@@ -174,7 +174,7 @@ void TSMDataColumn::accessCell (rownr_t rownr, const void* dataPtr,
     if (hypercube->getLastColAccess() != TSMCube::CellAccess) {
 	if (! stmanPtr_p->userSetCache (rownr)) {
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), IPosition(), True, False);
+				     IPosition(), IPosition(), true, false);
 	    hypercube->setLastColAccess (TSMCube::CellAccess);
 	}
     }
@@ -183,7 +183,7 @@ void TSMDataColumn::accessCell (rownr_t rownr, const void* dataPtr,
 }
 
 void TSMDataColumn::accessCellSlice (rownr_t rownr, const Slicer& ns,
-				     const void* dataPtr, Bool writeFlag)
+				     const void* dataPtr, bool writeFlag)
 {
     IPosition end;
     TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, end);
@@ -195,7 +195,7 @@ void TSMDataColumn::accessCellSlice (rownr_t rownr, const Slicer& ns,
     // Set the correct start and end of the slice in the hypercube.
     // A slice of the data cell is accessed, thus copy the Slicer
     // info for the vector coordinates.
-    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+    for (uint32_t i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 	start(i)  = blc(i);
 	end(i)    = trc(i);
 	stride(i) = inc(i);
@@ -207,16 +207,16 @@ void TSMDataColumn::accessCellSlice (rownr_t rownr, const Slicer& ns,
 	if (! stmanPtr_p->userSetCache (rownr)) {
 	    // The main access path is assumed to be along the full slice
 	    // dimensions.
-	    uInt naxis = 0;
+	    uint32_t naxis = 0;
 	    IPosition axisPath (end.nelements());
-	    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+	    for (uint32_t i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 		if (blc(i) == 0  &&  trc(i) == endcp(i)) {
 		    axisPath(naxis++) = i;
 		}
 	    }
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), axisPath, True, False);
+				     IPosition(), axisPath, true, false);
 	    hypercube->setLastColAccess (TSMCube::SliceAccess);
 	    hypercube->setLastColSlice (slice);
 	}
@@ -226,7 +226,7 @@ void TSMDataColumn::accessCellSlice (rownr_t rownr, const Slicer& ns,
 			      localPixelSize_p, tilePixelSize_p, writeFlag);
 }
 
-void TSMDataColumn::accessColumn (const void* dataPtr, Bool writeFlag)
+void TSMDataColumn::accessColumn (const void* dataPtr, bool writeFlag)
 {
     // Get the single hypercube and the shape of the hypercube.
     TSMCube* hypercube = stmanPtr_p->singleHypercube();
@@ -236,7 +236,7 @@ void TSMDataColumn::accessColumn (const void* dataPtr, Bool writeFlag)
     // Size the cache if the user has not done it.
     if (! stmanPtr_p->userSetCache (0)) {
 	hypercube->setCacheSize (end + 1, IPosition(),
-				 IPosition(), IPosition(), True, False);
+				 IPosition(), IPosition(), true, false);
 	hypercube->setLastColAccess (TSMCube::ColumnAccess);
     }
     hypercube->accessSection (start, end, (char*)dataPtr, colnr_p,
@@ -244,7 +244,7 @@ void TSMDataColumn::accessColumn (const void* dataPtr, Bool writeFlag)
 }
 
 void TSMDataColumn::accessColumnSlice (const Slicer& ns,
-				       const void* dataPtr, Bool writeFlag)
+				       const void* dataPtr, bool writeFlag)
 {
     // Get the single hypercube and the shape of the hypercube.
     TSMCube* hypercube = stmanPtr_p->singleHypercube();
@@ -259,7 +259,7 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
     // The entire column is accessed, thus all scalar coordinates.
     // A slice of each data cell is accessed, thus copy the Slicer
     // info for the vector coordinates.
-    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+    for (uint32_t i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 	start(i)  = blc(i);
 	end(i)    = trc(i);
 	stride(i) = inc(i);
@@ -271,20 +271,20 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 	if (! stmanPtr_p->userSetCache (0)) {
 	    // The main access path is assumed to be along the full slice
 	    // dimensions.
-	    uInt naxis = 0;
+	    uint32_t naxis = 0;
 	    IPosition axisPath (end.nelements());
-	    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+	    for (uint32_t i=0; i<stmanPtr_p->nrCoordVector(); i++) {
 		if (blc(i) == 0  &&  trc(i) == endcp(i)) {
 		    axisPath(naxis++) = i;
 		}
 	    }
 	    // The further access path is along the trailing axes.
-	    for (uInt i=stmanPtr_p->nrCoordVector(); i<axisPath.nelements(); i++) {
+	    for (uint32_t i=stmanPtr_p->nrCoordVector(); i<axisPath.nelements(); i++) {
 		axisPath(naxis++) = i;
 	    }
 	    axisPath.resize (naxis);
 	    hypercube->setCacheSize (1 + end - start, IPosition(),
-				     IPosition(), axisPath, True, False);
+				     IPosition(), axisPath, true, false);
 	    hypercube->setLastColAccess (TSMCube::ColumnSliceAccess);
 	    hypercube->setLastColSlice (slice);
 	}
@@ -297,14 +297,14 @@ void TSMDataColumn::accessColumnSlice (const Slicer& ns,
 
 void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 				       const IPosition& arrShape,
-				       const void* dataPtr, Bool writeFlag)
+				       const void* dataPtr, bool writeFlag)
 {
   char* data = (char*)(dataPtr);
-  uInt lastAxis  = arrShape.nelements() - 1;
+  uint32_t lastAxis  = arrShape.nelements() - 1;
   IPosition cellShape = arrShape.getFirst (lastAxis);
-  uInt64 chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
-  uInt64 nrinc = 0;
-  Int64  lastRowPos = 0;
+  uint64_t chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
+  uint64_t nrinc = 0;
+  int64_t  lastRowPos = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis+1);
@@ -321,10 +321,10 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
       // A read has to be done if we have another hypercube
       // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, rowpos);
-      Int64 hcRowPos = rowpos(lastAxis);
-      Bool doIt = False;
+      int64_t hcRowPos = rowpos(lastAxis);
+      bool doIt = false;
       if (hypercube != lastCube  ||  hcRowPos <= lastRowPos) {
-	doIt = True;
+	doIt = true;
       } else {
 	// The same hypercube. Check if the stride is the same.
 	// The first time the stride has to be determined.
@@ -332,7 +332,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	  incr(lastAxis) = hcRowPos - end(lastAxis);
 	} else {
 	  if (hcRowPos - end(lastAxis) != incr(lastAxis)) {
-	    doIt = True;
+	    doIt = true;
 	  }
 	}
       }
@@ -341,7 +341,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	  accessFullCells (lastCube, data, writeFlag, start, end, incr);
 	  data += (nrinc+1) * chunkSize;
 	} else {
-	  for (uInt i=0; i<lastAxis; i++) {
+	  for (uint32_t i=0; i<lastAxis; i++) {
 	    start(i) = 0;
 	    end(i)   = rowpos(i) - 1;
 	    incr(i)  = 1;
@@ -381,13 +381,13 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 					    const Slicer& ns,
 					    const IPosition& arrShape,
 					    const void* dataPtr,
-					    Bool writeFlag)
+					    bool writeFlag)
 {
   char* data = (char*)(dataPtr);
-  uInt lastAxis  = arrShape.nelements() - 1;
-  uInt64 chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
-  uInt64 nrinc = 0;
-  Int64  lastRowPos = 0;
+  uint32_t lastAxis  = arrShape.nelements() - 1;
+  uint64_t chunkSize = arrShape.product() / arrShape(lastAxis) * localPixelSize_p;
+  uint64_t nrinc = 0;
+  int64_t  lastRowPos = 0;
   TSMCube* lastCube = 0;
   IPosition rowpos;
   IPosition start(lastAxis+1);
@@ -404,10 +404,10 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
       // A read has to be done if we have another hypercube
       // or if the rownr is not higher.
       TSMCube* hypercube = stmanPtr_p->getHypercube (rownr, rowpos);
-      Int64 hcRowPos = rowpos(lastAxis);
-      Bool doIt = False;
+      int64_t hcRowPos = rowpos(lastAxis);
+      bool doIt = false;
       if (hypercube != lastCube  ||  hcRowPos <= lastRowPos) {
-	doIt = True;
+	doIt = true;
       } else {
 	// The same hypercube. Check if the stride is the same.
 	// The first time the stride has to be determined.
@@ -415,7 +415,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 	  incr(lastAxis) = hcRowPos - end(lastAxis);
 	} else {
 	  if (hcRowPos - end(lastAxis) != incr(lastAxis)) {
-	    doIt = True;
+	    doIt = true;
 	  }
 	}
       }
@@ -426,7 +426,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 	} else {
 	  IPosition blc, trc, inc;
 	  ns.inferShapeFromSource (shape(rownr), blc, trc, inc);
-	  for (uInt i=0; i<lastAxis; i++) {
+	  for (uint32_t i=0; i<lastAxis; i++) {
 	    start(i) = blc(i);
 	    end(i)   = trc(i);
 	    incr(i)  = inc(i);
@@ -452,7 +452,7 @@ void TSMDataColumn::accessColumnSliceCells (const RefRows& rownrs,
 }
 
 void TSMDataColumn::accessFullCells (TSMCube* hypercube,
-				     char* dataPtr, Bool writeFlag,
+				     char* dataPtr, bool writeFlag,
 				     const IPosition& start,
 				     const IPosition& end,
 				     const IPosition& incr)
@@ -462,7 +462,7 @@ void TSMDataColumn::accessFullCells (TSMCube* hypercube,
   if (! stmanPtr_p->userSetCache (0)) {
     if (hypercube->getLastColAccess() != TSMCube::ColumnAccess) {
       hypercube->setCacheSize (hypercube->cubeShape(), IPosition(),
-			       IPosition(), IPosition(), True, False);
+			       IPosition(), IPosition(), true, false);
       hypercube->setLastColAccess (TSMCube::ColumnAccess);
     }
   }
@@ -471,7 +471,7 @@ void TSMDataColumn::accessFullCells (TSMCube* hypercube,
 }
 
 void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
-				       char* dataPtr, Bool writeFlag,
+				       char* dataPtr, bool writeFlag,
 				       const IPosition& start,
 				       const IPosition& end,
 				       const IPosition& incr)
@@ -481,10 +481,10 @@ void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
   if (! stmanPtr_p->userSetCache (0)) {
     // The main access path is assumed to be along the full slice
     // dimensions.
-    uInt naxis = 0;
+    uint32_t naxis = 0;
     IPosition axisPath (end.nelements());
     IPosition sliceShp = hypercube->cubeShape();
-    for (uInt i=0; i<stmanPtr_p->nrCoordVector(); i++) {
+    for (uint32_t i=0; i<stmanPtr_p->nrCoordVector(); i++) {
       if (start(i) == 0  &&  end(i) == sliceShp(i)-1) {
 	axisPath(naxis++) = i;
       }
@@ -494,12 +494,12 @@ void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
     if (hypercube->getLastColAccess() != TSMCube::ColumnSliceAccess
     ||  ! sliceShp.isEqual (hypercube->getLastColSlice())) {
       // The further access path is along the trailing axes.
-      for (uInt i=stmanPtr_p->nrCoordVector(); i<axisPath.nelements(); i++) {
+      for (uint32_t i=stmanPtr_p->nrCoordVector(); i<axisPath.nelements(); i++) {
 	axisPath(naxis++) = i;
       }
       axisPath.resize (naxis);
       hypercube->setCacheSize (sliceShp, IPosition(),
-			       IPosition(), axisPath, True, False);
+			       IPosition(), axisPath, true, false);
       hypercube->setLastColAccess (TSMCube::ColumnSliceAccess);
       hypercube->setLastColSlice (sliceShp);
     }
@@ -511,44 +511,44 @@ void TSMDataColumn::accessSlicedCells (TSMCube* hypercube,
 
 void TSMDataColumn::getfloat (rownr_t rownr, float* dataPtr)
 {
-    accessCell (rownr, dataPtr, False);
+    accessCell (rownr, dataPtr, false);
 }
 void TSMDataColumn::putfloat (rownr_t rownr, const float* dataPtr)
 {
-    accessCell (rownr, dataPtr, True);
+    accessCell (rownr, dataPtr, true);
 }
 
 
 void TSMDataColumn::getArrayV (rownr_t rownr, ArrayBase& dataPtr)
 {
-    Bool deleteIt;
+    bool deleteIt;
     void* data = dataPtr.getVStorage (deleteIt);
-    accessCell (rownr, data, False);
+    accessCell (rownr, data, false);
     dataPtr.putVStorage (data, deleteIt);
 }
 
 void TSMDataColumn::putArrayV (rownr_t rownr, const ArrayBase& dataPtr)
 {
-    Bool deleteIt;
+    bool deleteIt;
     const void* data = dataPtr.getVStorage (deleteIt);
-    accessCell (rownr, data, True);
+    accessCell (rownr, data, true);
     dataPtr.freeVStorage (data, deleteIt);
 }
 
 void TSMDataColumn::getSliceV (rownr_t rownr, const Slicer& ns,
                                ArrayBase& dataPtr)
 {
-    Bool deleteIt;
+    bool deleteIt;
     void* data = dataPtr.getVStorage (deleteIt);
-    accessCellSlice (rownr, ns, data, False);
+    accessCellSlice (rownr, ns, data, false);
     dataPtr.putVStorage (data, deleteIt);
 }
 void TSMDataColumn::putSliceV (rownr_t rownr, const Slicer& ns,
                                const ArrayBase& dataPtr)
 {
-    Bool deleteIt;
+    bool deleteIt;
     const void* data = dataPtr.getVStorage (deleteIt);
-    accessCellSlice (rownr, ns, data, True);
+    accessCellSlice (rownr, ns, data, true);
     dataPtr.freeVStorage (data, deleteIt);
 }
 
@@ -557,9 +557,9 @@ void TSMDataColumn::getArrayColumnV (ArrayBase& dataPtr)
   if (! stmanPtr_p->canAccessColumn()) {
     getArrayColumnBase (dataPtr);
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     void* data = dataPtr.getVStorage (deleteIt);
-    accessColumn (data, False);
+    accessColumn (data, false);
     dataPtr.putVStorage (data, deleteIt);
   }
 }
@@ -568,9 +568,9 @@ void TSMDataColumn::putArrayColumnV (const ArrayBase& dataPtr)
   if (! stmanPtr_p->canAccessColumn()) {
     putArrayColumnBase (dataPtr);
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     const void* data = dataPtr.getVStorage (deleteIt);
-    accessColumn (data, True);
+    accessColumn (data, true);
     dataPtr.freeVStorage (data, deleteIt);
   }
 }
@@ -581,9 +581,9 @@ void TSMDataColumn::getColumnSliceV (const Slicer& ns,
   if (! stmanPtr_p->canAccessColumn()) {
     getColumnSliceBase (ns, dataPtr);
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     void* data = dataPtr.getVStorage (deleteIt);
-    accessColumnSlice (ns, data, False);
+    accessColumnSlice (ns, data, false);
     dataPtr.putVStorage (data, deleteIt);
   }
 }
@@ -593,9 +593,9 @@ void TSMDataColumn::putColumnSliceV (const Slicer& ns,
   if (! stmanPtr_p->canAccessColumn()) {
     putColumnSliceBase (ns, dataPtr);
   } else {
-    Bool deleteIt;
+    bool deleteIt;
     const void* data = dataPtr.getVStorage (deleteIt);
-    accessColumnSlice (ns, data, True);
+    accessColumnSlice (ns, data, true);
     dataPtr.freeVStorage (data, deleteIt);
   }
 }
@@ -607,9 +607,9 @@ void TSMDataColumn::getArrayColumnCellsV (const RefRows& rownrs,
     // Only use optimized accessColumnCells for hypercubes where the rows
     // are mapped to a single axis.
     if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
-        Bool deleteIt;
+        bool deleteIt;
 	void* data = dataPtr.getVStorage (deleteIt);
-	accessColumnCells (rownrs, dataPtr.shape(), data, False);
+	accessColumnCells (rownrs, dataPtr.shape(), data, false);
 	dataPtr.putVStorage (data, deleteIt);
     } else {
         getArrayColumnCellsBase (rownrs, dataPtr);
@@ -622,9 +622,9 @@ void TSMDataColumn::putArrayColumnCellsV (const RefRows& rownrs,
     // Only use optimized accessColumnCells for hypercubes where the rows
     // are mapped to a single axis.
     if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
-        Bool deleteIt;
+        bool deleteIt;
 	const void* data = dataPtr.getVStorage (deleteIt);
-	accessColumnCells (rownrs, dataPtr.shape(), data, True);
+	accessColumnCells (rownrs, dataPtr.shape(), data, true);
 	dataPtr.freeVStorage (data, deleteIt);
     } else {
         putArrayColumnCellsBase (rownrs, dataPtr);
@@ -638,9 +638,9 @@ void TSMDataColumn::getColumnSliceCellsV (const RefRows& rownrs,
     // Only use optimized accessColumnSliceCells for hypercubes where the rows
     // are mapped to a single axis.
     if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
-        Bool deleteIt;
+        bool deleteIt;
 	void* data = dataPtr.getVStorage (deleteIt);
-	accessColumnSliceCells (rownrs, ns, dataPtr.shape(), data, False);
+	accessColumnSliceCells (rownrs, ns, dataPtr.shape(), data, false);
 	dataPtr.putVStorage (data, deleteIt);
     } else {
         getColumnSliceCellsBase (rownrs, ns, dataPtr);
@@ -654,9 +654,9 @@ void TSMDataColumn::putColumnSliceCellsV (const RefRows& rownrs,
     // Only use optimized accessColumnSliceCells for hypercubes where the rows
     // are mapped to a single axis.
     if (dataPtr.ndim() == stmanPtr_p->nrCoordVector() + 1) {
-        Bool deleteIt;
+        bool deleteIt;
 	const void* data = dataPtr.getVStorage (deleteIt);
-	accessColumnSliceCells (rownrs, ns, dataPtr.shape(), data, True);
+	accessColumnSliceCells (rownrs, ns, dataPtr.shape(), data, true);
 	dataPtr.freeVStorage (data, deleteIt);
     } else {
         putColumnSliceCellsBase (rownrs, ns, dataPtr);
@@ -664,26 +664,26 @@ void TSMDataColumn::putColumnSliceCellsV (const RefRows& rownrs,
 }
 
 
-#define TSMDATACOLUMN_GETPUT(T) \
-void TSMDataColumn::aips_name2(get,T) (rownr_t rownr, T* dataPtr) \
+#define TSMDATACOLUMN_GETPUT(T,NM)                                  \
+void TSMDataColumn::aips_name2(get,NM) (rownr_t rownr, T* dataPtr) \
 { \
-    accessCell (rownr, dataPtr, False); \
+    accessCell (rownr, dataPtr, false); \
 } \
-void TSMDataColumn::aips_name2(put,T) (rownr_t rownr, const T* dataPtr) \
+void TSMDataColumn::aips_name2(put,NM) (rownr_t rownr, const T* dataPtr) \
 { \
-    accessCell (rownr, dataPtr, True); \
+    accessCell (rownr, dataPtr, true); \
 }
 
-TSMDATACOLUMN_GETPUT(Bool)
-TSMDATACOLUMN_GETPUT(uChar)
-TSMDATACOLUMN_GETPUT(Short)
-TSMDATACOLUMN_GETPUT(uShort)
-TSMDATACOLUMN_GETPUT(Int)
-TSMDATACOLUMN_GETPUT(uInt)
-TSMDATACOLUMN_GETPUT(Int64)
-//#TSMDATACOLUMN_GETPUT(float)
-TSMDATACOLUMN_GETPUT(double)
-TSMDATACOLUMN_GETPUT(Complex)
-TSMDATACOLUMN_GETPUT(DComplex)
+TSMDATACOLUMN_GETPUT(bool, Bool)
+TSMDATACOLUMN_GETPUT(unsigned char, uChar)
+TSMDATACOLUMN_GETPUT(int16_t, Short)
+TSMDATACOLUMN_GETPUT(uint16_t, uShort)
+TSMDATACOLUMN_GETPUT(int32_t, Int)
+TSMDATACOLUMN_GETPUT(uint32_t, uInt)
+TSMDATACOLUMN_GETPUT(int64_t, Int64)
+//#TSMDATACOLUMN_GETPUT(float, float)
+TSMDATACOLUMN_GETPUT(double, double)
+TSMDATACOLUMN_GETPUT(Complex, Complex)
+TSMDATACOLUMN_GETPUT(DComplex, DComplex)
 
 } //# NAMESPACE CASACORE - END

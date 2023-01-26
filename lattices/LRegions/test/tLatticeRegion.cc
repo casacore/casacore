@@ -37,9 +37,9 @@ void doIt (const IPosition& latticeShape,
 	   const IPosition& start,
 	   const IPosition& end,
 	   const IPosition& center,
-	   Int radius)
+	   int32_t radius)
 {
-    uInt ndim = start.nelements();
+    uint32_t ndim = start.nelements();
     // Show output of simple circle.
     LCEllipsoid cir (center, radius, latticeShape);
     LatticeRegion reg1(cir);
@@ -53,7 +53,7 @@ void doIt (const IPosition& latticeShape,
 		       latticeShape);
     AlwaysAssertExit (! reg2.hasMask());
     AlwaysAssertExit (reg2.get().shape() == 1+(end-start)/2);
-    AlwaysAssertExit (allEQ (reg2.get(), True));
+    AlwaysAssertExit (allEQ (reg2.get(), true));
     cout << "slicer: " << reg2.get() << endl;
 
     // Take a slicer of the slicer.
@@ -61,7 +61,7 @@ void doIt (const IPosition& latticeShape,
 			       IPosition(2,1,2), Slicer::endIsLast)),
 			reg2.shape());
     AlwaysAssertExit (! reg2a.hasMask());
-    AlwaysAssertExit (allEQ (reg2a.get(), True));
+    AlwaysAssertExit (allEQ (reg2a.get(), true));
     cout << "strided slicer: " << reg2a.get() << endl;
 }
 

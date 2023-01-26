@@ -35,10 +35,10 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Statics
-uInt MCPosition::ToRef_p[N_Routes][3] = {
+uint32_t MCPosition::ToRef_p[N_Routes][3] = {
   {MPosition::ITRF,	MPosition::WGS84,	0},
   {MPosition::WGS84,	MPosition::ITRF,	0} };
-uInt MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
+uint32_t MCPosition::FromTo_p[MPosition::N_Types][MPosition::N_Types];
 std::once_flag MCPosition::theirInitOnceFlag;
 
 //# Constructors
@@ -60,9 +60,9 @@ void MCPosition::getConvert(MConvertBase &mc,
 			    const MRBase &inref, 
 			    const MRBase &outref) {
 
-  Int iin  = inref.getType();
-  Int iout = outref.getType();
-  Int tmp;
+  int32_t iin  = inref.getType();
+  int32_t iout = outref.getType();
+  int32_t tmp;
   while (iin != iout) {
     tmp = FromTo_p[iin][iout];
     iin = ToRef_p[tmp][1];
@@ -76,11 +76,11 @@ void MCPosition::clearConvert() {
 }
 
 //# Conversion routines
-void MCPosition::initConvert(uInt which, MConvertBase &mc) {
+void MCPosition::initConvert(uint32_t which, MConvertBase &mc) {
 
-  if (False) initConvert(which, mc);	// Stop warning
+  if (false) initConvert(which, mc);	// Stop warning
 
-  if (!DVEC1) DVEC1 = new Vector<Double>(3);
+  if (!DVEC1) DVEC1 = new Vector<double>(3);
 
   switch (which) {
 
@@ -102,16 +102,16 @@ void MCPosition::doConvert(MVPosition &in,
 			   MRBase &outref,
 			   const MConvertBase &mc) {
     
-  if (False) { inref.getType(); outref.getType(); } // to stop warnings
+  if (false) { inref.getType(); outref.getType(); } // to stop warnings
 
-  Double g1, g2, g3, g4;
+  double g1, g2, g3, g4;
 
-  for (Int i=0; i<mc.nMethod(); i++) {
+  for (int32_t i=0; i<mc.nMethod(); i++) {
 
     switch (mc.getMethod(i)) {
 	
     case ITRF_WGS84: {
-      Double d1, d2;
+      double d1, d2;
       // Get angles
       *DVEC1 = in.get();
       // Get flattening

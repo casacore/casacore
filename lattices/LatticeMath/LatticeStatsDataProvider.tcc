@@ -35,14 +35,14 @@ template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider()
     : LatticeStatsDataProviderBase<T>(),
     _iter(), _currentSlice(),
-    _currentPtr(0), _delData(False), _atEnd(False), _nMaxThreads(0) {}
+    _currentPtr(0), _delData(false), _atEnd(false), _nMaxThreads(0) {}
 
 template <class T>
 LatticeStatsDataProvider<T>::LatticeStatsDataProvider(
-    const Lattice<T>& lattice, uInt iteratorLimitBytes
+    const Lattice<T>& lattice, uint32_t iteratorLimitBytes
 ) : LatticeStatsDataProviderBase<T>(),
     _iter(), _currentSlice(),
-    _currentPtr(0), _delData(False), _atEnd(False) {
+    _currentPtr(0), _delData(false), _atEnd(false) {
     setLattice(lattice, iteratorLimitBytes);
 }
 
@@ -53,7 +53,7 @@ template <class T>
 void LatticeStatsDataProvider<T>::operator++() {
     _freeStorage();
     if (_iter.null()) {
-        _atEnd = True;
+        _atEnd = true;
     }
     else {
         ++(*_iter);
@@ -62,16 +62,16 @@ void LatticeStatsDataProvider<T>::operator++() {
 }
 
 template <class T>
-uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
+uint32_t LatticeStatsDataProvider<T>::estimatedSteps() const {
     if (_iter.null()) {
         return 1;
     }
     IPosition lattShape = _iter->latticeShape();
     IPosition cursShape = _iter->cursor().shape();
-    uInt ndim = lattShape.size();
-    uInt count = 1;
-    for (uInt i=0; i<ndim; i++) {
-        uInt nsteps = lattShape[i]/cursShape[i];
+    uint32_t ndim = lattShape.size();
+    uint32_t count = 1;
+    for (uint32_t i=0; i<ndim; i++) {
+        uint32_t nsteps = lattShape[i]/cursShape[i];
         if (lattShape[i] % cursShape[i] != 0) {
             ++nsteps;
         }
@@ -81,7 +81,7 @@ uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
 }
 
 template <class T>
-Bool LatticeStatsDataProvider<T>::atEnd() const {
+bool LatticeStatsDataProvider<T>::atEnd() const {
     if (_iter.null()) {
         return _atEnd;
     }
@@ -95,7 +95,7 @@ void LatticeStatsDataProvider<T>::finalize() {
 }
 
 template <class T>
-uInt64 LatticeStatsDataProvider<T>::getCount() {
+uint64_t LatticeStatsDataProvider<T>::getCount() {
     if (_iter.null()) {
         return _currentSlice.size();
     }
@@ -112,12 +112,12 @@ const T* LatticeStatsDataProvider<T>::getData() {
 }
 
 template <class T>
-const Bool* LatticeStatsDataProvider<T>::getMask() {
+const bool* LatticeStatsDataProvider<T>::getMask() {
     return NULL;
 }
 
 template <class T>
-uInt LatticeStatsDataProvider<T>::getNMaxThreads() const {
+uint32_t LatticeStatsDataProvider<T>::getNMaxThreads() const {
 #ifdef _OPENMP
     return _nMaxThreads;
 #else
@@ -126,8 +126,8 @@ uInt LatticeStatsDataProvider<T>::getNMaxThreads() const {
 }
 
 template <class T>
-Bool LatticeStatsDataProvider<T>::hasMask() const {
-    return False;
+bool LatticeStatsDataProvider<T>::hasMask() const {
+    return false;
 }
 
 template <class T>
@@ -140,7 +140,7 @@ void LatticeStatsDataProvider<T>::reset() {
 
 template <class T>
 void LatticeStatsDataProvider<T>::setLattice(
-    const Lattice<T>& lattice, uInt iteratorLimitBytes
+    const Lattice<T>& lattice, uint32_t iteratorLimitBytes
 ) {
     finalize();
     if (lattice.size() > iteratorLimitBytes/sizeof(T)) {
@@ -154,19 +154,19 @@ void LatticeStatsDataProvider<T>::setLattice(
     else {
         _iter = NULL;
         _currentSlice.assign(lattice.get());
-        _atEnd = False;
+        _atEnd = false;
     }
 #ifdef _OPENMP
     _nMaxThreads = min(
         omp_get_max_threads(),
-        (Int)ceil((Float)lattice.size()/ClassicalStatisticsData::BLOCK_SIZE)
+        (int32_t)ceil((float)lattice.size()/ClassicalStatisticsData::BLOCK_SIZE)
     );
 #endif
 }
 
 template <class T>
 void LatticeStatsDataProvider<T>::updateMaxPos(
-    const std::pair<Int64, Int64>& maxpos
+    const std::pair<int64_t, int64_t>& maxpos
 ) {
     IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
     if (! _iter.null()) {
@@ -177,7 +177,7 @@ void LatticeStatsDataProvider<T>::updateMaxPos(
 
 template <class T>
 void LatticeStatsDataProvider<T>::updateMinPos(
-    const std::pair<Int64, Int64>& minpos
+    const std::pair<int64_t, int64_t>& minpos
 ) {
     IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
     if (! _iter.null()) {
@@ -189,7 +189,7 @@ void LatticeStatsDataProvider<T>::updateMinPos(
 template <class T>
 void LatticeStatsDataProvider<T>::_freeStorage() {
     _currentSlice.freeStorage (_currentPtr, _delData);
-    _delData = False;
+    _delData = false;
 }
 }
 

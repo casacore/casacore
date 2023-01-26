@@ -31,9 +31,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-std::map<String,Int>& MSSelectionKeywords::getMap()
+std::map<String,int32_t>& MSSelectionKeywords::getMap()
 {
-  static std::map<String,Int> fieldMap(initMap());
+  static std::map<String,int32_t> fieldMap(initMap());
   return fieldMap;
 }
 
@@ -45,8 +45,8 @@ Block<String>& MSSelectionKeywords::getReverseMap()
 
 MSSelectionKeywords::Field MSSelectionKeywords::field(const String& itemName)
 {
-  std::map<String,Int>& fieldMap = getMap();
-  std::map<String,Int>::iterator iter = fieldMap.find(itemName);
+  std::map<String,int32_t>& fieldMap = getMap();
+  std::map<String,int32_t>::iterator iter = fieldMap.find(itemName);
   return iter==fieldMap.end() ?  UNDEFINED : Field(iter->second);
 }
 
@@ -57,9 +57,9 @@ const String& MSSelectionKeywords::keyword(Field fld)
 }
 
 
-std::map<String,Int> MSSelectionKeywords::initMap()
+std::map<String,int32_t> MSSelectionKeywords::initMap()
 {
-  std::map<String,Int> fieldMap;
+  std::map<String,int32_t> fieldMap;
   fieldMap.insert (std::make_pair("undefined",UNDEFINED));
   fieldMap.insert (std::make_pair("amplitude",AMPLITUDE));
   fieldMap.insert (std::make_pair("corrected_amplitude",CORRECTED_AMPLITUDE));
@@ -134,7 +134,7 @@ std::map<String,Int> MSSelectionKeywords::initMap()
 
 Block<String> MSSelectionKeywords::initReverseMap()
 {
-  std::map<String,Int>& fieldMap = getMap();
+  std::map<String,int32_t>& fieldMap = getMap();
   Block<String> reverseMap(NUMBER_KEYWORDS);
   for (const auto& x : fieldMap) {
     AlwaysAssert (x.second < NUMBER_KEYWORDS, AipsError);

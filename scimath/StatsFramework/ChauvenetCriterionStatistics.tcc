@@ -36,7 +36,7 @@ namespace casacore {
 
 CASA_STATD
 ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
-    Double zscore, Int maxIterations
+    double zscore, int32_t maxIterations
 )
   : ConstrainedRangeStatistics<CASA_STATP>(
         CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
@@ -82,12 +82,12 @@ ChauvenetCriterionStatistics<CASA_STATP>::clone() const {
 CASA_STATD
 void ChauvenetCriterionStatistics<CASA_STATP>::reset() {
     ConstrainedRangeStatistics<CASA_STATP>::reset();
-    _rangeIsSet = False;
+    _rangeIsSet = false;
     _niter = 0;
 }
 
 CASA_STATD
-void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(Bool c) {
+void ChauvenetCriterionStatistics<CASA_STATP>::setCalculateAsAdded(bool c) {
     ThrowIf(
         c,
         "ChauvenetCriterionStatistics does not support calculating "
@@ -100,8 +100,8 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
     if (_rangeIsSet) {
         return;
     }
-    uInt maxI = _maxIterations >= 0 ? _maxIterations : 1000;
-    uInt64 prevNpts = 0;
+    uint32_t maxI = _maxIterations >= 0 ? _maxIterations : 1000;
+    uint64_t prevNpts = 0;
     StatsData<AccumType> sd;
     while (_niter <= maxI) {
         if (_niter == 0) {
@@ -110,12 +110,12 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         }
         else {
             sd = this->getStatistics();
-            if ((uInt64)sd.npts == prevNpts) {
+            if ((uint64_t)sd.npts == prevNpts) {
                 break;
             }
         }
-        Double zScore = _zscore >= 0
-            ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
+        double zScore = _zscore >= 0
+            ? _zscore : ZScoreCalculator::getMaxZScore((uint64_t)sd.npts);
         CountedPtr<std::pair<AccumType, AccumType>> range
             = new std::pair<AccumType, AccumType>(
                 sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
@@ -123,8 +123,8 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
         // _rangeIsSet is set here to prevent infinite
         // recursion on next loop iteration
-        _rangeIsSet = True;
-        prevNpts = (uInt64)sd.npts;
+        _rangeIsSet = true;
+        prevNpts = (uint64_t)sd.npts;
         ++_niter;
     }
     --_niter;

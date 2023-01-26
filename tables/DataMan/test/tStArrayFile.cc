@@ -39,14 +39,14 @@
 // This class is meant to store indirect table arrays, but could
 // in principle also be used for other array purposes.
 
-void a (Bool, uInt, Int64&, Int64&, Int64&, Int64&);
-void b (Bool, Int64, Int64, Int64, Int64, Int64&, Int64&, Int64&, Int64&);
-void c (Bool, Int64, Int64, Int64, Int64);
+void a (bool, uint32_t, int64_t&, int64_t&, int64_t&, int64_t&);
+void b (bool, int64_t, int64_t, int64_t, int64_t, int64_t&, int64_t&, int64_t&, int64_t&);
+void c (bool, int64_t, int64_t, int64_t, int64_t);
 
 int main (int argc, const char* argv[])
 {
-    uInt stVersion = 0;
-    uInt endVersion = 1;
+    uint32_t stVersion = 0;
+    uint32_t endVersion = 1;
     if (argc > 1) {
 	istringstream istr(argv[1]);
 	istr >> stVersion;
@@ -57,20 +57,20 @@ int main (int argc, const char* argv[])
 	}
     }
     try {
-	for (uInt i=stVersion; i<=endVersion; i++) {
-	    Int64 off1, off2, off3, off4, offc1, offc2, offc3, offc4;
+	for (uint32_t i=stVersion; i<=endVersion; i++) {
+	    int64_t off1, off2, off3, off4, offc1, offc2, offc3, offc4;
 	    cout << "test of StArrayFile with version " << i
 		 << " in canonical format " << endl;
-	    a (True, i, off1, off2, off3, off4);
-	    b (True, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
-	    c (True, off1, off2, off3, off4);
-	    c (True, offc1, offc2, offc3, offc4);
+	    a (true, i, off1, off2, off3, off4);
+	    b (true, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
+	    c (true, off1, off2, off3, off4);
+	    c (true, offc1, offc2, offc3, offc4);
 	    cout << "test of StArrayFile with version " << i
 		 << " in local format " << endl;
-	    a (False, i, off1, off2, off3, off4);
-	    b (False, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
-	    c (False, off1, off2, off3, off4);
-	    c (False, offc1, offc2, offc3, offc4);
+	    a (false, i, off1, off2, off3, off4);
+	    b (false, off1, off2, off3, off4, offc1, offc2, offc3, offc4);
+	    c (false, off1, off2, off3, off4);
+	    c (false, offc1, offc2, offc3, offc4);
 	}
     } catch (std::exception& x) {
 	cout << "Caught an exception: " << x.what() << endl;
@@ -80,20 +80,20 @@ int main (int argc, const char* argv[])
 }
 
 // Write some arrays (in chunks).
-void a (Bool canonical, uInt version,
-	Int64& off1, Int64& off2, Int64& off3, Int64& off4)
+void a (bool canonical, uint32_t version,
+	int64_t& off1, int64_t& off2, int64_t& off3, int64_t& off4)
 {
-    uInt l1,l2,l3,l4;
-    Bool bbuf[10000];
-    Int ibuf[10000];
+    uint32_t l1,l2,l3,l4;
+    bool bbuf[10000];
+    int32_t ibuf[10000];
     Complex cbuf[10000];
     String sbuf[10000];
     char str[16];
-    for (uInt i=0; i<10000; i++) {
+    for (uint32_t i=0; i<10000; i++) {
 	if (i%3 == 0) {
-	    bbuf[i] = True;
+	    bbuf[i] = true;
 	}else{
-	    bbuf[i] = False;
+	    bbuf[i] = false;
 	}
 	ibuf[i] = i;
 	cbuf[i] = Complex(i+1,i+2);
@@ -103,7 +103,7 @@ void a (Bool canonical, uInt version,
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::New, version,
 		      canonical);
     cout << "Length=" << io.length() << endl;
-    l1 = io.putShape (IPosition(2,100,100), off1, static_cast<Int*>(0));
+    l1 = io.putShape (IPosition(2,100,100), off1, static_cast<int32_t*>(0));
     cout << l1 << " " << off1 << endl;
     cout << "Length=" << io.length() << endl;
     //# Note that because the data is not written here (but a bit later),
@@ -126,44 +126,44 @@ void a (Bool canonical, uInt version,
     cout << "Length=" << io.length() << endl;
     io.put (off3+l3, 4024, 5976, sbuf+4024);
     cout << "Length=" << io.length() << endl;
-    l4 = io.putShape (IPosition(2,1000,10), off4, static_cast<Bool*>(0));
+    l4 = io.putShape (IPosition(2,1000,10), off4, static_cast<bool*>(0));
     cout << l4 << " " << off4 << endl;
     cout << "Length=" << io.length() << endl;
     io.put (off4+l4, 0, 10000, bbuf);
 }
 
 // Read back and update and copy some arrays.
-void b (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4,
-	Int64& offc1, Int64& offc2, Int64& offc3, Int64& offc4)
+void b (bool canonical, int64_t off1, int64_t off2, int64_t off3, int64_t off4,
+	int64_t& offc1, int64_t& offc2, int64_t& offc3, int64_t& offc4)
 {
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Update, 0, canonical);
     cout << "Length=" << io.length() << endl;
     IPosition shp, shp1, shp2, shp3, shp4;
-    Int64 offs;
-    uInt nref;
-    Bool bbuf[10000];
-    Int ibuf[10000];
+    int64_t offs;
+    uint32_t nref;
+    bool bbuf[10000];
+    int32_t ibuf[10000];
     Complex cbuf[10000];
     String sbuf[10000], sbufo[10000];
     char str[16];
-    Int i;
+    int32_t i;
     for (i=0; i<10000; i++) {
 	sprintf (str, "str %d", i);
 	sbuf[i] = str;
     }
-    uInt l1 = io.getShape (off1, shp);
+    uint32_t l1 = io.getShape (off1, shp);
     nref = io.getRefCount (off1);
     cout << l1 << " " << shp << " " << nref <<endl;
     shp1 = shp;
-    uInt l2 = io.getShape (off2, shp);
+    uint32_t l2 = io.getShape (off2, shp);
     nref = io.getRefCount (off2);
     cout << l2 << " " << shp << " " << nref << endl;
     shp2 = shp;
-    uInt l3 = io.getShape (off3, shp);
+    uint32_t l3 = io.getShape (off3, shp);
     nref = io.getRefCount (off3);
     cout << l3 << " " << shp << " " << nref << endl;
     shp3 = shp;
-    uInt l4 = io.getShape (off4, shp);
+    uint32_t l4 = io.getShape (off4, shp);
     nref = io.getRefCount (off4);
     cout << l4 << " " << shp << " " << nref << endl;
     shp4 = shp;
@@ -189,7 +189,7 @@ void b (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4,
     io.get (off4+l4, 1102, 1898, bbuf+1102);
     io.get (off4+l4, 3000, 7000, bbuf+3000);
     for (i=0; i<10000; i++) {
-	Bool b = (i%3 == 0  ?  True : False);
+	bool b = (i%3 == 0  ?  true : false);
 	if (ibuf[i] != i  ||  cbuf[i] != Complex(i+1,i+2)  ||  bbuf[i] != b) {
 	    cout << "mismatch " << i << ":" << ibuf[i] << " " << cbuf[i]
 		 << " " << bbuf[i] << endl;
@@ -205,54 +205,54 @@ void b (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4,
     io.put (off4+l4, 23, 1, bbuf);
     io.put (off4+l4, 34, 4, bbuf);
     cout << "Length=" << io.length() << endl;
-    uInt lc1 = io.putShape (shp1, offc1, static_cast<Int*>(0));
+    uint32_t lc1 = io.putShape (shp1, offc1, static_cast<int32_t*>(0));
     cout << "copy to " << lc1 << " " << offc1 << endl;
     io.copyArrayInt (offc1+lc1, off1+l1, shp1.product());
-    uInt lc2 = io.putShape (shp2, offc2, static_cast<Complex*>(0));
+    uint32_t lc2 = io.putShape (shp2, offc2, static_cast<Complex*>(0));
     cout << "copy to " << lc2 << " " << offc2 << endl;
     io.copyArrayComplex (offc2+lc2, off2+l2, shp2.product());
-    uInt lc3 = io.putShape (shp3, offc3, static_cast<String*>(0));
+    uint32_t lc3 = io.putShape (shp3, offc3, static_cast<String*>(0));
     cout << "copy to " << lc3 << " " << offc3 << endl;
     io.copyArrayString (offc3+lc3, off3+l3, shp3.product());
-    uInt lc4 = io.putShape (shp4, offc4, static_cast<Bool*>(0));
+    uint32_t lc4 = io.putShape (shp4, offc4, static_cast<bool*>(0));
     cout << "copy to " << lc4 << " " << offc4 << endl;
     io.copyArrayBool (offc4+lc4, off4+l4, shp4.product());
 }
 
 // Read back.
-void c (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4)
+void c (bool canonical, int64_t off1, int64_t off2, int64_t off3, int64_t off4)
 {
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::Old, 0, canonical);
     cout << "Length=" << io.length() << endl;
-    uInt nref;
+    uint32_t nref;
     IPosition shp;
-    Bool bbuf[10000];
-    Int ibuf[10000];
+    bool bbuf[10000];
+    int32_t ibuf[10000];
     Complex cbuf[10000];
     String sbuf[10000], sbufo[10000];
     char str[16];
-    uInt i;
+    uint32_t i;
     for (i=0; i<10000; i++) {
 	sprintf (str, "str %d", i);
 	sbuf[i] = str;
     }
-    uInt l1 = io.getShape (off1, shp);
+    uint32_t l1 = io.getShape (off1, shp);
     nref = io.getRefCount (off1);
     cout << l1 << " " << shp << " " << nref << endl;
-    uInt l2 = io.getShape (off2, shp);
+    uint32_t l2 = io.getShape (off2, shp);
     nref = io.getRefCount (off2);
     cout << l2 << " " << shp << " " << nref << endl;
-    uInt l3 = io.getShape (off3, shp);
+    uint32_t l3 = io.getShape (off3, shp);
     nref = io.getRefCount (off3);
     cout << l3 << " " << shp << " " << nref << endl;
-    uInt l4 = io.getShape (off4, shp);
+    uint32_t l4 = io.getShape (off4, shp);
     nref = io.getRefCount (off4);
     cout << l4 << " " << shp << " " << nref << endl;
     io.get (off4+l4, 0, 10000, bbuf);
     io.get (off3+l3, 0, 10000, sbufo);
     io.get (off1+l1, 0, 10000, ibuf);
     io.get (off2+l2, 0, 10000, cbuf);
-    Int j;
+    int32_t j;
     for (i=0; i<10000; i++) {
 	j = i;
 	if (i>0 && i<21)
@@ -263,17 +263,17 @@ void c (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4)
 	}
     }
     for (i=0; i<10000; i++) {
-	Bool b = (i%3 == 0  ?  True : False);
+	bool b = (i%3 == 0  ?  true : false);
 	j = i;
 	if (i>=1 && i<21) {
 	    j = i-1;
-	    b = (j%3 == 0  ?  True : False);
+	    b = (j%3 == 0  ?  true : false);
 	}
 	if (i == 23) {
-	  b = True;
+	  b = true;
 	}
 	if (i>=34 && i<38) {
-	    b = ((i-34)%3 == 0  ?  True : False);
+	    b = ((i-34)%3 == 0  ?  true : false);
 	}
 	if (ibuf[i] != j  ||  cbuf[i] != Complex(j+1,j+2)  ||  bbuf[i] != b)
 	    cout << "mismatch in row " << i << ":" << ibuf[i] << " " << cbuf[i]

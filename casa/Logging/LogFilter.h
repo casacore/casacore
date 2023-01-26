@@ -99,8 +99,8 @@ public:
   // Clone the object.
   virtual LogFilter* clone() const;
 
-  // Return True if <src>message</src> passes this filter.
-  virtual Bool pass (const LogMessage& message) const;
+  // Return true if <src>message</src> passes this filter.
+  virtual bool pass (const LogMessage& message) const;
 
   // Return the lowest priority which will pass this filter.
   LogMessage::Priority lowestPriority() const;

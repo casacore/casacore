@@ -34,19 +34,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //----------------------------------------------------------------------------
   //
-  Vector<Int> set_intersection(const Vector<Int>& v1, const Vector<Int>& v2)
+  Vector<int32_t> set_intersection(const Vector<int32_t>& v1, const Vector<int32_t>& v2)
   {
-    Vector<Int> loc;
-    Bool found=False;
-    Int n1=v1.nelements(), n2=v2.nelements();
+    Vector<int32_t> loc;
+    bool found=false;
+    int32_t n1=v1.nelements(), n2=v2.nelements();
 
-    for(Int i=0;i<n1;i++)
+    for(int32_t i=0;i<n1;i++)
       {
-	found=False;
-	for(Int j=0;j<n2;j++) if (v2(j) == v1(i)) {found=True;break;}
+	found=false;
+	for(int32_t j=0;j<n2;j++) if (v2(j) == v1(i)) {found=true;break;}
 	if (found)
 	  {
-	    loc.resize(loc.nelements()+1,True);
+	    loc.resize(loc.nelements()+1,true);
 	    loc(loc.nelements()-1) = v1(i);
 	  }
       }
@@ -57,21 +57,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //----------------------------------------------------------------------------
   //
-  Vector<Int> set_union(const Vector<Int>& v1, const Vector<Int>& v2)
+  Vector<int32_t> set_union(const Vector<int32_t>& v1, const Vector<int32_t>& v2)
   {
-    Vector<Int> loc;
-    Bool found=False;
+    Vector<int32_t> loc;
+    bool found=false;
     loc = v2;
-    Int n1=v1.nelements(),n2;
+    int32_t n1=v1.nelements(),n2;
 
-    for(Int i=0;i<n1;i++)
+    for(int32_t i=0;i<n1;i++)
       {
 	n2=loc.nelements();
-	found=False;
-	for(Int j=0;j<n2;j++) if (loc(j) == v1(i)) {found=True;break;}
+	found=false;
+	for(int32_t j=0;j<n2;j++) if (loc(j) == v1(i)) {found=true;break;}
 	if (!found)
 	  {
-	    loc.resize(loc.nelements()+1,True);
+	    loc.resize(loc.nelements()+1,true);
 	    loc(loc.nelements()-1) = v1(i);
 	  }
       }
@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //----------------------------------------------------------------------------
   //
-  Bool mssSetData(const MeasurementSet& ms, 
+  bool mssSetData(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  const String& outMSName,
 		  const String& timeExpr,
@@ -103,7 +103,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
               stateExpr, obsExpr, "", mymss);
   }
 
-  Bool mssSetData2(const MeasurementSet& ms, 
+  bool mssSetData2(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  const String& outMSName,
 		  const String& timeExpr,
@@ -127,7 +127,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //
     
     MSSelection *mss=mymss;
-    Bool rstat;
+    bool rstat;
     if (mss == NULL) mss= new MSSelection();
     
     try
@@ -140,8 +140,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	// Apply the internal accumulated TEN to the MS and produce the
 	// selected MS.  
 	//
-	// If the accumulated TEN is NULL, this returns False.  Else
-	// return True.
+	// If the accumulated TEN is NULL, this returns false.  Else
+	// return true.
 	//
 	rstat = mss->getSelectedMS(selectedMS,outMSName);
       }
@@ -158,7 +158,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //----------------------------------------------------------------------------
   //
-  Bool mssSetData(const MeasurementSet& ms, 
+  bool mssSetData(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  Vector<Vector<Slice> >& chanSlices,
 		  Vector<Vector<Slice> >& corrSlices,
@@ -174,7 +174,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  const String& arrayExpr,
 		  const String& stateExpr,
 		  const String& obsExpr,
-		  const Int defaultChanStep,
+		  const int32_t defaultChanStep,
 		  MSSelection *mymss
 		  )
   {
@@ -185,7 +185,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
 
-  Bool mssSetData2(const MeasurementSet& ms, 
+  bool mssSetData2(const MeasurementSet& ms, 
 		  MeasurementSet& selectedMS,
 		  Vector<Vector<Slice> >& chanSlices,
 		  Vector<Vector<Slice> >& corrSlices,
@@ -202,7 +202,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  const String& stateExpr,
 		  const String& obsExpr,
 		  const String& feedExpr,
-		  const Int defaultChanStep,
+		  const int32_t defaultChanStep,
 		  MSSelection *mymss
 		  )
   {
@@ -211,7 +211,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // internally.
     //
     MSSelection *mss=mymss;
-    Bool rstat;
+    bool rstat;
     if (mss == NULL) mss = new MSSelection();
 
     try
@@ -224,8 +224,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	// Apply the internal accumulated TEN to the MS and produce the
 	// selected MS.  
 	//
-	// If the accumulated TEN is NULL, this returns False.  Else
-	// return True.
+	// If the accumulated TEN is NULL, this returns false.  Else
+	// return true.
 	//
 	rstat = mss->getSelectedMS(selectedMS,outMSName);
 	
@@ -245,10 +245,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //
   //----------------------------------------------------------------------------
   //
-  String stripWhite(const String& str, Bool onlyends)
+  String stripWhite(const String& str, bool onlyends)
   {
     //if ((str == "" ) || (str.length() <=0)) return str;
-    Int j0,j1;
+    int32_t j0,j1;
     j0=0;j1=str.length()-1;
     if (onlyends)
       {
@@ -264,23 +264,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     Record retval;
     TableExprNode exprNode=thisSelection.toTableExprNode(ms);
-    Vector<Int> fieldlist=thisSelection.getFieldList();
-    Vector<Int> spwlist=thisSelection.getSpwList();
-    Vector<Int> scanlist=thisSelection.getScanList();
-    Vector<Int> antenna1list=thisSelection.getAntenna1List();
-    Vector<Int> antenna2list=thisSelection.getAntenna2List();
-    Matrix<Int> chanlist=thisSelection.getChanList();
-    Matrix<Int> baselinelist=thisSelection.getBaselineList();
-    Vector<Int> ddIDList=thisSelection.getDDIDList();
-    Vector<Int> spwDDIDList=thisSelection.getSPWDDIDList();
-    Vector<Int> stateIDList=thisSelection.getStateObsModeList();
-    Vector<Int> observationIDList=thisSelection.getObservationList();
-    Vector<Int> feed1List=thisSelection.getFeed1List();
-    Vector<Int> feed2List=thisSelection.getFeed2List();
-    Vector<Int> feedPairList=thisSelection.getFeedPairList();
-    std::map<Int, Vector<Int > > polMap=thisSelection.getPolMap();
-    std::map<Int, Vector<Vector<Int> > > corrMap=thisSelection.getCorrMap();
-    Vector<Int> allDDIDList;
+    Vector<int32_t> fieldlist=thisSelection.getFieldList();
+    Vector<int32_t> spwlist=thisSelection.getSpwList();
+    Vector<int32_t> scanlist=thisSelection.getScanList();
+    Vector<int32_t> antenna1list=thisSelection.getAntenna1List();
+    Vector<int32_t> antenna2list=thisSelection.getAntenna2List();
+    Matrix<int32_t> chanlist=thisSelection.getChanList();
+    Matrix<int32_t> baselinelist=thisSelection.getBaselineList();
+    Vector<int32_t> ddIDList=thisSelection.getDDIDList();
+    Vector<int32_t> spwDDIDList=thisSelection.getSPWDDIDList();
+    Vector<int32_t> stateIDList=thisSelection.getStateObsModeList();
+    Vector<int32_t> observationIDList=thisSelection.getObservationList();
+    Vector<int32_t> feed1List=thisSelection.getFeed1List();
+    Vector<int32_t> feed2List=thisSelection.getFeed2List();
+    Vector<int32_t> feedPairList=thisSelection.getFeedPairList();
+    std::map<int32_t, Vector<int32_t > > polMap=thisSelection.getPolMap();
+    std::map<int32_t, Vector<Vector<int32_t> > > corrMap=thisSelection.getCorrMap();
+    Vector<int32_t> allDDIDList;
     if (ddIDList.nelements() == 0) allDDIDList = spwDDIDList;
     else if (spwDDIDList.nelements() == 0) allDDIDList = ddIDList;
     else allDDIDList = set_intersection(ddIDList, spwDDIDList);
@@ -307,7 +307,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //----------------------------------------------------------------------------
   //
   int tokenize(const String& str, const String& sep, Vector<String>& tokens,
-	       Bool upcase)
+	       bool upcase)
   {
     String tmpStr(str);
     /* String::size_type tokpos,startpos=0; */
@@ -321,8 +321,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	tokens(0)=tok;
 	while((tok=strtok((char*)NULL,sep_p)))
 	  {
-	    tokens.resize(tokens.nelements()+1,True);
-	    tokens(tokens.nelements()-1)=stripWhite(String(tok),True).c_str();
+	    tokens.resize(tokens.nelements()+1,true);
+	    tokens(tokens.nelements()-1)=stripWhite(String(tok),true).c_str();
 	  }
       }
     else
@@ -331,7 +331,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     /*    
     while ((tokpos=tmpStr.index(sep,startpos)))
       {
-	tokens.resize(tokens.nelements()+1,True);
+	tokens.resize(tokens.nelements()+1,true);
 	if (tokpos==String::npos)
 	  tokens(tokens.nelements()-1)=tmpStr.after(startpos-1);
 	else
@@ -357,16 +357,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     while(std::getline(ss, item, delim))   tmp.push_back(item);
 
     elems.resize(tmp.size());
-    for (uInt i=0;i<tmp.size();i++) elems[i]=tmp[i];
+    for (uint32_t i=0;i<tmp.size();i++) elems[i]=tmp[i];
     return elems;
   }
 
-  Bool getSelectedTable(Table& selectedTab,
+  bool getSelectedTable(Table& selectedTab,
 			const Table& baseTab,
 			TableExprNode& fullTEN,
 			const String& outName)
   {
-    Bool newRefTab=False;
+    bool newRefTab=false;
     if ((!fullTEN.isNull()) && (fullTEN.nrow() > 0))
       {
 	selectedTab = Table((baseTab)(fullTEN));
@@ -376,7 +376,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	  throw(MSSelectionNullSelection("MSSelectionNullSelection : The selected table has zero rows."));
 	if (outName!="") selectedTab.rename(outName,Table::New);
 	selectedTab.flush();
-	newRefTab=True;
+	newRefTab=true;
       }
     
     return newRefTab;

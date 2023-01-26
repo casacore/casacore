@@ -63,51 +63,51 @@ public:
     // TYPE - UNIT - MEASURE
     UNDEFINED_COLUMN=0,
     // Antenna id <BR>
-    // Int
+    // int32_t
     ANTENNA_ID,
     // Antenna pointing direction (e.g. RA, DEC) as polynomial in time.<BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION.
+    // double(2,NUM_POLY+1) - rad - DIRECTION.
     DIRECTION,
     // Time interval <BR>
-    // Double - s
+    // double - s
     INTERVAL,
     // Pointing Name. <BR>
     // String
     NAME,
     // Polynomial order for *_DIR columns <BR>
-    // Int
+    // int32_t
     NUM_POLY,
     // Target direction <BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION
+    // double(2,NUM_POLY+1) - rad - DIRECTION
     TARGET,
     // Time midpoint for interval. <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME,
     // Time origin for the directions and rates. <BR>
-    // Double - s - EPOCH
+    // double - s - EPOCH
     TIME_ORIGIN,
     // Track flag - true if on position <BR>
-    // Bool
+    // bool
     TRACKING,
     // Number of required columns <BR>
     NUMBER_REQUIRED_COLUMNS=TRACKING,
     // Encoder values <BR>
-    // Double(2)
+    // double(2)
     ENCODER,
     // On source flag - true if on source <BR>
-    // Bool
+    // bool
     ON_SOURCE,
     // Over the top flag - true if antenna has been driven over the top <BR>
-    // Bool
+    // bool
     OVER_THE_TOP,
     // Pointing model id <BR>
-    // Int 
+    // int32_t 
     POINTING_MODEL_ID,
     // Pointing offset as polynomial in time<BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION.
+    // double(2,NUM_POLY+1) - rad - DIRECTION.
     POINTING_OFFSET,  
     // Offset from source as polynomial in time<BR>
-    // Double(2,NUM_POLY+1) - rad - DIRECTION.
+    // double(2,NUM_POLY+1) - rad - DIRECTION.
     SOURCE_OFFSET,  
     // Not a column, but just a final enum specifying the number of enums.
     NUMBER_PREDEFINED_COLUMNS=SOURCE_OFFSET

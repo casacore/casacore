@@ -78,8 +78,8 @@ int main (int argc, const char* argv[])
       return 1;
     }
 
-    Int64 size = nr*tleng;
-    Int64 pagesz = getpagesize();
+    int64_t size = nr*tleng;
+    int64_t pagesz = getpagesize();
     if (mode >= 0) {
       Timer timer;
       int fd = FiledesIO::create("tMappedIO_tmp.dat2");
@@ -89,11 +89,11 @@ int main (int argc, const char* argv[])
       timer.show("write");
       // Map chunk by chunk.
       for (int k=0; k<nrch; k++) {
-	Int64 offset = k*size;
+	int64_t offset = k*size;
 	// Calculate start of page on which offset is located.
-	Int64 pageStartOffset = (offset/pagesz) * pagesz;
+	int64_t pageStartOffset = (offset/pagesz) * pagesz;
 	// Add the difference to the nr of bytes to map.
-	Int64 nrBytes = size + offset-pageStartOffset;
+	int64_t nrBytes = size + offset-pageStartOffset;
 	// Do mmap
 	int protect= PROT_READ | PROT_WRITE;
 	void* pageStart = ::mmap (0, nrBytes, protect, MAP_SHARED, fd,
@@ -120,11 +120,11 @@ int main (int argc, const char* argv[])
       timer.mark();
       // Map chunk by chunk.
       for (int k=0; k<nrch; k++) {
-	Int64 offset = k*size;
+	int64_t offset = k*size;
 	// Calculate start of page on which offset is located.
-	Int64 pageStartOffset = (offset/pagesz) * pagesz;
+	int64_t pageStartOffset = (offset/pagesz) * pagesz;
 	// Add the difference to the nr of bytes to map.
-	Int64 nrBytes = size + offset-pageStartOffset;
+	int64_t nrBytes = size + offset-pageStartOffset;
 	// Do mmap
 	int protect= PROT_READ;
 	void* pageStart = ::mmap (0, nrBytes, protect, MAP_SHARED, fd,

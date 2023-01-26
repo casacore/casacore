@@ -56,9 +56,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <example>
 // <srcblock>
-// Float func(const Vector<Float>& x) {return x(0)*x(1);}        // x*y
+// float func(const Vector<float>& x) {return x(0)*x(1);}        // x*y
 // // Convert C++ functions to Function
-// FunctionWrapper<Float> Func(func, 2);
+// FunctionWrapper<float> Func(func, 2);
 // </srcblock>
 
 // <templating arg=T>

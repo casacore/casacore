@@ -105,13 +105,13 @@ namespace casacore {
     virtual void setup (const Table&, const TaQLStyle&);
 
     // Get the value.
-    virtual Double getDouble (const TableExprId& id);
-    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual double getDouble (const TableExprId& id);
+    virtual MArray<double> getArrayDouble (const TableExprId& id);
 
   private:
     // Handle a radial velocity or optionally doppler for REST conversion.
-    // It returns True if Doppler is used.
-    Bool handleRadVelDoppler (uInt& argnr, Bool mustRadVel);
+    // It returns true if Doppler is used.
+    bool handleRadVelDoppler (uint32_t& argnr, bool mustRadVel);
     
     //# Data members.
     FrequencyEngine      itsEngine;

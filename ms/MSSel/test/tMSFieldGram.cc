@@ -70,7 +70,7 @@ int main(int argc, const char* argv[])
     MeasurementSet ms(msName);
     MeasurementSet * mssel;
     cout << "Original table has rows " << ms.nrow() << endl;
-    Vector<Int> selectedIDs;
+    Vector<int32_t> selectedIDs;
     TableExprNode colAsTen=ms.col(MS::columnName(MS::FIELD_ID));
     const TableExprNode node = msFieldGramParseCommand(ms.field(), colAsTen, argv[2],selectedIDs);
     if(node.isNull()) 

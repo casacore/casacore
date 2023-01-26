@@ -66,22 +66,22 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-    Bool FITSCoordinateUtil::toFITSHeader(RecordInterface &header, 
+    bool FITSCoordinateUtil::toFITSHeader(RecordInterface &header, 
 					  IPosition &shape,
 					  const CoordinateSystem& cSys,
-					  Bool oneRelative,
-					  Char prefix, Bool writeWCS,
-					  Bool preferVelocity, 
-					  Bool opticalVelocity,
-					  Bool preferWavelength,
-					  Bool airWavelength) const
+					  bool oneRelative,
+					  char prefix, bool writeWCS,
+					  bool preferVelocity, 
+					  bool opticalVelocity,
+					  bool preferWavelength,
+					  bool airWavelength) const
     {
 	LogIO os(LogOrigin("FITSCoordinateUtil", "toFITSHeader", WHERE));
 
 
 // Validation
 
-	const Int n = cSys.nWorldAxes();
+	const int32_t n = cSys.nWorldAxes();
 	String sprefix(prefix);
 	if (header.isDefined(sprefix + "rval") ||
 	    header.isDefined(sprefix + "rpix") ||
@@ -90,10 +90,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    header.isDefined(sprefix + "unit")) {
 	    os << LogIO::SEVERE << "Already contains one or more of *rval, *rpix, "
 		"*delt, *type, *unit";
-	    return False;
+	    return false;
 	}
 
-	Double offset = 0.0;
+	double offset = 0.0;
 	if (oneRelative) {
 	    offset = 1.0;
 	}
@@ -104,24 +104,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Find the sky coordinate, if any
 
-	Int skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
-	Int longAxis = -1, latAxis = -1;
+	int32_t skyCoord = coordsys.findCoordinate(Coordinate::DIRECTION);
+	int32_t longAxis = -1, latAxis = -1;
 
 // Find the spectral axis, if any
 
-	Int specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
-	Int specAxis = -1;
+	int32_t specCoord = coordsys.findCoordinate(Coordinate::SPECTRAL);
+	int32_t specAxis = -1;
     
 // Find the Stokes axis if any. 
 
-	Int stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
-	Int stokesAxis = -1;
+	int32_t stokesCoord = coordsys.findCoordinate(Coordinate::STOKES);
+	int32_t stokesAxis = -1;
 
 // If any axes have been removed from a coordinate, you find it out here.  
 
-	Int i;
+	int32_t i;
 	for (i=0; i<n ; i++) {
-	    Int c, a;
+	    int32_t c, a;
 	    coordsys.findWorldAxis(c, a, i);
 	    if (c == skyCoord) {
 		if (a == 0) {
@@ -145,7 +145,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // If we have any tabular axes that aren't pure linear and are not optical velo or wavelength,
 // report that the table will be lost.
 
-	Int tabCoord = -1;
+	int32_t tabCoord = -1;
 	while ((tabCoord = cSys.findCoordinate(Coordinate::TABULAR, tabCoord)) > 0) {
 	    if (cSys.tabularCoordinate(tabCoord).pixelValues().nelements() > 0 
 		&& !( ((preferVelocity && opticalVelocity) || preferWavelength) && tabCoord==specCoord)
@@ -174,8 +174,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // If there is a spectral conversion layer, make it permanent here
 	if(specCoord>=0){
 	  SpectralCoordinate sCoord(coordsys.spectralCoordinate(specCoord));
-	  MFrequency::Types nativeCtype = sCoord.frequencySystem(False); // native type
-	  MFrequency::Types convCtype = sCoord.frequencySystem(True); // converted type
+	  MFrequency::Types nativeCtype = sCoord.frequencySystem(false); // native type
+	  MFrequency::Types convCtype = sCoord.frequencySystem(true); // converted type
 
 	  if (convCtype != nativeCtype) {
 	    MEpoch convEpoch;
@@ -192,13 +192,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Generate keywords.  If we find we have a DC with one of the
 // axes removed, it will be linearized here.
 
-	Double longPole, latPole;
-	Vector<Double> crval, crpix, cdelt, pvi_ma;
+	double longPole, latPole;
+	Vector<double> crval, crpix, cdelt, pvi_ma;
 	// crota is deprecated for FITS output
-	//	Vector<Double> crota;
+	//	Vector<double> crota;
 	Vector<String> ctype, cunit;
-	Matrix<Double> pc;
-	Bool isNCP = False;
+	Matrix<double> pc;
+	bool isNCP = false;
 	if (!generateFITSKeywords (os, isNCP, longPole, latPole, crval, crpix, 
 				   cdelt, 
 				   // crota,  
@@ -206,29 +206,29 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 				   coordsys, skyCoord, longAxis, latAxis, 
 				   specAxis, stokesAxis, writeWCS,
 				   offset, sprefix)) {
-	    return False;
+	    return false;
 	}
 
 // Special stokes handling
 
 	if (stokesAxis >= 0) {
 	    if (!toFITSHeaderStokes (crval, crpix, cdelt, os, coordsys,
-				     stokesAxis, stokesCoord)) return False;
+				     stokesAxis, stokesCoord)) return false;
 	}
 
 // If there are more world than pixel axes, we will need to add
 // degenerate pixel axes and modify the shape.
 
-	if (Int(coordsys.nPixelAxes()) < n) {
+	if (int32_t(coordsys.nPixelAxes()) < n) {
 	    IPosition shapetmp = shape; 
 	    shape.resize(n);
-	    Vector<Double> crpixtmp = crpix.copy();
+	    Vector<double> crpixtmp = crpix.copy();
 	    crpix.resize(n);
-	    Int count = 0;
-	    for (Int worldAxis=0; worldAxis<n; worldAxis++) {
-		Int coordinate, axisInCoordinate;
+	    int32_t count = 0;
+	    for (int32_t worldAxis=0; worldAxis<n; worldAxis++) {
+		int32_t coordinate, axisInCoordinate;
 		coordsys.findWorldAxis(coordinate, axisInCoordinate, worldAxis);
-		Int pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
+		int32_t pixelAxis = coordsys.pixelAxes(coordinate)(axisInCoordinate);
 		if (pixelAxis >= 0) {
 		    // We have a pixel axis
 		    shape(worldAxis) = shapetmp(count);
@@ -248,7 +248,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	if (skyCoord >= 0) {
 	    const DirectionCoordinate& dCoord = coordsys.directionCoordinate(skyCoord);
 	    MDirection::Types radecsys = dCoord.directionType();
-	    Double equinox = -1.0;
+	    double equinox = -1.0;
 	    String radesys = "";
 	    switch(radecsys) {
 	    case MDirection::J2000:
@@ -290,7 +290,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Actually write the header
 
-	if (writeWCS && Int(coordsys.nPixelAxes()) == n) {
+	if (writeWCS && int32_t(coordsys.nPixelAxes()) == n) {
 	    header.define("pc", pc);
 	} else if (writeWCS) {
 	    os << LogIO::SEVERE << "writeWCS && nPixelAxes() != n. Requires "
@@ -306,7 +306,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	if (skyCoord >=0 && pvi_ma.nelements() > 0) {
 	    if (!writeWCS) {
-		for (uInt k=0; k<pvi_ma.nelements(); k++) {
+		for (uint32_t k=0; k<pvi_ma.nelements(); k++) {
 		    if (!casacore::nearAbs(pvi_ma(k), 0.0)) {
 			os << LogIO::WARN << 
 			    "Projection parameters not all zero.Information lost in FITS"
@@ -319,7 +319,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    else {
 		// determine which axis is the "latitude" axis, i.e. DEC or xLAT
 		int theLatAxisNum = -1;
-		for (uInt k=0; k<ctype.nelements(); k++){
+		for (uint32_t k=0; k<ctype.nelements(); k++){
 		    string theType(ctype[k]);
 		    if (theType.substr(0,3) == "DEC" || theType.substr(1,3) == "LAT"){
 			theLatAxisNum = k;
@@ -356,7 +356,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Write out the obsinfo
 
 	String error;
-	Bool ok = coordsys.obsInfo().toFITS(error, header);
+	bool ok = coordsys.obsInfo().toFITS(error, header);
 	if (!ok) {
 	    os << LogIO::SEVERE << "Error converting ObsInfo: " << error << 
 		LogIO::POST;
@@ -366,24 +366,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
 
-    Bool FITSCoordinateUtil::toFITSHeaderStokes(Vector<Double>& crval,
-						Vector<Double>& crpix,
-						Vector<Double>& cdelt,
+    bool FITSCoordinateUtil::toFITSHeaderStokes(Vector<double>& crval,
+						Vector<double>& crpix,
+						Vector<double>& cdelt,
 						LogIO& os,
 						const CoordinateSystem& coordsys,
-						Int stokesAxis, Int stokesCoord)  const
+						int32_t stokesAxis, int32_t stokesCoord)  const
     {
-	Vector<Int> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
-	Int inc = 1;
-	Bool inorder = True;
+	Vector<int32_t> stokes(coordsys.stokesCoordinate(stokesCoord).stokes());
+	int32_t inc = 1;
+	bool inorder = true;
 	if (stokes.nelements() > 1) {
 	    inc = Stokes::FITSValue(Stokes::StokesTypes(stokes(1))) - 
 		Stokes::FITSValue(Stokes::StokesTypes(stokes(0)));
-	    for (uInt k=2; k<stokes.nelements(); k++) {
+	    for (uint32_t k=2; k<stokes.nelements(); k++) {
 		if ((Stokes::FITSValue(Stokes::StokesTypes(stokes(k))) - 
 		     Stokes::FITSValue(Stokes::StokesTypes(stokes(k-1)))) !=
 		    inc) {
-		    inorder = False;
+		    inorder = false;
 		}
 	    }
 	}
@@ -397,30 +397,30 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	       <<  "The Stokes coordinate in this CoordinateSystem is too" << endl;
 	    os << LogIO::SEVERE 
 	       << "complex to convert to the FITS convention" << LogIO::POST;
-	    return False;
+	    return false;
 	}
 //
-	return True;
+	return true;
     }
 
 
-    Bool FITSCoordinateUtil::generateFITSKeywords (LogIO&, Bool& isNCP, 
-						   Double& longPole,  Double& latPole,
-						   Vector<Double>& crval,
-						   Vector<Double>& crpix,
-						   Vector<Double>& cdelt,
-						   // Vector<Double>& crota,
-						   Vector<Double>& pvi_ma,
+    bool FITSCoordinateUtil::generateFITSKeywords (LogIO&, bool& isNCP, 
+						   double& longPole,  double& latPole,
+						   Vector<double>& crval,
+						   Vector<double>& crpix,
+						   Vector<double>& cdelt,
+						   // Vector<double>& crota,
+						   Vector<double>& pvi_ma,
 						   Vector<String>& ctype,
 						   Vector<String>& cunit,
-						   Matrix<Double>& pc,
+						   Matrix<double>& pc,
 						   const CoordinateSystem& cSys,
-						   Int skyCoord, Int longAxis, 
-						   Int latAxis, Int specAxis, 
-						   Int stokesAxis, Bool, 
-						   Double offset, const String&) const
+						   int32_t skyCoord, int32_t longAxis, 
+						   int32_t latAxis, int32_t specAxis, 
+						   int32_t stokesAxis, bool, 
+						   double offset, const String&) const
     {
-	const Int n = cSys.nWorldAxes();
+	const int32_t n = cSys.nWorldAxes();
 	crval = cSys.referenceValue();
 	crpix = cSys.referencePixel() + offset;
 	cdelt = cSys.increment();
@@ -438,17 +438,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    latPole =  dCoord.longLatPoles()(3);
 //
 	    const DirectionCoordinate &dc = cSys.directionCoordinate(skyCoord);
-	    Double reflat = 0.;
+	    double reflat = 0.;
 	    if(latAxis>=0){
 	      reflat = C::pi/180.0*crval(latAxis);
 	    }
 	    cctype = cTypeFromDirection (isNCP, dc.projection(), 
 					 DirectionCoordinate::axisNames(dc.directionType(),
-									True), reflat, True);
+									true), reflat, true);
 	}
 //
 	ctype = cSys.worldAxisNames();
-	for (Int i=0; i < n; i++) {
+	for (int32_t i=0; i < n; i++) {
 	    if (i == longAxis || i == latAxis) { 
 		if (i==longAxis) {
 		    ctype[i] = cctype[0];
@@ -476,34 +476,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // CUNIT is case sensitive. 
 
 	cunit = cSys.worldAxisUnits();
-	for (Int i=0; i<n; i++) {
+	for (int32_t i=0; i<n; i++) {
 	    if (cunit(i).length() > 8) {
 		cunit(i) = cunit(i).at(0,8);
 	    }
 	    while (cunit(i).length() < 8) cunit(i) += " ";
 	}
 //
-	Matrix<Double> imageLT = cSys.linearTransform();
+	Matrix<double> imageLT = cSys.linearTransform();
 	pc = imageLT;
 	// need to transpose to conform with FITSKeywordUtil
-	for(uInt i=0; i<imageLT.nrow(); i++){
-	  for(uInt j=0; j<imageLT.ncolumn(); j++){
+	for(uint32_t i=0; i<imageLT.nrow(); i++){
+	  for(uint32_t j=0; j<imageLT.ncolumn(); j++){
 	    pc(i,j) = imageLT(j,i);
 	  }
 	}
 
-	return True;
+	return true;
     }
 
 
 
 
-    Bool FITSCoordinateUtil::fromFITSHeader (Int& stokesFITSValue, 
+    bool FITSCoordinateUtil::fromFITSHeader (int32_t& stokesFITSValue, 
 					     CoordinateSystem& cSys,
 					     RecordInterface& recHeader,
 					     const Vector<String>& header,
 					     const IPosition& shape, 
-					     uInt which) const
+					     uint32_t which) const
 
     {
 // this method takes header converts it into cSys and puts the remainer into recHeader
@@ -514,7 +514,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	if (header.nelements()==0) {
 	    os << "Header is empty - cannot create CoordinateSystem" << LogIO::WARN;
-	    return False;
+	    return false;
 	}
 
 // Convert header to char* for wcs parser
@@ -606,11 +606,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     
 // Print cards for debugging
   
-	Bool print(False);
+	bool print(false);
         if (print) {
 	    cerr << "Header Cards " << endl;
-	    for (Int i=0; i<nkeys; i++) {
-		uInt pt = i*80;
+	    for (int32_t i=0; i<nkeys; i++) {
+		uint32_t pt = i*80;
 		char* pChar3 = &pChar2[pt];
 		String s(pChar3,80);
 		cerr << s << endl;
@@ -628,14 +628,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	int status = wcspih(pChar2, nkeys, relax, ctrl, &nrej, &nwcs, &wcsPtr);
 	if (status!=0) {
 	    os << LogIO::SEVERE << "wcs FITS parse error with error code " << status << LogIO::POST;
-	    return False;
+	    return false;
 	}
-	if (uInt(nwcs) == 0) {
+	if (uint32_t(nwcs) == 0) {
 	    os << LogIO::NORMAL << "No WCS compliant coordinate representation found. Will try to continue ..." << LogIO::POST;
 	    cardsToRecord (os, recHeader, pChar2);
-	    return False;
+	    return false;
 	}
-	else if (which >= uInt(nwcs)) {
+	else if (which >= uint32_t(nwcs)) {
 	    os << LogIO::WARN << "Requested WCS # " << which << " (zero-based) exceeds the number available, i.e. must be smaller than " << nwcs << LogIO::POST;
 	    os << LogIO::WARN << "Will use the last available one." << LogIO::POST;
 	    which = nwcs-1;
@@ -647,7 +647,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         String newHdr;
         if (saveCards.size() > 0) {
             newHdr = String(pChar2);
-            for (uInt i=0; i<saveCards.size(); ++i) {
+            for (uint32_t i=0; i<saveCards.size(); ++i) {
                 newHdr.append (saveCards[i]);
             }
             pChar2 = const_cast<char*>(newHdr.chars());
@@ -687,11 +687,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 	int stat[NWCSFIX];
 	ctrl = 7;                         // Do all unsafe unit corrections
-        // wcsfix needs Int shape, so copy it.
-        std::vector<Int> tmpshp(shape.begin(), shape.end());
+        // wcsfix needs int32_t shape, so copy it.
+        std::vector<int32_t> tmpshp(shape.begin(), shape.end());
 
-	Bool doAbort=False;
-	uInt eCount=0;
+	bool doAbort=false;
+	uint32_t eCount=0;
         if (wcsfix(ctrl, &(tmpshp[0]), &wcsPtr[which], stat) > 0) {
 	    for (int i=0; i<NWCSFIX; i++) {
 		int err = stat[i];
@@ -699,7 +699,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    os << LogIO::NORMAL << wcsNames(i) << " incurred the error " << wcsfix_errmsg[err] <<  LogIO::POST;
 		    eCount++;
 		    if(i==CELFIX){
-			doAbort=True;
+			doAbort=true;
 		    }
 		}
 	    }
@@ -712,20 +712,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    os << errmsg << LogIO::EXCEPTION;
 		}
 //
-		return False;
+		return false;
 	    }
 	    os << LogIO::NORMAL << "Will try to continue ..." <<  LogIO::POST; 
 	}	  
 
 // Now fish out the various coordinates from the wcs structure and build the CoordinateSystem
 
-	Vector<Int> dirAxes;
-	Vector<Int> linAxes;
-	Int longAxis = -1;
-	Int latAxis = -1;
-	Int specAxis = -1;
-	Int stokesAxis = -1;
-	const uInt nAxes = wcsPtr[which].naxis;
+	Vector<int32_t> dirAxes;
+	Vector<int32_t> linAxes;
+	int32_t longAxis = -1;
+	int32_t latAxis = -1;
+	int32_t specAxis = -1;
+	int32_t stokesAxis = -1;
+	const uint32_t nAxes = wcsPtr[which].naxis;
 
 	if(nAxes>shape.size()){
 	  os << LogIO::NORMAL << "The WCS for this image contains " << nAxes - shape.size()
@@ -737,11 +737,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	     <<  LogIO::POST;
 	}	  
 //
-	Bool ok=True;
+	bool ok=true;
 	ok = addDirectionCoordinate (cSysTmp, dirAxes, wcsPtr[which], os);
 	if (!ok) {
 	    wcsvfree(&nwcs, &wcsPtr);
-	    return False;
+	    return false;
 	}
 	if (dirAxes.nelements()==2) {
 	    longAxis = dirAxes[0];
@@ -751,19 +751,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	ok = addStokesCoordinate (cSysTmp, stokesAxis, stokesFITSValue, wcsPtr[which], shape, os);
 	if (!ok) {
 	    wcsvfree(&nwcs, &wcsPtr);
-	    return False;
+	    return false;
 	}
 //
 	ok = addSpectralCoordinate (cSysTmp, specAxis, wcsPtr[which], shape, os);
 	if (!ok) {
 	    wcsvfree(&nwcs, &wcsPtr);
-	    return False;
+	    return false;
 	}
 //
 	ok = addLinearCoordinate (cSysTmp, linAxes, wcsPtr[which], os);
 	if (!ok) {
 	    wcsvfree(&nwcs, &wcsPtr);
-	    return False;
+	    return false;
 	}
 
 // Free up wcs memory
@@ -776,16 +776,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Now we need to work out the transpose order of the CS
 
-	Vector<Int> order(nAxes);
-	Int nspecial = 0;                    // Anything other than linear
+	Vector<int32_t> order(nAxes);
+	int32_t nspecial = 0;                    // Anything other than linear
 //
 	if (longAxis >=0) nspecial++;
 	if (latAxis >=0) nspecial++;
 	if (stokesAxis >= 0) nspecial++;
 	if (specAxis >= 0) nspecial++;
 //
-	Int linused = 0;
-	for (Int i=0; i<Int(nAxes); i++) {
+	int32_t linused = 0;
+	for (int32_t i=0; i<int32_t(nAxes); i++) {
 	    if (i == longAxis) {
 		order(i) = 0; // long is always first if it exist
 	    } else if (i == latAxis) {
@@ -815,22 +815,22 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	cSysTmp.transpose(order,order);
 //
 	cSys = cSysTmp;
-	return True;
+	return true;
     }
 
-    static Bool do_sub_wcs(const ::wcsprm& wcs, int &nsub, Block<int> &axes, ::wcsprm &wcsDest, LogIO &os)
+    static bool do_sub_wcs(const ::wcsprm& wcs, int &nsub, Block<int> &axes, ::wcsprm &wcsDest, LogIO &os)
     {
     	try {
     		Coordinate::sub_wcs(wcs, nsub, axes.storage(), wcsDest);
-    		return True;
+    		return true;
     	} catch (const AipsError &e) {
     		os << LogIO::WARN << e.what() << LogIO::POST;
-    		return False;
+    		return false;
     	}
     }
 
-    Bool FITSCoordinateUtil::addDirectionCoordinate (CoordinateSystem& cSys, 
-						     Vector<Int>& dirAxes, 
+    bool FITSCoordinateUtil::addDirectionCoordinate (CoordinateSystem& cSys, 
+						     Vector<int32_t>& dirAxes, 
 						     const ::wcsprm& wcs,
 						     LogIO& os) const
     {
@@ -844,7 +844,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 	::wcsprm wcsDest;
 	wcsInit (wcsDest);
-	Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
+	bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 // See if we found the Sky
 
@@ -864,21 +864,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    String errMsg;
 	    if (!directionSystemFromWCS (os, dirSystem, errMsg, wcsDest)) {
 		os << LogIO::WARN << errMsg << LogIO::POST;
-		ok = False;
+		ok = false;
 	    }
 
 // Try to make DirectionCoordinate and fix up zero increments etc and add to CoordinateSystem
 
 	    if (ok) {
 		try {
-		    Bool oneRel = True;           // wcs structure from FITS has 1-rel pixel coordinates
+		    bool oneRel = true;           // wcs structure from FITS has 1-rel pixel coordinates
 		    DirectionCoordinate c(dirSystem, wcsDest, oneRel);
 //
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
 		} catch (std::exception& x) {
 		    os << LogIO::WARN << x.what() << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}
 	    }
 	}
@@ -890,8 +890,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
 
-    Bool FITSCoordinateUtil::addLinearCoordinate (CoordinateSystem& cSys, 
-						  Vector<Int>& linAxes, 
+    bool FITSCoordinateUtil::addLinearCoordinate (CoordinateSystem& cSys, 
+						  Vector<int32_t>& linAxes, 
 						  const ::wcsprm& wcs,
 						  LogIO& os) const
     {
@@ -905,7 +905,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	::wcsprm wcsDest;
 	wcsInit (wcsDest);
 //
-	Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
+	bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 // See if we found the coordinate
 
@@ -925,14 +925,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	    if (ok) {
 		try {
-		    Bool oneRel = True;    // wcs structure from FITS has 1-rel pixel coordinates
+		    bool oneRel = true;    // wcs structure from FITS has 1-rel pixel coordinates
 		    LinearCoordinate c(wcsDest, oneRel);
 //
 		    fixCoordinate (c, os);
 		    cSys.addCoordinate(c);
 		} catch (std::exception& x) {
 		    os << LogIO::WARN << x.what() << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}
 	    }
 	}
@@ -959,8 +959,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 #endif
     }
 
-    Bool FITSCoordinateUtil::addStokesCoordinate (CoordinateSystem& cSys, 
-						  Int& stokesAxis,  Int& stokesFITSValue,
+    bool FITSCoordinateUtil::addStokesCoordinate (CoordinateSystem& cSys, 
+						  int32_t& stokesAxis,  int32_t& stokesFITSValue,
 						  const ::wcsprm& wcs, const IPosition& shape,
 						  LogIO& os) const
     { 
@@ -973,7 +973,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 	::wcsprm wcsDest;
     wcsInit (wcsDest);
-    Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
+    bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
 // See if we found the axis
 
@@ -986,13 +986,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Try to create StokesCoordinate
 
 	    stokesAxis = axes[0] - 1;              // 1 -> 0 rel
-	    uInt stokesAxisShape = 1;
-	    if(stokesAxis<(Int)shape.size()){
+	    uint32_t stokesAxisShape = 1;
+	    if(stokesAxis<(int32_t)shape.size()){
 	      stokesAxisShape = shape(stokesAxis);
 	    }
-	    Bool warnStokes = stokesFITSValue > 0;
+	    bool warnStokes = stokesFITSValue > 0;
 	    stokesFITSValue = -1;
-	    Vector<Int> stokes(1); stokes = 1;
+	    Vector<int32_t> stokes(1); stokes = 1;
 	    StokesCoordinate c(stokes);                  // No default constructor
 	    String errMsg;
 	    if (stokesCoordinateFromWCS (os, c, stokesFITSValue, errMsg, wcsDest, 
@@ -1000,7 +1000,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		cSys.addCoordinate(c);
 	    } else {
 		os << LogIO::WARN << errMsg << LogIO::POST;
-		ok = False;
+		ok = false;
 	    }
 	}
 
@@ -1013,8 +1013,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
 
 
-    Bool FITSCoordinateUtil::addSpectralCoordinate (CoordinateSystem& cSys, 
-						    Int& specAxis,
+    bool FITSCoordinateUtil::addSpectralCoordinate (CoordinateSystem& cSys, 
+						    int32_t& specAxis,
 						    const ::wcsprm& wcs,
 						    const IPosition& shape,
 						    LogIO& os) const
@@ -1027,10 +1027,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	::wcsprm wcsDest;
     wcsInit (wcsDest);
-    Bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
+    bool ok = do_sub_wcs(wcs, nsub, axes, wcsDest, os);
 
-	uInt nc = 1;
-	if(axes[0]-1<(Int)shape.nelements()){
+	uint32_t nc = 1;
+	if(axes[0]-1<(int32_t)shape.nelements()){
 	  nc = shape(axes[0]-1); // the number of channels of the spectral axis
 	}
 
@@ -1051,7 +1051,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		if(nc==0){
 		    os << LogIO::WARN << "Will omit tabular spectral coordinate with no channels." << LogIO::POST;
 		    wcsfree (&wcsDest);
-		    return True;
+		    return true;
 		}
 
 		// make a tabular frequency coordinate from the wavelengths
@@ -1060,34 +1060,34 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 		if (!frequencySystemFromWCS (os, freqSystem, errMsg, wcsDest)) {
 		    os << LogIO::WARN << errMsg << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}
-		Double cRval = wcsDest.crval[0];
-		Double cRpix = wcsDest.crpix[0];
-		Double cDelt = wcsDest.cdelt[0];
-		Double cPc = wcsDest.pc[0];
-		Vector<Double> wavelengths(nc);
+		double cRval = wcsDest.crval[0];
+		double cRpix = wcsDest.crpix[0];
+		double cDelt = wcsDest.cdelt[0];
+		double cPc = wcsDest.pc[0];
+		Vector<double> wavelengths(nc);
 
 		//cout << "crval " << cRval << " crpix " << cRpix << " pc " << cPc << " cdelt " << cDelt << endl;
 		
 		String waveUnit = String(wcsDest.cunit[0]);
-		Double restFrequency = wcs.restfrq;
+		double restFrequency = wcs.restfrq;
 		if (restFrequency==0.){
 		    if(wcs.restwav != 0.){
 			restFrequency = C::c/wcs.restwav;
 		    }
 		}
 
-		for(uInt i=0; i<nc; i++){
-		  wavelengths(i) = cRval + cDelt * cPc * (Double(i + 1) - cRpix); // +1 because FITS works 1-based
+		for(uint32_t i=0; i<nc; i++){
+		  wavelengths(i) = cRval + cDelt * cPc * (double(i + 1) - cRpix); // +1 because FITS works 1-based
 		    //cout << "wave i " << i << " " << wavelengths(i) << " " << waveUnit << endl;
 		}
 
-		Bool inAir = False;
+		bool inAir = false;
 		nativeSType = SpectralCoordinate::WAVE;
 		if(cType.contains("AWAV")){
 		  // os << LogIO::NORMAL << "Translating Air Wavelength into wavelength ..." << LogIO::POST;
-		    inAir = True;
+		    inAir = true;
 		    nativeSType = SpectralCoordinate::AWAV;
 		}
 
@@ -1098,7 +1098,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    cSys.addCoordinate(c);
 		} catch (std::exception& x) {
 		    os << LogIO::WARN << x.what() << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}     
 	    }
 	    else if(cType.contains("VOPT") || cType.contains("FELO")){
@@ -1106,7 +1106,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		if(nc==0){
 		    os << LogIO::WARN << "Will omit tabular spectral coordinate with no channels." << LogIO::POST;
 		    wcsfree (&wcsDest);
-		    return True; 
+		    return true; 
 		}
 
 		// make a tabular frequency coordinate from the optical velocities
@@ -1115,23 +1115,23 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 		if (!frequencySystemFromWCS (os, freqSystem, errMsg, wcsDest)) {
 		    os << LogIO::WARN << errMsg << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}
-		Double cRval = wcsDest.crval[0];
-		Double cRpix = wcsDest.crpix[0];
-		Double cDelt = wcsDest.cdelt[0];
-		Double cPc = wcsDest.pc[0];
-		Double restFrequency = wcs.restfrq;
+		double cRval = wcsDest.crval[0];
+		double cRpix = wcsDest.crpix[0];
+		double cDelt = wcsDest.cdelt[0];
+		double cPc = wcsDest.pc[0];
+		double restFrequency = wcs.restfrq;
 		if (restFrequency==0.){
 		    if(wcs.restwav != 0.){
 			restFrequency = C::c/wcs.restwav;
 		    }
 		    else{
 			os << LogIO::WARN << "Zero or no rest frequency provided for velocity axis." << LogIO::POST;
-			ok = False;
+			ok = false;
 		    }	
 		}
-		Vector<Double> frequencies(nc);
+		Vector<double> frequencies(nc);
 
 		//cout << "crval " << cRval << " crpix " << cRpix << " pc " << cPc << " cdelt " << cDelt << endl;
 		//cout << "restfrq " << restFrequency << " cunit " << String(wcsDest.cunit[0]) << endl;
@@ -1139,9 +1139,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		Unit uCunit(String(wcsDest.cunit[0]));
 		Unit mps("m/s");
 
-		for(uInt i=0; i<nc; i++){
-		    Quantity velQ(cRval + cDelt * cPc * (Double(i+1) - cRpix), uCunit); // +1 because FITS works 1-based
-		    Double vel = velQ.getValue(mps);
+		for(uint32_t i=0; i<nc; i++){
+		    Quantity velQ(cRval + cDelt * cPc * (double(i+1) - cRpix), uCunit); // +1 because FITS works 1-based
+		    double vel = velQ.getValue(mps);
 		    if(vel>-C::c){
 			frequencies(i) = restFrequency/(vel/C::c+1.); // in Hz
 		    }
@@ -1159,7 +1159,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    cSys.addCoordinate(c);
 		} catch (std::exception& x) {
 		    os << LogIO::WARN << x.what() << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}     
 	    }
 	    else{ // make a coordinate linear in frequency using wcslib
@@ -1187,7 +1187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		}
 		else {
 		    os << LogIO::WARN << "Unrecognized frequency type" << LogIO::POST;
-		    ok = False;
+		    ok = false;
 		}
 		
 		if (ok) {
@@ -1205,7 +1205,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			    break;
 			default:
 			    os << "Will not try to continue ...";
-			    ok = False;
+			    ok = false;
 			}
 			os << LogIO::POST;
 		    } else {
@@ -1221,7 +1221,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
  		    specAxis = axes[0]-1;
 		    if (!frequencySystemFromWCS (os, freqSystem, errMsg, wcsDest)) {
 			os << LogIO::WARN << errMsg << LogIO::POST;
-			ok = False;
+			ok = false;
 		    }
 		}
 
@@ -1229,7 +1229,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		// increments etc and add to CoordinateSystem
 		if (ok) {
 		    try {
-			Bool oneRel = True;           // wcs structure from FITS has 1-rel pixel coordinate
+			bool oneRel = true;           // wcs structure from FITS has 1-rel pixel coordinate
 			SpectralCoordinate c(freqSystem, wcsDest, oneRel);
 			c.setNativeType(nativeSType);
 			
@@ -1237,7 +1237,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			cSys.addCoordinate(c);
 		    } catch (std::exception& x) {
 			os << LogIO::WARN << x.what() << LogIO::POST;
-			ok = False;
+			ok = false;
 		    }     
 		}
 	    }
@@ -1253,19 +1253,19 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
 
-    Bool FITSCoordinateUtil::directionSystemFromWCS (LogIO& os, MDirection::Types& type,String& errMsg,
+    bool FITSCoordinateUtil::directionSystemFromWCS (LogIO& os, MDirection::Types& type,String& errMsg,
 						     const ::wcsprm& wcs) const
     {
 
 // Extract Equinox keyword
 
 //
-	Bool eqIsDefined = !undefined(wcs.equinox);
-	Double equinox(0.0);
+	bool eqIsDefined = !undefined(wcs.equinox);
+	double equinox(0.0);
 	if (eqIsDefined) equinox = wcs.equinox;
-	Bool eqIs1950(False);
-	Bool eqIs1950VLA(False);
-	Bool eqIs2000(False);
+	bool eqIs1950(false);
+	bool eqIs1950VLA(false);
+	bool eqIs2000(false);
 	if (eqIsDefined) {
 	    eqIs1950 = casacore::near(equinox, 1950.0);
 	    eqIs1950VLA = casacore::near(equinox, 1979.9);
@@ -1274,11 +1274,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Extract RADESYS keyword
 
-	Bool sysIsDefined = wcs.radesys[0]!='\0';
+	bool sysIsDefined = wcs.radesys[0]!='\0';
 	String raDecSys;
 	if (sysIsDefined) {
 	    String tt(wcs.radesys);
-	    Int i1 = tt.index(RXwhite,0);
+	    int32_t i1 = tt.index(RXwhite,0);
 	    if (i1==-1) i1 = tt.length();
 	    raDecSys = String(tt.before(i1));
 	}
@@ -1300,7 +1300,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // galactic coordinates
 
 	    type = MDirection::GALACTIC;   
-	    return True;
+	    return true;
 	} else if (cLon=="ELON" && cLat=="ELAT") {
 
 // ecliptic for J2000 equator and equinox
@@ -1308,28 +1308,28 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 	    if (!eqIsDefined || (eqIsDefined && eqIs2000)) {
 		type = MDirection::ECLIPTIC;   
-		return True;
+		return true;
 	    } else {
 		oss2 << "Equinox " << equinox << " is invalid for Ecliptic Coordinates - must be 2000.0";
 		errMsg = String(oss2);
-		return False;
+		return false;
 	    }
 	} else if (cLon=="SLON" && cLat=="SLAT") {      
 
 // supergalactic coordinates
 
 	    type = MDirection::SUPERGAL;
-	    return True;
+	    return true;
 	} else if (cLon=="HLON" && cLat=="HLAT") {
 	    errMsg = String("Helioecliptic Coordinates are not supported");
-	    return False;
+	    return false;
 	} else {
 	    String cLon2(cTypeLon.at(1,3));
 	    String cLat2(cTypeLat.at(1,3));
 	    if ( (cLon2=="LON" || cLat2=="LAT") || (cLon2=="LAT" || cLat2=="LON") ) {
 		oss2 << cLon << " and " << cLat << " are unsupported LON/LAT types";
 		errMsg = String(oss2);
-		return False;
+		return false;
 	    }
 	}
 
@@ -1340,80 +1340,80 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	if (raDecSys==String("ICRS")) {
 	    if (!eqIsDefined || eqIs2000) {
 		type = MDirection::ICRS;   
-		return True;
+		return true;
 	    } else {
 		oss2 << "Direction system ICRS with equinox " << equinox << " is not supported";
 		errMsg = String(oss2);
-		return False;
+		return false;
 	    }
 	} else if (raDecSys==String("FK5")) {                
 	    if (!eqIsDefined || eqIs2000) {                  // equinox always Julian for FK5
 		type = MDirection::J2000;                     // Needs 
-		return True;
+		return true;
 	    } else {
 		oss2 << "Direction system FK5 with equinox " << equinox << " is not supported";
 		errMsg = String(oss2);
-		return False;
+		return false;
 	    }
 	} else if (raDecSys==String("FK4")) {  
 	    if (!eqIsDefined || eqIs1950) {                  // equinox always Besellian for FK4
 		type = MDirection::B1950;   
-		return True;
+		return true;
 	    } else if (!eqIsDefined || eqIs1950VLA) {
 		type = MDirection::B1950_VLA;
-		return True;
+		return true;
 	    } else {
 		oss2 << "Direction system FK4 with equinox " << equinox << " is not supported";
 		errMsg = String(oss2);
-		return False;
+		return false;
 	    }
 	} else if (raDecSys==String("FK4-NO-E")) {
 	    if (!eqIsDefined || eqIs1950) {    // equinox always Besellian
 		type = MDirection::B1950;   
-		return True;
+		return true;
 	    } else if (!eqIsDefined || eqIs1950VLA) {
 		type = MDirection::B1950_VLA;
-		return True;
+		return true;
 	    } else {
 		oss2 << "Direction system FK4-NO-E with equinox " << equinox << " is not supported";
 		errMsg = String(oss2);
-		return False;        
+		return false;        
 	    }
 	} else if (raDecSys==String("GAPPT")) {
 	    type = MDirection::APP;   
 	    errMsg = String("Direction system GAPPT is not supported");
-	    return False;
+	    return false;
 	} else {
 	    if (sysIsDefined) {
 		oss2 << "Direction system '" << raDecSys << "' is not supported";
 		errMsg = String(oss2);
-		return False;
+		return false;
 	    } else {
 		if (eqIsDefined) {                            // No RaDecSys but Equinox available
 		    if (equinox>=1984.0) {                     // Paper II
 			type = MDirection::J2000;               // FK5
-			return True;
+			return true;
 		    } else if (casacore::near(equinox,1979.9)) {
 			type = MDirection::B1950_VLA;
-			return True;
+			return true;
 		    } else {
 			type = MDirection::B1950;               // FK4
-			return True;
+			return true;
 		    }
 		} else {                                      // No RaDecSys or equinox
 		    os << "No Direction system is defined - J2000 assumed" << LogIO::POST;
 		    type = MDirection::J2000;                  // Defaults to ICRS
-		    return True;
+		    return true;
 		}
 	    }
 	}
 //
 	errMsg = String("FITSCoordinateUtil::directionSystemFromWCS - logic error");
-	return False;
+	return false;
     }
 
 
-    Bool FITSCoordinateUtil::frequencySystemFromWCS (LogIO& os, MFrequency::Types& type,String& errMsg,
+    bool FITSCoordinateUtil::frequencySystemFromWCS (LogIO& os, MFrequency::Types& type,String& errMsg,
 						     const ::wcsprm& wcs) const
     //
     // After running it through the wcsFixItUp function, I can assume that
@@ -1426,10 +1426,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	        os << LogIO::NORMAL << "Neither SPECSYS nor VELREF keyword given, spectral reference frame not defined ..." 
 		   << LogIO::POST;
 	        type = MFrequency::Undefined;
-	        return True;
+	        return true;
 	    }
 	    else { // velref was given
-	        Int vref = wcs.velref;
+	        int32_t vref = wcs.velref;
 	        os << LogIO::NORMAL << "No SPECSYS but found (deprecated) VELREF keyword with value " << vref << LogIO::POST;
 	        if(vref>256){
 		  vref -= 256;
@@ -1468,7 +1468,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  os << LogIO::WARN << "Undefined by AIPS convention. TOPO assumed." << LogIO::POST;
 		  break;
 		}
-		return True;
+		return true;
 	    }
 	}
 	String specSys(wcs.specsys);
@@ -1479,51 +1479,51 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	ostringstream oss;
 	if (specSys=="TOPOCENT") {
 	    type = MFrequency::TOPO;
-	    return True;
+	    return true;
 	} else if (specSys=="GEOCENTR") {
 	    type = MFrequency::GEO;
-	    return True;
+	    return true;
 	} else if (specSys=="BARYCENT") {
 	    type = MFrequency::BARY;
-	    return True;
+	    return true;
 	} else if (specSys=="HELIOCEN") {
 	    type = MFrequency::BARY;
 	    os << LogIO::NORMAL << "The HELIOCENTRIC frequency system is deprecated in FITS - it is assumed BARYCENTIC was meant" << LogIO::POST;
-	    return True;
+	    return true;
 	} else if (specSys=="LSRK") {
 	    type = MFrequency::LSRK;
-	    return True;
+	    return true;
 	} else if (specSys=="LSRD") {
 	    type = MFrequency::LSRD;
-	    return True;
+	    return true;
 	} else if (specSys=="GALACTOC") {
 	    type = MFrequency::GALACTO;
-	    return True;
+	    return true;
 	} else if (specSys=="LOCALGRP") {
 	    type = MFrequency::LGROUP;
-	    return True;
+	    return true;
 	} else if (specSys=="CMBDIPOL") {
 	    type = MFrequency::CMB;
-	    return True;
+	    return true;
 	} else if (specSys=="SOURCE") {
 	    type = MFrequency::REST;
-	    return True;
+	    return true;
 	} else {
 	    oss << "Frequency system '" << specSys << "' is not supported";
 	    errMsg = String(oss);
-	    return False;
+	    return false;
 	}
 //
 	errMsg = String("FITSCoordinateUtil::frequencySystemFromWCS - logic error");
-	return False;
+	return false;
     }
 
 
 
-    Bool FITSCoordinateUtil::stokesCoordinateFromWCS (LogIO& os, StokesCoordinate& coord, 
-						      Int& stokesFITSValue, String& errMsg, 
+    bool FITSCoordinateUtil::stokesCoordinateFromWCS (LogIO& os, StokesCoordinate& coord, 
+						      int32_t& stokesFITSValue, String& errMsg, 
 						      const ::wcsprm& wcs, 
-						      uInt shape, Bool warnStokes) const
+						      uint32_t shape, bool warnStokes) const
     {
 
 // For the StokesCoordinate, the shape is not separable from the coordinate
@@ -1531,7 +1531,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	if (shape>4) {
 	    os << "The Stokes axis is longer than 4 pixels.  This is not supported" 
 	       << LogIO::EXCEPTION;       
-	    return False;
+	    return false;
 	}
 //
 	if (wcs.naxis != 1) {
@@ -1540,17 +1540,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Fish out values
 
-	Double crpix = wcs.crpix[0] - 1.0;            // Make 0-rel
-	Double crval = wcs.crval[0];
-	Double cdelt = wcs.cdelt[0];
+	double crpix = wcs.crpix[0] - 1.0;            // Make 0-rel
+	double crval = wcs.crval[0];
+	double cdelt = wcs.cdelt[0];
 //
-	Vector<Int> stokes(shape); 
-	for (uInt k=0; k<shape; k++) {
-	    Double tmp = crval + (k - crpix)*cdelt;
+	Vector<int32_t> stokes(shape); 
+	for (uint32_t k=0; k<shape; k++) {
+	    double tmp = crval + (k - crpix)*cdelt;
 	    if (tmp >= 0) {
-		stokes(k) = Int(tmp + 0.01);
+		stokes(k) = int32_t(tmp + 0.01);
 	    } else {
-		stokes(k) = Int(tmp - 0.01);
+		stokes(k) = int32_t(tmp - 0.01);
 	    }
 //
 	    if (stokes(k)==0) {
@@ -1598,10 +1598,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    coord = StokesCoordinate(stokes);
 	} catch (std::exception& x) {
 	    errMsg = x.what();
-	    return False;
+	    return false;
 	} 
 //
-	return True;
+	return true;
     }
 
 
@@ -1630,12 +1630,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // The date information is in the WCS structure
 // 'mjdobs' takes precedence over 'dateobs'
 
-	Bool mjdIsDefined = !undefined(wcs.mjdobs);
-	Bool dateObsDefined = wcs.dateobs[0]!='\0';
+	bool mjdIsDefined = !undefined(wcs.mjdobs);
+	bool dateObsDefined = wcs.dateobs[0]!='\0';
 	if (mjdIsDefined) {
-	    Double mjdObs = wcs.mjdobs;
+	    double mjdObs = wcs.mjdobs;
 //
-	    MEpoch dateObs(Quantum<Double>(mjdObs,"d"), timeSystem);
+	    MEpoch dateObs(Quantum<double>(mjdObs,"d"), timeSystem);
 	    oi.setObsDate (dateObs);
 	} else if (dateObsDefined) {
 	    //      String dateObsStr(wcs.dateobs[0]);
@@ -1651,7 +1651,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Remove fields from record
 
 	Vector<String> cards = ObsInfo::keywordNamesFITS();
-	for (uInt i=0; i<cards.nelements(); i++) {
+	for (uint32_t i=0; i<cards.nelements(); i++) {
 	    if (header.isDefined(cards(i))) header.removeField(cards[i]);
 	}
 //
@@ -1661,9 +1661,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
     Vector<String> FITSCoordinateUtil::cTypeFromDirection(
-    	Bool& isNCP, const Projection& proj,
+    	bool& isNCP, const Projection& proj,
     	const Vector<String>& axisNames,
-    	Double refLat, Bool printError
+    	double refLat, bool printError
     ) {
     	//
     	// RefLat in radians
@@ -1672,7 +1672,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     		DirectionCoordinate dc(
     			MDirection::J2000, proj,
     			0, refLat, 1e-5, -1e-5,
-    			Matrix<Double>::identity(2), 0, 0
+    			Matrix<double>::identity(2), 0, 0
     		);
     		isNCP = dc.isNCP();
     	}
@@ -1680,12 +1680,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
     Vector<String> FITSCoordinateUtil::cTypeFromDirection (
-    	const Projection& proj, const Vector<String>& axisNames, Bool printError
+    	const Projection& proj, const Vector<String>& axisNames, bool printError
     ) {
 	LogIO os(LogOrigin("FITSCoordinateUtil", "cTypeFromDirection", WHERE));
 	Vector<String> ctype(2);
 
-	for (uInt i=0; i<2; i++) {
+	for (uint32_t i=0; i<2; i++) {
 	    String name = axisNames(i);
 	    while (name.length() < 4) {
 		name += "-";
@@ -1775,7 +1775,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
 
 
-    Bool FITSCoordinateUtil::getCDFromHeader(Matrix<Double>& cd, uInt n, const RecordInterface& header) 
+    bool FITSCoordinateUtil::getCDFromHeader(Matrix<double>& cd, uint32_t n, const RecordInterface& header) 
     //
     // We have to read the CDj_i cards and ultimately pack them into the 
     // WCS linprm structure in the right order.  
@@ -1814,8 +1814,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	cd = 0.0;
 	cd.diagonal() = 1.0;
 //
-	for (uInt i=0; i<n; i++) {
-	    for (uInt j=0; j<n; j++) {
+	for (uint32_t i=0; i<n; i++) {
+	    for (uint32_t j=0; j<n; j++) {
 		ostringstream oss;
 		oss << "cd" << j+1 << "_" << i+1;
 		String field(oss);
@@ -1823,17 +1823,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		    header.get(field, cd(i,j));
 		} else {
 		    cd.resize(0,0);
-		    return False;
+		    return false;
 		}
 	    }
 	}
-	return True;
+	return true;
     }
 
 
-    void FITSCoordinateUtil::getPCFromHeader(LogIO& os, Int& rotationAxis, 
-					     Matrix<Double>& pc, 
-					     uInt n, 
+    void FITSCoordinateUtil::getPCFromHeader(LogIO& os, int32_t& rotationAxis, 
+					     Matrix<double>& pc, 
+					     uint32_t n, 
 					     const RecordInterface& header,
 					     const String& sprefix)
     {
@@ -1853,7 +1853,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		os << "The PC matrix must be square" << LogIO::EXCEPTION;
 	    }
 	} else if (header.isDefined(sprefix + "rota")) {
-	    Vector<Double> crota;
+	    Vector<double> crota;
 	    header.get(sprefix + "rota", crota);
 
 // Turn crota into PC matrix
@@ -1864,7 +1864,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // We can only handle one non-zero angle
 
-	    for (uInt i=0; i<crota.nelements(); i++) {
+	    for (uint32_t i=0; i<crota.nelements(); i++) {
 		if (!casacore::near(crota(i), 0.0)) {
 		    if (rotationAxis >= 0) {
 			os << LogIO::SEVERE << "Can only convert one non-zero"
@@ -1915,20 +1915,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // Specific keywords to be located 
 
-	const uInt nKeyIds = 0;
+	const uint32_t nKeyIds = 0;
 	::fitskeyid keyids[1];
 
 // Parse the header
 
 	// sanitize to avoid segfaults in fitshdr
-	Bool crlfwarned = False;
-	for(uInt i=0; i<strlen(pHeader)-1; i++){
-	    uInt headerchar = pHeader[i];
+	bool crlfwarned = false;
+	for(uint32_t i=0; i<strlen(pHeader)-1; i++){
+	    uint32_t headerchar = pHeader[i];
 	    if( (headerchar==10) || (headerchar==13) ){
 	        if( ! crlfwarned ){
 		    os << LogIO::WARN << "HEADER contains LF and/or CR characters!" << LogIO::POST;
 		    os << LogIO::WARN << "Will try to replace them by spaces ...." << LogIO::POST;
-		    crlfwarned = True;
+		    crlfwarned = true;
 		}
 		pHeader[i] = 32;
 	    }
@@ -1945,7 +1945,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
 	
 //
-	for (Int i=0; i<nCards; i++) {
+	for (int32_t i=0; i<nCards; i++) {
 	    Record subRec;
 //
 	    String name(keys[i].keyword);
@@ -1959,17 +1959,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	    case 1:                                 // Logical
 	    {
-		Bool value(keys[i].keyvalue.i > 0);
+		bool value(keys[i].keyvalue.i > 0);
 		subRec.define("value", value);
 		break;
 	    }
-	    case 2:                                 // 32-bit Int
+	    case 2:                                 // 32-bit int32_t
 	    {
-		Int value(keys[i].keyvalue.i);       
+		int32_t value(keys[i].keyvalue.i);       
 		subRec.define("value", value);
 		break;
 	    }
-	    case 3:                                 // 64-bit Int
+	    case 3:                                 // 64-bit int32_t
 	    {
 		os << LogIO::WARN << "Cannot yet handle 64-bit Ints; dropping card " << name << LogIO::POST;
 		break;
@@ -1981,7 +1981,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    }
 	    case 5:                                 // Floating point
 	    {
-		Double value(keys[i].keyvalue.f);
+		double value(keys[i].keyvalue.f);
 		subRec.define("value", value);
 		break;
 	    }
@@ -2040,14 +2040,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	return;
 
 //
-	Vector<Double> cdelt = c.increment();
-	Vector<Double> crval = c.referenceValue();
+	Vector<double> cdelt = c.increment();
+	Vector<double> crval = c.referenceValue();
 //
-	const uInt n = cdelt.nelements();
+	const uint32_t n = cdelt.nelements();
 	Coordinate::Type type = c.type();
 	String sType = c.showType();
 //
-	for (uInt i=0; i<n; i++) {
+	for (uint32_t i=0; i<n; i++) {
 	    if (casacore::near(cdelt(i),0.0)) {
 		if (type==Coordinate::DIRECTION) {
 		    cdelt[i] = C::pi/180.0;        // 1 deg

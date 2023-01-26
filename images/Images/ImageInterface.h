@@ -86,12 +86,12 @@ class TiledShape;
 // instance of this object.  It can however be used as a function argument.<br>
 // eg 1. (used in dImageInterface.cc)
 // <srcblock>
-// Float sumPixels(const ImageInterface<Float>& image){
-//   uInt rowLength = image.shape()(0);
+// float sumPixels(const ImageInterface<float>& image){
+//   uint32_t rowLength = image.shape()(0);
 //   IPosition rowShape(image.ndim());
 //   rowShape = 1; rowShape(0) = rowLength;
-//   Float sumPix = 0;
-//   RO_LatticeIterator<Float> iter(image, rowShape);
+//   float sumPix = 0;
+//   RO_LatticeIterator<float> iter(image, rowShape);
 //   while(!iter.atEnd()){
 //     sumPix += sum(iter.vectorCursor());
 //     iter++;
@@ -120,7 +120,7 @@ class TiledShape;
 //   IPosition shape() const;
 //   
 //   // doGetSlice is another function required of all Lattice objects.
-//   Bool doGetSlice(<Array<T>& buffer, const Slicer& section);
+//   bool doGetSlice(<Array<T>& buffer, const Slicer& section);
 //
 //  // etc...
 // private:
@@ -173,10 +173,10 @@ public:
   
   // Function which get and set the units associated with the image
   // pixels (i.e. the "brightness" unit). <src>setUnits()</src> returns
-  // False if it cannot set the unit for some reason (e.g. the underlying
+  // false if it cannot set the unit for some reason (e.g. the underlying
   // file is not writable).
   // <group>
-  virtual Bool setUnits (const Unit& newUnits);
+  virtual bool setUnits (const Unit& newUnits);
   virtual const Unit& units() const
     { return unit_p; }
   // </group>
@@ -184,12 +184,12 @@ public:
   // Return the name of the current ImageInterface object. This will generally 
   // be a file name for images that have a persistent form.  Any path
   // before the actual file name can be optionally stripped off.
-  virtual String name (Bool stripPath=False) const = 0;
+  virtual String name (bool stripPath=false) const = 0;
 
   // Functions to set or replace the coordinate information in the Image
-  // Returns False on failure, e.g. if the number of axes do not match.
+  // Returns false on failure, e.g. if the number of axes do not match.
   // <group>
-  virtual Bool setCoordinateInfo (const CoordinateSystem& coords);
+  virtual bool setCoordinateInfo (const CoordinateSystem& coords);
   const CoordinateSystem& coordinates() const
     { return coords_p; }
   // </group>
@@ -225,7 +225,7 @@ public:
   // <group>
   const TableRecord& miscInfo() const
     { return miscInfo_p; }
-  virtual Bool setMiscInfo (const RecordInterface& newInfo);
+  virtual bool setMiscInfo (const RecordInterface& newInfo);
   // </group>
 
   // The ImageInfo object contains some miscellaneous information about the image
@@ -240,19 +240,19 @@ public:
   // Get non-const access to the ImageInfo.
   ImageInfo& rwImageInfo()
     { return imageInfo_p; }
-  virtual Bool setImageInfo (const ImageInfo& info);
+  virtual bool setImageInfo (const ImageInfo& info);
   // </group>
 
   // Get access to the attribute handler.
   // By default an empty handler is returned where no groups can be added to.
   // <group>
-  virtual ImageAttrHandler& attrHandler (Bool createHandler=False);
+  virtual ImageAttrHandler& attrHandler (bool createHandler=false);
   ImageAttrHandler& roAttrHandler() const
-    { return const_cast<ImageInterface<T>*>(this)->attrHandler(False); }
+    { return const_cast<ImageInterface<T>*>(this)->attrHandler(false); }
   // </group>
 
   // Can the image handle region definition?
-  Bool canDefineRegion() const
+  bool canDefineRegion() const
     { return regHandPtr_p->canDefineRegion(); }
 
   // Make a mask which is suitable for the type of image.
@@ -261,22 +261,22 @@ public:
   // <br>Optionally the mask can be defined as an image region/mask
   // and turned in the default mask for the image. By default it will.
   virtual ImageRegion makeMask (const String& name,
-				Bool defineAsRegion = True,
-				Bool setAsDefaultMask = True,
-				Bool initialize = False,
-				Bool value = True);
+				bool defineAsRegion = true,
+				bool setAsDefaultMask = true,
+				bool initialize = false,
+				bool value = true);
 
   // Define a region/mask belonging to the image.
   // The group type determines if it stored as a region or mask.
-  // If overwrite=False, an exception will be thrown if the region
+  // If overwrite=false, an exception will be thrown if the region
   // already exists.
-  // <br>An exception is thrown if canDefineRegion is False.
+  // <br>An exception is thrown if canDefineRegion is false.
   virtual void defineRegion (const String& name, const ImageRegion& region,
 			     RegionHandler::GroupType,
-			     Bool overwrite = False);
+			     bool overwrite = false);
 
   // Does the image have a region with the given name?
-  virtual Bool hasRegion (const String& regionName,
+  virtual bool hasRegion (const String& regionName,
 			  RegionHandler::GroupType = RegionHandler::Any) const;
 
   // Get a region/mask belonging to the image from the given group
@@ -287,7 +287,7 @@ public:
   virtual ImageRegion* getImageRegionPtr
                             (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool throwIfUnknown = True) const;
+			     bool throwIfUnknown = true) const;
 
   // Rename a region.
   // If a region with the new name already exists, it is deleted or
@@ -297,14 +297,14 @@ public:
   virtual void renameRegion (const String& newName,
 			     const String& oldName,
 			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool overwrite = False);
+			     bool overwrite = false);
 
   // Remove a region/mask belonging to the image from the given group
   // (which can be Any).
   // <br>Optionally an exception is thrown if the region does not exist.
   virtual void removeRegion (const String& name,
 			     RegionHandler::GroupType = RegionHandler::Any,
-			     Bool throwIfUnknown = True);
+			     bool throwIfUnknown = true);
 
   // Get the names of all regions/masks.
   virtual Vector<String> regionNames
@@ -338,21 +338,21 @@ public:
   // The number starts at the given number and is incremented until the name
   // is unique.
   String makeUniqueRegionName (const String& rootName,
-			       uInt startNumber = 1) const;
+			       uint32_t startNumber = 1) const;
 
   // Check class invariants. 
-  virtual Bool ok() const = 0;
+  virtual bool ok() const = 0;
 
   // Save and restore an ImageInterface object to or from a state Record
-  Bool toRecord (String& error, RecordInterface& outRec);
-  Bool fromRecord (String& error, const RecordInterface& inRec);
+  bool toRecord (String& error, RecordInterface& outRec);
+  bool fromRecord (String& error, const RecordInterface& inRec);
  
 protected:
   // Assignment (copy semantics) is only useful for derived classes.
   ImageInterface& operator= (const ImageInterface& other);
 
   // Restore the image info from the record.
-  Bool restoreImageInfo (const RecordInterface& rec);
+  bool restoreImageInfo (const RecordInterface& rec);
 
   // Set the image logger variable.
   void setLogMember (const LoggerHolder& logger)
@@ -394,7 +394,7 @@ private:
 
 
 //# Declare extern templates for often used types.
-  extern template class ImageInterface<Float>;
+  extern template class ImageInterface<float>;
   extern template class ImageInterface<Complex>;
 
 

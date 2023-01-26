@@ -70,7 +70,7 @@ class TableExprNode;
 
 // Declare the bison parser (is implemented by bison command).
   TableExprNode msArrayGramParseCommand (const MeasurementSet *ms, const String& command, 
-					 Vector<Int>& idList, Int maxArrays=1000);
+					 Vector<int32_t>& idList, int32_t maxArrays=1000);
 
 // The yyerror function for the parser.
 // It throws an exception with the current token.
@@ -82,7 +82,7 @@ void MSArrayGramerror (const char*);
 
 // Give the current position in the string.
 // This can be used when parse errors occur.
-Int& msArrayGramPosition();
+int32_t& msArrayGramPosition();
 
 // Declare the input routine for flex/bison.
 int msArrayGramInput (char* buf, int max_size);

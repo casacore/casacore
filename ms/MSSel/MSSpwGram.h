@@ -71,13 +71,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // Declare the bison parser (is implemented by bison command).
   int msSpwGramParseCommand (const MeasurementSet *ms, const String& command);
   int msSpwGramParseCommand (const MeasurementSet *ms, const String& command,
-			     Vector<Int>& selectedIDs, Matrix<Int>& selectedChanIDs);
+			     Vector<int32_t>& selectedIDs, Matrix<int32_t>& selectedChanIDs);
   int msSpwGramParseCommand (const MSSpectralWindow& spwSubTable, const MSDataDescription& ddSubTable, 
 			     const TableExprNode& colAsTEN,
 			     const String& command,
-			     Vector<Int>& selectedIDs,
-			     Matrix<Int>& selectedChans,
-			     Vector<Int>& selectedDDIDs) ;
+			     Vector<int32_t>& selectedIDs,
+			     Matrix<int32_t>& selectedChans,
+			     Vector<int32_t>& selectedDDIDs) ;
   
   // The yyerror function for the parser.
   // It throws an exception with the current token.
@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   // Give the current position in the string.
   // This can be used when parse errors occur.
-  Int& msSpwGramPosition();
+  int32_t& msSpwGramPosition();
   
   // Declare the input routine for flex/bison.
   int msSpwGramInput (char* buf, int max_size);

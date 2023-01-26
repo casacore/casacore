@@ -74,7 +74,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	  T b_p;
 //	};
 //	// The specialized function
-//	template <> class f<AutoDiffA<Double> > {
+//	template <> class f<AutoDiffA<double> > {
 //	public:
 //	  T operator()(const T& x) { return a_p*a_p*a_p*b_p*b_p*x; }
 //	  void set(const T& a, const T& b) { a_p = a; b_p = b; }
@@ -83,11 +83,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //	  T b_p;
 //	};
 //	// Call it with different template arguments:
-//	  AutoDiff<Double> a1(2,2,0), b1(3,2,1), x1(7);
-//	  f<AutoDiff<Double> > f1; f1.set(a1, b1);
+//	  AutoDiff<double> a1(2,2,0), b1(3,2,1), x1(7);
+//	  f<AutoDiff<double> > f1; f1.set(a1, b1);
 //	  cout << "Diff a,b:   " << f1(x1) << endl;
 //	
-//	  f<AutoDiffA<Double> > f12; f12.set(a1, b1);
+//	  f<AutoDiffA<double> > f12; f12.set(a1, b1);
 //	  cout << "Same....:   " << f12(x1) << endl;
 //
 //    // Result will be:
@@ -95,7 +95,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //    // Same....:  (504, [756, 336])
 //
 //    // It needed the template instantiations definitions:
-//	template class f<AutoDiff<Double> >;
+//	template class f<AutoDiff<double> >;
 // </srcblock>
 // </example>
 //
@@ -125,13 +125,13 @@ template <class T> class AutoDiffA : public AutoDiff<T> {
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs, the nth derivative is one, and all 
   // others are zero. 
-  AutoDiffA(const T &v, const uInt ndiffs, const uInt n) :
+  AutoDiffA(const T &v, const uint32_t ndiffs, const uint32_t n) :
     AutoDiff<T>(v, ndiffs, n) {} 
 
   // A function f(x0,x1,...,xn,...) with a value of v.  The 
   // total number of derivatives is ndiffs.
   // All derivatives are zero. 
-  AutoDiffA(const T &v, const uInt ndiffs) : AutoDiff<T>(v, ndiffs) {}
+  AutoDiffA(const T &v, const uint32_t ndiffs) : AutoDiff<T>(v, ndiffs) {}
 
   // Construct one from another
   AutoDiffA(const AutoDiff<T> &other) : AutoDiff<T>(other) {}

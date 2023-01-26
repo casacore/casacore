@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //# Declare a file global pointer to a char* for the input string.
   static const char*           strpMSSpwGram = 0;
-  static Int                   posMSSpwGram = 0;
+  static int32_t                   posMSSpwGram = 0;
   // MSSpwGramwrap out of namespace
   
   //# Parse the command.
@@ -81,7 +81,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     try 
       {
-	Int ret;
+	int32_t ret;
 	MSSpwGramrestart (MSSpwGramin);
 	yy_start = 1;
 	strpMSSpwGram = command.chars();     // get pointer to command string
@@ -102,12 +102,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   int baseMSSpwGramParseCommand (MSSpwParse* parser, const String& command,
-				 Vector<Int>& selectedIDs, Matrix<Int>&selectedChans,
-				 Vector<Int>& selectedDDIDs) 
+				 Vector<int32_t>& selectedIDs, Matrix<int32_t>&selectedChans,
+				 Vector<int32_t>& selectedDDIDs) 
   {
     try 
       {
-	Int ret;
+	int32_t ret;
 	MSSpwGramrestart (MSSpwGramin);
 	yy_start = 1;
 	strpMSSpwGram = command.chars();     // get pointer to command string
@@ -136,21 +136,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			     const MSDataDescription& ddSubTable, 
 			     const TableExprNode& colAsTEN,
 			     const String& command,
-			     Vector<Int>& selectedIDs,
-			     Matrix<Int>& selectedChans,
-			     Vector<Int>& selectedDDIDs) 
+			     Vector<int32_t>& selectedIDs,
+			     Matrix<int32_t>& selectedChans,
+			     Vector<int32_t>& selectedDDIDs) 
   {
     MSSpwParse thisParser(spwSubTable, ddSubTable, colAsTEN);
     return baseMSSpwGramParseCommand(&thisParser, command, selectedIDs, selectedChans, selectedDDIDs);
   }
 
   int msSpwGramParseCommand (const MeasurementSet *ms, 
-			     const String& command,Vector<Int>& selectedIDs,
-			     Matrix<Int>& selectedChans) 
+			     const String& command,Vector<int32_t>& selectedIDs,
+			     Matrix<int32_t>& selectedChans) 
   {
     try 
       {
-    	Int ret;
+    	int32_t ret;
     	MSSpwGramrestart (MSSpwGramin);
     	yy_start = 1;
     	strpMSSpwGram = command.chars();     // get pointer to command string
@@ -187,7 +187,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   //# Give the string position.
-  Int& msSpwGramPosition()
+  int32_t& msSpwGramPosition()
   {
     return posMSSpwGram;
   }

@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LatticeRegion::LatticeRegion()
 : itsRegion (0),
-  itsHasRegionMask (False)
+  itsHasRegionMask (false)
 {}
 
 LatticeRegion::LatticeRegion (const LCRegion& region)
@@ -53,7 +53,7 @@ LatticeRegion::LatticeRegion (LCRegion* region)
 LatticeRegion::LatticeRegion (const Slicer& slicer,
 			      const IPosition& latticeShape)
 : itsRegion (0),
-  itsHasRegionMask (False)
+  itsHasRegionMask (false)
 {
   // Make sure that the slicer has blc,trc filled in.
   IPosition blc, trc, inc;
@@ -64,7 +64,7 @@ LatticeRegion::LatticeRegion (const Slicer& slicer,
 }
   
 LatticeRegion::LatticeRegion (const LatticeRegion& other)
-: Lattice<Bool>(),
+: Lattice<bool>(),
   itsRegion (other.itsRegion->cloneRegion()),
   itsSlicer (other.itsSlicer),
   itsHasRegionMask (other.itsHasRegionMask)
@@ -89,24 +89,24 @@ LatticeRegion& LatticeRegion::operator= (const LatticeRegion& other)
     return *this;
 }
 
-Lattice<Bool>* LatticeRegion::clone() const
+Lattice<bool>* LatticeRegion::clone() const
 {
     return new LatticeRegion (*this);
 }
 
 
-Bool LatticeRegion::isWritable() const
+bool LatticeRegion::isWritable() const
 {
     return itsRegion->isWritable();
 }
 
 
-uInt LatticeRegion::advisedMaxPixels() const
+uint32_t LatticeRegion::advisedMaxPixels() const
 {
   return itsRegion->advisedMaxPixels();
 }
 
-IPosition LatticeRegion::doNiceCursorShape (uInt maxPixels) const
+IPosition LatticeRegion::doNiceCursorShape (uint32_t maxPixels) const
 {
     if (itsHasRegionMask) {
         return itsRegion->niceCursorShape (maxPixels);
@@ -114,12 +114,12 @@ IPosition LatticeRegion::doNiceCursorShape (uInt maxPixels) const
     return LatticeBase::doNiceCursorShape (maxPixels);
 }
 
-uInt LatticeRegion::maximumCacheSize() const
+uint32_t LatticeRegion::maximumCacheSize() const
 {
   return itsRegion->maximumCacheSize();
 }
 
-void LatticeRegion::setMaximumCacheSize (uInt howManyPixels)
+void LatticeRegion::setMaximumCacheSize (uint32_t howManyPixels)
 {
   itsRegion->setMaximumCacheSize (howManyPixels);
 }
@@ -133,7 +133,7 @@ void LatticeRegion::setCacheSizeFromPath (const IPosition& sliceShape,
 				   axisPath);
 }
 
-void LatticeRegion::setCacheSizeInTiles (uInt howManyTiles)
+void LatticeRegion::setCacheSizeInTiles (uint32_t howManyTiles)
 {
   itsRegion->setCacheSizeInTiles (howManyTiles);
 }
@@ -149,7 +149,7 @@ void LatticeRegion::showCacheStatistics (ostream& os) const
 }
 
 
-Bool LatticeRegion::lock (FileLocker::LockType type, uInt nattempts)
+bool LatticeRegion::lock (FileLocker::LockType type, uint32_t nattempts)
 {
     // Llock the PagedArray containing the mask.
     return itsRegion->lock (type, nattempts);
@@ -159,7 +159,7 @@ void LatticeRegion::unlock()
     // Unlock the PagedArray containing the mask.
     itsRegion->unlock();
 }
-Bool LatticeRegion::hasLock (FileLocker::LockType type) const
+bool LatticeRegion::hasLock (FileLocker::LockType type) const
 {
     return itsRegion->hasLock (type);
 }
@@ -189,7 +189,7 @@ IPosition LatticeRegion::shape() const
     return itsSlicer.length();
 }
   
-uInt LatticeRegion::ndim() const
+uint32_t LatticeRegion::ndim() const
 {
     return itsSlicer.ndim();
 }
@@ -199,29 +199,29 @@ size_t LatticeRegion::nelements() const
     return itsRegion->nelements();
 }
   
-LatticeIterInterface<Bool>* LatticeRegion::makeIter
+LatticeIterInterface<bool>* LatticeRegion::makeIter
                         (const LatticeNavigator& navigator,
-			 Bool useRef) const
+			 bool useRef) const
 {
     return itsRegion->makeIter (navigator, useRef);
 }
 
 
-Bool LatticeRegion::doGetSlice (Array<Bool>& buffer,
+bool LatticeRegion::doGetSlice (Array<bool>& buffer,
 				const Slicer& section)
 {
     // When no mask at all, simply return all true.
     if (! hasMask()) {
         buffer.resize (section.length());
-        buffer = True;
-	return False;
+        buffer = true;
+	return false;
     }
     // Return the required section.
     ///    LCRegion* reg = (LCRegion*)itsRegion;
     return itsRegion->doGetSlice (buffer, section);
 }
 
-void LatticeRegion::doPutSlice (const Array<Bool>& sourceBuffer,
+void LatticeRegion::doPutSlice (const Array<bool>& sourceBuffer,
 				const IPosition& where,
 				const IPosition& stride)
 {
@@ -229,38 +229,38 @@ void LatticeRegion::doPutSlice (const Array<Bool>& sourceBuffer,
     itsRegion->putSlice (sourceBuffer, where, stride);
 }
 
-void LatticeRegion::set (const Bool& value)
+void LatticeRegion::set (const bool& value)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->set (value);
 }
-void LatticeRegion::apply (Bool (*function)(Bool))
+void LatticeRegion::apply (bool (*function)(bool))
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->apply (function);
 }
-void LatticeRegion::apply (Bool (*function)(const Bool&))
+void LatticeRegion::apply (bool (*function)(const bool&))
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->apply (function);
 }
-void LatticeRegion::apply (const Functional<Bool,Bool>& function)
+void LatticeRegion::apply (const Functional<bool,bool>& function)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->apply (function);
 }
-void LatticeRegion::putAt (const Bool& value, const IPosition& where)
+void LatticeRegion::putAt (const bool& value, const IPosition& where)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->putAt (value, where);
 }
-void LatticeRegion::copyData (const Lattice<Bool>& from)
+void LatticeRegion::copyData (const Lattice<bool>& from)
 {
     AlwaysAssert (hasMask() && isWritable(), AipsError);
     itsRegion->copyData (from);
 }
 
-Bool LatticeRegion::ok() const
+bool LatticeRegion::ok() const
 {
     return itsRegion->ok();
 }
@@ -273,8 +273,8 @@ Slicer LatticeRegion::convert (const Slicer& slicer) const
 						   blc, trc, inc);
     const IPosition& start = itsSlicer.start();
     const IPosition& incr  = itsSlicer.stride();
-    uInt ndim = shape.nelements();
-    for (uInt i=0; i<ndim; i++) {
+    uint32_t ndim = shape.nelements();
+    for (uint32_t i=0; i<ndim; i++) {
 	blc(i) = start(i) + blc(i) * incr(i);
 	inc(i) *= incr(i);
     }
@@ -282,12 +282,12 @@ Slicer LatticeRegion::convert (const Slicer& slicer) const
 }
 IPosition LatticeRegion::convert (const IPosition& position) const
 {
-    uInt ndim = itsSlicer.ndim();
+    uint32_t ndim = itsSlicer.ndim();
     DebugAssert (position.nelements() == ndim, AipsError);
     IPosition result (ndim);
     const IPosition& start = itsSlicer.start();
     const IPosition& incr  = itsSlicer.stride();
-    for (uInt i=0; i<ndim; i++) {
+    for (uint32_t i=0; i<ndim; i++) {
 	DebugAssert (position(i) < itsSlicer.length()(i), AipsError);
 	result(i) = start(i) + position(i) * incr(i);
     }

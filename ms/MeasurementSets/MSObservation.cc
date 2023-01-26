@@ -38,10 +38,10 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MSObservation::MSObservation():hasBeenDestroyed_p(True) { }
+MSObservation::MSObservation():hasBeenDestroyed_p(true) { }
 
 MSObservation::MSObservation(const String &tableName, TableOption option) 
-    : MSTable<MSObservationEnums>(tableName, option),hasBeenDestroyed_p(False)
+    : MSTable<MSObservationEnums>(tableName, option),hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -52,7 +52,7 @@ MSObservation::MSObservation(const String &tableName, TableOption option)
 MSObservation::MSObservation(const String& tableName, const String &tableDescName,
 			       TableOption option)
     : MSTable<MSObservationEnums>(tableName, tableDescName,option),
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -61,18 +61,18 @@ MSObservation::MSObservation(const String& tableName, const String &tableDescNam
 }
 
 MSObservation::MSObservation(SetupNewTable &newTab, rownr_t nrrow,
-			       Bool initialize)
+			       bool initialize)
     : MSTable<MSObservationEnums>(newTab, nrrow, initialize), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
-	throw (AipsError("MSObservation(SetupNewTable &, rownr_t, Bool) - "
+	throw (AipsError("MSObservation(SetupNewTable &, rownr_t, bool) - "
 			 "table is not a valid MSObservation"));
 }
 
 MSObservation::MSObservation(const Table &table)
-    : MSTable<MSObservationEnums>(table), hasBeenDestroyed_p(False)
+    : MSTable<MSObservationEnums>(table), hasBeenDestroyed_p(false)
 {
     // verify that the now opened table is valid
     if (! validate(this->tableDesc()))
@@ -82,7 +82,7 @@ MSObservation::MSObservation(const Table &table)
 
 MSObservation::MSObservation(const MSObservation &other)
     : MSTable<MSObservationEnums>(other), 
-      hasBeenDestroyed_p(False)
+      hasBeenDestroyed_p(false)
 {
     // verify that other is valid
     if (&other != this) 
@@ -102,7 +102,7 @@ MSObservation::~MSObservation()
            << "~MSObservation() - Table written is not a valid MSObservation"
            << LogIO::POST;
     }
-    hasBeenDestroyed_p = True;
+    hasBeenDestroyed_p = true;
 }
 
 
@@ -157,12 +157,12 @@ MSTableMaps MSObservation::initMaps()
   // Define the columns with known dimensionality
   addColumnToDesc(maps, LOG, 1);
   addColumnToDesc(maps, SCHEDULE, 1);
-  for (Int i = UNDEFINED_KEYWORD+1;
+  for (int32_t i = UNDEFINED_KEYWORD+1;
        i <= NUMBER_PREDEFINED_KEYWORDS; i++) {
     addKeyToDesc(maps, PredefinedKeywords(i));
   }
   // all required columns 
-  for (Int i = UNDEFINED_COLUMN+1; 
+  for (int32_t i = UNDEFINED_COLUMN+1; 
        i <= NUMBER_REQUIRED_COLUMNS; i++) {
     addColumnToDesc(maps, PredefinedColumns(i));
   }

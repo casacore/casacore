@@ -83,7 +83,7 @@ class Template {
   ~Template();
 
   // Operators
-  const String &operator[](uInt n) { return output_p[n]; }
+  const String &operator[](uint32_t n) { return output_p[n]; }
 
   //# Member functions
   // Clear the object for a re-use.
@@ -95,56 +95,56 @@ class Template {
   void read(const String &filename);
   // </group>
   // Get the number of template entries
-  uInt getCount() const { return count_p; };
+  uint32_t getCount() const { return count_p; };
   // Get the number of template definition lines found
-  uInt getTDCount() const { return tdcount_p; };
+  uint32_t getTDCount() const { return tdcount_p; };
   // Get the number of templates found after all processing
-  uInt getTCount() const { return tcount_p; };
+  uint32_t getTCount() const { return tcount_p; };
   // Get the number of duplicates found
-  uInt getDCount() { return dcount_p; };
+  uint32_t getDCount() { return dcount_p; };
   // Get the various template definition information fields.
   // Meant for testing and special projects only.
   // <group>
-  const String &getTDFlist(uInt n) { return tdflist_p[n]; };
-  const String &getTDlist(uInt n) { return tdlist_p[n]; };
-  const uInt &getTDfile(uInt n) { return tdfile_p[n]; };
-  const uInt &getTDline(uInt n) { return tdline_p[n]; };
-  const String &getTDname(uInt n) { return tdname_p[n]; };
+  const String &getTDFlist(uint32_t n) { return tdflist_p[n]; };
+  const String &getTDlist(uint32_t n) { return tdlist_p[n]; };
+  const uint32_t &getTDfile(uint32_t n) { return tdfile_p[n]; };
+  const uint32_t &getTDline(uint32_t n) { return tdline_p[n]; };
+  const String &getTDname(uint32_t n) { return tdname_p[n]; };
   // </group>
 
-  // Canonicalise the template entries in the object. If switch True, do only
+  // Canonicalise the template entries in the object. If switch true, do only
   // the templates entry for duplication
-  void canonical(const Bool tmplonly=False);
+  void canonical(const bool tmplonly=false);
   // Split the entries in number, name id, rest
   void splitName();
   // Sort the data on name and number and fill in missing number. If switch
-  // is True, renumber all template entries in sequence.
-  void sortName(const Bool renumber=False);
+  // is true, renumber all template entries in sequence.
+  void sortName(const bool renumber=false);
   // Write the data formatted to the specified file. Notify errors and warnings
-  // by writing to <src>cerr</src>. If <src>warn</src> is False, some warnings will be
+  // by writing to <src>cerr</src>. If <src>warn</src> is false, some warnings will be
   // compressed into a general warning.
-  void writeOut(ostream &os, const Bool warn=False);
+  void writeOut(ostream &os, const bool warn=false);
   // Write the duplicate list; the userFile gets ***; isSys gives the system switch
-  void writeDup(ostream &os, const String &userFile, Bool isSys=False);
+  void writeDup(ostream &os, const String &userFile, bool isSys=false);
 
  private:
   //# Data
   // Each element is a template entry on a single line
   Block<String> output_p;
   // Count the lines
-  uInt count_p;
+  uint32_t count_p;
   // Count the templates
-  uInt tcount_p;
+  uint32_t tcount_p;
   // Record comment lines
   Block<String> comout_p;
   // And where they originated
-  Block<Int> comptr_p;
+  Block<int32_t> comptr_p;
   // And count the comment lines
-  uInt ccount_p;
+  uint32_t ccount_p;
   // Indicate data split
-  Bool isSplit_p;
+  bool isSplit_p;
   // Count the duplicates
-  uInt dcount_p;
+  uint32_t dcount_p;
   // Data split of number string (or empty/spaces)
   Block<String> nstring_p;
   // Data split all text
@@ -152,18 +152,18 @@ class Template {
   // Data split name string (first include file)
   Block<String> namstring_p;
   // Data split numeric number
-  Block<uInt> nval_p;
+  Block<uint32_t> nval_p;
 
   // List of files used
   Block<String> tdflist_p;
   // Number of template definitions extracted from input
-  uInt tdcount_p;
+  uint32_t tdcount_p;
   // List of template definitions
   Block<String> tdlist_p;
   // Pointers to in which file in list
-  Block<uInt> tdfile_p;
+  Block<uint32_t> tdfile_p;
   // Line number in file at which template found
-  Block<uInt> tdline_p;
+  Block<uint32_t> tdline_p;
   // List of comparison names
   Block<String> tdname_p;
 
@@ -175,7 +175,7 @@ class Template {
   Template &operator=(const Template &other);
   //# Member functions
   // Save comment
-  void setComment(const String &txt, const Bool atstart=False);
+  void setComment(const String &txt, const bool atstart=false);
   // Save a line
   void setOutput(const String &txt);
 
@@ -194,22 +194,22 @@ class Template {
   static const Regex namespaceRE;
 
   // Simple pattern and replacements to make canonical templates files
-  static const uInt Ncanon = 52;
+  static const uint32_t Ncanon = 52;
   static const Regex PATcanon[Ncanon];
   static const String REPcanon[Ncanon];
 
   // For canonical change: replacement of pattern with pattern
-  static const uInt Ncanon2 = 15;
+  static const uint32_t Ncanon2 = 15;
   static const Regex PATcanon20[Ncanon2];
   static const Regex PATcanon21[Ncanon2];
   static const String REPcanon2[Ncanon2];
 
   // Make canonical numbers of 4 digits minimum
-  static const uInt Nnmin = 4;
+  static const uint32_t Nnmin = 4;
   static const Regex PATnmin[Nnmin];
   static const String REPnmin[Nnmin];
   // Make canonical numbers of 4 digits maximum
-  static const uInt Nnmax = 1;
+  static const uint32_t Nnmax = 1;
   static const Regex PATnmax[Nnmax];
   static const Regex REPnmax[Nnmax];
  
@@ -231,7 +231,7 @@ class Template {
   static const Regex snamespaceRE;
 
   // Replacement patterns for ifs in saved line
-  static const uInt Ninif = 5;
+  static const uint32_t Ninif = 5;
   static const String PATinif[Ninif];
   static const String REPinif[Ninif];
 
@@ -253,7 +253,7 @@ class Template {
   // Patterns to make all typedefs comparisons for duplicates possible
   // Note that the first three should be in that position for run-time
   // change on some systems.
-  static const uInt Ntypedef = 23;
+  static const uint32_t Ntypedef = 23;
   static const Regex PATtypedef0[Ntypedef];
   static const Regex PATtypedef1[Ntypedef];
   static String REPtypedef[Ntypedef];

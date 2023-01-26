@@ -62,13 +62,13 @@ String removeDir (const String& msg)
 }
 
 // First build a description.
-TableDesc makeDesc (Bool ask)
+TableDesc makeDesc (bool ask)
 {
   // Build the table description.
   TableDesc td("", "1", TableDesc::Scratch);
   String stman, stmanname;
-  Int op;
-  while (True) {
+  int32_t op;
+  while (true) {
     try {
       if (ask) {
 	cout << "0=end 1=scalar 2=dirarr 3=fixindarr 4=varindarr: ";
@@ -103,18 +103,18 @@ TableDesc makeDesc (Bool ask)
 	}
 
 	if (op == 1) {
-	    td.addColumn (ScalarColumnDesc<uInt>(strs(0), "", stman,
+	    td.addColumn (ScalarColumnDesc<uint32_t>(strs(0), "", stman,
 						 stmanname));
 	  } else if (op == 2) {
-	    td.addColumn (ArrayColumnDesc<uInt>(strs(0), "", stman, stmanname,
+	    td.addColumn (ArrayColumnDesc<uint32_t>(strs(0), "", stman, stmanname,
 					      IPosition(1,10),
 					      ColumnDesc::Direct));
 	} else if (op == 3) {
-	  td.addColumn (ArrayColumnDesc<uInt>(strs(0), "", stman, stmanname,
+	  td.addColumn (ArrayColumnDesc<uint32_t>(strs(0), "", stman, stmanname,
 					      IPosition(1,10),
 					      ColumnDesc::FixedShape));
 	} else if (op == 4) {
-	  td.addColumn (ArrayColumnDesc<uInt>(strs(0), "", stman, stmanname));
+	  td.addColumn (ArrayColumnDesc<uint32_t>(strs(0), "", stman, stmanname));
 	}
       } else {
 	break;
@@ -125,7 +125,7 @@ TableDesc makeDesc (Bool ask)
   }
   // Create the hypercolumn descriptions for all tiled columns.
   std::map<String,String> hcmap;
-  for (uInt i=0; i<td.ncolumn(); i++) {
+  for (uint32_t i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cd = td.columnDesc(i);
     if (cd.dataManagerType() == "TiledShapeStMan") {
       std::map<String,String>::iterator iter = hcmap.find(cd.dataManagerGroup());
@@ -138,7 +138,7 @@ TableDesc makeDesc (Bool ask)
   }
   for (auto& x : hcmap) {
     Vector<String> vec = stringToVector(x.second);
-    uInt ndim = 2;
+    uint32_t ndim = 2;
     if (td.columnDesc(vec(0)).isScalar()) {
       ndim = 1;
     }
@@ -149,19 +149,19 @@ TableDesc makeDesc (Bool ask)
 }
 
 void putData (Table& tab, const TableDesc& td,
-	      uInt startrow, uInt nrow)
+	      uint32_t startrow, uint32_t nrow)
 {
-  for (uInt i=0; i<td.ncolumn(); i++) {
+  for (uint32_t i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td.columnDesc(i);
     if (cdesc.isScalar()) {
-      ScalarColumn<uInt> col (tab, cdesc.name());
-      for (uInt i=0; i<nrow; i++) {
+      ScalarColumn<uint32_t> col (tab, cdesc.name());
+      for (uint32_t i=0; i<nrow; i++) {
 	col.put (startrow+i, startrow+i);
       }
     } else {
-      ArrayColumn<uInt> col (tab, cdesc.name());
-      Vector<uInt> vec(10);
-      for (uInt i=0; i<nrow; i++) {
+      ArrayColumn<uint32_t> col (tab, cdesc.name());
+      Vector<uint32_t> vec(10);
+      for (uint32_t i=0; i<nrow; i++) {
 	vec = startrow+i;
 	col.put (startrow+i, vec);
       }
@@ -170,19 +170,19 @@ void putData (Table& tab, const TableDesc& td,
 }
 
 void checkData (const Table& tab, const TableDesc& td,
-		uInt startrow, uInt nrow)
+		uint32_t startrow, uint32_t nrow)
 {
-  for (uInt i=0; i<td.ncolumn(); i++) {
+  for (uint32_t i=0; i<td.ncolumn(); i++) {
     const ColumnDesc& cdesc = td.columnDesc(i);
     if (cdesc.isScalar()) {
-      ScalarColumn<uInt> col (tab, cdesc.name());
-      for (uInt i=0; i<nrow; i++) {
+      ScalarColumn<uint32_t> col (tab, cdesc.name());
+      for (uint32_t i=0; i<nrow; i++) {
 	AlwaysAssert (col(startrow+i) == startrow+i, AipsError);
       }
     } else {
-      ArrayColumn<uInt> col (tab, cdesc.name());
-      Vector<uInt> vec(10);
-      for (uInt i=0; i<nrow; i++) {
+      ArrayColumn<uint32_t> col (tab, cdesc.name());
+      Vector<uint32_t> vec(10);
+      for (uint32_t i=0; i<nrow; i++) {
 	vec = startrow+i;
 	AlwaysAssert (allEQ(col(startrow+i), vec), AipsError);
       }
@@ -190,16 +190,16 @@ void checkData (const Table& tab, const TableDesc& td,
   }
 }
 
-void addCols (Bool ask, Table& tab)
+void addCols (bool ask, Table& tab)
 {
   TableDesc tdn = makeDesc(ask);
   AlwaysAssert (tdn.ncolumn() > 0, AipsError);
   const ColumnDesc& cdesc = tdn.columnDesc(0);
   if (tdn.ncolumn() == 1) {
     if (cdesc.dataManagerType() == cdesc.dataManagerGroup()) {
-      tab.addColumn (cdesc, cdesc.dataManagerType(), False);
+      tab.addColumn (cdesc, cdesc.dataManagerType(), false);
     } else {
-      tab.addColumn (cdesc, cdesc.dataManagerGroup(), True);
+      tab.addColumn (cdesc, cdesc.dataManagerGroup(), true);
     }
   } else {
     if (cdesc.dataManagerType() == "StManAipsIO") {
@@ -223,7 +223,7 @@ void addCols (Bool ask, Table& tab)
   cout << " Added and initialized " << tdn.ncolumn() << " columns" << endl;
 }
 
-void doTable (Bool ask, const TableDesc& td)
+void doTable (bool ask, const TableDesc& td)
 {
   // Now create a new table from the description.
   // Use copy constructor to test if it works fine.
@@ -231,8 +231,8 @@ void doTable (Bool ask, const TableDesc& td)
   SetupNewTable newtab("tTable_4_tmp.data", td, Table::New);
   Table tab(newtab);
 
-  Int op;
-  while (True) {
+  int32_t op;
+  while (true) {
     try {
       if (ask) {
 	cout << "0=end 1=reopen 2=addcols 3=removecols 4=addrow 5=show "
@@ -255,7 +255,7 @@ void doTable (Bool ask, const TableDesc& td)
 	tab.removeColumn (stringToVector(str));
 	cout << " Removed columns " << str << endl;
       } else if (op == 4) {
-	uInt n = tab.nrow();
+	uint32_t n = tab.nrow();
 	tab.addRow();
 	putData (tab, tab.tableDesc(), n, 1);
 	cout << " Added and initialized 1 row" << endl;
@@ -271,7 +271,7 @@ void doTable (Bool ask, const TableDesc& td)
 	tab.actualTableDesc().show (cout);
 	Record rec = tab.dataManagerInfo();
 	cout << "Data Managers:" << endl;
-	for (uInt i=0; i<rec.nfields(); i++) {
+	for (uint32_t i=0; i<rec.nfields(); i++) {
 	  const Record& subrec = rec.subRecord(i);
 	  cout << " Type=" << subrec.asString("TYPE");
 	  cout << " Name=" << subrec.asString("NAME");
@@ -295,7 +295,7 @@ void doTable (Bool ask, const TableDesc& td)
 	checkData (tab, tab.tableDesc(), 0, tab.nrow());
 	cout << " Checked all data" << endl;
       } else if (op == 9) {
-	tab.deepCopy ("tTable_4_tmp.datn", Table::New, True);
+	tab.deepCopy ("tTable_4_tmp.datn", Table::New, true);
 	tab = Table("tTable_4_tmp.datn");
 	tab.rename ("tTable_4_tmp.data", Table::New);
 	// The next 2 statements are needed to ensure that all objects
@@ -316,7 +316,7 @@ int main (int argc, const char*[])
   try {
     cout << "tTable_4 is for interactive playing with tables" << endl;
     cout << "-----------------------------------------------" << endl;
-    Bool ask = argc < 2;
+    bool ask = argc < 2;
     doTable (ask, makeDesc(ask));
   } catch (std::exception& x) {
     cout << "Caught an exception: " << x.what() << endl;

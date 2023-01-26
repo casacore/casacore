@@ -45,7 +45,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <synopsis>
 // This LEL class holds an array with a mask.
-// The mask can be a single Bool valid for all elements of the array.
+// The mask can be a single bool valid for all elements of the array.
 // Otherwise it is a full mask with the same shape as the array.
 // </synopsis>
 
@@ -65,8 +65,8 @@ public:
        : itsMaskPtr(0) {}
 
 // Constructor takes mask.
-   LELArrayBase (const Array<Bool>& mask)
-       : itsMaskPtr(new Array<Bool>(mask)) {}
+   LELArrayBase (const Array<bool>& mask)
+       : itsMaskPtr(new Array<bool>(mask)) {}
 
 // Copy constructor (reference semantics).
    LELArrayBase (const LELArrayBase& other);
@@ -77,14 +77,14 @@ public:
    LELArrayBase& operator= (const LELArrayBase& other);
 
 // Does the value have a mask?
-   Bool isMasked() const
+   bool isMasked() const
       { return  (itsMaskPtr != 0); }
 
 // Get mask.
 // <group>
-   const Array<Bool>& mask() const
+   const Array<bool>& mask() const
       { return *itsMaskPtr; }
-   Array<Bool>& mask()
+   Array<bool>& mask()
       { return *itsMaskPtr; }
 // </group>
 
@@ -92,13 +92,13 @@ public:
    void removeMask();
 
 // Set the mask from given array (takes reference).
-   void setMask (const Array<Bool>& other);
+   void setMask (const Array<bool>& other);
 
 // Set the mask from the mask of the other value.
    void setMask (const LELArrayBase& other);
 
 // Set the mask from given array (takes reference).
-   void setMask (Array<Bool>& other);
+   void setMask (Array<bool>& other);
 
 // Set the mask by combining the masks of both values.
    void setMask (const LELArrayBase& left, const LELArrayBase& right)
@@ -108,32 +108,32 @@ public:
 // <group>
    void combineMask (const LELArrayBase& other)
     { if (other.isMasked()) combineMask (other.mask()); }
-   void combineMask (const Array<Bool>& mask);
+   void combineMask (const Array<bool>& mask);
 // </group>
 
 // Combine the mask with the given value in case of an OR or AND.
 // It means the mask is set to true if value is desiredValue
-// (which should be True for OR and False for AND).
+// (which should be true for OR and false for AND).
 // <group>
 // Combine with a single scalar value for which the mask is false.
-   void combineOrAnd (Bool desiredValue, const Array<Bool>& value);
+   void combineOrAnd (bool desiredValue, const Array<bool>& value);
 
 // Combine for two arrays taking the true/false array values into account.
 // The mask and value are set to desiredValue if the temp value is desiredValue.
-   void combineOrAnd (Bool desiredValue, Array<Bool>& value,
-		      const Array<Bool>& temp);
+   void combineOrAnd (bool desiredValue, Array<bool>& value,
+		      const Array<bool>& temp);
 
 // Combine for two arrays taking the true/false array values and mask
 // into account.
 // The mask and value are set to desiredValue if the temp value is desiredValue
 // and its temp mask it true.
-// The mask is set to false if the temp mask is False.
-   void combineOrAnd (Bool desiredValue, Array<Bool>& value,
-		      const Array<Bool>& temp, const Array<Bool>& tempMask);
+// The mask is set to false if the temp mask is false.
+   void combineOrAnd (bool desiredValue, Array<bool>& value,
+		      const Array<bool>& temp, const Array<bool>& tempMask);
 // </group>
 
 private:
-   Array<Bool>* itsMaskPtr;
+   Array<bool>* itsMaskPtr;
 };
 
 

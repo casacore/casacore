@@ -72,7 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return order_p; }
 
     // Is the order given?
-    Bool orderGiven() const
+    bool orderGiven() const
       { return given_p; }
 
     // Add the values of the sort key to the Sort object by reading the
@@ -89,7 +89,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     TableExprNode node_p;
     Sort::Order   order_p;
-    Bool          given_p;
+    bool          given_p;
   };
 
 

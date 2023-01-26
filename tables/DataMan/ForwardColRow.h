@@ -110,30 +110,30 @@ private:
     ForwardColumnIndexedRow& operator= (const ForwardColumnIndexedRow&);
 
     // This data manager cannot handle changing array shapes.
-    Bool canChangeShape() const;
+    bool canChangeShape() const;
 
     // Set the shape of an (indirect) array in the given row.
     // This throws an exception, because putting is not supported.
     void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the value shape defined in the given row?
-    Bool isShapeDefined (rownr_t rownr);
+    bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
-    uInt ndim (rownr_t rownr);
+    uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the item in the given row.
     IPosition shape (rownr_t rownr);
 
     // Get the scalar value with a standard data type in the given row.
     // <group>
-    virtual void getBool     (rownr_t rownr, Bool* dataPtr);
-    virtual void getuChar    (rownr_t rownr, uChar* dataPtr);
-    virtual void getShort    (rownr_t rownr, Short* dataPtr);
-    virtual void getuShort   (rownr_t rownr, uShort* dataPtr);
-    virtual void getInt      (rownr_t rownr, Int* dataPtr);
-    virtual void getuInt     (rownr_t rownr, uInt* dataPtr);
-    virtual void getInt64    (rownr_t rownr, Int64* dataPtr);
+    virtual void getBool     (rownr_t rownr, bool* dataPtr);
+    virtual void getuChar    (rownr_t rownr, unsigned char* dataPtr);
+    virtual void getShort    (rownr_t rownr, int16_t* dataPtr);
+    virtual void getuShort   (rownr_t rownr, uint16_t* dataPtr);
+    virtual void getInt      (rownr_t rownr, int32_t* dataPtr);
+    virtual void getuInt     (rownr_t rownr, uint32_t* dataPtr);
+    virtual void getInt64    (rownr_t rownr, int64_t* dataPtr);
     virtual void getfloat    (rownr_t rownr, float* dataPtr);
     virtual void getdouble   (rownr_t rownr, double* dataPtr);
     virtual void getComplex  (rownr_t rownr, Complex* dataPtr);
@@ -147,13 +147,13 @@ private:
     // Put the scalar value with a standard data type into the given row.
     // This throws an exception, because putting is not supported.
     // <group>
-    virtual void putBool     (rownr_t rownr, const Bool* dataPtr);
-    virtual void putuChar    (rownr_t rownr, const uChar* dataPtr);
-    virtual void putShort    (rownr_t rownr, const Short* dataPtr);
-    virtual void putuShort   (rownr_t rownr, const uShort* dataPtr);
-    virtual void putInt      (rownr_t rownr, const Int* dataPtr);
-    virtual void putuInt     (rownr_t rownr, const uInt* dataPtr);
-    virtual void putInt64    (rownr_t rownr, const Int64* dataPtr);
+    virtual void putBool     (rownr_t rownr, const bool* dataPtr);
+    virtual void putuChar    (rownr_t rownr, const unsigned char* dataPtr);
+    virtual void putShort    (rownr_t rownr, const int16_t* dataPtr);
+    virtual void putuShort   (rownr_t rownr, const uint16_t* dataPtr);
+    virtual void putInt      (rownr_t rownr, const int32_t* dataPtr);
+    virtual void putuInt     (rownr_t rownr, const uint32_t* dataPtr);
+    virtual void putInt64    (rownr_t rownr, const int64_t* dataPtr);
     virtual void putfloat    (rownr_t rownr, const float* dataPtr);
     virtual void putdouble   (rownr_t rownr, const double* dataPtr);
     virtual void putComplex  (rownr_t rownr, const Complex* dataPtr);
@@ -361,13 +361,13 @@ private:
     void reopenRW();
 
 
-    // Define the column with the row numbers (must have data type uInt).
+    // Define the column with the row numbers (must have data type uint32_t).
     String                          rowColumnName_p;
-    ScalarColumn<uInt>              rowColumn_p;
+    ScalarColumn<uint32_t>              rowColumn_p;
     // Define the various engine column objects.
     PtrBlock<ForwardColumnIndexedRow*> refColumns_p;
     // Cache of last row used to get row number.
-    Int64   lastRow_p;
+    int64_t   lastRow_p;
     rownr_t rowNumber_p;
 
 
@@ -388,7 +388,7 @@ public:
 
 inline rownr_t ForwardColumnIndexedRowEngine::convertRownr (rownr_t rownr)
 {
-    if (Int64(rownr) != lastRow_p) {
+    if (int64_t(rownr) != lastRow_p) {
 	rowNumber_p = rowColumn_p(rownr);
 	lastRow_p   = rownr;
     }

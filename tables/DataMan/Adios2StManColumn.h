@@ -46,7 +46,7 @@ public:
                         char aOpenMode) = 0;
     virtual void setShapeColumn(const IPosition &aShape) override;
     virtual IPosition shape(rownr_t aRowNr) override;
-    Bool canChangeShape() const override;
+    bool canChangeShape() const override;
     void setShape (rownr_t aRowNr, const IPosition& aShape) override;
 
     int getDataTypeSize();
@@ -56,28 +56,28 @@ public:
 protected:
 
     // scalar get/put
-    virtual void getBool(rownr_t aRowNr, Bool *aDataPtr) override;
-    virtual void getuChar(rownr_t aRowNr, uChar *aDataPtr) override;
-    virtual void getShort(rownr_t aRowNr, Short *aDataPtr) override;
-    virtual void getuShort(rownr_t aRowNr, uShort *aDataPtr) override;
-    virtual void getInt(rownr_t aRowNr, Int *aDataPtr) override;
-    virtual void getuInt(rownr_t aRowNr, uInt *aDataPtr) override;
-    virtual void getInt64(rownr_t aRowNr, Int64 *aDataPtr) override;
-    virtual void getfloat(rownr_t aRowNr, Float *aDataPtr) override;
-    virtual void getdouble(rownr_t aRowNr, Double *aDataPtr) override;
+    virtual void getBool(rownr_t aRowNr, bool *aDataPtr) override;
+    virtual void getuChar(rownr_t aRowNr, unsigned char *aDataPtr) override;
+    virtual void getShort(rownr_t aRowNr, int16_t *aDataPtr) override;
+    virtual void getuShort(rownr_t aRowNr, uint16_t *aDataPtr) override;
+    virtual void getInt(rownr_t aRowNr, int32_t *aDataPtr) override;
+    virtual void getuInt(rownr_t aRowNr, uint32_t *aDataPtr) override;
+    virtual void getInt64(rownr_t aRowNr, int64_t *aDataPtr) override;
+    virtual void getfloat(rownr_t aRowNr, float *aDataPtr) override;
+    virtual void getdouble(rownr_t aRowNr, double *aDataPtr) override;
     virtual void getComplex(rownr_t aRowNr, Complex *aDataPtr) override;
     virtual void getDComplex(rownr_t aRowNr, DComplex *aDataPtr) override;
     virtual void getString(rownr_t aRowNr, String *aDataPtr) override;
 
-    virtual void putBool(rownr_t aRowNr, const Bool *aDataPtr) override;
-    virtual void putuChar(rownr_t aRowNr, const uChar *aDataPtr) override;
-    virtual void putShort(rownr_t aRowNr, const Short *aDataPtr) override;
-    virtual void putuShort(rownr_t aRowNr, const uShort *aDataPtr) override;
-    virtual void putInt(rownr_t aRowNr, const Int *aDataPtr) override;
-    virtual void putuInt(rownr_t aRowNr, const uInt *aDataPtr) override;
-    virtual void putInt64(rownr_t aRowNr, const Int64 *aDataPtr) override;
-    virtual void putfloat(rownr_t aRowNr, const Float *aDataPtr) override;
-    virtual void putdouble(rownr_t aRowNr, const Double *aDataPtr) override;
+    virtual void putBool(rownr_t aRowNr, const bool *aDataPtr) override;
+    virtual void putuChar(rownr_t aRowNr, const unsigned char *aDataPtr) override;
+    virtual void putShort(rownr_t aRowNr, const int16_t *aDataPtr) override;
+    virtual void putuShort(rownr_t aRowNr, const uint16_t *aDataPtr) override;
+    virtual void putInt(rownr_t aRowNr, const int32_t *aDataPtr) override;
+    virtual void putuInt(rownr_t aRowNr, const uint32_t *aDataPtr) override;
+    virtual void putInt64(rownr_t aRowNr, const int64_t *aDataPtr) override;
+    virtual void putfloat(rownr_t aRowNr, const float *aDataPtr) override;
+    virtual void putdouble(rownr_t aRowNr, const double *aDataPtr) override;
     virtual void putComplex(rownr_t aRowNr, const Complex *aDataPtr) override;
     virtual void putDComplex(rownr_t aRowNr, const DComplex *aDataPtr) override;
     virtual void putString(rownr_t aRowNr, const String *aDataPtr) override;
@@ -134,7 +134,7 @@ protected:
     String itsColumnName;
     IPosition itsCasaShape;
     std::unordered_map<rownr_t, IPosition> itsCasaShapes;
-    Bool isShapeFixed = false;
+    bool isShapeFixed = false;
 
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
@@ -187,7 +187,7 @@ private:
 
     void toAdios(const ArrayBase *arrayPtr)
     {
-        Bool deleteIt;
+        bool deleteIt;
         const void *data = arrayPtr->getVStorage(deleteIt);
         toAdios(data, 0);
         arrayPtr->freeVStorage (data, deleteIt);
@@ -195,7 +195,7 @@ private:
 
     void fromAdios(ArrayBase *arrayPtr)
     {
-        Bool deleteIt;
+        bool deleteIt;
         void *data = arrayPtr->getVStorage(deleteIt);
         fromAdios(data, 0);
         arrayPtr->putVStorage(data, deleteIt);

@@ -96,15 +96,15 @@ public:
     // symbol AIPS_ARRAY_INDEX_CHECK is defined, "index" will be
     // checked to ensure it is not out of bounds. If this check fails, an
     // AipsError will be thrown.
-    Int operator() (uInt index) const;
+    int32_t operator() (uint32_t index) const;
 
     // The number of elements in this TSMShape. Since TSMShape
     // objects use zero-based indexing, the maximum available index is
     // nelements() - 1.
-    uInt nelements() const;
+    uint32_t nelements() const;
 
     // conform returns true if nelements() == other.nelements().
-    Bool conform (const TSMShape& other) const;
+    bool conform (const TSMShape& other) const;
 
     // Calculate the offset for a given position.
     // <group>
@@ -131,14 +131,14 @@ public:
     //     TSMShape TSM (array.shape());
     //     IPosition offsetIncr = TSM.offsetIncrement (subArrayShape);
     //     Array<T> subArray(subArrayShape);
-    //     Bool deleteMain;
+    //     bool deleteMain;
     //     const T* mainData = array.getStorage (deleteMain);
     //     mainData += TSM.offset (subArrayStart)
-    //     Bool deleteSub;
+    //     bool deleteSub;
     //     T* subData = subArray.getStorage (deleteSub);
-    //     for (uInt i=0; i<subArrayShape(2); i++) {
-    //         for (uInt j=0; j<subArrayShape(1); j++) {
-    //             for (uInt k=0; k<subArrayShape(0); k++) {
+    //     for (uint32_t i=0; i<subArrayShape(2); i++) {
+    //         for (uint32_t j=0; j<subArrayShape(1); j++) {
+    //             for (uint32_t k=0; k<subArrayShape(0); k++) {
     //                 *subData++ = *mainData++;
     //             }
     //             mainData += offsetIncr(1);
@@ -155,21 +155,21 @@ public:
 
 private:
     IPosition data_p;
-    uInt      size_p;     //# Not necessary, but done for speedup
+    uint32_t      size_p;     //# Not necessary, but done for speedup
 };
 
 
-inline uInt TSMShape::nelements() const
+inline uint32_t TSMShape::nelements() const
 {
     return size_p;
 }
 
-inline Int TSMShape::operator()(uInt index) const
+inline int32_t TSMShape::operator()(uint32_t index) const
 {
     return data_p(index);
 }
 
-inline Bool TSMShape::conform (const TSMShape& other) const
+inline bool TSMShape::conform (const TSMShape& other) const
 {
     return data_p.conform (other.data_p);
 }

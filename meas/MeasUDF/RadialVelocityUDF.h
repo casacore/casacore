@@ -100,12 +100,12 @@ namespace casacore {
     virtual void setup (const Table&, const TaQLStyle&);
 
     // Get the value.
-    virtual Double getDouble (const TableExprId& id);
-    virtual MArray<Double> getArrayDouble (const TableExprId& id);
+    virtual double getDouble (const TableExprId& id);
+    virtual MArray<double> getArrayDouble (const TableExprId& id);
 
   private:
-    // Try if the value is given as Doppler. True is returned if so.
-    Bool tryDoppler (uInt& argnr);
+    // Try if the value is given as Doppler. true is returned if so.
+    bool tryDoppler (uint32_t& argnr);
 
     //# Data members.
     RadialVelocityEngine   itsEngine;

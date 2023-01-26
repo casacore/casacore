@@ -115,11 +115,11 @@ public:
     virtual void setShape (rownr_t rownr, const IPosition& shape);
 
     // Is the shape defined (i.e. is there an array) in this row?
-    virtual Bool isShapeDefined (rownr_t rownr);
+    virtual bool isShapeDefined (rownr_t rownr);
 
     // Get the dimensionality of the item in the given row.
     // 0 is returned if there is no array.
-    virtual uInt ndim (rownr_t rownr);
+    virtual uint32_t ndim (rownr_t rownr);
 
     // Get the shape of the array in the given row.
     // An zero-length IPosition is returned if there is no array.
@@ -127,7 +127,7 @@ public:
 
     // This storage manager can handle changing array shapes
     // for non-FixedShape columns.
-    virtual Bool canChangeShape() const;
+    virtual bool canChangeShape() const;
 
     // Get an array value in the given row.
     // The buffer pointed to by dataPtr has to have the correct length
@@ -170,21 +170,21 @@ public:
     virtual void reopenRW();
 
     // Check if the class invariants still hold.
-    Bool ok() const;
+    bool ok() const;
 
 private:
     // The storage manager.
     StManAipsIO* staioPtr_p;
     // The (unique) sequence number of the column.
-    uInt seqnr_p;
+    uint32_t seqnr_p;
     // The shape of all arrays in case it is fixed.
     IPosition fixedShape_p;
     // Switch indicating if the shape is fixed.
-    Bool shapeIsFixed_p;
+    bool shapeIsFixed_p;
     // The version of the object retrieved from a file.
     // Versions < 2 use a StManArrayFile of their own.
     // Newer versions share the one in StManAipsIO.
-    uInt version_p;
+    uint32_t version_p;
     // The file containing the indirect arrays.
     StManArrayFile* iosfile_p;
 
@@ -203,13 +203,13 @@ private:
     // Put the data of a data block.
     // datap is an array of nrval pointers to StIndArray.
     // Only the file offsets get written.
-    void putData (void* datap, uInt nrval, AipsIO&);
+    void putData (void* datap, uint32_t nrval, AipsIO&);
 
     // Get file offsets to the arrays into a data block at the given index.
     // datap is an array of pointers to StIndArray.
     // nrval blocks will be allocated and read starting at datap[index].
     // The actual shape and array data will be read when needed.
-    void getData (void* datap, uInt index, uInt nrval, AipsIO&, uInt version);
+    void getData (void* datap, uint32_t index, uint32_t nrval, AipsIO&, uint32_t version);
 	
     // Forbid copy constructor.
     StManColumnIndArrayAipsIO (const StManColumnIndArrayAipsIO&);

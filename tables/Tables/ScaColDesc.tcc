@@ -43,7 +43,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 : BaseColumnDesc (name, "", "", "",
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
-		  opt, 0, IPosition(), True, False, False)
+		  opt, 0, IPosition(), true, false, false)
 {
     defaultVal_p = T();
 }
@@ -55,7 +55,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 : BaseColumnDesc (name, comment, "", "",
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
-		  opt, 0, IPosition(), True, False, False)
+		  opt, 0, IPosition(), true, false, false)
 {
     defaultVal_p = T();
 }
@@ -69,7 +69,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 : BaseColumnDesc (name, comment, dataManName, dataManGroup,
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
-		  opt, 0, IPosition(), True, False, False)
+		  opt, 0, IPosition(), true, false, false)
 {
     defaultVal_p = T();
 }
@@ -84,7 +84,7 @@ ScalarColumnDesc<T>::ScalarColumnDesc (const String& name,
 : BaseColumnDesc (name, comment, dataManName, dataManGroup,
 		  ValType::getType(&defaultVal_p),
 		  valDataTypeId(&defaultVal_p),
-		  opt, 0, IPosition(), True, False, False),
+		  opt, 0, IPosition(), true, false, false),
   defaultVal_p   (defaultVal)
 {}
   
@@ -144,14 +144,14 @@ void ScalarColumnDesc<T>::registerClass() const
 template<class T>
 void ScalarColumnDesc<T>::putDesc (AipsIO& ios) const
 {
-    ios << (uInt)1;                  // class version 1
+    ios << (uint32_t)1;                  // class version 1
     ValType::put (ios, &defaultVal_p);
 }
 
 template<class T>
 void ScalarColumnDesc<T>::getDesc (AipsIO& ios)
 {
-    uInt version;
+    uint32_t version;
     ios >> version;
     ValType::get (ios, &defaultVal_p);
 }

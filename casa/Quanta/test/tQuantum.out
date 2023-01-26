@@ -142,7 +142,7 @@ Cached unit table (26):
     yd2       ()                           0.83612736 m2
 
 --------------------------
-Mixed Quantity/Quantum<Int>  5 mm/s
+Mixed Quantity/Quantum<int32_t>  5 mm/s
 
 --------------------------
 Try illegal operations

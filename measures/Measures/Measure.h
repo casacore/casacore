@@ -284,13 +284,13 @@ public:
   // </srcblock>
   // <group>
   virtual void set(const MeasValue &dt) = 0;
-  virtual Bool putValue(const Vector<Quantum<Double> > &in) = 0;
+  virtual bool putValue(const Vector<Quantum<double> > &in) = 0;
   // </group>
-  // Set the offset in the reference (False if non-matching Measure)
-  virtual Bool setOffset(const Measure &in) = 0;
+  // Set the offset in the reference (false if non-matching Measure)
+  virtual bool setOffset(const Measure &in) = 0;
   //
   // Check the type of derived Measure entity (e.g. "Epoch")
-  virtual Bool areYou(const String &tp) const = 0;
+  virtual bool areYou(const String &tp) const = 0;
   // All should have:
   // Assert that we are the correct Measure type
   // <thrown>
@@ -311,32 +311,32 @@ public:
   //    static const String &showMe();
   // // Cast an integer to the appropriate reference type. Avaialable to provide
   // // a safe cast in cases where Measure type is not explicitly known.
-  //    static Measure::Types castType(uInt tp);
+  //    static Measure::Types castType(uint32_t tp);
   // // Show the reference type (e.g. MEpoch::showType(MEpoch::IAT) == "TAI")
-  //    static const String &showType(uInt tp);
+  //    static const String &showType(uint32_t tp);
   //    static const String &showType(Measure::Types tp);
   // </srcblock>
   // <group>
   virtual String getRefString() const = 0;
   // </group>
   // Tell me if you are a pure model (e.g. a planet)
-  virtual Bool isModel() const;
+  virtual bool isModel() const;
   //
   // Each derived class should have a string-to-code translation routine
-  // for the reference type. The routine returns False if unknown String (and
+  // for the reference type. The routine returns false if unknown String (and
   // a default mr), else an appropiate mr reference.
   // <srcblock>
-  //	Bool giveMe(Measure::Ref &mr, const String &in);
-  //	static Bool getType(Measure::Types &tp, const String &in);
+  //	bool giveMe(Measure::Ref &mr, const String &in);
+  //	static bool getType(Measure::Types &tp, const String &in);
   // </srcblock>
   // <group>
   // Dummy for cxx2html
   void dummy_giveMe() const {}
   // </group>
   //
-  // Set the reference type to the specified String. False if illegal
+  // Set the reference type to the specified String. false if illegal
   // string, reference set to DEFAULT.
-  virtual Bool setRefString(const String &in) = 0;
+  virtual bool setRefString(const String &in) = 0;
   // Get the default reference type
   virtual const String &getDefaultType() const = 0;
   // Get a list of all known reference codes. nall returns the number in list,
@@ -344,12 +344,12 @@ public:
   // end of list). typ returns the list of corresponding types.
   // All should have
   // <srcblock>
-  //  static const String* allMyTypes(Int &nall, Int &nextra,
-  //			              const uInt *&typ);
+  //  static const String* allMyTypes(int32_t &nall, int32_t &nextra,
+  //			              const uint32_t *&typ);
   // </srcblock>
   // <group>
-  virtual const String* allTypes(Int &nall, Int &nextra,
-                                 const uInt *&typ) const;
+  virtual const String* allTypes(int32_t &nall, int32_t &nextra,
+                                 const uint32_t *&typ) const;
   // </group>
   //
   // Check if all internal tables of types (both enum and String) are 
@@ -371,7 +371,7 @@ public:
   // strings to check against (tname), and its length (N_name). The check
   // is case insensitive and mini-max. A return value less than N_name indicates
   // success.
-  static uInt giveMe(const String &in, Int N_name, 
+  static uint32_t giveMe(const String &in, int32_t N_name, 
 		     const String tname[]);
   // Each class should have a function to return its reference:
   // <srcblock>
@@ -390,7 +390,7 @@ public:
   // appropiate one of:
   // <srcblock>
   //    Quantity get(const Unit &unit) const;
-  //    Quantum<Vector<Double> > get(const Unit &unit) const;
+  //    Quantum<Vector<double> > get(const Unit &unit) const;
   // </srcblock>
   // <group>
   void dummy_getValue() const {}

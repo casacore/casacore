@@ -59,9 +59,9 @@ class TiledFileAccess;
 // Masked values are indicated in FITS images via magic
 // value blanking.  This class provides an on-the-fly mask.
 // The doGetSlice function reads the data values and returns
-// an Array<Bool> which is True (good) or False (bad - blanked)
+// an Array<bool> which is true (good) or false (bad - blanked)
 //
-// Because FITSMask inherits from Lattice<Bool> it can be
+// Because FITSMask inherits from Lattice<bool> it can be
 // used as the private pixel mask data member for FITSImage
 // returned by the MaskedLattice::pixelMask() functions
 //
@@ -91,7 +91,7 @@ class TiledFileAccess;
 //# </todo>
 
 
-class FITSMask : public Lattice<Bool>
+class FITSMask : public Lattice<bool>
 {
 public:
 
@@ -102,20 +102,20 @@ public:
   // Constructor (for 8 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
-            uChar magic, Bool hasBlanks);
+  FITSMask (TiledFileAccess* tiledFileAccess, float scale, float offset,
+            unsigned char magic, bool hasBlanks);
 
   // Constructor (for 16 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
-            Short magic, Bool hasBlanks);
+  FITSMask (TiledFileAccess* tiledFileAccess, float scale, float offset,
+            int16_t magic, bool hasBlanks);
   
   // Constructor (for 32 bit integers).  The pointer is not cloned, just copied
   // The scale, offset, magic blanking values must come from
   // the FITS header ('bscale', 'bzero', 'blank')
-  FITSMask (TiledFileAccess* tiledFileAccess, Float scale, Float offset,
-            Int magic, Bool hasBlanks);
+  FITSMask (TiledFileAccess* tiledFileAccess, float scale, float offset,
+            int32_t magic, bool hasBlanks);
   
   // Copy constructor (reference semantics).  The TiledFileAccess pointer
   // is just copied.
@@ -129,45 +129,45 @@ public:
   FITSMask& operator= (const FITSMask& other);
 
   // Make a copy of the object (reference semantics).
-  virtual Lattice<Bool>* clone() const;
+  virtual Lattice<bool>* clone() const;
 
-  // Is the FITSMask writable? Returns False. Although it is not hard
+  // Is the FITSMask writable? Returns false. Although it is not hard
   // to implement writing of the mask, data values would be lost
   // because of magic blanking. 
-  virtual Bool isWritable() const;
+  virtual bool isWritable() const;
 
   // Return the shape of the Lattice including all degenerate 
   // axes (ie. axes with a length of one) 
   IPosition shape() const;
 
   // Do the actual getting of an array of values.
-  virtual Bool doGetSlice (Array<Bool>& buffer, const Slicer& section);
+  virtual bool doGetSlice (Array<bool>& buffer, const Slicer& section);
 
   // Do the actual getting of an array of values.  Throws an exception.
-  virtual void doPutSlice (const Array<Bool>& sourceBuffer,
+  virtual void doPutSlice (const Array<bool>& sourceBuffer,
 			   const IPosition& where,
 			   const IPosition& stride);
   
   // Set the switch for also filtering 0.0 (besides NaNs).
-  virtual void setFilterZero (Bool filterZero);
+  virtual void setFilterZero (bool filterZero);
  
 private:
 
   // Mask out ONLY NaN's
-  void filterNaN (Bool* pMask, const float* pData, uInt nelems);
+  void filterNaN (bool* pMask, const float* pData, uint32_t nelems);
 
   // Mask out NaN's and values 0.0
-  void filterZeroNaN (Bool* pMask, const Float* pData, uInt nelems);
+  void filterZeroNaN (bool* pMask, const float* pData, uint32_t nelems);
  
 //
   TiledFileAccess* itsTiledFilePtr;
-  Array<Float> itsBuffer;
-  Float itsScale, itsOffset;
-  Short itsUCharMagic;
-  Short itsShortMagic;
-  Int itsLongMagic;
-  Bool itsHasIntBlanks;
-  Bool itsFilterZero;
+  Array<float> itsBuffer;
+  float itsScale, itsOffset;
+  int16_t itsUCharMagic;
+  int16_t itsShortMagic;
+  int32_t itsLongMagic;
+  bool itsHasIntBlanks;
+  bool itsFilterZero;
 };
 
 
