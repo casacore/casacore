@@ -33,6 +33,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 void UnitMap::initUMPrefix (UMaps& maps) {
   map<String, UnitName>& mapPref = maps.mapPref;
   mapPref.insert(map<String, UnitName>::value_type
+			   ("Q", UnitName("Q", C::quetta,"quetta")));
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("R", UnitName("R", C::ronna, "ronna")));
+  mapPref.insert(map<String, UnitName>::value_type
 			   ("Y", UnitName("Y", C::yotta, "yotta")));
   mapPref.insert(map<String, UnitName>::value_type
 			   ("Z", UnitName("Z", C::zetta, "zetta")));
@@ -72,6 +76,10 @@ void UnitMap::initUMPrefix (UMaps& maps) {
 			   ("z", UnitName("z", C::zepto, "zepto")));
   mapPref.insert(map<String, UnitName>::value_type
 			   ("y", UnitName("y", C::yocto, "yocto")));
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("r", UnitName("r", C::ronto, "ronto")));
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("q", UnitName("q", C::quecto,"quecto")));
 }
 
 } //# NAMESPACE CASACORE - END
