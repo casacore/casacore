@@ -524,10 +524,8 @@ void PlainTable::resync()
     // Skip the sync-ing in that case.
     uInt ncolumn;
     rownr_t nrrow;
-    if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
-			   colSetPtr_p->dataManChanged())) {
-        tableChanged = False;
-    } else {
+    if (lockSync_p.read (nrrow, ncolumn, tableChanged,
+                         colSetPtr_p->dataManChanged())) {
         if (ncolumn != tableDesc().ncolumn()) {
             throw (TableError ("Table::resync cannot sync table " +
                                tableName() + "; another process "

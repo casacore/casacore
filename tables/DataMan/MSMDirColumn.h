@@ -135,8 +135,6 @@ private:
   MSMDirColumn& operator= (const MSMDirColumn&);
 
 
-  // The (unique) sequence number of the column.
-  uInt seqnr_p;
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.
