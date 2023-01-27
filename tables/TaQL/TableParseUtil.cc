@@ -42,7 +42,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Handle a table name and create a Table object for it as needed.
     // This is quite complex, because a table name can be given in many ways:
-    // 1. an ordinary name such as 'my.tab' or '../my.tab'.
+    // 1. an ordinary name such as 'my.tab'
     // 2. a wildcarded name (for table concatenation) such as 'my*.tab'. Note that for
     //    such a case the alwaysOpen=False, so no Table object is created.
     // 3. a table number in the temporary table list such as $1
@@ -62,8 +62,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //      keywords in column col. But this example is very esoteric.
     // In practice column keywords and nested keywords will hardly ever be used,
     // so usually something like my.ms::ANTENNA is the only 'complicated' spec used.
-    // Note that splitting on a dot as in option 7) is done after trying that part as an
-    // ordinary table name to handle .. in a case such as '../my.tab::SUB' correctly.
     Table getTable (Int tabnr, const String& name,
                     const Table& ftab,
                     const std::vector<const Table*>& tempTables,
@@ -88,25 +86,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // Split the first subtable name into parts using a dot as separator.
       // The first part can be empty, a shorthand or a temporary table number.
-      // An empty part means that an ordinary table name such as ../tab might be given.
-      // If not, it must indicate the first available table in a previous query.
+      // An empty part means the first available table.
       stPart = 1;          // indicate first part is handled.
       Vector<String> parts = stringToVector(subs[0], '.');
       if (parts.size() == 0  ||  parts[0].empty()) {
-        if (! subs[0].empty()) {
-          if (Table::isReadable (subs[0])) {
-            table = Table(subs[0]);
-            stSub = 1;
-            stPart = 0;
-          }
-        }
+        table = TableParseTableList::findTable (String(), True, stack).table();
         if (table.isNull()) {
-          // Not a table name. Try it as first table in previous query.
-          table = TableParseTableList::findTable (String(), True, stack).table();
-          if (table.isNull()) {
-            throw TableInvExpr(":: or . is invalid in table name " + name +
-                               ": no previous table available");
-          }
+          throw TableInvExpr(":: or . is invalid in table name " + name +
+                             ": no previous table available");
         }
       } else {
         if (tabnr >= 0) {

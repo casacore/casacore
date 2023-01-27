@@ -141,7 +141,7 @@ private:
   class Data {
   public:
     Data (const IPosition& shape, int dtype, int elemSize);
-    //# explicitly specify noexcept to squash compiler warning
+    //# Specify noexcept(false) because destructor can throw (warning with -Wexceptions).
     ~Data() noexcept(false);
     Data (const Data&) = delete;
     Data& operator= (const Data&) = delete;
@@ -154,6 +154,8 @@ private:
   };
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
+  // The size of an array element.
+  uInt elemSize_p;
   // The size at the start of the data (for the IPosition).
   uInt startSize_p;
 

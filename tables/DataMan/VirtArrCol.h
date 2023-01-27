@@ -189,7 +189,7 @@ public:
     // The object cannot be assigned to.
     VirtualArrayColumn<T>& operator= (const VirtualArrayColumn<T>&) = delete;
 
-  // Return the data type of the column.
+    // Return the data type of the column.
     virtual int dataType() const;
 
     // Return the data type Id of the column.

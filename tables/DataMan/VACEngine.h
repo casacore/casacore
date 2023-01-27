@@ -133,8 +133,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //      // The default constructor is required for reconstruction of the
 //      // engine when a table is read back.
-//      AVACEngine()
-//      {}
+//      AVACEngine() = default;
 //
 //      // Construct the engine for the given source column and storing
 //      // the result in the given target columns for the data members
@@ -147,8 +146,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        yTargetName_p (yTargetColumnName)
 //      {}
 //
-//      // Destructor is mandatory.
-//      virtual ~AVACEngine()
+//      // Destructor is only needed if something has to be destructed.
+//      ~AVACEngine() = override
 //      {}
 //
 //      // Assignment is not needed and therefore forbidden.
@@ -294,14 +293,14 @@ public:
     // engine when a table is read back.
     // It is also used to construct an engine, which does not check
     // the source column name.
-    VACEngine();
+    VACEngine() = default;
 
     // Construct an engine to handle a column with an arbitrary data type.
     // Later it will check if the source column name is correct.
     VACEngine (const String& sourceColumnName);
 
-    // Destructor is mandatory.
-    ~VACEngine();
+    // Destructor.
+    virtual ~VACEngine() = default;
 
     // Assignment is not needed and therefore forbidden.
     VACEngine<T>& operator= (const VACEngine<T>&) = delete;

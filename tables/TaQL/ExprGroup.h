@@ -242,7 +242,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual MArray<MVTime> getArrayDate (const vector<TableExprId>& = vector<TableExprId>());
     virtual MArray<String> getArrayString (const vector<TableExprId>& = vector<TableExprId>());
     // <group>
-  private:
   protected:
     //# Data member
     TableExprNodeRep* itsNode;      // refers the node (not owned)

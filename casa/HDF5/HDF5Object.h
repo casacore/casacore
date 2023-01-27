@@ -76,10 +76,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The destructor in a derived class should close the hid appropriately.
     virtual ~HDF5Object();
 
-    // Copy constructor cannot be used.
+    // Copy constructor cannot be used because a HID cannot be copied.
     HDF5Object (const HDF5Object&) = delete;
 
-    // Assignment cannot be used.
+    // Assignment cannot be used because a HID cannot be copied .
     HDF5Object& operator= (const HDF5Object&) = delete;
 
     // Check if there is HDF5 support compiled in.

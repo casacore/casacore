@@ -123,6 +123,7 @@ public:
     // Assignment cannot be used for this base class.
     VirtualColumnEngine& operator= (const VirtualColumnEngine&) = delete;
 
+private:
     // The data manager is not a storage manager?
     virtual Bool isStorageManager() const;
 
