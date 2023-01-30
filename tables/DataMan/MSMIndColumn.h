@@ -135,9 +135,7 @@ private:
   class Data {
   public:
     Data (const IPosition& shape, int dtype, int elemSize);
-    //# explicitly specify noexcept to squash compiler warning
-    ~Data() noexcept(false);
-    void clear (int dtype);
+    ~Data();
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
   private:
@@ -145,6 +143,7 @@ private:
     Data& operator= (const Data&);
     IPosition shape_p;
     void* data_p;
+    bool data_is_string;
   };
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
