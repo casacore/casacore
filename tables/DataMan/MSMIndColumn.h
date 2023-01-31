@@ -142,6 +142,8 @@ private:
   public:
     Data (const IPosition& shape, int dtype, int elemSize);
     ~Data();
+    Data (const Data&) = delete;
+    Data& operator= (const Data&) = delete;
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
   private:
