@@ -74,10 +74,11 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 
-#ifdef HAVE_MPI
 #ifdef HAVE_ADIOS2
 #include <casacore/tables/DataMan/Adios2StMan.h>
 #endif
+#ifdef HAVE_MPI
+#include <mpi.h>
 #endif
 
 #include <casacore/casa/HDF5/HDF5File.h>

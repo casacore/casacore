@@ -997,7 +997,7 @@ void LatticeStatistics<T>::_doStatsLoop(
         }
         const auto subCursorShape = _cursorShapeForArrayMethod(setSize);
         if (subCursorShape.product() >= nDPMaxThreads || forceUsingArrays) {
-            _computeStatsUsingArrays(subLat, progressMeter, subCursorShape);
+            _computeStatsUsingArrays(progressMeter, subCursorShape);
             computed = True;
         }
     }
@@ -1077,7 +1077,7 @@ IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const
 
 template <class T>
 void LatticeStatistics<T>::_computeStatsUsingArrays(
-    SubLattice<T> subLat, CountedPtr<LattStatsProgress> progressMeter,
+    CountedPtr<LattStatsProgress> progressMeter,
     const IPosition& cursorShape
 ) {
     T overallMax = 0;
@@ -1182,7 +1182,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
         _doComputationUsingArrays(
             sa, overallMin, overallMax, arrayShape, dataArray,
             maskArray, curPos, nthreads,
-            subLat, isChauv, isMasked, isReal, range
+            isChauv, isMasked, isReal, range
         );
         if(! progressMeter.null()) {
             (*progressMeter)++;
@@ -1206,7 +1206,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
 #ifdef _OPENMP
          nthreads
 #endif
-                 , const SubLattice<T>& subLat, Bool isChauv,
+                 , Bool isChauv,
     Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
 ) {
     uInt nArrays = dataArray.size();
@@ -1303,7 +1303,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
                 }
                 _updateMinMaxPos(
                     overallMin, overallMax, currentMin, currentMax,
-                    minPos, maxPos, atStart, subLat
+                    minPos, maxPos, atStart
                 );
             }
         }
@@ -1395,7 +1395,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
                 dataProvider->minMaxPos(minPos, maxPos);
                 _updateMinMaxPos(
                     overallMin, overallMax, currentMin, currentMax,
-                    minPos, maxPos, atStart, subLat
+                    minPos, maxPos, atStart
                 );
             }
         }
@@ -1418,7 +1418,7 @@ template <class T>
 void LatticeStatistics<T>::_updateMinMaxPos(
     T& overallMin, T& overallMax, T currentMin, T currentMax,
     const IPosition& minPos, const IPosition& maxPos,
-    Bool atStart, const SubLattice<T>& subLat
+    Bool atStart
 ) {
     // CAUTION The way this has worked in the past apparently for
     // lattices is that the max and min positions are representative
@@ -1428,10 +1428,10 @@ void LatticeStatistics<T>::_updateMinMaxPos(
     // it has been.
     if (atStart) {
         if (! minPos.empty()) {
-            minPos_p = subLat.positionInParent(minPos);
+            minPos_p = minPos;
         }
         if (! maxPos.empty()) {
-            maxPos_p = subLat.positionInParent(maxPos);
+            maxPos_p = maxPos;
         }
         overallMin = currentMin;
         overallMax = currentMax;
@@ -1441,13 +1441,13 @@ void LatticeStatistics<T>::_updateMinMaxPos(
     ) {
         if (currentMin < overallMin) {
             if (! minPos.empty()) {
-                minPos_p = subLat.positionInParent(minPos);
+                minPos_p = minPos;
             }
             overallMin = currentMin;
         }
         if (currentMax > overallMax) {
             if (! maxPos.empty()) {
-                maxPos_p = subLat.positionInParent(maxPos);
+                maxPos_p = maxPos;
             }
             overallMax = currentMax;
         }

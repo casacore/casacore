@@ -24,6 +24,12 @@ MSFits/SDSysCalHandler.cc
 MSFits/SDWeatherHandler.cc
 )
 
+set(top_level_headers
+MSFits.h
+)
+
+init_pch_support(casa_msfits ${top_level_headers})
+
 target_link_libraries (casa_msfits casa_ms casa_fits ${CASACORE_ARCH_LIBS})
 
 add_subdirectory (apps)
@@ -58,8 +64,7 @@ MSFits/SDWeatherHandler.h
 DESTINATION include/casacore/msfits/MSFits
 )
 
-install (FILES
-MSFits.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/msfits
 )
 

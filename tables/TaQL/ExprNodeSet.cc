@@ -148,7 +148,7 @@ void TableExprNodeSet::add (const TENSEBShPtr& elemIn, Bool adaptType)
         dtype_p = TableExprNodeBinary::getDT (dtype_p, elem->dataType(),
                                               OtEQ);
     }
-    fillExprType  (itsElems[n].get());
+    fillExprType (itsElems[n].get());
 }
 
 void TableExprNodeSet::adaptSetUnits (const Unit& unit)
@@ -221,7 +221,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
                   }
               }
         }
-        // No different units, so adapt elements to first unit.
+        // No different units, so adapt elements to the unit.
         for (size_t i=0; i<n; i++) {
             itsElems[i]->adaptSetUnits (unit());
         }
@@ -241,20 +241,54 @@ TENShPtr TableExprNodeSet::setOrArray() const
         if (isConstant()) {
             return toConstArray();
         }
+        // Set ndim and shape if those are constant.
     }
     TableExprNodeSet* set = new TableExprNodeSet (*this);
     if (itsBounded) {
         // Set the type to VTArray; the getArray functions
         // will convert the set to an array for each row.
+        // Set the shape and/or dimensionaly if constant.
         set->setValueType (VTArray);
-        if (itsSingle  &&  !hasArrays()) {
-            set->ndim_p = 1;
-            set->shape_p = IPosition (1, size());
-        }
+        set->setShape();
     }
     return set;
 }
 
+void TableExprNodeSet::setShape()
+{
+  // Only sets with single elements can have a size.
+  if (!itsSingle) {
+    return;
+  }
+  // Scalar elements form a vector.
+  if (!hasArrays()) {
+    ndim_p = 1;
+    shape_p = IPosition (1, size());
+  }
+  // See if all elements have the same shape.
+  // If not, leave the shape empty.
+  // Do the same for dimensionality.
+  IPosition shp (itsElems[0]->shape());
+  uInt ndim = shp.size();
+  for (size_t i=1; i<itsElems.size(); ++i) {
+    IPosition shp2 (itsElems[i]->shape());
+    if (!shp2.isEqual(shp)) {
+      shp.resize(0);
+    }
+    if (shp2.size() != ndim) {
+      ndim = 0;
+    }
+  }
+  // The set has one more axis.
+  if (ndim > 0) {
+    ndim_p = ndim+1;
+  }
+  if (!shp.empty()) {
+    shape_p = shp;
+    shape_p.append (IPosition(1,size()));
+  }
+}
+  
 TENShPtr TableExprNodeSet::toConstArray() const
 {
     // Construct the correct const array object.

@@ -198,6 +198,18 @@ template <typename T> void doTestComplex()
   }
 }
 
+template<typename T> void doTestComplexReal()
+{
+  // Test pow function for mix of complex array and real scalar.
+  T val(1.7);
+  std::complex<T> valc(1,2);
+  MArray<std::complex<T>> m1 (Vector<std::complex<T>>(2, valc));
+  for (int i=0; i<2; ++i) {
+    checkNear (pow(m1,val), std::pow(valc,val), False, i==0);
+    m1.setMask (Vector<Bool>(2,False));
+  }
+}
+
 void doTestMixed()
 {
   // Test masking more thoroughly.
@@ -716,6 +728,10 @@ int main()
     doTestComplex<Complex>();
     cout << "doTestComplex<DComplex>" << endl;
     doTestComplex<DComplex>();
+    cout << "doTestComplexReal<Float>" << endl;
+    doTestComplexReal<Float>();
+    cout << "doTestComplexReal<Double>" << endl;
+    doTestComplexReal<Double>();
     cout << "doTestMixed" << endl;
     doTestMixed();
     cout << "doTestReduce" << endl;

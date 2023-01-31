@@ -294,8 +294,6 @@ protected:
     BaseMappedArrayEngine (const BaseMappedArrayEngine&);
 
     // Assignment is not needed and therefore forbidden
-  ///    BaseMappedArrayEngine<VirtualType, StoredType>& operator=
-  //	             (const BaseMappedArrayEngine<VirtualType, StoredType>&) = delete;
     BaseMappedArrayEngine& operator= (const BaseMappedArrayEngine&) = delete;
 
     // Set if the column is writable or not.

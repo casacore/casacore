@@ -839,10 +839,15 @@ template<typename T, typename Alloc> Array<T, Alloc> pow(const T &a, const Array
     return arrayTransformResult (a, b, [](T l, T r) { return std::pow(l, r); });
 }
 
-template<typename T, typename Alloc> Array<T, Alloc> pow(const Array<T, Alloc> &a, const double &b)
+template<typename T, typename Alloc> Array<T, Alloc> pow(const Array<T, Alloc> &a, const T &b)
 {
-    Array<T, Alloc> result(a.shape());
-    arrayContTransform (a, b, result, [](T l, T r) { return std::pow(l, r); });
+    return arrayTransformResult (a, b, [](T l, T r) { return std::pow(l, r); });
+}
+
+template<typename T, typename Alloc> Array<std::complex<T>, Alloc> pow(const Array<std::complex<T>, Alloc> &a, const T &b)
+{
+    Array<std::complex<T>, Alloc> result(a.shape());
+    arrayContTransform (a, b, result, [](std::complex<T> l, T r) { return std::pow(l, r); });
     return result;
 }
 

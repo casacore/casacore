@@ -227,13 +227,16 @@ ${ADIOS2_SOURCES}
 ${DYSCOSTMAN_SOURCES}
 )
 
-target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES})
-if(MPI_FOUND)
-    target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
-    if(ADIOS2_FOUND)
-        target_link_libraries(casa_tables adios2::adios2)
-    endif(ADIOS2_FOUND)
-endif(MPI_FOUND)
+set(top_level_headers
+DataMan.h
+LogTables.h
+Tables.h
+TaQL.h
+)
+
+init_pch_support(casa_tables ${top_level_headers})
+
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
 
 add_subdirectory (apps)
 
@@ -488,11 +491,7 @@ LogTables/NewFile.h
 DESTINATION include/casacore/tables/LogTables
 )
 
-install (FILES
-DataMan.h
-LogTables.h
-Tables.h
-TaQL.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/tables
 )
 

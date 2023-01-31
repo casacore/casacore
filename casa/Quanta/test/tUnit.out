@@ -6,11 +6,13 @@ Define user unit symbols:
 --------------------------
 List all defined symbols
 
-Prefix table (20):
+Prefix table (24):
     E         (exa)                        1e+18
     G         (giga)                       1000000000
     M         (mega)                       1000000
     P         (peta)                       1e+15
+    Q         (quetta)                     1e+30
+    R         (ronna)                      1e+27
     T         (tera)                       1e+12
     Y         (yotta)                      1e+24
     Z         (zetta)                      1e+21
@@ -24,6 +26,8 @@ Prefix table (20):
     m         (milli)                      0.001
     n         (nano)                       1e-09
     p         (pico)                       1e-12
+    q         (quecto)                     1e-30
+    r         (ronto)                      1e-27
     u         (micro)                      1e-06
     y         (yocto)                      1e-24
     z         (zepto)                      1e-21

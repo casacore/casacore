@@ -121,7 +121,9 @@ namespace casacore {
           dynamic_cast<TableExprNodeArrayPart*>(operand.get());
         if (partNode) {
           colNode = partNode->getColumnNode();
-          tabCol  = &(colNode->getColumn());
+          if (colNode) {
+            tabCol = &(colNode->getColumn());
+          }
         }
       }
     }

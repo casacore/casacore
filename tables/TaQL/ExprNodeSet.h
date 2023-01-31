@@ -208,6 +208,9 @@ public:
     // Let a set node convert itself to the given unit.
     void adaptSetUnits (const Unit&) override;
 
+    // Try to set the set's shape for a bounded set with single elements.
+    void setShape();
+
 private:
     // Convert the const set to an array.
     TENShPtr toConstArray() const;

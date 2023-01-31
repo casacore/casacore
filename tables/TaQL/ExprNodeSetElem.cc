@@ -221,6 +221,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     dtype_p = itsStart->dataType();
     setUnit (itsStart->unit());
     setExprType();
+    ndim_p  = value.getNodeRep()->ndim();
+    shape_p = value.getNodeRep()->shape();
   }
 
   TableExprNodeSetElemSingle::TableExprNodeSetElemSingle

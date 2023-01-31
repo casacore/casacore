@@ -152,6 +152,8 @@ int main()
 
    cout << endl
         << "Metric prefixes:"                               << endl
+        << "C::quetta.............  " << C::quetta          << endl
+        << "C::ronna..............  " << C::ronna           << endl
         << "C::yotta..............  " << C::yotta           << endl
         << "C::zetta..............  " << C::zetta           << endl
         << "C::exa................  " << C::exa             << endl
@@ -171,7 +173,9 @@ int main()
         << "C::femto..............  " << C::femto           << endl
         << "C::atto...............  " << C::atto            << endl
         << "C::zepto..............  " << C::zepto           << endl
-        << "C::yocto..............  " << C::yocto           << endl;
+        << "C::yocto..............  " << C::yocto           << endl
+        << "C::ronto..............  " << C::ronto           << endl
+        << "C::quecto.............  " << C::quecto          << endl;
 
    cout << endl
         << "Angular measure:"                               << endl

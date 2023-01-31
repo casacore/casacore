@@ -77,7 +77,7 @@ template<class T> class MArray;
 // table select expression.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // TableExprNode is the class to store a table select expression,
 // making it possible to select rows from the table. The selected
 // rows form a table which is a view of the original table.
@@ -112,7 +112,7 @@ template<class T> class MArray;
 // object for a column in the table. The Table
 // <linkto file="Table.h#keycol">operator()</linkto> can be used
 // the do the actual selection from the top TableExprNode object.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -282,7 +282,13 @@ public:
     // Get the table info of the expression node.
     TableExprInfo getTableInfo() const
       { return node_p->getTableInfo(); }
-  
+
+    // Get the table to which the expression node belongs.
+    //# [[deprecated ("Use getTableInfo().table() instead")]]
+    Table table() const
+      __attribute__ ((deprecated ("Use getTableInfo().table() instead")))
+      { return getTableInfo().table(); }
+
     // Get the unit of the expression.
     const Unit& unit() const
       { return node_p->unit(); }
@@ -401,7 +407,7 @@ private:
       { return getColumnInt (RowNumbers(rownrs)); }
     Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const
       { return getColumnuInt (RowNumbers(rownrs)); }
-    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const 
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const
       { return getColumnInt64 (RowNumbers(rownrs)); }
     Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const
       { return getColumnFloat (RowNumbers(rownrs)); }
@@ -438,7 +444,7 @@ public:
     static TableExprNode keyCol (const TableExprInfo& tabInfo,
                                  const String& name,
                                  const Vector<String>& fieldNames);
-  
+
     // Create a column node on behalf of the Table class.
     // <src>fieldNames</src> indicate a possible field in a column of Records.
     // For builtin data types another type of node is created than
@@ -524,7 +530,7 @@ public:
     static TableExprNode newArrayPartNode (const TableExprNode& arrayNode,
                                            const TableExprNodeSet& indices,
                                            const TaQLStyle& = TaQLStyle(0));
- 
+
     // returns const pointer to the underlying TableExprNodeRep object.
     const TENShPtr& getRep() const;
     const TableExprNodeRep* getNodeRep() const;

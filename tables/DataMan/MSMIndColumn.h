@@ -141,21 +141,16 @@ private:
   class Data {
   public:
     Data (const IPosition& shape, int dtype, int elemSize);
-    //# Specify noexcept(false) because destructor can throw (warning with -Wexceptions).
-    ~Data() noexcept(false);
-    Data (const Data&) = delete;
-    Data& operator= (const Data&) = delete;
-    void clear (int dtype);
+    ~Data();
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
   private:
     IPosition shape_p;
     void* data_p;
+    bool data_is_string;
   };
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
-  // The size of an array element.
-  uInt elemSize_p;
   // The size at the start of the data (for the IPosition).
   uInt startSize_p;
 

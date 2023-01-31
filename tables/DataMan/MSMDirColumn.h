@@ -134,9 +134,6 @@ private:
   // Delete the array in the given row.
   void deleteArray (rownr_t rownr);
 
-  //# Data members
-  // The (unique) sequence number of the column.
-  uInt seqnr_p;
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.
