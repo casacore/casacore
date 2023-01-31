@@ -71,7 +71,7 @@ void doOpens()
 				      True);
 
       {
-         PtrHolder<ImageInterface<Float> > im;
+         std::unique_ptr<ImageInterface<Float> > im;
          ImageUtilities::openImage(im, name1);
       }
       {
@@ -79,7 +79,7 @@ void doOpens()
          im = ImageUtilities::openImage<Float>(name1);
       }
       {
-         PtrHolder<ImageInterface<Float> > im;
+         std::unique_ptr<ImageInterface<Float> > im;
          ImageUtilities::openImage(im, name2);
       }
    }

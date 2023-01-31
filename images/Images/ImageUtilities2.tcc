@@ -51,7 +51,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T> void ImageUtilities::addDegenerateAxes(
-	LogIO& os, PtrHolder<ImageInterface<T> >& outImage,
+        LogIO& os, std::unique_ptr<ImageInterface<T> >& outImage,
 	const ImageInterface<T>& inImage, const String& outFile,
 	Bool direction, Bool spectral, const String& stokes,
 	Bool linear, Bool tabular, Bool overwrite,
@@ -85,12 +85,12 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 	if (outFile.empty()) {
 		os << LogIO::NORMAL << "Creating (temp)image of shape "
 			<< shape << LogIO::POST;
-		outImage.set(new TempImage<T>(shape, cSys));
+		outImage.reset(new TempImage<T>(shape, cSys));
 	}
 	else {
 		os << LogIO::NORMAL << "Creating image '" << outFile << "' of shape "
 			<< shape << LogIO::POST;
-		outImage.set(new PagedImage<T>(shape, cSys, outFile));
+		outImage.reset(new PagedImage<T>(shape, cSys, outFile));
 	}
 	ImageInterface<T>* pOutImage = outImage.ptr();
 
@@ -286,12 +286,12 @@ template <typename T> void ImageUtilities::openImage(
 }
 
 template <typename T> void ImageUtilities::openImage(
-	PtrHolder<ImageInterface<T> >& image,
+        std::unique_ptr<ImageInterface<T> >& image,
 	const String& fileName
 ) {
    ImageInterface<T>* p = 0;
    ImageUtilities::openImage(p, fileName);
-   image.set(p);
+   image.reset(p);
 }
 
 template <typename T>

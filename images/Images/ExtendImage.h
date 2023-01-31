@@ -30,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -185,8 +185,8 @@ public:
 
 private:
   //# itsImagePtr points to the parent image.
-  PtrHolder<ImageInterface<T> > itsImagePtr;
-  PtrHolder<ExtendLattice<T> >  itsExtLatPtr;
+  std::unique_ptr<ImageInterface<T> > itsImagePtr;
+  std::unique_ptr<ExtendLattice<T> >  itsExtLatPtr;
 
   //# Make members of parent class known.
 public:

@@ -29,9 +29,9 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/BasicSL/Complexfwd.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -227,7 +227,7 @@ private:
 
 //# Data Members
   // Pointer to a Quantity
-  PtrHolder<QBase> hold_p;
+  std::unique_ptr<QBase> hold_p;
 
 //# General member functions
   // Convert to a different real scalar quantum

@@ -275,23 +275,23 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds->getDataProvider()
     );
-    // The PtrHolders hold references to C arrays of length
+    // The std::unique_ptr-s hold references to C arrays of length
     // ClassicalStatisticsData::CACHE_PADDING*nThreadsMax.
     // Only every CACHE_PADDING*nth element will be populated
-    PtrHolder<std::vector<std::vector<uInt64>>> tBins(
+    std::unique_ptr<std::vector<std::vector<uInt64>>[]> tBins(
         new std::vector<std::vector<uInt64> >[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<std::vector<CountedPtr<AccumType>>> tSameVal(
+    std::unique_ptr<std::vector<CountedPtr<AccumType>>[]> tSameVal(
         new std::vector<CountedPtr<AccumType>>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<std::vector<Bool>> tAllSame(
+    std::unique_ptr<std::vector<Bool>[]> tAllSame(
         new std::vector<Bool>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -422,10 +422,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArray(DataArray& ary) {
     const auto nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds->getDataProvider()
     );
-    PtrHolder<std::vector<AccumType>> tAry(
+    std::unique_ptr<std::vector<AccumType>[]> tAry(
         new std::vector<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     while (True) {
         const auto& chunk = ds->initLoopVars();
@@ -645,15 +645,15 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds->getDataProvider()
     );
-    PtrHolder<std::vector<std::vector<AccumType>>> tArys(
+    std::unique_ptr<std::vector<std::vector<AccumType>>[]> tArys(
         new std::vector<std::vector<AccumType>>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<uInt64> tCurrentCount(
+    std::unique_ptr<uInt64[]> tCurrentCount(
         new uInt64[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;

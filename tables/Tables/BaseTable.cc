@@ -48,7 +48,6 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Utilities/Sort.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/IO/AipsIO.h>

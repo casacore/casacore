@@ -57,24 +57,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Constructors
 template <class T>
 FunctionHolder<T>::FunctionHolder() 
-  : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) {}
+  : nam_p(N_Types), isFilled(False)
+{}
 
 template <class T>
 FunctionHolder<T>::FunctionHolder(const Function<T> &in) 
-  : hold_p(in.clone()), mode_p(), nam_p(N_Types), isFilled(False) 
+  : hold_p(in.clone()), nam_p(N_Types), isFilled(False) 
 {
     if (in.hasMode()) {
-	mode_p.set(new Record(RecordInterface::Variable));
-	in.getMode( *(mode_p.ptr()) );
+	mode_p.reset(new Record(RecordInterface::Variable));
+	in.getMode(*mode_p);
     }
 }
 
 template <class T>
 FunctionHolder<T>::FunctionHolder(const FunctionHolder<T> &other)
-  : hold_p(), mode_p(), nam_p(N_Types), isFilled(False) 
+  : nam_p(N_Types), isFilled(False) 
 {
-  if (other.hold_p.ptr()) hold_p.set(other.hold_p.ptr()->clone());
-  if (other.mode_p.ptr()) mode_p.set(other.mode_p.ptr()->clone());
+  if (other.hold_p) hold_p.reset(other.hold_p->clone());
+  if (other.mode_p) mode_p.reset(other.mode_p->clone());
 }
 
 //# Destructor
@@ -86,16 +87,16 @@ template <class T>
 FunctionHolder<T> &FunctionHolder<T>::
 operator=(const FunctionHolder<T> &other) {
   if (this != &other) {
-    if (other.hold_p.ptr()) {
-      hold_p.set(other.hold_p.ptr()->clone());
+    if (other.hold_p) {
+      hold_p.reset(other.hold_p->clone());
     } else {
-      hold_p.clear();
+      hold_p.reset();
     }
 
-    if (other.mode_p.ptr()) {
-      mode_p.set(other.mode_p.ptr()->clone());
+    if (other.mode_p) {
+      mode_p.reset(other.mode_p->clone());
     } else {
-      mode_p.clear();
+      mode_p.reset();
     }
   }
   return *this;
@@ -104,7 +105,7 @@ operator=(const FunctionHolder<T> &other) {
 //# Member Functions
 template <class T>
 Bool FunctionHolder<T>::isEmpty() const {
-  return (!hold_p.ptr());
+  return (!hold_p);
 }
 
 template <class T>
@@ -115,25 +116,25 @@ const Vector<String> &FunctionHolder<T>::names() const {
 
 template <class T>
 const Function<T> &FunctionHolder<T>::asFunction() const {
-  if (!hold_p.ptr()) {
+  if (!hold_p) {
     throw(AipsError("Empty FunctionHolder argument for asFunction"));
   }
-  return *hold_p.ptr();
+  return *hold_p;
 }
 
 template <class T>
 Bool FunctionHolder<T>::addFunction(const Function<T> &fnc) {
   if (nf_p == COMBINE) {
-    dynamic_cast<CombiFunction<T> &>(*hold_p.ptr()).addFunction(fnc);
+    dynamic_cast<CombiFunction<T> &>(*hold_p).addFunction(fnc);
   } else if (nf_p == COMPOUND) {
-    dynamic_cast<CompoundFunction<T> &>(*hold_p.ptr()).addFunction(fnc);
+    dynamic_cast<CompoundFunction<T> &>(*hold_p).addFunction(fnc);
   } else return False;
   return True;
 } 
 
 template <class T>
 typename FunctionHolder<T>::Types FunctionHolder<T>::type() const {
-  if (!hold_p.ptr()) {
+  if (!hold_p) {
     throw(AipsError("Empty FunctionHolder argument for type()"));
   }
   return nf_p;
@@ -184,13 +185,13 @@ void FunctionHolder<T>::init() const {
 
 template <class T>
 Bool FunctionHolder<T>::fromRecord(String &error, const RecordInterface &in) {
-  hold_p.clear();
+  hold_p.reset();
   Function<T> *fn(0);
   if (!getRecord(error, fn, in)) {
     delete fn; fn = 0;
     return False;
   }
-  hold_p.set(fn);
+  hold_p.reset(fn);
   return True;
 }
 
@@ -255,7 +256,7 @@ Bool FunctionHolder<T>::fromString(String &error,
   nf_p = static_cast<Types>(nf);
   Function<T> *fn(0);
   if (getType(error, fn)) {
-    hold_p.set(fn);
+    hold_p.reset(fn);
     return True;
   }
   delete fn; fn = 0;
@@ -264,28 +265,28 @@ Bool FunctionHolder<T>::fromString(String &error,
 
 template <class T>
 Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
-  if (hold_p.ptr() && putType(error, out)) {
+  if (hold_p && putType(error, out)) {
     out.define(RecordFieldId("ndim"),
-	       static_cast<Int>(hold_p.ptr()->ndim()));
+	       static_cast<Int>(hold_p->ndim()));
     out.define(RecordFieldId("npar"),
-	       static_cast<Int>(hold_p.ptr()->nparameters()));
+	       static_cast<Int>(hold_p->nparameters()));
     out.define(RecordFieldId("params"),
-    	       hold_p.ptr()->parameters().getParameters());
+    	       hold_p->parameters().getParameters());
     out.define(RecordFieldId("masks"),
-    	       hold_p.ptr()->parameters().getParamMasks());
+    	       hold_p->parameters().getParamMasks());
 
     Record mode;
-    hold_p.ptr()->getMode(mode);
+    hold_p->getMode(mode);
     if (mode.nfields() > 0) out.defineRecord(RecordFieldId("mode"), mode);
 
     if (nf_p == COMBINE || nf_p == COMPOUND) {
       Int x(0);
       if (nf_p == COMBINE) {
 	x = dynamic_cast<const CombiFunction<T> *>
-	  (hold_p.ptr())->nFunctions();
+	  (hold_p.get())->nFunctions();
       } else {
 	x = dynamic_cast<const CompoundFunction<T> *>
-	  (hold_p.ptr())->nFunctions();
+	  (hold_p.get())->nFunctions();
       }
       out.define("nfunc", x);
       Record func;
@@ -293,11 +294,11 @@ Bool FunctionHolder<T>::toRecord(String &error, RecordInterface &out) const {
 	Record fnc;
 	if (nf_p == COMBINE) {
 	  FunctionHolder<T> fn(dynamic_cast<const CombiFunction<T> *>
-			    (hold_p.ptr())->function(i));
+                               (hold_p.get())->function(i));
 	  if (!fn.toRecord(error, fnc)) return False;
 	} else {
 	  FunctionHolder<T> fn(dynamic_cast<const CompoundFunction<T> *>
-			    (hold_p.ptr())->function(i));
+                               (hold_p.get())->function(i));
 	  if (!fn.toRecord(error, fnc)) return False;
 	}
 	ostringstream oss;
@@ -322,41 +323,41 @@ template <class T>
 Bool FunctionHolder<T>::putType(String &error, RecordInterface &out) const {
   order_p = -1;
   text_p = "";
-  if (dynamic_cast<const Gaussian1D<T> *>(hold_p.ptr())) {
+  if (dynamic_cast<const Gaussian1D<T> *>(hold_p.get())) {
     nf_p = GAUSSIAN1D;
-  } else if (dynamic_cast<const Gaussian2D<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const Gaussian2D<T> *>(hold_p.get())) {
     nf_p = GAUSSIAN2D;
-  } else if (dynamic_cast<const Gaussian3D<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const Gaussian3D<T> *>(hold_p.get())) {
     nf_p = GAUSSIAN3D;
-  } else if (dynamic_cast<const GaussianND<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const GaussianND<T> *>(hold_p.get())) {
     nf_p = GAUSSIANND;
-    order_p = Int(-3.0+sqrt(1.0+8.0*hold_p.ptr()->nparameters())+0.1)/2;
-  } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.ptr())) {
+    order_p = Int(-3.0+sqrt(1.0+8.0*hold_p->nparameters())+0.1)/2;
+  } else if (dynamic_cast<const HyperPlane<T> *>(hold_p.get())) {
     nf_p = HYPERPLANE;
-    order_p = hold_p.ptr()->nparameters();
-  } else if (dynamic_cast<const Polynomial<T> *>(hold_p.ptr())) {
+    order_p = hold_p->nparameters();
+  } else if (dynamic_cast<const Polynomial<T> *>(hold_p.get())) {
     nf_p = POLYNOMIAL;
-    order_p = hold_p.ptr()->nparameters()-1;
-  } else if (dynamic_cast<const EvenPolynomial<T> *>(hold_p.ptr())) {
+    order_p = hold_p->nparameters()-1;
+  } else if (dynamic_cast<const EvenPolynomial<T> *>(hold_p.get())) {
     nf_p = EVENPOLYNOMIAL;
-    order_p = 2*hold_p.ptr()->nparameters()-1;
-  } else if (dynamic_cast<const OddPolynomial<T> *>(hold_p.ptr())) {
+    order_p = 2*hold_p->nparameters()-1;
+  } else if (dynamic_cast<const OddPolynomial<T> *>(hold_p.get())) {
     nf_p = ODDPOLYNOMIAL;
-    order_p = 2*hold_p.ptr()->nparameters()-1;
-  } else if (dynamic_cast<const Sinusoid1D<T> *>(hold_p.ptr())) {
+    order_p = 2*hold_p->nparameters()-1;
+  } else if (dynamic_cast<const Sinusoid1D<T> *>(hold_p.get())) {
     nf_p = SINUSOID1D;
-  } else if (dynamic_cast<const Chebyshev<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const Chebyshev<T> *>(hold_p.get())) {
     nf_p = CHEBYSHEV;
-    order_p = hold_p.ptr()->nparameters()-1;
-  } else if (dynamic_cast<const SimButterworthBandpass<T> *>(hold_p.ptr())) {
+    order_p = hold_p->nparameters()-1;
+  } else if (dynamic_cast<const SimButterworthBandpass<T> *>(hold_p.get())) {
     nf_p = BUTTERWORTH;
-  } else if (dynamic_cast<const CombiFunction<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const CombiFunction<T> *>(hold_p.get())) {
     nf_p = COMBINE;
-  } else if (dynamic_cast<const CompoundFunction<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const CompoundFunction<T> *>(hold_p.get())) {
     nf_p = COMPOUND;
-  } else if (dynamic_cast<const CompiledFunction<T> *>(hold_p.ptr())) {
+  } else if (dynamic_cast<const CompiledFunction<T> *>(hold_p.get())) {
     nf_p = COMPILED;
-    text_p = dynamic_cast<const CompiledFunction<T> *>(hold_p.ptr())->
+    text_p = dynamic_cast<const CompiledFunction<T> *>(hold_p.get())->
       getText();
   } else {
     error += String("Unknown functional in FunctionHolder::putType()\n");
@@ -382,7 +383,7 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn,
   if (in.isDefined(String("mode")) &&
       in.type(in.idToNumber(RecordFieldId("mode"))) == TpRecord) 
   {
-      mode_p.set(new Record(in.asRecord(RecordFieldId("mode"))));
+      mode_p.reset(new Record(in.asRecord(RecordFieldId("mode"))));
   }
 
   Int nf;
@@ -405,7 +406,6 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
     error += "Unknown type in FunctionHolder::getType()\n";
     return False;
   }
-  ///  hold_p.clear();
   switch (nf_p) {
     
   case GAUSSIAN1D:
@@ -455,15 +455,15 @@ Bool FunctionHolder<T>::getType(String &error, Function<U> *&fn) {
     break;
     
   case CHEBYSHEV:
-    if (mode_p.ptr()) 
-      fn = (new Chebyshev<U>(order_p, *(mode_p.ptr()) ));
+    if (mode_p) 
+      fn = (new Chebyshev<U>(order_p, *mode_p));
     else 
       fn = (new Chebyshev<U>(order_p));
     break;
     
   case BUTTERWORTH:
-    if (mode_p.ptr()) 
-      fn = (new SimButterworthBandpass<U>(*(mode_p.ptr()) ));
+    if (mode_p) 
+      fn = (new SimButterworthBandpass<U>(*mode_p));
     else 
       fn = (new SimButterworthBandpass<U>(0, 0));
     break;

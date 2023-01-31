@@ -57,7 +57,6 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/Utilities/LinearSearch.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/ValType.h>
@@ -169,7 +168,7 @@ LatticeStatistics<T>::LatticeStatistics(const LatticeStatistics<T> &other)
   _aOld(other._aOld), _bOld(other._bOld), _aNew(other._aNew), _bNew(other._bNew),
   _latticeStatsAlgortihm(
       other._latticeStatsAlgortihm
-          ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm) : NULL
+          ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm) : nullptr
   )
 //
 // Copy constructor.  Storage lattice is not copied.
@@ -239,10 +238,10 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       _bNew = other._bNew;
       _aOld = other._aOld;
       _bOld = other._bOld;
-      _latticeStatsAlgortihm.set(
+      _latticeStatsAlgortihm.reset(
           other._latticeStatsAlgortihm
               ? new LatticeStatsAlgorithm(*other._latticeStatsAlgortihm)
-              : NULL
+              : nullptr
       );
    }
    return *this;
@@ -815,28 +814,28 @@ Bool LatticeStatistics<T>::configureChauvenet(
 
 template <class T>
 void LatticeStatistics<T>::forceUseStatsFrameworkUsingDataProviders() {
-    _latticeStatsAlgortihm.set(
+    _latticeStatsAlgortihm.reset(
         new LatticeStatsAlgorithm(STATS_FRAMEWORK_DATA_PROVIDERS)
     );
 }
 
 template <class T>
 void LatticeStatistics<T>::forceUseStatsFrameworkUsingArrays() {
-    _latticeStatsAlgortihm.set(
+    _latticeStatsAlgortihm.reset(
         new LatticeStatsAlgorithm(STATS_FRAMEWORK_ARRAYS)
     );
 }
 
 template <class T>
 void LatticeStatistics<T>::forceUseOldTiledApplyMethod() {
-    _latticeStatsAlgortihm.set(
+    _latticeStatsAlgortihm.reset(
         new LatticeStatsAlgorithm(TILED_APPLY)
     );
 }
 
 template <class T>
 void LatticeStatistics<T>::forceAllowCodeDecideWhichAlgortihmToUse() {
-    _latticeStatsAlgortihm.set(NULL);
+    _latticeStatsAlgortihm.reset(nullptr);
 }
 
 template <class T>

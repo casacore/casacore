@@ -28,8 +28,8 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -486,11 +486,11 @@ Random* Random::construct(Random::Types type, RNG* gen) {
 
 Vector<Double> Random::defaultParameters (Random::Types type) {
   MLCG gen;
-  const PtrHolder<Random> ranPtr(construct(type, &gen));
-  if (ranPtr.ptr() == 0) {
+  const std::unique_ptr<Random> ranPtr(construct(type, &gen));
+  if (!ranPtr) {
     return Vector<Double>();
   } else {
-    return ranPtr.ptr()->parameters();
+    return ranPtr->parameters();
   }
 }
 

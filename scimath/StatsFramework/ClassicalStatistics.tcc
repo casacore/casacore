@@ -31,7 +31,7 @@
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 #include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
 #include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <memory>
 
 #include <iomanip>
 
@@ -459,10 +459,10 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<StatsData<AccumType> > tStats(
+    std::unique_ptr<StatsData<AccumType>[]> tStats(
         new StatsData<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*i;
@@ -847,15 +847,15 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<CountedPtr<AccumType> > tmin(
+    std::unique_ptr<CountedPtr<AccumType>[]> tmin(
         new CountedPtr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<CountedPtr<AccumType> > tmax(
+    std::unique_ptr<CountedPtr<AccumType>[]> tmax(
         new CountedPtr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     while (True) {
         const auto& chunk = ds.initLoopVars();
@@ -980,20 +980,20 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<CountedPtr<AccumType> > tmin(
+    std::unique_ptr<CountedPtr<AccumType>[]> tmin(
         new CountedPtr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<CountedPtr<AccumType> > tmax(
+    std::unique_ptr<CountedPtr<AccumType>[]> tmax(
         new CountedPtr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<uInt64> npts(
+    std::unique_ptr<uInt64[]> npts(
         new uInt64[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -1124,8 +1124,8 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doNpts() {
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<uInt64> npts(
-        new uInt64[ClassicalStatisticsData::CACHE_PADDING*nThreadsMax], True
+    std::unique_ptr<uInt64[]> npts(
+        new uInt64[ClassicalStatisticsData::CACHE_PADDING*nThreadsMax]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
