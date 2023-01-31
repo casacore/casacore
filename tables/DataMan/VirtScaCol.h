@@ -166,7 +166,13 @@ public:
     // Frees up the storage.
     virtual ~VirtualScalarColumn();
 
-    // Return the data type of the column.
+    // The object cannot be copied.
+    VirtualScalarColumn (const VirtualScalarColumn<T>&) = delete;
+
+    // The object cannot be assigned to.
+    VirtualScalarColumn<T>& operator= (const VirtualScalarColumn<T>&) = delete;
+
+  // Return the data type of the column.
     virtual int dataType() const;
 
     // Return the data type Id of the column.
@@ -235,13 +241,6 @@ private:
     // The default implementation loops over the rows.
     virtual void putScalarColumnCellsV (const RefRows& rownrs,
 					const ArrayBase& dataPtr);
-
-private:
-    // The object cannot be copied.
-    VirtualScalarColumn (const VirtualScalarColumn<T>&);
-
-    // The object cannot be assigned to.
-    VirtualScalarColumn<T>& operator= (const VirtualScalarColumn<T>&);
 };
 
 

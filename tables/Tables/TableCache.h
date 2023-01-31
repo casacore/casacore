@@ -98,6 +98,12 @@ public:
 
     ~TableCache();
 
+    // The copy constructor is forbidden.
+    TableCache (const TableCache&) = delete;
+  
+    // The assignment operator is forbidden.
+    TableCache& operator= (const TableCache&) = delete;
+
     // Try to find a table with the given name in the cache.
     // Return a pointer to a table if found (thus if already open).
     // Return a zero pointer if not found.
@@ -145,11 +151,6 @@ public:
                            const TableLock& tableInfo);
 
 private:
-    // The copy constructor is forbidden.
-    TableCache (const TableCache&);
-    // The assignment operator is forbidden.
-    TableCache& operator= (const TableCache&);
-
     // Get the table without doing a mutex lock (for operator()).
     PlainTable* getTable (const String& tableName) const;
 

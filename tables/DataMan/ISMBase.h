@@ -106,6 +106,9 @@ public:
 
     ~ISMBase();
 
+    // Assignment cannot be used.
+    ISMBase& operator= (const ISMBase& that) = delete;
+
     // Clone this object.
     // It does not clone ISMColumn objects possibly used.
     // The caller has to delete the newly created object.
@@ -240,9 +243,6 @@ public:
 private:
     // Copy constructor (only meant for clone function).
     ISMBase (const ISMBase& that);
-
-    // Assignment cannot be used.
-    ISMBase& operator= (const ISMBase& that);
 
     // (Re)create the index, file, and cache object.
     void recreate();

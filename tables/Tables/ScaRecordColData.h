@@ -101,6 +101,12 @@ public:
 
     ~ScalarRecordColumnData();
 
+    // Copy constructor cannot be used.
+    ScalarRecordColumnData (const ScalarRecordColumnData&) = delete;
+
+    // Assignment cannot be used.
+    ScalarRecordColumnData& operator= (const ScalarRecordColumnData&) = delete;
+
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description.
     virtual void initialize (rownr_t startRownr, rownr_t endRownr);
@@ -162,18 +168,7 @@ public:
     // Create a data manager column object for this column.
     virtual void createDataManagerColumn();
 
-
 private:
-    // Pointer to column description.
-    const ScalarRecordColumnDesc* scaDescPtr_p;
-    
-
-    // Copy constructor cannot be used.
-    ScalarRecordColumnData (const ScalarRecordColumnData&);
-
-    // Assignment cannot be used.
-    ScalarRecordColumnData& operator= (const ScalarRecordColumnData&);
-
     // Write the column data.
     // The control information is written into the given AipsIO object,
     // while the data is written/flushed by the data manager.

@@ -102,6 +102,14 @@ public:
 
     ~SetupNewTableRep();
 
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    SetupNewTableRep (const SetupNewTableRep&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    SetupNewTableRep& operator= (const SetupNewTableRep&) = delete;
+
     // Get the name of the table.
     const String& name() const
 	{ return tabName_p; }
@@ -199,16 +207,6 @@ private:
     CountedPtr<TableDesc> tdescPtr_p;
     CountedPtr<ColumnSet> colSetPtr_p;  //# null = object is already used by a Table
     std::map<void*,void*> dataManMap_p;
-
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    SetupNewTableRep (const SetupNewTableRep&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    SetupNewTableRep& operator= (const SetupNewTableRep&);
 
     // Setup the new table.
     // This checks various things and creates the set of columns.

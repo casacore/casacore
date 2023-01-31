@@ -203,6 +203,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // of the aggregation node.
     explicit TableExprGroupFuncBase (TableExprNodeRep* node);
     virtual ~TableExprGroupFuncBase();
+    // Copying is not needed, thus not allowed.
+    TableExprGroupFuncBase (const TableExprGroupFuncBase&) = delete;
+    TableExprGroupFuncBase& operator= (const TableExprGroupFuncBase&) = delete;
     // Does the aggregate function use lazy semantics?
     // The default implementation returns False.
     virtual Bool isLazy() const;
@@ -239,10 +242,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual MArray<MVTime> getArrayDate (const vector<TableExprId>& = vector<TableExprId>());
     virtual MArray<String> getArrayString (const vector<TableExprId>& = vector<TableExprId>());
     // <group>
-  private:
-    // Copying is not needed, thus not allowed.
-    TableExprGroupFuncBase (const TableExprGroupFuncBase&);
-    TableExprGroupFuncBase& operator= (const TableExprGroupFuncBase&);
   protected:
     //# Data member
     TableExprNodeRep* itsNode;      // refers the node (not owned)
@@ -806,6 +805,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Let the aggregate node objects construct the function set.
     TableExprGroupFuncSet (const vector<TableExprNodeRep*>& aggrNodes);
 
+    // Copying is not needed, thus not allowed.
+    TableExprGroupFuncSet (const TableExprGroupFuncSet&) = delete;
+    TableExprGroupFuncSet& operator= (const TableExprGroupFuncSet&) = delete;
+
     // Add a function object.
     void add (const CountedPtr<TableExprGroupFuncBase>& func);
 
@@ -821,10 +824,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return itsId; }
 
   private:
-    // Copying is not needed, thus not allowed.
-    TableExprGroupFuncSet (const TableExprGroupFuncSet&);
-    TableExprGroupFuncSet& operator= (const TableExprGroupFuncSet&);
-
     //# Data members.
     vector<CountedPtr<TableExprGroupFuncBase> > itsFuncs;
     TableExprId itsId;      //# row containing the non-aggregate variables

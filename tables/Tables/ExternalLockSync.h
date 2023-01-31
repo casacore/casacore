@@ -67,6 +67,12 @@ public:
 
     ~ExternalLockSync();
 
+    // Copy constructor is forbidden.
+    ExternalLockSync (const ExternalLockSync& that) = delete;
+
+    // Assignment is forbidden.
+    ExternalLockSync& operator= (const ExternalLockSync& that) = delete;
+
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
@@ -100,12 +106,6 @@ public:
     Bool hasLock (FileLocker::LockType) const;
 
 private:
-    // Copy constructor is forbidden.
-    ExternalLockSync (const ExternalLockSync& that);
-
-    // Assignment is forbidden.
-    ExternalLockSync& operator= (const ExternalLockSync& that);
-
     // The callback function when releasing a lock.
     static MemoryIO* releaseCallBack (void* lockSyncObject, Bool always);
 

@@ -81,6 +81,12 @@ public:
 
     virtual ~StManColumn();
 
+    // The object cannot be copied.
+    StManColumn (const StManColumn&) = delete;
+
+    // The object cannot be assigned to.
+    StManColumn& operator= (const StManColumn&) = delete;
+
     // Set the shape of an (variable-shaped) array in the given row.
     // By default it throws a "not possible" exception.
     virtual void setShape (rownr_t rownr, const IPosition& shape);
@@ -284,12 +290,6 @@ public:
 
 
 private:
-    // The object cannot be copied.
-    StManColumn (const StManColumn&);
-
-    // The object cannot be assigned to.
-    StManColumn& operator= (const StManColumn&);
-
     // Throw an "invalid operation" exception for the default
     // implementation of getArray.
     void throwInvalidOp(const String &op) const;

@@ -235,7 +235,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
 #endif
 
-    TableAttr attr (tableName(), isWritable(), lockOptions);
+    TableAttr attr (tableName(), PlainTable::isWritable(), lockOptions);
     tdescPtr_p->getFile (ios, attr);            // read description
     // Check if the given table type matches the type in the file.
     if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
@@ -257,7 +257,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     colSetPtr_p->linkToTable (this);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {
-	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
+        PlainTable::keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
     }
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
@@ -317,7 +317,7 @@ void PlainTable::closeObject()
         timespec timet;
         timet.tv_sec = 1;
         timet.tv_nsec = 0;
-        while (isMultiUsed(False)) {
+        while (PlainTable::isMultiUsed(False)) {
             if (nTrys == 0) {
                 unmarkForDelete (False, "");
                 throw (TableError ("Table " + name_p + " cannot be deleted;"

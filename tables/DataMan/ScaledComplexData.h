@@ -192,6 +192,10 @@ public:
     // Destructor is mandatory.
     ~ScaledComplexData();
 
+    // Assignment is not needed and therefore forbidden.
+    ScaledComplexData<VirtualType,StoredType>& operator=
+                           (const ScaledComplexData<VirtualType,StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     String dataManagerType() const;
 
@@ -218,11 +222,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     ScaledComplexData (const ScaledComplexData<VirtualType,StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    ScaledComplexData<VirtualType,StoredType>& operator=
-                           (const ScaledComplexData<VirtualType,StoredType>&);
 
     // Clone the engine object.
     virtual DataManager* clone() const;

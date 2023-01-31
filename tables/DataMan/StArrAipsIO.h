@@ -94,6 +94,12 @@ public:
   // Frees up the storage.
   virtual ~StManColumnArrayAipsIO();
 
+  // Forbid copy constructor.
+  StManColumnArrayAipsIO (const StManColumnArrayAipsIO&) = delete;
+
+  // Forbid assignment.
+  StManColumnArrayAipsIO& operator= (const StManColumnArrayAipsIO&) = delete;
+
   // Set the (fixed) shape of the arrays in the entire column.
   virtual void setShapeColumn (const IPosition& shape);
 
@@ -136,8 +142,6 @@ public:
   virtual void getFile (rownr_t nrval, AipsIO&);
 
 private:
-  // The (unique) sequence number of the column.
-  uInt seqnr_p;
   // The shape of the array.
   IPosition shape_p;
   // The nr of elements in the array.
@@ -155,12 +159,6 @@ private:
   // be allocated and read starting at datap[index].
   virtual void getData (void* datap, uInt index, uInt nrval,
                         AipsIO&, uInt version);
-
-  // Forbid copy constructor.
-  StManColumnArrayAipsIO (const StManColumnArrayAipsIO&);
-
-  // Forbid assignment.
-  StManColumnArrayAipsIO& operator= (const StManColumnArrayAipsIO&);
 };
 
 

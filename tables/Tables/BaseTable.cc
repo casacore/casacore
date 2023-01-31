@@ -364,7 +364,8 @@ void BaseTable::setTableChanged()
 
 void BaseTable::markForDelete (Bool callback, const String& oldName)
 {
-    AlwaysAssert (!isNull(), AipsError);
+    //# Do not use virtual isNull as it can be called from the constructor.
+    AlwaysAssert (!BaseTable::isNull(), AipsError);
     Bool prev = delete_p;
     delete_p = True;
     //# Do callback if changed from non-scratch to scratch or if name changed.
@@ -378,7 +379,7 @@ void BaseTable::markForDelete (Bool callback, const String& oldName)
 }
 void BaseTable::unmarkForDelete (Bool callback, const String& oldName)
 {
-    AlwaysAssert (!isNull(), AipsError);
+    AlwaysAssert (!BaseTable::isNull(), AipsError);
     Bool prev = delete_p;
     delete_p = False;
     //# Do callback if changed from scratch to non-scratch.

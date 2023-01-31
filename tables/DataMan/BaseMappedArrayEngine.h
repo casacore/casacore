@@ -290,10 +290,11 @@ protected:
     // engine when a table is read back.
     BaseMappedArrayEngine();
 
-    // Copy constructor is only used by copy constructor of derived classes.
-    // (so it is made protected).
-    BaseMappedArrayEngine
-	              (const BaseMappedArrayEngine<VirtualType, StoredType>&);
+    // Copy constructor is used by copy constructor of derived classes.
+    BaseMappedArrayEngine (const BaseMappedArrayEngine&);
+
+    // Assignment is not needed and therefore forbidden
+    BaseMappedArrayEngine& operator= (const BaseMappedArrayEngine&) = delete;
 
     // Set if the column is writable or not.
     void setWritable (Bool isWritable);
@@ -462,12 +463,6 @@ protected:
 
 
 private:
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    BaseMappedArrayEngine<VirtualType, StoredType>& operator=
-	             (const BaseMappedArrayEngine<VirtualType, StoredType>&);
-
-
     //# Now define the data members.
     String         virtualName_p;        //# virtual column name
     String         storedName_p;         //# stored column name

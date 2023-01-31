@@ -44,8 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ScalarRecordColumnData::ScalarRecordColumnData
                                    (const ScalarRecordColumnDesc* cd,
 				    ColumnSet* csp)
-: PlainColumn  (cd, csp),
-  scaDescPtr_p (cd)
+: PlainColumn (cd, csp)
 {}
 
 ScalarRecordColumnData::~ScalarRecordColumnData()

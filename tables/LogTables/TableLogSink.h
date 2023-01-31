@@ -190,9 +190,9 @@ public:
   // Clear the local sink (i.e. remove all messages from it).
   virtual void clearLocally();
 
-  // Returns the id for this class...
+  // Returns the id for this class.
   static String localId( );
-  // Returns the id of the LogSink in use...
+  // Returns the id of the LogSink in use.
   String id( ) const;
 
   // Make a LogSink for a TableLogSink with a new table.
@@ -206,8 +206,6 @@ public:
   // </group>
 
 private:
-  // Undefined and inaccessible
-  TableLogSink();
   // Avoid duplicating code in copy ctor and assignment operator
   void copy_other(const TableLogSink& other);
   // Make a new log table.

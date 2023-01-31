@@ -132,6 +132,12 @@ public:
 
     virtual ~TSMCube();
 
+    // Forbid copy constructor.
+    TSMCube (const TSMCube&) = delete;
+
+    // Forbid assignment.
+    TSMCube& operator= (const TSMCube&) = delete;
+
     // Flush the data in the cache.
     virtual void flushCache();
 
@@ -303,12 +309,6 @@ protected:
     void resizeTileSections();
 
 private:
-    // Forbid copy constructor.
-    TSMCube (const TSMCube&);
-
-    // Forbid assignment.
-    TSMCube& operator= (const TSMCube&);
-
     // Get the cache object.
     // This will construct the cache object if not present yet.
     BucketCache* getCache();

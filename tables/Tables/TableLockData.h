@@ -76,6 +76,12 @@ public:
 
     ~TableLockData();
 
+    // Copy constructor is forbidden.
+    TableLockData (const TableLockData& that) = delete;
+
+    // Assignment is forbidden.
+    TableLockData& operator= (const TableLockData& that) = delete;
+
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
@@ -114,13 +120,6 @@ public:
     // </group>
 
 private:
-    // Copy constructor is forbidden.
-    TableLockData (const TableLockData& that);
-
-    // Assignment is forbidden.
-    TableLockData& operator= (const TableLockData& that);
-
-
     //# Define the lock file.
     LockFile*        itsLock;
     //# Define if the file is already read or write locked.

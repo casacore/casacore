@@ -262,7 +262,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           TNODE sval;
           const TNODE* ptr = &sval;
           size_t incr = 0;
-          Bool deleteIt;
+          Bool deleteIt = False;
           if (node.isScalar()) {
             node.get (rowid, sval);
           } else {

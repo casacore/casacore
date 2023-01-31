@@ -81,6 +81,12 @@ public:
   // Frees up the storage.
   ~MSMIndColumn();
 
+  // Forbid copy constructor.
+  MSMIndColumn (const MSMIndColumn&) = delete;
+
+  // Forbid assignment.
+  MSMIndColumn& operator= (const MSMIndColumn&) = delete;
+
   // Set the (fixed) shape of the arrays in the entire column.
   void setShapeColumn (const IPosition& shape);
 
@@ -136,11 +142,11 @@ private:
   public:
     Data (const IPosition& shape, int dtype, int elemSize);
     ~Data();
+    Data (const Data&) = delete;
+    Data& operator= (const Data&) = delete;
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
   private:
-    Data (const Data&);
-    Data& operator= (const Data&);
     IPosition shape_p;
     void* data_p;
     bool data_is_string;
@@ -161,12 +167,6 @@ private:
   // Get a pointer to the data array.
   void* getDataPtr (rownr_t rownr)
     { return (char*)(getShape(rownr)) + startSize_p; }
-
-  // Forbid copy constructor.
-  MSMIndColumn (const MSMIndColumn&);
-
-  // Forbid assignment.
-  MSMIndColumn& operator= (const MSMIndColumn&);
 };
 
 

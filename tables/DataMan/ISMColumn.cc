@@ -855,11 +855,10 @@ void ISMColumn::putFromRow (rownr_t rownr, const char* data, uInt lenData)
     ISMBucket* bucket;
     rownr_t bucketNrrow;
     uInt cursor = 0;
-    bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow);
+    stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow);
     // Loop through all buckets from the given row on.
     // Replace the starting value in them.
-    while ((bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow))
-	                                                           != 0) {
+    while ((bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow)) != nullptr) {
 #ifdef AIPS_TRACE
         cout << "," << rownr;
 #endif

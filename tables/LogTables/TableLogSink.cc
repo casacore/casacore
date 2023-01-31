@@ -136,7 +136,7 @@ void TableLogSink::copy_other (const TableLogSink& other)
 
 TableLogSink::~TableLogSink()
 {
-    flush();
+    TableLogSink::flush();
 }
 
 void TableLogSink::makeTable (SetupNewTable& setup)

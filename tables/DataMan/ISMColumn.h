@@ -120,6 +120,12 @@ public:
 
     ~ISMColumn();
 
+    // Forbid copy constructor.
+    ISMColumn (const ISMColumn&) = delete;
+
+    // Forbid assignment.
+    ISMColumn& operator= (const ISMColumn&) = delete;
+
     // Set the shape of an array in the column.
     virtual void setShapeColumn (const IPosition& shape);
 
@@ -282,12 +288,6 @@ protected:
 
 
 private:
-    // Forbid copy constructor.
-    ISMColumn (const ISMColumn&);
-
-    // Forbid assignment.
-    ISMColumn& operator= (const ISMColumn&);
-
     // Initialize part of the object.
     // It is used by doCreate and getFile.
     void init();

@@ -105,6 +105,12 @@ public:
 
     ~ArrayColumnData();
 
+    // Copy constructor cannot be used.
+    ArrayColumnData (const ArrayColumnData&) = delete;
+
+    // Assignment cannot be used.
+    ArrayColumnData& operator= (const ArrayColumnData&) = delete;
+
     // Ask the data manager if the shape of an existing array can be changed.
     virtual Bool canChangeShape() const;
 
@@ -228,8 +234,6 @@ public:
 
 
 private:
-    // Pointer to column description.
-    const ArrayColumnDescBase* arrDescPtr_p;
     // Is the shape for all arrays in the columns defined.
     Bool shapeColDef_p;
     // Shape for all arrays in the column.
@@ -237,12 +241,6 @@ private:
     // Does the length of a string has to be checked?
     Bool checkValueLength_p;
     
-
-    // Copy constructor cannot be used.
-    ArrayColumnData (const ArrayColumnData&);
-
-    // Assignment cannot be used.
-    ArrayColumnData& operator= (const ArrayColumnData&);
 
     // Check if the shape of an array can be set and if it is set
     // correctly (i.e. if matching possible #dim in column description).

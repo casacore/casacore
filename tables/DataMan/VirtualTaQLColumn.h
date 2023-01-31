@@ -105,6 +105,12 @@ public:
   // Destructor is mandatory.
   virtual ~VirtualTaQLColumn();
 
+  // Copy is not needed and therefore forbidden.
+  VirtualTaQLColumn (const VirtualTaQLColumn&) = delete;
+
+  // Assignment is not needed and therefore forbidden.
+  VirtualTaQLColumn& operator= (const VirtualTaQLColumn&) = delete;
+
   // Clone the engine object.
   virtual DataManager* clone() const;
 
@@ -155,12 +161,6 @@ public:
   // </group>
 
 private:
-  // Copy is not needed and therefore forbidden (so it is made private).
-  VirtualTaQLColumn (const VirtualTaQLColumn&);
-
-  // Assignment is not needed and therefore forbidden (so it is made private).
-  VirtualTaQLColumn& operator= (const VirtualTaQLColumn&);
-
   // Create the column object for the scalar column in this engine.
   virtual DataManagerColumn* makeScalarColumn (const String& columnName,
 					       int dataType, const String&);

@@ -33,7 +33,6 @@
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/ValType.h>
-#include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/IO/BucketCache.h>
 #include <casacore/casa/IO/BucketFile.h>
 #include <casacore/casa/IO/AipsIO.h>
@@ -289,11 +288,9 @@ void ISMBase::makeCache()
 				   ISMBucket::initCallBack,
 				   ISMBucket::deleteCallBack);
 	cache_p->resync (nbucketInit_p, nFreeBucket_p, firstFree_p);
-	AlwaysAssert (cache_p != 0, AipsError);
 	// Allocate a buffer for temporary storage by all ISM classes.
 	if (tempBuffer_p == 0) {
 	    tempBuffer_p = new char [bucketSize_p];
-	    AlwaysAssert (tempBuffer_p != 0, AipsError);
 	}
     }
 }
@@ -303,8 +300,7 @@ void ISMBase::makeIndex()
     if (index_p != 0) {
 	return;
     }
-    index_p = new ISMIndex (this);
-    AlwaysAssert (index_p != 0, AipsError);
+    index_p = new ISMIndex();
     file_p->open();
     readIndex();
 }
@@ -547,9 +543,7 @@ void ISMBase::recreate()
     nFreeBucket_p = 0;
     firstFree_p   = -1;
     file_p = new BucketFile (fileName(), 0, False, multiFile());
-    AlwaysAssert (file_p != 0, AipsError);
-    index_p = new ISMIndex (this);
-    AlwaysAssert (index_p != 0, AipsError);
+    index_p = new ISMIndex();
     makeCache();
     //# Let the column objects create something if needed.
     for (uInt i=0; i<ncolumn(); i++) {
@@ -627,7 +621,6 @@ rownr_t ISMBase::open64 (rownr_t tabNrrow, AipsIO& ios)
     init();
     file_p = new BucketFile (fileName(), table().isWritable(),
                              0, False, multiFile());
-    AlwaysAssert (file_p != 0, AipsError);
     //# Westerbork MSs have a problem, because TMS used for a while
     //# the erroneous version of ISMBase.cc.
     //# So if we have an old ISM version, do a makeIndex to get

@@ -34,11 +34,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
-VACEngine<T>::VACEngine ()
-: sourceName_p ("")
-{}
-
-template<class T>
 VACEngine<T>::VACEngine (const String& sourceColumnName)
 : sourceName_p (sourceColumnName)
 {}
@@ -48,10 +43,6 @@ VACEngine<T>::VACEngine (const VACEngine<T>& that)
 : VirtualColumnEngine(),
   VirtualArrayColumn<T>(),
   sourceName_p (that.sourceName_p)
-{}
-
-template<class T>
-VACEngine<T>::~VACEngine()
 {}
 
 template<class T>

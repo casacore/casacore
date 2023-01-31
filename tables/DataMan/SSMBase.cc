@@ -961,11 +961,9 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
   if (itsStringHandler) {
     itsStringHandler->flush();
   }
-
-  if (itsCache != 0) {
+  if (itsCache) {
     itsCache->flush();
   }
-
   if (isDataChanged) {
     writeIndex();
     if (doFsync) {
@@ -974,11 +972,9 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
     changed = True;
     isDataChanged = False;
   }
-
-  if (itsIosFile != 0) {
+  if (itsIosFile) {
     itsIosFile->flush(doFsync);
   }
-  
   ios.putstart ("SSM", 2);
   ios << itsDataManName;
   putBlock (ios, itsColumnOffset, itsColumnOffset.nelements());

@@ -110,6 +110,12 @@ public:
 
   ~TiledFileAccess();
 
+  // Forbid copy constructor.
+  TiledFileAccess (const TiledFileAccess&) = delete;
+
+  // Forbid assignment.
+  TiledFileAccess& operator= (const TiledFileAccess&) = delete;
+
   // Is the file writable?
   Bool isWritable() const
     { return itsWritable; }
@@ -237,13 +243,6 @@ public:
 
 
 private:
-  // Forbid copy constructor and assignment.
-  // <group>
-  TiledFileAccess (const TiledFileAccess&);
-  TiledFileAccess& operator= (const TiledFileAccess&);
-  // </group>
-
-
   TSMCube*         itsCube;
   TiledFileHelper* itsTSM;
   uInt             itsLocalPixelSize;

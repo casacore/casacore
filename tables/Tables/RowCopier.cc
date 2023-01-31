@@ -42,14 +42,12 @@ class ColumnHolder {
 public:
     ColumnHolder(Table &inTab, const Table &outTab);
     ~ColumnHolder();
+    //# The following constructors and operator don't seem to be useful
+    ColumnHolder(const ColumnHolder &other) = delete;
+    ColumnHolder &operator=(const ColumnHolder &other) = delete;
     void attach(const String &outCol, const String &inCol);
     Bool copy(rownr_t toRow, rownr_t fromRow);
 private:
-    //# The following constructors and operator don't seem to be useful
-    ColumnHolder();
-    ColumnHolder(const ColumnHolder &other);
-    ColumnHolder &operator=(const ColumnHolder &other);
-
     // The tables involved in the copying
     Table in;
     Table out;

@@ -104,6 +104,12 @@ public:
   
   virtual ~SSMColumn();
   
+  // Forbid copy constructor.
+  SSMColumn (const SSMColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMColumn& operator= (const SSMColumn&) = delete;
+  
   // Set the shape of an array in the column.
   // It is only called (right after the constructor) if the array has
   // a fixed shape.
@@ -253,12 +259,6 @@ protected:
   Conversion::ValueFunction* itsReadFunc;
   
 private:
-  // Forbid copy constructor.
-  SSMColumn (const SSMColumn&);
-  
-  // Forbid assignment.
-  SSMColumn& operator= (const SSMColumn&);
-  
   // Initialize part of the object.
   // It determines the nr of elements, the function to use to convert
   // from local to file format, etc..

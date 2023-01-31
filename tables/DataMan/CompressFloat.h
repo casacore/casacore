@@ -170,6 +170,9 @@ public:
   // Destructor is mandatory.
   ~CompressFloat();
 
+  // Assignment is not needed and therefore forbidden
+  CompressFloat& operator= (const CompressFloat&) = delete;
+
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
@@ -191,10 +194,6 @@ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
   CompressFloat (const CompressFloat&);
-
-  // Assignment is not needed and therefore forbidden
-  // (so it is made private and not implemented).
-  CompressFloat& operator= (const CompressFloat&);
 
   // Clone the engine object.
   virtual DataManager* clone() const;

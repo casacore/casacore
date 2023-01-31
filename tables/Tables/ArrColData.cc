@@ -41,12 +41,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ArrayColumnData::ArrayColumnData (const ArrayColumnDescBase* cd,
                                   ColumnSet* csp)
 : PlainColumn  (cd, csp),
-  arrDescPtr_p (cd),
   shapeColDef_p(False),
   shapeCol_p   ()
 {
     if (cd->shape().nelements() > 0) {
-	setShapeColumn (cd->shape());
+        ArrayColumnData::setShapeColumn (cd->shape());
     }
     checkValueLength_p = (columnDesc().dataType() == TpString  &&
                           columnDesc().maxLength() > 0);

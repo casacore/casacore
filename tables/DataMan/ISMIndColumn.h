@@ -105,6 +105,12 @@ public:
     // Frees up the storage.
     virtual ~ISMIndColumn();
 
+    // Forbid copy constructor.
+    ISMIndColumn (const ISMIndColumn&) = delete;
+
+    // Forbid assignment.
+    ISMIndColumn& operator= (const ISMIndColumn&) = delete;
+
     // Add (newNrrow-oldNrrow) rows to the column.
     virtual void addRow (rownr_t newNrrow, rownr_t oldNrrow);
 
@@ -169,12 +175,6 @@ public:
     virtual void handleRemove (rownr_t rownr, const char* value);
 
 private:
-    // Forbid copy constructor.
-    ISMIndColumn (const ISMIndColumn&);
-
-    // Forbid assignment.
-    ISMIndColumn& operator= (const ISMIndColumn&);
-
     // Initialize part of the object and open/create the file.
     // It is used by doCreate and getFile.
     void init (ByteIO::OpenOption fileOption);

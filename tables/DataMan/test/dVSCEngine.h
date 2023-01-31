@@ -114,6 +114,9 @@ public:
     // Destructor is mandatory.
     ~VSCExampleVSCEngine();
 
+    // Assignment is not needed and therefore forbidden.
+    VSCExampleVSCEngine& operator= (const VSCExampleVSCEngine&) = delete;
+
     // Clone the object.
     DataManager* clone() const;
 
@@ -138,10 +141,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     VSCExampleVSCEngine (const VSCExampleVSCEngine&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private).
-    VSCExampleVSCEngine& operator= (const VSCExampleVSCEngine&);
 
 
     // The target column names.

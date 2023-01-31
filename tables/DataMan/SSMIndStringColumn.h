@@ -91,6 +91,12 @@ public:
   
   virtual ~SSMIndStringColumn();
 
+  // Forbid copy constructor.
+  SSMIndStringColumn (const SSMIndStringColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMIndStringColumn& operator= (const SSMIndStringColumn&) = delete;
+
   // Get an array value in the given row.
   // An exception is thrown if no array is defined in this row.
   virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
@@ -112,14 +118,6 @@ public:
 
   // Get the dimensionality of the item in the given row.
   virtual uInt ndim (rownr_t aRowNr);
-
-
-private:
-  // Forbid copy constructor.
-  SSMIndStringColumn (const SSMIndStringColumn&);
-  
-  // Forbid assignment.
-  SSMIndStringColumn& operator= (const SSMIndStringColumn&);  
 };
 
 

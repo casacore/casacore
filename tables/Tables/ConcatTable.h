@@ -147,6 +147,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // for output and not marked for delete.
     virtual ~ConcatTable();
 
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    ConcatTable (const ConcatTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    ConcatTable& operator= (const ConcatTable&) = delete;
+
     // Get the names of the tables this table consists of.
     virtual void getPartNames (Block<String>& names, Bool recursive) const;
 
@@ -301,16 +309,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Block<BaseColumn*> getRefColumns (const String& columnName);
 
   private:
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    ConcatTable (const ConcatTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    ConcatTable& operator= (const ConcatTable&);
-
     // Show the extra table structure info (names of used tables).
     void showStructureExtra (std::ostream&) const;
 

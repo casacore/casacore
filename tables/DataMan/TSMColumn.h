@@ -103,6 +103,9 @@ public:
     // Frees up the storage.
     virtual ~TSMColumn();
 
+    // Forbid assignment.
+    TSMColumn& operator= (const TSMColumn&) = delete;
+
     // Get the name of the column.
     const String& columnName() const;
 
@@ -147,10 +150,6 @@ protected:
 
     // The copy constructor can only be used to copy a derived class.
     TSMColumn (const TSMColumn& that);
-
-private:
-    // Forbid assignment.
-    TSMColumn& operator= (const TSMColumn&);
 };
 
 

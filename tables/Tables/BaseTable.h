@@ -114,7 +114,16 @@ public:
     // Common code shared by the MPI constructor and non-MPI constructor
     void BaseTableCommon (const String& tableName, int tableOption, rownr_t nrrow);
 
+    // The destructor will delete the table if needed.
     virtual ~BaseTable();
+
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    BaseTable (const BaseTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    BaseTable& operator= (const BaseTable&) = delete;
 
     // Is the table a null table?
     // By default it is not.
@@ -547,16 +556,6 @@ protected:
     void getTableInfo();
 
 private:
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    BaseTable (const BaseTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    BaseTable& operator= (const BaseTable&);
-
     // Show a possible extra table structure header.
     // It is used by e.g. RefTable to show which table is referenced.
     virtual void showStructureExtra (std::ostream&) const;

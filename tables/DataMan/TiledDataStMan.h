@@ -367,6 +367,12 @@ public:
 
     ~TiledDataStMan();
 
+    // Forbid copy constructor.
+    TiledDataStMan (const TiledDataStMan&) = delete;
+
+    // Forbid assignment.
+    TiledDataStMan& operator= (const TiledDataStMan&) = delete;
+
     // Clone this object.
     // It does not clone TSMColumn objects possibly used.
     DataManager* clone() const;
@@ -384,12 +390,6 @@ private:
     // This constructor is private, because it should only be used
     // by makeObject.
     TiledDataStMan();
-
-    // Forbid copy constructor.
-    TiledDataStMan (const TiledDataStMan&);
-
-    // Forbid assignment.
-    TiledDataStMan& operator= (const TiledDataStMan&);
 
     // Add rows to the storage manager.
     // This will only increase the number of rows. When a hypercube is

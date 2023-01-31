@@ -101,6 +101,12 @@ public:
     // Frees up the storage.
     virtual ~TSMCoordColumn();
 
+    // Forbid copy constructor.
+    TSMCoordColumn (const TSMCoordColumn&) = delete;
+
+    // Forbid assignment.
+    TSMCoordColumn& operator= (const TSMCoordColumn&) = delete;
+
     // Set the shape of the coordinate vector in the given row.
     virtual void setShape (rownr_t rownr, const IPosition& shape);
 
@@ -149,12 +155,6 @@ public:
 private:
     // The axis number of the coordinate.
     uInt axisNr_p;
-
-    // Forbid copy constructor.
-    TSMCoordColumn (const TSMCoordColumn&);
-
-    // Forbid assignment.
-    TSMCoordColumn& operator= (const TSMCoordColumn&);
 };
 
 

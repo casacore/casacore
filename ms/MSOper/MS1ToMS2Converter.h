@@ -81,16 +81,16 @@ public:
 
   ~MS1ToMS2Converter();
 
+  // Forbid copy constructor and assignment.
+  // <group>
+  MS1ToMS2Converter (const MS1ToMS2Converter&) = delete;
+  MS1ToMS2Converter& operator= (const MS1ToMS2Converter&) = delete;
+  // </group>
+
   // Do the actual conversion.
   Bool convert();
 
 private:
-  // Forbid copy constrcutor and assignment.
-  // <group>
-  MS1ToMS2Converter (const MS1ToMS2Converter&);
-  MS1ToMS2Converter& operator= (const MS1ToMS2Converter&);
-  // </group>
-
   // If possible remove a column from the table.
   // Otherwise rename it by prefixing it with _OBSOLETE_.
   void removeColumn(Table& t, const String& col);

@@ -133,8 +133,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //
 //      // The default constructor is required for reconstruction of the
 //      // engine when a table is read back.
-//      AVACEngine()
-//      {}
+//      AVACEngine() = default;
 //
 //      // Construct the engine for the given source column and storing
 //      // the result in the given target columns for the data members
@@ -147,9 +146,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        yTargetName_p (yTargetColumnName)
 //      {}
 //
-//      // Destructor is mandatory.
-//      virtual ~AVACEngine()
+//      // Destructor is only needed if something has to be destructed.
+//      ~AVACEngine() = override
 //      {}
+//
+//      // Assignment is not needed and therefore forbidden.
+//      AVACEngine& operator= (const AVACEngine&) = delete;
 //
 //      // Clone the object.
 //      virtual DataManager* clone() const
@@ -211,10 +213,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //        xTargetName_p (that.xTargetName_p),
 //        yTargetName_p (that.yTargetName_p)
 //      {}
-//
-//      // Assignment is not needed and therefore forbidden
-//      // (so it is made private and is not implemented).
-//      AVACEngine& operator= (const AVACEngine&);
 //
 //
 //      // The target column names.
@@ -295,14 +293,17 @@ public:
     // engine when a table is read back.
     // It is also used to construct an engine, which does not check
     // the source column name.
-    VACEngine();
+    VACEngine() = default;
 
     // Construct an engine to handle a column with an arbitrary data type.
     // Later it will check if the source column name is correct.
     VACEngine (const String& sourceColumnName);
 
-    // Destructor is mandatory.
-    ~VACEngine();
+    // Destructor.
+    virtual ~VACEngine() = default;
+
+    // Assignment is not needed and therefore forbidden.
+    VACEngine<T>& operator= (const VACEngine<T>&) = delete;
 
     // Return the data manager type name.
     // This defaults to the data type ID followed by VACEngine
@@ -314,16 +315,11 @@ public:
 	{ return sourceName_p; }
 
 protected:
-
     // Copy constructor is only used by clone().
     // (so it is made protected).
     VACEngine (const VACEngine<T>&);
 
 private:
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private).
-    VACEngine<T>& operator= (const VACEngine<T>&);
-
     // The column is in principle writable.
     // This does not mean it is actually writable, because that
     // depends on the fact if the table is writable.

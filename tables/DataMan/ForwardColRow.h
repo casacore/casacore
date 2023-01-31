@@ -95,6 +95,12 @@ public:
     // Destructor is mandatory.
     ~ForwardColumnIndexedRow();
 
+    // Copy constructor is not needed and therefore forbidden.
+    ForwardColumnIndexedRow (const ForwardColumnIndexedRow&) = delete;
+
+    // Assignment is not needed and therefore forbidden.
+    ForwardColumnIndexedRow& operator= (const ForwardColumnIndexedRow&) = delete;
+
     // Initialize the object.
     // This means binding the column to the column with the same name
     // in the original table.
@@ -102,13 +108,6 @@ public:
     void prepare (const Table& thisTable);
 
 private:
-    // Copy constructor is not needed and therefore forbidden
-    // (so make it private).
-    ForwardColumnIndexedRow (const ForwardColumnIndexedRow&);
-
-    // Assignment is not needed and therefore forbidden (so make it private).
-    ForwardColumnIndexedRow& operator= (const ForwardColumnIndexedRow&);
-
     // This data manager cannot handle changing array shapes.
     Bool canChangeShape() const;
 
@@ -308,6 +307,13 @@ public:
     // Destructor is mandatory.
     ~ForwardColumnIndexedRowEngine();
 
+    // The copy constructor is forbidden.
+    ForwardColumnIndexedRowEngine (const ForwardColumnIndexedRowEngine&) = delete;
+
+    // Assignment is forbidden.
+    ForwardColumnIndexedRowEngine& operator=
+	                          (const ForwardColumnIndexedRowEngine&) = delete;
+
     // Clone the engine object.
     DataManager* clone() const;
 
@@ -326,13 +332,6 @@ public:
     static void registerClass();
 
 private:
-    // The copy constructor is forbidden (so it is private).
-    ForwardColumnIndexedRowEngine (const ForwardColumnIndexedRowEngine&);
-
-    // Assignment is forbidden (so it is private).
-    ForwardColumnIndexedRowEngine& operator=
-	                          (const ForwardColumnIndexedRowEngine&);
-
     // Create the column object for the scalar column in this engine.
     DataManagerColumn* makeScalarColumn (const String& columnName,
 					 int dataType,

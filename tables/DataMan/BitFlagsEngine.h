@@ -211,6 +211,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Destructor is mandatory.
     ~BitFlagsEngine();
 
+    // Assignment is not needed and therefore forbidden
+    BitFlagsEngine<StoredType>& operator= (const BitFlagsEngine<StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
@@ -248,10 +251,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Copy constructor is only used by clone().
     // (so it is made private).
     BitFlagsEngine (const BitFlagsEngine<StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    BitFlagsEngine<StoredType>& operator= (const BitFlagsEngine<StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;

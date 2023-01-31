@@ -123,7 +123,7 @@ public:
   // Create with a TableLogSink.
   LoggerHolder (const String& logTableName, Bool isWritable);
 
-  // Copy constructor (reference sematics).
+  // Copy constructor (reference semantics).
   LoggerHolder (const LoggerHolder&);
 
   ~LoggerHolder();
@@ -429,6 +429,12 @@ public:
 
   ~LogHolderIter();
 
+  // Copy constructor is not needed, thus forbidden.
+  LogHolderIter (const LogHolderIter&) = delete;
+
+  // Assignment is not needed, thus forbidden.
+  LogHolderIter& operator= (const LogHolderIter&) = delete;
+
   // Increment to next message.
   // Returns False if at the end.
   Bool next();
@@ -441,13 +447,6 @@ public:
     { return *itsLogger; }
 
 private:
-  // Copy constructor is not needed, thus forbidden.
-  LogHolderIter (const LogHolderIter&);
-
-  // Assignment is not needed, thus forbidden.
-  LogHolderIter& operator= (const LogHolderIter&);
-
-
   const LoggerHolder* itsLogger;
   Bool                itsTempClosed;
   LogHolderIter*      itsParentIter;
