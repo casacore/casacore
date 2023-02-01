@@ -88,7 +88,7 @@ public:
   // applied.
   //  <group>
   template<class T>
-  static void openImage (std::unique_ptr<ImageInterface<T> >& image,
+  static void openImage (std::unique_ptr<ImageInterface<T>>& image,
                          const String& fileName);
 
   template<class T>
@@ -96,7 +96,7 @@ public:
                          const String& fileName);
 
   template<class T>
-  static std::shared_ptr<ImageInterface<T> > openImage (const String& fileName);
+  static std::shared_ptr<ImageInterface<T>> openImage (const String& fileName);
 //  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
@@ -122,7 +122,7 @@ public:
    template <typename T>
    static void addDegenerateAxes (
 		   LogIO& os,
-		   std::unique_ptr<ImageInterface<T> >& outImage,
+		   std::unique_ptr<ImageInterface<T>>& outImage,
 		   const ImageInterface<T>& inImage,
 		   const String& outFile, Bool direction,
 		   Bool spectral, const String& stokes,

@@ -186,7 +186,7 @@ template <class T> class FunctionHolder : public RecordTransformable {
 private:
   //# Data Members
   // Pointer to a Function
-  std::unique_ptr<Function<T> > hold_p;
+  std::unique_ptr<Function<T>> hold_p;
   // Aids (only filled after a succesful to/fromRecord
   // <group>
   mutable Types nf_p;
@@ -210,7 +210,7 @@ private:
   template <class U>
     Bool getType(String &error, Function<U> *&fn);
   void setParameters(Function<T> *&fn, const Vector<T> &params);
-  void setParameters(Function<AutoDiff<T> > *&fn, const Vector<T> &params);
+  void setParameters(Function<AutoDiff<T>> *&fn, const Vector<T> &params);
   // </group>
 };
 

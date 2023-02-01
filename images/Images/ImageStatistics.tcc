@@ -678,7 +678,7 @@ template <class T> Bool ImageStatistics<T>::_computeFlux(
     ReadOnlyVectorIterator<AccumType> sumIt(sum);
     ReadOnlyVectorIterator<AccumType> nPtsIt(npts);
     VectorIterator<AccumType> fluxIt(flux);
-    std::unique_ptr<ReadOnlyVectorIterator<Double> > beamAreaIter(
+    std::unique_ptr<ReadOnlyVectorIterator<Double>> beamAreaIter(
         gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : nullptr
     );
     uInt n1 = nPtsIt.vector().nelements();

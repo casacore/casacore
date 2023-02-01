@@ -71,15 +71,15 @@ void doOpens()
 				      True);
 
       {
-         std::unique_ptr<ImageInterface<Float> > im;
+         std::unique_ptr<ImageInterface<Float>> im;
          ImageUtilities::openImage(im, name1);
       }
       {
-         CountedPtr<ImageInterface<Float> > im;
+         CountedPtr<ImageInterface<Float>> im;
          im = ImageUtilities::openImage<Float>(name1);
       }
       {
-         std::unique_ptr<ImageInterface<Float> > im;
+         std::unique_ptr<ImageInterface<Float>> im;
          ImageUtilities::openImage(im, name2);
       }
    }
@@ -155,7 +155,7 @@ void doTypes()
   dir.removeRecursive();
 }
 
-void listWorld (const Vector<Quantum<Double> >& wPars)
+void listWorld (const Vector<Quantum<Double>>& wPars)
 {
    cerr << "World" << endl;
    if (wPars.nelements()==3){ 

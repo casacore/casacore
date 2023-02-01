@@ -500,7 +500,7 @@ void FunctionHolder<T>::setParameters(Function<T> *&fn,
 }
 
 template <class T>
-void FunctionHolder<T>::setParameters(Function<AutoDiff<T> > *&fn,
+void FunctionHolder<T>::setParameters(Function<AutoDiff<T>> *&fn,
 				      const Vector<T> &params) {
   for (uInt i=0; i<fn->nparameters(); ++i) {
     (*fn)[i] = AutoDiff<T>(params[i], fn->nparameters(), i);

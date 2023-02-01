@@ -185,8 +185,8 @@ public:
 
 private:
   //# itsImagePtr points to the parent image.
-  std::unique_ptr<ImageInterface<T> > itsImagePtr;
-  std::unique_ptr<ExtendLattice<T> >  itsExtLatPtr;
+  std::unique_ptr<ImageInterface<T>> itsImagePtr;
+  std::unique_ptr<ExtendLattice<T>>  itsExtLatPtr;
 
   //# Make members of parent class known.
 public:

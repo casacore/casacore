@@ -51,7 +51,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T> void ImageUtilities::addDegenerateAxes(
-        LogIO& os, std::unique_ptr<ImageInterface<T> >& outImage,
+        LogIO& os, std::unique_ptr<ImageInterface<T>>& outImage,
 	const ImageInterface<T>& inImage, const String& outFile,
 	Bool direction, Bool spectral, const String& stokes,
 	Bool linear, Bool tabular, Bool overwrite,
@@ -286,7 +286,7 @@ template <typename T> void ImageUtilities::openImage(
 }
 
 template <typename T> void ImageUtilities::openImage(
-        std::unique_ptr<ImageInterface<T> >& image,
+        std::unique_ptr<ImageInterface<T>>& image,
 	const String& fileName
 ) {
    ImageInterface<T>* p = 0;
@@ -295,12 +295,12 @@ template <typename T> void ImageUtilities::openImage(
 }
 
 template <typename T>
-std::shared_ptr<ImageInterface<T> > ImageUtilities::openImage
+std::shared_ptr<ImageInterface<T>> ImageUtilities::openImage
 (const String& fileName)
 {
    ImageInterface<T>* p = 0;
    ImageUtilities::openImage(p, fileName);
-   return std::shared_ptr<ImageInterface<T> > (p);
+   return std::shared_ptr<ImageInterface<T>> (p);
 }
 
 } //# NAMESPACE CASACORE - END
