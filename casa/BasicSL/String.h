@@ -1035,12 +1035,14 @@ inline ostream &operator<<(ostream &s, const String &x) {
 
 
 // Define the hash function for String, so unordered_set<String> can be used.
+namespace std {
 template<>
-struct std::hash<casacore::String>
+struct hash<casacore::String>
 {
   std::size_t operator()(casacore::String const& k) const noexcept
     { return std::hash<std::string>()(k); }
 };
 
+}
 
 #endif
