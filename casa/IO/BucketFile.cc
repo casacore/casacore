@@ -67,12 +67,12 @@ BucketFile::BucketFile (const String& fileName,
 {
     // Create the file.
     if (mfile_p) {
-      file_p = new MFFileIO (mfile_p, name_p, ByteIO::New);
+      file_p.reset (new MFFileIO (mfile_p, name_p, ByteIO::New));
       isMapped_p = False;
       bufSize_p  = 0;
     } else {
       fd_p   = FiledesIO::create (name_p.chars());
-      file_p = new FiledesIO (fd_p, name_p);
+      file_p.reset (new FiledesIO (fd_p, name_p));
     }
     createMapBuf();
 }
@@ -101,12 +101,12 @@ BucketFile::~BucketFile()
     close();
 }
 
-CountedPtr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
+std::shared_ptr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
 {
   if (mfile_p) {
     return file_p;
   }
-  return new FilebufIO (fd_p, bufferSize);
+  return std::shared_ptr<ByteIO>(new FilebufIO (fd_p, bufferSize));
 }
 
 
@@ -114,7 +114,7 @@ void BucketFile::close()
 {
     if (file_p) {
         deleteMapBuf();
-	file_p = CountedPtr<ByteIO>();
+	file_p.reset();
         FiledesIO::close (fd_p);
 	fd_p   = -1;
     }
@@ -125,11 +125,11 @@ void BucketFile::open()
 {
     if (! file_p) {
       if (mfile_p) {
-        file_p = new MFFileIO (mfile_p, name_p,
-                               isWritable_p ? ByteIO::Update : ByteIO::Old);
+        file_p.reset (new MFFileIO (mfile_p, name_p,
+                                    isWritable_p ? ByteIO::Update : ByteIO::Old));
       } else {
         fd_p   = FiledesIO::open (name_p.chars(), isWritable_p);
-        file_p = new FiledesIO (fd_p, name_p);
+        file_p.reset (new FiledesIO (fd_p, name_p));
       }
       createMapBuf();
     }
@@ -168,7 +168,7 @@ void BucketFile::remove()
     } else {
       DOos::remove (name_p, False, False);
     }
-    file_p = CountedPtr<ByteIO>();
+    file_p.reset();
 }
 
 

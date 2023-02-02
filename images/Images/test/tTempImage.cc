@@ -136,9 +136,9 @@ void doIt (TempImage<Int>& scratch)
 // Stream, unstream, and check the image.
 void streamImage (ImageInterface<Int>& img)
 {
-  MemoryIO membuf;
-  CanonicalIO canio (&membuf);
-  AipsIO os (&canio);
+  std::shared_ptr<ByteIO> membuf(new MemoryIO());
+  std::shared_ptr<TypeIO> canio (new CanonicalIO(membuf));
+  AipsIO os (canio);
   // Write the image.
   os.putstart("Image", 1);
   {

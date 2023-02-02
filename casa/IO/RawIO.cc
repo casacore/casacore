@@ -28,8 +28,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
-: TypeIO (byteIO, takeOver)
+RawIO::RawIO (const std::shared_ptr<ByteIO>& byteIO)
+: TypeIO (byteIO)
 {}
 
 RawIO::RawIO (const RawIO& that)

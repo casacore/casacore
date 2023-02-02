@@ -94,11 +94,10 @@ public:
     // This creates an invalid object, but is present for convenience.
     ByteSinkSource();
 
-    // Construct from given TypeIO object.  The constructor does not copy the
-    // object, but only keeps a pointer to it. If takeOver is true the this
-    // class will delete the supplied pointer. Otherwise the caller is
-    // responsible for this.
-    ByteSinkSource (TypeIO* typeIO, Bool takeOver=False);
+    // Construct from given TypeIO object.
+    // The constructor does not copy the object, but only keeps a pointer to it.
+    // It takes over the given pointer and deletes.
+    ByteSinkSource (const std::shared_ptr<TypeIO>& typeIO);
 
     // The copy constructor uses reference semantics
     ByteSinkSource (const ByteSinkSource& sinkSource);

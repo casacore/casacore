@@ -28,7 +28,7 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteIO.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 //# The following should be a forward declaration. But our Complex & DComplex
 //# classes are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
@@ -80,7 +80,9 @@ public:
     // Constructor.
     // The read/write functions will use the given ByteIO object
     // as the data store.
-    explicit TypeIO (ByteIO* byteIO, Bool takeOver=False);
+    // This class takes over the pointers and will be responsible for deleting the
+    // ByteIO pointer.
+    explicit TypeIO (const std::shared_ptr<ByteIO>& byteIO);
 
     virtual ~TypeIO();
     
@@ -151,7 +153,7 @@ public:
 
 protected:    
     // This variable keeps a pointer to a ByteIO.
-    CountedPtr<ByteIO> itsByteIO;
+    std::shared_ptr<ByteIO> itsByteIO;
 
     // The copy constructor uses reference semantics.
     TypeIO (const TypeIO& TypeIO);

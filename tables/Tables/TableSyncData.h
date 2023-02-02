@@ -120,15 +120,16 @@ private:
     uInt        itsModifyCounter;
     uInt        itsTableChangeCounter;
     Block<uInt> itsDataManChangeCounter;
-    MemoryIO    itsMemIO;
+    MemoryIO*   itsMemIO;                  //# deleted by shared_ptr below
     AipsIO      itsAipsIO;
+    std::shared_ptr<ByteIO> itsByteIO;     //# deletes itsMemIO
 };
 
 
 
 inline MemoryIO& TableSyncData::memoryIO()
 {
-    return itsMemIO;
+    return *itsMemIO;
 }
 inline uInt TableSyncData::getModifyCounter() const
 {

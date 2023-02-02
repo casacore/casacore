@@ -97,18 +97,19 @@ void doit (Bool doExcp)
   }
 
   cout << endl << "Test using MemoryIO ..." << endl;
-  MemoryIO membuf;
+  MemoryIO* membuf = new MemoryIO();
+  std::shared_ptr<ByteIO> bmembuf(membuf);
   {
-    RawIO rawio(&membuf);
-    AipsIO io2(&rawio);
+    std::shared_ptr<TypeIO> rawio(new RawIO(bmembuf));
+    AipsIO io2(rawio);
     doIO (doExcp, True, io2);
   }
-  const uChar* iobuf = membuf.getBuffer();
-  uInt bufleng = membuf.length();
-  MemoryIO membuf2(iobuf, bufleng);
+  const uChar* iobuf = membuf->getBuffer();
+  uInt bufleng = membuf->length();
+  std::shared_ptr<ByteIO> bmembuf2(new MemoryIO(iobuf, bufleng));
   {
-    RawIO rawio(&membuf2);
-    AipsIO io2(&rawio);
+    std::shared_ptr<TypeIO> rawio(new RawIO(bmembuf2));
+    AipsIO io2(rawio);
     doIO (doExcp, False, io2);
   }
 }

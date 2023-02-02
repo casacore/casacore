@@ -32,8 +32,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSinkSource::ByteSinkSource ()
 {}
 
-ByteSinkSource::ByteSinkSource (TypeIO* typeIO, Bool takeOver)
-  : BaseSinkSource (typeIO, takeOver)
+ByteSinkSource::ByteSinkSource (const std::shared_ptr<TypeIO>& typeIO)
+  : BaseSinkSource (typeIO)
 {}
 
 ByteSinkSource::ByteSinkSource (const ByteSinkSource& sinkSource)
