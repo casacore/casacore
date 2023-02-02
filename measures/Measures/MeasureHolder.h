@@ -28,9 +28,9 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/Containers/Block.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -234,7 +234,7 @@ private:
   
   //# Data Members
   // Pointer to a Measure
-  PtrHolder<Measure> hold_p;
+  std::unique_ptr<Measure> hold_p;
   // Block of pointers to measure values to make a faster interface
   Block<MeasValue *> mvhold_p;
   // Should the mvhold_p be converted into record?

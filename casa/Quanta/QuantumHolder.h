@@ -29,9 +29,9 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/casa/BasicSL/Complexfwd.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -63,18 +63,18 @@ template <class Qtype> class Quantum;
 // can handle toRecord() and fromRecord() conversions.
 // A QuantumHolder
 // is created empty, from a Quantum (e.g. a <src>Quantum<Double></src>) or a
-// <src>Quantum<Vector<Float> ></src>).
+// <src>Quantum<Vector<Float>></src>).
 //
 // The accepted range of Quantums is:
 // <ul>
 //  <li> <src>Quantum<Int>, Quantum<Float>, Quantum<Double> == Quantity</src>
 //  <li> <src>Quantum<Complex>, Quantum<DComplex></src>
-//  <li> <src>Quantum<Vector<Int> >, Quantum<Vector<Float> ></src>, 
-//	 <src>Quantum<Vector<Double> ></src>
-//  <li> <src>Quantum<Vector<Complex> >, Quantum<Vector<DComplex> ></src>
-//  <li> <src>Quantum<Array<Int> >, Quantum<Array<Float> ></src>, 
-//	 <src>Quantum<Array<Double> ></src>
-//  <li> <src>Quantum<Array<Complex> >, Quantum<Array<DComplex> ></src>
+//  <li> <src>Quantum<Vector<Int>>, Quantum<Vector<Float>></src>, 
+//	 <src>Quantum<Vector<Double>></src>
+//  <li> <src>Quantum<Vector<Complex>>, Quantum<Vector<DComplex>></src>
+//  <li> <src>Quantum<Array<Int>>, Quantum<Array<Float>></src>, 
+//	 <src>Quantum<Array<Double>></src>
+//  <li> <src>Quantum<Array<Complex>>, Quantum<Array<DComplex>></src>
 // </ul>
 // Scalars in the same group can be converted to any in the same group (e.g.
 // Int to Double); Vectors of length 1 can be converted to scalars in the 
@@ -185,16 +185,16 @@ public:
   const Quantum<Int> &asQuantumInt() ;
   const Quantum<Complex> &asQuantumComplex() ;
   const Quantum<DComplex> &asQuantumDComplex() ;
-  const Quantum<Vector<Double> > &asQuantumVectorDouble() ;
-  const Quantum<Vector<Float> > &asQuantumVectorFloat() ;
-  const Quantum<Vector<Int> > &asQuantumVectorInt() ;
-  const Quantum<Vector<Complex> > &asQuantumVectorComplex() ;
-  const Quantum<Vector<DComplex> > &asQuantumVectorDComplex() ;
-  const Quantum<Array<Double> > &asQuantumArrayDouble() ;
-  const Quantum<Array<Float> > &asQuantumArrayFloat() ;
-  const Quantum<Array<Int> > &asQuantumArrayInt() ;
-  const Quantum<Array<Complex> > &asQuantumArrayComplex() ;
-  const Quantum<Array<DComplex> > &asQuantumArrayDComplex() ;
+  const Quantum<Vector<Double>> &asQuantumVectorDouble() ;
+  const Quantum<Vector<Float>> &asQuantumVectorFloat() ;
+  const Quantum<Vector<Int>> &asQuantumVectorInt() ;
+  const Quantum<Vector<Complex>> &asQuantumVectorComplex() ;
+  const Quantum<Vector<DComplex>> &asQuantumVectorDComplex() ;
+  const Quantum<Array<Double>> &asQuantumArrayDouble() ;
+  const Quantum<Array<Float>> &asQuantumArrayFloat() ;
+  const Quantum<Array<Int>> &asQuantumArrayInt() ;
+  const Quantum<Array<Complex>> &asQuantumArrayComplex() ;
+  const Quantum<Array<DComplex>> &asQuantumArrayDComplex() ;
   // </group>
 
   // Create a Quantum from a record or a string.
@@ -227,7 +227,7 @@ private:
 
 //# Data Members
   // Pointer to a Quantity
-  PtrHolder<QBase> hold_p;
+  std::unique_ptr<QBase> hold_p;
 
 //# General member functions
   // Convert to a different real scalar quantum

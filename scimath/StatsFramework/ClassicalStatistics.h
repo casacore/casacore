@@ -39,8 +39,6 @@
 
 namespace casacore {
 
-template <class T> class PtrHolder;
-
 // Class to calculate statistics in a "classical" sense, ie using accumulators
 // with no special filtering beyond optional range filtering etc.
 //
