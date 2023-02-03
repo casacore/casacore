@@ -92,7 +92,7 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 			<< shape << LogIO::POST;
 		outImage.reset(new PagedImage<T>(shape, cSys, outFile));
 	}
-	ImageInterface<T>* pOutImage = outImage.ptr();
+	ImageInterface<T>* pOutImage = outImage.get();
 
 	// Generate output masks
 
