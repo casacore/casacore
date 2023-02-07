@@ -433,7 +433,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   TaQLNodeResult TaQLNodeHandler::visitJoinNode (const TaQLJoinNodeRep& node)
   {
-    //# Add a TableParseJoin object.
+    // Add a TableParseJoin object.
     TableParseJoin& joinObj = topStack()->addJoin();
     AlwaysAssert (node.itsTables.isValid(), AipsError);
     const std::vector<TaQLNode>& nodes = node.itsTables.getMultiRep()->itsNodes;
