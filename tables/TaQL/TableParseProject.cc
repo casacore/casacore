@@ -818,6 +818,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
       // If it is a column, check if all tables used have the same size.
       // Note: the projected table (used above) should not be checked.
+      // Don't do that for join tables.
       if (tab.tableDesc().isColumn (columnName)  &&  tabPair.joinIndex() < 0) {
         if (firstColTable_p.isNull()) {
           firstColTable_p = tab;
@@ -835,7 +836,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       try {
         TableExprNode node(TableExprNode::keyCol (tabPair.getTableInfo(),
                                                   columnName, fieldNames));
-        tpq.addApplySelNode (node);
+        Bool isJoin = False;
+        if (tabPair.joinIndex() >= 0) {
+          // See if it is a column expr; it could have been a keyword.
+          if (node.getRep()->exprType() == TableExprNodeRep::Variable) {
+            node = TaQLJoinColumn::makeColumnNode (node.getRep(),
+                                                   tpq.joins()[tabPair.joinIndex()]);
+            isJoin = True;
+          }
+        }
+        if (!isJoin) {
+          tpq.addApplySelNode (node);
+        }
         return node;
       } catch (const TableError&) {
         throw TableInvExpr(name + " is an unknown column (or keyword) in table "

@@ -199,9 +199,11 @@ private:
   // Handle a Multi RecFld representing a Record.
   Record handleMultiRecFld (const TaQLNode& node);
 
+  // Handle the MSID function.
+  TableExprNode handleIdFunc (const TaQLFuncNodeRep& node);
 
-  //# Use vector instead of stack because it has random access
-  //# (which is used in TableParse.cc).
+  //# Data members
+  //# Use vector instead of stack because random access is needed.
   std::vector<TableParseQuery*> itsStack;
   //# The temporary tables referred to by $i in the TaQL string.
   std::vector<const Table*> itsTempTables;
