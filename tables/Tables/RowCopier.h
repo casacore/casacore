@@ -30,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -193,7 +193,7 @@ public:
 private:
     // The ColumnHolder class exists only in the .cc file, it is what
     // ultimately does the work.
-    CountedPtr<ColumnHolder> columns_p;
+    std::shared_ptr<ColumnHolder> columns_p;
 };
 
 

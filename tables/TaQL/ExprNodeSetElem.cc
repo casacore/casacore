@@ -155,26 +155,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TENShPtr res;
     switch (dataType()) {
     case NTBool:
-      res = new TableExprNodeConstBool (expr->getBool (id));
+      res.reset (new TableExprNodeConstBool (expr->getBool (id)));
       break;
     case NTInt:
-      res = new TableExprNodeConstInt (expr->getInt (id));
+      res.reset (new TableExprNodeConstInt (expr->getInt (id)));
       break;
     case NTDouble:
-      res = new TableExprNodeConstDouble (expr->getDouble (id));
+      res.reset (new TableExprNodeConstDouble (expr->getDouble (id)));
       break;
     case NTComplex:
-      res = new TableExprNodeConstDComplex (expr->getDComplex (id));
+      res.reset (new TableExprNodeConstDComplex (expr->getDComplex (id)));
       break;
     case NTString:
-      res = new TableExprNodeConstString (expr->getString (id));
+      res.reset (new TableExprNodeConstString (expr->getString (id)));
       break;
     case NTDate:
       // Note that the increment or width for a DateTime is double.
       if (expr->dataType() == NTDate) {
-        res = new TableExprNodeConstDate (expr->getDate (id));
+        res.reset (new TableExprNodeConstDate (expr->getDate (id)));
       } else {
-        res = new TableExprNodeConstDouble (expr->getDouble (id));
+        res.reset (new TableExprNodeConstDouble (expr->getDouble (id)));
       }
       break;
     default:

@@ -693,7 +693,7 @@ void ArrayColumnBase::handleSlices (const Vector<Vector<Slice> >& slices,
   uInt nrdim = slicer.ndim();
   IPosition pos(nrdim, 0);
   while (True) {
-    CountedPtr<ArrayBase> refArr
+    std::shared_ptr<ArrayBase> refArr
       (arr.getSection (Slicer(arrStart, arrEnd, Slicer::endIsLast)));
     functor.apply (Slicer(colStart, colLen, colIncr), *refArr);
     uInt i;

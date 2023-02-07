@@ -102,7 +102,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Create the correct aggregate function object.
     // It is also kept in case it is a lazy aggregate function.
-    virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
+    virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Is the aggregate function a lazy or an immediate one?
     virtual Bool isLazyAggregate() const;
@@ -122,7 +122,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncBase* doMakeGroupAggrFunc();
 
     //# Data members.
-    CountedPtr<TableExprGroupFuncBase> itsFunc;
+    std::shared_ptr<TableExprGroupFuncBase> itsFunc;
   };
 
 

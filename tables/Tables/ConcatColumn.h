@@ -216,7 +216,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Also get a comparison function if undefined.
     // The function freeIterBuf must be called to free the buffers.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       CountedPtr<BaseCompare>& cmpObj);
+			       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);

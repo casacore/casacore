@@ -211,11 +211,11 @@ public:
   // all possible values of ANTENNA1 for the first DDId, then it will start
   // the iterations for the second DDId and so on.
   MSIter(const MeasurementSet& ms,
-         const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
+         const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns);
 
   // Same as above with multiple MSs as input.
   MSIter(const Block<MeasurementSet>& mss,
-         const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
+         const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns);
 
   // Copy construct. This calls the assigment operator.
   MSIter(const MSIter & other);
@@ -404,7 +404,7 @@ protected:
   // handle the construction details
   void construct(const Block<Int>& sortColumns, Bool addDefaultSortColumns);
   // handle the construction details using explicit comparison functions
-  void construct(const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns);
+  void construct(const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns);
   // advance the iteration
   void advance();
   // set the iteration state
@@ -500,8 +500,8 @@ protected:
   MFrequency restFrequency_p;
   MPosition telescopePosition_p;
 
-  CountedPtr<MSInterval> timeComp_p; // Points to the time comparator.
-                                     // 0 if not using a time interval.
+  std::shared_ptr<MSInterval> timeComp_p; // Points to the time comparator.
+                                          // 0 if not using a time interval.
 };
 
 inline Bool MSIter::more() const { return more_p;}

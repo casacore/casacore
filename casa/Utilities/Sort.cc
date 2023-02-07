@@ -39,7 +39,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-SortKey::SortKey (const void* dat, const CountedPtr<BaseCompare>& cmpobj,
+SortKey::SortKey (const void* dat, const std::shared_ptr<BaseCompare>& cmpobj,
                   uInt inc, int opt)
 : order_p   (opt),
   data_p    (dat),
@@ -211,7 +211,7 @@ void Sort::sortKey (const void* dat, DataType dt, uInt inc, Order ord)
 {
     addKey (dat, dt, inc, ord);
 }
-void Sort::sortKey (const void* dat, const CountedPtr<BaseCompare>& cmp,
+void Sort::sortKey (const void* dat, const std::shared_ptr<BaseCompare>& cmp,
                     uInt inc, Order ord)
 {
     addKey (new SortKey(dat, cmp, inc, ord));
@@ -223,7 +223,7 @@ void Sort::sortKey (uInt off, DataType dt, Order ord)
     }
     addKey ((char*)data_p+off, dt, size_p, ord);
 }
-void Sort::sortKey (uInt off, const CountedPtr<BaseCompare>& cmp, Order ord)
+void Sort::sortKey (uInt off, const std::shared_ptr<BaseCompare>& cmp, Order ord)
 {
     if (data_p == 0) {
 	throw SortNoData();

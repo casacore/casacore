@@ -101,7 +101,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // UDFs do not need a TableExprGroupFuncBase,
     // so TableExprGroupNull is returned.
-    CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc() override;
+    std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc() override;
 
     // Functions to get the desired result of a function
     // <group>

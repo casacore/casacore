@@ -460,39 +460,39 @@ ObjCompareFunc* ValType::getCmpFunc (DataType dt)
 }
 
 //# Get the comparison object.
-CountedPtr<BaseCompare> ValType::getCmpObj (DataType dt)
+std::shared_ptr<BaseCompare> ValType::getCmpObj (DataType dt)
 {
     switch (dt) {
     case TpBool:
-        return new ObjCompare<Bool>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<Bool>());
     case TpChar:
-        return new ObjCompare<Char>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<Char>());
     case TpUChar:
-        return new ObjCompare<uChar>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<uChar>());
     case TpShort:
-        return new ObjCompare<Short>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<Short>());
     case TpUShort:
-        return new ObjCompare<uShort>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<uShort>());
     case TpInt:
-        return new ObjCompare<Int>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<Int>());
     case TpUInt:
-        return new ObjCompare<uInt>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<uInt>());
     case TpInt64:
-        return new ObjCompare<Int64>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<Int64>());
     case TpFloat:
-        return new ObjCompare<float>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<float>());
     case TpDouble:
-        return new ObjCompare<double>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<double>());
     case TpComplex:
-        return new ObjCompare<Complex>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<Complex>());
     case TpDComplex:
-        return new ObjCompare<DComplex>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<DComplex>());
     case TpString:
-        return new ObjCompare<String>();
+        return std::shared_ptr<BaseCompare> (new ObjCompare<String>());
     default:
 	break;
     }
-    return CountedPtr<BaseCompare>();
+    return std::shared_ptr<BaseCompare>();
 }
 
 } //# NAMESPACE CASACORE - END

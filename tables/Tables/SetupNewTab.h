@@ -176,16 +176,16 @@ public:
 
     // Test if object is already in use.
     Bool isUsed() const
-        { return colSetPtr_p.null(); }
+        { return !colSetPtr_p; }
 
     // Get pointer to column set.
     // This function is used by PlainTable.
-    const CountedPtr<ColumnSet>& columnSetPtr() const
+    const std::shared_ptr<ColumnSet>& columnSetPtr() const
 	{ return colSetPtr_p; }
 
     // Get pointer to table description.
     // This function is used by PlainTable.
-    const CountedPtr<TableDesc>& tableDescPtr() const
+    const std::shared_ptr<TableDesc>& tableDescPtr() const
 	{ return tdescPtr_p; }
 
     // Set object to in use by a (Plain)Table object.
@@ -204,8 +204,8 @@ private:
     StorageOption storageOpt_p;
     // Marked for delete?
     Bool          delete_p;
-    CountedPtr<TableDesc> tdescPtr_p;
-    CountedPtr<ColumnSet> colSetPtr_p;  //# null = object is already used by a Table
+    std::shared_ptr<TableDesc> tdescPtr_p;
+    std::shared_ptr<ColumnSet> colSetPtr_p;  //# null = object is already used by a Table
     std::map<void*,void*> dataManMap_p;
 
     // Setup the new table.
@@ -438,16 +438,16 @@ public:
 
 private:
     // Actual object.
-    CountedPtr<SetupNewTableRep> newTable_p;
+    std::shared_ptr<SetupNewTableRep> newTable_p;
 
     // Get pointer to column set.
     // This function is used by PlainTable.
-    const CountedPtr<ColumnSet>& columnSetPtr() const
+    const std::shared_ptr<ColumnSet>& columnSetPtr() const
 	{ return newTable_p->columnSetPtr(); }
 
     // Get pointer to table description.
     // This function is used by PlainTable.
-    const CountedPtr<TableDesc>& tableDescPtr() const
+    const std::shared_ptr<TableDesc>& tableDescPtr() const
 	{ return newTable_p->tableDescPtr(); }
 
     // Set object to in use by a (Plain)Table object.

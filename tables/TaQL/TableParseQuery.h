@@ -280,7 +280,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                               Bool update=True);
 
     // Add an update object.
-    void addUpdate (const CountedPtr<TableParseUpdate>& upd)
+    void addUpdate (const std::shared_ptr<TableParseUpdate>& upd)
       { update_p.push_back (upd); }
 
     // Set the insert expressions for all rows.
@@ -321,8 +321,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // for the rows in the given rownrs vector.
     void doUpdate (Bool showTimings, const Table& origTable,
                    Table& updTable, const Vector<rownr_t>& rownrs,
-                   const CountedPtr<TableExprGroupResult>& groups =
-                   CountedPtr<TableExprGroupResult>());
+                   const std::shared_ptr<TableExprGroupResult>& groups =
+                   std::shared_ptr<TableExprGroupResult>());
 
     // Do the insert step and return a selection containing the new rows.
     Table doInsert (Bool showTimings, Table& table);
@@ -336,13 +336,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Do the projection step returning a table containing the projection.
     Table doProject (Bool showTimings, const Table&,
-                     const CountedPtr<TableExprGroupResult>& groups =
-                     CountedPtr<TableExprGroupResult>());
+                     const std::shared_ptr<TableExprGroupResult>& groups =
+                     std::shared_ptr<TableExprGroupResult>());
 
     // Do the projection containing column expressions.
     // Use the selected or unselected columns depending on <src>useSel</src>.
     Table doProjectExpr (Bool useSel,
-                         const CountedPtr<TableExprGroupResult>& groups);
+                         const std::shared_ptr<TableExprGroupResult>& groups);
 
     // Create a subtable (used by createTable).
     Table createSubTable (const String& subtableName,
@@ -359,12 +359,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Table adjustApplySelNodes (const Table&);
 
     // Do the groupby/aggregate step and return its result.
-    CountedPtr<TableExprGroupResult> doGroupby (bool showTimings);
+    std::shared_ptr<TableExprGroupResult> doGroupby (bool showTimings);
 
     // Do the HAVING step.
     // It returns False if no HAVING step was given.
     Bool doHaving (Bool showTimings,
-                   const CountedPtr<TableExprGroupResult>& groups);
+                   const std::shared_ptr<TableExprGroupResult>& groups);
 
     // Do the sort step.
     void doSort (Bool showTimings);
@@ -422,7 +422,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# The possible stride in offset:endrow:stride.
     Int64 stride_p;
     //# The update and insert list.
-    std::vector<CountedPtr<TableParseUpdate>> update_p;
+    std::vector<std::shared_ptr<TableParseUpdate>> update_p;
     //# The insert expressions (possibly for multiple rows).
     std::vector<TableExprNode> insertExprs_p;
     //# The table selection to be inserted.

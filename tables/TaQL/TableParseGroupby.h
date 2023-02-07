@@ -101,35 +101,35 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Execute the grouping and aggregation and return the results.
     // The rownrs are adapted to the resulting rownrs consisting of the
     // first row of each group.
-    CountedPtr<TableExprGroupResult> execGroupAggr (Vector<rownr_t>& rownrs) const;
+    std::shared_ptr<TableExprGroupResult> execGroupAggr (Vector<rownr_t>& rownrs) const;
 
     // Execute the HAVING clause (if present).
     // Return False in no HAVING.
     Bool execHaving (Vector<rownr_t>& rownrs,
-                     const CountedPtr<TableExprGroupResult>& groups);
+                     const std::shared_ptr<TableExprGroupResult>& groups);
 
   private:
     // Do the grouping and aggregation and return the results.
     // It distinguishes the immediate and lazy aggregate functions.
     // The rownrs are adapted to the resulting rownrs consisting of the
     // first row of each group.
-    CountedPtr<TableExprGroupResult> aggregate (Vector<rownr_t>& rownrs) const;
+    std::shared_ptr<TableExprGroupResult> aggregate (Vector<rownr_t>& rownrs) const;
 
     // Do the grouping and aggregation and return the results.
     // It consists of a single COUNTALL operation.
     // The rownrs are adapted to the resulting rownrs consisting of the
     // first row of each group.
-    CountedPtr<TableExprGroupResult> countAll (Vector<rownr_t>& rownrs) const;
+    std::shared_ptr<TableExprGroupResult> countAll (Vector<rownr_t>& rownrs) const;
 
     // Create the set of aggregate functions and groupby keys.
-    std::vector<CountedPtr<TableExprGroupFuncSet>> multiKey
+    std::vector<std::shared_ptr<TableExprGroupFuncSet>> multiKey
     (const std::vector<TableExprNodeRep*>&, const Vector<rownr_t>& rownrs) const;
 
     // Create the set of aggregate functions and groupby keys in case
     // a single groupby key is given.
     // This offers much faster map access then the general multipleKeys.
     template<typename T>
-    std::vector<CountedPtr<TableExprGroupFuncSet>> singleKey
+    std::vector<std::shared_ptr<TableExprGroupFuncSet>> singleKey
     (const std::vector<TableExprNodeRep*>& nodes,
      const Vector<rownr_t>& rownrs) const
     {
@@ -138,7 +138,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // groupby order.
       // A map<key,int> is used to keep track of the results where the int
       // is the index in a vector of a set of aggregate function objects.
-      std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+      std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets;
       std::map<T, int> keyFuncMap;
       T lastKey = std::numeric_limits<T>::max();
       int groupnr = -1;
@@ -154,7 +154,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           if (iter == keyFuncMap.end()) {
             groupnr = funcSets.size();
             keyFuncMap[key] = groupnr;
-            funcSets.push_back (new TableExprGroupFuncSet (nodes));
+            funcSets.push_back (std::shared_ptr<TableExprGroupFuncSet>
+                                (new TableExprGroupFuncSet (nodes)));
           } else {
             groupnr = iter->second;
           }

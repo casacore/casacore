@@ -122,7 +122,7 @@ RowCopier::RowCopier(Table &out, const Table &in)
 	throw(TableError("RowCopier: output table must be writable"));
     }
 
-    columns_p = new ColumnHolder(out,in);
+    columns_p.reset (new ColumnHolder(out,in));
     for (uInt i=0; i < out.tableDesc().ncolumn(); i++) {
 	TableColumn outCol(out, i);
         String name (outCol.columnDesc().name());
@@ -141,7 +141,7 @@ RowCopier::RowCopier(Table &out, const Table &in,
 	throw(TableError("RowCopier: output table must be writable"));
     }
 
-    columns_p = new ColumnHolder(out,in);
+    columns_p.reset (new ColumnHolder(out,in));
 
     if (inNames.nelements() != outNames.nelements()) {
 	throw(TableError("RowCopier: Non-conformant column name vectors"));

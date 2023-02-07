@@ -60,180 +60,180 @@ TableExprNode::TableExprNode() : node_p(0)
 //# These objects are created as temporaries by the compiler.
 TableExprNode::TableExprNode (const Bool& val)
 {
-    node_p = new TableExprNodeConstBool (val);
+    node_p.reset (new TableExprNodeConstBool (val));
 }
 TableExprNode::TableExprNode (const Int& val)
 {
-    node_p = new TableExprNodeConstInt (val);
+    node_p.reset (new TableExprNodeConstInt (val));
 }
 TableExprNode::TableExprNode (const uInt& val)
 {
-    node_p = new TableExprNodeConstInt (val);
+    node_p.reset (new TableExprNodeConstInt (val));
 }
 TableExprNode::TableExprNode (const Int64& val)
 {
-    node_p = new TableExprNodeConstInt (val);
+    node_p.reset (new TableExprNodeConstInt (val));
 }
 TableExprNode::TableExprNode (const uInt64& val)
 {
-    node_p = new TableExprNodeConstInt (val);
+    node_p.reset (new TableExprNodeConstInt (val));
 }
 TableExprNode::TableExprNode (const Float& val)
 {
-    node_p = new TableExprNodeConstDouble (Double (val));
+    node_p.reset (new TableExprNodeConstDouble (Double (val)));
 }
 TableExprNode::TableExprNode (const Double& val)
 {
-    node_p = new TableExprNodeConstDouble (val);
+    node_p.reset (new TableExprNodeConstDouble (val));
 }
 TableExprNode::TableExprNode (const Complex& val)
 {
-    node_p = new TableExprNodeConstDComplex (DComplex(val));
+    node_p.reset (new TableExprNodeConstDComplex (DComplex(val)));
 }
 TableExprNode::TableExprNode (const DComplex& val)
 {
-    node_p = new TableExprNodeConstDComplex (val);
+    node_p.reset (new TableExprNodeConstDComplex (val));
 }
 TableExprNode::TableExprNode (const String& val)
 {
-    node_p = new TableExprNodeConstString (val);
+    node_p.reset (new TableExprNodeConstString (val));
 }
 TableExprNode::TableExprNode (const std::string& val)
 {
-    node_p = new TableExprNodeConstString (String(val));
+    node_p.reset (new TableExprNodeConstString (String(val)));
 }
 TableExprNode::TableExprNode (const char* val)
 {
-    node_p = new TableExprNodeConstString (String(val));
+    node_p.reset (new TableExprNodeConstString (String(val)));
 }
 TableExprNode::TableExprNode (const Regex& val)
 {
-    node_p = new TableExprNodeConstRegex (TaqlRegex(val));
+    node_p.reset (new TableExprNodeConstRegex (TaqlRegex(val)));
 }
 TableExprNode::TableExprNode (const StringDistance& val)
 {
-    node_p = new TableExprNodeConstRegex (TaqlRegex(val));
+    node_p.reset (new TableExprNodeConstRegex (TaqlRegex(val)));
 }
 TableExprNode::TableExprNode (const TaqlRegex& val)
 {
-    node_p = new TableExprNodeConstRegex (val);
+    node_p.reset (new TableExprNodeConstRegex (val));
 }
 TableExprNode::TableExprNode (const MVTime& val)
 {
-    node_p = new TableExprNodeConstDate (val);
+    node_p.reset (new TableExprNodeConstDate (val));
 }
 TableExprNode::TableExprNode (const Array<Bool>& val)
 {
-    node_p = new TableExprNodeArrayConstBool (val);
+    node_p.reset (new TableExprNodeArrayConstBool (val));
 }
 TableExprNode::TableExprNode (const Array<uChar>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<Short>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<uShort>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<Int>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<uInt>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<Int64>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<uInt64>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const Array<Float>& val)
 {
-    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p.reset (new TableExprNodeArrayConstDouble (val));
 }
 TableExprNode::TableExprNode (const Array<Double>& val)
 {
-    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p.reset (new TableExprNodeArrayConstDouble (val));
 }
 TableExprNode::TableExprNode (const Array<Complex>& val)
 {
-    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p.reset (new TableExprNodeArrayConstDComplex (val));
 }
 TableExprNode::TableExprNode (const Array<DComplex>& val)
 {
-    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p.reset (new TableExprNodeArrayConstDComplex (val));
 }
 TableExprNode::TableExprNode (const Array<String>& val)
 {
-    node_p = new TableExprNodeArrayConstString (val);
+    node_p.reset (new TableExprNodeArrayConstString (val));
 }
 TableExprNode::TableExprNode (const Array<MVTime>& val)
 {
-    node_p = new TableExprNodeArrayConstDate (val);
+    node_p.reset (new TableExprNodeArrayConstDate (val));
 }
 
 TableExprNode::TableExprNode (const MArray<Bool>& val)
 {
-    node_p = new TableExprNodeArrayConstBool (val);
+    node_p.reset (new TableExprNodeArrayConstBool (val));
 }
 TableExprNode::TableExprNode (const MArray<uChar>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<Short>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<uShort>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<Int>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<uInt>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<Int64>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<uInt64>& val)
 {
-    node_p = new TableExprNodeArrayConstInt (val);
+    node_p.reset (new TableExprNodeArrayConstInt (val));
 }
 TableExprNode::TableExprNode (const MArray<Float>& val)
 {
-    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p.reset (new TableExprNodeArrayConstDouble (val));
 }
 TableExprNode::TableExprNode (const MArray<Double>& val)
 {
-    node_p = new TableExprNodeArrayConstDouble (val);
+    node_p.reset (new TableExprNodeArrayConstDouble (val));
 }
 TableExprNode::TableExprNode (const MArray<Complex>& val)
 {
-    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p.reset (new TableExprNodeArrayConstDComplex (val));
 }
 TableExprNode::TableExprNode (const MArray<DComplex>& val)
 {
-    node_p = new TableExprNodeArrayConstDComplex (val);
+    node_p.reset (new TableExprNodeArrayConstDComplex (val));
 }
 TableExprNode::TableExprNode (const MArray<String>& val)
 {
-    node_p = new TableExprNodeArrayConstString (val);
+    node_p.reset (new TableExprNodeArrayConstString (val));
 }
 TableExprNode::TableExprNode (const MArray<MVTime>& val)
 {
-    node_p = new TableExprNodeArrayConstDate (val);
+    node_p.reset (new TableExprNodeArrayConstDate (val));
 }
 
 TableExprNode::TableExprNode (const TENShPtr& node)
@@ -1044,7 +1044,7 @@ TableExprNode TableExprNode::newColumnNode (const TableExprInfo& tableInfo,
     //# Get the column description. This throws an exception if
     //# the name is not a column.
     const Table& table = tableInfo.table();
-    TENShPtr tsnptr = 0;
+    TENShPtr tsnptr;
     const ColumnDesc& coldes = table.tableDesc().columnDesc (name);
     TableColumn col(table, name);
     if (fieldNames.size() > 0  &&  coldes.dataType() != TpRecord) {
@@ -1054,40 +1054,40 @@ TableExprNode TableExprNode::newColumnNode (const TableExprInfo& tableInfo,
     if (coldes.isArray()) {
         switch(coldes.dataType()) {
         case TpBool:
-            tsnptr = new TableExprNodeArrayColumnBool (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnBool (col, tableInfo));
             break;
         case TpUChar:
-            tsnptr = new TableExprNodeArrayColumnuChar (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnuChar (col, tableInfo));
             break;
         case TpShort:
-            tsnptr = new TableExprNodeArrayColumnShort(col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnShort(col, tableInfo));
             break;
         case TpUShort:
-            tsnptr = new TableExprNodeArrayColumnuShort (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnuShort (col, tableInfo));
             break;
         case TpInt:
-            tsnptr = new TableExprNodeArrayColumnInt (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnInt (col, tableInfo));
             break;
         case TpUInt:
-            tsnptr = new TableExprNodeArrayColumnuInt (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnuInt (col, tableInfo));
             break;
         case TpInt64:
-            tsnptr = new TableExprNodeArrayColumnInt64 (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnInt64 (col, tableInfo));
             break;
         case TpFloat:
-            tsnptr = new TableExprNodeArrayColumnFloat (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnFloat (col, tableInfo));
             break;
         case TpDouble:
-            tsnptr = new TableExprNodeArrayColumnDouble (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnDouble (col, tableInfo));
             break;
         case TpComplex:
-            tsnptr = new TableExprNodeArrayColumnComplex (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnComplex (col, tableInfo));
             break;
         case TpDComplex:
-            tsnptr = new TableExprNodeArrayColumnDComplex (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnDComplex (col, tableInfo));
             break;
         case TpString:
-            tsnptr = new TableExprNodeArrayColumnString (col, tableInfo);
+            tsnptr.reset (new TableExprNodeArrayColumnString (col, tableInfo));
             break;
         default:
             throw (TableInvExpr (name, "unknown data type"));
@@ -1101,7 +1101,7 @@ TableExprNode TableExprNode::newColumnNode (const TableExprInfo& tableInfo,
             throw (TableInvExpr ("Sorry, column " + name + " contains records, "
                                  "which is not supported yet"));
         }
-        tsnptr = new TableExprNodeColumn (tableInfo, name);
+        tsnptr.reset (new TableExprNodeColumn (tableInfo, name));
     } else {
         throw (TableInvExpr (name, " must be a Scalar or Array column"));
     }
@@ -1141,7 +1141,7 @@ TableRecord* TableExprNode::findLastKeyRec (const TableRecord& keyset,
 TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
                                           const Vector<String>& fieldNames)
 {
-    TENShPtr tsnptr = 0;
+    TENShPtr tsnptr;
     String fullName;
     const TableRecord* ks = findLastKeyRec (keyset, fieldNames, fullName);
     String name = fieldNames[fieldNames.size() - 1];
@@ -1152,18 +1152,18 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     }
     switch (ks->dataType (fieldnr)) {
     case TpBool:
-        tsnptr = new TableExprNodeConstBool (ks->asBool (name));
+        tsnptr.reset (new TableExprNodeConstBool (ks->asBool (name)));
         break;
     case TpString:
-        tsnptr = new TableExprNodeConstString (ks->asString (name));
+        tsnptr.reset (new TableExprNodeConstString (ks->asString (name)));
         break;
     case TpComplex:
     case TpDComplex:
-        tsnptr = new TableExprNodeConstDComplex (ks->asDComplex (name));
+        tsnptr.reset (new TableExprNodeConstDComplex (ks->asDComplex (name)));
         break;
     case TpFloat:
     case TpDouble:
-        tsnptr = new TableExprNodeConstDouble (ks->asDouble (name));
+        tsnptr.reset (new TableExprNodeConstDouble (ks->asDouble (name)));
         break;
     case TpChar:
     case TpUChar:
@@ -1172,50 +1172,50 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     case TpInt:
     case TpUInt:
     case TpInt64:
-        tsnptr = new TableExprNodeConstInt (ks->asInt64 (name));
+        tsnptr.reset (new TableExprNodeConstInt (ks->asInt64 (name)));
         break;
     case TpArrayBool:
-        tsnptr = new TableExprNodeArrayConstBool (ks->asArrayBool (name));
+        tsnptr.reset (new TableExprNodeArrayConstBool (ks->asArrayBool (name)));
         break;
     case TpArrayString:
-        tsnptr = new TableExprNodeArrayConstString
-                                               (ks->asArrayString (name));
+        tsnptr.reset (new TableExprNodeArrayConstString
+                                               (ks->asArrayString (name)));
         break;
     case TpArrayComplex:
-        tsnptr = new TableExprNodeArrayConstDComplex
-                                               (ks->asArrayComplex (name));
+        tsnptr.reset (new TableExprNodeArrayConstDComplex
+                                               (ks->asArrayComplex (name)));
         break;
     case TpArrayDComplex:
-        tsnptr = new TableExprNodeArrayConstDComplex
-                                               (ks->asArrayDComplex (name));
+        tsnptr.reset (new TableExprNodeArrayConstDComplex
+                                               (ks->asArrayDComplex (name)));
         break;
     case TpArrayUChar:
-        tsnptr = new TableExprNodeArrayConstInt
-                                               (ks->asArrayuChar (name));
+        tsnptr.reset (new TableExprNodeArrayConstInt
+                                               (ks->asArrayuChar (name)));
         break;
     case TpArrayShort:
-        tsnptr = new TableExprNodeArrayConstInt
-                                               (ks->asArrayShort (name));
+        tsnptr.reset (new TableExprNodeArrayConstInt
+                                               (ks->asArrayShort (name)));
         break;
     case TpArrayInt:
-        tsnptr = new TableExprNodeArrayConstInt
-                                               (ks->asArrayInt (name));
+        tsnptr.reset (new TableExprNodeArrayConstInt
+                                               (ks->asArrayInt (name)));
         break;
     case TpArrayUInt:
-        tsnptr = new TableExprNodeArrayConstInt
-                                               (ks->asArrayuInt (name));
+        tsnptr.reset (new TableExprNodeArrayConstInt
+                                               (ks->asArrayuInt (name)));
         break;
     case TpArrayInt64:
-        tsnptr = new TableExprNodeArrayConstInt
-                                               (ks->asArrayInt64 (name));
+        tsnptr.reset (new TableExprNodeArrayConstInt
+                                               (ks->asArrayInt64 (name)));
         break;
     case TpArrayFloat:
-        tsnptr = new TableExprNodeArrayConstDouble
-                                               (ks->asArrayFloat (name));
+        tsnptr.reset (new TableExprNodeArrayConstDouble
+                                               (ks->asArrayFloat (name)));
         break;
     case TpArrayDouble:
-        tsnptr = new TableExprNodeArrayConstDouble
-                                               (ks->asArrayDouble (name));
+        tsnptr.reset (new TableExprNodeArrayConstDouble
+                                               (ks->asArrayDouble (name)));
         break;
     case TpRecord:
         throw (TableInvExpr ("Keyword " + fullName + " contains records, "
@@ -1351,11 +1351,11 @@ TableExprNode TableExprNode::newFunctionNode
       resDT = TableExprAggrNode::checkOperands (dtypeOper, resVT, ftype, par);
       // Create new aggregate function node and fill it.
       if (resVT == TableExprNodeRep::VTScalar) {
-        fnode = new TableExprAggrNode (ftype, resDT, resVT, set,
-                                       par, dtypeOper);
+        fnode.reset (new TableExprAggrNode (ftype, resDT, resVT, set,
+                                            par, dtypeOper));
       } else {
-        fnode = new TableExprAggrNodeArray (ftype, resDT, resVT, set,
-                                            par, dtypeOper, style);
+        fnode.reset (new TableExprAggrNodeArray (ftype, resDT, resVT, set,
+                                                 par, dtypeOper, style));
       }
     } else {
       resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
@@ -1383,8 +1383,8 @@ TableExprNode TableExprNode::newFunctionNode
           }
         }
       } else {
-        fnode = new TableExprFuncNodeArray (ftype, resDT, resVT, set,
-                                            par, dtypeOper, style);
+        fnode.reset (new TableExprFuncNodeArray (ftype, resDT, resVT, set,
+                                                 par, dtypeOper, style));
       }
     }
     return TableExprNodeRep::replaceConstNode (fnode);
@@ -1463,11 +1463,11 @@ TableExprNode TableExprNode::newConeNode
     // Create new function node and fill it.
     TENShPtr fnode;
     if (resVT == TableExprNodeRep::VTScalar) {
-      fnode = new TableExprConeNode (ftype, resDT, set,
-                                     par, dtypeOper, origin);
+      fnode.reset (new TableExprConeNode (ftype, resDT, set,
+                                          par, dtypeOper, origin));
     } else {
-      fnode = new TableExprConeNodeArray (ftype, resDT, set,
-                                          par, dtypeOper, origin);
+      fnode.reset (new TableExprConeNodeArray (ftype, resDT, set,
+                                               par, dtypeOper, origin));
     }
     return TableExprNodeRep::replaceConstNode (fnode);
 }
@@ -1494,20 +1494,17 @@ void TableExprNode::adaptUnit (const Unit& unit)
 TableExprNode TableExprNode::newRownrNode (const TableExprInfo& tableInfo,
                                            uInt origin)
 {
-    TENShPtr tsnptr = new TableExprNodeRownr (tableInfo, origin);
-    return tsnptr;
+    return TENShPtr(new TableExprNodeRownr (tableInfo, origin));
 }
 
 TableExprNode TableExprNode::newRowidNode (const TableExprInfo& tableInfo)
 {
-    TENShPtr tsnptr = new TableExprNodeRowid (tableInfo);
-    return tsnptr;
+    return TENShPtr(new TableExprNodeRowid (tableInfo));
 }
 
 TableExprNode TableExprNode::newRandomNode (const TableExprInfo& tableInfo)
 {
-    TENShPtr tsnptr = new TableExprNodeRandom (tableInfo);
-    return tsnptr;
+    return TENShPtr(new TableExprNodeRandom (tableInfo));
 }
 
 DataType TableExprNode::dataType() const

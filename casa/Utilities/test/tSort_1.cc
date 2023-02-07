@@ -262,7 +262,7 @@ Bool sortarr2 (Int* arr, uInt nr, int opt)
 {
     Bool success = True;
     Sort sort;
-    sort.sortKey (arr, CountedPtr<BaseCompare>(new ObjCompare<Int>), 4);
+    sort.sortKey (arr, std::shared_ptr<BaseCompare>(new ObjCompare<Int>), 4);
     Vector<uInt> ptr;
     Timer tim;
     sort.sort (ptr,nr,opt);

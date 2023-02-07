@@ -462,52 +462,52 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       if (colDesc.isScalar()) {
         switch (colDesc.dataType()) {
         case TpBool:
-          tsnptr = new TableExprNodeArrayConstBool
-            (ScalarColumn<Bool>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstBool
+                        (ScalarColumn<Bool>(tabcol).getColumn()));
           break;
         case TpUChar:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<uChar>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ScalarColumn<uChar>(tabcol).getColumn()));
           break;
         case TpShort:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<Short>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ScalarColumn<Short>(tabcol).getColumn()));
           break;
         case TpUShort:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<uShort>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ScalarColumn<uShort>(tabcol).getColumn()));
           break;
         case TpInt:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<Int>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ScalarColumn<Int>(tabcol).getColumn()));
           break;
         case TpUInt:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<uInt>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ScalarColumn<uInt>(tabcol).getColumn()));
           break;
         case TpInt64:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ScalarColumn<Int64>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ScalarColumn<Int64>(tabcol).getColumn()));
           break;
         case TpFloat:
-          tsnptr = new TableExprNodeArrayConstDouble
-            (ScalarColumn<Float>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDouble
+                        (ScalarColumn<Float>(tabcol).getColumn()));
           break;
         case TpDouble:
-          tsnptr = new TableExprNodeArrayConstDouble
-            (ScalarColumn<Double>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDouble
+                        (ScalarColumn<Double>(tabcol).getColumn()));
           break;
         case TpComplex:
-          tsnptr = new TableExprNodeArrayConstDComplex
-            (ScalarColumn<Complex>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDComplex
+                        (ScalarColumn<Complex>(tabcol).getColumn()));
           break;
         case TpDComplex:
-          tsnptr = new TableExprNodeArrayConstDComplex
-            (ScalarColumn<DComplex>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDComplex
+                        (ScalarColumn<DComplex>(tabcol).getColumn()));
           break;
         case TpString:
-          tsnptr = new TableExprNodeArrayConstString
-            (ScalarColumn<String>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstString
+                        (ScalarColumn<String>(tabcol).getColumn()));
           break;
         default:
           throw (TableInvExpr ("Nested query column " + colDesc.name() +
@@ -516,52 +516,52 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       } else {
         switch (colDesc.dataType()) {
         case TpBool:
-          tsnptr = new TableExprNodeArrayConstBool
-            (ArrayColumn<Bool>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstBool
+                        (ArrayColumn<Bool>(tabcol).getColumn()));
           break;
         case TpUChar:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<uChar>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ArrayColumn<uChar>(tabcol).getColumn()));
           break;
         case TpShort:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<Short>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ArrayColumn<Short>(tabcol).getColumn()));
           break;
         case TpUShort:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<uShort>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ArrayColumn<uShort>(tabcol).getColumn()));
           break;
         case TpInt:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<Int>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ArrayColumn<Int>(tabcol).getColumn()));
           break;
         case TpUInt:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<uInt>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ArrayColumn<uInt>(tabcol).getColumn()));
           break;
         case TpInt64:
-          tsnptr = new TableExprNodeArrayConstInt
-            (ArrayColumn<Int64>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstInt
+                        (ArrayColumn<Int64>(tabcol).getColumn()));
           break;
         case TpFloat:
-          tsnptr = new TableExprNodeArrayConstDouble
-            (ArrayColumn<Float>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDouble
+                        (ArrayColumn<Float>(tabcol).getColumn()));
           break;
         case TpDouble:
-          tsnptr = new TableExprNodeArrayConstDouble
-            (ArrayColumn<Double>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDouble
+                        (ArrayColumn<Double>(tabcol).getColumn()));
           break;
         case TpComplex:
-          tsnptr = new TableExprNodeArrayConstDComplex
-            (ArrayColumn<Complex>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDComplex
+                        (ArrayColumn<Complex>(tabcol).getColumn()));
           break;
         case TpDComplex:
-          tsnptr = new TableExprNodeArrayConstDComplex
-            (ArrayColumn<DComplex>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstDComplex
+                        (ArrayColumn<DComplex>(tabcol).getColumn()));
           break;
         case TpString:
-          tsnptr = new TableExprNodeArrayConstString
-            (ArrayColumn<String>(tabcol).getColumn());
+          tsnptr.reset (new TableExprNodeArrayConstString
+                        (ArrayColumn<String>(tabcol).getColumn()));
           break;
         default:
           throw (TableInvExpr ("Nested query column " + colDesc.name() +

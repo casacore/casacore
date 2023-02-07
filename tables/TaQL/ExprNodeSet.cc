@@ -217,7 +217,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         for (size_t i=0; i<n; i++) {
               if (! itsElems[i]->unit().empty()) {
                   if (! q.isConform (itsElems[i]->unit())) {
-                      return new TableExprNodeSet (*this);
+                    return TENShPtr(new TableExprNodeSet (*this));
                   }
               }
         }
@@ -244,6 +244,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         // Set ndim and shape if those are constant.
     }
     TableExprNodeSet* set = new TableExprNodeSet (*this);
+    TENShPtr pset(set);
     if (itsBounded) {
         // Set the type to VTArray; the getArray functions
         // will convert the set to an array for each row.
@@ -251,7 +252,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         set->setValueType (VTArray);
         set->setShape();
     }
-    return set;
+    return pset;
 }
 
 void TableExprNodeSet::setShape()
@@ -295,22 +296,22 @@ TENShPtr TableExprNodeSet::toConstArray() const
     TENShPtr tsnptr;
     switch (dataType()) {
     case NTBool:
-      tsnptr = new TableExprNodeArrayConstBool (toArray<Bool>(0));
+      tsnptr.reset (new TableExprNodeArrayConstBool (toArray<Bool>(0)));
       break;
     case NTInt:
-      tsnptr = new TableExprNodeArrayConstInt (toArray<Int64>(0));
+      tsnptr.reset (new TableExprNodeArrayConstInt (toArray<Int64>(0)));
       break;
     case NTDouble:
-      tsnptr = new TableExprNodeArrayConstDouble (toArray<Double>(0));
+      tsnptr.reset (new TableExprNodeArrayConstDouble (toArray<Double>(0)));
       break;
     case NTComplex:
-      tsnptr = new TableExprNodeArrayConstDComplex (toArray<DComplex>(0));
+      tsnptr.reset (new TableExprNodeArrayConstDComplex (toArray<DComplex>(0)));
       break;
     case NTString:
-      tsnptr = new TableExprNodeArrayConstString (toArray<String>(0));
+      tsnptr.reset (new TableExprNodeArrayConstString (toArray<String>(0)));
       break;
     case NTDate:
-      tsnptr = new TableExprNodeArrayConstDate (toArray<MVTime>(0));
+      tsnptr.reset (new TableExprNodeArrayConstDate (toArray<MVTime>(0)));
       break;
     default:
       TableExprNode::throwInvDT ("TableExprNodeSet::toConstArray");

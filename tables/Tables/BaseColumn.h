@@ -31,9 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/casa/Utilities/Compare.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -284,19 +284,19 @@ public:
     // in the argument dataSave.
     // The function freeSortKey must be called to free this storage.
     // <group>
-    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
-			      Int order, CountedPtr<ArrayBase>& dataSave);
+    virtual void makeSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
+			      Int order, std::shared_ptr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
-    virtual void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
+    virtual void makeRefSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
 				 Int order, const Vector<rownr_t>& rownrs,
-				 CountedPtr<ArrayBase>& dataSave);
+				 std::shared_ptr<ArrayBase>& dataSave);
     // </group>
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison object if undefined.
     // The function freeIterBuf must be called to free the buffers.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       CountedPtr<BaseCompare>& cmpObj);
+			       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);

@@ -197,7 +197,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     Bool tableChanged;
     Block<Bool> dmChanged;
     lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
-    tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
+    tdescPtr_p.reset (new TableDesc ("", TableDesc::Scratch));
 
     //# Reopen the file to be sure that the internal stdio buffer is not reused.
     //# This is a terrible hack, but it works.
@@ -253,7 +253,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
-    colSetPtr_p = new ColumnSet (tdescPtr_p.get());
+    colSetPtr_p.reset (new ColumnSet (tdescPtr_p.get()));
     colSetPtr_p->linkToTable (this);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {

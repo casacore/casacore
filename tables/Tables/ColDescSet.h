@@ -31,9 +31,9 @@
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/iosfwd.h>
 #include <map>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -189,7 +189,7 @@ private:
 
 
     // The set of all columns.
-    std::map<String,CountedPtr<ColumnDesc>> cols_p;
+    std::map<String,std::shared_ptr<ColumnDesc>> cols_p;
     // The order of addition of column descriptions.
     //# This is in fact a Block<ColumnDesc*>, but a void* is used
     //# to reduce the number of template instantiations.

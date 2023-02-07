@@ -26,6 +26,8 @@
 #ifndef CASA_COUNTEDPTR_H
 #define CASA_COUNTEDPTR_H
 
+////#warning CountedPtr is deprecated; use std::shared_ptr instead
+
 #include <casacore/casa/aips.h>
 #include <memory>
 

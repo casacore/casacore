@@ -231,7 +231,7 @@ public:
 
 
 private:
-  CountedPtr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
+  std::shared_ptr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
   TableLockData* lockPtr_p;          //# pointer to lock object
 
   // Setup the main parts of the object.

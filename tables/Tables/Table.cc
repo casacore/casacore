@@ -725,13 +725,13 @@ Table Table::sort (const Block<String>& names,
 {
     //# Insert a block with null compare objects.
     return sort (names,
-                 Block<CountedPtr<BaseCompare> >(names.nelements()),
+                 Block<std::shared_ptr<BaseCompare>>(names.nelements()),
                  orders, option);
 }
 
 //# Sort on multiple columns and orders with given functions.
 Table Table::sort (const Block<String>& names,
-		   const Block<CountedPtr<BaseCompare> >& cmpObjs,
+		   const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
 		   const Block<Int>& orders, int option) const
     { return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option)); }
 

@@ -555,25 +555,25 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
   if (node->valueType() == VTScalar) {
     switch (node->dataType()) {
     case NTBool:
-      newNode = new TableExprNodeConstBool (node->getBool (0));
+      newNode.reset (new TableExprNodeConstBool (node->getBool (0)));
       break;
     case NTInt:
-      newNode = new TableExprNodeConstInt (node->getInt (0));
+      newNode.reset (new TableExprNodeConstInt (node->getInt (0)));
       break;
     case NTDouble:
-      newNode = new TableExprNodeConstDouble (node->getDouble (0));
+      newNode.reset (new TableExprNodeConstDouble (node->getDouble (0)));
       break;
     case NTComplex:
-      newNode = new TableExprNodeConstDComplex (node->getDComplex(0));
+      newNode.reset (new TableExprNodeConstDComplex (node->getDComplex(0)));
       break;
     case NTString:
-      newNode = new TableExprNodeConstString (node->getString (0));
+      newNode.reset (new TableExprNodeConstString (node->getString (0)));
       break;
     case NTRegex:
-      newNode = new TableExprNodeConstRegex (node->getRegex (0));
+      newNode.reset (new TableExprNodeConstRegex (node->getRegex (0)));
       break;
     case NTDate:
-      newNode = new TableExprNodeConstDate (node->getDate (0));
+      newNode.reset (new TableExprNodeConstDate (node->getDate (0)));
       break;
     default:
       TableExprNode::throwInvDT ("in replaceConstNode"); // should never occur
@@ -581,22 +581,22 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
   } else {
     switch (node->dataType()) {
     case NTBool:
-      newNode = new TableExprNodeArrayConstBool(node->getArrayBool (0));
+      newNode.reset (new TableExprNodeArrayConstBool(node->getArrayBool (0)));
       break;
     case NTInt:
-      newNode = new TableExprNodeArrayConstInt(node->getArrayInt (0));
+      newNode.reset (new TableExprNodeArrayConstInt(node->getArrayInt (0)));
       break;
     case NTDouble:
-      newNode = new TableExprNodeArrayConstDouble(node->getArrayDouble (0));
+      newNode.reset (new TableExprNodeArrayConstDouble(node->getArrayDouble (0)));
       break;
     case NTComplex:
-      newNode = new TableExprNodeArrayConstDComplex(node->getArrayDComplex (0));
+      newNode.reset (new TableExprNodeArrayConstDComplex(node->getArrayDComplex (0)));
       break;
     case NTString:
-      newNode = new TableExprNodeArrayConstString(node->getArrayString (0));
+      newNode.reset (new TableExprNodeArrayConstString(node->getArrayString (0)));
       break;
     case NTDate:
-      newNode = new TableExprNodeArrayConstDate(node->getArrayDate (0));
+      newNode.reset (new TableExprNodeArrayConstDate(node->getArrayDate (0)));
       break;
     default:
       TableExprNode::throwInvDT ("in replaceConstNode"); // should never occur
@@ -923,17 +923,17 @@ void TableExprNodeBinary::adaptDataTypes()
     TENShPtr newNode;
     if (vtype == VTScalar) {
       if (newType == NTDouble) {
-        newNode = new TableExprNodeConstDouble ((*constNode)->getDouble(0));
+        newNode.reset (new TableExprNodeConstDouble ((*constNode)->getDouble(0)));
       } else {
-        newNode = new TableExprNodeConstDComplex ((*constNode)->getDouble(0));
+        newNode.reset (new TableExprNodeConstDComplex ((*constNode)->getDouble(0)));
       }
     } else {
       if (newType == NTDouble) {
-        newNode = new TableExprNodeArrayConstDouble
-                                            ((*constNode)->getArrayDouble(0));
+        newNode.reset (new TableExprNodeArrayConstDouble
+                       ((*constNode)->getArrayDouble(0)));
       } else {
-        newNode = new TableExprNodeArrayConstDComplex
-                                            ((*constNode)->getArrayDouble(0));
+        newNode.reset (new TableExprNodeArrayConstDComplex
+                       ((*constNode)->getArrayDouble(0)));
       }
     }
     newNode->setUnit ((*constNode)->unit());
@@ -974,7 +974,7 @@ void TableExprNodeMulti::flattenTree (std::vector<TableExprNodeRep*>& nodes)
   }
 }
 
-CountedPtr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc()
+std::shared_ptr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc()
 {
   throw AipsError ("TableExprNodeRep::makeGroupAggrFunc should not be called");
 }

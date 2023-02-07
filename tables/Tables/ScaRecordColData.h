@@ -147,20 +147,20 @@ public:
     // Add this column and its data to the Sort object.
     // Sorting on records is not supported, so an exception is thrown.
     // <group>
-    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
+    virtual void makeSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
                               Int order,
-			      CountedPtr<ArrayBase>& dataSave);
+			      std::shared_ptr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
-    virtual void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
+    virtual void makeRefSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
                                  Int order,
                                  const Vector<rownr_t>& rownrs,
-                                 CountedPtr<ArrayBase>& dataSave);
+                                 std::shared_ptr<ArrayBase>& dataSave);
     // </group>
 
     // Allocate value buffers for the table iterator.
     // Iteration based on records is not supported, so an exception is thrown.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       CountedPtr<BaseCompare>& cmpObj);
+			       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);

@@ -100,9 +100,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // <br>An HDF5Object has a conversion operator to <src>hid_t</src>, thus
 // can be used directly in any HDF5 function.
 //
-// Because of HDF5 resource management the objects (e.g. HDF5File) cannot
-// be copied. However, they can be used in shared pointers (like casacore's
-// CountedPtr or std::shared_ptr).
+// Because of HDF5 resource management the objects (e.g. HDF5File) cannot be
+// copied. However, they can be used in shared pointers such as std::shared_ptr.
 // <br>
 // Internally the classes use HDF5HidMeta.h which does the resource management
 // for HDF5 meta data like attributes, property lists, etc..

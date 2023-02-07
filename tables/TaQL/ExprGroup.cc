@@ -123,13 +123,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprGroupResult::TableExprGroupResult
-  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets)
+  (const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets)
   {
     itsFuncSets = funcSets;
   }
   TableExprGroupResult::TableExprGroupResult
-  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets,
-   const vector<CountedPtr<vector<TableExprId> > >& ids)
+  (const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets,
+   const vector<std::shared_ptr<vector<TableExprId>>>& ids)
   {
     AlwaysAssert (ids.size() == funcSets.size()  ||  ids.empty(), AipsError);
     itsFuncSets = funcSets;
@@ -163,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { return False; }
   void TableExprGroupFuncBase::finish()
   {}
-  CountedPtr<vector<TableExprId> > TableExprGroupFuncBase::getIds() const
+  std::shared_ptr<vector<TableExprId>> TableExprGroupFuncBase::getIds() const
   { throw TableInvExpr ("TableExprGroupFuncBase::getIds not implemented"); }
   Bool TableExprGroupFuncBase::getBool (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getBool not implemented"); }
@@ -254,7 +254,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprGroupExprId::TableExprGroupExprId (TableExprNodeRep* node)
     : TableExprGroupFuncBase (node)
   {
-    itsIds = new vector<TableExprId>();
+    itsIds.reset (new vector<TableExprId>());
   }
   TableExprGroupExprId::~TableExprGroupExprId()
   {}
@@ -266,7 +266,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsIds->push_back (id);
   }
-  CountedPtr<vector<TableExprId> > TableExprGroupExprId::getIds() const
+  std::shared_ptr<vector<TableExprId>> TableExprGroupExprId::getIds() const
   {
     return itsIds;
   }
@@ -474,7 +474,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void TableExprGroupFuncSet::add
-  (const CountedPtr<TableExprGroupFuncBase>& func)
+  (const std::shared_ptr<TableExprGroupFuncBase>& func)
   {
     size_t seqnr = itsFuncs.size();
     itsFuncs.push_back (func);

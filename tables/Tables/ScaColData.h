@@ -139,19 +139,19 @@ public:
 
     // Add the sort key to the Sort object on behalf of the Table sort function.
     // <group>
-    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
-                              CountedPtr<ArrayBase>& dataSave);
+    virtual void makeSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpFunc, Int order,
+                              std::shared_ptr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
-    void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpFunc, Int order,
+    void makeRefSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpFunc, Int order,
 			 const Vector<rownr_t>& rownrs,
-                         CountedPtr<ArrayBase>& dataSave);
+                         std::shared_ptr<ArrayBase>& dataSave);
     // </group>
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison object if undefined.
     // The function freeIterBuf must be called to free the buffers.
     void allocIterBuf (void*& lastVal, void*& curVal,
-		       CountedPtr<BaseCompare>& cmpObj);
+		       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     void freeIterBuf (void*& lastVal, void*& curVal);
@@ -194,7 +194,7 @@ private:
     //   <li> TableInvSort
     // </thrown>
     void fillSortKey (const Vector<T>* dataPtr, Sort&,
-		      CountedPtr<BaseCompare>& cmpObj, Int order);
+		      std::shared_ptr<BaseCompare>& cmpObj, Int order);
 };
 
 

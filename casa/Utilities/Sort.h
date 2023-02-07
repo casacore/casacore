@@ -32,7 +32,7 @@
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Compare.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -46,7 +46,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // It holds the following information about a sort key:
 // <ul>
 //  <li> Address of the data array containing the sort key;
-//  <li> A CountedPtr to a comparison object to be used
+//  <li> A std::shared_ptr to a comparison object to be used
 //       (of a class derived from the abstract base class BaseCompare).
 //  <li> Increment for the next data point -- this lets you specify a
 //       stride for keys embedded in a struct;
@@ -61,7 +61,7 @@ public:
 
     // Define a sort key in a given data array using the indicated
     // comparison object, stride and sort order.
-    SortKey (const void* data, const CountedPtr<BaseCompare>&,
+    SortKey (const void* data, const std::shared_ptr<BaseCompare>&,
              uInt increment, int order);
 
     // Copy constructor (copy semantics).
@@ -89,8 +89,8 @@ protected:
     const void*       data_p;
     // increment for next data point
     uInt              incr_p;
-    // comparison object; use CountedPtr for memory management
-    CountedPtr<BaseCompare> ccmpObj_p;
+    // comparison object; use std::shared_ptr for memory management
+    std::shared_ptr<BaseCompare> ccmpObj_p;
     // comparison object; use raw pointer for performance
     BaseCompare* cmpObj_p;
 };
@@ -288,7 +288,7 @@ public:
     //     <linkto group="DataType.h#DataType">basic data type</linkto>,
     //     in which case the appropriate comparison object will be
     //     created automatically, or
-    //   <li> by a CountedPtr of a comparison object.
+    //   <li> by a std::shared_ptr of a comparison object.
     //     You may want to use the templated comparison classes
     //     <linkto class=ObjCompare>ObjCompare</linkto>(),
     //     but you are free to use any other class derived from BaseCompare
@@ -310,10 +310,10 @@ public:
     // <group>
     void sortKey (const void* data, DataType, uInt increment = 0,
 		  Order = Ascending);
-    void sortKey (const void* data, const CountedPtr<BaseCompare>&,
+    void sortKey (const void* data, const std::shared_ptr<BaseCompare>&,
                   uInt increment, Order = Ascending);
     void sortKey (uInt offset, DataType, Order = Ascending);
-    void sortKey (uInt offset, const CountedPtr<BaseCompare>&,
+    void sortKey (uInt offset, const std::shared_ptr<BaseCompare>&,
                   Order = Ascending);
     // </group>
 

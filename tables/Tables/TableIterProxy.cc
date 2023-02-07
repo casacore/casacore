@@ -85,7 +85,7 @@ void TableIterProxy::makeStepIter (const Table& tab,
 {
   // First determine if all columns are scalar and have a valid data type.
   // Also find out if a case-insenstive string comparison is needed.
-  Block<CountedPtr<BaseCompare> > comps(columns.size());
+  Block<std::shared_ptr<BaseCompare>> comps(columns.size());
   Block<Int> orders (columns.size(), order);
   for (uInt i=0; i<iterSteps.size(); ++i) {
     if (i < columns.size()  &&  iterSteps[i] > 0) {
@@ -107,7 +107,7 @@ void TableIterProxy::makeStepIter (const Table& tab,
       case TpDouble:
         break;
       case TpString:
-        comps[i] = new CompareNoCase();
+        comps[i].reset (new CompareNoCase());
         break;
       default:
         throw TableError ("No iteration step can be given for column " +
@@ -128,49 +128,49 @@ void TableIterProxy::makeStepIter (const Table& tab,
       case TpUChar:
         {
           uChar start = ScalarColumn<uChar>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<uChar>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalInt<uChar>(iterSteps[i], start));
         }
         break;
       case TpShort:
         {
           Short start = ScalarColumn<Short>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<Short>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalInt<Short>(iterSteps[i], start));
         }
         break;
       case TpUShort:
         {
           uShort start = ScalarColumn<uShort>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<uShort>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalInt<uShort>(iterSteps[i], start));
         }
         break;
       case TpInt:
         {
           Int start = ScalarColumn<Int>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<Int>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalInt<Int>(iterSteps[i], start));
         }
         break;
       case TpUInt:
         {
           uInt start = ScalarColumn<uInt>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<uInt>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalInt<uInt>(iterSteps[i], start));
         }
         break;
       case TpInt64:
         {
           Int64 start = ScalarColumn<Int64>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalInt<Int64>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalInt<Int64>(iterSteps[i], start));
         }
         break;
       case TpFloat:
         {
           Float start = ScalarColumn<Float>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalReal<Float>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalReal<Float>(iterSteps[i], start));
         }
         break;
       case TpDouble:
         {
           Double start = ScalarColumn<Double>(sortab, columns[i])(0);
-          comps[i] = new CompareIntervalReal<Double>(iterSteps[i], start);
+          comps[i].reset (new CompareIntervalReal<Double>(iterSteps[i], start));
         }
         break;
       default:

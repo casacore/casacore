@@ -669,7 +669,7 @@ Vector<rownr_t>& BaseTable::rowStorage()
 //# Sort a table.
 std::shared_ptr<BaseTable> BaseTable::sort
 (const Block<String>& names,
- const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
  std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
@@ -701,7 +701,7 @@ std::shared_ptr<BaseTable> BaseTable::sort
 //# Do the actual sort.
 std::shared_ptr<BaseTable> BaseTable::doSort
 (PtrBlock<BaseColumn*>& sortCol,
- const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
  std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
@@ -710,8 +710,8 @@ std::shared_ptr<BaseTable> BaseTable::doSort
     //# Create a sort object.
     //# Pass all keys (and their data) to it.
     Sort sortobj;
-    Block<CountedPtr<ArrayBase> > data(nrkey);        // to remember data blocks
-    Block<CountedPtr<BaseCompare> > cmp(cmpObj);
+    Block<std::shared_ptr<ArrayBase>> data(nrkey);        // to remember data blocks
+    Block<std::shared_ptr<BaseCompare>> cmp(cmpObj);
     for (uInt i=0; i<nrkey; i++) {
         sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], data[i]);
     }
@@ -1001,7 +1001,7 @@ Vector<rownr_t> BaseTable::logicRows()
 
 BaseTableIterator* BaseTable::makeIterator
 (const Block<String>& names,
- const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  bool cacheIterationBoundaries)
 {
@@ -1019,8 +1019,8 @@ BaseTableIterator* BaseTable::makeIterator
 
 const TableDesc& BaseTable::makeEmptyTableDesc() const
 {
-    if (tdescPtr_p.null()) {
-        const_cast<BaseTable*>(this)->tdescPtr_p = new TableDesc();
+    if (!tdescPtr_p) {
+        const_cast<BaseTable*>(this)->tdescPtr_p.reset (new TableDesc());
     }
     return *tdescPtr_p;
 }
