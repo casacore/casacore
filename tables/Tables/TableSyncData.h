@@ -120,9 +120,8 @@ private:
     uInt        itsModifyCounter;
     uInt        itsTableChangeCounter;
     Block<uInt> itsDataManChangeCounter;
-    MemoryIO*   itsMemIO;                  //# deleted by shared_ptr below
+    std::shared_ptr<MemoryIO> itsMemIO;
     AipsIO      itsAipsIO;
-    std::shared_ptr<ByteIO> itsByteIO;     //# deletes itsMemIO
 };
 
 

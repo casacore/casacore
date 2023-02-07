@@ -451,16 +451,15 @@ void SSMBase::readHeader()
 void SSMBase::readIndexBuckets()
 {
   std::shared_ptr<TypeIO> aMio;
-  MemoryIO* aMemBuf = new MemoryIO(itsIndexLength);
-  std::shared_ptr<ByteIO> aMemBufByte(aMemBuf);
+  std::shared_ptr<MemoryIO> aMemBuf(new MemoryIO(itsIndexLength));
 
   uInt aCLength = 2*CanonicalConversion::canonicalSize (&itsFirstIdxBucket);
   getCache();
   // It is stored in big or little endian canonical format.
   if (asBigEndian()) {
-    aMio.reset (new CanonicalIO (aMemBufByte));
+    aMio.reset (new CanonicalIO (aMemBuf));
   } else {
-    aMio.reset (new LECanonicalIO (aMemBufByte));
+    aMio.reset (new LECanonicalIO (aMemBuf));
   }
   AipsIO anMOs (aMio);
 
@@ -510,8 +509,7 @@ void SSMBase::writeIndex()
 {
   std::shared_ptr<TypeIO> aTio;
   std::shared_ptr<TypeIO> aMio;
-  MemoryIO* aMemBuf = new MemoryIO();
-  std::shared_ptr<ByteIO> aMemBufByte(aMemBuf);
+  std::shared_ptr<MemoryIO> aMemBuf(new MemoryIO);
 
   // Use the file given by the BucketFile object..
   // Use a buffer size (512) equal to start of buckets in the file,
@@ -521,10 +519,10 @@ void SSMBase::writeIndex()
 
   // Store it in big or little endian canonical format.
   if (asBigEndian()) {
-    aMio.reset (new CanonicalIO (aMemBufByte));
+    aMio.reset (new CanonicalIO (aMemBuf));
     aTio.reset (new CanonicalIO (aFio));
   } else {
-    aMio.reset (new LECanonicalIO (aMemBufByte));
+    aMio.reset (new LECanonicalIO (aMemBuf));
     aTio.reset (new LECanonicalIO (aFio));
   }
   AipsIO anMOs (aMio);

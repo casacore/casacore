@@ -800,9 +800,8 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
     }
     //# Now write out the data in all data managers.
     //# Keep track if a data manager indeed wrote something.
-    MemoryIO* memio = new MemoryIO();
-    std::shared_ptr<ByteIO> bmemio(memio);
-    AipsIO aio(bmemio);
+    std::shared_ptr<MemoryIO> memio(new MemoryIO);
+    AipsIO aio(memio);
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         if (BLOCKDATAMANVAL(i)->flush (aio, fsync)) {
 	    dataManChanged_p[i] = True;
@@ -894,8 +893,8 @@ rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndi
 	uChar* data;
 	uInt leng;
 	ios.getnew (leng, data);
-        std::shared_ptr<ByteIO> bmemio (new MemoryIO(data, leng));
-	AipsIO aio(bmemio);
+        std::shared_ptr<MemoryIO> memio (new MemoryIO(data, leng));
+	AipsIO aio(memio);
 	rownr_t nrrow = BLOCKDATAMANVAL(i)->open64 (nrrow_p, aio);
         if (nrrow > nrrow_p) {
           nrrow_p = nrrow;

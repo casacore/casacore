@@ -76,9 +76,6 @@ public:
     // in canonical format.  For small arrays it uses a fixed buffer with
     // length <src>bufferLength</src>. For arrays not fitting in this buffer,
     // it uses a temporary buffer allocated on the heap.
-    // <p>
-    // This class takes over the pointer and will be responsible for deleting the
-    // ByteIO pointer.
     explicit LECanonicalIO (const std::shared_ptr<ByteIO>& byteIO,
                             uInt bufferLength=4096);
 

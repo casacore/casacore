@@ -81,9 +81,6 @@ public:
     // in canonical format.  For small arrays it uses a fixed buffer with
     // length <src>bufferLength</src>. For arrays not fitting in this buffer,
     // it uses a temporary buffer allocated on the heap.
-    // <p>
-    // This class takes over the pointers and will be responsible for deleting the
-    // DataConversion and ByteIO pointers.
     ConversionIO (const std::shared_ptr<DataConversion>& dataConversion,
                   const std::shared_ptr<ByteIO>& byteIO,
 		  uInt bufferLength=4096);

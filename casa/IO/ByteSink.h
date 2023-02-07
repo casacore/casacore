@@ -99,7 +99,6 @@ public:
 
     // Construct from given TypeIO object.
     // The constructor does not copy the object, but only keeps a pointer to it.
-    // It takes over the given pointer and deletes.
     ByteSink (const std::shared_ptr<TypeIO>& typeIO);
  
     // The copy constructor uses reference semantics

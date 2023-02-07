@@ -80,8 +80,6 @@ public:
     // Constructor.
     // The read/write functions will use the given ByteIO object
     // as the data store.
-    // This class takes over the pointers and will be responsible for deleting the
-    // ByteIO pointer.
     explicit TypeIO (const std::shared_ptr<ByteIO>& byteIO);
 
     virtual ~TypeIO();

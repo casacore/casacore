@@ -109,7 +109,6 @@ protected:
 
     // Construct using the given TypeIO.
     // The constructor does not copy the object, but only keeps a pointer to it.
-    // It takes over the given pointer and deletes.
     BaseSinkSource (const std::shared_ptr<TypeIO>& typeIO);
 
     // The copy constructor uses reference semantics

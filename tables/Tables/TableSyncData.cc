@@ -36,11 +36,10 @@ TableSyncData::TableSyncData()
 : itsNrrow              (0),
   itsNrcolumn           (-1),
   itsModifyCounter      (0),
-  itsTableChangeCounter (0)
+  itsTableChangeCounter (0),
+  itsMemIO              (new MemoryIO)
 {
-    itsMemIO = new MemoryIO();
-    itsByteIO.reset (itsMemIO);
-    itsAipsIO.open (itsByteIO);
+    itsAipsIO.open (itsMemIO);
 }
 
 TableSyncData::~TableSyncData()
