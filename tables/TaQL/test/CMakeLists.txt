@@ -39,14 +39,15 @@ tTaQLNode
 # Only test scripts, no test programs.
 set (testscripts
 ttaql
-tTableGramCretab
 tTableGramAlttab
-tTableGramUpdate
-tTableGramMasked
-tTableGramNull
+tTableGramCretab
 tTableGramGroupAggr
 tTableGramGroupAggrAll
 tTableGramGroupAggrMaskAll
+tTableGramJoin
+tTableGramMasked
+tTableGramNull
+tTableGramUpdate
 )
 
 # Some test sources include a test .h file.

@@ -41,7 +41,6 @@
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 #include <casacore/scimath/Mathematics/AutoDiffIO.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 #include <casacore/casa/iostream.h>

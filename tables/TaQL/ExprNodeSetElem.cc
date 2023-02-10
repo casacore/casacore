@@ -979,44 +979,72 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   
+  TableExprNodeSetElem::TableExprNodeSetElem (const TENSEBShPtr& elem)
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant),
+      itsElem (elem)
+  {
+    init();
+  }
+
   TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& node)
-    : itsElem (new TableExprNodeSetElemSingle (node))
-  {}
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant),
+      itsElem (new TableExprNodeSetElemSingle (node))
+  {
+    init();
+  }
 
   TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode* start,
                                               const TableExprNode* end,
                                               const TableExprNode* incr,
                                               Bool isEndExcl)
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant)
   {
     TableExprNode s (start ? *start : TableExprNode());
     TableExprNode e (end ? *end : TableExprNode());
     TableExprNode i (incr ? *incr : TableExprNode());
     itsElem.reset (new TableExprNodeSetElemDiscrete (s, e, i, isEndExcl));
+    init();
   }
 
   TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
                                               const TableExprNode& start,
                                               const TableExprNode& end,
                                               Bool isRightClosed)
-    : itsElem (new TableExprNodeSetElemCont (isLeftClosed, start,
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant),
+      itsElem (new TableExprNodeSetElemCont (isLeftClosed, start,
                                              end, isRightClosed))
-  {}
+  {
+    init();
+  }
   
   TableExprNodeSetElem::TableExprNodeSetElem (Bool isLeftClosed,
                                               const TableExprNode& start)
-    : itsElem (new TableExprNodeSetElemCont (isLeftClosed, start))
-  {}
-
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant),
+      itsElem (new TableExprNodeSetElemCont (isLeftClosed, start))
+  {
+    init();
+  }
 
   TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& end,
                                               Bool isRightClosed)
-    : itsElem (new TableExprNodeSetElemCont (end, isRightClosed))
-  {}
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant),
+      itsElem (new TableExprNodeSetElemCont (end, isRightClosed))
+  {
+    init();
+  }
 
   TableExprNodeSetElem::TableExprNodeSetElem (const TableExprNode& mid,
                                               const TableExprNode& width)
-    : itsElem (new TableExprNodeSetElemMidWidth (mid, width))
-  {}
+    : TableExprNodeRep (NTBool, VTSetElem, OtUndef, Constant),
+      itsElem (new TableExprNodeSetElemMidWidth (mid, width))
+  {
+    init();
+  }
 
+  void TableExprNodeSetElem::init()
+  {
+    dtype_p    = itsElem->dataType();
+    exprtype_p = itsElem->exprType();
+  }
   
 } //# NAMESPACE CASACORE - END

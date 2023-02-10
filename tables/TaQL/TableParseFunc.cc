@@ -25,6 +25,7 @@
 
 #include <casacore/tables/TaQL/TableParseFunc.h>
 #include <casacore/tables/TaQL/TableParseQuery.h>
+#include <casacore/tables/TaQL/TaQLJoin.h>
 #include <casacore/tables/TaQL/ExprConeNode.h>
 #include <casacore/tables/TaQL/TaQLStyle.h>
 #include <casacore/tables/Tables/TableColumn.h>
@@ -36,7 +37,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN  
 
-  TableExprNode TableParseFunc::makeFuncNode (TableParseQuery* sel,
+  TableExprNode TableParseFunc::makeFuncNode (TableParseQuery* tpq,
                                               const String& fname,
                                               const TableExprNodeSet& arguments,
                                               const Vector<int>& ignoreFuncs,
@@ -48,9 +49,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // See if something like xx.func is given.
     // xx can be a shorthand or a user defined function library.
     Vector<String> parts = stringToVector (name, '.');
-    if (sel  &&  parts.size() == 2) {
+    TableParsePair tabPair;
+    if (tpq  &&  parts.size() == 2) {
       // See if xx is a shorthand. If so, use that table.
-      TableParsePair tabPair = sel->tableList().findTable (parts[0], False);
+      tabPair = tpq->tableList().findTable (parts[0], False);
       if (! tabPair.table().isNull()) {
         tabInfo = tabPair.getTableInfo();
         name = parts[1];
@@ -62,7 +64,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                                                       ignoreFuncs);
     if (ftype == TableExprFuncNode::NRFUNC) {
       // The function can be a user defined one (or unknown).
-      return makeUDFNode (sel, name, arguments, tabInfo, style);
+      return makeUDFNode (tpq, name, arguments, tabInfo, style);
+    }
+    if (tabInfo.isJoinTable()) {
+      if (ftype == TableExprFuncNode::rowidFUNC) {
+        if (arguments.size() > 0) {
+          throw TableInvExpr("Function rowid cannot have arguments") ;
+        }
+        return new TaQLJoinRowid (tabInfo, tpq->joins()[tabPair.joinIndex()]);
+      } else if (ftype == TableExprFuncNode::rownrFUNC) {
+        throw TableInvExpr("Function rownr cannot be used on a join table");
+      }
     }
     try {
       // The axes of reduction functions such as SUMS can be given as a set or as
@@ -150,8 +162,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           } else if (arguments.size() == axarg+1
                      &&  arguments[axarg]->isSingle()) {
             // A single set given; see if it is an array.
-            const TableExprNodeSetElem& arg = arguments[axarg];
-            if (arg.start()->valueType() == TableExprNodeRep::VTArray) {
+            const TENSEBShPtr& arg = arguments[axarg];
+            if (arg->start()->valueType() == TableExprNodeRep::VTArray) {
               parms.add (arg);
               axesIsArray = True;
             }
@@ -160,9 +172,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
             // Combine all axes in a single set and add to parms.
             TableExprNodeSet axes;
             for (uInt i=axarg; i<arguments.size(); i++) {
-              const TableExprNodeSetElem& arg = arguments[i];
-              const TENShPtr& rep = arg.start();
-              if (rep == 0  ||  !arg.isSingle()
+              const TENSEBShPtr arg = arguments[i];
+              const TENShPtr& rep = arg->start();
+              if (!rep  ||  !arg->isSingle()
                   ||  rep->valueType() != TableExprNodeRep::VTScalar
                   ||  (rep->dataType() != TableExprNodeRep::NTInt
                        &&  rep->dataType() != TableExprNodeRep::NTDouble)) {

@@ -52,7 +52,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (!found) {
       inx--;
     }
-    DebugAssert (inx>=0  &&  inx<itsNTable, AipsError);
+    DebugAssert (inx>=0  &&  static_cast<uInt>(inx)<itsNTable, AipsError);
     itsLastStRow   = itsRows[inx];
     itsLastEndRow  = itsRows[inx+1];
     itsLastTableNr = inx;

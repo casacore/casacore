@@ -193,6 +193,7 @@ TaQL/ExprUnitNode.cc
 TaQL/MArrayBase.cc
 TaQL/RecordExpr.cc
 TaQL/RecordGram.cc
+TaQL/TaQLJoin.cc
 TaQL/TaQLNode.cc
 TaQL/TaQLNodeDer.cc
 TaQL/TaQLNodeHandler.cc
@@ -207,6 +208,7 @@ TaQL/TableGram.cc
 TaQL/TableParse.cc
 TaQL/TableParseFunc.cc
 TaQL/TableParseGroupby.cc
+TaQL/TableParseJoin.cc
 TaQL/TableParseProject.cc
 TaQL/TableParseQuery.cc
 TaQL/TableParseSortKey.cc
@@ -456,6 +458,7 @@ TaQL/MArrayUtil.h
 TaQL/MArray.h
 TaQL/RecordExpr.h
 TaQL/RecordGram.h
+TaQL/TaQLJoin.h
 TaQL/TaQLNode.h
 TaQL/TaQLNodeDer.h
 TaQL/TaQLNodeHandler.h
@@ -472,6 +475,7 @@ TaQL/TableGram.h
 TaQL/TableParse.h
 TaQL/TableParseFunc.h
 TaQL/TableParseGroupby.h
+TaQL/TableParseJoin.h
 TaQL/TableParseProject.h
 TaQL/TableParseQuery.h
 TaQL/TableParseSortKey.h

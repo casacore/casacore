@@ -50,6 +50,7 @@
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/sstream.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -677,8 +678,8 @@ template <class T> Bool ImageStatistics<T>::_computeFlux(
     ReadOnlyVectorIterator<AccumType> sumIt(sum);
     ReadOnlyVectorIterator<AccumType> nPtsIt(npts);
     VectorIterator<AccumType> fluxIt(flux);
-    PtrHolder<ReadOnlyVectorIterator<Double> > beamAreaIter(
-        gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : 0
+    std::unique_ptr<ReadOnlyVectorIterator<Double>> beamAreaIter(
+        gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : nullptr
     );
     uInt n1 = nPtsIt.vector().nelements();
     while (!nPtsIt.pastEnd()) {

@@ -278,7 +278,7 @@ void MSMIndColumn::deleteArray (rownr_t rownr)
 
 
 
-  MSMIndColumn::Data::Data (const IPosition& shape, int dtype, int elemSize)
+MSMIndColumn::Data::Data (const IPosition& shape, int dtype, int elemSize)
 : shape_p (shape),
   data_p  (nullptr),
   data_is_string(dtype == TpString)

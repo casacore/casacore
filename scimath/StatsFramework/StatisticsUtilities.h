@@ -37,8 +37,6 @@
 
 namespace casacore {
 
-template <class T> class PtrHolder;
-
 CASA_STATD class StatsDataProvider;
 
 // Various statistics related methods for the statistics framework.
@@ -192,9 +190,9 @@ public:
         std::vector<BinCountArray>& bins,
         std::vector<CountedPtr<AccumType> >& sameVal,
         std::vector<Bool>& allSame,
-        const PtrHolder<std::vector<BinCountArray>>& tBins,
-        const PtrHolder<std::vector<CountedPtr<AccumType>>>& tSameVal,
-        const PtrHolder<std::vector<Bool>>& tAllSame, uInt nThreadsMax
+        const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
+        const std::unique_ptr<std::vector<CountedPtr<AccumType>>[]>& tSameVal,
+        const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax
     );
 
     // use two statistics sets to get the statistics set that would

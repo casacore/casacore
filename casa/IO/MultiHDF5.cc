@@ -87,7 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void MultiHDF5::doOpenFile (MultiFileInfo& info)
   {
-    DebugAssert (! info.group->isValid(), AipsError);
+    DebugAssert (! info.group, AipsError);
     info.group.reset (new HDF5Group (*itsHDF5, info.name, true, false));
     info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
                                          (const uChar*)0));

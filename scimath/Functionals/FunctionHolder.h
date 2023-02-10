@@ -28,11 +28,11 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/RecordTransformable.h>
 #include <casacore/scimath/Functionals/Function.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -186,13 +186,13 @@ template <class T> class FunctionHolder : public RecordTransformable {
 private:
   //# Data Members
   // Pointer to a Function
-  PtrHolder<Function<T> > hold_p;
+  std::unique_ptr<Function<T>> hold_p;
   // Aids (only filled after a succesful to/fromRecord
   // <group>
   mutable Types nf_p;
   mutable Int order_p;
   mutable String text_p;
-  mutable PtrHolder<RecordInterface> mode_p;
+  mutable std::unique_ptr<RecordInterface> mode_p;
   // </group>
   // List of known names
   mutable Vector<String> nam_p;
@@ -210,7 +210,7 @@ private:
   template <class U>
     Bool getType(String &error, Function<U> *&fn);
   void setParameters(Function<T> *&fn, const Vector<T> &params);
-  void setParameters(Function<AutoDiff<T> > *&fn, const Vector<T> &params);
+  void setParameters(Function<AutoDiff<T>> *&fn, const Vector<T> &params);
   // </group>
 };
 

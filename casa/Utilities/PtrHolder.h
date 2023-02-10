@@ -26,6 +26,8 @@
 #ifndef CASA_PTRHOLDER_H
 #define CASA_PTRHOLDER_H
 
+#warning PtrHolder.h is deprecated; std::unique_ptr should be used instead
+
 //# Includes
 #include <casacore/casa/aips.h>
 
