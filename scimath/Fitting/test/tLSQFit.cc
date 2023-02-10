@@ -352,8 +352,7 @@ int main() {
       val1f[0] = 1;
       for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
       lsq5.makeNorm(val1f, 1.0f, val12f[511]);
-      std::shared_ptr<ByteIO> memio(new MemoryIO());
-      AipsIO aio(memio);
+      AipsIO aio(std::make_shared<MemoryIO>());
       lsq5.toAipsIO (aio);
       LSQFit lsq6;
       aio.setpos (0);

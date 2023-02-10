@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward declarations.
   class ByteIO;
-  class TypeIO;
+  class CanonicalIO;
   class MemoryIO;
 
 
@@ -199,16 +199,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Initialize the MultiFile object.
     void init (ByteIO::OpenOption option);
     // Read the file info for the new version 2.
-    void getInfoVersion2 (Int64 contBlockNr, TypeIO& aio);
+    void getInfoVersion2 (Int64 contBlockNr, CanonicalIO& aio);
     // Write a vector of Int64.
-    void writeVector (TypeIO& cio, const std::vector<Int64>& index);
-    void writeVector (TypeIO& cio, const std::vector<uInt>& index);
+    void writeVector (CanonicalIO& cio, const std::vector<Int64>& index);
+    void writeVector (CanonicalIO& cio, const std::vector<uInt>& index);
     // Read a vector of Int64.
-    void readVector (TypeIO& cio, std::vector<Int64>& index);
-    void readVector (TypeIO& cio, std::vector<uInt>& index);
+    void readVector (CanonicalIO& cio, std::vector<Int64>& index);
+    void readVector (CanonicalIO& cio, std::vector<uInt>& index);
     // Write the remainder of the header (in case exceeding 1 block).
     // <src>iobuf</src> should be large enough
-    void writeRemainder (MemoryIO& mio, TypeIO&, MultiFileBuffer& mfbuf);
+    void writeRemainder (MemoryIO& mio, CanonicalIO&, MultiFileBuffer& mfbuf);
     // Read the remainder of the header into the buffer.
     void readRemainder (Int64 headerSize, Int64 blockNr, std::vector<char>& buf);
     // Truncate the file if blocks are freed at the end.

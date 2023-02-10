@@ -125,8 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const std::shared_ptr<MultiFileBase>& parent, const String& name,
    ByteIO::OpenOption option, Int blockSize) const
   {
-    return std::shared_ptr<MultiFileBase> (new MultiFile (name, parent,
-                                                          option, blockSize));
+    return std::make_shared<MultiFile>(name, parent, option, blockSize);
   }
 
   void MultiFile::init (ByteIO::OpenOption option)
@@ -182,9 +181,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If too large, the remainder is written into continuation blocks.
     // There are 2 sets of continuation blocks to avoid that the header
     // gets corrupted in case of a crash while writing the header.
-    MemoryIO* mio = new MemoryIO(itsBlockSize, itsBlockSize);
-    std::shared_ptr<ByteIO> bio(mio);
-    std::shared_ptr<TypeIO> cio(new CanonicalIO(bio));
+    auto mio = std::make_shared<MemoryIO>(itsBlockSize, itsBlockSize);
+    auto cio = std::make_shared<CanonicalIO>(mio);
     AipsIO aio(cio);
     itsHdrCounter++;
     Int64 zero64 = 0;
@@ -258,7 +256,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::writeRemainder (MemoryIO& mio, TypeIO& cio,
+  void MultiFile::writeRemainder (MemoryIO& mio, CanonicalIO& cio,
                                   MultiFileBuffer& mfbuf)
   {
     char* iobuf = mfbuf.data();
@@ -319,7 +317,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     CanonicalConversion::fromLocal (buf+48, itsNrBlock);
   }
 
-  void MultiFile::writeVector (TypeIO& cio, const std::vector<Int64>& index)
+  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<Int64>& index)
   {
     // Write in the same way as AipsIO is doing.
     Int64 sz = index.size();
@@ -329,7 +327,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::writeVector (TypeIO& cio, const std::vector<uInt>& index)
+  void MultiFile::writeVector (CanonicalIO& cio, const std::vector<uInt>& index)
   {
     // Write in the same way as AipsIO is doing.
     Int64 sz = index.size();
@@ -339,7 +337,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::readVector (TypeIO& cio, std::vector<Int64>& index)
+  void MultiFile::readVector (CanonicalIO& cio, std::vector<Int64>& index)
   {
     Int64 sz;
     cio.read (1, &sz);
@@ -351,7 +349,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  void MultiFile::readVector (TypeIO& cio, std::vector<uInt>& index)
+  void MultiFile::readVector (CanonicalIO& cio, std::vector<uInt>& index)
   {
     Int64 sz;
     cio.read (1, &sz);
@@ -454,8 +452,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       iohdr.read (headerSize - itsBlockSize, &(buf[itsBlockSize]));
     }
     // Read all header info from the memory buffer.
-    std::shared_ptr<ByteIO> bio(new MemoryIO(&(buf[leadSize]), headerSize - leadSize));
-    std::shared_ptr<TypeIO> cio(new CanonicalIO(bio));
+    auto mio = std::make_shared<MemoryIO>(&(buf[leadSize]), headerSize - leadSize);
+    auto cio = std::make_shared<CanonicalIO>(mio);
     AipsIO aio(cio);
     Int version = aio.getstart ("MultiFile");
     AlwaysAssert (version==1, AipsError);
@@ -512,8 +510,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     // Read all header info from the memory buffer.
-    std::shared_ptr<ByteIO> bio(new MemoryIO(&(buf[leadSize]), headerSize - leadSize));
-    std::shared_ptr<TypeIO> cio(new CanonicalIO(bio));
+    auto mio = std::make_shared<MemoryIO>(&(buf[leadSize]), headerSize - leadSize);
+    auto cio = std::make_shared<CanonicalIO>(mio);
     AipsIO aio(cio);
     Int vers = aio.getstart ("MultiFile");
     AlwaysAssert (vers==version, AipsError);
@@ -522,7 +520,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     getInfoVersion2 (contBlockNr, *cio);
   }
 
-  void MultiFile::getInfoVersion2 (Int64 contBlockNr, TypeIO& cio)
+  void MultiFile::getInfoVersion2 (Int64 contBlockNr, CanonicalIO& cio)
   {
     std::vector<Int64> bl;
     for (MultiFileInfo& fileInfo: itsInfo) {

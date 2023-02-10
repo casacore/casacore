@@ -451,7 +451,7 @@ void SSMBase::readHeader()
 void SSMBase::readIndexBuckets()
 {
   std::shared_ptr<TypeIO> aMio;
-  std::shared_ptr<MemoryIO> aMemBuf(new MemoryIO(itsIndexLength));
+  auto aMemBuf = std::make_shared<MemoryIO>(itsIndexLength);
 
   uInt aCLength = 2*CanonicalConversion::canonicalSize (&itsFirstIdxBucket);
   getCache();
@@ -509,7 +509,7 @@ void SSMBase::writeIndex()
 {
   std::shared_ptr<TypeIO> aTio;
   std::shared_ptr<TypeIO> aMio;
-  std::shared_ptr<MemoryIO> aMemBuf(new MemoryIO);
+  auto aMemBuf = std::make_shared<MemoryIO>();
 
   // Use the file given by the BucketFile object..
   // Use a buffer size (512) equal to start of buckets in the file,

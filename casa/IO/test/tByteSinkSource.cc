@@ -42,9 +42,9 @@ int main ()
 				     ByteIO::New);
     }
     {
-        std::shared_ptr<ByteIO> regularFileIO
-          (new RegularFileIO (Path("tByteSinkSource_tmp.dat1"), ByteIO::New));
-        std::shared_ptr<TypeIO> canonicalIO(new CanonicalIO(regularFileIO));
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSinkSource_tmp.dat1"), ByteIO::New);
+        auto canonicalIO = std::make_shared<CanonicalIO>(regularFileIO);
 
 	ByteSinkSource sinkSource(canonicalIO);
 	ByteSinkSource sinkSource1(sinkSource);
@@ -67,9 +67,9 @@ int main ()
 	uChar    testuChar = 'B';
 	String   testString("This is a teststring");
 
-        std::shared_ptr<ByteIO> regularFileIO
-          (new RegularFileIO (Path("tByteSinkSource_tmp.dat1"), ByteIO::New));
-        std::shared_ptr<TypeIO> canonicalIO(new CanonicalIO(regularFileIO));
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSinkSource_tmp.dat1"), ByteIO::New);
+        auto canonicalIO = std::make_shared<CanonicalIO>(regularFileIO);
 	ByteSinkSource  sinkSource(canonicalIO);
 
 	cout << sinkSource.isReadable() << endl;
@@ -169,9 +169,9 @@ int main ()
 	cout << testString    << endl;
     }
     {
-        std::shared_ptr<ByteIO> regularFileIO
-          (new RegularFileIO (Path("tByteSinkSource_tmp.dat1"), ByteIO::Update));
-        std::shared_ptr<TypeIO> canonicalIO(new CanonicalIO(regularFileIO, 5));
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSinkSource_tmp.dat1"), ByteIO::Update);
+        auto canonicalIO = std::make_shared<CanonicalIO>(regularFileIO, 5);
 	ByteSinkSource sinkSource(canonicalIO);
 
 	String testString;

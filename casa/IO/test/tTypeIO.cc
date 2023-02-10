@@ -131,8 +131,7 @@ void doIt (TypeIO* io)
 
 int main()
 {
-    std::shared_ptr<ByteIO> regularFileIO
-      (new RegularFileIO (Path("tTypeIO_tmp.dat"), ByteIO::New));
+    auto regularFileIO = std::make_shared<RegularFileIO>(Path("tTypeIO_tmp.dat"), ByteIO::New);
     CanonicalIO canonicalIO (regularFileIO);
     doIt (&canonicalIO);
 
@@ -142,23 +141,23 @@ int main()
     RawIO rawIO (regularFileIO);
     doIt (&rawIO);
 
-    std::shared_ptr<DataConversion> canConv (new CanonicalDataConversion());
+    auto canConv = std::make_shared<CanonicalDataConversion>();
     ConversionIO canConvIO (canConv, regularFileIO);
     doIt (&canConvIO);
     
-    std::shared_ptr<DataConversion> lecanConv (new LECanonicalDataConversion());
+    auto lecanConv = std::make_shared<LECanonicalDataConversion>();
     ConversionIO lecanConvIO (lecanConv, regularFileIO);
     doIt (&lecanConvIO);
     
-    std::shared_ptr<DataConversion> ibmConv (new IBMDataConversion());
+    auto ibmConv = std::make_shared<IBMDataConversion>();
     ConversionIO ibmConvIO (ibmConv, regularFileIO);
     doIt (&ibmConvIO);
     
-    std::shared_ptr<DataConversion> vaxConv (new VAXDataConversion());
+    auto vaxConv = std::make_shared<VAXDataConversion>();
     ConversionIO vaxConvIO (vaxConv, regularFileIO);
     doIt (&vaxConvIO);
     
-    std::shared_ptr<DataConversion> rawConv (new RawDataConversion());
+    auto rawConv = std::make_shared<RawDataConversion>();
     ConversionIO rawConvIO (rawConv, regularFileIO);
     doIt (&rawConvIO);
     

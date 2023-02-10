@@ -174,7 +174,7 @@ void ScalarRecordColumnData::getRecord (rownr_t rownr, TableRecord& rec) const
 	dataColPtr_p->getArrayV (rownr, data);
 	Bool deleteIt;
 	const uChar* buf = data.getStorage (deleteIt);
-        std::shared_ptr<MemoryIO> memio (new MemoryIO (buf, shape(0)));
+        auto memio = std::make_shared<MemoryIO>(buf, shape(0));
 	AipsIO aio(memio);
 	rec.getRecord (aio, TableAttr(dataManager()->table()));
 	data.freeStorage (buf, deleteIt);
@@ -183,7 +183,7 @@ void ScalarRecordColumnData::getRecord (rownr_t rownr, TableRecord& rec) const
 
 void ScalarRecordColumnData::putRecord (rownr_t rownr, const TableRecord& rec)
 {
-    std::shared_ptr<MemoryIO> memio(new MemoryIO);
+    auto memio = std::make_shared<MemoryIO>();
     AipsIO aio(memio);
     rec.putRecord (aio, TableAttr(dataManager()->table().tableName()));
     IPosition shape (1, Int(memio->length()));

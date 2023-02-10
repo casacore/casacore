@@ -106,7 +106,7 @@ std::shared_ptr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
   if (mfile_p) {
     return file_p;
   }
-  return std::shared_ptr<ByteIO>(new FilebufIO (fd_p, bufferSize));
+  return std::make_shared<FilebufIO>(fd_p, bufferSize);
 }
 
 

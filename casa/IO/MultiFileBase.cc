@@ -88,11 +88,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   std::shared_ptr<MultiFileBase> MultiFileBase::openMF (const String& fileName)
   {
     if (HDF5File::isHDF5 (fileName)) {
-      return std::shared_ptr<MultiFileBase> (new MultiHDF5(fileName,
-                                                           ByteIO::Old));
+      return std::make_shared<MultiHDF5>(fileName, ByteIO::Old);
     }
-    return std::shared_ptr<MultiFileBase> (new MultiFile(fileName,
-                                                         ByteIO::Old));
+    return std::make_shared<MultiFile>(fileName, ByteIO::Old);
   }
 
   void MultiFileBase::setNewFile()

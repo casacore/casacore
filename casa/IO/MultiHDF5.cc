@@ -67,8 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const std::shared_ptr<MultiFileBase>& parent, const String& name,
    ByteIO::OpenOption option, Int blockSize) const
   {
-    return std::shared_ptr<MultiFileBase> (new MultiHDF5 (name, parent,
-                                                          option, blockSize));
+    return std::make_shared<MultiHDF5>(name, parent, option, blockSize);
   }
 
   void MultiHDF5::init (ByteIO::OpenOption option)

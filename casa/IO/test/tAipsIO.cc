@@ -82,8 +82,7 @@ void doit (Bool doExcp)
   }
   {
     cout << endl << "Test using MultiFile files ..." << endl;
-    std::shared_ptr<MultiFileBase> mfile
-      (new MultiFile("tAipsIO_tmp.mf", ByteIO::New));
+    auto mfile = std::make_shared<MultiFile>("tAipsIO_tmp.mf", ByteIO::New);
     AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, mfile); // open output file
     doIO (doExcp, True, io);
     io.close();
@@ -97,18 +96,17 @@ void doit (Bool doExcp)
   }
 
   cout << endl << "Test using MemoryIO ..." << endl;
-  MemoryIO* membuf = new MemoryIO();
-  std::shared_ptr<ByteIO> bmembuf(membuf);
+  auto membuf = std::make_shared<MemoryIO>();
   {
-    std::shared_ptr<TypeIO> rawio(new RawIO(bmembuf));
+    auto rawio = std::make_shared<RawIO>(membuf);
     AipsIO io2(rawio);
     doIO (doExcp, True, io2);
   }
   const uChar* iobuf = membuf->getBuffer();
   uInt bufleng = membuf->length();
-  std::shared_ptr<ByteIO> bmembuf2(new MemoryIO(iobuf, bufleng));
+  auto membuf2 = std::make_shared<MemoryIO>(iobuf, bufleng);
   {
-    std::shared_ptr<TypeIO> rawio(new RawIO(bmembuf2));
+    auto rawio = std::make_shared<RawIO>(membuf2);
     AipsIO io2(rawio);
     doIO (doExcp, False, io2);
   }

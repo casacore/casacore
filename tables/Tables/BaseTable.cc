@@ -739,8 +739,7 @@ std::shared_ptr<BaseTable> BaseTable::doSort
 std::shared_ptr<BaseTable> BaseTable::makeRefTable (Bool rowOrder,
                                                     rownr_t initialNrrow)
 {
-  std::shared_ptr<BaseTable> rtp (new RefTable(this, rowOrder, initialNrrow));
-  return rtp;
+  return std::make_shared<RefTable>(this, rowOrder, initialNrrow);
 }
 
 //# No rownrs have to be adjusted and they are by default in ascending order.

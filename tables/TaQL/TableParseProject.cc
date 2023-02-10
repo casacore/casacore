@@ -482,7 +482,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseProject::initDescriptions (const TableDesc& desc,
                                             const Record& dminfo)
   {
-    tableDesc_p = std::shared_ptr<TableDesc>(new TableDesc(desc));
+    tableDesc_p = std::make_shared<TableDesc>(desc);
     dminfo_p    = dminfo;
   }
 
