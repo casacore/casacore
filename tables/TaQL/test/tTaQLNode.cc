@@ -110,8 +110,7 @@ void seltab (const String& str)
   }
   // Save and restore the parse tree.
   // See if it gives the same result.
-  MemoryIO mio;
-  AipsIO aio(&mio);
+  AipsIO aio(std::make_shared<MemoryIO>());
   node.save (aio);
   aio.setpos (0);
   TaQLNode node2 = TaQLNode::restore (aio);

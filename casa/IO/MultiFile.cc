@@ -125,8 +125,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const std::shared_ptr<MultiFileBase>& parent, const String& name,
    ByteIO::OpenOption option, Int blockSize) const
   {
-    return std::shared_ptr<MultiFileBase> (new MultiFile (name, parent,
-                                                          option, blockSize));
+    return std::make_shared<MultiFile>(name, parent, option, blockSize);
   }
 
   void MultiFile::init (ByteIO::OpenOption option)
@@ -182,9 +181,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If too large, the remainder is written into continuation blocks.
     // There are 2 sets of continuation blocks to avoid that the header
     // gets corrupted in case of a crash while writing the header.
-    MemoryIO mio(itsBlockSize, itsBlockSize);
-    CanonicalIO cio(&mio);
-    AipsIO aio(&cio);
+    auto mio = std::make_shared<MemoryIO>(itsBlockSize, itsBlockSize);
+    auto cio = std::make_shared<CanonicalIO>(mio);
+    AipsIO aio(cio);
     itsHdrCounter++;
     Int64 zero64 = 0;
     uInt  zero32 = 0;
@@ -192,17 +191,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int   version = 2;
     // Start with a zero to distinguish it from version 1.
     // The first value in version 1 is always > 0.
-    cio.write (1, &zero64);
-    cio.write (1, &zero64);        // room for first cont.block (writeRemainder)
-    cio.write (1, &itsHdrCounter);
-    cio.write (1, &version);
-    cio.write (1, &zero32);        // headerCRC
-    cio.write (1, &zero64);        // header size
-    cio.write (1, &itsBlockSize);
-    cio.write (1, &itsNrBlock);
+    cio->write (1, &zero64);
+    cio->write (1, &zero64);        // room for first cont.block (writeRemainder)
+    cio->write (1, &itsHdrCounter);
+    cio->write (1, &version);
+    cio->write (1, &zero32);        // headerCRC
+    cio->write (1, &zero64);        // header size
+    cio->write (1, &itsBlockSize);
+    cio->write (1, &itsNrBlock);
     if (itsUseCRC) char8[0] = 1;
-    cio.write (8, char8);
-    AlwaysAssert (mio.length() == 64, AipsError);
+    cio->write (8, char8);
+    AlwaysAssert (mio->length() == 64, AipsError);
     // First write general info and file names, etc.
     aio.putstart ("MultiFile", version);
     aio << itsInfo;
@@ -210,15 +209,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Write the used and free blocknrs in packed format but outside
     // the AipsIO object because that is limited to 4 GB.
     for (const MultiFileInfo& fileInfo : info()) {
-      writeVector (cio, packIndex(fileInfo.blockNrs));
+      writeVector (*cio, packIndex(fileInfo.blockNrs));
     }
-    writeVector (cio, packIndex(freeBlocks()));
-    writeVector (cio, itsCRC);
+    writeVector (*cio, packIndex(freeBlocks()));
+    writeVector (*cio, itsCRC);
     // Calculate the size including the continuation blocknrs and number of
     // actually used blocknrs.
     // If continuation is needed, they might change and cannot
     // be written yet.
-    Int64 todo = mio.length();
+    Int64 todo = mio->length();
     DebugAssert (static_cast<uInt64>(todo) <= mio.allocated(), AipsError);
     Int64 totalSize = todo + 2*sizeof(uInt) + (2 + itsHdrCont[0].blockNrs.size() +
                               itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
@@ -229,18 +228,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                           itsUseODirect);
     // First write the remainder and adjust the header as needed.
     if (hasRemainder) {
-      writeRemainder (mio, cio, mfbuf);
+      writeRemainder (*mio, *cio, mfbuf);
     } else {
       // No remainder, so write the continuation blocknrs here.
       // None are used in the current set.
-      writeVector (cio, itsHdrCont[0].blockNrs);
-      writeVector (cio, itsHdrCont[1].blockNrs);
+      writeVector (*cio, itsHdrCont[0].blockNrs);
+      writeVector (*cio, itsHdrCont[1].blockNrs);
       itsNrContUsed[itsHdrContInx] = 0;
-      cio.write (2, itsNrContUsed);
+      cio->write (2, itsNrContUsed);
     }
     // Writing the first part of the header is done as the last step.
-    uChar* buf = const_cast<uChar*>(mio.getBuffer());
-    todo = mio.length();
+    uChar* buf = const_cast<uChar*>(mio->getBuffer());
+    todo = mio->length();
     CanonicalConversion::fromLocal (buf+32, todo);  // header size
     if (itsUseCRC) {
       uInt crc = calcCRC (buf, todo);
@@ -453,9 +452,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       iohdr.read (headerSize - itsBlockSize, &(buf[itsBlockSize]));
     }
     // Read all header info from the memory buffer.
-    MemoryIO mio(&(buf[leadSize]), headerSize - leadSize);
-    CanonicalIO cio(&mio);
-    AipsIO aio(&cio);
+    auto mio = std::make_shared<MemoryIO>(&(buf[leadSize]), headerSize - leadSize);
+    auto cio = std::make_shared<CanonicalIO>(mio);
+    AipsIO aio(cio);
     Int version = aio.getstart ("MultiFile");
     AlwaysAssert (version==1, AipsError);
     aio >> itsNrBlock;
@@ -511,14 +510,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     // Read all header info from the memory buffer.
-    MemoryIO mio(&(buf[leadSize]), headerSize - leadSize);
-    CanonicalIO cio(&mio);
-    AipsIO aio(&cio);
+    auto mio = std::make_shared<MemoryIO>(&(buf[leadSize]), headerSize - leadSize);
+    auto cio = std::make_shared<CanonicalIO>(mio);
+    AipsIO aio(cio);
     Int vers = aio.getstart ("MultiFile");
     AlwaysAssert (vers==version, AipsError);
     aio >> itsInfo;
     aio.getend();
-    getInfoVersion2 (contBlockNr, cio);
+    getInfoVersion2 (contBlockNr, *cio);
   }
 
   void MultiFile::getInfoVersion2 (Int64 contBlockNr, CanonicalIO& cio)

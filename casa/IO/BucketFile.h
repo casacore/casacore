@@ -32,9 +32,8 @@
 #include <casacore/casa/IO/MMapfdIO.h>
 #include <casacore/casa/IO/FilebufIO.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <unistd.h>
-
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -136,7 +135,7 @@ public:
 
     // Make a (temporary) buffered IO object for this file.
     // That object should not close the file.
-    virtual CountedPtr<ByteIO> makeFilebufIO (uInt bufferSize);
+    virtual std::shared_ptr<ByteIO> makeFilebufIO (uInt bufferSize);
 
     // Get the mapped file object.
     MMapfdIO* mappedFile()
@@ -200,7 +199,7 @@ private:
     uInt bufSize_p;
     int  fd_p;    //  fd (if used) of unbuffered file
     // The unbuffered file.
-    CountedPtr<ByteIO> file_p;
+    std::shared_ptr<ByteIO> file_p;
     // The optional mapped file.
     MMapfdIO* mappedFile_p;
     // The optional buffered file.

@@ -72,9 +72,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 LockFile::LockFile (const String& fileName, double inspectInterval,
 		    Bool create, Bool setRequestFlag, Bool mustExist,
 		    uInt seqnr, Bool permLocking, Bool noLocking)
-: itsFileIO      (0),
-  itsCanIO       (0),
-  itsWritable    (True),
+: itsWritable    (True),
   itsAddToList   (setRequestFlag),
   itsInterval    (inspectInterval),
   itsPid         (getpid()),
@@ -129,8 +127,7 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
         itsUseLocker = FileLocker (fd, 4*seqnr+1, 1);
       }
       if (!noLocking) {
-        itsFileIO = new FiledesIO (fd, itsName);
-        itsCanIO  = new CanonicalIO (itsFileIO);
+        itsFileIO.reset (new FiledesIO (fd, itsName));
         // Set the file to in use by acquiring a read lock.
         itsUseLocker.acquire (FileLocker::Read, 1);
       }
@@ -139,8 +136,6 @@ LockFile::LockFile (const String& fileName, double inspectInterval,
 
 LockFile::~LockFile()
 {
-    delete itsCanIO;
-    delete itsFileIO;
     int fd = itsLocker.fd();
     if (fd >= 0) {
 	FiledesIO::close (fd);
@@ -157,9 +152,9 @@ Bool LockFile::isMultiUsed()
 Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
 			uInt nattempts)
 {
-    //# When no lock file, lock requests always succeed,
+    //# If no lock file, lock requests always succeed,
     //# but we cannot return any info.
-    if (itsFileIO == 0) {
+    if (!itsFileIO) {
 	if (info != 0) {
 	    info->clear();
 	}
@@ -203,8 +198,8 @@ Bool LockFile::acquire (MemoryIO* info, FileLocker::LockType type,
 
 Bool LockFile::release (const MemoryIO* info)
 {
-    //# When no lock file, lock requests are not really handled.
-    if (itsFileIO == 0) {
+    //# If no lock file, lock requests are not really handled.
+    if (!itsFileIO) {
 	return True;
     }
     if (info != 0) {
@@ -215,8 +210,8 @@ Bool LockFile::release (const MemoryIO* info)
 
 Bool LockFile::inspect (Bool always)
 {
-    //# When no lock file, lock requests are not really handled.
-    if (itsFileIO == 0) {
+    //# If no lock file, lock requests are not really handled.
+    if (!itsFileIO) {
 	return False;
     }
 

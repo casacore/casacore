@@ -316,8 +316,7 @@ private:
     //# The member variables.
     FileLocker   itsLocker;
     FileLocker   itsUseLocker;
-    FiledesIO*   itsFileIO;
-    CanonicalIO* itsCanIO;
+    std::shared_ptr<FiledesIO>   itsFileIO;
     Bool         itsWritable;         //# lock file is writable?
     Bool         itsAddToList;        //# Should acquire add to request list?
     double       itsInterval;         //# interval between inspections

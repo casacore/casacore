@@ -31,10 +31,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ConversionIO::ConversionIO (DataConversion* dataConversion,
-			    ByteIO* byteIO, uInt bufferLength, Bool takeOver)
-: TypeIO          (byteIO, takeOver),
-  itsConversion   (dataConversion, takeOver),
+ConversionIO::ConversionIO (const std::shared_ptr<DataConversion>& dataConversion,
+			    const std::shared_ptr<ByteIO>& byteIO,
+                            uInt bufferLength)
+: TypeIO          (byteIO),
+  itsConversion   (dataConversion),
   itsBuffer       (new char[bufferLength]),
   itsBufferLength (bufferLength)
 {

@@ -36,9 +36,10 @@ TableSyncData::TableSyncData()
 : itsNrrow              (0),
   itsNrcolumn           (-1),
   itsModifyCounter      (0),
-  itsTableChangeCounter (0)
+  itsTableChangeCounter (0),
+  itsMemIO              (new MemoryIO)
 {
-    itsAipsIO.open (&itsMemIO);
+    itsAipsIO.open (itsMemIO);
 }
 
 TableSyncData::~TableSyncData()
@@ -80,7 +81,7 @@ void TableSyncData::write (rownr_t nrrow, uInt nrcolumn, Bool tableChanged,
     // Now write the data into the memoryIO object.
     // Use 32-bit for the row number if it fits.
     // First clear it.
-    itsMemIO.clear();
+    itsMemIO->clear();
     if (itsNrrow > DataManager::MAXROWNR32) {
       itsAipsIO.putstart ("sync", 2);
       itsAipsIO << itsNrrow;
@@ -105,7 +106,7 @@ void TableSyncData::write (rownr_t nrrow)
     // Now write the data into the memoryIO object.
     // Use 32-bit for the row number if it fits.
     // First clear it.
-    itsMemIO.clear();
+    itsMemIO->clear();
     if (itsNrrow > DataManager::MAXROWNR32) {
       itsAipsIO.putstart ("sync", 2);
       itsAipsIO << itsNrrow;
@@ -125,7 +126,7 @@ Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
     // When no columns, don't read the remaining part (then it is used
     // by an external filler).
     Int nrcol = -1;
-    if (itsMemIO.length() > 0) {
+    if (itsMemIO->length() > 0) {
         uint version = itsAipsIO.getstart ("sync");
         if (version > 2) {
           throw TableError ("TableSyncData version " + String::toString(version) +
@@ -144,7 +145,7 @@ Bool TableSyncData::read (rownr_t& nrrow, uInt& nrcolumn, Bool& tableChanged,
     if (nrcol < 0) {
 	tableChanged = True;
 	dataManChanged.set (True);
-	if (itsMemIO.length() > 0) {
+	if (itsMemIO->length() > 0) {
 	    itsAipsIO.getend();
 	    return True;                       // not empty
 	}

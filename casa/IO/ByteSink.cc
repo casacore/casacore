@@ -33,8 +33,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSink::ByteSink()
 {}
 
-ByteSink::ByteSink (TypeIO* typeIO, Bool takeOver)
-: BaseSinkSource (typeIO, takeOver)
+ByteSink::ByteSink (const std::shared_ptr<TypeIO>& typeIO)
+: BaseSinkSource (typeIO)
 {
     if (!isWritable()) {
 	throw (AipsError ("ByteSink is not writable"));

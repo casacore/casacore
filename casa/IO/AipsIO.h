@@ -184,11 +184,11 @@ public:
     // for which a <linkto class=FilebufIO>FilebufIO</linkto>
     // object has been created.
     // The actual IO is done via a CanonicalIO object on top of it.
-    explicit AipsIO (ByteIO*);
+    explicit AipsIO (const std::shared_ptr<ByteIO>&);
 
     // Construct from a stream object derived from TypeIO, thus from
     // a stream on top of ByteIOn doing the possible conversions.
-    explicit AipsIO (TypeIO*);
+    explicit AipsIO (const std::shared_ptr<TypeIO>&);
 
     // Close if not done yet
     ~AipsIO();
@@ -202,7 +202,6 @@ public:
     void open (const String& fileName,
                ByteIO::OpenOption = ByteIO::Old,
                uInt filebufSize=65536,
-               ////		     uInt filebufSize=1048576,
                const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Open by connecting to the given byte stream.
@@ -211,11 +210,11 @@ public:
     // object has been created.
     // The actual IO is done via a CanonicalIO object on top of it.
     // An exception is thrown if the object contains an already open file.
-    void open (ByteIO*);
+    void open (const std::shared_ptr<ByteIO>&);
 
     // Open by connecting to the given typed byte stream.
     // An exception is thrown if the object contains an already open file.
-    void open (TypeIO*);
+    void open (const std::shared_ptr<TypeIO>&);
 
     // Close file opened
     void close();
@@ -456,9 +455,9 @@ private:
     // The cached object type.
     String       objectType_p;
     // The file object.
-    ByteIO*      file_p;
+    std::shared_ptr<ByteIO> file_p;
     // The actual IO object.
-    TypeIO*      io_p;
+    std::shared_ptr<TypeIO> io_p;
     // Is the file is seekable?
     Bool         seekable_p;
     // magic value to check sync.
