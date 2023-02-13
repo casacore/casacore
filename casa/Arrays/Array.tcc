@@ -719,7 +719,7 @@ template<class T> void Array<T>::resize(const IPosition& len, bool copyValues)
     return;
   }
   // OK we differ, so we really have to resize ourselves.
-  Array<T> tmp;
+  Array<T> tmp(len);
   // Copy the contents if needed.
   if (copyValues) {
     tmp.copyMatchingPart (*this);
