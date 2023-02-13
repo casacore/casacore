@@ -12,8 +12,8 @@
 
 namespace casacore {
   
-template<typename T, typename Alloc>
-std::string to_string(const Array<T, Alloc> array)
+template<typename T>
+std::string to_string(const Array<T> array)
 {
   std::ostringstream str;
   str << array;
@@ -27,8 +27,8 @@ template<typename T>
 inline void ArrayIO_printValue (std::ostream& s, const T& v)
   { s << v; }
 
-template<typename T, typename Alloc>
-std::ostream &operator<<(std::ostream &s, const Array<T, Alloc> &a)
+template<typename T>
+std::ostream &operator<<(std::ostream &s, const Array<T> &a)
 {
   // Print any "header" information
   if (a.ndim() > 2) {
@@ -115,8 +115,8 @@ std::ostream &operator<<(std::ostream &s, const Array<T, Alloc> &a)
 //
 // They should eventually be replaced with something more sophisticated.
 
-template <typename T, typename Alloc>
-void write_array (const Array<T, Alloc>& the_array, const std::string& fileName)
+template <typename T>
+void write_array (const Array<T>& the_array, const std::string& fileName)
 {
   size_t nbytes = the_array.nelements() * sizeof(T);
   std::ofstream outfile(fileName, std::ios::out);
@@ -129,8 +129,8 @@ void write_array (const Array<T, Alloc>& the_array, const std::string& fileName)
   outfile.close();
 }
 
-template <typename T, typename Alloc>
-void read_array(Array<T, Alloc>& the_array, const std::string& fileName)
+template <typename T>
+void read_array(Array<T>& the_array, const std::string& fileName)
 {
   size_t nbytes = the_array.nelements() * sizeof(T);
   std::ifstream infile(fileName, std::ios::in);
@@ -145,8 +145,8 @@ void read_array(Array<T, Alloc>& the_array, const std::string& fileName)
   the_array.putStorage (storage, delete_storage);
 }
 
-template <typename T, typename Alloc>
-void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* filein)
+template <typename T>
+void readAsciiMatrix (Matrix<T>& mat, const char* filein)
 {
   const size_t bufSize = 1024;
   char buf[bufSize];
@@ -231,8 +231,8 @@ void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* filein)
 }
 
 
-template <typename T, typename Alloc>
-void writeAsciiMatrix (const Matrix<T, Alloc>& mat, const char* fileout)
+template <typename T>
+void writeAsciiMatrix (const Matrix<T>& mat, const char* fileout)
 {
   std::ofstream oFile;
   oFile.precision(12);
@@ -249,8 +249,8 @@ void writeAsciiMatrix (const Matrix<T, Alloc>& mat, const char* fileout)
 }
 
 
-template <typename T, typename Alloc>
-void readAsciiVector (Vector<T, Alloc>& vect, const char* filein) 
+template <typename T>
+void readAsciiVector (Vector<T>& vect, const char* filein)
 {
   const size_t bufSize = 1024;
   char buf[bufSize];
@@ -321,8 +321,8 @@ void readAsciiVector (Vector<T, Alloc>& vect, const char* filein)
   
 }
 
-template <typename T, typename Alloc>
-void writeAsciiVector (const Vector<T, Alloc>& vect, const char* fileout)
+template <typename T>
+void writeAsciiVector (const Vector<T>& vect, const char* fileout)
 {
   size_t rows = vect.size();
   std::ofstream oFile;
@@ -337,18 +337,18 @@ void writeAsciiVector (const Vector<T, Alloc>& vect, const char* fileout)
   oFile << '\n'; 
 }
 
-template <typename T, typename Alloc>
-std::istream &operator >> (std::istream &s, Array<T, Alloc> &x) {
+template <typename T>
+std::istream &operator >> (std::istream &s, Array<T> &x) {
   if (!read(s, x, 0, false)) {
     s.clear(std::ios::failbit | s.rdstate());
   }
   return s;
 }
 
-template <typename T, typename Alloc>
-bool read(std::istream &s, Array<T, Alloc> &x,
+template <typename T>
+bool read(std::istream &s, Array<T> &x,
 	  const IPosition *ip, bool it) {
-  ///  Array<T, Alloc> *to; PCAST(to, Array<T, Alloc>, &x);
+  ///  Array<T> *to; PCAST(to, Array<T>, &x);
   ///  if (to) {
   // If an empty array, it can get any dimension.
   if (x.ndim() == 0) {
@@ -379,7 +379,7 @@ bool read(std::istream &s, Array<T, Alloc> &x,
     // Otherwise try if we can resize.
     // This will always be possible for an Array,
     // but e.g. not for Vector if the Array is not 1D.
-    Array<T, Alloc> tx;
+    Array<T> tx;
     if (!read(s, tx, ip, it)) return false;
     // TODO this can be done without trial and error:
     // reading a matrix in always throws and catches an exception
@@ -423,10 +423,10 @@ bool read(std::istream &s, Array<T, Alloc> &x,
   return true;
 }
 
-template <typename T, typename Alloc>
+template <typename T>
 bool readArrayBlock(std::istream &s, bool &trans,
                     IPosition &p,
-                    std::vector<T, Alloc> &x, const IPosition *ip, bool it) {
+                    std::vector<T> &x, const IPosition *ip, bool it) {
   if (!s.good()) {
     s.clear(std::ios::failbit|s.rdstate()); // Redundant if using GNU iostreams
     return false;

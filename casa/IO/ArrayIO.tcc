@@ -140,8 +140,8 @@ inline LogIO& operator<< (LogIO& os, const IPosition& ip)
     return os;
 }
 
-template<typename T, typename Alloc>
-Block<T> makeBlock(const Array<T, Alloc>& array)
+template<typename T>
+Block<T> makeBlock(const Array<T>& array)
 {
 	Block<T> block(array.nelements());
 	if(array.contiguousStorage())

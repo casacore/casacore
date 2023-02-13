@@ -60,7 +60,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </ul>
 // </synopsis>
 
-template <typename T, typename Alloc=std::allocator<T>>
+template <typename T>
 class VectorSTLIterator
 : public std::iterator<std::random_access_iterator_tag, T> {
  public:
@@ -77,14 +77,14 @@ class VectorSTLIterator
   // the same as if created from <src>Vector.begin()</src>. Copy
   // constructor and assignment can be the default ones.
   // <group>
-  explicit VectorSTLIterator(const Vector<T, Alloc> &c)
+  explicit VectorSTLIterator(const Vector<T> &c)
     : start_p(const_cast<T*>(c.data())), 
       step_p (std::max(ssize_t(1), c.steps()(0))),
       iter_p (const_cast<T*>(c.data()))
   {}
   VectorSTLIterator() : start_p(0), step_p(1), iter_p(0)
   {}
-  VectorSTLIterator(const typename Array<T, Alloc>::IteratorSTL &c)
+  VectorSTLIterator(const typename Array<T>::IteratorSTL &c)
     : start_p(c.pos()), 
       step_p (std::max(ssize_t(1), c.steps()(0))),
       iter_p (start_p)
@@ -106,19 +106,19 @@ class VectorSTLIterator
     iterator t = *this; iter_p+=step_p; return t; }; 
   iterator &operator--() { iter_p-=step_p; return *this; };
   iterator operator--(int) {
-    VectorSTLIterator<T, Alloc> t = *this;iter_p-=step_p; return t; }; 
+    VectorSTLIterator<T> t = *this;iter_p-=step_p; return t; };
   iterator &operator+=(difference_type i) {
     iter_p+=i*step_p; return *this; };
   iterator &operator-=(difference_type i) {
     iter_p-=i*step_p; return *this; };
   iterator operator+(difference_type i) const {
-    VectorSTLIterator<T, Alloc> t = *this; return t+=i; };
+    VectorSTLIterator<T> t = *this; return t+=i; };
   iterator operator-(difference_type i) const {
-    VectorSTLIterator<T, Alloc> t = *this; return t-=i; };
+    VectorSTLIterator<T> t = *this; return t-=i; };
   // </group>
   // Size related
   // <group>
-  difference_type operator-(const VectorSTLIterator<T, Alloc> &x) const {
+  difference_type operator-(const VectorSTLIterator<T> &x) const {
     return (iter_p-x.iter_p)/step_p; };
   // </group>
   // Comparisons

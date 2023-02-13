@@ -39,8 +39,8 @@ using namespace std;
 
 BOOST_AUTO_TEST_SUITE(boxed_array_math)
 
-template<typename T, typename Alloc>
-void check(const Array<T, Alloc>& a, const IPosition& expectedShape, std::initializer_list<T> expectedValues)
+template<typename T>
+void check(const Array<T>& a, const IPosition& expectedShape, std::initializer_list<T> expectedValues)
 {
   BOOST_CHECK_EQUAL(a.shape(), expectedShape);
   if(a.shape() == expectedShape)
@@ -55,8 +55,8 @@ void check(const Array<T, Alloc>& a, const IPosition& expectedShape, std::initia
     }
   }
 }
-template<typename Alloc>
-void check(const Array<bool, Alloc>& a, const IPosition& expectedShape, std::initializer_list<bool> expectedValues)
+
+void check(const Array<bool>& a, const IPosition& expectedShape, std::initializer_list<bool> expectedValues)
 {
   BOOST_CHECK_EQUAL(a.shape(), expectedShape);
   if(a.shape() == expectedShape)

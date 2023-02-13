@@ -33,8 +33,8 @@
 
 namespace casacore {
 
-template<typename T, typename Alloc>
-LogicalArray reformedMask(const Array<T, Alloc>& data, const T truthvalue,
+template<typename T>
+LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
 			  const IPosition& desiredform)
 {
   if(data.shape().nelements() == desiredform.nelements()
@@ -51,7 +51,7 @@ LogicalArray reformedMask(const Array<T, Alloc>& data, const T truthvalue,
 
       // Create an array with desiredform's shape,
       LogicalArray collapseddata(desiredform);
-      ReadOnlyArrayIterator<T, Alloc> data_cursor(data,
+      ReadOnlyArrayIterator<T> data_cursor(data,
 					   IPosition::otherAxes(n_data_dim,
 					      IPosition::makeAxisPath(n_desired_dim)));
       IPosition collapsedPos;
@@ -85,54 +85,8 @@ LogicalArray reformedMask(const Array<T, Alloc>& data, const T truthvalue,
   }
 }
 
-// template<typename L, typename R, typename BinaryOperator, typename RES>
-// Array<RES> binOpExpandR(const Array<L>& left, const Array<R>& right,
-// 			BinaryOperator op)
-// {
-//   const IPosition leftShape = left.shape();
-//   Array<RES> res(leftShape);
-
-//   if(left.conform(right)){
-//     arrayContTransform(left, right, res, op);
-//   }
-//   else if(left.nelements() == right.nelements()){
-//     arrayContTransform(left, right.reform(leftShape), res, op);
-//   }
-//   else{
-//     const IPosition rightShape = right.shape();
-
-//     if(rightExpandableToLeft(leftShape, rightShape)){
-//       size_t n_right_dim = rightShape.nelements();
-//       ArrayIterator<L>   left_cursor(left, n_right_dim);
-//       ArrayIterator<RES> res_cursor(res, n_right_dim);
-//       IPosition rightPos;
-	
-//       // Go through each position in the new array,
-//       for(ArrayPositionIterator positer(rightShape, 0);
-// 	  !positer.pastEnd(); positer.next()){
-// 	rightPos = positer.pos();
-// 	left_cursor.set(rightPos);
-// 	res_cursor.set(rightPos);
-
-// 	// "resChunk op= rightEntry"
-// 	arrayContTransform(left_cursor.array(), right(rightPos),
-// 			   res_cursor.array(), op);
-//       }
-//     }
-//     else{
-//       ostringstream os;  // String(rightShape) is not supported.
-
-//       os << "binOpExpandR(): right's shape (" << rightShape << ")\n"
-// 	 << " has more dimensions than left's (" << leftShape << ")!";
-      
-//       throw(ArrayConformanceError(os));
-//     }
-//   }
-//   return res;
-// }
-
-template<typename L, typename AllocL, typename R, typename AllocR, typename BinaryOperator>
-void binOpExpandInPlace(Array<L, AllocL>& leftarr, const Array<R, AllocR>& rightarr, BinaryOperator op)
+template<typename L, typename R, typename BinaryOperator>
+void binOpExpandInPlace(Array<L>& leftarr, const Array<R>& rightarr, BinaryOperator op)
 {
   const IPosition leftShape  = leftarr.shape();
   const IPosition rightShape = rightarr.shape();

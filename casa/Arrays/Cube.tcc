@@ -34,47 +34,47 @@
 
 namespace casacore {
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Alloc& allocator)
-: Array<T>(IPosition(3, 0), allocator)
+template<typename T> Cube<T>::Cube()
+: Array<T>(IPosition(3, 0))
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3,
-    const T &initialValue, const Alloc& allocator)
-: Array<T>(IPosition(3, l1, l2, l3), initialValue, allocator)
+template<typename T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3,
+    const T &initialValue)
+: Array<T>(IPosition(3, l1, l2, l3), initialValue)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(size_t l1, size_t l2, size_t l3,
-    typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
-: Array<T>(IPosition(3, l1, l2, l3), Array<T, Alloc>::uninitialized, allocator)
+template<typename T> Cube<T>::Cube(size_t l1, size_t l2, size_t l3,
+    typename Array<T>::uninitializedType)
+: Array<T>(IPosition(3, l1, l2, l3), Array<T>::uninitialized)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &length,
-    const T &initialValue, const Alloc& allocator)
-  : Array<T>(length, initialValue, allocator)
+template<typename T> Cube<T>::Cube(const IPosition &length,
+    const T &initialValue)
+  : Array<T>(length, initialValue)
 {
   this->checkBeforeResize(length);
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const IPosition &length,
-    typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
-  : Array<T>(length, Array<T, Alloc>::uninitialized, allocator)
+template<typename T> Cube<T>::Cube(const IPosition &length,
+    typename Array<T>::uninitializedType)
+  : Array<T>(length, Array<T>::uninitialized)
 {
   this->checkBeforeResize(length);
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Cube<T, Alloc> &source)
+template<typename T> Cube<T>::Cube(const Cube<T> &source)
   : Array<T>(source)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(Cube<T, Alloc>&& source)
+template<typename T> Cube<T>::Cube(Cube<T>&& source)
   : Array<T>(std::move(source), IPosition(3, 0))
 {
   assert(ok());
@@ -83,33 +83,33 @@ template<typename T, typename Alloc> Cube<T, Alloc>::Cube(Cube<T, Alloc>&& sourc
 // <thrown>
 //   <item> ArrayNDimError
 // </thrown>
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(const Array<T, Alloc> &source)
+template<typename T> Cube<T>::Cube(const Array<T> &source)
 : Array<T>(source)
 {
   this->checkCubeShape();
   assert(ok());
 }
 
-template<typename T, typename Alloc> Cube<T, Alloc>::Cube(Array<T, Alloc>&& source)
+template<typename T> Cube<T>::Cube(Array<T>&& source)
 : Array<T>(std::move(source))
 {
   this->checkCubeShape();
   assert(ok());
 }
 
-template<typename T, typename Alloc>
-void Cube<T, Alloc>::resize(size_t nx, size_t ny, size_t nz, bool copyValues)
+template<typename T>
+void Cube<T>::resize(size_t nx, size_t ny, size_t nz, bool copyValues)
 {
     assert(ok());
     IPosition l(3);
     l(0) = nx; l(1) = ny; l(2) = nz;
-    Cube<T, Alloc>::resize(l, copyValues);
+    Cube<T>::resize(l, copyValues);
 }
 
 // <thrown>
 //    <item> ArrayError
 // </thrown>
-template<typename T, typename Alloc> Cube<T, Alloc> Cube<T, Alloc>::operator()(const Slice &sliceX,
+template<typename T> Cube<T> Cube<T>::operator()(const Slice &sliceX,
                                               const Slice &sliceY,
                                               const Slice &sliceZ)
 {
@@ -145,16 +145,16 @@ template<typename T, typename Alloc> Cube<T, Alloc> Cube<T, Alloc>::operator()(c
 
     // Check that the selected slice is valid
     if (s1 < 1 || s2 < 1 || s3 < 1) {
-	throw(ArrayError("Cube<T, Alloc>::operator()(Slice,Slice,Slice) : step < 1"));
+	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : step < 1"));
     } else if (l1 < 0  || l2 < 0 || l3 < 0) {
-	throw(ArrayError("Cube<T, Alloc>::operator()(Slice,Slice,Slice): length < 0"));
+	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice): length < 0"));
     } else if ((b1+(l1-1)*s1 >= this->length_p(0)) || 
 	       (b2+(l2-1)*s2 >= this->length_p(1)) ||
 	       (b3+(l3-1)*s3 >= this->length_p(2))) {
-	throw(ArrayError("Cube<T, Alloc>::operator()(Slice,Slice,Slice) : "
+	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : "
 			 "Desired slice extends beyond the end of the array"));
     } else if (b1 < 0 || b2 < 0 || b3 < 0) {
-	throw(ArrayError("Cube<T, Alloc>::operator()(Slice,Slice,Slice) : "
+	throw(ArrayError("Cube<T>::operator()(Slice,Slice,Slice) : "
 			 "start of slice before beginning of cube"));
    }
 
@@ -167,14 +167,14 @@ template<typename T, typename Alloc> Cube<T, Alloc> Cube<T, Alloc>::operator()(c
     return this->operator()(blc,trc,incr);
 }
 
-template<typename T, typename Alloc> const Cube<T, Alloc> Cube<T, Alloc>::operator()
+template<typename T> const Cube<T> Cube<T>::operator()
   (const Slice &sliceX, const Slice &sliceY, const Slice &sliceZ) const
 {
-    return const_cast<Cube<T, Alloc>*>(this)->operator() (sliceX, sliceY, sliceZ);
+    return const_cast<Cube<T>*>(this)->operator() (sliceX, sliceY, sliceZ);
 }
 
-template<typename T, typename Alloc>
-void Cube<T, Alloc>::doNonDegenerate (const Array<T> &other,
+template<typename T>
+void Cube<T>::doNonDegenerate (const Array<T> &other,
                                const IPosition &ignoreAxes)
 {
     Array<T> tmp(*this);
@@ -190,81 +190,81 @@ void Cube<T, Alloc>::doNonDegenerate (const Array<T> &other,
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<typename T, typename Alloc> Matrix<T, Alloc> Cube<T, Alloc>::xyPlane(size_t which)
+template<typename T> Matrix<T> Cube<T>::xyPlane(size_t which)
 {
     assert(ok());
     if ((long long)(which) >= this->length_p(2)) {
-	throw(ArrayConformanceError("Cube<T, Alloc>::xyPlane - plane > end"));
+	throw(ArrayConformanceError("Cube<T>::xyPlane - plane > end"));
     }
-    Cube<T, Alloc> tmp((*this)(Slice(), Slice(), which));
+    Cube<T> tmp((*this)(Slice(), Slice(), which));
     tmp.ndimen_p = 2;
     tmp.length_p.resize (2);
     tmp.inc_p.resize (2);
     tmp.originalLength_p.resize (2);
     tmp.makeSteps();
-    return Matrix<T, Alloc>(tmp); // should match Matrix<T>(const Array<T> &)
+    return Matrix<T>(tmp); // should match Matrix<T>(const Array<T> &)
 }
 
 
-template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::xyPlane(size_t which) const
+template<typename T> const Matrix<T> Cube<T>::xyPlane(size_t which) const
 {
-    Cube<T, Alloc> *This = const_cast<Cube<T, Alloc>*>(this);
+    Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
     // this should still be safe.
     return This->xyPlane(which);
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc> Cube<T, Alloc>::xzPlane(size_t which)
+template<typename T> Matrix<T> Cube<T>::xzPlane(size_t which)
 {
     assert(ok());
     if ((long long)(which) >= this->length_p(1)) {
-	throw(ArrayConformanceError("Cube<T, Alloc>::xzPlane - plane > end"));
+	throw(ArrayConformanceError("Cube<T>::xzPlane - plane > end"));
     }
-    Cube<T, Alloc> tmp((*this)(Slice(), which, Slice()));
+    Cube<T> tmp((*this)(Slice(), which, Slice()));
     // Keep axes 0 and 2, even if they have length 1.
     return tmp.nonDegenerate(IPosition(2,0,2));
 }
 
-template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::xzPlane(size_t which) const
+template<typename T> const Matrix<T> Cube<T>::xzPlane(size_t which) const
 {
-    Cube<T, Alloc> *This = const_cast<Cube<T, Alloc>*>(this);
+    Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
     // this should still be safe.
     return This->xzPlane(which);
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc> Cube<T, Alloc>::yzPlane(size_t which)
+template<typename T> Matrix<T> Cube<T>::yzPlane(size_t which)
 {
     assert(ok());
     if ((long long)(which) >= this->length_p(0)) {
-	throw(ArrayConformanceError("Cube<T, Alloc>::yzPlane - plane > end"));
+	throw(ArrayConformanceError("Cube<T>::yzPlane - plane > end"));
     }
-    Cube<T, Alloc> tmp((*this)(which, Slice(), Slice()));
+    Cube<T> tmp((*this)(which, Slice(), Slice()));
     // Keep axes 1 and 2, even if they have length 1.
     return tmp.nonDegenerate(IPosition(2,1,2));
 }
 
 
-template<typename T, typename Alloc> const Matrix<T, Alloc> Cube<T, Alloc>::yzPlane(size_t which) const
+template<typename T> const Matrix<T> Cube<T>::yzPlane(size_t which) const
 {
-    Cube<T, Alloc> *This = const_cast<Cube<T, Alloc>*>(this);
+    Cube<T> *This = const_cast<Cube<T>*>(this);
     // Cast away constness, but the return type is a const Matrix<T>, so
     // this should still be safe.
     return This->yzPlane(which);
 }
 
 
-template<typename T, typename Alloc> bool Cube<T, Alloc>::ok() const
+template<typename T> bool Cube<T>::ok() const
 {
 #ifndef NDEBUG
   if(this->ndim() != 3)
     throw std::runtime_error("ndim() == " + std::to_string(this->ndim()));
 #endif
-  return this->ndim() == 3 && Array<T, Alloc>::ok();
+  return this->ndim() == 3 && Array<T>::ok();
 }
 
-template<typename T, typename Alloc>
-Cube<T, Alloc>::Cube(const IPosition &shape, T *storage, 
+template<typename T>
+Cube<T>::Cube(const IPosition &shape, T *storage,
 		  StorageInitPolicy policy)
   : Array<T>(shape, storage, policy)
 {
@@ -272,17 +272,8 @@ Cube<T, Alloc>::Cube(const IPosition &shape, T *storage,
     throw ArrayError("len.nelements() != 3");
 }
 
-template<typename T, typename Alloc>
-Cube<T, Alloc>::Cube(const IPosition &shape, T *storage,
-                  StorageInitPolicy policy, const Alloc& allocator)
-  : Array<T>(shape, storage, policy, allocator)
-{
-  if(shape.nelements() != 3)
-    throw ArrayError("len.nelements() != 3");
-}
-
-template<typename T, typename Alloc>
-Cube<T, Alloc>::Cube(const IPosition &shape, const T *storage)
+template<typename T>
+Cube<T>::Cube(const IPosition &shape, const T *storage)
   : Array<T>(shape, storage)
 {
    if(shape.nelements() != 3)
@@ -290,8 +281,8 @@ Cube<T, Alloc>::Cube(const IPosition &shape, const T *storage)
 }
 
 
-template<typename T, typename Alloc>
-void Cube<T, Alloc>::preTakeStorage(const IPosition &shape)
+template<typename T>
+void Cube<T>::preTakeStorage(const IPosition &shape)
 {
   Array<T>::preTakeStorage(shape);
   if(shape.nelements() != 3)

@@ -83,7 +83,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forwards
 
-template<typename T, typename ArrayAlloc=std::allocator<T>, typename MaskAlloc=std::allocator<LogicalArrayElem>> class MaskedArray;
+template<typename T> class MaskedArray;
 
 
 // Define MaskedLogicalArray. 
