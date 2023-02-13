@@ -33,7 +33,7 @@
 #include <casacore/images/Images/ImageInfo.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Quanta/Unit.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -137,7 +137,7 @@ public:
   virtual Int doCompare (const LELImageCoord& other) const;
 
 private:
-  CountedPtr<CoordinateSystem> coords_p;
+  std::shared_ptr<CoordinateSystem> coords_p;
   ImageInfo   imageInfo_p;
   Unit        unit_p;
   TableRecord miscInfo_p;

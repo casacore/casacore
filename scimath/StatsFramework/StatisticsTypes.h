@@ -29,6 +29,7 @@
 
 #include <utility>
 #include <vector>
+#include <memory>
 
 
 // because the template signature has become unwieldy
@@ -42,7 +43,6 @@
 namespace casacore {
 
 class Record;
-template <class T> class CountedPtr;
 
 // Commonly used types in statistics framework.
 #define DataArray std::vector<AccumType>
@@ -54,12 +54,12 @@ using LocationType = std::pair<Int64, Int64>;
 
 template <class AccumType> struct StatsData {
 	Bool masked;
-	CountedPtr<AccumType> max;
+	std::shared_ptr<AccumType> max;
 	LocationType maxpos;
 	AccumType mean;
-	CountedPtr<AccumType> median;
-	CountedPtr<AccumType> medAbsDevMed;
-	CountedPtr<AccumType> min;
+	std::shared_ptr<AccumType> median;
+	std::shared_ptr<AccumType> medAbsDevMed;
+	std::shared_ptr<AccumType> min;
 	LocationType minpos;
 	Double npts;
 	AccumType nvariance;

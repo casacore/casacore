@@ -78,7 +78,7 @@ public:
 
 	virtual void reset();
 
-	void setProgressMeter(CountedPtr<LattStatsProgress> pm);
+	void setProgressMeter(std::shared_ptr<LattStatsProgress> pm);
 
 	// set the data ranges
 	void setRanges(
@@ -98,7 +98,7 @@ protected:
 private:
 	Bool _hasRanges, _isInclude;
 	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > _ranges;
-	CountedPtr<LattStatsProgress> _progressMeter;
+	std::shared_ptr<LattStatsProgress> _progressMeter;
 	IPosition _minPos, _maxPos;
 };
 

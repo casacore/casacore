@@ -108,7 +108,7 @@ protected:
 public: 
 // Constructor takes operation and expression to be operated upon
    LELFunction1D(const LELFunctionEnums::Function function,
-		 const CountedPtr<LELInterface<T> >& expr);
+		 const std::shared_ptr<LELInterface<T>>& expr);
 
 // Destructor 
   ~LELFunction1D();
@@ -136,7 +136,7 @@ public:
 
 private:
    LELFunctionEnums::Function   function_p;
-   CountedPtr<LELInterface<T> > pExpr_p;
+   std::shared_ptr<LELInterface<T>> pExpr_p;
 };
 
 
@@ -210,7 +210,7 @@ protected:
 public: 
 // Constructor takes operation and expression to be operated upon
    LELFunctionReal1D(const LELFunctionEnums::Function function,
-		     const CountedPtr<LELInterface<T> >& expr);
+		     const std::shared_ptr<LELInterface<T>>& expr);
 
 // Destructor 
   ~LELFunctionReal1D();
@@ -239,7 +239,7 @@ public:
 
 private:
    LELFunctionEnums::Function function_p;
-   CountedPtr<LELInterface<T> > pExpr_p;
+   std::shared_ptr<LELInterface<T>> pExpr_p;
 };
 
 

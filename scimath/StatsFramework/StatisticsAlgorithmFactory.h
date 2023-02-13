@@ -26,7 +26,6 @@
 #ifndef SCIMATH_STATSALGORITHMFACTORY_H
 #define SCIMATH_STATSALGORITHMFACTORY_H
 
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactoryData.h>
@@ -87,7 +86,7 @@ public:
 
     // Create a pointer to an object of a class derived from StatisticsAlgorithm
     // that reflects the current configuration
-    CountedPtr<StatisticsAlgorithm<CASA_STATP>> createStatsAlgorithm() const;
+    std::shared_ptr<StatisticsAlgorithm<CASA_STATP>> createStatsAlgorithm() const;
 
     StatisticsData::ALGORITHM algorithm() const { return _algorithm; }
 

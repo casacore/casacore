@@ -30,10 +30,10 @@
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/Polynomial.h>
 #include <casacore/casa/Arrays/Matrix.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 
 #include <mutex>
 #include <vector>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -63,9 +63,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // the new matrix.
   //
   // The cache does not hold <src>Matrix</src> objects themselves, but a
-  // <src>CountedPtr<Matrix></src> to avoid that in one thread a Matrix is
+  // <src>std::shared_ptr<Matrix></src> to avoid that in one thread a Matrix is
   // removed from the cache, while another thread is still using that Matrix.
-  // This assumes that CountedPtr is compiled thread-safe.
+  // This assumes that std::shared_ptr is compiled thread-safe.
   //
   // The class provides two virtual functions.
   // <ul>
@@ -91,7 +91,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     MeasTableMul();
     virtual ~MeasTableMul() {}
     void clear();
-    CountedPtr<Matrix<Double> > getArray (Double time, Double epsilon);
+    std::shared_ptr<Matrix<Double>> getArray (Double time, Double epsilon);
     virtual void init() = 0;
     virtual void calc(Matrix<Double>&, Double time) = 0;
   protected:
@@ -99,7 +99,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Int64 itsLastUsed;
     std::vector<Int64> itsUsed;
     std::vector<Double> itsTimes;
-    std::vector<CountedPtr<Matrix<Double> > > itsArrays;
+    std::vector<std::shared_ptr<Matrix<Double>>> itsArrays;
     Matrix<Double> itsDefArray;
   };
 

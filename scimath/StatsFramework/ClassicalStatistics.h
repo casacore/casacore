@@ -130,9 +130,9 @@ public:
     // to less than 1,000, it is automatically increased to 1,000; there should
     // be no reason to ever set nBins to be this small.
     virtual AccumType getMedian(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
@@ -146,18 +146,18 @@ public:
     // between 0 and 1, exclusive.
     virtual AccumType getMedianAndQuantiles(
         std::map<Double, AccumType>& quantiles,
-        const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        const std::set<Double>& fractions, std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
@@ -166,9 +166,9 @@ public:
     // 1, noninclusive.
     virtual std::map<Double, AccumType> getQuantiles(
         const std::set<Double>& fractions,
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
@@ -217,7 +217,7 @@ public:
     // of ClassicalStatistics. Purposefully non-virtual. Derived classes should
     // not implement.
     void setQuantileComputer(
-        CountedPtr<ClassicalQuantileComputer<CASA_STATP>> qc
+        std::shared_ptr<ClassicalQuantileComputer<CASA_STATP>> qc
     ) {
         _qComputer = qc;
     }
@@ -228,7 +228,7 @@ protected:
 
     // This constructor should be used by derived objects in order to set
     // the proper quantile computer object
-    ClassicalStatistics(CountedPtr<ClassicalQuantileComputer<CASA_STATP> > qc);
+    ClassicalStatistics(std::shared_ptr<ClassicalQuantileComputer<CASA_STATP>> qc);
 
     // <group>
     // scan through the data set to determine the number of good (unmasked,
@@ -314,50 +314,50 @@ protected:
     
     // <group>
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride
@@ -367,60 +367,60 @@ protected:
     // <group>
     // Sometimes we want the min, max, and npts all in one scan.
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     ) const;
     // </group>
 
-    CountedPtr<StatisticsAlgorithmQuantileComputer<CASA_STATP>>
+    std::shared_ptr<StatisticsAlgorithmQuantileComputer<CASA_STATP>>
     _getQuantileComputer() {
         return _qComputer;
     }
@@ -490,17 +490,17 @@ private:
     StatsData<AccumType> _statsData;
     Bool _calculateAsAdded{False}, _doMaxMin{True}, _mustAccumulate{False};
 
-    CountedPtr<ClassicalQuantileComputer<CASA_STATP>> _qComputer{};
+    std::shared_ptr<ClassicalQuantileComputer<CASA_STATP>> _qComputer{};
 
     void _computeMinMax(
-        CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, std::shared_ptr<AccumType>& mymin,
         DataIterator dataIter, MaskIterator maskIter,
         WeightsIterator weightsIter, uInt64 dataCount, const ChunkType& chunk
     );
 
     void _computeMinMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymax,
-        CountedPtr<AccumType>& mymin, DataIterator dataIter,
+        uInt64& npts, std::shared_ptr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, DataIterator dataIter,
         MaskIterator maskIter, WeightsIterator weightsIter, uInt64 dataCount,
         const ChunkType& chunk
     );
@@ -527,8 +527,8 @@ private:
     // send to quantile calculator methods
     void _doNptsMinMax(
         uInt64& mynpts, AccumType& mymin, AccumType& mymax,
-        CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-        CountedPtr<AccumType> knownMax
+        std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+        std::shared_ptr<AccumType> knownMax
     );
 
 };

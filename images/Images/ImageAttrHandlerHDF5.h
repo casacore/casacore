@@ -32,7 +32,6 @@
 #include <casacore/images/Images/ImageAttrHandler.h>
 #include <casacore/images/Images/ImageAttrGroupHDF5.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <map>
 
 namespace casacore {
@@ -132,7 +131,7 @@ public:
 
 private:
   Bool                                itsCanWrite;    //# writable?
-  CountedPtr<HDF5Group>               itsGroup;       //# HDF5 group to add to
+  std::shared_ptr<HDF5Group>          itsGroup;       //# HDF5 group to add to
   std::map<String,ImageAttrGroupHDF5> itsGroupMap;    //# attribute groups
 };
 

@@ -92,7 +92,7 @@ void LatticeStatsDataProviderBase<T>::reset() {
 
 template <class T>
 void LatticeStatsDataProviderBase<T>::setProgressMeter(
-	CountedPtr<LattStatsProgress> pm
+	std::shared_ptr<LattStatsProgress> pm
 ) {
 	_progressMeter = pm;
 }
@@ -109,7 +109,7 @@ void LatticeStatsDataProviderBase<T>::setRanges(
 
 template <class T>
 void LatticeStatsDataProviderBase<T>::_updateProgress() {
-	if (! _progressMeter.null()) {
+	if (_progressMeter) {
 		(*_progressMeter)++;
 	}
 }

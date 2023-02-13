@@ -435,7 +435,7 @@ protected:
 
   size_t nMS_p, curMS_p;
   ssize_t lastMS_p;
-  CountedPtr<MSColumns> msc_p;
+  std::shared_ptr<MSColumns> msc_p;
   Table curTable_p;
   Int curArrayIdFirst_p, lastArrayId_p, curSourceIdFirst_p;
   mutable String curFieldNameFirst_p;

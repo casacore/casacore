@@ -39,7 +39,7 @@ ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
     Double zscore, Int maxIterations
 )
   : ConstrainedRangeStatistics<CASA_STATP>(
-        CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
+        std::shared_ptr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
             new ConstrainedRangeQuantileComputer<CASA_STATP>(
                 &this->_getDataset()
             )
@@ -116,10 +116,10 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         }
         Double zScore = _zscore >= 0
             ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
-        CountedPtr<std::pair<AccumType, AccumType>> range
-            = new std::pair<AccumType, AccumType>(
+        std::shared_ptr<std::pair<AccumType, AccumType>> range
+            (new std::pair<AccumType, AccumType>(
                 sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
-            );
+            ));
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
         // _rangeIsSet is set here to prevent infinite
         // recursion on next loop iteration

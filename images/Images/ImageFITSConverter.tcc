@@ -206,14 +206,14 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 	// delete it if its not needed.
 
 	ImageRegion maskReg;
-	LatticeIterator<Bool>* pMaskIter = 0;
+        std::unique_ptr<LatticeIterator<Bool>> pMaskIter;
 	Bool madeMask = False;
 	if (bitpix<0 || isBlanked) {
 		maskReg = pNewImage->makeMask ("mask0", False, False);
 		LCRegion& mask = maskReg.asMask();
 		LatticeStepper pMaskStepper (shape, cursorShape,
 				IPosition::makeAxisPath(ndim));
-		pMaskIter = new LatticeIterator<Bool>(mask, pMaskStepper);
+		pMaskIter.reset (new LatticeIterator<Bool>(mask, pMaskStepper));
 		pMaskIter->reset();
 		madeMask = True;
 	}
@@ -293,9 +293,6 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 				pNewImage->defineRegion ("mask0", maskReg, RegionHandler::Masks);
 				pNewImage->setDefaultMask(String("mask0"));
 			}
-			// Clean up pointers
-
-			delete pMaskIter;
 		}
 	}
 	catch (const AipsError& x) {

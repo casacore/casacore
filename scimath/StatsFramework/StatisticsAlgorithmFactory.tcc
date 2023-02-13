@@ -28,7 +28,6 @@
 
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactory.h>
 
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/StatsFramework/BiweightStatistics.h>
 #include <casacore/scimath/StatsFramework/ChauvenetCriterionStatistics.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatistics.h>
@@ -98,26 +97,26 @@ void StatisticsAlgorithmFactory<CASA_STATP>::copy(
     other._biweightData = _biweightData;
 }
 
-CASA_STATD CountedPtr<StatisticsAlgorithm<CASA_STATP> >
+CASA_STATD std::shared_ptr<StatisticsAlgorithm<CASA_STATP>>
 StatisticsAlgorithmFactory<CASA_STATP>::createStatsAlgorithm() const {
     switch (_algorithm) {
     case StatisticsData::BIWEIGHT:
-        return new BiweightStatistics<CASA_STATP>(
+        return std::make_shared<BiweightStatistics<CASA_STATP>>(
             _biweightData.maxIter, _biweightData.c
         );
     case StatisticsData::CLASSICAL:
-        return new ClassicalStatistics<CASA_STATP>();
+        return std::make_shared<ClassicalStatistics<CASA_STATP>>();
     case StatisticsData::HINGESFENCES: {
-        return new HingesFencesStatistics<CASA_STATP>(_hf);
+        return std::make_shared<HingesFencesStatistics<CASA_STATP>>(_hf);
     }
     case StatisticsData::FITTOHALF: {
-        return new FitToHalfStatistics<CASA_STATP>(
+        return std::make_shared<FitToHalfStatistics<CASA_STATP>>(
             _fitToHalfData.center, _fitToHalfData.side,
             _fitToHalfData.centerValue
         );
     }
     case StatisticsData::CHAUVENETCRITERION: {
-        return new ChauvenetCriterionStatistics<CASA_STATP>(
+        return std::make_shared<ChauvenetCriterionStatistics<CASA_STATP>>(
             _chauvData.zScore, _chauvData.maxIter
         );
     }

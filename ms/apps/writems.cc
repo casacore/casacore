@@ -69,7 +69,6 @@
 #include <casacore/casa/Quanta/MVBaseline.h>
 #include <casacore/casa/OS/Time.h>
 #include <casacore/casa/OS/OMP.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -97,14 +96,14 @@ using namespace std;
 // This struct contains the data items needed to fill a spectral window in
 // the main table in HDF5.
 struct HDF5Spw {
-  CountedPtr<HDF5Group> spw;
-  CountedPtr<HDF5DataSet> data;
-  CountedPtr<HDF5DataSet> floatData;
-  CountedPtr<HDF5DataSet> modelData;
-  CountedPtr<HDF5DataSet> corrData;
-  CountedPtr<HDF5DataSet> flag;
-  CountedPtr<HDF5DataSet> weightSpectrum;
-  CountedPtr<HDF5DataSet> metaData;
+  std::shared_ptr<HDF5Group> spw;
+  std::shared_ptr<HDF5DataSet> data;
+  std::shared_ptr<HDF5DataSet> floatData;
+  std::shared_ptr<HDF5DataSet> modelData;
+  std::shared_ptr<HDF5DataSet> corrData;
+  std::shared_ptr<HDF5DataSet> flag;
+  std::shared_ptr<HDF5DataSet> weightSpectrum;
+  std::shared_ptr<HDF5DataSet> metaData;
 };
 
 struct HDF5MetaData
@@ -491,7 +490,7 @@ private:
   //# Define the data.
   Int64                itsNrRow;
   HDF5DataType         itsMetaType;
-  CountedPtr<HDF5File> itsFile;
+  std::shared_ptr<HDF5File> itsFile;
   vector<HDF5Spw>      itsSpws;
 };
 
@@ -1407,7 +1406,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
 {
   Timer timer;
   // Create the file.
-  itsFile = new HDF5File(msName, ByteIO::New);
+  itsFile.reset (new HDF5File(msName, ByteIO::New));
   int nrbasel = nbaselines();
   // Store some attributes defining nr of baselines and fields.
   Record rec;
@@ -1418,7 +1417,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
   // Create a group per spectral window.
   for (int band=itsSpw; band<itsSpw+itsNSpw; ++band) {
     HDF5Spw spw;
-    spw.spw = new HDF5Group(*itsFile, "SPW_"+String::toString(band));
+    spw.spw.reset (new HDF5Group(*itsFile, "SPW_"+String::toString(band)));
     // Write the attributes.
     HDF5Record::writeRecord (*(spw.spw), "ATTR", rec);
     // Create the data in the spw.
@@ -1429,31 +1428,31 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
     uInt cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
     cout << "HDF5 cacheSize = " << cacheSize << endl;
     if (itsWriteFloatData) {
-      spw.floatData = new HDF5DataSet (*spw.spw, "FLOAT_DATA", shape,
-                                       itsDataTileShape, (float*)0);
+      spw.floatData.reset (new HDF5DataSet (*spw.spw, "FLOAT_DATA", shape,
+                                            itsDataTileShape, (float*)0));
       spw.floatData->setCacheSize (cacheSize);
     } else {
-      spw.data = new HDF5DataSet (*spw.spw, "DATA", shape,
-                                  itsDataTileShape, (Complex*)0);
+      spw.data.reset (new HDF5DataSet (*spw.spw, "DATA", shape,
+                                       itsDataTileShape, (Complex*)0));
       spw.data->setCacheSize (cacheSize);
     }
     IPosition tileShape(itsDataTileShape);
     tileShape[2] *= 8;
-    spw.flag = new HDF5DataSet (*spw.spw, "FLAG", shape, tileShape,
-                                (Bool*)0);
+    spw.flag.reset (new HDF5DataSet (*spw.spw, "FLAG", shape, tileShape,
+                                     (Bool*)0));
     spw.flag->setCacheSize (cacheSize);
     if (itsWriteWeightSpectrum) {
-      spw.weightSpectrum = new HDF5DataSet (*spw.spw, "WEIGHT_SPECTRUM", shape,
-                                            itsDataTileShape, (float*)0);
+      spw.weightSpectrum.reset (new HDF5DataSet (*spw.spw, "WEIGHT_SPECTRUM", shape,
+                                                 itsDataTileShape, (float*)0));
       spw.weightSpectrum->setCacheSize (cacheSize);
     }
-    spw.metaData = new HDF5DataSet (*spw.spw, "METADATA", shape1,
-                                    tileShape1, itsMetaType);
+    spw.metaData.reset (new HDF5DataSet (*spw.spw, "METADATA", shape1,
+                                         tileShape1, itsMetaType));
     if (createImagerColumns) {
-      spw.modelData = new HDF5DataSet (*spw.spw, "MODEL_DATA", shape, tileShape,
-                                       (Complex*)0);
-      spw.corrData = new HDF5DataSet (*spw.spw, "CORRECTED_DATA", shape, tileShape,
-                                      (Complex*)0);
+      spw.modelData.reset (new HDF5DataSet (*spw.spw, "MODEL_DATA", shape, tileShape,
+                                            (Complex*)0));
+      spw.corrData.reset (new HDF5DataSet (*spw.spw, "CORRECTED_DATA", shape, tileShape,
+                                           (Complex*)0));
       // Not written, so no need to set their cache sizes.
     }
     itsSpws.push_back (spw);
@@ -2040,11 +2039,11 @@ String doOne (int seqnr, const String& msName)
   }
   // Create the MS.
   Timer timer;
-  CountedPtr<MSCreate> msmaker;
+  std::shared_ptr<MSCreate> msmaker;
   if (myWriteHDF5) {
-    msmaker = new MSCreateHDF5();
+    msmaker.reset (new MSCreateHDF5());
   } else {
-    msmaker = new MSCreateCasa();
+    msmaker.reset (new MSCreateCasa());
   }
   IPosition dataTileShape = formTileShape (myTileSize, myTileSizePol,
                                            myTileSizeFreq, myWriteFloatData,

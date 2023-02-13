@@ -865,7 +865,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     fhi.pMask = 0;
     if (image.isMasked()) {
       fhi.applyMask = True;
-      fhi.pMask = new Array<Bool>(IPosition(0,0));
+      fhi.pMask.reset (new Array<Bool>(IPosition(0,0)));
     }
     //
     // Find scale factors

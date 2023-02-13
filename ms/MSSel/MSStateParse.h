@@ -31,7 +31,7 @@
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward 
@@ -96,7 +96,7 @@ public:
     // Get table expression node object.
   static const TableExprNode* node();
   static MSStateParse* thisMSSIParser;
-  static CountedPtr<MSSelectionErrorHandler> thisMSSErrorHandler;
+  static std::shared_ptr<MSSelectionErrorHandler> thisMSSErrorHandler;
   //static MSSelectionErrorHandler* thisMSSErrorHandler;
   static Vector<Int> selectedIDs() {return idList;};
   static void reset(){idList.resize(0);};

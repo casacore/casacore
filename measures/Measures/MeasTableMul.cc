@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsArrays.resize (0);
   }
 
-  CountedPtr<Matrix<Double> > MeasTableMul::getArray
+  std::shared_ptr<Matrix<Double>> MeasTableMul::getArray
   (Double time, Double epsilon)
   {
     {   // cache lookup must be thread-safe
@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Let a derived class calculate the coefficient matrix for this epoch.
     // Note: multiple threads can execute this part (which is fine).
-    CountedPtr<Matrix<Double> > arr(new Matrix<Double>(itsDefArray.shape()));
+    std::shared_ptr<Matrix<Double>> arr(new Matrix<Double>(itsDefArray.shape()));
     *arr = itsDefArray;
     calc (*arr, time);
     {   // cache insertion must also be thread-safe

@@ -30,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/TempLatticeImpl.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -267,7 +267,7 @@ public:
 			   const IPosition& stride);
   
 private:
-  CountedPtr<TempLatticeImpl<T> > itsImpl;
+  std::shared_ptr<TempLatticeImpl<T>> itsImpl;
 };
 
 

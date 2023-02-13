@@ -171,7 +171,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members.
   public:
     static MSAntennaParse* thisMSAParser;
-    static CountedPtr<MSSelectionErrorHandler> thisMSAErrorHandler;
+    static std::shared_ptr<MSSelectionErrorHandler> thisMSAErrorHandler;
     static void cleanupErrorHandler() {thisMSAErrorHandler.reset();}
     std::bitset<HIGHESTLEVEL> complexity;
   private:

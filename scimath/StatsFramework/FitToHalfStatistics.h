@@ -86,9 +86,9 @@ public:
     // The median is just the center value, so none of the parameters to this
     // method are used.
     AccumType getMedian(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
@@ -125,18 +125,18 @@ public:
     AccumType getMedianAndQuantiles(
         std::map<Double, AccumType>& quantiles,
         const std::set<Double>& fractions,
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
 
     // get the median of the absolute deviation about the median of the data.
     AccumType getMedianAbsDevMed(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
@@ -145,9 +145,9 @@ public:
     // 1, noninclusive.
     std::map<Double, AccumType> getQuantiles(
         const std::set<Double>& fractions,
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
@@ -256,18 +256,18 @@ private:
     StatsData<AccumType> _statsData;
     Bool _doMedAbsDevMed{False}, _rangeIsSet{False};
     // these are the max and min for the real portion of the dataset
-    CountedPtr<AccumType> _realMax{}, _realMin{};
+    std::shared_ptr<AccumType> _realMax{}, _realMin{};
     Bool _isNullSet{False};
     // This is used for convenience and performance. It should always
     // be the same as the _range value used in the base
     // ConstrainedRangeStatistics object
-    CountedPtr<std::pair<AccumType, AccumType> > _range{nullptr};
+    std::shared_ptr<std::pair<AccumType, AccumType>> _range{nullptr};
 
     // get the min max of the entire (real + virtual) data set. Only
     // used for quantile computation
     void _getMinMax(
-        CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
-        CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
+        std::shared_ptr<AccumType>& realMin, std::shared_ptr<AccumType>& realMax,
+        std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax
     );
 
     // get the min/max of the real portion only of the dataset

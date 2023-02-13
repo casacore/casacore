@@ -30,7 +30,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/Lattices/MaskedLattice.h>
 #include <casacore/lattices/Lattices/LatticeIterator.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -181,7 +181,7 @@ public:
   // It returns the same flag as
   // <linkto class=MaskedLattice>MaskedLattice::getMaskSlice</linkto>.
   // <group>
-  Bool getMask (COWPtr<Array<Bool> >&, Bool removeDegenerateAxes=False) const;
+  Bool getMask (COWPtr<Array<Bool>>&, Bool removeDegenerateAxes=False) const;
   Bool getMask (Array<Bool>&, Bool removeDegenerateAxes=False) const;
   Array<Bool> getMask (Bool removeDegenerateAxes=False) const;
   // </group>
@@ -201,7 +201,12 @@ private:
   // In that case a clone of the original MaskedLattice is used.
   void fillPtr (const MaskedLattice<T>& mlattice);
 
-  CountedPtr<MaskedLattice<T> > itsMaskLattPtr;
+  // The shared pointer is used for automatic deletion.
+  // If not null, it is the same as the normal pointer below.
+  std::shared_ptr<MaskedLattice<T>> itsMaskLattShrPtr;
+  // Pointer to the MaskedLattice.
+  // Deletion (if needed) is done by the shared pointer above.
+  MaskedLattice<T>*                 itsMaskLattPtr;
 };
 
 

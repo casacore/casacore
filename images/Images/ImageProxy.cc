@@ -220,7 +220,7 @@ namespace casacore { //# name space casa begins
     concatImages (images, axis);
   }
 
-  ImageProxy::ImageProxy (const CountedPtr<LatticeBase>& image)
+  ImageProxy::ImageProxy (const std::shared_ptr<LatticeBase>& image)
     : itsLattice       (image),
       itsImageFloat    (0),
       itsImageDouble   (0),
@@ -229,7 +229,7 @@ namespace casacore { //# name space casa begins
       itsCoordSys      (0),
       itsAttrHandler   (0)
   {
-    if (! itsLattice.null()) {
+    if (itsLattice) {
       setup();
     }
   }
@@ -243,7 +243,7 @@ namespace casacore { //# name space casa begins
       itsCoordSys      (0),
       itsAttrHandler   (0)
   {
-    if (! itsLattice.null()) {
+    if (itsLattice) {
       setup();
     }
   }
@@ -253,7 +253,7 @@ namespace casacore { //# name space casa begins
     if (this != &that) {
       close();
       itsLattice = that.itsLattice;
-      if (! itsLattice.null()) {
+      if (itsLattice) {
         setup();
       }
     }
@@ -306,7 +306,7 @@ namespace casacore { //# name space casa begins
 
   void ImageProxy::close()
   {
-    itsLattice       = CountedPtr<LatticeBase>();
+    itsLattice.reset();
     itsImageFloat    = 0;
     itsImageDouble   = 0;
     itsImageComplex  = 0;
@@ -317,7 +317,7 @@ namespace casacore { //# name space casa begins
 
   void ImageProxy::checkNull() const
   {
-    if (itsLattice.null()) {
+    if (!itsLattice) {
       throw AipsError ("ImageProxy does not contain an image object");
     }
   }
@@ -479,14 +479,14 @@ namespace casacore { //# name space casa begins
 
   void ImageProxy::setup (LatticeBase* lattice)
   {
-    itsLattice = lattice;
+    itsLattice.reset (lattice);
     setup();
   }
 
   void ImageProxy::setup()
   {
-    // Get raw pointer from the CountedPtr.
-    LatticeBase* lattice = &(*itsLattice);
+    // Get raw pointer from the std::shared_ptr.
+    LatticeBase* lattice = itsLattice.get();
     switch (lattice->dataType()) {
     case TpFloat:
       itsImageFloat = dynamic_cast<ImageInterface<Float>*>(lattice);

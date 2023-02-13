@@ -53,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   HDF5Lattice<T>::HDF5Lattice (const TiledShape& shape, const String& fileName,
 			       const String& arrayName, const String& groupName)
   {
-    itsFile = new HDF5File (fileName, ByteIO::New);
+    itsFile.reset (new HDF5File (fileName, ByteIO::New));
     makeArray (shape, arrayName, groupName);
     DebugAssert (ok(), AipsError);
   }
@@ -62,14 +62,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   HDF5Lattice<T>::HDF5Lattice (const TiledShape& shape)
   {
     Path fileName = File::newUniqueName(String("./"), String("HDF5Lattice"));
-    itsFile = new HDF5File (fileName.absoluteName(), ByteIO::Scratch);
+    itsFile.reset (new HDF5File (fileName.absoluteName(), ByteIO::Scratch));
     makeArray (shape, "array", String());
     DebugAssert (ok(), AipsError);
   }
 
   template<typename T>
   HDF5Lattice<T>::HDF5Lattice (const TiledShape& shape,
-			       const CountedPtr<HDF5File>& file,
+			       const std::shared_ptr<HDF5File>& file,
 			       const String& arrayName, const String& groupName)
   : itsFile (file)
   {
@@ -83,16 +83,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Open for write if possible.
     if (File(fileName).isWritable()) {
-      itsFile = new HDF5File(fileName, ByteIO::Update);
+      itsFile.reset (new HDF5File(fileName, ByteIO::Update));
     } else {
-      itsFile = new HDF5File(fileName);
+      itsFile.reset (new HDF5File(fileName));
     }
     openArray (arrayName, groupName);
     DebugAssert (ok(), AipsError);
   }
 
   template<typename T>
-  HDF5Lattice<T>::HDF5Lattice (const CountedPtr<HDF5File>& file,
+  HDF5Lattice<T>::HDF5Lattice (const std::shared_ptr<HDF5File>& file,
 			       const String& arrayName, const String& groupName)
   : itsFile (file)
   {
@@ -289,12 +289,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (groupName.empty()) {
       // Use root group.
-      itsGroup = new HDF5Group(*itsFile, "/", true);
+      itsGroup.reset (new HDF5Group(*itsFile, "/", true));
     } else {
-      itsGroup = new HDF5Group(*itsFile, groupName, true);
+      itsGroup.reset (new HDF5Group(*itsFile, groupName, true));
     }
     // Open the data set.
-    itsDataSet = new HDF5DataSet (*itsGroup, arrayName, (const T*)0);
+    itsDataSet.reset (new HDF5DataSet (*itsGroup, arrayName, (const T*)0));
     // Calculate tile shape if default tile shape is empty
     itsTileShape = itsDataSet->tileShape();
     if (itsTileShape.empty()) {
@@ -311,14 +311,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     checkWritable();
     if (groupName.empty()) {
       // Use root group.
-      itsGroup = new HDF5Group(*itsFile, "/", true);
+      itsGroup.reset (new HDF5Group(*itsFile, "/", true));
     } else {
       // Create group if not existing yet.
-      itsGroup = new HDF5Group(*itsFile, groupName);
+      itsGroup.reset (new HDF5Group(*itsFile, groupName));
     }
     // Create the data set.
-    itsDataSet = new HDF5DataSet (*itsGroup, arrayName, shape.shape(),
-				  shape.tileShape(), (const T*)0);
+    itsDataSet.reset (new HDF5DataSet (*itsGroup, arrayName, shape.shape(),
+                                       shape.tileShape(), (const T*)0));
     // Calculate tile shape if default tile shape is empty
     itsTileShape = itsDataSet->tileShape();
     if (itsTileShape.empty()) {

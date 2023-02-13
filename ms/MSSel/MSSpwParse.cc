@@ -39,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSSpwParse::ddidList;
   Matrix<Int> MSSpwParse::chanList; 
   TableExprNode MSSpwParse::columnAsTEN_p;
-  CountedPtr<MSSelectionErrorHandler> MSSpwParse::thisMSSpwErrorHandler;
+  std::shared_ptr<MSSelectionErrorHandler> MSSpwParse::thisMSSpwErrorHandler;
   //# Constructor
   //
   //------------------------------------------------------------------

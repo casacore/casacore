@@ -33,50 +33,33 @@
 #include <casacore/casa/namespace.h>
 int main()
 {
-  // create an array of dimension 1, length 4
+  // Create an array of dimension 1, length 4 and initialize it.
   Array<Int> arr(IPosition(1,4));
-
-  // create a second array from the first array.  note that neither
-  // array has any values yet assigned to them
-  Array<Int> arr1(arr); 
-
-  // assign the elements of the first array
   indgen(arr);
 
-  Bool deleteIt = False;
-  Bool readOnly = True;
+  // Create a second array referencing the first array
+  // and put it in a COWPtr (which takes over the pointer).
+  // Mark it as readonly, so a copy is made when non-const access is done.
+  COWPtr<Array<Int> > arrptr(new Array<Int>(arr), True);
+  cout << "The original array is: " << arr << endl;
+  cout << "Array 1 is a reference to it: " << *arrptr << endl;
 
-  COWPtr<Array<Int> > arrptr(&arr1, deleteIt, readOnly);
-
-  //COWPtr< Array<Int> > arrptr(&arr1, False, True); 
-  // The COWptr does not have exclusive control of arr1 as I will also
-  // access it through normal array functions. It is Readonly so that when
-  // I modify it, it is forced to make a copy. Otherwise it will only make
-  // a copy when its internal number of references (increased using the
-  // assignment operator and copy constructor) is greater than one and a
-  // write operation is performed. However the COWptr does not not know
-  // how many external references (through normal array functions) there
-  // are so it is advisable to always make a copy if other methods of
-  // accessing the data are used. If COWptr functions were the only
-  // mechanism for accessing the data then I would not need to make the
-  // data Readonly.
-  cout << "The original array is:" << arr << endl;
-  cout << "Array 1 is a reference to it:" << arr1 << endl;
-  arr1(IPosition(1,0)) = 10;
-  cout << "Modifying array 1 modifies the original array also:" 
-       << arr1<< endl;
-  cout << "Or accessing it via the COWptr gives the same answer:" 
+  // Change the original array, which will also change the array in the
+  // COWPtr because it is a reference.
+  arr(IPosition(1,0)) = 10;
+  cout << "The first element of the array is modified: "
+       << arr << endl;
+  cout << "Accessing the array in the COWptr gives the same answer: " 
        << *arrptr << endl;
 
+  // Change the array in the COWPtr which needs the rwRef() function to
+  // get non-const access.
+  // Because the COWPtr array was declared readonly, COWPtr makes a copy
+  // of the array leaving the original array untouched.
   arrptr.rwRef().operator()(IPosition(1,1)) = 11;
-  // I need the rwRef function as both the operator-> and operator*
-  // functions return constant references and I need a non-const one to be
-  // able to modify the data
-  cout << "Array 1 has been modified using COWptr functions:" 
+  cout << "The array in the COWPtr has been copied and modified: "
        << *arrptr << endl;
-  cout << "But the normally accessed Array 1 is unchanged:"
-       << arr1 << endl;
-  cout << "As is the original array:" 
+  cout << "But the original array is unchanged: " 
        << arr << endl;
   cout << "as the COWptr has made a copy" << endl;
 }

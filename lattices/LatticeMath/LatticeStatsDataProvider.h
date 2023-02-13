@@ -116,7 +116,7 @@ public:
 	// </group>
 
 private:
-	CountedPtr<RO_LatticeIterator<T> > _iter;
+	std::shared_ptr<RO_LatticeIterator<T>> _iter;
 	Array<T> _currentSlice;
 	const T* _currentPtr;
 	Bool _delData, _atEnd;
