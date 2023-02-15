@@ -511,7 +511,7 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
     Array<S> cv = ait.array(); // reference
     fft0(cv, toFrequency);
     for(uInt i=0; i<vsize; i++){
-      cv(IPosition(1,i)) *= (S)exp(-Double((i+vsize/2)%vsize-(vsize/2))*exponent);
+      cv(IPosition(1,i)) *= (S)exp(Double((i+vsize/2)%vsize-(vsize/2))*exponent);
     }
     fft0(cv, !toFrequency);
     ait.next();
@@ -574,7 +574,7 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
     // apply shift
     fft0(cv, toFrequency);
     for(Int i=0; i<vsize; i++){
-      cv(IPosition(1,i)) *= (S)exp(-Double((i+vsize/2)%vsize-(vsize/2))*exponent);
+      cv(IPosition(1,i)) *= (S)exp(Double((i+vsize/2)%vsize-(vsize/2))*exponent);
     }
     fft0(cv, !toFrequency);
 
@@ -675,7 +675,7 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
     Array<S> cResult;
     fft0(cResult, rv);
     for(uInt i=0; i<cResult.size(); i++){
-      cResult(IPosition(1,i)) *= (S)exp(-Double((i+vsize/2)%vsize-(vsize/2))*exponent);
+      cResult(IPosition(1,i)) *= (S)exp(Double((i+vsize/2)%vsize-(vsize/2))*exponent);
     }
     fft0(rv, cResult);
 
