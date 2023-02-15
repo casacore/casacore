@@ -440,7 +440,7 @@ Bool SpectralCoordinate::toWorld (Vector<Double> &world,
 // Convert to World (Hz)
 
     Bool ok = True;
-    if (_tabular.ptr()) {
+    if (_tabular) {
        ok = _tabular->toWorld(world, pixel);
        if (!ok) set_error(_tabular->errorMessage());
     } else {
@@ -495,7 +495,7 @@ Bool SpectralCoordinate::toPixel (Vector<Double> &pixel,
 
 // Convert to pixel
 
-    if (_tabular.ptr()) {
+    if (_tabular) {
        ok = _tabular->toPixel(pixel, world_tmp1);
        if (!ok) set_error(_tabular->errorMessage());
     } else {
@@ -530,7 +530,7 @@ Bool SpectralCoordinate::toWorldMany (Matrix<Double>& world,
 // Convert to world (Hz)
 
    Bool ok = True;
-   if (_tabular.ptr()) {
+   if (_tabular) {
       ok = _tabular->toWorldMany(world, pixel, failures);
       if (!ok) set_error(_tabular->errorMessage());
    } else {
@@ -572,7 +572,7 @@ Bool SpectralCoordinate::toPixelMany (Matrix<Double>& pixel,
 // Convert to pixel
 
     Bool ok = True;
-    if (_tabular.ptr()) {
+    if (_tabular) {
        _tabular->toPixelMany(pixel, world2, failures);
        if (!ok) set_error(_tabular->errorMessage());
     } else {        
@@ -602,7 +602,7 @@ Vector<String> SpectralCoordinate::worldAxisUnits() const
 
 Vector<Double> SpectralCoordinate::referencePixel() const
 {
-    if (_tabular.ptr()) {
+    if (_tabular) {
        return _tabular->referencePixel();
     } else {
        Vector<Double> crpix(1);
@@ -614,7 +614,7 @@ Vector<Double> SpectralCoordinate::referencePixel() const
 
 Matrix<Double> SpectralCoordinate::linearTransform() const
 {
-    if (_tabular.ptr()) {
+    if (_tabular) {
        return _tabular->linearTransform();
     } else {
        Matrix<Double> tmp(1,1);
@@ -629,7 +629,7 @@ Vector<Double> SpectralCoordinate::increment() const
 // Get in Hz
 
     Vector<Double> value(1);
-    if (_tabular.ptr()) {
+    if (_tabular) {
        value= _tabular->increment();
     } else {
        value[0] = wcs_p.cdelt[0];
@@ -649,7 +649,7 @@ Vector<Double> SpectralCoordinate::referenceValue() const
 // Get in Hz
 
     Vector<Double> value(1);
-    if (_tabular.ptr()) {
+    if (_tabular) {
        value= _tabular->referenceValue();
     } else {
        value[0] = wcs_p.crval[0];
@@ -881,7 +881,7 @@ Bool SpectralCoordinate::setReferencePixel(const Vector<Double> &refPix)
     }
 //
     Bool ok= True;
-    if (_tabular.ptr()) {
+    if (_tabular) {
        ok = _tabular->setReferencePixel(refPix);
        if (!ok) set_error (_tabular->errorMessage());
     } else {
@@ -906,7 +906,7 @@ Bool SpectralCoordinate::setLinearTransform(const Matrix<Double> &xform)
        return False;
     }
 //
-    if (_tabular.ptr()) {
+    if (_tabular) {
        ok = _tabular->setLinearTransform(xform);
        if (!ok) set_error(_tabular->errorMessage());
     } else {
@@ -936,7 +936,7 @@ Bool SpectralCoordinate::setIncrement (const Vector<Double>& incr)
 // Now set
 
     Bool ok= True;
-    if (_tabular.ptr()) {
+    if (_tabular) {
        ok = _tabular->setIncrement(value);
        if (!ok) set_error (_tabular->errorMessage());
     } else {
@@ -965,7 +965,7 @@ Bool SpectralCoordinate::setReferenceValue(const Vector<Double>& refval)
     fromCurrent (value);
 //
     Bool ok= True;
-    if (_tabular.ptr()) {
+    if (_tabular) {
        ok = _tabular->setReferenceValue(value);
        if (!ok) set_error (_tabular->errorMessage());
     } else {
@@ -987,7 +987,7 @@ Double SpectralCoordinate::restFrequency() const
 
 Vector<Double> SpectralCoordinate::pixelValues() const
 {
-    if (_tabular.ptr()) {
+    if (_tabular) {
        return _tabular->pixelValues();
     } else {
        Vector<Double> pixels;
@@ -998,7 +998,7 @@ Vector<Double> SpectralCoordinate::pixelValues() const
 Vector<Double> SpectralCoordinate::worldValues() const
 {
     Vector<Double> worlds;
-    if (_tabular.ptr()) {
+    if (_tabular) {
        worlds = _tabular->worldValues();    // Hz
        toCurrent(worlds);
     }
@@ -1288,7 +1288,7 @@ Bool SpectralCoordinate::near(const Coordinate& other,
 // LinearXForm components
 //Tabular spectral coordinates with 1 channel has increment 0. by definition in TabularCoordinates !
 //so linear transform test is bound to fail so skip for that case
-   if( !(_tabular.ptr() && (_tabular->pixelValues()).nelements()==1))
+   if( !(_tabular && (_tabular->pixelValues()).nelements()==1))
      {
       LinearXform thisVal(referencePixel(), increment(), linearTransform());
       LinearXform thatVal(sCoord.referencePixel(), sCoord.increment(), sCoord.linearTransform());
@@ -1333,7 +1333,7 @@ Bool SpectralCoordinate::save(RecordInterface &container,
 
 // We may have TC (for tabular coordinates) or not.
 
-	if (_tabular.ptr()) {
+	if (_tabular) {
 		ok = (_tabular->save(subrec, "tabular"));   // Always Hz
 	} else {
 		ok = wcsSave (subrec, wcs_p, "wcs");          // Always Hz
@@ -1987,7 +1987,7 @@ Coordinate* SpectralCoordinate::makeFourierCoordinate (const Vector<Bool>& axes,
 // shape is the shape of the image for all axes in this coordinate
 //
 {
-   if (_tabular.ptr()) {
+   if (_tabular) {
       set_error("Cannot Fourier Transform a non-linear SpectralCoordinate");
       return 0;
    }
@@ -2432,12 +2432,12 @@ void SpectralCoordinate::copy (const SpectralCoordinate &other) {
 // Copy TabularCoordinate or wcs structure. Only one of the two
 // is allocated at any given time.
 
-    if (other._tabular.ptr()) {
+    if (other._tabular) {
        _tabular.reset(new TabularCoordinate(*(other._tabular)));
     }
     else {
-    	if (_tabular.ptr()) {
-    		_tabular.reset(0);
+    	if (_tabular) {
+    		_tabular.reset();
     	}
        copy_wcs(other.wcs_p, wcs_p);
        set_wcs(wcs_p);
@@ -2473,7 +2473,7 @@ void SpectralCoordinate::_setTabulatedFrequencies(const Vector<Double>& freqs) {
 }
 
 ostream& SpectralCoordinate::print(ostream& os) const {
-    os << "tabular " << _tabular.ptr() << endl;
+    os << "tabular " << _tabular.get() << endl;
     os << "to_hz_p " <<  to_hz_p << endl;
     os << "to_m_p " << to_m_p << endl;
     os << "type_p " << MFrequency::showType(type_p) << endl;
@@ -2499,7 +2499,7 @@ ostream& SpectralCoordinate::print(ostream& os) const {
 }
 
 Bool SpectralCoordinate::isTabular() const {
-	return _tabular.ptr();
+  return static_cast<Bool>(_tabular);
 }
 
 ostream &operator<<(ostream &os, const SpectralCoordinate& spcoord) {

@@ -52,7 +52,6 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/LinearSearch.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/iostream.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

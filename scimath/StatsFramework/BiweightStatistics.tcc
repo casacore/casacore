@@ -455,8 +455,8 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
         ds.getDataProvider()
     );
     const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsxw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsw2(new AccumType[dim], True);
+    std::unique_ptr<AccumType[]> tsxw2(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tsw2(new AccumType[dim]);
     // initialize the thread-based sums to 0
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
@@ -514,8 +514,8 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
         ds.getDataProvider()
     );
     const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], True);
-    PtrHolder<AccumType> tww_4u2(new AccumType[dim], True);
+    std::unique_ptr<AccumType[]> tsx_M2w4(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tww_4u2(new AccumType[dim]);
     // initialize the thread-based sums to 0
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
@@ -575,10 +575,10 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
         ds.getDataProvider()
     );
     const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsxw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], True);
-    PtrHolder<AccumType> tww_4u2(new AccumType[dim], True);
+    std::unique_ptr<AccumType[]> tsxw2(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tsw2(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tsx_M2w4(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tww_4u2(new AccumType[dim]);
     // initialize the thread-based sums to 0
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;

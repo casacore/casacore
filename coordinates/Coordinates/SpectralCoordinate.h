@@ -37,7 +37,7 @@
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/casa/Quanta/Quantum.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <memory>
 
 #include <wcslib/wcs.h>
 
@@ -590,7 +590,7 @@ public:
 
 private:
 
-    SPtrHolder<TabularCoordinate> _tabular;            // Tabular coordinate OR
+    std::unique_ptr<TabularCoordinate> _tabular;       // Tabular coordinate OR
     mutable ::wcsprm wcs_p;                            // wcs structure is used 
     Double to_hz_p;                                    // Convert from current world units to Hz
     Double to_m_p;                                     // Convert from current wavelength units to m

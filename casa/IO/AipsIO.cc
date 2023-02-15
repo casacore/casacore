@@ -67,7 +67,7 @@ AipsIO::AipsIO (const String& fileName, ByteIO::OpenOption fop,
   open (fileName, fop, filebufSize, mfile);
 }
 
-AipsIO::AipsIO (ByteIO* file)
+AipsIO::AipsIO (const std::shared_ptr<ByteIO>& file)
 : opened_p   (0),
   maxlev_p   (10),
   objlen_p   (10),
@@ -77,7 +77,7 @@ AipsIO::AipsIO (ByteIO* file)
     open (file);
 }
 
-AipsIO::AipsIO (TypeIO* file)
+AipsIO::AipsIO (const std::shared_ptr<TypeIO>& file)
 : opened_p   (0),
   maxlev_p   (10),
   objlen_p   (10),
@@ -103,21 +103,21 @@ void AipsIO::open (const String& fileName, ByteIO::OpenOption fop,
     // Initialize everything for the open.
     openInit (fop);
     if (mfile) {
-      file_p = new MFFileIO (mfile, fileName, fopt_p);
+      file_p.reset (new MFFileIO (mfile, fileName, fopt_p));
     } else {
-      file_p = new RegularFileIO (fileName, fopt_p, filebufSize);
+      file_p.reset (new RegularFileIO (fileName, fopt_p, filebufSize));
     }
-    io_p = new CanonicalIO (file_p);
+    io_p.reset (new CanonicalIO (file_p));
     seekable_p = True;
     opened_p   = 1;
 }
 
-void AipsIO::open (ByteIO* file)
+void AipsIO::open (const std::shared_ptr<ByteIO>& file)
 {
     // Initialize everything for the open.
     openInit (ByteIO::New);
-    file_p = 0;
-    io_p   = new CanonicalIO (file);
+    file_p.reset();
+    io_p.reset (new CanonicalIO (file));
     AlwaysAssert (io_p != 0, AipsError);
     seekable_p = io_p->isSeekable();
     if (! io_p->isReadable()) {
@@ -129,11 +129,11 @@ void AipsIO::open (ByteIO* file)
     opened_p = 1;
 }
 
-void AipsIO::open (TypeIO* file)
+void AipsIO::open (const std::shared_ptr<TypeIO>& file)
 {
     // Initialize everything for the open.
     openInit (ByteIO::New);
-    file_p = 0;
+    file_p.reset();
     io_p   = file;
     AlwaysAssert (io_p != 0, AipsError);
     seekable_p = io_p->isSeekable();
@@ -168,12 +168,8 @@ void AipsIO::openInit (ByteIO::OpenOption fop)
 // Delete the file if required.
 void AipsIO::close()
 {
-    if (opened_p == 1) {
-	delete io_p;
-	delete file_p;
-    }
-    io_p     = 0;
-    file_p   = 0;
+    io_p.reset();
+    file_p.reset();;
     opened_p = 0;
     swput_p  = -1;
     swget_p  = -1;

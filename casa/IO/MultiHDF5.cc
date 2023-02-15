@@ -67,8 +67,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   (const std::shared_ptr<MultiFileBase>& parent, const String& name,
    ByteIO::OpenOption option, Int blockSize) const
   {
-    return std::shared_ptr<MultiFileBase> (new MultiHDF5 (name, parent,
-                                                          option, blockSize));
+    return std::make_shared<MultiHDF5>(name, parent, option, blockSize);
   }
 
   void MultiHDF5::init (ByteIO::OpenOption option)
@@ -88,7 +87,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   void MultiHDF5::doOpenFile (MultiFileInfo& info)
   {
-    DebugAssert (! info.group->isValid(), AipsError);
+    DebugAssert (! info.group, AipsError);
     info.group.reset (new HDF5Group (*itsHDF5, info.name, true, false));
     info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
                                          (const uChar*)0));

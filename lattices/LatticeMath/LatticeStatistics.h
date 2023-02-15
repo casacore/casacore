@@ -540,7 +540,7 @@ private:
    Double _aOld, _bOld, _aNew, _bNew;
    
    // unset means let the code decide
-   PtrHolder<LatticeStatsAlgorithm> _latticeStatsAlgortihm;
+   std::unique_ptr<LatticeStatsAlgorithm> _latticeStatsAlgortihm;
 
    void _setDefaultCoeffs() {
        // coefficients from timings run on PagedImages on

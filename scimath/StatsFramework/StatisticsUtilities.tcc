@@ -30,7 +30,6 @@
 
 #include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 
 #include <iostream>
@@ -295,9 +294,9 @@ template <class AccumType>
 void StatisticsUtilities<AccumType>::mergeResults(
     std::vector<BinCountArray>& bins,
     std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
-    const PtrHolder<std::vector<BinCountArray>>& tBins,
-    const PtrHolder<std::vector<CountedPtr<AccumType>>>& tSameVal,
-    const PtrHolder<std::vector<Bool>>& tAllSame, uInt nThreadsMax
+    const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
+    const std::unique_ptr<std::vector<CountedPtr<AccumType>>[]>& tSameVal,
+    const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax
 ) {
     // merge results from individual threads (tBins, tSameVal, tAllSame)
     // into single data structures (bins, sameVal, allSame)

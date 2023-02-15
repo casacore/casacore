@@ -33,8 +33,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSource::ByteSource()
 {}
 
-ByteSource::ByteSource (TypeIO* typeIO, Bool takeOver)
-: BaseSinkSource (typeIO, takeOver)
+ByteSource::ByteSource (const std::shared_ptr<TypeIO>& typeIO)
+: BaseSinkSource (typeIO)
 {    
     if (!isReadable()) {
 	throw (AipsError ("ByteSource is not readable"));

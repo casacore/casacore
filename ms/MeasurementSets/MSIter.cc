@@ -387,8 +387,8 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
 
     if (!useIn && !useSorted) {
-      // we have to resort the input
-      if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
+      // we have to resort the input; enclose in >>> <<< to avoid pollution of test .out file
+      if (aips_debug) cout << ">>>"<<endl<<"MSIter::construct - resorting table"<<endl<<"<<<"<<endl;
       sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
     }
 

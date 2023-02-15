@@ -29,8 +29,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-LECanonicalIO::LECanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
-: TypeIO          (byteIO, takeOver), 
+LECanonicalIO::LECanonicalIO (const std::shared_ptr<ByteIO>& byteIO,
+                              uInt bufferLength)
+: TypeIO          (byteIO),
   itsBuffer       (new char[bufferLength]),
   itsBufferLength (bufferLength)
 {}

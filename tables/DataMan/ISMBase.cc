@@ -309,13 +309,13 @@ void ISMBase::readIndex()
 {
     file_p->seek (0);
     // Use the file given by the BucketFile object.
-    CountedPtr<ByteIO> fio = file_p->makeFilebufIO (1024);
-    TypeIO* tio;
+    std::shared_ptr<ByteIO> fio = file_p->makeFilebufIO (1024);
+    std::shared_ptr<TypeIO> tio;
     // It is stored in canonical or local format.
     if (asBigEndian()) {
-      tio = new CanonicalIO (fio.get());
+        tio.reset (new CanonicalIO (fio));
     }else{
-      tio = new LECanonicalIO (fio.get());
+        tio.reset (new LECanonicalIO (fio));
     }
     AipsIO os (tio);
     uInt version = os.getstart ("IncrementalStMan");
@@ -353,7 +353,6 @@ void ISMBase::readIndex()
     os.setpos (512 + off * bucketSize_p);
     index_p->get (os);
     os.close();
-    delete tio;
 }
 
 void ISMBase::writeIndex()
@@ -365,13 +364,13 @@ void ISMBase::writeIndex()
     // Write a few items at the beginning of the file.
     file_p->seek (0);
     // Use the file given by the BucketFile object.
-    CountedPtr<ByteIO> fio = file_p->makeFilebufIO (1024);
-    TypeIO* tio;
+    std::shared_ptr<ByteIO> fio = file_p->makeFilebufIO (1024);
+    std::shared_ptr<TypeIO> tio;
     // Store it in canonical or local format.
     if (asBigEndian()) {
-      tio = new CanonicalIO (fio.get());
+        tio.reset (new CanonicalIO (fio));
     }else{
-      tio = new LECanonicalIO (fio.get());
+        tio.reset (new LECanonicalIO (fio));
     }
     AipsIO os (tio);
     // The endian switch is a new feature. So only put it if little endian
@@ -394,7 +393,6 @@ void ISMBase::writeIndex()
     os.setpos (512 + off * bucketSize_p);
     index_p->put (os);
     os.close();
-    delete tio;
 }
     
 
