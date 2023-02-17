@@ -34,7 +34,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELUnaryBool::LELUnaryBool(const LELUnaryEnums::Operation op,
-			   const std::shared_ptr<LELInterface<Bool>>& pExpr)
+			   const CountedPtr<LELInterface<Bool> >& pExpr)
 : op_p(op), pExpr_p(pExpr)
 {
    setAttr(pExpr_p->getAttribute());

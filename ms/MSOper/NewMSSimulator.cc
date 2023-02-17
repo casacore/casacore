@@ -69,6 +69,7 @@
 #include <casacore/measures/Measures/MeasData.h>
 #include <casacore/measures/Measures/MFrequency.h>
 #include <casacore/measures/Measures.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/Arrays/Slicer.h>
@@ -102,7 +103,7 @@ const String flagTileId = "FLAG_CATEGORY_HYPERCUBE_ID";
 struct MSFeedParameterExtractor : protected MSIter {
   
   MSFeedParameterExtractor(const MeasurementSet &ms) {
-      msc_p.reset (new MSColumns(ms));
+      msc_p=new MSColumns(ms);
       msc_p->antenna().mount().getColumn(antennaMounts_p,True);
       checkFeed_p=True;
       setFeedInfo();
@@ -137,7 +138,7 @@ void NewMSSimulator::defaults() {
 }
   
 NewMSSimulator::NewMSSimulator(const String& MSName) :
-  dataAcc_p(), scratchDataAcc_p(), sigmaAcc_p(), flagAcc_p(),
+  ms_p(0), dataAcc_p(), scratchDataAcc_p(), sigmaAcc_p(), flagAcc_p(),
   maxData_p(2e9)
 {
   LogIO os(LogOrigin("NewMSSimulator", "NewMSSimulator<const String& MSName)", WHERE));
@@ -285,7 +286,7 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
   }
 
   // Now we can create the MeasurementSet and add the (empty) subtables
-  ms_p.reset (new MeasurementSet(newMS,0));
+  ms_p = casacore::CountedPtr<MeasurementSet>(new MeasurementSet(newMS,0));
   ms_p->createDefaultSubtables(Table::New);
 
   // add the SOURCE table  [copied from SimpleSimulator]
@@ -340,14 +341,14 @@ NewMSSimulator::NewMSSimulator(const String& MSName) :
 }
 
 NewMSSimulator::NewMSSimulator(MeasurementSet& theMS) :
-  dataAcc_p(), scratchDataAcc_p(), sigmaAcc_p(), flagAcc_p(),
+  ms_p(0), dataAcc_p(), scratchDataAcc_p(), sigmaAcc_p(), flagAcc_p(),
   maxData_p(2e9)
 {
   LogIO os(LogOrigin("NewMSSimulator", "NewMSSimulator(MeasurementSet& theMS)", WHERE));
 
   defaults();
 
-  ms_p.reset (new MeasurementSet(theMS));
+  ms_p = casacore::CountedPtr<MeasurementSet>(new MeasurementSet(theMS));
 
   os << "Opening MeasurementSet " << ms_p->tableName() << " with " << ms_p->nrow() << " rows" << LogIO::POST;
   dataWritten_p=ms_p->nrow();
@@ -691,7 +692,7 @@ void NewMSSimulator::initFields(const String& sourceName,
 
 }
 
-std::shared_ptr<MeasurementSet>
+casacore::CountedPtr<MeasurementSet>
 NewMSSimulator::getMs () const
 {
     return ms_p;

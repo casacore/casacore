@@ -50,8 +50,8 @@ Table& getTable (void*, Bool)
   return theTable;
 }
 
-std::shared_ptr<HDF5File> theHDF5File;
-const std::shared_ptr<HDF5File>& getHDF5File (void*)
+CountedPtr<HDF5File> theHDF5File;
+const CountedPtr<HDF5File>& getHDF5File (void*)
 {
   return theHDF5File;
 }
@@ -159,7 +159,7 @@ int main()
     AlwaysAssertExit (! File("tRegionHandler_tmp.lat/reg2n").exists());
     // Test regions in HDF5 only if supported.
     if (HDF5Object::hasHDF5Support()) {
-      theHDF5File.reset (new HDF5File ("tRegionHandler_tmp.hdf5", ByteIO::New));
+      theHDF5File = new HDF5File ("tRegionHandler_tmp.hdf5", ByteIO::New);
       RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
       doIt (reghdf5);
     }

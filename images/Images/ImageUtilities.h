@@ -30,6 +30,7 @@
 #include <casacore/scimath/Mathematics/GaussianBeam.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

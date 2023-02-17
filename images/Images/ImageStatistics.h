@@ -177,7 +177,7 @@ private:
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   std::shared_ptr<const ImageInterface<T>> _inImPtrMgr;
+   std::shared_ptr<const ImageInterface<T> > _inImPtrMgr;
    IPosition blc_;
    Int precision_;
    Bool _showRobust, _recordMessages, _listStats;

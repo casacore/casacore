@@ -54,7 +54,7 @@ int main() {
 		RO_LatticeIterator<Float> imIter(im);
 		/*
 		{
-			std::shared_ptr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
 				= new LatticeStatsDataProvider<Double, Float>(im);
 			ClassicalStatistics<Double, const Float*> cs;
 			cs.setDataProvider(dataProvider);
@@ -333,7 +333,7 @@ int main() {
 		/*
         {
 			cout << endl << "This should produce the desired results" << endl;
-		    std::shared_ptr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+		    CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
                 = new LatticeStatsDataProvider<Double, Float>(im);
 			ClassicalStatistics<Double, const Float*> cs;
             cout << im.name() << endl; 
@@ -359,7 +359,7 @@ int main() {
 
 		{
 			cout << endl << "This should produce the desired results" << endl;
-			std::shared_ptr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
 				= new LatticeStatsDataProvider<Double, Float>(im);
 			ClassicalStatistics<Double, const Float*> cs;
 			cs.setDataProvider(dataProvider);

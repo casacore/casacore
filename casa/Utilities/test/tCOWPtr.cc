@@ -35,12 +35,11 @@
 
 #include <casacore/casa/iostream.h>
 
-using namespace casacore;
-  
+#include <casacore/casa/namespace.h>
 static Bool testFunc(Array<Float> *ptr, const Array<Float> &array, 
-		     Bool readonly) 
+		     Bool deleteIt, Bool constant) 
 {
-  COWPtr<Array<float> > COW(ptr, readonly);
+  COWPtr<Array<float> > COW(ptr, deleteIt, constant);
 
   // only const T functions may be used through the pointer. 
   AlwaysAssert(COW->nelements() == 128, AipsError);
@@ -49,16 +48,19 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   AlwaysAssert(allEQ(*COW, array), AipsError);
 
   // return a reference to this instance.
-  AlwaysAssert(allEQ(COW.ref(), array), AipsError);
+  AlwaysAssert(allEQ(COW.ref(), array),AipsError);
   
-  // fill this instance. The pointer must be dynamically allocated.
-  // The boolean "readOnly" argument forces the COWPtr to treat the templated
+  // fill this instance. The pointer must be dynamically allocated. Default 
+  // behavior is to delete the pointer when this instance's destructer is 
+  // called.  "deleteIt = False" implies the pointer is being maintained by 
+  // another object,(i.e. this is a copy - do not delete.) The
+  // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
   // const acting version of COWPtr.  
   // note:  this deletes the old ptr and resets it.
-  Array<Float>* foobar = new Array<float>(IPosition(2,5,5));
+  Array<Float> *foobar = new Array<float>(IPosition(2,5,5));
   *foobar = 0.0;
-  COW.set(foobar, readonly);
+  COW.set(foobar, deleteIt, constant);
 
   // return a readable and writable reference to this instance.
   COW.rwRef().set(22.0);
@@ -76,7 +78,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
 
   // assignment operator with reference semantics
   Array<Float> *fooAlso = new Array<Float>(array); 
-  COW = COWPtr<Array<Float> >(fooAlso, readonly);
+  COW = COWPtr<Array<Float> >(fooAlso, deleteIt, constant);
   AlwaysAssert(allEQ(*COW, array), AipsError);
 
   //-------------------- test default ctor---------------------------
@@ -89,7 +91,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
     
   // assignment operator with reference semantics
   Array<Float> *fooAgain = new Array<Float>(array);
-  deflt = COWPtr<Array<Float> >(fooAgain, readonly);
+  deflt = COWPtr<Array<Float> >(fooAgain, deleteIt, constant);
 
   // only const T functions may be used through the pointer. 
   AlwaysAssert(deflt->nelements() == 128, AipsError);
@@ -100,13 +102,16 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   // return a reference to this instance.
   AlwaysAssert(allEQ(deflt.ref(), array),AipsError);
   
-  // fill this instance.
-  // The boolean "readOnly" argument forces the COWPtr to treat the templated
+  // fill this instance. The pointer must be dynamically allocated. Default 
+  // behavior is to delete the pointer when this instance's destructer is 
+  // called.  "deleteIt = False" implies the pointer is being maintained by 
+  // another object,(i.e. this is a copy - do not delete.) The
+  // Boolean "readOnly" argument forces the COWPtr to treat the templated
   // data as const.  This allows non-const data operations be used to fill a
   // const acting version of COWPtr.  
   Array<float> *bar = new Array<float>(IPosition(2,5,5));
   *bar = 0.0;
-  deflt.set(bar, readonly);
+  deflt.set(bar, deleteIt, constant);
 
   // return a readable and writable reference to this instance.
   deflt.rwRef().set(22.0);
@@ -142,7 +147,7 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   // const acting version of COWPtr.  
   Array<float> *foo = new Array<float>(IPosition(2,5,5));
   *foo = 0.0;
-  copy.set(foo, readonly);
+  copy.set(foo, deleteIt, constant);
 
   // return a readable and writable reference to this instance.
   copy.rwRef().set(22.0);
@@ -162,6 +167,21 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   copy = COW;
   AlwaysAssert(allEQ(*copy, array), AipsError);
 
+  // test setReadOnly
+  if (!deleteIt) {
+    copy.setReadOnly(foo);
+    AlwaysAssert(allEQ(*copy, *foo), AipsError);
+    AlwaysAssert(copy.isReadOnly(), AipsError);
+  }
+
+  if (!deleteIt) {
+    delete foo;
+    delete bar;
+    delete foobar;
+    delete fooAlso;
+    delete fooAgain;
+  }
+
   return True;
 }
 
@@ -176,15 +196,35 @@ int main()
 
     // we have four permutations
 
-    // Case 0: a readonly COWPtr
+    // Case 0: a const which controls the ptr.
     Array<Float> *ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError); 
-    AlwaysAssert(testFunc(ptr, array, True), AipsError);
+    AlwaysAssert(testFunc(ptr, array, True, True), AipsError);
+// the following can be uncommented when the CountedPtr class
+// is made to set the deleted pointer to NULL.
+//    AlwaysAssert(!ptr, AipsError); 
 
-    // Case 1: a non-readonly COWPtr
+    // Case 1: a non-const which controls the ptr.
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError); 
-    AlwaysAssert(testFunc(ptr, array, False), AipsError);
+    AlwaysAssert(testFunc(ptr, array, True, False), AipsError);
+// the following can be uncommented when the CountedPtr class
+// is made to set the deleted pointer to NULL.
+//    AlwaysAssert(!ptr, AipsError); 
+
+    // Case 2: a const which doesn't control the pointer
+    ptr = new Array<float>(array.copy());
+    AlwaysAssert(ptr, AipsError); 
+    AlwaysAssert(testFunc(ptr, array, False, True), AipsError);
+    AlwaysAssert(ptr, AipsError); 
+    delete ptr;    
+
+    // Case 3: a non-const which doesn't control the pointer
+    ptr = new Array<float>(array.copy());
+    AlwaysAssert(ptr, AipsError);
+    AlwaysAssert(testFunc(ptr, array, False, False), AipsError);
+    AlwaysAssert(ptr, AipsError); 
+    delete ptr;    
 
     cout << "OK" << endl;
 

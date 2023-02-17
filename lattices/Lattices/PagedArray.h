@@ -275,7 +275,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Table maskTable(maskSetup);
 // PagedArray<Bool> maskArray(IPosition(4,1024,1024,4,256), maskTable);
 // maskArray.set(False);
-// COWPtr<Array<Bool>> maskPtr;
+// COWPtr<Array<Bool> > maskPtr;
 // maskArray.getSlice(maskPtr, IPosition(4,240,240,3,0),
 // 		      IPosition(4,32,32,1,1), IPosition(4,1));
 // maskPtr.rwRef() = True;

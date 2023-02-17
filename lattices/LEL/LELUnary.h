@@ -188,7 +188,7 @@ public:
 // Constructor takes operation and expression
 // to be operated upon
    LELUnary(const LELUnaryEnums::Operation op, 
-	    const std::shared_ptr<LELInterface<T>>& pExpr);
+	    const CountedPtr<LELInterface<T> >& pExpr);
 
 // Destructor does nothing
   ~LELUnary();
@@ -216,7 +216,7 @@ public:
 
 private:
    LELUnaryEnums::Operation op_p;
-   std::shared_ptr<LELInterface<T>> pExpr_p;
+   CountedPtr<LELInterface<T> > pExpr_p;
 };
 
 
@@ -283,7 +283,7 @@ public:
 // Constructor takes operation and expression
 // to be operated upon
    LELUnaryBool(const LELUnaryEnums::Operation op, 
-		const std::shared_ptr<LELInterface<Bool>>& pExpr);
+		const CountedPtr<LELInterface<Bool> >& pExpr);
 
 // Destructor does nothing
   ~LELUnaryBool();
@@ -311,7 +311,7 @@ public:
 
 private:
    LELUnaryEnums::Operation op_p;
-   std::shared_ptr<LELInterface<Bool>> pExpr_p;
+   CountedPtr<LELInterface<Bool> > pExpr_p;
 };
 
 

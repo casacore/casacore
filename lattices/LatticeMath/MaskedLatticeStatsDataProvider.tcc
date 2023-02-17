@@ -51,7 +51,7 @@ MaskedLatticeStatsDataProvider<T>::~MaskedLatticeStatsDataProvider() {}
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::operator++() {
     _freeStorage();
-    if (!_iter) {
+    if (! _iter) {
         _atEnd = True;
     }
     else {
@@ -62,7 +62,7 @@ void MaskedLatticeStatsDataProvider<T>::operator++() {
 
 template <class T>
 uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
-    if (!_iter) {
+    if (! _iter) {
         return 1;
     }
     IPosition lattShape = _iter->latticeShape();
@@ -81,7 +81,7 @@ uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
 
 template <class T>
 Bool MaskedLatticeStatsDataProvider<T>::atEnd() const {
-    if (!_iter) {
+    if (! _iter) {
         return _atEnd;
     }
     else {
@@ -97,7 +97,7 @@ void MaskedLatticeStatsDataProvider<T>::finalize() {
 
 template <class T>
 uInt64 MaskedLatticeStatsDataProvider<T>::getCount() {
-    if (!_iter) {
+    if (! _iter) {
         return _currentSlice.size();
     }
     else {

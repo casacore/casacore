@@ -63,8 +63,8 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     _centerType(other._centerType), _useLower(other._useLower),
     _centerValue(other._centerValue), _statsData(copy(other._statsData)),
     _doMedAbsDevMed(other._doMedAbsDevMed), _rangeIsSet(other._rangeIsSet),
-    _realMax(!other._realMax ? NULL : new AccumType(*other._realMax)),
-    _realMin(!other._realMin ? NULL : new AccumType(*other._realMin)),
+    _realMax(other._realMax ? new AccumType(*other._realMax) : nullptr),
+    _realMin(other._realMin ? new AccumType(*other._realMin) : nullptr),
     _isNullSet(False), _range(other._range) {}
 
 CASA_STATD
@@ -85,8 +85,8 @@ FitToHalfStatistics<CASA_STATP>::operator=(
     _statsData = copy(other._statsData);
     _doMedAbsDevMed = other._doMedAbsDevMed;
     _rangeIsSet = other._rangeIsSet;
-    _realMax.reset (!other._realMax ? NULL : new AccumType(*other._realMax));
-    _realMin.reset (!other._realMin ? NULL : new AccumType(*other._realMin));
+    _realMax.reset (other._realMax ? new AccumType(*other._realMax) : nullptr);
+    _realMin.reset (other._realMin ? new AccumType(*other._realMin) : nullptr);
     _isNullSet = other._isNullSet;
     _range = other._range;
     return *this;
@@ -103,7 +103,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
     std::shared_ptr<uInt64> , std::shared_ptr<AccumType> ,
     std::shared_ptr<AccumType> , uInt , Bool , uInt
 ) {
-    std::shared_ptr<AccumType> median = _getStatsData().median;
+    auto median = _getStatsData().median;
     if (! median) {
         median.reset (new AccumType(_centerValue));
         _getStatsData().median = median;
@@ -142,8 +142,9 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
         );
         // The number of points to hand to the base class is the number of real
         // data points, or exactly half of the total number of points
-        std::shared_ptr<uInt64> realNPts ( !knownNpts
-            ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2));
+        std::shared_ptr<uInt64> realNPts(
+            new uInt64(knownNpts ? *knownNpts/2 : getNPts()/2)
+        );
         std::shared_ptr<AccumType> realMin, realMax;
         // need to set the median in the quantile computer object here. The
         // getMedian() call will do that, so we don't need to capture the return
@@ -161,7 +162,7 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_getMinMax(
-        std::shared_ptr<AccumType>& realMin, std::shared_ptr<AccumType>& realMax,
+    std::shared_ptr<AccumType>& realMin, std::shared_ptr<AccumType>& realMax,
     std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax
 ) {
     realMin.reset (new AccumType(_centerValue));
@@ -289,7 +290,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
                 // quantile is in virtual part of data set
                 std::set<Double> actualF;
                 actualF.insert(q);
-                uInt64 allNPts = !knownNpts ? getNPts() : *knownNpts;
+                uInt64 allNPts = knownNpts ? *knownNpts : getNPts();
                 auto actualFToI = StatisticsData::indicesFromFractions(
                     allNPts, actualF
                 );
@@ -340,8 +341,9 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     // of points in half. This is also true if we have to compute using
     // getNPts(), so we need our own value to pass in to the call of the base
     // class' method.
-    std::shared_ptr<uInt64> realNPts ( !knownNpts
-        ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2));
+    std::shared_ptr<uInt64> realNPts(
+        new uInt64(knownNpts ? *knownNpts/2 : getNPts()/2)
+    );
     std::shared_ptr<AccumType> realMin, realMax;
     _getMinMax(realMin, realMax, knownMin, knownMax);
     auto realPart = ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(

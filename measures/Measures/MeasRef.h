@@ -31,7 +31,7 @@
 #include <casacore/measures/Measures/MRBase.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/iosfwd.h>
-#include <memory>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -193,7 +193,7 @@ private:
   };
   
   //# Data
-  std::shared_ptr<RefRep> rep_p;
+  CountedPtr<RefRep> rep_p;
   
   //# Member functions
   // Create an instance of MeasRef

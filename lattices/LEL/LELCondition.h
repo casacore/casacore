@@ -94,8 +94,8 @@ protected:
 
 public: 
 // Construct the condition on the given expression.
-   LELCondition (const std::shared_ptr<LELInterface<T>>& expr,
-		 const std::shared_ptr<LELInterface<Bool>>& cond);
+   LELCondition (const CountedPtr<LELInterface<T> >& expr,
+		 const CountedPtr<LELInterface<Bool> >& cond);
 
 // Destructor does nothing
   ~LELCondition();
@@ -122,8 +122,8 @@ public:
   // </group>
 
 private:
-   std::shared_ptr<LELInterface<T>>    pExpr_p;
-   std::shared_ptr<LELInterface<Bool>> pCond_p;
+   CountedPtr<LELInterface<T> >    pExpr_p;
+   CountedPtr<LELInterface<Bool> > pCond_p;
 };
 
 

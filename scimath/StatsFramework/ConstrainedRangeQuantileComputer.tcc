@@ -73,7 +73,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
-    std::shared_ptr<AccumType> median = this->_getMedian();
+    auto median = this->_getMedian();
     if (! median) {
         median.reset (new AccumType(
             ClassicalQuantileComputer<CASA_STATP>::getMedian(
@@ -91,7 +91,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
-    std::shared_ptr<AccumType> medabsdevmed = this->_getMedianAbsDevMedian();
+    auto medabsdevmed = this->_getMedianAbsDevMedian();
     if (! medabsdevmed) {
         std::shared_ptr<AccumType> median = this->_getMedian();
         if (! median) {
@@ -137,7 +137,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
                     ++(*iCounts)[idx]; \
                     if (*iAllSame) { \
                         if (! *iSameVal) { \
-                            iSameVal->reset (new AccumType(myDatum));     \
+                            iSameVal->reset (new AccumType(myDatum)); \
                         } \
                         else { \
                             *iAllSame = myDatum == *(*iSameVal); \

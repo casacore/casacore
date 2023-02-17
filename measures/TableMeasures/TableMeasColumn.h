@@ -29,7 +29,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/TableColumn.h>
-#include <memory>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -132,7 +132,7 @@ public:
 
   // Test if the object is null.
   Bool isNull() const
-    { return !itsDescPtr; }
+    { return itsDescPtr.null(); }
 
   // Throw an exception if the object is null.
   void throwIfNull() const;
@@ -159,7 +159,7 @@ protected:
   //# The measure's value is represented by this many data components.
   uInt itsNvals;
   //# The Measure Column description.
-  std::shared_ptr<TableMeasDescBase> itsDescPtr;
+  CountedPtr<TableMeasDescBase> itsDescPtr;
   //# The data column.
   TableColumn itsTabDataCol;
   //# Does the measure column have a variable reference or offset?

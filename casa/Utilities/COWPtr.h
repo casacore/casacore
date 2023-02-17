@@ -27,7 +27,7 @@
 #define CASA_COWPTR_H
 
 #include <casacore/casa/aips.h>
-#include <memory>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -187,17 +187,19 @@ public:
   // delete-able by the destructor.  It is not "readOnly" so that it may be
   // changed by the COWPtr<T>::set() function.
   inline COWPtr(); 
-
-  // COWPtr takes over the given pointer. It uses a std::shared_ptr to count the
-  // references which is needed when copying a COWPtr. Thus the memory is
-  // automatically released when the last reference is gone.
-  // <br> The function ref() Control of copying the internal object is provided by the boolean
-  // <src>readOnly</src> argument. False forces a copy if the number of
+  
+  // The dynamic "pointer to object" constructor: default behavior is to 
+  // delete the allocated memory when this instance's of COWPtr is destructed. 
+  // Or the Boolean argument of "deleteIt = False" implies the pointer is 
+  // being maintained by an object other than this instance of COWPtr and 
+  // will not delete the allocated memory upon this instance's destruction. 
+  // Control of copying is provided by the Boolean "readOnly" argument.  The
+  // default value of "readOnly = False" forces a copy if the number of
   // references to the dynamic memory is greater than one.  Copying is always
-  // done if the constructor is given True.
+  // done if the constructor is given an argument of "readOnly = True".  
   // <note> The only copying done (if ever) is upon a call to 
   // COWPtr<T>::rwRef().</note>
-  explicit COWPtr(T *obj, Bool readOnly = False);
+  explicit COWPtr(T *obj, Bool deleteIt = True, Bool readOnly = False);
 
   // copy ctor with reference semantics
   inline COWPtr(const COWPtr<T> &other);
@@ -228,7 +230,7 @@ public:
   // forces <src>deleteIt=False</src> and <src>ReadOnly=True</src>. In
   // that way a const object can also be safely referenced by COWPtr.
   // <group>
-  void set(T *obj, Bool readOnly = False);
+  void set(T *obj, Bool deleteIt = True, Bool readOnly = False);
   void setReadOnly (const T *obj);
   void setReadOnly ();
   // </group>
@@ -259,15 +261,15 @@ public:
   Bool makeUnique(); 
 
 protected:
-  std::shared_ptr<T> obj_p;
+  CountedPtr<T> obj_p;
   Bool const_p;
 };
 
 
 
-// Make our own default pointer - const_p==False
+// Make our own default pointer - deleteIt==True by default, const_p==False
 template <class T> inline COWPtr<T>::COWPtr()
-:obj_p(static_cast<T *>(0)), const_p(False)
+:obj_p(static_cast<T *>(0), True), const_p(False)
 {
   // does nothing
 } 
@@ -323,7 +325,7 @@ template <class T> inline T &COWPtr<T>::rwRef()
 
 template <class T> inline Bool COWPtr<T>::isNull() const
 {
-  return !obj_p;
+  return obj_p.null();
 }
 
 template <class T> inline Bool COWPtr<T>::isReadOnly() const
@@ -333,7 +335,7 @@ template <class T> inline Bool COWPtr<T>::isReadOnly() const
 
 template <class T> inline Bool COWPtr<T>::isUnique() const
 {
-  return (const_p || obj_p.use_count()>1) ? False : True;
+  return (const_p || obj_p.nrefs()>1) ? False : True;
 }
 
 

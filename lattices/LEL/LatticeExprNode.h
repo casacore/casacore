@@ -36,8 +36,8 @@
 #include <casacore/lattices/LEL/LELFunctionEnums.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/IPosition.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
-#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -614,11 +614,11 @@ public:
 
 // Convert the expression to another data type.
 // <group>
-   std::shared_ptr<LELInterface<Float>>    makeFloat() const;
-   std::shared_ptr<LELInterface<Double>>   makeDouble() const;
-   std::shared_ptr<LELInterface<Complex>>  makeComplex() const;
-   std::shared_ptr<LELInterface<DComplex>> makeDComplex() const;
-   std::shared_ptr<LELInterface<Bool>>     makeBool() const;
+   CountedPtr<LELInterface<Float> >    makeFloat() const;
+   CountedPtr<LELInterface<Double> >   makeDouble() const;
+   CountedPtr<LELInterface<Complex> >  makeComplex() const;
+   CountedPtr<LELInterface<DComplex> > makeDComplex() const;
+   CountedPtr<LELInterface<Bool> >     makeBool() const;
 // </group>
 
 // Evaluate the expression.
@@ -710,15 +710,15 @@ public:
 // Replace a scalar subexpression by its result.
    Bool replaceScalarExpr();
   
-// Make the object from a std::shared_ptr<LELInterface> pointer.
+// Make the object from a Counted<LELInterface> pointer.
 // Ideally this function is private, but alas it is needed in LELFunction1D,
 // operator==, and more (too many to make them friend).
 // <group>
-   LatticeExprNode(const std::shared_ptr<LELInterface<Float>>& expr);
-   LatticeExprNode(const std::shared_ptr<LELInterface<Double>>& expr);
-   LatticeExprNode(const std::shared_ptr<LELInterface<Complex>>& expr);
-   LatticeExprNode(const std::shared_ptr<LELInterface<DComplex>>& expr);
-   LatticeExprNode(const std::shared_ptr<LELInterface<Bool>>& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<Float> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<Double> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<Complex> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<DComplex> >& expr);
+   LatticeExprNode(const CountedPtr<LELInterface<Bool> >& expr);
 // </group>
 
 // Determine the resulting data type from the given data types.
@@ -828,11 +828,11 @@ private:
    Bool                isInvalid_p;
    IPosition           iposition_p;
    const LELAttribute* pAttr_p;
-   std::shared_ptr<LELInterface<Float>>    pExprFloat_p;
-   std::shared_ptr<LELInterface<Double>>   pExprDouble_p;
-   std::shared_ptr<LELInterface<Complex>>  pExprComplex_p;
-   std::shared_ptr<LELInterface<DComplex>> pExprDComplex_p;
-   std::shared_ptr<LELInterface<Bool>>     pExprBool_p;
+   CountedPtr<LELInterface<Float> >    pExprFloat_p;
+   CountedPtr<LELInterface<Double> >   pExprDouble_p;
+   CountedPtr<LELInterface<Complex> >  pExprComplex_p;
+   CountedPtr<LELInterface<DComplex> > pExprDComplex_p;
+   CountedPtr<LELInterface<Bool> >     pExprBool_p;
 };
 
 

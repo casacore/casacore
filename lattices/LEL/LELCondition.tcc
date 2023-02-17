@@ -38,8 +38,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
-LELCondition<T>::LELCondition (const std::shared_ptr<LELInterface<T>>& expr,
-	                       const std::shared_ptr<LELInterface<Bool>>& cond)
+LELCondition<T>::LELCondition (const CountedPtr<LELInterface<T> >& expr,
+	                       const CountedPtr<LELInterface<Bool> >& cond)
 {
 #if defined(AIPS_TRACE)
    cout << "LELCondition:: constructor" << endl;

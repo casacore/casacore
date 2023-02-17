@@ -31,7 +31,7 @@
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <memory>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -251,7 +251,7 @@ public:
 
   // Is the iterator object empty?
   Bool isNull() const
-    { return !itsIterPtr; }
+    { return itsIterPtr.null(); }
 
   // Return the underlying lattice.
   Lattice<T>& lattice() const
@@ -335,7 +335,7 @@ public:
 
 protected:
   // The pointer to the Iterator
-  std::shared_ptr<LatticeIterInterface<T>> itsIterPtr;
+  CountedPtr<LatticeIterInterface<T> > itsIterPtr;
 };
 
 

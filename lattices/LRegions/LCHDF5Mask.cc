@@ -35,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {}
 
   LCHDF5Mask::LCHDF5Mask (const TiledShape& latticeShape,
-			  const std::shared_ptr<HDF5File>& file,
+			  const CountedPtr<HDF5File>& file,
 			  const String& maskName)
     : LCRegionSingle (latticeShape.shape()),
       itsBox (IPosition(latticeShape.shape().nelements(), 0),
@@ -48,7 +48,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   LCHDF5Mask::LCHDF5Mask (const TiledShape& maskShape,
 			  const LCBox& box,
-			  const std::shared_ptr<HDF5File>& file,
+			  const CountedPtr<HDF5File>& file,
 			  const String& maskName)
     : LCRegionSingle (box.latticeShape()),
       itsBox (box)

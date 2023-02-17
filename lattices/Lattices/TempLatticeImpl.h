@@ -32,7 +32,7 @@
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/tables/Tables/Table.h>
-#include <memory>
+#include <casacore/casa/Utilities/CountedPtr.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -54,7 +54,7 @@ class Table;
 // </prerequisite>
 
 // <synopsis>
-// The class is used as <src>std::shared_ptr<TempLatticeImpl></src> in class
+// The class is used as <src>CountedPtr<TempLatticeImpl></src> in class
 // TempLattice. In that way the making a copy of a TempLattice uses the
 // same object underneath.
 // This was needed to have a correct implementation of tempClose. Otherwise
@@ -98,7 +98,7 @@ public:
 
   // Flush the data.
   void flush()
-    { if (!itsTable.isNull()) itsTable.flush(); }
+    { if (itsTablePtr != 0) itsTablePtr->flush(); }
 
   // Close the Lattice temporarily (if it is paged to disk).
   // It'll be reopened automatically when needed or when
@@ -230,10 +230,10 @@ private:
   void deleteTable();
 
 
-  mutable Table                       itsTable;
-  mutable std::shared_ptr<Lattice<T>> itsLatticePtr;
-          String                      itsTableName;
-  mutable Bool                        itsIsClosed;
+  mutable Table*                  itsTablePtr;
+  mutable CountedPtr<Lattice<T> > itsLatticePtr;
+          String                  itsTableName;
+  mutable Bool                    itsIsClosed;
 };
 
 

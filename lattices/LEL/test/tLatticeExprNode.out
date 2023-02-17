@@ -12,7 +12,7 @@ LatticeExprNode (constant T)
   Bool
 
 LELInterface constructors
-LatticeExprNode(std::shared_ptr<LELInterface<T>>&) 
+LatticeExprNode(CountedPtr<LELInterface<T> >&) 
   Float
   Double
   Complex
@@ -403,7 +403,7 @@ LatticeExprNode (constant T)
   Bool
 
 LELInterface constructors
-LatticeExprNode(std::shared_ptr<LELInterface<T>>&) 
+LatticeExprNode(CountedPtr<LELInterface<T> >&) 
   Float
   Double
   Complex
@@ -794,7 +794,7 @@ LatticeExprNode (constant T)
   Bool
 
 LELInterface constructors
-LatticeExprNode(std::shared_ptr<LELInterface<T>>&) 
+LatticeExprNode(CountedPtr<LELInterface<T> >&) 
   Float
   Double
   Complex

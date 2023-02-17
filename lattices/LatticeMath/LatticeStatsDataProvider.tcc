@@ -52,7 +52,7 @@ LatticeStatsDataProvider<T>::~LatticeStatsDataProvider() {}
 template <class T>
 void LatticeStatsDataProvider<T>::operator++() {
     _freeStorage();
-    if (!_iter) {
+    if (! _iter) {
         _atEnd = True;
     }
     else {
@@ -63,7 +63,7 @@ void LatticeStatsDataProvider<T>::operator++() {
 
 template <class T>
 uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
-    if (!_iter) {
+    if (! _iter) {
         return 1;
     }
     IPosition lattShape = _iter->latticeShape();
@@ -82,7 +82,7 @@ uInt LatticeStatsDataProvider<T>::estimatedSteps() const {
 
 template <class T>
 Bool LatticeStatsDataProvider<T>::atEnd() const {
-    if (!_iter) {
+    if (! _iter) {
         return _atEnd;
     }
     return _iter->atEnd();
@@ -96,7 +96,7 @@ void LatticeStatsDataProvider<T>::finalize() {
 
 template <class T>
 uInt64 LatticeStatsDataProvider<T>::getCount() {
-    if (!_iter) {
+    if (! _iter) {
         return _currentSlice.size();
     }
     return _iter->cursor().size();

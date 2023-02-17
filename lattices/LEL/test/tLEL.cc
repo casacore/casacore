@@ -316,7 +316,7 @@ int main (int argc, const char* argv[])
 //
    cout << endl << "LELUnary<Float>" << endl;
   {
-    std::shared_ptr<LELInterface<Float> > pExpr(new LELLattice<Float>(bF));
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
 
 // Note that operator+ is not actually implemented in LELUnary because it
 // wouldn't do anything !  It is implemented in LatticeExprNode though
@@ -333,7 +333,7 @@ int main (int argc, const char* argv[])
 // wouldn't do anything !  It is implemented in LatticeExprNode though
 
     cout << "   Operator -" << endl;     
-    std::shared_ptr<LELInterface<Double> > pExpr(new LELLattice<Double>(bD));
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
     LELUnary<Double> expr(LELUnaryEnums::MINUS, pExpr);
     if (!checkDouble(expr, -bDVal, String("LELUnary"), shape, False, suppress)) ok = False;
   }
@@ -346,7 +346,7 @@ int main (int argc, const char* argv[])
 // wouldn't do anything !  It is implemented in LatticeExprNode though
 
     cout << "   Operator -" << endl;     
-    std::shared_ptr<LELInterface<Complex> > pExpr(new LELLattice<Complex>(bC));
+    CountedPtr<LELInterface<Complex> > pExpr = new LELLattice<Complex>(bC);
     LELUnary<Complex> expr(LELUnaryEnums::MINUS, pExpr);
     if (!checkComplex(expr, -bCVal, String("LELUnary"), shape, False, suppress)) ok = False;
   }
@@ -359,7 +359,7 @@ int main (int argc, const char* argv[])
 // wouldn't do anything !  It is implemented in LatticeExprNode though
 
     cout << "   Operator -" << endl;     
-    std::shared_ptr<LELInterface<DComplex> > pExpr(new LELLattice<DComplex>(bDC));
+    CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
     LELUnary<DComplex> expr(LELUnaryEnums::MINUS, pExpr);
     if (!checkDComplex(expr, -bDCVal, String("LELUnary"), shape, False, suppress)) ok = False;
   }
@@ -373,7 +373,7 @@ int main (int argc, const char* argv[])
 
     {
       cout << "   Operator !" << endl;     
-      std::shared_ptr<LELInterface<Bool> > pExpr(new LELLattice<Bool>(aB));
+      CountedPtr<LELInterface<Bool> > pExpr = new LELLattice<Bool>(aB);
       LELUnaryBool expr(LELUnaryEnums::NOT, pExpr);
       if (!checkBool(expr, (!aBVal), String("LELUnaryBool"), shape, False, suppress)) ok = False;
     }
@@ -385,8 +385,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinary<Float>" << endl;
-    std::shared_ptr<LELInterface<Float> > pExprLeft(new LELLattice<Float>(bF));
-    std::shared_ptr<LELInterface<Float> > pExprRight(new LELLattice<Float>(cF));
+    CountedPtr<LELInterface<Float> > pExprLeft = new LELLattice<Float>(bF);
+    CountedPtr<LELInterface<Float> > pExprRight = new LELLattice<Float>(cF);
 
     {
     cout << "   Operator +" << endl;     
@@ -424,8 +424,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinary<Double>" << endl;
-    std::shared_ptr<LELInterface<Double> > pExprLeft(new LELLattice<Double>(bD));
-    std::shared_ptr<LELInterface<Double> > pExprRight(new LELLattice<Double>(cD));
+    CountedPtr<LELInterface<Double> > pExprLeft = new LELLattice<Double>(bD);
+    CountedPtr<LELInterface<Double> > pExprRight = new LELLattice<Double>(cD);
 
     {
     cout << "   Operator +" << endl;     
@@ -462,8 +462,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinary<Complex>" << endl;
-    std::shared_ptr<LELInterface<Complex> > pExprLeft(new LELLattice<Complex>(bC));
-    std::shared_ptr<LELInterface<Complex> > pExprRight(new LELLattice<Complex>(cC));
+    CountedPtr<LELInterface<Complex> > pExprLeft = new LELLattice<Complex>(bC);
+    CountedPtr<LELInterface<Complex> > pExprRight = new LELLattice<Complex>(cC);
 
     {
     cout << "   Operator +" << endl;     
@@ -500,8 +500,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinary<DComplex>" << endl;
-    std::shared_ptr<LELInterface<DComplex> > pExprLeft(new LELLattice<DComplex>(bDC));
-    std::shared_ptr<LELInterface<DComplex> > pExprRight(new LELLattice<DComplex>(cDC));
+    CountedPtr<LELInterface<DComplex> > pExprLeft = new LELLattice<DComplex>(bDC);
+    CountedPtr<LELInterface<DComplex> > pExprRight = new LELLattice<DComplex>(cDC);
 
     {
     cout << "   Operator +" << endl;     
@@ -538,8 +538,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinaryCmp<Float>" << endl;
-    std::shared_ptr<LELInterface<Float> > pExprLeft(new LELLattice<Float>(bF));
-    std::shared_ptr<LELInterface<Float> > pExprRight(new LELLattice<Float>(cF));
+    CountedPtr<LELInterface<Float> > pExprLeft = new LELLattice<Float>(bF);
+    CountedPtr<LELInterface<Float> > pExprRight = new LELLattice<Float>(cF);
 
     {
     cout << "   Operator ==" << endl;     
@@ -577,8 +577,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinaryCmp<Double>" << endl;
-    std::shared_ptr<LELInterface<Double> > pExprLeft(new LELLattice<Double>(bD));
-    std::shared_ptr<LELInterface<Double> > pExprRight(new LELLattice<Double>(cD));
+    CountedPtr<LELInterface<Double> > pExprLeft = new LELLattice<Double>(bD);
+    CountedPtr<LELInterface<Double> > pExprRight = new LELLattice<Double>(cD);
 
     {
     cout << "   Operator ==" << endl;     
@@ -616,8 +616,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinaryCmp<Complex>" << endl;
-    std::shared_ptr<LELInterface<Complex> > pExprLeft(new LELLattice<Complex>(bC));
-    std::shared_ptr<LELInterface<Complex> > pExprRight(new LELLattice<Complex>(cC));
+    CountedPtr<LELInterface<Complex> > pExprLeft = new LELLattice<Complex>(bC);
+    CountedPtr<LELInterface<Complex> > pExprRight = new LELLattice<Complex>(cC);
 
     {
     cout << "   Operator ==" << endl;     
@@ -655,8 +655,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinaryCmp<DComplex>" << endl;
-    std::shared_ptr<LELInterface<DComplex> > pExprLeft(new LELLattice<DComplex>(bDC));
-    std::shared_ptr<LELInterface<DComplex> > pExprRight(new LELLattice<DComplex>(cDC));
+    CountedPtr<LELInterface<DComplex> > pExprLeft = new LELLattice<DComplex>(bDC);
+    CountedPtr<LELInterface<DComplex> > pExprRight = new LELLattice<DComplex>(cDC);
 
     {
     cout << "   Operator ==" << endl;     
@@ -694,8 +694,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELBinaryBool" << endl;
-    std::shared_ptr<LELInterface<Bool> > pExprLeft(new LELLattice<Bool>(bB));
-    std::shared_ptr<LELInterface<Bool> > pExprRight(new LELLattice<Bool>(cB));
+    CountedPtr<LELInterface<Bool> > pExprLeft = new LELLattice<Bool>(bB);
+    CountedPtr<LELInterface<Bool> > pExprRight = new LELLattice<Bool>(cB);
 
     {
     cout << "   Operator ==" << endl;     
@@ -726,7 +726,7 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELFunction1D<Float>" << endl;
-    std::shared_ptr<LELInterface<Float> > pExpr(new LELLattice<Float>(bF));
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
 
     {
     cout << "   Function sin" << endl;     
@@ -839,7 +839,7 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELFunction1D<Double>" << endl;
-    std::shared_ptr<LELInterface<Double> > pExpr(new LELLattice<Double>(bD));
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
 
     {
     cout << "   Function sin" << endl;     
@@ -952,7 +952,7 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELFunction1D<Complex>" << endl;
-    std::shared_ptr<LELInterface<Complex> > pExpr(new LELLattice<Complex>(bC));
+    CountedPtr<LELInterface<Complex> > pExpr = new LELLattice<Complex>(bC);
 
     {
     cout << "   Function sin" << endl;     
@@ -1038,7 +1038,7 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELFunction1D<DComplex>" << endl;
-    std::shared_ptr<LELInterface<DComplex> > pExpr(new LELLattice<DComplex>(bDC));
+    CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
 
     {
     cout << "   Function sin" << endl;     
@@ -1735,8 +1735,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELFunctionReal1D<Float>" << endl;
-    std::shared_ptr<LELInterface<Float> > pExpr(new LELLattice<Float>(bF));
-    std::shared_ptr<LELInterface<Float> > pExpra(new LELLattice<Float>(aF));
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
+    CountedPtr<LELInterface<Float> > pExpra = new LELLattice<Float>(aF);
 
     {
     cout << "   Function asin" << endl;     
@@ -1789,8 +1789,8 @@ int main (int argc, const char* argv[])
 //
   {
     cout << endl << "LELFunctionReal1D<Double>" << endl;
-    std::shared_ptr<LELInterface<Double> > pExpr(new LELLattice<Double>(bD));
-    std::shared_ptr<LELInterface<Double> > pExpra(new LELLattice<Double>(aD));
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
+    CountedPtr<LELInterface<Double> > pExpra = new LELLattice<Double>(aD);
 
     {
     cout << "   Function asin" << endl;     
@@ -2267,7 +2267,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << endl << "LELConvert<Float,Double> " << endl;
-    std::shared_ptr<LELInterface<Double> > pExpr(new LELLattice<Double>(bD));
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
     LELConvert<Float,Double> expr(pExpr);
     FResult = Float(bDVal);
     if (!checkFloat (expr, FResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2275,7 +2275,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<Double,Float> " << endl;
-    std::shared_ptr<LELInterface<Float> > pExpr(new LELLattice<Float>(bF));
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
     LELConvert<Double,Float> expr(pExpr);
     DResult = Double(bFVal);
     if (!checkDouble(expr, DResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2283,7 +2283,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<Complex,DComplex> " << endl;
-    std::shared_ptr<LELInterface<DComplex> > pExpr(new LELLattice<DComplex>(bDC));
+    CountedPtr<LELInterface<DComplex> > pExpr = new LELLattice<DComplex>(bDC);
     LELConvert<Complex,DComplex> expr(pExpr);
     CResult = Complex(bDCVal.real(), bDCVal.imag());
     if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2291,7 +2291,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<DComplex,Complex> " << endl;
-    std::shared_ptr<LELInterface<Complex> > pExpr(new LELLattice<Complex>(bC));
+    CountedPtr<LELInterface<Complex> > pExpr = new LELLattice<Complex>(bC);
     LELConvert<DComplex,Complex> expr(pExpr);
     DCResult = bCVal;
     if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2300,7 +2300,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<Complex,Float> " << endl;
-    std::shared_ptr<LELInterface<Float> > pExpr(new LELLattice<Float>(bF));
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
     LELConvert<Complex,Float> expr(pExpr);
     CResult = Complex(bFVal,0.0);
     if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2308,7 +2308,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<Complex,Double> " << endl;
-    std::shared_ptr<LELInterface<Double> > pExpr(new LELLattice<Double>(bD));
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
     LELConvert<Complex,Double> expr(pExpr);
     CResult = Complex(bDVal,0.0);
     if (!checkComplex(expr, CResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2316,7 +2316,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<DComplex,Float> " << endl;
-    std::shared_ptr<LELInterface<Float> > pExpr(new LELLattice<Float>(bF));
+    CountedPtr<LELInterface<Float> > pExpr = new LELLattice<Float>(bF);
     LELConvert<DComplex,Float> expr(pExpr);
     DCResult = DComplex(bFVal,0.0);
     if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, suppress)) ok = False;
@@ -2324,7 +2324,7 @@ int main (int argc, const char* argv[])
 
     {
     cout << "LELConvert<DComplex,Double> " << endl;
-    std::shared_ptr<LELInterface<Double> > pExpr(new LELLattice<Double>(bD));
+    CountedPtr<LELInterface<Double> > pExpr = new LELLattice<Double>(bD);
     LELConvert<DComplex,Double> expr(pExpr);
     DCResult = DComplex(bDVal,0.0);
     if (!checkDComplex(expr, DCResult, String("LELConvert"), shape, False, suppress)) ok = False;

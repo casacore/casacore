@@ -720,7 +720,7 @@ void MSIter::setMSInfo()
   if (newMS_p) {
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
-    msc_p.reset (new MSColumns(bms_p[curMS_p]));
+    msc_p = new MSColumns(bms_p[curMS_p]);
 
     // determine the reference frame position
     String observatory;

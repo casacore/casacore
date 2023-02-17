@@ -96,7 +96,7 @@ public:
    
 // Constructor.  <src><F></src> is the type we are coinverting from.
 // <src><T></src> is the type we are converting to.
-   LELConvert (const std::shared_ptr<LELInterface<F>>& expr);
+   LELConvert (const CountedPtr<LELInterface<F> >& expr);
 
 // Destructor does nothing
   ~LELConvert();
@@ -123,7 +123,7 @@ public:
   // </group>
 
 private:
-   std::shared_ptr<LELInterface<F>> pExpr_p;
+   CountedPtr<LELInterface<F> > pExpr_p;
 };
 
 

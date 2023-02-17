@@ -119,7 +119,8 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         std::shared_ptr<std::pair<AccumType, AccumType>> range
             (new std::pair<AccumType, AccumType>(
                 sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
-            ));
+            )
+        );
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
         // _rangeIsSet is set here to prevent infinite
         // recursion on next loop iteration

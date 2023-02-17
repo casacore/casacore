@@ -136,7 +136,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // HDF5 file. The array gets the given name.
     // Optionally the name of an HDF5 group can be given to create the array in.
     // The group is created if not existing yet.
-    HDF5Lattice (const TiledShape& shape, const std::shared_ptr<HDF5File>& file,
+    HDF5Lattice (const TiledShape& shape, const CountedPtr<HDF5File>& file,
 		 const String& arrayName, const String& groupName = String());
 
     // Reconstruct from a pre-existing HDF5Lattice in the HDF5 file and group
@@ -147,7 +147,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     // Reconstruct from a pre-existing HDF5Lattice in the HDF5 file and group
     // with the given name.
-    explicit HDF5Lattice (const std::shared_ptr<HDF5File>& file,
+    explicit HDF5Lattice (const CountedPtr<HDF5File>& file,
 			  const String& arrayName,
 			  const String& groupName = String());
 
@@ -184,16 +184,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual String name (Bool stripPath=False) const;
 
     // Return the current HDF5File object.
-    const std::shared_ptr<HDF5File>& file() const
+    const CountedPtr<HDF5File>& file() const
       { return itsFile; }
 
     // Return the current HDF5Group object.
-    const std::shared_ptr<HDF5Group>& group() const
+    const CountedPtr<HDF5Group>& group() const
       { return itsGroup; }
 
-    // Returns the current HDF5DataSet object
-    const std::shared_ptr<HDF5DataSet>& array() const
-      { return itsDataSet; }
+	// Returns the current HDF5DataSet object
+	const CountedPtr<HDF5DataSet>& array() const
+	{ return itsDataSet; }
 
     // Returns the name of this HDF5Lattice.
     const String& arrayName() const
@@ -261,10 +261,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void checkWritable() const;
 
 
-    std::shared_ptr<HDF5File>    itsFile;
-    std::shared_ptr<HDF5Group>   itsGroup;
-    std::shared_ptr<HDF5DataSet> itsDataSet;
-    IPosition                    itsTileShape;
+    CountedPtr<HDF5File>    itsFile;
+    CountedPtr<HDF5Group>   itsGroup;
+    CountedPtr<HDF5DataSet> itsDataSet;
+    IPosition               itsTileShape;
   };
 
 

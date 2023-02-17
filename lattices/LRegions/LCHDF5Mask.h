@@ -64,9 +64,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The default mask shape is the lattice shape.
     // <group>
     LCHDF5Mask (const TiledShape& latticeShape,
-		const std::shared_ptr<HDF5File>& file, const String& maskName);
+		const CountedPtr<HDF5File>& file, const String& maskName);
     LCHDF5Mask (const TiledShape& maskShape, const LCBox& box,
-		const std::shared_ptr<HDF5File>& file, const String& maskName);
+		const CountedPtr<HDF5File>& file, const String& maskName);
     LCHDF5Mask (HDF5Lattice<Bool>& mask, const LCBox& box);
     // </group>
 

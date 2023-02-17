@@ -29,6 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/Tables/Table.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <map>

@@ -49,6 +49,7 @@
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/Quanta/Unit.h>
+#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>
@@ -63,6 +64,7 @@ FITSImage::FITSImage (const String& name, uInt whichRep, uInt whichHDU)
 : ImageInterface<Float>(),
   name_p      (name),
   fullname_p  (name),
+  pPixelMask_p(0),
   scale_p     (1.0),
   offset_p    (0.0),
   shortMagic_p (0),
@@ -85,6 +87,7 @@ FITSImage::FITSImage (const String& name, const MaskSpecifier& maskSpec, uInt wh
   name_p      (name),
   fullname_p  (name),
   maskSpec_p  (maskSpec),
+  pPixelMask_p(0),
   scale_p     (1.0),
   offset_p    (0.0),
   shortMagic_p (0),
@@ -108,6 +111,7 @@ FITSImage::FITSImage (const FITSImage& other)
   fullname_p  (other.fullname_p),
   maskSpec_p  (other.maskSpec_p),
   pTiledFile_p(other.pTiledFile_p),
+  pPixelMask_p(0),
   shape_p     (other.shape_p),
   scale_p     (other.scale_p),
   offset_p    (other.offset_p),
@@ -124,8 +128,8 @@ FITSImage::FITSImage (const FITSImage& other)
   _hasBeamsTable(other._hasBeamsTable)
 
 {
-   if (other.pPixelMask_p) {
-     pPixelMask_p.reset (other.pPixelMask_p->clone());
+   if (other.pPixelMask_p != 0) {
+      pPixelMask_p = other.pPixelMask_p->clone();
    }
 }
  
@@ -137,11 +141,12 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
    if (this != &other) {
       ImageInterface<Float>::operator= (other);
 //
-      pTiledFile_p = other.pTiledFile_p;             // shared pointer
+      pTiledFile_p = other.pTiledFile_p;             // Counted pointer
 //
-      pPixelMask_p.reset();
-      if (other.pPixelMask_p) {
-        pPixelMask_p.reset (other.pPixelMask_p->clone());
+      delete pPixelMask_p;
+      pPixelMask_p = 0;
+      if (other.pPixelMask_p != 0) {
+	 pPixelMask_p = other.pPixelMask_p->clone();
       }
 //
       shape_p     = other.shape_p;
@@ -167,6 +172,7 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
  
 FITSImage::~FITSImage()
 {
+   delete pPixelMask_p;
 }
 
 
@@ -481,8 +487,10 @@ Lattice<Bool>& FITSImage::pixelMask()
 void FITSImage::tempClose()
 {
    if (! isClosed_p) {
-      pPixelMask_p.reset();
-      pTiledFile_p.reset();
+      delete pPixelMask_p;
+      pPixelMask_p = 0;
+//
+      pTiledFile_p = 0;
       isClosed_p = True;
    }
 }
@@ -667,32 +675,32 @@ void FITSImage::open()
 
 // The tile shape must not be a subchunk in all dimensions
 
-   pTiledFile_p.reset (new TiledFileAccess(name_p, fileOffset_p,
-                                           shape_p.shape(), shape_p.tileShape(),
-                                           dataType_p, TSMOption(),
-                                           writable, canonical));
+   pTiledFile_p = new TiledFileAccess(name_p, fileOffset_p,
+				      shape_p.shape(), shape_p.tileShape(),
+                                      dataType_p, TSMOption(),
+				      writable, canonical);
 
 // Shares the pTiledFile_p pointer. Scale factors for integers
 
    FITSMask* fitsMask=0;
    if (hasBlanks_p) {
       if (dataType_p == TpFloat) {
-         fitsMask = new FITSMask(pTiledFile_p.get());
+         fitsMask = new FITSMask(&(*pTiledFile_p));
       } else if (dataType_p == TpDouble) {
-         fitsMask = new FITSMask(pTiledFile_p.get());
+         fitsMask = new FITSMask(&(*pTiledFile_p));
       } else if (dataType_p == TpUChar) {
-         fitsMask = new FITSMask(pTiledFile_p.get(), scale_p, offset_p, 
+         fitsMask = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
                                  uCharMagic_p, hasBlanks_p);
       } else if (dataType_p == TpShort) {
-         fitsMask = new FITSMask(pTiledFile_p.get(), scale_p, offset_p, 
+         fitsMask = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
                                  shortMagic_p, hasBlanks_p);
       } else if (dataType_p == TpInt) {
-         fitsMask = new FITSMask(pTiledFile_p.get(), scale_p, offset_p, 
+         fitsMask = new FITSMask(&(*pTiledFile_p), scale_p, offset_p, 
                                  longMagic_p, hasBlanks_p);
       }
       if (fitsMask) {
-        pPixelMask_p.reset (fitsMask);
         fitsMask->setFilterZero(filterZeroMask_p);
+        pPixelMask_p = fitsMask;
       }
    }
 
@@ -830,15 +838,15 @@ void FITSImage::getImageAttributes (CoordinateSystem& cSys,
 
 void FITSImage::setMaskZero(Bool filterZero)
 {
-  // set the zero masking on the
-  // current mask
-  if (pPixelMask_p) {
-    dynamic_cast<FITSMask *>(pPixelMask_p.get())->setFilterZero(True);
-  }
-  // set the flag, such that an later
-  // mask created in 'open()' will be OK
-  // as well
-  filterZeroMask_p = filterZero;
+	// set the zero masking on the
+	// current mask
+	if (pPixelMask_p)
+		dynamic_cast<FITSMask *>(pPixelMask_p)->setFilterZero(True);
+
+	// set the flag, such that an later
+	// mask created in 'open()' will be OK
+	// as well
+	filterZeroMask_p = filterZero;
 }
 
 } //# NAMESPACE CASACORE - END

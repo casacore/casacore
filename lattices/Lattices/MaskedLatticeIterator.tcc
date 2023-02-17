@@ -75,8 +75,7 @@ template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
                                  (const RO_MaskedLatticeIterator<T>& other)
 : RO_LatticeIterator<T> (other),
-  itsMaskLattShrPtr (other.itsMaskLattShrPtr),
-  itsMaskLattPtr    (other.itsMaskLattPtr)
+  itsMaskLattPtr (other.itsMaskLattPtr)
 {}
 
 template <class T>
@@ -100,8 +99,7 @@ RO_MaskedLatticeIterator<T>& RO_MaskedLatticeIterator<T>::operator=
 {
   if (this != &other) {
     RO_LatticeIterator<T>::operator= (other);
-    itsMaskLattShrPtr = other.itsMaskLattShrPtr;
-    itsMaskLattPtr    = other.itsMaskLattPtr;
+    itsMaskLattPtr = other.itsMaskLattPtr;
   }
   return *this;
 }
@@ -121,11 +119,9 @@ void RO_MaskedLatticeIterator<T>::fillPtr (const MaskedLattice<T>& mlattice)
   Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
   MaskedLattice<T>* mptr = dynamic_cast<MaskedLattice<T>*>(lptr);
   if (mptr) {
-    itsMaskLattShrPtr.reset();    // no deletion of the pointer
-    itsMaskLattPtr = mptr;
+    itsMaskLattPtr = CountedPtr<MaskedLattice<T> > (mptr, False);
   } else {
-    itsMaskLattShrPtr.reset (mlattice.cloneML());
-    itsMaskLattPtr = itsMaskLattShrPtr.get();
+    itsMaskLattPtr = mlattice.cloneML();
   }
 }
 
@@ -140,7 +136,7 @@ Array<Bool> RO_MaskedLatticeIterator<T>::getMask
 }
 
 template <class T>
-Bool RO_MaskedLatticeIterator<T>::getMask (COWPtr<Array<Bool>>& arr,
+Bool RO_MaskedLatticeIterator<T>::getMask (COWPtr<Array<Bool> >& arr,
 					   Bool removeDegenerateAxes) const
 {
   return itsMaskLattPtr->getMaskSlice (arr, position(), cursorShape(),

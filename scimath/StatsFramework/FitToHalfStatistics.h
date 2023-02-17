@@ -261,7 +261,7 @@ private:
     // This is used for convenience and performance. It should always
     // be the same as the _range value used in the base
     // ConstrainedRangeStatistics object
-    std::shared_ptr<std::pair<AccumType, AccumType>> _range{nullptr};
+    std::shared_ptr<std::pair<AccumType, AccumType>> _range;
 
     // get the min max of the entire (real + virtual) data set. Only
     // used for quantile computation

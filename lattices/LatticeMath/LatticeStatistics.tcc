@@ -872,13 +872,15 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
        os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
-    pStoreLattice_p.reset (new TempLattice<AccumType>(
-        TiledShape(storeLatticeShape,
-        tileShape), useMemory
-    ));
+    pStoreLattice_p.reset(
+        new TempLattice<AccumType>(
+            TiledShape(storeLatticeShape, tileShape), useMemory
+        )
+    );
     // Set up min/max location variables
-    std::shared_ptr<LattStatsProgress> pProgressMeter (showProgress_p
-        ? new LattStatsProgress() : NULL);
+    std::shared_ptr<LattStatsProgress> pProgressMeter(
+        showProgress_p ? new LattStatsProgress() : NULL
+    );
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
@@ -921,7 +923,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
                 outLatt, *pInLattice_p,
                 collapser, IPosition(cursorAxes_p),
                 newOutAxis,
-                !pProgressMeter ? NULL : pProgressMeter.get()
+                pProgressMeter ? pProgressMeter.get() : NULL
             );
             collapser.minMaxPos(minPos_p, maxPos_p);
             ranOldMethod = True;
@@ -1271,8 +1273,8 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
         AccumType qq1 = doRobust_p ? q1[i] : 0;
         AccumType qq3 = doRobust_p ? q3[i] : 0;
         if (! fixedCurMinMax) {
-            currentMin = !stats.min ? 0 : *stats.min;
-            currentMax = !stats.max ? 0 : *stats.max;
+          currentMin = stats.min ? *stats.min : 0;
+          currentMax = stats.max ? *stats.max : 0;
         }
         _fillStorageLattice(
             currentMin, currentMax, mypos, stats, doRobust_p, qq1, qq3
@@ -1367,8 +1369,8 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
         sa->setDataProvider(dataProvider);
         StatsData<AccumType> stats = sa->getStatistics();
         if (! fixedCurMinMax) {
-            currentMin = !stats.min ? 0 : *stats.min;
-            currentMax = !stats.max ? 0 : *stats.max;
+          currentMin = stats.min ? *stats.min : 0;
+          currentMax = stats.max ? *stats.max : 0;
         }
         if (isChauv) {
             ChauvenetCriterionStatistics<AccumType, const T*, const Bool*> *ch

@@ -64,7 +64,7 @@ T Lattice<T>::operator() (const IPosition& where) const
 }
 
 template<class T>
-Bool Lattice<T>::get (COWPtr<Array<T>>& buffer,
+Bool Lattice<T>::get (COWPtr<Array<T> >& buffer,
 		      Bool removeDegenerateAxes) const
 {
   uInt nd = ndim();
@@ -90,7 +90,7 @@ Array<T> Lattice<T>::get (Bool removeDegenerateAxes) const
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (COWPtr<Array<T>>& buffer, const IPosition& start, 
+Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
 			   const IPosition& shape,
 			   Bool removeDegenerateAxes) const
 {
@@ -99,7 +99,7 @@ Bool Lattice<T>::getSlice (COWPtr<Array<T>>& buffer, const IPosition& start,
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (COWPtr<Array<T>>& buffer, const IPosition& start, 
+Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
 			   const IPosition& shape,
 			   const IPosition& stride,
 			   Bool removeDegenerateAxes) const
@@ -109,7 +109,7 @@ Bool Lattice<T>::getSlice (COWPtr<Array<T>>& buffer, const IPosition& start,
 }
 
 template<class T>
-Bool Lattice<T>::getSlice (COWPtr<Array<T>>& buffer,
+Bool Lattice<T>::getSlice (COWPtr<Array<T> >& buffer,
 			   const Slicer& section,
 			   Bool removeDegenerateAxes) const
 {
@@ -117,9 +117,9 @@ Bool Lattice<T>::getSlice (COWPtr<Array<T>>& buffer,
   // This is safe, since the array is copied when needed by COWptr.
   Lattice<T>* This = (Lattice<T>*)this;
   // The COWPtr takes over the pointer to the array.
-  std::unique_ptr<Array<T>> arr(new Array<T>);
+  Array<T>* arr = new Array<T>;
   Bool isARef = This->getSlice (*arr, section, removeDegenerateAxes);
-  buffer = COWPtr<Array<T>> (arr.release(), isARef);
+  buffer = COWPtr<Array<T> > (arr, True, isARef);
   return False;
 }
 

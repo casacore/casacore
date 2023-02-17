@@ -91,7 +91,7 @@ MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep)
 template<class Ms>
 void MeasRef<Ms>::create() {
   if (empty()) {
-    rep_p.reset (new RefRep);
+    rep_p = new RefRep();
   }
 }
 
@@ -114,7 +114,7 @@ Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
 //# Member functions
 template<class Ms>
 Bool MeasRef<Ms>::empty() const {
-  return !rep_p;
+  return rep_p.null();
 }
 
 template<class Ms>

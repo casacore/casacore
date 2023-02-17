@@ -453,8 +453,8 @@ namespace casacore {
         Vector<Int> selectedAnts1;
         Vector<Int> selectedAnts2;
         Matrix<Int> selectedBaselines;
-        std::shared_ptr<MSSelectionErrorHandler> curHandler = MSAntennaParse::thisMSAErrorHandler;
-        MSAntennaParse::thisMSAErrorHandler.reset (new UDFMSCalErrorHandler());
+        CountedPtr<MSSelectionErrorHandler> curHandler = MSAntennaParse::thisMSAErrorHandler;
+        MSAntennaParse::thisMSAErrorHandler = new UDFMSCalErrorHandler();
         try {
           itsDataNode = msAntennaGramParseCommand (anttab, a1, a2, selStr, 
                                                    selectedAnts1, selectedAnts2,
@@ -535,8 +535,8 @@ namespace casacore {
         Vector<Int> selectedFeed1;
         Vector<Int> selectedFeed2;
         Matrix<Int> selectedFeedPairs;
-        std::shared_ptr<MSSelectionErrorHandler> curHandler = MSFeedParse::thisMSFErrorHandler;
-        MSFeedParse::thisMSFErrorHandler.reset (new UDFMSCalErrorHandler());
+        CountedPtr<MSSelectionErrorHandler> curHandler = MSFeedParse::thisMSFErrorHandler;
+        MSFeedParse::thisMSFErrorHandler = new UDFMSCalErrorHandler();
         try {
           itsDataNode = msFeedGramParseCommand (feedtab, f1, f2, selStr, 
                                                 selectedFeed1, selectedFeed2,
@@ -568,8 +568,8 @@ namespace casacore {
       {
         MeasurementSet ms(table);
         Vector<Int> stateid;
-        std::shared_ptr<MSSelectionErrorHandler> curHandler = MSStateParse::thisMSSErrorHandler;
-        MSStateParse::thisMSSErrorHandler.reset (new UDFMSCalErrorHandler());
+        CountedPtr<MSSelectionErrorHandler> curHandler = MSStateParse::thisMSSErrorHandler;
+        MSStateParse::thisMSSErrorHandler = new UDFMSCalErrorHandler();
         try {
           if (msStateGramParseCommand(&ms, selStr, stateid) == 0) {
             itsDataNode = *(msStateGramParseNode());

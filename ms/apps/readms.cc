@@ -573,10 +573,10 @@ void setTSMCacheSize (const Table& tab, const String& columnName,
   }
 }
 
-void readRowsHDF5 (const std::shared_ptr<HDF5DataSet>& hflag,
-                   const std::shared_ptr<HDF5DataSet>& hdata,
-                   const std::shared_ptr<HDF5DataSet>& hfloatdata,
-                   const std::shared_ptr<HDF5DataSet>& hweight,
+void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
+                   const CountedPtr<HDF5DataSet>& hdata,
+                   const CountedPtr<HDF5DataSet>& hfloatdata,
+                   const CountedPtr<HDF5DataSet>& hweight,
                    Int64 row,
                    Int64 nrow)
 {
@@ -631,10 +631,10 @@ void readRowsHDF5 (const std::shared_ptr<HDF5DataSet>& hflag,
   }
 }
 
-void readRowsHDF5 (const std::shared_ptr<HDF5DataSet>& hflag,
-                   const std::shared_ptr<HDF5DataSet>& hdata,
-                   const std::shared_ptr<HDF5DataSet>& hfloatdata,
-                   const std::shared_ptr<HDF5DataSet>& hweight,
+void readRowsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
+                   const CountedPtr<HDF5DataSet>& hdata,
+                   const CountedPtr<HDF5DataSet>& hfloatdata,
+                   const CountedPtr<HDF5DataSet>& hweight,
                    const Slicer& slicer)
 {
   IPosition shp(slicer.length());
@@ -689,10 +689,10 @@ void readRowsHDF5 (const std::shared_ptr<HDF5DataSet>& hflag,
   }
 }
 
-Int64 readStepsHDF5 (const std::shared_ptr<HDF5DataSet>& hflag,
-                     const std::shared_ptr<HDF5DataSet>& hdata,
-                     const std::shared_ptr<HDF5DataSet>& hfloatdata,
-                     const std::shared_ptr<HDF5DataSet>& hweightspectrum,
+Int64 readStepsHDF5 (const CountedPtr<HDF5DataSet>& hflag,
+                     const CountedPtr<HDF5DataSet>& hdata,
+                     const CountedPtr<HDF5DataSet>& hfloatdata,
+                     const CountedPtr<HDF5DataSet>& hweightspectrum,
                      Int64 nrow,
                      Int64& niter)
 {
@@ -744,11 +744,11 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
     HDF5Group hspw(hfile, groupNames[i]);
     // Get the attributes.
     Record attr (HDF5Record::readRecord (hspw, "ATTR"));
-    std::shared_ptr<HDF5DataSet> hdata;
-    std::shared_ptr<HDF5DataSet> hfloatdata;
-    std::shared_ptr<HDF5DataSet> hflag;
-    std::shared_ptr<HDF5DataSet> hweightspectrum;
-    hflag.reset (new HDF5DataSet (hspw, "FLAG", (Bool*)0));
+    CountedPtr<HDF5DataSet> hdata;
+    CountedPtr<HDF5DataSet> hfloatdata;
+    CountedPtr<HDF5DataSet> hflag;
+    CountedPtr<HDF5DataSet> hweightspectrum;
+    hflag = new HDF5DataSet (hspw, "FLAG", (Bool*)0);
     IPosition shape = hflag->shape();
     IPosition tileShape = hflag->tileShape();
     uInt tileSize = 0;
@@ -757,7 +757,7 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
       hflag->setCacheSize (myCacheSizeFlag==0 ? cacheSize:myCacheSizeFlag);
     }
     try {
-      hdata.reset (new HDF5DataSet (hspw, "DATA", (Complex*)0));
+      hdata = new HDF5DataSet (hspw, "DATA", (Complex*)0);
       tileShape = hdata->tileShape();
       if (myReadData) {
         hdata->setCacheSize (myCacheSizeData==0 ? cacheSize:myCacheSizeData);
@@ -769,7 +769,7 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
     }
     if (! myReadData) {
       try {
-        hfloatdata.reset (new HDF5DataSet (hspw, "FLOAT_DATA", (Complex*)0));
+        hfloatdata = new HDF5DataSet (hspw, "FLOAT_DATA", (Complex*)0);
         tileShape = hdata->tileShape();
         if (myReadFloatData) {
           hfloatdata->setCacheSize (myCacheSizeData==0 ? cacheSize:myCacheSizeData);
@@ -780,7 +780,7 @@ std::vector<Int64> doHDF5 (int seqnr, const String& name)
       }
     }
     if (myReadWeightSpectrum) {
-      hweightspectrum.reset (new HDF5DataSet (hspw, "WEIGHT_SPECTRUM", (float*)0));
+      hweightspectrum = new HDF5DataSet (hspw, "WEIGHT_SPECTRUM", (float*)0);
       hweightspectrum->setCacheSize (myCacheSizeWeight==0 ? cacheSize:myCacheSizeWeight);
     }
     // Show some parms for the very first spw.

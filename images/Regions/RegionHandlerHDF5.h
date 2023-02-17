@@ -85,7 +85,7 @@ class RegionHandlerHDF5: public RegionHandler
 {
 public: 
   // The HDF5File object needed for the region operations.
-  typedef const std::shared_ptr<HDF5File>& GetCallback (void* objectPtr);
+  typedef const CountedPtr<HDF5File>& GetCallback (void* objectPtr);
 
   RegionHandlerHDF5 (GetCallback* callback, void* objectPtr);
 
@@ -174,7 +174,7 @@ public:
 
 private:
   // Get the file object.
-  const std::shared_ptr<HDF5File>& file() const
+  const CountedPtr<HDF5File>& file() const
     { return itsCallback (itsObjectPtr); }
 
   // Find field number of the region group to which a region belongs

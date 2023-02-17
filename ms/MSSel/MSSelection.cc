@@ -62,7 +62,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/ms/MeasurementSets/MSColumns.h>
-
+#include <casacore/casa/Utilities/CountedPtr.h>
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
   //----------------------------------------------------------------------------
@@ -495,7 +495,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
       case ANTENNA_EXPR:
 	{
-	  if (! MSAntennaParse::thisMSAErrorHandler)
+	  if (MSAntennaParse::thisMSAErrorHandler.null())
 	    {
 	      MSSelectionErrorHandler tt;
 	      setErrorHandler(ANTENNA_EXPR, &tt, True);
@@ -506,7 +506,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
       case FEED_EXPR:
 	{
-	  if (! MSFeedParse::thisMSFErrorHandler)
+	  if (MSFeedParse::thisMSFErrorHandler.null())
 	    {
 	      MSSelectionErrorHandler tt;
 	      setErrorHandler(FEED_EXPR, &tt, True);
@@ -517,18 +517,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	}
       case STATE_EXPR:
 	{
-	  if (! MSStateParse::thisMSSErrorHandler)
+	  if (MSStateParse::thisMSSErrorHandler.null())
 	    {
 	      MSSelectionErrorHandler tt;
 	      setErrorHandler(STATE_EXPR, &tt, True);
 	    }
-          else
+	   else
 	     MSStateParse::thisMSSErrorHandler->reset();
 	  break;
 	}
       case SPW_EXPR:
 	{
-	  if (! MSSpwParse::thisMSSpwErrorHandler)
+	  if (MSSpwParse::thisMSSpwErrorHandler.null())
 	    {
 	      MSSSpwErrorHandler tt;
 	      setErrorHandler(SPW_EXPR, &tt, True /*overRide*/);
@@ -808,44 +808,44 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       {
       case ANTENNA_EXPR:
 	{
-	  if (overRide  ||  !MSAntennaParse::thisMSAErrorHandler) {
+	  if (overRide  ||  MSAntennaParse::thisMSAErrorHandler.null()) {
             if (mssEH == NULL) {
-              MSAntennaParse::thisMSAErrorHandler.reset(mssEH);
+              MSAntennaParse::thisMSAErrorHandler = mssEH;
             } else {
-              MSAntennaParse::thisMSAErrorHandler.reset(mssEH->clone());
+              MSAntennaParse::thisMSAErrorHandler = mssEH->clone();
 	    }
           }
 	  break;
 	}
       case FEED_EXPR:
 	{
-	  if (overRide  ||  !MSFeedParse::thisMSFErrorHandler) {
+	  if (overRide  ||  MSFeedParse::thisMSFErrorHandler.null()) {
             if (mssEH == NULL) {
-              MSFeedParse::thisMSFErrorHandler.reset(mssEH);
+              MSFeedParse::thisMSFErrorHandler = mssEH;
             } else {
-              MSFeedParse::thisMSFErrorHandler.reset(mssEH->clone());
+              MSFeedParse::thisMSFErrorHandler = mssEH->clone();
 	    }
           }
 	  break;
 	}
       case STATE_EXPR:
 	{
-	  if (overRide  ||  !MSStateParse::thisMSSErrorHandler) {
+	  if (overRide  ||  MSStateParse::thisMSSErrorHandler.null()) {
             if (mssEH == NULL) {
-              MSStateParse::thisMSSErrorHandler.reset(mssEH);
+              MSStateParse::thisMSSErrorHandler = mssEH;
             } else {
-              MSStateParse::thisMSSErrorHandler.reset(mssEH->clone());
+              MSStateParse::thisMSSErrorHandler = mssEH->clone();
 	    }
           }
 	  break;
 	}
       case SPW_EXPR:
 	{
-	  if (overRide  ||  !MSSpwParse::thisMSSpwErrorHandler) {
+	  if (overRide  ||  MSSpwParse::thisMSSpwErrorHandler.null()) {
             if (mssEH == NULL) {
-              MSSpwParse::thisMSSpwErrorHandler.reset(mssEH);
+              MSSpwParse::thisMSSpwErrorHandler = mssEH;
             } else {
-              MSSpwParse::thisMSSpwErrorHandler.reset(mssEH->clone());
+              MSSpwParse::thisMSSpwErrorHandler = mssEH->clone();
 	    }
           }
 	  break;
