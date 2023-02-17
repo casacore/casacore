@@ -46,7 +46,7 @@ TableMeasColumn::TableMeasColumn (const Table& tab,
 : itsNvals      (0),
   itsTabDataCol (tab, columnName)
 {
-  itsDescPtr = TableMeasDescBase::reconstruct (tab, columnName);
+  itsDescPtr.reset (TableMeasDescBase::reconstruct (tab, columnName));
   itsVarRefFlag = itsDescPtr->isRefCodeVariable();
   itsVarOffFlag = itsDescPtr->isOffsetVariable();
 }
