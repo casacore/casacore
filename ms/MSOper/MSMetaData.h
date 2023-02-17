@@ -491,19 +491,6 @@ public:
     // get a map of the spwIDs to spw names from the spw table
     vector<String> getSpwNames() const;
 
-    // ALMA specific CAS-13973 get receiver bands for each spw
-    // values of -1 indicate no info found for those spws.
-    // <group>
-    vector<int> getSpwReceiverBands() const;
-
-    std::shared_ptr<vector<int>> _almaReceiverBands(uint nspw) const;
-    //</group>
-
-    // ALMA specific CAS-13973 get subwindows for each spw
-    // values of -1 indicate no info found for those spws.
-    vector<int> getSpwSubwindows() const;
-
-
     // get all the spws associated with the data description IDs listed in the main table.
     // This will not correspond to a list of the row numbers in the SPECTRAL_WINDOW table
     // if there are data description IDs that are not in the main table.
@@ -679,6 +666,37 @@ public:
     // values are in seconds. All values in this column are used in the computation,
     // including those which associated row flags may be set. 
     ColumnStats getIntervalStatistics() const;
+
+    // ALMA specific CAS-13973 get receiver bands for each spw
+    // values of -1 indicate no info found for those spws.
+    vector<int> getSpwReceiverBands() const;
+
+    // ALMA specific CAS-13973 get subwindows for each spw
+    // values of -1 indicate no info found for those spws.
+    // The SPW subwindow name is established by the ALMA Observing
+    // Tool and is recorded in each project's scheduling blocks.
+    // Here is an example for one spw whose subwindow name is
+    // "SW-1", as indicated by the name field. Currently, these
+    // values can range up to "SW-4", as a maximumn of 4 spws per
+    // baseband are currently offered on the ALMA correlators.
+    // 
+    // <sbl:ACASpectralWindow sideBand="LSB"
+    // windowFunction="HANNING" polnProducts="XX,YY" synthProf="ACA_CDP">
+    // <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+    // <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+    // <sbl:name>SW-1</sbl:name>
+    // <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+    // <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+    // <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+    // <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+    // <sbl:representativeWindow>false</sbl:representativeWindow>
+    // <sbl:frqChProfReproduction>true</sbl:frqChProfReproduction>
+    // <sbl:ChannelAverageRegion>
+    // <sbl:startChannel>6</sbl:startChannel>
+    // <sbl:numberChannels>115</sbl:numberChannels>
+    // </sbl:ChannelAverageRegion>
+    // </sbl:ACASpectralWindow> 
+    vector<int> getSpwSubwindows() const;
 
 private:
 
@@ -1164,6 +1182,8 @@ private:
     template <class T> std::shared_ptr<Vector<T> > _getMainScalarColumn(
         MSMainEnums::PredefinedColumns col
     ) const;
+
+    std::shared_ptr<vector<int>> _almaReceiverBands(uint nspw) const;
 
 };
 
