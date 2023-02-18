@@ -191,10 +191,7 @@ LatticeStatistics<T> &LatticeStatistics<T>::operator=(const LatticeStatistics<T>
       pInLattice_p = _inLatPtrMgr.get();
 // Delete storage lattice 
 
-      if (! pStoreLattice_p.null()) {
-        // delete pStoreLattice_p;
-         pStoreLattice_p = 0;
-      }
+      pStoreLattice_p.reset();
 
       needStorageLattice_p = True;
 // Do the rest
@@ -875,13 +872,15 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
        os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
-    pStoreLattice_p = new TempLattice<AccumType>(
-        TiledShape(storeLatticeShape,
-        tileShape), useMemory
+    pStoreLattice_p.reset(
+        new TempLattice<AccumType>(
+            TiledShape(storeLatticeShape, tileShape), useMemory
+        )
     );
     // Set up min/max location variables
-    CountedPtr<LattStatsProgress> pProgressMeter = showProgress_p
-        ? new LattStatsProgress() : NULL;
+    std::shared_ptr<LattStatsProgress> pProgressMeter(
+        showProgress_p ? new LattStatsProgress() : NULL
+    );
     Double timeOld = 0;
     Double timeNew = 0;
     uInt nsets = pStoreLattice_p->size()/storeLatticeShape.getLast(1)[0];
@@ -924,7 +923,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
                 outLatt, *pInLattice_p,
                 collapser, IPosition(cursorAxes_p),
                 newOutAxis,
-                pProgressMeter.null() ? NULL : &*pProgressMeter
+                pProgressMeter ? pProgressMeter.get() : NULL
             );
             collapser.minMaxPos(minPos_p, maxPos_p);
             ranOldMethod = True;
@@ -960,7 +959,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
 
 template <class T>
 void LatticeStatistics<T>::_doStatsLoop(
-    uInt nsets, CountedPtr<LattStatsProgress> progressMeter
+    uInt nsets, std::shared_ptr<LattStatsProgress> progressMeter
 ) {
     maxPos_p.resize(0);
     minPos_p.resize(0);
@@ -1076,7 +1075,7 @@ IPosition LatticeStatistics<T>::_cursorShapeForArrayMethod(uInt64 setSize) const
 
 template <class T>
 void LatticeStatistics<T>::_computeStatsUsingArrays(
-    CountedPtr<LattStatsProgress> progressMeter,
+    std::shared_ptr<LattStatsProgress> progressMeter,
     const IPosition& cursorShape
 ) {
     T overallMax = 0;
@@ -1091,7 +1090,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     > saf2;
     _saf.copy(saf2);
     std::vector<
-        CountedPtr<
+        std::shared_ptr<
             StatisticsAlgorithm<
                 AccumType, typename Array<T>::const_iterator,
                 Array<Bool>::const_iterator
@@ -1101,14 +1100,14 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     for (uInt i=0; i<nSA; ++i) {
         sa[i] = saf2.createStatsAlgorithm();
     }
-    CountedPtr<DataRanges> range;
+    std::shared_ptr<DataRanges> range;
     if (! noInclude_p || ! noExclude_p) {
         range.reset(new DataRanges());
         range->push_back(std::pair<T, T>(range_p[0], range_p[1]));
     }
     const Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
-    std::vector<Array<T> > dataArray;
-    std::vector<Array<Bool> > maskArray;
+    std::vector<Array<T>> dataArray;
+    std::vector<Array<Bool>> maskArray;
     std::vector<IPosition> curPos;
     Bool isMasked = pInLattice_p->isMasked();
     IPosition latShape = pInLattice_p->shape();
@@ -1129,7 +1128,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     for (uInt i=0; i<ndim; ++i) {
         nIter *= ceil((Float)latShape[i]/(Float)cursorShape[i]);
     }
-    if (! progressMeter.null()) {
+    if (progressMeter) {
         progressMeter->init(nIter);
     }
     RO_MaskedLatticeIterator<T> latIter(*pInLattice_p, myStepper);
@@ -1183,7 +1182,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
             maskArray, curPos, nthreads,
             isChauv, isMasked, isReal, range
         );
-        if(! progressMeter.null()) {
+        if (progressMeter) {
             (*progressMeter)++;
         }
     }
@@ -1192,27 +1191,27 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
 template <class T>
 void LatticeStatistics<T>::_doComputationUsingArrays(
     std::vector<
-        CountedPtr<
+        std::shared_ptr<
             StatisticsAlgorithm<
                 AccumType, typename Array<T>::const_iterator,
                 Array<Bool>::const_iterator
             >
         >
     >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
-    std::vector<Array<T> >& dataArray,
-    std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
+    std::vector<Array<T>>& dataArray,
+    std::vector<Array<Bool>>& maskArray, std::vector<IPosition>& curPos,
     uInt
 #ifdef _OPENMP
          nthreads
 #endif
                  , Bool isChauv,
-    Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
+    Bool isMasked, Bool isReal, std::shared_ptr<const DataRanges> range
 ) {
     uInt nArrays = dataArray.size();
     Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
     T currentMin = fixedCurMinMax ? range_p[0] : 0;
     T currentMax = fixedCurMinMax ? range_p[1] : 0;
-    std::vector<StatsData<AccumType> > statsArray(nArrays);
+    std::vector<StatsData<AccumType>> statsArray(nArrays);
     std::vector<AccumType> q1(doRobust_p ? nArrays : 0);
     std::vector<AccumType> q3(doRobust_p ? nArrays : 0);
     std::vector<uInt> chauvIterArray(isChauv ? nArrays : 0);
@@ -1274,8 +1273,8 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
         AccumType qq1 = doRobust_p ? q1[i] : 0;
         AccumType qq3 = doRobust_p ? q3[i] : 0;
         if (! fixedCurMinMax) {
-            currentMin = stats.min.null() ? 0 : *stats.min;
-            currentMax = stats.max.null() ? 0 : *stats.max;
+          currentMin = stats.min ? *stats.min : 0;
+          currentMax = stats.max ? *stats.max : 0;
         }
         _fillStorageLattice(
             currentMin, currentMax, mypos, stats, doRobust_p, qq1, qq3
@@ -1312,7 +1311,7 @@ void LatticeStatistics<T>::_doComputationUsingArrays(
 template <class T>
 void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
-    CountedPtr<LattStatsProgress> progressMeter, uInt nsets
+    std::shared_ptr<LattStatsProgress> progressMeter, uInt nsets
 ) {
     Bool fixedCurMinMax = (fixedMinMax_p && ! noInclude_p);
     T currentMin = fixedCurMinMax ? range_p[0] : 0;
@@ -1326,7 +1325,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
     LatticeStatsDataProviderBase<T> *dataProvider;
     _configureDataProviders(lattDP, maskedLattDP);
     Bool nsetsIsLarge = nsets > 50;
-    if (! progressMeter.null()) {
+    if (progressMeter) {
         if (nsetsIsLarge) {
             progressMeter->init(nsets);
         }
@@ -1337,7 +1336,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             }
         }
     }
-    CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > sa
+    std::shared_ptr<StatisticsAlgorithm<AccumType, const T*, const Bool*>> sa
         = _saf.createStatsAlgorithm();
     Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
     AccumType q1, q3;
@@ -1356,7 +1355,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             dataProvider = &lattDP;
         }
         if (
-            stepper.atStart() && ! progressMeter.null()
+            stepper.atStart() && progressMeter
             && ! nsetsIsLarge
         ) {
             // if _doRobust_p = True, one scan for accumulated stats
@@ -1370,8 +1369,8 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
         sa->setDataProvider(dataProvider);
         StatsData<AccumType> stats = sa->getStatistics();
         if (! fixedCurMinMax) {
-            currentMin = stats.min.null() ? 0 : *stats.min;
-            currentMax = stats.max.null() ? 0 : *stats.max;
+          currentMin = stats.min ? *stats.min : 0;
+          currentMax = stats.max ? *stats.max : 0;
         }
         if (isChauv) {
             ChauvenetCriterionStatistics<AccumType, const T*, const Bool*> *ch
@@ -1407,7 +1406,7 @@ void LatticeStatistics<T>::_computeStatsUsingLattDataProviders(
             );
         }
         _fillStorageLattice(currentMin, currentMax, curPos, stats, doRobust_p, q1, q3);
-        if(! progressMeter.null() && nsetsIsLarge) {
+        if(progressMeter && nsetsIsLarge) {
             (*progressMeter)++;
         }
     }
@@ -1508,7 +1507,7 @@ void LatticeStatistics<T>::generateRobust () {
     IPosition axisPath = cursorAxes_p;
     axisPath.append(displayAxes_p);
     LatticeStepper stepper(latticeShape, cursorShape, axisPath);
-    CountedPtr<StatisticsAlgorithm<AccumType, const T*, const Bool*> > sa;
+    std::shared_ptr<StatisticsAlgorithm<AccumType, const T*, const Bool*>> sa;
     LatticeStatsDataProvider<T> lattDP;
     MaskedLatticeStatsDataProvider<T> maskedLattDP;
     IPosition curPos, pos, pos2, pos3, posQ1, posQ3,
@@ -1572,7 +1571,7 @@ template <class T>
 template <class U, class V>
 void LatticeStatistics<T>::_computeQuantiles(
     AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
-    CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg,
+    std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg,
     uInt64 knownNpts, AccumType knownMin, AccumType knownMax
 ) const {
     static const std::set<Double> fracs = quartileFracs();
@@ -1584,9 +1583,9 @@ void LatticeStatistics<T>::_computeQuantiles(
     // computing the median and the quartiles simultaneously minimizes
     // the number of necessary data scans, as opposed to first calling
     // getMedian() and getQuartiles() separately
-    CountedPtr<uInt64> npts(new uInt64(knownNpts));
-    CountedPtr<AccumType> mymin(new AccumType(knownMin));
-    CountedPtr<AccumType> mymax(new AccumType(knownMax));
+    std::shared_ptr<uInt64> npts(new uInt64(knownNpts));
+    std::shared_ptr<AccumType> mymin(new AccumType(knownMin));
+    std::shared_ptr<AccumType> mymax(new AccumType(knownMax));
     median = statsAlg->getMedianAndQuantiles(
         quantiles, fracs, npts, mymin, mymax,
         maxArraySizeBytes, False, nBins
@@ -1602,7 +1601,7 @@ template <class T>
 template <class U, class V>
       void LatticeStatistics<T>::_computeQuantilesForStatsFramework(
       StatsData<AccumType>& stats, AccumType& q1, AccumType& q3,
-      CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg
+      std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg
 ) const {
     if (stats.npts > 0) {
         AccumType median, medAbsDevMed;

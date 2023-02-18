@@ -36,8 +36,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Constructors
 template <class T>
 FunctionWrapper<T>::FunctionWrapper() :
-  WrapperParam<T>(0),
-  doit_p(0) {}
+  WrapperParam<T>(0)
+  {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&), const Bool) : 
