@@ -88,7 +88,7 @@ using namespace std;
 // Define the type for the map of name to (resulttable,command).
 typedef map<String, pair<Table,String> > TableMap;
 
-// Define Deleter objects for a unique_ptr<ostream>
+// Define Deleter objects for a shared_ptr<ostream>
 // cout and cerr should not be deleted.
 class Deleter
 {

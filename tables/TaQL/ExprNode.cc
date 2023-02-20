@@ -60,180 +60,180 @@ TableExprNode::TableExprNode() : node_p(0)
 //# These objects are created as temporaries by the compiler.
 TableExprNode::TableExprNode (const Bool& val)
 {
-    node_p.reset (new TableExprNodeConstBool (val));
+    node_p = std::make_shared<TableExprNodeConstBool>(val);
 }
 TableExprNode::TableExprNode (const Int& val)
 {
-    node_p.reset (new TableExprNodeConstInt (val));
+    node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
 TableExprNode::TableExprNode (const uInt& val)
 {
-    node_p.reset (new TableExprNodeConstInt (val));
+    node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
 TableExprNode::TableExprNode (const Int64& val)
 {
-    node_p.reset (new TableExprNodeConstInt (val));
+    node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
 TableExprNode::TableExprNode (const uInt64& val)
 {
-    node_p.reset (new TableExprNodeConstInt (val));
+    node_p = std::make_shared<TableExprNodeConstInt>(val);
 }
 TableExprNode::TableExprNode (const Float& val)
 {
-    node_p.reset (new TableExprNodeConstDouble (Double (val)));
+    node_p = std::make_shared<TableExprNodeConstDouble>(Double(val));
 }
 TableExprNode::TableExprNode (const Double& val)
 {
-    node_p.reset (new TableExprNodeConstDouble (val));
+    node_p = std::make_shared<TableExprNodeConstDouble>(val);
 }
 TableExprNode::TableExprNode (const Complex& val)
 {
-    node_p.reset (new TableExprNodeConstDComplex (DComplex(val)));
+    node_p = std::make_shared<TableExprNodeConstDComplex>(DComplex(val));
 }
 TableExprNode::TableExprNode (const DComplex& val)
 {
-    node_p.reset (new TableExprNodeConstDComplex (val));
+    node_p = std::make_shared<TableExprNodeConstDComplex>(val);
 }
 TableExprNode::TableExprNode (const String& val)
 {
-    node_p.reset (new TableExprNodeConstString (val));
+    node_p = std::make_shared<TableExprNodeConstString>(val);
 }
 TableExprNode::TableExprNode (const std::string& val)
 {
-    node_p.reset (new TableExprNodeConstString (String(val)));
+    node_p = std::make_shared<TableExprNodeConstString>(String(val));
 }
 TableExprNode::TableExprNode (const char* val)
 {
-    node_p.reset (new TableExprNodeConstString (String(val)));
+    node_p = std::make_shared<TableExprNodeConstString>(String(val));
 }
 TableExprNode::TableExprNode (const Regex& val)
 {
-    node_p.reset (new TableExprNodeConstRegex (TaqlRegex(val)));
+    node_p = std::make_shared<TableExprNodeConstRegex>(TaqlRegex(val));
 }
 TableExprNode::TableExprNode (const StringDistance& val)
 {
-    node_p.reset (new TableExprNodeConstRegex (TaqlRegex(val)));
+    node_p = std::make_shared<TableExprNodeConstRegex>(TaqlRegex(val));
 }
 TableExprNode::TableExprNode (const TaqlRegex& val)
 {
-    node_p.reset (new TableExprNodeConstRegex (val));
+    node_p = std::make_shared<TableExprNodeConstRegex>(val);
 }
 TableExprNode::TableExprNode (const MVTime& val)
 {
-    node_p.reset (new TableExprNodeConstDate (val));
+    node_p = std::make_shared<TableExprNodeConstDate>(val);
 }
 TableExprNode::TableExprNode (const Array<Bool>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstBool (val));
+    node_p = std::make_shared<TableExprNodeArrayConstBool>(val);
 }
 TableExprNode::TableExprNode (const Array<uChar>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<Short>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<uShort>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<Int>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<uInt>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<Int64>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<uInt64>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const Array<Float>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDouble (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDouble>(val);
 }
 TableExprNode::TableExprNode (const Array<Double>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDouble (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDouble>(val);
 }
 TableExprNode::TableExprNode (const Array<Complex>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDComplex (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDComplex>(val);
 }
 TableExprNode::TableExprNode (const Array<DComplex>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDComplex (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDComplex>(val);
 }
 TableExprNode::TableExprNode (const Array<String>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstString (val));
+    node_p = std::make_shared<TableExprNodeArrayConstString>(val);
 }
 TableExprNode::TableExprNode (const Array<MVTime>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDate (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDate>(val);
 }
 
 TableExprNode::TableExprNode (const MArray<Bool>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstBool (val));
+    node_p = std::make_shared<TableExprNodeArrayConstBool>(val);
 }
 TableExprNode::TableExprNode (const MArray<uChar>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<Short>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<uShort>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<Int>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<uInt>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<Int64>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<uInt64>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstInt (val));
+    node_p = std::make_shared<TableExprNodeArrayConstInt>(val);
 }
 TableExprNode::TableExprNode (const MArray<Float>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDouble (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDouble>(val);
 }
 TableExprNode::TableExprNode (const MArray<Double>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDouble (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDouble>(val);
 }
 TableExprNode::TableExprNode (const MArray<Complex>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDComplex (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDComplex>(val);
 }
 TableExprNode::TableExprNode (const MArray<DComplex>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDComplex (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDComplex>(val);
 }
 TableExprNode::TableExprNode (const MArray<String>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstString (val));
+    node_p = std::make_shared<TableExprNodeArrayConstString>(val);
 }
 TableExprNode::TableExprNode (const MArray<MVTime>& val)
 {
-    node_p.reset (new TableExprNodeArrayConstDate (val));
+    node_p = std::make_shared<TableExprNodeArrayConstDate>(val);
 }
 
 TableExprNode::TableExprNode (const TENShPtr& node)
@@ -1054,40 +1054,40 @@ TableExprNode TableExprNode::newColumnNode (const TableExprInfo& tableInfo,
     if (coldes.isArray()) {
         switch(coldes.dataType()) {
         case TpBool:
-            tsnptr.reset (new TableExprNodeArrayColumnBool (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnBool>(col, tableInfo);
             break;
         case TpUChar:
-            tsnptr.reset (new TableExprNodeArrayColumnuChar (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnuChar>(col, tableInfo);
             break;
         case TpShort:
-            tsnptr.reset (new TableExprNodeArrayColumnShort(col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnShort>(col, tableInfo);
             break;
         case TpUShort:
-            tsnptr.reset (new TableExprNodeArrayColumnuShort (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnuShort>(col, tableInfo);
             break;
         case TpInt:
-            tsnptr.reset (new TableExprNodeArrayColumnInt (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnInt>(col, tableInfo);
             break;
         case TpUInt:
-            tsnptr.reset (new TableExprNodeArrayColumnuInt (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnuInt>(col, tableInfo);
             break;
         case TpInt64:
-            tsnptr.reset (new TableExprNodeArrayColumnInt64 (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnInt64>(col, tableInfo);
             break;
         case TpFloat:
-            tsnptr.reset (new TableExprNodeArrayColumnFloat (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnFloat>(col, tableInfo);
             break;
         case TpDouble:
-            tsnptr.reset (new TableExprNodeArrayColumnDouble (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnDouble>(col, tableInfo);
             break;
         case TpComplex:
-            tsnptr.reset (new TableExprNodeArrayColumnComplex (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnComplex>(col, tableInfo);
             break;
         case TpDComplex:
-            tsnptr.reset (new TableExprNodeArrayColumnDComplex (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnDComplex>(col, tableInfo);
             break;
         case TpString:
-            tsnptr.reset (new TableExprNodeArrayColumnString (col, tableInfo));
+            tsnptr = std::make_shared<TableExprNodeArrayColumnString>(col, tableInfo);
             break;
         default:
             throw (TableInvExpr (name, "unknown data type"));
@@ -1101,7 +1101,7 @@ TableExprNode TableExprNode::newColumnNode (const TableExprInfo& tableInfo,
             throw (TableInvExpr ("Sorry, column " + name + " contains records, "
                                  "which is not supported yet"));
         }
-        tsnptr.reset (new TableExprNodeColumn (tableInfo, name));
+        tsnptr = std::make_shared<TableExprNodeColumn>(tableInfo, name);
     } else {
         throw (TableInvExpr (name, " must be a Scalar or Array column"));
     }
@@ -1152,18 +1152,18 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     }
     switch (ks->dataType (fieldnr)) {
     case TpBool:
-        tsnptr.reset (new TableExprNodeConstBool (ks->asBool (name)));
+        tsnptr = std::make_shared<TableExprNodeConstBool>(ks->asBool (name));
         break;
     case TpString:
-        tsnptr.reset (new TableExprNodeConstString (ks->asString (name)));
+        tsnptr = std::make_shared<TableExprNodeConstString>(ks->asString (name));
         break;
     case TpComplex:
     case TpDComplex:
-        tsnptr.reset (new TableExprNodeConstDComplex (ks->asDComplex (name)));
+        tsnptr = std::make_shared<TableExprNodeConstDComplex>(ks->asDComplex (name));
         break;
     case TpFloat:
     case TpDouble:
-        tsnptr.reset (new TableExprNodeConstDouble (ks->asDouble (name)));
+        tsnptr = std::make_shared<TableExprNodeConstDouble>(ks->asDouble (name));
         break;
     case TpChar:
     case TpUChar:
@@ -1172,50 +1172,50 @@ TableExprNode TableExprNode::newKeyConst (const TableRecord& keyset,
     case TpInt:
     case TpUInt:
     case TpInt64:
-        tsnptr.reset (new TableExprNodeConstInt (ks->asInt64 (name)));
+        tsnptr = std::make_shared<TableExprNodeConstInt>(ks->asInt64 (name));
         break;
     case TpArrayBool:
-        tsnptr.reset (new TableExprNodeArrayConstBool (ks->asArrayBool (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstBool>(ks->asArrayBool (name));
         break;
     case TpArrayString:
-        tsnptr.reset (new TableExprNodeArrayConstString
-                                               (ks->asArrayString (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstString>
+                                               (ks->asArrayString (name));
         break;
     case TpArrayComplex:
-        tsnptr.reset (new TableExprNodeArrayConstDComplex
-                                               (ks->asArrayComplex (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstDComplex>
+                                               (ks->asArrayComplex (name));
         break;
     case TpArrayDComplex:
-        tsnptr.reset (new TableExprNodeArrayConstDComplex
-                                               (ks->asArrayDComplex (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstDComplex>
+                                               (ks->asArrayDComplex (name));
         break;
     case TpArrayUChar:
-        tsnptr.reset (new TableExprNodeArrayConstInt
-                                               (ks->asArrayuChar (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>
+                                               (ks->asArrayuChar (name));
         break;
     case TpArrayShort:
-        tsnptr.reset (new TableExprNodeArrayConstInt
-                                               (ks->asArrayShort (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>
+                                               (ks->asArrayShort (name));
         break;
     case TpArrayInt:
-        tsnptr.reset (new TableExprNodeArrayConstInt
-                                               (ks->asArrayInt (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>
+                                               (ks->asArrayInt (name));
         break;
     case TpArrayUInt:
-        tsnptr.reset (new TableExprNodeArrayConstInt
-                                               (ks->asArrayuInt (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>
+                                               (ks->asArrayuInt (name));
         break;
     case TpArrayInt64:
-        tsnptr.reset (new TableExprNodeArrayConstInt
-                                               (ks->asArrayInt64 (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstInt>
+                                               (ks->asArrayInt64 (name));
         break;
     case TpArrayFloat:
-        tsnptr.reset (new TableExprNodeArrayConstDouble
-                                               (ks->asArrayFloat (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstDouble>
+                                               (ks->asArrayFloat (name));
         break;
     case TpArrayDouble:
-        tsnptr.reset (new TableExprNodeArrayConstDouble
-                                               (ks->asArrayDouble (name)));
+        tsnptr = std::make_shared<TableExprNodeArrayConstDouble>
+                                               (ks->asArrayDouble (name));
         break;
     case TpRecord:
         throw (TableInvExpr ("Keyword " + fullName + " contains records, "
@@ -1351,19 +1351,19 @@ TableExprNode TableExprNode::newFunctionNode
       resDT = TableExprAggrNode::checkOperands (dtypeOper, resVT, ftype, par);
       // Create new aggregate function node and fill it.
       if (resVT == TableExprNodeRep::VTScalar) {
-        fnode.reset (new TableExprAggrNode (ftype, resDT, resVT, set,
-                                            par, dtypeOper));
+        fnode = std::make_shared<TableExprAggrNode>(ftype, resDT, resVT, set,
+                                                    par, dtypeOper);
       } else {
-        fnode.reset (new TableExprAggrNodeArray (ftype, resDT, resVT, set,
-                                                 par, dtypeOper, style));
+        fnode = std::make_shared<TableExprAggrNodeArray>(ftype, resDT, resVT, set,
+                                                         par, dtypeOper, style);
       }
     } else {
       resDT = TableExprFuncNode::checkOperands (dtypeOper, resVT, vtypeOper,
                                                 ftype, par);
       if (resVT == TableExprNodeRep::VTScalar) {
-        TableExprFuncNode* node = new TableExprFuncNode (ftype, resDT, resVT, set,
-                                                         par, dtypeOper, tabInfo);
-        fnode.reset (node);
+        auto node = std::make_shared<TableExprFuncNode>(ftype, resDT, resVT, set,
+                                                        par, dtypeOper, tabInfo);
+        fnode = node;
         // If the condition of IIF is a constant scalar, evaluate and replace.
         // Do it only if the data type matches.
         // Take the operands from the function node created,
@@ -1383,8 +1383,8 @@ TableExprNode TableExprNode::newFunctionNode
           }
         }
       } else {
-        fnode.reset (new TableExprFuncNodeArray (ftype, resDT, resVT, set,
-                                                 par, dtypeOper, style));
+        fnode = std::make_shared<TableExprFuncNodeArray>(ftype, resDT, resVT, set,
+                                                         par, dtypeOper, style);
       }
     }
     return TableExprNodeRep::replaceConstNode (fnode);
@@ -1463,11 +1463,11 @@ TableExprNode TableExprNode::newConeNode
     // Create new function node and fill it.
     TENShPtr fnode;
     if (resVT == TableExprNodeRep::VTScalar) {
-      fnode.reset (new TableExprConeNode (ftype, resDT, set,
-                                          par, dtypeOper, origin));
+      fnode = std::make_shared<TableExprConeNode>(ftype, resDT, set,
+                                                  par, dtypeOper, origin);
     } else {
-      fnode.reset (new TableExprConeNodeArray (ftype, resDT, set,
-                                               par, dtypeOper, origin));
+      fnode = std::make_shared<TableExprConeNodeArray>(ftype, resDT, set,
+                                                       par, dtypeOper, origin);
     }
     return TableExprNodeRep::replaceConstNode (fnode);
 }

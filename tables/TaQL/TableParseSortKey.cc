@@ -76,156 +76,144 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     switch (node_p.getColumnDataType()) {
     case TpBool:
       {
-        Array<Bool>* array = new Array<Bool>
-          (node_p.getColumnBool(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Bool>>(node_p.getColumnBool(rownrs));
+        arrPtr = array;
         Bool* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Bool> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Bool>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpBool, 0, order);
       }
       break;
     case TpUChar:
       {
-        Array<uChar>* array = new Array<uChar>
-          (node_p.getColumnuChar(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<uChar>>(node_p.getColumnuChar(rownrs));
+        arrPtr = array;
         uChar* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<uChar> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<uChar>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpUChar, 0, order);
       }
       break;
     case TpShort:
       {
-        Array<Short>* array = new Array<Short>
-          (node_p.getColumnShort(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Short>>(node_p.getColumnShort(rownrs));
+        arrPtr = array;
         Short* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Short> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Short>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpShort, 0, order);
       }
       break;
     case TpUShort:
       {
-        Array<uShort>* array = new Array<uShort>
-          (node_p.getColumnuShort(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<uShort>>(node_p.getColumnuShort(rownrs));
+        arrPtr = array;
         uShort* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<uShort> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<uShort>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpUShort, 0, order);
       }
       break;
     case TpInt:
       {
-        Array<Int>* array = new Array<Int>
-          (node_p.getColumnInt(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Int>>(node_p.getColumnInt(rownrs));
+        arrPtr = array;
         Int* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Int> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Int>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpInt, 0, order);
       }
       break;
     case TpUInt:
       {
-        Array<uInt>* array = new Array<uInt>
-          (node_p.getColumnuInt(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<uInt>>(node_p.getColumnuInt(rownrs));
+        arrPtr = array;
         uInt* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<uInt> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<uInt>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpUInt, 0, order);
       }
       break;
     case TpInt64:
       {
-        Array<Int64>* array = new Array<Int64>
-          (node_p.getColumnInt64(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Int64>>(node_p.getColumnInt64(rownrs));
+        arrPtr = array;
         Int64* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Int64> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Int64>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpInt64, 0, order);
       }
       break;
     case TpFloat:
       {
-        Array<Float>* array = new Array<Float>
-          (node_p.getColumnFloat(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Float>>(node_p.getColumnFloat(rownrs));
+        arrPtr = array;
         Float* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Float> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Float>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpFloat, 0, order);
       }
       break;
     case TpDouble:
       {
-        Array<Double>* array = new Array<Double>
-          (node_p.getColumnDouble(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Double>>(node_p.getColumnDouble(rownrs));
+        arrPtr = array;
         Double* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Double> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Double>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpDouble, 0, order);
       }
       break;
     case TpComplex:
       {
-        Array<Complex>* array = new Array<Complex>
-          (node_p.getColumnComplex(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<Complex>>(node_p.getColumnComplex(rownrs));
+        arrPtr = array;
         Complex* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<Complex> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<Complex>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpComplex, 0, order);
       }
       break;
     case TpDComplex:
       {
-        Array<DComplex>* array = new Array<DComplex>
-          (node_p.getColumnDComplex(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<DComplex>>(node_p.getColumnDComplex(rownrs));
+        arrPtr = array;
         DComplex* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<DComplex> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<DComplex>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpDComplex, 0, order);
       }
       break;
     case TpString:
       {
-        Array<String>* array = new Array<String>
-          (node_p.getColumnString(rownrs));
-        arrPtr.reset (array);
+        auto array = std::make_shared<Array<String>>(node_p.getColumnString(rownrs));
+        arrPtr = array;
         String* data = array->getStorage (deleteIt);
         if (deleteIt) {
           // A copy has been made, so replace the array.
-          arrPtr.reset (new Array<String> (array->shape(), data, TAKE_OVER));
+          arrPtr = std::make_shared<Array<String>>(array->shape(), data, TAKE_OVER);
         }
         sort.sortKey (data, TpString, 0, order);
       }

@@ -54,8 +54,8 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
     uInt n = indices.size();
     itsElems.resize (n);
     for (uInt i=0; i<n; i++) {
-      itsElems[i].reset (new TableExprNodeSetElemSingle
-                         (TableExprNode (Int64(indices(i)))));
+      itsElems[i] = std::make_shared<TableExprNodeSetElemSingle>
+                         (TableExprNode (Int64(indices(i))));
     }
 }
 
@@ -78,7 +78,7 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
           end = TableExprNode (Int64(indices.end()(i)));
         }
         TableExprNode incr (Int64(indices.stride()(i)));
-        itsElems[i].reset (new TableExprNodeSetElemDiscrete (start, end, incr));
+        itsElems[i] = std::make_shared<TableExprNodeSetElemDiscrete>(start, end, incr);
     }
 }
 
@@ -296,22 +296,22 @@ TENShPtr TableExprNodeSet::toConstArray() const
     TENShPtr tsnptr;
     switch (dataType()) {
     case NTBool:
-      tsnptr.reset (new TableExprNodeArrayConstBool (toArray<Bool>(0)));
+      tsnptr = std::make_shared<TableExprNodeArrayConstBool>(toArray<Bool>(0));
       break;
     case NTInt:
-      tsnptr.reset (new TableExprNodeArrayConstInt (toArray<Int64>(0)));
+      tsnptr = std::make_shared<TableExprNodeArrayConstInt>(toArray<Int64>(0));
       break;
     case NTDouble:
-      tsnptr.reset (new TableExprNodeArrayConstDouble (toArray<Double>(0)));
+      tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(toArray<Double>(0));
       break;
     case NTComplex:
-      tsnptr.reset (new TableExprNodeArrayConstDComplex (toArray<DComplex>(0)));
+      tsnptr = std::make_shared<TableExprNodeArrayConstDComplex>(toArray<DComplex>(0));
       break;
     case NTString:
-      tsnptr.reset (new TableExprNodeArrayConstString (toArray<String>(0)));
+      tsnptr = std::make_shared<TableExprNodeArrayConstString>(toArray<String>(0));
       break;
     case NTDate:
-      tsnptr.reset (new TableExprNodeArrayConstDate (toArray<MVTime>(0)));
+      tsnptr = std::make_shared<TableExprNodeArrayConstDate>(toArray<MVTime>(0));
       break;
     default:
       TableExprNode::throwInvDT ("TableExprNodeSet::toConstArray");

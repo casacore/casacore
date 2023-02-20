@@ -38,7 +38,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-std::shared_ptr<LogSink::LsiIntermediate> *LogSink::global_sink_p = 0;
+std::shared_ptr<LogSink::LsiIntermediate> LogSink::global_sink_p;
 std::once_flag LogSink::theirCallOnceFlag;
 
 
@@ -55,7 +55,7 @@ LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
     useGlobalSink_p (True)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
     if (nullSink) {
         local_sink_p.reset (new NullLogSink(LogFilter(LogMessage::DEBUGGING)));
@@ -70,7 +70,7 @@ LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
     useGlobalSink_p (True)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
     if (nullSink) {
         local_sink_p.reset (new NullLogSink(LogFilter(LogMessage::DEBUGGING)));
@@ -87,7 +87,7 @@ LogSink::LogSink(LogMessage::Priority filter, ostream *os,
     useGlobalSink_p (useGlobalSink)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
     AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
 }
@@ -99,7 +99,7 @@ LogSink::LogSink(const LogFilterInterface &filter, ostream *os,
     useGlobalSink_p (useGlobalSink)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
     AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
 }
@@ -111,7 +111,7 @@ LogSink::LogSink (const LogFilterInterface &filter,
     useGlobalSink_p (True)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 }
 
 LogSink::LogSink(const LogSink &other) 
@@ -119,7 +119,7 @@ LogSink::LogSink(const LogSink &other)
     useGlobalSink_p (other.useGlobalSink_p)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 }
 
 LogSink &LogSink::operator=(const LogSink &other)
@@ -152,8 +152,8 @@ Bool LogSink::post(const LogMessage &message)
 Bool LogSink::postGlobally(const LogMessage &message)
 {
     Bool posted = False;
-    AlwaysAssert(static_cast<bool>(*global_sink_p), AipsError);
-    if ((**global_sink_p)->filter().pass(message)) {
+    AlwaysAssert(static_cast<bool>(global_sink_p), AipsError);
+    if ((*global_sink_p)->filter().pass(message)) {
         posted = globalSink().postLocally(message);
     }
     return posted;
@@ -249,21 +249,21 @@ LogSink &LogSink::localSink(LogSinkInterface *&fromNew)
 
 Bool LogSink::nullGlobalSink( )
 {
-    return !global_sink_p ? True : !(*global_sink_p);
+    return !global_sink_p;
 }
 
 LogSinkInterface &LogSink::globalSink()
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    return ***global_sink_p;
+    return **global_sink_p;
 }
 
 void LogSink::globalSink(LogSinkInterface *&fromNew)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    (* global_sink_p)->replace(fromNew); // racy with use of global_sink_p as noted in .h
+    global_sink_p->replace(fromNew); // racy with use of global_sink_p as noted in .h
     fromNew = 0;
-    AlwaysAssert(static_cast<bool>(*global_sink_p), AipsError);
+    AlwaysAssert(static_cast<bool>(global_sink_p), AipsError);
 }
 
 Bool LogSink::postLocally(const LogMessage &message) 
@@ -292,15 +292,15 @@ void LogSink::flush (Bool global)
     if (local_sink_p) {
         local_sink_p->flush(False);
     }
-    if (global  &&  *global_sink_p) {
-        (**global_sink_p)->flush(False);
+    if (global  &&  global_sink_p) {
+        (*global_sink_p)->flush(False);
     }
 }
 
 void LogSink::createGlobalSink()
 {
-    LogSink::global_sink_p = new std::shared_ptr<LsiIntermediate> ();
-    global_sink_p->reset (new LsiIntermediate (new StreamLogSink(LogMessage::NORMAL, &cerr)));
+    global_sink_p = std::make_shared<LsiIntermediate>
+      (new StreamLogSink(LogMessage::NORMAL, &cerr));
 }
 
 } //# NAMESPACE CASACORE - END

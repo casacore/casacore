@@ -220,7 +220,7 @@ void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
     //# an unknown data type.
     AlwaysAssert (vecPtr->contiguousStorage(), AipsError);
     if (!cmpObj) {
-        cmpObj.reset (new ObjCompare<T>);
+        cmpObj = std::make_shared<ObjCompare<T>>();
     }
     sortobj.sortKey (vecPtr->data(), cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending
@@ -235,7 +235,7 @@ void ScalarColumnData<T>::allocIterBuf (void*& lastVal, void*& curVal,
     lastVal = valp;
     curVal  = valp + 1;
     if (!cmpObj) {
-        cmpObj.reset (new ObjCompare<T>);
+        cmpObj = std::make_shared<ObjCompare<T>>();
     }
 }
 

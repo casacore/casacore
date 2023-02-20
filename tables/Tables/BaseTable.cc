@@ -1020,7 +1020,7 @@ BaseTableIterator* BaseTable::makeIterator
 const TableDesc& BaseTable::makeEmptyTableDesc() const
 {
     if (!tdescPtr_p) {
-        const_cast<BaseTable*>(this)->tdescPtr_p.reset (new TableDesc());
+      const_cast<BaseTable*>(this)->tdescPtr_p = std::make_shared<TableDesc>();
     }
     return *tdescPtr_p;
 }

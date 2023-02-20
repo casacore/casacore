@@ -179,12 +179,12 @@ void ColumnSet::openMultiFile (uInt from, const Table& tab,
     // Create the object if not created yet.
     if (! multiFile_p) {
       if (storageOpt_p.option() == StorageOption::MultiFile) {
-        multiFile_p.reset (new MultiFile (tab.tableName() + "/table.mf",
-                                          opt, storageOpt_p.blockSize(),
-                                          storageOpt_p.useODirect()));
+        multiFile_p = std::make_shared<MultiFile>(tab.tableName() + "/table.mf",
+                                                  opt, storageOpt_p.blockSize(),
+                                                  storageOpt_p.useODirect());
       } else {
-        multiFile_p.reset (new MultiHDF5 (tab.tableName() + "/table.mfh5",
-                                          opt, storageOpt_p.blockSize()));
+        multiFile_p = std::make_shared<MultiHDF5>(tab.tableName() + "/table.mfh5",
+                                                  opt, storageOpt_p.blockSize());
       }
     }
     // Pass it to the data managers.

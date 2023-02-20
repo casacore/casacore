@@ -254,7 +254,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprGroupExprId::TableExprGroupExprId (TableExprNodeRep* node)
     : TableExprGroupFuncBase (node)
   {
-    itsIds.reset (new vector<TableExprId>());
+    itsIds = std::make_shared<std::vector<TableExprId>>();
   }
   TableExprGroupExprId::~TableExprGroupExprId()
   {}

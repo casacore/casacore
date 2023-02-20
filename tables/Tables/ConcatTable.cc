@@ -322,7 +322,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     std::vector<std::shared_ptr<TableDesc>> actualDesc(tables_p.nelements());;
     Bool equalDataTypes;
     for (uInt i=0; i<tables_p.nelements(); ++i) {
-      actualDesc[i].reset (new TableDesc(tables_p[i].actualTableDesc()));
+      actualDesc[i] = std::make_shared<TableDesc>(tables_p[i].actualTableDesc());
       if (actualDesc[i]->columnDescSet().isEqual
 	  (actualDesc[0]->columnDescSet(), equalDataTypes)) {
 	if (equalDataTypes) {
@@ -353,7 +353,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     //# Use the table description.
-    tdescPtr_p.reset (new TableDesc (*(actualDesc[0]), TableDesc::Scratch));
+    tdescPtr_p = std::make_shared<TableDesc>(*(actualDesc[0]), TableDesc::Scratch);
     keywordSet_p = tables_p[0].keywordSet();
     // Handle the possible concatenated subtables.
     handleSubTables();

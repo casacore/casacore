@@ -555,25 +555,25 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
   if (node->valueType() == VTScalar) {
     switch (node->dataType()) {
     case NTBool:
-      newNode.reset (new TableExprNodeConstBool (node->getBool (0)));
+      newNode = std::make_shared<TableExprNodeConstBool>(node->getBool(0));
       break;
     case NTInt:
-      newNode.reset (new TableExprNodeConstInt (node->getInt (0)));
+      newNode = std::make_shared<TableExprNodeConstInt>(node->getInt(0));
       break;
     case NTDouble:
-      newNode.reset (new TableExprNodeConstDouble (node->getDouble (0)));
+      newNode = std::make_shared<TableExprNodeConstDouble>(node->getDouble(0));
       break;
     case NTComplex:
-      newNode.reset (new TableExprNodeConstDComplex (node->getDComplex(0)));
+      newNode = std::make_shared<TableExprNodeConstDComplex>(node->getDComplex(0));
       break;
     case NTString:
-      newNode.reset (new TableExprNodeConstString (node->getString (0)));
+      newNode = std::make_shared<TableExprNodeConstString>(node->getString(0));
       break;
     case NTRegex:
-      newNode.reset (new TableExprNodeConstRegex (node->getRegex (0)));
+      newNode = std::make_shared<TableExprNodeConstRegex>(node->getRegex(0));
       break;
     case NTDate:
-      newNode.reset (new TableExprNodeConstDate (node->getDate (0)));
+      newNode = std::make_shared<TableExprNodeConstDate>(node->getDate(0));
       break;
     default:
       TableExprNode::throwInvDT ("in replaceConstNode"); // should never occur
@@ -581,22 +581,22 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
   } else {
     switch (node->dataType()) {
     case NTBool:
-      newNode.reset (new TableExprNodeArrayConstBool(node->getArrayBool (0)));
+      newNode = std::make_shared<TableExprNodeArrayConstBool>(node->getArrayBool(0));
       break;
     case NTInt:
-      newNode.reset (new TableExprNodeArrayConstInt(node->getArrayInt (0)));
+      newNode = std::make_shared<TableExprNodeArrayConstInt>(node->getArrayInt(0));
       break;
     case NTDouble:
-      newNode.reset (new TableExprNodeArrayConstDouble(node->getArrayDouble (0)));
+      newNode = std::make_shared<TableExprNodeArrayConstDouble>(node->getArrayDouble(0));
       break;
     case NTComplex:
-      newNode.reset (new TableExprNodeArrayConstDComplex(node->getArrayDComplex (0)));
+      newNode = std::make_shared<TableExprNodeArrayConstDComplex>(node->getArrayDComplex(0));
       break;
     case NTString:
-      newNode.reset (new TableExprNodeArrayConstString(node->getArrayString (0)));
+      newNode = std::make_shared<TableExprNodeArrayConstString>(node->getArrayString(0));
       break;
     case NTDate:
-      newNode.reset (new TableExprNodeArrayConstDate(node->getArrayDate (0)));
+      newNode = std::make_shared<TableExprNodeArrayConstDate>(node->getArrayDate(0));
       break;
     default:
       TableExprNode::throwInvDT ("in replaceConstNode"); // should never occur
@@ -923,17 +923,17 @@ void TableExprNodeBinary::adaptDataTypes()
     TENShPtr newNode;
     if (vtype == VTScalar) {
       if (newType == NTDouble) {
-        newNode.reset (new TableExprNodeConstDouble ((*constNode)->getDouble(0)));
+        newNode = std::make_shared<TableExprNodeConstDouble>((*constNode)->getDouble(0));
       } else {
-        newNode.reset (new TableExprNodeConstDComplex ((*constNode)->getDouble(0)));
+        newNode = std::make_shared<TableExprNodeConstDComplex>((*constNode)->getDouble(0));
       }
     } else {
       if (newType == NTDouble) {
-        newNode.reset (new TableExprNodeArrayConstDouble
-                       ((*constNode)->getArrayDouble(0)));
+        newNode = std::make_shared<TableExprNodeArrayConstDouble>
+                       ((*constNode)->getArrayDouble(0));
       } else {
-        newNode.reset (new TableExprNodeArrayConstDComplex
-                       ((*constNode)->getArrayDouble(0)));
+        newNode = std::make_shared<TableExprNodeArrayConstDComplex>
+                       ((*constNode)->getArrayDouble(0));
       }
     }
     newNode->setUnit ((*constNode)->unit());

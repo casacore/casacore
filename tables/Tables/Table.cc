@@ -68,7 +68,7 @@ Table::Table()
 : baseTabPtr_p     (0),
   lastModCounter_p (0)
 {
-  countedTabPtr_p.reset (new NullTable());
+  countedTabPtr_p = std::make_shared<NullTable>();
   baseTabPtr_p = countedTabPtr_p.get();
 }
 
@@ -503,15 +503,15 @@ std::shared_ptr<BaseTable> Table::makeBaseTable
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
-      baseTabPtr.reset (new PlainTable (ios, version, name, type, nrrow,
-                                        tableOption, lockOptions, tsmOpt,
-                                        addToCache, locknr));
+      baseTabPtr = std::make_shared<PlainTable>(ios, version, name, type, nrrow,
+                                                tableOption, lockOptions, tsmOpt,
+                                                addToCache, locknr);
     } else if (tp == "RefTable") {
-      baseTabPtr.reset (new RefTable (ios, name, nrrow, tableOption,
-                                      lockOptions, tsmOpt));
+      baseTabPtr = std::make_shared<RefTable>(ios, name, nrrow, tableOption,
+                                              lockOptions, tsmOpt);
     } else if (tp == "ConcatTable") {
-      baseTabPtr.reset (new ConcatTable (ios, name, nrrow, tableOption,
-                                         lockOptions, tsmOpt));
+      baseTabPtr = std::make_shared<ConcatTable>(ios, name, nrrow, tableOption,
+                                                 lockOptions, tsmOpt);
     } else {
       throw (TableInternalError("Table::open: unknown table kind " + tp));
     }

@@ -164,7 +164,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Bool deleteIt;
     const T* datap = vecPtr->getStorage (deleteIt);
     if (!cmpObj) {
-        cmpObj.reset (new ObjCompare<T>);
+      cmpObj = std::make_shared<ObjCompare<T>>();
     }
     sortobj.sortKey (datap, cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending

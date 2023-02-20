@@ -43,8 +43,8 @@ SetupNewTable::SetupNewTable (const String& tableName,
 			      Table::TableOption opt,
                               const StorageOption& storageOpt)
 {
-    newTable_p.reset (new SetupNewTableRep (tableName, tableDescName,
-                                            opt, storageOpt));
+    newTable_p = std::make_shared<SetupNewTableRep>(tableName, tableDescName,
+                                                    opt, storageOpt);
 }
 
 SetupNewTable::SetupNewTable (const String& tableName,
@@ -52,8 +52,8 @@ SetupNewTable::SetupNewTable (const String& tableName,
 			      Table::TableOption opt,
                               const StorageOption& storageOpt)
 {
-    newTable_p.reset (new SetupNewTableRep (tableName, tableDesc,
-                                            opt, storageOpt));
+    newTable_p = std::make_shared<SetupNewTableRep>(tableName, tableDesc,
+                                                    opt, storageOpt);
 }
 
 SetupNewTable::SetupNewTable (const SetupNewTable& that)
@@ -84,7 +84,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   colSetPtr_p (0)
 {
     //# Copy the table description.
-    tdescPtr_p.reset (new TableDesc(tableDescName));
+    tdescPtr_p = std::make_shared<TableDesc>(tableDescName);
     //# Setup the new table.
     setup();
 }
@@ -101,7 +101,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   colSetPtr_p (0)
 {
     //# Read the table description.
-    tdescPtr_p.reset (new TableDesc(tableDesc, "", "", TableDesc::Scratch));
+    tdescPtr_p = std::make_shared<TableDesc>(tableDesc, "", "", TableDesc::Scratch);
     //# Setup the new table.
     setup();
 }
@@ -139,7 +139,7 @@ void SetupNewTableRep::setup()
     //# Check if all subtable descriptions exist.
     tdescPtr_p->checkSubTableDesc();
     //# Create a column set.
-    colSetPtr_p.reset (new ColumnSet(tdescPtr_p.get(), storageOpt_p));
+    colSetPtr_p = std::make_shared<ColumnSet>(tdescPtr_p.get(), storageOpt_p);
 }
 
 

@@ -107,7 +107,7 @@ void TableIterProxy::makeStepIter (const Table& tab,
       case TpDouble:
         break;
       case TpString:
-        comps[i].reset (new CompareNoCase());
+        comps[i] = std::make_shared<CompareNoCase>();
         break;
       default:
         throw TableError ("No iteration step can be given for column " +
@@ -128,49 +128,49 @@ void TableIterProxy::makeStepIter (const Table& tab,
       case TpUChar:
         {
           uChar start = ScalarColumn<uChar>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalInt<uChar>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<uChar>>(iterSteps[i], start);
         }
         break;
       case TpShort:
         {
           Short start = ScalarColumn<Short>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalInt<Short>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<Short>>(iterSteps[i], start);
         }
         break;
       case TpUShort:
         {
           uShort start = ScalarColumn<uShort>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalInt<uShort>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<uShort>>(iterSteps[i], start);
         }
         break;
       case TpInt:
         {
           Int start = ScalarColumn<Int>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalInt<Int>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<Int>>(iterSteps[i], start);
         }
         break;
       case TpUInt:
         {
           uInt start = ScalarColumn<uInt>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalInt<uInt>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<uInt>>(iterSteps[i], start);
         }
         break;
       case TpInt64:
         {
           Int64 start = ScalarColumn<Int64>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalInt<Int64>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<Int64>>(iterSteps[i], start);
         }
         break;
       case TpFloat:
         {
           Float start = ScalarColumn<Float>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalReal<Float>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<Float>>(iterSteps[i], start);
         }
         break;
       case TpDouble:
         {
           Double start = ScalarColumn<Double>(sortab, columns[i])(0);
-          comps[i].reset (new CompareIntervalReal<Double>(iterSteps[i], start));
+          comps[i] = std::make_shared<CompareIntervalInt<Double>>(iterSteps[i], start);
         }
         break;
       default:
