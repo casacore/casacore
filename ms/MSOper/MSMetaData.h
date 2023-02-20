@@ -665,6 +665,37 @@ public:
     // including those which associated row flags may be set. 
     ColumnStats getIntervalStatistics() const;
 
+    // ALMA specific CAS-13973 get receiver bands for each spw
+    // values of -1 indicate no info found for those spws.
+    vector<int> getSpwReceiverBands() const;
+
+    // ALMA specific CAS-13973 get subwindows for each spw
+    // values of -1 indicate no info found for those spws.
+    // The SPW subwindow name is established by the ALMA Observing
+    // Tool and is recorded in each project's scheduling blocks.
+    // Here is an example for one spw whose subwindow name is
+    // "SW-1", as indicated by the name field. Currently, these
+    // values can range up to "SW-4", as a maximumn of 4 spws per
+    // baseband are currently offered on the ALMA correlators.
+    // 
+    // <sbl:ACASpectralWindow sideBand="LSB"
+    // windowFunction="HANNING" polnProducts="XX,YY" synthProf="ACA_CDP">
+    // <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+    // <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+    // <sbl:name>SW-1</sbl:name>
+    // <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+    // <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+    // <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+    // <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+    // <sbl:representativeWindow>false</sbl:representativeWindow>
+    // <sbl:frqChProfReproduction>true</sbl:frqChProfReproduction>
+    // <sbl:ChannelAverageRegion>
+    // <sbl:startChannel>6</sbl:startChannel>
+    // <sbl:numberChannels>115</sbl:numberChannels>
+    // </sbl:ChannelAverageRegion>
+    // </sbl:ACASpectralWindow> 
+    vector<int> getSpwSubwindows() const;
+
 private:
 
     struct ScanProperties {
@@ -682,14 +713,14 @@ private:
         // interval, which is not accounted for in the SubScanProperties times
         std::pair<Double, Double> timeRange;
         // times for each spectral window
-        std::map<uInt, std::set<Double> > times;
+        std::map<uInt, std::set<double> > times;
     };
 
     struct SpwProperties {
-        Double bandwidth;
+        double bandwidth;
         QVD chanfreqs;
         QVD chanwidths;
-        Int netsideband;
+        int netsideband;
         // The sum of all channel frequencies divided by the number of channels
         Quantity meanfreq;
         // The mean of the low frequency extent of the lowest frequency channel and
@@ -698,7 +729,7 @@ private:
         Quantity centerfreq;
         uInt nchans;
         // The center frequencies of the two channels at the edges of the window
-        vector<Double> edgechans;
+        vector<double> edgechans;
         uInt bbcno;
         // from the REF_FREQUENCY column
         MFrequency reffreq;
@@ -709,6 +740,9 @@ private:
         QVD resolution;
         // CAS-13749 value for adhoc ALMA-specific SPECTRAL_WINDOW column
         String corrbit;
+        // CAS-13973 ALMA specific quantities sw = subwindow, rb = receiver band
+        int rb;
+        int sw;
     };
 
     // represents non-primary key data for a SOURCE table row
@@ -1146,6 +1180,8 @@ private:
     template <class T> std::shared_ptr<Vector<T> > _getMainScalarColumn(
         MSMainEnums::PredefinedColumns col
     ) const;
+
+    std::shared_ptr<vector<int>> _almaReceiverBands(uint nspw) const;
 
 };
 
