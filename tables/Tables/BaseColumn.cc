@@ -204,19 +204,19 @@ void BaseColumn::putColumnSliceCells (const RefRows&,
 }
 
 
-void BaseColumn::makeSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
-                              CountedPtr<ArrayBase>&)
+void BaseColumn::makeSortKey (Sort&, std::shared_ptr<BaseCompare>&, Int,
+                              std::shared_ptr<ArrayBase>&)
 {
   throw (TableInvOper ("makeSortKey() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
-void BaseColumn::makeRefSortKey (Sort&, CountedPtr<BaseCompare>&, Int,
-				 const Vector<rownr_t>&, CountedPtr<ArrayBase>&)
+void BaseColumn::makeRefSortKey (Sort&, std::shared_ptr<BaseCompare>&, Int,
+				 const Vector<rownr_t>&, std::shared_ptr<ArrayBase>&)
 {
   throw (TableInvOper ("makeSortKey(rownrs) for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));
 }
-void BaseColumn::allocIterBuf (void*&, void*&, CountedPtr<BaseCompare>&)
+void BaseColumn::allocIterBuf (void*&, void*&, std::shared_ptr<BaseCompare>&)
 {
   throw (TableInvOper ("allocIterBuf() for column " + colDescPtr_p->name() +
                        " is only valid for a scalar"));

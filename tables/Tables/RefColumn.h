@@ -230,14 +230,14 @@ public:
     // It may allocate some storage on the heap, which will be saved
     // in the argument dataSave.
     // The function freeSortKey must be called to free this storage.
-    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
-			      Int order, CountedPtr<ArrayBase>& dataSave);
+    virtual void makeSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
+			      Int order, std::shared_ptr<ArrayBase>& dataSave);
 
     // Allocate value buffers for the table iterator.
     // Also get a comparison functiuon if undefined.
     // The function freeIterBuf must be called to free the buffers.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       CountedPtr<BaseCompare>& cmpObj);
+			       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);

@@ -32,7 +32,7 @@
 #include <casacore/tables/Tables/ColumnCache.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -496,14 +496,14 @@ private:
     // Get a slice from the array in the given row.
     // It reads the full array in the possibly reshaped ArrayBase object.
     void getSliceArr (rownr_t row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
+                      std::shared_ptr<ArrayBase>& fullArr,
                       ArrayBase& arr);
 
     // Put a slice into the array in the given row.
     // It reads and writes the full array in the possibly reshaped ArrayBase
     // object.
     void putSliceArr (rownr_t row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
+                      std::shared_ptr<ArrayBase>& fullArr,
                       const ArrayBase& arr);
 
     //# Data members

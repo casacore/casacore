@@ -38,7 +38,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-CountedPtr<LogSink::LsiIntermediate> *LogSink::global_sink_p = 0;
+std::shared_ptr<LogSink::LsiIntermediate> LogSink::global_sink_p;
 std::once_flag LogSink::theirCallOnceFlag;
 
 
@@ -55,14 +55,14 @@ LogSink::LogSink(LogMessage::Priority filter, Bool nullSink)
     useGlobalSink_p (True)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
     if (nullSink) {
-        local_sink_p = new NullLogSink(LogFilter(LogMessage::DEBUGGING));
+        local_sink_p.reset (new NullLogSink(LogFilter(LogMessage::DEBUGGING)));
     } else {
-        local_sink_p = new MemoryLogSink(LogFilter(LogMessage::DEBUGGING));
+        local_sink_p.reset (new MemoryLogSink(LogFilter(LogMessage::DEBUGGING)));
     }
-    AlwaysAssert(! local_sink_p.null(), AipsError);
+    AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
 }
 
 LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
@@ -70,14 +70,14 @@ LogSink::LogSink(const LogFilterInterface &filter, Bool nullSink)
     useGlobalSink_p (True)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
     if (nullSink) {
-        local_sink_p = new NullLogSink(LogFilter(LogMessage::DEBUGGING));
+        local_sink_p.reset (new NullLogSink(LogFilter(LogMessage::DEBUGGING)));
     } else {
-        local_sink_p = new MemoryLogSink(LogFilter(LogMessage::DEBUGGING));
+        local_sink_p.reset (new MemoryLogSink(LogFilter(LogMessage::DEBUGGING)));
     }
-    AlwaysAssert(! local_sink_p.null(), AipsError);
+    AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
 }
 
 LogSink::LogSink(LogMessage::Priority filter, ostream *os,
@@ -87,9 +87,9 @@ LogSink::LogSink(LogMessage::Priority filter, ostream *os,
     useGlobalSink_p (useGlobalSink)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
-    AlwaysAssert(! local_sink_p.null(), AipsError);
+    AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
 }
 
 LogSink::LogSink(const LogFilterInterface &filter, ostream *os,
@@ -99,19 +99,19 @@ LogSink::LogSink(const LogFilterInterface &filter, ostream *os,
     useGlobalSink_p (useGlobalSink)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 
-    AlwaysAssert(! local_sink_p.null(), AipsError);
+    AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
 }
 
 LogSink::LogSink (const LogFilterInterface &filter,
-		  const CountedPtr<LogSinkInterface>& sink)
+		  const std::shared_ptr<LogSinkInterface>& sink)
   : LogSinkInterface(filter),
     local_sink_p(sink),
     useGlobalSink_p (True)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 }
 
 LogSink::LogSink(const LogSink &other) 
@@ -119,7 +119,7 @@ LogSink::LogSink(const LogSink &other)
     useGlobalSink_p (other.useGlobalSink_p)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    local_ref_to_global_p = *LogSink::global_sink_p;
+    local_ref_to_global_p = LogSink::global_sink_p;
 }
 
 LogSink &LogSink::operator=(const LogSink &other)
@@ -152,8 +152,8 @@ Bool LogSink::post(const LogMessage &message)
 Bool LogSink::postGlobally(const LogMessage &message)
 {
     Bool posted = False;
-    AlwaysAssert(!(*global_sink_p).null(), AipsError);
-    if ((**global_sink_p)->filter().pass(message)) {
+    AlwaysAssert(static_cast<bool>(global_sink_p), AipsError);
+    if ((*global_sink_p)->filter().pass(message)) {
         posted = globalSink().postLocally(message);
     }
     return posted;
@@ -241,29 +241,29 @@ LogSinkInterface &LogSink::localSink()
 
 LogSink &LogSink::localSink(LogSinkInterface *&fromNew)
 {
-    local_sink_p = fromNew;
+    local_sink_p.reset (fromNew);
     fromNew = 0;
-    AlwaysAssert(!local_sink_p.null(), AipsError);
+    AlwaysAssert(static_cast<bool>(local_sink_p), AipsError);
     return *this;
 }
 
 Bool LogSink::nullGlobalSink( )
 {
-    return ! global_sink_p ? True : (*global_sink_p).null( ) ? True : False;
+    return !global_sink_p;
 }
 
 LogSinkInterface &LogSink::globalSink()
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    return ***global_sink_p;
+    return **global_sink_p;
 }
 
 void LogSink::globalSink(LogSinkInterface *&fromNew)
 {
     std::call_once(theirCallOnceFlag, createGlobalSink);
-    (* global_sink_p)->replace(fromNew); // racy with use of global_sink_p as noted in .h
+    global_sink_p->replace(fromNew); // racy with use of global_sink_p as noted in .h
     fromNew = 0;
-    AlwaysAssert(!(*global_sink_p).null(), AipsError);
+    AlwaysAssert(static_cast<bool>(global_sink_p), AipsError);
 }
 
 Bool LogSink::postLocally(const LogMessage &message) 
@@ -289,18 +289,18 @@ void LogSink::clearLocally()
 
 void LogSink::flush (Bool global)
 {
-    if (!local_sink_p.null()) {
+    if (local_sink_p) {
         local_sink_p->flush(False);
     }
-    if (global  &&  !(*global_sink_p).null()) {
-        (**global_sink_p)->flush(False);
+    if (global  &&  global_sink_p) {
+        (*global_sink_p)->flush(False);
     }
 }
 
 void LogSink::createGlobalSink()
 {
-    LogSink::global_sink_p = new CountedPtr<LsiIntermediate> ();
-    (* global_sink_p) = new LsiIntermediate (new StreamLogSink(LogMessage::NORMAL, &cerr));
+    global_sink_p = std::make_shared<LsiIntermediate>
+      (new StreamLogSink(LogMessage::NORMAL, &cerr));
 }
 
 } //# NAMESPACE CASACORE - END

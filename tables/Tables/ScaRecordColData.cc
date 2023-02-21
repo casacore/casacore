@@ -194,26 +194,26 @@ void ScalarRecordColumnData::putRecord (rownr_t rownr, const TableRecord& rec)
 
 
 void ScalarRecordColumnData::makeSortKey (Sort&,
-					  CountedPtr<BaseCompare>&,
+					  std::shared_ptr<BaseCompare>&,
 					  Int,
-					  CountedPtr<ArrayBase>&)
+					  std::shared_ptr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
 		       "is not possible"));
 }
 
 void ScalarRecordColumnData::makeRefSortKey (Sort&,
-                                             CountedPtr<BaseCompare>&,
+                                             std::shared_ptr<BaseCompare>&,
 					     Int,
 					     const Vector<rownr_t>&,
-					     CountedPtr<ArrayBase>&)
+					     std::shared_ptr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
 		       "is not possible"));
 }
 
 void ScalarRecordColumnData::allocIterBuf (void*&, void*&,
-                                           CountedPtr<BaseCompare>&)
+                                           std::shared_ptr<BaseCompare>&)
 {
     throw (TableError ("Iterating on a column containing records "
 		       "is not possible"));

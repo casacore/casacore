@@ -126,27 +126,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   template<class T>
   void ConcatScalarColumn<T>::makeSortKey (Sort& sortobj,
-                                           CountedPtr<BaseCompare>& cmpObj,
+                                           std::shared_ptr<BaseCompare>& cmpObj,
 					   Int order,
-					   CountedPtr<ArrayBase>& dataSave)
+					   std::shared_ptr<ArrayBase>& dataSave)
   {
     //# Get the data as a column.
     Vector<T>* vecPtr = new Vector<T>(nrow());
-    dataSave = vecPtr;
+    dataSave.reset (vecPtr);
     getScalarColumn (*vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
   }
 
   template<class T>
   void ConcatScalarColumn<T>::makeRefSortKey (Sort& sortobj,
-                                              CountedPtr<BaseCompare>& cmpObj,
+                                              std::shared_ptr<BaseCompare>& cmpObj,
 					      Int order,
 					      const Vector<rownr_t>& rownrs,
-					      CountedPtr<ArrayBase>& dataSave)
+					      std::shared_ptr<ArrayBase>& dataSave)
   {
     //# Get the data as a column.
     Vector<T>* vecPtr = new Vector<T>(rownrs.size());
-    dataSave = vecPtr;
+    dataSave.reset (vecPtr);
     getScalarColumnCells (rownrs, *vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
   }
@@ -154,7 +154,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<class T>
   void ConcatScalarColumn<T>::fillSortKey (const Vector<T>* vecPtr,
 					   Sort& sortobj,
-                                           CountedPtr<BaseCompare>& cmpObj,
+                                           std::shared_ptr<BaseCompare>& cmpObj,
 					   Int order)
   {
     //# Pass the real vector storage as the sort data.
@@ -163,8 +163,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# an unknown data type.
     Bool deleteIt;
     const T* datap = vecPtr->getStorage (deleteIt);
-    if (cmpObj.null()) {
-      cmpObj = new ObjCompare<T>();
+    if (!cmpObj) {
+      cmpObj = std::make_shared<ObjCompare<T>>();
     }
     sortobj.sortKey (datap, cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending

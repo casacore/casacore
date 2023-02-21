@@ -319,14 +319,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void ConcatTable::initialize()
   {
     // Check if all tables have the same description.
-    // Note that we size the table instead of reserve, because push_back
-    // gives the following warning for CountedPtr:
-    //  "dereferencing pointer aonymous  does break strict-aliasing rule"
-    vector<CountedPtr<TableDesc> > actualDesc(tables_p.nelements());;
+    std::vector<std::shared_ptr<TableDesc>> actualDesc(tables_p.nelements());;
     Bool equalDataTypes;
     for (uInt i=0; i<tables_p.nelements(); ++i) {
-      actualDesc[i] = CountedPtr<TableDesc> (new TableDesc
-					     (tables_p[i].actualTableDesc()));
+      actualDesc[i] = std::make_shared<TableDesc>(tables_p[i].actualTableDesc());
       if (actualDesc[i]->columnDescSet().isEqual
 	  (actualDesc[0]->columnDescSet(), equalDataTypes)) {
 	if (equalDataTypes) {
@@ -357,7 +353,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       }
     }
     //# Use the table description.
-    tdescPtr_p = new TableDesc (*(actualDesc[0]), TableDesc::Scratch);
+    tdescPtr_p = std::make_shared<TableDesc>(*(actualDesc[0]), TableDesc::Scratch);
     keywordSet_p = tables_p[0].keywordSet();
     // Handle the possible concatenated subtables.
     handleSubTables();

@@ -66,7 +66,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -88,7 +88,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -110,7 +110,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -132,7 +132,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -160,7 +160,7 @@ void checkLazy (const TableExprNode& expr,
     funcid.apply (id);
   }
   funcid.finish();
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   Double val = func->getDouble (*funcid.getIds());
   if (val != expVal) {
     foundError = True;

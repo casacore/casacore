@@ -103,17 +103,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Handle the creation and deletion of sort keys.
     // <group>
     virtual void makeSortKey (Sort& sortobj,
-                              CountedPtr<BaseCompare>& cmpObj,
+                              std::shared_ptr<BaseCompare>& cmpObj,
 			      Int order,
-			      CountedPtr<ArrayBase>& dataSave);
+			      std::shared_ptr<ArrayBase>& dataSave);
     virtual void makeRefSortKey (Sort& sortobj,
-                                 CountedPtr<BaseCompare>& cmpObj,
+                                 std::shared_ptr<BaseCompare>& cmpObj,
 				 Int order,
 				 const Vector<rownr_t>& rownrs,
-				 CountedPtr<ArrayBase>& dataSave);
+				 std::shared_ptr<ArrayBase>& dataSave);
     virtual void fillSortKey (const Vector<T>* vecPtr,
 			      Sort& sortobj,
-                              CountedPtr<BaseCompare>& cmpObj,
+                              std::shared_ptr<BaseCompare>& cmpObj,
 			      Int order);
     // </group>
 

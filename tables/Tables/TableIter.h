@@ -176,7 +176,7 @@ public:
     // break existing applications that change the comparison objects
     // (cmpObjs) between iterations.
     TableIterator (const Table&, const Block<String>& columnNames,
-                   const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                   const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
                    const Block<Int>& orders, Option = ParSort,
                    bool cacheIterationBoundaries = false);
     // </group>
@@ -192,7 +192,7 @@ public:
     // Test if the object is null, i.e. does not reference a table yet.
     // This is the case if the default constructor is used.
     Bool isNull() const
-	{ return (tabIterPtr_p == 0  ?  True : False); }
+      { return !tabIterPtr_p; }
 
     // Throw an exception if the object is null, i.e.
     // if function isNull() is True.

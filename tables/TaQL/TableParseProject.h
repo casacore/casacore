@@ -97,10 +97,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return projectExprSubset_p.size(); }
 
     // Set the column names to the ones to be updated.
-    void setColumnNames (const std::vector<CountedPtr<TableParseUpdate>>&);
+    void setColumnNames (const std::vector<std::shared_ptr<TableParseUpdate>>&);
 
     // Put the column name and mask name into the update objects.
-    void setUpdateNames (std::vector<CountedPtr<TableParseUpdate>>&);
+    void setUpdateNames (std::vector<std::shared_ptr<TableParseUpdate>>&);
     
     // Set the names to the stored columns of the first table.
     // Resize columnNameMasks_p accordingly.

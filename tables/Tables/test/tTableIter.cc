@@ -216,10 +216,8 @@ void doiter3()
     Table t1;
     Block<String> iv1(1);
     iv1[0] = "col3";
-    Block<CountedPtr<BaseCompare> > compObj(1);
-    CompareIntervalReal<Float> xx(10., 0.);
-    CountedPtr<BaseCompare> xxx (new CompareIntervalReal<Float>(10., 0.));
-    compObj[0] = xxx;
+    Block<std::shared_ptr<BaseCompare>> compObj(1);
+    compObj[0].reset (new CompareIntervalReal<Float>(10., 0.));
     Block<Int> orders(1);
     orders[0] = TableIterator::Ascending;
     TableIterator iter1(tab1, iv1, compObj, orders);
@@ -284,9 +282,7 @@ void test_cache_boundaries()
     Block<String> sortCols(2);
     sortCols[0] = "col2";
     sortCols[1] = "col1";
-    Block<CountedPtr<BaseCompare> > compObj(2);
-    compObj[0] = nullptr;
-    compObj[1] = nullptr;
+    Block<std::shared_ptr<BaseCompare>> compObj(2);   // use default compares
     Block<Int> orders(2);
     orders[0] = TableIterator::Ascending;
     orders[1] = TableIterator::Ascending;

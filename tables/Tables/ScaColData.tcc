@@ -182,28 +182,28 @@ void ScalarColumnData<T>::putScalarColumnCells (const RefRows& rownrs,
 
 template<class T>
 void ScalarColumnData<T>::makeSortKey (Sort& sortobj,
-				       CountedPtr<BaseCompare>& cmpObj,
+				       std::shared_ptr<BaseCompare>& cmpObj,
 				       Int order,
-				       CountedPtr<ArrayBase>& dataSave)
+				       std::shared_ptr<ArrayBase>& dataSave)
 {
     //# Get the data as a column.
     //# Save the pointer to the vector for deletion by freeSortKey().
     Vector<T>* vecPtr = new Vector<T>(nrow());
-    dataSave = vecPtr;
+    dataSave.reset (vecPtr);
     getScalarColumn (*vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
 }
 
 template<class T>
 void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
-                                          CountedPtr<BaseCompare>& cmpObj,
+                                          std::shared_ptr<BaseCompare>& cmpObj,
 					  Int order,
 					  const Vector<rownr_t>& rownrs,
-					  CountedPtr<ArrayBase>& dataSave)
+					  std::shared_ptr<ArrayBase>& dataSave)
 {
     //# Get the data as a column.
     Vector<T>* vecPtr = new Vector<T>(rownrs.size());
-    dataSave = vecPtr;
+    dataSave.reset (vecPtr);
     getScalarColumnCells (rownrs, *vecPtr);
     fillSortKey (vecPtr, sortobj, cmpObj, order);
 }
@@ -211,7 +211,7 @@ void ScalarColumnData<T>::makeRefSortKey (Sort& sortobj,
 template<class T>
 void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
 				       Sort& sortobj,
-                                       CountedPtr<BaseCompare>& cmpObj,
+                                       std::shared_ptr<BaseCompare>& cmpObj,
 				       Int order)
 {
     //# Pass the real vector storage as the sort data.
@@ -219,8 +219,8 @@ void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
     //# Throw an exception if no compare function is given for
     //# an unknown data type.
     AlwaysAssert (vecPtr->contiguousStorage(), AipsError);
-    if (cmpObj.null()) {
-        cmpObj = new ObjCompare<T>();
+    if (!cmpObj) {
+        cmpObj = std::make_shared<ObjCompare<T>>();
     }
     sortobj.sortKey (vecPtr->data(), cmpObj, sizeof(T),
 		     order == Sort::Descending  ?  Sort::Descending
@@ -229,13 +229,13 @@ void ScalarColumnData<T>::fillSortKey (const Vector<T>* vecPtr,
 
 template<class T>
 void ScalarColumnData<T>::allocIterBuf (void*& lastVal, void*& curVal,
-					CountedPtr<BaseCompare>& cmpObj)
+					std::shared_ptr<BaseCompare>& cmpObj)
 {
     T* valp = new T[2];
     lastVal = valp;
     curVal  = valp + 1;
-    if (cmpObj.null()) {
-	cmpObj = new ObjCompare<T>;
+    if (!cmpObj) {
+        cmpObj = std::make_shared<ObjCompare<T>>();
     }
 }
 

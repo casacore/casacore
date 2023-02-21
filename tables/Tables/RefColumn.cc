@@ -185,13 +185,13 @@ void RefColumn::setMaximumCacheSize (uInt nbytes)
     { colPtr_p->setMaximumCacheSize (nbytes); }
 
 
-void RefColumn::makeSortKey (Sort& sortobj, CountedPtr<BaseCompare>& cmpObj,
-			     Int order, CountedPtr<ArrayBase>& dataSave)
+void RefColumn::makeSortKey (Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj,
+			     Int order, std::shared_ptr<ArrayBase>& dataSave)
     { colPtr_p->makeRefSortKey (sortobj, cmpObj, order,
 				refTabPtr_p->rowNumbers(), dataSave); }
 
 void RefColumn::allocIterBuf (void*& lastVal, void*& curVal,
-			      CountedPtr<BaseCompare>& cmpObj)
+			      std::shared_ptr<BaseCompare>& cmpObj)
     { colPtr_p->allocIterBuf (lastVal, curVal, cmpObj); }
 
 void RefColumn::freeIterBuf (void*& lastVal, void*& curVal)

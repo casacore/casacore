@@ -43,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseTableIterator::BaseTableIterator (const std::shared_ptr<BaseTable>& btp,
                                       const Block<String>& keys,
-                                      const Block<CountedPtr<BaseCompare> >& cmp,
+                                      const Block<std::shared_ptr<BaseCompare>>& cmp,
                                       const Block<Int>& order,
                                       int option,
                                       bool cacheIterationBoundaries)

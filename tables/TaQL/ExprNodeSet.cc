@@ -54,8 +54,8 @@ TableExprNodeSet::TableExprNodeSet (const IPosition& indices)
     uInt n = indices.size();
     itsElems.resize (n);
     for (uInt i=0; i<n; i++) {
-      itsElems[i].reset (new TableExprNodeSetElemSingle
-                         (TableExprNode (Int64(indices(i)))));
+      itsElems[i] = std::make_shared<TableExprNodeSetElemSingle>
+                         (TableExprNode (Int64(indices(i))));
     }
 }
 
@@ -78,7 +78,7 @@ TableExprNodeSet::TableExprNodeSet (const Slicer& indices)
           end = TableExprNode (Int64(indices.end()(i)));
         }
         TableExprNode incr (Int64(indices.stride()(i)));
-        itsElems[i].reset (new TableExprNodeSetElemDiscrete (start, end, incr));
+        itsElems[i] = std::make_shared<TableExprNodeSetElemDiscrete>(start, end, incr);
     }
 }
 
@@ -217,7 +217,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         for (size_t i=0; i<n; i++) {
               if (! itsElems[i]->unit().empty()) {
                   if (! q.isConform (itsElems[i]->unit())) {
-                      return new TableExprNodeSet (*this);
+                    return TENShPtr(new TableExprNodeSet (*this));
                   }
               }
         }
@@ -243,7 +243,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         }
         // Set ndim and shape if those are constant.
     }
-    TableExprNodeSet* set = new TableExprNodeSet (*this);
+    auto set = std::make_shared<TableExprNodeSet>(*this);
     if (itsBounded) {
         // Set the type to VTArray; the getArray functions
         // will convert the set to an array for each row.
@@ -295,22 +295,22 @@ TENShPtr TableExprNodeSet::toConstArray() const
     TENShPtr tsnptr;
     switch (dataType()) {
     case NTBool:
-      tsnptr = new TableExprNodeArrayConstBool (toArray<Bool>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstBool>(toArray<Bool>(0));
       break;
     case NTInt:
-      tsnptr = new TableExprNodeArrayConstInt (toArray<Int64>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstInt>(toArray<Int64>(0));
       break;
     case NTDouble:
-      tsnptr = new TableExprNodeArrayConstDouble (toArray<Double>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstDouble>(toArray<Double>(0));
       break;
     case NTComplex:
-      tsnptr = new TableExprNodeArrayConstDComplex (toArray<DComplex>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstDComplex>(toArray<DComplex>(0));
       break;
     case NTString:
-      tsnptr = new TableExprNodeArrayConstString (toArray<String>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstString>(toArray<String>(0));
       break;
     case NTDate:
-      tsnptr = new TableExprNodeArrayConstDate (toArray<MVTime>(0));
+      tsnptr = std::make_shared<TableExprNodeArrayConstDate>(toArray<MVTime>(0));
       break;
     default:
       TableExprNode::throwInvDT ("TableExprNodeSet::toConstArray");

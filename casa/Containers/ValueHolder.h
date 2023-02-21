@@ -31,7 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/ValueHolderRep.h>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -120,7 +120,7 @@ public:
 
   // Is this a null object?
   Bool isNull() const
-    { return itsRep.null(); }
+    { return !itsRep; }
 
   // Get the data type (as defined in DataType.h).
   // Note that TpOther is returned for an empty untyped array.
@@ -215,7 +215,7 @@ public:
 
 private:
 
-  CountedPtr<ValueHolderRep> itsRep;
+  std::shared_ptr<ValueHolderRep> itsRep;
 };
 
 

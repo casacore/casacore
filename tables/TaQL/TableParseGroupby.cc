@@ -133,7 +133,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  CountedPtr<TableExprGroupResult> TableParseGroupby::execGroupAggr
+  std::shared_ptr<TableExprGroupResult> TableParseGroupby::execGroupAggr
   (Vector<rownr_t>& rownrs) const
   {
     // If only 'select count(*)' was given, get the size of the WHERE,
@@ -146,7 +146,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   Bool TableParseGroupby::execHaving
-  (Vector<rownr_t>& rownrs, const CountedPtr<TableExprGroupResult>& groups)
+  (Vector<rownr_t>& rownrs, const std::shared_ptr<TableExprGroupResult>& groups)
   {
     if (itsHavingNode.isNull()) {
       return False;
@@ -167,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     return True;
   }
 
-  CountedPtr<TableExprGroupResult> TableParseGroupby::aggregate
+  std::shared_ptr<TableExprGroupResult> TableParseGroupby::aggregate
   (Vector<rownr_t>& rownrs) const
   {
     // Get the aggregate functions to be evaluated lazily.
@@ -194,7 +194,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (! lazyNodes.empty()) {
       immediateNodes.push_back (&expridNode);
     }
-    std::vector<CountedPtr<TableExprGroupFuncSet>> funcSets;
+    std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets;
     // Use a faster way for a single groupby key.
     if (itsGroupbyNodes.size() == 1  &&
         itsGroupbyNodes[0].dataType() == TpDouble) {
@@ -209,11 +209,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Form the rownr vector from the rows kept in the aggregate objects.
     // Similarly, form the TableExprId vector if there are lazy nodes.
     Vector<rownr_t> resRownrs(funcSets.size());
-    std::vector<CountedPtr<std::vector<TableExprId> > > ids;
+    std::vector<std::shared_ptr<std::vector<TableExprId>>> ids;
     ids.reserve (funcSets.size());
     rownr_t n=0;
     for (uInt i=0; i<funcSets.size(); ++i) {
-      const std::vector<CountedPtr<TableExprGroupFuncBase> >& funcs
+      const std::vector<std::shared_ptr<TableExprGroupFuncBase>>& funcs
         = funcSets[i]->getFuncs();
       for (uInt j=0; j<funcs.size(); ++j) {
         funcs[j]->finish();
@@ -225,12 +225,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     rownrs.reference (resRownrs);
     // Save the aggregation results in a result object.
-    CountedPtr<TableExprGroupResult> result
-      (new TableExprGroupResult (funcSets, ids));
-    return result;
+    return std::make_shared<TableExprGroupResult>(funcSets, ids);
   }
 
-  CountedPtr<TableExprGroupResult> TableParseGroupby::countAll
+  std::shared_ptr<TableExprGroupResult> TableParseGroupby::countAll
   (Vector<rownr_t>& rownrs) const
   {
     // This function is a special case because it does not need to
@@ -238,11 +236,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // some other columns can also be listed which will be those of the
     // last row.
     // Make a set containing the count(*) aggregate function object.
-    std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets
-      (1, new TableExprGroupFuncSet());
-    CountedPtr<TableExprGroupFuncBase> funcb = itsAggrNodes[0]->makeGroupAggrFunc();
+    std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets
+      (1, std::make_shared<TableExprGroupFuncSet>());
+    std::shared_ptr<TableExprGroupFuncBase> funcb = itsAggrNodes[0]->makeGroupAggrFunc();
     TableExprGroupCountAll& func = dynamic_cast<TableExprGroupCountAll&>(*funcb);
-    // Note: add turns it into a CountedPtr, so it will be deleted automatically.
     funcSets[0]->add (funcb);
     // The nr of rows is the result of count(*), so simply set it.
     func.setResult (rownrs.size());
@@ -251,10 +248,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       rownrs.reference (Vector<rownr_t>(1, rownrs[rownrs.size()-1]));
     }
     // Save the aggregation results in a result object.
-    return CountedPtr<TableExprGroupResult>(new TableExprGroupResult(funcSets));
+    return std::make_shared<TableExprGroupResult>(funcSets);
   }
 
-  std::vector<CountedPtr<TableExprGroupFuncSet>> TableParseGroupby::multiKey
+  std::vector<std::shared_ptr<TableExprGroupFuncSet>> TableParseGroupby::multiKey
   (const std::vector<TableExprNodeRep*>& nodes, const Vector<rownr_t>& rownrs) const
   {
     // Group the data according to the (maybe empty) groupby.
@@ -262,7 +259,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // groupby order.
     // A map<key,int> is used to keep track of the results where the int
     // is the index in a vector of a set of aggregate function objects.
-    std::vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
+    std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets;
     std::map<TableExprGroupKeySet, Int> keyFuncMap;
     // Create the set of groupby key objects.
     TableExprGroupKeySet keySet(itsGroupbyNodes);
@@ -276,7 +273,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       std::map<TableExprGroupKeySet, Int>::iterator iter=keyFuncMap.find (keySet);
       if (iter == keyFuncMap.end()) {
         keyFuncMap[keySet] = groupnr;
-        funcSets.push_back (new TableExprGroupFuncSet (nodes));
+        funcSets.push_back (std::make_shared<TableExprGroupFuncSet>(nodes));
       } else {
         groupnr = iter->second;
       }

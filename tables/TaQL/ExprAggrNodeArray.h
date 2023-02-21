@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
 
     // Create the correct aggregate function object.
-    virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
+    virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Is the array aggregate function lazy?
     virtual Bool isLazyAggregate() const;
@@ -93,10 +93,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     // Create the correct aggregate function object.
-    CountedPtr<TableExprGroupFuncBase> doMakeGroupAggrFunc();
+    std::shared_ptr<TableExprGroupFuncBase> doMakeGroupAggrFunc();
 
     //# Data members.
-    CountedPtr<TableExprGroupFuncBase> itsFunc;
+    std::shared_ptr<TableExprGroupFuncBase> itsFunc;
   };
 
 

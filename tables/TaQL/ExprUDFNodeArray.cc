@@ -63,8 +63,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableExprUDFNodeArray::applySelection (const Vector<rownr_t>& rownrs)
     { itsUDF->applySelection (rownrs); }
 
-  CountedPtr<TableExprGroupFuncBase> TableExprUDFNodeArray::makeGroupAggrFunc()
-    { return new TableExprGroupNull(this); }
+  std::shared_ptr<TableExprGroupFuncBase> TableExprUDFNodeArray::makeGroupAggrFunc()
+    { return std::make_shared<TableExprGroupNull>(this); }
 
   MArray<Bool>     TableExprUDFNodeArray::getArrayBool    (const TableExprId& id)
     { return itsUDF->getArrayBool (id); }

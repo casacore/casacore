@@ -37,6 +37,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <memory>
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -55,7 +56,6 @@ class DataManager;
 class IPosition;
 class TableExprInfo;
 template<class T> class Block;
-template<class T> class CountedPtr;
 
 
 // <summary>
@@ -846,11 +846,11 @@ public:
     // Sort on multiple columns. The principal column has to be the
     // first element in the Block of column names.
     // The order can be given per column.
-    // Provide some special comparisons via CountedPtrs of compare objects.
-    // A null CountedPtr means using the standard compare object
+    // Provide some special comparisons via std::shared_ptrs of compare objects.
+    // A null std::shared_ptr means using the standard compare object
     // from class <linkto class="ObjCompare:description">ObjCompare</linkto>.
     Table sort (const Block<String>& columnNames,
-		const Block<CountedPtr<BaseCompare> >& compareObjects,
+		const Block<std::shared_ptr<BaseCompare>>& compareObjects,
 		const Block<Int>& sortOrders,
 		int = Sort::ParSort) const;
     // </group>

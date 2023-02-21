@@ -96,7 +96,7 @@ public:
     // (cmpObjs) between iterations.
     BaseTableIterator (const std::shared_ptr<BaseTable>&,
                        const Block<String>& columnNames,
-                       const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                       const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
                        const Block<Int>& orders,
                        int option,
                        bool cacheIterationBoundaries = false);
@@ -131,7 +131,7 @@ protected:
     uInt                   nrkeys_p;      //# nr of columns in group
     String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
-    Block<CountedPtr<BaseCompare> > cmpObj_p;  //# comparison object per column
+    Block<std::shared_ptr<BaseCompare>> cmpObj_p;  //# comparison object per column
 
     // Copy constructor (to be used by clone)
     BaseTableIterator (const BaseTableIterator&);

@@ -575,7 +575,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   //# Execute the updates.
   void TableParseQuery::doUpdate (Bool showTimings, const Table& origTable,
                                   Table& updTable, const Vector<rownr_t>& rownrs,
-                                  const CountedPtr<TableExprGroupResult>& groups)
+                                  const std::shared_ptr<TableExprGroupResult>& groups)
   {
     Timer timer;
     AlwaysAssert (updTable.nrow() == rownrs.size(), AipsError);
@@ -778,11 +778,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   //# Execute the groupby.
-  CountedPtr<TableExprGroupResult> TableParseQuery::doGroupby
+  std::shared_ptr<TableExprGroupResult> TableParseQuery::doGroupby
   (Bool showTimings)
   {
     Timer timer;
-    CountedPtr<TableExprGroupResult> result = groupby_p.execGroupAggr(rownrs_p);
+    std::shared_ptr<TableExprGroupResult> result = groupby_p.execGroupAggr(rownrs_p);
     if (showTimings) {
       timer.show ("  Groupby     ");
     }
@@ -803,7 +803,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   Bool TableParseQuery::doHaving (Bool showTimings,
-                                  const CountedPtr<TableExprGroupResult>& groups)
+                                  const std::shared_ptr<TableExprGroupResult>& groups)
   {
     Timer timer;
     // Find the rows matching the HAVING expression.
@@ -894,7 +894,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   Table TableParseQuery::doProject
   (Bool showTimings, const Table& table,
-   const CountedPtr<TableExprGroupResult>& groups)
+   const std::shared_ptr<TableExprGroupResult>& groups)
   {
     Timer timer;
     Table tabp;
@@ -919,7 +919,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   Table TableParseQuery::doProjectExpr
-  (Bool useSel, const CountedPtr<TableExprGroupResult>& groups)
+  (Bool useSel, const std::shared_ptr<TableExprGroupResult>& groups)
   {
     if (! rownrs_p.empty()) {
       // Add the rows if not done yet.
@@ -1259,7 +1259,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Get the row numbers of the result of the possible first step.
     rownrs_p.reference (resultTable.rowNumbers(table));
     // Execute possible groupby/aggregate.
-    CountedPtr<TableExprGroupResult> groupResult;
+    std::shared_ptr<TableExprGroupResult> groupResult;
     if (groupby_p.isUsed() != 0) {
       groupResult = doGroupby (showTimings);
       // Aggregate results and normal table rows need to have the same rownrs,

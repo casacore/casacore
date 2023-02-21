@@ -143,7 +143,6 @@ void VSCExampleVSCEngine::registerClass()
 #include <casacore/tables/DataMan/VirtScaCol.tcc>
 #include <casacore/casa/Utilities/Compare.tcc>
 #include <casacore/casa/Utilities/Copy.tcc>
-#include <casacore/casa/Utilities/CountedPtr.tcc>
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 namespace casacore {
@@ -163,8 +162,8 @@ template void objcopy<VSCExample>(VSCExample *, VSCExample const *, uInt, uInt, 
 template void objset<VSCExample>(VSCExample *, VSCExample, uInt);
 template void objset<VSCExample>(VSCExample *, VSCExample, uInt, uInt);
 template void objmove<VSCExample>(VSCExample *, VSCExample const *, uInt);
-template class CountedPtr<Block<VSCExample> >;
-template class PtrRep<Block<VSCExample> >;
+template class std::shared_ptr<Block<VSCExample>>;
+template class PtrRep<Block<VSCExample>>;
 template String valDataTypeId(VSCExample const *);
 
 }

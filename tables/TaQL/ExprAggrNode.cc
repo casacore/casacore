@@ -180,10 +180,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
   }
 
-  CountedPtr<TableExprGroupFuncBase> TableExprAggrNode::makeGroupAggrFunc()
+  std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNode::makeGroupAggrFunc()
   {
     // Create a new function object because each FuncSet needs its own one.
-    itsFunc = doMakeGroupAggrFunc();
+    itsFunc.reset (doMakeGroupAggrFunc());
     return itsFunc;
   }
 

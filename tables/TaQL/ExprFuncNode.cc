@@ -1723,7 +1723,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTString;
         nodes.resize(1);
-        nodes[0] = new TableExprNodeConstString ("today");
+        nodes[0] = std::make_shared<TableExprNodeConstString>("today");
         return NTDate;
     case mjdtodateFUNC:
         checkNumOfArg (1, 1, nodes);
@@ -1735,7 +1735,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTDate;
         nodes.resize (1);
-        nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
+        nodes[0] = std::make_shared<TableExprNodeConstDate>(MVTime(Time()));
         return NTDate;
     case yearFUNC:
     case monthFUNC:
@@ -1752,7 +1752,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTDate;
         nodes.resize (1);
-        nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
+        nodes[0] = std::make_shared<TableExprNodeConstDate>(MVTime(Time()));
         return dtout;
     case cmonthFUNC:
     case cdowFUNC:
@@ -1765,7 +1765,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTDate;
         nodes.resize (1);
-        nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
+        nodes[0] = std::make_shared<TableExprNodeConstDate>(MVTime(Time()));
         return NTString;
     case stringFUNC:
         if (checkNumOfArg (1, 2, nodes) == 2) {

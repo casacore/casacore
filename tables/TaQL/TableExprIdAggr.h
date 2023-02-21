@@ -31,9 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TableExprId.h>
 #include <casacore/tables/TaQL/ExprGroup.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -84,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     // Construct it from the aggregation results.
-    explicit TableExprIdAggr (const CountedPtr<TableExprGroupResult>& result)
+    explicit TableExprIdAggr (const std::shared_ptr<TableExprGroupResult>& result)
       : itsMagicValue (0xabababab),
         itsResult     (result)
     {}
@@ -108,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     uInt itsMagicValue;
-    CountedPtr<TableExprGroupResult> itsResult;
+    std::shared_ptr<TableExprGroupResult> itsResult;
   };
 
 

@@ -93,9 +93,9 @@ TENShPtr TableExprNodeUnit::useUnit (const TENShPtr& node,
   // Create a unit conversion node for a scalar or array.
   TENShPtr tsnptr;
   if (node->valueType() == VTScalar) {
-    tsnptr = new TableExprNodeUnit (node, unit);
+    tsnptr = std::make_shared<TableExprNodeUnit>(node, unit);
   } else {
-    tsnptr = new TableExprNodeArrayUnit (node, unit);
+    tsnptr = std::make_shared<TableExprNodeArrayUnit>(node, unit);
   }
   if (tsnptr->getUnitFactor() == 1.) {
     // Units are the same, so no conversion needed.

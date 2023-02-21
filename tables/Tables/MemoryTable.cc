@@ -50,8 +50,8 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
 	   ("SetupNewTable object already used for another Table"));
   }
   //# Use MemoryStMan for stored and unbound columns.
-  CountedPtr<TableDesc> tdescPtr  = newtab.tableDescPtr();
-  CountedPtr<ColumnSet> colSetPtr = newtab.columnSetPtr();
+  std::shared_ptr<TableDesc> tdescPtr  = newtab.tableDescPtr();
+  std::shared_ptr<ColumnSet> colSetPtr = newtab.columnSetPtr();
   MemoryStMan stman(colSetPtr->uniqueDataManagerName("MSMTAB"));
   for (uInt i=0; i<tdescPtr->ncolumn(); i++) {
     PlainColumn* col = colSetPtr->getColumn(i);

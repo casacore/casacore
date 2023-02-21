@@ -66,7 +66,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar()
       {
         MArray<Bool> arr = getArrayBool(0);
         if (arr.size() == 1) {
-          return new TableExprNodeConstBool (arr.array().data()[0]);
+          return TENShPtr(new TableExprNodeConstBool (arr.array().data()[0]));
         }
       }
       break;
@@ -74,7 +74,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar()
       {
         MArray<Int64> arr = getArrayInt(0);
         if (arr.size() == 1) {
-          return new TableExprNodeConstInt (arr.array().data()[0]);
+          return TENShPtr(new TableExprNodeConstInt (arr.array().data()[0]));
         }
       }
       break;
@@ -82,7 +82,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar()
       {
         MArray<Double> arr = getArrayDouble(0);
         if (arr.size() == 1) {
-          return new TableExprNodeConstDouble (arr.array().data()[0]);
+          return TENShPtr(new TableExprNodeConstDouble (arr.array().data()[0]));
         }
       }
       break;
@@ -90,7 +90,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar()
       {
         MArray<DComplex> arr = getArrayDComplex(0);
         if (arr.size() == 1) {
-          return new TableExprNodeConstDComplex (arr.array().data()[0]);
+          return TENShPtr(new TableExprNodeConstDComplex (arr.array().data()[0]));
         }
       }
       break;
@@ -98,7 +98,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar()
       {
         MArray<String> arr = getArrayString(0);
         if (arr.size() == 1) {
-          return new TableExprNodeConstString (arr.array().data()[0]);
+          return TENShPtr(new TableExprNodeConstString (arr.array().data()[0]));
         }
       }
       break;
@@ -106,7 +106,7 @@ TENShPtr TableExprNodeArray::makeConstantScalar()
       {
         MArray<MVTime> arr = getArrayDate(0);
         if (arr.size() == 1) {
-          return new TableExprNodeConstDate (arr.array().data()[0]);
+          return TENShPtr(new TableExprNodeConstDate (arr.array().data()[0]));
         }
       }
       break;

@@ -253,7 +253,7 @@ void TableExprNodeINInt::doOptimize (TENShPtr& rnode)
       arr.reference (values.flatten());
     }
     // Use an unordered_map for fast lookup.
-    rnode.reset (new TableExprNodeSetOptUSet<Int64> (*rnode, arr));
+    rnode = std::make_shared<TableExprNodeSetOptUSet<Int64>>(*rnode, arr);
   }
 }
 Bool TableExprNodeINInt::getBool (const TableExprId& id)
@@ -315,7 +315,7 @@ void TableExprNodeINString::doOptimize (TENShPtr& rnode)
         // Remove masked elements.
         arr.reference (values.flatten());
       }
-      rnode.reset (new TableExprNodeSetOptUSet<String> (*rnode, arr));
+      rnode = std::make_shared<TableExprNodeSetOptUSet<String>>(*rnode, arr);
     }
   }
 }

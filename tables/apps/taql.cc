@@ -88,6 +88,21 @@ using namespace std;
 // Define the type for the map of name to (resulttable,command).
 typedef map<String, pair<Table,String> > TableMap;
 
+// Define Deleter objects for a shared_ptr<ostream>
+// cout and cerr should not be deleted.
+class Deleter
+{
+public:
+  Deleter (Bool deleteIt)
+    : itsDelete (deleteIt)
+    {}
+  void operator() (ostream* ptr)
+    { if (itsDelete) delete ptr; }
+private:
+  Bool itsDelete;
+};
+
+
 struct Options
 {
   Bool printSelect;
@@ -101,7 +116,7 @@ struct Options
   String fname;
   String style;
   String outName;
-  CountedPtr<ostream> stream;
+  std::shared_ptr<ostream> stream;
 
   Options()
     : printSelect  (False),   // print explicitly select result?
@@ -114,7 +129,7 @@ struct Options
       separator    ('\t'),    // default separator between printed columns
       style        ("python"),
       outName      ("stdout"),
-      stream       (CountedPtr<ostream>(&cout, False))  // default stdout
+      stream       (&cout, Deleter(False))  // default stdout
   {}
 };
 
@@ -1214,15 +1229,16 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
         String outname(fname);
         outname.downcase();
         if (outname == "stdout") {
-          options.stream  = CountedPtr<ostream>(&cout, False);
+          options.stream  = std::shared_ptr<ostream>(&cout, Deleter(False));
           options.outName = "stdout";
         } else if (outname == "stderr") {
-          options.stream = CountedPtr<ostream>(&cerr, False);
+          options.stream  = std::shared_ptr<ostream>(&cerr, Deleter(False));
           options.outName = "stderr";
         } else {
           try {
             outname = Path(fname).absoluteName();
-            options.stream = new ofstream(outname);
+            options.stream = std::shared_ptr<ostream>
+              (new ofstream(outname), Deleter(True));
             options.outName = outname;
           } catch (std::exception& x) {
             cerr << "Could not create output file " << fname << endl;

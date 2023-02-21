@@ -71,9 +71,9 @@ public:
   Int64 getInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    const vector<TableExprId>& ids = aid.result().ids(id.rownr());
+    const std::vector<TableExprId>& ids = aid.result().ids(id.rownr());
     Int64 sum3 = 0;
-    for (vector<TableExprId>::const_iterator it=ids.begin();
+    for (std::vector<TableExprId>::const_iterator it=ids.begin();
          it!=ids.end(); ++it){
       Int64 v = operands()[0]->getInt(*it);
         sum3 += v*v*v;
@@ -125,16 +125,16 @@ int main()
       set.add (TableExprNodeSetElem(node1));
       TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tabInfo));
       TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getRep().get());
-      vector<TableExprNodeRep*> aggrNodes = TableExprNodeUtil::getAggrNodes (rep);
+      std::vector<TableExprNodeRep*> aggrNodes = TableExprNodeUtil::getAggrNodes (rep);
       AlwaysAssertExit (aggrNodes.size() == 1);
       AlwaysAssertExit (aggrNodes[0]->isLazyAggregate());
-      CountedPtr<vector<TableExprId> > ids(new vector<TableExprId>());
+      std::shared_ptr<std::vector<TableExprId>> ids(new std::vector<TableExprId>());
       for (uInt i=0; i<tab.nrow(); ++i) {
         ids->push_back (TableExprId(i));
       }
-      vector<CountedPtr<vector<TableExprId> > > idVec(1, ids);
-      vector<CountedPtr<TableExprGroupFuncSet> > funcVec(1);
-      CountedPtr<TableExprGroupResult> res
+      std::vector<std::shared_ptr<std::vector<TableExprId>>> idVec(1, ids);
+      std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcVec(1);
+      std::shared_ptr<TableExprGroupResult> res
         (new TableExprGroupResult(funcVec, idVec));
       TableExprIdAggr aid(res);
       aid.setRownr (0);

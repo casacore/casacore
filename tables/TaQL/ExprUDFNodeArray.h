@@ -95,7 +95,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     void applySelection (const Vector<rownr_t>& rownrs) override;
 
     // UDFs do not need a TableExprGroupFuncBase, so null is returned.
-    CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc() override;
+    std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc() override;
 
     // Functions to get the desired result of a function
     // <group>

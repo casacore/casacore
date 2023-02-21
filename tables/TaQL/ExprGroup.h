@@ -145,12 +145,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Create from the possible set of immediate aggregate functions.
     // No immediate functions were used, thus no TableExprIds needed.
     explicit TableExprGroupResult
-    (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets);
+    (const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets);
     // Create from the possible set of immediate aggregate functions
     // and the set of TableExprIds per group for lazy aggregate functions.
     TableExprGroupResult
-    (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets,
-     const vector<CountedPtr<vector<TableExprId> > >& ids);
+    (const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets,
+     const vector<std::shared_ptr<vector<TableExprId>>>& ids);
     // Get the nr of groups.
     uInt ngroup() const
       { return itsFuncSets.size(); }
@@ -161,8 +161,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     const vector<TableExprId>& ids (uInt group) const
       { return *itsIds[group]; }
   private:
-    vector<CountedPtr<TableExprGroupFuncSet> > itsFuncSets;
-    vector<CountedPtr<vector<TableExprId> > >  itsIds;
+    vector<std::shared_ptr<TableExprGroupFuncSet>> itsFuncSets;
+    vector<std::shared_ptr<vector<TableExprId>>>  itsIds;
   };
 
 
@@ -223,7 +223,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual void finish();
     // Get the assembled TableExprIds of a group. It is specifically meant
     // for TableExprGroupExprId used for lazy aggregation.
-    virtual CountedPtr<vector<TableExprId> > getIds() const;
+    virtual std::shared_ptr<vector<TableExprId>> getIds() const;
     // Get the aggregated value.
     // Immediate classes can return the already calculated value, while
     // lazy classes will get the values of all rows given by the TableExprIds
@@ -338,9 +338,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual ~TableExprGroupExprId();
     virtual Bool isLazy() const;
     virtual void apply (const TableExprId& id);
-    virtual CountedPtr<vector<TableExprId> > getIds() const;
+    virtual std::shared_ptr<vector<TableExprId>> getIds() const;
   private:
-    CountedPtr<vector<TableExprId> > itsIds;
+    std::shared_ptr<vector<TableExprId>> itsIds;
   };
 
   // <summary>
@@ -420,10 +420,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       Array<T> result(shp);
       ArrayIterator<T> iter (result, arr.ndim());
       Array<Bool> mask;
-      CountedPtr<ArrayIterator<Bool> > miter;
+      std::shared_ptr<ArrayIterator<Bool>> miter;
       if (hasMask) {
         mask.resize (shp);
-        miter = new ArrayIterator<Bool> (mask, arr.ndim());
+        miter.reset (new ArrayIterator<Bool> (mask, arr.ndim()));
       }
       for (; id<ids.size(); ++id) {
         MArray<T> values;
@@ -810,13 +810,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprGroupFuncSet& operator= (const TableExprGroupFuncSet&) = delete;
 
     // Add a function object.
-    void add (const CountedPtr<TableExprGroupFuncBase>& func);
+    void add (const std::shared_ptr<TableExprGroupFuncBase>& func);
 
     // Apply the functions to the given row.
     void apply (const TableExprId& id);
 
     // Get the vector of functions.
-    const vector<CountedPtr<TableExprGroupFuncBase> >& getFuncs() const
+    const vector<std::shared_ptr<TableExprGroupFuncBase>>& getFuncs() const
       { return itsFuncs; }
 
     // Get the TableExprId.
@@ -825,7 +825,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     //# Data members.
-    vector<CountedPtr<TableExprGroupFuncBase> > itsFuncs;
+    vector<std::shared_ptr<TableExprGroupFuncBase>> itsFuncs;
     TableExprId itsId;      //# row containing the non-aggregate variables
   };
 

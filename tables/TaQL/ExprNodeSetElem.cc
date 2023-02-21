@@ -155,26 +155,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TENShPtr res;
     switch (dataType()) {
     case NTBool:
-      res = new TableExprNodeConstBool (expr->getBool (id));
+      res = std::make_shared<TableExprNodeConstBool>(expr->getBool(id));
       break;
     case NTInt:
-      res = new TableExprNodeConstInt (expr->getInt (id));
+      res = std::make_shared<TableExprNodeConstInt>(expr->getInt(id));
       break;
     case NTDouble:
-      res = new TableExprNodeConstDouble (expr->getDouble (id));
+      res = std::make_shared<TableExprNodeConstDouble>(expr->getDouble(id));
       break;
     case NTComplex:
-      res = new TableExprNodeConstDComplex (expr->getDComplex (id));
+      res = std::make_shared<TableExprNodeConstDComplex>(expr->getDComplex(id));
       break;
     case NTString:
-      res = new TableExprNodeConstString (expr->getString (id));
+      res = std::make_shared<TableExprNodeConstString>(expr->getString(id));
       break;
     case NTDate:
       // Note that the increment or width for a DateTime is double.
       if (expr->dataType() == NTDate) {
-        res = new TableExprNodeConstDate (expr->getDate (id));
+        res = std::make_shared<TableExprNodeConstDate>(expr->getDate(id));
       } else {
-        res = new TableExprNodeConstDouble (expr->getDouble (id));
+        res = std::make_shared<TableExprNodeConstDouble>(expr->getDouble(id));
       }
       break;
     default:
@@ -920,11 +920,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TENShPtr startp;
     TENShPtr endp;
     if (dataType() == NTDouble) {
-      startp.reset (new TableExprNodeConstDouble(start));
-      endp.reset   (new TableExprNodeConstDouble(end));
+      startp = std::make_shared<TableExprNodeConstDouble>(start);
+      endp   = std::make_shared<TableExprNodeConstDouble>(end);
     } else{
-      startp.reset (new TableExprNodeConstDate(MVTime(start)));
-      endp.reset   (new TableExprNodeConstDate(MVTime(end)));
+      startp = std::make_shared<TableExprNodeConstDate>(MVTime(start));
+      endp   = std::make_shared<TableExprNodeConstDate>(MVTime(end));
     }
     // Create a closed-closed interval.
     return TENSEBShPtr(new TableExprNodeSetElemCont (*this, startp, endp));
@@ -1002,7 +1002,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     TableExprNode s (start ? *start : TableExprNode());
     TableExprNode e (end ? *end : TableExprNode());
     TableExprNode i (incr ? *incr : TableExprNode());
-    itsElem.reset (new TableExprNodeSetElemDiscrete (s, e, i, isEndExcl));
+    itsElem = std::make_shared<TableExprNodeSetElemDiscrete>(s, e, i, isEndExcl);
     init();
   }
 

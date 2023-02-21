@@ -30,7 +30,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -202,7 +202,7 @@ public:
 
 
 private:
-  CountedPtr<LoggerHolderRep> itsRep;
+  std::shared_ptr<LoggerHolderRep> itsRep;
 };
 
 

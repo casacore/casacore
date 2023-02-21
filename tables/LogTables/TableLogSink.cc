@@ -301,7 +301,7 @@ LogSink TableLogSink::makeSink (const LogFilterInterface &filter,
 {
   LogSinkInterface* sink = new TableLogSink (LogFilter(LogMessage::DEBUGGING),
 					     fileName);
-  return LogSink (filter, CountedPtr<LogSinkInterface>(sink));
+  return LogSink (filter, std::shared_ptr<LogSinkInterface>(sink));
 }
 
 } //# NAMESPACE CASACORE - END

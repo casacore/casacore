@@ -1,4 +1,4 @@
-//# PGPlotter.h: Standard plotting object for application programmers.
+//# PGPlotter.cc: Standard plotting object for application programmers.
 //# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -96,13 +96,13 @@ PGPlotter::CreateFunction* PGPlotter::setCreateFunction
 void PGPlotter::detach()
 {
     worker_p->resetPlotNumber();        // Implemented for PGPlotterGlish only
-    CountedPtr<PGPlotterInterface> empty;
+    std::shared_ptr<PGPlotterInterface> empty;
     worker_p = empty;
 }
 
 Bool PGPlotter::isAttached() const
 {
-    return (!worker_p.null());
+    return (static_cast<Bool>(worker_p));
 }
 
 void PGPlotter::message(const String &text)

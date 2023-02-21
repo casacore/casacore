@@ -29,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/System/PGPlotterInterface.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -287,7 +287,7 @@ public:
     virtual void wnad(Float x1, Float x2, Float y1, Float y2);
     // </group>
  private:
-    CountedPtr<PGPlotterInterface> worker_p;
+    std::shared_ptr<PGPlotterInterface> worker_p;
     static CreateFunction* creator_p;
 
     // Throws an exception if !isAttached()

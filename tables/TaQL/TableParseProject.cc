@@ -881,9 +881,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (uInt i=0; i<columnExpr_p.size(); i++) {
       if (! columnExpr_p[i].isNull()) {
         if (projectExprSelColumn_p[i] == useSel) {
-          tpq.addUpdate (new TableParseUpdate (columnNames_p[i],
-                                               columnNameMasks_p[i],
-                                               columnExpr_p[i], False));
+          tpq.addUpdate (std::make_shared<TableParseUpdate>
+                         (columnNames_p[i], columnNameMasks_p[i],
+                          columnExpr_p[i], False));
         }
       }
     }
@@ -899,7 +899,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void TableParseProject::setUpdateNames
-  (std::vector<CountedPtr<TableParseUpdate>>& upd)
+  (std::vector<std::shared_ptr<TableParseUpdate>>& upd)
   {
     for (uInt i=0; i<upd.size(); i++) {
       upd[i]->setColumnName     (columnNames_p[i]);
@@ -908,7 +908,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
   
   void TableParseProject::setColumnNames
-    (const std::vector<CountedPtr<TableParseUpdate>>& upd)
+    (const std::vector<std::shared_ptr<TableParseUpdate>>& upd)
   {
     columnNames_p.resize (upd.size());
     for (uInt i=0; i<upd.size(); i++) {

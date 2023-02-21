@@ -53,7 +53,7 @@ void sort1 (Int option)
   arr[7] = "aaab";
   arr[8] = "aaab2";
   arr[9] = "aaab1";
-  CountedPtr<BaseCompare> cmp(new CompareNoCase());
+  std::shared_ptr<BaseCompare> cmp(new CompareNoCase());
   Sort sort;
   sort.sortKey (arr, cmp, sizeof(String));
   Vector<uInt> inx;
@@ -78,7 +78,7 @@ void sort2 (Int option)
   arr[7] = 9;
   arr[8] = 8.99;
   arr[9] = -5;
-  CountedPtr<BaseCompare> cmp(new CompareIntervalReal<Double>(2,1));
+  std::shared_ptr<BaseCompare> cmp(new CompareIntervalReal<Double>(2,1));
   Sort sort;
   sort.sortKey (arr, cmp, sizeof(Double));
   Vector<uInt> inx;
@@ -103,7 +103,7 @@ void sort3 (Int option)
   arr[7] = 9;
   arr[8] = -8;
   arr[9] = -5;
-  CountedPtr<BaseCompare> cmp(new CompareIntervalReal<Double>(3,0));
+  std::shared_ptr<BaseCompare> cmp(new CompareIntervalReal<Double>(3,0));
   Sort sort;
   sort.sortKey (arr, cmp, sizeof(Double));
   Vector<uInt> inx;

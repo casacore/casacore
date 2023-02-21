@@ -207,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void ConcatColumn::allocIterBuf (void*& lastVal, void*& curVal,
-                                   CountedPtr<BaseCompare>& cmpObj)
+                                   std::shared_ptr<BaseCompare>& cmpObj)
     { refColPtr_p[0]->allocIterBuf (lastVal, curVal, cmpObj); }
 
   void ConcatColumn::freeIterBuf (void*& lastVal, void*& curVal)
@@ -324,7 +324,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       rownr_t nrrow = rows.nelements() - st[rowAxis];
       sz[rowAxis] = nrrow;
       Vector<rownr_t> rowPart(tabRowNrs(Slice(st[rowAxis], nrrow))); 
-      CountedPtr<ArrayBase> part (arr.getSection (Slicer(st, sz)));
+      std::unique_ptr<ArrayBase> part (arr.getSection (Slicer(st, sz)));
       accessFunc (refColPtr_p[lastTabNr], RefRows(rowPart), ns, *part);
     }
   }

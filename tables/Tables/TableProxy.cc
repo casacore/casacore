@@ -912,9 +912,9 @@ Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
   // Get the table description.
   std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.tableDesc()));
   }
   Record rec = getTableDesc(*tableDescPtr, cOrder);
 
@@ -954,9 +954,9 @@ Record TableProxy::getColumnDescription (const String& columnName,
   // Get the table description.
   std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.tableDesc()));
   }
   // Return the column description as a record.
   const ColumnDesc& columnDescription = (*tableDescPtr) [columnName];

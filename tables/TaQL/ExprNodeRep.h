@@ -52,7 +52,7 @@ template<class T> class Block;
 
 //# Define a shared pointer to the Rep class.
 class TableExprNodeRep;
-typedef CountedPtr<TableExprNodeRep> TENShPtr;
+typedef std::shared_ptr<TableExprNodeRep> TENShPtr;
 
 
 // <summary>
@@ -298,7 +298,7 @@ public:
     // Create the correct immediate aggregate function object.
     // The default implementation throws an exception, because it should
     // only be called for TableExprAggrNode(Array).
-    virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
+    virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Is the aggregate function a lazy or an immediate one?
     // The default implementation returns True

@@ -85,7 +85,7 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 {}
 
 MSIter::MSIter(const MeasurementSet& ms,
-               const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
+               const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns) :
   timeInSort_p(false),
   arrayInSort_p(false),
   ddInSort_p(false),
@@ -112,7 +112,7 @@ MSIter::MSIter(const MeasurementSet& ms,
 }
 
 MSIter::MSIter(const Block<MeasurementSet>& mss,
-  const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
+               const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns) :
   bms_p(mss),
   timeInSort_p(false),
   arrayInSort_p(false),
@@ -138,7 +138,7 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 }
 
 void MSIter::construct(
-  const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns)
+  const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns)
 {
     nMS_p=bms_p.nelements();
     if (nMS_p==0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
@@ -152,7 +152,7 @@ void MSIter::construct(
 
     // Creating the sorting members to be pass to the TableIterator constructor
     Block<String> sortColumnNames;
-    Block<CountedPtr<BaseCompare>> sortCompareFunctions;
+    Block<std::shared_ptr<BaseCompare>> sortCompareFunctions;
 
     sortColumnNames.resize(sortColumns.size());
     sortCompareFunctions.resize(sortColumns.size());
@@ -339,10 +339,10 @@ void MSIter::construct(const Block<Int>& sortColumns,
   }
 
   // now find the time column and set the compare function
-  Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
+  Block<std::shared_ptr<BaseCompare> > objComp(columns.nelements());
   for (size_t i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
-      timeComp_p = new MSInterval(interval_p);
+      timeComp_p.reset (new MSInterval(interval_p));
       objComp[i] = timeComp_p;
     }
   }
