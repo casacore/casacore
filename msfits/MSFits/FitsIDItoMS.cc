@@ -169,7 +169,7 @@ Vector<Double> FITSIDItoMS1::effChBw;
 //	
 FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
 			   const Int& obsType, const Bool& initFirstMain,
-			   const Float& vanVleck, const Int& zeroPad)
+			   const Float& vanVleck)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
@@ -180,7 +180,6 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
     itsObsType(obsType),
     itsCorrelat(correlat),
     itsVanVleck(vanVleck),
-    itsZeroPad(zeroPad),
     msc_p(0)
 {
 
@@ -2207,8 +2206,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       // Apply digital corrections to data correlated with the DiFX
       // correlator as these have not been applied at the correlator.
       // Various constants have been taken from VLBA Scientific Memo
-      // 12 as the DiFX correlator tries to emulate the original VLBA
-      // FX correlator as closely as possible.  Note that DiFX doesn't
+      // 12 as the DiFX tries to emulate the original VLBA FX
+      // correlator as closely as possible.  Note that DiFX doesn't
       // suffer from saturation so the saturation correction is
       // omitted here.  DiFX currently doesn't support Hanning
       // weighting.
@@ -2262,11 +2261,8 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	if (ant1 != ant2 || rho == NULL) {
 	  // Cross-correlations
 	  vis *= Complex(bfactc);
-	} else if (itsZeroPad == 0) {
-	  // Auto-correlations, without zero-padding
-	  vis *= Complex(bfacta);
 	} else {
-	  // Auto-correlations, with zero-padding
+	  // Auto-correlations
 	  for (Int p=0; p<nCorr; p++) {
 	    if (corrProduct_p(0, p) == corrProduct_p(1, p)) {
 
