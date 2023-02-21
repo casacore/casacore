@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { itsUDF->applySelection (rownrs); }
 
   std::shared_ptr<TableExprGroupFuncBase> TableExprUDFNode::makeGroupAggrFunc()
-    { return std::shared_ptr<TableExprGroupFuncBase>(new TableExprGroupNull(this)); }
+    { return std::make_shared<TableExprGroupNull>(this); }
 
   Bool      TableExprUDFNode::getBool     (const TableExprId& id)
     { return itsUDF->getBool (id); }

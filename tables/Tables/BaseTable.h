@@ -480,9 +480,8 @@ public:
      std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange);
 
     // Create a RefTable object.
-    // The returned object can be casted to RefTable using asRefTable() below.
-    std::shared_ptr<BaseTable> makeRefTable (Bool rowOrder,
-                                             rownr_t initialNrrow);
+    std::shared_ptr<RefTable> makeRefTable (Bool rowOrder,
+                                            rownr_t initialNrrow);
 
     // Check if the row number is valid.
     // It throws an exception if out of range.
@@ -516,6 +515,7 @@ protected:
     Bool makeTableDir();
 
     // Make a true deep copy of the table.
+    // The table is flushed before making the copy.
     void trueDeepCopy (const String& newName,
 		       const Record& dataManagerInfo,
                        const StorageOption&,

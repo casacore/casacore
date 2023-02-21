@@ -243,8 +243,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         }
         // Set ndim and shape if those are constant.
     }
-    TableExprNodeSet* set = new TableExprNodeSet (*this);
-    TENShPtr pset(set);
+    auto set = std::make_shared<TableExprNodeSet>(*this);
     if (itsBounded) {
         // Set the type to VTArray; the getArray functions
         // will convert the set to an array for each row.
@@ -252,7 +251,7 @@ TENShPtr TableExprNodeSet::setOrArray() const
         set->setValueType (VTArray);
         set->setShape();
     }
-    return pset;
+    return set;
 }
 
 void TableExprNodeSet::setShape()

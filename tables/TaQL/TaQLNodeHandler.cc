@@ -473,26 +473,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       TaQLNodeResult ires1 = visitNode (node.itsIndices1);
       if (node.itsIndices2.isValid()) {
         TaQLNodeResult ires2 = visitNode (node.itsIndices2);
-        topStack()->addUpdate (std::shared_ptr<TableParseUpdate>
-                               (new TableParseUpdate(node.itsName,
-                                                     node.itsNameMask,
-                                                     getHR(ires1).getExprSet(),
-                                                     getHR(ires2).getExprSet(),
-                                                     expr,
-                                                     node.itsIndices1.style())));
+        topStack()->addUpdate (std::make_shared<TableParseUpdate>
+                               (node.itsName,
+                                node.itsNameMask,
+                                getHR(ires1).getExprSet(),
+                                getHR(ires2).getExprSet(),
+                                expr,
+                                node.itsIndices1.style()));
       } else {
-        topStack()->addUpdate (std::shared_ptr<TableParseUpdate>
-                               (new TableParseUpdate(node.itsName,
-                                                     node.itsNameMask,
-                                                     getHR(ires1).getExprSet(),
-                                                     expr,
-                                                     node.itsIndices1.style())));
+        topStack()->addUpdate (std::make_shared<TableParseUpdate>
+                               (node.itsName,
+                                node.itsNameMask,
+                                getHR(ires1).getExprSet(),
+                                expr,
+                                node.itsIndices1.style()));
       }
     } else {
-      topStack()->addUpdate (std::shared_ptr<TableParseUpdate>
-                             (new TableParseUpdate(node.itsName,
-                                                   node.itsNameMask,
-                                                   expr)));
+      topStack()->addUpdate (std::make_shared<TableParseUpdate>
+                             (node.itsName,
+                              node.itsNameMask,
+                              expr));
     }
     return TaQLNodeResult();
   }
@@ -1065,9 +1065,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // Take the description for the new column from the old one.
       topStack()->handleColSpec (names[i], names[i+1], String(), Record());
       // Add an update command.
-      topStack()->addUpdate (std::shared_ptr<TableParseUpdate>
-                             (new TableParseUpdate (names[i], String(),
-                                                    tab.col(names[i+1]))));
+      topStack()->addUpdate (std::make_shared<TableParseUpdate>
+                             (names[i], String(), tab.col(names[i+1])));
     }
     // Execute it all.
     topStack()->handleCopyCol (node.style().doTiming());
@@ -1157,8 +1156,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         TableExprNode expr = getHR(eres).getExpr();
         exprs.push_back (expr);
         if (i == 0) {
-          topStack()->addUpdate (std::shared_ptr<TableParseUpdate>
-                                 (new TableParseUpdate("", "", expr)));
+          topStack()->addUpdate (std::make_shared<TableParseUpdate>
+                                 ("", "", expr));
         }
       }
     }

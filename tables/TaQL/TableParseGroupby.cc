@@ -225,9 +225,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     rownrs.reference (resRownrs);
     // Save the aggregation results in a result object.
-    std::shared_ptr<TableExprGroupResult> result
-      (new TableExprGroupResult (funcSets, ids));
-    return result;
+    return std::make_shared<TableExprGroupResult>(funcSets, ids);
   }
 
   std::shared_ptr<TableExprGroupResult> TableParseGroupby::countAll
@@ -239,10 +237,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // last row.
     // Make a set containing the count(*) aggregate function object.
     std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets
-      (1, std::shared_ptr<TableExprGroupFuncSet>(new TableExprGroupFuncSet()));
+      (1, std::make_shared<TableExprGroupFuncSet>());
     std::shared_ptr<TableExprGroupFuncBase> funcb = itsAggrNodes[0]->makeGroupAggrFunc();
     TableExprGroupCountAll& func = dynamic_cast<TableExprGroupCountAll&>(*funcb);
-    // Note: add turns it into a std::shared_ptr, so it will be deleted automatically.
     funcSets[0]->add (funcb);
     // The nr of rows is the result of count(*), so simply set it.
     func.setResult (rownrs.size());
@@ -251,7 +248,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       rownrs.reference (Vector<rownr_t>(1, rownrs[rownrs.size()-1]));
     }
     // Save the aggregation results in a result object.
-    return std::shared_ptr<TableExprGroupResult>(new TableExprGroupResult(funcSets));
+    return std::make_shared<TableExprGroupResult>(funcSets);
   }
 
   std::vector<std::shared_ptr<TableExprGroupFuncSet>> TableParseGroupby::multiKey
@@ -276,8 +273,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       std::map<TableExprGroupKeySet, Int>::iterator iter=keyFuncMap.find (keySet);
       if (iter == keyFuncMap.end()) {
         keyFuncMap[keySet] = groupnr;
-        funcSets.push_back (std::shared_ptr<TableExprGroupFuncSet>
-                            (new TableExprGroupFuncSet (nodes)));
+        funcSets.push_back (std::make_shared<TableExprGroupFuncSet>(nodes));
       } else {
         groupnr = iter->second;
       }

@@ -482,7 +482,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void TableParseProject::initDescriptions (const TableDesc& desc,
                                             const Record& dminfo)
   {
-    tableDesc_p = std::shared_ptr<TableDesc>(new TableDesc(desc));
+    tableDesc_p = std::make_shared<TableDesc>(desc);
     dminfo_p    = dminfo;
   }
 
@@ -869,10 +869,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     for (uInt i=0; i<columnExpr_p.size(); i++) {
       if (! columnExpr_p[i].isNull()) {
         if (projectExprSelColumn_p[i] == useSel) {
-          tpq.addUpdate (std::shared_ptr<TableParseUpdate>
-                         (new TableParseUpdate (columnNames_p[i],
-                                                columnNameMasks_p[i],
-                                                columnExpr_p[i], False)));
+          tpq.addUpdate (std::make_shared<TableParseUpdate>
+                         (columnNames_p[i], columnNameMasks_p[i],
+                          columnExpr_p[i], False));
         }
       }
     }
