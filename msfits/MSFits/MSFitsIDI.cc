@@ -290,6 +290,7 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
   // Correlator
   String correlat;
+  Float corVer = 0.0;
   Float vanVleck = 0.0;
 
   // Loop over all HDU in the FITS-IDI file
@@ -303,6 +304,10 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 	correlat = tab.kw("CORRELAT")->asString();
 	correlat.trim();
 	os << LogIO::NORMAL << "Correlator: " << correlat << LogIO::POST;
+      }
+      if(tab.kw("FXCORVER")){
+	corVer = std::stof(tab.kw("FXCORVER")->asString());
+	os << LogIO::NORMAL << "CorVer: " << corVer << LogIO::POST;
       }
       if (tab.kw("VANVLECK")) {
 	vanVleck = tab.kw("VANVLECK")->asFloat();
@@ -321,7 +326,8 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
 
     } else {
       // Process the FITS-IDI input from the position of this binary table
-      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain, vanVleck);
+      FITSIDItoMS1 bintab(infits, correlat, itsObsType, initFirstMain,
+			  vanVleck, corVer);
       initFirstMain = False;
       String hduName = bintab.extname();
       hduName = hduName.before(trailing);

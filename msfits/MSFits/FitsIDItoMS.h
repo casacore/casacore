@@ -129,7 +129,7 @@ public:
 
   FITSIDItoMS1(FitsInput& in, const String& correlat,
 	       const Int& obsType=0, const Bool& initFirstMain=True,
-	       const Float& vanVleck=0.0);
+	       const Float& vanVleck=0.0, const Float& corVer=0.0);
 
   ~FITSIDItoMS1();
   
@@ -300,6 +300,7 @@ protected:
   Double lastTime_p;
   Int itsObsType;
   String itsCorrelat;
+  Float itsCorVer;
   Float itsVanVleck;
   MeasurementSet ms_p;
   MSColumns* msc_p;
@@ -315,6 +316,7 @@ protected:
   String weightyp_p;
   Int nStokes_p;
   Int nBand_p;
+  Double visScl_p;
   static std::map<Int,Int> antIdFromNo;
   static std::map<Int,Int> digiLevels;
   static Vector<Double> effChBw;

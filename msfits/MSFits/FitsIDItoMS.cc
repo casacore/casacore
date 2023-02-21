@@ -169,7 +169,7 @@ Vector<Double> FITSIDItoMS1::effChBw;
 //	
 FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
 			   const Int& obsType, const Bool& initFirstMain,
-			   const Float& vanVleck)
+			   const Float& vanVleck, const Float& corVer)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
@@ -180,6 +180,7 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
     itsObsType(obsType),
     itsCorrelat(correlat),
     itsVanVleck(vanVleck),
+    itsCorVer(corVer),
     msc_p(0)
 {
 
@@ -219,7 +220,9 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
   //
   
   convertKeywords();      
-  
+
+  if (itsCorrelat.length() == 0 && array_p == "VLBA")
+    itsCorrelat = "VLBA";
   
   // 
   // Step 1a: Read the table.info from the MSK table keywords TYPE,
@@ -868,8 +871,11 @@ void FITSIDItoMS1::describeColumns()
 
 	weightypKwPresent_p = False;
 	weightyp_p = "";
+	if (itsCorrelat == "DIFX" || itsCorrelat == "VLBA")
+	  weightyp_p = "CORRELAT";
 	nStokes_p = 1;
 	nBand_p = 1;
+	visScl_p = 1.0;
 
         while((kw = kwl.next())){
 	    kwname = kw->name();
@@ -896,6 +902,9 @@ void FITSIDItoMS1::describeColumns()
 			  << "\" in UV_DATA table. Presently this keyword is ignored."
 			  << LogIO::POST;
 		}
+	    }
+	    else if(kwname.at(0,8)=="VIS_SCAL"){
+		visScl_p = kw->asDouble();
 	    }
 	}
 
@@ -2150,6 +2159,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       nIF_p=1;
     }
     
+    Double weightScale = visScl_p;
+    if (itsCorrelat == "VLBA" && itsCorVer >= 4.17)
+      weightScale *= interval;
+
     //cout <<"ifnomax ="<<max(1,nIF_p)<<endl;
 
     for (Int ifno=0; ifno<max(1,nIF_p); ifno++) {
@@ -2219,11 +2232,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       // own cosine tranform based on an FFT.  And this code simply
       // uses the expressions for rho_2 and rho_4 given in the
       // literature instead of using a lookup table.
-      if (itsCorrelat == "DIFX") {
+      if (itsCorrelat == "DIFX" || itsCorrelat == "VLBA") {
 	const double A = 5.36;
 	const Double H = 0.87890625;
 	Double bfacta, bfactc;
-	Double Rm, gamma, alfa;
+	Double Rm, gamma, alfa, sat;
 	Double (*rho)(Double) = NULL;
 
 	if (digiLevels[ant1] == 4 && digiLevels[ant2] == 4) {
@@ -2289,8 +2302,14 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	      // Cosine transform back to frequency domain
 	      redftPlan.Execute(fftOut.data(), fftIn.data());
 
-	      for (Int chan=0; chan<nChan; chan++)
-		vis(p, chan) = fftIn[chan] / (2*nChan);
+	      for (Int chan=0; chan<nChan; chan++) {
+		if (itsCorrelat == "VLBA")
+		  sat = 1.0 + (nCorr > 2 ? 0.25 : 0.125) * weightSpec(p, chan);
+		else
+		  sat = 1.0;
+
+		vis(p, chan) = sat * fftIn[chan] / (2*nChan);
+	      }
 	    } else {
 	      for (Int chan=0; chan<nChan; chan++)
 		vis(p, chan) *= Complex(bfactc);
@@ -2300,7 +2319,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       }
 
       if (weightyp_p == "CORRELAT")
-	vis /= weightSpec;
+	vis /= ((Float)weightScale * weightSpec);
 
       // determine the spectralWindowId
       Int spW = ifno;
@@ -2325,9 +2344,9 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  const Int p = corrIndex_p[pol];
 
 	  if (ant1 == ant2)
-	    weightSpec(p, chan) *= interval * effChBw(spW);
+	    weightSpec(p, chan) *= visScl_p * interval * effChBw(spW);
 	  else
-	    weightSpec(p, chan) *= 2 * interval * effChBw(spW);
+	    weightSpec(p, chan) *= visScl_p * 2 * interval * effChBw(spW);
 
 	  if (weightSpec(p, chan) > 0.0)
 	    sigmaSpec(p, chan) = 1.0f / sqrt(weightSpec(p, chan));
