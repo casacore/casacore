@@ -69,7 +69,7 @@ public:
     // FIXME make protected once refactor is complete
     void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
-    void setMedian(CountedPtr<AccumType> median) { _median = median; }
+    void setMedian(std::shared_ptr<AccumType> median) { _median = median; }
 
 protected:
 
@@ -101,13 +101,13 @@ protected:
 
     StatisticsDataset<CASA_STATP>* _getDataset() { return _dataset; }
 
-    CountedPtr<AccumType> _getMedian() const { return _median; }
+    std::shared_ptr<AccumType> _getMedian() const { return _median; }
 
-    CountedPtr<AccumType> _getMedianAbsDevMedian() const {
+    std::shared_ptr<AccumType> _getMedianAbsDevMedian() const {
         return _medAbsDevMed;
     }
 
-    void _setMedianAbsDevMedian(CountedPtr<AccumType> medAbsDevMed) {
+    void _setMedianAbsDevMedian(std::shared_ptr<AccumType> medAbsDevMed) {
         _medAbsDevMed = medAbsDevMed;
     }
 
@@ -117,7 +117,7 @@ private:
     // in the associated non-QuantileComputer computer object,
     // so this should not be wrapped in a smart pointer.
     StatisticsDataset<CASA_STATP>* _dataset{nullptr};
-    CountedPtr<AccumType> _median{}, _medAbsDevMed{};
+    std::shared_ptr<AccumType> _median{}, _medAbsDevMed{};
 
 };
 

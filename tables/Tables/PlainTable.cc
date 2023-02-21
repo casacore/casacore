@@ -479,7 +479,6 @@ void PlainTable::syncTable()
     TableRecord& newKeySet = tab->keywordSet();
     newKeySet.setTableAttr (oldKeySet, defaultAttr);
     oldKeySet = newKeySet;
-    delete tab;
 }
 
 

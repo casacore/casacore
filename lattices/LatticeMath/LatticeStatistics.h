@@ -521,9 +521,9 @@ private:
    };
 
    const MaskedLattice<T>* pInLattice_p;
-   std::shared_ptr<const MaskedLattice<T> > _inLatPtrMgr;
+   std::shared_ptr<const MaskedLattice<T>> _inLatPtrMgr;
 
-   CountedPtr<TempLattice<AccumType> > pStoreLattice_p;
+   std::shared_ptr<TempLattice<AccumType>> pStoreLattice_p;
    Vector<Int> nxy_p, statsToPlot_p;
    Vector<T> range_p;
    Bool noInclude_p, noExclude_p;
@@ -570,14 +570,14 @@ private:
    template <class U, class V>
    void _computeQuantiles(
        AccumType& median, AccumType& medAbsDevMed, AccumType& q1, AccumType& q3,
-       CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg,
+       std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg,
        uInt64 knownNpts, AccumType knownMin, AccumType knownMax
    ) const;
 
    template <class U, class V>
    void _computeQuantilesForStatsFramework(
         StatsData<AccumType>& stats, AccumType& q1, AccumType& q3,
-        CountedPtr<StatisticsAlgorithm<AccumType, U, V> > statsAlg
+        std::shared_ptr<StatisticsAlgorithm<AccumType, U, V>> statsAlg
    ) const;
 
 // Find the median per cursorAxes chunk
@@ -622,33 +622,33 @@ private:
            MaskedLatticeStatsDataProvider<T>& maskedLattDP
    ) const;
 
-   void _doStatsLoop(uInt nsets, CountedPtr<LattStatsProgress> progressMeter);
+   void _doStatsLoop(uInt nsets, std::shared_ptr<LattStatsProgress> progressMeter);
 
    void _computeStatsUsingArrays(
-       CountedPtr<LattStatsProgress> progressMeter, 
+       std::shared_ptr<LattStatsProgress> progressMeter, 
        const IPosition& cursorShape
    );
 
    void _computeStatsUsingLattDataProviders(
        LatticeStepper& stepper, SubLattice<T> subLat, Slicer& slicer,
-       CountedPtr<LattStatsProgress> progressMeter, uInt nsets
+       std::shared_ptr<LattStatsProgress> progressMeter, uInt nsets
    );
 
    IPosition _cursorShapeForArrayMethod(uInt64 setSize) const;
 
    void _doComputationUsingArrays(
        std::vector<
-           CountedPtr<
+           std::shared_ptr<
                StatisticsAlgorithm<
                    AccumType, typename Array<T>::const_iterator,
                    Array<Bool>::const_iterator
                >
            >
        >& sa, T& overallMin, T& overallMax, IPosition& arrayShape,
-       std::vector<Array<T> >& dataArray,
-       std::vector<Array<Bool> >& maskArray, std::vector<IPosition>& curPos,
+       std::vector<Array<T>>& dataArray,
+       std::vector<Array<Bool>>& maskArray, std::vector<IPosition>& curPos,
        uInt nthreads, Bool isChauv,
-       Bool isMasked, Bool isReal, CountedPtr<const DataRanges> range
+       Bool isMasked, Bool isReal, std::shared_ptr<const DataRanges> range
    );
 
    void _fillStorageLattice(

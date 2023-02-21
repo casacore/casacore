@@ -684,7 +684,7 @@ public:
     return arr;
   }
 
-private:
+protected:
 
   // Get the column info for toAscii.
   Bool getColInfo (const String& colName, Bool useBrackets,

@@ -72,9 +72,8 @@ class RawIO: public TypeIO
 {
 public: 
     // Constructor.  The read/write functions will use the given ByteIO object
-    // as the data store.  If takeOver is True the this class will delete the
-    // supplied pointer. Otherwise the caller is responsible for this.
-    explicit RawIO (ByteIO* byteIO, Bool takeOver=False);
+    // as the data store.
+    explicit RawIO (const std::shared_ptr<ByteIO>& byteIO);
 
     // The copy constructor uses reference semantics
     RawIO (const RawIO& rawIO);

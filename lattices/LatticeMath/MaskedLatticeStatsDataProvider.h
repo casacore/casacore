@@ -116,7 +116,7 @@ public:
 
 private:
 
-	CountedPtr<RO_MaskedLatticeIterator<T> > _iter;
+	std::shared_ptr<RO_MaskedLatticeIterator<T>> _iter;
 	Array<T> _currentSlice;
 	Array<Bool> _currentMaskSlice;
 	const T* _currentPtr;

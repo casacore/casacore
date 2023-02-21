@@ -33,8 +33,8 @@ BaseSinkSource::BaseSinkSource()
 : itsTypeIO ()
 {}
 
-BaseSinkSource::BaseSinkSource (TypeIO* typeIO, Bool takeOver)
-: itsTypeIO (typeIO, takeOver)
+BaseSinkSource::BaseSinkSource (const std::shared_ptr<TypeIO>& typeIO)
+: itsTypeIO (typeIO)
 {}
 
 BaseSinkSource::BaseSinkSource (const BaseSinkSource& sinkSource)
@@ -51,17 +51,6 @@ BaseSinkSource& BaseSinkSource::operator= (const BaseSinkSource& sinkSource)
 
 BaseSinkSource::~BaseSinkSource()
 {}
-
-
-TypeIO& BaseSinkSource::typeIO()
-{
-    return *itsTypeIO;
-}
-
-const TypeIO& BaseSinkSource::typeIO() const
-{
-    return *itsTypeIO;
-}
 
 Int64 BaseSinkSource::seek (Int64 offset, ByteIO::SeekOption option)
 {
@@ -89,7 +78,7 @@ Bool BaseSinkSource::isSeekable() const
 
 Bool BaseSinkSource::isNull() const
 {
-    return itsTypeIO.null();
+    return !itsTypeIO;
 }
 
 } //# NAMESPACE CASACORE - END

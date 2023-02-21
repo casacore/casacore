@@ -72,7 +72,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::reset() {
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const std::vector<AccumType>& maxLimit
@@ -94,7 +94,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -117,7 +117,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -140,7 +140,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
@@ -164,7 +164,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -187,7 +187,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -210,7 +210,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
@@ -236,7 +236,7 @@ void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void HingesFencesQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,

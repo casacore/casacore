@@ -28,6 +28,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <memory>
 
 namespace casacore {
 
@@ -156,22 +157,22 @@ private:
     // Accumulators for sum, sum squared, number of points
     // minimum, and maximum
 
-    CountedPtr<Block<Double> > _npts;
-    CountedPtr<Block<U> > _sum, _sumSq,
+    std::shared_ptr<Block<Double>> _npts;
+    std::shared_ptr<Block<U>> _sum, _sumSq,
         _mean, _variance, _nvariance, _sigma;
-    CountedPtr<Block<T> > _min, _max;
-    CountedPtr<Block<Bool> > _initMinMax;
+    std::shared_ptr<Block<T>> _min, _max;
+    std::shared_ptr<Block<Bool>> _initMinMax;
 
     uInt64 _n1, _n3;
 
     void _convertNPts(
-        Double*& nptsPtr, CountedPtr<Block<Double> > npts,
-        CountedPtr<Block<DComplex> > nptsComplex
+        Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+        std::shared_ptr<Block<DComplex>> nptsComplex
     ) const;
 
     void _convertNPts(
-        DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
-        CountedPtr<Block<DComplex> > nptsComplex
+        DComplex*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+        std::shared_ptr<Block<DComplex>> nptsComplex
     ) const;
 };
 

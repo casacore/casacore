@@ -62,17 +62,17 @@ StatsData<AccumType> initializeStatsData() {
 template <class AccumType>
 StatsData<AccumType> copy(const StatsData<AccumType>& stats) {
 	StatsData<AccumType> mycopy = stats;
-	if (! mycopy.max.null()) {
-		mycopy.max = new AccumType(*mycopy.max);
+	if (mycopy.max) {
+            mycopy.max.reset (new AccumType(*mycopy.max));
 	}
-	if (! mycopy.median.null()) {
-		mycopy.median = new AccumType(*mycopy.median);
+	if (mycopy.median) {
+            mycopy.median.reset (new AccumType(*mycopy.median));
 	}
-	if (! mycopy.medAbsDevMed.null()) {
-		mycopy.medAbsDevMed = new AccumType(*mycopy.medAbsDevMed);
+	if (mycopy.medAbsDevMed) {
+            mycopy.medAbsDevMed.reset (new AccumType(*mycopy.medAbsDevMed));
 	}
-	if (! mycopy.min.null()) {
-		mycopy.min = new AccumType(*mycopy.min);
+	if (mycopy.min) {
+            mycopy.min.reset (new AccumType(*mycopy.min));
 	}
 	return mycopy;
 }
@@ -112,14 +112,14 @@ Record toRecord(const StatsData<AccumType>& stats) {
 	r.define(
 		StatisticsData::toString(StatisticsData::VARIANCE), stats.variance
 	);
-	if (! stats.max.null()) {
+	if (stats.max) {
 		r.define(
 			StatisticsData::toString(StatisticsData::MAX), *stats.max
 		);
 		r.define("maxDatasetIndex", stats.maxpos.first);
 		r.define("maxIndex", stats.maxpos.second);
 	}
-	if (! stats.min.null()) {
+	if (stats.min) {
 		r.define(
 			StatisticsData::toString(StatisticsData::MIN), *stats.min
 		);

@@ -51,9 +51,9 @@ void LattStatsProgress::initDerived()
 // calls this initDerived function
 // 
 
-    _meter = new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
-                                 String("Accumulation Iterations"), String(""), String(""),
-                                 True, max(1,Int(expectedNsteps()/20)));
+  _meter.reset (new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
+                                  String("Accumulation Iterations"), String(""), String(""),
+                                  True, max(1,Int(expectedNsteps()/20))));
 }
 
 void LattStatsProgress::nstepsDone (uInt nsteps)

@@ -188,10 +188,10 @@ public:
 
     static void mergeResults(
         std::vector<BinCountArray>& bins,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame,
         const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
-        const std::unique_ptr<std::vector<CountedPtr<AccumType>>[]>& tSameVal,
+        const std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]>& tSameVal,
         const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax
     );
 

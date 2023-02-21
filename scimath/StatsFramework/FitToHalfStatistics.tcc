@@ -44,7 +44,7 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     FitToHalfStatisticsData::USE_DATA useData,
     AccumType centerValue
 ) : ConstrainedRangeStatistics<CASA_STATP>(
-        CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP> >(
+        std::shared_ptr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
             new ConstrainedRangeQuantileComputer<CASA_STATP>(
                 &this->_getDataset())
             )
@@ -63,8 +63,8 @@ FitToHalfStatistics<CASA_STATP>::FitToHalfStatistics(
     _centerType(other._centerType), _useLower(other._useLower),
     _centerValue(other._centerValue), _statsData(copy(other._statsData)),
     _doMedAbsDevMed(other._doMedAbsDevMed), _rangeIsSet(other._rangeIsSet),
-    _realMax(other._realMax.null() ? NULL : new AccumType(*other._realMax)),
-    _realMin(other._realMin.null() ? NULL : new AccumType(*other._realMin)),
+    _realMax(other._realMax ? new AccumType(*other._realMax) : nullptr),
+    _realMin(other._realMin ? new AccumType(*other._realMin) : nullptr),
     _isNullSet(False), _range(other._range) {}
 
 CASA_STATD
@@ -85,8 +85,8 @@ FitToHalfStatistics<CASA_STATP>::operator=(
     _statsData = copy(other._statsData);
     _doMedAbsDevMed = other._doMedAbsDevMed;
     _rangeIsSet = other._rangeIsSet;
-    _realMax = other._realMax.null() ? NULL : new AccumType(*other._realMax);
-    _realMin = other._realMin.null() ? NULL : new AccumType(*other._realMin);
+    _realMax.reset (other._realMax ? new AccumType(*other._realMax) : nullptr);
+    _realMin.reset (other._realMin ? new AccumType(*other._realMin) : nullptr);
     _isNullSet = other._isNullSet;
     _range = other._range;
     return *this;
@@ -100,12 +100,12 @@ FitToHalfStatistics<CASA_STATP>::clone() const {
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64> , CountedPtr<AccumType> ,
-    CountedPtr<AccumType> , uInt , Bool , uInt
+    std::shared_ptr<uInt64> , std::shared_ptr<AccumType> ,
+    std::shared_ptr<AccumType> , uInt , Bool , uInt
 ) {
-    CountedPtr<AccumType> median = _getStatsData().median;
+    auto median = _getStatsData().median;
     if (! median) {
-        median = new AccumType(_centerValue);
+        median.reset (new AccumType(_centerValue));
         _getStatsData().median = median;
         this->_getQuantileComputer()->setMedian(median);
     }
@@ -115,8 +115,8 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedian(
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantileToValue,
-    const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    const std::set<Double>& quantiles, std::shared_ptr<uInt64> knownNpts,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     // The median is trivial, we just need to compute the quantiles
@@ -129,8 +129,8 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAndQuantiles(
 
 CASA_STATD
 AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
     if (! _getStatsData().medAbsDevMed) {
@@ -142,32 +142,33 @@ AccumType FitToHalfStatistics<CASA_STATP>::getMedianAbsDevMed(
         );
         // The number of points to hand to the base class is the number of real
         // data points, or exactly half of the total number of points
-        CountedPtr<uInt64> realNPts = knownNpts.null()
-            ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
-        CountedPtr<AccumType> realMin, realMax;
+        std::shared_ptr<uInt64> realNPts(
+            new uInt64(knownNpts ? *knownNpts/2 : getNPts()/2)
+        );
+        std::shared_ptr<AccumType> realMin, realMax;
         // need to set the median in the quantile computer object here. The
         // getMedian() call will do that, so we don't need to capture the return
         // value
         getMedian();
-        _getStatsData().medAbsDevMed = new AccumType(
+        _getStatsData().medAbsDevMed.reset (new AccumType(
             ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
                 realNPts, knownMin, knownMax, binningThreshholdSizeBytes,
                 persistSortedArray, nBins
             )
-        );
+        ));
     }
     return *_getStatsData().medAbsDevMed;
 }
 
 CASA_STATD
 void FitToHalfStatistics<CASA_STATP>::_getMinMax(
-        CountedPtr<AccumType>& realMin, CountedPtr<AccumType>& realMax,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax
+    std::shared_ptr<AccumType>& realMin, std::shared_ptr<AccumType>& realMax,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax
 ) {
-    realMin = new AccumType(_centerValue);
-    realMax = new AccumType(_centerValue);
+    realMin.reset (new AccumType(_centerValue));
+    realMax.reset (new AccumType(_centerValue));
     AccumType mymin, mymax;
-    if (knownMin.null() || knownMax.null()) {
+    if (!knownMin || !knownMax) {
         getMinMax(mymin, mymax);
     }
     else {
@@ -175,10 +176,10 @@ void FitToHalfStatistics<CASA_STATP>::_getMinMax(
         mymax = *knownMax;
     }
     if (_useLower) {
-        realMin = new AccumType(mymin);
+        realMin.reset (new AccumType(mymin));
     }
     else {
-        realMax = new AccumType(mymax);
+        realMax.reset (new AccumType(mymax));
     }
 }
 
@@ -204,16 +205,16 @@ void FitToHalfStatistics<CASA_STATP>::getMinMax(
         // calculation of accumulated statistics, in
         // _updateDataProviderMaxMin(). if those have been done previously, this
         // if block won't be entered so they will not be computed again here
-        _realMin = new AccumType(mymin);
-        _realMax = new AccumType(mymax);
+        _realMin.reset (new AccumType(mymin));
+        _realMax.reset (new AccumType(mymax));
         if (_useLower) {
             mymax = TWO*_centerValue - mymin;
         }
         else {
             mymin = TWO*_centerValue - mymax;
         }
-        _getStatsData().min = new AccumType(mymin);
-        _getStatsData().max = new AccumType(mymax);
+        _getStatsData().min.reset (new AccumType(mymin));
+        _getStatsData().max.reset (new AccumType(mymax));
     }
     else {
         mymin = *_getStatsData().min;
@@ -246,8 +247,8 @@ void FitToHalfStatistics<CASA_STATP>::_getRealMinMax(
 
 CASA_STATD
 std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    const std::set<Double>& fractions, std::shared_ptr<uInt64> knownNpts,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     ThrowIf(
@@ -255,7 +256,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
         "Value of all quantiles must be between 0 and 1 (noninclusive)"
     );
     ThrowIf (
-        ! knownNpts.null() && *knownNpts % 2 != 0,
+        knownNpts && *knownNpts % 2 != 0,
         "knownNpts must be even for this class"
     );
     _setRange();
@@ -289,7 +290,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
                 // quantile is in virtual part of data set
                 std::set<Double> actualF;
                 actualF.insert(q);
-                uInt64 allNPts = knownNpts.null() ? getNPts() : *knownNpts;
+                uInt64 allNPts = knownNpts ? *knownNpts : getNPts();
                 auto actualFToI = StatisticsData::indicesFromFractions(
                     allNPts, actualF
                 );
@@ -340,9 +341,10 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
     // of points in half. This is also true if we have to compute using
     // getNPts(), so we need our own value to pass in to the call of the base
     // class' method.
-    CountedPtr<uInt64> realNPts = knownNpts.null()
-        ? new uInt64(getNPts()/2) : new uInt64(*knownNpts/2);
-    CountedPtr<AccumType> realMin, realMax;
+    std::shared_ptr<uInt64> realNPts(
+        new uInt64(knownNpts ? *knownNpts/2 : getNPts()/2)
+    );
+    std::shared_ptr<AccumType> realMin, realMax;
     _getMinMax(realMin, realMax, knownMin, knownMax);
     auto realPart = ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
         realPortionFractions, realNPts, realMin, realMax,
@@ -428,12 +430,12 @@ StatsData<AccumType> FitToHalfStatistics<CASA_STATP>::_getStatistics() {
     if (_useLower) {
         stats.maxpos.first = -1;
         stats.maxpos.second = -1;
-        stats.max = new AccumType(TWO*_centerValue - *stats.min);
+        stats.max.reset (new AccumType(TWO*_centerValue - *stats.min));
     }
     else {
         stats.minpos.first = -1;
         stats.minpos.second = -1;
-        stats.min = new AccumType(TWO*_centerValue - *stats.max);
+        stats.min.reset (new AccumType(TWO*_centerValue - *stats.max));
     }
     return copy(stats);
 }
@@ -452,7 +454,7 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
     // be the same (as in the same memory address) as in the cs object, but in
     // this case a copy will suffice and it does not require making
     // ClassicalStatistics::_getQuantileComputer() public.
-    CountedPtr<ClassicalQuantileComputer<CASA_STATP> > qComputer(
+    std::shared_ptr<ClassicalQuantileComputer<CASA_STATP>> qComputer(
         new ClassicalQuantileComputer<CASA_STATP>(&this->_getDataset())
     );
     cs.setQuantileComputer(qComputer);
@@ -465,16 +467,16 @@ void FitToHalfStatistics<CASA_STATP>::_setRange() {
             : cs.getMedian();
     }
     _getStatsData().mean = _centerValue;
-    _getStatsData().median = new AccumType(_centerValue);
+    _getStatsData().median.reset (new AccumType(_centerValue));
     this->_getQuantileComputer()->setMedian(_getStatsData().median);
     AccumType mymin, mymax;
     cs.getMinMax(mymin, mymax);
     if (_useLower) {
-        _range = new std::pair<AccumType, AccumType>(mymin, _centerValue);
+        _range.reset (new std::pair<AccumType, AccumType>(mymin, _centerValue));
         _isNullSet = mymin > _centerValue;
     }
     else {
-        _range = new std::pair<AccumType, AccumType>(_centerValue, mymax);
+        _range.reset (new std::pair<AccumType, AccumType>(_centerValue, mymax));
         _isNullSet = mymax < _centerValue;
     }
     // median must be set after _setRange(_range) call, because the _setRange()
@@ -597,10 +599,10 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     const Int64 iDataset = this->_getDataset().iDataset();
     if (
         iDataset == threadStats.maxpos.first
-        && (stats.max.null() || *threadStats.max > *stats.max)
+        && (!stats.max || *threadStats.max > *stats.max)
     ) {
-        if (_realMax.null() || *threadStats.max > *_realMax) {
-            _realMax = new AccumType(*threadStats.max);
+        if (!_realMax || *threadStats.max > *_realMax) {
+            _realMax.reset (new AccumType(*threadStats.max));
             if (dataProvider && ! _useLower) {
                 dataProvider->updateMaxPos(threadStats.maxpos);
             }
@@ -608,10 +610,10 @@ void FitToHalfStatistics<CASA_STATP>::_updateDataProviderMaxMin(
     }
     if (
         iDataset == threadStats.minpos.first
-        && (stats.min.null() || (*threadStats.min) < (*stats.min))
+        && (!stats.min || (*threadStats.min) < (*stats.min))
     ) {
-        if (_realMin.null() || (*threadStats.min) < *_realMin) {
-            _realMin = new AccumType(*threadStats.min);
+        if (!_realMin || (*threadStats.min) < *_realMin) {
+            _realMin.reset (new AccumType(*threadStats.min));
             if (dataProvider && _useLower) {
                 dataProvider->updateMinPos(threadStats.minpos);
             }

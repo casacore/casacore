@@ -30,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LatticeMath/LatticeProgress.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -91,7 +91,7 @@ public:
     virtual void done();
 
 private:
-    CountedPtr<ProgressMeter> _meter;
+    std::shared_ptr<ProgressMeter> _meter;
     uInt _currentStep;
 };
 

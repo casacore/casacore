@@ -76,11 +76,8 @@ public:
     // in canonical format.  For small arrays it uses a fixed buffer with
     // length <src>bufferLength</src>. For arrays not fitting in this buffer,
     // it uses a temporary buffer allocated on the heap.
-    // <p>
-    // If takeOver is True the this class will delete the supplied
-    // pointer. Otherwise the caller is responsible for this.
-    explicit LECanonicalIO (ByteIO* byteIO, uInt bufferLength=4096,
-			    Bool takeOver=False);
+    explicit LECanonicalIO (const std::shared_ptr<ByteIO>& byteIO,
+                            uInt bufferLength=4096);
 
     // The copy constructor uses reference semantics
     LECanonicalIO (const LECanonicalIO& canonicalIO);

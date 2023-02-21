@@ -42,16 +42,14 @@ int main ()
 				     ByteIO::New);
     }
     {
-	RegularFileIO regularFileIO (Path("tByteSinkSource_tmp.dat1"),
-				     ByteIO::New);
-	CanonicalIO canonicalIO(&regularFileIO);
-	CanonicalIO canonicalIO1(canonicalIO);
-	canonicalIO1 = canonicalIO;
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSinkSource_tmp.dat1"), ByteIO::New);
+        auto canonicalIO = std::make_shared<CanonicalIO>(regularFileIO);
 
-	ByteSinkSource sinkSource(&canonicalIO);
+	ByteSinkSource sinkSource(canonicalIO);
 	ByteSinkSource sinkSource1(sinkSource);
 	sinkSource1 = sinkSource; 
-	ByteSinkSource sinkSource2(&(sinkSource.typeIO()));
+	ByteSinkSource sinkSource2(sinkSource.typeIO());
     }
     {
 	Bool     testBool = True;
@@ -69,10 +67,10 @@ int main ()
 	uChar    testuChar = 'B';
 	String   testString("This is a teststring");
 
-	RegularFileIO regularFileIO (Path("tByteSinkSource_tmp.dat1"),
-				     ByteIO::New);
-	CanonicalIO canonicalIO(&regularFileIO);
-	ByteSinkSource  sinkSource(&canonicalIO);
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSinkSource_tmp.dat1"), ByteIO::New);
+        auto canonicalIO = std::make_shared<CanonicalIO>(regularFileIO);
+	ByteSinkSource  sinkSource(canonicalIO);
 
 	cout << sinkSource.isReadable() << endl;
 	cout << sinkSource.isWritable() << endl;
@@ -171,16 +169,16 @@ int main ()
 	cout << testString    << endl;
     }
     {
-	RegularFileIO regularFileIO (Path("tByteSinkSource_tmp.dat1"),
-				     ByteIO::Update);
-	CanonicalIO canonicalIO(&regularFileIO, 5);
-	ByteSinkSource sinkSource(&canonicalIO);
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSinkSource_tmp.dat1"), ByteIO::Update);
+        auto canonicalIO = std::make_shared<CanonicalIO>(regularFileIO, 5);
+	ByteSinkSource sinkSource(canonicalIO);
 
-	String   testString;
+	String testString;
 	sinkSource << "This is a teststring";
 	sinkSource.seek (0);
 	sinkSource >> testString;
-	cout << testString    << endl;
+	cout << testString << endl;
     }
     {
 	try {

@@ -800,17 +800,17 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
     }
     //# Now write out the data in all data managers.
     //# Keep track if a data manager indeed wrote something.
-    MemoryIO memio;
-    AipsIO aio(&memio);
+    auto memio = std::make_shared<MemoryIO>();
+    AipsIO aio(memio);
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         if (BLOCKDATAMANVAL(i)->flush (aio, fsync)) {
 	    dataManChanged_p[i] = True;
 	    written = True;
 	}
 	if (writeTable) {
-	    ios.put (uInt(memio.length()), memio.getBuffer());
+	    ios.put (uInt(memio->length()), memio->getBuffer());
 	}
-	memio.clear();
+	memio->clear();
     }
     if (multiFile_p) {
       multiFile_p->flush();
@@ -820,7 +820,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 
 
 rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndian,
-                         const TSMOption& tsmOption)
+                            const TSMOption& tsmOption)
 {
     //# If the first value is negative, it is the version.
     //# Otherwise it is nrrow_p.
@@ -893,8 +893,8 @@ rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndi
 	uChar* data;
 	uInt leng;
 	ios.getnew (leng, data);
-	MemoryIO memio (data, leng);
-	AipsIO aio(&memio);
+        auto memio = std::make_shared<MemoryIO>(data, leng);
+	AipsIO aio(memio);
 	rownr_t nrrow = BLOCKDATAMANVAL(i)->open64 (nrrow_p, aio);
         if (nrrow > nrrow_p) {
           nrrow_p = nrrow;

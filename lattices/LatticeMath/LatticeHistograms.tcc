@@ -805,8 +805,7 @@ Bool LatticeHistograms<T>::displayOneHistogram (const T& linearSum,
 
 // Write values of the display axes on the plot
  
-   T* dummy = 0;
-   DataType type = whatType(dummy);
+   DataType type = whatType<T>();
    Float nchar = 0.5;
    if (type==TpComplex) nchar = 1.5;
    String coords = writeCoordinates(histPos);
@@ -960,8 +959,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os,
       setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
       setStream(os6, oPrec); setStream(os7, oPrec);
 //
-      T* dummy = 0;
-      DataType type = whatType(dummy);
+      DataType type = whatType<T>();
       Int oWidth;
       if (type==TpFloat) {  
          oWidth = 15;               //

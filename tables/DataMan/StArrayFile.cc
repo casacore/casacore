@@ -59,14 +59,14 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     }
     //# Open file name as input and/or output; throw exception if it fails.
     if (mfile) {
-      file_p = new MFFileIO (mfile, fname, fop);
+      file_p.reset (new MFFileIO (mfile, fname, fop));
     } else {
-      file_p = new RegularFileIO (RegularFile(fname), fop, bufferSize);
+      file_p.reset (new RegularFileIO (RegularFile(fname), fop, bufferSize));
     }
     if (bigEndian) {
-	iofil_p = new CanonicalIO (file_p);
+      iofil_p.reset (new CanonicalIO (file_p));
     }else{
-	iofil_p = new LECanonicalIO (file_p);
+      iofil_p.reset (new LECanonicalIO (file_p));
     }
     AlwaysAssert (iofil_p != 0, AipsError);
     swput_p = iofil_p->isWritable();
@@ -91,8 +91,6 @@ StManArrayFile::~StManArrayFile ()
 {
     //# Write the version and file length at the beginning.
     flush (False);
-    delete iofil_p;
-    delete file_p;
 }
 
 

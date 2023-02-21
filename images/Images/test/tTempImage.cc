@@ -136,9 +136,9 @@ void doIt (TempImage<Int>& scratch)
 // Stream, unstream, and check the image.
 void streamImage (ImageInterface<Int>& img)
 {
-  MemoryIO membuf;
-  CanonicalIO canio (&membuf);
-  AipsIO os (&canio);
+  auto membuf = std::make_shared<MemoryIO>();
+  auto canio  = std::make_shared<CanonicalIO>(membuf);
+  AipsIO os (canio);
   // Write the image.
   os.putstart("Image", 1);
   {
@@ -146,7 +146,7 @@ void streamImage (ImageInterface<Int>& img)
     String msg;
     AlwaysAssertExit (img.toRecord(msg, rec));
     os <<  rec;
-                      }
+  }
   os << img.get();
   os << img.isMasked();
   if (img.isMasked()) {

@@ -273,8 +273,8 @@ public:
     // </group>
 
 private:
-    ByteIO* file_p;                //# File object
-    TypeIO* iofil_p;               //# IO object
+    std::shared_ptr<ByteIO> file_p;                //# File object
+    std::shared_ptr<TypeIO> iofil_p;               //# IO object
     Int64   leng_p;                //# File length
     uInt    version_p;             //# Version of StArrayFile file
     Bool    swput_p;               //# True = put is possible

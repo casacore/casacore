@@ -29,8 +29,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperParam.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -138,7 +138,7 @@ public:
 protected:
   //# Data
   // The function aid object
-  CountedPtr<WrapperBase<T> > doit_p;
+  std::shared_ptr<WrapperBase<T>> doit_p;
 
   //# Make members of parent classes known.
 protected:
