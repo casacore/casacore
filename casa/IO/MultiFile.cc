@@ -218,7 +218,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // If continuation is needed, they might change and cannot
     // be written yet.
     Int64 todo = mio->length();
-    DebugAssert (static_cast<uInt64>(todo) <= mio.allocated(), AipsError);
+    DebugAssert (static_cast<uInt64>(todo) <= mio->allocated(), AipsError);
     Int64 totalSize = todo + 2*sizeof(uInt) + (2 + itsHdrCont[0].blockNrs.size() +
                               itsHdrCont[1].blockNrs.size()) * sizeof(Int64);
     // Allocate a temp buffer if header too large or if O_DIRECT.

@@ -114,7 +114,7 @@ void test_NewMSSimulator_Constructors()
   NewMSSimulatorTester simulatorTester("newsim");
   
   //This shared pointer gets deleted before the shared pointer inside simulator_p
-  casacore::CountedPtr<casacore::MeasurementSet> ms = simulatorTester.simulator_p->getMs();
+  std::shared_ptr<casacore::MeasurementSet> ms = simulatorTester.simulator_p->getMs();
   
   //Constructor from existing MS. Not working. Has to be copied first?
   //NewMSSimulatorTester simulatorTesterFromMS(*ms);
@@ -123,7 +123,7 @@ void test_NewMSSimulator_Constructors()
   NewMSSimulatorTester simulatorTester2("newsim2");
   
   //This shared pointer gets deleted before the shared pointer inside simulator_p
-  casacore::CountedPtr<casacore::MeasurementSet> ms2 = simulatorTester.simulator_p->getMs();
+  std::shared_ptr<casacore::MeasurementSet> ms2 = simulatorTester.simulator_p->getMs();
   
   //simulator is destroyed, but we keep a shared_ptr of the ms, so it should be fine
   simulatorTester2.simulator_p.reset(0);

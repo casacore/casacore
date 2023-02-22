@@ -342,7 +342,7 @@ void MSIter::construct(const Block<Int>& sortColumns,
   Block<std::shared_ptr<BaseCompare> > objComp(columns.nelements());
   for (size_t i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
-      timeComp_p.reset (new MSInterval(interval_p));
+      timeComp_p = std::make_shared<MSInterval>(interval_p);
       objComp[i] = timeComp_p;
     }
   }
@@ -491,7 +491,7 @@ MSIter::operator=(const MSIter& other)
   frequency0_p = other.frequency0_p;
   restFrequency_p = other.restFrequency_p;
   telescopePosition_p = other.telescopePosition_p;
-  timeComp_p.reset(new MSInterval(interval_p));
+  timeComp_p = std::make_shared<MSInterval>(interval_p);
   prevFirstTimeStamp_p=other.prevFirstTimeStamp_p;
   return *this;
 }
@@ -720,7 +720,7 @@ void MSIter::setMSInfo()
   if (newMS_p) {
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
-    msc_p = new MSColumns(bms_p[curMS_p]);
+    msc_p = std::make_shared<MSColumns>(bms_p[curMS_p]);
 
     // determine the reference frame position
     String observatory;

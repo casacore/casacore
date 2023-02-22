@@ -1071,7 +1071,7 @@ std::shared_ptr<std::set<Int> > MSMetaData::_getEphemFieldIDs() const {
     }
     MSFieldColumns msfc(_ms->field());
     ScalarColumn<Int> ephemCol = msfc.ephemerisId();
-    _ephemFields.reset(new std::set<Int>());
+    _ephemFields = std::make_shared<std::set<Int>>();
     if (ephemCol.isNull()) {
         return _ephemFields;
     }
@@ -2134,7 +2134,7 @@ vector<int> MSMetaData::getSpwReceiverBands() const {
         avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
     );
     vector<int> out;
-    for (const auto spw: props) {
+    for (const auto& spw: props) {
         out.push_back(spw.rb);
     }
     return out;
@@ -2146,7 +2146,7 @@ vector<int> MSMetaData::getSpwSubwindows() const {
         avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
     );
     vector<int> out;
-    for (const auto spw: props) {
+    for (const auto& spw: props) {
         out.push_back(spw.sw);
     }
     return out;
@@ -3000,17 +3000,13 @@ MSMetaData::_getSourceInfo() const {
             // resize=True because the array lengths may differ
             // from cell to cell, CAS-10409
             restfreq.get(i, rf, True);
-            props.restfreq.reset(
-                new std::vector<MFrequency>(rf.tovector())
-            );
+            props.restfreq = std::make_shared<std::vector<MFrequency>>(rf.tovector());
         }
         else {
             props.restfreq.reset();
         }
         if (transition.isDefined(i)) {
-            props.transition.reset(
-                new std::vector<String>(transition(i).tovector())
-            );
+            props.transition = std::make_shared<std::vector<String>>(transition(i).tovector());
         }
         else {
             props.transition.reset();
@@ -3176,8 +3172,8 @@ void MSMetaData::_getFieldsAndTimesMaps(
         timeToFieldsMap = _timeToFieldsMap;
         return;
     }
-    fieldToTimesMap.reset(new std::map<Int, std::set<Double> >());
-    timeToFieldsMap.reset(new std::map<Double, std::set<Int> >());
+    fieldToTimesMap = std::make_shared<std::map<Int, std::set<Double>>>();
+    timeToFieldsMap = std::make_shared<std::map<Double, std::set<Int>>>();
     std::shared_ptr<Vector<Int> > allFields = _getFieldIDs();
     std::shared_ptr<Vector<Double> > allTimes = this->_getTimes();
     Vector<Int>::const_iterator lastField = allFields->end();
@@ -3626,7 +3622,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
         const static String title = "Computing scan and subscan properties...";
         log << LogOrigin("MSMetaData", __func__, WHERE)
             << LogIO::NORMAL << title << LogIO::POST;
-        pm.reset(new ProgressMeter(0, _ms->nrow(), title));
+        pm = std::make_shared<ProgressMeter>(0, _ms->nrow(), title);
     }
     const static String scanName = MeasurementSet::columnName(MSMainEnums::SCAN_NUMBER);
     const static String fieldName = MeasurementSet::columnName(MSMainEnums::FIELD_ID);
@@ -3644,12 +3640,8 @@ void MSMetaData::_computeScanAndSubScanProperties(
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
     >  props;
     std::vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
-    scanProps.reset(
-        new std::map<ScanKey, ScanProperties>()
-    );
-    subScanProps.reset(
-        new std::map<SubScanKey, SubScanProperties>()
-    );
+    scanProps = std::make_shared<std::map<ScanKey, ScanProperties>>();
+    subScanProps = std::make_shared<std::map<SubScanKey, SubScanProperties>>();
     rownr_t doneRows = 0;
     rownr_t msRows = _ms->nrow();
     static const rownr_t rowsInChunk = 10000000;
@@ -3710,12 +3702,8 @@ void MSMetaData::_mergeScanProps(
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
     >&  props
 ) const {
-    scanProps.reset(
-        new std::map<ScanKey, ScanProperties>()
-    );
-    subScanProps.reset(
-        new std::map<SubScanKey, SubScanProperties>()
-    );
+    scanProps = std::make_shared<std::map<ScanKey, ScanProperties>>();
+    subScanProps = std::make_shared<std::map<SubScanKey, SubScanProperties>>();
     map<SubScanKey, map<uInt, Quantity> > ssSumInterval;
     uInt nTotChunks = props.size();
     for (uInt i=0; i<nTotChunks; ++i) {
