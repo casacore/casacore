@@ -453,17 +453,18 @@ namespace casacore {
         Vector<Int> selectedAnts1;
         Vector<Int> selectedAnts2;
         Matrix<Int> selectedBaselines;
-        std::shared_ptr<MSSelectionErrorHandler> curHandler = MSAntennaParse::thisMSAErrorHandler;
-        MSAntennaParse::thisMSAErrorHandler.reset (new UDFMSCalErrorHandler());
+        std::shared_ptr<MSSelectionErrorHandler> curHandler =
+          std::make_shared<UDFMSCalErrorHandler>();
+        MSAntennaParse::thisMSAErrorHandler.swap (curHandler);
         try {
           itsDataNode = msAntennaGramParseCommand (anttab, a1, a2, selStr, 
                                                    selectedAnts1, selectedAnts2,
                                                    selectedBaselines);
         } catch (const std::exception&) {
-          MSAntennaParse::thisMSAErrorHandler = curHandler;
+          MSAntennaParse::thisMSAErrorHandler.swap (curHandler);
           throw;
         }          
-        MSAntennaParse::thisMSAErrorHandler = curHandler;
+        MSAntennaParse::thisMSAErrorHandler.swap (curHandler);
       }
       break;
     case CORR:
@@ -535,17 +536,18 @@ namespace casacore {
         Vector<Int> selectedFeed1;
         Vector<Int> selectedFeed2;
         Matrix<Int> selectedFeedPairs;
-        std::shared_ptr<MSSelectionErrorHandler> curHandler = MSFeedParse::thisMSFErrorHandler;
-        MSFeedParse::thisMSFErrorHandler.reset (new UDFMSCalErrorHandler());
+        std::shared_ptr<MSSelectionErrorHandler> curHandler =
+          std::make_shared<UDFMSCalErrorHandler>();
+        MSFeedParse::thisMSFErrorHandler.swap (curHandler);
         try {
           itsDataNode = msFeedGramParseCommand (feedtab, f1, f2, selStr, 
                                                 selectedFeed1, selectedFeed2,
                                                 selectedFeedPairs);
         } catch (const std::exception&) {
-          MSFeedParse::thisMSFErrorHandler = curHandler;
+          MSFeedParse::thisMSFErrorHandler.swap (curHandler);
           throw;
         }          
-        MSFeedParse::thisMSFErrorHandler = curHandler;
+        MSFeedParse::thisMSFErrorHandler.swap (curHandler);
       }
       break;
     case ARRAY:
@@ -568,18 +570,19 @@ namespace casacore {
       {
         MeasurementSet ms(table);
         Vector<Int> stateid;
-        std::shared_ptr<MSSelectionErrorHandler> curHandler = MSStateParse::thisMSSErrorHandler;
-        MSStateParse::thisMSSErrorHandler.reset (new UDFMSCalErrorHandler());
+        std::shared_ptr<MSSelectionErrorHandler> curHandler =
+          std::make_shared<UDFMSCalErrorHandler>();
+        MSStateParse::thisMSSErrorHandler.swap (curHandler);
         try {
           if (msStateGramParseCommand(&ms, selStr, stateid) == 0) {
             itsDataNode = *(msStateGramParseNode());
           }
         } catch (const std::exception&) {
           msStateGramParseDeleteNode();
-          MSStateParse::thisMSSErrorHandler = curHandler;
+          MSStateParse::thisMSSErrorHandler.swap (curHandler);
           throw;
         }          
-        MSStateParse::thisMSSErrorHandler = curHandler;
+        MSStateParse::thisMSSErrorHandler.swap (curHandler);
       }
       break;
     case OBS:

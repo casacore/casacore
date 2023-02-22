@@ -810,7 +810,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (overRide  ||  !MSAntennaParse::thisMSAErrorHandler) {
             if (mssEH == NULL) {
-              MSAntennaParse::thisMSAErrorHandler.reset(mssEH);
+              MSAntennaParse::thisMSAErrorHandler.reset();
             } else {
               MSAntennaParse::thisMSAErrorHandler.reset(mssEH->clone());
 	    }
@@ -821,7 +821,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (overRide  ||  !MSFeedParse::thisMSFErrorHandler) {
             if (mssEH == NULL) {
-              MSFeedParse::thisMSFErrorHandler.reset(mssEH);
+              MSFeedParse::thisMSFErrorHandler.reset();
             } else {
               MSFeedParse::thisMSFErrorHandler.reset(mssEH->clone());
 	    }
@@ -832,7 +832,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (overRide  ||  !MSStateParse::thisMSSErrorHandler) {
             if (mssEH == NULL) {
-              MSStateParse::thisMSSErrorHandler.reset(mssEH);
+              MSStateParse::thisMSSErrorHandler.reset();
             } else {
               MSStateParse::thisMSSErrorHandler.reset(mssEH->clone());
 	    }
@@ -843,7 +843,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	{
 	  if (overRide  ||  !MSSpwParse::thisMSSpwErrorHandler) {
             if (mssEH == NULL) {
-              MSSpwParse::thisMSSpwErrorHandler.reset(mssEH);
+              MSSpwParse::thisMSSpwErrorHandler.reset();
             } else {
               MSSpwParse::thisMSSpwErrorHandler.reset(mssEH->clone());
 	    }

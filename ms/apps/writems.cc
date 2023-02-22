@@ -1406,7 +1406,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
 {
   Timer timer;
   // Create the file.
-  itsFile.reset (new HDF5File(msName, ByteIO::New));
+  itsFile = std::make_shared<HDF5File>(msName, ByteIO::New);
   int nrbasel = nbaselines();
   // Store some attributes defining nr of baselines and fields.
   Record rec;
@@ -1417,7 +1417,7 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
   // Create a group per spectral window.
   for (int band=itsSpw; band<itsSpw+itsNSpw; ++band) {
     HDF5Spw spw;
-    spw.spw.reset (new HDF5Group(*itsFile, "SPW_"+String::toString(band)));
+    spw.spw = std::make_shared<HDF5Group>(*itsFile, "SPW_"+String::toString(band));
     // Write the attributes.
     HDF5Record::writeRecord (*(spw.spw), "ATTR", rec);
     // Create the data in the spw.
@@ -1428,31 +1428,31 @@ void MSCreateHDF5::createMS (const String& msName, int ntimeField,
     uInt cacheSize = (itsNFreq[band] + freqPerTile - 1) / freqPerTile;
     cout << "HDF5 cacheSize = " << cacheSize << endl;
     if (itsWriteFloatData) {
-      spw.floatData.reset (new HDF5DataSet (*spw.spw, "FLOAT_DATA", shape,
-                                            itsDataTileShape, (float*)0));
+      spw.floatData = std::make_shared<HDF5DataSet>(*spw.spw, "FLOAT_DATA", shape,
+                                                    itsDataTileShape, (float*)0);
       spw.floatData->setCacheSize (cacheSize);
     } else {
-      spw.data.reset (new HDF5DataSet (*spw.spw, "DATA", shape,
-                                       itsDataTileShape, (Complex*)0));
+      spw.data = std::make_shared<HDF5DataSet>(*spw.spw, "DATA", shape,
+                                               itsDataTileShape, (Complex*)0);
       spw.data->setCacheSize (cacheSize);
     }
     IPosition tileShape(itsDataTileShape);
     tileShape[2] *= 8;
-    spw.flag.reset (new HDF5DataSet (*spw.spw, "FLAG", shape, tileShape,
-                                     (Bool*)0));
+    spw.flag = std::make_shared<HDF5DataSet>(*spw.spw, "FLAG", shape, tileShape,
+                                             (Bool*)0);
     spw.flag->setCacheSize (cacheSize);
     if (itsWriteWeightSpectrum) {
-      spw.weightSpectrum.reset (new HDF5DataSet (*spw.spw, "WEIGHT_SPECTRUM", shape,
-                                                 itsDataTileShape, (float*)0));
+      spw.weightSpectrum = std::make_shared<HDF5DataSet>(*spw.spw, "WEIGHT_SPECTRUM", shape,
+                                                         itsDataTileShape, (float*)0);
       spw.weightSpectrum->setCacheSize (cacheSize);
     }
-    spw.metaData.reset (new HDF5DataSet (*spw.spw, "METADATA", shape1,
-                                         tileShape1, itsMetaType));
+    spw.metaData = std::make_shared<HDF5DataSet>(*spw.spw, "METADATA", shape1,
+                                                 tileShape1, itsMetaType);
     if (createImagerColumns) {
-      spw.modelData.reset (new HDF5DataSet (*spw.spw, "MODEL_DATA", shape, tileShape,
-                                            (Complex*)0));
-      spw.corrData.reset (new HDF5DataSet (*spw.spw, "CORRECTED_DATA", shape, tileShape,
-                                           (Complex*)0));
+      spw.modelData = std::make_shared<HDF5DataSet>(*spw.spw, "MODEL_DATA", shape, tileShape,
+                                                    (Complex*)0);
+      spw.corrData = std::make_shared<HDF5DataSet>(*spw.spw, "CORRECTED_DATA", shape, tileShape,
+                                                   (Complex*)0);
       // Not written, so no need to set their cache sizes.
     }
     itsSpws.push_back (spw);
@@ -2041,9 +2041,9 @@ String doOne (int seqnr, const String& msName)
   Timer timer;
   std::shared_ptr<MSCreate> msmaker;
   if (myWriteHDF5) {
-    msmaker.reset (new MSCreateHDF5());
+    msmaker = std::make_shared<MSCreateHDF5>();
   } else {
-    msmaker.reset (new MSCreateCasa());
+    msmaker = std::make_shared<MSCreateCasa>();
   }
   IPosition dataTileShape = formTileShape (myTileSize, myTileSizePol,
                                            myTileSizeFreq, myWriteFloatData,
