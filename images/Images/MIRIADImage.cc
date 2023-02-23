@@ -52,7 +52,6 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/casa/Quanta/UnitMap.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -317,7 +316,7 @@ void MIRIADImage::tempClose()
 {
    if (! isClosed_p) {
       delete pPixelMask_p;
-      pTiledFile_p = 0;
+      pTiledFile_p.reset();
       isClosed_p = True;
    }
 }
@@ -437,10 +436,10 @@ void MIRIADImage::open()
 
    // The tile shape must not be a subchunk in all dimensions
 
-   pTiledFile_p = new TiledFileAccess(iname, fileOffset_p,
-				      shape_p.shape(), shape_p.tileShape(),
-                                      dataType_p, TSMOption(),
-				      writable, canonical);
+   pTiledFile_p = std::make_shared<TiledFileAccess>(iname, fileOffset_p,
+                                                    shape_p.shape(), shape_p.tileShape(),
+                                                    dataType_p, TSMOption(),
+                                                    writable, canonical);
 
    // Shares the pTiledFile_p pointer. 
 

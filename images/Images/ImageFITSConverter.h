@@ -33,7 +33,7 @@
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 
 #ifndef WCSLIB_GETWCSTAB
@@ -76,7 +76,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     IPosition newShape;
     IPosition cursorOrder;
     FitsKeywordList kw;
-    CountedPtr<Array<Bool> > pMask;
+    std::shared_ptr<Array<Bool>> pMask;
   };
 
 

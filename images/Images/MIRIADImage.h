@@ -258,7 +258,7 @@ private:
   MaskSpecifier  maskSpec_p;
   Unit           unit_p;
   Record         rec_p;
-  CountedPtr<TiledFileAccess> pTiledFile_p;
+  std::shared_ptr<TiledFileAccess> pTiledFile_p;
   Lattice<Bool>* pPixelMask_p;
   //  Float          scale_p;
   //  Float          offset_p;

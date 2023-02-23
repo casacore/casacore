@@ -31,9 +31,9 @@
 #include <casacore/images/Images/MaskSpecifier.h>
 #include <casacore/lattices/Lattices/LatticeBase.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Containers/Record.h>
+#include <memory>
 
 namespace casacore {
 
@@ -124,7 +124,7 @@ namespace casacore {
                 Int dummy=0);
 
     // Construct from an existing image object.
-    ImageProxy (const CountedPtr<LatticeBase>&);
+    ImageProxy (const std::shared_ptr<LatticeBase>&);
 
     // Copy constructor (reference semantics).
     ImageProxy (const ImageProxy&);
@@ -464,13 +464,13 @@ namespace casacore {
 
     //# Data members.
     //# itsLattice is the real data; the pointers are for type convenience only.
-    CountedPtr<LatticeBase>   itsLattice;
-    ImageInterface<Float>*    itsImageFloat;
-    ImageInterface<Double>*   itsImageDouble;
-    ImageInterface<Complex>*  itsImageComplex;
-    ImageInterface<DComplex>* itsImageDComplex;
-    const CoordinateSystem*   itsCoordSys;
-    ImageAttrHandler*         itsAttrHandler;
+    std::shared_ptr<LatticeBase>   itsLattice;
+    ImageInterface<Float>*         itsImageFloat;
+    ImageInterface<Double>*        itsImageDouble;
+    ImageInterface<Complex>*       itsImageComplex;
+    ImageInterface<DComplex>*      itsImageDComplex;
+    const CoordinateSystem*        itsCoordSys;
+    ImageAttrHandler*              itsAttrHandler;
   };
 
 } // end namespace casacore
