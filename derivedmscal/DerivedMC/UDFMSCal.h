@@ -267,12 +267,11 @@ namespace casacore {
   class UDFMSCalErrorHandler : public MSSelectionErrorHandler
   {
   public:
-    virtual ~UDFMSCalErrorHandler()
-    {}
-    virtual void handleError (MSSelectionError&)
-    {}
-    virtual void reportError (const char*, const String)
-    {}
+    ~UDFMSCalErrorHandler() override = default;
+    void handleError (MSSelectionError&) override
+      {}
+    void reportError (const char*, const String) override
+      {}
   };
 
 

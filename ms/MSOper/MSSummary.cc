@@ -137,7 +137,7 @@ Bool MSSummary::setMS (const MeasurementSet& ms, Float maxCacheMB)
     } else {
         pMS = pTemp;
         Float cache = maxCacheMB < 0 ? _cacheSizeMB : maxCacheMB;
-        _msmd.reset(new MSMetaData(&ms, cache));
+        _msmd = std::make_shared<MSMetaData>(&ms, cache);
         return True;
     }
 }

@@ -212,7 +212,7 @@ public:
                const String& observername="CASA simulator",
                const String& projectname="CASA simulation");
 
-  casacore::CountedPtr<MeasurementSet> getMs () const;
+  std::shared_ptr<MeasurementSet> getMs () const;
 
 
 private:
@@ -236,7 +236,7 @@ private:
   Int lastSpWID_p;
   Int lastNchan_p;
 
-  casacore::CountedPtr<MeasurementSet> ms_p;
+  std::shared_ptr<MeasurementSet> ms_p;
 
   TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p;
 

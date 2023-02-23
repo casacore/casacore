@@ -142,7 +142,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     //# Data members.
   public:
     static MSFeedParse* thisMSFParser;
-    static CountedPtr<MSSelectionErrorHandler> thisMSFErrorHandler;
+    static std::shared_ptr<MSSelectionErrorHandler> thisMSFErrorHandler;
     static void cleanupErrorHandler() {thisMSFErrorHandler.reset();}
   private:
     TableExprNode node_p;

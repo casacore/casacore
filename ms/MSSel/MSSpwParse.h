@@ -114,7 +114,7 @@ public:
   // Get table expression node object.
   static const TableExprNode* node();
   static MSSpwParse* thisMSSParser;
-  static CountedPtr<MSSelectionErrorHandler> thisMSSpwErrorHandler;
+  static std::shared_ptr<MSSelectionErrorHandler> thisMSSpwErrorHandler;
   static Vector<Int> selectedDDIDs() {return ddidList;}
   static Vector<Int> selectedIDs() {return idList;}
   static Matrix<Int> selectedChanIDs() {return chanList;}

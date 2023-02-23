@@ -32,9 +32,9 @@
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSPointingColumns.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/tables/Tables/TableProxy.h>
 #include <map>
+#include <memory>
 
 namespace casacore {
 
