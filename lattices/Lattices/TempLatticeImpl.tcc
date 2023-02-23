@@ -41,7 +41,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 TempLatticeImpl<T>::TempLatticeImpl() 
-  : itsLatticePtr (new ArrayLattice<T>),
+  : itsLatticePtr (std::make_shared<ArrayLattice<T>>()),
     itsIsClosed   (False)
 {}
 
@@ -83,9 +83,9 @@ void TempLatticeImpl<T>::init (const TiledShape& shape, Double maxMemoryInMB)
     itsTableName = AppInfo::workFileName (Int(memoryReq), "TempLattice");
     SetupNewTable newtab (itsTableName, TableDesc(), Table::Scratch);
     itsTable = Table(newtab, TableLock::PermanentLockingWait);
-    itsLatticePtr.reset (new PagedArray<T> (shape, itsTable));
+    itsLatticePtr = std::make_shared<PagedArray<T>>(shape, itsTable);
   } else {
-    itsLatticePtr.reset (new ArrayLattice<T> (shape.shape()));
+    itsLatticePtr = std::make_shared<ArrayLattice<T>>(shape.shape());
   }
 }
 
@@ -108,7 +108,7 @@ void TempLatticeImpl<T>::tempReopen() const
     itsTable = Table(itsTableName,
                      TableLock(TableLock::PermanentLockingWait),
                      Table::Update);
-    itsLatticePtr.reset (new PagedArray<T> (itsTable));
+    itsLatticePtr = std::make_shared<PagedArray<T>>(itsTable);
     itsIsClosed = False;
   }
   if (!itsTable.isNull()) {

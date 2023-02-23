@@ -77,7 +77,7 @@ Bool LELInterface<T>::replaceScalarExpr (std::shared_ptr<LELInterface<T>>& expr)
     if (!isInvalidScalar  &&  expr->isScalar()) {
         LELScalar<T> tmp = expr->getScalar();
 	if (tmp.mask()) {
-            expr.reset (new LELUnaryConst<T> (tmp.value()));
+          expr = std::make_shared<LELUnaryConst<T>>(tmp.value());
 	} else {
 	    isInvalidScalar = True;
 	}
@@ -85,7 +85,7 @@ Bool LELInterface<T>::replaceScalarExpr (std::shared_ptr<LELInterface<T>>& expr)
 // If the value is an invalid scalar expression, replace by scalar
 // with false mask.
     if (isInvalidScalar) {
-        expr.reset (new LELUnaryConst<T>());
+      expr = std::make_shared<LELUnaryConst<T>>();
     }
     return isInvalidScalar;
 }
