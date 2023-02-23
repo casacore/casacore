@@ -27,7 +27,7 @@
 #define CASA_COWPTR_H
 
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -181,8 +181,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> class COWPtr
 {
-public:
+private:
+  // Helper class to make deletion of object optional.
+  class Deleter {
+  public:
+    Deleter (Bool deleteIt) : deleteIt_p (deleteIt)
+      {}
+    void operator() (T * data) const
+      { if (deleteIt_p) delete data; }
+  private:
+    Bool deleteIt_p;
+  };
+
   
+public:
   // The default constructor: used to create a null pointer which is 
   // delete-able by the destructor.  It is not "readOnly" so that it may be
   // changed by the COWPtr<T>::set() function.
@@ -226,14 +238,7 @@ public:
   // <note> The only copying done (if ever) is upon a call to 
   // COWPtr<T>::rwRef().
   // </note>
-  // The <src>setReadOnly</src> function is the same as <src>set</src>, but
-  // forces <src>deleteIt=False</src> and <src>ReadOnly=True</src>. In
-  // that way a const object can also be safely referenced by COWPtr.
-  // <group>
   void set(T *obj, Bool deleteIt = True, Bool readOnly = False);
-  void setReadOnly (const T *obj);
-  void setReadOnly ();
-  // </group>
 
   // return a const reference to the object.
   inline const T &ref() const;
@@ -261,45 +266,33 @@ public:
   Bool makeUnique(); 
 
 protected:
-  CountedPtr<T> obj_p;
+  std::shared_ptr<T> obj_p;
   Bool const_p;
 };
 
 
 
-// Make our own default pointer - deleteIt==True by default, const_p==False
+//# Make our own default pointer - deleteIt==True by default, const_p==False
 template <class T> inline COWPtr<T>::COWPtr()
-:obj_p(static_cast<T *>(0), True), const_p(False)
-{
-  // does nothing
-} 
+  : obj_p   (nullptr, Deleter(True)),
+    const_p (False)
+{} 
 
-// copy ctor with reference semantics
+//# copy ctor with reference semantics
 template <class T> inline COWPtr<T>::COWPtr(const COWPtr<T> &other)
-: obj_p(other.obj_p), const_p(other.const_p)
-{
-  // does nothing
-}
+  : obj_p   (other.obj_p),
+    const_p (other.const_p)
+{}
 
 //assignment operator with reference semantics
 template <class T> 
 inline COWPtr<T> &COWPtr<T>::operator=(const COWPtr<T> &other)
 {
-  if (this != &other){
-    obj_p = other.obj_p;
+  if (this != &other) {
+    obj_p   = other.obj_p;
     const_p = other.const_p;
   }
   return *this;
-}
-
-template <class T> inline void COWPtr<T>::setReadOnly (const T *obj)
-{
-  set ((T*)obj, False, True);
-}
-
-template <class T> inline void COWPtr<T>::setReadOnly ()
-{
-  const_p = True;
 }
 
 template <class T> inline const T *COWPtr<T>::operator->() const
@@ -325,7 +318,7 @@ template <class T> inline T &COWPtr<T>::rwRef()
 
 template <class T> inline Bool COWPtr<T>::isNull() const
 {
-  return obj_p.null();
+  return !obj_p;
 }
 
 template <class T> inline Bool COWPtr<T>::isReadOnly() const
@@ -335,7 +328,7 @@ template <class T> inline Bool COWPtr<T>::isReadOnly() const
 
 template <class T> inline Bool COWPtr<T>::isUnique() const
 {
-  return (const_p || obj_p.nrefs()>1) ? False : True;
+  return (const_p || obj_p.use_count()>1) ? False : True;
 }
 
 

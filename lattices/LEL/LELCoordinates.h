@@ -29,7 +29,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -67,11 +67,11 @@ class LELLattCoordBase;
 //  CoordinateSystems.
 //  Lattice objects have a member function called <src>lelCoordinates</src>.
 //  This returns a LELCoordinates object.  This object contains a
-//  pointer (actually a CountedPtr) of type
+//  pointer (actually a std::shared_ptr) of type
 //  <linkto class=LELLattCoordBase>LELLattCoordBase</linkto>.  This is the
 //  base class of the letter classes.  For Lattices such as ImageInterface,
 //  this pointer actually points at the derived letter class LELImageCoord.
-//  This class in turn contains a pointer (a CountedPtr) to the actual
+//  This class in turn contains a pointer (a std::shared_ptr) to the actual
 //  CoordinateSystem object.   
 // 
 //  Note that every time the <src>lelCoordinates</src> function is called,
@@ -83,7 +83,7 @@ class LELLattCoordBase;
 //  <br><src>return LELCoordinates (new LELImageCoord (coords_p));</src>
 //  <br>so that the LELCoordinates constructor invokes the LELImageCoord
 //  constructor with the CoordinateSystem as its argument.  However,
-//  the internal use of CountedPtrs makes subsequent constructions inexpensive.
+//  the internal use of std::shared_ptrs makes subsequent constructions inexpensive.
 //
 //  Having a LELCoordinates object in hand, the programmer then has access
 //  to the CoordinateSystem that it ultimately contains.  This is via the
@@ -140,7 +140,7 @@ public:
 
     // Is the coordinates a null object?
     Bool isNull() const
-      { return coords_p.null(); }
+      { return !coords_p; }
 
     // Does the class have true coordinates?
     // It returns False if this is a null object.
@@ -161,7 +161,7 @@ public:
 
 private:
     // The pointer to the underlying object.
-    CountedPtr<LELLattCoordBase> coords_p;
+    std::shared_ptr<LELLattCoordBase> coords_p;
 };
 
 

@@ -107,8 +107,8 @@ public:
 // Constructor takes operation and left and right expressions
 // to be operated upon
    LELBinary(const LELBinaryEnums::Operation op, 
-	     const CountedPtr<LELInterface<T> >& pLeftExpr,
-	     const CountedPtr<LELInterface<T> >& pRightExpr);
+	     const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+	     const std::shared_ptr<LELInterface<T>>& pRightExpr);
 
 // Destructor 
   ~LELBinary();
@@ -136,8 +136,8 @@ public:
 
 private:
    LELBinaryEnums::Operation op_p;
-   CountedPtr<LELInterface<T> > pLeftExpr_p;
-   CountedPtr<LELInterface<T> > pRightExpr_p;
+   std::shared_ptr<LELInterface<T>> pLeftExpr_p;
+   std::shared_ptr<LELInterface<T>> pRightExpr_p;
 };
 
 
@@ -212,8 +212,8 @@ public:
 // Constructor takes operation and left and right expressions
 // to be operated upon. It can only handle the comparison operators.
    LELBinaryCmp(const LELBinaryEnums::Operation op, 
-		const CountedPtr<LELInterface<T> >& pLeftExpr,
-		const CountedPtr<LELInterface<T> >& pRightExpr);
+		const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+		const std::shared_ptr<LELInterface<T>>& pRightExpr);
 
 // Destructor 
   ~LELBinaryCmp();
@@ -241,8 +241,8 @@ public:
 
 private:
    LELBinaryEnums::Operation op_p;
-   CountedPtr<LELInterface<T> > pLeftExpr_p;
-   CountedPtr<LELInterface<T> > pRightExpr_p;
+   std::shared_ptr<LELInterface<T>> pLeftExpr_p;
+   std::shared_ptr<LELInterface<T>> pRightExpr_p;
 };
 
 
@@ -313,8 +313,8 @@ public:
 // Constructor takes operation and left and right expressions
 // to be operated upon.
    LELBinaryBool(const LELBinaryEnums::Operation op, 
-		 const CountedPtr<LELInterface<Bool> >& pLeftExpr,
-		 const CountedPtr<LELInterface<Bool> >& pRightExpr);
+		 const std::shared_ptr<LELInterface<Bool>>& pLeftExpr,
+		 const std::shared_ptr<LELInterface<Bool>>& pRightExpr);
 
 // Destructor 
   ~LELBinaryBool();
@@ -342,8 +342,8 @@ public:
 
 private:
    LELBinaryEnums::Operation op_p;
-   CountedPtr<LELInterface<Bool> > pLeftExpr_p;
-   CountedPtr<LELInterface<Bool> > pRightExpr_p;
+   std::shared_ptr<LELInterface<Bool>> pLeftExpr_p;
+   std::shared_ptr<LELInterface<Bool>> pRightExpr_p;
 };
 
 

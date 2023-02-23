@@ -129,7 +129,7 @@ const LatticeRegion& MaskedLattice<T>::region() const
 
 
 template<class T>
-Bool MaskedLattice<T>::getMask (COWPtr<Array<Bool> >& buffer,
+Bool MaskedLattice<T>::getMask (COWPtr<Array<Bool>>& buffer,
 				Bool removeDegenerateAxes) const
 {
   uInt nd = ndim();
@@ -155,7 +155,7 @@ Array<Bool> MaskedLattice<T>::getMask (Bool removeDegenerateAxes) const
 }
 
 template<class T>
-Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool> >& buffer,
+Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool>>& buffer,
 				     const IPosition& start, 
 				     const IPosition& shape,
 				     Bool removeDegenerateAxes) const
@@ -165,7 +165,7 @@ Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool> >& buffer,
 }
 
 template<class T>
-Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool> >& buffer,
+Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool>>& buffer,
 				     const IPosition& start, 
 				     const IPosition& shape,
 				     const IPosition& stride,
@@ -176,7 +176,7 @@ Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool> >& buffer,
 }
 
 template<class T>
-Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool> >& buffer,
+Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool>>& buffer,
 				     const Slicer& section,
 				     Bool removeDegenerateAxes) const
 {
@@ -184,9 +184,9 @@ Bool MaskedLattice<T>::getMaskSlice (COWPtr<Array<Bool> >& buffer,
   // This is safe, since the array is copied when needed by COWptr.
   MaskedLattice<T>* This = (MaskedLattice<T>*)this;
   // The COWPtr takes over the pointer to the array.
-  Array<Bool>* arr = new Array<Bool>;
+  std::unique_ptr<Array<Bool>> arr(new Array<Bool>);
   Bool isARef = This->getMaskSlice (*arr, section, removeDegenerateAxes);
-  buffer = COWPtr<Array<Bool> > (arr, True, isARef);
+  buffer = COWPtr<Array<Bool>> (arr.release(), isARef);
   return False;
 }
 

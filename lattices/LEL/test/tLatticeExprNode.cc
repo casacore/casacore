@@ -203,38 +203,38 @@ Bool doIt (const MaskedLattice<Float>& aF,
 //
 
    cout << endl << "LELInterface constructors" << endl;
-   cout << "LatticeExprNode(CountedPtr<LELInterface<T> >&) " << endl;
+   cout << "LatticeExprNode(std::shared_ptr<LELInterface<T>>&) " << endl;
    {
       cout << "  Float" << endl;
-      CountedPtr<LELInterface<Float> > pExpr = new LELUnaryConst<Float>(bFVal);
+      std::shared_ptr<LELInterface<Float>> pExpr(new LELUnaryConst<Float>(bFVal));
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bFVal);
       if (!compareScalarFloat (expr, expr2, bFVal, shape)) ok = False;
    }
    {
       cout << "  Double" << endl;
-      CountedPtr<LELInterface<Double> > pExpr = new LELUnaryConst<Double>(bDVal);
+      std::shared_ptr<LELInterface<Double>> pExpr(new LELUnaryConst<Double>(bDVal));
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bDVal);
       if (!compareScalarDouble (expr, expr2, bDVal, shape)) ok = False;
    }
    {
       cout << "  Complex" << endl;
-      CountedPtr<LELInterface<Complex> > pExpr = new LELUnaryConst<Complex>(bCVal);
+      std::shared_ptr<LELInterface<Complex>> pExpr(new LELUnaryConst<Complex>(bCVal));
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bCVal);
       if (!compareScalarComplex (expr, expr2, bCVal, shape)) ok = False;
    }
    {
       cout << "  DComplex" << endl;
-      CountedPtr<LELInterface<DComplex> > pExpr = new LELUnaryConst<DComplex>(bDCVal);
+      std::shared_ptr<LELInterface<DComplex>> pExpr(new LELUnaryConst<DComplex>(bDCVal));
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bDCVal);
       if (!compareScalarDComplex (expr, expr2, bDCVal, shape)) ok = False;
    }
    {
       cout << "  Bool" << endl;
-      CountedPtr<LELInterface<Bool> > pExpr = new LELUnaryConst<Bool>(bBVal);
+      std::shared_ptr<LELInterface<Bool>> pExpr(new LELUnaryConst<Bool>(bBVal));
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bBVal);
       if (!compareScalarBool (expr, expr2, bBVal, shape)) ok = False;

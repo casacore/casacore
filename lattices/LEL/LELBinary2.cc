@@ -35,8 +35,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
-			     const CountedPtr<LELInterface<Bool> >& pLeftExpr,
-			     const CountedPtr<LELInterface<Bool> >& pRightExpr)
+			     const std::shared_ptr<LELInterface<Bool>>& pLeftExpr,
+			     const std::shared_ptr<LELInterface<Bool>>& pRightExpr)
 : op_p(op)
 {
    if (op == LELBinaryEnums::EQ  ||  op == LELBinaryEnums::NE) {

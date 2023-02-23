@@ -68,7 +68,7 @@ LELArray<T> LELInterface<T>::getArray() const
 }
 
 template<class T>
-Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
+Bool LELInterface<T>::replaceScalarExpr (std::shared_ptr<LELInterface<T>>& expr)
 {
 // Recursively prepare (optimize) a scalar subexpression
     Bool isInvalidScalar = expr->prepareScalarExpr();
@@ -77,7 +77,7 @@ Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
     if (!isInvalidScalar  &&  expr->isScalar()) {
         LELScalar<T> tmp = expr->getScalar();
 	if (tmp.mask()) {
-	    expr = new LELUnaryConst<T> (tmp.value());
+            expr.reset (new LELUnaryConst<T> (tmp.value()));
 	} else {
 	    isInvalidScalar = True;
 	}
@@ -85,7 +85,7 @@ Bool LELInterface<T>::replaceScalarExpr (CountedPtr<LELInterface<T> >& expr)
 // If the value is an invalid scalar expression, replace by scalar
 // with false mask.
     if (isInvalidScalar) {
-	expr = new LELUnaryConst<T>();
+        expr.reset (new LELUnaryConst<T>());
     }
     return isInvalidScalar;
 }

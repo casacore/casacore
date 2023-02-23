@@ -31,9 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LEL/LELAttribute.h>
 #include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/FileLocker.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -188,7 +188,7 @@ public:
 // If the given expression is a valid scalar, replace it by its result.
 // It returns False if the expression is no scalar or if the expression
 // is an invalid scalar (i.e. with a False mask).
-   static Bool replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
+   static Bool replaceScalarExpr (std::shared_ptr<LELInterface<T>>& expr);
 
   // Handle locking/syncing of the parts of a lattice expression.
   // <br>By default the functions do not do anything at all.

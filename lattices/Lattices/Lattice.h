@@ -160,7 +160,7 @@ template <class T> class LatticeIterInterface;
 //
 //   const IPosition inputSliceShape(4,nx,ny,1,1);
 //   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
-//   COWPtr<Array<Float> > 
+//   COWPtr<Array<Float>> 
 //     inputArrPtr(new Array<Float>(inputSliceShape.nonDegenerate()));
 //   Array<Complex> resultArray(resultSliceShape.nonDegenerate());
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
@@ -286,14 +286,14 @@ public:
   // 'True' if "buffer" is a reference to Lattice data and 'False' if it  
   // is a copy. 
   // <group>   
-  Bool get (COWPtr<Array<T> >& buffer,
+  Bool get (COWPtr<Array<T>>& buffer,
 	    Bool removeDegenerateAxes=False) const;
-  Bool getSlice (COWPtr<Array<T> >& buffer, const Slicer& section,
+  Bool getSlice (COWPtr<Array<T>>& buffer, const Slicer& section,
 		 Bool removeDegenerateAxes=False) const;
-  Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+  Bool getSlice (COWPtr<Array<T>>& buffer, const IPosition& start, 
 		 const IPosition& shape,
 		 Bool removeDegenerateAxes=False) const;
-  Bool getSlice (COWPtr<Array<T> >& buffer, const IPosition& start, 
+  Bool getSlice (COWPtr<Array<T>>& buffer, const IPosition& start, 
 		 const IPosition& shape, const IPosition& stride,
 		 Bool removeDegenerateAxes=False) const;
   Bool get (Array<T>& buffer,

@@ -39,7 +39,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, class F>
-LELConvert<T,F>::LELConvert(const CountedPtr<LELInterface<F> >& expr)
+LELConvert<T,F>::LELConvert(const std::shared_ptr<LELInterface<F>>& expr)
 : pExpr_p (expr)
 //
 // F is the type we are converting from
