@@ -379,13 +379,11 @@ template<class T> bool anyOR (const T &val, const Array<T> &array);
 
 
 // Are all elements true?
-template<typename Alloc>
-inline bool allTrue (const Array<bool, Alloc>& array)
+inline bool allTrue (const Array<bool>& array)
   { return allEQ (array, true); }
 
 // Is any element true?
-template<typename Alloc>
-inline bool anyTrue (const Array<bool, Alloc>& array)
+inline bool anyTrue (const Array<bool>& array)
   { return anyEQ (array, true); }
 
 // The same functions as above, but for selected axes.

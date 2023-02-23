@@ -81,8 +81,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Returns a LogicalArray with elements (at pos) set to (data(pos) ==
 // truthvalue).  data is effectively collapsed using anyEQ if necessary to
 // fit desiredform.  Throws an exception if that does not work.
-template<typename T, typename Alloc>
-LogicalArray reformedMask(const Array<T, Alloc>& data, const T truthvalue,
+template<typename T>
+LogicalArray reformedMask(const Array<T>& data, const T truthvalue,
 			  const IPosition& desiredform);
 
 // Can arrays left and right with respective shapes leftShape and rightShape be
@@ -102,8 +102,8 @@ bool rightExpandableToLeft(const IPosition& leftShape, const IPosition& rightSha
 //# 			BinaryOperator op);
 
 // Like binOpExpandR(left, right, res, op), but work on left in place.
-template<typename L, typename AllocL, typename R, typename AllocR, typename BinaryOperator>
-void binOpExpandInPlace(Array<L, AllocL>& left, const Array<R, AllocR>& right, BinaryOperator op);
+template<typename L, typename R, typename BinaryOperator>
+void binOpExpandInPlace(Array<L>& left, const Array<R>& right, BinaryOperator op);
 
 // </group>
 

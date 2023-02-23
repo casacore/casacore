@@ -36,51 +36,44 @@
 
 namespace casacore { //#Begin casa namespace
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Alloc& allocator)
-: Array<T, Alloc>(IPosition(2, 0), allocator)
+template<typename T> Matrix<T>::Matrix()
+: Array<T>(IPosition(2, 0))
 {
   assert(ok());
 }
 
-/*template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &len, ArrayInitPolicy initPolicy)
-  : Array<T, Alloc>(len, initPolicy)
+template<typename T> Matrix<T>::Matrix(const IPosition &length, const T &initialValue)
+  : Array<T>(length, initialValue)
 {
-    makeIndexingConstants();
-    AlwaysAssert(len.nelements() == 2, ArrayError);
-}*/
-
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &length, const T &initialValue, const Alloc& allocator)
-  : Array<T, Alloc>(length, initialValue, allocator)
-{
-  Array<T, Alloc>::checkBeforeResize(length);
+  Array<T>::checkBeforeResize(length);
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const IPosition &length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
-  : Array<T, Alloc>(length, Array<T, Alloc>::uninitialized, allocator)
+template<typename T> Matrix<T>::Matrix(const IPosition &length, typename Array<T>::uninitializedType)
+  : Array<T>(length, Array<T>::uninitialized)
 {
-  Array<T, Alloc>::checkBeforeResize(length);
+  Array<T>::checkBeforeResize(length);
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, const T &initialValue, const Alloc& allocator)
-: Array<T, Alloc>(IPosition(2, l1, l2), initialValue, allocator)
+template<typename T> Matrix<T>::Matrix(size_t l1, size_t l2, const T &initialValue)
+: Array<T>(IPosition(2, l1, l2), initialValue)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(size_t l1, size_t l2, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator)
-: Array<T, Alloc>(IPosition(2, l1, l2), Array<T, Alloc>::uninitialized, allocator)
+template<typename T> Matrix<T>::Matrix(size_t l1, size_t l2, typename Array<T>::uninitializedType)
+: Array<T>(IPosition(2, l1, l2), Array<T>::uninitialized)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Matrix<T, Alloc>& source)
-  : Array<T, Alloc>(source)
+template<typename T> Matrix<T>::Matrix(const Matrix<T>& source)
+  : Array<T>(source)
 {
   assert(ok());
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(Matrix<T, Alloc>&& source)
-  : Array<T, Alloc>(std::move(source), IPosition(2, 0))
+template<typename T> Matrix<T>::Matrix(Matrix<T>&& source)
+  : Array<T>(std::move(source), IPosition(2, 0))
 {
   assert(ok());
 }
@@ -88,45 +81,45 @@ template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(Matrix<T, Alloc>&&
 // <thrown>
 //    <item> ArrayNDimError
 // </thrown>
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(const Array<T, Alloc>& source)
-: Array<T, Alloc>(source)
+template<typename T> Matrix<T>::Matrix(const Array<T>& source)
+: Array<T>(source)
 {
   this->checkMatrixShape();
   assert(ok());
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc>::Matrix(Array<T, Alloc>&& source)
-: Array<T, Alloc>(std::move(source))
+template<typename T> Matrix<T>::Matrix(Array<T>&& source)
+: Array<T>(std::move(source))
 {
   this->checkMatrixShape();
   assert(ok());
 }
 
-template<typename T, typename Alloc>
-Matrix<T, Alloc>::Matrix(const IPosition &shape, T *storage,
-                  StorageInitPolicy policy, const Alloc& allocator)
-  : Array<T, Alloc>(shape, storage, policy, allocator)
+template<typename T>
+Matrix<T>::Matrix(const IPosition &shape, T *storage,
+                  StorageInitPolicy policy)
+  : Array<T>(shape, storage, policy)
 {
-  Array<T, Alloc>::checkBeforeResize(shape);
+  Array<T>::checkBeforeResize(shape);
 }
 
-template<typename T, typename Alloc>
-Matrix<T, Alloc>::Matrix(const IPosition &shape, const T *storage)
-  : Array<T, Alloc>(shape, storage)
+template<typename T>
+Matrix<T>::Matrix(const IPosition &shape, const T *storage)
+  : Array<T>(shape, storage)
 {
-  Array<T, Alloc>::checkBeforeResize(shape);
+  Array<T>::checkBeforeResize(shape);
 }
 
-template<typename T, typename Alloc> void Matrix<T, Alloc>::resize(size_t nx, size_t ny, bool copyValues)
+template<typename T> void Matrix<T>::resize(size_t nx, size_t ny, bool copyValues)
 {
-  Array<T, Alloc>::resize(IPosition{ssize_t(nx), ssize_t(ny)}, copyValues);
+  Array<T>::resize(IPosition{ssize_t(nx), ssize_t(ny)}, copyValues);
   assert(ok());
 }
 
 // <thrown>
 //    <item> ArrayError
 // </thrown>
-template<typename T, typename Alloc> Matrix<T, Alloc> Matrix<T, Alloc>::operator()(const Slice &sliceX,
+template<typename T> Matrix<T> Matrix<T>::operator()(const Slice &sliceX,
 						  const Slice &sliceY)
 {
   assert(ok());
@@ -152,41 +145,41 @@ template<typename T, typename Alloc> Matrix<T, Alloc> Matrix<T, Alloc>::operator
 
     // Check that the selected slice is valid
     if (s1 < 1 || s2<1) {
-	throw(ArrayError("Matrix<T, Alloc>::operator()(Slice,Slice) : step < 1"));
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : step < 1"));
     } else if (l1 < 0  || l2 < 0) {
-	throw(ArrayError("Matrix<T, Alloc>::operator()(Slice,Slice) : length < 0"));
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : length < 0"));
     } else if ((b1+(l1-1)*s1 >= this->length_p(0)) || 
 	       (b2+(l2-1)*s2 >= this->length_p(1))) {
-	throw(ArrayError("Matrix<T, Alloc>::operator()(Slice,Slice): desired slice"
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice): desired slice"
 			 " extends beyond the end of the array"));
     } else if (b1 < 0 || b2 < 0) {
-	throw(ArrayError("Matrix<T, Alloc>::operator()(Slice,Slice) : start of slice "
+	throw(ArrayError("Matrix<T>::operator()(Slice,Slice) : start of slice "
 			 "before beginning of matrix"));
     }
 
-    // For simplicity, just use the Array<T, Alloc> slicing. If this is found to be
+    // For simplicity, just use the Array<T> slicing. If this is found to be
     // a performance drag, we could special case this as we do for Vector.
     IPosition blc(2,b1,b2);
     IPosition trc(2,b1+(l1-1)*s1,b2+(l2-1)*s2);
     IPosition incr(2,s1,s2);
     return this->operator()(blc,trc,incr);
 }
-template<typename T, typename Alloc> const Matrix<T, Alloc> Matrix<T, Alloc>::operator()
+template<typename T> const Matrix<T> Matrix<T>::operator()
   (const Slice &sliceX, const Slice &sliceY) const
 {
-    return const_cast<Matrix<T, Alloc>*>(this)->operator() (sliceX, sliceY);
+    return const_cast<Matrix<T>*>(this)->operator() (sliceX, sliceY);
 }
 
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<typename T, typename Alloc> Vector<T, Alloc> Matrix<T, Alloc>::row(size_t n)
+template<typename T> Vector<T> Matrix<T>::row(size_t n)
 {
   assert(ok());
     if ((long long)(n) >= this->length_p(0)) {
-	throw(ArrayConformanceError("Matrix<T, Alloc>::row - row < 0 or > end"));
+	throw(ArrayConformanceError("Matrix<T>::row - row < 0 or > end"));
     }
-    Matrix<T, Alloc> tmp((*this)(n, Slice())); // A reference
+    Matrix<T> tmp((*this)(n, Slice())); // A reference
     tmp.ndimen_p = 1;
     tmp.length_p(0) = tmp.length_p(1);
     tmp.inc_p(0) = this->steps_p(1);
@@ -199,19 +192,19 @@ template<typename T, typename Alloc> Vector<T, Alloc> Matrix<T, Alloc>::row(size
     tmp.nels_p = tmp.length_p(0);
     tmp.contiguous_p = tmp.isStorageContiguous();
     tmp.makeSteps();
-    return tmp; // should match Vector<T, Alloc>(const Array<T, Alloc> &)
+    return tmp; // should match Vector<T>(const Array<T> &)
 }
 
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<typename T, typename Alloc> Vector<T, Alloc> Matrix<T, Alloc>::column(size_t n)
+template<typename T> Vector<T> Matrix<T>::column(size_t n)
 {
   assert(ok());
     if ((long long)(n) >= this->length_p(1)) {
-	throw(ArrayConformanceError("Matrix<T, Alloc>::column - column < 0 or > end"));
+	throw(ArrayConformanceError("Matrix<T>::column - column < 0 or > end"));
     }
-    Matrix<T, Alloc> tmp((*this)(Slice(), n)); // A reference
+    Matrix<T> tmp((*this)(Slice(), n)); // A reference
     tmp.ndimen_p = 1;
     tmp.length_p.resize (1);
     tmp.inc_p.resize (1);
@@ -219,56 +212,56 @@ template<typename T, typename Alloc> Vector<T, Alloc> Matrix<T, Alloc>::column(s
     tmp.nels_p = tmp.length_p(0);
     tmp.contiguous_p = tmp.isStorageContiguous();
     tmp.makeSteps();
-    return tmp; // should match Vector<T, Alloc>(const Array<T, Alloc> &)
+    return tmp; // should match Vector<T>(const Array<T> &)
 
 }
 
 // <thrown>
 //   <item> ArrayConformanceError
 // </thrown>
-template<typename T, typename Alloc> Vector<T, Alloc> Matrix<T, Alloc>::diagonal(long long n)
+template<typename T> Vector<T> Matrix<T>::diagonal(long long n)
 {
   assert(ok());
-    Matrix<T, Alloc> tmp(*this);
+    Matrix<T> tmp(*this);
     tmp.begin_p += tmp.makeDiagonal (0, n);
     tmp.makeSteps();
-    return tmp;  // should match Vector<T, Alloc>(const Array<T, Alloc> &)
+    return tmp;  // should match Vector<T>(const Array<T> &)
 }
 
-template<typename T, typename Alloc> const Vector<T, Alloc> Matrix<T, Alloc>::row(size_t n) const
+template<typename T> const Vector<T> Matrix<T>::row(size_t n) const
 {
     assert(ok());
     // Cast away constness of this so we do not have to duplicate code.
     // Because the return type is const we are not actually violating
     // constness.
-    Matrix<T, Alloc> *This = const_cast<Matrix<T, Alloc>*>(this);
+    Matrix<T> *This = const_cast<Matrix<T>*>(this);
     return This->row(n);
 }
 
-template<typename T, typename Alloc> const Vector<T, Alloc> Matrix<T, Alloc>::column(size_t n) const
+template<typename T> const Vector<T> Matrix<T>::column(size_t n) const
 {
   assert(ok());
     // Cast away constness of this so we do not have to duplicate code.
     // Because the return type is const we are not actually violating
     // constness.
-    Matrix<T, Alloc> *This = const_cast<Matrix<T, Alloc>*>(this);
+    Matrix<T> *This = const_cast<Matrix<T>*>(this);
     return This->column(n);
 }
 
 // If the matrix isn't square, this will throw an exception.
-template<typename T, typename Alloc> const Vector<T, Alloc> Matrix<T, Alloc>::diagonal(long long n) const
+template<typename T> const Vector<T> Matrix<T>::diagonal(long long n) const
 {
   assert(ok());
     // Cast away constness of this so we do not have to duplicate code.
     // Because the return type is const we are not actually violating
     // constness.
-    Matrix<T, Alloc> *This = const_cast<Matrix<T, Alloc>*>(this);
+    Matrix<T> *This = const_cast<Matrix<T>*>(this);
     return This->diagonal(n);
 }
 
-template<typename T, typename Alloc> Matrix<T, Alloc> Matrix<T, Alloc>::identity(size_t n)
+template<typename T> Matrix<T> Matrix<T>::identity(size_t n)
 {
-    Matrix<T, Alloc> m(n, n, T(0));
+    Matrix<T> m(n, n, T(0));
     T* ptr = m.data();
     for (size_t i=0; i<n; i++) {
         *ptr = T(1);
@@ -277,11 +270,11 @@ template<typename T, typename Alloc> Matrix<T, Alloc> Matrix<T, Alloc>::identity
     return m;
 }
 
-template<typename T, typename Alloc>
-void Matrix<T, Alloc>::doNonDegenerate (const Array<T, Alloc> &other,
+template<typename T>
+void Matrix<T>::doNonDegenerate (const Array<T> &other,
                                  const IPosition &ignoreAxes)
 {
-    Array<T, Alloc> tmp(*this);
+    Array<T> tmp(*this);
     tmp.nonDegenerate (other, ignoreAxes);
     if (tmp.ndim() != 2) {
 	throw (ArrayError ("Matrix::nonDegenerate (other, ignoreAxes) - "
@@ -291,15 +284,15 @@ void Matrix<T, Alloc>::doNonDegenerate (const Array<T, Alloc> &other,
     this->reference (tmp);
 }
 
-template<typename T, typename Alloc> bool Matrix<T, Alloc>::ok() const
+template<typename T> bool Matrix<T>::ok() const
 {
-    return ( (this->ndim() == 2) ? (Array<T, Alloc>::ok()) : false );
+    return ( (this->ndim() == 2) ? (Array<T>::ok()) : false );
 }
 
-template<typename T, typename Alloc>
-void Matrix<T, Alloc>::preTakeStorage(const IPosition &shape)
+template<typename T>
+void Matrix<T>::preTakeStorage(const IPosition &shape)
 {
-  Array<T, Alloc>::preTakeStorage(shape);
+  Array<T>::preTakeStorage(shape);
   if(shape.nelements() != 2)
     throw ArrayError("shape.nelements() != 2");
 }

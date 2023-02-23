@@ -30,9 +30,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T, typename Alloc>
+template<class T>
 template <class U, class V>
-Vector<T, Alloc>::Vector(const std::vector<U, V> &other)
+Vector<T>::Vector(const std::vector<U, V> &other)
   : Array<T>(IPosition(1, other.size()))
 {
   size_t i=0;
@@ -41,10 +41,10 @@ Vector<T, Alloc>::Vector(const std::vector<U, V> &other)
     (*this)[i++] = (T)*pos;
   }
 }
-template<class T, typename Alloc>
+template<class T>
 template<class Iterator>
-Vector<T, Alloc>::Vector(Iterator first, size_t size, int)
-  : Array<T, Alloc>(IPosition(1, size)) {
+Vector<T>::Vector(Iterator first, size_t size, int)
+  : Array<T>(IPosition(1, size)) {
   for (size_t i=0; i<size; ++i, ++first) {
     (*this)[i] = *first;
   }

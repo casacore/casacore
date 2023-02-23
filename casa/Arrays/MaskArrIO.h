@@ -28,7 +28,7 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
+template<typename T>
 class MaskedArray;
 
 // <summary>
@@ -84,13 +84,13 @@ class MaskedArray;
 // 
 // Write out an ascii representation of a MaskedArray.
 // The component Array and LogicalArray are written out sequentially.
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-std::ostream & operator<< (std::ostream &, const MaskedArray<T, ArrayAlloc, MaskAlloc> &);
+template<typename T>
+std::ostream & operator<< (std::ostream &, const MaskedArray<T> &);
 
 
 // </group>
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-std::string to_string(const MaskedArray<T, ArrayAlloc, MaskAlloc> &);
+template<typename T>
+std::string to_string(const MaskedArray<T> &);
 
 } //# NAMESPACE CASACORE - END
 

@@ -130,17 +130,6 @@ BOOST_AUTO_TEST_CASE(poolallocator)
   alloc.deallocate(c, 1);
 }
 
-BOOST_AUTO_TEST_CASE(custom_allocator_array)
-{
-  PoolAllocator<int> allocA(1024), allocB(1024);
-  Array<int, PoolAllocator<int>>
-    a(allocA),
-    b(IPosition(2, 3), 1982, allocA);
-  a = std::move(b);
-  Array<int, PoolAllocator<int>> c(IPosition(4, 1), allocB);
-  c.assign( a );
-}
-
 BOOST_AUTO_TEST_CASE(array_shared_storage)
 {
   int storage = 42;
