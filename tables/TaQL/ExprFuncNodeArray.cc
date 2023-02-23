@@ -653,8 +653,7 @@ MArray<Double> TableExprFuncNodeArray::angdistx (const MArray<Double>& a1,
       *res++ = acos (sin(*p1)*sindec2 + cos(*p1)*cosdec2*cos(ra1-ra2));
     }
   }
-  /// deal with possible mask
-  return MArray<Double>(result);
+  return MArray<Double>(result, a1.combineMask(a2));
 }
 
 

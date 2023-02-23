@@ -255,7 +255,7 @@ public:
   void setSeparator (const String& sep)
     { itsSep = sep; }
   void setSeparator (uInt incr, const String& sep)
-  { itsIncr = incr; itsSep2 = sep; }
+    { itsIncr = incr; itsSep2 = sep; }
   void add (const TaQLNode& node)
     { itsNodes.push_back (node); }
   const std::vector<TaQLNode>& getNodes() const
