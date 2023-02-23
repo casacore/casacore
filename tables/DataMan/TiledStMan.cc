@@ -391,8 +391,7 @@ TSMCube* TiledStMan::makeTSMCube (TSMFile* file, const IPosition& cubeShape,
         //cout << "buffered TSM1" << endl;
         AlwaysAssert (file->bucketFile()->isBuffered(), AipsError);
         hypercube = new TSMCubeBuff (this, file, cubeShape, tileShape,
-                                     values, fileOffset,
-                                     tsmOption().bufferSize());
+                                     values, fileOffset);
     } else {
         //cout << "caching TSM1" << endl;
         AlwaysAssert (file->bucketFile()->isCached(), AipsError);
@@ -1224,8 +1223,7 @@ uInt TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
                 cubeSet_p[i] = new TSMCubeMMap (this, headerFile);
             } else if (tsmOption().option() == TSMOption::Buffer) {
                 //cout << "buffered TSM" << endl;
-                cubeSet_p[i] = new TSMCubeBuff (this, headerFile,
-                                                tsmOption().bufferSize());
+                cubeSet_p[i] = new TSMCubeBuff (this, headerFile);
             }else{
                 //cout << "caching TSM" << endl;
 	        cubeSet_p[i] = new TSMCube (this, headerFile);
