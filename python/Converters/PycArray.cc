@@ -95,7 +95,7 @@ namespace casacore { namespace python {
     d.setdefault (std::string("shape"),
 		  to_list<IPosition>::makeobject (arr.shape()));
     d.setdefault (std::string("array"), a);
-    return d;
+    return std::move(d);
   }
 
 
