@@ -276,7 +276,9 @@ protected:
 template <class T> inline COWPtr<T>::COWPtr()
   : obj_p   (nullptr, Deleter(True)),
     const_p (False)
-{} 
+{
+  // does nothing
+} 
 
 //# copy ctor with reference semantics
 template <class T> inline COWPtr<T>::COWPtr(const COWPtr<T> &other)

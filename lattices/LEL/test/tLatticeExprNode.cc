@@ -206,35 +206,35 @@ Bool doIt (const MaskedLattice<Float>& aF,
    cout << "LatticeExprNode(std::shared_ptr<LELInterface<T>>&) " << endl;
    {
       cout << "  Float" << endl;
-      std::shared_ptr<LELInterface<Float>> pExpr(new LELUnaryConst<Float>(bFVal));
+      auto pExpr = std::make_shared<LELUnaryConst<Float>>(bFVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bFVal);
       if (!compareScalarFloat (expr, expr2, bFVal, shape)) ok = False;
    }
    {
       cout << "  Double" << endl;
-      std::shared_ptr<LELInterface<Double>> pExpr(new LELUnaryConst<Double>(bDVal));
+      auto pExpr = std::make_shared<LELUnaryConst<Double>>(bDVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bDVal);
       if (!compareScalarDouble (expr, expr2, bDVal, shape)) ok = False;
    }
    {
       cout << "  Complex" << endl;
-      std::shared_ptr<LELInterface<Complex>> pExpr(new LELUnaryConst<Complex>(bCVal));
+      auto pExpr = std::make_shared<LELUnaryConst<Complex>>(bCVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bCVal);
       if (!compareScalarComplex (expr, expr2, bCVal, shape)) ok = False;
    }
    {
       cout << "  DComplex" << endl;
-      std::shared_ptr<LELInterface<DComplex>> pExpr(new LELUnaryConst<DComplex>(bDCVal));
+      auto pExpr = std::make_shared<LELUnaryConst<DComplex>>(bDCVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bDCVal);
       if (!compareScalarDComplex (expr, expr2, bDCVal, shape)) ok = False;
    }
    {
       cout << "  Bool" << endl;
-      std::shared_ptr<LELInterface<Bool>> pExpr(new LELUnaryConst<Bool>(bBVal));
+      auto pExpr = std::make_shared<LELUnaryConst<Bool>>(bBVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bBVal);
       if (!compareScalarBool (expr, expr2, bBVal, shape)) ok = False;

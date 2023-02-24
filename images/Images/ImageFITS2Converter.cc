@@ -862,10 +862,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     //
     fhi.applyMask = False;
-    fhi.pMask = 0;
+    fhi.pMask.reset();
     if (image.isMasked()) {
       fhi.applyMask = True;
-      fhi.pMask.reset (new Array<Bool>(IPosition(0,0)));
+      fhi.pMask = std::make_shared<Array<Bool>>(IPosition(0,0));
     }
     //
     // Find scale factors

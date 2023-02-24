@@ -465,12 +465,12 @@ namespace casacore {
     //# Data members.
     //# itsLattice is the real data; the pointers are for type convenience only.
     std::shared_ptr<LatticeBase>   itsLattice;
-    ImageInterface<Float>*         itsImageFloat;
-    ImageInterface<Double>*        itsImageDouble;
-    ImageInterface<Complex>*       itsImageComplex;
-    ImageInterface<DComplex>*      itsImageDComplex;
-    const CoordinateSystem*        itsCoordSys;
-    ImageAttrHandler*              itsAttrHandler;
+    ImageInterface<Float>*         itsImageFloat;     //# reference, so no delete
+    ImageInterface<Double>*        itsImageDouble;    //# reference, so no delete
+    ImageInterface<Complex>*       itsImageComplex;   //# reference, so no delete
+    ImageInterface<DComplex>*      itsImageDComplex;  //# reference, so no delete
+    const CoordinateSystem*        itsCoordSys;       //# reference, so no delete
+    ImageAttrHandler*              itsAttrHandler;    //# reference, so no delete
   };
 
 } // end namespace casacore

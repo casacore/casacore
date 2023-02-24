@@ -48,7 +48,7 @@ namespace casacore {
     itsGroupMap.clear();
     // If ATTRGROUPS is defined, get all groups in it.
     if (HDF5Group::exists (hid, "ATTRGROUPS")) {
-      itsGroup.reset (new HDF5Group(hid, "ATTRGROUPS", true));
+      itsGroup = std::make_shared<HDF5Group>(hid, "ATTRGROUPS", true);
       vector<String> names = HDF5Group::linkNames (*itsGroup);
       for (uInt i=0; i<names.size(); ++i) {
         // Add group to map, but with a null object. It gets filled once
@@ -62,7 +62,7 @@ namespace casacore {
         throw AipsError("ImageAttrHandlerHDF5: cannot add ATTRGROUPS because "
                         "image is not writable");
       }
-      itsGroup.reset (new HDF5Group(hid, "ATTRGROUPS", false));
+      itsGroup = std::make_shared<HDF5Group>(hid, "ATTRGROUPS", false);
       itsCanWrite = True;
     }
     return *this;

@@ -149,7 +149,7 @@ void LatticeStatsDataProvider<T>::setLattice(
                 lattice.advisedMaxPixels()
             )
         );
-        _iter.reset (new RO_LatticeIterator<T>(lattice, stepper));
+        _iter = std::make_shared<RO_LatticeIterator<T>>(lattice, stepper);
     }
     else {
         _iter = NULL;

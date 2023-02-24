@@ -156,7 +156,7 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(
                 lattice.advisedMaxPixels()
             )
         );
-        _iter.reset (new RO_MaskedLatticeIterator<T>(lattice, stepper));
+        _iter = std::make_shared<RO_MaskedLatticeIterator<T>>(lattice, stepper);
     }
     else {
         _iter = NULL;
