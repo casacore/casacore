@@ -512,7 +512,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			    << "Using the maximum of the channel width range." 
 			    << LogIO::WARN;
 		    }
-		  step=fabs(freqList(i+2)/maxCW);
+		  step=fabs(freqList(j+2)/maxCW);
 		  // 
 		  // Enforce start < stop and step > 0.  
 		  //
