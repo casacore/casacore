@@ -256,7 +256,7 @@ std::map<Double, AccumType> FitToHalfStatistics<CASA_STATP>::getQuantiles(
         "Value of all quantiles must be between 0 and 1 (noninclusive)"
     );
     ThrowIf (
-        knownNpts && *knownNpts % 2 != 0,
+        knownNpts && ((*knownNpts % 2) != 0),
         "knownNpts must be even for this class"
     );
     _setRange();

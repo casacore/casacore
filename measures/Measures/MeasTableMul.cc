@@ -65,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Let a derived class calculate the coefficient matrix for this epoch.
     // Note: multiple threads can execute this part (which is fine).
-    std::shared_ptr<Matrix<Double>> arr(new Matrix<Double>(itsDefArray.shape()));
+    auto arr = std::make_shared<Matrix<Double>>(itsDefArray.shape());
     *arr = itsDefArray;
     calc (*arr, time);
     {   // cache insertion must also be thread-safe
