@@ -502,6 +502,9 @@ void FitsInput::read_header_rec() {
             m_rec_type = FITS::UnrecognizableRecord;
             return;
         }
+        //cout << "[FitsInput::read_header_rec()] Extra bytes after the end of the FITS file" << endl;
+	m_rec_type = FITS::EndOfFile;
+	return;
     }
     // since ffmrhd() reads the header, we need to move the file pointer back
     // to the beginning of the hdu before calling m_fin.read()
