@@ -33,7 +33,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template <class T> COWPtr<T>::COWPtr(T *obj, Bool deleteIt, Bool readOnly)
   : obj_p   (obj, Deleter(deleteIt)),
     const_p (readOnly)
-{}
+{
+  // does nothing
+}  
 
 template <class T> void COWPtr<T>::set(T *obj, Bool deleteIt, Bool readOnly)
 {

@@ -165,11 +165,6 @@ FITSImage& FITSImage::operator=(const FITSImage& other)
    return *this;
 } 
  
-FITSImage::~FITSImage()
-{
-}
-
-
 LatticeBase* FITSImage::openFITSImage (const String& name,
 				       const MaskSpecifier& spec)
 {

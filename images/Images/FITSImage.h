@@ -116,7 +116,7 @@ public:
   FITSImage(const FITSImage& other);
 
   // Destructor does nothing
-  virtual ~FITSImage();
+  virtual ~FITSImage() = default;
 
   // Assignment (reference semantics)
   FITSImage& operator=(const FITSImage& other);

@@ -284,7 +284,9 @@ template <class T> inline COWPtr<T>::COWPtr()
 template <class T> inline COWPtr<T>::COWPtr(const COWPtr<T> &other)
   : obj_p   (other.obj_p),
     const_p (other.const_p)
-{}
+{
+  // does nothing
+}
 
 //assignment operator with reference semantics
 template <class T> 
