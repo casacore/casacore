@@ -921,7 +921,7 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
                 outLatt, *pInLattice_p,
                 collapser, IPosition(cursorAxes_p),
                 newOutAxis,
-                pProgressMeter ? pProgressMeter.get() : NULL
+                pProgressMeter.get()
             );
             collapser.minMaxPos(minPos_p, maxPos_p);
             ranOldMethod = True;

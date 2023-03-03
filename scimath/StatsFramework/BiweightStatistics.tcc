@@ -71,8 +71,6 @@ BiweightStatistics<CASA_STATP>& BiweightStatistics<CASA_STATP>::operator=(
         _maxNiter = other._maxNiter;
         _location = other._location;
         _scale = other._scale;
-        _range = other._range
-            ? new std::pair<AccumType, AccumType>(*other._range) : nullptr;
         _range = other._range;
         _npts = other._npts;
     }

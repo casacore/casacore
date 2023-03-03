@@ -216,7 +216,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
         for (uInt i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg1950(i+1)(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC1950(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC1950(t, 1e-6));
         for (uInt i=0; i<69; i++) {
           dtmp = 0;
           for (uInt j=0; j<5; j++) {
@@ -233,7 +233,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
         for (uInt i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000B(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC2000B(t, 1e-6));
         for (Int i=76; i>=0; --i) {
           dtmp = 0;
           for (uInt j=0; j<5; j++) {
@@ -255,7 +255,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
         for (uInt i=0; i<5; i++) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000A(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC2000A(t, 1e-6));
         for (Int i=677; i>=0; --i) {
           dtmp = 0;
           for (uInt j=0; j<5; j++) {
@@ -294,7 +294,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
 	for (uInt i=0; i<5; i++) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
 	}
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC(t, 1e-6));
 	for (uInt i=0; i<106; i++) {
 	  dtmp = 0;
 	  for (uInt j=0; j<5; j++) {
@@ -374,7 +374,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
           fa(i) = MeasTable::fundArg1950(i+1)(t);
           dfa(i) = (MeasTable::fundArg1950(i+1).derivative())(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC1950(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC1950(t, 1e-6));
         for (uInt i=0; i<69; i++) {
           dtmp = ddtmp = 0;
           for (uInt j=0; j<5; j++) {
@@ -393,7 +393,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
           dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000B(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC2000B(t, 1e-6));
         for (Int i=76; i>=0; --i) {
           dtmp = ddtmp = 0;
           for (uInt j=0; j<5; j++) {
@@ -413,7 +413,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
           fa(i) = MeasTable::fundArg2000(i+1)(t);
           dfa(i) = (MeasTable::fundArg2000(i+1).derivative())(t);
         }
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC2000A(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC2000A(t, 1e-6));
         for (Int i=677; i>=0; --i) {
           dtmp = ddtmp = 0;
           for (uInt j=0; j<5; j++) {
@@ -454,7 +454,7 @@ void Nutation::calcNut(Double time, Bool calcDer) {
 	  fa(i) = MeasTable::fundArg(i+1)(t);
 	  dfa(i) = (MeasTable::fundArg(i+1).derivative())(t);
 	}
-        CountedPtr<Matrix<Double> > mul(MeasTable::mulSC(t, 1e-6));
+        std::shared_ptr<Matrix<Double>> mul(MeasTable::mulSC(t, 1e-6));
 	for (uInt i=0; i<106; i++) {
 	  dtmp = ddtmp = 0;
 	  for (uInt j=0; j<5; j++) {

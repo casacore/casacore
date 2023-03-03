@@ -116,10 +116,8 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         }
         Double zScore = _zscore >= 0
             ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
-        std::shared_ptr<std::pair<AccumType, AccumType>> range
-            (new std::pair<AccumType, AccumType>(
-                sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
-            )
+        auto range = std::make_shared<std::pair<AccumType, AccumType>>(
+            sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
         );
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
         // _rangeIsSet is set here to prevent infinite

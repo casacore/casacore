@@ -168,7 +168,7 @@ void Aberration::calcAber(Double t) {
           fa(i) = MeasTable::aber1950Arg(i)(t);
           dfa(i) = MeasTable::aber1950ArgDeriv(i)(t);
         }
-	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber1950(t, 1e-6);
+        std::shared_ptr<Matrix<Double>> mul = MeasTable::mulAber1950(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
         const Double* mulAberV = mul->data();
 
@@ -213,7 +213,7 @@ void Aberration::calcAber(Double t) {
 	  fa(i) = MeasTable::aberArg(i)(t);
 	  dfa(i) = MeasTable::aberArgDeriv(i)(t);
 	}
-	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber(t, 1e-6);
+        std::shared_ptr<Matrix<Double>> mul = MeasTable::mulAber(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
         const Double* mulAberV = mul->data();
 	for (i=0; i<80; i++) {

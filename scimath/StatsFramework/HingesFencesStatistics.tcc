@@ -39,8 +39,8 @@ CASA_STATD
 HingesFencesStatistics<CASA_STATP>::HingesFencesStatistics(
     Double f
 ) : ConstrainedRangeStatistics<CASA_STATP>(
-        std::shared_ptr<HingesFencesQuantileComputer<CASA_STATP>>(
-            new HingesFencesQuantileComputer<CASA_STATP>(&this->_getDataset())
+        std::make_shared<HingesFencesQuantileComputer<CASA_STATP>>(
+            &this->_getDataset()
         )
     ), _f(f) {
     reset();
@@ -557,10 +557,9 @@ void HingesFencesStatistics<CASA_STATP>::_setRange() {
         ClassicalStatistics<CASA_STATP> cs(*this);
         std::map<Double, AccumType> quartiles = cs.getQuantiles(quantiles);
         auto iqr = quartiles[0.75] - quartiles[0.25];
-        std::shared_ptr<std::pair<AccumType, AccumType>> range
-            (new std::pair<AccumType, AccumType>(
+        auto range = std::make_shared<std::pair<AccumType, AccumType>>(
                 quartiles[0.25] - _f*iqr, quartiles[0.75] + _f*iqr
-            ));
+        );
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
     }
     _rangeIsSet = True;
