@@ -51,11 +51,8 @@ TSMCubeBuff::TSMCubeBuff (TiledStMan* stman, TSMFile* file,
                           const IPosition& cubeShape,
                           const IPosition& tileShape,
                           const Record& values,
-                          Int64 fileOffset,
-                          uInt bufferSize)
-  : TSMCube (stman, file, cubeShape, tileShape, values, fileOffset, True),
-    cache_p (0),
-    bufferSize_p (bufferSize)
+                          Int64 fileOffset)
+  : TSMCube (stman, file, cubeShape, tileShape, values, fileOffset, True)
 {
   // Note that the TSMCube constructor calls setShape.
   // However, because it is in the constructor TSMCube's setShape is called.
@@ -65,54 +62,44 @@ TSMCubeBuff::TSMCubeBuff (TiledStMan* stman, TSMFile* file,
   }
 }
 
-TSMCubeBuff::TSMCubeBuff (TiledStMan* stman, AipsIO& ios, uInt bufferSize)
-  : TSMCube (stman, ios, True),
-    cache_p (0),
-    bufferSize_p (bufferSize)
+TSMCubeBuff::TSMCubeBuff (TiledStMan* stman, AipsIO& ios)
+  : TSMCube (stman, ios, True)
 {}
-
-TSMCubeBuff::~TSMCubeBuff()
-{
-    delete cache_p;
-}
-
 
 void TSMCubeBuff::showCacheStatistics (ostream& os) const
 {
-  if (cache_p != 0) {
+  if (cache_p) {
     os << ">>> No TSMCube cache statistics (uses buffered IO)" << endl;
     os << "<<<" << endl;
   }
 }
 
-
 void TSMCubeBuff::makeCache()
 {
     // If there is no cache, make one.
-    if (cache_p == 0) {
-        cache_p = new BucketBuffered (filePtr_p->bucketFile(), fileOffset_p,
-                                      bucketSize_p, nrTiles_p);
+    if (!cache_p) {
+        cache_p.reset (new BucketBuffered (filePtr_p->bucketFile(), fileOffset_p,
+                                           bucketSize_p, nrTiles_p));
     }
 }
 
 void TSMCubeBuff::flushCache()
 {
-    if (cache_p != 0) {
+    if (cache_p) {
 	cache_p->flush();
     }
 }
 
 void TSMCubeBuff::resyncCache()
 {
-    if (cache_p != 0) {
+    if (cache_p) {
 	cache_p->resync (nrTiles_p);
     }
 }
 
 void TSMCubeBuff::deleteCache()
 {
-    delete cache_p;
-    cache_p = 0;
+    cache_p.reset();
 }
 
 void TSMCubeBuff::setShape (const IPosition& cubeShape,
