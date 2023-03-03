@@ -69,7 +69,7 @@ public:
     // FIXME make protected once refactor is complete
     void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
-    void setMedian(std::shared_ptr<AccumType> median) { _median = median; }
+    void setMedian(std::shared_ptr<AccumType> median) { _median = std::move(median); }
 
 protected:
 
@@ -108,7 +108,7 @@ protected:
     }
 
     void _setMedianAbsDevMedian(std::shared_ptr<AccumType> medAbsDevMed) {
-        _medAbsDevMed = medAbsDevMed;
+        _medAbsDevMed = std::move(medAbsDevMed);
     }
 
 private:
