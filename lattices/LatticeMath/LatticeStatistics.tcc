@@ -872,14 +872,12 @@ Bool LatticeStatistics<T>::generateStorageLattice() {
        os_p << LogIO::NORMAL1
             << "Creating new statistics storage lattice of shape " << storeLatticeShape << endl << LogIO::POST;
     }
-    pStoreLattice_p.reset(
-        new TempLattice<AccumType>(
-            TiledShape(storeLatticeShape, tileShape), useMemory
-        )
+    pStoreLattice_p = std::make_shared<TempLattice<AccumType>>(
+        TiledShape(storeLatticeShape, tileShape), useMemory
     );
     // Set up min/max location variables
     std::shared_ptr<LattStatsProgress> pProgressMeter(
-        showProgress_p ? new LattStatsProgress() : NULL
+        showProgress_p ? std::make_shared<LattStatsProgress>() : NULL
     );
     Double timeOld = 0;
     Double timeNew = 0;
@@ -1102,7 +1100,7 @@ void LatticeStatistics<T>::_computeStatsUsingArrays(
     }
     std::shared_ptr<DataRanges> range;
     if (! noInclude_p || ! noExclude_p) {
-        range.reset(new DataRanges());
+      range = std::make_shared<DataRanges>();
         range->push_back(std::pair<T, T>(range_p[0], range_p[1]));
     }
     const Bool isChauv = _saf.algorithm() == StatisticsData::CHAUVENETCRITERION;
@@ -1583,9 +1581,9 @@ void LatticeStatistics<T>::_computeQuantiles(
     // computing the median and the quartiles simultaneously minimizes
     // the number of necessary data scans, as opposed to first calling
     // getMedian() and getQuartiles() separately
-    std::shared_ptr<uInt64> npts(new uInt64(knownNpts));
-    std::shared_ptr<AccumType> mymin(new AccumType(knownMin));
-    std::shared_ptr<AccumType> mymax(new AccumType(knownMax));
+    std::shared_ptr<uInt64> npts = std::make_shared<uInt64>(knownNpts);
+    std::shared_ptr<AccumType> mymin = std::make_shared<AccumType>(knownMin);
+    std::shared_ptr<AccumType> mymax = std::make_shared<AccumType>(knownMax);
     median = statsAlg->getMedianAndQuantiles(
         quantiles, fracs, npts, mymin, mymax,
         maxArraySizeBytes, False, nBins
@@ -1609,12 +1607,12 @@ template <class U, class V>
             median, medAbsDevMed, q1, q3, statsAlg,
             stats.npts, *stats.min, *stats.max
         );
-        stats.median.reset(new AccumType(median));
-        stats.medAbsDevMed.reset(new AccumType(medAbsDevMed));
+        stats.median = std::make_shared<AccumType>(median);
+        stats.medAbsDevMed = std::make_shared<AccumType>(medAbsDevMed);
     }
     else {
-        stats.median.reset(new AccumType(0));
-        stats.medAbsDevMed.reset(new AccumType(0));
+        stats.median = std::make_shared<AccumType>(0);
+        stats.medAbsDevMed = std::make_shared<AccumType>(0);
         q1 = 0;
         q3 = 0;
     }

@@ -147,7 +147,7 @@ protected:
 
   Block<IPosition> tileLocs;
   Block<Int> tileSequence;
-  Block<Array<T> > tileContents;
+  Block<Array<T>> tileContents;
 
   void writeTile(Int tile);
   void readTile(Int tile, Bool readonly);

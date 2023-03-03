@@ -1,4 +1,4 @@
-//# LatticeIter.cc: defines the RO_LatticeIterator and LatticeIterator classes
+//# LatticeIterator.cc: defines the RO_LatticeIterator and LatticeIterator classes
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -88,7 +88,7 @@ RO_LatticeIterator<T>::RO_LatticeIterator (const RO_LatticeIterator<T>& other)
 template <class T>
 RO_LatticeIterator<T>::~RO_LatticeIterator()
 {
-  // CountedPtr destructor takes care of deletion of the LatticeIterInterface
+  // std::shared_ptr destructor takes care of deletion of the LatticeIterInterface
 }
 
 template <class T>
@@ -107,7 +107,7 @@ RO_LatticeIterator<T> RO_LatticeIterator<T>::copy() const
 {
   RO_LatticeIterator<T> tmp;
   if (!isNull()) {
-    tmp.itsIterPtr = itsIterPtr->clone();
+    tmp.itsIterPtr.reset (itsIterPtr->clone());
   }
   return tmp;
 }
@@ -284,7 +284,7 @@ LatticeIterator<T> LatticeIterator<T>::copy() const
 {
   LatticeIterator<T> tmp;
   if (!isNull()) {
-    tmp.itsIterPtr = itsIterPtr->clone();
+    tmp.itsIterPtr.reset (itsIterPtr->clone());
   }
   return tmp;
 }

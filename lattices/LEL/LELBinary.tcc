@@ -40,8 +40,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELBinary<T>::LELBinary(const LELBinaryEnums::Operation op,
-			const CountedPtr<LELInterface<T> >& pLeftExpr,
-			const CountedPtr<LELInterface<T> >& pRightExpr)
+			const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+			const std::shared_ptr<LELInterface<T>>& pRightExpr)
 : op_p(op)
 {
    setAttr (LELAttribute(pLeftExpr->getAttribute(),
@@ -232,8 +232,8 @@ void LELBinary<T>::resync()
 // LELBinaryCmp
 template <class T>
 LELBinaryCmp<T>::LELBinaryCmp(const LELBinaryEnums::Operation op,
-			      const CountedPtr<LELInterface<T> >& pLeftExpr,
-			      const CountedPtr<LELInterface<T> >& pRightExpr)
+			      const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+			      const std::shared_ptr<LELInterface<T>>& pRightExpr)
 : op_p(op)
 {
    setAttr (LELAttribute(pLeftExpr->getAttribute(),

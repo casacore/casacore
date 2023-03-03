@@ -338,7 +338,7 @@ HDF5Image<T>& HDF5Image<T>::operator+= (const Lattice<T>& other)
 }
 
 template<class T>
-const CountedPtr<HDF5File>& HDF5Image<T>::getFile (void* imagePtr)
+const std::shared_ptr<HDF5File>& HDF5Image<T>::getFile (void* imagePtr)
 {
   HDF5Image<T>* im = static_cast<HDF5Image<T>*>(imagePtr);
   return im->map_p.file();

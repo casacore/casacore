@@ -46,17 +46,17 @@ void StatsTiledCollapser<T,U>::init (uInt nOutPixelsPerCollapse) {
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::initAccumulator (uInt64 n1, uInt64 n3) {
-   _sum.reset (new Block<U>(n1*n3));
-   _sumSq.reset (new Block<U>(n1*n3));
-   _npts.reset (new Block<Double>(n1*n3));
-   _mean.reset (new Block<U>(n1*n3));
-   _variance.reset (new Block<U>(n1*n3));
-   _sigma.reset (new Block<U>(n1*n3));
-   _nvariance.reset (new Block<U>(n1*n3));
+   _sum = std::make_shared<Block<U>>(n1*n3);
+   _sumSq = std::make_shared<Block<U>>(n1*n3);
+   _npts = std::make_shared<Block<Double>>(n1*n3);
+   _mean = std::make_shared<Block<U>>(n1*n3);
+   _variance = std::make_shared<Block<U>>(n1*n3);
+   _sigma = std::make_shared<Block<U>>(n1*n3);
+   _nvariance = std::make_shared<Block<U>>(n1*n3);
 
-   _min.reset (new Block<T>(n1*n3));
-   _max.reset (new Block<T>(n1*n3));
-   _initMinMax.reset (new Block<Bool>(n1*n3));
+   _min = std::make_shared<Block<T>>(n1*n3);
+   _max = std::make_shared<Block<T>>(n1*n3);
+   _initMinMax = std::make_shared<Block<Bool>>(n1*n3);
    _sum->set(0);
    _sumSq->set(0);
    _npts->set(0);
@@ -220,7 +220,7 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     U* sumSqPtr = _sumSq->storage();
     std::shared_ptr<Block<DComplex>> nptsComplex;
     if (! isReal(whatType<U>())) {
-       nptsComplex.reset (new Block<DComplex>(_n1*_n3));
+      nptsComplex = std::make_shared<Block<DComplex>>(_n1*_n3);
     }
     U* nPtsPtr;
     _convertNPts(nPtsPtr, _npts, nptsComplex);

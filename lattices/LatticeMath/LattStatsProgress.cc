@@ -51,14 +51,16 @@ void LattStatsProgress::initDerived()
 // calls this initDerived function
 // 
 
-  _meter.reset (new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
-                                  String("Accumulation Iterations"), String(""), String(""),
-                                  True, max(1,Int(expectedNsteps()/20))));
+   _meter = std::make_shared<ProgressMeter>(
+       0.0, Double(expectedNsteps()), String("Generate Storage Image"),
+       String("Accumulation Iterations"), String(""), String(""),
+       True, max(1,Int(expectedNsteps()/20))
+   );
 }
 
 void LattStatsProgress::nstepsDone (uInt nsteps)
 {
-	_currentStep = nsteps;
+    _currentStep = nsteps;
     _meter->update (_currentStep);
 }
 

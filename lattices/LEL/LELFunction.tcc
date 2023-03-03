@@ -47,7 +47,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // LELFunction1D
 template <class T>
 LELFunction1D<T>::LELFunction1D(const LELFunctionEnums::Function function,
-				const CountedPtr<LELInterface<T> >& expr)
+				const std::shared_ptr<LELInterface<T>>& expr)
 : function_p(function)
 {
    switch (function_p) {
@@ -440,7 +440,7 @@ void LELFunction1D<T>::resync()
 template <class T>
 LELFunctionReal1D<T>::LELFunctionReal1D
                                (const LELFunctionEnums::Function function,
-				const CountedPtr<LELInterface<T> >& expr)
+				const std::shared_ptr<LELInterface<T>>& expr)
 : function_p(function)
 {
    switch (function_p) {
@@ -600,7 +600,7 @@ Bool LELFunctionReal1D<T>::prepareScalarExpr()
    cout << "LELFunctionReal1D::prepare" << endl;
 #endif
 
-   if (! pExpr_p.null()) {
+   if (pExpr_p) {
       return LELInterface<T>::replaceScalarExpr (pExpr_p);
    }
    return False;

@@ -34,7 +34,6 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/stdvector.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -314,7 +313,7 @@ private:
     static Table& getRegionTable (void*, Bool);
 
     // Callback function for RegionHandlerHDF5 to get the file to be used.
-    static const CountedPtr<HDF5File>& getRegionHDF5 (void*);
+    static const std::shared_ptr<HDF5File>& getRegionHDF5 (void*);
 
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;

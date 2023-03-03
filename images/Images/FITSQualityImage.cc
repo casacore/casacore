@@ -55,7 +55,6 @@
 #include <casacore/casa/OS/File.h>
 #include <casacore/casa/Quanta/Unit.h>
 #include <casacore/measures/Measures/Quality.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Exceptions/Error.h>

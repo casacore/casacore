@@ -31,6 +31,7 @@
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageAttrHandlerHDF5.h>
 #include <casacore/lattices/Lattices/HDF5Lattice.h>
+#include <memory>
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
@@ -280,7 +281,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     // Function to return the internal HDF5File object to the RegionHandler.
-    static const CountedPtr<HDF5File>& getFile (void* imagePtr);
+    static const std::shared_ptr<HDF5File>& getFile (void* imagePtr);
 
     // This must be called in every constructor and place where the image
     // is attached to a new image.

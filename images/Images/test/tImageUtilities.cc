@@ -75,7 +75,7 @@ void doOpens()
          ImageUtilities::openImage(im, name1);
       }
       {
-         CountedPtr<ImageInterface<Float>> im;
+         std::shared_ptr<ImageInterface<Float>> im;
          im = ImageUtilities::openImage<Float>(name1);
       }
       {

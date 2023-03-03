@@ -167,13 +167,6 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   copy = COW;
   AlwaysAssert(allEQ(*copy, array), AipsError);
 
-  // test setReadOnly
-  if (!deleteIt) {
-    copy.setReadOnly(foo);
-    AlwaysAssert(allEQ(*copy, *foo), AipsError);
-    AlwaysAssert(copy.isReadOnly(), AipsError);
-  }
-
   if (!deleteIt) {
     delete foo;
     delete bar;
@@ -200,17 +193,11 @@ int main()
     Array<Float> *ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError); 
     AlwaysAssert(testFunc(ptr, array, True, True), AipsError);
-// the following can be uncommented when the CountedPtr class
-// is made to set the deleted pointer to NULL.
-//    AlwaysAssert(!ptr, AipsError); 
 
     // Case 1: a non-const which controls the ptr.
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError); 
     AlwaysAssert(testFunc(ptr, array, True, False), AipsError);
-// the following can be uncommented when the CountedPtr class
-// is made to set the deleted pointer to NULL.
-//    AlwaysAssert(!ptr, AipsError); 
 
     // Case 2: a const which doesn't control the pointer
     ptr = new Array<float>(array.copy());

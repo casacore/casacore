@@ -41,24 +41,20 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 TempLatticeImpl<T>::TempLatticeImpl() 
-: itsTablePtr (0),
-  itsIsClosed (False)
-{
-  itsLatticePtr = new ArrayLattice<T>;
-}
+  : itsLatticePtr (std::make_shared<ArrayLattice<T>>()),
+    itsIsClosed   (False)
+{}
 
 template<class T>
 TempLatticeImpl<T>::TempLatticeImpl (const TiledShape& shape, Int maxMemoryInMB)
-: itsTablePtr (0),
-  itsIsClosed (False)
+  : itsIsClosed (False)
 {
   init (shape, Double(maxMemoryInMB));
 }
 
 template<class T>
 TempLatticeImpl<T>::TempLatticeImpl (const TiledShape& shape, Double maxMemoryInMB)
-: itsTablePtr (0),
-  itsIsClosed (False)
+  : itsIsClosed (False)
 {
   init(shape, maxMemoryInMB);
 }
@@ -68,7 +64,6 @@ TempLatticeImpl<T>::~TempLatticeImpl()
 {
   // Reopen to make sure that temporary table gets deleted.
   doReopen();
-  delete itsTablePtr;
 }
 
 template<class T>
@@ -87,22 +82,21 @@ void TempLatticeImpl<T>::init (const TiledShape& shape, Double maxMemoryInMB)
     // We can use exclusive locking, since nobody else should use the table.
     itsTableName = AppInfo::workFileName (Int(memoryReq), "TempLattice");
     SetupNewTable newtab (itsTableName, TableDesc(), Table::Scratch);
-    itsTablePtr = new Table (newtab, TableLock::PermanentLockingWait);
-    itsLatticePtr = new PagedArray<T> (shape, *itsTablePtr);
+    itsTable = Table(newtab, TableLock::PermanentLockingWait);
+    itsLatticePtr = std::make_shared<PagedArray<T>>(shape, itsTable);
   } else {
-    itsLatticePtr = new ArrayLattice<T> (shape.shape());
+    itsLatticePtr = std::make_shared<ArrayLattice<T>>(shape.shape());
   }
 }
 
 template<class T>
 void TempLatticeImpl<T>::tempClose()
 {
-  if (itsTablePtr != 0 && isPaged()) {
+  if (!itsTable.isNull() && isPaged()) {
     // Take care that table does not get deleted, otherwise we cannot reopen.
-    itsTablePtr->unmarkForDelete();
-    delete itsTablePtr;
-    itsTablePtr = 0;
-    itsLatticePtr = 0;           // CountedPtr does delete of pointer
+    itsTable.unmarkForDelete();
+    itsLatticePtr.reset();
+    itsTable = Table();
     itsIsClosed = True;
   }
 }
@@ -111,14 +105,14 @@ template<class T>
 void TempLatticeImpl<T>::tempReopen() const
 {
   if (itsIsClosed && isPaged()) {
-    itsTablePtr = new Table (itsTableName,
-			     TableLock(TableLock::PermanentLockingWait),
-			     Table::Update);
-    itsLatticePtr = new PagedArray<T> (*itsTablePtr);
+    itsTable = Table(itsTableName,
+                     TableLock(TableLock::PermanentLockingWait),
+                     Table::Update);
+    itsLatticePtr = std::make_shared<PagedArray<T>>(itsTable);
     itsIsClosed = False;
   }
-  if (itsTablePtr != 0) {
-    itsTablePtr->markForDelete();
+  if (!itsTable.isNull()) {
+    itsTable.markForDelete();
   }
 }
 

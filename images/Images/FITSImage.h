@@ -116,7 +116,7 @@ public:
   FITSImage(const FITSImage& other);
 
   // Destructor does nothing
-  virtual ~FITSImage();
+  virtual ~FITSImage() = default;
 
   // Assignment (reference semantics)
   FITSImage& operator=(const FITSImage& other);
@@ -266,8 +266,8 @@ private:
   String         name_p;
   String         fullname_p;
   MaskSpecifier  maskSpec_p;
-  CountedPtr<TiledFileAccess> pTiledFile_p;
-  Lattice<Bool>* pPixelMask_p;
+  std::shared_ptr<TiledFileAccess> pTiledFile_p;
+  std::unique_ptr<Lattice<Bool>>   pPixelMask_p;
   TiledShape     shape_p;
   Float          scale_p;
   Float          offset_p;

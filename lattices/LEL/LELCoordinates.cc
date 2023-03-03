@@ -64,14 +64,14 @@ LELCoordinates& LELCoordinates::operator= (const LELCoordinates& other)
 // Return the underlying letter object.
 const LELLattCoordBase& LELCoordinates::coordinates() const
 {
-    AlwaysAssert (!coords_p.null(), AipsError);
+    AlwaysAssert (!isNull(), AipsError);
     return *coords_p;
 }
 
 // Does it have coordinates ?
 Bool LELCoordinates::hasCoordinates() const
 {
-    if (coords_p.null()) {
+    if (isNull()) {
         return False;
     }
     return coords_p->hasCoordinates();
@@ -80,7 +80,7 @@ Bool LELCoordinates::hasCoordinates() const
 // Check if the coordinates of this and that conform.
 Int LELCoordinates::compare (const LELCoordinates& that) const
 {
-    if (coords_p.null()  ||  that.coords_p.null()) {
+    if (isNull()  ||  that.isNull()) {
         return 9;
     }
     return coords_p->compare (*(that.coords_p));

@@ -96,7 +96,7 @@ String LELUnaryConst<T>::className() const
 
 template <class T>
 LELUnary<T>::LELUnary(const LELUnaryEnums::Operation op,
-		      const CountedPtr<LELInterface<T> >& pExpr)
+		      const std::shared_ptr<LELInterface<T>>& pExpr)
 : op_p(op), pExpr_p(pExpr)
 {
    this->setAttr(pExpr->getAttribute());

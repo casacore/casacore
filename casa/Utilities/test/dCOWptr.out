@@ -1,0 +1,8 @@
+The original array is:[0, 1, 2, 3]
+Array 1 is a reference to it:[0, 1, 2, 3]
+Modifying array 1 modifies the original array also:[10, 1, 2, 3]
+Or accessing it via the COWptr gives the same answer:[10, 1, 2, 3]
+Array 1 has been modified using COWptr functions:[10, 11, 2, 3]
+But the normally accessed Array 1 is unchanged:[10, 1, 2, 3]
+As is the original array:[10, 1, 2, 3]
+as the COWptr has made a copy
