@@ -374,7 +374,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (rownr < 0) {
       return False;
     }
-    DebugAssert (rownr < itsData.size(), AipsError);
+    DebugAssert (rownr < static_cast<Int64>(itsData.size()), AipsError);
     return itsData[rownr];
   }
   void TaQLJoinColumnBool::clear()
@@ -396,7 +396,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (rownr < 0) {
       return std::numeric_limits<Int64>::max();
     }
-    DebugAssert (rownr < itsData.size(), AipsError);
+    DebugAssert (rownr < static_cast<Int64>(itsData.size()), AipsError);
     return itsData[rownr];
   }
   void TaQLJoinColumnInt::clear()
@@ -419,7 +419,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (rownr < 0) {
       return std::numeric_limits<Double>::quiet_NaN();
     }
-    DebugAssert (rownr < itsData.size(), AipsError);
+    DebugAssert (rownr < static_cast<Int64>(itsData.size()), AipsError);
     return itsData[rownr];
   }
   void TaQLJoinColumnDouble::clear()
@@ -443,7 +443,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       return DComplex(std::numeric_limits<Double>::quiet_NaN(),
                       std::numeric_limits<Double>::quiet_NaN());
     }
-    DebugAssert (rownr < itsData.size(), AipsError);
+    DebugAssert (rownr < static_cast<Int64>(itsData.size()), AipsError);
     return itsData[rownr];
   }
   void TaQLJoinColumnDComplex::clear()
@@ -466,7 +466,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (rownr < 0) {
       return "none";
     }
-    DebugAssert (rownr < itsData.size(), AipsError);
+    DebugAssert (rownr < static_cast<Int64>(itsData.size()), AipsError);
     return itsData[rownr];
   }
   void TaQLJoinColumnString::clear()
@@ -488,7 +488,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (rownr < 0) {
       return MVTime();
     }
-    DebugAssert (rownr < itsData.size(), AipsError);
+    DebugAssert (rownr < static_cast<Int64>(itsData.size()), AipsError);
     return itsData[rownr];
   }
   void TaQLJoinColumnDate::clear()
