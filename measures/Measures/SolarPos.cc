@@ -226,7 +226,7 @@ void SolarPos::calcEarth(Double t) {
 		  fa(i) = MeasTable::posArg(i)(t);
 		  dfa(i) = MeasTable::posArgDeriv(i)(t);
 		}
-                CountedPtr<Matrix<Double> > mul = MeasTable::mulPosEarthXY(t, 1e-6);
+                std::shared_ptr<Matrix<Double>> mul = MeasTable::mulPosEarthXY(t, 1e-6);
                 DebugAssert (mul->contiguousStorage(), AipsError);
                 const Double* mulPosEarthXY = mul->data();
 		for (i=0; i<189; i++) {
@@ -301,7 +301,7 @@ void SolarPos::calcSun(Double t) {
 		  fa(i) = MeasTable::posArg(i)(t);
 		  dfa(i) = MeasTable::posArgDeriv(i)(t);
 		}
-                CountedPtr<Matrix<Double> > mul = MeasTable::mulPosSunXY(t, 1e-6);
+                std::shared_ptr<Matrix<Double>> mul = MeasTable::mulPosSunXY(t, 1e-6);
                 DebugAssert (mul->contiguousStorage(), AipsError);
                 const Double* mulPosSunXY = mul->data();
 		for (i=0; i<98; i++) {
