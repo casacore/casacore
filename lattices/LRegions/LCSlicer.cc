@@ -351,8 +351,8 @@ void LCSlicer::fill()
 	}
     }
     // Check if the region is absloute, fractional, unspecified, or strided.
-    // The float representation of MimicSource is inaccurate (648 instead of 646
-    // as the last digits), so be relaxed in testing it.
+    // The float representation of MimicSource (-2147483646) is inaccurate in the
+    // last digits, so be relaxed in testing it. Use a margin of 10.
     itsIsFractional  = False;
     itsIsAbsolute    = True;
     itsIsUnspecified = False;
@@ -426,6 +426,8 @@ Slicer LCSlicer::toSlicer (const Vector<Float>& referencePixel,
     IPosition trc(newLatticeShape-1);
     IPosition inc(ndout, 1);
     // Now convert the region's blc,trc,inc to a normal blc,trc,inc.
+    // The float representation of MimicSource (-2147483646) is inaccurate in the
+    // last digits, so be relaxed in testing it. Use a margin of 10.
     for (i=0; i<ndreg; i++) {
         Float v = itsBlc[i];
 	if (static_cast<Int64>(v) < Slicer::MimicSource+10) {
