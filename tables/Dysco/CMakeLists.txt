@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(PORTABLE "Generate portable code" OFF)
+option(PORTABLE "Generate portable code" ON)
 option(BUILD_PACKAGES "Build Debian packages" OFF)
 
 if(NOT PORTABLE)
