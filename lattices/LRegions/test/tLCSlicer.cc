@@ -213,6 +213,36 @@ void doIt()
         AlwaysAssert(sl.start() == IPosition(4, 100, 100, 0, 0), AipsError);
         AlwaysAssert(sl.end() == IPosition(4, 399, 399, 0, 0), AipsError);
     }
+    // Test if MimicSource works fine, also in to/fromRecord.
+    {
+        Vector<Float> blc(1,Slicer::MimicSource);
+        Vector<Float> trc(1,Slicer::MimicSource);
+        Vector<Float> inc(1,Slicer::MimicSource);
+        Vector<Float> refPix(1,100);
+        IPosition newLatticeShape(1, 400);
+        {
+          LCSlicer lcslicer(blc, trc, False, RegionType::RelRef);
+          Slicer sl = lcslicer.toSlicer(refPix, newLatticeShape);
+          AlwaysAssert(sl.start() == IPosition(1, 0), AipsError);
+          AlwaysAssert(sl.end() == IPosition(1, 399), AipsError);
+          AlwaysAssert(sl.stride() == IPosition(1, 1), AipsError);
+          TableRecord rec = lcslicer.toRecord ("");
+          LCSlicer* sl4 = LCSlicer::fromRecord (rec, "");
+          AlwaysAssertExit (! (*sl4 != lcslicer));
+          delete sl4;
+        }
+        {
+          LCSlicer lcslicer(blc, trc, True, RegionType::Abs);
+          Slicer sl = lcslicer.toSlicer(refPix, newLatticeShape);
+          AlwaysAssert(sl.start() == IPosition(1, 0), AipsError);
+          AlwaysAssert(sl.end() == IPosition(1, 399), AipsError);
+          AlwaysAssert(sl.stride() == IPosition(1, 1), AipsError);
+          TableRecord rec = lcslicer.toRecord ("");
+          LCSlicer* sl4 = LCSlicer::fromRecord (rec, "");
+          AlwaysAssertExit (! (*sl4 != lcslicer));
+          delete sl4;
+        }
+    }
 }
 
 
