@@ -32,6 +32,7 @@
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/Tables/ColumnCache.h>
 #include <casacore/tables/Tables/TableRecord.h>
+#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

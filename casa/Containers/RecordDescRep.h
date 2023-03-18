@@ -30,9 +30,9 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
-#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/iosfwd.h>
+#include <vector>
 #include <map>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -78,26 +78,44 @@ class AipsIO;
 // class RecordDesc.
 // </motivation>
 
-// <todo asof="1995/06/01">
-//   <li> Should the strategy wrt. field names be changed (not used in
-//        field description equality, must be unique at a given level?).
-//   <li> Perhaps we should be able to more conveniently change the description
-//        of an existing field.
-// </todo>
-
 class RecordDescRep
 {
 public:
-    // Create a description with no fields.
-    RecordDescRep();
+  // The data members of each entry in the description.
+    struct Data
+    {
+      Data()
+        : type_p(TpOther), is_array_p(False)
+      {}
+      Data(const String& name, Int dtype)
+        : type_p(dtype), name_p(name), shape_p(1,1), is_array_p(False)
+      {}
+      // Copy constructor and assignment have copy semantics.
+      Data (const Data& that)
+        { copy (that); }
+      Data& operator= (const Data& that)
+        { if (this != &that) copy(that); return *this; }
+      void copy (const Data&);
+      void setArrayShape (const IPosition& shape)
+        { shape_p = shape; is_array_p = True; }
+      // The DataType of each field.
+      Int type_p;
+      // The name of each field.
+      String name_p;
+      // The description of the sub-records. Null if the field is not a subrecord.
+      std::unique_ptr<RecordDesc> sub_record_p;
+      // The shape of the field; [1] for scalars and sub-records.
+      IPosition shape_p;
+      // True if the corresponding field is an array.
+      Bool is_array_p;
+      // Table description name for table fields.
+      String tableDescName_p;
+      // Comments for each field.
+      String comment_p;
+    };
 
-    // Create a description which is a copy of other.
-    RecordDescRep (const RecordDescRep& other);
 
-    // Replace this description with other.
-    RecordDescRep& operator= (const RecordDescRep& other);
-
-    virtual ~RecordDescRep();
+    virtual ~RecordDescRep() = default;
 
     // Add scalar or array field. If of array type, the shape is set to [-1],
     // which indicates a variable sized array. Returns the number of fields in
@@ -237,8 +255,7 @@ public:
 
 protected:
     // Add a field name and its type.
-    // It checks if the name is unique and it extends the various blocks
-    // using increment_length.
+    // It checks if the name is unique. and it extends the various blocks
     void addFieldName (const String& fieldName, DataType type);
 
     // Add a field from another Record description.
@@ -256,90 +273,70 @@ protected:
     // Set the shape (for a derived class).
     void setShape (const IPosition& shape, Int whichField);
 
-    // Helper functions
-    // <group>
-    virtual void increment_length();
-    void copy_other (const RecordDescRep& other);
-    // </group>
-
 private:
     // Test if all fields are part of the other description.
     // The flag equalDataTypes is set to True if the data types of the
     // fields in both descriptions are the same.
     Bool allExist (const RecordDescRep&, Bool& equalDataTypes) const;
 
-    // Number of fields in the description.
-    uInt n_p;
-    // The DataType of each field.
-    Block<Int> types_p;
-    // The name of each field.
-    Block<String> names_p;
-    // The description of the subrecords. Null if the field is not a subrecord.
-    // This isn't the most efficient representation. If this is ever an issue
-    // we could calculate these, or store them in one Block, or implement
-    // copy-on-write semantics.
-    PtrBlock<RecordDesc*> sub_records_p;
-    // The shape of the field [1] for scalars and sub-records.
-    Block<IPosition> shapes_p;
-    // True if the corresponding field is an array.
-    Block<Bool> is_array_p;
-    // Table description name for table fields.
-    Block<String> tableDescNames_p;
-    // Comments for each field.
-    Block<String> comments_p;
+    // Copy the given desc to this.
+    void copy_other (const RecordDescRep&);
+  
+    // The Data of each field.
+    std::vector<Data> data_p;
     // Mapping of field name to field number.
     std::map<String,Int> name_map_p;
 };
 
 inline uInt RecordDescRep::nfields() const
 {
-    return n_p;
+  return data_p.size();
 }
 
 inline DataType RecordDescRep::type (Int whichField) const
 {
-    return DataType(types_p[whichField]);
+    return DataType(data_p[whichField].type_p);
 }
 
 inline const String& RecordDescRep::name (Int whichField) const
 {
-    return names_p[whichField];
+    return data_p[whichField].name_p;
 }
 
 inline const IPosition& RecordDescRep::shape (Int whichField) const
 {
-    return shapes_p[whichField];
+    return data_p[whichField].shape_p;
 }
 
 inline Bool RecordDescRep::isArray (Int whichField) const
 {
-    return is_array_p[whichField];
+    return data_p[whichField].is_array_p;
 }
 
 inline Bool RecordDescRep::isScalar (Int whichField) const
 {
-    return isScalarFun (DataType(types_p[whichField]));
+    return isScalarFun (DataType(data_p[whichField].type_p));
 }
 
 inline Bool RecordDescRep::isSubRecord (Int whichField) const
 {
-    return  (types_p[whichField] == TpRecord);
+    return  (data_p[whichField].type_p == TpRecord);
 }
 
 inline Bool RecordDescRep::isTable (Int whichField) const
 {
-    return  (types_p[whichField] == TpTable);
+    return  (data_p[whichField].type_p == TpTable);
 }
 
 inline const RecordDesc& RecordDescRep::subRecord (Int whichField) const
 {
     //# The cast to non-const is completely safe.
-    return ((RecordDescRep*)this)->subRecord (whichField);
+    return const_cast<RecordDescRep*>(this)->subRecord (whichField);
 }
 
 inline const String& RecordDescRep::tableDescName (Int whichField) const
 {
-    return tableDescNames_p[whichField];
+    return data_p[whichField].tableDescName_p;
 }
 
 

@@ -87,8 +87,8 @@ class AipsIO;
 // <p>
 // A Record is a hierarchical structure, because it can have fields
 // containing Record's (as layed out in the RecordDesc). A subrecord
-// has a variable structure, when its RecordDesc is empty (i.e. contains
-// no fields). It is fixed when its RecordDesc contains fields.
+// has a variable structure, if its RecordDesc is empty (i.e. contains
+// no fields). It is fixed if its RecordDesc contains fields.
 // <p>
 // A Record may be assigned to another only if they conform; that is if their
 // fields have the identical type in the identical order.
@@ -202,8 +202,8 @@ public:
     explicit Record (const RecordDesc& description, RecordType type = Fixed,
 		     CheckFieldFunction* = 0, const void* checkArgument = 0);
 
-    // Create a copy of other using copy semantics.
-    Record (const Record& other);
+    // Create a copy of other using reference semantics.
+    Record (const Record& other) = default;
 
     // Create a Record from another type of record using copy semantics.
     // Subrecords are also converted to a Record.
@@ -231,8 +231,8 @@ public:
     // </note>
     Record& operator= (const Record& other);
     
-    // Release resources associated with this object.
-    ~Record();
+    // Destructor.
+    ~Record() override = default;
 
     // Make a copy of this object.
     RecordInterface* clone() const override;
@@ -256,7 +256,7 @@ public:
     // newDescription</src>. Any existing RecordFieldPtr objects are
     // invalidated (their <src>isAttached()</src> members return False) after
     // this call.
-    // <br>When the new description contains subrecords, those subrecords
+    // <br>If the new description contains subrecords, those subrecords
     // will be restructured if <src>recursive=True</src> is given.
     // Otherwise the subrecord is a variable empty record.
     // Subrecords will be variable if their description is empty (i.e. does
@@ -304,7 +304,7 @@ public:
     void renameField (const String& newName, const RecordFieldId&);
 
     // Define a value for the given field containing a subrecord.
-    // When the field is unknown, it will be added to the record.
+    // If the field is unknown, it will be added to the record.
     // The second version is meant for any type of record (e.g. Record,
     // TableRecord, GlishRecord). It is converted to a Record using the
     // Record constructor taking a RecordInterface object.
@@ -420,7 +420,7 @@ private:
     RecordDesc getDescription() const override;
 
     // Create Record as a subrecord.
-    // When the description is empty, the record has a variable structure.
+    // If the description is empty, the record has a variable structure.
     // Otherwise it is fixed.
     // <group>
     Record (RecordRep* parent, const RecordDesc& description);

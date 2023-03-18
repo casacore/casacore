@@ -554,7 +554,7 @@ void doIt (Bool doExcp)
     check (savrec2, -1234566, 37);
 
     // Clone the record.
-    RecordInterface* recClone = record.clone();
+    std::unique_ptr<RecordInterface> recClone(record.clone());
     check (Record(*recClone), -1234566, 37);
     *intField += 11;
     *arrayintField = -1234555;
@@ -564,7 +564,6 @@ void doIt (Bool doExcp)
     reccp.assign (*recClone);
     check (reccp, -1234566, 37);
     check (Record(*recClone), -1234566, 37);
-    delete recClone;
     *intField -= 11;
     *arrayintField = -1234566;
     check (record, -1234566, 37);
@@ -594,6 +593,7 @@ void doIt (Bool doExcp)
     RecordFieldPtr<String> tpstring4 (record, "TpString4");
     record.removeField (record.fieldNumber("TpString3"));
     AlwaysAssertExit (tpstring2.isAttached());
+    AlwaysAssertExit (!tpstring3.isAttached());
     AlwaysAssertExit (tpstring4.isAttached());
     AlwaysAssertExit (tpstring2.fieldNumber() == 36);
     record.removeField (record.fieldNumber("TpString4"));
@@ -628,9 +628,8 @@ void doIt (Bool doExcp)
     AlwaysAssertExit(! ucharField4.isAttached());
     RecordDesc rd2;
     rd2.addField("foo", TpInt);
-    Record *record6 = new Record(rd2);
+    std::unique_ptr<Record> record6(new Record(rd2));
     RecordFieldPtr<Int>(*record6, 0);
-    delete record6;
 
     // Check subRecord conformance.
     doSubRecord (doExcp, rd);

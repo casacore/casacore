@@ -300,7 +300,7 @@ private:
 
 
 inline RecordDesc::RecordDesc()
-: desc_p (new RecordDescRep)
+  : desc_p (new RecordDescRep())
 {}
 
 inline RecordDesc::RecordDesc (const RecordDesc& other)

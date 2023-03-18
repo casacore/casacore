@@ -52,7 +52,7 @@ Record::Record (const RecordDesc& description, RecordType type,
   parent_p (0)
 {}
 
-// When description is empty, Record structure is variable.
+// If description is empty, Record structure is variable.
 Record::Record (RecordRep* parent, const RecordDesc& description)
 : RecordInterface (description.nfields()==0 ? Variable : Fixed, 0, 0),
   rep_p    (new RecordRep (description)),
@@ -65,12 +65,6 @@ Record::Record (RecordRep* parent, RecordType type)
   parent_p (parent)
 {}
 
-Record::Record (const Record& other)
-: RecordInterface (other),
-  rep_p    (other.rep_p),
-  parent_p (other.parent_p)
-{}
-
 Record::Record (const RecordInterface& other)
 : RecordInterface (other),
   rep_p    (new RecordRep (other.description())),
@@ -78,39 +72,36 @@ Record::Record (const RecordInterface& other)
 {
     uInt n = other.nfields();
     const RecordDesc& desc = description();
-    for (uInt i=0; i<n; i++) {
+    for (uInt i=0; i<n; ++i) {
 	DataType dtype = desc.type(i);
 	if (dtype == TpRecord) {
-	    const RecordInterface& subrec = *((RecordInterface*)
+            const RecordInterface& subrec = *(static_cast<RecordInterface*>
                                               (other.get_pointer (i, dtype)));
 	    defineRecord (i, Record (subrec),
 			  subrec.isFixed()  ?  Fixed : Variable);
-	}else{
-	    rep_p->copyDataField (dtype, i, other.get_pointer (i, dtype));
+	} else {
+            defineDataField (i, dtype, other.get_pointer (i, dtype));
 	}
     }
 }
 
 Record& Record::operator= (const Record& other)
 {
-    // Assignment is only possible when the Record is empty or
-    // when their layout match or when the Record is non-fixed.
-    // When non-fixed or empty, we simply replace the representation.
+    // Assignment is only possible if the Record is empty or
+    // if their layout match or if the Record is non-fixed.
+    // If non-fixed or empty, we simply replace the representation.
     // Otherwise we replace all values (in which case we do not need
     // to replace the pointers in RecordFieldPtr's).
     if (this != &other) {
 	if (! isFixed()  ||  nfields() == 0) {
 	    rep_p = other.rep_p;
-	}else{
+	} else {
 	    AlwaysAssert (conform (other), AipsError);
 	    rwRef().copyData (other.ref());
 	}
     }
     return *this;
 }
-
-Record::~Record()
-{}
 
 RecordInterface* Record::clone() const
 {
@@ -186,7 +177,6 @@ void Record::renameField (const String& newName, const RecordFieldId& id)
     rwRef().renameField (newName, idToNumber(id));
 }
 
-
 void Record::addDataField (const String& name, DataType type,
 			   const IPosition& shape, Bool fixedShape,
 			   const void* value)
@@ -224,14 +214,14 @@ void Record::defineRecord (const RecordFieldId& id,
 	String name;
 	if (id.byName()) {
 	    name = id.fieldName();
-	}else{
+	} else {
 	    name = description().makeName (id.fieldNumber());
 	}
 	checkName (name, TpRecord);
 	rwRef().addField (name, value, type);
-    }else{
+    } else {
 	rwRef().defineDataField (whichField, TpRecord, &value);
-	Record& subrec = *(Record*)get_pointer (whichField, TpRecord);
+	Record& subrec = *static_cast<Record*>(get_pointer (whichField, TpRecord));
 	subrec.recordType() = type;
     }
 }
@@ -248,13 +238,13 @@ RecordInterface& Record::asrwRecord (const RecordFieldId& id)
 const Record& Record::subRecord (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Record*)get_pointer (whichField, TpRecord);
+    return *static_cast<const Record*>(get_pointer (whichField, TpRecord));
 }
 Record& Record::rwSubRecord (const RecordFieldId& id)
 {
     Int whichField = idToNumber (id);
     rwRef();
-    return *(Record*)get_pointer (whichField, TpRecord);
+    return *static_cast<Record*>(get_pointer (whichField, TpRecord));
 }    
 
 
@@ -280,14 +270,14 @@ void Record::putRecord (AipsIO& os) const
 }
 void Record::getRecord (AipsIO& os)
 {
-    // Get is only possible when the Record is empty or when
+    // Get is only possible if the Record is empty or if
     // the Record is non-fixed.
     AlwaysAssert ((! isFixed()  ||  nfields() == 0), AipsError);
     // Reading the record type back means casting it from an int
     // to the correct type.
     Int type;
     rwRef().getRecord (os, type);
-    recordType() = (RecordInterface::RecordType)type;
+    recordType() = static_cast<RecordInterface::RecordType>(type);
 }
 
 } //# NAMESPACE CASACORE - END

@@ -28,7 +28,7 @@ endforeach (src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 
-# Define the bfiles to build.
+# Define the files to build.
 set (buildfiles
 Arrays/ArrayBase.cc
 Arrays/ArrayError.cc
@@ -63,6 +63,7 @@ Containers/Block.cc
 Containers/Block_tmpl.cc
 Containers/IterError.cc
 Containers/Record.cc
+Containers/RecordData.cc
 Containers/RecordDesc.cc
 Containers/RecordDescRep.cc
 Containers/RecordFieldId.cc
@@ -403,6 +404,8 @@ Containers/BlockIO.tcc
 Containers/IterError.h
 Containers/ObjectStack.h
 Containers/ObjectStack.tcc
+Containers/Record.h
+Containers/RecordData.h
 Containers/RecordDesc.h
 Containers/RecordDescRep.h
 Containers/RecordField.h
@@ -410,7 +413,6 @@ Containers/RecordField.tcc
 Containers/RecordFieldId.h
 Containers/RecordFieldWriter.h
 Containers/RecordFieldWriter.tcc
-Containers/Record.h
 Containers/RecordInterface.h
 Containers/RecordRep.h
 Containers/ValueHolder.h

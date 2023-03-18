@@ -194,17 +194,16 @@ public:
 		     const void* checkArgument);
 
     // Copy constructor (copy semantics).
-    RecordInterface (const RecordInterface& other);
+    RecordInterface (const RecordInterface& other) = default;
 
     // Assignment (copy semantics).
     // This only assigns the RecordInterface object itself,
     // thus not the data in a derived class.
     // To do that the function <src>assign</src> below can be used.
-    RecordInterface& operator= (const RecordInterface& other);
+    RecordInterface& operator= (const RecordInterface& other) = default;
 
     // Destruct the record.
-    // All attached RecordFieldPtr objects are notified to detach themselves.
-    virtual ~RecordInterface();
+    virtual ~RecordInterface() = default;
 
     // Make a copy of this object.
     virtual RecordInterface* clone() const = 0;

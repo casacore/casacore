@@ -28,11 +28,10 @@
 
 
 #include <casacore/casa/Containers/RecordField.h>
-#include <casacore/casa/Utilities/Assert.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T>
+template<typename T>
 RecordFieldPtr<T>::RecordFieldPtr()
 : parent_p     (nullptr),
   fieldNumber_p(-1)
@@ -40,94 +39,105 @@ RecordFieldPtr<T>::RecordFieldPtr()
     // Nothing
 }
 
-template<class T>
+template<typename T>
 RecordFieldPtr<T>::RecordFieldPtr (RecordInterface& record, Int whichField)
 {
     attachToRecord (record, whichField);
 }
 
-template<class T>
+template<typename T>
 RecordFieldPtr<T>::RecordFieldPtr (RecordInterface& record,
 				   const RecordFieldId& id)
 {
     attachToRecord (record, record.idToNumber (id));
 }
 
-template<class T>
+template<typename T>
 void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
 					const RecordFieldId& id)
 {
     attachToRecord (record, record.idToNumber (id));
 }
-template<class T>
+template<typename T>
 void RecordFieldPtr<T>::attachToRecord (RecordInterface& record,
 					Int whichField)
 {
     parent_p      = &record;
     fieldNumber_p = whichField;
+    fieldName_p   = record.name(whichField);
     get(); // check type
 }
 
-template<class T>
+template<typename T>
 void RecordFieldPtr<T>::detach()
 {
     parent_p      = nullptr;
     fieldNumber_p = -1;
+    fieldName_p.clear();
 }
 
-template<class T>
+template<typename T>
 T& RecordFieldPtr<T>::operator*()
 {
     parent_p->makeUnique();
     return const_cast<T&>(get());
 }
 
+
 template<>
-inline const Table* RecordFieldPtr<Table>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+inline const Table* RecordFieldPtr<Table>::get_typed_ptr(RecordInterface* record, Int fieldNumber) const
 {
-  return static_cast<const Table*>(record->get_pointer(fieldNumber, TpOther));
+  validate();
+  return static_cast<const Table*>(record->get_pointer(fieldNumber, TpTable));
 }
 
 template<>
-inline const Record* RecordFieldPtr<Record>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+inline const Record* RecordFieldPtr<Record>::get_typed_ptr(RecordInterface* record, Int fieldNumber)const
 {
+  validate();
   return static_cast<const Record*>(record->get_pointer(fieldNumber, TpRecord, "Record"));
 }
 
 template<>
-inline const TableRecord* RecordFieldPtr<TableRecord>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+inline const TableRecord* RecordFieldPtr<TableRecord>::get_typed_ptr(RecordInterface* record, Int fieldNumber) const
 {
+  validate();
   return static_cast<const TableRecord*>(record->get_pointer(fieldNumber, TpRecord, "TableRecord"));
 }
 
-template<class T>
-inline const T* RecordFieldPtr<T>::get_typed_ptr(RecordInterface* record, Int fieldNumber)
+template<typename T>
+inline const T* RecordFieldPtr<T>::get_typed_ptr(RecordInterface* record, Int fieldNumber) const
 {
+  validate();
   return static_cast<const T*>(record->get_pointer(fieldNumber, whatType<T>()));
 }
 
-template<class T>
+template<typename T>
 inline void RecordFieldPtr<T>::define (const T& value)
 {
-    parent_p->defineDataField (fieldNumber_p, whatType<T>(), &value);
+  validate();
+  parent_p->defineDataField (fieldNumber_p, whatType<T>(), &value);
 }
 
 template<>
 inline void RecordFieldPtr<TableRecord>::define (const TableRecord& value)
 {
-    parent_p->defineDataField (fieldNumber_p, TpRecord, &value);
+  validate();
+  parent_p->defineDataField (fieldNumber_p, TpRecord, &value);
 }
 
-template<class T>
+template<typename T>
 const String& RecordFieldPtr<T>::comment() const
 {
-    return parent_p->comment (fieldNumber_p);
+  validate();
+  return parent_p->comment (fieldNumber_p);
 }
 
-template<class T>
+template<typename T>
 void RecordFieldPtr<T>::setComment (const String& comment)
 {
-    parent_p->setComment (fieldNumber_p, comment);
+  validate();
+  parent_p->setComment (fieldNumber_p, comment);
 }
 
 } //# NAMESPACE CASACORE - END

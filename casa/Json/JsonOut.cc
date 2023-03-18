@@ -32,6 +32,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/ValueHolder.h>
+#include <casacore/casa/Utilities/Assert.h>
 #include <sstream>
 #include <iomanip>
 #include <ctype.h>    //# for iscntrl

@@ -32,14 +32,13 @@
 #include <casacore/casa/HDF5/HDF5HidMeta.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/String.h>
+#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Utilities/DataType.h>
-#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   //# Forward Declarations
   class IPosition;
-  template<typename T> class Block;
 
   // <summary>
   // A class representing an HDF5 data type.

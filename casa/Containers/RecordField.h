@@ -30,6 +30,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/Record.h>
+#include <casacore/casa/Utilities/Assert.h>
+#include <casacore/casa/Exceptions/Error.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -107,7 +109,7 @@ class Table;
 // RecordFieldPtr provides a fast way to access the data in a record.
 // </motivation>
 
-template<class T> class RecordFieldPtr
+template<typename T> class RecordFieldPtr
 {
 public:
     // This object does not point to any field, i.e. 
@@ -161,7 +163,7 @@ public:
 
     // Return the name of the field.
     String name() const
-        {return parent_p->name (fieldNumber_p);}
+        {return fieldName_p;}
 
     // Is this field pointer attached to a valid record? Operations which
     // might cause it to become detached are:
@@ -172,13 +174,18 @@ public:
     // </ol>
     //# This inherited function is shown for documentation purposes.
     Bool isAttached() const
-	{return parent_p;}
+      {return parent_p  &&  fieldName_p == parent_p->name(fieldNumber_p);}
+
+    // In debug mode check if the field is still attached.
+    void validate() const
+      {DebugAssert (isAttached(), AipsError);}
 
 private:
-    static const T* get_typed_ptr(RecordInterface* record, Int fieldNumber);
+    const T* get_typed_ptr(RecordInterface* record, Int fieldNumber) const;
   
     RecordInterface* parent_p;
     Int              fieldNumber_p;
+    String           fieldName_p;
 };
 
 
@@ -205,7 +212,7 @@ private:
 // It would allow RecordFieldPtr to attach to a const RecordInterface object.
 // </synopsis>
 
-template<class T> class RORecordFieldPtr
+template<typename T> class RORecordFieldPtr
 {
 public:
     RORecordFieldPtr() {}

@@ -48,25 +48,6 @@ RecordInterface::RecordInterface (RecordType type,
   type_p          (type)
 {}
 
-RecordInterface::RecordInterface (const RecordInterface& other)
-: checkFunction_p (other.checkFunction_p),
-  checkArgument_p (other.checkArgument_p),
-  type_p          (other.type_p)
-{}
-
-RecordInterface& RecordInterface::operator= (const RecordInterface& other)
-{
-    checkFunction_p = other.checkFunction_p;
-    checkArgument_p = other.checkArgument_p;
-    type_p          = other.type_p;
-    return *this;
-}
-    
-RecordInterface::~RecordInterface()
-{
-}
-
-
 void RecordInterface::throwIfFixed() const
 {
     if (isFixed()) {
@@ -415,11 +396,11 @@ Bool RecordInterface::asBool (const RecordFieldId& id) const
     case TpBool:
         break;
     case TpInt:
-        return *(const Int*)get_pointer (whichField, TpInt);
+        return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     default:
         throw (AipsError ("RecordInterface::asBool - invalid data type"));
     }
-    return *(const Bool*)get_pointer (whichField, TpBool);
+    return *static_cast<const Bool*>(get_pointer (whichField, TpBool));
 }
 uChar RecordInterface::asuChar (const RecordFieldId& id) const
 {
@@ -429,15 +410,15 @@ uChar RecordInterface::asuChar (const RecordFieldId& id) const
     case TpUChar:
 	break;
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     default:
 	throw (AipsError ("RecordInterface::asuChar - invalid data type"));
     }
-    return *(const uChar*)get_pointer (whichField, TpUChar);
+    return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
 }
 Short RecordInterface::asShort (const RecordFieldId& id) const
 {
@@ -445,17 +426,17 @@ Short RecordInterface::asShort (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
 	break;
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     default:
 	throw (AipsError ("RecordInterface::asShort - invalid data type"));
     }
-    return *(const Short*)get_pointer (whichField, TpShort);
+    return *static_cast<const Short*>(get_pointer (whichField, TpShort));
 }
 Int RecordInterface::asInt (const RecordFieldId& id) const
 {
@@ -463,19 +444,19 @@ Int RecordInterface::asInt (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
         break;
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     case TpInt64:
-	return *(const Int64*)get_pointer (whichField, TpInt64);
+	return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
     default:
 	throw (AipsError ("RecordInterface::asInt - invalid data type"));
     }
-    return *(const Int*)get_pointer (whichField, TpInt);
+    return *static_cast<const Int*>(get_pointer (whichField, TpInt));
 }
 uInt RecordInterface::asuInt (const RecordFieldId& id) const
 {
@@ -483,19 +464,19 @@ uInt RecordInterface::asuInt (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
 	break;
     case TpInt64:
-	return *(const Int64*)get_pointer (whichField, TpInt64);
+	return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
     default:
 	throw (AipsError ("RecordInterface::asuInt - invalid data type"));
     }
-    return *(const uInt*)get_pointer (whichField, TpUInt);
+    return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
 }
 Int64 RecordInterface::asInt64 (const RecordFieldId& id) const
 {
@@ -503,19 +484,19 @@ Int64 RecordInterface::asInt64 (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     case TpInt64:
 	break;
     default:
 	throw (AipsError ("RecordInterface::asInt64 - invalid data type"));
     }
-    return *(const Int64*)get_pointer (whichField, TpInt64);
+    return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
 }
 float RecordInterface::asFloat (const RecordFieldId& id) const
 {
@@ -523,23 +504,23 @@ float RecordInterface::asFloat (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     case TpInt64:
-	return *(const Int64*)get_pointer (whichField, TpInt64);
+	return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
     case TpFloat:
 	break;
     case TpDouble:
-	return *(const double*)get_pointer (whichField, TpDouble);
+	return *static_cast<const double*>(get_pointer (whichField, TpDouble));
     default:
 	throw (AipsError ("RecordInterface::asFloat - invalid data type"));
     }
-    return *(const float*)get_pointer (whichField, TpFloat);
+    return *static_cast<const float*>(get_pointer (whichField, TpFloat));
 }
 double RecordInterface::asDouble (const RecordFieldId& id) const
 {
@@ -547,23 +528,23 @@ double RecordInterface::asDouble (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     case TpInt64:
-	return *(const Int64*)get_pointer (whichField, TpInt64);
+	return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
     case TpFloat:
-	return *(const float*)get_pointer (whichField, TpFloat);
+	return *static_cast<const float*>(get_pointer (whichField, TpFloat));
     case TpDouble:
 	break;
     default:
 	throw (AipsError ("RecordInterface::asDouble - invalid data type"));
     }
-    return *(const double*)get_pointer (whichField, TpDouble);
+    return *static_cast<const double*>(get_pointer (whichField, TpDouble));
 }
 Complex RecordInterface::asComplex (const RecordFieldId& id) const
 {
@@ -571,30 +552,30 @@ Complex RecordInterface::asComplex (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     case TpInt64:
-	return *(const Int64*)get_pointer (whichField, TpInt64);
+	return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
     case TpFloat:
-	return *(const float*)get_pointer (whichField, TpFloat);
+	return *static_cast<const float*>(get_pointer (whichField, TpFloat));
     case TpDouble:
-	return *(const double*)get_pointer (whichField, TpDouble);
+	return *static_cast<const double*>(get_pointer (whichField, TpDouble));
     case TpComplex:
 	break;
     case TpDComplex:
       {
-	DComplex dc = *(const DComplex*)get_pointer (whichField, TpDComplex);
+	DComplex dc = *static_cast<const DComplex*>(get_pointer (whichField, TpDComplex));
 	return Complex(dc.real(), dc.imag());
       }
     default:
 	throw (AipsError ("RecordInterface::asComplex - invalid data type"));
     }
-    return *(const Complex*)get_pointer (whichField, TpComplex);
+    return *static_cast<const Complex*>(get_pointer (whichField, TpComplex));
 }
 DComplex RecordInterface::asDComplex (const RecordFieldId& id) const
 {
@@ -602,91 +583,91 @@ DComplex RecordInterface::asDComplex (const RecordFieldId& id) const
     DataType dataType = type (whichField);
     switch (dataType) {
     case TpUChar:
-	return *(const uChar*)get_pointer (whichField, TpUChar);
+	return *static_cast<const uChar*>(get_pointer (whichField, TpUChar));
     case TpShort:
-	return *(const Short*)get_pointer (whichField, TpShort);
+	return *static_cast<const Short*>(get_pointer (whichField, TpShort));
     case TpInt:
-	return *(const Int*)get_pointer (whichField, TpInt);
+	return *static_cast<const Int*>(get_pointer (whichField, TpInt));
     case TpUInt:
-	return *(const uInt*)get_pointer (whichField, TpUInt);
+	return *static_cast<const uInt*>(get_pointer (whichField, TpUInt));
     case TpInt64:
-	return *(const Int64*)get_pointer (whichField, TpInt64);
+	return *static_cast<const Int64*>(get_pointer (whichField, TpInt64));
     case TpFloat:
-	return *(const float*)get_pointer (whichField, TpFloat);
+	return *static_cast<const float*>(get_pointer (whichField, TpFloat));
     case TpDouble:
-	return *(const double*)get_pointer (whichField, TpDouble);
+	return *static_cast<const double*>(get_pointer (whichField, TpDouble));
     case TpComplex:
 	{
-	    const Complex* val = (const Complex*)get_pointer (whichField,
-							      TpComplex);
-	    return DComplex (val->real(), val->imag());
+	    Complex val = *static_cast<const Complex*>(get_pointer (whichField,
+                                                                    TpComplex));
+	    return DComplex (val.real(), val.imag());
 	}
     case TpDComplex:
 	break;
     default:
 	throw (AipsError ("RecordInterface::asDComplex - invalid data type"));
     }
-    return *(const DComplex*)get_pointer (whichField, TpDComplex);
+    return *static_cast<const DComplex*>(get_pointer (whichField, TpDComplex));
 }
 const String& RecordInterface::asString (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const String*)get_pointer (whichField, TpString);
+    return *static_cast<const String*>(get_pointer (whichField, TpString));
 }
 const Array<Bool>& RecordInterface::asArrayBool (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<Bool>*)get_pointer (whichField, TpArrayBool);
+    return *static_cast<const Array<Bool>*>(get_pointer (whichField, TpArrayBool));
 }
 const Array<uChar>& RecordInterface::asArrayuChar (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<uChar>*)get_pointer (whichField, TpArrayUChar);
+    return *static_cast<const Array<uChar>*>(get_pointer (whichField, TpArrayUChar));
 }
 const Array<Short>& RecordInterface::asArrayShort (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<Short>*)get_pointer (whichField, TpArrayShort);
+    return *static_cast<const Array<Short>*>(get_pointer (whichField, TpArrayShort));
 }
 const Array<Int>& RecordInterface::asArrayInt (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<Int>*)get_pointer (whichField, TpArrayInt);
+    return *static_cast<const Array<Int>*>(get_pointer (whichField, TpArrayInt));
 }
 const Array<uInt>& RecordInterface::asArrayuInt (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<uInt>*)get_pointer (whichField, TpArrayUInt);
+    return *static_cast<const Array<uInt>*>(get_pointer (whichField, TpArrayUInt));
 }
 const Array<Int64>& RecordInterface::asArrayInt64 (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<Int64>*)get_pointer (whichField, TpArrayInt64);
+    return *static_cast<const Array<Int64>*>(get_pointer (whichField, TpArrayInt64));
 }
 const Array<float>& RecordInterface::asArrayFloat (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<float>*)get_pointer (whichField, TpArrayFloat);
+    return *static_cast<const Array<float>*>(get_pointer (whichField, TpArrayFloat));
 }
 const Array<double>& RecordInterface::asArrayDouble (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<double>*)get_pointer (whichField, TpArrayDouble);
+    return *static_cast<const Array<double>*>(get_pointer (whichField, TpArrayDouble));
 }
 const Array<Complex>& RecordInterface::asArrayComplex (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<Complex>*)get_pointer (whichField, TpArrayComplex);
+    return *static_cast<const Array<Complex>*>(get_pointer (whichField, TpArrayComplex));
 } 
 const Array<DComplex>&  RecordInterface::asArrayDComplex (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<DComplex>*)get_pointer (whichField, TpArrayDComplex);
+    return *static_cast<const Array<DComplex>*>(get_pointer (whichField, TpArrayDComplex));
 }
 const Array<String>& RecordInterface::asArrayString (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const Array<String>*)get_pointer (whichField, TpArrayString);
+    return *static_cast<const Array<String>*>(get_pointer (whichField, TpArrayString));
 }
 
 } //# NAMESPACE CASACORE - END

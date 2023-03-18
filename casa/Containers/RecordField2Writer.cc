@@ -36,25 +36,15 @@ RecordFieldWriter::~RecordFieldWriter()
 void MultiRecordFieldWriter::addWriter(RecordFieldWriter *fromNew)
 {
     AlwaysAssert(fromNew, AipsError);
-    uInt which = writers_p.nelements();
-    writers_p.resize(which + 1);
-    writers_p[which] = fromNew;
+    writers_p.push_back (std::unique_ptr<RecordFieldWriter>(fromNew));
 }
 
 void MultiRecordFieldWriter::copy()
 {
-    uInt n = writers_p.nelements();
+    uInt n = writers_p.size();
     for (uInt i=0; i<n; i++) {
         writers_p[i]->writeField();
     }
-}
-
-MultiRecordFieldWriter::~MultiRecordFieldWriter()
-{
-    for (uInt i=0; i<writers_p.nelements(); i++) {
-        delete writers_p[i];
-    }
-    writers_p.resize(0);
 }
 
 } //# NAMESPACE CASACORE - END

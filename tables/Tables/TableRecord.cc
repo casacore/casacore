@@ -81,7 +81,7 @@ TableRecord::TableRecord (const RecordInterface& other)
 : RecordInterface (other),
   parent_p (0)
 {
-  // If the RecordInterface is a TableRecord, assign it immediately.
+  // If the RecordInterface is a TableRecord, use it as is.
   const TableRecord* trecp = dynamic_cast<const TableRecord*>(&other);
   if (trecp != 0) {
     rep_p = trecp->rep_p;
@@ -92,17 +92,17 @@ TableRecord::TableRecord (const RecordInterface& other)
     for (uInt i=0; i<n; i++) {
 	DataType dtype = desc.type(i);
 	if (dtype == TpRecord) {
-	    const RecordInterface& subrec = *((RecordInterface*)
+            const RecordInterface& subrec = *(static_cast<const RecordInterface*>
                                               (other.get_pointer (i, dtype)));
-	    defineRecord (i, TableRecord (subrec),
+	    defineRecord (i, Record (subrec),
 			  subrec.isFixed()  ?  Fixed : Variable);
 	} else if (dtype == TpTable) {
-	    const TableKeyword& tabkey = *(const TableKeyword*)
-                                              (other.get_pointer (i, dtype));
-	    defineTable (i, tabkey.table(),
-			 tabkey.isFixed()  ?  Fixed : Variable);
-	}else{
-	    rep_p->copyDataField (dtype, i, other.get_pointer (i, dtype));
+          const TableKeyword& tabkey = *(static_cast<const TableKeyword*>
+                                         (other.get_pointer (i, dtype)));
+          defineTable (i, tabkey.table(),
+                       tabkey.isFixed()  ?  Fixed : Variable);
+	} else {
+          defineDataField (i, dtype, other.get_pointer (i, dtype));
 	}
     }
   }
@@ -271,7 +271,7 @@ void TableRecord::defineRecord (const RecordFieldId& id,
 	rwRef().addField (name, value, type);
     }else{
 	rwRef().defineDataField (whichField, TpRecord, &value);
-	TableRecord& subrec = *(TableRecord*)get_pointer (whichField, TpRecord);
+	TableRecord& subrec = *static_cast<TableRecord*>(get_pointer (whichField, TpRecord));
 	subrec.recordType() = type;
     }
 }
@@ -286,7 +286,8 @@ void TableRecord::defineTable (const RecordFieldId& id,
 	checkName (id.fieldName(), TpTable);
 	rwRef().addField (id.fieldName(), value, type);
     }else{
-	rwRef().defineDataField (whichField, TpTable, &value);
+        TableKeyword tabkey(value, String());
+	rwRef().defineDataField (whichField, TpTable, &tabkey);
     }
 }
 
@@ -301,28 +302,27 @@ RecordInterface& TableRecord::asrwRecord (const RecordFieldId& id)
 const TableRecord& TableRecord::subRecord (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return *(const TableRecord*)get_pointer (whichField, TpRecord);
+    return *static_cast<const TableRecord*>(get_pointer (whichField, TpRecord));
 }
 TableRecord& TableRecord::rwSubRecord (const RecordFieldId& id)
 {
     Int whichField = idToNumber (id);
     rwRef();
-    return *(TableRecord*)get_pointer (whichField, TpRecord);
+    return *static_cast<TableRecord*>(get_pointer (whichField, TpRecord));
 }    
 
 Table TableRecord::asTable (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return ((const TableKeyword*)get_pointer (whichField, TpTable))->table();
+    return static_cast<const TableKeyword*>(get_pointer (whichField, TpTable))->table();
 }
 
 Table TableRecord::asTable (const RecordFieldId& id,
 			    const TableLock& lockOptions) const
 {
     Int whichField = idToNumber (id);
-    const Table& tab =
-      ((const TableKeyword*)get_pointer (whichField,
-                                         TpTable))->table(&lockOptions);
+    const Table& tab = static_cast<const TableKeyword*>
+      (get_pointer (whichField, TpTable))->table(&lockOptions);
     /*
     String name = tab.tableName();
     int option = tab.tableOption();
@@ -343,8 +343,8 @@ Table TableRecord::asTable (const RecordFieldId& id,
 const TableAttr& TableRecord::tableAttributes (const RecordFieldId& id) const
 {
     Int whichField = idToNumber (id);
-    return ((const TableKeyword*)get_pointer (whichField, TpTable))->
-             tableAttributes();
+    return static_cast<const TableKeyword*>
+      (get_pointer (whichField, TpTable))->tableAttributes();
 }
 
 void TableRecord::closeTable (const RecordFieldId& id) const
@@ -408,7 +408,7 @@ void TableRecord::setTableAttr (const TableRecord& other,
     DataType dtype = desc.type(i);
     if (dtype == TpRecord) {
       // Handle a subrecord (which may contain subtables).
-      TableRecord& subrec = *(TableRecord*)(get_pointer (i, dtype));
+      TableRecord& subrec = *static_cast<TableRecord*>(get_pointer (i, dtype));
       // Take the corresponding subrecord from the other keyset.
       // Use an empty record if undefined.
       const String& fname = desc.name(i);
@@ -419,7 +419,7 @@ void TableRecord::setTableAttr (const TableRecord& other,
       }
     } else if (dtype == TpTable) {
       // Handle a subtable.
-      TableKeyword& tabkey = *(TableKeyword*)(get_pointer (i, dtype));
+      TableKeyword& tabkey = *static_cast<TableKeyword*>(get_pointer (i, dtype));
       // Get the attributes from other; use the default one if undefined.
       TableAttr attr(defaultAttr);
       const String& fname = desc.name(i);

@@ -97,6 +97,7 @@ Tables/TableLockData.cc
 Tables/TableLocker.cc
 Tables/TableProxy.cc
 Tables/TableRecord.cc
+Tables/TableRecordData.cc
 Tables/TableRecordRep.cc
 Tables/TableRow.cc
 Tables/TableRowProxy.cc
@@ -327,6 +328,7 @@ Tables/TableLockData.h
 Tables/TableLocker.h
 Tables/TableProxy.h
 Tables/TableRecord.h
+Tables/TableRecordData.h
 Tables/TableRecordRep.h
 Tables/TableRow.h
 Tables/TableRowProxy.h

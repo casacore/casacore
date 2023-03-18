@@ -29,6 +29,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/RecordField.h>
 #include <casacore/casa/Arrays/Array.h>
+#include <vector>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -128,8 +130,8 @@ public:
 		       RecordFieldId whichInField);
     virtual void writeField();
 private:
-    RecordFieldPtr<Array<T> >   out_p;
-    RORecordFieldPtr<Array<T> > in_p;
+    RecordFieldPtr<Array<T>>   out_p;
+    RORecordFieldPtr<Array<T>> in_p;
 };
 
 // <summary> Multi field writer.  Copy many fields with a single call.
@@ -155,11 +157,12 @@ class MultiRecordFieldWriter
 public:
   void addWriter(RecordFieldWriter *fromNew);
   void copy();
-  ~MultiRecordFieldWriter();
+  MultiRecordFieldWriter (const MultiRecordFieldWriter&) = delete;
+  MultiRecordFieldWriter& operator=(const MultiRecordFieldWriter&) = delete;
 private:
   // Make faster by having the RecordFieldCopiers split out so straight copying
   // is inline.
-  PtrBlock<RecordFieldWriter *> writers_p;
+  std::vector<std::unique_ptr<RecordFieldWriter>> writers_p;
 };
 
 

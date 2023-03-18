@@ -29,9 +29,10 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/Containers/RecordDesc.h>
+#include <casacore/casa/Containers/RecordData.h>
 #include <casacore/casa/Containers/RecordInterface.h>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -86,13 +87,6 @@ class String;
 // It also allows derivation of other RecordRep classes (like TableRecordRep),
 // while their mother classes are not derived from each other.
 // </motivation>
-//
-// <todo asof="1996/03/12">
-//   <li> An implementation where arrays are stored as T*'s would cut down on
-//        instantiations (the Arrayness would come back through the creation
-//        of the <src>RecordFieldPtr<Array<T> ></src>).
-// </todo>
-
 
 class RecordRep
 {
@@ -113,20 +107,27 @@ public:
     RecordRep& operator= (const RecordRep& other);
     
     // Delete all data.
-    virtual ~RecordRep();
-
-    // Get the comment for this field.
-    const String& comment (Int whichField) const;
-
-    // Set the comment for this field.
-    void setComment (Int whichField, const String& comment);
+    virtual ~RecordRep() = default;
 
     // Describes the current structure of this Record.
-    const RecordDesc& description() const;
+    const RecordDesc& description() const
+      { return desc_p; }
+
+    // Get the field number for a given name.
+    Int fieldNumber (const String& name) const
+      { return desc_p.fieldNumber (name); }
+
+    // Get the comment for this field.
+    const String& comment (Int whichField) const
+      { return desc_p.comment (whichField); }
+
+    // Set the comment for this field.
+    void setComment (Int whichField, const String& comment)
+      { desc_p.setComment (whichField, comment); }
 
     // Change the structure of this Record to contain the fields in
-    // newDescription. After calling restructure, <src>description() ==
-    // newDescription</src>.
+    // newDescription.
+    // After calling restructure, <src>description() ==newDescription</src>.
     void restructure (const RecordDesc& newDescription, Bool recursive);
 
     // Returns True if this and other have the same RecordDesc, other
@@ -144,15 +145,12 @@ public:
     // Copy all data of the Record.
     void copyData (const RecordRep& other);
 
-    // Copy a data field.
-    // This can only handle scalars and arrays.
-    void copyDataField (DataType type, Int whichField, const void* that) const;
-
     // Remove a field from the record.
     void removeField (Int whichField);
 
     // Rename the given field.
-    void renameField (const String& newName, Int whichField);
+    void renameField (const String& newName, Int whichField)
+      { desc_p.renameField (newName, whichField); }
 
     // Add a field with the given name and value to the record.
     // The data type of the field is determined by the data type of the value.
@@ -167,17 +165,17 @@ public:
 
     // Define a value for the given field.
     // Array conformance rules will not be applied for variable shaped arrays.
-    // When the field and value data type mismatch, type promotion
+    // If the field and value data type mismatch, type promotion
     // of scalars will be done if possible. If not possible, an exception
     // is thrown.
     void defineDataField (Int whichField, DataType type, const void* value);
 
     // Put the description and data of the Record.
-    // It also puts the fixedFlag attribute (of the mother object).
+    // It also puts the fixedFlag attribute (of the mother Record).
     void putRecord (AipsIO& os, int recordType) const;
 
     // Get the description and data of the Record.
-    // It also gets the fixedFlag attribute (of the mother object).
+    // It also gets the fixedFlag attribute (of the mother Record).
     void getRecord (AipsIO& os, Int& recordType);
 
     // Put the data of a record.
@@ -193,9 +191,9 @@ public:
     // Used by the RecordFieldPtr classes to attach in a type-safe way to the
     // correct field.
     // <group>
-    void* get_pointer (Int whichField, DataType type) const;
-    void* get_pointer (Int whichField, DataType type,
-		       const String& recordType) const;
+    virtual void* get_pointer (Int whichField, DataType type) const;
+    virtual void* get_pointer (Int whichField, DataType type,
+                               const String& recordType) const;
     // </group>
 
     // Merge a field from another record into this record.
@@ -212,71 +210,21 @@ public:
     void print (std::ostream&,
 		Int maxNrValues = 25,
 		const String& indent="") const;
-
+  
 protected:
+    // Do the actual merging of a field.
+    virtual void doMergeField (DataType type, const void* otherPtr,
+                               const IPosition& shape);
+
     // Utility functions to avoid code duplication in the public member 
     // functions.
-    // <group>
-    void delete_myself (uInt nfields);
     void copy_other (const RecordRep& other);
-    // </group>
 
-    // Get the field number for a given name.
-    virtual Int fieldNumber (const String& name) const;
-
-    // Add the data pointer to the data block.
-    // The block is extended when needed.
-    void addDataPtr (void* ptr);
-
-    // Remove a data pointer add the given index.
-    void removeDataPtr (Int index);
-
-    // Check if the shape of the data array matches the shape of a
-    // fixed-shaped array in the description.
-    void checkShape (DataType type, const IPosition& shape,
-		     const void* value, const String& fieldName);
-
-    // Add a field to the description.
-    virtual void addFieldToDesc (const String& name, DataType type,
-				 const IPosition& shape, Bool fixedShape);
-
-    // Remove a data field.
-    virtual void removeData (Int whichField, void* ptr, void* vecptr);
-
-    // Remove a field from the description.
-    virtual void removeFieldFromDesc (Int whichField);
-
-    // Create a data field for the given type and shape.
-    // This can only handle scalars and arrays.
-    void* createDataField (DataType type, const IPosition& shape);
-
-    // Delete a data field.
-    // This can only handle scalars and arrays.
-    void deleteDataField (DataType type, void* ptr, void* vecptr);
-
-    // Copy a data field.
-    // This can only handle scalars and arrays.
-    void copyDataField (DataType type, void* ptr, const void* that) const;
-
-    // Print a data field.
-    // This can only handle scalars and arrays.
-    void printDataField (std::ostream& os, DataType type,
-			 const String& indent, Int maxNrValues,
-			 const void* ptr) const;
-
-    // Put a data field.
-    // This can only handle scalars and arrays.
-    void putDataField (AipsIO& os, DataType type, const void* ptr) const;
-
-    // Get a data field.
-    // This can only handle scalars and arrays.
-    void getDataField (AipsIO& os, DataType type, void* ptr);
-
-    // Make an array for a scalar data field.
-    // It shares the data, so a change in the data is reflected in the array.
-    // It is used to be able to access a scalar as an 1D array.
-    void makeDataVec (Int whichField, DataType type);
-
+    // Check that the value's shape matches the given shape.
+    // If not, an exception is thrown.
+    void checkShape (const IPosition& shape, const void* value,
+                     const String& fieldName);
+  
     // Get a Scalar/ArrayKeywordSet object as a Record.
     // (type 0 = ScalarKeywordSet;  type 1 = ArrayKeywordSet).
     void getKeySet (AipsIO& os, uInt version, uInt type);
@@ -290,38 +238,14 @@ protected:
     // Get the array values of a keyword set.
     void getArrayKeys (AipsIO& os);
 
-
+    //# Data members
     // Holds the structure of this Record.
-    RecordDesc   desc_p;
+    RecordDesc desc_p;
     // Pointers to data values.
-    Block<void*> data_p;
-    // Pointers to a vector of a scalar (to access a scalar as an array).
-    Block<void*> datavec_p;
-    // #Entries used in data_p.
-    uInt         nused_p;
+    // A pointer is used, so the RecordData address is not changed when
+    // the vector is resized.
+    std::vector<std::unique_ptr<RecordDataBase>> data_p;
 };
-
-
-inline const RecordDesc& RecordRep::description() const
-{
-    return desc_p;
-}
-
-inline const String& RecordRep::comment (Int whichField) const
-{
-    return desc_p.comment (whichField);
-}
-
-inline void RecordRep::setComment (Int whichField, const String& comment)
-{
-    desc_p.setComment (whichField, comment);
-}
-
-inline void RecordRep::renameField (const String& newName, Int whichField)
-{
-    desc_p.renameField (newName, whichField);
-}
-
 
 
 } //# NAMESPACE CASACORE - END
