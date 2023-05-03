@@ -32,6 +32,7 @@ tTiledDataStMan
 tTiledEmpty
 tTiledFileAccess
 tTiledShapeStM_1
+tTiledShapeStM_2
 tTiledShapeStMan
 tTiledStMan
 tTSMShape
