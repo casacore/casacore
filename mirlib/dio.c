@@ -341,6 +341,7 @@ void dreaddir_c(char *contxt,char *path,int length)
     Strcpy(path,dp->d_name);
     Strcpy(npath,d->path);    Strcat(npath,path);
     (void)stat(npath,&buf);
-    if(S_IFDIR & buf.st_mode)Strcat(path,"/");
+    if(S_ISDIR(buf.st_mode)
+      Strcat(path,"/");
   }
 }

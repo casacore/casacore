@@ -25,6 +25,9 @@
 /*    pkgw    14dec11 Make errmsg_c public for use in uvio.c            */
 /************************************************************************/
 
+#define X_OPEN_SOURCE 500 // For strdup definition
+#define _DEFAULT_SOURCE // For sys_nerr
+
 #if defined(HAVE_CONFIG_H) && HAVE_CONFIG_H
 #include "config.h"
 #endif
