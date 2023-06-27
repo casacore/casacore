@@ -75,7 +75,7 @@ class uvector : private Alloc
 	static_assert(std::is_standard_layout<Tp>(), "A uvector can only hold classes with standard layout");
 private:
 #if __cplusplus > 201402L
-	typedef std::allocator_traits<allocator_type>::is_always_equal allocator_is_always_equal;
+	typedef typename std::allocator_traits<Alloc>::is_always_equal allocator_is_always_equal
 #else
 	typedef std::false_type allocator_is_always_equal;
 #endif
