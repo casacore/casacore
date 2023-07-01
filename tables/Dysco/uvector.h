@@ -73,42 +73,43 @@ template<typename Tp, typename Alloc = std::allocator<Tp> >
 class uvector : private Alloc
 {
 	static_assert(std::is_standard_layout<Tp>(), "A uvector can only hold classes with standard layout");
-private:
+
+ public:
+  /// Element type
+  typedef Tp value_type;
+  /// Type of allocator used to allocate and deallocate space
+  typedef Alloc allocator_type;
+  /// Reference to element type
+  typedef Tp& reference;
+  /// Constant reference to element type
+  typedef const Tp& const_reference;
+  /// Pointer to element type
+  typedef Tp* pointer;
+  /// Pointer to constant element type
+  typedef const Tp* const_pointer;
+  /// Iterator type
+  typedef Tp* iterator;
+  /// Iterator type of constant elements
+  typedef const Tp* const_iterator;
+  /// Reverse iterator type
+  typedef std::reverse_iterator<iterator> reverse_iterator;
+  /// Reverse iterator of constant elements
+  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+  /// Difference between to iterators
+  typedef std::ptrdiff_t difference_type;
+  /// Type used for indexing elements
+  typedef std::size_t size_t;
+  /// Type used for indexing elements
+  typedef std::size_t size_type;
+
+ private:
 #if __cplusplus > 201402L
-	typedef std::allocator_traits<allocator_type>::is_always_equal allocator_is_always_equal;
+  typedef typename std::allocator_traits<allocator_type>::is_always_equal
+      allocator_is_always_equal;
 #else
-	typedef std::false_type allocator_is_always_equal;
+  typedef std::false_type allocator_is_always_equal;
 #endif
-public:
-	/// Element type
-	typedef Tp value_type;
-	/// Type of allocator used to allocate and deallocate space
-	typedef Alloc allocator_type;
-	/// Reference to element type
-	typedef Tp& reference;
-	/// Constant reference to element type
-	typedef const Tp& const_reference;
-	/// Pointer to element type
-	typedef Tp* pointer;
-	/// Pointer to constant element type
-	typedef const Tp* const_pointer;
-	/// Iterator type
-	typedef Tp* iterator;
-	/// Iterator type of constant elements
-	typedef const Tp* const_iterator;
-	/// Reverse iterator type
-	typedef std::reverse_iterator<iterator> reverse_iterator;
-	/// Reverse iterator of constant elements
-	typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-	/// Difference between to iterators
-	typedef std::ptrdiff_t difference_type;
-	/// Type used for indexing elements
-	typedef std::size_t size_t;
-	/// Type used for indexing elements
-	typedef std::size_t size_type;
-	
-private:
-	pointer _begin, _end, _endOfStorage;
+  pointer _begin, _end, _endOfStorage;
 	
 public:
 	/** @brief Construct an empty uvector.
