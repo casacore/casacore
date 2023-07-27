@@ -247,7 +247,7 @@ class Allocator_private {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
-          std::allocator_traits<BulkAllocatorImpl>::construct(*this, &ptr[i], src[i]);
+          std::allocator_traits<Allocator>::construct(allocator, &ptr[i], src[i]);
         }
       } catch (...) {
         destroy(ptr, i);  // rollback constructions
@@ -259,7 +259,7 @@ class Allocator_private {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
-          std::allocator_traits<BulkAllocatorImpl>::construct(*this, &ptr[i], initial_value);
+          std::allocator_traits<Allocator>::construct(allocator, &ptr[i], initial_value);
         }
       } catch (...) {
         destroy(ptr, i);  // rollback constructions
@@ -270,7 +270,7 @@ class Allocator_private {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
-          std::allocator_traits<BulkAllocatorImpl>::construct(*this, &ptr[i]);
+          std::allocator_traits<Allocator>::construct(allocator, &ptr[i]);
         }
       } catch (...) {
         destroy(ptr, i);  // rollback constructions
@@ -281,7 +281,7 @@ class Allocator_private {
       for (size_type i = n; i > 0;) {
         --i;
         try {
-          std::allocator_traits<BulkAllocatorImpl>::destroy(*this, &ptr[i]);
+          std::allocator_traits<Allocator>::destroy(allocator, &ptr[i]);
         } catch (...) {
           // Destructor should not raise any exception.
         }
