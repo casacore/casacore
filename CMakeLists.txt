@@ -208,7 +208,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")
 endif()
 
-# Since 2015, we need pwrite and pwrite (POSIX 2001)
+# Since 2015, we need pread and pwrite (POSIX 2001)
 check_function_exists(pread HAVE_PREAD)
 check_function_exists(pwrite HAVE_PWRITE)
 if (NOT (HAVE_PREAD AND HAVE_PWRITE))
