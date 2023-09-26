@@ -158,6 +158,7 @@ Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSys
 Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWeather
 Bool FITSIDItoMS1::firstGainCurve = True; // initialize the class variable firstGainCurve
 Bool FITSIDItoMS1::firstPhaseCal = True; // initialize the class variable firstPhaseCal
+Bool FITSIDItoMS1::firstEOP = True; // initialize the class variable firstEOP
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 std::map<Int,Int> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
@@ -1589,7 +1590,8 @@ void FITSIDItoMS1::getAxisInfo()
 void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM, 
 				       Bool mainTbl, Bool addCorrMod,
 				       Bool addSyscal, Bool addWeather,
-				       Bool addGainCurve, Bool addPhaseCal) {
+				       Bool addGainCurve, Bool addPhaseCal,
+				       Bool addEOP) {
   
   Int nCorr = 0;
   Int nChan = 0;
@@ -1835,6 +1837,29 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     cableCalTqd.write(td);
     SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
     ms.rwKeywordSet().defineTable("PHASE_CAL", Table(tableSetup));
+  }
+
+  if(addEOP){
+    TableDesc td;
+    String name = "EARTH_ORIENTATION";
+
+    td.comment() = "Earth orientation parameters table";
+    td.addColumn(ScalarColumnDesc<Double>("TIME", "Time for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<Int>("OBSERVATION_ID", "Observation identifier"));
+    td.addColumn(ScalarColumnDesc<Double>("UT1_UTC", "UT1-UTC"));
+    td.addColumn(ArrayColumnDesc<Double>("PM", "Position of celestial pole"));
+    td.addColumn(ScalarColumnDesc<String>("TYPE", "EOP type"));
+    TableMeasValueDesc measVal(td, "TIME");
+    TableMeasDesc<MEpoch> measCol(measVal);
+    measCol.write(td);
+    TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+    timeTqd.write(td);
+    TableQuantumDesc ut1utcTqd(td, "UT1_UTC", Unit("s"));
+    ut1utcTqd.write(td);
+    TableQuantumDesc pmTqd(td, "PM", Unit("rad"));
+    pmTqd.write(td);
+    SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
+    ms.rwKeywordSet().defineTable("EARTH_ORIENTATION", Table(tableSetup));
   }
 
   // update the references to the subtable keywords
@@ -3940,6 +3965,69 @@ Bool FITSIDItoMS1::handlePhaseCal()
   return True;
 }
 
+Bool FITSIDItoMS1::handleCalc()
+{
+  *itsLog << LogOrigin("FitsIDItoMS()", "handleCalc");
+
+  TableDesc td;
+  String name = "EARTH_ORIENTATION";
+
+  td.comment() = "Earth Orientation Parameters table";
+  td.addColumn(ScalarColumnDesc<Double>("TIME", "Time for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<Int>("OBSERVATION_ID", "Observation identifier"));
+  td.addColumn(ScalarColumnDesc<Double>("UT1_UTC", "UT1-UTC"));
+  td.addColumn(ArrayColumnDesc<Double>("PM", "Position of celestial pole"));
+  td.addColumn(ScalarColumnDesc<String>("TYPE", "EOP type"));
+  TableMeasValueDesc measVal(td, "TIME");
+  TableMeasDesc<MEpoch> measCol(measVal);
+  measCol.write(td);
+  TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+  timeTqd.write(td);
+  TableQuantumDesc ut1utcTqd(td, "UT1_UTC", Unit("s"));
+  ut1utcTqd.write(td);
+  TableQuantumDesc pmTqd(td, "PM", Unit("rad"));
+  pmTqd.write(td);
+  SetupNewTable tableSetup(ms_p.tableName() + "/" + name, td, Table::New);
+  ms_p.rwKeywordSet().defineTable("EARTH_ORIENTATION", Table(tableSetup));
+
+  Int nVal=nrows();
+
+  Table eopTab = oldfullTable("");
+  ScalarColumn<Double> time(eopTab, "TIME");
+  ScalarColumn<Double> ut1utc(eopTab, "UT1-UTC");
+  ArrayColumn<Double> wobxy(eopTab, "WOBXY");
+  ScalarColumn<String> ut1type(eopTab, "UT1 TYPE");
+  ScalarColumn<String> wobtype(eopTab, "WOB TYPE");
+
+  Table mseop = ms_p.rwKeywordSet().asTable("EARTH_ORIENTATION");
+
+  Int outRow=-1;
+  for (Int inRow=0; inRow<nVal; inRow++) {
+    mseop.addRow(); outRow++;
+
+    ScalarColumn<Double> timeCol(mseop, "TIME");
+    ScalarColumn<Int> obsIdCol(mseop, "OBSERVATION_ID");
+    ScalarColumn<Double> ut1utcCol(mseop, "UT1_UTC");
+    ArrayColumn<Double> pmCol(mseop, "PM");
+    ScalarColumn<String> typeCol(mseop, "TYPE");
+
+    timeCol.put(outRow, time(inRow)*C::day + rdate);
+    obsIdCol.put(outRow, 0);
+    ut1utcCol.put(outRow, ut1utc(inRow));
+    pmCol.put(outRow, wobxy(inRow)*C::arcsec);
+    if (ut1type(inRow) == "E" || wobtype(inRow) == "E")
+      typeCol.put(outRow, "PREDICTED");
+    else if (ut1type(inRow) == "P" || wobtype(inRow) == "P")
+      typeCol.put(outRow, "PRELIMINARY");
+    else if (ut1type(inRow) == "F" || wobtype(inRow) == "F")
+      typeCol.put(outRow, "FINAL");
+  }
+
+  ms_p.rwKeywordSet().asTable("EARTH_ORIENTATION").flush();
+
+  return True;
+}
+
 Bool FITSIDItoMS1::handleModelComps()
 {
 
@@ -4066,6 +4154,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     Bool addWeather=False;
     Bool addGainCurve=False;
     Bool addPhaseCal=False;
+    Bool addEOP=False;
 
     if (firstSyscal && extname == "SYSTEM_TEMPERATURE") {
       addSyscal=True;
@@ -4087,8 +4176,13 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
       firstPhaseCal=False;
     }
 
+    if (firstPhaseCal && extname == "CALC") {
+      addEOP=True;
+      firstEOP=False;
+    }
+
     setupMeasurementSet(msFile, useTSM, mainTbl, addCorrMode, addSyscal,
-			addWeather, addGainCurve, addPhaseCal);
+			addWeather, addGainCurve, addPhaseCal, addEOP);
     
     Bool success = True; // for the optional tables, we have a return value permitting us
                          // to skip them if they cannot be read
@@ -4104,6 +4198,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     else if (extname=="PHASE-CAL") success =  handlePhaseCal(); 
     else if (extname=="WEATHER")  success =  fillWeatherTable(); 
     else if (extname=="MODEL_COMPS") success = handleModelComps();
+    else if (extname=="CALC") success = handleCalc();
     else if(extname =="BASELINE"
 	    || extname =="BANDPASS"
 	    || extname =="CALIBRATION"

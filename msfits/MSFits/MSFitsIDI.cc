@@ -429,6 +429,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       mssub.rename (itsMSOut+"/PHASE_CAL",Table::New);
       msmain.rwKeywordSet().defineTable("PHASE_CAL",mssub);
     }
+    if (subTableName(isub)=="CALC") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/EARTH_ORIENTATION",Table::Update);
+      mssub.rename (itsMSOut+"/EARTH_ORIENTATION",Table::New);
+      msmain.rwKeywordSet().defineTable("EARTH_ORIENTATION",mssub);
+    }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);
     //  mssub.rename (itsMSOut+"/IDI_CORRELATOR_MODEL",Table::Update);
