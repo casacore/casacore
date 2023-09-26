@@ -4030,12 +4030,27 @@ Bool FITSIDItoMS1::handleCalc()
 
 Bool FITSIDItoMS1::handleModelComps()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "handleModelComps");
-  // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int fftTwid = 0;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "FFT_TWID") {
+      fftTwid = fkw->asInt();
+    }
+  }
+
+  if (array_p == "VLBA" && fftTwid != 1) {
+    *itsLog << LogIO::SEVERE << "Data needs FFT artifact corrections; this is not yet implemented." << LogIO::POST;
+  }
+
+  // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
+
+  return False;
 }
 
 
