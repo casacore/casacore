@@ -4037,15 +4037,25 @@ Bool FITSIDItoMS1::handleModelComps()
   String kwname;
   kwl.first();
   Int fftTwid = 0;
+  String taperFn;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "FFT_TWID") {
       fftTwid = fkw->asInt();
     }
+    if (kwname == "TAPER_FN") {
+      taperFn = fkw->asString();
+      taperFn.trim();
+    }
   }
 
   if (array_p == "VLBA" && fftTwid != 1) {
     *itsLog << LogIO::SEVERE << "Data needs FFT artifact corrections; this is not yet implemented." << LogIO::POST;
+  }
+  if (array_p == "VLBA" && taperFn != "UNIFORM") {
+    *itsLog << LogIO::SEVERE << "Data was correlated with " << taperFn
+	    << " taper; support for this taper is not yet implemented."
+	    << LogIO::POST;
   }
 
   // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
