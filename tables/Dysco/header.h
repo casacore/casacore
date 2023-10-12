@@ -4,6 +4,7 @@
 #include "serializable.h"
 
 #include <stdint.h>
+#include <cstdint>
 
 namespace dyscostman {
 

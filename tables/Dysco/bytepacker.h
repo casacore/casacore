@@ -2,6 +2,7 @@
 #define DYSCO_BYTE_PACKER_H
 
 #include <stdexcept>
+#include <cstdint>
 
 namespace dyscostman {
 
