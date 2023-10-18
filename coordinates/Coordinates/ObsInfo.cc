@@ -113,7 +113,14 @@ ObsInfo& ObsInfo::setTelescope(const String &telescope)
     telescope_p = telescope;
     if (!isTelPositionSet_p) {
       MPosition pos;
-      if (MeasTable::Observatory (pos, telescope)) {
+      bool telescope_found = false;
+
+      try {
+        telescope_found = MeasTable::Observatory (pos, telescope);
+      } catch (std::exception&) {
+      }
+
+      if (telescope_found) {
         setTelescopePosition (pos);
       }
     }
