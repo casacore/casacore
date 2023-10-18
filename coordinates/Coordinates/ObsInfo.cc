@@ -24,6 +24,7 @@
 //#                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/measures/Measures/MeasureHolder.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/measures/Measures/MeasConvert.h>
@@ -118,6 +119,9 @@ ObsInfo& ObsInfo::setTelescope(const String &telescope)
       try {
         telescope_found = MeasTable::Observatory (pos, telescope);
       } catch (std::exception&) {
+        LogIO os(LogOrigin("ObsInfo", "setTelescope", WHERE));
+        os << "Cannot read table of Observatories, continuing ";
+        os << "without telescope position in ObsInfo" << LogIO::WARN;
       }
 
       if (telescope_found) {
