@@ -116,9 +116,11 @@ ObsInfo& ObsInfo::setTelescope(const String &telescope)
       MPosition pos;
       bool telescope_found = false;
 
+      // Make ObsInfo work even if no Observatories table is installed
+      // since that table is distributed separately in a large package
       try {
         telescope_found = MeasTable::Observatory (pos, telescope);
-      } catch (std::exception&) {
+      } catch (const std::exception&) {
         LogIO os(LogOrigin("ObsInfo", "setTelescope", WHERE));
         os << "Cannot read table of Observatories, continuing ";
         os << "without telescope position in ObsInfo" << LogIO::WARN;
