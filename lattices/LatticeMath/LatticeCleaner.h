@@ -172,7 +172,7 @@ public:
   // to implement cleaning based on the signal-to-noise as opposed to the standard cleaning
   // based on the flux. The default threshold value is 0.9, which ensures the behavior of the
   // code is exactly the same as before this parameter has been introduced.
-  void setMask(Lattice<T> & mask, const T& maskThreshold = T(0.9));
+  void setMask(const Lattice<T> & mask, const T& maskThreshold = T(0.9));
 
   // Tell the algorithm to NOT clean just the inner quarter
   // (This is useful when multiscale clean is being used

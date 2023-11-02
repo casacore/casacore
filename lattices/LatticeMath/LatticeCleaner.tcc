@@ -253,16 +253,16 @@ void LatticeCleaner<T>::update(const Lattice<T> &dirty)
 
 // add a mask image
 template<class T> 
-void LatticeCleaner<T>::setMask(Lattice<T> & mask, const T& maskThreshold) 
+void LatticeCleaner<T>::setMask(const Lattice<T> & mask, const T& maskThreshold)
 {
   itsMaskThreshold = maskThreshold;
-  IPosition maskShape = mask.shape();
-  IPosition dirtyShape = itsDirty->shape();
+  const IPosition maskShape = mask.shape();
+  const IPosition dirtyShape = itsDirty->shape();
 
-  AlwaysAssert((mask.shape() == itsDirty->shape()), AipsError);
+  AlwaysAssert((maskShape == dirtyShape), AipsError);
 
   // This is not needed after the first steps
-  itsMask = new TempLattice<T>(mask.shape(), itsMemoryMB);
+  itsMask = new TempLattice<T>(maskShape, itsMemoryMB);
   itsMask->copyData(mask);
 
   if (itsScalesValid) {
