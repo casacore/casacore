@@ -41,7 +41,7 @@ jobs:
             -DBUILD_PYTHON=OFF \
             -DBUILD_PYTHON3=ON \
             -DBoost_NO_BOOST_CMAKE=True \
-            -DCMAKE_Fortran_COMPILER=gfortran-10 \
+            -DCMAKE_Fortran_COMPILER=gfortran-13 \
             -DDATA_DIR=. ..
 
       - name: build
