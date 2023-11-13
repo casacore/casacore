@@ -9,14 +9,21 @@ on:
 
 jobs:
   osx:
-    runs-on: macos-10.15
+    runs-on: macos-12
 
     steps:
       - name: checkout
         uses: actions/checkout@v2
 
       - name: install homebrew deps
-        run: brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran gsl
+        run: brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran gsl ninja
+
+      # See https://github.com/orgs/Homebrew/discussions/3895#discussioncomment-4130560
+      - name: ensure we use homebrew python
+        run: |
+         find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -delete
+         brew unlink python@3.11
+         brew link python@3.11
 
       - name: pip install numpy
         run: pip3 install numpy
@@ -34,20 +41,20 @@ jobs:
         run: |
           cd build
           cmake \
+            -G Ninja \
             -DBUILD_TESTING=ON \
             -DCMAKE_PREFIX_PATH=/usr/local/ \
             -DUSE_OPENMP=OFF \
             -DUSE_HDF5=ON \
             -DBUILD_PYTHON=OFF \
             -DBUILD_PYTHON3=ON \
+            -DPython3_EXECUTABLE=`which python3.11` \
             -DBoost_NO_BOOST_CMAKE=True \
-            -DCMAKE_Fortran_COMPILER=gfortran-10 \
+            -DCMAKE_Fortran_COMPILER=gfortran-13 \
             -DDATA_DIR=. ..
 
       - name: build
-        run: |
-          cd build
-          make -j
+        run: cmake --build build
 
       - name: run tests
         run: |
@@ -55,6 +62,4 @@ jobs:
           CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
 
       - name: install
-        run: |
-          cd build
-          make install
+        run: cmake --build build --target install
