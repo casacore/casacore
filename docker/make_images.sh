@@ -1,10 +1,26 @@
-#!/bin/bash -xe
+#!/bin/bash
+#
+# Script to make python wheels for several versions
 
-HERE=`dirname "$0"`
-cd $HERE/..
+set -eu
 
-tag=$(git describe --tags)
+SCRIPT_DIR=$(cd $(dirname $0) && pwd)
+ROOT_DIR=$(git rev-parse --show-toplevel)
 
-for i in 37 38 39 310 311 312; do
-    docker build -f docker/py${i}_wheel.docker . -t quay.io/casacore/casacore:${tag}_wheel${i}
+REPOSITORY=quay.io/casacore/casacore
+GIT_TAG=$(git describe --tags --dirty)
+
+py_major=3
+for py_minor in $(seq 7 12); do
+    echo -e "\n\n******** Building wheel for python ${py_major}.${py_minor} ********\n"
+    py_version=${py_major}${py_minor}
+    [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+    docker build --no-cache \
+        --build-arg PYMAJOR=${py_major} \
+        --build-arg PYMINOR=${py_minor} \
+        --build-arg PYUNICODE=${py_unicode} \
+        --build-arg THREADS=16 \
+        --file ${SCRIPT_DIR}/py_wheel.docker \
+        --tag ${REPOSITORY}:${GIT_TAG}_py${py_version} \
+        ${ROOT_DIR}
 done

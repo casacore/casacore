@@ -1,22 +1,23 @@
 FROM quay.io/pypa/manylinux2014_x86_64
 
-# set python version
-ENV PYMAJOR 3
-ENV PYMINOR 7
-ENV PYUNICODE m
+# how many threads to use for compiling
+ARG THREADS=4
+
+# These variables MUST be set using the --build-arg option
+ARG PYMAJOR
+ARG PYMINOR
+ARG PYUNICODE
+
 ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}${PYUNICODE}
 
 # boost version
-ENV BOOSTMAJOR 75
+ENV BOOSTMAJOR 79
 ENV BOOSTMINOR 0
 ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
 ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
 
 # where do we epect casacore data build time and runtime
 ENV CASACORE_DATA /usr/share/casacore/data
-
-# how many threads to use for compiling
-ENV THREADS 4
 
 # install rpms
 RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel gsl-devel
@@ -55,7 +56,7 @@ RUN ./b2 -j${THREADS} \
     link=static,shared install
 
 # casacore wants numpy
-RUN /opt/python/${TARGET}/bin/pip install numpy==1.19.5
+RUN /opt/python/${TARGET}/bin/pip install oldest_supported_numpy
 
 # set up casacore
 ADD . /code
@@ -73,6 +74,7 @@ RUN cmake .. \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
     -DPORTABLE=TRUE \
+    -DUSE_PCH=FALSE \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
 USER root
