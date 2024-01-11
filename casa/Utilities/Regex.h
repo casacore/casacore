@@ -34,10 +34,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Forward declarations.
-struct re_pattern_buffer;
-struct re_registers;
-
 // <summary>
 // Regular expression class (based on std::regex)
 // </summary>
