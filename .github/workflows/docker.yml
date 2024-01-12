@@ -34,12 +34,14 @@ jobs:
 
       - name: Build docker image
         run: |
-          echo "${{ matrix.python-version }}"
-          py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
-          py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
-          echo "py_major=${py_major}"
-          echo "py_minor=${py_minor}"
-          
+          ./docker/hello.sh
+          # py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
+          # py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
+          # [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+          # echo "py_major=${py_major}"
+          # echo "py_minor=${py_minor}"
+          # echo "py_unicode=${py_unicode}"
+
       #   uses: docker/build-push-action@v5
       #   with:
       #     context: .
