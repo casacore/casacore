@@ -32,6 +32,19 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
 
+      - name: Determine build-args
+        id: build-args
+        run: |
+          py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
+          py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
+          [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+          git_tag=$(git describe --tags --dirty)
+          echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
+          echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
+          echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
+          echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
+          echo "TAG=$(git describe --tags)_py${py_major}${py_minor}" >> "$GITHUB_OUTPUT"
+
       # - name: Build docker image
       #   run: |
       #     git_tag=$(git describe --tags --dirty)
@@ -48,8 +61,12 @@ jobs:
       - name: Build and push docker image
         uses: docker/build-push-action@v5
         with:
+          build-args:
+            PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
+            PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
+            PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
           context: .
           file: docker/py_wheel.docker
           push: false
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: "${{ steps.build-args.outputs.REPOSITORY }}:${{ steps.build-args.outputs.TAG }}"
+          # labels: ${{ steps.meta.outputs.labels }}
