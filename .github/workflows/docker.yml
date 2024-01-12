@@ -1,0 +1,27 @@
+name: Publish Docker images
+
+on: [push]
+
+env:
+  REGISTRY: quay.io/casacore
+  IMAGE: ${{ github.repository }}
+
+jobs:
+  build_images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-versions: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          # Credentials for robot account "github" on Quay for organization "casacore"
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      # - name: Build docker image
