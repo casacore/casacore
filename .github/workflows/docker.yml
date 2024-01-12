@@ -3,7 +3,8 @@ name: Publish Docker images
 on: [push]
 
 env:
-  REGISTRY: quay.io/casacore
+  REGISTRY: quay.io
+  ORGANIZATION: casacore
   IMAGE: ${{ github.repository }}
 
 jobs:
@@ -21,6 +22,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           # Credentials for robot account "github" on Quay for organization "casacore"
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
 
