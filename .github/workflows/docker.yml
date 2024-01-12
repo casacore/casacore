@@ -32,19 +32,23 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
 
-      - name: Build docker image
-        run: |
-          ./docker/hello.sh
-          # py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
-          # py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
-          # [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
-          # echo "py_major=${py_major}"
-          # echo "py_minor=${py_minor}"
-          # echo "py_unicode=${py_unicode}"
+      # - name: Build docker image
+      #   run: |
+      #     git_tag=$(git describe --tags --dirty)
+      #     py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
+      #     py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
+      #     [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+      #     echo docker build \
+      #       --build-arg PYMAJOR=${py_major} \
+      #       --build-arg PYMINOR=${py_minor} \
+      #       --build-arg PYUNICODE=${py_unicode} \
+      #       --file ./docker/py_wheel.docker \
+      #       --tag ${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}
 
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     push: false
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
