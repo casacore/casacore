@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-versions: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
       - name: Checkout repository
@@ -32,7 +32,14 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
 
-      # - name: Build docker image
+      - name: Build docker image
+        run: |
+          echo "${{ matrix.python-version }}"
+          py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
+          py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
+          echo "py_major=${py_major}"
+          echo "py_minor=${py_minor}"
+          
       #   uses: docker/build-push-action@v5
       #   with:
       #     context: .
