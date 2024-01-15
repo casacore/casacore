@@ -26,11 +26,11 @@ jobs:
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
 
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@v5
-      #   with:
-      #     images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
 
       - name: Determine build-args
         id: build-args
@@ -59,15 +59,15 @@ jobs:
       #       --file ./docker/py_wheel.docker \
       #       --tag ${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}
 
-      - name: Build and push docker image
-        uses: docker/build-push-action@v5
-        with:
-          build-args:
-            PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
-            PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
-            PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
-          context: .
-          file: docker/py_wheel.docker
-          push: false
-          tags: "${{ steps.build-args.outputs.REPOSITORY }}:${{ steps.build-args.outputs.TAG }}"
-          # labels: ${{ steps.meta.outputs.labels }}
+      # - name: Build and push docker image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     build-args:
+      #       PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
+      #       PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
+      #       PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
+      #     context: .
+      #     file: docker/py_wheel.docker
+      #     push: false
+      #     tags: "${{ steps.build-args.outputs.REPOSITORY }}:${{ steps.build-args.outputs.TAG }}"
+      #     # labels: ${{ steps.meta.outputs.labels }}
