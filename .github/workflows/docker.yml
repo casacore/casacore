@@ -60,7 +60,8 @@ jobs:
             type=ref,event=branch
             type=ref,event=tag
             type=ref,event=pr
-            type=raw
+            type=raw,value=mytag-{{branch}}-{{sha}}
+            type=raw,value=latest,enable={{is_default_branch}}
             type=sha
             # type=schedule
             # type=ref,event=branch
