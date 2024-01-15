@@ -48,27 +48,27 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           flavor:
-            prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}
+            prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}_
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          tags: |
-            type=schedule
-            type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
-            type=pep440,enable=true,prefix=semver,pattern={{version}}
-            # type=match
-            type=edge,enable=true
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=raw,value=${{ steps.args.outputs.TAG }}
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,enable=true
-            # type=schedule
-            # type=ref,event=branch
-            # type=ref,event=pr
-            # type=semver,pattern={{version}}
-            # type=semver,pattern={{major}}.{{minor}}
-            # type=semver,pattern={{major}}
-            # type=sha
+          # tags: |
+          #   type=schedule
+          #   type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
+          #   type=pep440,enable=true,prefix=semver,pattern={{version}}
+          #   # type=match
+          #   type=edge,enable=true
+          #   type=ref,event=branch
+          #   type=ref,event=tag
+          #   type=ref,event=pr
+          #   type=raw,value={{branch}}-{{sha}}
+          #   type=raw,value=latest,enable={{is_default_branch}}
+          #   type=sha,enable=true
+          #   # type=schedule
+          #   # type=ref,event=branch
+          #   # type=ref,event=pr
+          #   # type=semver,pattern={{version}}
+          #   # type=semver,pattern={{major}}.{{minor}}
+          #   # type=semver,pattern={{major}}
+          #   # type=sha
 
       # - name: Build docker image
       #   run: |
