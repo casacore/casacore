@@ -55,16 +55,16 @@ jobs:
             # type=pep440,enable=true,prefix=semver,pattern={{version}}
             # # type=match
             # type=edge,enable=true
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
+            type=ref,event=branch,enable=true
+            type=ref,event=tag,enable=true
+            type=ref,event=pr,enable=true
             #   type=raw,value={{branch}}-{{sha}}
             #   type=raw,value=latest,enable={{is_default_branch}}
             #   type=sha,enable=true
             #   # type=schedule
             #   # type=ref,event=branch
             #   # type=ref,event=pr
-            type=semver,pattern={{version}}
+            type=semver,pattern={{version}},enable=true
             # type=semver,pattern={{major}}.{{minor}}
             #   # type=semver,pattern={{major}}
             #   # type=sha
