@@ -53,8 +53,8 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           tags: |
             type=schedule
-            type=semver
-            type=pep440
+            type=semver,pattern={{major}}.{{minor}}
+            type=pep440,pattern={{version}}
             type=match
             type=edge
             type=ref
