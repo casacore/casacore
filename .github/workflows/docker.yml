@@ -45,9 +45,11 @@ jobs:
         id: build-args
         run: |
           echo "Checking out GitHub repository: ${{ env.IMAGE }}"
+          echo "Python version: ${{ matrix.python-version }}"
           py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
           py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
           [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+          echo "py_major=${py_major}; py_minor=${py_minor}; py_unicode=${pyunicode}"
           # which git
           # git_tag=$(git describe --tags --dirty)  ## TODO: Probably git is not avaiable ?!
           echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
