@@ -1,6 +1,14 @@
 name: Publish Docker images
 
-on: [push]
+on:
+  push:
+    branches:
+      - $repo.default_branch
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - $repo.default_branch
 
 env:
   REGISTRY: quay.io
@@ -12,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7'] #, '3.8', '3.9', '3.10', '3.11', '3.12']
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
 
     steps:
       - name: Checkout repository
@@ -20,6 +28,7 @@ jobs:
 
       - name: Login to registry
         uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
         with:
           # Credentials for robot account "github" on Quay for organization "casacore"
           registry: ${{ env.REGISTRY }}
@@ -29,18 +38,14 @@ jobs:
       - name: Determine build-args
         id: args
         run: |
-          echo "Checking out GitHub repository: ${{ env.IMAGE }}"
-          echo "Python version: ${{ matrix.python-version }}"
+          echo "repo.default_branch=$repo.default_branch"
           py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
           py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
           [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
-          echo "py_major=${py_major}; py_minor=${py_minor}; py_unicode=${py_unicode}"
-          # git_tag=$(git describe --tags --dirty || true)
           echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
           echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
           echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
-          # echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
-          # echo "TAG=py${py_major}${py_minor}_${git_tag}" >> "$GITHUB_OUTPUT"
+          exit 1
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -49,38 +54,6 @@ jobs:
           flavor:
             prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}_
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          # tags: |
-            # type=schedule
-            # type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
-            # type=pep440,enable=true,prefix=semver,pattern={{version}}
-            # # type=match
-            # type=edge,enable=true
-            # type=ref,event=branch,enable=true
-            # type=ref,event=tag,enable=true
-            # type=ref,event=pr,enable=true
-            #   type=raw,value={{branch}}-{{sha}}
-            #   type=raw,value=latest,enable={{is_default_branch}}
-            #   type=sha,enable=true
-            #   # type=schedule
-            #   # type=ref,event=branch
-            #   # type=ref,event=pr
-            # type=semver,pattern={{version}},enable=true
-            # type=semver,pattern={{major}}.{{minor}}
-            #   # type=semver,pattern={{major}}
-            #   # type=sha
-
-      # - name: Build docker image
-      #   run: |
-      #     git_tag=$(git describe --tags --dirty)
-      #     py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
-      #     py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
-      #     [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
-      #     echo docker build \
-      #       --build-arg PYMAJOR=${py_major} \
-      #       --build-arg PYMINOR=${py_minor} \
-      #       --build-arg PYUNICODE=${py_unicode} \
-      #       --file ./docker/py_wheel.docker \
-      #       --tag ${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}
 
       - name: Build and push docker image
         uses: docker/build-push-action@v5
@@ -89,8 +62,7 @@ jobs:
             PYMAJOR=${{ steps.args.outputs.PYMAJOR }}
             PYMINOR=${{ steps.args.outputs.PYMINOR }}
             PYUNICODE=${{ steps.args.outputs.PYUNICODE }}
-          # context: .
           file: docker/py_wheel.docker
-          push: false
+          push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
