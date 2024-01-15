@@ -48,7 +48,8 @@ jobs:
           echo "Python version: ${{ matrix.python-version }}"
           py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
           py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
-          [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+          if [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ]; then py_unicode="m"; else py_unicode=; fi
+          # [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
           echo "py_major=${py_major}; py_minor=${py_minor}; py_unicode=${pyunicode}"
           # which git
           # git_tag=$(git describe --tags --dirty)  ## TODO: Probably git is not avaiable ?!
@@ -74,7 +75,7 @@ jobs:
       - name: Build and push docker image
         uses: docker/build-push-action@v5
         with:
-          build-args:
+          build-args: |
             # PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
             # PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
             # PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
