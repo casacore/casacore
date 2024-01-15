@@ -57,7 +57,9 @@ jobs:
             type=pep440,pattern={{version}}
             # type=match
             type=edge
-            type=ref
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
             type=raw
             type=sha
             # type=schedule
