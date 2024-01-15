@@ -52,11 +52,11 @@ jobs:
           echo "py_major=${py_major}; py_minor=${py_minor}; py_unicode=${pyunicode}"
           # which git
           # git_tag=$(git describe --tags --dirty)  ## TODO: Probably git is not avaiable ?!
-          echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
-          echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
-          echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
-          # echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
-          # echo "TAG=$(git describe --tags)_py${py_major}${py_minor}" >> "$GITHUB_OUTPUT"
+          echo "PYMAJOR=${py_major}" >> "$GITHUB_ENV"
+          echo "PYMINOR=${py_minor}" >> "$GITHUB_ENV"
+          echo "PYUNICODE=${py_unicode}" >> "$GITHUB_ENV"
+          # echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}" >> "$GITHUB_ENV"
+          # echo "TAG=$(git describe --tags)_py${py_major}${py_minor}" >> "$GITHUB_ENV"
 
       # - name: Build docker image
       #   run: |
@@ -75,9 +75,12 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args:
-            PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
-            PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
-            PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
+            # PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
+            # PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
+            # PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
+            PYMAJOR=${PYMAJOR}
+            PYMINOR=${PYMINOR}
+            PYUNICODE=${PYUNICODE}
           context: .
           file: docker/py_wheel.docker
           push: false
