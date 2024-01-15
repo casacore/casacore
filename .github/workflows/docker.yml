@@ -1,14 +1,15 @@
 name: Publish Docker images
 
-on:
-  push:
-    branches:
-      - $repo.default_branch
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - $repo.default_branch
+on: [push]
+# on:
+#   push:
+#     branches:
+#       - $repo.default_branch
+#     tags:
+#       - 'v*'
+#   pull_request:
+#     branches:
+#       - $repo.default_branch
 
 env:
   REGISTRY: quay.io
