@@ -55,7 +55,7 @@ jobs:
             type=schedule
             type=semver,pattern={{major}}.{{minor}}
             type=pep440,pattern={{version}}
-            type=match
+            # type=match
             type=edge
             type=ref
             type=raw
