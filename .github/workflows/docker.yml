@@ -49,12 +49,12 @@ jobs:
           flavor:
             prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}_
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          # tags: |
-          #   type=schedule
-          #   type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
-          #   type=pep440,enable=true,prefix=semver,pattern={{version}}
-          #   # type=match
-          #   type=edge,enable=true
+          tags: |
+            # type=schedule
+            # type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
+            # type=pep440,enable=true,prefix=semver,pattern={{version}}
+            # # type=match
+            type=edge,enable=true
           #   type=ref,event=branch
           #   type=ref,event=tag
           #   type=ref,event=pr
