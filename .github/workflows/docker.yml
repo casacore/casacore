@@ -31,7 +31,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           # images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
-          images: ${{ env.REGISTRY }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           tags: |
             type=schedule
             type=ref,event=branch
@@ -82,7 +82,7 @@ jobs:
             # PYMAJOR=${PYMAJOR}
             # PYMINOR=${PYMINOR}
             # PYUNICODE=${PYUNICODE}
-          context: .
+          # context: .
           file: docker/py_wheel.docker
           push: false
           # tags: "${{ steps.build-args.outputs.REPOSITORY }}:${{ steps.build-args.outputs.TAG }}"
