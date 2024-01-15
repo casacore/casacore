@@ -39,7 +39,7 @@ jobs:
       - name: Determine build-args
         id: args
         run: |
-          echo "repo.default_branch=$repo.default_branch"
+          echo "default branch: ${{ github.event.repository.default_branch }}"
           py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
           py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
           [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
