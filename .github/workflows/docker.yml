@@ -49,22 +49,22 @@ jobs:
           flavor:
             prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}_
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          tags: |
+          # tags: |
             # type=schedule
             # type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
             # type=pep440,enable=true,prefix=semver,pattern={{version}}
             # # type=match
             # type=edge,enable=true
-            type=ref,event=branch,enable=true
-            type=ref,event=tag,enable=true
-            type=ref,event=pr,enable=true
+            # type=ref,event=branch,enable=true
+            # type=ref,event=tag,enable=true
+            # type=ref,event=pr,enable=true
             #   type=raw,value={{branch}}-{{sha}}
             #   type=raw,value=latest,enable={{is_default_branch}}
             #   type=sha,enable=true
             #   # type=schedule
             #   # type=ref,event=branch
             #   # type=ref,event=pr
-            type=semver,pattern={{version}},enable=true
+            # type=semver,pattern={{version}},enable=true
             # type=semver,pattern={{major}}.{{minor}}
             #   # type=semver,pattern={{major}}
             #   # type=sha
@@ -89,13 +89,8 @@ jobs:
             PYMAJOR=${{ steps.args.outputs.PYMAJOR }}
             PYMINOR=${{ steps.args.outputs.PYMINOR }}
             PYUNICODE=${{ steps.args.outputs.PYUNICODE }}
-            # PYMAJOR=${PYMAJOR}
-            # PYMINOR=${PYMINOR}
-            # PYUNICODE=${PYUNICODE}
           # context: .
           file: docker/py_wheel.docker
           push: false
-          # tags: "${{ steps.args.outputs.REPOSITORY }}:${{ steps.args.outputs.TAG }}"
-          # labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
