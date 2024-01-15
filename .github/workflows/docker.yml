@@ -53,16 +53,16 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           tags: |
             type=schedule
-            type=semver,pattern={{major}}.{{minor}}
-            type=pep440,pattern={{version}}
+            type=semver,enable=true,prefix=semver,pattern={{major}}.{{minor}}
+            type=pep440,enable=true,prefix=semver,pattern={{version}}
             # type=match
-            type=edge
-            type=ref,event=branch
-            type=ref,event=tag
-            type=ref,event=pr
-            type=raw,value=mytag-{{branch}}-{{sha}}
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha
+            type=edge,enable=true,prefix=edge
+            type=ref,event=branch,prefix=event-branch
+            type=ref,event=tag,prefix=event-tag
+            type=ref,event=pr,prefix=event-pr
+            type=raw,value={{branch}}-{{sha}},prefix=mytag
+            type=raw,value=latest,enable=true # enable={{is_default_branch}}
+            type=sha,enable=true,prefix=sha
             # type=schedule
             # type=ref,event=branch
             # type=ref,event=pr
