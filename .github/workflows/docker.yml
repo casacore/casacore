@@ -26,23 +26,8 @@ jobs:
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          # images: ${{ env.REGISTRY }}/${{ env.ORGANIZATION }}/${{ env.IMAGE }}
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-
       - name: Determine build-args
-        id: build-args
+        id: args
         run: |
           echo "Checking out GitHub repository: ${{ env.IMAGE }}"
           echo "Python version: ${{ matrix.python-version }}"
@@ -58,6 +43,30 @@ jobs:
           echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
           # echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.ORGANIZATION}}/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
           # echo "TAG=$(git describe --tags)_py${py_major}${py_minor}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          flavor:
+            prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+          tags: |
+            type=schedule
+            type=semver
+            type=pep440
+            type=match
+            type=edge
+            type=ref
+            type=raw
+            type=sha
+            # type=schedule
+            # type=ref,event=branch
+            # type=ref,event=pr
+            # type=semver,pattern={{version}}
+            # type=semver,pattern={{major}}.{{minor}}
+            # type=semver,pattern={{major}}
+            # type=sha
 
       # - name: Build docker image
       #   run: |
@@ -76,16 +85,16 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           build-args: |
-            PYMAJOR=${{ steps.build-args.outputs.PYMAJOR }}
-            PYMINOR=${{ steps.build-args.outputs.PYMINOR }}
-            PYUNICODE=${{ steps.build-args.outputs.PYUNICODE }}
+            PYMAJOR=${{ steps.args.outputs.PYMAJOR }}
+            PYMINOR=${{ steps.args.outputs.PYMINOR }}
+            PYUNICODE=${{ steps.args.outputs.PYUNICODE }}
             # PYMAJOR=${PYMAJOR}
             # PYMINOR=${PYMINOR}
             # PYUNICODE=${PYUNICODE}
           # context: .
           file: docker/py_wheel.docker
           push: false
-          # tags: "${{ steps.build-args.outputs.REPOSITORY }}:${{ steps.build-args.outputs.TAG }}"
+          # tags: "${{ steps.args.outputs.REPOSITORY }}:${{ steps.args.outputs.TAG }}"
           # labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
