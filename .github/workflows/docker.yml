@@ -55,9 +55,9 @@ jobs:
             # type=pep440,enable=true,prefix=semver,pattern={{version}}
             # # type=match
             # type=edge,enable=true
-            #   type=ref,event=branch
-            #   type=ref,event=tag
-            #   type=ref,event=pr
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
             #   type=raw,value={{branch}}-{{sha}}
             #   type=raw,value=latest,enable={{is_default_branch}}
             #   type=sha,enable=true
