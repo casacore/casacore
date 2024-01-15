@@ -35,13 +35,12 @@ jobs:
           py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
           [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
           echo "py_major=${py_major}; py_minor=${py_minor}; py_unicode=${py_unicode}"
-          # which git
-          git_tag=$(git describe --tags --dirty || true)
+          # git_tag=$(git describe --tags --dirty || true)
           echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
           echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
           echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
-          echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
-          echo "TAG=py${py_major}${py_minor}_${git_tag}" >> "$GITHUB_OUTPUT"
+          # echo "REPOSITORY=${{ env.REGISTRY }}/${{ env.IMAGE }}" >> "$GITHUB_OUTPUT"
+          # echo "TAG=py${py_major}${py_minor}_${git_tag}" >> "$GITHUB_OUTPUT"
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
