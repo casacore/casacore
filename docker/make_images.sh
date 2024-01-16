@@ -15,7 +15,7 @@ for py_minor in $(seq 7 12); do
     echo -e "\n\n******** Building wheel for python ${py_major}.${py_minor} ********\n"
     py_version=${py_major}${py_minor}
     [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
-    docker build --no-cache \
+    docker build \
         --build-arg PYMAJOR=${py_major} \
         --build-arg PYMINOR=${py_minor} \
         --build-arg PYUNICODE=${py_unicode} \
