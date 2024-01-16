@@ -27,15 +27,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Login to registry
-        uses: docker/login-action@v3
-        if: github.event_name != 'pull_request'
-        with:
-          # Credentials for robot account "github" on Quay for organization "casacore"
-          registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
-
       - name: Determine build-args
         id: args
         run: |
@@ -46,6 +37,7 @@ jobs:
           echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
           echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
           echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
+          exit 1
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -54,6 +46,15 @@ jobs:
           flavor:
             prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}_
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+
+      - name: Login to registry
+        uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          # Credentials for robot account "github" on Quay for organization "casacore"
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
 
       - name: Build and push docker image
         uses: docker/build-push-action@v5
