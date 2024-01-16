@@ -36,6 +36,8 @@ jobs:
           echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
           echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
           echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
+          echo "THREADS=$(nproc)" # >> "GITHUB_OUTPUT"
+          exit 1
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -63,6 +65,7 @@ jobs:
             PYMAJOR=${{ steps.args.outputs.PYMAJOR }}
             PYMINOR=${{ steps.args.outputs.PYMINOR }}
             PYUNICODE=${{ steps.args.outputs.PYUNICODE }}
+            THREADS=${{ steps.args.outputs.THREADS }}
           file: docker/py_wheel.docker
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
