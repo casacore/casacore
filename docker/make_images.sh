@@ -21,6 +21,6 @@ for py_minor in $(seq 7 12); do
         --build-arg PYUNICODE=${py_unicode} \
         --build-arg THREADS=16 \
         --file ${SCRIPT_DIR}/py_wheel.docker \
-        --tag ${REPOSITORY}:${GIT_TAG}_py${py_version} \
+        --tag ${REPOSITORY}:py${py_version}_${GIT_TAG} \
         ${ROOT_DIR}
 done
