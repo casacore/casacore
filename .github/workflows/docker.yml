@@ -1,0 +1,68 @@
+name: Publish Docker images
+
+on:
+  push:
+    branches:
+      - $repo.default_branch
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - $repo.default_branch
+
+env:
+  REGISTRY: quay.io
+  ORGANIZATION: casacore
+  IMAGE: ${{ github.repository }}
+
+jobs:
+  build_images:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine build-args
+        id: args
+        run: |
+          py_major=$(echo ${{ matrix.python-version }} | cut -d'.' -f1)
+          py_minor=$(echo ${{ matrix.python-version }} | cut -d'.' -f2)
+          [ ${py_major} -eq 3 ] && [ ${py_minor} -le 7 ] && py_unicode="m" || py_unicode=
+          echo "PYMAJOR=${py_major}" >> "$GITHUB_OUTPUT"
+          echo "PYMINOR=${py_minor}" >> "$GITHUB_OUTPUT"
+          echo "PYUNICODE=${py_unicode}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          flavor:
+            prefix=py${{ steps.args.outputs.PYMAJOR }}${{ steps.args.outputs.PYMINOR }}_
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+
+      - name: Login to registry
+        id: login
+        uses: docker/login-action@v3
+        if: github.event_name != 'pull_request'
+        with:
+          # Credentials for robot account "github" on Quay for organization "casacore"
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+
+      - name: Build and push docker image
+        id: build-push
+        uses: docker/build-push-action@v5
+        with:
+          build-args: |
+            PYMAJOR=${{ steps.args.outputs.PYMAJOR }}
+            PYMINOR=${{ steps.args.outputs.PYMINOR }}
+            PYUNICODE=${{ steps.args.outputs.PYUNICODE }}
+          file: docker/py_wheel.docker
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
