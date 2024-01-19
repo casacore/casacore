@@ -3,12 +3,12 @@ name: Publish Docker images
 on:
   push:
     branches:
-      - $repo.default_branch
+      - 'master'
     tags:
       - 'v*'
   pull_request:
     branches:
-      - $repo.default_branch
+      - 'master'
 
 env:
   REGISTRY: quay.io
