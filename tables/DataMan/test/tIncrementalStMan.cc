@@ -529,7 +529,7 @@ void testWithLocking()
     uInt time_rows = 10000;
     TableDesc td;
     td.addColumn(ScalarColumnDesc<Int>("TIME"));
-    SetupNewTable newtab("tIn.tab", td, Table::New);
+    SetupNewTable newtab("tIncrementalStMan_tmp.tab", td, Table::New);
     IncrementalStMan ism;
     newtab.bindAll (ism);
     Table tab(newtab, nrow);
@@ -547,7 +547,7 @@ void testWithLocking()
   // which invalidates the cache.
   // Do it twice with a size less and greater than 10000.
   for (uInt time_rows=3333; time_rows<=33333; time_rows+=30000) {
-    Table tab("tIn.tab", TableLock::UserLocking);
+    Table tab("tIncrementalStMan_tmp.tab", TableLock::UserLocking);
     uInt nrow = tab.nrow();
     uInt row = 0;
     while (row < nrow) {
