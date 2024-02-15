@@ -1,8 +1,8 @@
 #ifndef DYSCO_BYTE_PACKER_H
 #define DYSCO_BYTE_PACKER_H
 
-#include <stdexcept>
 #include <cstdint>
+#include <stdexcept>
 
 namespace dyscostman {
 
