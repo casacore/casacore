@@ -2778,7 +2778,7 @@ void FITSIDItoMS1::fillFeedTable() {
     polaaS.attach(anTab, "POLAA");
     polabS.attach(anTab, "POLAB");
     POLAisScalar = True;
-    *itsLog << LogIO::WARN << "Treating POLAA and POLAB columns in input ANTENNA table as scalar," 
+    *itsLog << LogIO::NORMAL << "Treating POLAA and POLAB columns in input ANTENNA table as scalar,"
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }
 
@@ -3048,7 +3048,7 @@ void FITSIDItoMS1::fillFieldTable()
     id.attach(suTab, "SOURCE_ID");
   }
   else if(suTab.tableDesc().isColumn("ID_NO.")){
-    *itsLog << LogIO::WARN << "No SOURCE_ID column in input SOURCE table. Using deprecated ID_NO column."
+    *itsLog << LogIO::NORMAL << "No SOURCE_ID column in input SOURCE table. Using deprecated ID_NO column."
 	    << LogIO::POST;
     id.attach(suTab, "ID_NO.");
   }
@@ -3093,7 +3093,7 @@ void FITSIDItoMS1::fillFieldTable()
     }
     catch(std::exception& x){
       foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
-      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      *itsLog << LogIO::NORMAL << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
@@ -3109,11 +3109,11 @@ void FITSIDItoMS1::fillFieldTable()
     }
     catch(std::exception& x){
       foffsetSD.attach(suTab,"FREQOFF"); // fq. offset  
-      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      *itsLog << LogIO::NORMAL << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
     sysvelS.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreqS.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
-    *itsLog << LogIO::WARN << "Treating ?FLUX, ALPHA, FREQOFF, SYSVEL, and RESTFREQ columns in input SOURCE table as scalar,"
+    *itsLog << LogIO::NORMAL << "Treating ?FLUX, ALPHA, FREQOFF, SYSVEL, and RESTFREQ columns in input SOURCE table as scalar,"
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }      
 
@@ -3260,7 +3260,10 @@ Bool FITSIDItoMS1::fillCorrelatorModelTable()
   *itsLog << LogOrigin("FitsIDItoMS()", "fillCorrelatorModelTable");
 //  MSCorrelatorModelColumns& msCorrMod(msc_p->correlatorModel());
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
+
+  Table imTab = oldfullTable("");
+
+  return True;
 
 }
 
@@ -3308,7 +3311,7 @@ Bool FITSIDItoMS1::fillSysCalTable()
     }
     TSYSisScalar=True;
     if (nIF > 1) {
-      *itsLog << LogIO::WARN << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
+      *itsLog << LogIO::NORMAL << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
 	      << endl << " i.e. using same value for all bands." << LogIO::POST;
     }
   }
@@ -3681,7 +3684,7 @@ Bool FITSIDItoMS1::handleGainCurve()
     }
     GCisScalar=True;
     if (nIF > 1) {
-      *itsLog << LogIO::WARN << "Treating columns in input GAIN_CURVE table as scalar,"
+      *itsLog << LogIO::NORMAL << "Treating columns in input GAIN_CURVE table as scalar,"
 	      << endl << " i.e. using same value for all bands." << LogIO::POST;
     }
   }
@@ -4030,12 +4033,38 @@ Bool FITSIDItoMS1::handleCalc()
 
 Bool FITSIDItoMS1::handleModelComps()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "handleModelComps");
-  // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int fftTwid = 0;
+  String taperFn;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "FFT_TWID") {
+      fftTwid = fkw->asInt();
+    }
+    if (kwname == "TAPER_FN") {
+      taperFn = fkw->asString();
+      taperFn.trim();
+    }
+  }
+
+  if (array_p == "VLBA" && fftTwid != 1) {
+    *itsLog << LogIO::SEVERE << "Data needs FFT artifact corrections; this is not yet implemented." << LogIO::POST;
+  }
+  if (array_p == "VLBA" && taperFn != "UNIFORM") {
+    *itsLog << LogIO::SEVERE << "Data was correlated with " << taperFn
+	    << " taper; support for this taper is not yet implemented."
+	    << LogIO::POST;
+  }
+
+  // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
+  Table mcTab = oldfullTable("");
+
+  return True;
 }
 
 
@@ -4203,13 +4232,15 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
 	    || extname =="BANDPASS"
 	    || extname =="CALIBRATION"
 	    ){
-      *itsLog << LogIO::WARN << "FITS-IDI table " << extname 
+      *itsLog << LogIO::WARN << "FITS-IDI table " << extname
 	      << " not yet supported. Will ignore it." << LogIO::POST;
       return False;
     }
     else {
-      *itsLog << LogIO::WARN << "Extension " << extname 
-	      << " not part of the FITS-IDI convention. Will ignore it." << LogIO::POST;
+      if (extname != "TAPE_STATISTICS" && nrows() > 0) {
+	*itsLog << LogIO::WARN << "Extension " << extname
+		<< " not part of the FITS-IDI convention. Will ignore it." << LogIO::POST;
+      }
       return False;
     }  
     if(!success){
