@@ -1850,11 +1850,11 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
                 // inicates that row applies for all spectral windows
                 if (
                     Int(antnum) == inantid(i)
-                    && (
-                        spwids(i) == -1
-                        || uSpws.find(spwids(i)) != uSpws.end()
-                    )
-                ) {
+                      && (
+                          spwids(i) == -1
+                          || uSpws.find(spwids(i)) != uSpws.end()
+                      )
+                    ) {
                     found = True;
                     Vector<String> poltypes = inpoltype(i);
                     Vector<Quantity> ra;
@@ -1871,10 +1871,19 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
                         antToRA[antnum] = ra;
                     }
                     else {
-                        _checkReceptorAngles(ra, antToRA[antnum], antnum);
+                        try {
+                            _checkReceptorAngles(ra, antToRA[antnum], antnum);
+                        }
+                        catch (const std::exception& x) {
+                            os << LogOrigin("MSFitsOutput", __func__)
+                               << LogIO::WARN << "Receptor Angles in FEED table are not constant for antenna " << antnum
+                               << ". Will try to ignore this. If this data is not yet calibrated, a future calibration of the uvfits data may fail: "
+                               << x.what() << LogIO::POST;
+                        }
                     }
                 }
             }
+
             if (!found) {
                 os << LogIO::SEVERE
                         << "Could not find polarization types for antenna "
