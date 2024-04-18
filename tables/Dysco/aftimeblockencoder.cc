@@ -2,6 +2,15 @@
 
 #include <random>
 
+namespace {
+void changeChannelFactor(std::vector<AFTimeBlockEncoder::DBufferRow> &data,
+                                            float *metaBuffer, size_t visIndex,
+                                            double factor) {
+  metaBuffer[visIndex] /= factor;
+  for (AFTimeBlockEncoder::DBufferRow &row : data) row.visibilities[visIndex] *= factor;
+}
+}
+
 AFTimeBlockEncoder::AFTimeBlockEncoder(size_t nPol, size_t nChannels,
                                        bool fitToMaximum)
     : _nPol(nPol),
@@ -88,13 +97,6 @@ void AFTimeBlockEncoder::changeAntennaFactor(std::vector<DBufferRow> &data,
   }
 }
 
-void AFTimeBlockEncoder::changeChannelFactor(std::vector<DBufferRow> &data,
-                                             float *metaBuffer, size_t visIndex,
-                                             double factor) {
-  metaBuffer[visIndex] /= factor;
-  for (DBufferRow &row : data) row.visibilities[visIndex] *= factor;
-}
-
 //
 // There are 3 axes to maximize over; antenna1, antenna2, channel
 // We want to maximize all values (average abs value as large as possible)
@@ -126,20 +128,20 @@ void AFTimeBlockEncoder::fitToMaximum(
   // value equals the maximum encodable value
   const size_t visPerRow = _nPol * _nChannels;
   for (size_t visIndex = 0; visIndex != visPerRow; ++visIndex) {
-    double largestComp = 0.0;
+    double largest_component = 0.0;
     for (const DBufferRow &row : data) {
       if (row.antenna1 != row.antenna2) {
         const std::complex<double> *ptr = &row.visibilities[visIndex];
-        double complMax = std::max(std::max(ptr->real(), ptr->imag()),
+        double local_max = std::max(std::max(ptr->real(), ptr->imag()),
                                    -std::min(ptr->real(), ptr->imag()));
-        if (std::isfinite(complMax) && complMax > largestComp)
-          largestComp = complMax;
+        if (std::isfinite(local_max) && local_max > largest_component)
+          largest_component = local_max;
       }
     }
     const double factor =
-        (gausEncoder.MaxQuantity() == 0.0 || largestComp == 0.0)
+        (gausEncoder.MaxQuantity() == 0.0 || largest_component == 0.0)
             ? 1.0
-            : gausEncoder.MaxQuantity() / largestComp;
+            : gausEncoder.MaxQuantity() / largest_component;
     changeChannelFactor(data, metaBuffer, visIndex, factor);
   }
 
@@ -151,20 +153,20 @@ void AFTimeBlockEncoder::fitToMaximum(
       size_t bestChannel = 0;
       for (size_t channel = 0; channel != _nChannels; ++channel) {
         // By how much can we increase this channel?
-        double largestComp = 0.0;
+        double largest_component = 0.0;
         for (const DBufferRow &row : data) {
           if (row.antenna1 != row.antenna2) {
             const std::complex<double> *ptr =
                 &row.visibilities[channel * _nPol + polIndex];
-            double complMax = std::max(std::max(ptr->real(), ptr->imag()),
+            double local_max = std::max(std::max(ptr->real(), ptr->imag()),
                                        -std::min(ptr->real(), ptr->imag()));
-            if (std::isfinite(complMax) && complMax > largestComp)
-              largestComp = complMax;
+            if (std::isfinite(local_max) && local_max > largest_component)
+              largest_component = local_max;
           }
         }
-        double factor = (largestComp == 0.0)
+        double factor = (largest_component == 0.0)
                             ? 0.0
-                            : (gausEncoder.MaxQuantity() / largestComp - 1.0);
+                            : (gausEncoder.MaxQuantity() / largest_component - 1.0);
         // How much does this increase the total?
         double thisIncrease = 0.0;
         for (DBufferRow &row : data) {
@@ -271,7 +273,7 @@ void AFTimeBlockEncoder::encode(
   buffer.ConvertVector<std::complex<double>>(data);
   const size_t visPerRow = _nPol * _nChannels;
 
-  // Normalize the channels
+  // Normalize the RMS of the channels
   std::vector<RMSMeasurement> channelRMSes(_nChannels * _nPol);
   for (const DBufferRow &row : data) {
     for (size_t i = 0; i != visPerRow; ++i) {
@@ -289,7 +291,7 @@ void AFTimeBlockEncoder::encode(
   }
 
   for (size_t p = 0; p != _nPol; ++p) {
-    // Normalize the antennae
+    // Normalize the RMS of the antennae
     calculateAntennaeRMS(data, p, antennaCount);
     for (DBufferRow &row : data) {
       double mul =

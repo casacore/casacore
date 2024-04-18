@@ -12,6 +12,8 @@ using namespace dyscostman;
 
 BOOST_AUTO_TEST_SUITE(timeblock_encoder)
 
+namespace {
+
 std::unique_ptr<TimeBlockEncoder> CreateEncoder(
     Normalization blockNormalization, size_t nPol, size_t nChan) {
   switch (blockNormalization) {
@@ -219,6 +221,25 @@ void TestTimeBlockEncoder(Normalization blockNormalization) {
   unscaledRMS.RMS() << " x theoretical)\n";*/
 }
 
+TimeBlockBuffer<std::complex<float>> EncodeDecode(Normalization block_normalization, TimeBlockBuffer<std::complex<float>> &buffer, size_t n_pol, size_t n_chan, size_t n_ant) {
+  const size_t n_row = buffer.NRows();
+  StochasticEncoder<float> gausEncoder(256, 1.0, false);
+  std::unique_ptr<TimeBlockEncoder> encoder =
+      CreateEncoder(block_normalization, n_pol, n_chan);
+  size_t metaDataCount = encoder->MetaDataCount(n_row, n_pol, n_chan, n_ant);
+  size_t symbolCount = encoder->SymbolCount(n_row);
+  ao::uvector<float> metaBuffer(metaDataCount);
+  ao::uvector<TimeBlockEncoder::symbol_t> symbolBuffer(symbolCount);
+
+  std::mt19937 mt;
+  encoder->EncodeWithDithering(gausEncoder, buffer, metaBuffer.data(),
+                               symbolBuffer.data(), n_ant, mt);
+  return Decode(block_normalization, gausEncoder, n_ant, n_chan, n_pol, n_row,
+             metaBuffer.data(), symbolBuffer.data());
+}
+
+}
+
 BOOST_AUTO_TEST_CASE(row_normalization_per_row_accuracy) {
   TestSimpleExample(Normalization::kRow);
 }
@@ -243,53 +264,39 @@ BOOST_AUTO_TEST_CASE(rf_normalization_global_rms_accuracy) {
   TestTimeBlockEncoder(Normalization::kRF);
 }
 
-void TestZeroEncoding(Normalization blockNormalization) {
-  const size_t nAnt = 4, nChan = 1, nPol = 2, nRow = (nAnt * (nAnt + 1) / 2);
+void TestZeroEncoding(Normalization block_normalization) {
+  const size_t n_ant = 4, n_chan = 1, n_pol = 2;
 
-  TimeBlockBuffer<std::complex<float>> buffer(nPol, nChan);
+  TimeBlockBuffer<std::complex<float>> buffer(n_pol, n_chan);
 
-  std::vector<std::complex<float>> data(nChan * nPol, 0.0);
+  std::vector<std::complex<float>> data(n_chan * n_pol, 0.0);
   size_t index = 0;
-  for (size_t a1 = 0; a1 != nAnt; ++a1) {
-    for (size_t a2 = a1; a2 != nAnt; ++a2) {
+  for (size_t a1 = 0; a1 != n_ant; ++a1) {
+    for (size_t a2 = a1; a2 != n_ant; ++a2) {
       buffer.SetData(index, a1, a2, data.data());
       ++index;
     }
   }
 
-  const TimeBlockBuffer<std::complex<float>> input(buffer);
-  StochasticEncoder<float> gausEncoder(256, 1.0, false);
-  std::unique_ptr<TimeBlockEncoder> encoder =
-      CreateEncoder(blockNormalization, nPol, nChan);
-  size_t metaDataCount = encoder->MetaDataCount(nRow, nPol, nChan, nAnt);
-  size_t symbolCount = encoder->SymbolCount(nRow);
-  ao::uvector<float> metaBuffer(metaDataCount);
-  ao::uvector<TimeBlockEncoder::symbol_t> symbolBuffer(symbolCount);
+  const TimeBlockBuffer<std::complex<float>> out = EncodeDecode(block_normalization, buffer, n_pol, n_chan, n_ant);
 
-  std::mt19937 mt;
-  encoder->EncodeWithDithering(gausEncoder, buffer, metaBuffer.data(),
-                               symbolBuffer.data(), nAnt, mt);
-  TimeBlockBuffer<std::complex<float>> out =
-      Decode(blockNormalization, gausEncoder, nAnt, nChan, nPol, nRow,
-             metaBuffer.data(), symbolBuffer.data());
-
-  std::complex<float> dataFromOut[nChan * nPol];
-  for (size_t row = 0; row != nRow; row++) {
+  std::complex<float> dataFromOut[n_chan * n_pol];
+  for (size_t row = 0; row != out.NRows(); row++) {
     // skip auto-correlations of AF, since these are not saved.
     out.GetData(row, dataFromOut);
-    if (blockNormalization != Normalization::kAF ||
+    if (block_normalization != Normalization::kAF ||
         (row != 0 && row != 4 && row != 7 && row != 9)) {
-      for (size_t ch = 0; ch != nChan; ++ch) {
+      for (size_t ch = 0; ch != n_chan; ++ch) {
         BOOST_CHECK_MESSAGE(std::isfinite(dataFromOut[ch].real()),
                             "Real output{" << dataFromOut[ch]
                                            << "} is finite, row " << row
                                            << " with normalization "
-                                           << int(blockNormalization));
+                                           << int(block_normalization));
         BOOST_CHECK_MESSAGE(std::isfinite(dataFromOut[ch].imag()),
                             "Imaginary output{" << dataFromOut[ch]
                                                 << "} is finite, row " << row
                                                 << " with normalization "
-                                                << int(blockNormalization));
+                                                << int(block_normalization));
         BOOST_CHECK_EQUAL(dataFromOut[ch].real(), 0.0);
         BOOST_CHECK_EQUAL(dataFromOut[ch].imag(), 0.0);
       }
@@ -307,6 +314,59 @@ BOOST_AUTO_TEST_CASE(rf_normalization_with_zeros) {
 
 BOOST_AUTO_TEST_CASE(row_normalization_with_zeros) {
   TestZeroEncoding(Normalization::kRow);
+}
+
+BOOST_AUTO_TEST_CASE(rf_dynamic_range) {
+  constexpr size_t n_ant = 3;
+  constexpr size_t n_chan = 3;
+  constexpr size_t n_pol = 1;
+  constexpr Normalization block_normalization = Normalization::kRF;
+
+  TimeBlockBuffer<std::complex<float>> buffer(n_pol, n_chan);
+  // row, ant1, ant2
+  constexpr std::complex<float> normal_row_values[n_chan] = {{0.1, 0.1}, {1.0, 1.0}, {1.0, 1.0}};
+  constexpr std::complex<float> weird_row_values[n_chan] = {{1.0, 1.0}, {1e8, 1e8}, {1e8, 1e8}};
+  constexpr size_t weird_antenna = 1;
+  size_t row = 0;
+  for(size_t a1=0; a1!=n_ant; ++a1) {
+    for(size_t a2=a1; a2!=n_ant; ++a2) {
+      if(a1 == weird_antenna && a2 == weird_antenna)
+        buffer.SetData(row, a1, a2, weird_row_values);
+      else
+        buffer.SetData(row, a1, a2, normal_row_values);
+      ++row;
+    }
+  }
+
+  const TimeBlockBuffer<std::complex<float>> out = EncodeDecode(block_normalization, buffer, n_pol, n_chan, n_ant);
+  row = 0;
+  for(size_t a1=0; a1!=n_ant; ++a1) {
+    for(size_t a2=a1; a2!=n_ant; ++a2) {
+      // skip auto-correlations of AF, since these are not saved.
+      std::complex<float> out_data[n_chan * n_pol];
+      out.GetData(row, out_data);
+      for (size_t ch = 0; ch != n_chan; ++ch) {
+        BOOST_CHECK_MESSAGE(std::isfinite(out_data[ch].real()),
+                            "Real output{" << out_data[ch]
+                                            << "} is finite, row " << row);
+        BOOST_CHECK_MESSAGE(std::isfinite(out_data[ch].imag()),
+                            "Imaginary output{" << out_data[ch]
+                                                << "} is finite, row " << row);
+        if(a1 != weird_antenna || a2 != weird_antenna) {
+          const double expected = (ch == 0) ? 0.1 : 1.0;
+          BOOST_CHECK_CLOSE_FRACTION(out_data[ch].real(), expected, 1e-4);
+          BOOST_CHECK_CLOSE_FRACTION(out_data[ch].imag(), expected, 1e-4);
+        }
+        else if(ch != 0) {
+          // We don't test channel 0 because it can (and may) have a large error, because
+          // it is the only low value in this row.
+          BOOST_CHECK_CLOSE_FRACTION(out_data[ch].real(), 1e8, 1e-4);
+          BOOST_CHECK_CLOSE_FRACTION(out_data[ch].imag(), 1e8, 1e-4);
+        }
+      }
+      ++row;
+    }
+  }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
