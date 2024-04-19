@@ -52,8 +52,7 @@ void RFTimeBlockEncoder::maximizeChannels(std::vector<DBufferRow> &data, float *
     double largest_component = 0.0;
     for (const DBufferRow &row : data) {
       const std::complex<double> *ptr = &row.visibilities[visIndex];
-      double local_max = std::max(std::max(ptr->real(), ptr->imag()),
-                                  -std::min(ptr->real(), ptr->imag()));
+      const double local_max = std::max(std::fabs(ptr->real()), std::fabs(ptr->imag()));
       if (std::isfinite(local_max) && local_max > largest_component)
         largest_component = local_max;
     }
