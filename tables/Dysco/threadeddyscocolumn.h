@@ -42,6 +42,7 @@ class ThreadedDyscoColumn : public DyscoStManColumn {
   ThreadedDyscoColumn(const ThreadedDyscoColumn &source) = delete;
 
   void operator=(const ThreadedDyscoColumn &source) = delete;
+
   /** Destructor. */
   virtual ~ThreadedDyscoColumn();
 

@@ -64,19 +64,16 @@ class RFTimeBlockEncoder : public TimeBlockEncoder {
                  size_t antennaCount);
 
  private:
-  void calculateAntennaeRMS(const std::vector<DBufferRow> &data,
-                            size_t polIndex, size_t antennaCount);
+  void maximizeRows(std::vector<DBufferRow> &data, float *metaBuffer,
+                    const dyscostman::StochasticEncoder<float> &gausEncoder);
+  void maximizeChannels(
+      std::vector<DBufferRow> &data, float *metaBuffer,
+      const dyscostman::StochasticEncoder<float> &gausEncoder);
 
   template <bool UseDithering>
   void encode(const dyscostman::StochasticEncoder<float> &gausEncoder,
               const FBuffer &buffer, float *metaBuffer, symbol_t *symbolBuffer,
               size_t antennaCount, std::mt19937 *rnd);
-
-  void changeChannelFactor(std::vector<DBufferRow> &data, float *metaBuffer,
-                           size_t visIndex, double factor);
-  void fitToMaximum(std::vector<DBufferRow> &data, float *metaBuffer,
-                    const dyscostman::StochasticEncoder<float> &gausEncoder,
-                    size_t antennaCount);
 
   size_t _nPol, _nChannels;
 

@@ -75,8 +75,6 @@ class AFTimeBlockEncoder : public TimeBlockEncoder {
   void changeAntennaFactor(std::vector<DBufferRow> &data, float *metaBuffer,
                            size_t antennaIndex, size_t antennaCount,
                            size_t polIndex, double factor);
-  void changeChannelFactor(std::vector<DBufferRow> &data, float *metaBuffer,
-                           size_t visIndex, double factor);
 
   void fitToMaximum(std::vector<DBufferRow> &data, float *metaBuffer,
                     const dyscostman::StochasticEncoder<float> &gausEncoder,
