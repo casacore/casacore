@@ -128,7 +128,6 @@ Images/ImageSummary.tcc
 Images/ImageUtilities.h
 Images/ImageUtilities2.tcc
 Images/LELImageCoord.h
-Images/MIRIADImage.h
 Images/MaskSpecifier.h
 Images/PagedImage.h
 Images/PagedImage.tcc
