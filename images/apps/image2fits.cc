@@ -31,7 +31,6 @@
 #include <casacore/images/Images/ImageExprParse.h>
 #include <casacore/images/Images/ImageFITSConverter.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 
@@ -42,7 +41,6 @@ int main (int argc, const char* argv[])
   try {
     // Register the FITS and Miriad image types.
     casacore::FITSImage::registerOpenFunction();
-    casacore::MIRIADImage::registerOpenFunction();
 
     // enable input in no-prompt mode
     Input inputs(1);

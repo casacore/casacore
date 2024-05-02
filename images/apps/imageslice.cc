@@ -30,7 +30,6 @@
 
 #include <casacore/images/Images/ImageOpener.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/ImageFITSConverter.h>
 #include <casacore/images/Images/ImageUtilities.h>
@@ -62,7 +61,6 @@ int main(int argc, const char* argv[]) {
     const Block<Int> outregion = inputs.getIntArray("outregion");
 
     FITSImage::registerOpenFunction();
-    MIRIADImage::registerOpenFunction();
     LatticeBase* pLatt = ImageOpener::openImage(in);
     ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
     if (!pImage) {

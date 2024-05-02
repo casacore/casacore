@@ -35,7 +35,6 @@
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageOpener.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/HDF5Image.h>
 #include <casacore/images/Images/ImageUtilities.h>
 #include <casacore/images/Images/ImageRegrid.h>
@@ -92,7 +91,6 @@ int main(int argc, const char* argv[]) {
     const String interpolation = inputs.getString("interpolation");
 
     FITSImage::registerOpenFunction();
-    MIRIADImage::registerOpenFunction();
     LatticeBase* pLatt = ImageOpener::openImage(in);
     ImageInterface<Float>* pImage = dynamic_cast<ImageInterface<Float>*>(pLatt);
     if (!pImage) {

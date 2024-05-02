@@ -37,7 +37,6 @@
 #include <casacore/images/Images/FITSImage.h>
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageOpener.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/TempImage.h>
@@ -262,7 +261,6 @@ template <typename T> void ImageUtilities::openImage(
         "File '" + fileName + "' does not exist"
     );
     FITSImage::registerOpenFunction();
-    MIRIADImage::registerOpenFunction();
     LatticeBase* lattPtr = ImageOpener::openImage (fileName);
     ThrowIf(
         ! lattPtr,

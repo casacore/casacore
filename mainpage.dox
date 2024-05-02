@@ -224,15 +224,13 @@ namespace casacore {
 ///   <tr>
 ///   <td><a href="group__images.html">images</a></td>
 ///   <td>lattices coordinates fits measures tables scimath casa
-///      mirlib wcslib cfitsio</td>
+///      wcslib cfitsio</td>
 ///   </tr>
 ///   <tr>
 ///   <td><a href="group__python.html">python</a></td>
 ///   <td>casa boost-python python numpy</td>
 ///   </tr>
 ///   </table>
-///   <a href="http://www.atnf.csiro.au/computing/software/miriad">mirlib</a>
-///   is distributed and built as part of Casacore.
 ///   <a href="http://www.atnf.csiro.au/~mcalabre/WCS">wcslib</a> and
 ///   <a href="http://heasarc.gsfc.nasa.gov/docs/software/fitsio/fitsio.html">cfitsio</a>
 ///   are external packages that have to be installed before building all of Casacore.

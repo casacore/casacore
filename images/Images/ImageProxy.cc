@@ -41,7 +41,6 @@
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/HDF5Image.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/ImageUtilities.h>
 #include <casacore/lattices/LEL/LatticeExprNode.h>
 #include <casacore/coordinates/Coordinates/CoordinateSystem.h>
@@ -89,9 +88,8 @@ namespace casacore { //# name space casa begins
       itsCoordSys      (0),
       itsAttrHandler   (0)
   {
-    // Register the functions to create a FITSImage or MIRIADImage object.
+    // Register the functions to create a FITSImage object.
     FITSImage::registerOpenFunction();
-    MIRIADImage::registerOpenFunction();
     LatticeBase* lattice = openImage (name, mask, images);
     setup (lattice);
   }

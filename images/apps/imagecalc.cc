@@ -27,7 +27,6 @@
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/HDF5Image.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/images/Images/ImageProxy.h>
 #include <casacore/images/Images/ImageExpr.h>
 #include <casacore/images/Images/ImageExprParse.h>
@@ -37,9 +36,8 @@ using namespace casacore;
 int main(int argc, const char* argv[]) 
 {
   try {
-    // Register the FITS and Miriad image types.
+    // Register the FITS image types.
     casacore::FITSImage::registerOpenFunction();
-    casacore::MIRIADImage::registerOpenFunction();
 
     // Read the input parameters.
     Input inputs(1);

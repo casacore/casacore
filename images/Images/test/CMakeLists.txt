@@ -64,7 +64,6 @@ tImageStatistics
 tImageStatistics2
 tImageUtilities
 tLELSpectralIndex
-tMIRIADImage
 tPagedImage
 tPagedImage2
 tRebinImage

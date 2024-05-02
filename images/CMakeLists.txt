@@ -56,7 +56,6 @@ Images/ImageOpener.cc
 Images/ImageProxy.cc
 Images/ImageUtilities.cc
 Images/LELImageCoord.cc
-Images/MIRIADImage.cc
 Images/MaskSpecifier.cc
 Images/PagedImage2.cc
 ${BISON_ImageExprGram_OUTPUTS}
@@ -73,7 +72,6 @@ init_pch_support(casa_images ${top_level_headers})
 target_link_libraries (
 casa_images
 casa_coordinates
-casa_mirlib
 casa_lattices
 ${CASACORE_ARCH_LIBS}
 )

@@ -34,7 +34,6 @@
 #include <casacore/images/Images/ImageSummary.h>
 #include <casacore/images/Images/PagedImage.h>
 #include <casacore/images/Images/FITSImage.h>
-#include <casacore/images/Images/MIRIADImage.h>
 #include <casacore/measures/Measures/MDoppler.h>
 
 #include <casacore/casa/namespace.h>
@@ -85,10 +84,6 @@ try {
       }
    } else if (imageType==ImageOpener::FITS) {
       FITSImage im(in);
-      ImageSummary<Float> header(im);
-      header.list(os, doppler);
-   } else if (imageType==ImageOpener::MIRIAD) {  
-      MIRIADImage im(in);
       ImageSummary<Float> header(im);
       header.list(os, doppler);
    } else {
