@@ -389,6 +389,12 @@ public:
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.
     void reopenRW();
+    
+    // Indicate we will only changed the data values inside existing columns
+    // and not change the table structure or keywords.
+    // This hint combined with TableLock::NoLocking and reopenRW() allows
+    // multiple processes to modify non-overlapping data.
+    void dataOnly();
 
     // Get the endian format in which the table is stored.
     Table::EndianFormat endianFormat() const;
@@ -1103,6 +1109,8 @@ inline Bool Table::isSameRoot (const Table& other) const
 
 inline void Table::reopenRW()
     { baseTabPtr_p->reopenRW(); }
+inline void Table::dataOnly()
+    { baseTabPtr_p->dataOnly(); }
 inline void Table::flush (Bool fsync, Bool recursive)
     { baseTabPtr_p->flush (fsync, recursive); }
 inline void Table::resync()
