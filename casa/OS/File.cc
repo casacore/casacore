@@ -35,7 +35,7 @@
 #include <utime.h>                  // needed for utimbuf
 #include <errno.h>                  // needed for errno
 #include <casacore/casa/string.h>                 // needed for strerror
-#include <casacore/casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/stdio.h>                  // needed for snprintf
 #include <time.h>                   // needed for asctime/localtime on linux
 
 
@@ -253,7 +253,7 @@ Path File::newUniqueName (const String& directory, const String& prefix)
     char str[32];
     // fill str with the pid and the unique number
     uInt seqnr = uniqueSeqnr_p.fetch_add(1);
-    sprintf (str, "%i_%i", Int(getpid()), seqnr);
+    snprintf (str, sizeof(str), "%i_%i", Int(getpid()), seqnr);
     if (directory.empty()  ||  directory.lastchar() == '/') {
 	return Path (directory + prefix + str);
     }

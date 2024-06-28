@@ -95,7 +95,7 @@ namespace casacore {
 	    if ( home == 0 ) return instance( "casarc" );
 	    struct stat statbuf;
 	    char buf[2048];
-	    sprintf( buf, "%s/.casa", home );
+	    snprintf( buf, sizeof(buf), "%s/.casa", home );
 	    if ( stat( buf, &statbuf ) == 0 ) {
 		if ( S_ISDIR(statbuf.st_mode) ) {
 		    return instance( std::string(buf) + "/rc" );
@@ -192,14 +192,15 @@ namespace casacore {
 #endif
 
 	    int buflen = strlen(buf);
-	    char *copy = (char*) malloc(sizeof(char) * ( start +
-							 (buflen + keyword.length() + value.length() + 5) +
-							 (mapped_file_size - end) ));
+            int copylen = sizeof(char) * ( start +
+                                           (buflen + keyword.length() + value.length() + 5) +
+                                           (mapped_file_size - end) );
+	    char *copy = (char*) malloc(copylen);
 
 	    off_t off = 0;
 	    memcpy( copy, mapped_file, start );
 	    off += start;
-	    sprintf( &copy[off], "%s%s: %s", buf, keyword.c_str(), value.c_str() );
+	    snprintf( &copy[off], copylen-off, "%s%s: %s", buf, keyword.c_str(), value.c_str() );
 
 #if CASARC_DEBUG >= 2
 	    fprintf( stderr, " >>update>>>>>>>>%s<< [%d]\n", &copy[off], strlen(&copy[off]) );

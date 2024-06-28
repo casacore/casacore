@@ -993,9 +993,9 @@ class FitsKeyCardTranslator {
         static void fmtcard(char *, const FitsKeyword &);
     private:
 	int cardno;		// the current card number within record
-	const int FitsCardSize;
-	const int FitsMaxCard;
-	const int FitsRecSize;
+	static const int FitsCardSize = 80;
+	static const int FitsMaxCard = 36;
+	static const int FitsRecSize = 2880;
 	int max_errs;
 	int no_errs_;
 	const char **err_;

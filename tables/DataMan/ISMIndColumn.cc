@@ -36,7 +36,7 @@
 #include <casacore/casa/OS/LECanonicalConversion.h>
 #include <casacore/tables/DataMan/DataManError.h>
 
-#include <casacore/casa/stdio.h>                     // for sprintf
+#include <casacore/casa/stdio.h>                     // for snprintf
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -283,7 +283,7 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
         iosfile_p = stmanPtr_p->openArrayFile (fileOption);
     } else {
         char strc[8];
-	sprintf (strc, "i%i", seqnr_p);
+	snprintf (strc, sizeof(strc), "i%i", seqnr_p);
 	iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
 					fileOption, 1, asBigEndian);
     }

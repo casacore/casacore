@@ -181,7 +181,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	   kwname.rtrim(' ');
 	   // if it is indexed, add the index to the keyword
 	   if (kw->isindexed()) {
-	       sprintf(index,"%i",kw->index());
+               snprintf(index,sizeof(index),"%i",kw->index());
 	       kwname = kwname + String(index);
 	   }
 	   //		first check if this keyword exists in kwSet

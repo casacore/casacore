@@ -155,7 +155,7 @@ void a (const TableDesc& td)
 	ac.put (i, i+1);
 	ad.put (i, i+2);
 	ae.put (i, i+3);
-	sprintf (str, "V%i_", i);
+	snprintf (str, sizeof(str), "V%i_", i);
 	af.put (i, str);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
@@ -222,7 +222,7 @@ void check(const Table& tab, Bool showname)
 	acalc3.get (i, acalc3val);
 	acalc4.get (i, acalc4val);
 	acalcaf.get (i, acalcafval);
-	sprintf (str, "V%i_", i);
+	snprintf (str, sizeof(str), "V%i_", i);
 	if (abval != i  ||  acval != i+1
         ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)

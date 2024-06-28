@@ -101,7 +101,7 @@ void fill(const String& name, const String& name2, Int stval)
     adouble.put (i, stval);
     acomplex.put (i, Complex(stval,0));
     adcomplex.put (i, DComplex(0,stval));
-    sprintf (str, "V%i", stval);
+    snprintf (str, sizeof(str), "V%i", stval);
     astring.put (i, str);
     ++stval;
   }
@@ -164,7 +164,7 @@ void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
     AlwaysAssertExit (adouble(row) == stval);
     AlwaysAssertExit (acomplex(row) == Complex(stval,0));
     AlwaysAssertExit (adcomplex(row) == DComplex(0,stval));
-    sprintf (str, "V%i", stval);
+    snprintf (str, sizeof(str), "V%i", stval);
     AlwaysAssertExit (astring(row) == str);
     ++stval;
   }
