@@ -88,7 +88,7 @@ void a()
 	adouble.put (i, i);
 	acomplex.put (i, Complex(i,0));
 	adcomplex.put (i, DComplex(0,i));
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	astring.put (i, str);
     }
 }
@@ -137,7 +137,7 @@ void b()
         *adouble = i;
         *acomplex = Complex(i,0);
         *adcomplex = DComplex(0,i);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
         *astring = str;
         AlwaysAssertExit ( (colInx1.getRowNumber(found) == i  && found));
         AlwaysAssertExit ( (colInx2.getRowNumber(found) == i  && found));

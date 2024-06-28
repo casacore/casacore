@@ -48,7 +48,7 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/DynLib.h>
 #include <casacore/tables/DataMan/DataManError.h>
-#include <casacore/casa/stdio.h>                     // for sprintf
+#include <casacore/casa/stdio.h>                     // for snprintf
 
 #ifdef HAVE_ADIOS2
 #include <casacore/tables/DataMan/Adios2StMan.h>
@@ -256,7 +256,7 @@ DataManagerColumn* DataManager::reallocateColumn (DataManagerColumn* column)
 String DataManager::keywordName (const String& keyword) const
 {
     char strc[8];
-    sprintf (strc, "_%i", seqnr_p);
+    snprintf (strc, sizeof(strc), "_%i", seqnr_p);
     return keyword + strc;
 }
 
@@ -265,7 +265,7 @@ String DataManager::keywordName (const String& keyword) const
 String DataManager::fileName() const
 {
     char strc[8];
-    sprintf (strc, ".f%i", seqnr_p);
+    snprintf (strc, sizeof(strc), ".f%i", seqnr_p);
     return table_p->tableName() + "/table" + strc;
 }
 

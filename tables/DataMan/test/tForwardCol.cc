@@ -128,7 +128,7 @@ void a (const TableDesc& td)
 	ac.put (i, i+1);
 	ad.put (i, i+2);
 	ae.put (i, i+3);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	af.put (i, str);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
@@ -231,7 +231,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 	ae.get (i, aeval);
 	af.get (i, afval);
 	ag.get (i, agval);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	if (abval != i+abOffset  ||  acval != i+1+acOffset
         ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)) {

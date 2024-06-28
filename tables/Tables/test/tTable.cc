@@ -201,7 +201,7 @@ void a (const StorageOption& stopt, Bool doExcp)
     for (i=0; i<tab.nrow(); i++) {
 	ac.put (i, i+1);
 	ae.put (i, i+3);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	af.put (i, str);
     }
     Vector<float> vec2;
@@ -317,7 +317,7 @@ void b (Bool doExcp)
 	ae.get (i, aeval);
 	af.get (i, afval);
 	ag.get (i, agval);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	if (abval != Int(i)  ||  acval != Int(i+1)
         ||  adval != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)) {
@@ -665,7 +665,7 @@ void c (const StorageOption& stopt, Bool doExcp)
 	ac.put (i, i+1);
 	ad.put (i, i+2);
 	ae.put (i, i+3);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	af.put (i, str);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);

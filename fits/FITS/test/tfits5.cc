@@ -110,7 +110,7 @@ void cvt_table(AsciiTableExtension &x, FitsOutput &fout) {
 		    bk.del();
 		    switch (x.field(n).fieldtype()) {
 			case FITS::CHAR:
-			    sprintf(p,"%dA",x.field(n).fitsfieldsize());
+                            snprintf(p,sizeof(p),"%dA",x.field(n).fitsfieldsize());
 			    bk.mk((n + 1),FITS::TFORM,p);
 			    break;
 			case FITS::LONG:

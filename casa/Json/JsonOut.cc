@@ -213,7 +213,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       putNull();
     } else {
       char buf[16];
-      sprintf (buf, "%.7g", value);
+      snprintf (buf, sizeof(buf), "%.7g", value);
       // Add a decimal point if needed, otherwise it is integer.
       unsigned i;
       for (i=0; i<sizeof(buf); ++i) {
@@ -234,7 +234,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       putNull();
     } else {
       char buf[24];
-      sprintf (buf, "%.16g", value);
+      snprintf (buf, sizeof(buf), "%.16g", value);
       // Add a decimal point if needed, otherwise it is integer.
       unsigned i;
       for (i=0; i<sizeof(buf); ++i) {

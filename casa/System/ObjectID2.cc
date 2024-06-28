@@ -26,7 +26,7 @@
 
 #include <casacore/casa/System/ObjectID.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/stdio.h>                  // needed for snprintf
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -67,7 +67,7 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
 	    objectIDs.resize (n);
 	    objectIDs[n-1] = oid;
 	    char buf[16];
-	    sprintf (buf, "$OBJ#%i#O", n);
+	    snprintf (buf, sizeof(buf), "$OBJ#%i#O", n);
 	    result += buf;
 	    str = str.after(pos+1);
 	}

@@ -274,7 +274,7 @@ FITSTableWriter::FITSTableWriter(FitsOutput *file,
 	  }
 	  code = "A";
 	  char tdimColName[8];
-	  sprintf(tdimColName,"TDIM%03i",thisColumn);
+	  snprintf(tdimColName,sizeof(tdimColName),"TDIM%03i",thisColumn);
 	  thisColumn++;
 	  String tdimComment = "Shape of " + description.name(i) + " column.";
 	  columns.mk(thisColumn, FITS::TTYPE, tdimColName, tdimComment.chars());

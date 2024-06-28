@@ -135,7 +135,7 @@ void doIt (const Table& tab)
     ae.get (i, aeval);
     af.get (i, afval);
     ag.get (i, agval);
-    sprintf (str, "V%i", i);
+    snprintf (str, sizeof(str), "V%i", i);
     if (abval != Int(i)  ||  acval != Int(i+1)  ||  adval != i+2
         ||  aeval != i+3  ||  afval != str  ||  agval != DComplex(i+2)) {
       cout << "error in row " << i << ": " << abval

@@ -2064,36 +2064,36 @@ Bool LatticeStatistics<T>::getLayerStats(
         oDWidth = 2*oDWidth + 3;
     }
 
-    sprintf( buffer, "%d", nPts );
+    snprintf( buffer, sizeof(buffer), "%d", nPts );
     stats.push_back(stat_element("Npts",buffer));
 
-    sprintf( buffer, "%e", sum );
+    snprintf( buffer, sizeof(buffer), "%e", sum );
     stats.push_back(stat_element("Sum",buffer));
 
     if ( _canDoFlux()) {
         Bool unused;
-        sprintf( buffer, "%e", _flux(unused, sum, area ).getValue());
+        snprintf( buffer, sizeof(buffer), "%e", _flux(unused, sum, area ).getValue());
         stats.push_back(stat_element("FluxDensity",buffer));
     }
 
-    sprintf( buffer, "%e", mean );
+    snprintf( buffer, sizeof(buffer), "%e", mean );
     stats.push_back(stat_element("Mean",buffer));
 
     if (doRobust_p) {
-        sprintf( buffer, "%e", median );
+        snprintf( buffer, sizeof(buffer), "%e", median );
         stats.push_back(stat_element("Median",buffer));
     }
 
-    sprintf( buffer, "%e", rms );
+    snprintf( buffer, sizeof(buffer), "%e", rms );
     stats.push_back(stat_element("Rms",buffer));
 
-    sprintf( buffer, "%e", sigma );
+    snprintf( buffer, sizeof(buffer), "%e", sigma );
     stats.push_back(stat_element("Std dev",buffer));
 
-    sprintf( buffer, "%e", dMin );
+    snprintf( buffer, sizeof(buffer), "%e", dMin );
     stats.push_back(stat_element("Minimum",buffer));
 
-    sprintf( buffer, "%e", dMax );
+    snprintf( buffer, sizeof(buffer), "%e", dMax );
     stats.push_back(stat_element("Maximum",buffer));
 
     return True;
@@ -2188,37 +2188,37 @@ Bool LatticeStatistics<T>::getLayerStats(
     for (uInt j=0; j<n1; j++) {
         if (layer == (Int)j || n1 == 1)  {
 
-        sprintf( buffer, "%d", (int) ord.column(NPTS)(j) );
+        snprintf( buffer, sizeof(buffer), "%d", (int) ord.column(NPTS)(j) );
         stats.push_back(stat_element("Npts",buffer));
 
         if (ord.column(NPTS)(j) > 0){
 
-            sprintf( buffer, "%e", ord.column(SUM)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(SUM)(j) );
             stats.push_back(stat_element("Sum",buffer));
 
             if (_canDoFlux()) {
-            sprintf( buffer, "%e", ord.column(FLUX)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(FLUX)(j) );
             stats.push_back(stat_element("FluxDensity",buffer));
             }
 
-            sprintf( buffer, "%e", ord.column(MEAN)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(MEAN)(j) );
             stats.push_back(stat_element("Mean",buffer));
 
             if (doRobust_p){
-            sprintf( buffer, "%e", ord.column(MEDIAN)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(MEDIAN)(j) );
             stats.push_back(stat_element("Median",buffer));
             }
 
-            sprintf( buffer, "%e", ord.column(RMS)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(RMS)(j) );
             stats.push_back(stat_element("Rms",buffer));
 
-            sprintf( buffer, "%e", ord.column(SIGMA)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(SIGMA)(j) );
             stats.push_back(stat_element("Std dev",buffer));
 
-            sprintf( buffer, "%e", ord.column(MIN)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(MIN)(j) );
             stats.push_back(stat_element("Minimum",buffer));
 
-            sprintf( buffer, "%e", ord.column(MAX)(j) );
+            snprintf( buffer, sizeof(buffer), "%e", ord.column(MAX)(j) );
             stats.push_back(stat_element("Maximum",buffer));
         }
         }
