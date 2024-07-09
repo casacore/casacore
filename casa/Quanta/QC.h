@@ -220,13 +220,13 @@ public:
 
     // permeability vacuum
     inline static const Quantum<Double> &mu0( ) {
-        static Quantum<Double> result(4.0e-7*C::pi,"H/m");
+        static Quantum<Double> result(4.0e-7*M_PI,"H/m");
         return result;
     }
 
     // permittivity vacuum
     inline static const Quantum<Double> &epsilon0( ) {
-        static Quantum<Double> result(1.0/(4.0e-7*C::pi*C::c*C::c),"F/m");
+        static Quantum<Double> result(1.0/(4.0e-7*M_PI*C::c*C::c),"F/m");
         return result;
     }
 

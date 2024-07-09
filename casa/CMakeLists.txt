@@ -54,7 +54,6 @@ BasicMath/Math.cc
 BasicMath/Primes.cc
 BasicMath/Random.cc
 BasicSL/Complex.cc
-BasicSL/Constants.cc
 BasicSL/IComplex.cc
 BasicSL/STLMath.cc
 BasicSL/String.cc

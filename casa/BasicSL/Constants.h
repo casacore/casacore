@@ -52,12 +52,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="tConstants" demos="">
 
-//# // <prerequisite>
-//# // </prerequisite>
-
-//# // <etymology>
-//# // </etymology>
-
 // <synopsis>
 // The constants and conversion factors are defined here as double precision
 // values.  Where single precision calculations are done in a situation where
@@ -342,16 +336,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //                   double-precision floating-point number.
 // </srcblock>
 
-// <note role=tip>
-// Once cxx2html accepts the namespace type, the Dummy_Constants_Class can be
-// removed.<br>
-// Anyway, to use a constant (e.g. pi) use the C::pi construct now and later.
-// </note>
-
-
-class Dummy_Constants_class {
-};
-
 namespace C {
   //#--------------------------------------------------------------------
   //  Mathematical constants
@@ -361,62 +345,83 @@ namespace C {
   // Irrationals:
   // <group>
   // sqrt(2)
-  extern const Double sqrt2;
+  [[deprecated("use M_SQRT2")]]
+  inline constexpr double sqrt2 = 1.4142135623730950488;
   // sqrt(3)
-  extern const Double sqrt3;
+  [[deprecated("use M_SQRT3")]]
+  inline constexpr double sqrt3 = 1.7320508075688772935;;
   // 1/sqrt(2)
-  extern const Double _1_sqrt2;
+  [[deprecated("use M_SQRT1_2")]]
+  inline constexpr double _1_sqrt2 = 0.70710678118654752440;
   // 1/sqrt(3)
-  extern const Double _1_sqrt3;
+  [[deprecated("use (1.0/M_SQRT3)")]]
+  inline constexpr double _1_sqrt3 = 0.57735026918962576451;
   // </group>
 
   // Pi and functions thereof:
   // <group>
   // pi
-  extern const Double pi;
+  [[deprecated("use M_PI")]]
+  inline constexpr double pi = 3.141592653589793238462643;
   // 2*pi
-  extern const Double _2pi;
+  [[deprecated("use (2.0*M_PI)")]]
+  inline constexpr double _2pi = 6.283185307179586476925286;
   // pi/2
-  extern const Double pi_2;
+  [[deprecated("use M_PI_2")]]
+  inline constexpr double pi_2 = 1.570796326794896619231322;
   // pi/4
-  extern const Double pi_4;
+  [[deprecated("use M_PI_4")]]
+  inline constexpr double pi_4 = 0.7853981633974483096156608;
   // 1/pi
-  extern const Double _1_pi;
+  [[deprecated("use M_1_PI")]]
+  inline constexpr double _1_pi = 0.3183098861837906715377675;
   // 2/pi
-  extern const Double _2_pi;
+  [[deprecated("use M_2_PI")]]
+  inline constexpr double _2_pi = 0.6366197723675813430755350;
   // 1/sqrt(pi)
-  extern const Double _1_sqrtpi;
+  [[deprecated("use M_1_SQRTPI")]]
+  inline constexpr double _1_sqrtpi = 0.5641895835477562869480795;
   // 2/sqrt(pi)
-  extern const Double _2_sqrtpi;
+  [[deprecated("use M_2_SQRTPI")]]
+  inline constexpr double _2_sqrtpi = 1.1283791670955125738961590;
   // </group>
   
   // e and functions thereof:
   // <group>
   // e
-  extern const Double e;
+  [[deprecated("use M_E")]]
+  inline constexpr double e = 2.718281828459045235360287;
   // ln(2)
-  extern const Double ln2;  
+  [[deprecated("use M_LN2")]]
+  inline constexpr double ln2 = 0.6931471805599453094172321;
   // ln(10)
-  extern const Double ln10; 
+  [[deprecated("use M_LN10")]]
+  inline constexpr double ln10 = 2.3025850929940456840179915;
   // log2(e)
-  extern const Double log2e; 
+  [[deprecated("use M_LOG2E")]]
+  inline constexpr double log2e = 1.4426950408889634074;
   // log10(e)
-  extern const Double log10e;
+  [[deprecated("use M_LOG10E")]]
+  inline constexpr double log10e = 0.4342944819032518276511289;
   // </group>
   
   // gamma and functions thereof:
   // <group>
   // gamma
-  extern const Double gamma;
+  [[deprecated("Use std::numbers::gamma")]]
+  inline constexpr double gamma = 0.577215664901532860606512;
   // ln(gamma)
-  extern const Double lngamma;
+  [[deprecated("Use std::log(std::numbers::gamma)")]]
+  inline constexpr double lngamma = -0.549539312981644822337662;
   // e**gamma
-  extern const Double etogamma;
+  [[deprecated("Use std::exp(std::numbers::gamma)")]]
+  inline constexpr double etogamma =  1.7810724179901979852;
   // </group>
  
   // statistics related
   // 1/(Phi^(-1)(3/4), see https://en.wikipedia.org/wiki/Median_absolute_deviation#Relation_to_standard_deviation
-  extern const Double probit_3_4;
+  [[deprecated("hardly used; declare locally in your code")]]
+  inline constexpr double probit_3_4 = 1.482602218505602;
 
   //#--------------------------------------------------------------------
   //# Mathematical constants
@@ -432,26 +437,34 @@ namespace C {
   // <group>
   // the minimum single precision floating point number, 
   // excluding denormalised numbers
-  extern const Double flt_min;
+  [[deprecated("Use FLT_MIN")]]
+  inline constexpr double flt_min = FLT_MIN;
   // the minimum single precision floating point number, 
   // including denormalised numbers
-  extern const Double minfloat;
+  [[deprecated("Use FLT_MIN")]]
+  inline constexpr double minfloat = FLT_MIN;
   // the minimum double precision floating point number,
   // excluding denormalised numbers
-  extern const Double dbl_min;
+  [[deprecated("Use DBL_MIN")]]
+  inline constexpr double dbl_min = DBL_MIN;
   // the minimum double precision floating point number,
   // including denormalised numbers
-  extern const Double mindouble;
+  [[deprecated("Use DBL_MIN")]]
+  inline constexpr double mindouble = DBL_MIN;
   // the maximum single precision floating point number 
-  extern const Double  flt_max;
+  [[deprecated("Use FLT_MAX")]]
+  inline constexpr double  flt_max = FLT_MAX;
   // the maximum double precision floating point number 
-  extern const Double  dbl_max;
+  [[deprecated("Use DBL_MAX")]]
+  inline constexpr double  dbl_max = DBL_MAX;
   // Minimum single precision floating point number X such that 1+X does not
   // equal X
-  extern const Double flt_epsilon;
+  [[deprecated("Use FLT_EPSILON")]]
+  inline constexpr double flt_epsilon = FLT_EPSILON;
   // Minimum double precision floating point number X such that 1+X does not
   // equal X
-  extern const Double dbl_epsilon;
+  [[deprecated("Use DBL_EPSILON")]]
+  inline constexpr double dbl_epsilon = DBL_EPSILON;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -467,7 +480,7 @@ namespace C {
   // Fundamental physical constants (SI units):
   // <group>
   // velocity of light -- for legacy reasons only -- refer to PC
-  extern const Double c;
+  inline constexpr double c = 2.99792458e+08;
   // </group>
   
   //#--------------------------------------------------------------------
@@ -490,81 +503,81 @@ namespace C {
   //  Numerical conversion factors
   // <group>
   // e+30 (Q)
-  extern const Double quetta;
+  inline constexpr double quetta = 1.0e+30;
   // e+27 (R)
-  extern const Double ronna;
+  inline constexpr double ronna = 1.0e+27;
   // e+24 (Y)
-  extern const Double yotta;
+  inline constexpr double yotta = 1.0e+24;
   // e+21 (Z)
-  extern const Double zetta;
+  inline constexpr double zetta = 1.0e+21;
   // e+18 (E)
-  extern const Double exa;
+  inline constexpr double exa = 1.0e+18;
   // e+15 (P)
-  extern const Double peta;
+  inline constexpr double peta = 1.0e+15;
   // e+12 (T)
-  extern const Double tera;
+  inline constexpr double tera = 1.0e+12;
   // e+09 (G)
-  extern const Double giga;
+  inline constexpr double giga = 1.0e+09;
   // e+06 (M)
-  extern const Double mega;
+  inline constexpr double mega = 1.0e+06;
   // e+03 (k)
-  extern const Double kilo;
+  inline constexpr double kilo = 1.0e+03;
   // e+02 (h)
-  extern const Double hecto;
+  inline constexpr double hecto = 1.0e+02;
   // e+01 (da)
-  extern const Double deka;
+  inline constexpr double deka = 1.0e+01;
   // e-01 (d)
-  extern const Double deci;
+  inline constexpr double deci = 1.0e-01;
   // e-02 (c)
-  extern const Double centi;
+  inline constexpr double centi = 1.0e-02;
   // e-03 (m)
-  extern const Double milli;
+  inline constexpr double milli = 1.0e-03;
   // e-06 (u)
-  extern const Double micro;
+  inline constexpr double micro = 1.0e-06;
   // e-09 (n)
-  extern const Double nano;
+  inline constexpr double nano = 1.0e-09;
   // e-12 (p)
-  extern const Double pico;
+  inline constexpr double pico = 1.0e-12;
   // e-15 (f)
-  extern const Double femto;
+  inline constexpr double femto = 1.0e-15;
   // e-18 (a)
-  extern const Double atto;
+  inline constexpr double atto = 1.0e-18;
   // e-21 (z)
-  extern const Double zepto;
+  inline constexpr double zepto = 1.0e-21;
   // e-24 (y)
-  extern const Double yocto;
+  inline constexpr double yocto = 1.0e-24;
   // e-27 (r)
-  extern const Double ronto;
+  inline constexpr double ronto = 1.0e-27;
   // e-30 (q)
-  extern const Double quecto;
+  inline constexpr double quecto = 1.0e-30;
   // </group>
   
   // Angular measure:
   // <group>
   // radian
-  extern const Double radian;
+  inline constexpr double radian = 1.0;
   // circle
-  extern const Double circle; 
+  inline constexpr double circle = 6.2831853071795864769252867;
   // degree
-  extern const Double degree;
+  inline constexpr double degree = 0.0174532925199432957692369;
   // arcminute
-  extern const Double arcmin;
+  inline constexpr double arcmin = 0.000290888208665721596153948459;
   // arcsecond
-  extern const Double arcsec;
+  inline constexpr double arcsec = 0.00000484813681109535993589914098765;
   // </group>
   
   // Solid angular measure:
   // <group>
   // steradian
-  extern const Double steradian;
+  inline constexpr double steradian =  1.0;
   // sphere
-  extern const Double sphere;
+  inline constexpr double sphere = 12.56637061435917295385057344;
   // square degree
-  extern const Double square_degree;
+  inline constexpr double square_degree =  0.30461741978670859934674354486e-3;
   // square arcminute
-  extern const Double square_arcmin;
+  inline constexpr double square_arcmin =  0.8461594994075238870742876246233e-7;
   // square arcsecond
-  extern const Double square_arcsec;
+  inline constexpr double square_arcsec=  0.235044305390978857520635451284e-10;
   // </group>
   
   //#-----------------------------
@@ -581,26 +594,16 @@ namespace C {
   // Time interval [T]:
   // <group>
   // second
-  extern const Double second;
+  inline constexpr double second = 1.0;
   // minute
-  extern const Double minute;
+  inline constexpr double minute = 60.0;
   // hour
-  extern const Double hour;
+  inline constexpr double hour = 3600.0;
   // day
-  extern const Double day;
+  inline constexpr double day = 86400.0;
   // Difference between Julian Day and Modified Julian Day
-  extern const Double MJD0;
+  inline constexpr double MJD0 = 2400000.5;
   // </group>
-  
-  //#----------------------------
-  //# Physical conversion factors
-  //#----------------------------
-  //# <group>
-  
-  //#--------------------------------------------------------------------
-  //# Physical units
-  //#--------------------------------------------------------------------
-  //# <group>
   
 }
 
