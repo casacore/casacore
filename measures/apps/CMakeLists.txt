@@ -7,5 +7,5 @@ endforeach(prog findmeastable)
 
 add_executable (measuresdata  measuresdata/measuresdata.cc)
 target_link_libraries (measuresdata casa_measures ${CASACORE_ARCH_LIBS})
-install(TARGETS measuresdata DESTINATION bin)
+install(TARGETS measuresdata DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(PROGRAMS measuresdata/measuresdata-update DESTINATION bin)
