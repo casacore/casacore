@@ -28,8 +28,9 @@ jobs:
 
           brew install fftw hdf5 boost-python3 numpy cfitsio wcslib gsl ninja gcc
 
-          # ensure we use homebrew python (needed for macos-13-x86, not macos-14-arm64)
+          # ensure we use homebrew python and gcc
           export PATH=$(brew --prefix python)/bin:${PATH}
+          export PATH=$(brew --prefix gcc)/bin:${PATH}
           echo PATH=$PATH | tee -a $GITHUB_ENV
 
       - name: set up build and install dir with WSRT measures
