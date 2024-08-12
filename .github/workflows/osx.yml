@@ -2,10 +2,10 @@ name: macOS
 
 on:
   push:
-    branches: [ master ]
-    tags: [ "*" ]
+    branches: [master]
+    tags: ["*"]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   osx:
@@ -14,8 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-        - macos-13 # x68
-        - macos-14 # arm64
+          - macos-13 # x68
+          - macos-14 # arm64
 
     steps:
       - name: checkout
@@ -26,7 +26,7 @@ jobs:
           # Delete GitHub Python, See https://github.com/orgs/Homebrew/discussions/3895#discussioncomment-4130560
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -print -delete
 
-          brew install fftw hdf5 boost-python3 numpy cfitsio wcslib gsl ninja
+          brew install fftw hdf5 boost-python3 numpy cfitsio wcslib gsl ninja gcc
 
           # ensure we use homebrew python (needed for macos-13-x86, not macos-14-arm64)
           export PATH=$(brew --prefix python)/bin:${PATH}
