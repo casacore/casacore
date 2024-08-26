@@ -24,9 +24,9 @@ RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel read
 
 # download other source code
 WORKDIR /tmp
-RUN curl http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
-RUN curl ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar --output /tmp/measures.tgz
-RUN curl https://ufpr.dl.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
+RUN curl -L http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
+RUN curl -L ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar --output /tmp/measures.tgz
+RUN curl -L https://ufpr.dl.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
 
 RUN mkdir /build
 WORKDIR /build
