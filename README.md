@@ -109,27 +109,19 @@ make install
 there are various flags available to cmake to enable and disable options:
 ```
 $ cmake -DDATA_DIR=/usr/share/casacore/data -DUSE_OPENMP=ON \
-    -DUSE_HDF5=ON -DBUILD_PYTHON=ON -DUSE_THREADS=ON
+    -DUSE_HDF5=ON -DUSE_THREADS=ON
 ```
 
 The `DATA_DIR` should point to the location where you extracted the measures
 data. Special variables `%CASAROOT%` and `%CASAHOME%` can be used here, which
 can be set at run time through the `.casarc` file.
 
-You can build python3 support using `-DBUILD_PYTHON3=ON`. Note that CMake may
-have problems detecting the correct python3 libraries and headers, so probably
-you need to set them manually. For
+Older versions of CMake may have problems detecting the correct python
+libraries and headers, in which case you may need to set them manually. For
 example:
 ```
 -DPYTHON3_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.4m.so
 -DPYTHON3_INCLUDE_DIR=/usr/include/python3.4
-```
-
-To configure Python2 specific settings use:
-```
-PYTHON2_EXECUTABLE
-PYTHON2_LIBRARY
-PYTHON2_INCLUDE_DIR
 ```
 
 To configure Python3 specific settings use:
@@ -139,7 +131,7 @@ PYTHON3_LIBRARY
 PYTHON3_INCLUDE_DIR
 ```
 
-If you run into problems with boost libraries, try setting `-DBoost_NO_BOOST_CMAKE=True`. This will be necessary if you have the libraries from NRAO casa in your PATH or LD_LIBRARY_PATH.
+If you run into problems with boost libraries, try setting `-DBoost_NO_BOOST_CMAKE=True`. This may be necessary if you have the libraries from NRAO casa in your `PATH` or `LD_LIBRARY_PATH`.
 
 
 # Documentation
@@ -156,4 +148,3 @@ If you have patches please open a pull request. Your contributions are more
 than welcome! But to maintain a high code quality we have written a [contribution
 manual](https://github.com/casacore/casacore/blob/master/CONTRIBUTING.md), please read
 that first.
-

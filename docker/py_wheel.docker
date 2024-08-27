@@ -44,7 +44,7 @@ RUN make -j${THREADS}
 
 # setup boost
 WORKDIR /build
-RUN tar jxvf /tmp/boost.tar.bz2
+RUN tar jxf /tmp/boost.tar.bz2
 WORKDIR /build/boost_${BOOST_}
 RUN ./bootstrap.sh --prefix=/opt/boost \
     --with-libraries=python \
