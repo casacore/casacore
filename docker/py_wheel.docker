@@ -55,8 +55,8 @@ RUN ./b2 -j${THREADS} \
     cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/" \
     link=static,shared install
 
-# casacore wants numpy
-RUN /opt/python/${TARGET}/bin/pip install oldest_supported_numpy
+# casacore wants numpy. Do not take oldest_supported_numpy, because we want numpy 2.0 compatibility
+RUN /opt/python/${TARGET}/bin/pip install numpy
 
 # set up casacore
 ADD . /code
