@@ -1,3 +1,8 @@
+# 3.6.1
+
+ - Use the latest numpy for dockers; this should make python-casacore compatible with numpy 2.0.
+
+
 # 3.6.0
 
 ## General
