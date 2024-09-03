@@ -9,7 +9,7 @@
 
 if(NOT SOFA_FOUND)
 
-  find_library(SOFA_LIBRARY sofa
+  find_library(SOFA_LIBRARY NAMES sofa_c sofa
     HINTS ${SOFA_ROOT_DIR} PATH_SUFFIXES lib)
   mark_as_advanced(SOFA_LIBRARY)
 
