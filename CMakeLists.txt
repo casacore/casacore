@@ -324,7 +324,11 @@ find_package (DL)
 if (USE_READLINE)
     find_package (Readline REQUIRED)
 endif (USE_READLINE)
-find_package (SOFA)
+
+if (BUILD_TESTING)
+    find_package (SOFA)
+endif()
+
 if (USE_ADIOS2)
     find_package (ADIOS2 2.6.0 CONFIG REQUIRED)
     if(NOT USE_MPI)
