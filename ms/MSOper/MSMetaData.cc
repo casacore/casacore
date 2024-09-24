@@ -17,20 +17,19 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSMetaData.cc 21590 2015-03-26 19:30:16Z gervandiepen $
 
 #include <casacore/ms/MSOper/MSMetaData.h>
 
 #include <casacore/casa/Arrays/MaskArrMath.h>
 #include <casacore/casa/Arrays/VectorSTLIterator.h>
-#include <casacore/casa/OS/File.h>
 #include <casacore/casa/System/ProgressMeter.h>
+#include <casacore/casa/OS/Directory.h>
+#include <casacore/casa/OS/File.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/measures/TableMeasures/ArrayQuantColumn.h>
 #include <casacore/ms/MSOper/MSKeys.h>
@@ -42,6 +41,7 @@
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 
+#include <regex>
 #include <utility>
 
 #define _ORIGIN "MSMetaData::" + String(__func__) + ": "
@@ -1071,7 +1071,7 @@ std::shared_ptr<std::set<Int> > MSMetaData::_getEphemFieldIDs() const {
     }
     MSFieldColumns msfc(_ms->field());
     ScalarColumn<Int> ephemCol = msfc.ephemerisId();
-    _ephemFields.reset(new std::set<Int>());
+    _ephemFields = std::make_shared<std::set<Int>>();
     if (ephemCol.isNull()) {
         return _ephemFields;
     }
@@ -2128,6 +2128,30 @@ vector<String> MSMetaData::getSpwNames() const {
     return out;
 }
 
+vector<int> MSMetaData::getSpwReceiverBands() const {
+    std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
+    const auto props = _getSpwInfo(
+        avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
+    );
+    vector<int> out;
+    for (const auto& spw: props) {
+        out.push_back(spw.rb);
+    }
+    return out;
+}
+
+vector<int> MSMetaData::getSpwSubwindows() const {
+    std::set<uInt> avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw;
+    const auto props = _getSpwInfo(
+        avgSpw, tdmSpw, fdmSpw, wvrSpw, sqldSpw
+    );
+    vector<int> out;
+    for (const auto& spw: props) {
+        out.push_back(spw.sw);
+    }
+    return out;
+}
+
 std::set<uInt> MSMetaData::getSpwIDs() const {
     const Vector<Int> ddIDs = *_getDataDescIDs();
     const vector<uInt>& ddIDToSpw = getDataDescIDToSpwMap();
@@ -2976,17 +3000,13 @@ MSMetaData::_getSourceInfo() const {
             // resize=True because the array lengths may differ
             // from cell to cell, CAS-10409
             restfreq.get(i, rf, True);
-            props.restfreq.reset(
-                new std::vector<MFrequency>(rf.tovector())
-            );
+            props.restfreq = std::make_shared<std::vector<MFrequency>>(rf.tovector());
         }
         else {
             props.restfreq.reset();
         }
         if (transition.isDefined(i)) {
-            props.transition.reset(
-                new std::vector<String>(transition(i).tovector())
-            );
+            props.transition = std::make_shared<std::vector<String>>(transition(i).tovector());
         }
         else {
             props.transition.reset();
@@ -3152,8 +3172,8 @@ void MSMetaData::_getFieldsAndTimesMaps(
         timeToFieldsMap = _timeToFieldsMap;
         return;
     }
-    fieldToTimesMap.reset(new std::map<Int, std::set<Double> >());
-    timeToFieldsMap.reset(new std::map<Double, std::set<Int> >());
+    fieldToTimesMap = std::make_shared<std::map<Int, std::set<Double>>>();
+    timeToFieldsMap = std::make_shared<std::map<Double, std::set<Int>>>();
     std::shared_ptr<Vector<Int> > allFields = _getFieldIDs();
     std::shared_ptr<Vector<Double> > allTimes = this->_getTimes();
     Vector<Int>::const_iterator lastField = allFields->end();
@@ -3521,7 +3541,7 @@ Quantity MSMetaData::getEffectiveTotalExposureTime() {
     Double totalExposure = 0;
     String taql = "select FLAG, DATA_DESC_ID, EXPOSURE, TIME from "
         + _ms->tableName() + " where ANTENNA1 != ANTENNA2";
-    Table result(tableCommand(taql));
+    Table result(tableCommand(taql).table());
     Vector<Int> ddIDs = ScalarColumn<Int>(result, "DATA_DESC_ID").getColumn();
     Vector<Double> exposures = ScalarColumn<Double>(result, "EXPOSURE").getColumn();
     Vector<Double> times = ScalarColumn<Double>(result, "TIME").getColumn();
@@ -3602,7 +3622,7 @@ void MSMetaData::_computeScanAndSubScanProperties(
         const static String title = "Computing scan and subscan properties...";
         log << LogOrigin("MSMetaData", __func__, WHERE)
             << LogIO::NORMAL << title << LogIO::POST;
-        pm.reset(new ProgressMeter(0, _ms->nrow(), title));
+        pm = std::make_shared<ProgressMeter>(0, _ms->nrow(), title);
     }
     const static String scanName = MeasurementSet::columnName(MSMainEnums::SCAN_NUMBER);
     const static String fieldName = MeasurementSet::columnName(MSMainEnums::FIELD_ID);
@@ -3620,12 +3640,8 @@ void MSMetaData::_computeScanAndSubScanProperties(
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
     >  props;
     std::vector<uInt> ddIDToSpw = getDataDescIDToSpwMap();
-    scanProps.reset(
-        new std::map<ScanKey, ScanProperties>()
-    );
-    subScanProps.reset(
-        new std::map<SubScanKey, SubScanProperties>()
-    );
+    scanProps = std::make_shared<std::map<ScanKey, ScanProperties>>();
+    subScanProps = std::make_shared<std::map<SubScanKey, SubScanProperties>>();
     rownr_t doneRows = 0;
     rownr_t msRows = _ms->nrow();
     static const rownr_t rowsInChunk = 10000000;
@@ -3686,12 +3702,8 @@ void MSMetaData::_mergeScanProps(
         pair<map<ScanKey, ScanProperties>, map<SubScanKey, SubScanProperties> >
     >&  props
 ) const {
-    scanProps.reset(
-        new std::map<ScanKey, ScanProperties>()
-    );
-    subScanProps.reset(
-        new std::map<SubScanKey, SubScanProperties>()
-    );
+    scanProps = std::make_shared<std::map<ScanKey, ScanProperties>>();
+    subScanProps = std::make_shared<std::map<SubScanKey, SubScanProperties>>();
     map<SubScanKey, map<uInt, Quantity> > ssSumInterval;
     uInt nTotChunks = props.size();
     for (uInt i=0; i<nTotChunks; ++i) {
@@ -4942,11 +4954,74 @@ MSMetaData::ColumnStats MSMetaData::getIntervalStatistics() const {
     return stats;
 }
 
+std::shared_ptr<vector<int>> MSMetaData::_almaReceiverBands(uint nspw) const {
+    // for ALMA specific receiver band (RB) info
+    static const std::regex rb("RB_(\\d\\d)");
+    static const std::regex id("SpectralWindow_(\\d+)");
+    std::shared_ptr<vector<int>> freqBands(new vector<int>(nspw, -1));
+    const File asdm_rx(_ms->tableName() + "/ASDM_RECEIVER");
+    Vector<String> freqBand;
+    if (asdm_rx.exists() && asdm_rx.isDirectory()) {
+        auto spwid = ScalarColumn<String>(
+            Table(asdm_rx.path().originalName()), "spectralWindowId"
+        ).getColumn().tovector();
+        if (spwid.size() <= nspw) {
+            auto fb = ScalarColumn<String>(
+                Table(asdm_rx.path().originalName()), "frequencyBand"
+            ).getColumn().tovector();
+            // reverse order so that if the spw is defined multiple times,
+            // the first value for the rx band is used
+            reverse(spwid.begin(), spwid.end());
+            reverse(fb.begin(), fb.end());
+            const auto n = fb.size();
+            // to get type of i
+            auto i = n;
+            std::smatch match;
+            for (i=0; i<n; ++i) {
+                if (regex_search(fb[i], match, rb)) {
+                    auto myrb = stoi(match.str(1));
+                    // the receiver band is encoded, so we must get the spwid
+                    // it is associated with
+                    if (regex_search(spwid[i], match, id)) {
+                        auto myid = stoi(match.str(1));
+                        (*freqBands)[myid] = myrb;               
+                    }
+                    else {
+                        ostringstream os;
+                        os << "Unable to find spw id for row " << i
+                            << " in table " << asdm_rx.path().absoluteName();
+                        throw AipsError(os.str());
+                    }
+                }
+            }
+        }
+    }
+    return freqBands;
+}
+
+std::vector<std::vector<uInt>> MSMetaData::_getSpwToPolMap() const {
+    if (! _spwIDToPolIDMap.empty()) {
+        return _spwIDToPolIDMap;
+    }
+    const auto spwPolToDDID = getSpwIDPolIDToDataDescIDMap();
+    _spwIDToPolIDMap.resize(nSpw(true));
+    for (const auto &p : spwPolToDDID) {
+        _spwIDToPolIDMap[p.first.first].push_back(p.first.second);
+    }
+    for (auto &v : _spwIDToPolIDMap) {
+        std::sort(v.begin(), v.end());
+    }
+    return _spwIDToPolIDMap;
+}
+
 vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
     std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
 ) const {
     static const Regex rxSqld("BB_[0-9]#SQLD");
+    static const std::regex rb("RB_(\\d\\d)");
+    static const std::regex sw("SW-(\\d\\d)");
+    std::smatch match;
     MSSpWindowColumns spwCols(_ms->spectralWindow());
     Vector<Double> bws = spwCols.totalBandwidth().getColumn();
     ArrayQuantColumn<Double> cfCol(
@@ -4991,6 +5066,7 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     const static String wvr = "WVR";
     const static String wvrNominal = "WVR#NOMINAL";
     uInt nrows = bws.size();
+    std::shared_ptr<vector<int>> freqBands;
     for (uInt i=0; i<nrows; ++i) {
         spwInfo[i].bandwidth = bws[i];
         tmp.resize(0);
@@ -5056,7 +5132,32 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
             fdmSpw.insert(i);
         }
         else {
-            tdmSpw.insert(i);
+            const auto spwToPol = _getSpwToPolMap();
+            if (
+                spwToPol[i].size() == 1
+                && spwInfo[i].nchans
+                    * getNumCorrs()[*(spwToPol[i].begin())] > 256
+            ) {
+                fdmSpw.insert(i);
+            }
+            else {
+                tdmSpw.insert(i);
+            }
+        }
+        // CAS-13973 for ALMA get subwindow and receiver band
+        spwInfo[i].rb = -1;
+        if (regex_search(name[i], match, rb)) {
+            spwInfo[i].rb = stoi(match.str(1));
+        }
+        else {
+            if (! freqBands) {
+                freqBands = _almaReceiverBands(nrows);
+            }
+            spwInfo[i].rb = (*freqBands)[i];
+        }
+        spwInfo[i].sw = -1;
+        if (regex_search(name[i], match, sw)) {
+            spwInfo[i].sw = stoi(match.str(1));
         }
     }
     wvrSpw = wvrSecond.empty() ? wvrFirst : wvrSecond;

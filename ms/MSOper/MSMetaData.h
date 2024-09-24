@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSMetaData.h 21586 2015-03-25 13:46:25Z gervandiepen $
 
 #ifndef MS_MSMETADATA_H
 #define MS_MSMETADATA_H
@@ -34,9 +32,9 @@
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/ms/MeasurementSets/MeasurementSet.h>
 #include <casacore/ms/MeasurementSets/MSPointingColumns.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/tables/Tables/TableProxy.h>
 #include <map>
+#include <memory>
 
 namespace casacore {
 
@@ -667,6 +665,37 @@ public:
     // including those which associated row flags may be set. 
     ColumnStats getIntervalStatistics() const;
 
+    // ALMA specific CAS-13973 get receiver bands for each spw
+    // values of -1 indicate no info found for those spws.
+    vector<int> getSpwReceiverBands() const;
+
+    // ALMA specific CAS-13973 get subwindows for each spw
+    // values of -1 indicate no info found for those spws.
+    // The SPW subwindow name is established by the ALMA Observing
+    // Tool and is recorded in each project's scheduling blocks.
+    // Here is an example for one spw whose subwindow name is
+    // "SW-1", as indicated by the name field. Currently, these
+    // values can range up to "SW-4", as a maximumn of 4 spws per
+    // baseband are currently offered on the ALMA correlators.
+    // 
+    // <sbl:ACASpectralWindow sideBand="LSB"
+    // windowFunction="HANNING" polnProducts="XX,YY" synthProf="ACA_CDP">
+    // <sbl:centerFrequency unit="GHz">3.0</sbl:centerFrequency>
+    // <sbl:spectralAveragingFactor>1</sbl:spectralAveragingFactor>
+    // <sbl:name>SW-1</sbl:name>
+    // <sbl:effectiveBandwidth unit="GHz">2.0</sbl:effectiveBandwidth>
+    // <sbl:effectiveNumberOfChannels>128</sbl:effectiveNumberOfChannels>
+    // <sbl:associatedSpectralWindowNumberInPair>0</sbl:associatedSpectralWindowNumberInPair>
+    // <sbl:useThisSpectralWindow>true</sbl:useThisSpectralWindow>
+    // <sbl:representativeWindow>false</sbl:representativeWindow>
+    // <sbl:frqChProfReproduction>true</sbl:frqChProfReproduction>
+    // <sbl:ChannelAverageRegion>
+    // <sbl:startChannel>6</sbl:startChannel>
+    // <sbl:numberChannels>115</sbl:numberChannels>
+    // </sbl:ChannelAverageRegion>
+    // </sbl:ACASpectralWindow> 
+    vector<int> getSpwSubwindows() const;
+
 private:
 
     struct ScanProperties {
@@ -684,14 +713,14 @@ private:
         // interval, which is not accounted for in the SubScanProperties times
         std::pair<Double, Double> timeRange;
         // times for each spectral window
-        std::map<uInt, std::set<Double> > times;
+        std::map<uInt, std::set<double> > times;
     };
 
     struct SpwProperties {
-        Double bandwidth;
+        double bandwidth;
         QVD chanfreqs;
         QVD chanwidths;
-        Int netsideband;
+        int netsideband;
         // The sum of all channel frequencies divided by the number of channels
         Quantity meanfreq;
         // The mean of the low frequency extent of the lowest frequency channel and
@@ -700,7 +729,7 @@ private:
         Quantity centerfreq;
         uInt nchans;
         // The center frequencies of the two channels at the edges of the window
-        vector<Double> edgechans;
+        vector<double> edgechans;
         uInt bbcno;
         // from the REF_FREQUENCY column
         MFrequency reffreq;
@@ -711,6 +740,9 @@ private:
         QVD resolution;
         // CAS-13749 value for adhoc ALMA-specific SPECTRAL_WINDOW column
         String corrbit;
+        // CAS-13973 ALMA specific quantities sw = subwindow, rb = receiver band
+        int rb;
+        int sw;
     };
 
     // represents non-primary key data for a SOURCE table row
@@ -737,6 +769,7 @@ private:
     mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
     mutable std::map<Int, std::set<Int> >    _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
     mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
+    mutable std::vector<std::vector<uInt>> _spwIDToPolIDMap;
     mutable std::map<String, std::set<uInt> > _antennaNameToIDMap;
     mutable std::shared_ptr<const std::map<ScanKey, ScanProperties> > _scanProperties;
     mutable std::shared_ptr<const std::map<SubScanKey, SubScanProperties> > _subScanProperties;
@@ -968,6 +1001,10 @@ private:
 
     vector<std::set<String> > _getSpwToIntentsMap();
 
+    // poarization ids will be sorted in ascending order in all
+    // member vectors
+    std::vector<std::vector<uInt>> _getSpwToPolMap() const;
+
     std::shared_ptr<Vector<Int> > _getStateIDs() const;
 
     std::shared_ptr<Vector<Double> > _getTimes() const;
@@ -1148,6 +1185,8 @@ private:
     template <class T> std::shared_ptr<Vector<T> > _getMainScalarColumn(
         MSMainEnums::PredefinedColumns col
     ) const;
+
+    std::shared_ptr<vector<int>> _almaReceiverBands(uint nspw) const;
 
 };
 
