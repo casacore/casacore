@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLESYNCDATA_H
 #define TABLES_TABLESYNCDATA_H
@@ -82,6 +80,12 @@ public:
 
     ~TableSyncData();
 
+    // Copy constructor is forbidden.
+    TableSyncData (const TableSyncData& that) = delete;
+
+    // Assignment is forbidden.
+    TableSyncData& operator= (const TableSyncData& that) = delete;
+
     // Update the synchronization data and write it into the MemoryIO object.
     // This function is called when a table flush is done to reflect
     // if anything has changed compared to the previous flush.
@@ -110,20 +114,13 @@ public:
 
 
 private:
-    // Copy constructor is forbidden.
-    TableSyncData (const TableSyncData& that);
-
-    // Assignment is forbidden.
-    TableSyncData& operator= (const TableSyncData& that);
-
-
     //# Member variables.
     rownr_t     itsNrrow;
     Int         itsNrcolumn;
     uInt        itsModifyCounter;
     uInt        itsTableChangeCounter;
     Block<uInt> itsDataManChangeCounter;
-    MemoryIO    itsMemIO;
+    std::shared_ptr<MemoryIO> itsMemIO;
     AipsIO      itsAipsIO;
 };
 
@@ -131,7 +128,7 @@ private:
 
 inline MemoryIO& TableSyncData::memoryIO()
 {
-    return itsMemIO;
+    return *itsMemIO;
 }
 inline uInt TableSyncData::getModifyCounter() const
 {

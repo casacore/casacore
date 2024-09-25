@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: TaQLNode.h 21051 2011-04-20 11:46:29Z gervandiepen $
 
 //# Includes
 #include <casacore/tables/TaQL/ExprGroup.h>
@@ -125,13 +123,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 
   TableExprGroupResult::TableExprGroupResult
-  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets)
+  (const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets)
   {
     itsFuncSets = funcSets;
   }
   TableExprGroupResult::TableExprGroupResult
-  (const vector<CountedPtr<TableExprGroupFuncSet> >& funcSets,
-   const vector<CountedPtr<vector<TableExprId> > >& ids)
+  (const vector<std::shared_ptr<TableExprGroupFuncSet>>& funcSets,
+   const vector<std::shared_ptr<vector<TableExprId>>>& ids)
   {
     AlwaysAssert (ids.size() == funcSets.size()  ||  ids.empty(), AipsError);
     itsFuncSets = funcSets;
@@ -165,7 +163,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { return False; }
   void TableExprGroupFuncBase::finish()
   {}
-  CountedPtr<vector<TableExprId> > TableExprGroupFuncBase::getIds() const
+  std::shared_ptr<vector<TableExprId>> TableExprGroupFuncBase::getIds() const
   { throw TableInvExpr ("TableExprGroupFuncBase::getIds not implemented"); }
   Bool TableExprGroupFuncBase::getBool (const vector<TableExprId>&)
   { throw TableInvExpr ("TableExprGroupFuncBase::getBool not implemented"); }
@@ -202,8 +200,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     { return True; }
   void TableExprGroupNull::apply (const TableExprId&)
   {
-    throw AipsError ("TableExprGroupFunc::apply should not be called for "
-                     " lazy aggregation");
+    throw TableInvExpr ("TableExprGroupFunc::apply should not be called for "
+                        " lazy aggregation");
   }
 
   TableExprGroupFirst::TableExprGroupFirst (TableExprNodeRep* node)
@@ -256,7 +254,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   TableExprGroupExprId::TableExprGroupExprId (TableExprNodeRep* node)
     : TableExprGroupFuncBase (node)
   {
-    itsIds = new vector<TableExprId>();
+    itsIds = std::make_shared<std::vector<TableExprId>>();
   }
   TableExprGroupExprId::~TableExprGroupExprId()
   {}
@@ -268,7 +266,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     itsIds->push_back (id);
   }
-  CountedPtr<vector<TableExprId> > TableExprGroupExprId::getIds() const
+  std::shared_ptr<vector<TableExprId>> TableExprGroupExprId::getIds() const
   {
     return itsIds;
   }
@@ -476,7 +474,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void TableExprGroupFuncSet::add
-  (const CountedPtr<TableExprGroupFuncBase>& func)
+  (const std::shared_ptr<TableExprGroupFuncBase>& func)
   {
     size_t seqnr = itsFuncs.size();
     itsFuncs.push_back (func);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_VIRTSCACOL_H
 #define TABLES_VIRTSCACOL_H
@@ -168,7 +166,13 @@ public:
     // Frees up the storage.
     virtual ~VirtualScalarColumn();
 
-    // Return the data type of the column.
+    // The object cannot be copied.
+    VirtualScalarColumn (const VirtualScalarColumn<T>&) = delete;
+
+    // The object cannot be assigned to.
+    VirtualScalarColumn<T>& operator= (const VirtualScalarColumn<T>&) = delete;
+
+  // Return the data type of the column.
     virtual int dataType() const;
 
     // Return the data type Id of the column.
@@ -237,13 +241,6 @@ private:
     // The default implementation loops over the rows.
     virtual void putScalarColumnCellsV (const RefRows& rownrs,
 					const ArrayBase& dataPtr);
-
-private:
-    // The object cannot be copied.
-    VirtualScalarColumn (const VirtualScalarColumn<T>&);
-
-    // The object cannot be assigned to.
-    VirtualScalarColumn<T>& operator= (const VirtualScalarColumn<T>&);
 };
 
 

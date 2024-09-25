@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Define a main program to allow compalition and linking by the make system.
 //# The variable is set in tVSCEngine.cc to skip it.
@@ -145,7 +143,6 @@ void VSCExampleVSCEngine::registerClass()
 #include <casacore/tables/DataMan/VirtScaCol.tcc>
 #include <casacore/casa/Utilities/Compare.tcc>
 #include <casacore/casa/Utilities/Copy.tcc>
-#include <casacore/casa/Utilities/CountedPtr.tcc>
 #include <casacore/casa/Utilities/ValTypeId.h>
 
 namespace casacore {
@@ -165,8 +162,8 @@ template void objcopy<VSCExample>(VSCExample *, VSCExample const *, uInt, uInt, 
 template void objset<VSCExample>(VSCExample *, VSCExample, uInt);
 template void objset<VSCExample>(VSCExample *, VSCExample, uInt, uInt);
 template void objmove<VSCExample>(VSCExample *, VSCExample const *, uInt);
-template class CountedPtr<Block<VSCExample> >;
-template class PtrRep<Block<VSCExample> >;
+template class std::shared_ptr<Block<VSCExample>>;
+template class PtrRep<Block<VSCExample>>;
 template String valDataTypeId(VSCExample const *);
 
 }

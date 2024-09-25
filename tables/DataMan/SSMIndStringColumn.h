@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SSMINDSTRINGCOLUMN_H
 #define TABLES_SSMINDSTRINGCOLUMN_H
@@ -93,6 +91,12 @@ public:
   
   virtual ~SSMIndStringColumn();
 
+  // Forbid copy constructor.
+  SSMIndStringColumn (const SSMIndStringColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMIndStringColumn& operator= (const SSMIndStringColumn&) = delete;
+
   // Get an array value in the given row.
   // An exception is thrown if no array is defined in this row.
   virtual void getArrayV (rownr_t rownr, ArrayBase& dataPtr);
@@ -114,14 +118,6 @@ public:
 
   // Get the dimensionality of the item in the given row.
   virtual uInt ndim (rownr_t aRowNr);
-
-
-private:
-  // Forbid copy constructor.
-  SSMIndStringColumn (const SSMIndStringColumn&);
-  
-  // Forbid assignment.
-  SSMIndStringColumn& operator= (const SSMIndStringColumn&);  
 };
 
 

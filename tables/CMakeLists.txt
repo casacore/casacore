@@ -183,6 +183,9 @@ TaQL/ExprNodeArray.cc
 TaQL/ExprNodeRecord.cc
 TaQL/ExprNodeRep.cc
 TaQL/ExprNodeSet.cc
+TaQL/ExprNodeSetElem.cc
+TaQL/ExprNodeSetOpt.cc
+TaQL/ExprNodeUtil.cc
 TaQL/ExprRange.cc
 TaQL/ExprUDFNode.cc
 TaQL/ExprUDFNodeArray.cc
@@ -190,11 +193,11 @@ TaQL/ExprUnitNode.cc
 TaQL/MArrayBase.cc
 TaQL/RecordExpr.cc
 TaQL/RecordGram.cc
+TaQL/TaQLJoin.cc
 TaQL/TaQLNode.cc
 TaQL/TaQLNodeDer.cc
 TaQL/TaQLNodeHandler.cc
 TaQL/TaQLNodeRep.cc
-TaQL/TaQLNodeResult.cc
 TaQL/TaQLNodeVisitor.cc
 TaQL/TaQLResult.cc
 TaQL/TaQLShow.cc
@@ -203,6 +206,15 @@ TaQL/TableExprData.cc
 TaQL/TableExprId.cc
 TaQL/TableGram.cc
 TaQL/TableParse.cc
+TaQL/TableParseFunc.cc
+TaQL/TableParseGroupby.cc
+TaQL/TableParseJoin.cc
+TaQL/TableParseProject.cc
+TaQL/TableParseQuery.cc
+TaQL/TableParseSortKey.cc
+TaQL/TableParseTableList.cc
+TaQL/TableParseUpdate.cc
+TaQL/TableParseUtil.cc
 TaQL/UDFBase.cc
 LogTables/TableLogSink.cc
 LogTables/NewFile.cc
@@ -217,18 +229,20 @@ ${ADIOS2_SOURCES}
 ${DYSCOSTMAN_SOURCES}
 )
 
-target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES})
-if(MPI_FOUND)
-    target_link_libraries(casa_tables ${MPI_C_LIBRARIES})
-    if(ADIOS2_FOUND)
-        target_link_libraries(casa_tables adios2::adios2)
-    endif(ADIOS2_FOUND)
-endif(MPI_FOUND)
+set(top_level_headers
+DataMan.h
+LogTables.h
+Tables.h
+TaQL.h
+)
+
+init_pch_support(casa_tables ${top_level_headers})
+
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
 
 add_subdirectory (apps)
 
 install (TARGETS casa_tables
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -428,6 +442,9 @@ TaQL/ExprNodeArray.h
 TaQL/ExprNodeRecord.h
 TaQL/ExprNodeRep.h
 TaQL/ExprNodeSet.h
+TaQL/ExprNodeSetElem.h
+TaQL/ExprNodeSetOpt.h
+TaQL/ExprNodeUtil.h
 TaQL/ExprRange.h
 TaQL/ExprUDFNode.h
 TaQL/ExprUDFNodeArray.h
@@ -440,6 +457,7 @@ TaQL/MArrayUtil.h
 TaQL/MArray.h
 TaQL/RecordExpr.h
 TaQL/RecordGram.h
+TaQL/TaQLJoin.h
 TaQL/TaQLNode.h
 TaQL/TaQLNodeDer.h
 TaQL/TaQLNodeHandler.h
@@ -454,6 +472,15 @@ TaQL/TableExprId.h
 TaQL/TableExprIdAggr.h
 TaQL/TableGram.h
 TaQL/TableParse.h
+TaQL/TableParseFunc.h
+TaQL/TableParseGroupby.h
+TaQL/TableParseJoin.h
+TaQL/TableParseProject.h
+TaQL/TableParseQuery.h
+TaQL/TableParseSortKey.h
+TaQL/TableParseTableList.h
+TaQL/TableParseUpdate.h
+TaQL/TableParseUtil.h
 TaQL/UDFBase.h
 DESTINATION include/casacore/tables/TaQL
 )
@@ -467,11 +494,7 @@ LogTables/NewFile.h
 DESTINATION include/casacore/tables/LogTables
 )
 
-install (FILES
-DataMan.h
-LogTables.h
-Tables.h
-TaQL.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/tables
 )
 

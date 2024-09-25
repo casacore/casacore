@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprFuncNodeArray.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprFuncNodeArray.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -315,7 +313,6 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
   constAxes_p (False),
   constAlt_p  (False)
 {
-  table_p    = node_p.table();
   exprtype_p = node_p.exprType();
   unit_p     = node_p.unit();
   tryToConst();
@@ -324,14 +321,10 @@ TableExprFuncNodeArray::TableExprFuncNodeArray
 TableExprFuncNodeArray::~TableExprFuncNodeArray()
 {}
 
-void TableExprFuncNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprFuncNodeArray::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
-    node_p.getAggrNodes (aggr);
-}
-
-void TableExprFuncNodeArray::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-    node_p.getColumnNodes (cols);
+  nodes.push_back (this);
+  node_p.flattenTree (nodes);
 }
 
 void TableExprFuncNodeArray::tryToConst()
@@ -660,8 +653,7 @@ MArray<Double> TableExprFuncNodeArray::angdistx (const MArray<Double>& a1,
       *res++ = acos (sin(*p1)*sindec2 + cos(*p1)*cosdec2*cos(ra1-ra2));
     }
   }
-  /// deal with possible mask
-  return MArray<Double>(result);
+  return MArray<Double>(result, a1.combineMask(a2));
 }
 
 
@@ -2002,11 +1994,13 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
             return casacore::pow (operands()[0]->getDComplex(id),
                                   operands()[1]->getArrayDComplex(id));
         } else if (operands()[1]->valueType() == VTScalar) {
-            MArray<DComplex> arr1 (operands()[0]->getArrayDComplex(id));
-            Array<DComplex> arr2 (arr1.shape());
-            arr2 = operands()[1]->getDComplex(id);
-            /// Make pow of array,scalar possible
-            return MArray<DComplex> (pow(arr1.array(), arr2), arr1);
+          if (operands()[1]->dataType() == NTDouble) {
+            return casacore::pow (operands()[0]->getArrayDComplex(id),
+                                  operands()[1]->getDouble(id));
+          } else {
+            return casacore::pow (operands()[0]->getArrayDComplex(id),
+                                  operands()[1]->getDComplex(id));
+          }
         } else {
             return pow (operands()[0]->getArrayDComplex(id),
                         operands()[1]->getArrayDComplex(id));
@@ -2033,6 +2027,16 @@ MArray<DComplex> TableExprFuncNodeArray::getArrayDComplex
             return max (operands()[0]->getArrayDComplex(id),
                         operands()[1]->getArrayDComplex(id));
         }
+    case TableExprFuncNode::asinFUNC:
+        return asin  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::acosFUNC:
+        return acos  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::atanFUNC:
+        return atan  (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::tanFUNC:
+        return tan   (operands()[0]->getArrayDComplex(id));
+    case TableExprFuncNode::tanhFUNC:
+        return tanh  (operands()[0]->getArrayDComplex(id));
     case TableExprFuncNode::arrsumsFUNC:
       {
         MArray<DComplex> arr (operands()[0]->getArrayDComplex(id));

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNode.h 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #ifndef TABLES_EXPRNODE_H
 #define TABLES_EXPRNODE_H
@@ -37,7 +35,6 @@
 #include <casacore/tables/TaQL/MArray.h>
 #include <casacore/tables/Tables/RowNumbers.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/BasicSL/Complex.h>
 
@@ -79,7 +76,7 @@ template<class T> class MArray;
 // table select expression.
 // </etymology>
 
-// <synopsis> 
+// <synopsis>
 // TableExprNode is the class to store a table select expression,
 // making it possible to select rows from the table. The selected
 // rows form a table which is a view of the original table.
@@ -114,7 +111,7 @@ template<class T> class MArray;
 // object for a column in the table. The Table
 // <linkto file="Table.h#keycol">operator()</linkto> can be used
 // the do the actual selection from the top TableExprNode object.
-// </synopsis> 
+// </synopsis>
 
 // <example>
 // <srcblock>
@@ -281,6 +278,16 @@ public:
     void applySelection (const Vector<rownr_t>& rownrs)
       { node_p->applySelection (rownrs); }
 
+    // Get the table info of the expression node.
+    TableExprInfo getTableInfo() const
+      { return node_p->getTableInfo(); }
+
+    // Get the table to which the expression node belongs.
+    //# [[deprecated ("Use getTableInfo().table() instead")]]
+    Table table() const
+      __attribute__ ((deprecated ("Use getTableInfo().table() instead")))
+      { return getTableInfo().table(); }
+
     // Get the unit of the expression.
     const Unit& unit() const
       { return node_p->unit(); }
@@ -300,8 +307,8 @@ public:
       { return (node_p->valueType() == TableExprNodeRep::VTScalar); }
 
     // Get the number of rows in the table associated with this expression.
-    // One is returned if the expression is a constant.
-    // Zero is returned if no table is associated with it.
+    // One is returned if the expression is a constant or if no table is
+    // associated with it.
     rownr_t nrow() const
       { return node_p->nrow(); }
 
@@ -399,7 +406,7 @@ private:
       { return getColumnInt (RowNumbers(rownrs)); }
     Array<uInt>     getColumnuInt (const Vector<uInt>& rownrs) const
       { return getColumnuInt (RowNumbers(rownrs)); }
-    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const 
+    Array<Int64>    getColumnInt64 (const Vector<uInt>& rownrs) const
       { return getColumnInt64 (RowNumbers(rownrs)); }
     Array<Float>    getColumnFloat (const Vector<uInt>& rownrs) const
       { return getColumnFloat (RowNumbers(rownrs)); }
@@ -432,21 +439,22 @@ public:
     // rows as the given table.
     Bool checkTableSize (const Table& table, Bool canBeConst) const;
 
-    // Get table. This gets the Table object to which a
-    // TableExprNode belongs. A TableExprNode belongs to the Table to
-    // which the column(s) used in an expression belong. Note that
-    // all columns in an expression have to belong to the same table.
-    const Table& table() const;
+    // Create a column node or constant keyword node.
+    static TableExprNode keyCol (const TableExprInfo& tabInfo,
+                                 const String& name,
+                                 const Vector<String>& fieldNames);
 
     // Create a column node on behalf of the Table class.
+    // <src>fieldNames</src> indicate a possible field in a column of Records.
     // For builtin data types another type of node is created than
     // for other data types.
-    static TableExprNode newColumnNode (const Table& tab,
-                                        const String& name,
+    static TableExprNode newColumnNode (const TableExprInfo&,
+                                        const String& colName,
                                         const Vector<String>& fieldNames);
 
     // Create a TableExprNodeConst for a table keyword
     // (which is handled as a constant).
+    // <src>fieldNames</src> tells the name of the keyword and possible subrecords.
     static TableExprNode newKeyConst (const TableRecord&,
                                       const Vector<String>& fieldNames);
 
@@ -464,7 +472,7 @@ public:
     // <group>
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
                                           const TableExprNodeSet& set,
-                                          const Table& table,
+                                          const TableExprInfo& tabInfo,
                                           const TaQLStyle& = TaQLStyle(0));
     static TableExprNode newFunctionNode (TableExprFuncNode::FunctionType,
                                           const TableExprNode& node);
@@ -487,7 +495,7 @@ public:
     // Create a user defined function node.
     static TableExprNode newUDFNode (const String& name,
                                      const TableExprNodeSet& set,
-                                     const Table& table,
+                                     const TableExprInfo& tableInfo,
                                      const TaQLStyle& = TaQLStyle(0));
 
     // Create cone function node of the given type with the given arguments.
@@ -507,21 +515,21 @@ public:
     // Create rownumber() function node.
     // Origin indicates whether the first row should be zero (for C++ binding)
     // or an other value (one for TaQL binding).
-    static TableExprNode newRownrNode (const Table& table, uInt origin);
+    static TableExprNode newRownrNode (const TableExprInfo&, uInt origin);
 
     // Create rowid() function node.
     // Origin is always 0.
-    static TableExprNode newRowidNode (const Table& table);
+    static TableExprNode newRowidNode (const TableExprInfo&);
 
     // Create rand() function node.
-    static TableExprNode newRandomNode (const Table& table);
+    static TableExprNode newRandomNode (const TableExprInfo&);
 
     // Create ArrayElement node for the given array with the given index.
     // The origin is 0 for C++ and 1 for TaQL.
     static TableExprNode newArrayPartNode (const TableExprNode& arrayNode,
                                            const TableExprNodeSet& indices,
                                            const TaQLStyle& = TaQLStyle(0));
- 
+
     // returns const pointer to the underlying TableExprNodeRep object.
     const TENShPtr& getRep() const;
     const TableExprNodeRep* getNodeRep() const;
@@ -566,10 +574,6 @@ private:
 
 inline void TableExprNode::ranges (Block<TableExprRange>& blrange)
     { node_p->ranges (blrange); }
-
-//# Get the table from which the node is derived.
-inline const Table& TableExprNode::table() const
-    { return node_p->table(); }
 
 //# Get the value of an expression.
 inline void TableExprNode::get (const TableExprId& id, Bool& value) const

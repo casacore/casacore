@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -142,8 +142,8 @@ CASA_STATD void StatisticsAlgorithm<CASA_STATP>::addData(
 }
 
 CASA_STATD AccumType StatisticsAlgorithm<CASA_STATP>::getQuantile(
-    Double quantile, CountedPtr<uInt64> knownNpts,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    Double quantile, std::shared_ptr<uInt64> knownNpts,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     std::set<Double> qs;

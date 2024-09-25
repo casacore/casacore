@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -26,7 +26,6 @@
 #ifndef SCIMATH_STATSALGORITHMFACTORY_H
 #define SCIMATH_STATSALGORITHMFACTORY_H
 
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/Mathematics/NumericTraits.h>
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithm.h>
 #include <casacore/scimath/StatsFramework/StatisticsAlgorithmFactoryData.h>
@@ -87,7 +86,7 @@ public:
 
     // Create a pointer to an object of a class derived from StatisticsAlgorithm
     // that reflects the current configuration
-    CountedPtr<StatisticsAlgorithm<CASA_STATP>> createStatsAlgorithm() const;
+    std::shared_ptr<StatisticsAlgorithm<CASA_STATP>> createStatsAlgorithm() const;
 
     StatisticsData::ALGORITHM algorithm() const { return _algorithm; }
 

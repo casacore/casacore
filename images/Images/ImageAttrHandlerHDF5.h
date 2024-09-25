@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEATTRHANDLERHDF5_H
 #define IMAGES_IMAGEATTRHANDLERHDF5_H
@@ -34,7 +32,6 @@
 #include <casacore/images/Images/ImageAttrHandler.h>
 #include <casacore/images/Images/ImageAttrGroupHDF5.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <map>
 
 namespace casacore {
@@ -134,7 +131,7 @@ public:
 
 private:
   Bool                                itsCanWrite;    //# writable?
-  CountedPtr<HDF5Group>               itsGroup;       //# HDF5 group to add to
+  std::shared_ptr<HDF5Group>          itsGroup;       //# HDF5 group to add to
   std::map<String,ImageAttrGroupHDF5> itsGroupMap;    //# attribute groups
 };
 

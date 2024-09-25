@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/lattices/LEL/LELCoordinates.h>
@@ -66,14 +64,14 @@ LELCoordinates& LELCoordinates::operator= (const LELCoordinates& other)
 // Return the underlying letter object.
 const LELLattCoordBase& LELCoordinates::coordinates() const
 {
-    AlwaysAssert (!coords_p.null(), AipsError);
+    AlwaysAssert (!isNull(), AipsError);
     return *coords_p;
 }
 
 // Does it have coordinates ?
 Bool LELCoordinates::hasCoordinates() const
 {
-    if (coords_p.null()) {
+    if (isNull()) {
         return False;
     }
     return coords_p->hasCoordinates();
@@ -82,7 +80,7 @@ Bool LELCoordinates::hasCoordinates() const
 // Check if the coordinates of this and that conform.
 Int LELCoordinates::compare (const LELCoordinates& that) const
 {
-    if (coords_p.null()  ||  that.coords_p.null()) {
+    if (isNull()  ||  that.isNull()) {
         return 9;
     }
     return coords_p->compare (*(that.coords_p));

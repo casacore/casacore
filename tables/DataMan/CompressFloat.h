@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_COMPRESSFLOAT_H
 #define TABLES_COMPRESSFLOAT_H
@@ -172,6 +170,9 @@ public:
   // Destructor is mandatory.
   ~CompressFloat();
 
+  // Assignment is not needed and therefore forbidden
+  CompressFloat& operator= (const CompressFloat&) = delete;
+
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
@@ -193,10 +194,6 @@ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
   CompressFloat (const CompressFloat&);
-
-  // Assignment is not needed and therefore forbidden
-  // (so it is made private and not implemented).
-  CompressFloat& operator= (const CompressFloat&);
 
   // Clone the engine object.
   virtual DataManager* clone() const;

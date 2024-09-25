@@ -17,21 +17,19 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/IO/RawIO.h>
 #include <casacore/casa/IO/ByteIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-RawIO::RawIO (ByteIO* byteIO, Bool takeOver)
-: TypeIO (byteIO, takeOver)
+RawIO::RawIO (const std::shared_ptr<ByteIO>& byteIO)
+: TypeIO (byteIO)
 {}
 
 RawIO::RawIO (const RawIO& that)

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/OS/RegularFile.h>
@@ -56,7 +54,7 @@ void doIt (Bool doExcp)
 
     // Test the constructors.
     RegularFile risFile (Path("tRegularFile_tmp/isFile"));    // reg.file
-    RegularFile raName ("tRegularFile_tmp/aName");            // creatable
+    RegularFile raName (String("tRegularFile_tmp/aName"));    // creatable
     RegularFile risLink1 (isLink1);                           // resolves
     RegularFile rFile5 (risLink1);                            // copy ctor
     AlwaysAssertExit (rFile5.path().originalName() ==

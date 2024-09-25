@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_ARRAYIO_2_TCC
 #define CASA_ARRAYIO_2_TCC
@@ -136,78 +134,14 @@ AipsIO &operator>>(AipsIO &ios, Array<T> &a)
     return ios;
 }
 
-inline AipsIO& operator<< (AipsIO& aio, const IPosition& ip)
-{
-  bool use32 = true;
-  if (sizeof(ssize_t) > 4) {
-    for (size_t i=0; i<ip.nelements(); ++i) {
-      if (ip[i] > 2147483647) {
-        use32 = false;
-        break;
-      }
-    }
-  }
-  if (use32) {
-    // Write values as int.
-    aio.putstart("IPosition", 1);
-    aio << (uInt) ip.nelements();
-    for (size_t i=0; i<ip.nelements(); ++i) {
-      aio << int(ip[i]);
-    }
-  } else {
-    // Write values as long long.
-    aio.putstart("IPosition", 2);
-    aio << (uInt) ip.nelements();
-    for (size_t i=0; i<ip.nelements(); ++i) {
-      aio << (long long) (ip[i]);
-    }
-  }
-  aio.putend();
-  return aio;
-}
-
-// <thrown>
-//    <item> ArrayError
-// </thrown>
-inline AipsIO& operator>> (AipsIO& aio, IPosition& ip)
-{
-  int vers = aio.getstart("IPosition");
-  uInt nel;
-  aio >> nel;
-  ip.resize (nel, false);
-  if (vers == 1) {
-    int v;
-    for (size_t i=0; i<nel; ++i) {
-      aio >> v;
-      ip[i] = v;
-    }
-  } else if (vers == 2) {
-    long long v;
-    if (sizeof(ssize_t) <= 4) {
-      throw ArrayError ("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
-                       "cannot read back in an ssize_t of 4 bytes");
-    }
-    for (size_t i=0; i<nel; ++i) {
-      aio >> v;
-      ip[i] = v;
-    }
-  } else {
-    throw(ArrayError("AipsIO& operator>>(AipsIO& aio, IPosition& ip) - "
-                    "version on disk and in class do not match"));
-  }
-  aio.getend();
-  assert (ip.ok());
-  return aio;
-}
-
 inline LogIO& operator<< (LogIO& os, const IPosition& ip)
 {
     os.output() << ip;
     return os;
 }
 
-template<typename T, typename Alloc>
-Block<T> makeBlock(const Array<T, Alloc>& array)
+template<typename T>
+Block<T> makeBlock(const Array<T>& array)
 {
 	Block<T> block(array.nelements());
 	if(array.contiguousStorage())

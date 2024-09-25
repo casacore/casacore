@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_STMANCOLUMNBASE_H
 #define TABLES_STMANCOLUMNBASE_H
@@ -76,6 +74,12 @@ public:
 
     ~StManColumnBase();
 
+    // The object cannot be copied.
+    StManColumnBase (const StManColumnBase&) = delete;
+
+    // The object cannot be assigned to.
+    StManColumnBase& operator= (const StManColumnBase&) = delete;
+
     // Test if the given data type is supported by storage managers.
     // It is used by the function Table::isNativeDataType.
     static Bool isNativeDataType (int dtype);
@@ -90,13 +94,6 @@ public:
     // Return the size of an element of the column's data type.
     Int elemSize() const
       { return elemSize_p; }
-
-private:
-    // The object cannot be copied.
-    StManColumnBase (const StManColumnBase&);
-
-    // The object cannot be assigned to.
-    StManColumnBase& operator= (const StManColumnBase&);
 
 private:
     // The data type of the column.

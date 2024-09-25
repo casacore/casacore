@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/ByteSinkSource.h>
@@ -34,8 +32,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSinkSource::ByteSinkSource ()
 {}
 
-ByteSinkSource::ByteSinkSource (TypeIO* typeIO, Bool takeOver)
-  : BaseSinkSource (typeIO, takeOver)
+ByteSinkSource::ByteSinkSource (const std::shared_ptr<TypeIO>& typeIO)
+  : BaseSinkSource (typeIO)
 {}
 
 ByteSinkSource::ByteSinkSource (const ByteSinkSource& sinkSource)

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TSMCOLUMN_H
 #define TABLES_TSMCOLUMN_H
@@ -105,6 +103,9 @@ public:
     // Frees up the storage.
     virtual ~TSMColumn();
 
+    // Forbid assignment.
+    TSMColumn& operator= (const TSMColumn&) = delete;
+
     // Get the name of the column.
     const String& columnName() const;
 
@@ -149,10 +150,6 @@ protected:
 
     // The copy constructor can only be used to copy a derived class.
     TSMColumn (const TSMColumn& that);
-
-private:
-    // Forbid assignment.
-    TSMColumn& operator= (const TSMColumn&);
 };
 
 

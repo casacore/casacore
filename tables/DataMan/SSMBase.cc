@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusettes Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/SSMBase.h>
 #include <casacore/tables/DataMan/SSMColumn.h>
@@ -400,13 +398,13 @@ void SSMBase::readHeader()
   // Use the file given by the BucketFile object
   // Use a buffer size (512) equal to start of buckets in the file,
   // so the IO buffers in the different objects do not overlap.
-  CountedPtr<ByteIO> aFio = itsFile->makeFilebufIO (512);
+  std::shared_ptr<ByteIO> aFio = itsFile->makeFilebufIO (512);
   // It is stored in big or little endian canonical format.
-  TypeIO* aTio;
+  std::shared_ptr<TypeIO> aTio;
   if (asBigEndian()) {
-    aTio = new CanonicalIO (aFio.get());
+    aTio.reset (new CanonicalIO (aFio));
   } else {
-    aTio = new LECanonicalIO (aFio.get());
+    aTio.reset (new LECanonicalIO (aFio));
   }
   AipsIO anOs (aTio);
   uInt version = anOs.getstart("StandardStMan");
@@ -442,7 +440,6 @@ void SSMBase::readHeader()
 
   anOs.getend();
   anOs.close();
-  delete aTio;
 
   for (uInt i=0; i<itsPtrIndex.nelements(); i++) {
     delete itsPtrIndex[i];
@@ -453,16 +450,16 @@ void SSMBase::readHeader()
 
 void SSMBase::readIndexBuckets()
 {
-  TypeIO*   aMio;
-  MemoryIO  aMemBuf(itsIndexLength);
+  std::shared_ptr<TypeIO> aMio;
+  auto aMemBuf = std::make_shared<MemoryIO>(itsIndexLength);
 
   uInt aCLength = 2*CanonicalConversion::canonicalSize (&itsFirstIdxBucket);
   getCache();
   // It is stored in big or little endian canonical format.
   if (asBigEndian()) {
-    aMio = new CanonicalIO (&aMemBuf);
+    aMio.reset (new CanonicalIO (aMemBuf));
   } else {
-    aMio = new LECanonicalIO (&aMemBuf);
+    aMio.reset (new LECanonicalIO (aMemBuf));
   }
   AipsIO anMOs (aMio);
 
@@ -488,16 +485,16 @@ void SSMBase::readIndexBuckets()
       AlwaysAssert (itsIdxBucketOffset+itsIndexLength <= itsBucketSize
 		    &&  itsNrIdxBuckets == 1,
 		    AipsError);
-      aMemBuf.write (aNr, aBucketPtr+itsIdxBucketOffset);
+      aMemBuf->write (aNr, aBucketPtr+itsIdxBucketOffset);
     } else if (aNr < idxBucketSize) {
-      aMemBuf.write (aNr, aBucketPtr+aCLength);
+      aMemBuf->write (aNr, aBucketPtr+aCLength);
     } else {
-      aMemBuf.write (idxBucketSize, aBucketPtr+aCLength);
+      aMemBuf->write (idxBucketSize, aBucketPtr+aCLength);
     }
     aNr-=idxBucketSize;
   }
   
-  aMemBuf.seek(0);
+  aMemBuf->seek(0);
 
   uInt aNrIdx=itsPtrIndex.nelements();
   for (uInt i=0; i < aNrIdx; i++) {
@@ -506,28 +503,27 @@ void SSMBase::readIndexBuckets()
   }
   
   anMOs.close();
-  delete aMio;
 }
 
 void SSMBase::writeIndex()
 {
-  TypeIO*   aTio;
-  TypeIO*   aMio;
-  MemoryIO  aMemBuf;
+  std::shared_ptr<TypeIO> aTio;
+  std::shared_ptr<TypeIO> aMio;
+  auto aMemBuf = std::make_shared<MemoryIO>();
 
   // Use the file given by the BucketFile object..
   // Use a buffer size (512) equal to start of buckets in the file,
   // so the IO buffers in the different objects do not overlap.
-  CountedPtr<ByteIO> aFio = itsFile->makeFilebufIO (512);
+  std::shared_ptr<ByteIO> aFio = itsFile->makeFilebufIO (512);
   uInt aCLength = 2*CanonicalConversion::canonicalSize(&itsFirstIdxBucket);
 
   // Store it in big or little endian canonical format.
   if (asBigEndian()) {
-    aMio = new CanonicalIO (&aMemBuf);
-    aTio = new CanonicalIO (aFio.get());
+    aMio.reset (new CanonicalIO (aMemBuf));
+    aTio.reset (new CanonicalIO (aFio));
   } else {
-    aMio = new LECanonicalIO (&aMemBuf);
-    aTio = new LECanonicalIO (aFio.get());
+    aMio.reset (new LECanonicalIO (aMemBuf));
+    aTio.reset (new LECanonicalIO (aFio));
   }
   AipsIO anMOs (aMio);
 
@@ -539,8 +535,8 @@ void SSMBase::writeIndex()
 
   // Write total Mio in buckets.
   // Leave space for next bucket nr.
-  const uChar* aMemPtr = aMemBuf.getBuffer();
-  uInt idxLength = aMemBuf.length();
+  const uChar* aMemPtr = aMemBuf->getBuffer();
+  uInt idxLength = aMemBuf->length();
   uInt idxBucketSize = itsBucketSize-aCLength; 
   uInt aNrBuckets = idxLength / idxBucketSize;
   uInt aRestSize  = idxLength % idxBucketSize;
@@ -549,7 +545,6 @@ void SSMBase::writeIndex()
   } else {
     aRestSize = idxBucketSize;
   }
-
 
   // If index is currently written in a single half of a bucket,
   // see if this fits in the other half.
@@ -602,7 +597,6 @@ void SSMBase::writeIndex()
   }
 
   itsNrIdxBuckets = aNrBuckets;
-  delete aMio;
 
   AlwaysAssert ( itsStringHandler != 0, AipsError);
   itsLastStringBucket = itsStringHandler->lastStringBucket();
@@ -638,7 +632,6 @@ void SSMBase::writeIndex()
   
   anOs.putend();  
   anOs.close();
-  delete aTio;
   aFio->flush();
   // Synchronize to make sure it gets written to disk.
   // This is needed for NFS-files under Linux (to resolve defect 2752).
@@ -963,11 +956,9 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
   if (itsStringHandler) {
     itsStringHandler->flush();
   }
-
-  if (itsCache != 0) {
+  if (itsCache) {
     itsCache->flush();
   }
-
   if (isDataChanged) {
     writeIndex();
     if (doFsync) {
@@ -976,11 +967,9 @@ Bool SSMBase::flush (AipsIO& ios, Bool doFsync)
     changed = True;
     isDataChanged = False;
   }
-
-  if (itsIosFile != 0) {
+  if (itsIosFile) {
     itsIosFile->flush(doFsync);
   }
-  
   ios.putstart ("SSM", 2);
   ios << itsDataManName;
   putBlock (ios, itsColumnOffset, itsColumnOffset.nelements());

@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -39,7 +39,7 @@ ChauvenetCriterionStatistics<CASA_STATP>::ChauvenetCriterionStatistics(
     Double zscore, Int maxIterations
 )
   : ConstrainedRangeStatistics<CASA_STATP>(
-        CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
+        std::shared_ptr<ConstrainedRangeQuantileComputer<CASA_STATP>>(
             new ConstrainedRangeQuantileComputer<CASA_STATP>(
                 &this->_getDataset()
             )
@@ -116,10 +116,9 @@ void ChauvenetCriterionStatistics<CASA_STATP>::_setRange() {
         }
         Double zScore = _zscore >= 0
             ? _zscore : ZScoreCalculator::getMaxZScore((uInt64)sd.npts);
-        CountedPtr<std::pair<AccumType, AccumType>> range
-            = new std::pair<AccumType, AccumType>(
-                sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
-            );
+        auto range = std::make_shared<std::pair<AccumType, AccumType>>(
+            sd.mean - zScore*sd.stddev, sd.mean + zScore*sd.stddev
+        );
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
         // _rangeIsSet is set here to prevent infinite
         // recursion on next loop iteration

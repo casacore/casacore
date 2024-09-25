@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSMIndColumn.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_MSMINDCOLUMN_H
 #define TABLES_MSMINDCOLUMN_H
@@ -83,6 +81,12 @@ public:
   // Frees up the storage.
   ~MSMIndColumn();
 
+  // Forbid copy constructor.
+  MSMIndColumn (const MSMIndColumn&) = delete;
+
+  // Forbid assignment.
+  MSMIndColumn& operator= (const MSMIndColumn&) = delete;
+
   // Set the (fixed) shape of the arrays in the entire column.
   void setShapeColumn (const IPosition& shape);
 
@@ -137,21 +141,18 @@ private:
   class Data {
   public:
     Data (const IPosition& shape, int dtype, int elemSize);
-    //# explicitly specify noexcept to squash compiler warning
-    ~Data() noexcept(false);
-    void clear (int dtype);
+    ~Data();
+    Data (const Data&) = delete;
+    Data& operator= (const Data&) = delete;
     const IPosition& shape() const {return shape_p;}
     void* data() {return data_p;}
   private:
-    Data (const Data&);
-    Data& operator= (const Data&);
     IPosition shape_p;
     void* data_p;
+    bool data_is_string;
   };
   // The shape of all arrays in case it is fixed.
   IPosition fixedShape_p;
-  // The size of an array element.
-  uInt elemSize_p;
   // The size at the start of the data (for the IPosition).
   uInt startSize_p;
 
@@ -166,12 +167,6 @@ private:
   // Get a pointer to the data array.
   void* getDataPtr (rownr_t rownr)
     { return (char*)(getShape(rownr)) + startSize_p; }
-
-  // Forbid copy constructor.
-  MSMIndColumn (const MSMIndColumn&);
-
-  // Forbid assignment.
-  MSMIndColumn& operator= (const MSMIndColumn&);
 };
 
 

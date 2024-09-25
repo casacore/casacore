@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_ISMINDEX_H
 #define TABLES_ISMINDEX_H
@@ -79,12 +77,16 @@ class AipsIO;
 class ISMIndex
 {
 public:
-    // Create a ISMIndex object with the given parent for a new table.
-    // It keeps the pointer to its parent (but does not own it).
-    explicit ISMIndex (ISMBase* parent);
+    ISMIndex();
 
     // The destructor closes the file (if opened).
     ~ISMIndex();
+
+    // Forbid copy constructor.
+    ISMIndex (const ISMIndex&) = delete;
+
+    // Forbid assignment.
+    ISMIndex& operator= (const ISMIndex&) = delete;
 
     // Add a row.
     void addRow (rownr_t nrrow);
@@ -128,19 +130,11 @@ public:
     void show (std::ostream&) const;
 
 private:
-    // Forbid copy constructor.
-    ISMIndex (const ISMIndex&);
-
-    // Forbid assignment.
-    ISMIndex& operator= (const ISMIndex&);
-
     // Get the index of the bucket containing the given row.
     uInt getIndex (rownr_t rownr) const;
 
 
     //# Declare member variables.
-    // Pointer to the parent storage manager.
-    ISMBase*          stmanPtr_p;
     // Number of entries used.
     uInt              nused_p;
     // Rownr index (i.e. row rows_p[i] starts in bucketNr_p[i]).

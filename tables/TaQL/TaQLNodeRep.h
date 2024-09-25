@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TAQLNODEREP_H
 #define TABLES_TAQLNODEREP_H
@@ -126,6 +124,12 @@ public:
 
   virtual ~TaQLNodeRep();
 
+  // Letter objects cannot be copied.
+  // <group>
+  TaQLNodeRep (const TaQLNodeRep&) = delete;
+  TaQLNodeRep& operator= (const TaQLNodeRep&) = delete;
+  // </group>
+
   // Get the node type of the derived class.
   char nodeType() const
     { return itsNodeType; }
@@ -150,12 +154,6 @@ public:
   String addEscape (const String& str) const;
 
 private:
-  // Letter objects cannot be copied.
-  // <group>
-  TaQLNodeRep (const TaQLNodeRep&);
-  TaQLNodeRep& operator= (const TaQLNodeRep&);
-  // </group>
-
   char      itsNodeType;
   TaQLStyle itsStyle;
 };

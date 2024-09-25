@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -272,9 +270,7 @@ void b()
     Matrix<float> resD(2,10);
     Vector<RetypedArrayEx1> resA(10);
     Slice slice(1,5,2);
-    uInt i=0;
-    i = 0;
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    resD(0,j) = i*100+j;
 	    resD(1,j) = resD(0,j) + 10000;
@@ -295,7 +291,7 @@ void b()
 	}
     }
     Matrix<RetypedArrayEx1> matA = colA.getColumn();
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    if (!(matA(j,i) == RetypedArrayEx1(i*100+j, i*100+j+10000))) {
 		cout << "error in matA(" << j << "," << i << "): "
@@ -346,9 +342,7 @@ void c()
     Vector<RetypedArrayEx2> valA;
     Matrix<DComplex> resD(4,10);
     Vector<RetypedArrayEx2> resA(10);
-    uInt i=0;
-    i = 0;
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    uInt v = i*100 + j;
 	    resD(0,j) = DComplex(v);
@@ -410,9 +404,7 @@ void c()
     Vector<RetypedArrayEx2> valA;
     Matrix<DComplex> resD(2,10);
     Vector<RetypedArrayEx2> resA(10);
-    uInt i=0;
-    i = 0;
-    for (i=0; i<tab.nrow(); i++) {
+    for (rownr_t i=0; i<tab.nrow(); i++) {
 	for (uInt j=0; j<10; j++) {
 	    uInt v = i*100 + j;
 	    resD(0,j) = DComplex(v);

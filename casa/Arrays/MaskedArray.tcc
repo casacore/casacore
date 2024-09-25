@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MASKEDARRAY_2_TCC
 #define CASA_MASKEDARRAY_2_TCC
@@ -38,8 +36,8 @@
 
 namespace casacore {                                        //# NAMESPACE CASACORE - BEGIN
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> 
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray () :
+template<typename T>
+MaskedArray<T>::MaskedArray () :
 pArray (),
 pMask (),
 nelemValid (0),
@@ -47,8 +45,8 @@ nelemValidIsOK (false),
 isRO (false)
 {}
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const array_type &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const array_type &inarray,
   const LogicalArray &inmask,
   bool isreadonly)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false),
@@ -57,7 +55,7 @@ isRO (isreadonly)
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(const array_type &,"
+      "MaskedArray<T>::MaskedArray(const array_type &,"
       " const LogicalArray &, bool)"
       " - arrays do not conform"));
    }
@@ -70,15 +68,15 @@ isRO (isreadonly)
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const array_type &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const array_type &inarray,
   const LogicalArray &inmask)
 : pArray(), pMask (), nelemValid (0), nelemValidIsOK (false), isRO (false)
 {
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() !=  inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(const array_type &,"
+      "MaskedArray<T>::MaskedArray(const array_type &,"
       " const LogicalArray &)"
       " - arrays do not conform"));
    }
@@ -91,8 +89,8 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const array_type &inarray,
 
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
   const LogicalArray &inmask,
   bool isreadonly)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false),
@@ -101,7 +99,7 @@ isRO ( (inarray.isRO || isreadonly))
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &,"
+      "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
       " const LogicalArray &, bool)"
       " - arrays do not conform"));
    }
@@ -116,8 +114,8 @@ isRO ( (inarray.isRO || isreadonly))
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 const LogicalArray &inmask)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false),
 isRO (inarray.isRO)
@@ -125,7 +123,7 @@ isRO (inarray.isRO)
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &,"
+      "MaskedArray<T>::MaskedArray (const MaskedArray<T> &,"
       " const LogicalArray &)"
       " - arrays do not conform"));
    }
@@ -140,8 +138,8 @@ isRO (inarray.isRO)
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const array_type &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const array_type &inarray,
 const MaskedLogicalArray &inmask,
 bool isreadonly)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false),
@@ -150,7 +148,7 @@ isRO (isreadonly)
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(const array_type &inarray,"
+      "MaskedArray<T>::MaskedArray(const array_type &inarray,"
       " const MaskedLogicalArray &inmask, bool isreadonly)"
       " - arrays do not conform"));
    }
@@ -164,15 +162,15 @@ isRO (isreadonly)
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const array_type &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const array_type &inarray,
 const MaskedLogicalArray &inmask)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false), isRO (false)
 {
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(const array_type &inarray,"
+      "MaskedArray<T>::MaskedArray(const array_type &inarray,"
       " const MaskedLogicalArray &inmask)"
       " - arrays do not conform"));
    }
@@ -186,8 +184,8 @@ const MaskedLogicalArray &inmask)
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 const MaskedLogicalArray &inmask)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false),
 isRO (inarray.isRO)
@@ -195,7 +193,7 @@ isRO (inarray.isRO)
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &inarray,"
+      "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
       " const MaskedLogicalArray &inmask)"
       " - arrays do not conform"));
    }
@@ -210,8 +208,8 @@ isRO (inarray.isRO)
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &inarray,
+template<typename T>
+MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,
 const MaskedLogicalArray &inmask,
 bool isreadonly)
 : pArray (), pMask (), nelemValid (0), nelemValidIsOK (false),
@@ -220,7 +218,7 @@ isRO ( (inarray.isRO || isreadonly))
   //    if (! conform2 (inarray, inmask)) {
   if (inarray.shape() != inmask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray (const MaskedArray<T, ArrayAlloc, MaskAlloc> &inarray,"
+      "MaskedArray<T>::MaskedArray (const MaskedArray<T> &inarray,"
       " const MaskedLogicalArray &inmask, bool isreadonly)"
       " - arrays do not conform"));
    }
@@ -235,8 +233,8 @@ isRO ( (inarray.isRO || isreadonly))
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(const MaskedArray<T, ArrayAlloc, MaskAlloc> &other, bool isreadonly)
+template<typename T>
+MaskedArray<T>::MaskedArray(const MaskedArray<T> &other, bool isreadonly)
 : pArray (), pMask (),
 nelemValid (other.nelemValid), nelemValidIsOK (other.nelemValidIsOK),
 isRO ( (other.isRO || isreadonly))
@@ -250,8 +248,8 @@ isRO ( (other.isRO || isreadonly))
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(const MaskedArray<T, ArrayAlloc, MaskAlloc> &other)
+template<typename T>
+MaskedArray<T>::MaskedArray(const MaskedArray<T> &other)
 : pArray (), pMask (),
 nelemValid (other.nelemValid), nelemValidIsOK (other.nelemValidIsOK),
 isRO (other.isRO)
@@ -264,8 +262,8 @@ isRO (other.isRO)
 
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>::MaskedArray(MaskedArray<T, ArrayAlloc, MaskAlloc>&& source)
+template<typename T>
+MaskedArray<T>::MaskedArray(MaskedArray<T>&& source)
 : pArray (std::move(source.pArray)),
 pMask (std::move(source.pMask)),
 nelemValid (source.nelemValid),
@@ -279,13 +277,13 @@ isRO (source.isRO)
   assert(source.ok());
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> void
-MaskedArray<T, ArrayAlloc, MaskAlloc>::setData (const array_type &data,
+template<typename T> void
+MaskedArray<T>::setData (const array_type &data,
 const mask_type &mask,
 bool isReadOnly) {
   if (data.shape() != mask.shape()) {
     throw (ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::setData(const array_type &,"
+      "MaskedArray<T>::setData(const array_type &,"
       " const LogicalArray &, bool)"
       " - arrays do not conform"));
    }
@@ -293,29 +291,29 @@ bool isReadOnly) {
   pMask.reset( new mask_type (mask.copy()) );
   nelemValid = 0;
   nelemValidIsOK = false;
-  isRO  = isReadOnly; 
+  isRO  = isReadOnly;
   assert(ok());
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> void
-MaskedArray<T, ArrayAlloc, MaskAlloc>::setData (const MaskedArray<T, ArrayAlloc, MaskAlloc> & array,
+template<typename T> void
+MaskedArray<T>::setData (const MaskedArray<T> & array,
 bool isReadOnly){
   pArray.reset( new array_type(array.getArray()) );
   pMask.reset( new LogicalArray(array.getMask().copy()) );
   nelemValid = 0;
   nelemValidIsOK = false;
-  isRO  = isReadOnly; 
+  isRO  = isReadOnly;
 
   assert(ok());
  }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::copy(bool isreadonly) const
+template<typename T>
+MaskedArray<T> MaskedArray<T>::copy(bool isreadonly) const
 {
   assert(ok());
 
-  MaskedArray<T, ArrayAlloc, MaskAlloc> retval (pArray->copy(), *pMask, isreadonly);
+  MaskedArray<T> retval (pArray->copy(), *pMask, isreadonly);
   retval.nelemValid = nelemValid;
   retval.nelemValidIsOK = nelemValidIsOK;
 
@@ -323,12 +321,12 @@ MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::cop
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::copy() const
+template<typename T>
+MaskedArray<T> MaskedArray<T>::copy() const
 {
   assert(ok());
 
-  MaskedArray<T, ArrayAlloc, MaskAlloc> retval (pArray->copy(), *pMask);
+  MaskedArray<T> retval (pArray->copy(), *pMask);
   retval.nelemValid = nelemValid;
   retval.nelemValidIsOK = nelemValidIsOK;
 
@@ -336,55 +334,55 @@ MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::cop
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::operator() (const LogicalArray &mask) const
+template<typename T>
+MaskedArray<T> MaskedArray<T>::operator() (const LogicalArray &mask) const
 {
   assert(ok());
 
-  MaskedArray<T, ArrayAlloc, MaskAlloc> ret (*this, mask);
+  MaskedArray<T> ret (*this, mask);
   return ret;
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::operator()
+template<typename T>
+MaskedArray<T> MaskedArray<T>::operator()
 (const MaskedLogicalArray &mask) const
 {
   assert(ok());
 
-  MaskedArray<T, ArrayAlloc, MaskAlloc> ret (*this, mask);
+  MaskedArray<T> ret (*this, mask);
   return ret;
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::operator() (const IPosition &start,
+template<typename T>
+MaskedArray<T> MaskedArray<T>::operator() (const IPosition &start,
 const IPosition &end)
 {
   assert(ok());
-  return MaskedArray<T, ArrayAlloc, MaskAlloc> ((*pArray)(start,end), (*pMask)(start,end), isRO);
+  return MaskedArray<T> ((*pArray)(start,end), (*pMask)(start,end), isRO);
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::operator() (const IPosition &start,
+template<typename T>
+MaskedArray<T> MaskedArray<T>::operator() (const IPosition &start,
 const IPosition &end,
 const IPosition &inc)
 {
   assert(ok());
-  return MaskedArray<T, ArrayAlloc, MaskAlloc> ((*pArray)(start,end,inc), (*pMask)(start,end,inc),
+  return MaskedArray<T> ((*pArray)(start,end,inc), (*pMask)(start,end,inc),
     isRO);
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::operator() (const Slicer &slicer)
+template<typename T>
+MaskedArray<T> MaskedArray<T>::operator() (const Slicer &slicer)
 {
   assert(ok());
-  return MaskedArray<T, ArrayAlloc, MaskAlloc> ((*pArray)(slicer), (*pMask)(slicer), isRO);
+  return MaskedArray<T> ((*pArray)(slicer), (*pMask)(slicer), isRO);
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-const Array<T, ArrayAlloc> &MaskedArray<T, ArrayAlloc, MaskAlloc>::getArray() const
+template<typename T>
+const Array<T> &MaskedArray<T>::getArray() const
 {
   assert(ok());
 
@@ -392,8 +390,8 @@ const Array<T, ArrayAlloc> &MaskedArray<T, ArrayAlloc, MaskAlloc>::getArray() co
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-const Array<LogicalArrayElem, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>::getMask() const
+template<typename T>
+const Array<LogicalArrayElem> & MaskedArray<T>::getMask() const
 {
   assert(ok());
 
@@ -401,7 +399,7 @@ const Array<LogicalArrayElem, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray<T, ArrayAlloc, MaskAlloc>::ndim() const
+template<typename T> size_t MaskedArray<T>::ndim() const
 {
   assert(ok());
 
@@ -409,7 +407,7 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray<T, ArrayAlloc, MaskAlloc>::nelementsValid() const
+template<typename T> size_t MaskedArray<T>::nelementsValid() const
 {
   assert(ok());
 
@@ -431,7 +429,7 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray
 
     freeMaskStorage(maskStorage, maskDelete);
 
-    MaskedArray<T, ArrayAlloc, MaskAlloc> *nonconstThis = (MaskedArray<T, ArrayAlloc, MaskAlloc> *) this;
+    MaskedArray<T> *nonconstThis = (MaskedArray<T> *) this;
     nonconstThis->nelemValid = nelemValidTmp;
     nonconstThis->nelemValidIsOK = true;
    }
@@ -440,7 +438,7 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray<T, ArrayAlloc, MaskAlloc>::nelements() const
+template<typename T> size_t MaskedArray<T>::nelements() const
 {
   assert(ok());
 
@@ -448,7 +446,7 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> size_t MaskedArray
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> bool MaskedArray<T, ArrayAlloc, MaskAlloc>::ok() const
+template<typename T> bool MaskedArray<T>::ok() const
 {
   if (!pArray && !pMask) return true;                       // default constructed is ok
   if (!pArray || !pMask) return false;                      // not both set is not ok
@@ -456,7 +454,7 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> bool MaskedArray<T
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> bool MaskedArray<T, ArrayAlloc, MaskAlloc>::conform(const array_type &other) const
+template<typename T> bool MaskedArray<T>::conform(const array_type &other) const
 {
   assert(ok());
 
@@ -464,8 +462,8 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> bool MaskedArray<T
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-bool MaskedArray<T, ArrayAlloc, MaskAlloc>::conform(const MaskedArray<T, ArrayAlloc, MaskAlloc> &other) const
+template<typename T>
+bool MaskedArray<T>::conform(const MaskedArray<T> &other) const
 {
   assert(ok());
 
@@ -473,17 +471,17 @@ bool MaskedArray<T, ArrayAlloc, MaskAlloc>::conform(const MaskedArray<T, ArrayAl
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> void MaskedArray<T, ArrayAlloc, MaskAlloc>::setReadOnly() const
+template<typename T> void MaskedArray<T>::setReadOnly() const
 {
   assert(ok());
 
-  MaskedArray<T, ArrayAlloc, MaskAlloc> *nonconstThis = (MaskedArray<T, ArrayAlloc, MaskAlloc> *) this;
+  MaskedArray<T> *nonconstThis = (MaskedArray<T> *) this;
   nonconstThis->isRO = true;
 }
 
 
-template <typename T, typename ArrayAlloc, typename MaskAlloc>
-Array<T, ArrayAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray () const
+template <typename T>
+Array<T> MaskedArray<T>::getCompressedArray () const
 {
   array_type result (IPosition (1,nelementsValid()));
 
@@ -519,12 +517,12 @@ Array<T, ArrayAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (
 }
 
 
-template <typename T, typename ArrayAlloc, typename MaskAlloc>
-Array<T, ArrayAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (const IPosition & shape) const
+template <typename T>
+Array<T> MaskedArray<T>::getCompressedArray (const IPosition & shape) const
 {
   if (int(nelementsValid()) != shape.product()) {
     throw (ArrayError
-      ("void MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (const IPosition & shape)"
+      ("void MaskedArray<T>::getCompressedArray (const IPosition & shape)"
         " - input shape will create Array with incorrect number of elements"));
 
    }
@@ -563,12 +561,12 @@ Array<T, ArrayAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (
 }
 
 
-template <typename T, typename ArrayAlloc, typename MaskAlloc>
-void MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (array_type & inarr) const
+template <typename T>
+void MaskedArray<T>::getCompressedArray (array_type & inarr) const
 {
   if (nelementsValid() != inarr.nelements()) {
     throw (ArrayError
-      ("void MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (array_type & inarr)"
+      ("void MaskedArray<T>::getCompressedArray (array_type & inarr)"
         " - input Array number of elements is incorrect"));
 
    }
@@ -603,12 +601,12 @@ void MaskedArray<T, ArrayAlloc, MaskAlloc>::getCompressedArray (array_type & ina
 }
 
 
-template <typename T, typename ArrayAlloc, typename MaskAlloc>
-void MaskedArray<T, ArrayAlloc, MaskAlloc>::setCompressedArray (const array_type & inarr)
+template <typename T>
+void MaskedArray<T>::setCompressedArray (const array_type & inarr)
 {
   if (nelementsValid() != inarr.nelements()) {
     throw (ArrayError
-      ("void MaskedArray<T, ArrayAlloc, MaskAlloc>::setCompressedArray (const array_type & inarr)"
+      ("void MaskedArray<T>::setCompressedArray (const array_type & inarr)"
         " - input array number of elements is incorrect"));
 
    }
@@ -643,8 +641,8 @@ void MaskedArray<T, ArrayAlloc, MaskAlloc>::setCompressedArray (const array_type
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-const T * MaskedArray<T, ArrayAlloc, MaskAlloc>::getArrayStorage (bool &deleteIt) const
+template<typename T>
+const T * MaskedArray<T>::getArrayStorage (bool &deleteIt) const
 {
   assert(ok());
 
@@ -652,8 +650,8 @@ const T * MaskedArray<T, ArrayAlloc, MaskAlloc>::getArrayStorage (bool &deleteIt
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-void MaskedArray<T, ArrayAlloc, MaskAlloc>::freeArrayStorage(const T *&storage, bool deleteIt) const
+template<typename T>
+void MaskedArray<T>::freeArrayStorage(const T *&storage, bool deleteIt) const
 {
   assert(ok());
 
@@ -661,8 +659,8 @@ void MaskedArray<T, ArrayAlloc, MaskAlloc>::freeArrayStorage(const T *&storage, 
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-const LogicalArrayElem * MaskedArray<T, ArrayAlloc, MaskAlloc>::getMaskStorage (bool &deleteIt) const
+template<typename T>
+const LogicalArrayElem * MaskedArray<T>::getMaskStorage (bool &deleteIt) const
 {
   assert(ok());
 
@@ -670,7 +668,7 @@ const LogicalArrayElem * MaskedArray<T, ArrayAlloc, MaskAlloc>::getMaskStorage (
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> void  MaskedArray<T, ArrayAlloc, MaskAlloc>::freeMaskStorage
+template<typename T> void  MaskedArray<T>::freeMaskStorage
 (const LogicalArrayElem *&storage, bool deleteIt) const
 {
   assert(ok());
@@ -680,8 +678,8 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> void  MaskedArray<
 
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::operator=
+template<typename T>
+MaskedArray<T>& MaskedArray<T>::operator=
   (const array_type &inarray)
 {
   assert(ok());
@@ -692,20 +690,20 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::op
     nelemValid = 0;
     nelemValidIsOK = false;
     isRO  = false;
-    
+
     return *this;
   }
 
   if (!conform(inarray)) {
     throw(ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>::operator= "
+      "MaskedArray<T> & MaskedArray<T>::operator= "
       "(const array_type &inarray)"
       "- Conformance error."));
    }
 
   if (isRO) {
     throw(ArrayError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>::operator= "
+      "MaskedArray<T> & MaskedArray<T>::operator= "
       "(const array_type &inarray)"
       "- this is read only."));
    }
@@ -739,8 +737,8 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::op
   return *this;
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::operator=
+template<typename T>
+MaskedArray<T>& MaskedArray<T>::operator=
   (array_type&& inarray)
 {
   assert(ok());
@@ -758,9 +756,9 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::op
   }
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::operator=
-  (const MaskedArray<T, ArrayAlloc, MaskAlloc> &other)
+template<typename T>
+MaskedArray<T>& MaskedArray<T>::operator=
+  (const MaskedArray<T> &other)
 {
   assert(ok());
 
@@ -774,15 +772,15 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::op
 
   if (!conform(other)) {
     throw(ArrayConformanceError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>::operator= "
-      "(const MaskedArray<T, ArrayAlloc, MaskAlloc> &other)"
+      "MaskedArray<T> & MaskedArray<T>::operator= "
+      "(const MaskedArray<T> &other)"
       "- Conformance error."));
    }
 
   if (isRO) {
     throw(ArrayError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>::operator= "
-      "(const MaskedArray<T, ArrayAlloc, MaskAlloc> &other)"
+      "MaskedArray<T> & MaskedArray<T>::operator= "
+      "(const MaskedArray<T> &other)"
       "- this is read only."));
    }
 
@@ -822,15 +820,15 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::op
   return *this;
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::operator=
-  (MaskedArray<T, ArrayAlloc, MaskAlloc>&& other)
+template<typename T>
+MaskedArray<T>& MaskedArray<T>::operator=
+  (MaskedArray<T>&& other)
 {
   assert(ok());
 
   if (other.isReadOnly())
     return operator=(other);
-  
+
   if (this == &other)
     return *this;
 
@@ -850,14 +848,14 @@ MaskedArray<T, ArrayAlloc, MaskAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::op
   }
 }
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc> MaskedArray<T, ArrayAlloc, MaskAlloc> &MaskedArray<T, ArrayAlloc, MaskAlloc>::operator=(const T &val)
+template<typename T> MaskedArray<T> &MaskedArray<T>::operator=(const T &val)
 {
   assert(ok());
   if (!pArray) return *this;
 
   if (isRO) {
     throw(ArrayError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc> & MaskedArray<T, ArrayAlloc, MaskAlloc>::operator= (const T &val)"
+      "MaskedArray<T> & MaskedArray<T>::operator= (const T &val)"
       "- this is read only."));
    }
 
@@ -885,14 +883,14 @@ template<typename T, typename ArrayAlloc, typename MaskAlloc> MaskedArray<T, Arr
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-T * MaskedArray<T, ArrayAlloc, MaskAlloc>::getRWArrayStorage (bool &deleteIt) const
+template<typename T>
+T * MaskedArray<T>::getRWArrayStorage (bool &deleteIt) const
 {
   assert(ok());
 
   if (isRO) {
     throw(ArrayError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::getRWArrayStorage (bool &deleteIt) const"
+      "MaskedArray<T>::getRWArrayStorage (bool &deleteIt) const"
       "- this is read only."));
    }
 
@@ -900,14 +898,14 @@ T * MaskedArray<T, ArrayAlloc, MaskAlloc>::getRWArrayStorage (bool &deleteIt) co
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-void MaskedArray<T, ArrayAlloc, MaskAlloc>::putArrayStorage(T *&storage, bool deleteAndCopy) const
+template<typename T>
+void MaskedArray<T>::putArrayStorage(T *&storage, bool deleteAndCopy) const
 {
   assert(ok());
 
   if (isRO) {
     throw(ArrayError(
-      "MaskedArray<T, ArrayAlloc, MaskAlloc>::putArrayStorage (bool deleteAndCopy) const"
+      "MaskedArray<T>::putArrayStorage (bool deleteAndCopy) const"
       "- this is read only."));
    }
 
@@ -915,14 +913,14 @@ void MaskedArray<T, ArrayAlloc, MaskAlloc>::putArrayStorage(T *&storage, bool de
 }
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
-Array<T, ArrayAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::getRWArray() const
+template<typename T>
+Array<T>& MaskedArray<T>::getRWArray() const
 {
   assert(ok());
 
   if (isRO) {
     throw(ArrayError(
-      "array_type & MaskedArray<T, ArrayAlloc, MaskAlloc>::getRWArray () const"
+      "array_type & MaskedArray<T>::getRWArray () const"
       "- this is read only."));
    }
 
@@ -932,8 +930,8 @@ Array<T, ArrayAlloc>& MaskedArray<T, ArrayAlloc, MaskAlloc>::getRWArray() const
 
 //# Global functions.
 
-template<typename TL, typename ArrayAllocL, typename MaskAllocL, typename TR, typename ArrayAllocR>
-bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const Array<TR, ArrayAllocR> &right)
+template<typename TLLL, typename TRR>
+bool conform2 (const MaskedArray<TLLL> &left, const Array<TRR> &right)
 {
   IPosition leftShape (left.shape());
   IPosition rightShape (right.shape());
@@ -942,8 +940,8 @@ bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const Array
  ? true : false;
 }
 
-template<typename TL, typename ArrayAllocL, typename TR, typename ArrayAllocR, typename MaskAllocR>
-bool conform2 (const Array<TL, ArrayAllocL> &left, const MaskedArray<TR, ArrayAllocR, MaskAllocR> &right)
+template<typename TLL, typename TRRR>
+bool conform2 (const Array<TLL> &left, const MaskedArray<TRRR> &right)
 {
   IPosition leftShape (left.shape());
   IPosition rightShape (right.shape());
@@ -952,8 +950,8 @@ bool conform2 (const Array<TL, ArrayAllocL> &left, const MaskedArray<TR, ArrayAl
  ? true : false;
 }
 
-template<typename TL, typename ArrayAllocL, typename MaskAllocL, typename TR, typename ArrayAllocR, typename MaskAllocR>
-bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const MaskedArray<TR, ArrayAllocR, MaskAllocR> &right)
+template<typename TLLL, typename TRRR>
+bool conform2 (const MaskedArray<TLLL> &left, const MaskedArray<TRRR> &right)
 {
   IPosition leftShape (left.shape());
   IPosition rightShape (right.shape());

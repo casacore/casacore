@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNodeRep.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprNodeRep.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -31,6 +29,7 @@
 #include <casacore/tables/TaQL/ExprDerNodeArray.h>
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/tables/TaQL/ExprRange.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/tables/TaQL/MArray.h>
@@ -41,53 +40,56 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
+TableExprInfo::TableExprInfo (const Table& table, const String& alias,
+                              Bool isJoinTable)
+  : itsTable       (table),
+    itsAlias       (alias),
+    itsIsJoinTable (isJoinTable)
+{}
+
+void TableExprInfo::apply (const Vector<rownr_t>& rownrs)
+{
+  itsTable = itsTable(rownrs);
+}
+
+
+  
 // The constructor to be used by the derived classes.
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
-                                    OperType optype,
-                                    const Table& table)
-: table_p    (table),
-  dtype_p    (dtype),
-  vtype_p    (vtype),
-  optype_p   (optype),
-  argtype_p  (NoArr),
-  exprtype_p (Variable),
-  ndim_p     (0)
-{
-    if (table.isNull()) {
-        exprtype_p = Constant;
-    }
-}
+                                    OperType optype, ExprType exprtype)
+: dtype_p       (dtype),
+  vtype_p       (vtype),
+  optype_p      (optype),
+  argtype_p     (NoArr),
+  exprtype_p    (exprtype),
+  ndim_p        (0)
+{}
 
 TableExprNodeRep::TableExprNodeRep (NodeDataType dtype, ValueType vtype,
                                     OperType optype, ArgType argtype,
                                     ExprType exprtype,
-                                    Int ndim, const IPosition& shape,
-                                    const Table& table)
-: table_p    (table),
-  dtype_p    (dtype),
-  vtype_p    (vtype),
-  optype_p   (optype),
-  argtype_p  (argtype),
-  exprtype_p (exprtype),
-  ndim_p     (ndim),
-  shape_p    (shape)
+                                    Int ndim, const IPosition& shape)
+: dtype_p       (dtype),
+  vtype_p       (vtype),
+  optype_p      (optype),
+  argtype_p     (argtype),
+  exprtype_p    (exprtype),
+  ndim_p        (ndim),
+  shape_p       (shape)
 {}
-
-TableExprNodeRep::TableExprNodeRep (const TableExprNodeRep& that)
- : table_p    (that.table_p),
-  dtype_p    (that.dtype_p),
-  vtype_p    (that.vtype_p),
-  optype_p   (that.optype_p),
-  argtype_p  (that.argtype_p),
-  exprtype_p (that.exprtype_p),
-  ndim_p     (that.ndim_p),
-  shape_p    (that.shape_p),
-  unit_p     (that.unit_p)
+  
+TableExprInfo TableExprNodeRep::getTableInfo() const
+{
+    return TableExprInfo();
+}
+  
+Bool TableExprNodeRep::isAggregate() const
+{
+    return False;
+}
+  
+void TableExprNodeRep::optimize()
 {}
-
-TableExprNodeRep::~TableExprNodeRep ()
-{}
-
 
 void TableExprNodeRep::show (ostream& os, uInt indent) const
 {
@@ -96,7 +98,7 @@ void TableExprNodeRep::show (ostream& os, uInt indent) const
     }
     os << Int(dtype_p) << ' ' << Int(vtype_p) << ' ' << Int(optype_p)
        << ' ' << Int(exprtype_p) << ' '<< Int(argtype_p) << ' '
-       << ndim_p << ' ' << shape_p << ' ' << table_p.baseTablePtr() << endl;
+       << ndim_p << ' ' << shape_p << endl;
 }
 
 void TableExprNodeRep::disableApplySelection()
@@ -105,20 +107,9 @@ void TableExprNodeRep::disableApplySelection()
 void TableExprNodeRep::applySelection (const Vector<rownr_t>&)
 {}
 
-void TableExprNodeRep::getAggrNodes (vector<TableExprNodeRep*>&)
-{}
-
-void TableExprNodeRep::getColumnNodes (vector<TableExprNodeRep*>&)
-{}
-
-void TableExprNodeRep::checkAggrFuncs()
+  void TableExprNodeRep::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
-  vector<TableExprNodeRep*> aggr;
-  getAggrNodes (aggr);
-  if (! aggr.empty()) {
-    throw TableInvExpr("Invalid use of an aggregate function "
-                       "(only use in SELECT or HAVING clause)");
-  }
+  nodes.push_back (this);
 }
 
 void TableExprNodeRep::setUnit (const Unit& unit)
@@ -137,41 +128,23 @@ Double TableExprNodeRep::getUnitFactor() const
 void TableExprNodeRep::adaptSetUnits (const Unit&)
 {}
 
-//# Determine the number of rows in the table used in the expression.
-rownr_t TableExprNodeRep::nrow() const
+//# Determine the number of rows in the main table used in the expression.
+rownr_t TableExprNodeRep::nrow()
 {
     if (exprtype_p == Constant) {
         return 1;
     }
-    if (table_p.isNull()) {
-      return 1;                  // for calc expressions
+    vector<Table> tables = TableExprNodeUtil::getNodeTables (this, True);
+    if (tables.empty()) {
+        return 1;                  // for calc expressions
     }
-    return table_p.nrow();
+    return tables[0].nrow();
 }
 
-void TableExprNodeRep::convertConstChild()
-{}
-
-void TableExprNodeRep::checkTablePtr (Table& table,
-                                      const TENShPtr& node)
-{
-    if (node) {
-        if (table.isNull()  ||  table.nrow() == 0) {
-            table = node->table();
-        } else {
-        if (!(node->table().isNull()  ||  node->table().nrow() == 0)
-            &&  node->table().nrow() != table.nrow()) {
-                throw (TableInvExpr
-                       ("expression uses differently sized tables"));
-            }
-        }
-    }
-}
-void TableExprNodeRep::fillExprType (ExprType& type,
-                                     const TENShPtr& node)
+void TableExprNodeRep::fillExprType (const TableExprNodeRep* node)
 {
     if (node != 0  &&  !node->isConstant()) {
-        type = Variable;
+        exprtype_p = Variable;
     }
 }
 
@@ -345,60 +318,57 @@ MArray<MVTime> TableExprNodeRep::getDateAS (const TableExprId& id)
   return MArray<MVTime>(res);
 }
 
-Bool TableExprNodeRep::hasBool     (const TableExprId& id, Bool value)
+Bool TableExprNodeRep::contains (const TableExprId& id, Bool value)
 {
     return (value == getBool(id));
 }
-Bool TableExprNodeRep::hasInt      (const TableExprId& id, Int64 value)
+Bool TableExprNodeRep::contains (const TableExprId& id, Int64 value)
 {
     return (value == getInt(id));
 }
-Bool TableExprNodeRep::hasDouble   (const TableExprId& id, Double value)
+Bool TableExprNodeRep::contains (const TableExprId& id, Double value)
 {
     return (value == getDouble(id));
 }
-Bool TableExprNodeRep::hasDComplex (const TableExprId& id,
-                                    const DComplex& value)
+Bool TableExprNodeRep::contains (const TableExprId& id, DComplex value)
 {
     return (value == getDComplex(id));
 }
-Bool TableExprNodeRep::hasString   (const TableExprId& id,
-                                    const String& value)
+Bool TableExprNodeRep::contains (const TableExprId& id, String value)
 {
     return (value == getString(id));
 }
-Bool TableExprNodeRep::hasDate     (const TableExprId& id,
-                                    const MVTime& value)
+Bool TableExprNodeRep::contains (const TableExprId& id, MVTime value)
 {
     return (value == getDate(id));
 }
-MArray<Bool> TableExprNodeRep::hasArrayBool (const TableExprId& id,
-                                             const MArray<Bool>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<Bool>& value)
 {
     return (getBool(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayInt (const TableExprId& id,
-                                            const MArray<Int64>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<Int64>& value)
 {
     return (getInt(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayDouble (const TableExprId& id,
-                                               const MArray<Double>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<Double>& value)
 {
     return (getDouble(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayDComplex (const TableExprId& id,
-                                                 const MArray<DComplex>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<DComplex>& value)
 {
     return (getDComplex(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayString (const TableExprId& id,
-                                               const MArray<String>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<String>& value)
 {
     return (getString(id) == value);
 }
-MArray<Bool> TableExprNodeRep::hasArrayDate (const TableExprId& id,
-                                             const MArray<MVTime>& value)
+MArray<Bool> TableExprNodeRep::contains (const TableExprId& id,
+                                         const MArray<MVTime>& value)
 {
     return (getDate(id) == value);
 }
@@ -573,8 +543,10 @@ TENShPtr TableExprNodeBinary::shortcutOrAnd ()
 
 TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
 {
-  // If the expression is not constant, try to convert the type
-  // of a constant child to the other child's type.
+  // It might be possible to optimize a node by
+  // replacing a constant right hand by a faster implementation
+  // (in particular for the IN operator).
+  node->optimize();
   if (! node->isConstant()) {
     return node;
   }
@@ -583,25 +555,25 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
   if (node->valueType() == VTScalar) {
     switch (node->dataType()) {
     case NTBool:
-      newNode = new TableExprNodeConstBool (node->getBool (0));
+      newNode = std::make_shared<TableExprNodeConstBool>(node->getBool(0));
       break;
     case NTInt:
-      newNode = new TableExprNodeConstInt (node->getInt (0));
+      newNode = std::make_shared<TableExprNodeConstInt>(node->getInt(0));
       break;
     case NTDouble:
-      newNode = new TableExprNodeConstDouble (node->getDouble (0));
+      newNode = std::make_shared<TableExprNodeConstDouble>(node->getDouble(0));
       break;
     case NTComplex:
-      newNode = new TableExprNodeConstDComplex (node->getDComplex(0));
+      newNode = std::make_shared<TableExprNodeConstDComplex>(node->getDComplex(0));
       break;
     case NTString:
-      newNode = new TableExprNodeConstString (node->getString (0));
+      newNode = std::make_shared<TableExprNodeConstString>(node->getString(0));
       break;
     case NTRegex:
-      newNode = new TableExprNodeConstRegex (node->getRegex (0));
+      newNode = std::make_shared<TableExprNodeConstRegex>(node->getRegex(0));
       break;
     case NTDate:
-      newNode = new TableExprNodeConstDate (node->getDate (0));
+      newNode = std::make_shared<TableExprNodeConstDate>(node->getDate(0));
       break;
     default:
       TableExprNode::throwInvDT ("in replaceConstNode"); // should never occur
@@ -609,22 +581,22 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
   } else {
     switch (node->dataType()) {
     case NTBool:
-      newNode = new TableExprNodeArrayConstBool(node->getArrayBool (0));
+      newNode = std::make_shared<TableExprNodeArrayConstBool>(node->getArrayBool(0));
       break;
     case NTInt:
-      newNode = new TableExprNodeArrayConstInt(node->getArrayInt (0));
+      newNode = std::make_shared<TableExprNodeArrayConstInt>(node->getArrayInt(0));
       break;
     case NTDouble:
-      newNode = new TableExprNodeArrayConstDouble(node->getArrayDouble (0));
+      newNode = std::make_shared<TableExprNodeArrayConstDouble>(node->getArrayDouble(0));
       break;
     case NTComplex:
-      newNode = new TableExprNodeArrayConstDComplex(node->getArrayDComplex (0));
+      newNode = std::make_shared<TableExprNodeArrayConstDComplex>(node->getArrayDComplex(0));
       break;
     case NTString:
-      newNode = new TableExprNodeArrayConstString(node->getArrayString (0));
+      newNode = std::make_shared<TableExprNodeArrayConstString>(node->getArrayString(0));
       break;
     case NTDate:
-      newNode = new TableExprNodeArrayConstDate(node->getArrayDate (0));
+      newNode = std::make_shared<TableExprNodeArrayConstDate>(node->getArrayDate(0));
       break;
     default:
       TableExprNode::throwInvDT ("in replaceConstNode"); // should never occur
@@ -643,26 +615,19 @@ TENShPtr TableExprNodeRep::replaceConstNode (const TENShPtr& node)
 
 TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
                                           ValueType vtype,
-                                          OperType oper,
-                                          const Table& table)
-: TableExprNodeRep (tp, vtype, oper, table),
-  lnode_p          (0),
-  rnode_p          (0)
+                                          OperType optype,
+                                          ExprType exprtype)
+: TableExprNodeRep (tp, vtype, optype, exprtype)
 {}
 
 TableExprNodeBinary::TableExprNodeBinary (NodeDataType tp,
                                           const TableExprNodeRep& that,
                                           OperType oper)
-: TableExprNodeRep (that),
-  lnode_p          (0),
-  rnode_p          (0)
+: TableExprNodeRep (that)
 {
     dtype_p  = tp;
     optype_p = oper;
 }
-
-TableExprNodeBinary::~TableExprNodeBinary()
-{}
 
 void TableExprNodeBinary::show (ostream& os, uInt indent) const
 {
@@ -675,23 +640,14 @@ void TableExprNodeBinary::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeBinary::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprNodeBinary::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
+  nodes.push_back (this);
   if (lnode_p) {
-    lnode_p->getAggrNodes (aggr);
+    lnode_p->flattenTree (nodes);
   }
   if (rnode_p) {
-    rnode_p->getAggrNodes (aggr);
-  }
-}
-
-void TableExprNodeBinary::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-  if (lnode_p) {
-    lnode_p->getColumnNodes (cols);
-  }
-  if (rnode_p) {
-    rnode_p->getColumnNodes (cols);
+    rnode_p->flattenTree (nodes);
   }
 }
 
@@ -841,10 +797,7 @@ TableExprNodeRep TableExprNodeBinary::getCommonTypes (const TENShPtr& left,
     }
     // Determine from which table the expression is coming
     // and whether the tables match.
-    Table table = left->table();
-    checkTablePtr (table, right);
-    return TableExprNodeRep (dtype, vtype, opt, atype, extype, ndim, shape,
-                             table);
+    return TableExprNodeRep (dtype, vtype, opt, atype, extype, ndim, shape);
 }
 
 void TableExprNodeBinary::setChildren (const TENShPtr& left,
@@ -970,17 +923,17 @@ void TableExprNodeBinary::adaptDataTypes()
     TENShPtr newNode;
     if (vtype == VTScalar) {
       if (newType == NTDouble) {
-        newNode = new TableExprNodeConstDouble ((*constNode)->getDouble(0));
+        newNode = std::make_shared<TableExprNodeConstDouble>((*constNode)->getDouble(0));
       } else {
-        newNode = new TableExprNodeConstDComplex ((*constNode)->getDouble(0));
+        newNode = std::make_shared<TableExprNodeConstDComplex>((*constNode)->getDouble(0));
       }
     } else {
       if (newType == NTDouble) {
-        newNode = new TableExprNodeArrayConstDouble
-                                            ((*constNode)->getArrayDouble(0));
+        newNode = std::make_shared<TableExprNodeArrayConstDouble>
+                       ((*constNode)->getArrayDouble(0));
       } else {
-        newNode = new TableExprNodeArrayConstDComplex
-                                            ((*constNode)->getArrayDouble(0));
+        newNode = std::make_shared<TableExprNodeArrayConstDComplex>
+                       ((*constNode)->getArrayDouble(0));
       }
     }
     newNode->setUnit ((*constNode)->unit());
@@ -998,13 +951,7 @@ void TableExprNodeBinary::adaptDataTypes()
 TableExprNodeMulti::TableExprNodeMulti (NodeDataType tp, ValueType vtype,
                                         OperType oper,
                                         const TableExprNodeRep& source)
-: TableExprNodeRep (tp, vtype, oper, source.table()),
-  operands_p       (0)
-{
-    exprtype_p = source.exprType();
-}
-
-TableExprNodeMulti::~TableExprNodeMulti()
+: TableExprNodeRep (tp, vtype, oper, source.exprType())
 {}
 
 void TableExprNodeMulti::show (ostream& os, uInt indent) const
@@ -1017,25 +964,17 @@ void TableExprNodeMulti::show (ostream& os, uInt indent) const
     }
 }
 
-void TableExprNodeMulti::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+void TableExprNodeMulti::flattenTree (std::vector<TableExprNodeRep*>& nodes)
 {
-    for (uInt j=0; j<operands_p.size(); j++) {
-        if (operands_p[j] != 0) {
-            operands_p[j]->getAggrNodes (aggr);
-        }
+  nodes.push_back (this);
+  for (uInt j=0; j<operands_p.size(); j++) {
+    if (operands_p[j] != 0) {
+      operands_p[j]->flattenTree (nodes);
     }
+  }
 }
 
-void TableExprNodeMulti::getColumnNodes (vector<TableExprNodeRep*>& cols)
-{
-    for (uInt j=0; j<operands_p.size(); j++) {
-        if (operands_p[j] != 0) {
-            operands_p[j]->getColumnNodes (cols);
-        }
-    }
-}
-
-CountedPtr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc()
+std::shared_ptr<TableExprGroupFuncBase> TableExprNodeRep::makeGroupAggrFunc()
 {
   throw AipsError ("TableExprNodeRep::makeGroupAggrFunc should not be called");
 }

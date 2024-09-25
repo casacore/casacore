@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/Tables/Table.h>
@@ -35,6 +33,7 @@
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/UDFBase.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 using namespace casacore;
@@ -72,9 +71,9 @@ public:
   Int64 getInt (const TableExprId& id)
   {
     const TableExprIdAggr& aid = TableExprIdAggr::cast (id);
-    const vector<TableExprId>& ids = aid.result().ids(id.rownr());
+    const std::vector<TableExprId>& ids = aid.result().ids(id.rownr());
     Int64 sum3 = 0;
-    for (vector<TableExprId>::const_iterator it=ids.begin();
+    for (std::vector<TableExprId>::const_iterator it=ids.begin();
          it!=ids.end(); ++it){
       Int64 v = operands()[0]->getInt(*it);
         sum3 += v*v*v;
@@ -103,12 +102,13 @@ int main()
     UDFBase::registerUDF ("Test.UDFAggr", TestUDFAggr::makeObject);
     makeTable();
     Table tab("tExprNodeUDF_tmp.tab");
+    TableExprInfo tabInfo(tab);
     {
       // Test a normal user defined function.
       TableExprNode node1(tab.col("ANTENNA1"));
       TableExprNodeSet set;
       set.add (TableExprNodeSetElem(node1));
-      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDF", set, tab));
+      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDF", set, tabInfo));
       Table seltab(tab(node2));
       cout << "selected " << seltab.nrow() << " rows" << endl; 
       AlwaysAssertExit (seltab.nrow() == 3);
@@ -123,19 +123,18 @@ int main()
       TableExprNode node1(tab.col("ANTENNA1"));
       TableExprNodeSet set;
       set.add (TableExprNodeSetElem(node1));
-      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tab));
+      TableExprNode node2(TableExprNode::newUDFNode ("Test.UDFAggr", set, tabInfo));
       TableExprNodeRep* rep = const_cast<TableExprNodeRep*>(node2.getRep().get());
-      vector<TableExprNodeRep*> aggrNodes;
-      rep->getAggrNodes (aggrNodes);
+      std::vector<TableExprNodeRep*> aggrNodes = TableExprNodeUtil::getAggrNodes (rep);
       AlwaysAssertExit (aggrNodes.size() == 1);
       AlwaysAssertExit (aggrNodes[0]->isLazyAggregate());
-      CountedPtr<vector<TableExprId> > ids(new vector<TableExprId>());
+      std::shared_ptr<std::vector<TableExprId>> ids(new std::vector<TableExprId>());
       for (uInt i=0; i<tab.nrow(); ++i) {
         ids->push_back (TableExprId(i));
       }
-      vector<CountedPtr<vector<TableExprId> > > idVec(1, ids);
-      vector<CountedPtr<TableExprGroupFuncSet> > funcVec(1);
-      CountedPtr<TableExprGroupResult> res
+      std::vector<std::shared_ptr<std::vector<TableExprId>>> idVec(1, ids);
+      std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcVec(1);
+      std::shared_ptr<TableExprGroupResult> res
         (new TableExprGroupResult(funcVec, idVec));
       TableExprIdAggr aid(res);
       aid.setRownr (0);

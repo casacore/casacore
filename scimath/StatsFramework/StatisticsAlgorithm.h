@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -28,7 +28,6 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/scimath/StatsFramework/StatsDataProvider.h>
 #include <casacore/scimath/StatsFramework/StatisticsData.h>
 #include <casacore/scimath/StatsFramework/StatisticsDataset.h>
@@ -37,6 +36,7 @@
 #include <map>
 #include <set>
 #include <vector>
+#include <memory>
 
 namespace casacore {
 
@@ -212,9 +212,9 @@ public:
     virtual StatisticsData::ALGORITHM algorithm() const = 0;
 
     virtual AccumType getMedian(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     ) = 0;
@@ -224,35 +224,35 @@ public:
     virtual AccumType getMedianAndQuantiles(
         std::map<Double, AccumType>& quantileToValue,
         const std::set<Double>& quantiles,
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     ) = 0;
 
     // get the median of the absolute deviation about the median of the data.
     virtual AccumType getMedianAbsDevMed(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     ) = 0;
 
     // Purposefully not virtual. Derived classes should not implement.
     AccumType getQuantile(
-        Double quantile, CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        Double quantile, std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
 
     // get a map of quantiles to values.
     virtual std::map<Double, AccumType> getQuantiles(
-        const std::set<Double>& quantiles, CountedPtr<uInt64> npts=nullptr,
-        CountedPtr<AccumType> min=nullptr, CountedPtr<AccumType> max=nullptr,
+        const std::set<Double>& quantiles, std::shared_ptr<uInt64> npts=nullptr,
+        std::shared_ptr<AccumType> min=nullptr, std::shared_ptr<AccumType> max=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     ) = 0;

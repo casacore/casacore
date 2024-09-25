@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tMArrayMath.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/MArrayMath.h>
 #include <casacore/tables/TaQL/MArrayLogical.h>
@@ -196,6 +194,18 @@ template <typename T> void doTestComplex()
     checkNear (imag(m1), imag(val), False, i==0);
     checkNear (amplitude(m1), abs(val), False, i==0);
     checkNear (phase(m1), arg(val), False, i==0);
+    m1.setMask (Vector<Bool>(2,False));
+  }
+}
+
+template<typename T> void doTestComplexReal()
+{
+  // Test pow function for mix of complex array and real scalar.
+  T val(1.7);
+  std::complex<T> valc(1,2);
+  MArray<std::complex<T>> m1 (Vector<std::complex<T>>(2, valc));
+  for (int i=0; i<2; ++i) {
+    checkNear (pow(m1,val), std::pow(valc,val), False, i==0);
     m1.setMask (Vector<Bool>(2,False));
   }
 }
@@ -718,6 +728,10 @@ int main()
     doTestComplex<Complex>();
     cout << "doTestComplex<DComplex>" << endl;
     doTestComplex<DComplex>();
+    cout << "doTestComplexReal<Float>" << endl;
+    doTestComplexReal<Float>();
+    cout << "doTestComplexReal<Double>" << endl;
+    doTestComplexReal<Double>();
     cout << "doTestMixed" << endl;
     doTestMixed();
     cout << "doTestReduce" << endl;

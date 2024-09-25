@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MEAS_MEASENGINE_TCC
 #define MEAS_MEASENGINE_TCC
@@ -123,7 +121,9 @@ namespace casacore {
           dynamic_cast<TableExprNodeArrayPart*>(operand.get());
         if (partNode) {
           colNode = partNode->getColumnNode();
-          tabCol  = &(colNode->getColumn());
+          if (colNode) {
+            tabCol = &(colNode->getColumn());
+          }
         }
       }
     }

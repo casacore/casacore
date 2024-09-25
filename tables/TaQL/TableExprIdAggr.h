@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id: TableExprId.h 21403 2013-12-03 20:51:02Z gervandiepen $
 
 
 #ifndef TABLES_TABLEEXPRIDAGGR_H
@@ -34,9 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/tables/TaQL/TableExprId.h>
 #include <casacore/tables/TaQL/ExprGroup.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -87,7 +84,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
   public:
     // Construct it from the aggregation results.
-    explicit TableExprIdAggr (const CountedPtr<TableExprGroupResult>& result)
+    explicit TableExprIdAggr (const std::shared_ptr<TableExprGroupResult>& result)
       : itsMagicValue (0xabababab),
         itsResult     (result)
     {}
@@ -111,7 +108,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     uInt itsMagicValue;
-    CountedPtr<TableExprGroupResult> itsResult;
+    std::shared_ptr<TableExprGroupResult> itsResult;
   };
 
 

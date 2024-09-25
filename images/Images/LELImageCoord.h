@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_LELIMAGECOORD_H
 #define IMAGES_LELIMAGECOORD_H
@@ -35,7 +33,7 @@
 #include <casacore/images/Images/ImageInfo.h>
 #include <casacore/tables/Tables/TableRecord.h>
 #include <casacore/casa/Quanta/Unit.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -139,7 +137,7 @@ public:
   virtual Int doCompare (const LELImageCoord& other) const;
 
 private:
-  CountedPtr<CoordinateSystem> coords_p;
+  std::shared_ptr<CoordinateSystem> coords_p;
   ImageInfo   imageInfo_p;
   Unit        unit_p;
   TableRecord miscInfo_p;

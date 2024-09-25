@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#   $Id$
 
 #include <casacore/lattices/LatticeMath/Fit2D.h>
 
@@ -43,7 +41,6 @@
 #include <casacore/casa/Quanta/MVAngle.h>
 #include <casacore/scimath/Mathematics/AutoDiff.h>
 #include <casacore/scimath/Mathematics/AutoDiffIO.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/Assert.h>
 
 #include <casacore/casa/iostream.h>

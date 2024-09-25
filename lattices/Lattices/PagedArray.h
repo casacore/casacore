@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_PAGEDARRAY_H
 #define LATTICES_PAGEDARRAY_H
@@ -277,7 +275,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Table maskTable(maskSetup);
 // PagedArray<Bool> maskArray(IPosition(4,1024,1024,4,256), maskTable);
 // maskArray.set(False);
-// COWPtr<Array<Bool> > maskPtr;
+// COWPtr<Array<Bool>> maskPtr;
 // maskArray.getSlice(maskPtr, IPosition(4,240,240,3,0),
 // 		      IPosition(4,32,32,1,1), IPosition(4,1));
 // maskPtr.rwRef() = True;

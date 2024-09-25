@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -71,8 +71,6 @@ BiweightStatistics<CASA_STATP>& BiweightStatistics<CASA_STATP>::operator=(
         _maxNiter = other._maxNiter;
         _location = other._location;
         _scale = other._scale;
-        _range = other._range
-            ? new std::pair<AccumType, AccumType>(*other._range) : nullptr;
         _range = other._range;
         _npts = other._npts;
     }
@@ -91,8 +89,8 @@ StatisticsAlgorithm<CASA_STATP>* BiweightStatistics<CASA_STATP>::clone() const {
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt
+    std::shared_ptr<uInt64>, std::shared_ptr<AccumType>,
+    std::shared_ptr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation of the median"
@@ -101,8 +99,8 @@ AccumType BiweightStatistics<CASA_STATP>::getMedian(
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
-    std::map<Double, AccumType>&, const std::set<Double>&, CountedPtr<uInt64>,
-    CountedPtr<AccumType>, CountedPtr<AccumType>, uInt, Bool, uInt
+    std::map<Double, AccumType>&, const std::set<Double>&, std::shared_ptr<uInt64>,
+    std::shared_ptr<AccumType>, std::shared_ptr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation "
@@ -112,7 +110,7 @@ AccumType BiweightStatistics<CASA_STATP>::getMedianAndQuantiles(
 
 CASA_STATD
 AccumType BiweightStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64>, CountedPtr<AccumType>, CountedPtr<AccumType>,
+    std::shared_ptr<uInt64>, std::shared_ptr<AccumType>, std::shared_ptr<AccumType>,
     uInt, Bool, uInt
 ) {
     ThrowCc(
@@ -129,8 +127,8 @@ Int BiweightStatistics<CASA_STATP>::getNiter() const {
 
 CASA_STATD
 std::map<Double, AccumType> BiweightStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>&, CountedPtr<uInt64>, CountedPtr<AccumType>,
-    CountedPtr<AccumType>, uInt, Bool, uInt
+    const std::set<Double>&, std::shared_ptr<uInt64>, std::shared_ptr<AccumType>,
+    std::shared_ptr<AccumType>, uInt, Bool, uInt
 ) {
     ThrowCc(
         "The biweight algorithm does not support computation of quantile values"
@@ -455,8 +453,8 @@ void BiweightStatistics<CASA_STATP>::_doLocation() {
         ds.getDataProvider()
     );
     const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsxw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsw2(new AccumType[dim], True);
+    std::unique_ptr<AccumType[]> tsxw2(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tsw2(new AccumType[dim]);
     // initialize the thread-based sums to 0
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
@@ -514,8 +512,8 @@ void BiweightStatistics<CASA_STATP>::_doScale() {
         ds.getDataProvider()
     );
     const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], True);
-    PtrHolder<AccumType> tww_4u2(new AccumType[dim], True);
+    std::unique_ptr<AccumType[]> tsx_M2w4(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tww_4u2(new AccumType[dim]);
     // initialize the thread-based sums to 0
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
@@ -575,10 +573,10 @@ void BiweightStatistics<CASA_STATP>::_doLocationAndScale() {
         ds.getDataProvider()
     );
     const uInt dim = ClassicalStatisticsData::CACHE_PADDING*nThreadsMax;
-    PtrHolder<AccumType> tsxw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsw2(new AccumType[dim], True);
-    PtrHolder<AccumType> tsx_M2w4(new AccumType[dim], True);
-    PtrHolder<AccumType> tww_4u2(new AccumType[dim], True);
+    std::unique_ptr<AccumType[]> tsxw2(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tsw2(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tsx_M2w4(new AccumType[dim]);
+    std::unique_ptr<AccumType[]> tww_4u2(new AccumType[dim]);
     // initialize the thread-based sums to 0
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MS_MSSPWPARSE_H
 #define MS_MSSPWPARSE_H
@@ -116,7 +114,7 @@ public:
   // Get table expression node object.
   static const TableExprNode* node();
   static MSSpwParse* thisMSSParser;
-  static CountedPtr<MSSelectionErrorHandler> thisMSSpwErrorHandler;
+  static std::shared_ptr<MSSelectionErrorHandler> thisMSSpwErrorHandler;
   static Vector<Int> selectedDDIDs() {return ddidList;}
   static Vector<Int> selectedIDs() {return idList;}
   static Matrix<Int> selectedChanIDs() {return chanList;}

@@ -17,20 +17,18 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_CONVERSIONIO_H
 #define CASA_CONVERSIONIO_H
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/TypeIO.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 //# The following should be a declaration. But our Complex & DComplex classes
 //# are a typedef hence this does not work. Replace the following with
 //# forward declarations when Complex and DComplex are no longer typedefs.
@@ -83,12 +81,9 @@ public:
     // in canonical format.  For small arrays it uses a fixed buffer with
     // length <src>bufferLength</src>. For arrays not fitting in this buffer,
     // it uses a temporary buffer allocated on the heap.
-    // <p>
-    // If takeOver is True this this class will be responsible for deleting the
-    // DataConversion and ByteIO pointers.  Otherwise it is the callers
-    // responsibility.
-    ConversionIO (DataConversion* dataConversion, ByteIO* byteIO,
-		  uInt bufferLength=4096, Bool takeOver=False);
+    ConversionIO (const std::shared_ptr<DataConversion>& dataConversion,
+                  const std::shared_ptr<ByteIO>& byteIO,
+		  uInt bufferLength=4096);
 
     // The copy constructor uses reference semantics
     ConversionIO (const ConversionIO& conversionIO);
@@ -143,7 +138,7 @@ private:
 
 
     //# The data.
-    CountedPtr<DataConversion> itsConversion;
+    std::shared_ptr<DataConversion> itsConversion;
     uInt itsSizeChar;
     uInt itsSizeuChar;
     uInt itsSizeShort;

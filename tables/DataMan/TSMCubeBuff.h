@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TSMCUBEBUFF_H
 #define TABLES_TSMCUBEBUFF_H
@@ -105,52 +103,58 @@ public:
     TSMCubeBuff (TiledStMan* stman, TSMFile* file,
                  const IPosition& cubeShape,
                  const IPosition& tileShape,
-                 const Record& values, Int64 fileOffset, uInt bufferSize);
+                 const Record& values, Int64 fileOffset);
 
     // Reconstruct the hypercube by reading its data from the AipsIO stream.
     // It will link itself to the correct TSMFile. The TSMFile objects
     // must have been reconstructed in advance.
-    TSMCubeBuff (TiledStMan* stman, AipsIO& ios, uInt bufferSize);
+    TSMCubeBuff (TiledStMan* stman, AipsIO& ios);
 
-    virtual ~TSMCubeBuff();
+    ~TSMCubeBuff() override = default;
+
+    // Forbid copy constructor.
+    TSMCubeBuff (const TSMCubeBuff&) = delete;
+
+    // Forbid assignment.
+    TSMCubeBuff& operator= (const TSMCubeBuff&) = delete;
 
     // Flush the data in the cache.
-    virtual void flushCache();
+    virtual void flushCache() override;
 
     // Show the cache statistics.
-    virtual void showCacheStatistics (ostream& os) const;
+    void showCacheStatistics (ostream& os) const override;
 
     // Set the hypercube shape.
     // This is only possible if the shape was not defined yet.
-    virtual void setShape (const IPosition& cubeShape,
-                           const IPosition& tileShape);
+    void setShape (const IPosition& cubeShape,
+                   const IPosition& tileShape) override;
 
     // Extend the last dimension of the cube with the given number.
     // The record can contain the coordinates of the elements added.
-    virtual void extend (uInt64 nr, const Record& coordValues,
-                         const TSMColumn* lastCoordColumn);
+    void extend (uInt64 nr, const Record& coordValues,
+                 const TSMColumn* lastCoordColumn) override;
 
     // Read or write a section in the cube.
     // It is assumed that the section buffer is long enough.
-    virtual void accessSection (const IPosition& start, const IPosition& end,
-                                char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize,
-                                Bool writeFlag);
+    void accessSection (const IPosition& start, const IPosition& end,
+                        char* section, uInt colnr,
+                        uInt localPixelSize, uInt externalPixelSize,
+                        Bool writeFlag) override;
 
     // Read or write a section in a strided way.
     // It is assumed that the section buffer is long enough.
-    virtual void accessStrided (const IPosition& start, const IPosition& end,
-                                const IPosition& stride,
-                                char* section, uInt colnr,
-                                uInt localPixelSize, uInt externalPixelSize,
-                                Bool writeFlag);
+    void accessStrided (const IPosition& start, const IPosition& end,
+                        const IPosition& stride,
+                        char* section, uInt colnr,
+                        uInt localPixelSize, uInt externalPixelSize,
+                        Bool writeFlag) override;
 
     // Set the cache size for the given slice and access path.
-    virtual void setCacheSize (const IPosition& sliceShape,
-                               const IPosition& windowStart,
-                               const IPosition& windowLength,
-                               const IPosition& axisPath,
-                               Bool forceSmaller, Bool userSet);
+    void setCacheSize (const IPosition& sliceShape,
+                       const IPosition& windowStart,
+                       const IPosition& windowLength,
+                       const IPosition& axisPath,
+                       Bool forceSmaller, Bool userSet) override;
 
     // Resize the cache object.
     // If forceSmaller is False, the cache will only be resized when it grows.
@@ -159,43 +163,35 @@ public:
     // The cacheSize has to be given in buckets.
     // <br>The flag <src>userSet</src> inidicates if the cache size is set by
     // the user (by an Accessor object) or automatically (by TSMDataColumn).
-    virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
+    void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet) override;
 
 private:
-    // Forbid copy constructor.
-    TSMCubeBuff (const TSMCubeBuff&);
-
-    // Forbid assignment.
-    TSMCubeBuff& operator= (const TSMCubeBuff&);
-
     // Get the cache object.
     // This will construct the cache object if not present yet.
     BucketBuffered* getCache();
 
     // Construct the cache object (if not constructed yet).
-    virtual void makeCache();
+    void makeCache() override;
 
     // Resync the cache object.
-    virtual void resyncCache();
+    void resyncCache() override;
 
     // Delete the cache object.
-    virtual void deleteCache();
+    void deleteCache() override;
 
     //# Declare member variables.
     // The bucket cache.
-    BucketBuffered* cache_p;
-    // The buffer size to use.
-    uInt bufferSize_p;
+    std::unique_ptr<BucketBuffered> cache_p;
 };
 
 
 
 inline BucketBuffered* TSMCubeBuff::getCache()
 {
-    if (cache_p == 0) {
+    if (!cache_p) {
 	makeCache();
     }
-    return cache_p;
+    return cache_p.get();
 }
 
 

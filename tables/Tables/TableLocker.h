@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLELOCKER_H
 #define TABLES_TABLELOCKER_H
@@ -116,11 +114,6 @@ public:
     // If locked, the destructor releases the lock and flushes the data.
     ~TableLocker();
 
-    // Has this process the read or write lock, thus can the table
-    // be read or written safely?
-    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
-
-private:
     // The copy constructor and assignment are not possible.
     // Note that only one lock can be held on a table, so copying a
     // TableLocker object imposes great difficulties which objects should
@@ -129,10 +122,15 @@ private:
     // with a reference counted body class.
     // However, that will only be done when the need arises.
     // <group>
-    TableLocker (const TableLocker&);
-    TableLocker& operator= (const TableLocker&);
+    TableLocker (const TableLocker&) = delete;
+    TableLocker& operator= (const TableLocker&) = delete;
     // </group>
 
+    // Has this process the read or write lock, thus can the table
+    // be read or written safely?
+    Bool hasLock (FileLocker::LockType = FileLocker::Write) const;
+
+private:
     //# Variables.
     Table itsTable;
     bool  itsHadLock;

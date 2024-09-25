@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/TableIter.h>
 #include <casacore/tables/Tables/BaseTabIter.h>
@@ -46,7 +44,7 @@ TableIterator::TableIterator (const Table& tab,
 {
     Block<String> keys(1, key);
     Block<Int> ord(1, order);
-    Block<CountedPtr<BaseCompare> > cmpObj(1);
+    Block<std::shared_ptr<BaseCompare>> cmpObj(1);
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     ord, option);
     next();                            // get first subtable
@@ -59,7 +57,7 @@ TableIterator::TableIterator (const Table& tab,
 : tabIterPtr_p (0)
 {
     Block<Int> ord(keys.nelements(), order);
-    Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements());
+    Block<std::shared_ptr<BaseCompare>> cmpObj(keys.nelements());
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     ord, option);
     next();                            // get first subtable
@@ -71,7 +69,7 @@ TableIterator::TableIterator (const Table& tab,
 			      Option option)
 : tabIterPtr_p (0)
 {
-    Block<CountedPtr<BaseCompare> > cmpObj(keys.nelements());
+    Block<std::shared_ptr<BaseCompare>> cmpObj(keys.nelements());
     tabIterPtr_p = tab.baseTablePtr()->makeIterator (keys, cmpObj,
 						     orders, option);
     next();                            // get first subtable
@@ -79,7 +77,7 @@ TableIterator::TableIterator (const Table& tab,
 
 TableIterator::TableIterator (const Table& tab,
                               const Block<String>& keys,
-                              const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                              const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
                               const Block<Int>& orders,
                               Option option,
                               bool cacheIterationBoundaries)

@@ -1,13 +1,17 @@
 FROM quay.io/pypa/manylinux2014_x86_64
 
-# set python version
-ENV PYMAJOR 3
-ENV PYMINOR 7
-ENV PYUNICODE m
+# how many threads to use for compiling
+ARG THREADS=4
+
+# These variables MUST be set using the --build-arg option
+ARG PYMAJOR
+ARG PYMINOR
+ARG PYUNICODE
+
 ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}${PYUNICODE}
 
 # boost version
-ENV BOOSTMAJOR 75
+ENV BOOSTMAJOR 79
 ENV BOOSTMINOR 0
 ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
 ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
@@ -15,17 +19,14 @@ ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
 # where do we epect casacore data build time and runtime
 ENV CASACORE_DATA /usr/share/casacore/data
 
-# how many threads to use for compiling
-ENV THREADS 4
-
 # install rpms
 RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel readline-devel fftw-devel wcslib-devel gsl-devel
 
 # download other source code
 WORKDIR /tmp
-RUN curl http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
-RUN curl ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar --output /tmp/measures.tgz
-RUN curl https://ufpr.dl.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
+RUN curl -L http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
+RUN curl -L ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar --output /tmp/measures.tgz
+RUN curl -L https://downloads.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
 
 RUN mkdir /build
 WORKDIR /build
@@ -43,7 +44,7 @@ RUN make -j${THREADS}
 
 # setup boost
 WORKDIR /build
-RUN tar jxvf /tmp/boost.tar.bz2
+RUN tar jxf /tmp/boost.tar.bz2
 WORKDIR /build/boost_${BOOST_}
 RUN ./bootstrap.sh --prefix=/opt/boost \
     --with-libraries=python \
@@ -54,8 +55,8 @@ RUN ./b2 -j${THREADS} \
     cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/" \
     link=static,shared install
 
-# casacore wants numpy
-RUN /opt/python/${TARGET}/bin/pip install numpy==1.19.5
+# casacore wants numpy. Do not take oldest_supported_numpy, because we want numpy 2.0 compatibility
+RUN /opt/python/${TARGET}/bin/pip install numpy
 
 # set up casacore
 ADD . /code
@@ -73,6 +74,7 @@ RUN cmake .. \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
     -DPORTABLE=TRUE \
+    -DUSE_PCH=FALSE \
     -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN make -j${THREADS}
 USER root

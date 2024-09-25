@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/ConcatColumn.h>
 #include <casacore/tables/Tables/ConcatTable.h>
@@ -209,7 +207,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   }
 
   void ConcatColumn::allocIterBuf (void*& lastVal, void*& curVal,
-                                   CountedPtr<BaseCompare>& cmpObj)
+                                   std::shared_ptr<BaseCompare>& cmpObj)
     { refColPtr_p[0]->allocIterBuf (lastVal, curVal, cmpObj); }
 
   void ConcatColumn::freeIterBuf (void*& lastVal, void*& curVal)
@@ -326,7 +324,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       rownr_t nrrow = rows.nelements() - st[rowAxis];
       sz[rowAxis] = nrrow;
       Vector<rownr_t> rowPart(tabRowNrs(Slice(st[rowAxis], nrrow))); 
-      CountedPtr<ArrayBase> part (arr.getSection (Slicer(st, sz)));
+      std::unique_ptr<ArrayBase> part (arr.getSection (Slicer(st, sz)));
       accessFunc (refColPtr_p[lastTabNr], RefRows(rowPart), ns, *part);
     }
   }

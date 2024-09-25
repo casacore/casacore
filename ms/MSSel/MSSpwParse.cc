@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/ms/MSSel/MSSpwParse.h>
 #include <casacore/ms/MSSel/MSSpwIndex.h>
@@ -41,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   Vector<Int> MSSpwParse::ddidList;
   Matrix<Int> MSSpwParse::chanList; 
   TableExprNode MSSpwParse::columnAsTEN_p;
-  CountedPtr<MSSelectionErrorHandler> MSSpwParse::thisMSSpwErrorHandler;
+  std::shared_ptr<MSSelectionErrorHandler> MSSpwParse::thisMSSpwErrorHandler;
   //# Constructor
   //
   //------------------------------------------------------------------

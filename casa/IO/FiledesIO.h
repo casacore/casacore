@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_FILEDESIO_H
 #define CASA_FILEDESIO_H
@@ -148,6 +146,9 @@ public:
     // Fsync the file (i.e. force the data to be physically written).
     virtual void fsync();
 
+    // Truncate the file to the given size.
+    virtual void truncate (Int64 size);
+  
     // Some static convenience functions for file create/open/close.
     // Close is only done if the fd is non-negative.
     // <group>

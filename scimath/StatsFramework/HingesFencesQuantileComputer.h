@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -74,7 +74,7 @@ protected:
     // <group>
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
         const std::vector<AccumType>& maxLimit
@@ -82,7 +82,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -91,7 +91,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -100,7 +100,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
@@ -110,7 +110,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -119,7 +119,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
         const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -128,7 +128,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, const DataRanges& ranges, Bool isInclude,
@@ -138,7 +138,7 @@ protected:
 
     virtual void _findBins(
         std::vector<BinCountArray>& binCounts,
-        std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+        std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, const std::vector<StatsHistogram<AccumType>>& binDesc,

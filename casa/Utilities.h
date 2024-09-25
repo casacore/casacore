@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #ifndef CASA_UTILITIES_H
@@ -41,7 +39,6 @@
 #include <casacore/casa/Utilities/DynBuffer.h>
 #include <casacore/casa/Utilities/Fallible.h>
 #include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/Regex.h>
 #include <casacore/casa/Utilities/Sequence.h>
 #include <casacore/casa/Utilities/Sort.h>
@@ -98,9 +95,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //  <ul>
 //   <li> <linkto class=CountedPtr>Counted pointers</linkto>
 //    provide support for reference counting.
-//   <li> <linkto class=PtrHolder>Pointer holders</linkto>
-//    can be used to hold allocated pointers which should be deleted
-//    when an exception is thrown.
 //  </ul> 
 //  <li> Datatype utilities
 //  <ul>

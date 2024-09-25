@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELUNARY_H
 #define LATTICES_LELUNARY_H
@@ -190,7 +188,7 @@ public:
 // Constructor takes operation and expression
 // to be operated upon
    LELUnary(const LELUnaryEnums::Operation op, 
-	    const CountedPtr<LELInterface<T> >& pExpr);
+	    const std::shared_ptr<LELInterface<T>>& pExpr);
 
 // Destructor does nothing
   ~LELUnary();
@@ -218,7 +216,7 @@ public:
 
 private:
    LELUnaryEnums::Operation op_p;
-   CountedPtr<LELInterface<T> > pExpr_p;
+   std::shared_ptr<LELInterface<T>> pExpr_p;
 };
 
 
@@ -285,7 +283,7 @@ public:
 // Constructor takes operation and expression
 // to be operated upon
    LELUnaryBool(const LELUnaryEnums::Operation op, 
-		const CountedPtr<LELInterface<Bool> >& pExpr);
+		const std::shared_ptr<LELInterface<Bool>>& pExpr);
 
 // Destructor does nothing
   ~LELUnaryBool();
@@ -313,7 +311,7 @@ public:
 
 private:
    LELUnaryEnums::Operation op_p;
-   CountedPtr<LELInterface<Bool> > pExpr_p;
+   std::shared_ptr<LELInterface<Bool>> pExpr_p;
 };
 
 

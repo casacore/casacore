@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/ms/MSSel/MSStateParse.h>
 #include <casacore/ms/MSSel/MSStateIndex.h>
@@ -37,7 +35,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MSStateParse* MSStateParse::thisMSSIParser = 0x0; // Global pointer to the parser object
   TableExprNode* MSStateParse::node_p = 0x0;
   Vector<Int> MSStateParse::idList;
-  CountedPtr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
+  std::shared_ptr<MSSelectionErrorHandler> MSStateParse::thisMSSErrorHandler;
   //MSSelectionErrorHandler* MSStateParse::thisMSSErrorHandler=NULL;
 
   //# Constructor

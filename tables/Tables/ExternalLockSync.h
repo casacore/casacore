@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_EXTERNALLOCKSYNC_H
 #define TABLES_EXTERNALLOCKSYNC_H
@@ -69,6 +67,12 @@ public:
 
     ~ExternalLockSync();
 
+    // Copy constructor is forbidden.
+    ExternalLockSync (const ExternalLockSync& that) = delete;
+
+    // Assignment is forbidden.
+    ExternalLockSync& operator= (const ExternalLockSync& that) = delete;
+
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
@@ -102,12 +106,6 @@ public:
     Bool hasLock (FileLocker::LockType) const;
 
 private:
-    // Copy constructor is forbidden.
-    ExternalLockSync (const ExternalLockSync& that);
-
-    // Assignment is forbidden.
-    ExternalLockSync& operator= (const ExternalLockSync& that);
-
     // The callback function when releasing a lock.
     static MemoryIO* releaseCallBack (void* lockSyncObject, Bool always);
 

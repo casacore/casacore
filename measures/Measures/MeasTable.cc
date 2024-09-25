@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MeasTable.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 //# Includes
 #include <casacore/measures/Measures/MeasTable.h>
@@ -90,8 +88,8 @@ Vector<MDirection> MeasTable::srcPos;
 std::once_flag MeasTable::theirIGRFInitOnceFlag;
 Double MeasTable::dtimeIGRF = 0;
 Double MeasTable::firstIGRF = 0;
-std::vector<Vector<Double> > MeasTable::coefIGRF;
-std::vector<Vector<Double> > MeasTable::dIGRF;
+std::vector<Vector<Double>> MeasTable::coefIGRF;
+std::vector<Vector<Double>> MeasTable::dIGRF;
   ///#if !defined(USE_THREADS) || defined(__APPLE__)
   ///std::mutex MeasTable::theirdUT1Mutex;
   ///#endif
@@ -192,7 +190,7 @@ const Polynomial<Double> &MeasTable::fundArg(uInt which) {
     {1072261.307, 1602961601.328, -6.891,  0.019}, 
     { 450160.280,   -6962890.539,  7.455,  0.008}
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcFundArg(&FUND[0]));
+  static const std::vector<Polynomial<Double>> polyArray(calcFundArg(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
@@ -206,7 +204,7 @@ const Polynomial<Double> &MeasTable::fundArg1950(uInt which) {
     { 1262654.95,1602961611.18, -5.17,   0.0068},
     {  933059.79,  -6962911.23,  7.48,   0.0080}
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcFundArg(&FUND[0]));
+  static const std::vector<Polynomial<Double>> polyArray(calcFundArg(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
@@ -220,7 +218,7 @@ const Polynomial<Double> &MeasTable::fundArg2000(uInt which) {
     {1072260.70369,  1602961601.2090, - 6.3706,  0.006593, -0.00003169},
     { 450160.398036,   -6962890.5431,   7.4722,  0.007702, -0.00005939}
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcFundArg00(&FUND[0]));
+  static const std::vector<Polynomial<Double>> polyArray(calcFundArg00(&FUND[0]));
   DebugAssert(which < 6, AipsError);
   return polyArray[which];
 }
@@ -236,13 +234,13 @@ const Polynomial<Double> &MeasTable::planetaryArg2000(uInt which) {
     { 5.481293871,    7.4781598567 },
     { 5.321159000,    3.8127774000 }
   };
-  static const std::vector<Polynomial<Double> > polyArray(calcPlanArg00(&FUND[0]));
+  static const std::vector<Polynomial<Double>> polyArray(calcPlanArg00(&FUND[0]));
   DebugAssert(which < 14, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcFundArg(const Double coeff[6][4]) {
-  std::vector<Polynomial<Double> > result(6);
+std::vector<Polynomial<Double>> MeasTable::calcFundArg(const Double coeff[6][4]) {
+  std::vector<Polynomial<Double>> result(6);
   Int i,j;
   for (i=0; i<6; i++) {
     result[i] = Polynomial<Double>(3);
@@ -253,8 +251,8 @@ std::vector<Polynomial<Double> > MeasTable::calcFundArg(const Double coeff[6][4]
   return result;
 }    
 
-std::vector<Polynomial<Double> > MeasTable::calcFundArg00(const Double coeff[6][5]) {
-  std::vector<Polynomial<Double> > result(6);
+std::vector<Polynomial<Double>> MeasTable::calcFundArg00(const Double coeff[6][5]) {
+  std::vector<Polynomial<Double>> result(6);
   Int i,j;
   for (i=0; i<6; i++) {
     result[i] = Polynomial<Double>(4);
@@ -265,9 +263,9 @@ std::vector<Polynomial<Double> > MeasTable::calcFundArg00(const Double coeff[6][
   return result;
 }    
 
-std::vector<Polynomial<Double> > MeasTable::calcPlanArg00(const Double coeff[8][2]) {
+std::vector<Polynomial<Double>> MeasTable::calcPlanArg00(const Double coeff[8][2]) {
   static const Double APA[3] = { 0.0, 0.02438175, 0.00000538691 };
-  std::vector<Polynomial<Double> > result(14);
+  std::vector<Polynomial<Double>> result(14);
   for (uInt i=0; i<5; i++) {
     result[i] = fundArg2000(i+1);
   }
@@ -2017,17 +2015,17 @@ const Double* MeasTable::mulArg1950(uInt which) {
   return &(ARG[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulSC(Double time, Double epsilon)
 {
   return theirMulSC.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC2000A(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulSC2000A(Double time, Double epsilon)
 {
   return theirMulSC2000A.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC2000B(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulSC2000B(Double time, Double epsilon)
 {
   return theirMulSC2000B.getArray (time, epsilon);
 }
@@ -2772,7 +2770,7 @@ const Double* MeasTable::mulSCEqEqCT2000(uInt which) {
   return &(MULSC[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulSC1950(Double time, Double epsilon) {
+std::shared_ptr<Matrix<Double>> MeasTable::mulSC1950(Double time, Double epsilon) {
   return theirMulSC1950.getArray (time, epsilon);
 }
 
@@ -3124,12 +3122,12 @@ void MeasTable::doInitIGRF()
 
 // Aberration function
 const Polynomial<Double> &MeasTable::aberArg(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAberArg());
+  static const std::vector<Polynomial<Double>> polyArray(calcAberArg());
   DebugAssert(which < 13, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
+std::vector<Polynomial<Double>> MeasTable::calcAberArg() {
   static const Double ABERFUND[13][2] = {
     {4.4026088,	2608.7903142},
     {3.1761467,	1021.3285546},
@@ -3145,7 +3143,7 @@ std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
     {6.2400601,	 628.3019553},
     {1.6279052,	8433.4661601}
   };
-  std::vector<Polynomial<Double> > polyArray(13);
+  std::vector<Polynomial<Double>> polyArray(13);
   Int i,j;
   for (i=0; i<13; i++) {
     polyArray[i] = Polynomial<Double>(1);
@@ -3158,13 +3156,13 @@ std::vector<Polynomial<Double> > MeasTable::calcAberArg() {
 
 // Derivative aber
 const Polynomial<Double> &MeasTable::aberArgDeriv(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAberArgDeriv());
+  static const std::vector<Polynomial<Double>> polyArray(calcAberArgDeriv());
   DebugAssert(which < 13, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAberArgDeriv() {
-  std::vector<Polynomial<Double> > polyArray(13);
+std::vector<Polynomial<Double>> MeasTable::calcAberArgDeriv() {
+  std::vector<Polynomial<Double>> polyArray(13);
   for (int i=0; i<13; i++) {
     const Polynomial<Double> *polyPtr = &aberArg(i);
     polyArray[i] = polyPtr->derivative();
@@ -3173,12 +3171,12 @@ std::vector<Polynomial<Double> > MeasTable::calcAberArgDeriv() {
 }
 
 const Polynomial<Double> &MeasTable::aber1950Arg(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAber1950Arg());
+  static const std::vector<Polynomial<Double>> polyArray(calcAber1950Arg());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
+std::vector<Polynomial<Double>> MeasTable::calcAber1950Arg() {
   static const Double ABERFUND[12][4] = {
     {1065976.59, 1717915856.79, 33.09,   0.0518},
     {1290513.0,  129596579.1,   -0.54,   -0.0120},
@@ -3193,7 +3191,7 @@ std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
     {260701.20,	1542164.400,	0,	0},
     {135831.60,	786459.600,	0,	0}
   };
-  std::vector<Polynomial<Double> > polyArray(12);
+  std::vector<Polynomial<Double>> polyArray(12);
   Int i,j;
   for (i=0; i<12; i++) {
     polyArray[i] = Polynomial<Double>(3);
@@ -3206,13 +3204,13 @@ std::vector<Polynomial<Double> > MeasTable::calcAber1950Arg() {
 
 // Derivative aber1950
 const Polynomial<Double> &MeasTable::aber1950ArgDeriv(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcAber1950ArgDeriv());
+  static const std::vector<Polynomial<Double>> polyArray(calcAber1950ArgDeriv());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcAber1950ArgDeriv() {
-  std::vector<Polynomial<Double> > polyArray(12);
+std::vector<Polynomial<Double>> MeasTable::calcAber1950ArgDeriv() {
+  std::vector<Polynomial<Double>> polyArray(12);
   for (int i=0; i<12; i++) {
     const Polynomial<Double> *polyPtr = &aber1950Arg(i);
     polyArray[i] = polyPtr->derivative();
@@ -3495,21 +3493,21 @@ const Double* MeasTable::mulAberEarthArg(uInt which) {
   return &(ABEREARTHARG[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulAber(Double time, Double epsilon) {
+std::shared_ptr<Matrix<Double>> MeasTable::mulAber(Double time, Double epsilon) {
   return theirMulAber.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulAber1950(Double time, Double epsilon) {
+std::shared_ptr<Matrix<Double>> MeasTable::mulAber1950(Double time, Double epsilon) {
   return theirMulAber1950.getArray (time, epsilon);
 }
 
 const Vector<Double> &MeasTable::mulSunAber(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcMulSunAber());
+  static const std::vector<Vector<Double>> argArray(calcMulSunAber());
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
+std::vector<Vector<Double>> MeasTable::calcMulSunAber() {
   static const Short MSUNABER[17][6] = {
     {	719,	0,	6,	-660,	-15,	-283},
     {	159,	0,	2,	-147,	-6,	-61},
@@ -3529,7 +3527,7 @@ std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
     {	-1,	0,	0,	1,	0,	0},
     {	1,	0,	0,	0,	0,	0}
   };
-  std::vector<Vector<Double> > argArray(17);
+  std::vector<Vector<Double>> argArray(17);
   UnitVal AUperDay(1e-8,"AU/d");
   Double factor = AUperDay.getFac();
   Int i,j;
@@ -3543,12 +3541,12 @@ std::vector<Vector<Double> > MeasTable::calcMulSunAber() {
 }
 
 const Vector<Double> &MeasTable::mulEarthAber(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcMulEarthAber());
+  static const std::vector<Vector<Double>> argArray(calcMulEarthAber());
   DebugAssert(which < 17, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
+std::vector<Vector<Double>> MeasTable::calcMulEarthAber() {
   static const Short MEARTHABER[17][3] = {
     {	715,	-656,	-285},
     {	0,	26,	-59},
@@ -3568,7 +3566,7 @@ std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
     {	1,	0,	0},
     {	0,	0,	-1}
   };
-  std::vector<Vector<Double> > argArray(17);
+  std::vector<Vector<Double>> argArray(17);
   UnitVal AUperDay(1e-8,"AU/d");
   Double factor = AUperDay.getFac();
   Int i,j;
@@ -3582,17 +3580,17 @@ std::vector<Vector<Double> > MeasTable::calcMulEarthAber() {
 }
 
 const Vector<Double> &MeasTable::AberETerm(uInt which) {
-  static const std::vector<Vector<Double> > termArray(calcAberETerm());
+  static const std::vector<Vector<Double>> termArray(calcAberETerm());
   DebugAssert(which < 2, AipsError);
   return termArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcAberETerm() {
+std::vector<Vector<Double>> MeasTable::calcAberETerm() {
   static const Double TERM[2][3] = {
     {-1.62557,  -0.31919, -0.13843},
     {+1.245,    -1.580,   -0.659}
   };
-  std::vector<Vector<Double> > termArray(2);
+  std::vector<Vector<Double>> termArray(2);
   Int i;
   for (i=0; i<2; i++) {
     termArray[i].resize(3);
@@ -3616,17 +3614,17 @@ Double MeasTable::diurnalAber(Double radius, Double T) {
 
 // LSR velocity (kinematical)
 const Vector<Double> &MeasTable::velocityLSRK(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLSRK());
+  static const std::vector<Vector<Double>> argArray(calcVelocityLSRK());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLSRK() {
+std::vector<Vector<Double>> MeasTable::calcVelocityLSRK() {
   static const Double LSR[2][3] = {
     {0.0145021,  -0.865863, 0.500071},
     {0.00724658, -0.865985, 0.500018}
   };
-  std::vector<Vector<Double> > argArray(2);
+  std::vector<Vector<Double>> argArray(2);
   Double v = 20.0*1000.;
   for (Int i=0; i<2; i++) {
     argArray[i].resize(3);
@@ -3639,17 +3637,17 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLSRK() {
 
 // LSR velocity (dynamical)
 const Vector<Double> &MeasTable::velocityLSR(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLSR());
+  static const std::vector<Vector<Double>> argArray(calcVelocityLSR());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLSR() {
+std::vector<Vector<Double>> MeasTable::calcVelocityLSR() {
   static const Double LSR[2][3] = {
     {-0.0385568, -0.881138, 0.471285},
     {-0.0461164, -0.880664, 0.471491}
   };
-  std::vector<Vector<Double> > argArray(2);
+  std::vector<Vector<Double>> argArray(2);
   Double v = sqrt(81.+144.+49.)*1000.;
   for (Int i=0; i<2; i++) {
     argArray[i].resize(3);
@@ -3662,17 +3660,17 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLSR() {
 
 // LSR velocity wrt galactic centre
 const Vector<Double> &MeasTable::velocityLSRGal(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLSRGal());
+  static const std::vector<Vector<Double>> argArray(calcVelocityLSRGal());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLSRGal() {
+std::vector<Vector<Double>> MeasTable::calcVelocityLSRGal() {
   static const Double LSR[2][3] = {
     {0.494109, -0.44483 , 0.746982},
     {0.492728, -0.450347, 0.744585}
   };
-  std::vector<Vector<Double> > argArray(2);
+  std::vector<Vector<Double>> argArray(2);
   Double v = 220.*1000.;
   for (Int i=0; i<2; i++) {
     argArray[i].resize(3);
@@ -3685,17 +3683,17 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLSRGal() {
 
 // LGROUP velocity wrt bary center
 const Vector<Double> &MeasTable::velocityLGROUP(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityLGROUP());
+  static const std::vector<Vector<Double>> argArray(calcVelocityLGROUP());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityLGROUP() {
+std::vector<Vector<Double>> MeasTable::calcVelocityLGROUP() {
   static const Double LGROUP[2][3] = {
     {0.593553979227, -0.177954636914, 0.784873124106},
     {0.5953342407,   -0.184600136022, 0.781984610866} 
   };
-  std::vector<Vector<Double> > argArray(2);
+  std::vector<Vector<Double>> argArray(2);
   Double v = 308.*1000.;
   for (Int i=0; i<2; i++) {
     argArray[i].resize(3);
@@ -3708,17 +3706,17 @@ std::vector<Vector<Double> > MeasTable::calcVelocityLGROUP() {
 
 // CMB velocity wrt bary center
 const Vector<Double> &MeasTable::velocityCMB(uInt which) {
-  static const std::vector<Vector<Double> > argArray(calcVelocityCMB());
+  static const std::vector<Vector<Double>> argArray(calcVelocityCMB());
   DebugAssert(which < 2, AipsError);
   return argArray[which];
 }
 
-std::vector<Vector<Double> > MeasTable::calcVelocityCMB() {
+std::vector<Vector<Double>> MeasTable::calcVelocityCMB() {
   static const Double CMB[2][3] = {
     {-0.97176985257,  0.202393953108, -0.121243727187},
     {-0.970024232022, 0.213247954272, -0.11652595972}
   };
-  std::vector<Vector<Double> > argArray(2);
+  std::vector<Vector<Double>> argArray(2);
   Double v = 369.5*1000.;
   for (Int i=0; i<2; i++) {
     argArray[i].resize(3);
@@ -3731,12 +3729,12 @@ std::vector<Vector<Double> > MeasTable::calcVelocityCMB() {
 
 // Earth and Sun position
 const Polynomial<Double> &MeasTable::posArg(uInt which) { 
-  static const std::vector<Polynomial<Double> > polyArray(calcPosArg());
+  static const std::vector<Polynomial<Double>> polyArray(calcPosArg());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
+std::vector<Polynomial<Double>> MeasTable::calcPosArg() {
   static const Double POSFUND[12][2] = {
     {252.25,       149472.67},      // Q
     {181.9798,     58517.8157},     // V
@@ -3751,7 +3749,7 @@ std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
     { 93.27210,    483202.01753},   // F
     {134.9634,     477198.8676}     // l
   };
-  std::vector<Polynomial<Double> > polyArray(12);
+  std::vector<Polynomial<Double>> polyArray(12);
   Int i,j;
   for (i=0; i<12; i++) {
     polyArray[i] = Polynomial<Double>(1);
@@ -3764,13 +3762,13 @@ std::vector<Polynomial<Double> > MeasTable::calcPosArg() {
 
 // Derivative of Earth and Sun position polynomial
 const Polynomial<Double> &MeasTable::posArgDeriv(uInt which) {
-  static const std::vector<Polynomial<Double> > polyArray(calcPosArgDeriv());
+  static const std::vector<Polynomial<Double>> polyArray(calcPosArgDeriv());
   DebugAssert(which < 12, AipsError);
   return polyArray[which];
 }
 
-std::vector<Polynomial<Double> > MeasTable::calcPosArgDeriv() {
-  std::vector<Polynomial<Double> > polyArray(12);
+std::vector<Polynomial<Double>> MeasTable::calcPosArgDeriv() {
+  std::vector<Polynomial<Double>> polyArray(12);
   for (int i=0; i<12; i++) {
     const Polynomial<Double> *polyPtr = &posArg(i);
     polyArray[i] = polyPtr->derivative();
@@ -4158,22 +4156,22 @@ const Double* MeasTable::mulPosSunZArg(uInt which) {
   return &(POSZARG[which][0]);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosEarthXY(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulPosEarthXY(Double time, Double epsilon)
 {
   return theirMulPosEarthXY.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosEarthZ(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulPosEarthZ(Double time, Double epsilon)
 {
   return theirMulPosEarthZ.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosSunXY(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulPosSunXY(Double time, Double epsilon)
 {
   return theirMulPosSunXY.getArray (time, epsilon);
 }
 
-CountedPtr<Matrix<Double> > MeasTable::mulPosSunZ(Double time, Double epsilon)
+std::shared_ptr<Matrix<Double>> MeasTable::mulPosSunZ(Double time, Double epsilon)
 {
   return theirMulPosSunZ.getArray (time, epsilon);
 }

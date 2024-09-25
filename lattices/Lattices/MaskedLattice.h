@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_MASKEDLATTICE_H
 #define LATTICES_MASKEDLATTICE_H
@@ -152,7 +150,7 @@ class LatticeRegion;
 //
 //   const IPosition inputSliceShape(4,nx,ny,1,1);
 //   const IPosition resultSliceShape(4,nx/2+1,ny,1,1);
-//   COWPtr<Array<Float> > 
+//   COWPtr<Array<Float>> 
 //     inputArrPtr(new Array<Float>(inputSliceShape.nonDegenerate()));
 //   Array<Complex> resultArray(resultSliceShape.nonDegenerate());
 //   FFTServer<Float, Complex> FFT2D(inputSliceShape.nonDegenerate());
@@ -267,14 +265,14 @@ public:
   // If there is no mask, it still works fine.
   // In that case it sizes the buffer correctly and sets it to True.
   // <group>   
-  Bool getMask (COWPtr<Array<Bool> >& buffer,
+  Bool getMask (COWPtr<Array<Bool>>& buffer,
 		Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool> >& buffer, const Slicer& section,
+  Bool getMaskSlice (COWPtr<Array<Bool>>& buffer, const Slicer& section,
 		     Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool> >& buffer, const IPosition& start, 
+  Bool getMaskSlice (COWPtr<Array<Bool>>& buffer, const IPosition& start, 
 		     const IPosition& shape,
 		     Bool removeDegenerateAxes=False) const;
-  Bool getMaskSlice (COWPtr<Array<Bool> >& buffer, const IPosition& start, 
+  Bool getMaskSlice (COWPtr<Array<Bool>>& buffer, const IPosition& start, 
 		     const IPosition& shape, const IPosition& stride,
 		     Bool removeDegenerateAxes=False) const;
   Bool getMask (Array<Bool>& buffer,

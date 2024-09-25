@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MVTIME_H
 #define CASA_MVTIME_H
@@ -460,9 +458,19 @@ ostream &operator>>(ostream &is, MVTime &meas);
 ostream &operator<<(ostream &os, const MVTime::Format &form);
 // </group>
 
-// is equal operator, uses operator Double which returns days
+// equality and comparison operators, use operator Double which returns days
 inline Bool operator==(const MVTime &lh, const MVTime &rh) 
 { return (lh.operator Double() == rh.operator Double());}
+inline Bool operator!=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() != rh.operator Double());}
+inline Bool operator<(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() < rh.operator Double());}
+inline Bool operator<=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() <= rh.operator Double());}
+inline Bool operator>(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() > rh.operator Double());}
+inline Bool operator>=(const MVTime &lh, const MVTime &rh)
+{ return (lh.operator Double() >= rh.operator Double());}
 
 
 

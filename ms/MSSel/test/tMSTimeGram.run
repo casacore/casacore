@@ -4,8 +4,6 @@
 # -----------------------------------------------------------------------------
 # This script executes the program tMSTimeGram to test the
 # MSTimeGram module.
-#
-# $Id$
 #-----------------------------------------------------------------------------
 
   MS=$CASADEMO"mssel_test_small.ms"

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ArrayColumn.tcc 21354 2013-05-27 09:47:34Z gervandiepen $
 
 #include <casacore/tables/Tables/ArrayColumnBase.h>
 #include <casacore/tables/Tables/ArrayColumnFunc.h>
@@ -695,7 +693,7 @@ void ArrayColumnBase::handleSlices (const Vector<Vector<Slice> >& slices,
   uInt nrdim = slicer.ndim();
   IPosition pos(nrdim, 0);
   while (True) {
-    CountedPtr<ArrayBase> refArr
+    std::shared_ptr<ArrayBase> refArr
       (arr.getSection (Slicer(arrStart, arrEnd, Slicer::endIsLast)));
     functor.apply (Slicer(colStart, colLen, colIncr), *refArr);
     uInt i;

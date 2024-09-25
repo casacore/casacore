@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MASKEDARRAY2_H
 #define CASA_MASKEDARRAY2_H
@@ -320,14 +318,14 @@ class Slicer;
 // </todo>
 
 
-template<typename T, typename ArrayAlloc, typename MaskAlloc>
+template<typename T>
 class MaskedArray
 {
 
 public:
-  typedef Array<T, ArrayAlloc> array_type;
-  typedef Array<LogicalArrayElem, MaskAlloc> mask_type;
-  typedef MaskedArray<T, ArrayAlloc, MaskAlloc> masked_array_type;
+  typedef Array<T> array_type;
+  typedef Array<LogicalArrayElem> mask_type;
+  typedef MaskedArray<T> masked_array_type;
   
   // Default constructor for a MaskedArray does not allocate any memory
   // for the Data array or Mask. Hence the masked array 
@@ -611,7 +609,7 @@ public:
     // <group>
 
     // The returned Array will have dimension one.
-    Array<T, ArrayAlloc> getCompressedArray () const;
+    Array<T> getCompressedArray () const;
 
     // The returned Array will have the input shape.  This shape must
     // give the returned Array the required number of elements.
@@ -620,7 +618,7 @@ public:
     //    <li> ArrayError
     // </thrown>
     //
-    Array<T, ArrayAlloc> getCompressedArray (const IPosition & shape) const;
+    Array<T> getCompressedArray (const IPosition & shape) const;
 
     // </group>
 
@@ -727,12 +725,12 @@ protected:
 //
 //   <group name=conform2>
 //
-template<typename TL, typename ArrayAllocL, typename MaskAllocL, typename TR, typename ArrayAllocR>
-  bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const Array<TR, ArrayAllocR> &right);
-template<typename TL, typename ArrayAllocL, typename TR, typename ArrayAllocR, typename MaskAllocR>
-  bool conform2 (const Array<TL, ArrayAllocL> &left, const MaskedArray<TR, ArrayAllocR, MaskAllocR> &right);
-template<typename TL, typename ArrayAllocL, typename MaskAllocL, typename TR, typename ArrayAllocR, typename MaskAllocR>
-  bool conform2 (const MaskedArray<TL, ArrayAllocL, MaskAllocL> &left, const MaskedArray<TR, ArrayAllocR, MaskAllocR> &right);
+template<typename TLL, typename TRR>
+  bool conform2 (const MaskedArray<TLL> &left, const Array<TRR> &right);
+template<typename TLL, typename TRR>
+  bool conform2 (const Array<TLL> &left, const MaskedArray<TRR> &right);
+template<typename TLL, typename TRR>
+  bool conform2 (const MaskedArray<TLL> &left, const MaskedArray<TRR> &right);
 //
 //   </group>
 

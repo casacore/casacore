@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/IO/ByteSource.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -35,8 +33,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ByteSource::ByteSource()
 {}
 
-ByteSource::ByteSource (TypeIO* typeIO, Bool takeOver)
-: BaseSinkSource (typeIO, takeOver)
+ByteSource::ByteSource (const std::shared_ptr<TypeIO>& typeIO)
+: BaseSinkSource (typeIO)
 {    
     if (!isReadable()) {
 	throw (AipsError ("ByteSource is not readable"));

@@ -1,0 +1,27 @@
+option (USE_PCH "Use pre-compiled headers when possible to speed up build" YES)
+
+# PCH support is only available from cmake 3.16 onwards
+if(NOT ${CMAKE_VERSION} VERSION_GREATER "3.16" AND USE_PCH)
+  message(STATUS "Pre-compile headers only available from cmake version >= 3.16, turning OFF")
+  set(USE_PCH NO)
+endif()
+
+function(init_pch_support shlib headers)
+  if (NOT USE_PCH)
+    return()
+  endif()
+  target_precompile_headers(${shlib} PRIVATE ${headers})
+  set(_pch_pie_target ${shlib}_pch_pie)
+  set(_pch_pie_target ${_pch_pie_target} PARENT_SCOPE)
+  file(TOUCH ${CMAKE_CURRENT_BINARY_DIR}/empty.cpp)
+  add_library(${_pch_pie_target} STATIC ${CMAKE_CURRENT_BINARY_DIR}/empty.cpp)
+  set_target_properties(${_pch_pie_target} PROPERTIES POSITION_INDEPENDENT_CODE OFF)
+  target_precompile_headers(${_pch_pie_target} PRIVATE ${headers})
+endfunction()
+
+function(add_pch_support target)
+  if (NOT USE_PCH)
+    return()
+  endif()
+  target_precompile_headers(${target} REUSE_FROM ${_pch_pie_target})
+endfunction()

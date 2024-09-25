@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SSMINDCOLUMN_H
 #define TABLES_SSMINDCOLUMN_H
@@ -100,6 +98,12 @@ public:
   // Frees up the storage.
   ~SSMIndColumn();
   
+  // Forbid copy constructor.
+  SSMIndColumn (const SSMIndColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMIndColumn& operator= (const SSMIndColumn&) = delete;
+  
   // An array of 'fixed length' strings is not handled specially,
   // thus this function is ignored.
   // It is needed to override the bahviour of the base class.
@@ -160,12 +164,6 @@ public:
 
 
 private:
-  // Forbid copy constructor.
-  SSMIndColumn (const SSMIndColumn&);
-  
-  // Forbid assignment.
-  SSMIndColumn& operator= (const SSMIndColumn&);
-  
   // Initialize part of the object and open/create the file.
   // It is used by doCreate and getFile.
   void init();

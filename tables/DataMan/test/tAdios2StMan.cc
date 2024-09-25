@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/Adios2StMan.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
@@ -94,10 +92,8 @@ void VerifyScalarColumn(Table &table, std::string column, uInt rows)
     }
 }
 
-void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
-
-    Adios2StMan stman(MPI_COMM_WORLD);
-
+void doWriteDefault(std::string filename, uInt rows, IPosition array_pos)
+{
     TableDesc td("", "1", TableDesc::Scratch);
     td.addColumn (ScalarColumnDesc<Bool>("scalar_Bool"));
     td.addColumn (ScalarColumnDesc<uChar>("scalar_uChar"));
@@ -124,8 +120,15 @@ void doWriteDefault(std::string filename, uInt rows, IPosition array_pos){
     td.addColumn (ArrayColumnDesc<String>("array_String", array_pos, ColumnDesc::FixedShape));
 
     SetupNewTable newtab(filename, td, Table::New);
+#ifdef HAVE_MPI
+    Adios2StMan stman(MPI_COMM_WORLD);
     newtab.bindAll(stman);
     Table tab(MPI_COMM_WORLD, newtab, rows);
+#else
+    Adios2StMan stman;
+    newtab.bindAll(stman);
+    Table tab(newtab, rows);
+#endif // HAVE_MPI
 
     ScalarColumn<Bool> scalar_Bool (tab, "scalar_Bool");
     ScalarColumn<uChar> scalar_uChar (tab, "scalar_uChar");
@@ -278,7 +281,9 @@ void doReadCopiedTable(std::string filename, std::string column, uInt rows, IPos
 
 int main(int argc, char **argv){
 
+#ifdef HAVE_MPI
     MPI_Init(&argc,&argv);
+#endif
 
     uInt rows = 100;
     IPosition array_pos = IPosition(2,5,6);
@@ -290,7 +295,9 @@ int main(int argc, char **argv){
     doCopyTable("default.table", "duplicated.table", "array_Complex");
     doReadCopiedTable("duplicated.table", "array_Complex", rows, array_pos);
 
+#ifdef HAVE_MPI
     MPI_Finalize();
+#endif
 }
 
 

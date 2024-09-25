@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_VIRTCOLENG_H
 #define TABLES_VIRTCOLENG_H
@@ -118,16 +116,14 @@ public:
 
     virtual ~VirtualColumnEngine();
 
-private:
     // The copy constructor cannot be used for this base class.
     // The clone function should be used instead.
-    // The private declaration of this constructor makes it unusable.
-    VirtualColumnEngine (const VirtualColumnEngine& that);
+    VirtualColumnEngine (const VirtualColumnEngine&) = delete;
 
     // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    VirtualColumnEngine& operator= (const VirtualColumnEngine&);
+    VirtualColumnEngine& operator= (const VirtualColumnEngine&) = delete;
 
+private:
     // The data manager is not a storage manager?
     virtual Bool isStorageManager() const;
 

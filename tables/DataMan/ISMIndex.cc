@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/DataMan/ISMIndex.h>
@@ -38,9 +36,8 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-ISMIndex::ISMIndex (ISMBase* parent)
-: stmanPtr_p (parent),
-  nused_p    (1),
+ISMIndex::ISMIndex()
+: nused_p    (1),
   rows_p     (2, 0),
   bucketNr_p (1, 0)
 {}

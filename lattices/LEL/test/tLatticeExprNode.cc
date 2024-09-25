@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/lattices/LEL/LatticeExpr.h>
 #include <casacore/lattices/LEL/LELAttribute.h>
@@ -205,38 +203,38 @@ Bool doIt (const MaskedLattice<Float>& aF,
 //
 
    cout << endl << "LELInterface constructors" << endl;
-   cout << "LatticeExprNode(CountedPtr<LELInterface<T> >&) " << endl;
+   cout << "LatticeExprNode(std::shared_ptr<LELInterface<T>>&) " << endl;
    {
       cout << "  Float" << endl;
-      CountedPtr<LELInterface<Float> > pExpr = new LELUnaryConst<Float>(bFVal);
+      auto pExpr = std::make_shared<LELUnaryConst<Float>>(bFVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bFVal);
       if (!compareScalarFloat (expr, expr2, bFVal, shape)) ok = False;
    }
    {
       cout << "  Double" << endl;
-      CountedPtr<LELInterface<Double> > pExpr = new LELUnaryConst<Double>(bDVal);
+      auto pExpr = std::make_shared<LELUnaryConst<Double>>(bDVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bDVal);
       if (!compareScalarDouble (expr, expr2, bDVal, shape)) ok = False;
    }
    {
       cout << "  Complex" << endl;
-      CountedPtr<LELInterface<Complex> > pExpr = new LELUnaryConst<Complex>(bCVal);
+      auto pExpr = std::make_shared<LELUnaryConst<Complex>>(bCVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bCVal);
       if (!compareScalarComplex (expr, expr2, bCVal, shape)) ok = False;
    }
    {
       cout << "  DComplex" << endl;
-      CountedPtr<LELInterface<DComplex> > pExpr = new LELUnaryConst<DComplex>(bDCVal);
+      auto pExpr = std::make_shared<LELUnaryConst<DComplex>>(bDCVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bDCVal);
       if (!compareScalarDComplex (expr, expr2, bDCVal, shape)) ok = False;
    }
    {
       cout << "  Bool" << endl;
-      CountedPtr<LELInterface<Bool> > pExpr = new LELUnaryConst<Bool>(bBVal);
+      auto pExpr = std::make_shared<LELUnaryConst<Bool>>(bBVal);
       LatticeExprNode expr(pExpr);
       LatticeExprNode expr2(bBVal);
       if (!compareScalarBool (expr, expr2, bBVal, shape)) ok = False;

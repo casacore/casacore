@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TSMFILE_H
 #define TABLES_TSMFILE_H
@@ -84,21 +82,29 @@ public:
     // Create a TSMFile object (with corresponding file).
     // The sequence number gets part of the file name.
     TSMFile (const TiledStMan* stMan, uInt fileSequenceNr,
-             const TSMOption&, MultiFileBase* mfile=0);
+             const TSMOption&,
+             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Create a TSMFile object for the given existing file.
     TSMFile (const String& fileName, Bool writable, const TSMOption&,
-             MultiFileBase* mfile=0);
+             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Read the object back.
     // The file is not opened until the first access,
     // thus until the file descriptor is asked for the first time.
     // It checks if the sequence number matches the expected one.
     TSMFile (const TiledStMan* stMan, AipsIO& ios, uInt seqnr,
-             const TSMOption&, MultiFileBase* mfile=0);
+             const TSMOption&,
+             const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // The destructor closes the file.
     ~TSMFile();
+
+    // Forbid copy constructor.
+    TSMFile (const TSMFile&) = delete;
+
+    // Forbid assignment.
+    TSMFile& operator= (const TSMFile&) = delete;
 
     // Write the object.
     void putObject (AipsIO& ios) const;
@@ -129,13 +135,6 @@ private:
     BucketFile* file_p;
     // The (logical) length of the file.
     Int64 length_p;
-	    
-
-    // Forbid copy constructor.
-    TSMFile (const TSMFile&);
-
-    // Forbid assignment.
-    TSMFile& operator= (const TSMFile&);
 };
 
 

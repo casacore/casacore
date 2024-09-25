@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_ARRAYIO_2_H
 #define CASA_ARRAYIO_2_H
@@ -100,7 +98,7 @@ class String;
 // Write a formatted copy of the array to the LogIO output object. Merely calls
 // the ostream operator<< in turn.
 template<typename T, typename Alloc>
-LogIO &operator<<(LogIO &os, const Array<T, Alloc> &a);
+LogIO &operator<<(LogIO &os, const Array<T> &a);
 
 // Read or write a binary representation of an Array to a file. Very
 // useful for saving arrays and restoring them later.
@@ -110,13 +108,13 @@ LogIO &operator<<(LogIO &os, const Array<T, Alloc> &a);
 // <group>
 
 template<typename T, typename Alloc>
-AipsIO &operator<< (AipsIO &, const Array<T, Alloc> &);
+AipsIO &operator<< (AipsIO &, const Array<T> &);
 
 template<typename T, typename Alloc>
-void putArray (AipsIO &, const Array<T, Alloc> &, const char* name);
+void putArray (AipsIO &, const Array<T> &, const char* name);
 
 template<typename T, typename Alloc>
-AipsIO &operator>> (AipsIO &, Array<T, Alloc> &);
+AipsIO &operator>> (AipsIO &, Array<T> &);
 
 // </group>
 
@@ -172,10 +170,10 @@ AipsIO &operator>> (AipsIO &, Array<T, Alloc> &);
 // </note>
 // <group>
 template <typename T, typename Alloc>
-void write_array (const Array<T, Alloc>& the_array, const std::string& fileName);
+void write_array (const Array<T>& the_array, const std::string& fileName);
 
 template <typename T, typename Alloc>
-inline void write_array (const Array<T, Alloc>& the_array, const char* fileName)
+inline void write_array (const Array<T>& the_array, const char* fileName)
     { write_array (the_array, std::string(fileName)); }
 // </group>
 
@@ -188,10 +186,10 @@ inline void write_array (const Array<T, Alloc>& the_array, const char* fileName)
 // </note>
 // <group>
 template <typename T, typename Alloc>
-void read_array (Array<T, Alloc>& the_array, const std::string& fileName);
+void read_array (Array<T>& the_array, const std::string& fileName);
 
 template <typename T, typename Alloc>
-inline void read_array (Array<T, Alloc>& the_array, const char* fileName)
+inline void read_array (Array<T>& the_array, const char* fileName)
     { read_array (the_array, std::string(fileName)); }
 // </group>
 
@@ -204,10 +202,10 @@ inline void read_array (Array<T, Alloc>& the_array, const char* fileName)
 
 // <group>
 template <typename T, typename Alloc>
-void readAsciiVector (Vector<T, Alloc>& vec, const char* fileName);
+void readAsciiVector (Vector<T>& vec, const char* fileName);
 
 template <typename T, typename Alloc>
-void writeAsciiVector (const Vector<T, Alloc>& vec, const char* fileName);
+void writeAsciiVector (const Vector<T>& vec, const char* fileName);
 // </group>
 
 // </group>
@@ -217,7 +215,7 @@ AipsIO& operator>> (AipsIO& aio, IPosition& ip);
 LogIO& operator<< (LogIO& os, const IPosition& ip);
 
 template<typename T, typename Alloc>
-Block<T> makeBlock(const Array<T, Alloc>& array);
+Block<T> makeBlock(const Array<T>& array);
 
 template<typename T>
 Vector<T> makeVector(const Block<T>& block);

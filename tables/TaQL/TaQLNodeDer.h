@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TAQLNODEDER_H
 #define TABLES_TAQLNODEDER_H
@@ -257,7 +255,7 @@ public:
   void setSeparator (const String& sep)
     { itsSep = sep; }
   void setSeparator (uInt incr, const String& sep)
-  { itsIncr = incr; itsSep2 = sep; }
+    { itsIncr = incr; itsSep2 = sep; }
   void add (const TaQLNode& node)
     { itsNodes.push_back (node); }
   const std::vector<TaQLNode>& getNodes() const
@@ -324,19 +322,22 @@ public:
 class TaQLRangeNodeRep: public TaQLNodeRep
 {
 public:
-  TaQLRangeNodeRep (Bool leftClosed, TaQLNode start,
-                    const TaQLNode& end, Bool rightClosed);
+  TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start,
+                    const TaQLNode& end, Bool rightClosed,
+                    Bool asMidWidth=False);
   TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start);
   TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed);
+  TaQLRangeNodeRep (const TaQLNode& mid, const TaQLNode& width);
   virtual TaQLNodeResult visit (TaQLNodeVisitor&) const override;
   virtual void show (std::ostream& os) const override;
   virtual void save (AipsIO& aio) const override;
   static TaQLNode restore (AipsIO& aio);
 
-  Bool     itsLeftClosed;
   TaQLNode itsStart;
   TaQLNode itsEnd;
+  Bool     itsLeftClosed;
   Bool     itsRightClosed;
+  Bool     itsAsMidWidth;
 };
 
 
@@ -795,7 +796,7 @@ public:
                      const TaQLNode& giving, const TaQLMultiNode& dminfo);
   TaQLSelectNodeRep (const TaQLNode& columns,
                      const TaQLMultiNode& withTables, const TaQLMultiNode& fromTables,
-                     const TaQLNode& join, const TaQLNode& where,
+                     const TaQLMultiNode& joins, const TaQLNode& where,
                      const TaQLNode& groupby, const TaQLNode& having,
                      const TaQLNode& sort, const TaQLNode& limitoff,
                      const TaQLNode& giving, const TaQLMultiNode& dminfo);
@@ -807,7 +808,7 @@ public:
   TaQLNode      itsColumns;
   TaQLMultiNode itsWith;
   TaQLMultiNode itsTables;
-  TaQLNode      itsJoin;
+  TaQLMultiNode itsJoins;
   TaQLNode      itsWhere;
   TaQLNode      itsGroupby;
   TaQLNode      itsHaving;

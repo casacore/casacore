@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/images/Images/ImageAttrHandlerHDF5.h>
@@ -50,7 +48,7 @@ namespace casacore {
     itsGroupMap.clear();
     // If ATTRGROUPS is defined, get all groups in it.
     if (HDF5Group::exists (hid, "ATTRGROUPS")) {
-      itsGroup = CountedPtr<HDF5Group>(new HDF5Group(hid, "ATTRGROUPS", true));
+      itsGroup = std::make_shared<HDF5Group>(hid, "ATTRGROUPS", true);
       vector<String> names = HDF5Group::linkNames (*itsGroup);
       for (uInt i=0; i<names.size(); ++i) {
         // Add group to map, but with a null object. It gets filled once
@@ -64,7 +62,7 @@ namespace casacore {
         throw AipsError("ImageAttrHandlerHDF5: cannot add ATTRGROUPS because "
                         "image is not writable");
       }
-      itsGroup = CountedPtr<HDF5Group>(new HDF5Group(hid, "ATTRGROUPS", false));
+      itsGroup = std::make_shared<HDF5Group>(hid, "ATTRGROUPS", false);
       itsCanWrite = True;
     }
     return *this;

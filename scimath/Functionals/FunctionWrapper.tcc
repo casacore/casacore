@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef SCIMATH_FUNCTIONWRAPPER_TCC
 #define SCIMATH_FUNCTIONWRAPPER_TCC
@@ -39,8 +36,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Constructors
 template <class T>
 FunctionWrapper<T>::FunctionWrapper() :
-  WrapperParam<T>(0),
-  doit_p(0) {}
+  WrapperParam<T>(0)
+  {}
 
 template <class T>
 FunctionWrapper<T>::FunctionWrapper(T(*f)(const T&), const Bool) : 

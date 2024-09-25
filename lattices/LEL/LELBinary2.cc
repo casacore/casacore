@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/lattices/LEL/LELBinary.h>
 #include <casacore/lattices/LEL/LELScalar.h>
@@ -37,8 +35,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LELBinaryBool::LELBinaryBool(const LELBinaryEnums::Operation op,
-			     const CountedPtr<LELInterface<Bool> >& pLeftExpr,
-			     const CountedPtr<LELInterface<Bool> >& pRightExpr)
+			     const std::shared_ptr<LELInterface<Bool>>& pLeftExpr,
+			     const std::shared_ptr<LELInterface<Bool>>& pRightExpr)
 : op_p(op)
 {
    if (op == LELBinaryEnums::EQ  ||  op == LELBinaryEnums::NE) {

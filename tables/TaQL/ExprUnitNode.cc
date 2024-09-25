@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprUnitNode.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprUnitNode.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -95,9 +93,9 @@ TENShPtr TableExprNodeUnit::useUnit (const TENShPtr& node,
   // Create a unit conversion node for a scalar or array.
   TENShPtr tsnptr;
   if (node->valueType() == VTScalar) {
-    tsnptr = new TableExprNodeUnit (node, unit);
+    tsnptr = std::make_shared<TableExprNodeUnit>(node, unit);
   } else {
-    tsnptr = new TableExprNodeArrayUnit (node, unit);
+    tsnptr = std::make_shared<TableExprNodeArrayUnit>(node, unit);
   }
   if (tsnptr->getUnitFactor() == 1.) {
     // Units are the same, so no conversion needed.

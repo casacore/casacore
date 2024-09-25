@@ -18,7 +18,7 @@ fi
 # Use valgrind's memcheck tool on a program.
 # Filter out possible errors to give an overview.
 rm -f ${pgm}_tmp.valgrind
-valgrind --tool=memcheck --num-callers=50 --workaround-gcc296-bugs=yes --leak-check=yes --track-fds=yes --suppressions=$pgmpath/casacore_memcheck.supp --log-file=${pgm}_tmp.valgrind $pgm "$@"
+valgrind --tool=memcheck --num-callers=50 --ignore-range-below-sp=1024-1 --leak-check=yes --track-fds=yes --suppressions=$pgmpath/casacore_memcheck.supp --log-file=${pgm}_tmp.valgrind $pgm "$@"
 
 # Check if any error, definite or possible leak, or open fd is found.
 # If so, list the file and rename to keep it.

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TSMCUBEMMAP_H
 #define TABLES_TSMCUBEMMAP_H
@@ -115,6 +113,12 @@ public:
 
     virtual ~TSMCubeMMap();
 
+    // Forbid copy constructor.
+    TSMCubeMMap (const TSMCubeMMap&) = delete;
+
+    // Forbid assignment.
+    TSMCubeMMap& operator= (const TSMCubeMMap&) = delete;
+
     // Flush the data in the cache.
     virtual void flushCache();
 
@@ -163,12 +167,6 @@ public:
     virtual void setCacheSize (uInt cacheSize, Bool forceSmaller, Bool userSet);
 
 private:
-    // Forbid copy constructor.
-    TSMCubeMMap (const TSMCubeMMap&);
-
-    // Forbid assignment.
-    TSMCubeMMap& operator= (const TSMCubeMMap&);
-
     // Get the cache object.
     // This will construct the cache object if not present yet.
     BucketMapped* getCache();

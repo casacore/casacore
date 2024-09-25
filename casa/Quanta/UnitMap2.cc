@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 
@@ -34,6 +32,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Initialise the maps
 void UnitMap::initUMPrefix (UMaps& maps) {
   map<String, UnitName>& mapPref = maps.mapPref;
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("Q", UnitName("Q", C::quetta,"quetta")));
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("R", UnitName("R", C::ronna, "ronna")));
   mapPref.insert(map<String, UnitName>::value_type
 			   ("Y", UnitName("Y", C::yotta, "yotta")));
   mapPref.insert(map<String, UnitName>::value_type
@@ -74,6 +76,10 @@ void UnitMap::initUMPrefix (UMaps& maps) {
 			   ("z", UnitName("z", C::zepto, "zepto")));
   mapPref.insert(map<String, UnitName>::value_type
 			   ("y", UnitName("y", C::yocto, "yocto")));
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("r", UnitName("r", C::ronto, "ronto")));
+  mapPref.insert(map<String, UnitName>::value_type
+			   ("q", UnitName("q", C::quecto,"quecto")));
 }
 
 } //# NAMESPACE CASACORE - END

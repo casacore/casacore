@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 // TableGram; grammar for table command lines
 
@@ -82,6 +80,8 @@ public:
   {}
   ~TableGramState()
     { clear(); }
+  TableGramState (const TableGramState&) = delete;
+  TableGramState& operator= (const TableGramState&) = delete;
   void clear()
     { if (itsState) {
         TableGram_delete_buffer(itsState);
@@ -91,8 +91,6 @@ public:
   YY_BUFFER_STATE state() const
     { return itsState; }
 private:
-  TableGramState (const TableGramState&);
-  TableGramState& operator= (const TableGramState&);
   YY_BUFFER_STATE itsState;      //# this is a pointer to yy_buffer_state
 };
 
@@ -195,7 +193,7 @@ String tableGramRemoveQuotes (const String& in)
         //# Find next occurrence of leading ' or ""
         int inx = str.index (str[pos], pos+1);
         if (inx < 0) {
-            throw (TableError ("ill-formed quoted string: " + str));
+            throw TableInvExpr ("ill-formed quoted string: " + str);
         }
         out += str.at (pos+1, inx-pos-1);             // add substring
         pos = inx+1;
@@ -212,7 +210,7 @@ Double tableGramParseTime (const String& in)
         val = val.after(0);
     }
     if (! MVAngle::read (res, val)) {
-        throw (TableError ("invalid time/pos string " + val));
+        throw TableInvExpr ("invalid time/pos string " + val);
     }
     return MVAngle(res).radian();
 }
@@ -222,7 +220,7 @@ MVTime tableGramParseDateTime (const String& in)
     MUString str (in);
     Quantity res;
     if (! MVTime::read (res, str)) {
-        throw (TableError ("invalid date string " + in));
+        throw TableInvExpr ("invalid date string " + in);
     }
     return MVTime(res);
 }

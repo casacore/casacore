@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_COLDESCSET_H
 #define TABLES_COLDESCSET_H
@@ -33,9 +31,9 @@
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/iosfwd.h>
 #include <map>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -191,7 +189,7 @@ private:
 
 
     // The set of all columns.
-    std::map<String,CountedPtr<ColumnDesc>> cols_p;
+    std::map<String,std::shared_ptr<ColumnDesc>> cols_p;
     // The order of addition of column descriptions.
     //# This is in fact a Block<ColumnDesc*>, but a void* is used
     //# to reduce the number of template instantiations.

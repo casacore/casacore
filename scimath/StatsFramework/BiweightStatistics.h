@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -143,33 +143,33 @@ public:
     // these statistics are not supported. The methods, which override
     // the virtual ancestor versions, throw exceptions.
     virtual AccumType getMedian(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
 
     virtual AccumType getMedianAndQuantiles(
         std::map<Double, AccumType>& quantileToValue,
-        const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        const std::set<Double>& quantiles, std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
 
     virtual AccumType getMedianAbsDevMed(
-        CountedPtr<uInt64> knownNpts=nullptr,
-        CountedPtr<AccumType> knownMin=nullptr,
-        CountedPtr<AccumType> knownMax=nullptr,
+        std::shared_ptr<uInt64> knownNpts=nullptr,
+        std::shared_ptr<AccumType> knownMin=nullptr,
+        std::shared_ptr<AccumType> knownMax=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );
 
     virtual std::map<Double, AccumType> getQuantiles(
-        const std::set<Double>& quantiles, CountedPtr<uInt64> npts=nullptr,
-        CountedPtr<AccumType> min=nullptr, CountedPtr<AccumType> max=nullptr,
+        const std::set<Double>& quantiles, std::shared_ptr<uInt64> npts=nullptr,
+        std::shared_ptr<AccumType> min=nullptr, std::shared_ptr<AccumType> max=nullptr,
         uInt binningThreshholdSizeBytes=4096*4096,
         Bool persistSortedArray=False, uInt nBins=10000
     );

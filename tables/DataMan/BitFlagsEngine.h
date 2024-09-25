@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_BITFLAGSENGINE_H
 #define TABLES_BITFLAGSENGINE_H
@@ -213,6 +211,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Destructor is mandatory.
     ~BitFlagsEngine();
 
+    // Assignment is not needed and therefore forbidden
+    BitFlagsEngine<StoredType>& operator= (const BitFlagsEngine<StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
@@ -250,10 +251,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Copy constructor is only used by clone().
     // (so it is made private).
     BitFlagsEngine (const BitFlagsEngine<StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    BitFlagsEngine<StoredType>& operator= (const BitFlagsEngine<StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;

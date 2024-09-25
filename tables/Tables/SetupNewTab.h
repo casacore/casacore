@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SETUPNEWTAB_H
 #define TABLES_SETUPNEWTAB_H
@@ -104,6 +102,14 @@ public:
 
     ~SetupNewTableRep();
 
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    SetupNewTableRep (const SetupNewTableRep&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    SetupNewTableRep& operator= (const SetupNewTableRep&) = delete;
+
     // Get the name of the table.
     const String& name() const
 	{ return tabName_p; }
@@ -170,16 +176,16 @@ public:
 
     // Test if object is already in use.
     Bool isUsed() const
-        { return colSetPtr_p.null(); }
+        { return !colSetPtr_p; }
 
     // Get pointer to column set.
     // This function is used by PlainTable.
-    const CountedPtr<ColumnSet>& columnSetPtr() const
+    const std::shared_ptr<ColumnSet>& columnSetPtr() const
 	{ return colSetPtr_p; }
 
     // Get pointer to table description.
     // This function is used by PlainTable.
-    const CountedPtr<TableDesc>& tableDescPtr() const
+    const std::shared_ptr<TableDesc>& tableDescPtr() const
 	{ return tdescPtr_p; }
 
     // Set object to in use by a (Plain)Table object.
@@ -198,19 +204,9 @@ private:
     StorageOption storageOpt_p;
     // Marked for delete?
     Bool          delete_p;
-    CountedPtr<TableDesc> tdescPtr_p;
-    CountedPtr<ColumnSet> colSetPtr_p;  //# null = object is already used by a Table
+    std::shared_ptr<TableDesc> tdescPtr_p;
+    std::shared_ptr<ColumnSet> colSetPtr_p;  //# null = object is already used by a Table
     std::map<void*,void*> dataManMap_p;
-
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    SetupNewTableRep (const SetupNewTableRep&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    SetupNewTableRep& operator= (const SetupNewTableRep&);
 
     // Setup the new table.
     // This checks various things and creates the set of columns.
@@ -442,16 +438,16 @@ public:
 
 private:
     // Actual object.
-    CountedPtr<SetupNewTableRep> newTable_p;
+    std::shared_ptr<SetupNewTableRep> newTable_p;
 
     // Get pointer to column set.
     // This function is used by PlainTable.
-    const CountedPtr<ColumnSet>& columnSetPtr() const
+    const std::shared_ptr<ColumnSet>& columnSetPtr() const
 	{ return newTable_p->columnSetPtr(); }
 
     // Get pointer to table description.
     // This function is used by PlainTable.
-    const CountedPtr<TableDesc>& tableDescPtr() const
+    const std::shared_ptr<TableDesc>& tableDescPtr() const
 	{ return newTable_p->tableDescPtr(); }
 
     // Set object to in use by a (Plain)Table object.

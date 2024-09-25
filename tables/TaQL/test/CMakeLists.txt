@@ -19,6 +19,8 @@ tExprGroup
 tExprGroupArray
 tExprNode
 tExprNodeSet
+tExprNodeSetElem
+tExprNodeSetOpt
 tExprUnitNode
 tExprNodeUDF
 tMArray
@@ -29,6 +31,7 @@ tRecordGram
 tRecordGramTable
 tTableExprData
 tTableGram
+tTableGramError
 tTableGramFunc
 tTaQLNode
 )
@@ -36,14 +39,15 @@ tTaQLNode
 # Only test scripts, no test programs.
 set (testscripts
 ttaql
-tTableGramCretab
 tTableGramAlttab
-tTableGramUpdate
-tTableGramMasked
-tTableGramNull
+tTableGramCretab
 tTableGramGroupAggr
 tTableGramGroupAggrAll
 tTableGramGroupAggrMaskAll
+tTableGramJoin
+tTableGramMasked
+tTableGramNull
+tTableGramUpdate
 )
 
 # Some test sources include a test .h file.
@@ -51,6 +55,7 @@ include_directories ( . )
 
 foreach (test ${tests})
     add_executable (${test} ${test}.cc)
+    add_pch_support(${test})
     target_link_libraries (${test} casa_tables)
     add_test (${test} ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./${test})
     add_dependencies(check ${test})

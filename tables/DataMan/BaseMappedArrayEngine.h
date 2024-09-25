@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_BASEMAPPEDARRAYENGINE_H
 #define TABLES_BASEMAPPEDARRAYENGINE_H
@@ -292,10 +290,11 @@ protected:
     // engine when a table is read back.
     BaseMappedArrayEngine();
 
-    // Copy constructor is only used by copy constructor of derived classes.
-    // (so it is made protected).
-    BaseMappedArrayEngine
-	              (const BaseMappedArrayEngine<VirtualType, StoredType>&);
+    // Copy constructor is used by copy constructor of derived classes.
+    BaseMappedArrayEngine (const BaseMappedArrayEngine&);
+
+    // Assignment is not needed and therefore forbidden
+    BaseMappedArrayEngine& operator= (const BaseMappedArrayEngine&) = delete;
 
     // Set if the column is writable or not.
     void setWritable (Bool isWritable);
@@ -464,12 +463,6 @@ protected:
 
 
 private:
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    BaseMappedArrayEngine<VirtualType, StoredType>& operator=
-	             (const BaseMappedArrayEngine<VirtualType, StoredType>&);
-
-
     //# Now define the data members.
     String         virtualName_p;        //# virtual column name
     String         storedName_p;         //# stored column name

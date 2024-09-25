@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/OS/Path.h>
@@ -126,6 +124,10 @@ void doIt (Bool doExcp, Bool& success)
            "/aa"+home+"bb"+home+"cc/test", success);
     check ("/testx", "/testx", "/testx", success);
     check ("testx", "testx", curr + "/testx", success);
+    check ("/testx.", "/testx.", "/testx.", success);
+    check ("testx.", "testx.", curr + "/testx.", success);
+    check ("/.dotfile", "/.dotfile", "/.dotfile", success);
+    check (".dotfile", ".dotfile", curr + "/.dotfile", success);
     check (user, user, curr + "/" + user, success);
     check ("$tPath_Env_Test1/$HOME", home + "/" +  home,
 	   home + home, success);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_DATAMANAGER_H
 #define TABLES_DATAMANAGER_H
@@ -229,6 +227,13 @@ public:
 
     virtual ~DataManager();
 
+    // The copy constructor cannot be used for this base class.
+    // The clone function should be used instead.
+    DataManager (const DataManager&) = delete;
+
+    // Assignment cannot be used for this base class.
+    DataManager& operator= (const DataManager&) = delete;
+
     // Make a clone of the derived object.
     virtual DataManager* clone() const = 0;
 
@@ -294,7 +299,7 @@ public:
       { return tsmOption_p; }
 
     // Get the MultiFile pointer (can be 0).
-    MultiFileBase* multiFile()
+    std::shared_ptr<MultiFileBase> multiFile()
       { return multiFile_p; }
 
     // Compose a keyword name from the given keyword appended with the
@@ -389,7 +394,7 @@ protected:
     // Tell the data manager that MultiFile can be used.
     // Because MultiFile cannot be used with mmapped files, it sets
     // the TSMOption accordingly.
-    void setMultiFile (MultiFileBase* mfile);
+    void setMultiFile (const std::shared_ptr<MultiFileBase>& mfile);
 
     // Does the data manager support use of MultiFile?
     // A derived class has to return True if it can use the MultiFile.
@@ -407,19 +412,10 @@ private:
     uInt         seqnr_p;            //# Unique nr of this st.man. in a Table
     Bool         asBigEndian_p;      //# store data in big or little endian
     TSMOption    tsmOption_p;
-    MultiFileBase* multiFile_p;      //# MultiFile to use; 0=no MultiFile
+    std::shared_ptr<MultiFileBase> multiFile_p;  //# Possible MultiFile to use
     Table*       table_p;            //# Table this data manager belongs to
     mutable DataManager* clone_p;    //# Pointer to clone (used by SetupNewTab)
 
-
-    // The copy constructor cannot be used for this base class.
-    // The clone function should be used instead.
-    // The private declaration of this constructor makes it unusable.
-    DataManager (const DataManager&);
-
-    // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    DataManager& operator= (const DataManager&);
 
     // Create a column in the data manager on behalf of a table column.
     //# Should be private, but has to be public because friend

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_HDF5IMAGE_H
 #define IMAGES_HDF5IMAGE_H
@@ -33,6 +31,7 @@
 #include <casacore/images/Images/ImageInterface.h>
 #include <casacore/images/Images/ImageAttrHandlerHDF5.h>
 #include <casacore/lattices/Lattices/HDF5Lattice.h>
+#include <memory>
 
 //# Forward Declarations
 #include <casacore/casa/iosfwd.h>
@@ -282,7 +281,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     // Function to return the internal HDF5File object to the RegionHandler.
-    static const CountedPtr<HDF5File>& getFile (void* imagePtr);
+    static const std::shared_ptr<HDF5File>& getFile (void* imagePtr);
 
     // This must be called in every constructor and place where the image
     // is attached to a new image.

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_DATAMANAGERCOLUMN_H
 #define TABLES_DATAMANAGERCOLUMN_H
@@ -34,7 +32,7 @@
 #include <casacore/tables/Tables/ColumnCache.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -159,6 +157,12 @@ public:
     // Frees up the storage.
     virtual ~DataManagerColumn();
 
+    // The copy constructor cannot be used for this base class.
+    DataManagerColumn (const DataManagerColumn&) = delete;
+
+    // Assignment cannot be used for this base class.
+    DataManagerColumn& operator= (const DataManagerColumn&) = delete;
+
     // Set the isFixedShape flag.
     void setIsFixedShape (Bool isFixedShape)
         { isFixedShape_p = isFixedShape; }
@@ -255,7 +259,7 @@ public:
 	{ getInt64 (rownr, dataPtr); }
     void get (rownr_t rownr, float* dataPtr)
 	{ getfloat (rownr, dataPtr); } 
-   void get (rownr_t rownr, double* dataPtr)
+    void get (rownr_t rownr, double* dataPtr)
 	{ getdouble (rownr, dataPtr); }
     void get (rownr_t rownr, Complex* dataPtr)
 	{ getComplex (rownr, dataPtr); }
@@ -485,14 +489,6 @@ protected:
     // </group>
 
 private:
-    // The copy constructor cannot be used for this base class.
-    // The private declaration of this constructor makes it unusable.
-    DataManagerColumn (const DataManagerColumn&);
-
-    // Assignment cannot be used for this base class.
-    // The private declaration of this operator makes it unusable.
-    DataManagerColumn& operator= (const DataManagerColumn&);
-
     // Set the shape of all (fixed-shaped) arrays in the column.
     // By default it throws a "not possible" exception.
     virtual void setShapeColumn (const IPosition& shape);
@@ -500,14 +496,14 @@ private:
     // Get a slice from the array in the given row.
     // It reads the full array in the possibly reshaped ArrayBase object.
     void getSliceArr (rownr_t row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
+                      std::shared_ptr<ArrayBase>& fullArr,
                       ArrayBase& arr);
 
     // Put a slice into the array in the given row.
     // It reads and writes the full array in the possibly reshaped ArrayBase
     // object.
     void putSliceArr (rownr_t row, const Slicer& section,
-                      CountedPtr<ArrayBase>& fullArr,
+                      std::shared_ptr<ArrayBase>& fullArr,
                       const ArrayBase& arr);
 
     //# Data members

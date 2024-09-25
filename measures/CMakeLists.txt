@@ -69,13 +69,19 @@ TableMeasures/TableMeasValueDesc.cc
 TableMeasures/TableQuantumDesc.cc
 )
 
+set (top_level_headers
+Measures.h
+TableMeasures.h
+)
+
+init_pch_support(casa_measures ${top_level_headers})
+
 target_link_libraries (casa_measures casa_tables casa_scimath ${CASACORE_ARCH_LIBS})
 
 add_subdirectory (apps)
 
 install (
 TARGETS casa_measures
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -156,9 +162,7 @@ TableMeasures/TableQuantumDesc.h
 DESTINATION include/casacore/measures/TableMeasures
 )
 
-install (FILES
-Measures.h
-TableMeasures.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/measures
 )
 

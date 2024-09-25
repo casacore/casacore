@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/measures/Measures/SolarPos.h>
@@ -228,7 +226,7 @@ void SolarPos::calcEarth(Double t) {
 		  fa(i) = MeasTable::posArg(i)(t);
 		  dfa(i) = MeasTable::posArgDeriv(i)(t);
 		}
-                CountedPtr<Matrix<Double> > mul = MeasTable::mulPosEarthXY(t, 1e-6);
+                std::shared_ptr<Matrix<Double>> mul = MeasTable::mulPosEarthXY(t, 1e-6);
                 DebugAssert (mul->contiguousStorage(), AipsError);
                 const Double* mulPosEarthXY = mul->data();
 		for (i=0; i<189; i++) {
@@ -303,7 +301,7 @@ void SolarPos::calcSun(Double t) {
 		  fa(i) = MeasTable::posArg(i)(t);
 		  dfa(i) = MeasTable::posArgDeriv(i)(t);
 		}
-                CountedPtr<Matrix<Double> > mul = MeasTable::mulPosSunXY(t, 1e-6);
+                std::shared_ptr<Matrix<Double>> mul = MeasTable::mulPosSunXY(t, 1e-6);
                 DebugAssert (mul->contiguousStorage(), AipsError);
                 const Double* mulPosSunXY = mul->data();
 		for (i=0; i<98; i++) {

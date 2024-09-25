@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MS_MS1TOMS2CONVERTER_H
 #define MS_MS1TOMS2CONVERTER_H
@@ -83,16 +81,16 @@ public:
 
   ~MS1ToMS2Converter();
 
+  // Forbid copy constructor and assignment.
+  // <group>
+  MS1ToMS2Converter (const MS1ToMS2Converter&) = delete;
+  MS1ToMS2Converter& operator= (const MS1ToMS2Converter&) = delete;
+  // </group>
+
   // Do the actual conversion.
   Bool convert();
 
 private:
-  // Forbid copy constrcutor and assignment.
-  // <group>
-  MS1ToMS2Converter (const MS1ToMS2Converter&);
-  MS1ToMS2Converter& operator= (const MS1ToMS2Converter&);
-  // </group>
-
   // If possible remove a column from the table.
   // Otherwise rename it by prefixing it with _OBSOLETE_.
   void removeColumn(Table& t, const String& col);

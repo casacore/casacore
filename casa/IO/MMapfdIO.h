@@ -18,13 +18,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#  $Id$
 
 #ifndef CASA_MMAPFDIO_H
 #define CASA_MMAPFDIO_H
@@ -75,6 +73,12 @@ public:
   // Destructor.
   // If needed, it will flush and unmap the file, but not close it.
   ~MMapfdIO();
+
+  // Forbid copy constructor and assignment
+  // <group>
+  MMapfdIO (const MMapfdIO&) = delete;
+  MMapfdIO& operator= (const MMapfdIO&) = delete;
+  // </group>
 
   // Map the given file descriptor entirely into memory with read access.
   // The map has also write access if the file is opened for write.
@@ -128,12 +132,6 @@ protected:
   void unmapFile();
 
 private:
-  // Forbid copy constructor and assignment
-  // <group>
-  MMapfdIO (const MMapfdIO&);
-  MMapfdIO& operator= (const MMapfdIO&);
-  // </group>
-
   Int64  itsFileSize;       //# File size
   Int64  itsPosition;       //# Current seek position
   char*  itsPtr;            //# Pointer to memory map

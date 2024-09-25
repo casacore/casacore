@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #define _POSIX_C_SOURCE 200809L //For mkdtemp(), stpcpy(), nftw()
 #include <casacore/casa/aips.h>
@@ -116,7 +114,7 @@ void test_NewMSSimulator_Constructors()
   NewMSSimulatorTester simulatorTester("newsim");
   
   //This shared pointer gets deleted before the shared pointer inside simulator_p
-  casacore::CountedPtr<casacore::MeasurementSet> ms = simulatorTester.simulator_p->getMs();
+  std::shared_ptr<casacore::MeasurementSet> ms = simulatorTester.simulator_p->getMs();
   
   //Constructor from existing MS. Not working. Has to be copied first?
   //NewMSSimulatorTester simulatorTesterFromMS(*ms);
@@ -125,7 +123,7 @@ void test_NewMSSimulator_Constructors()
   NewMSSimulatorTester simulatorTester2("newsim2");
   
   //This shared pointer gets deleted before the shared pointer inside simulator_p
-  casacore::CountedPtr<casacore::MeasurementSet> ms2 = simulatorTester.simulator_p->getMs();
+  std::shared_ptr<casacore::MeasurementSet> ms2 = simulatorTester.simulator_p->getMs();
   
   //simulator is destroyed, but we keep a shared_ptr of the ms, so it should be fine
   simulatorTester2.simulator_p.reset(0);

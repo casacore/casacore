@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 
 #ifndef COORDINATES_SPECTRALCOORDINATE_H
@@ -40,7 +37,7 @@
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/casa/Quanta/Quantum.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <memory>
 
 #include <wcslib/wcs.h>
 
@@ -593,7 +590,7 @@ public:
 
 private:
 
-    SPtrHolder<TabularCoordinate> _tabular;            // Tabular coordinate OR
+    std::unique_ptr<TabularCoordinate> _tabular;       // Tabular coordinate OR
     mutable ::wcsprm wcs_p;                            // wcs structure is used 
     Double to_hz_p;                                    // Convert from current world units to Hz
     Double to_m_p;                                     // Convert from current wavelength units to m

@@ -1,4 +1,4 @@
-//# LatticeIter.cc: defines the RO_LatticeIterator and LatticeIterator classes
+//# LatticeIterator.cc: defines the RO_LatticeIterator and LatticeIterator classes
 //# Copyright (C) 1994,1995,1996,1997,1998,1999,2000,2003
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTICEITERATOR_TCC
 #define LATTICES_LATTICEITERATOR_TCC
@@ -90,7 +88,7 @@ RO_LatticeIterator<T>::RO_LatticeIterator (const RO_LatticeIterator<T>& other)
 template <class T>
 RO_LatticeIterator<T>::~RO_LatticeIterator()
 {
-  // CountedPtr destructor takes care of deletion of the LatticeIterInterface
+  // std::shared_ptr destructor takes care of deletion of the LatticeIterInterface
 }
 
 template <class T>
@@ -109,7 +107,7 @@ RO_LatticeIterator<T> RO_LatticeIterator<T>::copy() const
 {
   RO_LatticeIterator<T> tmp;
   if (!isNull()) {
-    tmp.itsIterPtr = itsIterPtr->clone();
+    tmp.itsIterPtr.reset (itsIterPtr->clone());
   }
   return tmp;
 }
@@ -286,7 +284,7 @@ LatticeIterator<T> LatticeIterator<T>::copy() const
 {
   LatticeIterator<T> tmp;
   if (!isNull()) {
-    tmp.itsIterPtr = itsIterPtr->clone();
+    tmp.itsIterPtr.reset (itsIterPtr->clone());
   }
   return tmp;
 }

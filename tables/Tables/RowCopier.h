@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #ifndef TABLES_ROWCOPIER_H
@@ -32,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -176,6 +174,14 @@ public:
     RowCopier (Table &out, const Table &in, const Vector<String>& outNames,
 	       const Vector<String>& inNames);
    
+    ~RowCopier();
+
+    //# The following constructors and operator don't seem to be useful
+    // <group>
+    RowCopier(const RowCopier &other) = delete;
+    RowCopier &operator=(const RowCopier &other) = delete;
+    // </group>
+
     // The things that actually do the copying when requested.
     // <group>
     // Copy different row numbers.
@@ -184,19 +190,10 @@ public:
     Bool copy (rownr_t rownr);
     // </group>
 
-    ~RowCopier();
-
 private:
-    //# The following constructors and operator don't seem to be useful
-    // <group>
-    RowCopier();
-    RowCopier(const RowCopier &other);
-    RowCopier &operator=(const RowCopier &other);
-    // </group>
-
     // The ColumnHolder class exists only in the .cc file, it is what
     // ultimately does the work.
-    CountedPtr<ColumnHolder> columns_p;
+    std::shared_ptr<ColumnHolder> columns_p;
 };
 
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef ADIOS2STMAN_H
 #define ADIOS2STMAN_H
@@ -33,7 +31,9 @@
 #include <string>
 #include <vector>
 
+#ifdef HAVE_MPI
 #include <mpi.h>
+#endif
 
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/tables/DataMan/DataManager.h>
@@ -48,16 +48,28 @@ class Adios2StMan : public DataManager
     template<typename T> friend class Adios2StManColumnT;
 public:
 
-    Adios2StMan(MPI_Comm mpiComm = MPI_COMM_WORLD,
-            std::string engineType = std::string(),
-            std::map<std::string, std::string> engineParams
-                = std::map<std::string, std::string>(),
-            std::vector<std::map<std::string, std::string>> transportParams
-                = std::vector<std::map<std::string, std::string>>(),
-            std::vector<std::map<std::string, std::string>> operatorParams
-                = std::vector<std::map<std::string, std::string>>());
+    // tag for differentiating string-based constructors
+    struct from_config_t {};
+    constexpr static from_config_t from_config {};
 
-    Adios2StMan(std::string xmlFile, MPI_Comm mpiComm = MPI_COMM_WORLD);
+#ifdef HAVE_MPI
+    Adios2StMan(
+            MPI_Comm mpiComm,
+            std::string engineType = {},
+            std::map<std::string, std::string> engineParams = {},
+            std::vector<std::map<std::string, std::string>> transportParams = {},
+            std::vector<std::map<std::string, std::string>> operatorParams = {});
+
+    Adios2StMan(MPI_Comm mpiComm, std::string configFile, from_config_t);
+#endif // HAVE_MPI
+
+    Adios2StMan(
+            std::string engineType = {},
+            std::map<std::string, std::string> engineParams = {},
+            std::vector<std::map<std::string, std::string>> transportParams = {},
+            std::vector<std::map<std::string, std::string>> operatorParams = {});
+
+    Adios2StMan(std::string configFile, from_config_t);
 
     virtual ~Adios2StMan();
 
@@ -87,6 +99,24 @@ public:
 private:
     class impl;
     std::unique_ptr<impl> pimpl;
+
+#ifdef HAVE_MPI
+    Adios2StMan(
+         MPI_Comm mpiComm,
+         std::string engineType,
+         std::map<std::string, std::string> engineParams,
+         std::vector<std::map<std::string, std::string>> transportParams,
+         std::vector<std::map<std::string, std::string>> operatorParams,
+         std::string configFile);
+#endif // HAVE_MPI
+
+    Adios2StMan(
+         std::string engineType,
+         std::map<std::string, std::string> engineParams,
+         std::vector<std::map<std::string, std::string>> transportParams,
+         std::vector<std::map<std::string, std::string>> operatorParams,
+         std::string configFile);
+
 }; // end of class Adios2StMan
 
 extern "C" void register_adios2stman();

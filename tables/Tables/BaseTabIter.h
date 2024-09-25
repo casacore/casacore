@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_BASETABITER_H
 #define TABLES_BASETABITER_H
@@ -98,7 +96,7 @@ public:
     // (cmpObjs) between iterations.
     BaseTableIterator (const std::shared_ptr<BaseTable>&,
                        const Block<String>& columnNames,
-                       const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                       const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
                        const Block<Int>& orders,
                        int option,
                        bool cacheIterationBoundaries = false);
@@ -107,6 +105,10 @@ public:
     BaseTableIterator* clone() const;
 
     virtual ~BaseTableIterator();
+
+    // Assignment is not needed, because the assignment operator in
+    // the envelope class TableIterator has reference semantics.
+    BaseTableIterator& operator= (const BaseTableIterator&) = delete;
 
     // Reset the iterator (i.e. restart iteration).
     virtual void reset();
@@ -129,7 +131,7 @@ protected:
     uInt                   nrkeys_p;      //# nr of columns in group
     String                 keyChangeAtLastNext_p;  //# name of column that terminated most recent next()
     PtrBlock<BaseColumn*>  colPtr_p;      //# pointer to column objects
-    Block<CountedPtr<BaseCompare> > cmpObj_p;  //# comparison object per column
+    Block<std::shared_ptr<BaseCompare>> cmpObj_p;  //# comparison object per column
 
     // Copy constructor (to be used by clone)
     BaseTableIterator (const BaseTableIterator&);
@@ -137,11 +139,6 @@ protected:
     std::shared_ptr<BaseTable> noCachedIterBoundariesNext();
 
 private:
-    // Assignment is not needed, because the assignment operator in
-    // the envelope class TableIterator has reference semantics.
-    // Declaring it private, makes it unusable.
-    BaseTableIterator& operator= (const BaseTableIterator&);
-
     Block<void*>           lastVal_p;     //# last value per column
     Block<void*>           curVal_p;      //# current value per column
 

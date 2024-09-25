@@ -17,25 +17,20 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef CASA_LOGSINK_H
 #define CASA_LOGSINK_H
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogSinkInterface.h>
-
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iosfwd.h>
-
+#include <memory>
 #include <mutex>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -166,7 +161,7 @@ public:
   // It is primarily intended to log to a
   // <linkto class=TableLogSink>TableLogSink</linkto>.
   LogSink (const LogFilterInterface &filter,
-	   const CountedPtr<LogSinkInterface>&);
+	   const std::shared_ptr<LogSinkInterface>&);
 
   // Make a referencing copy of <src>other</src>. That is, if you post a
   // message to the new object, it behaves as if you had posted it to the
@@ -268,8 +263,8 @@ private:
   // LsiIntermediate is a helper class to allow LogSinkInterface to implement
   // semantics that allow causing all classes accessing the log sink to be
   // aimed at a different sink object.  This used to be done by using an
-  // odd "replace" method in CountedPtr; however, this is functionality is
-  // being removed to CountedPtr as it is modernized so this class was
+  // odd "replace" method in std::shared_ptr; however, this is functionality is
+  // being removed to std::shared_ptr as it is modernized so this class was
   // created to serve this narrow purpose.
 
   class LsiIntermediate {
@@ -305,15 +300,15 @@ private:
   static void createGlobalSink();
 
   //# Data members.
-  CountedPtr<LogSinkInterface> local_sink_p;
-  static CountedPtr<LsiIntermediate> * global_sink_p;
+  std::shared_ptr<LogSinkInterface> local_sink_p;
+  static std::shared_ptr<LsiIntermediate> global_sink_p;
   static std::once_flag theirCallOnceFlag;
 
   // The following is a reference to the global sink. It is created to
-  // ensure that the global sink is not destroyed before the last local
+  // ensure that the global sink is not destroyed before the last
   // reference to it is destroyed. This can happen if you have a static
   // LogSink (or LogIO).
-  CountedPtr<LsiIntermediate> local_ref_to_global_p;
+  std::shared_ptr<LsiIntermediate> local_ref_to_global_p;
   Bool useGlobalSink_p;
 };
 

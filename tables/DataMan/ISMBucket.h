@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_ISMBUCKET_H
 #define TABLES_ISMBUCKET_H
@@ -140,6 +138,12 @@ public:
     ISMBucket (ISMBase* parent, const char* bucketStorage);
 
     ~ISMBucket();
+
+    // Forbid copy constructor.
+    ISMBucket (const ISMBucket&) = delete;
+
+    // Forbid assignment.
+    ISMBucket& operator= (const ISMBucket&) = delete;
 
     // Get the row-interval for given column and row.
     // It sets the start and end of the interval to which the row belongs
@@ -263,12 +267,6 @@ public:
                 rownr_t& offendingRow, rownr_t& offendingPrevRow) const;
 
 private:
-    // Forbid copy constructor.
-    ISMBucket (const ISMBucket&);
-
-    // Forbid assignment.
-    ISMBucket& operator= (const ISMBucket&);
-
     // Remove a data item with the given length.
     // If the length is zero, its variable length is read first.
     void removeData (uInt offset, uInt leng);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_VECTORITER_TCC
 #define CASA_VECTORITER_TCC
@@ -32,11 +30,11 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<typename T, typename Alloc> VectorIterator<T, Alloc>::VectorIterator(Array<T, Alloc> &a, size_t axis)
-  : ArrayIterator<T, Alloc>(a, IPosition(1,axis), true)
+template<typename T> VectorIterator<T>::VectorIterator(Array<T> &a, size_t axis)
+  : ArrayIterator<T>(a, IPosition(1,axis), true)
 {
     // We need to ensure that ap points at a vector
-    this->ap_p.reset( new Vector<T, Alloc>(*this->ap_p) ); // reference
+    this->ap_p.reset( new Vector<T>(*this->ap_p) ); // reference
 }
 
 } //# NAMESPACE CASACORE - END

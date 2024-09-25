@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_HDF5IMAGE_TCC
 #define IMAGES_HDF5IMAGE_TCC
@@ -340,7 +338,7 @@ HDF5Image<T>& HDF5Image<T>::operator+= (const Lattice<T>& other)
 }
 
 template<class T>
-const CountedPtr<HDF5File>& HDF5Image<T>::getFile (void* imagePtr)
+const std::shared_ptr<HDF5File>& HDF5Image<T>::getFile (void* imagePtr)
 {
   HDF5Image<T>* im = static_cast<HDF5Image<T>*>(imagePtr);
   return im->map_p.file();

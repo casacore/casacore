@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLECACHE_H
 #define TABLES_TABLECACHE_H
@@ -100,6 +98,12 @@ public:
 
     ~TableCache();
 
+    // The copy constructor is forbidden.
+    TableCache (const TableCache&) = delete;
+  
+    // The assignment operator is forbidden.
+    TableCache& operator= (const TableCache&) = delete;
+
     // Try to find a table with the given name in the cache.
     // Return a pointer to a table if found (thus if already open).
     // Return a zero pointer if not found.
@@ -147,11 +151,6 @@ public:
                            const TableLock& tableInfo);
 
 private:
-    // The copy constructor is forbidden.
-    TableCache (const TableCache&);
-    // The assignment operator is forbidden.
-    TableCache& operator= (const TableCache&);
-
     // Get the table without doing a mutex lock (for operator()).
     PlainTable* getTable (const String& tableName) const;
 

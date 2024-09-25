@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELCONDITION_H
 #define LATTICES_LELCONDITION_H
@@ -96,8 +94,8 @@ protected:
 
 public: 
 // Construct the condition on the given expression.
-   LELCondition (const CountedPtr<LELInterface<T> >& expr,
-		 const CountedPtr<LELInterface<Bool> >& cond);
+   LELCondition (const std::shared_ptr<LELInterface<T>>& expr,
+		 const std::shared_ptr<LELInterface<Bool>>& cond);
 
 // Destructor does nothing
   ~LELCondition();
@@ -124,8 +122,8 @@ public:
   // </group>
 
 private:
-   CountedPtr<LELInterface<T> >    pExpr_p;
-   CountedPtr<LELInterface<Bool> > pCond_p;
+   std::shared_ptr<LELInterface<T>>    pExpr_p;
+   std::shared_ptr<LELInterface<Bool>> pCond_p;
 };
 
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Arrays/IPosition.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -73,15 +71,15 @@ void doOpens()
 				      True);
 
       {
-         PtrHolder<ImageInterface<Float> > im;
+         std::unique_ptr<ImageInterface<Float>> im;
          ImageUtilities::openImage(im, name1);
       }
       {
-         CountedPtr<ImageInterface<Float> > im;
+         std::shared_ptr<ImageInterface<Float>> im;
          im = ImageUtilities::openImage<Float>(name1);
       }
       {
-         PtrHolder<ImageInterface<Float> > im;
+         std::unique_ptr<ImageInterface<Float>> im;
          ImageUtilities::openImage(im, name2);
       }
    }
@@ -157,7 +155,7 @@ void doTypes()
   dir.removeRecursive();
 }
 
-void listWorld (const Vector<Quantum<Double> >& wPars)
+void listWorld (const Vector<Quantum<Double>>& wPars)
 {
    cerr << "World" << endl;
    if (wPars.nelements()==3){ 

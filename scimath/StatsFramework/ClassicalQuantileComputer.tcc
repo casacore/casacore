@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -83,14 +83,14 @@ AccumType ClassicalQuantileComputer<CASA_STATP>::getMedian(
             mynpts, mymin, mymax, binningThreshholdSizeBytes/sizeof(AccumType),
             indices, persistSortedArray, nBins
         );
-        median = new AccumType(
+        median.reset (new AccumType(
             indexToValue.size() == 1
             ? indexToValue[*indices.begin()]
             : (
                 indexToValue[*indices.begin()]
                 + indexToValue[*indices.rbegin()]
             )/AccumType(2)
-        );
+        ));
         this->setMedian(median);
     }
     return *median;
@@ -228,7 +228,7 @@ void ClassicalQuantileComputer<CASA_STATP>::reset() {
 
 CASA_STATD std::vector<std::vector<uInt64>>
 ClassicalQuantileComputer<CASA_STATP>::_binCounts(
-    std::vector<CountedPtr<AccumType> >& sameVal,
+    std::vector<std::shared_ptr<AccumType>>& sameVal,
     const std::vector<StatsHistogram<AccumType>>& hist
 ) {
     auto bDesc = hist.cbegin();
@@ -262,7 +262,7 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
     });
     // sameVal indicates if all values in a histogram
     // (the vector elements) are the same
-    sameVal = std::vector<CountedPtr<AccumType>>(hist.size(), nullptr);
+    sameVal = std::vector<std::shared_ptr<AccumType>>(hist.size(), nullptr);
     // maxLimit are the maximum limits for each histogram. set them here.
     std::vector<AccumType> maxLimit(hist.size());
     iDesc = bDesc;
@@ -275,23 +275,23 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds->getDataProvider()
     );
-    // The PtrHolders hold references to C arrays of length
+    // The std::unique_ptr-s hold references to C arrays of length
     // ClassicalStatisticsData::CACHE_PADDING*nThreadsMax.
     // Only every CACHE_PADDING*nth element will be populated
-    PtrHolder<std::vector<std::vector<uInt64>>> tBins(
-        new std::vector<std::vector<uInt64> >[
+    std::unique_ptr<std::vector<std::vector<uInt64>>[]> tBins(
+        new std::vector<std::vector<uInt64>>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<std::vector<CountedPtr<AccumType>>> tSameVal(
-        new std::vector<CountedPtr<AccumType>>[
+    std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]> tSameVal(
+        new std::vector<std::shared_ptr<AccumType>>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<std::vector<Bool>> tAllSame(
+    std::unique_ptr<std::vector<Bool>[]> tAllSame(
         new std::vector<Bool>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -342,7 +342,7 @@ ClassicalQuantileComputer<CASA_STATP>::_binCounts(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_computeBins(
     std::vector<BinCountArray>& bins,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     DataIterator dataIter, MaskIterator maskIter,
     WeightsIterator weightsIter, uInt64 count,
     const std::vector<StatsHistogram<AccumType>>& hist,
@@ -422,10 +422,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArray(DataArray& ary) {
     const auto nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds->getDataProvider()
     );
-    PtrHolder<std::vector<AccumType>> tAry(
+    std::unique_ptr<std::vector<AccumType>[]> tAry(
         new std::vector<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     while (True) {
         const auto& chunk = ds->initLoopVars();
@@ -645,15 +645,15 @@ void ClassicalQuantileComputer<CASA_STATP>::_createDataArrays(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds->getDataProvider()
     );
-    PtrHolder<std::vector<std::vector<AccumType>>> tArys(
+    std::unique_ptr<std::vector<std::vector<AccumType>>[]> tArys(
         new std::vector<std::vector<AccumType>>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<uInt64> tCurrentCount(
+    std::unique_ptr<uInt64[]> tCurrentCount(
         new uInt64[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -730,7 +730,7 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     const std::vector<IndexSet>& dataIndices, uInt nBins
 ) {
     // dataIndices are relative to minimum bin minimum border
-    std::vector<CountedPtr<AccumType>> sameVal(hist.size(), nullptr);
+    std::vector<std::shared_ptr<AccumType>> sameVal(hist.size(), nullptr);
     auto binCounts = _binCounts(sameVal, hist);
     auto iSameVal = sameVal.cbegin();
     auto bCountSet = binCounts.cbegin();
@@ -740,7 +740,7 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
     std::vector<uInt64> vnpts;
     std::vector<LimitPair> vlimits;
     std::vector<IndexSet> vindices;
-    std::vector<std::map<uInt64, uInt64> > vNewToOld;
+    std::vector<std::map<uInt64, uInt64>> vNewToOld;
     // This is necessary for accounting. Map the lower limit of
     // a single bin to the lower limit of its associated histogram
     std::map<AccumType, AccumType> binToHistogramMap;
@@ -753,7 +753,7 @@ ClassicalQuantileComputer<CASA_STATP>::_dataFromMultipleBins(
         auto iIdx = idxSet.cbegin();
         auto eIdx = idxSet.cend();
         const auto& maxBinLims = iDesc->getMaxBinLimits();
-        if (iSameVal->null()) {
+        if (! *iSameVal) {
             // values in this histogram are not all the same
             auto iCounts = iCountSet->cbegin();
             auto eCounts = iCountSet->cend();
@@ -1008,8 +1008,8 @@ std::set<uInt64> ClassicalQuantileComputer<CASA_STATP>::_medianIndices(
                 auto idx = ihist->getIndex(myDatum); \
                 ++(*iCounts)[idx]; \
                 if (*iAllSame) { \
-                    if (iSameVal->null()) { \
-                        *iSameVal = new AccumType(myDatum); \
+                    if (!*iSameVal) { \
+                        iSameVal->reset (new AccumType(myDatum)); \
                     } \
                     else { \
                         *iAllSame = myDatum == *(*iSameVal); \
@@ -1027,9 +1027,9 @@ std::set<uInt64> ClassicalQuantileComputer<CASA_STATP>::_medianIndices(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
-    const std::vector<StatsHistogram<AccumType> >& hist,
+    const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit
 ) const {
     auto bCounts = binCounts.begin();
@@ -1054,7 +1054,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& hist,
@@ -1090,10 +1090,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
-    const std::vector<StatsHistogram<AccumType> >& hist,
+    const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit
 ) const {
     auto bCounts = binCounts.begin();
@@ -1123,10 +1123,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
-    Bool isInclude, const std::vector<StatsHistogram<AccumType> >& hist,
+    Bool isInclude, const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit
 ) const {
     auto bCounts = binCounts.begin();
@@ -1162,7 +1162,7 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& hist,
@@ -1195,10 +1195,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
-    const std::vector<StatsHistogram<AccumType> >& hist,
+    const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit
 ) const {
     auto bCounts = binCounts.begin();
@@ -1235,11 +1235,11 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
-    const std::vector<StatsHistogram<AccumType> >& hist,
+    const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit
 ) const {
     auto bCounts = binCounts.begin();
@@ -1277,10 +1277,10 @@ void ClassicalQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ClassicalQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType> >& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-    const std::vector<StatsHistogram<AccumType> >& hist,
+    const std::vector<StatsHistogram<AccumType>>& hist,
     const std::vector<AccumType>& maxLimit
 ) const {
     auto bCounts = binCounts.begin();

@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id: MSTable.h 21451 2014-06-10 07:48:08Z gervandiepen $
 
 #ifndef MS_MSTABLE_H
 #define MS_MSTABLE_H
@@ -32,7 +29,6 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/tables/Tables/Table.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/Tables/ColumnDesc.h>
 #include <map>

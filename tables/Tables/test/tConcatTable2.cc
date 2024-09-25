@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -103,7 +101,7 @@ void fill(const String& name, const String& name2, Int stval)
     adouble.put (i, stval);
     acomplex.put (i, Complex(stval,0));
     adcomplex.put (i, DComplex(0,stval));
-    sprintf (str, "V%i", stval);
+    snprintf (str, sizeof(str), "V%i", stval);
     astring.put (i, str);
     ++stval;
   }
@@ -166,7 +164,7 @@ void checkTable (const Table& tab, uInt nkey, uInt nsubrow, Int stval,
     AlwaysAssertExit (adouble(row) == stval);
     AlwaysAssertExit (acomplex(row) == Complex(stval,0));
     AlwaysAssertExit (adcomplex(row) == DComplex(0,stval));
-    sprintf (str, "V%i", stval);
+    snprintf (str, sizeof(str), "V%i", stval);
     AlwaysAssertExit (astring(row) == str);
     ++stval;
   }

@@ -64,7 +64,7 @@ select ab from tTableGram_tmp.tab where ab==2**1**2 || ab==-2**-1*8/-2*3
 1 selected columns:  ab
  2
  6
-select ab,ac,af from tTableGram_tmp.tab where lower(af) == regex("v[01279]")
+select ab,ac,af from ../../TaQL/./test/tTableGram_tmp.tab where lower(af) == regex("v[01279]")
     has been executed
     select result of 5 rows
 3 selected columns:  ab ac af
@@ -253,6 +253,24 @@ select ab,ac from tTableGram_tmp.tab where ab IN (select ac from tTableGram_tmp.
     has been executed
     select result of 4 rows
 2 selected columns:  ab ac
+ 6 7
+ 7 8
+ 8 9
+ 9 10
+select ab,ac from tTableGram_tmp.tab where ab AROUND 3 IN 2
+    has been executed
+    select result of 3 rows
+2 selected columns:  ab ac
+ 2 3
+ 3 4
+ 4 5
+select ab,ac from tTableGram_tmp.tab where ab NOT AROUND 3 IN 2
+    has been executed
+    select result of 7 rows
+2 selected columns:  ab ac
+ 0 1
+ 1 2
+ 5 6
  6 7
  7 8
  8 9

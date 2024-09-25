@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_CONSTANTS_H
 #define CASA_CONSTANTS_H
@@ -134,6 +132,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 // <h3>Numerical conversion factors</h3>
 // <srcblock>
+// quetta               e+30 (Q)
+// ronna                e+27 (R)
 // yotta                e+24 (Y)
 // zetta                e+21 (Z)
 // exa                  e+18 (E)
@@ -154,6 +154,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // atto                 e-18 (a)
 // zepto                e-21 (z)
 // yocto                e-24 (y)
+// ronto                e-27 (r)
+// quecto               e-30 (q)
 // </srcblock>
 
 // <h3>Angular measure</h3>
@@ -487,6 +489,10 @@ namespace C {
   
   //  Numerical conversion factors
   // <group>
+  // e+30 (Q)
+  extern const Double quetta;
+  // e+27 (R)
+  extern const Double ronna;
   // e+24 (Y)
   extern const Double yotta;
   // e+21 (Z)
@@ -527,6 +533,10 @@ namespace C {
   extern const Double zepto;
   // e-24 (y)
   extern const Double yocto;
+  // e-27 (r)
+  extern const Double ronto;
+  // e-30 (q)
+  extern const Double quecto;
   // </group>
   
   // Angular measure:

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGESTATISTICS_TCC
 #define IMAGES_IMAGESTATISTICS_TCC
@@ -52,6 +50,7 @@
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/sstream.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -679,8 +678,8 @@ template <class T> Bool ImageStatistics<T>::_computeFlux(
     ReadOnlyVectorIterator<AccumType> sumIt(sum);
     ReadOnlyVectorIterator<AccumType> nPtsIt(npts);
     VectorIterator<AccumType> fluxIt(flux);
-    PtrHolder<ReadOnlyVectorIterator<Double> > beamAreaIter(
-        gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : 0
+    std::unique_ptr<ReadOnlyVectorIterator<Double>> beamAreaIter(
+        gotBeamArea ? new ReadOnlyVectorIterator<Double>(beamArea) : nullptr
     );
     uInt n1 = nPtsIt.vector().nelements();
     while (!nPtsIt.pastEnd()) {

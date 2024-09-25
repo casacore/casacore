@@ -17,16 +17,15 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
 #include <casacore/casa/IO/MultiHDF5.h>
+#include <casacore/casa/IO/MFFileIO.h>
 #include <casacore/casa/HDF5/HDF5Group.h>
 #include <casacore/casa/HDF5/HDF5DataSet.h>
 #include <casacore/casa/HDF5/HDF5Record.h>
@@ -37,14 +36,48 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   MultiHDF5::MultiHDF5 (const String& name, ByteIO::OpenOption option,
                         Int blockSize)
     : MultiFileBase (name, blockSize, False),     //# no O_DIRECT in HDF5
-      itsFile       (itsName, option)
+      itsFile       (new HDF5File(itsName, option)),
+      itsHDF5       (itsFile.get())
+  {
+    init (option);
+  }
+
+  MultiHDF5::MultiHDF5 (const String& name,
+                        const std::shared_ptr<MultiFileBase>& parent,
+                        ByteIO::OpenOption option, Int blockSize)
+    // Use parent's block size if not specified.
+    : MultiFileBase (name, blockSize>0 ? blockSize:parent->blockSize(), False)
+  {
+    // Get the overall HDF5 file object.
+    MultiHDF5* parentHDF5 = dynamic_cast<MultiHDF5*>(parent.get());
+    if (! parentHDF5) {
+      throw AipsError("No MultiHDF5 parent given to nested MultiHDF5 constructor");
+    }
+    itsFile = parentHDF5->getHDF5File();
+    // Create or open the file.
+    // Note that creation (in doAddFile) also creates a dataset which is
+    // not used, but it does not harm.
+    MFFileIO file(parent, name, option);
+    itsGroup = file.getInfo().group;    // make sure HDF5Group object is kept
+    itsHDF5  = itsGroup.get();
+    init (option);
+  }
+
+  std::shared_ptr<MultiFileBase> MultiHDF5::makeNested
+  (const std::shared_ptr<MultiFileBase>& parent, const String& name,
+   ByteIO::OpenOption option, Int blockSize) const
+  {
+    return std::make_shared<MultiHDF5>(name, parent, option, blockSize);
+  }
+
+  void MultiHDF5::init (ByteIO::OpenOption option)
   {
     if (option == ByteIO::New  ||  option == ByteIO::NewNoReplace) {
       setNewFile();
     } else {
       readHeader();
     }
-    itsWritable = itsFile.isWritable();
+    itsWritable = itsFile->isWritable();
   }
 
   MultiHDF5::~MultiHDF5()
@@ -52,9 +85,24 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     close();
   }
 
-  void MultiHDF5::flushFile()
+  void MultiHDF5::doOpenFile (MultiFileInfo& info)
   {
-    itsFile.flush();
+    DebugAssert (! info.group, AipsError);
+    info.group.reset (new HDF5Group (*itsHDF5, info.name, true, false));
+    info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
+                                         (const uChar*)0));
+  }
+
+  void MultiHDF5::doCloseFile (MultiFileInfo& info)
+  {
+    DebugAssert (info.group->isValid(), AipsError);
+    info.dataSet.reset();
+    info.group.reset();
+  }
+
+  void MultiHDF5::doFlushFile()
+  {
+    itsFile->flush();
   }
 
   void MultiHDF5::close()
@@ -62,18 +110,18 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     flush();
     // Close all datasets and groups.
     itsInfo.clear();
-    itsFile.close();
+    itsHDF5->close();
   }
 
   void MultiHDF5::reopenRW()
   {
     // Close all datasets and groups.
     itsInfo.clear();
-    itsFile.reopenRW();
+    itsFile->reopenRW();
     readHeader (True);
     itsWritable = True;
   }
-
+  
   void MultiHDF5::fsync()
   {}
 
@@ -91,12 +139,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     rec.define ("names", names);
     rec.define ("sizes", sizes);
-    HDF5Record::writeRecord (itsFile, "__MultiHDF5_Header__", rec);
+    HDF5Record::writeRecord (*itsHDF5, "__MultiHDF5_Header__", rec);
   }
 
   void MultiHDF5::readHeader (Bool always)
   {
-    Record rec = HDF5Record::readRecord (itsFile, "__MultiHDF5_Header__");
+    Record rec = HDF5Record::readRecord (*itsHDF5, "__MultiHDF5_Header__");
     itsBlockSize  = rec.asInt64 ("blockSize");
     Int64 hdrCounter = rec.asInt64 ("hdrCounter");
     // Only if needed, interpret the rest of the header.
@@ -109,14 +157,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set info fields.
     itsInfo.reserve (names.size());
     for (uInt i=0; i<names.size(); ++i) {
-      MultiFileInfo info(itsBlockSize);
+      MultiFileInfo info;
       info.name  = names[i];
       info.fsize = sizes[i];
-      if (! info.name.empty()) {
-        info.group.reset (new HDF5Group (itsFile, info.name, true, false));
-        info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
-                                             (const uChar*)0));
-      }
       itsInfo.push_back (info);
     }
   }
@@ -124,7 +167,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   void MultiHDF5::doAddFile (MultiFileInfo& info)
   {
     // Create a group and dataset for the file.
-    info.group.reset (new HDF5Group (itsFile, info.name, false, true));
+    info.group.reset (new HDF5Group (*itsHDF5, info.name, false, true));
     info.dataSet.reset (new HDF5DataSet (*info.group, "FileData",
                                          IPosition(2, itsBlockSize, 0),
                                          IPosition(2, itsBlockSize, 1),
@@ -137,12 +180,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     info.dataSet.reset();
     info.group.reset();
     // Delete the group.
-    HDF5Group::remove (itsFile, info.name);
+    HDF5Group::remove (*itsHDF5, info.name);
   }
 
+  void MultiHDF5::doTruncateFile (MultiFileInfo&, uInt64)
+  {}
+  
   void MultiHDF5::extend (MultiFileInfo& info, Int64 lastblk)
   {
     info.dataSet->extend (IPosition(2, itsBlockSize, lastblk+1));
+    itsNrBlock = lastblk+1;
   }
 
   void MultiHDF5::readBlock (MultiFileInfo& info, Int64 blknr,

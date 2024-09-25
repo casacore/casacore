@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSMIndColumn.cc 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #include <casacore/tables/DataMan/MSMIndColumn.h>
 #include <casacore/casa/Arrays/Array.h>
@@ -70,7 +68,6 @@ void MSMIndColumn::setShape (rownr_t rownr, const IPosition& shape)
     if (ptr->shape().isEqual (shape)) {
       return;
     }
-    ptr->clear(dataType());
     delete ptr;
   }
   // Create the array.
@@ -275,43 +272,32 @@ void MSMIndColumn::remove (rownr_t rownr)
 
 void MSMIndColumn::deleteArray (rownr_t rownr)
 {
-  Data* ptr = MSMINDCOLUMN_GETDATA(rownr);
   // Remove the array for this row (if there).
-  if (ptr != 0) {
-    ptr->clear(dataType());
-    delete ptr;
-  }
+  delete MSMINDCOLUMN_GETDATA(rownr);
 }
 
 
 
-  MSMIndColumn::Data::Data (const IPosition& shape, int dtype, int elemSize)
+MSMIndColumn::Data::Data (const IPosition& shape, int dtype, int elemSize)
 : shape_p (shape),
-  data_p  (0)
+  data_p  (nullptr),
+  data_is_string(dtype == TpString)
 {
   Int64 nelem = shape.product();
-  if (dtype == TpString) {
+  if (data_is_string) {
     data_p = new String[nelem];
   } else {
     data_p = new char[nelem * elemSize];
   }
 }
 
-MSMIndColumn::Data::~Data() noexcept(false)
+MSMIndColumn::Data::~Data()
 {
-  if (data_p != 0) {
-    throw DataManInternalError("MSMIndColumn::dtor: data array not deleted");
-  }
-}
-
-void MSMIndColumn::Data::clear (int dtype)
-{
-  if (dtype == TpString) {
+  if (data_is_string) {
     delete [] static_cast<String*>(data_p);
   } else {
     delete [] static_cast<char*>(data_p);
   }
-  data_p = 0;
 }
 
 } //# NAMESPACE CASACORE - END

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELBINARY_TCC
 #define LATTICES_LELBINARY_TCC
@@ -42,8 +40,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
 LELBinary<T>::LELBinary(const LELBinaryEnums::Operation op,
-			const CountedPtr<LELInterface<T> >& pLeftExpr,
-			const CountedPtr<LELInterface<T> >& pRightExpr)
+			const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+			const std::shared_ptr<LELInterface<T>>& pRightExpr)
 : op_p(op)
 {
    setAttr (LELAttribute(pLeftExpr->getAttribute(),
@@ -234,8 +232,8 @@ void LELBinary<T>::resync()
 // LELBinaryCmp
 template <class T>
 LELBinaryCmp<T>::LELBinaryCmp(const LELBinaryEnums::Operation op,
-			      const CountedPtr<LELInterface<T> >& pLeftExpr,
-			      const CountedPtr<LELInterface<T> >& pRightExpr)
+			      const std::shared_ptr<LELInterface<T>>& pLeftExpr,
+			      const std::shared_ptr<LELInterface<T>>& pRightExpr)
 : op_p(op)
 {
    setAttr (LELAttribute(pLeftExpr->getAttribute(),

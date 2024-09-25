@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLELOCKDATA_H
 #define TABLES_TABLELOCKDATA_H
@@ -78,6 +76,12 @@ public:
 
     ~TableLockData();
 
+    // Copy constructor is forbidden.
+    TableLockData (const TableLockData& that) = delete;
+
+    // Assignment is forbidden.
+    TableLockData& operator= (const TableLockData& that) = delete;
+
     // Create the <src>LockFile</src> object and acquire a read or write
     // lock when permanent locking is in effect.
     // It throws an exception when acquiring the lock failed.
@@ -116,13 +120,6 @@ public:
     // </group>
 
 private:
-    // Copy constructor is forbidden.
-    TableLockData (const TableLockData& that);
-
-    // Assignment is forbidden.
-    TableLockData& operator= (const TableLockData& that);
-
-
     //# Define the lock file.
     LockFile*        itsLock;
     //# Define if the file is already read or write locked.

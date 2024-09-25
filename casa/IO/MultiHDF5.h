@@ -1,3 +1,4 @@
+
 //# MultiHDF5.h: Class to combine multiple files in a single HDF5 file
 //# Copyright (C) 2015
 //# Associated Universities, Inc. Washington DC, USA.
@@ -17,13 +18,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef CASA_MULTIHDF5_H
 #define CASA_MULTIHDF5_H
@@ -32,6 +31,8 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/MultiFile.h>
 #include <casacore/casa/HDF5/HDF5File.h>
+#include <casacore/casa/HDF5/HDF5Group.h>
+#include <memory>
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -96,57 +97,91 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   // </srcblock>
   // </example>
 
-  // <todo>
-  //  <li> write headers at alternating file positions (for robustness)
-  //  <li> possibly write headers entirely at the end if larger than blocksize
-  // </todo>
-
-
   class MultiHDF5 : public MultiFileBase
   {
   public:
     // Open or create a MultiHDF5 with the given name.
     // Upon creation the block size can be given. If 0, it uses the block size
     // of the file system the file is on.
-    MultiHDF5 (const String& name, ByteIO::OpenOption, Int blockSize=0);
+    explicit MultiHDF5 (const String& name, ByteIO::OpenOption, Int blockSize=0);
+
+
+    // Open or create a MultiHDF5 which is nested in the given parent.
+    // The data are read/written in a group with the given name in the parent.
+    // Upon creation the block size can be given. If 0, it uses the block size
+    // of the parent.
+    explicit MultiHDF5 (const String& name,
+                        const std::shared_ptr<MultiFileBase>& parent,
+                        ByteIO::OpenOption, Int blockSize=0);
 
     // The destructor flushes and closes the file.
-    virtual ~MultiHDF5();
+    ~MultiHDF5() override;
 
+    // Copy constructor and assignment not possible.
+    MultiHDF5 (const MultiHDF5&) = delete;
+    MultiHDF5& operator= (const MultiHDF5&) = delete;
+
+    // Make the correct MultiFileBase object for a nested file.
+    // It creates a new group under which the virtual files are created.
+    std::shared_ptr<MultiFileBase> makeNested
+    (const std::shared_ptr<MultiFileBase>& parent, const String& name,
+     ByteIO::OpenOption, Int blockSize) const override;
+                                                  
+    // Open the given logical file and return its file id.
+    // If the name is unknown, an exception is thrown.
+    // It creates the HDF5 group and dataset opbject.
     // Reopen the underlying file for read/write access.
     // Nothing will be done if the file is writable already.
     // Otherwise it will be reopened and an exception will be thrown
     // if it is not possible to reopen it for read/write access.
-    virtual void reopenRW();
+    void reopenRW() override;
 
     // Fsync the file (i.e., force the data to be physically written).
-    virtual void fsync();
+    void fsync() override;
+
+    // Get the HDF5File object.
+    const std::shared_ptr<HDF5File>& getHDF5File() const
+      { return itsFile; }
+    const HDF5Object& getHDF5Object() const
+      { return *itsHDF5; }
 
   private:
+    // Initialize the MultiFile object.
+    void init (ByteIO::OpenOption option);
+    // Do the class-specific actions on opening a file.
+    void doOpenFile (MultiFileInfo&) override;
+    // Do the class-specific actions on closing a file.
+    void doCloseFile (MultiFileInfo&) override;
     // Do the class-specific actions on adding a file.
-    virtual void doAddFile (MultiFileInfo&);
+    void doAddFile (MultiFileInfo&) override;
     // Do the class-specific actions on deleting a file.
-    virtual void doDeleteFile (MultiFileInfo&);
+    void doDeleteFile (MultiFileInfo&) override;
+    // Truncate the file to <src>nrblk</src> blocks (does nothing).
+    void doTruncateFile (MultiFileInfo& info, uInt64 nrblk) override;
     // Flush the file itself.
-    virtual void flushFile();
+    void doFlushFile() override;
     // Flush and close the file.
-    virtual void close();
+    void close() override;
     // Write the header info.
-    virtual void writeHeader();
+    void writeHeader() override;
     // Read the header info. If always==False, the info is only read if the
     // header counter has changed.
-    virtual void readHeader (Bool always=True);
+    void readHeader (Bool always=True) override;
     // Extend the virtual file to fit lastblk.
-    virtual void extend (MultiFileInfo& info, Int64 lastblk);
+    void extend (MultiFileInfo& info, Int64 lastblk) override;
     // Read a data block.
-    virtual void readBlock (MultiFileInfo& info, Int64 blknr,
-                            void* buffer);
+    void readBlock (MultiFileInfo& info, Int64 blknr,
+                    void* buffer) override;
     // Write a data block.
-    virtual void writeBlock (MultiFileInfo& info, Int64 blknr,
-                             const void* buffer);
+    void writeBlock (MultiFileInfo& info, Int64 blknr,
+                     const void* buffer) override;
 
     //# Data members
-    HDF5File itsFile;
+    std::shared_ptr<HDF5File>  itsFile;
+    std::shared_ptr<HDF5Group> itsGroup;
+    // This points to the HDF5Group if present, otherwise to the HDF5File.
+    // It tells where the HDF5 data are accessed.
+    HDF5Object*                itsHDF5;
   };
 
 

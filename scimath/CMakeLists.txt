@@ -47,6 +47,14 @@ endif ()
 
 add_library (casa_scimath ${buildfiles})
 
+set (top_level_headers
+Fitting.h
+Functionals.h
+Mathematics.h
+)
+
+init_pch_support(casa_scimath ${top_level_headers})
+
 if (FFTW3_FOUND)
     target_link_libraries (casa_scimath casa_scimath_f ${FFTW3_LIBRARIES} ${CASACORE_ARCH_LIBS})
 else (FFTW3_FOUND)
@@ -54,7 +62,6 @@ else (FFTW3_FOUND)
 endif (FFTW3_FOUND)
 
 install (TARGETS casa_scimath
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_WRITE GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -339,10 +346,7 @@ StatsFramework/ZScoreCalculator.h
 DESTINATION include/casacore/scimath/StatsFramework
 )
 
-install (FILES
-Fitting.h
-Functionals.h
-Mathematics.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/scimath
 )
 

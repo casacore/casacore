@@ -17,18 +17,16 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/System/ObjectID.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/stdio.h>                  // needed for snprintf
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -69,7 +67,7 @@ String ObjectID::extractIDs (Block<ObjectID>& objectIDs,
 	    objectIDs.resize (n);
 	    objectIDs[n-1] = oid;
 	    char buf[16];
-	    sprintf (buf, "$OBJ#%i#O", n);
+	    snprintf (buf, sizeof(buf), "$OBJ#%i#O", n);
 	    result += buf;
 	    str = str.after(pos+1);
 	}

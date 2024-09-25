@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/TaQL/TableParse.h>
 #include <casacore/tables/Tables/Table.h>
@@ -90,6 +88,21 @@ using namespace std;
 // Define the type for the map of name to (resulttable,command).
 typedef map<String, pair<Table,String> > TableMap;
 
+// Define Deleter objects for a shared_ptr<ostream>
+// cout and cerr should not be deleted.
+class Deleter
+{
+public:
+  Deleter (Bool deleteIt)
+    : itsDelete (deleteIt)
+    {}
+  void operator() (ostream* ptr)
+    { if (itsDelete) delete ptr; }
+private:
+  Bool itsDelete;
+};
+
+
 struct Options
 {
   Bool printSelect;
@@ -103,7 +116,7 @@ struct Options
   String fname;
   String style;
   String outName;
-  CountedPtr<ostream> stream;
+  std::shared_ptr<ostream> stream;
 
   Options()
     : printSelect  (False),   // print explicitly select result?
@@ -116,7 +129,7 @@ struct Options
       separator    ('\t'),    // default separator between printed columns
       style        ("python"),
       outName      ("stdout"),
-      stream       (CountedPtr<ostream>(&cout, False))  // default stdout
+      stream       (&cout, Deleter(False))  // default stdout
   {}
 };
 
@@ -1086,6 +1099,7 @@ void execFileCommands (TableMap& tableMap, const Options& options)
 {
   // Reads all commands from the file and split them at ;.
   // A command can be continued on the next line.
+  // An error in a command file is severe, so it exits on error.
   vector<String> commands;
   Bool appendLast = False;
   std::ifstream ifs(options.fname.c_str());
@@ -1134,12 +1148,17 @@ void askCommands (TableMap& tableMap, Options& options)
   }
 #endif
   while (True) {
-    String str;
-    // Read and execute until ^D or quit is given.
-    if (! (readLineSkip (str, "TaQL> ")  &&
-           executeArgs (splitWS(str), False, tableMap, options))) {
-      cerr << endl;
-      break;
+    // Catch errors, so the user can retry.
+    try {
+      String str;
+      // Read and execute until ^D or quit is given.
+      if (! (readLineSkip (str, "TaQL> ")  &&
+             executeArgs (splitWS(str), False, tableMap, options))) {
+        cerr << endl;
+        break;
+      }
+    } catch (const std::exception& x) {
+      cout << x.what() << endl;
     }
   }
 #ifdef HAVE_READLINE
@@ -1210,15 +1229,16 @@ Bool parseArgs (const vector<String>& args, uInt& st, Options& options, Bool rem
         String outname(fname);
         outname.downcase();
         if (outname == "stdout") {
-          options.stream  = CountedPtr<ostream>(&cout, False);
+          options.stream  = std::shared_ptr<ostream>(&cout, Deleter(False));
           options.outName = "stdout";
         } else if (outname == "stderr") {
-          options.stream = CountedPtr<ostream>(&cerr, False);
+          options.stream  = std::shared_ptr<ostream>(&cerr, Deleter(False));
           options.outName = "stderr";
         } else {
           try {
             outname = Path(fname).absoluteName();
-            options.stream = new ofstream(outname);
+            options.stream = std::shared_ptr<ostream>
+              (new ofstream(outname), Deleter(True));
             options.outName = outname;
           } catch (std::exception& x) {
             cerr << "Could not create output file " << fname << endl;

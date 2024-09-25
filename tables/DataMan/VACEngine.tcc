@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_VACENGINE_TCC
 #define TABLES_VACENGINE_TCC
@@ -36,11 +34,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
-VACEngine<T>::VACEngine ()
-: sourceName_p ("")
-{}
-
-template<class T>
 VACEngine<T>::VACEngine (const String& sourceColumnName)
 : sourceName_p (sourceColumnName)
 {}
@@ -50,10 +43,6 @@ VACEngine<T>::VACEngine (const VACEngine<T>& that)
 : VirtualColumnEngine(),
   VirtualArrayColumn<T>(),
   sourceName_p (that.sourceName_p)
-{}
-
-template<class T>
-VACEngine<T>::~VACEngine()
 {}
 
 template<class T>

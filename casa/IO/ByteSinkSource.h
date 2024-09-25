@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_BYTESINKSOURCE_H
 #define CASA_BYTESINKSOURCE_H
@@ -96,11 +94,9 @@ public:
     // This creates an invalid object, but is present for convenience.
     ByteSinkSource();
 
-    // Construct from given TypeIO object.  The constructor does not copy the
-    // object, but only keeps a pointer to it. If takeOver is true the this
-    // class will delete the supplied pointer. Otherwise the caller is
-    // responsible for this.
-    ByteSinkSource (TypeIO* typeIO, Bool takeOver=False);
+    // Construct from given TypeIO object.
+    // The constructor does not copy the object, but only keeps a pointer to it.
+    ByteSinkSource (const std::shared_ptr<TypeIO>& typeIO);
 
     // The copy constructor uses reference semantics
     ByteSinkSource (const ByteSinkSource& sinkSource);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/TaQL/TaQLResult.h>
@@ -36,14 +34,11 @@ TaQLResult::TaQLResult (const Table& table)
 : itsTable (table)
 {}
 
-// Also keep the table, otherwise the Table object is deleted and
-// the node contains a dangling BaseTable pointer.
 TaQLResult::TaQLResult (const TableExprNode& node)
-: itsTable (node.table()),
-  itsNode  (node)
+  : itsNode  (node)
 {}
 
-Table TaQLResult::table() const
+const Table& TaQLResult::table() const
 {
   AlwaysAssert (isTable(), AipsError);
   return itsTable;

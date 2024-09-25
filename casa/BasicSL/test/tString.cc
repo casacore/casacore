@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 
@@ -34,6 +32,7 @@
 #include <casacore/casa/stdlib.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
+#include <unordered_set>
 
 #include <casacore/casa/namespace.h>
 // Generally used variables
@@ -480,6 +479,14 @@ int main() {
   toInt();
   trim();
   startsWith();
+  {
+    // Test to see if String hash works.
+    std::unordered_set<String> sset;
+    sset.insert ("abc");
+    AlwaysAssertExit (sset.size() == 1);
+    AlwaysAssertExit (sset.find("abc") != sset.end());
+    AlwaysAssertExit (sset.find("abd") == sset.end());
+  }
   cout << "\nEnd of test\n";
   return(0);
 }

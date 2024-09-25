@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/DataMan/TSMDataColumn.h>
@@ -339,6 +337,7 @@ void TSMDataColumn::accessColumnCells (const RefRows& rownrs,
 	}
       }
       if (doIt) {
+        AlwaysAssert (hypercube, AipsError);
 	if (lastCube != 0) {
 	  accessFullCells (lastCube, data, writeFlag, start, end, incr);
 	  data += (nrinc+1) * chunkSize;

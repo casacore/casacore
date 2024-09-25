@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_STANDARDSTMAN_H
 #define TABLES_STANDARDSTMAN_H
@@ -178,12 +176,11 @@ public:
 
     ~StandardStMan();
 
-private:
     // Copy constructor cannot be used.
-    StandardStMan (const StandardStMan& that);
+    StandardStMan (const StandardStMan&) = delete;
 
     // Assignment cannot be used.
-    StandardStMan& operator= (const StandardStMan& that);
+    StandardStMan& operator= (const StandardStMan&) = delete;
 };
 
 

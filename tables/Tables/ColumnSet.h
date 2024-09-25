@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_COLUMNSET_H
 #define TABLES_COLUMNSET_H
@@ -109,6 +107,10 @@ public:
     // Get the storage option.
     const StorageOption& storageOption() const
       { return storageOpt_p; }
+
+    // Get the possible MultiFileBase object used to combine files.
+    std::shared_ptr<MultiFileBase> getMultiFile() const
+      { return multiFile_p; }
 
     // Are subtables used in other processes.
     Bool areTablesMultiUsed() const;
@@ -315,7 +317,7 @@ private:
     //# Declare the variables.
     TableDesc*              tdescPtr_p;
     StorageOption           storageOpt_p;
-    MultiFileBase*          multiFile_p;
+    std::shared_ptr<MultiFileBase> multiFile_p;
     rownr_t                 nrrow_p;          //# #rows
     BaseTable*              baseTablePtr_p;
     TableLockData*          lockPtr_p;        //# lock object

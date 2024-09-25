@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 
 #ifndef CASA_VALUEHOLDER_H
@@ -34,7 +31,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Containers/ValueHolderRep.h>
 #include <casacore/casa/Arrays/Array.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -123,7 +120,7 @@ public:
 
   // Is this a null object?
   Bool isNull() const
-    { return itsRep.null(); }
+    { return !itsRep; }
 
   // Get the data type (as defined in DataType.h).
   // Note that TpOther is returned for an empty untyped array.
@@ -218,7 +215,7 @@ public:
 
 private:
 
-  CountedPtr<ValueHolderRep> itsRep;
+  std::shared_ptr<ValueHolderRep> itsRep;
 };
 
 

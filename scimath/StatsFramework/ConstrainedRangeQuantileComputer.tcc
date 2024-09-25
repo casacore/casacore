@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -73,14 +73,14 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedian(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
-    CountedPtr<AccumType> median = this->_getMedian();
+    auto median = this->_getMedian();
     if (! median) {
-        median = new AccumType(
+        median.reset (new AccumType(
             ClassicalQuantileComputer<CASA_STATP>::getMedian(
                 mynpts, mymin, mymax, binningThreshholdSizeBytes,
                 persistSortedArray, nBins
             )
-        );
+        ));
         this->setMedian(median);
     }
     return *median;
@@ -91,9 +91,9 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
     uInt64 mynpts, AccumType mymin, AccumType mymax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
-    CountedPtr<AccumType> medabsdevmed = this->_getMedianAbsDevMedian();
+    auto medabsdevmed = this->_getMedianAbsDevMedian();
     if (! medabsdevmed) {
-        CountedPtr<AccumType> median = this->_getMedian();
+        std::shared_ptr<AccumType> median = this->_getMedian();
         if (! median) {
             this->getMedian(
                 mynpts, mymin, mymax, binningThreshholdSizeBytes,
@@ -136,13 +136,13 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
                     uInt idx = iBinDesc->getIndex(myDatum); \
                     ++(*iCounts)[idx]; \
                     if (*iAllSame) { \
-                        if (iSameVal->null()) { \
-                            *iSameVal = new AccumType(myDatum); \
+                        if (! *iSameVal) { \
+                            iSameVal->reset (new AccumType(myDatum)); \
                         } \
                         else { \
                             *iAllSame = myDatum == *(*iSameVal); \
                             if (! *iAllSame) { \
-                                *iSameVal = NULL; \
+                                iSameVal->reset(); \
                             } \
                         } \
                     } \
@@ -160,7 +160,7 @@ AccumType ConstrainedRangeQuantileComputer<CASA_STATP>::getMedianAbsDevMed(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
     const DataArray& maxLimit
@@ -187,7 +187,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -223,7 +223,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -256,7 +256,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude,
@@ -296,7 +296,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -329,7 +329,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
     const std::vector<StatsHistogram<AccumType>>& binDesc,
@@ -369,7 +369,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude,
@@ -411,7 +411,7 @@ void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
 CASA_STATD
 void ConstrainedRangeQuantileComputer<CASA_STATP>::_findBins(
     std::vector<BinCountArray>& binCounts,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const std::vector<StatsHistogram<AccumType>>& binDesc,

@@ -1,4 +1,4 @@
-//# PGPlotter.h: Standard plotting object for application programmers.
+//# PGPlotter.cc: Standard plotting object for application programmers.
 //# Copyright (C) 1997,2000,2001
 //# Associated Universities, Inc. Washington DC, USA.
 //#
@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #include <casacore/casa/System/PGPlotter.h>
 #include <casacore/casa/System/PGPlotterNull.h>
@@ -99,13 +96,13 @@ PGPlotter::CreateFunction* PGPlotter::setCreateFunction
 void PGPlotter::detach()
 {
     worker_p->resetPlotNumber();        // Implemented for PGPlotterGlish only
-    CountedPtr<PGPlotterInterface> empty;
+    std::shared_ptr<PGPlotterInterface> empty;
     worker_p = empty;
 }
 
 Bool PGPlotter::isAttached() const
 {
-    return (!worker_p.null());
+    return (static_cast<Bool>(worker_p));
 }
 
 void PGPlotter::message(const String &text)

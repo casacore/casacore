@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/images/Regions/RegionHandlerMemory.h>
 #include <casacore/images/Regions/RegionHandlerTable.h>
@@ -52,8 +50,8 @@ Table& getTable (void*, Bool)
   return theTable;
 }
 
-CountedPtr<HDF5File> theHDF5File;
-const CountedPtr<HDF5File>& getHDF5File (void*)
+std::shared_ptr<HDF5File> theHDF5File;
+const std::shared_ptr<HDF5File>& getHDF5File (void*)
 {
   return theHDF5File;
 }
@@ -161,7 +159,7 @@ int main()
     AlwaysAssertExit (! File("tRegionHandler_tmp.lat/reg2n").exists());
     // Test regions in HDF5 only if supported.
     if (HDF5Object::hasHDF5Support()) {
-      theHDF5File = new HDF5File ("tRegionHandler_tmp.hdf5", ByteIO::New);
+      theHDF5File = std::make_shared<HDF5File>("tRegionHandler_tmp.hdf5", ByteIO::New);
       RegionHandlerHDF5 reghdf5 (getHDF5File, 0);
       doIt (reghdf5);
     }

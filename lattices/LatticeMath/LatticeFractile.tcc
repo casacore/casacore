@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTICEFRACTILE_TCC
 #define LATTICES_LATTICEFRACTILE_TCC
@@ -177,7 +175,7 @@ uInt LatticeFractile<T>::maskedHistogram (T& stv, T& endv, T& minv, T& maxv,
   endv = boundaries[nbins];
   Bool firstTime = True;
   // Iterate through the lattice.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<Bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData, delMask;
@@ -391,7 +389,7 @@ Vector<T> LatticeFractile<T>::maskedFractile (const MaskedLattice<T>& lattice,
   uInt fractileInx = uInt(fraction * (ntodo-1));
   // Iterate until the bin containing the fractile does not
   // contain too many values anymore.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<Bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (True) {
     // Determine which bin contains the fractile and update the various values.
@@ -504,7 +502,7 @@ Vector<T> LatticeFractile<T>::smallMaskedFractile
   Block<T> buffer(size);
   uInt npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<Bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData, delMask;
@@ -783,7 +781,7 @@ Vector<T> LatticeFractile<T>::maskedFractiles (const MaskedLattice<T>& lattice,
   Bool finished2 = False;
   // Iterate until the bins containing the fractiles do not
   // contain too many values anymore.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<Bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (True) {
     // Determine which bin contains the requested values, determine
@@ -955,7 +953,7 @@ Vector<T> LatticeFractile<T>::smallMaskedFractiles
   Block<T> buffer(size);
   uInt npts = 0;
   // Iterate through the lattice and assemble all masked-on elements.
-  COWPtr<Array<Bool> > mask;
+  COWPtr<Array<Bool>> mask;
   RO_MaskedLatticeIterator<T> iter(lattice);
   while (! iter.atEnd()) {
     Bool delData, delMask;

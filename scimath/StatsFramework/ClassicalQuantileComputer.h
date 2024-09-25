@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -120,78 +120,78 @@ protected:
     // same number of elements as the number of bins in its corresponding
     // histogram in <src>hist</src>.
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
-        uInt dataStride, const std::vector<StatsHistogram<AccumType> >& hist,
+        uInt dataStride, const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const ;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
 
     virtual void _findBins(
-        std::vector<std::vector<uInt64> >& binCounts,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::vector<uInt64>>& binCounts,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, const DataIterator& dataBegin,
         const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         const std::vector<AccumType>& maxLimit
     ) const;
     // </group>
@@ -267,14 +267,14 @@ protected:
 
     // ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude,
         const IncludeLimits& includeLimits, uInt64 maxCount
     ) const;
 
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const IncludeLimits& includeLimits, uInt64 maxCount
@@ -282,7 +282,7 @@ protected:
 
     // mask and ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude,
@@ -291,7 +291,7 @@ protected:
 
     // weights
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const IncludeLimits& includeLimits,
         uInt64 maxCount
@@ -299,7 +299,7 @@ protected:
 
     // weights and ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude,
         const IncludeLimits& includeLimits, uInt64 maxCount
@@ -307,7 +307,7 @@ protected:
 
     // weights and mask
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, const IncludeLimits& includeLimits, uInt64 maxCount
@@ -315,7 +315,7 @@ protected:
 
     // weights, mask, ranges
     virtual void _populateArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, const DataRanges& ranges, Bool isInclude,
@@ -407,14 +407,14 @@ private:
     // to be in the higher index bin. <src>sameVal</src> will be non-null if all
     // the good values in the histogram range are the same. In that case, the
     // value held will be the value of each of those data points.
-    std::vector<std::vector<uInt64> > _binCounts(
-        std::vector<CountedPtr<AccumType> >& sameVal,
-        const std::vector<StatsHistogram<AccumType> >& hist
+    std::vector<std::vector<uInt64>> _binCounts(
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
+        const std::vector<StatsHistogram<AccumType>>& hist
     );
 
     void _computeBins(
         std::vector<std::vector<uInt64>>& bins,
-        std::vector<CountedPtr<AccumType>>& sameVal,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame, DataIterator dataIter,
         MaskIterator maskIter, WeightsIterator weightsIter, uInt64 count,
         const std::vector<StatsHistogram<AccumType>>& hist,
@@ -429,7 +429,7 @@ private:
     );
 
     void _computeDataArrays(
-        std::vector<std::vector<AccumType> >& arys, uInt64& currentCount,
+        std::vector<std::vector<AccumType>>& arys, uInt64& currentCount,
         DataIterator dataIter, MaskIterator maskIter,
         WeightsIterator weightsIter, uInt64 dataCount,
         const IncludeLimits& includeLimits, uInt64 maxCount,
@@ -457,7 +457,7 @@ private:
     // non-overlapping histograms and the histograms should be specified in
     // ascending order.
     std::vector<IndexValueMap> _dataFromMultipleBins(
-        const std::vector<StatsHistogram<AccumType> >& hist,
+        const std::vector<StatsHistogram<AccumType>>& hist,
         uInt64 maxArraySize, const std::vector<IndexSet>& dataIndices,
         uInt nBins
     );

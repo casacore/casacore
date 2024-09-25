@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_STARRAYFILE_H
 #define TABLES_STARRAYFILE_H
@@ -34,6 +32,7 @@
 #include <casacore/casa/IO/TypeIO.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -139,7 +138,7 @@ public:
     StManArrayFile (const String& name, ByteIO::OpenOption,
 		    uInt version=0, Bool bigEndian=True,
 		    uInt bufferSize=0,
-                    MultiFileBase* mfile=0);
+                    const std::shared_ptr<MultiFileBase>& = std::shared_ptr<MultiFileBase>());
 
     // Close the possibly opened file.
     ~StManArrayFile();
@@ -274,8 +273,8 @@ public:
     // </group>
 
 private:
-    ByteIO* file_p;                //# File object
-    TypeIO* iofil_p;               //# IO object
+    std::shared_ptr<ByteIO> file_p;                //# File object
+    std::shared_ptr<TypeIO> iofil_p;               //# IO object
     Int64   leng_p;                //# File length
     uInt    version_p;             //# Version of StArrayFile file
     Bool    swput_p;               //# True = put is possible

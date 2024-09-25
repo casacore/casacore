@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Partial implementation of little endian code by Kris Huber
 //# (kris@helios.ece.usu.edu)
@@ -2404,7 +2402,7 @@ Bool FitsKeywordList::basic_rules() {
 }
 
 FitsKeyCardTranslator::FitsKeyCardTranslator(int max) : cardno(0),
-	FitsCardSize(80), FitsMaxCard(36), FitsRecSize(2880), max_errs(max), 
+        max_errs(max), 
 	no_errs_(0) {
 	err_ = new const char * [max_errs];
 	err_cardno_ = new int [max_errs];
@@ -2522,33 +2520,33 @@ void FitsKeyCardTranslator::fmtcard(char *card, const FitsKeyword &k) {
 		    card[29] = (k.asBool() == True ? 'T' : 'F');
 		    break;
 		case FITS::LONG:
-		    sprintf(&card[18],"%12d",k.asInt());
+                    snprintf(&card[18],FitsCardSize-18,"%12d",k.asInt());
 		    card[30] = ' ';
 		    break;
 		case FITS::FLOAT:
-		    sprintf(&card[16],"%#14.7E",k.asFloat());
+		    snprintf(&card[16],FitsCardSize-16,"%#14.7E",k.asFloat());
 		    card[30] = ' ';
 		    break;
 		case FITS::DOUBLE:
-		    sprintf(&card[10],"%#20.12E",k.asDouble()); // optimum %23.15E
+		    snprintf(&card[10],FitsCardSize-10,"%#20.12E",k.asDouble()); // optimum %23.15E
 		    for (i = 29; i < 10; --i) // change the E to a D
 		        if (card[i] == 'E') { card[i] = 'D'; break; }
 		    card[30] = ' ';
 		    break;
 		case FITS::ICOMPLEX:
-		    sprintf(&card[18],"%12d",k.asIComplex().real());
+		    snprintf(&card[18],FitsCardSize-18,"%12d",k.asIComplex().real());
 		    card[30] = ' ';
-		    sprintf(&card[38],"%12d",k.asIComplex().imag());
+		    snprintf(&card[38],FitsCardSize-38,"%12d",k.asIComplex().imag());
 		    card[50] = ' ';
 		    break;
 		case FITS::COMPLEX:
-		    sprintf(&card[16],"%#14.6E",k.asComplex().real());
-		    sprintf(&card[36],"%#14.6E",k.asComplex().imag());
+		    snprintf(&card[16],FitsCardSize-16,"%#14.6E",k.asComplex().real());
+		    snprintf(&card[36],FitsCardSize-36,"%#14.6E",k.asComplex().imag());
 		    card[50] = ' ';
 		    break;
 		case FITS::DCOMPLEX:
-		    sprintf(&card[10],"%#20.12E",k.asDComplex().real());
-		    sprintf(&card[30],"%#20.12E",k.asDComplex().imag());
+		    snprintf(&card[10],FitsCardSize-10,"%#20.12E",k.asDComplex().real());
+		    snprintf(&card[30],FitsCardSize-30,"%#20.12E",k.asDComplex().imag());
 		    for (i = 29; i < 10; --i) // change E to a D
 		        if (card[i] == 'E') { card[i] = 'D'; break; }
 		    for (i = 49; i < 30; --i) // change E to a D

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: TSMCube.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef TABLES_TSMCUBE_H
 #define TABLES_TSMCUBE_H
@@ -133,6 +131,12 @@ public:
              Bool useDerived = False);
 
     virtual ~TSMCube();
+
+    // Forbid copy constructor.
+    TSMCube (const TSMCube&) = delete;
+
+    // Forbid assignment.
+    TSMCube& operator= (const TSMCube&) = delete;
 
     // Flush the data in the cache.
     virtual void flushCache();
@@ -305,12 +309,6 @@ protected:
     void resizeTileSections();
 
 private:
-    // Forbid copy constructor.
-    TSMCube (const TSMCube&);
-
-    // Forbid assignment.
-    TSMCube& operator= (const TSMCube&);
-
     // Get the cache object.
     // This will construct the cache object if not present yet.
     BucketCache* getCache();

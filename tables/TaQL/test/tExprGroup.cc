@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tExprNode.cc 21156 2011-12-12 07:57:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprAggrNode.h>
@@ -68,7 +66,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -90,7 +88,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -112,7 +110,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -134,7 +132,7 @@ void check (const TableExprNode& expr,
   // Get the aggregation node.
   TableExprAggrNode& aggr = const_cast<TableExprAggrNode&>
     (dynamic_cast<const TableExprAggrNode&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
@@ -162,7 +160,7 @@ void checkLazy (const TableExprNode& expr,
     funcid.apply (id);
   }
   funcid.finish();
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   Double val = func->getDouble (*funcid.getIds());
   if (val != expVal) {
     foundError = True;

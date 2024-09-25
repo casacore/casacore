@@ -18,13 +18,11 @@
     Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 
     Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
+           Internet email: casa-feedback@nrao.edu.
            Postal address: AIPS++ Project Office
                            National Radio Astronomy Observatory
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
-
-    $Id$
 */
 
 
@@ -60,6 +58,8 @@ Expect them, so bison does not generate an error message.
 %token DROPTAB
 %token WITH
 %token FROM
+%token JOIN
+%token ON
 %token WHERE
 %token GROUPBY
 %token GROUPROLL
@@ -97,6 +97,7 @@ Expect them, so bison does not generate an error message.
 %token IN
 %token INCONE
 %token BETWEEN
+%token AROUND
 %token EXISTS
 %token LIKE
 %token ILIKE
@@ -109,6 +110,7 @@ Expect them, so bison does not generate an error message.
 %token RBRACE
 %token COLON
 %token SEMICOL
+%token MIDWIDTH
 %token OPENOPEN
 %token OPENCLOSED
 %token CLOSEDOPEN
@@ -152,6 +154,9 @@ Expect them, so bison does not generate an error message.
 %type <nodelist> concsub
 %type <nodelist> concslist
 %type <nodename> concinto
+%type <nodelist> joins
+%type <nodelist> joinlist
+%type <node> join
 %type <node> whexpr
 %type <node> groupby
 %type <nodelist> exprlist
@@ -406,17 +411,17 @@ withpart:  {   /* no WITH part */
 
 /* The SELECT command; note that many parts are optional which is handled
    in the rule of that part. The FROM part being optional is handled here
-   because later a join might be added. */
-selcomm:   withpart SELECT selcol FROM tables whexpr groupby having order limitoff given dminfo {
+   because a join might be used. */
+selcomm:   withpart SELECT selcol FROM tables joins whexpr groupby having order limitoff given dminfo {
                $$ = new TaQLQueryNode(
-                    new TaQLSelectNodeRep (*$3, *$1, *$5, 0, *$6, *$7, *$8,
-					   *$9, *$10, *$11, *$12));
+                    new TaQLSelectNodeRep (*$3, *$1, *$5, *$6, *$7, *$8, *$9,
+					   *$10, *$11, *$12, *$13));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
-         | withpart SELECT selcol into FROM tables whexpr groupby having order limitoff dminfo {
+         | withpart SELECT selcol into FROM tables joins whexpr groupby having order limitoff dminfo {
                $$ = new TaQLQueryNode(
-		    new TaQLSelectNodeRep (*$3, *$1, *$6, 0, *$7, *$8, *$9,
-					   *$10, *$11, *$4, *$12));
+		    new TaQLSelectNodeRep (*$3, *$1, *$6, *$7, *$8, *$9, *$10,
+					   *$11, *$12, *$4, *$13));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | withpart SELECT selcol whexpr groupby having order limitoff given dminfo {
@@ -1460,6 +1465,34 @@ tabname:   NAME {
            }
          ;
 
+/* JOIN ON is optional */
+joins:     {   /* no joins */
+	       $$ = new TaQLMultiNode();
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | joinlist {
+               $$ = $1;
+           }
+         ;
+
+joinlist:  joinlist join {
+               $$ = $1;
+               $$->add (*$2);
+           }
+         | join {
+	       $$ = new TaQLMultiNode(False);
+               $$->setSeparator (String());
+	       TaQLNode::theirNodesCreated.push_back ($$);
+               $$->add (*$1);
+           }
+         ;
+
+join:      JOIN tablist ON orexpr {
+               $$ = new TaQLNode (new TaQLJoinNodeRep (*$2, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         ;
+
 /* WHERE is optional */
 whexpr:    {   /* no selection */
 	       $$ = new TaQLNode();
@@ -1642,6 +1675,21 @@ relexpr:   arithexpr {
          | arithexpr NOT BETWEEN arithexpr AND arithexpr {
 	       TaQLMultiNode pr(False);
 	       pr.add (new TaQLRangeNodeRep (True, *$4, *$6, True));
+	       TaQLNode p (new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_IN, *$1, pr));
+	       $$ = new TaQLNode(
+                    new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, p));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | arithexpr AROUND arithexpr IN arithexpr {
+	       TaQLMultiNode pr(False);
+	       pr.add (new TaQLRangeNodeRep (*$3, *$5));
+	       $$ = new TaQLNode(
+	            new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_IN, *$1, pr));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | arithexpr NOT AROUND arithexpr IN arithexpr {
+	       TaQLMultiNode pr(False);
+	       pr.add (new TaQLRangeNodeRep (*$4, *$6));
 	       TaQLNode p (new TaQLBinaryNodeRep (TaQLBinaryNodeRep::B_IN, *$1, pr));
 	       $$ = new TaQLNode(
                     new TaQLUnaryNodeRep (TaQLUnaryNodeRep::U_NOT, p));
@@ -1886,11 +1934,21 @@ singlerange: range {
 /* A range can be a discrete strt:end:step range or a continuous interval.
    The latter can be specified in two ways: using angle brackets
    and braces or using the =:= notation (where = can also be <).
-   Angle brackets indicate an open side, others a closed side.
+   Angle brackets indicate an open side, braces a closed side.
    It is possible to leave out the start or end value (meaning - or +infinity).
 */
 range:     colonrangeinterval {
                $$ = $1;
+           }
+         | BETWEEN arithexpr AND arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLRangeNodeRep (False, *$2, *$4, False));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | AROUND arithexpr IN arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLRangeNodeRep (*$2, *$4));
+	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | LT arithexpr COMMA arithexpr GT {
 	       $$ = new TaQLNode(
@@ -1950,6 +2008,11 @@ range:     colonrangeinterval {
          | LBRACE arithexpr COMMA GT {
 	       $$ = new TaQLNode(
                     new TaQLRangeNodeRep (True, *$2));
+	       TaQLNode::theirNodesCreated.push_back ($$);
+           }
+         | arithexpr MIDWIDTH arithexpr {
+	       $$ = new TaQLNode(
+                    new TaQLRangeNodeRep (*$1, *$3));
 	       TaQLNode::theirNodesCreated.push_back ($$);
            }
          | arithexpr OPENOPEN arithexpr {

@@ -17,19 +17,18 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: TaQLNodeArray.h 21051 2011-04-20 11:46:29Z gervandiepen $
 
 //# Includes
 #include <casacore/tables/TaQL/ExprAggrNodeArray.h>
 #include <casacore/tables/TaQL/ExprGroupAggrFunc.h>
 #include <casacore/tables/TaQL/ExprGroupAggrFuncArray.h>
 #include <casacore/tables/TaQL/TableExprIdAggr.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/TableError.h>
 
 
@@ -52,50 +51,42 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     exprtype_p = Variable;
   }
 
-  void TableExprAggrNodeArray::getAggrNodes (vector<TableExprNodeRep*>& aggr)
-  {
-    aggr.push_back (this);
-    uInt naggr = aggr.size();
-    for (uInt i=0; i<operands().size(); ++i) {
-      operands()[i]->getAggrNodes (aggr);
-    }
-    if (naggr != aggr.size()) {
-      throw TableInvExpr ("The argument of an aggregate function cannot use "
-                          "an aggregate function");
-    }
-  }
-
-  CountedPtr<TableExprGroupFuncBase> TableExprAggrNodeArray::makeGroupAggrFunc()
+  std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::makeGroupAggrFunc()
   {
     // Create a new function object because each FuncSet needs its own one.
     itsFunc = doMakeGroupAggrFunc();
     return itsFunc;
   }
 
+  Bool TableExprAggrNodeArray::isAggregate() const
+  {
+    return True;
+  }
+  
   Bool TableExprAggrNodeArray::isLazyAggregate() const
   {
     return itsFunc->isLazy();
   }
 
-  CountedPtr<TableExprGroupFuncBase> TableExprAggrNodeArray::doMakeGroupAggrFunc()
+  std::shared_ptr<TableExprGroupFuncBase> TableExprAggrNodeArray::doMakeGroupAggrFunc()
   {
     if (funcType() == TableExprFuncNode::gexpridFUNC) {
-      return new TableExprGroupExprId(this);
+      return std::make_shared<TableExprGroupExprId>(this);
     } else if (funcType() == TableExprFuncNode::gaggrFUNC) {
-      return new TableExprGroupAggr(this);
+      return std::make_shared<TableExprGroupAggr>(this);
     } else if (funcType() == TableExprFuncNode::growidFUNC) {
-      return new TableExprGroupRowid(this);
+      return std::make_shared<TableExprGroupRowid>(this);
     } else if (funcType() == TableExprFuncNode::ghistFUNC) {
       Int64  nbin  = operands()[1]->getInt(0);
       Double start = operands()[2]->getDouble(0);
       Double end   = operands()[3]->getDouble(0);
       if (operands()[0]->valueType() == VTScalar) {
-        return new TableExprGroupHistScalar (this, nbin, start, end);
+        return std::make_shared<TableExprGroupHistScalar>(this, nbin, start, end);
       }
       if (operands()[0]->dataType() == NTInt) {
-        return new TableExprGroupHistInt (this, nbin, start, end);
+        return std::make_shared<TableExprGroupHistInt>(this, nbin, start, end);
       }
-      return new TableExprGroupHistDouble (this, nbin, start, end);
+      return std::make_shared<TableExprGroupHistDouble>(this, nbin, start, end);
     }
     if (operands()[0]->valueType() == VTScalar) {
       throw TableInvExpr ("Aggregate function " +
@@ -108,13 +99,13 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case NTBool:
       switch (funcType()) {
       case TableExprFuncNode::ganysFUNC:
-        return new TableExprGroupArrayAnys(this);
+        return std::make_shared<TableExprGroupArrayAnys>(this);
       case TableExprFuncNode::gallsFUNC:
-        return new TableExprGroupArrayAlls(this);
+        return std::make_shared<TableExprGroupArrayAlls>(this);
       case TableExprFuncNode::gntruesFUNC:
-        return new TableExprGroupArrayNTrues(this);
+        return std::make_shared<TableExprGroupArrayNTrues>(this);
       case TableExprFuncNode::gnfalsesFUNC:
-        return new TableExprGroupArrayNFalses(this);
+        return std::make_shared<TableExprGroupArrayNFalses>(this);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
@@ -123,15 +114,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case NTInt:
       switch (funcType()) {
       case TableExprFuncNode::gminsFUNC:
-        return new TableExprGroupMinsArrayInt(this);
+        return std::make_shared<TableExprGroupMinsArrayInt>(this);
       case TableExprFuncNode::gmaxsFUNC:
-        return new TableExprGroupMaxsArrayInt(this);
+        return std::make_shared<TableExprGroupMaxsArrayInt>(this);
       case TableExprFuncNode::gsumsFUNC:
-        return new TableExprGroupSumsArrayInt(this);
+        return std::make_shared<TableExprGroupSumsArrayInt>(this);
       case TableExprFuncNode::gproductsFUNC:
-        return new TableExprGroupProductsArrayInt(this);
+        return std::make_shared<TableExprGroupProductsArrayInt>(this);
       case TableExprFuncNode::gsumsqrsFUNC:
-        return new TableExprGroupSumSqrsArrayInt(this);
+        return std::make_shared<TableExprGroupSumSqrsArrayInt>(this);
       default:
         break;
       }
@@ -140,27 +131,27 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case NTDouble:
       switch (funcType()) {
       case TableExprFuncNode::gminsFUNC:
-        return new TableExprGroupMinsArrayDouble(this);
+        return std::make_shared<TableExprGroupMinsArrayDouble>(this);
       case TableExprFuncNode::gmaxsFUNC:
-        return new TableExprGroupMaxsArrayDouble(this);
+        return std::make_shared<TableExprGroupMaxsArrayDouble>(this);
       case TableExprFuncNode::gsumsFUNC:
-        return new TableExprGroupSumsArrayDouble(this);
+        return std::make_shared<TableExprGroupSumsArrayDouble>(this);
       case TableExprFuncNode::gproductsFUNC:
-        return new TableExprGroupProductsArrayDouble(this);
+        return std::make_shared<TableExprGroupProductsArrayDouble>(this);
       case TableExprFuncNode::gsumsqrsFUNC:
-        return new TableExprGroupSumSqrsArrayDouble(this);
+        return std::make_shared<TableExprGroupSumSqrsArrayDouble>(this);
       case TableExprFuncNode::gmeansFUNC:
-        return new TableExprGroupMeansArrayDouble(this);
+        return std::make_shared<TableExprGroupMeansArrayDouble>(this);
       case TableExprFuncNode::gvariances0FUNC:
-        return new TableExprGroupVariancesArrayDouble(this, 0);
+        return std::make_shared<TableExprGroupVariancesArrayDouble>(this, 0);
       case TableExprFuncNode::gvariances1FUNC:
-        return new TableExprGroupVariancesArrayDouble(this, 1);
+        return std::make_shared<TableExprGroupVariancesArrayDouble>(this, 1);
       case TableExprFuncNode::gstddevs0FUNC:
-        return new TableExprGroupStdDevsArrayDouble(this, 0);
+        return std::make_shared<TableExprGroupStdDevsArrayDouble>(this, 0);
       case TableExprFuncNode::gstddevs1FUNC:
-        return new TableExprGroupStdDevsArrayDouble(this, 1);
+        return std::make_shared<TableExprGroupStdDevsArrayDouble>(this, 1);
       case TableExprFuncNode::grmssFUNC:
-        return new TableExprGroupRmssArrayDouble(this);
+        return std::make_shared<TableExprGroupRmssArrayDouble>(this);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +
@@ -169,21 +160,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     case NTComplex:
       switch (funcType()) {
       case TableExprFuncNode::gsumsFUNC:
-        return new TableExprGroupSumsArrayDComplex(this);
+        return std::make_shared<TableExprGroupSumsArrayDComplex>(this);
       case TableExprFuncNode::gproductsFUNC:
-        return new TableExprGroupProductsArrayDComplex(this);
+        return std::make_shared<TableExprGroupProductsArrayDComplex>(this);
       case TableExprFuncNode::gsumsqrsFUNC:
-        return new TableExprGroupSumSqrsArrayDComplex(this);
+        return std::make_shared<TableExprGroupSumSqrsArrayDComplex>(this);
       case TableExprFuncNode::gmeansFUNC:
-        return new TableExprGroupMeansArrayDComplex(this);
+        return std::make_shared<TableExprGroupMeansArrayDComplex>(this);
       case TableExprFuncNode::gvariances0FUNC:
-        return new TableExprGroupVariancesArrayDComplex(this, 0);
+        return std::make_shared<TableExprGroupVariancesArrayDComplex>(this, 0);
       case TableExprFuncNode::gvariances1FUNC:
-        return new TableExprGroupVariancesArrayDComplex(this, 1);
+        return std::make_shared<TableExprGroupVariancesArrayDComplex>(this, 1);
       case TableExprFuncNode::gstddevs0FUNC:
-        return new TableExprGroupStdDevsArrayDComplex(this, 0);
+        return std::make_shared<TableExprGroupStdDevsArrayDComplex>(this, 0);
       case TableExprFuncNode::gstddevs1FUNC:
-        return new TableExprGroupStdDevsArrayDComplex(this, 1);
+        return std::make_shared<TableExprGroupStdDevsArrayDComplex>(this, 1);
       default:
         throw TableInvExpr ("Aggregate function " +
                             String::toString(funcType()) +

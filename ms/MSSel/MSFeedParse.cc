@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/ms/MSSel/MSFeedParse.h>
 #include <casacore/ms/MSSel/MSFeedIndex.h>
@@ -39,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
  // Global pointer to the parser object
   MSFeedParse* MSFeedParse::thisMSFParser = 0;
   TableExprNode MSFeedParse::column1AsTEN_p, MSFeedParse::column2AsTEN_p;
-  CountedPtr<MSSelectionErrorHandler> MSFeedParse::thisMSFErrorHandler;
+  std::shared_ptr<MSSelectionErrorHandler> MSFeedParse::thisMSFErrorHandler;
   
   //# Constructor
   MSFeedParse::MSFeedParse ()

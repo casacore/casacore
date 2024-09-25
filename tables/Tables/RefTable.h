@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_REFTABLE_H
 #define TABLES_REFTABLE_H
@@ -142,6 +140,14 @@ public:
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
     virtual ~RefTable();
+
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    RefTable (const RefTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    RefTable& operator= (const RefTable&) = delete;
 
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
@@ -336,16 +342,6 @@ private:
     std::map<String,String> nameMap_p;      //# map to column name in parent
     std::map<String,RefColumn*> colMap_p;   //# map name to column
     Bool            changed_p;              //# True = changed since last write
-
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    RefTable (const RefTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    RefTable& operator= (const RefTable&);
 
     // Get the names of the tables this table consists of.
     virtual void getPartNames (Block<String>& names, Bool recursive) const;

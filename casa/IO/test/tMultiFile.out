@@ -1,0 +1,169 @@
+MultiFile test with blockSize=1024, useCRC=0, useODirect=0
+tMultiFile_tmp.dat: blocksize=1024  nfile=0  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=1024  nfile=0  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=1024  nfile=3  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=1024  nfile=3  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+file0 0
+file1 1
+file2 2
+[file0 [1,3,4]
+  fsize=3072 cur=-1 nest=0 dirty=0
+,file1 [5,6]
+  fsize=2048 cur=-1 nest=0 dirty=0
+,file2 [2,7]
+  fsize=2048 cur=-1 nest=0 dirty=0
+]
+tMultiFile_tmp.dat: blocksize=1024  nfile=3  nblock=8  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+file0 0
+file1 1
+file2 2
+test deleteFile
+tMultiFile_tmp.dat: blocksize=1024  nfile=2  nblock=8  nCRC=0
+  ncont=0,0  cont=0 []  free=[6,5]
+file0 0
+file1 -1
+file2 2
+[file0 [1,3,4]
+  fsize=3072 cur=0 nest=0 dirty=1
+, []
+  fsize=0 cur=-1 nest=0 dirty=0
+,file2 [2,7,5]
+  fsize=2064 cur=2 nest=0 dirty=1
+]
+tMultiFile_tmp.dat: blocksize=1024  nfile=2  nblock=8  nCRC=0
+  ncont=0,0  cont=0 []  free=[6]
+file0 0
+file1 -1
+file2 2
+
+MultiFile test with blockSize=128, useCRC=0, useODirect=0
+tMultiFile_tmp.dat: blocksize=128  nfile=0  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=128  nfile=0  nblock=2  nCRC=0
+  ncont=0,1  cont=1 [1]  free=[]
+tMultiFile_tmp.dat: blocksize=128  nfile=3  nblock=2  nCRC=0
+  ncont=0,1  cont=1 [1]  free=[]
+tMultiFile_tmp.dat: blocksize=128  nfile=3  nblock=3  nCRC=0
+  ncont=1,1  cont=0 [2]  free=[]
+file0 0
+file1 1
+file2 2
+[file0 [3,4,5,6,7,8,9,10,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]
+  fsize=3072 cur=-1 nest=0 dirty=0
+,file1 [35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50]
+  fsize=2048 cur=-1 nest=0 dirty=0
+,file2 [11,12,13,14,15,16,17,18,51,52,53,54,55,56,57,58]
+  fsize=2048 cur=-1 nest=0 dirty=0
+]
+tMultiFile_tmp.dat: blocksize=128  nfile=3  nblock=60  nCRC=0
+  ncont=1,2  cont=1 [1,59]  free=[]
+file0 0
+file1 1
+file2 2
+test deleteFile
+tMultiFile_tmp.dat: blocksize=128  nfile=2  nblock=62  nCRC=0
+  ncont=3,2  cont=0 [2,60,61]  free=[50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35]
+file0 0
+file1 -1
+file2 2
+[file0 [3,4,5,6,7,8,9,10,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]
+  fsize=3072 cur=0 nest=0 dirty=1
+, []
+  fsize=0 cur=-1 nest=0 dirty=0
+,file2 [11,12,13,14,15,16,17,18,51,52,53,54,55,56,57,58,35]
+  fsize=2064 cur=16 nest=0 dirty=1
+]
+tMultiFile_tmp.dat: blocksize=128  nfile=2  nblock=63  nCRC=0
+  ncont=3,3  cont=1 [1,59,62]  free=[50,49,48,47,46,45,44,43,42,41,40,39,38,37,36]
+file0 0
+file1 -1
+file2 2
+
+MultiFile test with blockSize=4096, useCRC=1, useODirect=1
+tMultiFile_tmp.dat: blocksize=4096  nfile=0  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=4096  nfile=0  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=4096  nfile=3  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=4096  nfile=3  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+file0 0
+file1 1
+file2 2
+[file0 [1]
+  fsize=3072 cur=0 nest=0 dirty=1
+,file1 [3]
+  fsize=2048 cur=0 nest=0 dirty=1
+,file2 [2]
+  fsize=2048 cur=0 nest=0 dirty=1
+]
+tMultiFile_tmp.dat: blocksize=4096  nfile=3  nblock=4  nCRC=4
+  ncont=0,0  cont=0 []  free=[]
+file0 0
+file1 1
+file2 2
+test deleteFile
+tMultiFile_tmp.dat: blocksize=4096  nfile=2  nblock=3  nCRC=3
+  ncont=0,0  cont=0 []  free=[]
+file0 0
+file1 -1
+file2 2
+[file0 [1]
+  fsize=3072 cur=0 nest=0 dirty=1
+, []
+  fsize=0 cur=-1 nest=0 dirty=0
+,file2 [2]
+  fsize=2064 cur=0 nest=0 dirty=1
+]
+tMultiFile_tmp.dat: blocksize=4096  nfile=2  nblock=3  nCRC=3
+  ncont=0,0  cont=0 []  free=[]
+file0 0
+file1 -1
+file2 2
+
+Test a version 1 MultiFile ...
+tMultiFile.in: blocksize=128  nfile=2  nblock=57  nCRC=0
+  ncont=0,0  cont=0 []  free=[48,47,46,45,44,43,42,41,40,39,38,37,36,35,34]
+file0 0
+file1 -1
+file2 2
+
+Test nested with block sizes 512 and 0
+tMultiFile_tmp.nest: blocksize=512  nfile=2  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tnested: blocksize=512  nfile=1  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.nest: blocksize=512  nfile=2  nblock=2  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tnested: blocksize=512  nfile=1  nblock=1  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+
+Test truncation of MultiFile (also nested) ...
+tMultiFile_tmp.dat: blocksize=256  nfile=1  nblock=11  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+tMultiFile_tmp.dat: blocksize=256  nfile=1  nblock=5  nCRC=0
+  ncont=0,0  cont=0 []  free=[]
+4
+>>>
+pack            0 real           0 user           0 system
+unpack          0 real           0 user           0 system
+pack         0.05 real        0.04 user           0 system
+unpack       0.05 real        0.04 user        0.01 system
+move1        0.03 real        0.02 user           0 system
+move2        0.05 real        0.05 user           0 system
+move2        0.05 real        0.05 user           0 system
+move3        0.12 real        0.11 user           0 system
+exact        0.02 real           0 user        0.02 system
+exact        0.02 real           0 user           0 system
+double       0.02 real           0 user        0.01 system
+double       0.01 real        0.01 user        0.01 system
+partly       0.01 real           0 user        0.01 system
+partly       0.04 real           0 user        0.02 system
+<<<
+tMultiFile ended OK

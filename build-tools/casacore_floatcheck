@@ -22,7 +22,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 #   Correspondence concerning AIPS++ should be addressed as follows:
-#          Internet email: aips2-request@nrao.edu.
+#          Internet email: casa-feedback@nrao.edu.
 #          Postal address: AIPS++ Project Office
 #                          National Radio Astronomy Observatory
 #                          520 Edgemont Road
@@ -41,7 +41,7 @@ def splitfile (filename, regexp):
     res = []
     for line in f:
         # Make sure numbers are separated by blanks.
-        line = regexp.sub (' \g<grp> ', line)
+        line = regexp.sub (r' \g<grp> ', line)
         res.extend (line.split())
     f.close()
     return res;
@@ -65,7 +65,7 @@ def main(argv=None):
         tol = float(argv[3])
 
     # Regular expression for an integer or float number.
-    numre = re.compile ('(?P<grp>[+-]?([0-9]+\.[0-9]*|[0-9]*\.[0-9]+|[0-9]+)([ed][+-][0-9]+)?)', re.IGNORECASE)
+    numre = re.compile (r'(?P<grp>[+-]?([0-9]+\.[0-9]*|[0-9]*\.[0-9]+|[0-9]+)([ed][+-][0-9]+)?)', re.IGNORECASE)
 
     # Split file in separate values.
     res1 = splitfile (argv[1], numre);

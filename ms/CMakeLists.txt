@@ -160,6 +160,14 @@ ${BISON_MSStateGram_OUTPUTS}
 ${FLEX_MSStateGram_OUTPUTS}
 )
 
+set(top_level_headers
+MeasurementSets.h
+MSSel.h
+MSOper.h
+)
+
+init_pch_support(casa_ms ${top_level_headers})
+
 target_link_libraries (
 casa_ms casa_measures
 ${CASACORE_ARCH_LIBS}
@@ -314,10 +322,7 @@ MSOper/NewMSSimulator.h
 DESTINATION include/casacore/ms/MSOper
 )
 
-install (FILES
-MeasurementSets.h
-MSSel.h
-MSOper.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/ms
 )
 

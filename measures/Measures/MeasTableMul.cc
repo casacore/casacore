@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id: MeasTable.h 21420 2014-03-19 09:18:51Z gervandiepen $
 
 #include <casacore/measures/Measures/MeasTableMul.h>
 #include <casacore/casa/Quanta/UnitVal.h>
@@ -42,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     itsArrays.resize (0);
   }
 
-  CountedPtr<Matrix<Double> > MeasTableMul::getArray
+  std::shared_ptr<Matrix<Double>> MeasTableMul::getArray
   (Double time, Double epsilon)
   {
     {   // cache lookup must be thread-safe
@@ -68,7 +65,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     // Let a derived class calculate the coefficient matrix for this epoch.
     // Note: multiple threads can execute this part (which is fine).
-    CountedPtr<Matrix<Double> > arr(new Matrix<Double>(itsDefArray.shape()));
+    auto arr = std::make_shared<Matrix<Double>>(itsDefArray.shape());
     *arr = itsDefArray;
     calc (*arr, time);
     {   // cache insertion must also be thread-safe

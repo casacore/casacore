@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/tables/Tables/RefColumn.h>
@@ -187,13 +185,13 @@ void RefColumn::setMaximumCacheSize (uInt nbytes)
     { colPtr_p->setMaximumCacheSize (nbytes); }
 
 
-void RefColumn::makeSortKey (Sort& sortobj, CountedPtr<BaseCompare>& cmpObj,
-			     Int order, CountedPtr<ArrayBase>& dataSave)
+void RefColumn::makeSortKey (Sort& sortobj, std::shared_ptr<BaseCompare>& cmpObj,
+			     Int order, std::shared_ptr<ArrayBase>& dataSave)
     { colPtr_p->makeRefSortKey (sortobj, cmpObj, order,
 				refTabPtr_p->rowNumbers(), dataSave); }
 
 void RefColumn::allocIterBuf (void*& lastVal, void*& curVal,
-			      CountedPtr<BaseCompare>& cmpObj)
+			      std::shared_ptr<BaseCompare>& cmpObj)
     { colPtr_p->allocIterBuf (lastVal, curVal, cmpObj); }
 
 void RefColumn::freeIterBuf (void*& lastVal, void*& curVal)

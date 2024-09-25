@@ -16,13 +16,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef LATTICES_MASKEDLATTICESTATSDATAPROVIDER_TCC
 #define LATTICES_MASKEDLATTICESTATSDATAPROVIDER_TCC
@@ -53,7 +51,7 @@ MaskedLatticeStatsDataProvider<T>::~MaskedLatticeStatsDataProvider() {}
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::operator++() {
     _freeStorage();
-    if (_iter.null()) {
+    if (! _iter) {
         _atEnd = True;
     }
     else {
@@ -64,7 +62,7 @@ void MaskedLatticeStatsDataProvider<T>::operator++() {
 
 template <class T>
 uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
-    if (_iter.null()) {
+    if (! _iter) {
         return 1;
     }
     IPosition lattShape = _iter->latticeShape();
@@ -83,9 +81,8 @@ uInt MaskedLatticeStatsDataProvider<T>::estimatedSteps() const {
 
 template <class T>
 Bool MaskedLatticeStatsDataProvider<T>::atEnd() const {
-    if (_iter.null()) {
+    if (! _iter) {
         return _atEnd;
-
     }
     else {
         return _iter->atEnd();
@@ -100,7 +97,7 @@ void MaskedLatticeStatsDataProvider<T>::finalize() {
 
 template <class T>
 uInt64 MaskedLatticeStatsDataProvider<T>::getCount() {
-    if (_iter.null()) {
+    if (! _iter) {
         return _currentSlice.size();
     }
     else {
@@ -110,7 +107,7 @@ uInt64 MaskedLatticeStatsDataProvider<T>::getCount() {
 
 template <class T>
 const T* MaskedLatticeStatsDataProvider<T>::getData() {
-    if (! _iter.null()) {
+    if (_iter) {
         _currentSlice.assign(_iter->cursor());
     }
     _currentPtr = _currentSlice.getStorage(_delData);
@@ -119,7 +116,7 @@ const T* MaskedLatticeStatsDataProvider<T>::getData() {
 
 template <class T>
 const Bool* MaskedLatticeStatsDataProvider<T>::getMask() {
-    if (! _iter.null()) {
+    if (_iter) {
         _currentMaskSlice.assign(_iter->getMask());
     }
     _currentMaskPtr = _currentMaskSlice.getStorage(_delMask);
@@ -143,7 +140,7 @@ Bool MaskedLatticeStatsDataProvider<T>::hasMask() const {
 template <class T>
 void MaskedLatticeStatsDataProvider<T>::reset() {
     LatticeStatsDataProviderBase<T>::reset();
-    if (! _iter.null()) {
+    if (_iter) {
         _iter->reset();
     }
 }
@@ -159,7 +156,7 @@ void MaskedLatticeStatsDataProvider<T>::setLattice(
                 lattice.advisedMaxPixels()
             )
         );
-        _iter = new RO_MaskedLatticeIterator<T>(lattice, stepper);
+        _iter = std::make_shared<RO_MaskedLatticeIterator<T>>(lattice, stepper);
     }
     else {
         _iter = NULL;
@@ -181,7 +178,7 @@ void MaskedLatticeStatsDataProvider<T>::updateMaxPos(
     const std::pair<Int64, Int64>& maxpos
 ) {
     IPosition p = toIPositionInArray(maxpos.second, _currentSlice.shape());
-    if (! _iter.null()) {
+    if (_iter) {
         p += _iter->position();
     }
     this->_updateMaxPos(p);
@@ -192,7 +189,7 @@ void MaskedLatticeStatsDataProvider<T>::updateMinPos(
     const std::pair<Int64, Int64>& minpos
 ) {
     IPosition p = toIPositionInArray(minpos.second, _currentSlice.shape());
-    if (! _iter.null()) {
+    if (_iter) {
         p += _iter->position();
     }
     this->_updateMinPos(p);

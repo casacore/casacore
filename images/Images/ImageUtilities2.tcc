@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEUTILITIES2_TCC
 #define IMAGES_IMAGEUTILITIES2_TCC
@@ -53,7 +51,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <typename T> void ImageUtilities::addDegenerateAxes(
-	LogIO& os, PtrHolder<ImageInterface<T> >& outImage,
+        LogIO& os, std::unique_ptr<ImageInterface<T>>& outImage,
 	const ImageInterface<T>& inImage, const String& outFile,
 	Bool direction, Bool spectral, const String& stokes,
 	Bool linear, Bool tabular, Bool overwrite,
@@ -87,14 +85,14 @@ template <typename T> void ImageUtilities::addDegenerateAxes(
 	if (outFile.empty()) {
 		os << LogIO::NORMAL << "Creating (temp)image of shape "
 			<< shape << LogIO::POST;
-		outImage.set(new TempImage<T>(shape, cSys));
+		outImage.reset(new TempImage<T>(shape, cSys));
 	}
 	else {
 		os << LogIO::NORMAL << "Creating image '" << outFile << "' of shape "
 			<< shape << LogIO::POST;
-		outImage.set(new PagedImage<T>(shape, cSys, outFile));
+		outImage.reset(new PagedImage<T>(shape, cSys, outFile));
 	}
-	ImageInterface<T>* pOutImage = outImage.ptr();
+	ImageInterface<T>* pOutImage = outImage.get();
 
 	// Generate output masks
 
@@ -288,21 +286,21 @@ template <typename T> void ImageUtilities::openImage(
 }
 
 template <typename T> void ImageUtilities::openImage(
-	PtrHolder<ImageInterface<T> >& image,
+        std::unique_ptr<ImageInterface<T>>& image,
 	const String& fileName
 ) {
    ImageInterface<T>* p = 0;
    ImageUtilities::openImage(p, fileName);
-   image.set(p);
+   image.reset(p);
 }
 
 template <typename T>
-std::shared_ptr<ImageInterface<T> > ImageUtilities::openImage
+std::shared_ptr<ImageInterface<T>> ImageUtilities::openImage
 (const String& fileName)
 {
    ImageInterface<T>* p = 0;
    ImageUtilities::openImage(p, fileName);
-   return std::shared_ptr<ImageInterface<T> > (p);
+   return std::shared_ptr<ImageInterface<T>> (p);
 }
 
 } //# NAMESPACE CASACORE - END

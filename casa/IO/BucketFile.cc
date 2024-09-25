@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -56,7 +54,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BucketFile::BucketFile (const String& fileName,
                         uInt bufSizeFile, Bool mappedFile,
-                        MultiFileBase* mfile)
+                        const std::shared_ptr<MultiFileBase>& mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (True),
   isMapped_p     (mappedFile),
@@ -69,19 +67,19 @@ BucketFile::BucketFile (const String& fileName,
 {
     // Create the file.
     if (mfile_p) {
-      file_p = new MFFileIO (*mfile_p, name_p, ByteIO::New);
+      file_p.reset (new MFFileIO (mfile_p, name_p, ByteIO::New));
       isMapped_p = False;
       bufSize_p  = 0;
     } else {
       fd_p   = FiledesIO::create (name_p.chars());
-      file_p = new FiledesIO (fd_p, name_p);
+      file_p.reset (new FiledesIO (fd_p, name_p));
     }
     createMapBuf();
 }
 
 BucketFile::BucketFile (const String& fileName, Bool isWritable,
                         uInt bufSizeFile, Bool mappedFile,
-                        MultiFileBase* mfile)
+                        const std::shared_ptr<MultiFileBase>& mfile)
 : name_p         (Path(fileName).expandedName()),
   isWritable_p   (isWritable),
   isMapped_p     (mappedFile),
@@ -103,12 +101,12 @@ BucketFile::~BucketFile()
     close();
 }
 
-CountedPtr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
+std::shared_ptr<ByteIO> BucketFile::makeFilebufIO (uInt bufferSize)
 {
   if (mfile_p) {
     return file_p;
   }
-  return new FilebufIO (fd_p, bufferSize);
+  return std::make_shared<FilebufIO>(fd_p, bufferSize);
 }
 
 
@@ -116,7 +114,7 @@ void BucketFile::close()
 {
     if (file_p) {
         deleteMapBuf();
-	file_p = CountedPtr<ByteIO>();
+	file_p.reset();
         FiledesIO::close (fd_p);
 	fd_p   = -1;
     }
@@ -127,11 +125,11 @@ void BucketFile::open()
 {
     if (! file_p) {
       if (mfile_p) {
-        file_p = new MFFileIO (*mfile_p, name_p,
-                               isWritable_p ? ByteIO::Update : ByteIO::Old);
+        file_p.reset (new MFFileIO (mfile_p, name_p,
+                                    isWritable_p ? ByteIO::Update : ByteIO::Old));
       } else {
         fd_p   = FiledesIO::open (name_p.chars(), isWritable_p);
-        file_p = new FiledesIO (fd_p, name_p);
+        file_p.reset (new FiledesIO (fd_p, name_p));
       }
       createMapBuf();
     }
@@ -170,7 +168,7 @@ void BucketFile::remove()
     } else {
       DOos::remove (name_p, False, False);
     }
-    file_p = CountedPtr<ByteIO>();
+    file_p.reset();
 }
 
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/TaQL/ExprUDFNode.h>
@@ -32,13 +30,13 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
   
-  TableExprUDFNode::TableExprUDFNode (UDFBase* udf, const Table& tab,
+  TableExprUDFNode::TableExprUDFNode (const std::shared_ptr<UDFBase>& udf,
+                                      const TableExprInfo& tabInfo,
                                       const TableExprNodeSet& source)
     : TableExprNodeMulti (udf->dataType(), VTScalar, OtFunc, source),
-      itsUDF (udf)
+      itsTableInfo (tabInfo),
+      itsUDF       (udf)
   {
-    // Set the table. This is needed for ExprNode::checkReplaceTable to work.
-    table_p = tab;
     // The source may be empty which causes the expression type
     // to be made constant. Force it to be variable if needed.
     if (udf->isConstant()) {
@@ -49,44 +47,25 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Set the unit and attributes (is also fine if undefined).
     setUnit (Unit(udf->getUnit()));
     setAttributes (udf->getAttributes());
- }
-
-  TableExprUDFNode::~TableExprUDFNode()
-  {
-    delete itsUDF;
   }
 
-  void TableExprUDFNode::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  void TableExprUDFNode::flattenTree (vector<TableExprNodeRep*>& nodes)
   {
-    uInt naggr = aggr.size();
-    itsUDF->getAggrNodes (aggr);
-    if (itsUDF->isAggregate()) {
-      // If the UDF itself is an aggregate function, its operands should not
-      // contain aggregate functions.
-      if (naggr != aggr.size()) {
-        throw TableInvExpr ("The argument of an aggregate function cannot use "
-                            "an aggregate function");
-      }
-      aggr.push_back (this);
-    }
+    nodes.push_back (this);
+    itsUDF->flattenTree (nodes);
   }
 
-  void TableExprUDFNode::getColumnNodes (vector<TableExprNodeRep*>& cols)
-  {
-    itsUDF->getColumnNodes (cols);
-    cols.push_back (this);
-  }
-
+  TableExprInfo TableExprUDFNode::getTableInfo() const
+    { return itsTableInfo; }
+  
   void TableExprUDFNode::disableApplySelection()
     { itsUDF->disableApplySelection(); }
 
   void TableExprUDFNode::applySelection (const Vector<rownr_t>& rownrs)
     { itsUDF->applySelection (rownrs); }
 
-  CountedPtr<TableExprGroupFuncBase> TableExprUDFNode::makeGroupAggrFunc()
-  {
-    return new TableExprGroupNull(this);
-  }
+  std::shared_ptr<TableExprGroupFuncBase> TableExprUDFNode::makeGroupAggrFunc()
+    { return std::make_shared<TableExprGroupNull>(this); }
 
   Bool      TableExprUDFNode::getBool     (const TableExprId& id)
     { return itsUDF->getBool (id); }

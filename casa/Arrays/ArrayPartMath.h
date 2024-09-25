@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ArrayPartMath.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef CASA_ARRAYPARTMATH_2_H
 #define CASA_ARRAYPARTMATH_2_H
@@ -105,79 +103,79 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // partialNFalse to count the number of true or false elements in an array.
 // </note>
 // <group>
-template<typename T, typename Alloc> Array<T, Alloc> partialSums (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialSums (const Array<T>& array,
 					const IPosition& collapseAxes);
-template<typename T, typename Alloc> Array<T, Alloc> partialSumSqrs (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialSumSqrs (const Array<T>& array,
                                            const IPosition& collapseAxes);
-template<typename T, typename Alloc> Array<T, Alloc> partialProducts (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialProducts (const Array<T>& array,
 					    const IPosition& collapseAxes);
-template<typename T, typename Alloc> Array<T, Alloc> partialMins (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialMins (const Array<T>& array,
 					const IPosition& collapseAxes);
-template<typename T, typename Alloc> Array<T, Alloc> partialMaxs (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialMaxs (const Array<T>& array,
 					const IPosition& collapseAxes);
-template<typename T, typename Alloc> Array<T, Alloc> partialMeans (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialMeans (const Array<T>& array,
 					 const IPosition& collapseAxes);
-template<typename T, typename Alloc>
-inline Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
+template<typename T>
+inline Array<T> partialVariances (const Array<T>& array,
   const IPosition& collapseAxes, size_t ddof=1)
 {
     return partialVariances (array, collapseAxes,
 			     partialMeans (array, collapseAxes), ddof);
 }
-template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
-					     const IPosition& collapseAxes, const Array<T, Alloc>& means);
-template<typename T, typename Alloc> Array<T, Alloc> partialVariances (const Array<T, Alloc>& array,
-					     const IPosition& collapseAxes, const Array<T, Alloc>& means, size_t ddof);
-template<typename T, typename Alloc> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
+template<typename T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes, const Array<T>& means);
+template<typename T> Array<T> partialVariances (const Array<T>& array,
+					     const IPosition& collapseAxes, const Array<T>& means, size_t ddof);
+template<typename T> Array<std::complex<T>> partialVariances (const Array<std::complex<T>>& array,
                                                            const IPosition& collapseAxes,
                                                            const Array<std::complex<T>>& means,
                                                            size_t ddof);
-template<typename T, typename Alloc> inline Array<T, Alloc> partialStddevs (const Array<T, Alloc>& array,
+template<typename T> inline Array<T> partialStddevs (const Array<T>& array,
                                                   const IPosition& collapseAxes,
                                                   size_t ddof=1)
 {
     return sqrt (partialVariances (array, collapseAxes,
 				   partialMeans (array, collapseAxes), ddof));
 }
-template<typename T, typename Alloc> inline Array<T, Alloc> partialStddevs (const Array<T, Alloc>& array,
+template<typename T> inline Array<T> partialStddevs (const Array<T>& array,
                                                   const IPosition& collapseAxes,
-                                                  const Array<T, Alloc>& means,
+                                                  const Array<T>& means,
                                                   size_t ddof=1)
 {
   return sqrt (partialVariances (array, collapseAxes, means, ddof));
 }
-template<typename T, typename Alloc> inline Array<T, Alloc> partialAvdevs (const Array<T, Alloc>& array,
+template<typename T> inline Array<T> partialAvdevs (const Array<T>& array,
                                                  const IPosition& collapseAxes)
 {
     return partialAvdevs (array, collapseAxes,
 			  partialMeans (array, collapseAxes));
 }
-template<typename T, typename Alloc> Array<T, Alloc> partialAvdevs (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialAvdevs (const Array<T>& array,
 					  const IPosition& collapseAxes,
-					  const Array<T, Alloc>& means);
-template<typename T, typename Alloc> Array<T, Alloc> partialRmss (const Array<T, Alloc>& array,
+					  const Array<T>& means);
+template<typename T> Array<T> partialRmss (const Array<T>& array,
 					const IPosition& collapseAxes);
-template<typename T, typename Alloc> Array<T, Alloc> partialMedians (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialMedians (const Array<T>& array,
 					   const IPosition& collapseAxes,
 					   bool takeEvenMean=false,
 					   bool inPlace=false);
-template<typename T, typename Alloc> Array<T, Alloc> partialMadfms (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialMadfms (const Array<T>& array,
                                           const IPosition& collapseAxes,
                                           bool takeEvenMean=false,
                                           bool inPlace=false);
-template<typename T, typename Alloc> Array<T, Alloc> partialFractiles (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialFractiles (const Array<T>& array,
                                              const IPosition& collapseAxes,
                                              float fraction,
                                              bool inPlace=false);
-template<typename T, typename Alloc> Array<T, Alloc> partialInterFractileRanges (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialInterFractileRanges (const Array<T>& array,
                                                        const IPosition& collapseAxes,
                                                        float fraction,
                                                        bool inPlace=false);
-template<typename T, typename Alloc> Array<T, Alloc> partialInterHexileRanges (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialInterHexileRanges (const Array<T>& array,
                                                      const IPosition& collapseAxes,
                                                      bool inPlace=false)
   { return partialInterFractileRanges (array, collapseAxes, 1./6., inPlace); }
-template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges (const Array<T, Alloc>& array,
+template<typename T> Array<T> partialInterQuartileRanges (const Array<T>& array,
                                                       const IPosition& collapseAxes,
                                                       bool inPlace=false)
   { return partialInterFractileRanges (array, collapseAxes, 0.25, inPlace); }
@@ -188,71 +186,71 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
   // Define functors to perform a reduction function on an Array object.
   // Use virtual functions instead of templates to avoid code bloat
   // in partialArrayMath, etc.
-  template<typename T, typename Alloc=std::allocator<T>> class SumFunc : public ArrayFunctorBase<T> {
+  template<typename T> class SumFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~SumFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return sum(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return sum(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class SumSqrFunc : public ArrayFunctorBase<T> {
+  template<typename T> class SumSqrFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~SumSqrFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return sumsqr(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return sumsqr(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class ProductFunc : public ArrayFunctorBase<T> {
+  template<typename T> class ProductFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~ProductFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return product(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return product(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class MinFunc : public ArrayFunctorBase<T> {
+  template<typename T> class MinFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~MinFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return min(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return min(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class MaxFunc : public ArrayFunctorBase<T> {
+  template<typename T> class MaxFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~MaxFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return max(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return max(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class MeanFunc : public ArrayFunctorBase<T> {
+  template<typename T> class MeanFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~MeanFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return mean(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return mean(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class VarianceFunc : public ArrayFunctorBase<T> {
+  template<typename T> class VarianceFunc : public ArrayFunctorBase<T> {
   public:
     explicit VarianceFunc (size_t ddof)
       : itsDdof(ddof) {}
     virtual ~VarianceFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return pvariance(arr, itsDdof); }
+    virtual T operator() (const Array<T>& arr) const final override { return pvariance(arr, itsDdof); }
   private:
     size_t itsDdof;
   };
-  template<typename T, typename Alloc=std::allocator<T>> class StddevFunc : public ArrayFunctorBase<T> {
+  template<typename T> class StddevFunc : public ArrayFunctorBase<T> {
   public:
     explicit StddevFunc (size_t ddof)
       : itsDdof(ddof) {}
     virtual ~StddevFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return pstddev(arr, itsDdof); }
+    virtual T operator() (const Array<T>& arr) const final override { return pstddev(arr, itsDdof); }
   private:
     size_t itsDdof;
   };
-  template<typename T, typename Alloc=std::allocator<T>> class AvdevFunc : public ArrayFunctorBase<T> {
+  template<typename T> class AvdevFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~AvdevFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return avdev(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return avdev(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class RmsFunc : public ArrayFunctorBase<T> {
+  template<typename T> class RmsFunc : public ArrayFunctorBase<T> {
   public:
     virtual ~RmsFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override { return rms(arr); }
+    virtual T operator() (const Array<T>& arr) const final override { return rms(arr); }
   };
-  template<typename T, typename Alloc=std::allocator<T>> class MedianFunc : public ArrayFunctorBase<T> {
+  template<typename T> class MedianFunc : public ArrayFunctorBase<T> {
   public:
     explicit MedianFunc (bool sorted=false, bool takeEvenMean=true,
                           bool inPlace = false)
       : itsSorted(sorted), itsTakeEvenMean(takeEvenMean), itsInPlace(inPlace) {}
     virtual ~MedianFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override
+    virtual T operator() (const Array<T>& arr) const final override
       { return median(arr, itsTmp, itsSorted, itsTakeEvenMean, itsInPlace); }
   private:
     bool     itsSorted;
@@ -260,13 +258,13 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
     bool     itsInPlace;
     mutable std::vector<T> itsTmp;
   };
-  template<typename T, typename Alloc=std::allocator<T>> class MadfmFunc : public ArrayFunctorBase<T> {
+  template<typename T> class MadfmFunc : public ArrayFunctorBase<T> {
   public:
     explicit MadfmFunc(bool sorted = false, bool takeEvenMean = true,
                        bool inPlace = false)
       : itsSorted(sorted), itsTakeEvenMean(takeEvenMean), itsInPlace(inPlace) {}
     virtual ~MadfmFunc() {}
-    virtual T operator()(const Array<T, Alloc>& arr) const final override
+    virtual T operator()(const Array<T>& arr) const final override
       { return madfm(arr, itsTmp, itsSorted, itsTakeEvenMean, itsInPlace); }
   private:
     bool     itsSorted;
@@ -274,13 +272,13 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
     bool     itsInPlace;
     mutable std::vector<T> itsTmp;
   };
-  template<typename T, typename Alloc=std::allocator<T>> class FractileFunc : public ArrayFunctorBase<T> {
+  template<typename T> class FractileFunc : public ArrayFunctorBase<T> {
   public:
     explicit FractileFunc (float fraction,
                             bool sorted = false, bool inPlace = false)
       : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
     virtual ~FractileFunc() {}
-    virtual T operator() (const Array<T, Alloc>& arr) const final override
+    virtual T operator() (const Array<T>& arr) const final override
       { return fractile(arr, itsTmp, itsFraction, itsSorted, itsInPlace); }
   private:
     float    itsFraction;
@@ -288,13 +286,13 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
     bool     itsInPlace;
     mutable std::vector<T> itsTmp;
   };
-  template<typename T, typename Alloc=std::allocator<T>> class InterFractileRangeFunc {
+  template<typename T> class InterFractileRangeFunc {
   public:
     explicit InterFractileRangeFunc(float fraction,
                                     bool sorted = false, bool inPlace = false)
       : itsFraction(fraction), itsSorted(sorted), itsInPlace(inPlace) {}
     virtual ~InterFractileRangeFunc() {}
-    virtual T operator()(const Array<T, Alloc>& arr) const final override
+    virtual T operator()(const Array<T>& arr) const final override
       { return interFractileRange(arr, itsTmp, itsFraction,
                                   itsSorted, itsInPlace); }
   private:
@@ -303,17 +301,17 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
     bool     itsInPlace;
     mutable std::vector<T> itsTmp;
   };
-  template<typename T, typename Alloc=std::allocator<T>> class InterHexileRangeFunc: public InterFractileRangeFunc<T, Alloc> {
+  template<typename T> class InterHexileRangeFunc: public InterFractileRangeFunc<T> {
   public:
     explicit InterHexileRangeFunc(bool sorted = false, bool inPlace = false)
-      : InterFractileRangeFunc<T, Alloc> (1./6., sorted, inPlace)
+      : InterFractileRangeFunc<T> (1./6., sorted, inPlace)
     {}
     virtual ~InterHexileRangeFunc() {}
   };
-  template<typename T, typename Alloc=std::allocator<T>> class InterQuartileRangeFunc: public InterFractileRangeFunc<T, Alloc> {
+  template<typename T> class InterQuartileRangeFunc: public InterFractileRangeFunc<T> {
   public:
     explicit InterQuartileRangeFunc(bool sorted = false, bool inPlace = false)
-      : InterFractileRangeFunc<T, Alloc> (0.25, sorted, inPlace)
+      : InterFractileRangeFunc<T> (0.25, sorted, inPlace)
     {} 
     virtual ~InterQuartileRangeFunc() {}
   };
@@ -322,18 +320,18 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
 
   // Do partial reduction of an Array object. I.e., perform the operation
   // on a subset of the array axes (the collapse axes).
-  template<typename T, typename Alloc=std::allocator<T>>
-  inline Array<T, Alloc> partialArrayMath (const Array<T, Alloc>& a,
+  template<typename T>
+  inline Array<T> partialArrayMath (const Array<T>& a,
                                     const IPosition& collapseAxes,
                                     const ArrayFunctorBase<T>& funcObj)
   {
-    Array<T, Alloc> res;
+    Array<T> res;
     partialArrayMath (res, a, collapseAxes, funcObj);
     return res;
   }
-  template<typename T, typename Alloc, typename RES, typename RESAlloc>
-  void partialArrayMath (Array<RES, RESAlloc>& res,
-                         const Array<T, Alloc>& a,
+  template<typename T, typename RES>
+  void partialArrayMath (Array<RES>& res,
+                         const Array<T>& a,
                          const IPosition& collapseAxes,
                          const ArrayFunctorBase<T,RES>& funcObj);
 
@@ -350,18 +348,18 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
 // The dimensionality of the array can be larger than the box; in that
 // case the missing axes of the box are assumed to have length 1.
 // A box axis length <= 0 means the full array axis.
-  template<typename T, typename Alloc>
-  inline Array<T, Alloc> boxedArrayMath (const Array<T, Alloc>& a,
+  template<typename T>
+  inline Array<T> boxedArrayMath (const Array<T>& a,
                                   const IPosition& boxSize,
                                   const ArrayFunctorBase<T>& funcObj)
   {
-    Array<T, Alloc> res;
+    Array<T> res;
     boxedArrayMath (res, a, boxSize, funcObj);
     return res;
   }
-  template<typename T, typename Alloc, typename RES, typename RESAlloc>
-  void boxedArrayMath (Array<RES, RESAlloc>&,
-                       const Array<T, Alloc>& array,
+  template<typename T, typename RES>
+  void boxedArrayMath (Array<RES>&,
+                       const Array<T>& array,
                        const IPosition& boxSize,
                        const ArrayFunctorBase<T,RES>& funcObj);
 
@@ -389,19 +387,19 @@ template<typename T, typename Alloc> Array<T, Alloc> partialInterQuartileRanges 
 // as casacore class MedianSlider, for a 2D array
 // it is much, much faster.
 // </note>
-  template<typename T, typename Alloc=std::allocator<T>>
-  inline Array<T, Alloc> slidingArrayMath (const Array<T, Alloc>& a,
+  template<typename T>
+  inline Array<T> slidingArrayMath (const Array<T>& a,
                                     const IPosition& halfBoxSize,
                                     const ArrayFunctorBase<T>& funcObj,
                                     bool fillEdge=true)
   {
-    Array<T, Alloc> res;
+    Array<T> res;
     slidingArrayMath (res, a, halfBoxSize, funcObj, fillEdge);
     return res;
   }
-  template<typename T, typename Alloc, typename RES, typename RESAlloc>
-  void slidingArrayMath (Array<RES, RESAlloc>& res,
-                         const Array<T, Alloc>& array,
+  template<typename T, typename RES>
+  void slidingArrayMath (Array<RES>& res,
+                         const Array<T>& array,
                          const IPosition& halfBoxSize,
                          const ArrayFunctorBase<T,RES>& funcObj,
                          bool fillEdge=true);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/TiledStMan.h>
 #include <casacore/tables/DataMan/TSMColumn.h>
@@ -393,8 +391,7 @@ TSMCube* TiledStMan::makeTSMCube (TSMFile* file, const IPosition& cubeShape,
         //cout << "buffered TSM1" << endl;
         AlwaysAssert (file->bucketFile()->isBuffered(), AipsError);
         hypercube = new TSMCubeBuff (this, file, cubeShape, tileShape,
-                                     values, fileOffset,
-                                     tsmOption().bufferSize());
+                                     values, fileOffset);
     } else {
         //cout << "caching TSM1" << endl;
         AlwaysAssert (file->bucketFile()->isCached(), AipsError);
@@ -1226,8 +1223,7 @@ uInt TiledStMan::headerFileGet (AipsIO& headerFile, rownr_t tabNrrow,
                 cubeSet_p[i] = new TSMCubeMMap (this, headerFile);
             } else if (tsmOption().option() == TSMOption::Buffer) {
                 //cout << "buffered TSM" << endl;
-                cubeSet_p[i] = new TSMCubeBuff (this, headerFile,
-                                                tsmOption().bufferSize());
+                cubeSet_p[i] = new TSMCubeBuff (this, headerFile);
             }else{
                 //cout << "caching TSM" << endl;
 	        cubeSet_p[i] = new TSMCube (this, headerFile);

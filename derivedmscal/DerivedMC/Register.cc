@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/derivedmscal/DerivedMC/Register.h>
 #include <casacore/derivedmscal/DerivedMC/DerivedMSCal.h>
@@ -113,11 +111,11 @@ namespace casacore {
       " hourangle of ANTENNA1" << endl;
     os << "  double MSCAL.HA2()            "
       " hourangle of ANTENNA2" << endl;
-    os << "  doublearray MSCAL.HADEC()          "
+    os << "  doublearray MSCAL.HADEC()     "
       " hourangle/declination of array center" << endl;
-    os << "  doublearray MSCAL.HADEC1()         "
+    os << "  doublearray MSCAL.HADEC1()    "
       " hourangle/declination of ANTENNA1" << endl;
-    os << "  doublearray MSCAL.HADEC2()         "
+    os << "  doublearray MSCAL.HADEC2()    "
       " hourangle/declination of ANTENNA2" << endl;
     os << "  doublearray MSCAL.AZEL()      "
       " azimuth/elevation of array center" << endl;
@@ -153,11 +151,11 @@ namespace casacore {
       " calc Apparent UVW coordinates in wvl for reffreq" << endl;
     os << "  doublearray MSCAL.UVWAPPWVLS()"
       " calc Apparent UVW coordinates in wvl per channel" << endl;
-    os << "  double MSCAL.DELAY1()"
+    os << "  double MSCAL.DELAY1()  "
       " calc delay (seconds) of ANTENNA1 w.r.t. array center" << endl;
-    os << "  double MSCAL.DELAY2()"
+    os << "  double MSCAL.DELAY2()  "
       " calc delay (seconds) of ANTENNA2 w.r.t. array center" << endl;
-    os << "  double MSCAL.DELAY1()"
+    os << "  double MSCAL.DELAY1()  "
       " calc delay (seconds) of ANTENNA1 w.r.t. ANTENNA2" << endl;
   }
 

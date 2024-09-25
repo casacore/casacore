@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/ColumnSet.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -51,7 +49,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ColumnSet::ColumnSet (TableDesc* tdesc, const StorageOption& opt)
 : tdescPtr_p      (tdesc),
   storageOpt_p    (opt),
-  multiFile_p     (0),
   baseTablePtr_p  (0),
   lockPtr_p       (0),
   seqCount_p      (0),
@@ -74,7 +71,6 @@ ColumnSet::~ColumnSet()
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
 	delete BLOCKDATAMANVAL(i);
     }
-    delete multiFile_p;
 }
 
 
@@ -183,12 +179,12 @@ void ColumnSet::openMultiFile (uInt from, const Table& tab,
     // Create the object if not created yet.
     if (! multiFile_p) {
       if (storageOpt_p.option() == StorageOption::MultiFile) {
-        multiFile_p = new MultiFile (tab.tableName() + "/table.mf",
-                                     opt, storageOpt_p.blockSize(),
-                                     storageOpt_p.useODirect());
+        multiFile_p = std::make_shared<MultiFile>(tab.tableName() + "/table.mf",
+                                                  opt, storageOpt_p.blockSize(),
+                                                  storageOpt_p.useODirect());
       } else {
-        multiFile_p = new MultiHDF5 (tab.tableName() + "/table.mfh5",
-                                     opt, storageOpt_p.blockSize());
+        multiFile_p = std::make_shared<MultiHDF5>(tab.tableName() + "/table.mfh5",
+                                                  opt, storageOpt_p.blockSize());
       }
     }
     // Pass it to the data managers.
@@ -804,17 +800,17 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
     }
     //# Now write out the data in all data managers.
     //# Keep track if a data manager indeed wrote something.
-    MemoryIO memio;
-    AipsIO aio(&memio);
+    auto memio = std::make_shared<MemoryIO>();
+    AipsIO aio(memio);
     for (uInt i=0; i<blockDataMan_p.nelements(); i++) {
         if (BLOCKDATAMANVAL(i)->flush (aio, fsync)) {
 	    dataManChanged_p[i] = True;
 	    written = True;
 	}
 	if (writeTable) {
-	    ios.put (uInt(memio.length()), memio.getBuffer());
+	    ios.put (uInt(memio->length()), memio->getBuffer());
 	}
-	memio.clear();
+	memio->clear();
     }
     if (multiFile_p) {
       multiFile_p->flush();
@@ -824,7 +820,7 @@ Bool ColumnSet::putFile (Bool writeTable, AipsIO& ios,
 
 
 rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndian,
-                         const TSMOption& tsmOption)
+                            const TSMOption& tsmOption)
 {
     //# If the first value is negative, it is the version.
     //# Otherwise it is nrrow_p.
@@ -897,8 +893,8 @@ rownr_t ColumnSet::getFile (AipsIO& ios, Table& tab, rownr_t nrrow, Bool bigEndi
 	uChar* data;
 	uInt leng;
 	ios.getnew (leng, data);
-	MemoryIO memio (data, leng);
-	AipsIO aio(&memio);
+        auto memio = std::make_shared<MemoryIO>(data, leng);
+	AipsIO aio(memio);
 	rownr_t nrrow = BLOCKDATAMANVAL(i)->open64 (nrrow_p, aio);
         if (nrrow > nrrow_p) {
           nrrow_p = nrrow;

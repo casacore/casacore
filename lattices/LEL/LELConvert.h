@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELCONVERT_H
 #define LATTICES_LELCONVERT_H
@@ -98,7 +96,7 @@ public:
    
 // Constructor.  <src><F></src> is the type we are coinverting from.
 // <src><T></src> is the type we are converting to.
-   LELConvert (const CountedPtr<LELInterface<F> >& expr);
+   LELConvert (const std::shared_ptr<LELInterface<F>>& expr);
 
 // Destructor does nothing
   ~LELConvert();
@@ -125,7 +123,7 @@ public:
   // </group>
 
 private:
-   CountedPtr<LELInterface<F> > pExpr_p;
+   std::shared_ptr<LELInterface<F>> pExpr_p;
 };
 
 

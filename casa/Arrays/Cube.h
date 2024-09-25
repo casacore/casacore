@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_CUBE_2_H
 #define CASA_CUBE_2_H
@@ -70,41 +68,39 @@ namespace casacore { //#Begin casa namespace
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<typename T, typename Alloc> class Cube : public Array<T, Alloc>
+template<typename T> class Cube : public Array<T>
 {
 public:
 
     // A Cube of length zero in each dimension; zero origin.
-    Cube(const Alloc& allocator=Alloc());
+    Cube();
 
     // A l1xl2xl3 sized cube.
     // Fill it with the initial value.
-    Cube(size_t l1, size_t l2, size_t l3, const T &initialValue=T(), const Alloc& allocator=Alloc());
+    Cube(size_t l1, size_t l2, size_t l3, const T &initialValue=T());
     
     // An uninitialized l1xl2xl3 sized cube.
-    Cube(size_t l1, size_t l2, size_t l3, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    Cube(size_t l1, size_t l2, size_t l3, typename Array<T>::uninitializedType);
 
     // A Cube where the shape ("len") is defined with IPositions.
     // Fill it with the initial value.
-    Cube(const IPosition &length, const T &initialValue = T(), const Alloc& allocator=Alloc());
+    Cube(const IPosition &length, const T &initialValue = T());
 
     // An uninitialized Cube where the shape ("len") is defined with IPositions.
-    Cube(const IPosition& length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    Cube(const IPosition& length, typename Array<T>::uninitializedType);
     
     // The copy constructor uses reference semantics.
-    Cube(const Cube<T, Alloc> &);
-    Cube(Cube<T, Alloc> &&);
+    Cube(const Cube<T> &);
+    Cube(Cube<T> &&);
 
     // Construct a cube by reference from "other". "other must have
     // ndim() of 3 or less. The warning which applies to the copy constructor
     // is also valid here.
-    Cube(const Array<T, Alloc> &);
-    Cube(Array<T, Alloc> &&);
+    Cube(const Array<T> &);
+    Cube(Array<T> &&);
 
     // Create an Cube of a given shape from a pointer.
     Cube(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
-    // Create an Cube of a given shape from a pointer.
-    Cube(const IPosition &shape, T *storage, StorageInitPolicy policy, const Alloc& allocator);
     // Create an  Cube of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Cube(const IPosition &shape, const T *storage);
@@ -112,7 +108,7 @@ public:
     // Resize to the given shape.
     // Resize without argument is equal to resize(0,0,0).
     // <group>
-    using Array<T, Alloc>::resize;
+    using Array<T>::resize;
     void resize(size_t nx, size_t ny, size_t nz, bool copyValues=false);
     // </group>
 
@@ -122,12 +118,12 @@ public:
     // Note that the assign function can be used to assign a
     // non-conforming cube.
     // <group>
-    Cube<T, Alloc> &operator=(const Cube<T, Alloc>& source)
-    { Array<T, Alloc>::operator=(source); return *this; }
-    Cube<T, Alloc> &operator=(Cube<T, Alloc>&& source)
-    { Array<T, Alloc>::operator=(std::move(source)); return *this; }
+    Cube<T> &operator=(const Cube<T>& source)
+    { Array<T>::operator=(source); return *this; }
+    Cube<T> &operator=(Cube<T>&& source)
+    { Array<T>::operator=(std::move(source)); return *this; }
     
-    Cube<T, Alloc>& operator=(const Array<T, Alloc>& source)
+    Cube<T>& operator=(const Array<T>& source)
     {
       // TODO is it highly confusing that operator= is specialized for Cube, e.g.
       // this is allowed:
@@ -143,20 +139,20 @@ public:
       // same!
       
       if (source.ndim() == 3) {
-        Array<T, Alloc>::operator=(source);
+        Array<T>::operator=(source);
       } else {
         // This might work if a.ndim == 1 or 2
-        (*this) = Cube<T, Alloc>(source);
+        (*this) = Cube<T>(source);
       }
       return *this;
     }
    
-    Cube<T, Alloc>& operator=(Array<T, Alloc>&& source)
+    Cube<T>& operator=(Array<T>&& source)
     {
       if (source.ndim() == 3) {
-        Array<T, Alloc>::operator=(std::move(source));
+        Array<T>::operator=(std::move(source));
       } else {
-        (*this) = Cube<T, Alloc>(std::move(source));
+        (*this) = Cube<T>(std::move(source));
       }
       return *this;
     }
@@ -165,14 +161,14 @@ public:
 
     // Copy val into every element of this cube; i.e. behaves as if
     // val were a constant conformant cube.
-    Array<T, Alloc> &operator=(const T &val)
+    Array<T> &operator=(const T &val)
       { return Array<T>::operator=(val); }
 
     // Copy to this those values in marray whose corresponding elements
     // in marray's mask are true.
     
     // TODO
-    //Cube<T, Alloc> &operator= (const MaskedArray<T> &marray)
+    //Cube<T> &operator= (const MaskedArray<T> &marray)
     //  { Array<T> (*this) = marray; return *this; }
 
 
@@ -204,9 +200,9 @@ public:
     // vd(Slice(0,10),Slice(10,10,Slice(0,10))) = -1.0; // sub-cube set to -1.0
     // </srcblock>
     // <group>
-    Cube<T, Alloc> operator()(const Slice &sliceX, const Slice &sliceY,
+    Cube<T> operator()(const Slice &sliceX, const Slice &sliceY,
 		       const Slice &sliceZ);
-    const Cube<T, Alloc> operator()(const Slice &sliceX, const Slice &sliceY,
+    const Cube<T> operator()(const Slice &sliceX, const Slice &sliceY,
                              const Slice &sliceZ) const;
     // </group>
 
@@ -266,12 +262,12 @@ public:
     // Of course you could also use a Matrix
     // iterator on the cube.
     // <group>
-    Matrix<T, Alloc> xyPlane(size_t zplane); 
-    const  Matrix<T, Alloc> xyPlane(size_t zplane) const; 
-    Matrix<T, Alloc> xzPlane(size_t yplane); 
-    const  Matrix<T, Alloc> xzPlane(size_t yplane) const; 
-    Matrix<T, Alloc> yzPlane(size_t xplane); 
-    const  Matrix<T, Alloc> yzPlane(size_t xplane) const; 
+    Matrix<T> xyPlane(size_t zplane);
+    const  Matrix<T> xyPlane(size_t zplane) const;
+    Matrix<T> xzPlane(size_t yplane);
+    const  Matrix<T> xzPlane(size_t yplane) const;
+    Matrix<T> yzPlane(size_t xplane);
+    const  Matrix<T> yzPlane(size_t xplane) const;
     // </group>
 
     // The length of each axis of the cube.

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TILEDFILEHELPER_H
 #define TABLES_TILEDFILEHELPER_H
@@ -81,6 +79,12 @@ public:
 
   ~TiledFileHelper();
 
+  // Forbid copy constructor.
+  TiledFileHelper (const TiledFileHelper&) = delete;
+
+  // Forbid assignment.
+  TiledFileHelper& operator= (const TiledFileHelper&) = delete;
+
   virtual const TableDesc& getDesc() const;
 
   TSMFile* file()
@@ -101,13 +105,6 @@ public:
   // </group>
 
 private:
-  // Forbid copy constructor and assignment.
-  // <group>
-  TiledFileHelper (const TiledFileHelper&);
-  TiledFileHelper& operator= (const TiledFileHelper&);
-  // </group>
-
-
   TableDesc itsDesc;
 };
 

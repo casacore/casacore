@@ -16,13 +16,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeStatistics.tcc 20652 2009-07-06 05:04:32Z Malte.Marquarding $
 
 #include <casacore/lattices/LatticeMath/StatsTiledCollapser.h>
 
@@ -48,17 +46,17 @@ void StatsTiledCollapser<T,U>::init (uInt nOutPixelsPerCollapse) {
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::initAccumulator (uInt64 n1, uInt64 n3) {
-   _sum = new Block<U>(n1*n3);
-   _sumSq = new Block<U>(n1*n3);
-   _npts = new Block<Double>(n1*n3);
-   _mean = new Block<U>(n1*n3);
-   _variance = new Block<U>(n1*n3);
-   _sigma = new Block<U>(n1*n3);
-   _nvariance = new Block<U>(n1*n3);
+   _sum = std::make_shared<Block<U>>(n1*n3);
+   _sumSq = std::make_shared<Block<U>>(n1*n3);
+   _npts = std::make_shared<Block<Double>>(n1*n3);
+   _mean = std::make_shared<Block<U>>(n1*n3);
+   _variance = std::make_shared<Block<U>>(n1*n3);
+   _sigma = std::make_shared<Block<U>>(n1*n3);
+   _nvariance = std::make_shared<Block<U>>(n1*n3);
 
-   _min = new Block<T>(n1*n3);
-   _max = new Block<T>(n1*n3);
-   _initMinMax = new Block<Bool>(n1*n3);
+   _min = std::make_shared<Block<T>>(n1*n3);
+   _max = std::make_shared<Block<T>>(n1*n3);
+   _initMinMax = std::make_shared<Block<Bool>>(n1*n3);
    _sum->set(0);
    _sumSq->set(0);
    _npts->set(0);
@@ -101,7 +99,7 @@ void StatsTiledCollapser<T,U>::process (
     Int64 minLoc = -1;
     Int64 maxLoc = -1;
 
-    std::vector<std::pair<U, U> > ranges;
+    std::vector<std::pair<U, U>> ranges;
     Bool isInclude = False;
     Bool hasRange = _include || _exclude;
     if (hasRange) {
@@ -109,8 +107,8 @@ void StatsTiledCollapser<T,U>::process (
         ranges[0] = std::make_pair(_range[0], _range[1]);
         isInclude = _include;
     }
-    typename vector<std::pair<U, U> >::const_iterator beginRange = ranges.begin();
-    typename vector<std::pair<U, U> >::const_iterator endRange = ranges.end();
+    typename vector<std::pair<U, U>>::const_iterator beginRange = ranges.begin();
+    typename vector<std::pair<U, U>>::const_iterator endRange = ranges.end();
     Int64 i = 0;
     if (pInMask == 0) {
         // All pixels are unmasked
@@ -220,9 +218,9 @@ void StatsTiledCollapser<T,U>::endAccumulator(
     U* resptr = res;
     U* sumPtr = _sum->storage();
     U* sumSqPtr = _sumSq->storage();
-    CountedPtr<Block<DComplex> > nptsComplex;
+    std::shared_ptr<Block<DComplex>> nptsComplex;
     if (! isReal(whatType<U>())) {
-        nptsComplex = new Block<DComplex>(_n1*_n3);
+      nptsComplex = std::make_shared<Block<DComplex>>(_n1*_n3);
     }
     U* nPtsPtr;
     _convertNPts(nPtsPtr, _npts, nptsComplex);
@@ -275,16 +273,16 @@ void StatsTiledCollapser<T,U>::endAccumulator(
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::_convertNPts(
-    Double*& nptsPtr, CountedPtr<Block<Double> > npts,
-    CountedPtr<Block<DComplex> >
+    Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+    std::shared_ptr<Block<DComplex>>
 ) const {
     nptsPtr = npts->storage();
 }
 
 template <class T, class U>
 void StatsTiledCollapser<T,U>::_convertNPts(
-    DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
-    CountedPtr<Block<DComplex> > nptsComplex
+    DComplex*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+    std::shared_ptr<Block<DComplex>> nptsComplex
 ) const {
     DComplex* storage = nptsComplex->storage();
     Double* realStorage = npts->storage();

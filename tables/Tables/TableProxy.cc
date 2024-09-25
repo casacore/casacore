@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: TableProxy.cc 21399 2013-11-12 07:55:35Z gervandiepen $
 
 
 #include <casacore/tables/Tables/TableProxy.h>
@@ -64,7 +62,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
-#include <casacore/casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/stdio.h>                  // needed for snprintf
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -914,9 +912,9 @@ Record TableProxy::getTableDescription (Bool actual, Bool cOrder)
   // Get the table description.
   std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.tableDesc()));
   }
   Record rec = getTableDesc(*tableDescPtr, cOrder);
 
@@ -956,9 +954,9 @@ Record TableProxy::getColumnDescription (const String& columnName,
   // Get the table description.
   std::unique_ptr<const TableDesc> tableDescPtr;
   if (actual) {
-    tableDescPtr.reset(new TableDesc(table_p.actualTableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.actualTableDesc()));
   } else {
-    tableDescPtr.reset(new TableDesc(table_p.tableDesc()));
+    tableDescPtr.reset (new TableDesc(table_p.tableDesc()));
   }
   // Return the column description as a record.
   const ColumnDesc& columnDescription = (*tableDescPtr) [columnName];
@@ -1174,7 +1172,7 @@ Record TableProxy::getVarColumn (const String& columnName,
   char namebuf[22];
   for (Int64 i=0; i<nrows; i++) {
     // Add the result to the record with field name formed from 1-based rownr.
-    sprintf (namebuf, "r%lli", row+1);
+    snprintf (namebuf, sizeof(namebuf), "r%lli", row+1);
     if (tabcol.isDefined(row)) {
       getValueFromTable(columnName, row, 1, 1, False).toRecord (rec, namebuf);
     } else {

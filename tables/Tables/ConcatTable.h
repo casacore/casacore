@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_CONCATTABLE_H
 #define TABLES_CONCATTABLE_H
@@ -148,6 +146,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
     virtual ~ConcatTable();
+
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    ConcatTable (const ConcatTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    ConcatTable& operator= (const ConcatTable&) = delete;
 
     // Get the names of the tables this table consists of.
     virtual void getPartNames (Block<String>& names, Bool recursive) const;
@@ -303,16 +309,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     Block<BaseColumn*> getRefColumns (const String& columnName);
 
   private:
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    ConcatTable (const ConcatTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    ConcatTable& operator= (const ConcatTable&);
-
     // Show the extra table structure info (names of used tables).
     void showStructureExtra (std::ostream&) const;
 

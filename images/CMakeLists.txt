@@ -63,6 +63,13 @@ ${BISON_ImageExprGram_OUTPUTS}
 ${FLEX_ImageExprGram_OUTPUTS}
 )
 
+set(top_level_headers
+Regions.h
+Images.h
+)
+
+init_pch_support(casa_images ${top_level_headers})
+
 target_link_libraries (
 casa_images
 casa_coordinates
@@ -75,7 +82,6 @@ add_subdirectory (apps)
 
 install (
 TARGETS casa_images
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -160,9 +166,7 @@ Regions/WCUnion.h
 DESTINATION include/casacore/images/Regions
 )
 
-install (FILES
-Regions.h
-Images.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/images
 )
 

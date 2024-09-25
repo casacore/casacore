@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef TABLES_TABLELOGSINK_H
 #define TABLES_TABLELOGSINK_H
@@ -193,9 +190,9 @@ public:
   // Clear the local sink (i.e. remove all messages from it).
   virtual void clearLocally();
 
-  // Returns the id for this class...
+  // Returns the id for this class.
   static String localId( );
-  // Returns the id of the LogSink in use...
+  // Returns the id of the LogSink in use.
   String id( ) const;
 
   // Make a LogSink for a TableLogSink with a new table.
@@ -209,8 +206,6 @@ public:
   // </group>
 
 private:
-  // Undefined and inaccessible
-  TableLogSink();
   // Avoid duplicating code in copy ctor and assignment operator
   void copy_other(const TableLogSink& other);
   // Make a new log table.

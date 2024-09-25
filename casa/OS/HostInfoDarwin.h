@@ -36,7 +36,6 @@
 **                        Rainer Orth       <ro@techfak.uni-bielefeld.de>
 **
 */
-//# $Id$
 
 #ifndef CASA_HOSTINFODARWIN_H
 #define CASA_HOSTINFODARWIN_H

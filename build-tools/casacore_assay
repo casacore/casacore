@@ -21,7 +21,7 @@
 #   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #
 #   Correspondence concerning AIPS++ should be addressed as follows:
-#          Internet email: aips2-request@nrao.edu.
+#          Internet email: casa-feedback@nrao.edu.
 #          Postal address: AIPS++ Project Office
 #                          National Radio Astronomy Observatory
 #                          520 Edgemont Road
@@ -54,7 +54,6 @@
 #  130:  interrupt
 #
 # Original: 1995/11/01 by Mark Calabretta, ATNF
-# $Id: assay,v 19.11 2006/10/17 03:41:50 gvandiep Exp $
 #=============================================================================
 
 # Find the path used to start the script. It is used for other scripts.

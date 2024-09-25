@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef CASA_COWPTR_TCC
 #define CASA_COWPTR_TCC
@@ -34,30 +31,33 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T> COWPtr<T>::COWPtr(T *obj, Bool deleteIt, Bool readOnly)
-: obj_p(obj, deleteIt), const_p(readOnly)
+  : obj_p   (obj, Deleter(deleteIt)),
+    const_p (readOnly)
 {
   // does nothing
-}
+}  
 
 template <class T> void COWPtr<T>::set(T *obj, Bool deleteIt, Bool readOnly)
 {
-  obj_p = CountedPtr<T>(obj, deleteIt);
+  obj_p   = std::shared_ptr<T>(obj, Deleter(deleteIt));
   const_p = readOnly;
 }
 
 // make this a copy if more than one exists. 
 template <class T> Bool COWPtr<T>::makeUnique()
 {
-  Bool val = False;
-  if (const_p || obj_p.nrefs() > 1){
-    T *tmp = new T;
-    *tmp = *obj_p;
-    // CountedPtr assignment operator takes care of deletion of old ptr.
-    obj_p = CountedPtr<T>(tmp, True);
-    const_p = False;
-    val = True;
+  Bool madeCopy = False;
+  if (const_p  ||  obj_p.use_count() > 1) {
+    // A copy has to be made.
+    // Use default ctor and assignment because copy ctor of e.g. Array
+    // has reference semantics.
+    std::shared_ptr<T> tmp(new T, Deleter(True));
+    *tmp     = *obj_p;
+    obj_p.swap (tmp);
+    const_p  = False;
+    madeCopy = True;
   } 
-  return val;
+  return madeCopy;
 }
 
 

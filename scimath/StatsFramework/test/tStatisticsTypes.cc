@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -37,12 +37,12 @@ int main() {
 	try {
 		struct StatsData<Double> stats;
 		stats.masked = True;
-		stats.max = new Double(27.3);
+		stats.max.reset (new Double(27.3));
 		stats.maxpos = std::make_pair(2, 55);
 		stats.mean = 22.1;
-		stats.median = new Double(22.8);
-		stats.medAbsDevMed = new Double(1.3);
-		stats.min = new Double(18.4);
+		stats.median.reset (new Double(22.8));
+		stats.medAbsDevMed.reset (new Double(1.3));
+		stats.min.reset (new Double(18.4));
 		stats.minpos = std::make_pair(1, 2);
 		stats.npts = 111.0;
 		stats.nvariance = 249.75;

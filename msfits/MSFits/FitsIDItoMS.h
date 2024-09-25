@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 //# Mod 2010: DP
 
 #ifndef MS_FITSIDITOMS_H
@@ -129,7 +127,9 @@ public:
   // software correlator used by the EVN).
   //
 
-  FITSIDItoMS1(FitsInput& in, const String& correlat, const Int& obsType=0, const Bool& initFirstMain=True);
+  FITSIDItoMS1(FitsInput& in, const String& correlat,
+	       const Int& obsType=0, const Bool& initFirstMain=True,
+	       const Float& vanVleck=0.0, const Float& corVer=0.0);
 
   ~FITSIDItoMS1();
   
@@ -176,6 +176,9 @@ public:
 
   //store the information from the PHASE-CAL table in a calibration table
   Bool handlePhaseCal();
+
+  //store the information from the CALC table in a calibration table
+  Bool handleCalc();
 
   //store the information from the MODEL_COMPS table 
   Bool handleModelComps();
@@ -237,7 +240,8 @@ protected:
   void setupMeasurementSet(const String& MSFileName, Bool useTSM=True, 
 			   Bool mainTbl=False, Bool addCorrMod=False,
 			   Bool addSyscal=False, Bool addWeather=False,
-			   Bool addGainCurve=False, Bool addPhaseCal=False);
+			   Bool addGainCurve=False, Bool addPhaseCal=False,
+			   Bool addEOP=False);
   
   // Fill the main table from the Primary group data
   void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
@@ -300,6 +304,8 @@ protected:
   Double lastTime_p;
   Int itsObsType;
   String itsCorrelat;
+  Float itsCorVer;
+  Float itsVanVleck;
   MeasurementSet ms_p;
   MSColumns* msc_p;
   static Bool firstMain;
@@ -307,6 +313,7 @@ protected:
   static Bool firstWeather;
   static Bool firstGainCurve;
   static Bool firstPhaseCal;
+  static Bool firstEOP;
   Bool weather_hasWater_p;
   Bool weather_hasElectron_p;
   Bool uv_data_hasWeights_p;
@@ -314,9 +321,11 @@ protected:
   String weightyp_p;
   Int nStokes_p;
   Int nBand_p;
+  Double visScl_p;
   static std::map<Int,Int> antIdFromNo;
   static std::map<Int,Int> digiLevels;
   static Vector<Double> effChBw;
+  Int nFreqid_p;
 
   //
   //# Member Functions

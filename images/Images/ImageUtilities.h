@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 #ifndef IMAGES_IMAGEUTILITIES_H
 #define IMAGES_IMAGEUTILITIES_H
 
@@ -33,15 +30,13 @@
 #include <casacore/scimath/Mathematics/GaussianBeam.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 template <class T> class ImageInterface;
 template <class T> class Quantum;
-template <class T> class PtrHolder;
 class CoordinateSystem;
 class Coordinate;
 class String;
@@ -92,7 +87,7 @@ public:
   // applied.
   //  <group>
   template<class T>
-  static void openImage (PtrHolder<ImageInterface<T> >& image,
+  static void openImage (std::unique_ptr<ImageInterface<T>>& image,
                          const String& fileName);
 
   template<class T>
@@ -100,7 +95,7 @@ public:
                          const String& fileName);
 
   template<class T>
-  static std::shared_ptr<ImageInterface<T> > openImage (const String& fileName);
+  static std::shared_ptr<ImageInterface<T>> openImage (const String& fileName);
 //  </group>
 
 // Copy MiscInfo, ImageInfo, brightness unit and logger (history) from in to out
@@ -126,7 +121,7 @@ public:
    template <typename T>
    static void addDegenerateAxes (
 		   LogIO& os,
-		   PtrHolder<ImageInterface<T> >& outImage,
+		   std::unique_ptr<ImageInterface<T>>& outImage,
 		   const ImageInterface<T>& inImage,
 		   const String& outFile, Bool direction,
 		   Bool spectral, const String& stokes,

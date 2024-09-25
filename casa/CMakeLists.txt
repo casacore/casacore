@@ -101,6 +101,7 @@ IO/ConversionIO.cc
 IO/FilebufIO.cc
 IO/FiledesIO.cc
 IO/FileLocker.cc
+IO/FileUnbufferedIO.cc
 IO/IPositionIO.cc
 IO/LECanonicalIO.cc
 IO/LockFile.cc
@@ -233,7 +234,51 @@ ${BISON_JsonGram_OUTPUTS}
 ${FLEX_JsonGram_OUTPUTS}
 )
 
+set(top_level_headers
+${PROJECT_BINARY_DIR}/casacore/casa/config.h
+aipsdef.h
+aipsenv.h
+aips.h
+aipstype.h
+aipsxtype.h
+Arrays.h
+BasicMath.h
+BasicSL.h
+complex.h
+Containers.h
+Exceptions.h
+fstream.h
+HDF5.h
+Inputs.h
+IO.h
+iomanip.h
+iosfwd.h
+iosstrfwd.h
+iostream.h
+istream.h
+Json.h
+Logging.h
+math.h
+namespace.h
+OS.h
+ostream.h
+Quanta.h
+sstream.h
+stdexcept.h
+stdio.h
+stdlib.h
+stdmap.h
+stdvector.h
+string.h
+System.h
+typeinfo.h
+Utilities.h
+vector.h
+${PROJECT_BINARY_DIR}/casacore/casa/version.h
+)
+
 add_library (casa_casa ${buildfiles})
+init_pch_support(casa_casa ${top_level_headers})
 
 
 if (HDF5_FOUND)
@@ -257,7 +302,6 @@ add_subdirectory (apps)
 
 install (
 TARGETS casa_casa
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -419,6 +463,7 @@ IO/ConversionIO.h
 IO/FilebufIO.h
 IO/FiledesIO.h
 IO/FileLocker.h
+IO/FileUnbufferedIO.h
 IO/LargeIOFuncDef.h
 IO/LECanonicalIO.h
 IO/LockFile.h
@@ -601,50 +646,9 @@ Utilities/ValTypeId.h
 DESTINATION include/casacore/casa/Utilities
 )
 
-install (FILES
-${PROJECT_BINARY_DIR}/casacore/casa/config.h
-aipsdef.h
-aipsenv.h
-aips.h
-aipstype.h
-aipsxtype.h
-Arrays.h
-BasicMath.h
-BasicSL.h
-complex.h
-Containers.h
-Exceptions.h
-fstream.h
-HDF5.h
-Inputs.h
-IO.h
-iomanip.h
-iosfwd.h
-iosstrfwd.h
-iostream.h
-istream.h
-Json.h
-Logging.h
-math.h
-namespace.h
-OS.h
-ostream.h
-Quanta.h
-sstream.h
-stdexcept.h
-stdio.h
-stdlib.h
-stdmap.h
-stdvector.h
-string.h
-System.h
-typeinfo.h
-Utilities.h
-vector.h
-${PROJECT_BINARY_DIR}/casacore/casa/version.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/casa
 )
-
 add_subdirectory (test ${EXCL_ALL})
 foreach (casa_module Arrays BasicMath BasicSL Containers
      Exceptions HDF5 Inputs IO Json Logging OS Quanta System Utilities)

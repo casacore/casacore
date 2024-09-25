@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: StIndArrAIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_STINDARRAIO_H
 #define TABLES_STINDARRAIO_H
@@ -104,6 +102,12 @@ public:
 
     // Frees up the storage and delete the StManArrayFile object.
     virtual ~StManColumnIndArrayAipsIO();
+	
+    // Forbid copy constructor.
+    StManColumnIndArrayAipsIO (const StManColumnIndArrayAipsIO&) = delete;
+
+    // Forbid assignment.
+    StManColumnIndArrayAipsIO& operator= (const StManColumnIndArrayAipsIO&) = delete;
 
     // Set the (fixed) shape of the arrays in the entire column.
     virtual void setShapeColumn (const IPosition& shape);
@@ -212,12 +216,6 @@ private:
     // nrval blocks will be allocated and read starting at datap[index].
     // The actual shape and array data will be read when needed.
     void getData (void* datap, uInt index, uInt nrval, AipsIO&, uInt version);
-	
-    // Forbid copy constructor.
-    StManColumnIndArrayAipsIO (const StManColumnIndArrayAipsIO&);
-
-    // Forbid assignment.
-    StManColumnIndArrayAipsIO& operator= (const StManColumnIndArrayAipsIO&);
 };
 
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -50,12 +48,10 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/OS/DynLib.h>
 #include <casacore/tables/DataMan/DataManError.h>
-#include <casacore/casa/stdio.h>                     // for sprintf
+#include <casacore/casa/stdio.h>                     // for snprintf
 
-#ifdef HAVE_MPI
 #ifdef HAVE_ADIOS2
 #include <casacore/tables/DataMan/Adios2StMan.h>
-#endif
 #endif
 
 #ifdef HAVE_DYSCO
@@ -69,7 +65,6 @@ DataManager::DataManager()
   seqnr_p       (0),
   asBigEndian_p (False),
   tsmOption_p   (TSMOption::Buffer, 0, 0),
-  multiFile_p   (0),
   clone_p       (0)
 {
     table_p = new Table;
@@ -162,11 +157,11 @@ void DataManager::showCacheStatistics (ostream&) const
 
 void DataManager::setTsmOption (const TSMOption& tsmOption)
 {
-  AlwaysAssert (multiFile_p==0, AipsError);
+  AlwaysAssert (!multiFile_p, AipsError);
   tsmOption_p = tsmOption;
 }
 
-void DataManager::setMultiFile (MultiFileBase* mfile)
+void DataManager::setMultiFile (const std::shared_ptr<MultiFileBase>& mfile)
 {
   multiFile_p = mfile;
   // Only caching can be used with a MultiFile.
@@ -261,7 +256,7 @@ DataManagerColumn* DataManager::reallocateColumn (DataManagerColumn* column)
 String DataManager::keywordName (const String& keyword) const
 {
     char strc[8];
-    sprintf (strc, "_%i", seqnr_p);
+    snprintf (strc, sizeof(strc), "_%i", seqnr_p);
     return keyword + strc;
 }
 
@@ -270,7 +265,7 @@ String DataManager::keywordName (const String& keyword) const
 String DataManager::fileName() const
 {
     char strc[8];
-    sprintf (strc, ".f%i", seqnr_p);
+    snprintf (strc, sizeof(strc), ".f%i", seqnr_p);
     return table_p->tableName() + "/table" + strc;
 }
 
@@ -425,10 +420,8 @@ std::map<String,DataManagerCtor> DataManager::initRegisterMap()
   theirRegisterMap.insert (std::make_pair("TiledColumnStMan", TiledColumnStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("TiledShapeStMan",  TiledShapeStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("MemoryStMan",      MemoryStMan::makeObject));
-#ifdef HAVE_MPI
 #ifdef HAVE_ADIOS2
   theirRegisterMap.insert (std::make_pair("Adios2StMan",      Adios2StMan::makeObject));
-#endif
 #endif
 
 #ifdef HAVE_DYSCO

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_ARRAYLOGICAL_2_H
 #define CASA_ARRAYLOGICAL_2_H
@@ -381,13 +379,11 @@ template<class T> bool anyOR (const T &val, const Array<T> &array);
 
 
 // Are all elements true?
-template<typename Alloc>
-inline bool allTrue (const Array<bool, Alloc>& array)
+inline bool allTrue (const Array<bool>& array)
   { return allEQ (array, true); }
 
 // Is any element true?
-template<typename Alloc>
-inline bool anyTrue (const Array<bool, Alloc>& array)
+inline bool anyTrue (const Array<bool>& array)
   { return anyEQ (array, true); }
 
 // The same functions as above, but for selected axes.

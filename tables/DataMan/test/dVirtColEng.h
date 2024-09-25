@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_DVIRTCOLENG_H
 #define TABLES_DVIRTCOLENG_H
@@ -83,6 +81,9 @@ public:
     // Destructor is mandatory.
     ~DummyVirtualScalar();
 
+    // Assignment is not needed and therefore forbidden.
+    DummyVirtualScalar& operator= (const DummyVirtualScalar&) = delete;
+
     // Return the scale factor used.
     double scale() const
 	{ return scale_p; }
@@ -100,9 +101,6 @@ public:
     void flush (AipsIO& ios);
 
 private:
-    // Assignment is not needed and therefore forbidden (so it is made private).
-    DummyVirtualScalar& operator= (const DummyVirtualScalar&);
-
     // The column may be writable, so we must override the default
     // implementation in the base class VirtualScalarColumn.
     Bool isWritable() const;
@@ -181,6 +179,9 @@ public:
     // Destructor is mandatory.
     ~DummyVirtualArray();
 
+    // Assignment is not needed and therefore forbidden.
+    DummyVirtualArray& operator= (const DummyVirtualArray&) = delete;
+
     // Return the scale factor used.
     double scale() const
 	{ return scale_p; }
@@ -198,9 +199,6 @@ public:
     void flush (AipsIO& ios);
 
 private:
-    // Assignment is not needed and therefore forbidden (so it is made private).
-    DummyVirtualArray& operator= (const DummyVirtualArray&);
-
     // The column is writable, so we must override the default
     // implementation in the base class VirtualColumn.
     Bool isWritable() const;
@@ -287,6 +285,14 @@ public:
     // Destructor is mandatory.
     ~DummyVirtualEngine();
 
+    // The data manager system will use the clone function to make
+    // a copy of the object. It does not need a copy constructor.
+    DummyVirtualEngine (const DummyVirtualEngine&) = delete;
+
+    // The data manager system will use the clone function to make
+    // a copy of the object. It does not need the assignment operator.
+    DummyVirtualEngine& operator= (const DummyVirtualEngine&) = delete;
+
     // Clone the engine object.
     DataManager* clone() const;
 
@@ -304,18 +310,6 @@ public:
     //# Usually you do not need to implement them.
 
 private:
-    // The copy constructor is forbidden in this example (so it is private).
-    // You can make it available if you want/need to.
-    // The data manager system will use the clone function to make
-    // a copy of the object. It does not need a copy constructor.
-    DummyVirtualEngine (const DummyVirtualEngine&);
-
-    // Assignment is forbidden in this example (so it is private).
-    // You can make it available if you want/need to.
-    // The data manager system will use the clone function to make
-    // a copy of the object. It does not need the assignment operator.
-    DummyVirtualEngine& operator= (const DummyVirtualEngine&);
-
     //# In this example it is not needed to implement the functions
     //# addRow/Column and deleteRow/Column, because the
     //# default DataManager implementation of no suffices.

@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef TABLES_LOGGERHOLDER_H
 #define TABLES_LOGGERHOLDER_H
@@ -33,7 +30,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/Containers/Block.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -126,7 +123,7 @@ public:
   // Create with a TableLogSink.
   LoggerHolder (const String& logTableName, Bool isWritable);
 
-  // Copy constructor (reference sematics).
+  // Copy constructor (reference semantics).
   LoggerHolder (const LoggerHolder&);
 
   ~LoggerHolder();
@@ -205,7 +202,7 @@ public:
 
 
 private:
-  CountedPtr<LoggerHolderRep> itsRep;
+  std::shared_ptr<LoggerHolderRep> itsRep;
 };
 
 
@@ -432,6 +429,12 @@ public:
 
   ~LogHolderIter();
 
+  // Copy constructor is not needed, thus forbidden.
+  LogHolderIter (const LogHolderIter&) = delete;
+
+  // Assignment is not needed, thus forbidden.
+  LogHolderIter& operator= (const LogHolderIter&) = delete;
+
   // Increment to next message.
   // Returns False if at the end.
   Bool next();
@@ -444,13 +447,6 @@ public:
     { return *itsLogger; }
 
 private:
-  // Copy constructor is not needed, thus forbidden.
-  LogHolderIter (const LogHolderIter&);
-
-  // Assignment is not needed, thus forbidden.
-  LogHolderIter& operator= (const LogHolderIter&);
-
-
   const LoggerHolder* itsLogger;
   Bool                itsTempClosed;
   LogHolderIter*      itsParentIter;

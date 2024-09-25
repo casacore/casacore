@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: StIndArrAIO.cc 21051 2011-04-20 11:46:29Z gervandiepen $
 
 #include <casacore/tables/DataMan/StIndArrAIO.h>
 #include <casacore/tables/DataMan/StArrayFile.h>
@@ -34,7 +32,7 @@
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/tables/DataMan/DataManError.h>
-#include <casacore/casa/stdio.h>                            //# for sprintf
+#include <casacore/casa/stdio.h>                            //# for snprintf
 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -91,7 +89,7 @@ void StManColumnIndArrayAipsIO::openFile (ByteIO::OpenOption opt)
         //# Open/create the file holding the arrays in the column.
         if (iosfile_p == 0) {
 	  char strc[8];
-	  sprintf (strc, "i%i", seqnr_p);
+	  snprintf (strc, sizeof(strc), "i%i", seqnr_p);
 	  iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc, opt);
 	} else {
 	  iosfile_p->resync();

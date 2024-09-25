@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/tables/Tables/MemoryTable.h>
@@ -52,8 +50,8 @@ MemoryTable::MemoryTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize)
 	   ("SetupNewTable object already used for another Table"));
   }
   //# Use MemoryStMan for stored and unbound columns.
-  CountedPtr<TableDesc> tdescPtr  = newtab.tableDescPtr();
-  CountedPtr<ColumnSet> colSetPtr = newtab.columnSetPtr();
+  std::shared_ptr<TableDesc> tdescPtr  = newtab.tableDescPtr();
+  std::shared_ptr<ColumnSet> colSetPtr = newtab.columnSetPtr();
   MemoryStMan stman(colSetPtr->uniqueDataManagerName("MSMTAB"));
   for (uInt i=0; i<tdescPtr->ncolumn(); i++) {
     PlainColumn* col = colSetPtr->getColumn(i);

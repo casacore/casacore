@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycBasicData.h,v 1.5 2006/10/25 01:42:13 gvandiep Exp $
 
 #ifndef PYRAP_PYCBASICDATA_H
 #define PYRAP_PYCBASICDATA_H
@@ -244,9 +242,9 @@ namespace casacore { namespace python {
       typename ContainerType::const_iterator i = c.begin();
       typename ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-      result.append(*i);
+        result.append(*i);
       }
-      return result;
+      return std::move(result);
     }
     static PyObject* convert (ContainerType const& c)
     {
@@ -263,7 +261,7 @@ namespace casacore { namespace python {
       // Reverse IPosition values.
       boost::python::list result;
       for (int i=c.size()-1; i>=0; --i) {
-    result.append(c[i]);
+        result.append(c[i]);
       }
       return result;
     }
@@ -289,7 +287,7 @@ namespace casacore { namespace python {
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
         bool b = *i;
-    result.append(b);
+        result.append(b);
       }
       return result;
     }
@@ -308,7 +306,7 @@ namespace casacore { namespace python {
       ContainerType::const_iterator i = c.begin();
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-    result.append((std::string const&)(*i));
+        result.append((std::string const&)(*i));
       }
       return result;
     }
@@ -327,9 +325,9 @@ namespace casacore { namespace python {
       ContainerType::const_iterator i = c.begin();
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-    result.append((std::string const&)(*i));
+        result.append((std::string const&)(*i));
       }
-      return result;
+      return std::move(result);
     }
     static PyObject* convert (ContainerType const& c)
     {
@@ -346,9 +344,9 @@ namespace casacore { namespace python {
       ContainerType::const_iterator i = c.begin();
       ContainerType::const_iterator iEnd = c.end();
       for( ; i != iEnd; ++i) {
-    result.append((std::string const&)(*i));
+        result.append((std::string const&)(*i));
       }
-      return result;
+      return std::move(result);
     }
     static PyObject* convert (ContainerType const& c)
     {

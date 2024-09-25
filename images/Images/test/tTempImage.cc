@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/images/Images/TempImage.h>
 #include <casacore/images/Images/SubImage.h>
@@ -138,9 +136,9 @@ void doIt (TempImage<Int>& scratch)
 // Stream, unstream, and check the image.
 void streamImage (ImageInterface<Int>& img)
 {
-  MemoryIO membuf;
-  CanonicalIO canio (&membuf);
-  AipsIO os (&canio);
+  auto membuf = std::make_shared<MemoryIO>();
+  auto canio  = std::make_shared<CanonicalIO>(membuf);
+  AipsIO os (canio);
   // Write the image.
   os.putstart("Image", 1);
   {
@@ -148,7 +146,7 @@ void streamImage (ImageInterface<Int>& img)
     String msg;
     AlwaysAssertExit (img.toRecord(msg, rec));
     os <<  rec;
-                      }
+  }
   os << img.get();
   os << img.isMasked();
   if (img.isMasked()) {

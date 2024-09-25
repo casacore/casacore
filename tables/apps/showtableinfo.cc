@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/TaQL/TableParse.h>
@@ -97,7 +95,7 @@ int main (int argc, char* argv[])
         command += " orderby " + selsort;
       }
       clog << "TaQL command = " << command << endl;
-      seltab = tableCommand (command);
+      seltab = tableCommand (command).table();
     }
     // Show the table structure.
     table.showStructure (cout, showdm, showcol, showsub, sortcol, cOrder);

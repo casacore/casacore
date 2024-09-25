@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeHistograms.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef LATTICES_LATTICEHISTOGRAMS_TCC
 #define LATTICES_LATTICEHISTOGRAMS_TCC
@@ -807,8 +805,7 @@ Bool LatticeHistograms<T>::displayOneHistogram (const T& linearSum,
 
 // Write values of the display axes on the plot
  
-   T* dummy = 0;
-   DataType type = whatType(dummy);
+   DataType type = whatType<T>();
    Float nchar = 0.5;
    if (type==TpComplex) nchar = 1.5;
    String coords = writeCoordinates(histPos);
@@ -962,8 +959,7 @@ void LatticeHistograms<T>::listStatistics(LogIO& os,
       setStream(os3, oPrec); setStream(os4, oPrec); setStream(os5, oPrec);
       setStream(os6, oPrec); setStream(os7, oPrec);
 //
-      T* dummy = 0;
-      DataType type = whatType(dummy);
+      DataType type = whatType<T>();
       Int oWidth;
       if (type==TpFloat) {  
          oWidth = 15;               //

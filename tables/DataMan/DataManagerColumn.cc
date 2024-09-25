@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -525,7 +523,6 @@ void DataManagerColumn::getArrayColumnBase (ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
   std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     getArrayV (row, iter->getArray());
@@ -536,7 +533,6 @@ void DataManagerColumn::putArrayColumnBase (const ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
   std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     putArrayV (row, iter->getArray());
@@ -575,7 +571,7 @@ void DataManagerColumn::putArrayColumnCellsBase (const RefRows& rows,
   DebugAssert (iter->pastEnd(), AipsError);
 }
 void DataManagerColumn::getSliceArr (rownr_t row, const Slicer& section,
-                                     CountedPtr<ArrayBase>& fullArr,
+                                     std::shared_ptr<ArrayBase>& fullArr,
                                      ArrayBase& arr)
 {
   IPosition shp = shape(row);
@@ -590,7 +586,7 @@ void DataManagerColumn::getSliceArr (rownr_t row, const Slicer& section,
   }
 }
 void DataManagerColumn::putSliceArr (rownr_t row, const Slicer& section,
-                                     CountedPtr<ArrayBase>& fullArr,
+                                     std::shared_ptr<ArrayBase>& fullArr,
                                      const ArrayBase& arr)
 {
   IPosition shp = shape(row);
@@ -608,21 +604,20 @@ void DataManagerColumn::putSliceArr (rownr_t row, const Slicer& section,
 void DataManagerColumn::getSliceBase (rownr_t row, const Slicer& section,
                                       ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::shared_ptr<ArrayBase> fullArr(arr.makeArray());
   getSliceArr (row, section, fullArr, arr);
 }
 void DataManagerColumn::putSliceBase (rownr_t row, const Slicer& section,
                                       const ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::shared_ptr<ArrayBase> fullArr(arr.makeArray());
   putSliceArr (row, section, fullArr, arr);
 }
 void DataManagerColumn::getColumnSliceBase (const Slicer& section, ArrayBase& arr)
 {
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::shared_ptr<ArrayBase> fullArr(arr.makeArray());
   std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     getSliceArr (row, section, fullArr, iter->getArray());
@@ -634,8 +629,7 @@ void DataManagerColumn::putColumnSliceBase (const Slicer& section,
 {
   const IPosition& shp = arr.shape();
   rownr_t nr = shp[shp.size() - 1];
-  DebugAssert (nr == nrow(), AipsError);
-  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::shared_ptr<ArrayBase> fullArr(arr.makeArray());
   std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (shp.size()-1);
   for (rownr_t row=0; row<nr; ++row) {
     putSliceArr (row, section, fullArr, iter->getArray());
@@ -646,7 +640,7 @@ void DataManagerColumn::getColumnSliceCellsBase (const RefRows& rows,
                                                  const Slicer& section,
                                                  ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::shared_ptr<ArrayBase> fullArr(arr.makeArray());
   std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {
@@ -664,7 +658,7 @@ void DataManagerColumn::putColumnSliceCellsBase (const RefRows& rows,
                                                  const Slicer& section,
                                                  const ArrayBase& arr)
 {
-  CountedPtr<ArrayBase> fullArr(arr.makeArray());
+  std::shared_ptr<ArrayBase> fullArr(arr.makeArray());
   std::unique_ptr<ArrayPositionIterator> iter = arr.makeIterator (arr.ndim()-1);
   RefRowsSliceIter rowsIter(rows);
   while (! rowsIter.pastEnd()) {

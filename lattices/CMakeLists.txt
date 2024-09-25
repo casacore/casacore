@@ -60,6 +60,15 @@ LRegions/LCUnion.cc
 LRegions/RegionType.cc
 )
 
+set(top_level_headers
+LatticeMath.h
+Lattices.h
+LEL.h
+LRegions.h
+)
+
+init_pch_support(casa_lattices ${top_level_headers})
+
 target_link_libraries (
 casa_lattices
 casa_tables
@@ -68,7 +77,6 @@ ${CASACORE_ARCH_LIBS}
 )
 
 install (TARGETS casa_lattices
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -245,11 +253,7 @@ LRegions/RegionType.h
 DESTINATION include/casacore/lattices/LRegions
 )
 
-install (FILES
-LatticeMath.h
-Lattices.h
-LEL.h
-LRegions.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/lattices
 )
 

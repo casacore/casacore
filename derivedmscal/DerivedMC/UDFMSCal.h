@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef DERIVEDMSCAL_UDFMSCAL_H
 #define DERIVEDMSCAL_UDFMSCAL_H
@@ -269,12 +267,11 @@ namespace casacore {
   class UDFMSCalErrorHandler : public MSSelectionErrorHandler
   {
   public:
-    virtual ~UDFMSCalErrorHandler()
-    {}
-    virtual void handleError (MSSelectionError&)
-    {}
-    virtual void reportError (const char*, const String)
-    {}
+    ~UDFMSCalErrorHandler() override = default;
+    void handleError (MSSelectionError&) override
+      {}
+    void reportError (const char*, const String) override
+      {}
   };
 
 

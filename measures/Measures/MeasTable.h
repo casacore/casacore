@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef MEASURES_MEASTABLE_H
 #define MEASURES_MEASTABLE_H
@@ -211,10 +208,10 @@ public:
   // Generate the which' vector of the nutation series multipliers
   // at T, measured in Julian centuries since J2000.0, respectively B1900.0
   // <group>
-  static CountedPtr<Matrix<Double> > mulSC(Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulSC1950(Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulSC2000A(Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulSC2000B(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulSC(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulSC1950(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulSC2000A(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulSC2000B(Double time, Double epsilon);
   static const Double* mulPlanSC2000A(uInt which);
   // </group>
 
@@ -313,8 +310,8 @@ public:
   // at T, measured in Julian centuries since J2000.0 (or J1900.0, yes,
   // J1900.0, for B1950).
   // <group>
-  static CountedPtr<Matrix<Double> > mulAber(Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulAber1950(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulAber(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulAber1950(Double time, Double epsilon);
   static const Vector<Double> &mulSunAber(uInt which);
   static const Vector<Double> &mulEarthAber(uInt which);
   // </group>
@@ -367,10 +364,10 @@ public:
   // Generate the which' vector of the position series multipliers
   // at T, measured in Julian centuries since J2000.0
   // <group>
-  static CountedPtr<Matrix<Double> > mulPosEarthXY(Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulPosEarthZ (Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulPosSunXY  (Double time, Double epsilon);
-  static CountedPtr<Matrix<Double> > mulPosSunZ   (Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosEarthXY(Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosEarthZ (Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosSunXY  (Double time, Double epsilon);
+  static std::shared_ptr<Matrix<Double>> mulPosSunZ   (Double time, Double epsilon);
   // </group>
   // Get the rotation matrix to change position from ecliptic to rectangular
   // for Soma et al. analytical expression
@@ -458,9 +455,9 @@ private:
 
   // Calculate fundArg
   // <group>
-  static std::vector<Polynomial<Double> > calcFundArg(const Double coeff[6][4]);
-  static std::vector<Polynomial<Double> > calcFundArg00(const Double coeff[6][5]);
-  static std::vector<Polynomial<Double> > calcPlanArg00(const Double coeff[8][2]);
+  static std::vector<Polynomial<Double>> calcFundArg(const Double coeff[6][4]);
+  static std::vector<Polynomial<Double>> calcFundArg00(const Double coeff[6][5]);
+  static std::vector<Polynomial<Double>> calcPlanArg00(const Double coeff[8][2]);
   // </group>
 
   // Calculate planetary data
@@ -471,28 +468,28 @@ private:
 
   // Calculate aberration data
   // <group>
-  static std::vector<Polynomial<Double> > calcAberArg();
-  static std::vector<Polynomial<Double> > calcAberArgDeriv();
-  static std::vector<Polynomial<Double> > calcAber1950Arg();
-  static std::vector<Polynomial<Double> > calcAber1950ArgDeriv();
-  static std::vector<Vector<Double> > calcMulSunAber();
-  static std::vector<Vector<Double> > calcMulEarthAber();
-  static std::vector<Vector<Double> > calcAberETerm();
+  static std::vector<Polynomial<Double>> calcAberArg();
+  static std::vector<Polynomial<Double>> calcAberArgDeriv();
+  static std::vector<Polynomial<Double>> calcAber1950Arg();
+  static std::vector<Polynomial<Double>> calcAber1950ArgDeriv();
+  static std::vector<Vector<Double>> calcMulSunAber();
+  static std::vector<Vector<Double>> calcMulEarthAber();
+  static std::vector<Vector<Double>> calcAberETerm();
   // </group>
 
   // Calculate velocity data
   // <group>
-  static std::vector<Vector<Double> > calcVelocityLSRK();
-  static std::vector<Vector<Double> > calcVelocityLSR();
-  static std::vector<Vector<Double> > calcVelocityLSRGal();
-  static std::vector<Vector<Double> > calcVelocityLGROUP();
-  static std::vector<Vector<Double> > calcVelocityCMB();
+  static std::vector<Vector<Double>> calcVelocityLSRK();
+  static std::vector<Vector<Double>> calcVelocityLSR();
+  static std::vector<Vector<Double>> calcVelocityLSRGal();
+  static std::vector<Vector<Double>> calcVelocityLGROUP();
+  static std::vector<Vector<Double>> calcVelocityCMB();
   // </group>
 
   // Calculate Earth and Sun position data
   // <group>
-  static std::vector<Polynomial<Double> > calcPosArg();
-  static std::vector<Polynomial<Double> > calcPosArgDeriv();
+  static std::vector<Polynomial<Double>> calcPosArg();
+  static std::vector<Polynomial<Double>> calcPosArgDeriv();
   // </group>
 
   // Calculate some of the rotation matrices for coordinate conversion
@@ -566,8 +563,8 @@ private:
   static Double lastIGRF;
   static Double time0IGRF;
   static Double timeIGRF;
-  static std::vector<Vector<Double> > coefIGRF;
-  static std::vector<Vector<Double> > dIGRF;
+  static std::vector<Vector<Double>> coefIGRF;
+  static std::vector<Vector<Double>> dIGRF;
   // </group>
 
   ///#if !defined(USE_THREADS) || defined(__APPLE__)

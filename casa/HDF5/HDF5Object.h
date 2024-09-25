@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_HDF5OBJECT_H
 #define CASA_HDF5OBJECT_H
@@ -78,6 +76,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The destructor in a derived class should close the hid appropriately.
     virtual ~HDF5Object();
 
+    // Copy constructor cannot be used because a HID cannot be copied.
+    HDF5Object (const HDF5Object&) = delete;
+
+    // Assignment cannot be used because a HID cannot be copied .
+    HDF5Object& operator= (const HDF5Object&) = delete;
+
     // Check if there is HDF5 support compiled in.
     static Bool hasHDF5Support();
 
@@ -125,12 +129,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       int64_t  itsDummyHid;
     };
     String itsName;
-
-  private:
-    // Copy constructor cannot be used.
-    HDF5Object (const HDF5Object& that);
-    // Assignment cannot be used.
-    HDF5Object& operator= (const HDF5Object& that);
   };
 
 

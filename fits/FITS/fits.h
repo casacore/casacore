@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 # if !defined(AIPS_FITS)
 # define AIPS_FITS
@@ -995,9 +993,9 @@ class FitsKeyCardTranslator {
         static void fmtcard(char *, const FitsKeyword &);
     private:
 	int cardno;		// the current card number within record
-	const int FitsCardSize;
-	const int FitsMaxCard;
-	const int FitsRecSize;
+	static constexpr int FitsCardSize = 80;
+	static constexpr int FitsMaxCard = 36;
+	static constexpr int FitsRecSize = 2880;
 	int max_errs;
 	int no_errs_;
 	const char **err_;

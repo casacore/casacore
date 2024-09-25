@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -39,8 +39,8 @@ CASA_STATD
 HingesFencesStatistics<CASA_STATP>::HingesFencesStatistics(
     Double f
 ) : ConstrainedRangeStatistics<CASA_STATP>(
-        CountedPtr<HingesFencesQuantileComputer<CASA_STATP> >(
-            new HingesFencesQuantileComputer<CASA_STATP>(&this->_getDataset())
+        std::make_shared<HingesFencesQuantileComputer<CASA_STATP>>(
+            &this->_getDataset()
         )
     ), _f(f) {
     reset();
@@ -239,7 +239,7 @@ void HingesFencesStatistics<CASA_STATP>::_accumNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     if (_hasRange) {
@@ -256,7 +256,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -274,7 +274,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -292,7 +292,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -313,7 +313,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride
 ) const {
@@ -331,7 +331,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -351,7 +351,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -372,7 +372,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -393,7 +393,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     if (_hasRange) {
@@ -410,7 +410,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -428,7 +428,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -446,7 +446,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -467,7 +467,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride
 ) const {
@@ -485,7 +485,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -505,7 +505,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -526,7 +526,7 @@ void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void HingesFencesStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -557,10 +557,9 @@ void HingesFencesStatistics<CASA_STATP>::_setRange() {
         ClassicalStatistics<CASA_STATP> cs(*this);
         std::map<Double, AccumType> quartiles = cs.getQuantiles(quantiles);
         auto iqr = quartiles[0.75] - quartiles[0.25];
-        CountedPtr<std::pair<AccumType, AccumType>> range
-            = new std::pair<AccumType, AccumType>(
+        auto range = std::make_shared<std::pair<AccumType, AccumType>>(
                 quartiles[0.25] - _f*iqr, quartiles[0.75] + _f*iqr
-            );
+        );
         ConstrainedRangeStatistics<CASA_STATP>::_setRange(range);
     }
     _rangeIsSet = True;

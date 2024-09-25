@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/ms/MeasurementSets/MSIter.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
@@ -87,7 +85,7 @@ int MSInterval::comp(const void * obj1, const void * obj2) const
 {}
 
 MSIter::MSIter(const MeasurementSet& ms,
-               const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
+               const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns) :
   timeInSort_p(false),
   arrayInSort_p(false),
   ddInSort_p(false),
@@ -114,7 +112,7 @@ MSIter::MSIter(const MeasurementSet& ms,
 }
 
 MSIter::MSIter(const Block<MeasurementSet>& mss,
-  const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns) :
+               const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns) :
   bms_p(mss),
   timeInSort_p(false),
   arrayInSort_p(false),
@@ -140,7 +138,7 @@ MSIter::MSIter(const Block<MeasurementSet>& mss,
 }
 
 void MSIter::construct(
-  const std::vector<std::pair<String, CountedPtr<BaseCompare>>>& sortColumns)
+  const std::vector<std::pair<String, std::shared_ptr<BaseCompare>>>& sortColumns)
 {
     nMS_p=bms_p.nelements();
     if (nMS_p==0) throw(AipsError("MSIter::construct -  No input MeasurementSets"));
@@ -154,7 +152,7 @@ void MSIter::construct(
 
     // Creating the sorting members to be pass to the TableIterator constructor
     Block<String> sortColumnNames;
-    Block<CountedPtr<BaseCompare>> sortCompareFunctions;
+    Block<std::shared_ptr<BaseCompare>> sortCompareFunctions;
 
     sortColumnNames.resize(sortColumns.size());
     sortCompareFunctions.resize(sortColumns.size());
@@ -341,10 +339,10 @@ void MSIter::construct(const Block<Int>& sortColumns,
   }
 
   // now find the time column and set the compare function
-  Block<CountedPtr<BaseCompare> > objComp(columns.nelements());
+  Block<std::shared_ptr<BaseCompare> > objComp(columns.nelements());
   for (size_t i=0; i<columns.nelements(); i++) {
     if (columns[i]==MS::columnName(MS::TIME)) {
-      timeComp_p = new MSInterval(interval_p);
+      timeComp_p = std::make_shared<MSInterval>(interval_p);
       objComp[i] = timeComp_p;
     }
   }
@@ -389,8 +387,8 @@ void MSIter::construct(const Block<Int>& sortColumns,
     }
 
     if (!useIn && !useSorted) {
-      // we have to resort the input
-      if (aips_debug) cout << "MSIter::construct - resorting table"<<endl;
+      // we have to resort the input; enclose in >>> <<< to avoid pollution of test .out file
+      if (aips_debug) cout << ">>>"<<endl<<"MSIter::construct - resorting table"<<endl<<"<<<"<<endl;
       sorted = bms_p[i].sort(columns, Sort::Ascending, Sort::QuickSort);
     }
 
@@ -493,7 +491,7 @@ MSIter::operator=(const MSIter& other)
   frequency0_p = other.frequency0_p;
   restFrequency_p = other.restFrequency_p;
   telescopePosition_p = other.telescopePosition_p;
-  timeComp_p.reset(new MSInterval(interval_p));
+  timeComp_p = std::make_shared<MSInterval>(interval_p);
   prevFirstTimeStamp_p=other.prevFirstTimeStamp_p;
   return *this;
 }
@@ -722,7 +720,7 @@ void MSIter::setMSInfo()
   if (newMS_p) {
     lastMS_p = curMS_p;
     if (!tabIterAtStart_p[curMS_p]) tabIter_p[curMS_p]->reset();
-    msc_p = new MSColumns(bms_p[curMS_p]);
+    msc_p = std::make_shared<MSColumns>(bms_p[curMS_p]);
 
     // determine the reference frame position
     String observatory;

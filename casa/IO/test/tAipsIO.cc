@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 
@@ -84,11 +82,11 @@ void doit (Bool doExcp)
   }
   {
     cout << endl << "Test using MultiFile files ..." << endl;
-    MultiFile mfile ("tAipsIO_tmp.mf", ByteIO::New);
-    AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, &mfile); // open output file
+    auto mfile = std::make_shared<MultiFile>("tAipsIO_tmp.mf", ByteIO::New);
+    AipsIO io("tAipsIO_tmp.data", ByteIO::New, 1024, mfile); // open output file
     doIO (doExcp, True, io);
     io.close();
-    io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, &mfile);
+    io.open("tAipsIO_tmp.data", ByteIO::Old, 1024, mfile);
     doIO (doExcp, False, io);
     // Now do some open calls; some of them are erroneous which are caught.
     // Delete the file in case it exists.
@@ -98,18 +96,18 @@ void doit (Bool doExcp)
   }
 
   cout << endl << "Test using MemoryIO ..." << endl;
-  MemoryIO membuf;
+  auto membuf = std::make_shared<MemoryIO>();
   {
-    RawIO rawio(&membuf);
-    AipsIO io2(&rawio);
+    auto rawio = std::make_shared<RawIO>(membuf);
+    AipsIO io2(rawio);
     doIO (doExcp, True, io2);
   }
-  const uChar* iobuf = membuf.getBuffer();
-  uInt bufleng = membuf.length();
-  MemoryIO membuf2(iobuf, bufleng);
+  const uChar* iobuf = membuf->getBuffer();
+  uInt bufleng = membuf->length();
+  auto membuf2 = std::make_shared<MemoryIO>(iobuf, bufleng);
   {
-    RawIO rawio(&membuf2);
-    AipsIO io2(&rawio);
+    auto rawio = std::make_shared<RawIO>(membuf2);
+    AipsIO io2(rawio);
     doIO (doExcp, False, io2);
   }
 }

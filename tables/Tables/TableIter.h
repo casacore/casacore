@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLEITER_H
 #define TABLES_TABLEITER_H
@@ -178,7 +176,7 @@ public:
     // break existing applications that change the comparison objects
     // (cmpObjs) between iterations.
     TableIterator (const Table&, const Block<String>& columnNames,
-                   const Block<CountedPtr<BaseCompare> >& cmpObjs,
+                   const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
                    const Block<Int>& orders, Option = ParSort,
                    bool cacheIterationBoundaries = false);
     // </group>
@@ -194,7 +192,7 @@ public:
     // Test if the object is null, i.e. does not reference a table yet.
     // This is the case if the default constructor is used.
     Bool isNull() const
-	{ return (tabIterPtr_p == 0  ?  True : False); }
+      { return !tabIterPtr_p; }
 
     // Throw an exception if the object is null, i.e.
     // if function isNull() is True.

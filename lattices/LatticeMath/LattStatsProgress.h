@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTSTATSPROGRESS_H
 #define LATTICES_LATTSTATSPROGRESS_H
@@ -32,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LatticeMath/LatticeProgress.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -93,7 +91,7 @@ public:
     virtual void done();
 
 private:
-    CountedPtr<ProgressMeter> _meter;
+    std::shared_ptr<ProgressMeter> _meter;
     uInt _currentStep;
 };
 

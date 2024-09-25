@@ -16,7 +16,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -54,7 +54,7 @@ int main() {
 		RO_LatticeIterator<Float> imIter(im);
 		/*
 		{
-			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+			std::shared_ptr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
 				= new LatticeStatsDataProvider<Double, Float>(im);
 			ClassicalStatistics<Double, const Float*> cs;
 			cs.setDataProvider(dataProvider);
@@ -333,7 +333,7 @@ int main() {
 		/*
         {
 			cout << endl << "This should produce the desired results" << endl;
-		    CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+		    std::shared_ptr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
                 = new LatticeStatsDataProvider<Double, Float>(im);
 			ClassicalStatistics<Double, const Float*> cs;
             cout << im.name() << endl; 
@@ -359,7 +359,7 @@ int main() {
 
 		{
 			cout << endl << "This should produce the desired results" << endl;
-			CountedPtr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
+			std::shared_ptr<StatsDataProvider<Double, const Float*, const Bool* > > dataProvider
 				= new LatticeStatsDataProvider<Double, Float>(im);
 			ClassicalStatistics<Double, const Float*> cs;
 			cs.setDataProvider(dataProvider);

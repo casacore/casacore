@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -30,9 +30,9 @@
 
 #include <casacore/scimath/StatsFramework/StatisticsTypes.h>
 
+
 namespace casacore {
 
-template <class T> class PtrHolder;
 
 // Representation of a statistics dataset used in statistics framework
 // calculatations.
@@ -66,12 +66,12 @@ public:
         uInt dataStride;
         // associated ranges. If nullptr, then there are none. If not, the
         // second member of the pair indicates if they are include ranges.
-        PtrHolder<std::pair<DataRanges, Bool>> ranges;
+        std::unique_ptr<std::pair<DataRanges, Bool>> ranges;
         // associated mask. If nullptr, then there is no mask.
         // If there is a mask, the second member is the mask stride.
-        PtrHolder<std::pair<MaskIterator, uInt>> mask;
+        std::unique_ptr<std::pair<MaskIterator, uInt>> mask;
         // associated weights. If nullptr, then there are no weights.
-        PtrHolder<WeightsIterator> weights;
+        std::unique_ptr<WeightsIterator> weights;
     };
 
     StatisticsDataset();

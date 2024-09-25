@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_BUCKETFILE_H
 #define CASA_BUCKETFILE_H
@@ -34,9 +32,8 @@
 #include <casacore/casa/IO/MMapfdIO.h>
 #include <casacore/casa/IO/FilebufIO.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <unistd.h>
-
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -115,7 +112,7 @@ public:
     // cannot be used and mappedFile is ignored.
     explicit BucketFile (const String& fileName,
                          uInt bufSizeFile=0, Bool mappedFile=False,
-                         MultiFileBase* mfile=0);
+                         const std::shared_ptr<MultiFileBase>& mfile=std::shared_ptr<MultiFileBase>());
 
     // Create a BucketFile object for an existing file.
     // The file should be opened by the <src>open</src>.
@@ -125,14 +122,20 @@ public:
     // cannot be used and mappedFile is ignored.
     BucketFile (const String& fileName, Bool writable,
                 uInt bufSizeFile=0, Bool mappedFile=False,
-                MultiFileBase* mfile=0);
+                         const std::shared_ptr<MultiFileBase>& mfile=std::shared_ptr<MultiFileBase>());
 
     // The destructor closes the file (if open).
     virtual ~BucketFile();
 
+    // Forbid copy constructor.
+    BucketFile (const BucketFile&) = delete;
+
+    // Forbid assignment.
+    BucketFile& operator= (const BucketFile&) = delete;
+
     // Make a (temporary) buffered IO object for this file.
     // That object should not close the file.
-    virtual CountedPtr<ByteIO> makeFilebufIO (uInt bufferSize);
+    virtual std::shared_ptr<ByteIO> makeFilebufIO (uInt bufferSize);
 
     // Get the mapped file object.
     MMapfdIO* mappedFile()
@@ -196,20 +199,14 @@ private:
     uInt bufSize_p;
     int  fd_p;    //  fd (if used) of unbuffered file
     // The unbuffered file.
-    CountedPtr<ByteIO> file_p;
+    std::shared_ptr<ByteIO> file_p;
     // The optional mapped file.
     MMapfdIO* mappedFile_p;
     // The optional buffered file.
     FilebufIO* bufferedFile_p;
     // The possibly used MultiFileBase.
-    MultiFileBase* mfile_p;
+    std::shared_ptr<MultiFileBase> mfile_p;
 	    
-
-    // Forbid copy constructor.
-    BucketFile (const BucketFile&);
-
-    // Forbid assignment.
-    BucketFile& operator= (const BucketFile&);
 
     // Create the mapped or buffered file object.
     void createMapBuf();

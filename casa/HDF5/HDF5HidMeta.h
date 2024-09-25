@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_HDF5HIDMETA_H
 #define CASA_HDF5HIDMETA_H
@@ -62,6 +60,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The destructor closes the hid.
     ~HDF5HidProperty()
       { close(); }
+    // Copy constructor cannot be used.
+    HDF5HidProperty (const HDF5HidProperty&) = delete;
+    // Assignment cannot be used.
+    HDF5HidProperty& operator= (const HDF5HidProperty&) = delete;
     // Close the hid if valid.
     void close();
     // Put hid in it. If it already contains a hid, it will be closed.
@@ -74,11 +76,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     operator hid_t() const
       { return itsHid; }
   private:
-    // Copy constructor cannot be used.
-    HDF5HidProperty (const HDF5HidProperty& that);
-    // Assignment cannot be used.
-    HDF5HidProperty& operator= (const HDF5HidProperty& that);
-
     hid_t itsHid;
   };
 
@@ -159,6 +156,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The destructor closes the hid.
     ~HDF5HidDataSpace()
       { close(); }
+    // Copy constructor cannot be used.
+    HDF5HidDataSpace (const HDF5HidDataSpace&) = delete;
+    // Assignment cannot be used.
+    HDF5HidDataSpace& operator= (const HDF5HidDataSpace&) = delete;
     // Close the hid if valid.
     void close();
     // Put hid in it. If it already contains a hid, it will be closed.
@@ -171,11 +172,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     operator hid_t() const
       { return itsHid; }
   private:
-    // Copy constructor cannot be used.
-    HDF5HidDataSpace (const HDF5HidDataSpace& that);
-    // Assignment cannot be used.
-    HDF5HidDataSpace& operator= (const HDF5HidDataSpace& that);
-
     hid_t itsHid;
   };
 
@@ -208,6 +204,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The destructor closes the hid.
     ~HDF5HidAttribute()
       { close(); }
+    // Copy constructor cannot be used.
+    HDF5HidAttribute (const HDF5HidAttribute&) = delete;
+    // Assignment cannot be used.
+    HDF5HidAttribute& operator= (const HDF5HidAttribute&) = delete;
     // Close the hid if valid.
     void close();
     // Put hid in it. If it already contains a hid, it will be closed.
@@ -220,11 +220,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     operator hid_t() const
       { return itsHid; }
   private:
-    // Copy constructor cannot be used.
-    HDF5HidAttribute (const HDF5HidAttribute& that);
-    // Assignment cannot be used.
-    HDF5HidAttribute& operator= (const HDF5HidAttribute& that);
-
     hid_t itsHid;
   };
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: StManAipsIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_STMANAIPSIO_H
 #define TABLES_STMANAIPSIO_H
@@ -115,6 +113,12 @@ public:
     // Frees up the storage.
     virtual ~StManColumnAipsIO();
 
+    // Forbid copy constructor.
+    StManColumnAipsIO (const StManColumnAipsIO&) = delete;
+
+    // Forbid assignment.
+    StManColumnAipsIO& operator= (const StManColumnAipsIO&) = delete;
+  
     // Write the column data into AipsIO.
     // It will successively write all extensions using putData.
     virtual void putFile (rownr_t nrval, AipsIO&);
@@ -135,13 +139,6 @@ protected:
     // plus the given index).
     virtual void getData (void* datap, uInt index, uInt nrval, AipsIO&,
 			  uInt version);
-
-private:
-    // Forbid copy constructor.
-    StManColumnAipsIO (const StManColumnAipsIO&);
-
-    // Forbid assignment.
-    StManColumnAipsIO& operator= (const StManColumnAipsIO&);
 };
 
 
@@ -211,6 +208,12 @@ public:
 
     virtual ~StManAipsIO();
 
+    // Forbid copy constructor.
+    StManAipsIO (const StManAipsIO&) = delete;
+
+    // Forbid assignment.
+    StManAipsIO& operator= (const StManAipsIO&) = delete;
+
     // Clone this object.
     // It does not clone StManAipsIOColumn objects possibly used.
     virtual DataManager* clone() const;
@@ -235,12 +238,6 @@ public:
 
 
 private:
-    // Forbid copy constructor.
-    StManAipsIO (const StManAipsIO&);
-
-    // Forbid assignment.
-    StManAipsIO& operator= (const StManAipsIO&);
-
     // Flush and optionally fsync the data.
     // It returns a True status if it had to flush (i.e. if data have changed).
     virtual Bool flush (AipsIO&, Bool fsync);

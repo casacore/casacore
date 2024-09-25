@@ -17,16 +17,15 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNodeRecord.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 
 #include <casacore/tables/TaQL/ExprNodeRecord.h>
+#include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/TableExprData.h>
 #include <casacore/casa/Containers/RecordInterface.h>
 #include <casacore/casa/Containers/RecordDesc.h>
@@ -40,7 +39,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TableExprNodeRecordField::TableExprNodeRecordField
                                             (DataType dtype,
                                              const Block<Int>& fieldNumbers)
-: TableExprNodeBinary (NTNumeric, VTScalar, OtField, Table()),
+: TableExprNodeBinary (NTNumeric, VTScalar, OtField, Constant),
   fieldNrs_p  (fieldNumbers),
   lastEntry_p (fieldNumbers.nelements() - 1)
 {
@@ -70,7 +69,7 @@ TableExprNodeRecordField::TableExprNodeRecordField
     dtype_p = NTDouble;
     break;
   default:
-    throw (AipsError ("TableExprNodeRecordField: invalid data type"));
+    TableExprNode::throwInvDT ("TableExprNodeRecordField: invalid data type");
   }
   exprtype_p = Variable;
   // Make sure the variable is not a constant for isDefined.
@@ -209,7 +208,7 @@ TableExprNodeRecordFieldArray::TableExprNodeRecordFieldArray
     dtype_p = NTDouble;
     break;
   default:
-    throw (AipsError ("TableExprNodeRecordFieldArray: invalid data type"));
+    TableExprNode::throwInvDT ("TableExprNodeRecordFieldArray: invalid data type");
   }
   exprtype_p = Variable;
 }

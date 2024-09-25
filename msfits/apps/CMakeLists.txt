@@ -1,5 +1,6 @@
 foreach(prog ms2uvfits)
     add_executable (${prog}  ${prog}.cc)
+    add_pch_support(${prog})
     target_link_libraries (${prog} casa_msfits ${CASACORE_ARCH_LIBS})
-    install(TARGETS ${prog} DESTINATION bin)
+    install(TARGETS ${prog})
 endforeach(prog ms2uvfits)

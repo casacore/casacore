@@ -5,17 +5,17 @@
 
 namespace casacore { //#Begin casa namespace
 
-template<typename T, typename Alloc = std::allocator<T>> class Array;
-template<typename T, typename Alloc = std::allocator<T>> class Vector;
-template<typename T, typename Alloc = std::allocator<T>> class Matrix;
-template<typename T, typename Alloc = std::allocator<T>> class Cube;
+template<typename T> class Array;
+template<typename T> class Vector;
+template<typename T> class Matrix;
+template<typename T> class Cube;
 typedef bool LogicalArrayElem;
 typedef Array<LogicalArrayElem> LogicalArray;
-template<typename T, typename ArrayAlloc, typename MaskAlloc> class MaskedArray;
-typedef MaskedArray<LogicalArrayElem, std::allocator<LogicalArrayElem>, std::allocator<LogicalArrayElem>> MaskedLogicalArray;
+template<typename T> class MaskedArray;
+typedef MaskedArray<LogicalArrayElem> MaskedLogicalArray;
 class Slice;
 class Slicer;
-template<typename T, typename Alloc = std::allocator<T>> class ArrayIterator;
+template<typename T> class ArrayIterator;
 
 }
 

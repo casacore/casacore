@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/IO/LECanonicalIO.h>
 #include <casacore/casa/OS/LECanonicalConversion.h>
@@ -31,8 +29,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-LECanonicalIO::LECanonicalIO (ByteIO* byteIO, uInt bufferLength, Bool takeOver)
-: TypeIO          (byteIO, takeOver), 
+LECanonicalIO::LECanonicalIO (const std::shared_ptr<ByteIO>& byteIO,
+                              uInt bufferLength)
+: TypeIO          (byteIO),
   itsBuffer       (new char[bufferLength]),
   itsBufferLength (bufferLength)
 {}

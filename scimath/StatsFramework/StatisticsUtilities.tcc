@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -30,7 +30,6 @@
 
 #include <casacore/casa/OS/OMP.h>
 #include <casacore/casa/Utilities/GenSort.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 
 #include <iostream>
@@ -294,10 +293,10 @@ std::map<uInt64, AccumType> StatisticsUtilities<AccumType>::indicesToValues(
 template <class AccumType>
 void StatisticsUtilities<AccumType>::mergeResults(
     std::vector<BinCountArray>& bins,
-    std::vector<CountedPtr<AccumType>>& sameVal, std::vector<Bool>& allSame,
-    const PtrHolder<std::vector<BinCountArray>>& tBins,
-    const PtrHolder<std::vector<CountedPtr<AccumType>>>& tSameVal,
-    const PtrHolder<std::vector<Bool>>& tAllSame, uInt nThreadsMax
+    std::vector<std::shared_ptr<AccumType>>& sameVal, std::vector<Bool>& allSame,
+    const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
+    const std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]>& tSameVal,
+    const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax
 ) {
     // merge results from individual threads (tBins, tSameVal, tAllSame)
     // into single data structures (bins, sameVal, allSame)
@@ -311,26 +310,26 @@ void StatisticsUtilities<AccumType>::mergeResults(
             );
             ++titer;
         });
-        //typename std::vector<CountedPtr<AccumType> >::iterator siter;
+        //typename std::vector<std::shared_ptr<AccumType>>::iterator siter;
         //auto send = sameVal.end();
         std::vector<Bool>::iterator aiter = allSame.begin();
         auto viter = tSameVal[idx8].cbegin();
         auto witer = tAllSame[idx8].cbegin();
         for_each(
             sameVal.begin(), sameVal.end(),
-            [&aiter, &viter, &witer](CountedPtr<AccumType>& svalue) {
+            [&aiter, &viter, &witer](std::shared_ptr<AccumType>& svalue) {
             if (! *aiter) {
                 // won't have the same values, do nothing
             }
             if (*witer && *aiter) {
                 if (
-                    viter->null()
-                    || (! svalue.null() && *svalue == *(*viter))
+                    !*viter
+                    || (svalue && *svalue == *(*viter))
                 ) {
                     // no unflagged values in this chunk or both
                     // have the all the same values, do nothing
                 }
-                else if (svalue.null()) {
+                else if (!svalue) {
                     svalue.reset(new AccumType(*(*viter)));
                 }
                 else {
@@ -367,12 +366,12 @@ StatsData<AccumType> StatisticsUtilities<AccumType>::combine(
         for_each(
             stats.cbegin(), stats.cend(),
             [&res](const StatsData<AccumType>& s) {
-            if (! s.max.null() && (res.max.null() || *(s.max) > *res.max)) {
+            if (s.max && (!res.max || *(s.max) > *res.max)) {
                 // pointer copy
                 res.max = s.max;
                 res.maxpos = s.maxpos;
             }
-            if (! s.min.null() && (res.min.null() || *(s.min) < *res.min)) {
+            if (s.min && (!res.min || *(s.min) < *res.min)) {
                 // pointer copy
                 res.min = s.min;
                 res.minpos = s.minpos;

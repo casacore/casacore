@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 // RecordGram; grammar for record command lines
 
@@ -36,7 +34,8 @@
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/RecordGram.h>
 #include <casacore/tables/TaQL/RecordExpr.h>
-#include <casacore/tables/TaQL/TableParse.h>       // routines used by bison actions
+#include <casacore/tables/TaQL/TableParseQuery.h>
+#include <casacore/tables/TaQL/TableParseFunc.h>
 #include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Utilities/MUString.h>
 #include <casacore/casa/Quanta/MVTime.h>
@@ -95,13 +94,13 @@ void RecordGram::addToken (TableExprNodeSet* ptr)
 void RecordGram::addToken (TableExprNodeSetElem* ptr)
   { addToken (ptr, RecordGram::Elem); }
 void RecordGram::deleteToken (TableExprNode* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteToken (RecordGramVal* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteToken (TableExprNodeSet* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteToken (TableExprNodeSetElem* ptr)
-  { delete ptr; removeToken (ptr); }
+  { removeToken (ptr); delete ptr; }
 void RecordGram::deleteTokenStorage()
 {
   for (std::map<void*,RecordGram::Token>::const_iterator
@@ -434,7 +433,8 @@ TableExprNode RecordGram::handleField (const String& name)
   if (theirTabPtr == 0) {
     return makeRecordExpr (*theirRecPtr, name);
   }
-  return theirTabPtr->keyCol (name, Vector<String>());
+  return TableExprNode::keyCol (TableExprInfo(*theirTabPtr),
+                                name, Vector<String>());
 }
 
 TableExprNode RecordGram::handleFunc (const String& name,
@@ -443,13 +443,14 @@ TableExprNode RecordGram::handleFunc (const String& name,
   // The ROWNR function can only be used with tables.
   if (theirTabPtr == 0) {
     Vector<Int> ignoreFuncs (1, TableExprFuncNode::rownrFUNC);
-    return TableParseSelect::makeFuncNode (0, name, arguments,
-                                           ignoreFuncs, Table(),
-                                           theirTaQLStyle);
+    return TableParseFunc::makeFuncNode (0, name, arguments,
+                                          ignoreFuncs, TableExprInfo(),
+                                          theirTaQLStyle);
   }
-  return TableParseSelect::makeFuncNode (0, name, arguments,
-                                         Vector<Int>(), *theirTabPtr,
-                                         theirTaQLStyle);
+  return TableParseFunc::makeFuncNode (0, name, arguments,
+                                       Vector<Int>(),
+                                       TableExprInfo(*theirTabPtr),
+                                       theirTaQLStyle);
 }
 
 TableExprNode RecordGram::handleRegex (const TableExprNode& left,

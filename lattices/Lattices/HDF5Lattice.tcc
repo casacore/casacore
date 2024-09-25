@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_HDF5LATTICE_TCC
 #define LATTICES_HDF5LATTICE_TCC
@@ -55,7 +53,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   HDF5Lattice<T>::HDF5Lattice (const TiledShape& shape, const String& fileName,
 			       const String& arrayName, const String& groupName)
   {
-    itsFile = new HDF5File (fileName, ByteIO::New);
+    itsFile = std::make_shared<HDF5File>(fileName, ByteIO::New);
     makeArray (shape, arrayName, groupName);
     DebugAssert (ok(), AipsError);
   }
@@ -64,14 +62,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   HDF5Lattice<T>::HDF5Lattice (const TiledShape& shape)
   {
     Path fileName = File::newUniqueName(String("./"), String("HDF5Lattice"));
-    itsFile = new HDF5File (fileName.absoluteName(), ByteIO::Scratch);
+    itsFile = std::make_shared<HDF5File>(fileName.absoluteName(), ByteIO::Scratch);
     makeArray (shape, "array", String());
     DebugAssert (ok(), AipsError);
   }
 
   template<typename T>
   HDF5Lattice<T>::HDF5Lattice (const TiledShape& shape,
-			       const CountedPtr<HDF5File>& file,
+			       const std::shared_ptr<HDF5File>& file,
 			       const String& arrayName, const String& groupName)
   : itsFile (file)
   {
@@ -85,16 +83,16 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     // Open for write if possible.
     if (File(fileName).isWritable()) {
-      itsFile = new HDF5File(fileName, ByteIO::Update);
+      itsFile = std::make_shared<HDF5File>(fileName, ByteIO::Update);
     } else {
-      itsFile = new HDF5File(fileName);
+      itsFile = std::make_shared<HDF5File>(fileName);
     }
     openArray (arrayName, groupName);
     DebugAssert (ok(), AipsError);
   }
 
   template<typename T>
-  HDF5Lattice<T>::HDF5Lattice (const CountedPtr<HDF5File>& file,
+  HDF5Lattice<T>::HDF5Lattice (const std::shared_ptr<HDF5File>& file,
 			       const String& arrayName, const String& groupName)
   : itsFile (file)
   {
@@ -291,12 +289,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   {
     if (groupName.empty()) {
       // Use root group.
-      itsGroup = new HDF5Group(*itsFile, "/", true);
+      itsGroup = std::make_shared<HDF5Group>(*itsFile, "/", true);
     } else {
-      itsGroup = new HDF5Group(*itsFile, groupName, true);
+      itsGroup = std::make_shared<HDF5Group>(*itsFile, groupName, true);
     }
     // Open the data set.
-    itsDataSet = new HDF5DataSet (*itsGroup, arrayName, (const T*)0);
+    itsDataSet = std::make_shared<HDF5DataSet>(*itsGroup, arrayName, (const T*)0);
     // Calculate tile shape if default tile shape is empty
     itsTileShape = itsDataSet->tileShape();
     if (itsTileShape.empty()) {
@@ -313,14 +311,14 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     checkWritable();
     if (groupName.empty()) {
       // Use root group.
-      itsGroup = new HDF5Group(*itsFile, "/", true);
+      itsGroup = std::make_shared<HDF5Group>(*itsFile, "/", true);
     } else {
       // Create group if not existing yet.
-      itsGroup = new HDF5Group(*itsFile, groupName);
+      itsGroup = std::make_shared<HDF5Group>(*itsFile, groupName);
     }
     // Create the data set.
-    itsDataSet = new HDF5DataSet (*itsGroup, arrayName, shape.shape(),
-				  shape.tileShape(), (const T*)0);
+    itsDataSet = std::make_shared<HDF5DataSet>(*itsGroup, arrayName, shape.shape(),
+                                               shape.tileShape(), (const T*)0);
     // Calculate tile shape if default tile shape is empty
     itsTileShape = itsDataSet->tileShape();
     if (itsTileShape.empty()) {

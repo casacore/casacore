@@ -94,6 +94,8 @@ Fundamental physical constants (SI units):
 C::c..................  2.99792e+08
 
 Metric prefixes:
+C::quetta.............  1e+30
+C::ronna..............  1e+27
 C::yotta..............  1e+24
 C::zetta..............  1e+21
 C::exa................  1e+18
@@ -114,6 +116,8 @@ C::femto..............  1e-15
 C::atto...............  1e-18
 C::zepto..............  1e-21
 C::yocto..............  1e-24
+C::ronto..............  1e-27
+C::quecto.............  1e-30
 
 Angular measure:
 C::radian.............  1

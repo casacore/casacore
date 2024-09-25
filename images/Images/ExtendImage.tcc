@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExtendImage.tcc 21563 2015-02-16 07:05:15Z gervandiepen $
 
 #ifndef IMAGES_EXTENDIMAGE_TCC
 #define IMAGES_EXTENDIMAGE_TCC
@@ -42,8 +40,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template<class T>
 ExtendImage<T>::ExtendImage()
-: itsImagePtr  (0),
-  itsExtLatPtr (0)
 {}
 
 template<class T>
@@ -59,7 +55,7 @@ ExtendImage<T>::ExtendImage (const ImageInterface<T>& image,
     throw AipsError ("ExtendImage - "
 		     "new csys or shape incompatible with old ones");
   }
-  itsExtLatPtr.set(new ExtendLattice<T> (image, newShape, newAxes, stretchAxes));
+  itsExtLatPtr.reset(new ExtendLattice<T> (image, newShape, newAxes, stretchAxes));
   setCoordsMember (newCsys);
   this->setImageInfoMember (itsImagePtr->imageInfo());
   this->setMiscInfoMember (itsImagePtr->miscInfo());
@@ -81,8 +77,8 @@ ExtendImage<T>& ExtendImage<T>::operator= (const ExtendImage<T>& other)
 {
   if (this != &other) {
     ImageInterface<T>::operator= (other);
-    itsImagePtr.set(other.itsImagePtr->cloneII());
-    itsExtLatPtr.set(new ExtendLattice<T> (*other.itsExtLatPtr));
+    itsImagePtr.reset(other.itsImagePtr->cloneII());
+    itsExtLatPtr.reset(new ExtendLattice<T> (*other.itsExtLatPtr));
   }
   return *this;
 }

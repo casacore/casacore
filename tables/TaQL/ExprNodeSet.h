@@ -17,23 +17,20 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprNodeSet.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_EXPRNODESET_H
 #define TABLES_EXPRNODESET_H
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/tables/TaQL/ExprNodeRep.h>
-#include <casacore/tables/TaQL/ExprNodeArray.h>
+#include <casacore/tables/TaQL/ExprNodeSetElem.h>
+#include <casacore/tables/Tables/TableError.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Containers/Block.h>
 #include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -42,227 +39,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class TableExprNode;
 class IPosition;
 class Slicer;
-
-// <summary>
-// Class to hold the table expression nodes for an element in a set.
-// </summary>
-
-// <use visibility=export>
-
-// <reviewed reviewer="UNKNOWN" date="before2004/08/25" tests="">
-// </reviewed>
-
-// <prerequisite>
-//# Classes you should understand before using this one.
-//   <li> TableExprNodeSet
-//   <li> TableExprNodeRep
-// </prerequisite>
-
-// <synopsis> 
-// This class is used to assemble the table expression nodes
-// representing an element in a set. A set element can be of 3 types:
-// <ol>
-// <li> A single discrete value, which can be of any type.
-//  It can be used for 3 purposes:
-//  <br>- A function argument.
-//  <br>- A single index in an array indexing operation.
-//  <br>- A single value in a set (used with the IN operator).
-//        This is in fact a bounded discrete interval (see below).
-// <li> A discrete interval consisting of start, end and increment.
-//  Each of those has to be an int scalar. Increment defaults to 1.
-//  It can be used for 2 purposes:
-//  <br>- A slice in an array indexing operation. In that case start
-//   defaults to the beginning of the dimension and end defaults to the end.
-//  <br>- A discrete interval in a set. Start has to be given.
-//  When end is not given, the result is an unbounded discrete interval.
-//  For a discrete interval, the type of start and end can also be
-//  a datetime scalar.
-// <li> A continuous interval, which can only be used in a set.
-//  It consists of a start and/or an end scalar value of type int, double,
-//  datetime, or string. The interval can be open or closed on one or
-//  both sides.
-// </ol>
-// Note the difference between a discrete and a continuous interval.
-// E.g. the discrete interval 2,6 consists of the five values 2,3,4,5,6.
-// The continuous interval 2,6 consists of all values between them.
-// <br>Further note that a bounded discrete interval is automatically
-// converted to a vector, which makes it possible to apply array
-// functions to it.
-// </synopsis> 
-
-class TableExprNodeSetElem : public TableExprNodeRep
-{
-public:
-    // Create the object for a single expression node.
-    explicit TableExprNodeSetElem (const TableExprNode& node);
-
-    // Create the object for a discrete interval.
-    // Each of the start, end, and incr pointers can be zero meaning
-    // that they are not given (see the synopsis for an explanation).
-    // Optionally the end is inclusive (C++ and Glish style) or exclusive
-    // (Python style).
-    TableExprNodeSetElem (const TableExprNode* start,
-                          const TableExprNode* end,
-                          const TableExprNode* incr,
-                          Bool isEndExcl = False);
-
-    // Create the object for a continuous bounded interval. It can be
-    // open or closed on either side.
-    TableExprNodeSetElem (Bool isLeftClosed, const TableExprNode& start,
-                          const TableExprNode& end, Bool isRightClosed);
-
-    // Create the object for a continuous left-bounded interval.
-    TableExprNodeSetElem (Bool isLeftClosed, const TableExprNode& start);
-
-    // Create the object for a continuous right-bounded interval.
-    TableExprNodeSetElem (const TableExprNode& end, Bool isRightClosed);
-
-    // Copy constructor (copy semantics).
-    TableExprNodeSetElem (const TableExprNodeSetElem&);
-
-    ~TableExprNodeSetElem();
-
-    // Show the node.
-    void show (ostream& os, uInt indent) const;
-
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-  
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
-  
-    // Is it a discrete set element.
-    Bool isDiscrete() const;
-
-    // Is a single value given?
-    Bool isSingle() const;
-
-    // Is the interval left or right closed?
-    // <group>
-    Bool isLeftClosed() const;
-    Bool isRightClosed() const;
-    // </group>
-
-    // Get the start, end or increment expression.
-    // Note that the pointer returned can be zero indicating that that
-    // value was not given.
-    // <group>
-    const TENShPtr& start() const;
-    const TENShPtr& end() const;
-    const TENShPtr& increment() const;
-    // </group>
-
-    // Fill a vector with the value(s) from this element by appending them
-    // at the end of the vector; the end is given by argument <src>cnt</src>
-    // which gets incremented with the number of values appended.
-    // This is used by the system to convert a set to a vector.
-    // <group>
-    void fillVector (Vector<Bool>& vec, Int64& cnt,
-                     const TableExprId& id) const;
-    void fillVector (Vector<Int64>& vec, Int64& cnt,
-                     const TableExprId& id) const;
-    void fillVector (Vector<Double>& vec, Int64& cnt,
-                     const TableExprId& id) const;
-    void fillVector (Vector<DComplex>& vec, Int64& cnt,
-                     const TableExprId& id) const;
-    void fillVector (Vector<String>& vec, Int64& cnt,
-                     const TableExprId& id) const;
-    void fillVector (Vector<MVTime>& vec, Int64& cnt,
-                     const TableExprId& id) const;
-    // </group>
-
-    // Set a flag in the match output array if the corresponding element
-    // in the value array is included in this set element.
-    // This is used by the system to implement the IN operator.
-    // <br>Note that it does NOT set match values to False; it is assumed they
-    // are initialized that way.
-    // <group>
-    void matchBool     (Bool* match, const Bool* value, size_t nval,
-                        const TableExprId& id) const;
-    void matchInt      (Bool* match, const Int64* value, size_t nval,
-                        const TableExprId& id) const;
-    void matchDouble   (Bool* match, const Double* value, size_t nval,
-                        const TableExprId& id) const;
-    void matchDComplex (Bool* match, const DComplex* value, size_t nval,
-                        const TableExprId& id) const;
-    void matchString   (Bool* match, const String* value, size_t nval,
-                        const TableExprId& id) const;
-    void matchDate     (Bool* match, const MVTime* value, size_t nval,
-                        const TableExprId& id) const;
-    // </group>
-
-    // Evaluate the element for the given row and construct a new
-    // (constant) element from it.
-    // This is used by the system to implement a set in a GIVING clause.
-    TableExprNodeSetElem* evaluate (const TableExprId& id) const;
-
-    // Get the table of a node and check if the children use the same table.
-    void checkTable();
-
-    // Let a set node convert itself to the given unit.
-    virtual void adaptSetUnits (const Unit&);
-
-private:
-    // A copy of a TableExprNodeSetElem cannot be made.
-    TableExprNodeSetElem& operator= (const TableExprNodeSetElem&);
-
-    // Construct an element from the given parts and take over their pointers.
-    // It is used by evaluate to construct an element in a rather cheap way.
-    TableExprNodeSetElem (const TableExprNodeSetElem& that,
-                          const TENShPtr& start, const TENShPtr& end,
-                          const TENShPtr& incr);
-
-    // Setup the object for a continuous interval.
-    void setup (Bool isLeftClosed, const TableExprNode* start,
-                const TableExprNode* end, Bool isRightClosed);
-
-
-    TENShPtr itsStart;
-    TENShPtr itsEnd;
-    TENShPtr itsIncr;
-    Bool itsEndExcl;
-    Bool itsLeftClosed;
-    Bool itsRightClosed;
-    Bool itsDiscrete;
-    Bool itsSingle;
-};
-
-
-
-inline Bool TableExprNodeSetElem::isDiscrete() const
-{
-    return itsDiscrete;
-}
-inline Bool TableExprNodeSetElem::isSingle() const
-{
-    return itsSingle;
-}
-inline Bool TableExprNodeSetElem::isLeftClosed() const
-{
-    return itsLeftClosed;
-}
-inline Bool TableExprNodeSetElem::isRightClosed() const
-{
-    return itsRightClosed;
-}
-inline const TENShPtr& TableExprNodeSetElem::start() const
-{
-    return itsStart;
-}
-inline const TENShPtr& TableExprNodeSetElem::end() const
-{
-    return itsEnd;
-}
-inline const TENShPtr& TableExprNodeSetElem::increment() const
-{
-    return itsIncr;
-}
-
-
-
-//# Define a macro to cast an itsElems to a TableExprNodeSetElem*.
-#define castItsElem(i) static_cast<TableExprNodeSetElem*>(itsElems[i].get())
-#define castSetElem(shptr) static_cast<TableExprNodeSetElem*>(shptr.get())
 
 
 // <summary>
@@ -335,20 +111,25 @@ public:
 
     ~TableExprNodeSet();
     
+    // A copy of a TableExprNodeSet cannot be assigned.
+    TableExprNodeSet& operator= (const TableExprNodeSet&) = delete;
+
     // Add an element to the set.
     // If adaptType=True, the data type is the highest of the elements added.
     // Otherwise it is that of the first element.
     // True is meant for a set of values, False for function arguments.
-    void add (const TableExprNodeSetElem&, Bool adaptType=False);
+    // <br>A constant mid-width interval is added as a normal interval.
+    // In this way constant intervals can never be mid-width which makes
+    // optimization easier.
+    void add (const TENSEBShPtr&, Bool adaptType=False);
+    void add (const TableExprNodeSetElem& elem, Bool adaptType=False)
+      { add (elem.getElem(), adaptType); }
 
     // Show the node.
-    void show (ostream& os, uInt indent) const;
+    void show (ostream& os, uInt indent) const override;
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-  
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&) override;
   
     // Check if the data type of the set elements are the same.
     // If not, an exception is thrown.
@@ -357,7 +138,7 @@ public:
     void checkEqualDataTypes() const;
 
     // Contains the set only single elements?
-    // Single means that only single values are given (thus end nor incr).
+    // Single means that only single values are given (thus no end nor incr).
     Bool isSingle() const;
 
     // Contains the set only discrete elements?
@@ -374,7 +155,7 @@ public:
     size_t nelements() const {return size();}
 
     // Get the i-th element.
-    const TableExprNodeSetElem& operator[] (size_t index) const;
+    const TENSEBShPtr& operator[] (size_t index) const;
 
     // Contains the set array values?
     Bool hasArrays() const;
@@ -388,95 +169,80 @@ public:
 
     // Get an array value for this bounded set in the given row.
     // <group>
-    virtual MArray<Bool> getArrayBool         (const TableExprId& id);
-    virtual MArray<Int64> getArrayInt         (const TableExprId& id);
-    virtual MArray<Double> getArrayDouble     (const TableExprId& id);
-    virtual MArray<DComplex> getArrayDComplex (const TableExprId& id);
-    virtual MArray<String> getArrayString     (const TableExprId& id);
-    virtual MArray<MVTime> getArrayDate       (const TableExprId& id);
+    MArray<Bool> getArrayBool         (const TableExprId& id) override;
+    MArray<Int64> getArrayInt         (const TableExprId& id) override;
+    MArray<Double> getArrayDouble     (const TableExprId& id) override;
+    MArray<DComplex> getArrayDComplex (const TableExprId& id) override;
+    MArray<String> getArrayString     (const TableExprId& id) override;
+    MArray<MVTime> getArrayDate       (const TableExprId& id) override;
     // </group>
 
     // Does a value occur in the set?
     // <group>
-    virtual Bool hasBool     (const TableExprId& id, Bool value);
-    virtual Bool hasInt      (const TableExprId& id, Int64 value);
-    virtual Bool hasDouble   (const TableExprId& id, Double value);
-    virtual Bool hasDComplex (const TableExprId& id, const DComplex& value);
-    virtual Bool hasString   (const TableExprId& id, const String& value);
-    virtual Bool hasDate     (const TableExprId& id, const MVTime& value);
-    virtual MArray<Bool> hasArrayBool     (const TableExprId& id,
-                                           const MArray<Bool>& value);
-    virtual MArray<Bool> hasArrayInt      (const TableExprId& id,
-                                           const MArray<Int64>& value);
-    virtual MArray<Bool> hasArrayDouble   (const TableExprId& id,
-                                           const MArray<Double>& value);
-    virtual MArray<Bool> hasArrayDComplex (const TableExprId& id,
-                                           const MArray<DComplex>& value);
-    virtual MArray<Bool> hasArrayString   (const TableExprId& id,
-                                           const MArray<String>& value);
-    virtual MArray<Bool> hasArrayDate     (const TableExprId& id,
-                                           const MArray<MVTime>& value);
+    Bool contains (const TableExprId& id, Bool value) override;
+    Bool contains (const TableExprId& id, Int64 value) override;
+    Bool contains (const TableExprId& id, Double value) override;
+    Bool contains (const TableExprId& id, DComplex value) override;
+    Bool contains (const TableExprId& id, String value) override;
+    Bool contains (const TableExprId& id, MVTime value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Bool>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Int64>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<Double>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<DComplex>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<String>& value) override;
+    MArray<Bool> contains (const TableExprId& id,
+                                   const MArray<MVTime>& value) override;
     // </group>
 
+    // Useful to make overloading clearer (mainly for test programs).
+    Bool contains (const TableExprId& id, int value)
+      { return contains (id, Int64(value)); }
+    Bool contains (const TableExprId& id, const char* value)
+      { return contains (id, String(value)); }
+
     // Let a set node convert itself to the given unit.
-    virtual void adaptSetUnits (const Unit&);
+    void adaptSetUnits (const Unit&) override;
+
+    // Try to set the set's shape for a bounded set with single elements.
+    void setShape();
 
 private:
-    // A copy of a TableExprNodeSet cannot be made.
-    TableExprNodeSet& operator= (const TableExprNodeSet&);
-
     // Convert the const set to an array.
     TENShPtr toConstArray() const;
 
     // Get the array in a templated way.
     // <group>
     void getArray (MArray<Bool>& marr, const TENShPtr& node,
-                           const TableExprId& id) const
+                   const TableExprId& id) const
       { marr.reference (node->getArrayBool (id)); }
     void getArray (MArray<Int64>& marr, const TENShPtr& node,
-                            const TableExprId& id) const
+                   const TableExprId& id) const
       { marr.reference (node->getArrayInt (id)); }
     void getArray (MArray<Double>& marr, const TENShPtr& node,
-                             const TableExprId& id) const
+                   const TableExprId& id) const
       { marr.reference (node->getArrayDouble (id)); }
     void getArray (MArray<DComplex>& marr, const TENShPtr& node,
-                               const TableExprId& id) const
+                   const TableExprId& id) const
       { marr.reference (node->getArrayDComplex (id)); }
     void getArray (MArray<String>& marr, const TENShPtr& node,
-                             const TableExprId& id) const
+                   const TableExprId& id) const
       { marr.reference (node->getArrayString (id)); }
     void getArray (MArray<MVTime>& marr, const TENShPtr& node,
-                             const TableExprId& id) const
+                   const TableExprId& id) const
       { marr.reference (node->getArrayDate (id)); }
     // </group>
 
-    // Sort and combine intervals.
-    // <group>
-    void combineIntIntervals();
-    void combineDoubleIntervals();
-    void combineDateIntervals();
-    // </group>
-
-    // Define the functions to find a double, which depend on open/closed-ness.
-    // In this way a test on open/closed is done only once.
-    // <group>
-    typedef Bool (TableExprNodeSet::* FindFuncPtr) (Double value);
-    Bool findOpenOpen     (Double value);
-    Bool findOpenClosed   (Double value);
-    Bool findClosedOpen   (Double value);
-    Bool findClosedClosed (Double value);
-    void setFindFunc (Bool isLeftClosed, Bool isRightClosed);
-    // </group>
-
-    std::vector<TENShPtr> itsElems;
+    //# Data members
+    std::vector<TENSEBShPtr> itsElems;
     Bool itsSingle;
     Bool itsDiscrete;
     Bool itsBounded;       //# Set is discrete and all starts/ends are defined
     Bool itsCheckTypes;    //# True = checking data types is not needed
-    Bool itsAllIntervals;  //# True = all elements are const intervals (sorted)
-    Block<Double> itsStart; //# Start values of const intervals
-    Block<Double> itsEnd;   //# End values of const intervals
-    FindFuncPtr   itsFindFunc; //# Function to find a matching const interval
 };
 
 
@@ -496,10 +262,9 @@ inline size_t TableExprNodeSet::size() const
 {
     return itsElems.size();
 }
-inline const TableExprNodeSetElem&
-                           TableExprNodeSet::operator[] (size_t index) const
+inline const TENSEBShPtr& TableExprNodeSet::operator[] (size_t index) const
 {
-    return *castItsElem(index);
+    return itsElems[index];
 }
 
 
@@ -510,9 +275,12 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
     DebugAssert (itsBounded, AipsError);
     Int64 n = size();
     if (hasArrays()) {
+      if (itsElems[0]->start()->valueType() != VTArray) {
+        throw TableInvExpr("scalar value cannot be given in a nested array");
+      }
       // Handle a nested array; this is done recursively.
       MArray<T> marr;
-      getArray (marr, castItsElem(0)->start(), id);
+      getArray (marr, itsElems[0]->start(), id);
       if (marr.isNull()) {
         return marr;
       }
@@ -533,11 +301,14 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
       IPosition e(shp-1);
       e[naxes] = 0;
       for (Int64 i=1; i<n; i++) {
+        if (itsElems[i]->start()->valueType() != VTArray) {
+          throw TableInvExpr("scalar value cannot be given in a nested array");
+        }
         iter.next();
         s[naxes]++;
         e[naxes]++;
         MArray<T> marr;
-        getArray (marr, castItsElem(i)->start(), id);
+        getArray (marr, itsElems[i]->start(), id);
         if (marr.isNull()) {
           return marr;
         }
@@ -564,7 +335,7 @@ MArray<T> TableExprNodeSet::toArray (const TableExprId& id) const
       Int64 cnt = 0;
       Vector<T> result (n);
       for (Int64 i=0; i<n; i++) {
-        castItsElem(i)->fillVector (result, cnt, id);
+        itsElems[i]->fillVector (result, cnt, id);
       }
       result.resize (cnt, True);
       return MArray<T>(result);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/TaQL/TaQLNodeDer.h>
@@ -593,27 +591,39 @@ TaQLNode TaQLFuncNodeRep::restore (AipsIO& aio)
   return new TaQLFuncNodeRep (name, TaQLNode::restoreMultiNode (aio));
 }
 
-TaQLRangeNodeRep::TaQLRangeNodeRep (Bool leftClosed, TaQLNode start,
-                                    const TaQLNode& end, Bool rightClosed)
+TaQLRangeNodeRep::TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start,
+                                    const TaQLNode& end, Bool rightClosed,
+                                    Bool asMidWidth)
   : TaQLNodeRep (TaQLNode_Range),
-    itsLeftClosed (leftClosed),
     itsStart      (start),
     itsEnd        (end),
-    itsRightClosed(rightClosed)
+    itsLeftClosed (leftClosed),
+    itsRightClosed(rightClosed),
+    itsAsMidWidth (asMidWidth)
 {}
 TaQLRangeNodeRep::TaQLRangeNodeRep (Bool leftClosed, const TaQLNode& start)
   : TaQLNodeRep (TaQLNode_Range),
-    itsLeftClosed (leftClosed),
     itsStart      (start),
     itsEnd        (),
-    itsRightClosed(False)
+    itsLeftClosed (leftClosed),
+    itsRightClosed(False),
+    itsAsMidWidth (False)
 {}
 TaQLRangeNodeRep::TaQLRangeNodeRep (const TaQLNode& end, Bool rightClosed)
   : TaQLNodeRep (TaQLNode_Range),
-    itsLeftClosed (False),
     itsStart      (),
     itsEnd        (end),
-    itsRightClosed(rightClosed)
+    itsLeftClosed (False),
+    itsRightClosed(rightClosed),
+    itsAsMidWidth (False)
+{}
+TaQLRangeNodeRep::TaQLRangeNodeRep (const TaQLNode& mid, const TaQLNode& width)
+  : TaQLNodeRep (TaQLNode_Range),
+    itsStart      (mid),
+    itsEnd        (width),
+    itsLeftClosed (True),
+    itsRightClosed(True),
+    itsAsMidWidth (True)
 {}
 TaQLNodeResult TaQLRangeNodeRep::visit (TaQLNodeVisitor& visitor) const
 {
@@ -621,33 +631,41 @@ TaQLNodeResult TaQLRangeNodeRep::visit (TaQLNodeVisitor& visitor) const
 }
 void TaQLRangeNodeRep::show (std::ostream& os) const
 {
-  if (itsLeftClosed) {
-    os << '{';
+  if (itsAsMidWidth) {
+    os << '(';
+    itsStart.show (os);
+    os << ")<:>(";
+    itsEnd.show (os);
+    os << ')';
   } else {
-    os << '<';
-  }
-  itsStart.show (os);
-  os << ',';
-  itsEnd.show (os);
-  if (itsRightClosed) {
-    os << '}';
-  } else {
-    os << '>';
+    if (itsLeftClosed) {
+      os << '{';
+    } else {
+      os << '<';
+    }
+    itsStart.show (os);
+    os << ',';
+    itsEnd.show (os);
+    if (itsRightClosed) {
+      os << '}';
+    } else {
+      os << '>';
+    }
   }
 }
 void TaQLRangeNodeRep::save (AipsIO& aio) const
 {
-  aio << itsLeftClosed << itsRightClosed;
+  aio << itsLeftClosed << itsRightClosed << itsAsMidWidth;
   itsStart.saveNode (aio);
   itsEnd.saveNode (aio);
 }
 TaQLNode TaQLRangeNodeRep::restore (AipsIO& aio)
 {
-  Bool leftClosed, rightClosed;
-  aio >> leftClosed >> rightClosed;
+  Bool leftClosed, rightClosed, asMidWidth;
+  aio >> leftClosed >> rightClosed >> asMidWidth;
   TaQLNode start = TaQLNode::restoreNode (aio);
   TaQLNode end = TaQLNode::restoreNode (aio);
-  return new TaQLRangeNodeRep (leftClosed, start, end, rightClosed);
+  return new TaQLRangeNodeRep (leftClosed, start, end, rightClosed, asMidWidth);
 }
 
 TaQLIndexNodeRep::TaQLIndexNodeRep (const TaQLNode& start,
@@ -707,7 +725,7 @@ void TaQLJoinNodeRep::show (std::ostream& os) const
     itsTables.show (os);
     os << ' ';
   }
-  os << "ON CONDITION ";
+  os << "ON ";
   itsCondition.show (os);
 }
 void TaQLJoinNodeRep::save (AipsIO& aio) const
@@ -1141,7 +1159,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
 TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
                                       const TaQLMultiNode& with,
                                       const TaQLMultiNode& tables,
-                                      const TaQLNode& join,
+                                      const TaQLMultiNode& joins,
                                       const TaQLNode& where,
                                       const TaQLNode& groupby,
                                       const TaQLNode& having,
@@ -1151,7 +1169,7 @@ TaQLSelectNodeRep::TaQLSelectNodeRep (const TaQLNode& columns,
                                       const TaQLMultiNode& dminfo)
   : TaQLQueryNodeRep (TaQLNode_Select),
     itsColumns(columns), itsWith(with), itsTables(tables),
-    itsJoin(join), itsWhere(where), itsGroupby(groupby), itsHaving(having),
+    itsJoins(joins), itsWhere(where), itsGroupby(groupby), itsHaving(having),
     itsSort(sort), itsLimitOff(limitoff), itsGiving(giving),
     itsDMInfo(dminfo)
 {}
@@ -1168,7 +1186,7 @@ void TaQLSelectNodeRep::showDerived (std::ostream& os) const
     os << " FROM ";
     itsTables.show (os);
   }
-  itsJoin.show (os);
+  itsJoins.show (os);
   if (itsWhere.isValid()) {
     os << " WHERE ";
     itsWhere.show (os);
@@ -1196,7 +1214,7 @@ void TaQLSelectNodeRep::save (AipsIO& aio) const
   itsColumns.saveNode (aio);
   itsWith.saveNode (aio);
   itsTables.saveNode (aio);
-  itsJoin.saveNode (aio);
+  itsJoins.saveNode (aio);
   itsWhere.saveNode (aio);
   itsGroupby.saveNode (aio);
   itsHaving.saveNode (aio);
@@ -1211,7 +1229,7 @@ TaQLNode TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode columns = TaQLNode::restoreNode (aio);
   TaQLMultiNode with = TaQLNode::restoreMultiNode (aio);
   TaQLMultiNode tables = TaQLNode::restoreMultiNode (aio);
-  TaQLNode join = TaQLNode::restoreMultiNode (aio);
+  TaQLMultiNode joins = TaQLNode::restoreMultiNode (aio);
   TaQLNode where = TaQLNode::restoreNode (aio);
   TaQLNode groupby = TaQLNode::restoreNode (aio);
   TaQLNode having = TaQLNode::restoreNode (aio);
@@ -1220,7 +1238,7 @@ TaQLNode TaQLSelectNodeRep::restore (AipsIO& aio)
   TaQLNode giving = TaQLNode::restoreNode (aio);
   TaQLMultiNode dminfo = TaQLNode::restoreMultiNode (aio);
   std::unique_ptr<TaQLSelectNodeRep> node
-    (new TaQLSelectNodeRep (columns, with, tables, join,
+    (new TaQLSelectNodeRep (columns, with, tables, joins,
                             where, groupby, having,
                             sort, limitoff, giving, dminfo));
   node->restoreSuper (aio);

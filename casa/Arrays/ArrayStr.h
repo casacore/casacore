@@ -13,8 +13,8 @@ namespace casacore {
 // preceeded by the position of the start of the vector. If the origin of
 // the array isn't zero it is printed. The shape of the array is always
 // printed.
-template<typename T, typename Alloc>
-std::ostream &operator << (std::ostream &, const Array<T, Alloc> &);
+template<typename T>
+std::ostream &operator << (std::ostream &, const Array<T> &);
 
 // Read an ascii representation of an array. All types with an <src><<</src>
 // operator can be handled. The basic format of the input should be:
@@ -55,11 +55,11 @@ std::ostream &operator << (std::ostream &, const Array<T, Alloc> &);
 // transpose (it) (which can be undone by the user specifying transpose).
 //
 // <group>
-template<typename T, typename Alloc>
-std::istream &operator>> (std::istream &s, Array<T, Alloc> &x);
+template<typename T>
+std::istream &operator>> (std::istream &s, Array<T> &x);
 
-template<typename T, typename Alloc>
-bool read(std::istream &s, Array<T, Alloc> &x,
+template<typename T>
+bool read(std::istream &s, Array<T> &x,
 			    const IPosition *ip=0, bool it=false);
 // </group>
 
@@ -76,9 +76,9 @@ bool read(std::istream &s, Array<T, Alloc> &x,
 // input not equal to ip (if specified); the shape given by user as input
 // does not conform to ip (if given) or the number of elements input.<br>
 // trans will be true if transpose asked by user; or if forced by it.
-template<typename T, typename Alloc> bool readArrayBlock(std::istream &s, bool &trans,
+template<typename T> bool readArrayBlock(std::istream &s, bool &trans,
   IPosition &p,
-  std::vector<T, Alloc> &x,
+  std::vector<T> &x,
   const IPosition *ip=0, bool it=false);
 
 // <summary>
@@ -130,15 +130,15 @@ template<typename T, typename Alloc> bool readArrayBlock(std::istream &s, bool &
 // The matrix should be declared but NOT dimensioned in the calling program.
 
 // <group>
-template <typename T, typename Alloc>
-void readAsciiMatrix (Matrix<T, Alloc>& mat, const char* fileName);
+template <typename T>
+void readAsciiMatrix (Matrix<T>& mat, const char* fileName);
 
-template <typename T, typename Alloc>
-void writeAsciiMatrix (const Matrix<T, Alloc>& mat, const char* fileName);
+template <typename T>
+void writeAsciiMatrix (const Matrix<T>& mat, const char* fileName);
 // </group>
 
-template<typename T, typename Alloc>
-std::string to_string(const Array<T, Alloc> array);
+template<typename T>
+std::string to_string(const Array<T> array);
 
 }
 

@@ -19,13 +19,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        internet email: aips2-request@nrao.edu.
+//#        internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tArray.cc 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #include "../IPosition.h"
 #include "../Array.h"
@@ -679,20 +677,19 @@ BOOST_AUTO_TEST_CASE( life_cycle_7 )
   IPosition const shape(2, 2, 3);
   size_t const nelems = shape.product();
   LifecycleChecker::clear();
-  std::allocator<LifecycleChecker> allocator;
-  LifecycleChecker *ptr = allocator.allocate(shape.product());
+  LifecycleChecker *ptr = std::allocator<LifecycleChecker>().allocate(shape.product());
   for (size_t i = 0; i < nelems; ++i) {
-      allocator.construct(&ptr[i]);
+      std::allocator<LifecycleChecker>().construct(&ptr[i]);
   }
   {
     Array<LifecycleChecker> a;
-    a.takeStorage(shape, ptr, SHARE, allocator);
+    a.takeStorage(shape, ptr, SHARE);
     a.resize(IPosition(2, 3, 3), false);
   }
   for (size_t i = 0; i < nelems; ++i) {
-    allocator.destroy(&ptr[i]);
+    std::allocator<LifecycleChecker>().destroy(&ptr[i]);
   }
-  allocator.deallocate(ptr, nelems);
+  std::allocator<LifecycleChecker>().deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
 }
 
@@ -708,7 +705,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_8 )
   }
   {
     Array<LifecycleChecker> a;
-    a.takeStorage(shape, ptr, TAKE_OVER, allocator);
+    a.takeStorage(shape, ptr, TAKE_OVER);
     a.resize(IPosition(2, 3, 3), true);
   }
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
@@ -723,7 +720,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_9 )
   LifecycleChecker *ptr = allocator.allocate(shape.product());
   {
       Array<LifecycleChecker> a;
-      a.takeStorage(shape, ptr, COPY, allocator);
+      a.takeStorage(shape, ptr, COPY);
   }
   allocator.deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
@@ -740,7 +737,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_10 )
     allocator.construct(&ptr[i]);
   }
   {
-    Array<LifecycleChecker> a(shape, ptr, SHARE, allocator);
+    Array<LifecycleChecker> a(shape, ptr, SHARE);
   }
   for (size_t i = 0; i < nelems; ++i) {
     allocator.destroy(&ptr[i]);
@@ -760,7 +757,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_11 )
     allocator.construct(&ptr[i]);
   }
   {
-    Array<LifecycleChecker> a(shape, ptr, TAKE_OVER, allocator);
+    Array<LifecycleChecker> a(shape, ptr, TAKE_OVER);
   }
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
 }
@@ -773,7 +770,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_12 )
   std::allocator<LifecycleChecker> allocator;
   LifecycleChecker *ptr = allocator.allocate(shape.product());
   {
-      Array<LifecycleChecker> a(shape, ptr, COPY, allocator);
+      Array<LifecycleChecker> a(shape, ptr, COPY);
   }
   allocator.deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);

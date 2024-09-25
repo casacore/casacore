@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef MS_MSCONCAT_H
 #define MS_MSCONCAT_H
@@ -111,6 +108,7 @@ private:
   Bool copyWeather(const MSWeather& otherWeather, const Block<uInt>& newAndIndices);
   Bool copyGainCurve(const MeasurementSet& otherMS, const Block<uInt>& newAndIndices);
   Bool copyPhaseCal(const MeasurementSet& otherMS, const Block<uInt>& newAndIndices);
+  Bool copyEOP(const MeasurementSet& otherMS);
   Int copyObservation(const MSObservation& otherObs, const Bool remRedunObsId=True);
                              //# by default remove redundant observation table rows
   Int copyProcessor(const MSProcessor& otherObs, const Bool remRedunProcId=True);

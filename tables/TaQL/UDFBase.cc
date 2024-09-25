@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: UDFBase.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 //# Includes
 #include <casacore/tables/TaQL/UDFBase.h>
@@ -51,14 +49,14 @@ namespace casacore {
   {}
 
   void UDFBase::init (const vector<TENShPtr>& operands,
-                      const Table& table, const TaQLStyle& style)
+                      const TableExprInfo& tableInfo, const TaQLStyle& style)
   {
     // Link to the operands.
     itsOperands.resize (operands.size());
     for (uInt i=0; i<operands.size(); ++i) {
       itsOperands[i] = operands[i];
     }
-    setup (table, style);
+    setup (tableInfo.table(), style);
     if (itsDataType == TableExprNodeRep::NTAny) {
       throw TableInvExpr ("UDFBase: data type not set by derived UDF class");
     }
@@ -67,17 +65,10 @@ namespace casacore {
     }
   }
 
-  void UDFBase::getAggrNodes (vector<TableExprNodeRep*>& aggr)
+  void UDFBase::flattenTree (std::vector<TableExprNodeRep*>& nodes)
   {
     for (uInt i=0; i<itsOperands.size(); ++i) {
-      itsOperands[i]->getAggrNodes (aggr);
-    }
-  }
-
-  void UDFBase::getColumnNodes (vector<TableExprNodeRep*>& cols)
-  {
-    for (uInt i=0; i<itsOperands.size(); ++i) {
-      itsOperands[i]->getColumnNodes (cols);
+      itsOperands[i]->flattenTree (nodes);
     }
   }
 

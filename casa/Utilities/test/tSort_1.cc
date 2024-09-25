@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/Utilities/Sort.h>
@@ -264,7 +262,7 @@ Bool sortarr2 (Int* arr, uInt nr, int opt)
 {
     Bool success = True;
     Sort sort;
-    sort.sortKey (arr, CountedPtr<BaseCompare>(new ObjCompare<Int>), 4);
+    sort.sortKey (arr, std::shared_ptr<BaseCompare>(new ObjCompare<Int>), 4);
     Vector<uInt> ptr;
     Timer tim;
     sort.sort (ptr,nr,opt);

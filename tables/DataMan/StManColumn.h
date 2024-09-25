@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_STMANCOLUMN_H
 #define TABLES_STMANCOLUMN_H
@@ -82,6 +80,12 @@ public:
     {}
 
     virtual ~StManColumn();
+
+    // The object cannot be copied.
+    StManColumn (const StManColumn&) = delete;
+
+    // The object cannot be assigned to.
+    StManColumn& operator= (const StManColumn&) = delete;
 
     // Set the shape of an (variable-shaped) array in the given row.
     // By default it throws a "not possible" exception.
@@ -286,12 +290,6 @@ public:
 
 
 private:
-    // The object cannot be copied.
-    StManColumn (const StManColumn&);
-
-    // The object cannot be assigned to.
-    StManColumn& operator= (const StManColumn&);
-
     // Throw an "invalid operation" exception for the default
     // implementation of getArray.
     void throwInvalidOp(const String &op) const;

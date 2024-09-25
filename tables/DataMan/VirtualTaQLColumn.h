@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_VIRTUALTAQLCOLUMN_H
 #define TABLES_VIRTUALTAQLCOLUMN_H
@@ -107,6 +105,12 @@ public:
   // Destructor is mandatory.
   virtual ~VirtualTaQLColumn();
 
+  // Copy is not needed and therefore forbidden.
+  VirtualTaQLColumn (const VirtualTaQLColumn&) = delete;
+
+  // Assignment is not needed and therefore forbidden.
+  VirtualTaQLColumn& operator= (const VirtualTaQLColumn&) = delete;
+
   // Clone the engine object.
   virtual DataManager* clone() const;
 
@@ -157,12 +161,6 @@ public:
   // </group>
 
 private:
-  // Copy is not needed and therefore forbidden (so it is made private).
-  VirtualTaQLColumn (const VirtualTaQLColumn&);
-
-  // Assignment is not needed and therefore forbidden (so it is made private).
-  VirtualTaQLColumn& operator= (const VirtualTaQLColumn&);
-
   // Create the column object for the scalar column in this engine.
   virtual DataManagerColumn* makeScalarColumn (const String& columnName,
 					       int dataType, const String&);

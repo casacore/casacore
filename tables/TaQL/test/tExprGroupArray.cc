@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: tExprNode.cc 21156 2011-12-12 07:57:36Z gervandiepen $
 
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/tables/TaQL/ExprNode.h>
@@ -44,8 +42,8 @@
 #include <casacore/casa/Arrays/ArrayUtil.h>
 #include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
-#include <casacore/casa/stdvector.h>
 #include <casacore/casa/iostream.h>
+#include <vector>
 
 #include <casacore/casa/namespace.h>
 // <summary>
@@ -70,7 +68,7 @@ Bool foundError = False;
 }
 
 void checkLazy (const TableExprNode& expr,
-                const vector<Record>& recs,
+                const std::vector<Record>& recs,
                 const Array<Bool>& expVal, const String& str)
 {
   cout << "Test Bool " << str << endl;
@@ -83,7 +81,7 @@ void checkLazy (const TableExprNode& expr,
     funcid.apply (id);
   }
   funcid.finish();
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   MArray<Bool> val = func->getArrayBool(*funcid.getIds());
   if (!allEQ (val.array(), expVal)) {
     foundError = True;
@@ -93,7 +91,7 @@ void checkLazy (const TableExprNode& expr,
 }
 
 void checkLazy (const TableExprNode& expr,
-                const vector<Record>& recs,
+                const std::vector<Record>& recs,
                 const Array<Int64>& expVal, const String& str)
 {
   cout << "Test Int " << str << endl;
@@ -106,9 +104,9 @@ void checkLazy (const TableExprNode& expr,
     funcid.apply (id);
   }
   funcid.finish();
-  vector<CountedPtr<TableExprGroupFuncSet> > funcSets;
-  funcSets.push_back (new TableExprGroupFuncSet());
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::vector<std::shared_ptr<TableExprGroupFuncSet>> funcSets;
+  funcSets.push_back (std::shared_ptr<TableExprGroupFuncSet>(new TableExprGroupFuncSet()));
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   funcSets[0]->add (func);
   MArray<Int64> val = func->getArrayInt(*funcid.getIds());
   if (!allEQ (val.array(), expVal)) {
@@ -116,9 +114,8 @@ void checkLazy (const TableExprNode& expr,
     cout << str << ": found value " << val.array() << "; expected "
          << expVal << endl;
   }
-  vector<CountedPtr<vector<TableExprId> > > ids(1, funcid.getIds());
-  CountedPtr<TableExprGroupResult> groupResult =
-    new TableExprGroupResult(funcSets, ids);
+  std::vector<std::shared_ptr<std::vector<TableExprId>>> ids(1, funcid.getIds());
+  std::shared_ptr<TableExprGroupResult> groupResult(new TableExprGroupResult(funcSets, ids));
   TableExprIdAggr aid(groupResult);
   aid.setRownr (0);
   MArray<Int64> val2 = aggr.getArrayInt (aid);
@@ -130,7 +127,7 @@ void checkLazy (const TableExprNode& expr,
 }
 
 void checkLazy (const TableExprNode& expr,
-                const vector<Record>& recs,
+                const std::vector<Record>& recs,
                 const Array<Double>& expVal, const String& str)
 {
   cout << "Test Double " << str << endl;
@@ -143,7 +140,7 @@ void checkLazy (const TableExprNode& expr,
     funcid.apply (id);
   }
   funcid.finish();
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   MArray<Double> val = func->getArrayDouble(*funcid.getIds());
   if (!allNear (val.array(), expVal, 1.e-10)) {
     foundError = True;
@@ -153,7 +150,7 @@ void checkLazy (const TableExprNode& expr,
 }
 
 void checkLazy (const TableExprNode& expr,
-                const vector<Record>& recs,
+                const std::vector<Record>& recs,
                 const Array<DComplex>& expVal, const String& str)
 {
   cout << "Test DComplex " << str << endl;
@@ -166,7 +163,7 @@ void checkLazy (const TableExprNode& expr,
     funcid.apply (id);
   }
   funcid.finish();
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   MArray<DComplex> val = func->getArrayDComplex(*funcid.getIds());
   if (!allNear (val.array(), expVal, 1.e-10)) {
     foundError = True;
@@ -177,20 +174,20 @@ void checkLazy (const TableExprNode& expr,
 
 
 void checkHist (const TableExprNode& expr,
-                const vector<Record>& recs,
+                const std::vector<Record>& recs,
                 const Array<Int64>& expVal)
 {
   cout << "Test Double ghist " << endl;
   // Get the aggregation node.
   TableExprAggrNodeArray& aggr = const_cast<TableExprAggrNodeArray&>
     (dynamic_cast<const TableExprAggrNodeArray&>(*expr.getRep().get()));
-  CountedPtr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
+  std::shared_ptr<TableExprGroupFuncBase> func = aggr.makeGroupAggrFunc();
   for (uInt i=0; i<recs.size(); ++i) {
     TableExprId id(recs[i]);
     func->apply (id);
   }
   func->finish();
-  MArray<Int64> val = func->getArrayInt(vector<TableExprId>());
+  MArray<Int64> val = func->getArrayInt(std::vector<TableExprId>());
   if (!allEQ (val.array(), expVal)) {
     foundError = True;
     cout << "ghist: found value " << val.array() << "; expected "
@@ -205,7 +202,7 @@ void doBoolArr()
   Cube<Bool> arr(2,3,4);
   arr = False; arr(0,1,3) = True;  arr(0,2,2) = True;
   // Define records containing equal parts of the array.
-  vector<Record> recs(arr.shape()[2]);
+  std::vector<Record> recs(arr.shape()[2]);
   MatrixIterator<Bool> iter(arr);
   int i=0;
   while (!iter.pastEnd()) {
@@ -224,7 +221,7 @@ void doIntArr()
   Cube<Int64> arr(20,30,40);
   indgen (arr);
   // Define records containing equal parts of the array.
-  vector<Record> recs(arr.shape()[2]);
+  std::vector<Record> recs(arr.shape()[2]);
   MatrixIterator<Int64> iter(arr);
   int i=0;
   while (!iter.pastEnd()) {
@@ -243,7 +240,7 @@ void doDoubleArr()
   Cube<Double> arr(5,3,1);
   indgen (arr, 10., 2.);
   // Define records containing equal parts of the array.
-  vector<Record> recs(arr.shape()[2]);
+  std::vector<Record> recs(arr.shape()[2]);
   MatrixIterator<Double> iter(arr);
   int i=0;
   while (!iter.pastEnd()) {
@@ -272,7 +269,7 @@ void doDoubleArr()
   set.add (TableExprNodeSetElem(12.));
   set.add (TableExprNodeSetElem(36.));
   checkHist (TableExprNode::newFunctionNode(TableExprFuncNode::ghistFUNC,
-                                            set, Table()),
+                                            set, TableExprInfo()),
              recs, hist);
 }
 
@@ -282,7 +279,7 @@ void doDComplexArr()
   Cube<DComplex> arr(5,3,8);
   indgen (arr, DComplex(0.1, -0.3), DComplex(-1.3, 3.5));
   // Define records containing equal parts of the array.
-  vector<Record> recs(arr.shape()[2]);
+  std::vector<Record> recs(arr.shape()[2]);
   MatrixIterator<DComplex> iter(arr);
   int i=0;
   while (!iter.pastEnd()) {

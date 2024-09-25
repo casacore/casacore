@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MATRIXITER_2_TCC
 #define CASA_MATRIXITER_2_TCC
@@ -32,22 +30,22 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<typename T, typename Alloc>
-MatrixIterator<T, Alloc>::MatrixIterator(Array<T, Alloc> &a)
-: ArrayIterator<T, Alloc>(a, 2)
+template<typename T>
+MatrixIterator<T>::MatrixIterator(Array<T> &a)
+: ArrayIterator<T>(a, 2)
 {
     // We need to ensure that ap points at a Matrix
-    this->ap_p.reset( new Matrix<T, Alloc>(*this->ap_p) ); // reference
+    this->ap_p.reset( new Matrix<T>(*this->ap_p) ); // reference
 }
 
-template<typename T, typename Alloc>
-MatrixIterator<T, Alloc>::MatrixIterator(Array<T, Alloc> &a,
+template<typename T>
+MatrixIterator<T>::MatrixIterator(Array<T> &a,
 						    size_t cursorAxis1,
 						    size_t cursorAxis2)
-: ArrayIterator<T, Alloc>(a, IPosition(2, cursorAxis1, cursorAxis2), true)
+: ArrayIterator<T>(a, IPosition(2, cursorAxis1, cursorAxis2), true)
 {
     // We need to ensure that ap points at a Matrix
-    this->ap_p.reset( new Matrix<T, Alloc>(*this->ap_p) );  // reference
+    this->ap_p.reset( new Matrix<T>(*this->ap_p) );  // reference
 }
 
 } //# NAMESPACE CASACORE - END

@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -36,8 +36,6 @@
 #include <casacore/casa/iosfwd.h>
 
 namespace casacore {
-
-template <class T> class PtrHolder;
 
 CASA_STATD class StatsDataProvider;
 
@@ -190,11 +188,11 @@ public:
 
     static void mergeResults(
         std::vector<BinCountArray>& bins,
-        std::vector<CountedPtr<AccumType> >& sameVal,
+        std::vector<std::shared_ptr<AccumType>>& sameVal,
         std::vector<Bool>& allSame,
-        const PtrHolder<std::vector<BinCountArray>>& tBins,
-        const PtrHolder<std::vector<CountedPtr<AccumType>>>& tSameVal,
-        const PtrHolder<std::vector<Bool>>& tAllSame, uInt nThreadsMax
+        const std::unique_ptr<std::vector<BinCountArray>[]>& tBins,
+        const std::unique_ptr<std::vector<std::shared_ptr<AccumType>>[]>& tSameVal,
+        const std::unique_ptr<std::vector<Bool>[]>& tAllSame, uInt nThreadsMax
     );
 
     // use two statistics sets to get the statistics set that would

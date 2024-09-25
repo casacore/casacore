@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEPROXY_H
 #define IMAGES_IMAGEPROXY_H
@@ -34,9 +31,9 @@
 #include <casacore/images/Images/MaskSpecifier.h>
 #include <casacore/lattices/Lattices/LatticeBase.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Containers/Record.h>
+#include <memory>
 
 namespace casacore {
 
@@ -127,7 +124,7 @@ namespace casacore {
                 Int dummy=0);
 
     // Construct from an existing image object.
-    ImageProxy (const CountedPtr<LatticeBase>&);
+    ImageProxy (const std::shared_ptr<LatticeBase>&);
 
     // Copy constructor (reference semantics).
     ImageProxy (const ImageProxy&);
@@ -467,13 +464,13 @@ namespace casacore {
 
     //# Data members.
     //# itsLattice is the real data; the pointers are for type convenience only.
-    CountedPtr<LatticeBase>   itsLattice;
-    ImageInterface<Float>*    itsImageFloat;
-    ImageInterface<Double>*   itsImageDouble;
-    ImageInterface<Complex>*  itsImageComplex;
-    ImageInterface<DComplex>* itsImageDComplex;
-    const CoordinateSystem*   itsCoordSys;
-    ImageAttrHandler*         itsAttrHandler;
+    std::shared_ptr<LatticeBase>   itsLattice;
+    ImageInterface<Float>*         itsImageFloat;     //# reference, so no delete
+    ImageInterface<Double>*        itsImageDouble;    //# reference, so no delete
+    ImageInterface<Complex>*       itsImageComplex;   //# reference, so no delete
+    ImageInterface<DComplex>*      itsImageDComplex;  //# reference, so no delete
+    const CoordinateSystem*        itsCoordSys;       //# reference, so no delete
+    ImageAttrHandler*              itsAttrHandler;    //# reference, so no delete
   };
 
 } // end namespace casacore

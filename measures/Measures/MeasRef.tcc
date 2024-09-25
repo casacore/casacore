@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MEASURES_MEASREF_TCC
 #define MEASURES_MEASREF_TCC
@@ -93,7 +91,7 @@ MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep)
 template<class Ms>
 void MeasRef<Ms>::create() {
   if (empty()) {
-    rep_p = new RefRep();
+    rep_p.reset (new RefRep);
   }
 }
 
@@ -116,7 +114,7 @@ Bool MeasRef<Ms>::operator!=(const MeasRef<Ms> &other) const {
 //# Member functions
 template<class Ms>
 Bool MeasRef<Ms>::empty() const {
-  return rep_p.null();
+  return !rep_p;
 }
 
 template<class Ms>

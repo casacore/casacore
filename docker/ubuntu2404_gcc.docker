@@ -1,8 +1,9 @@
-FROM ubuntu:18.04
+FROM ubuntu:24.04
 RUN export DEBIAN_FRONTEND=noninteractive \
     && apt-get update \
     && apt-get install -y \
-    clang \
+    gcc \
+    g++ \
     cmake \
     flex \
     bison \
@@ -19,7 +20,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     libboost-python-dev \
     libboost-test-dev \
     libgsl-dev \
-    python-numpy \
+    python-is-python3 \
     python3-numpy \
     wget \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
@@ -41,12 +42,9 @@ RUN cmake .. \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \
     -DUSE_HDF5=ON \
-    -DBUILD_PYTHON=ON \
-    -DBUILD_PYTHON3=ON \
     -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} \
     -DDATA_DIR=/usr/local/share/casacore/data \
-    -DCMAKE_C_COMPILER=/usr/bin/clang \
-    -DCMAKE_CXX_COMPILER=/usr/bin/clang++ \
+    -DBUILD_FFTPACK_DEPRECATED=ON \
     && make -j`nproc`
 USER root
 RUN make install

@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -27,8 +27,6 @@
 #define SCIMATH_STATISTICSDATASET_TCC
 
 #include <casacore/scimath/StatsFramework/StatisticsDataset.h>
-
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 
 namespace casacore {
@@ -238,9 +236,9 @@ CASA_STATD void StatisticsDataset<CASA_STATP>::initIterators() {
         _dsiter = _dataStrides.begin();
         _citer = _counts.begin();
     }
-    _chunk.ranges.clear();
-    _chunk.mask.clear();
-    _chunk.weights.clear();
+    _chunk.ranges.reset();
+    _chunk.mask.reset();
+    _chunk.weights.reset();
 }
 
 CASA_STATD
@@ -250,20 +248,20 @@ StatisticsDataset<CASA_STATP>::initLoopVars() {
         _chunk.data = _dataProvider->getData();
         _chunk.count = _dataProvider->getCount();
         _chunk.dataStride = _dataProvider->getStride();
-        _chunk.ranges.set(
+        _chunk.ranges.reset(
             _dataProvider->hasRanges()
             ? new std::pair<DataRanges, Bool>(
                 _dataProvider->getRanges(), _dataProvider->isInclude()
             ) : nullptr
         );
-        _chunk.mask.set(
+        _chunk.mask.reset(
             _dataProvider->hasMask()
             ? new std::pair<MaskIterator, uInt>(
                 _dataProvider->getMask(), _dataProvider->getMaskStride()
             )
             : nullptr
         );
-        _chunk.weights.set(
+        _chunk.weights.reset(
             _dataProvider->hasWeights()
             ? new WeightsIterator(_dataProvider->getWeights()) : nullptr
         );
@@ -273,20 +271,20 @@ StatisticsDataset<CASA_STATP>::initLoopVars() {
         _chunk.count = *_citer;
         _chunk.dataStride = *_dsiter;
         auto rangeI = _dataRanges.find(_dataCount);
-        _chunk.ranges.set(
+        _chunk.ranges.reset(
             rangeI == _dataRanges.end() ? nullptr
             : new std::pair<DataRanges, Bool>(
                 rangeI->second, _isIncludeRanges.find(_dataCount)->second
             )
         );
         auto maskI = _masks.find(_dataCount);
-        _chunk.mask.set(
+        _chunk.mask.reset(
             maskI == _masks.end() ? nullptr
             : new std::pair<MaskIterator, uInt>(
                 maskI->second, _maskStrides.find(_dataCount)->second
             )
         );
-        _chunk.weights.set(
+        _chunk.weights.reset(
             _weights.find(_dataCount) == _weights.end()
             ? nullptr : new WeightsIterator(_weights.find(_dataCount)->second)
         );

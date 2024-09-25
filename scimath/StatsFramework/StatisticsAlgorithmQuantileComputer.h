@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -69,7 +69,7 @@ public:
     // FIXME make protected once refactor is complete
     void _setSortedArray(const std::vector<AccumType>& v) { _sortedArray = v; }
 
-    void setMedian(CountedPtr<AccumType> median) { _median = median; }
+    void setMedian(std::shared_ptr<AccumType> median) { _median = std::move(median); }
 
 protected:
 
@@ -101,14 +101,14 @@ protected:
 
     StatisticsDataset<CASA_STATP>* _getDataset() { return _dataset; }
 
-    CountedPtr<AccumType> _getMedian() const { return _median; }
+    std::shared_ptr<AccumType> _getMedian() const { return _median; }
 
-    CountedPtr<AccumType> _getMedianAbsDevMedian() const {
+    std::shared_ptr<AccumType> _getMedianAbsDevMedian() const {
         return _medAbsDevMed;
     }
 
-    void _setMedianAbsDevMedian(CountedPtr<AccumType> medAbsDevMed) {
-        _medAbsDevMed = medAbsDevMed;
+    void _setMedianAbsDevMedian(std::shared_ptr<AccumType> medAbsDevMed) {
+        _medAbsDevMed = std::move(medAbsDevMed);
     }
 
 private:
@@ -117,7 +117,7 @@ private:
     // in the associated non-QuantileComputer computer object,
     // so this should not be wrapped in a smart pointer.
     StatisticsDataset<CASA_STATP>* _dataset{nullptr};
-    CountedPtr<AccumType> _median{}, _medAbsDevMed{};
+    std::shared_ptr<AccumType> _median{}, _medAbsDevMed{};
 
 };
 

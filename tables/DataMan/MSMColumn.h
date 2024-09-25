@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MSMColumn.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 #ifndef TABLES_MSMCOLUMN_H
 #define TABLES_MSMCOLUMN_H
@@ -110,6 +108,12 @@ public:
   // Frees up the storage.
   virtual ~MSMColumn();
 
+  // Forbid copy constructor.
+  MSMColumn (const MSMColumn&) = delete;
+
+  // Forbid assignment.
+  MSMColumn& operator= (const MSMColumn&) = delete;
+  
   // Get a scalar value in the given row.
   // The buffer pointed to by dataPtr has to have the correct length
   // (which is guaranteed by the Scalar/ArrayColumn get function).
@@ -228,13 +232,6 @@ protected:
   // Put the pointer for the given row.
   // This is for the derived classes like StManArrayColumnMemory.
   void putArrayPtr (rownr_t rownr, void* dataPtr);
-
-private:
-  // Forbid copy constructor.
-  MSMColumn (const MSMColumn&);
-
-  // Forbid assignment.
-  MSMColumn& operator= (const MSMColumn&);
 };
 
 

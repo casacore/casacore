@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SCALEDCOMPLEXDATA_H
 #define TABLES_SCALEDCOMPLEXDATA_H
@@ -194,6 +192,10 @@ public:
     // Destructor is mandatory.
     ~ScaledComplexData();
 
+    // Assignment is not needed and therefore forbidden.
+    ScaledComplexData<VirtualType,StoredType>& operator=
+                           (const ScaledComplexData<VirtualType,StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     String dataManagerType() const;
 
@@ -220,11 +222,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     ScaledComplexData (const ScaledComplexData<VirtualType,StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    ScaledComplexData<VirtualType,StoredType>& operator=
-                           (const ScaledComplexData<VirtualType,StoredType>&);
 
     // Clone the engine object.
     virtual DataManager* clone() const;

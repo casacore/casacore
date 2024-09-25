@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: showtable.cc 21480 2014-08-27 08:01:36Z gervandiepen $
 
 #include <casacore/casa/IO/MFFileIO.h>
 #include <casacore/casa/IO/MultiFile.h>
@@ -67,11 +65,11 @@ int main (int argc, char* argv[])
       return 0;
     }
     // Open each file and copy to the MultiFile.
-    CountedPtr<MultiFileBase> mfile;
+    std::shared_ptr<MultiFileBase> mfile;
     if (useHDF5) {
-      mfile = new MultiHDF5 (outName, ByteIO::New, blockSize);
+      mfile.reset (new MultiHDF5 (outName, ByteIO::New, blockSize));
     } else {
-      mfile = new MultiFile (outName, ByteIO::New, blockSize);
+      mfile.reset (new MultiFile (outName, ByteIO::New, blockSize));
     }
     Block<char> buffer (blockSize);
     for (vector<String>::const_iterator iter=fname.begin();
@@ -84,7 +82,7 @@ int main (int argc, char* argv[])
         Int64 todo = file.length();
         cout << "  copying " << todo << " bytes of " << *iter
              << " ..." << endl;
-        MFFileIO outfile (*mfile, *iter, ByteIO::New);
+        MFFileIO outfile (mfile, *iter, ByteIO::New);
         while (todo > 0) {
           Int64 sz = file.read (std::min(todo, blockSize), buffer.storage());
           outfile.write (sz, buffer.storage());

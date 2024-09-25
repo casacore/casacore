@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/images/Images/SubImage.h>
 #include <casacore/images/Images/PagedImage.h>
@@ -43,11 +41,10 @@
 #include <casacore/casa/Arrays/ArrayLogical.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
-
+#include <memory>
 
 #include <casacore/casa/namespace.h>
 void testVectorROIter (const Lattice<Float>& sublat,
@@ -316,10 +313,10 @@ void testBeams() {
 	trc[3] = 5.7;
 	LCBox box(blc, trc, shape);
     Record myboxRec = box.toRecord("");
-    PtrHolder<LogIO> log(new LogIO());
-    PtrHolder<ImageRegion> outRegionMgr(
+    std::unique_ptr<LogIO> log(new LogIO());
+    std::unique_ptr<ImageRegion> outRegionMgr(
         ImageRegion::fromRecord(
-            log.ptr(), x.coordinates(),
+            log.get(), x.coordinates(),
             x.shape(), myboxRec
         )
     );

@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEFITSCONVERTER_TCC
 #define IMAGES_IMAGEFITSCONVERTER_TCC
@@ -209,15 +206,15 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 	// delete it if its not needed.
 
 	ImageRegion maskReg;
-	LatticeIterator<Bool>* pMaskIter = 0;
+        std::unique_ptr<LatticeIterator<Bool>> pMaskIter;
 	Bool madeMask = False;
 	if (bitpix<0 || isBlanked) {
 		maskReg = pNewImage->makeMask ("mask0", False, False);
 		LCRegion& mask = maskReg.asMask();
 		LatticeStepper pMaskStepper (shape, cursorShape,
 				IPosition::makeAxisPath(ndim));
-		pMaskIter = new LatticeIterator<Bool>(mask, pMaskStepper);
-		pMaskIter->reset();
+		pMaskIter.reset (new LatticeIterator<Bool>(mask, pMaskStepper));
+		pMaskIter->reset();   // reset iterator
 		madeMask = True;
 	}
 
@@ -296,9 +293,6 @@ void ImageFITSConverterImpl<HDUType>::FITSToImage(
 				pNewImage->defineRegion ("mask0", maskReg, RegionHandler::Masks);
 				pNewImage->setDefaultMask(String("mask0"));
 			}
-			// Clean up pointers
-
-			delete pMaskIter;
 		}
 	}
 	catch (const AipsError& x) {

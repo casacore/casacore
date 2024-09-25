@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/ColDescSet.h>
 #include <casacore/tables/Tables/TableDesc.h>
@@ -60,9 +58,9 @@ ColumnDescSet& ColumnDescSet::operator= (const ColumnDescSet& that)
 	//# Make a copy of the ColumnDesc object and keep a pointer to it.
         for (uInt i=0; i<nrcol; ++i) {
 	    const String& colName = that[i].name();
-            CountedPtr<ColumnDesc> col = that.cols_p.at(colName);
+            std::shared_ptr<ColumnDesc> col = that.cols_p.at(colName);
             cols_p.insert (std::make_pair (colName,
-                                           CountedPtr<ColumnDesc>(new ColumnDesc(*col))));
+                                           std::shared_ptr<ColumnDesc>(new ColumnDesc(*col))));
 	    colSeq_p[i] = cols_p.at(colName).get();
 	}
     }
@@ -73,7 +71,7 @@ ColumnDescSet& ColumnDescSet::operator= (const ColumnDescSet& that)
 ColumnDesc& ColumnDescSet::operator[] (const String& name)
 {
     // Throw an exception if the column is undefined.
-    std::map<String,CountedPtr<ColumnDesc>>::iterator iter = cols_p.find (name);
+    std::map<String,std::shared_ptr<ColumnDesc>>::iterator iter = cols_p.find (name);
     if (iter == cols_p.end()) {
 	throw (TableError ("Table column " + name + " is unknown"));
     }
@@ -99,7 +97,7 @@ ColumnDesc& ColumnDescSet::addColumn (const ColumnDesc& cd)
 	throw (TableInvColumnDesc (cd.name(), "column already exists"));
     }
     cd.checkAdd (*this);
-    cols_p.insert (std::make_pair(cd.name(), CountedPtr<ColumnDesc>(new ColumnDesc(cd))));
+    cols_p.insert (std::make_pair(cd.name(), std::shared_ptr<ColumnDesc>(new ColumnDesc(cd))));
     //# Get actual column description object.
     ColumnDesc& coldes = *(cols_p.at(cd.name()));
     //# Add the new column to the sequence block.
@@ -153,7 +151,7 @@ void ColumnDescSet::rename (const String& newname, const String& oldname)
       }
     }
     AlwaysAssert (inx < colSeq_p.size(), AipsError);
-    CountedPtr<ColumnDesc> cdesc = cols_p.at(oldname);
+    std::shared_ptr<ColumnDesc> cdesc = cols_p.at(oldname);
     cdesc->checkRename (*this, newname);
     cols_p.erase (oldname);
     cols_p.insert (std::make_pair(newname, cdesc));

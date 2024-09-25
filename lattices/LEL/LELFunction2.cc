@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/lattices/LEL/LELFunction.h>
 #include <casacore/lattices/LEL/LELFunctionEnums.h>
@@ -287,7 +285,7 @@ void LELFunctionFloat::eval(LELArray<Float>& result,
 	    if (scalarTemp == 2) {
 	       result.value() *= result.value();
 	    } else {
-	       Array<Float> temp (pow (result.value(), Double(scalarTemp)));
+	       Array<Float> temp (pow (result.value(), scalarTemp));
 	       result.value().reference (temp);
 	    }
 	    break;
@@ -1241,7 +1239,7 @@ void LELFunctionComplex::eval(LELArray<Complex>& result,
 	    arg_p[1].eval(scalarTemp);
 	    arg_p[0].eval(result, section);
 	    if (scalarTemp.imag() == 0) {
-	       Double exponent = scalarTemp.real();
+	       Float exponent = scalarTemp.real();
 	       if (exponent == 2) {
 		  result.value() *= result.value();
 	       } else {

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGEEXPRPARSE_H
 #define IMAGES_IMAGEEXPRPARSE_H
@@ -36,7 +34,6 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/stdvector.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/HDF5/HDF5File.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -316,7 +313,7 @@ private:
     static Table& getRegionTable (void*, Bool);
 
     // Callback function for RegionHandlerHDF5 to get the file to be used.
-    static const CountedPtr<HDF5File>& getRegionHDF5 (void*);
+    static const std::shared_ptr<HDF5File>& getRegionHDF5 (void*);
 
     //# A 'global' node object to hold the resulting expression.
     static LatticeExprNode theirNode;

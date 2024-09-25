@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: TaQLNode.h 21051 2011-04-20 11:46:29Z gervandiepen $
 
 #ifndef TABLES_EXPRAGGRNODEARRAY_H
 #define TABLES_EXPRAGGRNODEARRAY_H
@@ -70,15 +68,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
                             const Block<Int>& dtypeOper,
                             const TaQLStyle& style);
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-
+    // This node does aggregation.
+    virtual Bool isAggregate() const;
+    
     // Get the operand node.
     TENShPtr operand()
-    { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
+      { return (operands().empty()  ?  TENShPtr() : operands()[0]); }
 
     // Create the correct aggregate function object.
-    virtual CountedPtr<TableExprGroupFuncBase> makeGroupAggrFunc();
+    virtual std::shared_ptr<TableExprGroupFuncBase> makeGroupAggrFunc();
 
     // Is the array aggregate function lazy?
     virtual Bool isLazyAggregate() const;
@@ -95,10 +93,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     // Create the correct aggregate function object.
-    CountedPtr<TableExprGroupFuncBase> doMakeGroupAggrFunc();
+    std::shared_ptr<TableExprGroupFuncBase> doMakeGroupAggrFunc();
 
     //# Data members.
-    CountedPtr<TableExprGroupFuncBase> itsFunc;
+    std::shared_ptr<TableExprGroupFuncBase> itsFunc;
   };
 
 

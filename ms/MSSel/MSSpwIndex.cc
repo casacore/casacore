@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/measures/Measures/MDoppler.h>
 #include <casacore/ms/MSSel/MSSpwIndex.h>
@@ -514,7 +512,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 			    << "Using the maximum of the channel width range." 
 			    << LogIO::WARN;
 		    }
-		  step=fabs(freqList(i+2)/maxCW);
+		  step=fabs(freqList(j+2)/maxCW);
 		  // 
 		  // Enforce start < stop and step > 0.  
 		  //

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/SetupNewTab.h>
 #include <casacore/tables/Tables/Table.h>
@@ -45,8 +43,8 @@ SetupNewTable::SetupNewTable (const String& tableName,
 			      Table::TableOption opt,
                               const StorageOption& storageOpt)
 {
-    newTable_p = new SetupNewTableRep (tableName, tableDescName,
-                                       opt, storageOpt);
+    newTable_p = std::make_shared<SetupNewTableRep>(tableName, tableDescName,
+                                                    opt, storageOpt);
 }
 
 SetupNewTable::SetupNewTable (const String& tableName,
@@ -54,8 +52,8 @@ SetupNewTable::SetupNewTable (const String& tableName,
 			      Table::TableOption opt,
                               const StorageOption& storageOpt)
 {
-    newTable_p = new SetupNewTableRep (tableName, tableDesc,
-                                       opt, storageOpt);
+    newTable_p = std::make_shared<SetupNewTableRep>(tableName, tableDesc,
+                                                    opt, storageOpt);
 }
 
 SetupNewTable::SetupNewTable (const SetupNewTable& that)
@@ -86,7 +84,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   colSetPtr_p (0)
 {
     //# Copy the table description.
-    tdescPtr_p = new TableDesc(tableDescName);
+    tdescPtr_p = std::make_shared<TableDesc>(tableDescName);
     //# Setup the new table.
     setup();
 }
@@ -103,7 +101,7 @@ SetupNewTableRep::SetupNewTableRep (const String& tableName,
   colSetPtr_p (0)
 {
     //# Read the table description.
-    tdescPtr_p = new TableDesc(tableDesc, "", "", TableDesc::Scratch);
+    tdescPtr_p = std::make_shared<TableDesc>(tableDesc, "", "", TableDesc::Scratch);
     //# Setup the new table.
     setup();
 }
@@ -141,7 +139,7 @@ void SetupNewTableRep::setup()
     //# Check if all subtable descriptions exist.
     tdescPtr_p->checkSubTableDesc();
     //# Create a column set.
-    colSetPtr_p = new ColumnSet(tdescPtr_p.get(), storageOpt_p);
+    colSetPtr_p = std::make_shared<ColumnSet>(tdescPtr_p.get(), storageOpt_p);
 }
 
 
@@ -188,8 +186,8 @@ void SetupNewTableRep::bindCreate (const Record& spec)
               sp = rec.subRecord ("SPEC");
             }
 	    Vector<String> cols (rec.asArrayString ("COLUMNS"));
-	    CountedPtr<DataManager> dataMan =
-              DataManager::getCtor(dmType) (dmGroup, sp);
+	    std::shared_ptr<DataManager> dataMan
+              (DataManager::getCtor(dmType) (dmGroup, sp));
 	    // Bind the columns to this data manager.
 	    for (uInt j=0; j<cols.nelements(); j++) {
 	        bindColumn (cols(j), *dataMan);

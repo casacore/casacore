@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_RAWIO_H
 #define CASA_RAWIO_H
@@ -74,9 +72,8 @@ class RawIO: public TypeIO
 {
 public: 
     // Constructor.  The read/write functions will use the given ByteIO object
-    // as the data store.  If takeOver is True the this class will delete the
-    // supplied pointer. Otherwise the caller is responsible for this.
-    explicit RawIO (ByteIO* byteIO, Bool takeOver=False);
+    // as the data store.
+    explicit RawIO (const std::shared_ptr<ByteIO>& byteIO);
 
     // The copy constructor uses reference semantics
     RawIO (const RawIO& rawIO);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/Table.h>
 #include <casacore/tables/Tables/SetupNewTab.h>
@@ -70,7 +68,7 @@ Table::Table()
 : baseTabPtr_p     (0),
   lastModCounter_p (0)
 {
-  countedTabPtr_p.reset (new NullTable());
+  countedTabPtr_p = std::make_shared<NullTable>();
   baseTabPtr_p = countedTabPtr_p.get();
 }
 
@@ -505,15 +503,15 @@ std::shared_ptr<BaseTable> Table::makeBaseTable
     ios >> format;
     ios >> tp;
     if (tp == "PlainTable") {
-      baseTabPtr.reset (new PlainTable (ios, version, name, type, nrrow,
-                                        tableOption, lockOptions, tsmOpt,
-                                        addToCache, locknr));
+      baseTabPtr = std::make_shared<PlainTable>(ios, version, name, type, nrrow,
+                                                tableOption, lockOptions, tsmOpt,
+                                                addToCache, locknr);
     } else if (tp == "RefTable") {
-      baseTabPtr.reset (new RefTable (ios, name, nrrow, tableOption,
-                                      lockOptions, tsmOpt));
+      baseTabPtr = std::make_shared<RefTable>(ios, name, nrrow, tableOption,
+                                              lockOptions, tsmOpt);
     } else if (tp == "ConcatTable") {
-      baseTabPtr.reset (new ConcatTable (ios, name, nrrow, tableOption,
-                                         lockOptions, tsmOpt));
+      baseTabPtr = std::make_shared<ConcatTable>(ios, name, nrrow, tableOption,
+                                                 lockOptions, tsmOpt);
     } else {
       throw (TableInternalError("Table::open: unknown table kind " + tp));
     }
@@ -727,13 +725,13 @@ Table Table::sort (const Block<String>& names,
 {
     //# Insert a block with null compare objects.
     return sort (names,
-                 Block<CountedPtr<BaseCompare> >(names.nelements()),
+                 Block<std::shared_ptr<BaseCompare>>(names.nelements()),
                  orders, option);
 }
 
 //# Sort on multiple columns and orders with given functions.
 Table Table::sort (const Block<String>& names,
-		   const Block<CountedPtr<BaseCompare> >& cmpObjs,
+		   const Block<std::shared_ptr<BaseCompare>>& cmpObjs,
 		   const Block<Int>& orders, int option) const
     { return Table(baseTabPtr_p->sort (names, cmpObjs, orders, option)); }
 
@@ -754,37 +752,24 @@ TableExprNode Table::key (const Vector<String>& fieldNames) const
 TableExprNode Table::col (const String& columnName) const
 {
     Vector<String> fieldNames;
-    return TableExprNode::newColumnNode (*this, columnName, fieldNames);
+    return TableExprNode::newColumnNode (TableExprInfo(*this),
+                                         columnName, fieldNames);
 }
 TableExprNode Table::col (const String& columnName,
 			  const Vector<String>& fieldNames) const
 {
-    return TableExprNode::newColumnNode (*this, columnName, fieldNames);
+    return TableExprNode::newColumnNode (TableExprInfo(*this),
+                                         columnName, fieldNames);
 }
 
-//# Create an expression node for either a keyword or column.
-TableExprNode Table::keyCol (const String& name,
-			     const Vector<String>& fieldNames) const
+TableExprNode Table::nodeRownr (rownr_t origin) const
 {
-    if (tableDesc().isColumn (name)) {
-	return col (name, fieldNames);
-    }else{
-	uInt nr = fieldNames.nelements();
-	Vector<String> names (nr + 1);
-	names (Slice(1,nr)) = fieldNames;
-	names(0) = name;
-	return key (names);
-    }
+    return TableExprNode::newRownrNode (TableExprInfo(*this), origin);
 }
 
-TableExprNode Table::nodeRownr(rownr_t origin) const
+TableExprNode Table::nodeRandom() const
 {
-    return TableExprNode::newRownrNode (*this, origin);
-}
-
-TableExprNode Table::nodeRandom () const
-{
-    return TableExprNode::newRandomNode (*this);
+    return TableExprNode::newRandomNode (TableExprInfo(*this));
 }
 
 

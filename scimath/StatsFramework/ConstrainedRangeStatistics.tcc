@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -34,7 +34,7 @@ namespace casacore {
 
 CASA_STATD
 ConstrainedRangeStatistics<CASA_STATP>::ConstrainedRangeStatistics(
-    CountedPtr<ConstrainedRangeQuantileComputer<CASA_STATP>> qc
+    std::shared_ptr<ConstrainedRangeQuantileComputer<CASA_STATP>> qc
 ) : ClassicalStatistics<CASA_STATP>(qc) {
     reset();
 }
@@ -63,18 +63,18 @@ ConstrainedRangeStatistics<CASA_STATP>::operator=(
 
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
     if (! this->_getStatsData().median) {
         _setRange();
-        CountedPtr<AccumType> median = new AccumType(
+        std::shared_ptr<AccumType> median (new AccumType(
             ClassicalStatistics<CASA_STATP>::getMedian(
                 knownNpts, knownMin, knownMax, binningThreshholdSizeBytes,
                 persistSortedArray, nBins
             )
-        );
+        ));
         this->_getStatsData().median = median;
         this->_getQuantileComputer()->setMedian(median);
     }
@@ -83,8 +83,8 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedian(
 
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
     _setRange();
@@ -97,8 +97,8 @@ AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAbsDevMed(
 CASA_STATD
 AccumType ConstrainedRangeStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantileToValue,
-    const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    const std::set<Double>& quantiles, std::shared_ptr<uInt64> knownNpts,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     _setRange();
@@ -125,8 +125,8 @@ uInt64 ConstrainedRangeStatistics<CASA_STATP>::getNPts() {
 CASA_STATD
 std::map<Double, AccumType>
 ConstrainedRangeStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>& quantiles, CountedPtr<uInt64> knownNpts,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    const std::set<Double>& quantiles, std::shared_ptr<uInt64> knownNpts,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     _setRange();
@@ -333,7 +333,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_accumNpts(
 // non-virtual version of method
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_setRange(
-    CountedPtr<std::pair<AccumType, AccumType>> r
+    std::shared_ptr<std::pair<AccumType, AccumType>> r
 ) {
     this->_clearStats();
     _range = r;
@@ -365,7 +365,7 @@ StatsData<AccumType> ConstrainedRangeStatistics<CASA_STATP>::_getStatistics() {
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     auto datum = dataBegin;
@@ -378,7 +378,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -400,7 +400,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -419,7 +419,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -445,7 +445,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride
 ) const {
@@ -464,7 +464,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -490,7 +490,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -518,7 +518,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -543,7 +543,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     auto datum = dataBegin;
@@ -558,7 +558,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -582,7 +582,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -601,7 +601,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -627,7 +627,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride
 ) const {
@@ -646,7 +646,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -672,7 +672,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -700,7 +700,7 @@ void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ConstrainedRangeStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_MIRIADIMAGE_H
 #define IMAGES_MIRIADIMAGE_H
@@ -260,7 +258,7 @@ private:
   MaskSpecifier  maskSpec_p;
   Unit           unit_p;
   Record         rec_p;
-  CountedPtr<TiledFileAccess> pTiledFile_p;
+  std::shared_ptr<TiledFileAccess> pTiledFile_p;
   Lattice<Bool>* pPixelMask_p;
   //  Float          scale_p;
   //  Float          offset_p;

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: PycArray.cc,v 1.4 2006/11/06 00:14:44 gvandiep Exp $
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
@@ -97,7 +95,7 @@ namespace casacore { namespace python {
     d.setdefault (std::string("shape"),
 		  to_list<IPosition>::makeobject (arr.shape()));
     d.setdefault (std::string("array"), a);
-    return d;
+    return std::move(d);
   }
 
 

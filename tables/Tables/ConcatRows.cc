@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/Tables/ConcatRows.h>
@@ -54,7 +52,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     if (!found) {
       inx--;
     }
-    DebugAssert (inx>=0  &&  inx<itsNTable, AipsError);
+    DebugAssert (inx>=0  &&  static_cast<uInt>(inx)<itsNTable, AipsError);
     itsLastStRow   = itsRows[inx];
     itsLastEndRow  = itsRows[inx+1];
     itsLastTableNr = inx;

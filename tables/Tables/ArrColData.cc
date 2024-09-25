@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/ArrColData.h>
 #include <casacore/tables/Tables/ArrColDesc.h>
@@ -43,12 +41,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ArrayColumnData::ArrayColumnData (const ArrayColumnDescBase* cd,
                                   ColumnSet* csp)
 : PlainColumn  (cd, csp),
-  arrDescPtr_p (cd),
   shapeColDef_p(False),
   shapeCol_p   ()
 {
     if (cd->shape().nelements() > 0) {
-	setShapeColumn (cd->shape());
+        ArrayColumnData::setShapeColumn (cd->shape());
     }
     checkValueLength_p = (columnDesc().dataType() == TpString  &&
                           columnDesc().maxLength() > 0);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_FORWARDCOL_H
 #define TABLES_FORWARDCOL_H
@@ -102,6 +100,12 @@ public:
     // Destructor is mandatory.
     virtual ~ForwardColumn();
 
+    // Copy constructor is not needed and therefore forbidden.
+    ForwardColumn (const ForwardColumn&) = delete;
+
+    // Assignment is not needed and therefore forbidden.
+    ForwardColumn& operator= (const ForwardColumn&) = delete;
+
     // Define the special keyword containing the name of the original table.
     // If the column in the referenced table contains that special keyword,
     // it is in its turn a forwarding column. In that case the special
@@ -128,13 +132,6 @@ protected:
 	{ return colPtr_p; }
 
 private:
-    // Copy constructor is not needed and therefore forbidden
-    // (so make it private).
-    ForwardColumn (const ForwardColumn&);
-
-    // Assignment is not needed and therefore forbidden (so make it private).
-    ForwardColumn& operator= (const ForwardColumn&);
-
     // Create a SetupNewTable object with the given name and option
     // and with the description from the given table.
     // The SetupNewTable object will use a single ForwardColumn
@@ -423,6 +420,12 @@ public:
     // Destructor is mandatory.
     ~ForwardColumnEngine();
 
+    // The copy constructor is forbidden.
+    ForwardColumnEngine (const ForwardColumnEngine&) = delete;
+
+    // Assignment is forbidden.
+    ForwardColumnEngine& operator= (const ForwardColumnEngine&) = delete;
+
     // Clone the engine object.
     DataManager* clone() const;
 
@@ -464,12 +467,6 @@ protected:
     void basePrepare();
 
 private:
-    // The copy constructor is forbidden (so it is private).
-    ForwardColumnEngine (const ForwardColumnEngine&);
-
-    // Assignment is forbidden (so it is private).
-    ForwardColumnEngine& operator= (const ForwardColumnEngine&);
-
     // This data manager allows to add rows.
     Bool canAddRow() const;
 

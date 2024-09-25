@@ -1,5 +1,5 @@
-//# TaQLNodeResult.cc: Representation of entities in the TaQL parse tree
-//# Copyright (C) 2005
+//# FileUnbufferedIO.cc: Class for unbuffered IO on a file
+//# Copyright (C) 2022
 //# Associated Universities, Inc. Washington DC, USA.
 //#
 //# This library is free software; you can redistribute it and/or modify it
@@ -17,19 +17,48 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
-#include <casacore/tables/TaQL/TaQLNodeResult.h>
+//# Includes
+#include <casacore/casa/IO/FileUnbufferedIO.h>
+#include <casacore/casa/IO/RegularFileIO.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-TaQLNodeResultRep::~TaQLNodeResultRep()
-{}
+  FileUnbufferedIO::FileUnbufferedIO (const RegularFile& fileName,
+                                      ByteIO::OpenOption option,
+                                      Bool useODirect)
+    : itsUseODirect (useODirect)
+  {
+    attach (RegularFileIO::openCreate (fileName, option, useODirect),
+            fileName.path().originalName());
+  }
+
+  FileUnbufferedIO::~FileUnbufferedIO()
+  {
+    close (fd());
+    detach();
+  }
+
+  void FileUnbufferedIO::reopenRW()
+  {
+    if (isWritable()) {
+      return;
+    }
+    // First try if the file can be opened as read/write.
+    // An exception is thrown if not possible.
+    int newfd = RegularFileIO::openCreate (fileName(), ByteIO::Update,
+                                           itsUseODirect);
+    // Now close the readonly file and reset fd.
+    close (fd());
+    detach();
+    attach (newfd, fileName());
+    setWritable();
+  }
+
 
 } //# NAMESPACE CASACORE - END

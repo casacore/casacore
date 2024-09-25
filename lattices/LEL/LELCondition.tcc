@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELCONDITION_TCC
 #define LATTICES_LELCONDITION_TCC
@@ -40,8 +38,8 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T>
-LELCondition<T>::LELCondition (const CountedPtr<LELInterface<T> >& expr,
-	                       const CountedPtr<LELInterface<Bool> >& cond)
+LELCondition<T>::LELCondition (const std::shared_ptr<LELInterface<T>>& expr,
+	                       const std::shared_ptr<LELInterface<Bool>>& cond)
 {
 #if defined(AIPS_TRACE)
    cout << "LELCondition:: constructor" << endl;

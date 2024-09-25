@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/RefTable.h>
 #include <casacore/tables/Tables/RefColumn.h>
@@ -71,7 +69,7 @@ RefTable::RefTable (BaseTable* btp, Bool order, rownr_t nrall)
 {
     AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
     //# Copy the table description and create the columns.
-    tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
+    tdescPtr_p = std::make_shared<TableDesc>(btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     //# Get root table (will be parent if btp is an reference table).
     TableTrace::traceRefTable (baseTabPtr_p->tableName(), 's');
@@ -85,7 +83,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<rownr_t>& rownrs)
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
-    tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
+    tdescPtr_p = std::make_shared<TableDesc>(btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     rowStorage_p = rownrs;
     AlwaysAssert (rowStorage_p.contiguousStorage(), AipsError);
@@ -110,7 +108,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<Bool>& mask)
   changed_p    (True)
 {
     //# Copy the table description and create the columns.
-    tdescPtr_p = new TableDesc (btp->tableDesc(), TableDesc::Scratch);
+    tdescPtr_p = std::make_shared<TableDesc>(btp->tableDesc(), TableDesc::Scratch);
     setup (btp, Vector<String>());
     //# Store the rownr if the mask is set.
     rownr_t nr = std::min<rownr_t> (mask.nelements(), btp->nrow());
@@ -135,7 +133,7 @@ RefTable::RefTable (BaseTable* btp, const Vector<String>& columnNames)
     //# Create the columns.
     const TableDesc& td = btp->tableDesc();
     //# Copy the keywords from the root tabledesc.
-    tdescPtr_p = new TableDesc (td, "", "", TableDesc::Scratch, False);
+    tdescPtr_p = std::make_shared<TableDesc>(td, "", "", TableDesc::Scratch, False);
     for (uInt i=0; i<columnNames.nelements(); i++) {
 	tdescPtr_p->addColumn (td.columnDesc (columnNames(i)));
     }
@@ -396,7 +394,7 @@ void RefTable::getRef (AipsIO& ios, int opt, const TableLock& lockOptions,
     //# description of the root table.
     const TableDesc& rootDesc = baseTabPtr_p->tableDesc();
     //# Copy the keywords from the root tabledesc.
-    tdescPtr_p = new TableDesc (rootDesc, "", "", TableDesc::Scratch, False);
+    tdescPtr_p = std::make_shared<TableDesc>(rootDesc, "", "", TableDesc::Scratch, False);
     makeDesc (*tdescPtr_p, rootDesc, nameMap_p, names);
     //# Create the refColumns.
     makeRefCol();

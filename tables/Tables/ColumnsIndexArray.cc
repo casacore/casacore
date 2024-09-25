@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/Tables/ColumnsIndexArray.h>
@@ -523,10 +521,7 @@ void ColumnsIndexArray::getArray (Vector<uChar>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    uChar* data = result.getStorage(deleteIt);
-    objmove (data, arr.getStorage(deleteIt), npts);
-    data += npts;
+    objmove (result.data(), arr.data(), npts);
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<uChar> arr = arrCol(i);
@@ -535,8 +530,7 @@ void ColumnsIndexArray::getArray (Vector<uChar>& result, const String& name)
 	if (npts+n > result.nelements()) {
 	  result.resize (npts+n, True);
 	}
-	data = result.getStorage(deleteIt) + npts;
-	objmove (data, arr.getStorage(deleteIt), n);
+	objmove (result.data()+npts, arr.data(), n);
 	npts += n;
       }
     }
@@ -555,10 +549,7 @@ void ColumnsIndexArray::getArray (Vector<Short>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    Short* data = result.getStorage(deleteIt);
-    objmove (data, arr.getStorage(deleteIt), npts);
-    data += npts;
+    objmove (result.data(), arr.data(), npts);
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<Short> arr = arrCol(i);
@@ -567,8 +558,7 @@ void ColumnsIndexArray::getArray (Vector<Short>& result, const String& name)
 	if (npts+n > result.nelements()) {
 	  result.resize (npts+n, True);
 	}
-	data = result.getStorage(deleteIt) + npts;
-	objmove (data, arr.getStorage(deleteIt), n);
+	objmove (result.data()+npts, arr.data(), n);
 	npts += n;
       }
     }
@@ -587,10 +577,7 @@ void ColumnsIndexArray::getArray (Vector<Int>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    Int* data = result.getStorage(deleteIt);
-    objmove (data, arr.getStorage(deleteIt), npts);
-    data += npts;
+    objmove (result.data(), arr.data(), npts);
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<Int> arr = arrCol(i);
@@ -599,8 +586,7 @@ void ColumnsIndexArray::getArray (Vector<Int>& result, const String& name)
 	if (npts+n > result.nelements()) {
 	  result.resize (npts+n, True);
 	}
-	data = result.getStorage(deleteIt) + npts;
-	objmove (data, arr.getStorage(deleteIt), n);
+	objmove (result.data()+npts, arr.data(), n);
 	npts += n;
       }
     }
@@ -619,10 +605,7 @@ void ColumnsIndexArray::getArray (Vector<uInt>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    uInt* data = result.getStorage(deleteIt);
-    objmove (data, arr.getStorage(deleteIt), npts);
-    data += npts;
+    objmove (result.data(), arr.data(), npts);
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<uInt> arr = arrCol(i);
@@ -631,8 +614,7 @@ void ColumnsIndexArray::getArray (Vector<uInt>& result, const String& name)
 	if (npts+n > result.nelements()) {
 	  result.resize (npts+n, True);
 	}
-	data = result.getStorage(deleteIt) + npts;
-	objmove (data, arr.getStorage(deleteIt), n);
+	objmove (result.data()+npts, arr.data(), n);
 	npts += n;
       }
     }
@@ -651,10 +633,7 @@ void ColumnsIndexArray::getArray (Vector<Int64>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    Int64* data = result.getStorage(deleteIt);
-    objmove (data, arr.getStorage(deleteIt), npts);
-    data += npts;
+    objmove (result.data(), arr.data(), npts);
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<Int64> arr = arrCol(i);
@@ -663,8 +642,7 @@ void ColumnsIndexArray::getArray (Vector<Int64>& result, const String& name)
 	if (npts+n > result.nelements()) {
 	  result.resize (npts+n, True);
 	}
-	data = result.getStorage(deleteIt) + npts;
-	objmove (data, arr.getStorage(deleteIt), n);
+	objmove (result.data()+npts, arr.data(), n);
 	npts += n;
       }
     }
@@ -683,10 +661,7 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
     rownr_t npts = arr.nelements();
     nrel[0] = npts;
     result.resize (nrrow*npts);
-    Bool deleteIt;
-    String* data = result.getStorage(deleteIt);
-    objmove (data, arr.getStorage(deleteIt), npts);
-    data += npts;
+    objmove (result.data(), arr.data(), npts);
     for (rownr_t i=1; i<nrrow; i++) {
       if (arrCol.isDefined(i)) {
 	Array<String> arr = arrCol(i);
@@ -695,8 +670,7 @@ void ColumnsIndexArray::getArray (Vector<String>& result, const String& name)
 	if (npts+n > result.nelements()) {
 	  result.resize (npts+n, True);
 	}
-	data = result.getStorage(deleteIt) + npts;
-	objmove (data, arr.getStorage(deleteIt), n);
+	objmove (result.data()+npts, arr.data(), n);
 	npts += n;
       }
     }

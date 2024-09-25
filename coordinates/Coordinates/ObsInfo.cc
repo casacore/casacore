@@ -17,16 +17,14 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #include <casacore/coordinates/Coordinates/ObsInfo.h>
+#include <casacore/casa/Logging/LogIO.h>
 #include <casacore/measures/Measures/MeasureHolder.h>
 #include <casacore/measures/Measures/MeasTable.h>
 #include <casacore/measures/Measures/MeasConvert.h>
@@ -116,7 +114,19 @@ ObsInfo& ObsInfo::setTelescope(const String &telescope)
     telescope_p = telescope;
     if (!isTelPositionSet_p) {
       MPosition pos;
-      if (MeasTable::Observatory (pos, telescope)) {
+      bool telescope_found = false;
+
+      // Make ObsInfo work even if no Observatories table is installed
+      // since that table is distributed separately in a large package
+      try {
+        telescope_found = MeasTable::Observatory (pos, telescope);
+      } catch (const std::exception&) {
+        LogIO os(LogOrigin("ObsInfo", "setTelescope", WHERE));
+        os << "Cannot read table of Observatories, continuing ";
+        os << "without telescope position in ObsInfo" << LogIO::WARN;
+      }
+
+      if (telescope_found) {
         setTelescopePosition (pos);
       }
     }

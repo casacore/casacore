@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExtendImage.h 21538 2015-01-07 09:08:57Z gervandiepen $
 
 #ifndef IMAGES_EXTENDIMAGE_H
 #define IMAGES_EXTENDIMAGE_H
@@ -32,7 +30,7 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/images/Images/ImageInterface.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -187,8 +185,8 @@ public:
 
 private:
   //# itsImagePtr points to the parent image.
-  PtrHolder<ImageInterface<T> > itsImagePtr;
-  PtrHolder<ExtendLattice<T> >  itsExtLatPtr;
+  std::unique_ptr<ImageInterface<T>> itsImagePtr;
+  std::unique_ptr<ExtendLattice<T>>  itsExtLatPtr;
 
   //# Make members of parent class known.
 public:

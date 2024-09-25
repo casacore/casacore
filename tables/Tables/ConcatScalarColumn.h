@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_CONCATSCALARCOLUMN_H
 #define TABLES_CONCATSCALARCOLUMN_H
@@ -105,17 +103,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Handle the creation and deletion of sort keys.
     // <group>
     virtual void makeSortKey (Sort& sortobj,
-                              CountedPtr<BaseCompare>& cmpObj,
+                              std::shared_ptr<BaseCompare>& cmpObj,
 			      Int order,
-			      CountedPtr<ArrayBase>& dataSave);
+			      std::shared_ptr<ArrayBase>& dataSave);
     virtual void makeRefSortKey (Sort& sortobj,
-                                 CountedPtr<BaseCompare>& cmpObj,
+                                 std::shared_ptr<BaseCompare>& cmpObj,
 				 Int order,
 				 const Vector<rownr_t>& rownrs,
-				 CountedPtr<ArrayBase>& dataSave);
+				 std::shared_ptr<ArrayBase>& dataSave);
     virtual void fillSortKey (const Vector<T>* vecPtr,
 			      Sort& sortobj,
-                              CountedPtr<BaseCompare>& cmpObj,
+                              std::shared_ptr<BaseCompare>& cmpObj,
 			      Int order);
     // </group>
 

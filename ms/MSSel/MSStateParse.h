@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MS_MSSTATEPARSE_H
 #define MS_MSSTATEPARSE_H
@@ -33,7 +31,7 @@
 #include <casacore/ms/MSSel/MSParse.h>
 #include <casacore/ms/MSSel/MSSelectionError.h>
 #include <casacore/ms/MSSel/MSSelectionErrorHandler.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward 
@@ -98,7 +96,7 @@ public:
     // Get table expression node object.
   static const TableExprNode* node();
   static MSStateParse* thisMSSIParser;
-  static CountedPtr<MSSelectionErrorHandler> thisMSSErrorHandler;
+  static std::shared_ptr<MSSelectionErrorHandler> thisMSSErrorHandler;
   //static MSSelectionErrorHandler* thisMSSErrorHandler;
   static Vector<Int> selectedIDs() {return idList;};
   static void reset(){idList.resize(0);};

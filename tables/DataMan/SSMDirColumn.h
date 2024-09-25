@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SSMDIRCOLUMN_H
 #define TABLES_SSMDIRCOLUMN_H
@@ -85,6 +83,12 @@ public:
   
   virtual ~SSMDirColumn();
 
+  // Forbid copy constructor.
+  SSMDirColumn (const SSMDirColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMDirColumn& operator= (const SSMDirColumn&) = delete;
+
   // An array of 'fixed length' strings is not handled specially,
   // thus this function is ignored.
   // It is needed to override the bahviour of the base class.
@@ -103,13 +107,6 @@ public:
 protected:
   // Read the array data for the given row into the data buffer.
   void getValue (rownr_t aRowNr, void* data);
-  
-private:
-  // Forbid copy constructor.
-  SSMDirColumn (const SSMDirColumn&);
-  
-  // Forbid assignment.
-  SSMDirColumn& operator= (const SSMDirColumn&);
 };
 
 

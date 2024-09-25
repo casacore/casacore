@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -99,7 +97,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   const char* commandHelp[] = {
     "Select a subset from a table, possibly calculating new values.",
     "  SELECT [[DISTINCT] expression_list] [INTO table [AS options]]",
-    "    [FROM table_list] [WHERE expression]",
+    "    [FROM table_list]",
+    "    [JOIN table_list ON expression [JOIN table_list ON expression ...]]",
+    "    [WHERE expression]",
     "    [GROUPBY expression_list] [HAVING expression]",
     "    [ORDERBY [DISTINCT] sort_list] [LIMIT expression] [OFFSET expression]",
     "    [GIVING table [AS options] | set] [DMINFO datamanagers]",
@@ -151,6 +151,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  [[DISTINCT] expression_list]",
     "  [INTO table [AS options]]",
     "  [FROM table_list]",
+    "  [JOIN table_list ON expression [JOIN table_list ON expression ...]]",
     "  [WHERE expression]",
     "  [GROUPBY expression_list]",
     "  [HAVING expression]",
@@ -201,6 +202,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  - concatenated tables; separated by commas enclosed in brackets",
     "  - backreference to an earlier created table using its shorthand",
     "  If FROM is not given, an empty table with LIMIT (default 1) rows is used.",
+    "",
+    "JOIN table_list ON expression ...",
+    "  Zero or more joins can be done to connect tables. For instance, in a MeasurementSet",
+    "  the main table can be joined with the ANTENNA subtable to find antenna names.",
+    "  The tables in the list are the join tables, while the tables in the FROM table_list",
+    "  or in a previous join are the main tables. The join tables can be specified in the",
+    "  same way as described in the FROM clause above.",
+    "  The expression must be a boolean scalar expression doing one or more comparisons",
+    "  separated by AND. Each comparison matches a column in the main and join table.",
+    "  A comparison can be the equality operator = or the interval operator IN,",
+    "  where the interval must be in the join table. For example:",
+    "    SELECT t1.ANTENNA1, t2.NAME FROM my.ms t1",
+    "        JOIN ::ANTENNA t2 on t1.ANTENNA1=t2.rownumber()",
+    "  selects the antenna number and its name by joining the antenna number with the row",
+    "  number in the ANTENNA subtable (where the row number is the implicit key).",
+    "  A more complicated join is given below. It finds information in the SYSCAL table",
+    "  based on antenna, spectral window and time.",
+    "    JOIN ::DATA_DESC t2 ON t1.DATA_DESC_ID==t2.rownumber() JOIN ::SYSCAL t3 ON",
+    "    t1.ANTENNA1==t3.ANTENNA_ID and t2.SPECTRAL_WINDOW_ID==t3.SPECTRAL_WINDOW_ID and",
+    "    t1.TIME AROUND t3.TIME IN t3.INTERVAL",
     "",
     "WHERE expression",
     "  An expression resulting in a boolean scalar telling if a row is selected.",
@@ -494,7 +515,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    &",
     "    ^",
     "    |",
-    "    == != >  >= <  <=  ~= !~= IN INCONE BETWEEN EXISTS LIKE  ~  !~",
+    "    == != >  >= <  <=  ~= !~= IN INCONE BETWEEN AROUND EXISTS LIKE  ~  !~",
     "    &&",
     "    ||",
     "",
@@ -521,7 +542,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "    ~ !~ (I)LIKE  pattern match",
     "    IN            is left hand an element in the right hand?",
     "    INCONE        cone searching",
-    "    EXISTS        does subquery have at least 1 match?"
+    "    EXISTS        does subquery have at least 1 match?",
+    "    x BETWEEN a AND b         is x in bounded interval <a,b>?",
+    "    x AROUND m IN w           is x in bounded interval <m-w/2,m+w/2>?"
   };
 
   const char* constHelp[] = {
@@ -658,13 +681,15 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "",
     "An interval is a continuous set of real values with optional bounds.",
     "If a bound is given, it can be open or closed.",
-    "An interval can be given in two ways:",
-    "  Using curly braces (closed bound) and angle brackets (open bound)",
+    "An interval can be given in various ways:",
+    "  as start-end using curly braces (closed side) and angle brackets (open side)",
     "    bounded:     {1,2}   <1,2>   {1,2>   <1,2}",
     "    unbounded:   {1,}    <1,>    {,2>    <,2}",
-    "  Using  a=:=b (closed bounds)  and  a<:<b (open bounds)",
+    "  as start-end using  a=:=b (closed sides)  and  a<:<b (open sides)",
     "    bounded:     1=:=2   1<:<2   1=:<2   1<:=2",
     "    unbounded:   1=:     1<:     :<2     :=2",
+    "  as start-end (closed sides) using  BETWEEN start AND end",
+    "  as mid-width (closed sides) using  mid<:>width  or  AROUND mid IN width",
     "",
     "A set consisting of values and/or bounded ranges is a 1-dim array.",
     "  For example:   [1,2,3,4,5]   [1:6]   [1,2:5,5]   are all the same",
@@ -714,7 +739,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "  angdist     angdistx    normangle   cones       anycone     findcone",
     "    see also 'show func meas' and 'show func mscal'",
     "misc functions:",
-    "  rownr       rowid",
+    "  msid        rownr       rowid",
     "aggregate functions:",
     "  gmin        gmax        gsum        gproduct    gsumsqr        gmean",
     "  gvariance   gsamplevariance         gstddev     gsamplestddev  grms",
@@ -927,7 +952,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     "Miscellaneous functions",
     "",
     "  int ROWNR()   aka ROWNUMBER    return row number in current table",
-    "  int ROWID()                    return row number in input table"
+    "  int ROWID()                    return row number in input table",
+    "      MSID(column)               use column if existing, otherwise ROWID()",
   };
 
   const char* aggrFuncHelp[] = {
@@ -1125,7 +1151,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (cmd == "unit"  ||  cmd == "units") {
       return showUnits (origType);
     }
-    throw AipsError (cmd + " is an unknown SHOW command");
+    throw TableInvExpr (cmd + " is an unknown SHOW command");
   }
 
   String TaQLShow::showTable (const Vector<String>& parts)
@@ -1155,10 +1181,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (cmd == "count") {
       return getHelp (countHelp);
     }
-    throw AipsError (cmd +
-                     " is an unknown command for 'show command <command>'\n"
-                     "   use select, calc, update, insert, delete, create,"
-                     " alter or count\n");
+    throw TableInvExpr (cmd +
+                        " is an unknown command for 'show command <command>'\n"
+                        "   use select, calc, update, insert, delete, create,"
+                        " alter or count\n");
   }
 
   String TaQLShow::showFuncs (const String& type,
@@ -1197,7 +1223,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       // It takes an argument (which can be empty).
       TableExprNode node = TableExprNode::newUDFNode (type+".help",
                                                       operands,
-                                                      Table(), style);
+                                                      TableExprInfo(), style);
       return node.getString(0);   // get the UDF help info as a string
     } catch (const std::exception&) {
       return type + " is an unknown type in 'show functions <type>'\n"
@@ -1249,9 +1275,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
           Unit unit(type);
           kind = unit.getValue();
         } catch (const AipsError&) {
-          throw AipsError ("Unknown kind or unit given in command "
-                           "'show units " + type + "'\nUse 'show' to "
-                           "show the valid kinds");
+          throw TableInvExpr ("Unknown kind or unit given in command "
+                              "'show units " + type + "'\nUse 'show' to "
+                              "show the valid kinds");
         }
       }
       showUnitKind (os, kind, UnitMap::giveDef());
@@ -1291,9 +1317,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     } else if (type == "doppler") {
       return getHelp (dopplerHelp);
     }
-    throw AipsError (type +
-                     " is an unknown type for command "
-                     "'show meastypes <type>'");
+    throw TableInvExpr (type +
+                        " is an unknown type for command "
+                        "'show meastypes <type>'");
   }
 
 } //# NAMESPACE CASACORE - END

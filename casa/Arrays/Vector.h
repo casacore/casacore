@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_VECTOR_2_H
 #define CASA_VECTOR_2_H
@@ -80,7 +78,7 @@ namespace casacore { //#Begin namespace casacore
 // index operations will be bounds-checked. Neither of these should
 // be defined for production code.
 
-template<typename T, typename Alloc> class Vector : public Array<T, Alloc>
+template<typename T> class Vector : public Array<T>
 {
 public:
     // A zero-length Vector.
@@ -101,8 +99,8 @@ public:
 
     // An uninitialized Vector with a defined length.
     // <group>
-    Vector(size_t Length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
-    Vector(const IPosition& Length, typename Array<T, Alloc>::uninitializedType, const Alloc& allocator=Alloc());
+    Vector(size_t Length, typename Array<T>::uninitializedType);
+    Vector(const IPosition& Length, typename Array<T>::uninitializedType);
     // </group>
     
     // Create a Vector from the given std::vector "other." Make it length "nr"
@@ -112,33 +110,31 @@ public:
     
     // Create a Vector of length other.size() and copy over its values.
     // This used to take a 'Block'
-    explicit Vector(const std::vector<T> &other, const Alloc& allocator=Alloc());
+    explicit Vector(const std::vector<T> &other);
 
     // Create a Vector from an initializer list.
     Vector(std::initializer_list<T> list);
 
     // Create a reference to other.
-    Vector(const Vector<T, Alloc> &other);
+    Vector(const Vector<T> &other);
     
     // Move
-    Vector(Vector<T, Alloc>&& source) noexcept;
+    Vector(Vector<T>&& source) noexcept;
     
     // Create a reference to the other array.
     // It is always possible if the array has zero or one axes.
     // If it has > 1 axes, it is only possible if the array has at most
     // one axis with length > 1. In that case the degenerated axes are removed.
-    Vector(const Array<T, Alloc> &other);
+    Vector(const Array<T> &other);
 
     // Create an Vector of a given shape from a pointer.
     Vector(const IPosition &shape, T *storage, StorageInitPolicy policy = COPY);
-    // Create an Vector of a given shape from a pointer.
-    Vector(const IPosition &shape, T *storage, StorageInitPolicy policy, Alloc& allocator);
     // Create an Vector of a given shape from a pointer. Because the pointer
     // is const, a copy is always made.
     Vector(const IPosition &shape, const T *storage);
 
     template<typename InputIterator>
-    Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator = Alloc());
+    Vector(InputIterator startIter, InputIterator endIter);
 
     // Create a Vector from an STL vector (see <src>tovector()</src> in
     // <linkto class=Array>Array</linkto>  for the reverse operation).
@@ -164,7 +160,7 @@ public:
     //# be hidden).
     // Resize without argument is equal to resize(0, false).
     // <group>
-    using Array<T, Alloc>::resize;
+    using Array<T>::resize;
     void resize(size_t len, bool copyValues=false)
       { if (len != this->nelements()) resize(IPosition(1,len), copyValues); }
     virtual void resize(const IPosition &len, bool copyValues=false) final override;
@@ -179,25 +175,25 @@ public:
     // TODO unlike Array, a Vector assign to an empty Vector does
     // not create a reference but does a value copy of the source.
     // This should be made consistent.
-    using Array<T, Alloc>::assign_conforming;
-    Vector<T, Alloc>& assign_conforming(const Vector<T, Alloc>& source)
+    using Array<T>::assign_conforming;
+    Vector<T>& assign_conforming(const Vector<T>& source)
     {
       return assign_conforming_implementation(source, std::is_copy_assignable<T>());
     }
-    Vector<T, Alloc>& assign_conforming(Vector<T, Alloc>&& source);
+    Vector<T>& assign_conforming(Vector<T>&& source);
     // source must be a 1-dimensional array.
-    Vector<T, Alloc>& assign_conforming(const Array<T, Alloc>& source);
-    Vector<T, Alloc>& assign_conforming(Array<T, Alloc>&& source);
+    Vector<T>& assign_conforming(const Array<T>& source);
+    Vector<T>& assign_conforming(Array<T>&& source);
     // </group>
 
-    using Array<T, Alloc>::operator=;
-    Vector<T, Alloc>& operator=(const Vector<T, Alloc>& source)
+    using Array<T>::operator=;
+    Vector<T>& operator=(const Vector<T>& source)
     { return assign_conforming(source); }
-    Vector<T, Alloc>& operator=(Vector<T, Alloc>&& source)
+    Vector<T>& operator=(Vector<T>&& source)
     { return assign_conforming(std::move(source)); }
-    Vector<T, Alloc>& operator=(const Array<T, Alloc>& source)
+    Vector<T>& operator=(const Array<T>& source)
     { assign_conforming(source); return *this; }
-    Vector<T, Alloc>& operator=(Array<T, Alloc>&& source)
+    Vector<T>& operator=(Array<T>&& source)
     { assign_conforming(std::move(source)); return *this; }
 
     // Convert a Vector to a Block, resizing the block and copying values.
@@ -242,27 +238,27 @@ public:
     // vd(Slice(0,10)) = -1.0; // First 10 elements of vd set to -1
     // </srcblock>
     // <group>
-    Vector<T, Alloc> operator()(const Slice &slice);
-    const Vector<T, Alloc> operator()(const Slice &slice) const;
+    Vector<T> operator()(const Slice &slice);
+    const Vector<T> operator()(const Slice &slice) const;
     // </group>
 
     // Slice using IPositions. Required to be defined, otherwise the base
     // class versions are hidden.
     // <group>
-    Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc,
+    Array<T> operator()(const IPosition &blc, const IPosition &trc,
 			const IPosition &incr)
-      { return Array<T, Alloc>::operator()(blc,trc,incr); }
-    const Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc,
+      { return Array<T>::operator()(blc,trc,incr); }
+    const Array<T> operator()(const IPosition &blc, const IPosition &trc,
                               const IPosition &incr) const
-      { return Array<T, Alloc>::operator()(blc,trc,incr); }
-    Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc)
-      { return Array<T, Alloc>::operator()(blc,trc); }
-    const Array<T, Alloc> operator()(const IPosition &blc, const IPosition &trc) const
-      { return Array<T, Alloc>::operator()(blc,trc); }
-    Array<T, Alloc> operator()(const Slicer& slicer)
-      { return Array<T, Alloc>::operator()(slicer); }
-    const Array<T, Alloc> operator()(const Slicer& slicer) const
-      { return Array<T, Alloc>::operator()(slicer); }
+      { return Array<T>::operator()(blc,trc,incr); }
+    Array<T> operator()(const IPosition &blc, const IPosition &trc)
+      { return Array<T>::operator()(blc,trc); }
+    const Array<T> operator()(const IPosition &blc, const IPosition &trc) const
+      { return Array<T>::operator()(blc,trc); }
+    Array<T> operator()(const Slicer& slicer)
+      { return Array<T>::operator()(slicer); }
+    const Array<T> operator()(const Slicer& slicer) const
+      { return Array<T>::operator()(slicer); }
     // </group>
 
     // The array is masked by the input LogicalArray.
@@ -316,8 +312,8 @@ protected:
     virtual size_t fixedDimensionality() const final override { return 1; }
 
 private:
-    Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::false_type isCopyable);
-    Vector<T, Alloc>& assign_conforming_implementation(const Vector<T, Alloc> &v, std::true_type isCopyable);
+    Vector<T>& assign_conforming_implementation(const Vector<T> &v, std::false_type isCopyable);
+    Vector<T>& assign_conforming_implementation(const Vector<T> &v, std::true_type isCopyable);
   
     // Helper functions for constructors.
     void initVector(const std::vector<T>&, long long nr);      // copy semantics
@@ -327,10 +323,10 @@ private:
     // and
     // Vector<literal>(iterator, iterator)
     template<typename InputIterator>
-    Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::false_type /* T is not a literal */);
+    Vector(InputIterator startIter, InputIterator endIter, std::false_type /* T is not a literal */);
     
     template<typename InputIterator>
-    Vector(InputIterator startIter, InputIterator endIter, const Alloc& allocator, std::true_type /* T is literal */);
+    Vector(InputIterator startIter, InputIterator endIter, std::true_type /* T is literal */);
 };
 
 } //#End namespace casacore

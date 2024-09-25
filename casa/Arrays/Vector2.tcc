@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_VECTOR2_2_TCC
 #define CASA_VECTOR2_2_TCC
@@ -32,9 +30,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-template<class T, typename Alloc>
+template<class T>
 template <class U, class V>
-Vector<T, Alloc>::Vector(const std::vector<U, V> &other)
+Vector<T>::Vector(const std::vector<U, V> &other)
   : Array<T>(IPosition(1, other.size()))
 {
   size_t i=0;
@@ -43,10 +41,10 @@ Vector<T, Alloc>::Vector(const std::vector<U, V> &other)
     (*this)[i++] = (T)*pos;
   }
 }
-template<class T, typename Alloc>
+template<class T>
 template<class Iterator>
-Vector<T, Alloc>::Vector(Iterator first, size_t size, int)
-  : Array<T, Alloc>(IPosition(1, size)) {
+Vector<T>::Vector(Iterator first, size_t size, int)
+  : Array<T>(IPosition(1, size)) {
   for (size_t i=0; i<size; ++i, ++first) {
     (*this)[i] = *first;
   }

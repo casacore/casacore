@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 
 #ifndef CASA_VALUEHOLDERREP_H
@@ -101,6 +98,15 @@ public:
   // Destructor.
   ~ValueHolderRep();
 
+  // Forbid copy ctor and assignment.
+  //# There is no fundamental reason to forbid them, but it saves
+  //# implementation work as long as they are not needed.
+  // <group>
+  ValueHolderRep (const ValueHolderRep&) = delete;
+  ValueHolderRep& operator= (const ValueHolderRep&) = delete;
+  // </group>
+
+
   // Get the data type (as defined in DataType.h).
   DataType dataType() const;
     
@@ -154,15 +160,6 @@ public:
   */
 
 private:
-  // Forbid copy ctor and assignment.
-  //# There is no fundamental reason to forbid them, but it saves
-  //# implementation work as long as they are not needed.
-  // <group>
-  ValueHolderRep (const ValueHolderRep&);
-  ValueHolderRep& operator= (const ValueHolderRep&);
-  // </group>
-
-
   uInt     itsNdim;
   DataType itsType;
   union {

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/ISMColumn.h>
 #include <casacore/tables/DataMan/ISMBase.h>
@@ -857,11 +855,10 @@ void ISMColumn::putFromRow (rownr_t rownr, const char* data, uInt lenData)
     ISMBucket* bucket;
     rownr_t bucketNrrow;
     uInt cursor = 0;
-    bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow);
+    stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow);
     // Loop through all buckets from the given row on.
     // Replace the starting value in them.
-    while ((bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow))
-	                                                           != 0) {
+    while ((bucket = stmanPtr_p->nextBucket (cursor, rownr, bucketNrrow)) != nullptr) {
 #ifdef AIPS_TRACE
         cout << "," << rownr;
 #endif

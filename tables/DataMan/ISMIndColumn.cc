@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/DataMan/ISMIndColumn.h>
@@ -38,7 +36,7 @@
 #include <casacore/casa/OS/LECanonicalConversion.h>
 #include <casacore/tables/DataMan/DataManError.h>
 
-#include <casacore/casa/stdio.h>                     // for sprintf
+#include <casacore/casa/stdio.h>                     // for snprintf
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -285,7 +283,7 @@ void ISMIndColumn::init (ByteIO::OpenOption fileOption)
         iosfile_p = stmanPtr_p->openArrayFile (fileOption);
     } else {
         char strc[8];
-	sprintf (strc, "i%i", seqnr_p);
+	snprintf (strc, sizeof(strc), "i%i", seqnr_p);
 	iosfile_p = new StManArrayFile (stmanPtr_p->fileName() + strc,
 					fileOption, 1, asBigEndian);
     }

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/ScaRecordColData.h>
 #include <casacore/tables/Tables/ScaRecordColDesc.h>
@@ -46,8 +44,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 ScalarRecordColumnData::ScalarRecordColumnData
                                    (const ScalarRecordColumnDesc* cd,
 				    ColumnSet* csp)
-: PlainColumn  (cd, csp),
-  scaDescPtr_p (cd)
+: PlainColumn (cd, csp)
 {}
 
 ScalarRecordColumnData::~ScalarRecordColumnData()
@@ -177,8 +174,8 @@ void ScalarRecordColumnData::getRecord (rownr_t rownr, TableRecord& rec) const
 	dataColPtr_p->getArrayV (rownr, data);
 	Bool deleteIt;
 	const uChar* buf = data.getStorage (deleteIt);
-	MemoryIO memio (buf, shape(0));
-	AipsIO aio(&memio);
+        auto memio = std::make_shared<MemoryIO>(buf, shape(0));
+	AipsIO aio(memio);
 	rec.getRecord (aio, TableAttr(dataManager()->table()));
 	data.freeStorage (buf, deleteIt);
     }
@@ -186,37 +183,37 @@ void ScalarRecordColumnData::getRecord (rownr_t rownr, TableRecord& rec) const
 
 void ScalarRecordColumnData::putRecord (rownr_t rownr, const TableRecord& rec)
 {
-    MemoryIO memio;
-    AipsIO aio(&memio);
+    auto memio = std::make_shared<MemoryIO>();
+    AipsIO aio(memio);
     rec.putRecord (aio, TableAttr(dataManager()->table().tableName()));
-    IPosition shape (1, Int(memio.length()));
-    Vector<uChar> data(shape, (uChar*)(memio.getBuffer()), SHARE);
+    IPosition shape (1, Int(memio->length()));
+    Vector<uChar> data(shape, (uChar*)(memio->getBuffer()), SHARE);
     dataColPtr_p->setShape (rownr, shape);
     dataColPtr_p->putArrayV (rownr, data);
 }
 
 
 void ScalarRecordColumnData::makeSortKey (Sort&,
-					  CountedPtr<BaseCompare>&,
+					  std::shared_ptr<BaseCompare>&,
 					  Int,
-					  CountedPtr<ArrayBase>&)
+					  std::shared_ptr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
 		       "is not possible"));
 }
 
 void ScalarRecordColumnData::makeRefSortKey (Sort&,
-                                             CountedPtr<BaseCompare>&,
+                                             std::shared_ptr<BaseCompare>&,
 					     Int,
 					     const Vector<rownr_t>&,
-					     CountedPtr<ArrayBase>&)
+					     std::shared_ptr<ArrayBase>&)
 {
     throw (TableError ("Sorting on a column containing records "
 		       "is not possible"));
 }
 
 void ScalarRecordColumnData::allocIterBuf (void*&, void*&,
-                                           CountedPtr<BaseCompare>&)
+                                           std::shared_ptr<BaseCompare>&)
 {
     throw (TableError ("Iterating on a column containing records "
 		       "is not possible"));

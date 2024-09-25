@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELCONVERT_TCC
 #define LATTICES_LELCONVERT_TCC
@@ -41,7 +39,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 template <class T, class F>
-LELConvert<T,F>::LELConvert(const CountedPtr<LELInterface<F> >& expr)
+LELConvert<T,F>::LELConvert(const std::shared_ptr<LELInterface<F>>& expr)
 : pExpr_p (expr)
 //
 // F is the type we are converting from

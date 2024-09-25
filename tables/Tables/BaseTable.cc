@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <thread>
 #include <utility>
@@ -37,6 +35,7 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/BaseColumn.h>
 #include <casacore/tables/TaQL/ExprNode.h>
+#include <casacore/tables/TaQL/ExprNodeUtil.h>
 #include <casacore/tables/Tables/BaseTabIter.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -49,7 +48,6 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Containers/ValueHolder.h>
 #include <casacore/casa/Utilities/Sort.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/Utilities/GenSort.h>
 #include <casacore/casa/IO/AipsIO.h>
@@ -365,7 +363,8 @@ void BaseTable::setTableChanged()
 
 void BaseTable::markForDelete (Bool callback, const String& oldName)
 {
-    AlwaysAssert (!isNull(), AipsError);
+    //# Do not use virtual isNull as it can be called from the constructor.
+    AlwaysAssert (!BaseTable::isNull(), AipsError);
     Bool prev = delete_p;
     delete_p = True;
     //# Do callback if changed from non-scratch to scratch or if name changed.
@@ -379,7 +378,7 @@ void BaseTable::markForDelete (Bool callback, const String& oldName)
 }
 void BaseTable::unmarkForDelete (Bool callback, const String& oldName)
 {
-    AlwaysAssert (!isNull(), AipsError);
+    AlwaysAssert (!BaseTable::isNull(), AipsError);
     Bool prev = delete_p;
     delete_p = False;
     //# Do callback if changed from scratch to non-scratch.
@@ -485,7 +484,7 @@ void BaseTable::deepCopy (const String& newName,
 			  Bool noRows) const
 {
     if (valueCopy  ||  dataManagerInfo.nfields() > 0  ||  noRows) {
-      trueDeepCopy (newName, dataManagerInfo, stopt, tableOption,
+        trueDeepCopy (newName, dataManagerInfo, stopt, tableOption,
 		      endianFormat, noRows);
     } else {
         copy (newName, tableOption);
@@ -508,7 +507,9 @@ void BaseTable::trueDeepCopy (const String& newName,
 	       ("Table::deepCopy: new name equal to old name " + name_p);
     }
     //# Flush the data and subtables.
-    //# (cast is necessary to bypass non-constness).
+    //# The cast is necessary to bypass the constness of trueDeepCopy
+    //# while flush is const. Changing this requires changing of functions
+    //# copy and deepCopy as well, which could be done in the future.
     BaseTable* ncThis = const_cast<BaseTable*>(this);
     ncThis->flush (True, True);
     //# Prepare the copy (do some extra checks).
@@ -670,7 +671,7 @@ Vector<rownr_t>& BaseTable::rowStorage()
 //# Sort a table.
 std::shared_ptr<BaseTable> BaseTable::sort
 (const Block<String>& names,
- const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
  std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
@@ -702,7 +703,7 @@ std::shared_ptr<BaseTable> BaseTable::sort
 //# Do the actual sort.
 std::shared_ptr<BaseTable> BaseTable::doSort
 (PtrBlock<BaseColumn*>& sortCol,
- const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
  std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange)
@@ -711,17 +712,16 @@ std::shared_ptr<BaseTable> BaseTable::doSort
     //# Create a sort object.
     //# Pass all keys (and their data) to it.
     Sort sortobj;
-    Block<CountedPtr<ArrayBase> > data(nrkey);        // to remember data blocks
-    Block<CountedPtr<BaseCompare> > cmp(cmpObj);
+    Block<std::shared_ptr<ArrayBase>> data(nrkey);        // to remember data blocks
+    Block<std::shared_ptr<BaseCompare>> cmp(cmpObj);
     for (uInt i=0; i<nrkey; i++) {
         sortCol[i]->makeSortKey (sortobj, cmp[i], order[i], data[i]);
     }
     //# Create a reference table.
     //# This table will NOT be in row order.
     rownr_t nrrow = nrow();
-    std::shared_ptr<BaseTable> resultBaseTab = makeRefTable (False, nrrow);
-    RefTable* resultTable = dynamic_cast<RefTable*>(resultBaseTab.get());
-    DebugAssert (resultTable, AipsError);
+    std::shared_ptr<RefTable> resultTable = makeRefTable (False, nrrow);
+    DebugAssert (static_cast<bool>(resultTable), AipsError);
     //# Now sort the table storing the row-numbers in the RefTable.
     //# Adjust rownrs in case source table is already a RefTable.
     //# Then delete possible allocated data blocks.
@@ -733,14 +733,13 @@ std::shared_ptr<BaseTable> BaseTable::doSort
     }
     adjustRownrs (nrrow, rows, False);
     resultTable->setNrrow (nrrow);
-    return resultBaseTab;
+    return resultTable;
 }
 
-std::shared_ptr<BaseTable> BaseTable::makeRefTable (Bool rowOrder,
-                                                    rownr_t initialNrrow)
+std::shared_ptr<RefTable> BaseTable::makeRefTable (Bool rowOrder,
+                                                   rownr_t initialNrrow)
 {
-  std::shared_ptr<BaseTable> rtp (new RefTable(this, rowOrder, initialNrrow));
-  return rtp;
+    return std::make_shared<RefTable>(this, rowOrder, initialNrrow);
 }
 
 //# No rownrs have to be adjusted and they are by default in ascending order.
@@ -790,18 +789,21 @@ std::shared_ptr<BaseTable> BaseTable::select (const TableExprNode& node,
     // Now check if this table has been used for all columns.
     // Accept that the expression has no table, which can be the case for
     // UDFs in derivedmscal (since they have no function arguments).
-    if (!node.table().isNull()  &&  node.table().nrow() != this->nrow()) {
-      throw (TableInvExpr ("select expression for table " +
-                           node.table().tableName() +
-                           " is used on a differently sized table " + name_p));
+    std::vector<Table> tables
+      (TableExprNodeUtil::getNodeTables (node.getRep().get(), True));
+    if (! tables.empty()) {
+      if (TableExprNodeUtil::getCheckNRow(tables) != this->nrow()) {
+        throw (TableInvExpr ("select expression for table " +
+                             tables[0].tableName() +
+                             " is used on a differently sized table " + name_p));
+      }
     }
     //# Create a reference table, which will be in row order.
     //# Loop through all rows and add to reference table if true.
     //# Add the rownr of the root table (one may search a reference table).
     //# Adjust the row numbers to reflect row numbers in the root table.
-    std::shared_ptr<BaseTable> resultBaseTab = makeRefTable (True, 0);
-    RefTable* resultTable = dynamic_cast<RefTable*>(resultBaseTab.get());
-    DebugAssert (resultTable, AipsError);
+    std::shared_ptr<RefTable> resultTable = makeRefTable (True, 0);
+    DebugAssert (static_cast<bool>(resultTable), AipsError);
     Bool val;
     rownr_t nrrow = nrow();
     TableExprId id;
@@ -822,28 +824,25 @@ std::shared_ptr<BaseTable> BaseTable::select (const TableExprNode& node,
       }
     }
     adjustRownrs (resultTable->nrow(), resultTable->rowStorage(), False);
-    return resultBaseTab;
+    return resultTable;
 }
 
 std::shared_ptr<BaseTable> BaseTable::select (const Vector<rownr_t>& rownrs)
 {
     AlwaysAssert (!isNull(), AipsError);
-    RefTable* rtp = new RefTable(this, rownrs);
-    return std::shared_ptr<BaseTable> (rtp);
+    return std::make_shared<RefTable>(this, rownrs);
 }
 
 std::shared_ptr<BaseTable> BaseTable::select (const Block<Bool>& mask)
 {
     AlwaysAssert (!isNull(), AipsError);
-    RefTable* rtp = new RefTable(this, Vector<Bool>(mask.begin(), mask.end()));
-    return std::shared_ptr<BaseTable> (rtp);
+    return std::make_shared<RefTable>(this, Vector<Bool>(mask.begin(), mask.end()));
 }
 
 std::shared_ptr<BaseTable> BaseTable::project (const Block<String>& names)
 {
     AlwaysAssert (!isNull(), AipsError);
-    RefTable* rtp = new RefTable(this, Vector<String>(names.begin(), names.end()));
-    return std::shared_ptr<BaseTable> (rtp);
+    return std::make_shared<RefTable>(this, Vector<String>(names.begin(), names.end()));
 }
 
 
@@ -865,12 +864,11 @@ std::shared_ptr<BaseTable> BaseTable::tabAnd (BaseTable* that)
     Vector<rownr_t> r1 = this->logicRows();
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
-    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
-    DebugAssert (rtp, AipsError);
+    std::shared_ptr<RefTable> rtp = makeRefTable (True, 0);
+    DebugAssert (static_cast<bool>(rtp), AipsError);
     // Store rownrs in new RefTable.
     rtp->refAnd (r1.size(), r1.data(), r2.size(), r2.data());
-    return baseTabPtr;
+    return rtp;
 }
 
 //# Or (union) 2 tables and return a new table.
@@ -889,12 +887,11 @@ std::shared_ptr<BaseTable> BaseTable::tabOr (BaseTable* that)
     Vector<rownr_t> r1 = this->logicRows();
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
-    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
-    DebugAssert (rtp, AipsError);
+    std::shared_ptr<RefTable> rtp = makeRefTable (True, 0);
+    DebugAssert (static_cast<bool>(rtp), AipsError);
     // Store rownrs in new RefTable.
     rtp->refOr (r1.size(), r1.data(), r2.size(), r2.data());
-    return baseTabPtr;
+    return rtp;
 }
 
 //# Subtract (difference) 2 tables and return a new table.
@@ -916,12 +913,11 @@ std::shared_ptr<BaseTable> BaseTable::tabSub (BaseTable* that)
     Vector<rownr_t> r1 = this->logicRows();
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
-    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
-    DebugAssert (rtp, AipsError);
+    std::shared_ptr<RefTable> rtp = makeRefTable (True, 0);
+    DebugAssert (static_cast<bool>(rtp), AipsError);
     // Store rownrs in new RefTable.
     rtp->refSub (r1.size(), r1.data(), r2.size(), r2.data());
-    return baseTabPtr;
+    return rtp;
 }
 
 //# Xor 2 tables and return a new table.
@@ -942,12 +938,11 @@ std::shared_ptr<BaseTable> BaseTable::tabXor (BaseTable* that)
     Vector<rownr_t> r1 = this->logicRows();
     Vector<rownr_t> r2 = that->logicRows();
     // Create RefTable which will be in row order.
-    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
-    DebugAssert (rtp, AipsError);
+    std::shared_ptr<RefTable> rtp = makeRefTable (True, 0);
+    DebugAssert (static_cast<bool>(rtp), AipsError);
     // Store rownrs in new RefTable.
     rtp->refXor (r1.size(), r1.data(), r2.size(), r2.data());
-    return baseTabPtr;
+    return rtp;
 }
 
 //# Negate a table (i.e. take all rows from the root not in table).
@@ -962,12 +957,11 @@ std::shared_ptr<BaseTable> BaseTable::tabNot()
     //# Get rownr array which is sorted if not in row order.
     Vector<rownr_t> r1 = this->logicRows();
     // Create RefTable which will be in row order.
-    std::shared_ptr<BaseTable> baseTabPtr = makeRefTable (True, 0);
-    RefTable* rtp = dynamic_cast<RefTable*>(baseTabPtr.get());
-    DebugAssert (rtp, AipsError);
+    std::shared_ptr<RefTable> rtp = makeRefTable (True, 0);
+    DebugAssert (static_cast<bool>(rtp), AipsError);
     // Store rownrs in new RefTable.
     rtp->refNot (r1.size(), r1.data(), root()->nrow());
-    return baseTabPtr;
+    return rtp;
 }
 
 //# Check if both tables have the same root.
@@ -998,7 +992,7 @@ Vector<rownr_t> BaseTable::logicRows()
 
 BaseTableIterator* BaseTable::makeIterator
 (const Block<String>& names,
- const Block<CountedPtr<BaseCompare> >& cmpObj,
+ const Block<std::shared_ptr<BaseCompare>>& cmpObj,
  const Block<Int>& order, int option,
  bool cacheIterationBoundaries)
 {
@@ -1016,8 +1010,8 @@ BaseTableIterator* BaseTable::makeIterator
 
 const TableDesc& BaseTable::makeEmptyTableDesc() const
 {
-    if (tdescPtr_p.null()) {
-        const_cast<BaseTable*>(this)->tdescPtr_p = new TableDesc();
+    if (!tdescPtr_p) {
+      const_cast<BaseTable*>(this)->tdescPtr_p = std::make_shared<TableDesc>();
     }
     return *tdescPtr_p;
 }

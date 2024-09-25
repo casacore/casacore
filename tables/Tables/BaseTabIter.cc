@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/Tables/BaseTabIter.h>
 #include <casacore/tables/Tables/TableIter.h>
@@ -45,7 +43,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 BaseTableIterator::BaseTableIterator (const std::shared_ptr<BaseTable>& btp,
                                       const Block<String>& keys,
-                                      const Block<CountedPtr<BaseCompare> >& cmp,
+                                      const Block<std::shared_ptr<BaseCompare>>& cmp,
                                       const Block<Int>& order,
                                       int option,
                                       bool cacheIterationBoundaries)

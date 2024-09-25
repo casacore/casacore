@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/images/Images/ImageExprParse.h>
 #include <casacore/images/Images/ImageExprGram.h>
@@ -66,7 +64,7 @@ static uInt theNrNodes;
 static Table theLastTable;
 
 //# Hold a pointer to the last HDF5 file to lookup unqualified region names.
-static CountedPtr<HDF5File> theLastHDF5;
+static std::shared_ptr<HDF5File> theLastHDF5;
 
 #define SAVE_GLOBALS \
  const Block<LatticeExprNode>* savTempLattices=theTempLattices; \
@@ -76,7 +74,7 @@ static CountedPtr<HDF5File> theLastHDF5;
  Block<Bool>  savNodesType=theNodesType; \
  uInt savNrNodes=theNrNodes; \
  Table savLastTable=theLastTable; \
- CountedPtr<HDF5File> savLastHDF5=theLastHDF5;
+ std::shared_ptr<HDF5File> savLastHDF5=theLastHDF5;
 
 #define RESTORE_GLOBALS \
  theTempLattices=savTempLattices; \
@@ -100,7 +98,7 @@ void imageExprParse_clear()
 // Is there no last table or HDF5 file?
 Bool imageExprParse_hasNoLast()
 {
-  return (theLastTable.isNull() && theLastHDF5.null());
+  return (theLastTable.isNull() && !theLastHDF5);
 }
 
 //# Initialize static members.
@@ -156,7 +154,7 @@ Table& ImageExprParse::getRegionTable (void*, Bool)
   return theLastTable;
 }
 
-const CountedPtr<HDF5File>& ImageExprParse::getRegionHDF5 (void*)
+const std::shared_ptr<HDF5File>& ImageExprParse::getRegionHDF5 (void*)
 {
   return theLastHDF5;
 }
@@ -672,7 +670,7 @@ LatticeExprNode ImageExprParse::makeLRNode() const
 	  Table table (fileName);
 	  theLastTable = table;
 	} else if (HDF5File::isHDF5(fileName)) {
-	  theLastHDF5  = new HDF5File(fileName);
+	  theLastHDF5 = std::make_shared<HDF5File>(fileName);
 	  theLastTable = Table();
 	} else {
 	  throw (AipsError ("ImageExprParse: the table used in region name'"
@@ -686,7 +684,7 @@ LatticeExprNode ImageExprParse::makeLRNode() const
       RegionHandlerTable regHand(getRegionTable, 0);
       regPtr = regHand.getRegion (names[index], RegionHandler::Any, False);
     }
-    if (! theLastHDF5.null()) {
+    if (theLastHDF5) {
       RegionHandlerHDF5 regHand(getRegionHDF5, 0);
       regPtr = regHand.getRegion (names[index], RegionHandler::Any, False);
     }
@@ -774,7 +772,7 @@ Bool ImageExprParse::tryLatticeNode (LatticeExprNode& node,
     if (type == "PagedImage") {
       theLastTable = Table(name);
     } else if (type == "HDF5Image") {
-      theLastHDF5  = new HDF5File(name);
+      theLastHDF5 = std::make_shared<HDF5File>(name);
       theLastTable = Table();
     }
     delete pLatt;

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef MS_NEWMSSIMULATOR_H
 #define MS_NEWMSSIMULATOR_H
@@ -214,7 +212,7 @@ public:
                const String& observername="CASA simulator",
                const String& projectname="CASA simulation");
 
-  casacore::CountedPtr<MeasurementSet> getMs () const;
+  std::shared_ptr<MeasurementSet> getMs () const;
 
 
 private:
@@ -238,7 +236,7 @@ private:
   Int lastSpWID_p;
   Int lastNchan_p;
 
-  casacore::CountedPtr<MeasurementSet> ms_p;
+  std::shared_ptr<MeasurementSet> ms_p;
 
   TiledDataStManAccessor dataAcc_p, scratchDataAcc_p, sigmaAcc_p, flagAcc_p;
 

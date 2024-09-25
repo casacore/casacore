@@ -16,8 +16,6 @@
 //# License along with this library; if not, write to the Free Software
 //# Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 
-//# $Id$
-
 #ifndef CASA_GENERIC_H
 #define CASA_GENERIC_H
 

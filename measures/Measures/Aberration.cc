@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/measures/Measures/Aberration.h>
@@ -170,7 +168,7 @@ void Aberration::calcAber(Double t) {
           fa(i) = MeasTable::aber1950Arg(i)(t);
           dfa(i) = MeasTable::aber1950ArgDeriv(i)(t);
         }
-	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber1950(t, 1e-6);
+        std::shared_ptr<Matrix<Double>> mul = MeasTable::mulAber1950(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
         const Double* mulAberV = mul->data();
 
@@ -215,7 +213,7 @@ void Aberration::calcAber(Double t) {
 	  fa(i) = MeasTable::aberArg(i)(t);
 	  dfa(i) = MeasTable::aberArgDeriv(i)(t);
 	}
-	CountedPtr<Matrix<Double> > mul = MeasTable::mulAber(t, 1e-6);
+        std::shared_ptr<Matrix<Double>> mul = MeasTable::mulAber(t, 1e-6);
         DebugAssert (mul->contiguousStorage(), AipsError);
         const Double* mulAberV = mul->data();
 	for (i=0; i<80; i++) {

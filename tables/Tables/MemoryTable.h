@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_MEMORYTABLE_H
 #define TABLES_MEMORYTABLE_H
@@ -89,6 +87,14 @@ public:
 
   // The destructor deletes all data.
   virtual ~MemoryTable();
+
+  // Copy constructor is forbidden, because copying a table requires
+  // some more knowledge (like table name of result).
+  MemoryTable (const MemoryTable&) = delete;
+
+  // Assignment is forbidden, because copying a table requires
+  // some more knowledge (like table name of result).
+  MemoryTable& operator= (const MemoryTable&) = delete;
 
   // Try to reopen the table (the underlying one) for read/write access.
   // It does nothing.
@@ -225,18 +231,8 @@ public:
 
 
 private:
-  CountedPtr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
+  std::shared_ptr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
   TableLockData* lockPtr_p;          //# pointer to lock object
-
-  // Copy constructor is forbidden, because copying a table requires
-  // some more knowledge (like table name of result).
-  // Declaring it private, makes it unusable.
-  MemoryTable (const MemoryTable&);
-
-  // Assignment is forbidden, because copying a table requires
-  // some more knowledge (like table name of result).
-  // Declaring it private, makes it unusable.
-  MemoryTable& operator= (const MemoryTable&);
 
   // Setup the main parts of the object.
   // <br>Create the initial name map from the table description.

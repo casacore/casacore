@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_FITSIMAGE_H
 #define IMAGES_FITSIMAGE_H
@@ -118,7 +116,7 @@ public:
   FITSImage(const FITSImage& other);
 
   // Destructor does nothing
-  virtual ~FITSImage();
+  virtual ~FITSImage() = default;
 
   // Assignment (reference semantics)
   FITSImage& operator=(const FITSImage& other);
@@ -268,8 +266,8 @@ private:
   String         name_p;
   String         fullname_p;
   MaskSpecifier  maskSpec_p;
-  CountedPtr<TiledFileAccess> pTiledFile_p;
-  Lattice<Bool>* pPixelMask_p;
+  std::shared_ptr<TiledFileAccess> pTiledFile_p;
+  std::unique_ptr<Lattice<Bool>>   pPixelMask_p;
   TiledShape     shape_p;
   Float          scale_p;
   Float          offset_p;

@@ -1,0 +1,345 @@
+Creating the test tables ...
+    update result of 20 rows
+    update result of 5 rows
+    select result of 5 rows
+3 selected columns:  ci2 cd2 cd
+Unit: 	d	
+0	4	1
+0	5	2
+1	4	3
+1	5	4
+2	4	5
+
+testing joins ...
+
+SELECT t1.cmi, t1.cmi2, t1.cmd, t2.ci, t2.cd, t2.cd2 FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi=msid(t2.ci)
+    has been executed
+    select result of 20 rows
+6 selected columns:  cmi cmi2 cmd ci cd cd2
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+
+SELECT t1.cmi, t1.cmi2, t1.cmd, t2.ci, t2.cd, t2.cd2, msid(cmixx), t2.msid(ci), t2.rowid() FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi=t2.rowid()+1
+    has been executed
+    select result of 20 rows
+9 selected columns:  cmi cmi2 cmd ci cd cd2 Col_7 Col_8 Col_9
+ 0 0 4.3 9.22337e+18 nan nan 0 9.22337e+18 -1
+ 1 1 5.3 0 1 4 1 0 0
+ 2 2 4.3 1 2 5 2 1 1
+ 3 0 5.3 2 3 4 3 2 2
+ 4 1 4.3 3 4 5 4 3 3
+ 5 2 5.3 4 5 4 5 4 4
+ 0 0 4.3 9.22337e+18 nan nan 6 9.22337e+18 -1
+ 1 1 5.3 0 1 4 7 0 0
+ 2 2 4.3 1 2 5 8 1 1
+ 3 0 5.3 2 3 4 9 2 2
+ 4 1 4.3 3 4 5 10 3 3
+ 5 2 5.3 4 5 4 11 4 4
+ 0 0 4.3 9.22337e+18 nan nan 12 9.22337e+18 -1
+ 1 1 5.3 0 1 4 13 0 0
+ 2 2 4.3 1 2 5 14 1 1
+ 3 0 5.3 2 3 4 15 2 2
+ 4 1 4.3 3 4 5 16 3 3
+ 5 2 5.3 4 5 4 17 4 4
+ 0 0 4.3 9.22337e+18 nan nan 18 9.22337e+18 -1
+ 1 1 5.3 0 1 4 19 0 0
+
+SELECT t1.cmi, t1.cmi2, t1.cmd, t2.ci, t2.cd, t2.cd2, msid(cmixx), msid(t2.ci), t2.rowid()+1 FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi=t2.rowid()+1 where t2.ci%5 > 2
+    has been executed
+    select result of 6 rows
+9 selected columns:  cmi cmi2 cmd ci cd cd2 Col_7 Col_8 Col_9
+ 4 1 4.3 3 4 5 4 3 4
+ 5 2 5.3 4 5 4 5 4 5
+ 4 1 4.3 3 4 5 10 3 4
+ 5 2 5.3 4 5 4 11 4 5
+ 4 1 4.3 3 4 5 16 3 4
+ 5 2 5.3 4 5 4 17 4 5
+
+SELECT t1.cmi, t1.cmi2, t1.cmd, t2.ci, t2.cd, t2.cd2 FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi=msid(t2.cirow)
+    has been executed
+    select result of 20 rows
+6 selected columns:  cmi cmi2 cmd ci cd cd2
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+
+SELECT t1.cmi, gsum(t2.ci), gsum(t2.cd) FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi=msid(t2.ci) GROUPBY t2.ci
+    has been executed
+    select result of 6 rows
+3 selected columns:  cmi Col_2 Col_3
+ 0 0 4
+ 1 4 8
+ 2 6 9
+ 3 9 12
+ 4 12 15
+ 5 9.22337e+18 nan
+
+SELECT t1.cmi2, t1.cmd, t2.ci2, t2.cd2, t2.cd FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmd around t2.cd2 in t2.cw
+    has been executed
+    select result of 20 rows
+5 selected columns:  cmi2 cmd ci2 cd2 cd
+ 0 4.3 0 4 1
+ 1 5.3 0 5 2
+ 2 4.3 0 4 1
+ 0 5.3 0 5 2
+ 1 4.3 0 4 1
+ 2 5.3 0 5 2
+ 0 4.3 0 4 1
+ 1 5.3 0 5 2
+ 2 4.3 0 4 1
+ 0 5.3 0 5 2
+ 1 4.3 0 4 1
+ 2 5.3 0 5 2
+ 0 4.3 0 4 1
+ 1 5.3 0 5 2
+ 2 4.3 0 4 1
+ 0 5.3 0 5 2
+ 1 4.3 0 4 1
+ 2 5.3 0 5 2
+ 0 4.3 0 4 1
+ 1 5.3 0 5 2
+
+SELECT t1.cmi2, t1.cmd, t2.ci2, t2.cd2, t2.cd FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi2=t2.ci2 && t1.cmd around t2.cd2 in t2.cw
+    has been executed
+    select result of 20 rows
+5 selected columns:  cmi2 cmd ci2 cd2 cd
+ 0 4.3 0 4 1
+ 1 5.3 1 5 4
+ 2 4.3 2 4 5
+ 0 5.3 0 5 2
+ 1 4.3 1 4 3
+ 2 5.3 9.22337e+18 nan nan
+ 0 4.3 0 4 1
+ 1 5.3 1 5 4
+ 2 4.3 2 4 5
+ 0 5.3 0 5 2
+ 1 4.3 1 4 3
+ 2 5.3 9.22337e+18 nan nan
+ 0 4.3 0 4 1
+ 1 5.3 1 5 4
+ 2 4.3 2 4 5
+ 0 5.3 0 5 2
+ 1 4.3 1 4 3
+ 2 5.3 9.22337e+18 nan nan
+ 0 4.3 0 4 1
+ 1 5.3 1 5 4
+
+SELECT t1.cmi, t1.cmi2, t1.cmd, t2.ci, t2.cd, t2.cd2 FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmi=t2.ci and t2.ci=t1.cmi
+    has been executed
+    select result of 20 rows
+6 selected columns:  cmi cmi2 cmd ci cd cd2
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+ 2 2 4.3 2 3 4
+ 3 0 5.3 3 4 5
+ 4 1 4.3 4 5 4
+ 5 2 5.3 9.22337e+18 nan nan
+ 0 0 4.3 0 1 4
+ 1 1 5.3 1 2 5
+
+SELECT t1.cmi2, t1.cmd, t2.ci2, t2.cd2, t2.cd, t2.cad FROM tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 ON t1.cmd around t2.cd2 in t2.cw and t1.cmd around t2.cd2 in t2.cw
+    has been executed
+    select result of 20 rows
+6 selected columns:  cmi2 cmd ci2 cd2 cd cad
+ 0 4.3 0 4 1 shape=[2, 3]
+ 1 5.3 0 5 2 shape=[2, 3]
+ 2 4.3 0 4 1 shape=[2, 3]
+ 0 5.3 0 5 2 shape=[2, 3]
+ 1 4.3 0 4 1 shape=[2, 3]
+ 2 5.3 0 5 2 shape=[2, 3]
+ 0 4.3 0 4 1 shape=[2, 3]
+ 1 5.3 0 5 2 shape=[2, 3]
+ 2 4.3 0 4 1 shape=[2, 3]
+ 0 5.3 0 5 2 shape=[2, 3]
+ 1 4.3 0 4 1 shape=[2, 3]
+ 2 5.3 0 5 2 shape=[2, 3]
+ 0 4.3 0 4 1 shape=[2, 3]
+ 1 5.3 0 5 2 shape=[2, 3]
+ 2 4.3 0 4 1 shape=[2, 3]
+ 0 5.3 0 5 2 shape=[2, 3]
+ 1 4.3 0 4 1 shape=[2, 3]
+ 2 5.3 0 5 2 shape=[2, 3]
+ 0 4.3 0 4 1 shape=[2, 3]
+ 1 5.3 0 5 2 shape=[2, 3]
+
+Updating the tables for nested joins ...
+    update result of 9 rows
+    update result of 9 rows
+    select result of 9 rows
+2 selected columns:  spw pol
+0	0
+1	0
+2	0
+0	1
+1	1
+2	1
+0	2
+1	2
+2	2
+    select result of 9 rows
+4 selected columns:  spw tod w ci
+Unit: 	d	s	
+0	02-Nov-2022/12:00:00.000	86400	0
+1	02-Nov-2022/12:00:00.000	86400	1
+2	02-Nov-2022/12:00:00.000	86400	2
+0	03-Nov-2022/12:00:00.000	86400	3
+1	03-Nov-2022/12:00:00.000	86400	4
+2	03-Nov-2022/12:00:00.000	86400	5
+0	04-Nov-2022/12:00:00.000	86400	6
+1	04-Nov-2022/12:00:00.000	86400	7
+2	04-Nov-2022/12:00:00.000	86400	8
+    select result of 20 rows
+5 selected columns:  cmi cmi2 cmd cdd ct
+Unit: 				d
+0	0	4.3	0	02-Nov-2022/12:00:00.000
+1	1	5.3	1	02-Nov-2022/12:00:00.000
+2	2	4.3	2	02-Nov-2022/12:00:00.000
+3	0	5.3	3	02-Nov-2022/12:00:00.000
+4	1	4.3	4	02-Nov-2022/12:00:00.000
+5	2	5.3	5	02-Nov-2022/12:00:00.000
+0	0	4.3	6	02-Nov-2022/12:00:00.000
+1	1	5.3	7	03-Nov-2022/12:00:00.000
+2	2	4.3	8	03-Nov-2022/12:00:00.000
+3	0	5.3	0	03-Nov-2022/12:00:00.000
+4	1	4.3	1	03-Nov-2022/12:00:00.000
+5	2	5.3	2	03-Nov-2022/12:00:00.000
+0	0	4.3	3	03-Nov-2022/12:00:00.000
+1	1	5.3	4	03-Nov-2022/12:00:00.000
+2	2	4.3	5	04-Nov-2022/12:00:00.000
+3	0	5.3	6	04-Nov-2022/12:00:00.000
+4	1	4.3	7	04-Nov-2022/12:00:00.000
+5	2	5.3	8	04-Nov-2022/12:00:00.000
+0	0	4.3	0	04-Nov-2022/12:00:00.000
+1	1	5.3	1	04-Nov-2022/12:00:00.000
+
+SELECT t1.rowid() as r1, t2.rowid() as r2, t3.rowid() as r3, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w
+    has been executed
+    select result of 20 rows
+5 selected columns:  r1 r2 r3 pol ci
+ 0 0 0 0 0
+ 1 1 1 0 1
+ 2 2 2 0 2
+ 3 3 0 1 0
+ 4 4 1 1 1
+ 5 5 2 1 2
+ 6 6 0 2 0
+ 7 7 4 2 4
+ 8 8 5 2 5
+ 9 0 3 0 3
+ 10 1 4 0 4
+ 11 2 5 0 5
+ 12 3 3 1 3
+ 13 4 4 1 4
+ 14 5 8 1 8
+ 15 6 6 2 6
+ 16 7 7 2 7
+ 17 8 8 2 8
+ 18 0 6 0 6
+ 19 1 7 0 7
+
+SELECT t1.rowid() as r1, t2.pol, t3.ci FROM tTableGramJoin_tmp.tab t1 JOIN ::DD t2 ON t1.cdd=t2.rowid() JOIN ::SC t3 ON t2.spw=t3.spw AND t1.ct AROUND t3.tod IN t3.w WHERE t3.ci%3!=0
+    has been executed
+    select result of 13 rows
+3 selected columns:  r1 pol ci
+ 1 0 1
+ 2 0 2
+ 4 1 1
+ 5 1 2
+ 7 2 4
+ 8 2 5
+ 10 0 4
+ 11 0 5
+ 13 1 4
+ 14 1 8
+ 16 2 7
+ 17 2 8
+ 19 0 7
+
+Testing erroneous commands ...
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on gsum(t1.cdd)=t2.rowid()
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on gsum(t1.cdd)=t2.rowid()'
+  Error in select expression: Aggregate functions cannot be used in a JOIN condition
+select from tTableGramJoin_tmp.tab t1 JOIN ::SUB t2, ::SC t3 on t1.cdd=t2.rowid()+t3.rowid()
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::SUB t2, ::SC t3 on t1.cdd=t2.rowid()+t3.rowid()'
+  Error in select expression: Join tables in a join must have the same nr of rows
+select from tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 on t1.cmd=t2.ci
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::SUB t2 on t1.cmd=t2.ci'
+  Error in select expression: In a equality join condition only Int and String data types are possible
+select t2.rownr() from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cdd=t2.rowid()
+
+Caught an exception: Error in TaQL command: 'select t2.rownr() from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cdd=t2.rowid()'
+  Error in select expression: Function rownr cannot be used on a join table
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cdd=3
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cdd=3'
+  Error in select expression: Join expressions cannot have constant comparison operands
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cmi!=t2.rowid()
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cmi!=t2.rowid()'
+  Error in select expression: JOIN condition must be == or IN
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on [t1.cmi,t1.cmi]=t2.rowid()
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on [t1.cmi,t1.cmi]=t2.rowid()'
+  Error in select expression: JOIN condition must be a scalar expression
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t2.rowid() in [t1.cmi,t1.cmi]
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t2.rowid() in [t1.cmi,t1.cmi]'
+  Error in select expression: When using an IN condition in a join, the main tables must be on the left side
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cmi+t2.rowid()=t2.rowid()
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cmi+t2.rowid()=t2.rowid()'
+  Error in select expression: Mix of from and join tables on one side of a join condition
+select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cmi=t2.rowid()+t1.cmi
+
+Caught an exception: Error in TaQL command: 'select from tTableGramJoin_tmp.tab t1 JOIN ::DD t2 on t1.cmi=t2.rowid()+t1.cmi'
+  Error in select expression: Mix of from and join tables on one side of a join condition

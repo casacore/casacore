@@ -1,11 +1,12 @@
-cmake_minimum_required (VERSION 3.3.0)
+cmake_minimum_required (VERSION 3.14.0)
 
-project(casacore VERSION 3.5.0)
+project(casacore VERSION 3.6.1)
 
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CheckFunctionExists)
 include(CheckCXXSourceCompiles)
+include(cmake/PCHSupport.cmake)
 
 # Fixes warnings on cmake 3.x+ about missing extensions
 if (POLICY CMP0115)
@@ -18,7 +19,7 @@ if (POLICY CMP0074)
 endif()
 
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
-SET(PROJECT_SOVERSION 7)
+SET(PROJECT_SOVERSION 8)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -33,7 +34,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# By default build only Python2 bindings
+# By default build only Python3 bindings
 option (BUILD_PYTHON "Build the python2 bindings" NO)
 option (BUILD_PYTHON3 "Build the python3 bindings" YES)
 
@@ -184,6 +185,7 @@ if (NOT CMAKE_BUILD_TYPE)
     get_filename_component(_cmpvar ${CMAKE_BINARY_DIR} NAME)
     if(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
         set (CMAKE_BUILD_TYPE Debug)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DAIPS_DEBUG")
     else()
         if(_cmpvar STREQUAL "cov")
             set (CMAKE_BUILD_TYPE Debug)
@@ -196,13 +198,9 @@ if (NOT CMAKE_BUILD_TYPE)
     endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# Detect if the compiler supports C++11 if we want to use it.
-check_cxx_compiler_flag(-std=c++11 HAS_CXX11)
-if (HAS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(FATAL_ERROR "Casacore build requires a c++11 compatible compiler")
-endif (HAS_CXX11)
+# Require a C++11 compatible compiler
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure clang is not complaining about unused arguments.
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -210,7 +208,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")
 endif()
 
-# Since 2015, we need pwrite and pwrite (POSIX 2001)
+# Since 2015, we need pread and pwrite (POSIX 2001)
 check_function_exists(pread HAVE_PREAD)
 check_function_exists(pwrite HAVE_PWRITE)
 if (NOT (HAVE_PREAD AND HAVE_PWRITE))
@@ -326,14 +324,20 @@ find_package (DL)
 if (USE_READLINE)
     find_package (Readline REQUIRED)
 endif (USE_READLINE)
-find_package (SOFA)
+
+if (BUILD_TESTING)
+    find_package (SOFA)
+endif()
+
 if (USE_ADIOS2)
-    set(USE_MPI ON)
-    message (STATUS "MPI is enabled as required by ADIOS2")
-    find_package (ADIOS2 CONFIG REQUIRED)
-    if (NOT ADIOS2_HAVE_MPI)
-        message (FATAL_ERROR "ADIOS2 found without MPI support.")
-    endif (NOT ADIOS2_HAVE_MPI)
+    find_package (ADIOS2 2.6.0 CONFIG REQUIRED)
+    if(NOT USE_MPI)
+        set(CASACORE_ADIOS_LIBRARY adios2::cxx11)
+    elseif (NOT ADIOS2_HAVE_MPI)
+        message(FATAL_ERROR "ADIOS2 found without MPI support but MPI support requested")
+    else()
+        set(CASACORE_ADIOS_LIBRARY adios2::cxx11_mpi)
+    endif()
 endif (USE_ADIOS2)
 if (USE_HDF5)
     find_package (HDF5 REQUIRED)
@@ -424,6 +428,7 @@ if(USE_MPI)
     add_definitions(-DHAVE_MPI)
 
     set(ENABLE_TABLELOCKING OFF)
+    set(CASACORE_MPI_LIBRARY ${MPI_C_LIBRARIES})
     message (STATUS "ENABLE_TABLELOCKING is turned off as required by MPI")
 endif(USE_MPI)
 
@@ -558,6 +563,7 @@ message (STATUS "BUILD_SHARED_LIBS ..... = ${BUILD_SHARED_LIBS}")
 message (STATUS "ENABLE_RPATH .......... = ${ENABLE_RPATH}")
 message (STATUS "CMAKE_INSTALL_NAME_DIR  = ${CMAKE_INSTALL_NAME_DIR}")
 message (STATUS "ENABLE_TABLELOCKING ... = ${ENABLE_TABLELOCKING}")
+message (STATUS "USE_PCH ............... = ${USE_PCH}")
 message (STATUS "USE_THREADS ........... = ${USE_THREADS}")
 message (STATUS "USE_OPENMP ............ = ${USE_OPENMP}")
 message (STATUS "USE_MPI ............... = ${USE_MPI}")
@@ -574,7 +580,7 @@ message (STATUS "LAPACK library? ....... = ${LAPACK_LIBRARIES}")
 message (STATUS "WCS library? .......... = ${WCSLIB_LIBRARIES}")
 message (STATUS "SOFA library? ......... = ${SOFA_LIBRARIES}")
 message (STATUS "CFitsio library? ...... = ${CFITSIO_LIBRARIES}")
-message (STATUS "ADIOS2 library? ....... = ${ADIOS2_LIBRARIES}")
+message (STATUS "ADIOS2 library? ....... = ${CASACORE_ADIOS_LIBRARY}")
 message (STATUS "HDF5 library? ......... = ${HDF5_hdf5_LIBRARY}")
 message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 

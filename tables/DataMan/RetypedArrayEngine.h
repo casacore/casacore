@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_RETYPEDARRAYENGINE_H
 #define TABLES_RETYPEDARRAYENGINE_H
@@ -479,6 +477,10 @@ public:
     // Destructor is mandatory.
     ~RetypedArrayEngine();
 
+    // Assignment is not needed and therefore forbidden.
+    RetypedArrayEngine<VirtualType,StoredType>& operator=
+                        (const RetypedArrayEngine<VirtualType,StoredType>&) = delete;
+
     // Return the type name of the engine (i.e. its class name).
     virtual String dataManagerType() const;
 
@@ -504,11 +506,6 @@ private:
     // Copy constructor is only used by clone().
     // (so it is made private).
     RetypedArrayEngine (const RetypedArrayEngine<VirtualType,StoredType>&);
-
-    // Assignment is not needed and therefore forbidden
-    // (so it is made private and not implemented).
-    RetypedArrayEngine<VirtualType,StoredType>& operator=
-                        (const RetypedArrayEngine<VirtualType,StoredType>&);
 
     // Clone the engine object.
     DataManager* clone() const;

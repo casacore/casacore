@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_LOCKFILE_H
 #define CASA_LOCKFILE_H
@@ -318,8 +316,7 @@ private:
     //# The member variables.
     FileLocker   itsLocker;
     FileLocker   itsUseLocker;
-    FiledesIO*   itsFileIO;
-    CanonicalIO* itsCanIO;
+    std::shared_ptr<FiledesIO>   itsFileIO;
     Bool         itsWritable;         //# lock file is writable?
     Bool         itsAddToList;        //# Should acquire add to request list?
     double       itsInterval;         //# interval between inspections

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_PLAINTABLE_H
 #define TABLES_PLAINTABLE_H
@@ -118,6 +116,14 @@ public:
     // The destructor flushes (i.e. writes) the table if it is opened
     // for output and not marked for delete.
     virtual ~PlainTable();
+
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    PlainTable (const PlainTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    PlainTable& operator= (const PlainTable&) = delete;
 
     // Return the layout of a table (i.e. description and #rows).
     // This function has the advantage that only the minimal amount of
@@ -263,16 +269,6 @@ public:
       { return theirTableCache; }
 
 private:
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    PlainTable (const PlainTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    PlainTable& operator= (const PlainTable&);
-
     // Close the object which is called by the destructor.
     void closeObject();
 
@@ -307,7 +303,7 @@ private:
     void checkWritable (const char* func) const;
 
 
-    CountedPtr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
+    std::shared_ptr<ColumnSet> colSetPtr_p;        //# pointer to set of columns
     Bool           tableChanged_p;     //# Has the main data changed?
     Bool           addToCache_p;       //# Is table added to cache?
     TableLockData* lockPtr_p;          //# pointer to lock object

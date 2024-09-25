@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: RegularFileIO.h 20551 2009-03-25 00:11:33Z Malte.Marquarding $
 
 //# Includes
 #include <casacore/casa/IO/MFFileIO.h>
@@ -32,71 +30,77 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-  MFFileIO::MFFileIO (MultiFileBase& file, const String& name,
-                      ByteIO::OpenOption opt)
-    : itsFile     (file),
-      itsPosition (0),
-      itsName     (name)
+  MFFileIO::MFFileIO (const std::shared_ptr<MultiFileBase>& file,
+                      const String& name, ByteIO::OpenOption opt)
+    : itsFile      (file),
+      itsPosition  (0),
+      itsName      (name),
+      itsIsWritable(True)
   {
     if (opt == ByteIO::New  ||  opt == ByteIO::NewNoReplace) {
-      itsId = itsFile.fileId (name, False);
-      if (itsId >= 0) {
-        if (opt == ByteIO::NewNoReplace) {
-          throw AipsError ("MFFileIO: file " + name + " already exists");
-        }
-        itsFile.deleteFile (itsId);
-      }
-      itsId = itsFile.addFile (name);
+      itsId = itsFile->createFile (name, opt);
     } else {
-      itsId = itsFile.fileId (name);
+      itsId = itsFile->openFile (name);
+      itsIsWritable = (opt == ByteIO::Update);
     }
   }
 
   MFFileIO::~MFFileIO()
   {
-    itsFile.flush();
+    itsFile->closeFile (itsId);
   }
 
   void MFFileIO::remove()
   {
-    itsFile.deleteFile (itsId);
+    itsFile->deleteFile (itsId);
     itsId = -1;
   }
 
   Int64 MFFileIO::read (Int64 size, void* buffer, Bool throwException)
   {
-    Int64 n = itsFile.read (itsId, buffer, size, itsPosition);
+    Int64 n = itsFile->read (itsId, buffer, size, itsPosition);
     itsPosition += n;
     if (throwException  &&  n < size) {
       throw AipsError ("MFFileIO::read - incorrect number of bytes ("
 		       + String::toString(n) + " out of "
-                       + String::toString(size) + ") read for file "
-                       + itsName + " in MultiFileBase " + itsFile.fileName());
+                       + String::toString(size) + ") read for logical file "
+                       + itsName + " in MultiFileBase " + itsFile->fileName());
     }
     return n;
   }
 
   void MFFileIO::write (Int64 size, const void* buffer)
   {
-    Int64 n = itsFile.write (itsId, buffer, size, itsPosition);
+    if (!itsIsWritable) {
+      throw AipsError ("Logical file " + itsName + " is not writable " +
+                       "in MultiFileBase " + itsFile->fileName());
+    }
+    Int64 n = itsFile->write (itsId, buffer, size, itsPosition);
     itsPosition += n;
     if (n != size) {
-      throw AipsError ("MFFileIO: write error in " + itsName);
+      throw AipsError ("MFFileIO: write error in logical file " + itsName +
+                       " in MultiFileBase " + itsFile->fileName());
     }
   }
 
   void MFFileIO::reopenRW()
   {
-    itsFile.reopenRW();
+    itsFile->reopenRW();
+    itsIsWritable = True;
   }
 
   void MFFileIO::flush()
   {
-    itsFile.flush();
+    itsFile->flushFile (itsId);
   }
 
   void MFFileIO::fsync()
   {}
+
+  void MFFileIO::truncate (Int64 size)
+  {
+    itsFile->truncate (itsId, size);
+  }
 
   String MFFileIO::fileName() const
   {
@@ -105,7 +109,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   Int64 MFFileIO::length()
   {
-    return itsFile.info()[itsId].fsize;
+    return itsFile->fileSize (itsId);
   }
        
   Bool MFFileIO::isReadable() const
@@ -115,7 +119,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   Bool MFFileIO::isWritable() const
   {
-    return itsFile.isWritable();
+    return itsIsWritable && itsFile->isWritable();
   }
 
   Bool MFFileIO::isSeekable() const
@@ -144,6 +148,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     }
     itsPosition = newPos;
     return newPos;
+  }
+
+  const MultiFileInfo& MFFileIO::getInfo() const
+  {
+    return itsFile->info()[itsId];
   }
 
 

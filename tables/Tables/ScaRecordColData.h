@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SCARECORDCOLDATA_H
 #define TABLES_SCARECORDCOLDATA_H
@@ -103,6 +101,12 @@ public:
 
     ~ScalarRecordColumnData();
 
+    // Copy constructor cannot be used.
+    ScalarRecordColumnData (const ScalarRecordColumnData&) = delete;
+
+    // Assignment cannot be used.
+    ScalarRecordColumnData& operator= (const ScalarRecordColumnData&) = delete;
+
     // Initialize the rows from startRownr till endRownr (inclusive)
     // with the default value defined in the column description.
     virtual void initialize (rownr_t startRownr, rownr_t endRownr);
@@ -143,20 +147,20 @@ public:
     // Add this column and its data to the Sort object.
     // Sorting on records is not supported, so an exception is thrown.
     // <group>
-    virtual void makeSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
+    virtual void makeSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
                               Int order,
-			      CountedPtr<ArrayBase>& dataSave);
+			      std::shared_ptr<ArrayBase>& dataSave);
     // Do it only for the given row numbers.
-    virtual void makeRefSortKey (Sort&, CountedPtr<BaseCompare>& cmpObj,
+    virtual void makeRefSortKey (Sort&, std::shared_ptr<BaseCompare>& cmpObj,
                                  Int order,
                                  const Vector<rownr_t>& rownrs,
-                                 CountedPtr<ArrayBase>& dataSave);
+                                 std::shared_ptr<ArrayBase>& dataSave);
     // </group>
 
     // Allocate value buffers for the table iterator.
     // Iteration based on records is not supported, so an exception is thrown.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       CountedPtr<BaseCompare>& cmpObj);
+			       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);
@@ -164,18 +168,7 @@ public:
     // Create a data manager column object for this column.
     virtual void createDataManagerColumn();
 
-
 private:
-    // Pointer to column description.
-    const ScalarRecordColumnDesc* scaDescPtr_p;
-    
-
-    // Copy constructor cannot be used.
-    ScalarRecordColumnData (const ScalarRecordColumnData&);
-
-    // Assignment cannot be used.
-    ScalarRecordColumnData& operator= (const ScalarRecordColumnData&);
-
     // Write the column data.
     // The control information is written into the given AipsIO object,
     // while the data is written/flushed by the data manager.

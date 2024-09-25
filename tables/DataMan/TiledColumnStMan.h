@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TILEDCOLUMNSTMAN_H
 #define TABLES_TILEDCOLUMNSTMAN_H
@@ -178,6 +176,12 @@ public:
 
     ~TiledColumnStMan();
 
+    // Forbid copy constructor.
+    TiledColumnStMan (const TiledColumnStMan&) = delete;
+
+    // Forbid assignment.
+    TiledColumnStMan& operator= (const TiledColumnStMan&) = delete;
+
     // Clone this object.
     // It does not clone TSMColumn objects possibly used.
     virtual DataManager* clone() const;
@@ -198,12 +202,6 @@ private:
     // This constructor is private, because it should only be used
     // by makeObject.
     TiledColumnStMan();
-
-    // Forbid copy constructor.
-    TiledColumnStMan (const TiledColumnStMan&);
-
-    // Forbid assignment.
-    TiledColumnStMan& operator= (const TiledColumnStMan&);
 
     // Get the (default) tile shape.
     virtual IPosition defaultTileShape() const;

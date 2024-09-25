@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TILEDDATASTMAN_H
 #define TABLES_TILEDDATASTMAN_H
@@ -369,6 +367,12 @@ public:
 
     ~TiledDataStMan();
 
+    // Forbid copy constructor.
+    TiledDataStMan (const TiledDataStMan&) = delete;
+
+    // Forbid assignment.
+    TiledDataStMan& operator= (const TiledDataStMan&) = delete;
+
     // Clone this object.
     // It does not clone TSMColumn objects possibly used.
     DataManager* clone() const;
@@ -386,12 +390,6 @@ private:
     // This constructor is private, because it should only be used
     // by makeObject.
     TiledDataStMan();
-
-    // Forbid copy constructor.
-    TiledDataStMan (const TiledDataStMan&);
-
-    // Forbid assignment.
-    TiledDataStMan& operator= (const TiledDataStMan&);
 
     // Add rows to the storage manager.
     // This will only increase the number of rows. When a hypercube is

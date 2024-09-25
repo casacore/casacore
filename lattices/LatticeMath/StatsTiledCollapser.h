@@ -16,13 +16,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: LatticeStatistics.h 20739 2009-09-29 01:15:15Z Malte.Marquarding $
 
 #ifndef LATTICES_STATSTILEDCOLLAPSER_H
 #define LATTICES_STATSTILEDCOLLAPSER_H
@@ -30,6 +28,7 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
+#include <memory>
 
 namespace casacore {
 
@@ -158,22 +157,22 @@ private:
     // Accumulators for sum, sum squared, number of points
     // minimum, and maximum
 
-    CountedPtr<Block<Double> > _npts;
-    CountedPtr<Block<U> > _sum, _sumSq,
+    std::shared_ptr<Block<Double>> _npts;
+    std::shared_ptr<Block<U>> _sum, _sumSq,
         _mean, _variance, _nvariance, _sigma;
-    CountedPtr<Block<T> > _min, _max;
-    CountedPtr<Block<Bool> > _initMinMax;
+    std::shared_ptr<Block<T>> _min, _max;
+    std::shared_ptr<Block<Bool>> _initMinMax;
 
     uInt64 _n1, _n3;
 
     void _convertNPts(
-        Double*& nptsPtr, CountedPtr<Block<Double> > npts,
-        CountedPtr<Block<DComplex> > nptsComplex
+        Double*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+        std::shared_ptr<Block<DComplex>> nptsComplex
     ) const;
 
     void _convertNPts(
-        DComplex*& nptsPtr, CountedPtr<Block<Double> > npts,
-        CountedPtr<Block<DComplex> > nptsComplex
+        DComplex*& nptsPtr, std::shared_ptr<Block<Double>> npts,
+        std::shared_ptr<Block<DComplex>> nptsComplex
     ) const;
 };
 

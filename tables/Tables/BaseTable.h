@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_BASETABLE_H
 #define TABLES_BASETABLE_H
@@ -35,7 +33,6 @@
 #include <casacore/tables/Tables/TableDesc.h>
 #include <casacore/tables/Tables/StorageOption.h>
 #include <casacore/casa/Utilities/Compare.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/IO/FileLocker.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
@@ -116,7 +113,16 @@ public:
     // Common code shared by the MPI constructor and non-MPI constructor
     void BaseTableCommon (const String& tableName, int tableOption, rownr_t nrrow);
 
+    // The destructor will delete the table if needed.
     virtual ~BaseTable();
+
+    // Copy constructor is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    BaseTable (const BaseTable&) = delete;
+
+    // Assignment is forbidden, because copying a table requires
+    // some more knowledge (like table name of result).
+    BaseTable& operator= (const BaseTable&) = delete;
 
     // Is the table a null table?
     // By default it is not.
@@ -264,7 +270,7 @@ public:
 
     // Get the table description.
     const TableDesc& tableDesc() const
-        { return (tdescPtr_p.null()  ?  makeEmptyTableDesc() : *tdescPtr_p); }
+        { return (!tdescPtr_p  ?  makeEmptyTableDesc() : *tdescPtr_p); }
 
     // Get the actual table description.
     virtual TableDesc actualTableDesc() const = 0;
@@ -382,14 +388,14 @@ public:
     // Sort a table on one or more columns of scalars.
     std::shared_ptr<BaseTable> sort
     (const Block<String>& columnNames,
-     const Block<CountedPtr<BaseCompare> >& compareObjects,
+     const Block<std::shared_ptr<BaseCompare>>& compareObjects,
      const Block<Int>& sortOrder, int sortOption,
      std::shared_ptr<Vector<rownr_t>> sortIterBoundaries = nullptr,
      std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange = nullptr);
 
     // Create an iterator.
     BaseTableIterator* makeIterator (const Block<String>& columnNames,
-                                     const Block<CountedPtr<BaseCompare> >&,
+                                     const Block<std::shared_ptr<BaseCompare>>&,
                                      const Block<Int>& orders, int option,
                                      bool cacheIterationBoundaries = false);
 
@@ -467,16 +473,15 @@ public:
     // Only in RefTable a smarter implementation is provided.
     virtual std::shared_ptr<BaseTable> doSort
     (PtrBlock<BaseColumn*>&,
-     const Block<CountedPtr<BaseCompare> >&,
+     const Block<std::shared_ptr<BaseCompare>>&,
      const Block<Int>& sortOrder,
      int sortOption,
      std::shared_ptr<Vector<rownr_t>> sortIterBoundaries,
      std::shared_ptr<Vector<size_t>> sortIterKeyIdxChange);
 
     // Create a RefTable object.
-    // The returned object can be casted to RefTable using asRefTable() below.
-    std::shared_ptr<BaseTable> makeRefTable (Bool rowOrder,
-                                             rownr_t initialNrrow);
+    std::shared_ptr<RefTable> makeRefTable (Bool rowOrder,
+                                            rownr_t initialNrrow);
 
     // Check if the row number is valid.
     // It throws an exception if out of range.
@@ -491,7 +496,7 @@ protected:
     std::weak_ptr<BaseTable> thisPtr_p; //# pointer to itself (to make shared_ptr)
     rownr_t        nrrow_p;             //# #rows in this table
     rownr_t        nrrowToAdd_p;        //# #rows to be added
-    CountedPtr<TableDesc> tdescPtr_p;   //# Pointer to table description
+    std::shared_ptr<TableDesc> tdescPtr_p;   //# Pointer to table description
     String         name_p;              //# table name
     int            option_p;            //# Table constructor option
     Bool           noWrite_p;           //# False = do not write the table
@@ -510,6 +515,7 @@ protected:
     Bool makeTableDir();
 
     // Make a true deep copy of the table.
+    // The table is flushed before making the copy.
     void trueDeepCopy (const String& newName,
 		       const Record& dataManagerInfo,
                        const StorageOption&,
@@ -549,16 +555,6 @@ protected:
     void getTableInfo();
 
 private:
-    // Copy constructor is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    BaseTable (const BaseTable&);
-
-    // Assignment is forbidden, because copying a table requires
-    // some more knowledge (like table name of result).
-    // Declaring it private, makes it unusable.
-    BaseTable& operator= (const BaseTable&);
-
     // Show a possible extra table structure header.
     // It is used by e.g. RefTable to show which table is referenced.
     virtual void showStructureExtra (std::ostream&) const;

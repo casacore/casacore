@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -139,50 +139,50 @@ protected:
 
     // <group>
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin,
         uInt maskStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMax(
-        CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+        std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
         const DataIterator& dataBegin, const WeightsIterator& weightBegin,
         uInt64 nr, uInt dataStride, const MaskIterator& maskBegin,
         uInt maskStride
@@ -191,54 +191,54 @@ protected:
     // <group>
     // Sometimes we want the min, max, and npts all in one scan.
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin, uInt64 nr,
         uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightsBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride,
         const DataRanges& ranges, Bool isInclude
     ) const;
 
     virtual void _minMaxNpts(
-        uInt64& npts, CountedPtr<AccumType>& mymin,
-        CountedPtr<AccumType>& mymax, const DataIterator& dataBegin,
+        uInt64& npts, std::shared_ptr<AccumType>& mymin,
+        std::shared_ptr<AccumType>& mymax, const DataIterator& dataBegin,
         const WeightsIterator& weightBegin, uInt64 nr, uInt dataStride,
         const MaskIterator& maskBegin, uInt maskStride
     ) const;

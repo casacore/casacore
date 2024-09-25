@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/tables/DataMan/StArrayFile.h>
 #include <casacore/casa/OS/RegularFile.h>
@@ -46,7 +44,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
 				uInt version, Bool bigEndian,
-				uInt bufferSize, MultiFileBase* mfile)
+				uInt bufferSize,
+                                const std::shared_ptr<MultiFileBase>& mfile)
 : leng_p    (16),
   version_p (version),
   hasPut_p  (False)
@@ -60,14 +59,14 @@ StManArrayFile::StManArrayFile (const String& fname, ByteIO::OpenOption fop,
     }
     //# Open file name as input and/or output; throw exception if it fails.
     if (mfile) {
-      file_p = new MFFileIO (*mfile, fname, fop);
+      file_p.reset (new MFFileIO (mfile, fname, fop));
     } else {
-      file_p = new RegularFileIO (RegularFile(fname), fop, bufferSize);
+      file_p.reset (new RegularFileIO (RegularFile(fname), fop, bufferSize));
     }
     if (bigEndian) {
-	iofil_p = new CanonicalIO (file_p);
+      iofil_p.reset (new CanonicalIO (file_p));
     }else{
-	iofil_p = new LECanonicalIO (file_p);
+      iofil_p.reset (new LECanonicalIO (file_p));
     }
     AlwaysAssert (iofil_p != 0, AipsError);
     swput_p = iofil_p->isWritable();
@@ -92,8 +91,6 @@ StManArrayFile::~StManArrayFile ()
 {
     //# Write the version and file length at the beginning.
     flush (False);
-    delete iofil_p;
-    delete file_p;
 }
 
 

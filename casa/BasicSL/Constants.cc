@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/BasicSL/Constants.h>
 
@@ -107,6 +105,8 @@ const Double C::c		= 2.99792458e+08;
 //----------------------------------------------------------------------------
 
 // Metric prefixes (unity):
+const Double C::quetta 		= 1.0e+30;
+const Double C::ronna 		= 1.0e+27;
 const Double C::yotta 		= 1.0e+24;
 const Double C::zetta 		= 1.0e+21;
 const Double C::exa 		= 1.0e+18;
@@ -127,6 +127,8 @@ const Double C::femto 		= 1.0e-15;
 const Double C::atto 		= 1.0e-18;
 const Double C::zepto 		= 1.0e-21;
 const Double C::yocto 		= 1.0e-24;
+const Double C::ronto 		= 1.0e-27;
+const Double C::quecto 		= 1.0e-30;
 
 // Angular measure:
 const Double C::radian         	= 1.0;

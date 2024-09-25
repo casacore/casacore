@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Do not use automatic template instantiation.
 #define CACACORE_NO_AUTO_TEMPLATES
@@ -222,7 +220,7 @@ namespace casacore { //# name space casa begins
     concatImages (images, axis);
   }
 
-  ImageProxy::ImageProxy (const CountedPtr<LatticeBase>& image)
+  ImageProxy::ImageProxy (const std::shared_ptr<LatticeBase>& image)
     : itsLattice       (image),
       itsImageFloat    (0),
       itsImageDouble   (0),
@@ -231,7 +229,7 @@ namespace casacore { //# name space casa begins
       itsCoordSys      (0),
       itsAttrHandler   (0)
   {
-    if (! itsLattice.null()) {
+    if (itsLattice) {
       setup();
     }
   }
@@ -245,7 +243,7 @@ namespace casacore { //# name space casa begins
       itsCoordSys      (0),
       itsAttrHandler   (0)
   {
-    if (! itsLattice.null()) {
+    if (itsLattice) {
       setup();
     }
   }
@@ -255,7 +253,7 @@ namespace casacore { //# name space casa begins
     if (this != &that) {
       close();
       itsLattice = that.itsLattice;
-      if (! itsLattice.null()) {
+      if (itsLattice) {
         setup();
       }
     }
@@ -308,7 +306,7 @@ namespace casacore { //# name space casa begins
 
   void ImageProxy::close()
   {
-    itsLattice       = CountedPtr<LatticeBase>();
+    itsLattice.reset();
     itsImageFloat    = 0;
     itsImageDouble   = 0;
     itsImageComplex  = 0;
@@ -319,7 +317,7 @@ namespace casacore { //# name space casa begins
 
   void ImageProxy::checkNull() const
   {
-    if (itsLattice.null()) {
+    if (!itsLattice) {
       throw AipsError ("ImageProxy does not contain an image object");
     }
   }
@@ -481,14 +479,14 @@ namespace casacore { //# name space casa begins
 
   void ImageProxy::setup (LatticeBase* lattice)
   {
-    itsLattice = lattice;
+    itsLattice.reset (lattice);
     setup();
   }
 
   void ImageProxy::setup()
   {
-    // Get raw pointer from the CountedPtr.
-    LatticeBase* lattice = &(*itsLattice);
+    // Get raw pointer from the std::shared_ptr.
+    LatticeBase* lattice = itsLattice.get();
     switch (lattice->dataType()) {
     case TpFloat:
       itsImageFloat = dynamic_cast<ImageInterface<Float>*>(lattice);

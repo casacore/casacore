@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TSMCOORDCOLUMN_H
 #define TABLES_TSMCOORDCOLUMN_H
@@ -103,6 +101,12 @@ public:
     // Frees up the storage.
     virtual ~TSMCoordColumn();
 
+    // Forbid copy constructor.
+    TSMCoordColumn (const TSMCoordColumn&) = delete;
+
+    // Forbid assignment.
+    TSMCoordColumn& operator= (const TSMCoordColumn&) = delete;
+
     // Set the shape of the coordinate vector in the given row.
     virtual void setShape (rownr_t rownr, const IPosition& shape);
 
@@ -151,12 +155,6 @@ public:
 private:
     // The axis number of the coordinate.
     uInt axisNr_p;
-
-    // Forbid copy constructor.
-    TSMCoordColumn (const TSMCoordColumn&);
-
-    // Forbid assignment.
-    TSMCoordColumn& operator= (const TSMCoordColumn&);
 };
 
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprConeNode.cc 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprConeNode.h>
 #include <casacore/tables/Tables/TableError.h>
@@ -40,8 +38,7 @@ TableExprConeNode::TableExprConeNode (FunctionType ftype, NodeDataType dtype,
                                       const vector<TENShPtr>& nodes,
                                       const Block<Int>& dtypeOper,
                                       uInt origin)
-  : TableExprFuncNode (ftype, dtype, VTScalar, source,
-                       nodes, dtypeOper, Table()),
+  : TableExprFuncNode (ftype, dtype, VTScalar, source, nodes, dtypeOper),
     origin_p          (origin)
 {}
 

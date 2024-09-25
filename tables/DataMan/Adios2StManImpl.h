@@ -19,7 +19,7 @@
 //# Inc., 675 Massachusettes Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -43,17 +43,18 @@ class Adios2StMan::impl
 public:
 
     impl(Adios2StMan &parent,
-         MPI_Comm mpiComm,
+         void *mpiComm,
          std::string engineType,
          std::map<std::string, std::string> engineParams,
          std::vector<std::map<std::string, std::string>> transportParams,
-         std::vector<std::map<std::string, std::string>> operatorParams);
-
-    impl(Adios2StMan &parent, std::string xmlFile, MPI_Comm mpiComm);
+         std::vector<std::map<std::string, std::string>> operatorParams,
+         std::string configFile);
 
     ~impl();
 
+#ifdef HAVE_MPI
     void checkMPI() const;
+#endif
     DataManager *clone() const;
     String dataManagerType() const;
     String dataManagerName() const;
@@ -90,11 +91,11 @@ private:
     std::shared_ptr<adios2::IO> itsAdiosIO;
     std::shared_ptr<adios2::Engine> itsAdiosEngine;
 
+#ifdef HAVE_MPI
     // MPI communicator to be used by all instances of this storage manager
     static MPI_Comm itsMpiComm;
+#endif
 
-    // The ADIOS2 XML configuration file
-    std::string itsAdiosXmlFile;
     // The ADIOS2 Engine type
     std::string itsAdiosEngineType;
     // Parameters for the ADIOS2 engine
@@ -103,6 +104,8 @@ private:
     std::vector<adios2::Params> itsAdiosTransportParamsVec;
     // Parameters for the ADIOS2 operators (compressors)
     std::vector<adios2::Params> itsAdiosOperatorParamsVec;
+    // The ADIOS2 XML configuration file
+    std::string itsAdiosConfigFile;
 
     // The type of this storage manager
     static constexpr const char *DATA_MANAGER_TYPE = "Adios2StMan";
@@ -117,6 +120,7 @@ private:
     // The name of the specification field for the ADIOS2 operator parameters
     static constexpr const char *SPEC_FIELD_OPERATOR_PARAMS = "OPERATORPARAMS";
 
+    void configureAdios();
     uInt ncolumn() const { return parent.ncolumn(); }
     String fileName() const { return parent.fileName(); }
 };

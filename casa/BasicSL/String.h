@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_STRING_H
 #define CASA_STRING_H
@@ -1034,5 +1032,17 @@ inline ostream &operator<<(ostream &s, const String &x) {
 
 
 } //# NAMESPACE CASACORE - END
+
+
+// Define the hash function for String, so unordered_set<String> can be used.
+namespace std {
+template<>
+struct hash<casacore::String>
+{
+  std::size_t operator()(casacore::String const& k) const noexcept
+    { return std::hash<std::string>()(k); }
+};
+
+}
 
 #endif

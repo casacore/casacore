@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Utilities/ValType.h>
 #include <casacore/casa/OS/CanonicalConversion.h>
@@ -462,39 +460,39 @@ ObjCompareFunc* ValType::getCmpFunc (DataType dt)
 }
 
 //# Get the comparison object.
-CountedPtr<BaseCompare> ValType::getCmpObj (DataType dt)
+std::shared_ptr<BaseCompare> ValType::getCmpObj (DataType dt)
 {
     switch (dt) {
     case TpBool:
-        return new ObjCompare<Bool>();
+        return std::make_shared<ObjCompare<Bool>>();
     case TpChar:
-        return new ObjCompare<Char>();
+        return std::make_shared<ObjCompare<Char>>();
     case TpUChar:
-        return new ObjCompare<uChar>();
+        return std::make_shared<ObjCompare<uChar>>();
     case TpShort:
-        return new ObjCompare<Short>();
+        return std::make_shared<ObjCompare<Short>>();
     case TpUShort:
-        return new ObjCompare<uShort>();
+        return std::make_shared<ObjCompare<uShort>>();
     case TpInt:
-        return new ObjCompare<Int>();
+        return std::make_shared<ObjCompare<Int>>();
     case TpUInt:
-        return new ObjCompare<uInt>();
+        return std::make_shared<ObjCompare<uInt>>();
     case TpInt64:
-        return new ObjCompare<Int64>();
+        return std::make_shared<ObjCompare<Int64>>();
     case TpFloat:
-        return new ObjCompare<float>();
+        return std::make_shared<ObjCompare<float>>();
     case TpDouble:
-        return new ObjCompare<double>();
+        return std::make_shared<ObjCompare<double>>();
     case TpComplex:
-        return new ObjCompare<Complex>();
+        return std::make_shared<ObjCompare<Complex>>();
     case TpDComplex:
-        return new ObjCompare<DComplex>();
+        return std::make_shared<ObjCompare<DComplex>>();
     case TpString:
-        return new ObjCompare<String>();
+        return std::make_shared<ObjCompare<String>>();
     default:
 	break;
     }
-    return CountedPtr<BaseCompare>();
+    return std::shared_ptr<BaseCompare>();
 }
 
 } //# NAMESPACE CASACORE - END

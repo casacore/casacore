@@ -16,13 +16,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTICECLEANER_TCC
 #define LATTICES_LATTICECLEANER_TCC
@@ -255,16 +253,16 @@ void LatticeCleaner<T>::update(const Lattice<T> &dirty)
 
 // add a mask image
 template<class T> 
-void LatticeCleaner<T>::setMask(Lattice<T> & mask, const T& maskThreshold) 
+void LatticeCleaner<T>::setMask(const Lattice<T> & mask, const T& maskThreshold)
 {
   itsMaskThreshold = maskThreshold;
-  IPosition maskShape = mask.shape();
-  IPosition dirtyShape = itsDirty->shape();
+  const IPosition maskShape = mask.shape();
+  const IPosition dirtyShape = itsDirty->shape();
 
-  AlwaysAssert((mask.shape() == itsDirty->shape()), AipsError);
+  AlwaysAssert((maskShape == dirtyShape), AipsError);
 
   // This is not needed after the first steps
-  itsMask = new TempLattice<T>(mask.shape(), itsMemoryMB);
+  itsMask = new TempLattice<T>(maskShape, itsMemoryMB);
   itsMask->copyData(mask);
 
   if (itsScalesValid) {

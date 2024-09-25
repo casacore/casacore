@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -31,7 +31,7 @@
 #include <casacore/scimath/StatsFramework/ClassicalStatisticsData.h>
 #include <casacore/scimath/StatsFramework/StatisticsIncrementer.h>
 #include <casacore/scimath/StatsFramework/StatisticsUtilities.h>
-#include <casacore/casa/Utilities/PtrHolder.h>
+#include <memory>
 
 #include <iomanip>
 
@@ -52,7 +52,7 @@ ClassicalStatistics<CASA_STATP>::ClassicalStatistics()
 
 CASA_STATD
 ClassicalStatistics<CASA_STATP>::ClassicalStatistics(
-    CountedPtr<ClassicalQuantileComputer<CASA_STATP>> qc
+    std::shared_ptr<ClassicalQuantileComputer<CASA_STATP>> qc
 ) : StatisticsAlgorithm<CASA_STATP>(),
     _statsData(initializeStatsData<AccumType>()),
     _qComputer(qc) {
@@ -101,8 +101,8 @@ ClassicalStatistics<CASA_STATP>::clone() const {
 
 CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedian(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
     if (_getStatsData().median) {
@@ -111,20 +111,20 @@ AccumType ClassicalStatistics<CASA_STATP>::getMedian(
     uInt64 mynpts;
     AccumType mymin, mymax;
     _doNptsMinMax(mynpts, mymin, mymax, knownNpts, knownMin, knownMax);
-    _getStatsData().median = new AccumType(
+    _getStatsData().median.reset (new AccumType(
         _qComputer->getMedian(
             mynpts, mymin, mymax, binningThreshholdSizeBytes,
             persistSortedArray, nBins
         )
-    );
+    ));
     return *_getStatsData().median;
 }
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_doNptsMinMax(
     uInt64& mynpts, AccumType& mymin, AccumType& mymax,
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax
 ) {
     if (knownMin && knownMax) {
         ThrowIf(
@@ -153,8 +153,8 @@ void ClassicalStatistics<CASA_STATP>::_doNptsMinMax(
 
 CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
     if (_getStatsData().medAbsDevMed) {
@@ -163,31 +163,31 @@ AccumType ClassicalStatistics<CASA_STATP>::getMedianAbsDevMed(
     uInt64 mynpts;
     AccumType mymin, mymax;
     _doNptsMinMax(mynpts, mymin, mymax, knownNpts, knownMin, knownMax);
-    _getStatsData().medAbsDevMed = new AccumType(
+    _getStatsData().medAbsDevMed.reset (new AccumType(
         _qComputer->getMedianAbsDevMed(
             mynpts, mymin, mymax, binningThreshholdSizeBytes,
             persistSortedArray, nBins
         )
-    );
+    ));
     return *_getStatsData().medAbsDevMed;
 }
 
 CASA_STATD
 AccumType ClassicalStatistics<CASA_STATP>::getMedianAndQuantiles(
     std::map<Double, AccumType>& quantiles, const std::set<Double>& fractions,
-    CountedPtr<uInt64> knownNpts, CountedPtr<AccumType> knownMin,
-    CountedPtr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
+    std::shared_ptr<uInt64> knownNpts, std::shared_ptr<AccumType> knownMin,
+    std::shared_ptr<AccumType> knownMax, uInt binningThreshholdSizeBytes,
     Bool persistSortedArray, uInt nBins
 ) {
     uInt64 mynpts;
     AccumType mymin, mymax;
     _doNptsMinMax(mynpts, mymin, mymax, knownNpts, knownMin, knownMax);
-    _getStatsData().median = new AccumType(
+    _getStatsData().median.reset (new AccumType(
         _qComputer->getMedianAndQuantiles(
             quantiles, fractions, mynpts, mymin, mymax,
             binningThreshholdSizeBytes, persistSortedArray, nBins
         )
-    );
+    ));
     return *_getStatsData().median;
 }
 
@@ -203,8 +203,8 @@ void ClassicalStatistics<CASA_STATP>::getMinMax(
             "setCalculateAsAdded(False) on this object"
         );
         _doMinMax(mymin, mymax);
-        _getStatsData().min = new AccumType(mymin);
-        _getStatsData().max = new AccumType(mymax);
+        _getStatsData().min.reset (new AccumType(mymin));
+        _getStatsData().max.reset (new AccumType(mymax));
         return;
     }
     mymin = *_getStatsData().min;
@@ -230,8 +230,8 @@ void ClassicalStatistics<CASA_STATP>::getMinMaxNpts(
                 "setCalculateAsAdded(False) on this object"
             );
             _getStatsData().npts = _doMinMaxNpts(mymin, mymax);
-            _getStatsData().min = new AccumType(mymin);
-            _getStatsData().max = new AccumType(mymax);
+            _getStatsData().min.reset (new AccumType(mymin));
+            _getStatsData().max.reset (new AccumType(mymax));
         }
         else {
             // this will update _getStatsData().min and _getStatsData().max
@@ -264,8 +264,8 @@ uInt64 ClassicalStatistics<CASA_STATP>::getNPts() {
 
 CASA_STATD
 std::map<Double, AccumType> ClassicalStatistics<CASA_STATP>::getQuantiles(
-    const std::set<Double>& fractions, CountedPtr<uInt64> knownNpts,
-    CountedPtr<AccumType> knownMin, CountedPtr<AccumType> knownMax,
+    const std::set<Double>& fractions, std::shared_ptr<uInt64> knownNpts,
+    std::shared_ptr<AccumType> knownMin, std::shared_ptr<AccumType> knownMax,
     uInt binningThreshholdSizeBytes, Bool persistSortedArray, uInt nBins
 ) {
     ThrowIf(
@@ -459,18 +459,18 @@ StatsData<AccumType> ClassicalStatistics<CASA_STATP>::_getStatistics() {
     uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<StatsData<AccumType> > tStats(
+    std::unique_ptr<StatsData<AccumType>[]> tStats(
         new StatsData<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*i;
         tStats[idx8] = _getInitialStats();
         // set nominal max and mins so accumulate
         // doesn't segfault
-        tStats[idx8].min = new AccumType(0);
-        tStats[idx8].max = new AccumType(0);
+        tStats[idx8].min.reset (new AccumType(0));
+        tStats[idx8].max.reset (new AccumType(0));
     }
     while (True) {
         const auto& chunk = ds.initLoopVars();
@@ -847,15 +847,15 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<CountedPtr<AccumType> > tmin(
-        new CountedPtr<AccumType>[
+    std::unique_ptr<std::shared_ptr<AccumType>[]> tmin(
+        new std::shared_ptr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<CountedPtr<AccumType> > tmax(
-        new CountedPtr<AccumType>[
+    std::unique_ptr<std::shared_ptr<AccumType>[]> tmax(
+        new std::shared_ptr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     while (True) {
         const auto& chunk = ds.initLoopVars();
@@ -890,8 +890,8 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
             break;
         }
     }
-    CountedPtr<AccumType> mymax;
-    CountedPtr<AccumType> mymin;
+    std::shared_ptr<AccumType> mymax;
+    std::shared_ptr<AccumType> mymin;
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
         if (tmin[idx8] && (! mymin || *tmin[idx8] < *mymin)) {
@@ -908,7 +908,7 @@ void ClassicalStatistics<CASA_STATP>::_doMinMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeMinMax(
-    CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+    std::shared_ptr<AccumType>& mymax, std::shared_ptr<AccumType>& mymin,
     DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
     uInt64 dataCount, const ChunkType& chunk
 ) {
@@ -980,20 +980,20 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<CountedPtr<AccumType> > tmin(
-        new CountedPtr<AccumType>[
+    std::unique_ptr<std::shared_ptr<AccumType>[]> tmin(
+        new std::shared_ptr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<CountedPtr<AccumType> > tmax(
-        new CountedPtr<AccumType>[
+    std::unique_ptr<std::shared_ptr<AccumType>[]> tmax(
+        new std::shared_ptr<AccumType>[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
-    PtrHolder<uInt64> npts(
+    std::unique_ptr<uInt64[]> npts(
         new uInt64[
             ClassicalStatisticsData::CACHE_PADDING*nThreadsMax
-        ], True
+        ]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -1032,7 +1032,7 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(
             break;
         }
     }
-    CountedPtr<AccumType> mymin, mymax;
+    std::shared_ptr<AccumType> mymin, mymax;
     uInt64 myNpts = 0;
     for (uInt i=0; i<nThreadsMax; ++i) {
         uInt idx8 = i * ClassicalStatisticsData::CACHE_PADDING;
@@ -1052,7 +1052,7 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doMinMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_computeMinMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymax, CountedPtr<AccumType>& mymin,
+    uInt64& npts, std::shared_ptr<AccumType>& mymax, std::shared_ptr<AccumType>& mymin,
     DataIterator dataIter, MaskIterator maskIter, WeightsIterator weightsIter,
     uInt64 dataCount, const ChunkType& chunk
 ) {
@@ -1124,8 +1124,8 @@ uInt64 ClassicalStatistics<CASA_STATP>::_doNpts() {
     const uInt nThreadsMax = StatisticsUtilities<AccumType>::nThreadsMax(
         ds.getDataProvider()
     );
-    PtrHolder<uInt64> npts(
-        new uInt64[ClassicalStatisticsData::CACHE_PADDING*nThreadsMax], True
+    std::unique_ptr<uInt64[]> npts(
+        new uInt64[ClassicalStatisticsData::CACHE_PADDING*nThreadsMax]
     );
     for (uInt tid=0; tid<nThreadsMax; ++tid) {
         uInt idx8 = ClassicalStatisticsData::CACHE_PADDING*tid;
@@ -1247,13 +1247,13 @@ void ClassicalStatistics<CASA_STATP>::_computeNpts(
         } \
     } \
     else { \
-        mymin = new AccumType(*datum); \
-        mymax = new AccumType(*datum); \
+        mymin.reset (new AccumType(*datum));      \
+        mymax.reset (new AccumType(*datum));      \
     }
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     auto datum = dataBegin;
@@ -1266,7 +1266,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -1288,7 +1288,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -1307,7 +1307,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -1333,7 +1333,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride
 ) const {
@@ -1352,7 +1352,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -1378,7 +1378,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -1406,7 +1406,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMax(
-    CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -1431,7 +1431,7 @@ void ClassicalStatistics<CASA_STATP>::_minMax(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride
 ) const {
     auto datum = dataBegin;
@@ -1447,7 +1447,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const DataRanges& ranges, Bool isInclude
 ) const {
@@ -1469,7 +1469,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -1488,7 +1488,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, uInt64 nr, uInt dataStride,
     const MaskIterator& maskBegin, uInt maskStride, const DataRanges& ranges,
     Bool isInclude
@@ -1514,7 +1514,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride
 ) const {
@@ -1533,7 +1533,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const DataRanges& ranges, Bool isInclude
 ) const {
@@ -1559,7 +1559,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightsBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride,
     const DataRanges& ranges, Bool isInclude
@@ -1587,7 +1587,7 @@ void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
 
 CASA_STATD
 void ClassicalStatistics<CASA_STATP>::_minMaxNpts(
-    uInt64& npts, CountedPtr<AccumType>& mymin, CountedPtr<AccumType>& mymax,
+    uInt64& npts, std::shared_ptr<AccumType>& mymin, std::shared_ptr<AccumType>& mymax,
     const DataIterator& dataBegin, const WeightsIterator& weightBegin,
     uInt64 nr, uInt dataStride, const MaskIterator& maskBegin, uInt maskStride
 ) const {
@@ -1627,7 +1627,7 @@ void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
         if (! same) {
             // make a copy, do not assign one pointer to another
             stats.maxpos = threadStats.maxpos;
-            stats.max = new AccumType(*threadStats.max);
+            stats.max.reset (new AccumType(*threadStats.max));
         }
         dataProvider->updateMaxPos(stats.maxpos);
     }
@@ -1638,7 +1638,7 @@ void ClassicalStatistics<CASA_STATP>::_updateDataProviderMaxMin(
         if (! same) {
             // make a copy, do not assign one pointer to another
             stats.minpos = threadStats.minpos;
-            stats.min = new AccumType(*threadStats.min);
+            stats.min.reset (new AccumType(*threadStats.min));
         }
         dataProvider->updateMinPos(stats.minpos);
     }

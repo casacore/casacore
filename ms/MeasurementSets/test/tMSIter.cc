@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 
@@ -232,8 +230,8 @@ void iter2MSMemory (double binwidth)
 void iterMSGenericSortFuncAlwaysTrue ()
 {
   MeasurementSet ms("tMSIter_tmp.ms");
-  CountedPtr<BaseCompare> alwaysTrue(new CompareAlwaysTrue());
-  std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+  std::shared_ptr<BaseCompare> alwaysTrue(new CompareAlwaysTrue());
+  std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
   sortCols.push_back(std::make_pair("ANTENNA1", alwaysTrue));
   MSIter msIter(ms, sortCols);
   size_t niter = 0;
@@ -276,8 +274,8 @@ public:
 void iterMSGenericSortFuncAntennaGrouping ()
 {
   MeasurementSet ms("tMSIter_tmp.ms");
-  CountedPtr<BaseCompare> antennaCluster(new CompareAntennaGrouping());
-  std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+  std::shared_ptr<BaseCompare> antennaCluster(new CompareAntennaGrouping());
+  std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
   sortCols.push_back(std::make_pair("ANTENNA1", antennaCluster));
   MSIter msIter(ms, sortCols);
   size_t nAnt01 = 0;
@@ -421,7 +419,7 @@ void iterMSCachedDDFeedInfo ()
     if(useGenericSortCons)
     {
       // Use constructor with generic sorting definitions
-      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
       sortCols.push_back(std::make_pair("DATA_DESC_ID", nullptr));
       msIter.reset(new MSIter(ms, sortCols));
     }
@@ -530,7 +528,7 @@ void iterMSCachedDDFeedInfo ()
     if(useGenericSortCons)
     {
       // Use constructor with generic sorting definitions
-      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
       sortCols.push_back(std::make_pair("DATA_DESC_ID", nullptr));
       sortCols.push_back(std::make_pair("ANTENNA1", nullptr));
       msIter.reset(new MSIter(ms, sortCols));
@@ -661,7 +659,7 @@ void iterMSCachedDDFeedInfo ()
     if(useGenericSortCons)
     {
       // Use constructor with generic sorting definitions
-      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
       sortCols.push_back(std::make_pair("TIME", nullptr));
       msIter.reset(new MSIter(ms, sortCols));
     }
@@ -791,7 +789,7 @@ void iterMSCachedFieldInfo ()
     if(useGenericSortCons)
     {
       // Use constructor with generic sorting definitions
-      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
       sortCols.push_back(std::make_pair("FIELD_ID", nullptr));
       msIter.reset(new MSIter(ms, sortCols));
     }
@@ -840,7 +838,7 @@ void iterMSCachedFieldInfo ()
     if(useGenericSortCons)
     {
       // Use constructor with generic sorting definitions
-      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
       sortCols.push_back(std::make_pair("FIELD_ID", nullptr));
       sortCols.push_back(std::make_pair("ANTENNA1", nullptr));
       msIter.reset(new MSIter(ms, sortCols));
@@ -903,7 +901,7 @@ void iterMSCachedFieldInfo ()
     if(useGenericSortCons)
     {
       // Use constructor with generic sorting definitions
-      std::vector<std::pair<String, CountedPtr<BaseCompare>>> sortCols;
+      std::vector<std::pair<String, std::shared_ptr<BaseCompare>>> sortCols;
       sortCols.push_back(std::make_pair("TIME", nullptr));
       msIter.reset(new MSIter(ms, sortCols));
     }

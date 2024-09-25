@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/casa/aips.h>
@@ -354,8 +352,7 @@ int main() {
       val1f[0] = 1;
       for (uInt j1=1; j1<6; j1++) val1f[j1] = val1f[j1-1]*511;
       lsq5.makeNorm(val1f, 1.0f, val12f[511]);
-      MemoryIO memio;
-      AipsIO aio(&memio);
+      AipsIO aio(std::make_shared<MemoryIO>());
       lsq5.toAipsIO (aio);
       LSQFit lsq6;
       aio.setpos (0);

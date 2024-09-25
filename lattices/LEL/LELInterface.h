@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELINTERFACE_H
 #define LATTICES_LELINTERFACE_H
@@ -33,9 +31,9 @@
 #include <casacore/casa/aips.h>
 #include <casacore/lattices/LEL/LELAttribute.h>
 #include <casacore/casa/Arrays/IPosition.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/IO/FileLocker.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -190,7 +188,7 @@ public:
 // If the given expression is a valid scalar, replace it by its result.
 // It returns False if the expression is no scalar or if the expression
 // is an invalid scalar (i.e. with a False mask).
-   static Bool replaceScalarExpr (CountedPtr<LELInterface<T> >& expr);
+   static Bool replaceScalarExpr (std::shared_ptr<LELInterface<T>>& expr);
 
   // Handle locking/syncing of the parts of a lattice expression.
   // <br>By default the functions do not do anything at all.

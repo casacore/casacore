@@ -5159,6 +5159,21 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
         if (regex_search(name[i], match, sw)) {
             spwInfo[i].sw = stoi(match.str(1));
         }
+        // CAS-13973 for ALMA get subwindow and receiver band
+        spwInfo[i].rb = -1;
+        if (regex_search(name[i], match, rb)) {
+            spwInfo[i].rb = stoi(match.str(1));
+        }
+        else {
+            if (! freqBands) {
+                freqBands = _almaReceiverBands(nrows);
+            }
+            spwInfo[i].rb = (*freqBands)[i];
+        }
+        spwInfo[i].sw = -1;
+        if (regex_search(name[i], match, sw)) {
+            spwInfo[i].sw = stoi(match.str(1));
+        }
     }
     wvrSpw = wvrSecond.empty() ? wvrFirst : wvrSecond;
     return spwInfo;

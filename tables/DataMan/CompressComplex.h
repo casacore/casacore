@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_COMPRESSCOMPLEX_H
 #define TABLES_COMPRESSCOMPLEX_H
@@ -173,6 +171,9 @@ public:
   // Destructor is mandatory.
   ~CompressComplex();
 
+  // Assignment is not needed and therefore forbidden
+  CompressComplex& operator= (const CompressComplex&) = delete;
+
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
@@ -192,14 +193,10 @@ public:
 
 protected:
   // Copy constructor is only used by clone() and derived class.
-  // (so it is made private).
+  // (so it is made protected).
   CompressComplex (const CompressComplex&);
 
 private:
-  // Assignment is not needed and therefore forbidden
-  // (so it is made private and not implemented).
-  CompressComplex& operator= (const CompressComplex&);
-
   // Clone the engine object.
   virtual DataManager* clone() const;
 
@@ -468,6 +465,9 @@ public:
   // Destructor is mandatory.
   ~CompressComplexSD();
 
+  // Assignment is not needed and therefore forbidden
+  CompressComplexSD& operator= (const CompressComplexSD&) = delete;
+
   // Return the type name of the engine (i.e. its class name).
   virtual String dataManagerType() const;
 
@@ -483,10 +483,6 @@ private:
   // Copy constructor is only used by clone().
   // (so it is made private).
   CompressComplexSD (const CompressComplexSD&);
-
-  // Assignment is not needed and therefore forbidden
-  // (so it is made private and not implemented).
-  CompressComplexSD& operator= (const CompressComplexSD&);
 
   // Clone the engine object.
   virtual DataManager* clone() const;

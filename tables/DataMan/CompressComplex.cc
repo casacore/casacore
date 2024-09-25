@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 #include <casacore/tables/DataMan/CompressComplex.h>
@@ -793,19 +791,11 @@ void CompressComplexSD::scaleOnPut (Float scale, Float offset,
       Int s;
       Float tmp = (in[i].real() - offset) / fullScale;
       if (tmp < 0) {
-	float f = ceil(tmp - 0.5);
-	if (f < -32768*32768) {
-	  s = -32768*32768;
-	} else {
-	  s = Int(f);
-	}
+	double f = ceil(tmp - 0.5);
+        s = static_cast<Int>(std::max(f, -32768.*32768));
       } else {
-	float f = floor(tmp + 0.5);
-	if (f > 32768*32768-1) {
-	  s = 32768*32768-1;
-	} else {
-	  s = Int(f);
-	}
+	double f = floor(tmp + 0.5);
+        s = static_cast<Int>(std::min(f, 32768.*32768-1));
       }
       // Shift 1 bit to left and make last bit 0 indicating that imag==0.
       out[i] = s<<1;

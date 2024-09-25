@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/tables/DataMan/TiledFileAccess.h>
@@ -55,8 +53,9 @@ int main()
     {
       Bool deleteIt;
       const Float* dataPtr = arr.getStorage (deleteIt);
-      RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
-      CanonicalIO ios (&fios);
+      std::shared_ptr<ByteIO> fios
+        (new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
+      CanonicalIO ios (fios);
       ios.write (shape.product(), dataPtr);
       arr.freeStorage (dataPtr, deleteIt);
     }
@@ -94,8 +93,9 @@ int main()
     {
       Bool deleteIt;
       const Float* dataPtr = arr.getStorage (deleteIt);
-      RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
-      RawIO ios (&fios);
+      std::shared_ptr<ByteIO> fios
+        (new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
+      RawIO ios (fios);
       uChar nr  = 0;
       off2 = ios.write (1, &nr);
       ios.write (shape.product(), dataPtr);
@@ -134,10 +134,11 @@ int main()
     {
       Bool deleteIt;
       const DComplex* dataPtr = arr.getStorage (deleteIt);
-      RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
-      CanonicalIO ios (&fios);
+      std::shared_ptr<ByteIO> fios
+        (new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
+      CanonicalIO ios (fios);
       off2 = ios.write (shape.product(), dataPtr);
-      RawIO cios (&fios);
+      RawIO cios (fios);
       cios.write (shape.product(), dataPtr);
       arr.freeStorage (dataPtr, deleteIt);
     }
@@ -200,8 +201,9 @@ int main()
     {
       Bool deleteIt;
       const uChar* dataPtr = arrs.getStorage (deleteIt);
-      RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
-      CanonicalIO ios (&fios);
+      std::shared_ptr<ByteIO> fios
+        (new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
+      CanonicalIO ios (fios);
       ios.write (shape.product(), dataPtr);
       arrs.freeStorage (dataPtr, deleteIt);
     }
@@ -234,8 +236,9 @@ int main()
     {
       Bool deleteIt;
       const Short* dataPtr = arrs.getStorage (deleteIt);
-      RegularFileIO fios(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New);
-      CanonicalIO ios (&fios);
+      std::shared_ptr<ByteIO> fios
+        (new RegularFileIO(RegularFile("tTiledFileAccess_tmp.dat"), ByteIO::New));
+      CanonicalIO ios (fios);
       ios.write (shape.product(), dataPtr);
       arrs.freeStorage (dataPtr, deleteIt);
     }

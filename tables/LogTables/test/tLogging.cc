@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/Logging/LogFilter.h>
@@ -313,7 +311,7 @@ void testLogSink()
     LogSink::globalSink(newGlobal);
     AlwaysAssertExit(!newGlobal);
     // static LogSinkInterface &globalSink();
-    AlwaysAssertExit(copy = &LogSink::globalSink());
+    AlwaysAssertExit(copy == &LogSink::globalSink());
     LogMessage message;
     message.message("test");
     // Bool post(const LogMessage &message);

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: UDFBase.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef TABLES_UDFBASE_H
 #define TABLES_UDFBASE_H
@@ -271,11 +269,8 @@ namespace casacore {
     const Record& getAttributes() const
       { return itsAttributes; }
 
-    // Get the nodes in the function operands representing an aggregate function.
-    void getAggrNodes (vector<TableExprNodeRep*>& aggr);
-
-    // Get the nodes in the function operands representing a table column.
-    void getColumnNodes (vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&);
   
   private:
     // Set up the function object.
@@ -332,7 +327,7 @@ namespace casacore {
 
     // Initialize the function object.
     void init (const std::vector<TENShPtr>& arg,
-               const Table& table, const TaQLStyle&);
+               const TableExprInfo& tableInfo, const TaQLStyle&);
 
     // Get the data type.
     TableExprNodeRep::NodeDataType dataType() const

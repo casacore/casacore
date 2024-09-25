@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_BASESINKSOURCE_H
 #define CASA_BASESINKSOURCE_H
@@ -31,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/TypeIO.h>
 #include <casacore/casa/IO/ByteIO.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -83,11 +81,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class BaseSinkSource
 {
 public: 
-    // This functions returns a reference to itsTypeIO.
-    // <group>
-    TypeIO& typeIO();
-    const TypeIO& typeIO() const;
-    // </group>
+    // This functions returns the shared pointer to itsTypeIO.
+    const std::shared_ptr<TypeIO>& typeIO() const
+      { return itsTypeIO; }
 
     // This function sets the position on the given offset.
     // The seek option defines from which position the seek is done.
@@ -111,10 +107,9 @@ public:
 protected:
     BaseSinkSource();
 
-    // Construct using the given TypeIO. If takeOver is true the this class
-    // will delete the supplied pointer. Otherwise the caller is responsible
-    // for this.
-    BaseSinkSource (TypeIO* typeIO, Bool takeOver=False);
+    // Construct using the given TypeIO.
+    // The constructor does not copy the object, but only keeps a pointer to it.
+    BaseSinkSource (const std::shared_ptr<TypeIO>& typeIO);
 
     // The copy constructor uses reference semantics
     BaseSinkSource (const BaseSinkSource& BaseSinkSource);
@@ -126,7 +121,7 @@ protected:
 
 
     // This variable keeps a pointer to a TypeIO.
-    CountedPtr<TypeIO> itsTypeIO;
+    std::shared_ptr<TypeIO> itsTypeIO;
 };
 
 

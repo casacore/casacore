@@ -17,13 +17,11 @@
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/msfits/MSFits/FitsIDItoMS.h> 
 #include <casacore/casa/IO/ArrayIO.h> 
@@ -160,6 +158,7 @@ Bool FITSIDItoMS1::firstSyscal = True; // initialize the class variable firstSys
 Bool FITSIDItoMS1::firstWeather = True; // initialize the class variable firstWeather
 Bool FITSIDItoMS1::firstGainCurve = True; // initialize the class variable firstGainCurve
 Bool FITSIDItoMS1::firstPhaseCal = True; // initialize the class variable firstPhaseCal
+Bool FITSIDItoMS1::firstEOP = True; // initialize the class variable firstEOP
 Double FITSIDItoMS1::rdate = 0.; // initialize the class variable rdate
 String FITSIDItoMS1::array_p = ""; // initialize the class variable array_p
 std::map<Int,Int> FITSIDItoMS1::antIdFromNo; // initialize the class variable antIdFromNo
@@ -169,7 +168,9 @@ Vector<Double> FITSIDItoMS1::effChBw;
 //	
 // Constructor
 //	
-FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int& obsType, const Bool& initFirstMain)
+FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
+			   const Int& obsType, const Bool& initFirstMain,
+			   const Float& vanVleck, const Float& corVer)
   : BinaryTableExtension(fitsin),
     itsNrMSKs(10),
     itsMSKC(itsNrMSKs," "),
@@ -179,6 +180,8 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int&
     ///infile_p(fitsin),
     itsObsType(obsType),
     itsCorrelat(correlat),
+    itsVanVleck(vanVleck),
+    itsCorVer(corVer),
     msc_p(0)
 {
 
@@ -218,7 +221,9 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat, const Int&
   //
   
   convertKeywords();      
-  
+
+  if (itsCorrelat.length() == 0 && array_p == "VLBA")
+    itsCorrelat = "VLBA";
   
   // 
   // Step 1a: Read the table.info from the MSK table keywords TYPE,
@@ -867,8 +872,11 @@ void FITSIDItoMS1::describeColumns()
 
 	weightypKwPresent_p = False;
 	weightyp_p = "";
+	if (itsCorrelat == "DIFX" || itsCorrelat == "VLBA")
+	  weightyp_p = "CORRELAT";
 	nStokes_p = 1;
 	nBand_p = 1;
+	visScl_p = 1.0;
 
         while((kw = kwl.next())){
 	    kwname = kw->name();
@@ -895,6 +903,9 @@ void FITSIDItoMS1::describeColumns()
 			  << "\" in UV_DATA table. Presently this keyword is ignored."
 			  << LogIO::POST;
 		}
+	    }
+	    else if(kwname.at(0,8)=="VIS_SCAL"){
+		visScl_p = kw->asDouble();
 	    }
 	}
 
@@ -1579,7 +1590,8 @@ void FITSIDItoMS1::getAxisInfo()
 void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM, 
 				       Bool mainTbl, Bool addCorrMod,
 				       Bool addSyscal, Bool addWeather,
-				       Bool addGainCurve, Bool addPhaseCal) {
+				       Bool addGainCurve, Bool addPhaseCal,
+				       Bool addEOP) {
   
   Int nCorr = 0;
   Int nChan = 0;
@@ -1825,6 +1837,29 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
     cableCalTqd.write(td);
     SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
     ms.rwKeywordSet().defineTable("PHASE_CAL", Table(tableSetup));
+  }
+
+  if(addEOP){
+    TableDesc td;
+    String name = "EARTH_ORIENTATION";
+
+    td.comment() = "Earth orientation parameters table";
+    td.addColumn(ScalarColumnDesc<Double>("TIME", "Time for which this set of parameters is accurate"));
+    td.addColumn(ScalarColumnDesc<Int>("OBSERVATION_ID", "Observation identifier"));
+    td.addColumn(ScalarColumnDesc<Double>("UT1_UTC", "UT1-UTC"));
+    td.addColumn(ArrayColumnDesc<Double>("PM", "Position of celestial pole"));
+    td.addColumn(ScalarColumnDesc<String>("TYPE", "EOP type"));
+    TableMeasValueDesc measVal(td, "TIME");
+    TableMeasDesc<MEpoch> measCol(measVal);
+    measCol.write(td);
+    TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+    timeTqd.write(td);
+    TableQuantumDesc ut1utcTqd(td, "UT1_UTC", Unit("s"));
+    ut1utcTqd.write(td);
+    TableQuantumDesc pmTqd(td, "PM", Unit("rad"));
+    pmTqd.write(td);
+    SetupNewTable tableSetup(ms.tableName() + "/" + name, td, option);
+    ms.rwKeywordSet().defineTable("EARTH_ORIENTATION", Table(tableSetup));
   }
 
   // update the references to the subtable keywords
@@ -2149,6 +2184,10 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       nIF_p=1;
     }
     
+    Double weightScale = visScl_p;
+    if (itsCorrelat == "VLBA" && itsCorVer >= 4.17)
+      weightScale *= interval;
+
     //cout <<"ifnomax ="<<max(1,nIF_p)<<endl;
 
     for (Int ifno=0; ifno<max(1,nIF_p); ifno++) {
@@ -2218,11 +2257,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       // own cosine tranform based on an FFT.  And this code simply
       // uses the expressions for rho_2 and rho_4 given in the
       // literature instead of using a lookup table.
-      if (itsCorrelat == "DIFX") {
+      if (itsCorrelat == "DIFX" || itsCorrelat == "VLBA") {
 	const double A = 5.36;
 	const Double H = 0.87890625;
 	Double bfacta, bfactc;
-	Double Rm, gamma, alfa;
+	Double Rm, gamma, alfa, sat;
 	Double (*rho)(Double) = NULL;
 
 	if (digiLevels[ant1] == 4 && digiLevels[ant2] == 4) {
@@ -2247,6 +2286,11 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  Rm = 1.0 / (A * H);
 	  alfa = 1.0;
 	  gamma = 1.0;
+	}
+
+	if (itsVanVleck != 0.0) {
+	  alfa = 1.0;
+	  rho = NULL;
 	}
 
 	bfactc = (gamma*gamma) / (A * Rm * alfa * H);
@@ -2283,8 +2327,14 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	      // Cosine transform back to frequency domain
 	      redftPlan.Execute(fftOut.data(), fftIn.data());
 
-	      for (Int chan=0; chan<nChan; chan++)
-		vis(p, chan) = fftIn[chan] / (2*nChan);
+	      for (Int chan=0; chan<nChan; chan++) {
+		if (itsCorrelat == "VLBA")
+		  sat = 1.0 + (nCorr > 2 ? 0.25 : 0.125) * weightSpec(p, chan);
+		else
+		  sat = 1.0;
+
+		vis(p, chan) = sat * fftIn[chan] / (2*nChan);
+	      }
 	    } else {
 	      for (Int chan=0; chan<nChan; chan++)
 		vis(p, chan) *= Complex(bfactc);
@@ -2294,7 +2344,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
       }
 
       if (weightyp_p == "CORRELAT")
-	vis /= weightSpec;
+	vis /= ((Float)weightScale * weightSpec);
 
       // determine the spectralWindowId
       Int spW = ifno;
@@ -2319,9 +2369,9 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  const Int p = corrIndex_p[pol];
 
 	  if (ant1 == ant2)
-	    weightSpec(p, chan) *= interval * effChBw(spW);
+	    weightSpec(p, chan) *= visScl_p * interval * effChBw(spW);
 	  else
-	    weightSpec(p, chan) *= 2 * interval * effChBw(spW);
+	    weightSpec(p, chan) *= visScl_p * 2 * interval * effChBw(spW);
 
 	  if (weightSpec(p, chan) > 0.0)
 	    sigmaSpec(p, chan) = 1.0f / sqrt(weightSpec(p, chan));
@@ -2728,7 +2778,7 @@ void FITSIDItoMS1::fillFeedTable() {
     polaaS.attach(anTab, "POLAA");
     polabS.attach(anTab, "POLAB");
     POLAisScalar = True;
-    *itsLog << LogIO::WARN << "Treating POLAA and POLAB columns in input ANTENNA table as scalar," 
+    *itsLog << LogIO::NORMAL << "Treating POLAA and POLAB columns in input ANTENNA table as scalar,"
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }
 
@@ -2909,8 +2959,9 @@ void FITSIDItoMS1::fillSpectralWindowTable()
   //cout << "nRow=" << nRow << endl;
 
 
-  Int nSpW = nIF_p;
+  Int nSpW = nIF_p * nRow;
   effChBw.resize(nSpW);
+  nFreqid_p = nRow;
 
   // The type of the column changes according to the number of entries
   if (nIF_p==1) {
@@ -2997,7 +3048,7 @@ void FITSIDItoMS1::fillFieldTable()
     id.attach(suTab, "SOURCE_ID");
   }
   else if(suTab.tableDesc().isColumn("ID_NO.")){
-    *itsLog << LogIO::WARN << "No SOURCE_ID column in input SOURCE table. Using deprecated ID_NO column."
+    *itsLog << LogIO::NORMAL << "No SOURCE_ID column in input SOURCE table. Using deprecated ID_NO column."
 	    << LogIO::POST;
     id.attach(suTab, "ID_NO.");
   }
@@ -3042,7 +3093,7 @@ void FITSIDItoMS1::fillFieldTable()
     }
     catch(std::exception& x){
       foffsetD.attach(suTab,"FREQOFF"); // fq. offset  
-      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      *itsLog << LogIO::NORMAL << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
     sysvel.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreq.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
@@ -3058,11 +3109,11 @@ void FITSIDItoMS1::fillFieldTable()
     }
     catch(std::exception& x){
       foffsetSD.attach(suTab,"FREQOFF"); // fq. offset  
-      *itsLog << LogIO::WARN << "Column FREQOFF is Double but should be Float." << LogIO::POST;
+      *itsLog << LogIO::NORMAL << "Column FREQOFF is Double but should be Float." << LogIO::POST;
     }
     sysvelS.attach(suTab,"SYSVEL"); // sys vel. (m/s)  
     restfreqS.attach(suTab,"RESTFREQ"); // rest freq. (hz)  
-    *itsLog << LogIO::WARN << "Treating ?FLUX, ALPHA, FREQOFF, SYSVEL, and RESTFREQ columns in input SOURCE table as scalar,"
+    *itsLog << LogIO::NORMAL << "Treating ?FLUX, ALPHA, FREQOFF, SYSVEL, and RESTFREQ columns in input SOURCE table as scalar,"
 	    << endl << " i.e. using same value for all bands." << LogIO::POST;
   }      
 
@@ -3209,7 +3260,10 @@ Bool FITSIDItoMS1::fillCorrelatorModelTable()
   *itsLog << LogOrigin("FitsIDItoMS()", "fillCorrelatorModelTable");
 //  MSCorrelatorModelColumns& msCorrMod(msc_p->correlatorModel());
   *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
+
+  Table imTab = oldfullTable("");
+
+  return True;
 
 }
 
@@ -3257,7 +3311,7 @@ Bool FITSIDItoMS1::fillSysCalTable()
     }
     TSYSisScalar=True;
     if (nIF > 1) {
-      *itsLog << LogIO::WARN << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
+      *itsLog << LogIO::NORMAL << "Treating TSYS_1 and TSYS_2 columns in input SYSTEM_TEMPERATURE table as scalar,"
 	      << endl << " i.e. using same value for all bands." << LogIO::POST;
     }
   }
@@ -3304,6 +3358,7 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
   kwl.first();
   Int noSTKD = 0;
   Int firstSTK = -1;
+  Int nIF = 1;
   while ((fkw = kwl.next())){
     kwname = fkw->name();
     if (kwname == "NO_STKD") {
@@ -3313,6 +3368,10 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     if (kwname == "STK_1") {
       firstSTK = fkw->asInt();
       //cout << kwname << "=" << firstSTK << endl;
+    }
+    if (kwname == "NO_BAND") {
+      nIF = fkw->asInt();
+      //cout << kwname << "=" << nIF << endl;
     }
   }
 
@@ -3351,11 +3410,6 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     // Check whether flag specification is supported; skip row if it isn't.
     if (array(inRow) != 0) {
       *itsLog << LogIO::SEVERE << "Flagging by array number not supported"
-	      << LogIO::POST;
-      continue;
-    }
-    if (fqid(inRow) != -1 && fqid(inRow) != 0) {
-      *itsLog << LogIO::SEVERE << "Flagging by frequency setup not supported"
 	      << LogIO::POST;
       continue;
     }
@@ -3415,17 +3469,25 @@ Bool FITSIDItoMS1::fillFlagCmdTable()
     ostringstream spw;
     Vector<Int> bandsV;
     Bool needSpw = False;
+    Int startFreqid = 0;
+    Int endFreqid = 0;
+    if (fqid(inRow) > 0)
+      startFreqid = endFreqid = fqid(inRow) - 1;
+    else if (nFreqid_p > 0)
+      endFreqid = nFreqid_p - 1;
     if (BANDSisScalar)
       bandsV = Vector<Int>(1, bandsS(inRow));
     else
       bandsV = bands(inRow);
-    for (int band = 0; band < bandsV.shape()(0); band++) {
-      if (bandsV[band]) {
-	if (spw.str().size() > 0)
-	  spw << ",";
-	spw << band;
-      } else {
-	needSpw = True;
+    for (int freqid = startFreqid; freqid <= endFreqid; freqid++) {
+      for (int band = 0; band < bandsV.shape()(0); band++) {
+	if (bandsV[band]) {
+	  if (spw.str().size() > 0)
+	    spw << ",";
+	  spw << (freqid * nIF) + band;
+	} else {
+	  needSpw = True;
+	}
       }
     }
     if (!needSpw)
@@ -3622,7 +3684,7 @@ Bool FITSIDItoMS1::handleGainCurve()
     }
     GCisScalar=True;
     if (nIF > 1) {
-      *itsLog << LogIO::WARN << "Treating columns in input GAIN_CURVE table as scalar,"
+      *itsLog << LogIO::NORMAL << "Treating columns in input GAIN_CURVE table as scalar,"
 	      << endl << " i.e. using same value for all bands." << LogIO::POST;
     }
   }
@@ -3906,14 +3968,103 @@ Bool FITSIDItoMS1::handlePhaseCal()
   return True;
 }
 
+Bool FITSIDItoMS1::handleCalc()
+{
+  *itsLog << LogOrigin("FitsIDItoMS()", "handleCalc");
+
+  TableDesc td;
+  String name = "EARTH_ORIENTATION";
+
+  td.comment() = "Earth Orientation Parameters table";
+  td.addColumn(ScalarColumnDesc<Double>("TIME", "Time for which this set of parameters is accurate"));
+  td.addColumn(ScalarColumnDesc<Int>("OBSERVATION_ID", "Observation identifier"));
+  td.addColumn(ScalarColumnDesc<Double>("UT1_UTC", "UT1-UTC"));
+  td.addColumn(ArrayColumnDesc<Double>("PM", "Position of celestial pole"));
+  td.addColumn(ScalarColumnDesc<String>("TYPE", "EOP type"));
+  TableMeasValueDesc measVal(td, "TIME");
+  TableMeasDesc<MEpoch> measCol(measVal);
+  measCol.write(td);
+  TableQuantumDesc timeTqd(td, "TIME", Unit("s"));
+  timeTqd.write(td);
+  TableQuantumDesc ut1utcTqd(td, "UT1_UTC", Unit("s"));
+  ut1utcTqd.write(td);
+  TableQuantumDesc pmTqd(td, "PM", Unit("rad"));
+  pmTqd.write(td);
+  SetupNewTable tableSetup(ms_p.tableName() + "/" + name, td, Table::New);
+  ms_p.rwKeywordSet().defineTable("EARTH_ORIENTATION", Table(tableSetup));
+
+  Int nVal=nrows();
+
+  Table eopTab = oldfullTable("");
+  ScalarColumn<Double> time(eopTab, "TIME");
+  ScalarColumn<Double> ut1utc(eopTab, "UT1-UTC");
+  ArrayColumn<Double> wobxy(eopTab, "WOBXY");
+  ScalarColumn<String> ut1type(eopTab, "UT1 TYPE");
+  ScalarColumn<String> wobtype(eopTab, "WOB TYPE");
+
+  Table mseop = ms_p.rwKeywordSet().asTable("EARTH_ORIENTATION");
+
+  Int outRow=-1;
+  for (Int inRow=0; inRow<nVal; inRow++) {
+    mseop.addRow(); outRow++;
+
+    ScalarColumn<Double> timeCol(mseop, "TIME");
+    ScalarColumn<Int> obsIdCol(mseop, "OBSERVATION_ID");
+    ScalarColumn<Double> ut1utcCol(mseop, "UT1_UTC");
+    ArrayColumn<Double> pmCol(mseop, "PM");
+    ScalarColumn<String> typeCol(mseop, "TYPE");
+
+    timeCol.put(outRow, time(inRow)*C::day + rdate);
+    obsIdCol.put(outRow, 0);
+    ut1utcCol.put(outRow, ut1utc(inRow));
+    pmCol.put(outRow, wobxy(inRow)*C::arcsec);
+    if (ut1type(inRow) == "E" || wobtype(inRow) == "E")
+      typeCol.put(outRow, "PREDICTED");
+    else if (ut1type(inRow) == "P" || wobtype(inRow) == "P")
+      typeCol.put(outRow, "PRELIMINARY");
+    else if (ut1type(inRow) == "F" || wobtype(inRow) == "F")
+      typeCol.put(outRow, "FINAL");
+  }
+
+  ms_p.rwKeywordSet().asTable("EARTH_ORIENTATION").flush();
+
+  return True;
+}
+
 Bool FITSIDItoMS1::handleModelComps()
 {
-
   *itsLog << LogOrigin("FitsIDItoMS()", "handleModelComps");
-  // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
-  *itsLog << LogIO::WARN <<  "not yet implemented" << LogIO::POST;
-  return False;
 
+  ConstFitsKeywordList& kwl = kwlist();
+  const FitsKeyword* fkw;
+  String kwname;
+  kwl.first();
+  Int fftTwid = 0;
+  String taperFn;
+  while ((fkw = kwl.next())){
+    kwname = fkw->name();
+    if (kwname == "FFT_TWID") {
+      fftTwid = fkw->asInt();
+    }
+    if (kwname == "TAPER_FN") {
+      taperFn = fkw->asString();
+      taperFn.trim();
+    }
+  }
+
+  if (array_p == "VLBA" && fftTwid != 1) {
+    *itsLog << LogIO::SEVERE << "Data needs FFT artifact corrections; this is not yet implemented." << LogIO::POST;
+  }
+  if (array_p == "VLBA" && taperFn != "UNIFORM") {
+    *itsLog << LogIO::SEVERE << "Data was correlated with " << taperFn
+	    << " taper; support for this taper is not yet implemented."
+	    << LogIO::POST;
+  }
+
+  // make the content of the MODEL_COMPS table available in the MS (t.b.d.)
+  Table mcTab = oldfullTable("");
+
+  return True;
 }
 
 
@@ -4032,6 +4183,7 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     Bool addWeather=False;
     Bool addGainCurve=False;
     Bool addPhaseCal=False;
+    Bool addEOP=False;
 
     if (firstSyscal && extname == "SYSTEM_TEMPERATURE") {
       addSyscal=True;
@@ -4053,8 +4205,13 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
       firstPhaseCal=False;
     }
 
+    if (firstPhaseCal && extname == "CALC") {
+      addEOP=True;
+      firstEOP=False;
+    }
+
     setupMeasurementSet(msFile, useTSM, mainTbl, addCorrMode, addSyscal,
-			addWeather, addGainCurve, addPhaseCal);
+			addWeather, addGainCurve, addPhaseCal, addEOP);
     
     Bool success = True; // for the optional tables, we have a return value permitting us
                          // to skip them if they cannot be read
@@ -4070,17 +4227,20 @@ bool FITSIDItoMS1::readFitsFile(const String& msFile)
     else if (extname=="PHASE-CAL") success =  handlePhaseCal(); 
     else if (extname=="WEATHER")  success =  fillWeatherTable(); 
     else if (extname=="MODEL_COMPS") success = handleModelComps();
+    else if (extname=="CALC") success = handleCalc();
     else if(extname =="BASELINE"
 	    || extname =="BANDPASS"
 	    || extname =="CALIBRATION"
 	    ){
-      *itsLog << LogIO::WARN << "FITS-IDI table " << extname 
+      *itsLog << LogIO::WARN << "FITS-IDI table " << extname
 	      << " not yet supported. Will ignore it." << LogIO::POST;
       return False;
     }
     else {
-      *itsLog << LogIO::WARN << "Extension " << extname 
-	      << " not part of the FITS-IDI convention. Will ignore it." << LogIO::POST;
+      if (extname != "TAPE_STATISTICS" && nrows() > 0) {
+	*itsLog << LogIO::WARN << "Extension " << extname
+		<< " not part of the FITS-IDI convention. Will ignore it." << LogIO::POST;
+      }
       return False;
     }  
     if(!success){

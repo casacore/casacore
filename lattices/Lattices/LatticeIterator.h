@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LATTICEITERATOR_H
 #define LATTICES_LATTICEITERATOR_H
@@ -33,7 +31,7 @@
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/LatticeIterInterface.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -253,7 +251,7 @@ public:
 
   // Is the iterator object empty?
   Bool isNull() const
-    { return itsIterPtr.null(); }
+    { return !itsIterPtr; }
 
   // Return the underlying lattice.
   Lattice<T>& lattice() const
@@ -337,7 +335,7 @@ public:
 
 protected:
   // The pointer to the Iterator
-  CountedPtr<LatticeIterInterface<T> > itsIterPtr;
+  std::shared_ptr<LatticeIterInterface<T>> itsIterPtr;
 };
 
 

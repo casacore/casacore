@@ -17,16 +17,14 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprFuncNode.cc 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #include <casacore/tables/TaQL/ExprFuncNode.h>
-#include <casacore/tables/TaQL/TableParse.h>
+#include <casacore/tables/TaQL/TableParseUtil.h>
 #include <casacore/tables/TaQL/ExprNode.h>
 #include <casacore/tables/TaQL/ExprNodeSet.h>
 #include <casacore/tables/TaQL/ExprDerNode.h>
@@ -53,12 +51,12 @@ TableExprFuncNode::TableExprFuncNode (FunctionType ftype, NodeDataType dtype,
                                       const TableExprNodeSet& source,
                                       const vector<TENShPtr>& nodes,
                                       const Block<Int>& dtypeOper,
-                                      const Table& table)
+                                      const TableExprInfo& tabInfo)
 : TableExprNodeMulti (dtype, vtype, OtFunc, source),
   funcType_p         (ftype),
   argDataType_p      (dtype),
   scale_p            (1),
-  table_p            (table)
+  table_p            (tabInfo.table())
 {
   // Fill child nodes as needed. It also fills operands_p.
   fillChildNodes (nodes, dtypeOper);
@@ -424,8 +422,8 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
         String name = operands_p[0]->getString (id);
         String shand, columnName;
         Vector<String> fieldNames;
-        TableParseSelect::splitName (shand, columnName, fieldNames,
-                                     name, True, True, False);
+        TableParseUtil::splitName (shand, columnName, fieldNames,
+                                   name, True, True, False);
         if (! shand.empty()) {
           return False;
         }
@@ -929,9 +927,6 @@ DComplex TableExprFuncNode::getDComplex (const TableExprId& id)
         return tan   (operands_p[0]->getDComplex(id));
     case tanhFUNC:
         return tanh  (operands_p[0]->getDComplex(id));
-    case atan2FUNC:
-        return atan2 (operands_p[0]->getDComplex(id),
-                      operands_p[1]->getDComplex(id));
     case complexFUNC:
         // A single argument is always a string.
         if (operands_p.size() == 1) {
@@ -1728,7 +1723,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTString;
         nodes.resize(1);
-        nodes[0] = new TableExprNodeConstString ("today");
+        nodes[0] = std::make_shared<TableExprNodeConstString>("today");
         return NTDate;
     case mjdtodateFUNC:
         checkNumOfArg (1, 1, nodes);
@@ -1740,7 +1735,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTDate;
         nodes.resize (1);
-        nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
+        nodes[0] = std::make_shared<TableExprNodeConstDate>(MVTime(Time()));
         return NTDate;
     case yearFUNC:
     case monthFUNC:
@@ -1757,7 +1752,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTDate;
         nodes.resize (1);
-        nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
+        nodes[0] = std::make_shared<TableExprNodeConstDate>(MVTime(Time()));
         return dtout;
     case cmonthFUNC:
     case cdowFUNC:
@@ -1770,7 +1765,7 @@ TableExprNodeRep::NodeDataType TableExprFuncNode::checkOperands
         dtypeOper.resize (1);
         dtypeOper[0] = NTDate;
         nodes.resize (1);
-        nodes[0] = new TableExprNodeConstDate (MVTime(Time()));
+        nodes[0] = std::make_shared<TableExprNodeConstDate>(MVTime(Time()));
         return NTString;
     case stringFUNC:
         if (checkNumOfArg (1, 2, nodes) == 2) {

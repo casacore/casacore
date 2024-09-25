@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_CONCATCOLUMN_H
 #define TABLES_CONCATCOLUMN_H
@@ -218,7 +216,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // Also get a comparison function if undefined.
     // The function freeIterBuf must be called to free the buffers.
     virtual void allocIterBuf (void*& lastVal, void*& curVal,
-			       CountedPtr<BaseCompare>& cmpObj);
+			       std::shared_ptr<BaseCompare>& cmpObj);
 
     // Free the value buffers allocated by allocIterBuf.
     virtual void freeIterBuf (void*& lastVal, void*& curVal);

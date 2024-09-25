@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id: TempLatticeImpl.h 20739 2009-09-29 01:15:15Z Malte.Marquarding $
 
 #ifndef LATTICES_TEMPLATTICEIMPL_H
 #define LATTICES_TEMPLATTICEIMPL_H
@@ -35,7 +32,7 @@
 #include <casacore/lattices/Lattices/Lattice.h>
 #include <casacore/lattices/Lattices/TiledShape.h>
 #include <casacore/tables/Tables/Table.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -57,7 +54,7 @@ class Table;
 // </prerequisite>
 
 // <synopsis>
-// The class is used as <src>CountedPtr<TempLatticeImpl></src> in class
+// The class is used as <src>std::shared_ptr<TempLatticeImpl></src> in class
 // TempLattice. In that way the making a copy of a TempLattice uses the
 // same object underneath.
 // This was needed to have a correct implementation of tempClose. Otherwise
@@ -101,7 +98,7 @@ public:
 
   // Flush the data.
   void flush()
-    { if (itsTablePtr != 0) itsTablePtr->flush(); }
+    { if (!itsTable.isNull()) itsTable.flush(); }
 
   // Close the Lattice temporarily (if it is paged to disk).
   // It'll be reopened automatically when needed or when
@@ -233,10 +230,10 @@ private:
   void deleteTable();
 
 
-  mutable Table*                  itsTablePtr;
-  mutable CountedPtr<Lattice<T> > itsLatticePtr;
-          String                  itsTableName;
-  mutable Bool                    itsIsClosed;
+  mutable Table                       itsTable;
+  mutable std::shared_ptr<Lattice<T>> itsLatticePtr;
+          String                      itsTableName;
+  mutable Bool                        itsIsClosed;
 };
 
 

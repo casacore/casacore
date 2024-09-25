@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/tables/LogTables/TableLogSink.h>
@@ -138,7 +136,7 @@ void TableLogSink::copy_other (const TableLogSink& other)
 
 TableLogSink::~TableLogSink()
 {
-    flush();
+    TableLogSink::flush();
 }
 
 void TableLogSink::makeTable (SetupNewTable& setup)
@@ -303,7 +301,7 @@ LogSink TableLogSink::makeSink (const LogFilterInterface &filter,
 {
   LogSinkInterface* sink = new TableLogSink (LogFilter(LogMessage::DEBUGGING),
 					     fileName);
-  return LogSink (filter, CountedPtr<LogSinkInterface>(sink));
+  return LogSink (filter, std::shared_ptr<LogSinkInterface>(sink));
 }
 
 } //# NAMESPACE CASACORE - END

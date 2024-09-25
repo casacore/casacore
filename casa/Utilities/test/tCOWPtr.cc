@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 
@@ -169,13 +167,6 @@ static Bool testFunc(Array<Float> *ptr, const Array<Float> &array,
   copy = COW;
   AlwaysAssert(allEQ(*copy, array), AipsError);
 
-  // test setReadOnly
-  if (!deleteIt) {
-    copy.setReadOnly(foo);
-    AlwaysAssert(allEQ(*copy, *foo), AipsError);
-    AlwaysAssert(copy.isReadOnly(), AipsError);
-  }
-
   if (!deleteIt) {
     delete foo;
     delete bar;
@@ -202,17 +193,11 @@ int main()
     Array<Float> *ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError); 
     AlwaysAssert(testFunc(ptr, array, True, True), AipsError);
-// the following can be uncommented when the CountedPtr class
-// is made to set the deleted pointer to NULL.
-//    AlwaysAssert(!ptr, AipsError); 
 
     // Case 1: a non-const which controls the ptr.
     ptr = new Array<float>(array.copy());
     AlwaysAssert(ptr, AipsError); 
     AlwaysAssert(testFunc(ptr, array, True, False), AipsError);
-// the following can be uncommented when the CountedPtr class
-// is made to set the deleted pointer to NULL.
-//    AlwaysAssert(!ptr, AipsError); 
 
     // Case 2: a const which doesn't control the pointer
     ptr = new Array<float>(array.copy());

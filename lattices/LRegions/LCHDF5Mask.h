@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LCHDF5MASK_H
 #define LATTICES_LCHDF5MASK_H
@@ -66,9 +64,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     // The default mask shape is the lattice shape.
     // <group>
     LCHDF5Mask (const TiledShape& latticeShape,
-		const CountedPtr<HDF5File>& file, const String& maskName);
+		const std::shared_ptr<HDF5File>& file, const String& maskName);
     LCHDF5Mask (const TiledShape& maskShape, const LCBox& box,
-		const CountedPtr<HDF5File>& file, const String& maskName);
+		const std::shared_ptr<HDF5File>& file, const String& maskName);
     LCHDF5Mask (HDF5Lattice<Bool>& mask, const LCBox& box);
     // </group>
 

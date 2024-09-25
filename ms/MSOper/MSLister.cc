@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 //#
 #include <casacore/casa/Quanta/MVTime.h>
 #include <casacore/casa/Containers/RecordFieldId.h>
@@ -539,6 +537,17 @@ void MSLister::selectvis(const String& timerange,
   }
 } // end selectvis
 
+/// Calculate the max number of digits needed to print the values in an array
+template <class T> uInt maxDigitsToPrint(const Array<T> &values)
+{
+    // Guard against log10(0).
+    if (max(values) == 0) {
+      return 1;
+    } else {
+      return (uInt)max(1,(Int)rint(abs(log10(abs(max(values))))+0.5));
+    }
+}
+
 void MSLister::listData(const int pageRows,
                         const String listfile)
 {
@@ -892,21 +901,21 @@ void MSLister::listData(const int pageRows,
       if ( precTime_p < 0 ) precTime_p = 7; // hh:mm:ss.s
       if ( precTime_p > 0 ) oTime_p++; // add space for decimal
 
-      oUVDist_p = (uInt)max(1,(Int)rint(log10(max(uvdist))+0.5)); // order
+      oUVDist_p = maxDigitsToPrint(uvdist); // order
       if ( precUVDist_p < 0 ) precUVDist_p = 0;
       if ( precUVDist_p > 0 ) oUVDist_p++;  // add space for decimal
 
-      oUVW_p = (uInt)max(1,(Int)rint(log10(max(uvw))+0.5)); // order
+      oUVW_p = maxDigitsToPrint(uvw); // order
       if ( precUVW_p < 0 ) precUVW_p = 2;
       if ( precUVW_p > 0 ) oUVW_p++;  // add space for decimal
       oUVW_p++;  // add space for sign
 
-      oAmpl_p = (uInt)max(1,(Int)rint(log10(max(ampl))+0.5));
+      oAmpl_p = maxDigitsToPrint(ampl);
       if ( precAmpl_p < 0 ) precAmpl_p = 3;  // mJy
       if ( precAmpl_p > 0 ) oAmpl_p++;  // add space for decimal
 
       if (!is_float){
-		  oPhase_p = (uInt)max(1,(Int)rint(abs(log10(max(phase)+0.5))));
+		  oPhase_p = maxDigitsToPrint(phase);
 		  if(min(phase) < 0) { oPhase_p+=3; } // add space for sign and column border
 		  else { oPhase_p++; } // add space for column border
 		  //oPhase_p = 3;  // 100s of degs
@@ -914,7 +923,7 @@ void MSLister::listData(const int pageRows,
 		  if ( precPhase_p > 0 ) oPhase_p+=2; // add space for decimal
       }
 
-      oWeight_p = (uInt)max(1,(Int)rint(log10(max(weight))+0.5));  // order
+      oWeight_p = maxDigitsToPrint(weight);  // order
       if ( precWeight_p < 0 ) precWeight_p = 0;
       if ( precWeight_p > 0 ) oWeight_p++;  // add space for decimal
 
@@ -925,8 +934,8 @@ void MSLister::listData(const int pageRows,
       wAnt2_p = columnWidth(antNames2);
 
       wFlag_p = 2; // the flag is always 1 character
-      if (doFld_p) wFld_p    = (uInt)rint(log10((float)max(fieldid))+0.5);
-      if (doSpW_p) wSpW_p    = (uInt)rint(log10((float)max(spwinid))+0.5);
+      if (doFld_p) wFld_p    = maxDigitsToPrint(fieldid);
+      if (doSpW_p) wSpW_p    = maxDigitsToPrint(spwinid);
       if (doChn_p) wChn_p    = 3;
 
 

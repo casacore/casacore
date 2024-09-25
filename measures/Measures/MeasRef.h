@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef MEASURES_MEASREF_H
 #define MEASURES_MEASREF_H
@@ -34,7 +31,7 @@
 #include <casacore/measures/Measures/MRBase.h>
 #include <casacore/measures/Measures/MeasFrame.h>
 #include <casacore/casa/iosfwd.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -196,7 +193,7 @@ private:
   };
   
   //# Data
-  CountedPtr<RefRep> rep_p;
+  std::shared_ptr<RefRep> rep_p;
   
   //# Member functions
   // Create an instance of MeasRef

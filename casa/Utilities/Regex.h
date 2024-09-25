@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_REGEX_H
 #define CASA_REGEX_H
@@ -35,10 +33,6 @@
 #include <casacore/casa/BasicSL/String.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
-
-//# Forward declarations.
-struct re_pattern_buffer;
-struct re_registers;
 
 // <summary>
 // Regular expression class (based on std::regex)

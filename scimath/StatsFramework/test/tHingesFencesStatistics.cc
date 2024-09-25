@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -1750,8 +1750,8 @@ int main() {
             std::set<Double> quantiles;
             quantiles.insert(0.25);
             quantiles.insert(0.75);
-            CountedPtr<uInt64> npts;
-            CountedPtr<Double> mymin, mymax;
+            std::shared_ptr<uInt64> npts;
+            std::shared_ptr<Double> mymin, mymax;
             std::map<Double, Double> quantileToValue;
             Double median = cs.getMedianAndQuantiles(
                 quantileToValue, quantiles, npts, mymin, mymax, 99999
@@ -2921,8 +2921,8 @@ int main() {
             std::set<Double> quantiles;
             quantiles.insert(0.25);
             quantiles.insert(0.75);
-            CountedPtr<uInt64> npts;
-            CountedPtr<Double> mymin, mymax;
+            std::shared_ptr<uInt64> npts;
+            std::shared_ptr<Double> mymin, mymax;
             std::map<Double, Double> quantileToValue;
             Double median = hfs.getMedianAndQuantiles(
                 quantileToValue, quantiles, npts, mymin, mymax, 50000

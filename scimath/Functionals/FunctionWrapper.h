@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef SCIMATH_FUNCTIONWRAPPER_H
 #define SCIMATH_FUNCTIONWRAPPER_H
@@ -31,8 +29,8 @@
 //# Includes
 #include <casacore/casa/aips.h>
 #include <casacore/scimath/Functionals/WrapperParam.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -140,7 +138,7 @@ public:
 protected:
   //# Data
   // The function aid object
-  CountedPtr<WrapperBase<T> > doit_p;
+  std::shared_ptr<WrapperBase<T>> doit_p;
 
   //# Make members of parent classes known.
 protected:

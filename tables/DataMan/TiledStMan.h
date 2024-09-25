@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TILEDSTMAN_H
 #define TABLES_TILEDSTMAN_H
@@ -120,6 +118,12 @@ public:
 
     virtual ~TiledStMan();
 
+    // Forbid copy constructor.
+    TiledStMan (const TiledStMan&) = delete;
+
+    // Forbid assignment.
+    TiledStMan& operator= (const TiledStMan&) = delete;
+  
     // Get the name given to the storage manager.
     // This is the name of the hypercolumn.
     virtual String dataManagerName() const;
@@ -519,13 +523,6 @@ protected:
     IPosition fixedCellShape_p;
     // Has any data changed since the last flush?
     Bool      dataChanged_p;
-
-private:
-    // Forbid copy constructor.
-    TiledStMan (const TiledStMan&);
-
-    // Forbid assignment.
-    TiledStMan& operator= (const TiledStMan&);
 };
 
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLE_H
 #define TABLES_TABLE_H
@@ -39,6 +37,7 @@
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Utilities/Sort.h>
+#include <memory>
 
 #ifdef HAVE_MPI
 #include <mpi.h>
@@ -55,8 +54,8 @@ class Record;
 class TableExprNode;
 class DataManager;
 class IPosition;
+class TableExprInfo;
 template<class T> class Block;
-template<class T> class CountedPtr;
 
 
 // <summary>
@@ -376,6 +375,10 @@ public:
     // The recursive switch tells how to deal with that.
     Block<String> getPartNames (Bool recursive=False) const;
 
+    // Is this table the same as the other?
+    Bool isSameTable (const Table& other) const
+      { return baseTabPtr_p == other.baseTabPtr_p; }
+  
     // Is the root table of this table the same as that of the other one?
     Bool isSameRoot (const Table& other) const;
 
@@ -747,8 +750,6 @@ public:
     TableExprNode col (const String& columnName) const;
     TableExprNode col (const String& columnName,
 		       const Vector<String>& fieldNames) const;
-    TableExprNode keyCol (const String& name,
-			  const Vector<String>& fieldNames) const;
     // </group>
 
     // Create a TableExprNode object for the rownumber function.
@@ -845,11 +846,11 @@ public:
     // Sort on multiple columns. The principal column has to be the
     // first element in the Block of column names.
     // The order can be given per column.
-    // Provide some special comparisons via CountedPtrs of compare objects.
-    // A null CountedPtr means using the standard compare object
+    // Provide some special comparisons via std::shared_ptrs of compare objects.
+    // A null std::shared_ptr means using the standard compare object
     // from class <linkto class="ObjCompare:description">ObjCompare</linkto>.
     Table sort (const Block<String>& columnNames,
-		const Block<CountedPtr<BaseCompare> >& compareObjects,
+		const Block<std::shared_ptr<BaseCompare>>& compareObjects,
 		const Block<Int>& sortOrders,
 		int = Sort::ParSort) const;
     // </group>

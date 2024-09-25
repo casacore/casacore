@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 //# Includes
@@ -34,18 +32,19 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/stdio.h>		// for sprintf
+#include <casacore/casa/stdio.h>		// for snprintf
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
-                  const TSMOption& tsmOpt, MultiFileBase* mfile)
+                  const TSMOption& tsmOpt,
+                  const std::shared_ptr<MultiFileBase>& mfile)
 : fileSeqnr_p (fileSequenceNr),
   file_p      (0),
   length_p    (0)
 {
     // Create the file.
     char strc[8];
-    sprintf (strc, "_TSM%i", fileSeqnr_p);
+    snprintf (strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
     String fileName = stman->fileName() + strc;
     Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
     uInt bufSize = 0;
@@ -56,7 +55,8 @@ TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
 }
 
 TSMFile::TSMFile (const String& fileName, Bool writable,
-                  const TSMOption& tsmOpt, MultiFileBase* mfile)
+                  const TSMOption& tsmOpt,
+                  const std::shared_ptr<MultiFileBase>& mfile)
 : fileSeqnr_p (0),
   file_p      (0),
   length_p    (0)
@@ -71,7 +71,8 @@ TSMFile::TSMFile (const String& fileName, Bool writable,
 }
 
 TSMFile::TSMFile (const TiledStMan* stman, AipsIO& ios, uInt seqnr,
-                  const TSMOption& tsmOpt, MultiFileBase* mfile)
+                  const TSMOption& tsmOpt,
+                  const std::shared_ptr<MultiFileBase>& mfile)
 : file_p (0)
 {
     getObject (ios);
@@ -80,7 +81,7 @@ TSMFile::TSMFile (const TiledStMan* stman, AipsIO& ios, uInt seqnr,
                                   stman->dataManagerName());
     }
     char strc[8];
-    sprintf (strc, "_TSM%i", fileSeqnr_p);
+    snprintf (strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
     String fileName = stman->fileName() + strc;
     Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
     uInt bufSize = 0;

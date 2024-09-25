@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/iostream.h>
@@ -55,10 +53,10 @@ int main ()
 	uChar    testuChar = 'B';
 	String   testString("This is a teststring");
 
-	RegularFileIO regularFileIO (Path("tByteSink_tmp.dat"),
-				     ByteIO::New);
-	CanonicalIO canonicalIO(&regularFileIO);
-	ByteSink  sink(&canonicalIO);
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSink_tmp.dat"), ByteIO::New);
+        auto canonicalIO  = std::make_shared<CanonicalIO>(regularFileIO);
+	ByteSink sink(canonicalIO);
 	cout << sink.isReadable() << endl;
 	cout << sink.isWritable() << endl;
 	cout << sink.isSeekable() << endl;
@@ -109,9 +107,10 @@ int main ()
 	uChar    testuChar;
 	String   testString;
 
-	RegularFileIO regularFileIO (Path("tByteSink_tmp.dat"));
-	CanonicalIO canonicalIO(&regularFileIO);
-	ByteSource  source(&canonicalIO);
+        auto regularFileIO =
+          std::make_shared<RegularFileIO>(Path("tByteSink_tmp.dat"));
+        auto canonicalIO  = std::make_shared<CanonicalIO>(regularFileIO);
+	ByteSource source(canonicalIO);
 
 	source.seek(0);
 	cout << source.isReadable() << endl;

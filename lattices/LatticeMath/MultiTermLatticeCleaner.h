@@ -17,15 +17,13 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 //#
 //# Urvashi Rau <rurvashi@aoc.nrao.edu>
-//#
-//# $Id: HostInfoDarwin.h 21521 2014-12-10 08:06:42Z gervandiepen $
 
 #ifndef LATTICES_MULTITERMLATTICECLEANER_H
 #define LATTICES_MULTITERMLATTICECLEANER_H

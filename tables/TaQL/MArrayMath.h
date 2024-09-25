@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: MArrayMath.h 21262 2012-09-07 12:38:36Z gervandiepen $
 
 #ifndef CASA_MARRAYMATH_H
 #define CASA_MARRAYMATH_H
@@ -589,8 +587,12 @@ namespace casacore {
     { return MArray<T> (pow(a, exp.array()), exp); }
 
   template<typename T>
-  MArray<T> pow(const MArray<T>& a, const Double& exp)
+  MArray<T> pow(const MArray<T>& a, const T& exp)
     { return MArray<T> (pow(a.array(), exp), a); }
+
+  template<typename T>
+  MArray<std::complex<T>> pow(const MArray<std::complex<T>>& a, const T& exp)
+  { return MArray<std::complex<T>> (pow(a.array(), exp), a); }
 
   template<typename T>
   MArray<T> min(const MArray<T>& left, const MArray<T>& right)

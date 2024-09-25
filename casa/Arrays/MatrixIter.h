@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_MATRIXITER_2_H
 #define CASA_MATRIXITER_2_H
@@ -64,26 +62,26 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // average /= float(cube.shape()(2));  // divide by the number of planes
 // </srcblock>
 
-template<typename T, typename Alloc=std::allocator<T>>
-class MatrixIterator : public ArrayIterator<T, Alloc>
+template<typename T>
+class MatrixIterator : public ArrayIterator<T>
 {
 public:
     // Iterate by matrices through array "a".
     // The first 2 axes form the cursor axes.
-    explicit MatrixIterator(Array<T, Alloc> &a);
+    explicit MatrixIterator(Array<T> &a);
 
     // Iterate by matrices through array "a".
     // The given axes form the cursor axes.
-    MatrixIterator(Array<T, Alloc> &a, size_t cursorAxis1, size_t cursorAxis2);
+    MatrixIterator(Array<T> &a, size_t cursorAxis1, size_t cursorAxis2);
 
     // Return the matrix at the current position.
-    Matrix<T, Alloc> &matrix() {return *(Matrix<T, Alloc> *)(this->ap_p.get());}
+    Matrix<T> &matrix() {return *(Matrix<T> *)(this->ap_p.get());}
 
 private:
     // Not implemented.
-    MatrixIterator(const MatrixIterator<T, Alloc> &) = delete;
+    MatrixIterator(const MatrixIterator<T> &) = delete;
     // Not implemented.
-    MatrixIterator<T, Alloc> &operator=(const MatrixIterator<T, Alloc> &) = delete;
+    MatrixIterator<T> &operator=(const MatrixIterator<T> &) = delete;
 };
 
 // 

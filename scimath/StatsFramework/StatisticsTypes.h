@@ -16,13 +16,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef SCIMATH_STATISTICSTYPES_H
 #define SCIMATH_STATISTICSTYPES_H
@@ -31,6 +29,7 @@
 
 #include <utility>
 #include <vector>
+#include <memory>
 
 
 // because the template signature has become unwieldy
@@ -44,7 +43,6 @@
 namespace casacore {
 
 class Record;
-template <class T> class CountedPtr;
 
 // Commonly used types in statistics framework.
 #define DataArray std::vector<AccumType>
@@ -56,12 +54,12 @@ using LocationType = std::pair<Int64, Int64>;
 
 template <class AccumType> struct StatsData {
 	Bool masked;
-	CountedPtr<AccumType> max;
+	std::shared_ptr<AccumType> max;
 	LocationType maxpos;
 	AccumType mean;
-	CountedPtr<AccumType> median;
-	CountedPtr<AccumType> medAbsDevMed;
-	CountedPtr<AccumType> min;
+	std::shared_ptr<AccumType> median;
+	std::shared_ptr<AccumType> medAbsDevMed;
+	std::shared_ptr<AccumType> min;
 	LocationType minpos;
 	Double npts;
 	AccumType nvariance;

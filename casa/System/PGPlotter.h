@@ -17,14 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//#
-//# $Id$
 
 #ifndef CASA_PGPLOTTER_H
 #define CASA_PGPLOTTER_H
@@ -32,7 +29,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/System/PGPlotterInterface.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -290,7 +287,7 @@ public:
     virtual void wnad(Float x1, Float x2, Float y1, Float y2);
     // </group>
  private:
-    CountedPtr<PGPlotterInterface> worker_p;
+    std::shared_ptr<PGPlotterInterface> worker_p;
     static CreateFunction* creator_p;
 
     // Throws an exception if !isAttached()

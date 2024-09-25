@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: ExprFuncNodeArray.h 21277 2012-10-31 16:07:31Z gervandiepen $
 
 #ifndef TABLES_EXPRFUNCNODEARRAY_H
 #define TABLES_EXPRFUNCNODEARRAY_H
@@ -81,11 +79,8 @@ public:
     // Destructor
     ~TableExprFuncNodeArray();
 
-    // Get the nodes representing an aggregate function.
-    virtual void getAggrNodes (std::vector<TableExprNodeRep*>& aggr);
-
-    // Get the nodes representing a table column.
-    virtual void getColumnNodes (std::vector<TableExprNodeRep*>& cols);
+    // Flatten the node tree by adding the node and its children to the vector.
+    virtual void flattenTree (std::vector<TableExprNodeRep*>&);
   
     // 'get' Functions to get the desired result of a function
     // <group>

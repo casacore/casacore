@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_SSMCOLUMN_H
 #define TABLES_SSMCOLUMN_H
@@ -105,6 +103,12 @@ public:
   SSMColumn (SSMBase* aParent, int aDataType, uInt aColNr);
   
   virtual ~SSMColumn();
+  
+  // Forbid copy constructor.
+  SSMColumn (const SSMColumn&) = delete;
+  
+  // Forbid assignment.
+  SSMColumn& operator= (const SSMColumn&) = delete;
   
   // Set the shape of an array in the column.
   // It is only called (right after the constructor) if the array has
@@ -255,12 +259,6 @@ protected:
   Conversion::ValueFunction* itsReadFunc;
   
 private:
-  // Forbid copy constructor.
-  SSMColumn (const SSMColumn&);
-  
-  // Forbid assignment.
-  SSMColumn& operator= (const SSMColumn&);
-  
   // Initialize part of the object.
   // It determines the nr of elements, the function to use to convert
   // from local to file format, etc..

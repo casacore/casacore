@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_LELFUNCTION_H
 #define LATTICES_LELFUNCTION_H
@@ -110,7 +108,7 @@ protected:
 public: 
 // Constructor takes operation and expression to be operated upon
    LELFunction1D(const LELFunctionEnums::Function function,
-		 const CountedPtr<LELInterface<T> >& expr);
+		 const std::shared_ptr<LELInterface<T>>& expr);
 
 // Destructor 
   ~LELFunction1D();
@@ -138,7 +136,7 @@ public:
 
 private:
    LELFunctionEnums::Function   function_p;
-   CountedPtr<LELInterface<T> > pExpr_p;
+   std::shared_ptr<LELInterface<T>> pExpr_p;
 };
 
 
@@ -212,7 +210,7 @@ protected:
 public: 
 // Constructor takes operation and expression to be operated upon
    LELFunctionReal1D(const LELFunctionEnums::Function function,
-		     const CountedPtr<LELInterface<T> >& expr);
+		     const std::shared_ptr<LELInterface<T>>& expr);
 
 // Destructor 
   ~LELFunctionReal1D();
@@ -241,7 +239,7 @@ public:
 
 private:
    LELFunctionEnums::Function function_p;
-   CountedPtr<LELInterface<T> > pExpr_p;
+   std::shared_ptr<LELInterface<T>> pExpr_p;
 };
 
 

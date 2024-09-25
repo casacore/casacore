@@ -21,6 +21,12 @@ MeasUDF/DopplerEngine.cc
 MeasUDF/Register.cc
 )
 
+set (top_level_headers
+MeasUDF.h
+)
+
+init_pch_support(casa_meas ${top_level_headers})
+
 target_link_libraries (casa_meas casa_measures)
 
 install (TARGETS casa_meas
@@ -52,8 +58,7 @@ MeasUDF/Register.h
 DESTINATION include/casacore/meas/MeasUDF
 )
 
-install (FILES
-MeasUDF.h
+install (FILES ${top_level_headers}
 DESTINATION include/casacore/meas
 )
 

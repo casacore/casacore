@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef TABLES_TABLEINDEXPROXY_H
 #define TABLES_TABLEINDEXPROXY_H
@@ -79,6 +77,9 @@ public:
 
   ~TableIndexProxy();
 
+  // Assignment is forbidden.
+  TableIndexProxy& operator= (const TableIndexProxy&) = delete;
+
   // Are all keys in the index unique?
   Bool isUnique() const;
 
@@ -105,10 +106,6 @@ public:
                                     Bool lowerInclusive, Bool upperInclusive);
 
 private:
-  // Assignment is forbidden.
-  TableIndexProxy& operator= (const TableIndexProxy&);
-
-
   ColumnsIndex*      scaIndex_p;
   ColumnsIndexArray* arrIndex_p;
 };

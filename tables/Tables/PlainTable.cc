@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 #include <casacore/tables/Tables/PlainTable.h>
@@ -199,7 +197,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     Bool tableChanged;
     Block<Bool> dmChanged;
     lockSync_p.read (nrrow_p, ncolumn, tableChanged, dmChanged);
-    tdescPtr_p = new TableDesc ("", TableDesc::Scratch);
+    tdescPtr_p = std::make_shared<TableDesc>("", TableDesc::Scratch);
 
     //# Reopen the file to be sure that the internal stdio buffer is not reused.
     //# This is a terrible hack, but it works.
@@ -237,7 +235,7 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
 #endif
 
-    TableAttr attr (tableName(), isWritable(), lockOptions);
+    TableAttr attr (tableName(), PlainTable::isWritable(), lockOptions);
     tdescPtr_p->getFile (ios, attr);            // read description
     // Check if the given table type matches the type in the file.
     if ((! type.empty())  &&  type != tdescPtr_p->getType()) {
@@ -255,11 +253,11 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
     }
     //# Construct and read the ColumnSet object.
     //# This will also construct the various DataManager objects.
-    colSetPtr_p = new ColumnSet (tdescPtr_p.get());
+    colSetPtr_p = std::make_shared<ColumnSet>(tdescPtr_p.get());
     colSetPtr_p->linkToTable (this);
     colSetPtr_p->linkToLockObject (lockPtr_p);
     if (version == 1) {
-	keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
+        PlainTable::keywordSet().merge (tmp, RecordInterface::OverwriteDuplicates);
     }
     //# Create a Table object to be used internally by the data managers.
     //# Do not count it, otherwise a mutual dependency exists.
@@ -319,7 +317,7 @@ void PlainTable::closeObject()
         timespec timet;
         timet.tv_sec = 1;
         timet.tv_nsec = 0;
-        while (isMultiUsed(False)) {
+        while (PlainTable::isMultiUsed(False)) {
             if (nTrys == 0) {
                 unmarkForDelete (False, "");
                 throw (TableError ("Table " + name_p + " cannot be deleted;"
@@ -481,7 +479,6 @@ void PlainTable::syncTable()
     TableRecord& newKeySet = tab->keywordSet();
     newKeySet.setTableAttr (oldKeySet, defaultAttr);
     oldKeySet = newKeySet;
-    delete tab;
 }
 
 
@@ -526,10 +523,8 @@ void PlainTable::resync()
     // Skip the sync-ing in that case.
     uInt ncolumn;
     rownr_t nrrow;
-    if (! lockSync_p.read (nrrow, ncolumn, tableChanged,
-			   colSetPtr_p->dataManChanged())) {
-        tableChanged = False;
-    } else {
+    if (lockSync_p.read (nrrow, ncolumn, tableChanged,
+                         colSetPtr_p->dataManChanged())) {
         if (ncolumn != tableDesc().ncolumn()) {
             throw (TableError ("Table::resync cannot sync table " +
                                tableName() + "; another process "

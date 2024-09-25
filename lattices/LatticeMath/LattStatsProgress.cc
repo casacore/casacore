@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 //
 
 #include <casacore/lattices/LatticeMath/LattStatsProgress.h>
@@ -53,14 +51,16 @@ void LattStatsProgress::initDerived()
 // calls this initDerived function
 // 
 
-    _meter = new ProgressMeter(0.0, Double(expectedNsteps()), String("Generate Storage Image"),
-                                 String("Accumulation Iterations"), String(""), String(""),
-                                 True, max(1,Int(expectedNsteps()/20)));
+   _meter = std::make_shared<ProgressMeter>(
+       0.0, Double(expectedNsteps()), String("Generate Storage Image"),
+       String("Accumulation Iterations"), String(""), String(""),
+       True, max(1,Int(expectedNsteps()/20))
+   );
 }
 
 void LattStatsProgress::nstepsDone (uInt nsteps)
 {
-	_currentStep = nsteps;
+    _currentStep = nsteps;
     _meter->update (_currentStep);
 }
 

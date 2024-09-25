@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef LATTICES_MASKEDLATTICEITERATOR_TCC
 #define LATTICES_MASKEDLATTICEITERATOR_TCC
@@ -77,7 +75,8 @@ template <class T>
 RO_MaskedLatticeIterator<T>::RO_MaskedLatticeIterator
                                  (const RO_MaskedLatticeIterator<T>& other)
 : RO_LatticeIterator<T> (other),
-  itsMaskLattPtr (other.itsMaskLattPtr)
+  itsMaskLattShrPtr (other.itsMaskLattShrPtr),
+  itsMaskLattPtr    (other.itsMaskLattPtr)
 {}
 
 template <class T>
@@ -101,7 +100,8 @@ RO_MaskedLatticeIterator<T>& RO_MaskedLatticeIterator<T>::operator=
 {
   if (this != &other) {
     RO_LatticeIterator<T>::operator= (other);
-    itsMaskLattPtr = other.itsMaskLattPtr;
+    itsMaskLattShrPtr = other.itsMaskLattShrPtr;
+    itsMaskLattPtr    = other.itsMaskLattPtr;
   }
   return *this;
 }
@@ -121,9 +121,11 @@ void RO_MaskedLatticeIterator<T>::fillPtr (const MaskedLattice<T>& mlattice)
   Lattice<T>* lptr = &(RO_LatticeIterator<T>::lattice());
   MaskedLattice<T>* mptr = dynamic_cast<MaskedLattice<T>*>(lptr);
   if (mptr) {
-    itsMaskLattPtr = CountedPtr<MaskedLattice<T> > (mptr, False);
+    itsMaskLattShrPtr.reset();    // no deletion of the pointer
+    itsMaskLattPtr = mptr;
   } else {
-    itsMaskLattPtr = mlattice.cloneML();
+    itsMaskLattShrPtr.reset (mlattice.cloneML());
+    itsMaskLattPtr = itsMaskLattShrPtr.get();
   }
 }
 
@@ -138,7 +140,7 @@ Array<Bool> RO_MaskedLatticeIterator<T>::getMask
 }
 
 template <class T>
-Bool RO_MaskedLatticeIterator<T>::getMask (COWPtr<Array<Bool> >& arr,
+Bool RO_MaskedLatticeIterator<T>::getMask (COWPtr<Array<Bool>>& arr,
 					   Bool removeDegenerateAxes) const
 {
   return itsMaskLattPtr->getMaskSlice (arr, position(), cursorShape(),

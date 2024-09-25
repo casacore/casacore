@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/IO/CanonicalIO.h>
@@ -133,34 +131,34 @@ void doIt (TypeIO* io)
 
 int main()
 {
-    RegularFileIO regularFileIO (Path("tTypeIO_tmp.dat"), ByteIO::New);
-    CanonicalIO canonicalIO (&regularFileIO);
+    auto regularFileIO = std::make_shared<RegularFileIO>(Path("tTypeIO_tmp.dat"), ByteIO::New);
+    CanonicalIO canonicalIO (regularFileIO);
     doIt (&canonicalIO);
 
-    LECanonicalIO lecanonicalIO (&regularFileIO);
+    LECanonicalIO lecanonicalIO (regularFileIO);
     doIt (&lecanonicalIO);
 
-    RawIO rawIO (&regularFileIO);
+    RawIO rawIO (regularFileIO);
     doIt (&rawIO);
 
-    CanonicalDataConversion canConv;
-    ConversionIO canConvIO (&canConv, &regularFileIO);
+    auto canConv = std::make_shared<CanonicalDataConversion>();
+    ConversionIO canConvIO (canConv, regularFileIO);
     doIt (&canConvIO);
     
-    LECanonicalDataConversion lecanConv;
-    ConversionIO lecanConvIO (&lecanConv, &regularFileIO);
+    auto lecanConv = std::make_shared<LECanonicalDataConversion>();
+    ConversionIO lecanConvIO (lecanConv, regularFileIO);
     doIt (&lecanConvIO);
     
-    IBMDataConversion ibmConv;
-    ConversionIO ibmConvIO (&ibmConv, &regularFileIO);
+    auto ibmConv = std::make_shared<IBMDataConversion>();
+    ConversionIO ibmConvIO (ibmConv, regularFileIO);
     doIt (&ibmConvIO);
     
-    VAXDataConversion vaxConv;
-    ConversionIO vaxConvIO (&vaxConv, &regularFileIO);
+    auto vaxConv = std::make_shared<VAXDataConversion>();
+    ConversionIO vaxConvIO (vaxConv, regularFileIO);
     doIt (&vaxConvIO);
     
-    RawDataConversion rawConv;
-    ConversionIO rawConvIO (&rawConv, &regularFileIO);
+    auto rawConv = std::make_shared<RawDataConversion>();
+    ConversionIO rawConvIO (rawConv, regularFileIO);
     doIt (&rawConvIO);
     
     cout << "OK" << endl;

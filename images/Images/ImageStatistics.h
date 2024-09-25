@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef IMAGES_IMAGESTATISTICS_H
 #define IMAGES_IMAGESTATISTICS_H
@@ -179,7 +177,7 @@ private:
 
    LogIO os_p;
    const ImageInterface<T>* pInImage_p;
-   std::shared_ptr<const ImageInterface<T> > _inImPtrMgr;
+   std::shared_ptr<const ImageInterface<T>> _inImPtrMgr;
    IPosition blc_;
    Int precision_;
    Bool _showRobust, _recordMessages, _listStats;

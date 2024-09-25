@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #include <casacore/casa/stdio.h>
 #include <casacore/tables/Tables/TableDesc.h>
@@ -157,7 +155,7 @@ void a (const TableDesc& td)
 	ac.put (i, i+1);
 	ad.put (i, i+2);
 	ae.put (i, i+3);
-	sprintf (str, "V%i_", i);
+	snprintf (str, sizeof(str), "V%i_", i);
 	af.put (i, str);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
@@ -224,7 +222,7 @@ void check(const Table& tab, Bool showname)
 	acalc3.get (i, acalc3val);
 	acalc4.get (i, acalc4val);
 	acalcaf.get (i, acalcafval);
-	sprintf (str, "V%i_", i);
+	snprintf (str, sizeof(str), "V%i_", i);
 	if (abval != i  ||  acval != i+1
         ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)
@@ -356,7 +354,7 @@ void testSelect()
 {
   // Select all rows.
   Table subset = tableCommand("select from tVirtualTaQLColumn_tmp.data0 "
-			      "where acalc > -1000");
+			      "where acalc > -1000").table();
   check (subset, False);
 }
 

@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 #ifndef CASA_VALTYPE_H
 #define CASA_VALTYPE_H
@@ -35,10 +33,10 @@
 #include <casacore/casa/BasicSL/String.h>
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/Utilities/Compare.h>
-#include <casacore/casa/Utilities/CountedPtr.h>
 #include <casacore/casa/OS/Conversion.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/iosfwd.h>
+#include <memory>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -185,7 +183,7 @@ public:
     static ObjCompareFunc* getCmpFunc (DataType);
 
     // Get the object which compares two values.
-    static CountedPtr<BaseCompare> getCmpObj (DataType);
+    static std::shared_ptr<BaseCompare> getCmpObj (DataType);
 
     // Put the value into <src>AipsIO</src>.
     // The <src>void*</src> function is not doing anything and is for

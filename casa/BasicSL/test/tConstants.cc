@@ -17,13 +17,11 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 //# Includes
 
@@ -154,6 +152,8 @@ int main()
 
    cout << endl
         << "Metric prefixes:"                               << endl
+        << "C::quetta.............  " << C::quetta          << endl
+        << "C::ronna..............  " << C::ronna           << endl
         << "C::yotta..............  " << C::yotta           << endl
         << "C::zetta..............  " << C::zetta           << endl
         << "C::exa................  " << C::exa             << endl
@@ -173,7 +173,9 @@ int main()
         << "C::femto..............  " << C::femto           << endl
         << "C::atto...............  " << C::atto            << endl
         << "C::zepto..............  " << C::zepto           << endl
-        << "C::yocto..............  " << C::yocto           << endl;
+        << "C::yocto..............  " << C::yocto           << endl
+        << "C::ronto..............  " << C::ronto           << endl
+        << "C::quecto.............  " << C::quecto          << endl;
 
    cout << endl
         << "Angular measure:"                               << endl

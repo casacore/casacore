@@ -18,13 +18,11 @@
     Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 
     Correspondence concerning AIPS++ should be addressed as follows:
-           Internet email: aips2-request@nrao.edu.
+           Internet email: casa-feedback@nrao.edu.
            Postal address: AIPS++ Project Office
                            National Radio Astronomy Observatory
                            520 Edgemont Road
                            Charlottesville, VA 22903-2475 USA
-
-    $Id$
 */
 
 /* yy_unput is not used, so let flex not generate it, otherwise picky
@@ -155,6 +153,7 @@ PATTREX   {OPERREX}{WHITE}({PATTEX}|{DISTEX})
 	  }
 
  /* operators */
+"<:>"     { recordGramPosition() += yyleng; return MIDWIDTH; }
 "<:<"     { recordGramPosition() += yyleng; return OPENOPEN; }
 "<:="     { recordGramPosition() += yyleng; return OPENCLOSED; }
 "=:<"     { recordGramPosition() += yyleng; return CLOSEDOPEN; }

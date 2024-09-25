@@ -16,13 +16,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id: Array.h 21545 2015-01-22 19:36:35Z gervandiepen $
 
 #ifndef LATTICES_LATTICESTATSDATAPROVIDERBASE_H
 #define LATTICES_LATTICESTATSDATAPROVIDERBASE_H
@@ -80,7 +78,7 @@ public:
 
 	virtual void reset();
 
-	void setProgressMeter(CountedPtr<LattStatsProgress> pm);
+	void setProgressMeter(std::shared_ptr<LattStatsProgress> pm);
 
 	// set the data ranges
 	void setRanges(
@@ -100,7 +98,7 @@ protected:
 private:
 	Bool _hasRanges, _isInclude;
 	std::vector<std::pair<typename NumericTraits<T>::PrecisionType, typename NumericTraits<T>::PrecisionType> > _ranges;
-	CountedPtr<LattStatsProgress> _progressMeter;
+	std::shared_ptr<LattStatsProgress> _progressMeter;
 	IPosition _minPos, _maxPos;
 };
 

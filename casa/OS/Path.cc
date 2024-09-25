@@ -17,13 +17,11 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
-//#
-//# $Id$
 
 
 #include <casacore/casa/OS/Path.h>
@@ -397,23 +395,11 @@ String Path::makeAbsoluteName (const String& inString) const
 	return inString;
     }
     // Otherwise we have a relative pathname.
-    // Remove a possible leading . or ./
     String workString (inString);
-    if (workString.length() > 0) {
-	if (workString[0] == '.') {
-	    Int from(1);
-	    if (workString.length() > 1){
-               switch(workString[1]) {
-                case '/' :
-		   from = 2;
-                   break;
-                case '.' :
-                   from = 0;
-                   break;
-               }
-	    } 
-	    workString = workString.from (from);
-	}
+    if (workString == ".") {
+        workString = "";
+    } else if (workString.startsWith("./")) {
+        workString = workString.from(2);
     }
     // Get the working directory and prepend it.
     // getcwd returns a null pointer if it fails.
