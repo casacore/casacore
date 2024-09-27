@@ -202,11 +202,13 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
       firstWeather = True;
       firstGainCurve = True;
       firstPhaseCal = True;
+      firstEOP = True;
       weather_hasWater_p = False;
       weather_hasElectron_p = False;
       antIdFromNo.clear();
       digiLevels.clear();
       rdate = 0.;
+      array_p = "";
   }
   
   //
@@ -2584,7 +2586,7 @@ void FITSIDItoMS1::fillAntennaTable()
      }
      else{
        if(array_p != arrnam){
-	 *itsLog << LogIO::WARN << "Conflicting observatory names: found "
+	 *itsLog << LogIO::SEVERE << "Conflicting observatory names: found "
 		 << arrnam << " and " << array_p << LogIO::POST;
        }
      }
