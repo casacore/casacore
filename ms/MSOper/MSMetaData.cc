@@ -5006,7 +5006,9 @@ std::vector<std::vector<uInt>> MSMetaData::_getSpwToPolMap() const {
     const auto spwPolToDDID = getSpwIDPolIDToDataDescIDMap();
     _spwIDToPolIDMap.resize(nSpw(true));
     for (const auto &p : spwPolToDDID) {
-        _spwIDToPolIDMap[p.first.first].push_back(p.first.second);
+        uInt spwID = p.first.first;
+        uInt polId = p.first.second;
+        _spwIDToPolIDMap[spwId].push_back(polId);
     }
     for (auto &v : _spwIDToPolIDMap) {
         std::sort(v.begin(), v.end());
