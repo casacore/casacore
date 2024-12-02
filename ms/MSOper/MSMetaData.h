@@ -1001,7 +1001,7 @@ private:
 
     vector<std::set<String> > _getSpwToIntentsMap();
 
-    // poarization ids will be sorted in ascending order in all
+    // polarization ids will be sorted in ascending order in all
     // member vectors
     std::vector<std::vector<uInt>> _getSpwToPolMap() const;
 
