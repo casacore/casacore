@@ -2121,8 +2121,7 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                             *lsrvel = sv(0);
                         }
                     }
-                    if (
-                        sourceTable->isColumn(MSSource::REST_FREQUENCY)
+                    if (sourceTable->isColumn(MSSource::REST_FREQUENCY)
                         && sourceColumns->restFrequency().isDefined(rownr)
                     ) {
                         Vector<Double>
@@ -2132,10 +2131,25 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                         }
                     }
                     if (sourceColumns->properMotion().isDefined(rownr)) {
-                        Vector<Double> pm =
-                                sourceColumns->properMotion()(rownr);
-                        *pmra = pm(0);
-                        *pmdec = pm(1);
+                        Vector<Double> pm = sourceColumns->properMotion()(rownr);
+			String unit="UNCALIB";
+			unit = sourceColumns->properMotion().keywordSet().asArrayString("QuantumUnits").tovector()[0];
+			unit.upcase();
+			if (unit=="RAD/S"){ // convert to deg/day
+			    *pmra = pm(0)*C::day/C::degree;
+			    *pmdec = pm(1)*C::day/C::degree;
+			}
+			else{
+			    *pmra = pm(0);
+			    *pmdec = pm(1);
+			    if (unit.at(0,5)!="DEG/D"){
+			       os << LogIO::WARN
+				  << "Proper motion for source in SOURCE table row #"<<rownr<<" has unfamiliar units: "
+				  << unit << " .\n Value in uv fits table AIPS SU needs to be checked."
+				  << LogIO::POST;
+			    }
+			}
+
                     }
                     *calcode = sourceColumns->code()(rownr) + "    ";
 
