@@ -357,7 +357,7 @@ String MVTime::string(uInt intyp, uInt inprec) const {
 String MVTime::string(const MVTime::Format &form) const {
     ostringstream oss;
     print (oss, form);
-    return oss;
+    return String(oss);
 }
 
 Double MVTime::timeZone() {

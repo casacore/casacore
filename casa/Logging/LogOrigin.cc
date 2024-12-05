@@ -198,7 +198,7 @@ String LogOrigin::location() const
 	}
 	os << ")";
     }
-    return os;
+    return String(os);
 }
 
 String LogOrigin::toString() const
