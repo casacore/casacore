@@ -2131,23 +2131,22 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                         }
                     }
                     if (sourceColumns->properMotion().isDefined(rownr)) {
-                        Vector<Double> pm = sourceColumns->properMotion()(rownr);
-			String unit="UNCALIB";
-			unit = sourceColumns->properMotion().keywordSet().asArrayString("QuantumUnits").tovector()[0];
-			unit.upcase();
-			if (unit=="RAD/S"){ // convert to deg/day
-			    *pmra = pm(0)*C::day/C::degree;
-			    *pmdec = pm(1)*C::day/C::degree;
-			}
-			else{
+			try{
+			    Vector<Quantum<Double> > pm;
+			    sourceColumns->properMotionQuant().get(rownr, pm, True);
+			    *pmra = pm(0).getValue(Unit("deg/d"));
+			    *pmdec = pm(1).getValue(Unit("deg/d"));
+			} catch (const std::exception& e) {
+			    String unit="UNCALIB";
+			    unit = sourceColumns->properMotionQuant().getUnits()[0];
+			    Vector<Double> pm;
+			    sourceColumns->properMotion().get(rownr, pm, True);
 			    *pmra = pm(0);
 			    *pmdec = pm(1);
-			    if (unit.at(0,5)!="DEG/D"){
-			       os << LogIO::WARN
-				  << "Proper motion for source in SOURCE table row #"<<rownr<<" has unfamiliar units: "
-				  << unit << " .\n Value in uv fits table AIPS SU needs to be checked."
-				  << LogIO::POST;
-			    }
+			    os << LogIO::WARN
+			       << "Proper motion for source in SOURCE table row #"<<rownr<<" has unfamiliar units: "
+			       << unit << " .\n Value in uv fits table needs to be checked."
+			       << LogIO::POST;
 			}
 
                     }
