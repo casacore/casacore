@@ -182,7 +182,7 @@ String LogMessage::toString() const
 
   ostringstream os;
   os << header << "\t" << message;
-  return os;
+  return String(os);
 }
 
 String LogMessage::toTermString() const
@@ -208,7 +208,7 @@ String LogMessage::toTermString() const
   os << header << "\n" << message;
   //String pr = toString(priority());
   //os << pr.resize(6, ' ') << "   " << message;
-  return os;
+  return String(os);
 }
 
 ostream &operator<<(ostream &os, const LogMessage &message)
