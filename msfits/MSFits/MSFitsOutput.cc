@@ -2121,8 +2121,7 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                             *lsrvel = sv(0);
                         }
                     }
-                    if (
-                        sourceTable->isColumn(MSSource::REST_FREQUENCY)
+                    if (sourceTable->isColumn(MSSource::REST_FREQUENCY)
                         && sourceColumns->restFrequency().isDefined(rownr)
                     ) {
                         Vector<Double>
@@ -2132,10 +2131,24 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                         }
                     }
                     if (sourceColumns->properMotion().isDefined(rownr)) {
-                        Vector<Double> pm =
-                                sourceColumns->properMotion()(rownr);
-                        *pmra = pm(0);
-                        *pmdec = pm(1);
+			try{
+			    Vector<Quantum<Double> > pm;
+			    sourceColumns->properMotionQuant().get(rownr, pm, True);
+			    *pmra = pm(0).getValue(Unit("deg/d"));
+			    *pmdec = pm(1).getValue(Unit("deg/d"));
+			} catch (const std::exception& e) {
+			    String unit="UNCALIB";
+			    unit = sourceColumns->properMotionQuant().getUnits()[0];
+			    Vector<Double> pm;
+			    sourceColumns->properMotion().get(rownr, pm, True);
+			    *pmra = pm(0);
+			    *pmdec = pm(1);
+			    os << LogIO::WARN
+			       << "Proper motion for source in SOURCE table row #"<<rownr<<" has unfamiliar units: "
+			       << unit << " .\n Value in uv fits table needs to be checked."
+			       << LogIO::POST;
+			}
+
                     }
                     *calcode = sourceColumns->code()(rownr) + "    ";
 
