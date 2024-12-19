@@ -1420,7 +1420,7 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
                 if (data[i] >= 0) {
                     data[i] = 0;
                 } else {
-                    data[i] = C::pi;
+                    data[i] = M_PI;
                 }
             }
             arr.putStorage (data, deleteIt);
@@ -1491,7 +1491,7 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
             }
         } else {
             for (size_t i=0; i<n; i++) {
-                doub[i] = fmod (Double(val[i]), 1.) * C::_2pi;   // in radians
+                doub[i] = fmod (Double(val[i]), 1.) * 2.0 * M_PI;   // in radians
             }
         }
         values.array().freeStorage (val, deleteVal);
@@ -1924,9 +1924,9 @@ MArray<Double> TableExprFuncNodeArray::getArrayDouble (const TableExprId& id)
         Double* resp = res.getStorage (deleteRes);
         size_t n = values.size();
         for (size_t i=0; i<n; i++) {
-          double v = fmod(val[i], C::_2pi);
-          if (v < -C::pi) v += C::_2pi;
-          res[i] = (v <= C::pi  ?  v : v-C::_2pi);
+          double v = fmod(val[i], 2.0 * M_PI);
+          if (v < -M_PI) v += 2.0 * M_PI;
+          res[i] = (v <= M_PI  ?  v : v-(2.0 * M_PI));
         }
         values.array().freeStorage (val, deleteVal);
         res.putStorage (resp, deleteRes);

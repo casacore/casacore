@@ -27,7 +27,8 @@
 //# Includes
 #include <casacore/casa/BasicSL/Complex.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/BasicSL/Constants.h>
+
+#include <cfloat>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -159,16 +160,16 @@ Complex acos(const Complex &in) {
   return std::acos(in);
 }
 DComplex atan2(const DComplex &in, const DComplex &t2) {
-  if (norm(t2) == 0) return DComplex(C::pi_2);
+  if (norm(t2) == 0) return DComplex(M_PI_2);
   const DComplex z = atan(in/t2);
   if (real(t2) > 0) return z;
-  return (z + DComplex(C::pi));
+  return (z + DComplex(M_PI));
 }
 Complex atan2(const Complex &in, const Complex &t2) {
-  if (norm(t2) == 0) return Complex(C::pi_2);
+  if (norm(t2) == 0) return Complex(M_PI_2);
   const Complex z = atan(in/t2);
   if (real(t2) > 0) return z;
-  return (z + Complex(C::pi));
+  return (z + Complex(M_PI));
 }
 /// Temporary solutions only
 DComplex erf(const DComplex &in) {
