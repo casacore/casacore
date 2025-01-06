@@ -18,6 +18,11 @@ if (POLICY CMP0074)
     cmake_policy (SET CMP0074 NEW)
 endif()
 
+# Use LOCATION as Python find strategy.
+if (POLICY CMP0094)
+    cmake_policy (SET CMP0094 NEW)
+endif()
+
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
 SET(PROJECT_SOVERSION 8)
 

@@ -80,4 +80,3 @@ if (NOT BUILD_PYTHON)
     DESTINATION include/casacore/python
     )
 endif (NOT BUILD_PYTHON)
-
