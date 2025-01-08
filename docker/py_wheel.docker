@@ -6,12 +6,11 @@ ARG THREADS=4
 # These variables MUST be set using the --build-arg option
 ARG PYMAJOR
 ARG PYMINOR
-ARG PYUNICODE
 
-ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}${PYUNICODE}
+ENV TARGET cp${PYMAJOR}${PYMINOR}-cp${PYMAJOR}${PYMINOR}
 
 # boost version
-ENV BOOSTMAJOR 79
+ENV BOOSTMAJOR 87
 ENV BOOSTMINOR 0
 ENV BOOST 1.${BOOSTMAJOR}.${BOOSTMINOR}
 ENV BOOST_ 1_${BOOSTMAJOR}_${BOOSTMINOR}
@@ -52,7 +51,7 @@ RUN ./bootstrap.sh --prefix=/opt/boost \
     --with-python-version=${PYMAJOR}.${PYMINOR} \
     --with-python-root=/opt/python/${TARGET}
 RUN ./b2 -j${THREADS} \
-    cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/" \
+    cxxflags="-fPIC -I/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/" \
     link=static,shared install
 
 # casacore wants numpy. Do not take oldest_supported_numpy, because we want numpy 2.0 compatibility
@@ -69,7 +68,7 @@ RUN cmake .. \
     -DPython3_ROOT_DIR=/opt/python/${TARGET} \
     -DPython3_EXECUTABLE=/opt/python/${TARGET}/bin/python3 \
     -DPython3_LIBRARY=/opt/boost/lib/libboost_python${PYMAJOR}${PYMINOR}.so \
-    -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}${PYUNICODE}/ \
+    -DPython3_INCLUDE_DIR=/opt/python/${TARGET}/include/python${PYMAJOR}.${PYMINOR}/ \
     -DSOFA_ROOT_DIR=/build \
     -DBUILD_TESTING=OFF \
     -DDATA_DIR=${CASACORE_DATA} \
