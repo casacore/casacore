@@ -348,13 +348,11 @@ namespace C {
   [[deprecated("use M_SQRT2")]]
   inline constexpr double sqrt2 = 1.4142135623730950488;
   // sqrt(3)
-  [[deprecated("use M_SQRT3")]]
   inline constexpr double sqrt3 = 1.7320508075688772935;;
   // 1/sqrt(2)
   [[deprecated("use M_SQRT1_2")]]
   inline constexpr double _1_sqrt2 = 0.70710678118654752440;
   // 1/sqrt(3)
-  [[deprecated("use (1.0/M_SQRT3)")]]
   inline constexpr double _1_sqrt3 = 0.57735026918962576451;
   // </group>
 
@@ -379,7 +377,7 @@ namespace C {
   [[deprecated("use M_2_PI")]]
   inline constexpr double _2_pi = 0.6366197723675813430755350;
   // 1/sqrt(pi)
-  [[deprecated("use M_1_SQRTPI")]]
+  [[deprecated("use (0.5 * M_2_SQRTPI)")]]
   inline constexpr double _1_sqrtpi = 0.5641895835477562869480795;
   // 2/sqrt(pi)
   [[deprecated("use M_2_SQRTPI")]]
@@ -408,13 +406,13 @@ namespace C {
   // gamma and functions thereof:
   // <group>
   // gamma
-  [[deprecated("Use std::numbers::gamma")]]
+  // With C++20, could be deprecated and use std::numbers::gamma instead
   inline constexpr double gamma = 0.577215664901532860606512;
   // ln(gamma)
-  [[deprecated("Use std::log(std::numbers::gamma)")]]
+  // With C++20, could be deprecated and use std::log(std::numbers::gamma) instead
   inline constexpr double lngamma = -0.549539312981644822337662;
   // e**gamma
-  [[deprecated("Use std::exp(std::numbers::gamma)")]]
+  // With C++20, could be deprecated and use std::exp(std::numbers::gamma) instead
   inline constexpr double etogamma =  1.7810724179901979852;
   // </group>
  
