@@ -296,7 +296,7 @@ T Interpolate2D::sinc(const T x) const {
     if (x == 0) {
         return 1;
     }
-    return sin(C::pi * x) / (C::pi * x);
+    return sin(M_PI * x) / (M_PI * x);
 }
 
 // Lanczos interpolation: helper function

@@ -89,7 +89,7 @@ int main() {
         majAx = Quantity(1, "arcsec");
         minAx = majAx;
         beam = GaussianBeam(majAx, minAx, pa);
-        AlwaysAssert(beam.getArea("arcsec2") == Quantity(C::pi/4/C::ln2), AipsError);
+        AlwaysAssert(beam.getArea("arcsec2") == Quantity(M_PI/4/M_LN2), AipsError);
         except = False;
         try {
             // bogus units

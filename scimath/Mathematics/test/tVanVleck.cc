@@ -162,9 +162,9 @@ int main() {
       // the chebyshev polynomials for size=65 and
       // corresponding rs from vv interpolator
       Double twoN = 2.0*65.0;
-      Double denom = cos(C::pi/twoN);
+      Double denom = cos(M_PI/twoN);
       for (uInt i=0;i<65;i++) {
-	Double rho = -cos(Double(2*i+1)*C::pi/twoN)/denom;
+	Double rho = -cos(Double(2*i+1)*M_PI/twoN)/denom;
 	Double r = vv.r(rho);
 	cout << i << " " << r << " " << rho << endl;
       }

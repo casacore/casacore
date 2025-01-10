@@ -38,7 +38,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T> 
 T Sinusoid1D<T>::eval(typename Function1D<T>::FunctionArg x) const {
   return param_p[AMPLITUDE]*
-    cos(T(C::_2pi)*(x[0] - param_p[X0])/param_p[PERIOD]);
+    cos(T(2.0*M_PI)*(x[0] - param_p[X0])/param_p[PERIOD]);
 }
 
 //# Member functions

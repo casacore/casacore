@@ -418,7 +418,6 @@ namespace C {
  
   // statistics related
   // 1/(Phi^(-1)(3/4), see https://en.wikipedia.org/wiki/Median_absolute_deviation#Relation_to_standard_deviation
-  [[deprecated("hardly used; declare locally in your code")]]
   inline constexpr double probit_3_4 = 1.482602218505602;
 
   //#--------------------------------------------------------------------

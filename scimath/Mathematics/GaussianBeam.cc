@@ -186,7 +186,7 @@ Double GaussianBeam::getArea(const Unit& unit) const {
     // nonstandard handling of solid angle units in CASA
     Quantity qunit(1, unit);
     if (qunit.isConform("sr") || qunit.isConform("rad2")) {
-        static const Double coeff = C::pi/(4*C::ln2);
+        static const Double coeff = M_PI/(4.0*M_LN2);
         return coeff * (_major * _minor).getValue(unit);
     }
     else {

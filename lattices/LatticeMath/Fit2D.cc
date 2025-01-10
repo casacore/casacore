@@ -393,7 +393,7 @@ Vector<Double> Fit2D::availableSolution (uInt which)  const
       } else {
          major = other;
          minor = ywidth;
-         pa = sol(iPA) + C::pi_2;   // pa off by 90
+         pa = sol(iPA) + M_PI_2;   // pa off by 90
       }
 //
 // Convert the position angle from positive 

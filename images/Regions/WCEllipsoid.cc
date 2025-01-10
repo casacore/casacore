@@ -95,10 +95,10 @@ WCEllipsoid::WCEllipsoid(
 			+ ": major axis is smaller than minor axis."
 		);
 	}
-	_theta.setValue(fmod(theta.getValue("rad"), C::pi));
+	_theta.setValue(fmod(theta.getValue("rad"), M_PI));
 	_theta.setUnit("rad");
 	if (_theta.getValue() < 0) {
-		_theta + Quantity(C::pi, "rad");
+		_theta + Quantity(M_PI, "rad");
 	}
 	_center.resize(2);
 	_center[0] = xcenter;

@@ -24,6 +24,8 @@
 //#                        Charlottesville, VA 22903-2475 USA
 
 //# Includes
+#include <cmath>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Quanta/Unit.h>

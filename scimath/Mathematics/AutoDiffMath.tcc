@@ -225,7 +225,7 @@ template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.value();
-  tmp.derivatives() *= T(T(C::_2_sqrtpi)*exp(-tv*tv));
+  tmp.derivatives() *= T(T(M_2_SQRTPI)*exp(-tv*tv));
   tmp.value() = erf(tv);
   return tmp;
 }
@@ -233,7 +233,7 @@ template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> erfc(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.value();
-  tmp.derivatives() *= T(T(-C::_2_sqrtpi)*exp(-tv*tv));
+  tmp.derivatives() *= T(T(-M_2_SQRTPI)*exp(-tv*tv));
   tmp.value() = erfc(tv);
   return tmp;
 }

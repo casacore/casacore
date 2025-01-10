@@ -174,8 +174,8 @@ void EarthField::calcField(const MVPosition &pos) {
       Double slat, clat, slong, clong, x, y, z, ratio, rr(0), one, two, three;
       Int l, m, n, fn(0), fm, j, i;
       for (Int lp=0; lp<4; lp++) {
-	slat = cos(C::pi_2 - posv(2));
-	clat = sin(C::pi_2 - posv(2));
+	slat = cos(M_PI_2 - posv(2));
+	clat = sin(M_PI_2 - posv(2));
 	slong = sin(posv(1));
 	clong = cos(posv(1));
 	cl_p(0) = clong;

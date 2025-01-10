@@ -374,8 +374,8 @@ Double GaussianConvert::positionAngleRange(Double pa)
 // Put in the range 0->pi 
 //
 {
-   Double pa2 = fmod(pa, C::pi);
-   if (pa2 < 0.0) pa2 += C::pi;
+   Double pa2 = fmod(pa, M_PI);
+   if (pa2 < 0.0) pa2 += M_PI;
    return pa2;
 }
 

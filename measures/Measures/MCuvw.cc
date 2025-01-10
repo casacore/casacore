@@ -671,12 +671,12 @@ void MCuvw::getB1950() {
 }
 
 void MCuvw::toPole(MVPosition &in) {
-  in *= RotMatrix(Euler(-C::pi_2 + MVDIR1.getLat(), 2u,
+  in *= RotMatrix(Euler(-M_PI_2 + MVDIR1.getLat(), 2u,
 			-MVDIR1.getLong(), 3u));
 }
 
 void MCuvw::fromPole(MVPosition &in) {
-  in = RotMatrix(Euler(-C::pi_2 + MVDIR1.getLat(), 2u,
+  in = RotMatrix(Euler(-M_PI_2 + MVDIR1.getLat(), 2u,
 		       -MVDIR1.getLong(), 3u)) * in;
 }
 

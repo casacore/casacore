@@ -266,7 +266,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   MSField fieldTable(rawms.field());
   MSFieldColumns msfc(fieldTable);
   Vector<Double> radec = msfc.phaseDirMeas(0).getAngle().getValue();
-  radec *=180.0/C::pi; // convert to degrees for FITS
+  radec *=180.0/M_PI; // convert to degrees for FITS
   if (radec(0) < 0) {
     radec(0) += 360;
   }

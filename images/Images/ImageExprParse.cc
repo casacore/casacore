@@ -258,9 +258,9 @@ LatticeExprNode ImageExprParse::makeFuncNode() const
     String val(itsSval);
     val.downcase();
     if (val == "pi") {
-	return LatticeExprNode (C::pi);
+	return LatticeExprNode (M_PI);
     } else if (val == "e") {
-	return LatticeExprNode (C::e);
+	return LatticeExprNode (M_E);
     } else {
 	throw (AipsError ("0-argument function " + itsSval + " is unknown"));
     }

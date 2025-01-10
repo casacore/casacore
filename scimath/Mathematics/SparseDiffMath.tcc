@@ -228,7 +228,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<class T> SparseDiff<T> erf(const SparseDiff<T> &ad) { 
     SparseDiff<T> tmp(ad);
     T tv = tmp.value();
-    *tmp.theRep() *= T(T(C::_2_sqrtpi)*exp(-tv*tv));
+    *tmp.theRep() *= T(T(M_2_SQRTPI)*exp(-tv*tv));
     tmp.value() = erf(tv);
     return tmp;
   }
@@ -236,7 +236,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   template<class T> SparseDiff<T> erfc(const SparseDiff<T> &ad) { 
     SparseDiff<T> tmp(ad);
     T tv = tmp.value();
-    *tmp.theRep() *= T(T(-C::_2_sqrtpi)*exp(-tv*tv));
+    *tmp.theRep() *= T(T(-M_2_SQRTPI)*exp(-tv*tv));
     tmp.value() = erfc(tv);
     return tmp;
   }

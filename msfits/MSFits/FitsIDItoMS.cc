@@ -1882,7 +1882,7 @@ void FITSIDItoMS1::setupMeasurementSet(const String& MSFileName, Bool useTSM,
 // Van Vleck relationship
 static Double rho_2(Double r)
 {
-  return sin((C::pi * r) / 2);
+  return sin((M_PI * r) / 2);
 }
 
 // Fred Schwab's rational approximation for 2-bit sampling with n =
@@ -2273,7 +2273,7 @@ void FITSIDItoMS1::fillMSMainTable(const String& MSFileName, Int& nField, Int& n
 	  rho = rho_4;
 	} else if (digiLevels[ant1] == 2 && digiLevels[ant2] == 2) {
 	  Rm = 1.0;
-	  alfa = 2.0 / C::pi;
+	  alfa = 2.0 / M_PI;
 	  gamma = 1.0 * 64.0 / 63.0;
 	  rho = rho_2;
 	} else if ((digiLevels[ant1] == 2 && digiLevels[ant2] == 4) ||
@@ -3566,7 +3566,7 @@ Bool FITSIDItoMS1::fillWeatherTable()
       msWeather.dewPoint().put(outRow,dewpoint(inRow)+273.15);
       msWeather.pressure().put(outRow,pressure(inRow));	// hPa == millibar
       msWeather.temperature().put(outRow,temperature(inRow)+273.15);
-      msWeather.windDirection().put(outRow,wind_direction(inRow)*C::pi/180.0);
+      msWeather.windDirection().put(outRow,wind_direction(inRow)*M_PI/180.0);
       msWeather.windSpeed().put(outRow,wind_velocity(inRow));
       if(weather_hasWater_p)
 	msWeather.H2O().put(outRow,wvr_h2o(inRow));

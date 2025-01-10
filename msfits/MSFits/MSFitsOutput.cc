@@ -409,7 +409,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     	else {
     		// Use the actual RA/Decl
     		radec = msfc.phaseDirMeas(_fieldNumber).getAngle().getValue();
-    		radec *= 180.0 / C::pi; // convert to degrees for FITS
+    		radec *= 180.0 / M_PI; // convert to degrees for FITS
     		if (radec(0) < 0) {
     			radec(0) += 360.0;
     		}

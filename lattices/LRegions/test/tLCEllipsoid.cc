@@ -65,7 +65,7 @@ void show(const LCEllipsoid& ellipse) {
 int main() {
     try {
         {
-            Float theta = C::pi/3;
+            Float theta = M_PI/3;
             Float xcenter = 30;
             Float ycenter = 30;
             IPosition latticeShape(2,60);
@@ -80,14 +80,14 @@ int main() {
             near(ellipse.theta(), copy->theta());
             delete copy;
 
-            Float theta2 = theta + C::pi;
+            Float theta2 = theta + M_PI;
             LCEllipsoid ellipse2(
                 xcenter, ycenter, major, minor, theta2, latticeShape
             );
             AlwaysAssert(ellipse == ellipse2, AipsError);
             near(ellipse.theta(), ellipse2.theta());
 
-            Float theta3 = theta - C::pi;
+            Float theta3 = theta - M_PI;
             LCEllipsoid ellipse3(
                 xcenter, ycenter, major, minor, theta3, latticeShape
             );
@@ -119,7 +119,7 @@ int main() {
             near(ellipse.theta(), ellipse2.theta());
             delete copy;
 
-            Float theta2 = C::pi/2;
+            Float theta2 = M_PI/2;
             LCEllipsoid ellipse3(
                 xcenter, ycenter, major, minor, theta2, latticeShape
             );
@@ -132,7 +132,7 @@ int main() {
             near(ellipse3.theta(), ellipse4.theta());
         }
         {
-            Float theta = C::pi/4;
+            Float theta = M_PI/4;
             Float xcenter = 40;
             Float ycenter = 40;
             IPosition latticeShape(2,60);
@@ -170,7 +170,7 @@ int main() {
             major = 40;
             minor = 10;
             // 5 degrees
-            Float theta = C::pi/36;
+            Float theta = M_PI/36;
             thrown = False;
             try {
                 LCEllipsoid ellipse(
@@ -209,7 +209,7 @@ int main() {
             LCEllipsoid ellipse3(center, radii, latticeShape);
             show(ellipse3);
 
-            Float theta = C::pi/4;
+            Float theta = M_PI/4;
             major = 36.01;
             minor = 16.01;
             xcenter = -1;

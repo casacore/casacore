@@ -1267,7 +1267,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   if (useHourAngle_p&&!hourAngleDefined_p) {
     msd.setEpoch( mRefTime_p );
     msd.setFieldCenter(fieldCenter);  // set to first sourceName above
-    t_offset_p = - msd.hourAngle() * 3600.0 * 180.0/C::pi / 15.0; // in seconds
+    t_offset_p = - msd.hourAngle() * 3600.0 * 180.0/M_PI / 15.0; // in seconds
     hourAngleDefined_p=True;
     //      os << "Times specified are interpreted as hour angles for first source observed" << endl
     //	 << "     offset in time = " << t_offset_p / 3600.0 << " hours from "
@@ -1545,7 +1545,7 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
       MEpoch::Ref refGMST1(MEpoch::GMST1);
       MEpoch::Convert epGMST1(epUT1, refGMST1);
       Double gmst = epGMST1().get("d").getValue("d");
-      gmst = (gmst - Int(gmst)) * C::_2pi;  // Into Radians
+      gmst = (gmst - Int(gmst)) * (2.0*M_PI);  // Into Radians
     
       MEpoch ep(Quantity((Time + Tint/2), "s"), MEpoch::UT1);
       msd.setEpoch(ep);
@@ -1811,7 +1811,7 @@ void NewMSSimulator::blockage(Double &fraction1, Double &fraction2,
     Double b=asin(sinb);
     Double a=asin(sina);
     Double area=(square(s)*a+b)-(square(s)*sina*cos(a)+sinb*cos(b));
-    fraction1 = area/C::pi;
+    fraction1 = area/M_PI;
     fraction2 = fraction1/square(s);
   }
   // if antenna1 is in behind, w is > 0, 2 is NOT shadowed

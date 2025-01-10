@@ -124,8 +124,8 @@ void LatticeHistSpecialize::makeGauss(uInt& nGPts, Float& gMax,
       
 // Set up Gaussian functional
                                     
-   const Float gaussAmp = dSum * C::_1_sqrt2 * C::_1_sqrtpi / dSigma;
-   const Float gWidth = sqrt(8.0*C::ln2) * dSigma;
+   const Float gaussAmp = dSum * M_SQRT1_2 * (0.5*M_2_SQRTPI) / dSigma;
+   const Float gWidth = sqrt(8.0*M_LN2) * dSigma;
    const Gaussian1D<Float> gauss(gaussAmp, dMean, gWidth);
    
 // Generate Gaussian.

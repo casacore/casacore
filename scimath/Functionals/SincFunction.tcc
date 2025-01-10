@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Operators
 template<class T> 
 T SincFunction<T>::eval(typename Function<T>::FunctionArg x) const {
-  T tmp = T(C::pi)*(x[0] - param_p[CENTER]);
+  T tmp = T(M_PI)*(x[0] - param_p[CENTER]);
   if (tmp == T(0.0)) return param_p[HEIGHT];
   return sin(tmp/param_p[WIDTH])/tmp*param_p[WIDTH];
 }
