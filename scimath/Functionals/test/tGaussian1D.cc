@@ -63,14 +63,14 @@ int main() {
   AlwaysAssertExit(cgauss1.height() == 4.0 && cgauss1.center() == 6.0 &&
 		   cgauss1.width() == 8.0);
   gauss1.setHeight(2.0);
-  AlwaysAssertExit(near(gauss1.flux(), 2.0*8.0*sqrt(C::pi/log(16.0))));
+  AlwaysAssertExit(near(gauss1.flux(), 2.0*8.0*sqrt(M_PI/log(16.0))));
   gauss1.setCenter(3.0);
   gauss1.setWidth(4.0);
   gauss1.setFlux(1.0);
   AlwaysAssertExit(gauss1[Gaussian1D<Double>::WIDTH] == 4.0 &&
 		   gauss1[Gaussian1D<Double>::CENTER] == 3.0 &&
 		   near(gauss1[Gaussian1D<Double>::HEIGHT] , 
-			1.0/4.0/sqrt(C::pi/log(16.0))));
+			1.0/4.0/sqrt(M_PI/log(16.0))));
   gauss1[Gaussian1D<Double>::HEIGHT] = 2.0;
   // <<
   cout << "Function Parameters: " << gauss1 << endl;
@@ -105,14 +105,14 @@ int main() {
   AlwaysAssertExit(cgauss5.height() == 4.0 && cgauss5.center() == 6.0 &&
 		   cgauss5.width() == 8.0);
   gauss5.setHeight(AutoDiff<Double>(2.0));
-  AlwaysAssertExit(near(gauss5.flux(), 2.0*8.0*sqrt(C::pi/log(16.0))));
+  AlwaysAssertExit(near(gauss5.flux(), 2.0*8.0*sqrt(M_PI/log(16.0))));
   gauss5.setCenter(AutoDiff<Double>(3.0,3,1));
   gauss5.setWidth(AutoDiff<Double>(4.0,3,2));
   gauss5.setFlux(AutoDiff<Double>(1.0,3,0));
   AlwaysAssertExit(gauss5[Gaussian1D<AutoDiff<Double> >::WIDTH] == 4.0 &&
 		   gauss5[Gaussian1D<AutoDiff<Double> >::CENTER] == 3.0 &&
 		   near(gauss5[Gaussian1D<AutoDiff<Double> >::HEIGHT] , 
-			1.0/4.0/sqrt(C::pi/log(16.0))));
+			1.0/4.0/sqrt(M_PI/log(16.0))));
   gauss5.setHeight(AutoDiff<Double>(2.0,3,0));
   cout << "Specialized(3):  " << gauss5(3.0) << endl;
   cout << "Specialized(5):  " << gauss5(5.0) << endl;
@@ -128,14 +128,14 @@ int main() {
   AlwaysAssertExit(cgauss6.height() == 4.0 && cgauss6.center() == 6.0 &&
 		   cgauss6.width() == 8.0);
   gauss6.setHeight(AutoDiffA<Double>(2.0));
-  AlwaysAssertExit(near(gauss6.flux(), 2.0*8.0*sqrt(C::pi/log(16.0))));
+  AlwaysAssertExit(near(gauss6.flux(), 2.0*8.0*sqrt(M_PI/log(16.0))));
   gauss6.setCenter(AutoDiffA<Double>(3.0,3,1));
   gauss6.setWidth(AutoDiffA<Double>(4.0,3,2));
   gauss6.setFlux(AutoDiffA<Double>(1.0,3,0));
   AlwaysAssertExit(gauss6[Gaussian1D<AutoDiffA<Double> >::WIDTH] == 4.0 &&
 		   gauss6[Gaussian1D<AutoDiffA<Double> >::CENTER] == 3.0 &&
 		   near(gauss6[Gaussian1D<AutoDiffA<Double> >::HEIGHT] , 
-			1.0/4.0/sqrt(C::pi/log(16.0))));
+			1.0/4.0/sqrt(M_PI/log(16.0))));
   gauss6.setHeight(AutoDiffA<Double>(2.0,3,0));
   cout << "Generic(3):      " << gauss6(AutoDiffA<Double>(3.0)) << endl;
   cout << "Generic(5):      " << gauss6(AutoDiffA<Double>(5.0)) << endl;

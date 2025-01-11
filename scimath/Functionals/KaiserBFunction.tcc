@@ -38,9 +38,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T> 
 T KaiserBFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   T par2 = param_p[KBPAR] * param_p[KBPAR];
-  T x1 = T(C::pi) * param_p[KBPAR];
-  T x2 = T(C::pi) * sqrt(par2 - T(1.0));
-  T x3 = T(C::pi) * sqrt(par2 - T(4.0));
+  T x1 = T(M_PI) * param_p[KBPAR];
+  T x2 = T(M_PI) * sqrt(par2 - T(1.0));
+  T x3 = T(M_PI) * sqrt(par2 - T(4.0));
   T a = sinh(x1);
   T b = sinh(x2) * T(2.0);
   T c = sinh(x3) * T(2.0);
@@ -48,7 +48,7 @@ T KaiserBFunction<T>::eval(typename Function<T>::FunctionArg x) const {
   a /= sum;
   b /= sum;
   c /= sum;
-  T y = (x[0]-param_p[CENTER]) * T(C::pi) / param_p[WIDTH];
+  T y = (x[0]-param_p[CENTER]) * T(M_PI) / param_p[WIDTH];
   return param_p[HEIGHT]*(a + b * cos(y) + c * cos(T(2.0) * y));
 }
 

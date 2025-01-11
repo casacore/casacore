@@ -214,11 +214,11 @@ Double MVFrequency::makeF(Double v, const Unit &dt, Bool rev) const{
   } else if (dt.getValue() == InvTime) {
     x = dt.getValue().getFac();
   } else if (dt.getValue() == AngleTime) {
-    x = dt.getValue().getFac()/C::pi/2.0;
+    x = dt.getValue().getFac()/M_PI/2.0;
   } else if (dt.getValue() == UnitVal::LENGTH) {
     return (LVel/dt.getValue().getFac()/v);
   } else if (dt.getValue() == InvLength) {
-    x = LVel*dt.getValue().getFac()/C::pi/2.0;
+    x = LVel*dt.getValue().getFac()/M_PI/2.0;
   } else if (dt.getValue() == Energy) {
     x = dt.getValue().getFac()/Planck;
   } else {

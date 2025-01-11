@@ -538,14 +538,14 @@ int testScaDouble()
 {
   cout<<"  testing scalar Double functions ..."<<endl;
   int nfail = 0;
-  nfail += checkScaDouble ("pi", "", C::pi);
-  nfail += checkScaDouble ("e", "", C::e);
+  nfail += checkScaDouble ("pi", "", M_PI);
+  nfail += checkScaDouble ("e", "", M_E);
   nfail += checkScaDouble ("c", "", C::c, "m/s");
   nfail += checkScaDouble ("sin", "0.5", sin(0.5));
   nfail += checkScaDouble ("sinh", "2", sinh(2));
   nfail += checkScaDouble ("cos", "0.6", cos(0.6));
   nfail += checkScaDouble ("cosh", "1.5", cosh(1.5));
-  nfail += checkScaDouble ("exp", "0.5", sqrt(C::e));
+  nfail += checkScaDouble ("exp", "0.5", sqrt(M_E));
   nfail += checkScaDouble ("log", "e()*e()", 2.);
   nfail += checkScaDouble ("log10", "0.1", -1.);
   nfail += checkScaDouble ("sqr", "-4.5", 4.5*4.5);
@@ -561,7 +561,7 @@ int testScaDouble()
   nfail += checkScaDouble ("norm", "-6.1", 6.1*6.1);
   nfail += checkScaDouble ("abs", "-6.5", 6.5);
   nfail += checkScaDouble ("arg", "6", 0., "rad");
-  nfail += checkScaDouble ("arg", "-6", C::pi, "rad");
+  nfail += checkScaDouble ("arg", "-6", M_PI, "rad");
   nfail += checkScaDouble ("real", "F", 0.);
   nfail += checkScaDouble ("real", "T", 1.);
   nfail += checkScaDouble ("real", "2", 2.);
@@ -653,8 +653,8 @@ int testScaDateTime()
   nfail += checkScaDouble ("mjd", "12Feb2017/12:00:00", 57796.5, "d");
   nfail += checkScaDateTime ("date", "'12Feb2017/12:0:0'", MVTime(2017,2,12,0));
   nfail += checkScaDateTime ("date", "12Feb2017/12:0:0", MVTime(2017,2,12,0));
-  nfail += checkScaDouble ("time", "'12Feb2017/12:0:0'", C::pi, "rad");
-  nfail += checkScaDouble ("time", "12Feb2017/12:0:0", C::pi, "rad");
+  nfail += checkScaDouble ("time", "'12Feb2017/12:0:0'", M_PI, "rad");
+  nfail += checkScaDouble ("time", "12Feb2017/12:0:0", M_PI, "rad");
   nfail += checkScaInt ("year", "'12-Feb-17/12:0:0'", 2017);
   nfail += checkScaInt ("year", "12-Feb-17/12:0:0", 2017);
   nfail += checkScaInt ("month", "'12Feb2017/12:0:0'", 2);

@@ -121,13 +121,13 @@ template<class T>
 T Gaussian2DParam<T>::flux() const {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   return param_p[HEIGHT]*abs(param_p[YWIDTH]*theXwidth*
-			     fwhm2int*fwhm2int*T(C::pi));
+			     fwhm2int*fwhm2int*T(M_PI));
 }
 
 template<class T>
 void Gaussian2DParam<T>::setFlux(const T &flux) {
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
-  param_p[HEIGHT] = flux/(abs(param_p[YWIDTH]*theXwidth*T(C::pi))*
+  param_p[HEIGHT] = flux/(abs(param_p[YWIDTH]*theXwidth*T(M_PI))*
 			  fwhm2int*fwhm2int);
 }
 
@@ -237,21 +237,21 @@ T Gaussian2DParam<T>::PA() const {
   T pa;
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   if (abs(param_p[YWIDTH]) >= abs(theXwidth)) pa = fmod(param_p[PANGLE],
-							T(C::pi));
-  else pa = fmod(param_p[PANGLE]+T(C::pi_2), T(C::pi));
-  if (pa < T(0.0)) pa += T(C::pi);
+							T(M_PI));
+  else pa = fmod(param_p[PANGLE]+T(M_PI_2), T(M_PI));
+  if (pa < T(0.0)) pa += T(M_PI);
   return pa;
 }
 
 template<class T>
 void Gaussian2DParam<T>::setPA(const T &pa) {
-  if (abs(pa) > T(C::_2pi)) {
+  if (abs(pa) > T(2.0*M_PI)) {
     throw(AipsError("Gaussian2DParam<T>::setPA(const T &pa)"
 		    " - PA must be in radians and between -2pi and 2pi"));
   }
   theXwidth = param_p[YWIDTH]*param_p[RATIO];
   if (abs(param_p[YWIDTH]) >= abs(theXwidth)) param_p[PANGLE] = pa;
-  else param_p[PANGLE] = pa - T(C::pi_2);
+  else param_p[PANGLE] = pa - T(M_PI_2);
   theCpa = cos(param_p[PANGLE]);
   theSpa = sin(param_p[PANGLE]);
   thePA  = param_p[PANGLE];

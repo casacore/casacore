@@ -210,7 +210,7 @@ namespace casacore {
           name = names.data()[i];   // keep original case
         }
       }
-      itsH[i] *= C::pi/180.;
+      itsH[i] *= M_PI/180.;
       itsConstants.data()[i] = MDirection::makeMDirection (name);
     }
   }

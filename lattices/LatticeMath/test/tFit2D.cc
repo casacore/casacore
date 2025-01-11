@@ -73,7 +73,7 @@ int main(int argc, const char *argv[])
    const Double noise = inputs.getDouble("noise");
    Double major = inputs.getDouble("major");
    Double minor= inputs.getDouble("minor");
-   Double pa = inputs.getDouble("pa") * C::pi / 180.0;          // +x -> +y
+   Double pa = inputs.getDouble("pa") * M_PI / 180.0;          // +x -> +y
    const Int nx = inputs.getInt("nx");   
    const Int ny = inputs.getInt("ny");   
    ///const Bool norm = inputs.getBool("norm");
@@ -170,8 +170,8 @@ int main(int argc, const char *argv[])
 //
       major *= 0.9;
       minor *= 0.9;
-      pa += C::pi / 180 * 20.0;
-      if (pa > C::pi) pa -= C::pi;
+      pa += M_PI / 180 * 20.0;
+      if (pa > M_PI) pa -= M_PI;
       cerr << endl;
    }
 

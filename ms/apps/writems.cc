@@ -1082,7 +1082,7 @@ void MSCreateCasa::fillFeed()
   Vector<Double> feedPos(3);
   feedPos = 0.0;
   Vector<Double> feedAngle(nRec);
-  feedAngle = -C::pi_4;                      // 0 for parallel dipoles
+  feedAngle = -M_PI_4;                      // 0 for parallel dipoles
   // Fill the FEED subtable.
   MSFeed msfeed = itsMS.feed();
   MSFeedColumns msfeedCol(msfeed);

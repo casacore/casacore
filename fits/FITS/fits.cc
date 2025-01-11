@@ -192,10 +192,10 @@ const float FITS::maxfloat = C::maxfloat;
 const double FITS::mindouble = C::mindouble;
 const double FITS::maxdouble = C::maxdouble;
 #   else
-const float FITS::minfloat = C::flt_min;
-const float FITS::maxfloat = C::flt_max;
-const double FITS::mindouble = C::dbl_min;
-const double FITS::maxdouble = C::dbl_max;
+const float FITS::minfloat = FLT_MIN;
+const float FITS::maxfloat = FLT_MAX;
+const double FITS::mindouble = DBL_MIN;
+const double FITS::maxdouble = DBL_MAX;
 #   endif
 
 ostream & operator << (ostream &o, const FitsLogical &x) {

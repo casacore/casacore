@@ -250,8 +250,8 @@ void UVWMachine::init() {
     // Define rotation to a coordinate system with pole towards in-direction
     // and X-axis W; by rotating around z-axis over -(90-long); and around
     // x-axis (lat-90).
-    rot1_p = RotMatrix(Euler(-(C::pi_2 - in_p.getValue().get()(0)), 3,
-			     in_p.getValue().get()(1) - C::pi_2, 1));
+    rot1_p = RotMatrix(Euler(-(M_PI_2 - in_p.getValue().get()(0)), 3,
+			     in_p.getValue().get()(1) - M_PI_2, 1));
     // Convert the input axes directions to the output reference frame, and
     // deduce a rotation matrix from these
     rot2_p.set(conv_p(mVx).getValue().getValue(),
@@ -260,8 +260,8 @@ void UVWMachine::init() {
     rot2_p.transpose();
     // The rotation matrix from a system that has a pole towards output
     // direction, into the standard system.
-    rot3_p = RotMatrix(Euler(C::pi_2 - out_p.getValue().get()(1), 1,
-			     -(out_p.getValue().get()(0) - C::pi_2), 3));
+    rot3_p = RotMatrix(Euler(M_PI_2 - out_p.getValue().get()(1), 1,
+			     -(out_p.getValue().get()(0) - M_PI_2), 3));
     // Get the rotation matrix which re-projects an uv-plane onto another
     // reference direction:
     // <ul>
@@ -272,10 +272,10 @@ void UVWMachine::init() {
     // and normalise
     rot4_p = RotMatrix();
     if (proj_p) {
-      RotMatrix x(Euler(-(C::pi_2 - out_p.getValue().get()(1)), 1,
+      RotMatrix x(Euler(-(M_PI_2 - out_p.getValue().get()(1)), 1,
 			out_p.getValue().get()(0) -
 			in_p.getValue().get()(0), 3,
-			(C::pi_2 - in_p.getValue().get()(1)), 1));
+			(M_PI_2 - in_p.getValue().get()(1)), 1));
       rot4_p(0,0) = x(1,1)/x(2,2);
       rot4_p(1,1) = x(0,0)/x(2,2);
       rot4_p(0,1) = x(1,0)/x(2,2);

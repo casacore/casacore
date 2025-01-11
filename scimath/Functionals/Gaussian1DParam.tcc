@@ -97,12 +97,12 @@ Gaussian1DParam<T>::operator=(const Gaussian1DParam<T> &other) {
 //# Member functions
 template<class T>
 T Gaussian1DParam<T>::flux() const {
-  return param_p[HEIGHT]*abs(param_p[WIDTH])*fwhm2int/T(C::_1_sqrtpi);
+  return param_p[HEIGHT]*abs(param_p[WIDTH])*fwhm2int/T(0.5 * M_2_SQRTPI);
 }
 
 template<class T>
 void Gaussian1DParam<T>::setFlux(const T &flux) {
-  param_p[HEIGHT] = flux*T(C::_1_sqrtpi)/abs(param_p[WIDTH])/fwhm2int;
+  param_p[HEIGHT] = flux*T(0.5 * M_2_SQRTPI)/abs(param_p[WIDTH])/fwhm2int;
 }
 
 } //# NAMESPACE CASACORE - END

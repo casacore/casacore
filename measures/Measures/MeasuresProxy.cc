@@ -392,7 +392,7 @@ Bool MeasuresProxy::toUvw(String &error, MeasureHolder &out,
       dot[i+2] = -cd*xyz[i+0];
     }
     for (uInt j=0; j<3*nel; ++j) {
-      dot[j] *= C::pi/180/240./1.002737909350795;
+      dot[j] *= M_PI/180/240./1.002737909350795;
     }
 
   } catch (std::exception& x) {

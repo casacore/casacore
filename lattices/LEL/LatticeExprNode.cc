@@ -1456,10 +1456,10 @@ LatticeExprNode pa (const LatticeExprNode& left,
    LatticeExprNode expr(atan2(left,right));
    switch (expr.dataType()) {
    case TpFloat:
-      return Float(90.0/C::pi) * expr;
+      return Float(90.0/M_PI) * expr;
       break;
    case TpDouble:
-      return Double(90.0/C::pi) * expr;
+      return Double(90.0/M_PI) * expr;
       break;
    default:
       throw (AipsError ("LatticeExprNode::pa - Unknown data type"));

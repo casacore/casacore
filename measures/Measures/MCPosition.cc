@@ -127,7 +127,7 @@ void MCPosition::doConvert(MVPosition &in,
 	if (d2 != 0.0) {
 	  (*DVEC1)(2) = atan(((*DVEC1)(2))/d2);
 	} else {
-	  (*DVEC1)(2) = ((*DVEC1)(2) >= 0) ? C::pi_2 : - C::pi_2;
+	  (*DVEC1)(2) = ((*DVEC1)(2) >= 0) ? M_PI_2 : - M_PI_2;
 	}
       }
       while ( !nearAbs((*DVEC1)(2), g2, 1e-10));

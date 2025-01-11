@@ -504,7 +504,7 @@ fftshift(Array<S> & cValues, const uInt& whichAxis,
     return;
   }
 
-  const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
+  const Complex exponent =  2.*M_PI*Complex(0.,1.)*relshift;
       
   ArrayIterator<S> ait(cValues, IPosition(1,whichAxis), True); // axes are the cursor  
   while(!ait.pastEnd()){
@@ -546,7 +546,7 @@ fftshift(Array<S> & outValues, Array<Bool> & outFlags,
     return;
   }
 
-  const Complex exponent =  2.*C::pi*Complex(0.,1.)*relshift; 
+  const Complex exponent =  2.*M_PI*Complex(0.,1.)*relshift;
 
   Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
   Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));
@@ -646,7 +646,7 @@ fftshift(Array<T> & outValues, Array<Bool> & outFlags,
     return;
   }
 
-  const Complex exponent =  -2.*C::pi*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case  
+  const Complex exponent =  -2.*M_PI*Complex(0.,1.)*relshift; // note: opposite sign compared to complex case
 
   Int numToFlag  = static_cast<Int> (ceil(vsize*fabs(relshift)));
   Int numToFlag2 = static_cast<Int> (floor(vsize*fabs(relshift)));

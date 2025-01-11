@@ -134,14 +134,14 @@ template <class Type>
 Type Gaussian3DParam<Type>::flux() const
 {
   return param_p[H]*param_p[AX]*param_p[AY]*param_p[AZ]*
-         fwhm2int*fwhm2int*fwhm2int*Type(C::pi*sqrt(C::pi));
+         fwhm2int*fwhm2int*fwhm2int*Type(M_PI*sqrt(M_PI));
 }
 
 template <class Type>
 void Gaussian3DParam<Type>::setFlux(const Type& flux)
 {
   param_p[H]= flux / (param_p[AX]*param_p[AY]*param_p[AZ]*
-         fwhm2int*fwhm2int*fwhm2int*Type(C::pi*sqrt(C::pi)));
+         fwhm2int*fwhm2int*fwhm2int*Type(M_PI*sqrt(M_PI)));
 }
 
 
@@ -287,7 +287,7 @@ Type Gaussian3DParam<Type>::phi() const
 template<class Type> 
 void Gaussian3DParam<Type>::settheta(const Type& theta) 
 {
-  if (abs(theta) > Type(C::pi_4))   
+  if (abs(theta) > Type(M_PI_4))
     throw(AipsError("Gaussian3DParam<Type>::settheta(const Type& theta)"
 		    " - theta must be in radians and between -pi/4 and pi/4"));
   
@@ -298,7 +298,7 @@ void Gaussian3DParam<Type>::settheta(const Type& theta)
 template<class Type> 
 void Gaussian3DParam<Type>::setphi(const Type& phi) 
 {
-  if (abs(phi) > Type(C::pi_4)) 
+  if (abs(phi) > Type(M_PI_4))
     throw(AipsError("Gaussian3D<Type>::setphi(const Type& phi)"
 		    " - phi must be in radians and between -pi/4 and pi/4"));
   

@@ -534,8 +534,8 @@ Bool ObsInfo::fromFITS(Vector<String>& error, const RecordInterface & rec)
 	    error(3) = "Type of OBSRA or OBSDEC field is not Double!";
 	    ok = False;
 	} else {
-           MVDirection mvd((subRec1.asDouble("value"))*C::pi/180.0,
-                           (subRec2.asDouble("value"))*C::pi/180.0);
+           MVDirection mvd((subRec1.asDouble("value"))*M_PI/180.0,
+                           (subRec2.asDouble("value"))*M_PI/180.0);
    	   setPointingCenter(mvd);
         }
     }

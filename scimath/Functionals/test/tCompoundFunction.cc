@@ -52,9 +52,9 @@ int main() {
   sumfunc.addFunction(gauss);                             // x^2 + e^{-x^2}
 
   //   T operator()(const T &x) const;
-  AlwaysAssertExit(near(sumfunc(2.0), 2.0*2.0 + 1.0/C::e/C::e/C::e/C::e));
+  AlwaysAssertExit(near(sumfunc(2.0), 2.0*2.0 + 1.0/M_E/M_E/M_E/M_E));
   Double xvec = 1.0;
-  AlwaysAssertExit(near(sumfunc(xvec), 1.0*1.0 + 1.0/C::e));
+  AlwaysAssertExit(near(sumfunc(xvec), 1.0*1.0 + 1.0/M_E));
 
   //   uInt nparameters()
   AlwaysAssertExit(sumfunc.nparameters() == 6);
@@ -79,7 +79,7 @@ int main() {
   //     Function<T> *function(uInt which);
   const CompoundFunction<Double> sfref = sumfunc;
   AlwaysAssertExit( (sumfunc.function(0))(3.0) == 9.0);
-  AlwaysAssertExit( near((sfref.function(1))(-1.0), 1.0/C::e ));
+  AlwaysAssertExit( near((sfref.function(1))(-1.0), 1.0/M_E ));
   //     T getparameter(uInt which) const;
   AlwaysAssertExit(sumfunc[0] == 0.0 &&
 		   sumfunc[1] == 0.0 &&
@@ -90,7 +90,7 @@ int main() {
   
   //     virtual void setParameter(uInt which, const T &val);
   sumfunc[4] = 2.0;
-  AlwaysAssertExit(near(sumfunc(3.0), 3.0*3.0 + 1.0/C::e));
+  AlwaysAssertExit(near(sumfunc(3.0), 3.0*3.0 + 1.0/M_E));
   
   //     virtual Function<T> *cloneFunction() const;
   //     ~CompoundFunction();

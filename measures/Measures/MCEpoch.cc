@@ -191,7 +191,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 	  xe -= MeasTable::dUT1(xe.get())/MeasData::SECinDAY;
 	  xe += MeasTable::dUTC(xe.get())/MeasData::SECinDAY;
 	  xe += MeasTable::dTAI(xe.get())/MeasData::SECinDAY;
-	  xe += MeasTable::GMST00(ut, xe.get())/C::_2pi;
+	  xe += MeasTable::GMST00(ut, xe.get())/(2.0*M_PI);
 	  xe += mve6713;
 	  tt = (xx-xe.get())/2.0055;
 	  in += MVEpoch(tt);
@@ -207,7 +207,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 	in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
 	in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
 	in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
-	in += MeasTable::GMST00(ut, in.get())/C::_2pi;
+	in += MeasTable::GMST00(ut, in.get())/(2.0*M_PI);
       } else {
 	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
       }

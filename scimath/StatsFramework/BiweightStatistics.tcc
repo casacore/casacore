@@ -413,7 +413,7 @@ void BiweightStatistics<CASA_STATP>::_computeStats() {
     if (_maxNiter >= 0) {
         // initial scale estimation before iteration begins
         _doScale();
-        const AccumType epsilon = 0.03*C::_1_sqrt2/sqrt(_npts - 1);
+        const AccumType epsilon = 0.03*M_SQRT1_2/sqrt(_npts - 1);
         AccumType prevScale = 0;
         for (_niter=1; _niter <= _maxNiter; ++_niter) {
             prevScale = _scale;
