@@ -111,13 +111,13 @@ public:
     // <src>new</src> or <src>malloc</src>. This can include some extra
     // overhead bytes, e.g. for alignment reasons.
     [[deprecated("Results are not accurate (see help for mallinfo2()), so avoid this call")]]
-    static size_t allocatedMemoryInBytes();
+    static size_t allocatedMemoryInBytes() { return 0; }
     // How much memory in in the memory "pool" of this process. This includes
     // not only the allocated memory, but some memory which has been
     // <src>delete</src>d but not returned to the OS on the assumption that
     // it might be needed again.
     [[deprecated("Results are not accurate (see help for mallinfo2()), so avoid this call")]]
-    static size_t assignedMemoryInBytes();
+    static size_t assignedMemoryInBytes() { return 0; }
     // Attempt to release memory which has been assigned but not allocated.
     // On many systems this will be a no-op, and even on systems in which it
     // does something the amount of reclaimed memory cannot be specified.

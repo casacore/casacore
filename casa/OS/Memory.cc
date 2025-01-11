@@ -41,41 +41,6 @@
 
 namespace casacore  { //#Begin namespace casa
 
-size_t Memory::allocatedMemoryInBytes()
-{
-    size_t total = 0;
-
-#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
-// Use getrusage to get the RSS
-   struct rusage rus;
-   getrusage(0, &rus);
-   total = rus.ru_maxrss;
-#else
-
-   struct mallinfo2 m = mallinfo2();
-   total = m.hblkhd + m.usmblks + m.uordblks;
-
-#endif
-   return total;
-}
-
-size_t Memory::assignedMemoryInBytes()
-{
-    size_t total = 0;
-#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
-// Use getrusage to get the other memory segments
-   struct rusage rus;
-   getrusage(0, &rus);
-   total = rus.ru_idrss + rus.ru_isrss;
-#else
-
-    struct mallinfo2 m = mallinfo2();
-    total = m.arena + m.hblkhd;
-#endif
-
-    return total;
-}
-
 void Memory::releaseMemory()
 {
 #if defined(AIPS_RELEASEMEM)
