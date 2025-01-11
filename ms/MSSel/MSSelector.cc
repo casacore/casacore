@@ -919,7 +919,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 									phaseDirMeas(curFieldId,times(k)));
 						ep.set(MVEpoch(times(k)/C::day));
 						msd_p.setEpoch(ep);
-						if (doHA) ha(k)=msd_p.hourAngle()/C::_2pi*C::day;
+						if (doHA) ha(k)=msd_p.hourAngle()/(2.0*M_PI)*C::day;
 						if (doLAST) last(k)=msd_p.last().getValue().get();
 					}
 				}
