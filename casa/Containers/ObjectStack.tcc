@@ -51,8 +51,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   T *ObjectStack<T>::get() {
     std::lock_guard<std::mutex> lock(mutex_p);
     if (stack_p.empty()) stack_p.push_back(new T);
+    T* object = stack_p.back();
     stack_p.pop_back();
-    return *stack_p.end();
+    return object;
   }
 
   template <class T>

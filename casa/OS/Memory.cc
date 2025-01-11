@@ -58,18 +58,7 @@ size_t Memory::allocatedMemoryInBytes()
    total = rus.ru_maxrss;
 #else
 
-   // Ger van Diepen   25-May-2004
-   // For IntelCC (with -cxxlib-gcc) mallinfo hangs if called before any
-   // malloc is done. So do a new to prevent that from happening.
-   // Ger van Diepen   6-Oct-2004
-   // Hang also occurs with gcc on Linux. So always do a new.
-   static char* ptr = 0;
-   if (ptr == 0) {
-     char* ptr = new char[4];
-     delete [] ptr;
-   }
-
-   struct mallinfo m = mallinfo();
+   struct mallinfo2 m = mallinfo2();
    total = m.hblkhd + m.usmblks + m.uordblks;
 
 #endif
@@ -86,7 +75,7 @@ size_t Memory::assignedMemoryInBytes()
    total = rus.ru_idrss + rus.ru_isrss;
 #else
 
-    struct mallinfo m = mallinfo();
+    struct mallinfo2 m = mallinfo2();
     total = m.arena + m.hblkhd;
 #endif
 

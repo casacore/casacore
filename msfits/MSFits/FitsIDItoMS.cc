@@ -180,8 +180,8 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
     ///infile_p(fitsin),
     itsObsType(obsType),
     itsCorrelat(correlat),
-    itsVanVleck(vanVleck),
     itsCorVer(corVer),
+    itsVanVleck(vanVleck),
     msc_p(0)
 {
 
