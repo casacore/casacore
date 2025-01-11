@@ -348,7 +348,7 @@ namespace C {
   [[deprecated("use M_SQRT2")]]
   inline constexpr double sqrt2 = 1.4142135623730950488;
   // sqrt(3)
-  inline constexpr double sqrt3 = 1.7320508075688772935;;
+  inline constexpr double sqrt3 = 1.7320508075688772935;
   // 1/sqrt(2)
   [[deprecated("use M_SQRT1_2")]]
   inline constexpr double _1_sqrt2 = 0.70710678118654752440;
