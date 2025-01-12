@@ -103,6 +103,7 @@ Tables/TableRowProxy.cc
 Tables/TableSyncData.cc
 Tables/TableTrace.cc
 Tables/TableUtil.cc
+AlternateMans/StokesIStMan.cc
 DataMan/BitFlagsEngine.cc
 DataMan/CompressComplex.cc
 DataMan/CompressFloat.cc
@@ -338,10 +339,17 @@ DESTINATION include/casacore/tables/Tables
 )
 
 install (FILES
+AlternateMans/BitPacking.h
+AlternateMans/BufferedColumnarFile.h
+AlternateMans/RowBasedFile.h
+AlternateMans/SimpleColumnarFile.h
+AlternateMans/StokesIStMan.h
+AlternateMans/StokesIStManColumn.h
 DataMan/BaseMappedArrayEngine.h
 DataMan/BaseMappedArrayEngine.tcc
 DataMan/BitFlagsEngine.h
 DataMan/BitFlagsEngine.tcc
+DataMan/ColumnarFile.h
 DataMan/CompressComplex.h
 DataMan/CompressFloat.h
 DataMan/DataManAccessor.h
