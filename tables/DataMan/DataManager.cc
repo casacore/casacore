@@ -49,6 +49,7 @@
 #include <casacore/casa/OS/DynLib.h>
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/stdio.h>                     // for snprintf
+#include <casacore/tables/AlternateMans/StokesIStMan.h>
 
 #ifdef HAVE_ADIOS2
 #include <casacore/tables/DataMan/Adios2StMan.h>
@@ -399,7 +400,7 @@ DataManager* DataManager::unknownDataManager (const String& type,
                               "  Check (DY)LD_LIBRARY_PATH matches the"
                               " libraries used during the build of "
                               + type);
-    return 0;
+    return nullptr;
 }
 
 
@@ -420,6 +421,7 @@ std::map<String,DataManagerCtor> DataManager::initRegisterMap()
   theirRegisterMap.insert (std::make_pair("TiledColumnStMan", TiledColumnStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("TiledShapeStMan",  TiledShapeStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("MemoryStMan",      MemoryStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("StokesIStMan",     StokesIStMan::makeObject));
 #ifdef HAVE_ADIOS2
   theirRegisterMap.insert (std::make_pair("Adios2StMan",      Adios2StMan::makeObject));
 #endif
