@@ -498,7 +498,6 @@ install (FILES ${top_level_headers}
 DESTINATION include/casacore/tables
 )
 
-add_subdirectory (Tables/test ${EXCL_ALL})
-add_subdirectory (DataMan/test ${EXCL_ALL})
-add_subdirectory (TaQL/test ${EXCL_ALL})
-add_subdirectory (LogTables/test ${EXCL_ALL})
+foreach (casa_module Tables AlternateMans DataMan TaQL LogTables)
+  add_subdirectory (${casa_module}/test ${EXCL_ALL})
+endforeach (casa_module)
