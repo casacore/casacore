@@ -276,6 +276,12 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
     os << LogIO::SEVERE << "Error reading FITS input" << LogIO::EXCEPTION;
   }
 
+  // Make sure this is a FITS-IDI file; the Astropy FITS code may
+  // inadvertedly turn an valid FITS-IDI into a random groups FITS file.
+  if (infits.hdutype() != FITS::PrimaryArrayHDU) {
+    os << LogIO::SEVERE << "Not a FITS-IDI file" << LogIO::EXCEPTION;
+  }
+
   // Regular expression for trailing blanks
   Regex trailing(" *$");
 
