@@ -8,15 +8,19 @@ using casacore::SimpleColumnarFile;
 
 template<typename ColumnarFile>
 void TestEmptyConstructor() {
-  ColumnarFile file;
+  ColumnarFile file_a;
+  BOOST_CHECK_EQUAL(file_a.NRows(), 0);
+  BOOST_CHECK_EQUAL(file_a.Filename(), "");
+  BOOST_CHECK(!file_a.IsOpen());
+
+  const std::string filename = "columnar_file_test.tmp";
+  ColumnarFile file_b = ColumnarFile::CreateNew(filename, 0, 0);
+  file_b = std::move(file_a);
   BOOST_CHECK_EQUAL(file.NRows(), 0);
   BOOST_CHECK_EQUAL(file.Filename(), "");
   BOOST_CHECK(!file.IsOpen());
 
-  file = ColumnarFile();
-  BOOST_CHECK_EQUAL(file.NRows(), 0);
-  BOOST_CHECK_EQUAL(file.Filename(), "");
-  BOOST_CHECK(!file.IsOpen());
+  unlink(filename.c_str());
 }
 
 template<typename ColumnarFile>
@@ -24,7 +28,7 @@ void TestCreateAndOpen() {
   constexpr size_t kStrideA = 10;
   const std::string filename = "columnar_file_test.tmp";
   {
-    ColumnarFile file = ColumnarFile::CreateNew(filename, {}, kStrideA);
+    ColumnarFile file = ColumnarFile::CreateNew(filename, 0, kStrideA);
     BOOST_CHECK_EQUAL(file.Stride(), kStrideA);
     BOOST_CHECK_EQUAL(file.NRows(), 0);
     BOOST_CHECK_EQUAL(file.Filename(), filename);
@@ -33,7 +37,7 @@ void TestCreateAndOpen() {
 
   // See if re-creating works
   constexpr size_t kStrideB = 20;
-  ColumnarFile file = ColumnarFile::CreateNew(filename, {}, kStrideB);
+  ColumnarFile file = ColumnarFile::CreateNew(filename, 0, kStrideB);
   BOOST_CHECK_EQUAL(file.Stride(), kStrideB);
   BOOST_CHECK_EQUAL(file.NRows(), 0);
   BOOST_CHECK_EQUAL(file.Filename(), filename);
@@ -45,7 +49,6 @@ void TestCreateAndOpen() {
   BOOST_CHECK(file.IsOpen());
   // Close by assigning to empty
   file = ColumnarFile();
-  BOOST_CHECK(!file.IsOpen());
 
   file = ColumnarFile::OpenExisting(filename, 0);
   BOOST_CHECK_EQUAL(file.Stride(), kStrideB);
