@@ -16,9 +16,9 @@ void TestEmptyConstructor() {
   const std::string filename = "columnar_file_test.tmp";
   ColumnarFile file_b = ColumnarFile::CreateNew(filename, 0, 0);
   file_b = std::move(file_a);
-  BOOST_CHECK_EQUAL(file.NRows(), 0);
-  BOOST_CHECK_EQUAL(file.Filename(), "");
-  BOOST_CHECK(!file.IsOpen());
+  BOOST_CHECK_EQUAL(file_b.NRows(), 0);
+  BOOST_CHECK_EQUAL(file_b.Filename(), "");
+  BOOST_CHECK(!file_b.IsOpen());
 
   unlink(filename.c_str());
 }
