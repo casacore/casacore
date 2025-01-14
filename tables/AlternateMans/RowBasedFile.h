@@ -27,7 +27,9 @@ class RowBasedFile {
     rhs.filename_ = "";
   }
 
-  // Create or overwrite a new columnar file on disk
+  /**
+   * Create or overwrite a new columnar file on disk
+   */
   RowBasedFile(const std::string& filename, uint64_t header_size,
                uint64_t stride)
       : stride_(stride), filename_(filename) {
@@ -40,7 +42,9 @@ class RowBasedFile {
     data_location_ = header_size + kPrivateHeaderSize;
   }
 
-  // Open an existing columnar file
+  /**
+   * Open an existing columnar file
+   */
   RowBasedFile(const std::string& filename, size_t header_size)
       : filename_(filename) {
     file_ = open(filename.c_str(), O_RDWR);
@@ -67,7 +71,7 @@ class RowBasedFile {
 
   /**
    * Close the file. After closing, all calls to I/O functions
-   * cause undefined behaviour, untill the class is assigned to
+   * cause undefined behaviour, until the class is assigned to
    * a new instance.
    */
   void Close() {
@@ -124,7 +128,7 @@ class RowBasedFile {
   /**
    * Number of bytes reserved for an optional header.
    */
-  uint64_t HeaderSize() const { return data_location_ - sizeof(stride_); }
+  uint64_t HeaderSize() const { return data_location_ - kPrivateHeaderSize; }
   /**
    * Write an optional extra header to the file. When creating the file,
    * the requested space is saved to store this header.
