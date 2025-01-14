@@ -107,11 +107,7 @@ public:
 template<class T> class LatticeConvolver
 {
 public:
-  // The default constructor creates a LatticeConvolver that will convolve your
-  // data with a point spread function (psf) that zero everywhere except at the
-  // centre where it is one. Convolving with this psf will not change your
-  // data.
-  LatticeConvolver();
+  LatticeConvolver() = delete;
 
   // Create a convolver that is initialised to do circular convolution with the
   // specified point spread function. It is assumed that the supplied model

@@ -51,33 +51,6 @@ void print(const Lattice<Float> & psf, const Lattice<Float> & model,
 
 int main() {
   try {
-    { // test linear and circular convolution using the default psf.
-      LatticeConvolver<Float> d;
-      AlwaysAssert(d.shape() == IPosition(1,1), AipsError);
-      AlwaysAssert(d.fftShape() == IPosition(1,1) , AipsError);
-      AlwaysAssert(d.psfShape() == IPosition(1,1) , AipsError);
-      AlwaysAssert(d.type() == ConvEnums::CIRCULAR , AipsError);
-      TempLattice<Float> model(IPosition(1,9));
-      model.set(1.0f);
-      model.putAt(2.0f, model.shape()/2);
-      TempLattice<Float> result(model.shape());
-      d.circular(result, model);
-      AlwaysAssert(allNearAbs(model.get(), result.get(), 
-			      NumericTraits<Float>::epsilon), AipsError);
-      AlwaysAssert(d.shape() == IPosition(1,9), AipsError);
-      AlwaysAssert(d.fftShape() == IPosition(1,9) , AipsError);
-      AlwaysAssert(d.psfShape() == IPosition(1,1) , AipsError);
-      AlwaysAssert(d.type() == ConvEnums::CIRCULAR , AipsError);
-
-      result.set(0.0f);
-      d.linear(result, model);
-      AlwaysAssert(allNear(model.get(), result.get(),
-			   NumericTraits<Float>::epsilon), AipsError);
-      AlwaysAssert(d.shape() == IPosition(1,9), AipsError);
-      AlwaysAssert(d.fftShape() == IPosition(1,9) , AipsError);
-      AlwaysAssert(d.psfShape() == IPosition(1,1) , AipsError);
-      AlwaysAssert(d.type() == ConvEnums::LINEAR , AipsError);
-    }
     { 
       TempLattice<Float> psf(IPosition(4,16,5,1,9));
       psf.set(0.0f);

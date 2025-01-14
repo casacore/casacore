@@ -43,20 +43,6 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 const Int maxLatSize = HostInfo::memoryTotal()/1024/8;
 
 template<class T> LatticeConvolver<T>::
-LatticeConvolver()
-  :itsPsfShape(IPosition(1,1)),
-   itsModelShape(itsPsfShape),
-   itsType(ConvEnums::CIRCULAR),
-   itsFFTShape(IPosition(1,1)),
-   itsXfr(0),
-   itsPsf(0),
-   itsCachedPsf(False)
-{
-  //itsXfr->set(typename NumericTraits<T>::ConjugateType(1));
-  doFast_p=False;
-} 
-
-template<class T> LatticeConvolver<T>::
 LatticeConvolver(const Lattice<T> & psf, Bool doFast)
   :itsPsfShape(psf.shape()),
    itsModelShape(itsPsfShape),
