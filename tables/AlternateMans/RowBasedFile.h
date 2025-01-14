@@ -78,9 +78,9 @@ class RowBasedFile {
     if (IsOpen()) {
       Truncate(NRows());
       int result = close(file_);
+      file_ = -1;
       if (result < 0)
         throw std::runtime_error("Could not close file " + filename_);
-      file_ = -1;
       n_rows_ = 0;
       stride_ = 0;
       filename_ = "";
