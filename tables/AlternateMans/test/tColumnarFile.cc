@@ -35,6 +35,8 @@ void TestCreateAndOpen() {
     BOOST_CHECK(file.IsOpen());
   }
 
+  BOOST_CHECK_THROW(ColumnarFile::OpenExisting("This-is-not-an-existing-filename.nope", 0), std::runtime_error);
+
   // See if re-creating works
   constexpr size_t kStrideB = 20;
   ColumnarFile file = ColumnarFile::CreateNew(filename, 0, kStrideB);
