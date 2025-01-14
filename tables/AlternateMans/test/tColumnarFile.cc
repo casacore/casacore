@@ -79,9 +79,9 @@ void TestReadAndWrite() {
   BOOST_CHECK_EQUAL(file.Stride(), 17*8);
 
   // Generate random data
-  for(size_t i=0; i!=std::size(data_a); ++i)
+  for(size_t i=0; i!=data_a.size(); ++i)
       data_a[i] = std::complex<float>(i+3, i*2);
-  for(size_t i=0; i!=std::size(data_b); ++i)
+  for(size_t i=0; i!=data_b.size(); ++i)
       data_b[i] = std::complex<float>(i*3+41, i*-2.0);
 
   file.Write(2, 0, data_a.data(), data_a.size());

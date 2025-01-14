@@ -5,8 +5,8 @@
 BOOST_AUTO_TEST_SUITE(bit_packing)
 
 BOOST_AUTO_TEST_CASE(pack_and_unpack) {
-  PackBoolArray(nullptr, nullptr, 0);
-  UnpackBoolArray(nullptr, nullptr, 0);
+  BOOST_CHECK_NO_THROW(PackBoolArray(nullptr, nullptr, 0));
+  BOOST_CHECK_NO_THROW(UnpackBoolArray(nullptr, nullptr, 0));
   
   const std::array<bool, 12> input_a={true, true, false, true, false, false, true, false, true, false, true, false};
   std::array<unsigned char, 2> packed_a={0xFF, 0xFF};
