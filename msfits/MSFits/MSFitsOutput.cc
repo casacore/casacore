@@ -1828,13 +1828,19 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
                 *mntsta = 3;
             }
             else if (mount.contains("SPACE-HALCA")) {
-                *mntsta = 7;
+                *mntsta = 9;
             }
+	    else if (mount.contains("ALT-AZ+BWG-R")) {
+		*mntsta = 6;
+	    }
+	    else if (mount.contains("ALT-AZ+BWG-L")) {
+		*mntsta = 7;
+	    }
             else if (mount.contains("BIZARRE")) {
-                *mntsta = 6;
+                *mntsta = 8;
             }
             else {
-                *mntsta = 7; // fits does not use anyway, put it 7
+                *mntsta = 9; // fits does not use anyway, put it 7
             }
             *staxof = inantoffset(antnum)(IPosition(1, 0));
             // OK, try to find if we're L/R or X/Y
