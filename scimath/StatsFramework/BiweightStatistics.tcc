@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -413,7 +413,7 @@ void BiweightStatistics<CASA_STATP>::_computeStats() {
     if (_maxNiter >= 0) {
         // initial scale estimation before iteration begins
         _doScale();
-        const AccumType epsilon = 0.03*C::_1_sqrt2/sqrt(_npts - 1);
+        const AccumType epsilon = 0.03*M_SQRT1_2/sqrt(_npts - 1);
         AccumType prevScale = 0;
         for (_niter=1; _niter <= _maxNiter; ++_niter) {
             prevScale = _scale;

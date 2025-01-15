@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -62,7 +62,7 @@
 #include <casacore/casa/Logging/LogIO.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
-#include <casacore/casa/stdio.h>                  // needed for sprintf
+#include <casacore/casa/stdio.h>                  // needed for snprintf
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -1172,7 +1172,7 @@ Record TableProxy::getVarColumn (const String& columnName,
   char namebuf[22];
   for (Int64 i=0; i<nrows; i++) {
     // Add the result to the record with field name formed from 1-based rownr.
-    sprintf (namebuf, "r%lli", row+1);
+    snprintf (namebuf, sizeof(namebuf), "r%lli", row+1);
     if (tabcol.isDefined(row)) {
       getValueFromTable(columnName, row, 1, 1, False).toRecord (rec, namebuf);
     } else {

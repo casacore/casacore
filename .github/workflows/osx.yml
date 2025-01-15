@@ -2,59 +2,76 @@ name: macOS
 
 on:
   push:
-    branches: [ master ]
-    tags: [ "*" ]
+    branches: [master]
+    tags: ["*"]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   osx:
-    runs-on: macos-10.15
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-13 # x68
+          - macos-14 # arm64
 
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: install homebrew deps
-        run: brew install fftw hdf5 boost-python3 cfitsio wcslib wget gfortran gsl
-
-      - name: pip install numpy
-        run: pip3 install numpy
-
-      - name:  get WSRT measures
-        run: wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
-
-      - name: make build folder
+      - name: install dependencies, set python environment
         run: |
-          mkdir -p build
+          # Delete GitHub Python, See https://github.com/orgs/Homebrew/discussions/3895#discussioncomment-4130560
+          find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -print -delete
+
+          brew install fftw hdf5 boost-python3 numpy cfitsio wcslib gsl ninja gcc
+
+          # ensure we use homebrew python and gcc
+          export PATH=$(brew --prefix python)/bin:${PATH}
+          export PATH=$(brew --prefix gcc)/bin:${PATH}
+          echo PATH=$PATH | tee -a $GITHUB_ENV
+
+      - name: set up build and install dir with WSRT measures
+        run: |
+          wget ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar -O WSRT_Measures.ztar
+          mkdir -p build install
           cd build
           tar zxvf ../WSRT_Measures.ztar
+          rm ../WSRT_Measures.ztar
 
       - name: configure
         run: |
           cd build
           cmake \
-            -DBUILD_TESTING=ON \
+            -G Ninja \
+            -DCMAKE_Fortran_COMPILER=$(which gfortran) \
             -DCMAKE_PREFIX_PATH=/usr/local/ \
-            -DUSE_OPENMP=OFF \
-            -DUSE_HDF5=ON \
+            -DBoost_NO_BOOST_CMAKE=True \
+            -DBUILD_TESTING=ON \
             -DBUILD_PYTHON=OFF \
             -DBUILD_PYTHON3=ON \
-            -DBoost_NO_BOOST_CMAKE=True \
-            -DCMAKE_Fortran_COMPILER=gfortran-10 \
-            -DDATA_DIR=. ..
+            -DPython3_EXECUTABLE=$(which python3) \
+            -DUSE_HDF5=ON \
+            -DUSE_OPENMP=OFF \
+            -DDATA_DIR=. \
+            -DCMAKE_INSTALL_PREFIX=../install \
+            ..
 
-      - name: build
-        run: |
-          cd build
-          make -j
+      - name: make
+        run: cmake --build build
 
       - name: run tests
         run: |
           cd build
-          CTEST_OUTPUT_ON_FAILURE=1 ctest -E tConvert
+          export ctest_args=""
+          # disable tests on amd64 https://github.com/casacore/casacore/issues/1352
+          if [[ "$(uname -m)" == "arm64" ]]; then
+            export ctest_args="-E tLSQaips|tLSQFit"
+          fi
+          CTEST_OUTPUT_ON_FAILURE=1 ctest $ctest_args
 
       - name: install
         run: |
-          cd build
-          make install
+          cmake --build build --target install

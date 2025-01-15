@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -1968,7 +1968,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bFVal);
       LatticeExprNode expr2(cFVal);
       LatticeExprNode expr3 = pa(expr1,expr2);
-      Float result = 90.0/C::pi*atan2(bFVal,cFVal);
+      Float result = 90.0/M_PI*atan2(bFVal,cFVal);
       if (!checkFloat (expr3, result, shape, True, False)) ok = False;
    }
    {
@@ -1976,7 +1976,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bF);
       LatticeExprNode expr2(cF);
       LatticeExprNode expr3 = pa(expr1,expr2);
-      Float result = 90.0/C::pi*atan2(bFVal,cFVal);
+      Float result = 90.0/M_PI*atan2(bFVal,cFVal);
       if (!checkFloat (expr3, result, shape, False, False)) ok = False;
       if (!checkMask (expr3, (bF.isMasked() || cF.isMasked()),
 		      bF.getMask() && cF.getMask())) ok = False;
@@ -1986,7 +1986,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bDVal);
       LatticeExprNode expr2(cDVal);
       LatticeExprNode expr3 = pa(expr1,expr2);
-      Double result = 90.0/C::pi*atan2(bDVal,cDVal);
+      Double result = 90.0/M_PI*atan2(bDVal,cDVal);
       if (!checkDouble (expr3, result, shape, True, False)) ok = False;
    }
    {
@@ -1994,7 +1994,7 @@ Bool doIt (const MaskedLattice<Float>& aF,
       LatticeExprNode expr1(bD);
       LatticeExprNode expr2(cD);
       LatticeExprNode expr3 = pa(expr1,expr2);
-      Double result = 90.0/C::pi*atan2(bDVal,cDVal);
+      Double result = 90.0/M_PI*atan2(bDVal,cDVal);
       if (!checkDouble (expr3, result, shape, False, False)) ok = False;
    }
    cout << "mask" << endl;

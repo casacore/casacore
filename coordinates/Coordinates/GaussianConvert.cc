@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -374,8 +374,8 @@ Double GaussianConvert::positionAngleRange(Double pa)
 // Put in the range 0->pi 
 //
 {
-   Double pa2 = fmod(pa, C::pi);
-   if (pa2 < 0.0) pa2 += C::pi;
+   Double pa2 = fmod(pa, M_PI);
+   if (pa2 < 0.0) pa2 += M_PI;
    return pa2;
 }
 

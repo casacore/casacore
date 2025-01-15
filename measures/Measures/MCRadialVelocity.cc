@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -200,7 +200,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
       MRadialVelocity::Ref::framePosition(outref, inref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
-      *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
+      *MVPOS1 = MVDirection(M_PI_2 + g1, 0.0);
       MVPOS1->readjust(g2 * cos(g3));
       MRadialVelocity::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);
@@ -232,7 +232,7 @@ void MCRadialVelocity::doConvert(MVRadialVelocity &in,
       MRadialVelocity::Ref::framePosition(inref, outref).
 	getLat(g3);
       g2 = MeasTable::diurnalAber(lengthE, tdbTime);
-      *MVPOS1 = MVDirection(C::pi_2 + g1, 0.0);
+      *MVPOS1 = MVDirection(M_PI_2 + g1, 0.0);
       MVPOS1->readjust(g2 * cos(g3));
       MRadialVelocity::Ref::frameDirection(outref, inref).
 	getApp(*MVDIR1);

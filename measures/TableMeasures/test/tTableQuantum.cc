@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -508,7 +508,7 @@ int main (int argc, const char* argv[])
         AlwaysAssert(v->getValue().size() == 5, AipsError);
         std::shared_ptr<Quantum<Vector<Double> > > w = col.getColumn("rad");
         AlwaysAssert(w->getValue().size() == 5, AipsError);
-        Double frac = C::pi/180;
+        Double frac = M_PI/180;
         for (uInt i=0; i<5; ++i) {
             AlwaysAssert(
                 near(w->getValue()[i], frac*v->getValue()[i]), AipsError

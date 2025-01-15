@@ -17,7 +17,7 @@
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -266,7 +266,7 @@ FitsOutput *MSFitsOutputAstron::writeMain(Int& refPixelFreq,
   MSField fieldTable(rawms.field());
   MSFieldColumns msfc(fieldTable);
   Vector<Double> radec = msfc.phaseDirMeas(0).getAngle().getValue();
-  radec *=180.0/C::pi; // convert to degrees for FITS
+  radec *=180.0/M_PI; // convert to degrees for FITS
   if (radec(0) < 0) {
     radec(0) += 360;
   }

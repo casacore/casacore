@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -769,6 +769,7 @@ private:
     mutable std::map<ScanKey, std::set<Int> > _scanToStatesMap, _scanToFieldsMap, _scanToAntennasMap;
     mutable std::map<Int, std::set<Int> >    _fieldToStatesMap, _stateToFieldsMap, _sourceToFieldsMap;
     mutable std::map<std::pair<uInt, uInt>, uInt> _spwPolIDToDataDescIDMap;
+    mutable std::vector<std::vector<uInt>> _spwIDToPolIDMap;
     mutable std::map<String, std::set<uInt> > _antennaNameToIDMap;
     mutable std::shared_ptr<const std::map<ScanKey, ScanProperties> > _scanProperties;
     mutable std::shared_ptr<const std::map<SubScanKey, SubScanProperties> > _subScanProperties;
@@ -999,6 +1000,10 @@ private:
     std::shared_ptr<Vector<Int> > _getScans() const;
 
     vector<std::set<String> > _getSpwToIntentsMap();
+
+    // polarization ids will be sorted in ascending order in all
+    // member vectors
+    std::vector<std::vector<uInt>> _getSpwToPolMap() const;
 
     std::shared_ptr<Vector<Int> > _getStateIDs() const;
 

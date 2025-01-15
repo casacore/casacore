@@ -370,6 +370,20 @@
 
 #define MYABS(x) ( (x) > 0 ? (x) : -(x) )
 
+/**************************************************************************
+*** GCC 14 detects problematic pointer passing:
+***
+***    In file included from casacore/mirlib/uvio.c:288:
+***    casacore/mirlib/miriad.h:182:51: note: expected ‘int8 *’ {aka ‘long long int *’} but argument is of type ‘off_t *’ {aka ‘long int *’}
+***    182 | void rdhdl_c (int tno, Const char *keyword, int8 *value, int8 defval);
+***        |                                             ~~~~~~^~~~~
+***
+***************************************************************************/
+#define RDHDL_C( TNO, KEYWORD, VALUE, DEFVAL ) \
+    { int8 value;                              \
+      rdhdl_c( TNO, KEYWORD, &value, DEFVAL);  \
+      *VALUE = value; }
+
 /*----------------------------------------------------------------------*/
 /*									*/
 /*	Types and static variables.					*/
@@ -746,7 +760,7 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
 #ifdef MIR4
     /* figure out if to read old MIR3 or new MIR4 */
 #if true
-      rdhdl_c(*tno,"vislen",&(uv->max_offset),hsize_c(uv->item));
+      RDHDL_C(*tno,"vislen",&(uv->max_offset),hsize_c(uv->item));
 #else
       int old_vislen;
       rdhdi_c(*tno,"vislen",&old_vislen,hsize_c(uv->item));
@@ -791,7 +805,7 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
 #ifdef MIR4
     /* figure out if to read old MIR3 or new MIR4 */
     if (1) {
-      rdhdl_c(*tno,"vislen",&(uv->offset),hsize_c(uv->item));
+      RDHDL_C(*tno,"vislen",&(uv->offset),hsize_c(uv->item));
     } else {
       int old_vislen;
       rdhdi_c(*tno,"vislen",&old_vislen,hsize_c(uv->item));
@@ -811,8 +825,8 @@ void uvopen_c(int *tno,Const char *name,Const char *status)
     rdhda_c(*tno,"obstype",line,"",MAXLINE);
     if(!strcmp(line,"autocorrelation"))		uv->flags |= UVF_AUTO;
     else if(!strcmp(line,"crosscorrelation"))	uv->flags |= UVF_CROSS;
-    rdhdl_c(*tno,"ncorr",&(uv->corr_flags.offset),-1);
-    rdhdl_c(*tno,"nwcorr",&(uv->wcorr_flags.offset),-1);
+    RDHDL_C(*tno,"ncorr",&(uv->corr_flags.offset),-1);
+    RDHDL_C(*tno,"nwcorr",&(uv->wcorr_flags.offset),-1);
     if(uv->corr_flags.offset < 0 || uv->wcorr_flags.offset < 0)
       BUG('f',"Cannot append to uv file without 'ncorr' and/or 'nwcorr' items");
 

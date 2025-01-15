@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -28,7 +28,6 @@
 #include <casacore/casa/sstream.h>
 #include <casacore/casa/iomanip.h>
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Quanta/QMath.h>
 #include <casacore/casa/Utilities/MUString.h>
 #include <casacore/casa/System/AppInfo.h>
@@ -82,12 +81,12 @@ const MVAngle &MVAngle::operator()() {
 }
 
 const MVAngle &MVAngle::operator()(Double norm) {
-    Double t = val/C::_2pi - norm;
+    Double t = val/(2.0*M_PI) - norm;
     if (t < 0 || t >=1) {
       // Next statement necessary for Linux gnu; val -= expr; gives incorrect
       // result of order 2e-11
-      Double df = std::floor(t)*C::_2pi;
-      val -= df;  /// val - = std::floor(t)*C::_2pi;
+      Double df = std::floor(t)*(2.0*M_PI);
+      val -= df;  /// val - = std::floor(t)*(2.0*M_PI);
     }
     return *this;
 }
@@ -98,7 +97,7 @@ const MVAngle &MVAngle::operator()(const MVAngle &norm) {
 
 // Member functions
 MVAngle MVAngle::coAngle() const {
-  MVAngle t = C::pi_2 - val;
+  MVAngle t = M_PI_2 - val;
   return (t());
 }
 
@@ -199,7 +198,7 @@ String MVAngle::string(uInt intyp, uInt inprec) const {
 String MVAngle::string(const MVAngle::Format &form) const {
     ostringstream oss;
     print (oss, form);
-    return oss;
+    return String(oss);
 }
 
 Double MVAngle::timeZone() {
@@ -335,9 +334,9 @@ void MVAngle::print(ostream &oss,
 }
 
 const MVAngle &MVAngle::binorm(Double norm) {
-    Double t = val/C::pi - norm;
+    Double t = val/M_PI - norm;
     if (t < 0 || t >=1) {
-      Double df = std::floor(t)*C::pi;
+      Double df = std::floor(t)*M_PI;
       val -= df;
     }
     return *this;

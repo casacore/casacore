@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -364,7 +364,7 @@ Int RecordDescRep::fieldNumber (const String& fieldName) const
 String RecordDescRep::makeName (Int whichField) const
 {
     char strc[13];
-    sprintf(strc, "*%i", whichField+1);
+    snprintf(strc, sizeof(strc), "*%i", whichField+1);
     return uniqueName (strc);
 }
 
@@ -375,7 +375,7 @@ String RecordDescRep::uniqueName (const String& name) const
     int n = 0;
     while (fieldNumber(newName) >= 0) {
 	++n;
-	sprintf(strc, "_%i", n);
+	snprintf(strc, sizeof(strc), "_%i", n);
 	newName = name + strc;
     }
     return newName;

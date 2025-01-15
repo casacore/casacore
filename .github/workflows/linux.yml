@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         dist:
-          - ubuntu1804_clang
-          - ubuntu1804_gcc
           - ubuntu2004_clang
           - ubuntu2004_gcc
           - ubuntu2204_clang
           - ubuntu2204_gcc
+          - ubuntu2404_clang
+          - ubuntu2404_gcc
     steps:
       - name: Checkout
         uses: actions/checkout@v2

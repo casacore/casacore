@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -632,9 +632,9 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     uInt ddof = 1;
     switch(funcType_p) {
     case piFUNC:
-        return C::pi;
+        return M_PI;
     case eFUNC:
-        return C::e;
+        return M_E;
     case cFUNC:
         return C::c;
     case sinFUNC:
@@ -751,7 +751,7 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
     case mjdFUNC:
         return operands_p[0]->getDate(id).day();
     case timeFUNC:                                       //# return in radians
-        return fmod (Double(operands_p[0]->getDate(id)), 1.) * C::_2pi;
+        return fmod (Double(operands_p[0]->getDate(id)), 1.) * 2.0 * M_PI;
     case arrminFUNC:
         if (operands_p[0]->valueType() == VTArray) {
             return min (operands_p[0]->getArrayDouble (id));
@@ -847,9 +847,9 @@ Double TableExprFuncNode::getDouble (const TableExprId& id)
       }
     case normangleFUNC:
       {
-        double v = fmod(operands_p[0]->getDouble(id), C::_2pi);
-        if (v < -C::pi) v += C::_2pi;
-        return (v <= C::pi  ?  v : v-C::_2pi);
+        double v = fmod(operands_p[0]->getDouble(id), 2.0 * M_PI);
+        if (v < -M_PI) v += 2.0 * M_PI;
+        return (v <= M_PI  ?  v : v-(2.0 * M_PI));
       }
     case datetimeFUNC:
     case mjdtodateFUNC:

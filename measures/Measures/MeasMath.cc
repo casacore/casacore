@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -442,22 +442,22 @@ void MeasMath::deapplyHADECtoITRF(MVPosition &in) {
 
 void MeasMath::applyHADECtoAZEL(MVPosition &in) {
   getInfo(LAT);
-  in *= RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u));
+  in *= RotMatrix(Euler(M_PI_2 - info_p[LAT] , 2u, M_PI, 3u));
 }
 
 void MeasMath::deapplyHADECtoAZEL(MVPosition &in) {
   getInfo(LAT);
-  in = RotMatrix(Euler(C::pi_2 - info_p[LAT] , 2u, C::pi, 3u)) * in;
+  in = RotMatrix(Euler(M_PI_2 - info_p[LAT] , 2u, M_PI, 3u)) * in;
 }
 
 void MeasMath::applyHADECtoAZELGEO(MVPosition &in) {
   getInfo(LATGEO);
-  in *= RotMatrix(Euler(C::pi_2 - info_p[LATGEO] , 2u, C::pi, 3u));
+  in *= RotMatrix(Euler(M_PI_2 - info_p[LATGEO] , 2u, M_PI, 3u));
 }
 
 void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
   getInfo(LATGEO);
-  in = RotMatrix(Euler(C::pi_2 - info_p[LATGEO] , 2u, C::pi, 3u)) * in;
+  in = RotMatrix(Euler(M_PI_2 - info_p[LATGEO] , 2u, M_PI, 3u)) * in;
 }
 
 void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
@@ -767,7 +767,7 @@ void MeasMath::rotateShift(MVPosition &in, const MVPosition &shft,
   } else {
     getInfo(lat); getInfo(lng);
     // Rotation towards direction
-    ROTMAT1 = RotMatrix(Euler(-C::pi_2 + info_p[lat], 2u,
+    ROTMAT1 = RotMatrix(Euler(-M_PI_2 + info_p[lat], 2u,
 			      -info_p[lng], 3u));
     // Rotation towards correction
     ROTMAT1 = RotMatrix(Euler(-(ROTMAT1*shft).getLong(), 3u)) * ROTMAT1;

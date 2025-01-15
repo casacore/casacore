@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -4999,6 +4999,23 @@ std::shared_ptr<vector<int>> MSMetaData::_almaReceiverBands(uint nspw) const {
     return freqBands;
 }
 
+std::vector<std::vector<uInt>> MSMetaData::_getSpwToPolMap() const {
+    if (! _spwIDToPolIDMap.empty()) {
+        return _spwIDToPolIDMap;
+    }
+    const auto spwPolToDDID = getSpwIDPolIDToDataDescIDMap();
+    _spwIDToPolIDMap.resize(nSpw(true));
+    for (const auto &p : spwPolToDDID) {
+        uInt spwID = p.first.first;
+        uInt polID = p.first.second;
+        _spwIDToPolIDMap[spwID].push_back(polID);
+    }
+    for (auto &v : _spwIDToPolIDMap) {
+        std::sort(v.begin(), v.end());
+    }
+    return _spwIDToPolIDMap;
+}
+
 vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
     std::set<uInt>& avgSpw, std::set<uInt>& tdmSpw, std::set<uInt>& fdmSpw,
     std::set<uInt>& wvrSpw, std::set<uInt>& sqldSpw
@@ -5117,7 +5134,32 @@ vector<MSMetaData::SpwProperties>  MSMetaData::_getSpwInfo2(
             fdmSpw.insert(i);
         }
         else {
-            tdmSpw.insert(i);
+            const auto spwToPol = _getSpwToPolMap();
+            if (
+                spwToPol[i].size() == 1
+                && spwInfo[i].nchans
+                    * getNumCorrs()[*(spwToPol[i].begin())] > 256
+            ) {
+                fdmSpw.insert(i);
+            }
+            else {
+                tdmSpw.insert(i);
+            }
+        }
+        // CAS-13973 for ALMA get subwindow and receiver band
+        spwInfo[i].rb = -1;
+        if (regex_search(name[i], match, rb)) {
+            spwInfo[i].rb = stoi(match.str(1));
+        }
+        else {
+            if (! freqBands) {
+                freqBands = _almaReceiverBands(nrows);
+            }
+            spwInfo[i].rb = (*freqBands)[i];
+        }
+        spwInfo[i].sw = -1;
+        if (regex_search(name[i], match, sw)) {
+            spwInfo[i].sw = stoi(match.str(1));
         }
         // CAS-13973 for ALMA get subwindow and receiver band
         spwInfo[i].rb = -1;

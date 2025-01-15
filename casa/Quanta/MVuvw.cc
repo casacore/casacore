@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -85,8 +85,8 @@ MVuvw::MVuvw(const MVBaseline &pos, const MVDirection &dr, Bool ew) :
   // Next for sgi_ntv to get it working properly
   MVDirection dr1(dr);
   dr1.adjust();
-  RotMatrix x(Euler(dr1.getLat() - C::pi_2, 1u,
-		    -dr1.getLong() - C::pi_2, 3u));
+  RotMatrix x(Euler(dr1.getLat() - M_PI_2, 1u,
+		    -dr1.getLong() - M_PI_2, 3u));
   if (ew) {}
   xyz = (x * pos).getValue();
 }

@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -71,7 +71,7 @@ FitGaussian<T>::FitGaussian()
   itsDimension = 0;
   itsNGaussians = 0;
   itsMaxRetries = 0;
-  itsMaxTime = C::dbl_max;
+  itsMaxTime = DBL_MAX;
   itsSuccess = 0;
 }
 
@@ -85,7 +85,7 @@ FitGaussian<T>::FitGaussian(uInt dimensions)
   itsDimension = dimensions;
   itsNGaussians = 0;
   itsMaxRetries = 0;
-  itsMaxTime = C::dbl_max;
+  itsMaxTime = DBL_MAX;
   itsSuccess = 0;
 }
 
@@ -101,7 +101,7 @@ FitGaussian<T>::FitGaussian(uInt dimensions, uInt numgaussians)
   itsMask.resize(itsNGaussians, itsDimension*3);
   itsMask = 1;
   itsMaxRetries = 0;
-  itsMaxTime = C::dbl_max;
+  itsMaxTime = DBL_MAX;
   itsSuccess = 0;
 }
 
@@ -113,7 +113,7 @@ void FitGaussian<T>::setDimensions(uInt dimensions)
                     " - dimensions must be 1, 2, or 3")); 
   itsDimension = dimensions;
   itsMaxRetries = 0;
-  itsMaxTime = C::dbl_max;
+  itsMaxTime = DBL_MAX;
   itsRetryFctr.resize();
   itsFirstEstimate.resize();
   itsMask.resize();
@@ -127,7 +127,7 @@ void FitGaussian<T>::setNumGaussians(uInt numgaussians)
 {
   itsNGaussians = numgaussians;
   itsMaxRetries = 0;
-  itsMaxTime = C::dbl_max;
+  itsMaxTime = DBL_MAX;
   itsRetryFctr.resize();
   itsFirstEstimate.resize();
   itsMask.resize();
@@ -246,7 +246,7 @@ Matrix<T> FitGaussian<T>::fit(const Matrix<T>& pos, const Vector<T>& f,
   Vector<Int> targetmask(itsNGaussians,-1); //should rename this... 
   uInt attempt = 0;                         //overall attempt number
   Int fitfailure;
-  T bestRMS = C::flt_max;  //how to template this properly...
+  T bestRMS = FLT_MAX;  //how to template this properly...
   
   itsSuccess = 0; 
 
@@ -498,44 +498,44 @@ void FitGaussian<T>::correctParameters(Matrix<T>& parameters)
       if (parameters(g,4) > 1) {
         parameters(g,3) *= parameters(g,4);
         parameters(g,4) = 1/parameters(g,4);      //swap axes
-        parameters(g,5) += C::pi_2;
+        parameters(g,5) += M_PI_2;
       }
       if (abs(parameters(g,5)) > 1e+5) continue;  //spin control
 
       //IMPR: a useful thing to do would be to retry the fit with all other
       //params fixed if the PA ends up crazy like this.
  
-      while (parameters(g,5) < 0)  parameters(g,5) += C::pi;
-      while (parameters(g,5) > C::pi) parameters(g,5) -= C::pi;
+      while (parameters(g,5) < 0)  parameters(g,5) += M_PI;
+      while (parameters(g,5) > M_PI) parameters(g,5) -= M_PI;
     }
     if (itsDimension == 3) {  
       if (abs(parameters(g,7)) > 1e+5) continue;  //spin control 
-      while (parameters(g,7) < -C::pi_2) parameters(g,7) += C::pi;
-      while (parameters(g,7) > C::pi_2) parameters(g,7) -= C::pi;
+      while (parameters(g,7) < -M_PI_2) parameters(g,7) += M_PI;
+      while (parameters(g,7) > M_PI_2) parameters(g,7) -= M_PI;
 
       if (abs(parameters(g,8)) > 1e+5) continue;  //spin control 
-      while (parameters(g,8) < -C::pi_2) parameters(g,8) += C::pi;
-      while (parameters(g,8) > C::pi_2) parameters(g,8) -= C::pi;
+      while (parameters(g,8) < -M_PI_2) parameters(g,8) += M_PI;
+      while (parameters(g,8) > M_PI_2) parameters(g,8) -= M_PI;
 
-      if (abs(parameters(g,7)) > C::pi_4) {
+      if (abs(parameters(g,7)) > M_PI_4) {
         //swap y/x axes
         T temp = parameters(g,4);
         parameters(g,4) = parameters(g,5);
         parameters(g,5) = temp;
         if (parameters(g,7) > 0)
-          parameters(g,7) -= C::pi_2;
+          parameters(g,7) -= M_PI_2;
         else
-          parameters(g,7) += C::pi_2;
+          parameters(g,7) += M_PI_2;
       }
-      if (abs(parameters(g,8)) > C::pi_4) {
+      if (abs(parameters(g,8)) > M_PI_4) {
         //swap z/x axes
         T temp = parameters(g,4);
         parameters(g,4) = parameters(g,6);
         parameters(g,6) = temp;
         if (parameters(g,8) > 0) {
-          parameters(g,8) -= C::pi_2;
+          parameters(g,8) -= M_PI_2;
         } else {
-          parameters(g,8) += C::pi_2;
+          parameters(g,8) += M_PI_2;
         }
       }
     }

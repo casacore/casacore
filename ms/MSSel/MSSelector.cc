@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -919,7 +919,7 @@ Record MSSelector::getData(const Vector<String>& items, Bool ifrAxis,
 									phaseDirMeas(curFieldId,times(k)));
 						ep.set(MVEpoch(times(k)/C::day));
 						msd_p.setEpoch(ep);
-						if (doHA) ha(k)=msd_p.hourAngle()/C::_2pi*C::day;
+						if (doHA) ha(k)=msd_p.hourAngle()/(2.0*M_PI)*C::day;
 						if (doLAST) last(k)=msd_p.last().getValue().get();
 					}
 				}

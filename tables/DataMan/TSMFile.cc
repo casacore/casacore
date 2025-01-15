@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -32,7 +32,7 @@
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/IO/AipsIO.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/stdio.h>		// for sprintf
+#include <casacore/casa/stdio.h>		// for snprintf
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
@@ -44,7 +44,7 @@ TSMFile::TSMFile (const TiledStMan* stman, uInt fileSequenceNr,
 {
     // Create the file.
     char strc[8];
-    sprintf (strc, "_TSM%i", fileSeqnr_p);
+    snprintf (strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
     String fileName = stman->fileName() + strc;
     Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
     uInt bufSize = 0;
@@ -81,7 +81,7 @@ TSMFile::TSMFile (const TiledStMan* stman, AipsIO& ios, uInt seqnr,
                                   stman->dataManagerName());
     }
     char strc[8];
-    sprintf (strc, "_TSM%i", fileSeqnr_p);
+    snprintf (strc, sizeof(strc), "_TSM%i", fileSeqnr_p);
     String fileName = stman->fileName() + strc;
     Bool mapOpt = tsmOpt.option() == TSMOption::MMap;
     uInt bufSize = 0;

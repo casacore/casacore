@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -56,7 +56,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
 // Gaussian. The volume error is less than 6e-5% for +/- 5 sigma limits
 // width is FWHM
 
-      const Double sigma = width / sqrt(Double(8.0) * C::ln2);
+      const Double sigma = width / sqrt(Double(8.0) * M_LN2);
       if (useShapeExactly) {
          nPixels = shape;
       } else {
@@ -69,7 +69,7 @@ Vector<Double> VectorKernel::make(KernelTypes kernelType, Double width,
       if (peakIsUnity)  {
          norm = 1.0;
       } else {
-         norm = 1.0 / (sigma * sqrt(2.0 * C::pi));
+         norm = 1.0 / (sigma * sqrt(2.0 * M_PI));
       }
       const Gaussian1D<Double> gauss(norm, refPix, Double(width));
       for (uInt j=0; j<nPixels; j++) kernel(j) = gauss(Double(j));

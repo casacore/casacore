@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -40,7 +40,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class T> 
 GaussianNDParam<T>::GaussianNDParam() : 
   Function<T>(6), itsDim(2),
-  itsFlux2Hgt(pow(T(C::_2pi),T(-1))) {
+  itsFlux2Hgt(pow(T(2.0*M_PI),T(-1))) {
   setFlux(T(1));
   for (uInt i=0; i<itsDim; ++i) param_p[CENTER+itsDim+i] = T(1);
 }
@@ -48,7 +48,7 @@ GaussianNDParam<T>::GaussianNDParam() :
 template<class T> 
 GaussianNDParam<T>::GaussianNDParam(uInt nDim) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim), 
-  itsFlux2Hgt(pow(T(C::_2pi),-T(nDim)/T(2))) { 
+  itsFlux2Hgt(pow(T(2.0*M_PI),-T(nDim)/T(2))) {
   setFlux(T(1));
   for (uInt i=0; i<itsDim; ++i) param_p[CENTER+itsDim+i] = T(1);
 }
@@ -56,7 +56,7 @@ GaussianNDParam<T>::GaussianNDParam(uInt nDim) :
 template<class T>
 GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim),
-  itsFlux2Hgt(pow(T(C::_2pi),-T(nDim)/T(2))) { 
+  itsFlux2Hgt(pow(T(2.0*M_PI),-T(nDim)/T(2))) {
   param_p[HEIGHT] = height;
   for (uInt i=0; i<itsDim; ++i) param_p[CENTER+itsDim+i] = T(1);
 }
@@ -65,7 +65,7 @@ template<class T>
 GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
 					const Vector<T> &mean) :
   Function<T>((nDim+3)*nDim/2+1), itsDim(nDim),
-  itsFlux2Hgt(pow(T(C::_2pi),-T(nDim)/T(2))) { 
+  itsFlux2Hgt(pow(T(2.0*M_PI),-T(nDim)/T(2))) {
   param_p[HEIGHT] = height;
   if (mean.nelements() != itsDim) {
     throw(AipsError("GaussianNDParam<T>::GaussianNDParam(uInt nDim, "
@@ -106,7 +106,7 @@ GaussianNDParam<T>::GaussianNDParam(uInt nDim, const T &height,
   
   T det = param_p[CENTER+itsDim];
   for (uInt i=1; i<itsDim; i++) det *= param_p[CENTER+itsDim+i];
-  itsFlux2Hgt = pow(T(C::_2pi), -T(itsDim)/T(2)) * sqrt(det);
+  itsFlux2Hgt = pow(T(2.0*M_PI), -T(itsDim)/T(2)) * sqrt(det);
 }
 
 template<class T> 
@@ -244,7 +244,7 @@ void GaussianNDParam<T>::setCovariance(const Matrix<T> &covar) {
   T det;
   invertSymPosDef(locCovariance, det, locCovariance);
   unpack(locCovariance);
-  itsFlux2Hgt = pow(T(C::_2pi),-T(itsDim)/T(2)) / sqrt(abs(det));
+  itsFlux2Hgt = pow(T(2.0*M_PI),-T(itsDim)/T(2)) / sqrt(abs(det));
 }
 
 template<class T> 

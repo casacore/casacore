@@ -54,7 +54,6 @@ BasicMath/Math.cc
 BasicMath/Primes.cc
 BasicMath/Random.cc
 BasicSL/Complex.cc
-BasicSL/Constants.cc
 BasicSL/IComplex.cc
 BasicSL/STLMath.cc
 BasicSL/String.cc
@@ -302,7 +301,6 @@ add_subdirectory (apps)
 
 install (
 TARGETS casa_casa
-RUNTIME DESTINATION bin
 LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE

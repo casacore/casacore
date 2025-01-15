@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -535,16 +535,16 @@ Bool FuncExpression::exec(Double &res) const {
 	exec_p.back() = exp(exec_p.back());
 	break;
       case FuncExprData::EXP2:
-	exec_p.back() = exp(exec_p.back()*C::ln2);
+	exec_p.back() = exp(exec_p.back()*M_LN2);
 	break;
       case FuncExprData::EXP10:
-	exec_p.back() = exp(exec_p.back()*C::ln10);
+	exec_p.back() = exp(exec_p.back()*M_LN10);
 	break;
       case FuncExprData::LOG:
 	exec_p.back() = log(exec_p.back());
 	break;
       case FuncExprData::LOG2:
-	exec_p.back() = log(exec_p.back())/C::ln2;
+	exec_p.back() = log(exec_p.back())/M_LN2;
 	break;
       case FuncExprData::LOG10:
 	exec_p.back() = log10(exec_p.back());
@@ -556,12 +556,12 @@ Bool FuncExpression::exec(Double &res) const {
 	exec_p.back() = ::erfc(exec_p.back());
 	break;
       case FuncExprData::PI: {
-	if (pos->state.argcnt == 0) exec_p.push_back(C::pi);
-	else exec_p.back() *= C::pi;
+	if (pos->state.argcnt == 0) exec_p.push_back(M_PI);
+	else exec_p.back() *= M_PI;
 	break; }
       case FuncExprData::EE: {
-	if (pos->state.argcnt == 0) exec_p.push_back(C::e);
-	else exec_p.back() *= C::e;
+	if (pos->state.argcnt == 0) exec_p.push_back(M_E);
+	else exec_p.back() *= M_E;
 	break; }
       case FuncExprData::ABS:
 	exec_p.back() = abs(exec_p.back());

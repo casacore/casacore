@@ -1,6 +1,6 @@
-cmake_minimum_required (VERSION 3.3.0)
+cmake_minimum_required (VERSION 3.14.0)
 
-project(casacore VERSION 3.5.0)
+project(casacore VERSION 3.6.1)
 
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
@@ -18,8 +18,13 @@ if (POLICY CMP0074)
     cmake_policy (SET CMP0074 NEW)
 endif()
 
+# Use LOCATION as Python find strategy.
+if (POLICY CMP0094)
+    cmake_policy (SET CMP0094 NEW)
+endif()
+
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
-SET(PROJECT_SOVERSION 7)
+SET(PROJECT_SOVERSION 8)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
@@ -34,7 +39,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Astronomical data processing library")
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# By default build only Python2 bindings
+# By default build only Python3 bindings
 option (BUILD_PYTHON "Build the python2 bindings" NO)
 option (BUILD_PYTHON3 "Build the python3 bindings" YES)
 
@@ -198,13 +203,9 @@ if (NOT CMAKE_BUILD_TYPE)
     endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# Detect if the compiler supports C++11 if we want to use it.
-check_cxx_compiler_flag(-std=c++11 HAS_CXX11)
-if (HAS_CXX11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-else()
-    message(FATAL_ERROR "Casacore build requires a c++11 compatible compiler")
-endif (HAS_CXX11)
+# Require a C++17 compatible compiler
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure clang is not complaining about unused arguments.
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -212,7 +213,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_C_FLAGS "-Qunused-arguments ${CMAKE_C_FLAGS}")
 endif()
 
-# Since 2015, we need pwrite and pwrite (POSIX 2001)
+# Since 2015, we need pread and pwrite (POSIX 2001)
 check_function_exists(pread HAVE_PREAD)
 check_function_exists(pwrite HAVE_PWRITE)
 if (NOT (HAVE_PREAD AND HAVE_PWRITE))
@@ -328,7 +329,11 @@ find_package (DL)
 if (USE_READLINE)
     find_package (Readline REQUIRED)
 endif (USE_READLINE)
-find_package (SOFA)
+
+if (BUILD_TESTING)
+    find_package (SOFA)
+endif()
+
 if (USE_ADIOS2)
     find_package (ADIOS2 2.6.0 CONFIG REQUIRED)
     if(NOT USE_MPI)

@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -86,7 +86,8 @@ int main(int argc, const char* argv[])
 
 	Int tabCount = 0;
 	// This allows for constructed names of the form baseName.table.xx
-	char *tabName = new char[baseName.length() + 10];
+        int tabNameLen = baseName.length() + 10;
+	char *tabName = new char[tabNameLen];
 	// construct the FITS input
 	FitsInput infits(inputFilename.chars(), FITS::Disk);
 	if (infits.err() != FitsIO::OK) {
@@ -98,7 +99,7 @@ int main(int argc, const char* argv[])
 	    switch (infits.hdutype()) {
 	    case FITS::BinaryTableHDU:
 	    {
-		sprintf(tabName,"%s.table.%i",baseName.chars(),tabCount++);
+                snprintf(tabName,tabNameLen,"%s.table.%i",baseName.chars(),tabCount++);
 		String tabNameString(tabName);
 		cout << "BinaryTableHDU : " << tabNameString << " ... " ;
 		BinaryTable bintab(infits, FITSError::defaultHandler, 

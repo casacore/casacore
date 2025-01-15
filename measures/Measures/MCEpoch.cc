@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -191,7 +191,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 	  xe -= MeasTable::dUT1(xe.get())/MeasData::SECinDAY;
 	  xe += MeasTable::dUTC(xe.get())/MeasData::SECinDAY;
 	  xe += MeasTable::dTAI(xe.get())/MeasData::SECinDAY;
-	  xe += MeasTable::GMST00(ut, xe.get())/C::_2pi;
+	  xe += MeasTable::GMST00(ut, xe.get())/(2.0*M_PI);
 	  xe += mve6713;
 	  tt = (xx-xe.get())/2.0055;
 	  in += MVEpoch(tt);
@@ -207,7 +207,7 @@ void MCEpoch::doConvert(MVEpoch &in,
 	in -= MeasTable::dUT1(in.get())/MeasData::SECinDAY;
 	in += MeasTable::dUTC(in.get())/MeasData::SECinDAY;
 	in += MeasTable::dTAI(in.get())/MeasData::SECinDAY;
-	in += MeasTable::GMST00(ut, in.get())/C::_2pi;
+	in += MeasTable::GMST00(ut, in.get())/(2.0*M_PI);
       } else {
 	in += MeasTable::GMST0(ut)/MeasData::SECinDAY;
       }

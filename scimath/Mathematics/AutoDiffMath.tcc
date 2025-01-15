@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -225,7 +225,7 @@ template<class T> AutoDiff<T> log10(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.value();
-  tmp.derivatives() *= T(T(C::_2_sqrtpi)*exp(-tv*tv));
+  tmp.derivatives() *= T(T(M_2_SQRTPI)*exp(-tv*tv));
   tmp.value() = erf(tv);
   return tmp;
 }
@@ -233,7 +233,7 @@ template<class T> AutoDiff<T> erf(const AutoDiff<T> &ad) {
 template<class T> AutoDiff<T> erfc(const AutoDiff<T> &ad) { 
   AutoDiff<T> tmp(ad);
   T tv = tmp.value();
-  tmp.derivatives() *= T(T(-C::_2_sqrtpi)*exp(-tv*tv));
+  tmp.derivatives() *= T(T(-M_2_SQRTPI)*exp(-tv*tv));
   tmp.value() = erfc(tv);
   return tmp;
 }

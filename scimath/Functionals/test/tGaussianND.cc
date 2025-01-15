@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -49,10 +49,10 @@ int main(){
 	for (Float y = -5; y < 5; y+=inc) {
 	  z(1) = y; 
 	  if (!near(Double(default2D(z)),
-		    exp(-(z(0)*z(0)+z(1)*z(1))/2)/(2.*C::pi),1E-5)) {
+		    exp(-(z(0)*z(0)+z(1)*z(1))/2)/(2.*M_PI),1E-5)) {
 	    failed = True;
 	    cout << "Expected value for f(" << z << ") is " 
-		 << exp(-(z(0)*z(0)+z(1)*z(1))/2)/(C::_2pi) 
+		 << exp(-(z(0)*z(0)+z(1)*z(1))/2)/(2.0*M_PI)
 		 << " calculated value is " 
 		 << default2D(z) << endl;
 	  }
@@ -88,10 +88,10 @@ int main(){
       for (Float x = -2; x < 2; x+=.1) {
 	z(0) = x;
 	if (!near(Double(g(z)),
-		  exp(-(z(0)*z(0))/2)/sqrt(C::_2pi),1E-5)) {
+		  exp(-(z(0)*z(0))/2)/sqrt(2.0*M_PI),1E-5)) {
 	  failed = True;
 	  cout << "Expected value for g(" << z << ") is " 
-	       << exp(-(z(0)*z(0)/2))/sqrt(C::_2pi) 
+	       << exp(-(z(0)*z(0)/2))/sqrt(2.0*M_PI)
 	       << " calculated value is " 
 	       << g(z) << endl;
 	}
@@ -156,10 +156,10 @@ int main(){
       cout << " the 3-D specified height test" << endl;
 
       if (!failed) {
-	if (!near(sum*inc*inc*inc, pow(Float(C::_2pi),Float(1.5)), 1E-5)) {
+	if (!near(sum*inc*inc*inc, pow(Float(2.0*M_PI),Float(1.5)), 1E-5)) {
 	  failed = True;
 	  cout << "Failed (value was " << sum*inc*inc*inc 
-	       << " not " << pow(Float(C::_2pi),Float(1.5))
+	       << " not " << pow(Float(2.0*M_PI),Float(1.5))
 	       << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
@@ -206,10 +206,10 @@ int main(){
       cout << " the 2-D specified height & mean test" << endl;
     
       if (!failed) {
-	if (!near(sum*inc*inc, C::_2pi, 1E-5)) {
+	if (!near(sum*inc*inc, 2.0*M_PI, 1E-5)) {
 	  failed = True;
 	  cout << "Failed (value was " << sum*inc*inc
-	       << " not " << C::_2pi
+	       << " not " << 2.0*M_PI
 	       << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;
@@ -269,13 +269,13 @@ int main(){
       if (!failed) {
 	if (!near(sum*inc*inc*inc, 
 		  height*sqrt(variance(0)*variance(1)*variance(2))
-		  *pow(C::_2pi,1.5)
+		  *pow(2.0*M_PI,1.5)
 		  , 1E-4)) {
 	  failed = True;
 	  cout << "Failed (value was " << sum*inc*inc*inc 
 	       << " not " 
 	       << height*sqrt(variance(0)*variance(1)*variance(2))
-	    *pow(C::_2pi,1.5)
+	    *pow(2.0*M_PI,1.5)
 	       << ")";
 	} else cout << "Passed";
 	cout << " the total flux test" << endl;

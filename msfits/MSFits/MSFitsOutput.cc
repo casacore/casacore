@@ -17,7 +17,7 @@
 //# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -409,7 +409,7 @@ std::shared_ptr<FitsOutput> MSFitsOutput::_writeMain(Int& refPixelFreq, Double& 
     	else {
     		// Use the actual RA/Decl
     		radec = msfc.phaseDirMeas(_fieldNumber).getAngle().getValue();
-    		radec *= 180.0 / C::pi; // convert to degrees for FITS
+    		radec *= 180.0 / M_PI; // convert to degrees for FITS
     		if (radec(0) < 0) {
     			radec(0) += 360.0;
     		}
@@ -1850,11 +1850,11 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
                 // inicates that row applies for all spectral windows
                 if (
                     Int(antnum) == inantid(i)
-                    && (
-                        spwids(i) == -1
-                        || uSpws.find(spwids(i)) != uSpws.end()
-                    )
-                ) {
+                      && (
+                          spwids(i) == -1
+                          || uSpws.find(spwids(i)) != uSpws.end()
+                      )
+                    ) {
                     found = True;
                     Vector<String> poltypes = inpoltype(i);
                     Vector<Quantity> ra;
@@ -1871,10 +1871,19 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
                         antToRA[antnum] = ra;
                     }
                     else {
-                        _checkReceptorAngles(ra, antToRA[antnum], antnum);
+                        try {
+                            _checkReceptorAngles(ra, antToRA[antnum], antnum);
+                        }
+                        catch (const std::exception& x) {
+                            os << LogOrigin("MSFitsOutput", __func__)
+                               << LogIO::WARN << "Receptor Angles in FEED table are not constant for antenna " << antnum
+                               << ". Will try to ignore this. If this data is not yet calibrated, a future calibration of the uvfits data may fail: "
+                               << x.what() << LogIO::POST;
+                        }
                     }
                 }
             }
+
             if (!found) {
                 os << LogIO::SEVERE
                         << "Could not find polarization types for antenna "
@@ -2112,8 +2121,7 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                             *lsrvel = sv(0);
                         }
                     }
-                    if (
-                        sourceTable->isColumn(MSSource::REST_FREQUENCY)
+                    if (sourceTable->isColumn(MSSource::REST_FREQUENCY)
                         && sourceColumns->restFrequency().isDefined(rownr)
                     ) {
                         Vector<Double>
@@ -2123,10 +2131,24 @@ Bool MSFitsOutput::_writeSU(std::shared_ptr<FitsOutput> output, const Measuremen
                         }
                     }
                     if (sourceColumns->properMotion().isDefined(rownr)) {
-                        Vector<Double> pm =
-                                sourceColumns->properMotion()(rownr);
-                        *pmra = pm(0);
-                        *pmdec = pm(1);
+			try{
+			    Vector<Quantum<Double> > pm;
+			    sourceColumns->properMotionQuant().get(rownr, pm, True);
+			    *pmra = pm(0).getValue(Unit("deg/d"));
+			    *pmdec = pm(1).getValue(Unit("deg/d"));
+			} catch (const std::exception& e) {
+			    String unit="UNCALIB";
+			    unit = sourceColumns->properMotionQuant().getUnits()[0];
+			    Vector<Double> pm;
+			    sourceColumns->properMotion().get(rownr, pm, True);
+			    *pmra = pm(0);
+			    *pmdec = pm(1);
+			    os << LogIO::WARN
+			       << "Proper motion for source in SOURCE table row #"<<rownr<<" has unfamiliar units: "
+			       << unit << " .\n Value in uv fits table needs to be checked."
+			       << LogIO::POST;
+			}
+
                     }
                     *calcode = sourceColumns->code()(rownr) + "    ";
 

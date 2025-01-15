@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -220,13 +220,13 @@ public:
 
     // permeability vacuum
     inline static const Quantum<Double> &mu0( ) {
-        static Quantum<Double> result(4.0e-7*C::pi,"H/m");
+        static Quantum<Double> result(4.0e-7*M_PI,"H/m");
         return result;
     }
 
     // permittivity vacuum
     inline static const Quantum<Double> &epsilon0( ) {
-        static Quantum<Double> result(1.0/(4.0e-7*C::pi*C::c*C::c),"F/m");
+        static Quantum<Double> result(1.0/(4.0e-7*M_PI*C::c*C::c),"F/m");
         return result;
     }
 

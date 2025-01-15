@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -85,11 +85,11 @@ int main() {
   Vector<Double> y51;
   y51 = s5(4.5).derivatives();
   cout << "AutoDiff:  " << s5(4.5) << endl;
-  Double y1 = C::_2pi * 0.5/3.0;
+  Double y1 = (2.0*M_PI) * 0.5/3.0;
   AlwaysAssertExit(near(y50, 1.0) &&
   		   near(y51(0), cos(y1)) &&
   		   near(y51(1), 2.0/3.0*y1*sin(y1)) &&
-  		   near(y51(2), 2.0/3.0*C::_2pi*sin(y1)));
+  		   near(y51(2), 2.0/3.0*(2.0*M_PI)*sin(y1)));
 
   // Generic AutoDiff
   Sinusoid1D<AutoDiffA<Double> > s6;
@@ -103,7 +103,7 @@ int main() {
   AlwaysAssertExit(near(y60, 1.0) &&
 		   near(y61(0), cos(y1)) &&
 		   near(y61(1), 2.0/3.0*y1*sin(y1)) &&
-		   near(y61(2), 2.0/3.0*C::_2pi*sin(y1)));
+		   near(y61(2), 2.0/3.0*(2.0*M_PI)*sin(y1)));
    
   //   Sinusoid1D(const Sinusoid1D &other);
   //   Sinusoid1D<T> &operator=(const Sinusoid1D<T> &other);

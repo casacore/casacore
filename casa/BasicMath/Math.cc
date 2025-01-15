@@ -17,15 +17,16 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/BasicMath/Math.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Utilities/Assert.h>
+
+#include <cfloat>
 
 // Changes for SUN CC port - abs changed to fabs for double and float args.
 
@@ -72,10 +73,10 @@ Bool near(Float val1, Float val2, Double tol) {
     return True;
   }
   if (val1 == 0) {
-    return (fabs(val2) <= (1+tol)*C::flt_min);
+    return (fabs(val2) <= (1+tol)*FLT_MIN);
   }
   else if (val2 == 0) {
-    return (fabs(val1) <= (1+tol)*C::flt_min);
+    return (fabs(val1) <= (1+tol)*FLT_MIN);
   }
   if ((0<val1) != (0<val2)) {
     return False;
@@ -99,10 +100,10 @@ Bool near(Double val1, Double val2, Double tol) {
     return True;
   }
   if (val1 == 0) {
-    return (fabs(val2) <= (1+tol)*C::dbl_min);
+    return (fabs(val2) <= (1+tol)*DBL_MIN);
   }
   else if (val2 == 0) {
-    return (fabs(val1) <= (1+tol)*C::dbl_min);
+    return (fabs(val1) <= (1+tol)*DBL_MIN);
   }
   if ((0<val1) != (0<val2)) {
     return False;

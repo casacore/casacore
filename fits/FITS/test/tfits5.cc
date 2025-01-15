@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -110,7 +110,7 @@ void cvt_table(AsciiTableExtension &x, FitsOutput &fout) {
 		    bk.del();
 		    switch (x.field(n).fieldtype()) {
 			case FITS::CHAR:
-			    sprintf(p,"%dA",x.field(n).fitsfieldsize());
+                            snprintf(p,sizeof(p),"%dA",x.field(n).fitsfieldsize());
 			    bk.mk((n + 1),FITS::TFORM,p);
 			    break;
 			case FITS::LONG:

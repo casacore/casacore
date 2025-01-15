@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -195,7 +195,7 @@ void VanVleck::initInterpolator()
   Vector<Double> rhos(itsSize);
 
   Double twoN = 2.0*itsSize;
-  Double denom = cos(C::pi/twoN);
+  Double denom = cos(M_PI/twoN);
   Int midi = (itsSize-1)/2;
   rhos[midi] = 0.0;
   rs[midi] = 0.0;
@@ -207,11 +207,11 @@ void VanVleck::initInterpolator()
 	  // for the rhos, choose the modified Chebyshev points
 	  // upper side
 	  Int hi = midi+i;
-	  rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
+	  rhos[hi] = -cos(Double(2*hi+1)*M_PI/twoN)/denom;
 	  rs[hi] = rs[hi-1] + rinc(rhos[hi-1],rhos[hi]);
 	  // lower side
 	  Int lo = midi-i;
-	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
+	  rhos[lo] = -cos(Double(2*lo+1)*M_PI/twoN)/denom;
 	  rs[lo] = rs[lo+1] + rinc(rhos[lo+1],rhos[lo]);
       }
   } else {
@@ -219,10 +219,10 @@ void VanVleck::initInterpolator()
 	  // for the rhos, choose the modified Chebyshev points
 	  // upper side
 	  Int hi = midi+i;
-	  rhos[hi] = -cos(Double(2*hi+1)*C::pi/twoN)/denom;
+	  rhos[hi] = -cos(Double(2*hi+1)*M_PI/twoN)/denom;
 	  // lower side
 	  Int lo = midi-i;
-	  rhos[lo] = -cos(Double(2*lo+1)*C::pi/twoN)/denom;
+	  rhos[lo] = -cos(Double(2*lo+1)*M_PI/twoN)/denom;
       }
       if (nearAbs(itsXlev, itsYlev)) {
 	  // auto-correlation
@@ -357,7 +357,7 @@ double VanVleck::drbydrho(double *rho)
     Double s = 0.0;
     Double thisRho = *rho;
     Double oneMinusRhoRho = 1.0 - thisRho*thisRho;
-    Double denom = C::_2pi*sqrt(oneMinusRhoRho);
+    Double denom = (2.0*M_PI)*sqrt(oneMinusRhoRho);
 
     for (uInt i=0;i<(itsNx-1);i++) {
 	for (uInt j=0;j<(itsNy-1);j++) {
@@ -398,7 +398,7 @@ Double VanVleck::threshNgt3(Int n, Double zerolag)
   }
   Double tol = 1.0e-8;
   Double sqrt2 = sqrt(2.0);
-  Double sqrt2dpi = sqrt(2.0/C::pi);
+  Double sqrt2dpi = sqrt(2.0/M_PI);
   Double fp, f;
   for (Int i=0;i<30;i++) {
     fp = 0.0;
@@ -477,7 +477,7 @@ Double VanVleck::invErf(Double x)
     Double signx = (x>=0) ? 1.0 : -1.0;
     result = signx*(p1/t+p2+t*(p3+t*(p4+t*(p5+t*p6))))/(q1+t*(q2+t*q3));
   } else {
-    result = C::dbl_max;
+    result = DBL_MAX;
     if (x<0) {
       result = -result;
     }
@@ -489,7 +489,7 @@ Double VanVleck::invErfc(Double x)
 {
   Double result;
   if (x>=2.0) {
-    result = -C::dbl_max;
+    result = -DBL_MAX;
   } else if (x>=0.0625) {
     // just use invErf(1-x)
     result = invErf(1.0-x);
@@ -523,7 +523,7 @@ Double VanVleck::invErfc(Double x)
     q3 = 1.0;
     result = (p1/t+p2+t*(p3+t*p4))/(q1+t*(q2+t*q3));
   } else {
-    result = C::dbl_max;
+    result = DBL_MAX;
   }
   return result;
 }

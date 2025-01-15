@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -213,7 +213,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       putNull();
     } else {
       char buf[16];
-      sprintf (buf, "%.7g", value);
+      snprintf (buf, sizeof(buf), "%.7g", value);
       // Add a decimal point if needed, otherwise it is integer.
       unsigned i;
       for (i=0; i<sizeof(buf); ++i) {
@@ -234,7 +234,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       putNull();
     } else {
       char buf[24];
-      sprintf (buf, "%.16g", value);
+      snprintf (buf, sizeof(buf), "%.16g", value);
       // Add a decimal point if needed, otherwise it is integer.
       unsigned i;
       for (i=0; i<sizeof(buf); ++i) {

@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -440,7 +440,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    const DirectionCoordinate &dc = cSys.directionCoordinate(skyCoord);
 	    Double reflat = 0.;
 	    if(latAxis>=0){
-	      reflat = C::pi/180.0*crval(latAxis);
+	      reflat = M_PI/180.0*crval(latAxis);
 	    }
 	    cctype = cTypeFromDirection (isNCP, dc.projection(), 
 					 DirectionCoordinate::axisNames(dc.directionType(),
@@ -1879,21 +1879,21 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	    if (rotationAxis >= 0 && pc.nrow() > 1) { // can't rotate 1D!
 		if (rotationAxis > 0) {
 		    pc(rotationAxis-1,rotationAxis-1) =
-			pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*C::pi/180.0);
+			pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*M_PI/180.0);
 		    pc(rotationAxis-1,rotationAxis)=
-			-sin(crota(rotationAxis)*C::pi/180.0);
+			-sin(crota(rotationAxis)*M_PI/180.0);
 		    pc(rotationAxis,rotationAxis-1)=
-			sin(crota(rotationAxis)*C::pi/180.0);
+			sin(crota(rotationAxis)*M_PI/180.0);
 		} else {
 		    os << LogIO::NORMAL << "Unusual to rotate about first"
 			" axis." << LogIO::POST;
 		    pc(rotationAxis+1,rotationAxis+1) =
-			pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*C::pi/180.0);
+			pc(rotationAxis,rotationAxis) = cos(crota(rotationAxis)*M_PI/180.0);
 
 // Assume sign of rotation is correct although its not on the expected axis (AIPS convention)
 
-		    pc(rotationAxis,rotationAxis+1)=-sin(crota(rotationAxis)*C::pi/180.0);
-		    pc(rotationAxis+1,rotationAxis)= sin(crota(rotationAxis)*C::pi/180.0);
+		    pc(rotationAxis,rotationAxis+1)=-sin(crota(rotationAxis)*M_PI/180.0);
+		    pc(rotationAxis+1,rotationAxis)= sin(crota(rotationAxis)*M_PI/180.0);
 		}
 	    }
 	} else {
@@ -2050,7 +2050,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	for (uInt i=0; i<n; i++) {
 	    if (casacore::near(cdelt(i),0.0)) {
 		if (type==Coordinate::DIRECTION) {
-		    cdelt[i] = C::pi/180.0;        // 1 deg
+		    cdelt[i] = M_PI/180.0;        // 1 deg
 		    os << LogIO::WARN << "Zero increment in coordinate of type " << sType << " setting  to 1 deg" << LogIO::POST;
 		} else {
 		    cdelt[i] = crval[i] * 0.1;

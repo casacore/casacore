@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -177,6 +177,9 @@ public:
   //store the information from the PHASE-CAL table in a calibration table
   Bool handlePhaseCal();
 
+  //store the information from the CALC table in a calibration table
+  Bool handleCalc();
+
   //store the information from the MODEL_COMPS table 
   Bool handleModelComps();
 
@@ -237,7 +240,8 @@ protected:
   void setupMeasurementSet(const String& MSFileName, Bool useTSM=True, 
 			   Bool mainTbl=False, Bool addCorrMod=False,
 			   Bool addSyscal=False, Bool addWeather=False,
-			   Bool addGainCurve=False, Bool addPhaseCal=False);
+			   Bool addGainCurve=False, Bool addPhaseCal=False,
+			   Bool addEOP=False);
   
   // Fill the main table from the Primary group data
   void fillMSMainTable(const String& MSFileName, Int& nField, Int& nSpW);
@@ -309,6 +313,7 @@ protected:
   static Bool firstWeather;
   static Bool firstGainCurve;
   static Bool firstPhaseCal;
+  static Bool firstEOP;
   Bool weather_hasWater_p;
   Bool weather_hasElectron_p;
   Bool uv_data_hasWeights_p;

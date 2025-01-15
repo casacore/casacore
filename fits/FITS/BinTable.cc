@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -181,7 +181,7 @@ BinaryTable::BinaryTable(FitsInput& fitsin, FITSErrorHandler errhandler,
 	   kwname.rtrim(' ');
 	   // if it is indexed, add the index to the keyword
 	   if (kw->isindexed()) {
-	       sprintf(index,"%i",kw->index());
+               snprintf(index,sizeof(index),"%i",kw->index());
 	       kwname = kwname + String(index);
 	   }
 	   //		first check if this keyword exists in kwSet

@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -1456,10 +1456,10 @@ LatticeExprNode pa (const LatticeExprNode& left,
    LatticeExprNode expr(atan2(left,right));
    switch (expr.dataType()) {
    case TpFloat:
-      return Float(90.0/C::pi) * expr;
+      return Float(90.0/M_PI) * expr;
       break;
    case TpDouble:
-      return Double(90.0/C::pi) * expr;
+      return Double(90.0/M_PI) * expr;
       break;
    default:
       throw (AipsError ("LatticeExprNode::pa - Unknown data type"));

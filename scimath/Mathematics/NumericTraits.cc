@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -28,20 +28,20 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-const Double & NumericTraits<Float>::epsilon = C::flt_epsilon;
-const Double & NumericTraits<Double>::epsilon = C::dbl_epsilon;
-const Double & NumericTraits<Complex>::epsilon = C::flt_epsilon;
-const Double & NumericTraits<DComplex>::epsilon = C::dbl_epsilon;
+const Double & NumericTraits<Float>::epsilon = FLT_EPSILON;
+const Double & NumericTraits<Double>::epsilon = DBL_EPSILON;
+const Double & NumericTraits<Complex>::epsilon = FLT_EPSILON;
+const Double & NumericTraits<DComplex>::epsilon = DBL_EPSILON;
 
-const Double & NumericTraits<Float>::minimum = C::flt_min;
-const Double & NumericTraits<Double>::minimum = C::dbl_min;
-const Double & NumericTraits<Complex>::minimum = C::flt_min;
-const Double & NumericTraits<DComplex>::minimum = C::dbl_min;
+const Double & NumericTraits<Float>::minimum = FLT_MIN;
+const Double & NumericTraits<Double>::minimum = DBL_MIN;
+const Double & NumericTraits<Complex>::minimum = FLT_MIN;
+const Double & NumericTraits<DComplex>::minimum = DBL_MIN;
 
-const Double & NumericTraits<Float>::maximum = C::flt_max;
-const Double & NumericTraits<Double>::maximum = C::dbl_max;
-const Double & NumericTraits<Complex>::maximum = C::flt_max;
-const Double & NumericTraits<DComplex>::maximum = C::dbl_max;
+const Double & NumericTraits<Float>::maximum = FLT_MAX;
+const Double & NumericTraits<Double>::maximum = DBL_MAX;
+const Double & NumericTraits<Complex>::maximum = FLT_MAX;
+const Double & NumericTraits<DComplex>::maximum = DBL_MAX;
 
 } //# NAMESPACE CASACORE - END
 

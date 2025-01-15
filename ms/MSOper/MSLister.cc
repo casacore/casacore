@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -540,7 +540,12 @@ void MSLister::selectvis(const String& timerange,
 /// Calculate the max number of digits needed to print the values in an array
 template <class T> uInt maxDigitsToPrint(const Array<T> &values)
 {
-    return (uInt)max(1,(Int)rint(abs(log10(abs(max(values))))+0.5));
+    // Guard against log10(0).
+    if (max(values) == 0) {
+      return 1;
+    } else {
+      return (uInt)max(1,(Int)rint(abs(log10(abs(max(values))))+0.5));
+    }
 }
 
 void MSLister::listData(const int pageRows,

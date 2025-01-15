@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -128,7 +128,7 @@ void a (const TableDesc& td)
 	ac.put (i, i+1);
 	ad.put (i, i+2);
 	ae.put (i, i+3);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	af.put (i, str);
 	arr1.put(i,arrf);
 	arr2.put(i,arrf);
@@ -231,7 +231,7 @@ void check(const String& tableName, Int abOffset, Int acOffset)
 	ae.get (i, aeval);
 	af.get (i, afval);
 	ag.get (i, agval);
-	sprintf (str, "V%i", i);
+	snprintf (str, sizeof(str), "V%i", i);
 	if (abval != i+abOffset  ||  acval != i+1+acOffset
         ||  Int(adval) != i+2  ||  aeval != i+3
 	||  afval != str  ||  agval != DComplex(i+2)) {

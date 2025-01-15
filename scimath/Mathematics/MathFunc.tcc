@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -73,7 +73,7 @@ T MathFunc<T>::defSincparm_p = T(1.14);
 template<class T>
 T MathFunc<T>::defExpPower_p = T(2.0);
 template<class T>
-T MathFunc<T>::defExpScale_p = T(1.3/sqrt(4.0*C::ln2));
+T MathFunc<T>::defExpScale_p = T(1.3/sqrt(4.0*M_LN2));
 #endif
 
 template<class T>
@@ -349,7 +349,7 @@ MathFunc<T> * Unary<T>::clone() const
 //
 template<class T>
 GaussianConv<T>::GaussianConv(T cut, T wparm): MathFunc<T>(), sup_width(cut),
-fw2(wparm*wparm), ln16(4.0*C::ln2)
+fw2(wparm*wparm), ln16(4.0*M_LN2)
 {
   // nothing
 }
@@ -359,7 +359,7 @@ fw2(wparm*wparm), ln16(4.0*C::ln2)
 //
 template<class T>
 GaussianConv<T>::GaussianConv(const GaussianConv<T>& other): MathFunc<T>(),
-  sup_width(other.sup_width), fw2(other.fw2), ln16(4.0*C::ln2)
+  sup_width(other.sup_width), fw2(other.fw2), ln16(4.0*M_LN2)
 {
   // nothing
 }
@@ -446,9 +446,9 @@ template<class T>
 T KB_Conv<T>::value(const T &i) const
 {
   T par2 = kbparm * kbparm;
-  T x1 = C::pi * kbparm;
-  T x2 = C::pi * sqrt(par2 - 1.0);
-  T x3 = C::pi * sqrt(par2 - 4.0);
+  T x1 = M_PI * kbparm;
+  T x2 = M_PI * sqrt(par2 - 1.0);
+  T x3 = M_PI * sqrt(par2 - 4.0);
   T a = sinh(x1);
   T b = sinh(x2) * 2.0;
   T c = sinh(x3) * 2.0;
@@ -456,7 +456,7 @@ T KB_Conv<T>::value(const T &i) const
   a /= sum;
   b /= sum;
   c /= sum;
-  T x = i * C::pi / fw;
+  T x = i * M_PI / fw;
   return (a + b * cos(x) + c * cos(2.0 * x));
 }
 
@@ -485,7 +485,7 @@ MathFunc<T> * KB_Conv<T>::clone() const
 template<class T>
 Mod_KB_Conv<T>::Mod_KB_Conv(T cut, T wparm, T KBparm, T gwparm): MathFunc<T>(),
 kbparm(KBparm), gw2(gwparm*gwparm), sup_width(cut), widthparm(wparm), 
-ln16(4.0*C::ln2)
+ln16(4.0*M_LN2)
 {
   // nothing
 }
@@ -496,7 +496,7 @@ ln16(4.0*C::ln2)
 template<class T>
 Mod_KB_Conv<T>::Mod_KB_Conv(const Mod_KB_Conv<T>& other): MathFunc<T>(),
 kbparm(other.kbparm), gw2(other.gw2), sup_width(other.sup_width),
-  widthparm(other.widthparm), ln16(4.0*C::ln2)
+  widthparm(other.widthparm), ln16(4.0*M_LN2)
 {
   // nothing
 }
@@ -525,9 +525,9 @@ template<class T>
 T Mod_KB_Conv<T>::value(const T &i) const
 {
   T par2 = kbparm * kbparm;
-  T x1 = C::pi * kbparm;
-  T x2 = C::pi * sqrt(par2 - 1.0);
-  T x3 = C::pi * sqrt(par2 - 4.0);
+  T x1 = M_PI * kbparm;
+  T x2 = M_PI * sqrt(par2 - 1.0);
+  T x3 = M_PI * sqrt(par2 - 4.0);
 
   T a = sinh(x1);
   T b = sinh(x2) * 2.0;
@@ -540,7 +540,7 @@ T Mod_KB_Conv<T>::value(const T &i) const
   c /= sum;
 
   T i2 = i * i;
-  T x = i * C::pi / widthparm;
+  T x = i * M_PI / widthparm;
   T fx = a + b * cos(x) + c * cos(2.0 * x);
   return (fx * exp(-ln16 * (i2 / gw2)));
 }
@@ -608,7 +608,7 @@ T Sinc_Conv<T>::value(const T &i) const
   T ret_value;
   if (i == 0.0) ret_value = 1.0;
   else {
-    T parm = C::pi * i / Sinc_parm;
+    T parm = M_PI * i / Sinc_parm;
     ret_value = sin(parm) / parm;
   }
   return ret_value;
@@ -713,7 +713,7 @@ MathFunc<T> * Sph_Conv<T>::clone() const
 template<class T>
 ExpSincConv<T>::ExpSincConv(T cut, T sincparm, T expscale, T exppower): 
 MathFunc<T>(), sup_width(cut), scale(expscale), exponent(exppower), 
-sincpByPi(sincparm/C::pi)
+sincpByPi(sincparm/M_PI)
 {
     // nothing
 }
@@ -769,7 +769,7 @@ FuncId ExpSincConv<T>::id() const
   tmp.name = "EXP_SINC";
   tmp.args.resize(4);
   tmp.args(0)=sup_width;
-  tmp.args(1)=sincpByPi * C::pi;
+  tmp.args(1)=sincpByPi * M_PI;
   tmp.args(2)=scale;
   tmp.args(3)=exponent;
   return tmp;

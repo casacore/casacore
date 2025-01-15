@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -182,7 +182,7 @@ String LogMessage::toString() const
 
   ostringstream os;
   os << header << "\t" << message;
-  return os;
+  return String(os);
 }
 
 String LogMessage::toTermString() const
@@ -208,7 +208,7 @@ String LogMessage::toTermString() const
   os << header << "\n" << message;
   //String pr = toString(priority());
   //os << pr.resize(6, ' ') << "   " << message;
-  return os;
+  return String(os);
 }
 
 ostream &operator<<(ostream &os, const LogMessage &message)

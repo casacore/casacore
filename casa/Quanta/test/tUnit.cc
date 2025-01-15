@@ -17,13 +17,15 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
 //# Includes
+#include <cmath>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Quanta/Unit.h>
@@ -44,7 +46,7 @@ int main () {
 	cout << "Define user unit symbols:" << endl;
 	cout << " beam = 0.1*pi \"_2  ; Jypb = 1 Jy/beam" << endl;
 	
-	UnitMap::putUser("beam",UnitVal(C::pi * 0.1,"\"_2"),"telescope beam");
+	UnitMap::putUser("beam",UnitVal(M_PI * 0.1,"\"_2"),"telescope beam");
 	UnitName jypb("Jypb",UnitVal(1.,"Jy/beam"),"Jansky/beam");
 	UnitMap::putUser(jypb);
 	

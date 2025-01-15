@@ -1,6 +1,6 @@
 *=======================================================================
 C     Correspondence concerning AIPS++ should be addressed as follows:
-C            Internet email: aips2-request@nrao.edu.
+C            Internet email: casa-feedback@nrao.edu.
 C            Postal address: AIPS++ Project Office
 C                            National Radio Astronomy Observatory
 C                            520 Edgemont Road

@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -56,7 +56,7 @@ namespace casacore {
     Vector<Double> R0(3),A1(3),V1(3),V2(6),V3(3);
 
     //  Radians per year to arcsec per century
-    const Double PMF=100e0*60e0*60e0*360e0/C::_2pi;
+    const Double PMF=100e0*60e0*60e0*360e0/(2.0*M_PI);
 
     //  Functions
     //  Double sla_EPJ,sla_EPB2D,sla_DRANRM

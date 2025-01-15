@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -47,10 +47,10 @@ const uShort         ValType::undefushort   = 0;
 const Int            ValType::undefint      = -2*Int(32768*32768);
 const uInt           ValType::undefuint     = 0;
 const Int64          ValType::undefint64    = -2*Int64(32768*32768)*Int64(32768*32768);
-const float          ValType::undeffloat    = -C::minfloat;
-const Complex        ValType::undefcomplex   (-C::minfloat,  -C::minfloat);
-const double         ValType::undefdouble   = -C::mindouble;
-const DComplex       ValType::undefdcomplex  (-C::mindouble, -C::mindouble);
+const float          ValType::undeffloat    = -FLT_MIN;
+const Complex        ValType::undefcomplex   (-FLT_MIN,  -FLT_MIN);
+const double         ValType::undefdouble   = -DBL_MIN;
+const DComplex       ValType::undefdcomplex  (-DBL_MIN, -DBL_MIN);
 const String         ValType::undefstring    ("");
 
 

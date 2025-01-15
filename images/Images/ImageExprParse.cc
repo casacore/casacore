@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -258,9 +258,9 @@ LatticeExprNode ImageExprParse::makeFuncNode() const
     String val(itsSval);
     val.downcase();
     if (val == "pi") {
-	return LatticeExprNode (C::pi);
+	return LatticeExprNode (M_PI);
     } else if (val == "e") {
-	return LatticeExprNode (C::e);
+	return LatticeExprNode (M_E);
     } else {
 	throw (AipsError ("0-argument function " + itsSval + " is unknown"));
     }

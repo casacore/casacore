@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -178,10 +178,10 @@ int main()
                                 cdelt(0), cdelt(1),
                                 xform, crpix(0), crpix(1));
 //
-        Quantum<Double> lon(crval(0)*180.0/C::pi, "deg");
-        Quantum<Double> lat(crval(1)*180.0/C::pi, "deg");
-        Quantum<Double> dlon(cdelt(0)*180.0/C::pi, "deg");
-        Quantum<Double> dlat(cdelt(1)*180.0/C::pi, "deg");
+        Quantum<Double> lon(crval(0)*180.0/M_PI, "deg");
+        Quantum<Double> lat(crval(1)*180.0/M_PI, "deg");
+        Quantum<Double> dlon(cdelt(0)*180.0/M_PI, "deg");
+        Quantum<Double> dlat(cdelt(1)*180.0/M_PI, "deg");
         Quantum<Double> longPole(999.0, "deg");
         Quantum<Double> latPole(999.0, "deg");
 //
@@ -525,7 +525,7 @@ int main()
     	          );
     	          Vector<Double> newJ2000RefVal = backToJ2000.referenceValue();
     	          if (newJ2000RefVal[0] < -0.1) {
-    	              newJ2000RefVal[0] += 2*C::pi;
+    	              newJ2000RefVal[0] += 2*M_PI;
     	          }
     	          AlwaysAssert(
     	              allNearAbs(newJ2000RefVal, j2000RefVal, 1e-9), AipsError
@@ -583,7 +583,7 @@ int main()
     	  Projection projection(Projection::SIN, parms);
     	  Double refLong = 0;
     	  Double refLat = 0.5;
-    	  Double inc = C::pi/180/3600;
+    	  Double inc = M_PI/180/3600;
     	  Matrix<Double> xform = Matrix<Double>::identity(2);
     	  Double refX = 0;
     	  Double refY = 0;
@@ -1305,13 +1305,13 @@ void doit6 ()
    Double latPole = -90;
 //
    DirectionCoordinate dc(type, proj, 
-                          crval(0)*C::pi/180.0, 
-                          crval(1)*C::pi/180.0, 
-                          cdelt(0)*C::pi/180.0, 
-                          cdelt(1)*C::pi/180.0, 
+                          crval(0)*M_PI/180.0,
+                          crval(1)*M_PI/180.0,
+                          cdelt(0)*M_PI/180.0,
+                          cdelt(1)*M_PI/180.0,
                           xform, crpix(0), crpix(1), 
-                          longPole*C::pi/180.0, 
-                          latPole*C::pi/180.0);
+                          longPole*M_PI/180.0,
+                          latPole*M_PI/180.0);
 //
    Vector<Double> poles = dc.longLatPoles();
    Bool ok = (near(poles(0), crval(0)) &&

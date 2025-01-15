@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -138,10 +138,10 @@ void doIt()
   checkScaDouble ("sinh(e2)", 0, sinh(e2), (exp(2)-exp(-2))/2, "");
   checkScaDouble ("cosh(e2)", 0, cosh(e2), (exp(2)+exp(-2))/2, "");
   checkScaDouble ("tanh(e2)", 0, tanh(e2), (exp(4)-1)/(exp(4)+1), "");
-  checkScaDouble ("asin(sin(30))", 0, asin(sin(e30)), C::pi/6, "rad");
-  checkScaDouble ("acos(cos(30))", 0, acos(cos(e30)), C::pi/6, "rad");
-  checkScaDouble ("atan(tan(30))", 0, atan(tan(e30)), C::pi/6, "rad");
-  checkScaDouble ("atan2(1,1)", 0, atan2(TableExprNode(1),1), C::pi/4, "rad");
+  checkScaDouble ("asin(sin(30))", 0, asin(sin(e30)), M_PI/6, "rad");
+  checkScaDouble ("acos(cos(30))", 0, acos(cos(e30)), M_PI/6, "rad");
+  checkScaDouble ("atan(tan(30))", 0, atan(tan(e30)), M_PI/6, "rad");
+  checkScaDouble ("atan2(1,1)", 0, atan2(TableExprNode(1),1), M_PI/4, "rad");
   checkScaDouble ("square(e2)", 0, square(e2), 4, "cm.cm");
   checkScaDouble ("cube(e2)", 0, cube(e2), 8, "cm.cm.cm");
   // sqrt returns basic SI units.
@@ -175,8 +175,8 @@ void doIt()
   checkScaDouble ("median(e2)", 0, median(e2), 2., "cm");
   checkScaBool ("isNaN(e2)", 0, isNaN(e2), False);
   checkScaInt ("ndim(e2)", 0, ndim(e2), 0);
-  checkScaDouble ("time", 0, time("17Apr09/12:00:00"), C::pi, "rad");
-  checkScaDouble ("time", 0, time("1Jan08/12:00:00"), C::pi, "rad");
+  checkScaDouble ("time", 0, time("17Apr09/12:00:00"), M_PI, "rad");
+  checkScaDouble ("time", 0, time("1Jan08/12:00:00"), M_PI, "rad");
   checkScaDouble ("date-date", 0, date("17Apr2009")-"1Apr2009", 16., "d"); 
   checkScaDouble ("iif(T,e2,e3+1)", 0, iif(True,e2,e3+1), 2., "cm"); 
   checkScaDouble ("iif(F,e2,e3+1)", 0, iif(False,e2,e3+1), 102., "cm"); 

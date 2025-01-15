@@ -18,7 +18,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -78,13 +78,13 @@ using std11_allocator = std::allocator<T>;
 template<typename T, size_t ALIGNMENT = CASA_DEFAULT_ALIGNMENT>
 struct casacore_allocator: public std11_allocator<T> {
   typedef std11_allocator<T> Super;
-  typedef typename Super::size_type size_type;
-  typedef typename Super::difference_type difference_type;
-  typedef typename Super::pointer pointer;
-  typedef typename Super::const_pointer const_pointer;
-  typedef typename Super::reference reference;
-  typedef typename Super::const_reference const_reference;
-  typedef typename Super::value_type value_type;
+  using size_type = typename Super::size_type;
+  using difference_type = typename Super::difference_type;
+  using pointer = T*;
+  using const_pointer = const T*;
+  using reference = T&;
+  using const_reference = const T&;
+  using value_type = typename Super::value_type;
 
   static constexpr size_t alignment = ALIGNMENT;
 
@@ -107,7 +107,7 @@ struct casacore_allocator: public std11_allocator<T> {
   }
 
   pointer allocate(size_type elements, const void* = 0) {
-    if (elements > this->max_size()) {
+    if (elements > std::allocator_traits<casacore_allocator>::max_size(*this)) {
       throw std::bad_alloc();
     }
     void *memptr = 0;
@@ -137,14 +137,14 @@ inline bool operator!=(const casacore_allocator<T, ALIGNMENT>&,
 
 template<typename T>
 struct new_del_allocator: public std11_allocator<T> {
-  typedef std11_allocator<T> Super;
-  typedef typename Super::size_type size_type;
-  typedef typename Super::difference_type difference_type;
-  typedef typename Super::pointer pointer;
-  typedef typename Super::const_pointer const_pointer;
-  typedef typename Super::reference reference;
-  typedef typename Super::const_reference const_reference;
-  typedef typename Super::value_type value_type;
+  using Super = std11_allocator<T>;
+  using size_type = typename Super::size_type;
+  using difference_type = typename Super::difference_type;
+  using pointer = T*;
+  using const_pointer = const T*;
+  using reference = T&;
+  using const_reference = const T&;
+  using value_type = typename Super::value_type;
 
   template<typename TOther>
   struct rebind {
@@ -165,7 +165,7 @@ struct new_del_allocator: public std11_allocator<T> {
   }
 
   pointer allocate(size_type elements, const void* = 0) {
-    if (elements > this->max_size()) {
+    if (elements > std::allocator_traits<new_del_allocator>::max_size(*this)) {
       throw std::bad_alloc();
     }
     return new T[elements];
@@ -214,10 +214,10 @@ class Allocator_private {
 
   template<typename T2>
   struct BulkAllocator {
-    typedef typename std::allocator<T2>::size_type size_type;
-    typedef typename std::allocator<T2>::pointer pointer;
-    typedef typename std::allocator<T2>::const_pointer const_pointer;
-    typedef typename std::allocator<T2>::value_type value_type;
+    using size_type = typename std::allocator<T2>::size_type;
+    using value_type = typename std::allocator<T2>::value_type;
+    using pointer = T2*;
+    using const_pointer = const T2*;
 
     virtual pointer allocate(size_type elements, const void*ptr = 0) = 0;
     virtual void deallocate(pointer ptr, size_type size) = 0;
@@ -247,7 +247,7 @@ class Allocator_private {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
-          allocator.construct(&ptr[i], src[i]);
+          std::allocator_traits<Allocator>::construct(allocator, &ptr[i], src[i]);
         }
       } catch (...) {
         destroy(ptr, i);  // rollback constructions
@@ -259,7 +259,7 @@ class Allocator_private {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
-          allocator.construct(&ptr[i], initial_value);
+          std::allocator_traits<Allocator>::construct(allocator, &ptr[i], initial_value);
         }
       } catch (...) {
         destroy(ptr, i);  // rollback constructions
@@ -270,7 +270,7 @@ class Allocator_private {
       size_type i = 0;
       try {
         for (i = 0; i < n; ++i) {
-          allocator.construct(&ptr[i]);
+          std::allocator_traits<Allocator>::construct(allocator, &ptr[i]);
         }
       } catch (...) {
         destroy(ptr, i);  // rollback constructions
@@ -281,7 +281,7 @@ class Allocator_private {
       for (size_type i = n; i > 0;) {
         --i;
         try {
-          allocator.destroy(&ptr[i]);
+          std::allocator_traits<Allocator>::destroy(allocator, &ptr[i]);
         } catch (...) {
           // Destructor should not raise any exception.
         }

@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -276,6 +276,12 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
     os << LogIO::SEVERE << "Error reading FITS input" << LogIO::EXCEPTION;
   }
 
+  // Make sure this is a FITS-IDI file; the Astropy FITS code may
+  // inadvertedly turn an valid FITS-IDI into a random groups FITS file.
+  if (infits.hdutype() != FITS::PrimaryArrayHDU) {
+    os << LogIO::SEVERE << "Not a FITS-IDI file" << LogIO::EXCEPTION;
+  }
+
   // Regular expression for trailing blanks
   Regex trailing(" *$");
 
@@ -428,6 +434,11 @@ void MSFitsIDI::readFITSFile(Bool& atEnd)
       Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/PHASE_CAL",Table::Update);
       mssub.rename (itsMSOut+"/PHASE_CAL",Table::New);
       msmain.rwKeywordSet().defineTable("PHASE_CAL",mssub);
+    }
+    if (subTableName(isub)=="CALC") {
+      Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/EARTH_ORIENTATION",Table::Update);
+      mssub.rename (itsMSOut+"/EARTH_ORIENTATION",Table::New);
+      msmain.rwKeywordSet().defineTable("EARTH_ORIENTATION",mssub);
     }
     //if (subTableName(isub)=="INTERFEROMETER_MODEL") {
     //  Table mssub(itsMSOut+"_tmp/"+subTableName(isub)+"/IDI_CORRELATOR_MODEL",Table::Update);

@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -215,7 +215,7 @@ int main() {
       mean(0) = .5; mean(1) = -1;
       
       fwhm(0) = 2; fwhm(1) = .5;
-      Double pa = C::pi/6,  height = 2;
+      Double pa = M_PI/6,  height = 2;
       Gaussian2D<Double> g(height, mean, fwhm, pa), g1;
       Gaussian2D<Double> g2(height, mean(0), mean(1), fwhm(0), 
 			      fwhm(1)/fwhm(0), pa);

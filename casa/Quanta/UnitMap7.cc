@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -26,6 +26,8 @@
 //# Includes
 
 #include <casacore/casa/Quanta/UnitMap.h>
+
+#include <cmath>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -66,7 +68,7 @@ void UnitMap::initUMCust3 (UMaps& maps) {
 						 "gauss")));
   mapCust.insert(map<String, UnitName>::value_type
 			   ("Gb",   	UnitName("Gb",
-						 UnitVal(10.0/(4.0 * C::pi), "A", &maps),
+						 UnitVal(10.0/(4.0 * M_PI), "A", &maps),
 						 "gilbert")));
   mapCust.insert(map<String, UnitName>::value_type
 			   ("ha",   	UnitName("ha",
@@ -106,7 +108,7 @@ void UnitMap::initUMCust3 (UMaps& maps) {
 						 "nautical mile (Imp)")));
   mapCust.insert(map<String, UnitName>::value_type
 			   ("Oe",   	UnitName("Oe",
-						 UnitVal(1000.0/(4.0*C::pi), "A/m", &maps),
+						 UnitVal(1000.0/(4.0*M_PI), "A/m", &maps),
 						 "oersted")));
   mapCust.insert(map<String, UnitName>::value_type
 			   ("oz",   	UnitName("oz",

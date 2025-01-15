@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -337,7 +337,7 @@ int main (int argc, const char* argv[])
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
     Double result = 3.5*bVal + cos(cVal) -
-	            10/min(cVal,dVal)*-eVal*log(bVal) - C::pi;
+	            10/min(cVal,dVal)*-eVal*log(bVal) - M_PI;
     if (! allNear (aArr, result, 1.0e-10)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr << endl;
@@ -351,7 +351,7 @@ int main (int argc, const char* argv[])
     a.copyData(expr);
     a.getSlice(aArr, IPosition(aArr.ndim(),0), 
 	       shape, IPosition(aArr.ndim(),1));
-    Double result = (bVal + cVal - dVal / 2*-bVal) + C::pi;
+    Double result = (bVal + cVal - dVal / 2*-bVal) + M_PI;
     if (! allEQ (aArr, result)) {
 	cout << "Result should be " << result << endl;
 	cout << "Result is " << aArr << endl;

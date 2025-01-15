@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -3605,10 +3605,10 @@ std::vector<Vector<Double>> MeasTable::calcAberETerm() {
 // Diurnal Aberration factor
 Double MeasTable::diurnalAber(Double radius, Double T) {
   ///  static Double res;
-  ///  res = C::_2pi * radius / MeasData::SECinDAY *
+  ///  res = (2.0*M_PI) * radius / MeasData::SECinDAY *
   ///    MeasTable::UTtoST(T)/C::c;
   ///  return res;
-  return C::_2pi * radius / MeasData::SECinDAY *
+  return (2.0*M_PI) * radius / MeasData::SECinDAY *
     MeasTable::UTtoST(T)/C::c;
 }
 
@@ -4355,13 +4355,13 @@ Polynomial<Double> MeasTable::calcGMST00() {
 Double MeasTable::ERA00(Double ut1) {
   static Polynomial<Double> stPoly(calcERA00());
   ut1 -= MeasData::MJD2000;
-  return MVAngle(stPoly(ut1)+ C::_2pi*fmod(ut1, 1.0))(0.0).radian();
+  return MVAngle(stPoly(ut1)+ (2.0*M_PI)*fmod(ut1, 1.0))(0.0).radian();
 }
 
 Polynomial<Double> MeasTable::calcERA00() {
   Polynomial<Double> stPoly(1);
-  stPoly.setCoefficient(0, 0.7790572732640*C::_2pi);
-  stPoly.setCoefficient(1, 0.00273781191135448*C::_2pi);
+  stPoly.setCoefficient(0, 0.7790572732640*(2.0*M_PI));
+  stPoly.setCoefficient(1, 0.00273781191135448*(2.0*M_PI));
   return stPoly;
 }
 

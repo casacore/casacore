@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -296,7 +296,7 @@ T Interpolate2D::sinc(const T x) const {
     if (x == 0) {
         return 1;
     }
-    return sin(C::pi * x) / (C::pi * x);
+    return sin(M_PI * x) / (M_PI * x);
 }
 
 // Lanczos interpolation: helper function

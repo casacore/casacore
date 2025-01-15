@@ -17,14 +17,13 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
 #include <casacore/casa/BasicMath/Random.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/BasicSL/String.h>
@@ -806,7 +805,7 @@ LogNormal::~LogNormal() {
 
 //      See Simulation, Modelling & Analysis by Law & Kelton, pp260
 Double LogNormal::operator()() {
-  return std::pow(C::e, this->Normal::operator()() );
+  return std::pow(M_E, this->Normal::operator()() );
 }
 
 void LogNormal::mean(Double x) {

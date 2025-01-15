@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusettes Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -454,11 +454,11 @@ void Adios2StMan::impl::create64(rownr_t  aNrRows)
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Write));
+    itsAdiosEngine->BeginStep();
     for (uInt i = 0; i < ncolumn(); ++i)
     {
         itsColumnPtrBlk[i]->create(itsAdiosEngine, 'w');
     }
-    itsAdiosEngine->BeginStep();
 }
 
 rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
@@ -466,11 +466,11 @@ rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
     itsRows = aNrRows;
     itsAdiosEngine = std::make_shared<adios2::Engine>(
         itsAdiosIO->Open(fileName() + ".bp", adios2::Mode::Read));
+    itsAdiosEngine->BeginStep();
     for (uInt i = 0; i < ncolumn(); ++i)
     {
         itsColumnPtrBlk[i]->create(itsAdiosEngine, 'r');
     }
-    itsAdiosEngine->BeginStep();
 
     ios.getstart(DATA_MANAGER_TYPE);
     ios >> itsDataManName;

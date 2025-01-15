@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -635,10 +635,11 @@ int FitsInput::skip_hdu() { //Skip an entire header-data unit
             ffgknm(l_card, l_keyname, &l_namelen, &l_status); // get the keyword name
 
             if (fftrec(l_keyname, &l_status) > 0) { // test keyword name; catches no END
-                sprintf(
-                        l_message,
-                        "Name of keyword no. %d contains illegal character(s): %s",
-                        nextkey, l_keyname);
+                snprintf(
+                         l_message,
+                         sizeof(l_message),
+                         "Name of keyword no. %d contains illegal character(s): %s",
+                         nextkey, l_keyname);
                 errmsg(MISSKEY, l_message);
 
                 if (nextkey % 36 == 0) { // test if at beginning of 36-card record.

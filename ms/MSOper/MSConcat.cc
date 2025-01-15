@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -357,6 +357,9 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
 
   // PHASE_CAL
   copyPhaseCal(otherMS, newAntIndices);
+
+  // EARTH_ORIENTATION
+  copyEOP(otherMS);
 
   /////////////////////////////////////////////////////
 
@@ -1246,6 +1249,11 @@ IPosition MSConcat::isFixedShape(const TableDesc& td) {
   // PHASE_CAL
   if(!copyPhaseCal(otherMS, newAntIndices)){
     log << LogIO::WARN << "Could not merge PhaseCal subtables " << LogIO::POST ;
+  }
+
+  // EARTH_ORIENTATION
+  if(!copyEOP(otherMS)){
+    log << LogIO::WARN << "Could not merge EOP subtables " << LogIO::POST ;
   }
 
   //////////////////////////////////////////////////////
@@ -2382,6 +2390,65 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS,
       if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
 	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
     }
+  }
+
+  return True;
+}
+
+Bool MSConcat::copyEOP(const MeasurementSet& otherMS){
+  // uses newSPWIndex_p; to be called after copySpwAndPol
+
+  LogIO os(LogOrigin("MSConcat", "copyEOP"));
+
+  Bool itsEOPNull = (!itsMS.rwKeywordSet().isDefined("EARTH_ORIENTATION") || (itsMS.rwKeywordSet().asTable("EARTH_ORIENTATION").nrow() == 0));
+  Bool otherEOPNull = (!otherMS.keywordSet().isDefined("EARTH_ORIENTATION") || (otherMS.keywordSet().asTable("EARTH_ORIENTATION").nrow() == 0));
+
+  if(itsEOPNull && otherEOPNull){ // neither of the two MSs do have valid EOP tables
+    os << LogIO::DEBUG1 << "No valid EOP tables present. Result won't have one either." << LogIO::POST;
+    return True;
+  }
+  else if(itsEOPNull && !otherEOPNull){
+    os << LogIO::WARN << itsMS.tableName() << " does not have a valid EOP table," << endl
+       << "  the MS to be appended, however, has one. Result won't have one."
+       << LogIO::POST;
+    return False;
+  }
+
+  if (otherEOPNull)
+    return True;
+
+  Table eop = itsMS.rwKeywordSet().asTable("EARTH_ORIENTATION");
+  Table otherEOP = otherMS.keywordSet().asTable("EARTH_ORIENTATION");
+  rownr_t actualRow=eop.nrow()-1;
+  rownr_t origNRow=actualRow+1;
+  Int rowToBeAdded=otherEOP.nrow();
+  TableRow eopRow(eop);
+  const ROTableRow otherEOPRow(otherEOP);
+  for (Int k=0; k < rowToBeAdded; ++k){
+    ++actualRow;
+    eop.addRow();
+    eopRow.put(actualRow, otherEOPRow.get(k, True));
+  }
+
+  ScalarColumn<Int> obsIdCol(eop, "OBSERVATION_ID");
+  Vector<Int> obsIds = obsIdCol.getColumn();
+
+  if (doObsA_p){
+    for (rownr_t r = 0; r < origNRow; r++) {
+      if(newObsIndexA_p.find(obsIds[r]) != newObsIndexA_p.end()){
+	obsIds[r] = getMapValue(newObsIndexA_p, obsIds[r]);
+      }
+    }
+    obsIdCol.putColumn(obsIds);
+  }
+
+  if (rowToBeAdded && doObsB_p){
+    for (rownr_t r = origNRow; r < eop.nrow(); r++) {
+      if(newObsIndexB_p.find(obsIds[r]) != newObsIndexB_p.end()){
+	obsIds[r] = getMapValue(newObsIndexB_p, obsIds[r]);
+      }
+    }
+    obsIdCol.putColumn(obsIds);
   }
 
   return True;

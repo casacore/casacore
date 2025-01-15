@@ -17,13 +17,15 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
 //#                        Charlottesville, VA 22903-2475 USA
 
 //# Includes
+
+#include <cmath>
 
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -116,29 +118,29 @@ int main()
 
    cout << endl
         << "Irrationals:"                                   << endl
-        << "C::sqrt2..............  " << C::sqrt2           << endl
+        << "C::sqrt2..............  " << M_SQRT2            << endl
         << "C::sqrt3..............  " << C::sqrt3           << endl
-        << "C::_1_sqrt2...........  " << C::_1_sqrt2        << endl
+        << "C::_1_sqrt2...........  " << M_SQRT1_2          << endl
         << "C::_1_sqrt3...........  " << C::_1_sqrt3        << endl;
 
    cout << endl
         << "Pi and functions thereof:"                      << endl
-        << "C::pi.................  " << C::pi              << endl
-        << "C::_2pi...............  " << C::_2pi            << endl
-        << "C::pi_2...............  " << C::pi_2            << endl
-        << "C::pi_4...............  " << C::pi_4            << endl
-        << "C::_1_pi..............  " << C::_1_pi           << endl
-        << "C::_2_pi..............  " << C::_2_pi           << endl
-        << "C::_1_sqrtpi..........  " << C::_1_sqrtpi       << endl
-        << "C::_2_sqrtpi..........  " << C::_2_sqrtpi       << endl;
+        << "C::pi.................  " << M_PI               << endl
+        << "C::_2pi...............  " << (2.0*M_PI)         << endl
+        << "C::pi_2...............  " << M_PI_2             << endl
+        << "C::pi_4...............  " << M_PI_4             << endl
+        << "C::_1_pi..............  " << M_1_PI             << endl
+        << "C::_2_pi..............  " << M_2_PI             << endl
+        << "C::_1_sqrtpi..........  " << (0.5 * M_2_SQRTPI) << endl
+        << "C::_2_sqrtpi..........  " << M_2_SQRTPI         << endl;
 
    cout << endl
         << "e and functions thereof:"                       << endl
-        << "C::e..................  " << C::e               << endl
-        << "C::ln2................  " << C::ln2             << endl
-        << "C::ln10...............  " << C::ln10            << endl
-        << "C::log2e..............  " << C::log2e           << endl
-        << "C::log10e.............  " << C::log10e          << endl;
+        << "C::e..................  " << M_E                << endl
+        << "C::ln2................  " << M_LN2              << endl
+        << "C::ln10...............  " << M_LN10             << endl
+        << "C::log2e..............  " << M_LOG2E            << endl
+        << "C::log10e.............  " << M_LOG10E           << endl;
 
    cout << endl
         << "gamma and functions thereof:"                   << endl

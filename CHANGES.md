@@ -1,3 +1,24 @@
+# 3.6.1
+
+ - Use the latest numpy for dockers; this should make python-casacore compatible with numpy 2.0.
+
+
+# 3.6.0
+
+## General
+
+ - Improvements on FITS import and export (#1215, #1229, #1251, #1267, #1268, #1304, #1318, #1341)
+ - Small improvements to Dysco (#1305, #1313, #1337, #1343)
+ - C++ modernizations (#1185, #1199, #1271, #1280, #1284, #1288, #1289, #1294, #1296, #1298, #1309, #1316, #1353, #1355)
+ - Build system and CI improvements (#1219, #1236, #1252, #1315, #1328, #1330, #1334, #1335, #1349)
+ - Code cleanup (#1204, #1245, #1269, #1277, #1279, #1300, #1301, #1302)
+ - TaQL improvements (#1221, #1232, #1244, #1247, #1259, #1260, #1263, #1270, #1276, #1299)
+ - Add new SI prefixes quetta, ronna, ronto and quecto (#1257)
+ - Fix several issues that arose in CASA use (#1200, #1227, #1246, #1262, #1290, #1291, #1292, #1329, #1323)
+ - Fix data race in images toWord / toPixel (#1235)
+ - Update e-mail address (#1339)
+
+
 # 3.5.0
 
 ## Highlights

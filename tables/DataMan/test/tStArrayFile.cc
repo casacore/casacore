@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -30,7 +30,7 @@
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/iostream.h>
 #include <casacore/casa/sstream.h>
-#include <casacore/casa/stdio.h>                           // for sprintf
+#include <casacore/casa/stdio.h>                           // for snprintf
 
 #include <casacore/casa/namespace.h>
 // <summary> Test program for the StManArrayFile class </summary>
@@ -97,7 +97,7 @@ void a (Bool canonical, uInt version,
 	}
 	ibuf[i] = i;
 	cbuf[i] = Complex(i+1,i+2);
-	sprintf (str, "str %d", i);
+	snprintf (str, sizeof(str), "str %d", i);
 	sbuf[i] = str;
     }
     StManArrayFile io("tStArrayFile_tmp.data", ByteIO::New, version,
@@ -148,7 +148,7 @@ void b (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4,
     char str[16];
     Int i;
     for (i=0; i<10000; i++) {
-	sprintf (str, "str %d", i);
+        snprintf (str, sizeof(str), "str %d", i);
 	sbuf[i] = str;
     }
     uInt l1 = io.getShape (off1, shp);
@@ -233,7 +233,7 @@ void c (Bool canonical, Int64 off1, Int64 off2, Int64 off3, Int64 off4)
     char str[16];
     uInt i;
     for (i=0; i<10000; i++) {
-	sprintf (str, "str %d", i);
+        snprintf (str, sizeof(str), "str %d", i);
 	sbuf[i] = str;
     }
     uInt l1 = io.getShape (off1, shp);

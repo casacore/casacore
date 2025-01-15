@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -186,7 +186,7 @@ Double GaussianBeam::getArea(const Unit& unit) const {
     // nonstandard handling of solid angle units in CASA
     Quantity qunit(1, unit);
     if (qunit.isConform("sr") || qunit.isConform("rad2")) {
-        static const Double coeff = C::pi/(4*C::ln2);
+        static const Double coeff = M_PI/(4.0*M_LN2);
         return coeff * (_major * _minor).getValue(unit);
     }
     else {

@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -37,7 +37,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //# Operators
 template<class T> 
 T SincFunction<T>::eval(typename Function<T>::FunctionArg x) const {
-  T tmp = T(C::pi)*(x[0] - param_p[CENTER]);
+  T tmp = T(M_PI)*(x[0] - param_p[CENTER]);
   if (tmp == T(0.0)) return param_p[HEIGHT];
   return sin(tmp/param_p[WIDTH])/tmp*param_p[WIDTH];
 }

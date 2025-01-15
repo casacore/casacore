@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -89,7 +89,7 @@ int main() {
         majAx = Quantity(1, "arcsec");
         minAx = majAx;
         beam = GaussianBeam(majAx, minAx, pa);
-        AlwaysAssert(beam.getArea("arcsec2") == Quantity(C::pi/4/C::ln2), AipsError);
+        AlwaysAssert(beam.getArea("arcsec2") == Quantity(M_PI/4/M_LN2), AipsError);
         except = False;
         try {
             // bogus units

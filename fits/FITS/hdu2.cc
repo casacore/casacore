@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //# 
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -1249,7 +1249,7 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 	    } else {
 		switch (fld[i]->fieldtype()) {
 	    	    case FITS::LONG:
-			sprintf(tmp,format[i],*((FitsLong *)(fld[i]->data())));
+                        snprintf(tmp,sizeof(tmp),format[i],*((FitsLong *)(fld[i]->data())));
 			if (strlen(tmp) > fits_width[i]) {
 	    	            errmsg(BADCONV,
 	      "Ascii Table conversion error: numeric value exceeds field size");
@@ -1260,11 +1260,11 @@ int AsciiTableExtension::writerow(FitsOutput &fout) {
 	    		    memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);
 			break;
 		    case FITS::FLOAT:
-			sprintf(tmp,format[i],*((float *)(fld[i]->data())));
+                        snprintf(tmp,sizeof(tmp),format[i],*((float *)(fld[i]->data())));
 			memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);
 			break;
 		    case FITS::DOUBLE:
-			sprintf(tmp,format[i],*((double *)(fld[i]->data())));
+                        snprintf(tmp,sizeof(tmp),format[i],*((double *)(fld[i]->data())));
 			for (t = &tmp[strlen(tmp) - 2]; *t != 'E'; --t) {}
 			*t = 'D'; // Change the 'E' to a 'D' in the format
          memcpy(&fitsrow[fits_offset[i]],tmp,fits_width[i]);

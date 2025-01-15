@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -44,7 +44,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
   else if (this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].nDerivatives() > 0) tmp = this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD];
   else if (this->param_p[Sinusoid1DParam<AutoDiff<T> >::X0].nDerivatives() > 0) tmp = this->param_p[Sinusoid1DParam<AutoDiff<T> >::X0];
   typename AutoDiff<T>::value_type arg =
-    static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
+    static_cast<typename AutoDiff<T>::value_type>(2.0*M_PI) *
     (x[0] - this->param_p[Sinusoid1DParam<AutoDiff<T> >::X0].value())/this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].value();
   typename AutoDiff<T>::value_type cosarg = cos(arg);
   typename AutoDiff<T>::value_type sinarg = sin(arg);
@@ -61,7 +61,7 @@ eval(typename Function<AutoDiff<T> >::FunctionArg x) const {
     if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T> >::PERIOD)) tmp.deriv(Sinusoid1DParam<AutoDiff<T> >::PERIOD) = dev;
     // derivative wrt x0
     dev = this->param_p[Sinusoid1DParam<AutoDiff<T> >::AMPLITUDE].value() *
-      static_cast<typename AutoDiff<T>::value_type>(C::_2pi) *
+      static_cast<typename AutoDiff<T>::value_type>(2.0*M_PI) *
       sinarg / this->param_p[Sinusoid1DParam<AutoDiff<T> >::PERIOD].value();
     if (this->param_p.mask(Sinusoid1DParam<AutoDiff<T> >::X0)) tmp.deriv(Sinusoid1DParam<AutoDiff<T> >::X0) = dev;
   }

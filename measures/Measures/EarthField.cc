@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -174,8 +174,8 @@ void EarthField::calcField(const MVPosition &pos) {
       Double slat, clat, slong, clong, x, y, z, ratio, rr(0), one, two, three;
       Int l, m, n, fn(0), fm, j, i;
       for (Int lp=0; lp<4; lp++) {
-	slat = cos(C::pi_2 - posv(2));
-	clat = sin(C::pi_2 - posv(2));
+	slat = cos(M_PI_2 - posv(2));
+	clat = sin(M_PI_2 - posv(2));
 	slong = sin(posv(1));
 	clong = cos(posv(1));
 	cl_p(0) = clong;

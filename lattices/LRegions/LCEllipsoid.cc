@@ -17,7 +17,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -106,15 +106,15 @@ LCEllipsoid::LCEllipsoid (
     const Float xcenter, const Float ycenter,
     const Float majorAxis, const Float minorAxis,
     const Float theta, const IPosition& latticeShape
-) : LCRegionFixed (latticeShape), _theta(fmod(theta, Float(C::pi))) {
+) : LCRegionFixed (latticeShape), _theta(fmod(theta, Float(M_PI))) {
     itsCenter.resize(2);
     itsCenter[0] = xcenter;
     itsCenter[1] = ycenter;
     itsRadii.resize(2);
     if (_theta < 0) {
-        _theta += C::pi;
+        _theta += M_PI;
     }
-    if (near(_theta, C::pi/2)) {
+    if (near(_theta, M_PI/2)) {
         itsRadii[0] = minorAxis;
         itsRadii[1] = majorAxis;
         _theta = 0;

@@ -17,7 +17,7 @@
 //# 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -294,7 +294,7 @@ void checktab (const String& prefix)
     String s1(prefix + "str1_");
     String s2(prefix + "str2_");
     for (uInt i=0; i<nrrow; i++) {
-      sprintf (buf, "%d", i);
+      snprintf (buf, sizeof(buf), "%d", i);
       s1 += buf;
       s2 += buf;
       if (s2.length() > 20) {
@@ -411,7 +411,7 @@ void checktab (const String& prefix)
     Array<DComplex> dcarr2 = dca2.getColumn().reform(IPosition(2,2,3*nrrow));
     Array<DComplex> dcarr3 = dca3.getColumn().reform(IPosition(2,2,3*nrrow));
     for (uInt i=0; i<nrrow; i++) {
-      sprintf (buf, "%d", i);
+      snprintf (buf, sizeof(buf), "%d", i);
       s1 += buf;
       s2 += buf;
       if (s2.length() > 20) {
@@ -508,7 +508,7 @@ void checktab (const String& prefix)
 						   IPosition(2,1,2))).
                              reform(IPosition(2,1,2*nrrow));
     for (uInt i=0; i<nrrow; i++) {
-      sprintf (buf, "%d", i);
+      snprintf (buf, sizeof(buf), "%d", i);
       s1 += buf;
       s2 += buf;
       if (s2.length() > 20) {
@@ -608,7 +608,7 @@ void extab (const String& prefix)
   String s2(prefix + "str2_");
   uInt nrrow = tab.nrow();
   for (uInt i=0; i<nrrow; i++) {
-    sprintf (buf, "%d", i);
+    snprintf (buf, sizeof(buf), "%d", i);
     s1 += buf;
     s2 += buf;
     if (s2.length() > 20) {

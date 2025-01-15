@@ -16,7 +16,7 @@
 //# Inc., 675 Massachusetts Ave, Cambridge, MA 02139, USA.
 //#
 //# Correspondence concerning AIPS++ should be addressed as follows:
-//#        Internet email: aips2-request@nrao.edu.
+//#        Internet email: casa-feedback@nrao.edu.
 //#        Postal address: AIPS++ Project Office
 //#                        National Radio Astronomy Observatory
 //#                        520 Edgemont Road
@@ -28,6 +28,7 @@
 #include <casacore/scimath/StatsFramework/BiweightStatistics.h>
 #include <casacore/casa/Exceptions/Error.h>
 
+#include <random>
 #include <vector>
 
 #include <casacore/casa/namespace.h>
@@ -1570,7 +1571,9 @@ int main() {
             AlwaysAssert(mymin == 0, AipsError);
             AlwaysAssert(mymax == big.size()-1, AipsError);
             // do it again, but shuffle the elements
-            random_shuffle(big.begin(), big.end());
+            std::random_device rd;
+            std::mt19937 g(rd());
+            std::shuffle(big.begin(), big.end(), g);
             BiweightStatistics<
                 Double, std::vector<Double>::const_iterator,
                 std::vector<Bool>::const_iterator
