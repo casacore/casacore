@@ -86,9 +86,11 @@ class VarBufferedColumnarFile : private RowBasedFile {
   void Close() {
     if (IsOpen()) {
       if (block_changed_) {
-        Seek(active_block_ * rows_per_block_ + DataLocation(), SEEK_SET);
-        // TODO don't write more rows than in the file.
-        WriteData(block_buffer_.data(), rows_per_block_ * Stride());
+        const uint64_t start_row = active_block_ * rows_per_block_;
+        const size_t n_rows_to_write =
+            std::min(rows_per_block_, std::max(NRows(), start_row) - start_row);
+        Seek(start_row * Stride() + DataLocation(), SEEK_SET);
+        WriteData(block_buffer_.data(), n_rows_to_write * Stride());
         block_changed_ = false;
       }
       RowBasedFile::Close();
