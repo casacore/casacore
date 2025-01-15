@@ -16,7 +16,6 @@ tFallible
 tGenSort
 tLinearSearch
 tPrecision
-tPtrHolder
 tRegex_1
 tRegex2
 tRegex

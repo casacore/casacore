@@ -434,8 +434,9 @@ Bool TableExprFuncNode::getBool (const TableExprId& id)
             rec = TableExprNode::findLastKeyRec (table_p.keywordSet(),
                                                  fieldNames, fullName);
           } else {
-            const TableRecord& colkeys
-              (TableColumn(table_p, columnName).keywordSet());
+            TableColumn column(table_p, columnName);
+            const TableRecord& colkeys =
+              column.keywordSet();
             rec = TableExprNode::findLastKeyRec (colkeys,
                                                  fieldNames, fullName);
           }

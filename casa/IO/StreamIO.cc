@@ -50,8 +50,7 @@ StreamIO::StreamIO(const String& hostname, uShort portNumber)
 #else
   // Do hostname lookup!
   struct sockaddr_in serverInfo;
-  objset(reinterpret_cast<char*>(&serverInfo), static_cast<char>(0), 
-	 sizeof(serverInfo)); // Isn't C a wonderful language!
+  memset(&serverInfo, 0, sizeof(serverInfo));
   serverInfo.sin_family = AF_INET;
 
   Regex anyLetters("[A-Za-z]");

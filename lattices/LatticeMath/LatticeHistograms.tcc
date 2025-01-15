@@ -1239,7 +1239,7 @@ HistTiledCollapser<T>::HistTiledCollapser(LatticeStatistics<T>* pStats, uInt nBi
 {;}
    
 template <class T>
-HistTiledCollapser<T>::~HistTiledCollapser<T>() {}
+HistTiledCollapser<T>::~HistTiledCollapser() {}
 
 template <class T>
 void HistTiledCollapser<T>::init (uInt nOutPixelsPerCollapse)

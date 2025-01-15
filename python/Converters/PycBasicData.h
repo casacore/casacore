@@ -244,7 +244,7 @@ namespace casacore { namespace python {
       for( ; i != iEnd; ++i) {
         result.append(*i);
       }
-      return std::move(result);
+      return result;
     }
     static PyObject* convert (ContainerType const& c)
     {
@@ -327,7 +327,7 @@ namespace casacore { namespace python {
       for( ; i != iEnd; ++i) {
         result.append((std::string const&)(*i));
       }
-      return std::move(result);
+      return result;
     }
     static PyObject* convert (ContainerType const& c)
     {
@@ -346,7 +346,7 @@ namespace casacore { namespace python {
       for( ; i != iEnd; ++i) {
         result.append((std::string const&)(*i));
       }
-      return std::move(result);
+      return result;
     }
     static PyObject* convert (ContainerType const& c)
     {

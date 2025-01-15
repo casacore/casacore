@@ -26,14 +26,9 @@
 //# MH 97/11/24 Stop attempt to use mallinfo from stdlib.h for HPUX
 #include <casacore/casa/aips.h>
 
-#if defined(__hpux__) && !defined(AIPS_NO_LEA_MALLOC)
-#define _STRUCT_MALLINFO
-#endif
-
 #include <casacore/casa/OS/Memory.h>
 #include <casacore/casa/OS/malloc.h>
 
-#if defined(AIPS_NO_LEA_MALLOC)
 #if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
 #include <sys/time.h>
 #include <sys/resource.h>
@@ -43,55 +38,8 @@
 #else
 #include <malloc.h>
 #endif
-#endif
 
 namespace casacore  { //#Begin namespace casa
-
-size_t Memory::allocatedMemoryInBytes()
-{
-    size_t total = 0;
-
-#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
-// Use getrusage to get the RSS
-   struct rusage rus;
-   getrusage(0, &rus);
-   total = rus.ru_maxrss;
-#else
-
-   // Ger van Diepen   25-May-2004
-   // For IntelCC (with -cxxlib-gcc) mallinfo hangs if called before any
-   // malloc is done. So do a new to prevent that from happening.
-   // Ger van Diepen   6-Oct-2004
-   // Hang also occurs with gcc on Linux. So always do a new.
-   static char* ptr = 0;
-   if (ptr == 0) {
-     char* ptr = new char[4];
-     delete [] ptr;
-   }
-
-   struct mallinfo m = mallinfo();
-   total = m.hblkhd + m.usmblks + m.uordblks;
-
-#endif
-   return total;
-}
-
-size_t Memory::assignedMemoryInBytes()
-{
-    size_t total = 0;
-#if defined(AIPS_DARWIN) || defined(AIPS_CRAY_PGI)
-// Use getrusage to get the other memory segments
-   struct rusage rus;
-   getrusage(0, &rus);
-   total = rus.ru_idrss + rus.ru_isrss;
-#else
-
-    struct mallinfo m = mallinfo();
-    total = m.arena + m.hblkhd;
-#endif
-
-    return total;
-}
 
 void Memory::releaseMemory()
 {
