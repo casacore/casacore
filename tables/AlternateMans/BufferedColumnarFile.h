@@ -69,6 +69,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
   }
 
   VarBufferedColumnarFile& operator=(VarBufferedColumnarFile&& rhs) {
+    Close();
     RowBasedFile::operator=(std::move(rhs));
     std::swap(packed_buffer_, rhs.packed_buffer_);
     std::swap(block_changed_, rhs.block_changed_);
