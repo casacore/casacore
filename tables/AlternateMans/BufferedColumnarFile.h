@@ -87,12 +87,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
   void Close() {
     if (IsOpen()) {
       if (block_changed_) {
-        const uint64_t start_row = active_block_ * rows_per_block_;
-        const size_t n_rows_to_write =
-            std::min(rows_per_block_, std::max(NRows(), start_row) - start_row);
-        Seek(start_row * Stride() + DataLocation(), SEEK_SET);
-        WriteData(block_buffer_.data(), n_rows_to_write * Stride());
-        block_changed_ = false;
+        WriteActiveBlock();
       }
       RowBasedFile::Close();
     }
@@ -165,14 +160,16 @@ class VarBufferedColumnarFile : private RowBasedFile {
    * Write one cell containing an array of floats. If the row is past the end of
    * the file, the file is enlarged (making NRows() = row + 1).
    */
-  void Write(uint64_t row, uint64_t column_offset, float* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const float* data,
+             uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
 
   /**
    * Write an array of doubles. See float version for documentation.
    */
-  void Write(uint64_t row, uint64_t column_offset, double* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const double* data,
+             uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
   /**
@@ -217,6 +214,11 @@ class VarBufferedColumnarFile : private RowBasedFile {
     block_changed_ = false;
   }
 
+  /**
+   * The currently buffered block. This function is for testing only.
+   */
+  uint64_t ActiveBlock() const { return active_block_; }
+
  private:
   // Create or overwrite a new columnar file on disk
   VarBufferedColumnarFile(const std::string& filename, uint64_t header_size,
@@ -241,21 +243,14 @@ class VarBufferedColumnarFile : private RowBasedFile {
     const uint64_t block = row / rows_per_block_;
     if (active_block_ != block) {
       if (block_changed_) {
-        const uint64_t start_row = active_block_ * rows_per_block_;
-        const size_t n_rows_to_write =
-            std::min(rows_per_block_, std::max(NRows(), start_row) - start_row);
-        Seek(start_row * Stride() + DataLocation(), SEEK_SET);
-        WriteData(block_buffer_.data(), n_rows_to_write * Stride());
-        block_changed_ = false;
+        WriteActiveBlock();
       }
 
       const uint64_t start_row = block * rows_per_block_;
       const size_t n_rows_to_read =
           std::min(rows_per_block_, std::max(NRows(), start_row) - start_row);
-      if (n_rows_to_read > 0) {
-        Seek(start_row * Stride() + DataLocation(), SEEK_SET);
-        ReadData(block_buffer_.data(), n_rows_to_read * Stride());
-      }
+      Seek(start_row * Stride() + DataLocation(), SEEK_SET);
+      ReadData(block_buffer_.data(), n_rows_to_read * Stride());
       std::fill(block_buffer_.begin() + n_rows_to_read * Stride(),
                 block_buffer_.end(), 0);
 
@@ -293,6 +288,19 @@ class VarBufferedColumnarFile : private RowBasedFile {
     block_changed_ = true;
   }
 
+  void WriteActiveBlock() {
+    const uint64_t start_row = active_block_ * rows_per_block_;
+    const size_t n_rows_to_write =
+        std::min(rows_per_block_, std::max(NRows(), start_row) - start_row);
+    Seek(start_row * Stride() + DataLocation(), SEEK_SET);
+    WriteData(block_buffer_.data(), n_rows_to_write * Stride());
+    block_changed_ = false;
+  }
+
+  /**
+   * This buffer is used temporarily for (un)packing booleans. Storing it as a
+   * member avoids memory allocations.
+   */
   std::vector<unsigned char> packed_buffer_;
 
   bool block_changed_ = false;
