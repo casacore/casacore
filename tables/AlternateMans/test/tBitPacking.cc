@@ -1,6 +1,6 @@
 #include <boost/test/unit_test.hpp>
 
-#include "../StokesIStMan/BitPacking.h"
+#include "../BitPacking.h"
 
 BOOST_AUTO_TEST_SUITE(bit_packing)
 

@@ -1,7 +1,7 @@
 #include <boost/test/unit_test.hpp>
 
-#include "../StokesIStMan/SimpleColumnarFile.h"
-#include "../StokesIStMan/BufferedColumnarFile.h"
+#include "../SimpleColumnarFile.h"
+#include "../BufferedColumnarFile.h"
 
 using casacore::VarBufferedColumnarFile;
 using casacore::SimpleColumnarFile;
