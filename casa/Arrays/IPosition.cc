@@ -233,7 +233,7 @@ IPosition IPosition::nonDegenerate (const IPosition& ignoreAxes) const
 
 void IPosition::resize (size_t newSize, bool copy)
 {
-    assert(ok());
+    if ( delta_p ) assert(ok());
     // If the size is unchanged, just return (more efficient)
     if (newSize == size_p) {
 	return;
