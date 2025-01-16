@@ -214,18 +214,13 @@ class VarBufferedColumnarFile : private RowBasedFile {
     block_changed_ = false;
   }
 
-  /**
-   * The currently buffered block. This function is for testing only.
-   */
-  uint64_t ActiveBlock() const { return active_block_; }
-
  private:
   // Create or overwrite a new columnar file on disk
   VarBufferedColumnarFile(const std::string& filename, uint64_t header_size,
                           uint64_t stride)
       : RowBasedFile(filename, header_size, stride),
         packed_buffer_((stride + 7) / 8),
-        rows_per_block_(std::max<size_t>(1, BufferSize / stride)),
+        rows_per_block_(stride == 0 ? 0 : std::max<size_t>(1, BufferSize / stride)),
         block_buffer_(rows_per_block_ * stride) {}
 
   // Open an existing columnar file
