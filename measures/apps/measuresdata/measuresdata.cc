@@ -435,7 +435,7 @@ const tableProperties allProperties[] = {
     "IERS EOPC04_05 Earth Orientation Data from IERS",	"eop97",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04_14", "eopc04.xx" } },
 
   //**********************************************************************//
 
@@ -447,7 +447,7 @@ const tableProperties allProperties[] = {
     "IERS EOP2000C04_05 Earth Orientation Data IAU2000","eop2000",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04_IAU2000.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04_14", "eopc04_IAU2000.xx" } },
 
   //**********************************************************************//
 
