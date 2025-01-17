@@ -107,6 +107,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class Memory
 {
 public:
+    // How much memory has been allocated by the programmer (via either
+    // <src>new</src> or <src>malloc</src>. This can include some extra
+    // overhead bytes, e.g. for alignment reasons.
+    static size_t allocatedMemoryInBytes();
     // Attempt to release memory which has been assigned but not allocated.
     // On many systems this will be a no-op, and even on systems in which it
     // does something the amount of reclaimed memory cannot be specified.
