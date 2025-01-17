@@ -220,7 +220,8 @@ class VarBufferedColumnarFile : private RowBasedFile {
                           uint64_t stride)
       : RowBasedFile(filename, header_size, stride),
         packed_buffer_((stride + 7) / 8),
-        rows_per_block_(stride == 0 ? 0 : std::max<size_t>(1, BufferSize / stride)),
+        rows_per_block_(stride == 0 ? 0
+                                    : std::max<size_t>(1, BufferSize / stride)),
         block_buffer_(rows_per_block_ * stride) {}
 
   // Open an existing columnar file
@@ -246,6 +247,9 @@ class VarBufferedColumnarFile : private RowBasedFile {
           std::min(rows_per_block_, std::max(NRows(), start_row) - start_row);
       Seek(start_row * Stride() + DataLocation(), SEEK_SET);
       ReadData(block_buffer_.data(), n_rows_to_read * Stride());
+      // Fill the remainder of block_buffer_ with zeroes. Doing it here makes
+      // the code robust and avoids the need for inserting zeroes when adding
+      // rows out-of-order, e.g., when adding row 5 while NRows() is 2."
       std::fill(block_buffer_.begin() + n_rows_to_read * Stride(),
                 block_buffer_.end(), 0);
 
