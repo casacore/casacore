@@ -1,7 +1,7 @@
 #include <boost/test/unit_test.hpp>
 
-#include "../StokesIStMan/SimpleColumnarFile.h"
-#include "../StokesIStMan/BufferedColumnarFile.h"
+#include "../SimpleColumnarFile.h"
+#include "../BufferedColumnarFile.h"
 
 using casacore::VarBufferedColumnarFile;
 using casacore::SimpleColumnarFile;
@@ -164,6 +164,31 @@ BOOST_AUTO_TEST_CASE(create_and_open_file) {
 BOOST_AUTO_TEST_CASE(read_and_write) {
   TestReadAndWrite<VarBufferedColumnarFile<1>>();
   TestReadAndWrite<VarBufferedColumnarFile<200>>();
+}
+
+BOOST_AUTO_TEST_CASE(buffered_file_edge_case) {
+  constexpr size_t kColumnSize = sizeof(float) * 2;
+  constexpr size_t kStride = kColumnSize * 2;
+  const std::string filename = "columnar_file_test.tmp";
+  casacore::VarBufferedColumnarFile file = casacore::VarBufferedColumnarFile<kStride*2>::CreateNew(filename, 0, kStride);
+  const float values[2] = { 3, 4 };
+  // Polute the buffer with some values
+  file.Write(2, 0, values, 2);
+  file.Write(3, 0, values, 2);
+  file.Write(2, kColumnSize, values, 2);
+  file.Write(3, kColumnSize, values, 2);
+  // At this point, block 1 (rows 2-3) is activated.
+  file.Write(5, 0, values, 2);
+  // Now, block 2 (rows 4-5) is activated
+  float result[2];
+  file.Read(5, kColumnSize, result, 2);
+  BOOST_CHECK_EQUAL(result[0], 0);
+  BOOST_CHECK_EQUAL(result[1], 0);
+  file.Read(5, 0, result, 2);
+  BOOST_CHECK_EQUAL(result[0], 3);
+  BOOST_CHECK_EQUAL(result[1], 4);
+  file.Close();
+  unlink(filename.c_str());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
