@@ -160,7 +160,7 @@ IPosition::IPosition (const std::vector<int> &other)
 
 IPosition::IPosition (const std::vector<long long> &other)
   : size_p (0),
-    data_p (nullptr)
+    data_p (buffer_p)
 {
     fill (other.size(), other.begin());
     assert(ok());
