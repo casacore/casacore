@@ -265,7 +265,7 @@ class RowBasedFile {
    * bb is the minor version. The major version is checked against the version
    * of the reader: if the file has a higher major version than the reader, the
    * file is rejected. The minor version is not checked, thus an increase in
-   * minor version indcates a change in file format that is still readale by
+   * minor version indicates a change in file format that is still readable by
    * older readers.
    */
   inline constexpr static uint32_t kFileVersion = 0x0100;
