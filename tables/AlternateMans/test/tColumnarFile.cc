@@ -1,7 +1,10 @@
+#define BOOST_TEST_MODULE alternate_mans
+#define BOOST_TEST_DYN_LINK
+
 #include <boost/test/unit_test.hpp>
 
-#include "../SimpleColumnarFile.h"
-#include "../BufferedColumnarFile.h"
+#include <casacore/tables/AlternateMans/SimpleColumnarFile.h>
+#include <casacore/tables/AlternateMans/BufferedColumnarFile.h>
 
 using casacore::VarBufferedColumnarFile;
 using casacore::SimpleColumnarFile;
