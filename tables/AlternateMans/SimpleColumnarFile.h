@@ -145,6 +145,10 @@ class SimpleColumnarFile : private RowBasedFile {
     SetNRows(std::max(row + 1, NRows()));
   }
 
+  /**
+   * This buffer is used temporarily for (un)packing booleans. Storing it as a
+   * member avoids memory allocations.
+   */
   std::vector<unsigned char> packed_buffer_;
 };
 

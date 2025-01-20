@@ -1,3 +1,6 @@
+#define BOOST_TEST_MODULE alternate_mans
+#define BOOST_TEST_DYN_LINK
+
 #include <boost/test/unit_test.hpp>
 
 #include <casacore/tables/AlternateMans/SimpleColumnarFile.h>

@@ -127,11 +127,9 @@ class RowBasedFile {
   void Truncate(uint64_t n_rows) {
     const int result = ftruncate(file_, n_rows_ * stride_ + data_location_);
     if (result < 0) {
-      char errstr[128];
-      char* msg = strerror_r(errno, errstr, 128);
-      throw std::runtime_error("I/O error: could not truncate file '" +
-                               filename_ + "' to have " +
-                               std::to_string(n_rows) + " rows: " + msg);
+      throw std::runtime_error(
+          "I/O error: could not truncate file '" + filename_ + "' to have " +
+          std::to_string(n_rows) + " rows: " + ErrorString());
     }
   }
 
@@ -271,6 +269,23 @@ class RowBasedFile {
    * older readers.
    */
   inline constexpr static uint32_t kFileVersion = 0x0100;
+
+  static std::string ErrorStringHelper(int result_value, char* buffer) {
+    if (result_value == 0)
+      return buffer;
+    else
+      return "Unknown error";
+  }
+  static std::string ErrorStringHelper(char* returned_buffer,
+                                       char* /*supplied_buffer*/) {
+    return std::string(returned_buffer);
+  }
+  static std::string ErrorString() {
+    char errstr[128];
+    // This is a small trick to allow both versions of strerror_r: by using
+    // function overloading, the right behaviour is picked.
+    return ErrorStringHelper(strerror_r(errno, errstr, 128), errstr);
+  }
 
   // The "C" file API is used because we need to use (f)truncate, which is not
   // available from the C++ fstream API.
