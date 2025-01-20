@@ -232,19 +232,7 @@ class RowBasedFile {
 
     WriteData(private_header_buffer.data(), private_header_buffer.size());
   }
-  /**
-   * First four bytes of a file. This spells out "Crbf" when stored as a little
-   * endian number, which stands for "Casacore Row-based file". Files without
-   * this magic number in the first four bytes are rejected.
-   *
-   * This also makes sure that a file written on a little endian machine is
-   * rejected by a big endian machine, and vice versa. Because big endian
-   * machines are extremely rare for astronomical processing, no effort is made
-   * to make it interchangable at this point of time. The official format is
-   * declared to use little endian numbers.
-   */
-  inline constexpr static uint32_t kMagicFileTag = 0x66627243;
-
+  
   /**
    * The size of the private header that the writer creates for the current file
    * format. This number is written into the file. Whenever a file is read, the
@@ -259,6 +247,19 @@ class RowBasedFile {
    */
   inline constexpr static uint32_t kWriterPrivateHeaderSize =
       3 * sizeof(uint32_t) + 2 * sizeof(uint64_t);
+
+  /**
+   * First four bytes of a file. This spells out "Crbf" when stored as a little
+   * endian number, which stands for "Casacore Row-based file". Files without
+   * this magic number in the first four bytes are rejected.
+   *
+   * This also makes sure that a file written on a little endian machine is
+   * rejected by a big endian machine, and vice versa. Because big endian
+   * machines are extremely rare for astronomical processing, no effort is made
+   * to make it interchangable at this point of time. The official format is
+   * declared to use little endian numbers.
+   */
+  inline constexpr static uint32_t kMagicFileTag = 0x66627243;
 
   /**
    * Version of this file, in format 0xaabb, where aa is the major version and
@@ -276,10 +277,12 @@ class RowBasedFile {
     else
       return "Unknown error";
   }
+  
   static std::string ErrorStringHelper(char* returned_buffer,
                                        char* /*supplied_buffer*/) {
     return std::string(returned_buffer);
   }
+  
   static std::string ErrorString() {
     char errstr[128];
     // This is a small trick to allow both versions of strerror_r: by using
