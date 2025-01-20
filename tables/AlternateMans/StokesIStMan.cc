@@ -70,8 +70,8 @@ casacore::DataManagerColumn *StokesIStMan::makeIndArrColumn(
     const casacore::String & /*name*/, int /*dataType*/,
     const casacore::String & /*dataTypeID*/) {
   throw std::runtime_error(
-      "makeIndArrColumn() called on StokesIStMan. StokesIStMan can only created "
-      "direct columns!\nUse casacore::ColumnDesc::Direct as option in your "
+      "makeIndArrColumn() called on StokesIStMan. StokesIStMan can only create "
+      "direct columns!\nUse casacore::ColumnDesc::Direct as option in the "
       "column desc constructor");
 }
 
@@ -82,8 +82,7 @@ casacore::rownr_t StokesIStMan::resync64(casacore::rownr_t nRow)
 
 void StokesIStMan::deleteManager() { unlink(fileName().c_str()); }
 
-void StokesIStMan::prepare() {
-}
+void StokesIStMan::prepare() {}
 
 void StokesIStMan::reopenRW() {}
 
