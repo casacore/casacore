@@ -214,6 +214,56 @@ DataType asScalar(DataType type);
 DataType asArray(DataType type);
 // </group>
 
+/**
+ * Returns the number of bytes that this type takes when serialized
+ * to disk. For dynamic types (arrays, records, etc.), a value
+ * of 0 is returned. TpBool returns a value of 1, but be aware that
+ * it may be stored with bit-packing.
+ */
+constexpr size_t SizeOfType(DataType dtype) {
+  switch (dtype) {
+    case DataType::TpBool:
+    case DataType::TpChar:
+    case DataType::TpUChar:
+      return 1;
+    case DataType::TpShort:
+    case DataType::TpUShort:
+      return 2;
+    case DataType::TpInt:
+    case DataType::TpUInt:
+    case DataType::TpFloat:
+      return 4;
+    case DataType::TpDouble:
+    case DataType::TpComplex:
+    case DataType::TpInt64:
+      return 8;
+    case DataType::TpDComplex:
+      return 16;
+    case DataType::TpArrayBool:
+    case DataType::TpArrayChar:
+    case DataType::TpArrayUChar:
+    case DataType::TpArrayShort:
+    case DataType::TpArrayUShort:
+    case DataType::TpArrayInt:
+    case DataType::TpArrayUInt:
+    case DataType::TpArrayInt64:
+    case DataType::TpArrayFloat:
+    case DataType::TpArrayDouble:
+    case DataType::TpArrayComplex:
+    case DataType::TpArrayDComplex:
+    case DataType::TpArrayQuantity:
+    case DataType::TpArrayString:
+    case DataType::TpOther:
+    case DataType::TpQuantity:
+    case DataType::TpRecord:
+    case DataType::TpString:
+    case DataType::TpTable:
+    case DataType::TpNumberOfTypes:
+      return 0;
+  }
+  return 0;
+}
+
 // It is occasionally useful to discover whether or not a DataType represents
 // an array or scalar value. Note that TpTable, TpRecord, and TpOther are neither
 // scalar nor array types.
