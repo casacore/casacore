@@ -1840,7 +1840,7 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
                 *mntsta = 8;
             }
             else {
-                *mntsta = 9; // fits does not use anyway, put it 7
+                *mntsta = 9; // fits does not use anyway, put it 9
             }
             *staxof = inantoffset(antnum)(IPosition(1, 0));
             // OK, try to find if we're L/R or X/Y
