@@ -349,7 +349,6 @@ DataMan/BaseMappedArrayEngine.h
 DataMan/BaseMappedArrayEngine.tcc
 DataMan/BitFlagsEngine.h
 DataMan/BitFlagsEngine.tcc
-DataMan/ColumnarFile.h
 DataMan/CompressComplex.h
 DataMan/CompressFloat.h
 DataMan/DataManAccessor.h
