@@ -155,10 +155,10 @@ class StokesIStManColumn final : public casacore::StManColumn {
 
   void setOffset(uint64_t column_offset) { column_offset_ = column_offset; }
   uint64_t getStoredSizeInBytes() const {
-    if (dtype() == casacore::TpArrayBool) {
+    if (dtype() == casacore::TpBool) {
       return (shape_[1] + 7) / 8;
     } else {
-      const uint64_t type_size = SizeOfType(asScalar(dtype()));
+      const uint64_t type_size = SizeOfType(dtype());
       return shape_[1] * type_size;
     }
   }

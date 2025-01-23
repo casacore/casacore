@@ -63,7 +63,7 @@ casacore::DataManagerColumn *StokesIStMan::makeDirArrColumn(
     return columns_.emplace_back(std::make_unique<StokesIStManColumn>(*this, file_, static_cast<DataType>(dataType))).get();
   else
     throw std::runtime_error(
-        "Trying to create a Stokes I data column with wrong type");
+        "Trying to create a Stokes I column with wrong type");
 }
 
 casacore::DataManagerColumn *StokesIStMan::makeIndArrColumn(
