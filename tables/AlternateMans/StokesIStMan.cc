@@ -59,7 +59,7 @@ casacore::DataManagerColumn *StokesIStMan::makeDirArrColumn(
     const casacore::String & /*name*/, int dataType,
     const casacore::String & /*dataTypeID*/) {
 
-  if (dataType == casacore::TpFloat || dataType == casacore::TpComplex)
+  if (dataType == casacore::TpFloat || dataType == casacore::TpComplex || dataType == casacore::TpBool)
     return columns_.emplace_back(std::make_unique<StokesIStManColumn>(*this, file_, static_cast<DataType>(dataType))).get();
   else
     throw std::runtime_error(
