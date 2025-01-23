@@ -232,7 +232,7 @@ class RowBasedFile {
 
     WriteData(private_header_buffer.data(), private_header_buffer.size());
   }
-  
+
   /**
    * The size of the private header that the writer creates for the current file
    * format. This number is written into the file. Whenever a file is read, the
@@ -277,12 +277,12 @@ class RowBasedFile {
     else
       return "Unknown error";
   }
-  
+
   static std::string ErrorStringHelper(char* returned_buffer,
                                        char* /*supplied_buffer*/) {
     return std::string(returned_buffer);
   }
-  
+
   static std::string ErrorString() {
     char errstr[128];
     // This is a small trick to allow both versions of strerror_r: by using
