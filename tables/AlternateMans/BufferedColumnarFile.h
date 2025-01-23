@@ -192,11 +192,12 @@ class VarBufferedColumnarFile : private RowBasedFile {
    */
   void Write(uint64_t row, uint64_t column_offset, const bool* data,
              uint64_t n) {
-    assert(column_offset + n <= Stride());
+    const size_t byte_size = (n + 7) / 8;
+    assert(column_offset + byte_size <= Stride());
     ActivateBlock(row);
     PackBoolArray(packed_buffer_.data(), data, n);
     Seek(row * Stride() + column_offset + DataLocation(), SEEK_SET);
-    WriteData(packed_buffer_.data(), n);
+    WriteData(packed_buffer_.data(), byte_size);
     SetNRows(std::max(row + 1, NRows()));
   }
 
