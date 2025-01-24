@@ -25,6 +25,8 @@
 
 
 //# Includes
+#include <casacore/tables/AlternateMans/StokesIStMan.h>
+#include <casacore/tables/AlternateMans/UvwStMan.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/StManAipsIO.h>
@@ -49,7 +51,6 @@
 #include <casacore/casa/OS/DynLib.h>
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/stdio.h>                     // for snprintf
-#include <casacore/tables/AlternateMans/StokesIStMan.h>
 
 #ifdef HAVE_ADIOS2
 #include <casacore/tables/DataMan/Adios2StMan.h>
@@ -422,6 +423,7 @@ std::map<String,DataManagerCtor> DataManager::initRegisterMap()
   theirRegisterMap.insert (std::make_pair("TiledShapeStMan",  TiledShapeStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("MemoryStMan",      MemoryStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("StokesIStMan",     StokesIStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("UvwStMan",         UvwStMan::makeObject));
 #ifdef HAVE_ADIOS2
   theirRegisterMap.insert (std::make_pair("Adios2StMan",      Adios2StMan::makeObject));
 #endif

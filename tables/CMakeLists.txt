@@ -104,6 +104,7 @@ Tables/TableSyncData.cc
 Tables/TableTrace.cc
 Tables/TableUtil.cc
 AlternateMans/StokesIStMan.cc
+AlternateMans/UvwStMan.cc
 DataMan/BitFlagsEngine.cc
 DataMan/CompressComplex.cc
 DataMan/CompressFloat.cc
