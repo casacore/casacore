@@ -104,6 +104,7 @@ Tables/TableSyncData.cc
 Tables/TableTrace.cc
 Tables/TableUtil.cc
 AlternateMans/StokesIStMan.cc
+AlternateMans/UvwStMan.cc
 DataMan/BitFlagsEngine.cc
 DataMan/CompressComplex.cc
 DataMan/CompressFloat.cc
@@ -345,6 +346,7 @@ AlternateMans/RowBasedFile.h
 AlternateMans/SimpleColumnarFile.h
 AlternateMans/StokesIStMan.h
 AlternateMans/StokesIStManColumn.h
+AlternateMans/UvwFile.h
 DataMan/BaseMappedArrayEngine.h
 DataMan/BaseMappedArrayEngine.tcc
 DataMan/BitFlagsEngine.h
