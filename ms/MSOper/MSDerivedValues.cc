@@ -196,8 +196,12 @@ MSDerivedValues& MSDerivedValues::setAntennaMount(const Vector<String>& mount)
 	mount_p(i)=4;
       } else if (mount(i)=="alt-az+nasmyth-l" || mount(i)=="ALT-AZ+NASMYTH-L") {
 	mount_p(i)=5;
-      } else {
+      } else if (mount(i)=="alt-az+bwg-r" || mount(i)=="ALT-AZ+BWG-R") {
         mount_p(i)=6;
+      } else if (mount(i)=="alt-az+bwg-l" || mount(i)=="ALT-AZ+BWG-L") {
+	mount_p(i)=7;
+      } else {
+	mount_p(i)=8;
       }
     }
   }
@@ -267,7 +271,8 @@ Double MSDerivedValues::parAngle()
   Double pa=0;
 
   if (mount_p(antenna_p)==0 || mount_p(antenna_p)==4 ||
-      mount_p(antenna_p)==5) {
+      mount_p(antenna_p)==5 || mount_p(antenna_p)==6 ||
+      mount_p(antenna_p)==7) {
     // Now we can do the conversions using the machines
     mRADecInAzEl_p     = cRADecToAzEl_p();
     mHADecPoleInAzEl_p = cHADecToAzEl_p();
@@ -282,6 +287,12 @@ Double MSDerivedValues::parAngle()
     } else if (mount_p(antenna_p)==5) {
       // Left-handed Nasmyth
       pa -= mRADecInAzEl_p.getAngle().getValue()[1];
+    } else if (mount_p(antenna_p)==6) {
+      pa += mRADecInAzEl_p.getAngle().getValue()[1]
+           -mRADecInAzEl_p.getAngle().getValue()[0];
+    } else if (mount_p(antenna_p)==7) {
+      pa -= mRADecInAzEl_p.getAngle().getValue()[1]
+	   -mRADecInAzEl_p.getAngle().getValue()[0];
     }
 
     // pa_p(iant)+= receptorAngle_p(iant);
