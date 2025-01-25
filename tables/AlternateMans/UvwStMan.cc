@@ -5,7 +5,7 @@
 
 namespace casacore {
 
-UvwStMan::UvwStMan(const casacore::String &, const casacore::Record &) : DataManager() { }
+UvwStMan::UvwStMan(const String &, const Record &) : DataManager() { }
 
 UvwStMan::UvwStMan(const UvwStMan &source)
     : DataManager(),
@@ -13,20 +13,20 @@ UvwStMan::UvwStMan(const UvwStMan &source)
 
 UvwStMan::~UvwStMan() noexcept = default;
 
-void UvwStMan::create64(casacore::rownr_t /*nRow*/) {
+void UvwStMan::create64(rownr_t /*nRow*/) {
   file_ = UvwFile::CreateNew(fileName());
 }
 
-casacore::rownr_t UvwStMan::open64(casacore::rownr_t /*n_row*/, casacore::AipsIO &) {
+rownr_t UvwStMan::open64(rownr_t /*n_row*/, AipsIO &) {
   file_ = UvwFile::OpenExisting(fileName());
   return file_.NRows();
 }
 
-casacore::DataManagerColumn *UvwStMan::makeDirArrColumn(
-    const casacore::String & /*name*/, int dataType,
-    const casacore::String & /*dataTypeID*/) {
+DataManagerColumn *UvwStMan::makeDirArrColumn(
+    const String & /*name*/, int dataType,
+    const String & /*dataTypeID*/) {
 
-  if (dataType == casacore::TpDouble) {
+  if (dataType == TpDouble) {
     column_ = std::make_unique<UvwStManColumn>(file_);
     return column_.get();
   } else {
@@ -42,19 +42,19 @@ void UvwStMan::prepare() {
     column_->Prepare(table());
 }
 
-void UvwStMan::addRow64(casacore::rownr_t) { }
+void UvwStMan::addRow64(rownr_t) { }
 
-void UvwStMan::removeRow64(casacore::rownr_t) {
+void UvwStMan::removeRow64(rownr_t) {
   throw std::runtime_error(
       "Can't remove rows from a UvwStMan");
 }
 
-void UvwStMan::addColumn(casacore::DataManagerColumn*) {
+void UvwStMan::addColumn(DataManagerColumn*) {
     throw std::runtime_error(
         "Can't add generic columns to UvwStMan");
 }
 
-void UvwStMan::removeColumn(casacore::DataManagerColumn *column) {
+void UvwStMan::removeColumn(DataManagerColumn *column) {
   if(column_.get() == column) {
     column_.reset();
   }

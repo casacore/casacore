@@ -2,6 +2,7 @@
 #define CASACORE_STOKES_I_ST_MAN_COLUMN_H_
 
 #include <casacore/tables/DataMan/StManColumn.h>
+#include <casacore/tables/Tables/ArrayColumn.h>
 
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/IPosition.h>
@@ -14,7 +15,7 @@ namespace casacore {
 
 class UvwIStMan;
 
-class UvwStManColumn final : public casacore::StManColumn {
+class UvwStManColumn final : public StManColumn {
  public:
   /**
    * Constructor, to be overloaded by subclass.
@@ -22,16 +23,16 @@ class UvwStManColumn final : public casacore::StManColumn {
    * @param dtype The column's type as defined by Casacore.
    */
   explicit UvwStManColumn(UvwFile &file)
-      : casacore::StManColumn(DataType::TpDouble), file_(file) {}
+      : StManColumn(DataType::TpDouble), file_(file) {}
 
   /**
    * Whether this column is writable
    * @returns @c true
    */
-  casacore::Bool isWritable() const final { return true; }
+  Bool isWritable() const final { return true; }
 
   /** Set the dimensions of values in this column. */
-  void setShapeColumn(const casacore::IPosition &shape) final {
+  void setShapeColumn(const IPosition &shape) final {
     if (shape.size() != 1 || shape[0] != 3) {
       throw std::runtime_error(
           "UvwStMan can only be used for array columns with 1 dimension of "
@@ -41,12 +42,8 @@ class UvwStManColumn final : public casacore::StManColumn {
 
   /** Get the dimensions of the values in a particular row.
    * @param rownr The row to get the shape for. */
-  casacore::IPosition shape(casacore::uInt) final {
-    return casacore::IPosition{3};
-  }
-  casacore::IPosition shape(casacore::rownr_t) final {
-    return casacore::IPosition{3};
-  }
+  IPosition shape(uInt) final { return IPosition{3}; }
+  IPosition shape(rownr_t) final { return IPosition{3}; }
 
   void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
     Array<double> &array = static_cast<Array<double> &>(dataPtr);
@@ -74,8 +71,8 @@ class UvwStManColumn final : public casacore::StManColumn {
   }
 
   void Prepare(Table &table) {
-    antenna1_column_ = casacore::ScalarColumn<int>(table, "ANTENNA1");
-    antenna2_column_ = casacore::ScalarColumn<int>(table, "ANTENNA2");
+    antenna1_column_ = ScalarColumn<int>(table, "ANTENNA1");
+    antenna2_column_ = ScalarColumn<int>(table, "ANTENNA2");
   }
 
  private:
@@ -83,8 +80,8 @@ class UvwStManColumn final : public casacore::StManColumn {
   void operator=(const UvwStManColumn &source) = delete;
 
   UvwFile &file_;
-  casacore::ScalarColumn<int> antenna1_column_;
-  casacore::ScalarColumn<int> antenna2_column_;
+  ScalarColumn<int> antenna1_column_;
+  ScalarColumn<int> antenna2_column_;
 };
 }  // namespace casacore
 

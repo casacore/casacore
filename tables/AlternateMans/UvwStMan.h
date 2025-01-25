@@ -19,7 +19,7 @@ class UvwStManColumn;
  */
 class UvwStMan final : public DataManager {
  public:
-  UvwStMan(const casacore::String &, const casacore::Record &);
+  UvwStMan(const String &, const Record &);
 
   /**
    * The columns are not copied: the new manager will be empty.
@@ -30,45 +30,41 @@ class UvwStMan final : public DataManager {
 
   UvwStMan &operator=(const UvwStMan &source) = delete;
 
-  casacore::DataManager *clone() const final { return new UvwStMan(*this); }
+  DataManager *clone() const final { return new UvwStMan(*this); }
 
-  static casacore::DataManager *makeObject(const casacore::String &name,
-                                           const casacore::Record &spec) {
+  static DataManager *makeObject(const String &name, const Record &spec) {
     return new UvwStMan(name, spec);
   }
 
-  casacore::String dataManagerType() const final { return "UvwStMan"; }
+  String dataManagerType() const final { return "UvwStMan"; }
 
-  casacore::Record dataManagerSpec() const final { return Record(); }
+  Record dataManagerSpec() const final { return Record(); }
 
  private:
-  casacore::Bool flush(casacore::AipsIO &, casacore::Bool) final {
-    return false;
-  }
+  Bool flush(AipsIO &, Bool) final { return false; }
 
-  void create64(casacore::rownr_t nRow) final;
+  void create64(rownr_t nRow) final;
 
-  casacore::rownr_t open64(casacore::rownr_t nRow, casacore::AipsIO &) final;
+  rownr_t open64(rownr_t nRow, AipsIO &) final;
 
-  casacore::DataManagerColumn *makeScalarColumn(
-      const casacore::String &, int, const casacore::String &) final {
+  DataManagerColumn *makeScalarColumn(const String &, int,
+                                      const String &) final {
     throw std::runtime_error(
         "makeScalarColumn() called on a UvwStMan. UvwStMan can only make array "
         "columns");
   }
 
-  casacore::DataManagerColumn *makeDirArrColumn(
-      const casacore::String &name, int dataType,
-      const casacore::String &dataTypeID) final;
+  DataManagerColumn *makeDirArrColumn(const String &name, int dataType,
+                                      const String &dataTypeID) final;
 
-  casacore::DataManagerColumn *makeIndArrColumn(
-      const casacore::String &, int, const casacore::String &) final {
+  DataManagerColumn *makeIndArrColumn(const String &, int,
+                                      const String &) final {
     throw std::runtime_error(
         "makeIndArrColumn() called on a UvwStMan. UvwStMan can only make "
         "direct columns");
   }
 
-  casacore::rownr_t resync64(casacore::rownr_t nRow) final { return nRow; }
+  rownr_t resync64(rownr_t nRow) final { return nRow; }
 
   void deleteManager() final;
 
@@ -81,16 +77,16 @@ class UvwStMan final : public DataManager {
   void reopenRW() final {}
 
   // Add rows to the storage manager.
-  void addRow64(casacore::rownr_t nrrow) final;
+  void addRow64(rownr_t nrrow) final;
 
   // Delete a row from all columns.
-  void removeRow64(casacore::rownr_t row_nr) final;
+  void removeRow64(rownr_t row_nr) final;
 
   // Do the final addition of a column.
-  void addColumn(casacore::DataManagerColumn *) final;
+  void addColumn(DataManagerColumn *) final;
 
   // Remove a column from the data file.
-  void removeColumn(casacore::DataManagerColumn *) final;
+  void removeColumn(DataManagerColumn *) final;
 
   std::string name_;
   std::unique_ptr<UvwStManColumn> column_;
