@@ -21,11 +21,9 @@ class UvwStManColumn final : public casacore::StManColumn {
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
    */
-  explicit UvwStManColumn(UvwFile &file, Table &table)
+  explicit UvwStManColumn(UvwFile &file)
       : casacore::StManColumn(DataType::TpDouble),
-        file_(file),
-        antenna1_column_(table, "ANTENNA1"),
-        antenna2_column_(table, "ANTENNA2") {}
+        file_(file) {}
 
   /**
    * Whether this column is writable
@@ -51,7 +49,7 @@ class UvwStManColumn final : public casacore::StManColumn {
     return casacore::IPosition{3};
   }
 
-  virtual void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
+  void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
     Array<double> &array = static_cast<Array<double> &>(dataPtr);
     bool ownership;
     double *storage = array.getStorage(ownership);
@@ -74,6 +72,11 @@ class UvwStManColumn final : public casacore::StManColumn {
     const int antenna2 = antenna2_column_(row);
     file_.WriteUvw(row, antenna1, antenna2, storage);
     array.freeStorage(storage, ownership);
+  }
+
+  void Prepare(Table &table) {
+    antenna1_column_ = casacore::ScalarColumn<int>(table, "ANTENNA1");
+    antenna2_column_ = casacore::ScalarColumn<int>(table, "ANTENNA2");
   }
 
  private:

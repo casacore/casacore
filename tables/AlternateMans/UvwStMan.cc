@@ -27,7 +27,7 @@ casacore::DataManagerColumn *UvwStMan::makeDirArrColumn(
     const casacore::String & /*dataTypeID*/) {
 
   if (dataType == casacore::TpDouble) {
-    column_ = std::make_unique<UvwStManColumn>(file_, table());
+    column_ = std::make_unique<UvwStManColumn>(file_);
     return column_.get();
   } else {
     throw std::runtime_error(
@@ -36,6 +36,11 @@ casacore::DataManagerColumn *UvwStMan::makeDirArrColumn(
 }
 
 void UvwStMan::deleteManager() { unlink(fileName().c_str()); }
+
+void UvwStMan::prepare() {
+  if(column_)
+    column_->Prepare(table());
+}
 
 void UvwStMan::addRow64(casacore::rownr_t) { }
 

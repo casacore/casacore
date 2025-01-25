@@ -72,11 +72,10 @@ class UvwStMan final : public DataManager {
 
   void deleteManager() final;
 
-  // Prepare the columns, let the data manager initialize itself further.
   // Prepare is called after create/open has been called for all
   // columns. In this way one can be sure that referenced columns
   // are read back and partly initialized.
-  void prepare() final {}
+  void prepare() final;
 
   // Reopen the storage manager files for read/write.
   void reopenRW() final {}
