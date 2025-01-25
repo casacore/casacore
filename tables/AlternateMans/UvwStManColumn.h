@@ -2,7 +2,7 @@
 #define CASACORE_STOKES_I_ST_MAN_COLUMN_H_
 
 #include <casacore/tables/DataMan/StManColumn.h>
-#include <casacore/tables/Tables/ArrayColumn.h>
+#include <casacore/tables/Tables/ScalarColumn.h>
 
 #include <casacore/casa/Arrays/Array.h>
 #include <casacore/casa/Arrays/IPosition.h>
