@@ -22,8 +22,7 @@ class UvwStManColumn final : public casacore::StManColumn {
    * @param dtype The column's type as defined by Casacore.
    */
   explicit UvwStManColumn(UvwFile &file)
-      : casacore::StManColumn(DataType::TpDouble),
-        file_(file) {}
+      : casacore::StManColumn(DataType::TpDouble), file_(file) {}
 
   /**
    * Whether this column is writable
