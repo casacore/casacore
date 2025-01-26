@@ -28,10 +28,10 @@ DataManagerColumn *AntennaPairStMan::makeScalarColumn(
 
   if (dataType == TpInt) {
     if(name == "ANTENNA1") {
-      columns_[0] = std::make_unique<AntennaPairStManColumn>(file_, 0);
+      columns_[0] = std::make_unique<AntennaPairStManColumn>(file_, false);
        return columns_[0].get();
     } if(name == "ANTENNA2") {
-      columns_[1] = std::make_unique<AntennaPairStManColumn>(file_, 1);
+      columns_[1] = std::make_unique<AntennaPairStManColumn>(file_, true);
       return columns_[1].get();
     } else {
       throw std::runtime_error("Trying to create a column with AntennaPairStMan that is named '" + name + "': only ANTENNA1 or ANTENNA2 is supported");

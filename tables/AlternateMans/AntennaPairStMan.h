@@ -40,6 +40,8 @@ class AntennaPairStMan final : public DataManager {
 
   Record dataManagerSpec() const final { return Record(); }
 
+  casacore::Bool canAddColumn() const final { return true; }
+
  private:
   Bool flush(AipsIO &, Bool) final { return false; }
 
