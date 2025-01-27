@@ -51,11 +51,6 @@ void AntennaPairStMan::removeRow64(rownr_t) {
       "Can't remove rows from a AntennaPairStMan");
 }
 
-void AntennaPairStMan::addColumn(DataManagerColumn*) {
-    throw std::runtime_error(
-        "Can't add generic columns to AntennaPairStMan");
-}
-
 void AntennaPairStMan::removeColumn(DataManagerColumn *column) {
   if(columns_[0].get() == column) {
     columns_[0].reset();

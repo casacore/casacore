@@ -82,7 +82,7 @@ class AntennaPairStMan final : public DataManager {
   void removeRow64(rownr_t row_nr) final;
 
   // Do the final addition of a column.
-  void addColumn(DataManagerColumn *) final;
+  void addColumn(DataManagerColumn *) final {}
 
   // Remove a column from the data file.
   void removeColumn(DataManagerColumn *) final;
