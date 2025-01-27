@@ -17,7 +17,7 @@ namespace casacore {
  *
  * baseline_uvw = antenna2_uvw - antenna1_uvw.
  *
- * By taking a random antenna as reference antenna and storing the relative UVW
+ * By taking the first written antenna as reference antenna and storing the relative UVW
  * distance of the other antennas towards the reference antenna, the baseline
  * uvws can be reconstructed.
  *
@@ -132,24 +132,24 @@ class UvwFile {
     if (antenna1 != antenna2) {
       if (antenna1 == reference_antenna_) {
         // baseline = a2 - a1 with a1 = 0
-        std::array<double, 3> ant2_uvw{uvw[0], uvw[1], uvw[2]};
+        const std::array<double, 3> ant2_uvw{uvw[0], uvw[1], uvw[2]};
         StoreOrCheck(antenna2, ant2_uvw);
       } else if (antenna2 == reference_antenna_) {
         // baseline = a2 - a1 with a2 = 0
-        std::array<double, 3> ant1_uvw{-uvw[0], -uvw[1], -uvw[2]};
+        const std::array<double, 3> ant1_uvw{-uvw[0], -uvw[1], -uvw[2]};
         StoreOrCheck(antenna1, ant1_uvw);
       } else if (IsSet(antenna1)) {
         // baseline = a2 - a1. Given a1:
         // a2 = baseline + a1
-        std::array<double, 3> ant1_uvw = block_uvws_[antenna1];
-        std::array<double, 3> ant2_uvw{
+        const std::array<double, 3> ant1_uvw = block_uvws_[antenna1];
+        const std::array<double, 3> ant2_uvw{
             uvw[0] + ant1_uvw[0], uvw[1] + ant1_uvw[1], uvw[2] + ant1_uvw[2]};
         StoreOrCheck(antenna2, ant2_uvw);
       } else if (IsSet(antenna2)) {
         // baseline = a2 - a1. Given a2:
         // a1 = a2 - baseline
-        std::array<double, 3> ant2_uvw = block_uvws_[antenna2];
-        std::array<double, 3> ant1_uvw{
+        const std::array<double, 3> ant2_uvw = block_uvws_[antenna2];
+        const std::array<double, 3> ant1_uvw{
             ant2_uvw[0] - uvw[0], ant2_uvw[1] - uvw[1], ant2_uvw[2] - uvw[2]};
         StoreOrCheck(antenna1, ant1_uvw);
       } else {
@@ -316,7 +316,7 @@ class UvwFile {
   }
   static bool AreNear(double a, double b) {
     const double magnitude = std::max({1e-5, std::fabs(a), std::fabs(b)});
-    return (std::fabs(a - b) / magnitude < 1e-5);
+    return (std::fabs(a - b) / magnitude) < 1e-5;
   }
   static std::string UvwAsString(const std::array<double, 3>& uvw) {
     std::ostringstream str;
