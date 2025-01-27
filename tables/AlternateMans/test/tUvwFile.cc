@@ -130,6 +130,7 @@ BOOST_AUTO_TEST_CASE(write_and_direct_read) {
   UvwFile file = UvwFile::CreateNew(kFilename);
   WriteTwoTimesteps(file, kBaselines, true);
   ReadTwoTimesteps(file, kBaselines, true);
+  file.Close();
   unlink(kFilename.c_str());
 }
 
@@ -142,6 +143,7 @@ BOOST_AUTO_TEST_CASE(write_and_read_after_reopen) {
   UvwFile file = UvwFile::OpenExisting(kFilename);
   ReadTwoTimesteps(file, kBaselines, true);
 
+  file.Close();
   unlink(kFilename.c_str());
 }
 
@@ -149,6 +151,7 @@ BOOST_AUTO_TEST_CASE(without_autocorrelations) {
   UvwFile file = UvwFile::CreateNew(kFilename);
   WriteTwoTimesteps(file, kBaselines, false);
   ReadTwoTimesteps(file, kBaselines, false);
+  file.Close();
   unlink(kFilename.c_str());
 }
 
@@ -160,6 +163,7 @@ BOOST_AUTO_TEST_CASE(missing_antenna) {
   file = UvwFile::CreateNew(kFilename);
   WriteTwoTimesteps(file, kBaselinesMissingAntenna, false);
   ReadTwoTimesteps(file, kBaselinesMissingAntenna, false);
+  file.Close();
   unlink(kFilename.c_str());
 }
 
@@ -169,6 +173,7 @@ BOOST_AUTO_TEST_CASE(invalid_baselines) {
   BOOST_CHECK_THROW(
     file.WriteUvw(1, 2, 3, kUvwPerBaseline[1].data()),
     std::runtime_error);
+  file.Close();
   unlink(kFilename.c_str());
 }
 
@@ -180,6 +185,23 @@ BOOST_AUTO_TEST_CASE(non_standard_ordering) {
   file = UvwFile::CreateNew(kFilename);
   WriteTwoTimesteps(file, kBaselinesSwapped, false);
   ReadTwoTimesteps(file, kBaselinesSwapped, false);
+  file.Close();
+  unlink(kFilename.c_str());
+}
+
+BOOST_AUTO_TEST_CASE(same_positions) {
+  UvwFile file = UvwFile::CreateNew(kFilename);
+  const std::array<double, 3> zero_uvw = {0.0, 0.0, 0.0};
+  for(uint64_t i=0; i!=kNBaselines; ++i) {
+    file.WriteUvw(i, kBaselines[i][0], kBaselines[i][1], zero_uvw.data());
+  }
+  for(uint64_t i=0; i!=kNBaselines; ++i) {
+    std::array<double, 3> uvw = {1.0, 1.0, 1.0};
+    file.ReadUvw(i, kBaselines[i][0], kBaselines[i][1], uvw.data());
+      for(size_t z=0; z!=3; ++z)
+        BOOST_CHECK_LT(std::fabs(uvw[z]), 1e-6);
+  }
+  file.Close();
   unlink(kFilename.c_str());
 }
 

@@ -17,9 +17,9 @@ namespace casacore {
  *
  * baseline_uvw = antenna2_uvw - antenna1_uvw.
  *
- * By taking the first written antenna as reference antenna and storing the relative UVW
- * distance of the other antennas towards the reference antenna, the baseline
- * uvws can be reconstructed.
+ * By taking the first written antenna as reference antenna and storing the
+ * relative UVW distance of the other antennas towards the reference antenna,
+ * the baseline uvws can be reconstructed.
  *
  * A small downside is that this requires the measurement set to be "reasonably"
  * ordered: every timestep should have the same baselines in the same order.
@@ -82,6 +82,14 @@ class UvwFile {
     n_antenna_ = rhs.n_antenna_;
     block_uvws_ = std::move(rhs.block_uvws_);
     block_is_changed_ = rhs.block_is_changed_;
+    rhs.n_rows_ = 0;
+    rhs.rows_per_block_ = 0;
+    rhs.active_block_ = 0;
+    rhs.reference_antenna_ = 0;
+    rhs.start_antenna_2_ = 0;
+    rhs.n_antenna_ = 0;
+    rhs.block_uvws_.clear();
+    rhs.block_is_changed_ = false;
     return *this;
   }
 
@@ -102,20 +110,24 @@ class UvwFile {
   /**
    * Write a single row to the column. This has to be done in a reasonable
    * order; see the class description.
+   * @param row denotes the row in the Casacore measurement set to be read.
    */
-  void WriteUvw(uint64_t row_nr, size_t antenna1, size_t antenna2,
+  void WriteUvw(uint64_t row, size_t antenna1, size_t antenna2,
                 const double* uvw) {
-    if (row_nr > n_rows_) {
+    if (row > n_rows_) {
       throw std::runtime_error(
           "Uvw data must be written in order (writing row " +
-          std::to_string(row_nr) + ", after writing " +
-          std::to_string(n_rows_) + " rows)");
+          std::to_string(row) + ", after writing " + std::to_string(n_rows_) +
+          " rows)");
     }
     // The row/block is zero when there's not yet a full block written.
     if (rows_per_block_ == 0) {
-      if (row_nr == 0) {
+      if (row == 0) {
         reference_antenna_ = antenna1;
         start_antenna_2_ = antenna2;
+        n_antenna_ = std::max(antenna1, antenna2) + 1;
+        block_uvws_.resize(n_antenna_, kUnsetPosition);
+        block_uvws_[reference_antenna_] = {0.0, 0.0, 0.0};
       } else if (antenna1 == reference_antenna_ &&
                  antenna2 == start_antenna_2_) {
         // This baseline is the first baseline of a new block, so the block size
@@ -124,9 +136,11 @@ class UvwFile {
         n_antenna_ = block_uvws_.size();
         WriteHeader();
         ActivateBlock(1);
+      } else {
+        n_antenna_ = std::max({antenna1 + 1, antenna2 + 1, n_antenna_});
       }
     } else {
-      const uint64_t block = row_nr / rows_per_block_;
+      const uint64_t block = row / rows_per_block_;
       ActivateBlock(block);
     }
     if (antenna1 != antenna2) {
@@ -158,23 +172,24 @@ class UvwFile {
             "ordered either by antenna 1 or by antenna 2");
       }
     }
-    n_rows_ = std::max(n_rows_, row_nr + 1);
+    n_rows_ = std::max(n_rows_, row + 1);
   }
 
   /**
    * Read a single row. This may be done in random order, but is most efficient
    * when reading a file contiguously.
+   * @param row denotes the row in the Casacore measurement set to be read.
    */
-  void ReadUvw(uint64_t row_nr, size_t antenna1, size_t antenna2, double* uvw) {
-    if (row_nr >= n_rows_ || antenna1 >= n_antenna_ || antenna2 >= n_antenna_) {
+  void ReadUvw(uint64_t row, size_t antenna1, size_t antenna2, double* uvw) {
+    if (row >= n_rows_ || antenna1 >= n_antenna_ || antenna2 >= n_antenna_) {
       throw std::runtime_error(
-          "Invalid read for Uvw data: row " + std::to_string(row_nr) +
-          ", baseline (" + std::to_string(antenna1) + "), " +
-          std::to_string(antenna2) + " was requested. File has only " +
+          "Invalid read for Uvw data: row " + std::to_string(row) +
+          ", baseline (" + std::to_string(antenna1) + ", " +
+          std::to_string(antenna2) + ") was requested. File has only " +
           std::to_string(n_rows_) + " rows.");
     }
     if (rows_per_block_ != 0) {
-      const uint64_t block = row_nr / rows_per_block_;
+      const uint64_t block = row / rows_per_block_;
       ActivateBlock(block);
     }
     uvw[0] = block_uvws_[antenna2][0] - block_uvws_[antenna1][0];
@@ -225,6 +240,13 @@ class UvwFile {
       const uint64_t n_blocks = file_.NRows() / (n_antenna_ - 1);
       n_rows_ = n_blocks * rows_per_block_;
     }
+    if (n_rows_ > 0 && n_antenna_ <= reference_antenna_)
+      throw std::runtime_error(
+          "Invalid combination of values for n_antenna and reference antenna "
+          "in file: file damaged?");
+    // Setting the size of block_uvws_ here, saves an extra size check in
+    // ActivateBlock().
+    block_uvws_.assign(n_antenna_, kUnsetPosition);
   }
 
   /**
@@ -245,7 +267,7 @@ class UvwFile {
       }
     } else {
       if (block_uvws_.size() <= antenna)
-        block_uvws_.resize(antenna + 1, {0.0, 0.0, 0.0});
+        block_uvws_.resize(antenna + 1, kUnsetPosition);
       block_uvws_[antenna] = antenna_uvw;
       block_is_changed_ = true;
     }
@@ -257,9 +279,9 @@ class UvwFile {
         WriteActiveBlock();
       }
 
-      block_uvws_.clear();
       const uint64_t block_start_row = (n_antenna_ - 1) * block;
       if (block_start_row < file_.NRows()) {
+        block_uvws_.clear();
         for (size_t antenna = 0; antenna != n_antenna_; ++antenna) {
           if (antenna != reference_antenna_) {
             const uint64_t row = antenna < reference_antenna_
@@ -271,6 +293,9 @@ class UvwFile {
             block_uvws_.emplace_back(std::array<double, 3>{0.0, 0.0, 0.0});
           }
         }
+      } else {
+        std::fill(block_uvws_.begin(), block_uvws_.end(), kUnsetPosition);
+        block_uvws_[reference_antenna_] = {0.0, 0.0, 0.0};
       }
       active_block_ = block;
     }
@@ -294,13 +319,19 @@ class UvwFile {
   void ReadHeader() {
     unsigned char data[kHeaderSize];
     file_.ReadHeader(data);
+    if (!std::equal(data, data + 8, kMagicHeaderTag)) {
+      throw std::runtime_error(
+          "The UVW columnar file header not have the expected tag for UVW "
+          "columns: the measurement set may be damaged");
+    }
     rows_per_block_ = reinterpret_cast<uint64_t&>(data[8]);
     reference_antenna_ = reinterpret_cast<uint64_t&>(data[16]);
     n_antenna_ = reinterpret_cast<uint64_t&>(data[24]);
   }
 
   void WriteHeader() {
-    unsigned char data[kHeaderSize] = "Uvw-col";
+    unsigned char data[kHeaderSize];
+    std::copy_n(kMagicHeaderTag, 8, data);
     reinterpret_cast<uint64_t&>(data[8]) = rows_per_block_;
     reinterpret_cast<uint64_t&>(data[16]) = reference_antenna_;
     reinterpret_cast<uint64_t&>(data[24]) = n_antenna_;
@@ -309,7 +340,7 @@ class UvwFile {
 
   bool IsSet(size_t antenna) const {
     return block_uvws_.size() > antenna &&
-           block_uvws_[antenna] != std::array<double, 3>{0.0, 0.0, 0.0};
+           block_uvws_[antenna] != kUnsetPosition;
   }
   static bool AreNear(std::array<double, 3> a, std::array<double, 3> b) {
     return AreNear(a[0], b[0]) && AreNear(a[1], b[1]) && AreNear(a[2], b[2]);
@@ -326,14 +357,35 @@ class UvwFile {
 
   /**
    * The header:
-   * char[8] "Uvw-col\0"
+   * char[8] "Uvw-col\0" (=kMagicHeaderTag)
    * uint64_t rows_per_block
    * uint64_t reference_antenna
    * uint64_t n_antenna
    */
   constexpr static size_t kHeaderSize = 32;
+  constexpr static const char kMagicHeaderTag[8] = "Uvw-col";
+  constexpr static std::array<double, 3> kUnsetPosition = {
+      std::numeric_limits<double>::max(), std::numeric_limits<double>::max(),
+      std::numeric_limits<double>::max()};
   BufferedColumnarFile file_;
+  /**
+   * Number of rows in the Uvw column. It is increased when writing a new
+   * Uvw row using @ref WriteUvw(). This concept of a "row" is different
+   * from a row in the BufferedColumnarFile (i.e., @c file_ ), as for each
+   * block (see below), only the uvw per antenna are stored, and these form
+   * the rows in that file.
+   */
   uint64_t n_rows_ = 0;
+  /**
+   * A "block" is a contiguous number of baselines that together form
+   * one timestep. This is the same as saying they form one (triangular)
+   * correlation matrix. It can have auto-correlation but this is not
+   * required. A block may have missing antennas, but has some constraints
+   * on the ordering; see the class description. Per block, the UVW values
+   * are calculated per antenna. This value specifies the number of table
+   * rows in one block, i.e. the number of set elements in the correlation
+   * matrix.
+   */
   uint64_t rows_per_block_ = 0;
   uint64_t active_block_ = 0;
   size_t reference_antenna_ = 0;
