@@ -201,8 +201,8 @@ class AntennaPairFile {
     file_.ReadHeader(data);
     if (!std::equal(data, data + 8, kMagicHeaderTag)) {
       throw std::runtime_error(
-          "The Antenna-pair columnar file header not have the expected tag for "
-          "antenna columns: the measurement set may be damaged");
+          "The Antenna-pair columnar file header does not have the expected "
+          "tag for antenna columns: the measurement set may be damaged");
     }
     rows_in_pattern_ = reinterpret_cast<uint64_t&>(data[8]);
   }
