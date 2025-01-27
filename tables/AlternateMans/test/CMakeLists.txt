@@ -1,4 +1,5 @@
 set (testfiles
+  tAntennaPairFile.cc
   tBitPacking.cc
   tColumnarFile.cc
 )

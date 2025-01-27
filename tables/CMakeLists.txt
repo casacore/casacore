@@ -339,6 +339,7 @@ DESTINATION include/casacore/tables/Tables
 )
 
 install (FILES
+AlternateMans/AntennaPairFile.h
 AlternateMans/BitPacking.h
 AlternateMans/BufferedColumnarFile.h
 AlternateMans/RowBasedFile.h

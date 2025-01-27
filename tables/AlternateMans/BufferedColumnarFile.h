@@ -133,6 +133,14 @@ class VarBufferedColumnarFile : private RowBasedFile {
   void Read(uint64_t row, uint64_t column_offset, double* data, uint64_t n) {
     ReadImplementation(row, column_offset, data, n);
   }
+
+  /**
+   * Read array of int32_t. See float version for documentation.
+   */
+  void Read(uint64_t row, uint64_t column_offset, int32_t* data, uint64_t n) {
+    ReadImplementation(row, column_offset, data, n);
+  }
+
   /**
    * Read array of complex floats. See float version for documentation.
    */
@@ -172,6 +180,15 @@ class VarBufferedColumnarFile : private RowBasedFile {
              uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
+
+  /**
+   * Write an array of int32_t. See float version for documentation.
+   */
+  void Write(uint64_t row, uint64_t column_offset, const int32_t* data,
+             uint64_t n) {
+    WriteImplementation(row, column_offset, data, n);
+  }
+
   /**
    * Write an array of complex floats. See float version for documentation.
    */
