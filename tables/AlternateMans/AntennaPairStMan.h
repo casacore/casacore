@@ -15,7 +15,7 @@ namespace casacore {
 class AntennaPairStManColumn;
 
 /**
- * A storage manager that saves the UVW with (lossless) compression.
+ * A storage manager that saves the antenna columns with (lossless) compression.
  */
 class AntennaPairStMan final : public DataManager {
  public:
