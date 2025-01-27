@@ -76,7 +76,7 @@ class AntennaPairFile {
 
   void Close() {
     if (file_.IsOpen()) {
-      if (rows_in_pattern_ == 0 && !data_.empty()) {
+      if (rows_in_pattern_ == 0) {
         WriteHeader();
         WriteData();
       }
@@ -199,11 +199,17 @@ class AntennaPairFile {
   void ReadHeader() {
     unsigned char data[kHeaderSize];
     file_.ReadHeader(data);
+    if (!std::equal(data, data + 8, kMagicHeaderTag)) {
+      throw std::runtime_error(
+          "The Antenna-pair columnar file header not have the expected tag for "
+          "antenna columns: the measurement set may be damaged");
+    }
     rows_in_pattern_ = reinterpret_cast<uint64_t&>(data[8]);
   }
 
   void WriteHeader() {
-    unsigned char data[kHeaderSize] = "Uvw-col";
+    unsigned char data[kHeaderSize];
+    std::copy_n(kMagicHeaderTag, 8, data);
     reinterpret_cast<uint64_t&>(data[8]) = rows_in_pattern_;
     file_.WriteHeader(data);
   }
@@ -231,6 +237,7 @@ class AntennaPairFile {
    * uint64_t rows_per_block
    */
   constexpr static size_t kHeaderSize = 16;
+  constexpr static const char kMagicHeaderTag[8] = "AntPair";
   constexpr static int32_t kUnsetAntenna = std::numeric_limits<int32_t>::min();
   BufferedColumnarFile file_;
   /**
