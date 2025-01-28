@@ -53,7 +53,8 @@ class AntennaPairFile {
   }
 
   /**
-   * Open an already existing antenna-pair file from disk with the given filename.
+   * Open an already existing antenna-pair file from disk with the given
+   * filename.
    */
   static AntennaPairFile OpenExisting(const std::string& filename) {
     return AntennaPairFile(filename, true);

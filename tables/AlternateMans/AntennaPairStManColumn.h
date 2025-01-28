@@ -20,8 +20,10 @@ class AntennaPairStManColumn final : public StManColumn {
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
    */
-  explicit AntennaPairStManColumn(AntennaPairFile &file, bool second)
-      : StManColumn(DataType::TpInt), file_(file), second_(second) {}
+  explicit AntennaPairStManColumn(AntennaPairFile &file, bool is_antenna_2)
+      : StManColumn(DataType::TpInt),
+        file_(file),
+        is_antenna_2_(is_antenna_2) {}
 
   /**
    * Whether this column is writable
@@ -30,7 +32,7 @@ class AntennaPairStManColumn final : public StManColumn {
   Bool isWritable() const final { return true; }
 
   void getInt(rownr_t row, Int *dataPtr) final {
-    if (second_)
+    if (is_antenna_2_)
       *dataPtr = file_.ReadAntenna2(row);
     else
       *dataPtr = file_.ReadAntenna1(row);
@@ -42,7 +44,7 @@ class AntennaPairStManColumn final : public StManColumn {
    * @param dataPtr The data pointer.
    */
   void putInt(rownr_t row, const Int *dataPtr) final {
-    if (second_)
+    if (is_antenna_2_)
       file_.WriteAntenna2(row, *dataPtr);
     else
       file_.WriteAntenna1(row, *dataPtr);
@@ -53,7 +55,7 @@ class AntennaPairStManColumn final : public StManColumn {
   void operator=(const AntennaPairStManColumn &source) = delete;
 
   AntennaPairFile &file_;
-  bool is_antenna_2;
+  bool is_antenna_2_;
 };
 }  // namespace casacore
 
