@@ -251,7 +251,7 @@ class UvwFile {
 
   /**
    * If this block does not have a value for the specified antenna, store
-   * th uvw value for it. If it does have a value, the value is checked. This
+   * the uvw value for it. If it does have a value, the value is checked. This
    * check has a relatively high tolerance (1e-5, fractionally) because it is
    * only there to catch "significant" errors caused by e.g. writing in the
    * wrong order.
