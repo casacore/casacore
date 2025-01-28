@@ -46,14 +46,14 @@ class AntennaPairFile {
   }
 
   /**
-   * Create a new UVW file on disk with the given filename.
+   * Create a new antenna-pair file on disk with the given filename.
    */
   static AntennaPairFile CreateNew(const std::string& filename) {
     return AntennaPairFile(filename);
   }
 
   /**
-   * Open an already existing UVW file from disk with the given filename.
+   * Open an already existing antenna-pair file from disk with the given filename.
    */
   static AntennaPairFile OpenExisting(const std::string& filename) {
     return AntennaPairFile(filename, true);
