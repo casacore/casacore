@@ -40,6 +40,8 @@ class AntennaPairFile {
     file_ = std::move(rhs.file_);
     rows_in_pattern_ = rhs.rows_in_pattern_;
     data_ = rhs.data_;
+    rhs.rows_in_pattern_ = 0;
+    rhs.data_.clear();
     return *this;
   }
 
