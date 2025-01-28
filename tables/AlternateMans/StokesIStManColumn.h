@@ -97,9 +97,7 @@ class StokesIStManColumn final : public casacore::StManColumn {
    */
   explicit StokesIStManColumn(StokesIStMan &parent, BufferedColumnarFile &file,
                               casacore::DataType dtype)
-      : casacore::StManColumn(dtype), parent_(parent), file_(file) {
-    // TODO handle size of boolean columns
-  }
+      : casacore::StManColumn(dtype), parent_(parent), file_(file) {}
 
   /**
    * Whether this column is writable

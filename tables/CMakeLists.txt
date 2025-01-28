@@ -103,6 +103,7 @@ Tables/TableRowProxy.cc
 Tables/TableSyncData.cc
 Tables/TableTrace.cc
 Tables/TableUtil.cc
+AlternateMans/AntennaPairStMan.cc
 AlternateMans/StokesIStMan.cc
 DataMan/BitFlagsEngine.cc
 DataMan/CompressComplex.cc
@@ -340,6 +341,8 @@ DESTINATION include/casacore/tables/Tables
 
 install (FILES
 AlternateMans/AntennaPairFile.h
+AlternateMans/AntennaPairStMan.h
+AlternateMans/AntennaPairStManColumn.h
 AlternateMans/BitPacking.h
 AlternateMans/BufferedColumnarFile.h
 AlternateMans/RowBasedFile.h
