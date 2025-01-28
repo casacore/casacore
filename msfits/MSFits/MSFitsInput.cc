@@ -2178,6 +2178,12 @@ void MSFitsInput::fillAntennaTable(BinaryTable& bt) {
             mount = "ALT-AZ+NASMYTH-L";
             break;
         case 6:
+            mount = "ALT-AZ+BWG-R";
+            break;
+ 	case 7:
+            mount = "ALT-AZ+BWG-L";
+            break;
+        case 8:
             mount = "BIZARRE";
             break;
         default:
