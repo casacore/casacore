@@ -56,16 +56,14 @@ class AntennaPairStMan final : public DataManager {
                                       const String &) final {
     throw std::runtime_error(
         "makeDirArrColumn() called on a AntennaPairStMan. AntennaPairStMan can "
-        "only make scalar "
-        "columns");
+        "only make scalar columns");
   }
 
   DataManagerColumn *makeIndArrColumn(const String &, int,
                                       const String &) final {
     throw std::runtime_error(
         "makeIndArrColumn() called on a AntennaPairStMan. AntennaPairStMan can "
-        "only make "
-        "scalar columns");
+        "only make scalar columns");
   }
 
   rownr_t resync64(rownr_t nRow) final { return nRow; }

@@ -53,7 +53,7 @@ class AntennaPairStManColumn final : public StManColumn {
   void operator=(const AntennaPairStManColumn &source) = delete;
 
   AntennaPairFile &file_;
-  bool second_;
+  bool is_antenna_2;
 };
 }  // namespace casacore
 
