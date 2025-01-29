@@ -13,8 +13,6 @@
 
 namespace casacore {
 
-class UvwIStMan;
-
 class UvwStManColumn final : public StManColumn {
  public:
   /**

@@ -25,6 +25,7 @@
 
 
 //# Includes
+#include <casacore/tables/AlternateMans/AntennaPairStMan.h>
 #include <casacore/tables/AlternateMans/StokesIStMan.h>
 #include <casacore/tables/AlternateMans/UvwStMan.h>
 #include <casacore/tables/DataMan/DataManager.h>
@@ -51,8 +52,6 @@
 #include <casacore/casa/OS/DynLib.h>
 #include <casacore/tables/DataMan/DataManError.h>
 #include <casacore/casa/stdio.h>                     // for snprintf
-#include <casacore/tables/AlternateMans/AntennaPairStMan.h>
-#include <casacore/tables/AlternateMans/StokesIStMan.h>
 
 #ifdef HAVE_ADIOS2
 #include <casacore/tables/DataMan/Adios2StMan.h>
