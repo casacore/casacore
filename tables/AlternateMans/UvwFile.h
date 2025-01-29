@@ -392,7 +392,7 @@ class UvwFile {
   // This value is used to determine the first baseline in the data, which is
   // the baseline (reference_antenna_, start_antenna_2_).
   size_t start_antenna_2_ = 0;
-  size_t n_antenna_ = 0;
+  size_t n_antennas_ = 0;
   // UVW for each antenna in the block
   std::vector<std::array<double, 3>> block_uvws_;
   bool block_is_changed_ = false;
