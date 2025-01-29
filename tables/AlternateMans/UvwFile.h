@@ -380,7 +380,7 @@ class UvwFile {
    * Uvw row using @ref WriteUvw(). This concept of a "row" is different
    * from a row in the BufferedColumnarFile (i.e., @c file_ ), as for each
    * block (see below), only the uvw per antenna are stored, and these form
-   * the rowsn_antenna_ in that file.
+   * the rows in that file.
    */
   uint64_t n_rows_ = 0;
   /**
