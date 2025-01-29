@@ -1815,6 +1815,12 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
             else if (mount.contains("ALT-AZ+NASMYTH-L")) {
                 *mntsta = 5;
             }
+	    else if (mount.contains("ALT-AZ+BWG-R")) {
+		*mntsta = 6;
+	    }
+	    else if (mount.contains("ALT-AZ+BWG-L")) {
+		*mntsta = 7;
+	    }
 	    else if (mount.contains("ALT-AZ")) {
                 *mntsta = 0;
             }
@@ -1830,12 +1836,6 @@ Bool MSFitsOutput::_writeAN(std::shared_ptr<FitsOutput> output, const Measuremen
             else if (mount.contains("SPACE-HALCA")) {
                 *mntsta = 9;
             }
-	    else if (mount.contains("ALT-AZ+BWG-R")) {
-		*mntsta = 6;
-	    }
-	    else if (mount.contains("ALT-AZ+BWG-L")) {
-		*mntsta = 7;
-	    }
             else if (mount.contains("BIZARRE")) {
                 *mntsta = 8;
             }
