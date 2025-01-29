@@ -4,6 +4,7 @@
 #include "BufferedColumnarFile.h"
 
 #include <algorithm>
+#include <cassert>
 #include <limits>
 #include <ostream>
 #include <stdexcept>
@@ -56,7 +57,7 @@ class UvwFile {
         active_block_(source.active_block_),
         reference_antenna_(source.reference_antenna_),
         start_antenna_2_(source.start_antenna_2_),
-        n_antenna_(source.n_antenna_),
+        n_antennas_(source.n_antennas_),
         block_uvws_(std::move(source.block_uvws_)),
         block_is_changed_(source.block_is_changed_) {
     source.n_rows_ = 0;
@@ -64,7 +65,7 @@ class UvwFile {
     source.active_block_ = 0;
     source.reference_antenna_ = 0;
     source.start_antenna_2_ = 0;
-    source.n_antenna_ = 0;
+    source.n_antennas_ = 0;
     source.block_uvws_.clear();
     source.block_is_changed_ = false;
   }
@@ -79,7 +80,7 @@ class UvwFile {
     active_block_ = rhs.active_block_;
     reference_antenna_ = rhs.reference_antenna_;
     start_antenna_2_ = rhs.start_antenna_2_;
-    n_antenna_ = rhs.n_antenna_;
+    n_antennas_ = rhs.n_antennas_;
     block_uvws_ = std::move(rhs.block_uvws_);
     block_is_changed_ = rhs.block_is_changed_;
     rhs.n_rows_ = 0;
@@ -87,7 +88,7 @@ class UvwFile {
     rhs.active_block_ = 0;
     rhs.reference_antenna_ = 0;
     rhs.start_antenna_2_ = 0;
-    rhs.n_antenna_ = 0;
+    rhs.n_antennas_ = 0;
     rhs.block_uvws_.clear();
     rhs.block_is_changed_ = false;
     return *this;
@@ -114,6 +115,7 @@ class UvwFile {
    */
   void WriteUvw(uint64_t row, size_t antenna1, size_t antenna2,
                 const double* uvw) {
+    assert(file_.IsOpen());
     if (row > n_rows_) {
       throw std::runtime_error(
           "Uvw data must be written in order (writing row " +
@@ -125,19 +127,19 @@ class UvwFile {
       if (row == 0) {
         reference_antenna_ = antenna1;
         start_antenna_2_ = antenna2;
-        n_antenna_ = std::max(antenna1, antenna2) + 1;
-        block_uvws_.resize(n_antenna_, kUnsetPosition);
+        n_antennas_ = std::max(antenna1, antenna2) + 1;
+        block_uvws_.resize(n_antennas_, kUnsetPosition);
         block_uvws_[reference_antenna_] = {0.0, 0.0, 0.0};
       } else if (antenna1 == reference_antenna_ &&
                  antenna2 == start_antenna_2_) {
         // This baseline is the first baseline of a new block, so the block size
         // can be determined
         rows_per_block_ = n_rows_;
-        n_antenna_ = block_uvws_.size();
+        n_antennas_ = block_uvws_.size();
         WriteHeader();
         ActivateBlock(1);
       } else {
-        n_antenna_ = std::max({antenna1 + 1, antenna2 + 1, n_antenna_});
+        n_antennas_ = std::max({antenna1 + 1, antenna2 + 1, n_antennas_});
       }
     } else {
       const uint64_t block = row / rows_per_block_;
@@ -181,7 +183,8 @@ class UvwFile {
    * @param row denotes the row in the Casacore measurement set to be read.
    */
   void ReadUvw(uint64_t row, size_t antenna1, size_t antenna2, double* uvw) {
-    if (row >= n_rows_ || antenna1 >= n_antenna_ || antenna2 >= n_antenna_) {
+    assert(file_.IsOpen());
+    if (row >= n_rows_ || antenna1 >= n_antennas_ || antenna2 >= n_antennas_) {
       throw std::runtime_error(
           "Invalid read for Uvw data: row " + std::to_string(row) +
           ", baseline (" + std::to_string(antenna1) + ", " +
@@ -201,7 +204,7 @@ class UvwFile {
     if (file_.IsOpen()) {
       if (rows_per_block_ == 0) {
         rows_per_block_ = n_rows_;
-        n_antenna_ = block_uvws_.size();
+        n_antennas_ = block_uvws_.size();
         WriteHeader();
       }
       if (block_is_changed_) {
@@ -230,23 +233,23 @@ class UvwFile {
       : file_(BufferedColumnarFile::OpenExisting(filename, kHeaderSize)) {
     ReadHeader();
     active_block_ = std::numeric_limits<uint64_t>::max();
-    if (n_antenna_ > 1) {
-      if (file_.NRows() % (n_antenna_ - 1) != 0) {
+    if (n_antennas_ > 1) {
+      if (file_.NRows() % (n_antennas_ - 1) != 0) {
         throw std::runtime_error(
             "Uvw file has an incorrect number of rows (" +
             std::to_string(file_.NRows()) + ", expecting multiple of " +
-            std::to_string(n_antenna_ - 1) + "): file corrupted?");
+            std::to_string(n_antennas_ - 1) + "): file corrupted?");
       }
-      const uint64_t n_blocks = file_.NRows() / (n_antenna_ - 1);
+      const uint64_t n_blocks = file_.NRows() / (n_antennas_ - 1);
       n_rows_ = n_blocks * rows_per_block_;
     }
-    if (n_rows_ > 0 && n_antenna_ <= reference_antenna_)
+    if (n_rows_ > 0 && n_antennas_ <= reference_antenna_)
       throw std::runtime_error(
           "Invalid combination of values for n_antenna and reference antenna "
           "in file: file damaged?");
     // Setting the size of block_uvws_ here, saves an extra size check in
     // ActivateBlock().
-    block_uvws_.assign(n_antenna_, kUnsetPosition);
+    block_uvws_.assign(n_antennas_, kUnsetPosition);
   }
 
   /**
@@ -279,33 +282,37 @@ class UvwFile {
         WriteActiveBlock();
       }
 
-      const uint64_t block_start_row = (n_antenna_ - 1) * block;
-      if (block_start_row < file_.NRows()) {
-        block_uvws_.clear();
-        for (size_t antenna = 0; antenna != n_antenna_; ++antenna) {
-          if (antenna != reference_antenna_) {
-            const uint64_t row = antenna < reference_antenna_
-                                     ? block_start_row + antenna
-                                     : block_start_row + antenna - 1;
-            std::array<double, 3>& uvw = block_uvws_.emplace_back();
-            file_.Read(row, 0, uvw.data(), 3);
-          } else {
-            block_uvws_.emplace_back(std::array<double, 3>{0.0, 0.0, 0.0});
-          }
-        }
-      } else {
-        std::fill(block_uvws_.begin(), block_uvws_.end(), kUnsetPosition);
-        block_uvws_[reference_antenna_] = {0.0, 0.0, 0.0};
-      }
       active_block_ = block;
+      ReadActiveBlock();
+    }
+  }
+
+  void ReadActiveBlock() {
+    const uint64_t block_start_row = (n_antennas_ - 1) * active_block_;
+    if (block_start_row < file_.NRows()) {
+      block_uvws_.clear();
+      for (size_t antenna = 0; antenna != n_antennas_; ++antenna) {
+        if (antenna != reference_antenna_) {
+          const uint64_t row = antenna < reference_antenna_
+                                   ? block_start_row + antenna
+                                   : block_start_row + antenna - 1;
+          std::array<double, 3>& uvw = block_uvws_.emplace_back();
+          file_.Read(row, 0, uvw.data(), 3);
+        } else {
+          block_uvws_.emplace_back(std::array<double, 3>{0.0, 0.0, 0.0});
+        }
+      }
+    } else {
+      std::fill(block_uvws_.begin(), block_uvws_.end(), kUnsetPosition);
+      block_uvws_[reference_antenna_] = {0.0, 0.0, 0.0};
     }
   }
 
   void WriteActiveBlock() {
-    if (block_uvws_.size() != n_antenna_)
+    if (block_uvws_.size() != n_antennas_)
       throw std::runtime_error("Trying to write an incomplete UVW block");
-    const uint64_t block_start_row = (n_antenna_ - 1) * active_block_;
-    for (size_t antenna = 0; antenna != n_antenna_; ++antenna) {
+    const uint64_t block_start_row = (n_antennas_ - 1) * active_block_;
+    for (size_t antenna = 0; antenna != n_antennas_; ++antenna) {
       if (antenna != reference_antenna_) {
         const uint64_t row = antenna < reference_antenna_
                                  ? block_start_row + antenna
@@ -326,7 +333,7 @@ class UvwFile {
     }
     rows_per_block_ = reinterpret_cast<uint64_t&>(data[8]);
     reference_antenna_ = reinterpret_cast<uint64_t&>(data[16]);
-    n_antenna_ = reinterpret_cast<uint64_t&>(data[24]);
+    n_antennas_ = reinterpret_cast<uint64_t&>(data[24]);
   }
 
   void WriteHeader() {
@@ -334,7 +341,7 @@ class UvwFile {
     std::copy_n(kMagicHeaderTag, 8, data);
     reinterpret_cast<uint64_t&>(data[8]) = rows_per_block_;
     reinterpret_cast<uint64_t&>(data[16]) = reference_antenna_;
-    reinterpret_cast<uint64_t&>(data[24]) = n_antenna_;
+    reinterpret_cast<uint64_t&>(data[24]) = n_antennas_;
     file_.WriteHeader(data);
   }
 
@@ -373,7 +380,7 @@ class UvwFile {
    * Uvw row using @ref WriteUvw(). This concept of a "row" is different
    * from a row in the BufferedColumnarFile (i.e., @c file_ ), as for each
    * block (see below), only the uvw per antenna are stored, and these form
-   * the rows in that file.
+   * the rowsn_antenna_ in that file.
    */
   uint64_t n_rows_ = 0;
   /**
