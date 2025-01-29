@@ -2,6 +2,7 @@ set (testfiles
   tAntennaPairFile.cc
   tBitPacking.cc
   tColumnarFile.cc
+  tUvwFile.cc
 )
 
 find_package(Boost COMPONENTS unit_test_framework)

@@ -349,6 +349,7 @@ AlternateMans/RowBasedFile.h
 AlternateMans/SimpleColumnarFile.h
 AlternateMans/StokesIStMan.h
 AlternateMans/StokesIStManColumn.h
+AlternateMans/UvwFile.h
 DataMan/BaseMappedArrayEngine.h
 DataMan/BaseMappedArrayEngine.tcc
 DataMan/BitFlagsEngine.h
