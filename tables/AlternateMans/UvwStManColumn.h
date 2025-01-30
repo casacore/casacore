@@ -15,18 +15,9 @@ namespace casacore {
 
 class UvwStManColumn final : public StManColumn {
  public:
-  /**
-   * Constructor, to be overloaded by subclass.
-   * @param parent The parent stman to which this column belongs.
-   * @param dtype The column's type as defined by Casacore.
-   */
   explicit UvwStManColumn(UvwFile &file)
       : StManColumn(DataType::TpDouble), file_(file) {}
 
-  /**
-   * Whether this column is writable
-   * @returns @c true
-   */
   Bool isWritable() const final { return true; }
 
   /** Set the dimensions of values in this column. */
@@ -38,9 +29,8 @@ class UvwStManColumn final : public StManColumn {
     }
   }
 
-  /** Get the dimensions of the values in a particular row.
-   * @param rownr The row to get the shape for. */
   IPosition shape(uInt) final { return IPosition{3}; }
+
   IPosition shape(rownr_t) final { return IPosition{3}; }
 
   void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
@@ -55,7 +45,7 @@ class UvwStManColumn final : public StManColumn {
 
   /**
    * Write values into a particular row.
-   * @param rowNr The row number to write the values to.
+   * @param row The row number to write the values to.
    * @param dataPtr The data pointer.
    */
   void putArrayV(rownr_t row, const ArrayBase &dataPtr) final {

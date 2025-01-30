@@ -16,6 +16,10 @@ class UvwStManColumn;
 
 /**
  * A storage manager that saves the UVW with (lossless) compression.
+ * Because this storage manager needs to know the ANTENNA1 and
+ * ANTENNA2 values, the UVW values can only be written after writing
+ * the antenna values for a row.
+ * @see UvwFile for how the compression works and the requirements.
  */
 class UvwStMan final : public DataManager {
  public:
