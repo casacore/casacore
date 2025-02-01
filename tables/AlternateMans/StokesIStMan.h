@@ -147,6 +147,8 @@ class StokesIStMan final : public casacore::DataManager {
   // does not have move construct/assignment.
   std::vector<std::unique_ptr<StokesIStManColumn>> columns_;
   BufferedColumnarFile file_;
+  constexpr static size_t kHeaderSize = 8;
+  constexpr static const char kMagicHeaderTag[8] = "StkIcol";
 };
 
 }  // namespace casacore

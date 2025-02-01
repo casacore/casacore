@@ -37,12 +37,22 @@ void StokesIStMan::registerClass() {
 }
 
 void StokesIStMan::create64(casacore::rownr_t nRow) {
-  file_ = BufferedColumnarFile::CreateNew(fileName(), {}, CalculateAndUpdateStride());
+  file_ = BufferedColumnarFile::CreateNew(fileName(), kHeaderSize, CalculateAndUpdateStride());
+  unsigned char data[kHeaderSize];
+  std::copy_n(kMagicHeaderTag, 8, data);
+  file_.WriteHeader(data);
   file_.AddRows(nRow);
 }
 
 casacore::rownr_t StokesIStMan::open64(casacore::rownr_t /*n_row*/, casacore::AipsIO &) {
-  file_ = BufferedColumnarFile::OpenExisting(fileName(), 0);
+  file_ = BufferedColumnarFile::OpenExisting(fileName(), kHeaderSize);
+  unsigned char data[kHeaderSize];
+  file_.ReadHeader(data);
+  if (!std::equal(data, data + 8, kMagicHeaderTag)) {
+    throw std::runtime_error(
+        "The Stokes I columnar file header does not have the expected tag for Stokes I "
+        "columns: the measurement set may be damaged");
+  }
   return file_.NRows();
 }
 

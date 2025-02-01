@@ -2,6 +2,7 @@ set (testfiles
   tAntennaPairFile.cc
   tBitPacking.cc
   tColumnarFile.cc
+  tStokesIStMan.cc
   tUvwFile.cc
 )
 
