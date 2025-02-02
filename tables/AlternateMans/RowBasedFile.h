@@ -17,12 +17,16 @@ class RowBasedFile {
   RowBasedFile(const RowBasedFile& rhs) = delete;
   RowBasedFile(RowBasedFile&& rhs) noexcept
       : file_(rhs.file_),
+        private_header_size_(rhs.private_header_size_),
         n_rows_(rhs.n_rows_),
+        need_truncate_(rhs.need_truncate_),
         stride_(rhs.stride_),
         data_location_(rhs.data_location_),
         filename_(rhs.filename_) {
     rhs.file_ = -1;
+    rhs.private_header_size_ = kWriterPrivateHeaderSize;
     rhs.n_rows_ = 0;
+    rhs.need_truncate_ = false;
     rhs.stride_ = 0;
     rhs.data_location_ = kWriterPrivateHeaderSize;
     rhs.filename_ = "";
@@ -49,9 +53,12 @@ class RowBasedFile {
   RowBasedFile(const std::string& filename, size_t header_size)
       : filename_(filename) {
     file_ = open(filename.c_str(), O_RDWR);
-    if (file_ < 0)
-      throw std::runtime_error("I/O error: could not open file '" + filename +
-                               "'");
+    if (file_ < 0) {
+      file_ = open(filename.c_str(), O_RDONLY);
+      if (file_ < 0)
+        throw std::runtime_error("I/O error: could not open file '" + filename +
+                                 "'");
+    }
     uint32_t magic_tag;
     ReadData(reinterpret_cast<unsigned char*>(&magic_tag), sizeof(uint32_t));
     if (magic_tag != kMagicFileTag) {
@@ -94,12 +101,17 @@ class RowBasedFile {
     n_rows_ = stride_ == 0 ? 0 : (pos - data_location_) / stride_;
   }
   ~RowBasedFile() noexcept {
-    if (IsOpen()) close(file_);
+    try {
+      Close();
+    } catch (...) {
+    }
   }
   RowBasedFile& operator=(RowBasedFile&& rhs) {
     Close();
     std::swap(file_, rhs.file_);
+    std::swap(private_header_size_, rhs.private_header_size_);
     std::swap(n_rows_, rhs.n_rows_);
+    std::swap(need_truncate_, rhs.need_truncate_);
     std::swap(stride_, rhs.stride_);
     std::swap(data_location_, rhs.data_location_);
     std::swap(filename_, rhs.filename_);
@@ -113,14 +125,18 @@ class RowBasedFile {
    */
   void Close() {
     if (IsOpen()) {
-      Truncate(NRows());
-      int result = close(file_);
-      file_ = -1;
-      if (result < 0)
-        throw std::runtime_error("Could not close file " + filename_);
-      n_rows_ = 0;
-      stride_ = 0;
-      filename_ = "";
+      if (need_truncate_) {
+        try {
+          need_truncate_ = false;
+          Truncate(NRows());
+        } catch (...) {
+          // Truncate failed, still try to close the file to prevent a dangling
+          // open file, before throwing the exception.
+          CloseWithoutTruncate();
+          throw;
+        }
+      }
+      CloseWithoutTruncate();
     }
   }
 
@@ -185,7 +201,12 @@ class RowBasedFile {
    * Total number of rows stored in this file.
    */
   uint64_t NRows() const { return n_rows_; }
-  void SetNRows(uint64_t new_n_rows) { n_rows_ = new_n_rows; }
+
+  void SetNRows(uint64_t new_n_rows) {
+    need_truncate_ = true;
+    n_rows_ = new_n_rows;
+  }
+
   /**
    * Total number of bytes in one row. This value is also stored in the file,
    * and is read from the file in @ref OpenExisting().
@@ -220,6 +241,18 @@ class RowBasedFile {
   }
 
  private:
+  void CloseWithoutTruncate() {
+    int result = close(file_);
+    file_ = -1;
+    private_header_size_ = kWriterPrivateHeaderSize;
+    n_rows_ = 0;
+    stride_ = 0;
+    data_location_ = kWriterPrivateHeaderSize;
+    filename_ = "";
+    if (result < 0)
+      throw std::runtime_error("Could not close file " + filename_);
+  }
+
   void WritePrivateHeader() {
     // Collect entire private header in one write call
     std::array<unsigned char, kWriterPrivateHeaderSize> private_header_buffer;
@@ -295,6 +328,7 @@ class RowBasedFile {
   int file_ = -1;
   uint32_t private_header_size_ = kWriterPrivateHeaderSize;
   uint64_t n_rows_ = 0;
+  bool need_truncate_ = false;
   uint64_t stride_ = 0;
   /**
    * This variable is also used to set/calculate the header size, using the

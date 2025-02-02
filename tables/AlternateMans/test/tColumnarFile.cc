@@ -135,6 +135,63 @@ void TestReadAndWrite() {
   unlink(filename.c_str());
 }
 
+template<typename ColumnarFile>
+void TestReadOnlyOpen() {
+  using std::filesystem::permissions;
+  using std::filesystem::perms;
+  using std::filesystem::perm_options;
+  
+  constexpr size_t kColumnOffset = 6;
+  const std::array<int32_t, 4> kRowData{1, 9, 8, 2};
+  constexpr size_t kStride = kColumnOffset + kRowData.size() * sizeof(int32_t);
+  constexpr size_t kHeader = 33;
+  const std::string kFilename = "columnar_file_test_ro.tmp";
+  // If an earlier test failed, there might still be an RO file with this
+  // name on disk; make sure to remove it, otherwise CreateNew() fails.
+  if(std::filesystem::exists(kFilename)) {
+    permissions(kFilename, 
+      perms::owner_write|perms::others_write|perms::group_write,
+      perm_options::add);
+    unlink(kFilename.c_str());
+  }
+  // Write a simple test file
+  {
+    ColumnarFile file = ColumnarFile::CreateNew(kFilename, kHeader, kStride);
+    file.AddRows(37);
+    file.Write(3, kColumnOffset, kRowData.data(), kRowData.size());
+    file.Close();
+  }
+  permissions(kFilename, 
+    perms::owner_write|perms::others_write|perms::group_write,
+    perm_options::remove);
+  
+  // Check if we can read the RO file
+  ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
+  BOOST_CHECK_EQUAL(file.Stride(), kStride);
+  BOOST_CHECK_EQUAL(file.NRows(), 37);
+  std::array<int32_t, 4> data{0, 0, 0, 0};
+  file.Read(3, kColumnOffset, data.data(), data.size());
+  BOOST_CHECK_EQUAL_COLLECTIONS(kRowData.begin(), kRowData.end(), data.begin(), data.end());
+  file.Close();
+  
+  // Overwriting an RO file should report an error
+  BOOST_CHECK_THROW(ColumnarFile::CreateNew(kFilename, kHeader, kStride), std::runtime_error);
+  
+  // Updating an RO file should report an error. The error might not be throwed before calling close,
+  // because the write actions might be buffered.
+  const auto Update = [kFilename]()->void {
+    ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
+    std::array<int32_t, 4> data{1, 2, 3, 4};
+    file.Write(3, kColumnOffset, data.data(), data.size());
+    file.Close();
+  };
+  BOOST_CHECK_THROW(Update(), std::runtime_error);
+  
+  permissions(kFilename, 
+    perms::owner_write|perms::others_write|perms::group_write,
+    perm_options::add);
+  unlink(kFilename.c_str());
+}
 BOOST_AUTO_TEST_SUITE(simple_columnar_file)
 
 BOOST_AUTO_TEST_CASE(empty_constructor) {
@@ -147,6 +204,10 @@ BOOST_AUTO_TEST_CASE(create_and_open_file) {
 
 BOOST_AUTO_TEST_CASE(read_and_write) {
   TestReadAndWrite<SimpleColumnarFile>();
+}
+
+BOOST_AUTO_TEST_CASE(read_only) {
+  TestReadOnlyOpen<SimpleColumnarFile>();
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -167,6 +228,11 @@ BOOST_AUTO_TEST_CASE(create_and_open_file) {
 BOOST_AUTO_TEST_CASE(read_and_write) {
   TestReadAndWrite<VarBufferedColumnarFile<1>>();
   TestReadAndWrite<VarBufferedColumnarFile<200>>();
+}
+
+BOOST_AUTO_TEST_CASE(read_only) {
+  TestReadOnlyOpen<VarBufferedColumnarFile<1>>();
+  TestReadOnlyOpen<VarBufferedColumnarFile<200>>();
 }
 
 BOOST_AUTO_TEST_CASE(buffered_file_edge_case) {

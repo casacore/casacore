@@ -67,6 +67,9 @@ class SimpleColumnarFile : private RowBasedFile {
   void Read(uint64_t row, uint64_t column_offset, double* data, uint64_t n) {
     ReadImplementation(row, column_offset, data, n);
   }
+  void Read(uint64_t row, uint64_t column_offset, int32_t* data, uint64_t n) {
+    ReadImplementation(row, column_offset, data, n);
+  }
   void Read(uint64_t row, uint64_t column_offset, bool* data, uint64_t n) {
     const size_t byte_size = (n + 7) / 8;
     assert(column_offset + byte_size <= Stride());
@@ -86,10 +89,16 @@ class SimpleColumnarFile : private RowBasedFile {
              const std::complex<double>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset, float* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const float* data,
+             uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
-  void Write(uint64_t row, uint64_t column_offset, double* data, uint64_t n) {
+  void Write(uint64_t row, uint64_t column_offset, const double* data,
+             uint64_t n) {
+    WriteImplementation(row, column_offset, data, n);
+  }
+  void Write(uint64_t row, uint64_t column_offset, const int32_t* data,
+             uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
   void Write(uint64_t row, uint64_t column_offset, const bool* data,

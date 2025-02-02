@@ -87,7 +87,14 @@ class VarBufferedColumnarFile : private RowBasedFile {
   void Close() {
     if (IsOpen()) {
       if (block_changed_) {
-        WriteActiveBlock();
+        try {
+          WriteActiveBlock();
+        } catch (...) {
+          // Even if writing fails, the file should still be closed to
+          // prevent the file to remain open after destruction.
+          RowBasedFile::Close();
+          throw;
+        }
       }
       RowBasedFile::Close();
     }
@@ -127,6 +134,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
   void Read(uint64_t row, uint64_t column_offset, float* data, uint64_t n) {
     ReadImplementation(row, column_offset, data, n);
   }
+
   /**
    * Read array of doubles. See float version for documentation.
    */
@@ -148,6 +156,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
             uint64_t n) {
     ReadImplementation(row, column_offset, data, n);
   }
+
   /**
    * Read an array of bools. See float version for documentation. Booleans are
    * stored with bit-packing.
@@ -196,6 +205,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
              const std::complex<float>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
+
   /**
    * Write an array of complex doubles. See float version for documentation.
    */
@@ -203,6 +213,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
              const std::complex<double>* data, uint64_t n) {
     WriteImplementation(row, column_offset, data, n);
   }
+
   /**
    * Write an array of bools. Bools are stored with bit-packing. See float
    * version for documentation.
