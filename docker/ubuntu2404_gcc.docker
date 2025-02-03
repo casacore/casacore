@@ -17,7 +17,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
     libreadline6-dev \
     libhdf5-serial-dev \
     libboost-dev \
+    libboost-filesystem-dev \
     libboost-python-dev \
+    libboost-system-dev \
     libboost-test-dev \
     libgsl-dev \
     python-is-python3 \

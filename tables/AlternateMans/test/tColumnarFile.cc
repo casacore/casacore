@@ -1,6 +1,9 @@
 #define BOOST_TEST_MODULE alternate_mans
 #define BOOST_TEST_DYN_LINK
 
+// The support of std::filesystem in gcc13 was not sufficient to use std::filesystem::permissions(), so
+// boost is used.
+#include <boost/filesystem/operations.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <casacore/tables/AlternateMans/SimpleColumnarFile.h>
@@ -137,9 +140,8 @@ void TestReadAndWrite() {
 
 template<typename ColumnarFile>
 void TestReadOnlyOpen() {
-  using std::filesystem::permissions;
-  using std::filesystem::perms;
-  using std::filesystem::perm_options;
+  using boost::filesystem::permissions;
+  using boost::filesystem::perms;
   
   constexpr size_t kColumnOffset = 6;
   const std::array<int32_t, 4> kRowData{1, 9, 8, 2};
@@ -148,10 +150,9 @@ void TestReadOnlyOpen() {
   const std::string kFilename = "columnar_file_test_ro.tmp";
   // If an earlier test failed, there might still be an RO file with this
   // name on disk; make sure to remove it, otherwise CreateNew() fails.
-  if(std::filesystem::exists(kFilename)) {
+  if(boost::filesystem::exists(kFilename)) {
     permissions(kFilename, 
-      perms::owner_write|perms::others_write|perms::group_write,
-      perm_options::add);
+      perms::add_perms | perms::owner_write|perms::others_write|perms::group_write);
     unlink(kFilename.c_str());
   }
   // Write a simple test file
@@ -162,8 +163,7 @@ void TestReadOnlyOpen() {
     file.Close();
   }
   permissions(kFilename, 
-    perms::owner_write|perms::others_write|perms::group_write,
-    perm_options::remove);
+    perms::remove_perms|perms::owner_write|perms::others_write|perms::group_write);
   
   // Check if we can read the RO file
   ColumnarFile file = ColumnarFile::OpenExisting(kFilename, kHeader);
@@ -187,11 +187,11 @@ void TestReadOnlyOpen() {
   };
   BOOST_CHECK_THROW(Update(), std::runtime_error);
   
-  permissions(kFilename, 
-    perms::owner_write|perms::others_write|perms::group_write,
-    perm_options::add);
+  permissions(kFilename,
+    perms::add_perms | perms::owner_write|perms::others_write|perms::group_write);
   unlink(kFilename.c_str());
 }
+
 BOOST_AUTO_TEST_SUITE(simple_columnar_file)
 
 BOOST_AUTO_TEST_CASE(empty_constructor) {
