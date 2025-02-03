@@ -5,7 +5,7 @@ set (testfiles
   tUvwFile.cc
 )
 
-find_package(Boost COMPONENTS unit_test_framework)
+find_package(Boost COMPONENTS unit_test_framework system)
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIR})
 
