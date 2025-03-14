@@ -345,7 +345,7 @@ void AFTimeBlockEncoder::calculateAntennaeRMS(
     size_t a1 = row.antenna1, a2 = row.antenna2;
     if (a1 != a2) {
       if (a1 > a2) std::swap(a1, a2);
-      size_t index = row.antenna1 * antennaCount + row.antenna2;
+      const size_t index = a1 * antennaCount + a2;
       for (size_t ch = 0; ch != _nChannels; ++ch)
         matrixMeas[index].Include(row.visibilities[ch * _nPol + polIndex]);
     }
