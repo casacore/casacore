@@ -235,7 +235,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
    */
   void SetStride(uint64_t new_stride) {
     RowBasedFile::SetStride(new_stride);
-    packed_buffer_.resize((new_stride + 7) / 8);
+    packed_buffer_.resize(new_stride);
     active_block_ = std::numeric_limits<uint64_t>::max();
     rows_per_block_ =
         new_stride == 0 ? 0 : std::max<size_t>(1, BufferSize / new_stride);
@@ -248,7 +248,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
   VarBufferedColumnarFile(const std::string& filename, uint64_t header_size,
                           uint64_t stride)
       : RowBasedFile(filename, header_size, stride),
-        packed_buffer_((stride + 7) / 8),
+        packed_buffer_(stride),
         rows_per_block_(stride == 0 ? 0
                                     : std::max<size_t>(1, BufferSize / stride)),
         block_buffer_(rows_per_block_ * stride) {}
@@ -257,7 +257,7 @@ class VarBufferedColumnarFile : private RowBasedFile {
   VarBufferedColumnarFile(const std::string& filename, size_t header_size)
       : RowBasedFile(filename, header_size) {
     if (Stride() != 0) {
-      packed_buffer_.resize((Stride() + 7) / 8);
+      packed_buffer_.resize(Stride());
       rows_per_block_ = std::max<size_t>(1, BufferSize / Stride());
       block_buffer_.resize(rows_per_block_ * Stride());
     }
