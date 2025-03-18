@@ -1,3 +1,8 @@
+# 3.7.1
+
+- Fix an issue in 'Stokes I Storage manager' when used on boolean columns (flag column): #1407
+
+
 # 3.7.0
 
 ## Highlights
