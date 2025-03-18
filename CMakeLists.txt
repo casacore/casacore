@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.14.0)
 
-project(casacore VERSION 3.7.0)
+project(casacore VERSION 3.7.1)
 
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)

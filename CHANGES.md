@@ -1,3 +1,9 @@
+# 3.7.1
+
+- Fix an issue in 'Stokes I Storage manager' when used on boolean columns (flag column): #1407
+- Fix a bug in Dysco when antenna indices are swapped: #1406
+
+
 # 3.7.0
 
 ## Highlights
