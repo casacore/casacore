@@ -140,6 +140,7 @@ class UvwFile {
         ActivateBlock(1);
       } else {
         n_antennas_ = std::max({antenna1 + 1, antenna2 + 1, n_antennas_});
+        block_uvws_.resize(n_antennas_, kUnsetPosition);
       }
     } else {
       const uint64_t block = row / rows_per_block_;
@@ -173,6 +174,16 @@ class UvwFile {
             "Baselines are written in a non-ordered way: they need to be "
             "ordered either by antenna 1 or by antenna 2");
       }
+    } else {
+      // In the special case of a file with only auto-correlations, the
+      // positions of the antennas can not be established in this case, it's
+      // also not necessary, because a zero uvw can be returned for
+      // auto-correlations. However, it will cause StoreOrCheck() to be
+      // never called, and therefore the block is never written to the file, and
+      // upon read the nr. of rows can not be determined. So, if this is an
+      // auto-correlation that has not yet been written, mark the block as
+      // changed so it gets written.
+      block_is_changed_ = block_is_changed_ || !IsSet(antenna1);
     }
     n_rows_ = std::max(n_rows_, row + 1);
   }
@@ -189,7 +200,8 @@ class UvwFile {
           "Invalid read for Uvw data: row " + std::to_string(row) +
           ", baseline (" + std::to_string(antenna1) + ", " +
           std::to_string(antenna2) + ") was requested. File has only " +
-          std::to_string(n_rows_) + " rows.");
+          std::to_string(n_rows_) + " rows with " +
+          std::to_string(n_antennas_) + " antennas.");
     }
     if (rows_per_block_ != 0) {
       const uint64_t block = row / rows_per_block_;
@@ -202,9 +214,21 @@ class UvwFile {
 
   void Close() {
     if (file_.IsOpen()) {
+      // This handles two special cases: i) if only one block of visibilities
+      // is written, no repetition of baseline would have been identified yet.
+      // In that case, we now know the block size. ii) in case only a single
+      // auto-correlation (one antenna) is written without any
+      // cross-correlations, the compressed file will remain empty. We then have
+      // to identify how many rows are really in the MS, which is done by
+      // setting rows_per_block_ to the nr of rows. When reading such an MS, the
+      // fact that n_antennas_ == 1 is then a trigger to use rows_per_block_ as
+      // nrows, instead of the size of the compressed file.
       if (rows_per_block_ == 0) {
         rows_per_block_ = n_rows_;
         n_antennas_ = block_uvws_.size();
+        WriteHeader();
+      } else if (n_antennas_ == 1) {
+        rows_per_block_ = n_rows_;
         WriteHeader();
       }
       if (block_is_changed_) {
@@ -242,6 +266,8 @@ class UvwFile {
       }
       const uint64_t n_blocks = file_.NRows() / (n_antennas_ - 1);
       n_rows_ = n_blocks * rows_per_block_;
+    } else if (n_antennas_ == 1) {
+      n_rows_ = rows_per_block_;
     }
     if (n_rows_ > 0 && n_antennas_ <= reference_antenna_)
       throw std::runtime_error(

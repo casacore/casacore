@@ -205,5 +205,49 @@ BOOST_AUTO_TEST_CASE(same_positions) {
   unlink(kFilename.c_str());
 }
 
+BOOST_AUTO_TEST_CASE(only_one_auto_correlation_baseline) {
+  UvwFile file = UvwFile::CreateNew(kFilename);
+  constexpr size_t kNRows = 10;
+  const std::array<double, 3> zero_uvw = {0.0, 0.0, 0.0};
+  for(uint64_t i=0; i!=kNRows; ++i) {
+    file.WriteUvw(i, 0, 0, zero_uvw.data());
+  }
+  file.Close();
+
+  file = UvwFile::OpenExisting(kFilename);
+  BOOST_REQUIRE_EQUAL(file.NRows(), kNRows);
+  for(size_t row=0; row!=kNRows; ++row) {
+    std::array<double, 3> uvw = {-1, -1, -1};
+    file.ReadUvw(row, 0, 0, uvw.data());
+    BOOST_CHECK(uvw == zero_uvw);
+  }
+
+  file.Close();
+  unlink(kFilename.c_str());
+}
+
+BOOST_AUTO_TEST_CASE(only_two_auto_correlation_baselines) {
+  UvwFile file = UvwFile::CreateNew(kFilename);
+  constexpr size_t kNRows = 10;
+  const std::array<double, 3> zero_uvw = {0.0, 0.0, 0.0};
+  for(uint64_t row=0; row!=kNRows; ++row) {
+    const size_t antenna = row%2;
+    file.WriteUvw(row, antenna, antenna, zero_uvw.data());
+  }
+  file.Close();
+
+  file = UvwFile::OpenExisting(kFilename);
+  BOOST_REQUIRE_EQUAL(file.NRows(), kNRows);
+  for(size_t row=0; row!=kNRows; ++row) {
+    const size_t antenna = row%2;
+    std::array<double, 3> uvw = {-1, -1, -1};
+    file.ReadUvw(row, antenna, antenna, uvw.data());
+    BOOST_CHECK(uvw == zero_uvw);
+  }
+
+  file.Close();
+  unlink(kFilename.c_str());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
