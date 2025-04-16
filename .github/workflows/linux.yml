@@ -8,12 +8,10 @@ on:
 
 jobs:
   Linux:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         dist:
-          - ubuntu2004_clang
-          - ubuntu2004_gcc
           - ubuntu2204_clang
           - ubuntu2204_gcc
           - ubuntu2404_clang
