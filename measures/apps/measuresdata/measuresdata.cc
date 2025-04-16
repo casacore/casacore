@@ -417,13 +417,13 @@ const tableProperties allProperties[] = {
 
   { "TAI_UTC",			1.0,			31.0,
     True,			37300,			0.0,
-    "geodetic/TAI_UTC",  	"ftp",  		"ascii",
+    "geodetic/TAI_UTC",  	"https",  		"ascii",
     &TAI_UTC,			TAI_UTCCol,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
     "TAI_UTC difference obtained from USNO",		"leapSecond",
     False,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "ftp.astron.nl", "outgoing/Measures", "tai-utc.dat" } },
+    { "maia.usno.navy.mil", "ser7", "tai-utc.dat" } },
 
   //**********************************************************************//
 
