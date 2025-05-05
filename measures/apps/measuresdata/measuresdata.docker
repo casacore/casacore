@@ -1,0 +1,44 @@
+# Script for creating the 'measures-directory' containing casacore-tables with ephemerides, EOP, TAI-UTC, etc.
+# This Dockerfile is currently NOT being used for creating the tarball ('WSRT_Measures.ztar') hosted at astron.nl
+# To create data, start this docker container and run ./measuresdata-update
+FROM ubuntu:24.04
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get install -y \
+    gcc \
+    g++ \
+    cmake \
+    git \
+    flex \
+    bison \
+    libblas-dev \
+    liblapack-dev \
+    libcfitsio-dev \
+    wcslib-dev \
+    libfftw3-dev \
+    gfortran \
+    libncurses5-dev \
+    libreadline6-dev \
+    libhdf5-serial-dev \
+    libboost-dev \
+    libboost-python-dev \
+    libboost-test-dev \
+    libgsl-dev \
+    python-is-python3 \
+    python3-numpy \
+    wget \
+    curl \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+RUN mkdir /code
+WORKDIR /code
+RUN wget https://github.com/casacore/casacore/archive/refs/tags/v3.7.1.tar.gz && tar xf *.tar.gz && mv casacore* casacore
+RUN useradd -ms /bin/bash casacore \
+    && chown -R casacore.casacore /code
+USER casacore
+RUN mkdir /code/casacore/build
+WORKDIR /code/casacore/build
+RUN cmake .. && make -j`nproc`
+RUN mkdir -p /code/measures/ephemerides /code/measures/geodetic
+RUN cp /code/casacore/build/measures/apps/measuresdata /code/casacore/measures/apps/measuresdata/measuresdata-update /code/measures
+ENV PATH="$PATH:/code/measures"
+WORKDIR /code/measures
