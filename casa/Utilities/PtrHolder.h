@@ -26,8 +26,6 @@
 #ifndef CASA_PTRHOLDER_H
 #define CASA_PTRHOLDER_H
 
-#warning PtrHolder.h is deprecated; std::unique_ptr should be used instead
-
 //# Includes
 #include <casacore/casa/aips.h>
 
@@ -77,11 +75,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 //   <li> Use the autoptr class from the Standard Library
 // </todo>
 
-
 template<class T> class PtrHolder
 {
 public:
     // The default constructor uses a null pointer.
+  [[deprecated("Use std::unique_ptr")]]
     PtrHolder();
 
     // Construct a <src>PtrHolder</src> from a pointer which MUST have
@@ -98,6 +96,7 @@ public:
     // <src>clear()</src> is called with <src>deleteCurrentPtr</src>
     // set to False. The pointer must also only be put into
     // <em>one</em> holder to avoid double deletion.
+    [[deprecated("Use std::unique_ptr")]]
     PtrHolder(T *pointer, Bool isCArray = False);
 
     ~PtrHolder();

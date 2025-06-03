@@ -25,6 +25,9 @@
 
 
 //# Includes
+#include <casacore/tables/AlternateMans/AntennaPairStMan.h>
+#include <casacore/tables/AlternateMans/StokesIStMan.h>
+#include <casacore/tables/AlternateMans/UvwStMan.h>
 #include <casacore/tables/DataMan/DataManager.h>
 #include <casacore/tables/DataMan/DataManagerColumn.h>
 #include <casacore/tables/DataMan/StManAipsIO.h>
@@ -399,7 +402,7 @@ DataManager* DataManager::unknownDataManager (const String& type,
                               "  Check (DY)LD_LIBRARY_PATH matches the"
                               " libraries used during the build of "
                               + type);
-    return 0;
+    return nullptr;
 }
 
 
@@ -420,6 +423,9 @@ std::map<String,DataManagerCtor> DataManager::initRegisterMap()
   theirRegisterMap.insert (std::make_pair("TiledColumnStMan", TiledColumnStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("TiledShapeStMan",  TiledShapeStMan::makeObject));
   theirRegisterMap.insert (std::make_pair("MemoryStMan",      MemoryStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("AntennaPairStMan", AntennaPairStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("StokesIStMan",     StokesIStMan::makeObject));
+  theirRegisterMap.insert (std::make_pair("UvwStMan",         UvwStMan::makeObject));
 #ifdef HAVE_ADIOS2
   theirRegisterMap.insert (std::make_pair("Adios2StMan",      Adios2StMan::makeObject));
 #endif

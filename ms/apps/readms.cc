@@ -869,7 +869,7 @@ std::vector<Int64> doOne (int seqnr, const String& msName)
 
 void doAll()
 {
-  Int64 nrow, selNrow;
+  Int64 nrow = 0, selNrow = 0;
   int nthread = OMP::maxThreads();
 #ifdef _OPENMP
 #pragma omp parallel for schedule(dynamic)

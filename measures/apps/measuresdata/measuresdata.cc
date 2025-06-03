@@ -417,13 +417,13 @@ const tableProperties allProperties[] = {
 
   { "TAI_UTC",			1.0,			31.0,
     True,			37300,			0.0,
-    "geodetic/TAI_UTC",  	"ftp",  		"ascii",
+    "geodetic/TAI_UTC",  	"https",  		"ascii",
     &TAI_UTC,			TAI_UTCCol,		0,
     vector<String>(),		vector<uInt>(),		vector<TableColumn*>(),
     "TAI_UTC difference obtained from USNO",		"leapSecond",
     False,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "ftp.astron.nl", "outgoing/Measures", "tai-utc.dat" } },
+    { "maia.usno.navy.mil", "ser7", "tai-utc.dat" } },
 
   //**********************************************************************//
 
@@ -435,7 +435,7 @@ const tableProperties allProperties[] = {
     "IERS EOPC04_05 Earth Orientation Data from IERS",	"eop97",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04_14", "eopc04.xx" } },
 
   //**********************************************************************//
 
@@ -447,7 +447,7 @@ const tableProperties allProperties[] = {
     "IERS EOP2000C04_05 Earth Orientation Data IAU2000","eop2000",
     True,			"",			vector<String>(),
     0, 				vector<formatDescr>(),
-    { "hpiers.obspm.fr", "iers/eop/eopc04", "eopc04_IAU2000.xx" } },
+    { "hpiers.obspm.fr", "iers/eop/eopc04_14", "eopc04_IAU2000.xx" } },
 
   //**********************************************************************//
 

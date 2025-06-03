@@ -452,23 +452,24 @@ Vector<String> DataManInfo::removeDminfoColumns (Record& dminfo,
   // Keep track which columns are removed.
   Vector<String> remCols(columns.size());
   uInt ncols = 0;
-  for (uInt j=0; j<dminfo.nfields(); j++) {
-    Record rec = dminfo.subRecord(j);
+  uInt newdm_index = 0;
+  for (uInt dminfo_index=0; dminfo_index<dminfo.nfields(); dminfo_index++) {
+    Record rec = dminfo.subRecord(dminfo_index);
     Vector<String> dmcols (rec.asArrayString("COLUMNS"));
     uInt ndmcol = dmcols.size();
     const String& dmtype = rec.asString ("TYPE");
     if (keepType.empty()  ||  dmtype.substr(0,keepType.size()) != keepType) {
       // This dmtype does not need to be kept, so columns can be removed.
-      for (uInt i=0; i<columns.size(); ++i) {
-        const String& col = columns[i];
-        for (uInt j=0; j<ndmcol; ++j) {
-          if (col == dmcols[j]) {
+      for (uInt columns_index=0; columns_index<columns.size(); ++columns_index) {
+        const String& col = columns[columns_index];
+        for (uInt dmcol_index=0; dmcol_index<ndmcol; ++dmcol_index) {
+          if (col == dmcols[dmcol_index]) {
             // Column name matches, so remove it.
             // Add it to the vector of removed columns.
             remCols[ncols++] = col;
             --ndmcol;
-            for (uInt k=j; k<ndmcol; ++k) {
-              dmcols[k] = dmcols[k+1];
+            for (uInt i=dmcol_index; i<ndmcol; ++i) {
+              dmcols[i] = dmcols[i+1];
             }
           }
         }
@@ -480,7 +481,8 @@ Vector<String> DataManInfo::removeDminfoColumns (Record& dminfo,
         dmcols.resize (ndmcol, True);
         rec.define ("COLUMNS", dmcols);
       }
-      newdm.defineRecord (j, rec);
+      newdm.defineRecord (newdm_index, rec);
+      ++newdm_index;
     }
   }
   dminfo = newdm;

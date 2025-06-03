@@ -107,20 +107,12 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 class Memory
 {
 public:
-    // How much memory has been allocated by the programmer (via either
-    // <src>new</src> or <src>malloc</src>. This can include some extra
-    // overhead bytes, e.g. for alignment reasons.
-    static size_t allocatedMemoryInBytes();
-    // How much memory in in the memory "pool" of this process. This includes
-    // not only the allocated memory, but some memory which has been
-    // <src>delete</src>d but not returned to the OS on the assumption that
-    // it might be needed again.
-    static size_t assignedMemoryInBytes();
     // Attempt to release memory which has been assigned but not allocated.
     // On many systems this will be a no-op, and even on systems in which it
     // does something the amount of reclaimed memory cannot be specified.
     // Since this function may be somewhat expensive to call it should not
     // be called too often.
+    [[deprecated("This function calls malloc_trim(), which is is mostly an artefact and not effective on modern systems")]]
     static void releaseMemory();
 
     // setMemoryOptions and setMemoryOption are typically front ends for mallopt

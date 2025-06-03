@@ -105,9 +105,7 @@ public:
   const TaQLStyle& style() const
     { return itsRep->style(); }
 
-  // Destructor deletes the letter if no more references.
-  ~TaQLNode()
-    {}
+  virtual ~TaQLNode() noexcept = default;
 
   // Parse a TaQL command and return the result.
   // An exception is thrown in case of parse errors.

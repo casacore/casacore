@@ -180,8 +180,8 @@ FITSIDItoMS1::FITSIDItoMS1(FitsInput& fitsin, const String& correlat,
     ///infile_p(fitsin),
     itsObsType(obsType),
     itsCorrelat(correlat),
-    itsVanVleck(vanVleck),
     itsCorVer(corVer),
+    itsVanVleck(vanVleck),
     msc_p(0)
 {
 
@@ -2673,6 +2673,8 @@ void FITSIDItoMS1::fillAntennaTable()
      case 3: mount="X-Y"; break;
      case 4: mount="ALT-AZ+NASMYTH-R"; break;
      case 5: mount="ALT-AZ+NASMYTH-L"; break;
+     case 6: mount="ALT-AZ+BWG-R"; break;
+     case 7: mount="ALT-AZ+BWG-L"; break;
      default: mount="UNKNOWN"; break;
      }
      ant.flagRow().put(row,False);

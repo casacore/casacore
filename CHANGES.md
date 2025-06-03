@@ -1,3 +1,23 @@
+# 3.7.1
+
+- Fix an issue in 'Stokes I Storage manager' when used on boolean columns (flag column): #1407
+- Fix a bug in Dysco when antenna indices are swapped: #1406
+
+
+# 3.7.0
+
+## Highlights
+
+- Add new storage managers which losslessly compress data #1385, #1394, #1395, #1398, #1399, #1396, #1397, #1400
+- Improvements to FITS-IDI / MSFits conversions #1370, #1373, #1384, #1386
+- Switch to C++17 and use some of its features #1346
+
+# # General
+- Solved various issues with newer compilers and boost versions #1365, #1374, #1377, #1379, #1401
+- Fixed memory issues #1391, #1402
+- Build system improvements #1368, #1357, #1375, #1376
+
+
 # 3.6.1
 
  - Use the latest numpy for dockers; this should make python-casacore compatible with numpy 2.0.
