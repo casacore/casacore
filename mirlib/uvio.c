@@ -536,21 +536,24 @@ static AMP noamp;
 static int first=TRUE;
 
 /* void uvputvr_c(); */
-private void uvinfo_chan(),uvinfo_variance(),uvbasant_c();
-private void uv_init(),uv_freeuv(),uv_free_select();
-private void uvread_defline(),uvread_init(),uvread_velocity(),uvread_flags();
-private void uvread_defvelline();
-private void uvread_updated_planet(),uvread_reference();
-private void uvread_updated_uvw(),uvread_preamble();
-private void uv_vartable_out(),uv_vartable_in();
-private void uvset_coord(),uvset_linetype(),uvset_planet();
-private void uvset_selection(),uvset_preamble();
-private void uv_addopers(),uv_override();
-private UV *uv_getuv();
-private VARIABLE *uv_mkvar(),*uv_locvar(),*uv_checkvar();
-private int uv_scan(),uvread_line(),uvread_select(),uvread_maxvis();
-private int uvread_shadowed(),uvread_match(),uvread_matchp();
-private double uv_getskyfreq();
+private void uvinfo_chan(UV *uv,double *data,int mode),uvinfo_variance(UV *uv,double *data),uvbasant_c(int baseline,int *i1,int *i2);
+private void uv_init(),uv_freeuv(UV *uv),uv_free_select(SELECT *sel);
+private void uvread_defline(int tno),uvread_init(int tno),uvread_velocity(UV *uv,LINE_INFO *line,float *data,
+			     int *flags,int nsize,LINE_INFO *actual),uvread_flags(UV *uv,VARIABLE *v,FLAGS *flag_info,int nchan);
+private void uvread_defvelline(UV* uv,LINE_INFO *line,WINDOW *win);
+private void uvread_updated_planet(UV *uv),uvread_reference(UV *uv, float *data, int *flags,int n);
+private void uvread_updated_uvw(UV *uv),uvread_preamble(UV *uv, double *preamble);
+private void uv_vartable_out(UV *uv),uv_vartable_in(UV *uv);
+private void uvset_coord(UV *uv, char *type),uvset_linetype(LINE_INFO *line, const char *type, int n,
+			    double start,double width,double step),uvset_planet(UV *uv, double p1,double p2,double p3);
+private void uvset_selection(UV *uv, char *type, int n),uvset_preamble(UV *uv, char *type);
+private void uv_addopers(SELECT *sel,int type,int discard,double p1,double p2,char *ps),uv_override(UV *uv);
+private UV *uv_getuv(int tno);
+private VARIABLE *uv_mkvar(int tno,char *name,int type),*uv_locvar(int tno,char *name),*uv_checkvar(int tno,char *varname,int type);
+private int uv_scan(UV *uv, VARIABLE *vt),uvread_line(UV *uv,LINE_INFO *line,float *data,
+			int nsize,int *flags,LINE_INFO *actual),uvread_select(UV *uv),uvread_maxvis(SELECT *sel);
+private int uvread_shadowed(UV *uv,double diameter),uvread_match(char *s1,char *s2, int len2),uvread_matchp(char *s1,char *s2, int len2);
+private double uv_getskyfreq(UV *uv,WINDOW *win);
 
 /************************************************************************/
 #ifdef TESTBED
@@ -2750,7 +2753,7 @@ private void uvset_coord(UV *uv, char *type)
   }
 }
 /************************************************************************/
-private void uvset_linetype(LINE_INFO *line, char *type, int n, 
+private void uvset_linetype(LINE_INFO *line, const char *type, int n,
 			    double start,double width,double step)
 /*
   Decode the line type.
