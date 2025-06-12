@@ -26,7 +26,7 @@ jobs:
           # Delete GitHub Python, See https://github.com/orgs/Homebrew/discussions/3895#discussioncomment-4130560
           find /usr/local/bin -lname '*/Library/Frameworks/Python.framework/*' -print -delete
 
-          brew install fftw hdf5 boost-python3 numpy cfitsio wcslib gsl ninja gcc
+          brew install bison fftw hdf5 boost-python3 numpy cfitsio wcslib gsl ninja gcc
 
           # ensure we use homebrew python and gcc
           export PATH=$(brew --prefix python)/bin:${PATH}
