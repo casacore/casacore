@@ -46,73 +46,59 @@ CopyRecordToTable::CopyRecordToTable(Table &outputTable,
     for (i=0; i < n; i++) {
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
-    uInt total = 0;
-    table_bool.resize(counts[TpBool]); record_bool.resize(counts[TpBool]);
-    total += counts[TpBool];
+    table_bool.resize(counts[TpBool]);
+    record_bool.resize(counts[TpBool]);
  
-    table_char.resize(counts[TpUChar]); record_char.resize(counts[TpUChar]);
-    total += counts[TpUChar];
+    table_char.resize(counts[TpUChar]);
+    record_char.resize(counts[TpUChar]);
  
-    table_short.resize(counts[TpShort]); record_short.resize(counts[TpShort]);
-    total += counts[TpShort];
+    table_short.resize(counts[TpShort]);
+    record_short.resize(counts[TpShort]);
  
-    table_int.resize(counts[TpInt]); record_int.resize(counts[TpInt]);
-    total += counts[TpInt];
+    table_int.resize(counts[TpInt]);
+    record_int.resize(counts[TpInt]);
  
-    table_float.resize(counts[TpFloat]); record_float.resize(counts[TpFloat]);
-    total += counts[TpFloat];
+    table_float.resize(counts[TpFloat]);
+    record_float.resize(counts[TpFloat]);
  
     table_double.resize(counts[TpDouble]);
     record_double.resize(counts[TpDouble]);
-    total += counts[TpDouble];
- 
+  
     table_complex.resize(counts[TpComplex]);
     record_complex.resize(counts[TpComplex]);
-    total += counts[TpComplex];
  
     table_dcomplex.resize(counts[TpDComplex]);
     record_dcomplex.resize(counts[TpDComplex]);
-    total += counts[TpDComplex];
  
     table_string.resize(counts[TpString]);
     record_string.resize(counts[TpString]);
-    total += counts[TpString];
  
     table_array_bool.resize(counts[TpArrayBool]);
     record_array_bool.resize(counts[TpArrayBool]);
-    total += counts[TpArrayBool];
  
     table_array_char.resize(counts[TpArrayUChar]);
     record_array_char.resize(counts[TpArrayUChar]);
-    total += counts[TpArrayUChar];
 
     table_array_short.resize(counts[TpArrayShort]);
     record_array_short.resize(counts[TpArrayShort]);
-    total += counts[TpArrayShort];
  
     table_array_int.resize(counts[TpArrayInt]);
     record_array_int.resize(counts[TpArrayInt]);
-    total += counts[TpArrayInt];
  
     table_array_float.resize(counts[TpArrayFloat]);
     record_array_float.resize(counts[TpArrayFloat]);
-    total += counts[TpArrayFloat];
  
     table_array_double.resize(counts[TpArrayDouble]);
     record_array_double.resize(counts[TpArrayDouble]);
-    total += counts[TpArrayDouble];
  
     table_array_complex.resize(counts[TpArrayComplex]);
     record_array_complex.resize(counts[TpArrayComplex]);
-    total += counts[TpArrayComplex];
  
     table_array_dcomplex.resize(counts[TpArrayDComplex]);
     record_array_dcomplex.resize(counts[TpArrayDComplex]);
-    total += counts[TpArrayDComplex];
  
     table_array_string.resize(counts[TpArrayString]);
     record_array_string.resize(counts[TpArrayString]);
-    total += counts[TpArrayString];
  
     // Keeps track of what index we're writing into for each block.
     Block<uInt> where(TpNumberOfTypes);
@@ -709,73 +695,59 @@ CopyRecordToRecord::CopyRecordToRecord(RecordInterface &outputBuffer,
     for (i=0; i < n; i++) {
         if (inputMap(i) != -1) counts[inputBuffer.description().type(i)]++;
     }
-    uInt total = 0;
-    out_record_bool.resize(counts[TpBool]); in_record_bool.resize(counts[TpBool]);
-    total += counts[TpBool];
+    out_record_bool.resize(counts[TpBool]);
+    in_record_bool.resize(counts[TpBool]);
  
-    out_record_char.resize(counts[TpUChar]); in_record_char.resize(counts[TpUChar]);
-    total += counts[TpUChar];
+    out_record_char.resize(counts[TpUChar]);
+    in_record_char.resize(counts[TpUChar]);
  
-    out_record_short.resize(counts[TpShort]); in_record_short.resize(counts[TpShort]);
-    total += counts[TpShort];
+    out_record_short.resize(counts[TpShort]);
+    in_record_short.resize(counts[TpShort]);
  
-    out_record_int.resize(counts[TpInt]); in_record_int.resize(counts[TpInt]);
-    total += counts[TpInt];
+    out_record_int.resize(counts[TpInt]);
+    in_record_int.resize(counts[TpInt]);
  
-    out_record_float.resize(counts[TpFloat]); in_record_float.resize(counts[TpFloat]);
-    total += counts[TpFloat];
+    out_record_float.resize(counts[TpFloat]);
+    in_record_float.resize(counts[TpFloat]);
  
     out_record_double.resize(counts[TpDouble]);
     in_record_double.resize(counts[TpDouble]);
-    total += counts[TpDouble];
  
     out_record_complex.resize(counts[TpComplex]);
     in_record_complex.resize(counts[TpComplex]);
-    total += counts[TpComplex];
  
     out_record_dcomplex.resize(counts[TpDComplex]);
     in_record_dcomplex.resize(counts[TpDComplex]);
-    total += counts[TpDComplex];
  
     out_record_string.resize(counts[TpString]);
     in_record_string.resize(counts[TpString]);
-    total += counts[TpString];
  
     out_record_array_bool.resize(counts[TpArrayBool]);
     in_record_array_bool.resize(counts[TpArrayBool]);
-    total += counts[TpArrayBool];
  
     out_record_array_char.resize(counts[TpArrayUChar]);
     in_record_array_char.resize(counts[TpArrayUChar]);
-    total += counts[TpArrayUChar];
  
     out_record_array_short.resize(counts[TpArrayShort]);
     in_record_array_short.resize(counts[TpArrayShort]);
-    total += counts[TpArrayShort];
  
     out_record_array_int.resize(counts[TpArrayInt]);
     in_record_array_int.resize(counts[TpArrayInt]);
-    total += counts[TpArrayInt];
  
     out_record_array_float.resize(counts[TpArrayFloat]);
     in_record_array_float.resize(counts[TpArrayFloat]);
-    total += counts[TpArrayFloat];
  
     out_record_array_double.resize(counts[TpArrayDouble]);
     in_record_array_double.resize(counts[TpArrayDouble]);
-    total += counts[TpArrayDouble];
  
     out_record_array_complex.resize(counts[TpArrayComplex]);
     in_record_array_complex.resize(counts[TpArrayComplex]);
-    total += counts[TpArrayComplex];
  
     out_record_array_dcomplex.resize(counts[TpArrayDComplex]);
     in_record_array_dcomplex.resize(counts[TpArrayDComplex]);
-    total += counts[TpArrayDComplex];
  
     out_record_array_string.resize(counts[TpArrayString]);
     in_record_array_string.resize(counts[TpArrayString]);
-    total += counts[TpArrayString];
   
     // Keeps track of what index we're writing into for each block.
     Block<uInt> where(TpNumberOfTypes);

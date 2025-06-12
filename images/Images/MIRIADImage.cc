@@ -1028,11 +1028,11 @@ void MIRIADImage::getImageAttributes (CoordinateSystem& cSys,
 // Now we need to work out the transpose order
 
   Vector<Int> order(ndim);
-  Int nspecial = 0;
+  /*Int nspecial = 0;
   if (longAxis >= 0) nspecial++;
   if (latAxis >= 0) nspecial++;
   if (stokesAxis >= 0) nspecial++;
-  if (spectralAxis >= 0) nspecial++;
+  if (spectralAxis >= 0) nspecial++;*/
 #if 0
 
   // I can't figure this out now, there is something wrong here for miriad

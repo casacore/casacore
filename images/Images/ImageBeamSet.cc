@@ -462,7 +462,7 @@ ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
     }
     uInt count = 0;
     uInt chan = 0;
-    uInt stokes = 0;
+    //uInt stokes = 0;
     Matrix<GaussianBeam> beams(nchan, nstokes);
     auto iterend = beams.end();
     for (
@@ -476,7 +476,7 @@ ImageBeamSet ImageBeamSet::fromRecord(const Record& rec) {
             *iter = GaussianBeam::fromRecord(rec.asRecord(field));
         if (++chan == nchan) {
             chan = 0;
-            ++stokes;
+            //++stokes;
         }
     }
     return ImageBeamSet(beams);

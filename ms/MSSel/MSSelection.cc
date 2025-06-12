@@ -903,17 +903,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
       for(uInt i=0; i<exprOrder_p.nelements();  i++)
 	{
 	  exprIsNull = 
-	    (antennaExpr_p     == "") & 
-	    (feedExpr_p        == "") & 
-	    (fieldExpr_p       == "") & 
-	    (spwExpr_p         == "") &
-	    (scanExpr_p        == "") & 
-	    (arrayExpr_p       == "") &
-	    (timeExpr_p        == "") & 
-	    (uvDistExpr_p      == "") & 
-	    (taqlExpr_p        == "") & 
-	    (polnExpr_p        == "") & 
-	    (stateExpr_p       == "") & 
+	    (antennaExpr_p     == "") && 
+	    (feedExpr_p        == "") && 
+	    (fieldExpr_p       == "") && 
+	    (spwExpr_p         == "") &&
+	    (scanExpr_p        == "") && 
+	    (arrayExpr_p       == "") &&
+	    (timeExpr_p        == "") && 
+	    (uvDistExpr_p      == "") && 
+	    (taqlExpr_p        == "") && 
+	    (polnExpr_p        == "") && 
+	    (stateExpr_p       == "") && 
 	    (observationExpr_p == "");
 	}
     else

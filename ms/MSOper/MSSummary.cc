@@ -517,8 +517,6 @@ void MSSummary::getScanSummary (Record& outRec) const
     icols[0] = "OBSERVATION_ID";
     icols[1] = "ARRAY_ID";
     TableIterator obsarriter(mstab,icols);
-    //Limiting record length
-    Int recLength=0;
     // Iterate:
     while (!obsarriter.pastEnd()) {
 
@@ -686,7 +684,6 @@ void MSSummary::getScanSummary (Record& outRec) const
 
                     thisnrow=0;
                     meanIntTim=0.;
-                    ++recLength;
                 }
 
                 // etime keeps pace with thistime
@@ -746,7 +743,6 @@ void MSSummary::getScanSummary (Record& outRec) const
             outRec.defineRecord(scanrecid, scanRecord);
         }
         subsetscan=0;
-        ++recLength;
 
         // push OBS/ARR iteration
         obsarriter.next();
