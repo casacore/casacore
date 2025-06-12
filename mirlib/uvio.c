@@ -544,10 +544,10 @@ private void uvread_defvelline(UV* uv,LINE_INFO *line,WINDOW *win);
 private void uvread_updated_planet(UV *uv),uvread_reference(UV *uv, float *data, int *flags,int n);
 private void uvread_updated_uvw(UV *uv),uvread_preamble(UV *uv, double *preamble);
 private void uv_vartable_out(UV *uv),uv_vartable_in(UV *uv);
-private void uvset_coord(UV *uv, char *type),uvset_linetype(LINE_INFO *line, const char *type, int n,
+private void uvset_coord(UV *uv, const char *type),uvset_linetype(LINE_INFO *line, const char *type, int n,
 			    double start,double width,double step),uvset_planet(UV *uv, double p1,double p2,double p3);
-private void uvset_selection(UV *uv, char *type, int n),uvset_preamble(UV *uv, char *type);
-private void uv_addopers(SELECT *sel,int type,int discard,double p1,double p2,char *ps),uv_override(UV *uv);
+private void uvset_selection(UV *uv, const char *type, int n),uvset_preamble(UV *uv, const char *type);
+private void uv_addopers(SELECT *sel,int type,int discard,double p1,double p2,const char *ps),uv_override(UV *uv);
 private UV *uv_getuv(int tno);
 private VARIABLE *uv_mkvar(int tno,char *name,int type),*uv_locvar(int tno,char *name),*uv_checkvar(int tno,char *varname,int type);
 private int uv_scan(UV *uv, VARIABLE *vt),uvread_line(UV *uv,LINE_INFO *line,float *data,
@@ -2551,7 +2551,7 @@ void uvselect_c(int tno,Const char *object,double p1,double p2,int datasel)
   }
 }
 /************************************************************************/
-private void uv_addopers(SELECT *sel,int type,int discard,double p1,double p2,char *ps)
+private void uv_addopers(SELECT *sel,int type,int discard,double p1,double p2,const char *ps)
 {
   int n,i;
   OPERS *oper;
@@ -2658,7 +2658,7 @@ void uvset_c(int tno,Const char *object,Const char *type,
   }
 }
 /************************************************************************/
-private void uvset_preamble(UV *uv, char *type)
+private void uvset_preamble(UV *uv, const char *type)
 /*
   Set the preamble that the user wants to use.
 ------------------------------------------------------------------------*/
@@ -2707,7 +2707,7 @@ private void uvset_preamble(UV *uv, char *type)
   }
 }
 /************************************************************************/
-private void uvset_selection(UV *uv, char *type, int n)
+private void uvset_selection(UV *uv, const char *type, int n)
 /*
   Set the way the uvselect routine works.
 ------------------------------------------------------------------------*/
@@ -2732,7 +2732,7 @@ private void uvset_planet(UV *uv, double p1,double p2,double p3)
   uv->need_planet = TRUE;
 }
 /************************************************************************/
-private void uvset_coord(UV *uv, char *type)
+private void uvset_coord(UV *uv, const char *type)
 /*
   Set the flags to do with the processing of uv coordinates.
 

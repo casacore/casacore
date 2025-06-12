@@ -306,7 +306,7 @@ class Allocator_private {
     // Because this function gets called from destructors of statically allocated objects that get destructed
     // after the program finishes, the allocator is constructed in a static storage space and is never
     // destructed.
-    static typename std::aligned_storage<sizeof(BulkAllocatorImpl<Allocator>), alignof(BulkAllocatorImpl<Allocator>)>::type storage;
+    alignas(BulkAllocatorImpl<Allocator>) std::byte storage[sizeof(BulkAllocatorImpl<Allocator>)];
     static BulkAllocatorImpl<Allocator>* ptr =
       new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(&storage)) BulkAllocatorImpl<Allocator>();
     return ptr;
