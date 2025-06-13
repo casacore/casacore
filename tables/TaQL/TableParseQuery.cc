@@ -336,8 +336,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
         TableRecord& colkeys (TableColumn(tab, columnName).rwKeywordSet());
         rec = TableExprNode::findLastKeyRec (colkeys, fieldNames, fullName);
       } else {
-        const TableRecord colkeys (TableColumn(tab, columnName).keywordSet());
-        rec = TableExprNode::findLastKeyRec (colkeys, fieldNames, fullName);
+        rec = TableExprNode::findLastKeyRec (TableColumn(tab, columnName).keywordSet(), fieldNames, fullName);
       }
     }
     keyName = fieldNames[fieldNames.size() -1 ];
