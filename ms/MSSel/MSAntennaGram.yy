@@ -29,7 +29,7 @@
   using namespace casacore;
 %}
 
-%pure-parser                /* make parser re-entrant */
+%define api.pure                /* make parser re-entrant */
 
 %union {
   const TableExprNode* node;
@@ -126,12 +126,12 @@
   void kungrachulations(const std::bitset<MSAntennaParse::HIGHESTLEVEL>& complexity)
   {
     LogIO logIO(LogOrigin("MSAntannaParse",""));
-    Bool level1=(complexity.test(MSAntennaParse::ANTREGEX) &
-		 complexity.test(MSAntennaParse::ANTLIST)  &
+    Bool level1=(complexity.test(MSAntennaParse::ANTREGEX) &&
+		 complexity.test(MSAntennaParse::ANTLIST)  &&
 		 complexity.test(MSAntennaParse::BASELINELIST));
-    Bool level2=(level1 & complexity.test(MSAntennaParse::STATIONLIST));
-    Bool level3=(level2 & complexity.test(MSAntennaParse::STATIONREGEX)
-		 & complexity.test(MSAntennaParse::ANTATSTATIONLIST));
+    Bool level2=(level1 && complexity.test(MSAntennaParse::STATIONLIST));
+    Bool level3=(level2 && complexity.test(MSAntennaParse::STATIONREGEX)
+		 && complexity.test(MSAntennaParse::ANTATSTATIONLIST));
     if (level3)
       logIO << "Oh the brave one!\n  "
 	"You successfully passed the deepest abyss of parsing in baseline selection without error.\n "

@@ -1421,13 +1421,21 @@ static void copy_to_one_d( int tno )
     imgscubesize[d]=imgs[tno].cubesize[d];bufscubesize[d]=bufs[tno].cubesize[d];
     imgsblc[d]     =imgs[tno].blc[d];     bufsblc[d]     =0;
     imgstrc[d]     =imgs[tno].trc[d];     bufstrc[d]     =bufs[tno].axlen[d]-1;
-    imgscsz[d]     =imgscubesize[d-1];    bufscsz[d]     =bufscubesize[d-1];
     imgslower[d]   =imgs[tno].lower[d];
     imgsupper[d]   =imgs[tno].upper[d];
     axnumr[d]      =axnum[tno][d];
     reverses[d]    =reverse[tno][d];
     }
-    for( d=1; d<=naxes; d++ ) inv_axnumr[ axnumr[d] ] = d;
+    // I don't know if this is correct; in earlier versions of xyzio.c, the zero
+    // elements were set to imgscubesize[-1] / bufscubesize[-1], which causes
+    // undefined behaviour, hence these are now set to zero.
+    imgscsz[0] = 0;
+    bufscsz[0] = 0;
+    for( d=1; d<=naxes; d++ ) {
+        inv_axnumr[ axnumr[d] ] = d;
+        imgscsz[d]     =imgscubesize[d-1];   
+        bufscsz[d]     =bufscubesize[d-1];
+    }
 }
 
 static void set_bufs_limits( int tno, long virpix_off )

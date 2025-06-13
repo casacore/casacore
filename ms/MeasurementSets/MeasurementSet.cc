@@ -1130,39 +1130,6 @@ Record MeasurementSet::msseltoindex(const String& spw, const String& field,
 const MrsEligibility MrsEligibility::allSubtables_p = allEligible ();
 
 MrsEligibility
-MrsEligibility::allButTheseSubtables (SubtableId subtableId, ...)
-{
-    va_list vaList;
-
-    va_start (vaList, subtableId);
-
-    SubtableId id = subtableId;
-    MrsEligibility ineligible;
-
-    while (id > MSMainEnums::UNDEFINED_KEYWORD &&
-           id <= MSMainEnums::NUMBER_PREDEFINED_KEYWORDS){
-
-        ThrowIf (! isSubtable (id), "Invalid subtable ID: " + String::toString (id));
-
-        ineligible.eligible_p.insert (id);
-        id = (SubtableId) va_arg (vaList, int);
-    }
-
-    va_end (vaList);
-
-    // Get the set of all subtables and then subtract off the
-    // caller specified columns.  Return the result
-
-    MrsEligibility eligible;
-
-    set_difference (allSubtables_p.eligible_p.begin(), allSubtables_p.eligible_p.end(),
-                    ineligible.eligible_p.begin(), ineligible.eligible_p.end(),
-                    inserter (eligible.eligible_p, eligible.eligible_p.begin()));
-
-    return eligible;
-}
-
-MrsEligibility
 MrsEligibility::allEligible ()
 {
     MrsEligibility all;
@@ -1201,30 +1168,6 @@ MrsEligibility::defaultEligible ()
     return defaultSubtables;
 }
 
-
-MrsEligibility
-MrsEligibility::eligibleSubtables (SubtableId subtableId, ...)
-{
-    va_list vaList;
-
-    va_start (vaList, subtableId);
-
-    SubtableId id = subtableId;
-    MrsEligibility eligible;
-
-    while (id > MSMainEnums::UNDEFINED_KEYWORD &&
-           id <= MSMainEnums::NUMBER_PREDEFINED_KEYWORDS){
-
-        ThrowIf (! isSubtable (id), "Invalid subtable ID: " + String::toString (id));
-
-        eligible.eligible_p.insert (id);
-        id = (SubtableId) va_arg (vaList, Int);
-    }
-
-    va_end (vaList);
-
-    return eligible;
-}
 
 Bool
 MrsEligibility::isSubtable (SubtableId subtableId)

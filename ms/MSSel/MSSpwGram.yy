@@ -29,7 +29,7 @@
   using namespace casacore;
 %}
 
-%pure-parser                /* make parser re-entrant */
+%define api.pure                /* make parser re-entrant */
 
 %union {
   const TableExprNode* node;
@@ -325,7 +325,7 @@ Spw: IDENTIFIER
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
 	ostringstream m,tok; m << "No spw ID found for > ";
-	if ($2[1] == MSSpwIndex::MSSPW_INDEX)
+	if ($2[1] == static_cast<int>(MSSpwIndex::MSSPW_INDEX))
 	  {
 	    $$ = new Vector<Int>(myMSSI.matchGT((Int)$2[0]));
 	    // m << (Int)$2[0];
@@ -345,7 +345,7 @@ Spw: IDENTIFIER
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
 	ostringstream m, tok; m << "No spw ID found for < ";
-	if ($2[1] == MSSpwIndex::MSSPW_INDEX)
+	if ($2[1] == static_cast<int>(MSSpwIndex::MSSPW_INDEX))
 	  {
 	    $$ = new Vector<Int>(myMSSI.matchLT((Int)$2[0]));
  	    // m << (Int)$2[0];
@@ -365,7 +365,7 @@ Spw: IDENTIFIER
 	//	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->ms()->spectralWindow());
 	MSSpwIndex myMSSI(MSSpwParse::thisMSSParser->subTable());
 	ostringstream m,tok; m << "No spw ID found ";
-	if ($1[1] == MSSpwIndex::MSSPW_INDEX)
+	if ($1[1] == static_cast<int>(MSSpwIndex::MSSPW_INDEX))
 	  {
 	    $$ = new Vector<Int>(myMSSI.matchGTAndLT((Int)$1[0],(Int)$3[0]));
 	    //m << (Int)$1[0] << "<>" << (Int)$3[0];

@@ -418,8 +418,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	for(Int i=0;i<nSpw;i++)
 	  for(Int j=0;j<nFList;j+=4)
 	    {
-	      if ((freqList(j+3) == MSSpwIndex::MSSPW_INDEX) ||
-		  (freqList(j+3) == MSSpwIndex::MSSPW_INDEXRANGE))
+	      if ((freqList(j+3) == static_cast<int>(MSSpwIndex::MSSPW_INDEX)) ||
+		  (freqList(j+3) == static_cast<int>(MSSpwIndex::MSSPW_INDEXRANGE)))
 		{
 		  Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
 		  if (start == -1) start = 0;
@@ -461,7 +461,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		  localFreqList(pos++)=stop;
 		  localFreqList(pos++)=step;
 		}
-	      else if (freqList(j+3) == MSSpwIndex::MSSPW_UNITHZ)  // If the spec is XXHz
+	      else if (freqList(j+3) == static_cast<int>(MSSpwIndex::MSSPW_UNITHZ))  // If the spec is XXHz
 		{
 		  Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
 		  Vector<Double> cf,cw;
@@ -652,8 +652,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 	
 	for(Int j=0;j<nFList;j+=4)
 	  {
-	    if ((freqList(j+3) == MSSpwIndex::MSSPW_INDEX) ||
-		(freqList(j+3) == MSSpwIndex::MSSPW_INDEXRANGE))
+	    if ((freqList(j+3) == static_cast<int>(MSSpwIndex::MSSPW_INDEX)) ||
+		(freqList(j+3) == static_cast<int>(MSSpwIndex::MSSPW_INDEXRANGE)))
 	      {
 		Int start=(Int)freqList(j), stop=(Int)freqList(j+1), step=(Int)freqList(j+2);
 		//		  if (step==0) step=1;
@@ -668,7 +668,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 		//		  localFreqList(pos++)=stop;
 		//		  localFreqList(pos++)=step;
 	      }
-	    else if (freqList(j+3) == MSSpwIndex::MSSPW_UNITHZ)
+	    else if (freqList(j+3) == static_cast<int>(MSSpwIndex::MSSPW_UNITHZ))
 	      {
 		Float start=freqList(j),stop=freqList(j+1),step=freqList(j+2);
 		

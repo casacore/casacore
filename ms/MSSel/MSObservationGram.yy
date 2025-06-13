@@ -30,7 +30,7 @@
   using namespace casacore;
 %}
 
-%pure-parser                /* make parser re-entrant */
+%define api.pure                /* make parser re-entrant */
 
 %union {
   const TableExprNode* node;

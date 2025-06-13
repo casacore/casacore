@@ -61,9 +61,11 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // </synopsis>
 
 template <typename T>
-class VectorSTLIterator
-: public std::iterator<std::random_access_iterator_tag, T> {
+class VectorSTLIterator {
  public:
+  // iterator traits
+  using iterator_category = std::random_access_iterator_tag; 
+  
   typedef T                             value_type;
   typedef value_type*                   pointer;
   typedef const value_type*             const_pointer;
@@ -73,6 +75,8 @@ class VectorSTLIterator
   typedef const value_type&             const_reference;
   typedef std::size_t                   size_type;
   typedef ptrdiff_t                     difference_type;
+  
+       
   // Constructors. The iterator constructor from a <src>Vector</src> is
   // the same as if created from <src>Vector.begin()</src>. Copy
   // constructor and assignment can be the default ones.

@@ -285,7 +285,7 @@ PlainTable::~PlainTable()
 {
   // If destructed during an exception, catch possible other exceptions to
   // avoid termination.
-  if (std::uncaught_exception() ) {
+  if (std::uncaught_exceptions() != 0) {
     try {
       closeObject();
     } catch (std::exception& x) {

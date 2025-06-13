@@ -90,6 +90,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     virtual Int64 find (Double value) const;
     virtual Int64 find (String value) const;
     // </group>
+  private:
+    // Explicitly hide base function to prevent warning
+    using TableExprNodeRep::contains;
   };
 
 
@@ -132,6 +135,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
   private:
     std::unordered_map<T,Int64> itsMap;
+    // Explicitly hide base function to prevent warning
+    using TableExprNodeSetOptBase::find;
   };
 
 
@@ -229,6 +234,9 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
   protected:
     std::vector<Bool> itsLeftC;
     std::vector<Bool> itsRightC;
+  private:
+    // Explicitly hide base function to prevent warning
+    using TableExprNodeSetOptBase::find;
   };
 
 
@@ -271,6 +279,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
     LeftComp  itsLeftCmp;
     RightComp itsRightCmp;
     String    itsCmpType;
+    // Explicitly hide base function to prevent warning
+    using TableExprNodeSetOptBase::find;
   };
 
 

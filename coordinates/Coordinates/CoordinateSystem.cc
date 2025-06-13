@@ -2980,7 +2980,6 @@ Coordinate* CoordinateSystem::makeFourierCoordinate (const Vector<Bool>& axes,
    Coordinate* pC = clone();
    CoordinateSystem* pCS = dynamic_cast<CoordinateSystem*>(pC);
 //
-   uInt nReplaced = 0;
    const uInt nCoord = nCoordinates();
    for (uInt i=0; i<nCoord; i++) {
 
@@ -2991,7 +2990,6 @@ Coordinate* CoordinateSystem::makeFourierCoordinate (const Vector<Bool>& axes,
 
 // Find the coordinate-based axes and shape vectors
 
-         nReplaced++;
          Vector<Int> coordSysAxes = pixelAxes(i);
          Vector<Bool> coordAxes(coordSysAxes.nelements(),False);
          Vector<Int> coordShape(coordAxes.nelements(),0);

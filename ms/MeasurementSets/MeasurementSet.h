@@ -66,14 +66,52 @@ public:
     // eligible for memory residency.
     Bool isEligible (SubtableId subtableId) const;
 
-    // Factory methods to create MrsEligibility sets.  The two variable argument methods
-    // require that the list be terminated by using the id MSMainEnums::UNDEFINED_KEYWORD.
-    //
+    // Factory methods to create MrsEligibility sets.  The two functions with 
+    // parameter packs used to be variable argument functions. Because of this,
+    // it used to be required to use the id MSMainEnums::UNDEFINED_KEYWORD as the
+    // last parameter.
+    // Now that the functions use parameter packs, this is no longer required,
+    // and a value of UNDEFINED_KEYWORD is ignored.
     static MrsEligibility allEligible ();
     static MrsEligibility defaultEligible ();
     static MrsEligibility noneEligible ();
-    static MrsEligibility eligibleSubtables (SubtableId subtableId, ...);
-    static MrsEligibility allButTheseSubtables (SubtableId ineligibleSubtableId, ...);
+    
+    template <typename... SubtableIds>
+    static MrsEligibility eligibleSubtables (SubtableIds... subtableIds) {
+      MrsEligibility eligible;
+      for(const SubtableId subtableId : {subtableIds...}) {
+        // This function was converted from variable argument functions
+        // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
+        // as the last parameter, which can just be ignored.
+        if (subtableId != MSMainEnums::UNDEFINED_KEYWORD){
+          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + String::toString (subtableId));
+          eligible.eligible_p.insert(subtableId);
+        }
+      }
+      return eligible;
+    }
+    
+    template <typename... SubtableIds>
+    static MrsEligibility allButTheseSubtables (SubtableIds... subtableIds) {
+      MrsEligibility ineligible;
+      for(const SubtableId subtableId : {subtableIds...}) {
+        // This function was converted from variable argument functions
+        // to using a parameter pack. Because of this, callers specify 'UNDEFINED_KEYWORD'
+        // as the last parameter, which can just be ignored.
+        if (subtableId != MSMainEnums::UNDEFINED_KEYWORD) {
+          ThrowIf (! isSubtable (subtableId), "Invalid subtable ID: " + String::toString (subtableId));
+          ineligible.eligible_p.insert (subtableId);
+        }
+      }
+
+      // Get the set of all subtables and then subtract off the
+      // caller specified columns.  Return the result
+      MrsEligibility eligible;
+      set_difference (allSubtables_p.eligible_p.begin(), allSubtables_p.eligible_p.end(),
+                      ineligible.eligible_p.begin(), ineligible.eligible_p.end(),
+                      inserter (eligible.eligible_p, eligible.eligible_p.begin()));
+      return eligible;
+    }
 
 private:
 
