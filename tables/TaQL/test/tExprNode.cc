@@ -253,7 +253,7 @@ void doIt()
   arrisign = 1;
   arrisign.data()[0] = -1;
   convertArray (arridarg, arrisign);
-  arridarg = (arridarg-1.)*C::pi/-2.;
+  arridarg = (arridarg-1.)*M_PI/-2.;
   arrisign.data()[1] = 0;
   convertArray (arridsign, arrisign);
   Matrix<Int>  arri2(shp);
@@ -803,7 +803,7 @@ void doIt()
   checkScaDouble ("arg si", exprid, arg(esi1), 0.);
   checkArrDouble ("arg ai", exprid, arg(earri1), arridarg);
   checkScaDouble ("arg sd", exprid, arg(esd1), 0.);
-  checkArrDouble ("arg ad", exprid, arg(earrd1), (arrdsign-1.)*C::pi/-2.);
+  checkArrDouble ("arg ad", exprid, arg(earrd1), (arrdsign-1.)*M_PI/-2.);
   checkScaDouble ("arg sz", exprid, arg(esz1), arg(sz1));
   checkArrDouble ("arg az", exprid, arg(earrz1), phase(arrz1));
   checkScaDouble ("asin si", exprid, asin(esi1/300), asin(sid1/300.));
@@ -1057,7 +1057,7 @@ void doIt()
   checkScaBool ("ss==sqlpatt", exprid, ess1==sqlpattern(TableExprNode("as%")), False);
 
   // Check date functions.
-  checkScaDouble ("time", exprid, time("5Apr09/12:"), C::pi);
+  checkScaDouble ("time", exprid, time("5Apr09/12:"), M_PI);
   checkScaDate ("datetime", exprid, datetime("5Apr09/12:"), MVTime(54926.5));
   checkScaDouble ("mjd", exprid, mjd(datetime("5Apr09/12:")), 54926.5);
   checkScaInt ("day", exprid, day(datetime("5Apr09/12:")), 5);

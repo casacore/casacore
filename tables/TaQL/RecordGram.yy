@@ -34,7 +34,7 @@
 using namespace casacore;
 %}
 
-%pure-parser                /* make parser re-entrant */
+%define api.pure                /* make parser re-entrant */
 
 %expect 1                   /* do not report 1 shift/reduce conflict */
 

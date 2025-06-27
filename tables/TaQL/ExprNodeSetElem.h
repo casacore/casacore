@@ -374,6 +374,8 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
     //# Data members
     Bool itsEndExcl;
+    // Explicitly hide base function to prevent warning
+    using TableExprNodeSetElemBase::fillVector;
   };
 
 

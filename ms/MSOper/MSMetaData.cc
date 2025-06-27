@@ -2701,7 +2701,6 @@ void MSMetaData::_createSubScanRecords(
     std::set<SubScanKey> subScans = _getSubScanKeys(scanKey);
     std::set<SubScanKey>::const_iterator subScanIter = subScans.begin();
     std::set<SubScanKey>::const_iterator subScanEnd = subScans.end();
-    uInt subScanCount = 0;
     while (subScanIter != subScanEnd) {
         Record subScanRec;
         SubScanProperties props = subScanProps.find(*subScanIter)->second;
@@ -2717,7 +2716,6 @@ void MSMetaData::_createSubScanRecords(
         //subScanRec.define("field ID", subScanIter->fieldID);
         _createTimeStampRecords(subScanRec, props);
         parent.defineRecord("fieldID=" + String::toString(subScanIter->fieldID), subScanRec);
-        ++subScanCount;
         ++subScanIter;
     }
 }
