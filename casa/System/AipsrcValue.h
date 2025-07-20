@@ -28,10 +28,10 @@
 
 #include <casacore/casa/aips.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/System/Aipsrc.h>
 
 #include <mutex>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -157,21 +157,6 @@ class Unit;
 template <class T> class AipsrcValue : public Aipsrc {
 
 public:
-  //# Constructors
-  // Default constructor
-  // <note role=tip>
-  // A constructor (and destructor) have been provided to be able to generate
-  // a (routine-level) static register list. This had to be done since
-  // static data members are not yet implemented in the gcc compiler for
-  // templated classes. Once they are available the <tt>tlist</tt> and
-  // <tt>ntlst</tt> data can become static, constructor and desctructor and
-  // all references to the init() method can disappear.
-  // </note>
-  AipsrcValue();
-  //# Destructor
-  // See note with constructor
-  ~AipsrcValue();
-
   //# Member functions
   // The <src>find()</src> functions will, given a keyword, return the value
   // of a matched keyword found in the files. If no match found the
@@ -204,8 +189,10 @@ public:
 
   // Gets are like find, but using registered integers rather than names. The
   // aipsrc file is read only once, and values can be set as well.
+  // This function can't return a reference, because this would give access to
+  // the value without protection by the mutex.
   // <group>
-  static const T &get(uInt keyword);
+  static const T get(uInt keyword);
   // </group>
 
   // Sets allow registered values to be set
@@ -219,22 +206,14 @@ public:
 private:
   //# Data
   // The global AipsrcValue object
-  static AipsrcValue myp_p;
-  static std::mutex theirMutex;
+  //inline static AipsrcValue myp_p;
+  inline static std::mutex theirMutex;
   // Register list
   // <group>
-  Block<T> tlst;
-  Block<String> ntlst;
+  inline static std::vector<T> tlst;
+  inline static std::vector<String> ntlst;
   // </group>
 
-  //# Constructors
-  // Copy constructor (not implemented)
-  AipsrcValue<T> &operator=(const AipsrcValue<T> &other);
-
-  //# Copy assignment (not implemented)
-  AipsrcValue(const AipsrcValue<T> &other);
-
-  //# General member functions
 };
 
 template <> 
@@ -250,21 +229,18 @@ Bool AipsrcValue<String>::find(String &value,
 
 template <> class AipsrcValue<Bool> : public Aipsrc {
 public:
-  AipsrcValue();
-  ~AipsrcValue();
   static Bool find(Bool &value, const String &keyword);
   static Bool find(Bool &value, const String &keyword, const Bool &deflt);
   static uInt registerRC(const String &keyword, const Bool &deflt);
-  static const Bool &get(uInt keyword);
+  static const Bool get(uInt keyword);
   static void set(uInt keyword, const Bool &deflt);
   static void save(uInt keyword);
+
 private:
-  static AipsrcValue myp_p;
-  static std::mutex theirMutex;
-  Block<Bool> tlst;
-  Block<String> ntlst;
-  AipsrcValue<Bool> &operator=(const AipsrcValue<Bool> &other);
-  AipsrcValue(const AipsrcValue<Bool> &other);
+  inline static std::mutex theirMutex;
+  static_assert(sizeof(unsigned char) == sizeof(bool));
+  inline static std::vector<unsigned char> tlst;
+  inline static std::vector<String> ntlst;
 };
 
 

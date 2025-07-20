@@ -92,19 +92,14 @@ struct casacore_allocator: public std11_allocator<T> {
   struct rebind {
     typedef casacore_allocator<TOther> other;
   };
-  casacore_allocator() throw () {
-  }
+  casacore_allocator() noexcept = default;
 
-  casacore_allocator(const casacore_allocator&other) noexcept
-  :Super(other) {
-  }
+  casacore_allocator(const casacore_allocator&other) noexcept = default;
 
   template<typename TOther>
-  casacore_allocator(const casacore_allocator<TOther>&) noexcept {
-  }
+  casacore_allocator(const casacore_allocator<TOther>&) noexcept {}
 
-  ~casacore_allocator() noexcept {
-  }
+  ~casacore_allocator() noexcept = default;
 
   pointer allocate(size_type elements, const void* = 0) {
     if (elements > std::allocator_traits<casacore_allocator>::max_size(*this)) {
