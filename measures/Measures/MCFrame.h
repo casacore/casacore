@@ -27,6 +27,8 @@
 #define MEASURES_MCFRAME_H
 
 //# Includes
+#include <optional>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/measures/Measures/Measure.h>
@@ -226,53 +228,53 @@ private:
   // not the proper MeasConvert* here)
   cloned_ptr<MeasConvert<MEpoch>> epConvTDB;
   // TDB time
-  cloned_ptr<Double> epTDBp;
+  std::optional<Double> epTDBp;
   // Conversion to UT1 time
   cloned_ptr<MeasConvert<MEpoch>> epConvUT1;
   // UT1 time
-  cloned_ptr<Double> epUT1p;
+  std::optional<Double> epUT1p;
   // Conversion to TT time
   cloned_ptr<MeasConvert<MEpoch>> epConvTT;
   // TT time
-  cloned_ptr<Double> epTTp;
+  std::optional<Double> epTTp;
   // Conversion to LAST time
   cloned_ptr<MeasConvert<MEpoch>> epConvLAST;
   // LAST time
-  cloned_ptr<Double> epLASTp;
+  std::optional<Double> epLASTp;
   // Conversion to ITRF longitude/latitude
   cloned_ptr<MeasConvert<MPosition>> posConvLong;
   // Longitude
-  cloned_ptr<Vector<Double>> posLongp;
+  Vector<Double> posLongp;
   // Position
   cloned_ptr<MVPosition> posITRFp;
   // Conversion to geodetic longitude/latitude
   cloned_ptr<MeasConvert<MPosition>> posConvLongGeo;
   // Latitude
-  cloned_ptr<Vector<Double>> posLongGeop;
+  Vector<Double> posLongGeop;
   // Position
   cloned_ptr<MVPosition> posGeop;
   // Conversion to J2000
   cloned_ptr<MeasConvert<MDirection>> dirConvJ2000;
   // Longitude
-  cloned_ptr<Vector<Double>> j2000Longp;
+  Vector<Double> j2000Longp;
   // J2000 coordinates
   cloned_ptr<MVDirection> dirJ2000p;
   // Conversion to B1950
   cloned_ptr<MeasConvert<MDirection>> dirConvB1950;
   // Longitude
-  cloned_ptr<Vector<Double>> b1950Longp;
+  Vector<Double> b1950Longp;
   // B1950 coordinates
   cloned_ptr<MVDirection> dirB1950p;
   // Conversion to apparent coordinates
   cloned_ptr<MeasConvert<MDirection>> dirConvApp;
   // Longitude
-  cloned_ptr<Vector<Double>> appLongp;
+  Vector<Double> appLongp;
   // Apparent coordinates
   cloned_ptr<MVDirection> dirAppp;
   // Conversion to LSR radial velocity
   cloned_ptr<MeasConvert<MRadialVelocity>> radConvLSR;
   // Radial velocity
-  cloned_ptr<Double> radLSRp;
+  std::optional<Double> radLSRp;
   // </group>
   
   MCFrame &operator=(const MCFrame &other) = delete;
