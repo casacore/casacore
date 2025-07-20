@@ -36,6 +36,7 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
 class MDirection;
+template<class M> class MeasConvert;
 class MEpoch;
 class MVDirection;
 class MVPosition;
