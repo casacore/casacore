@@ -63,7 +63,8 @@ uInt AipsrcVector<Bool>::registerRC(const String &keyword,
 				    const Vector<Bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   uInt n = Aipsrc::registerRC(keyword, ntlst);
-  tlst.resize(n);
+  if(n > tlst.size())
+    tlst.resize(n);
   find (tlst[n-1], keyword, deflt);
   return n;
 }

@@ -80,8 +80,9 @@ template <class T>
 uInt AipsrcValue<T>::registerRC(const String &keyword,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, ntlst);
-  tlst.resize(n);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  if(n > tlst.size())
+    tlst.resize(n);
   find (tlst[n-1], keyword, deflt);
   return n;
 }
@@ -91,8 +92,9 @@ uInt AipsrcValue<T>::registerRC(const String &keyword,
 				const Unit &defun, const Unit &resun,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, ntlst);
-  tlst.resize(n);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  if(n > tlst.size())
+    tlst.resize(n);
   find ((tlst)[n-1], keyword, defun, resun, deflt);
   return n;
 }

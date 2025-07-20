@@ -206,7 +206,6 @@ public:
 private:
   //# Data
   // The global AipsrcValue object
-  //inline static AipsrcValue myp_p;
   inline static std::mutex theirMutex;
   // Register list
   // <group>
@@ -232,7 +231,7 @@ public:
   static Bool find(Bool &value, const String &keyword);
   static Bool find(Bool &value, const String &keyword, const Bool &deflt);
   static uInt registerRC(const String &keyword, const Bool &deflt);
-  static const Bool get(uInt keyword);
+  static Bool get(uInt keyword);
   static void set(uInt keyword, const Bool &deflt);
   static void save(uInt keyword);
 

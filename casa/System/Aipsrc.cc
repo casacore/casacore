@@ -284,7 +284,8 @@ uInt Aipsrc::registerRC(const String &keyword, std::vector<String> &nlst) {
 uInt Aipsrc::registerRC(const String &keyword,
 			const String &deflt) {
   uInt n = Aipsrc::registerRC(keyword, nstrlst);
-  strlst.resize(n);
+  if(n > strlst.size())
+    strlst.resize(n);
   find (strlst[n-1], keyword, deflt);
   return n;
 }
@@ -293,7 +294,8 @@ uInt Aipsrc::registerRC(const String &keyword,
 			Int Nname, const String tname[], 
 			const String &deflt) {
   uInt n = Aipsrc::registerRC(keyword, ncodlst);
-  codlst.resize(n);
+  if(n > codlst.size())
+    codlst.resize(n);
   find (codlst[n-1], keyword, Nname, tname, deflt);
   return n;
 }
@@ -301,7 +303,8 @@ uInt Aipsrc::registerRC(const String &keyword,
 uInt Aipsrc::registerRC(const String &keyword,
 			const Vector<String> &tname, const String &deflt) {
   uInt n = Aipsrc::registerRC(keyword, ncodlst);
-  codlst.resize(n);
+  if(n > codlst.size())
+    codlst.resize(n);
   find (codlst[n-1], keyword, tname, deflt);
   return n;
 }
@@ -555,7 +558,8 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
   for (Int i=nkw-1; i>=0; i--) {	// reverse order to do aipsrc like
     if (!nl[i].contains('*')) {		// no wild cards
       n = Aipsrc::registerRC(nl[i], nla);
-      vla.resize(n);
+      if(n > vla.size())
+        vla.resize(n);
       vla[n-1] = vl[i];
     }
   }
