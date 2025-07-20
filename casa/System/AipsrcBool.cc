@@ -53,7 +53,7 @@ uInt AipsrcValue<Bool>::registerRC(const String &keyword,
   return n;
 }
 
-const Bool AipsrcValue<Bool>::get(uInt keyword) {
+Bool AipsrcValue<Bool>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   return tlst[keyword-1];
@@ -74,7 +74,7 @@ void AipsrcValue<Bool>::save(uInt keyword) {
   } else {
     oss << "false";
   }
-  Aipsrc::save((ntlst)[keyword-1], String(oss));
+  Aipsrc::save(ntlst[keyword-1], String(oss));
 }
 
 } //# NAMESPACE CASACORE - END

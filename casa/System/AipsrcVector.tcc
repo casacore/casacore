@@ -99,8 +99,9 @@ Bool AipsrcVector<T>::find(Vector<T> &value, const String &keyword,
 template <class T>
 uInt AipsrcVector<T>::registerRC(const String &keyword,
 				 const Vector<T> &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, ntlst);
-  tlst.resize(n);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  if(n > tlst.size())
+    tlst.resize(n);
   find ((tlst)[n-1], keyword, deflt);
   return n;
 }
@@ -109,8 +110,9 @@ template <class T>
 uInt AipsrcVector<T>::registerRC(const String &keyword,
 				 const Unit &defun, const Unit &resun,
 				 const Vector<T> &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, ntlst);
-  tlst.resize(n);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  if(n > tlst.size())
+    tlst.resize(n);
   find ((tlst)[n-1], keyword, defun, resun, deflt);
   return n;
 }
