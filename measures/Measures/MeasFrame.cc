@@ -29,6 +29,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures/MCFrame.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MDirection.h>
