@@ -112,17 +112,13 @@ const MVPosition &Aberration::derivative(Double epoch) {
 
 void Aberration::initialize() {
   // Get the interpolation interval
-  if (!Aberration::interval_reg) {
-    interval_reg = 
-      AipsrcValue<Double>::registerRC(String("measures.aberration.d_interval"),
-				      Unit("d"), Unit("d"),
-				      Aberration::INTV);
-  }
-  if (!Aberration::usejpl_reg) {
-    usejpl_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"),
-				    False);
-  }
+  interval_reg =
+    AipsrcValue<Double>::registerRC(String("measures.aberration.d_interval"),
+            Unit("d"), Unit("d"),
+            Aberration::INTV);
+  usejpl_reg =
+    AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"),
+          False);
 }
 
 void Aberration::refresh() {

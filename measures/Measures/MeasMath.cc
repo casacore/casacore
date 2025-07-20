@@ -54,11 +54,6 @@ namespace {
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Static data
-// Note: this static is not mutexed, because it does not harm if accidently
-// two threads fill it at the same time.
-uInt MeasMath::b1950_reg_p = 0;
-
 //# Constructors
 MeasMath::MeasMath() :
   inOK_p(False), outOK_p(False),
@@ -460,12 +455,14 @@ void MeasMath::deapplyHADECtoAZELGEO(MVPosition &in) {
   in = RotMatrix(Euler(M_PI_2 - info_p[LATGEO] , 2u, M_PI, 3u)) * in;
 }
 
+void MeasMath::initializeB1950() {
+  b1950_reg_p =
+    AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
+            Unit("a"), Unit("a"), 2000.0);
+}
+
 void MeasMath::applyJ2000toB1950(MVPosition &in, Bool doin) {
-  if (!MeasMath::b1950_reg_p) {
-    b1950_reg_p =
-      AipsrcValue<Double>::registerRC(String("measures.b1950.d_epoch"),
-				      Unit("a"), Unit("a"), 2000.0);
-  }
+  std::call_once(initialize_once_flag, initializeB1950);
   Double epo;
   if (getInfo(UT1, True)) {
     epo = (info_p[UT1]-MeasData::MJD2000)/MeasData::JDCEN;
