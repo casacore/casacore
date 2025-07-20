@@ -118,23 +118,21 @@ void Nutation::fill() {
   checkEpoch_p = 1e30;
   checkDerEpoch_p = 1e30;
   for (uInt i=0; i<4; i++) result_p[i].set(1,3,1);
+  std::call_once(once_flag_, load_static_values);
+}
+
+void Nutation::load_static_values() {
   // Get interval and other switches
-  if (!Nutation::myInterval_reg) {
-    myInterval_reg = 
-      AipsrcValue<Double>::registerRC(String("measures.nutation.d_interval"),
-				      Unit("d"), Unit("d"),
-				      Nutation::INTV);
-  }
-  if (!Nutation::myUseiers_reg) {
-    myUseiers_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"),
-				    False);
-  }
-  if (!Nutation::myUsejpl_reg) {
-    myUsejpl_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.nutation.b_usejpl"),
-				    False);
-  }
+  myInterval_reg =
+    AipsrcValue<Double>::registerRC(String("measures.nutation.d_interval"),
+            Unit("d"), Unit("d"),
+            Nutation::INTV);
+  myUseiers_reg =
+    AipsrcValue<Bool>::registerRC(String("measures.nutation.b_useiers"),
+          False);
+  myUsejpl_reg =
+    AipsrcValue<Bool>::registerRC(String("measures.nutation.b_usejpl"),
+          False);
 }
 
 void Nutation::refresh() {

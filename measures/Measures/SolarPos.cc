@@ -32,16 +32,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Constants
-const Double SolarPos::INTV = 0.04;
-
-//# Static data
-uInt SolarPos::interval_reg = 0;
-uInt SolarPos::usejpl_reg = 0;
-
 //# Constructors
 SolarPos::SolarPos() : method(SolarPos::STANDARD), lres(0) {
-    fill();
+  std::call_once(initialize_once_flag, initialize_statics);
 }
 
 SolarPos::SolarPos(const SolarPos &other) {
@@ -50,7 +43,7 @@ SolarPos::SolarPos(const SolarPos &other) {
 
 SolarPos::SolarPos(SolarPosTypes type) :
 method(type), lres(0) {
-    fill();
+  std::call_once(initialize_once_flag, initialize_statics);
 }
 
 SolarPos &SolarPos::operator=(const SolarPos &other) {
@@ -169,21 +162,15 @@ const MVPosition &SolarPos::barySunDerivative(Double epoch) {
     return result[lres];
 }
 
-void SolarPos::fill() {
+void SolarPos::initialize_statics() {
   // Get the interpolation interval
-  if (!SolarPos::interval_reg) {
-    interval_reg = 
-      AipsrcValue<Double>::registerRC(String("measures.solarpos.d_interval"),
-				      Unit("d"), Unit("d"),
-				      SolarPos::INTV);
-  }
-  if (!SolarPos::usejpl_reg) {
-    usejpl_reg =
-      AipsrcValue<Bool>::registerRC(String("measures.solarpos.b_usejpl"),
-				    False);
-  }
-  checkEpoch = 1e30;
-  checkSunEpoch = 1e30;
+  interval_reg =
+    AipsrcValue<Double>::registerRC(String("measures.solarpos.d_interval"),
+            Unit("d"), Unit("d"),
+            SolarPos::INTV);
+  usejpl_reg =
+    AipsrcValue<Bool>::registerRC(String("measures.solarpos.b_usejpl"),
+          False);
 }
 
 void SolarPos::refresh() {

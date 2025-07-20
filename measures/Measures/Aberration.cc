@@ -32,16 +32,9 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Constants
-const Double Aberration::INTV = 0.04;
-
-//# Static data
-uInt Aberration::interval_reg = 0;
-uInt Aberration::usejpl_reg = 0;
-
 //# Constructors
 Aberration::Aberration() : method(Aberration::STANDARD), lres(0) {
-    fill();
+  std::call_once(initialize_once_flag, initialize);
 }
 
 Aberration::Aberration(const Aberration &other) {
@@ -50,7 +43,7 @@ Aberration::Aberration(const Aberration &other) {
 
 Aberration::Aberration(AberrationTypes type) :
 method(type), lres(0) {
-    fill();
+  std::call_once(initialize_once_flag, initialize);
 }
 
 Aberration &Aberration::operator=(const Aberration &other) {
@@ -63,12 +56,12 @@ Aberration &Aberration::operator=(const Aberration &other) {
 
 void Aberration::init() {
     method = Aberration::STANDARD;
-    fill();
+    checkEpoch = 1e30;
 }
 
 void Aberration::init(AberrationTypes type) {
     method = type;
-    fill();
+    checkEpoch = 1e30;
 }
 
 void Aberration::copy(const Aberration &other) {
@@ -117,7 +110,7 @@ const MVPosition &Aberration::derivative(Double epoch) {
     return result[lres];
 }
 
-void Aberration::fill() {
+void Aberration::initialize() {
   // Get the interpolation interval
   if (!Aberration::interval_reg) {
     interval_reg = 
@@ -130,7 +123,6 @@ void Aberration::fill() {
       AipsrcValue<Bool>::registerRC(String("measures.aberration.b_usejpl"),
 				    False);
   }
-  checkEpoch = 1e30;
 }
 
 void Aberration::refresh() {
