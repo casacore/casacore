@@ -30,69 +30,57 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 LogOrigin::LogOrigin()
-: task_p(""), function_p(""), class_p(""), id_p(True), line_p(0), file_p(""), node_p(getNode())
-{
-    // Nothing
-}
+: node_p(getNode())
+{}
 
-LogOrigin::LogOrigin(const String &globalFunctionName, const SourceLocation *where)
-  : task_p(""), function_p(globalFunctionName), class_p(""), id_p(True), 
-    line_p(where ? where->lineNumber : 0), 
-    file_p(where ? where->fileName : ""),
+LogOrigin::LogOrigin(const String &globalFunctionName)
+  : function_p(globalFunctionName),
     node_p(getNode())
-{
-    // Nothing
-}
+{}
+
+LogOrigin::LogOrigin(const String &globalFunctionName, const SourceLocation &where)
+  : function_p(globalFunctionName),
+    line_p(where.lineNumber),
+    file_p(where.fileName),
+    node_p(getNode())
+{}
+
+LogOrigin::LogOrigin(const String &className, const String &memberFuncName)
+  : function_p(memberFuncName),
+    class_p(className),
+    node_p(getNode())
+{}
 
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
-		     const SourceLocation *where)
-  : task_p(""), function_p(memberFuncName), class_p(className), id_p(True), 
-    line_p(where ? where->lineNumber : 0),
-    file_p(where ? where->fileName : ""),
+		     const SourceLocation &where)
+  : function_p(memberFuncName),
+    class_p(className),
+    line_p(where.lineNumber),
+    file_p(where.fileName),
     node_p(getNode())
-{
-    // Nothing
-}
+{}
 
-LogOrigin::LogOrigin(const String &className, const String &memberFuncName, 
-	  const ObjectID &id, const SourceLocation *where)
+LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
+	  const ObjectID &id)
+: task_p(""), function_p(memberFuncName), class_p(className),
+  id_p(id),
+  node_p(getNode())
+{}
+
+LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
+	  const ObjectID &id, const SourceLocation &where)
 : task_p(""), function_p(memberFuncName), class_p(className), 
   id_p(id), 
-  line_p(where ? where->lineNumber : 0),
-  file_p(where ? where->fileName : ""),
+  line_p(where.lineNumber),
+  file_p(where.fileName),
   node_p(getNode())
-{
-    // Nothing
-}
+{}
 
-LogOrigin::LogOrigin(const LogOrigin &other)
-{
-    copy_other(other);
-}
+LogOrigin::LogOrigin(const LogOrigin &other) = default;
 
-LogOrigin &LogOrigin::operator=(const LogOrigin &other)
-{
-    if (this != &other) {
-        copy_other(other);
-    }
-    return *this;
-}
+LogOrigin &LogOrigin::operator=(const LogOrigin &other) = default;
 
-void LogOrigin::copy_other(const LogOrigin &other)
-{
-    task_p = other.task_p;
-    function_p = other.function_p;
-    class_p = other.class_p;
-    id_p = other.id_p;
-    line_p = other.line_p;
-    file_p = other.file_p;
-    node_p = other.node_p;
-}
-
-LogOrigin::~LogOrigin()
-{
-    // Nothing
-}
+LogOrigin::~LogOrigin() = default;
 
 const String &LogOrigin::taskName() const
 {
@@ -224,14 +212,12 @@ ostream &operator<<(ostream &os, const LogOrigin &origin)
     return os;
 }
 
-// Goes with the following function. Not static function level because
-// causes problems with our exception emulation.
-static SourceLocation permanent;
-const SourceLocation *SourceLocation::canonicalize(const char *file, Int line)
+SourceLocation SourceLocation::canonicalize(const char *file, Int line)
 {
-    permanent.fileName = file;
-    permanent.lineNumber = line;
-    return &permanent;
+  SourceLocation permanent;
+  permanent.fileName = file;
+  permanent.lineNumber = line;
+  return permanent;
 }
 
 // Get the OpenMPI rank from the current process.
