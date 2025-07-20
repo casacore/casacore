@@ -29,8 +29,10 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/BasicSL/String.h>
-#include <casacore/casa/Containers/Block.h>
 #include <casacore/casa/System/Aipsrc.h>
+
+#include <mutex>
+#include <vector>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -83,13 +85,6 @@ class Unit;
 template <class T> class AipsrcVector : public Aipsrc {
 
 public:
-  //# Constructors
-  // Default constructor
-  // See a note in <linkto class=AipsrcValue>AipsrcValue</linkto>.
-  AipsrcVector();
-  //# Destructor
-  ~AipsrcVector();
-
   //# Member functions
   // The <src>find()</src> functions will, given a keyword, return the value
   // of a matched keyword found in the files. If no match found the
@@ -123,7 +118,7 @@ public:
   
   // Gets are like find, but using registered integers rather than names.
   // <group>
-  static const Vector<T> &get(uInt keyword);
+  static const Vector<T> get(uInt keyword);
   // </group>
   
   // Sets allow registered values to be set
@@ -136,22 +131,12 @@ public:
 
 private:
   //# Data
-  static AipsrcVector myp_p;
-  static std::mutex theirMutex;
+  inline static std::mutex theirMutex;
   // register list
   // <group>
-  Block<Vector<T> > tlst;
-  Block<String> ntlst;
+  inline static std::vector<Vector<T> > tlst;
+  inline static std::vector<String> ntlst;
   // </group>
-  
-  //# Constructors
-  // Copy constructor (not implemented)
-  AipsrcVector<T> &operator=(const AipsrcVector<T> &other);
-  
-  //# Copy assignment (not implemented)
-  AipsrcVector(const AipsrcVector<T> &other);
-  
-  //# General member functions
 };
 
 #define AipsrcVector_String AipsrcVector
@@ -166,24 +151,18 @@ private:
 
 template <> class AipsrcVector_String<String> : public Aipsrc {
  public:
-  AipsrcVector_String();
-  ~AipsrcVector_String();
   static Bool find(Vector<String> &value, const String &keyword);
   static Bool find(Vector<String> &value, const String &keyword, 
 		   const Vector<String> &deflt);
   static uInt registerRC(const String &keyword, const Vector<String> &deflt);
-  static const Vector<String> &get(uInt keyword);
+  static const Vector<String> get(uInt keyword);
   static void set(uInt keyword, const Vector<String> &deflt);
   static void save(uInt keyword);
 
 private:
-  static AipsrcVector_String myp_p;
-  static std::mutex theirMutex;
-  Block<Vector<String> > tlst;
-  Block<String> ntlst;
-  AipsrcVector_String<String>
-    &operator=(const AipsrcVector_String<String> &other);
-  AipsrcVector_String(const AipsrcVector_String<String> &other);
+  inline static std::mutex theirMutex;
+  inline static std::vector<Vector<String> > tlst;
+  inline static std::vector<String> ntlst;
 };
 
 #undef AipsrcVector_String
@@ -200,24 +179,18 @@ private:
 
 template <> class AipsrcVector_Bool<Bool> : public Aipsrc {
  public:
-  AipsrcVector_Bool();
-  ~AipsrcVector_Bool();
   static Bool find(Vector<Bool> &value, const String &keyword);
   static Bool find(Vector<Bool> &value, const String &keyword, 
 		   const Vector<Bool> &deflt);
   static uInt registerRC(const String &keyword, const Vector<Bool> &deflt);
-  static const Vector<Bool> &get(uInt keyword);
+  static const Vector<Bool> get(uInt keyword);
   static void set(uInt keyword, const Vector<Bool> &deflt);
   static void save(uInt keyword);
 
 private:
-  static AipsrcVector_Bool myp_p;
-  static std::mutex theirMutex;
-  Block<Vector<Bool> > tlst;
-  Block<String> ntlst;
-  AipsrcVector_Bool<Bool>
-    &operator=(const AipsrcVector_Bool<Bool> &other);
-  AipsrcVector_Bool(const AipsrcVector_Bool<Bool> &other);
+  inline static std::mutex theirMutex;
+  inline static std::vector<Vector<Bool> > tlst;
+  inline static std::vector<String> ntlst;
 };
 
 #undef AipsrcVector_Bool

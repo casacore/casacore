@@ -268,13 +268,13 @@ const String &Aipsrc::aipsHome() {
   return home;
 }
 
-uInt Aipsrc::registerRC(const String &keyword, Block<String> &nlst) {
+uInt Aipsrc::registerRC(const String &keyword, std::vector<String> &nlst) {
   uInt n;
-  for (n=0; n<nlst.nelements(); n++) {
+  for (n=0; n<nlst.size(); n++) {
     if (nlst[n] == keyword) break;
   }
   n++;
-  if (n>nlst.nelements()) {
+  if (n>nlst.size()) {
     nlst.resize(n);
   }
   nlst[n-1] = keyword;
@@ -307,45 +307,45 @@ uInt Aipsrc::registerRC(const String &keyword,
 }
 
 const String &Aipsrc::get(uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=strlst.size(), AipsError);
   return strlst[keyword-1];
 }
 
 const uInt &Aipsrc::get(uInt &code, uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=codlst.size(), AipsError);
   code = codlst[keyword-1];
   return codlst[keyword-1];
 }
 
 void Aipsrc::set(uInt keyword, const String &deflt) {
-  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=strlst.size(), AipsError);
   strlst[keyword-1] = deflt;
 }
 	       
 void Aipsrc::set(uInt keyword,
 		 Int Nname, const String tname[], const String &deflt) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=codlst.size(), AipsError);
   find (codlst[keyword-1], String::toString(keyword), Nname, tname, deflt);
 }
 
 void Aipsrc::set(uInt keyword,
 		 const Vector<String> &tname, const String &deflt) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=codlst.size(), AipsError);
   find (codlst[keyword-1], String::toString(keyword), tname, deflt);
 }
 
 void Aipsrc::save(uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=strlst.size(), AipsError);
   Aipsrc::save(nstrlst[keyword-1], strlst[keyword-1]);
 }
 
 void Aipsrc::save(uInt keyword, const String tname[]) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=codlst.size(), AipsError);
   Aipsrc::save(ncodlst[keyword-1], tname[codlst[keyword-1]]);
 }
 
 void Aipsrc::save(uInt keyword, const Vector<String> &tname) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
+  AlwaysAssert(keyword>0 && keyword<=codlst.size(), AipsError);
   Aipsrc::save(ncodlst[keyword-1], tname(codlst[keyword-1]));
 }
 
@@ -549,10 +549,8 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
   Block<String> nl;
   Block<String> vl;
   Int nkw = Aipsrc::genParse(nl, vl, ef, fileList);
-  Block<String> nla;
-  Block<String> vla;
-  nla.resize(0);
-  vla.resize(0);
+  std::vector<String> nla;
+  std::vector<String> vla;
   uInt n;
   for (Int i=nkw-1; i>=0; i--) {	// reverse order to do aipsrc like
     if (!nl[i].contains('*')) {		// no wild cards
@@ -587,7 +585,7 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
 
 void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
 		    const String &nam, const String &val) {
-  Block<String> nl = makeBlock(namlst);
+  std::vector<String> nl(namlst.begin(), namlst.end());
   uInt n = Aipsrc::registerRC(nam, nl);
   if (n > vallst.nelements()) vallst.resize(n, True);
   vallst(n-1) = val;
@@ -641,10 +639,10 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   String Aipsrc::home = String();
   String Aipsrc::uhome= String();
   Bool Aipsrc::filled = False;
-  Block<String> Aipsrc::strlst(0);
-  Block<String> Aipsrc::nstrlst(0);
-  Block<uInt> Aipsrc::codlst(0);
-  Block<String> Aipsrc::ncodlst(0);
+  std::vector<String> Aipsrc::strlst;
+  std::vector<String> Aipsrc::nstrlst;
+  std::vector<uInt> Aipsrc::codlst;
+  std::vector<String> Aipsrc::ncodlst;
 
 } //# NAMESPACE CASACORE - END
 

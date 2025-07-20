@@ -376,7 +376,7 @@ protected:
   // Actual find function to use during parse() without recursing into parse()
   static Bool findNoParse(String &value, const String &keyword, uInt start);
   // The registration function
-  static uInt registerRC(const String &keyword, Block<String> &nlst);
+  static uInt registerRC(const String &keyword, std::vector<String> &nlst);
   // Actual saving
   static void save(const String keyword, const String val);
   
@@ -410,11 +410,14 @@ private:
   static Bool filled;
   // String register list
   // <group>
-  static Block<String> strlst;
-  static Block<String> nstrlst;
-  static Block<uInt> codlst;
-  static Block<String> ncodlst;
+  static std::vector<String> strlst;
+  static std::vector<String> nstrlst;
+  static std::vector<uInt> codlst;
+  static std::vector<String> ncodlst;
   // </group>
+
+  Aipsrc() = delete;
+  ~Aipsrc() = delete;
 
   //# General member functions
   // Read in the aipsrc files. Always called using theirCallOnce (except for reRead()).

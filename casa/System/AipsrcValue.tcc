@@ -35,21 +35,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Data
-template <class T>
-AipsrcValue<T> AipsrcValue<T>::myp_p;
-template <class T>
-std::mutex AipsrcValue<T>::theirMutex;
-
-//# Constructor
-template <class T>
-AipsrcValue<T>::AipsrcValue() : 
-  tlst(0), ntlst(0) {}
-
-//# Destructor
-template <class T>
-AipsrcValue<T>::~AipsrcValue() {}
-
 template <class T>
 Bool AipsrcValue<T>::find(T &value, const String &keyword) {
   String res;
@@ -95,9 +80,9 @@ template <class T>
 uInt AipsrcValue<T>::registerRC(const String &keyword,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
-  myp_p.tlst.resize(n);
-  find ((myp_p.tlst)[n-1], keyword, deflt);
+  uInt n = Aipsrc::registerRC(keyword, ntlst);
+  tlst.resize(n);
+  find (tlst[n-1], keyword, deflt);
   return n;
 }
 
@@ -106,24 +91,24 @@ uInt AipsrcValue<T>::registerRC(const String &keyword,
 				const Unit &defun, const Unit &resun,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
-  myp_p.tlst.resize(n);
-  find ((myp_p.tlst)[n-1], keyword, defun, resun, deflt);
+  uInt n = Aipsrc::registerRC(keyword, ntlst);
+  tlst.resize(n);
+  find ((tlst)[n-1], keyword, defun, resun, deflt);
   return n;
 }
 
 template <class T>
-const T &AipsrcValue<T>::get(uInt keyword) {
+const T AipsrcValue<T>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  return (myp_p.tlst)[keyword-1];
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+  return (tlst)[keyword-1];
 }
 
 template <class T>
 void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  (myp_p.tlst)[keyword-1] = deflt;
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+  (tlst)[keyword-1] = deflt;
 }
 
 template <class T>
@@ -131,11 +116,11 @@ void AipsrcValue<T>::save(uInt keyword) {
   ostringstream oss;
   {
     std::lock_guard<std::mutex> lock(theirMutex);
-    AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-    oss << (myp_p.tlst)[keyword-1];
+    AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+    oss << (tlst)[keyword-1];
   }
   // Unlock has to be done before save, because MVTime uses AipsrcValue.
-  Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
+  Aipsrc::save((ntlst)[keyword-1], String(oss));
 }
 
 } //# NAMESPACE CASACORE - END
