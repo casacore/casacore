@@ -177,16 +177,13 @@ private:
   public:
     // Constructor
     // <note role=warning> Next one must be in-line for (some?) compilers </note>
-    RefRep() : type(Ms::DEFAULT), offmp(0), frame() {}
-    // Destructor
-    // <note role=warning> Next one must be in-line for (some?) compilers </note>
-    ~RefRep() {delete offmp;} 
+    RefRep() = default;
     // The actual data
     // <group>
     // Type of reference
-    typename Ms::Types type;
+    typename Ms::Types type = Ms::DEFAULT;
     // Pointer to main Measure, defining an offset
-    Measure *offmp;
+    std::unique_ptr<Measure> offmp;
     // Reference frame
     MeasFrame frame;
     // </group>

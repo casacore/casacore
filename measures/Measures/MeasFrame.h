@@ -27,6 +27,7 @@
 #define MEASURES_MEASFRAME_H
 
 //# Includes
+#include <memory>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -287,13 +288,19 @@ class MeasFrame {
   // Get the comet coordinates
   Bool getComet(MVPosition &tdb) const;
   // </group>
+
+  // Make a value copy of this MeasFrame, such that it
+  // contains no reference to the old MeasFrame. This
+  // can be useful for insuring thread safety in conversions.
+  MeasFrame independentCopy() const;
   
 private:
   
   //# Data
   // Representation of MeasFrame
-  FrameRep *rep;
+  std::shared_ptr<FrameRep> rep;
   
+  MeasFrame(std::shared_ptr<FrameRep> new_rep);
   //# Member functions
   // Create an instance of the MeasFrame class
   void create();
@@ -314,10 +321,6 @@ private:
   void makeComet();
   // Throw reset error
   void errorReset(const String &txt);
-  // Lock the frame to make sure deletion occurs when needed
-  void lock(uInt &locker);
-  // Unlock the frame
-  void unlock(const uInt locker);
 };
 
 //# Global functions

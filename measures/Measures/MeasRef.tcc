@@ -68,7 +68,7 @@ MeasRef<Ms>::MeasRef(const uInt tp, const Ms &ep)
 {
   create();
   rep_p->type = Ms::castType(tp);
-  rep_p->offmp = new Ms(ep);
+  rep_p->offmp = std::make_unique<Ms>(ep);
 }
 
 template<class Ms>
@@ -84,7 +84,7 @@ MeasRef<Ms>::MeasRef(const uInt tp, const MeasFrame &mf, const Ms &ep)
 {
   create();
   rep_p->type = Ms::castType(tp);
-  rep_p->offmp = new Ms(ep);
+  rep_p->offmp = std::make_unique<Ms>(ep);
   rep_p->frame = mf;
 }
 
@@ -97,8 +97,7 @@ void MeasRef<Ms>::create() {
 
 //# Destructor
 template<class Ms>
-MeasRef<Ms>::~MeasRef()
-{}
+MeasRef<Ms>::~MeasRef() = default;
 
 //# Operators
 template<class Ms>
@@ -200,7 +199,7 @@ const MeasFrame &MeasRef<Ms>::frameComet(MRBase &ref1,
 
 template<class Ms>
 const Measure* MeasRef<Ms>::offset() const {
-  return ( ! empty() ? rep_p->offmp : 0);
+  return ( ! empty() ? rep_p->offmp.get() : nullptr);
 }
 
 template<class Ms>
@@ -217,19 +216,13 @@ void MeasRef<Ms>::set(uInt tp) {
 template<class Ms>
 void MeasRef<Ms>::set(const Ms &ep) {
   create();
-  if (rep_p->offmp) {
-    delete rep_p->offmp; rep_p->offmp = 0;
-  }
-  rep_p->offmp = new Ms(ep);
+  rep_p->offmp = std::make_unique<Ms>(ep);
 }
 
 template<class Ms>
 void MeasRef<Ms>::set(const Measure &ep) {
   create();
-  if (rep_p->offmp) {
-    delete rep_p->offmp; rep_p->offmp = 0;
-  }
-  rep_p->offmp = ep.clone();
+  rep_p->offmp.reset(ep.clone());
 }
 
 template<class Ms>
