@@ -24,6 +24,9 @@
 //#                        Charlottesville, VA 22903-2475 USA
 
 //# Includes
+#include <optional>
+
+#include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Exceptions/Error.h>
 #include <casacore/casa/BasicMath/Math.h>
 #include <casacore/casa/BasicSL/Constants.h>
@@ -42,50 +45,119 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-MCFrame::MCFrame(const MCFrame &other) = default;
+struct MCFrameImplementation {
+  //# Data
+  // The belonging frame pointer
+  // MeasFrame myf;
+  // The actual measure conversion values
+  // <group>
+  // Conversion to TDB time (due to some (for me) unsolvable dependency
+  // errors)
+  // not the proper MeasConvert* here)
+  std::optional<MeasConvert<MEpoch>> epConvTDB;
+  // TDB time
+  std::optional<Double> epTDBp;
+  // Conversion to UT1 time
+  std::optional<MeasConvert<MEpoch>> epConvUT1;
+  // UT1 time
+  std::optional<Double> epUT1p;
+  // Conversion to TT time
+  std::optional<MeasConvert<MEpoch>> epConvTT;
+  // TT time
+  std::optional<Double> epTTp;
+  // Conversion to LAST time
+  std::optional<MeasConvert<MEpoch>> epConvLAST;
+  // LAST time
+  std::optional<Double> epLASTp;
+  // Conversion to ITRF longitude/latitude
+  std::optional<MeasConvert<MPosition>> posConvLong;
+  // Longitude
+  Vector<Double> posLongp;
+  // Position
+  std::optional<MVPosition> posITRFp;
+  // Conversion to geodetic longitude/latitude
+  std::optional<MeasConvert<MPosition>> posConvLongGeo;
+  // Latitude
+  Vector<Double> posLongGeop;
+  // Position
+  std::optional<MVPosition> posGeop;
+  // Conversion to J2000
+  std::optional<MeasConvert<MDirection>> dirConvJ2000;
+  // Longitude
+  Vector<Double> j2000Longp;
+  // J2000 coordinates
+  std::optional<MVDirection> dirJ2000p;
+  // Conversion to B1950
+  std::optional<MeasConvert<MDirection>> dirConvB1950;
+  // Longitude
+  Vector<Double> b1950Longp;
+  // B1950 coordinates
+  std::optional<MVDirection> dirB1950p;
+  // Conversion to apparent coordinates
+  std::optional<MeasConvert<MDirection>> dirConvApp;
+  // Longitude
+  Vector<Double> appLongp;
+  // Apparent coordinates
+  std::optional<MVDirection> dirAppp;
+  // Conversion to LSR radial velocity
+  std::optional<MeasConvert<MRadialVelocity>> radConvLSR;
+  // Radial velocity
+  std::optional<Double> radLSRp;
+  // </group>
+};
+  
+MCFrame::MCFrame() :
+  impl_(std::make_unique<MCFrameImplementation>()) {
+}
+
+MCFrame::MCFrame(const MCFrame &other) :
+  impl_(std::make_unique<MCFrameImplementation>(*other.impl_))
+{
+}
+
 MCFrame::MCFrame(MCFrame &&other) = default;
 MCFrame::~MCFrame() = default;
 
 void MCFrame::resetEpoch() {
-    epTDBp.reset();
-    epUT1p.reset();
-    epTTp.reset();
-    epLASTp.reset();
-    appLongp = casacore::Vector<Double>();
-    dirAppp.reset();
-    radLSRp.reset();
+  impl_->epTDBp.reset();
+  impl_->epUT1p.reset();
+  impl_->epTTp.reset();
+  impl_->epLASTp.reset();
+  impl_->appLongp = casacore::Vector<Double>();
+  impl_->dirAppp.reset();
+  impl_->radLSRp.reset();
 }
 
 void MCFrame::resetPosition() {
-  if (posLongp.empty()) {
-    posLongp = casacore::Vector<Double>();
-    posITRFp.reset();
-    posLongGeop = casacore::Vector<Double>();
-    posGeop.reset();
+  if (impl_->posLongp.empty()) {
+    impl_->posLongp = casacore::Vector<Double>();
+    impl_->posITRFp.reset();
+    impl_->posLongGeop = casacore::Vector<Double>();
+    impl_->posGeop.reset();
   }
-  if (epLASTp) {
-    epLASTp.reset();
+  if (impl_->epLASTp) {
+    impl_->epLASTp.reset();
   }
 }
 
 void MCFrame::resetDirection() {
-  if (j2000Longp.empty()) {
-    j2000Longp = casacore::Vector<Double>();
-    dirJ2000p.reset();
+  if (impl_->j2000Longp.empty()) {
+    impl_->j2000Longp = casacore::Vector<Double>();
+    impl_->dirJ2000p.reset();
   }
-  if (b1950Longp.empty()) {
-    b1950Longp = casacore::Vector<Double>();
-    dirB1950p.reset();
+  if (impl_->b1950Longp.empty()) {
+    impl_->b1950Longp = casacore::Vector<Double>();
+    impl_->dirB1950p.reset();
   }
-  if (appLongp.empty()) {
-    appLongp = casacore::Vector<Double>();
-    dirAppp.reset();
+  if (impl_->appLongp.empty()) {
+    impl_->appLongp = casacore::Vector<Double>();
+    impl_->dirAppp.reset();
   }
-  radLSRp.reset();
+  impl_->radLSRp.reset();
 }
 
 void MCFrame::resetRadialVelocity() {
-  radLSRp.reset();
+  impl_->radLSRp.reset();
 }
 
 void MCFrame::resetComet() {
@@ -93,12 +165,12 @@ void MCFrame::resetComet() {
 
 Bool MCFrame::getTDB(Double &tdb, const MeasFrame& myf) {
   if (myf.epoch()) {
-    if (!epTDBp) {
-      epTDBp = epConvTDB->operator()
+    if (!impl_->epTDBp) {
+      impl_->epTDBp = impl_->epConvTDB->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
     }
-    tdb = *epTDBp;
+    tdb = *impl_->epTDBp;
     return True;
   }
   tdb = 0.0;
@@ -107,12 +179,12 @@ Bool MCFrame::getTDB(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getUT1(Double &tdb, const MeasFrame& myf) {
   if (myf.epoch()) {
-    if (!epUT1p) {
-      epUT1p = epConvUT1->operator()
+    if (!impl_->epUT1p) {
+      impl_->epUT1p = impl_->epConvUT1->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
     }
-    tdb = *epUT1p;
+    tdb = *impl_->epUT1p;
     return True;
   }
   tdb = 0.0;
@@ -121,12 +193,12 @@ Bool MCFrame::getUT1(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getTT(Double &tdb, const MeasFrame& myf) {
   if (myf.epoch()) {
-    if (!epTTp) {
-      epTTp = epConvTT->operator()
+    if (!impl_->epTTp) {
+      impl_->epTTp = impl_->epConvTT->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
     }
-    tdb = *epTTp;
+    tdb = *impl_->epTTp;
     return True;
   }
   tdb = 0.0;
@@ -135,14 +207,13 @@ Bool MCFrame::getTT(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getLong(Double &tdb, const MeasFrame& myf) {
   if (myf.position()) {
-    if (posLongp.empty()) {
-      posITRFp.reset(new MVPosition);
-      *posITRFp = posConvLong->operator()
+    if (impl_->posLongp.empty()) {
+      impl_->posITRFp = impl_->posConvLong->operator()
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
-      posLongp = posITRFp->get();
+      impl_->posLongp = impl_->posITRFp->get();
     }
-    tdb = MVAngle(posLongp(1))(-0.5);
+    tdb = MVAngle(impl_->posLongp(1))(-0.5);
     return True;
   }
   tdb = 0.0;
@@ -151,14 +222,13 @@ Bool MCFrame::getLong(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getLat(Double &tdb, const MeasFrame& myf) {
   if (myf.position()) {
-    if (posLongp.empty()) {
-      posITRFp.reset(new MVPosition);
-      *posITRFp = posConvLong->operator()
+    if (impl_->posLongp.empty()) {
+      impl_->posITRFp = impl_->posConvLong->operator()
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
-      posLongp = posITRFp->get();
+      impl_->posLongp = impl_->posITRFp->get();
     }
-    tdb = posLongp(2);
+    tdb = impl_->posLongp(2);
     return True;
   }
   tdb = 0.0;
@@ -167,14 +237,13 @@ Bool MCFrame::getLat(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getLatGeo(Double &tdb, const MeasFrame& myf) {
   if (myf.position()) {
-    if (posLongGeop.empty()) {
-      posGeop.reset(new MVPosition);
-      *posGeop = posConvLongGeo->operator()
+    if (impl_->posLongGeop.empty()) {
+      impl_->posGeop = impl_->posConvLongGeo->operator()
         (*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
         getValue();
-      posLongGeop = posGeop->get();
+      impl_->posLongGeop = impl_->posGeop->get();
     }
-    tdb = posLongGeop(2);
+    tdb = impl_->posLongGeop(2);
     return True;
   }
   tdb = 0.0;
@@ -183,14 +252,13 @@ Bool MCFrame::getLatGeo(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getITRF(MVPosition &tdb, const MeasFrame& myf) {
   if (myf.position()) {
-    if (posLongp.empty()) {
-      posITRFp.reset(new MVPosition);
-      *posITRFp = posConvLong->operator()
+    if (impl_->posLongp.empty()) {
+      impl_->posITRFp = impl_->posConvLong->operator()
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
-      posLongp = posITRFp->get();
+      impl_->posLongp = impl_->posITRFp->get();
     }
-    tdb = *posITRFp;
+    tdb = *impl_->posITRFp;
     return True;
   }
   tdb = MVPosition(0.0);
@@ -199,14 +267,13 @@ Bool MCFrame::getITRF(MVPosition &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getRadius(Double &tdb, const MeasFrame& myf) {
   if (myf.position()) {
-    if (posLongp.empty()) {
-      posITRFp.reset(new MVPosition);
-      *posITRFp = posConvLong->operator()
+    if (impl_->posLongp.empty()) {
+      impl_->posITRFp = impl_->posConvLong->operator()
 	(*dynamic_cast<const MVPosition *const>(myf.position()->getData())).
 	getValue();
-      posLongp = posITRFp->get();
+      impl_->posLongp = impl_->posITRFp->get();
     }
-    tdb = posLongp(0);
+    tdb = impl_->posLongp(0);
     return True;
   }
   tdb = 0.0;
@@ -215,12 +282,12 @@ Bool MCFrame::getRadius(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getLAST(Double &tdb, const MeasFrame& myf) {
   if (myf.epoch()) {
-    if (!epLASTp) {
-      epLASTp = epConvLAST->operator()
+    if (!impl_->epLASTp) {
+      impl_->epLASTp = impl_->epConvLAST->operator()
 	(*dynamic_cast<const MVEpoch *const>(myf.epoch()->getData())).
 	getValue().get();
     }
-    tdb = fmod(*epLASTp, 1.0);
+    tdb = fmod(*impl_->epLASTp, 1.0);
     return True;
   }
   tdb = 0.0;
@@ -235,14 +302,13 @@ Bool MCFrame::getLASTr(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (j2000Longp.empty()) {
-      dirJ2000p.reset(new MVDirection);
-      *dirJ2000p = dirConvJ2000->operator()
+    if (impl_->j2000Longp.empty()) {
+      impl_->dirJ2000p = impl_->dirConvJ2000->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      j2000Longp = dirJ2000p->get();
+      impl_->j2000Longp = impl_->dirJ2000p->get();
     }
-    tdb = j2000Longp(0);
+    tdb = impl_->j2000Longp(0);
     return True;
   }
   tdb = 0.0;
@@ -251,14 +317,13 @@ Bool MCFrame::getJ2000Long(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getJ2000Lat(Double &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (j2000Longp.empty()) {
-      dirJ2000p.reset(new MVDirection);
-      *dirJ2000p = dirConvJ2000->operator()
+    if (impl_->j2000Longp.empty()) {
+      impl_->dirJ2000p = impl_->dirConvJ2000->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      j2000Longp = dirJ2000p->get();
+      impl_->j2000Longp = impl_->dirJ2000p->get();
     }
-    tdb = j2000Longp(1);
+    tdb = impl_->j2000Longp(1);
     return True;
   }
   tdb = 0.0;
@@ -267,14 +332,13 @@ Bool MCFrame::getJ2000Lat(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getJ2000(MVDirection &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (j2000Longp.empty()) {
-      dirJ2000p.reset(new MVDirection);
-      *dirJ2000p = dirConvJ2000->operator()
+    if (impl_->j2000Longp.empty()) {
+      impl_->dirJ2000p = impl_->dirConvJ2000->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      j2000Longp = dirJ2000p->get();
+      impl_->j2000Longp = impl_->dirJ2000p->get();
     }
-    tdb = *dirJ2000p;
+    tdb = *impl_->dirJ2000p;
     return True;
   }
   tdb = MVDirection(0.0);
@@ -283,14 +347,13 @@ Bool MCFrame::getJ2000(MVDirection &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getB1950Long(Double &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (b1950Longp.empty()) {
-      dirB1950p.reset(new MVDirection);
-      *dirB1950p = dirConvB1950->operator()
+    if (impl_->b1950Longp.empty()) {
+      impl_->dirB1950p = impl_->dirConvB1950->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      b1950Longp = dirB1950p->get();
+      impl_->b1950Longp = impl_->dirB1950p->get();
     }
-    tdb = b1950Longp(0);
+    tdb = impl_->b1950Longp(0);
     return True;
   }
   tdb = 0.0;
@@ -299,14 +362,13 @@ Bool MCFrame::getB1950Long(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getB1950Lat(Double &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (b1950Longp.empty()) {
-      dirB1950p.reset(new MVDirection);
-      *dirB1950p = dirConvB1950->operator()
+    if (impl_->b1950Longp.empty()) {
+      impl_->dirB1950p = impl_->dirConvB1950->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      b1950Longp = dirB1950p->get();
+      impl_->b1950Longp = impl_->dirB1950p->get();
     }
-    tdb = b1950Longp(1);
+    tdb = impl_->b1950Longp(1);
     return True;
   }
   tdb = 0.0;
@@ -315,14 +377,13 @@ Bool MCFrame::getB1950Lat(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getB1950(MVDirection &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (b1950Longp.empty()) {
-      dirB1950p.reset(new MVDirection);
-      *dirB1950p = dirConvB1950->operator()
+    if (impl_->b1950Longp.empty()) {
+      impl_->dirB1950p = impl_->dirConvB1950->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      b1950Longp = dirB1950p->get();
+      impl_->b1950Longp = impl_->dirB1950p->get();
     }
-    tdb = *dirB1950p;
+    tdb = *impl_->dirB1950p;
     return True;
   }
   tdb = MVDirection(0.0);
@@ -331,14 +392,13 @@ Bool MCFrame::getB1950(MVDirection &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getAppLong(Double &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (appLongp.empty()) {
-      dirAppp.reset(new MVDirection);
-      *dirAppp = dirConvApp->operator()
+    if (impl_->appLongp.empty()) {
+      impl_->dirAppp = impl_->dirConvApp->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      appLongp = dirAppp->get();
+      impl_->appLongp = impl_->dirAppp->get();
     }
-    tdb = appLongp(0);
+    tdb = impl_->appLongp(0);
     return True;
   }
   tdb = 0.0;
@@ -347,14 +407,13 @@ Bool MCFrame::getAppLong(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getAppLat(Double &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (appLongp.empty()) {
-      dirAppp.reset(new MVDirection);
-      *dirAppp = dirConvApp->operator()
+    if (impl_->appLongp.empty()) {
+      impl_->dirAppp = impl_->dirConvApp->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      appLongp = dirAppp->get();
+      impl_->appLongp = impl_->dirAppp->get();
     }
-    tdb = appLongp(1);
+    tdb = impl_->appLongp(1);
     return True;
   }
   tdb = 0.0;
@@ -363,14 +422,13 @@ Bool MCFrame::getAppLat(Double &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getApp(MVDirection &tdb, const MeasFrame& myf) {
   if (myf.direction()) {
-    if (appLongp.empty()) {
-      dirAppp.reset(new MVDirection);
-      *dirAppp = dirConvApp->operator()
+    if (impl_->appLongp.empty()) {
+      impl_->dirAppp = impl_->dirConvApp->operator()
 	(*dynamic_cast<const MVDirection *const>(myf.direction()->getData())).
 	getValue();
-      appLongp = dirAppp->get();
+      impl_->appLongp = impl_->dirAppp->get();
     }
-    tdb = *dirAppp;
+    tdb = *impl_->dirAppp;
     return True;
   }
   tdb = MVDirection(0.0);
@@ -379,13 +437,13 @@ Bool MCFrame::getApp(MVDirection &tdb, const MeasFrame& myf) {
 
 Bool MCFrame::getLSR(Double &tdb, const MeasFrame& myf) {
   if (myf.radialVelocity()) {
-    if (!radLSRp) {
-      radLSRp = radConvLSR->operator()
+    if (!impl_->radLSRp) {
+      impl_->radLSRp = impl_->radConvLSR->operator()
 	(*dynamic_cast<const MVRadialVelocity *const>(myf.radialVelocity()->
 						      getData())).
 	getValue();
     }
-    tdb = *radLSRp;
+    tdb = *impl_->radLSRp;
     return True;
   }
   tdb = 0.0;
@@ -414,83 +472,83 @@ void MCFrame::makeEpoch(const MeasFrame& myf) {
   const MEpoch::Ref REFTDB = MEpoch::Ref(MEpoch::TDB);
   const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
   const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
-  epConvTDB = new MEpoch::Convert(*(myf.epoch()), REFTDB);
-  epConvUT1 = new MEpoch::Convert(*(myf.epoch()), REFUT1);
-  epConvTT  = new MEpoch::Convert(*(myf.epoch()), REFTT);
-  epTDBp.reset();
-  epUT1p.reset();
-  epTTp.reset();
-  epConvLAST.reset();
-  epConvLAST = new MEpoch::Convert(*(myf.epoch()),
+  impl_->epConvTDB = MEpoch::Convert(*(myf.epoch()), REFTDB);
+  impl_->epConvUT1 = MEpoch::Convert(*(myf.epoch()), REFUT1);
+  impl_->epConvTT  = MEpoch::Convert(*(myf.epoch()), REFTT);
+  impl_->epTDBp.reset();
+  impl_->epUT1p.reset();
+  impl_->epTTp.reset();
+  impl_->epConvLAST.reset();
+  impl_->epConvLAST = MEpoch::Convert(*(myf.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, myf));
-  epLASTp.reset();
-  if (!appLongp.empty()) {
-    appLongp = casacore::Vector<Double>();
-    dirAppp.reset();
+  impl_->epLASTp.reset();
+  if (!impl_->appLongp.empty()) {
+    impl_->appLongp = casacore::Vector<Double>();
+    impl_->dirAppp.reset();
   }
-  radLSRp.reset();
+  impl_->radLSRp.reset();
 }
 
 void MCFrame::makePosition(const MeasFrame& myf) {
   static const MPosition::Ref REFLONG 
     = MPosition::Ref(MPosition::ITRF);
-  posConvLong = new MPosition::Convert(*(myf.position()),
+  impl_->posConvLong = MPosition::Convert(*(myf.position()),
 				       REFLONG);
-  if (!posLongp.empty()) {
-    posLongp = casacore::Vector<Double>();
-    posITRFp.reset();
+  if (!impl_->posLongp.empty()) {
+    impl_->posLongp = casacore::Vector<Double>();
+    impl_->posITRFp.reset();
   }
-  epLASTp.reset();
-  radLSRp.reset();
+  impl_->epLASTp.reset();
+  impl_->radLSRp.reset();
   static const MPosition::Ref REFGEO
     = MPosition::Ref(MPosition::WGS84);
-  posConvLongGeo = new MPosition::Convert(*(myf.position()),
+  impl_->posConvLongGeo = MPosition::Convert(*(myf.position()),
 					  REFGEO);
-  if (!posLongGeop.empty()) {
-    posLongGeop = casacore::Vector<Double>();
-    posGeop.reset();
+  if (!impl_->posLongGeop.empty()) {
+    impl_->posLongGeop = casacore::Vector<Double>();
+    impl_->posGeop.reset();
   }
 }
 
 void MCFrame::makeDirection(const MeasFrame& myf) {
   static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
-  dirConvJ2000 = new MDirection::Convert(*(myf.direction()),
+  impl_->dirConvJ2000 = MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::J2000,
 							 myf));
 
   static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
-  dirConvB1950 = new MDirection::Convert(*(myf.direction()),
+  impl_->dirConvB1950 = MDirection::Convert(*(myf.direction()),
 					 MDirection::Ref(MDirection::B1950,
 							 myf));
-  dirConvApp = new MDirection::Convert(*(myf.direction()),
+  impl_->dirConvApp = MDirection::Convert(*(myf.direction()),
 				       MDirection::Ref(MDirection::APP,
 						       myf));
-  if (!j2000Longp.empty()) {
-    j2000Longp = casacore::Vector<Double>();
-    dirJ2000p.reset();
+  if (!impl_->j2000Longp.empty()) {
+    impl_->j2000Longp = casacore::Vector<Double>();
+    impl_->dirJ2000p.reset();
   }
-  if (!b1950Longp.empty()) {
-    b1950Longp = casacore::Vector<Double>();
-    dirB1950p.reset();
+  if (!impl_->b1950Longp.empty()) {
+    impl_->b1950Longp = casacore::Vector<Double>();
+    impl_->dirB1950p.reset();
   }
-  if (!appLongp.empty()) {
-    appLongp = casacore::Vector<Double>();
-    dirAppp.reset();
+  if (!impl_->appLongp.empty()) {
+    impl_->appLongp = casacore::Vector<Double>();
+    impl_->dirAppp.reset();
   }
-  if (radLSRp) {
-    radLSRp.reset();
+  if (impl_->radLSRp) {
+    impl_->radLSRp.reset();
   }
 }
 
 void MCFrame::makeRadialVelocity(const MeasFrame& myf) {
   static const MRadialVelocity::Ref REFLSR 
     = MRadialVelocity::Ref(MRadialVelocity::LSRK);
-  radConvLSR = new MRadialVelocity::Convert(*(myf.radialVelocity()),
+  impl_->radConvLSR = MRadialVelocity::Convert(*(myf.radialVelocity()),
 					    REFLSR);
-  radLSRp.reset();
+  impl_->radLSRp.reset();
 }
 
-void MCFrame::makeComet() {;}
+void MCFrame::makeComet() {}
 
 } //# NAMESPACE CASACORE - END
 

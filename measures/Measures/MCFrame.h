@@ -27,23 +27,14 @@
 #define MEASURES_MCFRAME_H
 
 //# Includes
-#include <optional>
-
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Vector.h>
 #include <casacore/measures/Measures/Measure.h>
-#include <casacore/measures/Measures/MeasFrame.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-class MDirection;
-template<class M> class MeasConvert;
-class MEpoch;
-class MVDirection;
-class MVPosition;
-class MPosition;
-class MRadialVelocity;
+class MeasFrame;
+struct MCFrameImplementation;
 
 // <summary>
 // Measure frame calculations proxy
@@ -93,46 +84,6 @@ class MRadialVelocity;
 // <todo asof="1997/04/17">
 // </todo>
 
-template <typename T>
-class cloned_ptr {
- public:
-  cloned_ptr() noexcept {}
-  cloned_ptr(std::nullptr_t) noexcept {}
-  cloned_ptr(T* object) noexcept : _ptr(object) {}
-  cloned_ptr(const cloned_ptr<T>& other)
-      : _ptr(other._ptr == nullptr ? nullptr : new T(*other._ptr)) {}
-  cloned_ptr(cloned_ptr<T>&& other) noexcept : _ptr(std::move(other._ptr)) {}
-
-  cloned_ptr<T>& operator=(std::nullptr_t) noexcept { _ptr.reset(); return *this; }
-  cloned_ptr<T>& operator=(const cloned_ptr<T>& other) {
-    _ptr.reset(other._ptr == nullptr ? nullptr : new T(*other._ptr));
-    return *this;
-  }
-  cloned_ptr<T>& operator=(cloned_ptr<T>&& other) noexcept {
-    _ptr = std::move(other._ptr);
-    return *this;
-  }
-  void reset() noexcept { _ptr.reset(); }
-  void reset(T* object) noexcept { _ptr.reset(object); }
-
-  operator bool() const { return _ptr != nullptr; }
-  T& operator*() const noexcept { return *_ptr; }
-  T* operator->() const noexcept { return _ptr.get(); }
-  T* get() const { return _ptr.get(); }
-
-  bool operator==(std::nullptr_t) const noexcept { return _ptr == nullptr; }
-  bool operator==(const std::unique_ptr<T>& rhs) const noexcept {
-    return _ptr == rhs;
-  }
-  bool operator==(const cloned_ptr<T>& rhs) const noexcept {
-    return _ptr == rhs._ptr;
-  }
-  void swap(cloned_ptr<T>& other) noexcept { std::swap(_ptr, other._ptr); }
-
- private:
-  std::unique_ptr<T> _ptr;
-};
-
 class MCFrame {
 
 public:
@@ -141,7 +92,7 @@ public:
   
   //# Constructors
   // Construct using the MeasFrame parent
-  MCFrame() = default;
+  MCFrame();
   MCFrame(const MCFrame &other);
   MCFrame(MCFrame &&other);
 
@@ -218,66 +169,11 @@ public:
   Bool getComet(MVPosition &tdb, const MeasFrame& myf);
   
 private:
-  //# Data
-  // The belonging frame pointer
-  // MeasFrame myf;
-  // The actual measure conversion values
-  // <group>
-  // Conversion to TDB time (due to some (for me) unsolvable dependency
-  // errors)
-  // not the proper MeasConvert* here)
-  cloned_ptr<MeasConvert<MEpoch>> epConvTDB;
-  // TDB time
-  std::optional<Double> epTDBp;
-  // Conversion to UT1 time
-  cloned_ptr<MeasConvert<MEpoch>> epConvUT1;
-  // UT1 time
-  std::optional<Double> epUT1p;
-  // Conversion to TT time
-  cloned_ptr<MeasConvert<MEpoch>> epConvTT;
-  // TT time
-  std::optional<Double> epTTp;
-  // Conversion to LAST time
-  cloned_ptr<MeasConvert<MEpoch>> epConvLAST;
-  // LAST time
-  std::optional<Double> epLASTp;
-  // Conversion to ITRF longitude/latitude
-  cloned_ptr<MeasConvert<MPosition>> posConvLong;
-  // Longitude
-  Vector<Double> posLongp;
-  // Position
-  cloned_ptr<MVPosition> posITRFp;
-  // Conversion to geodetic longitude/latitude
-  cloned_ptr<MeasConvert<MPosition>> posConvLongGeo;
-  // Latitude
-  Vector<Double> posLongGeop;
-  // Position
-  cloned_ptr<MVPosition> posGeop;
-  // Conversion to J2000
-  cloned_ptr<MeasConvert<MDirection>> dirConvJ2000;
-  // Longitude
-  Vector<Double> j2000Longp;
-  // J2000 coordinates
-  cloned_ptr<MVDirection> dirJ2000p;
-  // Conversion to B1950
-  cloned_ptr<MeasConvert<MDirection>> dirConvB1950;
-  // Longitude
-  Vector<Double> b1950Longp;
-  // B1950 coordinates
-  cloned_ptr<MVDirection> dirB1950p;
-  // Conversion to apparent coordinates
-  cloned_ptr<MeasConvert<MDirection>> dirConvApp;
-  // Longitude
-  Vector<Double> appLongp;
-  // Apparent coordinates
-  cloned_ptr<MVDirection> dirAppp;
-  // Conversion to LSR radial velocity
-  cloned_ptr<MeasConvert<MRadialVelocity>> radConvLSR;
-  // Radial velocity
-  std::optional<Double> radLSRp;
-  // </group>
-  
   MCFrame &operator=(const MCFrame &other) = delete;
+  
+  // pointer-to-implementation (pimpl) pattern is used to avoid a large number of
+  // dependencies in the header file.
+  std::unique_ptr<struct MCFrameImplementation> impl_;
 };
 
 
