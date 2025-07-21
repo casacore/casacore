@@ -27,8 +27,6 @@
 #define MEASURES_MCFRAME_H
 
 //# Includes
-#include <optional>
-
 #include <casacore/casa/aips.h>
 #include <casacore/measures/Measures/Measure.h>
 
