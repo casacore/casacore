@@ -123,30 +123,20 @@ void MCFrame::resetEpoch() {
 }
 
 void MCFrame::resetPosition() {
-  if (!impl_->posLongp.empty()) {
-    impl_->posLongp = casacore::Vector<Double>();
-    impl_->posITRFp.reset();
-    impl_->posLongGeop = casacore::Vector<Double>();
-    impl_->posGeop.reset();
-  }
-  if (impl_->epLASTp) {
-    impl_->epLASTp.reset();
-  }
+  impl_->posLongp = casacore::Vector<Double>();
+  impl_->posITRFp.reset();
+  impl_->posLongGeop = casacore::Vector<Double>();
+  impl_->posGeop.reset();
+  impl_->epLASTp.reset();
 }
 
 void MCFrame::resetDirection() {
-  if (!impl_->j2000Longp.empty()) {
-    impl_->j2000Longp = casacore::Vector<Double>();
-    impl_->dirJ2000p.reset();
-  }
-  if (!impl_->b1950Longp.empty()) {
-    impl_->b1950Longp = casacore::Vector<Double>();
-    impl_->dirB1950p.reset();
-  }
-  if (!impl_->appLongp.empty()) {
-    impl_->appLongp = casacore::Vector<Double>();
-    impl_->dirAppp.reset();
-  }
+  impl_->j2000Longp = casacore::Vector<Double>();
+  impl_->dirJ2000p.reset();
+  impl_->b1950Longp = casacore::Vector<Double>();
+  impl_->dirB1950p.reset();
+  impl_->appLongp = casacore::Vector<Double>();
+  impl_->dirAppp.reset();
   impl_->radLSRp.reset();
 }
 
@@ -476,10 +466,8 @@ void MCFrame::makeEpoch(const MeasFrame& myf) {
   impl_->epConvLAST = MEpoch::Convert(*(myf.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, myf));
   impl_->epLASTp.reset();
-  if (!impl_->appLongp.empty()) {
-    impl_->appLongp = casacore::Vector<Double>();
-    impl_->dirAppp.reset();
-  }
+  impl_->appLongp = casacore::Vector<Double>();
+  impl_->dirAppp.reset();
   impl_->radLSRp.reset();
 }
 
@@ -488,20 +476,16 @@ void MCFrame::makePosition(const MeasFrame& myf) {
     = MPosition::Ref(MPosition::ITRF);
   impl_->posConvLong = MPosition::Convert(*(myf.position()),
 				       REFLONG);
-  if (!impl_->posLongp.empty()) {
-    impl_->posLongp = casacore::Vector<Double>();
-    impl_->posITRFp.reset();
-  }
+  impl_->posLongp = casacore::Vector<Double>();
+  impl_->posITRFp.reset();
   impl_->epLASTp.reset();
   impl_->radLSRp.reset();
   static const MPosition::Ref REFGEO
     = MPosition::Ref(MPosition::WGS84);
   impl_->posConvLongGeo = MPosition::Convert(*(myf.position()),
 					  REFGEO);
-  if (!impl_->posLongGeop.empty()) {
-    impl_->posLongGeop = casacore::Vector<Double>();
-    impl_->posGeop.reset();
-  }
+  impl_->posLongGeop = casacore::Vector<Double>();
+  impl_->posGeop.reset();
 }
 
 void MCFrame::makeDirection(const MeasFrame& myf) {
@@ -517,21 +501,13 @@ void MCFrame::makeDirection(const MeasFrame& myf) {
   impl_->dirConvApp = MDirection::Convert(*(myf.direction()),
 				       MDirection::Ref(MDirection::APP,
 						       myf));
-  if (!impl_->j2000Longp.empty()) {
-    impl_->j2000Longp = casacore::Vector<Double>();
-    impl_->dirJ2000p.reset();
-  }
-  if (!impl_->b1950Longp.empty()) {
-    impl_->b1950Longp = casacore::Vector<Double>();
-    impl_->dirB1950p.reset();
-  }
-  if (!impl_->appLongp.empty()) {
-    impl_->appLongp = casacore::Vector<Double>();
-    impl_->dirAppp.reset();
-  }
-  if (impl_->radLSRp) {
-    impl_->radLSRp.reset();
-  }
+  impl_->j2000Longp = casacore::Vector<Double>();
+  impl_->dirJ2000p.reset();
+  impl_->b1950Longp = casacore::Vector<Double>();
+  impl_->dirB1950p.reset();
+  impl_->appLongp = casacore::Vector<Double>();
+  impl_->dirAppp.reset();
+  impl_->radLSRp.reset();
 }
 
 void MCFrame::makeRadialVelocity(const MeasFrame& myf) {
