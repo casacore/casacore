@@ -46,9 +46,7 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 struct MCFrameImplementation {
-  // Conversion to TDB time (due to some (for me) unsolvable dependency
-  // errors)
-  // not the proper MeasConvert* here)
+  // Conversion to TDB time
   MeasConvert<MEpoch> epConvTDB;
   // TDB time
   std::optional<Double> epTDBp;
