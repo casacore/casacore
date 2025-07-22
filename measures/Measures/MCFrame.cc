@@ -46,11 +46,6 @@
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 struct MCFrameImplementation {
-  //# Data
-  // The belonging frame pointer
-  // MeasFrame myf;
-  // The actual measure conversion values
-  // <group>
   // Conversion to TDB time (due to some (for me) unsolvable dependency
   // errors)
   // not the proper MeasConvert* here)
@@ -103,7 +98,6 @@ struct MCFrameImplementation {
   std::optional<MeasConvert<MRadialVelocity>> radConvLSR;
   // Radial velocity
   std::optional<Double> radLSRp;
-  // </group>
 };
   
 MCFrame::MCFrame() :
