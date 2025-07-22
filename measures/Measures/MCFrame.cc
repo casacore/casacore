@@ -123,7 +123,7 @@ void MCFrame::resetEpoch() {
 }
 
 void MCFrame::resetPosition() {
-  if (impl_->posLongp.empty()) {
+  if (!impl_->posLongp.empty()) {
     impl_->posLongp = casacore::Vector<Double>();
     impl_->posITRFp.reset();
     impl_->posLongGeop = casacore::Vector<Double>();
@@ -135,15 +135,15 @@ void MCFrame::resetPosition() {
 }
 
 void MCFrame::resetDirection() {
-  if (impl_->j2000Longp.empty()) {
+  if (!impl_->j2000Longp.empty()) {
     impl_->j2000Longp = casacore::Vector<Double>();
     impl_->dirJ2000p.reset();
   }
-  if (impl_->b1950Longp.empty()) {
+  if (!impl_->b1950Longp.empty()) {
     impl_->b1950Longp = casacore::Vector<Double>();
     impl_->dirB1950p.reset();
   }
-  if (impl_->appLongp.empty()) {
+  if (!impl_->appLongp.empty()) {
     impl_->appLongp = casacore::Vector<Double>();
     impl_->dirAppp.reset();
   }
