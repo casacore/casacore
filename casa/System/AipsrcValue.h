@@ -167,14 +167,14 @@ public:
   // </group>
   // These <src>find()</src> functions will, given a keyword, read the value
   // of a matched keyword as a Quantity. If no unit has been given in the
-  // keyword value, the defun Unit will be assumed. The value returned
-  // will be converted to the resun Unit. If no match found, the default
+  // keyword value, the default_unit Unit will be assumed. The value returned
+  // will be converted to the result_unit Unit. If no match found, the default
   // value is returned (see example above).
   // <group>
   static Bool find(T &value, const String &keyword,
-		   const Unit &defun, const Unit &resun);
+		   const Unit &default_unit, const Unit &result_unit);
   static Bool find(T &value, const String &keyword,
-		   const Unit &defun, const Unit &resun,
+		   const Unit &default_unit, const Unit &result_unit,
 		   const T &deflt);
   // </group>
   // Functions to register keywords for later use in get() and set(). The
@@ -183,7 +183,7 @@ public:
   static uInt registerRC(const String &keyword,
 			 const T &deflt);
   static uInt registerRC(const String &keyword,
-			 const Unit &defun, const Unit &resun,
+			 const Unit &default_unit, const Unit &result_unit,
 			 const T &deflt);
   // </group>
 

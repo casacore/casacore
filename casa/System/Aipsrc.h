@@ -252,13 +252,13 @@ public:
   // was used.
   // <group>
   static Bool find(String &value, const String &keyword, 
-		   const String &deflt);
+		   const String &default_value);
   static Bool findNoHome(String &value, const String &keyword,
-			 const String &deflt);
+			 const String &default_value);
   static Bool find(uInt &value, const String &keyword,
-		   Int Nname, const String tname[], const String &deflt);
+		   Int Nname, const String tname[], const String &default_value);
   static Bool find(uInt &value, const String &keyword,
-		   const Vector<String> &tname, const String &deflt);
+		   const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Sets foundDir to the first /firstPart/lastPart path that it finds
@@ -276,11 +276,11 @@ public:
   // returned value is the index for get() and set().
   // <group>
   static uInt registerRC(const String &keyword,
-			 const String &deflt);
+			 const String &default_value);
   static uInt registerRC(const String &keyword,
-			 Int Nname, const String tname[], const String &deflt);
+			 Int Nname, const String tname[], const String &default_value);
   static uInt registerRC(const String &keyword,
-			 const Vector<String> &tname, const String &deflt);
+			 const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
@@ -292,11 +292,11 @@ public:
 
   // Sets allow registered values to be set
   // <group>
-  static void set(uInt keyword, const String &deflt);
+  static void set(uInt keyword, const String &default_value);
   static void set(uInt keyword,
-		  Int Nname, const String tname[], const String &deflt);
+		  Int Nname, const String tname[], const String &default_value);
   static void set(uInt keyword,
-		  const Vector<String> &tname, const String &deflt);
+		  const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Save a registered keyword value to <src>$HOME/.aipsrc</src>
@@ -410,10 +410,10 @@ private:
   static Bool filled;
   // String register list
   // <group>
-  static std::vector<String> strlst;
-  static std::vector<String> nstrlst;
-  static std::vector<uInt> codlst;
-  static std::vector<String> ncodlst;
+  static std::vector<String> string_values_;
+  static std::vector<String> string_names_;
+  static std::vector<uInt> coded_values_;
+  static std::vector<String> coded_names_;
   // </group>
 
   Aipsrc() = delete;
