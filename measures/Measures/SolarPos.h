@@ -27,6 +27,8 @@
 #define MEASURES_SOLARPOS_H
 
 //# Includes
+#include <mutex>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
@@ -109,7 +111,7 @@ class SolarPos {
 public:
 //# Constants
 // Interval to be used for linear approximation (in days)
-    static const Double INTV;
+    static constexpr Double INTV = 0.04;
 
 //# Enumerations
 // Types of known SolarPos calculations (at 1995/09/04 STANDARD == IAU1980)
@@ -158,8 +160,8 @@ private:
 // Method to be used
     SolarPosTypes method;
 // Check epoch for linear approximation
-    Double checkEpoch;
-    Double checkSunEpoch;
+    Double checkEpoch = 1e30;
+    Double checkSunEpoch = 1e30;
 // Cached calculated Earth positions
     Double eval[3];
 // Cached derivatives
@@ -175,15 +177,14 @@ private:
 // Last calculation
     MVPosition result[6];
 // Interpolation interval
-    static uInt interval_reg;
+    inline static uInt interval_reg;
 // JPL use
-    static uInt usejpl_reg;
+    inline static uInt usejpl_reg;
+    inline static std::once_flag initialize_once_flag;
 
 //# Member functions
-// Copy
     void copy(const SolarPos &other);
-// Fill an empty copy
-    void fill();
+    static void initialize_statics();
 // Calculate heliocentric Earth position for time t
     void calcEarth(Double t);
 // Calculate heliocentric barycentre position
