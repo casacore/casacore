@@ -89,13 +89,13 @@ uInt AipsrcValue<T>::registerRC(const String &keyword,
 
 template <class T>
 uInt AipsrcValue<T>::registerRC(const String &keyword,
-				const Unit &defun, const Unit &resun,
+				const Unit &default_unit, const Unit &result_unit,
 				const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   const uInt n = Aipsrc::registerRC(keyword, ntlst);
   if(n > tlst.size())
     tlst.resize(n);
-  find ((tlst)[n-1], keyword, defun, resun, deflt);
+  find ((tlst)[n-1], keyword, default_unit, result_unit, deflt);
   return n;
 }
 
