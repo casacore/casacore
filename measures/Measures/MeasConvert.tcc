@@ -28,11 +28,16 @@
 
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
+#include <casacore/measures/Measures/MCBase.h>
+#include <casacore/measures/Measures/MCRadialVelocity.h>
+#include <casacore/measures/Measures/MCDirection.h>
+#include <casacore/measures/Measures/MCPosition.h>
+#include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/MeasFrame.h>
-#include <casacore/measures/Measures/MCBase.h>
 #include <casacore/measures/Measures/MRBase.h>
+#include <casacore/measures/Measures/MRadialVelocity.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -385,15 +390,11 @@ void MeasConvert<M>::create() {
   if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
-    MeasFrame mftmp = rptmp->getFrame();
-    if (!(mftmp.empty()) &&
-	!(outref.getFrame().empty()) &&
-	mftmp != outref.getFrame()) {
+    const MeasFrame& mftmp = rptmp->getFrame();
+    if (!mftmp.empty() && !outref.getFrame().empty() && mftmp != outref.getFrame()) {
       MRBase *reftmp = new typename M::Ref(M::DEFAULT);
-      cvdat->getConvert(*this, *model->getRefPtr(), 
-			*reftmp);
-      cvdat->getConvert(*this, *reftmp,
-			outref);
+      cvdat->getConvert(*this, *model->getRefPtr(), *reftmp);
+      cvdat->getConvert(*this, *reftmp, outref);
       delete reftmp;
     } else {
       cvdat->getConvert(*this, *model->getRefPtr(), outref);
