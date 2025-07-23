@@ -283,7 +283,7 @@ uInt Aipsrc::registerRC(const String &keyword, std::vector<String> &nlst) {
 
 uInt Aipsrc::registerRC(const String &keyword,
 			const String &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, nstrlst);
+  const uInt n = Aipsrc::registerRC(keyword, nstrlst);
   if(n > strlst.size())
     strlst.resize(n);
   find (strlst[n-1], keyword, deflt);
