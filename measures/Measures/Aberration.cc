@@ -54,11 +54,6 @@ Aberration &Aberration::operator=(const Aberration &other) {
 }
 
 
-void Aberration::init() {
-    method = Aberration::STANDARD;
-    checkEpoch = 1e30;
-}
-
 void Aberration::init(AberrationTypes type) {
     method = type;
     checkEpoch = 1e30;

@@ -138,8 +138,7 @@ public:
 
 // Re-initialise Aberration object
 // <group>
-    void init();
-    void init(AberrationTypes type);
+    void init(AberrationTypes type = Aberration::STANDARD);
 // </group>
 
 // Refresh calculations
