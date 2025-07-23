@@ -62,7 +62,7 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
 uInt AipsrcVector<Bool>::registerRC(const String &keyword,
 				    const Vector<Bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
   if(n > tlst.size())
     tlst.resize(n);
   find (tlst[n-1], keyword, deflt);
@@ -87,7 +87,7 @@ void AipsrcVector<Bool>::save(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;
-  Int n = (tlst[keyword-1]).nelements();
+  const Int n = (tlst[keyword-1]).nelements();
   for (Int i=0; i<n; i++) {
     if ((tlst[keyword-1])(i)) {
       oss << " true";

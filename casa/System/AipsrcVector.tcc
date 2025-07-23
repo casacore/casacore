@@ -102,7 +102,7 @@ uInt AipsrcVector<T>::registerRC(const String &keyword,
   const uInt n = Aipsrc::registerRC(keyword, ntlst);
   if(n > tlst.size())
     tlst.resize(n);
-  find ((tlst)[n-1], keyword, deflt);
+  find (tlst[n-1], keyword, deflt);
   return n;
 }
 
@@ -113,30 +113,30 @@ uInt AipsrcVector<T>::registerRC(const String &keyword,
   const uInt n = Aipsrc::registerRC(keyword, ntlst);
   if(n > tlst.size())
     tlst.resize(n);
-  find ((tlst)[n-1], keyword, defun, resun, deflt);
+  find (tlst[n-1], keyword, defun, resun, deflt);
   return n;
 }
 
 template <class T>
 const Vector<T> AipsrcVector<T>::get(uInt keyword) {
   AlwaysAssert(keyword > 0 && keyword <= tlst.nelements(), AipsError);
-  return (tlst)[keyword-1];
+  return tlst[keyword-1];
 }
 
 template <class T>
 void AipsrcVector<T>::set(uInt keyword, const Vector<T> &deflt) {
   AlwaysAssert(keyword > 0 && keyword <= tlst.nelements(), AipsError);
-  (tlst)[keyword-1].resize(deflt.nelements());
-  (tlst)[keyword-1] = deflt;
+  tlst[keyword-1].resize(deflt.nelements());
+  tlst[keyword-1] = deflt;
 }
 
 template <class T>
 void AipsrcVector<T>::save(uInt keyword) {
   AlwaysAssert(keyword > 0 && keyword <= tlst.nelements(), AipsError);
   ostringstream oss;
-  Int n = ((tlst)[keyword-1]).nelements();
-  for (Int i=0; i<n; i++) oss << " " << ((tlst)[keyword-1])(i);
-  Aipsrc::save((ntlst)[keyword-1], String(oss));
+  const Int n = (tlst[keyword-1]).nelements();
+  for (Int i=0; i<n; i++) oss << " " << (tlst[keyword-1])(i);
+  Aipsrc::save(ntlst[keyword-1], String(oss));
 }
 
 } //# NAMESPACE CASACORE - END

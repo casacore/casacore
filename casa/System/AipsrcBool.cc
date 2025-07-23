@@ -47,7 +47,7 @@ Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword,
 uInt AipsrcValue<Bool>::registerRC(const String &keyword,
 				   const Bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, ntlst);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
   tlst.resize(n);
   find (reinterpret_cast<bool&>(tlst[n-1]), keyword, deflt);
   return n;

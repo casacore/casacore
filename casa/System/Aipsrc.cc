@@ -293,7 +293,7 @@ uInt Aipsrc::registerRC(const String &keyword,
 uInt Aipsrc::registerRC(const String &keyword,
 			Int Nname, const String tname[], 
 			const String &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, ncodlst);
+  const uInt n = Aipsrc::registerRC(keyword, ncodlst);
   if(n > codlst.size())
     codlst.resize(n);
   find (codlst[n-1], keyword, Nname, tname, deflt);
@@ -302,7 +302,7 @@ uInt Aipsrc::registerRC(const String &keyword,
 
 uInt Aipsrc::registerRC(const String &keyword,
 			const Vector<String> &tname, const String &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, ncodlst);
+  const uInt n = Aipsrc::registerRC(keyword, ncodlst);
   if(n > codlst.size())
     codlst.resize(n);
   find (codlst[n-1], keyword, tname, deflt);
