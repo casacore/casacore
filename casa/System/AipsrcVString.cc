@@ -87,7 +87,7 @@ void AipsrcVector<String>::save(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;
-  Int n = (tlst[keyword-1]).nelements();
+  const Int n = (tlst[keyword-1]).nelements();
   for (Int i=0; i<n; i++) oss << " " << (tlst[keyword-1])(i);
   Aipsrc::save((ntlst)[keyword-1], String(oss));
 }

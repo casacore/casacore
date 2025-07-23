@@ -103,14 +103,14 @@ template <class T>
 const T AipsrcValue<T>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
-  return (tlst)[keyword-1];
+  return tlst[keyword-1];
 }
 
 template <class T>
 void AipsrcValue<T>::set(uInt keyword, const T &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
   AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
-  (tlst)[keyword-1] = deflt;
+  tlst[keyword-1] = deflt;
 }
 
 template <class T>
@@ -119,10 +119,10 @@ void AipsrcValue<T>::save(uInt keyword) {
   {
     std::lock_guard<std::mutex> lock(theirMutex);
     AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
-    oss << (tlst)[keyword-1];
+    oss << tlst[keyword-1];
   }
   // Unlock has to be done before save, because MVTime uses AipsrcValue.
-  Aipsrc::save((ntlst)[keyword-1], String(oss));
+  Aipsrc::save(ntlst[keyword-1], String(oss));
 }
 
 } //# NAMESPACE CASACORE - END
