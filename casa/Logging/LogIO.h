@@ -272,7 +272,7 @@ private:
 // </ol>
 // <group name=command>
 LogIO &operator<<(LogIO &os, LogIO::Command item);
-LogIO &operator<<(LogIO &os, const SourceLocation *item);
+LogIO &operator<<(LogIO &os, const SourceLocation &item);
 LogIO &operator<<(LogIO &os, const LogOrigin &OR);
 // </group>
 

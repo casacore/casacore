@@ -177,11 +177,11 @@ void operator<< (LogIO &os, const AipsError& x)
     os.postThenThrow (x);
 }
 
-LogIO &operator<<(LogIO &os, const SourceLocation *item)
+LogIO &operator<<(LogIO &os, const SourceLocation &item)
 {
     if(os.priority() < LogMessage::NORMAL1 ||
        os.priority() > LogMessage::WARN )
-       os.sourceLocation(item);
+       os.sourceLocation(&item);
     return os;
 }
 
