@@ -28,15 +28,13 @@
 
 //# Includes
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Arrays/Vector.h>
 #include <casacore/measures/Measures/Measure.h>
-#include <casacore/measures/Measures/MeasFrame.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
-class MVDirection;
-class MVPosition;
+class MeasFrame;
+struct MCFrameImplementation;
 
 // <summary>
 // Measure frame calculations proxy
@@ -94,7 +92,9 @@ public:
   
   //# Constructors
   // Construct using the MeasFrame parent
-  MCFrame(MeasFrame &inf);
+  MCFrame();
+  MCFrame(const MCFrame &other);
+  MCFrame(MCFrame &&other);
 
   // Destructor
   ~MCFrame();
@@ -113,128 +113,67 @@ public:
   // Reset Comet
   void resetComet();
   // Make full Epoch
-  void makeEpoch();
+  void makeEpoch(const MeasFrame& frame);
   // Make full Position
-  void makePosition();
+  void makePosition(const MeasFrame& frame);
   // Make full Direction
-  void makeDirection();
+  void makeDirection(const MeasFrame& frame);
   // Make full RadialVelocity
-  void makeRadialVelocity();
+  void makeRadialVelocity(const MeasFrame& frame);
   // Make full Comet
   void makeComet();
 
-  // Get TDB in days
-  Bool getTDB(Double &tdb);
+  // Get time as Temps Dynamique Barycentrique (TDB, or Barycentric Dynamical Time) in days
+  Bool getTDB(Double &tdb, const MeasFrame& frame);
   // Get UT1 in days
-  Bool getUT1(Double &tdb);
+  Bool getUT1(Double &tdb, const MeasFrame& frame);
   // Get TT in days
-  Bool getTT(Double &tdb);
+  Bool getTT(Double &tdb, const MeasFrame& frame);
   // Get the longitude (in rad)
-  Bool getLong(Double &tdb);
+  Bool getLong(Double &tdb, const MeasFrame& frame);
   // Get the latitude (ITRF) (in rad)
-  Bool getLat(Double &tdb);
+  Bool getLat(Double &tdb, const MeasFrame& frame);
   // Get the position
-  Bool getITRF(MVPosition &tdb);
+  Bool getITRF(MVPosition &tdb, const MeasFrame& frame);
   // Get the geocentric position (in m)
-  Bool getRadius(Double &tdb);
+  Bool getRadius(Double &tdb, const MeasFrame& frame);
   // Get the geodetic latitude
-  Bool getLatGeo(Double &tdb);
+  Bool getLatGeo(Double &tdb, const MeasFrame& frame);
   // Get the LAST (in days)
-  Bool getLAST(Double &tdb);
+  Bool getLAST(Double &tdb, const MeasFrame& frame);
   // Get the LAST (in rad)
-  Bool getLASTr(Double &tdb);
+  Bool getLASTr(Double &tdb, const MeasFrame& frame);
   // Get J2000 coordinates (direction cosines) and long/lat (rad)
   // <group>
-  Bool getJ2000(MVDirection &tdb);
-  Bool getJ2000Long(Double &tdb);
-  Bool getJ2000Lat(Double &tdb);
+  Bool getJ2000(MVDirection &tdb, const MeasFrame& frame);
+  Bool getJ2000Long(Double &tdb, const MeasFrame& frame);
+  Bool getJ2000Lat(Double &tdb, const MeasFrame& frame);
   // </group>
   // Get B1950 coordinates (direction cosines) and long/lat (rad)
   // <group>
-  Bool getB1950(MVDirection &tdb);
-  Bool getB1950Long(Double &tdb);
-  Bool getB1950Lat(Double &tdb);
+  Bool getB1950(MVDirection &tdb, const MeasFrame& frame);
+  Bool getB1950Long(Double &tdb, const MeasFrame& frame);
+  Bool getB1950Lat(Double &tdb, const MeasFrame& frame);
   // </group>
   // Get apparent coordinates (direction cosines) and long/lat (rad)
   // <group>
-  Bool getApp(MVDirection &tdb);
-  Bool getAppLong(Double &tdb);
-  Bool getAppLat(Double &tdb);
+  Bool getApp(MVDirection &tdb, const MeasFrame& frame);
+  Bool getAppLong(Double &tdb, const MeasFrame& frame);
+  Bool getAppLat(Double &tdb, const MeasFrame& frame);
   // </group>
   // Get LSR radial velocity (m/s)
-  Bool getLSR(Double &tdb);
+  Bool getLSR(Double &tdb, const MeasFrame& frame);
   // Get Comet type
-  Bool getCometType(uInt &tdb);
+  Bool getCometType(uInt &tdb, const MeasFrame& frame);
   // Get Comet position
-  Bool getComet(MVPosition &tdb);
+  Bool getComet(MVPosition &tdb, const MeasFrame& frame);
   
 private:
-  //# Data
-  // The belonging frame pointer
-  MeasFrame myf;
-  // The actual measure conversion values
-  // <group>
-  // Conversion to TDB time (due to some (for me) unsolvable dependency
-  // errors)
-  // not the proper MeasConvert* here)
-  void *epConvTDB;
-  // TDB time
-  Double *epTDBp;
-  // Conversion to UT1 time
-  void *epConvUT1;
-  // UT1 time
-  Double *epUT1p;
-  // Conversion to TT time
-  void *epConvTT;
-  // TT time
-  Double *epTTp;
-  // Conversion to LAST time
-  void *epConvLAST;
-  // LAST time
-  Double *epLASTp;
-  // Conversion to ITRF longitude/latitude
-  void *posConvLong;
-  // Longitude
-  Vector<Double> *posLongp;
-  // Position
-  MVPosition *posITRFp;
-  // Conversion to geodetic longitude/latitude
-  void *posConvLongGeo;
-  // Latitude
-  Vector<Double> *posLongGeop;
-  // Position
-  MVPosition *posGeop;
-  // Conversion to J2000
-  void *dirConvJ2000;
-  // Longitude
-  Vector<Double> *j2000Longp;
-  // J2000 coordinates
-  MVDirection *dirJ2000p;
-  // Conversion to B1950
-  void *dirConvB1950;
-  // Longitude
-  Vector<Double> *b1950Longp;
-  // B1950 coordinates
-  MVDirection *dirB1950p;
-  // Conversion to apparent coordinates
-  void *dirConvApp;
-  // Longitude
-  Vector<Double> *appLongp;
-  // Apparent coordinates
-  MVDirection *dirAppp;
-  // Conversion to LSR radial velocity
-  void *radConvLSR;
-  // Radial velocity
-  Double *radLSRp;
-  // </group>
+  MCFrame &operator=(const MCFrame &other) = delete;
   
-  //# Member functions
-  // Default constructor (not implemented)
-  MCFrame();
-  // Copy constructor (not implemented)
-  MCFrame(const MCFrame &other);
-  // Copy assignment (not implemented)
-  MCFrame &operator=(const MCFrame &other);
+  // pointer-to-implementation (pimpl) pattern is used to avoid a large number of
+  // dependencies in the header file.
+  std::unique_ptr<MCFrameImplementation> impl_;
 };
 
 

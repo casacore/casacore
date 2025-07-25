@@ -324,133 +324,133 @@ void MeasFrame::unlock(const uInt locker) {
 }
 
 Bool MeasFrame::getTDB(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getTDB(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getTDB(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getUT1(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getUT1(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getUT1(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getTT(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getTT(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getTT(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLong(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLong(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLong(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getITRF(MVPosition &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getITRF(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getITRF(tdb, *this));
   tdb = MVPosition(0.0);
   return False; 
 }
 
 Bool MeasFrame::getRadius(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getRadius(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getRadius(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLatGeo(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLatGeo(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLatGeo(tdb, *this));
   tdb = 0;
   return False;
 }
 
 Bool MeasFrame::getLAST(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLAST(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLAST(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLASTr(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLASTr(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLASTr(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getJ2000(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getJ2000(tdb, *this));
   tdb = Double(0.0);
   return False; 
 }
 
 Bool MeasFrame::getJ2000Long(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Long(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Long(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getJ2000Lat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Lat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Lat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getB1950(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950Long(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950Long(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getB1950Long(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950Lat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950Lat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getB1950Lat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getApp(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getApp(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getApp(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getAppLong(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getAppLong(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getAppLong(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getAppLat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getAppLat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getAppLat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLSR(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLSR(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLSR(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getCometType(uInt &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getCometType(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getCometType(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getComet(MVPosition &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getComet(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getComet(tdb, *this));
   tdb = MVPosition(0.0);
   return False; 
 }
@@ -460,7 +460,7 @@ void MeasFrame::create() {
     rep = new FrameRep();
     uInt locker = 0;
     lock(locker);
-    rep->mymcf = new MCFrame(*this);
+    rep->mymcf = new MCFrame();
     unlock(locker);
   }
 }
@@ -517,19 +517,19 @@ void MeasFrame::fill(const MeasComet *in) {
 }
 
 void MeasFrame::makeEpoch() {
-  rep->mymcf->makeEpoch();
+  rep->mymcf->makeEpoch(*this);
 }
 
 void MeasFrame::makePosition() {
-  rep->mymcf->makePosition();
+  rep->mymcf->makePosition(*this);
 }
 
 void MeasFrame::makeDirection() {
-  rep->mymcf->makeDirection();
+  rep->mymcf->makeDirection(*this);
 }
 
 void MeasFrame::makeRadialVelocity() {
-  rep->mymcf->makeRadialVelocity();
+  rep->mymcf->makeRadialVelocity(*this);
 }
 
 void MeasFrame::makeComet() {
