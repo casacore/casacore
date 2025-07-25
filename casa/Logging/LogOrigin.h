@@ -177,7 +177,7 @@ private:
     String class_p;
     ObjectID id_p = True;
     uInt line_p = 0;
-    String file_p = "";
+    String file_p;
     String node_p;
 
     // Return a String with the MPI rank

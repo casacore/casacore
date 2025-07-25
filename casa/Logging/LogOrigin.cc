@@ -62,14 +62,14 @@ LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 	  const ObjectID &id)
-: task_p(""), function_p(memberFuncName), class_p(className),
+: function_p(memberFuncName), class_p(className),
   id_p(id),
   node_p(getNode())
 {}
 
 LogOrigin::LogOrigin(const String &className, const String &memberFuncName,
 	  const ObjectID &id, const SourceLocation &where)
-: task_p(""), function_p(memberFuncName), class_p(className), 
+: function_p(memberFuncName), class_p(className), 
   id_p(id), 
   line_p(where.lineNumber),
   file_p(where.fileName),
@@ -214,10 +214,10 @@ ostream &operator<<(ostream &os, const LogOrigin &origin)
 
 SourceLocation SourceLocation::canonicalize(const char *file, Int line)
 {
-  SourceLocation permanent;
-  permanent.fileName = file;
-  permanent.lineNumber = line;
-  return permanent;
+  SourceLocation location;
+  location.fileName = file;
+  location.lineNumber = line;
+  return location;
 }
 
 // Get the OpenMPI rank from the current process.
