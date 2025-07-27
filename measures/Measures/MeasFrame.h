@@ -175,9 +175,12 @@ class MeasFrame {
 	    const Measure &meas3);
   // </group>
   // Copy constructor (reference semantics)
-  MeasFrame(const MeasFrame &other);
+  MeasFrame(const MeasFrame &other) = default;
+  MeasFrame(MeasFrame &&other) = default;
+  
   // Copy assignment (reference semantics)
-  MeasFrame &operator=(const MeasFrame &other);
+  MeasFrame &operator=(const MeasFrame &other) = default;
+  MeasFrame &operator=(MeasFrame &&other) = default;
   // Destructor
   ~MeasFrame();
   

@@ -94,11 +94,6 @@ MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2,
   fill(&meas3);
 }
 
-MeasFrame::MeasFrame(const MeasFrame &other) :
-  rep(other.rep)
-{
-}
-
 MeasFrame::MeasFrame(std::shared_ptr<FrameRep> new_rep) :
   rep(std::move(new_rep))
 {
@@ -106,12 +101,6 @@ MeasFrame::MeasFrame(std::shared_ptr<FrameRep> new_rep) :
 
 // Destructor
 MeasFrame::~MeasFrame() = default;
-
-// Operators
-MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
-  rep = other.rep;
-  return *this;
-}
 
 Bool MeasFrame::operator==(const MeasFrame &other) const {
   return (rep == other.rep);
