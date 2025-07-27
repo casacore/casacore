@@ -206,7 +206,7 @@ Bool MCFrame::getLat(Double &tdb, const MeasFrame& frame) {
       impl_->posLongp = impl_->posITRFp.get();
     }
     tdb = impl_->posLongp(2);
-   return True;
+    return True;
   }
   tdb = 0.0;
   return False;
