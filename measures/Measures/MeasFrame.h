@@ -294,7 +294,7 @@ class MeasFrame {
 
   // Make a value copy of this MeasFrame, such that it
   // contains no reference to the old MeasFrame. This
-  // can be useful for insuring thread safety in conversions.
+  // can be useful for ensuring thread safety in conversions.
   MeasFrame independentCopy() const;
   
 private:
