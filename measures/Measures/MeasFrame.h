@@ -118,7 +118,7 @@ template <class Qtype> class Quantum;
 // <src>MCFrame::make(MeasFrame &)</src> static method.
 //
 // Because MeasFrame uses a reference to its implementation, which can be shared
-// by multiple MeasFrame instances, it is not automatically thread safe
+// by multiple MeasFrame instances, it is by default not thread safe
 // when different MeasFrames are accessed from different threads. Moreover,
 // a MeasFrame contains links to other objects which may also be shared.
 // In Casacore 3.8, the referenced data entries in this class
