@@ -61,6 +61,9 @@ if (HAVE_O_DIRECT)
     add_definitions(-DHAVE_O_DIRECT)
 endif()
 
+set(CMAKE_CXX_FLAGS "-fsanitize=thread ${CMAKE_CXX_FLAGS}")
+set(CMAKE_C_FLAGS "-fsanitize=thread ${CMAKE_C_FLAGS}")
+
 # By default do not use ADIOS2, HDF5
 option (ENABLE_TABLELOCKING "Make locking for concurrent table access possible" YES)
 option (USE_READLINE "Build readline support" YES)
