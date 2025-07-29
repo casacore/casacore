@@ -28,7 +28,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
 # Install WSRT Measures (extra casacore data, for tests)
 # Note: The file on the ftp site is updated daily. When warnings regarding leap
 # seconds appear, ignore them or regenerate the docker image.
-    && wget -nv -O /WSRT_Measures.ztar ftp://ftp.astron.nl/outgoing/Measures/WSRT_Measures.ztar \
+    && wget -nv -O /WSRT_Measures.ztar https://www.astron.nl/iers/WSRT_Measures.ztar \
     && mkdir -p /usr/local/share/casacore/data \
     && cd /usr/local/share/casacore/data \
     && tar xfz /WSRT_Measures.ztar \
