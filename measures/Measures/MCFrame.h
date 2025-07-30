@@ -113,11 +113,11 @@ public:
   // Reset Comet
   void resetComet();
   // Make full Epoch
-  void makeEpoch(const MeasFrame& frame);
+  void makeEpoch(MeasFrame& frame);
   // Make full Position
   void makePosition(const MeasFrame& frame);
   // Make full Direction
-  void makeDirection(const MeasFrame& frame);
+  void makeDirection(MeasFrame& frame);
   // Make full RadialVelocity
   void makeRadialVelocity(const MeasFrame& frame);
   // Make full Comet

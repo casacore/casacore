@@ -431,7 +431,7 @@ Bool MCFrame::getComet(MVPosition &tdb, const MeasFrame& frame) {
   return False;
 }
 
-void MCFrame::makeEpoch(const MeasFrame& frame) {
+void MCFrame::makeEpoch(MeasFrame& frame) {
   const MEpoch::Ref REFTDB = MEpoch::Ref(MEpoch::TDB);
   const MEpoch::Ref REFUT1 = MEpoch::Ref(MEpoch::UT1);
   const MEpoch::Ref REFTT  = MEpoch::Ref(MEpoch::TT);
@@ -441,8 +441,10 @@ void MCFrame::makeEpoch(const MeasFrame& frame) {
   impl_->epTDBp.reset();
   impl_->epUT1p.reset();
   impl_->epTTp.reset();
+  const details::CyclicState state = frame.rep.Freeze();
   impl_->epConvLAST = MEpoch::Convert(*(frame.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, frame));
+  frame.rep.Unfreeze(state);
   impl_->epLASTp.reset();
   impl_->appLongp = casacore::Vector<Double>();
   impl_->dirAppp = MVDirection();
@@ -466,19 +468,22 @@ void MCFrame::makePosition(const MeasFrame& frame) {
   impl_->posGeop = MVPosition();
 }
 
-void MCFrame::makeDirection(const MeasFrame& frame) {
+void MCFrame::makeDirection(MeasFrame& frame) {
   static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
+  details::CyclicState state = frame.rep.Freeze();
   impl_->dirConvJ2000 = MDirection::Convert(*frame.direction(),
-					 MDirection::Ref(MDirection::J2000,
-							 frame));
+          MDirection::Ref(MDirection::J2000, frame));
+  frame.rep.Unfreeze(state);
 
   static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
+  state = frame.rep.Freeze();
   impl_->dirConvB1950 = MDirection::Convert(*frame.direction(),
 					 MDirection::Ref(MDirection::B1950,
 							 frame));
   impl_->dirConvApp = MDirection::Convert(*frame.direction(),
 				       MDirection::Ref(MDirection::APP,
 						       frame));
+  frame.rep.Unfreeze(state);
   impl_->j2000Longp = casacore::Vector<Double>();
   impl_->dirJ2000p = MVDirection();
   impl_->b1950Longp = casacore::Vector<Double>();
