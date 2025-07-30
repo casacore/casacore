@@ -470,13 +470,11 @@ void MCFrame::makePosition(const MeasFrame& frame) {
 
 void MCFrame::makeDirection(MeasFrame& frame) {
   static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
+  static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
+
   details::CyclicState state = frame.rep.Freeze();
   impl_->dirConvJ2000 = MDirection::Convert(*frame.direction(),
           MDirection::Ref(MDirection::J2000, frame));
-  frame.rep.Unfreeze(state);
-
-  static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
-  state = frame.rep.Freeze();
   impl_->dirConvB1950 = MDirection::Convert(*frame.direction(),
 					 MDirection::Ref(MDirection::B1950,
 							 frame));

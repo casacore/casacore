@@ -76,15 +76,15 @@ BOOST_AUTO_TEST_CASE(non_empty) {
   Counter::Check(1, 1);
 }
 
-BOOST_AUTO_TEST_CASE(copy) {
-  Counter::Reset();
-  {
-    CyclicPtr<Counter> empty;
-    CyclicPtr<Counter> empty_copy(empty);
-    BOOST_CHECK(!empty_copy);
-    Counter::Check(0, 0);
-  }
+BOOST_AUTO_TEST_CASE(copy_empty) {
+  CyclicPtr<Counter> empty;
+  CyclicPtr<Counter> empty_copy(empty);
+  BOOST_CHECK(!empty_copy);
+  Counter::Check(0, 0);
+}
 
+BOOST_AUTO_TEST_CASE(copy_non_empty) {
+  Counter::Reset();
   Counter* counter = new Counter(42);
   CyclicPtr<Counter> a(counter);
   CyclicPtr<Counter> b(a);
@@ -136,15 +136,15 @@ BOOST_AUTO_TEST_CASE(copy) {
   Counter::CheckNActive(0);
 }
 
-BOOST_AUTO_TEST_CASE(move) {
+BOOST_AUTO_TEST_CASE(move_empty) {
   Counter::Reset();
-  {
-    CyclicPtr<Counter> empty;
-    CyclicPtr<Counter> empty_copy(std::move(empty));
-    BOOST_CHECK(!empty_copy);
-    Counter::Check(0, 0);
-  }
+  CyclicPtr<Counter> empty;
+  CyclicPtr<Counter> empty_copy(std::move(empty));
+  BOOST_CHECK(!empty_copy);
+  Counter::Check(0, 0);
+}
 
+BOOST_AUTO_TEST_CASE(move_non_empty) {
   Counter* counter = new Counter(42);
   CyclicPtr<Counter> a(counter);
   CyclicPtr<Counter> b(std::move(a));
@@ -193,34 +193,34 @@ BOOST_AUTO_TEST_CASE(manual_break_cycle) {
   Counter::CheckNActive(0);
 }
 
-BOOST_AUTO_TEST_CASE(freeze) {
+BOOST_AUTO_TEST_CASE(freeze_empty) {
   Counter::Reset();
-  // Test if freezing empty pointer works
-  {
-    CyclicPtr<Counter> p;
-    const CyclicState state = p.Freeze();
-    p.Unfreeze(state);
-    Counter::Check(0, 0);
-  }
-  // Test if freezing without making copies works
-  {
-    CyclicPtr<Counter> p = MakeCyclic<Counter>(37);
-    const CyclicState state = p.Freeze();
-    p.Unfreeze(state);
-    BOOST_CHECK(p);
-    BOOST_CHECK_EQUAL(p->Id(), 37);
-    Counter::Check(1, 0);
-  }
-  Counter::Check(1, 1);
-  // Test if making a cycle during freeze works
+  CyclicPtr<Counter> p;
+  const CyclicState state = p.Freeze();
+  p.Unfreeze(state);
+  Counter::Check(0, 0);
+}
+
+BOOST_AUTO_TEST_CASE(freeze_without_copies) {
+  Counter::Reset();
+  CyclicPtr<Counter> p = MakeCyclic<Counter>(37);
+  const CyclicState state = p.Freeze();
+  p.Unfreeze(state);
+  BOOST_CHECK(p);
+  BOOST_CHECK_EQUAL(p->Id(), 37);
+  Counter::Check(1, 0);
+}
+
+BOOST_AUTO_TEST_CASE(freeze_with_cycle) {
+  Counter::Reset();
   {
     CyclicPtr<SingleNode> node = MakeCyclic<SingleNode>();
     const CyclicState state = node.Freeze();
     node->link = node;
     node.Unfreeze(state);
-    Counter::Check(2, 1);
+    Counter::Check(1, 0);
   }
-  Counter::Check(2, 2);
+  Counter::Check(1, 1);
 }
 
 BOOST_AUTO_TEST_CASE(multiple_cycles) {
@@ -231,10 +231,10 @@ BOOST_AUTO_TEST_CASE(multiple_cycles) {
       CyclicPtr<MultiNode> node2 = MakeCyclic<MultiNode>();
       const CyclicState state_1 = node1.Freeze();
       const CyclicState state_2 = node2.Freeze();
-      node1->a = node2;
-      node1->b = node1;
-      node2->a = node1;
-      node2->b = node2;
+      node1->link_a = node2;
+      node1->link_b = node1;
+      node2->link_a = node1;
+      node2->link_b = node2;
       node2.Unfreeze(state_2);
       node1.Unfreeze(state_1);
       Counter::Check(2, 0);
