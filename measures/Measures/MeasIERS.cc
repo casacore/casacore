@@ -388,7 +388,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
   
   if(!tabin){                                // No table object given: search name
     String ldir;
-    Vector<String> searched;
+    std::vector<std::string> searched_dirs;
 
     if(name[0] == '/'){                        // Absolute path given.
       ldir = "";
@@ -405,8 +405,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
         for (Int i=0; i<2; i++) {
           Path mpath = Path(measures_data + "/" + (std::string) path[i]);
           ldir = mpath.absoluteName()+"/";
-          searched.resize(searched.nelements()+1, True);
-          searched[searched.nelements()-1] = ldir;
+          searched_dirs.push_back(ldir);
           if  (Table::isReadable(ldir+name)) {
             found = True;
             break;
@@ -425,8 +424,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
             for (Int i=0; i<2; i++) {
               Path mpath = Path(*it + "/" + (std::string) path[i]);
               ldir = mpath.absoluteName()+"/";
-              searched.resize(searched.nelements()+1, True);
-              searched[searched.nelements()-1] = ldir;
+              searched_dirs.push_back(ldir);
               if  (Table::isReadable(ldir+name)) {
                 found = True;
                 break;
@@ -437,8 +435,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
 
           if (Aipsrc::find(ldir, rc)){
             ldir += '/';
-            searched.resize(searched.nelements() + 1, True);
-            searched[searched.nelements() - 1] = ldir;
+            searched_dirs.push_back(ldir);
           }
           else {
             String udir;
@@ -455,8 +452,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
               for (Int i=0; i<2; i++) {
                 Path mpath = Path(mdir +"/" + path[i]);
                 ldir = mpath.absoluteName()+"/";
-                searched.resize(searched.nelements()+1, True);
-                searched[searched.nelements()-1] = ldir;
+                searched_dirs.push_back(ldir);
                 if  (Table::isReadable(ldir+name)) {
                   found = True;
                   break;
@@ -470,8 +466,7 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
               Path cdatapath(casadata);
               for (Int i=0; i<2; i++) {
                 ldir = cdatapath.absoluteName() + path[i];
-                searched.resize(searched.nelements() + 1, True);
-                searched[searched.nelements() - 1] = ldir;
+                searched_dirs.push_back(ldir);
                 if (Table::isReadable(ldir + name)) {
                   found = True;
                   break;
@@ -486,8 +481,8 @@ Bool MeasIERS::findTab(Table& tab, const Table *tabin, const String &rc,
       os << LogIO::WARN
          << "Requested data table " << name
          << " cannot be found in the searched directories:\n";
-      for(uInt i = 0; i < searched.nelements(); ++i) {
-        os << searched[i] << "\n";
+      for(const std::string &searched_dir: searched_dirs) {
+        os << searched_dir << "\n";
       }
       os << LogIO::POST;
       return False;
