@@ -47,8 +47,8 @@ private:
  *   same frame to different threads would cause a race condition even
  *   when the frame was only read from (/copied).
  *
- * By having a separate class that also holds the counter, these problems
- * are avoided. Introducing weak_ptrs to break the cycles in the measures
+ * Having a separate class that also holds the counter avoids these
+ * problems. Introducing weak_ptrs to break the cycles in the measures
  * code has been tried, but probably requires major changes in the
  * structure.
  *
@@ -133,8 +133,8 @@ public:
   }
 
   /**
-   * Freeze the reference counter until Unfreeze() is called. The object is
-   * guaranteed not to be destructed during a Freeze().
+   * Freeze the reference counter. The object is guaranteed not to
+   * be destructed  until Unfreeze() is called.
    *
    * The caller is responsible for calling Unfreeze(); letting CyclicState go
    * out of scope without unfreezing will not cause an error, so will lead to

@@ -43,26 +43,30 @@ struct SingleNode {
 
 struct MultiNode {
   Counter counter{42};
-  CyclicPtr<MultiNode> a;
-  CyclicPtr<MultiNode> b;
+  CyclicPtr<MultiNode> link_a;
+  CyclicPtr<MultiNode> link_b;
 };
 
 BOOST_AUTO_TEST_SUITE(cyclic_ptr)
 
-BOOST_AUTO_TEST_CASE(basic_use) {
+BOOST_AUTO_TEST_CASE(empty) {
 
   BOOST_CHECK(!CyclicPtr<int>());
   BOOST_CHECK(CyclicPtr<int>().Get() == nullptr);
 
+  Counter::Reset();
   {
-    Counter::Reset();
     CyclicPtr<Counter> empty;
     BOOST_CHECK(!empty);
     empty.Reset();
     BOOST_CHECK(!empty);
+    Counter::Check(0, 0); // 'empty' is in scope.
   }
-  Counter::Check(0, 0);
+  Counter::Check(0, 0); // 'empty' is out of scope.
+}
 
+BOOST_AUTO_TEST_CASE(non_empty) {
+  Counter::Reset();
   {
     CyclicPtr<Counter> ptr(new Counter(42));
     BOOST_CHECK(ptr);
@@ -73,21 +77,22 @@ BOOST_AUTO_TEST_CASE(basic_use) {
 }
 
 BOOST_AUTO_TEST_CASE(copy) {
+  Counter::Reset();
   {
-    Counter::Reset();
     CyclicPtr<Counter> empty;
     CyclicPtr<Counter> empty_copy(empty);
     BOOST_CHECK(!empty_copy);
     Counter::Check(0, 0);
   }
 
-  CyclicPtr<Counter> a(new Counter(42));
+  Counter* counter = new Counter(42);
+  CyclicPtr<Counter> a(counter);
   CyclicPtr<Counter> b(a);
   Counter::Check(1, 0);
   BOOST_CHECK(a);
   BOOST_CHECK(b);
-  BOOST_CHECK(a.Get() != nullptr);
-  BOOST_CHECK(a.Get() == b.Get());
+  BOOST_CHECK(a.Get() == counter);
+  BOOST_CHECK(b.Get() == counter);
   BOOST_CHECK_EQUAL(a->Id(), 42);
   BOOST_CHECK_EQUAL(b->Id(), 42);
 
@@ -132,21 +137,22 @@ BOOST_AUTO_TEST_CASE(copy) {
 }
 
 BOOST_AUTO_TEST_CASE(move) {
+  Counter::Reset();
   {
-    Counter::Reset();
     CyclicPtr<Counter> empty;
     CyclicPtr<Counter> empty_copy(std::move(empty));
     BOOST_CHECK(!empty_copy);
     Counter::Check(0, 0);
   }
 
-  CyclicPtr<Counter> a(new Counter(42));
+  Counter* counter = new Counter(42);
+  CyclicPtr<Counter> a(counter);
   CyclicPtr<Counter> b(std::move(a));
   Counter::Check(1, 0);
   BOOST_CHECK(!a);
   BOOST_CHECK(b);
   BOOST_CHECK(a.Get() == nullptr);
-  BOOST_CHECK(b.Get() != nullptr);
+  BOOST_CHECK(b.Get() == counter);
   BOOST_CHECK_EQUAL(b->Id(), 42);
 
   b.Reset();
@@ -217,7 +223,7 @@ BOOST_AUTO_TEST_CASE(freeze) {
   Counter::Check(2, 2);
 }
 
-BOOST_AUTO_TEST_CASE(multiples_cycles) {
+BOOST_AUTO_TEST_CASE(multiple_cycles) {
   Counter::Reset();
   {
     CyclicPtr<MultiNode> node1 = MakeCyclic<MultiNode>();
