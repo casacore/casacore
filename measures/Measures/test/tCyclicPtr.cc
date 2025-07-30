@@ -77,6 +77,7 @@ BOOST_AUTO_TEST_CASE(non_empty) {
 }
 
 BOOST_AUTO_TEST_CASE(copy_empty) {
+  Counter::Reset();
   CyclicPtr<Counter> empty;
   CyclicPtr<Counter> empty_copy(empty);
   BOOST_CHECK(!empty_copy);

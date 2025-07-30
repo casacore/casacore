@@ -441,6 +441,9 @@ void MCFrame::makeEpoch(MeasFrame& frame) {
   impl_->epTDBp.reset();
   impl_->epUT1p.reset();
   impl_->epTTp.reset();
+  // Initializing the MeasConvert may cause a cycle:
+  // MeasConvert -> MeasRef -> MeasFrame and
+  // MeasConvert -> Measure -> MeasRef -> MeasFrame
   const details::CyclicState state = frame.rep.Freeze();
   impl_->epConvLAST = MEpoch::Convert(*(frame.epoch()),
 				   MEpoch::Ref(MEpoch::LAST, frame));
@@ -472,6 +475,7 @@ void MCFrame::makeDirection(MeasFrame& frame) {
   static const MDirection::Ref REFJ2000 = MDirection::Ref(MDirection::J2000);
   static const MDirection::Ref REFB1950 = MDirection::Ref(MDirection::B1950);
 
+  // Initializing the MeasConvert may cause a cycle (see makeEpoch).
   details::CyclicState state = frame.rep.Freeze();
   impl_->dirConvJ2000 = MDirection::Convert(*frame.direction(),
           MDirection::Ref(MDirection::J2000, frame));

@@ -436,6 +436,8 @@ void MeasFrame::create() {
 }
 
 void MeasFrame::fill(const Measure *in) {
+  // The Measure values may own a MeasRef that owns this MeasFrame, causing a
+  // cycle. The Freezing/Unfreezing calls prevent counting these links.
   if (in) {
     if (dynamic_cast<const MEpoch*>(in)) {
       const details::CyclicState state = rep.Freeze();

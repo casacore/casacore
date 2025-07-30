@@ -134,7 +134,7 @@ public:
 
   /**
    * Freeze the reference counter. The object is guaranteed not to
-   * be destructed  until Unfreeze() is called.
+   * be destructed until Unfreeze() is called.
    *
    * The caller is responsible for calling Unfreeze(); letting CyclicState go
    * out of scope without unfreezing will not cause an error, so will lead to
