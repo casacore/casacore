@@ -27,11 +27,14 @@
 #define MEASURES_MEASCONVERT_H
 
 //# Includes
+#include <memory>
+#include <vector>
+
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Containers/Block.h>
 #include <casacore/measures/Measures/MConvertBase.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/measures/Measures/Measure.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
@@ -224,37 +227,37 @@ public:
   // Get method
   virtual uInt getMethod(uInt which) const;
   // Is the conversion engine empty?
-  Bool isNOP() { return crout.nelements() == 0; }
+  Bool isNOP() { return crout.empty(); }
   // Print conversion engine
   virtual void print(ostream &os) const;
   
 private:
   //# Data
   // The model template Measure
-  Measure *model;
+  std::unique_ptr<Measure> model;
   // The model unit to be used in conversions
   Unit unit;
   // The output reference
   typename M::Ref outref;
   // The input offset
-  typename M::MVType *offin;
+  std::unique_ptr<typename M::MVType> offin;
   // The output offset
-  typename M::MVType *offout;
+  std::unique_ptr<typename M::MVType> offout;
   // Vector of conversion routines (length variable)
-  Block<uInt> crout;
+  std::vector<uInt> crout;
   // Coded (with MeasFrame::FrameTypes) frames used in conversion
-  uInt crtype;
+  uInt crtype = 0;
   // Local conversion data
-  MCBase *cvdat;
+  std::unique_ptr<MCBase> cvdat;
   // Cyclic buffer for return values
   // <group>
   // Current pointer
-  Int lres;
-  M *result[4];
+  Int lres = 0;
+  std::unique_ptr<M> result[4];
   // </group>
   // Local variables that can be used in conversion
   // <group>
-  typename M::MVType *locres;
+  std::unique_ptr<typename M::MVType> locres;
   // </group>
   
   //# Member functions
