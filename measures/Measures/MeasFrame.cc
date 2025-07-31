@@ -560,7 +560,16 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
 }
 
 MeasFrame MeasFrame::independentCopy() const {
-  return MeasFrame(details::MakeCyclic<FrameRep>(*rep));
+  MeasFrame new_frame(details::MakeCyclic<FrameRep>(*rep));
+  if (new_frame.rep->epval)
+    new_frame.makeEpoch();
+  if (new_frame.rep->posval)
+    new_frame.makePosition();
+  if (new_frame.rep->dirval)
+    new_frame.makeDirection();
+  if (new_frame.rep->radval)
+    new_frame.makeRadialVelocity();
+  return new_frame;
 }
 
 } //# NAMESPACE CASACORE - END
