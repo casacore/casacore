@@ -409,7 +409,7 @@ void MeasConvert<M>::setOut(typename M::Types mr) {
 
 template<class M>
 void MeasConvert<M>::set(const M &val, const typename M::Ref &mr) {
-  model = std::make_unique<M>(&val);
+  model = std::make_unique<M>(val);
   unit = val.unit;
   outref = mr;
   create();
@@ -417,7 +417,7 @@ void MeasConvert<M>::set(const M &val, const typename M::Ref &mr) {
 
 template<class M>
 void MeasConvert<M>::set(const M &val, typename M::Types mr) {
-  model = std::make_unique<M>(&val);
+  model = std::make_unique<M>(val);
   unit = val.unit;
   outref = typename M::Ref(mr);
   create();
