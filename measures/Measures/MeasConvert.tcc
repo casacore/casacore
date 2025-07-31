@@ -28,16 +28,11 @@
 
 //# Includes
 #include <casacore/casa/Exceptions/Error.h>
-#include <casacore/measures/Measures/MCBase.h>
-#include <casacore/measures/Measures/MCRadialVelocity.h>
-#include <casacore/measures/Measures/MCDirection.h>
-#include <casacore/measures/Measures/MCPosition.h>
-#include <casacore/measures/Measures/MCEpoch.h>
 #include <casacore/measures/Measures/MeasBase.h>
 #include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/MeasFrame.h>
+#include <casacore/measures/Measures/MCBase.h>
 #include <casacore/measures/Measures/MRBase.h>
-#include <casacore/measures/Measures/MRadialVelocity.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
