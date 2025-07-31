@@ -31,10 +31,10 @@
 #include <vector>
 
 #include <casacore/casa/aips.h>
-#include <casacore/casa/Containers/Block.h>
 #include <casacore/measures/Measures/MConvertBase.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/measures/Measures/Measure.h>
+
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Forward Declarations
