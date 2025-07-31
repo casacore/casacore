@@ -94,10 +94,17 @@ MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2,
   fill(&meas3);
 }
 
-MeasFrame::MeasFrame(std::shared_ptr<FrameRep> new_rep) :
+MeasFrame::MeasFrame(details::CyclicPtr<FrameRep> new_rep) :
   rep(std::move(new_rep))
 {
 }
+
+// These must be declared here and not in the header because FrameRep
+// needs to be defined.
+MeasFrame::MeasFrame(const MeasFrame &other) = default;
+MeasFrame::MeasFrame(MeasFrame &&other) = default;
+MeasFrame &MeasFrame::operator=(const MeasFrame &other) = default;
+MeasFrame &MeasFrame::operator=(MeasFrame &&other) = default;
 
 // Destructor
 MeasFrame::~MeasFrame() = default;
@@ -163,7 +170,9 @@ void MeasFrame::resetEpoch(const MVEpoch &val) {
 
 void MeasFrame::resetEpoch(const Measure &val) {
   if (rep && rep->epval) {
+    const details::CyclicState state = rep.Freeze();
     rep->epval.reset(val.clone());
+    rep.Unfreeze(state);
     makeEpoch();
   } else {
     errorReset(String("Epoch"));
@@ -189,7 +198,9 @@ void MeasFrame::resetPosition(const MVPosition  &val) {
 
 void MeasFrame::resetPosition(const Measure &val) {
   if (rep && rep->posval) {
+    const details::CyclicState state = rep.Freeze();
     rep->posval.reset(val.clone());
+    rep.Unfreeze(state);
     makePosition();
   } else {
     errorReset(String("Position"));
@@ -215,7 +226,9 @@ void MeasFrame::resetDirection(const MVDirection  &val) {
 
 void MeasFrame::resetDirection(const Measure &val) {
   if (rep && rep->dirval) {
+    const details::CyclicState state = rep.Freeze();
     rep->dirval.reset(val.clone());
+    rep.Unfreeze(state);
     makeDirection();
   } else {
     errorReset(String("Direction"));
@@ -241,7 +254,9 @@ void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
 
 void MeasFrame::resetRadialVelocity(const Measure &val) {
   if (rep && rep->radval) {
+    const details::CyclicState state = rep.Freeze();
     rep->radval.reset(val.clone());
+    rep.Unfreeze(state);
     makeRadialVelocity();
   } else {
     errorReset(String("RadialVelocity"));
@@ -415,24 +430,34 @@ Bool MeasFrame::getComet(MVPosition &tdb) const {
 
 void MeasFrame::create() {
   if (!rep) {
-    rep = std::make_shared<FrameRep>();
+    rep = details::MakeCyclic<FrameRep>();
     rep->mymcf = std::make_unique<MCFrame>();
   }
 }
 
 void MeasFrame::fill(const Measure *in) {
+  // The Measure values may own a MeasRef that owns this MeasFrame, causing a
+  // cycle. The Freezing/Unfreezing calls prevent counting these links.
   if (in) {
     if (dynamic_cast<const MEpoch*>(in)) {
+      const details::CyclicState state = rep.Freeze();
       rep->epval.reset(in->clone());
+      rep.Unfreeze(state);
       makeEpoch();
     } else if (dynamic_cast<const MPosition*>(in)) {
+      const details::CyclicState state = rep.Freeze();
       rep->posval.reset(in->clone());
+      rep.Unfreeze(state);
       makePosition();
     } else if (dynamic_cast<const MDirection*>(in)) {
+      const details::CyclicState state = rep.Freeze();
       rep->dirval.reset(in->clone());
+      rep.Unfreeze(state);
       makeDirection();
     } else if (dynamic_cast<const MRadialVelocity*>(in)) {
+      const details::CyclicState state = rep.Freeze();
       rep->radval.reset(in->clone());
+      rep.Unfreeze(state);
       makeRadialVelocity();
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +
@@ -535,7 +560,7 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
 }
 
 MeasFrame MeasFrame::independentCopy() const {
-  return MeasFrame(std::make_shared<FrameRep>(*rep));
+  return MeasFrame(details::MakeCyclic<FrameRep>(*rep));
 }
 
 } //# NAMESPACE CASACORE - END

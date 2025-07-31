@@ -89,6 +89,7 @@ LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUT
 
 install (FILES
 Measures/Aberration.h
+Measures/CyclicPtr.h
 Measures/EarthField.h
 Measures/EarthMagneticMachine.h
 Measures/MBaseline.h

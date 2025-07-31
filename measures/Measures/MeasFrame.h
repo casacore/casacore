@@ -27,10 +27,10 @@
 #define MEASURES_MEASFRAME_H
 
 //# Includes
-#include <memory>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/CyclicPtr.h>
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/casa/iosfwd.h>
 
@@ -143,10 +143,6 @@ class MeasFrame {
   // Machinery
   // <group>
   friend class MCFrame;
-  friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
-  friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
-  friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
-  friend Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
   // </group>
 
   //# Enumerations
@@ -175,12 +171,12 @@ class MeasFrame {
 	    const Measure &meas3);
   // </group>
   // Copy constructor (reference semantics)
-  MeasFrame(const MeasFrame &other) = default;
-  MeasFrame(MeasFrame &&other) = default;
+  MeasFrame(const MeasFrame &other);
+  MeasFrame(MeasFrame &&other);
   
   // Copy assignment (reference semantics)
-  MeasFrame &operator=(const MeasFrame &other) = default;
-  MeasFrame &operator=(MeasFrame &&other) = default;
+  MeasFrame &operator=(const MeasFrame &other);
+  MeasFrame &operator=(MeasFrame &&other);
   // Destructor
   ~MeasFrame();
   
@@ -300,10 +296,10 @@ class MeasFrame {
 private:
   
   //# Data
-  // Representation of MeasFrame
-  std::shared_ptr<FrameRep> rep;
+  // Representation of MeasFrame. See the CyclicPtr class documentation for motivation.
+  details::CyclicPtr<FrameRep> rep;
   
-  MeasFrame(std::shared_ptr<FrameRep> new_rep);
+  MeasFrame(details::CyclicPtr<FrameRep> new_rep);
   //# Member functions
   // Create an instance of the MeasFrame class
   void create();
