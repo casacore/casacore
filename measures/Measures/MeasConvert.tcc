@@ -38,13 +38,17 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
 //# Constructors
 template<class M>
-MeasConvert<M>::MeasConvert() {
+MeasConvert<M>::MeasConvert() :
+  model(0), unit(), outref(), 
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const MeasConvert<M> &other) :
-    MConvertBase(other) {
+  MConvertBase(other),
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
   copy(other);
 }
@@ -59,120 +63,137 @@ MeasConvert<M> &MeasConvert<M>::operator=(const MeasConvert<M> &other) {
 
 template<class M>
 MeasConvert<M>::MeasConvert(const M &ep) :
-    unit(ep.unit) {
+  model(0), unit(ep.unit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(ep);
+  model = new M(ep);
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const M &ep, const typename M::Ref &mr) :
-    unit(ep.unit) {
+  model(0), unit(ep.unit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(ep);
+  model = new M(ep);
   outref = mr;
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Measure &ep, const typename M::Ref &mr) :
-    unit(ep.getUnit()) {
+  model(0), unit(ep.getUnit()), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model.reset(ep.clone());
+  model = ep.clone();
   outref = mr;
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const M &ep, typename M::Types mr) :
-    unit(ep.unit) {
+  model(0), unit(ep.unit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(ep);
+  model = new M(ep);
   outref = typename M::Ref(mr);
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Measure &ep, typename M::Types mr) :
-    unit(ep.getUnit()) {
+  model(0), unit(ep.getUnit()), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model.reset(ep.clone());
+  model = ep.clone();
   outref = typename M::Ref(mr);
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
-			    const typename M::Ref &mr) {
+			    const typename M::Ref &mr) :
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(typename M::MVType(), mrin);
+  model = new M(typename M::MVType(), mrin);
   outref = mr;
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const typename M::Ref &mrin,
-			    typename M::Types mr) {
+			    typename M::Types mr) :
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(typename M::MVType(), mrin);
+  model = new M(typename M::MVType(), mrin);
   outref = typename M::Ref(mr);
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(typename M::Types mrin,
-			    const typename M::Ref &mr) {
+			    const typename M::Ref &mr) :
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(typename M::MVType(), typename M::Ref(mrin));
+  model = new M(typename M::MVType(), typename M::Ref(mrin));
   outref = mr;
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(typename M::Types mrin,
-			    typename M::Types mr) {
+			    typename M::Types mr) :
+  model(0), unit(), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>(typename M::MVType(), typename M::Ref(mrin));
+  model = new M(typename M::MVType(), typename M::Ref(mrin));
   outref = typename M::Ref(mr);
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
-			    const typename M::Ref &mr) : unit(inunit)
-{
+			    const typename M::Ref &mr) :
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>( typename M::MVType(), mrin);
+  model = new M( typename M::MVType(), mrin);
   outref = mr;
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, const typename M::Ref &mrin,
-			    typename M::Types mr) : unit(inunit)
-{
+			    typename M::Types mr) :
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>( typename M::MVType(), mrin);
+  model = new M( typename M::MVType(), mrin);
   outref = typename M::Ref(mr);
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
-			    const typename M::Ref &mr) : unit(inunit)
-{
+			    const typename M::Ref &mr) :
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>( typename M::MVType(), typename M::Ref(mrin));
+  model = new M( typename M::MVType(), typename M::Ref(mrin));
   outref = mr;
   create();
 }
 
 template<class M>
 MeasConvert<M>::MeasConvert(const Unit &inunit, typename M::Types mrin,
-			    typename M::Types mr) : unit(inunit)
-{
+			    typename M::Types mr) :
+  model(0), unit(inunit), outref(),
+  offin(0), offout(0), crout(0), crtype(0), cvdat(0), lres(0), locres(0) {
   init();
-  model = std::make_unique<M>( typename M::MVType(), typename M::Ref(mrin));
+  model = new M( typename M::MVType(), typename M::Ref(mrin));
   outref = typename M::Ref(mr);
   create();
 }
@@ -267,25 +288,25 @@ const M &MeasConvert<M>::operator()(typename M::Types mr) {
 //# Member functions
 template<class M>
 void MeasConvert<M>::init() {
-  cvdat = std::make_unique<typename M::MCType>();
-  for (Int i=0; i<4; i++) result[i] = std::make_unique<M>();
-  locres = std::make_unique<typename M::MVType>();
+  cvdat = new typename M::MCType();
+  for (Int i=0; i<4; i++) result[i] = new M();
+  locres = new typename M::MVType();
 }
 
 template<class M>
 void MeasConvert<M>::clear() {
-  model.reset();
+  delete model; model = 0;
   unit = Unit();
   outref = typename M::Ref();
-  crout.clear();
+  crout.resize(0, True);
   crtype = 0;
   cvdat->clearConvert();
-  cvdat.reset();
-  offin.reset();
-  offout.reset();
-  locres.reset();
+  delete cvdat; cvdat = 0;
+  delete offin; offin = 0;
+  delete offout; offout = 0;
+  delete locres; locres = 0;
   for (Int j=0; j < 4; j++) {
-    result[j].reset();
+    delete result[j]; result[j] = 0;
   }
 }
 
@@ -293,7 +314,7 @@ template<class M>
 void MeasConvert<M>::copy(const MeasConvert<M> &other) {
   clear();
   init();
-  if (other.model) model = std::make_unique<M>(other.model.get());
+  if (other.model) model = new M(other.model);
   unit = other.unit;
   outref = other.outref;
   create();
@@ -301,7 +322,8 @@ void MeasConvert<M>::copy(const MeasConvert<M> &other) {
 
 template<class M>
 void MeasConvert<M>::addMethod(uInt method) {
-  crout.push_back(method);
+  crout.resize(crout.nelements() + 1);
+  crout[crout.nelements() - 1] = method;
 }
 
 template<class M>
@@ -311,7 +333,7 @@ void MeasConvert<M>::addFrameType(uInt tp) {
 
 template<class M>
 Int MeasConvert<M>::nMethod() const {
-  return crout.size();
+  return crout.nelements();
 }
 
 template<class M>
@@ -321,7 +343,7 @@ uInt MeasConvert<M>::getMethod(uInt which) const {
 
 template<class M>
 void MeasConvert<M>::create() {
-  offin.reset();
+  delete offin; offin = 0;
   if (model && model->getRefPtr()->offset()) {
     typename M::MVType *ptmp =
       (typename M::MVType *)(model->getRefPtr()->offset()->getData());
@@ -334,12 +356,12 @@ void MeasConvert<M>::create() {
 					      offset()->getRefPtr()));
     if (!mrtmp.empty()) {
       M mtmp(*ptmp, mrtmp);
-      offin = std::make_unique<typename M::MVType>(MeasConvert<M>(mtmp, rtmp).convert());
+      offin = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
     } else {
-      offin = std::make_unique<typename M::MVType>(*ptmp);
+      offin = new typename M::MVType(*ptmp);
     }
   }
-  offout.reset();
+  delete offout; offout = 0;
   if (outref.offset()) {
     typename M::MVType *ptmp =
       (typename M::MVType *)(outref.offset()->getData());
@@ -347,27 +369,32 @@ void MeasConvert<M>::create() {
     typename M::Ref mrtmp(*(typename M::Ref *)(outref.offset()->getRefPtr()));
     if (!mrtmp.empty()) {
       M mtmp(*ptmp, mrtmp);
-      offout = std::make_unique<typename M::MVType>(MeasConvert<M>(mtmp, rtmp).convert());
+      offout = new typename M::MVType(MeasConvert<M>(mtmp, rtmp).convert());
     } else {
-      offout = std::make_unique<typename M::MVType>(*ptmp);
+      offout = new typename M::MVType(*ptmp);
     }
   }
-  crout.clear();
+  crout.resize(0, True);
   crtype = 0;
   // Make sure a reference given
   if (model && model->getRefPtr()->empty()) {
-    ((MeasBase<typename M::MVType, typename M::Ref > *)model.get())
+    ((MeasBase<typename M::MVType, typename M::Ref > *)model)
       ->set(typename M::Ref(M::DEFAULT));
   }
   if (outref.empty()) outref = typename M::Ref(M::DEFAULT);
   if (model && !(model->getRefPtr()->empty()) && !(outref.empty())) {
     // Next due to compiler error (gcc)
     MRBase *rptmp(model->getRefPtr());
-    const MeasFrame& mftmp = rptmp->getFrame();
-    if (!mftmp.empty() && !outref.getFrame().empty() && mftmp != outref.getFrame()) {
-      typename M::Ref reftmp(M::DEFAULT);
-      cvdat->getConvert(*this, *model->getRefPtr(), reftmp);
-      cvdat->getConvert(*this, reftmp, outref);
+    MeasFrame mftmp = rptmp->getFrame();
+    if (!(mftmp.empty()) &&
+	!(outref.getFrame().empty()) &&
+	mftmp != outref.getFrame()) {
+      MRBase *reftmp = new typename M::Ref(M::DEFAULT);
+      cvdat->getConvert(*this, *model->getRefPtr(), 
+			*reftmp);
+      cvdat->getConvert(*this, *reftmp,
+			outref);
+      delete reftmp;
     } else {
       cvdat->getConvert(*this, *model->getRefPtr(), outref);
     }
@@ -390,7 +417,8 @@ convert(const typename M::MVType &val) {
 
 template<class M>
 void MeasConvert<M>::setModel(const Measure &val) {
-  model = std::make_unique<M>(&val);
+  delete model; model = 0;
+  model = new M(&val);
   unit = val.getUnit();
   create();
 }
@@ -409,7 +437,8 @@ void MeasConvert<M>::setOut(typename M::Types mr) {
 
 template<class M>
 void MeasConvert<M>::set(const M &val, const typename M::Ref &mr) {
-  model = std::make_unique<M>(&val);
+  delete model; model = 0;
+  model = new M(val);
   unit = val.unit;
   outref = mr;
   create();
@@ -417,7 +446,8 @@ void MeasConvert<M>::set(const M &val, const typename M::Ref &mr) {
 
 template<class M>
 void MeasConvert<M>::set(const M &val, typename M::Types mr) {
-  model = std::make_unique<M>(&val);
+  delete model; model = 0;
+  model = new M(val);
   unit = val.unit;
   outref = typename M::Ref(mr);
   create();
@@ -428,7 +458,7 @@ void MeasConvert<M>::set(const MeasValue &val) {
   if (model) {
     model->set(val);
   } else {
-    model = std::make_unique<M>(&val);
+    model = new M(&val);
     create();
   }
 }
