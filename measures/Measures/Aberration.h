@@ -27,6 +27,7 @@
 #define MEASURES_ABERRATION_H
 
 //# Includes
+#include <mutex>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/MVPosition.h>
 
@@ -108,7 +109,7 @@ class Aberration
 public:
 //# Constants
 // Interval to be used for linear approximation (in days)
-    static const Double INTV;
+    static constexpr Double INTV = 0.04;
 
 //# Enumerations
 // Types of known Aberration calculations (at 1995/09/04 STANDARD == IAU1980)
@@ -137,8 +138,7 @@ public:
 
 // Re-initialise Aberration object
 // <group>
-    void init();
-    void init(AberrationTypes type);
+    void init(AberrationTypes type = Aberration::STANDARD);
 // </group>
 
 // Refresh calculations
@@ -149,7 +149,7 @@ private:
 // Method to be used
     AberrationTypes method;
 // Check epoch for linear approximation
-    Double checkEpoch;
+    Double checkEpoch = 1e30;
 // Cached calculated angles
     Double aval[3];
 // Cached derivatives
@@ -161,15 +161,16 @@ private:
 // Last calculation
     MVPosition result[4];
 // Interpolation interval
-    static uInt interval_reg;
+    inline static uInt interval_reg;
 // JPL use
-    static uInt usejpl_reg;
+    inline static uInt usejpl_reg;
+    inline static std::once_flag initialize_once_flag;
 
 //# Member functions
 // Copy
     void copy(const Aberration &other);
 // Fill an empty copy
-    void fill();
+    static void initialize();
 // Calculate Aberration angles for time t
     void calcAber(Double t);
 };

@@ -1,0 +1,12 @@
+# cat /etc/cron.d/iers_to_ftp
+# Copy IERS tables to ASTRON ftp server for the World
+# Done every day at 16:00 UT (update of tables is at 15:00 UT)
+MAILTO="schoenmakers@astron.nl"
+PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+0 16 * * * root /usr/local/bin/distribute_measures.sh 2>&1 1>> /data/IERS/daily/log/iers_to_ftp.log
+
+
+cat /etc/cron.d/iers_update
+# Update IERS tables in /data/IERS every day at 15:15 UT
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+15 15 * * * root /usr/local/bin/iers_cron 2>&1 1>> /data/IERS/daily/log/iers_cron.log | mail -a /data/IERS/daily/log/iers_cron.log -s "iers_cron result" schoenmakers@astron.nl

@@ -27,6 +27,7 @@
 #define MEASURES_EARTHFIELD_H
 
 //# Includes
+#include <mutex>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/Quanta/MVPosition.h>
@@ -130,7 +131,7 @@ public:
 
   //# Constants
   // Default interval to be used for linear approximation (in m)
-  static const Double INTV;
+  static constexpr Double INTV = 50000;
 
   //# Enumerations
   // Known EarthField calculation models
@@ -205,13 +206,15 @@ public:
   // Last calculation
   Vector<Double> result_p[4];
   // Interpolation interval
-  static uInt interval_reg_p;
+  inline static uInt interval_reg_p = 0;
+  inline static std::once_flag initialization_once_flag;
 
   //# Member functions
   // Make a copy
   void copy(const EarthField &other);
   // Create correct default fixedEpoch and catalogue field data
   void fillField();
+  static void initializeRcValue();
   // Calculate EarthField for longitude and latitude and altitude (m)
   void calcField(const MVPosition &pos);
 

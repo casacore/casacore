@@ -27,6 +27,7 @@
 #define MEASURES_PRECESSION_H
 
 //# Includes
+#include <mutex>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Euler.h>
 #include <casacore/scimath/Functionals/Polynomial.h>
@@ -128,7 +129,7 @@ class Precession {
  public:
   //# Constants
   // Default interval to be used for linear approximation (in days)
-  static const Double INTV;
+  static constexpr Double INTV = 0.1;
   
   //# Enumerations
   // Types of known precession calculations (at 1995/09/04 STANDARD ==
@@ -195,7 +196,9 @@ class Precession {
   // Last calculation
   Euler result_p[4];
   // Interpolation interval aipsrc registration
-  static uInt myInterval_reg;
+  inline static uInt myInterval_reg;
+  inline static std::once_flag initialize_once_flag;
+  static void initialize();
 
   //# Member functions
   // Make a copy

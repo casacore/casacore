@@ -30,7 +30,7 @@
 using namespace casacore;
 %}
 
-%pure-parser                /* make parser re-entrant */
+%define api.pure                /* make parser re-entrant */
 
 /*
 The grammar has 2 shift/reduce conflicts which are resolved in a correct way.

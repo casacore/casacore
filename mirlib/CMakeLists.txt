@@ -2,6 +2,11 @@
 # CASA Mirlib
 #
 
+# Part of the c files is not compiling yet in C23 mode, so require
+# 17.
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
 add_library (
 casa_mirlib
 bug.c

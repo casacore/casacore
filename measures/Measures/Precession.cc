@@ -31,12 +31,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Constants
-const Double Precession::INTV = 0.1;
-
-//# Static data
-uInt Precession::myInterval_reg = 0;
-
 //# Constructors
 Precession::Precession() :
 method_p(Precession::STANDARD), fixedEpoch_p(MeasData::MJD2000), lres_p(0) {
@@ -110,15 +104,19 @@ void Precession::copy(const Precession &other) {
   for (uInt i=0; i<4; ++i) result_p[i] = other.result_p[i];
 }
 
-void Precession::fillEpoch() {
+void Precession::initialize() {
   // Get the interpolation interval
   if (!Precession::myInterval_reg) {
-    myInterval_reg = 
+    myInterval_reg =
       AipsrcValue<Double>::registerRC(String("measures.precession.d_interval"),
 				      Unit("d"), Unit("d"),
 				      Precession::INTV);
   }
-  
+}
+
+void Precession::fillEpoch() {
+  std::call_once(initialize_once_flag, initialize);
+
   checkEpoch_p = 1e30;
   switch (method_p) {
   case B1950: 

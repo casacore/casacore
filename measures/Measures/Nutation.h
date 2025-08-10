@@ -27,6 +27,8 @@
 #define MEASURES_NUTATION_H
 
 //# Includes
+#include <mutex>
+
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/Quanta/Euler.h>
@@ -223,11 +225,16 @@ class Nutation {
   static uInt myUseiers_reg;
   // JPL use
   static uInt myUsejpl_reg;
+  static inline std::once_flag once_flag_;
+
   //# Member functions
   // Make a copy
   void copy(const Nutation &other);
   // Fill an empty copy
   void fill();
+
+  static void load_static_values();
+
   // Calculate Nutation angles for time t; also derivatives if True given
   void calcNut(Double t, Bool calcDer = False);
 };

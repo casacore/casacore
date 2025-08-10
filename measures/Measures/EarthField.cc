@@ -34,17 +34,12 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Constants
-const Double EarthField::INTV = 50000;
-
-//# Static data
-uInt EarthField::interval_reg_p = 0;
-
 //# Constructors
 EarthField::EarthField() :
   method_p(EarthField::STANDARD), fixedEpoch_p(MeasData::MJD2000), agh_p(0), 
   p_p(0), q_p(0), cl_p(0), sl_p(0),
   lres_p(0) {
+    std::call_once(initialization_once_flag, initializeRcValue);
     fillField();
 }
 
@@ -56,6 +51,7 @@ EarthField::EarthField(EarthFieldTypes model, Double catepoch) :
   method_p(model), fixedEpoch_p(catepoch),
   p_p(0), q_p(0), cl_p(0), sl_p(0),
   lres_p(0) {
+    std::call_once(initialization_once_flag, initializeRcValue);
     fillField();
   }
 
@@ -77,7 +73,7 @@ void EarthField::init(EarthFieldTypes model, Double catepoch) {
 }
 
 //# Destructor
-EarthField::~EarthField() {}
+EarthField::~EarthField() = default;
 
 //# Operators
 // Calculate EarthField components
@@ -119,16 +115,15 @@ void EarthField::copy(const EarthField &other) {
   }
 }
 
-void EarthField::fillField() {
-
+void EarthField::initializeRcValue() {
   // Get the interpolation interval
-  if (!EarthField::interval_reg_p) {
-    interval_reg_p = 
-      AipsrcValue<Double>::registerRC(String("measures.earthfield.d_interval"),
-				      Unit("km"), Unit("m"),
-				      EarthField::INTV);
-  }
+  interval_reg_p =
+    AipsrcValue<Double>::registerRC(String("measures.earthfield.d_interval"),
+            Unit("km"), Unit("m"),
+            EarthField::INTV);
+}
 
+void EarthField::fillField() {
   checkPos_p = MVPosition(1e30, 1e30, 1e30);
   switch (method_p) {
   default:

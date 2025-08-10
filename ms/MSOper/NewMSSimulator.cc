@@ -1363,9 +1363,6 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
   Double Time=Tstart;
   Bool firstTime = True;
   
-  uInt nShadowed = 0;
-  uInt nSubElevation = 0;
-  
   // Start scan number from last one (if there was one)
   Int64 nMSRows=ms_p->nrow();
 
@@ -1685,7 +1682,6 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	  if ( isShadowed(ant1) || isShadowed(ant2) ) {
 	    msc.flag().put(reRow,trueFlag);
 	    msc.flagRow().put(reRow, True);
-	    nShadowed++;
 	  }
 	}
     }
@@ -1724,7 +1720,6 @@ void NewMSSimulator::observe(const Vector<String>& sourceNames,
 	  if ( isTooLow(ant1) || isTooLow(ant2) ) {
 	    msc.flag().put(reRow,trueFlag);
 	    msc.flagRow().put(reRow, True);
-	    nSubElevation++;
 	  }
 	}
     }    

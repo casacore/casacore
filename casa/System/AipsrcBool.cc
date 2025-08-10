@@ -31,17 +31,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Data
-AipsrcValue<Bool> AipsrcValue<Bool>::myp_p;
-std::mutex AipsrcValue<Bool>::theirMutex;
-
-//# Constructor
-AipsrcValue<Bool>::AipsrcValue() :
-  tlst(0), ntlst(0) {}
-
-//# Destructor
-AipsrcValue<Bool>::~AipsrcValue() {}
-
 Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword) {
   String res;
   Bool x = Aipsrc::find(res, keyword, 0);
@@ -58,34 +47,35 @@ Bool AipsrcValue<Bool>::find(Bool &value, const String &keyword,
 uInt AipsrcValue<Bool>::registerRC(const String &keyword,
 				   const Bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
-  myp_p.tlst.resize(n);
-  find ((myp_p.tlst)[n-1], keyword, deflt);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  if (n > tlst.size())
+    tlst.resize(n);
+  find (reinterpret_cast<bool&>(tlst[n-1]), keyword, deflt);
   return n;
 }
 
-const Bool &AipsrcValue<Bool>::get(uInt keyword) {
+Bool AipsrcValue<Bool>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  return (myp_p.tlst)[keyword-1];
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+  return tlst[keyword-1];
 }
 
 void AipsrcValue<Bool>::set(uInt keyword, const Bool &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  (myp_p.tlst)[keyword-1] = deflt;
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+  tlst[keyword-1] = deflt;
 }
 
 void AipsrcValue<Bool>::save(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;
-  if ((myp_p.tlst)[keyword-1]) {
+  if (tlst[keyword-1]) {
     oss << "true";
   } else {
     oss << "false";
   }
-  Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
+  Aipsrc::save(ntlst[keyword-1], String(oss));
 }
 
 } //# NAMESPACE CASACORE - END

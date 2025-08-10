@@ -205,7 +205,7 @@ void testLogOrigin()
     // LogOrigin(const String &globalFunctionName, const char *fileName=0,
     //           uInt lineNumber = 0);
     {
-        LogOrigin global("global", &location);
+        LogOrigin global("global", location);
 	AlwaysAssertExit(global.functionName() == "global" &&
 			 global.className() == "" &&
 			 global.objectID().isNull() &&
@@ -216,7 +216,7 @@ void testLogOrigin()
     // LogOrigin(const String &className, const String &memberFuncName,
     // 	      const char *fileName=0, uInt lineNumber = 0);
     {
-        LogOrigin member("class", "member", &location);
+        LogOrigin member("class", "member", location);
 	AlwaysAssertExit(member.functionName() == "member" &&
 			 member.className() == "class" &&
 			 member.objectID().isNull() &&
@@ -238,7 +238,7 @@ void testLogOrigin()
     // global ostream &operator<<(ostream &os, const LogOrigin &origin);
     {
         ObjectID id;
-	LogOrigin distributed("class", "member", id, &location);
+	LogOrigin distributed("class", "member", id, location);
 	AlwaysAssertExit(distributed.functionName() == "member" &&
 			 distributed.className() == "class" &&
 			 distributed.objectID() == id &&

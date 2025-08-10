@@ -252,13 +252,13 @@ public:
   // was used.
   // <group>
   static Bool find(String &value, const String &keyword, 
-		   const String &deflt);
+		   const String &default_value);
   static Bool findNoHome(String &value, const String &keyword,
-			 const String &deflt);
+			 const String &default_value);
   static Bool find(uInt &value, const String &keyword,
-		   Int Nname, const String tname[], const String &deflt);
+		   Int Nname, const String tname[], const String &default_value);
   static Bool find(uInt &value, const String &keyword,
-		   const Vector<String> &tname, const String &deflt);
+		   const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Sets foundDir to the first /firstPart/lastPart path that it finds
@@ -276,11 +276,11 @@ public:
   // returned value is the index for get() and set().
   // <group>
   static uInt registerRC(const String &keyword,
-			 const String &deflt);
+			 const String &default_value);
   static uInt registerRC(const String &keyword,
-			 Int Nname, const String tname[], const String &deflt);
+			 Int Nname, const String tname[], const String &default_value);
   static uInt registerRC(const String &keyword,
-			 const Vector<String> &tname, const String &deflt);
+			 const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Gets are like find, but using registered integers rather than names.
@@ -292,11 +292,11 @@ public:
 
   // Sets allow registered values to be set
   // <group>
-  static void set(uInt keyword, const String &deflt);
+  static void set(uInt keyword, const String &default_value);
   static void set(uInt keyword,
-		  Int Nname, const String tname[], const String &deflt);
+		  Int Nname, const String tname[], const String &default_value);
   static void set(uInt keyword,
-		  const Vector<String> &tname, const String &deflt);
+		  const Vector<String> &tname, const String &default_value);
   // </group>
 
   // Save a registered keyword value to <src>$HOME/.aipsrc</src>
@@ -376,7 +376,7 @@ protected:
   // Actual find function to use during parse() without recursing into parse()
   static Bool findNoParse(String &value, const String &keyword, uInt start);
   // The registration function
-  static uInt registerRC(const String &keyword, Block<String> &nlst);
+  static uInt registerRC(const String &keyword, std::vector<String> &nlst);
   // Actual saving
   static void save(const String keyword, const String val);
   
@@ -410,11 +410,14 @@ private:
   static Bool filled;
   // String register list
   // <group>
-  static Block<String> strlst;
-  static Block<String> nstrlst;
-  static Block<uInt> codlst;
-  static Block<String> ncodlst;
+  static std::vector<String> string_values_;
+  static std::vector<String> string_names_;
+  static std::vector<uInt> coded_values_;
+  static std::vector<String> coded_names_;
   // </group>
+
+  Aipsrc() = delete;
+  ~Aipsrc() = delete;
 
   //# General member functions
   // Read in the aipsrc files. Always called using theirCallOnce (except for reRead()).

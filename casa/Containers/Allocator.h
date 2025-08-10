@@ -92,19 +92,14 @@ struct casacore_allocator: public std11_allocator<T> {
   struct rebind {
     typedef casacore_allocator<TOther> other;
   };
-  casacore_allocator() throw () {
-  }
+  casacore_allocator() noexcept = default;
 
-  casacore_allocator(const casacore_allocator&other) noexcept
-  :Super(other) {
-  }
+  casacore_allocator(const casacore_allocator&other) noexcept = default;
 
   template<typename TOther>
-  casacore_allocator(const casacore_allocator<TOther>&) noexcept {
-  }
+  casacore_allocator(const casacore_allocator<TOther>&) noexcept {}
 
-  ~casacore_allocator() noexcept {
-  }
+  ~casacore_allocator() noexcept = default;
 
   pointer allocate(size_type elements, const void* = 0) {
     if (elements > std::allocator_traits<casacore_allocator>::max_size(*this)) {
@@ -306,7 +301,7 @@ class Allocator_private {
     // Because this function gets called from destructors of statically allocated objects that get destructed
     // after the program finishes, the allocator is constructed in a static storage space and is never
     // destructed.
-    static typename std::aligned_storage<sizeof(BulkAllocatorImpl<Allocator>), alignof(BulkAllocatorImpl<Allocator>)>::type storage;
+    alignas(BulkAllocatorImpl<Allocator>) static std::byte storage[sizeof(BulkAllocatorImpl<Allocator>)];
     static BulkAllocatorImpl<Allocator>* ptr =
       new (reinterpret_cast<BulkAllocatorImpl<Allocator>*>(&storage)) BulkAllocatorImpl<Allocator>();
     return ptr;

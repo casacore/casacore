@@ -99,20 +99,24 @@ public:
     // Use this constructor if the log message origination is from a
     // global function. Normally <src>where</src> is provided using
     // the <src>WHERE</src> macro.
-    LogOrigin(const String &globalFunctionName, const SourceLocation *where = 0);
+    LogOrigin(const String &globalFunctionName);
+    LogOrigin(const String &globalFunctionName, const SourceLocation &where);
   
     // Use this constructor if the log message origination is from a
     // class member function. Normally <src>where</src> is provided using
     // the <src>WHERE</src> macro.
+    LogOrigin(const String &className, const String &memberFuncName);
     LogOrigin(const String &className, const String &memberFuncName,
-	      const SourceLocation *where = 0);
+	      const SourceLocation &where);
 
     // Use this constructor if the log message origination is from a
     // distributed object (don't worry if you don't know what this
     // means). Normally <src>where</src> is provided using the
     // <src>WHERE</src> macro.
     LogOrigin(const String &className, const String &memberFuncName,
-	      const ObjectID &id, const SourceLocation *where = 0);
+	      const ObjectID &id);
+    LogOrigin(const String &className, const String &memberFuncName,
+	      const ObjectID &id, const SourceLocation &where);
 
     // Make <src>this</src> LogOrigin a copy of <src>other</src>.
     // <group>
@@ -171,8 +175,8 @@ private:
     String task_p;
     String function_p;
     String class_p;
-    ObjectID id_p;
-    uInt line_p;
+    ObjectID id_p = True;
+    uInt line_p = 0;
     String file_p;
     String node_p;
 
@@ -202,7 +206,7 @@ struct SourceLocation
 {
     const char *fileName;
     Int lineNumber;
-    static const SourceLocation *canonicalize(const char *file, Int line);
+    static SourceLocation canonicalize(const char *file, Int line);
 };
 
 #define WHERE casacore::SourceLocation::canonicalize(__FILE__, __LINE__)

@@ -85,14 +85,14 @@ Bool Aipsrc::findNoHome(String &value,
 }
 
 Bool Aipsrc::find(String &value, const String &keyword, 
-		  const String &deflt)
+		  const String &default_value)
 {
-  return (find(value, keyword) ? True : (value = deflt, False));
+  return (find(value, keyword) ? True : (value = default_value, False));
 }
 
 Bool Aipsrc::findNoHome(String &value, const String &keyword,
-			  const String &deflt) {
-  return (findNoHome(value, keyword) ? True : (value = deflt, False));
+			  const String &default_value) {
+  return (findNoHome(value, keyword) ? True : (value = default_value, False));
 }
 
 Bool Aipsrc::find(uInt &value, const String &keyword,
@@ -116,18 +116,18 @@ Bool Aipsrc::find(uInt &value, const String &keyword,
 }
 
 Bool Aipsrc::find(uInt &value, const String &keyword,
-		  Int Nname, const String tname[], const String &deflt) {
+		  Int Nname, const String tname[], const String &default_value) {
   if (!find(value, keyword, Nname, tname)) {
-    value = MUString::minimaxNC(deflt, Nname, tname);
+    value = MUString::minimaxNC(default_value, Nname, tname);
     return False;
   }
   return True;
 }
 
 Bool Aipsrc::find(uInt &value, const String &keyword,
-		  const Vector<String> &tname, const String &deflt) {
+		  const Vector<String> &tname, const String &default_value) {
   if (!find(value, keyword, tname)) {
-    value = MUString::minimaxNC(deflt, tname);
+    value = MUString::minimaxNC(default_value, tname);
     return False;
   }
   return True;
@@ -268,85 +268,83 @@ const String &Aipsrc::aipsHome() {
   return home;
 }
 
-uInt Aipsrc::registerRC(const String &keyword, Block<String> &nlst) {
-  uInt n;
-  for (n=0; n<nlst.nelements(); n++) {
-    if (nlst[n] == keyword) break;
+uInt Aipsrc::registerRC(const String &keyword, std::vector<String> &nlst) {
+  for (uInt n=0; n<nlst.size(); n++) {
+    if (nlst[n] == keyword) return n+1;
   }
-  n++;
-  if (n>nlst.nelements()) {
-    nlst.resize(n);
-  }
-  nlst[n-1] = keyword;
-  return n;
+  nlst.push_back(keyword);
+  return nlst.size();
 }
 
 uInt Aipsrc::registerRC(const String &keyword,
-			const String &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, nstrlst);
-  strlst.resize(n);
-  find (strlst[n-1], keyword, deflt);
+			const String &default_value) {
+  const uInt n = Aipsrc::registerRC(keyword, string_names_);
+  if(n > string_values_.size())
+    string_values_.resize(n);
+  find (string_values_[n-1], keyword, default_value);
   return n;
 }
 
 uInt Aipsrc::registerRC(const String &keyword,
 			Int Nname, const String tname[], 
-			const String &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, ncodlst);
-  codlst.resize(n);
-  find (codlst[n-1], keyword, Nname, tname, deflt);
+			const String &default_value) {
+  const uInt n = Aipsrc::registerRC(keyword, coded_names_);
+  if(n > coded_values_.size())
+    coded_values_.resize(n);
+  find (coded_values_[n-1], keyword, Nname, tname, default_value);
   return n;
 }
 
 uInt Aipsrc::registerRC(const String &keyword,
-			const Vector<String> &tname, const String &deflt) {
-  uInt n = Aipsrc::registerRC(keyword, ncodlst);
-  codlst.resize(n);
-  find (codlst[n-1], keyword, tname, deflt);
+			const Vector<String> &tname, const String &default_value) {
+  const uInt n = Aipsrc::registerRC(keyword, coded_names_);
+  if(n > coded_values_.size())
+    coded_values_.resize(n);
+  find (coded_values_[n-1], keyword, tname, default_value);
   return n;
 }
 
 const String &Aipsrc::get(uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
-  return strlst[keyword-1];
+  AlwaysAssert(keyword>0 && keyword<=string_values_.size(), AipsError);
+  return string_values_[keyword-1];
 }
 
 const uInt &Aipsrc::get(uInt &code, uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  code = codlst[keyword-1];
-  return codlst[keyword-1];
+  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
+  code = coded_values_[keyword-1];
+  return coded_values_[keyword-1];
 }
 
-void Aipsrc::set(uInt keyword, const String &deflt) {
-  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
-  strlst[keyword-1] = deflt;
+void Aipsrc::set(uInt keyword, const String &default_value) {
+  AlwaysAssert(keyword>0 && keyword<=string_values_.size(), AipsError);
+  string_values_[keyword-1] = default_value;
 }
 	       
 void Aipsrc::set(uInt keyword,
-		 Int Nname, const String tname[], const String &deflt) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  find (codlst[keyword-1], String::toString(keyword), Nname, tname, deflt);
+		 Int Nname, const String tname[], const String &default_value) {
+  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
+  find (coded_values_[keyword-1], String::toString(keyword), Nname, tname, default_value);
 }
 
 void Aipsrc::set(uInt keyword,
-		 const Vector<String> &tname, const String &deflt) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  find (codlst[keyword-1], String::toString(keyword), tname, deflt);
+		 const Vector<String> &tname, const String &default_value) {
+  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
+  find (coded_values_[keyword-1], String::toString(keyword), tname, default_value);
 }
 
 void Aipsrc::save(uInt keyword) {
-  AlwaysAssert(keyword>0 && keyword<=strlst.nelements(), AipsError);
-  Aipsrc::save(nstrlst[keyword-1], strlst[keyword-1]);
+  AlwaysAssert(keyword>0 && keyword<=string_values_.size(), AipsError);
+  Aipsrc::save(string_names_[keyword-1], string_values_[keyword-1]);
 }
 
 void Aipsrc::save(uInt keyword, const String tname[]) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  Aipsrc::save(ncodlst[keyword-1], tname[codlst[keyword-1]]);
+  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
+  Aipsrc::save(coded_names_[keyword-1], tname[coded_values_[keyword-1]]);
 }
 
 void Aipsrc::save(uInt keyword, const Vector<String> &tname) {
-  AlwaysAssert(keyword>0 && keyword<=codlst.nelements(), AipsError);
-  Aipsrc::save(ncodlst[keyword-1], tname(codlst[keyword-1]));
+  AlwaysAssert(keyword>0 && keyword<=coded_values_.size(), AipsError);
+  Aipsrc::save(coded_names_[keyword-1], tname(coded_values_[keyword-1]));
 }
 
 // Note that the parameters should not be references!
@@ -549,20 +547,19 @@ uInt Aipsrc::genRestore(Vector<String> &namlst, Vector<String> &vallst,
   Block<String> nl;
   Block<String> vl;
   Int nkw = Aipsrc::genParse(nl, vl, ef, fileList);
-  Block<String> nla;
-  Block<String> vla;
-  nla.resize(0);
-  vla.resize(0);
+  std::vector<String> names_la;
+  std::vector<String> values_la;
   uInt n;
   for (Int i=nkw-1; i>=0; i--) {	// reverse order to do aipsrc like
     if (!nl[i].contains('*')) {		// no wild cards
-      n = Aipsrc::registerRC(nl[i], nla);
-      vla.resize(n);
-      vla[n-1] = vl[i];
+      n = Aipsrc::registerRC(nl[i], names_la);
+      if(n > values_la.size())
+        values_la.resize(n);
+      values_la[n-1] = vl[i];
     }
   }
-  namlst = Vector<String>(nla.begin(), nla.end());
-  vallst = Vector<String>(vla.begin(), vla.end());
+  namlst = Vector<String>(names_la.begin(), names_la.end());
+  vallst = Vector<String>(values_la.begin(), values_la.end());
   return namlst.nelements();
 }
 
@@ -587,7 +584,7 @@ void Aipsrc::genSave(Vector<String> &namlst, Vector<String> &vallst,
 
 void Aipsrc::genSet(Vector<String> &namlst, Vector<String> &vallst,
 		    const String &nam, const String &val) {
-  Block<String> nl = makeBlock(namlst);
+  std::vector<String> nl(namlst.begin(), namlst.end());
   uInt n = Aipsrc::registerRC(nam, nl);
   if (n > vallst.nelements()) vallst.resize(n, True);
   vallst(n-1) = val;
@@ -641,10 +638,10 @@ Bool Aipsrc::genGet(String &val, Vector<String> &namlst, Vector<String> &vallst,
   String Aipsrc::home = String();
   String Aipsrc::uhome= String();
   Bool Aipsrc::filled = False;
-  Block<String> Aipsrc::strlst(0);
-  Block<String> Aipsrc::nstrlst(0);
-  Block<uInt> Aipsrc::codlst(0);
-  Block<String> Aipsrc::ncodlst(0);
+  std::vector<String> Aipsrc::string_values_;
+  std::vector<String> Aipsrc::string_names_;
+  std::vector<uInt> Aipsrc::coded_values_;
+  std::vector<String> Aipsrc::coded_names_;
 
 } //# NAMESPACE CASACORE - END
 

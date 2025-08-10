@@ -279,7 +279,8 @@ private:
   MVDirection infomvd_p[N_FrameMVDInfo];
   // </group>
   // Aipsrc definition for B1950 epoch (in years)
-  static uInt b1950_reg_p;
+  static inline std::once_flag initialize_once_flag;
+  static inline uInt b1950_reg_p;
  
   // </group>
 
@@ -289,6 +290,8 @@ private:
   // Assignment (not implemented)
   MeasMath &operator=(const MeasMath &other);
   
+  static void initializeB1950();
+
   //# Member functions
   // Get proper frame information
   void getFrame(FrameType i);

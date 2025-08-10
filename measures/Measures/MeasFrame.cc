@@ -29,6 +29,7 @@
 #include <casacore/casa/Quanta/Quantum.h>
 #include <casacore/casa/IO/ArrayIO.h>
 #include <casacore/measures/Measures/MCFrame.h>
+#include <casacore/measures/Measures/MeasConvert.h>
 #include <casacore/measures/Measures/MEpoch.h>
 #include <casacore/measures/Measures/MPosition.h>
 #include <casacore/measures/Measures/MDirection.h>
@@ -41,83 +42,72 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 // Representation class
 class FrameRep {
 public:
-  // Constructor
-  FrameRep() :
-    epval(0), posval(0), dirval(0), radval(0), comval(0),
-    mymcf(0), cnt(1) {}
-  // Destructor
-  ~FrameRep() {
-    delete epval;
-    delete posval;
-    delete dirval;
-    delete radval;
-    delete comval;
-    delete mymcf;		// delete conversion frame data
-  }
-  
+  FrameRep() = default;
+  ~FrameRep() = default;
+ FrameRep(const FrameRep& source) :
+    epval(source.epval ? source.epval->clone() : nullptr),
+    posval(source.posval ? source.posval->clone() : nullptr),
+    dirval(source.dirval ? source.dirval->clone() : nullptr),
+    radval(source.radval ? source.radval->clone() : nullptr),
+    comval(source.comval ? source.comval->clone() : nullptr),
+    mymcf(source.mymcf ? new MCFrame(*source.mymcf) : nullptr) {}
+
   // The actual measures
   // <group>
   // Epoch in time
-  Measure *epval;
+  std::unique_ptr<Measure> epval;
   // Position
-  Measure *posval;
+  std::unique_ptr<Measure> posval;
   // Direction
-  Measure *dirval;
+  std::unique_ptr<Measure> dirval;
   // Radial velocity
-  Measure *radval;
+  std::unique_ptr<Measure> radval;
   // Comet
-  MeasComet *comval;
+  std::unique_ptr<MeasComet> comval;
   // Pointer to belonging conversion frame
-  MCFrame *mymcf;
-  // Usage count
-  Int cnt;
+  std::unique_ptr<MCFrame> mymcf;
 };
 
 // MeasFrame class
 
 //# Constructors
-MeasFrame::MeasFrame() : rep(0) {
+MeasFrame::MeasFrame() {
   create();
 }
 
-MeasFrame::MeasFrame(const Measure &meas1) : rep(0) {
+MeasFrame::MeasFrame(const Measure &meas1) {
   create();
   fill(&meas1);
 }
 
-MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) : rep(0) {
+MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2) {
   create();
   fill(&meas1);
   fill(&meas2);
 }
 
 MeasFrame::MeasFrame(const Measure &meas1, const Measure &meas2,
-		     const Measure &meas3) : rep(0) {
+		     const Measure &meas3) {
   create();
   fill(&meas1);
   fill(&meas2);
   fill(&meas3);
 }
 
-MeasFrame::MeasFrame(const MeasFrame &other) {
-  rep = other.rep;
-  if (rep) rep->cnt++;
+MeasFrame::MeasFrame(details::CyclicPtr<FrameRep> new_rep) :
+  rep(std::move(new_rep))
+{
 }
+
+// These must be declared here and not in the header because FrameRep
+// needs to be defined.
+MeasFrame::MeasFrame(const MeasFrame &other) = default;
+MeasFrame::MeasFrame(MeasFrame &&other) = default;
+MeasFrame &MeasFrame::operator=(const MeasFrame &other) = default;
+MeasFrame &MeasFrame::operator=(MeasFrame &&other) = default;
 
 // Destructor
-MeasFrame::~MeasFrame() {
-  if (rep && rep->cnt && --rep->cnt == 0) delete rep;
-}
-
-// Operators
-MeasFrame &MeasFrame::operator=(const MeasFrame &other) {
-  if (this != &other) {
-    if (other.rep) other.rep->cnt++;
-    if (rep && rep->cnt && --rep->cnt == 0) delete rep;
-    rep = other.rep;
-  }
-  return *this;
-}
+MeasFrame::~MeasFrame() = default;
 
 Bool MeasFrame::operator==(const MeasFrame &other) const {
   return (rep == other.rep);
@@ -180,11 +170,9 @@ void MeasFrame::resetEpoch(const MVEpoch &val) {
 
 void MeasFrame::resetEpoch(const Measure &val) {
   if (rep && rep->epval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->epval;
-    rep->epval = val.clone();
-    unlock(locker);
+    const details::CyclicState state = rep.Freeze();
+    rep->epval.reset(val.clone());
+    rep.Unfreeze(state);
     makeEpoch();
   } else {
     errorReset(String("Epoch"));
@@ -210,11 +198,9 @@ void MeasFrame::resetPosition(const MVPosition  &val) {
 
 void MeasFrame::resetPosition(const Measure &val) {
   if (rep && rep->posval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->posval;
-    rep->posval = val.clone();
-    unlock(locker);
+    const details::CyclicState state = rep.Freeze();
+    rep->posval.reset(val.clone());
+    rep.Unfreeze(state);
     makePosition();
   } else {
     errorReset(String("Position"));
@@ -240,11 +226,9 @@ void MeasFrame::resetDirection(const MVDirection  &val) {
 
 void MeasFrame::resetDirection(const Measure &val) {
   if (rep && rep->dirval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->dirval;
-    rep->dirval = val.clone();
-    unlock(locker);
+    const details::CyclicState state = rep.Freeze();
+    rep->dirval.reset(val.clone());
+    rep.Unfreeze(state);
     makeDirection();
   } else {
     errorReset(String("Direction"));
@@ -270,11 +254,9 @@ void MeasFrame::resetRadialVelocity(const MVRadialVelocity  &val) {
 
 void MeasFrame::resetRadialVelocity(const Measure &val) {
   if (rep && rep->radval) {
-    uInt locker = 0;
-    lock(locker);
-    delete rep->radval;
-    rep->radval = val.clone();
-    unlock(locker);
+    const details::CyclicState state = rep.Freeze();
+    rep->radval.reset(val.clone());
+    rep.Unfreeze(state);
     makeRadialVelocity();
   } else {
     errorReset(String("RadialVelocity"));
@@ -290,207 +272,192 @@ void MeasFrame::resetComet(const MeasComet &val) {
 }
 
 const Measure* MeasFrame::epoch() const{
-  if (rep) return rep->epval;
-  return 0;
+  if (rep) return rep->epval.get();
+  return nullptr;
 }
 
 const Measure* MeasFrame::position() const{
-  if (rep) return rep->posval;
-  return 0;
+  if (rep) return rep->posval.get();
+  return nullptr;
 }
 
 const Measure* MeasFrame::direction() const{
-  if (rep) return rep->dirval;
-  return 0;
+  if (rep) return rep->dirval.get();
+  return nullptr;
 }
 
 const Measure* MeasFrame::radialVelocity() const{
-  if (rep) return rep->radval;
-  return 0;
+  if (rep) return rep->radval.get();
+  return nullptr;
 }
 
 const MeasComet* MeasFrame::comet() const{
-  if (rep) return rep->comval;
-  return 0;
-}
-
-void MeasFrame::lock(uInt &locker) {
-  locker = 1;
-  if (rep) locker = rep->cnt++;
-}
-
-void MeasFrame::unlock(const uInt locker) {
-  if (rep) rep->cnt = locker;
+  if (rep) return rep->comval.get();
+  return nullptr;
 }
 
 Bool MeasFrame::getTDB(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getTDB(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getTDB(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getUT1(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getUT1(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getUT1(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getTT(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getTT(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getTT(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLong(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLong(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLong(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getITRF(MVPosition &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getITRF(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getITRF(tdb, *this));
   tdb = MVPosition(0.0);
   return False; 
 }
 
 Bool MeasFrame::getRadius(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getRadius(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getRadius(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLatGeo(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLatGeo(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLatGeo(tdb, *this));
   tdb = 0;
   return False;
 }
 
 Bool MeasFrame::getLAST(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLAST(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLAST(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLASTr(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLASTr(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLASTr(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getJ2000(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getJ2000(tdb, *this));
   tdb = Double(0.0);
   return False; 
 }
 
 Bool MeasFrame::getJ2000Long(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Long(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Long(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getJ2000Lat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Lat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getJ2000Lat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getB1950(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950Long(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950Long(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getB1950Long(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getB1950Lat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getB1950Lat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getB1950Lat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getApp(MVDirection &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getApp(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getApp(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getAppLong(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getAppLong(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getAppLong(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getAppLat(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getAppLat(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getAppLat(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getLSR(Double &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getLSR(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getLSR(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getCometType(uInt &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getCometType(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getCometType(tdb, *this));
   tdb = 0;
   return False; 
 }
 
 Bool MeasFrame::getComet(MVPosition &tdb) const {
-  if (rep && rep->mymcf) return (rep->mymcf->getComet(tdb));
+  if (rep && rep->mymcf) return (rep->mymcf->getComet(tdb, *this));
   tdb = MVPosition(0.0);
   return False; 
 }
 
 void MeasFrame::create() {
   if (!rep) {
-    rep = new FrameRep();
-    uInt locker = 0;
-    lock(locker);
-    rep->mymcf = new MCFrame(*this);
-    unlock(locker);
+    rep = details::MakeCyclic<FrameRep>();
+    rep->mymcf = std::make_unique<MCFrame>();
   }
 }
 
 void MeasFrame::fill(const Measure *in) {
+  // The Measure values may own a MeasRef that owns this MeasFrame, causing a
+  // cycle. The Freezing/Unfreezing calls prevent counting these links.
   if (in) {
-    uInt locker = 0;
     if (dynamic_cast<const MEpoch*>(in)) {
-      lock(locker);
-      delete rep->epval;
-      rep->epval = in->clone();
-      unlock(locker);
+      const details::CyclicState state = rep.Freeze();
+      rep->epval.reset(in->clone());
+      rep.Unfreeze(state);
       makeEpoch();
     } else if (dynamic_cast<const MPosition*>(in)) {
-      lock(locker);
-      delete rep->posval;
-      rep->posval = in->clone();
-      unlock(locker);
+      const details::CyclicState state = rep.Freeze();
+      rep->posval.reset(in->clone());
+      rep.Unfreeze(state);
       makePosition();
     } else if (dynamic_cast<const MDirection*>(in)) {
-      lock(locker);
-      delete rep->dirval;
-      rep->dirval = in->clone();
-      unlock(locker);
+      const details::CyclicState state = rep.Freeze();
+      rep->dirval.reset(in->clone());
+      rep.Unfreeze(state);
       makeDirection();
     } else if (dynamic_cast<const MRadialVelocity*>(in)) {
-      lock(locker);
-      delete rep->radval;
-      rep->radval = in->clone();
-      unlock(locker);
+      const details::CyclicState state = rep.Freeze();
+      rep->radval.reset(in->clone());
+      rep.Unfreeze(state);
       makeRadialVelocity();
     } else {
       throw(AipsError("Unknown MeasFrame Measure type " +
@@ -501,11 +468,11 @@ void MeasFrame::fill(const Measure *in) {
 
 void MeasFrame::fill(const MeasComet *in) {
   if (in) {
-    delete rep->comval; rep->comval = 0;
+    rep->comval.reset();
     if (in->ok()) {
-      rep->comval = in->clone();
+      rep->comval.reset(in->clone());
       if (!rep->comval->ok()) {
-	delete rep->comval; rep->comval = 0;
+        rep->comval.reset();
       }
     }
     if (rep->comval) {
@@ -517,19 +484,19 @@ void MeasFrame::fill(const MeasComet *in) {
 }
 
 void MeasFrame::makeEpoch() {
-  rep->mymcf->makeEpoch();
+  rep->mymcf->makeEpoch(*this);
 }
 
 void MeasFrame::makePosition() {
-  rep->mymcf->makePosition();
+  rep->mymcf->makePosition(*this);
 }
 
 void MeasFrame::makeDirection() {
-  rep->mymcf->makeDirection();
+  rep->mymcf->makeDirection(*this);
 }
 
 void MeasFrame::makeRadialVelocity() {
-  rep->mymcf->makeRadialVelocity();
+  rep->mymcf->makeRadialVelocity(*this);
 }
 
 void MeasFrame::makeComet() {
@@ -590,6 +557,19 @@ ostream &operator<<(ostream &os, MeasFrame &mf) {
       mf.rep->comval->getEnd();
   }
   return os;
+}
+
+MeasFrame MeasFrame::independentCopy() const {
+  MeasFrame new_frame(details::MakeCyclic<FrameRep>(*rep));
+  if (new_frame.rep->epval)
+    new_frame.makeEpoch();
+  if (new_frame.rep->posval)
+    new_frame.makePosition();
+  if (new_frame.rep->dirval)
+    new_frame.makeDirection();
+  if (new_frame.rep->radval)
+    new_frame.makeRadialVelocity();
+  return new_frame;
 }
 
 } //# NAMESPACE CASACORE - END

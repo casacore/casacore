@@ -1,0 +1,233 @@
+#!/bin/csh -f
+#
+#$Prog$
+#
+#  $Id: iers_cron.csh,v 1.5 2010/02/01 12:26:10 schoenma Exp $
+#
+#  Purpose: update the IERS tables : IERSeop97 IERSpredict
+#            TAI_UTC IERSpredict2000 IERSeop2000 IGRF
+#
+#  Usage: iers_cron.csh [<IERS table dir>]
+#
+#        If the <IERS table dir> is not given, the tables in /data/IERS/daily
+#        will be updated. A copy of existing tables is made in directory
+#        /data/IERS/daily/old/<datetime>.
+#
+# Run this script on kis001.
+#
+#
+
+# Make sure directory with tables exists
+#set echo
+if ($1 != "") then
+  set iers_root = $1
+else
+  set iers_root = /data/IERS
+endif
+
+set iers_tbl = ${iers_root}/daily
+
+# Create logfile
+if (! (-d ${iers_tbl}/log) ) then
+   mkdir ${iers_tbl}/log >& /dev/null
+   if (! (-d ${iers_tbl}/log) ) then
+     tty -s && echo "Cannot create log directory ${iers_tbl}/log"
+   endif
+endif
+set date = `date +%Y%m%d%H%M%S`
+set logfile = ${iers_tbl}"/log/iers_cron."${date}
+touch $logfile
+if  (!(-e $logfile)) then
+    tty -s && echo "Cannot create logfile: "${logfile}" Will commence nonetheless"
+    set logfile = /dev/null
+endif
+
+# update scripts need to be run in $iers_tbl
+cd $iers_tbl
+echo "Using directory: "$iers_tbl >> $logfile
+
+# check existance of measuresdata-update and measuresdata
+set exist = `which measuresdata-update`
+if ( "${exist}" =~ *not\ found* ) then
+  set lognow = `date +%T`
+  echo ${lognow}": Could not locate measuresdata-update, cannot continue." | tee -a $logfile
+  exit
+endif
+set exist = `which measuresdata`
+if ( "${exist}" =~ *not\ found* ) then
+  set lognow = `date +%T`
+  echo ${lognow}": Could not locate measuresdata, cannot continue." | tee -a $logfile
+  exit
+endif
+
+
+# check existence of tables
+set list="DE200 DE405 Lines Sources IERSeop2000 IERSeop97 IERSpredict IERSpredict2000 TAI_UTC Observatories IGRF"
+set dirs = "ephemerides ephemerides ephemerides ephemerides geodetic geodetic geodetic geodetic geodetic geodetic geodetic"
+set tar_dirs = `echo ${dirs} | sed s/\ /"\n"/g | sort -u`
+set dest_dir = ($dirs)
+
+@ indx = 1
+foreach table ($list)
+  set dir = ${iers_tbl}/${dest_dir[${indx}]}/${table}
+  if (! -d $dir ) then
+    set lognow = `date +%T`
+    echo ${lognow}": WARNING: $dir does not exist, can only recreate it." | tee -a $logfile
+  endif
+  @ indx += 1
+end
+
+#Keep old directory to return after completion
+set olddir = `pwd`
+
+set now = `date +%Y%m%dT%H%M%S`
+set archivedir = ${iers_tbl}/old
+echo "Placing existing tables in tar-archive in ${archivedir}"
+if (!(-e ${archivedir})) then
+  mkdir ${archivedir}
+  if (!(-e ${archivedir})) then
+    set lognow = `date +%T`
+    echo ${lognow}": Could not create directory ${archivedir}; cannot continue." | tee -a $logfile
+    exit 1
+  endif
+endif
+
+# Check for tar-file of current tables; if not there, try to create it now.
+if (! (-e ${iers_tbl}/iers.tar.gz)) then
+  # Create a zipped tarfile of all tables
+  set result = `tar -czf ${iers_tbl}/iers.tar.gz ${tar_dirs} >& /dev/null; echo $?`
+  if (! (-e ${iers_tbl}/iers.tar.gz) || $result > 0) then
+    set lognow = `date +%T`
+    echo ${lognow}": Could not create tarfile ${iers_tbl}/iers.tar.gz; cannot continue." | tee -a $logfile
+    exit 1
+  endif
+endif
+
+
+# Move the tarfile to the archive
+set archname = iers_${now}.tar.gz
+mv -f ${iers_tbl}/iers.tar.gz ${archivedir}/${archname} >& /dev/null
+if (! (-e ${archivedir}/${archname}) ) then
+  set lognow = `date +%T`
+  echo ${lognow}": Could not move tarfile to ${archivedir}/${archname}; cannot continue." | tee -a $logfile
+  exit 1
+endif
+
+echo "Created tarfile ${archivedir}/${archname}" | tee -a $logfile
+
+# Start the update
+
+set lognow = `date +%T`
+echo ${lognow}": iers_cron : Executing measuresdata-update" | tee -a $logfile
+measuresdata-update type=IERSpredict refresh=y | tee -a $logfile
+set lognow = `date +%T`
+echo ${lognow}": iers_cron : Executing measuresdata-update" | tee -a $logfile
+measuresdata-update type=IERSpredict2000 refresh=y | tee -a $logfile
+set lognow = `date +%T`
+echo ${lognow}": iers_cron : Executing measuresdata-update" | tee -a $logfile
+measuresdata-update | tee -a $logfile
+set lognow = `date +%T`
+
+set ok = 1
+if ($ok == 1) then
+  set lognow = `date +%T`
+  echo ${lognow}": Set protection of table to read only" | tee -a $logfile
+  foreach table ($list)
+    echo ${lognow}": chmod -R ugo+rx ${iers_tbl}/${table}" | tee -a $logfile
+    chmod -R ugo+rx ${iers_tbl}/${table} >& /dev/null
+  end
+else
+  set lognow = `date +%T`
+  echo ${lognow}": Moving back archive versions in ${archivedir}" | tee -a $logfile
+  foreach table ($list)
+    echo ${lognow}":  rm -rf ${iers_tbl}/${table}" | tee -a $logfile
+    rm -rf ${iers_tbl}/${table}
+    if (-e ${iers_tbl}/${table}) then
+       echo ${lognow}": Could not remove ${tms_tbl}/${table}; replace ${table} by hand." | tee -a $logfile
+       break
+    else
+       set lognow = `date +%T`
+       echo ${lognow}": cp -Rp  ${archivedir}/${table} ${iers_tbl}/${table}" | tee -a $logfile
+       cp -Rp  ${archivedir}/${table} ${iers_tbl}/${table} >& /dev/null
+       if (!(-e ${iers_tbl}/${table})) then
+          echo ${lognow}": Could not copy ${archivedir}/${table} to ${iers_tbl}; proceed by hand." | tee -a $logfile
+       endif
+    endif
+  end
+endif
+
+#Cleanup up possible leftovers
+set lognow = `date +%T`
+echo ${lognow}": Cleaning up eopyyyy.xxx files" | tee -a $logfile
+rm -f eop* >& /dev/null
+
+# Now first check if tables are OK. This is done by running test program
+# tMeasure and tMeasJPL
+# Note: these will use the table location as defined when building the
+# programs; this must therefore be done with --data-dir=<iers_dir>
+# which points to the tables to be TESTED!!
+# See Wiki for info (search for IERS)
+
+echo ${lognow}": Testing new tables with tMeasure" | tee -a $logfile
+set result = `tMeasure >& ${iers_tbl}/log/tMeasure.out; echo $?`
+if ($result != 0) then
+  set lognow = `date +%T`
+  echo ${lognow}": Problem with running tMeasure on updated tables. See ${iers_tbl}/log/tMeasure.out for details " | tee -a $logfile
+  exit 1;
+endif
+echo ${lognow}": Testing new tables with tMeasJPL" | tee -a $logfile
+set result = `tMeasJPL >& ${iers_tbl}/log/tMeasJPL.out; echo $?`
+if ($result != 0) then
+  set lognow = `date +%T`
+  echo ${lognow}": Problem with running tMeasJPL on updated tables. See ${iers_tbl}/log/tMeasJPL.out for details " | tee -a $logfile
+  exit 1;
+endif
+
+# Create tarfile of current tables and remove previous.
+if (-e iers.tar.gz.new) rm -f iers.tar.gz.new >& /dev/null
+
+set result = `tar -czf iers.tar.gz.new $tar_dirs >&/dev/null ; echo $?`
+if ($result == 0) then
+  mv -f iers.tar.gz.new ${iers_tbl}/iers.tar.gz
+  echo ${lognow}": Created tarfile of updated tables" | tee -a $logfile
+else
+  echo ${lognow}": Could not create tarfile of updated tables" | tee -a $logfile
+  rm -f iers.tar.gz
+  exit 1;
+endif
+
+# Update tag file
+touch ${iers_tbl}/iers.tag
+
+set oldest_table_age = 90
+
+set too_old_tablelist = `find ${iers_tbl}/old -maxdepth 1 -mtime +$oldest_table_age -print | sort`
+if ($#too_old_tablelist > 0) then
+  set lognow = `date +%T`
+  echo ${lognow}": Cleaning up old tables older than $oldest_table_age days" | tee -a $logfile
+  foreach table ($too_old_tablelist)
+    rm -fr $table >& /dev/null
+    if (-e $table) then
+      set lognow = `date +%T`
+      echo ${lognow}": Could not remove $table" | tee -a $logfile
+    endif
+  end
+endif
+
+set too_old_oldlogfilelist = `find ${iers_tbl}/log -maxdepth 1 -mtime +$oldest_table_age -print | sort`
+if ($#too_old_oldlogfilelist > 0) then
+  set lognow = `date +%T`
+  echo ${lognow}": Cleaning up old logfiles older than $oldest_table_age days" | tee -a $logfile
+  foreach oldlogfile ($too_old_oldlogfilelist)
+    rm -f $oldlogfile >& /dev/null
+    if (-e $oldlogfile) then
+      set lognow = `date +%T`
+      echo ${lognow}": Could not remove $oldlogfile" | tee -a $logfile
+    endif
+  end
+endif
+
+#go back to olddir
+cd ${olddir}
+set lognow = `date +%T`
+echo ${lognow}": Finished" | tee -a $logfile

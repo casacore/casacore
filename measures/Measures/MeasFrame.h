@@ -30,6 +30,7 @@
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/casa/Arrays/Vector.h>
+#include <casacore/measures/Measures/CyclicPtr.h>
 #include <casacore/measures/Measures/Measure.h>
 #include <casacore/casa/iosfwd.h>
 
@@ -63,7 +64,8 @@ template <class Qtype> class Quantum;
 //
 // <synopsis>
 // Measurements are made in a reference frame (epoch, position, direction,
-// ...).<br>
+// ...).
+//
 // The class is a container for the reference frame Measures (MEpoch etc).
 // Since a frame will possibly be used by many different Measures, it behaves
 // as a smart pointer, with reference rather than copy characteristics.
@@ -76,7 +78,7 @@ template <class Qtype> class Quantum;
 //
 // A MeasFrame is constructed by setting the appropriate Measures, either in
 // a constructor, or with a set(). The input to the constructors and set are
-// Measures.<br>
+// Measures.
 //
 // Inside the frames automatic conversion to the most appropriate usage of
 // its values is done (e.g. time to TBD time, position to astronomical
@@ -95,25 +97,39 @@ template <class Qtype> class Quantum;
 // will calculate it (including possible other conversions) from the
 // observatory's position specified in a frame. Any calculation done will be
 // cached (e.g. a Nutation calculation in this case for dpsi), and used in
-// subsequent conversions using the same frame.<br>
+// subsequent conversions using the same frame.
+//
 // Furthermore, a frame will often be regularly updated (e.g. coordinate
 // conversion for a series of times). To make use of cached information, and
 // to speed up as much as possible, <src>reset...()</src> functions are 
 // available. These reset functions accept the same range of input parameter
 // types as the <linkto class=MeasConvert>MeasConvert</linkto> () operator,
 // and will keep any determined conversion machines and related information
-// intact, only recalculating whatever is necessary.<br>
+// intact, only recalculating whatever is necessary.
+//
 // The actual frame calculations and interrogations are done in a separate
 // <linkto class=MCFrame>MCFrame</linkto> hidden class, which attaches itself
-// to MeasFrame when and if necessary (see there if you are really curious).<br>.
+// to MeasFrame when and if necessary (see there if you are really curious).
+//
 // get...() functions can return frame measures. Only when the frame has been
 // attached to a calculating machine *MCFrame) are these values available.
 // This attachment is done if the frame has been actively used by a
 // Measure::Convert engine, or if explicitly done by the
 // <src>MCFrame::make(MeasFrame &)</src> static method.
+//
+// Because MeasFrame uses a reference to its implementation, which can be shared
+// by multiple MeasFrame instances, it is by default not thread safe
+// when different MeasFrames are accessed from different threads. Moreover,
+// a MeasFrame contains links to other objects which may also be shared.
+// In Casacore 3.8, the referenced data entries in this class
+// have been changed so they are initialized in thread-safe ways, and thread-safe
+// conversions can be achieved by using the independentCopy() method. See
+// the help for that function for more info.
+//
 // <note role=caution> An explicit (or implicit) call to MCFrame::make will
 // load the whole conversion machinery (including Tables) into your
-// linked module).</note><br>
+// linked module).</note>
+//
 // <linkto class=Aipsrc>Aipsrc keywords</linkto> can be used for additional
 // (highly specialised) additional internal conversion parameters.
 // </synopsis>
@@ -142,10 +158,6 @@ class MeasFrame {
   // Machinery
   // <group>
   friend class MCFrame;
-  friend Bool MCFrameGetdbl(void *dmf, uInt tp, Double &result);
-  friend Bool MCFrameGetmvdir(void *dmf, uInt tp, MVDirection &result);
-  friend Bool MCFrameGetmvpos(void *dmf, uInt tp, MVPosition &result);
-  friend Bool MCFrameGetuint(void *dmf, uInt tp, uInt &result);
   // </group>
 
   //# Enumerations
@@ -175,8 +187,11 @@ class MeasFrame {
   // </group>
   // Copy constructor (reference semantics)
   MeasFrame(const MeasFrame &other);
+  MeasFrame(MeasFrame &&other);
+  
   // Copy assignment (reference semantics)
   MeasFrame &operator=(const MeasFrame &other);
+  MeasFrame &operator=(MeasFrame &&other);
   // Destructor
   ~MeasFrame();
   
@@ -287,13 +302,32 @@ class MeasFrame {
   // Get the comet coordinates
   Bool getComet(MVPosition &tdb) const;
   // </group>
+
+  // Make a value copy of this MeasFrame, such that it contains no reference
+  // to the old MeasFrame data. This is useful for ensuring thread safety in conversions.
+  //
+  // This function is available since casacore v3.8.0.
+  //
+  // The following is an example of how a thread-safe conversion can be performed:
+  // <srcblock>
+  // void convert_example(const MDirection& shared_direction, const MeasFrame& shared_frame) {
+  //   const MeasFrame frame = shared_frame.independentCopy();
+  //   MDirection::Convert converter(MDirection::J2000,
+  //     MDirection::Ref(MDirection::ITRF, frame));
+  //   MDirection result = converter(shared_direction);
+  // </srcblock>
+  // The convert_example() function can be called from multiple threads (as long as
+  // they don't write to shared_direction or shared_frame), and performs a direction conversion
+  // from J2000 to ITRF. Any information that is shared between the threads is read-only.
+  MeasFrame independentCopy() const;
   
 private:
   
   //# Data
-  // Representation of MeasFrame
-  FrameRep *rep;
+  // Representation of MeasFrame. See the CyclicPtr class documentation for motivation.
+  details::CyclicPtr<FrameRep> rep;
   
+  MeasFrame(details::CyclicPtr<FrameRep> new_rep);
   //# Member functions
   // Create an instance of the MeasFrame class
   void create();
@@ -314,10 +348,6 @@ private:
   void makeComet();
   // Throw reset error
   void errorReset(const String &txt);
-  // Lock the frame to make sure deletion occurs when needed
-  void lock(uInt &locker);
-  // Unlock the frame
-  void unlock(const uInt locker);
 };
 
 //# Global functions

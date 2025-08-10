@@ -2765,7 +2765,6 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 	const Vector<rownr_t> feedsToCopy = feedIndex.getRowNumbers();
 	const uInt nFeedsToCopy = feedsToCopy.nelements();
 	rownr_t destRow = feed.nrow();
-	uInt rCount = 0;
 	for (uInt f = 0; f < nFeedsToCopy; f++) {
 	  Bool present=False;
 	  for(uInt g=0; g<matchingFeeds; g++){
@@ -2785,7 +2784,6 @@ Block<uInt> MSConcat::copyAntennaAndFeed(const MSAntenna& otherAnt,
 	      feedRecord.define(spwField, getMapValue(newSPWIndex_p, newSPWId));
 	    }
 	    feedRow.putMatchingFields(destRow, feedRecord);
-	    rCount++;
 	    destRow++;
 	  }
 	}

@@ -33,17 +33,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//# Data
-AipsrcVector<Bool> AipsrcVector<Bool>::myp_p;
-std::mutex AipsrcVector<Bool>::theirMutex;
-
-//# Constructor
-AipsrcVector<Bool>::AipsrcVector() : 
-  tlst(0), ntlst(0) {}
-
-//# Destructor
-AipsrcVector<Bool>::~AipsrcVector() {}
-
 Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
 			      const String &keyword) {
   String res;
@@ -73,39 +62,40 @@ Bool AipsrcVector<Bool>::find(Vector<Bool> &value,
 uInt AipsrcVector<Bool>::registerRC(const String &keyword,
 				    const Vector<Bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  uInt n = Aipsrc::registerRC(keyword, myp_p.ntlst);
-  myp_p.tlst.resize(n);
-  find ((myp_p.tlst)[n-1], keyword, deflt);
+  const uInt n = Aipsrc::registerRC(keyword, ntlst);
+  if(n > tlst.size())
+    tlst.resize(n);
+  find (tlst[n-1], keyword, deflt);
   return n;
 }
 
-const Vector<Bool> &AipsrcVector<Bool>::get(uInt keyword) {
+const Vector<Bool> AipsrcVector<Bool>::get(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  return (myp_p.tlst)[keyword-1];
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+  return tlst[keyword-1];
 }
 
 void AipsrcVector<Bool>::set(uInt keyword,
 			     const Vector<Bool> &deflt) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
-  (myp_p.tlst)[keyword-1].resize(deflt.nelements());
-  (myp_p.tlst)[keyword-1] = deflt;
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
+  tlst[keyword-1].resize(deflt.nelements());
+  tlst[keyword-1] = deflt;
 }
 
 void AipsrcVector<Bool>::save(uInt keyword) {
   std::lock_guard<std::mutex> lock(theirMutex);
-  AlwaysAssert(keyword > 0 && keyword <= myp_p.tlst.nelements(), AipsError);
+  AlwaysAssert(keyword > 0 && keyword <= tlst.size(), AipsError);
   ostringstream oss;
-  Int n = ((myp_p.tlst)[keyword-1]).nelements();
+  const Int n = (tlst[keyword-1]).nelements();
   for (Int i=0; i<n; i++) {
-    if (((myp_p.tlst)[keyword-1])(i)) {
+    if ((tlst[keyword-1])(i)) {
       oss << " true";
     } else {
       oss << " false";
     }
   }
-  Aipsrc::save((myp_p.ntlst)[keyword-1], String(oss));
+  Aipsrc::save((ntlst)[keyword-1], String(oss));
 }
 
 } //# NAMESPACE CASACORE - END
