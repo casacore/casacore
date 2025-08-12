@@ -131,8 +131,8 @@ public:
     // Reopen the table for read/write.
     virtual void reopenRW() = 0;
 
-    // Indicate we will only modify data values in existing columns
-    virtual void dataOnly();
+    // Indicate we will only modify data values in existing tiled columns
+    virtual void changeTiledDataOnly();
 
     // Is the table stored in big or little endian format?
     virtual Bool asBigEndian() const = 0;
@@ -507,7 +507,7 @@ protected:
     TableInfo      info_p;              //# Table information (type, etc.)
     Bool           madeDir_p;           //# True = table dir has been created
     int            itsTraceId;          //# table-id for TableTrace tracing
-    Bool           dataOnly_p;	        //# Only update data in existing columns
+    Bool           changeTiledDataOnly_p;  //# Only update data in existing columns
 
 
     // Do the callback for scratch tables (if callback is set).

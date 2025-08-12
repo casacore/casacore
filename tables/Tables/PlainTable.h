@@ -138,8 +138,8 @@ public:
     // Nothing is done if the table is already open for read/write.
     virtual void reopenRW();
 
-    // Indicate we will only modify data values in existing columns
-    virtual void dataOnly();
+    // Indicate we will only modify data values in existing tiled columns
+    virtual void changeTiledDataOnly();
 
     // Is the table stored in big or little endian format?
     virtual Bool asBigEndian() const;

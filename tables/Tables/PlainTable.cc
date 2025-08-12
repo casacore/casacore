@@ -367,9 +367,9 @@ void PlainTable::reopenRW()
     TableTrace::traceFile (itsTraceId, "reopenrw");
 }
 
-void PlainTable::dataOnly()
+void PlainTable::changeTiledDataOnly()
 {
-    dataOnly_p = true;
+    changeTiledDataOnly_p = true;
 }
 
 
@@ -552,7 +552,7 @@ Bool PlainTable::putFile (Bool always)
     {  // use scope to ensure AipsIO is closed (thus flushed) before lockfile
       AipsIO ios;
       TableAttr attr(tableName());
-      if (writeTab && !dataOnly_p) {
+      if (writeTab && !changeTiledDataOnly_p) {
 #ifdef AIPS_TRACE
         cout << "  full PlainTable::putFile" << endl;
 #endif
