@@ -231,7 +231,7 @@ int main (int argc, char* argv[])
       }
       uInt tz = 1;
       if (argc >= 9) {
-        tz = stoi(argv[8]);
+        tz = std::stoi(argv[8]);
       }
       IPosition shape(2,nx,ny);
       IPosition tileShape(3,tx,ty,tz);
