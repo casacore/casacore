@@ -84,7 +84,6 @@ void BaseTable::BaseTableCommon (const String& name, int option, rownr_t nrrow)
     delete_p = False;
     madeDir_p = True;
     itsTraceId = -1;
-    changeTiledDataOnly_p = False;
 
     if (name_p.empty()) {
         name_p = File::newUniqueName ("", "tab").originalName();
@@ -126,7 +125,9 @@ Bool BaseTable::isNull() const
 }
 
 void BaseTable::changeTiledDataOnly()
-{}
+{
+    throw (TableInvOper ("changeTiledDataOnly() can only be called for plain tables"));
+}
 
 void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 {

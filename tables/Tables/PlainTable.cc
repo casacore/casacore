@@ -50,7 +50,7 @@ TableCache PlainTable::theirTableCache;
 PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
                         const TableLock& lockOptions, int endianFormat,
                         const TSMOption& tsmOption)
-  : BaseTable (newtab.name(), newtab.option(), 0)
+  : BaseTable (newtab.name(), newtab.option(), 0), changeTiledDataOnly_(False)
 {
     PlainTableCommon(newtab, nrrow, initialize, lockOptions,
                      endianFormat, tsmOption);
@@ -60,7 +60,7 @@ PlainTable::PlainTable (SetupNewTable& newtab, rownr_t nrrow, Bool initialize,
 PlainTable::PlainTable (MPI_Comm mpiComm, SetupNewTable& newtab, rownr_t nrrow,
                         Bool initialize, const TableLock& lockOptions,
                         int endianFormat, const TSMOption& tsmOption)
-    : BaseTable (mpiComm, newtab.name(), newtab.option(), 0)
+    : BaseTable (mpiComm, newtab.name(), newtab.option(), 0), changeTiledDataOnly_(False)
 {
     PlainTableCommon(newtab, nrrow, initialize, lockOptions,
             endianFormat, tsmOption);
@@ -172,7 +172,8 @@ PlainTable::PlainTable (AipsIO&, uInt version, const String& tabname,
   tableChanged_p (False),
   addToCache_p   (addToCache),
   lockPtr_p      (0),
-  tsmOption_p    (tsmOption)
+  tsmOption_p    (tsmOption),
+  changeTiledDataOnly_(False)
 {
     // Replace default TSM option for existing table.
     tsmOption_p.fillOption (False);
@@ -369,7 +370,7 @@ void PlainTable::reopenRW()
 
 void PlainTable::changeTiledDataOnly()
 {
-    changeTiledDataOnly_p = true;
+    changeTiledDataOnly_ = True;
 }
 
 
@@ -547,12 +548,12 @@ void PlainTable::resync()
 Bool PlainTable::putFile (Bool always)
 {
     TableTrace::traceFile (itsTraceId, "flush");
-    Bool writeTab = always || tableChanged_p;
+    Bool writeTab = (always || tableChanged_p) && !changeTiledDataOnly_;
     Bool written = writeTab;
     {  // use scope to ensure AipsIO is closed (thus flushed) before lockfile
       AipsIO ios;
       TableAttr attr(tableName());
-      if (writeTab && !changeTiledDataOnly_p) {
+      if (writeTab) {
 #ifdef AIPS_TRACE
         cout << "  full PlainTable::putFile" << endl;
 #endif

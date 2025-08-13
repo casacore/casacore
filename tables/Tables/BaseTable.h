@@ -507,8 +507,6 @@ protected:
     TableInfo      info_p;              //# Table information (type, etc.)
     Bool           madeDir_p;           //# True = table dir has been created
     int            itsTraceId;          //# table-id for TableTrace tracing
-    Bool           changeTiledDataOnly_p;  //# Only update data in existing columns
-
 
     // Do the callback for scratch tables (if callback is set).
     void scratchCallback (Bool isScratch, const String& oldName) const;

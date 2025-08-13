@@ -314,6 +314,7 @@ private:
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
+    Bool           changeTiledDataOnly_; //# Allow updates to data in existing tiled columns
     //# cache of open (plain) tables
     static TableCache theirTableCache;
 };

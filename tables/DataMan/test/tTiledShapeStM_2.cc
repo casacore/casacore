@@ -24,18 +24,6 @@
 
 // This program tests the class TiledShapeStMan and related classes.
 
-// Outcomment and uncomment the correct typedef and define.
-//typedef Int Type;
-
-typedef Float Type;
-#define ARRINIT indgen(array)
-#define ARRINCR array += (Type)1
-
-//typedef Bool Type;
-//#define ARRINIT array = False
-//#define ARRINCR array = !array
-
-
 TSMOption makeAccessType (int accessType, Bool read=True)
 {
   if (!read) {
@@ -61,12 +49,12 @@ Bool readTable (int accessType, Bool chk, const IPosition& shape, uInt nrrow, Bo
          << nrrow << endl;
     return False;
   }
-  ArrayColumn<Type> data (table, "Data");
-  Array<Type> result;
-  Array<Type> array(shape);
-  ARRINIT;
+  ArrayColumn<Float> data (table, "Data");
+  Array<Float> result;
+  Array<Float> array(shape);
+  indgen(array);
   if (extrainc) {
-      ARRINCR;
+      array += (Float) 1;
   }
   Timer timer;
   for (uInt i=0; i<nrrow; i++) {
@@ -76,7 +64,7 @@ Bool readTable (int accessType, Bool chk, const IPosition& shape, uInt nrrow, Bo
         cout << "mismatch in data row " << i << endl;
         ok = False;
       }
-      ARRINCR;
+      array += (Float) 1;
     }
   }
   timer.show("Read cell ");
@@ -92,7 +80,7 @@ void writeVar (int accessType, Bool chk, const IPosition& shape,
 {
   // Build the table description.
   TableDesc td ("", "1", TableDesc::Scratch);
-  td.addColumn (ArrayColumnDesc<Type> ("Data", shape.nelements()));
+  td.addColumn (ArrayColumnDesc<Float> ("Data", shape.nelements()));
   td.defineHypercolumn ("TSMExample",
                         shape.nelements()+1,
                         stringToVector ("Data"));
@@ -103,17 +91,17 @@ void writeVar (int accessType, Bool chk, const IPosition& shape,
   TiledShapeStMan sm1 ("TSMExample", tileShape);
   newtab.bindAll (sm1);
   Table table(newtab, 0, False, Table::AipsrcEndian, makeAccessType(accessType, False));
-  ArrayColumn<Type> data (table, "Data");
-  Array<Type> array(shape);
+  ArrayColumn<Float> data (table, "Data");
+  Array<Float> array(shape);
   uInt i;
-  ARRINIT;
+  indgen(array);
   Timer timer;
   try {
     for (i=0; i<nrrow; i++) {
       table.addRow();
       data.put (i, array);
       if (chk) {
-        ARRINCR;
+        array += (Float) 1;
       }
     }
     // Sync to measure true IO.
@@ -132,10 +120,9 @@ void updateVar (int accessType, Bool chk, Bool tiledAccess, const IPosition& sha
     cout << "Table has " << table.nrow() << " rows; expected "
        << nrrow << endl;
   }
-  ArrayColumn<Type> data (table, "Data");
-  Array<Type> result;
-  Array<Type> array(shape);
-  //ARRINIT;
+  ArrayColumn<Float> data (table, "Data");
+  Array<Float> result;
+  Array<Float> array(shape);
   Timer timer;
   uint startRow, numRows;
   if (tiledAccess) {
@@ -171,7 +158,7 @@ void updateVar (int accessType, Bool chk, Bool tiledAccess, const IPosition& sha
     for (uint i=startRow; i<startRow + numRows; i++) {
       data.get (i, array);
       if (chk) {
-        ARRINCR;
+        array += (Float) 1;
       }
       data.put(i, array);
     }
