@@ -2954,8 +2954,18 @@ Block<uInt>  MSConcat::copyField(const MeasurementSet& otherms) {
       refDir = dirCtr(refDir.getValue());
     }
 
-    const Int newFld = fieldCols.matchDirection(refDir, delayDir, phaseDir, tolerance,
-						-1, // don't specify a tryrow
+    // Attempt to preserve field names by looking up the field by name
+    // and passing it as a hint when searching for fields with
+    // matching directions below.
+    Int64 tryRow = fieldCols.nrow() - 1;
+    while (tryRow >= 0) {
+      if (fieldCols.name()(tryRow) == otherFieldCols.name()(f))
+	break;
+      tryRow--;
+    }
+
+    const Int newFld = fieldCols.matchDirection(refDir, delayDir, phaseDir,
+						tolerance, tryRow,
 						otherOrigTime); // compare at the start time of the other field
     // cout << "other field, newFld " << f << ", " << newFld << endl;
 
