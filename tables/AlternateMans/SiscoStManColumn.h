@@ -30,9 +30,9 @@ class SiscoStManColumn final : public StManColumn {
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
    */
-  explicit SiscoStManColumn(SiscoStMan &parent, const std::string &filename,
+  explicit SiscoStManColumn(SiscoStMan &parent,
                             DataType dtype)
-      : StManColumn(dtype), parent_(parent), filename_(filename) {
+      : StManColumn(dtype), parent_(parent) {
     if (dtype != casacore::TpComplex) {
       throw std::runtime_error(
           "Sisco storage manager column can only be used for a data column "
@@ -72,11 +72,11 @@ class SiscoStManColumn final : public StManColumn {
 
   /**
    * Read the values for a particular row.
-   * @param rowNr The row number to get the values for.
+   * @param row The row number to get the values for.
    * @param dataPtr The array of values.
    */
-  void getArrayComplexV(unsigned row,
-                        Array<std::complex<float>> *dataPtr) final {
+  void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
+    Array<std::complex<float>> &array = static_cast<Array<std::complex<float>> &>(dataPtr);
     if (!reader_ || row < current_row_) {
       OpenReader();
     }
@@ -92,7 +92,7 @@ class SiscoStManColumn final : public StManColumn {
     const size_t n_channels = current_shape_[1];
 
     bool ownership;
-    Complex *storage = dataPtr->getStorage(ownership);
+    Complex *storage = array.getStorage(ownership);
     buffer_.resize(n_channels);
     for (int polarization = 0; polarization != n_polarizations;
          ++polarization) {
@@ -103,7 +103,7 @@ class SiscoStManColumn final : public StManColumn {
         storage[channel * n_polarizations + polarization] = buffer_[channel];
       }
     }
-    dataPtr->putStorage(storage, ownership);
+    array.putStorage(storage, ownership);
 
     current_shape_ = shapes_reader_->Read();
     ++current_row_;
@@ -111,11 +111,11 @@ class SiscoStManColumn final : public StManColumn {
 
   /**
    * Write values into a particular row.
-   * @param rowNr The row number to write the values to.
+   * @param row The row number to write the values to.
    * @param dataPtr The data pointer.
    */
-  void putArrayComplexV(unsigned row,
-                        const Array<std::complex<float>> *dataPtr) final {
+  void putArrayV(rownr_t row, const ArrayBase &dataPtr) final {
+    const Array<std::complex<float>> &array = static_cast<const Array<std::complex<float>> &>(dataPtr);
     if (!writer_ || row < current_row_) {
       OpenWriter();
     }
@@ -131,7 +131,7 @@ class SiscoStManColumn final : public StManColumn {
     const size_t n_channels = current_shape_[1];
 
     bool ownership;
-    const std::complex<float> *storage = dataPtr->getStorage(ownership);
+    const std::complex<float> *storage = array.getStorage(ownership);
     buffer_.resize(n_channels);
     for (int polarization = 0; polarization != n_polarizations;
          ++polarization) {
@@ -142,9 +142,9 @@ class SiscoStManColumn final : public StManColumn {
       }
       writer_->Write(baseline_id, buffer_);
     }
-    dataPtr->freeStorage(storage, ownership);
+    array.freeStorage(storage, ownership);
 
-    current_shape_ = dataPtr->shape();
+    current_shape_ = array.shape();
     ++current_row_;
     shapes_writer_->Write(current_shape_);
   }
@@ -164,7 +164,7 @@ class SiscoStManColumn final : public StManColumn {
 
   void OpenWriter() {
     Reset();
-    writer_.emplace(filename_);
+    writer_.emplace(parent_.fileName());
     char header_buffer[kHeaderSize];
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
     std::copy_n(reinterpret_cast<const char *>(&kVersionMajor), 2,
@@ -175,7 +175,7 @@ class SiscoStManColumn final : public StManColumn {
         reinterpret_cast<const std::byte *>(header_buffer), kHeaderSize);
     writer_->Open(header);
 
-    shapes_writer_.emplace(filename_ + kShapesExtension);
+    shapes_writer_.emplace(parent_.fileName() + kShapesExtension);
 
     current_row_ = 0;
     current_shape_ = IPosition();
@@ -185,7 +185,7 @@ class SiscoStManColumn final : public StManColumn {
 
   void OpenReader() {
     Reset();
-    reader_.emplace(filename_);
+    reader_.emplace(parent_.fileName());
     char header_buffer[kHeaderSize];
     std::span<std::byte> header(reinterpret_cast<std::byte *>(header_buffer),
                                 kHeaderSize);
@@ -196,7 +196,7 @@ class SiscoStManColumn final : public StManColumn {
     std::copy_n(&header_buffer[0], kMagicSize, magic_tag);
     std::copy_n(&header_buffer[4], 2, reinterpret_cast<char *>(&version_major));
     std::copy_n(&header_buffer[6], 2, reinterpret_cast<char *>(&version_minor));
-    shapes_reader_.emplace(filename_ + kShapesExtension);
+    shapes_reader_.emplace(parent_.fileName() + kShapesExtension);
 
     current_row_ = 0;
     current_shape_ = shapes_reader_->Read();
@@ -253,7 +253,6 @@ class SiscoStManColumn final : public StManColumn {
   ScalarColumn<int> antenna2_column_;
 
   SiscoStMan &parent_;
-  std::string filename_;
   std::optional<SiscoWriter> writer_;
   std::optional<SiscoReader> reader_;
   std::optional<ShapesFileWriter> shapes_writer_;

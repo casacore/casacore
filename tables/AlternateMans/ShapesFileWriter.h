@@ -44,7 +44,7 @@ class ShapesFileWriter {
     buffer_.clear();
   }
 
-  static constexpr size_t kMaxBufferSize = 1024 * 128;
+  static constexpr size_t kMaxBufferSize = 1024 * 10 * 128;
   std::vector<uint64_t> buffer_;
   std::vector<std::byte> compressed_buffer_;
   deflate::Compressor compressor_;

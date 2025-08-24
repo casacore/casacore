@@ -61,7 +61,7 @@ casacore::DataManagerColumn *SiscoStMan::makeDirArrColumn(
 casacore::DataManagerColumn *SiscoStMan::makeIndArrColumn(
     [[maybe_unused]] const casacore::String &name, int dataType,
     [[maybe_unused]] const casacore::String &dataTypeID) {
-  column_ = std::make_unique<SiscoStManColumn>(*this, fileName(), static_cast<DataType>(dataType));
+  column_ = std::make_unique<SiscoStManColumn>(*this, static_cast<DataType>(dataType));
   return column_.get();
 }
 
@@ -72,7 +72,10 @@ casacore::rownr_t SiscoStMan::resync64(casacore::rownr_t nRow)
 
 void SiscoStMan::deleteManager() { unlink(fileName().c_str()); }
 
-void SiscoStMan::prepare() {}
+void SiscoStMan::prepare() {
+  if(column_)
+    column_->Prepare();
+}
 
 void SiscoStMan::reopenRW() {}
 

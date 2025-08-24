@@ -21,7 +21,8 @@ SiscoWriter::SiscoWriter(const std::string& filename, int predict_level, int def
 
 void SiscoWriter::Open(std::span<const std::byte> header_data) {
   file_ = std::ofstream(filename_, std::ios::trunc | std::ios::binary | std::ios::in | std::ios::out);
-  
+  if(!file_.good())
+    throw std::runtime_error("Could not open file '" + filename_ + "'");
   file_.write(reinterpret_cast<const char*>(header_data.data()), header_data.size());
   
   signed char predict_level_char = predict_level_;
