@@ -203,8 +203,8 @@ if (NOT CMAKE_BUILD_TYPE)
     endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# Require a C++17 compatible compiler
-set(CMAKE_CXX_STANDARD 17)
+# Require a C++20 compatible compiler
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure clang is not complaining about unused arguments.

@@ -21,6 +21,7 @@ foreach (src ${parser_inputs})
     FLEX_TARGET (${src} TaQL/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
+find_library(DEFLATE_LIBRARY deflate)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
@@ -104,6 +105,10 @@ Tables/TableSyncData.cc
 Tables/TableTrace.cc
 Tables/TableUtil.cc
 AlternateMans/AntennaPairStMan.cc
+AlternateMans/Sisco.cc
+AlternateMans/SiscoReader.cc
+AlternateMans/SiscoStMan.cc
+AlternateMans/SiscoWriter.cc
 AlternateMans/StokesIStMan.cc
 AlternateMans/UvwStMan.cc
 DataMan/BitFlagsEngine.cc
@@ -241,7 +246,7 @@ TaQL.h
 
 init_pch_support(casa_tables ${top_level_headers})
 
-target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY} ${DEFLATE_LIBRARY})
 
 add_subdirectory (apps)
 
@@ -344,10 +349,19 @@ install (FILES
 AlternateMans/AntennaPairFile.h
 AlternateMans/AntennaPairStMan.h
 AlternateMans/AntennaPairStManColumn.h
+AlternateMans/BitFloat.h
 AlternateMans/BitPacking.h
 AlternateMans/BufferedColumnarFile.h
+AlternateMans/Deflate.h
 AlternateMans/RowBasedFile.h
+AlternateMans/ShapesFileReader.h
+AlternateMans/ShapesFileWriter.h
 AlternateMans/SimpleColumnarFile.h
+AlternateMans/Sisco.h
+AlternateMans/SiscoReader.h
+AlternateMans/SiscoStMan.h
+AlternateMans/SiscoStManColumn.h
+AlternateMans/SiscoWriter.h
 AlternateMans/StokesIStMan.h
 AlternateMans/StokesIStManColumn.h
 AlternateMans/UvwFile.h
