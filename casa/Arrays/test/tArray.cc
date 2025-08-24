@@ -679,7 +679,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_7 )
   LifecycleChecker::clear();
   LifecycleChecker *ptr = std::allocator<LifecycleChecker>().allocate(shape.product());
   for (size_t i = 0; i < nelems; ++i) {
-      std::allocator<LifecycleChecker>().construct(&ptr[i]);
+    new (&ptr[i]) LifecycleChecker();
   }
   {
     Array<LifecycleChecker> a;
@@ -687,7 +687,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_7 )
     a.resize(IPosition(2, 3, 3), false);
   }
   for (size_t i = 0; i < nelems; ++i) {
-    std::allocator<LifecycleChecker>().destroy(&ptr[i]);
+    delete &ptr[i];
   }
   std::allocator<LifecycleChecker>().deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
@@ -701,7 +701,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_8 )
   std::allocator<LifecycleChecker> allocator;
   LifecycleChecker *ptr = allocator.allocate(shape.product());
   for (size_t i = 0; i < nelems; ++i) {
-    allocator.construct(&ptr[i]);
+    new (&ptr[i]) LifecycleChecker();
   }
   {
     Array<LifecycleChecker> a;
@@ -734,13 +734,13 @@ BOOST_AUTO_TEST_CASE( life_cycle_10 )
   std::allocator<LifecycleChecker> allocator;
   LifecycleChecker *ptr = allocator.allocate(shape.product());
   for (size_t i = 0; i < nelems; ++i) {
-    allocator.construct(&ptr[i]);
+    new (&ptr[i]) LifecycleChecker();
   }
   {
     Array<LifecycleChecker> a(shape, ptr, SHARE);
   }
   for (size_t i = 0; i < nelems; ++i) {
-    allocator.destroy(&ptr[i]);
+    delete &ptr[i];
   }
   allocator.deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
@@ -754,7 +754,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_11 )
   std::allocator<LifecycleChecker> allocator;
   LifecycleChecker *ptr = allocator.allocate(shape.product());
   for (size_t i = 0; i < nelems; ++i) {
-    allocator.construct(&ptr[i]);
+    new (&ptr[i]) LifecycleChecker();
   }
   {
     Array<LifecycleChecker> a(shape, ptr, TAKE_OVER);
