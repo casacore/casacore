@@ -391,7 +391,7 @@ BOOST_AUTO_TEST_CASE( matrix_move_constructor )
   Matrix<int> empty;
   BOOST_CHECK_EQUAL_COLLECTIONS(c.begin(), c.end(), empty.begin(), empty.end());
   
-  BOOST_CHECK_THROW(Matrix<int>(Array<int>(IPosition(3))), std::exception);
+  BOOST_CHECK_THROW(Matrix<int>(Array<int>(IPosition(3, 0, 0, 0))), std::exception);
   
   Matrix<int> d(Vector<int>(3, 17));
   BOOST_CHECK_EQUAL(d.shape(), IPosition(2, 3, 1));
