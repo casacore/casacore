@@ -13,6 +13,7 @@
 #include "ShapesFileReader.h"
 #include "ShapesFileWriter.h"
 
+#include <filesystem>
 #include <optional>
 
 namespace casacore {
@@ -45,6 +46,13 @@ class SiscoStManColumn final : public StManColumn {
    */
   bool isWritable() const final { return true; }
 
+  bool canChangeShape() const final { return true; }
+
+  void setShape(rownr_t rownr, const IPosition &shape) final {
+    // Shape is implied from the array; explicit setting of the shape is not
+    // required.
+  }
+
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {
     if (shape.size() != 2) {
@@ -60,13 +68,20 @@ class SiscoStManColumn final : public StManColumn {
   /** Get the dimensions of the values in a particular row.
    * @param rownr The row to get the shape for. */
   IPosition shape(rownr_t row) final {
-    if (!reader_ || row < current_row_) {
-      OpenReader();
+    if (writer_ && row >= current_row_) {
+      return IPosition();
+    } else {
+      if (!reader_ || row < current_row_) {
+        if (std::filesystem::exists(parent_.fileName()))
+          OpenReader();
+        else
+          return IPosition();
+      }
+      while (current_row_ < row) {
+        SkipRow();
+      }
+      return current_shape_;
     }
-    while (current_row_ < row) {
-      SkipRow();
-    }
-    return current_shape_;
   }
   IPosition shape(unsigned row) final {
     return shape(static_cast<rownr_t>(row));
@@ -170,11 +185,12 @@ class SiscoStManColumn final : public StManColumn {
     Reset();
     writer_.emplace(parent_.fileName());
     char header_buffer[kHeaderSize];
+    std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
     std::copy_n(reinterpret_cast<const char *>(&kVersionMajor), 2,
-                &header_buffer[4]);
+                &header_buffer[kMagicSize]);
     std::copy_n(reinterpret_cast<const char *>(&kVersionMinor), 2,
-                &header_buffer[6]);
+                &header_buffer[kMagicSize + 2]);
     std::span<const std::byte> header(
         reinterpret_cast<const std::byte *>(header_buffer), kHeaderSize);
     writer_->Open(header);
@@ -198,8 +214,10 @@ class SiscoStManColumn final : public StManColumn {
     short version_major;
     short version_minor;
     std::copy_n(&header_buffer[0], kMagicSize, magic_tag);
-    std::copy_n(&header_buffer[4], 2, reinterpret_cast<char *>(&version_major));
-    std::copy_n(&header_buffer[6], 2, reinterpret_cast<char *>(&version_minor));
+    std::copy_n(&header_buffer[kMagicSize], 2,
+                reinterpret_cast<char *>(&version_major));
+    std::copy_n(&header_buffer[kMagicSize + 2], 2,
+                reinterpret_cast<char *>(&version_minor));
     shapes_reader_.emplace(parent_.fileName() + kShapesExtension);
 
     current_row_ = 0;
