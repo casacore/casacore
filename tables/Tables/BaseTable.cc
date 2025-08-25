@@ -124,6 +124,11 @@ Bool BaseTable::isNull() const
   return False;
 }
 
+void BaseTable::changeTiledDataOnly()
+{
+    throw (TableInvOper ("changeTiledDataOnly() can only be called for plain tables"));
+}
+
 void BaseTable::scratchCallback (Bool isScratch, const String& oldName) const
 {
     if (Table::scratchCallback_p != 0) {
@@ -350,8 +355,8 @@ void BaseTable::writeEnd (AipsIO& ios)
     ios.putend ();
     // Ensure that the buffers have been written before renaming
     ios.close();
-    // Now rename the file to the final name (table.dat). Not that the 
-    // rename is function (used by RegularFile::move) is atomic 
+    // Now rename the file to the final name (table.dat). Not that the
+    // rename is function (used by RegularFile::move) is atomic
     // (https://pubs.opengroup.org/onlinepubs/9699919799/functions/rename.html)
     RegularFile(Table::fileName(name_p)+"_tmp").move (Table::fileName(name_p), true);
 }
@@ -1249,4 +1254,3 @@ String BaseTable::makeAbsoluteName (const String& name) const
 }
 
 } //# NAMESPACE CASACORE - END
-

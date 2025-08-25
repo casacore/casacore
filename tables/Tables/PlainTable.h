@@ -138,6 +138,9 @@ public:
     // Nothing is done if the table is already open for read/write.
     virtual void reopenRW();
 
+    // Indicate we will only modify data values in existing tiled columns
+    virtual void changeTiledDataOnly();
+
     // Is the table stored in big or little endian format?
     virtual Bool asBigEndian() const;
 
@@ -311,6 +314,7 @@ private:
     Bool           bigEndian_p;        //# True  = big endian canonical
                                        //# False = little endian canonical
     TSMOption      tsmOption_p;
+    Bool           changeTiledDataOnly_; //# Allow updates to data in existing tiled columns
     //# cache of open (plain) tables
     static TableCache theirTableCache;
 };

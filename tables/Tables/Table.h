@@ -378,7 +378,7 @@ public:
     // Is this table the same as the other?
     Bool isSameTable (const Table& other) const
       { return baseTabPtr_p == other.baseTabPtr_p; }
-  
+
     // Is the root table of this table the same as that of the other one?
     Bool isSameRoot (const Table& other) const;
 
@@ -389,6 +389,15 @@ public:
     // An exception is thrown if the table is not writable.
     // Nothing is done if the table is already open for read/write.
     void reopenRW();
+
+    // Indicate we will leave the table unchanged except for the values of the
+    // data in columns stored with a TiledShape storage manager.
+    // This hint combined with TableLock::NoLocking and reopenRW() allows
+    // multiple processes to modify non-overlapping data in separate tiles to perform,
+    // e.g., flagging, calibration or continuum subtraction.
+    // If readonly subtable access is required, ensure they are opened in each
+    // process before reopenRW() is called.
+    void changeTiledDataOnly();
 
     // Get the endian format in which the table is stored.
     Table::EndianFormat endianFormat() const;
@@ -1103,6 +1112,8 @@ inline Bool Table::isSameRoot (const Table& other) const
 
 inline void Table::reopenRW()
     { baseTabPtr_p->reopenRW(); }
+inline void Table::changeTiledDataOnly()
+    { baseTabPtr_p->changeTiledDataOnly(); }
 inline void Table::flush (Bool fsync, Bool recursive)
     { baseTabPtr_p->flush (fsync, recursive); }
 inline void Table::resync()
