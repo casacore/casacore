@@ -204,8 +204,14 @@ if (NOT CMAKE_BUILD_TYPE)
     endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# Require a C++20 compatible compiler
-set(CMAKE_CXX_STANDARD 20)
+# Sisco requires a C++20 compatible compiler. If Sisco is not built, fall back to C++17 for the
+# time being.
+if(BUILD_SISCO)
+  set(CMAKE_CXX_STANDARD 20)
+else(BUILD_SISCO)
+  set(CMAKE_CXX_STANDARD 17)
+endif(BUILD_SISCO)
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure clang is not complaining about unused arguments.
