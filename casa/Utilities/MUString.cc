@@ -190,7 +190,7 @@ Double MUString::getDouble() {
     ("[-+]?(([0-9]+\\.[0-9]*)|([0-9]+)|(\\.[0-9]+))([eE][+-]?[0-9]+)?");
   Double res = 0.0;
   if (ptr < len && testDouble()) {
-    istringstream instr(str.at(ex, ptr));
+    istringstream instr(std::string(str.at(ex, ptr)));
     instr >> res;
     skipString(ex);
   }
