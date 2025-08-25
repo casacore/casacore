@@ -687,7 +687,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_7 )
     a.resize(IPosition(2, 3, 3), false);
   }
   for (size_t i = 0; i < nelems; ++i) {
-    delete &ptr[i];
+    ptr[i].~LifecycleChecker();
   }
   std::allocator<LifecycleChecker>().deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
@@ -740,7 +740,7 @@ BOOST_AUTO_TEST_CASE( life_cycle_10 )
     Array<LifecycleChecker> a(shape, ptr, SHARE);
   }
   for (size_t i = 0; i < nelems; ++i) {
-    delete &ptr[i];
+    ptr[i].~LifecycleChecker();
   }
   allocator.deallocate(ptr, nelems);
   BOOST_CHECK_EQUAL(LifecycleChecker::ctor_count, LifecycleChecker::dtor_count);
