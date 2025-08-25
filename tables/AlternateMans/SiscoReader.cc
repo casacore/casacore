@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+namespace casacore {
+
 SiscoReader::SiscoReader(const std::string& filename) : filename_(filename)
 {
 }
@@ -68,3 +70,5 @@ size_t SiscoReader::ReadChunk(std::vector<std::byte>& buffer)
     throw std::runtime_error("Could not read from file " + filename_);
   return decompressed_size;
 }
+
+} // namespace casacore

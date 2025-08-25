@@ -4,9 +4,11 @@
 #include <bit>
 #include <cinttypes>
 #include <limits>
+#include <optional>
+#include <stdexcept>
 #include <string_view>
 
-#include <iostream>  // FIXME DEBUG
+namespace casacore {
 
 enum class BitFloatKind : uint8_t {
   Zero,
@@ -201,5 +203,7 @@ class BitFloat {
   int8_t exponent_;
   bool sign_;
 };
+
+}  // namespace casacore
 
 #endif

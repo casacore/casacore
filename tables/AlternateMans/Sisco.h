@@ -7,6 +7,8 @@
 
 #include "BitFloat.h"
 
+namespace casacore {
+
 struct CompressorState {
   std::vector<BitFloat> previous3;
   std::vector<BitFloat> previous2;
@@ -255,5 +257,7 @@ inline constexpr BitFloat Predict(const BitFloat& previous3,
     return PredictThreshold(*result);
   }
 }
+
+}  // namespace casacore
 
 #endif

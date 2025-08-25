@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+namespace casacore {
+
 void DifferenceCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data) {
   uint32_t* mantissas = reinterpret_cast<uint32_t*>(mantissa_data.data());
   uint8_t* exponents = reinterpret_cast<uint8_t*>(exponent_data.data());
@@ -429,3 +431,5 @@ void QuadraticDecompress2D(CompressorState& state, std::span<std::byte> mantissa
     std::swap(state.scratch, state.previous3);
   }
 }
+
+} // namespace casacore

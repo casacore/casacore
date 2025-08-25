@@ -10,6 +10,8 @@
 #include "Deflate.h"
 #include "Sisco.h"
 
+namespace casacore {
+
 /**
  * File interface for data stored in the generated model compression (Sisco)
  * format.
@@ -46,5 +48,7 @@ class SiscoReader {
   std::ifstream file_;
   deflate::Decompressor deflate_decompressor;
 };
+
+}  // namespace casacore
 
 #endif

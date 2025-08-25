@@ -21,7 +21,9 @@ foreach (src ${parser_inputs})
     FLEX_TARGET (${src} TaQL/${src}.ll ${CMAKE_CURRENT_BINARY_DIR}/${src}.lcc COMPILE_FLAGS "-P${src}")
 endforeach (src)
 
+if(BUILD_SISCO)
 find_library(DEFLATE_LIBRARY deflate)
+endif(BUILD_SISCO)
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
@@ -43,7 +45,7 @@ else(BUILD_DYSCO)
   set(DYSCOSTMAN_LIBRARIES)
 endif(BUILD_DYSCO)
 
-add_library (casa_tables
+set(CASA_TABLES_FILES
 Tables/ArrayColumnBase.cc
 Tables/ArrayColumn_tmpl.cc
 Tables/ArrColData.cc
@@ -105,10 +107,6 @@ Tables/TableSyncData.cc
 Tables/TableTrace.cc
 Tables/TableUtil.cc
 AlternateMans/AntennaPairStMan.cc
-AlternateMans/Sisco.cc
-AlternateMans/SiscoReader.cc
-AlternateMans/SiscoStMan.cc
-AlternateMans/SiscoWriter.cc
 AlternateMans/StokesIStMan.cc
 AlternateMans/UvwStMan.cc
 DataMan/BitFlagsEngine.cc
@@ -236,6 +234,15 @@ ${FLEX_TableGram_OUTPUTS}
 ${ADIOS2_SOURCES}
 ${DYSCOSTMAN_SOURCES}
 )
+if(BUILD_SISCO)
+  set(CASA_TABLES_FILES ${CASA_TABLES_FILES}
+    AlternateMans/Sisco.cc
+    AlternateMans/SiscoReader.cc
+    AlternateMans/SiscoStMan.cc
+    AlternateMans/SiscoWriter.cc)
+endif(BUILD_SISCO)
+
+add_library (casa_tables ${CASA_TABLES_FILES})
 
 set(top_level_headers
 DataMan.h
@@ -246,7 +253,10 @@ TaQL.h
 
 init_pch_support(casa_tables ${top_level_headers})
 
-target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY} ${DEFLATE_LIBRARY})
+target_link_libraries (casa_tables casa_casa ${CASACORE_ARCH_LIBS} ${DYSCOSTMAN_LIBRARIES} ${CASACORE_ADIOS_LIBRARY} ${CASACORE_MPI_LIBRARY})
+if(BUILD_SISCO)
+  target_link_libraries (casa_tables ${DEFLATE_LIBRARY})
+endif(BUILD_SISCO)
 
 add_subdirectory (apps)
 
@@ -255,7 +265,6 @@ LIBRARY DESTINATION lib${LIB_SUFFIX}
 ARCHIVE DESTINATION lib${LIB_SUFFIX}
 LIBRARY PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
 )
-
 install (FILES
 Tables/ArrColData.h
 Tables/ArrColDesc.h
@@ -357,11 +366,6 @@ AlternateMans/RowBasedFile.h
 AlternateMans/ShapesFileReader.h
 AlternateMans/ShapesFileWriter.h
 AlternateMans/SimpleColumnarFile.h
-AlternateMans/Sisco.h
-AlternateMans/SiscoReader.h
-AlternateMans/SiscoStMan.h
-AlternateMans/SiscoStManColumn.h
-AlternateMans/SiscoWriter.h
 AlternateMans/StokesIStMan.h
 AlternateMans/StokesIStManColumn.h
 AlternateMans/UvwFile.h
@@ -448,6 +452,16 @@ DataMan/VirtualTaQLColumn.h
 ${ADIOS2_HEADERS}
 DESTINATION include/casacore/tables/DataMan
 )
+
+if(BUILD_SISCO)
+install(FILES
+  AlternateMans/Sisco.h
+  AlternateMans/SiscoReader.h
+  AlternateMans/SiscoStMan.h
+  AlternateMans/SiscoStManColumn.h
+  AlternateMans/SiscoWriter.h
+DESTINATION include/casacore/tables/DataMan)
+endif(BUILD_SISCO)
 
 install (FILES
 TaQL/ExprAggrNode.h

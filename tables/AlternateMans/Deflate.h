@@ -7,7 +7,7 @@
 #include <span>
 #include <stdexcept>
 
-namespace deflate {
+namespace casacore::deflate {
 
 class Compressor {
  public:
@@ -94,6 +94,6 @@ class Decompressor {
   struct libdeflate_decompressor* decompressor_;
 };
 
-}  // namespace deflate
+}  // namespace casacore::deflate
 
 #endif

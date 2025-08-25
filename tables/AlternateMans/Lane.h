@@ -1,5 +1,5 @@
-#ifndef AOCOMMON_LANE_11_H_
-#define AOCOMMON_LANE_11_H_
+#ifndef CASACORE_AOCOMMON_LANE_11_H_
+#define CASACORE_AOCOMMON_LANE_11_H_
 
 #include <condition_variable>
 #include <cstring>
@@ -10,6 +10,9 @@
  * @file
  * Internal header file for the Lane.
  * @headername{Lane.h}
+ *
+ * Original location of this file:
+ * https://gitlab.com/aroffringa/aocommon/-/blob/master/include/aocommon/lane.h
  */
 
 //#define LANE_DEBUG_MODE
@@ -21,7 +24,7 @@
 #include <string>
 #endif
 
-namespace aocommon {
+namespace casacore::aocommon {
 
 #ifdef LANE_DEBUG_MODE
 #define set_lane_debug_name(lane, str) (lane).setDebugName(str)

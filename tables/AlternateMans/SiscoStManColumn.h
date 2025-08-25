@@ -30,8 +30,7 @@ class SiscoStManColumn final : public StManColumn {
    * @param parent The parent stman to which this column belongs.
    * @param dtype The column's type as defined by Casacore.
    */
-  explicit SiscoStManColumn(SiscoStMan &parent,
-                            DataType dtype)
+  explicit SiscoStManColumn(SiscoStMan &parent, DataType dtype)
       : StManColumn(dtype), parent_(parent) {
     if (dtype != casacore::TpComplex) {
       throw std::runtime_error(
@@ -69,7 +68,7 @@ class SiscoStManColumn final : public StManColumn {
     }
     return current_shape_;
   }
-  IPosition shape (unsigned row) final {
+  IPosition shape(unsigned row) final {
     return shape(static_cast<rownr_t>(row));
   }
 
@@ -79,7 +78,8 @@ class SiscoStManColumn final : public StManColumn {
    * @param dataPtr The array of values.
    */
   void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
-    Array<std::complex<float>> &array = static_cast<Array<std::complex<float>> &>(dataPtr);
+    Array<std::complex<float>> &array =
+        static_cast<Array<std::complex<float>> &>(dataPtr);
     if (!reader_ || row < current_row_) {
       OpenReader();
     }
@@ -118,7 +118,8 @@ class SiscoStManColumn final : public StManColumn {
    * @param dataPtr The data pointer.
    */
   void putArrayV(rownr_t row, const ArrayBase &dataPtr) final {
-    const Array<std::complex<float>> &array = static_cast<const Array<std::complex<float>> &>(dataPtr);
+    const Array<std::complex<float>> &array =
+        static_cast<const Array<std::complex<float>> &>(dataPtr);
     if (!writer_ || row < current_row_) {
       OpenWriter();
     }
@@ -276,8 +277,8 @@ namespace casacore {
 void SiscoStManColumn::Prepare() {
   Table &table = parent_.table();
   field_id_column_ = ScalarColumn<int>(table, "FIELD_ID");
-  data_desc_id_column_ = ScalarColumn<int>( table, "DATA_DESC_ID");
-  antenna1_column_ = ScalarColumn<int>( table, "ANTENNA1");
+  data_desc_id_column_ = ScalarColumn<int>(table, "DATA_DESC_ID");
+  antenna1_column_ = ScalarColumn<int>(table, "ANTENNA1");
   antenna2_column_ = ScalarColumn<int>(table, "ANTENNA2");
 }
 

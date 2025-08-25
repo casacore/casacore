@@ -11,6 +11,8 @@
 #include "Lane.h"
 #include "Sisco.h"
 
+namespace casacore {
+
 /**
  * File interface for data stored in the generated model compression (Sisco)
  * format.
@@ -72,5 +74,7 @@ class SiscoWriter {
   std::array<std::thread, 5> deflate_threads_;
   std::thread write_thread_;
 };
+
+}  // namespace casacore
 
 #endif
