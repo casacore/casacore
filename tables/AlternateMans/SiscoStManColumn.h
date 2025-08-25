@@ -44,7 +44,7 @@ class SiscoStManColumn final : public StManColumn {
    * Whether this column is writable
    * @returns @c true
    */
-  Bool isWritable() const final { return true; }
+  bool isWritable() const final { return true; }
 
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {
@@ -68,6 +68,9 @@ class SiscoStManColumn final : public StManColumn {
       SkipRow();
     }
     return current_shape_;
+  }
+  IPosition shape (unsigned row) final {
+    return shape(static_cast<rownr_t>(row));
   }
 
   /**
