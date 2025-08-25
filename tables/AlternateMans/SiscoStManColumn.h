@@ -48,10 +48,11 @@ class SiscoStManColumn final : public StManColumn {
 
   bool canChangeShape() const final { return true; }
 
-  void setShape(rownr_t rownr, const IPosition &shape) final {
+  void setShape(rownr_t, const IPosition &) final {
     // Shape is implied from the array; explicit setting of the shape is not
     // required.
   }
+  void setShape(unsigned, const IPosition &) final {}
 
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {
