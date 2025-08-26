@@ -54,6 +54,9 @@ class SiscoStManColumn final : public StManColumn {
   }
   void setShape(unsigned, const IPosition &) final {}
 
+  bool isShapeDefined(rownr_t) final { return false; }
+  bool isShapeDefined(unsigned) final { return false; }
+
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {
     if (shape.size() != 2) {
@@ -147,8 +150,8 @@ class SiscoStManColumn final : public StManColumn {
     const int data_desc_id = data_desc_id_column_(current_row_);
     const int antenna1 = antenna1_column_(current_row_);
     const int antenna2 = antenna2_column_(current_row_);
-    const int n_polarizations = current_shape_[0];
-    const size_t n_channels = current_shape_[1];
+    const int n_polarizations = array.shape()[0];
+    const size_t n_channels = array.shape()[1];
 
     bool ownership;
     const std::complex<float> *storage = array.getStorage(ownership);
