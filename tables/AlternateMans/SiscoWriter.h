@@ -19,8 +19,8 @@ namespace casacore {
  */
 class SiscoWriter {
  public:
-  SiscoWriter(const std::string& filename, int predict_level = 2,
-              int deflate_level = 9);
+  SiscoWriter(const std::string& filename, int predict_level,
+              int deflate_level);
   SiscoWriter(SiscoWriter&&) = default;
   ~SiscoWriter() {
     if (file_.is_open()) Close();

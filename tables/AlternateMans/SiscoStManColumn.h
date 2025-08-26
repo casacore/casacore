@@ -184,7 +184,8 @@ class SiscoStManColumn final : public StManColumn {
 
   void OpenWriter() {
     Reset();
-    writer_.emplace(parent_.fileName());
+    writer_.emplace(parent_.fileName(), parent_.PredictLevel(),
+                    parent_.DeflateLevel());
     char header_buffer[kHeaderSize];
     std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);

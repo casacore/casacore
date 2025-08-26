@@ -18,18 +18,34 @@ namespace {
 }
 
 SiscoStMan::SiscoStMan(const casacore::String &/*name*/,
-                           const casacore::Record &/*spec*/)
+                       const casacore::Record &spec)
     : DataManager() {
+  const std::string kDeflateLevelKey = "deflate_level";
+  const std::string kPredictLevelKey = "predict_level";
+
+  if (spec.isDefined(kDeflateLevelKey)) {
+    deflate_level_ = spec.asInt(kDeflateLevelKey);
+    if (deflate_level_ <= 0)
+      throw std::runtime_error("Invalid value for " + kDeflateLevelKey);
+  }
+  if (spec.isDefined(kPredictLevelKey)) {
+    predict_level_ = spec.asInt(kPredictLevelKey);
+    if (predict_level_ < -1)
+      throw std::runtime_error("Invalid value for " + kPredictLevelKey);
+  }
 }
 
 SiscoStMan::SiscoStMan(const SiscoStMan &source)
     : DataManager(),
-      name_(source.name_) {}
+      name_(source.name_), deflate_level_(source.deflate_level_), predict_level_(source.predict_level_) {}
 
 SiscoStMan::~SiscoStMan() noexcept = default;
 
 casacore::Record SiscoStMan::dataManagerSpec() const {
-  return casacore::Record();
+  casacore::Record result;
+  result.define("deflate_level", deflate_level_);
+  result.define("predict_level", predict_level_);
+  return result;
 }
 
 void SiscoStMan::registerClass() {

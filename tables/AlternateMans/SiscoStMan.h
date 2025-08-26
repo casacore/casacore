@@ -79,6 +79,9 @@ class SiscoStMan final : public casacore::DataManager {
    */
   static void registerClass();
 
+  int DeflateLevel() const { return deflate_level_; }
+  int PredictLevel() const { return predict_level_; }
+
  protected:
  private:
   friend class SiscoStManColumn;
@@ -142,6 +145,8 @@ class SiscoStMan final : public casacore::DataManager {
   // The item-type needs to be a pointer, because casacore::StManColumn
   // does not have move construct/assignment.
   std::unique_ptr<SiscoStManColumn> column_;
+  int deflate_level_ = 9;
+  int predict_level_ = 2;
 };
 
 }  // namespace casacore
