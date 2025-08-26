@@ -51,7 +51,7 @@ set (testfiles
   tVectorSTLIterator.cc
 )
 
-find_package(Boost COMPONENTS filesystem unit_test_framework system)
+find_package(Boost 1.72 COMPONENTS filesystem unit_test_framework system)
 if(Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIR})
 
