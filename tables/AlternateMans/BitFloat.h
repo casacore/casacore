@@ -71,6 +71,7 @@ class BitFloat {
       : mantissa_(mantissa), exponent_(exponent), sign_(sign) {}
 
   constexpr uint32_t Mantissa() const { return mantissa_; }
+
   constexpr int8_t Exponent() const { return exponent_; }
 
   /**

@@ -187,7 +187,7 @@ inline void Decompress2D(int level, CompressorState& state,
 /**
  * If the predicted value is approximately twice as large as the target value
  * (based on its exponent only), predict zero instead as we're too far off.
- * This function is tailered for the Predict functions, and expects value to be
+ * This function is tailored for the Predict functions, and expects value to be
  * matched.
  */
 inline constexpr BitFloat PredictThreshold(const BitFloat& value) {

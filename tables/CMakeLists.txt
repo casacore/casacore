@@ -358,13 +358,9 @@ install (FILES
 AlternateMans/AntennaPairFile.h
 AlternateMans/AntennaPairStMan.h
 AlternateMans/AntennaPairStManColumn.h
-AlternateMans/BitFloat.h
 AlternateMans/BitPacking.h
 AlternateMans/BufferedColumnarFile.h
-AlternateMans/Deflate.h
 AlternateMans/RowBasedFile.h
-AlternateMans/ShapesFileReader.h
-AlternateMans/ShapesFileWriter.h
 AlternateMans/SimpleColumnarFile.h
 AlternateMans/StokesIStMan.h
 AlternateMans/StokesIStManColumn.h
@@ -455,6 +451,10 @@ DESTINATION include/casacore/tables/DataMan
 
 if(BUILD_SISCO)
 install(FILES
+  AlternateMans/BitFloat.h
+  AlternateMans/Deflate.h
+  AlternateMans/ShapesFileReader.h
+  AlternateMans/ShapesFileWriter.h
   AlternateMans/Sisco.h
   AlternateMans/SiscoReader.h
   AlternateMans/SiscoStMan.h
