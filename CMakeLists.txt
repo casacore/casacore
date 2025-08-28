@@ -46,6 +46,7 @@ option (BUILD_PYTHON3 "Build the python3 bindings" YES)
 option (BUILD_DEPRECATED "build and install deprecated classes (such as Map)" NO)
 option (BUILD_FFTPACK_DEPRECATED "build FFTPack" NO)
 option (BUILD_DYSCO "Build the Dysco compression storage manager" YES)
+option (BUILD_SISCO "Build the Sisco compression storage manager" NO)
 
 # By default build shared libraries
 option (ENABLE_SHARED "Build shared libraries" YES)
@@ -203,8 +204,14 @@ if (NOT CMAKE_BUILD_TYPE)
     endif(_cmpvar STREQUAL "dbg" OR _cmpvar STREQUAL "debug")
 endif (NOT CMAKE_BUILD_TYPE)
 
-# Require a C++17 compatible compiler
-set(CMAKE_CXX_STANDARD 17)
+# Sisco requires a C++20 compatible compiler. If Sisco is not built, fall back to C++17 for the
+# time being.
+if(BUILD_SISCO)
+  set(CMAKE_CXX_STANDARD 20)
+else(BUILD_SISCO)
+  set(CMAKE_CXX_STANDARD 17)
+endif(BUILD_SISCO)
+
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Ensure clang is not complaining about unused arguments.
@@ -377,6 +384,9 @@ include_directories (${CMAKE_SOURCE_DIR} ${CMAKE_BINARY_DIR})
 if (BUILD_DYSCO)
     add_definitions(-DHAVE_DYSCO)
 endif (BUILD_DYSCO)
+if (BUILD_SISCO)
+    add_definitions(-DHAVE_SISCO)
+endif (BUILD_SISCO)
 if (WCSLIB_FOUND)
     include_directories (${WCSLIB_INCLUDE_DIRS})
     add_definitions (-DWCSLIB_VERSION_MAJOR=${WCSLIB_VERSION_MAJOR} -DWCSLIB_VERSION_MINOR=${WCSLIB_VERSION_MINOR})
@@ -592,6 +602,7 @@ message (STATUS "FFTW3 library? ........ = ${FFTW3_LIBRARIES}")
 message (STATUS "BUILD_FFTPACK_DEPRECATED= ${BUILD_FFTPACK_DEPRECATED}")
 message (STATUS "BUILD_DEPRECATED ...... = ${BUILD_DEPRECATED}")
 message (STATUS "BUILD_DYSCO ........... = ${BUILD_DYSCO}")
+message (STATUS "BUILD_SISCO ........... = ${BUILD_SISCO}")
 message (STATUS "BUILD_PYTHON .......... = ${BUILD_PYTHON}")
 message (STATUS "BUILD_PYTHON3 ......... = ${BUILD_PYTHON3}")
 
