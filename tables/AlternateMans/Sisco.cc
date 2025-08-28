@@ -30,6 +30,8 @@ void LinearCompress1D(std::span<const BitFloat> input, std::span<std::byte> mant
   BitFloat previous2(input[0]);
   mantissas[0] = previous2.PackMantissa();
   exponents[0] = previous2.Exponent();
+  if(input.size() == 1)
+    return;
 
   BitFloat value(input[1]);
   BitFloat previous1(value);
@@ -92,6 +94,57 @@ void QuadraticCompress1D(std::span<const BitFloat> input, std::span<std::byte> m
   }
 }
 
+void CubicCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data) {
+  if(input.size() == 0)
+    return;
+
+  uint32_t* mantissas = reinterpret_cast<uint32_t*>(mantissa_data.data());
+  uint8_t* exponents = reinterpret_cast<uint8_t*>(exponent_data.data());
+
+  BitFloat previous4(input[0]);
+  mantissas[0] = input[0].PackMantissa();
+  exponents[0] = input[0].Exponent();
+  if(input.size() == 1)
+    return;
+
+  BitFloat value(input[1]);
+  BitFloat previous3(input[1]);
+  if(value.AllowsMath())
+    value -= Predict(previous4, value.Exponent());
+  mantissas[1] = value.PackMantissa();
+  exponents[1] = value.Exponent();
+  if(input.size() == 2)
+    return;
+
+  value = input[2];
+  BitFloat previous2(value);
+  if(value.AllowsMath())
+    value -= Predict(previous4, previous3, value.Exponent());
+  mantissas[2] = value.PackMantissa();
+  exponents[2] = value.Exponent();
+  if(input.size() == 3)
+    return;
+
+  value = input[3];
+  BitFloat previous1(value);
+  if(value.AllowsMath())
+    value -= Predict(previous4, previous3, previous2, value.Exponent());
+  mantissas[3] = value.PackMantissa();
+  exponents[3] = value.Exponent();
+
+  for(size_t i=4; i!=input.size(); ++i) {
+    value = input[i];
+    if(value.AllowsMath())
+      value -= Predict(previous4, previous3, previous2, previous1, value.Exponent());
+    mantissas[i] = value.PackMantissa();
+    exponents[i] = value.Exponent();
+    previous4 = previous3;
+    previous3 = previous2;
+    previous2 = previous1;
+    previous1 = input[i];
+  }
+}
+
 void DifferenceDecompress1D(std::span<const std::byte> mantissa_data,
                         std::span<const std::byte> exponent_data,
                         std::span<BitFloat> output) {
@@ -118,6 +171,8 @@ void LinearDecompress1D(std::span<const std::byte> mantissa_data,
 
   BitFloat p2 = BitFloat::FromCompressed(dmantissas[0], dexponents[0]);
   output[0] = p2;
+  if(output.size() == 1)
+    return;
 
   std::pair<uint32_t, bool> mantissa_and_sign = BitFloat::UnpackMantissa(dmantissas[1]);
   BitFloat p1(mantissa_and_sign.first, dexponents[1], mantissa_and_sign.second);
@@ -165,6 +220,49 @@ void QuadraticDecompress1D(std::span<const std::byte> mantissa_data, std::span<c
     output[i] = BitFloat(mantissa_and_sign.first, dexponents[i], mantissa_and_sign.second);
     if(output[i].AllowsMath())
       output[i] += Predict(p3, p2, p1, dexponents[i]);
+    p3 = p2;
+    p2 = p1;
+    p1 = output[i];
+  }
+}
+
+void CubicDecompress1D(std::span<const std::byte> mantissa_data, std::span<const std::byte> exponent_data, std::span<BitFloat> output) {
+  if(output.empty())
+    return;
+  const uint32_t* dmantissas = reinterpret_cast<const uint32_t*>(mantissa_data.data());
+  const int8_t* dexponents = reinterpret_cast<const int8_t*>(exponent_data.data());
+
+  BitFloat p4 = BitFloat::FromCompressed(dmantissas[0], dexponents[0]);
+  output[0] = p4;
+  if(output.size() == 1)
+    return;
+
+  std::pair<uint32_t, bool> mantissa_and_sign = BitFloat::UnpackMantissa(dmantissas[1]);
+  BitFloat p3(mantissa_and_sign.first, dexponents[1], mantissa_and_sign.second);
+  if(p3.AllowsMath())
+    p3 += Predict(p4, dexponents[1]);
+  output[1] = p3;
+  if(output.size() == 2)
+    return;
+
+  mantissa_and_sign = BitFloat::UnpackMantissa(dmantissas[2]);
+  BitFloat p2(mantissa_and_sign.first, dexponents[2], mantissa_and_sign.second);
+  if(p2.AllowsMath())
+    p2 += Predict(p4, p3, dexponents[2]);
+  output[2] = p2;
+
+  mantissa_and_sign = BitFloat::UnpackMantissa(dmantissas[3]);
+  BitFloat p1(mantissa_and_sign.first, dexponents[3], mantissa_and_sign.second);
+  if(p1.AllowsMath())
+    p1 += Predict(p4, p3, p2, dexponents[3]);
+  output[3] = p1;
+
+  for(size_t i=4; i!=output.size(); ++i) {
+    mantissa_and_sign = BitFloat::UnpackMantissa(dmantissas[i]);
+    output[i] = BitFloat(mantissa_and_sign.first, dexponents[i], mantissa_and_sign.second);
+    if(output[i].AllowsMath())
+      output[i] += Predict(p4, p3, p2, p1, dexponents[i]);
+    p4 = p3;
     p3 = p2;
     p2 = p1;
     p1 = output[i];
@@ -235,12 +333,14 @@ void LinearCompress2D(CompressorState& state, std::span<const float> row, std::s
     for(size_t i=0; i!=row.size(); ++i) {
       state.scratch[i] = BitFloat(row[i]);
       BitFloat predicted = Predict(state.previous2[i], state.previous1[i], state.scratch[i].Exponent());
-      state.previous2[i] = state.previous1[i];
-      state.previous1[i] = state.scratch[i];
+      state.previous2[i] = state.scratch[i];
       if(state.scratch[i].AllowsMath())
         state.scratch[i] -= predicted;
     }
     LinearCompress1D(state.scratch, mantissa_data, exponent_data);
+    std::vector<BitFloat> swapped(std::move(state.previous2));
+    state.previous2 = std::move(state.previous1);
+    state.previous1 = std::move(swapped);
   }
 }
 
@@ -293,13 +393,95 @@ void QuadraticCompress2D(CompressorState& state, std::span<const float> row, std
     for(size_t i=0; i!=row.size(); ++i) {
       state.scratch[i] = BitFloat(row[i]);
       BitFloat predicted = Predict(state.previous3[i], state.previous2[i], state.previous1[i], state.scratch[i].Exponent());
-      state.previous3[i] = state.previous2[i];
-      state.previous2[i] = state.previous1[i];
-      state.previous1[i] = state.scratch[i];
+      state.previous3[i] = state.scratch[i];
       if(state.scratch[i].AllowsMath())
         state.scratch[i] -= predicted;
     }
     QuadraticCompress1D(state.scratch, mantissa_data, exponent_data);
+    std::vector<BitFloat> swapped(std::move(state.previous3));
+    state.previous3 = std::move(state.previous2);
+    state.previous2 = std::move(state.previous1);
+    state.previous1 = std::move(swapped);
+  }
+}
+
+void CubicCompress2D(CompressorState& state, std::span<const float> row, std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data) {
+  if(state.previous1.empty()) {
+    state.previous1.reserve(row.size());
+    for(size_t i=0; i!=row.size(); ++i) {
+      state.previous1.emplace_back(row[i]);
+    }
+    CubicCompress1D(state.previous1, mantissa_data, exponent_data);
+
+  } else if(state.previous2.empty()) {
+    assert(state.previous1.size() == row.size());
+    assert(state.scratch.empty());
+    // Single previous value available
+    state.previous2 = std::move(state.previous1);
+    state.previous1.reserve(row.size());
+    state.scratch.reserve(row.size());
+    for(size_t i=0; i!=row.size(); ++i) {
+      const BitFloat& value = state.previous1.emplace_back(row[i]);
+      BitFloat& scratch_value = state.scratch.emplace_back(value);
+      if(scratch_value.AllowsMath())
+        scratch_value -= Predict(state.previous2[i], scratch_value.Exponent());
+    }
+    CubicCompress1D(state.scratch, mantissa_data, exponent_data);
+
+  } else if(state.previous3.empty()) {
+    assert(state.previous1.size() == row.size());
+    assert(state.previous2.size() == row.size());
+    assert(state.scratch.size() == row.size());
+    // Two previous values available
+    state.previous3 = std::move(state.previous2);
+    state.previous2 = std::move(state.previous1);
+    state.previous1.reserve(row.size());
+    for(size_t i=0; i!=row.size(); ++i) {
+      const BitFloat& value = state.previous1.emplace_back(row[i]);
+      state.scratch[i] = value;
+      if(state.scratch[i].AllowsMath())
+        state.scratch[i] -= Predict(state.previous3[i], state.previous2[i], state.scratch[i].Exponent());
+    }
+    CubicCompress1D(state.scratch, mantissa_data, exponent_data);
+
+  } else if(state.previous4.empty()) {
+    assert(state.previous1.size() == row.size());
+    assert(state.previous2.size() == row.size());
+    assert(state.previous3.size() == row.size());
+    assert(state.scratch.size() == row.size());
+    // Two previous values available
+    state.previous4 = std::move(state.previous3);
+    state.previous3 = std::move(state.previous2);
+    state.previous2 = std::move(state.previous1);
+    state.previous1.reserve(row.size());
+    for(size_t i=0; i!=row.size(); ++i) {
+      const BitFloat& value = state.previous1.emplace_back(row[i]);
+      state.scratch[i] = value;
+      if(state.scratch[i].AllowsMath())
+        state.scratch[i] -= Predict(state.previous4[i], state.previous3[i], state.previous2[i], state.scratch[i].Exponent());
+    }
+    CubicCompress1D(state.scratch, mantissa_data, exponent_data);
+
+  } else {
+    assert(state.previous1.size() == row.size());
+    assert(state.previous2.size() == row.size());
+    assert(state.previous3.size() == row.size());
+    assert(state.previous4.size() == row.size());
+    assert(state.scratch.size() == row.size());
+    // Three previous values available
+    for(size_t i=0; i!=row.size(); ++i) {
+      state.scratch[i] = BitFloat(row[i]);
+      BitFloat predicted = Predict(state.previous4[i], state.previous3[i], state.previous2[i], state.previous1[i], state.scratch[i].Exponent());
+      state.previous4[i] = state.scratch[i];
+      if(state.scratch[i].AllowsMath())
+        state.scratch[i] -= predicted;
+    }
+    CubicCompress1D(state.scratch, mantissa_data, exponent_data);
+    std::vector<BitFloat> swapped(std::move(state.previous4));
+    state.previous4 = std::move(state.previous3);
+    state.previous3 = std::move(state.previous2);
+    state.previous2 = std::move(state.previous1);
+    state.previous1 = std::move(swapped);
   }
 }
 
@@ -429,6 +611,79 @@ void QuadraticDecompress2D(CompressorState& state, std::span<std::byte> mantissa
     std::swap(state.scratch, state.previous2);
     // Use previous3 storage for scratch in next call
     std::swap(state.scratch, state.previous3);
+  }
+}
+
+void CubicDecompress2D(CompressorState& state, std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data, std::span<float> row) {
+  if(state.previous1.empty()) {
+    state.previous1.resize(row.size());
+    CubicDecompress1D(mantissa_data, exponent_data, state.previous1);
+    for(size_t i=0; i!=row.size(); ++i) {
+      row[i] = state.previous1[i].ToFloat();
+    }
+  } else if(state.previous2.empty()) {
+    assert(state.previous1.size() == row.size());
+    // Single previous value available
+    state.previous2 = std::move(state.previous1);
+    state.previous1.resize(row.size());
+    CubicDecompress1D(mantissa_data, exponent_data, state.previous1);
+    for(size_t i=0; i!=row.size(); ++i) {
+      BitFloat& value = state.previous1[i];
+      if(value.AllowsMath())
+        value += Predict(state.previous2[i], value.Exponent());
+      row[i] = value.ToFloat();
+    }
+
+  } else if(state.previous3.empty()) {
+    assert(state.previous1.size() == row.size());
+    assert(state.previous2.size() == row.size());
+    // Two previous values available
+    state.previous3 = std::move(state.previous2);
+    state.previous2 = std::move(state.previous1);
+    state.previous1.resize(row.size());
+    CubicDecompress1D(mantissa_data, exponent_data, state.previous1);
+    for(size_t i=0; i!=row.size(); ++i) {
+      BitFloat& value = state.previous1[i];
+      if(value.AllowsMath())
+        value += Predict(state.previous3[i], state.previous2[i], value.Exponent());
+      row[i] = value.ToFloat();
+    }
+
+  } else if(state.previous4.empty()) {
+    assert(state.previous1.size() == row.size());
+    assert(state.previous2.size() == row.size());
+    assert(state.previous3.size() == row.size());
+    state.previous4 = std::move(state.previous3);
+    state.previous3 = std::move(state.previous2);
+    state.previous2 = std::move(state.previous1);
+    state.previous1.resize(row.size());
+    CubicDecompress1D(mantissa_data, exponent_data, state.previous1);
+    for(size_t i=0; i!=row.size(); ++i) {
+      BitFloat& value = state.previous1[i];
+      if(value.AllowsMath())
+        value += Predict(state.previous4[i], state.previous3[i], state.previous2[i], value.Exponent());
+      row[i] = value.ToFloat();
+    }
+    state.scratch.resize(row.size());
+
+  } else {
+    assert(state.previous1.size() == row.size());
+    assert(state.previous2.size() == row.size());
+    assert(state.previous3.size() == row.size());
+    assert(state.scratch.size() == row.size());
+    // Three previous values available
+    CubicDecompress1D(mantissa_data, exponent_data, state.scratch);
+    for(size_t i=0; i!=row.size(); ++i) {
+      BitFloat& value = state.scratch[i];
+      if(value.AllowsMath())
+        value += Predict(state.previous4[i], state.previous3[i], state.previous2[i], state.previous1[i], value.Exponent());
+      row[i] = value.ToFloat();
+    }
+    std::swap(state.scratch, state.previous1);
+    std::swap(state.scratch, state.previous2);
+    std::swap(state.scratch, state.previous3);
+    // Use previous4 storage for scratch in next call
+    std::swap(state.scratch, state.previous4);
   }
 }
 

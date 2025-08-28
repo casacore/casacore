@@ -10,6 +10,7 @@
 namespace casacore {
 
 struct CompressorState {
+  std::vector<BitFloat> previous4;
   std::vector<BitFloat> previous3;
   std::vector<BitFloat> previous2;
   std::vector<BitFloat> previous1;
@@ -31,6 +32,10 @@ void QuadraticCompress1D(std::span<const BitFloat> input,
                          std::span<std::byte> mantissa_data,
                          std::span<std::byte> exponent_data);
 
+void CubicCompress1D(std::span<const BitFloat> input,
+                     std::span<std::byte> mantissa_data,
+                     std::span<std::byte> exponent_data);
+
 void DifferenceDecompress1D(std::span<const std::byte> mantissa_data,
                             std::span<const std::byte> exponent_data,
                             std::span<BitFloat> output);
@@ -42,6 +47,10 @@ void LinearDecompress1D(std::span<const std::byte> mantissa_data,
 void QuadraticDecompress1D(std::span<const std::byte> mantissa_data,
                            std::span<const std::byte> exponent_data,
                            std::span<BitFloat> output);
+
+void CubicDecompress1D(std::span<const std::byte> mantissa_data,
+                       std::span<const std::byte> exponent_data,
+                       std::span<BitFloat> output);
 
 void DirectCompress2D(std::span<const float> row,
                       std::span<std::byte> mantissa_data,
@@ -58,6 +67,10 @@ void LinearCompress2D(CompressorState& state, std::span<const float> row,
 void QuadraticCompress2D(CompressorState& state, std::span<const float> row,
                          std::span<std::byte> mantissa_data,
                          std::span<std::byte> exponent_data);
+
+void CubicCompress2D(CompressorState& state, std::span<const float> row,
+                     std::span<std::byte> mantissa_data,
+                     std::span<std::byte> exponent_data);
 
 void DirectDecompress2D(std::span<std::byte> mantissa_data,
                         std::span<std::byte> exponent_data,
@@ -78,20 +91,29 @@ void QuadraticDecompress2D(CompressorState& state,
                            std::span<std::byte> exponent_data,
                            std::span<float> row);
 
+void CubicDecompress2D(CompressorState& state,
+                       std::span<std::byte> mantissa_data,
+                       std::span<std::byte> exponent_data,
+                       std::span<float> row);
+
 inline void Compress1D(int level, std::span<const BitFloat> row,
                        std::span<std::byte> mantissa_data,
                        std::span<std::byte> exponent_data) {
   switch (level) {
     case 0:
       DifferenceCompress1D(row, mantissa_data, exponent_data);
-      break;
+      return;
     case 1:
       LinearCompress1D(row, mantissa_data, exponent_data);
-      break;
+      return;
     case 2:
       QuadraticCompress1D(row, mantissa_data, exponent_data);
-      break;
+      return;
+    case 3:
+      CubicCompress1D(row, mantissa_data, exponent_data);
+      return;
   }
+  throw std::runtime_error("Invalid compression level");
 }
 
 inline void Decompress1D(int level, std::span<std::byte> mantissa_data,
@@ -100,14 +122,18 @@ inline void Decompress1D(int level, std::span<std::byte> mantissa_data,
   switch (level) {
     case 0:
       DifferenceDecompress1D(mantissa_data, exponent_data, row);
-      break;
+      return;
     case 1:
       LinearDecompress1D(mantissa_data, exponent_data, row);
-      break;
+      return;
     case 2:
       QuadraticDecompress1D(mantissa_data, exponent_data, row);
-      break;
+      return;
+    case 3:
+      CubicDecompress1D(mantissa_data, exponent_data, row);
+      return;
   }
+  throw std::runtime_error("Invalid compression level");
 }
 
 inline void Compress2D(int level, CompressorState& state,
@@ -117,17 +143,21 @@ inline void Compress2D(int level, CompressorState& state,
   switch (level) {
     case -1:
       DirectCompress2D(row, mantissa_data, exponent_data);
-      break;
+      return;
     case 0:
       DifferenceCompress2D(state, row, mantissa_data, exponent_data);
-      break;
+      return;
     case 1:
       LinearCompress2D(state, row, mantissa_data, exponent_data);
-      break;
+      return;
     case 2:
       QuadraticCompress2D(state, row, mantissa_data, exponent_data);
-      break;
+      return;
+    case 3:
+      CubicCompress2D(state, row, mantissa_data, exponent_data);
+      return;
   }
+  throw std::runtime_error("Invalid compression level");
 }
 
 inline void Decompress2D(int level, CompressorState& state,
@@ -137,17 +167,21 @@ inline void Decompress2D(int level, CompressorState& state,
   switch (level) {
     case -1:
       DirectDecompress2D(mantissa_data, exponent_data, row);
-      break;
+      return;
     case 0:
       DifferenceDecompress2D(state, mantissa_data, exponent_data, row);
-      break;
+      return;
     case 1:
       LinearDecompress2D(state, mantissa_data, exponent_data, row);
-      break;
+      return;
     case 2:
       QuadraticDecompress2D(state, mantissa_data, exponent_data, row);
-      break;
+      return;
+    case 3:
+      CubicDecompress2D(state, mantissa_data, exponent_data, row);
+      return;
   }
+  throw std::runtime_error("Invalid compression level");
 }
 
 /**
@@ -254,6 +288,43 @@ inline constexpr BitFloat Predict(const BitFloat& previous3,
     (*matched_p2) *= 3;
     (*result) -= *matched_p2;
     (*result) += *matched_p3;
+    return PredictThreshold(*result);
+  }
+}
+
+inline constexpr BitFloat Predict(const BitFloat& previous4,
+                                  const BitFloat& previous3,
+                                  const BitFloat& previous2,
+                                  const BitFloat& previous1,
+                                  int8_t value_exponent) {
+  if (!previous1.AllowsMath()) {
+    return Predict(previous2, value_exponent);
+  } else if (!previous2.AllowsMath()) {
+    return Predict(previous1, value_exponent);
+  } else if (!previous3.AllowsMath()) {
+    return Predict(previous2, previous1, value_exponent);
+  } else if (!previous4.AllowsMath()) {
+    return Predict(previous3, previous2, previous1, value_exponent);
+  } else if (!BitFloat::AllowsMath(value_exponent)) {
+    return BitFloat(0, value_exponent, false);
+  } else {
+    const std::optional<BitFloat> matched_p4 = Match(previous4, value_exponent);
+    if (!matched_p4)
+      return Predict(previous3, previous2, previous1, value_exponent);
+    std::optional<BitFloat> matched_p3 = Match(previous3, value_exponent);
+    if (!matched_p3) return Predict(previous2, previous1, value_exponent);
+    std::optional<BitFloat> matched_p2 = Match(previous2, value_exponent);
+    if (!matched_p2) return Predict(previous1, value_exponent);
+    std::optional<BitFloat> result = Match(previous1, value_exponent);
+    if (!result) return Predict(previous2, value_exponent);
+    // We have to calculate:
+    // p_next = -p4 + 4p3 - 6p2 + 4p1
+    (*result) *= 4;
+    (*matched_p2) *= 6;
+    (*result) -= *matched_p2;
+    (*matched_p3) *= 4;
+    (*result) += *matched_p3;
+    (*result) -= *matched_p4;
     return PredictThreshold(*result);
   }
 }

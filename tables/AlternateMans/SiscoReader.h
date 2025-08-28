@@ -26,6 +26,8 @@ class SiscoReader {
   void Open(std::span<std::byte> header_data);
   void Read(size_t baseline_index, std::span<std::complex<float>> data);
 
+  int PredictLevel() const { return predict_level_; }
+
  private:
   int predict_level_;
   std::vector<std::byte> read_buffer_;

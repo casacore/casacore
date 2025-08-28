@@ -7,11 +7,11 @@ set (testfiles
 )
 if(BUILD_SISCO)
   set(testfiles ${testfiles}
-  tBitFloat.cc
-  tDeflate.cc
-  tShapesFile.cc
-  tSisco.cc
-  tSiscoWriter.cc
+    tBitFloat.cc
+    tDeflate.cc
+    tShapesFile.cc
+    tSisco.cc
+    tSiscoWriter.cc
   )
   find_library(DEFLATE_LIBRARY deflate)
   set (EXTRA_ALTMANTEST_LIBRARIES ${DEFLATE_LIBRARY})
