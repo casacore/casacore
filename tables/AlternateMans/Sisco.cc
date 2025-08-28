@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace casacore {
+namespace casacore::sisco {
 
 void DifferenceCompress1D(std::span<const BitFloat> input, std::span<std::byte> mantissa_data, std::span<std::byte> exponent_data) {
   uint32_t* mantissas = reinterpret_cast<uint32_t*>(mantissa_data.data());
@@ -687,4 +687,4 @@ void CubicDecompress2D(CompressorState& state, std::span<std::byte> mantissa_dat
   }
 }
 
-} // namespace casacore
+} // namespace casacore::sisco

@@ -280,8 +280,8 @@ class SiscoStManColumn final : public StManColumn {
   ScalarColumn<int> antenna2_column_;
 
   SiscoStMan &parent_;
-  std::optional<SiscoWriter> writer_;
-  std::optional<SiscoReader> reader_;
+  std::optional<sisco::SiscoWriter> writer_;
+  std::optional<sisco::SiscoReader> reader_;
   std::optional<ShapesFileWriter> shapes_writer_;
   std::optional<ShapesFileReader> shapes_reader_;
   rownr_t current_row_ = 0;

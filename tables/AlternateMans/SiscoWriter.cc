@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-namespace casacore {
+namespace casacore::sisco {
 namespace {
 /// Concatenate mantissas and exponents into one buffer
 void Concatenate(std::vector<std::byte>& destination, const std::vector<std::byte>& mantissas, const std::vector<std::byte>& exponents, size_t n_elements) {
@@ -173,4 +173,4 @@ void SiscoWriter::WriteChunk(uint64_t uncompressed_size, std::span<const std::by
   file_.write(reinterpret_cast<const char*>(data.data()), data.size());
 }
 
-} // namespace casacore
+} // namespace casacore::sisco

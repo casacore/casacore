@@ -7,7 +7,7 @@
 
 #include "BitFloat.h"
 
-namespace casacore {
+namespace casacore::sisco {
 
 struct CompressorState {
   std::vector<BitFloat> previous4;
@@ -153,7 +153,7 @@ inline void Compress2D(int level, CompressorState& state,
     case 2:
       QuadraticCompress2D(state, row, mantissa_data, exponent_data);
       return;
- * This function is tailored for the Predict functions, and expects value to be
+    case 3:
       CubicCompress2D(state, row, mantissa_data, exponent_data);
       return;
   }
@@ -329,6 +329,6 @@ inline constexpr BitFloat Predict(const BitFloat& previous4,
   }
 }
 
-}  // namespace casacore
+}  // namespace casacore::sisco
 
 #endif

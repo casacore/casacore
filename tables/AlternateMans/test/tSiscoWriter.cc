@@ -5,7 +5,7 @@
 
 #include <filesystem>
 
-namespace casacore {
+namespace casacore::sisco {
 
 namespace {
 const std::string kFilename = "test-tmp.tmp";
@@ -87,4 +87,4 @@ BOOST_FIXTURE_TEST_CASE(write, FileFixture) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-} // namespace casacore
+} // namespace casacore::sisco

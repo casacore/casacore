@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-namespace casacore {
+namespace casacore::sisco {
 
 SiscoReader::SiscoReader(const std::string& filename) : filename_(filename)
 {
@@ -71,4 +71,4 @@ size_t SiscoReader::ReadChunk(std::vector<std::byte>& buffer)
   return decompressed_size;
 }
 
-} // namespace casacore
+} // namespace casacore::sisco
