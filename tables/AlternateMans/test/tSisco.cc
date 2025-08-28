@@ -110,7 +110,7 @@ BOOST_AUTO_TEST_CASE(predict_from_three) {
   constexpr BitFloat p3(1.0f);
   constexpr BitFloat p2(4.0f);
   constexpr BitFloat p1(9.0f);
-  BitFloat predicted = Predict(p3, p2, p1, p1.Exponent());
+  constexpr BitFloat predicted = Predict(p3, p2, p1, p1.Exponent());
   BOOST_CHECK_CLOSE_FRACTION(predicted.ToFloat(), 16.0, 1e-6);
 }
 
@@ -150,6 +150,15 @@ BOOST_AUTO_TEST_CASE(predict_from_three_with_overflow_c) {
   BOOST_CHECK_EQUAL(predicted.Exponent(), target_exponent);
 }
 
+BOOST_AUTO_TEST_CASE(predict_from_four) {
+  constexpr BitFloat p4(1.0f);
+  constexpr BitFloat p3(8.0f);
+  constexpr BitFloat p2(27.0f);
+  constexpr BitFloat p1(64.0f);
+  constexpr BitFloat predicted = Predict(p4, p3, p2, p1, p1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(predicted.ToFloat(), 125.0, 1e-6);
+}
+
 void Check(const BitFloat& input, const BitFloat& result, size_t number_index) {
   const float input_float = input.ToFloat();
   // this one is useful for debugging...
@@ -175,7 +184,7 @@ BOOST_AUTO_TEST_CASE(compress_1d) {
     BitFloat(std::numeric_limits<float>::infinity()),
     BitFloat(std::numeric_limits<float>::infinity())
   };
-  for(int level=0; level!=3; ++level) {
+  for(int level=0; level!=4; ++level) {
     std::vector<std::byte> mantissa_data(input.size() * sizeof(uint32_t));
     std::vector<std::byte> exponent_data(input.size() * sizeof(int8_t));
     Compress1D(level, input, mantissa_data, exponent_data);

@@ -14,56 +14,56 @@ BOOST_AUTO_TEST_CASE(construct) {
   BOOST_CHECK_EQUAL(f1.Mantissa(), 0);
   BOOST_CHECK_EQUAL(f1.Exponent(), -127);
   BOOST_CHECK(!f1.Sign());
-  BOOST_CHECK(BitFloat::GetKind(f1) == BitFloatKind::Zero);
+  BOOST_CHECK(BitFloat::GetKind(f1.ToFloat()) == BitFloatKind::Zero);
 
   constexpr BitFloat f2(1.0f);
   BOOST_CHECK_EQUAL(f2.Mantissa(), 0x800000);
   BOOST_CHECK_EQUAL(f2.Exponent(), 0);
   BOOST_CHECK(!f2.Sign());
-  BOOST_CHECK(BitFloat::GetKind(f2) == BitFloatKind::Normal);
+  BOOST_CHECK(BitFloat::GetKind(f2.ToFloat()) == BitFloatKind::Normal);
 
   constexpr BitFloat f2b(2.0f);
   BOOST_CHECK_EQUAL(f2b.Mantissa(), 0x800000);
   BOOST_CHECK_EQUAL(f2b.Exponent(), 1);
   BOOST_CHECK(!f2b.Sign());
-  BOOST_CHECK(BitFloat::GetKind(f2b) == BitFloatKind::Normal);
+  BOOST_CHECK(BitFloat::GetKind(f2b.ToFloat()) == BitFloatKind::Normal);
 
   constexpr BitFloat f3(-1.0f);
   BOOST_CHECK_EQUAL(f3.Mantissa(), 0x800000);
   BOOST_CHECK_EQUAL(f3.Exponent(), 0);
   BOOST_CHECK(f3.Sign());
-  BOOST_CHECK(BitFloat::GetKind(f3) == BitFloatKind::Normal);
+  BOOST_CHECK(BitFloat::GetKind(f3.ToFloat()) == BitFloatKind::Normal);
 
   constexpr BitFloat f4(-0.0f);
-  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f4)), "negative zero");
+  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f4.ToFloat())), "negative zero");
 
   constexpr BitFloat f5(std::numeric_limits<float>::quiet_NaN());
-  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f5)), "nan");
+  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f5.ToFloat())), "nan");
 
   constexpr BitFloat f6(std::numeric_limits<float>::signaling_NaN());
-  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f6)), "signalling nan");
+  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f6.ToFloat())), "signalling nan");
 
   // Smallest subnormal
   constexpr BitFloat f7(std::bit_cast<float>(0b00000000000000000000000000000001));
-  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f7)), "subnormal");
+  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f7.ToFloat())), "subnormal");
 
   // Largest subnormal
   constexpr BitFloat f8(std::bit_cast<float>(0b00000000011111111111111111111111));
-  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f8)), "subnormal");
+  BOOST_CHECK_EQUAL(ToString(BitFloat::GetKind(f8.ToFloat())), "subnormal");
 
   // Smallest normal number
   constexpr BitFloat f9(std::bit_cast<float>(0b00000000100000000000000000000000));
   BOOST_CHECK_EQUAL(f9.Mantissa(), 0x800000);
   BOOST_CHECK_EQUAL(f9.Exponent(), -126);
   BOOST_CHECK(!f9.Sign());
-  BOOST_CHECK(BitFloat::GetKind(f9) == BitFloatKind::Normal);
+  BOOST_CHECK(BitFloat::GetKind(f9.ToFloat()) == BitFloatKind::Normal);
 
   // Largest normal number
   constexpr BitFloat f10(std::bit_cast<float>(0b01111111011111111111111111111111));
   BOOST_CHECK_EQUAL(f10.Mantissa(), 0xFFFFFF);
   BOOST_CHECK_EQUAL(f10.Exponent(), 127);
   BOOST_CHECK(!f10.Sign());
-  BOOST_CHECK(BitFloat::GetKind(f10) == BitFloatKind::Normal);
+  BOOST_CHECK(BitFloat::GetKind(f10.ToFloat()) == BitFloatKind::Normal);
 }
 
 BOOST_AUTO_TEST_CASE(to_float) {
@@ -256,7 +256,7 @@ void CheckMantissaPacking(float f) {
   BOOST_CHECK_EQUAL(original.Exponent(), decompressed.Exponent());
   const float result(decompressed.ToFloat());
   if(std::isfinite(f)) {
-    BOOST_CHECK_EQUAL(f, original);
+    BOOST_CHECK_EQUAL(f, original.ToFloat());
   }
   const uint32_t result_ui32 = std::bit_cast<uint32_t>(result);
   BOOST_CHECK_EQUAL(expected_ui32, result_ui32);

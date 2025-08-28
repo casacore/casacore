@@ -43,10 +43,21 @@ constexpr std::string_view ToString(BitFloatKind kind) {
   __builtin_unreachable();
 }
 
+/**
+ * Class that understands the bit-representation of single-precision floating
+ * point numbers, and that can decompose it into mantissa, exponent, sign and
+ * special values. It can also do some (limited) mathematical operations on it,
+ * while it can do these operations without loss of precision of the source
+ * number. It is used to implement compression (Sisco) that is based on
+ * predicting the next value in time and frequency.
+ */
 class BitFloat {
  public:
+  /** Constructs a zero-value BitFloat. */
   constexpr BitFloat() : mantissa_(0), exponent_(-127), sign_(false) {}
 
+  /** Constructs a BitFloat by decomposing the specified floating point value.
+   */
   constexpr explicit BitFloat(float f)
       : mantissa_((std::bit_cast<uint32_t>(f) & 0x007FFFFF) | 0x00800000),
         exponent_(static_cast<int8_t>(
@@ -61,6 +72,19 @@ class BitFloat {
 
   constexpr uint32_t Mantissa() const { return mantissa_; }
   constexpr int8_t Exponent() const { return exponent_; }
+
+  /**
+   * Combines the sign and the mantissa into one uint32_t. The mantissa of a
+   * single-precision floating point values is only 23 bits, and so this would
+   * fit easily. However, operations performed on the BitFloat like addition and
+   * multiplication may enlarge the mantissa, causing an 'overflow'.
+   *
+   * This method checks if mantissa's 32th bit is set (which would conflict with
+   * the bit used for the sign), and throws an exception in that case. This is
+   * not a full check for the occurence of overflow, as the mantissa might have
+   * overflown twice, and thus further overflow checking is necessary when doing
+   * operations.
+   */
   constexpr uint32_t PackMantissa() const {
     if (MantissaOverflow()) {
       throw std::runtime_error(
@@ -70,20 +94,37 @@ class BitFloat {
     }
     return (mantissa_ & 0x7FFFFFFFu) | (sign_ ? 0x80000000u : 0u);
   }
+
+  /**
+   * Given a result from @ref PackMantissa(), this function reversed the
+   * packing.
+   */
   constexpr static std::pair<uint32_t, bool> UnpackMantissa(
       uint32_t mantissa_with_sign) {
     const uint32_t mantissa = (mantissa_with_sign & 0x7FFFFFFFu);
     const bool sign = (mantissa_with_sign & 0x80000000u) != 0u;
     return {mantissa, sign};
   }
+
+  /**
+   * Constructs a BitFloat from a 'packed mantissa' (see @ref PackMantissa())
+   * and the exponent. In Sisco, these are stored separately, and this method is
+   * used to reconstruct the BitFloat.
+   */
   constexpr static BitFloat FromCompressed(uint32_t mantissa_with_sign,
                                            int8_t exponent) {
     const std::pair<uint32_t, bool> unpacked =
         UnpackMantissa(mantissa_with_sign);
     return BitFloat(unpacked.first, exponent, unpacked.second);
   }
+
   constexpr bool Sign() const { return sign_; }
-  /// lhs and rhs must be exponent-matched beforehand
+
+  /**
+   * Adds the value @p rhs to this. this and @p rhs must be exponent-matched
+   * beforehand. The function doesn't check this, neither does it check for
+   * overflow or non-finite values.
+   */
   constexpr BitFloat& operator+=(const BitFloat& rhs) {
     if (sign_ == rhs.sign_) {
       mantissa_ = mantissa_ + rhs.mantissa_;
@@ -95,7 +136,10 @@ class BitFloat {
     }
     return *this;
   }
-  /// lhs and rhs must be exponent-matched beforehand
+
+  /**
+   * Like operator+=, but subtracts @p rhs.
+   */
   constexpr BitFloat& operator-=(const BitFloat& rhs) {
     if (sign_ != rhs.sign_) {
       mantissa_ = mantissa_ + rhs.mantissa_;
@@ -107,10 +151,23 @@ class BitFloat {
     }
     return *this;
   }
+
+  /**
+   * Multiplies the value by an integer factor. The exponent is not changed, and
+   * overflow or special values aren't checked for.
+   */
   constexpr BitFloat& operator*=(unsigned factor) {
     mantissa_ *= factor;
     return *this;
   }
+
+  /**
+   * Compose this value back into a single-precision floating point value. Since
+   * this class allows storing unnormalized floating point values, this function
+   * normalizes the value if necessary. If the original value represented a
+   * special value (like NaN or inf), the value returned will be the bit-wise
+   * equal special value.
+   */
   constexpr float ToFloat() const {
     int8_t exponent = exponent_;
     uint32_t result = mantissa_;
@@ -134,14 +191,27 @@ class BitFloat {
         (sign_ ? 0x80000000 : 0x0);
     return std::bit_cast<float>(result);
   }
-  constexpr operator float() const { return ToFloat(); }
 
+  explicit constexpr operator float() const { return ToFloat(); }
+
+  /**
+   * Based on the exponent, determines if this is a special value and should not
+   * be used in mathematical operations like addition or multiplication. The
+   * value 'zero' is also considered to not allow math.
+   *
+   * Sisco stores the exponents separately and based on the exponent determines
+   * if it can do prediction to reconstruct the mantissa. Hence, the only
+   * information available is the exponent.
+   */
   static constexpr bool AllowsMath(int8_t exponent) {
     return exponent != static_cast<int8_t>(128u) && exponent != -127;
   }
 
   constexpr bool AllowsMath() const { return AllowsMath(exponent_); }
 
+  /**
+   * Negation; flips the sign of the value.
+   */
   friend constexpr BitFloat operator-(const BitFloat& input) {
     return BitFloat(input.mantissa_, input.exponent_, !input.sign_);
   }
@@ -151,6 +221,17 @@ class BitFloat {
            lhs.sign_ == rhs.sign_;
   }
 
+  /**
+   * Shifts the input value such that its exponent matches the specified
+   * exponent. This should be used before operations like addition and
+   * multiplication. Note that this may lead to loss of precision if the @p
+   * value_exponent is larger than the input.
+   *
+   * In case the shift would lead to overflow, no value is returned. In case the
+   * shifting results in the value becoming zero, a BitFloat representing zero
+   * is returned, but with the 'unnormalized' exponent still set to the
+   * requested exponent, meaning that it can be used in operations.
+   */
   friend constexpr std::optional<BitFloat> Match(const BitFloat& input,
                                                  int8_t value_exponent) {
     if (input.Exponent() == value_exponent) {
@@ -172,8 +253,11 @@ class BitFloat {
     }
   }
 
+  /** Returns true if bit 32 is set. */
   constexpr bool MantissaOverflow() const { return mantissa_ & 0x80000000; }
 
+  /** Determine what kind of float the specified value is: normal, nan, inf,
+   * etc. */
   constexpr static BitFloatKind GetKind(float f) {
     const uint32_t value = std::bit_cast<uint32_t>(f);
     if (value == 0) {
