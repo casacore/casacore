@@ -88,7 +88,7 @@ class BitFloat {
    */
   constexpr uint32_t PackMantissa() const {
     if (MantissaOverflow()) {
-      throw std::runtime_error(
+      throw std::overflow_error(
           "An overflow occured! Value = " + std::to_string(ToFloat()) +
           ", exponent = " + std::to_string(exponent_) + ", mantissa = " +
           std::to_string(mantissa_) + ", sign = " + std::to_string(sign_));

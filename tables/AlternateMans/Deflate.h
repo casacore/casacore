@@ -1,4 +1,4 @@
-#ifndef SISCO_DEFLATE_H_
+#ifndef CASACORE_SISCO_DEFLATE_H_
 #define SISCO_DEFLATE_H_
 
 #include "libdeflate.h"

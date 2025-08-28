@@ -153,7 +153,7 @@ inline void Compress2D(int level, CompressorState& state,
     case 2:
       QuadraticCompress2D(state, row, mantissa_data, exponent_data);
       return;
-    case 3:
+ * This function is tailored for the Predict functions, and expects value to be
       CubicCompress2D(state, row, mantissa_data, exponent_data);
       return;
   }

@@ -16,7 +16,7 @@ if(BUILD_SISCO)
   find_library(DEFLATE_LIBRARY deflate)
   set (EXTRA_ALTMANTEST_LIBRARIES ${DEFLATE_LIBRARY})
 elseif()
-set (EXTRA_ALTMANTEST_LIBRARIES)
+  set (EXTRA_ALTMANTEST_LIBRARIES)
 endif(BUILD_SISCO)
 
 find_package(Boost COMPONENTS filesystem system unit_test_framework)
