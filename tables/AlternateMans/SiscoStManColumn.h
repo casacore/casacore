@@ -54,7 +54,13 @@ class SiscoStManColumn final : public StManColumn {
   }
   void setShape(unsigned, const IPosition &) final {}
 
-  bool isShapeDefined(rownr_t) final { return false; }
+  bool isShapeDefined(rownr_t row) final {
+    if ((writer_ && row >= current_row_) || !file_exists_) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   bool isShapeDefined(unsigned) final { return false; }
 
   /** Set the dimensions of values in this column. */
@@ -72,14 +78,11 @@ class SiscoStManColumn final : public StManColumn {
   /** Get the dimensions of the values in a particular row.
    * @param rownr The row to get the shape for. */
   IPosition shape(rownr_t row) final {
-    if (writer_ && row >= current_row_) {
-      return IPosition();
+    if ((writer_ && row >= current_row_) || !file_exists_) {
+      return IPosition{0, 0};
     } else {
       if (!reader_ || row < current_row_) {
-        if (std::filesystem::exists(parent_.fileName()))
-          OpenReader();
-        else
-          return IPosition();
+        OpenReader();
       }
       while (current_row_ < row) {
         SkipRow();
@@ -110,22 +113,27 @@ class SiscoStManColumn final : public StManColumn {
     const int data_desc_id = data_desc_id_column_(current_row_);
     const int antenna1 = antenna1_column_(current_row_);
     const int antenna2 = antenna2_column_(current_row_);
-    const int n_polarizations = current_shape_[0];
-    const size_t n_channels = current_shape_[1];
+    if (current_shape_.size() >= 2) {
+      const int n_polarizations = current_shape_[0];
+      const size_t n_channels = current_shape_[1];
 
-    bool ownership;
-    Complex *storage = array.getStorage(ownership);
-    buffer_.resize(n_channels);
-    for (int polarization = 0; polarization != n_polarizations;
-         ++polarization) {
-      const size_t baseline_id = GetBaselineId(field_id, data_desc_id, antenna1,
-                                               antenna2, polarization);
-      reader_->Read(baseline_id, buffer_);
-      for (size_t channel = 0; channel != n_channels; ++channel) {
-        storage[channel * n_polarizations + polarization] = buffer_[channel];
+      if (n_channels) {
+        bool ownership;
+        Complex *storage = array.getStorage(ownership);
+        buffer_.resize(n_channels);
+        for (int polarization = 0; polarization != n_polarizations;
+             ++polarization) {
+          const size_t baseline_id = GetBaselineId(
+              field_id, data_desc_id, antenna1, antenna2, polarization);
+          reader_->Read(baseline_id, buffer_);
+          for (size_t channel = 0; channel != n_channels; ++channel) {
+            storage[channel * n_polarizations + polarization] =
+                buffer_[channel];
+          }
+        }
+        array.putStorage(storage, ownership);
       }
     }
-    array.putStorage(storage, ownership);
 
     current_shape_ = shapes_reader_->Read();
     ++current_row_;
@@ -150,22 +158,27 @@ class SiscoStManColumn final : public StManColumn {
     const int data_desc_id = data_desc_id_column_(current_row_);
     const int antenna1 = antenna1_column_(current_row_);
     const int antenna2 = antenna2_column_(current_row_);
-    const int n_polarizations = array.shape()[0];
-    const size_t n_channels = array.shape()[1];
+    if (array.shape().size() >= 2) {
+      const int n_polarizations = array.shape()[0];
+      const size_t n_channels = array.shape()[1];
 
-    bool ownership;
-    const std::complex<float> *storage = array.getStorage(ownership);
-    buffer_.resize(n_channels);
-    for (int polarization = 0; polarization != n_polarizations;
-         ++polarization) {
-      const size_t baseline_id = GetBaselineId(field_id, data_desc_id, antenna1,
-                                               antenna2, polarization);
-      for (size_t channel = 0; channel != n_channels; ++channel) {
-        buffer_[channel] = storage[channel * n_polarizations + polarization];
+      if (n_channels) {
+        bool ownership;
+        const std::complex<float> *storage = array.getStorage(ownership);
+        buffer_.resize(n_channels);
+        for (int polarization = 0; polarization != n_polarizations;
+             ++polarization) {
+          const size_t baseline_id = GetBaselineId(
+              field_id, data_desc_id, antenna1, antenna2, polarization);
+          for (size_t channel = 0; channel != n_channels; ++channel) {
+            buffer_[channel] =
+                storage[channel * n_polarizations + polarization];
+          }
+          writer_->Write(baseline_id, buffer_);
+        }
+        array.freeStorage(storage, ownership);
       }
-      writer_->Write(baseline_id, buffer_);
     }
-    array.freeStorage(storage, ownership);
 
     current_shape_ = array.shape();
     ++current_row_;
@@ -245,7 +258,7 @@ class SiscoStManColumn final : public StManColumn {
   }
 
   void WriteEmptyRow() {
-    shapes_writer_->Write(IPosition());
+    shapes_writer_->Write(IPosition{0, 0});
     ++current_row_;
   }
 
@@ -254,14 +267,18 @@ class SiscoStManColumn final : public StManColumn {
     const int data_desc_id = data_desc_id_column_(current_row_);
     const int antenna1 = antenna1_column_(current_row_);
     const int antenna2 = antenna2_column_(current_row_);
-    const int n_polarizations = current_shape_[0];
-    const int n_channels = current_shape_[1];
-    buffer_.resize(n_channels);
-    for (int polarization = 0; polarization != n_polarizations;
-         ++polarization) {
-      const size_t baseline_id = GetBaselineId(field_id, data_desc_id, antenna1,
-                                               antenna2, polarization);
-      reader_->Read(baseline_id, buffer_);
+    if (current_shape_.size() >= 2) {
+      const int n_polarizations = current_shape_[0];
+      const int n_channels = current_shape_[1];
+      if (n_channels) {
+        buffer_.resize(n_channels);
+        for (int polarization = 0; polarization != n_polarizations;
+             ++polarization) {
+          const size_t baseline_id = GetBaselineId(
+              field_id, data_desc_id, antenna1, antenna2, polarization);
+          reader_->Read(baseline_id, buffer_);
+        }
+      }
     }
     current_shape_ = shapes_reader_->Read();
     ++current_row_;
@@ -289,6 +306,7 @@ class SiscoStManColumn final : public StManColumn {
   IPosition current_shape_;
   std::map<std::array<int, 5>, size_t> baseline_ids_;
   size_t baseline_count_;
+  bool file_exists_ = false;
 };
 
 }  // namespace casacore
@@ -303,6 +321,7 @@ void SiscoStManColumn::Prepare() {
   data_desc_id_column_ = ScalarColumn<int>(table, "DATA_DESC_ID");
   antenna1_column_ = ScalarColumn<int>(table, "ANTENNA1");
   antenna2_column_ = ScalarColumn<int>(table, "ANTENNA2");
+  file_exists_ = std::filesystem::exists(parent_.fileName());
 }
 
 }  // namespace casacore
