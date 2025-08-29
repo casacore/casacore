@@ -294,6 +294,38 @@ BOOST_AUTO_TEST_CASE(mantissa_packing) {
   CheckMantissaPacking(std::numeric_limits<float>::quiet_NaN());
   CheckMantissaPacking(-std::numeric_limits<float>::infinity());
   CheckMantissaPacking(std::numeric_limits<float>::infinity());
+
+  BOOST_CHECK_THROW(BitFloat(0x80000000, 0, false).PackMantissa(), std::overflow_error);
+}
+
+BOOST_AUTO_TEST_CASE(match) {
+  constexpr BitFloat small_a(1e-5f);
+  constexpr BitFloat small_b(4e-5f);
+  constexpr BitFloat big(1e3f);
+  constexpr BitFloat zero(0.0f);
+
+  BOOST_REQUIRE(Match(small_a, small_b.Exponent()));
+  BOOST_CHECK_EQUAL(Match(small_a, small_b.Exponent())->Exponent(), small_b.Exponent());
+  BOOST_CHECK_EQUAL(Match(small_a, small_b.Exponent())->ToFloat(), small_a.ToFloat());
+
+  BOOST_REQUIRE(Match(small_b, small_a.Exponent()));
+  BOOST_CHECK_EQUAL(Match(small_b, small_a.Exponent())->Exponent(), small_a.Exponent());
+  BOOST_CHECK_EQUAL(Match(small_b, small_a.Exponent())->ToFloat(), small_b.ToFloat());
+
+  // Trying to represent the big number with the smaller number's exponent should cause overflow...
+  BOOST_CHECK(!Match(big, small_a.Exponent()));
+  BOOST_CHECK(!Match(big, zero.Exponent()));
+  BOOST_CHECK(!Match(small_a, zero.Exponent()));
+  // The otherway around should produce zero...
+  BOOST_REQUIRE(Match(small_a, big.Exponent()));
+  BOOST_CHECK_EQUAL(Match(small_a, big.Exponent())->ToFloat(), 0.0f);
+  BOOST_CHECK_EQUAL(Match(small_a, small_a.Exponent())->ToFloat(), small_a.ToFloat());
+  BOOST_CHECK_EQUAL(Match(big, big.Exponent())->ToFloat(), big.ToFloat());
+
+  // Zero has a 'special' exponent value (-127) but should be properly matched...
+  BOOST_REQUIRE(Match(zero, big.Exponent()));
+  BOOST_CHECK_EQUAL(static_cast<int>(Match(zero, big.Exponent())->Exponent()), static_cast<int>(big.Exponent()));
+  BOOST_CHECK_EQUAL(Match(zero, big.Exponent())->ToFloat(), 0.0f);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
