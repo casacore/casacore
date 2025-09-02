@@ -213,7 +213,7 @@ class SiscoStManColumn final : public StManColumn {
         reinterpret_cast<const std::byte *>(header_buffer), kHeaderSize);
     writer_->Open(header);
 
-    shapes_writer_.emplace(parent_.fileName() + kShapesExtension);
+    shapes_writer_.emplace(ShapesFilename());
 
     current_row_ = 0;
     current_shape_ = IPosition();
@@ -236,7 +236,7 @@ class SiscoStManColumn final : public StManColumn {
                 reinterpret_cast<char *>(&version_major));
     std::copy_n(&header_buffer[kMagicSize + 2], 2,
                 reinterpret_cast<char *>(&version_minor));
-    shapes_reader_.emplace(parent_.fileName() + kShapesExtension);
+    shapes_reader_.emplace(ShapesFilename());
 
     current_row_ = 0;
     current_shape_ = shapes_reader_->Read();
@@ -255,6 +255,10 @@ class SiscoStManColumn final : public StManColumn {
       ++baseline_count_;
     }
     return iterator->second;
+  }
+
+  std::string ShapesFilename() const {
+    return parent_.fileName() + kShapesExtension;
   }
 
   void WriteEmptyRow() {
@@ -321,7 +325,8 @@ void SiscoStManColumn::Prepare() {
   data_desc_id_column_ = ScalarColumn<int>(table, "DATA_DESC_ID");
   antenna1_column_ = ScalarColumn<int>(table, "ANTENNA1");
   antenna2_column_ = ScalarColumn<int>(table, "ANTENNA2");
-  file_exists_ = std::filesystem::exists(parent_.fileName());
+  file_exists_ = std::filesystem::exists(parent_.fileName()) &&
+                 std::filesystem::exists(ShapesFilename());
 }
 
 }  // namespace casacore
