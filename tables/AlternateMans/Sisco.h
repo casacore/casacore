@@ -246,7 +246,7 @@ inline constexpr BitFloat Predict(const BitFloat& previous2,
     if (!matched_p2) return BitFloat(0, value_exponent, false);
     std::optional<BitFloat> result = Match(previous1, value_exponent);
     if (!result) return BitFloat(0, value_exponent, false);
-    (*result) += *result;
+    (*result) *= 2;
     (*result) -= *matched_p2;
     return PredictThreshold(*result);
   }
