@@ -869,6 +869,22 @@ int main()
                 AlwaysAssert(maxPos.empty(), AipsError);
             }
         }
+        {
+            // CAS-14660; all pixels being incorrectly masked in certain cursor axes selection cases.
+            cout << "test CAS-14660" << endl;
+            Array<Float> largeArray(IPosition(4, 4300, 4300, 4, 117));
+            ArrayLattice<Float> myLatt(largeArray);
+            SubLattice<Float> mySubLatt(myLatt);
+            LatticeStatistics<Float> lattStats(mySubLatt);
+            Vector<Int> axes(3, 0);
+            axes[1] = 1;
+            axes[2] = 3;
+            lattStats.setAxes(axes);
+            Array<Double> npts;
+            lattStats.getStatistic(npts, LatticeStatsBase::NPTS);
+            cout << "npts shape " << npts.shape() << endl;
+            AlwaysAssert(npts.shape() == IPosition(1, 4) , AipsError);
+        }
     }
     catch (const std::exception& x) {
         cerr << "aipserror: error " << x.what() << endl;
