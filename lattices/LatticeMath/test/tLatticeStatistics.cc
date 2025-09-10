@@ -872,10 +872,16 @@ int main()
         {
             // CAS-14660; all pixels being incorrectly masked in certain cursor axes selection cases.
             cout << "test CAS-14660" << endl;
-            Array<Float> largeArray(IPosition(4, 4300, 4300, 4, 117));
-            ArrayLattice<Float> myLatt(largeArray);
-            SubLattice<Float> mySubLatt(myLatt);
-            LatticeStatistics<Float> lattStats(mySubLatt);
+            Array<Float> arr(IPosition(4, 1, 4300, 4, 117));
+            ArrayLattice<Float> myLatt(arr);
+            // SubLattice<Float> mySubLatt(myLatt);
+            ExtendLattice ext(
+                myLatt, IPosition(4, 4300, 4300, 4, 117), IPosition(), IPosition(1, 0)
+            );
+            cout << "myLatt shape " << myLatt.shape() << endl;
+            cout << "ext shape " << ext.shape() << endl;
+            //SubLattice<Float> mySubLatt(Lattice(ex);
+            LatticeStatistics<Float> lattStats(ext);
             Vector<Int> axes(3, 0);
             axes[1] = 1;
             axes[2] = 3;
