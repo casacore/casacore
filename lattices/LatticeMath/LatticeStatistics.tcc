@@ -2671,7 +2671,7 @@ Bool LatticeStatistics<T>::someGoodPoints ()
 
          for (pixelIterator.reset(); !pixelIterator.atEnd(); pixelIterator++) {
             for (Int i=0; i<n1; i++) {
-               if (Int(real(pixelIterator.matrixCursor()(i,NPTS))+0.1) > 0) {
+               if (uInt64(real(pixelIterator.matrixCursor()(i,NPTS))+0.1) > 0) {
                   someGoodPointsValue_p = True;
                   return someGoodPointsValue_p;
                }
