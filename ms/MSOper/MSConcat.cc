@@ -2167,9 +2167,25 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal,
     ScalarColumn<Int> spwCol(sysCal, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs=spwCol.getColumn();
+    Bool idsOK = True;
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
-      if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
-	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
+      if(newSPWIndex_p.find(spwIDs[k]) == newSPWIndex_p.end()){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN
+	 << "Found invalid spectral window ids in the SYSCAL table; the SYSCAL table will be emptied as it is inconsistent"
+	 << LogIO::POST;
+      RowNumbers rowtodel(sysCal.nrow());
+      indgen(rowtodel);
+      sysCal.removeRow(RowNumbers(rowtodel));
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
     }
   }
 
@@ -2319,9 +2335,25 @@ Bool MSConcat::copyGainCurve(const MeasurementSet& otherMS,
     ScalarColumn<Int> spwCol(gainCurve, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs=spwCol.getColumn();
+    Bool idsOK = True;
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
-      if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
-	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
+      if(newSPWIndex_p.find(spwIDs[k]) == newSPWIndex_p.end()){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN
+	 << "Found invalid spectral window ids in the GAIN_CURVE table; the GAIN_CURVE table will be emptied as it is inconsistent"
+	 << LogIO::POST;
+      RowNumbers rowtodel(gainCurve.nrow());
+      indgen(rowtodel);
+      gainCurve.removeRow(RowNumbers(rowtodel));
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
     }
   }
 
@@ -2399,9 +2431,25 @@ Bool MSConcat::copyPhaseCal(const MeasurementSet& otherMS,
     ScalarColumn<Int> spwCol(phaseCal, "SPECTRAL_WINDOW_ID");
     // check SPW IDs
     Vector<Int> spwIDs=spwCol.getColumn();
+    Bool idsOK = True;
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
-      if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
-	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
+      if(newSPWIndex_p.find(spwIDs[k]) == newSPWIndex_p.end()){
+	idsOK = False;
+	break;
+      }
+    }
+    if(!idsOK){
+      os << LogIO::WARN
+	 << "Found invalid spectral window ids in the PHASE_CAL table; the PHASE_CAL table will be emptied as it is inconsistent"
+	 << LogIO::POST;
+      RowNumbers rowtodel(phaseCal.nrow());
+      indgen(rowtodel);
+      phaseCal.removeRow(RowNumbers(rowtodel));
+      return False;
+    }
+
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
     }
   }
 
