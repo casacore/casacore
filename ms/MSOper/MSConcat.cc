@@ -2102,6 +2102,7 @@ Bool MSConcat::copyPointingB(MSPointing& otherPoint,const
 
 Bool MSConcat::copySysCal(const MSSysCal& otherSysCal,
 			  const Block<uInt>& newAntIndices){
+  // uses newSPWIndex_p; to be called after copySpwAndPol
 
   LogIO os(LogOrigin("MSConcat", "copySysCal"));
 
@@ -2157,6 +2158,18 @@ Bool MSConcat::copySysCal(const MSSysCal& otherSysCal,
 
     for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
       sysCalCol.antennaId().put(k, newAntIndices[antennaIDs[k]]);
+    }
+  }
+
+  //Now reassigning SPWs to the new indices of the SPECTRAL_WINDOW table
+
+  if(doSPW_p && rowToBeAdded > 0){
+    ScalarColumn<Int> spwCol(sysCal, "SPECTRAL_WINDOW_ID");
+    // check SPW IDs
+    Vector<Int> spwIDs=spwCol.getColumn();
+    for (Int k=origNRow; k < (origNRow+rowToBeAdded); ++k){
+      if(newSPWIndex_p.find(spwIDs[k]) != newSPWIndex_p.end())
+	spwCol.put(k, getMapValue(newSPWIndex_p, spwIDs[k]));
     }
   }
 
