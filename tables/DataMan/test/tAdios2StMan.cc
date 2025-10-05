@@ -279,7 +279,7 @@ void doReadCopiedTable(std::string filename, std::string column, uInt rows, IPos
     VerifyArrayColumn<Complex>(tab, column, rows, array_pos);
 }
 
-int main(int argc, char **argv){
+int main() {
 
 #ifdef HAVE_MPI
     MPI_Init(&argc,&argv);
