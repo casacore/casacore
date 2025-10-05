@@ -117,6 +117,11 @@ String Adios2StMan::dataManagerName() const
     return pimpl->dataManagerName();
 }
 
+void Adios2StMan::setDataManagerName(const String &aName)
+{
+    pimpl->setDataManagerName(aName);
+}
+
 void Adios2StMan::create64(rownr_t aNrRows)
 {
     pimpl->create64(aNrRows);
@@ -341,7 +346,7 @@ static Record to_record(const adios2::Params &params)
     return record;
 }
 
-DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
+DataManager *Adios2StMan::impl::makeObject(const String &aDataManName,
                                      const Record &spec)
 {
     std::string configFile;
@@ -376,12 +381,14 @@ DataManager *Adios2StMan::impl::makeObject(const String &/*aDataManType*/,
             operator_params.emplace_back(std::move(params));
         }
     }
-    return new Adios2StMan(
+    Adios2StMan *dtman = new Adios2StMan(
 #ifdef HAVE_MPI
             itsMpiComm,
 #endif
             engine, engine_params,
             transport_params, operator_params, configFile);
+    dtman->setDataManagerName(aDataManName);
+    return dtman;
 }
 
 Record Adios2StMan::impl::dataManagerSpec() const
@@ -427,7 +434,7 @@ Record Adios2StMan::impl::dataManagerSpec() const
 
 DataManager *Adios2StMan::impl::clone() const
 {
-    return new Adios2StMan(
+    auto *stman = new Adios2StMan(
 #ifdef HAVE_MPI
         itsMpiComm,
 #endif
@@ -437,6 +444,8 @@ DataManager *Adios2StMan::impl::clone() const
         itsAdiosOperatorParamsVec,
         itsAdiosConfigFile
     );
+    stman->setDataManagerName(itsDataManName);
+    return stman;
 }
 
 String Adios2StMan::impl::dataManagerType() const
@@ -594,6 +603,8 @@ Bool Adios2StMan::impl::flush(AipsIO &ios, Bool /*doFsync*/)
 }
 
 String Adios2StMan::impl::dataManagerName() const { return itsDataManName; }
+
+void Adios2StMan::impl::setDataManagerName(const String &aName) { itsDataManName = aName; }
 
 void register_adios2stman()
 {

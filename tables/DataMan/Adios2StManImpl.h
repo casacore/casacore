@@ -58,6 +58,7 @@ public:
     DataManager *clone() const;
     String dataManagerType() const;
     String dataManagerName() const;
+    void setDataManagerName(const String &aName);
     void create64(rownr_t aNrRows);
     rownr_t open64(rownr_t aRowNr, AipsIO &ios);
     rownr_t resync64(rownr_t aRowNr);
