@@ -23,7 +23,7 @@ RUN yum install -y flex cfitsio-devel blas-devel lapack-devel ncurses-devel read
 
 # download other source code
 WORKDIR /tmp
-RUN curl -L http://www.iausofa.org/2015_0209_F/sofa_f-20150209_a.tar.gz --output /tmp/sofa.tgz
+RUN curl -L http://www.iausofa.org/s/sofa_f-20231011tar.gz --output /tmp/sofa.tgz
 RUN curl -L https://www.astron.nl/iers/WSRT_Measures.ztar --output /tmp/measures.tgz
 RUN curl -L https://downloads.sourceforge.net/project/boost/boost/${BOOST}/boost_${BOOST_}.tar.bz2 --output /tmp/boost.tar.bz2
 
@@ -37,7 +37,7 @@ RUN tar zxvf /tmp/measures.tgz
 # install and configure sofa and measures
 WORKDIR /build
 RUN tar zxvf /tmp/sofa.tgz
-WORKDIR /build/sofa/20150209_a/f77/src
+WORKDIR /build/sofa/20231011/f77/src
 RUN make -j${THREADS}
 
 
