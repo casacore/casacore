@@ -75,6 +75,7 @@ public:
 
     virtual DataManager *clone() const;
     virtual String dataManagerType() const;
+    void setDataManagerName(const String &aName);
     virtual String dataManagerName() const;
     virtual void create64(rownr_t aNrRows);
     virtual rownr_t open64(rownr_t aRowNr, AipsIO &ios);
