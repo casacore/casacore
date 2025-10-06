@@ -72,7 +72,7 @@ class SiscoStManColumn final : public StManColumn {
           " dimensions, but it can only be used for "
           "columns with exactly 2 dimensions");
     }
-    current_shape_ = shape;
+    // This call is ignored; shape will always be determined from array size.
   }
 
   /** Get the dimensions of the values in a particular row.
@@ -87,7 +87,7 @@ class SiscoStManColumn final : public StManColumn {
       while (current_row_ < row) {
         SkipRow();
       }
-      return current_shape_;
+      return shape_buffer_[shape_read_position_];
     }
   }
   IPosition shape(unsigned row) final {
@@ -109,13 +109,11 @@ class SiscoStManColumn final : public StManColumn {
       SkipRow();
     }
 
-    const int field_id = field_id_column_(current_row_);
-    const int data_desc_id = data_desc_id_column_(current_row_);
-    const int antenna1 = antenna1_column_(current_row_);
-    const int antenna2 = antenna2_column_(current_row_);
-    if (current_shape_.size() >= 2) {
-      const int n_polarizations = current_shape_[0];
-      const size_t n_channels = current_shape_[1];
+    const IPosition &shape = shape_buffer_[shape_read_position_];
+    shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
+    if (shape.size() >= 2) {
+      const int n_polarizations = shape[0];
+      const size_t n_channels = shape[1];
 
       if (n_channels) {
         bool ownership;
@@ -123,9 +121,7 @@ class SiscoStManColumn final : public StManColumn {
         buffer_.resize(n_channels);
         for (int polarization = 0; polarization != n_polarizations;
              ++polarization) {
-          const size_t baseline_id = GetBaselineId(
-              field_id, data_desc_id, antenna1, antenna2, polarization);
-          reader_->Read(baseline_id, buffer_);
+          reader_->GetNextResult(buffer_);
           for (size_t channel = 0; channel != n_channels; ++channel) {
             storage[channel * n_polarizations + polarization] =
                 buffer_[channel];
@@ -135,7 +131,7 @@ class SiscoStManColumn final : public StManColumn {
       }
     }
 
-    current_shape_ = shapes_reader_->Read();
+    RequestOneMoreRow();
     ++current_row_;
   }
 
@@ -180,9 +176,8 @@ class SiscoStManColumn final : public StManColumn {
       }
     }
 
-    current_shape_ = array.shape();
     ++current_row_;
-    shapes_writer_->Write(current_shape_);
+    shapes_writer_->Write(array.shape());
   }
 
   void Prepare();
@@ -216,7 +211,6 @@ class SiscoStManColumn final : public StManColumn {
     shapes_writer_.emplace(ShapesFilename());
 
     current_row_ = 0;
-    current_shape_ = IPosition();
     baseline_ids_.clear();
     baseline_count_ = 0;
   }
@@ -239,9 +233,39 @@ class SiscoStManColumn final : public StManColumn {
     shapes_reader_.emplace(ShapesFilename());
 
     current_row_ = 0;
-    current_shape_ = shapes_reader_->Read();
     baseline_ids_.clear();
     baseline_count_ = 0;
+    // Always request half of the requests that fit in the buffer of
+    // SiscoReader, so that SiscoReader can preprocess requests using multiple
+    // threads. Every time a row is read/skipped, another row is requested.
+    shape_buffer_.resize(reader_->GetRequestBufferSize() / 2);
+    shape_read_position_ = 0;
+    shape_write_position_ = 0;
+    current_shape_reading_row_ = 0;
+    for (size_t i = 0; i != shape_buffer_.size(); ++i) {
+      RequestOneMoreRow();
+    }
+  }
+
+  void RequestOneMoreRow() {
+    const casacore::IPosition shape = shapes_reader_->Read();
+    if (!shapes_reader_->Eof() && shape.size() >= 2) {
+      const int field_id = field_id_column_(current_shape_reading_row_);
+      const int data_desc_id = data_desc_id_column_(current_shape_reading_row_);
+      const int antenna1 = antenna1_column_(current_shape_reading_row_);
+      const int antenna2 = antenna2_column_(current_shape_reading_row_);
+      const int n_polarizations = shape[0];
+      const int n_channels = shape[1];
+      for (int polarization = 0; polarization != n_polarizations;
+           ++polarization) {
+        const size_t baseline_id = GetBaselineId(
+            field_id, data_desc_id, antenna1, antenna2, polarization);
+        reader_->Request(baseline_id, n_channels);
+      }
+    }
+    shape_buffer_[shape_write_position_] = shape;
+    shape_write_position_ = (shape_write_position_ + 1) % shape_buffer_.size();
+    current_shape_reading_row_++;
   }
 
   size_t GetBaselineId(int field_id, int data_desc_id, int antenna1,
@@ -267,24 +291,20 @@ class SiscoStManColumn final : public StManColumn {
   }
 
   void SkipRow() {
-    const int field_id = field_id_column_(current_row_);
-    const int data_desc_id = data_desc_id_column_(current_row_);
-    const int antenna1 = antenna1_column_(current_row_);
-    const int antenna2 = antenna2_column_(current_row_);
-    if (current_shape_.size() >= 2) {
-      const int n_polarizations = current_shape_[0];
-      const int n_channels = current_shape_[1];
+    const casacore::IPosition &shape = shape_buffer_[shape_read_position_];
+    shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
+    if (shape.size() >= 2) {
+      const int n_polarizations = shape[0];
+      const int n_channels = shape[1];
       if (n_channels) {
         buffer_.resize(n_channels);
         for (int polarization = 0; polarization != n_polarizations;
              ++polarization) {
-          const size_t baseline_id = GetBaselineId(
-              field_id, data_desc_id, antenna1, antenna2, polarization);
-          reader_->Read(baseline_id, buffer_);
+          reader_->GetNextResult(buffer_);
         }
       }
     }
-    current_shape_ = shapes_reader_->Read();
+    RequestOneMoreRow();
     ++current_row_;
   }
 
@@ -305,9 +325,13 @@ class SiscoStManColumn final : public StManColumn {
   std::optional<sisco::SiscoReader> reader_;
   std::optional<ShapesFileWriter> shapes_writer_;
   std::optional<ShapesFileReader> shapes_reader_;
+  // A circular buffer to store the already read shapes
+  std::vector<IPosition> shape_buffer_;
+  size_t shape_read_position_ = 0;
+  size_t shape_write_position_ = 0;
+  rownr_t current_shape_reading_row_ = 0;
   rownr_t current_row_ = 0;
   std::vector<std::complex<float>> buffer_;
-  IPosition current_shape_;
   std::map<std::array<int, 5>, size_t> baseline_ids_;
   size_t baseline_count_;
   bool file_exists_ = false;

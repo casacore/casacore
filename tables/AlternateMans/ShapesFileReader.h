@@ -29,6 +29,8 @@ class ShapesFileReader {
     return result;
   }
 
+  bool Eof() const { return file_.eof(); }
+
  private:
   void FillCache() {
     uint32_t uncompressed_size;

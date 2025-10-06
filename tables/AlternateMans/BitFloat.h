@@ -163,6 +163,15 @@ class BitFloat {
   }
 
   /**
+   * Divides the value by an integer factor. The exponent is not changed, and
+   * overflow or special values aren't checked for.
+   */
+  constexpr BitFloat& operator/=(unsigned factor) {
+    mantissa_ /= factor;
+    return *this;
+  }
+
+  /**
    * Compose this value back into a single-precision floating point value. Since
    * this class allows storing unnormalized floating point values, this function
    * normalizes the value if necessary. If the original value represented a
