@@ -8,6 +8,7 @@ set (testfiles
 if(BUILD_SISCO)
   set(testfiles ${testfiles}
     tBitFloat.cc
+    tConditionalQueue.cc
     tDeflate.cc
     tShapesFile.cc
     tSisco.cc

@@ -196,6 +196,20 @@ BOOST_AUTO_TEST_CASE(compress_1d) {
   }
 }
 
+BOOST_AUTO_TEST_CASE(average_predict) {
+  constexpr BitFloat a(0.0f);
+  constexpr BitFloat b(2.0f);
+  constexpr BitFloat c(4.0f);
+  constexpr BitFloat d(-4.0f);
+  // Since a is zero, it will be discarded
+  constexpr BitFloat result1 = AveragePredict(a, b, b.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result1.ToFloat(), 2.0f, 1e-5);
+  constexpr BitFloat result2 = AveragePredict(c, b, b.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result2.ToFloat(), 3.0f, 1e-5);
+  constexpr BitFloat result3 = AveragePredict(c, d, c.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result3.ToFloat(), 0.0f, 1e-5);
+}
+
 BOOST_AUTO_TEST_CASE(quadratic_compress_1d) {
   std::vector<std::byte> mantissa(4);
   std::vector<std::byte> exponent(1);
@@ -204,6 +218,44 @@ BOOST_AUTO_TEST_CASE(quadratic_compress_1d) {
   std::vector<BitFloat> result(1);
   QuadraticDecompress1D(mantissa, exponent, result);
   BOOST_CHECK_EQUAL(result[0].ToFloat(), 1.0f);
+}
+
+BOOST_AUTO_TEST_CASE(linear_predict_from_3) {
+  constexpr BitFloat y3(0.0f);
+  constexpr BitFloat y2(2.0f);
+  constexpr BitFloat y1(4.0f);
+  constexpr BitFloat result1 = LinearPredict(y3, y2, y1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result1.ToFloat(), 6.0f, 1e-5);
+  constexpr BitFloat result2 = LinearPredict(y1, y1, y1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result2.ToFloat(), 4.0f, 1e-5);
+  constexpr BitFloat result3 = LinearPredict(y2, y2, y1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result3.ToFloat(), 4.0f + 2.0f/3.0f, 1e-5);
+
+  constexpr BitFloat z3(-4.0f);
+  constexpr BitFloat z2(-3.0f);
+  constexpr BitFloat z1(-2.0f);
+  constexpr BitFloat result4 = LinearPredict(z3, z2, z1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result4.ToFloat(), -1.0f, 1e-5);
+  constexpr BitFloat result5 = LinearPredict(z1, z1, z1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result5.ToFloat(), -2.0f, 1e-5);
+  constexpr BitFloat result6 = LinearPredict(z1, y2, z1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result6.ToFloat(), -2.0f/3.0f, 1e-5);
+}
+
+BOOST_AUTO_TEST_CASE(quadratic_predict_from_4) {
+  constexpr BitFloat y4(1.0f);
+  constexpr BitFloat y3(2.0f);
+  constexpr BitFloat y2(3.0f);
+  constexpr BitFloat y1(4.0f);
+  constexpr BitFloat result1 = QuadraticPredict(y4, y3, y2, y1, y1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result1.ToFloat(), 5.0f, 1e-5);
+
+  constexpr BitFloat z4(-1.0f);
+  constexpr BitFloat z3(-4.0f);
+  constexpr BitFloat z2(-9.0f);
+  constexpr BitFloat z1(-16.0f);
+  constexpr BitFloat result2 = QuadraticPredict(z4, z3, z2, z1, z1.Exponent());
+  BOOST_CHECK_CLOSE_FRACTION(result2.ToFloat(), -25.0f, 1e-5);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
