@@ -489,7 +489,6 @@ rownr_t Adios2StMan::impl::open64(rownr_t aNrRows, AipsIO &ios)
       ios >> dummy;
     }
     ios.getend();
-    itsRows = aNrRows;
     return itsRows;
 }
 
