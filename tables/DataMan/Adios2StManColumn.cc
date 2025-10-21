@@ -248,46 +248,56 @@ void Adios2StManColumn::putScalarColumnCellsV(const RefRows &rownrs, const Array
     toAdios(&data);
 }
 
+Adios2StManColumn::ArrayColumnCellsVIter::ArrayColumnCellsVIter(Adios2StManColumn &column, const RefRows &rownrs)
+ : itsColumn(column),
+   itsRowsSliceIter(rownrs)
+{
+    column.itsAdiosStart[0] = 0;
+    column.itsAdiosCount[0] = 0;
+    for (size_t i = 1; i < column.itsAdiosShape.size(); ++i) {
+        column.itsAdiosStart[i] = 0;
+        column.itsAdiosCount[i] = column.itsAdiosShape[i];
+    }
+}
+
+bool Adios2StManColumn::ArrayColumnCellsVIter::finished() const
+{
+    return itsRowsSliceIter.pastEnd();
+}
+
+std::size_t Adios2StManColumn::ArrayColumnCellsVIter::next_offset()
+{
+    if (itsRowsSliceIter.pastEnd()) {
+        throw std::runtime_error("Adios2StManColumn::ArrayColumnCellsViter");
+    }
+    // adjust user offset _before_ we adjust itsAdiosCount in the column
+    itsOffset += itsColumn.itsAdiosCount[0] * itsColumn.itsCasaShape.product();
+    auto row_start = itsRowsSliceIter.sliceStart();
+    auto row_end = itsRowsSliceIter.sliceEnd();
+    itsColumn.itsAdiosStart[0] = row_start;
+    itsColumn.itsAdiosCount[0] = row_end - row_start + 1;
+    itsRowsSliceIter.next();
+    return itsOffset;
+}
+
 void Adios2StManColumn::putArrayColumnCellsV (const RefRows& rownrs, const ArrayBase& data)
 {
-    if(rownrs.isSliced())
-    {
-        rownrs.convert();
-    }
     Bool deleteIt;
     const void *dataPtr = data.getVStorage(deleteIt);
-    itsAdiosCount[0] = 1;
-    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-    {
-        itsAdiosStart[i] = 0;
-        itsAdiosCount[i] = itsAdiosShape[i];
-    }
-    for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
-    {
-        itsAdiosStart[0] = rownrs.rowVector()[i];
-        toAdios(dataPtr, i * itsCasaShape.nelements());
+    ArrayColumnCellsVIter iter(*this, rownrs);
+    while (!iter.finished()) {
+        toAdios(dataPtr, iter.next_offset());
     }
     data.freeVStorage(dataPtr, deleteIt);
 }
 
 void Adios2StManColumn::getArrayColumnCellsV (const RefRows& rownrs, ArrayBase &data)
 {
-    if(rownrs.isSliced())
-    {
-        rownrs.convert();
-    }
     Bool deleteIt;
     void *dataPtr = data.getVStorage(deleteIt);
-    itsAdiosCount[0] = 1;
-    for (size_t i = 1; i < itsAdiosShape.size(); ++i)
-    {
-        itsAdiosStart[i] = 0;
-        itsAdiosCount[i] = itsAdiosShape[i];
-    }
-    for(uInt i = 0; i < rownrs.rowVector().size(); ++i)
-    {
-        itsAdiosStart[0] = rownrs.rowVector()[i];
-        fromAdios(dataPtr, i * itsCasaShape.nelements());
+    ArrayColumnCellsVIter iter(*this, rownrs);
+    while (!iter.finished()) {
+        fromAdios(dataPtr, iter.next_offset());
     }
     data.putVStorage(dataPtr, deleteIt);
 }
