@@ -119,6 +119,30 @@ private:
 
 
 protected:
+
+    /// Iterates over a RefRows object, adjusting an Adios2StManColumn's
+    /// adios variable selection to cover the required table rows (and the full cell)
+    /// while also calculating the offset into a given user-provided array where data
+    /// corresponding to such rows should be written into or read from.
+    class ArrayColumnCellsVIter
+    {
+    public:
+        ArrayColumnCellsVIter(Adios2StManColumn &column, const RefRows &rownrs);
+
+        /// Whether there are more rows to go through
+        bool finished() const;
+
+        /// Adjusts the Adios2StManColumn's adios variable selection to cover the next
+        /// set of rows, returning the offset into the user-provided array that corresponds
+        /// to that selection.
+        std::size_t next_offset();
+
+    private:
+        Adios2StManColumn &itsColumn;
+        RefRowsSliceIter itsRowsSliceIter;
+        std::size_t itsOffset {0};
+    };
+
     void scalarToSelection(rownr_t rownr);
     void scalarColumnVToSelection();
     void scalarColumnCellsVToSelection(const RefRows &rownrs);
