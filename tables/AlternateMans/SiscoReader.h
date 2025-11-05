@@ -79,7 +79,7 @@ class SiscoReader {
   struct Result {
     std::vector<float> real_data;
     std::vector<float> imaginary_data;
-    size_t result_index;
+    size_t result_index = 0;
     bool operator<(const Result& rhs) const {
       return result_index < rhs.result_index;
     }
