@@ -230,12 +230,12 @@ class SiscoStManColumn final : public StManColumn {
                 reinterpret_cast<char *>(&version_major));
     std::copy_n(&header_buffer[kMagicSize + 2], 2,
                 reinterpret_cast<char *>(&version_minor));
-    if (version_major != kMajorVersion) {
+    if (version_major != kVersionMajor) {
       throw std::runtime_error(
           "The file on disk is written as a Sisco version " +
           std::to_string(version_major) +
           " file, whereas this Casacore version supports only version " +
-          std::to_string(kMajorVersion));
+          std::to_string(kVersionMajor));
     }
     shapes_reader_.emplace(ShapesFilename());
 
