@@ -1,4 +1,4 @@
-#include "../DataManagers/ConditionalQueue.h"
+#include <casacore/tables/AlternateMans/ConditionalQueue.h>
 
 #include <boost/test/unit_test.hpp>
 
