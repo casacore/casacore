@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.14.0)
 
-project(casacore VERSION 3.7.1)
+project(casacore VERSION 3.8.0)
 
 include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
@@ -24,7 +24,7 @@ if (POLICY CMP0094)
 endif()
 
 # Increment the PROJECT_SOVERSION every time you update VERSION_MINOR!
-SET(PROJECT_SOVERSION 8)
+SET(PROJECT_SOVERSION 9)
 
 SET(NO_SOVERSION FALSE CACHE BOOL "do not add version information to shared libraries")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")

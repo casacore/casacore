@@ -1,3 +1,23 @@
+# 3.8.0
+
+## General
+
+- Updates for compatibility with more recent compiler versions: #1418, #1419, #1435
+- Updates related to measures data tarball: #1413, #1429, #1411
+- Improvements to thread safety, particularly in Measures: #1421, #1422, #1423,  #1425, #1426, #1430, #1424, #1431
+- Improvements to MSConcat: #1433, #1443
+- Fix math within FFTServer for non-integer shifts: #1282
+- Avoid overflow in LatticeStatistics: #1441
+- Various small improvements: #1428, #1437, #1444, #1445, #1412
+
+## Storage manager related
+
+- Fix an indexing bug in DataManInfo::removeDminfoColumns: #1410
+- Allow MPI data updates to tiled column data: #1308
+- New storage manager named Sisco for (simulated) data without noise: #1436, #1438, #1439, #1446, #1447
+- Improve metadata compression: #1409
+
+
 # 3.7.1
 
 - Fix an issue in 'Stokes I Storage manager' when used on boolean columns (flag column): #1407
@@ -12,7 +32,7 @@
 - Improvements to FITS-IDI / MSFits conversions #1370, #1373, #1384, #1386
 - Switch to C++17 and use some of its features #1346
 
-# # General
+## General
 - Solved various issues with newer compilers and boost versions #1365, #1374, #1377, #1379, #1401
 - Fixed memory issues #1391, #1402
 - Build system improvements #1368, #1357, #1375, #1376
