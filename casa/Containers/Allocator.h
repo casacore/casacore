@@ -32,6 +32,7 @@
 #include <casacore/casa/Utilities/DataType.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 
+#include <cstddef>
 #include <cstdlib>
 #include <memory>
 #include <new>
