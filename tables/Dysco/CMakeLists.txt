@@ -36,12 +36,12 @@ add_library(dyscostman-object OBJECT
 	threadeddyscocolumn.cc
 	rftimeblockencoder.cc
 	rowtimeblockencoder.cc)
-set_property(TARGET dyscostman-object PROPERTY POSITION_INDEPENDENT_CODE 1) 
+set_property(TARGET dyscostman-object PROPERTY POSITION_INDEPENDENT_CODE 1)
 
 set(DYSCOSTMAN_SOURCES $<TARGET_OBJECTS:dyscostman-object> PARENT_SCOPE)
 set(DYSCOSTMAN_LIBRARIES ${GSL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} PARENT_SCOPE)
 if(BUILD_TESTING)
-  find_package(Boost 1.72 COMPONENTS system filesystem unit_test_framework)
+  find_package(Boost 1.72 COMPONENTS filesystem unit_test_framework)
   if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIR})
     add_executable(tDysco
