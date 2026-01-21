@@ -565,6 +565,12 @@ foreach (module ${_modules})
     set(PRIVATE_LIBS "${PRIVATE_LIBS} -lcasa_${module}")
 endforeach (module)
 
+if (CASA_BUILD)
+    if (APPLE)
+        set(PRIVATE_LIBS "${PRIVATE_LIBS} -framework Accelerate -lm -ldl -Wl,-rpath,/opt/local/lib/libgcc/")
+    endif (APPLE)
+endif (CASA_BUILD)
+
 # Install pkg-config support file
 CONFIGURE_FILE("casacore.pc.in" "casacore.pc" @ONLY)
 set(CASA_PKGCONFIG_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig")
