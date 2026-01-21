@@ -79,7 +79,7 @@
   { \
     Table tab(table); \
     if (! keepTable) { \
-      tab = Table("tStMan_tmp.data", Table::Update); \
+      tab = Table("tStManAll_tmp.data", Table::Update); \
     } \
     ExecFunc(funcName, tab, String()); \
   } \
@@ -565,7 +565,7 @@ void bindVirtual (SetupNewTable& newtab, const String& name)
 }
 
 // Create a new table and fill a few cells with an empty array.
-// An empty table name defaults to tStMan_tmp.data.
+// An empty table name defaults to tStManAll_tmp.data.
 Table maketab (uInt nrrow, const DataManager& stman, Bool tiled,
                const String& tabName=String(), Bool addVirtual=False)
 {
@@ -585,7 +585,7 @@ Table maketab (uInt nrrow, const DataManager& stman, Bool tiled,
   addColDesc<String> (td, "sv", addVirtual);           // variable length string
   addColDesc<String> (td, "sf", addVirtual, 40);       // fixed length string
   // Now create a new table from the description.
-  String tname(tabName.empty() ? "tStMan_tmp.data" : tabName);
+  String tname(tabName.empty() ? "tStManAll_tmp.data" : tabName);
   SetupNewTable newtab(tname, td, Table::New);
   // Bind all columns to the storage manager and set the fixed shapes.
   newtab.bindAll (stman);
@@ -676,7 +676,7 @@ void checknewtab (const Table& table, uInt nrrow, Bool tiled)
 {
   Table tab(table);
   if (tab.isNull()) {
-    tab = Table("tStMan_tmp.data");
+    tab = Table("tStManAll_tmp.data");
   }
   AlwaysAssertExit (tab.nrow() == nrrow);
   // Make a subset of all except the last row, because the float and DComplex
@@ -711,7 +711,7 @@ void checktab (const Table& table)
 {
   Table tab(table);
   if (tab.isNull()) {
-    tab = Table("tStMan_tmp.data");
+    tab = Table("tStManAll_tmp.data");
   }
   ExecFunc(checkAll, tab, String());
 }
@@ -797,7 +797,7 @@ int main (int argc, const char* argv[])
       cout << "Testing ForwardColumnEngine ..." << endl;
       // Test ForwardColumn.
       StandardStMan stman(2000);
-      Table tab = maketab (nrrow, stman, False, "tStMan_tmp.datafc");
+      Table tab = maketab (nrrow, stman, False, "tStManAll_tmp.datafc");
       ForwardColumnEngine dataman(tab, "forwardcolumn");
       doTest (nrrow, dataman, True, False);
     }

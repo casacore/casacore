@@ -31,6 +31,7 @@
 #include <casacore/tables/Tables/ScalarColumn.h>
 #include <casacore/tables/Tables/ArrayColumn.h>
 #include <casacore/tables/DataMan/TiledColumnStMan.h>
+#include <casacore/tables/DataMan/StandardStMan.h>
 #include <casacore/tables/DataMan/TiledStManAccessor.h>
 #include <casacore/casa/Containers/Record.h>
 #include <casacore/casa/Arrays/Vector.h>
@@ -47,6 +48,9 @@
 #include <casacore/casa/iostream.h>
 
 #include <casacore/casa/namespace.h>
+
+rownr_t NROW = 551;
+
 // <summary>
 // Test program for the TiledColumnStMan class.
 // </summary>
@@ -55,19 +59,29 @@
 // The results are written to stdout. The script executing this program,
 // compares the results with the reference output file.
 
-void writeFixed(const TSMOption&);
-void readTable(const TSMOption&, Bool readKeys);
+void writeFixed(const TSMOption&, const IPosition&);
+void readTable(const TSMOption&, Bool readKeys, const IPosition&);
 void writeNoHyper(const TSMOption&);
 void extendOnly(const TSMOption&);
 
 int main () {
     try {
-        writeFixed(TSMOption::Cache);
-	readTable(TSMOption::MMap, True);
+      {
+        IPosition rowShape(2,13,10);
+        writeFixed(TSMOption::Cache, rowShape);
+	readTable(TSMOption::MMap, True, rowShape);
+      }
+      {
+        IPosition rowShape(3,13,15,0);
+        writeFixed(TSMOption::Cache, rowShape);
+	readTable(TSMOption::MMap, True, rowShape);
+      }
+        writeFixed(TSMOption::Cache, IPosition(1,0));
+	readTable(TSMOption::Cache, True, IPosition());
 	writeNoHyper(TSMOption::MMap);
-	readTable(TSMOption::Buffer, False);
-        writeFixed(TSMOption::Buffer);
-	readTable(TSMOption::Cache, False);
+	readTable(TSMOption::Buffer, False, IPosition());
+        writeFixed(TSMOption::Buffer, IPosition(1,0));
+	readTable(TSMOption::Cache, False, IPosition());
         extendOnly(TSMOption::Cache);
     } catch (std::exception& x) {
 	cout << "Caught an exception: " << x.what() << endl;
@@ -76,60 +90,113 @@ int main () {
     return 0;                           // exit with success status
 }
 
-// First build a description.
-void writeFixed(const TSMOption& tsmOpt)
+
+void incrXYZ (float& x, float& y, float& z, uInt rownr, const IPosition& rowShape)
 {
+  if (rownr == 0) {
+    // Initialize at first time.
+    x = 34;
+    y = 3;
+    z = -2;
+  } else {
+    x += 5;
+    if (rowShape.size() <= 1) {
+      // No hypercube, so normal increment.
+      y += -2;
+      z += 0.5;
+    } else {
+      // hypercube, so X repeats every n rows and Y increments after n rows.
+      if (rownr % rowShape[0] == 0) {
+        x = 34;
+        y += -2;
+        // Same logic for Z.
+        if (rowShape.size() == 2) {
+          z += 0.5;
+        } else {
+          if (rownr % (rowShape[0]*rowShape[1]) == 0) {
+            y = 3;
+            z += 0.5;
+          }
+        }
+      }
+    }
+  }
+}
+  
+// First build a description.
+void writeFixed(const TSMOption& tsmOpt, const IPosition& rowShape)
+{
+  cout << endl << "Test writeFixed " << rowShape << endl;
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
     td.addColumn (ArrayColumnDesc<float>  ("Pol", IPosition(1,16),
 					   ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1, ColumnDesc::FixedShape));
-    td.addColumn (ScalarColumnDesc<float> ("Time"));
+    td.addColumn (ScalarColumnDesc<float> ("X"));
+    td.addColumn (ScalarColumnDesc<float> ("Y"));
+    td.addColumn (ScalarColumnDesc<float> ("Z"));
     td.addColumn (ArrayColumnDesc<float>  ("Data", 2, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,20),
 					   ColumnDesc::FixedShape));
+    Vector<String> allCoords (stringToVector("Pol,Freq,X,Y,Z"));
     td.defineHypercolumn ("TSMExample",
-			  3,
+			  rowShape.size() + 2,
 			  stringToVector ("Data,Weight"),
-			  stringToVector ("Pol,Freq,Time"));
+                          allCoords(Slice(0, rowShape.size()+2)));
     
     // Now create a new table from the description.
     SetupNewTable newtab("tTiledColumnStMan_tmp.data", td, Table::New);
-    // Create a storage manager for it.
-    TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,1));
+    // Create a storage manager for it. First fill the tile shape.
+    IPosition tileShape(2 + rowShape.size());
+    tileShape[0] = 5;
+    tileShape[1] = 6;
+    for (uInt i=0; i<rowShape.size(); ++i) {
+      tileShape[i+2] = rowShape[i] / (i+2);
+      if (tileShape[i+2] <= 0) tileShape[i+2] = 1;
+    }
+    TiledColumnStMan sm1 ("TSMExample", tileShape, rowShape);
     newtab.setShapeColumn ("Freq", IPosition(1,20));
     newtab.setShapeColumn ("Data", IPosition(2,16,20));
     newtab.bindAll (sm1);
+    StandardStMan ssm;
+    if (tileShape.size() < 5) newtab.bindColumn ("Z", ssm);
+    if (tileShape.size() < 4) newtab.bindColumn ("Y", ssm);
     Table table(newtab, 0, False, Table::LittleEndian, tsmOpt);
 
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
     indgen (freqValues, float(200));
     indgen (polValues, float(300));
-    float timeValue;
-    timeValue = 34;
+    float xValue = 0;
+    float yValue = 0;
+    float zValue = 0;
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<float> data (table, "Data");
     ArrayColumn<float> weight (table, "Weight");
-    ScalarColumn<float> time (table, "Time");
+    ScalarColumn<float> x (table, "X");
+    ScalarColumn<float> y (table, "Y");
+    ScalarColumn<float> z (table, "Z");
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
     uInt i;
     indgen (array);
-    for (i=0; i<51; i++) {
+    for (i=0; i<NROW; i++) {
+        incrXYZ (xValue, yValue, zValue, i, rowShape);
 	table.addRow();
 	data.put (i, array);
 	weight.put (i, array+float(100));
-	time.put (i, timeValue);
+	x.put (i, xValue);
+	y.put (i, yValue);
+	z.put (i, zValue);
 	array += float(200);
-	timeValue += 5;
     }
     freq.put (0, freqValues);
     pol.put (0, polValues);
-    timeValue = 34;
+    // Now read it back and check it.
     indgen (array);
     for (i=0; i<table.nrow(); i++) {
+        incrXYZ (xValue, yValue, zValue, i, rowShape);
 	data.get (i, result);
 	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
@@ -144,45 +211,53 @@ void writeFixed(const TSMOption& tsmOpt)
 	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
-	if (time(i) != timeValue) {
-	    cout << "mismatch in time row " << i << endl;
+	if (x(i) != xValue) {
+	    cout << "mismatch in X row " << i << endl;
+	}
+	if (y(i) != yValue) {
+	    cout << "mismatch in Y row " << i << endl;
+	}
+	if (z(i) != zValue) {
+	    cout << "mismatch in Z row " << i << endl;
 	}
 	array += float(200);
-	timeValue += 5;
     }
     ROTiledStManAccessor accessor (table, "TSMExample");
     accessor.showCacheStatistics (cout);
+    cout << "hypercubeShape = " << accessor.getHypercubeShape(0) << endl;
+    cout << "tileShape = " << accessor.getTileShape(0) << endl;
     AlwaysAssertExit (accessor.nhypercubes() == 1);
-    AlwaysAssertExit (accessor.hypercubeShape(2) == IPosition(3,16,20,
-							      table.nrow()));
-    AlwaysAssertExit (accessor.tileShape(2) == IPosition(3,5,6,1));
-    AlwaysAssertExit (accessor.getHypercubeShape(0) == IPosition(3,16,20,
-								table.nrow()));
-    AlwaysAssertExit (accessor.getTileShape(0) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.hypercubeShape(2) == accessor.getHypercubeShape(0));
+    AlwaysAssertExit (accessor.tileShape(2) == accessor.getTileShape(0));
     AlwaysAssertExit (accessor.getBucketSize(0) == accessor.bucketSize(2));
     AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
 
-void readTable (const TSMOption& tsmOpt, Bool readKeys)
+void readTable (const TSMOption& tsmOpt, Bool readKeys, const IPosition& rowShape)
 {
-  Table table("tTiledColumnStMan_tmp.data", Table::Old, tsmOpt);
+    cout << endl << "Test readTable " << rowShape << endl;
+    Table table("tTiledColumnStMan_tmp.data", Table::Old, tsmOpt);
     ROTiledStManAccessor accessor (table, "TSMExample");
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<float> data (table, "Data");
     ArrayColumn<float> weight (table, "Weight");
-    ScalarColumn<float> time (table, "Time");
+    ScalarColumn<float> x (table, "X");
+    ScalarColumn<float> y (table, "Y");
+    ScalarColumn<float> z (table, "Z");
     Vector<float> freqValues(20);
     Vector<float> polValues(16);
     indgen (freqValues, float(200));
     indgen (polValues, float(300));
-    float timeValue;
-    timeValue = 34;
+    float xValue = 0;
+    float yValue = 0;
+    float zValue = 0;
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
     uInt i;
     indgen (array);
     for (i=0; i<table.nrow(); i++) {
+        incrXYZ (xValue, yValue, zValue, i, rowShape);
 	data.get (i, result);
 	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
@@ -197,11 +272,16 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
-	if (time(i) != timeValue) {
-	    cout << "mismatch in time row " << i << endl;
+	if (x(i) != xValue) {
+	    cout << "mismatch in X row " << i << endl;
+	}
+	if (y(i) != yValue) {
+	    cout << "mismatch in Y row " << i << endl;
+	}
+	if (z(i) != zValue) {
+	    cout << "mismatch in Z row " << i << endl;
 	}
 	array += float(200);
-	timeValue += 5;
     }
     accessor.showCacheStatistics (cout);
     accessor.clearCaches();
@@ -210,8 +290,13 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 			       freqValues));
       AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Pol"),
 			       polValues));
-      AlwaysAssertExit (allEQ (accessor.getValueRecord(0).asArrayFloat("Time"),
-			       time.getColumn()));
+      if (rowShape.size() > 1) {
+        cout << "X = " << accessor.getValueRecord(0).asArrayFloat("X") << endl;
+      }
+      if (rowShape.size() > 2) {
+        cout << "Y = " << accessor.getValueRecord(0).asArrayFloat("Y") << endl;
+        cout << "Z = " << accessor.getValueRecord(0).asArrayFloat("Z") << endl;
+      }
     }
     cout << "get's have been done" << endl;
 
@@ -220,7 +305,7 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
     {
 	Array<float> result;
 	data.getColumn (result);
-	if (result.shape() != IPosition (3,16,20,51)) {
+	if (result.shape() != IPosition (3,16,20,NROW)) {
 	    cout << "shape of getColumn result is incorrect" << endl;
 	}else{
 	    indgen (array);
@@ -243,8 +328,8 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
     // Get slices in the entire column.
     {
 	uInt i, j;
-	Cube<float> array(1,1,51);
-	for (i=0; i<51; i++) {
+	Cube<float> array(1,1,NROW);
+	for (i=0; i<NROW; i++) {
 	    array(0,0,i) = 200*i;
 	}
 	Array<float> result;
@@ -266,8 +351,8 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
     // Get strided slices in the entire column.
     {
 	uInt i, j;
-	Cube<float> array(2,2,51);
-	for (i=0; i<51; i++) {
+	Cube<float> array(2,2,NROW);
+	for (i=0; i<NROW; i++) {
 	    array(0,0,i) = 200*i;
 	    array(1,0,i) = 200*i + 16/2;
 	    array(0,1,i) = 200*i + 16*20/2;
@@ -360,12 +445,15 @@ void readTable (const TSMOption& tsmOpt, Bool readKeys)
 // First build a description.
 void writeNoHyper(const TSMOption& tsmOpt)
 {
+    cout << endl << "Test writeNoHyper " << endl;
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
     td.addColumn (ArrayColumnDesc<float>  ("Pol", IPosition(1,16),
 					   ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Freq", 1, ColumnDesc::FixedShape));
-    td.addColumn (ScalarColumnDesc<float> ("Time"));
+    td.addColumn (ScalarColumnDesc<float> ("X"));
+    td.addColumn (ScalarColumnDesc<float> ("Y"));
+    td.addColumn (ScalarColumnDesc<float> ("Z"));
     td.addColumn (ArrayColumnDesc<float>  ("Data", 2, ColumnDesc::FixedShape));
     td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,20),
 					   ColumnDesc::FixedShape));
@@ -384,30 +472,35 @@ void writeNoHyper(const TSMOption& tsmOpt)
     Vector<float> polValues(16);
     indgen (freqValues, float(200));
     indgen (polValues, float(300));
-    float timeValue;
-    timeValue = 34;
+    float xValue = 0;
+    float yValue = 0;
+    float zValue = 0;
     ArrayColumn<float> freq (table, "Freq");
     ArrayColumn<float> pol (table, "Pol");
     ArrayColumn<float> data (table, "Data");
     ArrayColumn<float> weight (table, "Weight");
-    ScalarColumn<float> time (table, "Time");
+    ScalarColumn<float> x (table, "X");
+    ScalarColumn<float> y (table, "Y");
+    ScalarColumn<float> z (table, "Z");
     Matrix<float> array(IPosition(2,16,20));
     Matrix<float> result(IPosition(2,16,20));
     uInt i;
     indgen (array);
-    for (i=0; i<51; i++) {
+    for (i=0; i<NROW; i++) {
+        incrXYZ (xValue, yValue, zValue, i, IPosition());
 	table.addRow();
 	data.put (i, array);
 	weight.put (i, array+float(100));
-	time.put (i, timeValue);
+	x.put (i, xValue);
+	y.put (i, yValue);
+	z.put (i, zValue);
 	array += float(200);
-	timeValue += 5;
 	freq.put (i, freqValues);
 	pol.put (i, polValues);
     }
-    timeValue = 34;
     indgen (array);
     for (i=0; i<table.nrow(); i++) {
+        incrXYZ (xValue, yValue, zValue, i, IPosition());
 	data.get (i, result);
 	if (! allEQ (array, result)) {
 	    cout << "mismatch in data row " << i << endl;
@@ -422,21 +515,24 @@ void writeNoHyper(const TSMOption& tsmOpt)
 	if (! allEQ (pol(i), polValues)) {
 	    cout << "mismatch in pol row " << i << endl;
 	}
-	if (time(i) != timeValue) {
-	    cout << "mismatch in time row " << i << endl;
+	if (x(i) != xValue) {
+	    cout << "mismatch in X row " << i << endl;
+	}
+	if (y(i) != yValue) {
+	    cout << "mismatch in Y row " << i << endl;
+	}
+	if (z(i) != zValue) {
+	    cout << "mismatch in Z row " << i << endl;
 	}
 	array += float(200);
-	timeValue += 5;
     }
     ROTiledStManAccessor accessor (table, "TSMExample");
     accessor.showCacheStatistics (cout);
+    cout << "hypercubeShape = " << accessor.getHypercubeShape(0) << endl;
+    cout << "tileShape = " << accessor.getTileShape(0) << endl;
     AlwaysAssertExit (accessor.nhypercubes() == 1);
-    AlwaysAssertExit (accessor.hypercubeShape(2) == IPosition(3,16,20,
-							      table.nrow()));
-    AlwaysAssertExit (accessor.tileShape(2) == IPosition(3,5,6,1));
-    AlwaysAssertExit (accessor.getHypercubeShape(0) == IPosition(3,16,20,
-								table.nrow()));
-    AlwaysAssertExit (accessor.getTileShape(0) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.hypercubeShape(2) == accessor.getHypercubeShape(0));
+    AlwaysAssertExit (accessor.tileShape(2) == accessor.getTileShape(0));
     AlwaysAssertExit (accessor.getBucketSize(0) == accessor.bucketSize(2));
     AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
@@ -444,32 +540,30 @@ void writeNoHyper(const TSMOption& tsmOpt)
 // First build a description.
 void extendOnly(const TSMOption& tsmOpt)
 {
+    cout << endl << "Test extendOnly " << endl;
     // Build the table description.
     TableDesc td ("", "1", TableDesc::Scratch);
     td.addColumn (ArrayColumnDesc<float>  ("Weight", IPosition(2,16,20),
 					   ColumnDesc::FixedShape));
     
     // Now create a new table from the description.
-    SetupNewTable newtab("tTiledColumnStMan_tm2p.data", td, Table::New);
+    SetupNewTable newtab("tTiledColumnStMan_tmp2.data", td, Table::New);
     // Create a storage manager for it.
-    TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,1));
+    TiledColumnStMan sm1 ("TSMExample", IPosition(3,5,6,420));
     newtab.bindColumn ("Weight", sm1);
     Table table(newtab, 0, False, Table::LocalEndian, tsmOpt);
 
     ArrayColumn<float> weight (table, "Weight");
-    uInt i;
-    for (i=0; i<51; i++) {
-	table.addRow();
-    }
+    table.addRow (34);
+    table.addRow (387);
+    table.flush();
     ROTiledStManAccessor accessor (table, "TSMExample");
     accessor.showCacheStatistics (cout);
+    cout << "hypercubeShape = " << accessor.getHypercubeShape(0) << endl;
+    cout << "tileShape = " << accessor.getTileShape(0) << endl;
     AlwaysAssertExit (accessor.nhypercubes() == 1);
-    AlwaysAssertExit (accessor.hypercubeShape(2) == IPosition(3,16,20,
-							      table.nrow()));
-    AlwaysAssertExit (accessor.tileShape(2) == IPosition(3,5,6,1));
-    AlwaysAssertExit (accessor.getHypercubeShape(0) == IPosition(3,16,20,
-								table.nrow()));
-    AlwaysAssertExit (accessor.getTileShape(0) == IPosition(3,5,6,1));
+    AlwaysAssertExit (accessor.hypercubeShape(2) == accessor.getHypercubeShape(0));
+    AlwaysAssertExit (accessor.tileShape(2) == accessor.getTileShape(0));
     AlwaysAssertExit (accessor.getBucketSize(0) == accessor.bucketSize(2));
     AlwaysAssertExit (accessor.getCacheSize(0) == accessor.cacheSize(2));
 }
