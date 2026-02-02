@@ -17,10 +17,10 @@ $ apt-get search casacore
 
 ## MacOS
 
-Use Homebrew with the `ska-sa` tap to install casacore:
+Use Homebrew with the `casacore` tap to install casacore:
 
 ```bash
-$ brew tap ska-sa/tap
+$ brew tap casacore/tap
 $ brew install casacore
 ```
 
