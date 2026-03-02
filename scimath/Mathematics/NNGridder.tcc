@@ -26,8 +26,9 @@
 #ifndef SCIMATH_NNGRIDDER_TCC
 #define SCIMATH_NNGRIDDER_TCC
 
+#include <cmath>
+
 #include <casacore/scimath/Mathematics/NNGridder.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -85,8 +86,8 @@ Range NNGridder<Domain, Range>::correctionFactor1D(Int loc, Int len)
 {
   Int offset=loc-len/2;
   if(offset!=0) {
-    Double arg=C::pi*Double(offset)/Double(len);
-    return sin(arg)/arg;
+    Double arg=M_PI*Double(offset)/Double(len);
+    return std::sin(arg)/arg;
   }
   else {
     return 1.0;

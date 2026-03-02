@@ -28,33 +28,6 @@
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
-//
-// Define static members of MathFunc<T> for g++
-//
-#if defined(__GNUC__) && (__GNUC__<3 || (__GNUC__==3 && __GNUC_MINOR__<4))
-Float MathFunc<Float>::defcutoff_p = (2.0);
-Float MathFunc<Float>::defwidth_p = (1.3);
-Float MathFunc<Float>::defKBwidth_p = (2.0);
-Float MathFunc<Float>::defKBparm_p = (2.5);
-Float MathFunc<Float>::defmodKBparm_p = (3.0);
-Float MathFunc<Float>::defSphcutoff_p = (3.0);
-Float MathFunc<Float>::defSphparm_p = (1.0);
-Float MathFunc<Float>::defSincparm_p = (1.14);
-Float MathFunc<Float>::defExpPower_p = (2.0);
-Float MathFunc<Float>::defExpScale_p = (1.3/sqrt(4.0*C::ln2));
-Double MathFunc<Double>::defcutoff_p = (2.0);
-Double MathFunc<Double>::defwidth_p = (1.3);
-Double MathFunc<Double>::defKBwidth_p = (2.0);
-Double MathFunc<Double>::defKBparm_p = (2.5);
-Double MathFunc<Double>::defmodKBparm_p = (3.0);
-Double MathFunc<Double>::defSphcutoff_p = (3.0);
-Double MathFunc<Double>::defSphparm_p = (1.0);
-Double MathFunc<Double>::defSincparm_p = (1.14);
-Double MathFunc<Double>::defExpPower_p = (2.0);
-Double MathFunc<Double>::defExpScale_p = (1.3/sqrt(4.0*C::ln2));
-#endif
-
-
 /* 
    Fred Schwab's SPHFN.f -- 
    translated by f2c (version of 22 July 1992  22:54:52).

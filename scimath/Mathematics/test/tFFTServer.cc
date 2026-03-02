@@ -43,6 +43,11 @@
 #include <casacore/casa/Utilities/Assert.h>
 #include <casacore/casa/iostream.h>
 
+// Included to make sure they compile without errors
+#include <casacore/scimath/Mathematics/ConvolveGridder.h>
+#include <casacore/scimath/Mathematics/DFTServer.h>
+#include <casacore/scimath/Mathematics/NNGridder.h>
+
 #include <casacore/casa/namespace.h>
 
 
