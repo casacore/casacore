@@ -294,16 +294,16 @@ class FITS {
     // maxelem will be -1.
         static void parse_vatform(const char *s, FITS::ValueType &valType,
 				  int &maxelem);
-	static inline constexpr Int minInt = INT_MIN;
-	static inline constexpr Int maxInt = INT_MAX;
-	static inline constexpr float minfloat = FLT_MIN;
-	static inline constexpr float maxfloat = FLT_MAX;
-	static inline constexpr double mindouble = DBL_MIN;
-	static inline constexpr double maxdouble = DBL_MAX;
+	static constexpr Int minInt = INT_MIN;
+	static constexpr Int maxInt = INT_MAX;
+	static constexpr float minfloat = FLT_MIN;
+	static constexpr float maxfloat = FLT_MAX;
+	static constexpr double mindouble = DBL_MIN;
+	static constexpr double maxdouble = DBL_MAX;
 
     private:
 	FITS();
-	static inline constexpr double tenpowerD[309] = { 1.0,
+	static constexpr double tenpowerD[309] = { 1.0,
 	  1.0E1,   1.0E2,   1.0E3,   1.0E4,   1.0E5,   1.0E6,   1.0E7,   1.0E8,
 	  1.0E9,  1.0E10,  1.0E11,  1.0E12,  1.0E13,  1.0E14,  1.0E15,  1.0E16,
 	 1.0E17,  1.0E18,  1.0E19,  1.0E20,  1.0E21,  1.0E22,  1.0E23,  1.0E24,
@@ -343,19 +343,19 @@ class FITS {
 	1.0E289, 1.0E290, 1.0E291, 1.0E292, 1.0E293, 1.0E294, 1.0E295, 1.0E296,
 	1.0E297, 1.0E298, 1.0E299, 1.0E300, 1.0E301, 1.0E302, 1.0E303, 1.0E304,
 	1.0E305, 1.0E306, 1.0E307, 1.0E308 };
-	static inline constexpr float tenpowerF[39] = { 1.0F,
+	static constexpr float tenpowerF[39] = { 1.0F,
 	  1.0E1F,  1.0E2F,  1.0E3F,  1.0E4F,  1.0E5F,  1.0E6F,  1.0E7F,  1.0E8F,
 	  1.0E9F, 1.0E10F, 1.0E11F, 1.0E12F, 1.0E13F, 1.0E14F, 1.0E15F, 1.0E16F,
 	 1.0E17F, 1.0E18F, 1.0E19F, 1.0E20F, 1.0E21F, 1.0E22F, 1.0E23F, 1.0E24F,
 	 1.0E25F, 1.0E26F, 1.0E27F, 1.0E28F, 1.0E29F, 1.0E30F, 1.0E31F, 1.0E32F,
 	 1.0E33F, 1.0E34F, 1.0E35F, 1.0E36F, 1.0E37F, 1.0E38F };
-	static inline constexpr int minfltexp = -38;
-	static inline constexpr int maxfltexp = 38;
-	static inline constexpr int mindblexp = -308;
-	static inline constexpr int maxdblexp = 308;
-	static inline constexpr int maxsigdigits = 17;
-	static inline constexpr int maxdigl = 9; // max digits in a long
-	static inline constexpr int maxexpdig = 3; // max digits in an exponent
+	static constexpr int minfltexp = -38;
+	static constexpr int maxfltexp = 38;
+	static constexpr int mindblexp = -308;
+	static constexpr int maxdblexp = 308;
+	static constexpr int maxsigdigits = 17;
+	static constexpr int maxdigl = 9; // max digits in a long
+	static constexpr int maxexpdig = 3; // max digits in an exponent
 	static double tenD(Int, int);
 	static float tenF(Int, int);
 	static int ckaccum(double &, Int, int);
@@ -442,7 +442,7 @@ class ReservedFitsKeywordCollection {
 	int rules(const ReservedFitsKeyword &, const char *, int, Bool,
 		FITS::ValueType, const void *, int, const char *&) const;
     private:
-	static inline constexpr int no_items = 56; // number of entries in the table
+	static constexpr int no_items = 56; // number of entries in the table
   //	Discussion of Reserved FitsKeyword Table
   //
   //	1. The reserved name itself (name_) is not unique;  there may
@@ -451,7 +451,7 @@ class ReservedFitsKeywordCollection {
   //	   it is indexed or not (name_, type_, isindexed_) is unique
   //	   within the table.
   //	3. The table is sorted by reserved name + type + isindexed.
-	static inline constexpr ReservedFitsKeyword resword[56] = {
+	static constexpr ReservedFitsKeyword resword[56] = {
 //        key            aname      namesize         isindexed           Section
 //         |               |           |  type           | isessential   in|NOST
 //        \|/             \|/         \|/\|/            \|/     \|/      \|/
@@ -513,14 +513,14 @@ class ReservedFitsKeywordCollection {
 /* 54 */ { FITS::XTENSION, "XTENSION", 8, FITS::STRING,  False, True },  // 5.2.1.2
 /* 55 */ { FITS::ERRWORD,  "",         0, FITS::NOVALUE, False, False }  // last
 };
-	static inline constexpr const ReservedFitsKeyword &user_def_item = resword[0]; // user-defined keyword
-	static inline constexpr const ReservedFitsKeyword &error_item = resword[55]; // error in keyword
-	static inline constexpr const ReservedFitsKeyword &end__item = resword[18];
-	static inline constexpr const ReservedFitsKeyword &spaces_item = resword[40];
-	static inline constexpr const ReservedFitsKeyword &comment_item = resword[9];
-	static inline constexpr const ReservedFitsKeyword &history_item = resword[27];
+	static constexpr const ReservedFitsKeyword &user_def_item = resword[0]; // user-defined keyword
+	static constexpr const ReservedFitsKeyword &error_item = resword[55]; // error in keyword
+	static constexpr const ReservedFitsKeyword &end__item = resword[18];
+	static constexpr const ReservedFitsKeyword &spaces_item = resword[40];
+	static constexpr const ReservedFitsKeyword &comment_item = resword[9];
+	static constexpr const ReservedFitsKeyword &history_item = resword[27];
   // alphabetic index to table
-	static inline constexpr int resalpha[26] = {
+	static constexpr int resalpha[26] = {
      // A  B  C   D   E  F   G   H   I  J  K  L  M   N   O   P  Q   R
 	1, 2, 8, 14, 18, 0, 25, 27, 28, 0, 0, 0, 0, 29, 31, 34, 0, 38,
      //  S   T  U  V  W   X  Y  Z
@@ -1114,9 +1114,9 @@ class FitsKeyCardTranslator {
         static void fmtcard(char *, const FitsKeyword &);
     private:
 	int cardno;		// the current card number within record
-	static inline constexpr int FitsCardSize = 80;
-	static inline constexpr int FitsMaxCard = 36;
-	static inline constexpr int FitsRecSize = 2880;
+	static constexpr int FitsCardSize = 80;
+	static constexpr int FitsMaxCard = 36;
+	static constexpr int FitsRecSize = 2880;
 	int max_errs;
 	int no_errs_;
 	const char **err_;
