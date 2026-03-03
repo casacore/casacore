@@ -1,0 +1,131 @@
+#!/bin/sh
+#
+# Script to test tTiledColumnStManPerf by running it in various ways.
+# It uses small numbers to ensure automatic tests take very little time.
+#
+# The tests can be run manually with much larger numbers to compare the
+# performance of row tiling.
+# For example:
+#   ./tTiledColumnStManPerf 4 16 40 7200 4 16 4096 0
+
+# First create and read without row tiling
+$casa_checktool ./tTiledColumnStManPerf 4 8 6 4 4 8 6 0
+$casa_checktool ./tTiledColumnStManPerf seq
+$casa_checktool ./tTiledColumnStManPerf seq 1
+$casa_checktool ./tTiledColumnStManPerf bl
+$casa_checktool ./tTiledColumnStManPerf bl 1
+
+# Create with row tiling
+$casa_checktool ./tTiledColumnStManPerf 4 8 6 4 4 8 6 2
+$casa_checktool ./tTiledColumnStManPerf seq
+$casa_checktool ./tTiledColumnStManPerf seq 1
+$casa_checktool ./tTiledColumnStManPerf bl
+$casa_checktool ./tTiledColumnStManPerf bl 1
+
+exit 0
+
+
+cat <<EOF
+
+MacDiepen3.test> ./tTiledColumnStManPerf 4 16 40 7200 4 16 8 512
+Create data table with 5904000 rows
+  npol  = 4
+  nfreq = 16
+  nant  = 40   (nbl = 820)
+  ntime = 7200
+  tileShape = [4, 16, 8, 512]   rowShape = [820, 7200]
+Create table       9.48 real        4.24 user        2.78 system
+>>> TSMCube cache statistics:
+cubeShape: [4, 16, 820, 7200]
+tileShape: [4, 16, 8, 512]
+maxCacheSz:0 MiB
+cacheSize: 103 (*2097152)
+#buckets:  1545
+#inits:    1545
+#writes:   1442
+#accesses: 5904000        hit-rate:  99.9738%
+<<<
+MacDiepen3.test> tTiledColumnStManPerf seq
+Read in sequential order
+>>> TSMCube cache statistics:
+cubeShape: [4, 16, 820, 7200]
+tileShape: [4, 16, 8, 512]
+maxCacheSz:0 MiB
+cacheSize: 103 (*2097152)
+#buckets:  1545
+#reads:    1545
+#accesses: 5904000        hit-rate:  99.9738%
+<<<
+Read sequentially      11.85 real       10.27 user        1.05 system
+MacDiepen3.test> tTiledColumnStManPerf bl
+Read in baseline order
+  nant  = 40   (nbl = 820)
+  ntime = 7200
+Read in bl order       46.02 real       30.66 user       12.95 system
+>>> TSMCube cache statistics:
+cubeShape: [4, 16, 820, 7200]
+tileShape: [4, 16, 8, 512]
+maxCacheSz:0 MiB
+cacheSize: 103 (*2097152)
+#buckets:  1545
+#reads:    1545
+#accesses: 11808000        hit-rate:  99.9869%
+<<<
+MacDiepen3.test> tTiledColumnStManPerf bl 1
+Read in baseline order using memory-mapped files
+  nant  = 40   (nbl = 820)
+  ntime = 7200
+Read in bl order       60.63 real       32.94 user       15.53 system
+>>> No TSMCube cache statistics (uses mmap)
+<<<
+MacDiepen3.test> tTiledColumnStManPerf seq 1
+Read in sequential order using memory-mapped files
+>>> No TSMCube cache statistics (uses mmap)
+<<<
+Read sequentially         14 real       10.59 user        1.12 system
+MacDiepen3.test> ./tTiledColumnStManPerf 4 16 40 7200 4 16 4096 0
+Create data table with 5904000 rows
+  npol  = 4
+  nfreq = 16
+  nant  = 40   (nbl = 820)
+  ntime = 7200
+  tileShape = [4, 16, 4096]   rowShape = []
+Create table       6.54 real        3.66 user        2.42 system
+>>> TSMCube cache statistics:
+cubeShape: [4, 16, 5904000]
+tileShape: [4, 16, 4096]
+maxCacheSz:0 MiB
+cacheSize: 1 (*2097152)
+#buckets:  1442
+#inits:    1442
+#writes:   1441
+#accesses: 5904000        hit-rate:  99.9756%
+<<<
+MacDiepen3.test> tTiledColumnStManPerf seq
+Read in sequential order
+>>> TSMCube cache statistics:
+cubeShape: [4, 16, 5904000]
+tileShape: [4, 16, 4096]
+maxCacheSz:0 MiB
+cacheSize: 1 (*2097152)
+#buckets:  1442
+#reads:    1442
+#accesses: 5904000        hit-rate:  99.9756%
+<<<
+Read sequentially      10.73 real        9.69 user        0.81 system
+MacDiepen3.test> tTiledColumnStManPerf bl
+Read in baseline order
+  nant  = 40   (nbl = 820)
+  ntime = 7200
+Read in bl order     1289.93 real      214.41 user      626.24 system
+>>> TSMCube cache statistics:
+cubeShape: [4, 16, 5904000]
+tileShape: [4, 16, 4096]
+maxCacheSz:0 MiB
+cacheSize: 1 (*2097152)
+#buckets:  1442         (<  #reads + #writes!)
+#reads:    1182440
+#accesses: 11808000        hit-rate:  89.9861%
+<<<
+
+EOF
