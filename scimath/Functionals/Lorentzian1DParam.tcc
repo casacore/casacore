@@ -26,9 +26,8 @@
 #ifndef SCIMATH_LORENTZIAN1DPARAM_TCC
 #define SCIMATH_LORENTZIAN1DPARAM_TCC
 
-//# Includes
+#include <cmath>
 #include <casacore/scimath/Functionals/Lorentzian1DParam.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/BasicMath/Math.h>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
@@ -97,12 +96,12 @@ Lorentzian1DParam<T>::operator=(const Lorentzian1DParam<T> &other) {
 //# Member functions
 template<class T>
 T Lorentzian1DParam<T>::flux() const {
-  return param_p[HEIGHT]*abs(param_p[WIDTH])*fwhm2int*T(C::pi);
+  return param_p[HEIGHT]*abs(param_p[WIDTH])*fwhm2int*T(M_PI);
 }
 
 template<class T>
 void Lorentzian1DParam<T>::setFlux(const T &flux) {
-  param_p[HEIGHT] = flux*T(C::_1_pi)/abs(param_p[WIDTH])/fwhm2int;
+  param_p[HEIGHT] = flux*T(M_1_PI)/abs(param_p[WIDTH])/fwhm2int;
 }
 
 } //# NAMESPACE CASACORE - END

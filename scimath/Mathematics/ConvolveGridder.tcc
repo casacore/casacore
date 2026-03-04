@@ -26,8 +26,11 @@
 #ifndef SCIMATH_CONVOLVEGRIDDER_TCC
 #define SCIMATH_CONVOLVEGRIDDER_TCC
 
+#include <cmath>
+#include <iostream>
+#include <vector>
+
 #include <casacore/scimath/Mathematics/ConvolveGridder.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/Vector.h>
 #include <casacore/casa/iostream.h>
@@ -335,7 +338,7 @@ Bool ConvolveGridder<Domain, Range>::grid(Array<Range> &gridded,
     return True;
   }
   else {
-    cout<<"Off grid"<<endl;
+    std::cout<<"Off grid"<<std::endl;
     return False;
   }
 }
@@ -384,15 +387,15 @@ Range ConvolveGridder<Domain, Range>::correctionFactor1D(Int loc, Int len)
   Int offset=loc-len/2;
   if(cType=="BOX") {
     if(offset!=0.0) {
-      Double arg=C::pi*Double(offset)/Double(len);
-      return sin(arg)/arg;
+      Double arg=M_PI*Double(offset)/Double(len);
+      return std::sin(arg)/arg;
     }
     else {
       return 1.0;
     }
   }
   else {
-    Double nu=abs(Double(offset)/Double(len/2));
+    Double nu=std::abs(Double(offset)/Double(len/2));
     Double val;
     grdsf(&nu, &val);
     return val;

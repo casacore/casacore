@@ -26,11 +26,10 @@
 #ifndef LATTICES_FIT2D_H
 #define LATTICES_FIT2D_H
 
-//# Includes
+#include <cmath>
 #include <casacore/casa/aips.h>
 #include <casacore/casa/Arrays/ArrayFwd.h>
 #include <casacore/scimath/Functionals/CompoundFunction.h>
-#include <casacore/casa/BasicSL/Constants.h>
 #include <casacore/scimath/Fitting/NonLinearFitLM.h>
 #include <casacore/casa/Logging/LogIO.h>
 
@@ -268,11 +267,11 @@ public:
 
     // Convert p.a. (radians) from positive +x -> +y 
     // (Fit2D) to positive +y -> -x (Gaussian2D)
-    static Double paToGauss2D (Double pa) {return pa - C::pi_2;};
+    static Double paToGauss2D (Double pa) {return pa - M_PI_2;};
 
     // Convert p.a. (radians) from positive +y -> -x
     // (Gaussian2D) to positive +x -> +y (Fit2D)
-    static Double paFromGauss2D (Double pa) {return pa + C::pi_2;};
+    static Double paFromGauss2D (Double pa) {return pa + M_PI_2;};
 
 private:
 

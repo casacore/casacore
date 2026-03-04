@@ -34,7 +34,6 @@
 #include <casacore/casa/Arrays/ArrayMath.h>
 #include <casacore/casa/Arrays/ArrayIter.h> 
 #include <casacore/casa/IO/ArrayIO.h> 
-#include <casacore/casa/BasicSL/Constants.h> 
 #include <casacore/casa/math.h> 
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN

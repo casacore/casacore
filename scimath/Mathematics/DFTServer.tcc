@@ -29,7 +29,7 @@
 #include <casacore/scimath/Mathematics/DFTServer.h>
 #include <casacore/casa/Arrays/Matrix.h>
 #include <casacore/casa/iostream.h>
-
+#include <cmath>
 
 namespace casacore { //# NAMESPACE CASACORE - BEGIN
 
@@ -317,11 +317,11 @@ void DFTServer<T>::c2c(Matrix<T> &Time, Matrix<T> &Freq, int dir)
             		for( int i=2; i<=(dimension+2)-1; i++) {
             			phase += (Time(k,i) * Freq(j,i));
                 	}
-               		phase=-(C::_2pi)*phase;
+               		phase=-(2.0*M_PI)*phase;
                		sum_real += (Time(k,0) * cos(phase) + Time(k,1) * cos(phase +
-			   (C::pi_2)) );
+			   (M_PI_2)) );
                		sum_imag += (Time(k,0) * sin(phase) + Time(k,1) * sin(phase +
-			   (C::pi_2)) );
+			   (M_PI_2)) );
     	   	}
 
            	Freq(j,0) = sum_real;
@@ -337,12 +337,12 @@ void DFTServer<T>::c2c(Matrix<T> &Time, Matrix<T> &Freq, int dir)
             		for( int i=2; i<=(dimension+2)-1; i++) {
             			phase += (Time(j,i) * Freq(k,i));
                 	}
-               		phase=(C::_2pi)*phase;
+               		phase=(2.0*M_PI)*phase;
                		sum_real+= (Freq(k,0) * cos(phase) + Freq(k,1) * cos(phase+
-			   	(C::pi_2)));
+			   	(M_PI_2)));
 			if (crFlag == 0) 
                		sum_imag+= (Freq(k,0) * sin(phase) + Freq(k,1) *
-			   	sin(phase + (C::pi_2)));
+			   	sin(phase + (M_PI_2)));
     	   	}
            	Time(j,0) = sum_real/numFreq;
            	Time(j,1) = sum_imag/numFreq;

@@ -181,7 +181,7 @@ template <class T> Vector<Double> Fit2D::estimate(Fit2D::Types type,
 //
       Double sn = 1.0;
       if (SP<0) sn = -1.0;
-      parameters(0) = sn * fac * P / ( C::pi * parameters(3) * parameters(4));
+      parameters(0) = sn * fac * P / ( M_PI * parameters(3) * parameters(4));
    } else if (type==Fit2D::LEVEL) {
       itsLogger << "Level models are not currently supported" <<
 	LogIO::EXCEPTION;

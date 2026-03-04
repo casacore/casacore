@@ -28,8 +28,10 @@
 
 //# Note that aips.h has to come first for the correct definition of off_t.
 # include <casacore/casa/aips.h>
-# include <stdlib.h>
-# include <ctype.h>
+# include <cfloat>
+# include <climits>
+# include <cstdlib>
+# include <cctype>
 # include <casacore/casa/iostream.h>
 # include <casacore/casa/BasicSL/Complex.h>
 # include <casacore/casa/BasicSL/IComplex.h>
@@ -292,24 +294,68 @@ class FITS {
     // maxelem will be -1.
         static void parse_vatform(const char *s, FITS::ValueType &valType,
 				  int &maxelem);
-	static const Int minInt;
-	static const Int maxInt;
-	static const float minfloat;
-	static const float maxfloat;
-	static const double mindouble;
-	static const double maxdouble;
+	static constexpr Int minInt = INT_MIN;
+	static constexpr Int maxInt = INT_MAX;
+	static constexpr float minfloat = FLT_MIN;
+	static constexpr float maxfloat = FLT_MAX;
+	static constexpr double mindouble = DBL_MIN;
+	static constexpr double maxdouble = DBL_MAX;
 
     private:
 	FITS();
-	static double tenpowerD[309];
-	static float tenpowerF[39];
-	static const int minfltexp;
-	static const int maxfltexp;
-	static const int mindblexp;
-	static const int maxdblexp;
-	static const int maxsigdigits;
-	static const int maxdigl; // max digits in a long
-	static const int maxexpdig; // max digits in an exponent
+	static constexpr double tenpowerD[309] = { 1.0,
+	  1.0E1,   1.0E2,   1.0E3,   1.0E4,   1.0E5,   1.0E6,   1.0E7,   1.0E8,
+	  1.0E9,  1.0E10,  1.0E11,  1.0E12,  1.0E13,  1.0E14,  1.0E15,  1.0E16,
+	 1.0E17,  1.0E18,  1.0E19,  1.0E20,  1.0E21,  1.0E22,  1.0E23,  1.0E24,
+	 1.0E25,  1.0E26,  1.0E27,  1.0E28,  1.0E29,  1.0E30,  1.0E31,  1.0E32,
+	 1.0E33,  1.0E34,  1.0E35,  1.0E36,  1.0E37,  1.0E38,  1.0E39,  1.0E40,
+	 1.0E41,  1.0E42,  1.0E43,  1.0E44,  1.0E45,  1.0E46,  1.0E47,  1.0E48,
+	 1.0E49,  1.0E50,  1.0E51,  1.0E52,  1.0E53,  1.0E54,  1.0E55,  1.0E56,
+	 1.0E57,  1.0E58,  1.0E59,  1.0E60,  1.0E61,  1.0E62,  1.0E63,  1.0E64,
+	 1.0E65,  1.0E66,  1.0E67,  1.0E68,  1.0E69,  1.0E70,  1.0E71,  1.0E72,
+	 1.0E73,  1.0E74,  1.0E75,  1.0E76,  1.0E77,  1.0E78,  1.0E79,  1.0E80,
+	 1.0E81,  1.0E82,  1.0E83,  1.0E84,  1.0E85,  1.0E86,  1.0E87,  1.0E88,
+	 1.0E89,  1.0E90,  1.0E91,  1.0E92,  1.0E93,  1.0E94,  1.0E95,  1.0E96,
+	 1.0E97,  1.0E98,  1.0E99, 1.0E100, 1.0E101, 1.0E102, 1.0E103, 1.0E104,
+	1.0E105, 1.0E106, 1.0E107, 1.0E108, 1.0E109, 1.0E110, 1.0E111, 1.0E112,
+	1.0E113, 1.0E114, 1.0E115, 1.0E116, 1.0E117, 1.0E118, 1.0E119, 1.0E120,
+	1.0E121, 1.0E122, 1.0E123, 1.0E124, 1.0E125, 1.0E126, 1.0E127, 1.0E128,
+	1.0E129, 1.0E130, 1.0E131, 1.0E132, 1.0E133, 1.0E134, 1.0E135, 1.0E136,
+	1.0E137, 1.0E138, 1.0E139, 1.0E140, 1.0E141, 1.0E142, 1.0E143, 1.0E144,
+	1.0E145, 1.0E146, 1.0E147, 1.0E148, 1.0E149, 1.0E150, 1.0E151, 1.0E152,
+	1.0E153, 1.0E154, 1.0E155, 1.0E156, 1.0E157, 1.0E158, 1.0E159, 1.0E160,
+	1.0E161, 1.0E162, 1.0E163, 1.0E164, 1.0E165, 1.0E166, 1.0E167, 1.0E168,
+	1.0E169, 1.0E170, 1.0E171, 1.0E172, 1.0E173, 1.0E174, 1.0E175, 1.0E176,
+	1.0E177, 1.0E178, 1.0E179, 1.0E180, 1.0E181, 1.0E182, 1.0E183, 1.0E184,
+	1.0E185, 1.0E186, 1.0E187, 1.0E188, 1.0E189, 1.0E190, 1.0E191, 1.0E192,
+	1.0E193, 1.0E194, 1.0E195, 1.0E196, 1.0E197, 1.0E198, 1.0E199, 1.0E200,
+	1.0E201, 1.0E202, 1.0E203, 1.0E204, 1.0E205, 1.0E206, 1.0E207, 1.0E208,
+	1.0E209, 1.0E210, 1.0E211, 1.0E212, 1.0E213, 1.0E214, 1.0E215, 1.0E216,
+	1.0E217, 1.0E218, 1.0E219, 1.0E220, 1.0E221, 1.0E222, 1.0E223, 1.0E224,
+	1.0E225, 1.0E226, 1.0E227, 1.0E228, 1.0E229, 1.0E230, 1.0E231, 1.0E232,
+	1.0E233, 1.0E234, 1.0E235, 1.0E236, 1.0E237, 1.0E238, 1.0E239, 1.0E240,
+	1.0E241, 1.0E242, 1.0E243, 1.0E244, 1.0E245, 1.0E246, 1.0E247, 1.0E248,
+	1.0E249, 1.0E250, 1.0E251, 1.0E252, 1.0E253, 1.0E254, 1.0E255, 1.0E256,
+	1.0E257, 1.0E258, 1.0E259, 1.0E260, 1.0E261, 1.0E262, 1.0E263, 1.0E264,
+	1.0E265, 1.0E266, 1.0E267, 1.0E268, 1.0E269, 1.0E270, 1.0E271, 1.0E272,
+	1.0E273, 1.0E274, 1.0E275, 1.0E276, 1.0E277, 1.0E278, 1.0E279, 1.0E280,
+	1.0E281, 1.0E282, 1.0E283, 1.0E284, 1.0E285, 1.0E286, 1.0E287, 1.0E288,
+	1.0E289, 1.0E290, 1.0E291, 1.0E292, 1.0E293, 1.0E294, 1.0E295, 1.0E296,
+	1.0E297, 1.0E298, 1.0E299, 1.0E300, 1.0E301, 1.0E302, 1.0E303, 1.0E304,
+	1.0E305, 1.0E306, 1.0E307, 1.0E308 };
+	static constexpr float tenpowerF[39] = { 1.0F,
+	  1.0E1F,  1.0E2F,  1.0E3F,  1.0E4F,  1.0E5F,  1.0E6F,  1.0E7F,  1.0E8F,
+	  1.0E9F, 1.0E10F, 1.0E11F, 1.0E12F, 1.0E13F, 1.0E14F, 1.0E15F, 1.0E16F,
+	 1.0E17F, 1.0E18F, 1.0E19F, 1.0E20F, 1.0E21F, 1.0E22F, 1.0E23F, 1.0E24F,
+	 1.0E25F, 1.0E26F, 1.0E27F, 1.0E28F, 1.0E29F, 1.0E30F, 1.0E31F, 1.0E32F,
+	 1.0E33F, 1.0E34F, 1.0E35F, 1.0E36F, 1.0E37F, 1.0E38F };
+	static constexpr int minfltexp = -38;
+	static constexpr int maxfltexp = 38;
+	static constexpr int mindblexp = -308;
+	static constexpr int maxdblexp = 308;
+	static constexpr int maxsigdigits = 17;
+	static constexpr int maxdigl = 9; // max digits in a long
+	static constexpr int maxexpdig = 3; // max digits in an exponent
 	static double tenD(Int, int);
 	static float tenF(Int, int);
 	static int ckaccum(double &, Int, int);
@@ -396,15 +442,90 @@ class ReservedFitsKeywordCollection {
 	int rules(const ReservedFitsKeyword &, const char *, int, Bool,
 		FITS::ValueType, const void *, int, const char *&) const;
     private:
-	static const int no_items; // number of entries in the table
-	static const ReservedFitsKeyword &user_def_item; // user-defined keyword
-	static const ReservedFitsKeyword &error_item; // error in keyword
-	static const ReservedFitsKeyword &end__item;
-	static const ReservedFitsKeyword &spaces_item;
-	static const ReservedFitsKeyword &comment_item;
-	static const ReservedFitsKeyword &history_item;
-	static const ReservedFitsKeyword resword[]; // table of reserved words
-	static const int resalpha[26]; // alphabetic index to table
+	static constexpr int no_items = 56; // number of entries in the table
+  //	Discussion of Reserved FitsKeyword Table
+  //
+  //	1. The reserved name itself (name_) is not unique;  there may
+  //	   be more than one entry with the same reserved name.
+  //	2. The combination of reserved name, the data type, and whether
+  //	   it is indexed or not (name_, type_, isindexed_) is unique
+  //	   within the table.
+  //	3. The table is sorted by reserved name + type + isindexed.
+	static constexpr ReservedFitsKeyword resword[56] = {
+//        key            aname      namesize         isindexed           Section
+//         |               |           |  type           | isessential   in|NOST
+//        \|/             \|/         \|/\|/            \|/     \|/      \|/
+//         ------          ------      -  -------        -----  -----    ------------
+/*  0 */ { FITS::USER_DEF, "",         0, FITS::NOVALUE, False, False },
+/*  1 */ { FITS::AUTHOR,   "AUTHOR",   6, FITS::STRING,  False, False }, // 5.2.2.3
+/*  2 */ { FITS::BITPIX,   "BITPIX",   6, FITS::LONG,    False, True },  // 5.2.1.1
+/*  3 */ { FITS::BLANK,    "BLANK",    5, FITS::LONG,    False, False }, // 5.2.2.5
+/*  4 */ { FITS::BLOCKED,  "BLOCKED",  7, FITS::LOGICAL, False, False }, // 5.2.2.1
+/*  5 */ { FITS::BSCALE,   "BSCALE",   6, FITS::REAL,    False, False }, // 5.2.2.5
+/*  6 */ { FITS::BUNIT,    "BUNIT",    5, FITS::STRING,  False, False }, // 5.2.2.5
+/*  7 */ { FITS::BZERO,    "BZERO",    5, FITS::REAL,    False, False }, // 5.2.2.5
+/*  8 */ { FITS::CDELT,    "CDELT",    5, FITS::REAL,    True, False },  // 5.2.2.5
+/*  9 */ { FITS::COMMENT,  "COMMENT",  7, FITS::NOVALUE, False, False }, // 5.2.2.4
+/* 10 */ { FITS::CROTA,    "CROTA",    5, FITS::REAL,    True, False },  // 5.2.2.5
+/* 11 */ { FITS::CRPIX,    "CRPIX",    5, FITS::REAL,    True, False },  // 5.2.2.5
+/* 12 */ { FITS::CRVAL,    "CRVAL",    5, FITS::REAL,    True, False },  // 5.2.2.5
+/* 13 */ { FITS::CTYPE,    "CTYPE",    5, FITS::STRING,  True, False },  // 5.2.2.5
+/* 14 */ { FITS::DATAMAX,  "DATAMAX",  7, FITS::REAL,    False, False }, // 5.2.2.5
+/* 15 */ { FITS::DATAMIN,  "DATAMIN",  7, FITS::REAL,    False, False }, // 5.2.2.5
+/* 16 */ { FITS::DATE,     "DATE",     4, FITS::STRING,  False, False }, // 5.2.2.1
+/* 17 */ { FITS::DATE_OBS, "DATE-OBS", 8, FITS::STRING,  False, False }, // 5.2.2.2
+/* 18 */ { FITS::END,      "END",      3, FITS::NOVALUE, False, True },  // 5.2.1.1
+/* 19 */ { FITS::EPOCH,    "EPOCH",    5, FITS::REAL,    False, False }, // 5.2.2.2
+/* 20 */ { FITS::EQUINOX,  "EQUINOX",  7, FITS::REAL,    False, False }, // 5.2.2.2
+/* 21 */ { FITS::EXTEND,   "EXTEND",   6, FITS::LOGICAL, False, True },  // 5.2.1.2
+/* 22 */ { FITS::EXTLEVEL, "EXTLEVEL", 8, FITS::LONG,    False, False }, // 5.2.2.6
+/* 23 */ { FITS::EXTNAME,  "EXTNAME",  7, FITS::STRING,  False, False }, // 5.2.2.6
+/* 24 */ { FITS::EXTVER,   "EXTVER",   6, FITS::LONG,    False, False }, // 5.2.2.6
+/* 25 */ { FITS::GCOUNT,   "GCOUNT",   6, FITS::LONG,    False, True },  // 5.2.1.2
+/* 26 */ { FITS::GROUPS,   "GROUPS",   6, FITS::LOGICAL, False, True },  // 7.1.1.6
+/* 27 */ { FITS::HISTORY,  "HISTORY",  7, FITS::NOVALUE, False, False }, // 5.2.2.4
+/* 28 */ { FITS::INSTRUME, "INSTRUME", 8, FITS::STRING,  False, False }, // 5.2.2.2
+/* 29 */ { FITS::NAXIS,    "NAXIS",    5, FITS::LONG,    False, True },  // 5.2.1.1
+/* 30 */ { FITS::NAXIS,    "NAXIS",    5, FITS::LONG,    True, True },   // 5.2.1.1
+/* 31 */ { FITS::OBJECT,   "OBJECT",   6, FITS::STRING,  False, False }, // 5.2.2.2
+/* 32 */ { FITS::OBSERVER, "OBSERVER", 8, FITS::STRING,  False, False }, // 5.2.2.2
+/* 33 */ { FITS::ORIGIN,   "ORIGIN",   6, FITS::STRING,  False, False }, // 5.2.2.1
+/* 34 */ { FITS::PCOUNT,   "PCOUNT",   6, FITS::LONG,    False, True },  // 5.2.1.2
+/* 35 */ { FITS::PSCAL,    "PSCAL",    5, FITS::REAL,    True, False },  // 7.1.2.2
+/* 36 */ { FITS::PTYPE,    "PTYPE",    5, FITS::STRING,  True, False },  // 7.1.2.1
+/* 37 */ { FITS::PZERO_FITS,    "PZERO",    5, FITS::REAL,    True, False },  // 7.1.2.3
+/* 38 */ { FITS::REFERENC, "REFERENC", 8, FITS::STRING,  False, False }, // 5.2.2.3
+/* 39 */ { FITS::SIMPLE,   "SIMPLE",   6, FITS::LOGICAL, False, True },  // 5.2.1.1
+/* 40 */ { FITS::SPACES,   "        ", 8, FITS::NOVALUE, False, False }, // 5.2.2.4
+/* 41 */ { FITS::TBCOL,    "TBCOL",    5, FITS::LONG,    True, False },  // 8.1.1
+/* 42 */ { FITS::TDIM,     "TDIM",     4, FITS::STRING,  True, False },  // A.4, A.9.1
+/* 43 */ { FITS::TDISP,    "TDISP",    5, FITS::STRING,  True, False },  // A.4
+/* 44 */ { FITS::TELESCOP, "TELESCOP", 8, FITS::STRING,  False, False }, // 5.2.2.2
+/* 45 */ { FITS::TFIELDS,  "TFIELDS",  7, FITS::LONG,    False, False }, // 8.1.1
+/* 46 */ { FITS::TFORM,    "TFORM",    5, FITS::STRING,  True, False },  // 8.1.1
+/* 47 */ { FITS::THEAP,    "THEAP",    5, FITS::LONG,    False, False }, // A.4, A.9.2
+/* 48 */ { FITS::TNULL,    "TNULL",    5, FITS::STRING,  True, False },  // 8.1.2
+/* 49 */ { FITS::TNULL,    "TNULL",    5, FITS::LONG  ,  True, False },  // A.4
+/* 50 */ { FITS::TSCAL,    "TSCAL",    5, FITS::REAL,    True, False },  // 8.1.2
+/* 51 */ { FITS::TTYPE,    "TTYPE",    5, FITS::STRING,  True, False },  // 8.1.2
+/* 52 */ { FITS::TUNIT,    "TUNIT",    5, FITS::STRING,  True, False },  // 8.1.2
+/* 53 */ { FITS::TZERO,    "TZERO",    5, FITS::REAL,    True, False },  // 8.1.2
+/* 54 */ { FITS::XTENSION, "XTENSION", 8, FITS::STRING,  False, True },  // 5.2.1.2
+/* 55 */ { FITS::ERRWORD,  "",         0, FITS::NOVALUE, False, False }  // last
+};
+	static constexpr const ReservedFitsKeyword &user_def_item = resword[0]; // user-defined keyword
+	static constexpr const ReservedFitsKeyword &error_item = resword[55]; // error in keyword
+	static constexpr const ReservedFitsKeyword &end__item = resword[18];
+	static constexpr const ReservedFitsKeyword &spaces_item = resword[40];
+	static constexpr const ReservedFitsKeyword &comment_item = resword[9];
+	static constexpr const ReservedFitsKeyword &history_item = resword[27];
+  // alphabetic index to table
+	static constexpr int resalpha[26] = {
+     // A  B  C   D   E  F   G   H   I  J  K  L  M   N   O   P  Q   R
+	1, 2, 8, 14, 18, 0, 25, 27, 28, 0, 0, 0, 0, 29, 31, 34, 0, 38,
+     //  S   T  U  V  W   X  Y  Z
+	39, 41, 0, 0, 0, 54, 0, 0
+};
 	const ReservedFitsKeyword &match(int, const char *, int, Bool,
 		FITS::ValueType, const void *, int, const char *&) const;
 
