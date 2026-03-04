@@ -40,6 +40,8 @@ class SiscoStManColumn final : public StManColumn {
     }
   }
 
+  ~SiscoStManColumn() override { ResetWriter(); }
+
   /**
    * Whether this column is writable
    * @returns @c true
@@ -55,10 +57,10 @@ class SiscoStManColumn final : public StManColumn {
   void setShape(unsigned, const IPosition &) final {}
 
   bool isShapeDefined(rownr_t row) final {
-    if ((writer_ && row >= current_row_) || !file_exists_) {
-      return false;
-    } else {
+    if (file_exists_) {
       return true;
+    } else {
+      return false;
     }
   }
   bool isShapeDefined(unsigned) final { return false; }
@@ -78,16 +80,11 @@ class SiscoStManColumn final : public StManColumn {
   /** Get the dimensions of the values in a particular row.
    * @param rownr The row to get the shape for. */
   IPosition shape(rownr_t row) final {
-    if ((writer_ && row >= current_row_) || !file_exists_) {
-      return IPosition{0, 0};
-    } else {
-      if (!reader_ || row < current_row_) {
-        OpenReader();
-      }
-      while (current_row_ < row) {
-        SkipRow();
-      }
+    if (file_exists_) {
+      PrepareReadingOfRow(row);
       return shape_buffer_[shape_read_position_];
+    } else {
+      return IPosition{0, 0};
     }
   }
   IPosition shape(unsigned row) final {
@@ -102,12 +99,7 @@ class SiscoStManColumn final : public StManColumn {
   void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
     Array<std::complex<float>> &array =
         static_cast<Array<std::complex<float>> &>(dataPtr);
-    if (!reader_ || row < current_row_) {
-      OpenReader();
-    }
-    while (current_row_ < row) {
-      SkipRow();
-    }
+    PrepareReadingOfRow(row);
 
     const IPosition &shape = shape_buffer_[shape_read_position_];
     shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
@@ -132,7 +124,7 @@ class SiscoStManColumn final : public StManColumn {
     }
 
     RequestOneMoreRow();
-    ++current_row_;
+    ++current_read_row_;
   }
 
   /**
@@ -143,17 +135,17 @@ class SiscoStManColumn final : public StManColumn {
   void putArrayV(rownr_t row, const ArrayBase &dataPtr) final {
     const Array<std::complex<float>> &array =
         static_cast<const Array<std::complex<float>> &>(dataPtr);
-    if (!writer_ || row < current_row_) {
+    if (!writer_ || row < current_write_row_) {
       OpenWriter();
     }
-    while (current_row_ < row) {
+    while (current_write_row_ < row) {
       WriteEmptyRow();
     }
 
-    const int field_id = field_id_column_(current_row_);
-    const int data_desc_id = data_desc_id_column_(current_row_);
-    const int antenna1 = antenna1_column_(current_row_);
-    const int antenna2 = antenna2_column_(current_row_);
+    const int field_id = field_id_column_(current_write_row_);
+    const int data_desc_id = data_desc_id_column_(current_write_row_);
+    const int antenna1 = antenna1_column_(current_write_row_);
+    const int antenna2 = antenna2_column_(current_write_row_);
     if (array.shape().size() >= 2) {
       const int n_polarizations = array.shape()[0];
       const size_t n_channels = array.shape()[1];
@@ -176,7 +168,7 @@ class SiscoStManColumn final : public StManColumn {
       }
     }
 
-    ++current_row_;
+    ++current_write_row_;
     shapes_writer_->Write(array.shape());
   }
 
@@ -186,16 +178,68 @@ class SiscoStManColumn final : public StManColumn {
   SiscoStManColumn(const SiscoStManColumn &source) = delete;
   void operator=(const SiscoStManColumn &source) = delete;
 
-  void Reset() {
+  void PrepareReadingOfRow(rownr_t row) {
+    // if row < current_read_row_, we have to reset the reader and start from
+    // the beginning. if row < current_write_row_, we are trying to read
+    // something that was already written. Writing may have been to a temporary
+    // file, which needs to be moved back first (by resetting), and if writing
+    // was not to a temporary file, it is the same file that we now need to open
+    // for reading, and the same file can not be written and read at the same
+    // time (e.g. due to caching). Ergo, the writer needs to be reset. The
+    // consequence is that another write after this read will reset (empty) the
+    // file. This is surprising, but it shouldn't happen in streaming
+    // processing, so it is a compromise. If writing is done to a temporary
+    // file, and reading is done from data that has not yet been written (row >=
+    // current_write_row_), no reset is necessary.
+    const bool is_reading_after_writing =
+        writer_ && (!has_temporary_file_ || row < current_write_row_);
+    // To check above condition, some boolean algebra gives:
+    // !is_reading_after_writing = !writer_ || (has_temporary_file_ && row >=
+    // current_write_row_) which is indeed also correct in that no writer reset
+    // is required in that case.
+    if (!reader_ || row < current_read_row_ || is_reading_after_writing) {
+      OpenReader();
+    }
+    while (current_read_row_ < row) {
+      SkipRow();
+    }
+  }
+
+  void ResetWriter() {
+    if (writer_) {
+      writer_.reset();
+      shapes_writer_.reset();
+
+      // In case has_temporary_file_ is true, the writers were initialized with
+      // a temporary filename such that reading of "old" values could take place
+      // simultaneously. These new files need to be moved over the old files.
+      if (has_temporary_file_) {
+        const std::string filename = parent_.fileName();
+        const std::string shapes_filename = ShapesFilename();
+        std::filesystem::rename(filename + kTemporaryExtension, filename);
+        std::filesystem::rename(shapes_filename + kTemporaryExtension, shapes_filename);
+        has_temporary_file_ = false;
+      }
+    }
+  }
+
+  void ResetReader() {
     reader_.reset();
     shapes_reader_.reset();
-    writer_.reset();
-    shapes_writer_.reset();
   }
 
   void OpenWriter() {
-    Reset();
-    writer_.emplace(parent_.fileName(), parent_.PredictLevel(),
+    ResetWriter();
+
+    std::string filename = parent_.fileName();
+    std::string shapes_filename = ShapesFilename();
+    if (reader_) {
+      filename = filename + kTemporaryExtension;
+      shapes_filename = shapes_filename + kTemporaryExtension;
+      has_temporary_file_ = true;
+    }
+
+    writer_.emplace(filename, parent_.PredictLevel(),
                     parent_.DeflateLevel());
     char header_buffer[kHeaderSize];
     std::fill_n(header_buffer, kHeaderSize, 0);
@@ -208,15 +252,18 @@ class SiscoStManColumn final : public StManColumn {
         reinterpret_cast<const std::byte *>(header_buffer), kHeaderSize);
     writer_->Open(header);
 
-    shapes_writer_.emplace(ShapesFilename());
+    shapes_writer_.emplace(shapes_filename);
 
-    current_row_ = 0;
+    current_write_row_ = 0;
     baseline_ids_.clear();
     baseline_count_ = 0;
   }
 
   void OpenReader() {
-    Reset();
+    ResetReader();
+    if(!has_temporary_file_) {
+      ResetWriter();
+    }
     reader_.emplace(parent_.fileName());
     char header_buffer[kHeaderSize];
     std::span<std::byte> header(reinterpret_cast<std::byte *>(header_buffer),
@@ -239,7 +286,7 @@ class SiscoStManColumn final : public StManColumn {
     }
     shapes_reader_.emplace(ShapesFilename());
 
-    current_row_ = 0;
+    current_read_row_ = 0;
     baseline_ids_.clear();
     baseline_count_ = 0;
     // Always request half of the requests that fit in the buffer of
@@ -294,7 +341,7 @@ class SiscoStManColumn final : public StManColumn {
 
   void WriteEmptyRow() {
     shapes_writer_->Write(IPosition{0, 0});
-    ++current_row_;
+    ++current_write_row_;
   }
 
   void SkipRow() {
@@ -312,7 +359,7 @@ class SiscoStManColumn final : public StManColumn {
       }
     }
     RequestOneMoreRow();
-    ++current_row_;
+    ++current_read_row_;
   }
 
   static constexpr size_t kHeaderSize = 20;
@@ -321,6 +368,7 @@ class SiscoStManColumn final : public StManColumn {
   static constexpr uint16_t kVersionMajor = 2;
   static constexpr uint16_t kVersionMinor = 0;
   static constexpr char kShapesExtension[] = "-shapes";
+  static constexpr char kTemporaryExtension[] = "-tmp";
 
   ScalarColumn<int> field_id_column_;
   ScalarColumn<int> data_desc_id_column_;
@@ -334,14 +382,27 @@ class SiscoStManColumn final : public StManColumn {
   std::optional<ShapesFileReader> shapes_reader_;
   // A circular buffer to store the already read shapes
   std::vector<IPosition> shape_buffer_;
+  // Points inside shape_buffer_ to the location corresponding to the shape for
+  // the current_read_row_.
   size_t shape_read_position_ = 0;
+  // When reading a new shape from file, this is the place inside the shape
+  // buffer to write it to.
   size_t shape_write_position_ = 0;
   rownr_t current_shape_reading_row_ = 0;
-  rownr_t current_row_ = 0;
+  rownr_t current_read_row_ = 0;
+  rownr_t current_write_row_ = 0;
+  // Scratch buffer. It does not have a specific state between function calls,
+  // but is stored in class scope so that can reuse its memory.
   std::vector<std::complex<float>> buffer_;
   std::map<std::array<int, 5>, size_t> baseline_ids_;
   size_t baseline_count_;
   bool file_exists_ = false;
+  /**
+   * If true, writing is done to a temporary file such that reading can still
+   * take place from the old file. The temporary file will be moved over the
+   * old file once writing is finished.
+   */
+  bool has_temporary_file_ = false;
 };
 
 }  // namespace casacore
