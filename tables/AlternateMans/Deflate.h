@@ -1,7 +1,7 @@
 #ifndef CASACORE_SISCO_DEFLATE_H_
 #define CASACORE_SISCO_DEFLATE_H_
 
-#include "libdeflate.h"
+#include <libdeflate.h>
 
 #include <cstddef>
 #include <span>
