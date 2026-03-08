@@ -39,7 +39,9 @@ RUN useradd -ms /bin/bash casacore \
 USER casacore
 RUN mkdir /code/build
 WORKDIR /code/build
-ENV CXXFLAGS="${CXXFLAGS} -stdlib=libc++"
+# The Boost version provided in Ubuntu 22 has issues when building with
+# libc++, so the following is commented out for Ubuntu 22.
+# ENV CXXFLAGS="${CXXFLAGS} -stdlib=libc++"
 RUN cmake .. \
     -DBUILD_TESTING=ON \
     -DUSE_OPENMP=OFF \

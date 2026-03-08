@@ -43,13 +43,13 @@ set (testfiles
   tVectorSTLIterator.cc
 )
 
-find_package(Boost 1.73 COMPONENTS filesystem unit_test_framework)
+find_package(Boost 1.73 COMPONENTS unit_test_framework)
 if(Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIR})
 
 	add_executable (arraytest ${testfiles})
 	add_pch_support(arraytest)
-	target_link_libraries(arraytest casa_casa ${Boost_FILESYSTEM_LIBRARY} ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+	target_link_libraries(arraytest casa_casa ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 	add_test (arraytest ${CMAKE_SOURCE_DIR}/cmake/cmake_assay ./arraytest)
 	add_dependencies(check arraytest)
 endif(Boost_FOUND)
