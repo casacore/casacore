@@ -29,8 +29,9 @@
 #include "../Vector.h"
 #include "../Matrix.h"
 
+#include <filesystem>
+
 #include <boost/test/unit_test.hpp>
-#include <boost/filesystem/operations.hpp>
 
 // This test program tests the ArrayIO2 functions.
 // It writes all kind of stuff, reads it back and writes it to stdout.
@@ -53,7 +54,7 @@ BOOST_AUTO_TEST_CASE( bin )
   {
     BOOST_CHECK_EQUAL(ipi(i), i*2);
   }
-  boost::filesystem::remove("tArrayIO2_tmp.data");
+  std::filesystem::remove("tArrayIO2_tmp.data");
 }
 
 BOOST_AUTO_TEST_CASE( matrix_read )
@@ -78,7 +79,7 @@ BOOST_AUTO_TEST_CASE( matrix_read )
     " 2, 3, 4, 5\n"
     " 1, 4, 5, 6\n"
     " 4, 5, 6, 7]\n");
-  boost::filesystem::remove("tArrayIO2.in_mat");
+  std::filesystem::remove("tArrayIO2.in_mat");
 }
 
 BOOST_AUTO_TEST_CASE( matrix_write )
@@ -99,7 +100,7 @@ BOOST_AUTO_TEST_CASE( matrix_write )
     "2  3  4  5  \n"
     "3  4  5  6  \n"
     "4  5  6  7  \n");
-  boost::filesystem::remove("tArrayIO2_tmp.mat");
+  std::filesystem::remove("tArrayIO2_tmp.mat");
 }
 
 BOOST_AUTO_TEST_CASE( vector_read )
@@ -119,7 +120,7 @@ BOOST_AUTO_TEST_CASE( vector_read )
   BOOST_CHECK_EQUAL(vec.shape(), ref.shape());
   for(size_t i=0; i!=ref.nelements(); ++i)
     BOOST_CHECK_EQUAL(vec[i], ref[i]);
-  boost::filesystem::remove("tArrayIO2.in_vec");
+  std::filesystem::remove("tArrayIO2.in_vec");
 }
 
 BOOST_AUTO_TEST_CASE( vector_write )
@@ -132,7 +133,7 @@ BOOST_AUTO_TEST_CASE( vector_write )
   sstr << ifile.rdbuf();
   BOOST_CHECK_EQUAL(sstr.str(),
     "1.23  2.34  3.45  4.56  5.67  6.78  9  \n");
-  boost::filesystem::remove("tArrayIO2_tmp.vec");
+  std::filesystem::remove("tArrayIO2_tmp.vec");
 }
 
 template<typename Arr>
