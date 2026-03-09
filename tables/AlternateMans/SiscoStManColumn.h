@@ -40,6 +40,8 @@ class SiscoStManColumn final : public StManColumn {
     }
   }
 
+  ~SiscoStManColumn() override { ResetWriter(); }
+
   /**
    * Whether this column is writable
    * @returns @c true
@@ -54,14 +56,16 @@ class SiscoStManColumn final : public StManColumn {
   }
   void setShape(unsigned, const IPosition &) final {}
 
-  bool isShapeDefined(rownr_t row) final {
-    if ((writer_ && row >= current_row_) || !file_exists_) {
-      return false;
-    } else {
+  bool isShapeDefined(rownr_t) final {
+    if (isFixedShape() || file_exists_) {
       return true;
+    } else {
+      return false;
     }
   }
-  bool isShapeDefined(unsigned) final { return false; }
+  bool isShapeDefined(unsigned row) final {
+    return isShapeDefined(static_cast<rownr_t>(row));
+  }
 
   /** Set the dimensions of values in this column. */
   void setShapeColumn(const IPosition &shape) final {
@@ -72,22 +76,19 @@ class SiscoStManColumn final : public StManColumn {
           " dimensions, but it can only be used for "
           "columns with exactly 2 dimensions");
     }
-    // This call is ignored; shape will always be determined from array size.
+    fixed_shape_ = shape;
   }
 
   /** Get the dimensions of the values in a particular row.
    * @param rownr The row to get the shape for. */
   IPosition shape(rownr_t row) final {
-    if ((writer_ && row >= current_row_) || !file_exists_) {
-      return IPosition{0, 0};
-    } else {
-      if (!reader_ || row < current_row_) {
-        OpenReader();
-      }
-      while (current_row_ < row) {
-        SkipRow();
-      }
+    if (isFixedShape()) {
+      return fixed_shape_;
+    } else if (file_exists_) {
+      PrepareReadingOfRow(row);
       return shape_buffer_[shape_read_position_];
+    } else {
+      return IPosition{0, 0};
     }
   }
   IPosition shape(unsigned row) final {
@@ -102,18 +103,18 @@ class SiscoStManColumn final : public StManColumn {
   void getArrayV(rownr_t row, ArrayBase &dataPtr) final {
     Array<std::complex<float>> &array =
         static_cast<Array<std::complex<float>> &>(dataPtr);
-    if (!reader_ || row < current_row_) {
-      OpenReader();
-    }
-    while (current_row_ < row) {
-      SkipRow();
-    }
+    PrepareReadingOfRow(row);
 
-    const IPosition &shape = shape_buffer_[shape_read_position_];
-    shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
-    if (shape.size() >= 2) {
-      const int n_polarizations = shape[0];
-      const size_t n_channels = shape[1];
+    const IPosition *shape;
+    if (isFixedShape()) {
+      shape = &fixed_shape_;
+    } else {
+      shape = &shape_buffer_[shape_read_position_];
+      shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
+    }
+    if (shape->size() >= 2) {
+      const int n_polarizations = (*shape)[0];
+      const size_t n_channels = (*shape)[1];
 
       if (n_channels) {
         bool ownership;
@@ -132,7 +133,7 @@ class SiscoStManColumn final : public StManColumn {
     }
 
     RequestOneMoreRow();
-    ++current_row_;
+    ++current_read_row_;
   }
 
   /**
@@ -143,17 +144,17 @@ class SiscoStManColumn final : public StManColumn {
   void putArrayV(rownr_t row, const ArrayBase &dataPtr) final {
     const Array<std::complex<float>> &array =
         static_cast<const Array<std::complex<float>> &>(dataPtr);
-    if (!writer_ || row < current_row_) {
+    if (!writer_ || row < current_write_row_) {
       OpenWriter();
     }
-    while (current_row_ < row) {
+    while (current_write_row_ < row) {
       WriteEmptyRow();
     }
 
-    const int field_id = field_id_column_(current_row_);
-    const int data_desc_id = data_desc_id_column_(current_row_);
-    const int antenna1 = antenna1_column_(current_row_);
-    const int antenna2 = antenna2_column_(current_row_);
+    const int field_id = field_id_column_(current_write_row_);
+    const int data_desc_id = data_desc_id_column_(current_write_row_);
+    const int antenna1 = antenna1_column_(current_write_row_);
+    const int antenna2 = antenna2_column_(current_write_row_);
     if (array.shape().size() >= 2) {
       const int n_polarizations = array.shape()[0];
       const size_t n_channels = array.shape()[1];
@@ -176,8 +177,8 @@ class SiscoStManColumn final : public StManColumn {
       }
     }
 
-    ++current_row_;
-    shapes_writer_->Write(array.shape());
+    ++current_write_row_;
+    if (!isFixedShape()) shapes_writer_->Write(array.shape());
   }
 
   void Prepare();
@@ -186,17 +187,71 @@ class SiscoStManColumn final : public StManColumn {
   SiscoStManColumn(const SiscoStManColumn &source) = delete;
   void operator=(const SiscoStManColumn &source) = delete;
 
-  void Reset() {
+  void PrepareReadingOfRow(rownr_t row) {
+    // if row < current_read_row_, we have to reset the reader and start from
+    // the beginning. if row < current_write_row_, we are trying to read
+    // something that was already written. Writing may have been to a temporary
+    // file, which needs to be moved back first (by resetting), and if writing
+    // was not to a temporary file, it is the same file that we now need to open
+    // for reading, and the same file can not be written and read at the same
+    // time (e.g. due to caching). Ergo, the writer needs to be reset. The
+    // consequence is that another write after this read will reset (empty) the
+    // file. This is surprising, but it shouldn't happen in streaming
+    // processing, so it is a compromise. If writing is done to a temporary
+    // file, and reading is done from data that has not yet been written (row >=
+    // current_write_row_), no reset is necessary.
+    const bool is_reading_after_writing =
+        writer_ && (!has_temporary_file_ || row < current_write_row_);
+    // To check above condition, some boolean algebra gives:
+    // !is_reading_after_writing = !writer_ || (has_temporary_file_ && row >=
+    // current_write_row_) which is indeed also correct in that no writer reset
+    // is required in that case.
+    if (!reader_ || row < current_read_row_ || is_reading_after_writing) {
+      OpenReader();
+    }
+    while (current_read_row_ < row) {
+      SkipRow();
+    }
+  }
+
+  void ResetWriter() {
+    if (writer_) {
+      writer_.reset();
+      shapes_writer_.reset();
+
+      // In case has_temporary_file_ is true, the writers were initialized with
+      // a temporary filename such that reading of "old" values could take place
+      // simultaneously. These new files need to be moved over the old files.
+      if (has_temporary_file_) {
+        const std::string filename = parent_.fileName();
+        std::filesystem::rename(filename + kTemporaryExtension, filename);
+        if (!isFixedShape()) {
+          const std::string shapes_filename = ShapesFilename();
+          std::filesystem::rename(shapes_filename + kTemporaryExtension,
+                                  shapes_filename);
+        }
+        has_temporary_file_ = false;
+      }
+    }
+  }
+
+  void ResetReader() {
     reader_.reset();
     shapes_reader_.reset();
-    writer_.reset();
-    shapes_writer_.reset();
   }
 
   void OpenWriter() {
-    Reset();
-    writer_.emplace(parent_.fileName(), parent_.PredictLevel(),
-                    parent_.DeflateLevel());
+    ResetWriter();
+
+    std::string filename = parent_.fileName();
+    std::string shapes_filename = ShapesFilename();
+    if (reader_) {
+      filename = filename + kTemporaryExtension;
+      shapes_filename = shapes_filename + kTemporaryExtension;
+      has_temporary_file_ = true;
+    }
+
+    writer_.emplace(filename, parent_.PredictLevel(), parent_.DeflateLevel());
     char header_buffer[kHeaderSize];
     std::fill_n(header_buffer, kHeaderSize, 0);
     std::copy_n(kMagic, kMagicSize, &header_buffer[0]);
@@ -208,15 +263,18 @@ class SiscoStManColumn final : public StManColumn {
         reinterpret_cast<const std::byte *>(header_buffer), kHeaderSize);
     writer_->Open(header);
 
-    shapes_writer_.emplace(ShapesFilename());
+    if (!isFixedShape()) shapes_writer_.emplace(shapes_filename);
 
-    current_row_ = 0;
+    current_write_row_ = 0;
     baseline_ids_.clear();
     baseline_count_ = 0;
   }
 
   void OpenReader() {
-    Reset();
+    ResetReader();
+    if (!has_temporary_file_) {
+      ResetWriter();
+    }
     reader_.emplace(parent_.fileName());
     char header_buffer[kHeaderSize];
     std::span<std::byte> header(reinterpret_cast<std::byte *>(header_buffer),
@@ -237,30 +295,39 @@ class SiscoStManColumn final : public StManColumn {
           " file, whereas this Casacore version supports only version " +
           std::to_string(kVersionMajor));
     }
-    shapes_reader_.emplace(ShapesFilename());
 
-    current_row_ = 0;
+    current_read_row_ = 0;
     baseline_ids_.clear();
     baseline_count_ = 0;
-    // Always request half of the requests that fit in the buffer of
-    // SiscoReader, so that SiscoReader can preprocess requests using multiple
-    // threads. Every time a row is read/skipped, another row is requested.
-    shape_buffer_.resize(reader_->GetRequestBufferSize() / 2);
-    shape_read_position_ = 0;
-    shape_write_position_ = 0;
-    current_shape_reading_row_ = 0;
-    for (size_t i = 0; i != shape_buffer_.size(); ++i) {
+    row_count_ = field_id_column_.nrow();
+
+    const size_t n_requests = reader_->GetRequestBufferSize() / 2;
+    if (!isFixedShape()) {
+      shapes_reader_.emplace(ShapesFilename());
+      // Always request half of the requests that fit in the buffer of
+      // SiscoReader, so that SiscoReader can preprocess requests using multiple
+      // threads. Every time a row is read/skipped, another row is requested.
+      shape_buffer_.resize(n_requests);
+      shape_read_position_ = 0;
+      shape_write_position_ = 0;
+    }
+    current_requested_reading_row_ = 0;
+    for (size_t i = 0; i != n_requests; ++i) {
       RequestOneMoreRow();
     }
   }
 
   void RequestOneMoreRow() {
-    const casacore::IPosition shape = shapes_reader_->Read();
-    if (!shapes_reader_->Eof() && shape.size() >= 2) {
-      const int field_id = field_id_column_(current_shape_reading_row_);
-      const int data_desc_id = data_desc_id_column_(current_shape_reading_row_);
-      const int antenna1 = antenna1_column_(current_shape_reading_row_);
-      const int antenna2 = antenna2_column_(current_shape_reading_row_);
+    const casacore::IPosition shape =
+        isFixedShape() ? fixed_shape_ : shapes_reader_->Read();
+    const bool eof = current_requested_reading_row_ >= row_count_ ||
+                     (!isFixedShape() && shapes_reader_->Eof());
+    if (!eof && shape.size() >= 2) {
+      const int field_id = field_id_column_(current_requested_reading_row_);
+      const int data_desc_id =
+          data_desc_id_column_(current_requested_reading_row_);
+      const int antenna1 = antenna1_column_(current_requested_reading_row_);
+      const int antenna2 = antenna2_column_(current_requested_reading_row_);
       const int n_polarizations = shape[0];
       const int n_channels = shape[1];
       for (int polarization = 0; polarization != n_polarizations;
@@ -270,9 +337,12 @@ class SiscoStManColumn final : public StManColumn {
         reader_->Request(baseline_id, n_channels);
       }
     }
-    shape_buffer_[shape_write_position_] = shape;
-    shape_write_position_ = (shape_write_position_ + 1) % shape_buffer_.size();
-    current_shape_reading_row_++;
+    if (!isFixedShape()) {
+      shape_buffer_[shape_write_position_] = shape;
+      shape_write_position_ =
+          (shape_write_position_ + 1) % shape_buffer_.size();
+    }
+    current_requested_reading_row_++;
   }
 
   size_t GetBaselineId(int field_id, int data_desc_id, int antenna1,
@@ -293,16 +363,37 @@ class SiscoStManColumn final : public StManColumn {
   }
 
   void WriteEmptyRow() {
-    shapes_writer_->Write(IPosition{0, 0});
-    ++current_row_;
+    if (isFixedShape()) {
+      const int n_polarizations = fixed_shape_[0];
+      const int n_channels = fixed_shape_[1];
+      buffer_.assign(n_channels, 0.0);
+      const int field_id = field_id_column_(current_write_row_);
+      const int data_desc_id = data_desc_id_column_(current_write_row_);
+      const int antenna1 = antenna1_column_(current_write_row_);
+      const int antenna2 = antenna2_column_(current_write_row_);
+      for (int polarization = 0; polarization != n_polarizations;
+           ++polarization) {
+        const size_t baseline_id = GetBaselineId(
+            field_id, data_desc_id, antenna1, antenna2, polarization);
+        writer_->Write(baseline_id, buffer_);
+      }
+    } else {
+      shapes_writer_->Write(IPosition{0, 0});
+    }
+    ++current_write_row_;
   }
 
   void SkipRow() {
-    const casacore::IPosition &shape = shape_buffer_[shape_read_position_];
-    shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
-    if (shape.size() >= 2) {
-      const int n_polarizations = shape[0];
-      const int n_channels = shape[1];
+    const casacore::IPosition *shape;
+    if (isFixedShape()) {
+      shape = &fixed_shape_;
+    } else {
+      shape = &shape_buffer_[shape_read_position_];
+      shape_read_position_ = (shape_read_position_ + 1) % shape_buffer_.size();
+    }
+    if (shape->size() >= 2) {
+      const int n_polarizations = (*shape)[0];
+      const int n_channels = (*shape)[1];
       if (n_channels) {
         buffer_.resize(n_channels);
         for (int polarization = 0; polarization != n_polarizations;
@@ -312,7 +403,7 @@ class SiscoStManColumn final : public StManColumn {
       }
     }
     RequestOneMoreRow();
-    ++current_row_;
+    ++current_read_row_;
   }
 
   static constexpr size_t kHeaderSize = 20;
@@ -321,6 +412,7 @@ class SiscoStManColumn final : public StManColumn {
   static constexpr uint16_t kVersionMajor = 2;
   static constexpr uint16_t kVersionMinor = 0;
   static constexpr char kShapesExtension[] = "-shapes";
+  static constexpr char kTemporaryExtension[] = "-tmp";
 
   ScalarColumn<int> field_id_column_;
   ScalarColumn<int> data_desc_id_column_;
@@ -332,16 +424,33 @@ class SiscoStManColumn final : public StManColumn {
   std::optional<sisco::SiscoReader> reader_;
   std::optional<ShapesFileWriter> shapes_writer_;
   std::optional<ShapesFileReader> shapes_reader_;
+  IPosition fixed_shape_;
   // A circular buffer to store the already read shapes
   std::vector<IPosition> shape_buffer_;
+  // Points inside shape_buffer_ to the location corresponding to the shape for
+  // the current_read_row_.
   size_t shape_read_position_ = 0;
+  // When reading a new shape from file, this is the place inside the shape
+  // buffer to write it to.
   size_t shape_write_position_ = 0;
-  rownr_t current_shape_reading_row_ = 0;
-  rownr_t current_row_ = 0;
+  rownr_t current_requested_reading_row_ = 0;
+  rownr_t current_read_row_ = 0;
+  rownr_t current_write_row_ = 0;
+  // When reading, this value is set to the number of rows in the measurement
+  // set.
+  rownr_t row_count_ = 0;
+  // Scratch buffer. It does not have a specific state between function calls,
+  // but is stored in class scope so that can reuse its memory.
   std::vector<std::complex<float>> buffer_;
   std::map<std::array<int, 5>, size_t> baseline_ids_;
   size_t baseline_count_;
   bool file_exists_ = false;
+  /**
+   * If true, writing is done to a temporary file such that reading can still
+   * take place from the old file. The temporary file will be moved over the
+   * old file once writing is finished.
+   */
+  bool has_temporary_file_ = false;
 };
 
 }  // namespace casacore
@@ -357,7 +466,7 @@ void SiscoStManColumn::Prepare() {
   antenna1_column_ = ScalarColumn<int>(table, "ANTENNA1");
   antenna2_column_ = ScalarColumn<int>(table, "ANTENNA2");
   file_exists_ = std::filesystem::exists(parent_.fileName()) &&
-                 std::filesystem::exists(ShapesFilename());
+                 (!isFixedShape() || std::filesystem::exists(ShapesFilename()));
 }
 
 }  // namespace casacore
