@@ -126,14 +126,10 @@ namespace casacore { //# NAMESPACE CASACORE - BEGIN
 template<class t> class assert_ {
 public:
     // <group>
-    assert_(int expr, const char *msg) {
+    assert_(bool expr, const char *msg) {
 	if (! expr) throw(t(msg));
     }
-    assert_(const void *ptr, const char *msg) {
-	if (! ptr) throw(t(msg));
-    }
-    assert_(int expr, const char *msg, const char* file, Int line);
-    assert_(const void *ptr, const char *msg, const char* file, Int line);
+    assert_(bool expr, const char *msg, const char* file, Int line);
     // </group>
 
     // A no-op, but it keeps g++ from complaining about "variable not used"
@@ -153,9 +149,9 @@ public:
 // <src>exit(0)</src>.
 
 #define AlwaysAssert(expr, exception) \
-    {casacore::assert_<exception > dummy_(expr, "Failed AlwaysAssert " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null(); }
+    {casacore::assert_<exception > dummy_(static_cast<bool>(expr), "Failed AlwaysAssert " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null(); }
 #define AlwaysAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError> dummy_(static_cast<bool>(expr), "Unrecoverable AlwaysAssertExit: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
 
 #if defined(AIPS_DEBUG)
 
@@ -174,9 +170,9 @@ public:
 //     (assert_<AbortError> (expr, "Unrecoverable Assertion: " #expr,__FILE__,(Int)__LINE__))
 
 #define DebugAssert(expr, exception) \
-    {casacore::assert_<exception > dummy_(expr, "Failed Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<exception > dummy_(static_cast<bool>(expr), "Failed Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
 #define DebugAssertExit(expr) \
-    {casacore::assert_<casacore::AbortError> dummy_(expr, "Unrecoverable Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
+    {casacore::assert_<casacore::AbortError> dummy_(static_cast<bool>(expr), "Unrecoverable Assertion: " #expr,__FILE__,(casacore::Int)__LINE__); dummy_.null();}
 
 #else
 
