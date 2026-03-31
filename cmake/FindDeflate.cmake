@@ -4,7 +4,7 @@ if(NOT DEFLATE_FOUND)
 
   find_path(DEFLATE_INCLUDE_DIR libdeflate.h)
   find_library(DEFLATE_LIBRARY NAMES deflate libdeflate)
-  mark_as_advanced(WCSLIB_INCLUDE_DIR WCSLIB_LIBRARY M_LIBRARY)
+  mark_as_advanced(DEFLATE_INCLUDE_DIR DEFLATE_LIBRARY)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(DEFLATE
